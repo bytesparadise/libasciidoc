@@ -1,0 +1,28 @@
+= Libasciidoc
+
+This project is an attemtp to implement the famous [Asciidoctor]http://github.com/asciidoctor/asciidoctor project in Golang to make it natively available for other Golang projects.
+
+== Supported syntax
+
+- [x] Titles / headings
+
+.Quoted text
+* [x] Bold 
+* [ ] Italic
+
+.Lists
+* [x] Unordered, simple list using the `*` marker
+
+.Links and images
+* [x] external links (`https://`, `http://`, `ftp://`, `irc://`, `mailto:`)
+* [ ] inline images
+* [x] block images
+
+== Supported backend/output
+
+[ ] HTML5
+
+
+== License
+
+Apache License 2.0

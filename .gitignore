@@ -1,0 +1,58 @@
+### Intellij ###
+.idea/
+*.iws
+*.iml
+/out/
+.idea_modules/
+atlassian-ide-plugin.xml
+
+### Eclipse ###
+.metadata
+tmp/
+*.tmp
+*.bak
+*.swp
+*~.nib
+local.properties
+.settings/
+.loadpath
+.recommenders
+
+# Eclipse Core
+.project
+
+# External tool builders
+.externalToolBuilders/
+
+# Locally stored "Eclipse launch configurations"
+*.launch
+
+# Code Recommenders
+.recommenders/
+
+
+### VisualStudioCode ###
+.vscode
+
+### Go ###
+# Compiled Object files, Static and Dynamic libs (Shared Objects)
+*.o
+*.a
+*.so
+
+# Folders
+_obj
+_test
+
+# binaries
+bin/
+
+# Glide package manager
+.glide
+vendor/
+
+# exclude tmp directory
+tmp
+
+# exclude generated file(s)
+parser/asciidoc_parser.go
