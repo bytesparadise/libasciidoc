@@ -186,6 +186,11 @@ generate:
 ## builds the application.
 build: prebuild-check clean-artifacts $(BINARY_PATH)
 
+.PHONY: test
+## run all tests except in the 'vendor' package 
+test: 
+	@go test -v $$(glide novendor) #('$$' is to escape the '$')
+
 # $(BINARY_PATH): $(SOURCES)
 $(BINARY_PATH): 
 	@rm -f ${BINARY_PATH}
