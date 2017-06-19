@@ -8,22 +8,22 @@ This project is an attemtp to implement the famous http://github.com/asciidoctor
 
 * [x] Titles / headings
 
-.Quoted text
-* [x] Bold 
-* [ ] Italic
+* [ ] Quoted text
+** [x] Bold 
+** [ ] Italic
 
-.Lists
-* [x] Unordered, simple list using the `*` marker
+* [ ] Lists
+** [x] Unordered, simple list using the `*` marker
+** [ ] Ordered
 
-.Links and images
-* [x] external links (`https://`, `http://`, `ftp://`, `irc://`, `mailto:`)
-* [ ] inline images
-* [x] block images
+* [ ] Links and images
+** [x] external links (`https://`, `http://`, `ftp://`, `irc://`, `mailto:`)
+** [ ] inline images
+** [x] block images
 
 == Supported backend/output
 
 * [ ] HTML5
-
 
 == License
 
