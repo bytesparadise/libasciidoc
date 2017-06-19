@@ -53,7 +53,7 @@ endef
 # If nothing was specified, run all targets as if in a fresh clone
 .PHONY: all
 ## Default target - fetch dependencies, generate code and build.
-all: prebuild-check install-deps generate build
+all: prebuild-check get-deps generate build
 
 .PHONY: help
 # Based on https://gist.github.com/rcmachado/af3db315e31383502660
@@ -125,13 +125,12 @@ govet:
 format-go-code: prebuild-check
 	@gofmt -s -l -w ${SOURCES}
 
-.PHONY: deps 
+.PHONY: get-deps 
 ## Download build dependencies.
-deps: $(VENDOR_DIR) 
+get-deps: $(VENDOR_DIR) 
 
 $(VENDOR_DIR): glide.lock glide.yaml
 	$(GLIDE_BIN) update 
-	touch $(VENDOR_DIR)
 
 .PHONY: prebuild-check
 prebuild-check: $(TMP_PATH) $(INSTALL_PREFIX) 
@@ -189,7 +188,7 @@ build: prebuild-check clean-artifacts $(BINARY_PATH)
 .PHONY: test
 ## run all tests except in the 'vendor' package 
 test: 
-	@go test -v $$(glide novendor) #('$$' is to escape the '$')
+	@go test -v $$(glide novendor) #
 
 # $(BINARY_PATH): $(SOURCES)
 $(BINARY_PATH): 
