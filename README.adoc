@@ -1,5 +1,7 @@
 = Libasciidoc
 
+image:https://travis-ci.org/bytesparadise/libasciidoc.svg?branch=master["Build Status", link="https://travis-ci.org/bytesparadise/libasciidoc"]
+
 This project is an attemtp to implement the famous http://github.com/asciidoctor/asciidoctor[Asciidoctor] project in Golang to make it natively available for other Golang projects.
 
 == Supported syntax
