@@ -1,5 +1,5 @@
-hash: 2e6720016b114ab983aa7019d791c07759370fe035bb0224a0ad5199072bc197
-updated: 2017-06-17T16:41:19.003931921+02:00
+hash: 10cb315acf28bc682cd4a496e2f5332a6cccdfab7400482ef93b9fa731f5dd7e
+updated: 2017-06-19T22:24:47.258597159+02:00
 imports:
 - name: github.com/go-test/deep
   version: f49763a6ea0a91026be26f8213bebee726b4185f
@@ -9,7 +9,7 @@ imports:
   version: 645ef00459ed84a119197bfb8d8205042c6df63d
 - name: github.com/sirupsen/logrus
   version: 202f25545ea4cf9b191ff7f846df5d87c9382c2b
-  repo: git@github.com:/sirupsen/logrus
+  repo: https://github.com/sirupsen/logrus.git
   vcs: git
 - name: github.com/stretchr/testify
   version: 69483b4bd14f5845b5a1e55bca19e954e827f1d0
@@ -17,7 +17,7 @@ imports:
   - assert
   - require
 - name: golang.org/x/sys
-  version: fb4cac33e3196ff7f507ab9b2d2a44b0142f5b5a
+  version: 478fcf54317e52ab69f40bb4c7a1520288d7f7ea
   subpackages:
   - unix
 testImports:

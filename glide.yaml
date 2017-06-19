@@ -9,7 +9,7 @@ import:
 - package: github.com/pkg/errors
   version: ^0.8.0
 - package: github.com/sirupsen/logrus
-  repo: git@github.com:/sirupsen/logrus
+  repo: https://github.com/sirupsen/logrus.git
   vcs: git
   version: ^1.0.0
 - package: github.com/go-test/deep

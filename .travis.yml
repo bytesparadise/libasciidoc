@@ -1,0 +1,21 @@
+dist: trusty
+sudo: false
+
+install:
+  - GLIDE_TAG="v0.12.3"
+  - GLIDE_DOWNLOAD="https://github.com/Masterminds/glide/releases/download/$GLIDE_TAG/glide-$GLIDE_TAG-linux-amd64.tar.gz"
+  - curl -L $GLIDE_DOWNLOAD | tar -xvz
+  - export PATH=$PATH:$PWD/linux-amd64/
+  - glide install
+  # pigeon is used to generate the parser
+  - go get -u github.com/mna/pigeon
+
+language: go
+
+go:
+  - 1.7
+  - 1.8
+
+script: 
+  - make generate
+  - make test
