@@ -1,6 +1,8 @@
 {
 package parser 
 
+import "github.com/bytesparadise/libasciidoc/types"
+
 // *****************************************************************************************
 // This file is generated after its sibling `asciidoc-grammar.peg` file. DO NOT MOIDIFY !
 // *****************************************************************************************
@@ -8,7 +10,7 @@ package parser
 }
 
 Document <- lines:Line* EOF {
-	return NewDocument(lines.([]interface{}))
+	return types.NewDocument(lines.([]interface{}))
 }
 
 Line <- line:(Heading / ListItem / BlockImage / Inline / EmptyLine) {
@@ -16,21 +18,21 @@ Line <- line:(Heading / ListItem / BlockImage / Inline / EmptyLine) {
 }
 
 Heading <- level:("="+) WS+ content:Inline {
-     return NewHeading(level, content.(*InlineContent))
+     return types.NewHeading(level, content.(*types.InlineContent))
 }
 
 //TODO: Blank lines are required before and after a list
 //TODO: Additionally, blank lines are permitted, but not required, between list items.
 ListItem <- WS* ('*' / '-') WS+ content:(Inline) {
-    return NewListItem(content.(*InlineContent))
+    return types.NewListItem(content.(*types.InlineContent))
 }
 
 Inline <- !NEWLINE elements:(BoldQuote / ExternalLink / BlockImage / Word / WS)+ NEWLINE? {
-    return NewInlineContent(elements.([]interface{}))
+    return types.NewInlineContent(elements.([]interface{}))
 } 
 
 BoldQuote <- '*' content:(BoldContent) '*' {
-    return NewBoldQuote(content)
+    return types.NewBoldQuote(content)
 }
 
 BoldContent <- (BoldContentWord WS+)* BoldContentWord {
@@ -39,14 +41,14 @@ BoldContent <- (BoldContentWord WS+)* BoldContentWord {
 
 ExternalLink <- url:(URL_SCHEME URL) text:('[' (URL_TEXT)* ']')? {
     if text != nil {
-        return NewExternalLink(url.([]interface{}), text.([]interface{}))
+        return types.NewExternalLink(url.([]interface{}), text.([]interface{}))
     }
-    return NewExternalLink(url.([]interface{}), nil)
+    return types.NewExternalLink(url.([]interface{}), nil)
 
 }
 
 BlockImage <- "image::" path:(URL) altText:('[' (URL_TEXT)* ']') {
-    return NewBlockImage(path.(string), altText.([]interface{}))
+    return types.NewBlockImage(path.(string), altText.([]interface{}))
 }
 
 Word <- (!NEWLINE !WS .)+ {
@@ -66,14 +68,13 @@ BoldContentWord <- (!NEWLINE !WS !'*' .)+ {
 }
 
 EmptyLine <- NEWLINE {
-    return NewEmptyLine()
+    return types.NewEmptyLine()
 }
 
 URL_SCHEME <- "http://" / "https://" / "ftp://" / "irc://" / "mailto:"
 DIGIT    <- [0-9]
 NEWLINE  <- "\r\n" / '\r' / '\n'
 WS       <- ' ' / '\t' {
-        fmt.Println("Detected a space")
         return string(c.text), nil
 }
 EOF      <- !.

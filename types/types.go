@@ -1,4 +1,4 @@
-package parser
+package types
 
 import (
 	"fmt"
@@ -111,19 +111,40 @@ func (l ListItem) String() string {
 
 // InlineContent the structure for the inline content
 type InlineContent struct {
-	Elements []interface{}
+	Elements []DocElement
 }
 
 //NewInlineContent initializes a new `InlineContent` from the given values
 func NewInlineContent(elements []interface{}) (*InlineContent, error) {
-	log.Debug(fmt.Sprintf("New inline content based on %d values: %v", len(elements), elements))
-	flattenedElements := flatten(elements)
-	log.Debug(fmt.Sprintf("New InlineContent: %v (%d)", flattenedElements, len(flattenedElements)))
-	return &InlineContent{Elements: flattenedElements}, nil
+	log.Debug(fmt.Sprintf("New inline content based on %d values: ", len(elements)))
+	mergedElements := make([]DocElement, 0)
+	for _, e := range merge(elements) {
+		mergedElements = append(mergedElements, e.(DocElement))
+	}
+	log.Debug(fmt.Sprintf("New InlineContent: %v (%d)", mergedElements, len(mergedElements)))
+	return &InlineContent{Elements: mergedElements}, nil
 }
 
 func (c InlineContent) String() string {
 	return fmt.Sprintf("<InlineContent (l=%[2]d)> %[1]v", c.Elements, len(c.Elements))
+}
+
+// *****************************
+// StringElement
+// *****************************
+
+// StringElement the structure for strings
+type StringElement struct {
+	Content string
+}
+
+//NewStringElement initializes a new `StringElement` from the given content
+func NewStringElement(content interface{}) *StringElement {
+	return &StringElement{Content: content.(string)}
+}
+
+func (e StringElement) String() string {
+	return fmt.Sprintf("<String> %s (%d)", e.Content, len(e.Content))
 }
 
 // *****************************
@@ -173,8 +194,8 @@ type ExternalLink struct {
 
 //NewExternalLink initializes a new `ExternalLink`
 func NewExternalLink(url, text []interface{}) (*ExternalLink, error) {
-	u := stringify(flatten(url))
-	t := stringify(flatten(text))
+	u := stringify(merge(url))
+	t := stringify(merge(text))
 	// the text includes the surrounding '[' and ']' which should be removed
 	t = strings.TrimPrefix(t, "[")
 	t = strings.TrimSuffix(t, "]")
@@ -200,7 +221,7 @@ type BlockImage struct {
 //NewBlockImage initializes a new `BlockImage`
 func NewBlockImage(path string, altText []interface{}) (*BlockImage, error) {
 	var width, height *string
-	alt := stringify(flatten(altText))
+	alt := stringify(merge(altText))
 	// the text includes the surrounding '[' and ']' which should be removed
 	alt = strings.TrimPrefix(alt, "[")
 	alt = strings.TrimSuffix(alt, "]")
