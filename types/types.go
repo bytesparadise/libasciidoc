@@ -129,9 +129,59 @@ func (c InlineContent) String() string {
 	return fmt.Sprintf("<InlineContent (l=%[2]d)> %[1]v", c.Elements, len(c.Elements))
 }
 
-// *****************************
+// -----------------------------
+// Meta Elements
+// -----------------------------
+
+// ElementLink the structure for element links
+type ElementLink struct {
+	Path string
+}
+
+//NewElementLink initializes a new `ElementLink` from the given path
+func NewElementLink(path string) (*ElementLink, error) {
+	log.Debugf("New ElementLink with path=%s", path)
+	return &ElementLink{Path: path}, nil
+}
+
+func (e ElementLink) String() string {
+	return fmt.Sprintf("<ElementLink> %s", e.Path)
+}
+
+// ElementID the structure for element IDs
+type ElementID struct {
+	ID string
+}
+
+//NewElementID initializes a new `ElementID` from the given path
+func NewElementID(id string) (*ElementID, error) {
+	log.Debugf("New ElementID with ID=%s", id)
+	return &ElementID{ID: id}, nil
+}
+
+func (e ElementID) String() string {
+	return fmt.Sprintf("<ElementID> %s", e.ID)
+}
+
+// ElementTitle the structure for element IDs
+type ElementTitle struct {
+	Content string
+}
+
+//NewElementTitle initializes a new `ElementTitle` from the given content
+func NewElementTitle(content []interface{}) (*ElementTitle, error) {
+	c := stringify(merge(content))
+	log.Debugf("New ElementTitle with content=%s", c)
+	return &ElementTitle{Content: c}, nil
+}
+
+func (e ElementTitle) String() string {
+	return fmt.Sprintf("<ElementTitle> %s", e.Content)
+}
+
+// -----------------------------
 // StringElement
-// *****************************
+// -----------------------------
 
 // StringElement the structure for strings
 type StringElement struct {
@@ -147,9 +197,9 @@ func (e StringElement) String() string {
 	return fmt.Sprintf("<String> %s (%d)", e.Content, len(e.Content))
 }
 
-// *****************************
-// BoldQuote
-// *****************************
+// -----------------------------
+// Quotes
+// -----------------------------
 
 // BoldQuote the structure for the bold quotes
 type BoldQuote struct {
@@ -165,9 +215,9 @@ func (b BoldQuote) String() string {
 	return fmt.Sprintf("<BoldQuote> %v", b.Content)
 }
 
-// *****************************
+// -----------------------------
 // EmptyLine
-// *****************************
+// -----------------------------
 
 // EmptyLine the structure for the empty lines, which are used to separate logical blocks
 type EmptyLine struct {
@@ -182,9 +232,9 @@ func (e EmptyLine) String() string {
 	return "<EmptyLine>"
 }
 
-// *****************************
-// ExternalLink
-// *****************************
+// -----------------------------
+// Links
+// -----------------------------
 
 // ExternalLink the structure for the external links
 type ExternalLink struct {
@@ -206,11 +256,11 @@ func (e ExternalLink) String() string {
 	return fmt.Sprintf("<ExternalLink> %s[%s]", e.URL, e.Text)
 }
 
-// *****************************
-// BlockImage
-// *****************************
+// -----------------------------
+// Images
+// -----------------------------
 
-// BlockImage the structure for the block images
+// BlockImage the structure for the block image macross
 type BlockImage struct {
 	Path    string
 	AltText *string
@@ -218,7 +268,7 @@ type BlockImage struct {
 	Height  *string
 }
 
-//NewBlockImage initializes a new `BlockImage`
+//NewBlockImage initializes a new `BlockImageMacro`
 func NewBlockImage(path string, altText []interface{}) (*BlockImage, error) {
 	var width, height *string
 	alt := stringify(merge(altText))
@@ -251,16 +301,16 @@ func NewBlockImage(path string, altText []interface{}) (*BlockImage, error) {
 		Height:  height}, nil
 }
 
-func (i BlockImage) String() string {
+func (m BlockImage) String() string {
 	var altText, width, height string
-	if i.AltText != nil {
-		altText = *i.AltText
+	if m.AltText != nil {
+		altText = *m.AltText
 	}
-	if i.Width != nil {
-		width = *i.Width
+	if m.Width != nil {
+		width = *m.Width
 	}
-	if i.Height != nil {
-		height = *i.Height
+	if m.Height != nil {
+		height = *m.Height
 	}
-	return fmt.Sprintf("<BlockImage> %s[%s,w=%s h=%s]", i.Path, altText, width, height)
+	return fmt.Sprintf("<BlockImageMacro> %s[%s,w=%s h=%s]", m.Path, altText, width, height)
 }

@@ -39,7 +39,7 @@ func TestHeadingOnly(t *testing.T) {
 	assert.EqualValues(t, expectedDocument, actualDocument)
 }
 
-func TestInvalidHeading1(t *testing.T) {
+func TestHeadingInvalid1(t *testing.T) {
 	// given an invalid heading (missing space after '=')
 	actualDocument, errs := ParseString("=a heading")
 	require.Nil(t, errs)
@@ -56,7 +56,7 @@ func TestInvalidHeading1(t *testing.T) {
 	log.Debugf("expected document: %s", expectedDocument.String())
 	assert.EqualValues(t, expectedDocument, actualDocument)
 }
-func TestInvalidHeading2(t *testing.T) {
+func TestHeadingInvalid2(t *testing.T) {
 	// given an invalid heading (extra space before '=')
 	actualDocument, errs := ParseString(" = a heading")
 	require.Nil(t, errs)
@@ -535,7 +535,7 @@ func TestBlockImageWithAltText(t *testing.T) {
 	assert.EqualValues(t, expectedDocument, actualDocument)
 }
 
-func TestBlockImageWithIDAndTitleAndDimensions(t *testing.T) {
+func TestBlockImageWithDimensionsAndIDLinkTitleMeta(t *testing.T) {
 	// given an inline with an external lin
 	actualDocument, errs := ParseString(`[#img-foobar]
 .A title to foobar
@@ -549,15 +549,155 @@ image::images/foo.png[the foo.png image,600,400]`)
 	height := "400"
 	expectedDocument := &types.Document{
 		Elements: []types.DocElement{
-			&types.InlineContent{Elements: []types.DocElement{&types.StringElement{Content: "[#img-foobar]"}}},
-			&types.InlineContent{Elements: []types.DocElement{&types.StringElement{Content: ".A title to foobar"}}},
-			&types.InlineContent{Elements: []types.DocElement{&types.StringElement{Content: "[link=http://foo.bar]"}}},
+			&types.ElementID{ID: "#img-foobar"},
+			&types.ElementTitle{Content: "A title to foobar"},
+			&types.ElementLink{Path: "http://foo.bar"},
 			&types.BlockImage{
 				Path:    "images/foo.png",
 				AltText: &altText,
 				Width:   &width,
 				Height:  &height,
 			},
+		},
+	}
+	log.Debugf("expected document: %s", expectedDocument.String())
+	assert.EqualValues(t, expectedDocument, actualDocument)
+}
+
+func TestElementLink(t *testing.T) {
+	// given an inline with an external lin
+	actualDocument, errs := ParseString(`[link=http://foo.bar]`)
+	require.Nil(t, errs)
+	log.Debugf("actual document: %s", actualDocument.String())
+	// then
+	expectedDocument := &types.Document{
+		Elements: []types.DocElement{
+			&types.ElementLink{Path: "http://foo.bar"},
+		},
+	}
+	log.Debugf("expected document: %s", expectedDocument.String())
+	assert.EqualValues(t, expectedDocument, actualDocument)
+}
+
+func TestElementLinkWithSpaces(t *testing.T) {
+	// given an inline with an element link
+	actualDocument, errs := ParseString(`[ link = http://foo.bar ]`)
+	require.Nil(t, errs)
+	log.Debugf("actual document: %s", actualDocument.String())
+	// then
+	expectedDocument := &types.Document{
+		Elements: []types.DocElement{
+			&types.ElementLink{Path: "http://foo.bar"},
+		},
+	}
+	log.Debugf("expected document: %s", expectedDocument.String())
+	assert.EqualValues(t, expectedDocument, actualDocument)
+}
+
+func TestElementLinkInvalid(t *testing.T) {
+	// given an inline with an element link with missing ']'
+	actualDocument, errs := ParseString(`[ link = http://foo.bar`)
+	require.Nil(t, errs)
+	log.Debugf("actual document: %s", actualDocument.String())
+	// then
+	expectedDocument := &types.Document{
+		Elements: []types.DocElement{
+			&types.InlineContent{
+				Elements: []types.DocElement{
+					&types.StringElement{Content: "[ link = "},
+					&types.ExternalLink{URL: "http://foo.bar"},
+				},
+			},
+		},
+	}
+	log.Debugf("expected document: %s", expectedDocument.String())
+	assert.EqualValues(t, expectedDocument, actualDocument)
+}
+
+func TestElementID(t *testing.T) {
+	// given an inline with an element ID
+	actualDocument, errs := ParseString(`[#img-foobar]`)
+	require.Nil(t, errs)
+	log.Debugf("actual document: %s", actualDocument.String())
+	// then
+	expectedDocument := &types.Document{
+		Elements: []types.DocElement{
+			&types.ElementID{ID: "#img-foobar"},
+		},
+	}
+	log.Debugf("expected document: %s", expectedDocument.String())
+	assert.EqualValues(t, expectedDocument, actualDocument)
+}
+
+func TestElementIDWithSpaces(t *testing.T) {
+	// given an inline with an element ID
+	actualDocument, errs := ParseString("[ #img-foobar ]")
+	require.Nil(t, errs)
+	log.Debugf("actual document: %s", actualDocument.String())
+	// then
+	expectedDocument := &types.Document{
+		Elements: []types.DocElement{
+			&types.ElementID{ID: "#img-foobar"},
+		},
+	}
+	log.Debugf("expected document: %s", expectedDocument.String())
+	assert.EqualValues(t, expectedDocument, actualDocument)
+}
+
+func TestElementIDInvalid(t *testing.T) {
+	// given an inline with an element ID with missing ']'
+	actualDocument, errs := ParseString(`[#img-foobar`)
+	require.Nil(t, errs)
+	log.Debugf("actual document: %s", actualDocument.String())
+	// then
+	expectedDocument := &types.Document{
+		Elements: []types.DocElement{
+			&types.InlineContent{Elements: []types.DocElement{&types.StringElement{Content: "[#img-foobar"}}},
+		},
+	}
+	log.Debugf("expected document: %s", expectedDocument.String())
+	assert.EqualValues(t, expectedDocument, actualDocument)
+}
+
+func TestElementTitle(t *testing.T) {
+	// given an inline with an element title
+	actualDocument, errs := ParseString(`.a title`)
+	require.Nil(t, errs)
+	log.Debugf("actual document: %s", actualDocument.String())
+	// then
+	expectedDocument := &types.Document{
+		Elements: []types.DocElement{
+			&types.ElementTitle{Content: "a title"},
+		},
+	}
+	log.Debugf("expected document: %s", expectedDocument.String())
+	assert.EqualValues(t, expectedDocument, actualDocument)
+}
+
+func TestElementTitleInvalid1(t *testing.T) {
+	// given an inline with an element title with extra space after '.'
+	actualDocument, errs := ParseString(". a title")
+	require.Nil(t, errs)
+	log.Debugf("actual document: %s", actualDocument.String())
+	// then
+	expectedDocument := &types.Document{
+		Elements: []types.DocElement{
+			&types.InlineContent{Elements: []types.DocElement{&types.StringElement{Content: ". a title"}}},
+		},
+	}
+	log.Debugf("expected document: %s", expectedDocument.String())
+	assert.EqualValues(t, expectedDocument, actualDocument)
+}
+
+func TestElementTitleInvalid2(t *testing.T) {
+	// given an inline with an element ID with missing '.' as first character
+	actualDocument, errs := ParseString(`!a title`)
+	require.Nil(t, errs)
+	log.Debugf("actual document: %s", actualDocument.String())
+	// then
+	expectedDocument := &types.Document{
+		Elements: []types.DocElement{
+			&types.InlineContent{Elements: []types.DocElement{&types.StringElement{Content: "!a title"}}},
 		},
 	}
 	log.Debugf("expected document: %s", expectedDocument.String())
