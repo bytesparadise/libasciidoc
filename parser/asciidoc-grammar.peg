@@ -13,7 +13,7 @@ Document <- lines:Line* EOF {
 	return types.NewDocument(lines.([]interface{}))
 }
 
-Line <- line:(Heading / ListItem / BlockImage / Inline / EmptyLine) {
+Line <- line:(Heading / ListItem / BlockImage / MetaElement / Inline / EmptyLine) {
     return line, nil
 }
 
@@ -21,16 +21,18 @@ Heading <- level:("="+) WS+ content:Inline {
      return types.NewHeading(level, content.(*types.InlineContent))
 }
 
+// ---------------------
+// Lists
+// ---------------------
 //TODO: Blank lines are required before and after a list
 //TODO: Additionally, blank lines are permitted, but not required, between list items.
 ListItem <- WS* ('*' / '-') WS+ content:(Inline) {
     return types.NewListItem(content.(*types.InlineContent))
 }
 
-Inline <- !NEWLINE elements:(BoldQuote / ExternalLink / BlockImage / Word / WS)+ NEWLINE? {
-    return types.NewInlineContent(elements.([]interface{}))
-} 
-
+// ---------------------
+// Quotes
+// ---------------------
 BoldQuote <- '*' content:(BoldContent) '*' {
     return types.NewBoldQuote(content)
 }
@@ -39,18 +41,59 @@ BoldContent <- (BoldContentWord WS+)* BoldContentWord {
     return string(c.text), nil
 }
 
+BoldContentWord <- (!NEWLINE !WS !'*' .)+ {
+    return string(c.text), nil
+}
+
+// ---------------------
+// Links
+// ---------------------
 ExternalLink <- url:(URL_SCHEME URL) text:('[' (URL_TEXT)* ']')? {
     if text != nil {
         return types.NewExternalLink(url.([]interface{}), text.([]interface{}))
     }
     return types.NewExternalLink(url.([]interface{}), nil)
-
 }
 
-BlockImage <- "image::" path:(URL) altText:('[' (URL_TEXT)* ']') {
+// ---------------------
+// Images
+// ---------------------
+BlockImage <- "image::" path:(URL) altText:('[' (URL_TEXT)* ']') (NEWLINE/EOF) {
     return types.NewBlockImage(path.(string), altText.([]interface{}))
 }
 
+// ---------------------
+// Inline content
+// ---------------------
+Inline <- !NEWLINE elements:(BoldQuote / ExternalLink / Word / WS)+ (NEWLINE/EOF) {
+    return types.NewInlineContent(elements.([]interface{}))
+} 
+
+// ---------------------
+// meta-element types
+// ---------------------
+MetaElement <- meta:(ElementLink / ElementID / ElementTitle) {
+    return meta, nil
+}
+
+// a link attached to an element, such as a BlockImage
+ElementLink <- "[" WS* "link" WS* "=" WS* path:URL WS* "]" (NEWLINE/EOF) {
+    return types.NewElementLink(path.(string))
+}
+
+// an id attached to an element, such as a BlockImage
+ElementID <- "[" WS* id:(ID) WS* "]" (NEWLINE/EOF) {
+    return types.NewElementID(id.(string))
+}
+
+// a title attached to an element, such as a BlockImage
+ElementTitle <- "." !WS title:(!NEWLINE .)+ (NEWLINE/EOF) {
+    return types.NewElementTitle(title.([]interface{}))
+}
+
+// ---------------------
+// Base types
+// ---------------------
 Word <- (!NEWLINE !WS .)+ {
     return string(c.text), nil
 }
@@ -59,13 +102,14 @@ URL <- (!NEWLINE !WS !'[' !']' .)+ {
     return string(c.text), nil
 }
 
+ID <- '#' (!NEWLINE !WS !'[' !']' .)+ {
+    return string(c.text), nil
+}
+
 URL_TEXT <- (!NEWLINE !'[' !']' .)+ {
     return string(c.text), nil
 }
 
-BoldContentWord <- (!NEWLINE !WS !'*' .)+ {
-    return string(c.text), nil
-}
 
 EmptyLine <- NEWLINE {
     return types.NewEmptyLine()
