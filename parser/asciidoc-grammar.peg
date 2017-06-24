@@ -58,36 +58,34 @@ ExternalLink <- url:(URL_SCHEME URL) text:('[' (URL_TEXT)* ']')? {
 // ---------------------
 // Images
 // ---------------------
-BlockImage <- "image::" path:(URL) altText:('[' (URL_TEXT)* ']') (NEWLINE/EOF) {
+BlockImage <- "image::" path:(URL) altText:('[' (URL_TEXT)* ']') EOL {
     return types.NewBlockImage(path.(string), altText.([]interface{}))
 }
 
 // ---------------------
 // Inline content
 // ---------------------
-Inline <- !NEWLINE elements:(BoldQuote / ExternalLink / Word / WS)+ (NEWLINE/EOF) {
+Inline <- !NEWLINE elements:(BoldQuote / ExternalLink / Word / WS)+ EOL {
     return types.NewInlineContent(elements.([]interface{}))
 } 
 
 // ---------------------
 // meta-element types
 // ---------------------
-MetaElement <- meta:(ElementLink / ElementID / ElementTitle) {
-    return meta, nil
-}
+MetaElement <- meta:(ElementLink / ElementID / ElementTitle) 
 
 // a link attached to an element, such as a BlockImage
-ElementLink <- "[" WS* "link" WS* "=" WS* path:URL WS* "]" (NEWLINE/EOF) {
+ElementLink <- "[" WS* "link" WS* "=" WS* path:URL WS* "]" EOL {
     return types.NewElementLink(path.(string))
 }
 
 // an id attached to an element, such as a BlockImage
-ElementID <- "[" WS* id:(ID) WS* "]" (NEWLINE/EOF) {
+ElementID <- "[" WS* id:(ID) WS* "]" EOL {
     return types.NewElementID(id.(string))
 }
 
 // a title attached to an element, such as a BlockImage
-ElementTitle <- "." !WS title:(!NEWLINE .)+ (NEWLINE/EOF) {
+ElementTitle <- "." !WS title:(!NEWLINE .)+ EOL {
     return types.NewElementTitle(title.([]interface{}))
 }
 
@@ -122,3 +120,4 @@ WS       <- ' ' / '\t' {
         return string(c.text), nil
 }
 EOF      <- !.
+EOL      <- NEWLINE / EOF
