@@ -21,12 +21,16 @@ func init() {
 	}
 }
 
-func TestHeadingOnly(t *testing.T) {
-	// given a valid heading
-	actualDocument, errs := ParseString("= a heading")
+func compare(t *testing.T, expectedDocument *types.Document, content string) {
+	actualDocument, errs := ParseString(content)
 	require.Nil(t, errs)
 	log.Debugf("actual document: %s", actualDocument.String())
-	// then
+	log.Debugf("expected document: %s", expectedDocument.String())
+	assert.EqualValues(t, expectedDocument, actualDocument)
+}
+func TestHeadingOnly(t *testing.T) {
+	// given a valid heading
+	actualContent := "= a heading"
 	expectedDocument := &types.Document{
 		Elements: []types.DocElement{
 			&types.Heading{Level: 1, Content: &types.InlineContent{
@@ -35,16 +39,12 @@ func TestHeadingOnly(t *testing.T) {
 				},
 			}},
 		}}
-	log.Debugf("expected document: %s", expectedDocument.String())
-	assert.EqualValues(t, expectedDocument, actualDocument)
+	compare(t, expectedDocument, actualContent)
 }
 
 func TestHeadingInvalid1(t *testing.T) {
 	// given an invalid heading (missing space after '=')
-	actualDocument, errs := ParseString("=a heading")
-	require.Nil(t, errs)
-	log.Debugf("actual document: %s", actualDocument.String())
-	// then
+	actualContent := "=a heading"
 	expectedDocument := &types.Document{
 		Elements: []types.DocElement{
 			&types.InlineContent{
@@ -53,15 +53,11 @@ func TestHeadingInvalid1(t *testing.T) {
 				},
 			},
 		}}
-	log.Debugf("expected document: %s", expectedDocument.String())
-	assert.EqualValues(t, expectedDocument, actualDocument)
+	compare(t, expectedDocument, actualContent)
 }
 func TestHeadingInvalid2(t *testing.T) {
 	// given an invalid heading (extra space before '=')
-	actualDocument, errs := ParseString(" = a heading")
-	require.Nil(t, errs)
-	log.Debugf("actual document: %s", actualDocument.String())
-	// then
+	actualContent := " = a heading"
 	expectedDocument := &types.Document{
 		Elements: []types.DocElement{
 			&types.InlineContent{
@@ -70,16 +66,12 @@ func TestHeadingInvalid2(t *testing.T) {
 				},
 			},
 		}}
-	log.Debugf("expected document: %s", expectedDocument.String())
-	assert.EqualValues(t, expectedDocument, actualDocument)
+	compare(t, expectedDocument, actualContent)
 }
 
 func TestSection2(t *testing.T) {
 	// given a section 2
-	actualDocument, errs := ParseString(`== section 1`)
-	require.Nil(t, errs)
-	log.Debugf("actual document: %s", actualDocument.String())
-	// then
+	actualContent := `== section 1`
 	expectedDocument := &types.Document{
 		Elements: []types.DocElement{
 			&types.Heading{Level: 2, Content: &types.InlineContent{
@@ -89,18 +81,12 @@ func TestSection2(t *testing.T) {
 			}},
 		},
 	}
-	log.Debugf("expected document: %s", expectedDocument.String())
-	assert.EqualValues(t, expectedDocument, actualDocument)
+	compare(t, expectedDocument, actualContent)
 }
 
 func TestHeadingWithSection2(t *testing.T) {
 	// given a document with a heading, an empty line and a section
-	actualDocument, errs := ParseString(`= a heading
-
-== section 1`)
-	require.Nil(t, errs)
-	log.Debugf("actual document: %s", actualDocument.String())
-	// then
+	actualContent := "= a heading\n\n== section 1"
 	expectedDocument := &types.Document{
 		Elements: []types.DocElement{
 			&types.Heading{Level: 1, Content: &types.InlineContent{
@@ -116,17 +102,11 @@ func TestHeadingWithSection2(t *testing.T) {
 			}},
 		},
 	}
-	log.Debugf("expected document: %s", expectedDocument.String())
-	assert.EqualValues(t, expectedDocument, actualDocument)
+	compare(t, expectedDocument, actualContent)
 }
 func TestHeadingWithInvalidSection2(t *testing.T) {
 	// given a document with a heading, an empty line and an invalid section (extra space at beginning of line)
-	actualDocument, errs := ParseString(`= a heading
-
- == section 1`)
-	require.Nil(t, errs)
-	log.Debugf("actual document: %s", actualDocument.String())
-	// then
+	actualContent := "= a heading\n\n == section 1"
 	expectedDocument := &types.Document{
 		Elements: []types.DocElement{
 			&types.Heading{Level: 1, Content: &types.InlineContent{
@@ -142,15 +122,11 @@ func TestHeadingWithInvalidSection2(t *testing.T) {
 			},
 		},
 	}
-	log.Debugf("expected document: %s", expectedDocument.String())
-	assert.EqualValues(t, expectedDocument, actualDocument)
+	compare(t, expectedDocument, actualContent)
 }
 func TestInline1Word(t *testing.T) {
 	// given a simple string
-	actualDocument, errs := ParseString(`hello`)
-	require.Nil(t, errs)
-	log.Debugf("actual document: %s", actualDocument.String())
-	// then
+	actualContent := "hello"
 	expectedDocument := &types.Document{
 		Elements: []types.DocElement{
 			&types.InlineContent{
@@ -160,15 +136,11 @@ func TestInline1Word(t *testing.T) {
 			},
 		},
 	}
-	log.Debugf("expected document: %s", expectedDocument.String())
-	assert.EqualValues(t, expectedDocument, actualDocument)
+	compare(t, expectedDocument, actualContent)
 }
 func TestInlineSimple(t *testing.T) {
 	// given a simple sentence
-	actualDocument, errs := ParseString(`a paragraph with some content`)
-	require.Nil(t, errs)
-	log.Debugf("actual document: %s", actualDocument.String())
-	// then
+	actualContent := "a paragraph with some content"
 	expectedDocument := &types.Document{
 		Elements: []types.DocElement{
 			&types.InlineContent{
@@ -178,15 +150,11 @@ func TestInlineSimple(t *testing.T) {
 			},
 		},
 	}
-	log.Debugf("expected document: %s", expectedDocument.String())
-	assert.EqualValues(t, expectedDocument, actualDocument)
+	compare(t, expectedDocument, actualContent)
 }
 func TestBoldQuote1Word(t *testing.T) {
 	// given a bold quote of 1 word
-	actualDocument, errs := ParseString(`*hello*`)
-	require.Nil(t, errs)
-	log.Debugf("actual document: %s", actualDocument.String())
-	// then
+	actualContent := "*hello*"
 	expectedDocument := &types.Document{
 		Elements: []types.DocElement{
 			&types.InlineContent{
@@ -198,16 +166,12 @@ func TestBoldQuote1Word(t *testing.T) {
 			},
 		},
 	}
-	log.Debugf("expected document: %s", expectedDocument.String())
-	assert.EqualValues(t, expectedDocument, actualDocument)
+	compare(t, expectedDocument, actualContent)
 }
 
 func TestBoldQuote2Words(t *testing.T) {
 	// given a bold quote of 2 words
-	actualDocument, errs := ParseString(`*bold    content*`)
-	require.Nil(t, errs)
-	log.Debugf("actual document: %s", actualDocument.String())
-	// then
+	actualContent := "*bold    content*"
 	expectedDocument := &types.Document{
 		Elements: []types.DocElement{
 			&types.InlineContent{
@@ -219,15 +183,11 @@ func TestBoldQuote2Words(t *testing.T) {
 			},
 		},
 	}
-	log.Debugf("expected document: %s", expectedDocument.String())
-	assert.EqualValues(t, expectedDocument, actualDocument)
+	compare(t, expectedDocument, actualContent)
 }
 func TestBoldQuote3Words(t *testing.T) {
 	// given a bold quote of 3 words
-	actualDocument, errs := ParseString(`*some bold content*`)
-	require.Nil(t, errs)
-	log.Debugf("actual document: %s", actualDocument.String())
-	// then
+	actualContent := "*some bold content*"
 	expectedDocument := &types.Document{
 		Elements: []types.DocElement{
 			&types.InlineContent{
@@ -239,15 +199,11 @@ func TestBoldQuote3Words(t *testing.T) {
 			},
 		},
 	}
-	log.Debugf("expected document: %s", expectedDocument.String())
-	assert.EqualValues(t, expectedDocument, actualDocument)
+	compare(t, expectedDocument, actualContent)
 }
 func TestInlineWithBoldQuote(t *testing.T) {
 	// given a sentence with a bold quote
-	actualDocument, errs := ParseString(`a paragraph with *some bold content*`)
-	require.Nil(t, errs)
-	log.Debugf("actual document: %s", actualDocument.String())
-	// then
+	actualContent := "a paragraph with *some bold content*"
 	expectedDocument := &types.Document{
 		Elements: []types.DocElement{
 			&types.InlineContent{
@@ -260,16 +216,12 @@ func TestInlineWithBoldQuote(t *testing.T) {
 			},
 		},
 	}
-	log.Debugf("expected document: %s", expectedDocument.String())
-	assert.EqualValues(t, expectedDocument, actualDocument)
+	compare(t, expectedDocument, actualContent)
 }
 
 func TestInlineWithInvalidBoldQuote1(t *testing.T) {
 	// given an inline with invalid bold (1)
-	actualDocument, errs := ParseString(`a paragraph with *some bold content`)
-	require.Nil(t, errs)
-	log.Debugf("actual document: %s", actualDocument.String())
-	// then
+	actualContent := "a paragraph with *some bold content"
 	expectedDocument := &types.Document{
 		Elements: []types.DocElement{
 			&types.InlineContent{
@@ -279,16 +231,12 @@ func TestInlineWithInvalidBoldQuote1(t *testing.T) {
 			},
 		},
 	}
-	log.Debugf("expected document: %s", expectedDocument.String())
-	assert.EqualValues(t, expectedDocument, actualDocument)
+	compare(t, expectedDocument, actualContent)
 }
 
 func TestInlineWithInvalidBoldQuote2(t *testing.T) {
 	// given an inline with invalid bold (2)
-	actualDocument, errs := ParseString(`a paragraph with *some bold content *`)
-	require.Nil(t, errs)
-	log.Debugf("actual document: %s", actualDocument.String())
-	// then
+	actualContent := "a paragraph with *some bold content *"
 	expectedDocument := &types.Document{
 		Elements: []types.DocElement{
 			&types.InlineContent{
@@ -298,16 +246,12 @@ func TestInlineWithInvalidBoldQuote2(t *testing.T) {
 			},
 		},
 	}
-	log.Debugf("expected document: %s", expectedDocument.String())
-	assert.EqualValues(t, expectedDocument, actualDocument)
+	compare(t, expectedDocument, actualContent)
 }
 
 func TestInlineWithInvalidBoldQuote3(t *testing.T) {
 	// given an inline with invalid bold (3)
-	actualDocument, errs := ParseString(`a paragraph with * some bold content*`)
-	require.Nil(t, errs)
-	log.Debugf("actual document: %s", actualDocument.String())
-	// then
+	actualContent := "a paragraph with * some bold content*"
 	expectedDocument := &types.Document{
 		Elements: []types.DocElement{
 			&types.InlineContent{
@@ -317,20 +261,12 @@ func TestInlineWithInvalidBoldQuote3(t *testing.T) {
 			},
 		},
 	}
-	log.Debugf("expected document: %s", expectedDocument.String())
-	assert.EqualValues(t, expectedDocument, actualDocument)
+	compare(t, expectedDocument, actualContent)
 }
 
 func TestHeadingSectionInlineWithBoldQuote(t *testing.T) {
 	// given
-	actualDocument, errs := ParseString(`= a heading
-
-== section 1
-
-a paragraph with *bold content*`)
-	require.Nil(t, errs)
-	log.Debugf("actual document: %s", actualDocument.String())
-	// then a document with a heading, an empty line, a section and an inline with a bold quote
+	actualContent := "= a heading\n\n== section 1\n\na paragraph with *bold content*"
 	expectedDocument := &types.Document{
 		Elements: []types.DocElement{
 			&types.Heading{Level: 1, Content: &types.InlineContent{
@@ -355,16 +291,12 @@ a paragraph with *bold content*`)
 			},
 		},
 	}
-	log.Debugf("expected document: %s", expectedDocument.String())
-	assert.EqualValues(t, expectedDocument, actualDocument)
+	compare(t, expectedDocument, actualContent)
 }
 
 func TestSingleListItem(t *testing.T) {
 	// given an inline with invalid bold (3)
-	actualDocument, errs := ParseString(`* a list item`)
-	require.Nil(t, errs)
-	log.Debugf("actual document: %s", actualDocument.String())
-	// then
+	actualContent := "* a list item"
 	expectedDocument := &types.Document{
 		Elements: []types.DocElement{
 			&types.ListItem{
@@ -376,16 +308,12 @@ func TestSingleListItem(t *testing.T) {
 			},
 		},
 	}
-	log.Debugf("expected document: %s", expectedDocument.String())
-	assert.EqualValues(t, expectedDocument, actualDocument)
+	compare(t, expectedDocument, actualContent)
 }
 
 func TestInvalidListItem(t *testing.T) {
 	// given an inline with invalid bold (3)
-	actualDocument, errs := ParseString(`*an invalid list item`)
-	require.Nil(t, errs)
-	log.Debugf("actual document: %s", actualDocument.String())
-	// then
+	actualContent := "*an invalid list item"
 	expectedDocument := &types.Document{
 		Elements: []types.DocElement{
 			&types.InlineContent{
@@ -395,17 +323,12 @@ func TestInvalidListItem(t *testing.T) {
 			},
 		},
 	}
-	log.Debugf("expected document: %s", expectedDocument.String())
-	assert.EqualValues(t, expectedDocument, actualDocument)
+	compare(t, expectedDocument, actualContent)
 }
 
 func TestListItems(t *testing.T) {
 	// given an inline with invalid bold (3)
-	actualDocument, errs := ParseString(`* a first item
-* a second item with *bold content*`)
-	require.Nil(t, errs)
-	log.Debugf("actual document: %s", actualDocument.String())
-	// then
+	actualContent := "* a first item\n* a second item with *bold content*"
 	expectedDocument := &types.Document{
 		Elements: []types.DocElement{
 			&types.ListItem{
@@ -427,16 +350,12 @@ func TestListItems(t *testing.T) {
 			},
 		},
 	}
-	log.Debugf("expected document: %s", expectedDocument.String())
-	assert.EqualValues(t, expectedDocument, actualDocument)
+	compare(t, expectedDocument, actualContent)
 }
 
 func TestExternalLink(t *testing.T) {
 	// given an inline with an external lin
-	actualDocument, errs := ParseString(`a link to https://foo.bar`)
-	require.Nil(t, errs)
-	log.Debugf("actual document: %s", actualDocument.String())
-	// then
+	actualContent := "a link to https://foo.bar"
 	expectedDocument := &types.Document{
 		Elements: []types.DocElement{
 			&types.InlineContent{
@@ -449,16 +368,12 @@ func TestExternalLink(t *testing.T) {
 			},
 		},
 	}
-	log.Debugf("expected document: %s", expectedDocument.String())
-	assert.EqualValues(t, expectedDocument, actualDocument)
+	compare(t, expectedDocument, actualContent)
 }
 
 func TestExternalLinkWithEmptyText(t *testing.T) {
 	// given an inline with an external lin
-	actualDocument, errs := ParseString(`a link to https://foo.bar[]`)
-	require.Nil(t, errs)
-	log.Debugf("actual document: %s", actualDocument.String())
-	// then
+	actualContent := "a link to https://foo.bar[]"
 	expectedDocument := &types.Document{
 		Elements: []types.DocElement{
 			&types.InlineContent{
@@ -472,17 +387,12 @@ func TestExternalLinkWithEmptyText(t *testing.T) {
 			},
 		},
 	}
-	t.Log(fmt.Sprintf("Actual document: %v", actualDocument.Elements[0].(*types.InlineContent).Elements[1]))
-	log.Debugf("expected document: %s", expectedDocument.String())
-	assert.EqualValues(t, expectedDocument, actualDocument)
+	compare(t, expectedDocument, actualContent)
 }
 
 func TestExternalLinkWithText(t *testing.T) {
 	// given an inline with an external lin
-	actualDocument, errs := ParseString(`a link to mailto:foo@bar[the foo@bar email]`)
-	require.Nil(t, errs)
-	log.Debugf("actual document: %s", actualDocument.String())
-	// then
+	actualContent := "a link to mailto:foo@bar[the foo@bar email]"
 	expectedDocument := &types.Document{
 		Elements: []types.DocElement{
 			&types.InlineContent{
@@ -496,16 +406,12 @@ func TestExternalLinkWithText(t *testing.T) {
 			},
 		},
 	}
-	log.Debugf("expected document: %s", expectedDocument.String())
-	assert.EqualValues(t, expectedDocument, actualDocument)
+	compare(t, expectedDocument, actualContent)
 }
 
 func TestBlockImageWithEmptyAltText(t *testing.T) {
 	// given an inline with an external lin
-	actualDocument, errs := ParseString(`image::images/foo.png[]`)
-	require.Nil(t, errs)
-	log.Debugf("actual document: %s", actualDocument.String())
-	// then
+	actualContent := "image::images/foo.png[]"
 	expectedDocument := &types.Document{
 		Elements: []types.DocElement{
 			&types.BlockImage{
@@ -513,15 +419,11 @@ func TestBlockImageWithEmptyAltText(t *testing.T) {
 			},
 		},
 	}
-	log.Debugf("expected document: %s", expectedDocument.String())
-	assert.EqualValues(t, expectedDocument, actualDocument)
+	compare(t, expectedDocument, actualContent)
 }
 func TestBlockImageWithAltText(t *testing.T) {
 	// given an inline with an external lin
-	actualDocument, errs := ParseString(`image::images/foo.png[the foo.png image]`)
-	require.Nil(t, errs)
-	log.Debugf("actual document: %s", actualDocument.String())
-	// then
+	actualContent := "image::images/foo.png[the foo.png image]"
 	altText := "the foo.png image"
 	expectedDocument := &types.Document{
 		Elements: []types.DocElement{
@@ -531,19 +433,12 @@ func TestBlockImageWithAltText(t *testing.T) {
 			},
 		},
 	}
-	log.Debugf("expected document: %s", expectedDocument.String())
-	assert.EqualValues(t, expectedDocument, actualDocument)
+	compare(t, expectedDocument, actualContent)
 }
 
 func TestBlockImageWithDimensionsAndIDLinkTitleMeta(t *testing.T) {
 	// given an inline with an external lin
-	actualDocument, errs := ParseString(`[#img-foobar]
-.A title to foobar
-[link=http://foo.bar]
-image::images/foo.png[the foo.png image,600,400]`)
-	require.Nil(t, errs)
-	log.Debugf("actual document: %s", actualDocument.String())
-	// then
+	actualContent := "[#img-foobar]\n.A title to foobar\n[link=http://foo.bar]\nimage::images/foo.png[the foo.png image,600,400]"
 	altText := "the foo.png image"
 	width := "600"
 	height := "400"
@@ -560,46 +455,34 @@ image::images/foo.png[the foo.png image,600,400]`)
 			},
 		},
 	}
-	log.Debugf("expected document: %s", expectedDocument.String())
-	assert.EqualValues(t, expectedDocument, actualDocument)
+	compare(t, expectedDocument, actualContent)
 }
 
 func TestElementLink(t *testing.T) {
 	// given an inline with an external lin
-	actualDocument, errs := ParseString(`[link=http://foo.bar]`)
-	require.Nil(t, errs)
-	log.Debugf("actual document: %s", actualDocument.String())
-	// then
+	actualContent := "[link=http://foo.bar]"
 	expectedDocument := &types.Document{
 		Elements: []types.DocElement{
 			&types.ElementLink{Path: "http://foo.bar"},
 		},
 	}
-	log.Debugf("expected document: %s", expectedDocument.String())
-	assert.EqualValues(t, expectedDocument, actualDocument)
+	compare(t, expectedDocument, actualContent)
 }
 
 func TestElementLinkWithSpaces(t *testing.T) {
 	// given an inline with an element link
-	actualDocument, errs := ParseString(`[ link = http://foo.bar ]`)
-	require.Nil(t, errs)
-	log.Debugf("actual document: %s", actualDocument.String())
-	// then
+	actualContent := "[ link = http://foo.bar ]"
 	expectedDocument := &types.Document{
 		Elements: []types.DocElement{
 			&types.ElementLink{Path: "http://foo.bar"},
 		},
 	}
-	log.Debugf("expected document: %s", expectedDocument.String())
-	assert.EqualValues(t, expectedDocument, actualDocument)
+	compare(t, expectedDocument, actualContent)
 }
 
 func TestElementLinkInvalid(t *testing.T) {
 	// given an inline with an element link with missing ']'
-	actualDocument, errs := ParseString(`[ link = http://foo.bar`)
-	require.Nil(t, errs)
-	log.Debugf("actual document: %s", actualDocument.String())
-	// then
+	actualContent := "[ link = http://foo.bar"
 	expectedDocument := &types.Document{
 		Elements: []types.DocElement{
 			&types.InlineContent{
@@ -610,96 +493,71 @@ func TestElementLinkInvalid(t *testing.T) {
 			},
 		},
 	}
-	log.Debugf("expected document: %s", expectedDocument.String())
-	assert.EqualValues(t, expectedDocument, actualDocument)
+	compare(t, expectedDocument, actualContent)
 }
 
 func TestElementID(t *testing.T) {
 	// given an inline with an element ID
-	actualDocument, errs := ParseString(`[#img-foobar]`)
-	require.Nil(t, errs)
-	log.Debugf("actual document: %s", actualDocument.String())
-	// then
+	actualContent := "[#img-foobar]"
 	expectedDocument := &types.Document{
 		Elements: []types.DocElement{
 			&types.ElementID{ID: "#img-foobar"},
 		},
 	}
-	log.Debugf("expected document: %s", expectedDocument.String())
-	assert.EqualValues(t, expectedDocument, actualDocument)
+	compare(t, expectedDocument, actualContent)
 }
 
 func TestElementIDWithSpaces(t *testing.T) {
 	// given an inline with an element ID
-	actualDocument, errs := ParseString("[ #img-foobar ]")
-	require.Nil(t, errs)
-	log.Debugf("actual document: %s", actualDocument.String())
-	// then
+	actualContent := "[ #img-foobar ]"
 	expectedDocument := &types.Document{
 		Elements: []types.DocElement{
 			&types.ElementID{ID: "#img-foobar"},
 		},
 	}
-	log.Debugf("expected document: %s", expectedDocument.String())
-	assert.EqualValues(t, expectedDocument, actualDocument)
+	compare(t, expectedDocument, actualContent)
 }
 
 func TestElementIDInvalid(t *testing.T) {
 	// given an inline with an element ID with missing ']'
-	actualDocument, errs := ParseString(`[#img-foobar`)
-	require.Nil(t, errs)
-	log.Debugf("actual document: %s", actualDocument.String())
-	// then
+	actualContent := "[#img-foobar"
 	expectedDocument := &types.Document{
 		Elements: []types.DocElement{
 			&types.InlineContent{Elements: []types.DocElement{&types.StringElement{Content: "[#img-foobar"}}},
 		},
 	}
-	log.Debugf("expected document: %s", expectedDocument.String())
-	assert.EqualValues(t, expectedDocument, actualDocument)
+	compare(t, expectedDocument, actualContent)
 }
 
 func TestElementTitle(t *testing.T) {
 	// given an inline with an element title
-	actualDocument, errs := ParseString(`.a title`)
-	require.Nil(t, errs)
-	log.Debugf("actual document: %s", actualDocument.String())
-	// then
+	actualContent := ".a title"
 	expectedDocument := &types.Document{
 		Elements: []types.DocElement{
 			&types.ElementTitle{Content: "a title"},
 		},
 	}
-	log.Debugf("expected document: %s", expectedDocument.String())
-	assert.EqualValues(t, expectedDocument, actualDocument)
+	compare(t, expectedDocument, actualContent)
 }
 
 func TestElementTitleInvalid1(t *testing.T) {
 	// given an inline with an element title with extra space after '.'
-	actualDocument, errs := ParseString(". a title")
-	require.Nil(t, errs)
-	log.Debugf("actual document: %s", actualDocument.String())
-	// then
+	actualContent := ". a title"
 	expectedDocument := &types.Document{
 		Elements: []types.DocElement{
 			&types.InlineContent{Elements: []types.DocElement{&types.StringElement{Content: ". a title"}}},
 		},
 	}
-	log.Debugf("expected document: %s", expectedDocument.String())
-	assert.EqualValues(t, expectedDocument, actualDocument)
+	compare(t, expectedDocument, actualContent)
 }
 
 func TestElementTitleInvalid2(t *testing.T) {
 	// given an inline with an element ID with missing '.' as first character
-	actualDocument, errs := ParseString(`!a title`)
-	require.Nil(t, errs)
-	log.Debugf("actual document: %s", actualDocument.String())
-	// then
+	actualContent := "!a title"
 	expectedDocument := &types.Document{
 		Elements: []types.DocElement{
 			&types.InlineContent{Elements: []types.DocElement{&types.StringElement{Content: "!a title"}}},
 		},
 	}
-	log.Debugf("expected document: %s", expectedDocument.String())
-	assert.EqualValues(t, expectedDocument, actualDocument)
+	compare(t, expectedDocument, actualContent)
 }
