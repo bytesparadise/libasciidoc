@@ -14,25 +14,28 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-var stringTemplate *template.Template
-var inlineContentTemplate *template.Template
-var boldContentTemplate *template.Template
+var inlineContentTmpl *template.Template
+var stringElementTmpl *template.Template
+var boldTextTmpl *template.Template
+var italicTextTmpl *template.Template
+var monospaceTextTmpl *template.Template
 
 // initializes the templates
 func init() {
-	var err error
-	inlineContentTemplate, err = template.New("inlineContent").Parse("<div class=\"paragraph\">\n<p>{{.}}</p>\n</div>")
+
+	inlineContentTmpl = newTemplate("inline content", "<div class=\"paragraph\">\n<p>{{.}}</p>\n</div>")
+	stringElementTmpl = newTemplate("string element", "{{.}}")
+	boldTextTmpl = newTemplate("bold text", "<strong>{{.}}</strong>")
+	italicTextTmpl = newTemplate("italic text", "<em>{{.}}</em>")
+	monospaceTextTmpl = newTemplate("monospace text", "<code>{{.}}</code>")
+}
+
+func newTemplate(name, src string) *template.Template {
+	t, err := template.New(name).Parse(src)
 	if err != nil {
-		log.Fatalf("failed to initialize HTML template: %s", err.Error())
+		log.Fatalf("failed to initialize '%s' template: %s", name, err.Error())
 	}
-	stringTemplate, err = template.New("string").Parse("{{.}}")
-	if err != nil {
-		log.Fatalf("failed to initialize HTML template: %s", err.Error())
-	}
-	boldContentTemplate, err = template.New("boldQuote").Parse("<strong>{{.}}</strong>")
-	if err != nil {
-		log.Fatalf("failed to initialize HTML template: %s", err.Error())
-	}
+	return t
 }
 
 // RenderToString renders the givem `document` in HTML and returns the result as a `string`
@@ -86,7 +89,7 @@ func renderInlineContent(inlineContent types.InlineContent) ([]byte, error) {
 	}
 	result := bytes.NewBuffer(make([]byte, 0))
 	// here we must preserve the HTML tags
-	err := inlineContentTemplate.Execute(result, template.HTML(renderedElementsBuff.String()))
+	err := inlineContentTmpl.Execute(result, template.HTML(renderedElementsBuff.String()))
 	if err != nil {
 		return nil, errors.Wrapf(err, "unable to render inline content")
 	}
@@ -95,15 +98,32 @@ func renderInlineContent(inlineContent types.InlineContent) ([]byte, error) {
 }
 
 func renderQuotedText(t types.QuotedText) ([]byte, error) {
+	elementsBuffer := bytes.NewBuffer(make([]byte, 0))
+	for _, element := range t.Elements {
+		b, err := renderDocElement(element)
+		if err != nil {
+			return nil, errors.Wrapf(err, "unable to render text quote")
+		}
+		_, err = elementsBuffer.Write(b)
+		if err != nil {
+			return nil, errors.Wrapf(err, "unable to render text quote")
+		}
+	}
 	result := bytes.NewBuffer(make([]byte, 0))
+	var tmpl *template.Template
 	switch t.Kind {
 	case types.Bold:
-		err := boldContentTemplate.Execute(result, t.Elements[0].(*types.StringElement).Content)
-		if err != nil {
-			return nil, errors.Wrapf(err, "unable to render bold quote")
-		}
+		tmpl = boldTextTmpl
+	case types.Italic:
+		tmpl = italicTextTmpl
+	case types.Monospace:
+		tmpl = monospaceTextTmpl
 	default:
 		return nil, errors.Errorf("unsupported quoted text kind: %v", t.Kind)
+	}
+	err := tmpl.Execute(result, template.HTML(elementsBuffer.String()))
+	if err != nil {
+		return nil, errors.Wrapf(err, "unable to render monospaced quote")
 	}
 	log.Debugf("rendered bold quote: %s", result.Bytes())
 	return result.Bytes(), nil
@@ -111,7 +131,7 @@ func renderQuotedText(t types.QuotedText) ([]byte, error) {
 
 func renderStringElement(s types.StringElement) ([]byte, error) {
 	result := bytes.NewBuffer(make([]byte, 0))
-	err := stringTemplate.Execute(result, s.Content)
+	err := stringElementTmpl.Execute(result, s.Content)
 	if err != nil {
 		return nil, errors.Wrapf(err, "unable to render string element")
 	}
