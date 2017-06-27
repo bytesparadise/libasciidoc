@@ -57,9 +57,10 @@ MonospaceText <- '`' content:(QuotedTextContent) '`' {
 
 QuotedTextContent <- QuotedTextContentElement (WS+ QuotedTextContentElement)*
 
-QuotedTextContentElement <- QuotedText / QuotedTextContentWord
+QuotedTextContentElement <- QuotedText / QuotedTextContentWord / InvalidQuotedTextContentWord
 
-QuotedTextContentWord <- (!NEWLINE !WS !'*' !'_' !'`' .)+ 
+QuotedTextContentWord <- (!NEWLINE !WS !'*' !'_' !'`' .)+ // cannot have '*', '_' or '`' within
+InvalidQuotedTextContentWord <- (!NEWLINE !WS  .)+ // can have '*', '_' or '`' within, maybe because the user made an error (extra or missing space, for example)
 
 // ------------------------------------------
 // Links

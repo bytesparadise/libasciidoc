@@ -22,6 +22,7 @@ func init() {
 }
 
 func compare(t *testing.T, expectedDocument *types.Document, content string) {
+	t.Log(fmt.Sprintf("processing '%s'", content))
 	actualDocument, errs := ParseString(content)
 	require.Nil(t, errs)
 	t.Log(fmt.Sprintf("actual document: %s", actualDocument.String()))

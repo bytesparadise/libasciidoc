@@ -171,30 +171,75 @@ func TestMonospaceTextWith3Words(t *testing.T) {
 }
 
 func TestItalicTextWithinBoldText(t *testing.T) {
-	actualContent := "*some _italic_ content*"
+	actualContent := "some *bold and _italic content_ together*."
 	expectedDocument := &types.Document{
 		Elements: []types.DocElement{
 			&types.InlineContent{
 				Elements: []types.DocElement{
+					&types.StringElement{Content: "some "},
 					&types.QuotedText{
 						Kind: types.Bold,
 						Elements: []types.DocElement{
-							&types.StringElement{Content: "some "},
+							&types.StringElement{Content: "bold and "},
 							&types.QuotedText{
 								Kind: types.Italic,
 								Elements: []types.DocElement{
-									&types.StringElement{Content: "italic"},
+									&types.StringElement{Content: "italic content"},
 								},
 							},
-							&types.StringElement{Content: " content"},
+							&types.StringElement{Content: " together"},
 						},
 					},
+					&types.StringElement{Content: "."},
 				},
 			},
 		},
 	}
 	compare(t, expectedDocument, actualContent)
 }
+
+func TestInvalidItalicTextWithinBoldText(t *testing.T) {
+	actualContent := "some *bold and _italic content _ together*."
+	expectedDocument := &types.Document{
+		Elements: []types.DocElement{
+			&types.InlineContent{
+				Elements: []types.DocElement{
+					&types.StringElement{Content: "some "},
+					&types.QuotedText{
+						Kind: types.Bold,
+						Elements: []types.DocElement{
+							&types.StringElement{Content: "bold and _italic content _ together"},
+						},
+					},
+					&types.StringElement{Content: "."},
+				},
+			},
+		},
+	}
+	compare(t, expectedDocument, actualContent)
+}
+
+func TestItalicTextWithinInvalidBoldText(t *testing.T) {
+	actualContent := "some *bold and _italic content_ together *."
+	expectedDocument := &types.Document{
+		Elements: []types.DocElement{
+			&types.InlineContent{
+				Elements: []types.DocElement{
+					&types.StringElement{Content: "some *bold and "},
+					&types.QuotedText{
+						Kind: types.Italic,
+						Elements: []types.DocElement{
+							&types.StringElement{Content: "italic content"},
+						},
+					},
+					&types.StringElement{Content: " together *."},
+				},
+			},
+		},
+	}
+	compare(t, expectedDocument, actualContent)
+}
+
 func TestBoldTextWithinItalicText(t *testing.T) {
 	// given a bold quote of 3 words
 	actualContent := "_some *bold* content_"
