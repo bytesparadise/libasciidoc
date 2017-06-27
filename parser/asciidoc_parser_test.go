@@ -24,8 +24,8 @@ func init() {
 func compare(t *testing.T, expectedDocument *types.Document, content string) {
 	actualDocument, errs := ParseString(content)
 	require.Nil(t, errs)
-	log.Debugf("actual document: %s", actualDocument.String())
-	log.Debugf("expected document: %s", expectedDocument.String())
+	t.Log(fmt.Sprintf("actual document: %s", actualDocument.String()))
+	t.Log(fmt.Sprintf("expected document: %s", expectedDocument.String()))
 	assert.EqualValues(t, expectedDocument, actualDocument)
 }
 func TestHeadingOnly(t *testing.T) {
@@ -86,7 +86,9 @@ func TestSection2(t *testing.T) {
 
 func TestHeadingWithSection2(t *testing.T) {
 	// given a document with a heading, an empty line and a section
-	actualContent := "= a heading\n\n== section 1"
+	actualContent := "= a heading\n" +
+		"\n" +
+		"== section 1"
 	expectedDocument := &types.Document{
 		Elements: []types.DocElement{
 			&types.Heading{Level: 1, Content: &types.InlineContent{
@@ -106,7 +108,9 @@ func TestHeadingWithSection2(t *testing.T) {
 }
 func TestHeadingWithInvalidSection2(t *testing.T) {
 	// given a document with a heading, an empty line and an invalid section (extra space at beginning of line)
-	actualContent := "= a heading\n\n == section 1"
+	actualContent := "= a heading\n" +
+		"\n" +
+		" == section 1"
 	expectedDocument := &types.Document{
 		Elements: []types.DocElement{
 			&types.Heading{Level: 1, Content: &types.InlineContent{
@@ -152,121 +156,13 @@ func TestInlineSimple(t *testing.T) {
 	}
 	compare(t, expectedDocument, actualContent)
 }
-func TestBoldQuote1Word(t *testing.T) {
-	// given a bold quote of 1 word
-	actualContent := "*hello*"
-	expectedDocument := &types.Document{
-		Elements: []types.DocElement{
-			&types.InlineContent{
-				Elements: []types.DocElement{
-					&types.BoldQuote{
-						Content: "hello",
-					},
-				},
-			},
-		},
-	}
-	compare(t, expectedDocument, actualContent)
-}
-
-func TestBoldQuote2Words(t *testing.T) {
-	// given a bold quote of 2 words
-	actualContent := "*bold    content*"
-	expectedDocument := &types.Document{
-		Elements: []types.DocElement{
-			&types.InlineContent{
-				Elements: []types.DocElement{
-					&types.BoldQuote{
-						Content: "bold    content",
-					},
-				},
-			},
-		},
-	}
-	compare(t, expectedDocument, actualContent)
-}
-func TestBoldQuote3Words(t *testing.T) {
-	// given a bold quote of 3 words
-	actualContent := "*some bold content*"
-	expectedDocument := &types.Document{
-		Elements: []types.DocElement{
-			&types.InlineContent{
-				Elements: []types.DocElement{
-					&types.BoldQuote{
-						Content: "some bold content",
-					},
-				},
-			},
-		},
-	}
-	compare(t, expectedDocument, actualContent)
-}
-func TestInlineWithBoldQuote(t *testing.T) {
-	// given a sentence with a bold quote
-	actualContent := "a paragraph with *some bold content*"
-	expectedDocument := &types.Document{
-		Elements: []types.DocElement{
-			&types.InlineContent{
-				Elements: []types.DocElement{
-					&types.StringElement{Content: "a paragraph with "},
-					&types.BoldQuote{
-						Content: "some bold content",
-					},
-				},
-			},
-		},
-	}
-	compare(t, expectedDocument, actualContent)
-}
-
-func TestInlineWithInvalidBoldQuote1(t *testing.T) {
-	// given an inline with invalid bold (1)
-	actualContent := "a paragraph with *some bold content"
-	expectedDocument := &types.Document{
-		Elements: []types.DocElement{
-			&types.InlineContent{
-				Elements: []types.DocElement{
-					&types.StringElement{Content: "a paragraph with *some bold content"},
-				},
-			},
-		},
-	}
-	compare(t, expectedDocument, actualContent)
-}
-
-func TestInlineWithInvalidBoldQuote2(t *testing.T) {
-	// given an inline with invalid bold (2)
-	actualContent := "a paragraph with *some bold content *"
-	expectedDocument := &types.Document{
-		Elements: []types.DocElement{
-			&types.InlineContent{
-				Elements: []types.DocElement{
-					&types.StringElement{Content: "a paragraph with *some bold content *"},
-				},
-			},
-		},
-	}
-	compare(t, expectedDocument, actualContent)
-}
-
-func TestInlineWithInvalidBoldQuote3(t *testing.T) {
-	// given an inline with invalid bold (3)
-	actualContent := "a paragraph with * some bold content*"
-	expectedDocument := &types.Document{
-		Elements: []types.DocElement{
-			&types.InlineContent{
-				Elements: []types.DocElement{
-					&types.StringElement{Content: "a paragraph with * some bold content*"},
-				},
-			},
-		},
-	}
-	compare(t, expectedDocument, actualContent)
-}
-
 func TestHeadingSectionInlineWithBoldQuote(t *testing.T) {
 	// given
-	actualContent := "= a heading\n\n== section 1\n\na paragraph with *bold content*"
+	actualContent := "= a heading\n" +
+		"\n" +
+		"== section 1\n" +
+		"\n" +
+		"a paragraph with *bold content*"
 	expectedDocument := &types.Document{
 		Elements: []types.DocElement{
 			&types.Heading{Level: 1, Content: &types.InlineContent{
@@ -284,8 +180,10 @@ func TestHeadingSectionInlineWithBoldQuote(t *testing.T) {
 			&types.InlineContent{
 				Elements: []types.DocElement{
 					&types.StringElement{Content: "a paragraph with "},
-					&types.BoldQuote{
-						Content: "bold content",
+					&types.QuotedText{Kind: types.Bold,
+						Elements: []types.DocElement{
+							&types.StringElement{Content: "bold content"},
+						},
 					},
 				},
 			},
@@ -328,7 +226,8 @@ func TestInvalidListItem(t *testing.T) {
 
 func TestListItems(t *testing.T) {
 	// given an inline with invalid bold (3)
-	actualContent := "* a first item\n* a second item with *bold content*"
+	actualContent := "* a first item\n" +
+		"* a second item with *bold content*"
 	expectedDocument := &types.Document{
 		Elements: []types.DocElement{
 			&types.ListItem{
@@ -342,8 +241,10 @@ func TestListItems(t *testing.T) {
 				Content: &types.InlineContent{
 					Elements: []types.DocElement{
 						&types.StringElement{Content: "a second item with "},
-						&types.BoldQuote{
-							Content: "bold content",
+						&types.QuotedText{Kind: types.Bold,
+							Elements: []types.DocElement{
+								&types.StringElement{Content: "bold content"},
+							},
 						},
 					},
 				},
@@ -438,7 +339,10 @@ func TestBlockImageWithAltText(t *testing.T) {
 
 func TestBlockImageWithDimensionsAndIDLinkTitleMeta(t *testing.T) {
 	// given an inline with an external lin
-	actualContent := "[#img-foobar]\n.A title to foobar\n[link=http://foo.bar]\nimage::images/foo.png[the foo.png image,600,400]"
+	actualContent := "[#img-foobar]\n" +
+		".A title to foobar\n" +
+		"[link=http://foo.bar]\n" +
+		"image::images/foo.png[the foo.png image,600,400]"
 	altText := "the foo.png image"
 	width := "600"
 	height := "400"

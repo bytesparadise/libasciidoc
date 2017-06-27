@@ -65,8 +65,8 @@ func renderDocElement(docElement types.DocElement) ([]byte, error) {
 	switch docElement.(type) {
 	case *types.InlineContent:
 		return renderInlineContent(*docElement.(*types.InlineContent))
-	case *types.BoldQuote:
-		return renderBoldQuote(*docElement.(*types.BoldQuote))
+	case *types.QuotedText:
+		return renderQuotedText(*docElement.(*types.QuotedText))
 	case *types.StringElement:
 		return renderStringElement(*docElement.(*types.StringElement))
 	default:
@@ -94,11 +94,16 @@ func renderInlineContent(inlineContent types.InlineContent) ([]byte, error) {
 	return result.Bytes(), nil
 }
 
-func renderBoldQuote(q types.BoldQuote) ([]byte, error) {
+func renderQuotedText(t types.QuotedText) ([]byte, error) {
 	result := bytes.NewBuffer(make([]byte, 0))
-	err := boldContentTemplate.Execute(result, q.Content)
-	if err != nil {
-		return nil, errors.Wrapf(err, "unable to render bold quote")
+	switch t.Kind {
+	case types.Bold:
+		err := boldContentTemplate.Execute(result, t.Elements[0].(*types.StringElement).Content)
+		if err != nil {
+			return nil, errors.Wrapf(err, "unable to render bold quote")
+		}
+	default:
+		return nil, errors.Errorf("unsupported quoted text kind: %v", t.Kind)
 	}
 	log.Debugf("rendered bold quote: %s", result.Bytes())
 	return result.Bytes(), nil

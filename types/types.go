@@ -6,6 +6,9 @@ import (
 
 	"flag"
 
+	"reflect"
+
+	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -170,9 +173,12 @@ type ElementTitle struct {
 
 //NewElementTitle initializes a new `ElementTitle` from the given content
 func NewElementTitle(content []interface{}) (*ElementTitle, error) {
-	c := stringify(merge(content))
+	c, err := stringify(content)
+	if err != nil {
+		return nil, errors.Wrapf(err, "failed to initialize a new ElementTitle")
+	}
 	log.Debugf("New ElementTitle with content=%s", c)
-	return &ElementTitle{Content: c}, nil
+	return &ElementTitle{Content: *c}, nil
 }
 
 func (e ElementTitle) String() string {
@@ -194,25 +200,46 @@ func NewStringElement(content interface{}) *StringElement {
 }
 
 func (e StringElement) String() string {
-	return fmt.Sprintf("<String> %s (%d)", e.Content, len(e.Content))
+	return fmt.Sprintf("<String> '%s' (%d)", e.Content, len(e.Content))
 }
 
 // -----------------------------
-// Quotes
+// Quoted text
 // -----------------------------
 
-// BoldQuote the structure for the bold quotes
-type BoldQuote struct {
-	Content string
+// QuotedText the structure for quoted text
+type QuotedText struct {
+	Kind     QuotedTextKind
+	Elements []DocElement
 }
 
-//NewBoldQuote initializes a new `BoldQuote` from the given content
-func NewBoldQuote(content interface{}) (*BoldQuote, error) {
-	return &BoldQuote{Content: content.(string)}, nil
+// QuotedTextKind the type for
+type QuotedTextKind int
+
+const (
+	// Bold bold quoted text
+	Bold = iota
+	// Italic italic quoted text
+	Italic
+	// Monospace monospace quoted text
+	Monospace
+)
+
+//NewQuotedText initializes a new `QuotedText` from the given kind and content
+func NewQuotedText(kind QuotedTextKind, content []interface{}) (*QuotedText, error) {
+	elements, err := toDocElements(merge(content))
+	if err != nil {
+		return nil, errors.Wrapf(err, "unable to initialize a new QuotedText")
+	}
+	log.Debugf("Initializing a new QuotedText with %d elements:", len(elements))
+	for _, element := range elements {
+		log.Debugf("- %v (%v)", element, reflect.TypeOf(element))
+	}
+	return &QuotedText{Kind: kind, Elements: elements}, nil
 }
 
-func (b BoldQuote) String() string {
-	return fmt.Sprintf("<BoldQuote> %v", b.Content)
+func (t QuotedText) String() string {
+	return fmt.Sprintf("<QuotedText (%d)> %v", t.Kind, t.Elements)
 }
 
 // -----------------------------
@@ -244,12 +271,17 @@ type ExternalLink struct {
 
 //NewExternalLink initializes a new `ExternalLink`
 func NewExternalLink(url, text []interface{}) (*ExternalLink, error) {
-	u := stringify(merge(url))
-	t := stringify(merge(text))
+	urlStr, err := stringify(url)
+	if err != nil {
+		return nil, errors.Wrapf(err, "failed to initialize a new ExternalLink element")
+	}
+	textStr, err := stringify(text)
+	if err != nil {
+		return nil, errors.Wrapf(err, "failed to initialize a new ExternalLink element")
+	}
 	// the text includes the surrounding '[' and ']' which should be removed
-	t = strings.TrimPrefix(t, "[")
-	t = strings.TrimSuffix(t, "]")
-	return &ExternalLink{URL: u, Text: t}, nil
+	trimmedText := strings.TrimPrefix(strings.TrimSuffix(*textStr, "]"), "[")
+	return &ExternalLink{URL: *urlStr, Text: trimmedText}, nil
 }
 
 func (e ExternalLink) String() string {
@@ -269,37 +301,65 @@ type BlockImage struct {
 }
 
 //NewBlockImage initializes a new `BlockImageMacro`
-func NewBlockImage(path string, altText []interface{}) (*BlockImage, error) {
-	var width, height *string
-	alt := stringify(merge(altText))
-	// the text includes the surrounding '[' and ']' which should be removed
-	alt = strings.TrimPrefix(alt, "[")
-	alt = strings.TrimSuffix(alt, "]")
-	// if no alttext was provided
-	if len(alt) == 0 {
-		return &BlockImage{
-			Path: path,
-		}, nil
-	}
+func NewBlockImage(path string) (*BlockImage, error) {
+	return &BlockImage{
+		Path: path,
+	}, nil
+}
+
+//NewBlockImageWithAltText initializes a new `BlockImageMacro`
+func NewBlockImageWithAltText(path string, altText string) (*BlockImage, error) {
+	var alt, width, height *string
 	// optionally, the width and height can be specified in the alt text, using `,` as a separator
 	// eg: `image::foo.png[a title,200,100]`
-	splittedAlt := strings.Split(alt, ",")
+	splittedAltText := strings.Split(altText, ",")
 	// naively assume that if the splitted 'alt' contains more than 3 elements, the 2 last ones are for the width and height
-	splitCount := len(splittedAlt)
+	splitCount := len(splittedAltText)
 	if splitCount >= 3 {
-		alt = strings.Join(splittedAlt[0:splitCount-2], ",")
-		w := splittedAlt[splitCount-2]
+		actualAltText := strings.Join(splittedAltText[0:splitCount-2], ",")
+		alt = &actualAltText
+		w := splittedAltText[splitCount-2]
 		width = &w
-		h := splittedAlt[splitCount-1]
+		h := splittedAltText[splitCount-1]
 		height = &h
+	} else {
+		alt = &altText
 	}
-
 	return &BlockImage{
 		Path:    path,
-		AltText: &alt,
+		AltText: alt,
 		Width:   width,
 		Height:  height}, nil
 }
+
+// func NewBlockImage(path string, altText string) (*BlockImage, error) {
+// 	var alt, width, height *string
+// 	alt, err := stringify(altText)
+// 	if err != nil {
+// 		return nil, errors.Wrapf(err, "failed to create block image")
+// 	}
+// 	// the text includes the surrounding '[' and ']' which should be removed
+// 	trimmedAltText := strings.TrimSuffix(strings.TrimPrefix(*alt, "["), "]")
+// 	// optionally, the width and height can be specified in the alt text, using `,` as a separator
+// 	// eg: `image::foo.png[a title,200,100]`
+// 	splittedAltText := strings.Split(trimmedAltText, ",")
+// 	// naively assume that if the splitted 'alt' contains more than 3 elements, the 2 last ones are for the width and height
+// 	splitCount := len(splittedAltText)
+// 	if splitCount >= 3 {
+// 		actualAltText := strings.Join(splittedAltText[0:splitCount-2], ",")
+// 		alt = &actualAltText
+// 		w := splittedAltText[splitCount-2]
+// 		width = &w
+// 		h := splittedAltText[splitCount-1]
+// 		height = &h
+// 	}
+
+// 	return &BlockImage{
+// 		Path:    path,
+// 		AltText: alt,
+// 		Width:   width,
+// 		Height:  height}, nil
+// }
 
 func (m BlockImage) String() string {
 	var altText, width, height string

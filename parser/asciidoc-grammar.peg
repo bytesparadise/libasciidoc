@@ -13,41 +13,57 @@ Document <- lines:Line* EOF {
 	return types.NewDocument(lines.([]interface{}))
 }
 
-Line <- line:(Heading / ListItem / BlockImage / MetaElement / Inline / EmptyLine) {
-    return line, nil
-}
+Line <- Heading / ListItem / BlockImage / MetaElement / Inline / EmptyLine
 
+// ------------------------------------------
+// Headings
+// ------------------------------------------
 Heading <- level:("="+) WS+ content:Inline {
      return types.NewHeading(level, content.(*types.InlineContent))
 }
 
-// ---------------------
+// ------------------------------------------
 // Lists
-// ---------------------
+// ------------------------------------------
 //TODO: Blank lines are required before and after a list
 //TODO: Additionally, blank lines are permitted, but not required, between list items.
 ListItem <- WS* ('*' / '-') WS+ content:(Inline) {
     return types.NewListItem(content.(*types.InlineContent))
 }
 
-// ---------------------
-// Quotes
-// ---------------------
-BoldQuote <- '*' content:(BoldContent) '*' {
-    return types.NewBoldQuote(content)
+// ------------------------------------------
+// Inline content
+// ------------------------------------------
+Inline <- !NEWLINE elements:(QuotedText / ExternalLink / Word / WS)+ EOL {
+    return types.NewInlineContent(elements.([]interface{}))
+} 
+
+// ------------------------------------------
+// Quotes: bold, italic and monospace
+// ------------------------------------------
+QuotedText <- BoldText / ItalicText / MonospaceText
+
+BoldText <- '*' content:(QuotedTextContent) '*' {
+    return types.NewQuotedText(types.Bold, content.([]interface{}))
 }
 
-BoldContent <- (BoldContentWord WS+)* BoldContentWord {
-    return string(c.text), nil
+ItalicText <- '_' content:(QuotedTextContent) '_' {
+    return types.NewQuotedText(types.Italic, content.([]interface{}))
 }
 
-BoldContentWord <- (!NEWLINE !WS !'*' .)+ {
-    return string(c.text), nil
+MonospaceText <- '`' content:(QuotedTextContent) '`' {
+    return types.NewQuotedText(types.Monospace, content.([]interface{}))
 }
 
-// ---------------------
+QuotedTextContent <- QuotedTextContentElement (WS+ QuotedTextContentElement)*
+
+QuotedTextContentElement <- QuotedText / QuotedTextContentWord
+
+QuotedTextContentWord <- (!NEWLINE !WS !'*' !'_' !'`' .)+ 
+
+// ------------------------------------------
 // Links
-// ---------------------
+// ------------------------------------------
 ExternalLink <- url:(URL_SCHEME URL) text:('[' (URL_TEXT)* ']')? {
     if text != nil {
         return types.NewExternalLink(url.([]interface{}), text.([]interface{}))
@@ -55,23 +71,19 @@ ExternalLink <- url:(URL_SCHEME URL) text:('[' (URL_TEXT)* ']')? {
     return types.NewExternalLink(url.([]interface{}), nil)
 }
 
-// ---------------------
+// ------------------------------------------
 // Images
-// ---------------------
-BlockImage <- "image::" path:(URL) altText:('[' (URL_TEXT)* ']') EOL {
-    return types.NewBlockImage(path.(string), altText.([]interface{}))
+// ------------------------------------------
+BlockImage <- "image::" path:(URL) '[' altText:(URL_TEXT?) ']' EOL {
+    if altText != nil {
+        return types.NewBlockImageWithAltText(path.(string), altText.(string))
+    }
+    return types.NewBlockImage(path.(string))
 }
 
-// ---------------------
-// Inline content
-// ---------------------
-Inline <- !NEWLINE elements:(BoldQuote / ExternalLink / Word / WS)+ EOL {
-    return types.NewInlineContent(elements.([]interface{}))
-} 
-
-// ---------------------
+// ------------------------------------------
 // meta-element types
-// ---------------------
+// ------------------------------------------
 MetaElement <- meta:(ElementLink / ElementID / ElementTitle) 
 
 // a link attached to an element, such as a BlockImage
@@ -89,9 +101,9 @@ ElementTitle <- "." !WS title:(!NEWLINE .)+ EOL {
     return types.NewElementTitle(title.([]interface{}))
 }
 
-// ---------------------
+// ------------------------------------------
 // Base types
-// ---------------------
+// ------------------------------------------
 Word <- (!NEWLINE !WS .)+ {
     return string(c.text), nil
 }
