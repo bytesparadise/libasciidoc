@@ -5,18 +5,33 @@ import (
 	"fmt"
 	"reflect"
 
+	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
 )
 
-func merge(content []interface{}) []interface{} {
-	elements := make([]interface{}, 0)
-	log.Debug(fmt.Sprintf("Merging %d element(s):", len(content)))
+func toDocElements(elements []interface{}) ([]DocElement, error) {
+	result := make([]DocElement, len(elements))
+	for i, element := range elements {
+		switch element := element.(type) {
+		case DocElement:
+			result[i] = element
+		default:
+			return nil, errors.Errorf("unexpected element type: %v (expected a DocElement instead)", reflect.TypeOf(element))
+		}
+	}
+	return result, nil
+}
+
+func merge(elements []interface{}, extraElements ...interface{}) []interface{} {
+	result := make([]interface{}, 0)
+	allElements := append(elements, extraElements...)
+	log.Debug(fmt.Sprintf("Merging %d element(s):", len(allElements)))
 	buff := bytes.NewBuffer(make([]byte, 0))
-	for _, v := range content {
+	for _, v := range allElements {
 		if v == nil {
 			continue
 		}
-		log.Debug(fmt.Sprintf(" - %v (%v)", v, reflect.TypeOf(v)))
+		// log.Debug(fmt.Sprintf(" - %v (%v)", v, reflect.TypeOf(v)))
 		switch v.(type) {
 		case string:
 			buff.WriteString(v.(string))
@@ -25,90 +40,78 @@ func merge(content []interface{}) []interface{} {
 				buff.WriteByte(b)
 			}
 		case StringElement:
-			buff.WriteString(v.(StringElement).Content)
+			content := v.(StringElement).Content
+			// log.Debugf("Adding '%s' to buffer", content)
+			buff.WriteString(content)
+		case *StringElement:
+			content := v.(*StringElement).Content
+			// log.Debugf("Adding '%s' to buffer", content)
+			buff.WriteString(content)
 		case []interface{}:
 			w := v.([]interface{})
 			if len(w) > 0 {
 				f := merge(w)
-				elements, buff = appendBuffer(elements, buff)
-				elements = join(elements, f)
+				result, buff = appendBuffer(result, buff)
+				result = merge(result, f...)
 			}
 		default:
-			elements, buff = appendBuffer(elements, buff)
-			elements = append(elements, v.(DocElement))
+			result, buff = appendBuffer(result, buff)
+			result = append(result, v.(DocElement))
 		}
 	}
 	// if buff was filled because some text was found
-	elements, buff = appendBuffer(elements, buff)
-	log.Debug(fmt.Sprintf("merged '%v' (len=%d)-> '%v' (len=%d)", content, len(content), elements, len(elements)))
-	return elements
+	result, buff = appendBuffer(result, buff)
+	if len(extraElements) > 0 {
+		log.Debug(fmt.Sprintf("merged '%v' (len=%d) with '%v' (len=%d) -> '%v' (len=%d)", elements, len(elements), extraElements, len(extraElements), result, len(result)))
+
+	} else {
+		log.Debug(fmt.Sprintf("merged '%v' (len=%d) -> '%v' (len=%d)", elements, len(elements), result, len(result)))
+	}
+	return result
 }
 
 // appendBuffer appends the content of the given buffer to the given array of elements, and returns a new buffer, or returns
 // the given arguments if the buffer was empty
 func appendBuffer(elements []interface{}, buff *bytes.Buffer) ([]interface{}, *bytes.Buffer) {
 	if buff.Len() > 0 {
-		//buffContent := buff.String()
 		return append(elements, NewStringElement(buff.String())), bytes.NewBuffer(make([]byte, 0))
 	}
 	return elements, buff
 }
 
-func join(elements []interface{}, otherElements []interface{}) []interface{} {
-	log.Debug(fmt.Sprintf("Joining '%v' with '%v'", elements, otherElements))
-	result := make([]interface{}, 0)
-	allElements := append(elements, otherElements...)
-	buff := bytes.NewBuffer(make([]byte, 0))
-	for _, element := range allElements {
-		log.Debug(fmt.Sprintf(" processing '%v' (%v)", element, reflect.TypeOf(element)))
-		// if the element is not a string, then just add the current buffer then this element
-		switch element.(type) {
-		case StringElement:
-			buff.WriteString(element.(StringElement).Content)
-		default:
-			if buff.Len() > 0 {
-				result = append(result, StringElement{Content: buff.String()})
-			}
-			result = append(result, element)
-			// re-init the buffer for the subsequent string element
-			buff = bytes.NewBuffer(make([]byte, 0))
-		}
-	}
-	// don't forget to append the pending buffer, too
-	if buff.Len() > 0 {
-		result = append(result, StringElement{Content: buff.String()})
-	}
-	log.Debug(fmt.Sprintf("Join result: '%v'", result))
-	return result
-}
-
-func stringify(values interface{}) string {
-	valueArray := values.([]interface{})
+func stringify(elements []interface{}) (*string, error) {
+	mergedElements := merge(elements)
 	b := make([]byte, 0)
 	buff := bytes.NewBuffer(b)
-	for _, v := range valueArray {
-		if v == nil {
+	for _, element := range mergedElements {
+		if element == nil {
 			continue
 		}
-		log.Debug(fmt.Sprintf("%v (%s) ", v, reflect.TypeOf(v)))
-		switch v.(type) {
+		log.Debug(fmt.Sprintf("%v (%s) ", element, reflect.TypeOf(element)))
+		switch element := element.(type) {
 		case string:
-			buff.WriteString(v.(string))
+			buff.WriteString(element)
 		case []byte:
-			for _, b := range v.([]byte) {
+			for _, b := range element {
 				buff.WriteByte(b)
 			}
 		case StringElement:
-			buff.WriteString(v.(StringElement).Content)
+			buff.WriteString(element.Content)
 		case *StringElement:
-			buff.WriteString(v.(*StringElement).Content)
+			buff.WriteString(element.Content)
 		case []interface{}:
-			buff.WriteString(stringify(v.([]interface{})))
+			stringifiedElement, err := stringify(element)
+			if err != nil {
+				// no need to wrap the error again in the same function
+				return nil, err
+			}
+			buff.WriteString(*stringifiedElement)
 		default:
-			log.Warn(fmt.Sprintf("unexpected type to stringify: '%v' type: %v", v, reflect.TypeOf(v)))
+			return nil, errors.Errorf("cannot convert element of type '%v' to string content", reflect.TypeOf(element))
 		}
 
 	}
-	log.Debug(fmt.Sprintf("stringified %v -> '%s' (%v)", values, buff.String(), reflect.TypeOf(buff.String())))
-	return buff.String()
+	result := buff.String()
+	log.Debug(fmt.Sprintf("stringified %v -> '%s' (%v)", elements, result, reflect.TypeOf(result)))
+	return &result, nil
 }
