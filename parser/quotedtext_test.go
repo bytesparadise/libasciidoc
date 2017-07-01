@@ -11,12 +11,16 @@ func TestBoldTextOf1Word(t *testing.T) {
 	actualContent := "*hello*"
 	expectedDocument := &types.Document{
 		Elements: []types.DocElement{
-			&types.InlineContent{
-				Elements: []types.DocElement{
-					&types.QuotedText{
-						Kind: types.Bold,
+			&types.Paragraph{
+				Lines: []*types.InlineContent{
+					&types.InlineContent{
 						Elements: []types.DocElement{
-							&types.StringElement{Content: "hello"},
+							&types.QuotedText{
+								Kind: types.Bold,
+								Elements: []types.DocElement{
+									&types.StringElement{Content: "hello"},
+								},
+							},
 						},
 					},
 				},
@@ -31,12 +35,16 @@ func TestBoldTextOf2Words(t *testing.T) {
 	actualContent := "*bold    content*"
 	expectedDocument := &types.Document{
 		Elements: []types.DocElement{
-			&types.InlineContent{
-				Elements: []types.DocElement{
-					&types.QuotedText{
-						Kind: types.Bold,
+			&types.Paragraph{
+				Lines: []*types.InlineContent{
+					&types.InlineContent{
 						Elements: []types.DocElement{
-							&types.StringElement{Content: "bold    content"},
+							&types.QuotedText{
+								Kind: types.Bold,
+								Elements: []types.DocElement{
+									&types.StringElement{Content: "bold    content"},
+								},
+							},
 						},
 					},
 				},
@@ -50,12 +58,16 @@ func TestBoldTextOf3Words(t *testing.T) {
 	actualContent := "*some bold content*"
 	expectedDocument := &types.Document{
 		Elements: []types.DocElement{
-			&types.InlineContent{
-				Elements: []types.DocElement{
-					&types.QuotedText{
-						Kind: types.Bold,
+			&types.Paragraph{
+				Lines: []*types.InlineContent{
+					&types.InlineContent{
 						Elements: []types.DocElement{
-							&types.StringElement{Content: "some bold content"},
+							&types.QuotedText{
+								Kind: types.Bold,
+								Elements: []types.DocElement{
+									&types.StringElement{Content: "some bold content"},
+								},
+							},
 						},
 					},
 				},
@@ -70,13 +82,17 @@ func TestInlineWithBoldText(t *testing.T) {
 	actualContent := "a paragraph with *some bold content*"
 	expectedDocument := &types.Document{
 		Elements: []types.DocElement{
-			&types.InlineContent{
-				Elements: []types.DocElement{
-					&types.StringElement{Content: "a paragraph with "},
-					&types.QuotedText{
-						Kind: types.Bold,
+			&types.Paragraph{
+				Lines: []*types.InlineContent{
+					&types.InlineContent{
 						Elements: []types.DocElement{
-							&types.StringElement{Content: "some bold content"},
+							&types.StringElement{Content: "a paragraph with "},
+							&types.QuotedText{
+								Kind: types.Bold,
+								Elements: []types.DocElement{
+									&types.StringElement{Content: "some bold content"},
+								},
+							},
 						},
 					},
 				},
@@ -91,9 +107,13 @@ func TestInlineWithInvalidBoldText1(t *testing.T) {
 	actualContent := "a paragraph with *some bold content"
 	expectedDocument := &types.Document{
 		Elements: []types.DocElement{
-			&types.InlineContent{
-				Elements: []types.DocElement{
-					&types.StringElement{Content: "a paragraph with *some bold content"},
+			&types.Paragraph{
+				Lines: []*types.InlineContent{
+					&types.InlineContent{
+						Elements: []types.DocElement{
+							&types.StringElement{Content: "a paragraph with *some bold content"},
+						},
+					},
 				},
 			},
 		},
@@ -106,9 +126,13 @@ func TestInlineWithInvalidBoldText2(t *testing.T) {
 	actualContent := "a paragraph with *some bold content *"
 	expectedDocument := &types.Document{
 		Elements: []types.DocElement{
-			&types.InlineContent{
-				Elements: []types.DocElement{
-					&types.StringElement{Content: "a paragraph with *some bold content *"},
+			&types.Paragraph{
+				Lines: []*types.InlineContent{
+					&types.InlineContent{
+						Elements: []types.DocElement{
+							&types.StringElement{Content: "a paragraph with *some bold content *"},
+						},
+					},
 				},
 			},
 		},
@@ -121,9 +145,13 @@ func TestInlineWithInvalidBoldText3(t *testing.T) {
 	actualContent := "a paragraph with * some bold content*"
 	expectedDocument := &types.Document{
 		Elements: []types.DocElement{
-			&types.InlineContent{
-				Elements: []types.DocElement{
-					&types.StringElement{Content: "a paragraph with * some bold content*"},
+			&types.Paragraph{
+				Lines: []*types.InlineContent{
+					&types.InlineContent{
+						Elements: []types.DocElement{
+							&types.StringElement{Content: "a paragraph with * some bold content*"},
+						},
+					},
 				},
 			},
 		},
@@ -135,12 +163,16 @@ func TestItalicTextWith3Words(t *testing.T) {
 	actualContent := "_some italic content_"
 	expectedDocument := &types.Document{
 		Elements: []types.DocElement{
-			&types.InlineContent{
-				Elements: []types.DocElement{
-					&types.QuotedText{
-						Kind: types.Italic,
+			&types.Paragraph{
+				Lines: []*types.InlineContent{
+					&types.InlineContent{
 						Elements: []types.DocElement{
-							&types.StringElement{Content: "some italic content"},
+							&types.QuotedText{
+								Kind: types.Italic,
+								Elements: []types.DocElement{
+									&types.StringElement{Content: "some italic content"},
+								},
+							},
 						},
 					},
 				},
@@ -155,12 +187,16 @@ func TestMonospaceTextWith3Words(t *testing.T) {
 	actualContent := "`some monospace content`"
 	expectedDocument := &types.Document{
 		Elements: []types.DocElement{
-			&types.InlineContent{
-				Elements: []types.DocElement{
-					&types.QuotedText{
-						Kind: types.Monospace,
+			&types.Paragraph{
+				Lines: []*types.InlineContent{
+					&types.InlineContent{
 						Elements: []types.DocElement{
-							&types.StringElement{Content: "some monospace content"},
+							&types.QuotedText{
+								Kind: types.Monospace,
+								Elements: []types.DocElement{
+									&types.StringElement{Content: "some monospace content"},
+								},
+							},
 						},
 					},
 				},
@@ -174,23 +210,27 @@ func TestItalicTextWithinBoldText(t *testing.T) {
 	actualContent := "some *bold and _italic content_ together*."
 	expectedDocument := &types.Document{
 		Elements: []types.DocElement{
-			&types.InlineContent{
-				Elements: []types.DocElement{
-					&types.StringElement{Content: "some "},
-					&types.QuotedText{
-						Kind: types.Bold,
+			&types.Paragraph{
+				Lines: []*types.InlineContent{
+					&types.InlineContent{
 						Elements: []types.DocElement{
-							&types.StringElement{Content: "bold and "},
+							&types.StringElement{Content: "some "},
 							&types.QuotedText{
-								Kind: types.Italic,
+								Kind: types.Bold,
 								Elements: []types.DocElement{
-									&types.StringElement{Content: "italic content"},
+									&types.StringElement{Content: "bold and "},
+									&types.QuotedText{
+										Kind: types.Italic,
+										Elements: []types.DocElement{
+											&types.StringElement{Content: "italic content"},
+										},
+									},
+									&types.StringElement{Content: " together"},
 								},
 							},
-							&types.StringElement{Content: " together"},
+							&types.StringElement{Content: "."},
 						},
 					},
-					&types.StringElement{Content: "."},
 				},
 			},
 		},
@@ -202,16 +242,20 @@ func TestInvalidItalicTextWithinBoldText(t *testing.T) {
 	actualContent := "some *bold and _italic content _ together*."
 	expectedDocument := &types.Document{
 		Elements: []types.DocElement{
-			&types.InlineContent{
-				Elements: []types.DocElement{
-					&types.StringElement{Content: "some "},
-					&types.QuotedText{
-						Kind: types.Bold,
+			&types.Paragraph{
+				Lines: []*types.InlineContent{
+					&types.InlineContent{
 						Elements: []types.DocElement{
-							&types.StringElement{Content: "bold and _italic content _ together"},
+							&types.StringElement{Content: "some "},
+							&types.QuotedText{
+								Kind: types.Bold,
+								Elements: []types.DocElement{
+									&types.StringElement{Content: "bold and _italic content _ together"},
+								},
+							},
+							&types.StringElement{Content: "."},
 						},
 					},
-					&types.StringElement{Content: "."},
 				},
 			},
 		},
@@ -223,16 +267,20 @@ func TestItalicTextWithinInvalidBoldText(t *testing.T) {
 	actualContent := "some *bold and _italic content_ together *."
 	expectedDocument := &types.Document{
 		Elements: []types.DocElement{
-			&types.InlineContent{
-				Elements: []types.DocElement{
-					&types.StringElement{Content: "some *bold and "},
-					&types.QuotedText{
-						Kind: types.Italic,
+			&types.Paragraph{
+				Lines: []*types.InlineContent{
+					&types.InlineContent{
 						Elements: []types.DocElement{
-							&types.StringElement{Content: "italic content"},
+							&types.StringElement{Content: "some *bold and "},
+							&types.QuotedText{
+								Kind: types.Italic,
+								Elements: []types.DocElement{
+									&types.StringElement{Content: "italic content"},
+								},
+							},
+							&types.StringElement{Content: " together *."},
 						},
 					},
-					&types.StringElement{Content: " together *."},
 				},
 			},
 		},
@@ -245,19 +293,23 @@ func TestBoldTextWithinItalicText(t *testing.T) {
 	actualContent := "_some *bold* content_"
 	expectedDocument := &types.Document{
 		Elements: []types.DocElement{
-			&types.InlineContent{
-				Elements: []types.DocElement{
-					&types.QuotedText{
-						Kind: types.Italic,
+			&types.Paragraph{
+				Lines: []*types.InlineContent{
+					&types.InlineContent{
 						Elements: []types.DocElement{
-							&types.StringElement{Content: "some "},
 							&types.QuotedText{
-								Kind: types.Bold,
+								Kind: types.Italic,
 								Elements: []types.DocElement{
-									&types.StringElement{Content: "bold"},
+									&types.StringElement{Content: "some "},
+									&types.QuotedText{
+										Kind: types.Bold,
+										Elements: []types.DocElement{
+											&types.StringElement{Content: "bold"},
+										},
+									},
+									&types.StringElement{Content: " content"},
 								},
 							},
-							&types.StringElement{Content: " content"},
 						},
 					},
 				},
@@ -271,20 +323,24 @@ func TestMonospaceTextWithinBoldTextWithinItalicQuote(t *testing.T) {
 	actualContent := "*some _italic and `monospaced content`_*"
 	expectedDocument := &types.Document{
 		Elements: []types.DocElement{
-			&types.InlineContent{
-				Elements: []types.DocElement{
-					&types.QuotedText{
-						Kind: types.Bold,
+			&types.Paragraph{
+				Lines: []*types.InlineContent{
+					&types.InlineContent{
 						Elements: []types.DocElement{
-							&types.StringElement{Content: "some "},
 							&types.QuotedText{
-								Kind: types.Italic,
+								Kind: types.Bold,
 								Elements: []types.DocElement{
-									&types.StringElement{Content: "italic and "},
+									&types.StringElement{Content: "some "},
 									&types.QuotedText{
-										Kind: types.Monospace,
+										Kind: types.Italic,
 										Elements: []types.DocElement{
-											&types.StringElement{Content: "monospaced content"},
+											&types.StringElement{Content: "italic and "},
+											&types.QuotedText{
+												Kind: types.Monospace,
+												Elements: []types.DocElement{
+													&types.StringElement{Content: "monospaced content"},
+												},
+											},
 										},
 									},
 								},
@@ -303,19 +359,23 @@ func TestItalicTextWithinItalicText(t *testing.T) {
 	actualContent := "_some _very italic_ content_"
 	expectedDocument := &types.Document{
 		Elements: []types.DocElement{
-			&types.InlineContent{
-				Elements: []types.DocElement{
-					&types.QuotedText{
-						Kind: types.Italic,
+			&types.Paragraph{
+				Lines: []*types.InlineContent{
+					&types.InlineContent{
 						Elements: []types.DocElement{
-							&types.StringElement{Content: "some "},
 							&types.QuotedText{
 								Kind: types.Italic,
 								Elements: []types.DocElement{
-									&types.StringElement{Content: "very italic"},
+									&types.StringElement{Content: "some "},
+									&types.QuotedText{
+										Kind: types.Italic,
+										Elements: []types.DocElement{
+											&types.StringElement{Content: "very italic"},
+										},
+									},
+									&types.StringElement{Content: " content"},
 								},
 							},
-							&types.StringElement{Content: " content"},
 						},
 					},
 				},
@@ -337,9 +397,13 @@ func xTestAllQuotes(t *testing.T) {
 		"``**__char__**``acter``**__s__**``"
 	expectedDocument := &types.Document{
 		Elements: []types.DocElement{
-			&types.InlineContent{
-				Elements: []types.DocElement{
-					&types.StringElement{Content: "a paragraph with * some bold content*"},
+			&types.Paragraph{
+				Lines: []*types.InlineContent{
+					&types.InlineContent{
+						Elements: []types.DocElement{
+							&types.StringElement{Content: "a paragraph with * some bold content*"},
+						},
+					},
 				},
 			},
 		},

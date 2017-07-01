@@ -1,6 +1,8 @@
 package html5_test
 
 import (
+	"bytes"
+	"fmt"
 	"strings"
 	"testing"
 
@@ -8,12 +10,13 @@ import (
 
 	"github.com/bytesparadise/libasciidoc/parser"
 	. "github.com/bytesparadise/libasciidoc/renderer/html5"
+	"github.com/bytesparadise/libasciidoc/types"
+	log "github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
-func TestHtml5Renderer(t *testing.T) {
-	// simple quotes
+func TestRenderQuotes(t *testing.T) {
 	t.Run("bold content alone", func(t *testing.T) {
 		// given
 		content := "*bold content*"
@@ -69,17 +72,27 @@ func TestHtml5Renderer(t *testing.T) {
 		expected := `<div class="paragraph"><p>some <strong>bold and _italic content _ together</strong>.</p></div>`
 		verify(t, expected, content)
 	})
-
 }
 
 func verify(t *testing.T, expected, content string) {
-	document, err := parser.ParseString(content)
+	// given
+	t.Log(fmt.Sprintf("processing '%s'", content))
+	reader := strings.NewReader(content)
+	doc, err := parser.ParseReader("", reader)
+	if err != nil {
+		log.Warnf("Error found while parsing the document: %v", err.Error())
+	}
 	require.Nil(t, err)
+	actualDocument := doc.(*types.Document)
 	// when
-	actual, errs := RenderToString(context.Background(), *document)
+	buff := bytes.NewBuffer(make([]byte, 0))
+	err = Render(context.Background(), *actualDocument, buff)
+	log.Warn("Done processing document")
 	// then
-	require.Nil(t, errs)
-	assert.Equal(t, singleLine(expected), singleLine(*actual))
+	require.Nil(t, err)
+	require.Empty(t, err)
+	result := string(buff.Bytes())
+	assert.Equal(t, singleLine(expected), singleLine(result))
 }
 
 func singleLine(content string) string {

@@ -2,7 +2,6 @@ package types
 
 import (
 	"bytes"
-	"fmt"
 	"reflect"
 
 	"github.com/pkg/errors"
@@ -25,13 +24,12 @@ func toDocElements(elements []interface{}) ([]DocElement, error) {
 func merge(elements []interface{}, extraElements ...interface{}) []interface{} {
 	result := make([]interface{}, 0)
 	allElements := append(elements, extraElements...)
-	log.Debug(fmt.Sprintf("Merging %d element(s):", len(allElements)))
+	// log.Debugf("Merging %d element(s):", len(allElements))
 	buff := bytes.NewBuffer(make([]byte, 0))
 	for _, v := range allElements {
 		if v == nil {
 			continue
 		}
-		// log.Debug(fmt.Sprintf(" - %v (%v)", v, reflect.TypeOf(v)))
 		switch v.(type) {
 		case string:
 			buff.WriteString(v.(string))
@@ -41,11 +39,9 @@ func merge(elements []interface{}, extraElements ...interface{}) []interface{} {
 			}
 		case StringElement:
 			content := v.(StringElement).Content
-			// log.Debugf("Adding '%s' to buffer", content)
 			buff.WriteString(content)
 		case *StringElement:
 			content := v.(*StringElement).Content
-			// log.Debugf("Adding '%s' to buffer", content)
 			buff.WriteString(content)
 		case []interface{}:
 			w := v.([]interface{})
@@ -61,12 +57,12 @@ func merge(elements []interface{}, extraElements ...interface{}) []interface{} {
 	}
 	// if buff was filled because some text was found
 	result, buff = appendBuffer(result, buff)
-	if len(extraElements) > 0 {
-		log.Debug(fmt.Sprintf("merged '%v' (len=%d) with '%v' (len=%d) -> '%v' (len=%d)", elements, len(elements), extraElements, len(extraElements), result, len(result)))
+	// if len(extraElements) > 0 {
+	// 	log.Debugf("merged '%v' (len=%d) with '%v' (len=%d) -> '%v' (len=%d)", elements, len(elements), extraElements, len(extraElements), result, len(result))
 
-	} else {
-		log.Debug(fmt.Sprintf("merged '%v' (len=%d) -> '%v' (len=%d)", elements, len(elements), result, len(result)))
-	}
+	// } else {
+	// 	log.Debugf("merged '%v' (len=%d) -> '%v' (len=%d)", elements, len(elements), result, len(result))
+	// }
 	return result
 }
 
@@ -87,7 +83,7 @@ func stringify(elements []interface{}) (*string, error) {
 		if element == nil {
 			continue
 		}
-		log.Debug(fmt.Sprintf("%v (%s) ", element, reflect.TypeOf(element)))
+		log.Debugf("%v (%s) ", element, reflect.TypeOf(element))
 		switch element := element.(type) {
 		case string:
 			buff.WriteString(element)
@@ -112,6 +108,6 @@ func stringify(elements []interface{}) (*string, error) {
 
 	}
 	result := buff.String()
-	log.Debug(fmt.Sprintf("stringified %v -> '%s' (%v)", elements, result, reflect.TypeOf(result)))
+	log.Debugf("stringified %v -> '%s' (%v)", elements, result, reflect.TypeOf(result))
 	return &result, nil
 }

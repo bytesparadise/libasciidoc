@@ -3,6 +3,7 @@ package parser_test
 import (
 	"flag"
 	"fmt"
+	"strings"
 	"testing"
 
 	. "github.com/bytesparadise/libasciidoc/parser"
@@ -15,7 +16,7 @@ import (
 func init() {
 	args := flag.Args()
 	if len(args) > 0 {
-		log.Warn(fmt.Sprintf("Starting test(s) with args=%v", flag.Args()))
+		log.Warnf("Starting test(s) with args=%v", flag.Args())
 	} else {
 		log.Warn("Starting test(s) with no custom arguments")
 	}
@@ -23,8 +24,13 @@ func init() {
 
 func compare(t *testing.T, expectedDocument *types.Document, content string) {
 	t.Log(fmt.Sprintf("processing '%s'", content))
-	actualDocument, errs := ParseString(content)
-	require.Nil(t, errs)
+	reader := strings.NewReader(content)
+	result, err := ParseReader("", reader)
+	if err != nil {
+		log.Errorf("Error found while parsing the document: %v", err.Error())
+	}
+	require.Nil(t, err)
+	actualDocument := result.(*types.Document)
 	t.Log(fmt.Sprintf("actual document: %s", actualDocument.String()))
 	t.Log(fmt.Sprintf("expected document: %s", expectedDocument.String()))
 	assert.EqualValues(t, expectedDocument, actualDocument)
@@ -48,9 +54,13 @@ func TestHeadingInvalid1(t *testing.T) {
 	actualContent := "=a heading"
 	expectedDocument := &types.Document{
 		Elements: []types.DocElement{
-			&types.InlineContent{
-				Elements: []types.DocElement{
-					&types.StringElement{Content: "=a heading"},
+			&types.Paragraph{
+				Lines: []*types.InlineContent{
+					&types.InlineContent{
+						Elements: []types.DocElement{
+							&types.StringElement{Content: "=a heading"},
+						},
+					},
 				},
 			},
 		}}
@@ -61,9 +71,13 @@ func TestHeadingInvalid2(t *testing.T) {
 	actualContent := " = a heading"
 	expectedDocument := &types.Document{
 		Elements: []types.DocElement{
-			&types.InlineContent{
-				Elements: []types.DocElement{
-					&types.StringElement{Content: " = a heading"},
+			&types.Paragraph{
+				Lines: []*types.InlineContent{
+					&types.InlineContent{
+						Elements: []types.DocElement{
+							&types.StringElement{Content: " = a heading"},
+						},
+					},
 				},
 			},
 		}}
@@ -97,7 +111,7 @@ func TestHeadingWithSection2(t *testing.T) {
 					&types.StringElement{Content: "a heading"},
 				},
 			}},
-			&types.EmptyLine{},
+			&types.BlankLine{},
 			&types.Heading{Level: 2, Content: &types.InlineContent{
 				Elements: []types.DocElement{
 					&types.StringElement{Content: "section 1"},
@@ -119,10 +133,14 @@ func TestHeadingWithInvalidSection2(t *testing.T) {
 					&types.StringElement{Content: "a heading"},
 				},
 			}},
-			&types.EmptyLine{},
-			&types.InlineContent{
-				Elements: []types.DocElement{
-					&types.StringElement{Content: " == section 1"},
+			&types.BlankLine{},
+			&types.Paragraph{
+				Lines: []*types.InlineContent{
+					&types.InlineContent{
+						Elements: []types.DocElement{
+							&types.StringElement{Content: " == section 1"},
+						},
+					},
 				},
 			},
 		},
@@ -134,9 +152,13 @@ func TestInline1Word(t *testing.T) {
 	actualContent := "hello"
 	expectedDocument := &types.Document{
 		Elements: []types.DocElement{
-			&types.InlineContent{
-				Elements: []types.DocElement{
-					&types.StringElement{Content: "hello"},
+			&types.Paragraph{
+				Lines: []*types.InlineContent{
+					&types.InlineContent{
+						Elements: []types.DocElement{
+							&types.StringElement{Content: "hello"},
+						},
+					},
 				},
 			},
 		},
@@ -148,9 +170,13 @@ func TestInlineSimple(t *testing.T) {
 	actualContent := "a paragraph with some content"
 	expectedDocument := &types.Document{
 		Elements: []types.DocElement{
-			&types.InlineContent{
-				Elements: []types.DocElement{
-					&types.StringElement{Content: "a paragraph with some content"},
+			&types.Paragraph{
+				Lines: []*types.InlineContent{
+					&types.InlineContent{
+						Elements: []types.DocElement{
+							&types.StringElement{Content: "a paragraph with some content"},
+						},
+					},
 				},
 			},
 		},
@@ -171,19 +197,23 @@ func TestHeadingSectionInlineWithBoldQuote(t *testing.T) {
 					&types.StringElement{Content: "a heading"},
 				},
 			}},
-			&types.EmptyLine{},
+			&types.BlankLine{},
 			&types.Heading{Level: 2, Content: &types.InlineContent{
 				Elements: []types.DocElement{
 					&types.StringElement{Content: "section 1"},
 				},
 			}},
-			&types.EmptyLine{},
-			&types.InlineContent{
-				Elements: []types.DocElement{
-					&types.StringElement{Content: "a paragraph with "},
-					&types.QuotedText{Kind: types.Bold,
+			&types.BlankLine{},
+			&types.Paragraph{
+				Lines: []*types.InlineContent{
+					&types.InlineContent{
 						Elements: []types.DocElement{
-							&types.StringElement{Content: "bold content"},
+							&types.StringElement{Content: "a paragraph with "},
+							&types.QuotedText{Kind: types.Bold,
+								Elements: []types.DocElement{
+									&types.StringElement{Content: "bold content"},
+								},
+							},
 						},
 					},
 				},
@@ -215,9 +245,13 @@ func TestInvalidListItem(t *testing.T) {
 	actualContent := "*an invalid list item"
 	expectedDocument := &types.Document{
 		Elements: []types.DocElement{
-			&types.InlineContent{
-				Elements: []types.DocElement{
-					&types.StringElement{Content: "*an invalid list item"},
+			&types.Paragraph{
+				Lines: []*types.InlineContent{
+					&types.InlineContent{
+						Elements: []types.DocElement{
+							&types.StringElement{Content: "*an invalid list item"},
+						},
+					},
 				},
 			},
 		},
@@ -260,11 +294,15 @@ func TestExternalLink(t *testing.T) {
 	actualContent := "a link to https://foo.bar"
 	expectedDocument := &types.Document{
 		Elements: []types.DocElement{
-			&types.InlineContent{
-				Elements: []types.DocElement{
-					&types.StringElement{Content: "a link to "},
-					&types.ExternalLink{
-						URL: "https://foo.bar",
+			&types.Paragraph{
+				Lines: []*types.InlineContent{
+					&types.InlineContent{
+						Elements: []types.DocElement{
+							&types.StringElement{Content: "a link to "},
+							&types.ExternalLink{
+								URL: "https://foo.bar",
+							},
+						},
 					},
 				},
 			},
@@ -278,12 +316,16 @@ func TestExternalLinkWithEmptyText(t *testing.T) {
 	actualContent := "a link to https://foo.bar[]"
 	expectedDocument := &types.Document{
 		Elements: []types.DocElement{
-			&types.InlineContent{
-				Elements: []types.DocElement{
-					&types.StringElement{Content: "a link to "},
-					&types.ExternalLink{
-						URL:  "https://foo.bar",
-						Text: "",
+			&types.Paragraph{
+				Lines: []*types.InlineContent{
+					&types.InlineContent{
+						Elements: []types.DocElement{
+							&types.StringElement{Content: "a link to "},
+							&types.ExternalLink{
+								URL:  "https://foo.bar",
+								Text: "",
+							},
+						},
 					},
 				},
 			},
@@ -297,66 +339,18 @@ func TestExternalLinkWithText(t *testing.T) {
 	actualContent := "a link to mailto:foo@bar[the foo@bar email]"
 	expectedDocument := &types.Document{
 		Elements: []types.DocElement{
-			&types.InlineContent{
-				Elements: []types.DocElement{
-					&types.StringElement{Content: "a link to "},
-					&types.ExternalLink{
-						URL:  "mailto:foo@bar",
-						Text: "the foo@bar email",
+			&types.Paragraph{
+				Lines: []*types.InlineContent{
+					&types.InlineContent{
+						Elements: []types.DocElement{
+							&types.StringElement{Content: "a link to "},
+							&types.ExternalLink{
+								URL:  "mailto:foo@bar",
+								Text: "the foo@bar email",
+							},
+						},
 					},
 				},
-			},
-		},
-	}
-	compare(t, expectedDocument, actualContent)
-}
-
-func TestBlockImageWithEmptyAltText(t *testing.T) {
-	// given an inline with an external lin
-	actualContent := "image::images/foo.png[]"
-	expectedDocument := &types.Document{
-		Elements: []types.DocElement{
-			&types.BlockImage{
-				Path: "images/foo.png",
-			},
-		},
-	}
-	compare(t, expectedDocument, actualContent)
-}
-func TestBlockImageWithAltText(t *testing.T) {
-	// given an inline with an external lin
-	actualContent := "image::images/foo.png[the foo.png image]"
-	altText := "the foo.png image"
-	expectedDocument := &types.Document{
-		Elements: []types.DocElement{
-			&types.BlockImage{
-				Path:    "images/foo.png",
-				AltText: &altText,
-			},
-		},
-	}
-	compare(t, expectedDocument, actualContent)
-}
-
-func TestBlockImageWithDimensionsAndIDLinkTitleMeta(t *testing.T) {
-	// given an inline with an external lin
-	actualContent := "[#img-foobar]\n" +
-		".A title to foobar\n" +
-		"[link=http://foo.bar]\n" +
-		"image::images/foo.png[the foo.png image,600,400]"
-	altText := "the foo.png image"
-	width := "600"
-	height := "400"
-	expectedDocument := &types.Document{
-		Elements: []types.DocElement{
-			&types.ElementID{ID: "#img-foobar"},
-			&types.ElementTitle{Content: "A title to foobar"},
-			&types.ElementLink{Path: "http://foo.bar"},
-			&types.BlockImage{
-				Path:    "images/foo.png",
-				AltText: &altText,
-				Width:   &width,
-				Height:  &height,
 			},
 		},
 	}
@@ -390,10 +384,14 @@ func TestElementLinkInvalid(t *testing.T) {
 	actualContent := "[ link = http://foo.bar"
 	expectedDocument := &types.Document{
 		Elements: []types.DocElement{
-			&types.InlineContent{
-				Elements: []types.DocElement{
-					&types.StringElement{Content: "[ link = "},
-					&types.ExternalLink{URL: "http://foo.bar"},
+			&types.Paragraph{
+				Lines: []*types.InlineContent{
+					&types.InlineContent{
+						Elements: []types.DocElement{
+							&types.StringElement{Content: "[ link = "},
+							&types.ExternalLink{URL: "http://foo.bar"},
+						},
+					},
 				},
 			},
 		},
@@ -406,7 +404,7 @@ func TestElementID(t *testing.T) {
 	actualContent := "[#img-foobar]"
 	expectedDocument := &types.Document{
 		Elements: []types.DocElement{
-			&types.ElementID{ID: "#img-foobar"},
+			&types.ElementID{Value: "img-foobar"},
 		},
 	}
 	compare(t, expectedDocument, actualContent)
@@ -417,7 +415,7 @@ func TestElementIDWithSpaces(t *testing.T) {
 	actualContent := "[ #img-foobar ]"
 	expectedDocument := &types.Document{
 		Elements: []types.DocElement{
-			&types.ElementID{ID: "#img-foobar"},
+			&types.ElementID{Value: "img-foobar"},
 		},
 	}
 	compare(t, expectedDocument, actualContent)
@@ -428,7 +426,11 @@ func TestElementIDInvalid(t *testing.T) {
 	actualContent := "[#img-foobar"
 	expectedDocument := &types.Document{
 		Elements: []types.DocElement{
-			&types.InlineContent{Elements: []types.DocElement{&types.StringElement{Content: "[#img-foobar"}}},
+			&types.Paragraph{
+				Lines: []*types.InlineContent{
+					&types.InlineContent{Elements: []types.DocElement{&types.StringElement{Content: "[#img-foobar"}}},
+				},
+			},
 		},
 	}
 	compare(t, expectedDocument, actualContent)
@@ -450,7 +452,11 @@ func TestElementTitleInvalid1(t *testing.T) {
 	actualContent := ". a title"
 	expectedDocument := &types.Document{
 		Elements: []types.DocElement{
-			&types.InlineContent{Elements: []types.DocElement{&types.StringElement{Content: ". a title"}}},
+			&types.Paragraph{
+				Lines: []*types.InlineContent{
+					&types.InlineContent{Elements: []types.DocElement{&types.StringElement{Content: ". a title"}}},
+				},
+			},
 		},
 	}
 	compare(t, expectedDocument, actualContent)
@@ -461,7 +467,11 @@ func TestElementTitleInvalid2(t *testing.T) {
 	actualContent := "!a title"
 	expectedDocument := &types.Document{
 		Elements: []types.DocElement{
-			&types.InlineContent{Elements: []types.DocElement{&types.StringElement{Content: "!a title"}}},
+			&types.Paragraph{
+				Lines: []*types.InlineContent{
+					&types.InlineContent{Elements: []types.DocElement{&types.StringElement{Content: "!a title"}}},
+				},
+			},
 		},
 	}
 	compare(t, expectedDocument, actualContent)
