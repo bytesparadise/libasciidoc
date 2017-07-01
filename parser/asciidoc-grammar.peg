@@ -13,12 +13,12 @@ Document <- lines:Line* EOF {
 	return types.NewDocument(lines.([]interface{}))
 }
 
-Line <- Heading / ListItem / BlockImage / MetaElement / Inline / EmptyLine
+Line <- Heading / ListItem / BlockImage / MetadataElement / Paragraph / BlankLine
 
 // ------------------------------------------
 // Headings
 // ------------------------------------------
-Heading <- level:("="+) WS+ content:Inline {
+Heading <- level:("="+) WS+ content:InlineContent {
      return types.NewHeading(level, content.(*types.InlineContent))
 }
 
@@ -27,15 +27,20 @@ Heading <- level:("="+) WS+ content:Inline {
 // ------------------------------------------
 //TODO: Blank lines are required before and after a list
 //TODO: Additionally, blank lines are permitted, but not required, between list items.
-ListItem <- WS* ('*' / '-') WS+ content:(Inline) {
+ListItem <- WS* ('*' / '-') WS+ content:(InlineContent) {
     return types.NewListItem(content.(*types.InlineContent))
 }
 
 // ------------------------------------------
-// Inline content
+// Paragraph content
 // ------------------------------------------
-Inline <- !NEWLINE elements:(QuotedText / ExternalLink / Word / WS)+ EOL {
-    return types.NewInlineContent(elements.([]interface{}))
+// a paragraph is a group of line ending with a blank line (or end of file)
+Paragraph <- lines:(InlineContent)+ (BlankLine/EOF) {
+    return types.NewParagraph(c.text, lines.([]interface{}))
+} 
+
+InlineContent <- !NEWLINE elements:(QuotedText / ExternalLink / Word / WS)+ EOL {
+    return types.NewInlineContent(c.text, elements.([]interface{}))
 } 
 
 // ------------------------------------------
@@ -75,17 +80,23 @@ ExternalLink <- url:(URL_SCHEME URL) text:('[' (URL_TEXT)* ']')? {
 // ------------------------------------------
 // Images
 // ------------------------------------------
-BlockImage <- "image::" path:(URL) '[' altText:(URL_TEXT?) ']' EOL {
-    if altText != nil {
-        return types.NewBlockImageWithAltText(path.(string), altText.(string))
+BlockImage <- metadata:(MetadataElement)* image:BlockImageMacro {
+    // here we can ignore the blank line in the returned element
+    return types.NewBlockImage(c.text, *image.(*types.BlockImageMacro), metadata.([]interface{}))
+}
+
+BlockImageMacro <- "image::" path:(URL) '[' attributes:(URL_TEXT?) ']' EOL {
+    if attributes != nil {
+        attrs := attributes.(string)
+        return types.NewBlockImageMacro(c.text, path.(string), &attrs)
     }
-    return types.NewBlockImage(path.(string))
+    return types.NewBlockImageMacro(c.text, path.(string), nil)
 }
 
 // ------------------------------------------
 // meta-element types
 // ------------------------------------------
-MetaElement <- meta:(ElementLink / ElementID / ElementTitle) 
+MetadataElement <- meta:(ElementLink / ElementID / ElementTitle) 
 
 // a link attached to an element, such as a BlockImage
 ElementLink <- "[" WS* "link" WS* "=" WS* path:URL WS* "]" EOL {
@@ -93,7 +104,7 @@ ElementLink <- "[" WS* "link" WS* "=" WS* path:URL WS* "]" EOL {
 }
 
 // an id attached to an element, such as a BlockImage
-ElementID <- "[" WS* id:(ID) WS* "]" EOL {
+ElementID <- "[" WS* '#' id:(ID) WS* "]" EOL {
     return types.NewElementID(id.(string))
 }
 
@@ -113,7 +124,7 @@ URL <- (!NEWLINE !WS !'[' !']' .)+ {
     return string(c.text), nil
 }
 
-ID <- '#' (!NEWLINE !WS !'[' !']' .)+ {
+ID <- (!NEWLINE !WS !'[' !']' .)+ {
     return string(c.text), nil
 }
 
@@ -122,8 +133,8 @@ URL_TEXT <- (!NEWLINE !'[' !']' .)+ {
 }
 
 
-EmptyLine <- NEWLINE {
-    return types.NewEmptyLine()
+BlankLine <- NEWLINE {
+    return types.NewBlankLine()
 }
 
 URL_SCHEME <- "http://" / "https://" / "ftp://" / "irc://" / "mailto:"
