@@ -22,18 +22,18 @@ func init() {
 	log.SetFormatter(&log.TextFormatter{FullTimestamp: true})
 }
 
-// *****************************
+// ------------------------------------------
 // DocElement
-// *****************************
+// ------------------------------------------
 
 //DocElement the interface for all document elements
 type DocElement interface {
 	String() string
 }
 
-// *****************************
+// ------------------------------------------
 // Document
-// *****************************
+// ------------------------------------------
 
 //Document the top-level structure for a a document
 type Document struct {
@@ -58,9 +58,9 @@ func (d *Document) String() string {
 	return result
 }
 
-// *****************************
+// ------------------------------------------
 // Heading
-// *****************************
+// ------------------------------------------
 
 // Heading the structure for the headings
 type Heading struct {
@@ -81,9 +81,9 @@ func (h Heading) String() string {
 	return fmt.Sprintf("<Heading %d> '%s'", h.Level, h.Content.String())
 }
 
-// *****************************
+// ------------------------------------------
 // ListItem
-// *****************************
+// ------------------------------------------
 
 // ListItem the structure for the list items
 type ListItem struct {
@@ -109,9 +109,9 @@ func (l ListItem) String() string {
 	return fmt.Sprintf("<List item> %v", *l.Content)
 }
 
-// *****************************
+// ------------------------------------------
 // Paragraph
-// *****************************
+// ------------------------------------------
 
 // Paragraph the structure for the paragraph
 type Paragraph struct {
@@ -156,9 +156,9 @@ func (c InlineContent) String() string {
 	return fmt.Sprintf("<InlineContent (l=%[2]d)> %[1]v", c.Elements, len(c.Elements))
 }
 
-// *****************************
+// ------------------------------------------
 // Images
-// *****************************
+// ------------------------------------------
 
 // BlockImage the structure for the block images
 type BlockImage struct {
@@ -255,9 +255,48 @@ func (m BlockImageMacro) String() string {
 	return fmt.Sprintf("<BlockImageMacroMacro> %s[%s,w=%s h=%s]", m.Path, m.Alt, width, height)
 }
 
-// *****************************
+// ------------------------------------------
+// Delimited blocks
+// ------------------------------------------
+
+// DelimitedBlockKind the type for delimited blocks
+type DelimitedBlockKind int
+
+const (
+	// SourceBlock a source block
+	SourceBlock DelimitedBlockKind = iota
+)
+
+//DelimitedBlock the structure for the delimited blocks
+type DelimitedBlock struct {
+	Kind    DelimitedBlockKind
+	Content string
+}
+
+//NewDelimitedBlock initializes a new `DelimitedBlock` of the given kind with the given content
+func NewDelimitedBlock(kind DelimitedBlockKind, content []interface{}) (*DelimitedBlock, error) {
+	c, err := stringify(content)
+	if err != nil {
+		return nil, errors.Wrapf(err, "unable to initialize a new delimited block")
+	}
+	return &DelimitedBlock{
+		Kind:    kind,
+		Content: strings.TrimSuffix(strings.TrimSuffix(*c, "\n"), "\r"), // remove "\n" or "\r\n", depending on the OS.
+	}, nil
+}
+
+func (b DelimitedBlock) String() string {
+	switch b.Kind {
+	case SourceBlock:
+		return fmt.Sprintf("<SourceBlock> %v", b.Content)
+	default:
+		return fmt.Sprintf("<Unknown type of block> %v", b.Content)
+	}
+}
+
+// ------------------------------------------
 // Meta Elements
-// *****************************
+// ------------------------------------------
 
 // ElementLink the structure for element links
 type ElementLink struct {
@@ -308,9 +347,9 @@ func (e ElementTitle) String() string {
 	return fmt.Sprintf("<ElementTitle> %s", e.Content)
 }
 
-// *****************************
+// ------------------------------------------
 // StringElement
-// *****************************
+// ------------------------------------------
 
 // StringElement the structure for strings
 type StringElement struct {
@@ -326,9 +365,9 @@ func (e StringElement) String() string {
 	return fmt.Sprintf("<String> '%s' (%d)", e.Content, len(e.Content))
 }
 
-// *****************************
+// ------------------------------------------
 // Quoted text
-// *****************************
+// ------------------------------------------
 
 // QuotedText the structure for quoted text
 type QuotedText struct {
@@ -341,7 +380,7 @@ type QuotedTextKind int
 
 const (
 	// Bold bold quoted text
-	Bold = iota
+	Bold QuotedTextKind = iota
 	// Italic italic quoted text
 	Italic
 	// Monospace monospace quoted text
@@ -365,9 +404,9 @@ func (t QuotedText) String() string {
 	return fmt.Sprintf("<QuotedText (%d)> %v", t.Kind, t.Elements)
 }
 
-// *****************************
+// ------------------------------------------
 // BlankLine
-// *****************************
+// ------------------------------------------
 
 // BlankLine the structure for the empty lines, which are used to separate logical blocks
 type BlankLine struct {
@@ -382,9 +421,9 @@ func (e BlankLine) String() string {
 	return "<BlankLine>"
 }
 
-// *****************************
+// ------------------------------------------
 // Links
-// *****************************
+// ------------------------------------------
 
 // ExternalLink the structure for the external links
 type ExternalLink struct {

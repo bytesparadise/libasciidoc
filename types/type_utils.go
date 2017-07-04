@@ -108,6 +108,6 @@ func stringify(elements []interface{}) (*string, error) {
 
 	}
 	result := buff.String()
-	log.Debugf("stringified %v -> '%s' (%v)", elements, result, reflect.TypeOf(result))
+	log.Debugf("stringified %v -> '%s' (%v characters)", elements, result, len(result))
 	return &result, nil
 }
