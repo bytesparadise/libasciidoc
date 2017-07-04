@@ -16,7 +16,10 @@ var paragraphTmpl *template.Template
 
 // initializes the template
 func init() {
-	paragraphTmpl = newTemplate("paragraph", "<div class=\"paragraph\">\n<p>{{.}}</p>\n</div>")
+	paragraphTmpl = newTemplate("paragraph",
+		`<div class="paragraph">
+<p>{{.}}</p>
+</div>`)
 }
 
 func renderParagraph(ctx context.Context, paragraph types.Paragraph) ([]byte, error) {

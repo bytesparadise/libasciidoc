@@ -23,7 +23,7 @@ func init() {
 }
 
 func compare(t *testing.T, expectedDocument *types.Document, content string) {
-	t.Log(fmt.Sprintf("processing '%s'", content))
+	t.Log(fmt.Sprintf("processing:\n%s", content))
 	reader := strings.NewReader(content)
 	result, err := ParseReader("", reader)
 	if err != nil {
