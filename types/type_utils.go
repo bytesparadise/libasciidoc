@@ -117,16 +117,28 @@ func stringify(elements []interface{}) (*string, error) {
 //NormalizationFunc a function that is used to normalize a string.
 type NormalizationFunc func(string) ([]byte, error)
 
+func isMn(r rune) bool {
+	return unicode.Is(unicode.Mn, r) // Mn: nonspacing marks
+}
+
+// func ReplaceNonAlphanumerics(replacement string) NormalizationFunc {
+// 	return func(source string) ([]byte, error) {
+// 		t := transform.Chain(norm.NFD, cases.Lower(language.Und), transform.RemoveFunc(isMn), norm.NFC)
+// 		result, _, _ := transform.String(t, source)
+// 		return []byte(result), nil
+// 	}
+// }
+
 //ReplaceNonAlphanumerics replaces all non alphanumerical characters and remove (accents)
 // in the given 'source' with the given 'replacement'.
 func ReplaceNonAlphanumerics(replacement string) NormalizationFunc {
 	return func(source string) ([]byte, error) {
 		buf := bytes.NewBuffer(make([]byte, 0))
-		_, err := buf.WriteString(replacement)
-		if err != nil {
-			return nil, errors.Wrapf(err, "unable to normalize value")
-		}
-		lastCharIsSpace := true
+		// _, err := buf.WriteString(replacement)
+		// if err != nil {
+		// 	return nil, errors.Wrapf(err, "unable to normalize value")
+		// }
+		lastCharIsSpace := false
 		for _, r := range source {
 			if unicode.Is(unicode.Letter, r) || unicode.Is(unicode.Number, r) {
 				_, err := buf.WriteString(strings.ToLower(string(r)))
@@ -165,7 +177,10 @@ func NewReplaceNonAlphanumericsVisitor() *ReplaceNonAlphanumericsVisitor {
 
 func (v *ReplaceNonAlphanumericsVisitor) Visit(element interface{}) error {
 	switch element := element.(type) {
-	case InlineContent, QuotedText:
+	case InlineContent:
+		log.Debugf("Prefixing with '_' while processing '%v'", reflect.TypeOf(element))
+		v.buf.WriteString("_")
+	case QuotedText:
 		// nothing to do at this level
 	case StringElement:
 		normalized, err := v.normalize(element.Content)
@@ -182,13 +197,15 @@ func (v *ReplaceNonAlphanumericsVisitor) Visit(element interface{}) error {
 func (v *ReplaceNonAlphanumericsVisitor) BeforeVisit(element interface{}) error {
 	switch element := element.(type) {
 	case QuotedText:
+		log.Debugf("Before visiting quoted element...")
+
 		switch element.Kind {
 		case Bold:
-			v.buf.WriteString("_strong")
+			v.buf.WriteString("_strong_")
 		case Italic:
-			v.buf.WriteString("_italic")
+			v.buf.WriteString("_italic_")
 		case Monospace:
-			v.buf.WriteString("_monospace")
+			v.buf.WriteString("_monospace_")
 		default:
 			return errors.Errorf("unsupported kind of quoted text: %d", element.Kind)
 		}

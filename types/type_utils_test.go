@@ -10,19 +10,19 @@ import (
 
 func TestNormalize(t *testing.T) {
 	t.Run("hello", func(t *testing.T) {
-		verify(t, "_hello", "hello")
+		verify(t, "hello", "hello")
 	})
 	t.Run("héllo with an accent", func(t *testing.T) {
 		verify(t, "_héllo_1_2_and_3_spaces", " héllo 1.2   and 3 Spaces")
 	})
 	t.Run("a an accent and a swedish character", func(t *testing.T) {
-		verify(t, `_a_à`, `A à ⌘`)
+		verify(t, `a_à`, `A à ⌘`)
 	})
 	t.Run("AŁA", func(t *testing.T) {
-		verify(t, `_aŁa_0_1`, `AŁA 0.1 ?`)
+		verify(t, `ała_0_1`, `AŁA 0.1 ?`)
 	})
 	t.Run("it's  2 spaces, here !", func(t *testing.T) {
-		verify(t, `_it_s_2_spaces_here`, `it's  2 spaces, here !`)
+		verify(t, `it_s_2_spaces_here`, `it's  2 spaces, here !`)
 	})
 }
 
