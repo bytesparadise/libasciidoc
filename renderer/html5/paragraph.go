@@ -25,13 +25,11 @@ func init() {
 func renderParagraph(ctx context.Context, paragraph types.Paragraph) ([]byte, error) {
 	renderedElementsBuff := bytes.NewBuffer(make([]byte, 0))
 	for _, line := range paragraph.Lines {
-		for _, element := range line.Elements {
-			renderedElement, err := renderElement(ctx, element)
-			if err != nil {
-				return nil, errors.Wrapf(err, "unable to render inline content element")
-			}
-			renderedElementsBuff.Write(renderedElement)
+		renderedElement, err := renderInlineContent(ctx, *line)
+		if err != nil {
+			return nil, errors.Wrapf(err, "unable to render paragraph element")
 		}
+		renderedElementsBuff.Write(renderedElement)
 	}
 	result := bytes.NewBuffer(make([]byte, 0))
 	// here we must preserve the HTML tags
