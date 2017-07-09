@@ -13,3 +13,6 @@ import:
   vcs: git
   version: ^1.0.0
 - package: github.com/go-test/deep
+- package: golang.org/x/text
+  subpackages:
+    - unicode

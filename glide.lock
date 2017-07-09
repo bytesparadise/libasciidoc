@@ -1,10 +1,10 @@
-hash: 10cb315acf28bc682cd4a496e2f5332a6cccdfab7400482ef93b9fa731f5dd7e
-updated: 2017-06-19T22:24:47.258597159+02:00
+hash: 277ac9f640750873736bfdc58fa22984ccc67fb7f473fdbf6db5bc87c05e53dc
+updated: 2017-07-09T13:50:51.059589264+02:00
 imports:
 - name: github.com/go-test/deep
   version: f49763a6ea0a91026be26f8213bebee726b4185f
 - name: github.com/mna/pigeon
-  version: 4468ff667da4e27301e257e6920165ddeb00c491
+  version: 3ad7b4379454d41dc287081d455492b3b00b81df
 - name: github.com/pkg/errors
   version: 645ef00459ed84a119197bfb8d8205042c6df63d
 - name: github.com/sirupsen/logrus
@@ -20,6 +20,10 @@ imports:
   version: 478fcf54317e52ab69f40bb4c7a1520288d7f7ea
   subpackages:
   - unix
+- name: golang.org/x/text
+  version: 47a200a05c8b3fd1b698571caecbb68beb2611ec
+  subpackages:
+  - unicode
 testImports:
 - name: github.com/davecgh/go-spew
   version: 6d212800a42e8ab5c146b8ace3490ee17e5225f9

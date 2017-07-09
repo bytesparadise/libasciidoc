@@ -23,12 +23,25 @@ func init() {
 }
 
 // ------------------------------------------
-// DocElement
+// DocElement (and other interfaces)
 // ------------------------------------------
 
 //DocElement the interface for all document elements
+// TODO: 'String()' remove this method ? no real value here (we could use a visitor to print/debug the elements), by having a `Visit(Visitor)` method instead
 type DocElement interface {
+	Visitable
 	String() string
+}
+
+type Visitable interface {
+	Accept(Visitor) error
+}
+
+// Visitor a visitor that can visit/traverse the DocElement and its children (if applicable)
+type Visitor interface {
+	BeforeVisit(interface{}) error
+	Visit(interface{}) error
+	AfterVisit(interface{}) error
 }
 
 // ------------------------------------------
@@ -49,6 +62,7 @@ func NewDocument(lines []interface{}) (*Document, error) {
 	return &Document{Elements: elements}, nil
 }
 
+//String implements the DocElement#String() method
 func (d *Document) String() string {
 	// todo : use a bufferwriter
 	result := ""
@@ -64,21 +78,51 @@ func (d *Document) String() string {
 
 // Heading the structure for the headings
 type Heading struct {
+	ID      *ElementID
 	Level   int
 	Content *InlineContent
 }
 
-//NewHeading initializes a new `Heading from the given level and content
-func NewHeading(level interface{}, inlineContent *InlineContent) (*Heading, error) {
+//NewHeading initializes a new `Heading from the given level and content, with the optional metadata.
+// In the metadata, only the ElementID is retained
+func NewHeading(level interface{}, inlineContent *InlineContent, metadata []interface{}) (*Heading, error) {
 	// counting the lenght of the 'level' value (ie, the number of `=` chars)
 	actualLevel := len(level.([]interface{}))
-	heading := Heading{Level: actualLevel, Content: inlineContent}
-	log.Debugf("New heading: %v", heading)
+	id, _, _ := newMetaElements(metadata)
+	if id == nil {
+		v := NewReplaceNonAlphanumericsVisitor()
+		err := inlineContent.Accept(v)
+		if err != nil {
+			return nil, errors.Wrapf(err, "unable to generate default ID while instanciating a new Heading element")
+		}
+
+		id, _ = NewElementID(v.NormalizedContent())
+	}
+	heading := Heading{Level: actualLevel, Content: inlineContent, ID: id}
+	log.Debugf("New Heading: %v", heading)
 	return &heading, nil
 }
 
+//String implements the DocElement#String() method
 func (h Heading) String() string {
 	return fmt.Sprintf("<Heading %d> '%s'", h.Level, h.Content.String())
+}
+
+//Accept implements DocElement#Accept(Visitor)
+func (h Heading) Accept(v Visitor) error {
+	err := v.BeforeVisit(h)
+	if err != nil {
+		return errors.Wrapf(err, "error while pre-visiting heading")
+	}
+	err = h.Content.Accept(v)
+	if err != nil {
+		return errors.Wrapf(err, "error while visiting heading")
+	}
+	err = v.AfterVisit(h)
+	if err != nil {
+		return errors.Wrapf(err, "error while post-visiting heading")
+	}
+	return nil
 }
 
 // ------------------------------------------
@@ -105,8 +149,30 @@ func NewListItem(content *InlineContent) (*ListItem, error) {
 	}, nil
 }
 
-func (l ListItem) String() string {
-	return fmt.Sprintf("<List item> %v", *l.Content)
+//String implements the DocElement#String() method
+func (i ListItem) String() string {
+	return fmt.Sprintf("<List item> %v", *i.Content)
+}
+
+//Accept implements DocElement#Accept(Visitor)
+func (i ListItem) Accept(v Visitor) error {
+	err := v.BeforeVisit(i)
+	if err != nil {
+		return errors.Wrapf(err, "error while pre-visiting list item")
+	}
+	err = v.Visit(i)
+	if err != nil {
+		return errors.Wrapf(err, "error while visiting list item")
+	}
+	err = i.Content.Accept(v)
+	if err != nil {
+		return errors.Wrapf(err, "error while visiting list item content")
+	}
+	err = v.AfterVisit(i)
+	if err != nil {
+		return errors.Wrapf(err, "error while post-visiting list item")
+	}
+	return nil
 }
 
 // ------------------------------------------
@@ -130,9 +196,38 @@ func NewParagraph(text []byte, lines []interface{}) (*Paragraph, error) {
 	return &Paragraph{Lines: typedLines}, nil
 }
 
+//String implements the DocElement#String() method
 func (p Paragraph) String() string {
 	return fmt.Sprintf("<Paragraph> %[1]v", p.Lines)
 }
+
+//Accept implements DocElement#Accept(Visitor)
+func (p Paragraph) Accept(v Visitor) error {
+	err := v.BeforeVisit(p)
+	if err != nil {
+		return errors.Wrapf(err, "error while pre-visiting pararaph")
+	}
+	err = v.Visit(p)
+	if err != nil {
+		return errors.Wrapf(err, "error while visiting pararaph")
+	}
+	for _, line := range p.Lines {
+		err := line.Accept(v)
+		if err != nil {
+			return errors.Wrapf(err, "error while visiting paragraph line")
+		}
+
+	}
+	err = v.AfterVisit(p)
+	if err != nil {
+		return errors.Wrapf(err, "error while post-visiting pararaph")
+	}
+	return nil
+}
+
+// ------------------------------------------
+// InlineContent
+// ------------------------------------------
 
 // InlineContent the structure for the lines in paragraphs
 type InlineContent struct {
@@ -142,18 +237,41 @@ type InlineContent struct {
 
 //NewInlineContent initializes a new `InlineContent` from the given values
 func NewInlineContent(text []byte, elements []interface{}) (*InlineContent, error) {
-	log.Debugf("New paragraph lines based on %d values: ", len(elements))
 	mergedElements := make([]DocElement, 0)
 	for _, e := range merge(elements) {
 		mergedElements = append(mergedElements, e.(DocElement))
 	}
 	log.Debugf("New InlineContent: %v (%d)", mergedElements, len(mergedElements))
-	// return &InlineContent{Input: text, Elements: mergedElements}, nil
 	return &InlineContent{Elements: mergedElements}, nil
 }
 
+//String implements the DocElement#String() method
 func (c InlineContent) String() string {
 	return fmt.Sprintf("<InlineContent (l=%[2]d)> %[1]v", c.Elements, len(c.Elements))
+}
+
+//Accept implements DocElement#Accept(Visitor)
+func (c InlineContent) Accept(v Visitor) error {
+	err := v.BeforeVisit(c)
+	if err != nil {
+		return errors.Wrapf(err, "error while pre-visiting inline content")
+	}
+	err = v.Visit(c)
+	if err != nil {
+		return errors.Wrapf(err, "error while visiting inline content")
+	}
+	for _, element := range c.Elements {
+		err = element.Accept(v)
+		if err != nil {
+			return errors.Wrapf(err, "error while visiting inline content element")
+		}
+
+	}
+	err = v.AfterVisit(c)
+	if err != nil {
+		return errors.Wrapf(err, "error while post-visiting heading")
+	}
+	return nil
 }
 
 // ------------------------------------------
@@ -171,21 +289,7 @@ type BlockImage struct {
 //NewBlockImage initializes a new `BlockImage`
 func NewBlockImage(input []byte, imageMacro BlockImageMacro, metadata []interface{}) (*BlockImage, error) {
 	log.Debugf("Initializing a new BlockImage from '%s'", input)
-	var id *ElementID
-	var title *ElementTitle
-	var link *ElementLink
-	for _, item := range metadata {
-		switch item := item.(type) {
-		case *ElementID:
-			id = item
-		case *ElementLink:
-			link = item
-		case *ElementTitle:
-			title = item
-		default:
-			log.Warnf("Unexpected metadata: %s", reflect.TypeOf(item))
-		}
-	}
+	id, title, link := newMetaElements(metadata)
 	return &BlockImage{
 		Macro: imageMacro,
 		ID:    id,
@@ -194,8 +298,37 @@ func NewBlockImage(input []byte, imageMacro BlockImageMacro, metadata []interfac
 	}, nil
 }
 
+//String implements the DocElement#String() method
 func (img BlockImage) String() string {
 	return "<BlockImage>" + img.Macro.String()
+}
+
+func (img BlockImage) elements() []Visitable {
+	return []Visitable{img.ID, img.Link, img.Macro, img.Title}
+}
+
+//Accept implements DocElement#Accept(Visitor)
+func (img BlockImage) Accept(v Visitor) error {
+	err := v.BeforeVisit(img)
+	if err != nil {
+		return errors.Wrapf(err, "error while pre-visiting block image")
+	}
+	err = v.Visit(img)
+	if err != nil {
+		return errors.Wrapf(err, "error while visiting block image")
+	}
+	for _, element := range img.elements() {
+		err := element.Accept(v)
+		if err != nil {
+			return errors.Wrapf(err, "error while visiting block image element")
+		}
+
+	}
+	err = v.AfterVisit(img)
+	if err != nil {
+		return errors.Wrapf(err, "error while post-visiting block image")
+	}
+	return nil
 }
 
 // BlockImageMacro the structure for the block image macros
@@ -244,6 +377,7 @@ func NewBlockImageMacro(input []byte, path string, attributes *string) (*BlockIm
 		Height: height}, nil
 }
 
+//String implements the DocElement#String() method
 func (m BlockImageMacro) String() string {
 	var width, height string
 	if m.Width != nil {
@@ -253,6 +387,23 @@ func (m BlockImageMacro) String() string {
 		height = *m.Height
 	}
 	return fmt.Sprintf("<BlockImageMacroMacro> %s[%s,w=%s h=%s]", m.Path, m.Alt, width, height)
+}
+
+//Accept implements DocElement#Accept(Visitor)
+func (m BlockImageMacro) Accept(v Visitor) error {
+	err := v.BeforeVisit(m)
+	if err != nil {
+		return errors.Wrapf(err, "error while pre-visiting block image macro")
+	}
+	err = v.Visit(m)
+	if err != nil {
+		return errors.Wrapf(err, "error while visiting block image macro")
+	}
+	err = v.AfterVisit(m)
+	if err != nil {
+		return errors.Wrapf(err, "error while post-visiting block image macro")
+	}
+	return nil
 }
 
 // ------------------------------------------
@@ -285,6 +436,7 @@ func NewDelimitedBlock(kind DelimitedBlockKind, content []interface{}) (*Delimit
 	}, nil
 }
 
+//String implements the DocElement#String() method
 func (b DelimitedBlock) String() string {
 	switch b.Kind {
 	case SourceBlock:
@@ -294,9 +446,45 @@ func (b DelimitedBlock) String() string {
 	}
 }
 
+//Accept implements DocElement#Accept(Visitor)
+func (b DelimitedBlock) Accept(v Visitor) error {
+	err := v.BeforeVisit(b)
+	if err != nil {
+		return errors.Wrapf(err, "error while pre-visiting delimited block")
+	}
+	err = v.Visit(b)
+	if err != nil {
+		return errors.Wrapf(err, "error while visiting delimited block")
+	}
+	err = v.AfterVisit(b)
+	if err != nil {
+		return errors.Wrapf(err, "error while post-visiting delimited block")
+	}
+	return nil
+}
+
 // ------------------------------------------
 // Meta Elements
 // ------------------------------------------
+
+func newMetaElements(metadata []interface{}) (*ElementID, *ElementTitle, *ElementLink) {
+	var id *ElementID
+	var title *ElementTitle
+	var link *ElementLink
+	for _, item := range metadata {
+		switch item := item.(type) {
+		case *ElementID:
+			id = item
+		case *ElementLink:
+			link = item
+		case *ElementTitle:
+			title = item
+		default:
+			log.Warnf("Unexpected metadata: %s", reflect.TypeOf(item))
+		}
+	}
+	return id, title, link
+}
 
 // ElementLink the structure for element links
 type ElementLink struct {
@@ -309,8 +497,26 @@ func NewElementLink(path string) (*ElementLink, error) {
 	return &ElementLink{Path: path}, nil
 }
 
+//String implements the DocElement#String() method
 func (e ElementLink) String() string {
 	return fmt.Sprintf("<ElementLink> %s", e.Path)
+}
+
+//Accept implements DocElement#Accept(Visitor)
+func (e ElementLink) Accept(v Visitor) error {
+	err := v.BeforeVisit(e)
+	if err != nil {
+		return errors.Wrapf(err, "error while pre-visiting element link")
+	}
+	err = v.Visit(e)
+	if err != nil {
+		return errors.Wrapf(err, "error while visiting element link")
+	}
+	err = v.AfterVisit(e)
+	if err != nil {
+		return errors.Wrapf(err, "error whie post-visiting element link")
+	}
+	return nil
 }
 
 // ElementID the structure for element IDs
@@ -324,8 +530,27 @@ func NewElementID(id string) (*ElementID, error) {
 	return &ElementID{Value: id}, nil
 }
 
+//String implements the DocElement#String() method
 func (e ElementID) String() string {
 	return fmt.Sprintf("<ElementID> %s", e.Value)
+}
+
+//Accept implements DocElement#Accept(Visitor)
+func (e ElementID) Accept(v Visitor) error {
+	err := v.BeforeVisit(e)
+	if err != nil {
+		return errors.Wrapf(err, "error while pre-visiting element ID")
+	}
+	err = v.Visit(e)
+	if err != nil {
+		return errors.Wrapf(err, "error while visiting element ID")
+	}
+	err = v.AfterVisit(e)
+	if err != nil {
+		return errors.Wrapf(err, "error while post-visiting element ID")
+	}
+
+	return nil
 }
 
 // ElementTitle the structure for element IDs
@@ -343,8 +568,26 @@ func NewElementTitle(content []interface{}) (*ElementTitle, error) {
 	return &ElementTitle{Content: *c}, nil
 }
 
+//String implements the DocElement#String() method
 func (e ElementTitle) String() string {
 	return fmt.Sprintf("<ElementTitle> %s", e.Content)
+}
+
+//Accept implements DocElement#Accept(Visitor)
+func (e ElementTitle) Accept(v Visitor) error {
+	err := v.BeforeVisit(e)
+	if err != nil {
+		return errors.Wrapf(err, "error while pre-visiting element link")
+	}
+	err = v.Visit(e)
+	if err != nil {
+		return errors.Wrapf(err, "error while visiting element title")
+	}
+	err = v.AfterVisit(e)
+	if err != nil {
+		return errors.Wrapf(err, "error while post-visiting element link")
+	}
+	return nil
 }
 
 // ------------------------------------------
@@ -361,8 +604,26 @@ func NewStringElement(content interface{}) *StringElement {
 	return &StringElement{Content: content.(string)}
 }
 
-func (e StringElement) String() string {
-	return fmt.Sprintf("<String> '%s' (%d)", e.Content, len(e.Content))
+//String implements the DocElement#String() method
+func (s StringElement) String() string {
+	return fmt.Sprintf("<String> '%s' (%d)", s.Content, len(s.Content))
+}
+
+//Accept implements DocElement#Accept(Visitor)
+func (s StringElement) Accept(v Visitor) error {
+	err := v.BeforeVisit(s)
+	if err != nil {
+		return errors.Wrapf(err, "error while pre-visiting string element")
+	}
+	err = v.Visit(s)
+	if err != nil {
+		return errors.Wrapf(err, "error while visiting string element")
+	}
+	err = v.AfterVisit(s)
+	if err != nil {
+		return errors.Wrapf(err, "error while post-visiting string element")
+	}
+	return nil
 }
 
 // ------------------------------------------
@@ -400,8 +661,33 @@ func NewQuotedText(kind QuotedTextKind, content []interface{}) (*QuotedText, err
 	return &QuotedText{Kind: kind, Elements: elements}, nil
 }
 
+//String implements the DocElement#String() method
 func (t QuotedText) String() string {
 	return fmt.Sprintf("<QuotedText (%d)> %v", t.Kind, t.Elements)
+}
+
+//Accept implements DocElement#Accept(Visitor)
+func (t QuotedText) Accept(v Visitor) error {
+	err := v.BeforeVisit(t)
+	if err != nil {
+		return errors.Wrapf(err, "error while pre-visiting quoted text")
+	}
+	err = v.Visit(t)
+	if err != nil {
+		return errors.Wrapf(err, "error while visiting quoted text")
+	}
+	for _, element := range t.Elements {
+		err := element.Accept(v)
+		if err != nil {
+			return errors.Wrapf(err, "error while visiting quoted text element")
+		}
+
+	}
+	err = v.AfterVisit(t)
+	if err != nil {
+		return errors.Wrapf(err, "error while post-visiting quoted text")
+	}
+	return nil
 }
 
 // ------------------------------------------
@@ -417,8 +703,26 @@ func NewBlankLine() (*BlankLine, error) {
 	return &BlankLine{}, nil
 }
 
-func (e BlankLine) String() string {
+//String implements the DocElement#String() method
+func (l BlankLine) String() string {
 	return "<BlankLine>"
+}
+
+//Accept implements DocElement#Accept(Visitor)
+func (l BlankLine) Accept(v Visitor) error {
+	err := v.BeforeVisit(l)
+	if err != nil {
+		return errors.Wrapf(err, "error while pre-visiting blank line")
+	}
+	err = v.Visit(l)
+	if err != nil {
+		return errors.Wrapf(err, "error while visiting blank line")
+	}
+	err = v.AfterVisit(l)
+	if err != nil {
+		return errors.Wrapf(err, "error while post-visiting blank line")
+	}
+	return nil
 }
 
 // ------------------------------------------
@@ -446,6 +750,24 @@ func NewExternalLink(url, text []interface{}) (*ExternalLink, error) {
 	return &ExternalLink{URL: *urlStr, Text: trimmedText}, nil
 }
 
-func (e ExternalLink) String() string {
-	return fmt.Sprintf("<ExternalLink> %s[%s]", e.URL, e.Text)
+//String implements the DocElement#String() method
+func (l ExternalLink) String() string {
+	return fmt.Sprintf("<ExternalLink> %s[%s]", l.URL, l.Text)
+}
+
+//Accept implements DocElement#Accept(Visitor)
+func (l ExternalLink) Accept(v Visitor) error {
+	err := v.BeforeVisit(l)
+	if err != nil {
+		return errors.Wrapf(err, "error while pre-visiting external link")
+	}
+	err = v.Visit(l)
+	if err != nil {
+		return errors.Wrapf(err, "error while visiting external link")
+	}
+	err = v.AfterVisit(l)
+	if err != nil {
+		return errors.Wrapf(err, "error while post-visiting external link")
+	}
+	return nil
 }

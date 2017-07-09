@@ -18,8 +18,8 @@ Line <- Heading / ListItem / BlockImage / DelimitedBlock / MetadataElement / Par
 // ------------------------------------------
 // Headings
 // ------------------------------------------
-Heading <- level:("="+) WS+ content:InlineContent {
-     return types.NewHeading(level, content.(*types.InlineContent))
+Heading <- metadata:(MetadataElement)* level:("="+) WS+ content:InlineContent {
+     return types.NewHeading(level, content.(*types.InlineContent), metadata.([]interface{}))
 }
 
 // ------------------------------------------

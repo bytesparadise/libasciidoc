@@ -40,11 +40,17 @@ func TestHeadingOnly(t *testing.T) {
 	actualContent := "= a heading"
 	expectedDocument := &types.Document{
 		Elements: []types.DocElement{
-			&types.Heading{Level: 1, Content: &types.InlineContent{
-				Elements: []types.DocElement{
-					&types.StringElement{Content: "a heading"},
+			&types.Heading{
+				Level: 1,
+				Content: &types.InlineContent{
+					Elements: []types.DocElement{
+						&types.StringElement{Content: "a heading"},
+					},
 				},
-			}},
+				ID: &types.ElementID{
+					Value: "_a_heading",
+				},
+			},
 		}}
 	compare(t, expectedDocument, actualContent)
 }
@@ -89,11 +95,17 @@ func TestSection2(t *testing.T) {
 	actualContent := `== section 1`
 	expectedDocument := &types.Document{
 		Elements: []types.DocElement{
-			&types.Heading{Level: 2, Content: &types.InlineContent{
-				Elements: []types.DocElement{
-					&types.StringElement{Content: "section 1"},
+			&types.Heading{
+				Level: 2,
+				Content: &types.InlineContent{
+					Elements: []types.DocElement{
+						&types.StringElement{Content: "section 1"},
+					},
 				},
-			}},
+				ID: &types.ElementID{
+					Value: "_section_1",
+				},
+			},
 		},
 	}
 	compare(t, expectedDocument, actualContent)
@@ -106,17 +118,29 @@ func TestHeadingWithSection2(t *testing.T) {
 		"== section 1"
 	expectedDocument := &types.Document{
 		Elements: []types.DocElement{
-			&types.Heading{Level: 1, Content: &types.InlineContent{
-				Elements: []types.DocElement{
-					&types.StringElement{Content: "a heading"},
+			&types.Heading{
+				Level: 1,
+				Content: &types.InlineContent{
+					Elements: []types.DocElement{
+						&types.StringElement{Content: "a heading"},
+					},
 				},
-			}},
+				ID: &types.ElementID{
+					Value: "_a_heading",
+				},
+			},
 			&types.BlankLine{},
-			&types.Heading{Level: 2, Content: &types.InlineContent{
-				Elements: []types.DocElement{
-					&types.StringElement{Content: "section 1"},
+			&types.Heading{
+				Level: 2,
+				Content: &types.InlineContent{
+					Elements: []types.DocElement{
+						&types.StringElement{Content: "section 1"},
+					},
 				},
-			}},
+				ID: &types.ElementID{
+					Value: "_section_1",
+				},
+			},
 		},
 	}
 	compare(t, expectedDocument, actualContent)
@@ -128,11 +152,16 @@ func TestHeadingWithInvalidSection2(t *testing.T) {
 		" == section 1"
 	expectedDocument := &types.Document{
 		Elements: []types.DocElement{
-			&types.Heading{Level: 1, Content: &types.InlineContent{
-				Elements: []types.DocElement{
-					&types.StringElement{Content: "a heading"},
+			&types.Heading{
+				Level: 1, Content: &types.InlineContent{
+					Elements: []types.DocElement{
+						&types.StringElement{Content: "a heading"},
+					},
 				},
-			}},
+				ID: &types.ElementID{
+					Value: "_a_heading",
+				},
+			},
 			&types.BlankLine{},
 			&types.Paragraph{
 				Lines: []*types.InlineContent{
@@ -192,17 +221,29 @@ func TestHeadingSectionInlineWithBoldQuote(t *testing.T) {
 		"a paragraph with *bold content*"
 	expectedDocument := &types.Document{
 		Elements: []types.DocElement{
-			&types.Heading{Level: 1, Content: &types.InlineContent{
-				Elements: []types.DocElement{
-					&types.StringElement{Content: "a heading"},
+			&types.Heading{
+				Level: 1,
+				Content: &types.InlineContent{
+					Elements: []types.DocElement{
+						&types.StringElement{Content: "a heading"},
+					},
 				},
-			}},
+				ID: &types.ElementID{
+					Value: "_a_heading",
+				},
+			},
 			&types.BlankLine{},
-			&types.Heading{Level: 2, Content: &types.InlineContent{
-				Elements: []types.DocElement{
-					&types.StringElement{Content: "section 1"},
+			&types.Heading{
+				Level: 2,
+				Content: &types.InlineContent{
+					Elements: []types.DocElement{
+						&types.StringElement{Content: "section 1"},
+					},
 				},
-			}},
+				ID: &types.ElementID{
+					Value: "_section_1",
+				},
+			},
 			&types.BlankLine{},
 			&types.Paragraph{
 				Lines: []*types.InlineContent{

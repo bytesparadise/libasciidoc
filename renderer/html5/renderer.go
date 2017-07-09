@@ -24,6 +24,8 @@ func Render(ctx context.Context, document types.Document, output io.Writer) erro
 
 func renderElement(ctx context.Context, element types.DocElement) ([]byte, error) {
 	switch element.(type) {
+	case *types.Heading:
+		return renderHeading(ctx, *element.(*types.Heading))
 	case *types.Paragraph:
 		return renderParagraph(ctx, *element.(*types.Paragraph))
 	case *types.QuotedText:
@@ -32,6 +34,8 @@ func renderElement(ctx context.Context, element types.DocElement) ([]byte, error
 		return renderBlockImage(ctx, *element.(*types.BlockImage))
 	case *types.DelimitedBlock:
 		return renderDelimitedBlock(ctx, *element.(*types.DelimitedBlock))
+	case *types.InlineContent:
+		return renderInlineContent(ctx, *element.(*types.InlineContent))
 	case *types.StringElement:
 		return renderStringElement(ctx, *element.(*types.StringElement))
 	default:
