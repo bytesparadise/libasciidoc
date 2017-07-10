@@ -5,22 +5,11 @@ import (
 	"path/filepath"
 	"strings"
 
-	"flag"
-
 	"reflect"
 
 	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
 )
-
-func init() {
-	debugMode := flag.Bool("debug", false, "when set, enables debug log messages")
-	flag.Parse()
-	if *debugMode {
-		log.SetLevel(log.DebugLevel)
-	}
-	log.SetFormatter(&log.TextFormatter{FullTimestamp: true})
-}
 
 // ------------------------------------------
 // DocElement (and other interfaces)

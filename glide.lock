@@ -1,10 +1,44 @@
-hash: 277ac9f640750873736bfdc58fa22984ccc67fb7f473fdbf6db5bc87c05e53dc
-updated: 2017-07-09T13:50:51.059589264+02:00
+hash: 663f7ee6d2093012d467bf7b7f2967d1fdda8ed7165a10a5ba785b9cd7d36b1a
+updated: 2017-07-10T12:38:51.139672541+02:00
 imports:
 - name: github.com/go-test/deep
   version: f49763a6ea0a91026be26f8213bebee726b4185f
 - name: github.com/mna/pigeon
-  version: 3ad7b4379454d41dc287081d455492b3b00b81df
+  version: 75583d30cd22f0c85c842a127f7b6b148b22a2dc
+- name: github.com/onsi/ginkgo
+  version: 77a8c1e5c40d6bb6c5eb4dd4bdce9763564f6298
+  subpackages:
+  - config
+  - internal/codelocation
+  - internal/containernode
+  - internal/failer
+  - internal/leafnodes
+  - internal/remote
+  - internal/spec
+  - internal/spec_iterator
+  - internal/specrunner
+  - internal/suite
+  - internal/testingtproxy
+  - internal/writer
+  - reporters
+  - reporters/stenographer
+  - reporters/stenographer/support/go-colorable
+  - reporters/stenographer/support/go-isatty
+  - types
+- name: github.com/onsi/gomega
+  version: 334b8f472b3af5d541c5642701c1e29e2126f486
+  subpackages:
+  - format
+  - internal/assertion
+  - internal/asyncassertion
+  - internal/oraclematcher
+  - internal/testingtsupport
+  - matchers
+  - matchers/support/goraph/bipartitegraph
+  - matchers/support/goraph/edge
+  - matchers/support/goraph/node
+  - matchers/support/goraph/util
+  - types
 - name: github.com/pkg/errors
   version: 645ef00459ed84a119197bfb8d8205042c6df63d
 - name: github.com/sirupsen/logrus
@@ -33,3 +67,5 @@ testImports:
   version: d8ed2627bdf02c080bf22230dbb337003b7aba2d
   subpackages:
   - difflib
+- name: gopkg.in/yaml.v2
+  version: a5b47d31c556af34a302ce5d659e6fea44d90de0

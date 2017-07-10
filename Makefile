@@ -188,7 +188,8 @@ build: prebuild-check clean-artifacts $(BINARY_PATH)
 .PHONY: test
 ## run all tests except in the 'vendor' package 
 test: 
-	@go test -v $$(glide novendor) #
+	# @go test -v $$(glide novendor) #
+	@ginkgo -r --randomizeAllSpecs --randomizeSuites --failOnPending --cover --trace --race --compilers=2
 
 # $(BINARY_PATH): $(SOURCES)
 $(BINARY_PATH): 
