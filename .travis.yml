@@ -9,6 +9,9 @@ install:
   - glide install
   # pigeon is used to generate the parser
   - go get -u github.com/mna/pigeon
+  # ginkgo and gomega are used to run the tests
+  - go get -v github.com/onsi/ginkgo/ginkgo
+  - go get -v github.com/onsi/gomega
 
 language: go
 

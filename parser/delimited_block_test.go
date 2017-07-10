@@ -1,52 +1,51 @@
 package parser_test
 
 import (
-	"testing"
-
 	"github.com/bytesparadise/libasciidoc/types"
+	. "github.com/onsi/ginkgo"
 )
 
-func TestDelimitedSourceBlockWithSingleLine(t *testing.T) {
-	// given a source block of 1 line
-	content := "some source code"
-	actualContent := "```\n" + content + "\n```"
-	expectedDocument := &types.Document{
-		Elements: []types.DocElement{
-			&types.DelimitedBlock{
-				Kind:    types.SourceBlock,
-				Content: content,
-			},
-		},
-	}
-	compare(t, expectedDocument, actualContent)
-}
+var _ = Describe("Testing with Ginkgo", func() {
+	It("delimited source block with single line", func() {
 
-func TestDelimitedSourceBlockWithMultipleLines(t *testing.T) {
-	// given a source block of multiple lines
-	content := "some source code\nwith an empty line\n\nin the middle"
-	actualContent := "```\n" + content + "\n```"
-	expectedDocument := &types.Document{
-		Elements: []types.DocElement{
-			&types.DelimitedBlock{
-				Kind:    types.SourceBlock,
-				Content: content,
+		content := "some source code"
+		actualContent := "```\n" + content + "\n```"
+		expectedDocument := &types.Document{
+			Elements: []types.DocElement{
+				&types.DelimitedBlock{
+					Kind:    types.SourceBlock,
+					Content: content,
+				},
 			},
-		},
-	}
-	compare(t, expectedDocument, actualContent)
-}
+		}
+		compare(GinkgoT(), expectedDocument, actualContent)
+	})
+	It("delimited source block with multiple lines", func() {
 
-func TestDelimitedSourceBlockWithNoLine(t *testing.T) {
-	// given an empty source block
-	content := ""
-	actualContent := "```\n" + content + "```"
-	expectedDocument := &types.Document{
-		Elements: []types.DocElement{
-			&types.DelimitedBlock{
-				Kind:    types.SourceBlock,
-				Content: content,
+		content := "some source code\nwith an empty line\n\nin the middle"
+		actualContent := "```\n" + content + "\n```"
+		expectedDocument := &types.Document{
+			Elements: []types.DocElement{
+				&types.DelimitedBlock{
+					Kind:    types.SourceBlock,
+					Content: content,
+				},
 			},
-		},
-	}
-	compare(t, expectedDocument, actualContent)
-}
+		}
+		compare(GinkgoT(), expectedDocument, actualContent)
+	})
+	It("delimited source block with no line", func() {
+
+		content := ""
+		actualContent := "```\n" + content + "```"
+		expectedDocument := &types.Document{
+			Elements: []types.DocElement{
+				&types.DelimitedBlock{
+					Kind:    types.SourceBlock,
+					Content: content,
+				},
+			},
+		}
+		compare(GinkgoT(), expectedDocument, actualContent)
+	})
+})

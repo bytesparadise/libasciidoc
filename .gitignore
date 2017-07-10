@@ -39,6 +39,7 @@ local.properties
 *.o
 *.a
 *.so
+*.coverprofile
 
 # Folders
 _obj

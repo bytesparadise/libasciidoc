@@ -1,10 +1,9 @@
 package html5_test
 
-import "testing"
+import . "github.com/onsi/ginkgo"
 
-func TestRenderDelimitedSourceBlock(t *testing.T) {
-	t.Run("source with multiple lines", func(t *testing.T) {
-		// given
+var _ = Describe("render delimited source blocks", func() {
+	It("source with multiple lines", func() {
 		content := "```\nsome source code\n\nhere\n```"
 		expected := `<div class="listingblock">
 <div class="content">
@@ -13,6 +12,6 @@ func TestRenderDelimitedSourceBlock(t *testing.T) {
 here</code></pre>
 </div>
 </div>`
-		verify(t, expected, content)
+		verify(GinkgoT(), expected, content)
 	})
-}
+})
