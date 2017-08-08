@@ -2,7 +2,7 @@ package html5_test
 
 import . "github.com/onsi/ginkgo"
 
-var _ = Describe("render headings", func() {
+var _ = Describe("Rendering Headings", func() {
 	It("heading level 1", func() {
 		content := "= a title"
 		expected := `<div id="header">

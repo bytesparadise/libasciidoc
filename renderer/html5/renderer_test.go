@@ -3,7 +3,6 @@ package html5_test
 import (
 	"bytes"
 	"context"
-	"fmt"
 	"strings"
 
 	"github.com/bytesparadise/libasciidoc/parser"
@@ -15,8 +14,7 @@ import (
 )
 
 func verify(t GinkgoTInterface, expected, content string) {
-
-	t.Log(fmt.Sprintf("processing '%s'", content))
+	t.Logf("processing '%s'", content)
 	reader := strings.NewReader(content)
 	doc, err := parser.ParseReader("", reader)
 	if err != nil {
@@ -24,14 +22,14 @@ func verify(t GinkgoTInterface, expected, content string) {
 	}
 	require.Nil(t, err)
 	actualDocument := doc.(*types.Document)
-
 	buff := bytes.NewBuffer(make([]byte, 0))
 	err = Render(context.Background(), *actualDocument, buff)
 	t.Log("Done processing document")
-
 	require.Nil(t, err)
 	require.Empty(t, err)
 	result := string(buff.Bytes())
+	t.Logf("** Actual output:\n%s\n", result)
+	t.Logf("** Expected output:\n%s\n", expected)
 	assert.Equal(t, expected, result)
 }
 

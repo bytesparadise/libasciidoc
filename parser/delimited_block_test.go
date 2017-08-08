@@ -5,9 +5,9 @@ import (
 	. "github.com/onsi/ginkgo"
 )
 
-var _ = Describe("Testing with Ginkgo", func() {
-	It("delimited source block with single line", func() {
+var _ = Describe("Parsing Delimited Blocks", func() {
 
+	It("delimited source block with single line", func() {
 		content := "some source code"
 		actualContent := "```\n" + content + "\n```"
 		expectedDocument := &types.Document{
@@ -20,8 +20,8 @@ var _ = Describe("Testing with Ginkgo", func() {
 		}
 		compare(GinkgoT(), expectedDocument, actualContent)
 	})
-	It("delimited source block with multiple lines", func() {
 
+	It("delimited source block with multiple lines", func() {
 		content := "some source code\nwith an empty line\n\nin the middle"
 		actualContent := "```\n" + content + "\n```"
 		expectedDocument := &types.Document{
@@ -34,8 +34,8 @@ var _ = Describe("Testing with Ginkgo", func() {
 		}
 		compare(GinkgoT(), expectedDocument, actualContent)
 	})
-	It("delimited source block with no line", func() {
 
+	It("delimited source block with no line", func() {
 		content := ""
 		actualContent := "```\n" + content + "```"
 		expectedDocument := &types.Document{

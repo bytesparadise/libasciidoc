@@ -88,13 +88,13 @@ func NewHeading(level interface{}, inlineContent *InlineContent, metadata []inte
 		id, _ = NewElementID(v.NormalizedContent())
 	}
 	heading := Heading{Level: actualLevel, Content: inlineContent, ID: id}
-	log.Debugf("New Heading: %v", heading)
+	log.Debugf("Initializing a ewHeading: %v", heading)
 	return &heading, nil
 }
 
 //String implements the DocElement#String() method
 func (h Heading) String() string {
-	return fmt.Sprintf("<Heading %d> '%s'", h.Level, h.Content.String())
+	return fmt.Sprintf("<%v %d> '%s'", reflect.TypeOf(h), h.Level, h.Content.String())
 }
 
 //Accept implements DocElement#Accept(Visitor)
@@ -115,32 +115,134 @@ func (h Heading) Accept(v Visitor) error {
 }
 
 // ------------------------------------------
-// ListItem
+// Lists
 // ------------------------------------------
 
-// ListItem the structure for the list items
-type ListItem struct {
-	Content *InlineContent
+// List the structure for the lists
+type List struct {
+	ID    *ElementID
+	Items []*ListItem
 }
 
-//NewListItem initializes a new `ListItem` from the given content
-func NewListItem(content *InlineContent) (*ListItem, error) {
-	log.Debugf("New list item based on %v", content)
-	// items := strings.Split(value, " ")
-	// number, err := strconv.Atoi(items[0])
-	// if err != nil {
-	// 	return nil, errs.Wrapf(err, "failed to create new ListItem")
-	// }
-	// content := items[1]
-	return &ListItem{
-		// Number:  number,
-		Content: content,
+//NewList initializes a new `ListItem` from the given content
+func NewList(elements []interface{}, metadata []interface{}) (*List, error) {
+	id, _, _ := newMetaElements(metadata)
+	items := make([]*ListItem, 0)
+	log.Debugf("Initializing a new List from %d elements", len(elements))
+	currentLevel := 1
+	lastItems := make([]*ListItem, 10)
+	for _, element := range elements {
+		// each "list item" can be a "list item" element followed by an optional blank line (ignored during the processing below)
+		//  also, a list item may need to be divided when it contains lines starting with a caret or a group of stars...
+
+		if itemElements, ok := element.([]interface{}); ok {
+			if item, ok := itemElements[0].(*ListItem); ok {
+				//log.Debugf("  processing element of type '%v' with current level=%d...", reflect.TypeOf(itemElements[0]), item.Level)
+				if item.Level == 1 {
+					items = append(items, item)
+				} else if item.Level > currentLevel {
+					// force the current item level to (last seen level + 1)
+					item.Level = currentLevel + 1
+				}
+
+				if item.Level > 1 {
+					// now join the item to its parent
+					parentItem := lastItems[item.Level-2]
+					if parentItem.Children == nil {
+						parentItem.Children = &List{}
+					}
+					parentItem.Children.Items = append(parentItem.Children.Items, item)
+				}
+				// memorizes the current item for further processing
+				if item.Level > cap(lastItems) { // increase capacity
+					newCap := 2 * item.Level
+					newSlice := make([]*ListItem, newCap)
+					copy(newSlice, lastItems)
+					lastItems = newSlice
+				}
+				if item.Level < currentLevel { // remove some items
+					for i := item.Level; i < currentLevel; i++ {
+						lastItems[i] = nil
+
+					}
+				}
+				currentLevel = item.Level
+				lastItems[item.Level-1] = item
+			}
+		}
+	}
+	return &List{
+		ID:    id,
+		Items: items,
 	}, nil
 }
 
 //String implements the DocElement#String() method
+func (l List) String() string {
+	result := fmt.Sprintf("<%v|size=%d>", reflect.TypeOf(l), len(l.Items))
+	for _, item := range l.Items {
+		result = result + "\n\t" + item.String()
+	}
+	return result
+}
+
+//Accept implements DocElement#Accept(Visitor)
+func (l List) Accept(v Visitor) error {
+	err := v.BeforeVisit(l)
+	if err != nil {
+		return errors.Wrapf(err, "error while pre-visiting list")
+	}
+	err = v.Visit(l)
+	if err != nil {
+		return errors.Wrapf(err, "error while visiting list")
+	}
+	for _, item := range l.Items {
+		err := item.Accept(v)
+		if err != nil {
+			return errors.Wrapf(err, "error while visiting list item")
+		}
+	}
+	err = v.AfterVisit(l)
+	if err != nil {
+		return errors.Wrapf(err, "error while post-visiting list")
+	}
+	return nil
+}
+
+// ListItem the structure for the list items
+type ListItem struct {
+	Level    int
+	Content  *ListItemContent
+	Children *List
+}
+
+//NewListItem initializes a new `ListItem` from the given content
+func NewListItem(level interface{}, content *ListItemContent, children *List) (*ListItem, error) {
+	switch vals := reflect.ValueOf(level); vals.Kind() {
+	case reflect.Slice:
+		log.Debugf("Initializing a new ListItem with content '%s' lines and input level '%d'", content, vals.Len())
+		return &ListItem{
+			Level:    vals.Len(),
+			Content:  content,
+			Children: children,
+		}, nil
+	default:
+		return nil, errors.Errorf("Unable to initialize a ListItem with level '%v", level)
+	}
+}
+
+//String implements the DocElement#String() method
 func (i ListItem) String() string {
-	return fmt.Sprintf("<List item> %v", *i.Content)
+	return i.StringWithIndent(1)
+}
+
+// StringWithIndent same as String() but with a specified number of spaces at the beginning of the line, to produce a given level of indentation
+func (i ListItem) StringWithIndent(indentLevel int) string {
+	result := fmt.Sprintf("%s<%v|level=%d> %s", strings.Repeat(" ", indentLevel), reflect.TypeOf(i), i.Level, i.Content.String())
+	for _, c := range i.Children.Items {
+		result = result + "\n\t" + c.StringWithIndent(indentLevel+1)
+	}
+	return result
 }
 
 //Accept implements DocElement#Accept(Visitor)
@@ -157,9 +259,66 @@ func (i ListItem) Accept(v Visitor) error {
 	if err != nil {
 		return errors.Wrapf(err, "error while visiting list item content")
 	}
+	for _, child := range i.Children.Items {
+		err := child.Accept(v)
+		if err != nil {
+			return errors.Wrapf(err, "error while visiting list item child")
+		}
+	}
 	err = v.AfterVisit(i)
 	if err != nil {
 		return errors.Wrapf(err, "error while post-visiting list item")
+	}
+	return nil
+}
+
+// ListItemContent the structure for the list item content
+type ListItemContent struct {
+	Lines []*InlineContent
+}
+
+//NewListItemContent initializes a new `ListItemContent`
+func NewListItemContent(text []byte, lines []interface{}) (*ListItemContent, error) {
+	log.Debugf("Initializing a new ListItemContent with %d line(s)", len(lines))
+	typedLines := make([]*InlineContent, 0)
+	for _, line := range lines {
+		// here, `line` is an []interface{} in which we need to locate the relevant `*InlineContent` fragment
+		if lineFragments, ok := line.([]interface{}); ok {
+			for i := range lineFragments {
+				if fragment, ok := lineFragments[i].(*InlineContent); ok {
+					typedLines = append(typedLines, fragment)
+				}
+			}
+		}
+	}
+	return &ListItemContent{Lines: typedLines}, nil
+}
+
+//String implements the DocElement#String() method
+func (c ListItemContent) String() string {
+	return fmt.Sprintf("<%v> %v", reflect.TypeOf(c), c.Lines)
+}
+
+//Accept implements DocElement#Accept(Visitor)
+func (c ListItemContent) Accept(v Visitor) error {
+	err := v.BeforeVisit(c)
+	if err != nil {
+		return errors.Wrapf(err, "error while pre-visiting ListItemContent")
+	}
+	err = v.Visit(c)
+	if err != nil {
+		return errors.Wrapf(err, "error while visiting ListItemContent")
+	}
+	for _, line := range c.Lines {
+		err := line.Accept(v)
+		if err != nil {
+			return errors.Wrapf(err, "error while visiting ListItemContent line")
+		}
+
+	}
+	err = v.AfterVisit(c)
+	if err != nil {
+		return errors.Wrapf(err, "error while post-visiting ListItemContent")
 	}
 	return nil
 }
@@ -170,24 +329,22 @@ func (i ListItem) Accept(v Visitor) error {
 
 // Paragraph the structure for the paragraph
 type Paragraph struct {
-	// Input    []byte
 	Lines []*InlineContent
 }
 
 //NewParagraph initializes a new `Paragraph`
 func NewParagraph(text []byte, lines []interface{}) (*Paragraph, error) {
-	log.Debugf("New paragraph with %d lines: ", len(lines))
+	log.Debugf("Initializing a new Paragraph with %d line(s)", len(lines))
 	typedLines := make([]*InlineContent, 0)
 	for _, line := range lines {
 		typedLines = append(typedLines, line.(*InlineContent))
 	}
-	// return &InlineContent{Input: text, Elements: mergedElements}, nil
 	return &Paragraph{Lines: typedLines}, nil
 }
 
 //String implements the DocElement#String() method
 func (p Paragraph) String() string {
-	return fmt.Sprintf("<Paragraph> %[1]v", p.Lines)
+	return fmt.Sprintf("<%v> %v", reflect.TypeOf(p), p.Lines)
 }
 
 //Accept implements DocElement#Accept(Visitor)
@@ -230,13 +387,13 @@ func NewInlineContent(text []byte, elements []interface{}) (*InlineContent, erro
 	for _, e := range merge(elements) {
 		mergedElements = append(mergedElements, e.(DocElement))
 	}
-	log.Debugf("New InlineContent: %v (%d)", mergedElements, len(mergedElements))
+	log.Debugf("Initialized new InlineContent: %v (%d)", mergedElements, len(mergedElements))
 	return &InlineContent{Elements: mergedElements}, nil
 }
 
 //String implements the DocElement#String() method
 func (c InlineContent) String() string {
-	return fmt.Sprintf("<InlineContent (l=%[2]d)> %[1]v", c.Elements, len(c.Elements))
+	return fmt.Sprintf("<%v|size=%d> %v", reflect.TypeOf(c), len(c.Elements), c.Elements)
 }
 
 //Accept implements DocElement#Accept(Visitor)
@@ -288,32 +445,32 @@ func NewBlockImage(input []byte, imageMacro BlockImageMacro, metadata []interfac
 }
 
 //String implements the DocElement#String() method
-func (img BlockImage) String() string {
-	return "<BlockImage>" + img.Macro.String()
+func (i BlockImage) String() string {
+	return fmt.Sprintf("<%v> %s", reflect.TypeOf(i), i.Macro.String())
 }
 
-func (img BlockImage) elements() []Visitable {
-	return []Visitable{img.ID, img.Link, img.Macro, img.Title}
+func (i BlockImage) elements() []Visitable {
+	return []Visitable{i.ID, i.Link, i.Macro, i.Title}
 }
 
 //Accept implements DocElement#Accept(Visitor)
-func (img BlockImage) Accept(v Visitor) error {
-	err := v.BeforeVisit(img)
+func (i BlockImage) Accept(v Visitor) error {
+	err := v.BeforeVisit(i)
 	if err != nil {
 		return errors.Wrapf(err, "error while pre-visiting block image")
 	}
-	err = v.Visit(img)
+	err = v.Visit(i)
 	if err != nil {
 		return errors.Wrapf(err, "error while visiting block image")
 	}
-	for _, element := range img.elements() {
+	for _, element := range i.elements() {
 		err := element.Accept(v)
 		if err != nil {
 			return errors.Wrapf(err, "error while visiting block image element")
 		}
 
 	}
-	err = v.AfterVisit(img)
+	err = v.AfterVisit(i)
 	if err != nil {
 		return errors.Wrapf(err, "error while post-visiting block image")
 	}
@@ -330,6 +487,7 @@ type BlockImageMacro struct {
 
 //NewBlockImageMacro initializes a new `BlockImageMacro`
 func NewBlockImageMacro(input []byte, path string, attributes *string) (*BlockImageMacro, error) {
+	log.Debugf("Initializing a new BlockImageMacro from '%s'", input)
 	var alt string
 	var width, height *string
 	if attributes != nil {
@@ -358,7 +516,6 @@ func NewBlockImageMacro(input []byte, path string, attributes *string) (*BlockIm
 		}
 		alt = path[offset : len(path)-len(extension)]
 	}
-	log.Debugf("Initializing a new BlockImageMacro from '%s'", input)
 	return &BlockImageMacro{
 		Path:   path,
 		Alt:    alt,
@@ -375,7 +532,7 @@ func (m BlockImageMacro) String() string {
 	if m.Height != nil {
 		height = *m.Height
 	}
-	return fmt.Sprintf("<BlockImageMacroMacro> %s[%s,w=%s h=%s]", m.Path, m.Alt, width, height)
+	return fmt.Sprintf("<%v> %s[%s,w=%s h=%s]", reflect.TypeOf(m), m.Path, m.Alt, width, height)
 }
 
 //Accept implements DocElement#Accept(Visitor)
@@ -427,12 +584,7 @@ func NewDelimitedBlock(kind DelimitedBlockKind, content []interface{}) (*Delimit
 
 //String implements the DocElement#String() method
 func (b DelimitedBlock) String() string {
-	switch b.Kind {
-	case SourceBlock:
-		return fmt.Sprintf("<SourceBlock> %v", b.Content)
-	default:
-		return fmt.Sprintf("<Unknown type of block> %v", b.Content)
-	}
+	return fmt.Sprintf("<%v> %v", reflect.TypeOf(b), b.Content)
 }
 
 //Accept implements DocElement#Accept(Visitor)
@@ -482,13 +634,13 @@ type ElementLink struct {
 
 //NewElementLink initializes a new `ElementLink` from the given path
 func NewElementLink(path string) (*ElementLink, error) {
-	log.Debugf("New ElementLink with path=%s", path)
+	log.Debugf("Initializing a new ElementLink with path=%s", path)
 	return &ElementLink{Path: path}, nil
 }
 
 //String implements the DocElement#String() method
 func (e ElementLink) String() string {
-	return fmt.Sprintf("<ElementLink> %s", e.Path)
+	return fmt.Sprintf("<%v> %s", reflect.TypeOf(e), e.Path)
 }
 
 //Accept implements DocElement#Accept(Visitor)
@@ -515,13 +667,13 @@ type ElementID struct {
 
 //NewElementID initializes a new `ElementID` from the given path
 func NewElementID(id string) (*ElementID, error) {
-	log.Debugf("New ElementID with ID=%s", id)
+	log.Debugf("Initializing a ewElementID with ID=%s", id)
 	return &ElementID{Value: id}, nil
 }
 
 //String implements the DocElement#String() method
 func (e ElementID) String() string {
-	return fmt.Sprintf("<ElementID> %s", e.Value)
+	return fmt.Sprintf("<%v> %s", reflect.TypeOf(e), e.Value)
 }
 
 //Accept implements DocElement#Accept(Visitor)
@@ -553,13 +705,13 @@ func NewElementTitle(content []interface{}) (*ElementTitle, error) {
 	if err != nil {
 		return nil, errors.Wrapf(err, "failed to initialize a new ElementTitle")
 	}
-	log.Debugf("New ElementTitle with content=%s", c)
+	log.Debugf("Initializing a ewElementTitle with content=%s", c)
 	return &ElementTitle{Content: *c}, nil
 }
 
 //String implements the DocElement#String() method
 func (e ElementTitle) String() string {
-	return fmt.Sprintf("<ElementTitle> %s", e.Content)
+	return fmt.Sprintf("<%v> %s", reflect.TypeOf(e), e.Content)
 }
 
 //Accept implements DocElement#Accept(Visitor)
@@ -595,7 +747,7 @@ func NewStringElement(content interface{}) *StringElement {
 
 //String implements the DocElement#String() method
 func (s StringElement) String() string {
-	return fmt.Sprintf("<String> '%s' (%d)", s.Content, len(s.Content))
+	return fmt.Sprintf("<%v> '%s'", reflect.TypeOf(s), s.Content)
 }
 
 //Accept implements DocElement#Accept(Visitor)
@@ -652,7 +804,7 @@ func NewQuotedText(kind QuotedTextKind, content []interface{}) (*QuotedText, err
 
 //String implements the DocElement#String() method
 func (t QuotedText) String() string {
-	return fmt.Sprintf("<QuotedText (%d)> %v", t.Kind, t.Elements)
+	return fmt.Sprintf("<%v (%d)> %v", reflect.TypeOf(t), t.Kind, t.Elements)
 }
 
 //Accept implements DocElement#Accept(Visitor)
@@ -694,7 +846,7 @@ func NewBlankLine() (*BlankLine, error) {
 
 //String implements the DocElement#String() method
 func (l BlankLine) String() string {
-	return "<BlankLine>"
+	return fmt.Sprintf("<%v>", reflect.TypeOf(l))
 }
 
 //Accept implements DocElement#Accept(Visitor)
@@ -741,7 +893,7 @@ func NewExternalLink(url, text []interface{}) (*ExternalLink, error) {
 
 //String implements the DocElement#String() method
 func (l ExternalLink) String() string {
-	return fmt.Sprintf("<ExternalLink> %s[%s]", l.URL, l.Text)
+	return fmt.Sprintf("<%v> %s[%s]", reflect.TypeOf(l), l.URL, l.Text)
 }
 
 //Accept implements DocElement#Accept(Visitor)

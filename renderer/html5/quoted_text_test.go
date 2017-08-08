@@ -2,7 +2,7 @@ package html5_test
 
 import . "github.com/onsi/ginkgo"
 
-var _ = Describe("render quotes", func() {
+var _ = Describe("Rendering Quoted Texts", func() {
 	It("bold content alone", func() {
 
 		content := "*bold content*"

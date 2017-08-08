@@ -3,12 +3,11 @@ package types
 import (
 	"github.com/stretchr/testify/require"
 
-	_ "github.com/bytesparadise/libasciidoc/test"
 	. "github.com/onsi/ginkgo"
 	"github.com/stretchr/testify/assert"
 )
 
-var _ = Describe("normalize string", func() {
+var _ = Describe("Normalizing String", func() {
 	It("hello", func() {
 		verify(GinkgoT(), "hello", "hello")
 	})
