@@ -5,9 +5,9 @@ import (
 	. "github.com/onsi/ginkgo"
 )
 
-var _ = Describe("Testing with Ginkgo", func() {
-	It("bold text of1 word", func() {
+var _ = Describe("Parsing Quoted Texts", func() {
 
+	It("bold text of 1 word", func() {
 		actualContent := "*hello*"
 		expectedDocument := &types.Document{
 			Elements: []types.DocElement{
@@ -29,8 +29,8 @@ var _ = Describe("Testing with Ginkgo", func() {
 		}
 		compare(GinkgoT(), expectedDocument, actualContent)
 	})
-	It("bold text of2 words", func() {
 
+	It("bold text of 2 words", func() {
 		actualContent := "*bold    content*"
 		expectedDocument := &types.Document{
 			Elements: []types.DocElement{
@@ -52,8 +52,8 @@ var _ = Describe("Testing with Ginkgo", func() {
 		}
 		compare(GinkgoT(), expectedDocument, actualContent)
 	})
-	It("bold text of3 words", func() {
 
+	It("bold text of 3 words", func() {
 		actualContent := "*some bold content*"
 		expectedDocument := &types.Document{
 			Elements: []types.DocElement{
@@ -75,8 +75,8 @@ var _ = Describe("Testing with Ginkgo", func() {
 		}
 		compare(GinkgoT(), expectedDocument, actualContent)
 	})
-	It("inline with bold text", func() {
 
+	It("inline with bold text", func() {
 		actualContent := "a paragraph with *some bold content*"
 		expectedDocument := &types.Document{
 			Elements: []types.DocElement{
@@ -99,8 +99,8 @@ var _ = Describe("Testing with Ginkgo", func() {
 		}
 		compare(GinkgoT(), expectedDocument, actualContent)
 	})
-	It("inline with invalid bold text1", func() {
 
+	It("inline with invalid bold text1", func() {
 		actualContent := "a paragraph with *some bold content"
 		expectedDocument := &types.Document{
 			Elements: []types.DocElement{
@@ -117,8 +117,8 @@ var _ = Describe("Testing with Ginkgo", func() {
 		}
 		compare(GinkgoT(), expectedDocument, actualContent)
 	})
-	It("inline with invalid bold text2", func() {
 
+	It("inline with invalid bold text2", func() {
 		actualContent := "a paragraph with *some bold content *"
 		expectedDocument := &types.Document{
 			Elements: []types.DocElement{
@@ -135,8 +135,8 @@ var _ = Describe("Testing with Ginkgo", func() {
 		}
 		compare(GinkgoT(), expectedDocument, actualContent)
 	})
-	It("inline with invalid bold text3", func() {
 
+	It("inline with invalid bold text3", func() {
 		actualContent := "a paragraph with * some bold content*"
 		expectedDocument := &types.Document{
 			Elements: []types.DocElement{
@@ -153,8 +153,8 @@ var _ = Describe("Testing with Ginkgo", func() {
 		}
 		compare(GinkgoT(), expectedDocument, actualContent)
 	})
-	It("italic text with3 words", func() {
 
+	It("italic text with3 words", func() {
 		actualContent := "_some italic content_"
 		expectedDocument := &types.Document{
 			Elements: []types.DocElement{
@@ -176,8 +176,8 @@ var _ = Describe("Testing with Ginkgo", func() {
 		}
 		compare(GinkgoT(), expectedDocument, actualContent)
 	})
-	It("monospace text with3 words", func() {
 
+	It("monospace text with3 words", func() {
 		actualContent := "`some monospace content`"
 		expectedDocument := &types.Document{
 			Elements: []types.DocElement{
@@ -199,8 +199,8 @@ var _ = Describe("Testing with Ginkgo", func() {
 		}
 		compare(GinkgoT(), expectedDocument, actualContent)
 	})
-	It("italic text within bold text", func() {
 
+	It("italic text within bold text", func() {
 		actualContent := "some *bold and _italic content_ together*."
 		expectedDocument := &types.Document{
 			Elements: []types.DocElement{
@@ -231,8 +231,8 @@ var _ = Describe("Testing with Ginkgo", func() {
 		}
 		compare(GinkgoT(), expectedDocument, actualContent)
 	})
-	It("invalid italic text within bold text", func() {
 
+	It("invalid italic text within bold text", func() {
 		actualContent := "some *bold and _italic content _ together*."
 		expectedDocument := &types.Document{
 			Elements: []types.DocElement{
@@ -256,8 +256,8 @@ var _ = Describe("Testing with Ginkgo", func() {
 		}
 		compare(GinkgoT(), expectedDocument, actualContent)
 	})
-	It("italic text within invalid bold text", func() {
 
+	It("italic text within invalid bold text", func() {
 		actualContent := "some *bold and _italic content_ together *."
 		expectedDocument := &types.Document{
 			Elements: []types.DocElement{
@@ -281,8 +281,8 @@ var _ = Describe("Testing with Ginkgo", func() {
 		}
 		compare(GinkgoT(), expectedDocument, actualContent)
 	})
-	It("bold text within italic text", func() {
 
+	It("bold text within italic text", func() {
 		actualContent := "_some *bold* content_"
 		expectedDocument := &types.Document{
 			Elements: []types.DocElement{
@@ -311,8 +311,8 @@ var _ = Describe("Testing with Ginkgo", func() {
 		}
 		compare(GinkgoT(), expectedDocument, actualContent)
 	})
-	It("monospace text within bold text within italic quote", func() {
 
+	It("monospace text within bold text within italic quote", func() {
 		actualContent := "*some _italic and `monospaced content`_*"
 		expectedDocument := &types.Document{
 			Elements: []types.DocElement{
@@ -346,8 +346,8 @@ var _ = Describe("Testing with Ginkgo", func() {
 		}
 		compare(GinkgoT(), expectedDocument, actualContent)
 	})
-	It("italic text within italic text", func() {
 
+	It("italic text within italic text", func() {
 		actualContent := "_some _very italic_ content_"
 		expectedDocument := &types.Document{
 			Elements: []types.DocElement{
@@ -376,31 +376,29 @@ var _ = Describe("Testing with Ginkgo", func() {
 		}
 		compare(GinkgoT(), expectedDocument, actualContent)
 	})
+
+	// It("all supported quotes", func() {
+	// 	actualContent := "*bold phrase* & **char**acter**s**\n" +
+	// 		"_italic phrase_ & __char__acter__s__\n" +
+	// 		"*_bold italic phrase_* & **__char__**acter**__s__**\n" +
+	// 		"`monospace phrase` & ``char``acter``s``\n" +
+	// 		"`*monospace bold phrase*` & ``**char**``acter``**s**``\n" +
+	// 		"`_monospace italic phrase_` & ``__char__``acter``__s__``\n" +
+	// 		"`*_monospace bold italic phrase_*` & \n" +
+	// 		"``**__char__**``acter``**__s__**``"
+	// 	expectedDocument := &types.Document{
+	// 		Elements: []types.DocElement{
+	// 			&types.Paragraph{
+	// 				Lines: []*types.InlineContent{
+	// 					&types.InlineContent{
+	// 						Elements: []types.DocElement{
+	// 							&types.StringElement{Content: "a paragraph with * some bold content*"},
+	// 						},
+	// 					},
+	// 				},
+	// 			},
+	// 		},
+	// 	}
+	// 	compare(GinkgoT(), expectedDocument, actualContent)
+	// })
 })
-
-func xTestAllQuotes(t GinkgoTInterface) {
-
-	actualContent := "*bold phrase* & **char**acter**s**\n" +
-		"_italic phrase_ & __char__acter__s__\n" +
-		"*_bold italic phrase_* & **__char__**acter**__s__**\n" +
-		"`monospace phrase` & ``char``acter``s``\n" +
-		"`*monospace bold phrase*` & ``**char**``acter``**s**``\n" +
-		"`_monospace italic phrase_` & ``__char__``acter``__s__``\n" +
-		"`*_monospace bold italic phrase_*` & \n" +
-		"``**__char__**``acter``**__s__**``"
-	expectedDocument := &types.Document{
-		Elements: []types.DocElement{
-			&types.Paragraph{
-				Lines: []*types.InlineContent{
-					&types.InlineContent{
-						Elements: []types.DocElement{
-							&types.StringElement{Content: "a paragraph with * some bold content*"},
-						},
-					},
-				},
-			},
-		},
-	}
-	compare(t, expectedDocument, actualContent)
-
-}

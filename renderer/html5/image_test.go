@@ -2,7 +2,7 @@ package html5_test
 
 import . "github.com/onsi/ginkgo"
 
-var _ = Describe("render block images", func() {
+var _ = Describe("Rendering Block Images", func() {
 	It("image alone", func() {
 
 		content := "image::foo.png[]"

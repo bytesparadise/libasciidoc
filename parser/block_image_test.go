@@ -5,9 +5,9 @@ import (
 	. "github.com/onsi/ginkgo"
 )
 
-var _ = Describe("Testing with Ginkgo", func() {
-	It("block image with empty alt", func() {
+var _ = Describe("Parsing Block Images", func() {
 
+	It("block image with empty alt", func() {
 		actualContent := "image::images/foo.png[]"
 		expectedDocument := &types.Document{
 			Elements: []types.DocElement{
@@ -21,8 +21,8 @@ var _ = Describe("Testing with Ginkgo", func() {
 		}
 		compare(GinkgoT(), expectedDocument, actualContent)
 	})
-	It("block image with alt", func() {
 
+	It("block image with alt", func() {
 		actualContent := "image::images/foo.png[the foo.png image]"
 		expectedDocument := &types.Document{
 			Elements: []types.DocElement{
@@ -36,8 +36,8 @@ var _ = Describe("Testing with Ginkgo", func() {
 		}
 		compare(GinkgoT(), expectedDocument, actualContent)
 	})
-	It("block image with dimensions and i d link title meta", func() {
 
+	It("block image with dimensions and i d link title meta", func() {
 		actualContent := "[#img-foobar]\n" +
 			".A title to foobar\n" +
 			"[link=http://foo.bar]\n" +
@@ -61,8 +61,8 @@ var _ = Describe("Testing with Ginkgo", func() {
 		}
 		compare(GinkgoT(), expectedDocument, actualContent)
 	})
-	It("block image appending inline content", func() {
 
+	It("block image appending inline content", func() {
 		actualContent := "a paragraph\nimage::images/foo.png[]"
 		expectedDocument := &types.Document{
 			Elements: []types.DocElement{

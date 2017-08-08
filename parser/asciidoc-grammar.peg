@@ -13,7 +13,7 @@ Document <- lines:Line* EOF {
 	return types.NewDocument(lines.([]interface{}))
 }
 
-Line <- Heading / ListItem / BlockImage / DelimitedBlock / MetadataElement / Paragraph / BlankLine
+Line <- Heading / List / BlockImage / DelimitedBlock / MetadataElement / Paragraph / BlankLine
 
 // ------------------------------------------
 // Headings
@@ -23,16 +23,21 @@ Heading <- metadata:(MetadataElement)* level:("="+) WS+ content:InlineContent {
 }
 
 // ------------------------------------------
-// List Type
+// List Items
 // ------------------------------------------
-//TODO: Blank lines are required before and after a list
-//TODO: Additionally, blank lines are permitted, but not required, between list items.
-ListItem <- WS* ('*' / '-') WS+ content:(InlineContent) {
-    return types.NewListItem(content.(*types.InlineContent))
+List <- metadata:(MetadataElement)* elements:(ListItem BlankLine?)+ (BlankLine / EOF) {
+    return types.NewList(elements.([]interface{}), metadata.([]interface{}))
 }
 
+ListItem <- WS* level:('*'+ / '-') WS+ content:(ListItemContent) {
+    return types.NewListItem(level, content.(*types.ListItemContent), nil)
+}
+
+ListItemContent <- lines:(!(WS* ('*'+ / '-') WS+) InlineContent)+ {
+    return types.NewListItemContent(c.text, lines.([]interface{}))
+} 
 // ------------------------------------------
-// Paragraph Type
+// Paragraphs
 // ------------------------------------------
 // a paragraph is a group of line ending with a blank line (or end of file)
 Paragraph <- lines:(InlineContent)+ (BlankLine/EOF) {
@@ -44,7 +49,7 @@ InlineContent <- !NEWLINE elements:(QuotedText / ExternalLink / Word / WS)+ EOL 
 } 
 
 // ------------------------------------------
-// Quote Types (bold, italic and monospace)
+// Quote Texts (bold, italic and monospace)
 // ------------------------------------------
 QuotedText <- BoldText / ItalicText / MonospaceText
 
@@ -68,7 +73,7 @@ QuotedTextContentWord <- (!NEWLINE !WS !'*' !'_' !'`' .)+ // cannot have '*', '_
 InvalidQuotedTextContentWord <- (!NEWLINE !WS  .)+ // can have '*', '_' or '`' within, maybe because the user made an error (extra or missing space, for example)
 
 // ------------------------------------------
-// Link Type
+// Links
 // ------------------------------------------
 ExternalLink <- url:(URL_SCHEME URL) text:('[' (URL_TEXT)* ']')? {
     if text != nil {
@@ -78,7 +83,7 @@ ExternalLink <- url:(URL_SCHEME URL) text:('[' (URL_TEXT)* ']')? {
 }
 
 // ------------------------------------------
-// Image Type
+// Images
 // ------------------------------------------
 BlockImage <- metadata:(MetadataElement)* image:BlockImageMacro {
     // here we can ignore the blank line in the returned element
@@ -94,7 +99,7 @@ BlockImageMacro <- "image::" path:(URL) '[' attributes:(URL_TEXT?) ']' EOL {
 }
 
 // ------------------------------------------
-// Delimited Block Types
+// Delimited Blocks
 // ------------------------------------------
 
 DelimitedBlock <- SourceBlock
@@ -108,7 +113,7 @@ SourceBlockDelimiter <- "```"
 SourceBlockLine <- (!EOL .)* NEWLINE
 
 // ------------------------------------------
-// Meta Element Types
+// Meta Elements
 // ------------------------------------------
 MetadataElement <- meta:(ElementLink / ElementID / ElementTitle) 
 
@@ -134,6 +139,10 @@ Word <- (!NEWLINE !WS .)+ {
     return string(c.text), nil
 }
 
+BlankLine <- NEWLINE {
+    return types.NewBlankLine()
+}
+
 URL <- (!NEWLINE !WS !'[' !']' .)+ {
     return string(c.text), nil
 }
@@ -146,16 +155,16 @@ URL_TEXT <- (!NEWLINE !'[' !']' .)+ {
     return string(c.text), nil
 }
 
-
-BlankLine <- NEWLINE {
-    return types.NewBlankLine()
-}
-
 URL_SCHEME <- "http://" / "https://" / "ftp://" / "irc://" / "mailto:"
+
 DIGIT    <- [0-9]
+
 NEWLINE  <- "\r\n" / '\r' / '\n'
+
 WS       <- ' ' / '\t' {
         return string(c.text), nil
 }
+
 EOF      <- !.
+
 EOL      <- NEWLINE / EOF

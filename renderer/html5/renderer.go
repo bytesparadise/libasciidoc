@@ -26,6 +26,8 @@ func renderElement(ctx context.Context, element types.DocElement) ([]byte, error
 	switch element.(type) {
 	case *types.Heading:
 		return renderHeading(ctx, *element.(*types.Heading))
+	case *types.List:
+		return renderList(ctx, *element.(*types.List))
 	case *types.Paragraph:
 		return renderParagraph(ctx, *element.(*types.Paragraph))
 	case *types.QuotedText:
