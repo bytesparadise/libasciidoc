@@ -44,6 +44,10 @@ type Document struct {
 
 //NewDocument initializes a new `Document` from the given lines
 func NewDocument(lines []interface{}) (*Document, error) {
+	log.Debugf("Initializing a new Document with %d line(s)", len(lines))
+	for i, line := range lines {
+		log.Debugf("Line #%d: %v", i, reflect.TypeOf(line))
+	}
 	elements := make([]DocElement, len(lines))
 	for i := range lines {
 		elements[i] = lines[i].(DocElement)
@@ -61,6 +65,32 @@ func (d *Document) String() string {
 	return result
 }
 
+// ------------------------------------------
+// DocumentLine
+// ------------------------------------------
+
+// //NewDocumentLine returns the
+// func NewDocumentLine(content interface{}) (*DocElement, error) {
+// 	log.Debugf("Initializing a new Document with %d line(s)", len(lines))
+// 	for i, line := range lines {
+// 		log.Debugf("Line #%d: %v", i, reflect.TypeOf(line))
+// 	}
+// 	elements := make([]DocElement, len(lines))
+// 	for i := range lines {
+// 		elements[i] = lines[i].(DocElement)
+// 	}
+// 	return &Document{Elements: elements}, nil
+// }
+
+// //String implements the DocElement#String() method
+// func (d *Document) String() string {
+// 	// todo : use a bufferwriter
+// 	result := ""
+// 	for i := range d.Elements {
+// 		result = result + "\n" + d.Elements[i].String()
+// 	}
+// 	return result
+// }
 // ------------------------------------------
 // Heading
 // ------------------------------------------
@@ -88,7 +118,7 @@ func NewHeading(level interface{}, inlineContent *InlineContent, metadata []inte
 		id, _ = NewElementID(v.NormalizedContent())
 	}
 	heading := Heading{Level: actualLevel, Content: inlineContent, ID: id}
-	log.Debugf("Initializing a ewHeading: %v", heading)
+	log.Debugf("Initialized a new Heading: %v", heading)
 	return &heading, nil
 }
 
@@ -171,6 +201,7 @@ func NewList(elements []interface{}, metadata []interface{}) (*List, error) {
 			}
 		}
 	}
+	log.Debugf("Initialized a new List with %d item(s)", len(items))
 	return &List{
 		ID:    id,
 		Items: items,
@@ -239,8 +270,10 @@ func (i ListItem) String() string {
 // StringWithIndent same as String() but with a specified number of spaces at the beginning of the line, to produce a given level of indentation
 func (i ListItem) StringWithIndent(indentLevel int) string {
 	result := fmt.Sprintf("%s<%v|level=%d> %s", strings.Repeat(" ", indentLevel), reflect.TypeOf(i), i.Level, i.Content.String())
-	for _, c := range i.Children.Items {
-		result = result + "\n\t" + c.StringWithIndent(indentLevel+1)
+	if i.Children != nil {
+		for _, c := range i.Children.Items {
+			result = result + "\n\t" + c.StringWithIndent(indentLevel+1)
+		}
 	}
 	return result
 }
@@ -841,6 +874,7 @@ type BlankLine struct {
 
 //NewBlankLine initializes a new `BlankLine`
 func NewBlankLine() (*BlankLine, error) {
+	log.Debug("Initializing a new BlankLine")
 	return &BlankLine{}, nil
 }
 

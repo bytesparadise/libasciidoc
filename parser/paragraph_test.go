@@ -7,7 +7,7 @@ import (
 
 var _ = Describe("Parsing Paragraphs", func() {
 
-	It("inline1 word", func() {
+	It("inline 1 word", func() {
 		actualContent := "hello"
 		expectedDocument := &types.Document{
 			Elements: []types.DocElement{
@@ -22,7 +22,7 @@ var _ = Describe("Parsing Paragraphs", func() {
 				},
 			},
 		}
-		compare(GinkgoT(), expectedDocument, actualContent)
+		verify(GinkgoT(), expectedDocument, actualContent)
 	})
 
 	It("inline simple", func() {
@@ -40,6 +40,6 @@ var _ = Describe("Parsing Paragraphs", func() {
 				},
 			},
 		}
-		compare(GinkgoT(), expectedDocument, actualContent)
+		verify(GinkgoT(), expectedDocument, actualContent)
 	})
 })

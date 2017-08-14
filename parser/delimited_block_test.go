@@ -18,7 +18,7 @@ var _ = Describe("Parsing Delimited Blocks", func() {
 				},
 			},
 		}
-		compare(GinkgoT(), expectedDocument, actualContent)
+		verify(GinkgoT(), expectedDocument, actualContent)
 	})
 
 	It("delimited source block with multiple lines", func() {
@@ -32,7 +32,7 @@ var _ = Describe("Parsing Delimited Blocks", func() {
 				},
 			},
 		}
-		compare(GinkgoT(), expectedDocument, actualContent)
+		verify(GinkgoT(), expectedDocument, actualContent)
 	})
 
 	It("delimited source block with no line", func() {
@@ -46,6 +46,6 @@ var _ = Describe("Parsing Delimited Blocks", func() {
 				},
 			},
 		}
-		compare(GinkgoT(), expectedDocument, actualContent)
+		verify(GinkgoT(), expectedDocument, actualContent)
 	})
 })

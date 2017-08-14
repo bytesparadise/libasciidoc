@@ -27,7 +27,7 @@ var _ = Describe("Parsing Quoted Texts", func() {
 				},
 			},
 		}
-		compare(GinkgoT(), expectedDocument, actualContent)
+		verify(GinkgoT(), expectedDocument, actualContent)
 	})
 
 	It("bold text of 2 words", func() {
@@ -50,7 +50,7 @@ var _ = Describe("Parsing Quoted Texts", func() {
 				},
 			},
 		}
-		compare(GinkgoT(), expectedDocument, actualContent)
+		verify(GinkgoT(), expectedDocument, actualContent)
 	})
 
 	It("bold text of 3 words", func() {
@@ -73,7 +73,7 @@ var _ = Describe("Parsing Quoted Texts", func() {
 				},
 			},
 		}
-		compare(GinkgoT(), expectedDocument, actualContent)
+		verify(GinkgoT(), expectedDocument, actualContent)
 	})
 
 	It("inline with bold text", func() {
@@ -97,7 +97,7 @@ var _ = Describe("Parsing Quoted Texts", func() {
 				},
 			},
 		}
-		compare(GinkgoT(), expectedDocument, actualContent)
+		verify(GinkgoT(), expectedDocument, actualContent)
 	})
 
 	It("inline with invalid bold text1", func() {
@@ -115,7 +115,7 @@ var _ = Describe("Parsing Quoted Texts", func() {
 				},
 			},
 		}
-		compare(GinkgoT(), expectedDocument, actualContent)
+		verify(GinkgoT(), expectedDocument, actualContent)
 	})
 
 	It("inline with invalid bold text2", func() {
@@ -133,7 +133,7 @@ var _ = Describe("Parsing Quoted Texts", func() {
 				},
 			},
 		}
-		compare(GinkgoT(), expectedDocument, actualContent)
+		verify(GinkgoT(), expectedDocument, actualContent)
 	})
 
 	It("inline with invalid bold text3", func() {
@@ -151,7 +151,7 @@ var _ = Describe("Parsing Quoted Texts", func() {
 				},
 			},
 		}
-		compare(GinkgoT(), expectedDocument, actualContent)
+		verify(GinkgoT(), expectedDocument, actualContent)
 	})
 
 	It("italic text with3 words", func() {
@@ -174,7 +174,7 @@ var _ = Describe("Parsing Quoted Texts", func() {
 				},
 			},
 		}
-		compare(GinkgoT(), expectedDocument, actualContent)
+		verify(GinkgoT(), expectedDocument, actualContent)
 	})
 
 	It("monospace text with3 words", func() {
@@ -197,7 +197,7 @@ var _ = Describe("Parsing Quoted Texts", func() {
 				},
 			},
 		}
-		compare(GinkgoT(), expectedDocument, actualContent)
+		verify(GinkgoT(), expectedDocument, actualContent)
 	})
 
 	It("italic text within bold text", func() {
@@ -229,7 +229,7 @@ var _ = Describe("Parsing Quoted Texts", func() {
 				},
 			},
 		}
-		compare(GinkgoT(), expectedDocument, actualContent)
+		verify(GinkgoT(), expectedDocument, actualContent)
 	})
 
 	It("invalid italic text within bold text", func() {
@@ -254,7 +254,7 @@ var _ = Describe("Parsing Quoted Texts", func() {
 				},
 			},
 		}
-		compare(GinkgoT(), expectedDocument, actualContent)
+		verify(GinkgoT(), expectedDocument, actualContent)
 	})
 
 	It("italic text within invalid bold text", func() {
@@ -279,7 +279,7 @@ var _ = Describe("Parsing Quoted Texts", func() {
 				},
 			},
 		}
-		compare(GinkgoT(), expectedDocument, actualContent)
+		verify(GinkgoT(), expectedDocument, actualContent)
 	})
 
 	It("bold text within italic text", func() {
@@ -309,7 +309,7 @@ var _ = Describe("Parsing Quoted Texts", func() {
 				},
 			},
 		}
-		compare(GinkgoT(), expectedDocument, actualContent)
+		verify(GinkgoT(), expectedDocument, actualContent)
 	})
 
 	It("monospace text within bold text within italic quote", func() {
@@ -344,7 +344,7 @@ var _ = Describe("Parsing Quoted Texts", func() {
 				},
 			},
 		}
-		compare(GinkgoT(), expectedDocument, actualContent)
+		verify(GinkgoT(), expectedDocument, actualContent)
 	})
 
 	It("italic text within italic text", func() {
@@ -374,7 +374,7 @@ var _ = Describe("Parsing Quoted Texts", func() {
 				},
 			},
 		}
-		compare(GinkgoT(), expectedDocument, actualContent)
+		verify(GinkgoT(), expectedDocument, actualContent)
 	})
 
 	// It("all supported quotes", func() {
@@ -399,6 +399,6 @@ var _ = Describe("Parsing Quoted Texts", func() {
 	// 			},
 	// 		},
 	// 	}
-	// 	compare(GinkgoT(), expectedDocument, actualContent)
+	// 	verify(GinkgoT(), expectedDocument, actualContent)
 	// })
 })

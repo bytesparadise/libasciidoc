@@ -23,7 +23,7 @@ var _ = Describe("Parsing Headings", func() {
 					},
 				},
 			}}
-		compare(GinkgoT(), expectedDocument, actualContent)
+		verify(GinkgoT(), expectedDocument, actualContent)
 	})
 
 	It("heading invalid1", func() {
@@ -40,7 +40,7 @@ var _ = Describe("Parsing Headings", func() {
 					},
 				},
 			}}
-		compare(GinkgoT(), expectedDocument, actualContent)
+		verify(GinkgoT(), expectedDocument, actualContent)
 	})
 
 	It("heading invalid2", func() {
@@ -57,7 +57,7 @@ var _ = Describe("Parsing Headings", func() {
 					},
 				},
 			}}
-		compare(GinkgoT(), expectedDocument, actualContent)
+		verify(GinkgoT(), expectedDocument, actualContent)
 	})
 
 	It("section2", func() {
@@ -77,7 +77,7 @@ var _ = Describe("Parsing Headings", func() {
 				},
 			},
 		}
-		compare(GinkgoT(), expectedDocument, actualContent)
+		verify(GinkgoT(), expectedDocument, actualContent)
 	})
 
 	It("heading with section2", func() {
@@ -111,7 +111,7 @@ var _ = Describe("Parsing Headings", func() {
 				},
 			},
 		}
-		compare(GinkgoT(), expectedDocument, actualContent)
+		verify(GinkgoT(), expectedDocument, actualContent)
 	})
 
 	It("heading with invalid section2", func() {
@@ -142,6 +142,6 @@ var _ = Describe("Parsing Headings", func() {
 				},
 			},
 		}
-		compare(GinkgoT(), expectedDocument, actualContent)
+		verify(GinkgoT(), expectedDocument, actualContent)
 	})
 })

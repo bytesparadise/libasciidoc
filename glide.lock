@@ -1,12 +1,12 @@
 hash: 663f7ee6d2093012d467bf7b7f2967d1fdda8ed7165a10a5ba785b9cd7d36b1a
-updated: 2017-07-10T12:38:51.139672541+02:00
+updated: 2017-08-10T10:34:55.467681795+02:00
 imports:
 - name: github.com/go-test/deep
   version: f49763a6ea0a91026be26f8213bebee726b4185f
 - name: github.com/mna/pigeon
-  version: 75583d30cd22f0c85c842a127f7b6b148b22a2dc
+  version: 7397997f31ddb24949618f11bab1588199703721
 - name: github.com/onsi/ginkgo
-  version: 77a8c1e5c40d6bb6c5eb4dd4bdce9763564f6298
+  version: 9eda700730cba42af70d53180f9dcce9266bc2bc
   subpackages:
   - config
   - internal/codelocation
@@ -26,7 +26,7 @@ imports:
   - reporters/stenographer/support/go-isatty
   - types
 - name: github.com/onsi/gomega
-  version: 334b8f472b3af5d541c5642701c1e29e2126f486
+  version: c893efa28eb45626cdaa76c9f653b62488858837
   subpackages:
   - format
   - internal/assertion
@@ -42,7 +42,7 @@ imports:
 - name: github.com/pkg/errors
   version: 645ef00459ed84a119197bfb8d8205042c6df63d
 - name: github.com/sirupsen/logrus
-  version: 202f25545ea4cf9b191ff7f846df5d87c9382c2b
+  version: a3f95b5c423586578a4e099b11a46c2479628cac
   repo: https://github.com/sirupsen/logrus.git
   vcs: git
 - name: github.com/stretchr/testify
@@ -57,6 +57,21 @@ imports:
 - name: golang.org/x/text
   version: 47a200a05c8b3fd1b698571caecbb68beb2611ec
   subpackages:
+  - encoding
+  - encoding/charmap
+  - encoding/htmlindex
+  - encoding/internal
+  - encoding/internal/identifier
+  - encoding/japanese
+  - encoding/korean
+  - encoding/simplifiedchinese
+  - encoding/traditionalchinese
+  - encoding/unicode
+  - internal/tag
+  - internal/utf8internal
+  - language
+  - runes
+  - transform
   - unicode
 testImports:
 - name: github.com/davecgh/go-spew
@@ -67,5 +82,11 @@ testImports:
   version: d8ed2627bdf02c080bf22230dbb337003b7aba2d
   subpackages:
   - difflib
+- name: golang.org/x/net
+  version: b1a2d6e8c8b5fc8f601ead62536f02a8e1b6217d
+  subpackages:
+  - html
+  - html/atom
+  - html/charset
 - name: gopkg.in/yaml.v2
   version: a5b47d31c556af34a302ce5d659e6fea44d90de0

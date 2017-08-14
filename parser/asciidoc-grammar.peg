@@ -4,7 +4,7 @@ package parser
 import "github.com/bytesparadise/libasciidoc/types"
 
 // *****************************************************************************************
-// This file is generated after its sibling `asciidoc-grammar.peg` file. DO NOT MOIDIFY !
+// This file is generated after its sibling `asciidoc-grammar.peg` file. DO NOT MODIFY !
 // *****************************************************************************************
 
 }
@@ -13,7 +13,9 @@ Document <- lines:Line* EOF {
 	return types.NewDocument(lines.([]interface{}))
 }
 
-Line <- Heading / List / BlockImage / DelimitedBlock / MetadataElement / Paragraph / BlankLine
+Line <- !EOF content:(Heading / List / BlockImage / DelimitedBlock / MetadataElement / Paragraph / BlankLine) {
+    return content.(types.DocElement), nil
+}
 
 // ------------------------------------------
 // Headings
@@ -25,7 +27,9 @@ Heading <- metadata:(MetadataElement)* level:("="+) WS+ content:InlineContent {
 // ------------------------------------------
 // List Items
 // ------------------------------------------
-List <- metadata:(MetadataElement)* elements:(ListItem BlankLine?)+ (BlankLine / EOF) {
+List <- metadata:(MetadataElement)* 
+    // list items can be followed by an optional, single blank line
+    elements:(ListItem BlankLine?)+ {
     return types.NewList(elements.([]interface{}), metadata.([]interface{}))
 }
 
@@ -40,11 +44,13 @@ ListItemContent <- lines:(!(WS* ('*'+ / '-') WS+) InlineContent)+ {
 // Paragraphs
 // ------------------------------------------
 // a paragraph is a group of line ending with a blank line (or end of file)
-Paragraph <- lines:(InlineContent)+ (BlankLine/EOF) {
+Paragraph <- lines:(InlineContent)+ {
     return types.NewParagraph(c.text, lines.([]interface{}))
 } 
 
-InlineContent <- !NEWLINE elements:(QuotedText / ExternalLink / Word / WS)+ EOL {
+// an inline content element may begin and end with spaces, 
+// but it must contain at least a quoted text, an external link or a word
+InlineContent <- elements:(WS* (QuotedText / ExternalLink / Word) WS*)+ EOL {
     return types.NewInlineContent(c.text, elements.([]interface{}))
 } 
 
@@ -85,12 +91,12 @@ ExternalLink <- url:(URL_SCHEME URL) text:('[' (URL_TEXT)* ']')? {
 // ------------------------------------------
 // Images
 // ------------------------------------------
-BlockImage <- metadata:(MetadataElement)* image:BlockImageMacro {
+BlockImage <- metadata:(MetadataElement)* image:BlockImageMacro  WS* EOL {
     // here we can ignore the blank line in the returned element
     return types.NewBlockImage(c.text, *image.(*types.BlockImageMacro), metadata.([]interface{}))
 }
 
-BlockImageMacro <- "image::" path:(URL) '[' attributes:(URL_TEXT?) ']' EOL {
+BlockImageMacro <- "image::" path:(URL) '[' attributes:(URL_TEXT?) ']' {
     if attributes != nil {
         attrs := attributes.(string)
         return types.NewBlockImageMacro(c.text, path.(string), &attrs)
@@ -139,7 +145,7 @@ Word <- (!NEWLINE !WS .)+ {
     return string(c.text), nil
 }
 
-BlankLine <- NEWLINE {
+BlankLine <- WS* EOL {
     return types.NewBlankLine()
 }
 

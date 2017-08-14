@@ -25,7 +25,7 @@ var _ = Describe("Parsing External Links", func() {
 				},
 			},
 		}
-		compare(GinkgoT(), expectedDocument, actualContent)
+		verify(GinkgoT(), expectedDocument, actualContent)
 	})
 
 	It("external link with empty text", func() {
@@ -47,7 +47,7 @@ var _ = Describe("Parsing External Links", func() {
 				},
 			},
 		}
-		compare(GinkgoT(), expectedDocument, actualContent)
+		verify(GinkgoT(), expectedDocument, actualContent)
 	})
 
 	It("external link with text", func() {
@@ -69,6 +69,6 @@ var _ = Describe("Parsing External Links", func() {
 				},
 			},
 		}
-		compare(GinkgoT(), expectedDocument, actualContent)
+		verify(GinkgoT(), expectedDocument, actualContent)
 	})
 })
