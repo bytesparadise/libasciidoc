@@ -30,7 +30,7 @@ var _ = Describe("Parsing Unordered List Items", func() {
 					},
 				},
 			}
-			compare(GinkgoT(), expectedDocument, actualContent)
+			verify(GinkgoT(), expectedDocument, actualContent)
 		})
 		It("1 list with an ID and a single item", func() {
 			actualContent := "[#listID]\n" +
@@ -56,7 +56,7 @@ var _ = Describe("Parsing Unordered List Items", func() {
 					},
 				},
 			}
-			compare(GinkgoT(), expectedDocument, actualContent)
+			verify(GinkgoT(), expectedDocument, actualContent)
 		})
 
 		It("1 list with 2 items with stars", func() {
@@ -99,7 +99,7 @@ var _ = Describe("Parsing Unordered List Items", func() {
 					},
 				},
 			}
-			compare(GinkgoT(), expectedDocument, actualContent)
+			verify(GinkgoT(), expectedDocument, actualContent)
 		})
 		It("1 list with 2 items with carets", func() {
 			actualContent := "- a first item\n" +
@@ -141,9 +141,10 @@ var _ = Describe("Parsing Unordered List Items", func() {
 					},
 				},
 			}
-			compare(GinkgoT(), expectedDocument, actualContent)
+			verify(GinkgoT(), expectedDocument, actualContent)
 		})
 		It("1 list with 2 items with empty line in-between", func() {
+			// fist line after list item is swallowed
 			actualContent := "* a first item\n" +
 				"\n" +
 				"* a second item with *bold content*"
@@ -184,7 +185,7 @@ var _ = Describe("Parsing Unordered List Items", func() {
 					},
 				},
 			}
-			compare(GinkgoT(), expectedDocument, actualContent)
+			verify(GinkgoT(), expectedDocument, actualContent)
 		})
 		It("1 list with 2 items on multiple lines", func() {
 			actualContent := "* item 1\n" +
@@ -233,9 +234,10 @@ var _ = Describe("Parsing Unordered List Items", func() {
 					},
 				},
 			}
-			compare(GinkgoT(), expectedDocument, actualContent)
+			verify(GinkgoT(), expectedDocument, actualContent)
 		})
-		It("2 lists with 2 empty line in-between", func() {
+		It("2 lists with 2 empty lines in-between", func() {
+			// the first blank lines after the first list is swallowed (for the list item)
 			actualContent := "* an item in the first list\n" +
 				"\n" +
 				"\n" +
@@ -258,6 +260,7 @@ var _ = Describe("Parsing Unordered List Items", func() {
 							},
 						},
 					},
+					&types.BlankLine{},
 					&types.List{
 						Items: []*types.ListItem{
 							&types.ListItem{
@@ -276,7 +279,7 @@ var _ = Describe("Parsing Unordered List Items", func() {
 					},
 				},
 			}
-			compare(GinkgoT(), expectedDocument, actualContent)
+			verify(GinkgoT(), expectedDocument, actualContent)
 		})
 
 	})
@@ -408,7 +411,7 @@ var _ = Describe("Parsing Unordered List Items", func() {
 					},
 				},
 			}
-			compare(GinkgoT(), expectedDocument, actualContent)
+			verify(GinkgoT(), expectedDocument, actualContent)
 		})
 
 	})
@@ -496,7 +499,7 @@ var _ = Describe("Parsing Unordered List Items", func() {
 					},
 				},
 			}
-			compare(GinkgoT(), expectedDocument, actualContent)
+			verify(GinkgoT(), expectedDocument, actualContent)
 		})
 
 		It("invalid list item", func() {
@@ -514,7 +517,7 @@ var _ = Describe("Parsing Unordered List Items", func() {
 					},
 				},
 			}
-			compare(GinkgoT(), expectedDocument, actualContent)
+			verify(GinkgoT(), expectedDocument, actualContent)
 		})
 	})
 

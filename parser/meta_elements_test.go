@@ -14,7 +14,7 @@ var _ = Describe("Parsing Meta Elements", func() {
 				&types.ElementLink{Path: "http://foo.bar"},
 			},
 		}
-		compare(GinkgoT(), expectedDocument, actualContent)
+		verify(GinkgoT(), expectedDocument, actualContent)
 	})
 
 	It("element link with spaces", func() {
@@ -24,7 +24,7 @@ var _ = Describe("Parsing Meta Elements", func() {
 				&types.ElementLink{Path: "http://foo.bar"},
 			},
 		}
-		compare(GinkgoT(), expectedDocument, actualContent)
+		verify(GinkgoT(), expectedDocument, actualContent)
 	})
 
 	It("element link invalid", func() {
@@ -43,7 +43,7 @@ var _ = Describe("Parsing Meta Elements", func() {
 				},
 			},
 		}
-		compare(GinkgoT(), expectedDocument, actualContent)
+		verify(GinkgoT(), expectedDocument, actualContent)
 	})
 
 	It("element id", func() {
@@ -53,7 +53,7 @@ var _ = Describe("Parsing Meta Elements", func() {
 				&types.ElementID{Value: "img-foobar"},
 			},
 		}
-		compare(GinkgoT(), expectedDocument, actualContent)
+		verify(GinkgoT(), expectedDocument, actualContent)
 	})
 
 	It("element id with spaces", func() {
@@ -63,7 +63,7 @@ var _ = Describe("Parsing Meta Elements", func() {
 				&types.ElementID{Value: "img-foobar"},
 			},
 		}
-		compare(GinkgoT(), expectedDocument, actualContent)
+		verify(GinkgoT(), expectedDocument, actualContent)
 	})
 
 	It("element id invalid", func() {
@@ -77,7 +77,7 @@ var _ = Describe("Parsing Meta Elements", func() {
 				},
 			},
 		}
-		compare(GinkgoT(), expectedDocument, actualContent)
+		verify(GinkgoT(), expectedDocument, actualContent)
 	})
 
 	It("element title", func() {
@@ -87,7 +87,7 @@ var _ = Describe("Parsing Meta Elements", func() {
 				&types.ElementTitle{Content: "a title"},
 			},
 		}
-		compare(GinkgoT(), expectedDocument, actualContent)
+		verify(GinkgoT(), expectedDocument, actualContent)
 	})
 
 	It("element title invalid1", func() {
@@ -101,7 +101,7 @@ var _ = Describe("Parsing Meta Elements", func() {
 				},
 			},
 		}
-		compare(GinkgoT(), expectedDocument, actualContent)
+		verify(GinkgoT(), expectedDocument, actualContent)
 	})
 
 	It("element title invalid2", func() {
@@ -115,6 +115,6 @@ var _ = Describe("Parsing Meta Elements", func() {
 				},
 			},
 		}
-		compare(GinkgoT(), expectedDocument, actualContent)
+		verify(GinkgoT(), expectedDocument, actualContent)
 	})
 })

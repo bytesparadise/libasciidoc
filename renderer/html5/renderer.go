@@ -40,6 +40,9 @@ func renderElement(ctx context.Context, element types.DocElement) ([]byte, error
 		return renderInlineContent(ctx, *element.(*types.InlineContent))
 	case *types.StringElement:
 		return renderStringElement(ctx, *element.(*types.StringElement))
+	case *types.BlankLine:
+		// blank lines are ignored
+		return make([]byte, 0), nil
 	default:
 		return nil, errors.Errorf("unsupported element type: %v", reflect.TypeOf(element))
 	}

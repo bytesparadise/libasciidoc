@@ -16,7 +16,7 @@ func init() {
 	log.SetFormatter(customFormatter)
 	if debugMode() {
 		log.SetLevel(log.DebugLevel)
-		log.Warn("Running test with logs in debug-level")
+		log.Warn("Running test with logs in DEBUG level")
 	}
 	log.SetFormatter(&log.TextFormatter{FullTimestamp: false})
 }

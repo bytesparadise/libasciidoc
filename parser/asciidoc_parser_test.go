@@ -1,6 +1,7 @@
 package parser_test
 
 import (
+	"reflect"
 	"strings"
 
 	. "github.com/bytesparadise/libasciidoc/parser"
@@ -62,12 +63,12 @@ var _ = Describe("Parsing content", func() {
 				},
 			},
 		}
-		compare(GinkgoT(), expectedDocument, actualContent)
+		verify(GinkgoT(), expectedDocument, actualContent)
 	})
 
 })
 
-func compare(t GinkgoTInterface, expectedDocument *types.Document, content string) {
+func verify(t GinkgoTInterface, expectedDocument *types.Document, content string) {
 	log.Debugf("processing:\n%s", content)
 	reader := strings.NewReader(content)
 	result, err := ParseReader("", reader)
@@ -76,7 +77,7 @@ func compare(t GinkgoTInterface, expectedDocument *types.Document, content strin
 	}
 	require.Nil(t, err)
 	actualDocument := result.(*types.Document)
-	t.Logf("actual document: %+v", actualDocument)
+	t.Logf("actual document: %+v", reflect.TypeOf(actualDocument.Elements[0]))
 	t.Logf("expected document: %+v", expectedDocument)
 	assert.EqualValues(t, *expectedDocument, *actualDocument)
 }
