@@ -8,27 +8,74 @@ import (
 )
 
 var _ = Describe("Normalizing String", func() {
+
 	It("hello", func() {
-		verify(GinkgoT(), "hello", "hello")
+		source := &InlineContent{
+			Elements: []DocElement{
+				&StringElement{Content: "hello"},
+			},
+		}
+		verify(GinkgoT(), "_hello", source)
 	})
+
 	It("héllo with an accent", func() {
-		verify(GinkgoT(), "_héllo_1_2_and_3_spaces", " héllo 1.2   and 3 Spaces")
+		source := &InlineContent{
+			Elements: []DocElement{
+				&StringElement{Content: "  héllo 1.2   and 3 Spaces"},
+			},
+		}
+		verify(GinkgoT(), "_héllo_1_2_and_3_spaces", source)
 	})
+
 	It("a an accent and a swedish character", func() {
-		verify(GinkgoT(), `a_à`, `A à ⌘`)
+		source := &InlineContent{
+			Elements: []DocElement{
+				&StringElement{Content: `A à ⌘`},
+			},
+		}
+		verify(GinkgoT(), `_a_à`, source)
 	})
+
 	It("AŁA", func() {
-		verify(GinkgoT(), `ała_0_1`, `AŁA 0.1 ?`)
+		source := &InlineContent{
+			Elements: []DocElement{
+				&StringElement{Content: `AŁA 0.1 ?`},
+			},
+		}
+		verify(GinkgoT(), `_ała_0_1`, source)
 	})
+
 	It("it's  2 spaces, here !", func() {
-		verify(GinkgoT(), `it_s_2_spaces_here`, `it's  2 spaces, here !`)
+		source := &InlineContent{
+			Elements: []DocElement{
+				&StringElement{Content: `it's  2 spaces, here !`},
+			},
+		}
+		verify(GinkgoT(), `_it_s_2_spaces_here`, source)
+	})
+
+	It("content with <strong> markup", func() {
+		// == a section title, with *bold content*
+		source := &InlineContent{
+			Elements: []DocElement{
+				&StringElement{Content: "a section title, with"},
+				&QuotedText{
+					Kind: Bold,
+					Elements: []DocElement{
+						&StringElement{Content: "bold content"},
+					},
+				},
+			},
+		}
+		verify(GinkgoT(), `_a_section_title_with_strong_bold_content_strong`, source)
 	})
 })
 
-func verify(t GinkgoTInterface, expected, input string) {
-	t.Logf("Processing '%s'", input)
-	result, err := ReplaceNonAlphanumerics("_")(input)
+func verify(t GinkgoTInterface, expected string, inlineContent *InlineContent) {
+	t.Logf("Processing '%s'", inlineContent.String())
+	result, err := ReplaceNonAlphanumerics(inlineContent, "_")
 	require.Nil(t, err)
-	t.Logf("Normalized result: '%s'", string(result))
-	assert.Equal(t, expected, string(result))
+	t.Logf("Normalized result: '%s'", *result)
+	assert.Equal(t, expected, *result)
+
 }

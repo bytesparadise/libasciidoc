@@ -17,10 +17,7 @@ func verify(t GinkgoTInterface, expected, content string) {
 	t.Logf("processing '%s'", content)
 	reader := strings.NewReader(content)
 	doc, err := parser.ParseReader("", reader)
-	if err != nil {
-		t.Logf("Error found while parsing the document: %v", err.Error())
-	}
-	require.Nil(t, err)
+	require.Nil(t, err, "Error found while parsing the document")
 	actualDocument := doc.(*types.Document)
 	buff := bytes.NewBuffer(make([]byte, 0))
 	err = Render(context.Background(), *actualDocument, buff)

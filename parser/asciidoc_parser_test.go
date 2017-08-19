@@ -1,7 +1,6 @@
 package parser_test
 
 import (
-	"reflect"
 	"strings"
 
 	. "github.com/bytesparadise/libasciidoc/parser"
@@ -23,38 +22,44 @@ var _ = Describe("Parsing content", func() {
 			"a paragraph with *bold content*"
 		expectedDocument := &types.Document{
 			Elements: []types.DocElement{
-				&types.Heading{
-					Level: 1,
-					Content: &types.InlineContent{
-						Elements: []types.DocElement{
-							&types.StringElement{Content: "a heading"},
-						},
-					},
-					ID: &types.ElementID{
-						Value: "_a_heading",
-					},
-				},
-				&types.BlankLine{},
-				&types.Heading{
-					Level: 2,
-					Content: &types.InlineContent{
-						Elements: []types.DocElement{
-							&types.StringElement{Content: "section 1"},
-						},
-					},
-					ID: &types.ElementID{
-						Value: "_section_1",
-					},
-				},
-				&types.BlankLine{},
-				&types.Paragraph{
-					Lines: []*types.InlineContent{
-						&types.InlineContent{
+				&types.Section{
+					Heading: types.Heading{
+						Level: 1,
+						Content: &types.InlineContent{
 							Elements: []types.DocElement{
-								&types.StringElement{Content: "a paragraph with "},
-								&types.QuotedText{Kind: types.Bold,
+								&types.StringElement{Content: "a heading"},
+							},
+						},
+						ID: &types.ElementID{
+							Value: "_a_heading",
+						},
+					},
+					Elements: []types.DocElement{
+						&types.Section{
+							Heading: types.Heading{
+								Level: 2,
+								Content: &types.InlineContent{
 									Elements: []types.DocElement{
-										&types.StringElement{Content: "bold content"},
+										&types.StringElement{Content: "section 1"},
+									},
+								},
+								ID: &types.ElementID{
+									Value: "_section_1",
+								},
+							},
+							Elements: []types.DocElement{
+								&types.Paragraph{
+									Lines: []*types.InlineContent{
+										&types.InlineContent{
+											Elements: []types.DocElement{
+												&types.StringElement{Content: "a paragraph with "},
+												&types.QuotedText{Kind: types.Bold,
+													Elements: []types.DocElement{
+														&types.StringElement{Content: "bold content"},
+													},
+												},
+											},
+										},
 									},
 								},
 							},
@@ -77,7 +82,7 @@ func verify(t GinkgoTInterface, expectedDocument *types.Document, content string
 	}
 	require.Nil(t, err)
 	actualDocument := result.(*types.Document)
-	t.Logf("actual document: %+v", reflect.TypeOf(actualDocument.Elements[0]))
+	t.Logf("actual document: %+v", actualDocument)
 	t.Logf("expected document: %+v", expectedDocument)
 	assert.EqualValues(t, *expectedDocument, *actualDocument)
 }

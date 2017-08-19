@@ -9,7 +9,8 @@ var _ = Describe("Rendering Blank lines", func() {
 second paragraph`
 		expected := `<div class="paragraph">
 <p>first paragraph</p>
-</div><div class="paragraph">
+</div>
+<div class="paragraph">
 <p>second paragraph</p>
 </div>`
 		verify(GinkgoT(), expected, content)
@@ -20,7 +21,8 @@ second paragraph`
 second paragraph`
 		expected := `<div class="paragraph">
 <p>first paragraph</p>
-</div><div class="paragraph">
+</div>
+<div class="paragraph">
 <p>second paragraph</p>
 </div>`
 		verify(GinkgoT(), expected, content)

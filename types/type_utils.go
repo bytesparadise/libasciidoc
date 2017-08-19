@@ -121,17 +121,9 @@ func isMn(r rune) bool {
 	return unicode.Is(unicode.Mn, r) // Mn: nonspacing marks
 }
 
-// func ReplaceNonAlphanumerics(replacement string) NormalizationFunc {
-// 	return func(source string) ([]byte, error) {
-// 		t := transform.Chain(norm.NFD, cases.Lower(language.Und), transform.RemoveFunc(isMn), norm.NFC)
-// 		result, _, _ := transform.String(t, source)
-// 		return []byte(result), nil
-// 	}
-// }
-
 //ReplaceNonAlphanumerics replaces all non alphanumerical characters and remove (accents)
 // in the given 'source' with the given 'replacement'.
-func ReplaceNonAlphanumerics(replacement string) NormalizationFunc {
+func NewReplaceNonAlphanumericsFunc(replacement string) NormalizationFunc {
 	return func(source string) ([]byte, error) {
 		buf := bytes.NewBuffer(make([]byte, 0))
 		// _, err := buf.WriteString(replacement)
@@ -139,7 +131,7 @@ func ReplaceNonAlphanumerics(replacement string) NormalizationFunc {
 		// 	return nil, errors.Wrapf(err, "unable to normalize value")
 		// }
 		lastCharIsSpace := false
-		for _, r := range source {
+		for _, r := range strings.TrimLeft(source, " ") { // ignore heading spaces
 			if unicode.Is(unicode.Letter, r) || unicode.Is(unicode.Number, r) {
 				_, err := buf.WriteString(strings.ToLower(string(r)))
 				if err != nil {
@@ -159,9 +151,19 @@ func ReplaceNonAlphanumerics(replacement string) NormalizationFunc {
 	}
 }
 
-//ReplaceNonAlphanumericCharsVisitor a visitor that builds a string representation of the visited elements,
-// in which all non-alphanumeric characters have been replaced with a "_"
+func ReplaceNonAlphanumerics(source *InlineContent, replacement string) (*string, error) {
+	v := NewReplaceNonAlphanumericsVisitor()
+	s := *source
+	err := s.Accept(v)
+	if err != nil {
+		return nil, err
+	}
+	result := v.NormalizedContent()
+	return &result, nil
+}
 
+//ReplaceNonAlphanumericsVisitor a visitor that builds a string representation of the visited elements,
+// in which all non-alphanumeric characters have been replaced with a "_"
 type ReplaceNonAlphanumericsVisitor struct {
 	buf       bytes.Buffer
 	normalize NormalizationFunc
@@ -171,34 +173,32 @@ func NewReplaceNonAlphanumericsVisitor() *ReplaceNonAlphanumericsVisitor {
 	buf := bytes.NewBuffer(make([]byte, 0))
 	return &ReplaceNonAlphanumericsVisitor{
 		buf:       *buf,
-		normalize: ReplaceNonAlphanumerics("_"),
+		normalize: NewReplaceNonAlphanumericsFunc("_"),
 	}
 }
 
 func (v *ReplaceNonAlphanumericsVisitor) Visit(element interface{}) error {
 	switch element := element.(type) {
-	case InlineContent:
+	case *InlineContent:
 		log.Debugf("Prefixing with '_' while processing '%v'", reflect.TypeOf(element))
 		v.buf.WriteString("_")
-	case QuotedText:
-		// nothing to do at this level
-	case StringElement:
+	case *StringElement:
 		normalized, err := v.normalize(element.Content)
 		if err != nil {
 			return errors.Wrapf(err, "error while normalizing String Element")
 		}
 		v.buf.Write(normalized)
 	default:
-		return errors.Errorf("unsupported type of element to visit: %v", reflect.TypeOf(element))
+		// ignore
 	}
 	return nil
 }
 
 func (v *ReplaceNonAlphanumericsVisitor) BeforeVisit(element interface{}) error {
+	log.Debugf("Before visiting element of type '%v'...", reflect.TypeOf(element))
 	switch element := element.(type) {
-	case QuotedText:
+	case *QuotedText:
 		log.Debugf("Before visiting quoted element...")
-
 		switch element.Kind {
 		case Bold:
 			v.buf.WriteString("_strong_")
@@ -217,7 +217,7 @@ func (v *ReplaceNonAlphanumericsVisitor) BeforeVisit(element interface{}) error 
 
 func (v *ReplaceNonAlphanumericsVisitor) AfterVisit(element interface{}) error {
 	switch element := element.(type) {
-	case QuotedText:
+	case *QuotedText:
 		switch element.Kind {
 		case Bold:
 			v.buf.WriteString("_strong")

@@ -7,114 +7,122 @@ import (
 
 var _ = Describe("Parsing Meta Elements", func() {
 
-	It("element link", func() {
-		actualContent := "[link=http://foo.bar]"
-		expectedDocument := &types.Document{
-			Elements: []types.DocElement{
-				&types.ElementLink{Path: "http://foo.bar"},
-			},
-		}
-		verify(GinkgoT(), expectedDocument, actualContent)
-	})
+	Context("element link", func() {
 
-	It("element link with spaces", func() {
-		actualContent := "[ link = http://foo.bar ]"
-		expectedDocument := &types.Document{
-			Elements: []types.DocElement{
-				&types.ElementLink{Path: "http://foo.bar"},
-			},
-		}
-		verify(GinkgoT(), expectedDocument, actualContent)
-	})
+		It("element link", func() {
+			actualContent := "[link=http://foo.bar]"
+			expectedDocument := &types.Document{
+				Elements: []types.DocElement{
+					&types.ElementLink{Path: "http://foo.bar"},
+				},
+			}
+			verify(GinkgoT(), expectedDocument, actualContent)
+		})
 
-	It("element link invalid", func() {
-		actualContent := "[ link = http://foo.bar"
-		expectedDocument := &types.Document{
-			Elements: []types.DocElement{
-				&types.Paragraph{
-					Lines: []*types.InlineContent{
-						&types.InlineContent{
-							Elements: []types.DocElement{
-								&types.StringElement{Content: "[ link = "},
-								&types.ExternalLink{URL: "http://foo.bar"},
+		It("element link with spaces", func() {
+			actualContent := "[ link = http://foo.bar ]"
+			expectedDocument := &types.Document{
+				Elements: []types.DocElement{
+					&types.ElementLink{Path: "http://foo.bar"},
+				},
+			}
+			verify(GinkgoT(), expectedDocument, actualContent)
+		})
+
+		It("element link invalid", func() {
+			actualContent := "[ link = http://foo.bar"
+			expectedDocument := &types.Document{
+				Elements: []types.DocElement{
+					&types.Paragraph{
+						Lines: []*types.InlineContent{
+							&types.InlineContent{
+								Elements: []types.DocElement{
+									&types.StringElement{Content: "[ link = "},
+									&types.ExternalLink{URL: "http://foo.bar"},
+								},
 							},
 						},
 					},
 				},
-			},
-		}
-		verify(GinkgoT(), expectedDocument, actualContent)
+			}
+			verify(GinkgoT(), expectedDocument, actualContent)
+		})
 	})
 
-	It("element id", func() {
-		actualContent := "[#img-foobar]"
-		expectedDocument := &types.Document{
-			Elements: []types.DocElement{
-				&types.ElementID{Value: "img-foobar"},
-			},
-		}
-		verify(GinkgoT(), expectedDocument, actualContent)
-	})
+	Context("element id", func() {
 
-	It("element id with spaces", func() {
-		actualContent := "[ #img-foobar ]"
-		expectedDocument := &types.Document{
-			Elements: []types.DocElement{
-				&types.ElementID{Value: "img-foobar"},
-			},
-		}
-		verify(GinkgoT(), expectedDocument, actualContent)
-	})
+		It("element id", func() {
+			actualContent := "[#img-foobar]"
+			expectedDocument := &types.Document{
+				Elements: []types.DocElement{
+					&types.ElementID{Value: "img-foobar"},
+				},
+			}
+			verify(GinkgoT(), expectedDocument, actualContent)
+		})
 
-	It("element id invalid", func() {
-		actualContent := "[#img-foobar"
-		expectedDocument := &types.Document{
-			Elements: []types.DocElement{
-				&types.Paragraph{
-					Lines: []*types.InlineContent{
-						&types.InlineContent{Elements: []types.DocElement{&types.StringElement{Content: "[#img-foobar"}}},
+		It("element id with spaces", func() {
+			actualContent := "[ #img-foobar ]"
+			expectedDocument := &types.Document{
+				Elements: []types.DocElement{
+					&types.ElementID{Value: "img-foobar"},
+				},
+			}
+			verify(GinkgoT(), expectedDocument, actualContent)
+		})
+
+		It("element id invalid", func() {
+			actualContent := "[#img-foobar"
+			expectedDocument := &types.Document{
+				Elements: []types.DocElement{
+					&types.Paragraph{
+						Lines: []*types.InlineContent{
+							&types.InlineContent{Elements: []types.DocElement{&types.StringElement{Content: "[#img-foobar"}}},
+						},
 					},
 				},
-			},
-		}
-		verify(GinkgoT(), expectedDocument, actualContent)
+			}
+			verify(GinkgoT(), expectedDocument, actualContent)
+		})
 	})
+	Context("element title", func() {
 
-	It("element title", func() {
-		actualContent := ".a title"
-		expectedDocument := &types.Document{
-			Elements: []types.DocElement{
-				&types.ElementTitle{Content: "a title"},
-			},
-		}
-		verify(GinkgoT(), expectedDocument, actualContent)
-	})
+		It("element title", func() {
+			actualContent := ".a title"
+			expectedDocument := &types.Document{
+				Elements: []types.DocElement{
+					&types.ElementTitle{Content: "a title"},
+				},
+			}
+			verify(GinkgoT(), expectedDocument, actualContent)
+		})
 
-	It("element title invalid1", func() {
-		actualContent := ". a title"
-		expectedDocument := &types.Document{
-			Elements: []types.DocElement{
-				&types.Paragraph{
-					Lines: []*types.InlineContent{
-						&types.InlineContent{Elements: []types.DocElement{&types.StringElement{Content: ". a title"}}},
+		It("element title invalid1", func() {
+			actualContent := ". a title"
+			expectedDocument := &types.Document{
+				Elements: []types.DocElement{
+					&types.Paragraph{
+						Lines: []*types.InlineContent{
+							&types.InlineContent{Elements: []types.DocElement{&types.StringElement{Content: ". a title"}}},
+						},
 					},
 				},
-			},
-		}
-		verify(GinkgoT(), expectedDocument, actualContent)
-	})
+			}
+			verify(GinkgoT(), expectedDocument, actualContent)
+		})
 
-	It("element title invalid2", func() {
-		actualContent := "!a title"
-		expectedDocument := &types.Document{
-			Elements: []types.DocElement{
-				&types.Paragraph{
-					Lines: []*types.InlineContent{
-						&types.InlineContent{Elements: []types.DocElement{&types.StringElement{Content: "!a title"}}},
+		It("element title invalid2", func() {
+			actualContent := "!a title"
+			expectedDocument := &types.Document{
+				Elements: []types.DocElement{
+					&types.Paragraph{
+						Lines: []*types.InlineContent{
+							&types.InlineContent{Elements: []types.DocElement{&types.StringElement{Content: "!a title"}}},
+						},
 					},
 				},
-			},
-		}
-		verify(GinkgoT(), expectedDocument, actualContent)
+			}
+			verify(GinkgoT(), expectedDocument, actualContent)
+		})
 	})
 })

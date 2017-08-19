@@ -9,18 +9,22 @@ import "github.com/bytesparadise/libasciidoc/types"
 
 }
 
-Document <- lines:Line* EOF {
-	return types.NewDocument(lines.([]interface{}))
+Document <- blocks:Block* EOF {
+	return types.NewDocument(blocks.([]interface{}))
 }
 
-Line <- !EOF content:(Heading / List / BlockImage / DelimitedBlock / MetadataElement / Paragraph / BlankLine) {
+Block <- !EOF content:(Section / List / BlockImage / DelimitedBlock / MetadataElement / Paragraph / BlankLine) {
     return content.(types.DocElement), nil
+}
+
+Section <- heading:(Heading) elements:(Block*) {
+    return types.NewSection(heading.(*types.Heading), elements.([]interface{}))
 }
 
 // ------------------------------------------
 // Headings
 // ------------------------------------------
-Heading <- metadata:(MetadataElement)* level:("="+) WS+ content:InlineContent {
+Heading <- metadata:(MetadataElement)* level:("="+) WS+ content:InlineContent (BlankLine? / EOF) {
      return types.NewHeading(level, content.(*types.InlineContent), metadata.([]interface{}))
 }
 

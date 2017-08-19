@@ -10,7 +10,7 @@ import (
 	"github.com/pkg/errors"
 )
 
-// Render renders the given document elements in HTML and writes the result in the given `writer`
+// Render renders the given document in HTML and writes the result in the given `writer`
 func Render(ctx context.Context, document types.Document, output io.Writer) error {
 	for _, element := range document.Elements {
 		content, err := renderElement(ctx, element)
@@ -24,8 +24,8 @@ func Render(ctx context.Context, document types.Document, output io.Writer) erro
 
 func renderElement(ctx context.Context, element types.DocElement) ([]byte, error) {
 	switch element.(type) {
-	case *types.Heading:
-		return renderHeading(ctx, *element.(*types.Heading))
+	case *types.Section:
+		return renderSection(ctx, *element.(*types.Section))
 	case *types.List:
 		return renderList(ctx, *element.(*types.List))
 	case *types.Paragraph:
@@ -41,10 +41,9 @@ func renderElement(ctx context.Context, element types.DocElement) ([]byte, error
 	case *types.StringElement:
 		return renderStringElement(ctx, *element.(*types.StringElement))
 	case *types.BlankLine:
-		// blank lines are ignored
-		return make([]byte, 0), nil
+		return []byte("\n"), nil
 	default:
-		return nil, errors.Errorf("unsupported element type: %v", reflect.TypeOf(element))
+		return nil, errors.Errorf("unsupported type of element: %v", reflect.TypeOf(element))
 	}
 
 }
