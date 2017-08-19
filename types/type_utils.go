@@ -10,6 +10,10 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+func indent(indentLevel int) string {
+	return strings.Repeat("  ", indentLevel)
+}
+
 func toDocElements(elements []interface{}) ([]DocElement, error) {
 	result := make([]DocElement, len(elements))
 	for i, element := range elements {
@@ -180,7 +184,7 @@ func NewReplaceNonAlphanumericsVisitor() *ReplaceNonAlphanumericsVisitor {
 func (v *ReplaceNonAlphanumericsVisitor) Visit(element interface{}) error {
 	switch element := element.(type) {
 	case *InlineContent:
-		log.Debugf("Prefixing with '_' while processing '%v'", reflect.TypeOf(element))
+		// log.Debugf("Prefixing with '_' while processing '%v'", reflect.TypeOf(element))
 		v.buf.WriteString("_")
 	case *StringElement:
 		normalized, err := v.normalize(element.Content)
@@ -195,10 +199,10 @@ func (v *ReplaceNonAlphanumericsVisitor) Visit(element interface{}) error {
 }
 
 func (v *ReplaceNonAlphanumericsVisitor) BeforeVisit(element interface{}) error {
-	log.Debugf("Before visiting element of type '%v'...", reflect.TypeOf(element))
+	// log.Debugf("Before visiting element of type '%v'...", reflect.TypeOf(element))
 	switch element := element.(type) {
 	case *QuotedText:
-		log.Debugf("Before visiting quoted element...")
+		// log.Debugf("Before visiting quoted element...")
 		switch element.Kind {
 		case Bold:
 			v.buf.WriteString("_strong_")

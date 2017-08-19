@@ -24,8 +24,30 @@ Section <- heading:(Heading) elements:(Block*) {
 // ------------------------------------------
 // Headings
 // ------------------------------------------
-Heading <- metadata:(MetadataElement)* level:("="+) WS+ content:InlineContent (BlankLine? / EOF) {
-     return types.NewHeading(level, content.(*types.InlineContent), metadata.([]interface{}))
+Heading <- Heading1 / Heading2 / Heading3 / Heading4 / Heading5 / Heading6
+
+Heading1 <- metadata:(MetadataElement)* level:("=") WS+ content:InlineContent (BlankLine? / EOF) {
+     return types.NewHeading(1, content.(*types.InlineContent), metadata.([]interface{}))
+}
+
+Heading2 <- metadata:(MetadataElement)* level:("==") WS+ content:InlineContent (BlankLine? / EOF) {
+     return types.NewHeading(2, content.(*types.InlineContent), metadata.([]interface{}))
+}
+
+Heading3 <- metadata:(MetadataElement)* level:("===") WS+ content:InlineContent (BlankLine? / EOF) {
+     return types.NewHeading(3, content.(*types.InlineContent), metadata.([]interface{}))
+}
+
+Heading4 <- metadata:(MetadataElement)* level:("====") WS+ content:InlineContent (BlankLine? / EOF) {
+     return types.NewHeading(4, content.(*types.InlineContent), metadata.([]interface{}))
+}
+
+Heading5 <- metadata:(MetadataElement)* level:("=====") WS+ content:InlineContent (BlankLine? / EOF) {
+     return types.NewHeading(5, content.(*types.InlineContent), metadata.([]interface{}))
+}
+
+Heading6 <- metadata:(MetadataElement)* level:("======") WS+ content:InlineContent (BlankLine? / EOF) {
+     return types.NewHeading(6, content.(*types.InlineContent), metadata.([]interface{}))
 }
 
 // ------------------------------------------

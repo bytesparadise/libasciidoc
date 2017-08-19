@@ -82,7 +82,7 @@ func verify(t GinkgoTInterface, expectedDocument *types.Document, content string
 	}
 	require.Nil(t, err)
 	actualDocument := result.(*types.Document)
-	t.Logf("actual document: %+v", actualDocument)
-	t.Logf("expected document: %+v", expectedDocument)
+	t.Logf("actual document: %s", actualDocument.String(0))
+	t.Logf("expected document: %s", expectedDocument.String(0))
 	assert.EqualValues(t, *expectedDocument, *actualDocument)
 }

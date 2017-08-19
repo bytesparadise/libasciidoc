@@ -121,6 +121,46 @@ var _ = Describe("Parsing Sections", func() {
 			verify(GinkgoT(), expectedDocument, actualContent)
 		})
 
+		It("section level 1 with nested section level 3", func() {
+			actualContent := "= a heading\n" +
+				"\n" +
+				"=== section 3"
+			expectedDocument := &types.Document{
+				Elements: []types.DocElement{
+					&types.Section{
+						Heading: types.Heading{
+							Level: 1,
+							Content: &types.InlineContent{
+								Elements: []types.DocElement{
+									&types.StringElement{Content: "a heading"},
+								},
+							},
+							ID: &types.ElementID{
+								Value: "_a_heading",
+							},
+						},
+						Elements: []types.DocElement{
+							&types.Section{
+								Heading: types.Heading{
+									Level: 3,
+									Content: &types.InlineContent{
+										Elements: []types.DocElement{
+											&types.StringElement{Content: "section 3"},
+										},
+									},
+									ID: &types.ElementID{
+										Value: "_section_3",
+									},
+								},
+								Elements: []types.DocElement{},
+							},
+						},
+					},
+				},
+			}
+			verify(GinkgoT(), expectedDocument, actualContent)
+		})
+
 		It("section level 2 with immediate paragraph", func() {
 			actualContent := `== a title
 and a paragraph`
@@ -224,13 +264,13 @@ and a paragraph`
 			actualContent := `= a title
 
 == Section A
-a paragraph 
+a paragraph
 
 === Section A.a
 a paragraph
 
 == Section B
-a paragraph `
+a paragraph`
 			expectedDocument := &types.Document{
 				Elements: []types.DocElement{
 					&types.Section{
@@ -291,6 +331,7 @@ a paragraph `
 													},
 												},
 											},
+											&types.BlankLine{},
 										},
 									},
 								},
@@ -305,6 +346,17 @@ a paragraph `
 									},
 									ID: &types.ElementID{
 										Value: "_section_b",
+									},
+								},
+								Elements: []types.DocElement{
+									&types.Paragraph{
+										Lines: []*types.InlineContent{
+											&types.InlineContent{
+												Elements: []types.DocElement{
+													&types.StringElement{Content: "a paragraph"},
+												},
+											},
+										},
 									},
 								},
 							},

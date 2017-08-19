@@ -72,7 +72,7 @@ var _ = Describe("Normalizing String", func() {
 })
 
 func verify(t GinkgoTInterface, expected string, inlineContent *InlineContent) {
-	t.Logf("Processing '%s'", inlineContent.String())
+	t.Logf("Processing '%s'", inlineContent.String(0))
 	result, err := ReplaceNonAlphanumerics(inlineContent, "_")
 	require.Nil(t, err)
 	t.Logf("Normalized result: '%s'", *result)
