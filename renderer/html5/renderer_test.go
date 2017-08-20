@@ -25,8 +25,8 @@ func verify(t GinkgoTInterface, expected, content string) {
 	require.Nil(t, err)
 	require.Empty(t, err)
 	result := string(buff.Bytes())
-	t.Logf("** Actual output:\n%s\n", result)
-	t.Logf("** Expected output:\n%s\n", expected)
+	t.Logf("** Actual output:\n`%s`\n", result)
+	t.Logf("** Expected output:\n`%s`\n", expected)
 	assert.Equal(t, expected, result)
 }
 

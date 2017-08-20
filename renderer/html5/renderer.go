@@ -12,12 +12,15 @@ import (
 
 // Render renders the given document in HTML and writes the result in the given `writer`
 func Render(ctx context.Context, document types.Document, output io.Writer) error {
-	for _, element := range document.Elements {
+	for i, element := range document.Elements {
 		content, err := renderElement(ctx, element)
 		if err != nil {
 			return errors.Wrapf(err, "failed to render document")
 		}
 		output.Write(content)
+		if _, ok := element.(*types.BlankLine); !ok && i < len(document.Elements)-1 {
+			output.Write([]byte("\n"))
+		}
 	}
 	return nil
 }
@@ -41,7 +44,8 @@ func renderElement(ctx context.Context, element types.DocElement) ([]byte, error
 	case *types.StringElement:
 		return renderStringElement(ctx, *element.(*types.StringElement))
 	case *types.BlankLine:
-		return []byte("\n"), nil
+		// return []byte("\n"), nil
+		return make([]byte, 0), nil
 	default:
 		return nil, errors.Errorf("unsupported type of element: %v", reflect.TypeOf(element))
 	}

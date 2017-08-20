@@ -77,17 +77,22 @@ var _ = Describe("Rendering sections", func() {
 
 	Context("Section with elements", func() {
 
-		It("heading level 2 with a paragraph", func() {
+		It("heading level 2 with 2 paragraphs", func() {
 			content := `== a title
 		
-and a paragraph`
+and a first paragraph
+
+and a second paragraph`
 			// top-level heading is not rendered per-say,
 			// but the heading will be used to set the HTML page's <title> element
 			expected := `<div class="sect1">
 <h2 id="_a_title">a title</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>and a paragraph</p>
+<p>and a first paragraph</p>
+</div>
+<div class="paragraph">
+<p>and a second paragraph</p>
 </div>
 </div>
 </div>`

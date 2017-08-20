@@ -28,6 +28,6 @@ func renderDelimitedBlock(ctx context.Context, block types.DelimitedBlock) ([]by
 	if err != nil {
 		return nil, errors.Wrapf(err, "unable to render delimited block")
 	}
-	log.Debugf("rendered delimited block: %s", result.Bytes())
+	// log.Debugf("rendered delimited block: %s", result.Bytes())
 	return result.Bytes(), nil
 }
