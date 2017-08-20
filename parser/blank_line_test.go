@@ -21,7 +21,7 @@ second paragraph`
 						},
 					},
 				},
-				&types.BlankLine{},
+				// &types.BlankLine{},
 				&types.Paragraph{
 					Lines: []*types.InlineContent{
 						&types.InlineContent{
@@ -53,9 +53,9 @@ second paragraph
 						},
 					},
 				},
-				&types.BlankLine{},
-				&types.BlankLine{},
-				&types.BlankLine{},
+				// &types.BlankLine{},
+				// &types.BlankLine{},
+				// &types.BlankLine{},
 				&types.Paragraph{
 					Lines: []*types.InlineContent{
 						&types.InlineContent{

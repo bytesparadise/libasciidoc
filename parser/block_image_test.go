@@ -67,7 +67,7 @@ var _ = Describe("Parsing Block Images", func() {
 							Alt:  "foo",
 						},
 					},
-					&types.BlankLine{},
+					// &types.BlankLine{},
 				},
 			}
 			verify(GinkgoT(), expectedDocument, actualContent)
@@ -85,8 +85,8 @@ var _ = Describe("Parsing Block Images", func() {
 							Alt:  "foo",
 						},
 					},
-					&types.BlankLine{},
-					&types.BlankLine{},
+					// &types.BlankLine{},
+					// &types.BlankLine{},
 				},
 			}
 			verify(GinkgoT(), expectedDocument, actualContent)
