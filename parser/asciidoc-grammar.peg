@@ -9,19 +9,92 @@ import "github.com/bytesparadise/libasciidoc/types"
 
 }
 
-Document <- lines:Line* EOF {
-	return types.NewDocument(lines.([]interface{}))
+Document <- blocks:DocumentBlock* EOF {
+	return types.NewDocument(blocks.([]interface{}))
 }
 
-Line <- !EOF content:(Heading / List / BlockImage / DelimitedBlock / MetadataElement / Paragraph / BlankLine) {
+DocumentBlock <- !EOF content:(Section / List / BlockImage / DelimitedBlock / MetadataElement / Paragraph / BlankLine) {
     return content.(types.DocElement), nil
 }
+
+Section <- Section1 / Section2 / Section3 / Section4 / Section5 / Section6
+
+Section1 <- heading:(Heading1) elements:(Section1Block*) {
+    return types.NewSection(heading.(*types.Heading), elements.([]interface{}))
+}
+
+Section1Block <- content:(Section2 / Section3 / Section4 / Section5 / Section6 / List / BlockImage / DelimitedBlock / MetadataElement / Paragraph / BlankLine) {
+    return content.(types.DocElement), nil
+}
+
+Section2 <- heading:(Heading2) elements:(Section2Block*) {
+    return types.NewSection(heading.(*types.Heading), elements.([]interface{}))
+}
+
+Section2Block <- !Section1 !Section2 content:(Section3 / Section4 / Section5 / Section6 / List / BlockImage / DelimitedBlock / MetadataElement / Paragraph / BlankLine) {
+    return content.(types.DocElement), nil
+}
+
+Section3 <- heading:(Heading3) elements:(Section3Block*) &(Section3)* {
+    return types.NewSection(heading.(*types.Heading), elements.([]interface{}))
+}
+
+Section3Block <- !Section1 !Section2 !Section3 content:(Section4 / Section5 / Section6 / List / BlockImage / DelimitedBlock / MetadataElement / Paragraph / BlankLine) {
+    return content.(types.DocElement), nil
+}
+
+Section4 <- heading:(Heading4) elements:(Section4Block*) {
+    return types.NewSection(heading.(*types.Heading), elements.([]interface{}))
+}
+
+Section4Block <- !Section1 !Section2 !Section3 !Section4 content:(Section5 / Section6 / List / BlockImage / DelimitedBlock / MetadataElement / Paragraph / BlankLine) {
+    return content.(types.DocElement), nil
+}
+
+Section5 <- heading:(Heading5) elements:(Section5Block*) {
+    return types.NewSection(heading.(*types.Heading), elements.([]interface{}))
+}
+
+Section5Block <- !Section1 !Section2 !Section3 !Section4 !Section5 content:(Section6 / List / BlockImage / DelimitedBlock / MetadataElement / Paragraph / BlankLine) {
+    return content.(types.DocElement), nil
+}
+
+Section6 <- heading:(Heading6) elements:(Section6Block*) {
+    return types.NewSection(heading.(*types.Heading), elements.([]interface{}))
+}
+
+Section6Block <- !Section1 !Section2 !Section3 !Section4 !Section5 !Section6 content:(List / BlockImage / DelimitedBlock / MetadataElement / Paragraph / BlankLine) {
+    return content.(types.DocElement), nil
+}
+
 
 // ------------------------------------------
 // Headings
 // ------------------------------------------
-Heading <- metadata:(MetadataElement)* level:("="+) WS+ content:InlineContent {
-     return types.NewHeading(level, content.(*types.InlineContent), metadata.([]interface{}))
+Heading <- Heading1 / Heading2 / Heading3 / Heading4 / Heading5 / Heading6
+
+Heading1 <- metadata:(MetadataElement)* level:("=") WS+ content:InlineContent (BlankLine? / EOF) {
+     return types.NewHeading(1, content.(*types.InlineContent), metadata.([]interface{}))
+}
+
+Heading2 <- metadata:(MetadataElement)* level:("==") WS+ content:InlineContent (BlankLine? / EOF) {
+     return types.NewHeading(2, content.(*types.InlineContent), metadata.([]interface{}))
+}
+
+Heading3 <- metadata:(MetadataElement)* level:("===") WS+ content:InlineContent (BlankLine? / EOF) {
+     return types.NewHeading(3, content.(*types.InlineContent), metadata.([]interface{}))
+}
+
+Heading4 <- metadata:(MetadataElement)* level:("====") WS+ content:InlineContent (BlankLine? / EOF) {
+     return types.NewHeading(4, content.(*types.InlineContent), metadata.([]interface{}))
+}
+
+Heading5 <- metadata:(MetadataElement)* level:("=====") WS+ content:InlineContent (BlankLine? / EOF) {
+     return types.NewHeading(5, content.(*types.InlineContent), metadata.([]interface{}))
+}
+
+Heading6 <- metadata:(MetadataElement)* level:("======") WS+ content:InlineContent (BlankLine? / EOF) {
+     return types.NewHeading(6, content.(*types.InlineContent), metadata.([]interface{}))
 }
 
 // ------------------------------------------
@@ -145,7 +218,7 @@ Word <- (!NEWLINE !WS .)+ {
     return string(c.text), nil
 }
 
-BlankLine <- WS* EOL {
+BlankLine <- !EOF WS* EOL {
     return types.NewBlankLine()
 }
 

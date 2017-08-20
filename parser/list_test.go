@@ -260,7 +260,7 @@ var _ = Describe("Parsing Unordered List Items", func() {
 							},
 						},
 					},
-					&types.BlankLine{},
+					// &types.BlankLine{},
 					&types.List{
 						Items: []*types.ListItem{
 							&types.ListItem{
