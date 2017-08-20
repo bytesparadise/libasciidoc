@@ -19,14 +19,6 @@ DocumentBlock <- !EOF content:(Section / List / BlockImage / DelimitedBlock / Me
 
 Section <- Section1 / Section2 / Section3 / Section4 / Section5 / Section6
 
-// Section <- heading:(Heading) elements:(Block*) {
-//     fmt.Printf("Building a section of level %d with %d elements:\n", heading.(*types.Heading).Level, len(elements.([]interface{})))
-//     for _, e := range elements.([]interface{}) {
-//         fmt.Printf(" %+v:\n", reflect.TypeOf(e))
-//     }
-//     return types.NewSection(heading.(*types.Heading), elements.([]interface{}))
-// }
-
 Section1 <- heading:(Heading1) elements:(Section1Block*) {
     return types.NewSection(heading.(*types.Heading), elements.([]interface{}))
 }

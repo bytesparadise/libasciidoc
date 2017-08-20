@@ -308,7 +308,7 @@ a paragraph`
 											},
 										},
 									},
-									&types.BlankLine{},
+									// &types.BlankLine{},
 									&types.Section{
 										Heading: types.Heading{
 											Level: 3,
@@ -331,7 +331,7 @@ a paragraph`
 													},
 												},
 											},
-											&types.BlankLine{},
+											// &types.BlankLine{},
 										},
 									},
 								},

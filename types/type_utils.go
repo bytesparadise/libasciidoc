@@ -27,6 +27,20 @@ func toDocElements(elements []interface{}) ([]DocElement, error) {
 	return result, nil
 }
 
+// convertBlocksToDocElements converts the given blocks to DocElement and exclude `BlankLine`
+func convertBlocksToDocElements(blocks []interface{}) []DocElement {
+	elements := make([]DocElement, len(blocks))
+	j := 0
+	for i := range blocks {
+		// exclude blank lines from here, we won't need them in the rendering anyways
+		if _, ok := blocks[i].(*BlankLine); !ok {
+			elements[j] = blocks[i].(DocElement)
+			j++
+		}
+	}
+	return elements[:j] // exclude allocated nil values
+}
+
 func merge(elements []interface{}, extraElements ...interface{}) []interface{} {
 	result := make([]interface{}, 0)
 	allElements := append(elements, extraElements...)

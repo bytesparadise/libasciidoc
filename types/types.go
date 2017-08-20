@@ -49,10 +49,7 @@ func NewDocument(blocks []interface{}) (*Document, error) {
 	for i, block := range blocks {
 		log.Debugf("Line #%d: %v", i, reflect.TypeOf(block))
 	}
-	elements := make([]DocElement, len(blocks))
-	for i := range blocks {
-		elements[i] = blocks[i].(DocElement)
-	}
+	elements := convertBlocksToDocElements(blocks)
 	return &Document{Elements: elements}, nil
 }
 
@@ -79,10 +76,7 @@ type Section struct {
 //NewSection initializes a new `Section` from the given heading and elements
 func NewSection(heading *Heading, blocks []interface{}) (*Section, error) {
 	// log.Debugf("Initializing a new Section with %d block(s)", len(blocks))
-	elements := make([]DocElement, len(blocks))
-	for i := range blocks {
-		elements[i] = blocks[i].(DocElement)
-	}
+	elements := convertBlocksToDocElements(blocks)
 	log.Debugf("Initialized a new Section of level %d with %d block(s)", heading.Level, len(blocks))
 	return &Section{
 		Heading:  *heading,
