@@ -9,7 +9,6 @@ import (
 
 	"github.com/bytesparadise/libasciidoc/types"
 	"github.com/pkg/errors"
-	log "github.com/sirupsen/logrus"
 )
 
 var paragraphTmpl *template.Template
@@ -37,6 +36,6 @@ func renderParagraph(ctx context.Context, paragraph types.Paragraph) ([]byte, er
 	if err != nil {
 		return nil, errors.Wrapf(err, "unable to render inline content")
 	}
-	log.Debugf("rendered paragraph: %s", result.Bytes())
+	// log.Debugf("rendered paragraph: %s", result.Bytes())
 	return result.Bytes(), nil
 }

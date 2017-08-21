@@ -744,7 +744,7 @@ type ElementID struct {
 
 //NewElementID initializes a new `ElementID` from the given path
 func NewElementID(id string) (*ElementID, error) {
-	log.Debugf("Initializing a new ElementID with ID=%s", id)
+	log.Debugf("Initializing a new ElementID with value=`%s`", id)
 	return &ElementID{Value: id}, nil
 }
 

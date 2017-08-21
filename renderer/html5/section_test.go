@@ -98,5 +98,84 @@ and a second paragraph`
 </div>`
 			verify(GinkgoT(), expected, content)
 		})
+
+		It("preamble then section level 2", func() {
+			content := `= a title
+		
+a preamble
+
+splitted in 2 paragraphs
+
+== section 1
+
+with some text`
+			// top-level heading is not rendered per-say,
+			// but the heading will be used to set the HTML page's <title> element
+			expected := `<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>a preamble</p>
+</div>
+<div class="paragraph">
+<p>splitted in 2 paragraphs</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_section_1">section 1</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>with some text</p>
+</div>
+</div>
+</div>`
+			verify(GinkgoT(), expected, content)
+		})
+
+		It("preamble then 2 sections level 2", func() {
+			content := `= a title
+		
+a preamble
+
+splitted in 2 paragraphs
+
+== section 1
+
+with some text
+
+== section 2
+
+with some text, too`
+			// top-level heading is not rendered per-say,
+			// but the heading will be used to set the HTML page's <title> element
+			expected := `<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>a preamble</p>
+</div>
+<div class="paragraph">
+<p>splitted in 2 paragraphs</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_section_1">section 1</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>with some text</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_section_2">section 2</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>with some text, too</p>
+</div>
+</div>
+</div>`
+			verify(GinkgoT(), expected, content)
+		})
+
 	})
 })
