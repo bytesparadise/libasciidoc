@@ -7,8 +7,6 @@ import (
 
 	"github.com/bytesparadise/libasciidoc/types"
 	"github.com/pkg/errors"
-
-	log "github.com/sirupsen/logrus"
 )
 
 var stringElementTmpl *template.Template
@@ -24,6 +22,6 @@ func renderStringElement(ctx context.Context, str types.StringElement) ([]byte, 
 	if err != nil {
 		return nil, errors.Wrapf(err, "unable to render string element")
 	}
-	log.Debugf("rendered string: %s", result.Bytes())
+	// log.Debugf("rendered string: %s", result.Bytes())
 	return result.Bytes(), nil
 }

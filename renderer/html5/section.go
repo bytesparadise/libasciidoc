@@ -4,10 +4,12 @@ import (
 	"bytes"
 	"context"
 	"html/template"
+	"reflect"
 	"strconv"
 
 	"github.com/bytesparadise/libasciidoc/types"
 	"github.com/pkg/errors"
+	log "github.com/sirupsen/logrus"
 )
 
 // var section1HeaderTmpl *template.Template
@@ -19,7 +21,12 @@ var otherSectionContentTmpl *template.Template
 // initializes the templates
 func init() {
 	section1ContentTmpl = newTemplate("section 1",
-		`{{ if .Elements }}{{.Elements}}{{end}}`)
+		`{{ if .Preamble }}<div id="preamble">
+<div class="sectionbody">
+{{.Preamble}}
+</div>
+</div>
+{{end}}{{ if .Elements }}{{.Elements}}{{end}}`)
 	section2ContentTmpl = newTemplate("section 2",
 		`<div class="{{.Class}}">
 {{.Heading}}
@@ -41,6 +48,75 @@ func init() {
 }
 
 func renderSection(ctx context.Context, section types.Section) ([]byte, error) {
+	switch section.Heading.Level {
+	case 1:
+		return renderSectionLevel1(ctx, section)
+	default:
+		return renderOtherSection(ctx, section)
+	}
+}
+
+func renderSectionLevel1(ctx context.Context, section types.Section) ([]byte, error) {
+	// only applies if the first element (if exists) is not a nested section
+	var preambleElements []types.DocElement
+	var otherElements []types.DocElement
+	// log.Debugf("Preparing Preamble elements...")
+	for i, element := range section.Elements {
+		log.Debugf(" %v", reflect.TypeOf(element))
+
+		if _, ok := element.(*types.Section); ok {
+			if i > 0 {
+				preambleElements = section.Elements[:i]
+			} else {
+				preambleElements = make([]types.DocElement, 0)
+			}
+			otherElements = section.Elements[i:]
+			break
+		}
+	}
+	// log.Debugf("Preamble elements: %d", len(preambleElements))
+	renderedPreambleElementsBuff := bytes.NewBuffer(make([]byte, 0))
+	for i, element := range preambleElements {
+		renderedElement, err := renderElement(ctx, element)
+		if err != nil {
+			return nil, errors.Wrapf(err, "unable to render preamble element")
+		}
+		renderedPreambleElementsBuff.Write(renderedElement)
+		if i < len(preambleElements)-1 {
+			renderedPreambleElementsBuff.WriteString("\n")
+		}
+	}
+	renderedHTMLPreamble := template.HTML(renderedPreambleElementsBuff.String())
+	renderedElementsBuff := bytes.NewBuffer(make([]byte, 0))
+	for i, element := range otherElements {
+		renderedElement, err := renderElement(ctx, element)
+		if err != nil {
+			return nil, errors.Wrapf(err, "unable to render section element")
+		}
+		renderedElementsBuff.Write(renderedElement)
+		if i < len(otherElements)-1 {
+			renderedElementsBuff.WriteString("\n")
+		}
+	}
+	renderedHTMLElements := template.HTML(renderedElementsBuff.String())
+	result := bytes.NewBuffer(make([]byte, 0))
+	err := section1ContentTmpl.Execute(result, struct {
+		Class    string
+		Preamble template.HTML
+		Elements template.HTML
+	}{
+		Class:    "sect" + strconv.Itoa(section.Heading.Level-1),
+		Preamble: renderedHTMLPreamble,
+		Elements: renderedHTMLElements,
+	})
+	if err != nil {
+		return nil, errors.Wrapf(err, "error while rendering section")
+	}
+	// log.Debugf("rendered section: %s", result.Bytes())
+	return result.Bytes(), nil
+}
+
+func renderOtherSection(ctx context.Context, section types.Section) ([]byte, error) {
 	renderedHeading, err := renderHeading(ctx, section.Heading)
 	if err != nil {
 		return nil, errors.Wrapf(err, "error while rendering section heading")
@@ -66,14 +142,16 @@ func renderSection(ctx context.Context, section types.Section) ([]byte, error) {
 	} else {
 		tmpl = otherSectionContentTmpl
 	}
+	renderedHTMLHeading := template.HTML(renderedHeading)
+	renderedHTMLElements := template.HTML(renderedElementsBuff.String())
 	err = tmpl.Execute(result, struct {
 		Class    string
 		Heading  template.HTML
 		Elements template.HTML
 	}{
 		Class:    "sect" + strconv.Itoa(section.Heading.Level-1),
-		Heading:  template.HTML(renderedHeading),
-		Elements: template.HTML(renderedElementsBuff.String()),
+		Heading:  renderedHTMLHeading,
+		Elements: renderedHTMLElements,
 	})
 	if err != nil {
 		return nil, errors.Wrapf(err, "error while rendering section")
@@ -84,10 +162,6 @@ func renderSection(ctx context.Context, section types.Section) ([]byte, error) {
 
 func renderHeading(ctx context.Context, heading types.Heading) ([]byte, error) {
 	result := bytes.NewBuffer(make([]byte, 0))
-	// skip heading level 1, it will be used as the document title instead
-	if heading.Level == 1 {
-		return result.Bytes(), nil
-	}
 	renderedContent, err := renderElement(ctx, heading.Content)
 	if err != nil {
 		return nil, errors.Wrapf(err, "error while rendering heading content")

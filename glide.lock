@@ -1,5 +1,5 @@
-hash: 663f7ee6d2093012d467bf7b7f2967d1fdda8ed7165a10a5ba785b9cd7d36b1a
-updated: 2017-08-10T10:34:55.467681795+02:00
+hash: 2890eb41628595da96f5d32a49c1496924668cc707a3e2d469bbcdc40d7d6120
+updated: 2017-08-21T16:37:36.310336353+02:00
 imports:
 - name: github.com/go-test/deep
   version: f49763a6ea0a91026be26f8213bebee726b4185f
@@ -42,7 +42,7 @@ imports:
 - name: github.com/pkg/errors
   version: 645ef00459ed84a119197bfb8d8205042c6df63d
 - name: github.com/sirupsen/logrus
-  version: a3f95b5c423586578a4e099b11a46c2479628cac
+  version: f006c2ac4710855cf0f916dd6b77acf6b048dc6e
   repo: https://github.com/sirupsen/logrus.git
   vcs: git
 - name: github.com/stretchr/testify
@@ -50,10 +50,15 @@ imports:
   subpackages:
   - assert
   - require
+- name: golang.org/x/crypto
+  version: eb71ad9bd329b5ac0fd0148dd99bd62e8be8e035
+  subpackages:
+  - ssh/terminal
 - name: golang.org/x/sys
   version: 478fcf54317e52ab69f40bb4c7a1520288d7f7ea
   subpackages:
   - unix
+  - windows
 - name: golang.org/x/text
   version: 47a200a05c8b3fd1b698571caecbb68beb2611ec
   subpackages:
