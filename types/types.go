@@ -393,16 +393,24 @@ func (c *ListItemContent) Accept(v Visitor) error {
 // Paragraph the structure for the paragraph
 type Paragraph struct {
 	Lines []*InlineContent
+	ID    *ElementID
+	Title *ElementTitle
 }
 
 //NewParagraph initializes a new `Paragraph`
-func NewParagraph(text []byte, lines []interface{}) (*Paragraph, error) {
+func NewParagraph(text []byte, lines []interface{}, metadata []interface{}) (*Paragraph, error) {
 	log.Debugf("Initializing a new Paragraph with %d line(s)", len(lines))
+	id, title, _ := newMetaElements(metadata)
+
 	typedLines := make([]*InlineContent, 0)
 	for _, line := range lines {
 		typedLines = append(typedLines, line.(*InlineContent))
 	}
-	return &Paragraph{Lines: typedLines}, nil
+	return &Paragraph{
+		Lines: typedLines,
+		ID:    id,
+		Title: title,
+	}, nil
 }
 
 //String implements the DocElement#String() method
@@ -773,7 +781,7 @@ func (e *ElementID) Accept(v Visitor) error {
 
 // ElementTitle the structure for element IDs
 type ElementTitle struct {
-	Content string
+	Value string
 }
 
 //NewElementTitle initializes a new `ElementTitle` from the given content
@@ -783,12 +791,12 @@ func NewElementTitle(content []interface{}) (*ElementTitle, error) {
 		return nil, errors.Wrapf(err, "failed to initialize a new ElementTitle")
 	}
 	log.Debugf("Initializing a new ElementTitle with content=%s", c)
-	return &ElementTitle{Content: *c}, nil
+	return &ElementTitle{Value: *c}, nil
 }
 
 //String implements the DocElement#String() method
 func (e *ElementTitle) String(indentLevel int) string {
-	return fmt.Sprintf("%s<%v> %s", indent(indentLevel), reflect.TypeOf(e), e.Content)
+	return fmt.Sprintf("%s<%v> %s", indent(indentLevel), reflect.TypeOf(e), e.Value)
 }
 
 //Accept implements DocElement#Accept(Visitor)
