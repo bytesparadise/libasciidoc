@@ -91,7 +91,7 @@ var _ = Describe("Parsing Meta Elements", func() {
 			actualContent := ".a title"
 			expectedDocument := &types.Document{
 				Elements: []types.DocElement{
-					&types.ElementTitle{Content: "a title"},
+					&types.ElementTitle{Value: "a title"},
 				},
 			}
 			verify(GinkgoT(), expectedDocument, actualContent)

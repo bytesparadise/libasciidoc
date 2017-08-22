@@ -124,7 +124,7 @@ var _ = Describe("Parsing Block Images", func() {
 							Height: &height,
 						},
 						ID:    &types.ElementID{Value: "img-foobar"},
-						Title: &types.ElementTitle{Content: "A title to foobar"},
+						Title: &types.ElementTitle{Value: "A title to foobar"},
 						Link:  &types.ElementLink{Path: "http://foo.bar"},
 					},
 				},

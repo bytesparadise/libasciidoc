@@ -16,25 +16,37 @@ var paragraphTmpl *template.Template
 // initializes the template
 func init() {
 	paragraphTmpl = newTemplate("paragraph",
-		`<div class="paragraph">
-<p>{{.}}</p>
+		`<div {{ if .ID }}id="{{.ID.Value}}" {{ end }}class="paragraph">{{ if .Title}}
+<div class="title">{{.Title.Value}}</div>{{ end }}
+<p>{{.Lines}}</p>
 </div>`)
 }
 
 func renderParagraph(ctx context.Context, paragraph types.Paragraph) ([]byte, error) {
-	renderedElementsBuff := bytes.NewBuffer(make([]byte, 0))
-	for _, line := range paragraph.Lines {
-		renderedElement, err := renderInlineContent(ctx, *line)
+	renderedLinesBuff := bytes.NewBuffer(make([]byte, 0))
+	for i, line := range paragraph.Lines {
+		renderedLine, err := renderInlineContent(ctx, *line)
 		if err != nil {
-			return nil, errors.Wrapf(err, "unable to render paragraph element")
+			return nil, errors.Wrapf(err, "unable to render paragraph line")
 		}
-		renderedElementsBuff.Write(renderedElement)
+		renderedLinesBuff.Write(renderedLine)
+		if i < len(paragraph.Lines)-1 {
+			renderedLinesBuff.WriteString("\n")
+		}
+
 	}
 	result := bytes.NewBuffer(make([]byte, 0))
-	// here we must preserve the HTML tags
-	err := paragraphTmpl.Execute(result, template.HTML(renderedElementsBuff.String()))
+	err := paragraphTmpl.Execute(result, struct {
+		ID    *types.ElementID
+		Title *types.ElementTitle
+		Lines template.HTML
+	}{
+		ID:    paragraph.ID,
+		Title: paragraph.Title,
+		Lines: template.HTML(renderedLinesBuff.String()), // here we must preserve the HTML tags
+	})
 	if err != nil {
-		return nil, errors.Wrapf(err, "unable to render inline content")
+		return nil, errors.Wrapf(err, "unable to render paragraph")
 	}
 	// log.Debugf("rendered paragraph: %s", result.Bytes())
 	return result.Bytes(), nil

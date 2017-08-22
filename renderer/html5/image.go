@@ -18,7 +18,7 @@ func init() {
 <div class="content">
 {{if .Link}}<a class="image" href="{{.Link.Path}}">{{end}}<img src="{{.Macro.Path}}" alt="{{.Macro.Alt}}"{{if .Macro.Width}} width="{{.Macro.Width}}"{{end}}{{if .Macro.Height}} height="{{.Macro.Height}}"{{end}}>{{if .Link}}</a>{{end}}
 </div>{{if .Title}}
-<div class="title">{{.Title.Content}}</div>
+<div class="title">{{.Title.Value}}</div>
 {{else}}
 {{end}}</div>`)
 }
