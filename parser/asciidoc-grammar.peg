@@ -124,8 +124,8 @@ Paragraph <- metadata:(MetadataElement)* lines:(InlineContent)+ {
 } 
 
 // an inline content element may begin and end with spaces, 
-// but it must contain at least a quoted text, an external link or a word
-InlineContent <- elements:(WS* (QuotedText / ExternalLink / Word) WS*)+ EOL {
+// but it must contain at least an image, a quoted text, an external link or a word
+InlineContent <- elements:(WS* (InlineImage / QuotedText / ExternalLink / Word) WS*)+ EOL {
     return types.NewInlineContent(c.text, elements.([]interface{}))
 } 
 
@@ -168,15 +168,20 @@ ExternalLink <- url:(URL_SCHEME URL) text:('[' (URL_TEXT)* ']')? {
 // ------------------------------------------
 BlockImage <- metadata:(MetadataElement)* image:BlockImageMacro  WS* EOL {
     // here we can ignore the blank line in the returned element
-    return types.NewBlockImage(c.text, *image.(*types.BlockImageMacro), metadata.([]interface{}))
+    return types.NewBlockImage(c.text, *image.(*types.ImageMacro), metadata.([]interface{}))
 }
 
 BlockImageMacro <- "image::" path:(URL) '[' attributes:(URL_TEXT?) ']' {
-    if attributes != nil {
-        attrs := attributes.(string)
-        return types.NewBlockImageMacro(c.text, path.(string), &attrs)
-    }
-    return types.NewBlockImageMacro(c.text, path.(string), nil)
+    return types.NewImageMacro(c.text, path.(string), attributes)
+}
+
+InlineImage <- image:InlineImageMacro {
+    // here we can ignore the blank line in the returned element
+    return types.NewInlineImage(c.text, *image.(*types.ImageMacro))
+}
+
+InlineImageMacro <- "image:" !":" path:(URL) '[' attributes:(URL_TEXT?) ']' {
+    return types.NewImageMacro(c.text, path.(string), attributes)
 }
 
 // ------------------------------------------

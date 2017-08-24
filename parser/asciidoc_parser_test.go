@@ -74,7 +74,7 @@ var _ = Describe("Parsing content", func() {
 })
 
 func verify(t GinkgoTInterface, expectedDocument *types.Document, content string) {
-	log.Debugf("processing:\n%s", content)
+	log.Debugf("processing: %s", content)
 	reader := strings.NewReader(content)
 	result, err := ParseReader("", reader)
 	if err != nil {
@@ -83,7 +83,7 @@ func verify(t GinkgoTInterface, expectedDocument *types.Document, content string
 	require.Nil(t, err)
 	actualDocument := result.(*types.Document)
 	t.Logf("actual document structure: %+v", actualDocument.Elements)
-	t.Logf("actual document: %s", actualDocument.String(0))
-	t.Logf("expected document: %s", expectedDocument.String(0))
+	t.Logf("actual document: `%s`", actualDocument.String(0))
+	t.Logf("expected document: `%s`", expectedDocument.String(0))
 	assert.EqualValues(t, *expectedDocument, *actualDocument)
 }

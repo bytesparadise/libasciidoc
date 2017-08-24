@@ -5,11 +5,11 @@ import (
 	. "github.com/onsi/ginkgo"
 )
 
-var _ = Describe("Parsing Meta Elements", func() {
+var _ = Describe("Meta Elements", func() {
 
-	Context("element link", func() {
+	Context("Element link", func() {
 
-		It("element link", func() {
+		It("element link alone", func() {
 			actualContent := "[link=http://foo.bar]"
 			expectedDocument := &types.Document{
 				Elements: []types.DocElement{

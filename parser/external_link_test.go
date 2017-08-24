@@ -5,7 +5,7 @@ import (
 	. "github.com/onsi/ginkgo"
 )
 
-var _ = Describe("Parsing External Links", func() {
+var _ = Describe("External Links", func() {
 
 	It("external link", func() {
 		actualContent := "a link to https://foo.bar"

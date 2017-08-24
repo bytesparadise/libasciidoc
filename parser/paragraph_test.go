@@ -5,7 +5,7 @@ import (
 	. "github.com/onsi/ginkgo"
 )
 
-var _ = Describe("Parsing Paragraphs", func() {
+var _ = Describe("Paragraphs", func() {
 
 	It("paragraph with 1 word", func() {
 		actualContent := "hello"

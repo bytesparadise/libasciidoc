@@ -5,7 +5,7 @@ import (
 	. "github.com/onsi/ginkgo"
 )
 
-var _ = Describe("Parsing Quoted Texts", func() {
+var _ = Describe("Quoted Texts", func() {
 
 	It("bold text of 1 word", func() {
 		actualContent := "*hello*"

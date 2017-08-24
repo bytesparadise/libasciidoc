@@ -464,7 +464,7 @@ func NewInlineContent(text []byte, elements []interface{}) (*InlineContent, erro
 		mergedElements = append(mergedElements, e.(DocElement))
 	}
 	result := &InlineContent{Elements: mergedElements}
-	log.Debugf("Initialized new InlineContent: '%s'", result.String(0))
+	log.Debugf("Initialized new InlineContent with %d elements: '%s'", len(result.Elements), result.String(0))
 	return &InlineContent{Elements: mergedElements}, nil
 }
 
@@ -511,14 +511,14 @@ func (c *InlineContent) Accept(v Visitor) error {
 
 // BlockImage the structure for the block images
 type BlockImage struct {
-	Macro BlockImageMacro
+	Macro ImageMacro
 	ID    *ElementID
 	Title *ElementTitle
 	Link  *ElementLink
 }
 
 //NewBlockImage initializes a new `BlockImage`
-func NewBlockImage(input []byte, imageMacro BlockImageMacro, metadata []interface{}) (*BlockImage, error) {
+func NewBlockImage(input []byte, imageMacro ImageMacro, metadata []interface{}) (*BlockImage, error) {
 	log.Debugf("Initializing a new BlockImage from '%s'", input)
 	id, title, link := newMetaElements(metadata)
 	return &BlockImage{
@@ -531,7 +531,7 @@ func NewBlockImage(input []byte, imageMacro BlockImageMacro, metadata []interfac
 
 //String implements the DocElement#String() method
 func (i *BlockImage) String(indentLevel int) string {
-	return fmt.Sprintf("%s<%v> %v", indent(indentLevel), reflect.TypeOf(i), i.Macro)
+	return fmt.Sprintf("%s<%v> %s", indent(indentLevel), reflect.TypeOf(i), i.Macro.String(0))
 }
 
 func (i *BlockImage) elements() []Visitable {
@@ -562,23 +562,62 @@ func (i *BlockImage) Accept(v Visitor) error {
 	return nil
 }
 
-// BlockImageMacro the structure for the block image macros
-type BlockImageMacro struct {
+// InlineImage the structure for the inline image macros
+type InlineImage struct {
+	Macro ImageMacro
+}
+
+//NewInlineImage initializes a new `InlineImage` (similar to BlockImage, but without Metadata)
+func NewInlineImage(input []byte, imageMacro ImageMacro) (*InlineImage, error) {
+	log.Debugf("Initializing a new InlineImage from '%s'", input)
+	return &InlineImage{
+		Macro: imageMacro,
+	}, nil
+}
+
+//String implements the DocElement#String() method
+func (i *InlineImage) String(indentLevel int) string {
+	return fmt.Sprintf("%s<%v> %s", indent(indentLevel), reflect.TypeOf(i), i.Macro.String(0))
+}
+
+//Accept implements DocElement#Accept(Visitor)
+func (i *InlineImage) Accept(v Visitor) error {
+	err := v.BeforeVisit(i)
+	if err != nil {
+		return errors.Wrapf(err, "error while pre-visiting inline image")
+	}
+	err = v.Visit(i)
+	if err != nil {
+		return errors.Wrapf(err, "error while visiting inline image")
+	}
+	err = i.Macro.Accept(v)
+	if err != nil {
+		return errors.Wrapf(err, "error while visiting block image element")
+	}
+	err = v.AfterVisit(i)
+	if err != nil {
+		return errors.Wrapf(err, "error while post-visiting block image")
+	}
+	return nil
+}
+
+// ImageMacro the structure for the block image macros
+type ImageMacro struct {
 	Path   string
 	Alt    string
 	Width  *string
 	Height *string
 }
 
-//NewBlockImageMacro initializes a new `BlockImageMacro`
-func NewBlockImageMacro(input []byte, path string, attributes *string) (*BlockImageMacro, error) {
-	log.Debugf("Initializing a new BlockImageMacro from '%s'", input)
+//NewImageMacro initializes a new `ImageMacro`
+func NewImageMacro(input []byte, path string, attributes interface{}) (*ImageMacro, error) {
+	log.Debugf("Initializing a new ImageMacro from '%s'", input)
 	var alt string
 	var width, height *string
 	if attributes != nil {
 		// optionally, the width and height can be specified in the alt text, using `,` as a separator
 		// eg: `image::foo.png[a title,200,100]`
-		splittedAttributes := strings.Split(*attributes, ",")
+		splittedAttributes := strings.Split(attributes.(string), ",")
 		// naively assume that if the splitted 'alt' contains more than 3 elements, the 2 last ones are for the width and height
 		splitCount := len(splittedAttributes)
 		alt = splittedAttributes[0]
@@ -601,7 +640,7 @@ func NewBlockImageMacro(input []byte, path string, attributes *string) (*BlockIm
 		}
 		alt = path[offset : len(path)-len(extension)]
 	}
-	return &BlockImageMacro{
+	return &ImageMacro{
 		Path:   path,
 		Alt:    alt,
 		Width:  width,
@@ -609,7 +648,7 @@ func NewBlockImageMacro(input []byte, path string, attributes *string) (*BlockIm
 }
 
 //String implements the DocElement#String() method
-func (m *BlockImageMacro) String(indentLevel int) string {
+func (m *ImageMacro) String(indentLevel int) string {
 	var width, height string
 	if m.Width != nil {
 		width = *m.Width
@@ -617,11 +656,11 @@ func (m *BlockImageMacro) String(indentLevel int) string {
 	if m.Height != nil {
 		height = *m.Height
 	}
-	return fmt.Sprintf("%s<%v> %s[%s,w=%s h=%s]", indent(indentLevel), reflect.TypeOf(m), m.Path, m.Alt, width, height)
+	return fmt.Sprintf("%s<%v> %s['%s', w='%s' h='%s']", indent(indentLevel), reflect.TypeOf(m), m.Path, m.Alt, width, height)
 }
 
 //Accept implements DocElement#Accept(Visitor)
-func (m *BlockImageMacro) Accept(v Visitor) error {
+func (m *ImageMacro) Accept(v Visitor) error {
 	err := v.BeforeVisit(m)
 	if err != nil {
 		return errors.Wrapf(err, "error while pre-visiting block image macro")
@@ -832,7 +871,7 @@ func NewStringElement(content interface{}) *StringElement {
 
 //String implements the DocElement#String() method
 func (s *StringElement) String(indentLevel int) string {
-	return fmt.Sprintf("%s%s", indent(indentLevel), s.Content)
+	return fmt.Sprintf("%s`%s`", indent(indentLevel), s.Content)
 }
 
 //Accept implements DocElement#Accept(Visitor)
