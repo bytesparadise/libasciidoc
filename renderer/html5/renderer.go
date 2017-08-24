@@ -37,6 +37,8 @@ func renderElement(ctx context.Context, element types.DocElement) ([]byte, error
 		return renderQuotedText(ctx, *element.(*types.QuotedText))
 	case *types.BlockImage:
 		return renderBlockImage(ctx, *element.(*types.BlockImage))
+	case *types.InlineImage:
+		return renderInlineImage(ctx, *element.(*types.InlineImage))
 	case *types.DelimitedBlock:
 		return renderDelimitedBlock(ctx, *element.(*types.DelimitedBlock))
 	case *types.InlineContent:

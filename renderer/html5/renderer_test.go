@@ -14,6 +14,7 @@ import (
 )
 
 func verify(t GinkgoTInterface, expected, content string) {
+	expected = strings.Replace(expected, "\t", "", -1)
 	t.Logf("processing '%s'", content)
 	reader := strings.NewReader(content)
 	doc, err := parser.ParseReader("", reader)
@@ -27,7 +28,7 @@ func verify(t GinkgoTInterface, expected, content string) {
 	require.Empty(t, err)
 	result := string(buff.Bytes())
 	t.Logf("** Actual output:\n`%s`\n", result)
-	t.Logf("** Expected output:\n`%s`\n", expected)
+	t.Logf("** Expected output:\n`%s`\n", expected) // remove tabs that can be inserted by VSCode while formatting the tests code
 	assert.Equal(t, expected, result)
 }
 

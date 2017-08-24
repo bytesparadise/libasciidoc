@@ -5,7 +5,7 @@ import (
 	. "github.com/onsi/ginkgo"
 )
 
-var _ = Describe("Rendering Blank lines", func() {
+var _ = Describe("Blank lines", func() {
 	It("blank line between 2 paragraphs", func() {
 		actualDocument := `first paragraph
 

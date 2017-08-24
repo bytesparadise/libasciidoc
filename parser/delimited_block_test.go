@@ -5,7 +5,7 @@ import (
 	. "github.com/onsi/ginkgo"
 )
 
-var _ = Describe("Parsing Delimited Blocks", func() {
+var _ = Describe("Delimited Blocks", func() {
 
 	It("delimited source block with single line", func() {
 		content := "some source code"

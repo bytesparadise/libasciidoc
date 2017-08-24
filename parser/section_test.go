@@ -5,7 +5,7 @@ import (
 	. "github.com/onsi/ginkgo"
 )
 
-var _ = Describe("Parsing Sections", func() {
+var _ = Describe("Sections", func() {
 
 	Context("Valid document", func() {
 
