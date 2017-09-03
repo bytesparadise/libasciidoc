@@ -15,14 +15,14 @@ var inlineImageTmpl *template.Template
 
 // initializes the templates
 func init() {
-	blockImageTmpl = newTemplate("block image", `<div{{if .ID }} id="{{.ID.Value}}"{{ end }} class="imageblock">
+	blockImageTmpl = newHTMLTemplate("block image", `<div{{if .ID }} id="{{.ID.Value}}"{{ end }} class="imageblock">
 <div class="content">
 {{if .Link}}<a class="image" href="{{.Link.Path}}">{{end}}<img src="{{.Macro.Path}}" alt="{{.Macro.Alt}}"{{if .Macro.Width}} width="{{.Macro.Width}}"{{end}}{{if .Macro.Height}} height="{{.Macro.Height}}"{{end}}>{{if .Link}}</a>{{end}}
 </div>{{if .Title}}
 <div class="title">{{.Title.Value}}</div>
 {{else}}
 {{end}}</div>`)
-	inlineImageTmpl = newTemplate("inline image", `<span class="image"><img src="{{.Macro.Path}}" alt="{{.Macro.Alt}}"{{if .Macro.Width}} width="{{.Macro.Width}}"{{end}}{{if .Macro.Height}} height="{{.Macro.Height}}"{{end}}></span>`)
+	inlineImageTmpl = newHTMLTemplate("inline image", `<span class="image"><img src="{{.Macro.Path}}" alt="{{.Macro.Alt}}"{{if .Macro.Width}} width="{{.Macro.Width}}"{{end}}{{if .Macro.Height}} height="{{.Macro.Height}}"{{end}}></span>`)
 }
 
 func renderBlockImage(ctx context.Context, img types.BlockImage) ([]byte, error) {

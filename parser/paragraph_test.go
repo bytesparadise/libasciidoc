@@ -10,11 +10,12 @@ var _ = Describe("Paragraphs", func() {
 	It("paragraph with 1 word", func() {
 		actualContent := "hello"
 		expectedDocument := &types.Document{
+			Metadata: &types.DocumentMetadata{},
 			Elements: []types.DocElement{
 				&types.Paragraph{
 					Lines: []*types.InlineContent{
 						&types.InlineContent{
-							Elements: []types.DocElement{
+							Elements: []types.InlineElement{
 								&types.StringElement{Content: "hello"},
 							},
 						},
@@ -28,11 +29,12 @@ var _ = Describe("Paragraphs", func() {
 	It("paragraph with few words", func() {
 		actualContent := "a paragraph with some content"
 		expectedDocument := &types.Document{
+			Metadata: &types.DocumentMetadata{},
 			Elements: []types.DocElement{
 				&types.Paragraph{
 					Lines: []*types.InlineContent{
 						&types.InlineContent{
-							Elements: []types.DocElement{
+							Elements: []types.InlineElement{
 								&types.StringElement{Content: "a paragraph with some content"},
 							},
 						},
@@ -46,15 +48,16 @@ var _ = Describe("Paragraphs", func() {
 	It("paragraph with bold content", func() {
 		actualContent := "a paragraph with *some bold content*"
 		expectedDocument := &types.Document{
+			Metadata: &types.DocumentMetadata{},
 			Elements: []types.DocElement{
 				&types.Paragraph{
 					Lines: []*types.InlineContent{
 						&types.InlineContent{
-							Elements: []types.DocElement{
+							Elements: []types.InlineElement{
 								&types.StringElement{Content: "a paragraph with "},
 								&types.QuotedText{
 									Kind: types.Bold,
-									Elements: []types.DocElement{
+									Elements: []types.InlineElement{
 										&types.StringElement{Content: "some bold content"},
 									},
 								},
@@ -72,13 +75,14 @@ var _ = Describe("Paragraphs", func() {
 .a title
 a paragraph`
 		expectedDocument := &types.Document{
+			Metadata: &types.DocumentMetadata{},
 			Elements: []types.DocElement{
 				&types.Paragraph{
 					ID:    &types.ElementID{Value: "foo"},
 					Title: &types.ElementTitle{Value: "a title"},
 					Lines: []*types.InlineContent{
 						&types.InlineContent{
-							Elements: []types.DocElement{
+							Elements: []types.InlineElement{
 								&types.StringElement{Content: "a paragraph"},
 							},
 						},

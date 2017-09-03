@@ -13,7 +13,7 @@ var stringElementTmpl *template.Template
 
 // initializes the templates
 func init() {
-	stringElementTmpl = newTemplate("string element", "{{.}}")
+	stringElementTmpl = newHTMLTemplate("string element", "{{.}}")
 }
 
 func renderStringElement(ctx context.Context, str types.StringElement) ([]byte, error) {

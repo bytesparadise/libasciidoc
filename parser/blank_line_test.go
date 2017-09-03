@@ -11,21 +11,21 @@ var _ = Describe("Blank lines", func() {
 
 second paragraph`
 		expectedDocument := &types.Document{
+			Metadata: &types.DocumentMetadata{},
 			Elements: []types.DocElement{
 				&types.Paragraph{
 					Lines: []*types.InlineContent{
 						&types.InlineContent{
-							Elements: []types.DocElement{
+							Elements: []types.InlineElement{
 								&types.StringElement{Content: "first paragraph"},
 							},
 						},
 					},
 				},
-				// &types.BlankLine{},
 				&types.Paragraph{
 					Lines: []*types.InlineContent{
 						&types.InlineContent{
-							Elements: []types.DocElement{
+							Elements: []types.InlineElement{
 								&types.StringElement{Content: "second paragraph"},
 							},
 						},
@@ -43,23 +43,21 @@ second paragraph`
 second paragraph
 `
 		expectedDocument := &types.Document{
+			Metadata: &types.DocumentMetadata{},
 			Elements: []types.DocElement{
 				&types.Paragraph{
 					Lines: []*types.InlineContent{
 						&types.InlineContent{
-							Elements: []types.DocElement{
+							Elements: []types.InlineElement{
 								&types.StringElement{Content: "first paragraph"},
 							},
 						},
 					},
 				},
-				// &types.BlankLine{},
-				// &types.BlankLine{},
-				// &types.BlankLine{},
 				&types.Paragraph{
 					Lines: []*types.InlineContent{
 						&types.InlineContent{
-							Elements: []types.DocElement{
+							Elements: []types.InlineElement{
 								&types.StringElement{Content: "second paragraph"},
 							},
 						},

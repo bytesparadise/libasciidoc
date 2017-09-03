@@ -21,12 +21,15 @@ var _ = Describe("Parsing content", func() {
 			"\n" +
 			"a paragraph with *bold content*"
 		expectedDocument := &types.Document{
+			Metadata: &types.DocumentMetadata{
+				"title": "a heading",
+			},
 			Elements: []types.DocElement{
 				&types.Section{
 					Heading: types.Heading{
 						Level: 1,
 						Content: &types.InlineContent{
-							Elements: []types.DocElement{
+							Elements: []types.InlineElement{
 								&types.StringElement{Content: "a heading"},
 							},
 						},
@@ -39,7 +42,7 @@ var _ = Describe("Parsing content", func() {
 							Heading: types.Heading{
 								Level: 2,
 								Content: &types.InlineContent{
-									Elements: []types.DocElement{
+									Elements: []types.InlineElement{
 										&types.StringElement{Content: "section 1"},
 									},
 								},
@@ -51,10 +54,10 @@ var _ = Describe("Parsing content", func() {
 								&types.Paragraph{
 									Lines: []*types.InlineContent{
 										&types.InlineContent{
-											Elements: []types.DocElement{
+											Elements: []types.InlineElement{
 												&types.StringElement{Content: "a paragraph with "},
 												&types.QuotedText{Kind: types.Bold,
-													Elements: []types.DocElement{
+													Elements: []types.InlineElement{
 														&types.StringElement{Content: "bold content"},
 													},
 												},

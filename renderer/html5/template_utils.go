@@ -1,13 +1,22 @@
 package html5
 
 import (
-	"html/template"
+	htmltemplate "html/template"
+	texttemplate "text/template"
 
 	log "github.com/sirupsen/logrus"
 )
 
-func newTemplate(name, src string) *template.Template {
-	t, err := template.New(name).Parse(src)
+func newHTMLTemplate(name, src string) *htmltemplate.Template {
+	t, err := htmltemplate.New(name).Parse(src)
+	if err != nil {
+		log.Fatalf("failed to initialize '%s' template: %s", name, err.Error())
+	}
+	return t
+}
+
+func newTextTemplate(name, src string) *texttemplate.Template {
+	t, err := texttemplate.New(name).Parse(src)
 	if err != nil {
 		log.Fatalf("failed to initialize '%s' template: %s", name, err.Error())
 	}

@@ -12,6 +12,7 @@ var _ = Describe("Images", func() {
 			It("block image with empty alt", func() {
 				actualContent := "image::images/foo.png[]"
 				expectedDocument := &types.Document{
+					Metadata: &types.DocumentMetadata{},
 					Elements: []types.DocElement{
 						&types.BlockImage{
 							Macro: types.ImageMacro{
@@ -27,6 +28,7 @@ var _ = Describe("Images", func() {
 			It("block image with empty alt and trailing spaces", func() {
 				actualContent := "image::images/foo.png[]  \t\t  "
 				expectedDocument := &types.Document{
+					Metadata: &types.DocumentMetadata{},
 					Elements: []types.DocElement{
 						&types.BlockImage{
 							Macro: types.ImageMacro{
@@ -44,6 +46,7 @@ var _ = Describe("Images", func() {
 				actualContent := `image::images/foo.png[]
 `
 				expectedDocument := &types.Document{
+					Metadata: &types.DocumentMetadata{},
 					Elements: []types.DocElement{
 						&types.BlockImage{
 							Macro: types.ImageMacro{
@@ -61,6 +64,7 @@ var _ = Describe("Images", func() {
 				actualContent := `image::images/foo.png[]
   `
 				expectedDocument := &types.Document{
+					Metadata: &types.DocumentMetadata{},
 					Elements: []types.DocElement{
 						&types.BlockImage{
 							Macro: types.ImageMacro{
@@ -79,6 +83,7 @@ var _ = Describe("Images", func() {
  
 			`
 				expectedDocument := &types.Document{
+					Metadata: &types.DocumentMetadata{},
 					Elements: []types.DocElement{
 						&types.BlockImage{
 							Macro: types.ImageMacro{
@@ -96,6 +101,7 @@ var _ = Describe("Images", func() {
 			It("block image with alt", func() {
 				actualContent := "image::images/foo.png[the foo.png image]"
 				expectedDocument := &types.Document{
+					Metadata: &types.DocumentMetadata{},
 					Elements: []types.DocElement{
 						&types.BlockImage{
 							Macro: types.ImageMacro{
@@ -116,6 +122,7 @@ var _ = Describe("Images", func() {
 				width := "600"
 				height := "400"
 				expectedDocument := &types.Document{
+					Metadata: &types.DocumentMetadata{},
 					Elements: []types.DocElement{
 						&types.BlockImage{
 							Macro: types.ImageMacro{
@@ -137,16 +144,17 @@ var _ = Describe("Images", func() {
 			It("block image appending inline content", func() {
 				actualContent := "a paragraph\nimage::images/foo.png[]"
 				expectedDocument := &types.Document{
+					Metadata: &types.DocumentMetadata{},
 					Elements: []types.DocElement{
 						&types.Paragraph{
 							Lines: []*types.InlineContent{
 								&types.InlineContent{
-									Elements: []types.DocElement{
+									Elements: []types.InlineElement{
 										&types.StringElement{Content: "a paragraph"},
 									},
 								},
 								&types.InlineContent{
-									Elements: []types.DocElement{
+									Elements: []types.InlineElement{
 										&types.StringElement{Content: "image::images/foo.png[]"},
 									},
 								},
@@ -165,11 +173,12 @@ var _ = Describe("Images", func() {
 			It("inline image with empty alt", func() {
 				actualContent := "image:images/foo.png[]"
 				expectedDocument := &types.Document{
+					Metadata: &types.DocumentMetadata{},
 					Elements: []types.DocElement{
 						&types.Paragraph{
 							Lines: []*types.InlineContent{
 								&types.InlineContent{
-									Elements: []types.DocElement{
+									Elements: []types.InlineElement{
 										&types.InlineImage{
 											Macro: types.ImageMacro{
 												Path: "images/foo.png",
@@ -188,11 +197,12 @@ var _ = Describe("Images", func() {
 			It("inline image with empty alt and trailing spaces", func() {
 				actualContent := "image:images/foo.png[]  \t\t  "
 				expectedDocument := &types.Document{
+					Metadata: &types.DocumentMetadata{},
 					Elements: []types.DocElement{
 						&types.Paragraph{
 							Lines: []*types.InlineContent{
 								&types.InlineContent{
-									Elements: []types.DocElement{
+									Elements: []types.InlineElement{
 										&types.InlineImage{
 											Macro: types.ImageMacro{
 												Path: "images/foo.png",
@@ -214,11 +224,12 @@ var _ = Describe("Images", func() {
 			It("inline image surrounded with test", func() {
 				actualContent := "a foo image:images/foo.png[] bar..."
 				expectedDocument := &types.Document{
+					Metadata: &types.DocumentMetadata{},
 					Elements: []types.DocElement{
 						&types.Paragraph{
 							Lines: []*types.InlineContent{
 								&types.InlineContent{
-									Elements: []types.DocElement{
+									Elements: []types.InlineElement{
 										&types.StringElement{
 											Content: "a foo ",
 										},
@@ -243,11 +254,12 @@ var _ = Describe("Images", func() {
 			It("inline image with alt", func() {
 				actualContent := "image:images/foo.png[the foo.png image]"
 				expectedDocument := &types.Document{
+					Metadata: &types.DocumentMetadata{},
 					Elements: []types.DocElement{
 						&types.Paragraph{
 							Lines: []*types.InlineContent{
 								&types.InlineContent{
-									Elements: []types.DocElement{
+									Elements: []types.InlineElement{
 										&types.InlineImage{
 											Macro: types.ImageMacro{
 												Path: "images/foo.png",
@@ -267,16 +279,17 @@ var _ = Describe("Images", func() {
 			It("inline image appending inline content", func() {
 				actualContent := "a paragraph\nimage::images/foo.png[]"
 				expectedDocument := &types.Document{
+					Metadata: &types.DocumentMetadata{},
 					Elements: []types.DocElement{
 						&types.Paragraph{
 							Lines: []*types.InlineContent{
 								&types.InlineContent{
-									Elements: []types.DocElement{
+									Elements: []types.InlineElement{
 										&types.StringElement{Content: "a paragraph"},
 									},
 								},
 								&types.InlineContent{
-									Elements: []types.DocElement{
+									Elements: []types.InlineElement{
 										&types.StringElement{Content: "image::images/foo.png[]"},
 									},
 								},

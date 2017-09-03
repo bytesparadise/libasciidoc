@@ -23,6 +23,11 @@ type DocElement interface {
 	String(int) string
 }
 
+type InlineElement interface {
+	DocElement
+	PlainString() string
+}
+
 type Visitable interface {
 	Accept(Visitor) error
 }
@@ -40,6 +45,7 @@ type Visitor interface {
 
 //Document the top-level structure for a document
 type Document struct {
+	Metadata *DocumentMetadata
 	Elements []DocElement
 }
 
@@ -50,7 +56,27 @@ func NewDocument(blocks []interface{}) (*Document, error) {
 		log.Debugf("Line #%d: %v", i, reflect.TypeOf(block))
 	}
 	elements := convertBlocksToDocElements(blocks)
-	return &Document{Elements: elements}, nil
+	document := &Document{Elements: elements}
+	document.initMetadata()
+	return document, nil
+}
+
+// initMetadata initializes the Document's metadata
+func (d *Document) initMetadata() {
+	metadata := &DocumentMetadata{}
+	//look-up the document title in the (first) section of level 1
+	var headSection *Section
+	for _, element := range d.Elements {
+		if section, ok := element.(*Section); ok {
+			if section.Heading.Level == 1 {
+				headSection = section
+			}
+		}
+	}
+	if headSection != nil {
+		metadata.SetTitle(headSection.Heading.PlainString())
+	}
+	d.Metadata = metadata
 }
 
 //String implements the DocElement#String() method
@@ -155,6 +181,18 @@ func NewHeading(level int, inlineContent *InlineContent, metadata []interface{})
 //String implements the DocElement#String() method
 func (h *Heading) String(indentLevel int) string {
 	return fmt.Sprintf("%s<Heading %d> %s", indent(indentLevel), h.Level, h.Content.String(0))
+}
+
+//PlainString returns a plain string version of all elements in this Heading's Content, without any rendering
+func (h *Heading) PlainString() string {
+	result := bytes.NewBuffer(make([]byte, 0))
+	for i, element := range h.Content.Elements {
+		result.WriteString(element.PlainString())
+		if i < len(h.Content.Elements)-1 {
+			result.WriteString(" ")
+		}
+	}
+	return result.String()
 }
 
 //Accept implements DocElement#Accept(Visitor)
@@ -454,14 +492,14 @@ func (p *Paragraph) Accept(v Visitor) error {
 // InlineContent the structure for the lines in paragraphs
 type InlineContent struct {
 	// Input    []byte
-	Elements []DocElement
+	Elements []InlineElement
 }
 
 //NewInlineContent initializes a new `InlineContent` from the given values
 func NewInlineContent(text []byte, elements []interface{}) (*InlineContent, error) {
-	mergedElements := make([]DocElement, 0)
+	mergedElements := make([]InlineElement, 0)
 	for _, e := range merge(elements) {
-		mergedElements = append(mergedElements, e.(DocElement))
+		mergedElements = append(mergedElements, e.(InlineElement))
 	}
 	result := &InlineContent{Elements: mergedElements}
 	log.Debugf("Initialized new InlineContent with %d elements: '%s'", len(result.Elements), result.String(0))
@@ -578,6 +616,11 @@ func NewInlineImage(input []byte, imageMacro ImageMacro) (*InlineImage, error) {
 //String implements the DocElement#String() method
 func (i *InlineImage) String(indentLevel int) string {
 	return fmt.Sprintf("%s<%v> %s", indent(indentLevel), reflect.TypeOf(i), i.Macro.String(0))
+}
+
+//PlainString implements the InlineElement#PlainString() method
+func (i *InlineImage) PlainString() string {
+	return i.Macro.Alt
 }
 
 //Accept implements DocElement#Accept(Visitor)
@@ -874,6 +917,11 @@ func (s *StringElement) String(indentLevel int) string {
 	return fmt.Sprintf("%s`%s`", indent(indentLevel), s.Content)
 }
 
+//PlainString implements the InlineElement#PlainString() method
+func (s *StringElement) PlainString() string {
+	return s.Content
+}
+
 //Accept implements DocElement#Accept(Visitor)
 func (s *StringElement) Accept(v Visitor) error {
 	err := v.BeforeVisit(s)
@@ -898,7 +946,7 @@ func (s *StringElement) Accept(v Visitor) error {
 // QuotedText the structure for quoted text
 type QuotedText struct {
 	Kind     QuotedTextKind
-	Elements []DocElement
+	Elements []InlineElement
 }
 
 // QuotedTextKind the type for
@@ -915,7 +963,7 @@ const (
 
 //NewQuotedText initializes a new `QuotedText` from the given kind and content
 func NewQuotedText(kind QuotedTextKind, content []interface{}) (*QuotedText, error) {
-	elements, err := toDocElements(merge(content))
+	elements, err := toInlineElements(merge(content))
 	if err != nil {
 		return nil, errors.Wrapf(err, "unable to initialize a new QuotedText")
 	}
@@ -929,6 +977,18 @@ func NewQuotedText(kind QuotedTextKind, content []interface{}) (*QuotedText, err
 //String implements the DocElement#String() method
 func (t *QuotedText) String(indentLevel int) string {
 	return fmt.Sprintf("%s<%v (%d)> %v", indent(indentLevel), reflect.TypeOf(t), t.Kind, t.Elements)
+}
+
+//PlainString implements the InlineElement#PlainString() method
+func (t *QuotedText) PlainString() string {
+	result := bytes.NewBuffer(make([]byte, 0))
+	for i, element := range t.Elements {
+		result.WriteString(element.PlainString())
+		if i < len(t.Elements)-1 {
+			result.WriteString(" ")
+		}
+	}
+	return result.String()
 }
 
 //Accept implements DocElement#Accept(Visitor)
@@ -1019,6 +1079,11 @@ func NewExternalLink(url, text []interface{}) (*ExternalLink, error) {
 //String implements the DocElement#String() method
 func (l *ExternalLink) String(indentLevel int) string {
 	return fmt.Sprintf("%s<%v> %s[%s]", indent(indentLevel), reflect.TypeOf(l), l.URL, l.Text)
+}
+
+//PlainString implements the InlineElement#PlainString() method
+func (l *ExternalLink) PlainString() string {
+	return l.Text
 }
 
 //Accept implements DocElement#Accept(Visitor)

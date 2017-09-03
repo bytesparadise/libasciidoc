@@ -17,9 +17,9 @@ var monospaceTextTmpl *template.Template
 
 // initializes the templates
 func init() {
-	boldTextTmpl = newTemplate("bold text", "<strong>{{.}}</strong>")
-	italicTextTmpl = newTemplate("italic text", "<em>{{.}}</em>")
-	monospaceTextTmpl = newTemplate("monospace text", "<code>{{.}}</code>")
+	boldTextTmpl = newHTMLTemplate("bold text", "<strong>{{.}}</strong>")
+	italicTextTmpl = newHTMLTemplate("italic text", "<em>{{.}}</em>")
+	monospaceTextTmpl = newHTMLTemplate("monospace text", "<code>{{.}}</code>")
 }
 
 func renderQuotedText(ctx context.Context, t types.QuotedText) ([]byte, error) {

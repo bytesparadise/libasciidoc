@@ -11,7 +11,7 @@ var _ = Describe("Normalizing String", func() {
 
 	It("hello", func() {
 		source := &InlineContent{
-			Elements: []DocElement{
+			Elements: []InlineElement{
 				&StringElement{Content: "hello"},
 			},
 		}
@@ -20,7 +20,7 @@ var _ = Describe("Normalizing String", func() {
 
 	It("héllo with an accent", func() {
 		source := &InlineContent{
-			Elements: []DocElement{
+			Elements: []InlineElement{
 				&StringElement{Content: "  héllo 1.2   and 3 Spaces"},
 			},
 		}
@@ -29,7 +29,7 @@ var _ = Describe("Normalizing String", func() {
 
 	It("a an accent and a swedish character", func() {
 		source := &InlineContent{
-			Elements: []DocElement{
+			Elements: []InlineElement{
 				&StringElement{Content: `A à ⌘`},
 			},
 		}
@@ -38,7 +38,7 @@ var _ = Describe("Normalizing String", func() {
 
 	It("AŁA", func() {
 		source := &InlineContent{
-			Elements: []DocElement{
+			Elements: []InlineElement{
 				&StringElement{Content: `AŁA 0.1 ?`},
 			},
 		}
@@ -47,7 +47,7 @@ var _ = Describe("Normalizing String", func() {
 
 	It("it's  2 spaces, here !", func() {
 		source := &InlineContent{
-			Elements: []DocElement{
+			Elements: []InlineElement{
 				&StringElement{Content: `it's  2 spaces, here !`},
 			},
 		}
@@ -57,11 +57,11 @@ var _ = Describe("Normalizing String", func() {
 	It("content with <strong> markup", func() {
 		// == a section title, with *bold content*
 		source := &InlineContent{
-			Elements: []DocElement{
+			Elements: []InlineElement{
 				&StringElement{Content: "a section title, with"},
 				&QuotedText{
 					Kind: Bold,
-					Elements: []DocElement{
+					Elements: []InlineElement{
 						&StringElement{Content: "bold content"},
 					},
 				},

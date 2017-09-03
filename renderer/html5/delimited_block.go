@@ -14,7 +14,7 @@ var sourceBlockTmpl *template.Template
 
 // initializes the templates
 func init() {
-	sourceBlockTmpl = newTemplate("delimited source block", `<div class="listingblock">
+	sourceBlockTmpl = newHTMLTemplate("delimited source block", `<div class="listingblock">
 <div class="content">
 <pre class="highlight"><code>{{.Content}}</code></pre>
 </div>
