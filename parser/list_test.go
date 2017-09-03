@@ -12,6 +12,7 @@ var _ = Describe("List Items", func() {
 			It("1 list with a single item", func() {
 				actualContent := "* a list item"
 				expectedDocument := &types.Document{
+					Metadata: &types.DocumentMetadata{},
 					Elements: []types.DocElement{
 						&types.List{
 							Items: []*types.ListItem{
@@ -20,7 +21,7 @@ var _ = Describe("List Items", func() {
 									Content: &types.ListItemContent{
 										Lines: []*types.InlineContent{
 											&types.InlineContent{
-												Elements: []types.DocElement{
+												Elements: []types.InlineElement{
 													&types.StringElement{Content: "a list item"},
 												},
 											},
@@ -37,6 +38,7 @@ var _ = Describe("List Items", func() {
 				actualContent := "[#listID]\n" +
 					"* a list item"
 				expectedDocument := &types.Document{
+					Metadata: &types.DocumentMetadata{},
 					Elements: []types.DocElement{
 						&types.List{
 							ID: &types.ElementID{Value: "listID"},
@@ -46,7 +48,7 @@ var _ = Describe("List Items", func() {
 									Content: &types.ListItemContent{
 										Lines: []*types.InlineContent{
 											&types.InlineContent{
-												Elements: []types.DocElement{
+												Elements: []types.InlineElement{
 													&types.StringElement{Content: "a list item"},
 												},
 											},
@@ -64,6 +66,7 @@ var _ = Describe("List Items", func() {
 				actualContent := "* a first item\n" +
 					"* a second item with *bold content*"
 				expectedDocument := &types.Document{
+					Metadata: &types.DocumentMetadata{},
 					Elements: []types.DocElement{
 						&types.List{
 							Items: []*types.ListItem{
@@ -72,7 +75,7 @@ var _ = Describe("List Items", func() {
 									Content: &types.ListItemContent{
 										Lines: []*types.InlineContent{
 											&types.InlineContent{
-												Elements: []types.DocElement{
+												Elements: []types.InlineElement{
 													&types.StringElement{Content: "a first item"},
 												},
 											},
@@ -84,10 +87,10 @@ var _ = Describe("List Items", func() {
 									Content: &types.ListItemContent{
 										Lines: []*types.InlineContent{
 											&types.InlineContent{
-												Elements: []types.DocElement{
+												Elements: []types.InlineElement{
 													&types.StringElement{Content: "a second item with "},
 													&types.QuotedText{Kind: types.Bold,
-														Elements: []types.DocElement{
+														Elements: []types.InlineElement{
 															&types.StringElement{Content: "bold content"},
 														},
 													},
@@ -106,6 +109,7 @@ var _ = Describe("List Items", func() {
 				actualContent := "- a first item\n" +
 					"- a second item with *bold content*"
 				expectedDocument := &types.Document{
+					Metadata: &types.DocumentMetadata{},
 					Elements: []types.DocElement{
 						&types.List{
 							Items: []*types.ListItem{
@@ -114,7 +118,7 @@ var _ = Describe("List Items", func() {
 									Content: &types.ListItemContent{
 										Lines: []*types.InlineContent{
 											&types.InlineContent{
-												Elements: []types.DocElement{
+												Elements: []types.InlineElement{
 													&types.StringElement{Content: "a first item"},
 												},
 											},
@@ -126,10 +130,10 @@ var _ = Describe("List Items", func() {
 									Content: &types.ListItemContent{
 										Lines: []*types.InlineContent{
 											&types.InlineContent{
-												Elements: []types.DocElement{
+												Elements: []types.InlineElement{
 													&types.StringElement{Content: "a second item with "},
 													&types.QuotedText{Kind: types.Bold,
-														Elements: []types.DocElement{
+														Elements: []types.InlineElement{
 															&types.StringElement{Content: "bold content"},
 														},
 													},
@@ -150,6 +154,7 @@ var _ = Describe("List Items", func() {
 					"\n" +
 					"* a second item with *bold content*"
 				expectedDocument := &types.Document{
+					Metadata: &types.DocumentMetadata{},
 					Elements: []types.DocElement{
 						&types.List{
 							Items: []*types.ListItem{
@@ -158,7 +163,7 @@ var _ = Describe("List Items", func() {
 									Content: &types.ListItemContent{
 										Lines: []*types.InlineContent{
 											&types.InlineContent{
-												Elements: []types.DocElement{
+												Elements: []types.InlineElement{
 													&types.StringElement{Content: "a first item"},
 												},
 											},
@@ -170,10 +175,10 @@ var _ = Describe("List Items", func() {
 									Content: &types.ListItemContent{
 										Lines: []*types.InlineContent{
 											&types.InlineContent{
-												Elements: []types.DocElement{
+												Elements: []types.InlineElement{
 													&types.StringElement{Content: "a second item with "},
 													&types.QuotedText{Kind: types.Bold,
-														Elements: []types.DocElement{
+														Elements: []types.InlineElement{
 															&types.StringElement{Content: "bold content"},
 														},
 													},
@@ -194,6 +199,7 @@ var _ = Describe("List Items", func() {
 					"* item 2\n" +
 					"on 2 lines, too."
 				expectedDocument := &types.Document{
+					Metadata: &types.DocumentMetadata{},
 					Elements: []types.DocElement{
 						&types.List{
 							Items: []*types.ListItem{
@@ -202,12 +208,12 @@ var _ = Describe("List Items", func() {
 									Content: &types.ListItemContent{
 										Lines: []*types.InlineContent{
 											&types.InlineContent{
-												Elements: []types.DocElement{
+												Elements: []types.InlineElement{
 													&types.StringElement{Content: "item 1"},
 												},
 											},
 											&types.InlineContent{
-												Elements: []types.DocElement{
+												Elements: []types.InlineElement{
 													&types.StringElement{Content: "  on 2 lines."},
 												},
 											},
@@ -219,12 +225,12 @@ var _ = Describe("List Items", func() {
 									Content: &types.ListItemContent{
 										Lines: []*types.InlineContent{
 											&types.InlineContent{
-												Elements: []types.DocElement{
+												Elements: []types.InlineElement{
 													&types.StringElement{Content: "item 2"},
 												},
 											},
 											&types.InlineContent{
-												Elements: []types.DocElement{
+												Elements: []types.InlineElement{
 													&types.StringElement{Content: "on 2 lines, too."},
 												},
 											},
@@ -244,6 +250,7 @@ var _ = Describe("List Items", func() {
 					"\n" +
 					"* an item in the second list"
 				expectedDocument := &types.Document{
+					Metadata: &types.DocumentMetadata{},
 					Elements: []types.DocElement{
 						&types.List{
 							Items: []*types.ListItem{
@@ -252,7 +259,7 @@ var _ = Describe("List Items", func() {
 									Content: &types.ListItemContent{
 										Lines: []*types.InlineContent{
 											&types.InlineContent{
-												Elements: []types.DocElement{
+												Elements: []types.InlineElement{
 													&types.StringElement{Content: "an item in the first list"},
 												},
 											},
@@ -269,7 +276,7 @@ var _ = Describe("List Items", func() {
 									Content: &types.ListItemContent{
 										Lines: []*types.InlineContent{
 											&types.InlineContent{
-												Elements: []types.DocElement{
+												Elements: []types.InlineElement{
 													&types.StringElement{Content: "an item in the second list"},
 												},
 											},
@@ -296,6 +303,7 @@ var _ = Describe("List Items", func() {
 					"* item 2\n" +
 					"** item 2.1\n"
 				expectedDocument := &types.Document{
+					Metadata: &types.DocumentMetadata{},
 					Elements: []types.DocElement{
 						&types.List{
 							Items: []*types.ListItem{
@@ -304,7 +312,7 @@ var _ = Describe("List Items", func() {
 									Content: &types.ListItemContent{
 										Lines: []*types.InlineContent{
 											&types.InlineContent{
-												Elements: []types.DocElement{
+												Elements: []types.InlineElement{
 													&types.StringElement{Content: "item 1"},
 												},
 											},
@@ -317,8 +325,7 @@ var _ = Describe("List Items", func() {
 												Content: &types.ListItemContent{
 													Lines: []*types.InlineContent{
 														&types.InlineContent{
-
-															Elements: []types.DocElement{
+															Elements: []types.InlineElement{
 																&types.StringElement{Content: "item 1.1"},
 															},
 														},
@@ -330,7 +337,7 @@ var _ = Describe("List Items", func() {
 												Content: &types.ListItemContent{
 													Lines: []*types.InlineContent{
 														&types.InlineContent{
-															Elements: []types.DocElement{
+															Elements: []types.InlineElement{
 																&types.StringElement{Content: "item 1.2"},
 															},
 														},
@@ -343,7 +350,7 @@ var _ = Describe("List Items", func() {
 															Content: &types.ListItemContent{
 																Lines: []*types.InlineContent{
 																	&types.InlineContent{
-																		Elements: []types.DocElement{
+																		Elements: []types.InlineElement{
 																			&types.StringElement{Content: "item 1.2.1"},
 																		},
 																	},
@@ -358,7 +365,7 @@ var _ = Describe("List Items", func() {
 												Content: &types.ListItemContent{
 													Lines: []*types.InlineContent{
 														&types.InlineContent{
-															Elements: []types.DocElement{
+															Elements: []types.InlineElement{
 																&types.StringElement{Content: "item 1.3"},
 															},
 														},
@@ -370,7 +377,7 @@ var _ = Describe("List Items", func() {
 												Content: &types.ListItemContent{
 													Lines: []*types.InlineContent{
 														&types.InlineContent{
-															Elements: []types.DocElement{
+															Elements: []types.InlineElement{
 																&types.StringElement{Content: "item 1.4"},
 															},
 														},
@@ -385,7 +392,7 @@ var _ = Describe("List Items", func() {
 									Content: &types.ListItemContent{
 										Lines: []*types.InlineContent{
 											&types.InlineContent{
-												Elements: []types.DocElement{
+												Elements: []types.InlineElement{
 													&types.StringElement{Content: "item 2"},
 												},
 											},
@@ -398,7 +405,7 @@ var _ = Describe("List Items", func() {
 												Content: &types.ListItemContent{
 													Lines: []*types.InlineContent{
 														&types.InlineContent{
-															Elements: []types.DocElement{
+															Elements: []types.InlineElement{
 																&types.StringElement{Content: "item 2.1"},
 															},
 														},
@@ -425,6 +432,7 @@ var _ = Describe("List Items", func() {
 					"** item 1.2\n" +
 					"* item 2"
 				expectedDocument := &types.Document{
+					Metadata: &types.DocumentMetadata{},
 					Elements: []types.DocElement{
 						&types.List{
 							Items: []*types.ListItem{
@@ -433,7 +441,7 @@ var _ = Describe("List Items", func() {
 									Content: &types.ListItemContent{
 										Lines: []*types.InlineContent{
 											&types.InlineContent{
-												Elements: []types.DocElement{
+												Elements: []types.InlineElement{
 													&types.StringElement{Content: "item 1"},
 												},
 											},
@@ -446,7 +454,7 @@ var _ = Describe("List Items", func() {
 												Content: &types.ListItemContent{
 													Lines: []*types.InlineContent{
 														&types.InlineContent{
-															Elements: []types.DocElement{
+															Elements: []types.InlineElement{
 																&types.StringElement{Content: "item 1.1"},
 															},
 														},
@@ -459,7 +467,7 @@ var _ = Describe("List Items", func() {
 															Content: &types.ListItemContent{
 																Lines: []*types.InlineContent{
 																	&types.InlineContent{
-																		Elements: []types.DocElement{
+																		Elements: []types.InlineElement{
 																			&types.StringElement{Content: "item 1.1.1"},
 																		},
 																	},
@@ -474,7 +482,7 @@ var _ = Describe("List Items", func() {
 												Content: &types.ListItemContent{
 													Lines: []*types.InlineContent{
 														&types.InlineContent{
-															Elements: []types.DocElement{
+															Elements: []types.InlineElement{
 																&types.StringElement{Content: "item 1.2"},
 															},
 														},
@@ -489,7 +497,7 @@ var _ = Describe("List Items", func() {
 									Content: &types.ListItemContent{
 										Lines: []*types.InlineContent{
 											&types.InlineContent{
-												Elements: []types.DocElement{
+												Elements: []types.InlineElement{
 													&types.StringElement{Content: "item 2"},
 												},
 											},
@@ -506,11 +514,12 @@ var _ = Describe("List Items", func() {
 			It("invalid list item", func() {
 				actualContent := "*an invalid list item"
 				expectedDocument := &types.Document{
+					Metadata: &types.DocumentMetadata{},
 					Elements: []types.DocElement{
 						&types.Paragraph{
 							Lines: []*types.InlineContent{
 								&types.InlineContent{
-									Elements: []types.DocElement{
+									Elements: []types.InlineElement{
 										&types.StringElement{Content: "*an invalid list item"},
 									},
 								},

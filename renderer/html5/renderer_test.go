@@ -22,7 +22,7 @@ func verify(t GinkgoTInterface, expected, content string) {
 	actualDocument := doc.(*types.Document)
 	t.Logf("Actual document:\n%s", actualDocument.String(1))
 	buff := bytes.NewBuffer(make([]byte, 0))
-	err = Render(context.Background(), *actualDocument, buff)
+	err = Render(context.Background(), *actualDocument, buff, nil)
 	t.Log("Done processing document")
 	require.Nil(t, err)
 	require.Empty(t, err)

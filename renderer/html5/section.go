@@ -20,30 +20,30 @@ var otherSectionContentTmpl *template.Template
 
 // initializes the templates
 func init() {
-	section1ContentTmpl = newTemplate("section 1",
+	section1ContentTmpl = newHTMLTemplate("section 1",
 		`{{ if .Preamble }}<div id="preamble">
 <div class="sectionbody">
 {{.Preamble}}
 </div>
 </div>
 {{end}}{{ if .Elements }}{{.Elements}}{{end}}`)
-	section2ContentTmpl = newTemplate("section 2",
+	section2ContentTmpl = newHTMLTemplate("section 2",
 		`<div class="{{.Class}}">
 {{.Heading}}
 <div class="sectionbody">{{ if .Elements }}
 {{.Elements}}{{end}}
 </div>
 </div>`)
-	otherSectionContentTmpl = newTemplate("other section",
+	otherSectionContentTmpl = newHTMLTemplate("other section",
 		`<div class="{{.Class}}">
 {{.Heading}}{{ if .Elements }}
 {{.Elements}}{{end}}
 </div>`)
-	// 	section1HeaderTmpl = newTemplate("section 1 heading",
+	// 	section1HeaderTmpl = newHTMLTemplate("section 1 heading",
 	// 		`<div id="header">
 	// <h1>{{.Content}}</h1>
 	// </div>`)
-	otherSectionHeaderTmpl = newTemplate("other heading",
+	otherSectionHeaderTmpl = newHTMLTemplate("other heading",
 		`<h{{.Level}} id="{{.ID}}">{{.Content}}</h{{.Level}}>`)
 }
 

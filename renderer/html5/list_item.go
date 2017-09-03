@@ -17,17 +17,17 @@ var listItemContentTmpl *template.Template
 
 // initializes the templates
 func init() {
-	unorderedListTmpl = newTemplate("unordered list", `<div{{ if .ID }} id="{{.ID.Value}}"{{ end }} class="ulist">
+	unorderedListTmpl = newHTMLTemplate("unordered list", `<div{{ if .ID }} id="{{.ID.Value}}"{{ end }} class="ulist">
 <ul>
 {{.Items}}
 </ul>
 </div>`) // include an extra line-return at the end
-	listItemTmpl = newTemplate("list item", `<li>
+	listItemTmpl = newHTMLTemplate("list item", `<li>
 {{.Content}}{{ if .Children }}
 {{.Children}}
 </li>{{ else }}
 </li>{{ end }}`)
-	listItemContentTmpl = newTemplate("list item content", `<p>{{.}}</p>`)
+	listItemContentTmpl = newHTMLTemplate("list item content", `<p>{{.}}</p>`)
 }
 
 func renderList(ctx context.Context, list types.List) ([]byte, error) {

@@ -12,12 +12,15 @@ var _ = Describe("Sections", func() {
 		It("section with heading only", func() {
 			actualContent := "= a heading"
 			expectedDocument := &types.Document{
+				Metadata: &types.DocumentMetadata{
+					"title": "a heading",
+				},
 				Elements: []types.DocElement{
 					&types.Section{
 						Heading: types.Heading{
 							Level: 1,
 							Content: &types.InlineContent{
-								Elements: []types.DocElement{
+								Elements: []types.InlineElement{
 									&types.StringElement{Content: "a heading"},
 								},
 							},
@@ -34,12 +37,13 @@ var _ = Describe("Sections", func() {
 		It("section level 2", func() {
 			actualContent := `== section 2`
 			expectedDocument := &types.Document{
+				Metadata: &types.DocumentMetadata{},
 				Elements: []types.DocElement{
 					&types.Section{
 						Heading: types.Heading{
 							Level: 2,
 							Content: &types.InlineContent{
-								Elements: []types.DocElement{
+								Elements: []types.InlineElement{
 									&types.StringElement{Content: "section 2"},
 								},
 							},
@@ -57,14 +61,15 @@ var _ = Describe("Sections", func() {
 		It("section level 2 with quoted text", func() {
 			actualContent := `==  *2 spaces and bold content*`
 			expectedDocument := &types.Document{
+				Metadata: &types.DocumentMetadata{},
 				Elements: []types.DocElement{
 					&types.Section{
 						Heading: types.Heading{
 							Level: 2,
 							Content: &types.InlineContent{
-								Elements: []types.DocElement{
+								Elements: []types.InlineElement{
 									&types.QuotedText{
-										Elements: []types.DocElement{
+										Elements: []types.InlineElement{
 											&types.StringElement{Content: "2 spaces and bold content"},
 										},
 									},
@@ -86,12 +91,14 @@ var _ = Describe("Sections", func() {
 				"\n" +
 				"== section 2"
 			expectedDocument := &types.Document{
-				Elements: []types.DocElement{
+				Metadata: &types.DocumentMetadata{
+					"title": "a heading",
+				}, Elements: []types.DocElement{
 					&types.Section{
 						Heading: types.Heading{
 							Level: 1,
 							Content: &types.InlineContent{
-								Elements: []types.DocElement{
+								Elements: []types.InlineElement{
 									&types.StringElement{Content: "a heading"},
 								},
 							},
@@ -104,7 +111,7 @@ var _ = Describe("Sections", func() {
 								Heading: types.Heading{
 									Level: 2,
 									Content: &types.InlineContent{
-										Elements: []types.DocElement{
+										Elements: []types.InlineElement{
 											&types.StringElement{Content: "section 2"},
 										},
 									},
@@ -126,12 +133,15 @@ var _ = Describe("Sections", func() {
 				"\n" +
 				"=== section 3"
 			expectedDocument := &types.Document{
+				Metadata: &types.DocumentMetadata{
+					"title": "a heading",
+				},
 				Elements: []types.DocElement{
 					&types.Section{
 						Heading: types.Heading{
 							Level: 1,
 							Content: &types.InlineContent{
-								Elements: []types.DocElement{
+								Elements: []types.InlineElement{
 									&types.StringElement{Content: "a heading"},
 								},
 							},
@@ -144,7 +154,7 @@ var _ = Describe("Sections", func() {
 								Heading: types.Heading{
 									Level: 3,
 									Content: &types.InlineContent{
-										Elements: []types.DocElement{
+										Elements: []types.InlineElement{
 											&types.StringElement{Content: "section 3"},
 										},
 									},
@@ -165,12 +175,13 @@ var _ = Describe("Sections", func() {
 			actualContent := `== a title
 and a paragraph`
 			expectedDocument := &types.Document{
+				Metadata: &types.DocumentMetadata{},
 				Elements: []types.DocElement{
 					&types.Section{
 						Heading: types.Heading{
 							Level: 2,
 							Content: &types.InlineContent{
-								Elements: []types.DocElement{
+								Elements: []types.InlineElement{
 									&types.StringElement{Content: "a title"},
 								},
 							},
@@ -182,7 +193,7 @@ and a paragraph`
 							&types.Paragraph{
 								Lines: []*types.InlineContent{
 									&types.InlineContent{
-										Elements: []types.DocElement{
+										Elements: []types.InlineElement{
 											&types.StringElement{Content: "and a paragraph"},
 										},
 									},
@@ -197,12 +208,13 @@ and a paragraph`
 		It("section level 2 with a paragraph separated by empty line", func() {
 			actualContent := "== a title\n\nand a paragraph"
 			expectedDocument := &types.Document{
+				Metadata: &types.DocumentMetadata{},
 				Elements: []types.DocElement{
 					&types.Section{
 						Heading: types.Heading{
 							Level: 2,
 							Content: &types.InlineContent{
-								Elements: []types.DocElement{
+								Elements: []types.InlineElement{
 									&types.StringElement{Content: "a title"},
 								},
 							},
@@ -214,7 +226,7 @@ and a paragraph`
 							&types.Paragraph{
 								Lines: []*types.InlineContent{
 									&types.InlineContent{
-										Elements: []types.DocElement{
+										Elements: []types.InlineElement{
 											&types.StringElement{Content: "and a paragraph"},
 										},
 									},
@@ -230,12 +242,13 @@ and a paragraph`
 		It("section level 2 with a paragraph separated by non-empty line", func() {
 			actualContent := "== a title\n    \nand a paragraph"
 			expectedDocument := &types.Document{
+				Metadata: &types.DocumentMetadata{},
 				Elements: []types.DocElement{
 					&types.Section{
 						Heading: types.Heading{
 							Level: 2,
 							Content: &types.InlineContent{
-								Elements: []types.DocElement{
+								Elements: []types.InlineElement{
 									&types.StringElement{Content: "a title"},
 								},
 							},
@@ -247,7 +260,7 @@ and a paragraph`
 							&types.Paragraph{
 								Lines: []*types.InlineContent{
 									&types.InlineContent{
-										Elements: []types.DocElement{
+										Elements: []types.InlineElement{
 											&types.StringElement{Content: "and a paragraph"},
 										},
 									},
@@ -272,12 +285,15 @@ a paragraph
 == Section B
 a paragraph`
 			expectedDocument := &types.Document{
+				Metadata: &types.DocumentMetadata{
+					"title": "a title",
+				},
 				Elements: []types.DocElement{
 					&types.Section{
 						Heading: types.Heading{
 							Level: 1,
 							Content: &types.InlineContent{
-								Elements: []types.DocElement{
+								Elements: []types.InlineElement{
 									&types.StringElement{Content: "a title"},
 								},
 							},
@@ -290,7 +306,7 @@ a paragraph`
 								Heading: types.Heading{
 									Level: 2,
 									Content: &types.InlineContent{
-										Elements: []types.DocElement{
+										Elements: []types.InlineElement{
 											&types.StringElement{Content: "Section A"},
 										},
 									},
@@ -302,7 +318,7 @@ a paragraph`
 									&types.Paragraph{
 										Lines: []*types.InlineContent{
 											&types.InlineContent{
-												Elements: []types.DocElement{
+												Elements: []types.InlineElement{
 													&types.StringElement{Content: "a paragraph"},
 												},
 											},
@@ -313,7 +329,7 @@ a paragraph`
 										Heading: types.Heading{
 											Level: 3,
 											Content: &types.InlineContent{
-												Elements: []types.DocElement{
+												Elements: []types.InlineElement{
 													&types.StringElement{Content: "Section A.a"},
 												},
 											},
@@ -325,7 +341,7 @@ a paragraph`
 											&types.Paragraph{
 												Lines: []*types.InlineContent{
 													&types.InlineContent{
-														Elements: []types.DocElement{
+														Elements: []types.InlineElement{
 															&types.StringElement{Content: "a paragraph"},
 														},
 													},
@@ -340,7 +356,7 @@ a paragraph`
 								Heading: types.Heading{
 									Level: 2,
 									Content: &types.InlineContent{
-										Elements: []types.DocElement{
+										Elements: []types.InlineElement{
 											&types.StringElement{Content: "Section B"},
 										},
 									},
@@ -352,7 +368,7 @@ a paragraph`
 									&types.Paragraph{
 										Lines: []*types.InlineContent{
 											&types.InlineContent{
-												Elements: []types.DocElement{
+												Elements: []types.InlineElement{
 													&types.StringElement{Content: "a paragraph"},
 												},
 											},
@@ -372,11 +388,12 @@ a paragraph`
 		It("heading invalid - missing space", func() {
 			actualContent := "=a heading"
 			expectedDocument := &types.Document{
+				Metadata: &types.DocumentMetadata{},
 				Elements: []types.DocElement{
 					&types.Paragraph{
 						Lines: []*types.InlineContent{
 							&types.InlineContent{
-								Elements: []types.DocElement{
+								Elements: []types.InlineElement{
 									&types.StringElement{Content: "=a heading"},
 								},
 							},
@@ -389,11 +406,12 @@ a paragraph`
 		It("heading invalid - heading space", func() {
 			actualContent := " = a heading"
 			expectedDocument := &types.Document{
+				Metadata: &types.DocumentMetadata{},
 				Elements: []types.DocElement{
 					&types.Paragraph{
 						Lines: []*types.InlineContent{
 							&types.InlineContent{
-								Elements: []types.DocElement{
+								Elements: []types.InlineElement{
 									&types.StringElement{Content: " = a heading"},
 								},
 							},
@@ -408,11 +426,14 @@ a paragraph`
 				"\n" +
 				" == section 2"
 			expectedDocument := &types.Document{
+				Metadata: &types.DocumentMetadata{
+					"title": "a heading",
+				},
 				Elements: []types.DocElement{
 					&types.Section{
 						Heading: types.Heading{
 							Level: 1, Content: &types.InlineContent{
-								Elements: []types.DocElement{
+								Elements: []types.InlineElement{
 									&types.StringElement{Content: "a heading"},
 								},
 							},
@@ -424,7 +445,7 @@ a paragraph`
 							&types.Paragraph{
 								Lines: []*types.InlineContent{
 									&types.InlineContent{
-										Elements: []types.DocElement{
+										Elements: []types.InlineElement{
 											&types.StringElement{Content: " == section 2"},
 										},
 									},

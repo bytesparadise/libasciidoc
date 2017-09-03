@@ -15,7 +15,7 @@ var paragraphTmpl *template.Template
 
 // initializes the template
 func init() {
-	paragraphTmpl = newTemplate("paragraph",
+	paragraphTmpl = newHTMLTemplate("paragraph",
 		`<div {{ if .ID }}id="{{.ID.Value}}" {{ end }}class="paragraph">{{ if .Title}}
 <div class="title">{{.Title.Value}}</div>{{ end }}
 <p>{{.Lines}}</p>

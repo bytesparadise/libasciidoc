@@ -14,14 +14,14 @@ func indent(indentLevel int) string {
 	return strings.Repeat("  ", indentLevel)
 }
 
-func toDocElements(elements []interface{}) ([]DocElement, error) {
-	result := make([]DocElement, len(elements))
+func toInlineElements(elements []interface{}) ([]InlineElement, error) {
+	result := make([]InlineElement, len(elements))
 	for i, element := range elements {
 		switch element := element.(type) {
-		case DocElement:
+		case InlineElement:
 			result[i] = element
 		default:
-			return nil, errors.Errorf("unexpected element type: %v (expected a DocElement instead)", reflect.TypeOf(element))
+			return nil, errors.Errorf("unexpected element type: %v (expected a InlineElement instead)", reflect.TypeOf(element))
 		}
 	}
 	return result, nil

@@ -3,8 +3,10 @@ package libasciidoc_test
 import (
 	"bytes"
 	"strings"
+	"time"
 
 	. "github.com/bytesparadise/libasciidoc"
+	"github.com/bytesparadise/libasciidoc/renderer"
 	. "github.com/onsi/ginkgo"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -12,20 +14,31 @@ import (
 
 var _ = Describe("Rendering documents in HTML", func() {
 
-	It("document with no section", func() {
-		// main title alone is not rendered in the body
-		content := "= a document"
-		expected := ""
-		verify(GinkgoT(), expected, content)
-	})
+	Context("Document Body", func() {
 
-	It("section levels 1 and 2", func() {
-		content := `= a document title
+		It("empty document", func() {
+			// main title alone is not rendered in the body
+			source := ""
+			expectedContent := ""
+			verifyDocumentBody(GinkgoT(), nil, expectedContent, source)
+		})
+
+		It("document with no section", func() {
+			// main title alone is not rendered in the body
+			source := "= a document title"
+			expectedTitle := "a document title"
+			expectedContent := ""
+			verifyDocumentBody(GinkgoT(), &expectedTitle, expectedContent, source)
+		})
+
+		It("section levels 1 and 2", func() {
+			source := `= a document title
 
 == Section A
 
 a paragraph with *bold content*`
-		expected := `<div class="sect1">
+			expectedTitle := "a document title"
+			expectedContent := `<div class="sect1">
 <h2 id="_section_a">Section A</h2>
 <div class="sectionbody">
 <div class="paragraph">
@@ -33,11 +46,26 @@ a paragraph with *bold content*`
 </div>
 </div>
 </div>`
-		verify(GinkgoT(), expected, content)
-	})
+			verifyDocumentBody(GinkgoT(), &expectedTitle, expectedContent, source)
+		})
 
-	It("section levels 1, 2 and 3", func() {
-		content := `= a document title
+		It("section level 2", func() {
+			source := `== Section A
+
+a paragraph with *bold content*`
+			expectedContent := `<div class="sect1">
+<h2 id="_section_a">Section A</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>a paragraph with <strong>bold content</strong></p>
+</div>
+</div>
+</div>`
+			verifyDocumentBody(GinkgoT(), nil, expectedContent, source)
+		})
+
+		It("section levels 1, 2 and 3", func() {
+			source := `= a document title
 
 == Section A
 
@@ -46,7 +74,8 @@ a paragraph with *bold content*
 === Section A.a
 
 a paragraph`
-		expected := `<div class="sect1">
+			expectedTitle := "a document title"
+			expectedContent := `<div class="sect1">
 <h2 id="_section_a">Section A</h2>
 <div class="sectionbody">
 <div class="paragraph">
@@ -60,11 +89,11 @@ a paragraph`
 </div>
 </div>
 </div>`
-		verify(GinkgoT(), expected, content)
-	})
+			verifyDocumentBody(GinkgoT(), &expectedTitle, expectedContent, source)
+		})
 
-	It("section levels 1, 2, 3 and 2", func() {
-		content := `= a document title
+		It("section levels 1, 2, 3 and 2", func() {
+			source := `= a document title
 
 == Section A
 
@@ -77,7 +106,8 @@ a paragraph
 == Section B
 
 a paragraph with _italic content_`
-		expected := `<div class="sect1">
+			expectedTitle := "a document title"
+			expectedContent := `<div class="sect1">
 <h2 id="_section_a">Section A</h2>
 <div class="sectionbody">
 <div class="paragraph">
@@ -99,19 +129,87 @@ a paragraph with _italic content_`
 </div>
 </div>
 </div>`
-		verify(GinkgoT(), expected, content)
+			verifyDocumentBody(GinkgoT(), &expectedTitle, expectedContent, source)
+		})
 	})
+
+	Context("Complete Document ", func() {
+
+		It("section levels 1 and 2", func() {
+			source := `= a document title
+
+== Section A
+
+a paragraph with *bold content*`
+			expectedContent := `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="libasciidoc">
+<title>a document title</title>
+<body class="article">
+<div id="header">
+<h1>a document title</h1>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="_section_a">Section A</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>a paragraph with <strong>bold content</strong></p>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated {{.LastUpdated}}
+</div>
+</div>
+</body>
+</html>`
+			verifyCompleteDocument(GinkgoT(), expectedContent, source)
+		})
+	})
+
 })
 
-func verify(t GinkgoTInterface, expected, content string) {
-	t.Logf("processing '%s'", content)
-	contentReader := strings.NewReader(content)
+func verifyDocumentBody(t GinkgoTInterface, expectedTitle *string, expectedContent, source string) {
+	t.Logf("processing '%s'", source)
+	sourceReader := strings.NewReader(source)
 	resultWriter := bytes.NewBuffer(make([]byte, 0))
-	err := ConvertToHTML(contentReader, resultWriter)
+	metadata, err := ConvertToHTMLBody(sourceReader, resultWriter)
+	require.Nil(t, err, "Error found while parsing the document")
+	require.NotNil(t, metadata)
+	t.Log("Done processing document")
+	result := string(resultWriter.Bytes())
+	t.Logf("** Actual output:\n`%s`\n", result)
+	t.Logf("** expectedContent output:\n`%s`\n", expectedContent)
+	assert.Equal(t, expectedContent, result)
+	actualTitle := metadata.GetTitle()
+	if actualTitle == nil {
+		assert.Nil(t, actualTitle)
+	} else {
+		assert.Equal(t, *expectedTitle, *actualTitle)
+	}
+}
+
+func verifyCompleteDocument(t GinkgoTInterface, expectedContent, source string) {
+	t.Logf("processing '%s'", source)
+	sourceReader := strings.NewReader(source)
+	resultWriter := bytes.NewBuffer(make([]byte, 0))
+	options := renderer.Options{}
+	options[renderer.LastUpdated] = time.Now()
+	err := ConvertToHTML(sourceReader, resultWriter, options)
 	require.Nil(t, err, "Error found while parsing the document")
 	t.Log("Done processing document")
 	result := string(resultWriter.Bytes())
 	t.Logf("** Actual output:\n`%s`\n", result)
-	t.Logf("** Expected output:\n`%s`\n", expected)
-	assert.Equal(t, expected, result)
+	lastUpdated, err := options.LastUpdated()
+	require.Nil(t, err)
+	expectedContent = strings.Replace(expectedContent, "{{.LastUpdated}}", *lastUpdated, 1)
+	t.Logf("** expectedContent output:\n`%s`\n", expectedContent)
+	assert.Equal(t, expectedContent, result)
 }
