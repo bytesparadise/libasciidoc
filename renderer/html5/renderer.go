@@ -7,8 +7,6 @@ import (
 	"io"
 	texttemplate "text/template"
 
-	"reflect"
-
 	"github.com/bytesparadise/libasciidoc/renderer"
 	"github.com/bytesparadise/libasciidoc/types"
 	"github.com/pkg/errors"
@@ -122,7 +120,7 @@ func renderElement(ctx context.Context, element types.DocElement) ([]byte, error
 		// ignored in the output
 		return make([]byte, 0), nil
 	default:
-		return nil, errors.Errorf("unsupported type of element: %v", reflect.TypeOf(element))
+		return nil, errors.Errorf("unsupported type of element: %T", element)
 	}
 
 }

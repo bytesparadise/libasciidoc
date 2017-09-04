@@ -1,7 +1,6 @@
 package renderer
 
 import (
-	"reflect"
 	"time"
 
 	"github.com/pkg/errors"
@@ -29,7 +28,7 @@ func (o Options) LastUpdated() (*string, error) {
 			result := lastUpdated.Format("2006/01/02 15:04:05 MST")
 			return &result, nil
 		default:
-			return nil, errors.Errorf("`LastUpdated` option is not in a valid format: %v", reflect.TypeOf(lastUpdated))
+			return nil, errors.Errorf("`LastUpdated` option is not in a valid format: %T", lastUpdated)
 		}
 	}
 	result := time.Now().Format("2006/01/02 15:04:05 MST")
@@ -44,7 +43,7 @@ func (o Options) IncludeHeaderFooter() (*bool, error) {
 		case bool:
 			return &includeHeaderFooter, nil
 		default:
-			return nil, errors.Errorf("`IncludeHeaderFooter` option is not in a valid format: %v", reflect.TypeOf(includeHeaderFooter))
+			return nil, errors.Errorf("`IncludeHeaderFooter` option is not in a valid format: %T", includeHeaderFooter)
 		}
 	}
 	result := false
