@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"context"
 	"html/template"
-	"reflect"
 	"strconv"
 
 	"github.com/bytesparadise/libasciidoc/types"
@@ -62,7 +61,7 @@ func renderSectionLevel1(ctx context.Context, section types.Section) ([]byte, er
 	var otherElements []types.DocElement
 	// log.Debugf("Preparing Preamble elements...")
 	for i, element := range section.Elements {
-		log.Debugf(" %v", reflect.TypeOf(element))
+		log.Debugf(" %T", element)
 
 		if _, ok := element.(*types.Section); ok {
 			if i > 0 {

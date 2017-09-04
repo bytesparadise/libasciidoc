@@ -2,7 +2,6 @@ package types
 
 import (
 	"bytes"
-	"reflect"
 	"strings"
 	"unicode"
 
@@ -21,7 +20,7 @@ func toInlineElements(elements []interface{}) ([]InlineElement, error) {
 		case InlineElement:
 			result[i] = element
 		default:
-			return nil, errors.Errorf("unexpected element type: %v (expected a InlineElement instead)", reflect.TypeOf(element))
+			return nil, errors.Errorf("unexpected element type: %T (expected a InlineElement instead)", element)
 		}
 	}
 	return result, nil
@@ -103,7 +102,7 @@ func stringify(elements []interface{}) (*string, error) {
 		if element == nil {
 			continue
 		}
-		log.Debugf("%v (%s) ", element, reflect.TypeOf(element))
+		log.Debugf("%[1]v (%[1]T) ", element)
 		switch element := element.(type) {
 		case string:
 			buff.WriteString(element)
@@ -123,7 +122,7 @@ func stringify(elements []interface{}) (*string, error) {
 			}
 			buff.WriteString(*stringifiedElement)
 		default:
-			return nil, errors.Errorf("cannot convert element of type '%v' to string content", reflect.TypeOf(element))
+			return nil, errors.Errorf("cannot convert element of type '%T' to string content", element)
 		}
 
 	}
@@ -198,7 +197,7 @@ func NewReplaceNonAlphanumericsVisitor() *ReplaceNonAlphanumericsVisitor {
 func (v *ReplaceNonAlphanumericsVisitor) Visit(element interface{}) error {
 	switch element := element.(type) {
 	case *InlineContent:
-		// log.Debugf("Prefixing with '_' while processing '%v'", reflect.TypeOf(element))
+		// log.Debugf("Prefixing with '_' while processing '%T'", element)
 		v.buf.WriteString("_")
 	case *StringElement:
 		normalized, err := v.normalize(element.Content)
@@ -213,7 +212,7 @@ func (v *ReplaceNonAlphanumericsVisitor) Visit(element interface{}) error {
 }
 
 func (v *ReplaceNonAlphanumericsVisitor) BeforeVisit(element interface{}) error {
-	// log.Debugf("Before visiting element of type '%v'...", reflect.TypeOf(element))
+	// log.Debugf("Before visiting element of type '%T'...", element)
 	switch element := element.(type) {
 	case *QuotedText:
 		// log.Debugf("Before visiting quoted element...")
