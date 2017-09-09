@@ -15,7 +15,7 @@ import (
 // ConvertToHTMLBody converts the content of the given reader `r` into an set of <DIV> elements for an HTML/BODY document.
 // The conversion result is written in the given writer `w`, whereas the document metadata (title, etc.) (or an error if a problem occurred) is returned
 // as the result of the function call.
-func ConvertToHTMLBody(r io.Reader, w io.Writer) (*types.DocumentMetadata, error) {
+func ConvertToHTMLBody(r io.Reader, w io.Writer) (*types.DocumentAttributes, error) {
 	doc, err := parser.ParseReader("", r)
 	if err != nil {
 		return nil, errors.Wrapf(err, "error while parsing the document")
@@ -28,7 +28,7 @@ func ConvertToHTMLBody(r io.Reader, w io.Writer) (*types.DocumentMetadata, error
 		return nil, errors.Wrapf(err, "error while rendering the document")
 	}
 	log.Debugf("Done processing document")
-	return document.Metadata, nil
+	return document.Attributes, nil
 }
 
 // ConvertToHTML converts the content of the given reader `r` into a full HTML document, written in the given writer `w`.

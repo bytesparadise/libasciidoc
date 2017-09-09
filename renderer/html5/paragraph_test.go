@@ -24,4 +24,20 @@ with more content afterwards...</p>
 </div>`
 		verify(GinkgoT(), expected, content)
 	})
+
+	It("2 paragraphs and blank line", func() {
+		content := `
+*bold content* with more content afterwards...
+
+and here another paragraph
+
+`
+		expected := `<div class="paragraph">
+<p><strong>bold content</strong> with more content afterwards...</p>
+</div>
+<div class="paragraph">
+<p>and here another paragraph</p>
+</div>`
+		verify(GinkgoT(), expected, content)
+	})
 })

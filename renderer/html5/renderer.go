@@ -10,6 +10,7 @@ import (
 	"github.com/bytesparadise/libasciidoc/renderer"
 	"github.com/bytesparadise/libasciidoc/types"
 	"github.com/pkg/errors"
+	log "github.com/sirupsen/logrus"
 )
 
 var documentTmpl *texttemplate.Template
@@ -59,8 +60,8 @@ func Render(ctx context.Context, document types.Document, output io.Writer, opti
 		renderedHTMLElements := template.HTML(renderedElementsBuff.String())
 
 		title := "undefined"
-		if document.Metadata.GetTitle() != nil {
-			title = *document.Metadata.GetTitle()
+		if document.Attributes.GetTitle() != nil {
+			title = *document.Attributes.GetTitle()
 		}
 		err := documentTmpl.Execute(output, struct {
 			Generator   string
@@ -83,14 +84,22 @@ func Render(ctx context.Context, document types.Document, output io.Writer, opti
 }
 
 func renderElements(ctx context.Context, elements []types.DocElement, output io.Writer) error {
-	for i, element := range elements {
+	hasContent := false
+	for _, element := range elements {
 		content, err := renderElement(ctx, element)
 		if err != nil {
 			return errors.Wrapf(err, "failed to render the document")
 		}
-		output.Write(content)
-		if _, ok := element.(*types.BlankLine); !ok && i < len(elements)-1 {
+		// if there's already some content, we need to insert a `\n` before writing
+		// the rendering output of the current element (if application, ie, not empty)
+		if hasContent && len(content) > 0 {
+			log.Debugf("Appending '\\n' after element of type '%T'", element)
 			output.Write([]byte("\n"))
+		}
+		// if the element was rendering into 'something' (ie, not enpty result)
+		if len(content) > 0 {
+			output.Write(content)
+			hasContent = true
 		}
 	}
 	return nil
@@ -116,8 +125,8 @@ func renderElement(ctx context.Context, element types.DocElement) ([]byte, error
 		return renderInlineContent(ctx, *element.(*types.InlineContent))
 	case *types.StringElement:
 		return renderStringElement(ctx, *element.(*types.StringElement))
-	case *types.BlankLine, *types.ElementID, *types.ElementLink, *types.ElementTitle:
-		// ignored in the output
+	case *types.DocumentAttribute:
+		// for now, silently ignored in the output
 		return make([]byte, 0), nil
 	default:
 		return nil, errors.Errorf("unsupported type of element: %T", element)

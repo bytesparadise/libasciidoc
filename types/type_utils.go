@@ -138,15 +138,11 @@ func isMn(r rune) bool {
 	return unicode.Is(unicode.Mn, r) // Mn: nonspacing marks
 }
 
-//ReplaceNonAlphanumerics replaces all non alphanumerical characters and remove (accents)
+// NewReplaceNonAlphanumericsFunc replaces all non alphanumerical characters and remove (accents)
 // in the given 'source' with the given 'replacement'.
 func NewReplaceNonAlphanumericsFunc(replacement string) NormalizationFunc {
 	return func(source string) ([]byte, error) {
 		buf := bytes.NewBuffer(make([]byte, 0))
-		// _, err := buf.WriteString(replacement)
-		// if err != nil {
-		// 	return nil, errors.Wrapf(err, "unable to normalize value")
-		// }
 		lastCharIsSpace := false
 		for _, r := range strings.TrimLeft(source, " ") { // ignore heading spaces
 			if unicode.Is(unicode.Letter, r) || unicode.Is(unicode.Number, r) {

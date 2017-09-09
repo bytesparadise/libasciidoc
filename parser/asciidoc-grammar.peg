@@ -17,7 +17,7 @@ DocumentBlock <- !EOF content:(Section / StandaloneBlock) {
     return content.(types.DocElement), nil
 }
 
-StandaloneBlock <- List / BlockImage / DelimitedBlock / Paragraph / MetadataElement / BlankLine
+StandaloneBlock <- DocumentAttribute / List / BlockImage / DelimitedBlock / Paragraph / ElementAttribute / BlankLine //TODO: should Paragraph be the last type ?
 
 Section <- Section1 / Section2 / Section3 / Section4 / Section5 / Section6
 
@@ -75,37 +75,51 @@ Section6Block <- !Section1 !Section2 !Section3 !Section4 !Section5 !Section6 con
 // ------------------------------------------
 Heading <- Heading1 / Heading2 / Heading3 / Heading4 / Heading5 / Heading6
 
-Heading1 <- metadata:(MetadataElement)* level:("=") WS+ content:InlineContent (BlankLine? / EOF) {
-     return types.NewHeading(1, content.(*types.InlineContent), metadata.([]interface{}))
+Heading1 <- attributes:(ElementAttribute)* level:("=") WS+ content:InlineContent (BlankLine? / EOF) { //TODO: replace `(BlankLine? / EOF)` with `EOL` to allow for immediate attributes or any other content ?
+     return types.NewHeading(1, content.(*types.InlineContent), attributes.([]interface{}))
 }
 
-Heading2 <- metadata:(MetadataElement)* level:("==") WS+ content:InlineContent (BlankLine? / EOF) {
-     return types.NewHeading(2, content.(*types.InlineContent), metadata.([]interface{}))
+Heading2 <- attributes:(ElementAttribute)* level:("==") WS+ content:InlineContent (BlankLine? / EOF) {
+     return types.NewHeading(2, content.(*types.InlineContent), attributes.([]interface{}))
 }
 
-Heading3 <- metadata:(MetadataElement)* level:("===") WS+ content:InlineContent (BlankLine? / EOF) {
-     return types.NewHeading(3, content.(*types.InlineContent), metadata.([]interface{}))
+Heading3 <- attributes:(ElementAttribute)* level:("===") WS+ content:InlineContent (BlankLine? / EOF) {
+     return types.NewHeading(3, content.(*types.InlineContent), attributes.([]interface{}))
 }
 
-Heading4 <- metadata:(MetadataElement)* level:("====") WS+ content:InlineContent (BlankLine? / EOF) {
-     return types.NewHeading(4, content.(*types.InlineContent), metadata.([]interface{}))
+Heading4 <- attributes:(ElementAttribute)* level:("====") WS+ content:InlineContent (BlankLine? / EOF) {
+     return types.NewHeading(4, content.(*types.InlineContent), attributes.([]interface{}))
 }
 
-Heading5 <- metadata:(MetadataElement)* level:("=====") WS+ content:InlineContent (BlankLine? / EOF) {
-     return types.NewHeading(5, content.(*types.InlineContent), metadata.([]interface{}))
+Heading5 <- attributes:(ElementAttribute)* level:("=====") WS+ content:InlineContent (BlankLine? / EOF) {
+     return types.NewHeading(5, content.(*types.InlineContent), attributes.([]interface{}))
 }
 
-Heading6 <- metadata:(MetadataElement)* level:("======") WS+ content:InlineContent (BlankLine? / EOF) {
-     return types.NewHeading(6, content.(*types.InlineContent), metadata.([]interface{}))
+Heading6 <- attributes:(ElementAttribute)* level:("======") WS+ content:InlineContent (BlankLine? / EOF) {
+     return types.NewHeading(6, content.(*types.InlineContent), attributes.([]interface{}))
+}
+
+
+// ------------------------------------------
+// Document Attribute
+// ------------------------------------------
+DocumentAttribute <- DocumentAttributeWithNameOnly / DocumentAttributeWithNameAndValue 
+
+DocumentAttributeWithNameOnly <- ":" name:((!NEWLINE !":" !WS .)+) ":" WS* EOL {
+    return types.NewDocumentAttribute(name.([]interface{}), nil)
+}
+
+DocumentAttributeWithNameAndValue <- ":" name:((!NEWLINE !":" !WS .)+) ":" WS+ value:(!NEWLINE .)* EOL {
+    return types.NewDocumentAttribute(name.([]interface{}), value.([]interface{}))
 }
 
 // ------------------------------------------
 // List Items
 // ------------------------------------------
-List <- metadata:(MetadataElement)* 
+List <- attributes:(ElementAttribute)* 
     // list items can be followed by an optional, single blank line
     elements:(ListItem BlankLine?)+ {
-    return types.NewList(elements.([]interface{}), metadata.([]interface{}))
+    return types.NewList(elements.([]interface{}), attributes.([]interface{}))
 }
 
 ListItem <- WS* level:('*'+ / '-') WS+ content:(ListItemContent) {
@@ -119,8 +133,8 @@ ListItemContent <- lines:(!(WS* ('*'+ / '-') WS+) InlineContent)+ {
 // Paragraphs
 // ------------------------------------------
 // a paragraph is a group of line ending with a blank line (or end of file)
-Paragraph <- metadata:(MetadataElement)* lines:(InlineContent)+ {
-    return types.NewParagraph(c.text, lines.([]interface{}), metadata.([]interface{}))
+Paragraph <- attributes:(ElementAttribute)* lines:(InlineContent)+ {
+    return types.NewParagraph(c.text, lines.([]interface{}), attributes.([]interface{}))
 } 
 
 // an inline content element may begin and end with spaces, 
@@ -166,9 +180,9 @@ ExternalLink <- url:(URL_SCHEME URL) text:('[' (URL_TEXT)* ']')? {
 // ------------------------------------------
 // Images
 // ------------------------------------------
-BlockImage <- metadata:(MetadataElement)* image:BlockImageMacro  WS* EOL {
+BlockImage <- attributes:(ElementAttribute)* image:BlockImageMacro  WS* EOL {
     // here we can ignore the blank line in the returned element
-    return types.NewBlockImage(c.text, *image.(*types.ImageMacro), metadata.([]interface{}))
+    return types.NewBlockImage(c.text, *image.(*types.ImageMacro), attributes.([]interface{}))
 }
 
 BlockImageMacro <- "image::" path:(URL) '[' attributes:(URL_TEXT?) ']' {
@@ -201,7 +215,7 @@ SourceBlockLine <- (!EOL .)* NEWLINE
 // ------------------------------------------
 // Meta Elements
 // ------------------------------------------
-MetadataElement <- meta:(ElementLink / ElementID / ElementTitle) 
+ElementAttribute <- meta:(ElementLink / ElementID / ElementTitle) 
 
 // a link attached to an element, such as a BlockImage
 ElementLink <- "[" WS* "link" WS* "=" WS* path:URL WS* "]" EOL {
