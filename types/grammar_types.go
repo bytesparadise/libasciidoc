@@ -23,11 +23,13 @@ type DocElement interface {
 	String(int) string
 }
 
+// InlineElement the interface for inline elements
 type InlineElement interface {
 	DocElement
 	PlainString() string
 }
 
+// Visitable the interface for visitable elements
 type Visitable interface {
 	Accept(Visitor) error
 }
@@ -45,8 +47,8 @@ type Visitor interface {
 
 // Document the top-level structure for a document
 type Document struct {
-	Metadata *DocumentMetadata
-	Elements []DocElement
+	Attributes *DocumentAttributes
+	Elements   []DocElement
 }
 
 // NewDocument initializes a new `Document` from the given lines
@@ -57,13 +59,13 @@ func NewDocument(blocks []interface{}) (*Document, error) {
 	}
 	elements := convertBlocksToDocElements(blocks)
 	document := &Document{Elements: elements}
-	document.initMetadata()
+	document.initAttributes()
 	return document, nil
 }
 
-// initMetadata initializes the Document's metadata
-func (d *Document) initMetadata() {
-	metadata := &DocumentMetadata{}
+// initAttributes initializes the Document's attributes
+func (d *Document) initAttributes() {
+	d.Attributes = &DocumentAttributes{}
 	// look-up the document title in the (first) section of level 1
 	var headSection *Section
 	for _, element := range d.Elements {
@@ -74,19 +76,58 @@ func (d *Document) initMetadata() {
 		}
 	}
 	if headSection != nil {
-		metadata.SetTitle(headSection.Heading.PlainString())
+		d.Attributes.SetTitle(headSection.Heading.PlainString())
 	}
-	d.Metadata = metadata
+
 }
 
 // String implements the DocElement#String() method
 func (d *Document) String(indentLevel int) string {
-	log.Debugf("Printing document...")
 	result := bytes.NewBuffer(make([]byte, 0))
 	for i := range d.Elements {
 		result.WriteString(fmt.Sprintf("\n%s", d.Elements[i].String(0)))
 	}
+	log.Debug(fmt.Sprintf("Printing document:\n%s", result.String()))
 	return result.String()
+}
+
+// ------------------------------------------
+// Document Attributes
+// ------------------------------------------
+
+// DocumentAttribute the type for Document Attributes
+type DocumentAttribute struct {
+	Name  string
+	Value string
+}
+
+// NewDocumentAttribute initializes a new Document Attribute
+func NewDocumentAttribute(name []interface{}, value []interface{}) (*DocumentAttribute, error) {
+	attrName, err := stringify(name)
+	if err != nil {
+		return nil, errors.Wrapf(err, "error while initializing a DocumentAttribute")
+	}
+	attrValue, err := stringify(value)
+	if err != nil {
+		return nil, errors.Wrapf(err, "error while initializing a DocumentAttribute")
+	}
+	log.Debugf("Initialized a new DocumentAttribute: '%s' -> '%s'", *attrName, *attrValue)
+	return &DocumentAttribute{
+		Name:  *attrName,
+		Value: *attrValue,
+	}, nil
+}
+
+// String implements the DocElement#String() method
+func (a *DocumentAttribute) String(indentLevel int) string {
+	result := bytes.NewBuffer(make([]byte, 0))
+	result.WriteString(fmt.Sprintf("%s<DocumentAttribute> '%s' -> '%s'\n", indent(indentLevel), a.Name, a.Value))
+	return result.String()
+}
+
+// Accept implements DocElement#Accept(Visitor)
+func (a *DocumentAttribute) Accept(v Visitor) error {
+	return nil
 }
 
 // ------------------------------------------
@@ -159,11 +200,11 @@ type Heading struct {
 	Content *InlineContent
 }
 
-// NewHeading initializes a new `Heading from the given level and content, with the optional metadata.
-// In the metadata, only the ElementID is retained
-func NewHeading(level int, inlineContent *InlineContent, metadata []interface{}) (*Heading, error) {
+// NewHeading initializes a new `Heading from the given level and content, with the optional attributes.
+// In the attributes, only the ElementID is retained
+func NewHeading(level int, inlineContent *InlineContent, attributes []interface{}) (*Heading, error) {
 	// counting the lenght of the 'level' value (ie, the number of `=` chars)
-	id, _, _ := newMetaElements(metadata)
+	id, _, _ := newElementAttributes(attributes)
 	// make a default id from the heading's inline content
 	if id == nil {
 		replacement, err := ReplaceNonAlphanumerics(inlineContent, "_")
@@ -222,8 +263,8 @@ type List struct {
 }
 
 // NewList initializes a new `ListItem` from the given content
-func NewList(elements []interface{}, metadata []interface{}) (*List, error) {
-	id, _, _ := newMetaElements(metadata)
+func NewList(elements []interface{}, attributes []interface{}) (*List, error) {
+	id, _, _ := newElementAttributes(attributes)
 	items := make([]*ListItem, 0)
 	log.Debugf("Initializing a new List from %d elements", len(elements))
 	currentLevel := 1
@@ -431,9 +472,9 @@ type Paragraph struct {
 }
 
 // NewParagraph initializes a new `Paragraph`
-func NewParagraph(text []byte, lines []interface{}, metadata []interface{}) (*Paragraph, error) {
+func NewParagraph(text []byte, lines []interface{}, attributes []interface{}) (*Paragraph, error) {
 	log.Debugf("Initializing a new Paragraph with %d line(s)", len(lines))
-	id, title, _ := newMetaElements(metadata)
+	id, title, _ := newElementAttributes(attributes)
 
 	typedLines := make([]*InlineContent, 0)
 	for _, line := range lines {
@@ -551,9 +592,9 @@ type BlockImage struct {
 }
 
 // NewBlockImage initializes a new `BlockImage`
-func NewBlockImage(input []byte, imageMacro ImageMacro, metadata []interface{}) (*BlockImage, error) {
+func NewBlockImage(input []byte, imageMacro ImageMacro, attributes []interface{}) (*BlockImage, error) {
 	log.Debugf("Initializing a new BlockImage from '%s'", input)
-	id, title, link := newMetaElements(metadata)
+	id, title, link := newElementAttributes(attributes)
 	return &BlockImage{
 		Macro: imageMacro,
 		ID:    id,
@@ -600,7 +641,7 @@ type InlineImage struct {
 	Macro ImageMacro
 }
 
-// NewInlineImage initializes a new `InlineImage` (similar to BlockImage, but without Metadata)
+// NewInlineImage initializes a new `InlineImage` (similar to BlockImage, but without attributes)
 func NewInlineImage(input []byte, imageMacro ImageMacro) (*InlineImage, error) {
 	log.Debugf("Initializing a new InlineImage from '%s'", input)
 	return &InlineImage{
@@ -770,11 +811,11 @@ func (b *DelimitedBlock) Accept(v Visitor) error {
 // Meta Elements
 // ------------------------------------------
 
-func newMetaElements(metadata []interface{}) (*ElementID, *ElementTitle, *ElementLink) {
+func newElementAttributes(attributes []interface{}) (*ElementID, *ElementTitle, *ElementLink) {
 	var id *ElementID
 	var title *ElementTitle
 	var link *ElementLink
-	for _, item := range metadata {
+	for _, item := range attributes {
 		switch item := item.(type) {
 		case *ElementID:
 			id = item
@@ -783,7 +824,7 @@ func newMetaElements(metadata []interface{}) (*ElementID, *ElementTitle, *Elemen
 		case *ElementTitle:
 			title = item
 		default:
-			log.Warnf("Unexpected metadata: %T", item)
+			log.Warnf("Unexpected attributes: %T", item)
 		}
 	}
 	return id, title, link

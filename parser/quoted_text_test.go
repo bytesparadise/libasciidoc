@@ -10,7 +10,7 @@ var _ = Describe("Quoted Texts", func() {
 	It("bold text of 1 word", func() {
 		actualContent := "*hello*"
 		expectedDocument := &types.Document{
-			Metadata: &types.DocumentMetadata{},
+			Attributes: &types.DocumentAttributes{},
 			Elements: []types.DocElement{
 				&types.Paragraph{
 					Lines: []*types.InlineContent{
@@ -34,7 +34,7 @@ var _ = Describe("Quoted Texts", func() {
 	It("bold text of 2 words", func() {
 		actualContent := "*bold    content*"
 		expectedDocument := &types.Document{
-			Metadata: &types.DocumentMetadata{},
+			Attributes: &types.DocumentAttributes{},
 			Elements: []types.DocElement{
 				&types.Paragraph{
 					Lines: []*types.InlineContent{
@@ -58,7 +58,7 @@ var _ = Describe("Quoted Texts", func() {
 	It("bold text of 3 words", func() {
 		actualContent := "*some bold content*"
 		expectedDocument := &types.Document{
-			Metadata: &types.DocumentMetadata{},
+			Attributes: &types.DocumentAttributes{},
 			Elements: []types.DocElement{
 				&types.Paragraph{
 					Lines: []*types.InlineContent{
@@ -82,7 +82,7 @@ var _ = Describe("Quoted Texts", func() {
 	It("inline with bold text", func() {
 		actualContent := "a paragraph with *some bold content*"
 		expectedDocument := &types.Document{
-			Metadata: &types.DocumentMetadata{},
+			Attributes: &types.DocumentAttributes{},
 			Elements: []types.DocElement{
 				&types.Paragraph{
 					Lines: []*types.InlineContent{
@@ -107,7 +107,7 @@ var _ = Describe("Quoted Texts", func() {
 	It("inline with invalid bold text1", func() {
 		actualContent := "a paragraph with *some bold content"
 		expectedDocument := &types.Document{
-			Metadata: &types.DocumentMetadata{},
+			Attributes: &types.DocumentAttributes{},
 			Elements: []types.DocElement{
 				&types.Paragraph{
 					Lines: []*types.InlineContent{
@@ -126,7 +126,7 @@ var _ = Describe("Quoted Texts", func() {
 	It("inline with invalid bold text2", func() {
 		actualContent := "a paragraph with *some bold content *"
 		expectedDocument := &types.Document{
-			Metadata: &types.DocumentMetadata{},
+			Attributes: &types.DocumentAttributes{},
 			Elements: []types.DocElement{
 				&types.Paragraph{
 					Lines: []*types.InlineContent{
@@ -145,7 +145,7 @@ var _ = Describe("Quoted Texts", func() {
 	It("inline with invalid bold text3", func() {
 		actualContent := "a paragraph with * some bold content*"
 		expectedDocument := &types.Document{
-			Metadata: &types.DocumentMetadata{},
+			Attributes: &types.DocumentAttributes{},
 			Elements: []types.DocElement{
 				&types.Paragraph{
 					Lines: []*types.InlineContent{
@@ -164,7 +164,7 @@ var _ = Describe("Quoted Texts", func() {
 	It("italic text with3 words", func() {
 		actualContent := "_some italic content_"
 		expectedDocument := &types.Document{
-			Metadata: &types.DocumentMetadata{},
+			Attributes: &types.DocumentAttributes{},
 			Elements: []types.DocElement{
 				&types.Paragraph{
 					Lines: []*types.InlineContent{
@@ -188,7 +188,7 @@ var _ = Describe("Quoted Texts", func() {
 	It("monospace text with3 words", func() {
 		actualContent := "`some monospace content`"
 		expectedDocument := &types.Document{
-			Metadata: &types.DocumentMetadata{},
+			Attributes: &types.DocumentAttributes{},
 			Elements: []types.DocElement{
 				&types.Paragraph{
 					Lines: []*types.InlineContent{
@@ -212,7 +212,7 @@ var _ = Describe("Quoted Texts", func() {
 	It("italic text within bold text", func() {
 		actualContent := "some *bold and _italic content_ together*."
 		expectedDocument := &types.Document{
-			Metadata: &types.DocumentMetadata{},
+			Attributes: &types.DocumentAttributes{},
 			Elements: []types.DocElement{
 				&types.Paragraph{
 					Lines: []*types.InlineContent{
@@ -245,7 +245,7 @@ var _ = Describe("Quoted Texts", func() {
 	It("invalid italic text within bold text", func() {
 		actualContent := "some *bold and _italic content _ together*."
 		expectedDocument := &types.Document{
-			Metadata: &types.DocumentMetadata{},
+			Attributes: &types.DocumentAttributes{},
 			Elements: []types.DocElement{
 				&types.Paragraph{
 					Lines: []*types.InlineContent{
@@ -271,7 +271,7 @@ var _ = Describe("Quoted Texts", func() {
 	It("italic text within invalid bold text", func() {
 		actualContent := "some *bold and _italic content_ together *."
 		expectedDocument := &types.Document{
-			Metadata: &types.DocumentMetadata{},
+			Attributes: &types.DocumentAttributes{},
 			Elements: []types.DocElement{
 				&types.Paragraph{
 					Lines: []*types.InlineContent{
@@ -297,7 +297,7 @@ var _ = Describe("Quoted Texts", func() {
 	It("bold text within italic text", func() {
 		actualContent := "_some *bold* content_"
 		expectedDocument := &types.Document{
-			Metadata: &types.DocumentMetadata{},
+			Attributes: &types.DocumentAttributes{},
 			Elements: []types.DocElement{
 				&types.Paragraph{
 					Lines: []*types.InlineContent{
@@ -328,7 +328,7 @@ var _ = Describe("Quoted Texts", func() {
 	It("monospace text within bold text within italic quote", func() {
 		actualContent := "*some _italic and `monospaced content`_*"
 		expectedDocument := &types.Document{
-			Metadata: &types.DocumentMetadata{},
+			Attributes: &types.DocumentAttributes{},
 			Elements: []types.DocElement{
 				&types.Paragraph{
 					Lines: []*types.InlineContent{
@@ -364,7 +364,7 @@ var _ = Describe("Quoted Texts", func() {
 	It("italic text within italic text", func() {
 		actualContent := "_some _very italic_ content_"
 		expectedDocument := &types.Document{
-			Metadata: &types.DocumentMetadata{},
+			Attributes: &types.DocumentAttributes{},
 			Elements: []types.DocElement{
 				&types.Paragraph{
 					Lines: []*types.InlineContent{

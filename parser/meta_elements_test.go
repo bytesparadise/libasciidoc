@@ -12,7 +12,7 @@ var _ = Describe("Meta Elements", func() {
 		It("element link alone", func() {
 			actualContent := "[link=http://foo.bar]"
 			expectedDocument := &types.Document{
-				Metadata: &types.DocumentMetadata{},
+				Attributes: &types.DocumentAttributes{},
 				Elements: []types.DocElement{
 					&types.ElementLink{Path: "http://foo.bar"},
 				},
@@ -23,7 +23,7 @@ var _ = Describe("Meta Elements", func() {
 		It("element link with spaces", func() {
 			actualContent := "[ link = http://foo.bar ]"
 			expectedDocument := &types.Document{
-				Metadata: &types.DocumentMetadata{},
+				Attributes: &types.DocumentAttributes{},
 				Elements: []types.DocElement{
 					&types.ElementLink{Path: "http://foo.bar"},
 				},
@@ -34,7 +34,7 @@ var _ = Describe("Meta Elements", func() {
 		It("element link invalid", func() {
 			actualContent := "[ link = http://foo.bar"
 			expectedDocument := &types.Document{
-				Metadata: &types.DocumentMetadata{},
+				Attributes: &types.DocumentAttributes{},
 				Elements: []types.DocElement{
 					&types.Paragraph{
 						Lines: []*types.InlineContent{
@@ -57,7 +57,7 @@ var _ = Describe("Meta Elements", func() {
 		It("element id", func() {
 			actualContent := "[#img-foobar]"
 			expectedDocument := &types.Document{
-				Metadata: &types.DocumentMetadata{},
+				Attributes: &types.DocumentAttributes{},
 				Elements: []types.DocElement{
 					&types.ElementID{Value: "img-foobar"},
 				},
@@ -68,7 +68,7 @@ var _ = Describe("Meta Elements", func() {
 		It("element id with spaces", func() {
 			actualContent := "[ #img-foobar ]"
 			expectedDocument := &types.Document{
-				Metadata: &types.DocumentMetadata{},
+				Attributes: &types.DocumentAttributes{},
 				Elements: []types.DocElement{
 					&types.ElementID{Value: "img-foobar"},
 				},
@@ -79,7 +79,7 @@ var _ = Describe("Meta Elements", func() {
 		It("element id invalid", func() {
 			actualContent := "[#img-foobar"
 			expectedDocument := &types.Document{
-				Metadata: &types.DocumentMetadata{},
+				Attributes: &types.DocumentAttributes{},
 				Elements: []types.DocElement{
 					&types.Paragraph{
 						Lines: []*types.InlineContent{
@@ -96,7 +96,7 @@ var _ = Describe("Meta Elements", func() {
 		It("element title", func() {
 			actualContent := ".a title"
 			expectedDocument := &types.Document{
-				Metadata: &types.DocumentMetadata{},
+				Attributes: &types.DocumentAttributes{},
 				Elements: []types.DocElement{
 					&types.ElementTitle{Value: "a title"},
 				},
@@ -107,7 +107,7 @@ var _ = Describe("Meta Elements", func() {
 		It("element title invalid1", func() {
 			actualContent := ". a title"
 			expectedDocument := &types.Document{
-				Metadata: &types.DocumentMetadata{},
+				Attributes: &types.DocumentAttributes{},
 				Elements: []types.DocElement{
 					&types.Paragraph{
 						Lines: []*types.InlineContent{
@@ -122,7 +122,7 @@ var _ = Describe("Meta Elements", func() {
 		It("element title invalid2", func() {
 			actualContent := "!a title"
 			expectedDocument := &types.Document{
-				Metadata: &types.DocumentMetadata{},
+				Attributes: &types.DocumentAttributes{},
 				Elements: []types.DocElement{
 					&types.Paragraph{
 						Lines: []*types.InlineContent{

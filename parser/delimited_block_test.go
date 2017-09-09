@@ -11,7 +11,7 @@ var _ = Describe("Delimited Blocks", func() {
 		content := "some source code"
 		actualContent := "```\n" + content + "\n```"
 		expectedDocument := &types.Document{
-			Metadata: &types.DocumentMetadata{},
+			Attributes: &types.DocumentAttributes{},
 			Elements: []types.DocElement{
 				&types.DelimitedBlock{
 					Kind:    types.SourceBlock,
@@ -26,7 +26,7 @@ var _ = Describe("Delimited Blocks", func() {
 		content := "some source code\nwith an empty line\n\nin the middle"
 		actualContent := "```\n" + content + "\n```"
 		expectedDocument := &types.Document{
-			Metadata: &types.DocumentMetadata{},
+			Attributes: &types.DocumentAttributes{},
 			Elements: []types.DocElement{
 				&types.DelimitedBlock{
 					Kind:    types.SourceBlock,
@@ -41,7 +41,7 @@ var _ = Describe("Delimited Blocks", func() {
 		content := ""
 		actualContent := "```\n" + content + "```"
 		expectedDocument := &types.Document{
-			Metadata: &types.DocumentMetadata{},
+			Attributes: &types.DocumentAttributes{},
 			Elements: []types.DocElement{
 				&types.DelimitedBlock{
 					Kind:    types.SourceBlock,

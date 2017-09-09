@@ -12,7 +12,7 @@ var _ = Describe("Sections", func() {
 		It("section with heading only", func() {
 			actualContent := "= a heading"
 			expectedDocument := &types.Document{
-				Metadata: &types.DocumentMetadata{
+				Attributes: &types.DocumentAttributes{
 					"title": "a heading",
 				},
 				Elements: []types.DocElement{
@@ -37,7 +37,7 @@ var _ = Describe("Sections", func() {
 		It("section level 2", func() {
 			actualContent := `== section 2`
 			expectedDocument := &types.Document{
-				Metadata: &types.DocumentMetadata{},
+				Attributes: &types.DocumentAttributes{},
 				Elements: []types.DocElement{
 					&types.Section{
 						Heading: types.Heading{
@@ -61,7 +61,7 @@ var _ = Describe("Sections", func() {
 		It("section level 2 with quoted text", func() {
 			actualContent := `==  *2 spaces and bold content*`
 			expectedDocument := &types.Document{
-				Metadata: &types.DocumentMetadata{},
+				Attributes: &types.DocumentAttributes{},
 				Elements: []types.DocElement{
 					&types.Section{
 						Heading: types.Heading{
@@ -91,7 +91,7 @@ var _ = Describe("Sections", func() {
 				"\n" +
 				"== section 2"
 			expectedDocument := &types.Document{
-				Metadata: &types.DocumentMetadata{
+				Attributes: &types.DocumentAttributes{
 					"title": "a heading",
 				}, Elements: []types.DocElement{
 					&types.Section{
@@ -133,7 +133,7 @@ var _ = Describe("Sections", func() {
 				"\n" +
 				"=== section 3"
 			expectedDocument := &types.Document{
-				Metadata: &types.DocumentMetadata{
+				Attributes: &types.DocumentAttributes{
 					"title": "a heading",
 				},
 				Elements: []types.DocElement{
@@ -175,7 +175,7 @@ var _ = Describe("Sections", func() {
 			actualContent := `== a title
 and a paragraph`
 			expectedDocument := &types.Document{
-				Metadata: &types.DocumentMetadata{},
+				Attributes: &types.DocumentAttributes{},
 				Elements: []types.DocElement{
 					&types.Section{
 						Heading: types.Heading{
@@ -208,7 +208,7 @@ and a paragraph`
 		It("section level 2 with a paragraph separated by empty line", func() {
 			actualContent := "== a title\n\nand a paragraph"
 			expectedDocument := &types.Document{
-				Metadata: &types.DocumentMetadata{},
+				Attributes: &types.DocumentAttributes{},
 				Elements: []types.DocElement{
 					&types.Section{
 						Heading: types.Heading{
@@ -242,7 +242,7 @@ and a paragraph`
 		It("section level 2 with a paragraph separated by non-empty line", func() {
 			actualContent := "== a title\n    \nand a paragraph"
 			expectedDocument := &types.Document{
-				Metadata: &types.DocumentMetadata{},
+				Attributes: &types.DocumentAttributes{},
 				Elements: []types.DocElement{
 					&types.Section{
 						Heading: types.Heading{
@@ -285,7 +285,7 @@ a paragraph
 == Section B
 a paragraph`
 			expectedDocument := &types.Document{
-				Metadata: &types.DocumentMetadata{
+				Attributes: &types.DocumentAttributes{
 					"title": "a title",
 				},
 				Elements: []types.DocElement{
@@ -388,7 +388,7 @@ a paragraph`
 		It("heading invalid - missing space", func() {
 			actualContent := "=a heading"
 			expectedDocument := &types.Document{
-				Metadata: &types.DocumentMetadata{},
+				Attributes: &types.DocumentAttributes{},
 				Elements: []types.DocElement{
 					&types.Paragraph{
 						Lines: []*types.InlineContent{
@@ -406,7 +406,7 @@ a paragraph`
 		It("heading invalid - heading space", func() {
 			actualContent := " = a heading"
 			expectedDocument := &types.Document{
-				Metadata: &types.DocumentMetadata{},
+				Attributes: &types.DocumentAttributes{},
 				Elements: []types.DocElement{
 					&types.Paragraph{
 						Lines: []*types.InlineContent{
@@ -426,7 +426,7 @@ a paragraph`
 				"\n" +
 				" == section 2"
 			expectedDocument := &types.Document{
-				Metadata: &types.DocumentMetadata{
+				Attributes: &types.DocumentAttributes{
 					"title": "a heading",
 				},
 				Elements: []types.DocElement{

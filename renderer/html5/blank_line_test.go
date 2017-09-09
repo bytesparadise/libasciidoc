@@ -27,4 +27,14 @@ second paragraph`
 </div>`
 		verify(GinkgoT(), expected, content)
 	})
+	It("blank lines at end of document", func() {
+		content := `first paragraph
+		
+		
+		`
+		expected := `<div class="paragraph">
+<p>first paragraph</p>
+</div>`
+		verify(GinkgoT(), expected, content)
+	})
 })

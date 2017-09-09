@@ -1,21 +1,29 @@
 package types
 
-// DocumentMetadata the document metadata
-type DocumentMetadata map[string]string
+// DocumentAttributes the document metadata
+type DocumentAttributes map[string]interface{}
 
 const (
 	title string = "title"
 )
 
 // GetTitle retrieves the document title in its metadata, or returns nil if the title was not specified
-func (m DocumentMetadata) GetTitle() *string {
+func (m DocumentAttributes) GetTitle() *string {
 	if t, ok := m[title]; ok {
-		return &t
+		if t, ok := t.(string); ok {
+			return &t
+		}
 	}
 	return nil
 }
 
 // SetTitle sets the title in the document metadata
-func (m DocumentMetadata) SetTitle(t string) {
+func (m DocumentAttributes) SetTitle(t string) {
 	m[title] = t
+}
+
+// Add adds the given attribute
+func (m DocumentAttributes) Add(a *DocumentAttribute) {
+	// TODO: raise a warning if there was already a name/value
+	m[a.Name] = a.Value
 }
