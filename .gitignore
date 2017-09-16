@@ -55,5 +55,3 @@ vendor/
 # exclude tmp directory
 tmp
 
-# exclude generated file(s)
-parser/asciidoc_parser.go
