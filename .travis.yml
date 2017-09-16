@@ -12,6 +12,7 @@ install:
   # ginkgo and gomega are used to run the tests
   - go get -v github.com/onsi/ginkgo/ginkgo
   - go get -v github.com/onsi/gomega
+  - go get github.com/modocache/gover
 
 language: go
 
@@ -24,3 +25,7 @@ go:
 script: 
   - make generate
   - make test
+
+after_success:
+  - gover . coverage.txt
+  - bash <(curl -s https://codecov.io/bash)
