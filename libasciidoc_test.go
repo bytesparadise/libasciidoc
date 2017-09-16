@@ -2,6 +2,7 @@ package libasciidoc_test
 
 import (
 	"bytes"
+	"context"
 	"strings"
 	"time"
 
@@ -179,8 +180,8 @@ Last updated {{.LastUpdated}}
 func verifyDocumentBody(t GinkgoTInterface, expectedTitle *string, expectedContent, source string) {
 	t.Logf("processing '%s'", source)
 	sourceReader := strings.NewReader(source)
-	resultWriter := bytes.NewBuffer(make([]byte, 0))
-	metadata, err := ConvertToHTMLBody(sourceReader, resultWriter)
+	resultWriter := bytes.NewBuffer(nil)
+	metadata, err := ConvertToHTMLBody(context.Background(), sourceReader, resultWriter)
 	require.Nil(t, err, "Error found while parsing the document")
 	require.NotNil(t, metadata)
 	t.Log("Done processing document")
@@ -199,10 +200,10 @@ func verifyDocumentBody(t GinkgoTInterface, expectedTitle *string, expectedConte
 func verifyCompleteDocument(t GinkgoTInterface, expectedContent, source string) {
 	t.Logf("processing '%s'", source)
 	sourceReader := strings.NewReader(source)
-	resultWriter := bytes.NewBuffer(make([]byte, 0))
+	resultWriter := bytes.NewBuffer(nil)
 	options := renderer.Options{}
 	options[renderer.LastUpdated] = time.Now()
-	err := ConvertToHTML(sourceReader, resultWriter, options)
+	err := ConvertToHTML(context.Background(), sourceReader, resultWriter, options)
 	require.Nil(t, err, "Error found while parsing the document")
 	t.Log("Done processing document")
 	result := string(resultWriter.Bytes())

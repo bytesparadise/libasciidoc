@@ -2,9 +2,10 @@ package html5
 
 import (
 	"bytes"
-	"context"
 	"html/template"
 	"strconv"
+
+	asciidoc "github.com/bytesparadise/libasciidoc/context"
 
 	"github.com/bytesparadise/libasciidoc/types"
 	"github.com/pkg/errors"
@@ -46,7 +47,7 @@ func init() {
 		`<h{{.Level}} id="{{.ID}}">{{.Content}}</h{{.Level}}>`)
 }
 
-func renderSection(ctx context.Context, section types.Section) ([]byte, error) {
+func renderSection(ctx asciidoc.Context, section types.Section) ([]byte, error) {
 	switch section.Heading.Level {
 	case 1:
 		return renderSectionLevel1(ctx, section)
@@ -55,7 +56,7 @@ func renderSection(ctx context.Context, section types.Section) ([]byte, error) {
 	}
 }
 
-func renderSectionLevel1(ctx context.Context, section types.Section) ([]byte, error) {
+func renderSectionLevel1(ctx asciidoc.Context, section types.Section) ([]byte, error) {
 	// only applies if the first element (if exists) is not a nested section
 	var preambleElements []types.DocElement
 	var otherElements []types.DocElement
@@ -74,9 +75,9 @@ func renderSectionLevel1(ctx context.Context, section types.Section) ([]byte, er
 		}
 	}
 	// log.Debugf("Preamble elements: %d", len(preambleElements))
-	renderedPreambleElementsBuff := bytes.NewBuffer(make([]byte, 0))
+	renderedPreambleElementsBuff := bytes.NewBuffer(nil)
 	for i, element := range preambleElements {
-		renderedElement, err := renderElement(ctx, element)
+		renderedElement, err := processElement(ctx, element)
 		if err != nil {
 			return nil, errors.Wrapf(err, "unable to render preamble element")
 		}
@@ -86,9 +87,9 @@ func renderSectionLevel1(ctx context.Context, section types.Section) ([]byte, er
 		}
 	}
 	renderedHTMLPreamble := template.HTML(renderedPreambleElementsBuff.String())
-	renderedElementsBuff := bytes.NewBuffer(make([]byte, 0))
+	renderedElementsBuff := bytes.NewBuffer(nil)
 	for i, element := range otherElements {
-		renderedElement, err := renderElement(ctx, element)
+		renderedElement, err := processElement(ctx, element)
 		if err != nil {
 			return nil, errors.Wrapf(err, "unable to render section element")
 		}
@@ -98,7 +99,7 @@ func renderSectionLevel1(ctx context.Context, section types.Section) ([]byte, er
 		}
 	}
 	renderedHTMLElements := template.HTML(renderedElementsBuff.String())
-	result := bytes.NewBuffer(make([]byte, 0))
+	result := bytes.NewBuffer(nil)
 	err := section1ContentTmpl.Execute(result, struct {
 		Class    string
 		Preamble template.HTML
@@ -115,14 +116,14 @@ func renderSectionLevel1(ctx context.Context, section types.Section) ([]byte, er
 	return result.Bytes(), nil
 }
 
-func renderOtherSection(ctx context.Context, section types.Section) ([]byte, error) {
+func renderOtherSection(ctx asciidoc.Context, section types.Section) ([]byte, error) {
 	renderedHeading, err := renderHeading(ctx, section.Heading)
 	if err != nil {
 		return nil, errors.Wrapf(err, "error while rendering section heading")
 	}
-	renderedElementsBuff := bytes.NewBuffer(make([]byte, 0))
+	renderedElementsBuff := bytes.NewBuffer(nil)
 	for i, element := range section.Elements {
-		renderedElement, err := renderElement(ctx, element)
+		renderedElement, err := processElement(ctx, element)
 		if err != nil {
 			return nil, errors.Wrapf(err, "unable to render section element")
 		}
@@ -131,7 +132,7 @@ func renderOtherSection(ctx context.Context, section types.Section) ([]byte, err
 			renderedElementsBuff.WriteString("\n")
 		}
 	}
-	result := bytes.NewBuffer(make([]byte, 0))
+	result := bytes.NewBuffer(nil)
 	// select the appropriate template for the section
 	var tmpl *template.Template
 	if section.Heading.Level == 1 {
@@ -159,9 +160,9 @@ func renderOtherSection(ctx context.Context, section types.Section) ([]byte, err
 	return result.Bytes(), nil
 }
 
-func renderHeading(ctx context.Context, heading types.Heading) ([]byte, error) {
-	result := bytes.NewBuffer(make([]byte, 0))
-	renderedContent, err := renderElement(ctx, heading.Content)
+func renderHeading(ctx asciidoc.Context, heading types.Heading) ([]byte, error) {
+	result := bytes.NewBuffer(nil)
+	renderedContent, err := processElement(ctx, heading.Content)
 	if err != nil {
 		return nil, errors.Wrapf(err, "error while rendering heading content")
 	}

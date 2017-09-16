@@ -6,7 +6,6 @@ import (
 	"unicode"
 
 	"github.com/pkg/errors"
-	log "github.com/sirupsen/logrus"
 )
 
 func indent(indentLevel int) string {
@@ -44,7 +43,7 @@ func merge(elements []interface{}, extraElements ...interface{}) []interface{} {
 	result := make([]interface{}, 0)
 	allElements := append(elements, extraElements...)
 	// log.Debugf("Merging %d element(s):", len(allElements))
-	buff := bytes.NewBuffer(make([]byte, 0))
+	buff := bytes.NewBuffer(nil)
 	for _, v := range allElements {
 		if v == nil {
 			continue
@@ -89,7 +88,7 @@ func merge(elements []interface{}, extraElements ...interface{}) []interface{} {
 // the given arguments if the buffer was empty
 func appendBuffer(elements []interface{}, buff *bytes.Buffer) ([]interface{}, *bytes.Buffer) {
 	if buff.Len() > 0 {
-		return append(elements, NewStringElement(buff.String())), bytes.NewBuffer(make([]byte, 0))
+		return append(elements, NewStringElement(buff.String())), bytes.NewBuffer(nil)
 	}
 	return elements, buff
 }
@@ -102,7 +101,7 @@ func stringify(elements []interface{}) (*string, error) {
 		if element == nil {
 			continue
 		}
-		log.Debugf("%[1]v (%[1]T) ", element)
+		// log.Debugf("%[1]v (%[1]T) ", element)
 		switch element := element.(type) {
 		case string:
 			buff.WriteString(element)
@@ -127,7 +126,7 @@ func stringify(elements []interface{}) (*string, error) {
 
 	}
 	result := buff.String()
-	log.Debugf("stringified %v -> '%s' (%v characters)", elements, result, len(result))
+	// log.Debugf("stringified %v -> '%s' (%v characters)", elements, result, len(result))
 	return &result, nil
 }
 
@@ -142,7 +141,7 @@ func isMn(r rune) bool {
 // in the given 'source' with the given 'replacement'.
 func NewReplaceNonAlphanumericsFunc(replacement string) NormalizationFunc {
 	return func(source string) ([]byte, error) {
-		buf := bytes.NewBuffer(make([]byte, 0))
+		buf := bytes.NewBuffer(nil)
 		lastCharIsSpace := false
 		for _, r := range strings.TrimLeft(source, " ") { // ignore heading spaces
 			if unicode.Is(unicode.Letter, r) || unicode.Is(unicode.Number, r) {
@@ -183,7 +182,7 @@ type ReplaceNonAlphanumericsVisitor struct {
 }
 
 func NewReplaceNonAlphanumericsVisitor() *ReplaceNonAlphanumericsVisitor {
-	buf := bytes.NewBuffer(make([]byte, 0))
+	buf := bytes.NewBuffer(nil)
 	return &ReplaceNonAlphanumericsVisitor{
 		buf:       *buf,
 		normalize: NewReplaceNonAlphanumericsFunc("_"),

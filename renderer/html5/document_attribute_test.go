@@ -29,4 +29,43 @@ var _ = Describe("Rendering With Attributes", func() {
 </div>`
 		verify(GinkgoT(), expected, content)
 	})
+
+	It("a paragraph with substitution", func() {
+		content := `:author: Xavier
+
+a paragraph written by {author}`
+
+		expected := `<div class="paragraph">
+<p>a paragraph written by Xavier</p>
+</div>`
+		verify(GinkgoT(), expected, content)
+	})
+
+	It("paragraphs with definitions, substitutions and resets", func() {
+		content := `author is {author}.
+		
+:author: me
+author is now {author}.
+
+:author: you
+author is now {author}.
+
+:author!:
+author is now {author}.`
+
+		expected := `<div class="paragraph">
+<p>author is {author}.</p>
+</div>
+<div class="paragraph">
+<p>author is now me.</p>
+</div>
+<div class="paragraph">
+<p>author is now you.</p>
+</div>
+<div class="paragraph">
+<p>author is now {author}.</p>
+</div>`
+		verify(GinkgoT(), expected, content)
+	})
+
 })

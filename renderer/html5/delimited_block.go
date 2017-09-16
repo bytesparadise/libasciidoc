@@ -2,9 +2,9 @@ package html5
 
 import (
 	"bytes"
-	"context"
 	"html/template"
 
+	asciidoc "github.com/bytesparadise/libasciidoc/context"
 	"github.com/bytesparadise/libasciidoc/types"
 	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
@@ -21,9 +21,9 @@ func init() {
 </div>`)
 }
 
-func renderDelimitedBlock(ctx context.Context, block types.DelimitedBlock) ([]byte, error) {
+func renderDelimitedBlock(ctx asciidoc.Context, block types.DelimitedBlock) ([]byte, error) {
 	log.Debugf("rendering delimited block with content: %s", block.Content)
-	result := bytes.NewBuffer(make([]byte, 0))
+	result := bytes.NewBuffer(nil)
 	err := sourceBlockTmpl.Execute(result, block)
 	if err != nil {
 		return nil, errors.Wrapf(err, "unable to render delimited block")

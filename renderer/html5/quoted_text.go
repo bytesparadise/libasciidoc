@@ -1,11 +1,10 @@
 package html5
 
 import (
-	"context"
+	"bytes"
 	"html/template"
 
-	"bytes"
-
+	asciidoc "github.com/bytesparadise/libasciidoc/context"
 	"github.com/bytesparadise/libasciidoc/types"
 	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
@@ -22,10 +21,10 @@ func init() {
 	monospaceTextTmpl = newHTMLTemplate("monospace text", "<code>{{.}}</code>")
 }
 
-func renderQuotedText(ctx context.Context, t types.QuotedText) ([]byte, error) {
-	elementsBuffer := bytes.NewBuffer(make([]byte, 0))
+func renderQuotedText(ctx asciidoc.Context, t types.QuotedText) ([]byte, error) {
+	elementsBuffer := bytes.NewBuffer(nil)
 	for _, element := range t.Elements {
-		b, err := renderElement(ctx, element)
+		b, err := processElement(ctx, element)
 		if err != nil {
 			return nil, errors.Wrapf(err, "unable to render text quote")
 		}
@@ -34,7 +33,7 @@ func renderQuotedText(ctx context.Context, t types.QuotedText) ([]byte, error) {
 			return nil, errors.Wrapf(err, "unable to render text quote")
 		}
 	}
-	result := bytes.NewBuffer(make([]byte, 0))
+	result := bytes.NewBuffer(nil)
 	var tmpl *template.Template
 	switch t.Kind {
 	case types.Bold:

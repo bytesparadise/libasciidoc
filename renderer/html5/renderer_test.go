@@ -5,6 +5,7 @@ import (
 	"context"
 	"strings"
 
+	asciidoc "github.com/bytesparadise/libasciidoc/context"
 	"github.com/bytesparadise/libasciidoc/parser"
 	. "github.com/bytesparadise/libasciidoc/renderer/html5"
 	"github.com/bytesparadise/libasciidoc/types"
@@ -21,8 +22,9 @@ func verify(t GinkgoTInterface, expected, content string) {
 	require.Nil(t, err, "Error found while parsing the document")
 	actualDocument := doc.(*types.Document)
 	t.Logf("Actual document:\n%s", actualDocument.String(1))
-	buff := bytes.NewBuffer(make([]byte, 0))
-	err = Render(context.Background(), *actualDocument, buff, nil)
+	buff := bytes.NewBuffer(nil)
+	ctx := asciidoc.Wrap(context.Background(), *actualDocument)
+	err = Render(ctx, buff, nil)
 	t.Log("Done processing document")
 	require.Nil(t, err)
 	require.Empty(t, err)

@@ -1,12 +1,10 @@
 package html5
 
 import (
+	"bytes"
 	"html/template"
 
-	"bytes"
-
-	"context"
-
+	asciidoc "github.com/bytesparadise/libasciidoc/context"
 	"github.com/bytesparadise/libasciidoc/types"
 	"github.com/pkg/errors"
 )
@@ -22,8 +20,8 @@ func init() {
 </div>`)
 }
 
-func renderParagraph(ctx context.Context, paragraph types.Paragraph) ([]byte, error) {
-	renderedLinesBuff := bytes.NewBuffer(make([]byte, 0))
+func renderParagraph(ctx asciidoc.Context, paragraph types.Paragraph) ([]byte, error) {
+	renderedLinesBuff := bytes.NewBuffer(nil)
 	for i, line := range paragraph.Lines {
 		renderedLine, err := renderInlineContent(ctx, *line)
 		if err != nil {
@@ -35,7 +33,7 @@ func renderParagraph(ctx context.Context, paragraph types.Paragraph) ([]byte, er
 		}
 
 	}
-	result := bytes.NewBuffer(make([]byte, 0))
+	result := bytes.NewBuffer(nil)
 	err := paragraphTmpl.Execute(result, struct {
 		ID    *types.ElementID
 		Title *types.ElementTitle

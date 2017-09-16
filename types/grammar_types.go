@@ -83,11 +83,11 @@ func (d *Document) initAttributes() {
 
 // String implements the DocElement#String() method
 func (d *Document) String(indentLevel int) string {
-	result := bytes.NewBuffer(make([]byte, 0))
+	result := bytes.NewBuffer(nil)
 	for i := range d.Elements {
 		result.WriteString(fmt.Sprintf("\n%s", d.Elements[i].String(0)))
 	}
-	log.Debug(fmt.Sprintf("Printing document:\n%s", result.String()))
+	// log.Debug(fmt.Sprintf("Printing document:\n%s", result.String()))
 	return result.String()
 }
 
@@ -95,38 +95,96 @@ func (d *Document) String(indentLevel int) string {
 // Document Attributes
 // ------------------------------------------
 
-// DocumentAttribute the type for Document Attributes
-type DocumentAttribute struct {
+// DocumentAttributeDeclaration the type for Document Attribute Declarations
+type DocumentAttributeDeclaration struct {
 	Name  string
 	Value string
 }
 
-// NewDocumentAttribute initializes a new Document Attribute
-func NewDocumentAttribute(name []interface{}, value []interface{}) (*DocumentAttribute, error) {
+// NewDocumentAttributeDeclaration initializes a new DocumentAttributeDeclaration
+func NewDocumentAttributeDeclaration(name []interface{}, value []interface{}) (*DocumentAttributeDeclaration, error) {
 	attrName, err := stringify(name)
 	if err != nil {
-		return nil, errors.Wrapf(err, "error while initializing a DocumentAttribute")
+		return nil, errors.Wrapf(err, "error while initializing a DocumentAttributeDeclaration")
 	}
 	attrValue, err := stringify(value)
 	if err != nil {
-		return nil, errors.Wrapf(err, "error while initializing a DocumentAttribute")
+		return nil, errors.Wrapf(err, "error while initializing a DocumentAttributeDeclaration")
 	}
-	log.Debugf("Initialized a new DocumentAttribute: '%s' -> '%s'", *attrName, *attrValue)
-	return &DocumentAttribute{
+	log.Debugf("Initialized a new DocumentAttributeDeclaration: '%s' -> '%s'", *attrName, *attrValue)
+	return &DocumentAttributeDeclaration{
 		Name:  *attrName,
 		Value: *attrValue,
 	}, nil
 }
 
 // String implements the DocElement#String() method
-func (a *DocumentAttribute) String(indentLevel int) string {
-	result := bytes.NewBuffer(make([]byte, 0))
-	result.WriteString(fmt.Sprintf("%s<DocumentAttribute> '%s' -> '%s'\n", indent(indentLevel), a.Name, a.Value))
-	return result.String()
+func (a *DocumentAttributeDeclaration) String(indentLevel int) string {
+	return fmt.Sprintf("%s<DocumentAttributeDeclaration> '%s' -> '%s'\n", indent(indentLevel), a.Name, a.Value)
 }
 
 // Accept implements DocElement#Accept(Visitor)
-func (a *DocumentAttribute) Accept(v Visitor) error {
+func (a *DocumentAttributeDeclaration) Accept(v Visitor) error {
+	return nil
+}
+
+// DocumentAttributeReset the type for DocumentAttributeReset
+type DocumentAttributeReset struct {
+	Name string
+}
+
+// NewDocumentAttributeReset initializes a new Document Attribute Resets.
+func NewDocumentAttributeReset(name []interface{}) (*DocumentAttributeReset, error) {
+	attrName, err := stringify(name)
+	if err != nil {
+		return nil, errors.Wrapf(err, "error while initializing a DocumentAttributeReset")
+	}
+	log.Debugf("Initialized a new DocumentAttributeReset: '%s'", *attrName)
+	return &DocumentAttributeReset{Name: *attrName}, nil
+}
+
+// String implements the DocElement#String() method
+func (a *DocumentAttributeReset) String(indentLevel int) string {
+	return fmt.Sprintf("%s<DocumentAttributeReset> '%s'\n", indent(indentLevel), a.Name)
+}
+
+// PlainString implements the InlineElement#PlainString() method
+func (a *DocumentAttributeReset) PlainString() string {
+	return fmt.Sprintf("{%s}'\n", a.Name)
+}
+
+// Accept implements DocElement#Accept(Visitor)
+func (a *DocumentAttributeReset) Accept(v Visitor) error {
+	return nil
+}
+
+// DocumentAttributeSubstitution the type for DocumentAttributeSubstitution
+type DocumentAttributeSubstitution struct {
+	Name string
+}
+
+// NewDocumentAttributeSubstitution initializes a new Document Attribute Substitutions
+func NewDocumentAttributeSubstitution(name []interface{}) (*DocumentAttributeSubstitution, error) {
+	attrName, err := stringify(name)
+	if err != nil {
+		return nil, errors.Wrapf(err, "error while initializing a DocumentAttributeSubstitution")
+	}
+	log.Debugf("Initialized a new DocumentAttributeSubstitution: '%s'", *attrName)
+	return &DocumentAttributeSubstitution{Name: *attrName}, nil
+}
+
+// String implements the DocElement#String() method
+func (a *DocumentAttributeSubstitution) String(indentLevel int) string {
+	return fmt.Sprintf("%s<DocumentAttributeSubstitution> '%s'\n", indent(indentLevel), a.Name)
+}
+
+// PlainString implements the InlineElement#PlainString() method
+func (a *DocumentAttributeSubstitution) PlainString() string {
+	return fmt.Sprintf("{%s}'\n", a.Name)
+}
+
+// Accept implements DocElement#Accept(Visitor)
+func (a *DocumentAttributeSubstitution) Accept(v Visitor) error {
 	return nil
 }
 
@@ -153,7 +211,7 @@ func NewSection(heading *Heading, blocks []interface{}) (*Section, error) {
 
 // String implements the DocElement#String() method
 func (s *Section) String(indentLevel int) string {
-	result := bytes.NewBuffer(make([]byte, 0))
+	result := bytes.NewBuffer(nil)
 	result.WriteString(fmt.Sprintf("%s<Section %d> '%s'\n", indent(indentLevel), s.Heading.Level, s.Heading.Content.String(0)))
 	for _, element := range s.Elements {
 		result.WriteString(fmt.Sprintf("%s", element.String(indentLevel+1)))
@@ -225,7 +283,7 @@ func (h *Heading) String(indentLevel int) string {
 
 // PlainString returns a plain string version of all elements in this Heading's Content, without any rendering
 func (h *Heading) PlainString() string {
-	result := bytes.NewBuffer(make([]byte, 0))
+	result := bytes.NewBuffer(nil)
 	for i, element := range h.Content.Elements {
 		result.WriteString(element.PlainString())
 		if i < len(h.Content.Elements)-1 {
@@ -489,7 +547,7 @@ func NewParagraph(text []byte, lines []interface{}, attributes []interface{}) (*
 
 // String implements the DocElement#String() method
 func (p *Paragraph) String(indentLevel int) string {
-	result := bytes.NewBuffer(make([]byte, 0))
+	result := bytes.NewBuffer(nil)
 	result.WriteString(fmt.Sprintf("%s<p>", indent(indentLevel)))
 	for _, line := range p.Lines {
 		result.WriteString(fmt.Sprintf("%s\n", line.String(0)))
@@ -533,18 +591,19 @@ type InlineContent struct {
 
 // NewInlineContent initializes a new `InlineContent` from the given values
 func NewInlineContent(text []byte, elements []interface{}) (*InlineContent, error) {
-	mergedElements := make([]InlineElement, 0)
-	for _, e := range merge(elements) {
-		mergedElements = append(mergedElements, e.(InlineElement))
+	mergedElements := merge(elements)
+	mergedInlineElements := make([]InlineElement, len(mergedElements))
+	for i, element := range mergedElements {
+		mergedInlineElements[i] = element.(InlineElement)
 	}
-	result := &InlineContent{Elements: mergedElements}
+	result := &InlineContent{Elements: mergedInlineElements}
 	log.Debugf("Initialized new InlineContent with %d elements: '%s'", len(result.Elements), result.String(0))
-	return &InlineContent{Elements: mergedElements}, nil
+	return result, nil
 }
 
 // String implements the DocElement#String() method
 func (c *InlineContent) String(indentLevel int) string {
-	result := bytes.NewBuffer(make([]byte, 0))
+	result := bytes.NewBuffer(nil)
 	result.WriteString(indent(indentLevel))
 	for i, element := range c.Elements {
 		result.WriteString(fmt.Sprintf("%s", element.String(0)))
@@ -1017,7 +1076,7 @@ func (t *QuotedText) String(indentLevel int) string {
 
 // PlainString implements the InlineElement#PlainString() method
 func (t *QuotedText) PlainString() string {
-	result := bytes.NewBuffer(make([]byte, 0))
+	result := bytes.NewBuffer(nil)
 	for i, element := range t.Elements {
 		result.WriteString(element.PlainString())
 		if i < len(t.Elements)-1 {
