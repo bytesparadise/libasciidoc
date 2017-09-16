@@ -24,6 +24,7 @@ BINARY_PATH=$(INSTALL_PREFIX)/libasciidoc
 VENDOR_DIR=vendor
 SOURCE_DIR ?= .
 SOURCES := $(shell find $(SOURCE_DIR) -path $(SOURCE_DIR)/vendor -prune -o -name '*.go' -print)
+COVERPKGS := $(shell go list ./... | grep -v vendor | paste -sd "," -)
 COMMIT=$(shell git rev-parse HEAD)
 # GITUNTRACKEDCHANGES := $(shell git status --porcelain --untracked-files=no)
 GITUNTRACKEDCHANGES := $(shell git status --porcelain)
@@ -188,8 +189,8 @@ build: prebuild-check clean-artifacts $(BINARY_PATH)
 .PHONY: test
 ## run all tests except in the 'vendor' package 
 test: 
-	# @go test -v $$(glide novendor) #
-	@ginkgo -r --randomizeAllSpecs --randomizeSuites --failOnPending --cover --trace --race --compilers=2
+	@echo $(COVERPKGS)
+	@ginkgo -r --randomizeAllSpecs --randomizeSuites --failOnPending --trace --race --compilers=2  --cover -coverpkg $(COVERPKGS)
 
 # $(BINARY_PATH): $(SOURCES)
 $(BINARY_PATH): 

@@ -55,3 +55,5 @@ vendor/
 # exclude tmp directory
 tmp
 
+# exclude code coverage merged results
+coverage.txt
