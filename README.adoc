@@ -1,6 +1,7 @@
 = Libasciidoc
 
-image:https://travis-ci.org/bytesparadise/libasciidoc.svg?branch=master["Build Status", link="https://travis-ci.org/bytesparadise/libasciidoc"]
+image:https://travis-ci.org/bytesparadise/libasciidoc.svg?branch=master["Build Status", link="https://travis-ci.org/bytesparadise/libasciidoc"] 
+image:https://codecov.io/gh/bytesparadise/libasciidoc/branch/master/graph/badge.svg["Codecov", link="https://codecov.io/gh/bytesparadise/libasciidoc"]
 
 This project is an attemtp to implement the famous http://github.com/asciidoctor/asciidoctor[Asciidoctor] project in Golang in order to make it natively available for other Golang projects.
 
