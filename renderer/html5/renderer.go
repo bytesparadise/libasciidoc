@@ -2,15 +2,14 @@ package html5
 
 import (
 	"bytes"
-	"context"
 	"html/template"
 	"io"
 	texttemplate "text/template"
 
+	asciidoc "github.com/bytesparadise/libasciidoc/context"
 	"github.com/bytesparadise/libasciidoc/renderer"
 	"github.com/bytesparadise/libasciidoc/types"
 	"github.com/pkg/errors"
-	log "github.com/sirupsen/logrus"
 )
 
 var documentTmpl *texttemplate.Template
@@ -42,7 +41,7 @@ Last updated {{.LastUpdated}}
 }
 
 // Render renders the given document in HTML and writes the result in the given `writer`
-func Render(ctx context.Context, document types.Document, output io.Writer, options renderer.Options) error {
+func Render(ctx asciidoc.Context, output io.Writer, options renderer.Options) error {
 	includeHeaderFooter, err := options.IncludeHeaderFooter()
 	if err != nil {
 		return errors.Wrap(err, "error while rendering the HTML document")
@@ -55,13 +54,12 @@ func Render(ctx context.Context, document types.Document, output io.Writer, opti
 
 	if *includeHeaderFooter {
 		// use a temporary writer for the document's content
-		renderedElementsBuff := bytes.NewBuffer(make([]byte, 0))
-		renderElements(ctx, document.Elements, renderedElementsBuff)
+		renderedElementsBuff := bytes.NewBuffer(nil)
+		processElements(ctx, renderedElementsBuff)
 		renderedHTMLElements := template.HTML(renderedElementsBuff.String())
-
 		title := "undefined"
-		if document.Attributes.GetTitle() != nil {
-			title = *document.Attributes.GetTitle()
+		if ctx.Document.Attributes.GetTitle() != nil {
+			title = *ctx.Document.Attributes.GetTitle()
 		}
 		err := documentTmpl.Execute(output, struct {
 			Generator   string
@@ -79,21 +77,20 @@ func Render(ctx context.Context, document types.Document, output io.Writer, opti
 		}
 		return nil
 	}
-	return renderElements(ctx, document.Elements, output)
+	return processElements(ctx, output)
 
 }
 
-func renderElements(ctx context.Context, elements []types.DocElement, output io.Writer) error {
+func processElements(ctx asciidoc.Context, output io.Writer) error {
 	hasContent := false
-	for _, element := range elements {
-		content, err := renderElement(ctx, element)
+	for _, element := range ctx.Document.Elements {
+		content, err := processElement(ctx, element)
 		if err != nil {
 			return errors.Wrapf(err, "failed to render the document")
 		}
 		// if there's already some content, we need to insert a `\n` before writing
 		// the rendering output of the current element (if application, ie, not empty)
 		if hasContent && len(content) > 0 {
-			log.Debugf("Appending '\\n' after element of type '%T'", element)
 			output.Write([]byte("\n"))
 		}
 		// if the element was rendering into 'something' (ie, not enpty result)
@@ -105,7 +102,7 @@ func renderElements(ctx context.Context, elements []types.DocElement, output io.
 	return nil
 }
 
-func renderElement(ctx context.Context, element types.DocElement) ([]byte, error) {
+func processElement(ctx asciidoc.Context, element types.DocElement) ([]byte, error) {
 	switch element.(type) {
 	case *types.Section:
 		return renderSection(ctx, *element.(*types.Section))
@@ -125,9 +122,14 @@ func renderElement(ctx context.Context, element types.DocElement) ([]byte, error
 		return renderInlineContent(ctx, *element.(*types.InlineContent))
 	case *types.StringElement:
 		return renderStringElement(ctx, *element.(*types.StringElement))
-	case *types.DocumentAttribute:
-		// for now, silently ignored in the output
-		return make([]byte, 0), nil
+	case *types.DocumentAttributeDeclaration:
+		// 'process' function do not return any rendered content, but may return an error
+		return nil, processAttributeDeclaration(ctx, *element.(*types.DocumentAttributeDeclaration))
+	case *types.DocumentAttributeReset:
+		// 'process' function do not return any rendered content, but may return an error
+		return nil, processAttributeReset(ctx, *element.(*types.DocumentAttributeReset))
+	case *types.DocumentAttributeSubstitution:
+		return renderAttributeSubstitution(ctx, *element.(*types.DocumentAttributeSubstitution))
 	default:
 		return nil, errors.Errorf("unsupported type of element: %T", element)
 	}

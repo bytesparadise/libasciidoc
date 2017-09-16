@@ -17,7 +17,7 @@ DocumentBlock <- !EOF content:(Section / StandaloneBlock) {
     return content.(types.DocElement), nil
 }
 
-StandaloneBlock <- DocumentAttribute / List / BlockImage / DelimitedBlock / Paragraph / ElementAttribute / BlankLine //TODO: should Paragraph be the last type ?
+StandaloneBlock <- DocumentAttributeDeclaration / DocumentAttributeReset / List / BlockImage / DelimitedBlock / Paragraph / ElementAttribute / BlankLine //TODO: should Paragraph be the last type ?
 
 Section <- Section1 / Section2 / Section3 / Section4 / Section5 / Section6
 
@@ -101,17 +101,37 @@ Heading6 <- attributes:(ElementAttribute)* level:("======") WS+ content:InlineCo
 
 
 // ------------------------------------------
-// Document Attribute
+// Document Attributes
 // ------------------------------------------
-DocumentAttribute <- DocumentAttributeWithNameOnly / DocumentAttributeWithNameAndValue 
+DocumentAttributeDeclaration <- DocumentAttributeDeclarationWithNameOnly / DocumentAttributeDeclarationWithNameAndValue 
 
-DocumentAttributeWithNameOnly <- ":" name:((!NEWLINE !":" !WS .)+) ":" WS* EOL {
-    return types.NewDocumentAttribute(name.([]interface{}), nil)
+DocumentAttributeDeclarationWithNameOnly <- ":" name:(AttributeName) ":" WS* EOL {
+    return types.NewDocumentAttributeDeclaration(name.([]interface{}), nil)
 }
 
-DocumentAttributeWithNameAndValue <- ":" name:((!NEWLINE !":" !WS .)+) ":" WS+ value:(!NEWLINE .)* EOL {
-    return types.NewDocumentAttribute(name.([]interface{}), value.([]interface{}))
+DocumentAttributeDeclarationWithNameAndValue <- ":" name:(AttributeName) ":" WS+ value:(!NEWLINE .)* EOL {
+    return types.NewDocumentAttributeDeclaration(name.([]interface{}), value.([]interface{}))
 }
+
+DocumentAttributeReset <- DocumentAttributeResetWithHeadingBangSymbol / DocumentAttributeResetWithTrailingBangSymbol
+
+DocumentAttributeResetWithHeadingBangSymbol <- ":!" name:(AttributeName) ":" WS* EOL {
+    return types.NewDocumentAttributeReset(name.([]interface{}))
+}
+
+DocumentAttributeResetWithTrailingBangSymbol <- ":" name:(AttributeName) "!:" WS* EOL {
+    return types.NewDocumentAttributeReset(name.([]interface{}))
+}
+
+
+DocumentAttributeSubstitution <- "{" name:(AttributeName) "}" {
+    return types.NewDocumentAttributeSubstitution(name.([]interface{}))
+}
+
+// AttributeName must be at least one character long, 
+// must begin with a word character (A-Z, a-z, 0-9 or _) and 
+// must only contain word characters and hyphens ('-').
+AttributeName <- ([A-Z] / [a-z] / [0-9] / "_") ([A-Z] / [a-z] / [0-9] / "-")*
 
 // ------------------------------------------
 // List Items
@@ -137,14 +157,16 @@ Paragraph <- attributes:(ElementAttribute)* lines:(InlineContent)+ {
     return types.NewParagraph(c.text, lines.([]interface{}), attributes.([]interface{}))
 } 
 
-// an inline content element may begin and end with spaces, 
-// but it must contain at least an image, a quoted text, an external link or a word
-InlineContent <- elements:(WS* (InlineImage / QuotedText / ExternalLink / Word) WS*)+ EOL {
+// an inline content element may start with and end with spaces, 
+// but it must contain at least an inline element (image, quoted text, external link, document attribute substitution, word, etc.)
+InlineContent <- elements:(WS* InlineElement WS*)+ EOL {
     return types.NewInlineContent(c.text, elements.([]interface{}))
 } 
 
+InlineElement <- InlineImage / QuotedText / ExternalLink / DocumentAttributeSubstitution / Word
+
 // ------------------------------------------
-// Quote Texts (bold, italic and monospace)
+// Quoted Texts (bold, italic and monospace)
 // ------------------------------------------
 QuotedText <- BoldText / ItalicText / MonospaceText
 

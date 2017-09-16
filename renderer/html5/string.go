@@ -2,9 +2,9 @@ package html5
 
 import (
 	"bytes"
-	"context"
 	"html/template"
 
+	asciidoc "github.com/bytesparadise/libasciidoc/context"
 	"github.com/bytesparadise/libasciidoc/types"
 	"github.com/pkg/errors"
 )
@@ -16,8 +16,8 @@ func init() {
 	stringElementTmpl = newHTMLTemplate("string element", "{{.}}")
 }
 
-func renderStringElement(ctx context.Context, str types.StringElement) ([]byte, error) {
-	result := bytes.NewBuffer(make([]byte, 0))
+func renderStringElement(ctx asciidoc.Context, str types.StringElement) ([]byte, error) {
+	result := bytes.NewBuffer(nil)
 	err := stringElementTmpl.Execute(result, str.Content)
 	if err != nil {
 		return nil, errors.Wrapf(err, "unable to render string element")

@@ -2,9 +2,9 @@ package html5
 
 import (
 	"bytes"
-	"context"
 	"html/template"
 
+	asciidoc "github.com/bytesparadise/libasciidoc/context"
 	"github.com/bytesparadise/libasciidoc/types"
 	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
@@ -25,8 +25,8 @@ func init() {
 	inlineImageTmpl = newHTMLTemplate("inline image", `<span class="image"><img src="{{.Macro.Path}}" alt="{{.Macro.Alt}}"{{if .Macro.Width}} width="{{.Macro.Width}}"{{end}}{{if .Macro.Height}} height="{{.Macro.Height}}"{{end}}></span>`)
 }
 
-func renderBlockImage(ctx context.Context, img types.BlockImage) ([]byte, error) {
-	result := bytes.NewBuffer(make([]byte, 0))
+func renderBlockImage(ctx asciidoc.Context, img types.BlockImage) ([]byte, error) {
+	result := bytes.NewBuffer(nil)
 	err := blockImageTmpl.Execute(result, img)
 	if err != nil {
 		return nil, errors.Wrapf(err, "unable to render block image")
@@ -35,8 +35,8 @@ func renderBlockImage(ctx context.Context, img types.BlockImage) ([]byte, error)
 	return result.Bytes(), nil
 }
 
-func renderInlineImage(ctx context.Context, img types.InlineImage) ([]byte, error) {
-	result := bytes.NewBuffer(make([]byte, 0))
+func renderInlineImage(ctx asciidoc.Context, img types.InlineImage) ([]byte, error) {
+	result := bytes.NewBuffer(nil)
 	err := inlineImageTmpl.Execute(result, img)
 	if err != nil {
 		return nil, errors.Wrapf(err, "unable to render inline image")
