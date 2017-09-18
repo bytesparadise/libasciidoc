@@ -19,13 +19,13 @@ import (
 // DocElement the interface for all document elements
 // TODO: 'String()' remove this method ? no real value here (we could use a visitor to print/debug the elements), by having a `Visit(Visitor)` method instead
 type DocElement interface {
-	Visitable
 	String(int) string
 }
 
 // InlineElement the interface for inline elements
 type InlineElement interface {
 	DocElement
+	Visitable
 	PlainString() string
 }
 
@@ -123,11 +123,6 @@ func (a *DocumentAttributeDeclaration) String(indentLevel int) string {
 	return fmt.Sprintf("%s<DocumentAttributeDeclaration> '%s' -> '%s'\n", indent(indentLevel), a.Name, a.Value)
 }
 
-// Accept implements DocElement#Accept(Visitor)
-func (a *DocumentAttributeDeclaration) Accept(v Visitor) error {
-	return nil
-}
-
 // DocumentAttributeReset the type for DocumentAttributeReset
 type DocumentAttributeReset struct {
 	Name string
@@ -151,11 +146,6 @@ func (a *DocumentAttributeReset) String(indentLevel int) string {
 // PlainString implements the InlineElement#PlainString() method
 func (a *DocumentAttributeReset) PlainString() string {
 	return fmt.Sprintf("{%s}'\n", a.Name)
-}
-
-// Accept implements DocElement#Accept(Visitor)
-func (a *DocumentAttributeReset) Accept(v Visitor) error {
-	return nil
 }
 
 // DocumentAttributeSubstitution the type for DocumentAttributeSubstitution
@@ -185,7 +175,7 @@ func (a *DocumentAttributeSubstitution) PlainString() string {
 
 // Accept implements DocElement#Accept(Visitor)
 func (a *DocumentAttributeSubstitution) Accept(v Visitor) error {
-	return nil
+	return v.Visit(a)
 }
 
 // ------------------------------------------
@@ -217,34 +207,6 @@ func (s *Section) String(indentLevel int) string {
 		result.WriteString(fmt.Sprintf("%s", element.String(indentLevel+1)))
 	}
 	return result.String()
-}
-
-// Accept implements DocElement#Accept(Visitor)
-func (s *Section) Accept(v Visitor) error {
-	err := v.BeforeVisit(s)
-	if err != nil {
-		return errors.Wrapf(err, "error while pre-visiting section")
-	}
-	err = v.Visit(s)
-	if err != nil {
-		return errors.Wrapf(err, "error while visiting section")
-	}
-	err = s.Heading.Accept(v)
-	if err != nil {
-		return errors.Wrapf(err, "error while visiting section heading")
-	}
-	for _, element := range s.Elements {
-		err := element.Accept(v)
-		if err != nil {
-			return errors.Wrapf(err, "error while visiting section element")
-		}
-
-	}
-	err = v.AfterVisit(s)
-	if err != nil {
-		return errors.Wrapf(err, "error while post-visiting section")
-	}
-	return nil
 }
 
 // ------------------------------------------
@@ -291,23 +253,6 @@ func (h *Heading) PlainString() string {
 		}
 	}
 	return result.String()
-}
-
-// Accept implements DocElement#Accept(Visitor)
-func (h *Heading) Accept(v Visitor) error {
-	err := v.BeforeVisit(h)
-	if err != nil {
-		return errors.Wrapf(err, "error while pre-visiting heading")
-	}
-	err = h.Content.Accept(v)
-	if err != nil {
-		return errors.Wrapf(err, "error while visiting heading")
-	}
-	err = v.AfterVisit(h)
-	if err != nil {
-		return errors.Wrapf(err, "error while post-visiting heading")
-	}
-	return nil
 }
 
 // ------------------------------------------
@@ -380,29 +325,6 @@ func (l *List) String(indentLevel int) string {
 	return result
 }
 
-// Accept implements DocElement#Accept(Visitor)
-func (l *List) Accept(v Visitor) error {
-	err := v.BeforeVisit(l)
-	if err != nil {
-		return errors.Wrapf(err, "error while pre-visiting list")
-	}
-	err = v.Visit(l)
-	if err != nil {
-		return errors.Wrapf(err, "error while visiting list")
-	}
-	for _, item := range l.Items {
-		err := item.Accept(v)
-		if err != nil {
-			return errors.Wrapf(err, "error while visiting list item")
-		}
-	}
-	err = v.AfterVisit(l)
-	if err != nil {
-		return errors.Wrapf(err, "error while post-visiting list")
-	}
-	return nil
-}
-
 // ListItem the structure for the list items
 type ListItem struct {
 	Level    int
@@ -441,33 +363,6 @@ func (i *ListItem) StringWithIndent(indentLevel int) string {
 	return result
 }
 
-// Accept implements DocElement#Accept(Visitor)
-func (i *ListItem) Accept(v Visitor) error {
-	err := v.BeforeVisit(i)
-	if err != nil {
-		return errors.Wrapf(err, "error while pre-visiting list item")
-	}
-	err = v.Visit(i)
-	if err != nil {
-		return errors.Wrapf(err, "error while visiting list item")
-	}
-	err = i.Content.Accept(v)
-	if err != nil {
-		return errors.Wrapf(err, "error while visiting list item content")
-	}
-	for _, child := range i.Children.Items {
-		err := child.Accept(v)
-		if err != nil {
-			return errors.Wrapf(err, "error while visiting list item child")
-		}
-	}
-	err = v.AfterVisit(i)
-	if err != nil {
-		return errors.Wrapf(err, "error while post-visiting list item")
-	}
-	return nil
-}
-
 // ListItemContent the structure for the list item content
 type ListItemContent struct {
 	Lines []*InlineContent
@@ -493,29 +388,6 @@ func NewListItemContent(text []byte, lines []interface{}) (*ListItemContent, err
 // String implements the DocElement#String() method
 func (c *ListItemContent) String(indentLevel int) string {
 	return fmt.Sprintf("%s<%T> %v", indent(indentLevel), c, c.Lines)
-}
-
-// Accept implements DocElement#Accept(Visitor)
-func (c *ListItemContent) Accept(v Visitor) error {
-	err := v.BeforeVisit(c)
-	if err != nil {
-		return errors.Wrapf(err, "error while pre-visiting ListItemContent")
-	}
-	err = v.Visit(c)
-	if err != nil {
-		return errors.Wrapf(err, "error while visiting ListItemContent")
-	}
-	for _, line := range c.Lines {
-		err := line.Accept(v)
-		if err != nil {
-			return errors.Wrapf(err, "error while visiting ListItemContent line")
-		}
-	}
-	err = v.AfterVisit(c)
-	if err != nil {
-		return errors.Wrapf(err, "error while post-visiting ListItemContent")
-	}
-	return nil
 }
 
 // ------------------------------------------
@@ -553,30 +425,6 @@ func (p *Paragraph) String(indentLevel int) string {
 		result.WriteString(fmt.Sprintf("%s\n", line.String(0)))
 	}
 	return result.String()
-}
-
-// Accept implements DocElement#Accept(Visitor)
-func (p *Paragraph) Accept(v Visitor) error {
-	err := v.BeforeVisit(p)
-	if err != nil {
-		return errors.Wrapf(err, "error while pre-visiting pararaph")
-	}
-	err = v.Visit(p)
-	if err != nil {
-		return errors.Wrapf(err, "error while visiting pararaph")
-	}
-	for _, line := range p.Lines {
-		err := line.Accept(v)
-		if err != nil {
-			return errors.Wrapf(err, "error while visiting paragraph line")
-		}
-
-	}
-	err = v.AfterVisit(p)
-	if err != nil {
-		return errors.Wrapf(err, "error while post-visiting pararaph")
-	}
-	return nil
 }
 
 // ------------------------------------------
@@ -665,34 +513,6 @@ func NewBlockImage(input []byte, imageMacro ImageMacro, attributes []interface{}
 // String implements the DocElement#String() method
 func (i *BlockImage) String(indentLevel int) string {
 	return fmt.Sprintf("%s<%T> %s", indent(indentLevel), i, i.Macro.String(0))
-}
-
-func (i *BlockImage) elements() []Visitable {
-	return []Visitable{i.ID, i.Link, &i.Macro, i.Title}
-}
-
-// Accept implements DocElement#Accept(Visitor)
-func (i *BlockImage) Accept(v Visitor) error {
-	err := v.BeforeVisit(i)
-	if err != nil {
-		return errors.Wrapf(err, "error while pre-visiting block image")
-	}
-	err = v.Visit(i)
-	if err != nil {
-		return errors.Wrapf(err, "error while visiting block image")
-	}
-	for _, element := range i.elements() {
-		err := element.Accept(v)
-		if err != nil {
-			return errors.Wrapf(err, "error while visiting block image element")
-		}
-
-	}
-	err = v.AfterVisit(i)
-	if err != nil {
-		return errors.Wrapf(err, "error while post-visiting block image")
-	}
-	return nil
 }
 
 // InlineImage the structure for the inline image macros
@@ -905,23 +725,6 @@ func (e *ElementLink) String(indentLevel int) string {
 	return fmt.Sprintf("%s<%T> %s", indent(indentLevel), e, e.Path)
 }
 
-// Accept implements DocElement#Accept(Visitor)
-func (e *ElementLink) Accept(v Visitor) error {
-	err := v.BeforeVisit(e)
-	if err != nil {
-		return errors.Wrapf(err, "error while pre-visiting element link")
-	}
-	err = v.Visit(e)
-	if err != nil {
-		return errors.Wrapf(err, "error while visiting element link")
-	}
-	err = v.AfterVisit(e)
-	if err != nil {
-		return errors.Wrapf(err, "error whie post-visiting element link")
-	}
-	return nil
-}
-
 // ElementID the structure for element IDs
 type ElementID struct {
 	Value string
@@ -936,24 +739,6 @@ func NewElementID(id string) (*ElementID, error) {
 // String implements the DocElement#String() method
 func (e *ElementID) String(indentLevel int) string {
 	return fmt.Sprintf("%s<%T> %s", indent(indentLevel), e, e.Value)
-}
-
-// Accept implements DocElement#Accept(Visitor)
-func (e *ElementID) Accept(v Visitor) error {
-	err := v.BeforeVisit(e)
-	if err != nil {
-		return errors.Wrapf(err, "error while pre-visiting element ID")
-	}
-	err = v.Visit(e)
-	if err != nil {
-		return errors.Wrapf(err, "error while visiting element ID")
-	}
-	err = v.AfterVisit(e)
-	if err != nil {
-		return errors.Wrapf(err, "error while post-visiting element ID")
-	}
-
-	return nil
 }
 
 // ElementTitle the structure for element IDs
@@ -974,23 +759,6 @@ func NewElementTitle(content []interface{}) (*ElementTitle, error) {
 // String implements the DocElement#String() method
 func (e *ElementTitle) String(indentLevel int) string {
 	return fmt.Sprintf("%s<%T> %s", indent(indentLevel), e, e.Value)
-}
-
-// Accept implements DocElement#Accept(Visitor)
-func (e *ElementTitle) Accept(v Visitor) error {
-	err := v.BeforeVisit(e)
-	if err != nil {
-		return errors.Wrapf(err, "error while pre-visiting element link")
-	}
-	err = v.Visit(e)
-	if err != nil {
-		return errors.Wrapf(err, "error while visiting element title")
-	}
-	err = v.AfterVisit(e)
-	if err != nil {
-		return errors.Wrapf(err, "error while post-visiting element link")
-	}
-	return nil
 }
 
 // ------------------------------------------
@@ -1127,23 +895,6 @@ func NewBlankLine() (*BlankLine, error) {
 // String implements the DocElement#String() method
 func (l *BlankLine) String(indentLevel int) string {
 	return fmt.Sprintf("%s<Blankline>\n", indent(indentLevel))
-}
-
-// Accept implements DocElement#Accept(Visitor)
-func (l *BlankLine) Accept(v Visitor) error {
-	err := v.BeforeVisit(l)
-	if err != nil {
-		return errors.Wrapf(err, "error while pre-visiting blank line")
-	}
-	err = v.Visit(l)
-	if err != nil {
-		return errors.Wrapf(err, "error while visiting blank line")
-	}
-	err = v.AfterVisit(l)
-	if err != nil {
-		return errors.Wrapf(err, "error while post-visiting blank line")
-	}
-	return nil
 }
 
 // ------------------------------------------
