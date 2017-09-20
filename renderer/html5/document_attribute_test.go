@@ -68,4 +68,17 @@ author is now {author}.`
 		verify(GinkgoT(), expected, content)
 	})
 
+	It("front-matter then paragraph with substitutions", func() {
+		content := `---
+author: Xavier
+---
+		
+author is {author}.`
+
+		expected := `<div class="paragraph">
+<p>author is Xavier.</p>
+</div>`
+		verify(GinkgoT(), expected, content)
+	})
+
 })
