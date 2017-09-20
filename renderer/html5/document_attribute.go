@@ -24,7 +24,12 @@ func renderAttributeSubstitution(ctx asciidoc.Context, attribute types.DocumentA
 	if value == nil {
 		result.WriteString(fmt.Sprintf("{%s}", attribute.Name))
 	} else {
-		result.WriteString(*value)
+		switch value := value.(type) {
+		case *interface{}:
+			result.WriteString(fmt.Sprintf("%v", *value))
+		default:
+			return nil, fmt.Errorf("unsupported type of attribute to substitute: %T", value)
+		}
 	}
 	return result.Bytes(), nil
 }

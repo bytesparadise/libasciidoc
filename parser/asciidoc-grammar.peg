@@ -9,16 +9,33 @@ import "github.com/bytesparadise/libasciidoc/types"
 
 }
 
-Document <- blocks:DocumentBlock* EOF {
-	return types.NewDocument(blocks.([]interface{}))
+Document <- frontmatter:(FrontMatter?) blocks:(DocumentBlock*) EOF {
+    if frontmatter != nil {
+	    return types.NewDocument(frontmatter.(*types.FrontMatter), blocks.([]interface{}))
+    }
+	return types.NewDocument(nil, blocks.([]interface{}))
 }
 
-DocumentBlock <- !EOF content:(Section / StandaloneBlock) {
+DocumentBlock <- content:(Section / StandaloneBlock) {
     return content.(types.DocElement), nil
 }
 
 StandaloneBlock <- DocumentAttributeDeclaration / DocumentAttributeReset / List / BlockImage / DelimitedBlock / Paragraph / ElementAttribute / BlankLine //TODO: should Paragraph be the last type ?
 
+// ------------------------------------------
+// Front Matter
+// ------------------------------------------
+FrontMatter <- YamlFrontMatter 
+
+FrontMatter <- YamlFrontMatterToken content:(!YamlFrontMatterToken .)* YamlFrontMatterToken {
+    return types.NewYamlFrontMatter(content.([]interface{}))
+}
+
+YamlFrontMatterToken  <- "---" EOL
+
+// ------------------------------------------
+// Sections
+// ------------------------------------------
 Section <- Section1 / Section2 / Section3 / Section4 / Section5 / Section6
 
 Section1 <- heading:(Heading1) elements:(Section1Block*) {
@@ -68,7 +85,6 @@ Section6 <- heading:(Heading6) elements:(Section6Block*) {
 Section6Block <- !Section1 !Section2 !Section3 !Section4 !Section5 !Section6 content:(StandaloneBlock) {
     return content.(types.DocElement), nil
 }
-
 
 // ------------------------------------------
 // Headings
