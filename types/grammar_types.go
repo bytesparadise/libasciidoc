@@ -6,6 +6,8 @@ import (
 	"path/filepath"
 	"strings"
 
+	yaml "gopkg.in/yaml.v2"
+
 	"reflect"
 
 	"github.com/pkg/errors"
@@ -47,12 +49,13 @@ type Visitor interface {
 
 // Document the top-level structure for a document
 type Document struct {
-	Attributes *DocumentAttributes
-	Elements   []DocElement
+	FrontMatter *FrontMatter
+	Attributes  *DocumentAttributes
+	Elements    []DocElement
 }
 
 // NewDocument initializes a new `Document` from the given lines
-func NewDocument(blocks []interface{}) (*Document, error) {
+func NewDocument(frontmatter *FrontMatter, blocks []interface{}) (*Document, error) {
 	log.Debugf("Initializing a new Document with %d blocks(s)", len(blocks))
 	for i, block := range blocks {
 		log.Debugf("Line #%d: %T", i, block)
@@ -60,6 +63,9 @@ func NewDocument(blocks []interface{}) (*Document, error) {
 	elements := convertBlocksToDocElements(blocks)
 	document := &Document{Elements: elements}
 	document.initAttributes()
+	if frontmatter != nil {
+		document.Attributes.AddAll(frontmatter.Content)
+	}
 	return document, nil
 }
 
@@ -173,9 +179,33 @@ func (a *DocumentAttributeSubstitution) PlainString() string {
 	return fmt.Sprintf("{%s}'\n", a.Name)
 }
 
-// Accept implements DocElement#Accept(Visitor)
+// Accept implements Visitable#Accept(Visitor)
 func (a *DocumentAttributeSubstitution) Accept(v Visitor) error {
 	return v.Visit(a)
+}
+
+// ------------------------------------------
+// Front Matter
+// ------------------------------------------
+
+// FrontMatter the structure for document front-matter
+type FrontMatter struct {
+	Content map[string]interface{}
+}
+
+// NewYamlFrontMatter initializes a new FrontMatter from the given `content`
+func NewYamlFrontMatter(content []interface{}) (*FrontMatter, error) {
+	c, err := stringify(content)
+	if err != nil {
+		return nil, errors.Wrapf(err, "unable to 'stringify' content in front-matter of document")
+	}
+	attributes := make(map[string]interface{})
+	err = yaml.Unmarshal([]byte(*c), &attributes)
+	if err != nil {
+		return nil, errors.Wrapf(err, "unable to parse yaml content in front-matter of document")
+	}
+	log.Debugf("Initialized a new FrontMatter with attributes: %+v", attributes)
+	return &FrontMatter{Content: attributes}, nil
 }
 
 // ------------------------------------------
@@ -445,7 +475,7 @@ func NewInlineContent(text []byte, elements []interface{}) (*InlineContent, erro
 		mergedInlineElements[i] = element.(InlineElement)
 	}
 	result := &InlineContent{Elements: mergedInlineElements}
-	log.Debugf("Initialized new InlineContent with %d elements: '%s'", len(result.Elements), result.String(0))
+	log.Debugf("Initialized new InlineContent with %d element(s): '%s'", len(result.Elements), result.String(0))
 	return result, nil
 }
 
@@ -462,7 +492,7 @@ func (c *InlineContent) String(indentLevel int) string {
 	return result.String()
 }
 
-// Accept implements DocElement#Accept(Visitor)
+// Accept implements Visitable#Accept(Visitor)
 func (c *InlineContent) Accept(v Visitor) error {
 	err := v.BeforeVisit(c)
 	if err != nil {
@@ -538,7 +568,7 @@ func (i *InlineImage) PlainString() string {
 	return i.Macro.Alt
 }
 
-// Accept implements DocElement#Accept(Visitor)
+// Accept implements Visitable#Accept(Visitor)
 func (i *InlineImage) Accept(v Visitor) error {
 	err := v.BeforeVisit(i)
 	if err != nil {
@@ -617,7 +647,7 @@ func (m *ImageMacro) String(indentLevel int) string {
 	return fmt.Sprintf("%s<%T> %s['%s', w='%s' h='%s']", indent(indentLevel), m, m.Path, m.Alt, width, height)
 }
 
-// Accept implements DocElement#Accept(Visitor)
+// Accept implements Visitable#Accept(Visitor)
 func (m *ImageMacro) Accept(v Visitor) error {
 	err := v.BeforeVisit(m)
 	if err != nil {
@@ -669,7 +699,7 @@ func (b *DelimitedBlock) String(indentLevel int) string {
 	return fmt.Sprintf("%s<%T> %v", indent(indentLevel), b, b.Content)
 }
 
-// Accept implements DocElement#Accept(Visitor)
+// Accept implements Visitable#Accept(Visitor)
 func (b *DelimitedBlock) Accept(v Visitor) error {
 	err := v.BeforeVisit(b)
 	if err != nil {
@@ -785,7 +815,7 @@ func (s *StringElement) PlainString() string {
 	return s.Content
 }
 
-// Accept implements DocElement#Accept(Visitor)
+// Accept implements Visitable#Accept(Visitor)
 func (s *StringElement) Accept(v Visitor) error {
 	err := v.BeforeVisit(s)
 	if err != nil {
@@ -854,7 +884,7 @@ func (t *QuotedText) PlainString() string {
 	return result.String()
 }
 
-// Accept implements DocElement#Accept(Visitor)
+// Accept implements Visitable#Accept(Visitor)
 func (t *QuotedText) Accept(v Visitor) error {
 	err := v.BeforeVisit(t)
 	if err != nil {
@@ -932,7 +962,7 @@ func (l *ExternalLink) PlainString() string {
 	return l.Text
 }
 
-// Accept implements DocElement#Accept(Visitor)
+// Accept implements Visitable#Accept(Visitor)
 func (l *ExternalLink) Accept(v Visitor) error {
 	err := v.BeforeVisit(l)
 	if err != nil {

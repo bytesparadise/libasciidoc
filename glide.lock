@@ -1,5 +1,5 @@
-hash: 2890eb41628595da96f5d32a49c1496924668cc707a3e2d469bbcdc40d7d6120
-updated: 2017-08-21T16:37:36.310336353+02:00
+hash: 3a7a6660aa022e0847683a59e6553c85cee1cd88d9aec5d90896d11a1ce7f5b5
+updated: 2017-09-20T23:00:07.103289113+02:00
 imports:
 - name: github.com/go-test/deep
   version: f49763a6ea0a91026be26f8213bebee726b4185f
@@ -78,6 +78,8 @@ imports:
   - runes
   - transform
   - unicode
+- name: gopkg.in/yaml.v2
+  version: a5b47d31c556af34a302ce5d659e6fea44d90de0
 testImports:
 - name: github.com/davecgh/go-spew
   version: 6d212800a42e8ab5c146b8ace3490ee17e5225f9
@@ -93,5 +95,3 @@ testImports:
   - html
   - html/atom
   - html/charset
-- name: gopkg.in/yaml.v2
-  version: a5b47d31c556af34a302ce5d659e6fea44d90de0
