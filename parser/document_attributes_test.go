@@ -160,7 +160,7 @@ a paragraph`
 		It("no heading and attributes in body", func() {
 
 			actualContent := `a paragraph
-		
+  
 :toc:
 :date: 2017-01-01
 :author: Xavier`

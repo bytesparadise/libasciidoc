@@ -1,5 +1,5 @@
 hash: 3a7a6660aa022e0847683a59e6553c85cee1cd88d9aec5d90896d11a1ce7f5b5
-updated: 2017-09-20T23:00:07.103289113+02:00
+updated: 2017-09-22T15:13:53.6579306+02:00
 imports:
 - name: github.com/go-test/deep
   version: f49763a6ea0a91026be26f8213bebee726b4185f

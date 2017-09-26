@@ -408,16 +408,11 @@ a paragraph`
 			expectedDocument := &types.Document{
 				Attributes: &types.DocumentAttributes{},
 				Elements: []types.DocElement{
-					&types.Paragraph{
-						Lines: []*types.InlineContent{
-							&types.InlineContent{
-								Elements: []types.InlineElement{
-									&types.StringElement{Content: " = a heading"},
-								},
-							},
-						},
+					&types.LiteralBlock{
+						Content: " = a heading",
 					},
-				}}
+				},
+			}
 			verify(GinkgoT(), expectedDocument, actualContent)
 		})
 
@@ -442,14 +437,8 @@ a paragraph`
 							},
 						},
 						Elements: []types.DocElement{
-							&types.Paragraph{
-								Lines: []*types.InlineContent{
-									&types.InlineContent{
-										Elements: []types.InlineElement{
-											&types.StringElement{Content: " == section 2"},
-										},
-									},
-								},
+							&types.LiteralBlock{
+								Content: " == section 2",
 							},
 						},
 					},

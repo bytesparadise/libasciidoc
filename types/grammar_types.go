@@ -109,11 +109,11 @@ type DocumentAttributeDeclaration struct {
 
 // NewDocumentAttributeDeclaration initializes a new DocumentAttributeDeclaration
 func NewDocumentAttributeDeclaration(name []interface{}, value []interface{}) (*DocumentAttributeDeclaration, error) {
-	attrName, err := stringify(name)
+	attrName, err := Stringify(name)
 	if err != nil {
 		return nil, errors.Wrapf(err, "error while initializing a DocumentAttributeDeclaration")
 	}
-	attrValue, err := stringify(value)
+	attrValue, err := Stringify(value)
 	if err != nil {
 		return nil, errors.Wrapf(err, "error while initializing a DocumentAttributeDeclaration")
 	}
@@ -136,7 +136,7 @@ type DocumentAttributeReset struct {
 
 // NewDocumentAttributeReset initializes a new Document Attribute Resets.
 func NewDocumentAttributeReset(name []interface{}) (*DocumentAttributeReset, error) {
-	attrName, err := stringify(name)
+	attrName, err := Stringify(name)
 	if err != nil {
 		return nil, errors.Wrapf(err, "error while initializing a DocumentAttributeReset")
 	}
@@ -161,7 +161,7 @@ type DocumentAttributeSubstitution struct {
 
 // NewDocumentAttributeSubstitution initializes a new Document Attribute Substitutions
 func NewDocumentAttributeSubstitution(name []interface{}) (*DocumentAttributeSubstitution, error) {
-	attrName, err := stringify(name)
+	attrName, err := Stringify(name)
 	if err != nil {
 		return nil, errors.Wrapf(err, "error while initializing a DocumentAttributeSubstitution")
 	}
@@ -195,9 +195,9 @@ type FrontMatter struct {
 
 // NewYamlFrontMatter initializes a new FrontMatter from the given `content`
 func NewYamlFrontMatter(content []interface{}) (*FrontMatter, error) {
-	c, err := stringify(content)
+	c, err := Stringify(content)
 	if err != nil {
-		return nil, errors.Wrapf(err, "unable to 'stringify' content in front-matter of document")
+		return nil, errors.Wrapf(err, "unable to 'Stringify' content in front-matter of document")
 	}
 	attributes := make(map[string]interface{})
 	err = yaml.Unmarshal([]byte(*c), &attributes)
@@ -475,7 +475,7 @@ func NewInlineContent(text []byte, elements []interface{}) (*InlineContent, erro
 		mergedInlineElements[i] = element.(InlineElement)
 	}
 	result := &InlineContent{Elements: mergedInlineElements}
-	log.Debugf("Initialized new InlineContent with %d element(s): '%s'", len(result.Elements), result.String(0))
+	log.Debugf("Initialized new InlineContent with %d element(s): %s", len(result.Elements), result.String(0))
 	return result, nil
 }
 
@@ -530,7 +530,7 @@ type BlockImage struct {
 
 // NewBlockImage initializes a new `BlockImage`
 func NewBlockImage(input []byte, imageMacro ImageMacro, attributes []interface{}) (*BlockImage, error) {
-	log.Debugf("Initializing a new BlockImage from '%s'", input)
+	log.Debugf("Initializing a new BlockImage from %s", input)
 	id, title, link := newElementAttributes(attributes)
 	return &BlockImage{
 		Macro: imageMacro,
@@ -552,7 +552,7 @@ type InlineImage struct {
 
 // NewInlineImage initializes a new `InlineImage` (similar to BlockImage, but without attributes)
 func NewInlineImage(input []byte, imageMacro ImageMacro) (*InlineImage, error) {
-	log.Debugf("Initializing a new InlineImage from '%s'", input)
+	log.Debugf("Initializing a new InlineImage from %s", input)
 	return &InlineImage{
 		Macro: imageMacro,
 	}, nil
@@ -599,7 +599,7 @@ type ImageMacro struct {
 
 // NewImageMacro initializes a new `ImageMacro`
 func NewImageMacro(input []byte, path string, attributes interface{}) (*ImageMacro, error) {
-	log.Debugf("Initializing a new ImageMacro from '%s'", input)
+	log.Debugf("Initializing a new ImageMacro from %s", input)
 	var alt string
 	var width, height *string
 	if attributes != nil {
@@ -644,7 +644,7 @@ func (m *ImageMacro) String(indentLevel int) string {
 	if m.Height != nil {
 		height = *m.Height
 	}
-	return fmt.Sprintf("%s<%T> %s['%s', w='%s' h='%s']", indent(indentLevel), m, m.Path, m.Alt, width, height)
+	return fmt.Sprintf("%s<%T> %s[%s, w=%s h=%s]", indent(indentLevel), m, m.Path, m.Alt, width, height)
 }
 
 // Accept implements Visitable#Accept(Visitor)
@@ -672,8 +672,8 @@ func (m *ImageMacro) Accept(v Visitor) error {
 type DelimitedBlockKind int
 
 const (
-	// SourceBlock a source block
-	SourceBlock DelimitedBlockKind = iota
+	// FencedBlock a fenced block
+	FencedBlock DelimitedBlockKind = iota
 )
 
 // DelimitedBlock the structure for the delimited blocks
@@ -684,23 +684,74 @@ type DelimitedBlock struct {
 
 // NewDelimitedBlock initializes a new `DelimitedBlock` of the given kind with the given content
 func NewDelimitedBlock(kind DelimitedBlockKind, content []interface{}) (*DelimitedBlock, error) {
-	c, err := stringify(content)
+	c, err := Stringify(content)
 	if err != nil {
 		return nil, errors.Wrapf(err, "unable to initialize a new delimited block")
 	}
+	// remove "\n" or "\r\n", depending on the OS.
+	blockContent := strings.TrimSuffix(strings.TrimSuffix(*c, "\n"), "\r")
+	log.Debugf("Initialized a new DelimitedBlock with content=`%s`", blockContent)
 	return &DelimitedBlock{
 		Kind:    kind,
-		Content: strings.TrimSuffix(strings.TrimSuffix(*c, "\n"), "\r"), // remove "\n" or "\r\n", depending on the OS.
+		Content: blockContent,
 	}, nil
 }
 
 // String implements the DocElement#String() method
 func (b *DelimitedBlock) String(indentLevel int) string {
-	return fmt.Sprintf("%s<%T> %v", indent(indentLevel), b, b.Content)
+	return fmt.Sprintf("%s<%T|%v> %v", indent(indentLevel), b, b.Kind, b.Content)
 }
 
 // Accept implements Visitable#Accept(Visitor)
 func (b *DelimitedBlock) Accept(v Visitor) error {
+	err := v.BeforeVisit(b)
+	if err != nil {
+		return errors.Wrapf(err, "error while pre-visiting delimited block")
+	}
+	err = v.Visit(b)
+	if err != nil {
+		return errors.Wrapf(err, "error while visiting delimited block")
+	}
+	err = v.AfterVisit(b)
+	if err != nil {
+		return errors.Wrapf(err, "error while post-visiting delimited block")
+	}
+	return nil
+}
+
+// ------------------------------------------
+// Literal blocks
+// ------------------------------------------
+
+// LiteralBlock the structure for the literal blocks
+type LiteralBlock struct {
+	Content string
+}
+
+// NewLiteralBlock initializes a new `DelimitedBlock` of the given kind with the given content,
+// along with the given heading spaces
+func NewLiteralBlock(spaces, content []interface{}) (*LiteralBlock, error) {
+	// concatenates the spaces with the actual content in a single 'stringified' value
+	// log.Debugf("Initializing a new LiteralBlock with spaces='%v' and content=`%v`", spaces, content)
+	c, err := Stringify(append(spaces, content...))
+	if err != nil {
+		return nil, errors.Wrapf(err, "unable to initialize a new literal block")
+	}
+	// remove "\n" or "\r\n", depending on the OS.
+	blockContent := strings.TrimSuffix(strings.TrimSuffix(*c, "\n"), "\r")
+	log.Debugf("Initialized a new LiteralBlock with content=`%s`", blockContent)
+	return &LiteralBlock{
+		Content: blockContent,
+	}, nil
+}
+
+// String implements the DocElement#String() method
+func (b *LiteralBlock) String(indentLevel int) string {
+	return fmt.Sprintf("%s<%T> %v", indent(indentLevel), b, b.Content)
+}
+
+// Accept implements Visitable#Accept(Visitor)
+func (b *LiteralBlock) Accept(v Visitor) error {
 	err := v.BeforeVisit(b)
 	if err != nil {
 		return errors.Wrapf(err, "error while pre-visiting delimited block")
@@ -762,7 +813,7 @@ type ElementID struct {
 
 // NewElementID initializes a new `ElementID` from the given path
 func NewElementID(id string) (*ElementID, error) {
-	log.Debugf("Initializing a new ElementID with value=`%s`", id)
+	log.Debugf("Initializing a new ElementID with value=%s", id)
 	return &ElementID{Value: id}, nil
 }
 
@@ -778,11 +829,11 @@ type ElementTitle struct {
 
 // NewElementTitle initializes a new `ElementTitle` from the given content
 func NewElementTitle(content []interface{}) (*ElementTitle, error) {
-	c, err := stringify(content)
+	c, err := Stringify(content)
 	if err != nil {
 		return nil, errors.Wrapf(err, "failed to initialize a new ElementTitle")
 	}
-	log.Debugf("Initializing a new ElementTitle with content=%s", c)
+	log.Debugf("Initializing a new ElementTitle with content=%s", *c)
 	return &ElementTitle{Value: *c}, nil
 }
 
@@ -807,7 +858,7 @@ func NewStringElement(content interface{}) *StringElement {
 
 // String implements the DocElement#String() method
 func (s *StringElement) String(indentLevel int) string {
-	return fmt.Sprintf("%s`%s`", indent(indentLevel), s.Content)
+	return fmt.Sprintf("%s%s", indent(indentLevel), s.Content)
 }
 
 // PlainString implements the InlineElement#PlainString() method
@@ -939,11 +990,11 @@ type ExternalLink struct {
 
 // NewExternalLink initializes a new `ExternalLink`
 func NewExternalLink(url, text []interface{}) (*ExternalLink, error) {
-	urlStr, err := stringify(url)
+	urlStr, err := Stringify(url)
 	if err != nil {
 		return nil, errors.Wrapf(err, "failed to initialize a new ExternalLink element")
 	}
-	textStr, err := stringify(text)
+	textStr, err := Stringify(text)
 	if err != nil {
 		return nil, errors.Wrapf(err, "failed to initialize a new ExternalLink element")
 	}
