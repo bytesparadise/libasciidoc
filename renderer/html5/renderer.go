@@ -118,6 +118,8 @@ func processElement(ctx asciidoc.Context, element types.DocElement) ([]byte, err
 		return renderInlineImage(ctx, *element.(*types.InlineImage))
 	case *types.DelimitedBlock:
 		return renderDelimitedBlock(ctx, *element.(*types.DelimitedBlock))
+	case *types.LiteralBlock:
+		return renderLiteralBlock(ctx, *element.(*types.LiteralBlock))
 	case *types.InlineContent:
 		return renderInlineContent(ctx, *element.(*types.InlineContent))
 	case *types.StringElement:
