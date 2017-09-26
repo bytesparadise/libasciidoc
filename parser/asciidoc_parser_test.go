@@ -79,7 +79,7 @@ var _ = Describe("Parsing content", func() {
 func verify(t GinkgoTInterface, expectedDocument *types.Document, content string) {
 	log.Debugf("processing: %s", content)
 	reader := strings.NewReader(content)
-	result, err := ParseReader("", reader)
+	result, err := ParseReader("", reader) //Debug(true)
 	if err != nil {
 		log.WithError(err).Error("Error found while parsing the document")
 	}
