@@ -93,7 +93,8 @@ func appendBuffer(elements []interface{}, buff *bytes.Buffer) ([]interface{}, *b
 	return elements, buff
 }
 
-func stringify(elements []interface{}) (*string, error) {
+//Stringify convert the given elements into a string
+func Stringify(elements []interface{}) (*string, error) {
 	mergedElements := merge(elements)
 	b := make([]byte, 0)
 	buff := bytes.NewBuffer(b)
@@ -114,7 +115,7 @@ func stringify(elements []interface{}) (*string, error) {
 		case *StringElement:
 			buff.WriteString(element.Content)
 		case []interface{}:
-			stringifiedElement, err := stringify(element)
+			stringifiedElement, err := Stringify(element)
 			if err != nil {
 				// no need to wrap the error again in the same function
 				return nil, err

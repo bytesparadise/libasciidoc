@@ -7,48 +7,101 @@ import (
 
 var _ = Describe("Delimited Blocks", func() {
 
-	It("delimited source block with single line", func() {
-		content := "some source code"
-		actualContent := "```\n" + content + "\n```"
-		expectedDocument := &types.Document{
-			Attributes: &types.DocumentAttributes{},
-			Elements: []types.DocElement{
-				&types.DelimitedBlock{
-					Kind:    types.SourceBlock,
-					Content: content,
+	Context("Source blocks", func() {
+
+		It("delimited source block with single line", func() {
+			content := "some source code"
+			actualContent := "```\n" + content + "\n```"
+			expectedDocument := &types.Document{
+				Attributes: &types.DocumentAttributes{},
+				Elements: []types.DocElement{
+					&types.DelimitedBlock{
+						Kind:    types.FencedBlock,
+						Content: content,
+					},
 				},
-			},
-		}
-		verify(GinkgoT(), expectedDocument, actualContent)
+			}
+			verify(GinkgoT(), expectedDocument, actualContent)
+		})
+
+		It("delimited source block with no line", func() {
+			content := ""
+			actualContent := "```\n" + content + "```"
+			expectedDocument := &types.Document{
+				Attributes: &types.DocumentAttributes{},
+				Elements: []types.DocElement{
+					&types.DelimitedBlock{
+						Kind:    types.FencedBlock,
+						Content: content,
+					},
+				},
+			}
+			verify(GinkgoT(), expectedDocument, actualContent)
+		})
+
+		It("delimited source block with multiple lines", func() {
+			content := "some source code\nwith an empty line\n\nin the middle"
+			actualContent := "```\n" + content + "\n```"
+			expectedDocument := &types.Document{
+				Attributes: &types.DocumentAttributes{},
+				Elements: []types.DocElement{
+					&types.DelimitedBlock{
+						Kind:    types.FencedBlock,
+						Content: content,
+					},
+				},
+			}
+			verify(GinkgoT(), expectedDocument, actualContent)
+		})
+
+		It("delimited source block with multiple lines then a paragraph", func() {
+			content := "some source code\nwith an empty line\n\nin the middle"
+			actualContent := "```\n" + content + "\n```\nthen a normal paragraph."
+			expectedDocument := &types.Document{
+				Attributes: &types.DocumentAttributes{},
+				Elements: []types.DocElement{
+					&types.DelimitedBlock{
+						Kind:    types.FencedBlock,
+						Content: content,
+					},
+					&types.Paragraph{
+						Lines: []*types.InlineContent{
+							&types.InlineContent{
+								Elements: []types.InlineElement{
+									&types.StringElement{Content: "then a normal paragraph."},
+								},
+							},
+						},
+					},
+				},
+			}
+			verify(GinkgoT(), expectedDocument, actualContent)
+		})
+
+		It("delimited source block after a paragraph", func() {
+			content := "some source code"
+			actualContent := "a paragraph.\n```\n" + content + "\n```\n"
+			expectedDocument := &types.Document{
+				Attributes: &types.DocumentAttributes{},
+				Elements: []types.DocElement{
+					&types.Paragraph{
+						Lines: []*types.InlineContent{
+							&types.InlineContent{
+								Elements: []types.InlineElement{
+									&types.StringElement{Content: "a paragraph."},
+								},
+							},
+						},
+					},
+					&types.DelimitedBlock{
+						Kind:    types.FencedBlock,
+						Content: content,
+					},
+				},
+			}
+			verify(GinkgoT(), expectedDocument, actualContent)
+		})
+
 	})
 
-	It("delimited source block with multiple lines", func() {
-		content := "some source code\nwith an empty line\n\nin the middle"
-		actualContent := "```\n" + content + "\n```"
-		expectedDocument := &types.Document{
-			Attributes: &types.DocumentAttributes{},
-			Elements: []types.DocElement{
-				&types.DelimitedBlock{
-					Kind:    types.SourceBlock,
-					Content: content,
-				},
-			},
-		}
-		verify(GinkgoT(), expectedDocument, actualContent)
-	})
-
-	It("delimited source block with no line", func() {
-		content := ""
-		actualContent := "```\n" + content + "```"
-		expectedDocument := &types.Document{
-			Attributes: &types.DocumentAttributes{},
-			Elements: []types.DocElement{
-				&types.DelimitedBlock{
-					Kind:    types.SourceBlock,
-					Content: content,
-				},
-			},
-		}
-		verify(GinkgoT(), expectedDocument, actualContent)
-	})
 })
