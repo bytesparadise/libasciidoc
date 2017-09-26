@@ -2,31 +2,53 @@
 
 image:https://travis-ci.org/bytesparadise/libasciidoc.svg?branch=master["Build Status", link="https://travis-ci.org/bytesparadise/libasciidoc"] 
 image:https://codecov.io/gh/bytesparadise/libasciidoc/branch/master/graph/badge.svg["Codecov", link="https://codecov.io/gh/bytesparadise/libasciidoc"]
+image:https://img.shields.io/badge/License-Apache%202.0-blue.svg["License", link="https://opensource.org/licenses/Apache-2.0"]
 
-This project is an attemtp to implement the famous http://github.com/asciidoctor/asciidoctor[Asciidoctor] project in Golang in order to make it natively available for other Golang projects.
+Libasciidoc is an open source Go library that converts Asciidoc content into HTML (other output formats may be supported in the future). 
+It is is available under the terms of the https://raw.githubusercontent.com/bytesparadise/libasciidoc/LICENSE[Apache License 2.0].
 
 == Supported syntax
 
-* [x] Titles / headings
-
+* [x] Title and Sections (level 1 to 6)
+* [x] Document attributes declaration and substitution
+* [x] Paragraphs
+* [x] Delimited Source Blocks (using the ``` delimiter, a.k.a "fences")
+* [x] Literal blocks (paragraph starting with a space, with the `....` delimiter or with the `[literal]` attribute)
 * [x] Quoted text
 ** [x] Bold 
 ** [x] Italic
 ** [x] Monospace
-
 * [ ] Lists
 ** [x] Unordered, using the `-` marker for simple lists, or the `*` marker for nested lists (and `**`, `***`, etc. for the sublists) .
 ** [ ] Ordered
+* [x] Links and images
+** [x] external links in paragraphs (`https://`, `http://`, `ftp://`, `irc://`, `mailto:`)
+** [x] images in paragraphs (`image://`)
+** [x] block images (`image:://`)
+* Element attributes (ID, link and title, when applicable) on block images, paragraphs, lists and sections
 
-* [ ] Links and images
-** [x] external links (`https://`, `http://`, `ftp://`, `irc://`, `mailto:`)
-** [ ] inline images
-** [x] block images
+Further elements will be supported in the future. Don't hesitate to open an issue https://github.com/bytesparadise/libasciidoc/issues[here] to help prioritizing the upcoming work.
 
-== Supported backend/output
+== Installation
 
-* [ ] HTML5
+    $ go get -u github.com/bytesparadise/libasciidoc
 
-== License
+== Usage
 
-Apache License 2.0
+Libasciidoc provides 2 functions to convert an Asciidoc content into HTML:
+
+1. Converting to a complete HTML document:
+
+    err := ConvertToHTML(context.Background(), sourceReader, resultWriter, options)
+
+2. Converting to a `body` element only:
+
+    metadata, err := ConvertToHTMLBody(context.Background(), sourceReader, resultWriter)
+
+== How to contribute
+
+Please refer to the http://CONTRIBUTE.adoc[Contribute] file.
+
+
+
+
