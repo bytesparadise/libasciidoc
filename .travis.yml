@@ -22,6 +22,9 @@ go:
   - 1.9.x
   - tip
 
+matrix:
+  allow_failures:
+  - go: tip
 script: 
   - make generate
   - make test
