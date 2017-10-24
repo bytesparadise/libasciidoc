@@ -21,9 +21,7 @@ import (
 // ------------------------------------------
 
 // DocElement the interface for all document elements
-// TODO: 'String()' remove this method ? no real value here (we could use a visitor to print/debug the elements), by having a `Visit(Visitor)` method instead
 type DocElement interface {
-	String(int) string
 }
 
 // InlineElement the interface for inline elements
@@ -61,7 +59,8 @@ func NewDocument(frontmatter, header interface{}, blocks []interface{}) (*Docume
 	for i, block := range blocks {
 		log.Debugf("Line #%d: %T", i, block)
 	}
-	elements := convertBlocksToDocElements(blocks)
+	// elements := convertBlocksToDocElements(blocks)
+	elements := filterUnrelevantElements(blocks)
 	document := &Document{
 		Attributes: make(map[string]interface{}),
 		Elements:   elements,
@@ -77,19 +76,6 @@ func NewDocument(frontmatter, header interface{}, blocks []interface{}) (*Docume
 		}
 	}
 	return document, nil
-}
-
-// String implements the DocElement#String() method
-func (d *Document) String(indentLevel int) string {
-	result := bytes.NewBuffer(nil)
-	for attrName, attrValue := range d.Attributes {
-		result.WriteString(fmt.Sprintf("\n%s: %v", attrName, attrValue))
-	}
-	for i := range d.Elements {
-		result.WriteString(fmt.Sprintf("\n%s", d.Elements[i].String(0)))
-	}
-	// log.Debug(fmt.Sprintf("Printing document:\n%s", result.String()))
-	return result.String()
 }
 
 // ------------------------------------------
@@ -386,11 +372,6 @@ func NewDocumentAttributeDeclaration(name []interface{}, value []interface{}) (*
 	}, nil
 }
 
-// String implements the DocElement#String() method
-func (a *DocumentAttributeDeclaration) String(indentLevel int) string {
-	return fmt.Sprintf("%s<DocumentAttributeDeclaration> '%s' -> '%s'\n", indent(indentLevel), a.Name, a.Value)
-}
-
 // DocumentAttributeReset the type for DocumentAttributeReset
 type DocumentAttributeReset struct {
 	Name string
@@ -404,11 +385,6 @@ func NewDocumentAttributeReset(name []interface{}) (*DocumentAttributeReset, err
 	}
 	log.Debugf("Initialized a new DocumentAttributeReset: '%s'", *attrName)
 	return &DocumentAttributeReset{Name: *attrName}, nil
-}
-
-// String implements the DocElement#String() method
-func (a *DocumentAttributeReset) String(indentLevel int) string {
-	return fmt.Sprintf("%s<DocumentAttributeReset> '%s'\n", indent(indentLevel), a.Name)
 }
 
 // PlainString implements the InlineElement#PlainString() method
@@ -429,11 +405,6 @@ func NewDocumentAttributeSubstitution(name []interface{}) (*DocumentAttributeSub
 	}
 	log.Debugf("Initialized a new DocumentAttributeSubstitution: '%s'", *attrName)
 	return &DocumentAttributeSubstitution{Name: *attrName}, nil
-}
-
-// String implements the DocElement#String() method
-func (a *DocumentAttributeSubstitution) String(indentLevel int) string {
-	return fmt.Sprintf("%s<DocumentAttributeSubstitution> '%s'\n", indent(indentLevel), a.Name)
 }
 
 // PlainString implements the InlineElement#PlainString() method
@@ -458,17 +429,7 @@ type Preamble struct {
 // NewPreamble initializes a new Preamble from the given elements
 func NewPreamble(elements []interface{}) (*Preamble, error) {
 	log.Debugf("Initialiazing new Preamble with %d elements", len(elements))
-
-	return &Preamble{Elements: convertBlocksToDocElements(elements)}, nil
-}
-
-// String implements the DocElement#String() method
-func (p *Preamble) String(indentLevel int) string {
-	result := bytes.NewBuffer(nil)
-	for _, element := range p.Elements {
-		result.WriteString(fmt.Sprintf("%s", element.String(indentLevel+1)))
-	}
-	return result.String()
+	return &Preamble{Elements: filterUnrelevantElements(elements)}, nil
 }
 
 // ------------------------------------------
@@ -509,23 +470,13 @@ type Section struct {
 // NewSection initializes a new `Section` from the given section title and elements
 func NewSection(level int, sectionTitle *SectionTitle, blocks []interface{}) (*Section, error) {
 	// log.Debugf("Initializing a new Section with %d block(s)", len(blocks))
-	elements := convertBlocksToDocElements(blocks)
+	elements := filterUnrelevantElements(blocks)
 	log.Debugf("Initialized a new Section of level %d with %d block(s)", level, len(blocks))
 	return &Section{
 		Level:        level,
 		SectionTitle: *sectionTitle,
 		Elements:     elements,
 	}, nil
-}
-
-// String implements the DocElement#String() method
-func (s *Section) String(indentLevel int) string {
-	result := bytes.NewBuffer(nil)
-	result.WriteString(fmt.Sprintf("%s<Section %d> '%s'\n", indent(indentLevel), s.Level, s.SectionTitle.Content.String(0)))
-	for _, element := range s.Elements {
-		result.WriteString(fmt.Sprintf("%s", element.String(indentLevel+1)))
-	}
-	return result.String()
 }
 
 // ------------------------------------------
@@ -552,13 +503,8 @@ func NewSectionTitle(inlineContent *InlineContent, attributes []interface{}) (*S
 		id, _ = NewElementID(*replacement)
 	}
 	sectionTitle := SectionTitle{Content: inlineContent, ID: id}
-	log.Debugf("Initialized a new SectionTitle: %s", sectionTitle.String(0))
+	log.Debugf("Initialized a new SectionTitle: %s", spew.Sprint(sectionTitle))
 	return &sectionTitle, nil
-}
-
-// String implements the DocElement#String() method
-func (h *SectionTitle) String(indentLevel int) string {
-	return fmt.Sprintf("%s<SectionTitle> %s", indent(indentLevel), h.Content.String(0))
 }
 
 // PlainString returns a plain string version of all elements in this SectionTitle's Content, without any rendering
@@ -634,15 +580,6 @@ func NewList(elements []interface{}, attributes []interface{}) (*List, error) {
 	}, nil
 }
 
-// String implements the DocElement#String() method
-func (l *List) String(indentLevel int) string {
-	result := fmt.Sprintf("%s<%T|size=%d>", indent(indentLevel), l, len(l.Items))
-	for _, item := range l.Items {
-		result = result + "\n" + item.String(indentLevel+1)
-	}
-	return result
-}
-
 // ListItem the structure for the list items
 type ListItem struct {
 	Level    int
@@ -665,22 +602,6 @@ func NewListItem(level interface{}, content *ListItemContent, children *List) (*
 	}
 }
 
-// String implements the DocElement#String() method
-func (i *ListItem) String(indentLevel int) string {
-	return i.StringWithIndent(indentLevel)
-}
-
-// StringWithIndent same as String() but with a specified number of spaces at the beginning of the line, to produce a given level of indentation
-func (i *ListItem) StringWithIndent(indentLevel int) string {
-	result := fmt.Sprintf("%s<%T|level=%d> %s", indent(indentLevel), i, i.Level, i.Content)
-	if i.Children != nil {
-		for _, c := range i.Children.Items {
-			result = result + "\n\t" + c.StringWithIndent(indentLevel+1)
-		}
-	}
-	return result
-}
-
 // ListItemContent the structure for the list item content
 type ListItemContent struct {
 	Lines []*InlineContent
@@ -701,11 +622,6 @@ func NewListItemContent(text []byte, lines []interface{}) (*ListItemContent, err
 		}
 	}
 	return &ListItemContent{Lines: typedLines}, nil
-}
-
-// String implements the DocElement#String() method
-func (c *ListItemContent) String(indentLevel int) string {
-	return fmt.Sprintf("%s<%T> %v", indent(indentLevel), c, c.Lines)
 }
 
 // ------------------------------------------
@@ -736,16 +652,6 @@ func NewParagraph(text []byte, lines []interface{}, attributes []interface{}) (*
 	}, nil
 }
 
-// String implements the DocElement#String() method
-func (p *Paragraph) String(indentLevel int) string {
-	result := bytes.NewBuffer(nil)
-	result.WriteString(fmt.Sprintf("%s<p>", indent(indentLevel)))
-	for _, line := range p.Lines {
-		result.WriteString(fmt.Sprintf("%s\n", line.String(0)))
-	}
-	return result.String()
-}
-
 // ------------------------------------------
 // InlineContent
 // ------------------------------------------
@@ -769,19 +675,6 @@ func NewInlineContent(text []byte, elements []interface{}) (*InlineContent, erro
 		spew.Fdump(os.Stdout, result)
 	}
 	return result, nil
-}
-
-// String implements the DocElement#String() method
-func (c *InlineContent) String(indentLevel int) string {
-	result := bytes.NewBuffer(nil)
-	result.WriteString(indent(indentLevel))
-	for i, element := range c.Elements {
-		result.WriteString(fmt.Sprintf("%s", element.String(0)))
-		if i < len(c.Elements)-1 {
-			result.WriteString(" ")
-		}
-	}
-	return result.String()
 }
 
 // Accept implements Visitable#Accept(Visitor)
@@ -832,11 +725,6 @@ func NewBlockImage(input []byte, imageMacro ImageMacro, attributes []interface{}
 	}, nil
 }
 
-// String implements the DocElement#String() method
-func (i *BlockImage) String(indentLevel int) string {
-	return fmt.Sprintf("%s<%T> %s", indent(indentLevel), i, i.Macro.String(0))
-}
-
 // InlineImage the structure for the inline image macros
 type InlineImage struct {
 	Macro ImageMacro
@@ -848,11 +736,6 @@ func NewInlineImage(input []byte, imageMacro ImageMacro) (*InlineImage, error) {
 	return &InlineImage{
 		Macro: imageMacro,
 	}, nil
-}
-
-// String implements the DocElement#String() method
-func (i *InlineImage) String(indentLevel int) string {
-	return fmt.Sprintf("%s<%T> %s", indent(indentLevel), i, i.Macro.String(0))
 }
 
 // PlainString implements the InlineElement#PlainString() method
@@ -927,18 +810,6 @@ func NewImageMacro(input []byte, path string, attributes interface{}) (*ImageMac
 		Height: height}, nil
 }
 
-// String implements the DocElement#String() method
-func (m *ImageMacro) String(indentLevel int) string {
-	var width, height string
-	if m.Width != nil {
-		width = *m.Width
-	}
-	if m.Height != nil {
-		height = *m.Height
-	}
-	return fmt.Sprintf("%s<%T> %s[%s, w=%s h=%s]", indent(indentLevel), m, m.Path, m.Alt, width, height)
-}
-
 // Accept implements Visitable#Accept(Visitor)
 func (m *ImageMacro) Accept(v Visitor) error {
 	err := v.BeforeVisit(m)
@@ -993,11 +864,6 @@ func NewDelimitedBlock(kind DelimitedBlockKind, content []interface{}) (*Delimit
 	}, nil
 }
 
-// String implements the DocElement#String() method
-func (b *DelimitedBlock) String(indentLevel int) string {
-	return fmt.Sprintf("%s<%T|%v> %v", indent(indentLevel), b, b.Kind, b.Content)
-}
-
 // Accept implements Visitable#Accept(Visitor)
 func (b *DelimitedBlock) Accept(v Visitor) error {
 	err := v.BeforeVisit(b)
@@ -1039,11 +905,6 @@ func NewLiteralBlock(spaces, content []interface{}) (*LiteralBlock, error) {
 	return &LiteralBlock{
 		Content: blockContent,
 	}, nil
-}
-
-// String implements the DocElement#String() method
-func (b *LiteralBlock) String(indentLevel int) string {
-	return fmt.Sprintf("%s<%T> %v", indent(indentLevel), b, b.Content)
 }
 
 // Accept implements Visitable#Accept(Visitor)
@@ -1097,11 +958,6 @@ func NewElementLink(path string) (*ElementLink, error) {
 	return &ElementLink{Path: path}, nil
 }
 
-// String implements the DocElement#String() method
-func (e *ElementLink) String(indentLevel int) string {
-	return fmt.Sprintf("%s<%T> %s", indent(indentLevel), e, e.Path)
-}
-
 // ElementID the structure for element IDs
 type ElementID struct {
 	Value string
@@ -1111,11 +967,6 @@ type ElementID struct {
 func NewElementID(id string) (*ElementID, error) {
 	log.Debugf("Initializing a new ElementID with value=%s", id)
 	return &ElementID{Value: id}, nil
-}
-
-// String implements the DocElement#String() method
-func (e *ElementID) String(indentLevel int) string {
-	return fmt.Sprintf("%s<%T> %s", indent(indentLevel), e, e.Value)
 }
 
 // ElementTitle the structure for element IDs
@@ -1133,11 +984,6 @@ func NewElementTitle(content []interface{}) (*ElementTitle, error) {
 	return &ElementTitle{Value: *c}, nil
 }
 
-// String implements the DocElement#String() method
-func (e *ElementTitle) String(indentLevel int) string {
-	return fmt.Sprintf("%s<%T> %s", indent(indentLevel), e, e.Value)
-}
-
 // ------------------------------------------
 // StringElement
 // ------------------------------------------
@@ -1150,11 +996,6 @@ type StringElement struct {
 // NewStringElement initializes a new `StringElement` from the given content
 func NewStringElement(content interface{}) *StringElement {
 	return &StringElement{Content: content.(string)}
-}
-
-// String implements the DocElement#String() method
-func (s *StringElement) String(indentLevel int) string {
-	return fmt.Sprintf("%s%s", indent(indentLevel), s.Content)
 }
 
 // PlainString implements the InlineElement#PlainString() method
@@ -1214,11 +1055,6 @@ func NewQuotedText(kind QuotedTextKind, content []interface{}) (*QuotedText, err
 	return &QuotedText{Kind: kind, Elements: elements}, nil
 }
 
-// String implements the DocElement#String() method
-func (t *QuotedText) String(indentLevel int) string {
-	return fmt.Sprintf("%s<%T (%d)> %v", indent(indentLevel), t, t.Kind, t.Elements)
-}
-
 // PlainString implements the InlineElement#PlainString() method
 func (t *QuotedText) PlainString() string {
 	result := bytes.NewBuffer(nil)
@@ -1269,11 +1105,6 @@ func NewBlankLine() (*BlankLine, error) {
 	return &BlankLine{}, nil
 }
 
-// String implements the DocElement#String() method
-func (l *BlankLine) String(indentLevel int) string {
-	return fmt.Sprintf("%s<Blankline>\n", indent(indentLevel))
-}
-
 // ------------------------------------------
 // Links
 // ------------------------------------------
@@ -1302,11 +1133,6 @@ func NewExternalLink(url, text []interface{}) (*ExternalLink, error) {
 		return nil, errors.Wrapf(err, "failed to initialize a new ExternalLink element")
 	}
 	return &ExternalLink{URL: *urlStr, Text: *textStr}, nil
-}
-
-// String implements the DocElement#String() method
-func (l *ExternalLink) String(indentLevel int) string {
-	return fmt.Sprintf("%s<%T> %s[%s]", indent(indentLevel), l, l.URL, l.Text)
 }
 
 // PlainString implements the InlineElement#PlainString() method

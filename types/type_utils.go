@@ -26,28 +26,55 @@ func toInlineElements(elements []interface{}) ([]InlineElement, error) {
 	return result, nil
 }
 
-// convertBlocksToDocElements converts the given blocks to DocElement and exclude `BlankLine`
-func convertBlocksToDocElements(blocks []interface{}) []DocElement {
-	log.Debugf("Converting %+v into DocElements...", blocks)
+// filterUnrelevantElements excludes the unrelevant (empty) blocks
+func filterUnrelevantElements(blocks []interface{}) []DocElement {
+	log.Debugf("Filtering %d blocks...", len(blocks))
 	elements := make([]DocElement, 0)
 	for _, block := range blocks {
-		if b, ok := block.(DocElement); ok {
-			if preamble, ok := b.(*Preamble); ok {
-				if len(preamble.Elements) > 0 {
-					// exclude empty preamble
-					elements = append(elements, b)
-				}
-			} else if _, ok := b.(*BlankLine); !ok {
-				// exclude blank lines from here, we won't need them in the rendering anyways
-				elements = append(elements, b)
+		log.Debugf(" converting block of type '%T' into a DocElement...", block)
+		if preamble, ok := block.(*Preamble); ok {
+			// exclude empty preambles
+			if len(preamble.Elements) > 0 {
+				// exclude empty preamble
+				elements = append(elements, block)
 			}
-		} else if block, ok := block.([]interface{}); ok {
-			result := convertBlocksToDocElements(block)
+		} else if _, ok := block.(*BlankLine); ok {
+			// exclude blank lines from here, we won't need them in the rendering anyways
+		} else if b, ok := block.([]interface{}); ok {
+			result := filterUnrelevantElements(b)
 			elements = append(elements, result...)
+		} else if block != nil {
+			elements = append(elements, block)
 		}
 	}
+	log.Debugf("result=%[1]v (%[1]T) ", elements)
 	return elements // exclude allocated nil values
 }
+
+// // convertBlocksToDocElements converts the given blocks to DocElement and exclude `BlankLine`
+// func convertBlocksToDocElements(blocks []interface{}) []DocElement {
+// 	log.Debugf("Converting %d blocks into DocElements...", len(blocks))
+// 	elements := make([]DocElement, 0)
+// 	for _, block := range blocks {
+// 		log.Debugf(" converting block of type '%T' into a DocElement...", block)
+// 		if b, ok := block.(DocElement); ok {
+// 			if preamble, ok := b.(*Preamble); ok {
+// 				// exclude empty preambles
+// 				if len(preamble.Elements) > 0 {
+// 					// exclude empty preamble
+// 					elements = append(elements, b)
+// 				}
+// 			} else if _, ok := b.(*BlankLine); !ok {
+// 				// exclude blank lines from here, we won't need them in the rendering anyways
+// 				elements = append(elements, b)
+// 			}
+// 		} else if block, ok := block.([]interface{}); ok {
+// 			result := convertBlocksToDocElements(block)
+// 			elements = append(elements, result...)
+// 		}
+// 	}
+// 	return elements // exclude allocated nil values
+// }
 
 func merge(elements []interface{}, extraElements ...interface{}) []interface{} {
 	result := make([]interface{}, 0)

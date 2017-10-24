@@ -1,6 +1,7 @@
 package types
 
 import (
+	"github.com/davecgh/go-spew/spew"
 	"github.com/stretchr/testify/require"
 
 	. "github.com/onsi/ginkgo"
@@ -72,7 +73,7 @@ var _ = Describe("Normalizing String", func() {
 })
 
 func verify(t GinkgoTInterface, expected string, inlineContent *InlineContent) {
-	t.Logf("Processing '%s'", inlineContent.String(0))
+	t.Logf("Processing '%s'", spew.Sprint(inlineContent))
 	result, err := ReplaceNonAlphanumerics(inlineContent, "_")
 	require.Nil(t, err)
 	t.Logf("Normalized result: '%s'", *result)
