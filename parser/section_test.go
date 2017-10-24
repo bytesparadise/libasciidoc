@@ -9,46 +9,55 @@ var _ = Describe("Sections", func() {
 
 	Context("Valid document", func() {
 
-		It("section with heading only", func() {
-			actualContent := "= a heading"
+		It("header only", func() {
+			actualContent := "= a header"
 			expectedDocument := &types.Document{
-				Attributes: &types.DocumentAttributes{
-					"title": "a heading",
+				Attributes: map[string]interface{}{
+					"doctitle": "a header",
 				},
-				Elements: []types.DocElement{
-					&types.Section{
-						Heading: types.Heading{
-							Level: 1,
-							Content: &types.InlineContent{
-								Elements: []types.InlineElement{
-									&types.StringElement{Content: "a heading"},
-								},
-							},
-							ID: &types.ElementID{
-								Value: "_a_heading",
-							},
-						},
-						Elements: []types.DocElement{},
-					},
-				}}
+				Elements: []types.DocElement{},
+			}
 			verify(GinkgoT(), expectedDocument, actualContent)
 		})
 
-		It("section level 2", func() {
-			actualContent := `== section 2`
+		It("header and paragraph", func() {
+			actualContent := `= a header
+
+and a paragraph`
 			expectedDocument := &types.Document{
-				Attributes: &types.DocumentAttributes{},
+				Attributes: map[string]interface{}{
+					"doctitle": "a header",
+				},
+				Elements: []types.DocElement{
+					&types.Paragraph{
+						Lines: []*types.InlineContent{
+							&types.InlineContent{
+								Elements: []types.InlineElement{
+									&types.StringElement{Content: "and a paragraph"},
+								},
+							},
+						},
+					},
+				},
+			}
+			verify(GinkgoT(), expectedDocument, actualContent)
+		})
+
+		It("section level 1 alone", func() {
+			actualContent := `== section 1`
+			expectedDocument := &types.Document{
+				Attributes: map[string]interface{}{},
 				Elements: []types.DocElement{
 					&types.Section{
-						Heading: types.Heading{
-							Level: 2,
+						Level: 1,
+						SectionTitle: types.SectionTitle{
 							Content: &types.InlineContent{
 								Elements: []types.InlineElement{
-									&types.StringElement{Content: "section 2"},
+									&types.StringElement{Content: "section 1"},
 								},
 							},
 							ID: &types.ElementID{
-								Value: "_section_2",
+								Value: "_section_1",
 							},
 						},
 						Elements: []types.DocElement{},
@@ -58,14 +67,14 @@ var _ = Describe("Sections", func() {
 			verify(GinkgoT(), expectedDocument, actualContent)
 		})
 
-		It("section level 2 with quoted text", func() {
+		It("section level 1 with quoted text", func() {
 			actualContent := `==  *2 spaces and bold content*`
 			expectedDocument := &types.Document{
-				Attributes: &types.DocumentAttributes{},
+				Attributes: map[string]interface{}{},
 				Elements: []types.DocElement{
 					&types.Section{
-						Heading: types.Heading{
-							Level: 2,
+						Level: 1,
+						SectionTitle: types.SectionTitle{
 							Content: &types.InlineContent{
 								Elements: []types.InlineElement{
 									&types.QuotedText{
@@ -86,100 +95,112 @@ var _ = Describe("Sections", func() {
 			verify(GinkgoT(), expectedDocument, actualContent)
 		})
 
-		It("section level 1 with nested section level 2", func() {
-			actualContent := "= a heading\n" +
-				"\n" +
-				"== section 2"
+		It("section level 0 with nested section level 1", func() {
+			actualContent := `= a header
+
+== section 1`
 			expectedDocument := &types.Document{
-				Attributes: &types.DocumentAttributes{
-					"title": "a heading",
+				Attributes: map[string]interface{}{
+					"doctitle": "a header",
 				}, Elements: []types.DocElement{
 					&types.Section{
-						Heading: types.Heading{
-							Level: 1,
+						Level: 1,
+						SectionTitle: types.SectionTitle{
 							Content: &types.InlineContent{
 								Elements: []types.InlineElement{
-									&types.StringElement{Content: "a heading"},
+									&types.StringElement{Content: "section 1"},
 								},
 							},
 							ID: &types.ElementID{
-								Value: "_a_heading",
+								Value: "_section_1",
 							},
 						},
-						Elements: []types.DocElement{
-							&types.Section{
-								Heading: types.Heading{
-									Level: 2,
-									Content: &types.InlineContent{
-										Elements: []types.InlineElement{
-											&types.StringElement{Content: "section 2"},
-										},
-									},
-									ID: &types.ElementID{
-										Value: "_section_2",
-									},
-								},
-								Elements: []types.DocElement{},
-							},
-						},
+						Elements: []types.DocElement{},
 					},
 				},
 			}
 			verify(GinkgoT(), expectedDocument, actualContent)
 		})
 
-		It("section level 1 with nested section level 3", func() {
-			actualContent := "= a heading\n" +
-				"\n" +
-				"=== section 3"
+		It("section level 0 with preamble and section level 1", func() {
+			actualContent := `= a header
+
+a short preamble
+
+== section 1`
 			expectedDocument := &types.Document{
-				Attributes: &types.DocumentAttributes{
-					"title": "a heading",
+				Attributes: map[string]interface{}{
+					"doctitle": "a header",
+				}, Elements: []types.DocElement{
+					&types.Preamble{
+						Elements: []types.DocElement{
+							&types.Paragraph{
+								Lines: []*types.InlineContent{
+									&types.InlineContent{
+										Elements: []types.InlineElement{
+											&types.StringElement{Content: "a short preamble"},
+										},
+									},
+								},
+							},
+						},
+					},
+					&types.Section{
+						Level: 1,
+						SectionTitle: types.SectionTitle{
+							Content: &types.InlineContent{
+								Elements: []types.InlineElement{
+									&types.StringElement{Content: "section 1"},
+								},
+							},
+							ID: &types.ElementID{
+								Value: "_section_1",
+							},
+						},
+						Elements: []types.DocElement{},
+					},
+				},
+			}
+			verify(GinkgoT(), expectedDocument, actualContent)
+		})
+
+		It("section level 0 with nested section level 2", func() {
+			actualContent := "= a header\n" +
+				"\n" +
+				"=== section 2"
+			expectedDocument := &types.Document{
+				Attributes: map[string]interface{}{
+					"doctitle": "a header",
 				},
 				Elements: []types.DocElement{
 					&types.Section{
-						Heading: types.Heading{
-							Level: 1,
+						Level: 2,
+						SectionTitle: types.SectionTitle{
 							Content: &types.InlineContent{
 								Elements: []types.InlineElement{
-									&types.StringElement{Content: "a heading"},
+									&types.StringElement{Content: "section 2"},
 								},
 							},
 							ID: &types.ElementID{
-								Value: "_a_heading",
+								Value: "_section_2",
 							},
 						},
-						Elements: []types.DocElement{
-							&types.Section{
-								Heading: types.Heading{
-									Level: 3,
-									Content: &types.InlineContent{
-										Elements: []types.InlineElement{
-											&types.StringElement{Content: "section 3"},
-										},
-									},
-									ID: &types.ElementID{
-										Value: "_section_3",
-									},
-								},
-								Elements: []types.DocElement{},
-							},
-						},
+						Elements: []types.DocElement{},
 					},
 				},
 			}
 			verify(GinkgoT(), expectedDocument, actualContent)
 		})
 
-		It("section level 2 with immediate paragraph", func() {
+		It("section level 1 with immediate paragraph", func() {
 			actualContent := `== a title
 and a paragraph`
 			expectedDocument := &types.Document{
-				Attributes: &types.DocumentAttributes{},
+				Attributes: map[string]interface{}{},
 				Elements: []types.DocElement{
 					&types.Section{
-						Heading: types.Heading{
-							Level: 2,
+						Level: 1,
+						SectionTitle: types.SectionTitle{
 							Content: &types.InlineContent{
 								Elements: []types.InlineElement{
 									&types.StringElement{Content: "a title"},
@@ -205,14 +226,14 @@ and a paragraph`
 			}
 			verify(GinkgoT(), expectedDocument, actualContent)
 		})
-		It("section level 2 with a paragraph separated by empty line", func() {
+		It("section level 1 with a paragraph separated by empty line", func() {
 			actualContent := "== a title\n\nand a paragraph"
 			expectedDocument := &types.Document{
-				Attributes: &types.DocumentAttributes{},
+				Attributes: map[string]interface{}{},
 				Elements: []types.DocElement{
 					&types.Section{
-						Heading: types.Heading{
-							Level: 2,
+						Level: 1,
+						SectionTitle: types.SectionTitle{
 							Content: &types.InlineContent{
 								Elements: []types.InlineElement{
 									&types.StringElement{Content: "a title"},
@@ -239,14 +260,14 @@ and a paragraph`
 			verify(GinkgoT(), expectedDocument, actualContent)
 		})
 
-		It("section level 2 with a paragraph separated by non-empty line", func() {
+		It("section level 1 with a paragraph separated by non-empty line", func() {
 			actualContent := "== a title\n    \nand a paragraph"
 			expectedDocument := &types.Document{
-				Attributes: &types.DocumentAttributes{},
+				Attributes: map[string]interface{}{},
 				Elements: []types.DocElement{
 					&types.Section{
-						Heading: types.Heading{
-							Level: 2,
+						Level: 1,
+						SectionTitle: types.SectionTitle{
 							Content: &types.InlineContent{
 								Elements: []types.InlineElement{
 									&types.StringElement{Content: "a title"},
@@ -285,33 +306,43 @@ a paragraph
 == Section B
 a paragraph`
 			expectedDocument := &types.Document{
-				Attributes: &types.DocumentAttributes{
-					"title": "a title",
+				Attributes: map[string]interface{}{
+					"doctitle": "a title",
 				},
 				Elements: []types.DocElement{
 					&types.Section{
-						Heading: types.Heading{
-							Level: 1,
+						Level: 1,
+						SectionTitle: types.SectionTitle{
 							Content: &types.InlineContent{
 								Elements: []types.InlineElement{
-									&types.StringElement{Content: "a title"},
+									&types.StringElement{Content: "Section A"},
 								},
 							},
 							ID: &types.ElementID{
-								Value: "_a_title",
+								Value: "_section_a",
 							},
 						},
 						Elements: []types.DocElement{
+							&types.Paragraph{
+								Lines: []*types.InlineContent{
+									&types.InlineContent{
+										Elements: []types.InlineElement{
+											&types.StringElement{Content: "a paragraph"},
+										},
+									},
+								},
+							},
+							// &types.BlankLine{},
 							&types.Section{
-								Heading: types.Heading{
-									Level: 2,
+								Level: 2,
+								SectionTitle: types.SectionTitle{
 									Content: &types.InlineContent{
 										Elements: []types.InlineElement{
-											&types.StringElement{Content: "Section A"},
+											&types.StringElement{Content: "Section A.a"},
 										},
 									},
 									ID: &types.ElementID{
-										Value: "_section_a",
+										Value: "_section_a_a",
 									},
 								},
 								Elements: []types.DocElement{
@@ -325,53 +356,28 @@ a paragraph`
 										},
 									},
 									// &types.BlankLine{},
-									&types.Section{
-										Heading: types.Heading{
-											Level: 3,
-											Content: &types.InlineContent{
-												Elements: []types.InlineElement{
-													&types.StringElement{Content: "Section A.a"},
-												},
-											},
-											ID: &types.ElementID{
-												Value: "_section_a_a",
-											},
-										},
-										Elements: []types.DocElement{
-											&types.Paragraph{
-												Lines: []*types.InlineContent{
-													&types.InlineContent{
-														Elements: []types.InlineElement{
-															&types.StringElement{Content: "a paragraph"},
-														},
-													},
-												},
-											},
-											// &types.BlankLine{},
-										},
-									},
 								},
 							},
-							&types.Section{
-								Heading: types.Heading{
-									Level: 2,
-									Content: &types.InlineContent{
-										Elements: []types.InlineElement{
-											&types.StringElement{Content: "Section B"},
-										},
-									},
-									ID: &types.ElementID{
-										Value: "_section_b",
-									},
+						},
+					},
+					&types.Section{
+						Level: 1,
+						SectionTitle: types.SectionTitle{
+							Content: &types.InlineContent{
+								Elements: []types.InlineElement{
+									&types.StringElement{Content: "Section B"},
 								},
-								Elements: []types.DocElement{
-									&types.Paragraph{
-										Lines: []*types.InlineContent{
-											&types.InlineContent{
-												Elements: []types.InlineElement{
-													&types.StringElement{Content: "a paragraph"},
-												},
-											},
+							},
+							ID: &types.ElementID{
+								Value: "_section_b",
+							},
+						},
+						Elements: []types.DocElement{
+							&types.Paragraph{
+								Lines: []*types.InlineContent{
+									&types.InlineContent{
+										Elements: []types.InlineElement{
+											&types.StringElement{Content: "a paragraph"},
 										},
 									},
 								},
@@ -385,16 +391,16 @@ a paragraph`
 	})
 
 	Context("Invalid document", func() {
-		It("heading invalid - missing space", func() {
-			actualContent := "=a heading"
+		It("header invalid - missing space", func() {
+			actualContent := "=a header"
 			expectedDocument := &types.Document{
-				Attributes: &types.DocumentAttributes{},
+				Attributes: map[string]interface{}{},
 				Elements: []types.DocElement{
 					&types.Paragraph{
 						Lines: []*types.InlineContent{
 							&types.InlineContent{
 								Elements: []types.InlineElement{
-									&types.StringElement{Content: "=a heading"},
+									&types.StringElement{Content: "=a header"},
 								},
 							},
 						},
@@ -403,44 +409,30 @@ a paragraph`
 			verify(GinkgoT(), expectedDocument, actualContent)
 		})
 
-		It("heading invalid - heading space", func() {
-			actualContent := " = a heading"
+		It("header invalid - header space", func() {
+			actualContent := " = a header"
 			expectedDocument := &types.Document{
-				Attributes: &types.DocumentAttributes{},
+				Attributes: map[string]interface{}{},
 				Elements: []types.DocElement{
 					&types.LiteralBlock{
-						Content: " = a heading",
+						Content: " = a header",
 					},
 				},
 			}
 			verify(GinkgoT(), expectedDocument, actualContent)
 		})
 
-		It("heading with invalid section2", func() {
-			actualContent := "= a heading\n" +
+		It("header with invalid section1", func() {
+			actualContent := "= a header\n" +
 				"\n" +
-				" == section 2"
+				" == section 1"
 			expectedDocument := &types.Document{
-				Attributes: &types.DocumentAttributes{
-					"title": "a heading",
+				Attributes: map[string]interface{}{
+					"doctitle": "a header",
 				},
 				Elements: []types.DocElement{
-					&types.Section{
-						Heading: types.Heading{
-							Level: 1, Content: &types.InlineContent{
-								Elements: []types.InlineElement{
-									&types.StringElement{Content: "a heading"},
-								},
-							},
-							ID: &types.ElementID{
-								Value: "_a_heading",
-							},
-						},
-						Elements: []types.DocElement{
-							&types.LiteralBlock{
-								Content: " == section 2",
-							},
-						},
+					&types.LiteralBlock{
+						Content: " == section 1",
 					},
 				},
 			}

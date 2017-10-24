@@ -13,7 +13,7 @@ var _ = Describe("Delimited Blocks", func() {
 			content := "some source code"
 			actualContent := "```\n" + content + "\n```"
 			expectedDocument := &types.Document{
-				Attributes: &types.DocumentAttributes{},
+				Attributes: map[string]interface{}{},
 				Elements: []types.DocElement{
 					&types.DelimitedBlock{
 						Kind:    types.FencedBlock,
@@ -28,7 +28,7 @@ var _ = Describe("Delimited Blocks", func() {
 			content := ""
 			actualContent := "```\n" + content + "```"
 			expectedDocument := &types.Document{
-				Attributes: &types.DocumentAttributes{},
+				Attributes: map[string]interface{}{},
 				Elements: []types.DocElement{
 					&types.DelimitedBlock{
 						Kind:    types.FencedBlock,
@@ -43,7 +43,7 @@ var _ = Describe("Delimited Blocks", func() {
 			content := "some source code\nwith an empty line\n\nin the middle"
 			actualContent := "```\n" + content + "\n```"
 			expectedDocument := &types.Document{
-				Attributes: &types.DocumentAttributes{},
+				Attributes: map[string]interface{}{},
 				Elements: []types.DocElement{
 					&types.DelimitedBlock{
 						Kind:    types.FencedBlock,
@@ -58,7 +58,7 @@ var _ = Describe("Delimited Blocks", func() {
 			content := "some source code\nwith an empty line\n\nin the middle"
 			actualContent := "```\n" + content + "\n```\nthen a normal paragraph."
 			expectedDocument := &types.Document{
-				Attributes: &types.DocumentAttributes{},
+				Attributes: map[string]interface{}{},
 				Elements: []types.DocElement{
 					&types.DelimitedBlock{
 						Kind:    types.FencedBlock,
@@ -82,7 +82,7 @@ var _ = Describe("Delimited Blocks", func() {
 			content := "some source code"
 			actualContent := "a paragraph.\n```\n" + content + "\n```\n"
 			expectedDocument := &types.Document{
-				Attributes: &types.DocumentAttributes{},
+				Attributes: map[string]interface{}{},
 				Elements: []types.DocElement{
 					&types.Paragraph{
 						Lines: []*types.InlineContent{

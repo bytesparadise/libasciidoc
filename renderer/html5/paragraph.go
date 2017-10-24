@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"html/template"
 
-	asciidoc "github.com/bytesparadise/libasciidoc/context"
+	"github.com/bytesparadise/libasciidoc/renderer"
 	"github.com/bytesparadise/libasciidoc/types"
 	"github.com/pkg/errors"
 )
@@ -15,12 +15,12 @@ var paragraphTmpl *template.Template
 func init() {
 	paragraphTmpl = newHTMLTemplate("paragraph",
 		`<div {{ if .ID }}id="{{.ID.Value}}" {{ end }}class="paragraph">{{ if .Title}}
-<div class="title">{{.Title.Value}}</div>{{ end }}
+<div class="doctitle">{{.Title.Value}}</div>{{ end }}
 <p>{{.Lines}}</p>
 </div>`)
 }
 
-func renderParagraph(ctx asciidoc.Context, paragraph types.Paragraph) ([]byte, error) {
+func renderParagraph(ctx *renderer.Context, paragraph types.Paragraph) ([]byte, error) {
 	renderedLinesBuff := bytes.NewBuffer(nil)
 	for i, line := range paragraph.Lines {
 		renderedLine, err := renderInlineContent(ctx, *line)

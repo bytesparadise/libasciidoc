@@ -3,6 +3,7 @@ package types
 import (
 	"bytes"
 	"fmt"
+	"os"
 	"path/filepath"
 	"strings"
 
@@ -10,6 +11,7 @@ import (
 
 	"reflect"
 
+	"github.com/davecgh/go-spew/spew"
 	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
 )
@@ -49,52 +51,306 @@ type Visitor interface {
 
 // Document the top-level structure for a document
 type Document struct {
-	FrontMatter *FrontMatter
-	Attributes  *DocumentAttributes
-	Elements    []DocElement
+	Attributes DocumentAttributes
+	Elements   []DocElement
 }
 
 // NewDocument initializes a new `Document` from the given lines
-func NewDocument(frontmatter *FrontMatter, blocks []interface{}) (*Document, error) {
+func NewDocument(frontmatter, header interface{}, blocks []interface{}) (*Document, error) {
 	log.Debugf("Initializing a new Document with %d blocks(s)", len(blocks))
 	for i, block := range blocks {
 		log.Debugf("Line #%d: %T", i, block)
 	}
 	elements := convertBlocksToDocElements(blocks)
-	document := &Document{Elements: elements}
-	document.initAttributes()
-	if frontmatter != nil {
-		document.Attributes.AddAll(frontmatter.Content)
+	document := &Document{
+		Attributes: make(map[string]interface{}),
+		Elements:   elements,
 	}
-	return document, nil
-}
-
-// initAttributes initializes the Document's attributes
-func (d *Document) initAttributes() {
-	d.Attributes = &DocumentAttributes{}
-	// look-up the document title in the (first) section of level 1
-	var headSection *Section
-	for _, element := range d.Elements {
-		if section, ok := element.(*Section); ok {
-			if section.Heading.Level == 1 {
-				headSection = section
-			}
+	if frontmatter != nil {
+		for attrName, attrValue := range frontmatter.(*FrontMatter).Content {
+			document.Attributes[attrName] = attrValue
 		}
 	}
-	if headSection != nil {
-		d.Attributes.SetTitle(headSection.Heading.PlainString())
+	if header != nil {
+		for attrName, attrValue := range header.(*DocumentHeader).Content {
+			document.Attributes[attrName] = attrValue
+		}
 	}
-
+	return document, nil
 }
 
 // String implements the DocElement#String() method
 func (d *Document) String(indentLevel int) string {
 	result := bytes.NewBuffer(nil)
+	for attrName, attrValue := range d.Attributes {
+		result.WriteString(fmt.Sprintf("\n%s: %v", attrName, attrValue))
+	}
 	for i := range d.Elements {
 		result.WriteString(fmt.Sprintf("\n%s", d.Elements[i].String(0)))
 	}
 	// log.Debug(fmt.Sprintf("Printing document:\n%s", result.String()))
 	return result.String()
+}
+
+// ------------------------------------------
+// Document Header
+// ------------------------------------------
+
+// DocumentHeader the document header
+type DocumentHeader struct {
+	Content DocumentAttributes
+}
+
+// NewDocumentHeader initializes a new DocumentHeader
+func NewDocumentHeader(header, authors, revision interface{}, otherAttributes []interface{}) (*DocumentHeader, error) {
+	content := DocumentAttributes{}
+	if header != nil {
+		content["doctitle"] = header.(*SectionTitle).PlainString()
+	}
+	log.Debugf("Initializing a new DocumentHeader with content '%v', authors '%+v' and revision '%+v'", content, authors, revision)
+	if authors != nil {
+		for i, author := range authors.([]*DocumentAuthor) {
+			if i == 0 {
+				content.Add("firstname", author.FirstName)
+				content.Add("middlename", author.MiddleName)
+				content.Add("lastname", author.LastName)
+				content.Add("author", author.FullName)
+				content.Add("authorinitials", author.Initials)
+				content.Add("email", author.Email)
+			} else {
+				content.Add(fmt.Sprintf("firstname_%d", i+1), author.FirstName)
+				content.Add(fmt.Sprintf("middlename_%d", i+1), author.MiddleName)
+				content.Add(fmt.Sprintf("lastname_%d", i+1), author.LastName)
+				content.Add(fmt.Sprintf("author_%d", i+1), author.FullName)
+				content.Add(fmt.Sprintf("authorinitials_%d", i+1), author.Initials)
+				content.Add(fmt.Sprintf("email_%d", i+1), author.Email)
+			}
+		}
+	}
+	if revision != nil {
+		rev := revision.(*DocumentRevision)
+		content.Add("revnumber", rev.Revnumber)
+		content.Add("revdate", rev.Revdate)
+		content.Add("revremark", rev.Revremark)
+	}
+	for _, attr := range otherAttributes {
+		if attr, ok := attr.(*DocumentAttributeDeclaration); ok {
+			content.AddAttribute(attr)
+		}
+	}
+	return &DocumentHeader{
+		Content: content,
+	}, nil
+}
+
+// ------------------------------------------
+// Document Author
+// ------------------------------------------
+
+// DocumentAuthor a document author
+type DocumentAuthor struct {
+	FullName   string
+	Initials   string
+	FirstName  *string
+	MiddleName *string
+	LastName   *string
+	Email      *string
+}
+
+// NewDocumentAuthors converts the given authors into an array of `DocumentAuthor`
+func NewDocumentAuthors(authors []interface{}) ([]*DocumentAuthor, error) {
+	log.Debugf("Initializing a new array of document authors from `%+v`", authors)
+	result := make([]*DocumentAuthor, len(authors))
+	for i, author := range authors {
+		switch author.(type) {
+		case *DocumentAuthor:
+			result[i] = author.(*DocumentAuthor)
+		default:
+			return nil, errors.Errorf("unexpected type of author: %T", author)
+		}
+	}
+	return result, nil
+}
+
+//NewDocumentAuthor initializes a new DocumentAuthor
+func NewDocumentAuthor(namePart1, namePart2, namePart3, emailAddress interface{}) (*DocumentAuthor, error) {
+	var part1, part2, part3, email *string
+	var err error
+	if namePart1 != nil {
+		part1, err = Stringify(namePart1.([]interface{}),
+			func(s string) (string, error) {
+				return strings.TrimSpace(s), nil
+			},
+			func(s string) (string, error) {
+				return strings.Replace(s, "_", " ", -1), nil
+			},
+		)
+		if err != nil {
+			return nil, errors.Wrapf(err, "error while initializing a DocumentAuthor")
+		}
+	}
+	if namePart2 != nil {
+		part2, err = Stringify(namePart2.([]interface{}),
+			func(s string) (string, error) {
+				return strings.TrimSpace(s), nil
+			},
+			func(s string) (string, error) {
+				return strings.Replace(s, "_", " ", -1), nil
+			},
+		)
+		if err != nil {
+			return nil, errors.Wrapf(err, "error while initializing a DocumentAuthor")
+		}
+	}
+	if namePart3 != nil {
+		part3, err = Stringify(namePart3.([]interface{}),
+			func(s string) (string, error) {
+				return strings.TrimSpace(s), nil
+			},
+			func(s string) (string, error) {
+				return strings.Replace(s, "_", " ", -1), nil
+			},
+		)
+		if err != nil {
+			return nil, errors.Wrapf(err, "error while initializing a DocumentAuthor")
+		}
+	}
+	if emailAddress != nil {
+		email, err = Stringify(emailAddress.([]interface{}),
+			func(s string) (string, error) {
+				return strings.TrimPrefix(s, "<"), nil
+			}, func(s string) (string, error) {
+				return strings.TrimSuffix(s, ">"), nil
+			}, func(s string) (string, error) {
+				return strings.TrimSpace(s), nil
+			})
+		if err != nil {
+			return nil, errors.Wrapf(err, "error while initializing a DocumentAuthor")
+		}
+	}
+	result := new(DocumentAuthor)
+	if part2 != nil && part3 != nil {
+		result.FirstName = part1
+		result.MiddleName = part2
+		result.LastName = part3
+		result.FullName = fmt.Sprintf("%s %s %s", *part1, *part2, *part3)
+		result.Initials = initials(*result.FirstName, *result.MiddleName, *result.LastName)
+	} else if part2 != nil {
+		result.FirstName = part1
+		result.LastName = part2
+		result.FullName = fmt.Sprintf("%s %s", *part1, *part2)
+		result.Initials = initials(*result.FirstName, *result.LastName)
+	} else {
+		result.FirstName = part1
+		result.FullName = *part1
+		result.Initials = initials(*result.FirstName)
+	}
+	result.Email = email
+	log.Debugf("Initialized a new document author: `%v`", result.String())
+	return result, nil
+}
+
+func initials(firstPart string, otherParts ...string) string {
+	result := fmt.Sprintf("%s", firstPart[0:1])
+	if otherParts != nil {
+		for _, otherPart := range otherParts {
+			result = result + otherPart[0:1]
+		}
+	}
+	return result
+}
+
+func (a *DocumentAuthor) String() string {
+	email := ""
+	if a.Email != nil {
+		email = *a.Email
+	}
+	return fmt.Sprintf("%s (%s)", a.FullName, email)
+}
+
+// ------------------------------------------
+// Document Revision
+// ------------------------------------------
+
+// DocumentRevision a document revision
+type DocumentRevision struct {
+	Revnumber *string
+	Revdate   *string
+	Revremark *string
+}
+
+// NewDocumentRevision intializes a new DocumentRevision
+func NewDocumentRevision(revnumber, revdate, revremark interface{}) (*DocumentRevision, error) {
+	// log.Debugf("Initializing document revision with revnumber=%v, revdate=%v, revremark=%v", revnumber, revdate, revremark)
+	// stringify, then remove the "v" prefix and trim spaces
+	var number, date, remark *string
+	var err error
+	if revnumber != nil {
+		number, err = Stringify(revnumber.([]interface{}),
+			func(s string) (string, error) {
+				return strings.TrimPrefix(s, "v"), nil
+			}, func(s string) (string, error) {
+				return strings.TrimPrefix(s, "V"), nil
+			}, func(s string) (string, error) {
+				return strings.TrimSpace(s), nil
+			})
+		if err != nil {
+			return nil, errors.Wrapf(err, "error while initializing a DocumentRevision")
+		}
+	}
+	if revdate != nil {
+		// stringify, then remove the "," prefix and trim spaces
+		date, err = Stringify(revdate.([]interface{}), func(s string) (string, error) {
+			return strings.TrimSpace(s), nil
+		})
+		if err != nil {
+			return nil, errors.Wrapf(err, "error while initializing a DocumentRevision")
+		}
+		// do not keep empty values
+		if *date == "" {
+			date = nil
+		}
+	}
+	if revremark != nil {
+		// then we need to strip the heading "," and spaces
+		remark, err = Stringify(revremark.([]interface{}),
+			func(s string) (string, error) {
+				return strings.TrimPrefix(s, ":"), nil
+			}, func(s string) (string, error) {
+				return strings.TrimSpace(s), nil
+			})
+		if err != nil {
+			return nil, errors.Wrapf(err, "error while initializing a DocumentRevision")
+		}
+		// do not keep empty values
+		if *remark == "" {
+			remark = nil
+		}
+	}
+	// log.Debugf("Initializing a new DocumentRevision with revnumber='%v', revdate='%v' and revremark='%v'", *n, *d, *r)
+	result := DocumentRevision{
+		Revnumber: number,
+		Revdate:   date,
+		Revremark: remark,
+	}
+	log.Debugf("Initialized a new document revision: `%s`", result.String())
+	return &result, nil
+}
+
+func (r *DocumentRevision) String() string {
+	number := ""
+	if r.Revnumber != nil {
+		number = *r.Revnumber
+	}
+	date := ""
+	if r.Revdate != nil {
+		date = *r.Revdate
+	}
+	remark := ""
+	if r.Revremark != nil {
+		remark = *r.Revremark
+	}
+	return fmt.Sprintf("%v, %v: %v", number, date, remark)
 }
 
 // ------------------------------------------
@@ -109,11 +365,17 @@ type DocumentAttributeDeclaration struct {
 
 // NewDocumentAttributeDeclaration initializes a new DocumentAttributeDeclaration
 func NewDocumentAttributeDeclaration(name []interface{}, value []interface{}) (*DocumentAttributeDeclaration, error) {
-	attrName, err := Stringify(name)
+	attrName, err := Stringify(name,
+		func(s string) (string, error) {
+			return strings.TrimSpace(s), nil
+		})
 	if err != nil {
 		return nil, errors.Wrapf(err, "error while initializing a DocumentAttributeDeclaration")
 	}
-	attrValue, err := Stringify(value)
+	attrValue, err := Stringify(value,
+		func(s string) (string, error) {
+			return strings.TrimSpace(s), nil
+		})
 	if err != nil {
 		return nil, errors.Wrapf(err, "error while initializing a DocumentAttributeDeclaration")
 	}
@@ -185,6 +447,31 @@ func (a *DocumentAttributeSubstitution) Accept(v Visitor) error {
 }
 
 // ------------------------------------------
+// Preamble
+// ------------------------------------------
+
+// Preamble the structure for document Preamble
+type Preamble struct {
+	Elements []DocElement
+}
+
+// NewPreamble initializes a new Preamble from the given elements
+func NewPreamble(elements []interface{}) (*Preamble, error) {
+	log.Debugf("Initialiazing new Preamble with %d elements", len(elements))
+
+	return &Preamble{Elements: convertBlocksToDocElements(elements)}, nil
+}
+
+// String implements the DocElement#String() method
+func (p *Preamble) String(indentLevel int) string {
+	result := bytes.NewBuffer(nil)
+	for _, element := range p.Elements {
+		result.WriteString(fmt.Sprintf("%s", element.String(indentLevel+1)))
+	}
+	return result.String()
+}
+
+// ------------------------------------------
 // Front Matter
 // ------------------------------------------
 
@@ -209,30 +496,32 @@ func NewYamlFrontMatter(content []interface{}) (*FrontMatter, error) {
 }
 
 // ------------------------------------------
-// Section
+// Sections
 // ------------------------------------------
 
 // Section the structure for a section
 type Section struct {
-	Heading  Heading
-	Elements []DocElement
+	Level        int
+	SectionTitle SectionTitle
+	Elements     []DocElement
 }
 
-// NewSection initializes a new `Section` from the given heading and elements
-func NewSection(heading *Heading, blocks []interface{}) (*Section, error) {
+// NewSection initializes a new `Section` from the given section title and elements
+func NewSection(level int, sectionTitle *SectionTitle, blocks []interface{}) (*Section, error) {
 	// log.Debugf("Initializing a new Section with %d block(s)", len(blocks))
 	elements := convertBlocksToDocElements(blocks)
-	log.Debugf("Initialized a new Section of level %d with %d block(s)", heading.Level, len(blocks))
+	log.Debugf("Initialized a new Section of level %d with %d block(s)", level, len(blocks))
 	return &Section{
-		Heading:  *heading,
-		Elements: elements,
+		Level:        level,
+		SectionTitle: *sectionTitle,
+		Elements:     elements,
 	}, nil
 }
 
 // String implements the DocElement#String() method
 func (s *Section) String(indentLevel int) string {
 	result := bytes.NewBuffer(nil)
-	result.WriteString(fmt.Sprintf("%s<Section %d> '%s'\n", indent(indentLevel), s.Heading.Level, s.Heading.Content.String(0)))
+	result.WriteString(fmt.Sprintf("%s<Section %d> '%s'\n", indent(indentLevel), s.Level, s.SectionTitle.Content.String(0)))
 	for _, element := range s.Elements {
 		result.WriteString(fmt.Sprintf("%s", element.String(indentLevel+1)))
 	}
@@ -240,41 +529,40 @@ func (s *Section) String(indentLevel int) string {
 }
 
 // ------------------------------------------
-// Heading
+// SectionTitle
 // ------------------------------------------
 
-// Heading the structure for the headings
-type Heading struct {
+// SectionTitle the structure for the section titles
+type SectionTitle struct {
 	ID      *ElementID
-	Level   int
 	Content *InlineContent
 }
 
-// NewHeading initializes a new `Heading from the given level and content, with the optional attributes.
+// NewSectionTitle initializes a new `SectionTitle`` from the given level and content, with the optional attributes.
 // In the attributes, only the ElementID is retained
-func NewHeading(level int, inlineContent *InlineContent, attributes []interface{}) (*Heading, error) {
+func NewSectionTitle(inlineContent *InlineContent, attributes []interface{}) (*SectionTitle, error) {
 	// counting the lenght of the 'level' value (ie, the number of `=` chars)
 	id, _, _ := newElementAttributes(attributes)
-	// make a default id from the heading's inline content
+	// make a default id from the sectionTitle's inline content
 	if id == nil {
 		replacement, err := ReplaceNonAlphanumerics(inlineContent, "_")
 		if err != nil {
-			return nil, errors.Wrapf(err, "unable to generate default ID while instanciating a new Heading element")
+			return nil, errors.Wrapf(err, "unable to generate default ID while instanciating a new SectionTitle element")
 		}
 		id, _ = NewElementID(*replacement)
 	}
-	heading := Heading{Level: level, Content: inlineContent, ID: id}
-	log.Debugf("Initialized a new Heading: %s", heading.String(0))
-	return &heading, nil
+	sectionTitle := SectionTitle{Content: inlineContent, ID: id}
+	log.Debugf("Initialized a new SectionTitle: %s", sectionTitle.String(0))
+	return &sectionTitle, nil
 }
 
 // String implements the DocElement#String() method
-func (h *Heading) String(indentLevel int) string {
-	return fmt.Sprintf("%s<Heading %d> %s", indent(indentLevel), h.Level, h.Content.String(0))
+func (h *SectionTitle) String(indentLevel int) string {
+	return fmt.Sprintf("%s<SectionTitle> %s", indent(indentLevel), h.Content.String(0))
 }
 
-// PlainString returns a plain string version of all elements in this Heading's Content, without any rendering
-func (h *Heading) PlainString() string {
+// PlainString returns a plain string version of all elements in this SectionTitle's Content, without any rendering
+func (h *SectionTitle) PlainString() string {
 	result := bytes.NewBuffer(nil)
 	for i, element := range h.Content.Elements {
 		result.WriteString(element.PlainString())
@@ -438,7 +726,8 @@ func NewParagraph(text []byte, lines []interface{}, attributes []interface{}) (*
 
 	typedLines := make([]*InlineContent, 0)
 	for _, line := range lines {
-		typedLines = append(typedLines, line.(*InlineContent))
+		// each `line` element is an array with the actual `InlineContent` + `EOF`
+		typedLines = append(typedLines, line.([]interface{})[0].(*InlineContent))
 	}
 	return &Paragraph{
 		Lines: typedLines,
@@ -475,7 +764,10 @@ func NewInlineContent(text []byte, elements []interface{}) (*InlineContent, erro
 		mergedInlineElements[i] = element.(InlineElement)
 	}
 	result := &InlineContent{Elements: mergedInlineElements}
-	log.Debugf("Initialized new InlineContent with %d element(s): %s", len(result.Elements), result.String(0))
+	if log.GetLevel() == log.DebugLevel {
+		log.Debugf("Initialized a new InlineContent with %d elements:", len(result.Elements))
+		spew.Fdump(os.Stdout, result)
+	}
 	return result, nil
 }
 
@@ -511,7 +803,7 @@ func (c *InlineContent) Accept(v Visitor) error {
 	}
 	err = v.AfterVisit(c)
 	if err != nil {
-		return errors.Wrapf(err, "error while post-visiting heading")
+		return errors.Wrapf(err, "error while post-visiting sectionTitle")
 	}
 	return nil
 }
@@ -684,16 +976,20 @@ type DelimitedBlock struct {
 
 // NewDelimitedBlock initializes a new `DelimitedBlock` of the given kind with the given content
 func NewDelimitedBlock(kind DelimitedBlockKind, content []interface{}) (*DelimitedBlock, error) {
-	c, err := Stringify(content)
+	blockContent, err := Stringify(content,
+		// remove "\n" or "\r\n", depending on the OS.
+		func(s string) (string, error) {
+			return strings.TrimSuffix(s, "\n"), nil
+		}, func(s string) (string, error) {
+			return strings.TrimSuffix(s, "\r"), nil
+		})
 	if err != nil {
 		return nil, errors.Wrapf(err, "unable to initialize a new delimited block")
 	}
-	// remove "\n" or "\r\n", depending on the OS.
-	blockContent := strings.TrimSuffix(strings.TrimSuffix(*c, "\n"), "\r")
-	log.Debugf("Initialized a new DelimitedBlock with content=`%s`", blockContent)
+	log.Debugf("Initialized a new DelimitedBlock with content=`%s`", *blockContent)
 	return &DelimitedBlock{
 		Kind:    kind,
-		Content: blockContent,
+		Content: *blockContent,
 	}, nil
 }
 
@@ -729,7 +1025,7 @@ type LiteralBlock struct {
 }
 
 // NewLiteralBlock initializes a new `DelimitedBlock` of the given kind with the given content,
-// along with the given heading spaces
+// along with the given sectionTitle spaces
 func NewLiteralBlock(spaces, content []interface{}) (*LiteralBlock, error) {
 	// concatenates the spaces with the actual content in a single 'stringified' value
 	// log.Debugf("Initializing a new LiteralBlock with spaces='%v' and content=`%v`", spaces, content)
@@ -994,13 +1290,18 @@ func NewExternalLink(url, text []interface{}) (*ExternalLink, error) {
 	if err != nil {
 		return nil, errors.Wrapf(err, "failed to initialize a new ExternalLink element")
 	}
-	textStr, err := Stringify(text)
+	textStr, err := Stringify(text, // remove "\n" or "\r\n", depending on the OS.
+		// remove heading "[" and traingin "]"
+		func(s string) (string, error) {
+			return strings.TrimPrefix(s, "["), nil
+		},
+		func(s string) (string, error) {
+			return strings.TrimSuffix(s, "]"), nil
+		})
 	if err != nil {
 		return nil, errors.Wrapf(err, "failed to initialize a new ExternalLink element")
 	}
-	// the text includes the surrounding '[' and ']' which should be removed
-	trimmedText := strings.TrimPrefix(strings.TrimSuffix(*textStr, "]"), "[")
-	return &ExternalLink{URL: *urlStr, Text: trimmedText}, nil
+	return &ExternalLink{URL: *urlStr, Text: *textStr}, nil
 }
 
 // String implements the DocElement#String() method

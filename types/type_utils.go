@@ -6,6 +6,7 @@ import (
 	"unicode"
 
 	"github.com/pkg/errors"
+	log "github.com/sirupsen/logrus"
 )
 
 func indent(indentLevel int) string {
@@ -27,16 +28,25 @@ func toInlineElements(elements []interface{}) ([]InlineElement, error) {
 
 // convertBlocksToDocElements converts the given blocks to DocElement and exclude `BlankLine`
 func convertBlocksToDocElements(blocks []interface{}) []DocElement {
-	elements := make([]DocElement, len(blocks))
-	j := 0
-	for i := range blocks {
-		// exclude blank lines from here, we won't need them in the rendering anyways
-		if _, ok := blocks[i].(*BlankLine); !ok {
-			elements[j] = blocks[i].(DocElement)
-			j++
+	log.Debugf("Converting %+v into DocElements...", blocks)
+	elements := make([]DocElement, 0)
+	for _, block := range blocks {
+		if b, ok := block.(DocElement); ok {
+			if preamble, ok := b.(*Preamble); ok {
+				if len(preamble.Elements) > 0 {
+					// exclude empty preamble
+					elements = append(elements, b)
+				}
+			} else if _, ok := b.(*BlankLine); !ok {
+				// exclude blank lines from here, we won't need them in the rendering anyways
+				elements = append(elements, b)
+			}
+		} else if block, ok := block.([]interface{}); ok {
+			result := convertBlocksToDocElements(block)
+			elements = append(elements, result...)
 		}
 	}
-	return elements[:j] // exclude allocated nil values
+	return elements // exclude allocated nil values
 }
 
 func merge(elements []interface{}, extraElements ...interface{}) []interface{} {
@@ -93,8 +103,11 @@ func appendBuffer(elements []interface{}, buff *bytes.Buffer) ([]interface{}, *b
 	return elements, buff
 }
 
-//Stringify convert the given elements into a string
-func Stringify(elements []interface{}) (*string, error) {
+type StringifyFuncs func(s string) (string, error)
+
+//Stringify convert the given elements into a string, then applies the optional `funcs` to convert the string before returning it.
+// These StringifyFuncs can be used to trim the content, for example
+func Stringify(elements []interface{}, funcs ...StringifyFuncs) (*string, error) {
 	mergedElements := merge(elements)
 	b := make([]byte, 0)
 	buff := bytes.NewBuffer(b)
@@ -127,6 +140,13 @@ func Stringify(elements []interface{}) (*string, error) {
 
 	}
 	result := buff.String()
+	for _, f := range funcs {
+		var err error
+		result, err = f(result)
+		if err != nil {
+			return nil, errors.Wrapf(err, "Failed to postprocess the stringified content")
+		}
+	}
 	// log.Debugf("stringified %v -> '%s' (%v characters)", elements, result, len(result))
 	return &result, nil
 }
@@ -144,7 +164,7 @@ func NewReplaceNonAlphanumericsFunc(replacement string) NormalizationFunc {
 	return func(source string) ([]byte, error) {
 		buf := bytes.NewBuffer(nil)
 		lastCharIsSpace := false
-		for _, r := range strings.TrimLeft(source, " ") { // ignore heading spaces
+		for _, r := range strings.TrimLeft(source, " ") { // ignore header spaces
 			if unicode.Is(unicode.Letter, r) || unicode.Is(unicode.Number, r) {
 				_, err := buf.WriteString(strings.ToLower(string(r)))
 				if err != nil {

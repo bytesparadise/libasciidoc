@@ -19,7 +19,7 @@ with more content afterwards...</p>
 .a title
 *bold content* with more content afterwards...`
 		expected := `<div id="foo" class="paragraph">
-<div class="title">a title</div>
+<div class="doctitle">a title</div>
 <p><strong>bold content</strong> with more content afterwards...</p>
 </div>`
 		verify(GinkgoT(), expected, content)

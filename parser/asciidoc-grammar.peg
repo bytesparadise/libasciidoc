@@ -13,18 +13,19 @@ import "github.com/bytesparadise/libasciidoc/types"
 // Document
 // ------------------------------------------
 
-Document <- frontmatter:(FrontMatter?) blocks:(DocumentBlock*) EOF {
-    if frontmatter != nil {
-	    return types.NewDocument(frontmatter.(*types.FrontMatter), blocks.([]interface{}))
-    }
-	return types.NewDocument(nil, blocks.([]interface{}))
+Document <- frontMatter:(FrontMatter?) documentHeader:(DocumentHeader?) blocks:(DocumentBlocks) EOF {
+	return types.NewDocument(frontMatter, documentHeader, blocks.([]interface{}))
 }
 
-DocumentBlock <- content:(Section / StandaloneBlock) {
-    return content.(types.DocElement), nil
+DocumentBlocks <- content:(Preamble Section+) / content:(StandaloneBlock*) {
+    return content, nil
 }
 
-StandaloneBlock <- DocumentAttributeDeclaration / DocumentAttributeReset / List / BlockImage / LiteralBlock / DelimitedBlock / Paragraph / ElementAttribute / BlankLine //TODO: should Paragraph be the last type ?
+StandaloneBlock <- DocumentAttributeDeclaration / DocumentAttributeReset / List / BlockImage / LiteralBlock / DelimitedBlock / Paragraph / (ElementAttribute EOL) / BlankLine //TODO: should Paragraph be the last type ?
+
+Preamble <- elements:(StandaloneBlock*) {
+    return types.NewPreamble(elements.([]interface{}))
+}
 
 // ------------------------------------------
 // Front Matter
@@ -38,87 +39,46 @@ FrontMatter <- YamlFrontMatterToken content:(!YamlFrontMatterToken .)* YamlFront
 YamlFrontMatterToken  <- "---" EOL
 
 // ------------------------------------------
-// Sections
+// Document Header
 // ------------------------------------------
-Section <- Section1 / Section2 / Section3 / Section4 / Section5 / Section6
-
-Section1 <- heading:(Heading1) elements:(Section1Block*) {
-    return types.NewSection(heading.(*types.Heading), elements.([]interface{}))
+// TODO: include main title | subtitle with support for custom separator
+DocumentHeader <- header:(DocumentTitle) authors:(DocumentAuthors?) revision:(DocumentRevision?) otherAttributes:(DocumentAttributeDeclaration*){ 
+    return types.NewDocumentHeader(header, authors, revision, otherAttributes.([]interface{}))
 }
 
-Section1Block <- content:(Section2 / Section3 / Section4 / Section5 / Section6 / StandaloneBlock) {
-    return content.(types.DocElement), nil
+DocumentTitle <- attributes:(ElementAttribute)* level:("=") WS+ content:InlineContent EOL { 
+     return types.NewSectionTitle(content.(*types.InlineContent), attributes.([]interface{}))
 }
 
-Section2 <- heading:(Heading2) elements:(Section2Block*) {
-    return types.NewSection(heading.(*types.Heading), elements.([]interface{}))
+DocumentAuthors <- DocumentAuthorsInlineForm / DocumentAuthorsAttributeForm
+
+DocumentAuthorsInlineForm <- WS* !":" authors:(DocumentAuthor+) EOL {
+    return types.NewDocumentAuthors(authors.([]interface{}))
 }
 
-Section2Block <- !Section1 !Section2 content:(Section3 / Section4 / Section5 / Section6 / StandaloneBlock) {
-    return content.(types.DocElement), nil
+DocumentAuthorsAttributeForm <- WS* ":author:" author:(DocumentAuthor) {
+    return []*types.DocumentAuthor{author.(*types.DocumentAuthor)}, nil
 }
 
-Section3 <- heading:(Heading3) elements:(Section3Block*) &(Section3)* {
-    return types.NewSection(heading.(*types.Heading), elements.([]interface{}))
+DocumentAuthor <- WS* namePart1:(DocumentAuthorNamePart) namePart2:(DocumentAuthorNamePart)? namePart3:(DocumentAuthorNamePart)? email:(DocumentAuthorEmail)? WS* ";"? WS*{
+    return types.NewDocumentAuthor(namePart1, namePart2, namePart3, email)
+} 
+
+// "<" marks the beginning of the author email, and ";" is the authors separator
+DocumentAuthorNamePart <- !"<" !";" Word WS*
+
+DocumentAuthorEmail <- "<" email:(!">" !EOL .)+ ">" 
+
+// see http://asciidoctor.org/docs/user-manual/#revision-number-date-and-remark
+// Eg: "v1.0, October 2, 2013: First incarnation"
+DocumentRevision <- WS* !":" revnumber:(DocumentRevisionNumber)? ","? revdate:(DocumentRevisionDate)? ":"? revremark:(DocumentRevisionRemark)? EOL {
+    return types.NewDocumentRevision(revnumber, revdate, revremark)
 }
 
-Section3Block <- !Section1 !Section2 !Section3 content:(Section4 / Section5 / Section6 / StandaloneBlock) {
-    return content.(types.DocElement), nil
-}
-
-Section4 <- heading:(Heading4) elements:(Section4Block*) {
-    return types.NewSection(heading.(*types.Heading), elements.([]interface{}))
-}
-
-Section4Block <- !Section1 !Section2 !Section3 !Section4 content:(Section5 / Section6 / StandaloneBlock) {
-    return content.(types.DocElement), nil
-}
-
-Section5 <- heading:(Heading5) elements:(Section5Block*) {
-    return types.NewSection(heading.(*types.Heading), elements.([]interface{}))
-}
-
-Section5Block <- !Section1 !Section2 !Section3 !Section4 !Section5 content:(Section6 / StandaloneBlock) {
-    return content.(types.DocElement), nil
-}
-
-Section6 <- heading:(Heading6) elements:(Section6Block*) {
-    return types.NewSection(heading.(*types.Heading), elements.([]interface{}))
-}
-
-Section6Block <- !Section1 !Section2 !Section3 !Section4 !Section5 !Section6 content:(StandaloneBlock) {
-    return content.(types.DocElement), nil
-}
-
-// ------------------------------------------
-// Headings
-// ------------------------------------------
-Heading <- Heading1 / Heading2 / Heading3 / Heading4 / Heading5 / Heading6
-
-Heading1 <- attributes:(ElementAttribute)* level:("=") WS+ content:InlineContent (BlankLine? / EOF) { //TODO: replace `(BlankLine? / EOF)` with `EOL` to allow for immediate attributes or any other content ?
-     return types.NewHeading(1, content.(*types.InlineContent), attributes.([]interface{}))
-}
-
-Heading2 <- attributes:(ElementAttribute)* level:("==") WS+ content:InlineContent (BlankLine? / EOF) {
-     return types.NewHeading(2, content.(*types.InlineContent), attributes.([]interface{}))
-}
-
-Heading3 <- attributes:(ElementAttribute)* level:("===") WS+ content:InlineContent (BlankLine? / EOF) {
-     return types.NewHeading(3, content.(*types.InlineContent), attributes.([]interface{}))
-}
-
-Heading4 <- attributes:(ElementAttribute)* level:("====") WS+ content:InlineContent (BlankLine? / EOF) {
-     return types.NewHeading(4, content.(*types.InlineContent), attributes.([]interface{}))
-}
-
-Heading5 <- attributes:(ElementAttribute)* level:("=====") WS+ content:InlineContent (BlankLine? / EOF) {
-     return types.NewHeading(5, content.(*types.InlineContent), attributes.([]interface{}))
-}
-
-Heading6 <- attributes:(ElementAttribute)* level:("======") WS+ content:InlineContent (BlankLine? / EOF) {
-     return types.NewHeading(6, content.(*types.InlineContent), attributes.([]interface{}))
-}
-
+// DocumentRevisionNumber MUST start with a `v` or MAY start with a `v` but MUST end with a `,`
+DocumentRevisionNumber <- "v"i DIGIT  (!EOL !"," !":" .)* / "v"i? DIGIT  (!EOL !"," !":" .)* WS* &","
+DocumentRevisionDate <- (!EOL !":" .)* 
+DocumentRevisionRemark <- (!EOL .)*
 
 // ------------------------------------------
 // Document Attributes
@@ -133,9 +93,9 @@ DocumentAttributeDeclarationWithNameAndValue <- ":" name:(AttributeName) ":" WS+
     return types.NewDocumentAttributeDeclaration(name.([]interface{}), value.([]interface{}))
 }
 
-DocumentAttributeReset <- DocumentAttributeResetWithHeadingBangSymbol / DocumentAttributeResetWithTrailingBangSymbol
+DocumentAttributeReset <- DocumentAttributeResetWithSectionTitleBangSymbol / DocumentAttributeResetWithTrailingBangSymbol
 
-DocumentAttributeResetWithHeadingBangSymbol <- ":!" name:(AttributeName) ":" WS* EOL {
+DocumentAttributeResetWithSectionTitleBangSymbol <- ":!" name:(AttributeName) ":" WS* EOL {
     return types.NewDocumentAttributeReset(name.([]interface{}))
 }
 
@@ -154,6 +114,78 @@ DocumentAttributeSubstitution <- "{" name:(AttributeName) "}" {
 AttributeName <- ([A-Z] / [a-z] / [0-9] / "_") ([A-Z] / [a-z] / [0-9] / "-")*
 
 // ------------------------------------------
+// Sections
+// ------------------------------------------
+Section <- Section1 / Section2 / Section3 / Section4 / Section5
+
+
+Section1 <- header:(Section1Title) elements:(Section1Block*) {
+    return types.NewSection(1, header.(*types.SectionTitle), elements.([]interface{}))
+}
+
+Section1Block <- !Section1 content:(Section2 / Section3 / Section4 / Section5 / StandaloneBlock) {
+    return content.(types.DocElement), nil
+}
+
+Section2 <- header:(Section2Title) elements:(Section2Block*) &(Section2)* {
+    return types.NewSection(2, header.(*types.SectionTitle), elements.([]interface{}))
+}
+
+Section2Block <- !Section1 !Section2 content:(Section3 / Section4 / Section5 / StandaloneBlock) {
+    return content.(types.DocElement), nil
+}
+
+Section3 <- header:(Section3Title) elements:(Section3Block*) {
+    return types.NewSection(3, header.(*types.SectionTitle), elements.([]interface{}))
+}
+
+Section3Block <- !Section1 !Section2 !Section3 content:(Section4 / Section5 / StandaloneBlock) {
+    return content.(types.DocElement), nil
+}
+
+Section4 <- header:(Section4Title) elements:(Section4Block*) {
+    return types.NewSection(4, header.(*types.SectionTitle), elements.([]interface{}))
+}
+
+Section4Block <- !Section1 !Section2 !Section3 !Section4 content:(Section5 / StandaloneBlock) {
+    return content.(types.DocElement), nil
+}
+
+Section5 <- header:(Section5Title) elements:(Section5Block*) {
+    return types.NewSection(5, header.(*types.SectionTitle), elements.([]interface{}))
+}
+
+Section5Block <- !Section1 !Section2 !Section3 !Section4 !Section5 content:(StandaloneBlock) {
+    return content.(types.DocElement), nil
+}
+
+// ------------------------------------------
+// Section Titles
+// ------------------------------------------
+
+SectionTitle <- Section1Title / Section2Title / Section3Title / Section4Title / Section5Title
+
+Section1Title <- attributes:(ElementAttribute)* level:("==") WS+ content:InlineContent EOL (BlankLine? / EOF) { 
+     return types.NewSectionTitle(content.(*types.InlineContent), attributes.([]interface{}))
+}
+
+Section2Title <- attributes:(ElementAttribute)* level:("===") WS+ content:InlineContent EOL (BlankLine? / EOF) {
+     return types.NewSectionTitle(content.(*types.InlineContent), attributes.([]interface{}))
+}
+
+Section3Title <- attributes:(ElementAttribute)* level:("====") WS+ content:InlineContent EOL (BlankLine? / EOF) {
+     return types.NewSectionTitle(content.(*types.InlineContent), attributes.([]interface{}))
+}
+
+Section4Title <- attributes:(ElementAttribute)* level:("=====") WS+ content:InlineContent EOL (BlankLine? / EOF) {
+     return types.NewSectionTitle(content.(*types.InlineContent), attributes.([]interface{}))
+}
+
+Section5Title <- attributes:(ElementAttribute)* level:("======") WS+ content:InlineContent EOL (BlankLine? / EOF) {
+     return types.NewSectionTitle(content.(*types.InlineContent), attributes.([]interface{}))
+}
+
+// ------------------------------------------
 // List Items
 // ------------------------------------------
 List <- attributes:(ElementAttribute)* 
@@ -166,20 +198,21 @@ ListItem <- WS* level:('*'+ / '-') WS+ content:(ListItemContent) {
     return types.NewListItem(level, content.(*types.ListItemContent), nil)
 }
 
-ListItemContent <- lines:(!(WS* ('*'+ / '-') WS+) InlineContent)+ {
+ListItemContent <- lines:(!(WS* ('*'+ / '-') WS+) InlineContent EOL)+ { 
     return types.NewListItemContent(c.text, lines.([]interface{}))
 } 
 // ------------------------------------------
 // Paragraphs
 // ------------------------------------------
 // a paragraph is a group of line ending with a blank line (or end of file)
-Paragraph <- attributes:(ElementAttribute)* lines:(InlineContent)+ {
+// a paragraph cannot start with the `section` sequence (`= `, `== `, etc.)
+Paragraph <- attributes:(ElementAttribute)* !("="+ WS+) lines:(InlineContent EOL)+ {
     return types.NewParagraph(c.text, lines.([]interface{}), attributes.([]interface{}))
 } 
 
 // an inline content element may start with and end with spaces, 
 // but it must contain at least an inline element (image, quoted text, external link, document attribute substitution, word, etc.)
-InlineContent <- !FencedBlockDelimiter elements:(WS* InlineElement WS*)+ EOL {
+InlineContent <- !FencedBlockDelimiter elements:(WS* InlineElement WS*)+ &EOL { // needs an 'EOL' but does not consume it here.
     return types.NewInlineContent(c.text, elements.([]interface{}))
 } 
 

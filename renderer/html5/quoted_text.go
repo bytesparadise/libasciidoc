@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"html/template"
 
-	asciidoc "github.com/bytesparadise/libasciidoc/context"
+	"github.com/bytesparadise/libasciidoc/renderer"
 	"github.com/bytesparadise/libasciidoc/types"
 	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
@@ -21,10 +21,10 @@ func init() {
 	monospaceTextTmpl = newHTMLTemplate("monospace text", "<code>{{.}}</code>")
 }
 
-func renderQuotedText(ctx asciidoc.Context, t types.QuotedText) ([]byte, error) {
+func renderQuotedText(ctx *renderer.Context, t types.QuotedText) ([]byte, error) {
 	elementsBuffer := bytes.NewBuffer(nil)
 	for _, element := range t.Elements {
-		b, err := processElement(ctx, element)
+		b, err := renderElement(ctx, element)
 		if err != nil {
 			return nil, errors.Wrapf(err, "unable to render text quote")
 		}

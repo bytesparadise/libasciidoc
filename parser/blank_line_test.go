@@ -11,7 +11,7 @@ var _ = Describe("Blank lines", func() {
 
 second paragraph`
 		expectedDocument := &types.Document{
-			Attributes: &types.DocumentAttributes{},
+			Attributes: map[string]interface{}{},
 			Elements: []types.DocElement{
 				&types.Paragraph{
 					Lines: []*types.InlineContent{
@@ -43,7 +43,7 @@ second paragraph`
 second paragraph
 `
 		expectedDocument := &types.Document{
-			Attributes: &types.DocumentAttributes{},
+			Attributes: map[string]interface{}{},
 			Elements: []types.DocElement{
 				&types.Paragraph{
 					Lines: []*types.InlineContent{

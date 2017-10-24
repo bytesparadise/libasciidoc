@@ -1,4 +1,4 @@
-package context
+package renderer
 
 import (
 	"context"
@@ -12,14 +12,20 @@ import (
 type Context struct {
 	context  context.Context
 	Document types.Document
+	options  map[string]interface{}
 }
 
 // Wrap wraps the given `ctx` context into a new context which will contain the given `document` document.
-func Wrap(ctx context.Context, document types.Document) Context {
-	return Context{
+func Wrap(ctx context.Context, document types.Document, options ...Option) *Context {
+	result := &Context{
 		context:  ctx,
 		Document: document,
+		options:  make(map[string]interface{}),
 	}
+	for _, option := range options {
+		option(result)
+	}
+	return result
 }
 
 // Deadline wrapper implementation of context.Context.Deadline()

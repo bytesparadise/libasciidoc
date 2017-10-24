@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"html/template"
 
-	asciidoc "github.com/bytesparadise/libasciidoc/context"
+	"github.com/bytesparadise/libasciidoc/renderer"
 	"github.com/bytesparadise/libasciidoc/types"
 	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
@@ -19,13 +19,13 @@ func init() {
 <div class="content">
 {{if .Link}}<a class="image" href="{{.Link.Path}}">{{end}}<img src="{{.Macro.Path}}" alt="{{.Macro.Alt}}"{{if .Macro.Width}} width="{{.Macro.Width}}"{{end}}{{if .Macro.Height}} height="{{.Macro.Height}}"{{end}}>{{if .Link}}</a>{{end}}
 </div>{{if .Title}}
-<div class="title">{{.Title.Value}}</div>
+<div class="doctitle">{{.Title.Value}}</div>
 {{else}}
 {{end}}</div>`)
 	inlineImageTmpl = newHTMLTemplate("inline image", `<span class="image"><img src="{{.Macro.Path}}" alt="{{.Macro.Alt}}"{{if .Macro.Width}} width="{{.Macro.Width}}"{{end}}{{if .Macro.Height}} height="{{.Macro.Height}}"{{end}}></span>`)
 }
 
-func renderBlockImage(ctx asciidoc.Context, img types.BlockImage) ([]byte, error) {
+func renderBlockImage(ctx *renderer.Context, img types.BlockImage) ([]byte, error) {
 	result := bytes.NewBuffer(nil)
 	err := blockImageTmpl.Execute(result, img)
 	if err != nil {
@@ -35,7 +35,7 @@ func renderBlockImage(ctx asciidoc.Context, img types.BlockImage) ([]byte, error
 	return result.Bytes(), nil
 }
 
-func renderInlineImage(ctx asciidoc.Context, img types.InlineImage) ([]byte, error) {
+func renderInlineImage(ctx *renderer.Context, img types.InlineImage) ([]byte, error) {
 	result := bytes.NewBuffer(nil)
 	err := inlineImageTmpl.Execute(result, img)
 	if err != nil {

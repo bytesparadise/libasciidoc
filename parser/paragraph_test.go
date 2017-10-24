@@ -10,7 +10,7 @@ var _ = Describe("Paragraphs", func() {
 	It("paragraph with 1 word", func() {
 		actualContent := "hello"
 		expectedDocument := &types.Document{
-			Attributes: &types.DocumentAttributes{},
+			Attributes: map[string]interface{}{},
 			Elements: []types.DocElement{
 				&types.Paragraph{
 					Lines: []*types.InlineContent{
@@ -29,7 +29,7 @@ var _ = Describe("Paragraphs", func() {
 	It("paragraph with few words", func() {
 		actualContent := "a paragraph with some content"
 		expectedDocument := &types.Document{
-			Attributes: &types.DocumentAttributes{},
+			Attributes: map[string]interface{}{},
 			Elements: []types.DocElement{
 				&types.Paragraph{
 					Lines: []*types.InlineContent{
@@ -48,7 +48,7 @@ var _ = Describe("Paragraphs", func() {
 	It("paragraph with bold content", func() {
 		actualContent := "a paragraph with *some bold content*"
 		expectedDocument := &types.Document{
-			Attributes: &types.DocumentAttributes{},
+			Attributes: map[string]interface{}{},
 			Elements: []types.DocElement{
 				&types.Paragraph{
 					Lines: []*types.InlineContent{
@@ -75,7 +75,7 @@ var _ = Describe("Paragraphs", func() {
 .a title
 a paragraph`
 		expectedDocument := &types.Document{
-			Attributes: &types.DocumentAttributes{},
+			Attributes: map[string]interface{}{},
 			Elements: []types.DocElement{
 				&types.Paragraph{
 					ID:    &types.ElementID{Value: "foo"},
