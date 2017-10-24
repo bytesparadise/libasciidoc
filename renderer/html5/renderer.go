@@ -6,6 +6,7 @@ import (
 	"github.com/bytesparadise/libasciidoc/renderer"
 	"github.com/bytesparadise/libasciidoc/types"
 	"github.com/pkg/errors"
+	log "github.com/sirupsen/logrus"
 )
 
 // Render renders the given document in HTML and writes the result in the given `writer`
@@ -39,6 +40,7 @@ func renderElements(ctx *renderer.Context, output io.Writer) error {
 }
 
 func renderElement(ctx *renderer.Context, element types.DocElement) ([]byte, error) {
+	log.Debugf("Rendering element of type %T", element)
 	switch element.(type) {
 	case *types.Section:
 		return renderSection(ctx, *element.(*types.Section))
