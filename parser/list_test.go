@@ -12,7 +12,7 @@ var _ = Describe("List Items", func() {
 			It("1 list with a single item", func() {
 				actualContent := "* a list item"
 				expectedDocument := &types.Document{
-					Attributes: &types.DocumentAttributes{},
+					Attributes: map[string]interface{}{},
 					Elements: []types.DocElement{
 						&types.List{
 							Items: []*types.ListItem{
@@ -38,7 +38,7 @@ var _ = Describe("List Items", func() {
 				actualContent := "[#listID]\n" +
 					"* a list item"
 				expectedDocument := &types.Document{
-					Attributes: &types.DocumentAttributes{},
+					Attributes: map[string]interface{}{},
 					Elements: []types.DocElement{
 						&types.List{
 							ID: &types.ElementID{Value: "listID"},
@@ -66,7 +66,7 @@ var _ = Describe("List Items", func() {
 				actualContent := "* a first item\n" +
 					"* a second item with *bold content*"
 				expectedDocument := &types.Document{
-					Attributes: &types.DocumentAttributes{},
+					Attributes: map[string]interface{}{},
 					Elements: []types.DocElement{
 						&types.List{
 							Items: []*types.ListItem{
@@ -109,7 +109,7 @@ var _ = Describe("List Items", func() {
 				actualContent := "- a first item\n" +
 					"- a second item with *bold content*"
 				expectedDocument := &types.Document{
-					Attributes: &types.DocumentAttributes{},
+					Attributes: map[string]interface{}{},
 					Elements: []types.DocElement{
 						&types.List{
 							Items: []*types.ListItem{
@@ -154,7 +154,7 @@ var _ = Describe("List Items", func() {
 					"\n" +
 					"* a second item with *bold content*"
 				expectedDocument := &types.Document{
-					Attributes: &types.DocumentAttributes{},
+					Attributes: map[string]interface{}{},
 					Elements: []types.DocElement{
 						&types.List{
 							Items: []*types.ListItem{
@@ -199,7 +199,7 @@ var _ = Describe("List Items", func() {
 					"* item 2\n" +
 					"on 2 lines, too."
 				expectedDocument := &types.Document{
-					Attributes: &types.DocumentAttributes{},
+					Attributes: map[string]interface{}{},
 					Elements: []types.DocElement{
 						&types.List{
 							Items: []*types.ListItem{
@@ -250,7 +250,7 @@ var _ = Describe("List Items", func() {
 					"\n" +
 					"* an item in the second list"
 				expectedDocument := &types.Document{
-					Attributes: &types.DocumentAttributes{},
+					Attributes: map[string]interface{}{},
 					Elements: []types.DocElement{
 						&types.List{
 							Items: []*types.ListItem{
@@ -303,7 +303,7 @@ var _ = Describe("List Items", func() {
 					"* item 2\n" +
 					"** item 2.1\n"
 				expectedDocument := &types.Document{
-					Attributes: &types.DocumentAttributes{},
+					Attributes: map[string]interface{}{},
 					Elements: []types.DocElement{
 						&types.List{
 							Items: []*types.ListItem{
@@ -432,7 +432,7 @@ var _ = Describe("List Items", func() {
 					"** item 1.2\n" +
 					"* item 2"
 				expectedDocument := &types.Document{
-					Attributes: &types.DocumentAttributes{},
+					Attributes: map[string]interface{}{},
 					Elements: []types.DocElement{
 						&types.List{
 							Items: []*types.ListItem{
@@ -514,7 +514,7 @@ var _ = Describe("List Items", func() {
 			It("invalid list item", func() {
 				actualContent := "*an invalid list item"
 				expectedDocument := &types.Document{
-					Attributes: &types.DocumentAttributes{},
+					Attributes: map[string]interface{}{},
 					Elements: []types.DocElement{
 						&types.Paragraph{
 							Lines: []*types.InlineContent{

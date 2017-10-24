@@ -1,10 +1,14 @@
 hash: 3a7a6660aa022e0847683a59e6553c85cee1cd88d9aec5d90896d11a1ce7f5b5
-updated: 2017-09-22T15:13:53.6579306+02:00
+updated: 2017-10-16T09:19:56.63025179+02:00
 imports:
+- name: github.com/davecgh/go-spew
+  version: 6d212800a42e8ab5c146b8ace3490ee17e5225f9
+  subpackages:
+  - spew
 - name: github.com/go-test/deep
   version: f49763a6ea0a91026be26f8213bebee726b4185f
 - name: github.com/mna/pigeon
-  version: 7397997f31ddb24949618f11bab1588199703721
+  version: 0e50ca5df1bdf6740f6780e5ed926f5973a44ddc
 - name: github.com/onsi/ginkgo
   version: 9eda700730cba42af70d53180f9dcce9266bc2bc
   subpackages:
@@ -51,7 +55,7 @@ imports:
   - assert
   - require
 - name: golang.org/x/crypto
-  version: eb71ad9bd329b5ac0fd0148dd99bd62e8be8e035
+  version: 81e90905daefcd6fd217b62423c0908922eadb30
   subpackages:
   - ssh/terminal
 - name: golang.org/x/sys
@@ -81,10 +85,6 @@ imports:
 - name: gopkg.in/yaml.v2
   version: a5b47d31c556af34a302ce5d659e6fea44d90de0
 testImports:
-- name: github.com/davecgh/go-spew
-  version: 6d212800a42e8ab5c146b8ace3490ee17e5225f9
-  subpackages:
-  - spew
 - name: github.com/pmezard/go-difflib
   version: d8ed2627bdf02c080bf22230dbb337003b7aba2d
   subpackages:

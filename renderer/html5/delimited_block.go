@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"html/template"
 
-	asciidoc "github.com/bytesparadise/libasciidoc/context"
+	"github.com/bytesparadise/libasciidoc/renderer"
 	"github.com/bytesparadise/libasciidoc/types"
 	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
@@ -21,7 +21,7 @@ func init() {
 </div>`)
 }
 
-func renderDelimitedBlock(ctx asciidoc.Context, block types.DelimitedBlock) ([]byte, error) {
+func renderDelimitedBlock(ctx *renderer.Context, block types.DelimitedBlock) ([]byte, error) {
 	log.Debugf("rendering delimited block with content: %s", block.Content)
 	result := bytes.NewBuffer(nil)
 	tmpl, err := selectDelimitedBlockTemplate(block)

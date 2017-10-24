@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"html/template"
 
-	asciidoc "github.com/bytesparadise/libasciidoc/context"
+	"github.com/bytesparadise/libasciidoc/renderer"
 	"github.com/bytesparadise/libasciidoc/types"
 	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
@@ -30,7 +30,7 @@ func init() {
 	listItemContentTmpl = newHTMLTemplate("list item content", `<p>{{.}}</p>`)
 }
 
-func renderList(ctx asciidoc.Context, list types.List) ([]byte, error) {
+func renderList(ctx *renderer.Context, list types.List) ([]byte, error) {
 	renderedElementsBuff := bytes.NewBuffer(nil)
 	for i, item := range list.Items {
 		renderedListItem, err := renderListItem(ctx, *item)
@@ -59,7 +59,7 @@ func renderList(ctx asciidoc.Context, list types.List) ([]byte, error) {
 	return result.Bytes(), nil
 }
 
-func renderListItem(ctx asciidoc.Context, item types.ListItem) ([]byte, error) {
+func renderListItem(ctx *renderer.Context, item types.ListItem) ([]byte, error) {
 	renderedItemContent, err := renderListItemContent(ctx, *item.Content)
 	if err != nil {
 		return nil, errors.Wrapf(err, "unable to render list item")
@@ -88,7 +88,7 @@ func renderListItem(ctx asciidoc.Context, item types.ListItem) ([]byte, error) {
 	return result.Bytes(), nil
 }
 
-func renderListItemContent(ctx asciidoc.Context, content types.ListItemContent) ([]byte, error) {
+func renderListItemContent(ctx *renderer.Context, content types.ListItemContent) ([]byte, error) {
 	renderedLinesBuff := bytes.NewBuffer(nil)
 	for _, line := range content.Lines {
 		renderedLine, err := renderInlineContent(ctx, *line)

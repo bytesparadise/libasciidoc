@@ -32,7 +32,7 @@ var _ = Describe("Rendering documents in HTML", func() {
 			verifyDocumentBody(GinkgoT(), &expectedTitle, expectedContent, source)
 		})
 
-		It("section levels 1 and 2", func() {
+		It("section levels 0 and 1", func() {
 			source := `= a document title
 
 == Section A
@@ -50,7 +50,7 @@ a paragraph with *bold content*`
 			verifyDocumentBody(GinkgoT(), &expectedTitle, expectedContent, source)
 		})
 
-		It("section level 2", func() {
+		It("section level 1 with a paragraph", func() {
 			source := `== Section A
 
 a paragraph with *bold content*`
@@ -65,14 +65,14 @@ a paragraph with *bold content*`
 			verifyDocumentBody(GinkgoT(), nil, expectedContent, source)
 		})
 
-		It("section levels 1, 2 and 3", func() {
+		It("section levels 0, 1 and 3", func() {
 			source := `= a document title
 
 == Section A
 
 a paragraph with *bold content*
 
-=== Section A.a
+==== Section A.a.a
 
 a paragraph`
 			expectedTitle := "a document title"
@@ -82,8 +82,8 @@ a paragraph`
 <div class="paragraph">
 <p>a paragraph with <strong>bold content</strong></p>
 </div>
-<div class="sect2">
-<h3 id="_section_a_a">Section A.a</h3>
+<div class="sect3">
+<h4 id="_section_a_a_a">Section A.a.a</h4>
 <div class="paragraph">
 <p>a paragraph</p>
 </div>
@@ -136,10 +136,10 @@ a paragraph with _italic content_`
 
 	Context("Complete Document ", func() {
 
-		It("section levels 1 and 2", func() {
+		It("section levels 0 and 5", func() {
 			source := `= a document title
 
-== Section A
+====== Section A
 
 a paragraph with *bold content*`
 			expectedContent := `<!DOCTYPE html>
@@ -155,12 +155,10 @@ a paragraph with *bold content*`
 <h1>a document title</h1>
 </div>
 <div id="content">
-<div class="sect1">
-<h2 id="_section_a">Section A</h2>
-<div class="sectionbody">
+<div class="sect5">
+<h6 id="_section_a">Section A</h6>
 <div class="paragraph">
 <p>a paragraph with <strong>bold content</strong></p>
-</div>
 </div>
 </div>
 </div>
@@ -201,16 +199,14 @@ func verifyCompleteDocument(t GinkgoTInterface, expectedContent, source string) 
 	t.Logf("processing '%s'", source)
 	sourceReader := strings.NewReader(source)
 	resultWriter := bytes.NewBuffer(nil)
-	options := renderer.Options{}
-	options[renderer.LastUpdated] = time.Now()
-	err := ConvertToHTML(context.Background(), sourceReader, resultWriter, options)
+	lastUpdated := time.Now()
+	err := ConvertToHTML(context.Background(), sourceReader, resultWriter, renderer.LastUpdated(lastUpdated))
 	require.Nil(t, err, "Error found while parsing the document")
 	t.Log("Done processing document")
-	result := string(resultWriter.Bytes())
+	result := resultWriter.String()
 	t.Logf("** Actual output:\n`%s`\n", result)
-	lastUpdated, err := options.LastUpdated()
 	require.Nil(t, err)
-	expectedContent = strings.Replace(expectedContent, "{{.LastUpdated}}", *lastUpdated, 1)
+	expectedContent = strings.Replace(expectedContent, "{{.LastUpdated}}", lastUpdated.Format(renderer.LastUpdatedFormat), 1)
 	t.Logf("** expectedContent output:\n`%s`\n", expectedContent)
 	assert.Equal(t, expectedContent, result)
 }

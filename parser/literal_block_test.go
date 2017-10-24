@@ -12,7 +12,7 @@ var _ = Describe("Literal Blocks", func() {
 		It("literal block from 1-line paragraph with single space", func() {
 			actualContent := ` some literal content`
 			expectedDocument := &types.Document{
-				Attributes: &types.DocumentAttributes{},
+				Attributes: map[string]interface{}{},
 				Elements: []types.DocElement{
 					&types.LiteralBlock{
 						Content: " some literal content",
@@ -26,7 +26,7 @@ var _ = Describe("Literal Blocks", func() {
 			actualContent := ` some literal content
 on 2 lines.`
 			expectedDocument := &types.Document{
-				Attributes: &types.DocumentAttributes{},
+				Attributes: map[string]interface{}{},
 				Elements: []types.DocElement{
 					&types.LiteralBlock{
 						Content: " some literal content\non 2 lines.",
@@ -41,7 +41,7 @@ on 2 lines.`
 
 a normal paragraph.`
 			expectedDocument := &types.Document{
-				Attributes: &types.DocumentAttributes{},
+				Attributes: map[string]interface{}{},
 				Elements: []types.DocElement{
 					&types.LiteralBlock{
 						Content: "   some literal content",
@@ -69,7 +69,7 @@ some literal content
 ....
 a normal paragraph.`
 			expectedDocument := &types.Document{
-				Attributes: &types.DocumentAttributes{},
+				Attributes: map[string]interface{}{},
 				Elements: []types.DocElement{
 					&types.LiteralBlock{
 						Content: "some literal content",
@@ -98,7 +98,7 @@ some literal content
 
 a normal paragraph.`
 			expectedDocument := &types.Document{
-				Attributes: &types.DocumentAttributes{},
+				Attributes: map[string]interface{}{},
 				Elements: []types.DocElement{
 					&types.LiteralBlock{
 						Content: "some literal content",

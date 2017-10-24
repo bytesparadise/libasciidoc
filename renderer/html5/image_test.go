@@ -44,7 +44,7 @@ var _ = Describe("Rendering Images", func() {
 			<div class="content">
 			<a class="image" href="http://foo.bar"><img src="images/foo.png" alt="the foo.png image" width="600" height="400"></a>
 			</div>
-			<div class="title">A title to foobar</div>
+			<div class="doctitle">A title to foobar</div>
 			</div>`
 			verify(GinkgoT(), expected, content)
 		})

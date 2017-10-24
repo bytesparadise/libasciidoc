@@ -5,6 +5,7 @@ import (
 
 	. "github.com/bytesparadise/libasciidoc/parser"
 	"github.com/bytesparadise/libasciidoc/types"
+	"github.com/davecgh/go-spew/spew"
 	. "github.com/onsi/ginkgo"
 	log "github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/assert"
@@ -13,54 +14,39 @@ import (
 
 var _ = Describe("Parsing content", func() {
 
-	It("heading section inline with bold quote", func() {
+	It("header section inline with bold quote", func() {
 
-		actualContent := "= a heading\n" +
+		actualContent := "= a header\n" +
 			"\n" +
 			"== section 1\n" +
 			"\n" +
 			"a paragraph with *bold content*"
 		expectedDocument := &types.Document{
-			Attributes: &types.DocumentAttributes{
-				"title": "a heading",
+			Attributes: map[string]interface{}{
+				"doctitle": "a header",
 			},
 			Elements: []types.DocElement{
 				&types.Section{
-					Heading: types.Heading{
-						Level: 1,
+					Level: 1,
+					SectionTitle: types.SectionTitle{
 						Content: &types.InlineContent{
 							Elements: []types.InlineElement{
-								&types.StringElement{Content: "a heading"},
+								&types.StringElement{Content: "section 1"},
 							},
 						},
 						ID: &types.ElementID{
-							Value: "_a_heading",
+							Value: "_section_1",
 						},
 					},
 					Elements: []types.DocElement{
-						&types.Section{
-							Heading: types.Heading{
-								Level: 2,
-								Content: &types.InlineContent{
+						&types.Paragraph{
+							Lines: []*types.InlineContent{
+								&types.InlineContent{
 									Elements: []types.InlineElement{
-										&types.StringElement{Content: "section 1"},
-									},
-								},
-								ID: &types.ElementID{
-									Value: "_section_1",
-								},
-							},
-							Elements: []types.DocElement{
-								&types.Paragraph{
-									Lines: []*types.InlineContent{
-										&types.InlineContent{
+										&types.StringElement{Content: "a paragraph with "},
+										&types.QuotedText{Kind: types.Bold,
 											Elements: []types.InlineElement{
-												&types.StringElement{Content: "a paragraph with "},
-												&types.QuotedText{Kind: types.Bold,
-													Elements: []types.InlineElement{
-														&types.StringElement{Content: "bold content"},
-													},
-												},
+												&types.StringElement{Content: "bold content"},
 											},
 										},
 									},
@@ -76,16 +62,15 @@ var _ = Describe("Parsing content", func() {
 
 })
 
-func verify(t GinkgoTInterface, expectedDocument *types.Document, content string) {
+func verify(t GinkgoTInterface, expectedDocument interface{}, content string, options ...Option) {
 	log.Debugf("processing: %s", content)
 	reader := strings.NewReader(content)
-	result, err := ParseReader("", reader) //Debug(true)
+	result, err := ParseReader("", reader, options...) //, Debug(true))
 	if err != nil {
 		log.WithError(err).Error("Error found while parsing the document")
 	}
 	require.Nil(t, err)
-	actualDocument := result.(*types.Document)
-	t.Logf("actual document: `%s`", actualDocument.String(0))
-	t.Logf("expected document: `%s`", expectedDocument.String(0))
-	assert.EqualValues(t, *expectedDocument, *actualDocument)
+	t.Logf("actual document: `%s`", spew.Sdump(result))
+	t.Logf("expected document: `%s`", spew.Sdump(expectedDocument))
+	assert.EqualValues(t, expectedDocument, result)
 }
