@@ -23,7 +23,16 @@ var _ = Describe("Parsing content", func() {
 			"a paragraph with *bold content*"
 		expectedDocument := &types.Document{
 			Attributes: map[string]interface{}{
-				"doctitle": "a header",
+				"doctitle": &types.SectionTitle{
+					Content: &types.InlineContent{
+						Elements: []types.InlineElement{
+							&types.StringElement{Content: "a header"},
+						},
+					},
+					ID: &types.ElementID{
+						Value: "_a_header",
+					},
+				},
 			},
 			Elements: []types.DocElement{
 				&types.Section{

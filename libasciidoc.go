@@ -15,35 +15,35 @@ import (
 // ConvertToHTMLBody converts the content of the given reader `r` into an set of <DIV> elements for an HTML/BODY document.
 // The conversion result is written in the given writer `w`, whereas the document metadata (title, etc.) (or an error if a problem occurred) is returned
 // as the result of the function call.
-func ConvertToHTMLBody(ctx context.Context, r io.Reader, w io.Writer) (types.DocumentAttributes, error) {
+func ConvertToHTMLBody(ctx context.Context, r io.Reader, w io.Writer) (map[string]interface{}, error) {
 	doc, err := parser.ParseReader("", r)
 	if err != nil {
 		return nil, errors.Wrapf(err, "error while parsing the document")
 	}
 	document := doc.(*types.Document)
 	options := []renderer.Option{renderer.IncludeHeaderFooter(false)}
-	err = htmlrenderer.Render(renderer.Wrap(ctx, *document, options...), w)
+	metadata, err := htmlrenderer.Render(renderer.Wrap(ctx, *document, options...), w)
 	if err != nil {
 		return nil, errors.Wrapf(err, "error while rendering the document")
 	}
 	log.Debugf("Done processing document")
-	return document.Attributes, nil
+	return metadata, nil
 }
 
 // ConvertToHTML converts the content of the given reader `r` into a full HTML document, written in the given writer `w`.
 // Returns an error if a problem occurred
-func ConvertToHTML(ctx context.Context, r io.Reader, w io.Writer, options ...renderer.Option) error {
+func ConvertToHTML(ctx context.Context, r io.Reader, w io.Writer, options ...renderer.Option) (map[string]interface{}, error) {
 	doc, err := parser.ParseReader("", r)
 	if err != nil {
-		return errors.Wrapf(err, "error while parsing the document")
+		return nil, errors.Wrapf(err, "error while parsing the document")
 	}
 	document := doc.(*types.Document)
 	// force/override value
 	options = append(options, renderer.IncludeHeaderFooter(true))
-	err = htmlrenderer.Render(renderer.Wrap(ctx, *document, options...), w)
+	metadata, err := htmlrenderer.Render(renderer.Wrap(ctx, *document, options...), w)
 	if err != nil {
-		return errors.Wrapf(err, "error while rendering the document")
+		return nil, errors.Wrapf(err, "error while rendering the document")
 	}
 	log.Debugf("Done processing document")
-	return nil
+	return metadata, nil
 }

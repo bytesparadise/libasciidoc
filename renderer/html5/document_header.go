@@ -55,19 +55,19 @@ Last updated {{.LastUpdated}}
 <span id="email{{.Index}}" class="email"><a href="mailto:{{.Email}}">{{.Email}}</a></span><br>{{ end }}`)
 }
 
-func renderFullDocument(ctx *renderer.Context, output io.Writer) error {
+func renderFullDocument(ctx *renderer.Context, output io.Writer) (*string, error) {
 	log.Debugf("Rendering full document...")
 	// use a temporary writer for the document's content
 	renderedElementsBuff := bytes.NewBuffer(nil)
 	renderElements(ctx, renderedElementsBuff)
 	renderedHTMLElements := htmltemplate.HTML(renderedElementsBuff.String())
-	title := "undefined"
-	if ctx.Document.Attributes.GetTitle() != nil {
-		title = *ctx.Document.Attributes.GetTitle()
+	documentTitle, err := RenderDocumentTitle(ctx)
+	if err != nil {
+		return nil, errors.Wrap(err, "error while rendering the HTML document")
 	}
 	documentDetails, err := renderDocumentDetails(ctx)
 	if err != nil {
-		return errors.Wrap(err, "error while rendering the HTML document")
+		return nil, errors.Wrap(err, "error while rendering the HTML document")
 	}
 	err = documentTmpl.Execute(output, struct {
 		Generator   string
@@ -78,16 +78,32 @@ func renderFullDocument(ctx *renderer.Context, output io.Writer) error {
 		Details     *htmltemplate.HTML
 	}{
 		Generator:   "libasciidoc", // TODO: externalize this value and include the lib version ?
-		Title:       title,
+		Title:       *documentTitle,
 		Content:     renderedHTMLElements,
 		RevNumber:   ctx.Document.Attributes.GetAsString("revnumber"),
 		LastUpdated: ctx.LastUpdated(),
 		Details:     documentDetails,
 	})
 	if err != nil {
-		return errors.Wrap(err, "error while rendering the HTML document")
+		return nil, errors.Wrap(err, "error while rendering the HTML document")
 	}
-	return nil
+	return documentTitle, nil
+}
+
+// RenderDocumentTitle renders the document title
+func RenderDocumentTitle(ctx *renderer.Context) (*string, error) {
+	sectionTitle, err := ctx.Document.Attributes.GetTitle()
+	if err != nil {
+		return nil, errors.Wrapf(err, "unable to render document title")
+	}
+	if sectionTitle != nil {
+		title, err := renderPlainString(ctx, sectionTitle)
+		if err != nil {
+			return nil, errors.Wrapf(err, "unable to render document title")
+		}
+		return title, nil
+	}
+	return nil, nil
 }
 
 func renderDocumentDetails(ctx *renderer.Context) (*htmltemplate.HTML, error) {

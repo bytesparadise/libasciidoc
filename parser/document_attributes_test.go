@@ -16,7 +16,16 @@ var _ = Describe("Parsing Document Attributes", func() {
 This journey begins on a bleary Monday morning.`
 			expectedResult := &types.Document{
 				Attributes: map[string]interface{}{
-					"doctitle": "The Dangerous and Thrilling Documentation Chronicles",
+					"doctitle": &types.SectionTitle{
+						Content: &types.InlineContent{
+							Elements: []types.InlineElement{
+								&types.StringElement{Content: "The Dangerous and Thrilling Documentation Chronicles"},
+							},
+						},
+						ID: &types.ElementID{
+							Value: "_the_dangerous_and_thrilling_documentation_chronicles",
+						},
+					},
 				},
 				Elements: []types.DocElement{
 					&types.Paragraph{
@@ -469,7 +478,16 @@ v1.0, June 19, 2017: First incarnation
 This journey begins on a bleary Monday morning.`
 			expectedResult := &types.Document{
 				Attributes: map[string]interface{}{
-					"doctitle":         "The Dangerous and Thrilling Documentation Chronicles",
+					"doctitle": &types.SectionTitle{
+						Content: &types.InlineContent{
+							Elements: []types.InlineElement{
+								&types.StringElement{Content: "The Dangerous and Thrilling Documentation Chronicles"},
+							},
+						},
+						ID: &types.ElementID{
+							Value: "_the_dangerous_and_thrilling_documentation_chronicles",
+						},
+					},
 					"author":           "Kismet Rainbow Chameleon",
 					"firstname":        "Kismet",
 					"middlename":       "Rainbow",

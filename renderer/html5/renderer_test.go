@@ -11,6 +11,7 @@ import (
 	"github.com/bytesparadise/libasciidoc/types"
 	"github.com/davecgh/go-spew/spew"
 	. "github.com/onsi/ginkgo"
+	"github.com/sergi/go-diff/diffmatchpatch"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -24,7 +25,7 @@ func verify(t GinkgoTInterface, expected, content string, options ...renderer.Op
 	t.Logf("actual document: `%s`", spew.Sdump(actualDocument))
 	rendererCtx := renderer.Wrap(context.Background(), *actualDocument, options...)
 	buff := bytes.NewBuffer(nil)
-	err = html5.Render(rendererCtx, buff)
+	_, err = html5.Render(rendererCtx, buff)
 	t.Log("* Done processing document:")
 	require.Nil(t, err)
 	require.Empty(t, err)
@@ -35,7 +36,9 @@ func verify(t GinkgoTInterface, expected, content string, options ...renderer.Op
 	}
 	t.Logf("** Actual output:\n`%s`\n", result)
 	t.Logf("** Expected output:\n`%s`\n", expected) // remove tabs that can be inserted by VSCode while formatting the tests code
-	assert.Equal(t, expected, result)
+	dmp := diffmatchpatch.New()
+	diffs := dmp.DiffMain(result, expected, true)
+	assert.Equal(t, expected, result, dmp.DiffPrettyText(diffs))
 }
 
 func singleLine(content string) string {

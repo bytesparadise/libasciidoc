@@ -9,15 +9,18 @@ import:
 - package: github.com/pkg/errors
   version: ^0.8.0
 - package: github.com/sirupsen/logrus
+  version: ^1.0.0
   repo: https://github.com/sirupsen/logrus.git
   vcs: git
-  version: ^1.0.0
 - package: github.com/go-test/deep
 - package: golang.org/x/text
   subpackages:
-    - unicode
+  - unicode
 - package: github.com/onsi/ginkgo
   version: ^1.4.0
 - package: github.com/onsi/gomega
   version: ^1.2.0
 - package: gopkg.in/yaml.v2
+- package: github.com/sergi/go-diff
+  subpackages:
+  - diffmatchpatch
