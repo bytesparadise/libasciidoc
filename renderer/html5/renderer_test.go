@@ -16,24 +16,23 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func verify(t GinkgoTInterface, expected, content string, options ...renderer.Option) {
+func verify(t GinkgoTInterface, expected, content string, rendererOpts ...renderer.Option) {
 	t.Logf("processing '%s'", content)
 	reader := strings.NewReader(content)
 	doc, err := parser.ParseReader("", reader)
 	require.Nil(t, err, "Error found while parsing the document")
-	actualDocument := doc.(*types.Document)
-	t.Logf("actual document: `%s`", spew.Sdump(actualDocument))
-	rendererCtx := renderer.Wrap(context.Background(), *actualDocument, options...)
+	t.Logf("actual document: `%s`", spew.Sdump(doc))
 	buff := bytes.NewBuffer(nil)
+	actualDocument := doc.(*types.Document)
+	rendererCtx := renderer.Wrap(context.Background(), *actualDocument, rendererOpts...)
 	_, err = html5.Render(rendererCtx, buff)
-	t.Log("* Done processing document:")
 	require.Nil(t, err)
-	require.Empty(t, err)
-	result := buff.String()
-	expected = strings.Replace(expected, "\t", "", -1)
 	if strings.Contains(expected, "{{.LastUpdated}}") {
 		expected = strings.Replace(expected, "{{.LastUpdated}}", rendererCtx.LastUpdated(), 1)
 	}
+	t.Log("* Done processing document:")
+	result := buff.String()
+	expected = strings.Replace(expected, "\t", "", -1)
 	t.Logf("** Actual output:\n`%s`\n", result)
 	t.Logf("** Expected output:\n`%s`\n", expected) // remove tabs that can be inserted by VSCode while formatting the tests code
 	dmp := diffmatchpatch.New()

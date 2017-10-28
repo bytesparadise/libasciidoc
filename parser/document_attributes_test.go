@@ -519,6 +519,61 @@ This journey begins on a bleary Monday morning.`
 			}
 			verify(GinkgoT(), expectedResult, actualContent)
 		})
+
+		It("header section inline with bold quote", func() {
+
+			actualContent := `= a header
+				
+== section 1
+
+a paragraph with *bold content*`
+			expectedDocument := &types.Document{
+				Attributes: map[string]interface{}{
+					"doctitle": &types.SectionTitle{
+						Content: &types.InlineContent{
+							Elements: []types.InlineElement{
+								&types.StringElement{Content: "a header"},
+							},
+						},
+						ID: &types.ElementID{
+							Value: "_a_header",
+						},
+					},
+				},
+				Elements: []types.DocElement{
+					&types.Section{
+						Level: 1,
+						SectionTitle: types.SectionTitle{
+							Content: &types.InlineContent{
+								Elements: []types.InlineElement{
+									&types.StringElement{Content: "section 1"},
+								},
+							},
+							ID: &types.ElementID{
+								Value: "_section_1",
+							},
+						},
+						Elements: []types.DocElement{
+							&types.Paragraph{
+								Lines: []*types.InlineContent{
+									&types.InlineContent{
+										Elements: []types.InlineElement{
+											&types.StringElement{Content: "a paragraph with "},
+											&types.QuotedText{Kind: types.Bold,
+												Elements: []types.InlineElement{
+													&types.StringElement{Content: "bold content"},
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			}
+			verify(GinkgoT(), expectedDocument, actualContent)
+		})
 	})
 
 	Context("Invalid document attributes", func() {
