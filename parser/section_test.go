@@ -13,7 +13,16 @@ var _ = Describe("Sections", func() {
 			actualContent := "= a header"
 			expectedDocument := &types.Document{
 				Attributes: map[string]interface{}{
-					"doctitle": "a header",
+					"doctitle": &types.SectionTitle{
+						Content: &types.InlineContent{
+							Elements: []types.InlineElement{
+								&types.StringElement{Content: "a header"},
+							},
+						},
+						ID: &types.ElementID{
+							Value: "_a_header",
+						},
+					},
 				},
 				Elements: []types.DocElement{},
 			}
@@ -26,7 +35,16 @@ var _ = Describe("Sections", func() {
 and a paragraph`
 			expectedDocument := &types.Document{
 				Attributes: map[string]interface{}{
-					"doctitle": "a header",
+					"doctitle": &types.SectionTitle{
+						Content: &types.InlineContent{
+							Elements: []types.InlineElement{
+								&types.StringElement{Content: "a header"},
+							},
+						},
+						ID: &types.ElementID{
+							Value: "_a_header",
+						},
+					},
 				},
 				Elements: []types.DocElement{
 					&types.Paragraph{
@@ -101,7 +119,16 @@ and a paragraph`
 == section 1`
 			expectedDocument := &types.Document{
 				Attributes: map[string]interface{}{
-					"doctitle": "a header",
+					"doctitle": &types.SectionTitle{
+						Content: &types.InlineContent{
+							Elements: []types.InlineElement{
+								&types.StringElement{Content: "a header"},
+							},
+						},
+						ID: &types.ElementID{
+							Value: "_a_header",
+						},
+					},
 				}, Elements: []types.DocElement{
 					&types.Section{
 						Level: 1,
@@ -130,7 +157,16 @@ a short preamble
 == section 1`
 			expectedDocument := &types.Document{
 				Attributes: map[string]interface{}{
-					"doctitle": "a header",
+					"doctitle": &types.SectionTitle{
+						Content: &types.InlineContent{
+							Elements: []types.InlineElement{
+								&types.StringElement{Content: "a header"},
+							},
+						},
+						ID: &types.ElementID{
+							Value: "_a_header",
+						},
+					},
 				}, Elements: []types.DocElement{
 					&types.Preamble{
 						Elements: []types.DocElement{
@@ -170,7 +206,16 @@ a short preamble
 				"=== section 2"
 			expectedDocument := &types.Document{
 				Attributes: map[string]interface{}{
-					"doctitle": "a header",
+					"doctitle": &types.SectionTitle{
+						Content: &types.InlineContent{
+							Elements: []types.InlineElement{
+								&types.StringElement{Content: "a header"},
+							},
+						},
+						ID: &types.ElementID{
+							Value: "_a_header",
+						},
+					},
 				},
 				Elements: []types.DocElement{
 					&types.Section{
@@ -295,7 +340,7 @@ and a paragraph`
 		})
 
 		It("section levels 1, 2, 3, 2", func() {
-			actualContent := `= a title
+			actualContent := `= a header
 
 == Section A
 a paragraph
@@ -307,7 +352,16 @@ a paragraph
 a paragraph`
 			expectedDocument := &types.Document{
 				Attributes: map[string]interface{}{
-					"doctitle": "a title",
+					"doctitle": &types.SectionTitle{
+						Content: &types.InlineContent{
+							Elements: []types.InlineElement{
+								&types.StringElement{Content: "a header"},
+							},
+						},
+						ID: &types.ElementID{
+							Value: "_a_header",
+						},
+					},
 				},
 				Elements: []types.DocElement{
 					&types.Section{
@@ -428,7 +482,16 @@ a paragraph`
 				" == section 1"
 			expectedDocument := &types.Document{
 				Attributes: map[string]interface{}{
-					"doctitle": "a header",
+					"doctitle": &types.SectionTitle{
+						Content: &types.InlineContent{
+							Elements: []types.InlineElement{
+								&types.StringElement{Content: "a header"},
+							},
+						},
+						ID: &types.ElementID{
+							Value: "_a_header",
+						},
+					},
 				},
 				Elements: []types.DocElement{
 					&types.LiteralBlock{

@@ -1,10 +1,43 @@
 package html5_test
 
-import . "github.com/onsi/ginkgo"
-import "github.com/bytesparadise/libasciidoc/renderer"
-import "time"
+import (
+	"time"
 
-var _ = Describe("Rendering sections", func() {
+	"github.com/bytesparadise/libasciidoc/renderer"
+	. "github.com/onsi/ginkgo"
+)
+
+var _ = Describe("Rendering header", func() {
+	Context("Header with inline elements in title", func() {
+
+		It("header with quoted text", func() {
+			content := `= The _Dangerous_ and *Thrilling* Documentation Chronicles`
+			expected := `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="libasciidoc">
+<title>The Dangerous and Thrilling Documentation Chronicles</title>
+<body class="article">
+<div id="header">
+<h1>The Dangerous and Thrilling Documentation Chronicles</h1>
+</div>
+<div id="content">
+
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated {{.LastUpdated}}
+</div>
+</div>
+</body>
+</html>`
+			verify(GinkgoT(), expected, content, renderer.IncludeHeaderFooter(true))
+		})
+	})
+
 	Context("Header with attributes", func() {
 
 		It("header with author and revision", func() {
@@ -44,7 +77,6 @@ Last updated {{.LastUpdated}}
 </body>
 </html>`
 			verify(GinkgoT(), expected, content, renderer.IncludeHeaderFooter(true))
-
 		})
 
 		It("header with 2 authors and no revision", func() {

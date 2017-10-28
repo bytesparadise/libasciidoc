@@ -1,6 +1,10 @@
 package types
 
-import "reflect"
+import (
+	"reflect"
+
+	"github.com/pkg/errors"
+)
 
 // DocumentAttributes the document attributes
 type DocumentAttributes map[string]interface{}
@@ -16,12 +20,14 @@ func (m DocumentAttributes) HasAuthors() bool {
 }
 
 // GetTitle retrieves the document title in its metadata, or returns nil if the title was not specified
-func (m DocumentAttributes) GetTitle() *string {
-	if t, ok := m[title]; ok {
-		title := t.(string)
-		return &title
+func (m DocumentAttributes) GetTitle() (*SectionTitle, error) {
+	if t, found := m[title]; found {
+		if t, ok := t.(*SectionTitle); ok {
+			return t, nil
+		}
+		return nil, errors.Errorf("document title type is not valid: %T", t)
 	}
-	return nil
+	return nil, nil
 }
 
 // Add adds the given attribute

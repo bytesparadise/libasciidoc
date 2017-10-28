@@ -1,6 +1,7 @@
 package html5
 
 import (
+	"bytes"
 	"io"
 
 	"github.com/bytesparadise/libasciidoc/renderer"
@@ -10,37 +11,12 @@ import (
 )
 
 // Render renders the given document in HTML and writes the result in the given `writer`
-func Render(ctx *renderer.Context, output io.Writer) error {
-	if ctx.IncludeHeaderFooter() {
-		return renderFullDocument(ctx, output)
-	}
-	return renderElements(ctx, output)
-
-}
-
-func renderElements(ctx *renderer.Context, output io.Writer) error {
-	hasContent := false
-	for _, element := range ctx.Document.Elements {
-		content, err := renderElement(ctx, element)
-		if err != nil {
-			return errors.Wrapf(err, "failed to render the document")
-		}
-		// if there's already some content, we need to insert a `\n` before writing
-		// the rendering output of the current element (if application, ie, not empty)
-		if hasContent && len(content) > 0 {
-			output.Write([]byte("\n"))
-		}
-		// if the element was rendering into 'something' (ie, not enpty result)
-		if len(content) > 0 {
-			output.Write(content)
-			hasContent = true
-		}
-	}
-	return nil
+func Render(ctx *renderer.Context, output io.Writer) (map[string]interface{}, error) {
+	return renderDocument(ctx, output)
 }
 
 func renderElement(ctx *renderer.Context, element types.DocElement) ([]byte, error) {
-	log.Debugf("Rendering element of type %T", element)
+	log.Debugf("rendering element of type %T", element)
 	switch element.(type) {
 	case *types.Section:
 		return renderSection(ctx, *element.(*types.Section))
@@ -75,5 +51,33 @@ func renderElement(ctx *renderer.Context, element types.DocElement) ([]byte, err
 	default:
 		return nil, errors.Errorf("unsupported type of element: %T", element)
 	}
+}
 
+func renderPlainString(ctx *renderer.Context, element types.DocElement) ([]byte, error) {
+	switch element := element.(type) {
+	case *types.SectionTitle:
+		return renderPlainStringForInlineElements(ctx, element.Content.Elements)
+	case *types.QuotedText:
+		return renderPlainStringForInlineElements(ctx, element.Elements)
+	case *types.InlineImage:
+		return []byte(element.Macro.Alt), nil
+	case *types.ExternalLink:
+		return []byte(element.Text), nil
+	case *types.StringElement:
+		return []byte(element.Content), nil
+	default:
+		return nil, errors.Errorf("unexpected type of element to process: %T", element)
+	}
+}
+
+func renderPlainStringForInlineElements(ctx *renderer.Context, elements []types.InlineElement) ([]byte, error) {
+	buff := bytes.NewBuffer(nil)
+	for _, e := range elements {
+		plainStringElement, err := renderPlainString(ctx, e)
+		if err != nil {
+			return nil, errors.Wrap(err, "unable to render plain string value")
+		}
+		buff.Write(plainStringElement)
+	}
+	return buff.Bytes(), nil
 }

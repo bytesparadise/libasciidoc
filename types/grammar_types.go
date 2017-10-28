@@ -1,7 +1,6 @@
 package types
 
 import (
-	"bytes"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -28,7 +27,6 @@ type DocElement interface {
 type InlineElement interface {
 	DocElement
 	Visitable
-	PlainString() string
 }
 
 // Visitable the interface for visitable elements
@@ -91,7 +89,7 @@ type DocumentHeader struct {
 func NewDocumentHeader(header, authors, revision interface{}, otherAttributes []interface{}) (*DocumentHeader, error) {
 	content := DocumentAttributes{}
 	if header != nil {
-		content["doctitle"] = header.(*SectionTitle).PlainString()
+		content["doctitle"] = header.(*SectionTitle)
 	}
 	log.Debugf("Initializing a new DocumentHeader with content '%v', authors '%+v' and revision '%+v'", content, authors, revision)
 	if authors != nil {
@@ -387,11 +385,6 @@ func NewDocumentAttributeReset(name []interface{}) (*DocumentAttributeReset, err
 	return &DocumentAttributeReset{Name: *attrName}, nil
 }
 
-// PlainString implements the InlineElement#PlainString() method
-func (a *DocumentAttributeReset) PlainString() string {
-	return fmt.Sprintf("{%s}'\n", a.Name)
-}
-
 // DocumentAttributeSubstitution the type for DocumentAttributeSubstitution
 type DocumentAttributeSubstitution struct {
 	Name string
@@ -405,11 +398,6 @@ func NewDocumentAttributeSubstitution(name []interface{}) (*DocumentAttributeSub
 	}
 	log.Debugf("Initialized a new DocumentAttributeSubstitution: '%s'", *attrName)
 	return &DocumentAttributeSubstitution{Name: *attrName}, nil
-}
-
-// PlainString implements the InlineElement#PlainString() method
-func (a *DocumentAttributeSubstitution) PlainString() string {
-	return fmt.Sprintf("{%s}'\n", a.Name)
 }
 
 // Accept implements Visitable#Accept(Visitor)
@@ -505,18 +493,6 @@ func NewSectionTitle(inlineContent *InlineContent, attributes []interface{}) (*S
 	sectionTitle := SectionTitle{Content: inlineContent, ID: id}
 	log.Debugf("Initialized a new SectionTitle: %s", spew.Sprint(sectionTitle))
 	return &sectionTitle, nil
-}
-
-// PlainString returns a plain string version of all elements in this SectionTitle's Content, without any rendering
-func (h *SectionTitle) PlainString() string {
-	result := bytes.NewBuffer(nil)
-	for i, element := range h.Content.Elements {
-		result.WriteString(element.PlainString())
-		if i < len(h.Content.Elements)-1 {
-			result.WriteString(" ")
-		}
-	}
-	return result.String()
 }
 
 // ------------------------------------------
@@ -736,11 +712,6 @@ func NewInlineImage(input []byte, imageMacro ImageMacro) (*InlineImage, error) {
 	return &InlineImage{
 		Macro: imageMacro,
 	}, nil
-}
-
-// PlainString implements the InlineElement#PlainString() method
-func (i *InlineImage) PlainString() string {
-	return i.Macro.Alt
 }
 
 // Accept implements Visitable#Accept(Visitor)
@@ -998,11 +969,6 @@ func NewStringElement(content interface{}) *StringElement {
 	return &StringElement{Content: content.(string)}
 }
 
-// PlainString implements the InlineElement#PlainString() method
-func (s *StringElement) PlainString() string {
-	return s.Content
-}
-
 // Accept implements Visitable#Accept(Visitor)
 func (s *StringElement) Accept(v Visitor) error {
 	err := v.BeforeVisit(s)
@@ -1053,18 +1019,6 @@ func NewQuotedText(kind QuotedTextKind, content []interface{}) (*QuotedText, err
 		log.Debugf("- %v (%T)", element, element)
 	}
 	return &QuotedText{Kind: kind, Elements: elements}, nil
-}
-
-// PlainString implements the InlineElement#PlainString() method
-func (t *QuotedText) PlainString() string {
-	result := bytes.NewBuffer(nil)
-	for i, element := range t.Elements {
-		result.WriteString(element.PlainString())
-		if i < len(t.Elements)-1 {
-			result.WriteString(" ")
-		}
-	}
-	return result.String()
 }
 
 // Accept implements Visitable#Accept(Visitor)
@@ -1133,11 +1087,6 @@ func NewExternalLink(url, text []interface{}) (*ExternalLink, error) {
 		return nil, errors.Wrapf(err, "failed to initialize a new ExternalLink element")
 	}
 	return &ExternalLink{URL: *urlStr, Text: *textStr}, nil
-}
-
-// PlainString implements the InlineElement#PlainString() method
-func (l *ExternalLink) PlainString() string {
-	return l.Text
 }
 
 // Accept implements Visitable#Accept(Visitor)

@@ -175,7 +175,7 @@ Last updated {{.LastUpdated}}
 
 })
 
-func verifyDocumentBody(t GinkgoTInterface, expectedTitle *string, expectedContent, source string) {
+func verifyDocumentBody(t GinkgoTInterface, expectedRenderedTitle *string, expectedContent, source string) {
 	t.Logf("processing '%s'", source)
 	sourceReader := strings.NewReader(source)
 	resultWriter := bytes.NewBuffer(nil)
@@ -187,11 +187,13 @@ func verifyDocumentBody(t GinkgoTInterface, expectedTitle *string, expectedConte
 	t.Logf("** Actual output:\n`%s`\n", result)
 	t.Logf("** expectedContent output:\n`%s`\n", expectedContent)
 	assert.Equal(t, expectedContent, result)
-	actualTitle := metadata.GetTitle()
-	if actualTitle == nil {
+	actualTitle := metadata["doctitle"]
+	if expectedRenderedTitle == nil {
 		assert.Nil(t, actualTitle)
 	} else {
-		assert.Equal(t, *expectedTitle, *actualTitle)
+		t.Logf("Actual title: %v", actualTitle)
+		t.Logf("Expected title: %v", *expectedRenderedTitle)
+		assert.Equal(t, *expectedRenderedTitle, actualTitle)
 	}
 }
 
@@ -200,7 +202,7 @@ func verifyCompleteDocument(t GinkgoTInterface, expectedContent, source string) 
 	sourceReader := strings.NewReader(source)
 	resultWriter := bytes.NewBuffer(nil)
 	lastUpdated := time.Now()
-	err := ConvertToHTML(context.Background(), sourceReader, resultWriter, renderer.LastUpdated(lastUpdated))
+	_, err := ConvertToHTML(context.Background(), sourceReader, resultWriter, renderer.LastUpdated(lastUpdated))
 	require.Nil(t, err, "Error found while parsing the document")
 	t.Log("Done processing document")
 	result := resultWriter.String()

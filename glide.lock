@@ -1,5 +1,5 @@
-hash: 3a7a6660aa022e0847683a59e6553c85cee1cd88d9aec5d90896d11a1ce7f5b5
-updated: 2017-10-16T09:19:56.63025179+02:00
+hash: cfba5e638b0bc78f86d3fa35d1d93831e62fc13a0c31b0e57153a21ab291a151
+updated: 2017-10-27T14:02:22.149425+02:00
 imports:
 - name: github.com/davecgh/go-spew
   version: 6d212800a42e8ab5c146b8ace3490ee17e5225f9
@@ -45,6 +45,10 @@ imports:
   - types
 - name: github.com/pkg/errors
   version: 645ef00459ed84a119197bfb8d8205042c6df63d
+- name: github.com/sergi/go-diff
+  version: feef008d51ad2b3778f85d387ccf91735543008d
+  subpackages:
+  - diffmatchpatch
 - name: github.com/sirupsen/logrus
   version: f006c2ac4710855cf0f916dd6b77acf6b048dc6e
   repo: https://github.com/sirupsen/logrus.git

@@ -9,6 +9,7 @@ import (
 	texttemplate "text/template"
 
 	"github.com/bytesparadise/libasciidoc/renderer"
+	"github.com/bytesparadise/libasciidoc/types"
 	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
 )
@@ -55,39 +56,93 @@ Last updated {{.LastUpdated}}
 <span id="email{{.Index}}" class="email"><a href="mailto:{{.Email}}">{{.Email}}</a></span><br>{{ end }}`)
 }
 
-func renderFullDocument(ctx *renderer.Context, output io.Writer) error {
-	log.Debugf("Rendering full document...")
-	// use a temporary writer for the document's content
-	renderedElementsBuff := bytes.NewBuffer(nil)
-	renderElements(ctx, renderedElementsBuff)
-	renderedHTMLElements := htmltemplate.HTML(renderedElementsBuff.String())
-	title := "undefined"
-	if ctx.Document.Attributes.GetTitle() != nil {
-		title = *ctx.Document.Attributes.GetTitle()
-	}
-	documentDetails, err := renderDocumentDetails(ctx)
+func renderDocument(ctx *renderer.Context, output io.Writer) (map[string]interface{}, error) {
+	metadata := make(map[string]interface{})
+	documentTitle, err := ctx.Document.Attributes.GetTitle()
 	if err != nil {
-		return errors.Wrap(err, "error while rendering the HTML document")
+		return nil, errors.Wrapf(err, "unable to render full document")
 	}
-	err = documentTmpl.Execute(output, struct {
-		Generator   string
-		Title       string
-		Content     htmltemplate.HTML
-		RevNumber   *string
-		LastUpdated string
-		Details     *htmltemplate.HTML
-	}{
-		Generator:   "libasciidoc", // TODO: externalize this value and include the lib version ?
-		Title:       title,
-		Content:     renderedHTMLElements,
-		RevNumber:   ctx.Document.Attributes.GetAsString("revnumber"),
-		LastUpdated: ctx.LastUpdated(),
-		Details:     documentDetails,
-	})
+	renderedTitle, err := renderDocumentTitle(ctx, documentTitle)
 	if err != nil {
-		return errors.Wrap(err, "error while rendering the HTML document")
+		return nil, errors.Wrapf(err, "unable to render full document")
+	}
+	if ctx.IncludeHeaderFooter() {
+		log.Debugf("Rendering full document...")
+		// use a temporary writer for the document's content
+		renderedElementsBuff := bytes.NewBuffer(nil)
+		renderElements(ctx, ctx.Document.Elements, renderedElementsBuff)
+		renderedHTMLElements := htmltemplate.HTML(renderedElementsBuff.String())
+		documentDetails, err := renderDocumentDetails(ctx)
+		if err != nil {
+			return nil, errors.Wrapf(err, "unable to render full document")
+		}
+		err = documentTmpl.Execute(output, struct {
+			Generator   string
+			Title       string
+			Content     htmltemplate.HTML
+			RevNumber   *string
+			LastUpdated string
+			Details     *htmltemplate.HTML
+		}{
+			Generator:   "libasciidoc", // TODO: externalize this value and include the lib version ?
+			Title:       string(renderedTitle),
+			Content:     renderedHTMLElements,
+			RevNumber:   ctx.Document.Attributes.GetAsString("revnumber"),
+			LastUpdated: ctx.LastUpdated(),
+			Details:     documentDetails,
+		})
+		if err != nil {
+			return nil, errors.Wrapf(err, "unable to render full document")
+		}
+	} else {
+		err := renderElements(ctx, ctx.Document.Elements, output)
+		if err != nil {
+			return nil, errors.Wrapf(err, "unable to render full document")
+		}
+	}
+	// copy all document attributes, and override the title with its rendered value instead of the `types.Section` struct
+	for k, v := range ctx.Document.Attributes {
+		switch k {
+		case "doctitle":
+			metadata[k] = string(renderedTitle)
+		default:
+			metadata[k] = v
+		}
+	}
+	return metadata, nil
+}
+
+func renderElements(ctx *renderer.Context, elements []types.DocElement, output io.Writer) error {
+	hasContent := false
+	for _, element := range elements {
+		content, err := renderElement(ctx, element)
+		if err != nil {
+			return errors.Wrapf(err, "failed to render the document")
+		}
+		// if there's already some content, we need to insert a `\n` before writing
+		// the rendering output of the current element (if application, ie, not empty)
+		if hasContent && len(content) > 0 {
+			output.Write([]byte("\n"))
+		}
+		// if the element was rendering into 'something' (ie, not enpty result)
+		if len(content) > 0 {
+			output.Write(content)
+			hasContent = true
+		}
 	}
 	return nil
+}
+
+// renderDocumentTitle renders the document title
+func renderDocumentTitle(ctx *renderer.Context, documentTitle *types.SectionTitle) ([]byte, error) {
+	if documentTitle != nil {
+		title, err := renderPlainString(ctx, documentTitle)
+		if err != nil {
+			return nil, errors.Wrapf(err, "unable to render document title")
+		}
+		return title, nil
+	}
+	return nil, nil
 }
 
 func renderDocumentDetails(ctx *renderer.Context) (*htmltemplate.HTML, error) {

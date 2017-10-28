@@ -16,7 +16,16 @@ var _ = Describe("Parsing Document Attributes", func() {
 This journey begins on a bleary Monday morning.`
 			expectedResult := &types.Document{
 				Attributes: map[string]interface{}{
-					"doctitle": "The Dangerous and Thrilling Documentation Chronicles",
+					"doctitle": &types.SectionTitle{
+						Content: &types.InlineContent{
+							Elements: []types.InlineElement{
+								&types.StringElement{Content: "The Dangerous and Thrilling Documentation Chronicles"},
+							},
+						},
+						ID: &types.ElementID{
+							Value: "_the_dangerous_and_thrilling_documentation_chronicles",
+						},
+					},
 				},
 				Elements: []types.DocElement{
 					&types.Paragraph{
@@ -469,7 +478,16 @@ v1.0, June 19, 2017: First incarnation
 This journey begins on a bleary Monday morning.`
 			expectedResult := &types.Document{
 				Attributes: map[string]interface{}{
-					"doctitle":         "The Dangerous and Thrilling Documentation Chronicles",
+					"doctitle": &types.SectionTitle{
+						Content: &types.InlineContent{
+							Elements: []types.InlineElement{
+								&types.StringElement{Content: "The Dangerous and Thrilling Documentation Chronicles"},
+							},
+						},
+						ID: &types.ElementID{
+							Value: "_the_dangerous_and_thrilling_documentation_chronicles",
+						},
+					},
 					"author":           "Kismet Rainbow Chameleon",
 					"firstname":        "Kismet",
 					"middlename":       "Rainbow",
@@ -500,6 +518,61 @@ This journey begins on a bleary Monday morning.`
 				},
 			}
 			verify(GinkgoT(), expectedResult, actualContent)
+		})
+
+		It("header section inline with bold quote", func() {
+
+			actualContent := `= a header
+				
+== section 1
+
+a paragraph with *bold content*`
+			expectedDocument := &types.Document{
+				Attributes: map[string]interface{}{
+					"doctitle": &types.SectionTitle{
+						Content: &types.InlineContent{
+							Elements: []types.InlineElement{
+								&types.StringElement{Content: "a header"},
+							},
+						},
+						ID: &types.ElementID{
+							Value: "_a_header",
+						},
+					},
+				},
+				Elements: []types.DocElement{
+					&types.Section{
+						Level: 1,
+						SectionTitle: types.SectionTitle{
+							Content: &types.InlineContent{
+								Elements: []types.InlineElement{
+									&types.StringElement{Content: "section 1"},
+								},
+							},
+							ID: &types.ElementID{
+								Value: "_section_1",
+							},
+						},
+						Elements: []types.DocElement{
+							&types.Paragraph{
+								Lines: []*types.InlineContent{
+									&types.InlineContent{
+										Elements: []types.InlineElement{
+											&types.StringElement{Content: "a paragraph with "},
+											&types.QuotedText{Kind: types.Bold,
+												Elements: []types.InlineElement{
+													&types.StringElement{Content: "bold content"},
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			}
+			verify(GinkgoT(), expectedDocument, actualContent)
 		})
 	})
 
