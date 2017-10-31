@@ -11,7 +11,7 @@ Don’t get discouraged if you don't get an immediate response, this is a side-p
 
 == Bug triage
 
-* You can help report bugs by filing them https://github.com/bytesparadise/libasciidoc/issues[here]. 
+* You can help report bugs by filling them https://github.com/bytesparadise/libasciidoc/issues[here]. 
 
 * You can help us diagnose and fix existing bugs by asking and providing answers for the following:
 ** Is the bug reproducible as explained?   

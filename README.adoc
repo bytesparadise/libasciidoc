@@ -21,6 +21,9 @@ It is is available under the terms of the https://raw.githubusercontent.com/byte
 * Block images (`image:://`)
 * Element attributes (ID, link and title, when applicable) on block images, paragraphs, lists and sections
 
+
+See the http://LIMITATIONS.adoc[known limitations] page for differences between Asciidoc/Asciidoctor and Libasciidoc.
+
 Further elements will be supported in the future. Feel free to open issues https://github.com/bytesparadise/libasciidoc/issues[here] to help prioritizing the upcoming work.
 
 == Installation
@@ -43,4 +46,4 @@ where the returned `types.DocumentAttributes` object contains the document's tit
 
 == How to contribute
 
-Please refer to the http://CONTRIBUTE.adoc[Contribute] file.
+Please refer to the http://CONTRIBUTE.adoc[Contribute] page.

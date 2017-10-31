@@ -2,7 +2,6 @@ package types
 
 import (
 	"fmt"
-	"os"
 	"path/filepath"
 	"strings"
 
@@ -491,7 +490,10 @@ func NewSectionTitle(inlineContent *InlineContent, attributes []interface{}) (*S
 		id, _ = NewElementID(*replacement)
 	}
 	sectionTitle := SectionTitle{Content: inlineContent, ID: id}
-	log.Debugf("Initialized a new SectionTitle: %s", spew.Sprint(sectionTitle))
+	if log.GetLevel() == log.DebugLevel {
+		log.Debugf("Initialized a new SectionTitle:")
+		spew.Dump(sectionTitle)
+	}
 	return &sectionTitle, nil
 }
 
@@ -648,7 +650,7 @@ func NewInlineContent(text []byte, elements []interface{}) (*InlineContent, erro
 	result := &InlineContent{Elements: mergedInlineElements}
 	if log.GetLevel() == log.DebugLevel {
 		log.Debugf("Initialized a new InlineContent with %d elements:", len(result.Elements))
-		spew.Fdump(os.Stdout, result)
+		spew.Dump(result)
 	}
 	return result, nil
 }
@@ -1014,9 +1016,9 @@ func NewQuotedText(kind QuotedTextKind, content []interface{}) (*QuotedText, err
 	if err != nil {
 		return nil, errors.Wrapf(err, "unable to initialize a new QuotedText")
 	}
-	log.Debugf("Initializing a new QuotedText with %d elements:", len(elements))
-	for _, element := range elements {
-		log.Debugf("- %v (%T)", element, element)
+	if log.GetLevel() == log.DebugLevel {
+		log.Debugf("Initialized a new QuotedText with %d elements:", len(elements))
+		spew.Dump(elements)
 	}
 	return &QuotedText{Kind: kind, Elements: elements}, nil
 }
