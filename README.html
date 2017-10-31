@@ -1,0 +1,110 @@
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p><span class="image"><a class="image" href="https://travis-ci.org/bytesparadise/libasciidoc"><img src="https://travis-ci.org/bytesparadise/libasciidoc.svg?branch=master" alt="Build Status"></a></span>
+<span class="image"><a class="image" href="https://codecov.io/gh/bytesparadise/libasciidoc"><img src="https://codecov.io/gh/bytesparadise/libasciidoc/branch/master/graph/badge.svg" alt="Codecov"></a></span>
+<span class="image"><a class="image" href="https://opensource.org/licenses/Apache-2.0"><img src="https://img.shields.io/badge/License-Apache%202.0-blue.svg" alt="License"></a></span></p>
+</div>
+<div class="paragraph">
+<p>Libasciidoc is an open source Go library that converts Asciidoc content into HTML (other output formats may be supported in the future).
+It is is available under the terms of the <a href="https://raw.githubusercontent.com/bytesparadise/libasciidoc/LICENSE">Apache License 2.0</a>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_supported_syntax">Supported syntax</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p>Title and Sections (level 1 to 6)</p>
+</li>
+<li>
+<p>Document attribute declaration (after the title and within the rest of the document) and substitution</p>
+</li>
+<li>
+<p>Paragraphs</p>
+</li>
+<li>
+<p>Delimited Source Blocks (using the ``` delimiter, a.k.a "fences")</p>
+</li>
+<li>
+<p>Literal blocks (paragraph starting with a space, with the "&#8230;&#8203;." delimiter or with the <code>[literal]</code> attribute)</p>
+</li>
+<li>
+<p>Quoted text (bold, <em>italic</em> and <code>monospace</code>)</p>
+</li>
+<li>
+<p>Unordered lists, using the <code>-</code> marker for simple lists, or the <code>*</code> marker for nested lists (and <code>**</code>, <code>***</code>, etc. for the sublists) .</p>
+</li>
+<li>
+<p>External links in paragraphs (<code>https://</code>, <code>http://</code>, <code>ftp://</code>, <code>irc://</code>, <code>mailto:</code>)</p>
+</li>
+<li>
+<p>Inline images in paragraphs (<code>image://</code>)</p>
+</li>
+<li>
+<p>Block images (<code>image:://</code>)</p>
+</li>
+<li>
+<p>Element attributes (ID, link and title, when applicable) on block images, paragraphs, lists and sections</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>See the <a href="http://LIMITATIONS.adoc">known limitations</a> document for differences between Asciidoc/Asciidoctor and Libasciidoc.</p>
+</div>
+<div class="paragraph">
+<p>Further elements will be supported in the future. Feel free to open issues <a href="https://github.com/bytesparadise/libasciidoc/issues">here</a> to help prioritizing the upcoming work.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_installation">Installation</h2>
+<div class="sectionbody">
+<div class="literalblock">
+<div class="content">
+<pre>$ go get -u github.com/bytesparadise/libasciidoc</pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_usage">Usage</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Libasciidoc provides 2 functions to convert an Asciidoc content into HTML:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Converting to a complete HTML document:</p>
+<div class="literalblock">
+<div class="content">
+<pre>func ConvertToHTML(context.Context, io.Reader, io.Writer, renderer.Options) error</pre>
+</div>
+</div>
+</li>
+<li>
+<p>Converting to a <code>body</code> element only:</p>
+<div class="literalblock">
+<div class="content">
+<pre>func ConvertToHTMLBody(context.Context, io.Reader, io.Writer) (*types.DocumentAttributes, error)</pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>where the returned <code>types.DocumentAttributes</code> object contains the document&#8217;s title (which is not rendered in the HTML&#8217;s body) and its other attributes.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_how_to_contribute">How to contribute</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Please refer to the <a href="http://CONTRIBUTE.adoc">Contribute</a> file.</p>
+</div>
+</div>
+</div>

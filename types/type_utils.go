@@ -51,31 +51,6 @@ func filterUnrelevantElements(blocks []interface{}) []DocElement {
 	return elements // exclude allocated nil values
 }
 
-// // convertBlocksToDocElements converts the given blocks to DocElement and exclude `BlankLine`
-// func convertBlocksToDocElements(blocks []interface{}) []DocElement {
-// 	log.Debugf("Converting %d blocks into DocElements...", len(blocks))
-// 	elements := make([]DocElement, 0)
-// 	for _, block := range blocks {
-// 		log.Debugf(" converting block of type '%T' into a DocElement...", block)
-// 		if b, ok := block.(DocElement); ok {
-// 			if preamble, ok := b.(*Preamble); ok {
-// 				// exclude empty preambles
-// 				if len(preamble.Elements) > 0 {
-// 					// exclude empty preamble
-// 					elements = append(elements, b)
-// 				}
-// 			} else if _, ok := b.(*BlankLine); !ok {
-// 				// exclude blank lines from here, we won't need them in the rendering anyways
-// 				elements = append(elements, b)
-// 			}
-// 		} else if block, ok := block.([]interface{}); ok {
-// 			result := convertBlocksToDocElements(block)
-// 			elements = append(elements, result...)
-// 		}
-// 	}
-// 	return elements // exclude allocated nil values
-// }
-
 func merge(elements []interface{}, extraElements ...interface{}) []interface{} {
 	result := make([]interface{}, 0)
 	allElements := append(elements, extraElements...)
@@ -130,11 +105,12 @@ func appendBuffer(elements []interface{}, buff *bytes.Buffer) ([]interface{}, *b
 	return elements, buff
 }
 
-type StringifyFuncs func(s string) (string, error)
+// StringifyOption a function to apply on the result of the `Stringify` function below, before returning
+type StringifyOption func(s string) (string, error)
 
 //Stringify convert the given elements into a string, then applies the optional `funcs` to convert the string before returning it.
 // These StringifyFuncs can be used to trim the content, for example
-func Stringify(elements []interface{}, funcs ...StringifyFuncs) (*string, error) {
+func Stringify(elements []interface{}, options ...StringifyOption) (*string, error) {
 	mergedElements := merge(elements)
 	b := make([]byte, 0)
 	buff := bytes.NewBuffer(b)
@@ -167,7 +143,7 @@ func Stringify(elements []interface{}, funcs ...StringifyFuncs) (*string, error)
 
 	}
 	result := buff.String()
-	for _, f := range funcs {
+	for _, f := range options {
 		var err error
 		result, err = f(result)
 		if err != nil {

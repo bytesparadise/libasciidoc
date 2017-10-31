@@ -110,7 +110,7 @@ DocumentAttributeSubstitution <- "{" name:(AttributeName) "}" {
 
 // AttributeName must be at least one character long, 
 // must begin with a word character (A-Z, a-z, 0-9 or _) and 
-// must only contain word characters and hyphens ('-').
+// must only contain word characters and hyphens ("-").
 AttributeName <- ([A-Z] / [a-z] / [0-9] / "_") ([A-Z] / [a-z] / [0-9] / "-")*
 
 // ------------------------------------------
@@ -194,11 +194,11 @@ List <- attributes:(ElementAttribute)*
     return types.NewList(elements.([]interface{}), attributes.([]interface{}))
 }
 
-ListItem <- WS* level:('*'+ / '-') WS+ content:(ListItemContent) {
+ListItem <- WS* level:("*"+ / "-") WS+ content:(ListItemContent) {
     return types.NewListItem(level, content.(*types.ListItemContent), nil)
 }
 
-ListItemContent <- lines:(!(WS* ('*'+ / '-') WS+) InlineContent EOL)+ { 
+ListItemContent <- lines:(!(WS* ("*"+ / "-") WS+) InlineContent EOL)+ { 
     return types.NewListItemContent(c.text, lines.([]interface{}))
 } 
 // ------------------------------------------
@@ -212,7 +212,7 @@ Paragraph <- attributes:(ElementAttribute)* !("="+ WS+) lines:(InlineContent EOL
 
 // an inline content element may start with and end with spaces, 
 // but it must contain at least an inline element (image, quoted text, external link, document attribute substitution, word, etc.)
-InlineContent <- !FencedBlockDelimiter elements:(WS* InlineElement WS*)+ &EOL { // needs an 'EOL' but does not consume it here.
+InlineContent <- !FencedBlockDelimiter elements:(WS* InlineElement WS*)+ &EOL { // needs an "EOL" but does not consume it here.
     return types.NewInlineContent(c.text, elements.([]interface{}))
 } 
 
@@ -223,29 +223,68 @@ InlineElement <- InlineImage / QuotedText / ExternalLink / DocumentAttributeSubs
 // ------------------------------------------
 QuotedText <- BoldText / ItalicText / MonospaceText
 
-BoldText <- '*' content:(QuotedTextContent) '*' {
+BoldText <- BoldTextDoublePunctuation / BoldTextUnbalancedPunctuation / BoldTextSimplePunctuation // double punctuation must be evaluated first
+
+BoldTextSimplePunctuation <- "*" content:(QuotedTextContent) "*" {
     return types.NewQuotedText(types.Bold, content.([]interface{}))
 }
 
-ItalicText <- '_' content:(QuotedTextContent) '_' {
+BoldTextDoublePunctuation <- "**" content:(QuotedTextContent) "**" {
+    return types.NewQuotedText(types.Bold, content.([]interface{}))
+}
+
+BoldTextUnbalancedPunctuation <- "**" content:(QuotedTextContent) "*" { // unbalanced `**` vs `*` punctuation
+    result := append([]interface{}{"*"}, content.([]interface{}))
+    return types.NewQuotedText(types.Bold, result)
+}
+
+ItalicText <- ItalicTextDoublePunctuation / ItalicTextUnbalancedPunctuation / ItalicTextSimplePunctuation
+
+ItalicTextSimplePunctuation <- "_" content:(QuotedTextContent) "_" {
     return types.NewQuotedText(types.Italic, content.([]interface{}))
 }
 
-MonospaceText <- '`' content:(QuotedTextContent) '`' {
+ItalicTextDoublePunctuation <- "__" content:(QuotedTextContent) "__" {
+    return types.NewQuotedText(types.Italic, content.([]interface{}))
+}
+
+ItalicTextUnbalancedPunctuation <- "__" content:(QuotedTextContent) "_" { // unbalanced `**` vs `*` punctuation
+    result := append([]interface{}{"_"}, content.([]interface{}))
+    return types.NewQuotedText(types.Italic, result)
+}
+
+MonospaceText <- MonospaceTextDoublePunctuation / MonospaceTextUnbalancedPunctuation / MonospaceTextSimplePunctuation
+
+MonospaceTextSimplePunctuation <- "`" content:(QuotedTextContent) "`" {
     return types.NewQuotedText(types.Monospace, content.([]interface{}))
+}
+
+MonospaceTextDoublePunctuation <- "``" content:(QuotedTextContent) "``" {
+    return types.NewQuotedText(types.Monospace, content.([]interface{}))
+}
+
+MonospaceTextUnbalancedPunctuation <- "``" content:(QuotedTextContent) "`" { // unbalanced `**` vs `*` punctuation
+    result := append([]interface{}{"`"}, content.([]interface{}))
+    return types.NewQuotedText(types.Monospace, result)
 }
 
 QuotedTextContent <- QuotedTextContentElement (WS+ QuotedTextContentElement)*
 
-QuotedTextContentElement <- QuotedText / QuotedTextContentWord / InvalidQuotedTextContentWord
+QuotedTextContentElement <- QuotedText / QuotedTextWord / WordWithQuotePunctuation // word with quote punctuation is only accepted if nothing matched before, so we have a chance to stop
 
-QuotedTextContentWord <- (!NEWLINE !WS !'*' !'_' !'`' .)+ // cannot have '*', '_' or '`' within
-InvalidQuotedTextContentWord <- (!NEWLINE !WS  .)+ // can have '*', '_' or '`' within, maybe because the user made an error (extra or missing space, for example)
+QuotedTextWord <- (!NEWLINE !WS !"*" !"_" !"`" .)+ // cannot have "*", "_" or "`" within
+WordWithQuotePunctuation <- (!NEWLINE !WS  .)+ { // can have "*", "_" or "`" within, maybe because the user inserted another quote, or made an error (extra or missing space, for example)
+    return c.text, nil
+}
+
+// make sure unbalanced punctuation for quoted text is treated accordingly
+UnbalancedQuotePunctuation <- "*" / "_" / "`"
+
 
 // ------------------------------------------
 // Links
 // ------------------------------------------
-ExternalLink <- url:(URL_SCHEME URL) text:('[' (URL_TEXT)* ']')? {
+ExternalLink <- url:(URL_SCHEME URL) text:("[" (URL_TEXT)* "]")? {
     if text != nil {
         return types.NewExternalLink(url.([]interface{}), text.([]interface{}))
     }
@@ -260,7 +299,7 @@ BlockImage <- attributes:(ElementAttribute)* image:BlockImageMacro  WS* EOL {
     return types.NewBlockImage(c.text, *image.(*types.ImageMacro), attributes.([]interface{}))
 }
 
-BlockImageMacro <- "image::" path:(URL) '[' attributes:(URL_TEXT?) ']' {
+BlockImageMacro <- "image::" path:(URL) "[" attributes:(URL_TEXT?) "]" {
     return types.NewImageMacro(c.text, path.(string), attributes)
 }
 
@@ -269,7 +308,7 @@ InlineImage <- image:InlineImageMacro {
     return types.NewInlineImage(c.text, *image.(*types.ImageMacro))
 }
 
-InlineImageMacro <- "image:" !":" path:(URL) '[' attributes:(URL_TEXT?) ']' {
+InlineImageMacro <- "image:" !":" path:(URL) "[" attributes:(URL_TEXT?) "]" {
     return types.NewImageMacro(c.text, path.(string), attributes)
 }
 
@@ -293,7 +332,6 @@ LiteralBlock <- ParagraphWithSpaces / ParagraphWithLiteralBlockDelimiter / Parag
 
 // paragraph indented with one or more spaces on the first line
 ParagraphWithSpaces <- spaces:(WS+) !NEWLINE content:(LiteralBlockContent) EndOfLiteralBlock {
-    // fmt.Printf("matching LiteralBlock with raw content=`%v`\n", content)
     return types.NewLiteralBlock(spaces.([]interface{}), content.([]interface{}))
 }
 
@@ -328,12 +366,12 @@ ElementLink <- "[" WS* "link" WS* "=" WS* path:URL WS* "]" EOL {
 }
 
 // an id attached to an element, such as a BlockImage
-ElementID <- "[" WS* '#' id:(ID) WS* "]" EOL {
+ElementID <- "[" WS* "#" id:(ID) WS* "]" EOL {
     return types.NewElementID(id.(string))
 }
 
 // a title attached to an element, such as a BlockImage (
-// a title starts with a single '.' followed by the value, without space in-between
+// a title starts with a single "." followed by the value, without space in-between
 ElementTitle <- "." !"." !WS title:(!NEWLINE .)+ EOL {
     return types.NewElementTitle(title.([]interface{}))
 }
@@ -349,15 +387,15 @@ BlankLine <- !EOF WS* EOL {
     return types.NewBlankLine()
 }
 
-URL <- (!NEWLINE !WS !'[' !']' .)+ {
+URL <- (!NEWLINE !WS !"[" !"]" .)+ {
     return string(c.text), nil
 }
 
-ID <- (!NEWLINE !WS !'[' !']' .)+ {
+ID <- (!NEWLINE !WS !"[" !"]" .)+ {
     return string(c.text), nil
 }
 
-URL_TEXT <- (!NEWLINE !'[' !']' .)+ {
+URL_TEXT <- (!NEWLINE !"[" !"]" .)+ {
     return string(c.text), nil
 }
 
@@ -367,7 +405,7 @@ DIGIT    <- [0-9]
 
 NEWLINE  <- "\r\n" / "\r" / "\n"
 
-WS       <- ' ' / '\t' {
+WS       <- " " / "\t" {
         return string(c.text), nil
 }
 
