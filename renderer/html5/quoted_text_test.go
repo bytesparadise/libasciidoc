@@ -99,4 +99,25 @@ var _ = Describe("Rendering Quoted Texts", func() {
 			verify(GinkgoT(), expected, content)
 		})
 	})
+
+	Context("Prevented substitution", func() {
+
+		It("esacped bold content in sentence", func() {
+			content := "some \\*bold content*."
+			expected := `<div class="paragraph">
+<p>some *bold content*.</p>
+</div>`
+			verify(GinkgoT(), expected, content)
+		})
+
+		It("italic content within escaped bold quote in sentence", func() {
+			content := "some \\*bold and _italic content_* together."
+			expected := `<div class="paragraph">
+<p>some *bold and <em>italic content</em>* together.</p>
+</div>`
+			verify(GinkgoT(), expected, content)
+		})
+
+	})
+
 })

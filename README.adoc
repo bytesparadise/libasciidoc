@@ -12,10 +12,10 @@ It is is available under the terms of the https://raw.githubusercontent.com/byte
 * Title and Sections (level 1 to 6)
 * Document attribute declaration (after the title and within the rest of the document) and substitution
 * Paragraphs
-* Delimited Source Blocks (using the \``` delimiter, a.k.a "fences")
+* Delimited Source Blocks (using the `+++```+++` delimiter, a.k.a "fences")
 * Literal blocks (paragraph starting with a space, with the "...." delimiter or with the `[literal]` attribute)
-* Quoted text (+bold+, _italic_ and `monospace`)
-* Unordered lists, using the `-` marker for simple lists, or the `\*` marker for nested lists (and `\**`, `\***`, etc. for the sublists) .
+* Quoted text (+bold+, _italic_ and `monospace`) and substitution prevention using the `\` escape character
+* Unordered lists, using the `-` marker for simple lists, or the `\*` marker for nested lists (and `\**`, `\***`, etc. for the sublists)
 * External links in paragraphs (`https://`, `http://`, `ftp://`, `irc://`, `mailto:`)
 * Inline images in paragraphs (`image://`)
 * Block images (`image:://`)
@@ -36,13 +36,13 @@ Libasciidoc provides 2 functions to convert an Asciidoc content into HTML:
 
 1. Converting to a complete HTML document:
 
-    func ConvertToHTML(context.Context, io.Reader, io.Writer, renderer.Options) error
+    func ConvertToHTML(context.Context, io.Reader, io.Writer, renderer.Option...) (map[string]interface{}, error)
 
 2. Converting to a `body` element only:
 
-    func ConvertToHTMLBody(context.Context, io.Reader, io.Writer) (*types.DocumentAttributes, error)
+    func ConvertToHTMLBody(context.Context, io.Reader, io.Writer) (map[string]interface{}, error)
 
-where the returned `types.DocumentAttributes` object contains the document's title (which is not rendered in the HTML's body) and its other attributes.
+where the returned `map[string]interface{}` object contains the document's title (which is not rendered in the HTML's body) and its other attributes.
 
 == How to contribute
 
