@@ -586,7 +586,7 @@ type ListItemContent struct {
 }
 
 // NewListItemContent initializes a new `ListItemContent`
-func NewListItemContent(text []byte, lines []interface{}) (*ListItemContent, error) {
+func NewListItemContent(lines []interface{}) (*ListItemContent, error) {
 	log.Debugf("Initializing a new ListItemContent with %d line(s)", len(lines))
 	typedLines := make([]*InlineContent, 0)
 	for _, line := range lines {
@@ -614,7 +614,7 @@ type Paragraph struct {
 }
 
 // NewParagraph initializes a new `Paragraph`
-func NewParagraph(text []byte, lines []interface{}, attributes []interface{}) (*Paragraph, error) {
+func NewParagraph(lines []interface{}, attributes []interface{}) (*Paragraph, error) {
 	log.Debugf("Initializing a new Paragraph with %d line(s)", len(lines))
 	id, title, _ := newElementAttributes(attributes)
 
@@ -641,17 +641,17 @@ type InlineContent struct {
 }
 
 // NewInlineContent initializes a new `InlineContent` from the given values
-func NewInlineContent(text []byte, elements []interface{}) (*InlineContent, error) {
+func NewInlineContent(elements []interface{}) (*InlineContent, error) {
 	mergedElements := merge(elements)
 	mergedInlineElements := make([]InlineElement, len(mergedElements))
 	for i, element := range mergedElements {
 		mergedInlineElements[i] = element.(InlineElement)
 	}
 	result := &InlineContent{Elements: mergedInlineElements}
-	if log.GetLevel() == log.DebugLevel {
-		log.Debugf("Initialized a new InlineContent with %d elements:", len(result.Elements))
-		spew.Dump(result)
-	}
+	// if log.GetLevel() == log.DebugLevel {
+	// 	log.Debugf("Initialized a new InlineContent with %d elements:", len(result.Elements))
+	// 	spew.Dump(result)
+	// }
 	return result, nil
 }
 
@@ -692,8 +692,7 @@ type BlockImage struct {
 }
 
 // NewBlockImage initializes a new `BlockImage`
-func NewBlockImage(input []byte, imageMacro ImageMacro, attributes []interface{}) (*BlockImage, error) {
-	log.Debugf("Initializing a new BlockImage from %s", input)
+func NewBlockImage(imageMacro ImageMacro, attributes []interface{}) (*BlockImage, error) {
 	id, title, link := newElementAttributes(attributes)
 	return &BlockImage{
 		Macro: imageMacro,
@@ -709,8 +708,7 @@ type InlineImage struct {
 }
 
 // NewInlineImage initializes a new `InlineImage` (similar to BlockImage, but without attributes)
-func NewInlineImage(input []byte, imageMacro ImageMacro) (*InlineImage, error) {
-	log.Debugf("Initializing a new InlineImage from %s", input)
+func NewInlineImage(imageMacro ImageMacro) (*InlineImage, error) {
 	return &InlineImage{
 		Macro: imageMacro,
 	}, nil
@@ -746,8 +744,7 @@ type ImageMacro struct {
 }
 
 // NewImageMacro initializes a new `ImageMacro`
-func NewImageMacro(input []byte, path string, attributes interface{}) (*ImageMacro, error) {
-	log.Debugf("Initializing a new ImageMacro from %s", input)
+func NewImageMacro(path string, attributes interface{}) (*ImageMacro, error) {
 	var alt string
 	var width, height *string
 	if attributes != nil {
@@ -1045,6 +1042,26 @@ func (t *QuotedText) Accept(v Visitor) error {
 		return errors.Wrapf(err, "error while post-visiting quoted text")
 	}
 	return nil
+}
+
+// ------------------------------------------------------
+// Escaped Quoted Text (i.e., with substitution prevention)
+// ------------------------------------------------------
+
+// NewEscapedQuotedText returns a new InlineContent where the nested elements are preserved (ie, substituted as expected)
+func NewEscapedQuotedText(backslashes []interface{}, punctuation string, content []interface{}) (*InlineContent, error) {
+	backslashesStr, err := Stringify(backslashes,
+		func(s string) (string, error) {
+			// remove the number of back-slashes that match the length of the punctuation. Eg: `\*` or `\\**`, but keep extra back-slashes
+			if len(s) > len(punctuation) {
+				return s[len(punctuation):], nil
+			}
+			return "", nil
+		})
+	if err != nil {
+		return nil, errors.Wrapf(err, "error while initializing quoted text with substitution prevention")
+	}
+	return NewInlineContent([]interface{}{backslashesStr, punctuation, content, punctuation})
 }
 
 // ------------------------------------------

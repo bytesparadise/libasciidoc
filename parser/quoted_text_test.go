@@ -620,97 +620,106 @@ var _ = Describe("Quoted Texts", func() {
 
 	Context("Unbalanced quoted text", func() {
 
-		It("unbalanced bold text - extra on left", func() {
-			actualContent := "**some bold content*"
-			expectedResult := &types.InlineContent{
-				Elements: []types.InlineElement{
-					&types.QuotedText{
-						Kind: types.Bold,
-						Elements: []types.InlineElement{
-							&types.StringElement{Content: "*some bold content"},
+		Context("Unbalanced bold text", func() {
+
+			It("unbalanced bold text - extra on left", func() {
+				actualContent := "**some bold content*"
+				expectedResult := &types.InlineContent{
+					Elements: []types.InlineElement{
+						&types.QuotedText{
+							Kind: types.Bold,
+							Elements: []types.InlineElement{
+								&types.StringElement{Content: "*some bold content"},
+							},
 						},
 					},
-				},
-			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineContent"))
+				}
+				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineContent"))
+			})
+
+			It("unbalanced bold text - extra on right", func() {
+				actualContent := "*some bold content**"
+				expectedResult := &types.InlineContent{
+					Elements: []types.InlineElement{
+						&types.QuotedText{
+							Kind: types.Bold,
+							Elements: []types.InlineElement{
+								&types.StringElement{Content: "some bold content"},
+							},
+						},
+						&types.StringElement{Content: "*"},
+					},
+				}
+				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineContent"))
+			})
 		})
 
-		It("unbalanced bold text - extra on right", func() {
-			actualContent := "*some bold content**"
-			expectedResult := &types.InlineContent{
-				Elements: []types.InlineElement{
-					&types.QuotedText{
-						Kind: types.Bold,
-						Elements: []types.InlineElement{
-							&types.StringElement{Content: "some bold content"},
+		Context("unbalanced italic text", func() {
+
+			It("unbalanced italic text - extra on left", func() {
+				actualContent := "__some italic content_"
+				expectedResult := &types.InlineContent{
+					Elements: []types.InlineElement{
+						&types.QuotedText{
+							Kind: types.Italic,
+							Elements: []types.InlineElement{
+								&types.StringElement{Content: "_some italic content"},
+							},
 						},
 					},
-					&types.StringElement{Content: "*"},
-				},
-			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineContent"))
+				}
+				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineContent"))
+			})
+
+			It("unbalanced italic text - extra on right", func() {
+				actualContent := "_some italic content__"
+				expectedResult := &types.InlineContent{
+					Elements: []types.InlineElement{
+						&types.QuotedText{
+							Kind: types.Italic,
+							Elements: []types.InlineElement{
+								&types.StringElement{Content: "some italic content"},
+							},
+						},
+						&types.StringElement{Content: "_"},
+					},
+				}
+				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineContent"))
+			})
 		})
 
-		It("unbalanced italic text - extra on left", func() {
-			actualContent := "__some italic content_"
-			expectedResult := &types.InlineContent{
-				Elements: []types.InlineElement{
-					&types.QuotedText{
-						Kind: types.Italic,
-						Elements: []types.InlineElement{
-							&types.StringElement{Content: "_some italic content"},
-						},
-					},
-				},
-			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineContent"))
-		})
+		Context("unbalanced monospace text", func() {
 
-		It("unbalanced italic text - extra on right", func() {
-			actualContent := "_some italic content__"
-			expectedResult := &types.InlineContent{
-				Elements: []types.InlineElement{
-					&types.QuotedText{
-						Kind: types.Italic,
-						Elements: []types.InlineElement{
-							&types.StringElement{Content: "some italic content"},
+			It("unbalanced monospace text - extra on left", func() {
+				actualContent := "``some monospace content`"
+				expectedResult := &types.InlineContent{
+					Elements: []types.InlineElement{
+						&types.QuotedText{
+							Kind: types.Monospace,
+							Elements: []types.InlineElement{
+								&types.StringElement{Content: "`some monospace content"},
+							},
 						},
 					},
-					&types.StringElement{Content: "_"},
-				},
-			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineContent"))
-		})
+				}
+				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineContent"))
+			})
 
-		It("unbalanced monospace text - extra on left", func() {
-			actualContent := "``some monospace content`"
-			expectedResult := &types.InlineContent{
-				Elements: []types.InlineElement{
-					&types.QuotedText{
-						Kind: types.Monospace,
-						Elements: []types.InlineElement{
-							&types.StringElement{Content: "`some monospace content"},
+			It("unbalanced monospace text - extra on right", func() {
+				actualContent := "`some monospace content``"
+				expectedResult := &types.InlineContent{
+					Elements: []types.InlineElement{
+						&types.QuotedText{
+							Kind: types.Monospace,
+							Elements: []types.InlineElement{
+								&types.StringElement{Content: "some monospace content"},
+							},
 						},
+						&types.StringElement{Content: "`"},
 					},
-				},
-			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineContent"))
-		})
-
-		It("unbalanced monospace text - extra on right", func() {
-			actualContent := "`some monospace content``"
-			expectedResult := &types.InlineContent{
-				Elements: []types.InlineElement{
-					&types.QuotedText{
-						Kind: types.Monospace,
-						Elements: []types.InlineElement{
-							&types.StringElement{Content: "some monospace content"},
-						},
-					},
-					&types.StringElement{Content: "`"},
-				},
-			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineContent"))
+				}
+				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineContent"))
+			})
 		})
 
 		It("inline with unbalanced bold text", func() {
@@ -727,6 +736,293 @@ var _ = Describe("Quoted Texts", func() {
 			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Paragraph"))
 		})
 
+	})
+
+	Context("Prevented substitution", func() {
+
+		Context("Prevented Bold text substitution", func() {
+
+			It("escaped bold text with simple quote", func() {
+				actualContent := `\*bold content*`
+				expectedResult := &types.Paragraph{
+					Lines: []*types.InlineContent{
+						&types.InlineContent{
+							Elements: []types.InlineElement{
+								&types.StringElement{Content: "*bold content*"},
+							},
+						},
+					},
+				}
+				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Paragraph"))
+			})
+
+			It("escaped bold text with simple quote and more backslashes", func() {
+				actualContent := `\\*bold content*`
+				expectedResult := &types.Paragraph{
+					Lines: []*types.InlineContent{
+						&types.InlineContent{
+							Elements: []types.InlineElement{
+								&types.StringElement{Content: `\*bold content*`},
+							},
+						},
+					},
+				}
+				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Paragraph"))
+			})
+
+			It("escaped bold text with double quote", func() {
+				actualContent := `\\**bold content**`
+				expectedResult := &types.Paragraph{
+					Lines: []*types.InlineContent{
+						&types.InlineContent{
+							Elements: []types.InlineElement{
+								&types.StringElement{Content: `**bold content**`},
+							},
+						},
+					},
+				}
+				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Paragraph"))
+			})
+
+			It("escaped bold text with double quote and more backslashes", func() {
+				actualContent := `\\\**bold content**`
+				expectedResult := &types.Paragraph{
+					Lines: []*types.InlineContent{
+						&types.InlineContent{
+							Elements: []types.InlineElement{
+								&types.StringElement{Content: `\**bold content**`},
+							},
+						},
+					},
+				}
+				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Paragraph"))
+			})
+
+			It("escaped bold text with unbalanced double quote", func() {
+				actualContent := `\**bold content*`
+				expectedResult := &types.Paragraph{
+					Lines: []*types.InlineContent{
+						&types.InlineContent{
+							Elements: []types.InlineElement{
+								&types.StringElement{Content: `**bold content*`},
+							},
+						},
+					},
+				}
+				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Paragraph"))
+			})
+
+			It("escaped bold text with unbalanced double quote and more backslashes", func() {
+				actualContent := `\\\**bold content*`
+				expectedResult := &types.Paragraph{
+					Lines: []*types.InlineContent{
+						&types.InlineContent{
+							Elements: []types.InlineElement{
+								&types.StringElement{Content: `\\**bold content*`},
+							},
+						},
+					},
+				}
+				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Paragraph"))
+			})
+		})
+
+		Context("Prevented Italic text substitution", func() {
+
+			It("escaped italic text with simple quote", func() {
+				actualContent := `\_italic content_`
+				expectedResult := &types.Paragraph{
+					Lines: []*types.InlineContent{
+						&types.InlineContent{
+							Elements: []types.InlineElement{
+								&types.StringElement{Content: "_italic content_"},
+							},
+						},
+					},
+				}
+				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Paragraph"))
+			})
+
+			It("escaped italic text with simple quote and more backslashes", func() {
+				actualContent := `\\_italic content_`
+				expectedResult := &types.Paragraph{
+					Lines: []*types.InlineContent{
+						&types.InlineContent{
+							Elements: []types.InlineElement{
+								&types.StringElement{Content: `\_italic content_`},
+							},
+						},
+					},
+				}
+				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Paragraph"))
+			})
+
+			It("escaped italic text with double quote", func() {
+				actualContent := `\\__italic content__`
+				expectedResult := &types.Paragraph{
+					Lines: []*types.InlineContent{
+						&types.InlineContent{
+							Elements: []types.InlineElement{
+								&types.StringElement{Content: `__italic content__`},
+							},
+						},
+					},
+				}
+				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Paragraph"))
+			})
+
+			It("escaped italic text with double quote and more backslashes", func() {
+				actualContent := `\\\__italic content__`
+				expectedResult := &types.Paragraph{
+					Lines: []*types.InlineContent{
+						&types.InlineContent{
+							Elements: []types.InlineElement{
+								&types.StringElement{Content: `\__italic content__`},
+							},
+						},
+					},
+				}
+				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Paragraph"))
+			})
+
+			It("escaped italic text with unbalanced double quote", func() {
+				actualContent := `\__italic content_`
+				expectedResult := &types.Paragraph{
+					Lines: []*types.InlineContent{
+						&types.InlineContent{
+							Elements: []types.InlineElement{
+								&types.StringElement{Content: `__italic content_`},
+							},
+						},
+					},
+				}
+				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Paragraph"))
+			})
+
+			It("escaped italic text with unbalanced double quote and more backslashes", func() {
+				actualContent := `\\\__italic content_`
+				expectedResult := &types.Paragraph{
+					Lines: []*types.InlineContent{
+						&types.InlineContent{
+							Elements: []types.InlineElement{
+								&types.StringElement{Content: `\\__italic content_`}, // only 1 backslash remove
+							},
+						},
+					},
+				}
+				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Paragraph"))
+			})
+		})
+
+		Context("Prevented Monospace text substitution", func() {
+
+			It("escaped monospace text with simple quote", func() {
+				actualContent := "\\`monospace content`"
+				expectedResult := &types.Paragraph{
+					Lines: []*types.InlineContent{
+						&types.InlineContent{
+							Elements: []types.InlineElement{
+								&types.StringElement{Content: "`monospace content`"},
+							},
+						},
+					},
+				}
+				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Paragraph"))
+			})
+
+			It("escaped monospace text with simple quote and more backslashes", func() {
+				actualContent := "\\\\`monospace content`"
+				expectedResult := &types.Paragraph{
+					Lines: []*types.InlineContent{
+						&types.InlineContent{
+							Elements: []types.InlineElement{
+								&types.StringElement{Content: "\\`monospace content`"}, // only 1 backslash remove
+							},
+						},
+					},
+				}
+				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Paragraph"))
+			})
+
+			It("escaped monospace text with double quote", func() {
+				actualContent := "\\\\``monospace content``"
+				expectedResult := &types.Paragraph{
+					Lines: []*types.InlineContent{
+						&types.InlineContent{
+							Elements: []types.InlineElement{
+								&types.StringElement{Content: "``monospace content``"},
+							},
+						},
+					},
+				}
+				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Paragraph"))
+			})
+
+			It("escaped monospace text with double quote and more backslashes", func() {
+				actualContent := "\\\\\\``monospace content``" // 3 backslashes
+				expectedResult := &types.Paragraph{
+					Lines: []*types.InlineContent{
+						&types.InlineContent{
+							Elements: []types.InlineElement{
+								&types.StringElement{Content: "\\``monospace content``"},
+							},
+						},
+					},
+				}
+				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Paragraph"))
+			})
+
+			It("escaped monospace text with unbalanced double quote", func() {
+				actualContent := "\\``monospace content`"
+				expectedResult := &types.Paragraph{
+					Lines: []*types.InlineContent{
+						&types.InlineContent{
+							Elements: []types.InlineElement{
+								&types.StringElement{Content: "``monospace content`"},
+							},
+						},
+					},
+				}
+				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Paragraph"))
+			})
+
+			It("escaped monospace text with unbalanced double quote and more backslashes", func() {
+				actualContent := "\\\\\\``monospace content`" // 3 backslashes
+				expectedResult := &types.Paragraph{
+					Lines: []*types.InlineContent{
+						&types.InlineContent{
+							Elements: []types.InlineElement{
+								&types.StringElement{Content: "\\\\``monospace content`"}, // only 1 backslash remove
+							},
+						},
+					},
+				}
+				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Paragraph"))
+			})
+		})
+
+		Context("Include nested substitution", func() {
+			It("escaped bold text with nested italic", func() {
+				actualContent := `\*bold _and italic_ content*`
+				expectedResult := &types.Paragraph{
+					Lines: []*types.InlineContent{
+						&types.InlineContent{
+							Elements: []types.InlineElement{
+								&types.StringElement{Content: "*bold "},
+								&types.QuotedText{
+									Kind: types.Italic,
+									Elements: []types.InlineElement{
+										&types.StringElement{Content: "and italic"},
+									},
+								},
+								&types.StringElement{Content: " content*"},
+							},
+						},
+					},
+				}
+				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Paragraph"))
+			})
+		})
 	})
 
 })

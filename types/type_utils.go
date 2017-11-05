@@ -56,33 +56,41 @@ func merge(elements []interface{}, extraElements ...interface{}) []interface{} {
 	allElements := append(elements, extraElements...)
 	// log.Debugf("Merging %d element(s):", len(allElements))
 	buff := bytes.NewBuffer(nil)
-	for _, v := range allElements {
-		if v == nil {
+	for _, element := range allElements {
+		if element == nil {
 			continue
 		}
-		switch v.(type) {
+		switch element := element.(type) {
 		case string:
-			buff.WriteString(v.(string))
+			buff.WriteString(element)
+		case *string:
+			buff.WriteString(*element)
 		case []byte:
-			for _, b := range v.([]byte) {
+			for _, b := range element {
 				buff.WriteByte(b)
 			}
 		case StringElement:
-			content := v.(StringElement).Content
+			content := element.Content
 			buff.WriteString(content)
 		case *StringElement:
-			content := v.(*StringElement).Content
+			content := element.Content
 			buff.WriteString(content)
+		case *InlineContent:
+			inlineElements := make([]interface{}, len(element.Elements))
+			for i, e := range element.Elements {
+				inlineElements[i] = e
+			}
+			result = merge(result, inlineElements...)
 		case []interface{}:
-			w := v.([]interface{})
-			if len(w) > 0 {
-				f := merge(w)
+			if len(element) > 0 {
+				f := merge(element)
 				result, buff = appendBuffer(result, buff)
 				result = merge(result, f...)
 			}
 		default:
+			log.Debugf("Merging with 'default' case an element of type %[1]T: %[1]v", element)
 			result, buff = appendBuffer(result, buff)
-			result = append(result, v.(DocElement))
+			result = append(result, element)
 		}
 	}
 	// if buff was filled because some text was found
@@ -96,8 +104,8 @@ func merge(elements []interface{}, extraElements ...interface{}) []interface{} {
 	return result
 }
 
-// appendBuffer appends the content of the given buffer to the given array of elements, and returns a new buffer, or returns
-// the given arguments if the buffer was empty
+// appendBuffer appends the content of the given buffer to the given array of elements,
+// and returns a new buffer, or returns the given arguments if the buffer was empty
 func appendBuffer(elements []interface{}, buff *bytes.Buffer) ([]interface{}, *bytes.Buffer) {
 	if buff.Len() > 0 {
 		return append(elements, NewStringElement(buff.String())), bytes.NewBuffer(nil)

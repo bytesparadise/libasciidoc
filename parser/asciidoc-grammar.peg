@@ -199,7 +199,7 @@ ListItem <- WS* level:("*"+ / "-") WS+ content:(ListItemContent) {
 }
 
 ListItemContent <- lines:(!(WS* ("*"+ / "-") WS+) InlineContent EOL)+ { 
-    return types.NewListItemContent(c.text, lines.([]interface{}))
+    return types.NewListItemContent(lines.([]interface{}))
 } 
 // ------------------------------------------
 // Paragraphs
@@ -207,13 +207,13 @@ ListItemContent <- lines:(!(WS* ("*"+ / "-") WS+) InlineContent EOL)+ {
 // a paragraph is a group of line ending with a blank line (or end of file)
 // a paragraph cannot start with the `section` sequence (`= `, `== `, etc.)
 Paragraph <- attributes:(ElementAttribute)* !("="+ WS+) lines:(InlineContent EOL)+ {
-    return types.NewParagraph(c.text, lines.([]interface{}), attributes.([]interface{}))
+    return types.NewParagraph(lines.([]interface{}), attributes.([]interface{}))
 } 
 
 // an inline content element may start with and end with spaces, 
 // but it must contain at least an inline element (image, quoted text, external link, document attribute substitution, word, etc.)
 InlineContent <- !FencedBlockDelimiter elements:(WS* InlineElement WS*)+ &EOL { // needs an "EOL" but does not consume it here.
-    return types.NewInlineContent(c.text, elements.([]interface{}))
+    return types.NewInlineContent(elements.([]interface{}))
 } 
 
 InlineElement <- InlineImage / QuotedText / ExternalLink / DocumentAttributeSubstitution / Word
@@ -221,51 +221,97 @@ InlineElement <- InlineImage / QuotedText / ExternalLink / DocumentAttributeSubs
 // ------------------------------------------
 // Quoted Texts (bold, italic and monospace)
 // ------------------------------------------
-QuotedText <- BoldText / ItalicText / MonospaceText
+QuotedText <- BoldText / ItalicText / MonospaceText /
+            EscapedBoldText / EscapedItalicText / EscapedMonospaceText
 
 BoldText <- BoldTextDoublePunctuation / BoldTextUnbalancedPunctuation / BoldTextSimplePunctuation // double punctuation must be evaluated first
 
-BoldTextSimplePunctuation <- "*" content:(QuotedTextContent) "*" {
+BoldTextSimplePunctuation <- !`\` "*" content:(QuotedTextContent) "*" {
     return types.NewQuotedText(types.Bold, content.([]interface{}))
 }
 
-BoldTextDoublePunctuation <- "**" content:(QuotedTextContent) "**" {
+BoldTextDoublePunctuation <- !`\\` "**" content:(QuotedTextContent) "**" {
     return types.NewQuotedText(types.Bold, content.([]interface{}))
 }
 
-BoldTextUnbalancedPunctuation <- "**" content:(QuotedTextContent) "*" { // unbalanced `**` vs `*` punctuation
+BoldTextUnbalancedPunctuation <- !`\\` "**" content:(QuotedTextContent) "*" { // unbalanced `**` vs `*` punctuation
     result := append([]interface{}{"*"}, content.([]interface{}))
     return types.NewQuotedText(types.Bold, result)
 }
 
+EscapedBoldText <- EscapedBoldTextDoublePunctuation / EscapedBoldTextUnbalancedPunctuation / EscapedBoldTextSimplePunctuation // double punctuation must be evaluated first
+
+EscapedBoldTextSimplePunctuation <- backslashes:(`\` `\`*) "*" content:(QuotedTextContent) "*" {
+    return types.NewEscapedQuotedText(backslashes.([]interface{}), "*", content.([]interface{}))
+}
+
+EscapedBoldTextDoublePunctuation <- backslashes:(`\\` `\`*) "**" content:(QuotedTextContent) "**" {
+    return types.NewEscapedQuotedText(backslashes.([]interface{}), "**", content.([]interface{}))
+}
+
+EscapedBoldTextUnbalancedPunctuation <-  backslashes:(`\` `\`*) "**" content:(QuotedTextContent) "*" { // unbalanced `**` vs `*` punctuation
+    result := append([]interface{}{"*"}, content.([]interface{}))
+    return types.NewEscapedQuotedText(backslashes.([]interface{}), "*", result)
+}
+
 ItalicText <- ItalicTextDoublePunctuation / ItalicTextUnbalancedPunctuation / ItalicTextSimplePunctuation
 
-ItalicTextSimplePunctuation <- "_" content:(QuotedTextContent) "_" {
+ItalicTextSimplePunctuation <- !`\` "_" content:(QuotedTextContent) "_" {
     return types.NewQuotedText(types.Italic, content.([]interface{}))
 }
 
-ItalicTextDoublePunctuation <- "__" content:(QuotedTextContent) "__" {
+ItalicTextDoublePunctuation <- !`\\` "__" content:(QuotedTextContent) "__" {
     return types.NewQuotedText(types.Italic, content.([]interface{}))
 }
 
-ItalicTextUnbalancedPunctuation <- "__" content:(QuotedTextContent) "_" { // unbalanced `**` vs `*` punctuation
+ItalicTextUnbalancedPunctuation <- !`\\` "__" content:(QuotedTextContent) "_" { // unbalanced `__` vs `_` punctuation
     result := append([]interface{}{"_"}, content.([]interface{}))
     return types.NewQuotedText(types.Italic, result)
 }
 
+EscapedItalicText <- EscapedItalicTextDoublePunctuation / EscapedItalicTextUnbalancedPunctuation / EscapedItalicTextSimplePunctuation // double punctuation must be evaluated first
+
+EscapedItalicTextSimplePunctuation <- backslashes:(`\` `\`*) "_" content:(QuotedTextContent) "_" {
+    return types.NewEscapedQuotedText(backslashes.([]interface{}), "_", content.([]interface{}))
+}
+
+EscapedItalicTextDoublePunctuation <- backslashes:(`\\` `\`*) "__" content:(QuotedTextContent) "__" {
+    return types.NewEscapedQuotedText(backslashes.([]interface{}), "__", content.([]interface{}))
+}
+
+EscapedItalicTextUnbalancedPunctuation <-  backslashes:(`\` `\`*) "__" content:(QuotedTextContent) "_" { // unbalanced `__` vs `_` punctuation
+    result := append([]interface{}{"_"}, content.([]interface{}))
+    return types.NewEscapedQuotedText(backslashes.([]interface{}), "_", result)
+}
+
 MonospaceText <- MonospaceTextDoublePunctuation / MonospaceTextUnbalancedPunctuation / MonospaceTextSimplePunctuation
 
-MonospaceTextSimplePunctuation <- "`" content:(QuotedTextContent) "`" {
+MonospaceTextSimplePunctuation <- !`\` "`" content:(QuotedTextContent) "`" {
     return types.NewQuotedText(types.Monospace, content.([]interface{}))
 }
 
-MonospaceTextDoublePunctuation <- "``" content:(QuotedTextContent) "``" {
+MonospaceTextDoublePunctuation <- !`\\` "``" content:(QuotedTextContent) "``" {
     return types.NewQuotedText(types.Monospace, content.([]interface{}))
 }
 
-MonospaceTextUnbalancedPunctuation <- "``" content:(QuotedTextContent) "`" { // unbalanced `**` vs `*` punctuation
+MonospaceTextUnbalancedPunctuation <- !`\\` "``" content:(QuotedTextContent) "`" { // unbalanced "``" vs "`" punctuation
     result := append([]interface{}{"`"}, content.([]interface{}))
     return types.NewQuotedText(types.Monospace, result)
+}
+
+EscapedMonospaceText <- EscapedMonospaceTextDoublePunctuation / EscapedMonospaceTextUnbalancedPunctuation / EscapedMonospaceTextSimplePunctuation // double punctuation must be evaluated first
+
+EscapedMonospaceTextSimplePunctuation <- backslashes:(`\` `\`*) "`" content:(QuotedTextContent) "`" {
+    return types.NewEscapedQuotedText(backslashes.([]interface{}), "`", content.([]interface{}))
+}
+
+EscapedMonospaceTextDoublePunctuation <- backslashes:(`\\` `\`*) "``" content:(QuotedTextContent) "``" {
+    return types.NewEscapedQuotedText(backslashes.([]interface{}), "``", content.([]interface{}))
+}
+
+EscapedMonospaceTextUnbalancedPunctuation <-  backslashes:(`\` `\`*) "``" content:(QuotedTextContent) "`" { // unbalanced "``" vs "`" punctuation
+    result := append([]interface{}{"`"}, content.([]interface{}))
+    return types.NewEscapedQuotedText(backslashes.([]interface{}), "`", result)
 }
 
 QuotedTextContent <- QuotedTextContentElement (WS+ QuotedTextContentElement)*
@@ -296,20 +342,20 @@ ExternalLink <- url:(URL_SCHEME URL) text:("[" (URL_TEXT)* "]")? {
 // ------------------------------------------
 BlockImage <- attributes:(ElementAttribute)* image:BlockImageMacro  WS* EOL {
     // here we can ignore the blank line in the returned element
-    return types.NewBlockImage(c.text, *image.(*types.ImageMacro), attributes.([]interface{}))
+    return types.NewBlockImage(*image.(*types.ImageMacro), attributes.([]interface{}))
 }
 
 BlockImageMacro <- "image::" path:(URL) "[" attributes:(URL_TEXT?) "]" {
-    return types.NewImageMacro(c.text, path.(string), attributes)
+    return types.NewImageMacro(path.(string), attributes)
 }
 
 InlineImage <- image:InlineImageMacro {
     // here we can ignore the blank line in the returned element
-    return types.NewInlineImage(c.text, *image.(*types.ImageMacro))
+    return types.NewInlineImage(*image.(*types.ImageMacro))
 }
 
 InlineImageMacro <- "image:" !":" path:(URL) "[" attributes:(URL_TEXT?) "]" {
-    return types.NewImageMacro(c.text, path.(string), attributes)
+    return types.NewImageMacro(path.(string), attributes)
 }
 
 // ------------------------------------------------------------------------------------

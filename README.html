@@ -32,10 +32,10 @@ It is is available under the terms of the <a href="https://raw.githubusercontent
 <p>Literal blocks (paragraph starting with a space, with the "&#8230;&#8203;." delimiter or with the <code>[literal]</code> attribute)</p>
 </li>
 <li>
-<p>Quoted text (bold, <em>italic</em> and <code>monospace</code>)</p>
+<p>Quoted text (bold, <em>italic</em> and <code>monospace</code>) and substitution prevention using the <code>\</code> escape character</p>
 </li>
 <li>
-<p>Unordered lists, using the <code>-</code> marker for simple lists, or the <code>*</code> marker for nested lists (and <code>**</code>, <code>***</code>, etc. for the sublists) .</p>
+<p>Unordered lists, using the <code>-</code> marker for simple lists, or the <code>*</code> marker for nested lists (and <code>**</code>, <code>***</code>, etc. for the sublists)</p>
 </li>
 <li>
 <p>External links in paragraphs (<code>https://</code>, <code>http://</code>, <code>ftp://</code>, <code>irc://</code>, <code>mailto:</code>)</p>
@@ -52,7 +52,7 @@ It is is available under the terms of the <a href="https://raw.githubusercontent
 </ul>
 </div>
 <div class="paragraph">
-<p>See the <a href="http://LIMITATIONS.adoc">known limitations</a> document for differences between Asciidoc/Asciidoctor and Libasciidoc.</p>
+<p>See the <a href="http://LIMITATIONS.adoc">known limitations</a> page for differences between Asciidoc/Asciidoctor and Libasciidoc.</p>
 </div>
 <div class="paragraph">
 <p>Further elements will be supported in the future. Feel free to open issues <a href="https://github.com/bytesparadise/libasciidoc/issues">here</a> to help prioritizing the upcoming work.</p>
@@ -81,7 +81,7 @@ It is is available under the terms of the <a href="https://raw.githubusercontent
 <p>Converting to a complete HTML document:</p>
 <div class="literalblock">
 <div class="content">
-<pre>func ConvertToHTML(context.Context, io.Reader, io.Writer, renderer.Options) error</pre>
+<pre>func ConvertToHTML(context.Context, io.Reader, io.Writer, renderer.Option...) (map[string]interface{}, error)</pre>
 </div>
 </div>
 </li>
@@ -89,7 +89,7 @@ It is is available under the terms of the <a href="https://raw.githubusercontent
 <p>Converting to a <code>body</code> element only:</p>
 <div class="literalblock">
 <div class="content">
-<pre>func ConvertToHTMLBody(context.Context, io.Reader, io.Writer) (*types.DocumentAttributes, error)</pre>
+<pre>func ConvertToHTMLBody(context.Context, io.Reader, io.Writer) (map[string]interface{}, error)</pre>
 </div>
 </div>
 </li>
@@ -104,7 +104,7 @@ It is is available under the terms of the <a href="https://raw.githubusercontent
 <h2 id="_how_to_contribute">How to contribute</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Please refer to the <a href="http://CONTRIBUTE.adoc">Contribute</a> file.</p>
+<p>Please refer to the <a href="http://CONTRIBUTE.adoc">Contribute</a> page.</p>
 </div>
 </div>
 </div>
