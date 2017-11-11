@@ -32,11 +32,15 @@ Preamble <- elements:(StandaloneBlock*) {
 // ------------------------------------------
 FrontMatter <- YamlFrontMatter 
 
-FrontMatter <- YamlFrontMatterToken content:(!YamlFrontMatterToken .)* YamlFrontMatterToken {
-    return types.NewYamlFrontMatter(content.([]interface{}))
+FrontMatter <- YamlFrontMatterToken content:(YamlFrontMatterContent) YamlFrontMatterToken {
+    return types.NewYamlFrontMatter(content.(string))
 }
 
 YamlFrontMatterToken  <- "---" EOL
+
+YamlFrontMatterContent <- (!YamlFrontMatterToken .)* {
+    return string(c.text), nil
+}
 
 // ------------------------------------------
 // Document Header
@@ -65,7 +69,7 @@ DocumentAuthor <- WS* namePart1:(DocumentAuthorNamePart) namePart2:(DocumentAuth
 } 
 
 // "<" marks the beginning of the author email, and ";" is the authors separator
-DocumentAuthorNamePart <- !"<" !";" Word WS*
+DocumentAuthorNamePart <- !"<" !";" Characters WS*
 
 DocumentAuthorEmail <- "<" email:(!">" !EOL .)+ ">" 
 
@@ -216,11 +220,11 @@ InlineContent <- !FencedBlockDelimiter elements:(WS* InlineElement WS*)+ &EOL { 
     return types.NewInlineContent(elements.([]interface{}))
 } 
 
-InlineElement <- InlineImage / QuotedText / ExternalLink / DocumentAttributeSubstitution / Word
+InlineElement <- Passthrough / InlineImage / QuotedText / ExternalLink / DocumentAttributeSubstitution / Characters
 
-// ------------------------------------------
-// Quoted Texts (bold, italic and monospace)
-// ------------------------------------------
+// ----------------------------------------------------------------------------
+// Quoted Texts (bold, italic and monospace) including substitution prevention
+// ----------------------------------------------------------------------------
 QuotedText <- BoldText / ItalicText / MonospaceText /
             EscapedBoldText / EscapedItalicText / EscapedMonospaceText
 
@@ -316,16 +320,41 @@ EscapedMonospaceTextUnbalancedPunctuation <-  backslashes:(`\` `\`*) "``" conten
 
 QuotedTextContent <- QuotedTextContentElement (WS+ QuotedTextContentElement)*
 
-QuotedTextContentElement <- QuotedText / QuotedTextWord / WordWithQuotePunctuation // word with quote punctuation is only accepted if nothing matched before, so we have a chance to stop
+QuotedTextContentElement <- QuotedText / QuotedTextCharacters / CharactersWithQuotePunctuation // word with quote punctuation is only accepted if nothing matched before, so we have a chance to stop
 
-QuotedTextWord <- (!NEWLINE !WS !"*" !"_" !"`" .)+ // cannot have "*", "_" or "`" within
-WordWithQuotePunctuation <- (!NEWLINE !WS  .)+ { // can have "*", "_" or "`" within, maybe because the user inserted another quote, or made an error (extra or missing space, for example)
+QuotedTextCharacters <- (!NEWLINE !WS !"*" !"_" !"`" .)+ // cannot have "*", "_" or "`" within
+CharactersWithQuotePunctuation <- (!NEWLINE !WS  .)+ { // can have "*", "_" or "`" within, maybe because the user inserted another quote, or made an error (extra or missing space, for example)
     return c.text, nil
 }
 
 // make sure unbalanced punctuation for quoted text is treated accordingly
 UnbalancedQuotePunctuation <- "*" / "_" / "`"
 
+
+// ------------------------------------------
+// Passthrough
+// ------------------------------------------
+Passthrough <- TriplePlusPassthrough / SinglePlusPassthrough / PassthroughMacro
+
+SinglePlusPassthrough <- "+" content:(!NEWLINE !"+" .)* "+" {
+    return types.NewPassthrough(types.SinglePlusPassthrough, content.([]interface{}))
+}
+
+TriplePlusPassthrough <- "+++" content:(!"+++" .)* "+++" {
+    return types.NewPassthrough(types.TriplePlusPassthrough, content.([]interface{}))
+}
+
+PassthroughMacro <- SimplePassthroughMacro / PassthroughWithQuotedText
+
+SimplePassthroughMacro <- "pass:[" content:(PassthroughMacroCharacter)* "]" {
+    return types.NewPassthrough(types.PassthroughMacro, content.([]interface{}))
+}
+
+PassthroughWithQuotedText <- "pass:q[" content:(QuotedText / PassthroughMacroCharacter)* "]" {
+    return types.NewPassthrough(types.PassthroughMacro, content.([]interface{}))
+}
+
+PassthroughMacroCharacter <- (!"]" .)
 
 // ------------------------------------------
 // Links
@@ -423,15 +452,19 @@ ElementTitle <- "." !"." !WS title:(!NEWLINE .)+ EOL {
 }
 
 // ------------------------------------------
-// Base Types
+// BlankLine
 // ------------------------------------------
-Word <- (!NEWLINE !WS .)+ {
-    return string(c.text), nil
-}
-
 BlankLine <- !EOF WS* EOL {
     return types.NewBlankLine()
 }
+
+// ------------------------------------------
+// Base Types
+// ------------------------------------------
+Characters <- (!NEWLINE !WS .)+ {
+    return string(c.text), nil
+}
+
 
 URL <- (!NEWLINE !WS !"[" !"]" .)+ {
     return string(c.text), nil

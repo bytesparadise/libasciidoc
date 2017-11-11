@@ -7,11 +7,11 @@ import (
 	. "github.com/onsi/ginkgo"
 )
 
-var _ = Describe("Rendering header", func() {
+var _ = Describe("Document Header", func() {
 	Context("Header with inline elements in title", func() {
 
 		It("header with quoted text", func() {
-			content := `= The _Dangerous_ and *Thrilling* Documentation Chronicles`
+			actualContent := `= The _Dangerous_ and *Thrilling* Documentation Chronicles`
 			expected := `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -34,14 +34,14 @@ Last updated {{.LastUpdated}}
 </div>
 </body>
 </html>`
-			verify(GinkgoT(), expected, content, renderer.IncludeHeaderFooter(true))
+			verify(GinkgoT(), expected, actualContent, renderer.IncludeHeaderFooter(true))
 		})
 	})
 
 	Context("Header with attributes", func() {
 
 		It("header with author and revision", func() {
-			content := `= The Dangerous and Thrilling Documentation Chronicles
+			actualContent := `= The Dangerous and Thrilling Documentation Chronicles
 Kismet Rainbow Chameleon <kismet@asciidoctor.org>
 v1.0, June 19, 2017: First incarnation`
 			// top-level section is not rendered per-say,
@@ -76,11 +76,11 @@ Last updated {{.LastUpdated}}
 </div>
 </body>
 </html>`
-			verify(GinkgoT(), expected, content, renderer.IncludeHeaderFooter(true))
+			verify(GinkgoT(), expected, actualContent, renderer.IncludeHeaderFooter(true))
 		})
 
 		It("header with 2 authors and no revision", func() {
-			content := `= The Dangerous and Thrilling Documentation Chronicles
+			actualContent := `= The Dangerous and Thrilling Documentation Chronicles
 Kismet Rainbow Chameleon <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus@asciidoctor.org>`
 			// top-level section is not rendered per-say,
 			// but the section will be used to set the HTML page's <title> element
@@ -112,7 +112,7 @@ Last updated {{.LastUpdated}}
 </div>
 </body>
 </html>`
-			verify(GinkgoT(), expected, content, renderer.IncludeHeaderFooter(true), renderer.LastUpdated(time.Now()))
+			verify(GinkgoT(), expected, actualContent, renderer.IncludeHeaderFooter(true), renderer.LastUpdated(time.Now()))
 
 		})
 	})

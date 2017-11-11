@@ -28,6 +28,8 @@ func renderElement(ctx *renderer.Context, element types.DocElement) ([]byte, err
 		return renderParagraph(ctx, *element.(*types.Paragraph))
 	case *types.QuotedText:
 		return renderQuotedText(ctx, *element.(*types.QuotedText))
+	case *types.Passthrough:
+		return renderPassthrough(ctx, *element.(*types.Passthrough))
 	case *types.BlockImage:
 		return renderBlockImage(ctx, *element.(*types.BlockImage))
 	case *types.InlineImage:

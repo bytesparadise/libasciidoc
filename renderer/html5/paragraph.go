@@ -33,6 +33,10 @@ func renderParagraph(ctx *renderer.Context, paragraph types.Paragraph) ([]byte, 
 		}
 
 	}
+	// skip rendering if there's no content in the paragraph (eg: empty passthough)
+	if renderedLinesBuff.Len() == 0 {
+		return []byte{}, nil
+	}
 	result := bytes.NewBuffer(nil)
 	err := paragraphTmpl.Execute(result, struct {
 		ID    *types.ElementID

@@ -13,7 +13,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-var _ = Describe("Rendering documents in HTML", func() {
+var _ = Describe("Documents", func() {
 
 	Context("Document Body", func() {
 

@@ -15,6 +15,7 @@ It is is available under the terms of the https://raw.githubusercontent.com/byte
 * Delimited Source Blocks (using the `+++```+++` delimiter, a.k.a "fences")
 * Literal blocks (paragraph starting with a space, with the "...." delimiter or with the `[literal]` attribute)
 * Quoted text (+bold+, _italic_ and `monospace`) and substitution prevention using the `\` escape character
+* Passtrough (wrapping with a single plus or a triple plus, or using the `pass:[]` or `pass:q[]` macros)
 * Unordered lists, using the `-` marker for simple lists, or the `\*` marker for nested lists (and `\**`, `\***`, etc. for the sublists)
 * External links in paragraphs (`https://`, `http://`, `ftp://`, `irc://`, `mailto:`)
 * Inline images in paragraphs (`image://`)

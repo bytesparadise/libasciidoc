@@ -2,9 +2,9 @@ package html5_test
 
 import . "github.com/onsi/ginkgo"
 
-var _ = Describe("Rendering List of Items", func() {
+var _ = Describe("Lists of Items", func() {
 	It("simple list", func() {
-		content := `* item 1
+		actualContent := `* item 1
 * item 2`
 		expected := `<div class="ulist">
 <ul>
@@ -16,10 +16,10 @@ var _ = Describe("Rendering List of Items", func() {
 </li>
 </ul>
 </div>`
-		verify(GinkgoT(), expected, content)
+		verify(GinkgoT(), expected, actualContent)
 	})
 	It("simple list with a title", func() {
-		content := `[#foo]
+		actualContent := `[#foo]
 	* item 1
 	* item 2`
 		expected := `<div id="foo" class="ulist">
@@ -32,10 +32,10 @@ var _ = Describe("Rendering List of Items", func() {
 </li>
 </ul>
 </div>`
-		verify(GinkgoT(), expected, content)
+		verify(GinkgoT(), expected, actualContent)
 	})
 	It("nested lists", func() {
-		content := `* item 1
+		actualContent := `* item 1
 ** item 1.1
 ** item 1.2
 * item 2`
@@ -59,10 +59,10 @@ var _ = Describe("Rendering List of Items", func() {
 </li>
 </ul>
 </div>`
-		verify(GinkgoT(), expected, content)
+		verify(GinkgoT(), expected, actualContent)
 	})
 	It("nested lists with a title", func() {
-		content := `[#foo]
+		actualContent := `[#foo]
 * item 1
 ** item 1.1
 ** item 1.2
@@ -87,6 +87,6 @@ var _ = Describe("Rendering List of Items", func() {
 </li>
 </ul>
 </div>`
-		verify(GinkgoT(), expected, content)
+		verify(GinkgoT(), expected, actualContent)
 	})
 })

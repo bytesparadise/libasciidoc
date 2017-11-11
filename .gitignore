@@ -57,3 +57,4 @@ tmp
 
 # exclude code coverage merged results
 coverage.txt
+*.html

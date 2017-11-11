@@ -72,7 +72,6 @@ var _ = Describe("Images", func() {
 								Alt:  "foo",
 							},
 						},
-						// &types.BlankLine{},
 					},
 				}
 				verify(GinkgoT(), expectedDocument, actualContent)
@@ -91,8 +90,6 @@ var _ = Describe("Images", func() {
 								Alt:  "foo",
 							},
 						},
-						// &types.BlankLine{},
-						// &types.BlankLine{},
 					},
 				}
 				verify(GinkgoT(), expectedDocument, actualContent)

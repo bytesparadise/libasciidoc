@@ -14,13 +14,14 @@ func indent(indentLevel int) string {
 }
 
 func toInlineElements(elements []interface{}) ([]InlineElement, error) {
-	result := make([]InlineElement, len(elements))
-	for i, element := range elements {
+	mergedElements := merge(elements)
+	result := make([]InlineElement, len(mergedElements))
+	for i, element := range mergedElements {
 		switch element := element.(type) {
 		case InlineElement:
 			result[i] = element
 		default:
-			return nil, errors.Errorf("unexpected element type: %T (expected a InlineElement instead)", element)
+			return nil, errors.Errorf("unexpected element of type: %T (expected a InlineElement instead)", element)
 		}
 	}
 	return result, nil
@@ -32,23 +33,25 @@ func filterUnrelevantElements(blocks []interface{}) []DocElement {
 	elements := make([]DocElement, 0)
 	for _, block := range blocks {
 		log.Debugf(" converting block of type '%T' into a DocElement...", block)
-		if preamble, ok := block.(*Preamble); ok {
+		switch block := block.(type) {
+		case *BlankLine:
+			// exclude blank lines from here, we won't need them in the rendering anyways
+		case *Preamble:
 			// exclude empty preambles
-			if len(preamble.Elements) > 0 {
+			if len(block.Elements) > 0 {
 				// exclude empty preamble
 				elements = append(elements, block)
 			}
-		} else if _, ok := block.(*BlankLine); ok {
-			// exclude blank lines from here, we won't need them in the rendering anyways
-		} else if b, ok := block.([]interface{}); ok {
-			result := filterUnrelevantElements(b)
+		case []interface{}:
+			result := filterUnrelevantElements(block)
 			elements = append(elements, result...)
-		} else if block != nil {
-			elements = append(elements, block)
+		default:
+			if block != nil {
+				elements = append(elements, block)
+			}
 		}
 	}
-	log.Debugf("result=%[1]v (%[1]T) ", elements)
-	return elements // exclude allocated nil values
+	return elements
 }
 
 func merge(elements []interface{}, extraElements ...interface{}) []interface{} {
@@ -88,7 +91,7 @@ func merge(elements []interface{}, extraElements ...interface{}) []interface{} {
 				result = merge(result, f...)
 			}
 		default:
-			log.Debugf("Merging with 'default' case an element of type %[1]T: %[1]v", element)
+			log.Debugf("Merging with 'default' case an element of type %[1]T", element)
 			result, buff = appendBuffer(result, buff)
 			result = append(result, element)
 		}

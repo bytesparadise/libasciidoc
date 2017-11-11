@@ -2,31 +2,31 @@ package html5_test
 
 import . "github.com/onsi/ginkgo"
 
-var _ = Describe("Rendering Paragraph", func() {
+var _ = Describe("Paragraphs", func() {
 
-	It("a standalone paragraph", func() {
-		content := `*bold content* 
-with more content afterwards...`
+	It("a standalone paragraph with special character", func() {
+		actualContent := `*bold content* 
+& more content afterwards...`
 		expected := `<div class="paragraph">
 <p><strong>bold content</strong> 
-with more content afterwards...</p>
+&amp; more content afterwards...</p>
 </div>`
-		verify(GinkgoT(), expected, content)
+		verify(GinkgoT(), expected, actualContent)
 	})
 
 	It("a standalone paragraph with an ID and a title", func() {
-		content := `[#foo]
+		actualContent := `[#foo]
 .a title
 *bold content* with more content afterwards...`
 		expected := `<div id="foo" class="paragraph">
 <div class="doctitle">a title</div>
 <p><strong>bold content</strong> with more content afterwards...</p>
 </div>`
-		verify(GinkgoT(), expected, content)
+		verify(GinkgoT(), expected, actualContent)
 	})
 
 	It("2 paragraphs and blank line", func() {
-		content := `
+		actualContent := `
 *bold content* with more content afterwards...
 
 and here another paragraph
@@ -38,6 +38,6 @@ and here another paragraph
 <div class="paragraph">
 <p>and here another paragraph</p>
 </div>`
-		verify(GinkgoT(), expected, content)
+		verify(GinkgoT(), expected, actualContent)
 	})
 })

@@ -268,7 +268,6 @@ var _ = Describe("List Items", func() {
 								},
 							},
 						},
-						// &types.BlankLine{},
 						&types.List{
 							Items: []*types.ListItem{
 								&types.ListItem{
