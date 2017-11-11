@@ -1,5 +1,5 @@
 hash: cfba5e638b0bc78f86d3fa35d1d93831e62fc13a0c31b0e57153a21ab291a151
-updated: 2017-10-27T14:02:22.149425+02:00
+updated: 2017-11-07T10:25:48.82905315+01:00
 imports:
 - name: github.com/davecgh/go-spew
   version: 6d212800a42e8ab5c146b8ace3490ee17e5225f9
@@ -8,7 +8,7 @@ imports:
 - name: github.com/go-test/deep
   version: f49763a6ea0a91026be26f8213bebee726b4185f
 - name: github.com/mna/pigeon
-  version: 0e50ca5df1bdf6740f6780e5ed926f5973a44ddc
+  version: 3be04e5d442b852c8f25976ad53e667841322ed4
 - name: github.com/onsi/ginkgo
   version: 9eda700730cba42af70d53180f9dcce9266bc2bc
   subpackages:

@@ -2,20 +2,20 @@ package html5_test
 
 import . "github.com/onsi/ginkgo"
 
-var _ = Describe("Rendering sections", func() {
+var _ = Describe("Sections", func() {
 
 	Context("Sections only", func() {
 
 		It("header section", func() {
-			content := "= a title"
+			actualContent := "= a title"
 			// top-level section is not rendered per-say,
 			// but the section will be used to set the HTML page's <title> element
 			expected := ``
-			verify(GinkgoT(), expected, content)
+			verify(GinkgoT(), expected, actualContent)
 		})
 
 		It("section level 1 alone", func() {
-			content := "== a title"
+			actualContent := "== a title"
 			// top-level section is not rendered per-say,
 			// but the section will be used to set the HTML page's <title> element
 			expected := `<div class="sect1">
@@ -23,53 +23,53 @@ var _ = Describe("Rendering sections", func() {
 <div class="sectionbody">
 </div>
 </div>`
-			verify(GinkgoT(), expected, content)
+			verify(GinkgoT(), expected, actualContent)
 		})
 
 		It("section level 2 alone", func() {
-			content := "=== a title"
+			actualContent := "=== a title"
 			// top-level section is not rendered per-say,
 			// but the section will be used to set the HTML page's <title> element
 			expected := `<div class="sect2">
 <h3 id="_a_title">a title</h3>
 </div>`
-			verify(GinkgoT(), expected, content)
+			verify(GinkgoT(), expected, actualContent)
 		})
 
 		It("section level 1 with just bold content", func() {
-			content := `==  *2 spaces and bold content*`
+			actualContent := `==  *2 spaces and bold content*`
 			expected := `<div class="sect1">
 <h2 id="__strong_2_spaces_and_bold_content_strong"><strong>2 spaces and bold content</strong></h2>
 <div class="sectionbody">
 </div>
 </div>`
-			verify(GinkgoT(), expected, content)
+			verify(GinkgoT(), expected, actualContent)
 		})
 
 		It("section level 2 with nested bold content", func() {
-			content := `=== a section title, with *bold content*`
+			actualContent := `=== a section title, with *bold content*`
 			expected := `<div class="sect2">
 <h3 id="_a_section_title_with_strong_bold_content_strong">a section title, with <strong>bold content</strong></h3>
 </div>`
-			verify(GinkgoT(), expected, content)
+			verify(GinkgoT(), expected, actualContent)
 		})
 
 		It("section level 1 with custom ID", func() {
-			content := `[#custom_id]
+			actualContent := `[#custom_id]
 == a section title, with *bold content*`
 			expected := `<div class="sect1">
 <h2 id="custom_id">a section title, with <strong>bold content</strong></h2>
 <div class="sectionbody">
 </div>
 </div>`
-			verify(GinkgoT(), expected, content)
+			verify(GinkgoT(), expected, actualContent)
 		})
 	})
 
 	Context("Section with elements", func() {
 
 		It("section level 1 with 2 paragraphs", func() {
-			content := `== a title
+			actualContent := `== a title
 		
 and a first paragraph
 
@@ -87,11 +87,11 @@ and a second paragraph`
 </div>
 </div>
 </div>`
-			verify(GinkgoT(), expected, content)
+			verify(GinkgoT(), expected, actualContent)
 		})
 
 		It("section with just a paragraph", func() {
-			content := `= a title
+			actualContent := `= a title
 		
 a paragraph`
 			// top-level section is not rendered per-say,
@@ -99,11 +99,11 @@ a paragraph`
 			expected := `<div class="paragraph">
 <p>a paragraph</p>
 </div>`
-			verify(GinkgoT(), expected, content)
+			verify(GinkgoT(), expected, actualContent)
 		})
 
 		It("header with preamble then section level 1", func() {
-			content := `= a title
+			actualContent := `= a title
 		
 a preamble
 
@@ -132,11 +132,11 @@ with some text`
 </div>
 </div>
 </div>`
-			verify(GinkgoT(), expected, content)
+			verify(GinkgoT(), expected, actualContent)
 		})
 
 		It("header with preamble then 2 sections level 1", func() {
-			content := `= a title
+			actualContent := `= a title
 		
 a preamble
 
@@ -177,7 +177,7 @@ with some text, too`
 </div>
 </div>
 </div>`
-			verify(GinkgoT(), expected, content)
+			verify(GinkgoT(), expected, actualContent)
 		})
 
 	})

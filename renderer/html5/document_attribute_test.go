@@ -2,9 +2,9 @@ package html5_test
 
 import . "github.com/onsi/ginkgo"
 
-var _ = Describe("Rendering With Attributes", func() {
+var _ = Describe("Document With Attributes", func() {
 	It("some attributes then a paragraph", func() {
-		content := `:toc:
+		actualContent := `:toc:
 :date: 2017-01-01
 :author: Xavier
 a paragraph`
@@ -12,13 +12,11 @@ a paragraph`
 		expected := `<div class="paragraph">
 <p>a paragraph</p>
 </div>`
-		verify(GinkgoT(), expected, content)
+		verify(GinkgoT(), expected, actualContent)
 	})
-})
 
-var _ = Describe("Rendering With Attributes", func() {
 	It("a paragraph then some attributes", func() {
-		content := `a paragraph
+		actualContent := `a paragraph
 
 :toc:
 :date: 2017-01-01
@@ -27,22 +25,22 @@ var _ = Describe("Rendering With Attributes", func() {
 		expected := `<div class="paragraph">
 <p>a paragraph</p>
 </div>`
-		verify(GinkgoT(), expected, content)
+		verify(GinkgoT(), expected, actualContent)
 	})
 
 	It("a paragraph with substitution", func() {
-		content := `:author: Xavier
+		actualContent := `:author: Xavier
 
 a paragraph written by {author}`
 
 		expected := `<div class="paragraph">
 <p>a paragraph written by Xavier</p>
 </div>`
-		verify(GinkgoT(), expected, content)
+		verify(GinkgoT(), expected, actualContent)
 	})
 
 	It("paragraphs with definitions, substitutions and resets", func() {
-		content := `author is {author}.
+		actualContent := `author is {author}.
 		
 :author: me
 author is now {author}.
@@ -65,11 +63,11 @@ author is now {author}.`
 <div class="paragraph">
 <p>author is now {author}.</p>
 </div>`
-		verify(GinkgoT(), expected, content)
+		verify(GinkgoT(), expected, actualContent)
 	})
 
 	It("front-matter then paragraph with substitutions", func() {
-		content := `---
+		actualContent := `---
 author: Xavier
 ---
 		
@@ -78,7 +76,7 @@ author is {author}.`
 		expected := `<div class="paragraph">
 <p>author is Xavier.</p>
 </div>`
-		verify(GinkgoT(), expected, content)
+		verify(GinkgoT(), expected, actualContent)
 	})
 
 })

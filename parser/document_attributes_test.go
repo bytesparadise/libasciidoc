@@ -6,7 +6,7 @@ import (
 	. "github.com/onsi/ginkgo"
 )
 
-var _ = Describe("Parsing Document Attributes", func() {
+var _ = Describe("Document Attributes", func() {
 
 	Context("Valid Document Header", func() {
 

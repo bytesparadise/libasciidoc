@@ -386,7 +386,6 @@ a paragraph`
 									},
 								},
 							},
-							// &types.BlankLine{},
 							&types.Section{
 								Level: 2,
 								SectionTitle: types.SectionTitle{
@@ -409,7 +408,6 @@ a paragraph`
 											},
 										},
 									},
-									// &types.BlankLine{},
 								},
 							},
 						},

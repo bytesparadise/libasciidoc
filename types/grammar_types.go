@@ -429,13 +429,9 @@ type FrontMatter struct {
 }
 
 // NewYamlFrontMatter initializes a new FrontMatter from the given `content`
-func NewYamlFrontMatter(content []interface{}) (*FrontMatter, error) {
-	c, err := Stringify(content)
-	if err != nil {
-		return nil, errors.Wrapf(err, "unable to 'Stringify' content in front-matter of document")
-	}
+func NewYamlFrontMatter(content string) (*FrontMatter, error) {
 	attributes := make(map[string]interface{})
-	err = yaml.Unmarshal([]byte(*c), &attributes)
+	err := yaml.Unmarshal([]byte(content), &attributes)
 	if err != nil {
 		return nil, errors.Wrapf(err, "unable to parse yaml content in front-matter of document")
 	}
@@ -642,17 +638,11 @@ type InlineContent struct {
 
 // NewInlineContent initializes a new `InlineContent` from the given values
 func NewInlineContent(elements []interface{}) (*InlineContent, error) {
-	mergedElements := merge(elements)
-	mergedInlineElements := make([]InlineElement, len(mergedElements))
-	for i, element := range mergedElements {
-		mergedInlineElements[i] = element.(InlineElement)
+	inlineElements, err := toInlineElements(elements)
+	if err != nil {
+		return nil, errors.Wrap(err, "unable to initialize a new InlineContent")
 	}
-	result := &InlineContent{Elements: mergedInlineElements}
-	// if log.GetLevel() == log.DebugLevel {
-	// 	log.Debugf("Initialized a new InlineContent with %d elements:", len(result.Elements))
-	// 	spew.Dump(result)
-	// }
-	return result, nil
+	return &InlineContent{Elements: inlineElements}, nil
 }
 
 // Accept implements Visitable#Accept(Visitor)
@@ -1009,7 +999,7 @@ const (
 
 // NewQuotedText initializes a new `QuotedText` from the given kind and content
 func NewQuotedText(kind QuotedTextKind, content []interface{}) (*QuotedText, error) {
-	elements, err := toInlineElements(merge(content))
+	elements, err := toInlineElements(content)
 	if err != nil {
 		return nil, errors.Wrapf(err, "unable to initialize a new QuotedText")
 	}
@@ -1062,6 +1052,47 @@ func NewEscapedQuotedText(backslashes []interface{}, punctuation string, content
 		return nil, errors.Wrapf(err, "error while initializing quoted text with substitution prevention")
 	}
 	return NewInlineContent([]interface{}{backslashesStr, punctuation, content, punctuation})
+}
+
+// ------------------------------------------
+// Passthrough
+// ------------------------------------------
+
+// Passthrough the structure for Passthroughs
+type Passthrough struct {
+	Kind     PassthroughKind
+	Elements []InlineElement
+}
+
+// PassthroughKind the kind of passthrough
+type PassthroughKind int
+
+const (
+	// SinglePlusPassthrough a passthrough with a single `+` punctuation
+	SinglePlusPassthrough PassthroughKind = iota
+	// TriplePlusPassthrough a passthrough with a triple `+++` punctuation
+	TriplePlusPassthrough
+	// PassthroughMacro a passthrough with the `pass:[]` macro
+	PassthroughMacro
+)
+
+// NewPassthrough returns a new passthrough
+func NewPassthrough(kind PassthroughKind, elements []interface{}) (*Passthrough, error) {
+	passthroughElements, err := toInlineElements(elements)
+	if err != nil {
+		return nil, errors.Wrap(err, "unable to initialize a new Passthrough")
+	}
+	log.Debugf("Initialized a new Passthrough with content: '%v'", passthroughElements)
+	return &Passthrough{
+		Kind:     kind,
+		Elements: passthroughElements,
+	}, nil
+
+}
+
+// Accept implements Visitable#Accept(Visitor)
+func (p *Passthrough) Accept(v Visitor) error {
+	return nil
 }
 
 // ------------------------------------------

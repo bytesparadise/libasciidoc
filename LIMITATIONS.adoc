@@ -34,3 +34,19 @@ whereas Asciidoc/Asciidoctor will produce :
 <p><strong>some *nested bold</strong> content*.</p>
 ```
 
+== Passthroughs
+
+The Inline pass macro will not render nothing at all instead of an empty paragraph
+when the macro is empty. I.e.:
+
+````
+pass:[]
+````
+
+will produce no HTML element at all, whereas Asciidoc/Asciidoctor will produce :
+
+````
+<div class="paragraph">
+<p></p>
+</div>
+````
