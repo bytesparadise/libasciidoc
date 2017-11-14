@@ -10,11 +10,11 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-var listingBlockTmpl *template.Template
+var verbatimBlockTmpl *template.Template
 
 // initializes the templates
 func init() {
-	listingBlockTmpl = newHTMLTemplate("listing block", `<div class="listingblock">
+	verbatimBlockTmpl = newHTMLTemplate("listing block", `<div class="listingblock">
 <div class="content">
 <pre class="highlight"><code>{{.Content}}</code></pre>
 </div>
@@ -38,8 +38,8 @@ func renderDelimitedBlock(ctx *renderer.Context, block types.DelimitedBlock) ([]
 
 func selectDelimitedBlockTemplate(block types.DelimitedBlock) (*template.Template, error) {
 	switch block.Kind {
-	case types.FencedBlock:
-		return listingBlockTmpl, nil
+	case types.FencedBlock, types.ListingBlock:
+		return verbatimBlockTmpl, nil
 	default:
 		return nil, errors.Errorf("no template for block of kind %v", block.Kind)
 	}
