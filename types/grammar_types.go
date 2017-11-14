@@ -797,6 +797,8 @@ type DelimitedBlockKind int
 const (
 	// FencedBlock a fenced block
 	FencedBlock DelimitedBlockKind = iota
+	// ListingBlock a listing block
+	ListingBlock
 )
 
 // DelimitedBlock the structure for the delimited blocks

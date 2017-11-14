@@ -12,15 +12,15 @@ It is is available under the terms of the https://raw.githubusercontent.com/byte
 * Title and Sections (level 1 to 6)
 * Document attribute declaration (after the title and within the rest of the document) and substitution
 * Paragraphs
-* Delimited Source Blocks (using the `+++```+++` delimiter, a.k.a "fences")
-* Literal blocks (paragraph starting with a space, with the "...." delimiter or with the `[literal]` attribute)
-* Quoted text (+bold+, _italic_ and `monospace`) and substitution prevention using the `\` escape character
-* Passtrough (wrapping with a single plus or a triple plus, or using the `pass:[]` or `pass:q[]` macros)
+* Delimited Source Blocks (using the `+++```+++` ("fences") delimiter for source code or the `----` delimiter for listing)
+* Literal blocks (paragraph starting with a space, with the `+++....+++` delimiter or with the `[literal]` attribute)
+* Quoted text (+bold+, _italic_ and `monospace`) and substitution prevention using the backslash (`\`) character
+* Passtrough (wrapping with a single plus or a triple plus, or using the `+++pass:[]+++` or `+++pass:q[]+++` macros)
 * Unordered lists, using the `-` marker for simple lists, or the `\*` marker for nested lists (and `\**`, `\***`, etc. for the sublists)
 * External links in paragraphs (`https://`, `http://`, `ftp://`, `irc://`, `mailto:`)
 * Inline images in paragraphs (`image://`)
 * Block images (`image:://`)
-* Element attributes (ID, link and title, when applicable) on block images, paragraphs, lists and sections
+* Element attributes (`ID`, `link` and `title`, where applicable) on block images, paragraphs, lists and sections
 
 
 See the http://LIMITATIONS.adoc[known limitations] page for differences between Asciidoc/Asciidoctor and Libasciidoc.

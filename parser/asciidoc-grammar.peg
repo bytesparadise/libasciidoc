@@ -216,7 +216,7 @@ Paragraph <- attributes:(ElementAttribute)* !("="+ WS+) lines:(InlineContent EOL
 
 // an inline content element may start with and end with spaces, 
 // but it must contain at least an inline element (image, quoted text, external link, document attribute substitution, word, etc.)
-InlineContent <- !FencedBlockDelimiter elements:(WS* InlineElement WS*)+ &EOL { // needs an "EOL" but does not consume it here.
+InlineContent <- !BlockDelimiter elements:(WS* InlineElement WS*)+ &EOL { // needs an "EOL" but does not consume it here.
     return types.NewInlineContent(elements.([]interface{}))
 } 
 
@@ -390,15 +390,25 @@ InlineImageMacro <- "image:" !":" path:(URL) "[" attributes:(URL_TEXT?) "]" {
 // ------------------------------------------------------------------------------------
 // Delimited Blocks (http://asciidoctor.org/docs/user-manual/#built-in-blocks-summary)
 // ------------------------------------------------------------------------------------
-DelimitedBlock <- FencedBlock 
+DelimitedBlock <- FencedBlock / ListingBlock 
+
+BlockDelimiter <- FencedBlockDelimiter / ListingBlockDelimiter
+
+FencedBlockDelimiter <- "```"
 
 FencedBlock <- FencedBlockDelimiter WS* NEWLINE content:(FencedBlockContent) FencedBlockDelimiter WS* EOL {
     return types.NewDelimitedBlock(types.FencedBlock, content.([]interface{}))
 }
 
-FencedBlockDelimiter <- "```"
-
 FencedBlockContent <- content:(!FencedBlockDelimiter .)* 
+
+ListingBlockDelimiter <- "----"
+
+ListingBlock <- ListingBlockDelimiter WS* NEWLINE content:(ListingBlockContent) ListingBlockDelimiter WS* EOL {
+    return types.NewDelimitedBlock(types.ListingBlock, content.([]interface{}))
+}
+
+ListingBlockContent <- content:(!ListingBlockDelimiter .)* 
 
 // -------------------------------------------------------------------------------------
 // Literal Blocks (see http://asciidoctor.org/docs/user-manual/#literal-text-and-blocks)
