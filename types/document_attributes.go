@@ -2,6 +2,7 @@ package types
 
 import (
 	"reflect"
+	"strconv"
 
 	"github.com/pkg/errors"
 )
@@ -10,13 +11,41 @@ import (
 type DocumentAttributes map[string]interface{}
 
 const (
-	title string = "doctitle"
+	title     string = "doctitle"
+	toclevels string = "toclevels"
 )
+
+// HasTOC returns `true` if the document has the `toc` attribute
+func (m DocumentAttributes) HasTOC() bool {
+	_, exists := m["toc"]
+	return exists
+}
+
+// GetTOCLevels returns the value of the `toclevels` attribute if it was specified,
+// or `2` as the default value
+func (m DocumentAttributes) GetTOCLevels() (*int, error) {
+	if levels, exists := m["toclevels"]; exists {
+		if levels, ok := levels.(int); ok {
+			return &levels, nil
+		}
+		if _, ok := levels.(string); ok {
+			levels, err := strconv.Atoi(levels.(string))
+			if err != nil {
+				return nil, errors.Wrapf(err, "the value of the 'toclevels' attribute is not an integer: %T", levels)
+			}
+			return &levels, nil
+		}
+		return nil, errors.Errorf("the value of the 'toclevels' attribute is not an integer: %T", levels)
+	}
+	// return default value if the "toclevels" doc attribute was not specified
+	defaultLevels := 2
+	return &defaultLevels, nil
+}
 
 // HasAuthors returns `true` if the document has one or more authors, `false` otherwise.
 func (m DocumentAttributes) HasAuthors() bool {
-	_, author := m["author"]
-	return author
+	_, exists := m["author"]
+	return exists
 }
 
 // GetTitle retrieves the document title in its metadata, or returns nil if the title was not specified
