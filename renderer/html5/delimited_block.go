@@ -21,14 +21,14 @@ func init() {
 </div>`)
 }
 
-func renderDelimitedBlock(ctx *renderer.Context, block types.DelimitedBlock) ([]byte, error) {
-	log.Debugf("rendering delimited block with content: %s", block.Content)
+func renderDelimitedBlock(ctx *renderer.Context, b *types.DelimitedBlock) ([]byte, error) {
+	log.Debugf("rendering delimited block with content: %s", b.Content)
 	result := bytes.NewBuffer(nil)
-	tmpl, err := selectDelimitedBlockTemplate(block)
+	tmpl, err := selectDelimitedBlockTemplate(b)
 	if err != nil {
 		return nil, errors.Wrapf(err, "unable to render delimited block")
 	}
-	err = tmpl.Execute(result, block)
+	err = tmpl.Execute(result, b)
 	if err != nil {
 		return nil, errors.Wrapf(err, "unable to render delimited block")
 	}
@@ -36,11 +36,11 @@ func renderDelimitedBlock(ctx *renderer.Context, block types.DelimitedBlock) ([]
 	return result.Bytes(), nil
 }
 
-func selectDelimitedBlockTemplate(block types.DelimitedBlock) (*template.Template, error) {
-	switch block.Kind {
+func selectDelimitedBlockTemplate(b *types.DelimitedBlock) (*template.Template, error) {
+	switch b.Kind {
 	case types.FencedBlock, types.ListingBlock:
 		return verbatimBlockTmpl, nil
 	default:
-		return nil, errors.Errorf("no template for block of kind %v", block.Kind)
+		return nil, errors.Errorf("no template for block of kind %v", b.Kind)
 	}
 }

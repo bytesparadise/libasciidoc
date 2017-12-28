@@ -15,12 +15,6 @@ const (
 	toclevels string = "toclevels"
 )
 
-// HasTOC returns `true` if the document has the `toc` attribute
-func (m DocumentAttributes) HasTOC() bool {
-	_, exists := m["toc"]
-	return exists
-}
-
 // GetTOCLevels returns the value of the `toclevels` attribute if it was specified,
 // or `2` as the default value
 func (m DocumentAttributes) GetTOCLevels() (*int, error) {
@@ -89,8 +83,8 @@ func (m DocumentAttributes) AddAttribute(attr *DocumentAttributeDeclaration) {
 }
 
 // Reset resets the given attribute
-func (m DocumentAttributes) Reset(a DocumentAttributeReset) {
-	delete(m, a.Name)
+func (m DocumentAttributes) Reset(attr *DocumentAttributeReset) {
+	delete(m, attr.Name)
 }
 
 // GetAsString gets the string value for the given key, or nil if none was found

@@ -100,15 +100,6 @@ func renderDocument(ctx *renderer.Context, output io.Writer) (map[string]interfa
 
 func renderElements(ctx *renderer.Context, elements []types.DocElement) ([]byte, error) {
 	renderedElementsBuff := bytes.NewBuffer(nil)
-	// handle TOC
-	if ctx.Document.Attributes.HasTOC() {
-		renderedTOC, err := renderTableOfContent(ctx)
-		if err != nil {
-			return nil, errors.Wrapf(err, "failed to render the document")
-		}
-		renderedElementsBuff.Write(renderedTOC)
-	}
-
 	hasContent := false
 	for _, element := range elements {
 		content, err := renderElement(ctx, element)

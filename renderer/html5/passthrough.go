@@ -9,7 +9,7 @@ import (
 	"github.com/pkg/errors"
 )
 
-func renderPassthrough(ctx *renderer.Context, p types.Passthrough) ([]byte, error) {
+func renderPassthrough(ctx *renderer.Context, p *types.Passthrough) ([]byte, error) {
 	renderedContent, err := renderPassthroughContent(ctx, p)
 	if err != nil {
 		return nil, errors.Wrap(err, "unable to render passthrough")
@@ -26,7 +26,7 @@ func renderPassthrough(ctx *renderer.Context, p types.Passthrough) ([]byte, erro
 }
 
 // renderPassthroughMacro renders the passthrough content in ist raw from
-func renderPassthroughContent(ctx *renderer.Context, p types.Passthrough) ([]byte, error) {
+func renderPassthroughContent(ctx *renderer.Context, p *types.Passthrough) ([]byte, error) {
 	buf := bytes.NewBuffer(nil)
 	for _, element := range p.Elements {
 		switch element := element.(type) {

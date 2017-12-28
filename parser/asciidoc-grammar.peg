@@ -21,7 +21,7 @@ DocumentBlocks <- content:(Preamble Section+) / content:(StandaloneBlock*) {
     return content, nil
 }
 
-StandaloneBlock <- DocumentAttributeDeclaration / DocumentAttributeReset / List / BlockImage / LiteralBlock / DelimitedBlock / Paragraph / (ElementAttribute EOL) / BlankLine //TODO: should Paragraph be the last type ?
+StandaloneBlock <- DocumentAttributeDeclaration / DocumentAttributeReset / TableOfContentsMacro / List / BlockImage / LiteralBlock / DelimitedBlock / Paragraph / (ElementAttribute EOL) / BlankLine //TODO: should Paragraph be the last type ?
 
 Preamble <- elements:(StandaloneBlock*) {
     return types.NewPreamble(elements.([]interface{}))
@@ -116,6 +116,11 @@ DocumentAttributeSubstitution <- "{" name:(AttributeName) "}" {
 // must begin with a word character (A-Z, a-z, 0-9 or _) and 
 // must only contain word characters and hyphens ("-").
 AttributeName <- ([A-Z] / [a-z] / [0-9] / "_") ([A-Z] / [a-z] / [0-9] / "-")*
+
+// ------------------------------------------
+// Table of Contents
+// ------------------------------------------
+TableOfContentsMacro <- "toc::[]" NEWLINE
 
 // ------------------------------------------
 // Sections

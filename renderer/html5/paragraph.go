@@ -20,15 +20,15 @@ func init() {
 </div>`)
 }
 
-func renderParagraph(ctx *renderer.Context, paragraph types.Paragraph) ([]byte, error) {
+func renderParagraph(ctx *renderer.Context, p *types.Paragraph) ([]byte, error) {
 	renderedLinesBuff := bytes.NewBuffer(nil)
-	for i, line := range paragraph.Lines {
-		renderedLine, err := renderInlineContent(ctx, *line)
+	for i, line := range p.Lines {
+		renderedLine, err := renderInlineContent(ctx, line)
 		if err != nil {
 			return nil, errors.Wrapf(err, "unable to render paragraph line")
 		}
 		renderedLinesBuff.Write(renderedLine)
-		if i < len(paragraph.Lines)-1 {
+		if i < len(p.Lines)-1 {
 			renderedLinesBuff.WriteString("\n")
 		}
 
@@ -43,8 +43,8 @@ func renderParagraph(ctx *renderer.Context, paragraph types.Paragraph) ([]byte, 
 		Title *types.ElementTitle
 		Lines template.HTML
 	}{
-		ID:    paragraph.ID,
-		Title: paragraph.Title,
+		ID:    p.ID,
+		Title: p.Title,
 		Lines: template.HTML(renderedLinesBuff.String()), // here we must preserve the HTML tags
 	})
 	if err != nil {

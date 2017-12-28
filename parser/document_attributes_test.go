@@ -506,6 +506,7 @@ This journey begins on a bleary Monday morning.`
 					"toc":              "",
 				},
 				Elements: []types.DocElement{
+					&types.TableOfContentsMacro{},
 					&types.Paragraph{
 						Lines: []*types.InlineContent{
 							&types.InlineContent{
