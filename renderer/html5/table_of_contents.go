@@ -17,8 +17,7 @@ func init() {
 	tableOfContentTmpl = newHTMLTemplate("toc", `<div id="toc" class="toc">
 <div id="toctitle">Table of Contents</div>
 {{.Content}}
-</div>
-`)
+</div>`)
 	tableOfContentSectionSetTmpl = newHTMLTemplate("toc section", `<ul class="sectlevel{{.Level}}">
 {{ range .Elements }}<li><a href="#{{.Href}}">{{.Title}}</a>{{ if .Subelements }}
 {{.Subelements}}
@@ -40,7 +39,7 @@ type TableOfContentSection struct {
 	Subelements *template.HTML
 }
 
-func renderTableOfContent(ctx *renderer.Context) ([]byte, error) {
+func renderTableOfContent(ctx *renderer.Context, m *types.TableOfContentsMacro) ([]byte, error) {
 	result := bytes.NewBuffer(nil)
 	renderedSections, err := renderTableOfContentSections(ctx, ctx.Document.Elements, 1)
 	if err != nil {

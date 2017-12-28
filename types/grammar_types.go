@@ -58,19 +58,50 @@ func NewDocument(frontmatter, header interface{}, blocks []interface{}) (*Docume
 	}
 	// elements := convertBlocksToDocElements(blocks)
 	elements := filterUnrelevantElements(blocks)
-	document := &Document{
-		Attributes: make(map[string]interface{}),
-		Elements:   elements,
-	}
+	attributes := make(map[string]interface{})
+
 	if frontmatter != nil {
 		for attrName, attrValue := range frontmatter.(*FrontMatter).Content {
-			document.Attributes[attrName] = attrValue
+			attributes[attrName] = attrValue
 		}
 	}
 	if header != nil {
 		for attrName, attrValue := range header.(*DocumentHeader).Content {
-			document.Attributes[attrName] = attrValue
+			attributes[attrName] = attrValue
+			if attrName == "toc" {
+				// insert a TableOfContentsMacro element if `toc` value is:
+				// - "auto" (or empty)
+				// - "preamble"
+				switch attrValue {
+				case "", "auto":
+					// insert TableOfContentsMacro at first position
+					elements = append([]DocElement{&TableOfContentsMacro{}}, elements...)
+				case "preamble":
+					// lookup preamble in elements (should be first)
+					preambleIndex := 0
+					for i, e := range elements {
+						if _, ok := e.(*Preamble); ok {
+							preambleIndex = i
+							break
+						}
+					}
+					// insert TableOfContentsMacro just after preamble
+					remainingElements := make([]DocElement, len(elements)-(preambleIndex+1))
+					copy(remainingElements, elements[preambleIndex+1:])
+					elements = append(elements[0:preambleIndex+1], &TableOfContentsMacro{})
+					elements = append(elements, remainingElements...)
+				case "macro":
+				default:
+					log.Warnf("invalid value for 'toc' attribute: '%s'", attrValue)
+
+				}
+
+			}
 		}
+	}
+	document := &Document{
+		Attributes: attributes,
+		Elements:   elements,
 	}
 	return document, nil
 }
@@ -402,6 +433,14 @@ func NewDocumentAttributeSubstitution(name []interface{}) (*DocumentAttributeSub
 // Accept implements Visitable#Accept(Visitor)
 func (a *DocumentAttributeSubstitution) Accept(v Visitor) error {
 	return v.Visit(a)
+}
+
+// ------------------------------------------
+// Table of Contents
+// ------------------------------------------
+
+// TableOfContentsMacro the structure for Table of Contents
+type TableOfContentsMacro struct {
 }
 
 // ------------------------------------------

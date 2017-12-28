@@ -25,7 +25,7 @@ func init() {
 	inlineImageTmpl = newHTMLTemplate("inline image", `<span class="image"><img src="{{.Macro.Path}}" alt="{{.Macro.Alt}}"{{if .Macro.Width}} width="{{.Macro.Width}}"{{end}}{{if .Macro.Height}} height="{{.Macro.Height}}"{{end}}></span>`)
 }
 
-func renderBlockImage(ctx *renderer.Context, img types.BlockImage) ([]byte, error) {
+func renderBlockImage(ctx *renderer.Context, img *types.BlockImage) ([]byte, error) {
 	result := bytes.NewBuffer(nil)
 	err := blockImageTmpl.Execute(result, img)
 	if err != nil {
@@ -35,7 +35,7 @@ func renderBlockImage(ctx *renderer.Context, img types.BlockImage) ([]byte, erro
 	return result.Bytes(), nil
 }
 
-func renderInlineImage(ctx *renderer.Context, img types.InlineImage) ([]byte, error) {
+func renderInlineImage(ctx *renderer.Context, img *types.InlineImage) ([]byte, error) {
 	result := bytes.NewBuffer(nil)
 	err := inlineImageTmpl.Execute(result, img)
 	if err != nil {

@@ -41,16 +41,16 @@ func init() {
 		`<h{{.Level}} id="{{.ID}}">{{.Content}}</h{{.Level}}>`)
 }
 
-func renderPreamble(ctx *renderer.Context, preamble types.Preamble) ([]byte, error) {
+func renderPreamble(ctx *renderer.Context, p *types.Preamble) ([]byte, error) {
 	log.Debugf("Rendering preamble...")
 	renderedElementsBuff := bytes.NewBuffer(nil)
-	for i, element := range preamble.Elements {
+	for i, element := range p.Elements {
 		renderedElement, err := renderElement(ctx, element)
 		if err != nil {
 			return nil, errors.Wrapf(err, "unable to render preamble")
 		}
 		renderedElementsBuff.Write(renderedElement)
-		if i < len(preamble.Elements)-1 {
+		if i < len(p.Elements)-1 {
 			renderedElementsBuff.WriteString("\n")
 		}
 	}
@@ -59,21 +59,21 @@ func renderPreamble(ctx *renderer.Context, preamble types.Preamble) ([]byte, err
 	if err != nil {
 		return nil, errors.Wrapf(err, "error while rendering section")
 	}
-	log.Debugf("rendered preamble: %s", result.Bytes())
+	log.Debugf("rendered p: %s", result.Bytes())
 	return result.Bytes(), nil
 }
 
-func renderSection(ctx *renderer.Context, section types.Section) ([]byte, error) {
-	log.Debugf("Rendering section level %d", section.Level)
-	renderedSectionTitle, err := renderSectionTitle(ctx, section.Level, section.SectionTitle)
+func renderSection(ctx *renderer.Context, s *types.Section) ([]byte, error) {
+	log.Debugf("Rendering section level %d", s.Level)
+	renderedSectionTitle, err := renderSectionTitle(ctx, s.Level, s.SectionTitle)
 	if err != nil {
 		return nil, errors.Wrapf(err, "error while rendering section sectionTitle")
 	}
-	renderedSectionElements, err := renderSectionElements(ctx, section.Elements)
+	renderedSectionElements, err := renderSectionElements(ctx, s.Elements)
 	result := bytes.NewBuffer(nil)
 	// select the appropriate template for the section
 	var tmpl *template.Template
-	if section.Level == 1 {
+	if s.Level == 1 {
 		tmpl = section1ContentTmpl
 	} else {
 		tmpl = otherSectionContentTmpl
@@ -85,7 +85,7 @@ func renderSection(ctx *renderer.Context, section types.Section) ([]byte, error)
 		SectionTitle template.HTML
 		Elements     template.HTML
 	}{
-		Class:        "sect" + strconv.Itoa(section.Level),
+		Class:        "sect" + strconv.Itoa(s.Level),
 		SectionTitle: renderedHTMLSectionTitle,
 		Elements:     renderedHTMLElements,
 	})

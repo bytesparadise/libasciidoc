@@ -8,9 +8,9 @@ import (
 	"github.com/pkg/errors"
 )
 
-func renderInlineContent(ctx *renderer.Context, content types.InlineContent) ([]byte, error) {
+func renderInlineContent(ctx *renderer.Context, c *types.InlineContent) ([]byte, error) {
 	renderedElementsBuff := bytes.NewBuffer(nil)
-	for _, element := range content.Elements {
+	for _, element := range c.Elements {
 		renderedElement, err := renderElement(ctx, element)
 		if err != nil {
 			return nil, errors.Wrapf(err, "unable to render paragraph element")

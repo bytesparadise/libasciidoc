@@ -30,15 +30,15 @@ func init() {
 	listItemContentTmpl = newHTMLTemplate("list item content", `<p>{{.}}</p>`)
 }
 
-func renderList(ctx *renderer.Context, list types.List) ([]byte, error) {
+func renderList(ctx *renderer.Context, l *types.List) ([]byte, error) {
 	renderedElementsBuff := bytes.NewBuffer(nil)
-	for i, item := range list.Items {
+	for i, item := range l.Items {
 		renderedListItem, err := renderListItem(ctx, *item)
 		if err != nil {
 			return nil, errors.Wrapf(err, "unable to render list of items")
 		}
 		renderedElementsBuff.Write(renderedListItem)
-		if i < len(list.Items)-1 {
+		if i < len(l.Items)-1 {
 			renderedElementsBuff.WriteString("\n")
 		}
 	}
@@ -49,25 +49,25 @@ func renderList(ctx *renderer.Context, list types.List) ([]byte, error) {
 		ID    *types.ElementID
 		Items template.HTML
 	}{
-		ID:    list.ID,
+		ID:    l.ID,
 		Items: template.HTML(renderedElementsBuff.String()),
 	})
 	if err != nil {
-		return nil, errors.Wrapf(err, "unable to render list of items")
+		return nil, errors.Wrapf(err, "unable to render l of items")
 	}
 	log.Debugf("rendered list of items: %s", result.Bytes())
 	return result.Bytes(), nil
 }
 
-func renderListItem(ctx *renderer.Context, item types.ListItem) ([]byte, error) {
-	renderedItemContent, err := renderListItemContent(ctx, *item.Content)
+func renderListItem(ctx *renderer.Context, i types.ListItem) ([]byte, error) {
+	renderedItemContent, err := renderListItemContent(ctx, *i.Content)
 	if err != nil {
 		return nil, errors.Wrapf(err, "unable to render list item")
 	}
 	result := bytes.NewBuffer(nil)
 	var renderedChildrenOutput *template.HTML
-	if item.Children != nil {
-		childrenOutput, err := renderList(ctx, *item.Children)
+	if i.Children != nil {
+		childrenOutput, err := renderList(ctx, i.Children)
 		if err != nil {
 			return nil, errors.Wrapf(err, "unable to render list item")
 		}
@@ -88,10 +88,10 @@ func renderListItem(ctx *renderer.Context, item types.ListItem) ([]byte, error) 
 	return result.Bytes(), nil
 }
 
-func renderListItemContent(ctx *renderer.Context, content types.ListItemContent) ([]byte, error) {
+func renderListItemContent(ctx *renderer.Context, c types.ListItemContent) ([]byte, error) {
 	renderedLinesBuff := bytes.NewBuffer(nil)
-	for _, line := range content.Lines {
-		renderedLine, err := renderInlineContent(ctx, *line)
+	for _, line := range c.Lines {
+		renderedLine, err := renderInlineContent(ctx, line)
 		if err != nil {
 			return nil, errors.Wrapf(err, "failed to render list item content")
 		}
