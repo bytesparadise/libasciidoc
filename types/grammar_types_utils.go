@@ -9,10 +9,6 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-func indent(indentLevel int) string {
-	return strings.Repeat("  ", indentLevel)
-}
-
 func toInlineElements(elements []interface{}) ([]InlineElement, error) {
 	mergedElements := merge(elements)
 	result := make([]InlineElement, len(mergedElements))
@@ -72,9 +68,6 @@ func merge(elements []interface{}, extraElements ...interface{}) []interface{} {
 			for _, b := range element {
 				buff.WriteByte(b)
 			}
-		case StringElement:
-			content := element.Content
-			buff.WriteString(content)
 		case *StringElement:
 			content := element.Content
 			buff.WriteString(content)
@@ -126,19 +119,7 @@ func Stringify(elements []interface{}, options ...StringifyOption) (*string, err
 	b := make([]byte, 0)
 	buff := bytes.NewBuffer(b)
 	for _, element := range mergedElements {
-		if element == nil {
-			continue
-		}
-		// log.Debugf("%[1]v (%[1]T) ", element)
 		switch element := element.(type) {
-		case string:
-			buff.WriteString(element)
-		case []byte:
-			for _, b := range element {
-				buff.WriteByte(b)
-			}
-		case StringElement:
-			buff.WriteString(element.Content)
 		case *StringElement:
 			buff.WriteString(element.Content)
 		case []interface{}:

@@ -25,7 +25,7 @@ type DocElement interface {
 // InlineElement the interface for inline elements
 type InlineElement interface {
 	DocElement
-	Visitable
+	// Visitable
 }
 
 // Visitable the interface for visitable elements
@@ -695,9 +695,11 @@ func (c *InlineContent) Accept(v Visitor) error {
 		return errors.Wrapf(err, "error while visiting inline content")
 	}
 	for _, element := range c.Elements {
-		err = element.Accept(v)
-		if err != nil {
-			return errors.Wrapf(err, "error while visiting inline content element")
+		if visitable, ok := element.(Visitable); ok {
+			err = visitable.Accept(v)
+			if err != nil {
+				return errors.Wrapf(err, "error while visiting inline content element")
+			}
 		}
 
 	}
@@ -741,27 +743,6 @@ func NewInlineImage(imageMacro ImageMacro) (*InlineImage, error) {
 	return &InlineImage{
 		Macro: imageMacro,
 	}, nil
-}
-
-// Accept implements Visitable#Accept(Visitor)
-func (i *InlineImage) Accept(v Visitor) error {
-	err := v.BeforeVisit(i)
-	if err != nil {
-		return errors.Wrapf(err, "error while pre-visiting inline image")
-	}
-	err = v.Visit(i)
-	if err != nil {
-		return errors.Wrapf(err, "error while visiting inline image")
-	}
-	err = i.Macro.Accept(v)
-	if err != nil {
-		return errors.Wrapf(err, "error while visiting block image element")
-	}
-	err = v.AfterVisit(i)
-	if err != nil {
-		return errors.Wrapf(err, "error while post-visiting block image")
-	}
-	return nil
 }
 
 // ImageMacro the structure for the block image macros
@@ -809,23 +790,6 @@ func NewImageMacro(path string, attributes interface{}) (*ImageMacro, error) {
 		Height: height}, nil
 }
 
-// Accept implements Visitable#Accept(Visitor)
-func (m *ImageMacro) Accept(v Visitor) error {
-	err := v.BeforeVisit(m)
-	if err != nil {
-		return errors.Wrapf(err, "error while pre-visiting block image macro")
-	}
-	err = v.Visit(m)
-	if err != nil {
-		return errors.Wrapf(err, "error while visiting block image macro")
-	}
-	err = v.AfterVisit(m)
-	if err != nil {
-		return errors.Wrapf(err, "error while post-visiting block image macro")
-	}
-	return nil
-}
-
 // ------------------------------------------
 // Delimited blocks
 // ------------------------------------------
@@ -865,23 +829,6 @@ func NewDelimitedBlock(kind DelimitedBlockKind, content []interface{}) (*Delimit
 	}, nil
 }
 
-// Accept implements Visitable#Accept(Visitor)
-func (b *DelimitedBlock) Accept(v Visitor) error {
-	err := v.BeforeVisit(b)
-	if err != nil {
-		return errors.Wrapf(err, "error while pre-visiting delimited block")
-	}
-	err = v.Visit(b)
-	if err != nil {
-		return errors.Wrapf(err, "error while visiting delimited block")
-	}
-	err = v.AfterVisit(b)
-	if err != nil {
-		return errors.Wrapf(err, "error while post-visiting delimited block")
-	}
-	return nil
-}
-
 // ------------------------------------------
 // Literal blocks
 // ------------------------------------------
@@ -906,23 +853,6 @@ func NewLiteralBlock(spaces, content []interface{}) (*LiteralBlock, error) {
 	return &LiteralBlock{
 		Content: blockContent,
 	}, nil
-}
-
-// Accept implements Visitable#Accept(Visitor)
-func (b *LiteralBlock) Accept(v Visitor) error {
-	err := v.BeforeVisit(b)
-	if err != nil {
-		return errors.Wrapf(err, "error while pre-visiting delimited block")
-	}
-	err = v.Visit(b)
-	if err != nil {
-		return errors.Wrapf(err, "error while visiting delimited block")
-	}
-	err = v.AfterVisit(b)
-	if err != nil {
-		return errors.Wrapf(err, "error while post-visiting delimited block")
-	}
-	return nil
 }
 
 // ------------------------------------------
@@ -1062,11 +992,12 @@ func (t *QuotedText) Accept(v Visitor) error {
 		return errors.Wrapf(err, "error while visiting quoted text")
 	}
 	for _, element := range t.Elements {
-		err := element.Accept(v)
-		if err != nil {
-			return errors.Wrapf(err, "error while visiting quoted text element")
+		if visitable, ok := element.(Visitable); ok {
+			err := visitable.Accept(v)
+			if err != nil {
+				return errors.Wrapf(err, "error while visiting quoted text element")
+			}
 		}
-
 	}
 	err = v.AfterVisit(t)
 	if err != nil {
@@ -1129,11 +1060,6 @@ func NewPassthrough(kind PassthroughKind, elements []interface{}) (*Passthrough,
 		Elements: passthroughElements,
 	}, nil
 
-}
-
-// Accept implements Visitable#Accept(Visitor)
-func (p *Passthrough) Accept(v Visitor) error {
-	return nil
 }
 
 // ------------------------------------------
