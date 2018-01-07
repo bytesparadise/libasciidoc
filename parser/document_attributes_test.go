@@ -27,6 +27,7 @@ This journey begins on a bleary Monday morning.`
 						},
 					},
 				},
+				ElementReferences: map[string]interface{}{},
 				Elements: []types.DocElement{
 					&types.Paragraph{
 						Lines: []*types.InlineContent{
@@ -295,7 +296,8 @@ This journey begins on a bleary Monday morning.`
 :0Author: Xavier
 :Auth0r: Xavier`
 				expectedResult := &types.Document{
-					Attributes: map[string]interface{}{},
+					Attributes:        map[string]interface{}{},
+					ElementReferences: map[string]interface{}{},
 					Elements: []types.DocElement{
 						&types.DocumentAttributeDeclaration{Name: "a"},
 						&types.DocumentAttributeDeclaration{Name: "author", Value: "Xavier"},
@@ -314,7 +316,8 @@ This journey begins on a bleary Monday morning.`
 :author: Xavier
 a paragraph`
 				expectedResult := &types.Document{
-					Attributes: map[string]interface{}{},
+					Attributes:        map[string]interface{}{},
+					ElementReferences: map[string]interface{}{},
 					Elements: []types.DocElement{
 						&types.DocumentAttributeDeclaration{Name: "toc"},
 						&types.DocumentAttributeDeclaration{Name: "date", Value: "2017-01-01"},
@@ -340,7 +343,8 @@ a paragraph`
 
 a paragraph`
 				expectedResult := &types.Document{
-					Attributes: map[string]interface{}{},
+					Attributes:        map[string]interface{}{},
+					ElementReferences: map[string]interface{}{},
 					Elements: []types.DocElement{
 						&types.DocumentAttributeDeclaration{Name: "toc"},
 						&types.DocumentAttributeDeclaration{Name: "date", Value: "2017-01-01"},
@@ -367,7 +371,8 @@ a paragraph`
 
 a paragraph`
 				expectedResult := &types.Document{
-					Attributes: map[string]interface{}{},
+					Attributes:        map[string]interface{}{},
+					ElementReferences: map[string]interface{}{},
 					Elements: []types.DocElement{
 						&types.DocumentAttributeDeclaration{Name: "toc"},
 						&types.DocumentAttributeDeclaration{Name: "date", Value: "2017-01-01"},
@@ -393,7 +398,8 @@ a paragraph`
 :date: 2017-01-01
 :author: Xavier`
 				expectedResult := &types.Document{
-					Attributes: map[string]interface{}{},
+					Attributes:        map[string]interface{}{},
+					ElementReferences: map[string]interface{}{},
 					Elements: []types.DocElement{
 						&types.Paragraph{
 							Lines: []*types.InlineContent{
@@ -420,7 +426,8 @@ a paragraph`
 			
 a paragraph written by {author}.`
 				expectedResult := &types.Document{
-					Attributes: map[string]interface{}{},
+					Attributes:        map[string]interface{}{},
+					ElementReferences: map[string]interface{}{},
 					Elements: []types.DocElement{
 						&types.DocumentAttributeDeclaration{Name: "author", Value: "Xavier"},
 						&types.Paragraph{
@@ -446,7 +453,8 @@ a paragraph written by {author}.`
 :author2!:
 a paragraph written by {author}.`
 				expectedResult := &types.Document{
-					Attributes: map[string]interface{}{},
+					Attributes:        map[string]interface{}{},
+					ElementReferences: map[string]interface{}{},
 					Elements: []types.DocElement{
 						&types.DocumentAttributeDeclaration{Name: "author", Value: "Xavier"},
 						&types.DocumentAttributeReset{Name: "author1"},
@@ -505,6 +513,7 @@ This journey begins on a bleary Monday morning.`
 					"keywords":         "documentation, team, obstacles, journey, victory",
 					"toc":              "",
 				},
+				ElementReferences: map[string]interface{}{},
 				Elements: []types.DocElement{
 					&types.TableOfContentsMacro{},
 					&types.Paragraph{
@@ -538,6 +547,18 @@ a paragraph with *bold content*`
 						},
 						ID: &types.ElementID{
 							Value: "_a_header",
+						},
+					},
+				},
+				ElementReferences: map[string]interface{}{
+					"_section_1": &types.SectionTitle{
+						Content: &types.InlineContent{
+							Elements: []types.InlineElement{
+								&types.StringElement{Content: "section 1"},
+							},
+						},
+						ID: &types.ElementID{
+							Value: "_section_1",
 						},
 					},
 				},
@@ -585,7 +606,8 @@ a paragraph with *bold content*`
 :date: 2017-01-01
 :author: Xavier`
 			expectedResult := &types.Document{
-				Attributes: map[string]interface{}{},
+				Attributes:        map[string]interface{}{},
+				ElementReferences: map[string]interface{}{},
 				Elements: []types.DocElement{
 					&types.Paragraph{
 						Lines: []*types.InlineContent{
@@ -620,7 +642,8 @@ a paragraph with *bold content*`
 			actualContent := `:@date: 2017-01-01
 :{author}: Xavier`
 			expectedResult := &types.Document{
-				Attributes: map[string]interface{}{},
+				Attributes:        map[string]interface{}{},
+				ElementReferences: map[string]interface{}{},
 				Elements: []types.DocElement{
 					&types.Paragraph{
 						Lines: []*types.InlineContent{

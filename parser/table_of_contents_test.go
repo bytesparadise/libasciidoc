@@ -61,6 +61,18 @@ A short preamble
 				"doctitle": doctitleAttribute,
 				"toc":      "",
 			},
+			ElementReferences: map[string]interface{}{
+				"_section_1": &types.SectionTitle{
+					Content: &types.InlineContent{
+						Elements: []types.InlineElement{
+							&types.StringElement{Content: "section 1"},
+						},
+					},
+					ID: &types.ElementID{
+						Value: "_section_1",
+					},
+				},
+			},
 			Elements: []types.DocElement{
 				tableOfContents,
 				preamble,
@@ -82,6 +94,18 @@ A short preamble
 			Attributes: map[string]interface{}{
 				"doctitle": doctitleAttribute,
 				"toc":      "preamble",
+			},
+			ElementReferences: map[string]interface{}{
+				"_section_1": &types.SectionTitle{
+					Content: &types.InlineContent{
+						Elements: []types.InlineElement{
+							&types.StringElement{Content: "section 1"},
+						},
+					},
+					ID: &types.ElementID{
+						Value: "_section_1",
+					},
+				},
 			},
 			Elements: []types.DocElement{
 				preamble,
