@@ -16,22 +16,24 @@ func Render(ctx *renderer.Context, output io.Writer) (map[string]interface{}, er
 }
 
 func renderElement(ctx *renderer.Context, element types.DocElement) ([]byte, error) {
-	log.Debugf("rendering element of type %T", element)
-	switch element.(type) {
+	log.Debugf("rendering element of type `%T`", element)
+	switch e := element.(type) {
 	case *types.TableOfContentsMacro:
-		return renderTableOfContent(ctx, element.(*types.TableOfContentsMacro))
+		return renderTableOfContent(ctx, e)
 	case *types.Section:
-		return renderSection(ctx, element.(*types.Section))
+		return renderSection(ctx, e)
 	case *types.Preamble:
-		return renderPreamble(ctx, element.(*types.Preamble))
+		return renderPreamble(ctx, e)
 	case *types.List:
-		return renderList(ctx, element.(*types.List))
+		return renderList(ctx, e)
 	case *types.Paragraph:
-		return renderParagraph(ctx, element.(*types.Paragraph))
+		return renderParagraph(ctx, e)
+	case *types.CrossReference:
+		return renderCrossReference(ctx, e)
 	case *types.QuotedText:
-		return renderQuotedText(ctx, element.(*types.QuotedText))
+		return renderQuotedText(ctx, e)
 	case *types.Passthrough:
-		return renderPassthrough(ctx, element.(*types.Passthrough))
+		return renderPassthrough(ctx, e)
 	case *types.BlockImage:
 		return renderBlockImage(ctx, element.(*types.BlockImage))
 	case *types.InlineImage:

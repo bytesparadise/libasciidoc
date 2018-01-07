@@ -20,6 +20,7 @@ first paragraph`
 					"title":  "a title", // TODO: convert `title` attribute from front-matter into `doctitle` here ?
 					"author": "Xavier",
 				},
+				ElementReferences: map[string]interface{}{},
 				Elements: []types.DocElement{
 					&types.Paragraph{
 						Lines: []*types.InlineContent{
@@ -41,7 +42,8 @@ first paragraph`
 
 first paragraph`
 			expectedDocument := &types.Document{
-				Attributes: map[string]interface{}{},
+				Attributes:        map[string]interface{}{},
+				ElementReferences: map[string]interface{}{},
 				Elements: []types.DocElement{
 					&types.Paragraph{
 						Lines: []*types.InlineContent{

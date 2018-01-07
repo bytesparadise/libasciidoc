@@ -13,7 +13,8 @@ var _ = Describe("Delimited Blocks", func() {
 			content := "some fenced code"
 			actualContent := "```\n" + content + "\n```"
 			expectedDocument := &types.Document{
-				Attributes: map[string]interface{}{},
+				Attributes:        map[string]interface{}{},
+				ElementReferences: map[string]interface{}{},
 				Elements: []types.DocElement{
 					&types.DelimitedBlock{
 						Kind:    types.FencedBlock,
@@ -28,7 +29,8 @@ var _ = Describe("Delimited Blocks", func() {
 			content := ""
 			actualContent := "```\n" + content + "```"
 			expectedDocument := &types.Document{
-				Attributes: map[string]interface{}{},
+				Attributes:        map[string]interface{}{},
+				ElementReferences: map[string]interface{}{},
 				Elements: []types.DocElement{
 					&types.DelimitedBlock{
 						Kind:    types.FencedBlock,
@@ -43,7 +45,8 @@ var _ = Describe("Delimited Blocks", func() {
 			content := "some fenced code\nwith an empty line\n\nin the middle"
 			actualContent := "```\n" + content + "\n```"
 			expectedDocument := &types.Document{
-				Attributes: map[string]interface{}{},
+				Attributes:        map[string]interface{}{},
+				ElementReferences: map[string]interface{}{},
 				Elements: []types.DocElement{
 					&types.DelimitedBlock{
 						Kind:    types.FencedBlock,
@@ -58,7 +61,8 @@ var _ = Describe("Delimited Blocks", func() {
 			content := "some fenced code\nwith an empty line\n\nin the middle"
 			actualContent := "```\n" + content + "\n```\nthen a normal paragraph."
 			expectedDocument := &types.Document{
-				Attributes: map[string]interface{}{},
+				Attributes:        map[string]interface{}{},
+				ElementReferences: map[string]interface{}{},
 				Elements: []types.DocElement{
 					&types.DelimitedBlock{
 						Kind:    types.FencedBlock,
@@ -82,7 +86,8 @@ var _ = Describe("Delimited Blocks", func() {
 			content := "some fenced code"
 			actualContent := "a paragraph.\n```\n" + content + "\n```\n"
 			expectedDocument := &types.Document{
-				Attributes: map[string]interface{}{},
+				Attributes:        map[string]interface{}{},
+				ElementReferences: map[string]interface{}{},
 				Elements: []types.DocElement{
 					&types.Paragraph{
 						Lines: []*types.InlineContent{
@@ -110,7 +115,8 @@ var _ = Describe("Delimited Blocks", func() {
 some listing code
 ----`
 			expectedDocument := &types.Document{
-				Attributes: map[string]interface{}{},
+				Attributes:        map[string]interface{}{},
+				ElementReferences: map[string]interface{}{},
 				Elements: []types.DocElement{
 					&types.DelimitedBlock{
 						Kind:    types.ListingBlock,
@@ -125,7 +131,8 @@ some listing code
 			content := ""
 			actualContent := "----\n" + content + "----"
 			expectedDocument := &types.Document{
-				Attributes: map[string]interface{}{},
+				Attributes:        map[string]interface{}{},
+				ElementReferences: map[string]interface{}{},
 				Elements: []types.DocElement{
 					&types.DelimitedBlock{
 						Kind:    types.ListingBlock,
@@ -140,7 +147,8 @@ some listing code
 			content := "some listing code\nwith an empty line\n\nin the middle"
 			actualContent := "----\n" + content + "\n----"
 			expectedDocument := &types.Document{
-				Attributes: map[string]interface{}{},
+				Attributes:        map[string]interface{}{},
+				ElementReferences: map[string]interface{}{},
 				Elements: []types.DocElement{
 					&types.DelimitedBlock{
 						Kind:    types.ListingBlock,
@@ -155,7 +163,8 @@ some listing code
 			content := "some listing code\nwith an empty line\n\nin the middle"
 			actualContent := "----\n" + content + "\n----\nthen a normal paragraph."
 			expectedDocument := &types.Document{
-				Attributes: map[string]interface{}{},
+				Attributes:        map[string]interface{}{},
+				ElementReferences: map[string]interface{}{},
 				Elements: []types.DocElement{
 					&types.DelimitedBlock{
 						Kind:    types.ListingBlock,
@@ -182,7 +191,8 @@ some listing code
 some listing code
 ----`
 			expectedDocument := &types.Document{
-				Attributes: map[string]interface{}{},
+				Attributes:        map[string]interface{}{},
+				ElementReferences: map[string]interface{}{},
 				Elements: []types.DocElement{
 					&types.Paragraph{
 						Lines: []*types.InlineContent{

@@ -207,106 +207,82 @@ var _ = Describe("Quoted Texts", func() {
 
 		It("inline with bold text", func() {
 			actualContent := "a paragraph with *some bold content*"
-			expectedResult := &types.Paragraph{
-				Lines: []*types.InlineContent{
-					&types.InlineContent{
+			expectedResult := &types.InlineContent{
+				Elements: []types.InlineElement{
+					&types.StringElement{Content: "a paragraph with "},
+					&types.QuotedText{
+						Kind: types.Bold,
 						Elements: []types.InlineElement{
-							&types.StringElement{Content: "a paragraph with "},
-							&types.QuotedText{
-								Kind: types.Bold,
-								Elements: []types.InlineElement{
-									&types.StringElement{Content: "some bold content"},
-								},
-							},
+							&types.StringElement{Content: "some bold content"},
 						},
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Paragraph"))
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineContent"))
 		})
 
 		It("inline with invalid bold text1", func() {
 			actualContent := "a paragraph with *some bold content"
-			expectedResult := &types.Paragraph{
-				Lines: []*types.InlineContent{
-					&types.InlineContent{
-						Elements: []types.InlineElement{
-							&types.StringElement{Content: "a paragraph with *some bold content"},
-						},
-					},
+			expectedResult := &types.InlineContent{
+				Elements: []types.InlineElement{
+					&types.StringElement{Content: "a paragraph with *some bold content"},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Paragraph"))
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineContent"))
 		})
 
 		It("inline with invalid bold text2", func() {
 			actualContent := "a paragraph with *some bold content *"
-			expectedResult := &types.Paragraph{
-				Lines: []*types.InlineContent{
-					&types.InlineContent{
-						Elements: []types.InlineElement{
-							&types.StringElement{Content: "a paragraph with *some bold content *"},
-						},
-					},
+			expectedResult := &types.InlineContent{
+				Elements: []types.InlineElement{
+					&types.StringElement{Content: "a paragraph with *some bold content *"},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Paragraph"))
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineContent"))
 		})
 
 		It("inline with invalid bold text3", func() {
 			actualContent := "a paragraph with * some bold content*"
-			expectedResult := &types.Paragraph{
-				Lines: []*types.InlineContent{
-					&types.InlineContent{
-						Elements: []types.InlineElement{
-							&types.StringElement{Content: "a paragraph with * some bold content*"},
-						},
-					},
+			expectedResult := &types.InlineContent{
+				Elements: []types.InlineElement{
+					&types.StringElement{Content: "a paragraph with * some bold content*"},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Paragraph"))
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineContent"))
 		})
 
 		It("invalid italic text within bold text", func() {
 			actualContent := "some *bold and _italic content _ together*."
-			expectedResult := &types.Paragraph{
-				Lines: []*types.InlineContent{
-					&types.InlineContent{
+			expectedResult := &types.InlineContent{
+				Elements: []types.InlineElement{
+					&types.StringElement{Content: "some "},
+					&types.QuotedText{
+						Kind: types.Bold,
 						Elements: []types.InlineElement{
-							&types.StringElement{Content: "some "},
-							&types.QuotedText{
-								Kind: types.Bold,
-								Elements: []types.InlineElement{
-									&types.StringElement{Content: "bold and _italic content _ together"},
-								},
-							},
-							&types.StringElement{Content: "."},
+							&types.StringElement{Content: "bold and _italic content _ together"},
 						},
 					},
+					&types.StringElement{Content: "."},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Paragraph"))
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineContent"))
 		})
 
 		It("italic text within invalid bold text", func() {
 			actualContent := "some *bold and _italic content_ together *."
-			expectedResult := &types.Paragraph{
-				Lines: []*types.InlineContent{
-					&types.InlineContent{
+			expectedResult := &types.InlineContent{
+				Elements: []types.InlineElement{
+					&types.StringElement{Content: "some *bold and "},
+					&types.QuotedText{
+						Kind: types.Italic,
 						Elements: []types.InlineElement{
-							&types.StringElement{Content: "some *bold and "},
-							&types.QuotedText{
-								Kind: types.Italic,
-								Elements: []types.InlineElement{
-									&types.StringElement{Content: "italic content"},
-								},
-							},
-							&types.StringElement{Content: " together *."},
+							&types.StringElement{Content: "italic content"},
 						},
 					},
+					&types.StringElement{Content: " together *."},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Paragraph"))
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineContent"))
 		})
 	})
 
@@ -314,30 +290,26 @@ var _ = Describe("Quoted Texts", func() {
 
 		It("italic text within bold text", func() {
 			actualContent := "some *bold and _italic content_ together*."
-			expectedResult := &types.Paragraph{
-				Lines: []*types.InlineContent{
-					&types.InlineContent{
+			expectedResult := &types.InlineContent{
+				Elements: []types.InlineElement{
+					&types.StringElement{Content: "some "},
+					&types.QuotedText{
+						Kind: types.Bold,
 						Elements: []types.InlineElement{
-							&types.StringElement{Content: "some "},
+							&types.StringElement{Content: "bold and "},
 							&types.QuotedText{
-								Kind: types.Bold,
+								Kind: types.Italic,
 								Elements: []types.InlineElement{
-									&types.StringElement{Content: "bold and "},
-									&types.QuotedText{
-										Kind: types.Italic,
-										Elements: []types.InlineElement{
-											&types.StringElement{Content: "italic content"},
-										},
-									},
-									&types.StringElement{Content: " together"},
+									&types.StringElement{Content: "italic content"},
 								},
 							},
-							&types.StringElement{Content: "."},
+							&types.StringElement{Content: " together"},
 						},
 					},
+					&types.StringElement{Content: "."},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Paragraph"))
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineContent"))
 		})
 
 		It("simple-quote bold within simple-quote bold text", func() {

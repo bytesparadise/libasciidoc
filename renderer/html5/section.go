@@ -67,9 +67,12 @@ func renderSection(ctx *renderer.Context, s *types.Section) ([]byte, error) {
 	log.Debugf("Rendering section level %d", s.Level)
 	renderedSectionTitle, err := renderSectionTitle(ctx, s.Level, s.SectionTitle)
 	if err != nil {
-		return nil, errors.Wrapf(err, "error while rendering section sectionTitle")
+		return nil, errors.Wrapf(err, "error while rendering section")
 	}
 	renderedSectionElements, err := renderSectionElements(ctx, s.Elements)
+	if err != nil {
+		return nil, errors.Wrapf(err, "error while rendering section")
+	}
 	result := bytes.NewBuffer(nil)
 	// select the appropriate template for the section
 	var tmpl *template.Template

@@ -24,7 +24,8 @@ var _ = Describe("Sections", func() {
 						},
 					},
 				},
-				Elements: []types.DocElement{},
+				ElementReferences: map[string]interface{}{},
+				Elements:          []types.DocElement{},
 			}
 			verify(GinkgoT(), expectedDocument, actualContent)
 		})
@@ -46,6 +47,7 @@ and a paragraph`
 						},
 					},
 				},
+				ElementReferences: map[string]interface{}{},
 				Elements: []types.DocElement{
 					&types.Paragraph{
 						Lines: []*types.InlineContent{
@@ -65,6 +67,18 @@ and a paragraph`
 			actualContent := `== section 1`
 			expectedDocument := &types.Document{
 				Attributes: map[string]interface{}{},
+				ElementReferences: map[string]interface{}{
+					"_section_1": &types.SectionTitle{
+						Content: &types.InlineContent{
+							Elements: []types.InlineElement{
+								&types.StringElement{Content: "section 1"},
+							},
+						},
+						ID: &types.ElementID{
+							Value: "_section_1",
+						},
+					},
+				},
 				Elements: []types.DocElement{
 					&types.Section{
 						Level: 1,
@@ -89,6 +103,22 @@ and a paragraph`
 			actualContent := `==  *2 spaces and bold content*`
 			expectedDocument := &types.Document{
 				Attributes: map[string]interface{}{},
+				ElementReferences: map[string]interface{}{
+					"__strong_2_spaces_and_bold_content_strong": &types.SectionTitle{
+						Content: &types.InlineContent{
+							Elements: []types.InlineElement{
+								&types.QuotedText{
+									Elements: []types.InlineElement{
+										&types.StringElement{Content: "2 spaces and bold content"},
+									},
+								},
+							},
+						},
+						ID: &types.ElementID{
+							Value: "__strong_2_spaces_and_bold_content_strong",
+						},
+					},
+				},
 				Elements: []types.DocElement{
 					&types.Section{
 						Level: 1,
@@ -129,7 +159,20 @@ and a paragraph`
 							Value: "_a_header",
 						},
 					},
-				}, Elements: []types.DocElement{
+				},
+				ElementReferences: map[string]interface{}{
+					"_section_1": &types.SectionTitle{
+						Content: &types.InlineContent{
+							Elements: []types.InlineElement{
+								&types.StringElement{Content: "section 1"},
+							},
+						},
+						ID: &types.ElementID{
+							Value: "_section_1",
+						},
+					},
+				},
+				Elements: []types.DocElement{
 					&types.Section{
 						Level: 1,
 						SectionTitle: types.SectionTitle{
@@ -167,7 +210,20 @@ a short preamble
 							Value: "_a_header",
 						},
 					},
-				}, Elements: []types.DocElement{
+				},
+				ElementReferences: map[string]interface{}{
+					"_section_1": &types.SectionTitle{
+						Content: &types.InlineContent{
+							Elements: []types.InlineElement{
+								&types.StringElement{Content: "section 1"},
+							},
+						},
+						ID: &types.ElementID{
+							Value: "_section_1",
+						},
+					},
+				},
+				Elements: []types.DocElement{
 					&types.Preamble{
 						Elements: []types.DocElement{
 							&types.Paragraph{
@@ -217,6 +273,18 @@ a short preamble
 						},
 					},
 				},
+				ElementReferences: map[string]interface{}{
+					"_section_2": &types.SectionTitle{
+						Content: &types.InlineContent{
+							Elements: []types.InlineElement{
+								&types.StringElement{Content: "section 2"},
+							},
+						},
+						ID: &types.ElementID{
+							Value: "_section_2",
+						},
+					},
+				},
 				Elements: []types.DocElement{
 					&types.Section{
 						Level: 2,
@@ -242,6 +310,18 @@ a short preamble
 and a paragraph`
 			expectedDocument := &types.Document{
 				Attributes: map[string]interface{}{},
+				ElementReferences: map[string]interface{}{
+					"_a_title": &types.SectionTitle{
+						Content: &types.InlineContent{
+							Elements: []types.InlineElement{
+								&types.StringElement{Content: "a title"},
+							},
+						},
+						ID: &types.ElementID{
+							Value: "_a_title",
+						},
+					},
+				},
 				Elements: []types.DocElement{
 					&types.Section{
 						Level: 1,
@@ -275,6 +355,18 @@ and a paragraph`
 			actualContent := "== a title\n\nand a paragraph"
 			expectedDocument := &types.Document{
 				Attributes: map[string]interface{}{},
+				ElementReferences: map[string]interface{}{
+					"_a_title": &types.SectionTitle{
+						Content: &types.InlineContent{
+							Elements: []types.InlineElement{
+								&types.StringElement{Content: "a title"},
+							},
+						},
+						ID: &types.ElementID{
+							Value: "_a_title",
+						},
+					},
+				},
 				Elements: []types.DocElement{
 					&types.Section{
 						Level: 1,
@@ -309,6 +401,18 @@ and a paragraph`
 			actualContent := "== a title\n    \nand a paragraph"
 			expectedDocument := &types.Document{
 				Attributes: map[string]interface{}{},
+				ElementReferences: map[string]interface{}{
+					"_a_title": &types.SectionTitle{
+						Content: &types.InlineContent{
+							Elements: []types.InlineElement{
+								&types.StringElement{Content: "a title"},
+							},
+						},
+						ID: &types.ElementID{
+							Value: "_a_title",
+						},
+					},
+				},
 				Elements: []types.DocElement{
 					&types.Section{
 						Level: 1,
@@ -360,6 +464,38 @@ a paragraph`
 						},
 						ID: &types.ElementID{
 							Value: "_a_header",
+						},
+					},
+				},
+				ElementReferences: map[string]interface{}{
+					"_section_a": &types.SectionTitle{
+						Content: &types.InlineContent{
+							Elements: []types.InlineElement{
+								&types.StringElement{Content: "Section A"},
+							},
+						},
+						ID: &types.ElementID{
+							Value: "_section_a",
+						},
+					},
+					"_section_a_a": &types.SectionTitle{
+						Content: &types.InlineContent{
+							Elements: []types.InlineElement{
+								&types.StringElement{Content: "Section A.a"},
+							},
+						},
+						ID: &types.ElementID{
+							Value: "_section_a_a",
+						},
+					},
+					"_section_b": &types.SectionTitle{
+						Content: &types.InlineContent{
+							Elements: []types.InlineElement{
+								&types.StringElement{Content: "Section B"},
+							},
+						},
+						ID: &types.ElementID{
+							Value: "_section_b",
 						},
 					},
 				},
@@ -446,7 +582,8 @@ a paragraph`
 		It("header invalid - missing space", func() {
 			actualContent := "=a header"
 			expectedDocument := &types.Document{
-				Attributes: map[string]interface{}{},
+				Attributes:        map[string]interface{}{},
+				ElementReferences: map[string]interface{}{},
 				Elements: []types.DocElement{
 					&types.Paragraph{
 						Lines: []*types.InlineContent{
@@ -464,7 +601,8 @@ a paragraph`
 		It("header invalid - header space", func() {
 			actualContent := " = a header"
 			expectedDocument := &types.Document{
-				Attributes: map[string]interface{}{},
+				Attributes:        map[string]interface{}{},
+				ElementReferences: map[string]interface{}{},
 				Elements: []types.DocElement{
 					&types.LiteralBlock{
 						Content: " = a header",
@@ -491,6 +629,7 @@ a paragraph`
 						},
 					},
 				},
+				ElementReferences: map[string]interface{}{},
 				Elements: []types.DocElement{
 					&types.LiteralBlock{
 						Content: " == section 1",

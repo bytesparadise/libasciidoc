@@ -225,7 +225,7 @@ InlineContent <- !BlockDelimiter elements:(WS* InlineElement WS*)+ &EOL { // nee
     return types.NewInlineContent(elements.([]interface{}))
 } 
 
-InlineElement <- Passthrough / InlineImage / QuotedText / ExternalLink / DocumentAttributeSubstitution / Characters
+InlineElement <- CrossReference / Passthrough / InlineImage / QuotedText / ExternalLink / DocumentAttributeSubstitution / Characters
 
 // ----------------------------------------------------------------------------
 // Quoted Texts (bold, italic and monospace) including substitution prevention
@@ -328,13 +328,13 @@ QuotedTextContent <- QuotedTextContentElement (WS+ QuotedTextContentElement)*
 QuotedTextContentElement <- QuotedText / QuotedTextCharacters / CharactersWithQuotePunctuation // word with quote punctuation is only accepted if nothing matched before, so we have a chance to stop
 
 QuotedTextCharacters <- (!NEWLINE !WS !"*" !"_" !"`" .)+ // cannot have "*", "_" or "`" within
+
 CharactersWithQuotePunctuation <- (!NEWLINE !WS  .)+ { // can have "*", "_" or "`" within, maybe because the user inserted another quote, or made an error (extra or missing space, for example)
     return c.text, nil
 }
 
 // make sure unbalanced punctuation for quoted text is treated accordingly
 UnbalancedQuotePunctuation <- "*" / "_" / "`"
-
 
 // ------------------------------------------
 // Passthrough
@@ -360,6 +360,13 @@ PassthroughWithQuotedText <- "pass:q[" content:(QuotedText / PassthroughMacroCha
 }
 
 PassthroughMacroCharacter <- (!"]" .)
+
+// ------------------------------------------
+// Cross References
+// ------------------------------------------
+CrossReference <- "<<" id:(ID) ">>" {
+    return types.NewCrossReference(id.(string))
+}
 
 // ------------------------------------------
 // Links
@@ -448,15 +455,20 @@ ParagraphWithLiteralAttribute <- "[literal]" WS* NEWLINE content:(LiteralBlockCo
 // ------------------------------------------
 // Element Attributes
 // ------------------------------------------
-ElementAttribute <- meta:(ElementLink / ElementID / ElementTitle) 
+ElementAttribute <- ElementLink / ElementID / ElementTitle / InvalidElementAttribute
 
 // a link attached to an element, such as a BlockImage
-ElementLink <- "[" WS* "link" WS* "=" WS* path:URL WS* "]" EOL {
+ElementLink <- "[link=" WS* path:URL WS* "]" EOL {
     return types.NewElementLink(path.(string))
 }
 
+ElementID <- ElementIDNormal / ElementIDShortHand
+
 // an id attached to an element, such as a BlockImage
-ElementID <- "[" WS* "#" id:(ID) WS* "]" EOL {
+ElementIDNormal <- "[[" id:(ID) "]]" EOL {
+    return types.NewElementID(id.(string))
+}
+ElementIDShortHand <- "[#" id:(ID) "]" EOL {
     return types.NewElementID(id.(string))
 }
 
@@ -464,6 +476,10 @@ ElementID <- "[" WS* "#" id:(ID) WS* "]" EOL {
 // a title starts with a single "." followed by the value, without space in-between
 ElementTitle <- "." !"." !WS title:(!NEWLINE .)+ EOL {
     return types.NewElementTitle(title.([]interface{}))
+}
+
+InvalidElementAttribute <- "[" WS+ content:(!"]" .)* "]" {
+    return types.NewInvalidElementAttribute(c.text)
 }
 
 // ------------------------------------------
@@ -485,7 +501,7 @@ URL <- (!NEWLINE !WS !"[" !"]" .)+ {
     return string(c.text), nil
 }
 
-ID <- (!NEWLINE !WS !"[" !"]" .)+ {
+ID <- (!NEWLINE !WS !"[" !"]" !"<<" !">>".)+ {
     return string(c.text), nil
 }
 

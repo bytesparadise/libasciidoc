@@ -20,12 +20,12 @@ import (
 
 // DocElement the interface for all document elements
 type DocElement interface {
+	// Visitable
 }
 
 // InlineElement the interface for inline elements
 type InlineElement interface {
 	DocElement
-	// Visitable
 }
 
 // Visitable the interface for visitable elements
@@ -35,9 +35,9 @@ type Visitable interface {
 
 // Visitor a visitor that can visit/traverse the DocElement and its children (if applicable)
 type Visitor interface {
-	BeforeVisit(interface{}) error
-	Visit(interface{}) error
-	AfterVisit(interface{}) error
+	BeforeVisit(Visitable) error
+	Visit(Visitable) error
+	AfterVisit(Visitable) error
 }
 
 // ------------------------------------------
@@ -46,8 +46,9 @@ type Visitor interface {
 
 // Document the top-level structure for a document
 type Document struct {
-	Attributes DocumentAttributes
-	Elements   []DocElement
+	Attributes        DocumentAttributes
+	Elements          []DocElement
+	ElementReferences ElementReferences
 }
 
 // NewDocument initializes a new `Document` from the given lines
@@ -95,14 +96,23 @@ func NewDocument(frontmatter, header interface{}, blocks []interface{}) (*Docume
 					log.Warnf("invalid value for 'toc' attribute: '%s'", attrValue)
 
 				}
-
 			}
 		}
 	}
-	document := &Document{
-		Attributes: attributes,
-		Elements:   elements,
+
+	c := NewElementReferencesCollector()
+	for _, e := range elements {
+		if v, ok := e.(Visitable); ok {
+			v.Accept(c)
+		}
 	}
+	document := &Document{
+		Attributes:        attributes,
+		Elements:          elements,
+		ElementReferences: c.ElementReferences,
+	}
+
+	// visit all elements in the `AST` to retrieve their reference (ie, their ElementID if they have any)
 	return document, nil
 }
 
@@ -191,7 +201,7 @@ func NewDocumentAuthor(namePart1, namePart2, namePart3, emailAddress interface{}
 	var part1, part2, part3, email *string
 	var err error
 	if namePart1 != nil {
-		part1, err = Stringify(namePart1.([]interface{}),
+		part1, err = stringify(namePart1.([]interface{}),
 			func(s string) (string, error) {
 				return strings.TrimSpace(s), nil
 			},
@@ -204,7 +214,7 @@ func NewDocumentAuthor(namePart1, namePart2, namePart3, emailAddress interface{}
 		}
 	}
 	if namePart2 != nil {
-		part2, err = Stringify(namePart2.([]interface{}),
+		part2, err = stringify(namePart2.([]interface{}),
 			func(s string) (string, error) {
 				return strings.TrimSpace(s), nil
 			},
@@ -217,7 +227,7 @@ func NewDocumentAuthor(namePart1, namePart2, namePart3, emailAddress interface{}
 		}
 	}
 	if namePart3 != nil {
-		part3, err = Stringify(namePart3.([]interface{}),
+		part3, err = stringify(namePart3.([]interface{}),
 			func(s string) (string, error) {
 				return strings.TrimSpace(s), nil
 			},
@@ -230,7 +240,7 @@ func NewDocumentAuthor(namePart1, namePart2, namePart3, emailAddress interface{}
 		}
 	}
 	if emailAddress != nil {
-		email, err = Stringify(emailAddress.([]interface{}),
+		email, err = stringify(emailAddress.([]interface{}),
 			func(s string) (string, error) {
 				return strings.TrimPrefix(s, "<"), nil
 			}, func(s string) (string, error) {
@@ -300,7 +310,7 @@ func NewDocumentRevision(revnumber, revdate, revremark interface{}) (*DocumentRe
 	var number, date, remark *string
 	var err error
 	if revnumber != nil {
-		number, err = Stringify(revnumber.([]interface{}),
+		number, err = stringify(revnumber.([]interface{}),
 			func(s string) (string, error) {
 				return strings.TrimPrefix(s, "v"), nil
 			}, func(s string) (string, error) {
@@ -314,7 +324,7 @@ func NewDocumentRevision(revnumber, revdate, revremark interface{}) (*DocumentRe
 	}
 	if revdate != nil {
 		// stringify, then remove the "," prefix and trim spaces
-		date, err = Stringify(revdate.([]interface{}), func(s string) (string, error) {
+		date, err = stringify(revdate.([]interface{}), func(s string) (string, error) {
 			return strings.TrimSpace(s), nil
 		})
 		if err != nil {
@@ -327,7 +337,7 @@ func NewDocumentRevision(revnumber, revdate, revremark interface{}) (*DocumentRe
 	}
 	if revremark != nil {
 		// then we need to strip the heading "," and spaces
-		remark, err = Stringify(revremark.([]interface{}),
+		remark, err = stringify(revremark.([]interface{}),
 			func(s string) (string, error) {
 				return strings.TrimPrefix(s, ":"), nil
 			}, func(s string) (string, error) {
@@ -379,14 +389,14 @@ type DocumentAttributeDeclaration struct {
 
 // NewDocumentAttributeDeclaration initializes a new DocumentAttributeDeclaration
 func NewDocumentAttributeDeclaration(name []interface{}, value []interface{}) (*DocumentAttributeDeclaration, error) {
-	attrName, err := Stringify(name,
+	attrName, err := stringify(name,
 		func(s string) (string, error) {
 			return strings.TrimSpace(s), nil
 		})
 	if err != nil {
 		return nil, errors.Wrapf(err, "error while initializing a DocumentAttributeDeclaration")
 	}
-	attrValue, err := Stringify(value,
+	attrValue, err := stringify(value,
 		func(s string) (string, error) {
 			return strings.TrimSpace(s), nil
 		})
@@ -407,7 +417,7 @@ type DocumentAttributeReset struct {
 
 // NewDocumentAttributeReset initializes a new Document Attribute Resets.
 func NewDocumentAttributeReset(name []interface{}) (*DocumentAttributeReset, error) {
-	attrName, err := Stringify(name)
+	attrName, err := stringify(name)
 	if err != nil {
 		return nil, errors.Wrapf(err, "error while initializing a DocumentAttributeReset")
 	}
@@ -422,7 +432,7 @@ type DocumentAttributeSubstitution struct {
 
 // NewDocumentAttributeSubstitution initializes a new Document Attribute Substitutions
 func NewDocumentAttributeSubstitution(name []interface{}) (*DocumentAttributeSubstitution, error) {
-	attrName, err := Stringify(name)
+	attrName, err := stringify(name)
 	if err != nil {
 		return nil, errors.Wrapf(err, "error while initializing a DocumentAttributeSubstitution")
 	}
@@ -499,6 +509,32 @@ func NewSection(level int, sectionTitle *SectionTitle, blocks []interface{}) (*S
 		SectionTitle: *sectionTitle,
 		Elements:     elements,
 	}, nil
+}
+
+// Accept implements Visitable#Accept(Visitor)
+func (s *Section) Accept(v Visitor) error {
+	err := v.BeforeVisit(s)
+	if err != nil {
+		return errors.Wrapf(err, "error while pre-visiting section")
+	}
+	err = v.Visit(s)
+	if err != nil {
+		return errors.Wrapf(err, "error while visiting section")
+	}
+	for _, element := range s.Elements {
+		if visitable, ok := element.(Visitable); ok {
+			err = visitable.Accept(v)
+			if err != nil {
+				return errors.Wrapf(err, "error while visiting section element")
+			}
+		}
+
+	}
+	err = v.AfterVisit(s)
+	if err != nil {
+		return errors.Wrapf(err, "error while post-visiting section")
+	}
+	return nil
 }
 
 // ------------------------------------------
@@ -711,6 +747,21 @@ func (c *InlineContent) Accept(v Visitor) error {
 }
 
 // ------------------------------------------
+// Cross References
+// ------------------------------------------
+
+// CrossReference the struct for Cross References
+type CrossReference struct {
+	ID string
+}
+
+// NewCrossReference initializes a new `CrossReference` from the given ID
+func NewCrossReference(id string) (*CrossReference, error) {
+	log.Debugf("Initializing a new CrossReference with ID=%s", id)
+	return &CrossReference{ID: id}, nil
+}
+
+// ------------------------------------------
 // Images
 // ------------------------------------------
 
@@ -812,7 +863,7 @@ type DelimitedBlock struct {
 
 // NewDelimitedBlock initializes a new `DelimitedBlock` of the given kind with the given content
 func NewDelimitedBlock(kind DelimitedBlockKind, content []interface{}) (*DelimitedBlock, error) {
-	blockContent, err := Stringify(content,
+	blockContent, err := stringify(content,
 		// remove "\n" or "\r\n", depending on the OS.
 		func(s string) (string, error) {
 			return strings.TrimSuffix(s, "\n"), nil
@@ -843,7 +894,7 @@ type LiteralBlock struct {
 func NewLiteralBlock(spaces, content []interface{}) (*LiteralBlock, error) {
 	// concatenates the spaces with the actual content in a single 'stringified' value
 	// log.Debugf("Initializing a new LiteralBlock with spaces='%v' and content=`%v`", spaces, content)
-	c, err := Stringify(append(spaces, content...))
+	c, err := stringify(append(spaces, content...))
 	if err != nil {
 		return nil, errors.Wrapf(err, "unable to initialize a new literal block")
 	}
@@ -894,25 +945,37 @@ type ElementID struct {
 	Value string
 }
 
-// NewElementID initializes a new `ElementID` from the given path
+// NewElementID initializes a new `ElementID` from the given ID
 func NewElementID(id string) (*ElementID, error) {
-	log.Debugf("Initializing a new ElementID with value=%s", id)
+	log.Debugf("Initializing a new ElementID with ID=%s", id)
 	return &ElementID{Value: id}, nil
 }
 
-// ElementTitle the structure for element IDs
+// ElementTitle the structure for element Titles
 type ElementTitle struct {
 	Value string
 }
 
-// NewElementTitle initializes a new `ElementTitle` from the given content
-func NewElementTitle(content []interface{}) (*ElementTitle, error) {
-	c, err := Stringify(content)
+// NewElementTitle initializes a new `ElementTitle` from the given value
+func NewElementTitle(value []interface{}) (*ElementTitle, error) {
+	v, err := stringify(value)
 	if err != nil {
 		return nil, errors.Wrapf(err, "failed to initialize a new ElementTitle")
 	}
-	log.Debugf("Initializing a new ElementTitle with content=%s", *c)
-	return &ElementTitle{Value: *c}, nil
+	log.Debugf("Initializing a new ElementTitle with content=%s", *v)
+	return &ElementTitle{Value: *v}, nil
+}
+
+// InvalidElementAttribute the struct for invalid element attributes
+type InvalidElementAttribute struct {
+	Value string
+}
+
+// NewInvalidElementAttribute initializes a new `InvalidElementAttribute` from the given text
+func NewInvalidElementAttribute(text []byte) (*InvalidElementAttribute, error) {
+	value := string(text)
+	log.Debugf("Initializing a new InvalidElementAttribute with text=%s", value)
+	return &InvalidElementAttribute{Value: value}, nil
 }
 
 // ------------------------------------------
@@ -1012,7 +1075,7 @@ func (t *QuotedText) Accept(v Visitor) error {
 
 // NewEscapedQuotedText returns a new InlineContent where the nested elements are preserved (ie, substituted as expected)
 func NewEscapedQuotedText(backslashes []interface{}, punctuation string, content []interface{}) (*InlineContent, error) {
-	backslashesStr, err := Stringify(backslashes,
+	backslashesStr, err := stringify(backslashes,
 		func(s string) (string, error) {
 			// remove the number of back-slashes that match the length of the punctuation. Eg: `\*` or `\\**`, but keep extra back-slashes
 			if len(s) > len(punctuation) {
@@ -1088,11 +1151,11 @@ type ExternalLink struct {
 
 // NewExternalLink initializes a new `ExternalLink`
 func NewExternalLink(url, text []interface{}) (*ExternalLink, error) {
-	urlStr, err := Stringify(url)
+	urlStr, err := stringify(url)
 	if err != nil {
 		return nil, errors.Wrapf(err, "failed to initialize a new ExternalLink element")
 	}
-	textStr, err := Stringify(text, // remove "\n" or "\r\n", depending on the OS.
+	textStr, err := stringify(text, // remove "\n" or "\r\n", depending on the OS.
 		// remove heading "[" and traingin "]"
 		func(s string) (string, error) {
 			return strings.TrimPrefix(s, "["), nil
