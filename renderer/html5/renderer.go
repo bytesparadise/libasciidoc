@@ -35,25 +35,27 @@ func renderElement(ctx *renderer.Context, element types.DocElement) ([]byte, err
 	case *types.Passthrough:
 		return renderPassthrough(ctx, e)
 	case *types.BlockImage:
-		return renderBlockImage(ctx, element.(*types.BlockImage))
+		return renderBlockImage(ctx, e)
 	case *types.InlineImage:
-		return renderInlineImage(ctx, element.(*types.InlineImage))
+		return renderInlineImage(ctx, e)
 	case *types.DelimitedBlock:
-		return renderDelimitedBlock(ctx, element.(*types.DelimitedBlock))
+		return renderDelimitedBlock(ctx, e)
 	case *types.LiteralBlock:
-		return renderLiteralBlock(ctx, element.(*types.LiteralBlock))
+		return renderLiteralBlock(ctx, e)
 	case *types.InlineContent:
-		return renderInlineContent(ctx, element.(*types.InlineContent))
+		return renderInlineContent(ctx, e)
+	case *types.ExternalLink:
+		return renderExternalLink(ctx, e)
 	case *types.StringElement:
-		return renderStringElement(ctx, element.(*types.StringElement))
+		return renderStringElement(ctx, e)
 	case *types.DocumentAttributeDeclaration:
 		// 'process' function do not return any rendered content, but may return an error
-		return nil, processAttributeDeclaration(ctx, element.(*types.DocumentAttributeDeclaration))
+		return nil, processAttributeDeclaration(ctx, e)
 	case *types.DocumentAttributeReset:
 		// 'process' function do not return any rendered content, but may return an error
-		return nil, processAttributeReset(ctx, element.(*types.DocumentAttributeReset))
+		return nil, processAttributeReset(ctx, e)
 	case *types.DocumentAttributeSubstitution:
-		return renderAttributeSubstitution(ctx, element.(*types.DocumentAttributeSubstitution))
+		return renderAttributeSubstitution(ctx, e)
 	default:
 		return nil, errors.Errorf("unsupported type of element: %T", element)
 	}
