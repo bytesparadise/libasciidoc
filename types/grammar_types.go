@@ -440,11 +440,6 @@ func NewDocumentAttributeSubstitution(name []interface{}) (*DocumentAttributeSub
 	return &DocumentAttributeSubstitution{Name: *attrName}, nil
 }
 
-// Accept implements Visitable#Accept(Visitor)
-func (a *DocumentAttributeSubstitution) Accept(v Visitor) error {
-	return v.Visit(a)
-}
-
 // ------------------------------------------
 // Table of Contents
 // ------------------------------------------
@@ -605,17 +600,8 @@ func NewList(elements []interface{}, attributes []interface{}) (*List, error) {
 					}
 					parentItem.Children.Items = append(parentItem.Children.Items, item)
 				}
-				// memorizes the current item for further processing
-				if item.Level > cap(lastItems) { // increase capacity
-					newCap := 2 * item.Level
-					newSlice := make([]*ListItem, newCap)
-					copy(newSlice, lastItems)
-					lastItems = newSlice
-				}
 				if item.Level < currentLevel { // remove some items
-					for i := item.Level; i < currentLevel; i++ {
-						lastItems[i] = nil
-					}
+					lastItems = lastItems[:item.Level+1]
 				}
 				currentLevel = item.Level
 				lastItems[item.Level-1] = item
@@ -1167,21 +1153,4 @@ func NewExternalLink(url, text []interface{}) (*ExternalLink, error) {
 		return nil, errors.Wrapf(err, "failed to initialize a new ExternalLink element")
 	}
 	return &ExternalLink{URL: *urlStr, Text: *textStr}, nil
-}
-
-// Accept implements Visitable#Accept(Visitor)
-func (l *ExternalLink) Accept(v Visitor) error {
-	err := v.BeforeVisit(l)
-	if err != nil {
-		return errors.Wrapf(err, "error while pre-visiting external link")
-	}
-	err = v.Visit(l)
-	if err != nil {
-		return errors.Wrapf(err, "error while visiting external link")
-	}
-	err = v.AfterVisit(l)
-	if err != nil {
-		return errors.Wrapf(err, "error while post-visiting external link")
-	}
-	return nil
 }
