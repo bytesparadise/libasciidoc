@@ -20,13 +20,16 @@ func verify(t GinkgoTInterface, expected, content string, rendererOpts ...render
 	t.Logf("processing '%s'", content)
 	reader := strings.NewReader(content)
 	doc, err := parser.ParseReader("", reader)
-	require.Nil(t, err, "Error found while parsing the document")
+	require.NoError(t, err, "Error found while parsing the document")
 	t.Logf("actual document: `%s`", spew.Sdump(doc))
 	buff := bytes.NewBuffer(nil)
 	actualDocument := doc.(*types.Document)
-	rendererCtx := renderer.Wrap(context.Background(), *actualDocument, rendererOpts...)
+	rendererCtx := renderer.Wrap(context.Background(), actualDocument, rendererOpts...)
+	// if entrypoint := rendererCtx.Entrypoint(); entrypoint != nil {
+
+	// }
 	_, err = html5.Render(rendererCtx, buff)
-	require.Nil(t, err)
+	require.NoError(t, err)
 	if strings.Contains(expected, "{{.LastUpdated}}") {
 		expected = strings.Replace(expected, "{{.LastUpdated}}", rendererCtx.LastUpdated(), 1)
 	}

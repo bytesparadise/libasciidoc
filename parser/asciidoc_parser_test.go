@@ -18,7 +18,7 @@ func verify(t GinkgoTInterface, expectedDocument interface{}, content string, op
 	if err != nil {
 		log.WithError(err).Error("Error found while parsing the document")
 	}
-	require.Nil(t, err)
+	require.NoError(t, err)
 	t.Logf("actual document: `%s`", spew.Sdump(result))
 	t.Logf("expected document: `%s`", spew.Sdump(expectedDocument))
 	assert.EqualValues(t, expectedDocument, result)

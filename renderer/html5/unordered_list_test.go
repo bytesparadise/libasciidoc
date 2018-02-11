@@ -2,10 +2,11 @@ package html5_test
 
 import . "github.com/onsi/ginkgo"
 
-var _ = Describe("Lists of Items", func() {
-	It("simple list", func() {
+var _ = Describe("unordered lists", func() {
+	It("simple unordered list with no title", func() {
 		actualContent := `* item 1
-* item 2`
+* item 2
+* item 3`
 		expected := `<div class="ulist">
 <ul>
 <li>
@@ -14,11 +15,14 @@ var _ = Describe("Lists of Items", func() {
 <li>
 <p>item 2</p>
 </li>
+<li>
+<p>item 3</p>
+</li>
 </ul>
 </div>`
 		verify(GinkgoT(), expected, actualContent)
 	})
-	It("simple list with a title", func() {
+	It("simple unordered list with a title", func() {
 		actualContent := `[#foo]
 	* item 1
 	* item 2`
@@ -34,7 +38,7 @@ var _ = Describe("Lists of Items", func() {
 </div>`
 		verify(GinkgoT(), expected, actualContent)
 	})
-	It("nested lists", func() {
+	It("nested unordered lists without a title", func() {
 		actualContent := `* item 1
 ** item 1.1
 ** item 1.2
@@ -61,13 +65,13 @@ var _ = Describe("Lists of Items", func() {
 </div>`
 		verify(GinkgoT(), expected, actualContent)
 	})
-	It("nested lists with a title", func() {
-		actualContent := `[#foo]
+	It("nested unordered lists with a title", func() {
+		actualContent := `[#listID]
 * item 1
 ** item 1.1
 ** item 1.2
 * item 2`
-		expected := `<div id="foo" class="ulist">
+		expected := `<div id="listID" class="ulist">
 <ul>
 <li>
 <p>item 1</p>

@@ -7,7 +7,9 @@ import (
 )
 
 var _ = Describe("Images", func() {
+
 	Context("Block Images", func() {
+
 		Context("Correct behaviour", func() {
 
 			It("block image with empty alt", func() {
@@ -102,29 +104,58 @@ var _ = Describe("Images", func() {
 				verify(GinkgoT(), expectedDocument, actualContent, parser.Entrypoint("BlockImage"))
 			})
 		})
+
 		Context("Errors", func() {
-			It("block image appending inline content", func() {
-				actualContent := "a paragraph\nimage::images/foo.png[]"
-				expectedDocument := &types.Paragraph{
-					Lines: []*types.InlineContent{
-						&types.InlineContent{
-							Elements: []types.InlineElement{
-								&types.StringElement{Content: "a paragraph"},
+
+			Context("Parsing the paragraph only", func() {
+
+				It("block image appending inline content", func() {
+					actualContent := "a paragraph\nimage::images/foo.png[]"
+					expectedDocument := &types.Paragraph{
+						Lines: []*types.InlineContent{
+							&types.InlineContent{
+								Elements: []types.InlineElement{
+									&types.StringElement{Content: "a paragraph"},
+								},
+							},
+							&types.InlineContent{
+								Elements: []types.InlineElement{
+									&types.StringElement{Content: "image::images/foo.png[]"},
+								},
 							},
 						},
-						&types.InlineContent{
-							Elements: []types.InlineElement{
-								&types.StringElement{Content: "image::images/foo.png[]"},
+					}
+					verify(GinkgoT(), expectedDocument, actualContent, parser.Entrypoint("Paragraph"))
+				})
+			})
+
+			Context("Parsing the whole document", func() {
+
+				It("paragraph with block image with alt and dimensions", func() {
+					actualContent := "a foo image::foo.png[foo image, 600, 400] bar"
+					expectedDocument := &types.Document{
+						Attributes:        map[string]interface{}{},
+						ElementReferences: map[string]interface{}{},
+						Elements: []types.DocElement{
+							&types.Paragraph{
+								Lines: []*types.InlineContent{
+									&types.InlineContent{
+										Elements: []types.InlineElement{
+											&types.StringElement{Content: "a foo image::foo.png[foo image, 600, 400] bar"},
+										},
+									},
+								},
 							},
 						},
-					},
-				}
-				verify(GinkgoT(), expectedDocument, actualContent, parser.Entrypoint("Paragraph"))
+					}
+					verify(GinkgoT(), expectedDocument, actualContent)
+				})
 			})
 		})
 	})
 
 	Context("Inline Images", func() {
+
 		Context("Correct behaviour", func() {
 
 			It("inline image with empty alt", func() {

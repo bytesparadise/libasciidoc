@@ -3,6 +3,7 @@ package html5
 import (
 	"bytes"
 	"io"
+	"reflect"
 
 	"github.com/bytesparadise/libasciidoc/renderer"
 	"github.com/bytesparadise/libasciidoc/types"
@@ -24,10 +25,14 @@ func renderElement(ctx *renderer.Context, element types.DocElement) ([]byte, err
 		return renderSection(ctx, e)
 	case *types.Preamble:
 		return renderPreamble(ctx, e)
-	case *types.List:
-		return renderList(ctx, e)
+	case *types.LabeledList:
+		return renderLabeledList(ctx, e)
+	case *types.UnorderedList:
+		return renderUnorderedList(ctx, e)
 	case *types.Paragraph:
 		return renderParagraph(ctx, e)
+	case *types.ListParagraph:
+		return renderListParagraph(ctx, e)
 	case *types.CrossReference:
 		return renderCrossReference(ctx, e)
 	case *types.QuotedText:
@@ -57,6 +62,7 @@ func renderElement(ctx *renderer.Context, element types.DocElement) ([]byte, err
 	case *types.DocumentAttributeSubstitution:
 		return renderAttributeSubstitution(ctx, e)
 	default:
+		log.Errorf("unsupported type of element: %T", element)
 		return nil, errors.Errorf("unsupported type of element: %T", element)
 	}
 }
@@ -88,4 +94,16 @@ func renderPlainStringForInlineElements(ctx *renderer.Context, elements []types.
 		buff.Write(plainStringElement)
 	}
 	return buff.Bytes(), nil
+}
+
+// notLastItem returns true if the given index is NOT the last entry in the given description lines, false otherwise.
+func notLastItem(index int, content interface{}) bool {
+	switch reflect.TypeOf(content).Kind() {
+	case reflect.Slice, reflect.Array:
+		s := reflect.ValueOf(content)
+		return index < s.Len()-1
+	default:
+		log.Warnf("content of type %T is not an array or a slice")
+		return false
+	}
 }

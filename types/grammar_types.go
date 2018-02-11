@@ -567,123 +567,306 @@ func NewSectionTitle(inlineContent *InlineContent, attributes []interface{}) (*S
 // Lists
 // ------------------------------------------
 
-// List the structure for the lists
-type List struct {
-	ID    *ElementID
-	Items []*ListItem
+// List a List
+type List interface {
+	// Items() []interface{}
 }
 
-// NewList initializes a new `ListItem` from the given content
-func NewList(elements []interface{}, attributes []interface{}) (*List, error) {
-	id, _, _ := newElementAttributes(attributes)
-	items := make([]*ListItem, 0)
+// ListItem a list item
+type ListItem interface {
+	AddChild(interface{})
+}
+
+// NewList initializes a new `List` from the given content
+func NewList(elements []interface{}, attributes []interface{}) (List, error) {
 	log.Debugf("Initializing a new List from %d elements", len(elements))
+	buffer := make(map[reflect.Type][]ListItem)
+	rootType := reflect.TypeOf(elements[0])
+	previousType := rootType
+	for _, element := range elements {
+		log.Debugf("Processing list item of type %T", element)
+		item, ok := element.(ListItem)
+		if !ok {
+			return nil, errors.Errorf("element of type '%T' is not a valid list item", element)
+		}
+		// collect all elements of the same kind and make a sub list from them
+		// each time a change of type is detected, except for the root type
+		currentType := reflect.TypeOf(item)
+		if currentType != previousType && previousType != rootType {
+			log.Debugf(" detected a switch of type when processing item of type %T", element)
+			// change of type: make a list from the buffer[t], reset and keep iterating
+			sublist, err := newList(buffer[previousType], nil)
+			if err != nil {
+				return nil, errors.Wrapf(err, "failed to initialize a sublist")
+			}
+			// look-up the previous item of the same type as the current type
+			parentItems := buffer[currentType]
+			parentItem := parentItems[len(parentItems)-1]
+			parentItem.AddChild(sublist)
+			buffer[previousType] = make([]ListItem, 0)
+		}
+		// add item to buffer
+		buffer[currentType] = append(buffer[currentType], item)
+		previousType = currentType
+	}
+	// finally, the top-level list
+	t := reflect.TypeOf(elements[0])
+	return newList(buffer[t], attributes)
+}
+
+func newList(items []ListItem, attributes []interface{}) (List, error) {
+	if len(items) == 0 {
+		return nil, errors.Errorf("cannot build a list from an empty slice")
+	}
+	switch items[0].(type) {
+	case *UnorderedListItem:
+		return NewUnorderedList(items, attributes)
+	case *LabeledListItem:
+		return NewLabeledList(items, attributes)
+	default:
+		return nil, errors.Errorf("unsupported type of element as the root list: '%T'", items[0])
+	}
+}
+
+// ------------------------------------------
+// Unordered Lists
+// ------------------------------------------
+
+// UnorderedList the structure for the Unordered Lists
+type UnorderedList struct {
+	Attributes map[string]interface{}
+	Items      []*UnorderedListItem
+}
+
+// NewUnorderedList initializes a new `UnorderedList` from the given content
+func NewUnorderedList(elements []ListItem, attributes []interface{}) (*UnorderedList, error) {
+	items := make([]*UnorderedListItem, 0)
+	log.Debugf("Initializing a new UnorderedList from %d elements", len(elements))
 	currentLevel := 1
-	lastItems := make([]*ListItem, 10)
+	lastItems := make([]*UnorderedListItem, 10)
 	for _, element := range elements {
 		// each "list item" can be a "list item" element followed by an optional blank line (ignored during the processing below)
 		//  also, a list item may need to be divided when it contains lines starting with a caret or a group of stars...
-		if itemElements, ok := element.([]interface{}); ok {
-			if item, ok := itemElements[0].(*ListItem); ok {
-				if item.Level == 1 {
-					items = append(items, item)
-				} else if item.Level > currentLevel {
-					// force the current item level to (last seen level + 1)
-					item.Level = currentLevel + 1
-				}
-
-				if item.Level > 1 {
-					// now join the item to its parent
-					parentItem := lastItems[item.Level-2]
-					if parentItem.Children == nil {
-						parentItem.Children = &List{}
-					}
-					parentItem.Children.Items = append(parentItem.Children.Items, item)
-				}
-				if item.Level < currentLevel { // remove some items
-					lastItems = lastItems[:item.Level+1]
-				}
-				currentLevel = item.Level
-				lastItems[item.Level-1] = item
-			}
+		log.Debugf("Processing item of type %T", element)
+		item, ok := element.(*UnorderedListItem)
+		if !ok {
+			return nil, errors.Errorf("element of type '%T' is not a valid unorderedlist item", element)
 		}
+		log.Debugf("Processing item of level %d", item.Level)
+		if item.Level == 1 {
+			items = append(items, item)
+		} else if item.Level > currentLevel {
+			// force the current item level to (last seen level + 1)
+			item.Level = currentLevel + 1
+		}
+		if item.Level > 1 {
+			// now join the item to its parent
+			parentItem := lastItems[item.Level-2]
+			log.Debugf("Joining UnorderedListItem of level %d with parent of level %d", item.Level, parentItem.Level)
+			// look-up the (last) UnorderedList in the parent elements, or create one
+			var sublist *UnorderedList
+			if len(parentItem.Elements) > 0 {
+				if s, ok := parentItem.Elements[len(parentItem.Elements)-1].(*UnorderedList); ok {
+					sublist = s
+				}
+			}
+			if sublist == nil {
+				sublist = &UnorderedList{
+					Items: make([]*UnorderedListItem, 0),
+				}
+				parentItem.Elements = append(parentItem.Elements, sublist)
+			}
+			sublist.Items = append(sublist.Items, item)
+		}
+		if item.Level < currentLevel { // forget about all children items
+			lastItems = lastItems[:item.Level+1]
+		}
+		currentLevel = item.Level
+		lastItems[item.Level-1] = item
 	}
-	log.Debugf("Initialized a new List with %d item(s)", len(items))
-	return &List{
-		ID:    id,
-		Items: items,
+	log.Debugf("Initialized a new UnorderedList with %d root item(s)", len(items))
+	return &UnorderedList{
+		Attributes: mergeAttributes(attributes),
+		Items:      items,
 	}, nil
 }
 
-// ListItem the structure for the list items
-type ListItem struct {
+// UnorderedListItem the structure for the unordered list items
+type UnorderedListItem struct {
 	Level    int
-	Content  *ListItemContent
-	Children *List
+	Elements []DocElement
 }
 
-// NewListItem initializes a new `ListItem` from the given content
-func NewListItem(level interface{}, content *ListItemContent, children *List) (*ListItem, error) {
+// NewUnorderedListItem initializes a new `UnorderedListItem` from the given content
+func NewUnorderedListItem(level interface{}, elements []DocElement) (*UnorderedListItem, error) {
 	switch vals := reflect.ValueOf(level); vals.Kind() {
 	case reflect.Slice:
-		log.Debugf("Initializing a new ListItem with content '%s' lines and input level '%d'", content, vals.Len())
-		return &ListItem{
+		// log.Debugf("Initializing a new UnorderedListItem with content '%s' lines and input level '%d'", content, vals.Len())
+		return &UnorderedListItem{
 			Level:    vals.Len(),
-			Content:  content,
-			Children: children,
+			Elements: elements,
 		}, nil
 	default:
-		return nil, errors.Errorf("Unable to initialize a ListItem with level '%v", level)
+		return nil, errors.Errorf("Unable to initialize a UnorderedListItem with level '%v", level)
 	}
 }
 
-// ListItemContent the structure for the list item content
-type ListItemContent struct {
-	Lines []*InlineContent
+// AddChild appends the given item to the content of this UnorderedListItem
+func (i *UnorderedListItem) AddChild(item interface{}) {
+	i.Elements = append(i.Elements, item)
 }
 
-// NewListItemContent initializes a new `ListItemContent`
-func NewListItemContent(lines []interface{}) (*ListItemContent, error) {
-	log.Debugf("Initializing a new ListItemContent with %d line(s)", len(lines))
-	typedLines := make([]*InlineContent, 0)
-	for _, line := range lines {
+// NewListItemContent initializes a new `UnorderedListItemContent`
+func NewListItemContent(content []interface{}) ([]DocElement, error) {
+	log.Debugf("Initializing a new ListItemContent with %d line(s)", len(content))
+	elements := make([]DocElement, 0)
+	for _, element := range content {
+		log.Debugf("Processing line element of type %T", element)
 		// here, `line` is an []interface{} in which we need to locate the relevant `*InlineContent` fragment
-		if lineFragments, ok := line.([]interface{}); ok {
-			for i := range lineFragments {
-				if fragment, ok := lineFragments[i].(*InlineContent); ok {
-					typedLines = append(typedLines, fragment)
+		switch element := element.(type) {
+		case []interface{}:
+			for _, e := range element {
+				log.Debugf("Processing line sub-element of type %T", e)
+				if e, ok := e.(DocElement); ok {
+					elements = append(elements, e)
 				}
 			}
+		case DocElement:
+			elements = append(elements, element)
 		}
 	}
-	return &ListItemContent{Lines: typedLines}, nil
+	log.Debugf("Initialized a new ListItemContent with %d elements(s)", len(elements))
+	// no need to return an empty ListItemContent
+	if len(elements) == 0 {
+		return nil, nil
+	}
+	return elements, nil
 }
+
+// ------------------------------------------
+// Labeled List
+// ------------------------------------------
+
+// LabeledList the structure for the Labeled Lists
+type LabeledList struct {
+	Attributes map[string]interface{}
+	Items      []*LabeledListItem
+}
+
+// NewLabeledList initializes a new `LabeledList` from the given content
+func NewLabeledList(elements []ListItem, attributes []interface{}) (*LabeledList, error) {
+	log.Debugf("Initializing a new LabeledList from %d elements", len(elements))
+	items := make([]*LabeledListItem, 0)
+	for _, element := range elements {
+		if item, ok := element.(*LabeledListItem); ok {
+			items = append(items, item)
+		}
+	}
+	log.Debugf("Initialized a new LabeledList with %d root item(s)", len(items))
+	return &LabeledList{
+		Attributes: mergeAttributes(attributes),
+		Items:      items,
+	}, nil
+}
+
+// LabeledListItem an item in a labeled
+type LabeledListItem struct {
+	Term     string
+	Elements []DocElement
+}
+
+// NewLabeledListItem initializes a new LabeledListItem
+func NewLabeledListItem(term []interface{}, elements []DocElement) (*LabeledListItem, error) {
+	t, err := stringify(term)
+	if err != nil {
+		return nil, errors.Wrapf(err, "unable to get term while instanciating a new LabeledListItem element")
+	}
+	return &LabeledListItem{
+		Term:     *t,
+		Elements: elements,
+	}, nil
+}
+
+// AddChild appends the given item to the content of this LabeledListItem
+func (i *LabeledListItem) AddChild(item interface{}) {
+	log.Debugf("Adding item %v to %v", item, i.Elements)
+	i.Elements = append(i.Elements, item)
+}
+
+// NewLabeledListItemDescription initializes a new `ListItemContent`
+// func NewLabeledListItemDescription(content []interface{}) (*ListItemContent, error) {
+// 	log.Debugf("Initializing a new labeled ListItemContent with %d line(s)", len(content))
+// 	elements := make([]DocElement, 0)
+// 	for _, element := range content {
+// 		// here, `line` is an []interface{} in which we need to locate the relevant `*InlineContent` fragment
+// 		if e, ok := element.(DocElement); ok {
+// 			elements = append(elements, e)
+// 		}
+// 	}
+// 	log.Debugf("Initialized a new labeled ListItemContent with %d line(s): %s", len(elements), spew.Sdump(elements))
+// 	return &ListItemContent{Elements: elements}, nil
+// }
 
 // ------------------------------------------
 // Paragraph
 // ------------------------------------------
 
-// Paragraph the structure for the paragraph
+// Paragraph the structure for the paragraphs
 type Paragraph struct {
-	Lines []*InlineContent
 	ID    *ElementID
 	Title *ElementTitle
+	Lines []*InlineContent
 }
 
 // NewParagraph initializes a new `Paragraph`
 func NewParagraph(lines []interface{}, attributes []interface{}) (*Paragraph, error) {
 	log.Debugf("Initializing a new Paragraph with %d line(s)", len(lines))
 	id, title, _ := newElementAttributes(attributes)
-
-	typedLines := make([]*InlineContent, 0)
+	elements := make([]*InlineContent, 0)
 	for _, line := range lines {
-		// each `line` element is an array with the actual `InlineContent` + `EOF`
-		typedLines = append(typedLines, line.([]interface{})[0].(*InlineContent))
+		if lineElements, ok := line.([]interface{}); ok {
+			for _, lineElement := range lineElements {
+				if lineElement, ok := lineElement.(*InlineContent); ok {
+					// log.Debugf(" processing paragraph line of type %T", lineElement)
+					// each `line` element is an array with the actual `InlineContent` + `EOF`
+					elements = append(elements, lineElement)
+				}
+			}
+		}
 	}
 	return &Paragraph{
-		Lines: typedLines,
+		Lines: elements,
 		ID:    id,
 		Title: title,
+	}, nil
+}
+
+// ------------------------------------------
+// List Paragraph
+// ------------------------------------------
+
+// ListParagraph the structure for the list paragraphs
+type ListParagraph struct {
+	Lines []*InlineContent
+}
+
+// NewListParagraph initializes a new `ListParagraph`
+func NewListParagraph(lines []interface{}) (*ListParagraph, error) {
+	// log.Debugf("Initializing a new ListParagraph with %d line(s)", len(lines))
+	elements := make([]*InlineContent, 0)
+	for _, line := range lines {
+		if lineElements, ok := line.([]interface{}); ok {
+			for _, lineElement := range lineElements {
+				if lineElement, ok := lineElement.(*InlineContent); ok {
+					// log.Debugf(" processing paragraph line of type %T", lineElement)
+					// each `line` element is an array with the actual `InlineContent` + `EOF`
+					elements = append(elements, lineElement)
+				}
+			}
+		}
+	}
+	return &ListParagraph{
+		Lines: elements,
 	}, nil
 }
 
@@ -1121,7 +1304,7 @@ type BlankLine struct {
 
 // NewBlankLine initializes a new `BlankLine`
 func NewBlankLine() (*BlankLine, error) {
-	log.Debug("Initializing a new BlankLine")
+	// log.Debug("Initializing a new BlankLine")
 	return &BlankLine{}, nil
 }
 

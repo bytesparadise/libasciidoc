@@ -6,11 +6,13 @@ import "time"
 type Option func(ctx *Context)
 
 const (
-	//LastUpdated the key to specify the last update of the document to render.
+	//keyLastUpdated the key to specify the last update of the document to render.
 	// Can be a string or a time, which will be formatted using the 2006/01/02 15:04:05 MST` pattern
 	keyLastUpdated string = "LastUpdated"
-	//IncludeHeaderFooter a bool value to indicate if the header and footer should be rendered
+	//keyIncludeHeaderFooter a bool value to indicate if the header and footer should be rendered
 	keyIncludeHeaderFooter string = "IncludeHeaderFooter"
+	//keyEntrypoint a bool value to indicate if the entrypoint to start with when parsing the document
+	keyEntrypoint string = "Entrypoint"
 	// LastUpdatedFormat the time format for the `last updated` document attribute
 	LastUpdatedFormat string = "2006/01/02 15:04:05 MST"
 )
@@ -29,6 +31,13 @@ func IncludeHeaderFooter(value bool) Option {
 	}
 }
 
+// Entrypoint function to set the `entrypoint` option in the renderer context
+func Entrypoint(entrypoint string) Option {
+	return func(ctx *Context) {
+		ctx.options[keyEntrypoint] = entrypoint
+	}
+}
+
 // LastUpdated returns the value of the 'LastUpdated' Option if it was present,
 // otherwise it returns the current time using the `2006/01/02 15:04:05 MST` format
 func (ctx *Context) LastUpdated() string {
@@ -41,7 +50,7 @@ func (ctx *Context) LastUpdated() string {
 }
 
 // IncludeHeaderFooter returns the value of the 'LastUpdated' Option if it was present,
-// otherwise it returns `false``
+// otherwise it returns `false`
 func (ctx *Context) IncludeHeaderFooter() bool {
 	if includeHeaderFooter, found := ctx.options[keyIncludeHeaderFooter]; found {
 		if includeHeaderFooter, typeMatch := includeHeaderFooter.(bool); typeMatch {
@@ -49,4 +58,15 @@ func (ctx *Context) IncludeHeaderFooter() bool {
 		}
 	}
 	return false
+}
+
+// Entrypoint returns the value of the 'Entrypoint' Option if it was present,
+// otherwise it returns `nil
+func (ctx *Context) Entrypoint() *string {
+	if entrypoint, found := ctx.options[keyEntrypoint]; found {
+		if entrypoint, typeMatch := entrypoint.(string); typeMatch {
+			return &entrypoint
+		}
+	}
+	return nil
 }
