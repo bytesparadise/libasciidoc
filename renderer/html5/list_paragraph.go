@@ -10,24 +10,22 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-const listParagraphTmpl = `{{ $ctx := .Context }}{{ with .Data }}<p>{{ $lines := .Lines }}{{ range $index, $line := $lines }}{{ renderElement $ctx $line | printf "%s" }}{{ if notLastItem $index $lines }}{{ print "\n" }}{{ end }}{{ end }}</p>{{ end }}`
+var listParagraphTmpl *texttemplate.Template
+
+// initializes the templates
+func init() {
+	listParagraphTmpl = newTextTemplate("list paragraph",
+		`{{ $ctx := .Context }}{{ with .Data }}<p>{{ $lines := .Lines }}{{ range $index, $line := $lines }}{{ renderElement $ctx $line | printf "%s" }}{{ if notLastItem $index $lines }}{{ print "\n" }}{{ end }}{{ end }}</p>{{ end }}`,
+		texttemplate.FuncMap{
+			"renderElement": renderElement,
+			"notLastItem":   notLastItem,
+		})
+}
 
 func renderListParagraph(ctx *renderer.Context, p *types.ListParagraph) ([]byte, error) {
-	// TODO: move this to init
-	t := texttemplate.New("list paragraph")
-	t.Funcs(texttemplate.FuncMap{
-		"renderElement": renderElement,
-		"notLastItem":   notLastItem,
-	})
-	var err error
-	t, err = t.Parse(listParagraphTmpl)
-	if err != nil {
-		return nil, errors.Wrapf(err, "unable to parse list paragraph template")
-	}
-
 	result := bytes.NewBuffer(nil)
 	// here we must preserve the HTML tags
-	err = t.Execute(result, ContextualPipeline{
+	err := listParagraphTmpl.Execute(result, ContextualPipeline{
 		Context: ctx,
 		Data:    p,
 	})

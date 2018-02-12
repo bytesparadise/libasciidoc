@@ -10,89 +10,37 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-// var unorderedListTmpl *template.Template
-// var unorderedNestedListTmpl *template.Template
-// var unorderedListItemTmpl *template.Template
-// var unorderedListItemContentTmpl *template.Template
-
-const unorderedListTmpl = `{{ $ctx := .Context }}{{ with .Data }}<div{{ if index .Attributes "ID" }} id="{{ index .Attributes "ID" }}"{{ end }} class="ulist">
-<ul>
-{{ range .Items }}{{ template "items" wrap $ctx . }}{{ end }}</ul>
-</div>{{ end }}`
-
-const unorderedListItemTmpl = `{{ define "items" }}{{ $ctx := .Context }}{{ with .Data }}<li>
-{{ $elements := .Elements }}{{ range $index, $element := $elements }}{{ renderElement $ctx $element | printf "%s" }}{{ if notLastItem $index $elements }}{{ print "\n" }}{{ end }}{{ end }}
-</li>
-{{ end }}{{ end }}`
+var unorderedListTmpl *texttemplate.Template
 
 // initializes the templates
 func init() {
-	// 	unorderedListTmpl = newHTMLTemplate("unordered list", `<div{{ if .ID }} id="{{.ID.Value}}"{{ end }} class="ulist">
-	// <ul>
-	// {{.Items}}
-	// </ul>
-	// </div>`)
-	// 	unorderedListItemTmpl = newHTMLTemplate("unordered list item", `<li>
-	// {{.Content}}{{ if .Children }}
-	// {{.Children}}
-	// </li>{{ else }}
-	// </li>{{ end }}`)
-	// 	unorderedListItemContentTmpl = newHTMLTemplate("unordered list item content", `<p>{{.}}</p>`)
+	unorderedListTmpl = newTextTemplate("unordered list",
+		`{{ $ctx := .Context }}{{ with .Data }}<div{{ if index .Attributes "ID" }} id="{{ index .Attributes "ID" }}"{{ end }} class="ulist">
+<ul>
+{{ $items := .Items }}{{ range $itemIndex, $item := $items }}<li>
+{{ $elements := $item.Elements }}{{ range $elementIndex, $element := $elements }}{{ renderElement $ctx $element | printf "%s" }}{{ if notLastItem $elementIndex $elements }}{{ print "\n" }}{{ end }}{{ end }}
+</li>
+{{ end }}</ul>
+</div>{{ end }}`,
+		texttemplate.FuncMap{
+			"renderElement": renderElement,
+			"wrap":          wrap,
+			"notLastItem":   notLastItem,
+		})
 
 }
 
 func renderUnorderedList(ctx *renderer.Context, l *types.UnorderedList) ([]byte, error) {
-	// TODO: move this to init
-	t := texttemplate.New("unordered list")
-	t.Funcs(texttemplate.FuncMap{
-		"renderElement": renderElement,
-		"wrap":          wrap,
-		"notLastItem":   notLastItem,
-	})
-	var err error
-	t, err = t.Parse(unorderedListItemTmpl)
-	if err != nil {
-		return nil, errors.Wrapf(err, "unable to parse unordered list item template")
-	}
-	t, err = t.Parse(unorderedListTmpl)
-	if err != nil {
-		return nil, errors.Wrapf(err, "unable to parse unordered list template")
-	}
-
-	// renderedElementsBuff := bytes.NewBuffer(nil)
-	// for i, item := range l.Items {
-	// 	renderedListItem, err := renderUnorderedListItem(ctx, *item)
-	// 	if err != nil {
-	// 		return nil, errors.Wrapf(err, "unable to render list of items")
-	// 	}
-	// 	renderedElementsBuff.Write(renderedListItem)
-	// 	if i < len(l.Items)-1 {
-	// 		renderedElementsBuff.WriteString("\n")
-	// 	}
-	// }
-
-	// result := bytes.NewBuffer(nil)
-	// // here we must preserve the HTML tags
-	// err := unorderedListTmpl.Execute(result, struct {
-	// 	ID    *types.ElementID
-	// 	Items template.HTML
-	// }{
-	// 	ID:    l.ID,
-	// 	Items: template.HTML(renderedElementsBuff.String()),
-	// })
-	// if err != nil {
-	// 	return nil, errors.Wrapf(err, "unable to render l of items")
-	// }
 	result := bytes.NewBuffer(nil)
 	// here we must preserve the HTML tags
-	err = t.Execute(result, ContextualPipeline{
+	err := unorderedListTmpl.Execute(result, ContextualPipeline{
 		Context: ctx,
 		Data:    l,
 	})
 	if err != nil {
 		return nil, errors.Wrapf(err, "unable to render list of items")
 	}
-	log.Debugf("rendered list of items: %s", result.Bytes())
+	log.Debugf("rendered unordered list of items: %s", result.Bytes())
 	return result.Bytes(), nil
 }
 

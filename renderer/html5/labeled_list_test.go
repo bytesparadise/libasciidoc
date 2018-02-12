@@ -180,5 +180,51 @@ on 2 lines, too.</p>
 			verify(GinkgoT(), expected, actualContent)
 		})
 
+		It("labeled list with nested lists and horizontal layout", func() {
+			actualContent := `[horizontal]
+item 1:: 
+* foo
+* bar
+** baz
+item 2:: something simple`
+			expected := `<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+item 1
+</td>
+<td class="hdlist2">
+<div class="ulist">
+<ul>
+<li>
+<p>foo</p>
+</li>
+<li>
+<p>bar</p>
+<div class="ulist">
+<ul>
+<li>
+<p>baz</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+item 2
+</td>
+<td class="hdlist2">
+<p>something simple</p>
+</td>
+</tr>
+</table>
+</div>`
+			verify(GinkgoT(), expected, actualContent)
+		})
+
 	})
 })
