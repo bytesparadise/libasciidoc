@@ -70,7 +70,7 @@ var _ = Describe("Delimited Blocks", func() {
 					},
 					&types.Paragraph{
 						Lines: []*types.InlineContent{
-							&types.InlineContent{
+							{
 								Elements: []types.InlineElement{
 									&types.StringElement{Content: "then a normal paragraph."},
 								},
@@ -91,7 +91,7 @@ var _ = Describe("Delimited Blocks", func() {
 				Elements: []types.DocElement{
 					&types.Paragraph{
 						Lines: []*types.InlineContent{
-							&types.InlineContent{
+							{
 								Elements: []types.InlineElement{
 									&types.StringElement{Content: "a paragraph."},
 								},
@@ -172,7 +172,7 @@ some listing code
 					},
 					&types.Paragraph{
 						Lines: []*types.InlineContent{
-							&types.InlineContent{
+							{
 								Elements: []types.InlineElement{
 									&types.StringElement{Content: "then a normal paragraph."},
 								},
@@ -196,7 +196,7 @@ some listing code
 				Elements: []types.DocElement{
 					&types.Paragraph{
 						Lines: []*types.InlineContent{
-							&types.InlineContent{
+							{
 								Elements: []types.InlineElement{
 									&types.StringElement{Content: "a paragraph."},
 								},
