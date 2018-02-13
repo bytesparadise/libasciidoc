@@ -2,11 +2,9 @@ dist: trusty
 sudo: false
 
 install:
-  - GLIDE_TAG="v0.12.3"
-  - GLIDE_DOWNLOAD="https://github.com/Masterminds/glide/releases/download/$GLIDE_TAG/glide-$GLIDE_TAG-linux-amd64.tar.gz"
-  - curl -L $GLIDE_DOWNLOAD | tar -xvz
-  - export PATH=$PATH:$PWD/linux-amd64/
-  - glide install
+  # dep is used to manage dependencies
+  - go get -u github.com/golang/dep/cmd/dep
+  - dep ensure
   # pigeon is used to generate the parser
   - go get -u github.com/mna/pigeon
   # ginkgo and gomega are used to run the tests
@@ -17,7 +15,7 @@ install:
 language: go
 
 go:
-  - 1.7.x
+  # - 1.7.x
   - 1.8.x
   - 1.9.x
   - tip
