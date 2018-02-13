@@ -7,16 +7,24 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-func newHTMLTemplate(name, src string) *htmltemplate.Template {
-	t, err := htmltemplate.New(name).Parse(src)
+func newHTMLTemplate(name, src string, funcs ...htmltemplate.FuncMap) *htmltemplate.Template {
+	t := htmltemplate.New(name)
+	for _, f := range funcs {
+		t.Funcs(f)
+	}
+	t, err := t.Parse(src)
 	if err != nil {
 		log.Fatalf("failed to initialize '%s' template: %s", name, err.Error())
 	}
 	return t
 }
 
-func newTextTemplate(name, src string) *texttemplate.Template {
-	t, err := texttemplate.New(name).Parse(src)
+func newTextTemplate(name, src string, funcs ...texttemplate.FuncMap) *texttemplate.Template {
+	t := texttemplate.New(name)
+	for _, f := range funcs {
+		t.Funcs(f)
+	}
+	t, err := t.Parse(src)
 	if err != nil {
 		log.Fatalf("failed to initialize '%s' template: %s", name, err.Error())
 	}

@@ -12,7 +12,7 @@ var _ = Describe("Paragraphs", func() {
 		actualContent := "hello"
 		expectedDocument := &types.Paragraph{
 			Lines: []*types.InlineContent{
-				&types.InlineContent{
+				{
 					Elements: []types.InlineElement{
 						&types.StringElement{Content: "hello"},
 					},
@@ -26,7 +26,7 @@ var _ = Describe("Paragraphs", func() {
 		actualContent := "a paragraph with some content"
 		expectedDocument := &types.Paragraph{
 			Lines: []*types.InlineContent{
-				&types.InlineContent{
+				{
 					Elements: []types.InlineElement{
 						&types.StringElement{Content: "a paragraph with some content"},
 					},
@@ -40,7 +40,7 @@ var _ = Describe("Paragraphs", func() {
 		actualContent := "a paragraph with *some bold content*"
 		expectedDocument := &types.Paragraph{
 			Lines: []*types.InlineContent{
-				&types.InlineContent{
+				{
 					Elements: []types.InlineElement{
 						&types.StringElement{Content: "a paragraph with "},
 						&types.QuotedText{
@@ -64,7 +64,7 @@ a paragraph`
 			ID:    &types.ElementID{Value: "foo"},
 			Title: &types.ElementTitle{Value: "a title"},
 			Lines: []*types.InlineContent{
-				&types.InlineContent{
+				{
 					Elements: []types.InlineElement{
 						&types.StringElement{Content: "a paragraph"},
 					},

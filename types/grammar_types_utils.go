@@ -7,16 +7,27 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+func toDocElements(elements []interface{}) ([]DocElement, error) {
+	result := make([]DocElement, len(elements))
+	for i, element := range elements {
+		element, ok := element.(DocElement)
+		if !ok {
+			return nil, errors.Errorf("unexpected element of type: %T (expected a DocElement instead)", element)
+		}
+		result[i] = element
+	}
+	return result, nil
+}
+
 func toInlineElements(elements []interface{}) ([]InlineElement, error) {
-	mergedElements := merge(elements)
+	mergedElements := mergeElements(elements)
 	result := make([]InlineElement, len(mergedElements))
 	for i, element := range mergedElements {
-		switch element := element.(type) {
-		case InlineElement:
-			result[i] = element
-		default:
+		element, ok := element.(InlineElement)
+		if !ok {
 			return nil, errors.Errorf("unexpected element of type: %T (expected a InlineElement instead)", element)
 		}
+		result[i] = element
 	}
 	return result, nil
 }
@@ -48,7 +59,7 @@ func filterUnrelevantElements(blocks []interface{}) []DocElement {
 	return elements
 }
 
-func merge(elements []interface{}, extraElements ...interface{}) []interface{} {
+func mergeElements(elements []interface{}, extraElements ...interface{}) []interface{} {
 	result := make([]interface{}, 0)
 	allElements := append(elements, extraElements...)
 	// log.Debugf("Merging %d element(s):", len(allElements))
@@ -74,12 +85,12 @@ func merge(elements []interface{}, extraElements ...interface{}) []interface{} {
 			for i, e := range element.Elements {
 				inlineElements[i] = e
 			}
-			result = merge(result, inlineElements...)
+			result = mergeElements(result, inlineElements...)
 		case []interface{}:
 			if len(element) > 0 {
-				f := merge(element)
+				f := mergeElements(element)
 				result, buff = appendBuffer(result, buff)
-				result = merge(result, f...)
+				result = mergeElements(result, f...)
 			}
 		default:
 			log.Debugf("Merging with 'default' case an element of type %[1]T", element)
@@ -98,6 +109,22 @@ func merge(elements []interface{}, extraElements ...interface{}) []interface{} {
 	return result
 }
 
+func mergeAttributes(attributes []interface{}) map[string]interface{} {
+	if attributes == nil || len(attributes) == 0 {
+		return nil
+	}
+	result := make(map[string]interface{})
+	for _, attr := range attributes {
+		if attr, ok := attr.(map[string]interface{}); ok {
+			for k, v := range attr {
+				result[k] = v
+			}
+		}
+	}
+	return result
+
+}
+
 // appendBuffer appends the content of the given buffer to the given array of elements,
 // and returns a new buffer, or returns the given arguments if the buffer was empty
 func appendBuffer(elements []interface{}, buff *bytes.Buffer) ([]interface{}, *bytes.Buffer) {
@@ -113,7 +140,7 @@ type stringifyOption func(s string) (string, error)
 // stringify convert the given elements into a string, then applies the optional `funcs` to convert the string before returning it.
 // These StringifyFuncs can be used to trim the content, for example
 func stringify(elements []interface{}, options ...stringifyOption) (*string, error) {
-	mergedElements := merge(elements)
+	mergedElements := mergeElements(elements)
 	b := make([]byte, 0)
 	buff := bytes.NewBuffer(b)
 	for _, element := range mergedElements {

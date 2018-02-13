@@ -16,7 +16,7 @@ second paragraph`
 			Elements: []types.DocElement{
 				&types.Paragraph{
 					Lines: []*types.InlineContent{
-						&types.InlineContent{
+						{
 							Elements: []types.InlineElement{
 								&types.StringElement{Content: "first paragraph"},
 							},
@@ -25,7 +25,7 @@ second paragraph`
 				},
 				&types.Paragraph{
 					Lines: []*types.InlineContent{
-						&types.InlineContent{
+						{
 							Elements: []types.InlineElement{
 								&types.StringElement{Content: "second paragraph"},
 							},
@@ -49,7 +49,7 @@ second paragraph
 			Elements: []types.DocElement{
 				&types.Paragraph{
 					Lines: []*types.InlineContent{
-						&types.InlineContent{
+						{
 							Elements: []types.InlineElement{
 								&types.StringElement{Content: "first paragraph"},
 							},
@@ -58,7 +58,7 @@ second paragraph
 				},
 				&types.Paragraph{
 					Lines: []*types.InlineContent{
-						&types.InlineContent{
+						{
 							Elements: []types.InlineElement{
 								&types.StringElement{Content: "second paragraph"},
 							},
