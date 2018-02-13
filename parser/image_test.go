@@ -118,7 +118,7 @@ var _ = Describe("Images", func() {
 									&types.StringElement{Content: "a paragraph"},
 								},
 							},
-							&types.InlineContent{
+							{
 								Elements: []types.InlineElement{
 									&types.StringElement{Content: "image::images/foo.png[]"},
 								},
@@ -139,7 +139,7 @@ var _ = Describe("Images", func() {
 						Elements: []types.DocElement{
 							&types.Paragraph{
 								Lines: []*types.InlineContent{
-									&types.InlineContent{
+									{
 										Elements: []types.InlineElement{
 											&types.StringElement{Content: "a foo image::foo.png[foo image, 600, 400] bar"},
 										},
@@ -232,12 +232,12 @@ var _ = Describe("Images", func() {
 				actualContent := "a paragraph\nimage::images/foo.png[]"
 				expectedDocument := &types.Paragraph{
 					Lines: []*types.InlineContent{
-						&types.InlineContent{
+						{
 							Elements: []types.InlineElement{
 								&types.StringElement{Content: "a paragraph"},
 							},
 						},
-						&types.InlineContent{
+						{
 							Elements: []types.InlineElement{
 								&types.StringElement{Content: "image::images/foo.png[]"},
 							},
