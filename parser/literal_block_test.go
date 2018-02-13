@@ -40,7 +40,7 @@ a normal paragraph.`
 					},
 					&types.Paragraph{
 						Lines: []*types.InlineContent{
-							&types.InlineContent{
+							{
 								Elements: []types.InlineElement{
 									&types.StringElement{Content: "a normal paragraph."},
 								},
@@ -69,7 +69,7 @@ a normal paragraph.`
 					},
 					&types.Paragraph{
 						Lines: []*types.InlineContent{
-							&types.InlineContent{
+							{
 								Elements: []types.InlineElement{
 									&types.StringElement{Content: "a normal paragraph."},
 								},
@@ -99,7 +99,7 @@ a normal paragraph.`
 					},
 					&types.Paragraph{
 						Lines: []*types.InlineContent{
-							&types.InlineContent{
+							{
 								Elements: []types.InlineElement{
 									&types.StringElement{Content: "a normal paragraph."},
 								},
@@ -110,7 +110,6 @@ a normal paragraph.`
 			}
 			verify(GinkgoT(), expectedDocument, actualContent)
 		})
-
 	})
 
 })
