@@ -10,7 +10,7 @@ var _ = Describe("External Links", func() {
 
 	It("external link", func() {
 		actualContent := "a link to https://foo.bar"
-		expectedDocument := &types.InlineContent{
+		expectedResult := &types.InlineContent{
 			Elements: []types.InlineElement{
 				&types.StringElement{Content: "a link to "},
 				&types.ExternalLink{
@@ -18,12 +18,12 @@ var _ = Describe("External Links", func() {
 				},
 			},
 		}
-		verify(GinkgoT(), expectedDocument, actualContent, parser.Entrypoint("InlineContent"))
+		verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineContent"))
 	})
 
 	It("external link with empty text", func() {
 		actualContent := "a link to https://foo.bar[]"
-		expectedDocument := &types.InlineContent{
+		expectedResult := &types.InlineContent{
 			Elements: []types.InlineElement{
 				&types.StringElement{Content: "a link to "},
 				&types.ExternalLink{
@@ -32,12 +32,12 @@ var _ = Describe("External Links", func() {
 				},
 			},
 		}
-		verify(GinkgoT(), expectedDocument, actualContent, parser.Entrypoint("InlineContent"))
+		verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineContent"))
 	})
 
 	It("external link with text", func() {
 		actualContent := "a link to mailto:foo@bar[the foo@bar email]"
-		expectedDocument := &types.InlineContent{
+		expectedResult := &types.InlineContent{
 			Elements: []types.InlineElement{
 				&types.StringElement{Content: "a link to "},
 				&types.ExternalLink{
@@ -46,6 +46,6 @@ var _ = Describe("External Links", func() {
 				},
 			},
 		}
-		verify(GinkgoT(), expectedDocument, actualContent, parser.Entrypoint("InlineContent"))
+		verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineContent"))
 	})
 })

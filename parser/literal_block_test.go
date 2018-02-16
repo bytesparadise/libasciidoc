@@ -12,26 +12,26 @@ var _ = Describe("Literal Blocks", func() {
 
 		It("literal block from 1-line paragraph with single space", func() {
 			actualContent := ` some literal content`
-			expectedDocument := &types.LiteralBlock{
+			expectedResult := &types.LiteralBlock{
 				Content: " some literal content",
 			}
-			verify(GinkgoT(), expectedDocument, actualContent, parser.Entrypoint("LiteralBlock"))
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("LiteralBlock"))
 		})
 
 		It("literal block from paragraph with single space on first line", func() {
 			actualContent := ` some literal content
 on 2 lines.`
-			expectedDocument := &types.LiteralBlock{
+			expectedResult := &types.LiteralBlock{
 				Content: " some literal content\non 2 lines.",
 			}
-			verify(GinkgoT(), expectedDocument, actualContent, parser.Entrypoint("LiteralBlock"))
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("LiteralBlock"))
 		})
 
 		It("mixing literal block and paragraph ", func() {
 			actualContent := `   some literal content
 
 a normal paragraph.`
-			expectedDocument := &types.Document{
+			expectedResult := &types.Document{
 				Attributes:        map[string]interface{}{},
 				ElementReferences: map[string]interface{}{},
 				Elements: []types.DocElement{
@@ -49,7 +49,7 @@ a normal paragraph.`
 					},
 				},
 			}
-			verify(GinkgoT(), expectedDocument, actualContent)
+			verify(GinkgoT(), expectedResult, actualContent)
 		})
 	})
 
@@ -60,7 +60,7 @@ a normal paragraph.`
 some literal content
 ....
 a normal paragraph.`
-			expectedDocument := &types.Document{
+			expectedResult := &types.Document{
 				Attributes:        map[string]interface{}{},
 				ElementReferences: map[string]interface{}{},
 				Elements: []types.DocElement{
@@ -78,7 +78,7 @@ a normal paragraph.`
 					},
 				},
 			}
-			verify(GinkgoT(), expectedDocument, actualContent)
+			verify(GinkgoT(), expectedResult, actualContent)
 		})
 
 	})
@@ -90,7 +90,7 @@ a normal paragraph.`
 some literal content
 
 a normal paragraph.`
-			expectedDocument := &types.Document{
+			expectedResult := &types.Document{
 				Attributes:        map[string]interface{}{},
 				ElementReferences: map[string]interface{}{},
 				Elements: []types.DocElement{
@@ -108,7 +108,7 @@ a normal paragraph.`
 					},
 				},
 			}
-			verify(GinkgoT(), expectedDocument, actualContent)
+			verify(GinkgoT(), expectedResult, actualContent)
 		})
 	})
 

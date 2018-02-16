@@ -218,10 +218,17 @@ HorizontalLayout <- "[horizontal]" {
     return map[string]interface{}{"layout": "horizontal"}, nil
 }
 
-ListParagraph <-  lines:(!(UnorderedListItemPrefix) !(LabeledListItemTerm LabeledListItemSeparator) InlineContent EOL)+ {
+ListParagraph <-  lines:(!(ListItemContinuation) !(UnorderedListItemPrefix) !(LabeledListItemTerm LabeledListItemSeparator) InlineContent EOL)+ {
     return types.NewListParagraph(lines.([]interface{}))
 } 
 
+ListItemContinuation <- "+" WS* NEWLINE {
+    return types.NewListItemContinuation()
+}
+
+ContinuedBlockElement <- ListItemContinuation element:BlockElement {
+    return element, nil
+}
 
 // ------------------------------------------
 // Unordered Lists
@@ -241,9 +248,10 @@ UnorderedListItemPrefix <- WS* level:("*"+ / "-") WS+ { // ignore whitespaces, o
     return level, nil
 }
 
-UnorderedListItemContent <- elements:(ListParagraph)+ { // Another list or a literal paragraph immediately following a list item will be implicitly included in the list item
+UnorderedListItemContent <- elements:(ListParagraph+ ContinuedBlockElement*) { // Another list or a literal paragraph immediately following a list item will be implicitly included in the list item
     return types.NewListItemContent(elements.([]interface{}))
 } 
+
 
 
 // ------------------------------------------
@@ -270,7 +278,7 @@ LabeledListItemWithDescription <- term:(LabeledListItemTerm) LabeledListItemSepa
     return types.NewLabeledListItem(term.([]interface{}), description.([]types.DocElement))
 }
 
-LabeledListItemDescription <- elements:(ListParagraph)* { 
+LabeledListItemDescription <- elements:(ListParagraph / ContinuedBlockElement)* { 
     return types.NewListItemContent(elements.([]interface{}))
 }
 

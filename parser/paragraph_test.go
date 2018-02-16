@@ -10,7 +10,7 @@ var _ = Describe("Paragraphs", func() {
 
 	It("paragraph with 1 word", func() {
 		actualContent := "hello"
-		expectedDocument := &types.Paragraph{
+		expectedResult := &types.Paragraph{
 			Lines: []*types.InlineContent{
 				{
 					Elements: []types.InlineElement{
@@ -19,12 +19,12 @@ var _ = Describe("Paragraphs", func() {
 				},
 			},
 		}
-		verify(GinkgoT(), expectedDocument, actualContent, parser.Entrypoint("Paragraph"))
+		verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Paragraph"))
 	})
 
 	It("paragraph with few words", func() {
 		actualContent := "a paragraph with some content"
-		expectedDocument := &types.Paragraph{
+		expectedResult := &types.Paragraph{
 			Lines: []*types.InlineContent{
 				{
 					Elements: []types.InlineElement{
@@ -33,12 +33,12 @@ var _ = Describe("Paragraphs", func() {
 				},
 			},
 		}
-		verify(GinkgoT(), expectedDocument, actualContent, parser.Entrypoint("Paragraph"))
+		verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Paragraph"))
 	})
 
 	It("paragraph with bold content", func() {
 		actualContent := "a paragraph with *some bold content*"
-		expectedDocument := &types.Paragraph{
+		expectedResult := &types.Paragraph{
 			Lines: []*types.InlineContent{
 				{
 					Elements: []types.InlineElement{
@@ -53,14 +53,14 @@ var _ = Describe("Paragraphs", func() {
 				},
 			},
 		}
-		verify(GinkgoT(), expectedDocument, actualContent, parser.Entrypoint("Paragraph"))
+		verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Paragraph"))
 	})
 
 	It("paragraph with id and title", func() {
 		actualContent := `[#foo]
 .a title
 a paragraph`
-		expectedDocument := &types.Paragraph{
+		expectedResult := &types.Paragraph{
 			ID:    &types.ElementID{Value: "foo"},
 			Title: &types.ElementTitle{Value: "a title"},
 			Lines: []*types.InlineContent{
@@ -71,6 +71,6 @@ a paragraph`
 				},
 			},
 		}
-		verify(GinkgoT(), expectedDocument, actualContent, parser.Entrypoint("Paragraph"))
+		verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Paragraph"))
 	})
 })

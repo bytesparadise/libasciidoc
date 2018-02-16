@@ -12,7 +12,7 @@ var _ = Describe("labeled lists", func() {
 		actualContent := `Item1::
 Item 1 description
 on 2 lines`
-		expectedDocument := &types.LabeledList{
+		expectedResult := &types.LabeledList{
 			Items: []*types.LabeledListItem{
 				{
 					Term: "Item1",
@@ -35,25 +35,25 @@ on 2 lines`
 				},
 			},
 		}
-		verify(GinkgoT(), expectedDocument, actualContent, parser.Entrypoint("List"))
+		verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("List"))
 	})
 
 	It("labeled list with a single term and no description", func() {
 		actualContent := `Item1::`
-		expectedDocument := &types.LabeledList{
+		expectedResult := &types.LabeledList{
 			Items: []*types.LabeledListItem{
 				{
 					Term: "Item1",
 				},
 			},
 		}
-		verify(GinkgoT(), expectedDocument, actualContent, parser.Entrypoint("List"))
+		verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("List"))
 	})
 
 	It("labeled list with a horizontal layout attribute", func() {
 		actualContent := `[horizontal]
 Item1:: foo`
-		expectedDocument := &types.LabeledList{
+		expectedResult := &types.LabeledList{
 			Attributes: map[string]interface{}{
 				"layout": "horizontal",
 			},
@@ -74,20 +74,20 @@ Item1:: foo`
 				},
 			},
 		}
-		verify(GinkgoT(), expectedDocument, actualContent, parser.Entrypoint("List"))
+		verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("List"))
 	})
 
 	It("labeled list with a single term and a blank line", func() {
 		actualContent := `Item1::
 			`
-		expectedDocument := &types.LabeledList{
+		expectedResult := &types.LabeledList{
 			Items: []*types.LabeledListItem{
 				{
 					Term: "Item1",
 				},
 			},
 		}
-		verify(GinkgoT(), expectedDocument, actualContent, parser.Entrypoint("List"))
+		verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("List"))
 	})
 
 	It("labeled list with multiple items", func() {
@@ -97,7 +97,7 @@ Item 2::
 Item 2 description
 Item 3:: 
 Item 3 description`
-		expectedDocument := &types.LabeledList{
+		expectedResult := &types.LabeledList{
 			Items: []*types.LabeledListItem{
 				{
 					Term: "Item 1",
@@ -143,7 +143,7 @@ Item 3 description`
 				},
 			},
 		}
-		verify(GinkgoT(), expectedDocument, actualContent, parser.Entrypoint("List"))
+		verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("List"))
 	})
 
 	It("labeled list with nested list", func() {
@@ -151,7 +151,7 @@ Item 3 description`
 * foo
 * bar
 Item with description:: something simple`
-		expectedDocument := &types.LabeledList{
+		expectedResult := &types.LabeledList{
 			Items: []*types.LabeledListItem{
 				{
 					Term: "Empty item",
@@ -207,7 +207,7 @@ Item with description:: something simple`
 			},
 		}
 
-		verify(GinkgoT(), expectedDocument, actualContent, parser.Entrypoint("List"))
+		verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("List"))
 	})
 
 	It("labeled list with a single item and paragraph", func() {
@@ -216,7 +216,7 @@ foo
 bar
 
 a normal paragraph.`
-		expectedDocument := &types.Document{
+		expectedResult := &types.Document{
 			Attributes:        map[string]interface{}{},
 			ElementReferences: map[string]interface{}{},
 			Elements: []types.DocElement{
@@ -254,16 +254,71 @@ a normal paragraph.`
 				},
 			},
 		}
-		verify(GinkgoT(), expectedDocument, actualContent)
+		verify(GinkgoT(), expectedResult, actualContent)
 	})
 
-	It("labeled list with fenced block", func() {
-		actualContent := "Item 1::\n" +
-			"```\n" +
-			"a fenced block\n" +
-			"```\n" +
-			"Item 2:: something simple"
-		expectedDocument := &types.Document{
+	It("labeled list with item continuation", func() {
+		actualContent := `Item 1::
++
+----
+a fenced block
+----
+Item 2:: something simple
++
+----
+another fenced block
+----`
+		expectedResult := &types.Document{
+			Attributes:        map[string]interface{}{},
+			ElementReferences: map[string]interface{}{},
+			Elements: []types.DocElement{
+				&types.LabeledList{
+					Items: []*types.LabeledListItem{
+						{
+							Term: "Item 1",
+							Elements: []types.DocElement{
+								&types.DelimitedBlock{
+									Kind:    types.ListingBlock,
+									Content: "a fenced block",
+								},
+							},
+						},
+						{
+							Term: "Item 2",
+							Elements: []types.DocElement{
+								&types.ListParagraph{
+									Lines: []*types.InlineContent{
+										{
+											Elements: []types.InlineElement{
+												&types.StringElement{Content: "something simple"},
+											},
+										},
+									},
+								},
+								&types.DelimitedBlock{
+									Kind:    types.ListingBlock,
+									Content: "another fenced block",
+								},
+							},
+						},
+					},
+				},
+			},
+		}
+
+		verify(GinkgoT(), expectedResult, actualContent)
+	})
+
+	It("labeled list without item continuation", func() {
+		actualContent := `Item 1::
+----
+a fenced block
+----
+Item 2:: something simple
+----
+another fenced block
+----`
+		expectedResult := &types.Document{
 			Attributes:        map[string]interface{}{},
 			ElementReferences: map[string]interface{}{},
 			Elements: []types.DocElement{
@@ -275,7 +330,7 @@ a normal paragraph.`
 					},
 				},
 				&types.DelimitedBlock{
-					Kind:    types.FencedBlock,
+					Kind:    types.ListingBlock,
 					Content: "a fenced block",
 				},
 				&types.LabeledList{
@@ -296,10 +351,14 @@ a normal paragraph.`
 						},
 					},
 				},
+				&types.DelimitedBlock{
+					Kind:    types.ListingBlock,
+					Content: "another fenced block",
+				},
 			},
 		}
 
-		verify(GinkgoT(), expectedDocument, actualContent)
+		verify(GinkgoT(), expectedResult, actualContent)
 	})
 
 })

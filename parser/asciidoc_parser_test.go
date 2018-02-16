@@ -11,7 +11,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func verify(t GinkgoTInterface, expectedDocument interface{}, content string, options ...parser.Option) {
+func verify(t GinkgoTInterface, expectedResult interface{}, content string, options ...parser.Option) {
 	log.Debugf("processing: %s", content)
 	reader := strings.NewReader(content)
 	result, err := parser.ParseReader("", reader, options...) //, Debug(true))
@@ -20,8 +20,8 @@ func verify(t GinkgoTInterface, expectedDocument interface{}, content string, op
 	}
 	require.NoError(t, err)
 	t.Logf("actual document: `%s`", spew.Sdump(result))
-	t.Logf("expected document: `%s`", spew.Sdump(expectedDocument))
-	assert.EqualValues(t, expectedDocument, result)
+	t.Logf("expected document: `%s`", spew.Sdump(expectedResult))
+	assert.EqualValues(t, expectedResult, result)
 }
 
 func expectError(t GinkgoTInterface, content string, options ...parser.Option) {

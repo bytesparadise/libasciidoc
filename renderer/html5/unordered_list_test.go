@@ -7,7 +7,7 @@ var _ = Describe("unordered lists", func() {
 		actualContent := `* item 1
 * item 2
 * item 3`
-		expected := `<div class="ulist">
+		expectedResult := `<div class="ulist">
 <ul>
 <li>
 <p>item 1</p>
@@ -20,13 +20,13 @@ var _ = Describe("unordered lists", func() {
 </li>
 </ul>
 </div>`
-		verify(GinkgoT(), expected, actualContent)
+		verify(GinkgoT(), expectedResult, actualContent)
 	})
 	It("simple unordered list with a title", func() {
 		actualContent := `[#foo]
 	* item 1
 	* item 2`
-		expected := `<div id="foo" class="ulist">
+		expectedResult := `<div id="foo" class="ulist">
 <ul>
 <li>
 <p>item 1</p>
@@ -36,14 +36,14 @@ var _ = Describe("unordered lists", func() {
 </li>
 </ul>
 </div>`
-		verify(GinkgoT(), expected, actualContent)
+		verify(GinkgoT(), expectedResult, actualContent)
 	})
 	It("nested unordered lists without a title", func() {
 		actualContent := `* item 1
 ** item 1.1
 ** item 1.2
 * item 2`
-		expected := `<div class="ulist">
+		expectedResult := `<div class="ulist">
 <ul>
 <li>
 <p>item 1</p>
@@ -63,7 +63,7 @@ var _ = Describe("unordered lists", func() {
 </li>
 </ul>
 </div>`
-		verify(GinkgoT(), expected, actualContent)
+		verify(GinkgoT(), expectedResult, actualContent)
 	})
 	It("nested unordered lists with a title", func() {
 		actualContent := `[#listID]
@@ -71,7 +71,7 @@ var _ = Describe("unordered lists", func() {
 ** item 1.1
 ** item 1.2
 * item 2`
-		expected := `<div id="listID" class="ulist">
+		expectedResult := `<div id="listID" class="ulist">
 <ul>
 <li>
 <p>item 1</p>
@@ -91,6 +91,77 @@ var _ = Describe("unordered lists", func() {
 </li>
 </ul>
 </div>`
-		verify(GinkgoT(), expected, actualContent)
+		verify(GinkgoT(), expectedResult, actualContent)
+	})
+
+	It("unordered list with item continuation", func() {
+		actualContent := `* foo
++
+----
+a delimited block
+----
++
+----
+another delimited block
+----
+* bar
+`
+		expectedResult := `<div class="ulist">
+<ul>
+<li>
+<p>foo</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>a delimited block</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>another delimited block</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>bar</p>
+</li>
+</ul>
+</div>`
+		verify(GinkgoT(), expectedResult, actualContent)
+	})
+
+	It("unordered list without item continuation", func() {
+		actualContent := `* foo
+----
+a delimited block
+----
+* bar
+----
+another delimited block
+----`
+		expectedResult := `<div class="ulist">
+<ul>
+<li>
+<p>foo</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>a delimited block</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>bar</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>another delimited block</code></pre>
+</div>
+</div>`
+		verify(GinkgoT(), expectedResult, actualContent)
 	})
 })

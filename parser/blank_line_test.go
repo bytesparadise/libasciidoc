@@ -10,7 +10,7 @@ var _ = Describe("Blank lines", func() {
 		actualDocument := `first paragraph
 
 second paragraph`
-		expectedDocument := &types.Document{
+		expectedResult := &types.Document{
 			Attributes:        map[string]interface{}{},
 			ElementReferences: map[string]interface{}{},
 			Elements: []types.DocElement{
@@ -34,7 +34,7 @@ second paragraph`
 				},
 			},
 		}
-		verify(GinkgoT(), expectedDocument, actualDocument)
+		verify(GinkgoT(), expectedResult, actualDocument)
 	})
 	It("blank line with spaces and tabs between 2 paragraphs and after second paragraph", func() {
 		actualDocument := `first paragraph
@@ -43,7 +43,7 @@ second paragraph`
 		
 second paragraph
 `
-		expectedDocument := &types.Document{
+		expectedResult := &types.Document{
 			Attributes:        map[string]interface{}{},
 			ElementReferences: map[string]interface{}{},
 			Elements: []types.DocElement{
@@ -67,7 +67,7 @@ second paragraph
 				},
 			},
 		}
-		verify(GinkgoT(), expectedDocument, actualDocument)
+		verify(GinkgoT(), expectedResult, actualDocument)
 	})
 
 })

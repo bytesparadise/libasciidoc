@@ -9,19 +9,19 @@ var _ = Describe("Links", func() {
 		It("External link alone", func() {
 
 			actualContent := "https://foo.com[the website]"
-			expected := `<div class="paragraph">
+			expectedResult := `<div class="paragraph">
 <p><a href="https://foo.com">the website</a></p>
 </div>`
-			verify(GinkgoT(), expected, actualContent)
+			verify(GinkgoT(), expectedResult, actualContent)
 		})
 
 		It("External link without description", func() {
 
 			actualContent := "https://foo.com[]"
-			expected := `<div class="paragraph">
+			expectedResult := `<div class="paragraph">
 <p><a href="https://foo.com" class="bare">https://foo.com</a></p>
 </div>`
-			verify(GinkgoT(), expected, actualContent)
+			verify(GinkgoT(), expectedResult, actualContent)
 		})
 	})
 })

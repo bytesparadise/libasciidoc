@@ -56,7 +56,7 @@ A short preamble
 
 == section 1`
 
-		expectedDocument := &types.Document{
+		expectedResult := &types.Document{
 			Attributes: map[string]interface{}{
 				"doctitle": doctitleAttribute,
 				"toc":      "",
@@ -79,7 +79,7 @@ A short preamble
 				section,
 			},
 		}
-		verify(GinkgoT(), expectedDocument, actualContent)
+		verify(GinkgoT(), expectedResult, actualContent)
 	})
 
 	It("TOC with preamble placement", func() {
@@ -90,7 +90,7 @@ A short preamble
 
 == section 1`
 
-		expectedDocument := &types.Document{
+		expectedResult := &types.Document{
 			Attributes: map[string]interface{}{
 				"doctitle": doctitleAttribute,
 				"toc":      "preamble",
@@ -113,7 +113,7 @@ A short preamble
 				section,
 			},
 		}
-		verify(GinkgoT(), expectedDocument, actualContent)
+		verify(GinkgoT(), expectedResult, actualContent)
 	})
 
 	// Context("TOC macro", func() {

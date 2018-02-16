@@ -1,6 +1,8 @@
 package html5_test
 
-import . "github.com/onsi/ginkgo"
+import (
+	. "github.com/onsi/ginkgo"
+)
 
 var _ = Describe("labeled lists of items", func() {
 
@@ -13,7 +15,7 @@ item 2:: description 2
 on 2 lines.
 item 3:: description 3
 on 2 lines, too.`
-			expected := `<div id="listID" class="dlist">
+			expectedResult := `<div id="listID" class="dlist">
 <dl>
 <dt class="hdlist1">item 1</dt>
 <dd>
@@ -31,13 +33,13 @@ on 2 lines, too.</p>
 </dd>
 </dl>
 </div>`
-			verify(GinkgoT(), expected, actualContent)
+			verify(GinkgoT(), expectedResult, actualContent)
 		})
 
 		It("labeled list with an empty entry", func() {
 			actualContent := `item 1::
 item 2:: description 2.`
-			expected := `<div class="dlist">
+			expectedResult := `<div class="dlist">
 <dl>
 <dt class="hdlist1">item 1</dt>
 <dt class="hdlist1">item 2</dt>
@@ -46,13 +48,13 @@ item 2:: description 2.`
 </dd>
 </dl>
 </div>`
-			verify(GinkgoT(), expected, actualContent)
+			verify(GinkgoT(), expectedResult, actualContent)
 		})
 
 		It("labeled list with an image", func() {
 			actualContent := `item 1:: image:foo.png[]
 item 2:: description 2.`
-			expected := `<div class="dlist">
+			expectedResult := `<div class="dlist">
 <dl>
 <dt class="hdlist1">item 1</dt>
 <dd>
@@ -64,12 +66,12 @@ item 2:: description 2.`
 </dd>
 </dl>
 </div>`
-			verify(GinkgoT(), expected, actualContent)
+			verify(GinkgoT(), expectedResult, actualContent)
 		})
 
 		It("labeled list with script injection", func() {
 			actualContent := `item 1:: <script>alert("foo!")</script>`
-			expected := `<div class="dlist">
+			expectedResult := `<div class="dlist">
 <dl>
 <dt class="hdlist1">item 1</dt>
 <dd>
@@ -77,7 +79,7 @@ item 2:: description 2.`
 </dd>
 </dl>
 </div>`
-			verify(GinkgoT(), expected, actualContent)
+			verify(GinkgoT(), expectedResult, actualContent)
 		})
 
 		It("labeled list with fenced block", func() {
@@ -86,7 +88,7 @@ item 2:: description 2.`
 				"a fenced block\n" +
 				"```\n" +
 				"item 2:: something simple"
-			expected := `<div class="dlist">
+			expectedResult := `<div class="dlist">
 <dl>
 <dt class="hdlist1">item 1</dt>
 </dl>
@@ -104,7 +106,7 @@ item 2:: description 2.`
 </dd>
 </dl>
 </div>`
-			verify(GinkgoT(), expected, actualContent)
+			verify(GinkgoT(), expectedResult, actualContent)
 		})
 
 		It("labeled list with nested lists", func() {
@@ -113,7 +115,7 @@ item 2:: description 2.`
 * bar
 ** baz
 item 2:: something simple`
-			expected := `<div class="dlist">
+			expectedResult := `<div class="dlist">
 <dl>
 <dt class="hdlist1">item 1</dt>
 <dd>
@@ -141,7 +143,7 @@ item 2:: something simple`
 </dd>
 </dl>
 </div>`
-			verify(GinkgoT(), expected, actualContent)
+			verify(GinkgoT(), expectedResult, actualContent)
 		})
 
 	})
@@ -154,7 +156,7 @@ item 1::
 item 2:: description 2 on 1 line.
 item 3:: description 3
 on 2 lines, too.`
-			expected := `<div class="hdlist">
+			expectedResult := `<div class="hdlist">
 <table>
 <tr>
 <td class="hdlist1">
@@ -177,7 +179,7 @@ on 2 lines, too.</p>
 </tr>
 </table>
 </div>`
-			verify(GinkgoT(), expected, actualContent)
+			verify(GinkgoT(), expectedResult, actualContent)
 		})
 
 		It("labeled list with nested lists and horizontal layout", func() {
@@ -187,7 +189,7 @@ item 1::
 * bar
 ** baz
 item 2:: something simple`
-			expected := `<div class="hdlist">
+			expectedResult := `<div class="hdlist">
 <table>
 <tr>
 <td class="hdlist1">
@@ -223,8 +225,80 @@ item 2
 </tr>
 </table>
 </div>`
-			verify(GinkgoT(), expected, actualContent)
+			verify(GinkgoT(), expectedResult, actualContent)
 		})
 
+	})
+
+	It("labeled list with continuation", func() {
+		actualContent := `Item 1::
++
+----
+a delimited block
+----
+Item 2:: something simple
++
+----
+another delimited block
+----`
+		expectedDocument := `<div class="dlist">
+<dl>
+<dt class="hdlist1">Item 1</dt>
+<dd>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>a delimited block</code></pre>
+</div>
+</div>
+</dd>
+<dt class="hdlist1">Item 2</dt>
+<dd>
+<p>something simple</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>another delimited block</code></pre>
+</div>
+</div>
+</dd>
+</dl>
+</div>`
+
+		verify(GinkgoT(), expectedDocument, actualContent)
+	})
+
+	It("labeled list without continuation", func() {
+		actualContent := `Item 1::
+----
+a delimited block
+----
+Item 2:: something simple
+----
+another delimited block
+----`
+		expectedDocument := `<div class="dlist">
+<dl>
+<dt class="hdlist1">Item 1</dt>
+</dl>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>a delimited block</code></pre>
+</div>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Item 2</dt>
+<dd>
+<p>something simple</p>
+</dd>
+</dl>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>another delimited block</code></pre>
+</div>
+</div>`
+
+		verify(GinkgoT(), expectedDocument, actualContent)
 	})
 })

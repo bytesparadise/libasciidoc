@@ -16,7 +16,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func verify(t GinkgoTInterface, expected, content string, rendererOpts ...renderer.Option) {
+func verify(t GinkgoTInterface, expectedResult, content string, rendererOpts ...renderer.Option) {
 	t.Logf("processing '%s'", content)
 	reader := strings.NewReader(content)
 	doc, err := parser.ParseReader("", reader)
@@ -30,17 +30,17 @@ func verify(t GinkgoTInterface, expected, content string, rendererOpts ...render
 	// }
 	_, err = html5.Render(rendererCtx, buff)
 	require.NoError(t, err)
-	if strings.Contains(expected, "{{.LastUpdated}}") {
-		expected = strings.Replace(expected, "{{.LastUpdated}}", rendererCtx.LastUpdated(), 1)
+	if strings.Contains(expectedResult, "{{.LastUpdated}}") {
+		expectedResult = strings.Replace(expectedResult, "{{.LastUpdated}}", rendererCtx.LastUpdated(), 1)
 	}
 	t.Log("* Done processing document:")
 	result := buff.String()
-	expected = strings.Replace(expected, "\t", "", -1)
+	expectedResult = strings.Replace(expectedResult, "\t", "", -1)
 	t.Logf("** Actual output:\n`%s`\n", result)
-	t.Logf("** Expected output:\n`%s`\n", expected) // remove tabs that can be inserted by VSCode while formatting the tests code
+	t.Logf("** expectedResult output:\n`%s`\n", expectedResult) // remove tabs that can be inserted by VSCode while formatting the tests code
 	dmp := diffmatchpatch.New()
-	diffs := dmp.DiffMain(result, expected, true)
-	assert.Equal(t, expected, result, dmp.DiffPrettyText(diffs))
+	diffs := dmp.DiffMain(result, expectedResult, true)
+	assert.Equal(t, expectedResult, result, dmp.DiffPrettyText(diffs))
 }
 
 func singleLine(content string) string {

@@ -13,7 +13,7 @@ var _ = Describe("Cross References", func() {
 == a title
 
 with some content linked to <<thetitle>>!`
-				expected := `<div class="sect1">
+				expectedResult := `<div class="sect1">
 <h2 id="thetitle">a title</h2>
 <div class="sectionbody">
 <div class="paragraph">
@@ -21,7 +21,7 @@ with some content linked to <<thetitle>>!`
 </div>
 </div>
 </div>`
-				verify(GinkgoT(), expected, actualContent)
+				verify(GinkgoT(), expectedResult, actualContent)
 			})
 		})
 
@@ -32,7 +32,7 @@ with some content linked to <<thetitle>>!`
 == a title
 
 with some content linked to <<thewrongtitle>>!`
-				expected := `<div class="sect1">
+				expectedResult := `<div class="sect1">
 <h2 id="thetitle">a title</h2>
 <div class="sectionbody">
 <div class="paragraph">
@@ -40,7 +40,7 @@ with some content linked to <<thewrongtitle>>!`
 </div>
 </div>
 </div>`
-				verify(GinkgoT(), expected, actualContent)
+				verify(GinkgoT(), expectedResult, actualContent)
 			})
 		})
 	})

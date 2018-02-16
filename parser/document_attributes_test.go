@@ -537,7 +537,7 @@ This journey begins on a bleary Monday morning.`
 == section 1
 
 a paragraph with *bold content*`
-			expectedDocument := &types.Document{
+			expectedResult := &types.Document{
 				Attributes: map[string]interface{}{
 					"doctitle": &types.SectionTitle{
 						Content: &types.InlineContent{
@@ -594,7 +594,7 @@ a paragraph with *bold content*`
 					},
 				},
 			}
-			verify(GinkgoT(), expectedDocument, actualContent)
+			verify(GinkgoT(), expectedResult, actualContent)
 		})
 	})
 

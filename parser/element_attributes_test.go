@@ -13,21 +13,21 @@ var _ = Describe("Element Attributes", func() {
 		Context("valid syntax", func() {
 			It("element link alone", func() {
 				actualContent := "[link=http://foo.bar]"
-				expectedDocument := &types.ElementLink{Path: "http://foo.bar"}
-				verify(GinkgoT(), expectedDocument, actualContent, parser.Entrypoint("ElementAttribute"))
+				expectedResult := &types.ElementLink{Path: "http://foo.bar"}
+				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("ElementAttribute"))
 			})
 			It("spaces in link", func() {
 				actualContent := "[link= http://foo.bar  ]"
-				expectedDocument := &types.ElementLink{Path: "http://foo.bar"}
-				verify(GinkgoT(), expectedDocument, actualContent, parser.Entrypoint("ElementAttribute"))
+				expectedResult := &types.ElementLink{Path: "http://foo.bar"}
+				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("ElementAttribute"))
 			})
 		})
 
 		Context("invalid syntax", func() {
 			It("spaces before keywork", func() {
 				actualContent := "[ link=http://foo.bar]"
-				expectedDocument := &types.InvalidElementAttribute{Value: "[ link=http://foo.bar]"}
-				verify(GinkgoT(), expectedDocument, actualContent, parser.Entrypoint("ElementAttribute"))
+				expectedResult := &types.InvalidElementAttribute{Value: "[ link=http://foo.bar]"}
+				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("ElementAttribute"))
 			})
 
 			Context("unbalanced brackets", func() {
@@ -37,14 +37,14 @@ var _ = Describe("Element Attributes", func() {
 				})
 
 				It("is an inline content", func() {
-					expectedDocument := &types.InlineContent{
+					expectedResult := &types.InlineContent{
 						Elements: []types.InlineElement{
 							&types.StringElement{
 								Content: "[link=http://foo.bar",
 							},
 						},
 					}
-					verify(GinkgoT(), expectedDocument, actualContent, parser.Entrypoint("InlineContent"))
+					verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineContent"))
 				})
 			})
 		})
@@ -56,14 +56,14 @@ var _ = Describe("Element Attributes", func() {
 
 			It("normal syntax", func() {
 				actualContent := "[[img-foobar]]"
-				expectedDocument := &types.ElementID{Value: "img-foobar"}
-				verify(GinkgoT(), expectedDocument, actualContent, parser.Entrypoint("ElementAttribute"))
+				expectedResult := &types.ElementID{Value: "img-foobar"}
+				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("ElementAttribute"))
 			})
 
 			It("short-hand syntax", func() {
 				actualContent := "[#img-foobar]"
-				expectedDocument := &types.ElementID{Value: "img-foobar"}
-				verify(GinkgoT(), expectedDocument, actualContent, parser.Entrypoint("ElementAttribute"))
+				expectedResult := &types.ElementID{Value: "img-foobar"}
+				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("ElementAttribute"))
 			})
 		})
 
@@ -71,8 +71,8 @@ var _ = Describe("Element Attributes", func() {
 
 			It("extra spaces", func() {
 				actualContent := "[ #img-foobar ]"
-				expectedDocument := &types.InvalidElementAttribute{Value: "[ #img-foobar ]"}
-				verify(GinkgoT(), expectedDocument, actualContent, parser.Entrypoint("ElementAttribute"))
+				expectedResult := &types.InvalidElementAttribute{Value: "[ #img-foobar ]"}
+				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("ElementAttribute"))
 			})
 
 			Context("unbalanced brackets", func() {
@@ -83,14 +83,14 @@ var _ = Describe("Element Attributes", func() {
 				})
 
 				It("is an inline content", func() {
-					expectedDocument := &types.InlineContent{
+					expectedResult := &types.InlineContent{
 						Elements: []types.InlineElement{
 							&types.StringElement{
 								Content: "[#img-foobar",
 							},
 						},
 					}
-					verify(GinkgoT(), expectedDocument, actualContent, parser.Entrypoint("InlineContent"))
+					verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineContent"))
 				})
 			})
 		})
@@ -101,8 +101,8 @@ var _ = Describe("Element Attributes", func() {
 
 			It("element title", func() {
 				actualContent := ".a title"
-				expectedDocument := &types.ElementTitle{Value: "a title"}
-				verify(GinkgoT(), expectedDocument, actualContent, parser.Entrypoint("ElementAttribute"))
+				expectedResult := &types.ElementTitle{Value: "a title"}
+				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("ElementAttribute"))
 			})
 		})
 
@@ -115,14 +115,14 @@ var _ = Describe("Element Attributes", func() {
 				})
 
 				It("is an inline content", func() {
-					expectedDocument := &types.InlineContent{
+					expectedResult := &types.InlineContent{
 						Elements: []types.InlineElement{
 							&types.StringElement{
 								Content: ". a title",
 							},
 						},
 					}
-					verify(GinkgoT(), expectedDocument, actualContent, parser.Entrypoint("InlineContent"))
+					verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineContent"))
 				})
 			})
 
@@ -134,14 +134,14 @@ var _ = Describe("Element Attributes", func() {
 				})
 
 				It("is an inline content", func() {
-					expectedDocument := &types.InlineContent{
+					expectedResult := &types.InlineContent{
 						Elements: []types.InlineElement{
 							&types.StringElement{
 								Content: "!a title",
 							},
 						},
 					}
-					verify(GinkgoT(), expectedDocument, actualContent, parser.Entrypoint("InlineContent"))
+					verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineContent"))
 				})
 			})
 		})
