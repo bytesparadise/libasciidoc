@@ -80,7 +80,7 @@ func renderPlainString(ctx *renderer.Context, element types.DocElement) ([]byte,
 	case *types.StringElement:
 		return []byte(element.Content), nil
 	default:
-		return nil, errors.Errorf("unexpected type of element to process: %T", element)
+		return nil, errors.Errorf("unexpectedResult type of element to process: %T", element)
 	}
 }
 

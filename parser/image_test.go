@@ -14,73 +14,73 @@ var _ = Describe("Images", func() {
 
 			It("block image with empty alt", func() {
 				actualContent := "image::images/foo.png[]"
-				expectedDocument := &types.BlockImage{
+				expectedResult := &types.BlockImage{
 					Macro: types.ImageMacro{
 						Path: "images/foo.png",
 						Alt:  "foo",
 					},
 				}
-				verify(GinkgoT(), expectedDocument, actualContent, parser.Entrypoint("BlockImage"))
+				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("BlockImage"))
 			})
 
 			It("block image with empty alt and trailing spaces", func() {
 				actualContent := "image::images/foo.png[]  \t\t  "
-				expectedDocument := &types.BlockImage{
+				expectedResult := &types.BlockImage{
 					Macro: types.ImageMacro{
 						Path: "images/foo.png",
 						Alt:  "foo",
 					},
 				}
-				verify(GinkgoT(), expectedDocument, actualContent, parser.Entrypoint("BlockImage"))
+				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("BlockImage"))
 			})
 
 			It("block image with line return", func() {
 				// line return here is not considered as a blank line
 				actualContent := `image::images/foo.png[]
 `
-				expectedDocument := &types.BlockImage{
+				expectedResult := &types.BlockImage{
 					Macro: types.ImageMacro{
 						Path: "images/foo.png",
 						Alt:  "foo",
 					},
 				}
-				verify(GinkgoT(), expectedDocument, actualContent, parser.Entrypoint("BlockImage"))
+				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("BlockImage"))
 			})
 
 			It("block image with 1 empty blank line", func() {
 				// here, there's a real blank line with some spaces
 				actualContent := `image::images/foo.png[]
   `
-				expectedDocument := &types.BlockImage{
+				expectedResult := &types.BlockImage{
 					Macro: types.ImageMacro{
 						Path: "images/foo.png",
 						Alt:  "foo",
 					},
 				}
-				verify(GinkgoT(), expectedDocument, actualContent, parser.Entrypoint("BlockImage"))
+				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("BlockImage"))
 			})
 
 			It("block image with 2 blank lines with spaces and tabs", func() {
 				actualContent := `image::images/foo.png[]
 			`
-				expectedDocument := &types.BlockImage{
+				expectedResult := &types.BlockImage{
 					Macro: types.ImageMacro{
 						Path: "images/foo.png",
 						Alt:  "foo",
 					},
 				}
-				verify(GinkgoT(), expectedDocument, actualContent, parser.Entrypoint("BlockImage"))
+				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("BlockImage"))
 			})
 
 			It("block image with alt", func() {
 				actualContent := "image::images/foo.png[the foo.png image]"
-				expectedDocument := &types.BlockImage{
+				expectedResult := &types.BlockImage{
 					Macro: types.ImageMacro{
 						Path: "images/foo.png",
 						Alt:  "the foo.png image",
 					},
 				}
-				verify(GinkgoT(), expectedDocument, actualContent, parser.Entrypoint("BlockImage"))
+				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("BlockImage"))
 			})
 
 			It("block image with dimensions and i d link title meta", func() {
@@ -90,7 +90,7 @@ var _ = Describe("Images", func() {
 					"image::images/foo.png[the foo.png image, 600, 400]"
 				width := "600"
 				height := "400"
-				expectedDocument := &types.BlockImage{
+				expectedResult := &types.BlockImage{
 					Macro: types.ImageMacro{
 						Path:   "images/foo.png",
 						Alt:    "the foo.png image",
@@ -101,7 +101,7 @@ var _ = Describe("Images", func() {
 					Title: &types.ElementTitle{Value: "A title to foobar"},
 					Link:  &types.ElementLink{Path: "http://foo.bar"},
 				}
-				verify(GinkgoT(), expectedDocument, actualContent, parser.Entrypoint("BlockImage"))
+				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("BlockImage"))
 			})
 		})
 
@@ -111,7 +111,7 @@ var _ = Describe("Images", func() {
 
 				It("block image appending inline content", func() {
 					actualContent := "a paragraph\nimage::images/foo.png[]"
-					expectedDocument := &types.Paragraph{
+					expectedResult := &types.Paragraph{
 						Lines: []*types.InlineContent{
 							&types.InlineContent{
 								Elements: []types.InlineElement{
@@ -125,7 +125,7 @@ var _ = Describe("Images", func() {
 							},
 						},
 					}
-					verify(GinkgoT(), expectedDocument, actualContent, parser.Entrypoint("Paragraph"))
+					verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Paragraph"))
 				})
 			})
 
@@ -133,7 +133,7 @@ var _ = Describe("Images", func() {
 
 				It("paragraph with block image with alt and dimensions", func() {
 					actualContent := "a foo image::foo.png[foo image, 600, 400] bar"
-					expectedDocument := &types.Document{
+					expectedResult := &types.Document{
 						Attributes:        map[string]interface{}{},
 						ElementReferences: map[string]interface{}{},
 						Elements: []types.DocElement{
@@ -148,7 +148,7 @@ var _ = Describe("Images", func() {
 							},
 						},
 					}
-					verify(GinkgoT(), expectedDocument, actualContent)
+					verify(GinkgoT(), expectedResult, actualContent)
 				})
 			})
 		})
@@ -160,7 +160,7 @@ var _ = Describe("Images", func() {
 
 			It("inline image with empty alt", func() {
 				actualContent := "image:images/foo.png[]"
-				expectedDocument := &types.InlineContent{
+				expectedResult := &types.InlineContent{
 					Elements: []types.InlineElement{
 						&types.InlineImage{
 							Macro: types.ImageMacro{
@@ -170,12 +170,12 @@ var _ = Describe("Images", func() {
 						},
 					},
 				}
-				verify(GinkgoT(), expectedDocument, actualContent, parser.Entrypoint("InlineContent"))
+				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineContent"))
 			})
 
 			It("inline image with empty alt and trailing spaces", func() {
 				actualContent := "image:images/foo.png[]  \t\t  "
-				expectedDocument := &types.InlineContent{
+				expectedResult := &types.InlineContent{
 					Elements: []types.InlineElement{
 						&types.InlineImage{
 							Macro: types.ImageMacro{
@@ -188,12 +188,12 @@ var _ = Describe("Images", func() {
 						},
 					},
 				}
-				verify(GinkgoT(), expectedDocument, actualContent, parser.Entrypoint("InlineContent"))
+				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineContent"))
 			})
 
 			It("inline image surrounded with test", func() {
 				actualContent := "a foo image:images/foo.png[] bar..."
-				expectedDocument := &types.InlineContent{
+				expectedResult := &types.InlineContent{
 					Elements: []types.InlineElement{
 						&types.StringElement{
 							Content: "a foo ",
@@ -209,12 +209,12 @@ var _ = Describe("Images", func() {
 						},
 					},
 				}
-				verify(GinkgoT(), expectedDocument, actualContent, parser.Entrypoint("InlineContent"))
+				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineContent"))
 			})
 
 			It("inline image with alt", func() {
 				actualContent := "image:images/foo.png[the foo.png image]"
-				expectedDocument := &types.InlineContent{
+				expectedResult := &types.InlineContent{
 					Elements: []types.InlineElement{
 						&types.InlineImage{
 							Macro: types.ImageMacro{
@@ -224,13 +224,13 @@ var _ = Describe("Images", func() {
 						},
 					},
 				}
-				verify(GinkgoT(), expectedDocument, actualContent, parser.Entrypoint("InlineContent"))
+				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineContent"))
 			})
 		})
 		Context("Errors", func() {
 			It("inline image appending inline content", func() {
 				actualContent := "a paragraph\nimage::images/foo.png[]"
-				expectedDocument := &types.Paragraph{
+				expectedResult := &types.Paragraph{
 					Lines: []*types.InlineContent{
 						{
 							Elements: []types.InlineElement{
@@ -244,7 +244,7 @@ var _ = Describe("Images", func() {
 						},
 					},
 				}
-				verify(GinkgoT(), expectedDocument, actualContent, parser.Entrypoint("Paragraph"))
+				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Paragraph"))
 			})
 		})
 	})

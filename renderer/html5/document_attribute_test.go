@@ -9,10 +9,10 @@ var _ = Describe("Document With Attributes", func() {
 :author: Xavier
 a paragraph`
 
-		expected := `<div class="paragraph">
+		expectedResult := `<div class="paragraph">
 <p>a paragraph</p>
 </div>`
-		verify(GinkgoT(), expected, actualContent)
+		verify(GinkgoT(), expectedResult, actualContent)
 	})
 
 	It("a paragraph then some attributes", func() {
@@ -22,10 +22,10 @@ a paragraph`
 :date: 2017-01-01
 :author: Xavier`
 
-		expected := `<div class="paragraph">
+		expectedResult := `<div class="paragraph">
 <p>a paragraph</p>
 </div>`
-		verify(GinkgoT(), expected, actualContent)
+		verify(GinkgoT(), expectedResult, actualContent)
 	})
 
 	It("a paragraph with substitution", func() {
@@ -33,10 +33,10 @@ a paragraph`
 
 a paragraph written by {author}`
 
-		expected := `<div class="paragraph">
+		expectedResult := `<div class="paragraph">
 <p>a paragraph written by Xavier</p>
 </div>`
-		verify(GinkgoT(), expected, actualContent)
+		verify(GinkgoT(), expectedResult, actualContent)
 	})
 
 	It("paragraphs with definitions, substitutions and resets", func() {
@@ -51,7 +51,7 @@ author is now {author}.
 :author!:
 author is now {author}.`
 
-		expected := `<div class="paragraph">
+		expectedResult := `<div class="paragraph">
 <p>author is {author}.</p>
 </div>
 <div class="paragraph">
@@ -63,7 +63,7 @@ author is now {author}.`
 <div class="paragraph">
 <p>author is now {author}.</p>
 </div>`
-		verify(GinkgoT(), expected, actualContent)
+		verify(GinkgoT(), expectedResult, actualContent)
 	})
 
 	It("front-matter then paragraph with substitutions", func() {
@@ -73,10 +73,10 @@ author: Xavier
 		
 author is {author}.`
 
-		expected := `<div class="paragraph">
+		expectedResult := `<div class="paragraph">
 <p>author is Xavier.</p>
 </div>`
-		verify(GinkgoT(), expected, actualContent)
+		verify(GinkgoT(), expectedResult, actualContent)
 	})
 
 })

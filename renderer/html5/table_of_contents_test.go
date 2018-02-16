@@ -28,7 +28,7 @@ A preamble...
 
 == Section C`
 
-			expected := `<div id="toc" class="toc">
+			expectedResult := `<div id="toc" class="toc">
 <div id="toctitle">Table of Contents</div>
 <ul class="sectlevel1">
 <li><a href="#_section_a">Section A</a>
@@ -79,7 +79,7 @@ A preamble...
 <div class="sectionbody">
 </div>
 </div>`
-			verify(GinkgoT(), expected, actualContent)
+			verify(GinkgoT(), expectedResult, actualContent)
 		})
 
 		It("TOC with custom level", func() {
@@ -105,7 +105,7 @@ A preamble...
 
 == Section C`
 
-			expected := `<div id="toc" class="toc">
+			expectedResult := `<div id="toc" class="toc">
 <div id="toctitle">Table of Contents</div>
 <ul class="sectlevel1">
 <li><a href="#_section_a">Section A</a>
@@ -167,7 +167,7 @@ A preamble...
 <div class="sectionbody">
 </div>
 </div>`
-			verify(GinkgoT(), expected, actualContent)
+			verify(GinkgoT(), expectedResult, actualContent)
 		})
 
 	})

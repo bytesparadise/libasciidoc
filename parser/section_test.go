@@ -11,7 +11,7 @@ var _ = Describe("Sections", func() {
 
 		It("header only", func() {
 			actualContent := "= a header"
-			expectedDocument := &types.Document{
+			expectedResult := &types.Document{
 				Attributes: map[string]interface{}{
 					"doctitle": &types.SectionTitle{
 						Content: &types.InlineContent{
@@ -27,14 +27,14 @@ var _ = Describe("Sections", func() {
 				ElementReferences: map[string]interface{}{},
 				Elements:          []types.DocElement{},
 			}
-			verify(GinkgoT(), expectedDocument, actualContent)
+			verify(GinkgoT(), expectedResult, actualContent)
 		})
 
 		It("header and paragraph", func() {
 			actualContent := `= a header
 
 and a paragraph`
-			expectedDocument := &types.Document{
+			expectedResult := &types.Document{
 				Attributes: map[string]interface{}{
 					"doctitle": &types.SectionTitle{
 						Content: &types.InlineContent{
@@ -60,12 +60,12 @@ and a paragraph`
 					},
 				},
 			}
-			verify(GinkgoT(), expectedDocument, actualContent)
+			verify(GinkgoT(), expectedResult, actualContent)
 		})
 
 		It("section level 1 alone", func() {
 			actualContent := `== section 1`
-			expectedDocument := &types.Document{
+			expectedResult := &types.Document{
 				Attributes: map[string]interface{}{},
 				ElementReferences: map[string]interface{}{
 					"_section_1": &types.SectionTitle{
@@ -96,12 +96,12 @@ and a paragraph`
 					},
 				},
 			}
-			verify(GinkgoT(), expectedDocument, actualContent)
+			verify(GinkgoT(), expectedResult, actualContent)
 		})
 
 		It("section level 1 with quoted text", func() {
 			actualContent := `==  *2 spaces and bold content*`
-			expectedDocument := &types.Document{
+			expectedResult := &types.Document{
 				Attributes: map[string]interface{}{},
 				ElementReferences: map[string]interface{}{
 					"__strong_2_spaces_and_bold_content_strong": &types.SectionTitle{
@@ -140,14 +140,14 @@ and a paragraph`
 					},
 				},
 			}
-			verify(GinkgoT(), expectedDocument, actualContent)
+			verify(GinkgoT(), expectedResult, actualContent)
 		})
 
 		It("section level 0 with nested section level 1", func() {
 			actualContent := `= a header
 
 == section 1`
-			expectedDocument := &types.Document{
+			expectedResult := &types.Document{
 				Attributes: map[string]interface{}{
 					"doctitle": &types.SectionTitle{
 						Content: &types.InlineContent{
@@ -189,7 +189,7 @@ and a paragraph`
 					},
 				},
 			}
-			verify(GinkgoT(), expectedDocument, actualContent)
+			verify(GinkgoT(), expectedResult, actualContent)
 		})
 
 		It("section level 0 with preamble and section level 1", func() {
@@ -198,7 +198,7 @@ and a paragraph`
 a short preamble
 
 == section 1`
-			expectedDocument := &types.Document{
+			expectedResult := &types.Document{
 				Attributes: map[string]interface{}{
 					"doctitle": &types.SectionTitle{
 						Content: &types.InlineContent{
@@ -253,14 +253,14 @@ a short preamble
 					},
 				},
 			}
-			verify(GinkgoT(), expectedDocument, actualContent)
+			verify(GinkgoT(), expectedResult, actualContent)
 		})
 
 		It("section level 0 with nested section level 2", func() {
 			actualContent := "= a header\n" +
 				"\n" +
 				"=== section 2"
-			expectedDocument := &types.Document{
+			expectedResult := &types.Document{
 				Attributes: map[string]interface{}{
 					"doctitle": &types.SectionTitle{
 						Content: &types.InlineContent{
@@ -302,13 +302,13 @@ a short preamble
 					},
 				},
 			}
-			verify(GinkgoT(), expectedDocument, actualContent)
+			verify(GinkgoT(), expectedResult, actualContent)
 		})
 
 		It("section level 1 with immediate paragraph", func() {
 			actualContent := `== a title
 and a paragraph`
-			expectedDocument := &types.Document{
+			expectedResult := &types.Document{
 				Attributes: map[string]interface{}{},
 				ElementReferences: map[string]interface{}{
 					"_a_title": &types.SectionTitle{
@@ -349,11 +349,11 @@ and a paragraph`
 					},
 				},
 			}
-			verify(GinkgoT(), expectedDocument, actualContent)
+			verify(GinkgoT(), expectedResult, actualContent)
 		})
 		It("section level 1 with a paragraph separated by empty line", func() {
 			actualContent := "== a title\n\nand a paragraph"
-			expectedDocument := &types.Document{
+			expectedResult := &types.Document{
 				Attributes: map[string]interface{}{},
 				ElementReferences: map[string]interface{}{
 					"_a_title": &types.SectionTitle{
@@ -394,12 +394,12 @@ and a paragraph`
 					},
 				},
 			}
-			verify(GinkgoT(), expectedDocument, actualContent)
+			verify(GinkgoT(), expectedResult, actualContent)
 		})
 
 		It("section level 1 with a paragraph separated by non-empty line", func() {
 			actualContent := "== a title\n    \nand a paragraph"
-			expectedDocument := &types.Document{
+			expectedResult := &types.Document{
 				Attributes: map[string]interface{}{},
 				ElementReferences: map[string]interface{}{
 					"_a_title": &types.SectionTitle{
@@ -440,7 +440,7 @@ and a paragraph`
 					},
 				},
 			}
-			verify(GinkgoT(), expectedDocument, actualContent)
+			verify(GinkgoT(), expectedResult, actualContent)
 		})
 
 		It("section levels 1, 2, 3, 2", func() {
@@ -454,7 +454,7 @@ a paragraph
 
 == Section B
 a paragraph`
-			expectedDocument := &types.Document{
+			expectedResult := &types.Document{
 				Attributes: map[string]interface{}{
 					"doctitle": &types.SectionTitle{
 						Content: &types.InlineContent{
@@ -574,14 +574,14 @@ a paragraph`
 					},
 				},
 			}
-			verify(GinkgoT(), expectedDocument, actualContent)
+			verify(GinkgoT(), expectedResult, actualContent)
 		})
 	})
 
 	Context("Invalid document", func() {
 		It("header invalid - missing space", func() {
 			actualContent := "=a header"
-			expectedDocument := &types.Document{
+			expectedResult := &types.Document{
 				Attributes:        map[string]interface{}{},
 				ElementReferences: map[string]interface{}{},
 				Elements: []types.DocElement{
@@ -595,12 +595,12 @@ a paragraph`
 						},
 					},
 				}}
-			verify(GinkgoT(), expectedDocument, actualContent)
+			verify(GinkgoT(), expectedResult, actualContent)
 		})
 
 		It("header invalid - header space", func() {
 			actualContent := " = a header"
-			expectedDocument := &types.Document{
+			expectedResult := &types.Document{
 				Attributes:        map[string]interface{}{},
 				ElementReferences: map[string]interface{}{},
 				Elements: []types.DocElement{
@@ -609,14 +609,14 @@ a paragraph`
 					},
 				},
 			}
-			verify(GinkgoT(), expectedDocument, actualContent)
+			verify(GinkgoT(), expectedResult, actualContent)
 		})
 
 		It("header with invalid section1", func() {
 			actualContent := "= a header\n" +
 				"\n" +
 				" == section 1"
-			expectedDocument := &types.Document{
+			expectedResult := &types.Document{
 				Attributes: map[string]interface{}{
 					"doctitle": &types.SectionTitle{
 						Content: &types.InlineContent{
@@ -636,7 +636,7 @@ a paragraph`
 					},
 				},
 			}
-			verify(GinkgoT(), expectedDocument, actualContent)
+			verify(GinkgoT(), expectedResult, actualContent)
 		})
 
 	})

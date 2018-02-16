@@ -12,7 +12,7 @@ var _ = Describe("Delimited Blocks", func() {
 		It("delimited fenced block with single line", func() {
 			content := "some fenced code"
 			actualContent := "```\n" + content + "\n```"
-			expectedDocument := &types.Document{
+			expectedResult := &types.Document{
 				Attributes:        map[string]interface{}{},
 				ElementReferences: map[string]interface{}{},
 				Elements: []types.DocElement{
@@ -22,13 +22,13 @@ var _ = Describe("Delimited Blocks", func() {
 					},
 				},
 			}
-			verify(GinkgoT(), expectedDocument, actualContent)
+			verify(GinkgoT(), expectedResult, actualContent)
 		})
 
 		It("delimited fenced block with no line", func() {
 			content := ""
 			actualContent := "```\n" + content + "```"
-			expectedDocument := &types.Document{
+			expectedResult := &types.Document{
 				Attributes:        map[string]interface{}{},
 				ElementReferences: map[string]interface{}{},
 				Elements: []types.DocElement{
@@ -38,13 +38,13 @@ var _ = Describe("Delimited Blocks", func() {
 					},
 				},
 			}
-			verify(GinkgoT(), expectedDocument, actualContent)
+			verify(GinkgoT(), expectedResult, actualContent)
 		})
 
 		It("delimited fenced block with multiple lines", func() {
 			content := "some fenced code\nwith an empty line\n\nin the middle"
 			actualContent := "```\n" + content + "\n```"
-			expectedDocument := &types.Document{
+			expectedResult := &types.Document{
 				Attributes:        map[string]interface{}{},
 				ElementReferences: map[string]interface{}{},
 				Elements: []types.DocElement{
@@ -54,13 +54,13 @@ var _ = Describe("Delimited Blocks", func() {
 					},
 				},
 			}
-			verify(GinkgoT(), expectedDocument, actualContent)
+			verify(GinkgoT(), expectedResult, actualContent)
 		})
 
 		It("delimited fenced block with multiple lines then a paragraph", func() {
 			content := "some fenced code\nwith an empty line\n\nin the middle"
 			actualContent := "```\n" + content + "\n```\nthen a normal paragraph."
-			expectedDocument := &types.Document{
+			expectedResult := &types.Document{
 				Attributes:        map[string]interface{}{},
 				ElementReferences: map[string]interface{}{},
 				Elements: []types.DocElement{
@@ -79,13 +79,13 @@ var _ = Describe("Delimited Blocks", func() {
 					},
 				},
 			}
-			verify(GinkgoT(), expectedDocument, actualContent)
+			verify(GinkgoT(), expectedResult, actualContent)
 		})
 
 		It("delimited fenced block after a paragraph", func() {
 			content := "some fenced code"
 			actualContent := "a paragraph.\n```\n" + content + "\n```\n"
-			expectedDocument := &types.Document{
+			expectedResult := &types.Document{
 				Attributes:        map[string]interface{}{},
 				ElementReferences: map[string]interface{}{},
 				Elements: []types.DocElement{
@@ -104,7 +104,7 @@ var _ = Describe("Delimited Blocks", func() {
 					},
 				},
 			}
-			verify(GinkgoT(), expectedDocument, actualContent)
+			verify(GinkgoT(), expectedResult, actualContent)
 		})
 	})
 
@@ -114,7 +114,7 @@ var _ = Describe("Delimited Blocks", func() {
 			actualContent := `----
 some listing code
 ----`
-			expectedDocument := &types.Document{
+			expectedResult := &types.Document{
 				Attributes:        map[string]interface{}{},
 				ElementReferences: map[string]interface{}{},
 				Elements: []types.DocElement{
@@ -124,13 +124,13 @@ some listing code
 					},
 				},
 			}
-			verify(GinkgoT(), expectedDocument, actualContent)
+			verify(GinkgoT(), expectedResult, actualContent)
 		})
 
 		It("delimited listing block with no line", func() {
 			content := ""
 			actualContent := "----\n" + content + "----"
-			expectedDocument := &types.Document{
+			expectedResult := &types.Document{
 				Attributes:        map[string]interface{}{},
 				ElementReferences: map[string]interface{}{},
 				Elements: []types.DocElement{
@@ -140,13 +140,13 @@ some listing code
 					},
 				},
 			}
-			verify(GinkgoT(), expectedDocument, actualContent)
+			verify(GinkgoT(), expectedResult, actualContent)
 		})
 
 		It("delimited listing block with multiple lines", func() {
 			content := "some listing code\nwith an empty line\n\nin the middle"
 			actualContent := "----\n" + content + "\n----"
-			expectedDocument := &types.Document{
+			expectedResult := &types.Document{
 				Attributes:        map[string]interface{}{},
 				ElementReferences: map[string]interface{}{},
 				Elements: []types.DocElement{
@@ -156,13 +156,13 @@ some listing code
 					},
 				},
 			}
-			verify(GinkgoT(), expectedDocument, actualContent)
+			verify(GinkgoT(), expectedResult, actualContent)
 		})
 
 		It("delimited listing block with multiple lines then a paragraph", func() {
 			content := "some listing code\nwith an empty line\n\nin the middle"
 			actualContent := "----\n" + content + "\n----\nthen a normal paragraph."
-			expectedDocument := &types.Document{
+			expectedResult := &types.Document{
 				Attributes:        map[string]interface{}{},
 				ElementReferences: map[string]interface{}{},
 				Elements: []types.DocElement{
@@ -181,7 +181,7 @@ some listing code
 					},
 				},
 			}
-			verify(GinkgoT(), expectedDocument, actualContent)
+			verify(GinkgoT(), expectedResult, actualContent)
 		})
 
 		It("delimited listing block after a paragraph", func() {
@@ -190,7 +190,7 @@ some listing code
 ----
 some listing code
 ----`
-			expectedDocument := &types.Document{
+			expectedResult := &types.Document{
 				Attributes:        map[string]interface{}{},
 				ElementReferences: map[string]interface{}{},
 				Elements: []types.DocElement{
@@ -209,7 +209,7 @@ some listing code
 					},
 				},
 			}
-			verify(GinkgoT(), expectedDocument, actualContent)
+			verify(GinkgoT(), expectedResult, actualContent)
 		})
 
 	})

@@ -15,7 +15,7 @@ author: Xavier
 ---
 
 first paragraph`
-			expectedDocument := &types.Document{
+			expectedResult := &types.Document{
 				Attributes: map[string]interface{}{
 					"title":  "a title", // TODO: convert `title` attribute from front-matter into `doctitle` here ?
 					"author": "Xavier",
@@ -33,7 +33,7 @@ first paragraph`
 					},
 				},
 			}
-			verify(GinkgoT(), expectedDocument, actualDocument)
+			verify(GinkgoT(), expectedResult, actualDocument)
 		})
 
 		It("empty front-matter", func() {
@@ -41,7 +41,7 @@ first paragraph`
 ---
 
 first paragraph`
-			expectedDocument := &types.Document{
+			expectedResult := &types.Document{
 				Attributes:        map[string]interface{}{},
 				ElementReferences: map[string]interface{}{},
 				Elements: []types.DocElement{
@@ -56,7 +56,7 @@ first paragraph`
 					},
 				},
 			}
-			verify(GinkgoT(), expectedDocument, actualDocument)
+			verify(GinkgoT(), expectedResult, actualDocument)
 		})
 	})
 

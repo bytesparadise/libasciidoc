@@ -8,14 +8,14 @@ var _ = Describe("Delimited Blocks", func() {
 
 		It("Fenced block with multiple lines", func() {
 			actualContent := "```\nsome source code\n\nhere\n```"
-			expected := `<div class="listingblock">
+			expectedResult := `<div class="listingblock">
 			<div class="content">
 			<pre class="highlight"><code>some source code
 			
 			here</code></pre>
 			</div>
 			</div>`
-			verify(GinkgoT(), expected, actualContent)
+			verify(GinkgoT(), expectedResult, actualContent)
 		})
 	})
 
@@ -27,14 +27,14 @@ some source code
 
 here
 ----`
-			expected := `<div class="listingblock">
+			expectedResult := `<div class="listingblock">
 			<div class="content">
 			<pre class="highlight"><code>some source code
 			
 			here</code></pre>
 			</div>
 			</div>`
-			verify(GinkgoT(), expected, actualContent)
+			verify(GinkgoT(), expectedResult, actualContent)
 		})
 	})
 
@@ -43,13 +43,13 @@ here
 		It("literal block with multiple lines", func() {
 			actualContent := ` some source code
 here`
-			expected := `<div class="literalblock">
+			expectedResult := `<div class="literalblock">
 <div class="content">
 <pre> some source code
 here</pre>
 </div>
 </div>`
-			verify(GinkgoT(), expected, actualContent)
+			verify(GinkgoT(), expectedResult, actualContent)
 		})
 	})
 })

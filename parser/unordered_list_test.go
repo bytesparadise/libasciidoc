@@ -12,7 +12,7 @@ var _ = Describe("unordered lists", func() {
 
 		It("unordered list with a single item", func() {
 			actualContent := "* a list item"
-			expectedDocument := &types.UnorderedList{
+			expectedResult := &types.UnorderedList{
 				Items: []*types.UnorderedListItem{
 					{
 						Level: 1,
@@ -30,13 +30,13 @@ var _ = Describe("unordered lists", func() {
 					},
 				},
 			}
-			verify(GinkgoT(), expectedDocument, actualContent, parser.Entrypoint("List"))
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("List"))
 		})
 
 		It("unordered list with an ID and a single item", func() {
 			actualContent := "[#listID]\n" +
 				"* a list item"
-			expectedDocument := &types.UnorderedList{
+			expectedResult := &types.UnorderedList{
 				Attributes: map[string]interface{}{
 					"ID": "listID",
 				},
@@ -57,13 +57,13 @@ var _ = Describe("unordered lists", func() {
 					},
 				},
 			}
-			verify(GinkgoT(), expectedDocument, actualContent, parser.Entrypoint("List"))
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("List"))
 		})
 
 		It("unordered list with 2 items with stars", func() {
 			actualContent := "* a first item\n" +
 				"* a second item with *bold content*"
-			expectedDocument := &types.UnorderedList{
+			expectedResult := &types.UnorderedList{
 				Items: []*types.UnorderedListItem{
 					{
 						Level: 1,
@@ -100,12 +100,12 @@ var _ = Describe("unordered lists", func() {
 					},
 				},
 			}
-			verify(GinkgoT(), expectedDocument, actualContent, parser.Entrypoint("List"))
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("List"))
 		})
 		It("unordered list with 2 items with carets", func() {
 			actualContent := "- a first item\n" +
 				"- a second item with *bold content*"
-			expectedDocument := &types.UnorderedList{
+			expectedResult := &types.UnorderedList{
 				Items: []*types.UnorderedListItem{
 					{
 						Level: 1,
@@ -142,14 +142,14 @@ var _ = Describe("unordered lists", func() {
 					},
 				},
 			}
-			verify(GinkgoT(), expectedDocument, actualContent, parser.Entrypoint("List"))
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("List"))
 		})
 		It("unordered list with 2 items with empty line in-between", func() {
 			// fist line after list item is swallowed
 			actualContent := "* a first item\n" +
 				"\n" +
 				"* a second item with *bold content*"
-			expectedDocument := &types.UnorderedList{
+			expectedResult := &types.UnorderedList{
 				Items: []*types.UnorderedListItem{
 					{
 						Level: 1,
@@ -186,14 +186,14 @@ var _ = Describe("unordered lists", func() {
 					},
 				},
 			}
-			verify(GinkgoT(), expectedDocument, actualContent, parser.Entrypoint("List"))
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("List"))
 		})
 		It("unordered list with 2 items on multiple lines", func() {
 			actualContent := "* item 1\n" +
 				"  on 2 lines.\n" +
 				"* item 2\n" +
 				"on 2 lines, too."
-			expectedDocument := &types.UnorderedList{
+			expectedResult := &types.UnorderedList{
 				Items: []*types.UnorderedListItem{
 					{
 						Level: 1,
@@ -235,7 +235,7 @@ var _ = Describe("unordered lists", func() {
 					},
 				},
 			}
-			verify(GinkgoT(), expectedDocument, actualContent, parser.Entrypoint("List"))
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("List"))
 		})
 		It("2 Uuordered lists with 2 empty lines in-between", func() {
 			// the first blank lines after the first list is swallowed (for the list item)
@@ -243,7 +243,7 @@ var _ = Describe("unordered lists", func() {
 				"\n" +
 				"\n" +
 				"* an item in the second list"
-			expectedDocument := &types.Document{
+			expectedResult := &types.Document{
 				Attributes:        map[string]interface{}{},
 				ElementReferences: map[string]interface{}{},
 				Elements: []types.DocElement{
@@ -285,7 +285,7 @@ var _ = Describe("unordered lists", func() {
 					},
 				},
 			}
-			verify(GinkgoT(), expectedDocument, actualContent) // parse the whole document to get 2 lists
+			verify(GinkgoT(), expectedResult, actualContent) // parse the whole document to get 2 lists
 		})
 
 		It("unordered list with items on 3 levels", func() {
@@ -297,7 +297,7 @@ var _ = Describe("unordered lists", func() {
 ** item 1.4
 * item 2
 ** item 2.1`
-			expectedDocument := &types.UnorderedList{
+			expectedResult := &types.UnorderedList{
 				Items: []*types.UnorderedListItem{
 					{
 						Level: 1,
@@ -425,7 +425,7 @@ var _ = Describe("unordered lists", func() {
 					},
 				},
 			}
-			verify(GinkgoT(), expectedDocument, actualContent, parser.Entrypoint("List"))
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("List"))
 		})
 
 	})
@@ -437,7 +437,7 @@ var _ = Describe("unordered lists", func() {
 				"*** item 1.1.1\n" +
 				"** item 1.2\n" +
 				"* item 2"
-			expectedDocument := &types.UnorderedList{
+			expectedResult := &types.UnorderedList{
 				Items: []*types.UnorderedListItem{
 					{
 						Level: 1,
@@ -519,12 +519,12 @@ var _ = Describe("unordered lists", func() {
 					},
 				},
 			}
-			verify(GinkgoT(), expectedDocument, actualContent, parser.Entrypoint("List"))
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("List"))
 		})
 
 		It("invalid list item", func() {
 			actualContent := "*an invalid list item"
-			expectedDocument := &types.Paragraph{
+			expectedResult := &types.Paragraph{
 				Lines: []*types.InlineContent{
 					&types.InlineContent{
 						Elements: []types.InlineElement{
@@ -533,7 +533,136 @@ var _ = Describe("unordered lists", func() {
 					},
 				},
 			}
-			verify(GinkgoT(), expectedDocument, actualContent, parser.Entrypoint("Paragraph"))
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Paragraph"))
+		})
+	})
+
+	Context("list item continuation", func() {
+
+		It("unordered list with item continuation", func() {
+			actualContent := `* foo
++
+----
+a delimited block
+----
++
+----
+another delimited block
+----
+* bar
+`
+			expectedResult := &types.Document{
+				Attributes:        map[string]interface{}{},
+				ElementReferences: map[string]interface{}{},
+				Elements: []types.DocElement{
+
+					&types.UnorderedList{
+						Items: []*types.UnorderedListItem{
+							{
+								Level: 1,
+								Elements: []types.DocElement{
+									&types.ListParagraph{
+										Lines: []*types.InlineContent{
+											&types.InlineContent{
+												Elements: []types.InlineElement{
+													&types.StringElement{Content: "foo"},
+												},
+											},
+										},
+									},
+									&types.DelimitedBlock{
+										Kind:    types.ListingBlock,
+										Content: "a delimited block",
+									},
+									&types.DelimitedBlock{
+										Kind:    types.ListingBlock,
+										Content: "another delimited block",
+									},
+								},
+							},
+							{
+								Level: 1,
+								Elements: []types.DocElement{
+									&types.ListParagraph{
+										Lines: []*types.InlineContent{
+											&types.InlineContent{
+												Elements: []types.InlineElement{
+													&types.StringElement{Content: "bar"},
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			}
+			verify(GinkgoT(), expectedResult, actualContent)
+		})
+
+		It("unordered list without item continuation", func() {
+			actualContent := `* foo
+----
+a delimited block
+----
+* bar
+----
+another delimited block
+----`
+			expectedResult := &types.Document{
+				Attributes:        map[string]interface{}{},
+				ElementReferences: map[string]interface{}{},
+				Elements: []types.DocElement{
+
+					&types.UnorderedList{
+						Items: []*types.UnorderedListItem{
+							{
+								Level: 1,
+								Elements: []types.DocElement{
+									&types.ListParagraph{
+										Lines: []*types.InlineContent{
+											&types.InlineContent{
+												Elements: []types.InlineElement{
+													&types.StringElement{Content: "foo"},
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+					&types.DelimitedBlock{
+						Kind:    types.ListingBlock,
+						Content: "a delimited block",
+					},
+					&types.UnorderedList{
+						Items: []*types.UnorderedListItem{
+							{
+								Level: 1,
+								Elements: []types.DocElement{
+									&types.ListParagraph{
+										Lines: []*types.InlineContent{
+											&types.InlineContent{
+												Elements: []types.InlineElement{
+													&types.StringElement{Content: "bar"},
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+					&types.DelimitedBlock{
+						Kind:    types.ListingBlock,
+						Content: "another delimited block",
+					},
+				},
+			}
+			verify(GinkgoT(), expectedResult, actualContent)
+
 		})
 	})
 

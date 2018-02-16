@@ -7,26 +7,26 @@ var _ = Describe("Blank lines", func() {
 		actualContent := `first paragraph
 
 second paragraph`
-		expected := `<div class="paragraph">
+		expectedResult := `<div class="paragraph">
 <p>first paragraph</p>
 </div>
 <div class="paragraph">
 <p>second paragraph</p>
 </div>`
-		verify(GinkgoT(), expected, actualContent)
+		verify(GinkgoT(), expectedResult, actualContent)
 	})
 
 	It("blank line with spaces and tabs between 2 paragraphs", func() {
 		actualContent := `first paragraph
 		  
 second paragraph`
-		expected := `<div class="paragraph">
+		expectedResult := `<div class="paragraph">
 <p>first paragraph</p>
 </div>
 <div class="paragraph">
 <p>second paragraph</p>
 </div>`
-		verify(GinkgoT(), expected, actualContent)
+		verify(GinkgoT(), expectedResult, actualContent)
 	})
 
 	It("blank lines (tabs) at end of document", func() {
@@ -34,10 +34,10 @@ second paragraph`
 		
 		
 		`
-		expected := `<div class="paragraph">
+		expectedResult := `<div class="paragraph">
 <p>first paragraph</p>
 </div>`
-		verify(GinkgoT(), expected, actualContent)
+		verify(GinkgoT(), expectedResult, actualContent)
 	})
 
 	It("blank lines (spaces) at end of document", func() {
@@ -45,9 +45,9 @@ second paragraph`
 		
 		
         `
-		expected := `<div class="paragraph">
+		expectedResult := `<div class="paragraph">
 <p>first paragraph</p>
 </div>`
-		verify(GinkgoT(), expected, actualContent)
+		verify(GinkgoT(), expectedResult, actualContent)
 	})
 })

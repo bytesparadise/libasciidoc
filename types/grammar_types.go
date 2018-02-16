@@ -743,6 +743,15 @@ func NewListItemContent(content []interface{}) ([]DocElement, error) {
 	return elements, nil
 }
 
+// ListItemContinuation a list item continuation
+type ListItemContinuation struct {
+}
+
+// NewListItemContinuation returns a new ListItemContinuation
+func NewListItemContinuation() (*ListItemContinuation, error) {
+	return &ListItemContinuation{}, nil
+}
+
 // ------------------------------------------
 // Labeled List
 // ------------------------------------------
