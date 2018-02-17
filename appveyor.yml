@@ -1,0 +1,37 @@
+version: "{build}"
+
+# Source Config
+
+clone_folder: c:\gopath\src\github.com\bytesparadise\libasciidoc
+
+# Build host
+
+environment:
+  GOPATH: c:\gopath
+  DEPTESTBYPASS501: 1
+  GOVERSION: 1.8
+
+init:
+  - git config --global core.autocrlf input
+
+# Build
+
+install:
+  - set Path=%PATH%;c:\go\bin;%GOPATH%\bin
+  - go version
+  - go env
+  # Install dep and fetch dependencies
+  - go get -u github.com/golang/dep/cmd/dep
+  - dep ensure
+  # Install ginkgo and gomega to run the tests
+  - go get -v github.com/onsi/ginkgo/ginkgo
+  - go get -v github.com/onsi/gomega
+
+build: false
+deploy: false
+
+test_script:
+  - go build github.com/bytesparadise/libasciidoc
+  # - for /f "" %%G in ('go list -f {{.Dir}} github.com/bytesparadise/libasciidoc/... ^| find /i /v "/vendor/"') do ( echo %%G & ginkgo -skipPackage log %%G & IF ERRORLEVEL == 1 EXIT 1)
+  - ginkgo -r . & IF ERRORLEVEL == 1 EXIT 1
+   

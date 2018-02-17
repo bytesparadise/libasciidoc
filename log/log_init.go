@@ -1,4 +1,4 @@
-package test
+package log
 
 import (
 	"flag"
@@ -9,7 +9,7 @@ import (
 
 // initializes the level for the logger, using the optional '-debug' flag to activate the logs in 'debug' level.
 // Other tests must import this 'test' package even if unused, using:
-// import _ "github.com/bytesparadise/libasciidoc/test"
+// import _ "github.com/bytesparadise/libasciidoc/log"
 func init() {
 	customFormatter := new(log.TextFormatter)
 	customFormatter.TimestampFormat = "2006-01-02 15:04:05"
