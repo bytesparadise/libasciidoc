@@ -6,7 +6,7 @@ import (
 
 	"testing"
 
-	_ "github.com/bytesparadise/libasciidoc/test"
+	_ "github.com/bytesparadise/libasciidoc/log"
 )
 
 func TestLibasciidoc(t *testing.T) {

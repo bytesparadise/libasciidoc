@@ -19,18 +19,6 @@ VENDOR_DIR=vendor
 SOURCE_DIR ?= .
 SOURCES := $(shell find $(SOURCE_DIR) -path $(SOURCE_DIR)/vendor -prune -o -name '*.go' -print)
 COVERPKGS := $(shell go list ./... | grep -v vendor | paste -sd "," -)
-COMMIT=$(shell git rev-parse HEAD)
-# GITUNTRACKEDCHANGES := $(shell git status --porcelain --untracked-files=no)
-GITUNTRACKEDCHANGES := $(shell git status --porcelain)
-ifneq ($(GITUNTRACKEDCHANGES),)
-COMMIT := $(COMMIT)-dirty
-endif
-BUILD_TIME=`date -u '+%Y-%m-%dT%H:%M:%SZ'`
-
-
-
-# Pass in build time variables to main
-LDFLAGS=-ldflags "-X ${PACKAGE_NAME}/about.Commit=${COMMIT} -X ${PACKAGE_NAME}/about.BuildTime=${BUILD_TIME}"
 
 $(INSTALL_PREFIX):
 # Build artifacts dir
@@ -38,7 +26,6 @@ $(INSTALL_PREFIX):
 
 $(TMP_PATH):
 	@mkdir -p $(TMP_PATH)
-
 
 # Call this function with $(call log-info,"Your message")
 define log-info =
