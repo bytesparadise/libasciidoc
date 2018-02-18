@@ -1,27 +1,65 @@
 package html5_test
 
-import . "github.com/onsi/ginkgo"
+import (
+	. "github.com/onsi/ginkgo"
+)
 
-var _ = Describe("Links", func() {
+var _ = Describe("links", func() {
 
-	Context("External links", func() {
+	Context("external links", func() {
 
-		It("External link alone", func() {
+		It("external link with text", func() {
 
-			actualContent := "https://foo.com[the website]"
+			actualContent := "a link to https://foo.com[the website]."
 			expectedResult := `<div class="paragraph">
-<p><a href="https://foo.com">the website</a></p>
+<p>a link to <a href="https://foo.com">the website</a>.</p>
 </div>`
 			verify(GinkgoT(), expectedResult, actualContent)
 		})
 
-		It("External link without description", func() {
+		It("external link without text", func() {
 
-			actualContent := "https://foo.com[]"
+			actualContent := "a link to https://foo.com[]."
 			expectedResult := `<div class="paragraph">
-<p><a href="https://foo.com" class="bare">https://foo.com</a></p>
+<p>a link to <a href="https://foo.com" class="bare">https://foo.com</a>.</p>
 </div>`
 			verify(GinkgoT(), expectedResult, actualContent)
 		})
 	})
+
+	Context("relative links", func() {
+
+		It("relative link to doc without text", func() {
+			actualContent := "a link to link:foo.adoc[]."
+			expectedResult := `<div class="paragraph">
+<p>a link to <a href="foo.adoc" class="bare">foo.adoc</a>.</p>
+</div>`
+			verify(GinkgoT(), expectedResult, actualContent)
+		})
+
+		It("relative link to doc with text", func() {
+			actualContent := "a link to link:foo.adoc[foo doc]."
+			expectedResult := `<div class="paragraph">
+<p>a link to <a href="foo.adoc">foo doc</a>.</p>
+</div>`
+			verify(GinkgoT(), expectedResult, actualContent)
+		})
+
+		It("relative link to external URL with text", func() {
+			actualContent := "a link to link:https://foo.bar[foo doc]."
+			expectedResult := `<div class="paragraph">
+<p>a link to <a href="https://foo.bar">foo doc</a>.</p>
+</div>`
+			verify(GinkgoT(), expectedResult, actualContent)
+		})
+
+		It("invalid relative link to doc", func() {
+			actualContent := "a link to link:foo.adoc."
+			expectedResult := `<div class="paragraph">
+<p>a link to link:foo.adoc.</p>
+</div>`
+			verify(GinkgoT(), expectedResult, actualContent)
+		})
+	})
+
 })

@@ -10,14 +10,14 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-var externalLinkTmpl *template.Template
+var LinkTmpl *template.Template
 
 // initializes the templates
 func init() {
-	externalLinkTmpl = newHTMLTemplate("external link", `<a href="{{ .URL }}"{{if .Class}} class="{{ .Class }}"{{ end }}>{{ .Text }}</a>`)
+	LinkTmpl = newHTMLTemplate("external link", `<a href="{{ .URL }}"{{if .Class}} class="{{ .Class }}"{{ end }}>{{ .Text }}</a>`)
 }
 
-func renderExternalLink(ctx *renderer.Context, l *types.ExternalLink) ([]byte, error) {
+func renderLink(ctx *renderer.Context, l *types.Link) ([]byte, error) {
 	result := bytes.NewBuffer(nil)
 	text := l.Text
 	class := ""
@@ -25,7 +25,7 @@ func renderExternalLink(ctx *renderer.Context, l *types.ExternalLink) ([]byte, e
 		text = l.URL
 		class = "bare"
 	}
-	err := externalLinkTmpl.Execute(result, struct {
+	err := LinkTmpl.Execute(result, struct {
 		URL   string
 		Text  string
 		Class string

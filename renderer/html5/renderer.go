@@ -49,8 +49,8 @@ func renderElement(ctx *renderer.Context, element types.DocElement) ([]byte, err
 		return renderLiteralBlock(ctx, e)
 	case *types.InlineContent:
 		return renderInlineContent(ctx, e)
-	case *types.ExternalLink:
-		return renderExternalLink(ctx, e)
+	case *types.Link:
+		return renderLink(ctx, e)
 	case *types.StringElement:
 		return renderStringElement(ctx, e)
 	case *types.DocumentAttributeDeclaration:
@@ -75,7 +75,7 @@ func renderPlainString(ctx *renderer.Context, element types.DocElement) ([]byte,
 		return renderPlainStringForInlineElements(ctx, element.Elements)
 	case *types.InlineImage:
 		return []byte(element.Macro.Alt), nil
-	case *types.ExternalLink:
+	case *types.Link:
 		return []byte(element.Text), nil
 	case *types.StringElement:
 		return []byte(element.Content), nil

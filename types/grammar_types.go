@@ -1321,17 +1321,17 @@ func NewBlankLine() (*BlankLine, error) {
 // Links
 // ------------------------------------------
 
-// ExternalLink the structure for the external links
-type ExternalLink struct {
+// Link the structure for the external links
+type Link struct {
 	URL  string
 	Text string
 }
 
-// NewExternalLink initializes a new `ExternalLink`
-func NewExternalLink(url, text []interface{}) (*ExternalLink, error) {
+// NewLink initializes a new `Link`
+func NewLink(url, text []interface{}) (*Link, error) {
 	urlStr, err := stringify(url)
 	if err != nil {
-		return nil, errors.Wrapf(err, "failed to initialize a new ExternalLink element")
+		return nil, errors.Wrapf(err, "failed to initialize a new Link element")
 	}
 	textStr, err := stringify(text, // remove "\n" or "\r\n", depending on the OS.
 		// remove heading "[" and traingin "]"
@@ -1342,7 +1342,7 @@ func NewExternalLink(url, text []interface{}) (*ExternalLink, error) {
 			return strings.TrimSuffix(s, "]"), nil
 		})
 	if err != nil {
-		return nil, errors.Wrapf(err, "failed to initialize a new ExternalLink element")
+		return nil, errors.Wrapf(err, "failed to initialize a new Link element")
 	}
-	return &ExternalLink{URL: *urlStr, Text: *textStr}, nil
+	return &Link{URL: *urlStr, Text: *textStr}, nil
 }
