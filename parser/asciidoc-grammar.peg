@@ -297,7 +297,7 @@ InlineContent <- !BlockDelimiter elements:(WS* InlineElement WS*)+ &EOL { // nee
     return types.NewInlineContent(elements.([]interface{}))
 } 
 
-InlineElement <- CrossReference / Passthrough / InlineImage / QuotedText / ExternalLink / DocumentAttributeSubstitution / Characters
+InlineElement <- CrossReference / Passthrough / InlineImage / QuotedText / Link / DocumentAttributeSubstitution / Characters
 
 // ----------------------------------------------------------------------------
 // Quoted Texts (bold, italic and monospace) including substitution prevention
@@ -443,11 +443,20 @@ CrossReference <- "<<" id:(ID) ">>" {
 // ------------------------------------------
 // Links
 // ------------------------------------------
+Link <- RelativeLink / ExternalLink 
+
 ExternalLink <- url:(URL_SCHEME URL) text:("[" (URL_TEXT)* "]")? {
     if text != nil {
-        return types.NewExternalLink(url.([]interface{}), text.([]interface{}))
+        return types.NewLink(url.([]interface{}), text.([]interface{}))
     }
-    return types.NewExternalLink(url.([]interface{}), nil)
+    return types.NewLink(url.([]interface{}), nil)
+}
+
+RelativeLink <- "link:" url:(URL_SCHEME? URL) text:("[" (URL_TEXT)* "]") {
+    if text != nil {
+        return types.NewLink(url.([]interface{}), text.([]interface{}))
+    }
+    return types.NewLink(url.([]interface{}), nil)
 }
 
 // ------------------------------------------
