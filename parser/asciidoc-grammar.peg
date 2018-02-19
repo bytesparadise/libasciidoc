@@ -53,8 +53,8 @@ DocumentHeader <- header:(DocumentTitle) authors:(DocumentAuthors?) revision:(Do
     return types.NewDocumentHeader(header, authors, revision, otherAttributes.([]interface{}))
 }
 
-DocumentTitle <- attributes:(ElementAttribute)* level:("=") WS+ content:InlineContent EOL { 
-     return types.NewSectionTitle(content.(*types.InlineContent), attributes.([]interface{}))
+DocumentTitle <- attributes:(ElementAttribute)* level:("=") WS+ content:(InlineContent) WS* id:(InlineElementID)? EOL { 
+     return types.NewSectionTitle(content.(*types.InlineContent), append(attributes.([]interface{}), id))
 }
 
 DocumentAuthors <- DocumentAuthorsInlineForm / DocumentAuthorsAttributeForm
@@ -177,24 +177,25 @@ Section5Block <- !Section1 !Section2 !Section3 !Section4 !Section5 content:(Bloc
 
 SectionTitle <- Section1Title / Section2Title / Section3Title / Section4Title / Section5Title
 
-Section1Title <- attributes:(ElementAttribute)* level:("==") WS+ content:InlineContent EOL (BlankLine? / EOF) { 
-     return types.NewSectionTitle(content.(*types.InlineContent), attributes.([]interface{}))
+Section1Title <- attributes:(ElementAttribute)* level:("==") WS+ content:(InlineContent) WS* id:(InlineElementID)? WS* EOL (BlankLine? / EOF) { 
+    return types.NewSectionTitle(content.(*types.InlineContent), append(attributes.([]interface{}), id))
 }
 
-Section2Title <- attributes:(ElementAttribute)* level:("===") WS+ content:InlineContent EOL (BlankLine? / EOF) {
-     return types.NewSectionTitle(content.(*types.InlineContent), attributes.([]interface{}))
+Section2Title <- attributes:(ElementAttribute)* level:("===") WS+ content:(InlineContent) WS* id:(InlineElementID)? WS* EOL (BlankLine? / EOF) {
+    fmt.Println("New Section 2...")
+    return types.NewSectionTitle(content.(*types.InlineContent), append(attributes.([]interface{}), id))
 }
 
-Section3Title <- attributes:(ElementAttribute)* level:("====") WS+ content:InlineContent EOL (BlankLine? / EOF) {
-     return types.NewSectionTitle(content.(*types.InlineContent), attributes.([]interface{}))
+Section3Title <- attributes:(ElementAttribute)* level:("====") WS+ content:(InlineContent) WS* id:(InlineElementID)? EOL (BlankLine? / EOF) {
+    return types.NewSectionTitle(content.(*types.InlineContent), append(attributes.([]interface{}), id))
 }
 
-Section4Title <- attributes:(ElementAttribute)* level:("=====") WS+ content:InlineContent EOL (BlankLine? / EOF) {
-     return types.NewSectionTitle(content.(*types.InlineContent), attributes.([]interface{}))
+Section4Title <- attributes:(ElementAttribute)* level:("=====") WS+ content:(InlineContent) WS* id:(InlineElementID)? EOL (BlankLine? / EOF) {
+    return types.NewSectionTitle(content.(*types.InlineContent), append(attributes.([]interface{}), id))
 }
 
-Section5Title <- attributes:(ElementAttribute)* level:("======") WS+ content:InlineContent EOL (BlankLine? / EOF) {
-     return types.NewSectionTitle(content.(*types.InlineContent), attributes.([]interface{}))
+Section5Title <- attributes:(ElementAttribute)* level:("======") WS+ content:(InlineContent) WS* id:(InlineElementID)? EOL (BlankLine? / EOF) {
+    return types.NewSectionTitle(content.(*types.InlineContent), append(attributes.([]interface{}), id))
 }
 
 // ------------------------------------------
@@ -218,7 +219,7 @@ HorizontalLayout <- "[horizontal]" {
     return map[string]interface{}{"layout": "horizontal"}, nil
 }
 
-ListParagraph <-  lines:(!(ListItemContinuation) !(UnorderedListItemPrefix) !(LabeledListItemTerm LabeledListItemSeparator) InlineContent EOL)+ {
+ListParagraph <-  lines:(!(ListItemContinuation) !(UnorderedListItemPrefix) !(LabeledListItemTerm LabeledListItemSeparator) InlineContentWithTrailingSpaces EOL)+ {
     return types.NewListParagraph(lines.([]interface{}))
 } 
 
@@ -233,13 +234,6 @@ ContinuedBlockElement <- ListItemContinuation element:BlockElement {
 // ------------------------------------------
 // Unordered Lists
 // ------------------------------------------
-// UnorderedList <- attributes:(ElementAttribute)* 
-//     // list items can be followed by an optional, single blank line
-//     elements:(UnorderedListItem)+ {
-//     return types.NewUnorderedList(elements.([]interface{}), attributes.([]interface{}))
-// }
-
-
 UnorderedListItem <- level:(UnorderedListItemPrefix) content:(UnorderedListItemContent) BlankLine? {
     return types.NewUnorderedListItem(level, content.([]types.DocElement))
 }
@@ -257,10 +251,6 @@ UnorderedListItemContent <- elements:(ListParagraph+ ContinuedBlockElement*) { /
 // ------------------------------------------
 // Labeled Lists
 // ------------------------------------------
-// LabeledList <- attributes:(ElementAttribute)* elements:(LabeledListItem+) {
-//     return types.NewLabeledList(elements.([]interface{}), attributes.([]interface{}))
-// }
-
 LabeledListItem <- LabeledListItemWithDescription / LabeledListItemWithTermAlone
 
 LabeledListItemWithTermAlone <- term:(LabeledListItemTerm)  "::" WS* EOL { // here, WS is optional since there is no description afterwards
@@ -287,17 +277,21 @@ LabeledListItemDescription <- elements:(ListParagraph / ContinuedBlockElement)* 
 // ------------------------------------------
 // a paragraph is a group of line ending with a blank line (or end of file)
 // a paragraph cannot start with the `section` sequence (`= `, `== `, etc.)
-Paragraph <- attributes:(ElementAttribute)* !("="+ WS+) lines:(InlineContent EOL)+ {
+Paragraph <- attributes:(ElementAttribute)* !("="+ WS+) lines:(InlineContentWithTrailingSpaces EOL)+ {
     return types.NewParagraph(lines.([]interface{}), attributes.([]interface{}))
 } 
 
 // an inline content element may start with and end with spaces, 
 // but it must contain at least an inline element (image, quoted text, external link, document attribute substitution, word, etc.)
-InlineContent <- !BlockDelimiter elements:(WS* InlineElement WS*)+ &EOL { // needs an "EOL" but does not consume it here.
+InlineContentWithTrailingSpaces <- !BlockDelimiter elements:(WS* !InlineElementID InlineElement WS*)+  { // absorbs heading and trailing spaces
     return types.NewInlineContent(elements.([]interface{}))
 } 
 
-InlineElement <- CrossReference / Passthrough / InlineImage / QuotedText / Link / DocumentAttributeSubstitution / Characters
+InlineContent <- !BlockDelimiter elements:(WS* !InlineElementID InlineElement)+  { // absorbs heading and trailing spaces
+    return types.NewInlineContent(elements.([]interface{}))
+} 
+
+InlineElement <- (CrossReference / Passthrough / InlineImage / QuotedText / Link / DocumentAttributeSubstitution / Characters)
 
 // ----------------------------------------------------------------------------
 // Quoted Texts (bold, italic and monospace) including substitution prevention
@@ -543,13 +537,13 @@ ElementLink <- "[link=" WS* path:URL WS* "]" EOL {
     return types.NewElementLink(path.(string))
 }
 
-ElementID <- ElementIDNormal / ElementIDShortHand
-
-// an id attached to an element, such as a BlockImage
-ElementIDNormal <- "[[" id:(ID) "]]" EOL {
+ElementID <- id:(InlineElementID) EOL {
+    return id, nil
+} / "[#" id:(ID) "]" EOL {
     return types.NewElementID(id.(string))
 }
-ElementIDShortHand <- "[#" id:(ID) "]" EOL {
+
+InlineElementID <- "[[" id:(ID) "]]" {
     return types.NewElementID(id.(string))
 }
 
