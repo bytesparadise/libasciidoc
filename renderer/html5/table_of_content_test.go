@@ -190,20 +190,18 @@ A preamble...
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>A preamble&#8230;&#8203;</p>
+<p>A preamble...</p>
 </div>
 </div>
 </div>
 <div class="sect1">
 <h2 id="foo">Section F</h2>
 <div class="sectionbody">
-
 </div>
 </div>
 <div class="sect1">
 <h2 id="bar">Section B</h2>
 <div class="sectionbody">
-
 </div>
 </div>`
 		verify(GinkgoT(), expectedResult, actualContent)

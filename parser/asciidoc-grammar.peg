@@ -182,7 +182,6 @@ Section1Title <- attributes:(ElementAttribute)* level:("==") WS+ content:(Inline
 }
 
 Section2Title <- attributes:(ElementAttribute)* level:("===") WS+ content:(InlineContent) WS* id:(InlineElementID)? WS* EOL (BlankLine? / EOF) {
-    fmt.Println("New Section 2...")
     return types.NewSectionTitle(content.(*types.InlineContent), append(attributes.([]interface{}), id))
 }
 
