@@ -175,20 +175,24 @@ var _ = Describe("Images", func() {
 
 			It("inline image with empty alt and trailing spaces", func() {
 				actualContent := "image:images/foo.png[]  \t\t  "
-				expectedResult := &types.InlineContent{
-					Elements: []types.InlineElement{
-						&types.InlineImage{
-							Macro: types.ImageMacro{
-								Path: "images/foo.png",
-								Alt:  "foo",
+				expectedResult := &types.Paragraph{
+					Lines: []*types.InlineContent{
+						{
+							Elements: []types.InlineElement{
+								&types.InlineImage{
+									Macro: types.ImageMacro{
+										Path: "images/foo.png",
+										Alt:  "foo",
+									},
+								},
+								&types.StringElement{
+									Content: "  \t\t  ",
+								},
 							},
-						},
-						&types.StringElement{
-							Content: "  \t\t  ",
 						},
 					},
 				}
-				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineContent"))
+				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Paragraph"))
 			})
 
 			It("inline image surrounded with test", func() {

@@ -6,10 +6,8 @@ import (
 
 var _ = Describe("Document TOC", func() {
 
-	Context("Document with TOC", func() {
-
-		It("TOC with default level", func() {
-			actualContent := `= A title
+	It("TOC with default level", func() {
+		actualContent := `= A title
 :toc:
 
 A preamble...
@@ -28,7 +26,7 @@ A preamble...
 
 == Section C`
 
-			expectedResult := `<div id="toc" class="toc">
+		expectedResult := `<div id="toc" class="toc">
 <div id="toctitle">Table of Contents</div>
 <ul class="sectlevel1">
 <li><a href="#_section_a">Section A</a>
@@ -79,11 +77,11 @@ A preamble...
 <div class="sectionbody">
 </div>
 </div>`
-			verify(GinkgoT(), expectedResult, actualContent)
-		})
+		verify(GinkgoT(), expectedResult, actualContent)
+	})
 
-		It("TOC with custom level", func() {
-			actualContent := `= A title
+	It("TOC with custom level", func() {
+		actualContent := `= A title
 :toc:
 :toclevels: 4
 
@@ -105,7 +103,7 @@ A preamble...
 
 == Section C`
 
-			expectedResult := `<div id="toc" class="toc">
+		expectedResult := `<div id="toc" class="toc">
 <div id="toctitle">Table of Contents</div>
 <ul class="sectlevel1">
 <li><a href="#_section_a">Section A</a>
@@ -167,8 +165,47 @@ A preamble...
 <div class="sectionbody">
 </div>
 </div>`
-			verify(GinkgoT(), expectedResult, actualContent)
-		})
+		verify(GinkgoT(), expectedResult, actualContent)
 
 	})
+
+	It("TOC with section IDs", func() {
+		actualContent := `= A title
+:toc:
+
+A preamble...
+
+== Section F [[foo]]
+
+[[bar]]
+== Section B
+`
+		expectedResult := `<div id="toc" class="toc">
+<div id="toctitle">Table of Contents</div>
+<ul class="sectlevel1">
+<li><a href="#foo">Section F</a></li>
+<li><a href="#bar">Section B</a></li>
+</ul>
+</div>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>A preamble...</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="foo">Section F</h2>
+<div class="sectionbody">
+</div>
+</div>
+<div class="sect1">
+<h2 id="bar">Section B</h2>
+<div class="sectionbody">
+</div>
+</div>`
+		verify(GinkgoT(), expectedResult, actualContent)
+
+	})
+
 })

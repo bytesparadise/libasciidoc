@@ -496,7 +496,7 @@ type Section struct {
 
 // NewSection initializes a new `Section` from the given section title and elements
 func NewSection(level int, sectionTitle *SectionTitle, blocks []interface{}) (*Section, error) {
-	// log.Debugf("Initializing a new Section with %d block(s)", len(blocks))
+	log.Debugf("Initializing a new Section with %d block(s)", len(blocks))
 	elements := filterUnrelevantElements(blocks)
 	log.Debugf("Initialized a new Section of level %d with %d block(s)", level, len(blocks))
 	return &Section{
@@ -1100,6 +1100,8 @@ func newElementAttributes(attributes []interface{}) (*ElementID, *ElementTitle, 
 			link = item
 		case *ElementTitle:
 			title = item
+		case nil:
+			// ignore
 		default:
 			log.Warnf("Unexpected attributes: %T", item)
 		}

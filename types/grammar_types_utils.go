@@ -29,6 +29,7 @@ func toInlineElements(elements []interface{}) ([]InlineElement, error) {
 		}
 		result[i] = element
 	}
+
 	return result, nil
 }
 
@@ -99,13 +100,8 @@ func mergeElements(elements []interface{}, extraElements ...interface{}) []inter
 		}
 	}
 	// if buff was filled because some text was found
-	result, buff = appendBuffer(result, buff)
-	// if len(extraElements) > 0 {
-	// 	log.Debugf("merged '%v' (len=%d) with '%v' (len=%d) -> '%v' (len=%d)", elements, len(elements), extraElements, len(extraElements), result, len(result))
+	result, _ = appendBuffer(result, buff)
 
-	// } else {
-	// 	log.Debugf("merged '%v' (len=%d) -> '%v' (len=%d)", elements, len(elements), result, len(result))
-	// }
 	return result
 }
 
