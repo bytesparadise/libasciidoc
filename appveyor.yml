@@ -9,13 +9,15 @@ clone_folder: c:\gopath\src\github.com\bytesparadise\libasciidoc
 environment:
   GOPATH: c:\gopath
   DEPTESTBYPASS501: 1
-  GOVERSION: 1.8
+  matrix:
+    - GO_VERSION: 1.8
+    - GO_VERSION: 1.9
+    - GO_VERSION: 1.10
 
 init:
   - git config --global core.autocrlf input
 
 # Build
-
 install:
   - set Path=%PATH%;c:\go\bin;%GOPATH%\bin
   - go version
