@@ -15,9 +15,10 @@ install:
 language: go
 
 go:
-  # - 1.7.x
-  - 1.8.x
-  - 1.9.x
+  # - 1.7.x (abandonned - not supported by dep)
+  - "1.8.x"
+  - "1.9.x"
+  - "1.10.x"
   - tip
 
 matrix:
