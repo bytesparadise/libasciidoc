@@ -2,7 +2,8 @@ package html5_test
 
 import . "github.com/onsi/ginkgo"
 
-var _ = Describe("Blank lines", func() {
+var _ = Describe("blank lines", func() {
+
 	It("blank line between 2 paragraphs", func() {
 		actualContent := `first paragraph
 

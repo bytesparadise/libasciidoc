@@ -31,6 +31,10 @@ func renderElement(ctx *renderer.Context, element types.DocElement) ([]byte, err
 		return renderUnorderedList(ctx, e)
 	case *types.Paragraph:
 		return renderParagraph(ctx, e)
+	case *types.Admonition:
+		return renderAdmonition(ctx, e)
+	case *types.AdmonitionParagraph:
+		return renderAdmonitionParagraph(ctx, e)
 	case *types.ListParagraph:
 		return renderListParagraph(ctx, e)
 	case *types.CrossReference:
