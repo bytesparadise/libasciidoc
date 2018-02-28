@@ -35,7 +35,7 @@ on 2 lines`
 				},
 			},
 		}
-		verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("List"))
+		verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("BlockElement"))
 	})
 
 	It("labeled list with a single term and no description", func() {
@@ -47,7 +47,7 @@ on 2 lines`
 				},
 			},
 		}
-		verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("List"))
+		verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("BlockElement"))
 	})
 
 	It("labeled list with a horizontal layout attribute", func() {
@@ -74,7 +74,7 @@ Item1:: foo`
 				},
 			},
 		}
-		verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("List"))
+		verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("BlockElement"))
 	})
 
 	It("labeled list with a single term and a blank line", func() {
@@ -87,7 +87,7 @@ Item1:: foo`
 				},
 			},
 		}
-		verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("List"))
+		verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("BlockElement"))
 	})
 
 	It("labeled list with multiple items", func() {
@@ -143,7 +143,7 @@ Item 3 description`
 				},
 			},
 		}
-		verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("List"))
+		verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("BlockElement"))
 	})
 
 	It("labeled list with nested list", func() {
@@ -207,7 +207,7 @@ Item with description:: something simple`
 			},
 		}
 
-		verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("List"))
+		verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("BlockElement"))
 	})
 
 	It("labeled list with a single item and paragraph", func() {
