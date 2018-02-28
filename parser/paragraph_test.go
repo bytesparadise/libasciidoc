@@ -19,7 +19,7 @@ var _ = Describe("Paragraphs", func() {
 				},
 			},
 		}
-		verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Paragraph"))
+		verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("BlockElement"))
 	})
 
 	It("paragraph with few words", func() {
@@ -33,7 +33,7 @@ var _ = Describe("Paragraphs", func() {
 				},
 			},
 		}
-		verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Paragraph"))
+		verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("BlockElement"))
 	})
 
 	It("paragraph with bold content", func() {
@@ -53,7 +53,7 @@ var _ = Describe("Paragraphs", func() {
 				},
 			},
 		}
-		verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Paragraph"))
+		verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("BlockElement"))
 	})
 
 	It("paragraph with id and title", func() {
@@ -71,6 +71,6 @@ a paragraph`
 				},
 			},
 		}
-		verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Paragraph"))
+		verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("BlockElement"))
 	})
 })

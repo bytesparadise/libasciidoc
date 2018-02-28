@@ -28,6 +28,5 @@ func renderLiteralBlock(ctx *renderer.Context, b *types.LiteralBlock) ([]byte, e
 	if err != nil {
 		return nil, errors.Wrapf(err, "unable to render delimited block")
 	}
-	// log.Debugf("rendered delimited block: %s", result.Bytes())
 	return result.Bytes(), nil
 }

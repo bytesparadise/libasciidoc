@@ -629,6 +629,34 @@ func newList(items []ListItem, attributes []interface{}) (List, error) {
 }
 
 // ------------------------------------------
+// List Paragraph
+// ------------------------------------------
+// ListParagraph the structure for the list paragraphs
+type ListParagraph struct {
+	Lines []*InlineContent
+}
+
+// NewListParagraph initializes a new `ListParagraph`
+func NewListParagraph(lines []interface{}) (*ListParagraph, error) {
+	// log.Debugf("Initializing a new ListParagraph with %d line(s)", len(lines))
+	elements := make([]*InlineContent, 0)
+	for _, line := range lines {
+		if lineElements, ok := line.([]interface{}); ok {
+			for _, lineElement := range lineElements {
+				if lineElement, ok := lineElement.(*InlineContent); ok {
+					// log.Debugf(" processing paragraph line of type %T", lineElement)
+					// each `line` element is an array with the actual `InlineContent` + `EOF`
+					elements = append(elements, lineElement)
+				}
+			}
+		}
+	}
+	return &ListParagraph{
+		Lines: elements,
+	}, nil
+}
+
+// ------------------------------------------
 // Unordered Lists
 // ------------------------------------------
 
@@ -802,20 +830,6 @@ func (i *LabeledListItem) AddChild(item interface{}) {
 	i.Elements = append(i.Elements, item)
 }
 
-// NewLabeledListItemDescription initializes a new `ListItemContent`
-// func NewLabeledListItemDescription(content []interface{}) (*ListItemContent, error) {
-// 	log.Debugf("Initializing a new labeled ListItemContent with %d line(s)", len(content))
-// 	elements := make([]DocElement, 0)
-// 	for _, element := range content {
-// 		// here, `line` is an []interface{} in which we need to locate the relevant `*InlineContent` fragment
-// 		if e, ok := element.(DocElement); ok {
-// 			elements = append(elements, e)
-// 		}
-// 	}
-// 	log.Debugf("Initialized a new labeled ListItemContent with %d line(s): %s", len(elements), spew.Sdump(elements))
-// 	return &ListItemContent{Elements: elements}, nil
-// }
-
 // ------------------------------------------
 // Paragraph
 // ------------------------------------------
@@ -844,24 +858,86 @@ func NewParagraph(lines []interface{}, attributes []interface{}) (*Paragraph, er
 		}
 	}
 	return &Paragraph{
-		Lines: elements,
 		ID:    id,
+		Lines: elements,
 		Title: title,
 	}, nil
 }
 
 // ------------------------------------------
-// List Paragraph
+// Admonition
 // ------------------------------------------
 
-// ListParagraph the structure for the list paragraphs
-type ListParagraph struct {
+// Admonition the structure for the admonition paragraphs
+type Admonition struct {
+	ID      *ElementID
+	Kind    AdmonitionKind
+	Title   *ElementTitle
+	Content DocElement
+}
+
+// AdmonitionKind the type of admonition
+type AdmonitionKind string
+
+const (
+	// Tip the 'TIP' type of admonition
+	Tip AdmonitionKind = "tip"
+	// Note the 'NOTE' type of admonition
+	Note AdmonitionKind = "note"
+	// Important the 'IMPORTANT' type of admonition
+	Important AdmonitionKind = "important"
+	// Warning the 'WARNING' type of admonition
+	Warning AdmonitionKind = "warning"
+	// Caution the 'CAUTION' type of admonition
+	Caution AdmonitionKind = "caution"
+)
+
+// NewAdmonition initializes a new `Admonition`
+// func NewAdmonition(kind AdmonitionKind, lines []interface{}, attributes []interface{}) (*Admonition, error) {
+// 	log.Debugf("Initializing a new Admonition with %d line(s)", len(lines))
+// 	id, title, _ := newElementAttributes(attributes)
+// 	elements := make([]*InlineContent, 0)
+// 	for _, line := range lines {
+// 		if lineElements, ok := line.([]interface{}); ok {
+// 			for _, lineElement := range lineElements {
+// 				if lineElement, ok := lineElement.(*InlineContent); ok {
+// 					// log.Debugf(" processing paragraph line of type %T", lineElement)
+// 					// each `line` element is an array with the actual `InlineContent` + `EOF`
+// 					elements = append(elements, lineElement)
+// 				}
+// 			}
+// 		}
+// 	}
+// 	return &Admonition{
+// 		ID:    id,
+// 		Kind:  kind,
+// 		Lines: elements,
+// 		Title: title,
+// 	}, nil
+// }
+func NewAdmonition(kind AdmonitionKind, content DocElement, attributes []interface{}) (*Admonition, error) {
+	log.Debugf("Initializing a new Admonition...")
+	id, title, _ := newElementAttributes(attributes)
+	return &Admonition{
+		ID:      id,
+		Kind:    kind,
+		Title:   title,
+		Content: content,
+	}, nil
+}
+
+// ------------------------------------------
+// Admonition Paragraph
+// ------------------------------------------
+
+// AdmonitionParagraph the structure for the list paragraphs
+type AdmonitionParagraph struct {
 	Lines []*InlineContent
 }
 
-// NewListParagraph initializes a new `ListParagraph`
-func NewListParagraph(lines []interface{}) (*ListParagraph, error) {
-	// log.Debugf("Initializing a new ListParagraph with %d line(s)", len(lines))
+// NewAdmonitionParagraph initializes a new `AdmonitionParagraph`
+func NewAdmonitionParagraph(lines []interface{}) (*AdmonitionParagraph, error) {
+	// log.Debugf("Initializing a new AdmonitionParagraph with %d line(s)", len(lines))
 	elements := make([]*InlineContent, 0)
 	for _, line := range lines {
 		if lineElements, ok := line.([]interface{}); ok {
@@ -874,7 +950,7 @@ func NewListParagraph(lines []interface{}) (*ListParagraph, error) {
 			}
 		}
 	}
-	return &ListParagraph{
+	return &AdmonitionParagraph{
 		Lines: elements,
 	}, nil
 }
