@@ -1107,30 +1107,45 @@ const (
 	FencedBlock DelimitedBlockKind = iota
 	// ListingBlock a listing block
 	ListingBlock
+	// ExampleBlock an example block
+	ExampleBlock
 )
 
 // DelimitedBlock the structure for the delimited blocks
 type DelimitedBlock struct {
-	Kind    DelimitedBlockKind
-	Content string
+	Kind     DelimitedBlockKind
+	ID       *ElementID
+	Title    *ElementTitle
+	Elements []DocElement
 }
 
 // NewDelimitedBlock initializes a new `DelimitedBlock` of the given kind with the given content
-func NewDelimitedBlock(kind DelimitedBlockKind, content []interface{}) (*DelimitedBlock, error) {
-	blockContent, err := stringify(content,
-		// remove "\n" or "\r\n", depending on the OS.
-		func(s string) (string, error) {
-			return strings.TrimSuffix(s, "\n"), nil
-		}, func(s string) (string, error) {
-			return strings.TrimSuffix(s, "\r"), nil
-		})
-	if err != nil {
-		return nil, errors.Wrapf(err, "unable to initialize a new delimited block")
+func NewDelimitedBlock(kind DelimitedBlockKind, content []interface{}, attributes []interface{}) (*DelimitedBlock, error) {
+	id, title, _ := newElementAttributes(attributes)
+	var elements []DocElement
+	switch kind {
+	case FencedBlock, ListingBlock:
+		s, err := stringify(content,
+			// remove "\n" or "\r\n", depending on the OS.
+			func(s string) (string, error) {
+				return strings.TrimRight(s, "\n"), nil
+			}, func(s string) (string, error) {
+				return strings.TrimRight(s, "\r"), nil
+			})
+		if err != nil {
+			return nil, errors.Wrapf(err, "unable to initialize a new delimited block")
+		}
+		elements = make([]DocElement, 1)
+		elements[0] = NewStringElement(*s)
+	default:
+		elements = filterUnrelevantElements(content)
 	}
-	log.Debugf("Initialized a new DelimitedBlock with content=`%s`", *blockContent)
+	log.Debugf("Initialized a new DelimitedBlock with content=`%s`", elements)
 	return &DelimitedBlock{
-		Kind:    kind,
-		Content: *blockContent,
+		Kind:     kind,
+		ID:       id,
+		Title:    title,
+		Elements: elements,
 	}, nil
 }
 
@@ -1153,7 +1168,7 @@ func NewLiteralBlock(spaces, content []interface{}) (*LiteralBlock, error) {
 		return nil, errors.Wrapf(err, "unable to initialize a new literal block")
 	}
 	// remove "\n" or "\r\n", depending on the OS.
-	blockContent := strings.TrimSuffix(strings.TrimSuffix(*c, "\n"), "\r")
+	blockContent := strings.TrimRight(strings.TrimRight(*c, "\n"), "\r")
 	log.Debugf("Initialized a new LiteralBlock with content=`%s`", blockContent)
 	return &LiteralBlock{
 		Content: blockContent,

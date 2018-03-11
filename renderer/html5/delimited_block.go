@@ -2,7 +2,7 @@ package html5
 
 import (
 	"bytes"
-	"html/template"
+	texttemplate "text/template"
 
 	"github.com/bytesparadise/libasciidoc/renderer"
 	"github.com/bytesparadise/libasciidoc/types"
@@ -10,25 +10,43 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-var verbatimBlockTmpl *template.Template
+var listingBlockTmpl *texttemplate.Template
+var exampleBlockTmpl *texttemplate.Template
 
 // initializes the templates
 func init() {
-	verbatimBlockTmpl = newHTMLTemplate("listing block", `<div class="listingblock">
+	listingBlockTmpl = newTextTemplate("listing block", `<div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>{{.Content}}</code></pre>
+<pre class="highlight"><code>{{ $ctx := .Context }}{{ with .Data }}{{ $elements := .Elements }}{{ range $index, $element := $elements }}{{ renderElement $ctx $element | printf "%s" }}{{ if notLastItem $index $elements }}{{ print "\n" }}{{ end }}{{ end }}{{ end }}</code></pre>
 </div>
-</div>`)
+</div>`,
+		texttemplate.FuncMap{
+			"renderElement": renderElement,
+			"notLastItem":   notLastItem,
+		})
+	exampleBlockTmpl = newTextTemplate("example block", `<div class="exampleblock">
+<div class="content">
+{{ $ctx := .Context }}{{ with .Data }}{{ $elements := .Elements }}{{ range $index, $element := $elements }}{{ renderElement $ctx $element | printf "%s" }}{{ if notLastItem $index $elements }}{{ print "\n" }}{{ end }}{{ end }}{{ end }}
+</div>
+</div>`,
+		texttemplate.FuncMap{
+			"renderElement": renderElement,
+			"notLastItem":   notLastItem,
+		})
 }
 
 func renderDelimitedBlock(ctx *renderer.Context, b *types.DelimitedBlock) ([]byte, error) {
-	log.Debugf("rendering delimited block with content: %s", b.Content)
+	log.Debugf("rendering delimited block")
 	result := bytes.NewBuffer(nil)
 	tmpl, err := selectDelimitedBlockTemplate(b)
 	if err != nil {
 		return nil, errors.Wrapf(err, "unable to render delimited block")
 	}
-	err = tmpl.Execute(result, b)
+
+	err = tmpl.Execute(result, ContextualPipeline{
+		Context: ctx,
+		Data:    b,
+	})
 	if err != nil {
 		return nil, errors.Wrapf(err, "unable to render delimited block")
 	}
@@ -36,10 +54,12 @@ func renderDelimitedBlock(ctx *renderer.Context, b *types.DelimitedBlock) ([]byt
 	return result.Bytes(), nil
 }
 
-func selectDelimitedBlockTemplate(b *types.DelimitedBlock) (*template.Template, error) {
+func selectDelimitedBlockTemplate(b *types.DelimitedBlock) (*texttemplate.Template, error) {
 	switch b.Kind {
 	case types.FencedBlock, types.ListingBlock:
-		return verbatimBlockTmpl, nil
+		return listingBlockTmpl, nil
+	case types.ExampleBlock:
+		return exampleBlockTmpl, nil
 	default:
 		return nil, errors.Errorf("no template for block of kind %v", b.Kind)
 	}

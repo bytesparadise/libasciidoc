@@ -457,25 +457,27 @@ InlineImageMacro <- "image:" !":" path:(URL) "[" attributes:(URL_TEXT?) "]" {
 // ------------------------------------------------------------------------------------
 // Delimited Blocks (http://asciidoctor.org/docs/user-manual/#built-in-blocks-summary)
 // ------------------------------------------------------------------------------------
-DelimitedBlock <- FencedBlock / ListingBlock 
+DelimitedBlock <- FencedBlock / ListingBlock / ExampleBlock
 
-BlockDelimiter <- FencedBlockDelimiter / ListingBlockDelimiter
+BlockDelimiter <- LiteralBlockDelimiter / FencedBlockDelimiter / ListingBlockDelimiter / ExampleBlockDelimiter
 
 FencedBlockDelimiter <- "```"
 
-FencedBlock <- FencedBlockDelimiter WS* NEWLINE content:(FencedBlockContent) FencedBlockDelimiter WS* EOL {
-    return types.NewDelimitedBlock(types.FencedBlock, content.([]interface{}))
+FencedBlock <- FencedBlockDelimiter WS* NEWLINE content:(!FencedBlockDelimiter .)* FencedBlockDelimiter WS* EOL {
+    return types.NewDelimitedBlock(types.FencedBlock, content.([]interface{}), nil)
 }
-
-FencedBlockContent <- content:(!FencedBlockDelimiter .)* 
 
 ListingBlockDelimiter <- "----"
 
-ListingBlock <- ListingBlockDelimiter WS* NEWLINE content:(ListingBlockContent) ListingBlockDelimiter WS* EOL {
-    return types.NewDelimitedBlock(types.ListingBlock, content.([]interface{}))
+ListingBlock <- ListingBlockDelimiter WS* NEWLINE content:(!ListingBlockDelimiter .)* ListingBlockDelimiter WS* EOL {
+    return types.NewDelimitedBlock(types.ListingBlock, content.([]interface{}), nil)
 }
 
-ListingBlockContent <- content:(!ListingBlockDelimiter .)* 
+ExampleBlockDelimiter <- "===="
+
+ExampleBlock <- attributes:(ElementAttribute)* ExampleBlockDelimiter WS* NEWLINE content:(List / Paragraph / BlankLine)*  ExampleBlockDelimiter WS* EOL {
+    return types.NewDelimitedBlock(types.ExampleBlock, content.([]interface{}), attributes.([]interface{}))
+}
 
 // -------------------------------------------------------------------------------------
 // Literal Blocks (see http://asciidoctor.org/docs/user-manual/#literal-text-and-blocks)
