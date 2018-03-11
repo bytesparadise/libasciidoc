@@ -278,8 +278,12 @@ another fenced block
 							Term: "Item 1",
 							Elements: []types.DocElement{
 								&types.DelimitedBlock{
-									Kind:    types.ListingBlock,
-									Content: "a fenced block",
+									Kind: types.ListingBlock,
+									Elements: []types.DocElement{
+										&types.StringElement{
+											Content: "a fenced block",
+										},
+									},
 								},
 							},
 						},
@@ -296,8 +300,12 @@ another fenced block
 									},
 								},
 								&types.DelimitedBlock{
-									Kind:    types.ListingBlock,
-									Content: "another fenced block",
+									Kind: types.ListingBlock,
+									Elements: []types.DocElement{
+										&types.StringElement{
+											Content: "another fenced block",
+										},
+									},
 								},
 							},
 						},
@@ -330,8 +338,12 @@ another fenced block
 					},
 				},
 				&types.DelimitedBlock{
-					Kind:    types.ListingBlock,
-					Content: "a fenced block",
+					Kind: types.ListingBlock,
+					Elements: []types.DocElement{
+						&types.StringElement{
+							Content: "a fenced block",
+						},
+					},
 				},
 				&types.LabeledList{
 					Items: []*types.LabeledListItem{
@@ -352,8 +364,12 @@ another fenced block
 					},
 				},
 				&types.DelimitedBlock{
-					Kind:    types.ListingBlock,
-					Content: "another fenced block",
+					Kind: types.ListingBlock,
+					Elements: []types.DocElement{
+						&types.StringElement{
+							Content: "another fenced block",
+						},
+					},
 				},
 			},
 		}

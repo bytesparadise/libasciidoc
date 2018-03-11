@@ -571,12 +571,20 @@ another delimited block
 										},
 									},
 									&types.DelimitedBlock{
-										Kind:    types.ListingBlock,
-										Content: "a delimited block",
+										Kind: types.ListingBlock,
+										Elements: []types.DocElement{
+											&types.StringElement{
+												Content: "a delimited block",
+											},
+										},
 									},
 									&types.DelimitedBlock{
-										Kind:    types.ListingBlock,
-										Content: "another delimited block",
+										Kind: types.ListingBlock,
+										Elements: []types.DocElement{
+											&types.StringElement{
+												Content: "another delimited block",
+											},
+										},
 									},
 								},
 							},
@@ -634,8 +642,12 @@ another delimited block
 						},
 					},
 					&types.DelimitedBlock{
-						Kind:    types.ListingBlock,
-						Content: "a delimited block",
+						Kind: types.ListingBlock,
+						Elements: []types.DocElement{
+							&types.StringElement{
+								Content: "a delimited block",
+							},
+						},
 					},
 					&types.UnorderedList{
 						Items: []*types.UnorderedListItem{
@@ -656,8 +668,12 @@ another delimited block
 						},
 					},
 					&types.DelimitedBlock{
-						Kind:    types.ListingBlock,
-						Content: "another delimited block",
+						Kind: types.ListingBlock,
+						Elements: []types.DocElement{
+							&types.StringElement{
+								Content: "another delimited block",
+							},
+						},
 					},
 				},
 			}
