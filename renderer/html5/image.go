@@ -10,24 +10,34 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-var blockImageTmpl *template.Template
-var inlineImageTmpl *template.Template
+var blockImageTmpl template.Template
+var inlineImageTmpl template.Template
 
 // initializes the templates
 func init() {
-	blockImageTmpl = newHTMLTemplate("block image", `<div{{if .ID }} id="{{.ID.Value}}"{{ end }} class="imageblock">
+	blockImageTmpl = newHTMLTemplate("block image", `<div{{ if ne .ID "" }} id="{{ .ID }}"{{ end }} class="imageblock">
 <div class="content">
-{{if .Link}}<a class="image" href="{{.Link.Path}}">{{end}}<img src="{{.Macro.Path}}" alt="{{.Macro.Alt}}"{{if .Macro.Width}} width="{{.Macro.Width}}"{{end}}{{if .Macro.Height}} height="{{.Macro.Height}}"{{end}}>{{if .Link}}</a>{{end}}
-</div>{{if .Title}}
-<div class="doctitle">{{.Title.Value}}</div>
-{{else}}
-{{end}}</div>`)
+{{ if ne .Link "" }}<a class="image" href="{{ .Link }}">{{ end}}<img src="{{ .Macro.Path }}" alt="{{ .Macro.Alt }}"{{ if .Macro.Width }} width="{{ .Macro.Width }}"{{ end }}{{ if .Macro.Height }} height="{{ .Macro.Height }}"{{ end }}>{{ if ne .Link "" }}</a>{{ end }}
+</div>{{ if ne .Title "" }}
+<div class="doctitle">{{ .Title }}</div>
+{{ else }}
+{{ end }}</div>`)
 	inlineImageTmpl = newHTMLTemplate("inline image", `<span class="image"><img src="{{.Macro.Path}}" alt="{{.Macro.Alt}}"{{if .Macro.Width}} width="{{.Macro.Width}}"{{end}}{{if .Macro.Height}} height="{{.Macro.Height}}"{{end}}></span>`)
 }
 
-func renderBlockImage(ctx *renderer.Context, img *types.BlockImage) ([]byte, error) {
+func renderBlockImage(ctx *renderer.Context, img types.BlockImage) ([]byte, error) {
 	result := bytes.NewBuffer(nil)
-	err := blockImageTmpl.Execute(result, img)
+	err := blockImageTmpl.Execute(result, struct {
+		ID    string
+		Title string
+		Link  string
+		Macro types.ImageMacro
+	}{
+		ID:    img.ID.Value,
+		Title: img.Title.Value,
+		Link:  img.Link.Path,
+		Macro: img.Macro,
+	})
 	if err != nil {
 		return nil, errors.Wrapf(err, "unable to render block image")
 	}
@@ -35,7 +45,7 @@ func renderBlockImage(ctx *renderer.Context, img *types.BlockImage) ([]byte, err
 	return result.Bytes(), nil
 }
 
-func renderInlineImage(ctx *renderer.Context, img *types.InlineImage) ([]byte, error) {
+func renderInlineImage(ctx *renderer.Context, img types.InlineImage) ([]byte, error) {
 	result := bytes.NewBuffer(nil)
 	err := inlineImageTmpl.Execute(result, img)
 	if err != nil {

@@ -27,9 +27,9 @@ func (c *ElementReferencesCollector) BeforeVisit(element Visitable) error {
 // Visit Implements Visitable#Visit()
 func (c *ElementReferencesCollector) Visit(element Visitable) error {
 	switch e := element.(type) {
-	case *Section:
-		log.Debugf("Adding element reference: %v", *e.SectionTitle.ID)
-		c.ElementReferences[e.SectionTitle.ID.Value] = &e.SectionTitle
+	case Section:
+		log.Debugf("Adding element reference: %v", e.Title.ID)
+		c.ElementReferences[e.Title.ID.Value] = e.Title
 	}
 	return nil
 }

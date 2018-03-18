@@ -10,7 +10,7 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-var unorderedListTmpl *texttemplate.Template
+var unorderedListTmpl texttemplate.Template
 
 // initializes the templates
 func init() {
@@ -30,7 +30,7 @@ func init() {
 
 }
 
-func renderUnorderedList(ctx *renderer.Context, l *types.UnorderedList) ([]byte, error) {
+func renderUnorderedList(ctx *renderer.Context, l types.UnorderedList) ([]byte, error) {
 	result := bytes.NewBuffer(nil)
 	// here we must preserve the HTML tags
 	err := unorderedListTmpl.Execute(result, ContextualPipeline{

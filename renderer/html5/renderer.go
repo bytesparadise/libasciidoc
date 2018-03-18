@@ -19,51 +19,51 @@ func Render(ctx *renderer.Context, output io.Writer) (map[string]interface{}, er
 func renderElement(ctx *renderer.Context, element types.DocElement) ([]byte, error) {
 	log.Debugf("rendering element of type `%T`", element)
 	switch e := element.(type) {
-	case *types.TableOfContentsMacro:
+	case types.TableOfContentsMacro:
 		return renderTableOfContent(ctx, e)
-	case *types.Section:
+	case types.Section:
 		return renderSection(ctx, e)
-	case *types.Preamble:
+	case types.Preamble:
 		return renderPreamble(ctx, e)
-	case *types.LabeledList:
+	case types.LabeledList:
 		return renderLabeledList(ctx, e)
-	case *types.UnorderedList:
+	case types.UnorderedList:
 		return renderUnorderedList(ctx, e)
-	case *types.Paragraph:
+	case types.Paragraph:
 		return renderParagraph(ctx, e)
-	case *types.Admonition:
+	case types.Admonition:
 		return renderAdmonition(ctx, e)
-	case *types.AdmonitionParagraph:
+	case types.AdmonitionParagraph:
 		return renderAdmonitionParagraph(ctx, e)
-	case *types.ListParagraph:
+	case types.ListParagraph:
 		return renderListParagraph(ctx, e)
-	case *types.CrossReference:
+	case types.CrossReference:
 		return renderCrossReference(ctx, e)
-	case *types.QuotedText:
+	case types.QuotedText:
 		return renderQuotedText(ctx, e)
-	case *types.Passthrough:
+	case types.Passthrough:
 		return renderPassthrough(ctx, e)
-	case *types.BlockImage:
+	case types.BlockImage:
 		return renderBlockImage(ctx, e)
-	case *types.InlineImage:
+	case types.InlineImage:
 		return renderInlineImage(ctx, e)
-	case *types.DelimitedBlock:
+	case types.DelimitedBlock:
 		return renderDelimitedBlock(ctx, e)
-	case *types.LiteralBlock:
+	case types.LiteralBlock:
 		return renderLiteralBlock(ctx, e)
-	case *types.InlineContent:
+	case types.InlineContent:
 		return renderInlineContent(ctx, e)
-	case *types.Link:
+	case types.Link:
 		return renderLink(ctx, e)
-	case *types.StringElement:
+	case types.StringElement:
 		return renderStringElement(ctx, e)
-	case *types.DocumentAttributeDeclaration:
+	case types.DocumentAttributeDeclaration:
 		// 'process' function do not return any rendered content, but may return an error
 		return nil, processAttributeDeclaration(ctx, e)
-	case *types.DocumentAttributeReset:
+	case types.DocumentAttributeReset:
 		// 'process' function do not return any rendered content, but may return an error
 		return nil, processAttributeReset(ctx, e)
-	case *types.DocumentAttributeSubstitution:
+	case types.DocumentAttributeSubstitution:
 		return renderAttributeSubstitution(ctx, e)
 	default:
 		log.Errorf("unsupported type of element: %T", element)
@@ -73,15 +73,15 @@ func renderElement(ctx *renderer.Context, element types.DocElement) ([]byte, err
 
 func renderPlainString(ctx *renderer.Context, element types.DocElement) ([]byte, error) {
 	switch element := element.(type) {
-	case *types.SectionTitle:
+	case types.SectionTitle:
 		return renderPlainStringForInlineElements(ctx, element.Content.Elements)
-	case *types.QuotedText:
+	case types.QuotedText:
 		return renderPlainStringForInlineElements(ctx, element.Elements)
-	case *types.InlineImage:
+	case types.InlineImage:
 		return []byte(element.Macro.Alt), nil
-	case *types.Link:
+	case types.Link:
 		return []byte(element.Text), nil
-	case *types.StringElement:
+	case types.StringElement:
 		return []byte(element.Content), nil
 	default:
 		return nil, errors.Errorf("unexpectedResult type of element to process: %T", element)

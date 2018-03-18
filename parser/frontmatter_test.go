@@ -15,18 +15,18 @@ author: Xavier
 ---
 
 first paragraph`
-			expectedResult := &types.Document{
+			expectedResult := types.Document{
 				Attributes: map[string]interface{}{
 					"title":  "a title", // TODO: convert `title` attribute from front-matter into `doctitle` here ?
 					"author": "Xavier",
 				},
 				ElementReferences: map[string]interface{}{},
 				Elements: []types.DocElement{
-					&types.Paragraph{
-						Lines: []*types.InlineContent{
-							&types.InlineContent{
+					types.Paragraph{
+						Lines: []types.InlineContent{
+							{
 								Elements: []types.InlineElement{
-									&types.StringElement{Content: "first paragraph"},
+									types.StringElement{Content: "first paragraph"},
 								},
 							},
 						},
@@ -41,15 +41,15 @@ first paragraph`
 ---
 
 first paragraph`
-			expectedResult := &types.Document{
+			expectedResult := types.Document{
 				Attributes:        map[string]interface{}{},
 				ElementReferences: map[string]interface{}{},
 				Elements: []types.DocElement{
-					&types.Paragraph{
-						Lines: []*types.InlineContent{
-							&types.InlineContent{
+					types.Paragraph{
+						Lines: []types.InlineContent{
+							{
 								Elements: []types.InlineElement{
-									&types.StringElement{Content: "first paragraph"},
+									types.StringElement{Content: "first paragraph"},
 								},
 							},
 						},

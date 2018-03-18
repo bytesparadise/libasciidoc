@@ -7,7 +7,7 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-func newHTMLTemplate(name, src string, funcs ...htmltemplate.FuncMap) *htmltemplate.Template {
+func newHTMLTemplate(name, src string, funcs ...htmltemplate.FuncMap) htmltemplate.Template {
 	t := htmltemplate.New(name)
 	for _, f := range funcs {
 		t.Funcs(f)
@@ -16,10 +16,10 @@ func newHTMLTemplate(name, src string, funcs ...htmltemplate.FuncMap) *htmltempl
 	if err != nil {
 		log.Fatalf("failed to initialize '%s' template: %s", name, err.Error())
 	}
-	return t
+	return *t
 }
 
-func newTextTemplate(name, src string, funcs ...texttemplate.FuncMap) *texttemplate.Template {
+func newTextTemplate(name, src string, funcs ...texttemplate.FuncMap) texttemplate.Template {
 	t := texttemplate.New(name)
 	for _, f := range funcs {
 		t.Funcs(f)
@@ -28,5 +28,5 @@ func newTextTemplate(name, src string, funcs ...texttemplate.FuncMap) *texttempl
 	if err != nil {
 		log.Fatalf("failed to initialize '%s' template: %s", name, err.Error())
 	}
-	return t
+	return *t
 }

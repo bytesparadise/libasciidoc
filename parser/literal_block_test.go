@@ -12,7 +12,7 @@ var _ = Describe("Literal Blocks", func() {
 
 		It("literal block from 1-line paragraph with single space", func() {
 			actualContent := ` some literal content`
-			expectedResult := &types.LiteralBlock{
+			expectedResult := types.LiteralBlock{
 				Content: " some literal content",
 			}
 			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("BlockElement"))
@@ -21,7 +21,7 @@ var _ = Describe("Literal Blocks", func() {
 		It("literal block from paragraph with single space on first line", func() {
 			actualContent := ` some literal content
 on 2 lines.`
-			expectedResult := &types.LiteralBlock{
+			expectedResult := types.LiteralBlock{
 				Content: " some literal content\non 2 lines.",
 			}
 			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("BlockElement"))
@@ -31,18 +31,18 @@ on 2 lines.`
 			actualContent := `   some literal content
 
 a normal paragraph.`
-			expectedResult := &types.Document{
+			expectedResult := types.Document{
 				Attributes:        map[string]interface{}{},
 				ElementReferences: map[string]interface{}{},
 				Elements: []types.DocElement{
-					&types.LiteralBlock{
+					types.LiteralBlock{
 						Content: "   some literal content",
 					},
-					&types.Paragraph{
-						Lines: []*types.InlineContent{
+					types.Paragraph{
+						Lines: []types.InlineContent{
 							{
 								Elements: []types.InlineElement{
-									&types.StringElement{Content: "a normal paragraph."},
+									types.StringElement{Content: "a normal paragraph."},
 								},
 							},
 						},
@@ -60,18 +60,18 @@ a normal paragraph.`
 some literal content
 ....
 a normal paragraph.`
-			expectedResult := &types.Document{
+			expectedResult := types.Document{
 				Attributes:        map[string]interface{}{},
 				ElementReferences: map[string]interface{}{},
 				Elements: []types.DocElement{
-					&types.LiteralBlock{
+					types.LiteralBlock{
 						Content: "some literal content",
 					},
-					&types.Paragraph{
-						Lines: []*types.InlineContent{
+					types.Paragraph{
+						Lines: []types.InlineContent{
 							{
 								Elements: []types.InlineElement{
-									&types.StringElement{Content: "a normal paragraph."},
+									types.StringElement{Content: "a normal paragraph."},
 								},
 							},
 						},
@@ -90,18 +90,18 @@ a normal paragraph.`
 some literal content
 
 a normal paragraph.`
-			expectedResult := &types.Document{
+			expectedResult := types.Document{
 				Attributes:        map[string]interface{}{},
 				ElementReferences: map[string]interface{}{},
 				Elements: []types.DocElement{
-					&types.LiteralBlock{
+					types.LiteralBlock{
 						Content: "some literal content",
 					},
-					&types.Paragraph{
-						Lines: []*types.InlineContent{
+					types.Paragraph{
+						Lines: []types.InlineContent{
 							{
 								Elements: []types.InlineElement{
-									&types.StringElement{Content: "a normal paragraph."},
+									types.StringElement{Content: "a normal paragraph."},
 								},
 							},
 						},

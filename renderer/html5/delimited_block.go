@@ -10,8 +10,8 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-var listingBlockTmpl *texttemplate.Template
-var exampleBlockTmpl *texttemplate.Template
+var listingBlockTmpl texttemplate.Template
+var exampleBlockTmpl texttemplate.Template
 
 // initializes the templates
 func init() {
@@ -35,7 +35,7 @@ func init() {
 		})
 }
 
-func renderDelimitedBlock(ctx *renderer.Context, b *types.DelimitedBlock) ([]byte, error) {
+func renderDelimitedBlock(ctx *renderer.Context, b types.DelimitedBlock) ([]byte, error) {
 	log.Debugf("rendering delimited block")
 	result := bytes.NewBuffer(nil)
 	tmpl, err := selectDelimitedBlockTemplate(b)
@@ -54,13 +54,13 @@ func renderDelimitedBlock(ctx *renderer.Context, b *types.DelimitedBlock) ([]byt
 	return result.Bytes(), nil
 }
 
-func selectDelimitedBlockTemplate(b *types.DelimitedBlock) (*texttemplate.Template, error) {
+func selectDelimitedBlockTemplate(b types.DelimitedBlock) (texttemplate.Template, error) {
 	switch b.Kind {
 	case types.FencedBlock, types.ListingBlock:
 		return listingBlockTmpl, nil
 	case types.ExampleBlock:
 		return exampleBlockTmpl, nil
 	default:
-		return nil, errors.Errorf("no template for block of kind %v", b.Kind)
+		return texttemplate.Template{}, errors.Errorf("no template for block of kind %v", b.Kind)
 	}
 }

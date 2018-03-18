@@ -12,10 +12,10 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-var preambleTmpl *template.Template
-var sectionHeaderTmpl *template.Template
-var section1ContentTmpl *template.Template
-var otherSectionContentTmpl *template.Template
+var preambleTmpl template.Template
+var sectionHeaderTmpl template.Template
+var section1ContentTmpl template.Template
+var otherSectionContentTmpl template.Template
 
 // initializes the templates
 func init() {
@@ -41,7 +41,7 @@ func init() {
 		`<h{{.Level}} id="{{.ID}}">{{.Content}}</h{{.Level}}>`)
 }
 
-func renderPreamble(ctx *renderer.Context, p *types.Preamble) ([]byte, error) {
+func renderPreamble(ctx *renderer.Context, p types.Preamble) ([]byte, error) {
 	log.Debugf("Rendering preamble...")
 	renderedElementsBuff := bytes.NewBuffer(nil)
 	for i, element := range p.Elements {
@@ -63,9 +63,9 @@ func renderPreamble(ctx *renderer.Context, p *types.Preamble) ([]byte, error) {
 	return result.Bytes(), nil
 }
 
-func renderSection(ctx *renderer.Context, s *types.Section) ([]byte, error) {
+func renderSection(ctx *renderer.Context, s types.Section) ([]byte, error) {
 	log.Debugf("Rendering section level %d", s.Level)
-	renderedSectionTitle, err := renderSectionTitle(ctx, s.Level, s.SectionTitle)
+	renderedSectionTitle, err := renderSectionTitle(ctx, s.Level, s.Title)
 	if err != nil {
 		return nil, errors.Wrapf(err, "error while rendering section")
 	}
@@ -75,7 +75,7 @@ func renderSection(ctx *renderer.Context, s *types.Section) ([]byte, error) {
 	}
 	result := bytes.NewBuffer(nil)
 	// select the appropriate template for the section
-	var tmpl *template.Template
+	var tmpl template.Template
 	if s.Level == 1 {
 		tmpl = section1ContentTmpl
 	} else {

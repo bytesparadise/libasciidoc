@@ -20,9 +20,8 @@ func ConvertToHTMLBody(ctx context.Context, r io.Reader, w io.Writer) (map[strin
 	if err != nil {
 		return nil, errors.Wrapf(err, "error while parsing the document")
 	}
-	document := doc.(*types.Document)
 	options := []renderer.Option{renderer.IncludeHeaderFooter(false)}
-	metadata, err := htmlrenderer.Render(renderer.Wrap(ctx, document, options...), w)
+	metadata, err := htmlrenderer.Render(renderer.Wrap(ctx, doc.(types.Document), options...), w)
 	if err != nil {
 		return nil, errors.Wrapf(err, "error while rendering the document")
 	}
@@ -37,10 +36,9 @@ func ConvertToHTML(ctx context.Context, r io.Reader, w io.Writer, options ...ren
 	if err != nil {
 		return nil, errors.Wrapf(err, "error while parsing the document")
 	}
-	document := doc.(*types.Document)
 	// force/override value
 	options = append(options, renderer.IncludeHeaderFooter(true))
-	metadata, err := htmlrenderer.Render(renderer.Wrap(ctx, document, options...), w)
+	metadata, err := htmlrenderer.Render(renderer.Wrap(ctx, doc.(types.Document), options...), w)
 	if err != nil {
 		return nil, errors.Wrapf(err, "error while rendering the document")
 	}

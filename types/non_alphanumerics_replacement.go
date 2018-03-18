@@ -6,6 +6,7 @@ import (
 	"unicode"
 
 	"github.com/pkg/errors"
+	log "github.com/sirupsen/logrus"
 )
 
 //NormalizationFunc a function that is used to normalize a string.
@@ -41,15 +42,14 @@ func NewReplaceNonAlphanumericsFunc(replacement string) NormalizationFunc {
 	}
 }
 
-func ReplaceNonAlphanumerics(source *InlineContent, replacement string) (*string, error) {
+// ReplaceNonAlphanumerics replace all non alpha numeric characters with the given `replacement`
+func ReplaceNonAlphanumerics(source InlineContent, replacement string) (string, error) {
 	v := NewReplaceNonAlphanumericsVisitor()
-	s := *source
-	err := s.Accept(v)
+	err := source.Accept(&v)
 	if err != nil {
-		return nil, err
+		return "", err
 	}
-	result := v.NormalizedContent()
-	return &result, nil
+	return v.NormalizedContent(), nil
 }
 
 //ReplaceNonAlphanumericsVisitor a visitor that builds a string representation of the visited elements,
@@ -59,20 +59,23 @@ type ReplaceNonAlphanumericsVisitor struct {
 	normalize NormalizationFunc
 }
 
-func NewReplaceNonAlphanumericsVisitor() *ReplaceNonAlphanumericsVisitor {
+// NewReplaceNonAlphanumericsVisitor returns a new ReplaceNonAlphanumericsVisitor
+func NewReplaceNonAlphanumericsVisitor() ReplaceNonAlphanumericsVisitor {
 	buf := bytes.NewBuffer(nil)
-	return &ReplaceNonAlphanumericsVisitor{
+	return ReplaceNonAlphanumericsVisitor{
 		buf:       *buf,
 		normalize: NewReplaceNonAlphanumericsFunc("_"),
 	}
 }
 
+// Visit method called when an element is visited
 func (v *ReplaceNonAlphanumericsVisitor) Visit(element Visitable) error {
+	log.Debugf("visiting element of type '%T'", element)
 	switch element := element.(type) {
-	case *InlineContent:
+	case InlineContent:
 		// log.Debugf("Prefixing with '_' while processing '%T'", element)
 		v.buf.WriteString("_")
-	case *StringElement:
+	case StringElement:
 		normalized, err := v.normalize(element.Content)
 		if err != nil {
 			return errors.Wrapf(err, "error while normalizing String Element")
@@ -84,10 +87,11 @@ func (v *ReplaceNonAlphanumericsVisitor) Visit(element Visitable) error {
 	return nil
 }
 
+// BeforeVisit method called before visiting an element. Allows for performing "pre-actions"
 func (v *ReplaceNonAlphanumericsVisitor) BeforeVisit(element Visitable) error {
-	// log.Debugf("Before visiting element of type '%T'...", element)
+	log.Debugf("Before visiting element of type '%T'...", element)
 	switch element := element.(type) {
-	case *QuotedText:
+	case QuotedText:
 		// log.Debugf("Before visiting quoted element...")
 		switch element.Kind {
 		case Bold:
@@ -105,9 +109,11 @@ func (v *ReplaceNonAlphanumericsVisitor) BeforeVisit(element Visitable) error {
 	return nil
 }
 
+// AfterVisit method called before visiting an element. Allows for performing "post-actions"
 func (v *ReplaceNonAlphanumericsVisitor) AfterVisit(element Visitable) error {
+	log.Debugf("After visiting element of type '%T'...", element)
 	switch element := element.(type) {
-	case *QuotedText:
+	case QuotedText:
 		switch element.Kind {
 		case Bold:
 			v.buf.WriteString("_strong")
@@ -124,7 +130,7 @@ func (v *ReplaceNonAlphanumericsVisitor) AfterVisit(element Visitable) error {
 	return nil
 }
 
+// NormalizedContent returns the normalized content
 func (v *ReplaceNonAlphanumericsVisitor) NormalizedContent() string {
-	result := v.buf.String()
-	return result
+	return v.buf.String()
 }

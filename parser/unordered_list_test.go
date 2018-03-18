@@ -12,16 +12,16 @@ var _ = Describe("unordered lists", func() {
 
 		It("unordered list with a single item", func() {
 			actualContent := "* a list item"
-			expectedResult := &types.UnorderedList{
-				Items: []*types.UnorderedListItem{
+			expectedResult := types.UnorderedList{
+				Items: []types.UnorderedListItem{
 					{
 						Level: 1,
 						Elements: []types.DocElement{
-							&types.ListParagraph{
-								Lines: []*types.InlineContent{
-									&types.InlineContent{
+							types.ListParagraph{
+								Lines: []types.InlineContent{
+									{
 										Elements: []types.InlineElement{
-											&types.StringElement{Content: "a list item"},
+											types.StringElement{Content: "a list item"},
 										},
 									},
 								},
@@ -36,19 +36,19 @@ var _ = Describe("unordered lists", func() {
 		It("unordered list with an ID and a single item", func() {
 			actualContent := "[#listID]\n" +
 				"* a list item"
-			expectedResult := &types.UnorderedList{
+			expectedResult := types.UnorderedList{
 				Attributes: map[string]interface{}{
 					"ID": "listID",
 				},
-				Items: []*types.UnorderedListItem{
+				Items: []types.UnorderedListItem{
 					{
 						Level: 1,
 						Elements: []types.DocElement{
-							&types.ListParagraph{
-								Lines: []*types.InlineContent{
-									&types.InlineContent{
+							types.ListParagraph{
+								Lines: []types.InlineContent{
+									{
 										Elements: []types.InlineElement{
-											&types.StringElement{Content: "a list item"},
+											types.StringElement{Content: "a list item"},
 										},
 									},
 								},
@@ -63,16 +63,16 @@ var _ = Describe("unordered lists", func() {
 		It("unordered list with 2 items with stars", func() {
 			actualContent := "* a first item\n" +
 				"* a second item with *bold content*"
-			expectedResult := &types.UnorderedList{
-				Items: []*types.UnorderedListItem{
+			expectedResult := types.UnorderedList{
+				Items: []types.UnorderedListItem{
 					{
 						Level: 1,
 						Elements: []types.DocElement{
-							&types.ListParagraph{
-								Lines: []*types.InlineContent{
-									&types.InlineContent{
+							types.ListParagraph{
+								Lines: []types.InlineContent{
+									{
 										Elements: []types.InlineElement{
-											&types.StringElement{Content: "a first item"},
+											types.StringElement{Content: "a first item"},
 										},
 									},
 								},
@@ -82,14 +82,14 @@ var _ = Describe("unordered lists", func() {
 					{
 						Level: 1,
 						Elements: []types.DocElement{
-							&types.ListParagraph{
-								Lines: []*types.InlineContent{
-									&types.InlineContent{
+							types.ListParagraph{
+								Lines: []types.InlineContent{
+									{
 										Elements: []types.InlineElement{
-											&types.StringElement{Content: "a second item with "},
-											&types.QuotedText{Kind: types.Bold,
+											types.StringElement{Content: "a second item with "},
+											types.QuotedText{Kind: types.Bold,
 												Elements: []types.InlineElement{
-													&types.StringElement{Content: "bold content"},
+													types.StringElement{Content: "bold content"},
 												},
 											},
 										},
@@ -105,16 +105,16 @@ var _ = Describe("unordered lists", func() {
 		It("unordered list with 2 items with carets", func() {
 			actualContent := "- a first item\n" +
 				"- a second item with *bold content*"
-			expectedResult := &types.UnorderedList{
-				Items: []*types.UnorderedListItem{
+			expectedResult := types.UnorderedList{
+				Items: []types.UnorderedListItem{
 					{
 						Level: 1,
 						Elements: []types.DocElement{
-							&types.ListParagraph{
-								Lines: []*types.InlineContent{
-									&types.InlineContent{
+							types.ListParagraph{
+								Lines: []types.InlineContent{
+									{
 										Elements: []types.InlineElement{
-											&types.StringElement{Content: "a first item"},
+											types.StringElement{Content: "a first item"},
 										},
 									},
 								},
@@ -124,14 +124,14 @@ var _ = Describe("unordered lists", func() {
 					{
 						Level: 1,
 						Elements: []types.DocElement{
-							&types.ListParagraph{
-								Lines: []*types.InlineContent{
-									&types.InlineContent{
+							types.ListParagraph{
+								Lines: []types.InlineContent{
+									{
 										Elements: []types.InlineElement{
-											&types.StringElement{Content: "a second item with "},
-											&types.QuotedText{Kind: types.Bold,
+											types.StringElement{Content: "a second item with "},
+											types.QuotedText{Kind: types.Bold,
 												Elements: []types.InlineElement{
-													&types.StringElement{Content: "bold content"},
+													types.StringElement{Content: "bold content"},
 												},
 											},
 										},
@@ -149,16 +149,16 @@ var _ = Describe("unordered lists", func() {
 			actualContent := "* a first item\n" +
 				"\n" +
 				"* a second item with *bold content*"
-			expectedResult := &types.UnorderedList{
-				Items: []*types.UnorderedListItem{
+			expectedResult := types.UnorderedList{
+				Items: []types.UnorderedListItem{
 					{
 						Level: 1,
 						Elements: []types.DocElement{
-							&types.ListParagraph{
-								Lines: []*types.InlineContent{
-									&types.InlineContent{
+							types.ListParagraph{
+								Lines: []types.InlineContent{
+									{
 										Elements: []types.InlineElement{
-											&types.StringElement{Content: "a first item"},
+											types.StringElement{Content: "a first item"},
 										},
 									},
 								},
@@ -168,14 +168,14 @@ var _ = Describe("unordered lists", func() {
 					{
 						Level: 1,
 						Elements: []types.DocElement{
-							&types.ListParagraph{
-								Lines: []*types.InlineContent{
-									&types.InlineContent{
+							types.ListParagraph{
+								Lines: []types.InlineContent{
+									{
 										Elements: []types.InlineElement{
-											&types.StringElement{Content: "a second item with "},
-											&types.QuotedText{Kind: types.Bold,
+											types.StringElement{Content: "a second item with "},
+											types.QuotedText{Kind: types.Bold,
 												Elements: []types.InlineElement{
-													&types.StringElement{Content: "bold content"},
+													types.StringElement{Content: "bold content"},
 												},
 											},
 										},
@@ -193,21 +193,21 @@ var _ = Describe("unordered lists", func() {
 				"  on 2 lines.\n" +
 				"* item 2\n" +
 				"on 2 lines, too."
-			expectedResult := &types.UnorderedList{
-				Items: []*types.UnorderedListItem{
+			expectedResult := types.UnorderedList{
+				Items: []types.UnorderedListItem{
 					{
 						Level: 1,
 						Elements: []types.DocElement{
-							&types.ListParagraph{
-								Lines: []*types.InlineContent{
-									&types.InlineContent{
+							types.ListParagraph{
+								Lines: []types.InlineContent{
+									{
 										Elements: []types.InlineElement{
-											&types.StringElement{Content: "item 1"},
+											types.StringElement{Content: "item 1"},
 										},
 									},
-									&types.InlineContent{
+									{
 										Elements: []types.InlineElement{
-											&types.StringElement{Content: "  on 2 lines."},
+											types.StringElement{Content: "  on 2 lines."},
 										},
 									},
 								},
@@ -217,16 +217,16 @@ var _ = Describe("unordered lists", func() {
 					{
 						Level: 1,
 						Elements: []types.DocElement{
-							&types.ListParagraph{
-								Lines: []*types.InlineContent{
-									&types.InlineContent{
+							types.ListParagraph{
+								Lines: []types.InlineContent{
+									{
 										Elements: []types.InlineElement{
-											&types.StringElement{Content: "item 2"},
+											types.StringElement{Content: "item 2"},
 										},
 									},
-									&types.InlineContent{
+									{
 										Elements: []types.InlineElement{
-											&types.StringElement{Content: "on 2 lines, too."},
+											types.StringElement{Content: "on 2 lines, too."},
 										},
 									},
 								},
@@ -243,20 +243,20 @@ var _ = Describe("unordered lists", func() {
 				"\n" +
 				"\n" +
 				"* an item in the second list"
-			expectedResult := &types.Document{
+			expectedResult := types.Document{
 				Attributes:        map[string]interface{}{},
 				ElementReferences: map[string]interface{}{},
 				Elements: []types.DocElement{
-					&types.UnorderedList{
-						Items: []*types.UnorderedListItem{
+					types.UnorderedList{
+						Items: []types.UnorderedListItem{
 							{
 								Level: 1,
 								Elements: []types.DocElement{
-									&types.ListParagraph{
-										Lines: []*types.InlineContent{
-											&types.InlineContent{
+									types.ListParagraph{
+										Lines: []types.InlineContent{
+											{
 												Elements: []types.InlineElement{
-													&types.StringElement{Content: "an item in the first list"},
+													types.StringElement{Content: "an item in the first list"},
 												},
 											},
 										},
@@ -265,16 +265,16 @@ var _ = Describe("unordered lists", func() {
 							},
 						},
 					},
-					&types.UnorderedList{
-						Items: []*types.UnorderedListItem{
+					types.UnorderedList{
+						Items: []types.UnorderedListItem{
 							{
 								Level: 1,
 								Elements: []types.DocElement{
-									&types.ListParagraph{
-										Lines: []*types.InlineContent{
-											&types.InlineContent{
+									types.ListParagraph{
+										Lines: []types.InlineContent{
+											{
 												Elements: []types.InlineElement{
-													&types.StringElement{Content: "an item in the second list"},
+													types.StringElement{Content: "an item in the second list"},
 												},
 											},
 										},
@@ -297,30 +297,30 @@ var _ = Describe("unordered lists", func() {
 ** item 1.4
 * item 2
 ** item 2.1`
-			expectedResult := &types.UnorderedList{
-				Items: []*types.UnorderedListItem{
+			expectedResult := types.UnorderedList{
+				Items: []types.UnorderedListItem{
 					{
 						Level: 1,
 						Elements: []types.DocElement{
-							&types.ListParagraph{
-								Lines: []*types.InlineContent{
-									&types.InlineContent{
+							types.ListParagraph{
+								Lines: []types.InlineContent{
+									{
 										Elements: []types.InlineElement{
-											&types.StringElement{Content: "item 1"},
+											types.StringElement{Content: "item 1"},
 										},
 									},
 								},
 							},
-							&types.UnorderedList{
-								Items: []*types.UnorderedListItem{
+							types.UnorderedList{
+								Items: []types.UnorderedListItem{
 									{
 										Level: 2,
 										Elements: []types.DocElement{
-											&types.ListParagraph{
-												Lines: []*types.InlineContent{
-													&types.InlineContent{
+											types.ListParagraph{
+												Lines: []types.InlineContent{
+													{
 														Elements: []types.InlineElement{
-															&types.StringElement{Content: "item 1.1"},
+															types.StringElement{Content: "item 1.1"},
 														},
 													},
 												},
@@ -330,25 +330,25 @@ var _ = Describe("unordered lists", func() {
 									{
 										Level: 2,
 										Elements: []types.DocElement{
-											&types.ListParagraph{
-												Lines: []*types.InlineContent{
-													&types.InlineContent{
+											types.ListParagraph{
+												Lines: []types.InlineContent{
+													{
 														Elements: []types.InlineElement{
-															&types.StringElement{Content: "item 1.2"},
+															types.StringElement{Content: "item 1.2"},
 														},
 													},
 												},
 											},
-											&types.UnorderedList{
-												Items: []*types.UnorderedListItem{
+											types.UnorderedList{
+												Items: []types.UnorderedListItem{
 													{
 														Level: 3,
 														Elements: []types.DocElement{
-															&types.ListParagraph{
-																Lines: []*types.InlineContent{
-																	&types.InlineContent{
+															types.ListParagraph{
+																Lines: []types.InlineContent{
+																	{
 																		Elements: []types.InlineElement{
-																			&types.StringElement{Content: "item 1.2.1"},
+																			types.StringElement{Content: "item 1.2.1"},
 																		},
 																	},
 																},
@@ -362,11 +362,11 @@ var _ = Describe("unordered lists", func() {
 									{
 										Level: 2,
 										Elements: []types.DocElement{
-											&types.ListParagraph{
-												Lines: []*types.InlineContent{
-													&types.InlineContent{
+											types.ListParagraph{
+												Lines: []types.InlineContent{
+													{
 														Elements: []types.InlineElement{
-															&types.StringElement{Content: "item 1.3"},
+															types.StringElement{Content: "item 1.3"},
 														},
 													},
 												},
@@ -376,11 +376,11 @@ var _ = Describe("unordered lists", func() {
 									{
 										Level: 2,
 										Elements: []types.DocElement{
-											&types.ListParagraph{
-												Lines: []*types.InlineContent{
-													&types.InlineContent{
+											types.ListParagraph{
+												Lines: []types.InlineContent{
+													{
 														Elements: []types.InlineElement{
-															&types.StringElement{Content: "item 1.4"},
+															types.StringElement{Content: "item 1.4"},
 														},
 													},
 												},
@@ -394,25 +394,25 @@ var _ = Describe("unordered lists", func() {
 					{
 						Level: 1,
 						Elements: []types.DocElement{
-							&types.ListParagraph{
-								Lines: []*types.InlineContent{
-									&types.InlineContent{
+							types.ListParagraph{
+								Lines: []types.InlineContent{
+									{
 										Elements: []types.InlineElement{
-											&types.StringElement{Content: "item 2"},
+											types.StringElement{Content: "item 2"},
 										},
 									},
 								},
 							},
-							&types.UnorderedList{
-								Items: []*types.UnorderedListItem{
+							types.UnorderedList{
+								Items: []types.UnorderedListItem{
 									{
 										Level: 2,
 										Elements: []types.DocElement{
-											&types.ListParagraph{
-												Lines: []*types.InlineContent{
-													&types.InlineContent{
+											types.ListParagraph{
+												Lines: []types.InlineContent{
+													{
 														Elements: []types.InlineElement{
-															&types.StringElement{Content: "item 2.1"},
+															types.StringElement{Content: "item 2.1"},
 														},
 													},
 												},
@@ -437,44 +437,44 @@ var _ = Describe("unordered lists", func() {
 				"*** item 1.1.1\n" +
 				"** item 1.2\n" +
 				"* item 2"
-			expectedResult := &types.UnorderedList{
-				Items: []*types.UnorderedListItem{
+			expectedResult := types.UnorderedList{
+				Items: []types.UnorderedListItem{
 					{
 						Level: 1,
 						Elements: []types.DocElement{
-							&types.ListParagraph{
-								Lines: []*types.InlineContent{
-									&types.InlineContent{
+							types.ListParagraph{
+								Lines: []types.InlineContent{
+									{
 										Elements: []types.InlineElement{
-											&types.StringElement{Content: "item 1"},
+											types.StringElement{Content: "item 1"},
 										},
 									},
 								},
 							},
-							&types.UnorderedList{
-								Items: []*types.UnorderedListItem{
+							types.UnorderedList{
+								Items: []types.UnorderedListItem{
 									{
 										Level: 2,
 										Elements: []types.DocElement{
-											&types.ListParagraph{
-												Lines: []*types.InlineContent{
-													&types.InlineContent{
+											types.ListParagraph{
+												Lines: []types.InlineContent{
+													{
 														Elements: []types.InlineElement{
-															&types.StringElement{Content: "item 1.1"},
+															types.StringElement{Content: "item 1.1"},
 														},
 													},
 												},
 											},
-											&types.UnorderedList{
-												Items: []*types.UnorderedListItem{
+											types.UnorderedList{
+												Items: []types.UnorderedListItem{
 													{
 														Level: 3,
 														Elements: []types.DocElement{
-															&types.ListParagraph{
-																Lines: []*types.InlineContent{
-																	&types.InlineContent{
+															types.ListParagraph{
+																Lines: []types.InlineContent{
+																	{
 																		Elements: []types.InlineElement{
-																			&types.StringElement{Content: "item 1.1.1"},
+																			types.StringElement{Content: "item 1.1.1"},
 																		},
 																	},
 																},
@@ -488,11 +488,11 @@ var _ = Describe("unordered lists", func() {
 									{
 										Level: 2,
 										Elements: []types.DocElement{
-											&types.ListParagraph{
-												Lines: []*types.InlineContent{
-													&types.InlineContent{
+											types.ListParagraph{
+												Lines: []types.InlineContent{
+													{
 														Elements: []types.InlineElement{
-															&types.StringElement{Content: "item 1.2"},
+															types.StringElement{Content: "item 1.2"},
 														},
 													},
 												},
@@ -506,11 +506,11 @@ var _ = Describe("unordered lists", func() {
 					{
 						Level: 1,
 						Elements: []types.DocElement{
-							&types.ListParagraph{
-								Lines: []*types.InlineContent{
-									&types.InlineContent{
+							types.ListParagraph{
+								Lines: []types.InlineContent{
+									{
 										Elements: []types.InlineElement{
-											&types.StringElement{Content: "item 2"},
+											types.StringElement{Content: "item 2"},
 										},
 									},
 								},
@@ -524,11 +524,11 @@ var _ = Describe("unordered lists", func() {
 
 		It("invalid list item", func() {
 			actualContent := "*an invalid list item"
-			expectedResult := &types.Paragraph{
-				Lines: []*types.InlineContent{
-					&types.InlineContent{
+			expectedResult := types.Paragraph{
+				Lines: []types.InlineContent{
+					{
 						Elements: []types.InlineElement{
-							&types.StringElement{Content: "*an invalid list item"},
+							types.StringElement{Content: "*an invalid list item"},
 						},
 					},
 				},
@@ -551,37 +551,37 @@ another delimited block
 ----
 * bar
 `
-			expectedResult := &types.Document{
+			expectedResult := types.Document{
 				Attributes:        map[string]interface{}{},
 				ElementReferences: map[string]interface{}{},
 				Elements: []types.DocElement{
 
-					&types.UnorderedList{
-						Items: []*types.UnorderedListItem{
+					types.UnorderedList{
+						Items: []types.UnorderedListItem{
 							{
 								Level: 1,
 								Elements: []types.DocElement{
-									&types.ListParagraph{
-										Lines: []*types.InlineContent{
-											&types.InlineContent{
+									types.ListParagraph{
+										Lines: []types.InlineContent{
+											{
 												Elements: []types.InlineElement{
-													&types.StringElement{Content: "foo"},
+													types.StringElement{Content: "foo"},
 												},
 											},
 										},
 									},
-									&types.DelimitedBlock{
+									types.DelimitedBlock{
 										Kind: types.ListingBlock,
 										Elements: []types.DocElement{
-											&types.StringElement{
+											types.StringElement{
 												Content: "a delimited block",
 											},
 										},
 									},
-									&types.DelimitedBlock{
+									types.DelimitedBlock{
 										Kind: types.ListingBlock,
 										Elements: []types.DocElement{
-											&types.StringElement{
+											types.StringElement{
 												Content: "another delimited block",
 											},
 										},
@@ -591,11 +591,11 @@ another delimited block
 							{
 								Level: 1,
 								Elements: []types.DocElement{
-									&types.ListParagraph{
-										Lines: []*types.InlineContent{
-											&types.InlineContent{
+									types.ListParagraph{
+										Lines: []types.InlineContent{
+											{
 												Elements: []types.InlineElement{
-													&types.StringElement{Content: "bar"},
+													types.StringElement{Content: "bar"},
 												},
 											},
 										},
@@ -618,21 +618,21 @@ a delimited block
 ----
 another delimited block
 ----`
-			expectedResult := &types.Document{
+			expectedResult := types.Document{
 				Attributes:        map[string]interface{}{},
 				ElementReferences: map[string]interface{}{},
 				Elements: []types.DocElement{
 
-					&types.UnorderedList{
-						Items: []*types.UnorderedListItem{
+					types.UnorderedList{
+						Items: []types.UnorderedListItem{
 							{
 								Level: 1,
 								Elements: []types.DocElement{
-									&types.ListParagraph{
-										Lines: []*types.InlineContent{
-											&types.InlineContent{
+									types.ListParagraph{
+										Lines: []types.InlineContent{
+											{
 												Elements: []types.InlineElement{
-													&types.StringElement{Content: "foo"},
+													types.StringElement{Content: "foo"},
 												},
 											},
 										},
@@ -641,24 +641,24 @@ another delimited block
 							},
 						},
 					},
-					&types.DelimitedBlock{
+					types.DelimitedBlock{
 						Kind: types.ListingBlock,
 						Elements: []types.DocElement{
-							&types.StringElement{
+							types.StringElement{
 								Content: "a delimited block",
 							},
 						},
 					},
-					&types.UnorderedList{
-						Items: []*types.UnorderedListItem{
+					types.UnorderedList{
+						Items: []types.UnorderedListItem{
 							{
 								Level: 1,
 								Elements: []types.DocElement{
-									&types.ListParagraph{
-										Lines: []*types.InlineContent{
-											&types.InlineContent{
+									types.ListParagraph{
+										Lines: []types.InlineContent{
+											{
 												Elements: []types.InlineElement{
-													&types.StringElement{Content: "bar"},
+													types.StringElement{Content: "bar"},
 												},
 											},
 										},
@@ -667,10 +667,10 @@ another delimited block
 							},
 						},
 					},
-					&types.DelimitedBlock{
+					types.DelimitedBlock{
 						Kind: types.ListingBlock,
 						Elements: []types.DocElement{
-							&types.StringElement{
+							types.StringElement{
 								Content: "another delimited block",
 							},
 						},

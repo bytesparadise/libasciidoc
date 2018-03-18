@@ -9,14 +9,14 @@ import (
 	"github.com/pkg/errors"
 )
 
-var stringElementTmpl *template.Template
+var stringElementTmpl template.Template
 
 // initializes the templates
 func init() {
 	stringElementTmpl = newHTMLTemplate("string element", "{{.}}")
 }
 
-func renderStringElement(ctx *renderer.Context, str *types.StringElement) ([]byte, error) {
+func renderStringElement(ctx *renderer.Context, str types.StringElement) ([]byte, error) {
 	result := bytes.NewBuffer(nil)
 	err := stringElementTmpl.Execute(result, str.Content)
 	if err != nil {

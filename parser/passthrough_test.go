@@ -12,10 +12,10 @@ var _ = Describe("Passthroughs", func() {
 
 		It("tripleplus passthrough with words", func() {
 			actualContent := `+++hello, world+++`
-			expectedResult := &types.Passthrough{
+			expectedResult := types.Passthrough{
 				Kind: types.TriplePlusPassthrough,
 				Elements: []types.InlineElement{
-					&types.StringElement{
+					types.StringElement{
 						Content: "hello, world",
 					},
 				},
@@ -25,7 +25,7 @@ var _ = Describe("Passthroughs", func() {
 
 		It("tripleplus empty passthrough ", func() {
 			actualContent := `++++++`
-			expectedResult := &types.Passthrough{
+			expectedResult := types.Passthrough{
 				Kind:     types.TriplePlusPassthrough,
 				Elements: []types.InlineElement{},
 			}
@@ -34,10 +34,10 @@ var _ = Describe("Passthroughs", func() {
 
 		It("tripleplus passthrough with spaces", func() {
 			actualContent := `+++ *hello*, world +++`
-			expectedResult := &types.Passthrough{
+			expectedResult := types.Passthrough{
 				Kind: types.TriplePlusPassthrough,
 				Elements: []types.InlineElement{
-					&types.StringElement{
+					types.StringElement{
 						Content: " *hello*, world ",
 					},
 				},
@@ -47,10 +47,10 @@ var _ = Describe("Passthroughs", func() {
 
 		It("tripleplus passthrough with only spaces", func() {
 			actualContent := `+++ +++`
-			expectedResult := &types.Passthrough{
+			expectedResult := types.Passthrough{
 				Kind: types.TriplePlusPassthrough,
 				Elements: []types.InlineElement{
-					&types.StringElement{
+					types.StringElement{
 						Content: " ",
 					},
 				},
@@ -60,10 +60,10 @@ var _ = Describe("Passthroughs", func() {
 
 		It("tripleplus passthrough with line break", func() {
 			actualContent := "+++hello,\nworld+++"
-			expectedResult := &types.Passthrough{
+			expectedResult := types.Passthrough{
 				Kind: types.TriplePlusPassthrough,
 				Elements: []types.InlineElement{
-					&types.StringElement{
+					types.StringElement{
 						Content: "hello,\nworld",
 					},
 				},
@@ -76,10 +76,10 @@ var _ = Describe("Passthroughs", func() {
 
 		It("singleplus passthrough with words", func() {
 			actualContent := `+hello, world+`
-			expectedResult := &types.Passthrough{
+			expectedResult := types.Passthrough{
 				Kind: types.SinglePlusPassthrough,
 				Elements: []types.InlineElement{
-					&types.StringElement{
+					types.StringElement{
 						Content: "hello, world",
 					},
 				},
@@ -89,7 +89,7 @@ var _ = Describe("Passthroughs", func() {
 
 		It("singleplus empty passthrough", func() {
 			actualContent := `++`
-			expectedResult := &types.Passthrough{
+			expectedResult := types.Passthrough{
 				Kind:     types.SinglePlusPassthrough,
 				Elements: []types.InlineElement{},
 			}
@@ -98,10 +98,10 @@ var _ = Describe("Passthroughs", func() {
 
 		It("singleplus passthrough with spaces", func() {
 			actualContent := `+ *hello*, world +`
-			expectedResult := &types.Passthrough{
+			expectedResult := types.Passthrough{
 				Kind: types.SinglePlusPassthrough,
 				Elements: []types.InlineElement{
-					&types.StringElement{
+					types.StringElement{
 						Content: " *hello*, world ",
 					},
 				},
@@ -111,18 +111,18 @@ var _ = Describe("Passthroughs", func() {
 
 		It("singleplus passthrough with line break", func() {
 			actualContent := "+hello,\nworld+"
-			expectedResult := &types.Paragraph{
-				Lines: []*types.InlineContent{
-					&types.InlineContent{
+			expectedResult := types.Paragraph{
+				Lines: []types.InlineContent{
+					{
 						Elements: []types.InlineElement{
-							&types.StringElement{
+							types.StringElement{
 								Content: "+hello,",
 							},
 						},
 					},
-					&types.InlineContent{
+					{
 						Elements: []types.InlineElement{
-							&types.StringElement{
+							types.StringElement{
 								Content: "world+",
 							},
 						},
@@ -139,10 +139,10 @@ var _ = Describe("Passthroughs", func() {
 
 			It("passthrough macro with single word", func() {
 				actualContent := `pass:[hello]`
-				expectedResult := &types.Passthrough{
+				expectedResult := types.Passthrough{
 					Kind: types.PassthroughMacro,
 					Elements: []types.InlineElement{
-						&types.StringElement{
+						types.StringElement{
 							Content: "hello",
 						},
 					},
@@ -152,10 +152,10 @@ var _ = Describe("Passthroughs", func() {
 
 			It("passthrough macro with words", func() {
 				actualContent := `pass:[hello, world]`
-				expectedResult := &types.Passthrough{
+				expectedResult := types.Passthrough{
 					Kind: types.PassthroughMacro,
 					Elements: []types.InlineElement{
-						&types.StringElement{
+						types.StringElement{
 							Content: "hello, world",
 						},
 					},
@@ -165,7 +165,7 @@ var _ = Describe("Passthroughs", func() {
 
 			It("empty passthrough macro", func() {
 				actualContent := `pass:[]`
-				expectedResult := &types.Passthrough{
+				expectedResult := types.Passthrough{
 					Kind:     types.PassthroughMacro,
 					Elements: []types.InlineElement{},
 				}
@@ -174,10 +174,10 @@ var _ = Describe("Passthroughs", func() {
 
 			It("passthrough macro with spaces", func() {
 				actualContent := `pass:[ *hello*, world ]`
-				expectedResult := &types.Passthrough{
+				expectedResult := types.Passthrough{
 					Kind: types.PassthroughMacro,
 					Elements: []types.InlineElement{
-						&types.StringElement{
+						types.StringElement{
 							Content: " *hello*, world ",
 						},
 					},
@@ -187,10 +187,10 @@ var _ = Describe("Passthroughs", func() {
 
 			It("passthrough macro with line break", func() {
 				actualContent := "pass:[hello,\nworld]"
-				expectedResult := &types.Passthrough{
+				expectedResult := types.Passthrough{
 					Kind: types.PassthroughMacro,
 					Elements: []types.InlineElement{
-						&types.StringElement{
+						types.StringElement{
 							Content: "hello,\nworld",
 						},
 					},
@@ -203,13 +203,13 @@ var _ = Describe("Passthroughs", func() {
 
 			It("passthrough macro with single quoted word", func() {
 				actualContent := `pass:q[*hello*]`
-				expectedResult := &types.Passthrough{
+				expectedResult := types.Passthrough{
 					Kind: types.PassthroughMacro,
 					Elements: []types.InlineElement{
-						&types.QuotedText{
+						types.QuotedText{
 							Kind: types.Bold,
 							Elements: []types.InlineElement{
-								&types.StringElement{
+								types.StringElement{
 									Content: "hello",
 								},
 							},
@@ -221,21 +221,21 @@ var _ = Describe("Passthroughs", func() {
 
 			It("passthrough macro with quoted word in sentence", func() {
 				actualContent := `pass:q[ a *hello*, world ]`
-				expectedResult := &types.Passthrough{
+				expectedResult := types.Passthrough{
 					Kind: types.PassthroughMacro,
 					Elements: []types.InlineElement{
-						&types.StringElement{
+						types.StringElement{
 							Content: " a ",
 						},
-						&types.QuotedText{
+						types.QuotedText{
 							Kind: types.Bold,
 							Elements: []types.InlineElement{
-								&types.StringElement{
+								types.StringElement{
 									Content: "hello",
 								},
 							},
 						},
-						&types.StringElement{
+						types.StringElement{
 							Content: ", world ",
 						},
 					},

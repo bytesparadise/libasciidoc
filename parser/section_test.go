@@ -12,18 +12,18 @@ var _ = Describe("sections", func() {
 		It("header only", func() {
 			actualContent := "= a header"
 			doctitle := types.SectionTitle{
-				Content: &types.InlineContent{
-					Elements: []types.InlineElement{
-						&types.StringElement{Content: "a header"},
-					},
-				},
-				ID: &types.ElementID{
+				ID: types.ElementID{
 					Value: "_a_header",
 				},
+				Content: types.InlineContent{
+					Elements: []types.InlineElement{
+						types.StringElement{Content: "a header"},
+					},
+				},
 			}
-			expectedResult := &types.Document{
+			expectedResult := types.Document{
 				Attributes: map[string]interface{}{
-					"doctitle": &doctitle,
+					"doctitle": doctitle,
 				},
 				ElementReferences: map[string]interface{}{},
 				Elements:          []types.DocElement{},
@@ -37,26 +37,26 @@ var _ = Describe("sections", func() {
 and a paragraph`
 
 			doctitle := types.SectionTitle{
-				Content: &types.InlineContent{
-					Elements: []types.InlineElement{
-						&types.StringElement{Content: "a header"},
-					},
-				},
-				ID: &types.ElementID{
+				ID: types.ElementID{
 					Value: "_a_header",
 				},
+				Content: types.InlineContent{
+					Elements: []types.InlineElement{
+						types.StringElement{Content: "a header"},
+					},
+				},
 			}
-			expectedResult := &types.Document{
+			expectedResult := types.Document{
 				Attributes: map[string]interface{}{
-					"doctitle": &doctitle,
+					"doctitle": doctitle,
 				},
 				ElementReferences: map[string]interface{}{},
 				Elements: []types.DocElement{
-					&types.Paragraph{
-						Lines: []*types.InlineContent{
-							&types.InlineContent{
+					types.Paragraph{
+						Lines: []types.InlineContent{
+							{
 								Elements: []types.InlineElement{
-									&types.StringElement{Content: "and a paragraph"},
+									types.StringElement{Content: "and a paragraph"},
 								},
 							},
 						},
@@ -69,25 +69,25 @@ and a paragraph`
 		It("section level 1 alone", func() {
 			actualContent := `== section 1`
 			section1Title := types.SectionTitle{
-				Content: &types.InlineContent{
-					Elements: []types.InlineElement{
-						&types.StringElement{Content: "section 1"},
-					},
-				},
-				ID: &types.ElementID{
+				ID: types.ElementID{
 					Value: "_section_1",
 				},
+				Content: types.InlineContent{
+					Elements: []types.InlineElement{
+						types.StringElement{Content: "section 1"},
+					},
+				},
 			}
-			expectedResult := &types.Document{
+			expectedResult := types.Document{
 				Attributes: map[string]interface{}{},
 				ElementReferences: map[string]interface{}{
-					"_section_1": &section1Title,
+					"_section_1": section1Title,
 				},
 				Elements: []types.DocElement{
-					&types.Section{
-						Level:        1,
-						SectionTitle: section1Title,
-						Elements:     []types.DocElement{},
+					types.Section{
+						Level:    1,
+						Title:    section1Title,
+						Elements: []types.DocElement{},
 					},
 				},
 			}
@@ -97,29 +97,29 @@ and a paragraph`
 		It("section level 1 with quoted text", func() {
 			actualContent := `==  *2 spaces and bold content*`
 			sectionTitle := types.SectionTitle{
-				Content: &types.InlineContent{
+				ID: types.ElementID{
+					Value: "__strong_2_spaces_and_bold_content_strong",
+				},
+				Content: types.InlineContent{
 					Elements: []types.InlineElement{
-						&types.QuotedText{
+						types.QuotedText{
 							Elements: []types.InlineElement{
-								&types.StringElement{Content: "2 spaces and bold content"},
+								types.StringElement{Content: "2 spaces and bold content"},
 							},
 						},
 					},
 				},
-				ID: &types.ElementID{
-					Value: "__strong_2_spaces_and_bold_content_strong",
-				},
 			}
-			expectedResult := &types.Document{
+			expectedResult := types.Document{
 				Attributes: map[string]interface{}{},
 				ElementReferences: map[string]interface{}{
-					"__strong_2_spaces_and_bold_content_strong": &sectionTitle,
+					"__strong_2_spaces_and_bold_content_strong": sectionTitle,
 				},
 				Elements: []types.DocElement{
-					&types.Section{
-						Level:        1,
-						SectionTitle: sectionTitle,
-						Elements:     []types.DocElement{},
+					types.Section{
+						Level:    1,
+						Title:    sectionTitle,
+						Elements: []types.DocElement{},
 					},
 				},
 			}
@@ -131,37 +131,37 @@ and a paragraph`
 
 == section 1`
 			doctitle := types.SectionTitle{
-				Content: &types.InlineContent{
-					Elements: []types.InlineElement{
-						&types.StringElement{Content: "a header"},
-					},
-				},
-				ID: &types.ElementID{
+				ID: types.ElementID{
 					Value: "_a_header",
+				},
+				Content: types.InlineContent{
+					Elements: []types.InlineElement{
+						types.StringElement{Content: "a header"},
+					},
 				},
 			}
 			section1Title := types.SectionTitle{
-				Content: &types.InlineContent{
-					Elements: []types.InlineElement{
-						&types.StringElement{Content: "section 1"},
-					},
-				},
-				ID: &types.ElementID{
+				ID: types.ElementID{
 					Value: "_section_1",
 				},
+				Content: types.InlineContent{
+					Elements: []types.InlineElement{
+						types.StringElement{Content: "section 1"},
+					},
+				},
 			}
-			expectedResult := &types.Document{
+			expectedResult := types.Document{
 				Attributes: map[string]interface{}{
-					"doctitle": &doctitle,
+					"doctitle": doctitle,
 				},
 				ElementReferences: map[string]interface{}{
-					"_section_1": &section1Title,
+					"_section_1": section1Title,
 				},
 				Elements: []types.DocElement{
-					&types.Section{
-						Level:        1,
-						SectionTitle: section1Title,
-						Elements:     []types.DocElement{},
+					types.Section{
+						Level:    1,
+						Title:    section1Title,
+						Elements: []types.DocElement{},
 					},
 				},
 			}
@@ -175,50 +175,50 @@ a short preamble
 
 == section 1`
 			section1Title := types.SectionTitle{
-				Content: &types.InlineContent{
-					Elements: []types.InlineElement{
-						&types.StringElement{Content: "section 1"},
-					},
-				},
-				ID: &types.ElementID{
+				ID: types.ElementID{
 					Value: "_section_1",
+				},
+				Content: types.InlineContent{
+					Elements: []types.InlineElement{
+						types.StringElement{Content: "section 1"},
+					},
 				},
 			}
 			doctitle := types.SectionTitle{
-				Content: &types.InlineContent{
-					Elements: []types.InlineElement{
-						&types.StringElement{Content: "a header"},
-					},
-				},
-				ID: &types.ElementID{
+				ID: types.ElementID{
 					Value: "_a_header",
 				},
+				Content: types.InlineContent{
+					Elements: []types.InlineElement{
+						types.StringElement{Content: "a header"},
+					},
+				},
 			}
-			expectedResult := &types.Document{
+			expectedResult := types.Document{
 				Attributes: map[string]interface{}{
-					"doctitle": &doctitle,
+					"doctitle": doctitle,
 				},
 				ElementReferences: map[string]interface{}{
-					"_section_1": &section1Title,
+					"_section_1": section1Title,
 				},
 				Elements: []types.DocElement{
-					&types.Preamble{
+					types.Preamble{
 						Elements: []types.DocElement{
-							&types.Paragraph{
-								Lines: []*types.InlineContent{
-									&types.InlineContent{
+							types.Paragraph{
+								Lines: []types.InlineContent{
+									{
 										Elements: []types.InlineElement{
-											&types.StringElement{Content: "a short preamble"},
+											types.StringElement{Content: "a short preamble"},
 										},
 									},
 								},
 							},
 						},
 					},
-					&types.Section{
-						Level:        1,
-						SectionTitle: section1Title,
-						Elements:     []types.DocElement{},
+					types.Section{
+						Level:    1,
+						Title:    section1Title,
+						Elements: []types.DocElement{},
 					},
 				},
 			}
@@ -230,37 +230,37 @@ a short preamble
 				"\n" +
 				"=== section 2"
 			doctitle := types.SectionTitle{
-				Content: &types.InlineContent{
-					Elements: []types.InlineElement{
-						&types.StringElement{Content: "a header"},
-					},
-				},
-				ID: &types.ElementID{
+				ID: types.ElementID{
 					Value: "_a_header",
+				},
+				Content: types.InlineContent{
+					Elements: []types.InlineElement{
+						types.StringElement{Content: "a header"},
+					},
 				},
 			}
 			section2Title := types.SectionTitle{
-				Content: &types.InlineContent{
-					Elements: []types.InlineElement{
-						&types.StringElement{Content: "section 2"},
-					},
-				},
-				ID: &types.ElementID{
+				ID: types.ElementID{
 					Value: "_section_2",
 				},
+				Content: types.InlineContent{
+					Elements: []types.InlineElement{
+						types.StringElement{Content: "section 2"},
+					},
+				},
 			}
-			expectedResult := &types.Document{
+			expectedResult := types.Document{
 				Attributes: map[string]interface{}{
-					"doctitle": &doctitle,
+					"doctitle": doctitle,
 				},
 				ElementReferences: map[string]interface{}{
-					"_section_2": &section2Title,
+					"_section_2": section2Title,
 				},
 				Elements: []types.DocElement{
-					&types.Section{
-						Level:        2,
-						SectionTitle: section2Title,
-						Elements:     []types.DocElement{},
+					types.Section{
+						Level:    2,
+						Title:    section2Title,
+						Elements: []types.DocElement{},
 					},
 				},
 			}
@@ -271,30 +271,30 @@ a short preamble
 			actualContent := `== a title
 and a paragraph`
 			section1Title := types.SectionTitle{
-				Content: &types.InlineContent{
-					Elements: []types.InlineElement{
-						&types.StringElement{Content: "a title"},
-					},
-				},
-				ID: &types.ElementID{
+				ID: types.ElementID{
 					Value: "_a_title",
 				},
+				Content: types.InlineContent{
+					Elements: []types.InlineElement{
+						types.StringElement{Content: "a title"},
+					},
+				},
 			}
-			expectedResult := &types.Document{
+			expectedResult := types.Document{
 				Attributes: map[string]interface{}{},
 				ElementReferences: map[string]interface{}{
-					"_a_title": &section1Title,
+					"_a_title": section1Title,
 				},
 				Elements: []types.DocElement{
-					&types.Section{
-						Level:        1,
-						SectionTitle: section1Title,
+					types.Section{
+						Level: 1,
+						Title: section1Title,
 						Elements: []types.DocElement{
-							&types.Paragraph{
-								Lines: []*types.InlineContent{
-									&types.InlineContent{
+							types.Paragraph{
+								Lines: []types.InlineContent{
+									{
 										Elements: []types.InlineElement{
-											&types.StringElement{Content: "and a paragraph"},
+											types.StringElement{Content: "and a paragraph"},
 										},
 									},
 								},
@@ -311,30 +311,30 @@ and a paragraph`
 			
 and a paragraph`
 			section1Title := types.SectionTitle{
-				Content: &types.InlineContent{
-					Elements: []types.InlineElement{
-						&types.StringElement{Content: "a title"},
-					},
-				},
-				ID: &types.ElementID{
+				ID: types.ElementID{
 					Value: "_a_title",
 				},
+				Content: types.InlineContent{
+					Elements: []types.InlineElement{
+						types.StringElement{Content: "a title"},
+					},
+				},
 			}
-			expectedResult := &types.Document{
+			expectedResult := types.Document{
 				Attributes: map[string]interface{}{},
 				ElementReferences: map[string]interface{}{
-					"_a_title": &section1Title,
+					"_a_title": section1Title,
 				},
 				Elements: []types.DocElement{
-					&types.Section{
-						Level:        1,
-						SectionTitle: section1Title,
+					types.Section{
+						Level: 1,
+						Title: section1Title,
 						Elements: []types.DocElement{
-							&types.Paragraph{
-								Lines: []*types.InlineContent{
-									&types.InlineContent{
+							types.Paragraph{
+								Lines: []types.InlineContent{
+									{
 										Elements: []types.InlineElement{
-											&types.StringElement{Content: "and a paragraph"},
+											types.StringElement{Content: "and a paragraph"},
 										},
 									},
 								},
@@ -349,30 +349,30 @@ and a paragraph`
 		It("section level 1 with a paragraph separated by non-empty line", func() {
 			actualContent := "== a title\n    \nand a paragraph"
 			section1Title := types.SectionTitle{
-				Content: &types.InlineContent{
-					Elements: []types.InlineElement{
-						&types.StringElement{Content: "a title"},
-					},
-				},
-				ID: &types.ElementID{
+				ID: types.ElementID{
 					Value: "_a_title",
 				},
+				Content: types.InlineContent{
+					Elements: []types.InlineElement{
+						types.StringElement{Content: "a title"},
+					},
+				},
 			}
-			expectedResult := &types.Document{
+			expectedResult := types.Document{
 				Attributes: map[string]interface{}{},
 				ElementReferences: map[string]interface{}{
-					"_a_title": &section1Title,
+					"_a_title": section1Title,
 				},
 				Elements: []types.DocElement{
-					&types.Section{
-						Level:        1,
-						SectionTitle: section1Title,
+					types.Section{
+						Level: 1,
+						Title: section1Title,
 						Elements: []types.DocElement{
-							&types.Paragraph{
-								Lines: []*types.InlineContent{
-									&types.InlineContent{
+							types.Paragraph{
+								Lines: []types.InlineContent{
+									{
 										Elements: []types.InlineElement{
-											&types.StringElement{Content: "and a paragraph"},
+											types.StringElement{Content: "and a paragraph"},
 										},
 									},
 								},
@@ -396,77 +396,77 @@ a paragraph
 == Section B
 a paragraph`
 			doctitle := types.SectionTitle{
-				Content: &types.InlineContent{
-					Elements: []types.InlineElement{
-						&types.StringElement{Content: "a header"},
-					},
-				},
-				ID: &types.ElementID{
+				ID: types.ElementID{
 					Value: "_a_header",
+				},
+				Content: types.InlineContent{
+					Elements: []types.InlineElement{
+						types.StringElement{Content: "a header"},
+					},
 				},
 			}
 			sectionATitle := types.SectionTitle{
-				Content: &types.InlineContent{
-					Elements: []types.InlineElement{
-						&types.StringElement{Content: "Section A"},
-					},
-				},
-				ID: &types.ElementID{
+				ID: types.ElementID{
 					Value: "_section_a",
+				},
+				Content: types.InlineContent{
+					Elements: []types.InlineElement{
+						types.StringElement{Content: "Section A"},
+					},
 				},
 			}
 			sectionAaTitle := types.SectionTitle{
-				Content: &types.InlineContent{
-					Elements: []types.InlineElement{
-						&types.StringElement{Content: "Section A.a"},
-					},
-				},
-				ID: &types.ElementID{
+				ID: types.ElementID{
 					Value: "_section_a_a",
+				},
+				Content: types.InlineContent{
+					Elements: []types.InlineElement{
+						types.StringElement{Content: "Section A.a"},
+					},
 				},
 			}
 			sectionBTitle := types.SectionTitle{
-				Content: &types.InlineContent{
-					Elements: []types.InlineElement{
-						&types.StringElement{Content: "Section B"},
-					},
-				},
-				ID: &types.ElementID{
+				ID: types.ElementID{
 					Value: "_section_b",
 				},
+				Content: types.InlineContent{
+					Elements: []types.InlineElement{
+						types.StringElement{Content: "Section B"},
+					},
+				},
 			}
-			expectedResult := &types.Document{
+			expectedResult := types.Document{
 				Attributes: map[string]interface{}{
-					"doctitle": &doctitle,
+					"doctitle": doctitle,
 				},
 				ElementReferences: map[string]interface{}{
-					"_section_a":   &sectionATitle,
-					"_section_a_a": &sectionAaTitle,
-					"_section_b":   &sectionBTitle,
+					"_section_a":   sectionATitle,
+					"_section_a_a": sectionAaTitle,
+					"_section_b":   sectionBTitle,
 				},
 				Elements: []types.DocElement{
-					&types.Section{
-						Level:        1,
-						SectionTitle: sectionATitle,
+					types.Section{
+						Level: 1,
+						Title: sectionATitle,
 						Elements: []types.DocElement{
-							&types.Paragraph{
-								Lines: []*types.InlineContent{
-									&types.InlineContent{
+							types.Paragraph{
+								Lines: []types.InlineContent{
+									{
 										Elements: []types.InlineElement{
-											&types.StringElement{Content: "a paragraph"},
+											types.StringElement{Content: "a paragraph"},
 										},
 									},
 								},
 							},
-							&types.Section{
-								Level:        2,
-								SectionTitle: sectionAaTitle,
+							types.Section{
+								Level: 2,
+								Title: sectionAaTitle,
 								Elements: []types.DocElement{
-									&types.Paragraph{
-										Lines: []*types.InlineContent{
-											&types.InlineContent{
+									types.Paragraph{
+										Lines: []types.InlineContent{
+											{
 												Elements: []types.InlineElement{
-													&types.StringElement{Content: "a paragraph"},
+													types.StringElement{Content: "a paragraph"},
 												},
 											},
 										},
@@ -475,15 +475,15 @@ a paragraph`
 							},
 						},
 					},
-					&types.Section{
-						Level:        1,
-						SectionTitle: sectionBTitle,
+					types.Section{
+						Level: 1,
+						Title: sectionBTitle,
 						Elements: []types.DocElement{
-							&types.Paragraph{
-								Lines: []*types.InlineContent{
-									&types.InlineContent{
+							types.Paragraph{
+								Lines: []types.InlineContent{
+									{
 										Elements: []types.InlineElement{
-											&types.StringElement{Content: "a paragraph"},
+											types.StringElement{Content: "a paragraph"},
 										},
 									},
 								},
@@ -504,58 +504,58 @@ a paragraph`
 == Section B
 a paragraph`
 			doctitle := types.SectionTitle{
-				Content: &types.InlineContent{
-					Elements: []types.InlineElement{
-						&types.StringElement{Content: "a header"},
-					},
-				},
-				ID: &types.ElementID{
+				ID: types.ElementID{
 					Value: "_a_header",
+				},
+				Content: types.InlineContent{
+					Elements: []types.InlineElement{
+						types.StringElement{Content: "a header"},
+					},
 				},
 			}
 			fooTitle := types.SectionTitle{
-				Content: &types.InlineContent{
-					Elements: []types.InlineElement{
-						&types.StringElement{Content: "Section F"},
-					},
-				},
-				ID: &types.ElementID{
+				ID: types.ElementID{
 					Value: "foo",
+				},
+				Content: types.InlineContent{
+					Elements: []types.InlineElement{
+						types.StringElement{Content: "Section F"},
+					},
 				},
 			}
 			barTitle := types.SectionTitle{
-				Content: &types.InlineContent{
-					Elements: []types.InlineElement{
-						&types.StringElement{Content: "Section B"},
-					},
-				},
-				ID: &types.ElementID{
+				ID: types.ElementID{
 					Value: "bar",
 				},
+				Content: types.InlineContent{
+					Elements: []types.InlineElement{
+						types.StringElement{Content: "Section B"},
+					},
+				},
 			}
-			expectedResult := &types.Document{
+			expectedResult := types.Document{
 				Attributes: map[string]interface{}{
-					"doctitle": &doctitle,
+					"doctitle": doctitle,
 				},
 				ElementReferences: map[string]interface{}{
-					"foo": &fooTitle,
-					"bar": &barTitle,
+					"foo": fooTitle,
+					"bar": barTitle,
 				},
 				Elements: []types.DocElement{
-					&types.Section{
-						Level:        1,
-						SectionTitle: fooTitle,
-						Elements:     []types.DocElement{},
+					types.Section{
+						Level:    1,
+						Title:    fooTitle,
+						Elements: []types.DocElement{},
 					},
-					&types.Section{
-						Level:        1,
-						SectionTitle: barTitle,
+					types.Section{
+						Level: 1,
+						Title: barTitle,
 						Elements: []types.DocElement{
-							&types.Paragraph{
-								Lines: []*types.InlineContent{
-									&types.InlineContent{
+							types.Paragraph{
+								Lines: []types.InlineContent{
+									{
 										Elements: []types.InlineElement{
-											&types.StringElement{Content: "a paragraph"},
+											types.StringElement{Content: "a paragraph"},
 										},
 									},
 								},
@@ -571,15 +571,15 @@ a paragraph`
 	Context("invalid sections", func() {
 		It("header invalid - missing space", func() {
 			actualContent := "=a header"
-			expectedResult := &types.Document{
+			expectedResult := types.Document{
 				Attributes:        map[string]interface{}{},
 				ElementReferences: map[string]interface{}{},
 				Elements: []types.DocElement{
-					&types.Paragraph{
-						Lines: []*types.InlineContent{
-							&types.InlineContent{
+					types.Paragraph{
+						Lines: []types.InlineContent{
+							{
 								Elements: []types.InlineElement{
-									&types.StringElement{Content: "=a header"},
+									types.StringElement{Content: "=a header"},
 								},
 							},
 						},
@@ -590,11 +590,11 @@ a paragraph`
 
 		It("header invalid - header space", func() {
 			actualContent := " = a header"
-			expectedResult := &types.Document{
+			expectedResult := types.Document{
 				Attributes:        map[string]interface{}{},
 				ElementReferences: map[string]interface{}{},
 				Elements: []types.DocElement{
-					&types.LiteralBlock{
+					types.LiteralBlock{
 						Content: " = a header",
 					},
 				},
@@ -606,22 +606,22 @@ a paragraph`
 			actualContent := "= a header\n" +
 				"\n" +
 				" == section 1"
-			expectedResult := &types.Document{
+			expectedResult := types.Document{
 				Attributes: map[string]interface{}{
-					"doctitle": &types.SectionTitle{
-						Content: &types.InlineContent{
-							Elements: []types.InlineElement{
-								&types.StringElement{Content: "a header"},
-							},
-						},
-						ID: &types.ElementID{
+					"doctitle": types.SectionTitle{
+						ID: types.ElementID{
 							Value: "_a_header",
+						},
+						Content: types.InlineContent{
+							Elements: []types.InlineElement{
+								types.StringElement{Content: "a header"},
+							},
 						},
 					},
 				},
 				ElementReferences: map[string]interface{}{},
 				Elements: []types.DocElement{
-					&types.LiteralBlock{
+					types.LiteralBlock{
 						Content: " == section 1",
 					},
 				},

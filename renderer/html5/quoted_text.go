@@ -10,9 +10,9 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-var boldTextTmpl *template.Template
-var italicTextTmpl *template.Template
-var monospaceTextTmpl *template.Template
+var boldTextTmpl template.Template
+var italicTextTmpl template.Template
+var monospaceTextTmpl template.Template
 
 // initializes the templates
 func init() {
@@ -21,7 +21,7 @@ func init() {
 	monospaceTextTmpl = newHTMLTemplate("monospace text", "<code>{{.}}</code>")
 }
 
-func renderQuotedText(ctx *renderer.Context, t *types.QuotedText) ([]byte, error) {
+func renderQuotedText(ctx *renderer.Context, t types.QuotedText) ([]byte, error) {
 	elementsBuffer := bytes.NewBuffer(nil)
 	for _, element := range t.Elements {
 		b, err := renderElement(ctx, element)
@@ -34,7 +34,7 @@ func renderQuotedText(ctx *renderer.Context, t *types.QuotedText) ([]byte, error
 		}
 	}
 	result := bytes.NewBuffer(nil)
-	var tmpl *template.Template
+	var tmpl template.Template
 	switch t.Kind {
 	case types.Bold:
 		tmpl = boldTextTmpl
