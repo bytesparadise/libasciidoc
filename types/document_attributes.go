@@ -43,20 +43,20 @@ func (m DocumentAttributes) HasAuthors() bool {
 }
 
 // GetTitle retrieves the document title in its metadata, or returns nil if the title was not specified
-func (m DocumentAttributes) GetTitle() (*SectionTitle, error) {
+func (m DocumentAttributes) GetTitle() (SectionTitle, error) {
 	if t, found := m[title]; found {
-		if t, ok := t.(*SectionTitle); ok {
+		if t, ok := t.(SectionTitle); ok {
 			return t, nil
 		}
-		return nil, errors.Errorf("document title type is not valid: %T", t)
+		return SectionTitle{}, errors.Errorf("document title type is not valid: %T", t)
 	}
-	return nil, nil
+	return SectionTitle{}, nil
 }
 
-// Add adds the given attribute
+// Add adds the given attribute if its value is non-nil
 // TODO: raise a warning if there was already a name/value
 func (m DocumentAttributes) Add(key string, value interface{}) {
-	// do not add nil values
+	// do not add nil or empty values
 	if value == nil {
 		return
 	}
@@ -72,18 +72,28 @@ func (m DocumentAttributes) Add(key string, value interface{}) {
 	}
 }
 
-// AddAttribute adds the given attribute
+// Add adds the given attribute if its value is non-nil and non-empty
 // TODO: raise a warning if there was already a name/value
-func (m DocumentAttributes) AddAttribute(attr *DocumentAttributeDeclaration) {
-	// do not add nil values
-	if attr == nil {
+func (m DocumentAttributes) AddNonEmpty(key string, value interface{}) {
+	// do not add nil or empty values
+	if value == "" {
 		return
 	}
+	m.Add(key, value)
+}
+
+// AddAttribute adds the given attribute
+// TODO: raise a warning if there was already a name/value
+func (m DocumentAttributes) AddAttribute(attr DocumentAttributeDeclaration) {
+	// do not add nil values
+	// if attr == nil {
+	// 	return
+	// }
 	m.Add(attr.Name, attr.Value)
 }
 
 // Reset resets the given attribute
-func (m DocumentAttributes) Reset(attr *DocumentAttributeReset) {
+func (m DocumentAttributes) Reset(attr DocumentAttributeReset) {
 	delete(m, attr.Name)
 }
 

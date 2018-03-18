@@ -10,7 +10,7 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-var literalBlockTmpl *template.Template
+var literalBlockTmpl template.Template
 
 // initializes the templates
 func init() {
@@ -21,7 +21,7 @@ func init() {
 </div>`)
 }
 
-func renderLiteralBlock(ctx *renderer.Context, b *types.LiteralBlock) ([]byte, error) {
+func renderLiteralBlock(ctx *renderer.Context, b types.LiteralBlock) ([]byte, error) {
 	log.Debugf("rendering delimited block with content: %s", b.Content)
 	result := bytes.NewBuffer(nil)
 	err := literalBlockTmpl.Execute(result, b)

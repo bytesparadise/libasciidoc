@@ -14,11 +14,11 @@ var _ = Describe("Cross References", func() {
 
 			It("xref with custom id", func() {
 				actualContent := `a link to <<thetitle>>.`
-				expectedResult := &types.InlineContent{
+				expectedResult := types.InlineContent{
 					Elements: []types.InlineElement{
-						&types.StringElement{Content: "a link to "},
-						&types.CrossReference{ID: "thetitle"},
-						&types.StringElement{Content: "."},
+						types.StringElement{Content: "a link to "},
+						types.CrossReference{ID: "thetitle"},
+						types.StringElement{Content: "."},
 					},
 				}
 				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineContent"))

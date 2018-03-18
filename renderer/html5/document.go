@@ -12,7 +12,7 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-var documentTmpl *texttemplate.Template
+var documentTmpl texttemplate.Template
 
 func init() {
 	documentTmpl = newTextTemplate("root document",
@@ -126,7 +126,7 @@ func renderDocumentTitle(ctx *renderer.Context) ([]byte, error) {
 	if err != nil {
 		return nil, errors.Wrapf(err, "unable to render document title")
 	}
-	if documentTitle != nil {
+	if documentTitle.ID != (types.ElementID{}) { // ignore if no ID was set, ie, title is not defined
 		title, err := renderPlainString(ctx, documentTitle)
 		if err != nil {
 			return nil, errors.Wrapf(err, "unable to render document title")

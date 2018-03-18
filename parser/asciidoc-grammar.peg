@@ -54,7 +54,7 @@ DocumentHeader <- header:(DocumentTitle) authors:(DocumentAuthors?) revision:(Do
 }
 
 DocumentTitle <- attributes:(ElementAttribute)* level:("=") WS+ content:(InlineContent) WS* id:(InlineElementID)? EOL { 
-     return types.NewSectionTitle(content.(*types.InlineContent), append(attributes.([]interface{}), id))
+     return types.NewSectionTitle(content.(types.InlineContent), append(attributes.([]interface{}), id))
 }
 
 DocumentAuthors <- DocumentAuthorsInlineForm / DocumentAuthorsAttributeForm
@@ -64,7 +64,7 @@ DocumentAuthorsInlineForm <- WS* !":" authors:(DocumentAuthor+) EOL {
 }
 
 DocumentAuthorsAttributeForm <- WS* ":author:" author:(DocumentAuthor) {
-    return []*types.DocumentAuthor{author.(*types.DocumentAuthor)}, nil
+    return []types.DocumentAuthor{author.(types.DocumentAuthor)}, nil
 }
 
 DocumentAuthor <- WS* namePart1:(DocumentAuthorNamePart) namePart2:(DocumentAuthorNamePart)? namePart3:(DocumentAuthorNamePart)? email:(DocumentAuthorEmail)? WS* ";"? WS*{
@@ -131,7 +131,7 @@ Section <- Section1 / Section2 / Section3 / Section4 / Section5
 
 
 Section1 <- header:(Section1Title) elements:(Section1Block*) {
-    return types.NewSection(1, header.(*types.SectionTitle), elements.([]interface{}))
+    return types.NewSection(1, header.(types.SectionTitle), elements.([]interface{}))
 }
 
 Section1Block <- !Section1 content:(Section2 / Section3 / Section4 / Section5 / BlockElement) {
@@ -139,7 +139,7 @@ Section1Block <- !Section1 content:(Section2 / Section3 / Section4 / Section5 / 
 }
 
 Section2 <- header:(Section2Title) elements:(Section2Block*) &(Section2)* {
-    return types.NewSection(2, header.(*types.SectionTitle), elements.([]interface{}))
+    return types.NewSection(2, header.(types.SectionTitle), elements.([]interface{}))
 }
 
 Section2Block <- !Section1 !Section2 content:(Section3 / Section4 / Section5 / BlockElement) {
@@ -147,7 +147,7 @@ Section2Block <- !Section1 !Section2 content:(Section3 / Section4 / Section5 / B
 }
 
 Section3 <- header:(Section3Title) elements:(Section3Block*) {
-    return types.NewSection(3, header.(*types.SectionTitle), elements.([]interface{}))
+    return types.NewSection(3, header.(types.SectionTitle), elements.([]interface{}))
 }
 
 Section3Block <- !Section1 !Section2 !Section3 content:(Section4 / Section5 / BlockElement) {
@@ -155,7 +155,7 @@ Section3Block <- !Section1 !Section2 !Section3 content:(Section4 / Section5 / Bl
 }
 
 Section4 <- header:(Section4Title) elements:(Section4Block*) {
-    return types.NewSection(4, header.(*types.SectionTitle), elements.([]interface{}))
+    return types.NewSection(4, header.(types.SectionTitle), elements.([]interface{}))
 }
 
 Section4Block <- !Section1 !Section2 !Section3 !Section4 content:(Section5 / BlockElement) {
@@ -163,7 +163,7 @@ Section4Block <- !Section1 !Section2 !Section3 !Section4 content:(Section5 / Blo
 }
 
 Section5 <- header:(Section5Title) elements:(Section5Block*) {
-    return types.NewSection(5, header.(*types.SectionTitle), elements.([]interface{}))
+    return types.NewSection(5, header.(types.SectionTitle), elements.([]interface{}))
 }
 
 Section5Block <- !Section1 !Section2 !Section3 !Section4 !Section5 content:(BlockElement) {
@@ -177,23 +177,23 @@ Section5Block <- !Section1 !Section2 !Section3 !Section4 !Section5 content:(Bloc
 SectionTitle <- Section1Title / Section2Title / Section3Title / Section4Title / Section5Title
 
 Section1Title <- attributes:(ElementAttribute)* level:("==") WS+ content:(InlineContent) WS* id:(InlineElementID)? WS* EOL (BlankLine? / EOF) { 
-    return types.NewSectionTitle(content.(*types.InlineContent), append(attributes.([]interface{}), id))
+    return types.NewSectionTitle(content.(types.InlineContent), append(attributes.([]interface{}), id))
 }
 
 Section2Title <- attributes:(ElementAttribute)* level:("===") WS+ content:(InlineContent) WS* id:(InlineElementID)? WS* EOL (BlankLine? / EOF) {
-    return types.NewSectionTitle(content.(*types.InlineContent), append(attributes.([]interface{}), id))
+    return types.NewSectionTitle(content.(types.InlineContent), append(attributes.([]interface{}), id))
 }
 
 Section3Title <- attributes:(ElementAttribute)* level:("====") WS+ content:(InlineContent) WS* id:(InlineElementID)? EOL (BlankLine? / EOF) {
-    return types.NewSectionTitle(content.(*types.InlineContent), append(attributes.([]interface{}), id))
+    return types.NewSectionTitle(content.(types.InlineContent), append(attributes.([]interface{}), id))
 }
 
 Section4Title <- attributes:(ElementAttribute)* level:("=====") WS+ content:(InlineContent) WS* id:(InlineElementID)? EOL (BlankLine? / EOF) {
-    return types.NewSectionTitle(content.(*types.InlineContent), append(attributes.([]interface{}), id))
+    return types.NewSectionTitle(content.(types.InlineContent), append(attributes.([]interface{}), id))
 }
 
 Section5Title <- attributes:(ElementAttribute)* level:("======") WS+ content:(InlineContent) WS* id:(InlineElementID)? EOL (BlankLine? / EOF) {
-    return types.NewSectionTitle(content.(*types.InlineContent), append(attributes.([]interface{}), id))
+    return types.NewSectionTitle(content.(types.InlineContent), append(attributes.([]interface{}), id))
 }
 
 // ------------------------------------------
@@ -438,7 +438,7 @@ RelativeLink <- "link:" url:(URL_SCHEME? URL) text:("[" (URL_TEXT)* "]") {
 // ------------------------------------------
 BlockImage <- attributes:(ElementAttribute)* image:BlockImageMacro  WS* EOL {
     // here we can ignore the blank line in the returned element
-    return types.NewBlockImage(*image.(*types.ImageMacro), attributes.([]interface{}))
+    return types.NewBlockImage(image.(types.ImageMacro), attributes.([]interface{}))
 }
 
 BlockImageMacro <- "image::" path:(URL) "[" attributes:(URL_TEXT?) "]" {
@@ -447,7 +447,7 @@ BlockImageMacro <- "image::" path:(URL) "[" attributes:(URL_TEXT?) "]" {
 
 InlineImage <- image:InlineImageMacro {
     // here we can ignore the blank line in the returned element
-    return types.NewInlineImage(*image.(*types.ImageMacro))
+    return types.NewInlineImage(image.(types.ImageMacro))
 }
 
 InlineImageMacro <- "image:" !":" path:(URL) "[" attributes:(URL_TEXT?) "]" {

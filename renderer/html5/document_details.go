@@ -11,8 +11,8 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-var documentDetailsTmpl *htmltemplate.Template
-var documentAuthorDetailsTmpl *htmltemplate.Template
+var documentDetailsTmpl htmltemplate.Template
+var documentAuthorDetailsTmpl htmltemplate.Template
 
 func init() {
 	documentDetailsTmpl = newHTMLTemplate("document details", `<div class="details">{{ if .Authors }}

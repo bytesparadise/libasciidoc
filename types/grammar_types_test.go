@@ -15,26 +15,26 @@ var _ = Describe("lists", func() {
 		It("multi-level list", func() {
 			// // given
 			elements := []interface{}{
-				&types.UnorderedListItem{
+				types.UnorderedListItem{
 					Level: 1,
 					Elements: []types.DocElement{
-						&types.StringElement{
+						types.StringElement{
 							Content: "item 1",
 						},
 					},
 				},
-				&types.UnorderedListItem{
+				types.UnorderedListItem{
 					Level: 2,
 					Elements: []types.DocElement{
-						&types.StringElement{
+						types.StringElement{
 							Content: "item 1.1",
 						},
 					},
 				},
-				&types.UnorderedListItem{
+				types.UnorderedListItem{
 					Level: 1,
 					Elements: []types.DocElement{
-						&types.StringElement{
+						types.StringElement{
 							Content: "item 2",
 						},
 					},
@@ -44,20 +44,20 @@ var _ = Describe("lists", func() {
 			actual, err := types.NewList(elements, nil)
 			// then
 			require.NoError(GinkgoT(), err)
-			expectation := &types.UnorderedList{
-				Items: []*types.UnorderedListItem{
+			expectation := types.UnorderedList{
+				Items: []types.UnorderedListItem{
 					{
 						Level: 1,
 						Elements: []types.DocElement{
-							&types.StringElement{
+							types.StringElement{
 								Content: "item 1",
 							},
-							&types.UnorderedList{
-								Items: []*types.UnorderedListItem{
+							types.UnorderedList{
+								Items: []types.UnorderedListItem{
 									{
 										Level: 2,
 										Elements: []types.DocElement{
-											&types.StringElement{
+											types.StringElement{
 												Content: "item 1.1",
 											},
 										},
@@ -69,7 +69,7 @@ var _ = Describe("lists", func() {
 					{
 						Level: 1,
 						Elements: []types.DocElement{
-							&types.StringElement{
+							types.StringElement{
 								Content: "item 2",
 							},
 						},
@@ -85,26 +85,26 @@ var _ = Describe("lists", func() {
 		It("labeled list with 3 items", func() {
 			// // given
 			elements := []interface{}{
-				&types.LabeledListItem{
+				types.LabeledListItem{
 					Term: "item 1",
 					Elements: []types.DocElement{
-						&types.StringElement{
+						types.StringElement{
 							Content: "item 1",
 						},
 					},
 				},
-				&types.LabeledListItem{
+				types.LabeledListItem{
 					Term: "item 2",
 					Elements: []types.DocElement{
-						&types.StringElement{
+						types.StringElement{
 							Content: "item 2",
 						},
 					},
 				},
-				&types.LabeledListItem{
+				types.LabeledListItem{
 					Term: "item 3",
 					Elements: []types.DocElement{
-						&types.StringElement{
+						types.StringElement{
 							Content: "item 3",
 						},
 					},
@@ -114,28 +114,28 @@ var _ = Describe("lists", func() {
 			actual, err := types.NewList(elements, nil)
 			// then
 			require.NoError(GinkgoT(), err)
-			expectation := &types.LabeledList{
-				Items: []*types.LabeledListItem{
-					&types.LabeledListItem{
+			expectation := types.LabeledList{
+				Items: []types.LabeledListItem{
+					{
 						Term: "item 1",
 						Elements: []types.DocElement{
-							&types.StringElement{
+							types.StringElement{
 								Content: "item 1",
 							},
 						},
 					},
-					&types.LabeledListItem{
+					{
 						Term: "item 2",
 						Elements: []types.DocElement{
-							&types.StringElement{
+							types.StringElement{
 								Content: "item 2",
 							},
 						},
 					},
-					&types.LabeledListItem{
+					{
 						Term: "item 3",
 						Elements: []types.DocElement{
-							&types.StringElement{
+							types.StringElement{
 								Content: "item 3",
 							},
 						},
@@ -150,50 +150,50 @@ var _ = Describe("lists", func() {
 		It("labeled list with unordered sublist", func() {
 			// // given
 			elements := []interface{}{
-				&types.LabeledListItem{
+				types.LabeledListItem{
 					Term: "item A",
 					Elements: []types.DocElement{
-						&types.StringElement{
+						types.StringElement{
 							Content: "item A",
 						},
 					},
 				},
-				&types.UnorderedListItem{
+				types.UnorderedListItem{
 					Level: 1,
 					Elements: []types.DocElement{
-						&types.StringElement{
+						types.StringElement{
 							Content: "item A.1",
 						},
 					},
 				},
-				&types.UnorderedListItem{
+				types.UnorderedListItem{
 					Level: 2,
 					Elements: []types.DocElement{
-						&types.StringElement{
+						types.StringElement{
 							Content: "item A.1.1",
 						},
 					},
 				},
-				&types.UnorderedListItem{
+				types.UnorderedListItem{
 					Level: 1,
 					Elements: []types.DocElement{
-						&types.StringElement{
+						types.StringElement{
 							Content: "item A.2",
 						},
 					},
 				},
-				&types.LabeledListItem{
+				types.LabeledListItem{
 					Term: "item B",
 					Elements: []types.DocElement{
-						&types.StringElement{
+						types.StringElement{
 							Content: "item B",
 						},
 					},
 				},
-				&types.LabeledListItem{
+				types.LabeledListItem{
 					Term: "item C",
 					Elements: []types.DocElement{
-						&types.StringElement{
+						types.StringElement{
 							Content: "item C",
 						},
 					},
@@ -203,28 +203,28 @@ var _ = Describe("lists", func() {
 			actual, err := types.NewList(elements, nil)
 			// then
 			require.NoError(GinkgoT(), err)
-			expectation := &types.LabeledList{
-				Items: []*types.LabeledListItem{
+			expectation := types.LabeledList{
+				Items: []types.LabeledListItem{
 					{
 						Term: "item A",
 						Elements: []types.DocElement{
-							&types.StringElement{
+							types.StringElement{
 								Content: "item A",
 							},
-							&types.UnorderedList{
-								Items: []*types.UnorderedListItem{
+							types.UnorderedList{
+								Items: []types.UnorderedListItem{
 									{
 										Level: 1,
 										Elements: []types.DocElement{
-											&types.StringElement{
+											types.StringElement{
 												Content: "item A.1",
 											},
-											&types.UnorderedList{
-												Items: []*types.UnorderedListItem{
+											types.UnorderedList{
+												Items: []types.UnorderedListItem{
 													{
 														Level: 2,
 														Elements: []types.DocElement{
-															&types.StringElement{
+															types.StringElement{
 																Content: "item A.1.1",
 															},
 														},
@@ -236,7 +236,7 @@ var _ = Describe("lists", func() {
 									{
 										Level: 1,
 										Elements: []types.DocElement{
-											&types.StringElement{
+											types.StringElement{
 												Content: "item A.2",
 											},
 										},
@@ -248,7 +248,7 @@ var _ = Describe("lists", func() {
 					{
 						Term: "item B",
 						Elements: []types.DocElement{
-							&types.StringElement{
+							types.StringElement{
 								Content: "item B",
 							},
 						},
@@ -256,7 +256,7 @@ var _ = Describe("lists", func() {
 					{
 						Term: "item C",
 						Elements: []types.DocElement{
-							&types.StringElement{
+							types.StringElement{
 								Content: "item C",
 							},
 						},

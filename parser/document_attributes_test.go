@@ -14,26 +14,26 @@ var _ = Describe("Document Attributes", func() {
 			actualContent := `= The Dangerous and Thrilling Documentation Chronicles
 			
 This journey begins on a bleary Monday morning.`
-			expectedResult := &types.Document{
+			expectedResult := types.Document{
 				Attributes: map[string]interface{}{
-					"doctitle": &types.SectionTitle{
-						Content: &types.InlineContent{
-							Elements: []types.InlineElement{
-								&types.StringElement{Content: "The Dangerous and Thrilling Documentation Chronicles"},
-							},
-						},
-						ID: &types.ElementID{
+					"doctitle": types.SectionTitle{
+						ID: types.ElementID{
 							Value: "_the_dangerous_and_thrilling_documentation_chronicles",
+						},
+						Content: types.InlineContent{
+							Elements: []types.InlineElement{
+								types.StringElement{Content: "The Dangerous and Thrilling Documentation Chronicles"},
+							},
 						},
 					},
 				},
 				ElementReferences: map[string]interface{}{},
 				Elements: []types.DocElement{
-					&types.Paragraph{
-						Lines: []*types.InlineContent{
-							&types.InlineContent{
+					types.Paragraph{
+						Lines: []types.InlineContent{
+							{
 								Elements: []types.InlineElement{
-									&types.StringElement{Content: "This journey begins on a bleary Monday morning."},
+									types.StringElement{Content: "This journey begins on a bleary Monday morning."},
 								},
 							},
 						},
@@ -49,20 +49,14 @@ This journey begins on a bleary Monday morning.`
 
 				It("all data", func() {
 					actualContent := `Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>`
-					fullName := "Kismet Rainbow Chameleon"
-					initials := "KRC"
-					firstname := "Kismet"
-					middleName := "Rainbow"
-					lastName := "Chameleon"
-					email := `kismet@asciidoctor.org`
-					expectedResult := []*types.DocumentAuthor{
-						&types.DocumentAuthor{
-							FullName:   fullName,
-							FirstName:  &firstname,
-							MiddleName: &middleName,
-							LastName:   &lastName,
-							Initials:   initials,
-							Email:      &email,
+					expectedResult := []types.DocumentAuthor{
+						{
+							FullName:   "Kismet Rainbow Chameleon",
+							FirstName:  "Kismet",
+							MiddleName: "Rainbow",
+							LastName:   "Chameleon",
+							Initials:   "KRC",
+							Email:      "kismet@asciidoctor.org",
 						},
 					}
 					verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentAuthors"))
@@ -70,18 +64,13 @@ This journey begins on a bleary Monday morning.`
 
 				It("lastname with underscores", func() {
 					actualContent := `Lazarus het_Draeke <lazarus@asciidoctor.org>`
-					fullName := "Lazarus het Draeke"
-					initials := "Lh"
-					firstname := "Lazarus"
-					lastName := "het Draeke"
-					email := `lazarus@asciidoctor.org`
-					expectedResult := []*types.DocumentAuthor{
-						&types.DocumentAuthor{
-							FullName:  fullName,
-							FirstName: &firstname,
-							LastName:  &lastName,
-							Initials:  initials,
-							Email:     &email,
+					expectedResult := []types.DocumentAuthor{
+						{
+							FullName:  "Lazarus het Draeke",
+							FirstName: "Lazarus",
+							LastName:  "het Draeke",
+							Initials:  "Lh",
+							Email:     "lazarus@asciidoctor.org",
 						},
 					}
 					verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentAuthors"))
@@ -89,16 +78,12 @@ This journey begins on a bleary Monday morning.`
 
 				It("firstname and lastname only", func() {
 					actualContent := `Kismet Chameleon`
-					fullName := "Kismet Chameleon"
-					initials := "KC"
-					firstname := "Kismet"
-					lastName := "Chameleon"
-					expectedResult := []*types.DocumentAuthor{
-						&types.DocumentAuthor{
-							FullName:  fullName,
-							FirstName: &firstname,
-							LastName:  &lastName,
-							Initials:  initials,
+					expectedResult := []types.DocumentAuthor{
+						{
+							FullName:  "Kismet Chameleon",
+							FirstName: "Kismet",
+							LastName:  "Chameleon",
+							Initials:  "KC",
 						},
 					}
 					verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentAuthors"))
@@ -106,14 +91,11 @@ This journey begins on a bleary Monday morning.`
 
 				It("firstname only", func() {
 					actualContent := `  Chameleon`
-					fullName := "Chameleon"
-					initials := "C"
-					firstname := "Chameleon"
-					expectedResult := []*types.DocumentAuthor{
-						&types.DocumentAuthor{
-							FullName:  fullName,
-							FirstName: &firstname,
-							Initials:  initials,
+					expectedResult := []types.DocumentAuthor{
+						{
+							FullName:  "Chameleon",
+							FirstName: "Chameleon",
+							Initials:  "C",
 						},
 					}
 					verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentAuthors"))
@@ -121,18 +103,13 @@ This journey begins on a bleary Monday morning.`
 
 				It("alternate author input", func() {
 					actualContent := `:author: Kismet Rainbow Chameleon` // `:email:` is processed as a regular attribute
-					fullName := "Kismet Rainbow Chameleon"
-					initials := "KRC"
-					firstname := "Kismet"
-					middleName := "Rainbow"
-					lastName := "Chameleon"
-					expectedResult := []*types.DocumentAuthor{
-						&types.DocumentAuthor{
-							FullName:   fullName,
-							FirstName:  &firstname,
-							MiddleName: &middleName,
-							LastName:   &lastName,
-							Initials:   initials,
+					expectedResult := []types.DocumentAuthor{
+						{
+							FullName:   "Kismet Rainbow Chameleon",
+							FirstName:  "Kismet",
+							MiddleName: "Rainbow",
+							LastName:   "Chameleon",
+							Initials:   "KRC",
 						},
 					}
 					verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentAuthors"))
@@ -142,33 +119,21 @@ This journey begins on a bleary Monday morning.`
 			Context("Multiple authors", func() {
 				It("2 authors only", func() {
 					actualContent := `Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus@asciidoctor.org>`
-					fullName := "Kismet Rainbow Chameleon"
-					initials := "KRC"
-					firstname := "Kismet"
-					middleName := "Rainbow"
-					lastName := "Chameleon"
-					email := `kismet@asciidoctor.org`
-					fullName2 := "Lazarus het Draeke"
-					initials2 := "Lh"
-					firstname2 := "Lazarus"
-					lastName2 := "het Draeke"
-					email2 := `lazarus@asciidoctor.org`
-
-					expectedResult := []*types.DocumentAuthor{
-						&types.DocumentAuthor{
-							FullName:   fullName,
-							FirstName:  &firstname,
-							MiddleName: &middleName,
-							LastName:   &lastName,
-							Initials:   initials,
-							Email:      &email,
+					expectedResult := []types.DocumentAuthor{
+						{
+							FullName:   "Kismet Rainbow Chameleon",
+							FirstName:  "Kismet",
+							MiddleName: "Rainbow",
+							LastName:   "Chameleon",
+							Initials:   "KRC",
+							Email:      "kismet@asciidoctor.org",
 						},
-						&types.DocumentAuthor{
-							FullName:  fullName2,
-							FirstName: &firstname2,
-							LastName:  &lastName2,
-							Initials:  initials2,
-							Email:     &email2,
+						{
+							FullName:  "Lazarus het Draeke",
+							FirstName: "Lazarus",
+							LastName:  "het Draeke",
+							Initials:  "Lh",
+							Email:     "lazarus@asciidoctor.org",
 						},
 					}
 					verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentAuthors"))
@@ -180,106 +145,91 @@ This journey begins on a bleary Monday morning.`
 
 			It("Full document revision", func() {
 				actualContent := `v1.0, June 19, 2017: First incarnation`
-				revnumber := "1.0"
-				revdate := "June 19, 2017"
-				revremark := "First incarnation"
-				expectedResult := &types.DocumentRevision{
-					Revnumber: &revnumber,
-					Revdate:   &revdate,
-					Revremark: &revremark,
+				expectedResult := types.DocumentRevision{
+					Revnumber: "1.0",
+					Revdate:   "June 19, 2017",
+					Revremark: "First incarnation",
 				}
 				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentRevision"))
 			})
 
 			It("revision with revnumber and revdate only", func() {
 				actualContent := `v1.0, June 19, 2017`
-				revnumber := "1.0"
-				revdate := "June 19, 2017"
-				expectedResult := &types.DocumentRevision{
-					Revnumber: &revnumber,
-					Revdate:   &revdate,
+				expectedResult := types.DocumentRevision{
+					Revnumber: "1.0",
+					Revdate:   "June 19, 2017",
 				}
 				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentRevision"))
 			})
 
 			It("revision with revnumber and revdate - with colon separator", func() {
 				actualContent := `v1.0, June 19, 2017:`
-				revnumber := "1.0"
-				revdate := "June 19, 2017"
-				expectedResult := &types.DocumentRevision{
-					Revnumber: &revnumber,
-					Revdate:   &revdate,
+				expectedResult := types.DocumentRevision{
+					Revnumber: "1.0",
+					Revdate:   "June 19, 2017",
 				}
 				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentRevision"))
 			})
 			It("revision with revnumber only - comma suffix", func() {
 				actualContent := `1.0,`
-				revnumber := "1.0"
-				expectedResult := &types.DocumentRevision{
-					Revnumber: &revnumber,
+				expectedResult := types.DocumentRevision{
+					Revnumber: "1.0",
 				}
 				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentRevision"))
 			})
 
 			It("revision with revdate as number - spaces and no prefix no suffix", func() {
 				actualContent := `1.0`
-				revdate := "1.0"
-				expectedResult := &types.DocumentRevision{
-					Revdate: &revdate,
+				expectedResult := types.DocumentRevision{
+					Revdate: "1.0",
 				}
 				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentRevision"))
 			})
 
 			It("revision with revdate as alphanum - spaces and no prefix no suffix", func() {
 				actualContent := `1.0a`
-				revdate := "1.0a"
-				expectedResult := &types.DocumentRevision{
-					Revdate: &revdate,
+				expectedResult := types.DocumentRevision{
+					Revdate: "1.0a",
 				}
 				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentRevision"))
 			})
 
 			It("revision with revnumber only", func() {
 				actualContent := `v1.0:`
-				revnumber := "1.0"
-				expectedResult := &types.DocumentRevision{
-					Revnumber: &revnumber,
+				expectedResult := types.DocumentRevision{
+					Revnumber: "1.0",
 				}
 				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentRevision"))
 			})
 
 			It("revision with spaces and capital revnumber ", func() {
 				actualContent := `V1.0:`
-				revnumber := "1.0"
-				expectedResult := &types.DocumentRevision{
-					Revnumber: &revnumber,
+				expectedResult := types.DocumentRevision{
+					Revnumber: "1.0",
 				}
 				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentRevision"))
 			})
 
 			It("revision only - with comma separator", func() {
 				actualContent := `v1.0,`
-				revnumber := "1.0"
-				expectedResult := &types.DocumentRevision{
-					Revnumber: &revnumber,
+				expectedResult := types.DocumentRevision{
+					Revnumber: "1.0",
 				}
 				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentRevision"))
 			})
 
 			It("revision with revnumber plus comma and colon separators", func() {
 				actualContent := `v1.0,:`
-				revnumber := "1.0"
-				expectedResult := &types.DocumentRevision{
-					Revnumber: &revnumber,
+				expectedResult := types.DocumentRevision{
+					Revnumber: "1.0",
 				}
 				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentRevision"))
 			})
 
 			It("revision with revnumber plus colon separator", func() {
 				actualContent := `v1.0:`
-				revnumber := "1.0"
-				expectedResult := &types.DocumentRevision{
-					Revnumber: &revnumber,
+				expectedResult := types.DocumentRevision{
+					Revnumber: "1.0",
 				}
 				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentRevision"))
 			})
@@ -295,16 +245,16 @@ This journey begins on a bleary Monday morning.`
 :Author: Xavier
 :0Author: Xavier
 :Auth0r: Xavier`
-				expectedResult := &types.Document{
+				expectedResult := types.Document{
 					Attributes:        map[string]interface{}{},
 					ElementReferences: map[string]interface{}{},
 					Elements: []types.DocElement{
-						&types.DocumentAttributeDeclaration{Name: "a"},
-						&types.DocumentAttributeDeclaration{Name: "author", Value: "Xavier"},
-						&types.DocumentAttributeDeclaration{Name: "_author", Value: "Xavier"},
-						&types.DocumentAttributeDeclaration{Name: "Author", Value: "Xavier"},
-						&types.DocumentAttributeDeclaration{Name: "0Author", Value: "Xavier"},
-						&types.DocumentAttributeDeclaration{Name: "Auth0r", Value: "Xavier"},
+						types.DocumentAttributeDeclaration{Name: "a"},
+						types.DocumentAttributeDeclaration{Name: "author", Value: "Xavier"},
+						types.DocumentAttributeDeclaration{Name: "_author", Value: "Xavier"},
+						types.DocumentAttributeDeclaration{Name: "Author", Value: "Xavier"},
+						types.DocumentAttributeDeclaration{Name: "0Author", Value: "Xavier"},
+						types.DocumentAttributeDeclaration{Name: "Auth0r", Value: "Xavier"},
 					},
 				}
 				verify(GinkgoT(), expectedResult, actualContent)
@@ -315,18 +265,18 @@ This journey begins on a bleary Monday morning.`
 :date:  2017-01-01
 :author: Xavier
 a paragraph`
-				expectedResult := &types.Document{
+				expectedResult := types.Document{
 					Attributes:        map[string]interface{}{},
 					ElementReferences: map[string]interface{}{},
 					Elements: []types.DocElement{
-						&types.DocumentAttributeDeclaration{Name: "toc"},
-						&types.DocumentAttributeDeclaration{Name: "date", Value: "2017-01-01"},
-						&types.DocumentAttributeDeclaration{Name: "author", Value: "Xavier"},
-						&types.Paragraph{
-							Lines: []*types.InlineContent{
-								&types.InlineContent{
+						types.DocumentAttributeDeclaration{Name: "toc"},
+						types.DocumentAttributeDeclaration{Name: "date", Value: "2017-01-01"},
+						types.DocumentAttributeDeclaration{Name: "author", Value: "Xavier"},
+						types.Paragraph{
+							Lines: []types.InlineContent{
+								{
 									Elements: []types.InlineElement{
-										&types.StringElement{Content: "a paragraph"},
+										types.StringElement{Content: "a paragraph"},
 									},
 								},
 							},
@@ -342,18 +292,18 @@ a paragraph`
 :author: Xavier
 
 a paragraph`
-				expectedResult := &types.Document{
+				expectedResult := types.Document{
 					Attributes:        map[string]interface{}{},
 					ElementReferences: map[string]interface{}{},
 					Elements: []types.DocElement{
-						&types.DocumentAttributeDeclaration{Name: "toc"},
-						&types.DocumentAttributeDeclaration{Name: "date", Value: "2017-01-01"},
-						&types.DocumentAttributeDeclaration{Name: "author", Value: "Xavier"},
-						&types.Paragraph{
-							Lines: []*types.InlineContent{
-								&types.InlineContent{
+						types.DocumentAttributeDeclaration{Name: "toc"},
+						types.DocumentAttributeDeclaration{Name: "date", Value: "2017-01-01"},
+						types.DocumentAttributeDeclaration{Name: "author", Value: "Xavier"},
+						types.Paragraph{
+							Lines: []types.InlineContent{
+								{
 									Elements: []types.InlineElement{
-										&types.StringElement{Content: "a paragraph"},
+										types.StringElement{Content: "a paragraph"},
 									},
 								},
 							},
@@ -370,18 +320,18 @@ a paragraph`
 :author: Xavier
 
 a paragraph`
-				expectedResult := &types.Document{
+				expectedResult := types.Document{
 					Attributes:        map[string]interface{}{},
 					ElementReferences: map[string]interface{}{},
 					Elements: []types.DocElement{
-						&types.DocumentAttributeDeclaration{Name: "toc"},
-						&types.DocumentAttributeDeclaration{Name: "date", Value: "2017-01-01"},
-						&types.DocumentAttributeDeclaration{Name: "author", Value: "Xavier"},
-						&types.Paragraph{
-							Lines: []*types.InlineContent{
-								&types.InlineContent{
+						types.DocumentAttributeDeclaration{Name: "toc"},
+						types.DocumentAttributeDeclaration{Name: "date", Value: "2017-01-01"},
+						types.DocumentAttributeDeclaration{Name: "author", Value: "Xavier"},
+						types.Paragraph{
+							Lines: []types.InlineContent{
+								{
 									Elements: []types.InlineElement{
-										&types.StringElement{Content: "a paragraph"},
+										types.StringElement{Content: "a paragraph"},
 									},
 								},
 							},
@@ -397,22 +347,22 @@ a paragraph`
 :toc:
 :date: 2017-01-01
 :author: Xavier`
-				expectedResult := &types.Document{
+				expectedResult := types.Document{
 					Attributes:        map[string]interface{}{},
 					ElementReferences: map[string]interface{}{},
 					Elements: []types.DocElement{
-						&types.Paragraph{
-							Lines: []*types.InlineContent{
-								&types.InlineContent{
+						types.Paragraph{
+							Lines: []types.InlineContent{
+								{
 									Elements: []types.InlineElement{
-										&types.StringElement{Content: "a paragraph"},
+										types.StringElement{Content: "a paragraph"},
 									},
 								},
 							},
 						},
-						&types.DocumentAttributeDeclaration{Name: "toc"},
-						&types.DocumentAttributeDeclaration{Name: "date", Value: "2017-01-01"},
-						&types.DocumentAttributeDeclaration{Name: "author", Value: "Xavier"},
+						types.DocumentAttributeDeclaration{Name: "toc"},
+						types.DocumentAttributeDeclaration{Name: "date", Value: "2017-01-01"},
+						types.DocumentAttributeDeclaration{Name: "author", Value: "Xavier"},
 					},
 				}
 				verify(GinkgoT(), expectedResult, actualContent)
@@ -425,18 +375,18 @@ a paragraph`
 				actualContent := `:author: Xavier
 			
 a paragraph written by {author}.`
-				expectedResult := &types.Document{
+				expectedResult := types.Document{
 					Attributes:        map[string]interface{}{},
 					ElementReferences: map[string]interface{}{},
 					Elements: []types.DocElement{
-						&types.DocumentAttributeDeclaration{Name: "author", Value: "Xavier"},
-						&types.Paragraph{
-							Lines: []*types.InlineContent{
-								&types.InlineContent{
+						types.DocumentAttributeDeclaration{Name: "author", Value: "Xavier"},
+						types.Paragraph{
+							Lines: []types.InlineContent{
+								{
 									Elements: []types.InlineElement{
-										&types.StringElement{Content: "a paragraph written by "},
-										&types.DocumentAttributeSubstitution{Name: "author"},
-										&types.StringElement{Content: "."},
+										types.StringElement{Content: "a paragraph written by "},
+										types.DocumentAttributeSubstitution{Name: "author"},
+										types.StringElement{Content: "."},
 									},
 								},
 							},
@@ -452,20 +402,20 @@ a paragraph written by {author}.`
 :!author1:
 :author2!:
 a paragraph written by {author}.`
-				expectedResult := &types.Document{
+				expectedResult := types.Document{
 					Attributes:        map[string]interface{}{},
 					ElementReferences: map[string]interface{}{},
 					Elements: []types.DocElement{
-						&types.DocumentAttributeDeclaration{Name: "author", Value: "Xavier"},
-						&types.DocumentAttributeReset{Name: "author1"},
-						&types.DocumentAttributeReset{Name: "author2"},
-						&types.Paragraph{
-							Lines: []*types.InlineContent{
-								&types.InlineContent{
+						types.DocumentAttributeDeclaration{Name: "author", Value: "Xavier"},
+						types.DocumentAttributeReset{Name: "author1"},
+						types.DocumentAttributeReset{Name: "author2"},
+						types.Paragraph{
+							Lines: []types.InlineContent{
+								{
 									Elements: []types.InlineElement{
-										&types.StringElement{Content: "a paragraph written by "},
-										&types.DocumentAttributeSubstitution{Name: "author"},
-										&types.StringElement{Content: "."},
+										types.StringElement{Content: "a paragraph written by "},
+										types.DocumentAttributeSubstitution{Name: "author"},
+										types.StringElement{Content: "."},
 									},
 								},
 							},
@@ -484,16 +434,16 @@ v1.0, June 19, 2017: First incarnation
 :keywords: documentation, team, obstacles, journey, victory
 
 This journey begins on a bleary Monday morning.`
-			expectedResult := &types.Document{
+			expectedResult := types.Document{
 				Attributes: map[string]interface{}{
-					"doctitle": &types.SectionTitle{
-						Content: &types.InlineContent{
-							Elements: []types.InlineElement{
-								&types.StringElement{Content: "The Dangerous and Thrilling Documentation Chronicles"},
-							},
-						},
-						ID: &types.ElementID{
+					"doctitle": types.SectionTitle{
+						ID: types.ElementID{
 							Value: "_the_dangerous_and_thrilling_documentation_chronicles",
+						},
+						Content: types.InlineContent{
+							Elements: []types.InlineElement{
+								types.StringElement{Content: "The Dangerous and Thrilling Documentation Chronicles"},
+							},
 						},
 					},
 					"author":           "Kismet Rainbow Chameleon",
@@ -515,12 +465,12 @@ This journey begins on a bleary Monday morning.`
 				},
 				ElementReferences: map[string]interface{}{},
 				Elements: []types.DocElement{
-					&types.TableOfContentsMacro{},
-					&types.Paragraph{
-						Lines: []*types.InlineContent{
-							&types.InlineContent{
+					types.TableOfContentsMacro{},
+					types.Paragraph{
+						Lines: []types.InlineContent{
+							{
 								Elements: []types.InlineElement{
-									&types.StringElement{Content: "This journey begins on a bleary Monday morning."},
+									types.StringElement{Content: "This journey begins on a bleary Monday morning."},
 								},
 							},
 						},
@@ -537,53 +487,53 @@ This journey begins on a bleary Monday morning.`
 == section 1
 
 a paragraph with *bold content*`
-			expectedResult := &types.Document{
+			expectedResult := types.Document{
 				Attributes: map[string]interface{}{
-					"doctitle": &types.SectionTitle{
-						Content: &types.InlineContent{
-							Elements: []types.InlineElement{
-								&types.StringElement{Content: "a header"},
-							},
-						},
-						ID: &types.ElementID{
+					"doctitle": types.SectionTitle{
+						ID: types.ElementID{
 							Value: "_a_header",
+						},
+						Content: types.InlineContent{
+							Elements: []types.InlineElement{
+								types.StringElement{Content: "a header"},
+							},
 						},
 					},
 				},
 				ElementReferences: map[string]interface{}{
-					"_section_1": &types.SectionTitle{
-						Content: &types.InlineContent{
-							Elements: []types.InlineElement{
-								&types.StringElement{Content: "section 1"},
-							},
-						},
-						ID: &types.ElementID{
+					"_section_1": types.SectionTitle{
+						ID: types.ElementID{
 							Value: "_section_1",
+						},
+						Content: types.InlineContent{
+							Elements: []types.InlineElement{
+								types.StringElement{Content: "section 1"},
+							},
 						},
 					},
 				},
 				Elements: []types.DocElement{
-					&types.Section{
+					types.Section{
 						Level: 1,
-						SectionTitle: types.SectionTitle{
-							Content: &types.InlineContent{
-								Elements: []types.InlineElement{
-									&types.StringElement{Content: "section 1"},
-								},
-							},
-							ID: &types.ElementID{
+						Title: types.SectionTitle{
+							ID: types.ElementID{
 								Value: "_section_1",
+							},
+							Content: types.InlineContent{
+								Elements: []types.InlineElement{
+									types.StringElement{Content: "section 1"},
+								},
 							},
 						},
 						Elements: []types.DocElement{
-							&types.Paragraph{
-								Lines: []*types.InlineContent{
-									&types.InlineContent{
+							types.Paragraph{
+								Lines: []types.InlineContent{
+									types.InlineContent{
 										Elements: []types.InlineElement{
-											&types.StringElement{Content: "a paragraph with "},
-											&types.QuotedText{Kind: types.Bold,
+											types.StringElement{Content: "a paragraph with "},
+											types.QuotedText{Kind: types.Bold,
 												Elements: []types.InlineElement{
-													&types.StringElement{Content: "bold content"},
+													types.StringElement{Content: "bold content"},
 												},
 											},
 										},
@@ -605,30 +555,30 @@ a paragraph with *bold content*`
 :toc:
 :date: 2017-01-01
 :author: Xavier`
-			expectedResult := &types.Document{
+			expectedResult := types.Document{
 				Attributes:        map[string]interface{}{},
 				ElementReferences: map[string]interface{}{},
 				Elements: []types.DocElement{
-					&types.Paragraph{
-						Lines: []*types.InlineContent{
-							&types.InlineContent{
+					types.Paragraph{
+						Lines: []types.InlineContent{
+							{
 								Elements: []types.InlineElement{
-									&types.StringElement{Content: "a paragraph"},
+									types.StringElement{Content: "a paragraph"},
 								},
 							},
-							&types.InlineContent{
+							{
 								Elements: []types.InlineElement{
-									&types.StringElement{Content: ":toc:"},
+									types.StringElement{Content: ":toc:"},
 								},
 							},
-							&types.InlineContent{
+							{
 								Elements: []types.InlineElement{
-									&types.StringElement{Content: ":date: 2017-01-01"},
+									types.StringElement{Content: ":date: 2017-01-01"},
 								},
 							},
-							&types.InlineContent{
+							{
 								Elements: []types.InlineElement{
-									&types.StringElement{Content: ":author: Xavier"},
+									types.StringElement{Content: ":author: Xavier"},
 								},
 							},
 						},
@@ -641,20 +591,20 @@ a paragraph with *bold content*`
 		It("invalid attribute names", func() {
 			actualContent := `:@date: 2017-01-01
 :{author}: Xavier`
-			expectedResult := &types.Document{
+			expectedResult := types.Document{
 				Attributes:        map[string]interface{}{},
 				ElementReferences: map[string]interface{}{},
 				Elements: []types.DocElement{
-					&types.Paragraph{
-						Lines: []*types.InlineContent{
-							&types.InlineContent{
+					types.Paragraph{
+						Lines: []types.InlineContent{
+							{
 								Elements: []types.InlineElement{
-									&types.StringElement{Content: ":@date: 2017-01-01"},
+									types.StringElement{Content: ":@date: 2017-01-01"},
 								},
 							},
-							&types.InlineContent{
+							{
 								Elements: []types.InlineElement{
-									&types.StringElement{Content: ":{author}: Xavier"},
+									types.StringElement{Content: ":{author}: Xavier"},
 								},
 							},
 						},

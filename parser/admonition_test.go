@@ -11,13 +11,13 @@ var _ = Describe("admonitions", func() {
 	Context("admonition paragraphs", func() {
 		It("note admonition paragraph", func() {
 			actualContent := `NOTE: this is a note.`
-			expectedResult := &types.Admonition{
+			expectedResult := types.Admonition{
 				Kind: types.Note,
-				Content: &types.AdmonitionParagraph{
-					Lines: []*types.InlineContent{
+				Content: types.AdmonitionParagraph{
+					Lines: []types.InlineContent{
 						{
 							Elements: []types.InlineElement{
-								&types.StringElement{
+								types.StringElement{
 									Content: "this is a note.",
 								},
 							},
@@ -31,20 +31,20 @@ var _ = Describe("admonitions", func() {
 		It("warning admonition paragraph", func() {
 			actualContent := `WARNING: this is a multiline
 warning!`
-			expectedResult := &types.Admonition{
+			expectedResult := types.Admonition{
 				Kind: types.Warning,
-				Content: &types.AdmonitionParagraph{
-					Lines: []*types.InlineContent{
+				Content: types.AdmonitionParagraph{
+					Lines: []types.InlineContent{
 						{
 							Elements: []types.InlineElement{
-								&types.StringElement{
+								types.StringElement{
 									Content: "this is a multiline",
 								},
 							},
 						},
 						{
 							Elements: []types.InlineElement{
-								&types.StringElement{
+								types.StringElement{
 									Content: "warning!",
 								},
 							},
@@ -59,19 +59,19 @@ warning!`
 			actualContent := `[[foo]]
 .bar
 NOTE: this is a note.`
-			expectedResult := &types.Admonition{
-				ID: &types.ElementID{
+			expectedResult := types.Admonition{
+				ID: types.ElementID{
 					Value: "foo",
 				},
-				Title: &types.ElementTitle{
+				Title: types.ElementTitle{
 					Value: "bar",
 				},
 				Kind: types.Note,
-				Content: &types.AdmonitionParagraph{
-					Lines: []*types.InlineContent{
+				Content: types.AdmonitionParagraph{
+					Lines: []types.InlineContent{
 						{
 							Elements: []types.InlineElement{
-								&types.StringElement{
+								types.StringElement{
 									Content: "this is a note.",
 								},
 							},
@@ -87,13 +87,13 @@ NOTE: this is a note.`
 		It("caution admonition block", func() {
 			actualContent := `[CAUTION] 
 this is a caution!`
-			expectedResult := &types.Admonition{
+			expectedResult := types.Admonition{
 				Kind: types.Caution,
-				Content: &types.AdmonitionParagraph{
-					Lines: []*types.InlineContent{
+				Content: types.AdmonitionParagraph{
+					Lines: []types.InlineContent{
 						{
 							Elements: []types.InlineElement{
-								&types.StringElement{
+								types.StringElement{
 									Content: "this is a caution!",
 								},
 							},
@@ -110,34 +110,34 @@ this is a caution!`
 .bar
 this is a 
 *caution*!`
-			expectedResult := &types.Admonition{
-				ID: &types.ElementID{
+			expectedResult := types.Admonition{
+				ID: types.ElementID{
 					Value: "foo",
 				},
-				Title: &types.ElementTitle{
+				Title: types.ElementTitle{
 					Value: "bar",
 				},
 				Kind: types.Caution,
-				Content: &types.AdmonitionParagraph{
-					Lines: []*types.InlineContent{
+				Content: types.AdmonitionParagraph{
+					Lines: []types.InlineContent{
 						{
 							Elements: []types.InlineElement{
-								&types.StringElement{
+								types.StringElement{
 									Content: "this is a ",
 								},
 							},
 						},
 						{
 							Elements: []types.InlineElement{
-								&types.QuotedText{
+								types.QuotedText{
 									Kind: types.Bold,
 									Elements: []types.InlineElement{
-										&types.StringElement{
+										types.StringElement{
 											Content: "caution",
 										},
 									},
 								},
-								&types.StringElement{
+								types.StringElement{
 									Content: "!",
 								},
 							},

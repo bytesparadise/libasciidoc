@@ -2,6 +2,7 @@ package types
 
 import (
 	"bytes"
+	"reflect"
 
 	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
@@ -40,9 +41,9 @@ func filterUnrelevantElements(blocks []interface{}) []DocElement {
 	for _, block := range blocks {
 		log.Debugf(" converting block of type '%T' into a DocElement...", block)
 		switch block := block.(type) {
-		case *BlankLine:
+		case BlankLine:
 			// exclude blank lines from here, we won't need them in the rendering anyways
-		case *Preamble:
+		case Preamble:
 			// exclude empty preambles
 			if len(block.Elements) > 0 {
 				// exclude empty preamble
@@ -78,10 +79,10 @@ func mergeElements(elements []interface{}, extraElements ...interface{}) []inter
 			for _, b := range element {
 				buff.WriteByte(b)
 			}
-		case *StringElement:
+		case StringElement:
 			content := element.Content
 			buff.WriteString(content)
-		case *InlineContent:
+		case InlineContent:
 			inlineElements := make([]interface{}, len(element.Elements))
 			for i, e := range element.Elements {
 				inlineElements[i] = e
@@ -135,23 +136,23 @@ type stringifyOption func(s string) (string, error)
 
 // stringify convert the given elements into a string, then applies the optional `funcs` to convert the string before returning it.
 // These StringifyFuncs can be used to trim the content, for example
-func stringify(elements []interface{}, options ...stringifyOption) (*string, error) {
+func stringify(elements []interface{}, options ...stringifyOption) (string, error) {
 	mergedElements := mergeElements(elements)
 	b := make([]byte, 0)
 	buff := bytes.NewBuffer(b)
 	for _, element := range mergedElements {
 		switch element := element.(type) {
-		case *StringElement:
+		case StringElement:
 			buff.WriteString(element.Content)
 		case []interface{}:
 			stringifiedElement, err := stringify(element)
 			if err != nil {
 				// no need to wrap the error again in the same function
-				return nil, err
+				return "", err
 			}
-			buff.WriteString(*stringifiedElement)
+			buff.WriteString(stringifiedElement)
 		default:
-			return nil, errors.Errorf("cannot convert element of type '%T' to string content", element)
+			return "", errors.Errorf("cannot convert element of type '%T' to string content", element)
 		}
 
 	}
@@ -160,9 +161,21 @@ func stringify(elements []interface{}, options ...stringifyOption) (*string, err
 		var err error
 		result, err = f(result)
 		if err != nil {
-			return nil, errors.Wrapf(err, "Failed to postprocess the stringified content")
+			return "", errors.Wrapf(err, "Failed to postprocess the stringified content")
 		}
 	}
 	// log.Debugf("stringified %v -> '%s' (%v characters)", elements, result, len(result))
-	return &result, nil
+	return result, nil
+}
+
+func toPtr(element interface{}) interface{} {
+	value := reflect.ValueOf(element)
+	if value.Type().Kind() == reflect.Ptr {
+		return element
+	}
+	ptr := reflect.New(reflect.TypeOf(element))
+	temp := ptr.Elem()
+	temp.Set(value)
+	// log.Debugf("Returning pointer of type %T", ptr.Interface())
+	return ptr.Interface()
 }

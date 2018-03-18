@@ -13,10 +13,10 @@ var _ = Describe("delimited blocks", func() {
 		It("fenced block with single line", func() {
 			content := "some fenced code"
 			actualContent := "```\n" + content + "\n```"
-			expectedResult := &types.DelimitedBlock{
+			expectedResult := types.DelimitedBlock{
 				Kind: types.FencedBlock,
 				Elements: []types.DocElement{
-					&types.StringElement{
+					types.StringElement{
 						Content: content,
 					},
 				},
@@ -27,10 +27,10 @@ var _ = Describe("delimited blocks", func() {
 		It("fenced block with no line", func() {
 			content := ""
 			actualContent := "```\n" + content + "```"
-			expectedResult := &types.DelimitedBlock{
+			expectedResult := types.DelimitedBlock{
 				Kind: types.FencedBlock,
 				Elements: []types.DocElement{
-					&types.StringElement{
+					types.StringElement{
 						Content: content,
 					},
 				},
@@ -41,10 +41,10 @@ var _ = Describe("delimited blocks", func() {
 		It("fenced block with multiple lines", func() {
 			content := "some fenced code\nwith an empty line\n\nin the middle"
 			actualContent := "```\n" + content + "\n```"
-			expectedResult := &types.DelimitedBlock{
+			expectedResult := types.DelimitedBlock{
 				Kind: types.FencedBlock,
 				Elements: []types.DocElement{
-					&types.StringElement{
+					types.StringElement{
 						Content: content,
 					},
 				},
@@ -55,23 +55,23 @@ var _ = Describe("delimited blocks", func() {
 		It("fenced block with multiple lines then a paragraph", func() {
 			content := "some fenced code\nwith an empty line\n\nin the middle"
 			actualContent := "```\n" + content + "\n```\nthen a normal paragraph."
-			expectedResult := &types.Document{
+			expectedResult := types.Document{
 				Attributes:        map[string]interface{}{},
 				ElementReferences: map[string]interface{}{},
 				Elements: []types.DocElement{
-					&types.DelimitedBlock{
+					types.DelimitedBlock{
 						Kind: types.FencedBlock,
 						Elements: []types.DocElement{
-							&types.StringElement{
+							types.StringElement{
 								Content: content,
 							},
 						},
 					},
-					&types.Paragraph{
-						Lines: []*types.InlineContent{
+					types.Paragraph{
+						Lines: []types.InlineContent{
 							{
 								Elements: []types.InlineElement{
-									&types.StringElement{Content: "then a normal paragraph."},
+									types.StringElement{Content: "then a normal paragraph."},
 								},
 							},
 						},
@@ -84,23 +84,23 @@ var _ = Describe("delimited blocks", func() {
 		It("fenced block after a paragraph", func() {
 			content := "some fenced code"
 			actualContent := "a paragraph.\n```\n" + content + "\n```\n"
-			expectedResult := &types.Document{
+			expectedResult := types.Document{
 				Attributes:        map[string]interface{}{},
 				ElementReferences: map[string]interface{}{},
 				Elements: []types.DocElement{
-					&types.Paragraph{
-						Lines: []*types.InlineContent{
+					types.Paragraph{
+						Lines: []types.InlineContent{
 							{
 								Elements: []types.InlineElement{
-									&types.StringElement{Content: "a paragraph."},
+									types.StringElement{Content: "a paragraph."},
 								},
 							},
 						},
 					},
-					&types.DelimitedBlock{
+					types.DelimitedBlock{
 						Kind: types.FencedBlock,
 						Elements: []types.DocElement{
-							&types.StringElement{
+							types.StringElement{
 								Content: content,
 							},
 						},
@@ -117,10 +117,10 @@ var _ = Describe("delimited blocks", func() {
 			actualContent := `----
 some listing code
 ----`
-			expectedResult := &types.DelimitedBlock{
+			expectedResult := types.DelimitedBlock{
 				Kind: types.ListingBlock,
 				Elements: []types.DocElement{
-					&types.StringElement{
+					types.StringElement{
 						Content: "some listing code",
 					},
 				},
@@ -131,10 +131,10 @@ some listing code
 		It("listing block with no line", func() {
 			content := ""
 			actualContent := "----\n" + content + "----"
-			expectedResult := &types.DelimitedBlock{
+			expectedResult := types.DelimitedBlock{
 				Kind: types.ListingBlock,
 				Elements: []types.DocElement{
-					&types.StringElement{
+					types.StringElement{
 						Content: "",
 					},
 				},
@@ -145,10 +145,10 @@ some listing code
 		It("listing block with multiple lines", func() {
 			content := "some listing code\nwith an empty line\n\nin the middle"
 			actualContent := "----\n" + content + "\n----"
-			expectedResult := &types.DelimitedBlock{
+			expectedResult := types.DelimitedBlock{
 				Kind: types.ListingBlock,
 				Elements: []types.DocElement{
-					&types.StringElement{
+					types.StringElement{
 						Content: content,
 					},
 				},
@@ -159,23 +159,23 @@ some listing code
 		It("listing block with multiple lines then a paragraph", func() {
 			content := "some listing code\nwith an empty line\n\nin the middle"
 			actualContent := "----\n" + content + "\n----\nthen a normal paragraph."
-			expectedResult := &types.Document{
+			expectedResult := types.Document{
 				Attributes:        map[string]interface{}{},
 				ElementReferences: map[string]interface{}{},
 				Elements: []types.DocElement{
-					&types.DelimitedBlock{
+					types.DelimitedBlock{
 						Kind: types.ListingBlock,
 						Elements: []types.DocElement{
-							&types.StringElement{
+							types.StringElement{
 								Content: content,
 							},
 						},
 					},
-					&types.Paragraph{
-						Lines: []*types.InlineContent{
+					types.Paragraph{
+						Lines: []types.InlineContent{
 							{
 								Elements: []types.InlineElement{
-									&types.StringElement{Content: "then a normal paragraph."},
+									types.StringElement{Content: "then a normal paragraph."},
 								},
 							},
 						},
@@ -191,23 +191,23 @@ some listing code
 ----
 some listing code
 ----`
-			expectedResult := &types.Document{
+			expectedResult := types.Document{
 				Attributes:        map[string]interface{}{},
 				ElementReferences: map[string]interface{}{},
 				Elements: []types.DocElement{
-					&types.Paragraph{
-						Lines: []*types.InlineContent{
+					types.Paragraph{
+						Lines: []types.InlineContent{
 							{
 								Elements: []types.InlineElement{
-									&types.StringElement{Content: "a paragraph."},
+									types.StringElement{Content: "a paragraph."},
 								},
 							},
 						},
 					},
-					&types.DelimitedBlock{
+					types.DelimitedBlock{
 						Kind: types.ListingBlock,
 						Elements: []types.DocElement{
-							&types.StringElement{
+							types.StringElement{
 								Content: "some listing code",
 							},
 						},
@@ -222,7 +222,7 @@ some listing code
 
 		It("literal block from 1-line paragraph with single space", func() {
 			actualContent := ` some literal content`
-			expectedResult := &types.LiteralBlock{
+			expectedResult := types.LiteralBlock{
 				Content: " some literal content",
 			}
 			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("BlockElement"))
@@ -231,7 +231,7 @@ some listing code
 		It("literal block from paragraph with single space on first line", func() {
 			actualContent := ` some literal content
 on 2 lines.`
-			expectedResult := &types.LiteralBlock{
+			expectedResult := types.LiteralBlock{
 				Content: " some literal content\non 2 lines.",
 			}
 			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("BlockElement"))
@@ -241,18 +241,18 @@ on 2 lines.`
 			actualContent := `   some literal content
 
 a normal paragraph.`
-			expectedResult := &types.Document{
+			expectedResult := types.Document{
 				Attributes:        map[string]interface{}{},
 				ElementReferences: map[string]interface{}{},
 				Elements: []types.DocElement{
-					&types.LiteralBlock{
+					types.LiteralBlock{
 						Content: "   some literal content",
 					},
-					&types.Paragraph{
-						Lines: []*types.InlineContent{
+					types.Paragraph{
+						Lines: []types.InlineContent{
 							{
 								Elements: []types.InlineElement{
-									&types.StringElement{Content: "a normal paragraph."},
+									types.StringElement{Content: "a normal paragraph."},
 								},
 							},
 						},
@@ -270,18 +270,18 @@ a normal paragraph.`
 some literal content
 ....
 a normal paragraph.`
-			expectedResult := &types.Document{
+			expectedResult := types.Document{
 				Attributes:        map[string]interface{}{},
 				ElementReferences: map[string]interface{}{},
 				Elements: []types.DocElement{
-					&types.LiteralBlock{
+					types.LiteralBlock{
 						Content: "some literal content",
 					},
-					&types.Paragraph{
-						Lines: []*types.InlineContent{
+					types.Paragraph{
+						Lines: []types.InlineContent{
 							{
 								Elements: []types.InlineElement{
-									&types.StringElement{Content: "a normal paragraph."},
+									types.StringElement{Content: "a normal paragraph."},
 								},
 							},
 						},
@@ -300,18 +300,18 @@ a normal paragraph.`
 some literal content
 
 a normal paragraph.`
-			expectedResult := &types.Document{
+			expectedResult := types.Document{
 				Attributes:        map[string]interface{}{},
 				ElementReferences: map[string]interface{}{},
 				Elements: []types.DocElement{
-					&types.LiteralBlock{
+					types.LiteralBlock{
 						Content: "some literal content",
 					},
-					&types.Paragraph{
-						Lines: []*types.InlineContent{
+					types.Paragraph{
+						Lines: []types.InlineContent{
 							{
 								Elements: []types.InlineElement{
-									&types.StringElement{Content: "a normal paragraph."},
+									types.StringElement{Content: "a normal paragraph."},
 								},
 							},
 						},
@@ -328,14 +328,14 @@ a normal paragraph.`
 			actualContent := `====
 some listing code
 ====`
-			expectedResult := &types.DelimitedBlock{
+			expectedResult := types.DelimitedBlock{
 				Kind: types.ExampleBlock,
 				Elements: []types.DocElement{
-					&types.Paragraph{
-						Lines: []*types.InlineContent{
+					types.Paragraph{
+						Lines: []types.InlineContent{
 							{
 								Elements: []types.InlineElement{
-									&types.StringElement{
+									types.StringElement{
 										Content: "some listing code",
 									},
 								},
@@ -354,27 +354,27 @@ with *bold content*
 
 * and a list item
 ====`
-			expectedResult := &types.DelimitedBlock{
+			expectedResult := types.DelimitedBlock{
 				Kind: types.ExampleBlock,
 				Elements: []types.DocElement{
-					&types.Paragraph{
-						Lines: []*types.InlineContent{
+					types.Paragraph{
+						Lines: []types.InlineContent{
 							{
 								Elements: []types.InlineElement{
-									&types.StringElement{
+									types.StringElement{
 										Content: "some listing code",
 									},
 								},
 							},
 							{
 								Elements: []types.InlineElement{
-									&types.StringElement{
+									types.StringElement{
 										Content: "with ",
 									},
-									&types.QuotedText{
+									types.QuotedText{
 										Kind: types.Bold,
 										Elements: []types.InlineElement{
-											&types.StringElement{
+											types.StringElement{
 												Content: "bold content",
 											},
 										},
@@ -383,16 +383,16 @@ with *bold content*
 							},
 						},
 					},
-					&types.UnorderedList{
-						Items: []*types.UnorderedListItem{
+					types.UnorderedList{
+						Items: []types.UnorderedListItem{
 							{
 								Level: 1,
 								Elements: []types.DocElement{
-									&types.ListParagraph{
-										Lines: []*types.InlineContent{
+									types.ListParagraph{
+										Lines: []types.InlineContent{
 											{
 												Elements: []types.InlineElement{
-													&types.StringElement{
+													types.StringElement{
 														Content: "and a list item",
 													},
 												},

@@ -10,8 +10,8 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-var tableOfContentTmpl *template.Template
-var tableOfContentSectionSetTmpl *template.Template
+var tableOfContentTmpl template.Template
+var tableOfContentSectionSetTmpl template.Template
 
 func init() {
 	tableOfContentTmpl = newHTMLTemplate("toc", `<div id="toc" class="toc">
@@ -39,7 +39,7 @@ type TableOfContentSection struct {
 	Subelements *template.HTML
 }
 
-func renderTableOfContent(ctx *renderer.Context, m *types.TableOfContentsMacro) ([]byte, error) {
+func renderTableOfContent(ctx *renderer.Context, m types.TableOfContentsMacro) ([]byte, error) {
 	result := bytes.NewBuffer(nil)
 	renderedSections, err := renderTableOfContentSections(ctx, ctx.Document.Elements, 1)
 	if err != nil {
@@ -60,8 +60,8 @@ func renderTableOfContentSections(ctx *renderer.Context, elements []types.DocEle
 	for _, element := range elements {
 		log.Debugf("traversing document element of type %T", element)
 		switch section := element.(type) {
-		case *types.Section:
-			renderedSectionTitle, err := renderElement(ctx, section.SectionTitle.Content)
+		case types.Section:
+			renderedTitle, err := renderElement(ctx, section.Title.Content)
 			if err != nil {
 				return nil, errors.Wrapf(err, "error while rendering table of content section")
 			}
@@ -78,8 +78,8 @@ func renderTableOfContentSections(ctx *renderer.Context, elements []types.DocEle
 			}
 			sections = append(sections, TableOfContentSection{
 				Level:       section.Level,
-				Href:        section.SectionTitle.ID.Value,
-				Title:       template.HTML(string(renderedSectionTitle)),
+				Href:        section.Title.ID.Value,
+				Title:       template.HTML(string(renderedTitle)),
 				Subelements: renderedChildSections,
 			})
 		}

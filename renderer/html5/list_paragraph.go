@@ -10,7 +10,7 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-var listParagraphTmpl *texttemplate.Template
+var listParagraphTmpl texttemplate.Template
 
 // initializes the templates
 func init() {
@@ -22,7 +22,7 @@ func init() {
 		})
 }
 
-func renderListParagraph(ctx *renderer.Context, p *types.ListParagraph) ([]byte, error) {
+func renderListParagraph(ctx *renderer.Context, p types.ListParagraph) ([]byte, error) {
 	result := bytes.NewBuffer(nil)
 	// here we must preserve the HTML tags
 	err := listParagraphTmpl.Execute(result, ContextualPipeline{

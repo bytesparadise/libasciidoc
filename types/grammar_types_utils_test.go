@@ -11,45 +11,45 @@ import (
 var _ = Describe("Normalizing String", func() {
 
 	It("hello", func() {
-		source := &InlineContent{
+		source := InlineContent{
 			Elements: []InlineElement{
-				&StringElement{Content: "hello"},
+				StringElement{Content: "hello"},
 			},
 		}
 		verify(GinkgoT(), "_hello", source)
 	})
 
 	It("héllo with an accent", func() {
-		source := &InlineContent{
+		source := InlineContent{
 			Elements: []InlineElement{
-				&StringElement{Content: "  héllo 1.2   and 3 Spaces"},
+				StringElement{Content: "  héllo 1.2   and 3 Spaces"},
 			},
 		}
 		verify(GinkgoT(), "_héllo_1_2_and_3_spaces", source)
 	})
 
 	It("a an accent and a swedish character", func() {
-		source := &InlineContent{
+		source := InlineContent{
 			Elements: []InlineElement{
-				&StringElement{Content: `A à ⌘`},
+				StringElement{Content: `A à ⌘`},
 			},
 		}
 		verify(GinkgoT(), `_a_à`, source)
 	})
 
 	It("AŁA", func() {
-		source := &InlineContent{
+		source := InlineContent{
 			Elements: []InlineElement{
-				&StringElement{Content: `AŁA 0.1 ?`},
+				StringElement{Content: `AŁA 0.1 ?`},
 			},
 		}
 		verify(GinkgoT(), `_ała_0_1`, source)
 	})
 
 	It("it's  2 spaces, here !", func() {
-		source := &InlineContent{
+		source := InlineContent{
 			Elements: []InlineElement{
-				&StringElement{Content: `it's  2 spaces, here !`},
+				StringElement{Content: `it's  2 spaces, here !`},
 			},
 		}
 		verify(GinkgoT(), `_it_s_2_spaces_here`, source)
@@ -57,13 +57,13 @@ var _ = Describe("Normalizing String", func() {
 
 	It("content with <strong> markup", func() {
 		// == a section title, with *bold content*
-		source := &InlineContent{
+		source := InlineContent{
 			Elements: []InlineElement{
-				&StringElement{Content: "a section title, with"},
-				&QuotedText{
+				StringElement{Content: "a section title, with"},
+				QuotedText{
 					Kind: Bold,
 					Elements: []InlineElement{
-						&StringElement{Content: "bold content"},
+						StringElement{Content: "bold content"},
 					},
 				},
 			},
@@ -72,11 +72,11 @@ var _ = Describe("Normalizing String", func() {
 	})
 })
 
-func verify(t GinkgoTInterface, expected string, inlineContent *InlineContent) {
+func verify(t GinkgoTInterface, expected string, inlineContent InlineContent) {
 	t.Logf("Processing '%s'", spew.Sprint(inlineContent))
 	result, err := ReplaceNonAlphanumerics(inlineContent, "_")
 	require.Nil(t, err)
-	t.Logf("Normalized result: '%s'", *result)
-	assert.Equal(t, expected, *result)
+	t.Logf("Normalized result: '%s'", result)
+	assert.Equal(t, expected, result)
 
 }

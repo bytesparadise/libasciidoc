@@ -10,8 +10,8 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-var admonitionTmpl *texttemplate.Template
-var admonitionParagraphTmpl *texttemplate.Template
+var admonitionTmpl texttemplate.Template
+var admonitionParagraphTmpl texttemplate.Template
 
 // initializes the templates
 func init() {
@@ -37,14 +37,14 @@ func init() {
 		})
 }
 
-func renderAdmonition(ctx *renderer.Context, a *types.Admonition) ([]byte, error) {
+func renderAdmonition(ctx *renderer.Context, a types.Admonition) ([]byte, error) {
 	log.Debugf("rendering admonition")
 	result := bytes.NewBuffer(nil)
 	var id, title *string
-	if a.ID != nil {
+	if a.ID != (types.ElementID{}) {
 		id = &a.ID.Value
 	}
-	if a.Title != nil {
+	if a.Title != (types.ElementTitle{}) {
 		title = &a.Title.Value
 	}
 	renderedContent, err := renderElement(ctx, a.Content)
@@ -70,7 +70,7 @@ func renderAdmonition(ctx *renderer.Context, a *types.Admonition) ([]byte, error
 	return result.Bytes(), nil
 }
 
-func renderAdmonitionParagraph(ctx *renderer.Context, p *types.AdmonitionParagraph) ([]byte, error) {
+func renderAdmonitionParagraph(ctx *renderer.Context, p types.AdmonitionParagraph) ([]byte, error) {
 	result := bytes.NewBuffer(nil)
 	// here we must preserve the HTML tags
 	err := admonitionParagraphTmpl.Execute(result, ContextualPipeline{

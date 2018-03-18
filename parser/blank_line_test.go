@@ -10,24 +10,24 @@ var _ = Describe("Blank lines", func() {
 		actualDocument := `first paragraph
 
 second paragraph`
-		expectedResult := &types.Document{
+		expectedResult := types.Document{
 			Attributes:        map[string]interface{}{},
 			ElementReferences: map[string]interface{}{},
 			Elements: []types.DocElement{
-				&types.Paragraph{
-					Lines: []*types.InlineContent{
+				types.Paragraph{
+					Lines: []types.InlineContent{
 						{
 							Elements: []types.InlineElement{
-								&types.StringElement{Content: "first paragraph"},
+								types.StringElement{Content: "first paragraph"},
 							},
 						},
 					},
 				},
-				&types.Paragraph{
-					Lines: []*types.InlineContent{
+				types.Paragraph{
+					Lines: []types.InlineContent{
 						{
 							Elements: []types.InlineElement{
-								&types.StringElement{Content: "second paragraph"},
+								types.StringElement{Content: "second paragraph"},
 							},
 						},
 					},
@@ -43,24 +43,24 @@ second paragraph`
 		
 second paragraph
 `
-		expectedResult := &types.Document{
+		expectedResult := types.Document{
 			Attributes:        map[string]interface{}{},
 			ElementReferences: map[string]interface{}{},
 			Elements: []types.DocElement{
-				&types.Paragraph{
-					Lines: []*types.InlineContent{
+				types.Paragraph{
+					Lines: []types.InlineContent{
 						{
 							Elements: []types.InlineElement{
-								&types.StringElement{Content: "first paragraph"},
+								types.StringElement{Content: "first paragraph"},
 							},
 						},
 					},
 				},
-				&types.Paragraph{
-					Lines: []*types.InlineContent{
+				types.Paragraph{
+					Lines: []types.InlineContent{
 						{
 							Elements: []types.InlineElement{
-								&types.StringElement{Content: "second paragraph"},
+								types.StringElement{Content: "second paragraph"},
 							},
 						},
 					},

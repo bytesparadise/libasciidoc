@@ -12,10 +12,10 @@ var _ = Describe("Quoted Texts", func() {
 
 		It("bold text of 1 word", func() {
 			actualContent := "*hello*"
-			expectedResult := &types.QuotedText{
+			expectedResult := types.QuotedText{
 				Kind: types.Bold,
 				Elements: []types.InlineElement{
-					&types.StringElement{Content: "hello"},
+					types.StringElement{Content: "hello"},
 				},
 			}
 			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("QuotedText"))
@@ -23,10 +23,10 @@ var _ = Describe("Quoted Texts", func() {
 
 		It("bold text of 2 words", func() {
 			actualContent := "*bold    content*"
-			expectedResult := &types.QuotedText{
+			expectedResult := types.QuotedText{
 				Kind: types.Bold,
 				Elements: []types.InlineElement{
-					&types.StringElement{Content: "bold    content"},
+					types.StringElement{Content: "bold    content"},
 				},
 			}
 			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("QuotedText"))
@@ -34,10 +34,10 @@ var _ = Describe("Quoted Texts", func() {
 
 		It("bold text of 3 words", func() {
 			actualContent := "*some bold content*"
-			expectedResult := &types.QuotedText{
+			expectedResult := types.QuotedText{
 				Kind: types.Bold,
 				Elements: []types.InlineElement{
-					&types.StringElement{Content: "some bold content"},
+					types.StringElement{Content: "some bold content"},
 				},
 			}
 			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("QuotedText"))
@@ -45,10 +45,10 @@ var _ = Describe("Quoted Texts", func() {
 
 		It("italic text with3 words", func() {
 			actualContent := "_some italic content_"
-			expectedResult := &types.QuotedText{
+			expectedResult := types.QuotedText{
 				Kind: types.Italic,
 				Elements: []types.InlineElement{
-					&types.StringElement{Content: "some italic content"},
+					types.StringElement{Content: "some italic content"},
 				},
 			}
 			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("QuotedText"))
@@ -56,10 +56,10 @@ var _ = Describe("Quoted Texts", func() {
 
 		It("monospace text with3 words", func() {
 			actualContent := "`some monospace content`"
-			expectedResult := &types.QuotedText{
+			expectedResult := types.QuotedText{
 				Kind: types.Monospace,
 				Elements: []types.InlineElement{
-					&types.StringElement{Content: "some monospace content"},
+					types.StringElement{Content: "some monospace content"},
 				},
 			}
 			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("QuotedText"))
@@ -67,17 +67,17 @@ var _ = Describe("Quoted Texts", func() {
 
 		It("bold text within italic text", func() {
 			actualContent := "_some *bold* content_"
-			expectedResult := &types.QuotedText{
+			expectedResult := types.QuotedText{
 				Kind: types.Italic,
 				Elements: []types.InlineElement{
-					&types.StringElement{Content: "some "},
-					&types.QuotedText{
+					types.StringElement{Content: "some "},
+					types.QuotedText{
 						Kind: types.Bold,
 						Elements: []types.InlineElement{
-							&types.StringElement{Content: "bold"},
+							types.StringElement{Content: "bold"},
 						},
 					},
-					&types.StringElement{Content: " content"},
+					types.StringElement{Content: " content"},
 				},
 			}
 			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("QuotedText"))
@@ -85,18 +85,18 @@ var _ = Describe("Quoted Texts", func() {
 
 		It("monospace text within bold text within italic quote", func() {
 			actualContent := "*some _italic and `monospaced content`_*"
-			expectedResult := &types.QuotedText{
+			expectedResult := types.QuotedText{
 				Kind: types.Bold,
 				Elements: []types.InlineElement{
-					&types.StringElement{Content: "some "},
-					&types.QuotedText{
+					types.StringElement{Content: "some "},
+					types.QuotedText{
 						Kind: types.Italic,
 						Elements: []types.InlineElement{
-							&types.StringElement{Content: "italic and "},
-							&types.QuotedText{
+							types.StringElement{Content: "italic and "},
+							types.QuotedText{
 								Kind: types.Monospace,
 								Elements: []types.InlineElement{
-									&types.StringElement{Content: "monospaced content"},
+									types.StringElement{Content: "monospaced content"},
 								},
 							},
 						},
@@ -108,17 +108,17 @@ var _ = Describe("Quoted Texts", func() {
 
 		It("italic text within italic text", func() {
 			actualContent := "_some _very italic_ content_"
-			expectedResult := &types.QuotedText{
+			expectedResult := types.QuotedText{
 				Kind: types.Italic,
 				Elements: []types.InlineElement{
-					&types.StringElement{Content: "some "},
-					&types.QuotedText{
+					types.StringElement{Content: "some "},
+					types.QuotedText{
 						Kind: types.Italic,
 						Elements: []types.InlineElement{
-							&types.StringElement{Content: "very italic"},
+							types.StringElement{Content: "very italic"},
 						},
 					},
-					&types.StringElement{Content: " content"},
+					types.StringElement{Content: " content"},
 				},
 			}
 			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("QuotedText"))
@@ -129,10 +129,10 @@ var _ = Describe("Quoted Texts", func() {
 
 		It("bold text of 1 word", func() {
 			actualContent := "**hello**"
-			expectedResult := &types.QuotedText{
+			expectedResult := types.QuotedText{
 				Kind: types.Bold,
 				Elements: []types.InlineElement{
-					&types.StringElement{Content: "hello"},
+					types.StringElement{Content: "hello"},
 				},
 			}
 			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("QuotedText"))
@@ -140,10 +140,10 @@ var _ = Describe("Quoted Texts", func() {
 
 		It("italic text with3 words", func() {
 			actualContent := "__some italic content__"
-			expectedResult := &types.QuotedText{
+			expectedResult := types.QuotedText{
 				Kind: types.Italic,
 				Elements: []types.InlineElement{
-					&types.StringElement{Content: "some italic content"},
+					types.StringElement{Content: "some italic content"},
 				},
 			}
 			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("QuotedText"))
@@ -151,10 +151,10 @@ var _ = Describe("Quoted Texts", func() {
 
 		It("monospace text with3 words", func() {
 			actualContent := "``some monospace content``"
-			expectedResult := &types.QuotedText{
+			expectedResult := types.QuotedText{
 				Kind: types.Monospace,
 				Elements: []types.InlineElement{
-					&types.StringElement{Content: "some monospace content"},
+					types.StringElement{Content: "some monospace content"},
 				},
 			}
 			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("QuotedText"))
@@ -162,17 +162,17 @@ var _ = Describe("Quoted Texts", func() {
 
 		It("bold text within italic text", func() {
 			actualContent := "__some *bold* content__"
-			expectedResult := &types.QuotedText{
+			expectedResult := types.QuotedText{
 				Kind: types.Italic,
 				Elements: []types.InlineElement{
-					&types.StringElement{Content: "some "},
-					&types.QuotedText{
+					types.StringElement{Content: "some "},
+					types.QuotedText{
 						Kind: types.Bold,
 						Elements: []types.InlineElement{
-							&types.StringElement{Content: "bold"},
+							types.StringElement{Content: "bold"},
 						},
 					},
-					&types.StringElement{Content: " content"},
+					types.StringElement{Content: " content"},
 				},
 			}
 			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("QuotedText"))
@@ -180,18 +180,18 @@ var _ = Describe("Quoted Texts", func() {
 
 		It("monospace text within bold text within italic quote", func() {
 			actualContent := "**some _italic and ``monospaced content``_**"
-			expectedResult := &types.QuotedText{
+			expectedResult := types.QuotedText{
 				Kind: types.Bold,
 				Elements: []types.InlineElement{
-					&types.StringElement{Content: "some "},
-					&types.QuotedText{
+					types.StringElement{Content: "some "},
+					types.QuotedText{
 						Kind: types.Italic,
 						Elements: []types.InlineElement{
-							&types.StringElement{Content: "italic and "},
-							&types.QuotedText{
+							types.StringElement{Content: "italic and "},
+							types.QuotedText{
 								Kind: types.Monospace,
 								Elements: []types.InlineElement{
-									&types.StringElement{Content: "monospaced content"},
+									types.StringElement{Content: "monospaced content"},
 								},
 							},
 						},
@@ -207,13 +207,13 @@ var _ = Describe("Quoted Texts", func() {
 
 		It("inline with bold text", func() {
 			actualContent := "a paragraph with *some bold content*"
-			expectedResult := &types.InlineContent{
+			expectedResult := types.InlineContent{
 				Elements: []types.InlineElement{
-					&types.StringElement{Content: "a paragraph with "},
-					&types.QuotedText{
+					types.StringElement{Content: "a paragraph with "},
+					types.QuotedText{
 						Kind: types.Bold,
 						Elements: []types.InlineElement{
-							&types.StringElement{Content: "some bold content"},
+							types.StringElement{Content: "some bold content"},
 						},
 					},
 				},
@@ -223,9 +223,9 @@ var _ = Describe("Quoted Texts", func() {
 
 		It("inline with invalid bold text1", func() {
 			actualContent := "a paragraph with *some bold content"
-			expectedResult := &types.InlineContent{
+			expectedResult := types.InlineContent{
 				Elements: []types.InlineElement{
-					&types.StringElement{Content: "a paragraph with *some bold content"},
+					types.StringElement{Content: "a paragraph with *some bold content"},
 				},
 			}
 			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineContent"))
@@ -233,9 +233,9 @@ var _ = Describe("Quoted Texts", func() {
 
 		It("inline with invalid bold text2", func() {
 			actualContent := "a paragraph with *some bold content *"
-			expectedResult := &types.InlineContent{
+			expectedResult := types.InlineContent{
 				Elements: []types.InlineElement{
-					&types.StringElement{Content: "a paragraph with *some bold content *"},
+					types.StringElement{Content: "a paragraph with *some bold content *"},
 				},
 			}
 			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineContent"))
@@ -243,9 +243,9 @@ var _ = Describe("Quoted Texts", func() {
 
 		It("inline with invalid bold text3", func() {
 			actualContent := "a paragraph with * some bold content*"
-			expectedResult := &types.InlineContent{
+			expectedResult := types.InlineContent{
 				Elements: []types.InlineElement{
-					&types.StringElement{Content: "a paragraph with * some bold content*"},
+					types.StringElement{Content: "a paragraph with * some bold content*"},
 				},
 			}
 			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineContent"))
@@ -253,16 +253,16 @@ var _ = Describe("Quoted Texts", func() {
 
 		It("invalid italic text within bold text", func() {
 			actualContent := "some *bold and _italic content _ together*."
-			expectedResult := &types.InlineContent{
+			expectedResult := types.InlineContent{
 				Elements: []types.InlineElement{
-					&types.StringElement{Content: "some "},
-					&types.QuotedText{
+					types.StringElement{Content: "some "},
+					types.QuotedText{
 						Kind: types.Bold,
 						Elements: []types.InlineElement{
-							&types.StringElement{Content: "bold and _italic content _ together"},
+							types.StringElement{Content: "bold and _italic content _ together"},
 						},
 					},
-					&types.StringElement{Content: "."},
+					types.StringElement{Content: "."},
 				},
 			}
 			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineContent"))
@@ -270,16 +270,16 @@ var _ = Describe("Quoted Texts", func() {
 
 		It("italic text within invalid bold text", func() {
 			actualContent := "some *bold and _italic content_ together *."
-			expectedResult := &types.InlineContent{
+			expectedResult := types.InlineContent{
 				Elements: []types.InlineElement{
-					&types.StringElement{Content: "some *bold and "},
-					&types.QuotedText{
+					types.StringElement{Content: "some *bold and "},
+					types.QuotedText{
 						Kind: types.Italic,
 						Elements: []types.InlineElement{
-							&types.StringElement{Content: "italic content"},
+							types.StringElement{Content: "italic content"},
 						},
 					},
-					&types.StringElement{Content: " together *."},
+					types.StringElement{Content: " together *."},
 				},
 			}
 			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineContent"))
@@ -290,23 +290,23 @@ var _ = Describe("Quoted Texts", func() {
 
 		It("italic text within bold text", func() {
 			actualContent := "some *bold and _italic content_ together*."
-			expectedResult := &types.InlineContent{
+			expectedResult := types.InlineContent{
 				Elements: []types.InlineElement{
-					&types.StringElement{Content: "some "},
-					&types.QuotedText{
+					types.StringElement{Content: "some "},
+					types.QuotedText{
 						Kind: types.Bold,
 						Elements: []types.InlineElement{
-							&types.StringElement{Content: "bold and "},
-							&types.QuotedText{
+							types.StringElement{Content: "bold and "},
+							types.QuotedText{
 								Kind: types.Italic,
 								Elements: []types.InlineElement{
-									&types.StringElement{Content: "italic content"},
+									types.StringElement{Content: "italic content"},
 								},
 							},
-							&types.StringElement{Content: " together"},
+							types.StringElement{Content: " together"},
 						},
 					},
-					&types.StringElement{Content: "."},
+					types.StringElement{Content: "."},
 				},
 			}
 			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineContent"))
@@ -315,19 +315,19 @@ var _ = Describe("Quoted Texts", func() {
 		It("simple-quote bold within simple-quote bold text", func() {
 			// here we don't allow for bold text within bold text, to comply with the existing implementations (asciidoc and asciidoctor)
 			actualContent := "*some *nested bold* content*"
-			expectedResult := &types.InlineContent{
+			expectedResult := types.InlineContent{
 				Elements: []types.InlineElement{
-					&types.QuotedText{
+					types.QuotedText{
 						Kind: types.Bold,
 						Elements: []types.InlineElement{
-							&types.StringElement{Content: "some "},
-							&types.QuotedText{
+							types.StringElement{Content: "some "},
+							types.QuotedText{
 								Kind: types.Bold,
 								Elements: []types.InlineElement{
-									&types.StringElement{Content: "nested bold"},
+									types.StringElement{Content: "nested bold"},
 								},
 							},
-							&types.StringElement{Content: " content"},
+							types.StringElement{Content: " content"},
 						},
 					},
 				},
@@ -338,19 +338,19 @@ var _ = Describe("Quoted Texts", func() {
 		It("double-quote bold within double-quote bold text", func() {
 			// here we don't allow for bold text within bold text, to comply with the existing implementations (asciidoc and asciidoctor)
 			actualContent := "**some **nested bold** content**"
-			expectedResult := &types.InlineContent{
+			expectedResult := types.InlineContent{
 				Elements: []types.InlineElement{
-					&types.QuotedText{
+					types.QuotedText{
 						Kind: types.Bold,
 						Elements: []types.InlineElement{
-							&types.StringElement{Content: "some "},
-							&types.QuotedText{
+							types.StringElement{Content: "some "},
+							types.QuotedText{
 								Kind: types.Bold,
 								Elements: []types.InlineElement{
-									&types.StringElement{Content: "nested bold"},
+									types.StringElement{Content: "nested bold"},
 								},
 							},
-							&types.StringElement{Content: " content"},
+							types.StringElement{Content: " content"},
 						},
 					},
 				},
@@ -361,19 +361,19 @@ var _ = Describe("Quoted Texts", func() {
 		It("simple-quote bold within double-quote bold text", func() {
 			// here we don't allow for bold text within bold text, to comply with the existing implementations (asciidoc and asciidoctor)
 			actualContent := "**some *nested bold* content**"
-			expectedResult := &types.InlineContent{
+			expectedResult := types.InlineContent{
 				Elements: []types.InlineElement{
-					&types.QuotedText{
+					types.QuotedText{
 						Kind: types.Bold,
 						Elements: []types.InlineElement{
-							&types.StringElement{Content: "some "},
-							&types.QuotedText{
+							types.StringElement{Content: "some "},
+							types.QuotedText{
 								Kind: types.Bold,
 								Elements: []types.InlineElement{
-									&types.StringElement{Content: "nested bold"},
+									types.StringElement{Content: "nested bold"},
 								},
 							},
-							&types.StringElement{Content: " content"},
+							types.StringElement{Content: " content"},
 						},
 					},
 				},
@@ -384,19 +384,19 @@ var _ = Describe("Quoted Texts", func() {
 		It("double-quote bold within simple-quote bold text", func() {
 			// here we don't allow for bold text within bold text, to comply with the existing implementations (asciidoc and asciidoctor)
 			actualContent := "*some **nested bold** content*"
-			expectedResult := &types.InlineContent{
+			expectedResult := types.InlineContent{
 				Elements: []types.InlineElement{
-					&types.QuotedText{
+					types.QuotedText{
 						Kind: types.Bold,
 						Elements: []types.InlineElement{
-							&types.StringElement{Content: "some "},
-							&types.QuotedText{
+							types.StringElement{Content: "some "},
+							types.QuotedText{
 								Kind: types.Bold,
 								Elements: []types.InlineElement{
-									&types.StringElement{Content: "nested bold"},
+									types.StringElement{Content: "nested bold"},
 								},
 							},
-							&types.StringElement{Content: " content"},
+							types.StringElement{Content: " content"},
 						},
 					},
 				},
@@ -407,19 +407,19 @@ var _ = Describe("Quoted Texts", func() {
 		It("simple-quote italic within simple-quote italic text", func() {
 			// here we don't allow for italic text within italic text, to comply with the existing implementations (asciidoc and asciidoctor)
 			actualContent := "_some _nested italic_ content_"
-			expectedResult := &types.InlineContent{
+			expectedResult := types.InlineContent{
 				Elements: []types.InlineElement{
-					&types.QuotedText{
+					types.QuotedText{
 						Kind: types.Italic,
 						Elements: []types.InlineElement{
-							&types.StringElement{Content: "some "},
-							&types.QuotedText{
+							types.StringElement{Content: "some "},
+							types.QuotedText{
 								Kind: types.Italic,
 								Elements: []types.InlineElement{
-									&types.StringElement{Content: "nested italic"},
+									types.StringElement{Content: "nested italic"},
 								},
 							},
-							&types.StringElement{Content: " content"},
+							types.StringElement{Content: " content"},
 						},
 					},
 				},
@@ -430,19 +430,19 @@ var _ = Describe("Quoted Texts", func() {
 		It("double-quote italic within double-quote italic text", func() {
 			// here we don't allow for italic text within italic text, to comply with the existing implementations (asciidoc and asciidoctor)
 			actualContent := "__some __nested italic__ content__"
-			expectedResult := &types.InlineContent{
+			expectedResult := types.InlineContent{
 				Elements: []types.InlineElement{
-					&types.QuotedText{
+					types.QuotedText{
 						Kind: types.Italic,
 						Elements: []types.InlineElement{
-							&types.StringElement{Content: "some "},
-							&types.QuotedText{
+							types.StringElement{Content: "some "},
+							types.QuotedText{
 								Kind: types.Italic,
 								Elements: []types.InlineElement{
-									&types.StringElement{Content: "nested italic"},
+									types.StringElement{Content: "nested italic"},
 								},
 							},
-							&types.StringElement{Content: " content"},
+							types.StringElement{Content: " content"},
 						},
 					},
 				},
@@ -453,19 +453,19 @@ var _ = Describe("Quoted Texts", func() {
 		It("simple-quote italic within double-quote italic text", func() {
 			// here we allow for italic text within italic text, to comply with the existing implementations (asciidoc and asciidoctor)
 			actualContent := "_some __nested italic__ content_"
-			expectedResult := &types.InlineContent{
+			expectedResult := types.InlineContent{
 				Elements: []types.InlineElement{
-					&types.QuotedText{
+					types.QuotedText{
 						Kind: types.Italic,
 						Elements: []types.InlineElement{
-							&types.StringElement{Content: "some "},
-							&types.QuotedText{
+							types.StringElement{Content: "some "},
+							types.QuotedText{
 								Kind: types.Italic,
 								Elements: []types.InlineElement{
-									&types.StringElement{Content: "nested italic"},
+									types.StringElement{Content: "nested italic"},
 								},
 							},
-							&types.StringElement{Content: " content"},
+							types.StringElement{Content: " content"},
 						},
 					},
 				},
@@ -476,19 +476,19 @@ var _ = Describe("Quoted Texts", func() {
 		It("double-quote italic within simple-quote italic text", func() {
 			// here we allow for italic text within italic text, to comply with the existing implementations (asciidoc and asciidoctor)
 			actualContent := "_some __nested italic__ content_"
-			expectedResult := &types.InlineContent{
+			expectedResult := types.InlineContent{
 				Elements: []types.InlineElement{
-					&types.QuotedText{
+					types.QuotedText{
 						Kind: types.Italic,
 						Elements: []types.InlineElement{
-							&types.StringElement{Content: "some "},
-							&types.QuotedText{
+							types.StringElement{Content: "some "},
+							types.QuotedText{
 								Kind: types.Italic,
 								Elements: []types.InlineElement{
-									&types.StringElement{Content: "nested italic"},
+									types.StringElement{Content: "nested italic"},
 								},
 							},
-							&types.StringElement{Content: " content"},
+							types.StringElement{Content: " content"},
 						},
 					},
 				},
@@ -499,19 +499,19 @@ var _ = Describe("Quoted Texts", func() {
 		It("simple-quote monospace within simple-quote monospace text", func() {
 			// here we don't allow for monospace text within monospace text, to comply with the existing implementations (asciidoc and asciidoctor)
 			actualContent := "`some `nested monospace` content`"
-			expectedResult := &types.InlineContent{
+			expectedResult := types.InlineContent{
 				Elements: []types.InlineElement{
-					&types.QuotedText{
+					types.QuotedText{
 						Kind: types.Monospace,
 						Elements: []types.InlineElement{
-							&types.StringElement{Content: "some "},
-							&types.QuotedText{
+							types.StringElement{Content: "some "},
+							types.QuotedText{
 								Kind: types.Monospace,
 								Elements: []types.InlineElement{
-									&types.StringElement{Content: "nested monospace"},
+									types.StringElement{Content: "nested monospace"},
 								},
 							},
-							&types.StringElement{Content: " content"},
+							types.StringElement{Content: " content"},
 						},
 					},
 				},
@@ -522,19 +522,19 @@ var _ = Describe("Quoted Texts", func() {
 		It("double-quote monospace within double-quote monospace text", func() {
 			// here we don't allow for monospace text within monospace text, to comply with the existing implementations (asciidoc and asciidoctor)
 			actualContent := "``some ``nested monospace`` content``"
-			expectedResult := &types.InlineContent{
+			expectedResult := types.InlineContent{
 				Elements: []types.InlineElement{
-					&types.QuotedText{
+					types.QuotedText{
 						Kind: types.Monospace,
 						Elements: []types.InlineElement{
-							&types.StringElement{Content: "some "},
-							&types.QuotedText{
+							types.StringElement{Content: "some "},
+							types.QuotedText{
 								Kind: types.Monospace,
 								Elements: []types.InlineElement{
-									&types.StringElement{Content: "nested monospace"},
+									types.StringElement{Content: "nested monospace"},
 								},
 							},
-							&types.StringElement{Content: " content"},
+							types.StringElement{Content: " content"},
 						},
 					},
 				},
@@ -545,19 +545,19 @@ var _ = Describe("Quoted Texts", func() {
 		It("simple-quote monospace within double-quote monospace text", func() {
 			// here we allow for monospace text within monospace text, to comply with the existing implementations (asciidoc and asciidoctor)
 			actualContent := "`some ``nested monospace`` content`"
-			expectedResult := &types.InlineContent{
+			expectedResult := types.InlineContent{
 				Elements: []types.InlineElement{
-					&types.QuotedText{
+					types.QuotedText{
 						Kind: types.Monospace,
 						Elements: []types.InlineElement{
-							&types.StringElement{Content: "some "},
-							&types.QuotedText{
+							types.StringElement{Content: "some "},
+							types.QuotedText{
 								Kind: types.Monospace,
 								Elements: []types.InlineElement{
-									&types.StringElement{Content: "nested monospace"},
+									types.StringElement{Content: "nested monospace"},
 								},
 							},
-							&types.StringElement{Content: " content"},
+							types.StringElement{Content: " content"},
 						},
 					},
 				},
@@ -568,19 +568,19 @@ var _ = Describe("Quoted Texts", func() {
 		It("double-quote monospace within simple-quote monospace text", func() {
 			// here we allow for monospace text within monospace text, to comply with the existing implementations (asciidoc and asciidoctor)
 			actualContent := "`some ``nested monospace`` content`"
-			expectedResult := &types.InlineContent{
+			expectedResult := types.InlineContent{
 				Elements: []types.InlineElement{
-					&types.QuotedText{
+					types.QuotedText{
 						Kind: types.Monospace,
 						Elements: []types.InlineElement{
-							&types.StringElement{Content: "some "},
-							&types.QuotedText{
+							types.StringElement{Content: "some "},
+							types.QuotedText{
 								Kind: types.Monospace,
 								Elements: []types.InlineElement{
-									&types.StringElement{Content: "nested monospace"},
+									types.StringElement{Content: "nested monospace"},
 								},
 							},
-							&types.StringElement{Content: " content"},
+							types.StringElement{Content: " content"},
 						},
 					},
 				},
@@ -596,12 +596,12 @@ var _ = Describe("Quoted Texts", func() {
 
 			It("unbalanced bold text - extra on left", func() {
 				actualContent := "**some bold content*"
-				expectedResult := &types.InlineContent{
+				expectedResult := types.InlineContent{
 					Elements: []types.InlineElement{
-						&types.QuotedText{
+						types.QuotedText{
 							Kind: types.Bold,
 							Elements: []types.InlineElement{
-								&types.StringElement{Content: "*some bold content"},
+								types.StringElement{Content: "*some bold content"},
 							},
 						},
 					},
@@ -611,15 +611,15 @@ var _ = Describe("Quoted Texts", func() {
 
 			It("unbalanced bold text - extra on right", func() {
 				actualContent := "*some bold content**"
-				expectedResult := &types.InlineContent{
+				expectedResult := types.InlineContent{
 					Elements: []types.InlineElement{
-						&types.QuotedText{
+						types.QuotedText{
 							Kind: types.Bold,
 							Elements: []types.InlineElement{
-								&types.StringElement{Content: "some bold content"},
+								types.StringElement{Content: "some bold content"},
 							},
 						},
-						&types.StringElement{Content: "*"},
+						types.StringElement{Content: "*"},
 					},
 				}
 				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineContent"))
@@ -630,12 +630,12 @@ var _ = Describe("Quoted Texts", func() {
 
 			It("unbalanced italic text - extra on left", func() {
 				actualContent := "__some italic content_"
-				expectedResult := &types.InlineContent{
+				expectedResult := types.InlineContent{
 					Elements: []types.InlineElement{
-						&types.QuotedText{
+						types.QuotedText{
 							Kind: types.Italic,
 							Elements: []types.InlineElement{
-								&types.StringElement{Content: "_some italic content"},
+								types.StringElement{Content: "_some italic content"},
 							},
 						},
 					},
@@ -645,15 +645,15 @@ var _ = Describe("Quoted Texts", func() {
 
 			It("unbalanced italic text - extra on right", func() {
 				actualContent := "_some italic content__"
-				expectedResult := &types.InlineContent{
+				expectedResult := types.InlineContent{
 					Elements: []types.InlineElement{
-						&types.QuotedText{
+						types.QuotedText{
 							Kind: types.Italic,
 							Elements: []types.InlineElement{
-								&types.StringElement{Content: "some italic content"},
+								types.StringElement{Content: "some italic content"},
 							},
 						},
-						&types.StringElement{Content: "_"},
+						types.StringElement{Content: "_"},
 					},
 				}
 				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineContent"))
@@ -664,12 +664,12 @@ var _ = Describe("Quoted Texts", func() {
 
 			It("unbalanced monospace text - extra on left", func() {
 				actualContent := "``some monospace content`"
-				expectedResult := &types.InlineContent{
+				expectedResult := types.InlineContent{
 					Elements: []types.InlineElement{
-						&types.QuotedText{
+						types.QuotedText{
 							Kind: types.Monospace,
 							Elements: []types.InlineElement{
-								&types.StringElement{Content: "`some monospace content"},
+								types.StringElement{Content: "`some monospace content"},
 							},
 						},
 					},
@@ -679,15 +679,15 @@ var _ = Describe("Quoted Texts", func() {
 
 			It("unbalanced monospace text - extra on right", func() {
 				actualContent := "`some monospace content``"
-				expectedResult := &types.InlineContent{
+				expectedResult := types.InlineContent{
 					Elements: []types.InlineElement{
-						&types.QuotedText{
+						types.QuotedText{
 							Kind: types.Monospace,
 							Elements: []types.InlineElement{
-								&types.StringElement{Content: "some monospace content"},
+								types.StringElement{Content: "some monospace content"},
 							},
 						},
-						&types.StringElement{Content: "`"},
+						types.StringElement{Content: "`"},
 					},
 				}
 				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineContent"))
@@ -696,11 +696,11 @@ var _ = Describe("Quoted Texts", func() {
 
 		It("inline with unbalanced bold text", func() {
 			actualContent := "a paragraph with *some bold content"
-			expectedResult := &types.Paragraph{
-				Lines: []*types.InlineContent{
-					&types.InlineContent{
+			expectedResult := types.Paragraph{
+				Lines: []types.InlineContent{
+					{
 						Elements: []types.InlineElement{
-							&types.StringElement{Content: "a paragraph with *some bold content"},
+							types.StringElement{Content: "a paragraph with *some bold content"},
 						},
 					},
 				},
@@ -716,11 +716,11 @@ var _ = Describe("Quoted Texts", func() {
 
 			It("escaped bold text with simple quote", func() {
 				actualContent := `\*bold content*`
-				expectedResult := &types.Paragraph{
-					Lines: []*types.InlineContent{
-						&types.InlineContent{
+				expectedResult := types.Paragraph{
+					Lines: []types.InlineContent{
+						{
 							Elements: []types.InlineElement{
-								&types.StringElement{Content: "*bold content*"},
+								types.StringElement{Content: "*bold content*"},
 							},
 						},
 					},
@@ -730,11 +730,11 @@ var _ = Describe("Quoted Texts", func() {
 
 			It("escaped bold text with simple quote and more backslashes", func() {
 				actualContent := `\\*bold content*`
-				expectedResult := &types.Paragraph{
-					Lines: []*types.InlineContent{
-						&types.InlineContent{
+				expectedResult := types.Paragraph{
+					Lines: []types.InlineContent{
+						{
 							Elements: []types.InlineElement{
-								&types.StringElement{Content: `\*bold content*`},
+								types.StringElement{Content: `\*bold content*`},
 							},
 						},
 					},
@@ -744,11 +744,11 @@ var _ = Describe("Quoted Texts", func() {
 
 			It("escaped bold text with double quote", func() {
 				actualContent := `\\**bold content**`
-				expectedResult := &types.Paragraph{
-					Lines: []*types.InlineContent{
-						&types.InlineContent{
+				expectedResult := types.Paragraph{
+					Lines: []types.InlineContent{
+						{
 							Elements: []types.InlineElement{
-								&types.StringElement{Content: `**bold content**`},
+								types.StringElement{Content: `**bold content**`},
 							},
 						},
 					},
@@ -758,11 +758,11 @@ var _ = Describe("Quoted Texts", func() {
 
 			It("escaped bold text with double quote and more backslashes", func() {
 				actualContent := `\\\**bold content**`
-				expectedResult := &types.Paragraph{
-					Lines: []*types.InlineContent{
-						&types.InlineContent{
+				expectedResult := types.Paragraph{
+					Lines: []types.InlineContent{
+						{
 							Elements: []types.InlineElement{
-								&types.StringElement{Content: `\**bold content**`},
+								types.StringElement{Content: `\**bold content**`},
 							},
 						},
 					},
@@ -772,11 +772,11 @@ var _ = Describe("Quoted Texts", func() {
 
 			It("escaped bold text with unbalanced double quote", func() {
 				actualContent := `\**bold content*`
-				expectedResult := &types.Paragraph{
-					Lines: []*types.InlineContent{
-						&types.InlineContent{
+				expectedResult := types.Paragraph{
+					Lines: []types.InlineContent{
+						{
 							Elements: []types.InlineElement{
-								&types.StringElement{Content: `**bold content*`},
+								types.StringElement{Content: `**bold content*`},
 							},
 						},
 					},
@@ -786,11 +786,11 @@ var _ = Describe("Quoted Texts", func() {
 
 			It("escaped bold text with unbalanced double quote and more backslashes", func() {
 				actualContent := `\\\**bold content*`
-				expectedResult := &types.Paragraph{
-					Lines: []*types.InlineContent{
-						&types.InlineContent{
+				expectedResult := types.Paragraph{
+					Lines: []types.InlineContent{
+						{
 							Elements: []types.InlineElement{
-								&types.StringElement{Content: `\\**bold content*`},
+								types.StringElement{Content: `\\**bold content*`},
 							},
 						},
 					},
@@ -803,11 +803,11 @@ var _ = Describe("Quoted Texts", func() {
 
 			It("escaped italic text with simple quote", func() {
 				actualContent := `\_italic content_`
-				expectedResult := &types.Paragraph{
-					Lines: []*types.InlineContent{
-						&types.InlineContent{
+				expectedResult := types.Paragraph{
+					Lines: []types.InlineContent{
+						{
 							Elements: []types.InlineElement{
-								&types.StringElement{Content: "_italic content_"},
+								types.StringElement{Content: "_italic content_"},
 							},
 						},
 					},
@@ -817,11 +817,11 @@ var _ = Describe("Quoted Texts", func() {
 
 			It("escaped italic text with simple quote and more backslashes", func() {
 				actualContent := `\\_italic content_`
-				expectedResult := &types.Paragraph{
-					Lines: []*types.InlineContent{
-						&types.InlineContent{
+				expectedResult := types.Paragraph{
+					Lines: []types.InlineContent{
+						{
 							Elements: []types.InlineElement{
-								&types.StringElement{Content: `\_italic content_`},
+								types.StringElement{Content: `\_italic content_`},
 							},
 						},
 					},
@@ -831,11 +831,11 @@ var _ = Describe("Quoted Texts", func() {
 
 			It("escaped italic text with double quote", func() {
 				actualContent := `\\__italic content__`
-				expectedResult := &types.Paragraph{
-					Lines: []*types.InlineContent{
-						&types.InlineContent{
+				expectedResult := types.Paragraph{
+					Lines: []types.InlineContent{
+						{
 							Elements: []types.InlineElement{
-								&types.StringElement{Content: `__italic content__`},
+								types.StringElement{Content: `__italic content__`},
 							},
 						},
 					},
@@ -845,11 +845,11 @@ var _ = Describe("Quoted Texts", func() {
 
 			It("escaped italic text with double quote and more backslashes", func() {
 				actualContent := `\\\__italic content__`
-				expectedResult := &types.Paragraph{
-					Lines: []*types.InlineContent{
-						&types.InlineContent{
+				expectedResult := types.Paragraph{
+					Lines: []types.InlineContent{
+						{
 							Elements: []types.InlineElement{
-								&types.StringElement{Content: `\__italic content__`},
+								types.StringElement{Content: `\__italic content__`},
 							},
 						},
 					},
@@ -859,11 +859,11 @@ var _ = Describe("Quoted Texts", func() {
 
 			It("escaped italic text with unbalanced double quote", func() {
 				actualContent := `\__italic content_`
-				expectedResult := &types.Paragraph{
-					Lines: []*types.InlineContent{
-						&types.InlineContent{
+				expectedResult := types.Paragraph{
+					Lines: []types.InlineContent{
+						{
 							Elements: []types.InlineElement{
-								&types.StringElement{Content: `__italic content_`},
+								types.StringElement{Content: `__italic content_`},
 							},
 						},
 					},
@@ -873,11 +873,11 @@ var _ = Describe("Quoted Texts", func() {
 
 			It("escaped italic text with unbalanced double quote and more backslashes", func() {
 				actualContent := `\\\__italic content_`
-				expectedResult := &types.Paragraph{
-					Lines: []*types.InlineContent{
-						&types.InlineContent{
+				expectedResult := types.Paragraph{
+					Lines: []types.InlineContent{
+						{
 							Elements: []types.InlineElement{
-								&types.StringElement{Content: `\\__italic content_`}, // only 1 backslash remove
+								types.StringElement{Content: `\\__italic content_`}, // only 1 backslash remove
 							},
 						},
 					},
@@ -890,11 +890,11 @@ var _ = Describe("Quoted Texts", func() {
 
 			It("escaped monospace text with simple quote", func() {
 				actualContent := "\\`monospace content`"
-				expectedResult := &types.Paragraph{
-					Lines: []*types.InlineContent{
-						&types.InlineContent{
+				expectedResult := types.Paragraph{
+					Lines: []types.InlineContent{
+						{
 							Elements: []types.InlineElement{
-								&types.StringElement{Content: "`monospace content`"},
+								types.StringElement{Content: "`monospace content`"},
 							},
 						},
 					},
@@ -904,11 +904,11 @@ var _ = Describe("Quoted Texts", func() {
 
 			It("escaped monospace text with simple quote and more backslashes", func() {
 				actualContent := "\\\\`monospace content`"
-				expectedResult := &types.Paragraph{
-					Lines: []*types.InlineContent{
-						&types.InlineContent{
+				expectedResult := types.Paragraph{
+					Lines: []types.InlineContent{
+						{
 							Elements: []types.InlineElement{
-								&types.StringElement{Content: "\\`monospace content`"}, // only 1 backslash remove
+								types.StringElement{Content: "\\`monospace content`"}, // only 1 backslash remove
 							},
 						},
 					},
@@ -918,11 +918,11 @@ var _ = Describe("Quoted Texts", func() {
 
 			It("escaped monospace text with double quote", func() {
 				actualContent := "\\\\``monospace content``"
-				expectedResult := &types.Paragraph{
-					Lines: []*types.InlineContent{
-						&types.InlineContent{
+				expectedResult := types.Paragraph{
+					Lines: []types.InlineContent{
+						{
 							Elements: []types.InlineElement{
-								&types.StringElement{Content: "``monospace content``"},
+								types.StringElement{Content: "``monospace content``"},
 							},
 						},
 					},
@@ -932,11 +932,11 @@ var _ = Describe("Quoted Texts", func() {
 
 			It("escaped monospace text with double quote and more backslashes", func() {
 				actualContent := "\\\\\\``monospace content``" // 3 backslashes
-				expectedResult := &types.Paragraph{
-					Lines: []*types.InlineContent{
-						&types.InlineContent{
+				expectedResult := types.Paragraph{
+					Lines: []types.InlineContent{
+						{
 							Elements: []types.InlineElement{
-								&types.StringElement{Content: "\\``monospace content``"},
+								types.StringElement{Content: "\\``monospace content``"},
 							},
 						},
 					},
@@ -946,11 +946,11 @@ var _ = Describe("Quoted Texts", func() {
 
 			It("escaped monospace text with unbalanced double quote", func() {
 				actualContent := "\\``monospace content`"
-				expectedResult := &types.Paragraph{
-					Lines: []*types.InlineContent{
-						&types.InlineContent{
+				expectedResult := types.Paragraph{
+					Lines: []types.InlineContent{
+						{
 							Elements: []types.InlineElement{
-								&types.StringElement{Content: "``monospace content`"},
+								types.StringElement{Content: "``monospace content`"},
 							},
 						},
 					},
@@ -960,11 +960,11 @@ var _ = Describe("Quoted Texts", func() {
 
 			It("escaped monospace text with unbalanced double quote and more backslashes", func() {
 				actualContent := "\\\\\\``monospace content`" // 3 backslashes
-				expectedResult := &types.Paragraph{
-					Lines: []*types.InlineContent{
-						&types.InlineContent{
+				expectedResult := types.Paragraph{
+					Lines: []types.InlineContent{
+						{
 							Elements: []types.InlineElement{
-								&types.StringElement{Content: "\\\\``monospace content`"}, // only 1 backslash remove
+								types.StringElement{Content: "\\\\``monospace content`"}, // only 1 backslash remove
 							},
 						},
 					},
@@ -976,18 +976,18 @@ var _ = Describe("Quoted Texts", func() {
 		Context("Include nested substitution", func() {
 			It("escaped bold text with nested italic", func() {
 				actualContent := `\*bold _and italic_ content*`
-				expectedResult := &types.Paragraph{
-					Lines: []*types.InlineContent{
-						&types.InlineContent{
+				expectedResult := types.Paragraph{
+					Lines: []types.InlineContent{
+						{
 							Elements: []types.InlineElement{
-								&types.StringElement{Content: "*bold "},
-								&types.QuotedText{
+								types.StringElement{Content: "*bold "},
+								types.QuotedText{
 									Kind: types.Italic,
 									Elements: []types.InlineElement{
-										&types.StringElement{Content: "and italic"},
+										types.StringElement{Content: "and italic"},
 									},
 								},
-								&types.StringElement{Content: " content*"},
+								types.StringElement{Content: " content*"},
 							},
 						},
 					},

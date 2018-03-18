@@ -11,12 +11,12 @@ import (
 // which carries the types.Document which is being processed
 type Context struct {
 	context  context.Context
-	Document *types.Document
+	Document types.Document
 	options  map[string]interface{}
 }
 
 // Wrap wraps the given `ctx` context into a new context which will contain the given `document` document.
-func Wrap(ctx context.Context, document *types.Document, options ...Option) *Context {
+func Wrap(ctx context.Context, document types.Document, options ...Option) *Context {
 	result := &Context{
 		context:  ctx,
 		Document: document,

@@ -23,7 +23,7 @@ func verify(t GinkgoTInterface, expectedResult, content string, rendererOpts ...
 	require.NoError(t, err, "Error found while parsing the document")
 	t.Logf("actual document: `%s`", spew.Sdump(doc))
 	buff := bytes.NewBuffer(nil)
-	actualDocument := doc.(*types.Document)
+	actualDocument := doc.(types.Document)
 	rendererCtx := renderer.Wrap(context.Background(), actualDocument, rendererOpts...)
 	// if entrypoint := rendererCtx.Entrypoint(); entrypoint != nil {
 

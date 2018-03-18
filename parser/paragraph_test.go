@@ -10,11 +10,11 @@ var _ = Describe("Paragraphs", func() {
 
 	It("paragraph with 1 word", func() {
 		actualContent := "hello"
-		expectedResult := &types.Paragraph{
-			Lines: []*types.InlineContent{
+		expectedResult := types.Paragraph{
+			Lines: []types.InlineContent{
 				{
 					Elements: []types.InlineElement{
-						&types.StringElement{Content: "hello"},
+						types.StringElement{Content: "hello"},
 					},
 				},
 			},
@@ -24,11 +24,11 @@ var _ = Describe("Paragraphs", func() {
 
 	It("paragraph with few words", func() {
 		actualContent := "a paragraph with some content"
-		expectedResult := &types.Paragraph{
-			Lines: []*types.InlineContent{
+		expectedResult := types.Paragraph{
+			Lines: []types.InlineContent{
 				{
 					Elements: []types.InlineElement{
-						&types.StringElement{Content: "a paragraph with some content"},
+						types.StringElement{Content: "a paragraph with some content"},
 					},
 				},
 			},
@@ -38,15 +38,15 @@ var _ = Describe("Paragraphs", func() {
 
 	It("paragraph with bold content", func() {
 		actualContent := "a paragraph with *some bold content*"
-		expectedResult := &types.Paragraph{
-			Lines: []*types.InlineContent{
+		expectedResult := types.Paragraph{
+			Lines: []types.InlineContent{
 				{
 					Elements: []types.InlineElement{
-						&types.StringElement{Content: "a paragraph with "},
-						&types.QuotedText{
+						types.StringElement{Content: "a paragraph with "},
+						types.QuotedText{
 							Kind: types.Bold,
 							Elements: []types.InlineElement{
-								&types.StringElement{Content: "some bold content"},
+								types.StringElement{Content: "some bold content"},
 							},
 						},
 					},
@@ -60,13 +60,13 @@ var _ = Describe("Paragraphs", func() {
 		actualContent := `[#foo]
 .a title
 a paragraph`
-		expectedResult := &types.Paragraph{
-			ID:    &types.ElementID{Value: "foo"},
-			Title: &types.ElementTitle{Value: "a title"},
-			Lines: []*types.InlineContent{
+		expectedResult := types.Paragraph{
+			ID:    types.ElementID{Value: "foo"},
+			Title: types.ElementTitle{Value: "a title"},
+			Lines: []types.InlineContent{
 				{
 					Elements: []types.InlineElement{
-						&types.StringElement{Content: "a paragraph"},
+						types.StringElement{Content: "a paragraph"},
 					},
 				},
 			},

@@ -8,7 +8,7 @@ import (
 	"github.com/pkg/errors"
 )
 
-func renderInlineContent(ctx *renderer.Context, c *types.InlineContent) ([]byte, error) {
+func renderInlineContent(ctx *renderer.Context, c types.InlineContent) ([]byte, error) {
 	renderedElementsBuff := bytes.NewBuffer(nil)
 	for _, element := range c.Elements {
 		renderedElement, err := renderElement(ctx, element)

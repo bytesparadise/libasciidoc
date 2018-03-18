@@ -10,8 +10,8 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-var defaultLabeledListTmpl *texttemplate.Template
-var horizontalLabeledListTmpl *texttemplate.Template
+var defaultLabeledListTmpl texttemplate.Template
+var horizontalLabeledListTmpl texttemplate.Template
 
 // initializes the templates
 func init() {
@@ -54,8 +54,8 @@ func init() {
 
 }
 
-func renderLabeledList(ctx *renderer.Context, l *types.LabeledList) ([]byte, error) {
-	var tmpl *texttemplate.Template
+func renderLabeledList(ctx *renderer.Context, l types.LabeledList) ([]byte, error) {
+	var tmpl texttemplate.Template
 	if layout, ok := l.Attributes["layout"]; ok {
 		switch layout {
 		case "horizontal":
