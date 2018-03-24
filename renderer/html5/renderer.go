@@ -100,6 +100,22 @@ func renderPlainStringForInlineElements(ctx *renderer.Context, elements []types.
 	return buff.Bytes(), nil
 }
 
+// renderElements renders each element and includes an `\n` character until the last item
+func renderInlineContents(ctx *renderer.Context, elements []types.InlineContent) ([]byte, error) {
+	buff := bytes.NewBuffer(nil)
+	for i, e := range elements {
+		renderedElement, err := renderElement(ctx, e)
+		if err != nil {
+			return nil, errors.Wrap(err, "unable to render element")
+		}
+		buff.Write(renderedElement)
+		if i < len(elements)-1 {
+			buff.WriteString("\n")
+		}
+	}
+	return buff.Bytes(), nil
+}
+
 // notLastItem returns true if the given index is NOT the last entry in the given description lines, false otherwise.
 func notLastItem(index int, content interface{}) bool {
 	switch reflect.TypeOf(content).Kind() {
