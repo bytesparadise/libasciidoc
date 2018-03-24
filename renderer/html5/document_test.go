@@ -35,7 +35,7 @@ Last updated {{.LastUpdated}}
 </div>
 </body>
 </html>`
-			verify(GinkgoT(), expectedResult, actualContent, renderer.IncludeHeaderFooter(true))
+			verify(GinkgoT(), expectedResult, actualContent, renderer.IncludeHeaderFooter(true), renderer.LastUpdated(time.Now()))
 		})
 	})
 
