@@ -104,12 +104,12 @@ func renderElements(ctx *renderer.Context, elements []types.DocElement) ([]byte,
 	for _, element := range elements {
 		content, err := renderElement(ctx, element)
 		if err != nil {
-			return nil, errors.Wrapf(err, "failed to render the document")
+			return nil, errors.Wrapf(err, "failed to render the elements")
 		}
 		// if there's already some content, we need to insert a `\n` before writing
 		// the rendering output of the current element (if application, ie, not empty)
 		if hasContent && len(content) > 0 {
-			renderedElementsBuff.Write([]byte("\n"))
+			renderedElementsBuff.WriteString("\n")
 		}
 		// if the element was rendering into 'something' (ie, not enpty result)
 		if len(content) > 0 {
