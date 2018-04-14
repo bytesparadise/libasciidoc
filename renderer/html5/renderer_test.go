@@ -25,9 +25,6 @@ func verify(t GinkgoTInterface, expectedResult, content string, rendererOpts ...
 	buff := bytes.NewBuffer(nil)
 	actualDocument := doc.(types.Document)
 	rendererCtx := renderer.Wrap(context.Background(), actualDocument, rendererOpts...)
-	// if entrypoint := rendererCtx.Entrypoint(); entrypoint != nil {
-
-	// }
 	_, err = html5.Render(rendererCtx, buff)
 	require.NoError(t, err)
 	if strings.Contains(expectedResult, "{{.LastUpdated}}") {
