@@ -27,6 +27,8 @@ func renderElement(ctx *renderer.Context, element types.DocElement) ([]byte, err
 		return renderPreamble(ctx, e)
 	case types.LabeledList:
 		return renderLabeledList(ctx, e)
+	case types.OrderedList:
+		return renderOrderedList(ctx, e)
 	case types.UnorderedList:
 		return renderUnorderedList(ctx, e)
 	case types.Paragraph:

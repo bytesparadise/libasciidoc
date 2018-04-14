@@ -106,20 +106,36 @@ func mergeElements(elements []interface{}, extraElements ...interface{}) []inter
 	return result
 }
 
-func mergeAttributes(attributes []interface{}) map[string]interface{} {
-	if attributes == nil || len(attributes) == 0 {
-		return nil
+// DefaultAttribute a function to specify a default attribute
+type DefaultAttribute func(map[string]interface{})
+
+// WithNumberingStyle specifies the numbering type in an OrderedList
+func WithNumberingStyle(t NumberingStyle) DefaultAttribute {
+	return func(attributes map[string]interface{}) {
+		attributes["numbering"] = t
 	}
+}
+
+func mergeAttributes(attributes []interface{}, defaults ...DefaultAttribute) map[string]interface{} {
 	result := make(map[string]interface{})
+	// fill with the default values, that can be overridden afterwards
+	for _, d := range defaults {
+		d(result)
+	}
+	if attributes == nil {
+		return result
+	}
+	log.Debugf("attributes with defaults: %v", result)
 	for _, attr := range attributes {
+		log.Debugf("processing attributes of %T", attr)
 		if attr, ok := attr.(map[string]interface{}); ok {
 			for k, v := range attr {
 				result[k] = v
 			}
 		}
 	}
+	log.Debugf("merged attributes : %v", result)
 	return result
-
 }
 
 // appendBuffer appends the content of the given buffer to the given array of elements,

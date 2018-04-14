@@ -72,7 +72,7 @@ func (m DocumentAttributes) Add(key string, value interface{}) {
 	}
 }
 
-// Add adds the given attribute if its value is non-nil and non-empty
+// AddNonEmpty adds the given attribute if its value is non-nil and non-empty
 // TODO: raise a warning if there was already a name/value
 func (m DocumentAttributes) AddNonEmpty(key string, value interface{}) {
 	// do not add nil or empty values

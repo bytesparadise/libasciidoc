@@ -83,7 +83,7 @@ var _ = Describe("Images", func() {
 				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("BlockImage"))
 			})
 
-			It("block image with dimensions and i d link title meta", func() {
+			It("block image with dimensions and id link title meta", func() {
 				actualContent := "[#img-foobar]\n" +
 					".A title to foobar\n" +
 					"[link=http://foo.bar]\n" +
