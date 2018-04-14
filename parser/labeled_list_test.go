@@ -13,6 +13,7 @@ var _ = Describe("labeled lists", func() {
 Item 1 description
 on 2 lines`
 		expectedResult := types.LabeledList{
+			Attributes: map[string]interface{}{},
 			Items: []types.LabeledListItem{
 				{
 					Term: "Item1",
@@ -41,6 +42,7 @@ on 2 lines`
 	It("labeled list with a single term and no description", func() {
 		actualContent := `Item1::`
 		expectedResult := types.LabeledList{
+			Attributes: map[string]interface{}{},
 			Items: []types.LabeledListItem{
 				{
 					Term: "Item1",
@@ -81,6 +83,7 @@ Item1:: foo`
 		actualContent := `Item1::
 			`
 		expectedResult := types.LabeledList{
+			Attributes: map[string]interface{}{},
 			Items: []types.LabeledListItem{
 				{
 					Term: "Item1",
@@ -98,6 +101,7 @@ Item 2 description
 Item 3:: 
 Item 3 description`
 		expectedResult := types.LabeledList{
+			Attributes: map[string]interface{}{},
 			Items: []types.LabeledListItem{
 				{
 					Term: "Item 1",
@@ -152,14 +156,17 @@ Item 3 description`
 * bar
 Item with description:: something simple`
 		expectedResult := types.LabeledList{
+			Attributes: map[string]interface{}{},
 			Items: []types.LabeledListItem{
 				{
 					Term: "Empty item",
 					Elements: []types.DocElement{
 						types.UnorderedList{
+							Attributes: map[string]interface{}{},
 							Items: []types.UnorderedListItem{
 								{
-									Level: 1,
+									Level:       1,
+									BulletStyle: types.OneAsterisk,
 									Elements: []types.DocElement{
 										types.ListParagraph{
 											Lines: []types.InlineContent{
@@ -172,8 +179,9 @@ Item with description:: something simple`
 										},
 									},
 								},
-								types.UnorderedListItem{
-									Level: 1,
+								{
+									Level:       1,
+									BulletStyle: types.OneAsterisk,
 									Elements: []types.DocElement{
 										types.ListParagraph{
 											Lines: []types.InlineContent{
@@ -221,6 +229,7 @@ a normal paragraph.`
 			ElementReferences: map[string]interface{}{},
 			Elements: []types.DocElement{
 				types.LabeledList{
+					Attributes: map[string]interface{}{},
 					Items: []types.LabeledListItem{
 						{
 							Term: "Item 1",
@@ -273,6 +282,7 @@ another fenced block
 			ElementReferences: map[string]interface{}{},
 			Elements: []types.DocElement{
 				types.LabeledList{
+					Attributes: map[string]interface{}{},
 					Items: []types.LabeledListItem{
 						{
 							Term: "Item 1",
@@ -331,6 +341,7 @@ another fenced block
 			ElementReferences: map[string]interface{}{},
 			Elements: []types.DocElement{
 				types.LabeledList{
+					Attributes: map[string]interface{}{},
 					Items: []types.LabeledListItem{
 						{
 							Term: "Item 1",
@@ -346,6 +357,7 @@ another fenced block
 					},
 				},
 				types.LabeledList{
+					Attributes: map[string]interface{}{},
 					Items: []types.LabeledListItem{
 						{
 							Term: "Item 2",

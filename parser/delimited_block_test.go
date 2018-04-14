@@ -384,9 +384,11 @@ with *bold content*
 						},
 					},
 					types.UnorderedList{
+						Attributes: map[string]interface{}{},
 						Items: []types.UnorderedListItem{
 							{
-								Level: 1,
+								Level:       1,
+								BulletStyle: types.OneAsterisk,
 								Elements: []types.DocElement{
 									types.ListParagraph{
 										Lines: []types.InlineContent{

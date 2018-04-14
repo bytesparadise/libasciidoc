@@ -24,7 +24,7 @@ var _ = Describe("Element Attributes", func() {
 		})
 
 		Context("invalid syntax", func() {
-			It("spaces before keywork", func() {
+			It("spaces before keyword", func() {
 				actualContent := "[ link=http://foo.bar]"
 				expectedResult := types.InvalidElementAttribute{Value: "[ link=http://foo.bar]"}
 				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("ElementAttribute"))

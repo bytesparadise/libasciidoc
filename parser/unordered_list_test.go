@@ -13,9 +13,11 @@ var _ = Describe("unordered lists", func() {
 		It("unordered list with a single item", func() {
 			actualContent := "* a list item"
 			expectedResult := types.UnorderedList{
+				Attributes: map[string]interface{}{},
 				Items: []types.UnorderedListItem{
 					{
-						Level: 1,
+						Level:       1,
+						BulletStyle: types.OneAsterisk,
 						Elements: []types.DocElement{
 							types.ListParagraph{
 								Lines: []types.InlineContent{
@@ -42,7 +44,8 @@ var _ = Describe("unordered lists", func() {
 				},
 				Items: []types.UnorderedListItem{
 					{
-						Level: 1,
+						Level:       1,
+						BulletStyle: types.OneAsterisk,
 						Elements: []types.DocElement{
 							types.ListParagraph{
 								Lines: []types.InlineContent{
@@ -64,9 +67,11 @@ var _ = Describe("unordered lists", func() {
 			actualContent := "* a first item\n" +
 				"* a second item with *bold content*"
 			expectedResult := types.UnorderedList{
+				Attributes: map[string]interface{}{},
 				Items: []types.UnorderedListItem{
 					{
-						Level: 1,
+						Level:       1,
+						BulletStyle: types.OneAsterisk,
 						Elements: []types.DocElement{
 							types.ListParagraph{
 								Lines: []types.InlineContent{
@@ -80,7 +85,8 @@ var _ = Describe("unordered lists", func() {
 						},
 					},
 					{
-						Level: 1,
+						Level:       1,
+						BulletStyle: types.OneAsterisk,
 						Elements: []types.DocElement{
 							types.ListParagraph{
 								Lines: []types.InlineContent{
@@ -102,13 +108,16 @@ var _ = Describe("unordered lists", func() {
 			}
 			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("BlockElement"))
 		})
+
 		It("unordered list with 2 items with carets", func() {
 			actualContent := "- a first item\n" +
 				"- a second item with *bold content*"
 			expectedResult := types.UnorderedList{
+				Attributes: map[string]interface{}{},
 				Items: []types.UnorderedListItem{
 					{
-						Level: 1,
+						Level:       1,
+						BulletStyle: types.Dash,
 						Elements: []types.DocElement{
 							types.ListParagraph{
 								Lines: []types.InlineContent{
@@ -122,7 +131,8 @@ var _ = Describe("unordered lists", func() {
 						},
 					},
 					{
-						Level: 1,
+						Level:       1,
+						BulletStyle: types.Dash,
 						Elements: []types.DocElement{
 							types.ListParagraph{
 								Lines: []types.InlineContent{
@@ -144,15 +154,122 @@ var _ = Describe("unordered lists", func() {
 			}
 			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("BlockElement"))
 		})
+
+		It("unordered list with items with mixed styles", func() {
+			actualContent := `- a parent item
+				* a child item
+				- another parent item
+				* another child item
+				** with a sub child item`
+			expectedResult := types.UnorderedList{
+				Attributes: map[string]interface{}{},
+				Items: []types.UnorderedListItem{
+					{
+						Level:       1,
+						BulletStyle: types.Dash,
+						Elements: []types.DocElement{
+							types.ListParagraph{
+								Lines: []types.InlineContent{
+									{
+										Elements: []types.InlineElement{
+											types.StringElement{Content: "a parent item"},
+										},
+									},
+								},
+							},
+							types.UnorderedList{
+								Attributes: map[string]interface{}{},
+								Items: []types.UnorderedListItem{
+									{
+										Level:       2,
+										BulletStyle: types.OneAsterisk,
+										Elements: []types.DocElement{
+											types.ListParagraph{
+												Lines: []types.InlineContent{
+													{
+														Elements: []types.InlineElement{
+															types.StringElement{Content: "a child item"},
+														},
+													},
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+					{
+						Level:       1,
+						BulletStyle: types.Dash,
+						Elements: []types.DocElement{
+							types.ListParagraph{
+								Lines: []types.InlineContent{
+									{
+										Elements: []types.InlineElement{
+											types.StringElement{Content: "another parent item"},
+										},
+									},
+								},
+							},
+							types.UnorderedList{
+								Attributes: map[string]interface{}{},
+								Items: []types.UnorderedListItem{
+									{
+										Level:       2,
+										BulletStyle: types.OneAsterisk,
+										Elements: []types.DocElement{
+											types.ListParagraph{
+												Lines: []types.InlineContent{
+													{
+														Elements: []types.InlineElement{
+															types.StringElement{Content: "another child item"},
+														},
+													},
+												},
+											},
+											types.UnorderedList{
+												Attributes: map[string]interface{}{},
+												Items: []types.UnorderedListItem{
+													{
+														Level:       3,
+														BulletStyle: types.TwoAsterisks,
+														Elements: []types.DocElement{
+															types.ListParagraph{
+																Lines: []types.InlineContent{
+																	{
+																		Elements: []types.InlineElement{
+																			types.StringElement{Content: "with a sub child item"},
+																		},
+																	},
+																},
+															},
+														},
+													},
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			}
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("BlockElement"))
+		})
+
 		It("unordered list with 2 items with empty line in-between", func() {
 			// fist line after list item is swallowed
 			actualContent := "* a first item\n" +
 				"\n" +
 				"* a second item with *bold content*"
 			expectedResult := types.UnorderedList{
+				Attributes: map[string]interface{}{},
 				Items: []types.UnorderedListItem{
 					{
-						Level: 1,
+						Level:       1,
+						BulletStyle: types.OneAsterisk,
 						Elements: []types.DocElement{
 							types.ListParagraph{
 								Lines: []types.InlineContent{
@@ -166,7 +283,8 @@ var _ = Describe("unordered lists", func() {
 						},
 					},
 					{
-						Level: 1,
+						Level:       1,
+						BulletStyle: types.OneAsterisk,
 						Elements: []types.DocElement{
 							types.ListParagraph{
 								Lines: []types.InlineContent{
@@ -194,9 +312,11 @@ var _ = Describe("unordered lists", func() {
 				"* item 2\n" +
 				"on 2 lines, too."
 			expectedResult := types.UnorderedList{
+				Attributes: map[string]interface{}{},
 				Items: []types.UnorderedListItem{
 					{
-						Level: 1,
+						Level:       1,
+						BulletStyle: types.OneAsterisk,
 						Elements: []types.DocElement{
 							types.ListParagraph{
 								Lines: []types.InlineContent{
@@ -215,7 +335,8 @@ var _ = Describe("unordered lists", func() {
 						},
 					},
 					{
-						Level: 1,
+						Level:       1,
+						BulletStyle: types.OneAsterisk,
 						Elements: []types.DocElement{
 							types.ListParagraph{
 								Lines: []types.InlineContent{
@@ -237,7 +358,7 @@ var _ = Describe("unordered lists", func() {
 			}
 			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("BlockElement"))
 		})
-		It("2 Uuordered lists with 2 empty lines in-between", func() {
+		It("2 unordered lists with 2 empty lines in-between", func() {
 			// the first blank lines after the first list is swallowed (for the list item)
 			actualContent := "* an item in the first list\n" +
 				"\n" +
@@ -248,9 +369,11 @@ var _ = Describe("unordered lists", func() {
 				ElementReferences: map[string]interface{}{},
 				Elements: []types.DocElement{
 					types.UnorderedList{
+						Attributes: map[string]interface{}{},
 						Items: []types.UnorderedListItem{
 							{
-								Level: 1,
+								Level:       1,
+								BulletStyle: types.OneAsterisk,
 								Elements: []types.DocElement{
 									types.ListParagraph{
 										Lines: []types.InlineContent{
@@ -266,9 +389,11 @@ var _ = Describe("unordered lists", func() {
 						},
 					},
 					types.UnorderedList{
+						Attributes: map[string]interface{}{},
 						Items: []types.UnorderedListItem{
 							{
-								Level: 1,
+								Level:       1,
+								BulletStyle: types.OneAsterisk,
 								Elements: []types.DocElement{
 									types.ListParagraph{
 										Lines: []types.InlineContent{
@@ -298,9 +423,11 @@ var _ = Describe("unordered lists", func() {
 * item 2
 ** item 2.1`
 			expectedResult := types.UnorderedList{
+				Attributes: map[string]interface{}{},
 				Items: []types.UnorderedListItem{
 					{
-						Level: 1,
+						Level:       1,
+						BulletStyle: types.OneAsterisk,
 						Elements: []types.DocElement{
 							types.ListParagraph{
 								Lines: []types.InlineContent{
@@ -312,9 +439,11 @@ var _ = Describe("unordered lists", func() {
 								},
 							},
 							types.UnorderedList{
+								Attributes: map[string]interface{}{},
 								Items: []types.UnorderedListItem{
 									{
-										Level: 2,
+										Level:       2,
+										BulletStyle: types.TwoAsterisks,
 										Elements: []types.DocElement{
 											types.ListParagraph{
 												Lines: []types.InlineContent{
@@ -328,7 +457,8 @@ var _ = Describe("unordered lists", func() {
 										},
 									},
 									{
-										Level: 2,
+										Level:       2,
+										BulletStyle: types.TwoAsterisks,
 										Elements: []types.DocElement{
 											types.ListParagraph{
 												Lines: []types.InlineContent{
@@ -340,9 +470,11 @@ var _ = Describe("unordered lists", func() {
 												},
 											},
 											types.UnorderedList{
+												Attributes: map[string]interface{}{},
 												Items: []types.UnorderedListItem{
 													{
-														Level: 3,
+														Level:       3,
+														BulletStyle: types.ThreeAsterisks,
 														Elements: []types.DocElement{
 															types.ListParagraph{
 																Lines: []types.InlineContent{
@@ -360,7 +492,8 @@ var _ = Describe("unordered lists", func() {
 										},
 									},
 									{
-										Level: 2,
+										Level:       2,
+										BulletStyle: types.TwoAsterisks,
 										Elements: []types.DocElement{
 											types.ListParagraph{
 												Lines: []types.InlineContent{
@@ -374,7 +507,8 @@ var _ = Describe("unordered lists", func() {
 										},
 									},
 									{
-										Level: 2,
+										Level:       2,
+										BulletStyle: types.TwoAsterisks,
 										Elements: []types.DocElement{
 											types.ListParagraph{
 												Lines: []types.InlineContent{
@@ -392,7 +526,8 @@ var _ = Describe("unordered lists", func() {
 						},
 					},
 					{
-						Level: 1,
+						Level:       1,
+						BulletStyle: types.OneAsterisk,
 						Elements: []types.DocElement{
 							types.ListParagraph{
 								Lines: []types.InlineContent{
@@ -404,9 +539,11 @@ var _ = Describe("unordered lists", func() {
 								},
 							},
 							types.UnorderedList{
+								Attributes: map[string]interface{}{},
 								Items: []types.UnorderedListItem{
 									{
-										Level: 2,
+										Level:       2,
+										BulletStyle: types.TwoAsterisks,
 										Elements: []types.DocElement{
 											types.ListParagraph{
 												Lines: []types.InlineContent{
@@ -432,15 +569,17 @@ var _ = Describe("unordered lists", func() {
 
 	Context("invalid content", func() {
 		It("unordered list with items on 2 levels - bad numbering", func() {
-			actualContent := "* item 1\n" +
-				"*** item 1.1\n" +
-				"*** item 1.1.1\n" +
-				"** item 1.2\n" +
-				"* item 2"
+			actualContent := `* item 1
+				*** item 1.1
+				*** item 1.1.1
+				** item 1.2
+				* item 2`
 			expectedResult := types.UnorderedList{
+				Attributes: map[string]interface{}{},
 				Items: []types.UnorderedListItem{
 					{
-						Level: 1,
+						Level:       1,
+						BulletStyle: types.OneAsterisk,
 						Elements: []types.DocElement{
 							types.ListParagraph{
 								Lines: []types.InlineContent{
@@ -452,9 +591,11 @@ var _ = Describe("unordered lists", func() {
 								},
 							},
 							types.UnorderedList{
+								Attributes: map[string]interface{}{},
 								Items: []types.UnorderedListItem{
 									{
-										Level: 2,
+										Level:       2,
+										BulletStyle: types.TwoAsterisks,
 										Elements: []types.DocElement{
 											types.ListParagraph{
 												Lines: []types.InlineContent{
@@ -466,9 +607,11 @@ var _ = Describe("unordered lists", func() {
 												},
 											},
 											types.UnorderedList{
+												Attributes: map[string]interface{}{},
 												Items: []types.UnorderedListItem{
 													{
-														Level: 3,
+														Level:       3,
+														BulletStyle: types.ThreeAsterisks,
 														Elements: []types.DocElement{
 															types.ListParagraph{
 																Lines: []types.InlineContent{
@@ -486,7 +629,8 @@ var _ = Describe("unordered lists", func() {
 										},
 									},
 									{
-										Level: 2,
+										Level:       2,
+										BulletStyle: types.TwoAsterisks,
 										Elements: []types.DocElement{
 											types.ListParagraph{
 												Lines: []types.InlineContent{
@@ -504,7 +648,8 @@ var _ = Describe("unordered lists", func() {
 						},
 					},
 					{
-						Level: 1,
+						Level:       1,
+						BulletStyle: types.OneAsterisk,
 						Elements: []types.DocElement{
 							types.ListParagraph{
 								Lines: []types.InlineContent{
@@ -555,11 +700,12 @@ another delimited block
 				Attributes:        map[string]interface{}{},
 				ElementReferences: map[string]interface{}{},
 				Elements: []types.DocElement{
-
 					types.UnorderedList{
+						Attributes: map[string]interface{}{},
 						Items: []types.UnorderedListItem{
 							{
-								Level: 1,
+								Level:       1,
+								BulletStyle: types.OneAsterisk,
 								Elements: []types.DocElement{
 									types.ListParagraph{
 										Lines: []types.InlineContent{
@@ -589,7 +735,8 @@ another delimited block
 								},
 							},
 							{
-								Level: 1,
+								Level:       1,
+								BulletStyle: types.OneAsterisk,
 								Elements: []types.DocElement{
 									types.ListParagraph{
 										Lines: []types.InlineContent{
@@ -622,11 +769,12 @@ another delimited block
 				Attributes:        map[string]interface{}{},
 				ElementReferences: map[string]interface{}{},
 				Elements: []types.DocElement{
-
 					types.UnorderedList{
+						Attributes: map[string]interface{}{},
 						Items: []types.UnorderedListItem{
 							{
-								Level: 1,
+								Level:       1,
+								BulletStyle: types.OneAsterisk,
 								Elements: []types.DocElement{
 									types.ListParagraph{
 										Lines: []types.InlineContent{
@@ -650,9 +798,11 @@ another delimited block
 						},
 					},
 					types.UnorderedList{
+						Attributes: map[string]interface{}{},
 						Items: []types.UnorderedListItem{
 							{
-								Level: 1,
+								Level:       1,
+								BulletStyle: types.OneAsterisk,
 								Elements: []types.DocElement{
 									types.ListParagraph{
 										Lines: []types.InlineContent{
@@ -678,8 +828,6 @@ another delimited block
 				},
 			}
 			verify(GinkgoT(), expectedResult, actualContent)
-
 		})
 	})
-
 })

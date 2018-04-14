@@ -3,6 +3,7 @@ package html5_test
 import . "github.com/onsi/ginkgo"
 
 var _ = Describe("unordered lists", func() {
+
 	It("simple unordered list with no title", func() {
 		actualContent := `* item 1
 * item 2
@@ -22,6 +23,7 @@ var _ = Describe("unordered lists", func() {
 </div>`
 		verify(GinkgoT(), expectedResult, actualContent)
 	})
+
 	It("simple unordered list with a title", func() {
 		actualContent := `[#foo]
 	* item 1
@@ -38,6 +40,7 @@ var _ = Describe("unordered lists", func() {
 </div>`
 		verify(GinkgoT(), expectedResult, actualContent)
 	})
+
 	It("nested unordered lists without a title", func() {
 		actualContent := `* item 1
 ** item 1.1
@@ -65,6 +68,7 @@ var _ = Describe("unordered lists", func() {
 </div>`
 		verify(GinkgoT(), expectedResult, actualContent)
 	})
+
 	It("nested unordered lists with a title", func() {
 		actualContent := `[#listID]
 * item 1

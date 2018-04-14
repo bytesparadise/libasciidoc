@@ -16,7 +16,8 @@ var _ = Describe("lists", func() {
 			// // given
 			elements := []interface{}{
 				types.UnorderedListItem{
-					Level: 1,
+					Level:       1,
+					BulletStyle: types.Dash,
 					Elements: []types.DocElement{
 						types.StringElement{
 							Content: "item 1",
@@ -24,7 +25,8 @@ var _ = Describe("lists", func() {
 					},
 				},
 				types.UnorderedListItem{
-					Level: 2,
+					Level:       2,
+					BulletStyle: types.OneAsterisk,
 					Elements: []types.DocElement{
 						types.StringElement{
 							Content: "item 1.1",
@@ -32,7 +34,8 @@ var _ = Describe("lists", func() {
 					},
 				},
 				types.UnorderedListItem{
-					Level: 1,
+					Level:       1,
+					BulletStyle: types.Dash,
 					Elements: []types.DocElement{
 						types.StringElement{
 							Content: "item 2",
@@ -45,17 +48,21 @@ var _ = Describe("lists", func() {
 			// then
 			require.NoError(GinkgoT(), err)
 			expectation := types.UnorderedList{
+				Attributes: map[string]interface{}{},
 				Items: []types.UnorderedListItem{
 					{
-						Level: 1,
+						Level:       1,
+						BulletStyle: types.Dash,
 						Elements: []types.DocElement{
 							types.StringElement{
 								Content: "item 1",
 							},
 							types.UnorderedList{
+								Attributes: map[string]interface{}{},
 								Items: []types.UnorderedListItem{
 									{
-										Level: 2,
+										Level:       2,
+										BulletStyle: types.OneAsterisk,
 										Elements: []types.DocElement{
 											types.StringElement{
 												Content: "item 1.1",
@@ -67,7 +74,8 @@ var _ = Describe("lists", func() {
 						},
 					},
 					{
-						Level: 1,
+						Level:       1,
+						BulletStyle: types.Dash,
 						Elements: []types.DocElement{
 							types.StringElement{
 								Content: "item 2",
@@ -115,6 +123,7 @@ var _ = Describe("lists", func() {
 			// then
 			require.NoError(GinkgoT(), err)
 			expectation := types.LabeledList{
+				Attributes: map[string]interface{}{},
 				Items: []types.LabeledListItem{
 					{
 						Term: "item 1",
@@ -159,7 +168,8 @@ var _ = Describe("lists", func() {
 					},
 				},
 				types.UnorderedListItem{
-					Level: 1,
+					Level:       1,
+					BulletStyle: types.Dash,
 					Elements: []types.DocElement{
 						types.StringElement{
 							Content: "item A.1",
@@ -167,7 +177,8 @@ var _ = Describe("lists", func() {
 					},
 				},
 				types.UnorderedListItem{
-					Level: 2,
+					Level:       2,
+					BulletStyle: types.OneAsterisk,
 					Elements: []types.DocElement{
 						types.StringElement{
 							Content: "item A.1.1",
@@ -175,7 +186,8 @@ var _ = Describe("lists", func() {
 					},
 				},
 				types.UnorderedListItem{
-					Level: 1,
+					Level:       1,
+					BulletStyle: types.Dash,
 					Elements: []types.DocElement{
 						types.StringElement{
 							Content: "item A.2",
@@ -204,6 +216,7 @@ var _ = Describe("lists", func() {
 			// then
 			require.NoError(GinkgoT(), err)
 			expectation := types.LabeledList{
+				Attributes: map[string]interface{}{},
 				Items: []types.LabeledListItem{
 					{
 						Term: "item A",
@@ -212,17 +225,21 @@ var _ = Describe("lists", func() {
 								Content: "item A",
 							},
 							types.UnorderedList{
+								Attributes: map[string]interface{}{},
 								Items: []types.UnorderedListItem{
 									{
-										Level: 1,
+										Level:       1,
+										BulletStyle: types.Dash,
 										Elements: []types.DocElement{
 											types.StringElement{
 												Content: "item A.1",
 											},
 											types.UnorderedList{
+												Attributes: map[string]interface{}{},
 												Items: []types.UnorderedListItem{
 													{
-														Level: 2,
+														Level:       2,
+														BulletStyle: types.OneAsterisk,
 														Elements: []types.DocElement{
 															types.StringElement{
 																Content: "item A.1.1",
@@ -234,7 +251,8 @@ var _ = Describe("lists", func() {
 										},
 									},
 									{
-										Level: 1,
+										Level:       1,
+										BulletStyle: types.Dash,
 										Elements: []types.DocElement{
 											types.StringElement{
 												Content: "item A.2",
