@@ -35,15 +35,15 @@ func (ctx *Context) Deadline() (deadline time.Time, ok bool) {
 
 // Done wrapper implementation of context.Context.Done()
 func (ctx *Context) Done() <-chan struct{} {
-	return ctx.Done()
+	return ctx.context.Done()
 }
 
 // Err wrapper implementation of context.Context.Err()
 func (ctx *Context) Err() error {
-	return ctx.Err()
+	return ctx.context.Err()
 }
 
 // Value wrapper implementation of context.Context.Value(interface{})
 func (ctx *Context) Value(key interface{}) interface{} {
-	return ctx.Value(key)
+	return ctx.context.Value(key)
 }
