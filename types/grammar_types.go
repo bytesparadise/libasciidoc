@@ -276,11 +276,9 @@ func NewDocumentAuthor(namePart1, namePart2, namePart3, emailAddress interface{}
 }
 
 func initials(firstPart string, otherParts ...string) string {
-	result := fmt.Sprintf("%s", firstPart[0:1])
-	if otherParts != nil {
-		for _, otherPart := range otherParts {
-			result = result + otherPart[0:1]
-		}
+	result := firstPart[0:1]
+	for _, otherPart := range otherParts {
+		result = result + otherPart[0:1]
 	}
 	return result
 }
