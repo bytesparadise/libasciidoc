@@ -8,6 +8,12 @@
   version = "v1.1.0"
 
 [[projects]]
+  name = "github.com/inconshreveable/mousetrap"
+  packages = ["."]
+  revision = "76626ae9c91c4f2a10f34cad8ce83ea42c93bb75"
+  version = "v1.0"
+
+[[projects]]
   name = "github.com/onsi/ginkgo"
   packages = [
     ".",
@@ -77,6 +83,18 @@
   version = "v1.0.4"
 
 [[projects]]
+  name = "github.com/spf13/cobra"
+  packages = ["."]
+  revision = "a1f051bc3eba734da4772d60e2d677f47cf93ef4"
+  version = "v0.0.2"
+
+[[projects]]
+  name = "github.com/spf13/pflag"
+  packages = ["."]
+  revision = "583c0c0531f06d5278b7d917446061adc344b5cd"
+  version = "v1.0.1"
+
+[[projects]]
   name = "github.com/stretchr/testify"
   packages = [
     "assert",
@@ -143,6 +161,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "98e5d849489dc4bb2d38e6cd8ad370b867d82585a8b4191739c813517388ea56"
+  inputs-digest = "3f0bf5bee4548209c15bfbb8a882240088cab55922e5e109e172e38542b75db5"
   solver-name = "gps-cdcl"
   solver-version = 1

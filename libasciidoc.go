@@ -12,33 +12,29 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-// ConvertToHTMLBody converts the content of the given reader `r` into an set of <DIV> elements for an HTML/BODY document.
-// The conversion result is written in the given writer `w`, whereas the document metadata (title, etc.) (or an error if a problem occurred) is returned
+// ConvertFileToHTML converts the content of the given filename into an HTML document.
+// The conversion result is written in the given writer `output`, whereas the document metadata (title, etc.) (or an error if a problem occurred) is returned
 // as the result of the function call.
-func ConvertToHTMLBody(ctx context.Context, r io.Reader, w io.Writer) (map[string]interface{}, error) {
-	doc, err := parser.ParseReader("", r)
+func ConvertFileToHTML(ctx context.Context, filename string, output io.Writer, options ...renderer.Option) (map[string]interface{}, error) {
+	doc, err := parser.ParseFile(filename)
 	if err != nil {
 		return nil, errors.Wrapf(err, "error while parsing the document")
 	}
-	options := []renderer.Option{renderer.IncludeHeaderFooter(false)}
-	metadata, err := htmlrenderer.Render(renderer.Wrap(ctx, doc.(types.Document), options...), w)
-	if err != nil {
-		return nil, errors.Wrapf(err, "error while rendering the document")
-	}
-	log.Debugf("Done processing document")
-	return metadata, nil
+	return convertToHTML(ctx, doc, output, options...)
 }
 
-// ConvertToHTML converts the content of the given reader `r` into a full HTML document, written in the given writer `w`.
+// ConvertToHTML converts the content of the given reader `r` into a full HTML document, written in the given writer `output`.
 // Returns an error if a problem occurred
-func ConvertToHTML(ctx context.Context, r io.Reader, w io.Writer, options ...renderer.Option) (map[string]interface{}, error) {
+func ConvertToHTML(ctx context.Context, r io.Reader, output io.Writer, options ...renderer.Option) (map[string]interface{}, error) {
 	doc, err := parser.ParseReader("", r)
 	if err != nil {
 		return nil, errors.Wrapf(err, "error while parsing the document")
 	}
-	// force/override value
-	options = append(options, renderer.IncludeHeaderFooter(true))
-	metadata, err := htmlrenderer.Render(renderer.Wrap(ctx, doc.(types.Document), options...), w)
+	return convertToHTML(ctx, doc, output, options...)
+}
+
+func convertToHTML(ctx context.Context, doc interface{}, output io.Writer, options ...renderer.Option) (map[string]interface{}, error) {
+	metadata, err := htmlrenderer.Render(renderer.Wrap(ctx, doc.(types.Document), options...), output)
 	if err != nil {
 		return nil, errors.Wrapf(err, "error while rendering the document")
 	}
