@@ -21,6 +21,7 @@ It is is available under the terms of the https://raw.githubusercontent.com/byte
 * Inline images in paragraphs (`image://`)
 * Block images (`image:://`)
 * Element attributes (`ID`, `link` and `title`, where applicable) on block images, paragraphs, lists and sections
+* Labeled, ordered and unordered lists (with nesting and attributes)
 
 
 See the http://LIMITATIONS.adoc[known limitations] page for differences between Asciidoc/Asciidoctor and Libasciidoc.
@@ -33,17 +34,29 @@ Further elements will be supported in the future. Feel free to open issues https
 
 == Usage
 
+=== Command Line
+
+The libasciidoc library includes a minimalist command line interface to generate the HTML content from a given file:
+
+```
+$ libasciidoc -s content.adoc
+```
+
+=== Code integration
+
 Libasciidoc provides 2 functions to convert an Asciidoc content into HTML:
 
-1. Converting to a complete HTML document:
+1. Converting an `io.Reader` into an HTML document:
 
-    func ConvertToHTML(context.Context, io.Reader, io.Writer, renderer.Option...) (map[string]interface{}, error)
+    func ConvertToHTML(ctx context.Context, source io.Reader, output io.Writer, options renderer.Option...) (map[string]interface{}, error)
 
-2. Converting to a `body` element only:
+2. Converting a file (giving its name) into an HTML document:
 
-    func ConvertToHTMLBody(context.Context, io.Reader, io.Writer) (map[string]interface{}, error)
+    func ConvertFileToHTML(ctx context.Context, filename string, output io.Writer, options renderer.Option...) (map[string]interface{}, error)
 
 where the returned `map[string]interface{}` object contains the document's title (which is not rendered in the HTML's body) and its other attributes.
+
+The currently available option to pass as a last argument is `renderer.IncludeHeaderFooter(false)` to limit the generation to the body of the HTML document.
 
 == How to contribute
 

@@ -1,18 +1,13 @@
 package main
 
 import (
-	"bytes"
 	"context"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"strings"
 
+	"github.com/bytesparadise/libasciidoc"
 	"github.com/bytesparadise/libasciidoc/renderer"
-	"github.com/bytesparadise/libasciidoc/renderer/html5"
-	"github.com/bytesparadise/libasciidoc/types"
-
-	"github.com/bytesparadise/libasciidoc/parser"
 
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
@@ -48,21 +43,10 @@ func newRootCmd() *cobra.Command {
 				os.Exit(1)
 			}
 			source := cmd.Flag("source").Value.String()
-			b, err := ioutil.ReadFile(source)
+			_, err := libasciidoc.ConvertFileToHTML(context.Background(), source, os.Stdout, renderer.IncludeHeaderFooter(true)) //renderer.IncludeHeaderFooter(true)
 			if err != nil {
-				fmt.Printf("failed to read the source file: %v\n", err)
-				os.Exit(1)
+				return err
 			}
-			doc, err := parser.Parse(source, b)
-			if err != nil {
-				fmt.Printf("failed to parse the source file: %v\n", err)
-				os.Exit(1)
-			}
-			buff := bytes.NewBuffer(nil)
-			actualDocument := doc.(types.Document)
-			rendererCtx := renderer.Wrap(context.Background(), actualDocument)
-			_, err = html5.Render(rendererCtx, buff)
-			fmt.Printf("%s\n", buff.String())
 			return nil
 		},
 	}

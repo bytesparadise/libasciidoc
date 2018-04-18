@@ -179,7 +179,7 @@ func verifyDocumentBody(t GinkgoTInterface, expectedRenderedTitle *string, expec
 	t.Logf("processing '%s'", source)
 	sourceReader := strings.NewReader(source)
 	resultWriter := bytes.NewBuffer(nil)
-	metadata, err := ConvertToHTMLBody(context.Background(), sourceReader, resultWriter)
+	metadata, err := ConvertToHTML(context.Background(), sourceReader, resultWriter, renderer.IncludeHeaderFooter(false))
 	require.Nil(t, err, "Error found while parsing the document")
 	require.NotNil(t, metadata)
 	t.Log("Done processing document")
