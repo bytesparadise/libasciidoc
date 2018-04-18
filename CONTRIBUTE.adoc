@@ -4,20 +4,21 @@ This is the contribute.md of our project. Great to have you here. Here are a few
 
 == Adding new features
 
-Please open an issue https://github.com/bytesparadise/libasciidoc/issues[here] to discuss about the feature you would like to see in Libasciidoc, 
+Please open an issue https://github.com/bytesparadise/libasciidoc/issues[here] to discuss the feature you would like to see in Libasciidoc.
 If you're in the mood to implement it (that's awesome!), then submit a pull-request along with enough tests (both at the parser level and at the renderer level) to validate the behaviour of your code.
+When submitting a pull-request, please follow the https://gist.github.com/stephenparish/9941e89d80e2bc58a153#commit-message-conventions[AngularJS Commit Message Conventions].
 
 Don’t get discouraged if you don't get an immediate response, this is a side-project.
 
 == Bug triage
 
-* You can help report bugs by filling them https://github.com/bytesparadise/libasciidoc/issues[here]. 
+* You can help report bugs by filing them https://github.com/bytesparadise/libasciidoc/issues[here].
 
 * You can help us diagnose and fix existing bugs by asking and providing answers for the following:
-** Is the bug reproducible as explained?   
-** Are the steps to reproduce the bug clear? If not, can you describe how you might reproduce it?  
-** What tags should the bug have?  
-** Is this bug something you have run into? Would you appreciate it being looked into faster?  
+** Is the bug reproducible as explained?
+** Are the steps to reproduce the bug clear? If not, can you describe how you might reproduce it?
+** What tags should the bug have?
+** Is this bug something you have run into? Would you appreciate it being looked into faster?
 
 * You can close fixed bugs by testing old tickets to see if they are still happening.
 * You can update our changelog here:
@@ -26,5 +27,5 @@ Don’t get discouraged if you don't get an immediate response, this is a side-p
 
 == Beta testing
 
-Testing existing features is a good way to contribute to the project, too! 
+Testing existing features is a good way to contribute to the project, too!
 
