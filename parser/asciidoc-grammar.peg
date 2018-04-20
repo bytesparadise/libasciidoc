@@ -365,8 +365,11 @@ InlineElement <- CrossReference / Passthrough / InlineImage / QuotedText / Link 
 // a paragraph cannot start with the `section` sequence (`= `, `== `, etc.)
 Admonition <- attributes:(ElementAttribute)* !("="+ WS+) t:(AdmonitionKind) ": " content:(AdmonitionParagraph) { // paragraph style
     return types.NewAdmonition(t.(types.AdmonitionKind), content, attributes.([]interface{}))
-} / 
+} /
 attributes:(ElementAttribute)* "[" t:(AdmonitionKind) "]" WS* NEWLINE otherAttributes:(ElementAttribute)* content:(AdmonitionParagraph) { // block style
+    return types.NewAdmonition(t.(types.AdmonitionKind), content, append(attributes.([]interface{}), otherAttributes.([]interface{})...))
+} /
+attributes:(ElementAttribute)* "[" t:(AdmonitionKind) "]" WS* NEWLINE otherAttributes:(ElementAttribute)* content:(DelimitedBlock) { // block style
     return types.NewAdmonition(t.(types.AdmonitionKind), content, append(attributes.([]interface{}), otherAttributes.([]interface{})...))
 }
 
@@ -621,7 +624,8 @@ GenericAttribute <- key:(AttributeKey) "=" value:(AttributeValue) ("," WS*)? { /
     return types.NewGenericAttribute(key.([]interface{}), nil)
 }
 
-AttributeKey <- key: (!WS !"=" !"," !"]" .)+ WS*  {
+AttributeKey <- key: (!AdmonitionKind !WS !"=" !"," !"]" .)+ WS*  {
+//!AdmonitionKind
     // fmt.Printf("found attribute key: %v\n", key)
     return key, nil
 }
