@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"os"
 
 	"github.com/bytesparadise/libasciidoc"
 	"github.com/bytesparadise/libasciidoc/renderer"
@@ -19,11 +20,16 @@ func NewRootCmd() *cobra.Command {
 		Use:   "libasciidoc",
 		Short: "libasciidoc is a tool to generate an html output from an asciidoc file",
 		RunE: func(cmd *cobra.Command, args []string) error {
+			var err error
 			if cmd.Flag("source").Value.String() == "" {
 				return fmt.Errorf("flag 'source' is required")
 			}
-			source := cmd.Flag("source").Value.String()
-			_, err := libasciidoc.ConvertFileToHTML(context.Background(), source, cmd.OutOrStdout(), renderer.IncludeHeaderFooter(true)) //renderer.IncludeHeaderFooter(true)
+			if cmd.Flag("source").Value.String() == "-" {
+				_, err = libasciidoc.ConvertToHTML(context.Background(), os.Stdin, cmd.OutOrStdout(), renderer.IncludeHeaderFooter(true))
+			} else {
+				source := cmd.Flag("source").Value.String()
+				_, err = libasciidoc.ConvertFileToHTML(context.Background(), source, cmd.OutOrStdout(), renderer.IncludeHeaderFooter(true)) //renderer.IncludeHeaderFooter(true)
+			}
 			if err != nil {
 				return err
 			}
@@ -41,7 +47,7 @@ func NewRootCmd() *cobra.Command {
 		},
 	}
 	flags := rootCmd.Flags()
-	flags.StringVarP(&source, "source", "s", "", "the path to the asciidoc source to process")
+	flags.StringVarP(&source, "source", "s", "", "the path to the asciidoc source to process. Use '-' for reading from stdin")
 	rootCmd.PersistentFlags().StringVar(&logLevel, "log", "warning", "log level to set {debug, info, warning, error, fatal, panic}")
 	return rootCmd
 }
