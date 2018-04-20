@@ -37,6 +37,18 @@ var _ = Describe("root cmd", func() {
 		require.Error(GinkgoT(), err)
 	})
 
+	It("should fail to parse bad log level", func() {
+		// given
+		root := main.NewRootCmd()
+		buf := new(bytes.Buffer)
+		root.SetOutput(buf)
+		root.SetArgs([]string{"--log", "debug1", "-s", "test/test.adoc"})
+		// when
+		err := root.Execute()
+		// then
+		GinkgoT().Logf("command output: %v", buf.String())
+		require.Error(GinkgoT(), err)
+	})
 })
 
 func TestRootCommand(t *testing.T) {
