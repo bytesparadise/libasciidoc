@@ -112,6 +112,7 @@ var _ = Describe("Passthroughs", func() {
 		It("singleplus passthrough with line break", func() {
 			actualContent := "+hello,\nworld+"
 			expectedResult := types.Paragraph{
+				Attributes: map[string]interface{}{},
 				Lines: []types.InlineContent{
 					{
 						Elements: []types.InlineElement{

@@ -126,7 +126,7 @@ func renderDocumentTitle(ctx *renderer.Context) ([]byte, error) {
 	if err != nil {
 		return nil, errors.Wrapf(err, "unable to render document title")
 	}
-	if documentTitle.ID != (types.ElementID{}) { // ignore if no ID was set, ie, title is not defined
+	if _, found := documentTitle.Attributes[types.AttrID]; found { // ignore if no ID was set, ie, title is not defined
 		title, err := renderPlainString(ctx, documentTitle)
 		if err != nil {
 			return nil, errors.Wrapf(err, "unable to render document title")

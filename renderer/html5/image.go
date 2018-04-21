@@ -27,15 +27,25 @@ func init() {
 
 func renderBlockImage(ctx *renderer.Context, img types.BlockImage) ([]byte, error) {
 	result := bytes.NewBuffer(nil)
+	var id, title, link string
+	if i, ok := img.Attributes[types.AttrID].(string); ok {
+		id = i
+	}
+	if t, ok := img.Attributes[types.AttrTitle].(string); ok {
+		title = t
+	}
+	if l, ok := img.Attributes[types.AttrLink].(string); ok {
+		link = l
+	}
 	err := blockImageTmpl.Execute(result, struct {
 		ID    string
 		Title string
 		Link  string
 		Macro types.ImageMacro
 	}{
-		ID:    img.ID.Value,
-		Title: img.Title.Value,
-		Link:  img.Link.Path,
+		ID:    id,
+		Title: title,
+		Link:  link,
 		Macro: img.Macro,
 	})
 	if err != nil {

@@ -670,6 +670,7 @@ var _ = Describe("unordered lists", func() {
 		It("invalid list item", func() {
 			actualContent := "*an invalid list item"
 			expectedResult := types.Paragraph{
+				Attributes: map[string]interface{}{},
 				Lines: []types.InlineContent{
 					{
 						Elements: []types.InlineElement{
@@ -717,7 +718,8 @@ another delimited block
 										},
 									},
 									types.DelimitedBlock{
-										Kind: types.ListingBlock,
+										Kind:       types.ListingBlock,
+										Attributes: map[string]interface{}{},
 										Elements: []types.DocElement{
 											types.StringElement{
 												Content: "a delimited block",
@@ -725,7 +727,8 @@ another delimited block
 										},
 									},
 									types.DelimitedBlock{
-										Kind: types.ListingBlock,
+										Kind:       types.ListingBlock,
+										Attributes: map[string]interface{}{},
 										Elements: []types.DocElement{
 											types.StringElement{
 												Content: "another delimited block",
@@ -790,7 +793,8 @@ another delimited block
 						},
 					},
 					types.DelimitedBlock{
-						Kind: types.ListingBlock,
+						Kind:       types.ListingBlock,
+						Attributes: map[string]interface{}{},
 						Elements: []types.DocElement{
 							types.StringElement{
 								Content: "a delimited block",
@@ -818,7 +822,8 @@ another delimited block
 						},
 					},
 					types.DelimitedBlock{
-						Kind: types.ListingBlock,
+						Kind:       types.ListingBlock,
+						Attributes: map[string]interface{}{},
 						Elements: []types.DocElement{
 							types.StringElement{
 								Content: "another delimited block",

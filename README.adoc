@@ -22,6 +22,7 @@ It is is available under the terms of the https://raw.githubusercontent.com/byte
 * Block images (`image:://`)
 * Element attributes (`ID`, `link` and `title`, where applicable) on block images, paragraphs, lists and sections
 * Labeled, ordered and unordered lists (with nesting and attributes)
+* Admonition paragraphs
 
 
 See the http://LIMITATIONS.adoc[known limitations] page for differences between Asciidoc/Asciidoctor and Libasciidoc.
