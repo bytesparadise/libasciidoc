@@ -15,6 +15,7 @@ var _ = Describe("Images", func() {
 			It("block image with empty alt", func() {
 				actualContent := "image::images/foo.png[]"
 				expectedResult := types.BlockImage{
+					Attributes: map[string]interface{}{},
 					Macro: types.ImageMacro{
 						Path: "images/foo.png",
 						Alt:  "foo",
@@ -26,6 +27,7 @@ var _ = Describe("Images", func() {
 			It("block image with empty alt and trailing spaces", func() {
 				actualContent := "image::images/foo.png[]  \t\t  "
 				expectedResult := types.BlockImage{
+					Attributes: map[string]interface{}{},
 					Macro: types.ImageMacro{
 						Path: "images/foo.png",
 						Alt:  "foo",
@@ -39,6 +41,7 @@ var _ = Describe("Images", func() {
 				actualContent := `image::images/foo.png[]
 `
 				expectedResult := types.BlockImage{
+					Attributes: map[string]interface{}{},
 					Macro: types.ImageMacro{
 						Path: "images/foo.png",
 						Alt:  "foo",
@@ -52,6 +55,7 @@ var _ = Describe("Images", func() {
 				actualContent := `image::images/foo.png[]
   `
 				expectedResult := types.BlockImage{
+					Attributes: map[string]interface{}{},
 					Macro: types.ImageMacro{
 						Path: "images/foo.png",
 						Alt:  "foo",
@@ -64,6 +68,7 @@ var _ = Describe("Images", func() {
 				actualContent := `image::images/foo.png[]
 			`
 				expectedResult := types.BlockImage{
+					Attributes: map[string]interface{}{},
 					Macro: types.ImageMacro{
 						Path: "images/foo.png",
 						Alt:  "foo",
@@ -75,6 +80,7 @@ var _ = Describe("Images", func() {
 			It("block image with alt", func() {
 				actualContent := "image::images/foo.png[the foo.png image]"
 				expectedResult := types.BlockImage{
+					Attributes: map[string]interface{}{},
 					Macro: types.ImageMacro{
 						Path: "images/foo.png",
 						Alt:  "the foo.png image",
@@ -91,15 +97,17 @@ var _ = Describe("Images", func() {
 				width := "600"
 				height := "400"
 				expectedResult := types.BlockImage{
+					Attributes: map[string]interface{}{
+						types.AttrID:    "img-foobar",
+						types.AttrTitle: "A title to foobar",
+						"link":          "http://foo.bar",
+					},
 					Macro: types.ImageMacro{
 						Path:   "images/foo.png",
 						Alt:    "the foo.png image",
 						Width:  &width,
 						Height: &height,
 					},
-					ID:    types.ElementID{Value: "img-foobar"},
-					Title: types.ElementTitle{Value: "A title to foobar"},
-					Link:  types.ElementLink{Path: "http://foo.bar"},
 				}
 				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("BlockImage"))
 			})
@@ -112,6 +120,7 @@ var _ = Describe("Images", func() {
 				It("block image appending inline content", func() {
 					actualContent := "a paragraph\nimage::images/foo.png[]"
 					expectedResult := types.Paragraph{
+						Attributes: map[string]interface{}{},
 						Lines: []types.InlineContent{
 							types.InlineContent{
 								Elements: []types.InlineElement{
@@ -138,6 +147,7 @@ var _ = Describe("Images", func() {
 						ElementReferences: map[string]interface{}{},
 						Elements: []types.DocElement{
 							types.Paragraph{
+								Attributes: map[string]interface{}{},
 								Lines: []types.InlineContent{
 									{
 										Elements: []types.InlineElement{
@@ -176,6 +186,7 @@ var _ = Describe("Images", func() {
 			It("inline image with empty alt and trailing spaces", func() {
 				actualContent := "image:images/foo.png[]  \t\t  "
 				expectedResult := types.Paragraph{
+					Attributes: map[string]interface{}{},
 					Lines: []types.InlineContent{
 						{
 							Elements: []types.InlineElement{
@@ -235,6 +246,7 @@ var _ = Describe("Images", func() {
 			It("inline image appending inline content", func() {
 				actualContent := "a paragraph\nimage::images/foo.png[]"
 				expectedResult := types.Paragraph{
+					Attributes: map[string]interface{}{},
 					Lines: []types.InlineContent{
 						{
 							Elements: []types.InlineElement{

@@ -9,8 +9,8 @@ var _ = Describe("Table of Contents", func() {
 
 	// reusable elements
 	doctitleAttribute := types.SectionTitle{
-		ID: types.ElementID{
-			Value: "_a_title",
+		Attributes: map[string]interface{}{
+			types.AttrID: "_a_title",
 		},
 		Content: types.InlineContent{
 			Elements: []types.InlineElement{
@@ -22,6 +22,7 @@ var _ = Describe("Table of Contents", func() {
 	preamble := types.Preamble{
 		Elements: []types.DocElement{
 			types.Paragraph{
+				Attributes: map[string]interface{}{},
 				Lines: []types.InlineContent{
 					{
 						Elements: []types.InlineElement{
@@ -35,8 +36,8 @@ var _ = Describe("Table of Contents", func() {
 	section := types.Section{
 		Level: 1,
 		Title: types.SectionTitle{
-			ID: types.ElementID{
-				Value: "_section_1",
+			Attributes: map[string]interface{}{
+				types.AttrID: "_section_1",
 			},
 			Content: types.InlineContent{
 				Elements: []types.InlineElement{
@@ -63,8 +64,8 @@ A short preamble
 			},
 			ElementReferences: map[string]interface{}{
 				"_section_1": types.SectionTitle{
-					ID: types.ElementID{
-						Value: "_section_1",
+					Attributes: map[string]interface{}{
+						types.AttrID: "_section_1",
 					},
 					Content: types.InlineContent{
 						Elements: []types.InlineElement{
@@ -97,8 +98,8 @@ A short preamble
 			},
 			ElementReferences: map[string]interface{}{
 				"_section_1": types.SectionTitle{
-					ID: types.ElementID{
-						Value: "_section_1",
+					Attributes: map[string]interface{}{
+						types.AttrID: "_section_1",
 					},
 					Content: types.InlineContent{
 						Elements: []types.InlineElement{

@@ -538,26 +538,30 @@ func (s Section) Accept(v Visitor) error {
 
 // SectionTitle the structure for the section titles
 type SectionTitle struct {
-	ID      ElementID
-	Content InlineContent
+	Attributes map[string]interface{}
+	Content    InlineContent
 }
 
 // NewSectionTitle initializes a new `SectionTitle`` from the given level and content, with the optional attributes.
 // In the attributes, only the ElementID is retained
 func NewSectionTitle(inlineContent InlineContent, attributes []interface{}) (SectionTitle, error) {
 	// counting the lenght of the 'level' value (ie, the number of `=` chars)
-	id, _, _ := NewElementAttributes(attributes)
+	attrbs := NewElementAttributes(attributes)
 	// make a default id from the sectionTitle's inline content
-	if id == (ElementID{}) {
+	if _, found := attrbs[AttrID]; !found {
 		replacement, err := ReplaceNonAlphanumerics(inlineContent, "_")
 		if err != nil {
 			return SectionTitle{}, errors.Wrapf(err, "unable to generate default ID while instanciating a new SectionTitle element")
 		}
-		id, _ = NewElementID(replacement)
+		id, err := NewElementID(replacement)
+		if err != nil {
+			return SectionTitle{}, errors.Wrapf(err, "unable to generate default ID while instanciating a new SectionTitle element")
+		}
+		attrbs[AttrID] = id.Value
 	}
 	sectionTitle := SectionTitle{
-		ID:      id,
-		Content: inlineContent,
+		Attributes: attrbs,
+		Content:    inlineContent,
 	}
 	if log.GetLevel() == log.DebugLevel {
 		log.Debugf("Initialized a new SectionTitle:")
@@ -1189,15 +1193,14 @@ var _ ListItem = &LabeledListItem{}
 
 // Paragraph the structure for the paragraphs
 type Paragraph struct {
-	ID    ElementID
-	Title ElementTitle
-	Lines []InlineContent
+	Attributes map[string]interface{}
+	Lines      []InlineContent
 }
 
 // NewParagraph initializes a new `Paragraph`
 func NewParagraph(lines []interface{}, attributes []interface{}) (Paragraph, error) {
 	log.Debugf("Initializing a new Paragraph with %d line(s)", len(lines))
-	id, title, _ := NewElementAttributes(attributes)
+	attrbs := NewElementAttributes(attributes)
 	elements := make([]InlineContent, 0)
 	for _, line := range lines {
 		if lineElements, ok := line.([]interface{}); ok {
@@ -1211,9 +1214,8 @@ func NewParagraph(lines []interface{}, attributes []interface{}) (Paragraph, err
 		}
 	}
 	return Paragraph{
-		ID:    id,
-		Lines: elements,
-		Title: title,
+		Attributes: attrbs,
+		Lines:      elements,
 	}, nil
 }
 
@@ -1223,10 +1225,9 @@ func NewParagraph(lines []interface{}, attributes []interface{}) (Paragraph, err
 
 // Admonition the structure for the admonition paragraphs
 type Admonition struct {
-	ID      ElementID
-	Kind    AdmonitionKind
-	Title   ElementTitle
-	Content DocElement
+	Kind       AdmonitionKind
+	Attributes map[string]interface{}
+	Content    DocElement
 }
 
 // AdmonitionKind the type of admonition
@@ -1248,12 +1249,11 @@ const (
 // NewAdmonition returns a new Admonition element
 func NewAdmonition(kind AdmonitionKind, content DocElement, attributes []interface{}) (Admonition, error) {
 	log.Debugf("Initializing a new Admonition...")
-	id, title, _ := NewElementAttributes(attributes)
+	attrbs := NewElementAttributes(attributes)
 	return Admonition{
-		ID:      id,
-		Kind:    kind,
-		Title:   title,
-		Content: content,
+		Kind:       kind,
+		Attributes: attrbs,
+		Content:    content,
 	}, nil
 }
 
@@ -1351,20 +1351,15 @@ func NewCrossReference(id string) (CrossReference, error) {
 
 // BlockImage the structure for the block images
 type BlockImage struct {
-	Macro ImageMacro
-	ID    ElementID
-	Title ElementTitle
-	Link  ElementLink
+	Macro      ImageMacro
+	Attributes map[string]interface{}
 }
 
 // NewBlockImage initializes a new `BlockImage`
 func NewBlockImage(imageMacro ImageMacro, attributes []interface{}) (BlockImage, error) {
-	id, title, link := NewElementAttributes(attributes)
 	return BlockImage{
-		Macro: imageMacro,
-		ID:    id,
-		Title: title,
-		Link:  link,
+		Macro:      imageMacro,
+		Attributes: NewElementAttributes(attributes),
 	}, nil
 }
 
@@ -1444,15 +1439,14 @@ const (
 
 // DelimitedBlock the structure for the delimited blocks
 type DelimitedBlock struct {
-	Kind     DelimitedBlockKind
-	ID       ElementID
-	Title    ElementTitle
-	Elements []DocElement
+	Kind       DelimitedBlockKind
+	Attributes map[string]interface{}
+	Elements   []DocElement
 }
 
 // NewDelimitedBlock initializes a new `DelimitedBlock` of the given kind with the given content
 func NewDelimitedBlock(kind DelimitedBlockKind, content []interface{}, attributes []interface{}) (DelimitedBlock, error) {
-	id, title, _ := NewElementAttributes(attributes)
+	attrbs := NewElementAttributes(attributes)
 	var elements []DocElement
 	switch kind {
 	case FencedBlock, ListingBlock:
@@ -1473,10 +1467,9 @@ func NewDelimitedBlock(kind DelimitedBlockKind, content []interface{}, attribute
 	}
 	log.Debugf("Initialized a new DelimitedBlock with content=`%s`", elements)
 	return DelimitedBlock{
-		Kind:     kind,
-		ID:       id,
-		Title:    title,
-		Elements: elements,
+		Kind:       kind,
+		Attributes: attrbs,
+		Elements:   elements,
 	}, nil
 }
 
@@ -1510,37 +1503,35 @@ func NewLiteralBlock(spaces, content []interface{}) (LiteralBlock, error) {
 // Elements attributes
 // ------------------------------------------
 
+const (
+	// AttrID the key to retrieve the ID in the element attributes
+	AttrID string = "elementID"
+	// AttrTitle the key to retrieve the title in the element attributes
+	AttrTitle string = "title"
+	// AttrLink the key to retrieve the link in the element attributes
+	AttrLink string = "link"
+)
+
 // NewElementAttributes retrieves the ElementID, ElementTitle and ElementLink from the given slice of attributes
-func NewElementAttributes(attributes []interface{}) (ElementID, ElementTitle, ElementLink) {
-	var id ElementID
-	var title ElementTitle
-	var link ElementLink
-	for _, item := range attributes {
-		switch item := item.(type) {
+func NewElementAttributes(attributes []interface{}) map[string]interface{} {
+	attrbs := make(map[string]interface{})
+	for _, attrb := range attributes {
+		switch attrb := attrb.(type) {
 		case ElementID:
-			id = item
-		case ElementLink:
-			link = item
+			attrbs[AttrID] = attrb.Value
 		case ElementTitle:
-			title = item
+			attrbs[AttrTitle] = attrb.Value
+		case map[string]interface{}:
+			for k, v := range attrb {
+				attrbs[k] = v
+			}
 		case nil:
 			// ignore
 		default:
-			log.Warnf("Unexpected attributes: %T", item)
+			log.Warnf("Unexpected attributes: %T", attrb)
 		}
 	}
-	return id, title, link
-}
-
-// ElementLink the structure for element links
-type ElementLink struct {
-	Path string
-}
-
-// NewElementLink initializes a new `ElementLink` from the given path
-func NewElementLink(path string) (ElementLink, error) {
-	log.Debugf("Initializing a new ElementLink with path=%s", path)
-	return ElementLink{Path: path}, nil
+	return attrbs
 }
 
 // ElementID the structure for element IDs

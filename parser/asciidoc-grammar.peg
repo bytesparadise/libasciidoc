@@ -361,16 +361,18 @@ InlineElement <- CrossReference / Passthrough / InlineImage / QuotedText / Link 
 // ------------------------------------------
 // Admonitions
 // ------------------------------------------
+
+Admonition <- AdmonitionParagraph
+
 // a paragraph is a group of line ending with a blank line (or end of file)
 // a paragraph cannot start with the `section` sequence (`= `, `== `, etc.)
-Admonition <- attributes:(ElementAttribute)* !("="+ WS+) t:(AdmonitionKind) ": " content:(AdmonitionParagraph) { // paragraph style
+AdmonitionParagraph <- attributes:(ElementAttribute)* !("="+ WS+) t:(AdmonitionKind) ": " content:(AdmonitionParagraphContent) { // paragraph style
     return types.NewAdmonition(t.(types.AdmonitionKind), content, attributes.([]interface{}))
-} / 
-attributes:(ElementAttribute)* "[" t:(AdmonitionKind) "]" WS* NEWLINE otherAttributes:(ElementAttribute)* content:(AdmonitionParagraph) { // block style
+} / attributes:(ElementAttribute)* "[" t:(AdmonitionKind) "]" WS* NEWLINE otherAttributes:(ElementAttribute)* content:(AdmonitionParagraphContent) { // block style
     return types.NewAdmonition(t.(types.AdmonitionKind), content, append(attributes.([]interface{}), otherAttributes.([]interface{})...))
 }
 
-AdmonitionParagraph <- lines:(InlineContentWithTrailingSpaces EOL)+ {
+AdmonitionParagraphContent <- lines:(InlineContentWithTrailingSpaces EOL)+ {
     return types.NewAdmonitionParagraph(lines.([]interface{}))
 }
 
@@ -585,13 +587,8 @@ ParagraphWithLiteralAttribute <- "[literal]" WS* NEWLINE content:(LiteralBlockCo
 // ------------------------------------------
 // Element Attributes
 // ------------------------------------------
-ElementAttribute <- attr:(ElementLink / ElementID / ElementTitle / AttributeGroup / InvalidElementAttribute) EOL {
+ElementAttribute <- attr:(ElementID / ElementTitle / AttributeGroup / InvalidElementAttribute) EOL {
     return attr, nil // avoid returning something like `[]interface{}{attr, EOL}`
-}
-
-// a link attached to an element, such as a BlockImage
-ElementLink <- "[link=" WS* path:URL WS* "]" {
-    return types.NewElementLink(path.(string))
 }
 
 ElementID <- id:(InlineElementID) {

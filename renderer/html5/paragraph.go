@@ -29,6 +29,13 @@ func renderParagraph(ctx *renderer.Context, p types.Paragraph) ([]byte, error) {
 		return make([]byte, 0), nil
 	}
 	result := bytes.NewBuffer(nil)
+	var id, title string
+	if i, ok := p.Attributes[types.AttrID].(string); ok {
+		id = i
+	}
+	if t, ok := p.Attributes[types.AttrTitle].(string); ok {
+		title = t
+	}
 	err := paragraphTmpl.Execute(result, ContextualPipeline{
 		Context: ctx,
 		Data: struct {
@@ -36,8 +43,8 @@ func renderParagraph(ctx *renderer.Context, p types.Paragraph) ([]byte, error) {
 			Title string
 			Lines []types.InlineContent
 		}{
-			ID:    p.ID.Value,
-			Title: p.Title.Value,
+			ID:    id,
+			Title: title,
 			Lines: p.Lines,
 		},
 	})

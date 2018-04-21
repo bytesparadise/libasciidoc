@@ -11,6 +11,7 @@ var _ = Describe("Paragraphs", func() {
 	It("paragraph with 1 word", func() {
 		actualContent := "hello"
 		expectedResult := types.Paragraph{
+			Attributes: map[string]interface{}{},
 			Lines: []types.InlineContent{
 				{
 					Elements: []types.InlineElement{
@@ -25,6 +26,7 @@ var _ = Describe("Paragraphs", func() {
 	It("paragraph with few words", func() {
 		actualContent := "a paragraph with some content"
 		expectedResult := types.Paragraph{
+			Attributes: map[string]interface{}{},
 			Lines: []types.InlineContent{
 				{
 					Elements: []types.InlineElement{
@@ -39,6 +41,7 @@ var _ = Describe("Paragraphs", func() {
 	It("paragraph with bold content", func() {
 		actualContent := "a paragraph with *some bold content*"
 		expectedResult := types.Paragraph{
+			Attributes: map[string]interface{}{},
 			Lines: []types.InlineContent{
 				{
 					Elements: []types.InlineElement{
@@ -61,8 +64,10 @@ var _ = Describe("Paragraphs", func() {
 .a title
 a paragraph`
 		expectedResult := types.Paragraph{
-			ID:    types.ElementID{Value: "foo"},
-			Title: types.ElementTitle{Value: "a title"},
+			Attributes: map[string]interface{}{
+				types.AttrID:    "foo",
+				types.AttrTitle: "a title",
+			},
 			Lines: []types.InlineContent{
 				{
 					Elements: []types.InlineElement{

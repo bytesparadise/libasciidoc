@@ -253,6 +253,7 @@ a normal paragraph.`
 					},
 				},
 				types.Paragraph{
+					Attributes: map[string]interface{}{},
 					Lines: []types.InlineContent{
 						{
 							Elements: []types.InlineElement{
@@ -288,7 +289,8 @@ another fenced block
 							Term: "Item 1",
 							Elements: []types.DocElement{
 								types.DelimitedBlock{
-									Kind: types.ListingBlock,
+									Kind:       types.ListingBlock,
+									Attributes: map[string]interface{}{},
 									Elements: []types.DocElement{
 										types.StringElement{
 											Content: "a fenced block",
@@ -310,7 +312,8 @@ another fenced block
 									},
 								},
 								types.DelimitedBlock{
-									Kind: types.ListingBlock,
+									Kind:       types.ListingBlock,
+									Attributes: map[string]interface{}{},
 									Elements: []types.DocElement{
 										types.StringElement{
 											Content: "another fenced block",
@@ -349,7 +352,8 @@ another fenced block
 					},
 				},
 				types.DelimitedBlock{
-					Kind: types.ListingBlock,
+					Kind:       types.ListingBlock,
+					Attributes: map[string]interface{}{},
 					Elements: []types.DocElement{
 						types.StringElement{
 							Content: "a fenced block",
@@ -376,7 +380,8 @@ another fenced block
 					},
 				},
 				types.DelimitedBlock{
-					Kind: types.ListingBlock,
+					Kind:       types.ListingBlock,
+					Attributes: map[string]interface{}{},
 					Elements: []types.DocElement{
 						types.StringElement{
 							Content: "another fenced block",

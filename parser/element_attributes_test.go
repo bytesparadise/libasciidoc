@@ -13,12 +13,12 @@ var _ = Describe("Element Attributes", func() {
 		Context("valid syntax", func() {
 			It("element link alone", func() {
 				actualContent := "[link=http://foo.bar]"
-				expectedResult := types.ElementLink{Path: "http://foo.bar"}
+				expectedResult := map[string]interface{}{"link": "http://foo.bar"}
 				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("ElementAttribute"))
 			})
 			It("spaces in link", func() {
 				actualContent := "[link= http://foo.bar  ]"
-				expectedResult := types.ElementLink{Path: "http://foo.bar"}
+				expectedResult := map[string]interface{}{"link": "http://foo.bar"}
 				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("ElementAttribute"))
 			})
 		})

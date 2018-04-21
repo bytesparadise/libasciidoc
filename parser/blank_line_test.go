@@ -15,6 +15,7 @@ second paragraph`
 			ElementReferences: map[string]interface{}{},
 			Elements: []types.DocElement{
 				types.Paragraph{
+					Attributes: map[string]interface{}{},
 					Lines: []types.InlineContent{
 						{
 							Elements: []types.InlineElement{
@@ -24,6 +25,7 @@ second paragraph`
 					},
 				},
 				types.Paragraph{
+					Attributes: map[string]interface{}{},
 					Lines: []types.InlineContent{
 						{
 							Elements: []types.InlineElement{
@@ -48,6 +50,7 @@ second paragraph
 			ElementReferences: map[string]interface{}{},
 			Elements: []types.DocElement{
 				types.Paragraph{
+					Attributes: map[string]interface{}{},
 					Lines: []types.InlineContent{
 						{
 							Elements: []types.InlineElement{
@@ -57,6 +60,7 @@ second paragraph
 					},
 				},
 				types.Paragraph{
+					Attributes: map[string]interface{}{},
 					Lines: []types.InlineContent{
 						{
 							Elements: []types.InlineElement{

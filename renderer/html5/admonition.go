@@ -40,22 +40,22 @@ func init() {
 func renderAdmonition(ctx *renderer.Context, a types.Admonition) ([]byte, error) {
 	log.Debugf("rendering admonition")
 	result := bytes.NewBuffer(nil)
-	var id, title *string
-	if a.ID != (types.ElementID{}) {
-		id = &a.ID.Value
+	var id, title string
+	if i, ok := a.Attributes[types.AttrID].(string); ok {
+		id = i
 	}
-	if a.Title != (types.ElementTitle{}) {
-		title = &a.Title.Value
+	if t, ok := a.Attributes[types.AttrTitle].(string); ok {
+		title = t
 	}
 	renderedContent, err := renderElement(ctx, a.Content)
 	if err != nil {
 		return nil, errors.Wrapf(err, "failed to render admonition")
 	}
 	err = admonitionTmpl.Execute(result, struct {
-		ID      *string
+		ID      string
 		Class   string
 		Icon    string
-		Title   *string
+		Title   string
 		Content string
 	}{
 		ID:      id,

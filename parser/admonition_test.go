@@ -12,7 +12,8 @@ var _ = Describe("admonitions", func() {
 		It("note admonition paragraph", func() {
 			actualContent := `NOTE: this is a note.`
 			expectedResult := types.Admonition{
-				Kind: types.Note,
+				Kind:       types.Note,
+				Attributes: map[string]interface{}{},
 				Content: types.AdmonitionParagraph{
 					Lines: []types.InlineContent{
 						{
@@ -32,7 +33,8 @@ var _ = Describe("admonitions", func() {
 			actualContent := `WARNING: this is a multiline
 warning!`
 			expectedResult := types.Admonition{
-				Kind: types.Warning,
+				Kind:       types.Warning,
+				Attributes: map[string]interface{}{},
 				Content: types.AdmonitionParagraph{
 					Lines: []types.InlineContent{
 						{
@@ -60,11 +62,9 @@ warning!`
 .bar
 NOTE: this is a note.`
 			expectedResult := types.Admonition{
-				ID: types.ElementID{
-					Value: "foo",
-				},
-				Title: types.ElementTitle{
-					Value: "bar",
+				Attributes: map[string]interface{}{
+					types.AttrID:    "foo",
+					types.AttrTitle: "bar",
 				},
 				Kind: types.Note,
 				Content: types.AdmonitionParagraph{
@@ -83,12 +83,13 @@ NOTE: this is a note.`
 		})
 	})
 
-	Context("admonition blocks", func() {
-		It("caution admonition block", func() {
+	Context("admonition paragraphs", func() {
+		It("caution admonition paragraph", func() {
 			actualContent := `[CAUTION] 
 this is a caution!`
 			expectedResult := types.Admonition{
-				Kind: types.Caution,
+				Kind:       types.Caution,
+				Attributes: map[string]interface{}{},
 				Content: types.AdmonitionParagraph{
 					Lines: []types.InlineContent{
 						{
@@ -104,18 +105,16 @@ this is a caution!`
 			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("BlockElement"))
 		})
 
-		It("multiline caution admonition block with title and id", func() {
+		It("multiline caution admonition paragraph with title and id", func() {
 			actualContent := `[[foo]]
 [CAUTION] 
 .bar
 this is a 
 *caution*!`
 			expectedResult := types.Admonition{
-				ID: types.ElementID{
-					Value: "foo",
-				},
-				Title: types.ElementTitle{
-					Value: "bar",
+				Attributes: map[string]interface{}{
+					types.AttrID:    "foo",
+					types.AttrTitle: "bar",
 				},
 				Kind: types.Caution,
 				Content: types.AdmonitionParagraph{

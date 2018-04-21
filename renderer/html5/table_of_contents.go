@@ -76,9 +76,13 @@ func renderTableOfContentSections(ctx *renderer.Context, elements []types.DocEle
 					return nil, errors.Wrapf(err, "error while rendering table of content section")
 				}
 			}
+			var id string
+			if i, ok := section.Title.Attributes[types.AttrID].(string); ok {
+				id = i
+			}
 			sections = append(sections, TableOfContentSection{
 				Level:       section.Level,
-				Href:        section.Title.ID.Value,
+				Href:        id,
 				Title:       template.HTML(string(renderedTitle)),
 				Subelements: renderedChildSections,
 			})

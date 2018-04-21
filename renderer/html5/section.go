@@ -106,13 +106,17 @@ func renderSectionTitle(ctx *renderer.Context, level int, sectionTitle types.Sec
 		return nil, errors.Wrapf(err, "error while rendering sectionTitle content")
 	}
 	content := template.HTML(string(renderedContent))
+	var id string
+	if i, ok := sectionTitle.Attributes[types.AttrID].(string); ok {
+		id = i
+	}
 	err = sectionHeaderTmpl.Execute(result, struct {
 		Level   int
 		ID      string
 		Content template.HTML
 	}{
 		Level:   level + 1,
-		ID:      sectionTitle.ID.Value,
+		ID:      id,
 		Content: content,
 	})
 	if err != nil {

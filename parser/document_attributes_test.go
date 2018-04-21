@@ -17,8 +17,8 @@ This journey begins on a bleary Monday morning.`
 			expectedResult := types.Document{
 				Attributes: map[string]interface{}{
 					"doctitle": types.SectionTitle{
-						ID: types.ElementID{
-							Value: "_the_dangerous_and_thrilling_documentation_chronicles",
+						Attributes: map[string]interface{}{
+							types.AttrID: "_the_dangerous_and_thrilling_documentation_chronicles",
 						},
 						Content: types.InlineContent{
 							Elements: []types.InlineElement{
@@ -30,6 +30,7 @@ This journey begins on a bleary Monday morning.`
 				ElementReferences: map[string]interface{}{},
 				Elements: []types.DocElement{
 					types.Paragraph{
+						Attributes: map[string]interface{}{},
 						Lines: []types.InlineContent{
 							{
 								Elements: []types.InlineElement{
@@ -273,6 +274,7 @@ a paragraph`
 						types.DocumentAttributeDeclaration{Name: "date", Value: "2017-01-01"},
 						types.DocumentAttributeDeclaration{Name: "author", Value: "Xavier"},
 						types.Paragraph{
+							Attributes: map[string]interface{}{},
 							Lines: []types.InlineContent{
 								{
 									Elements: []types.InlineElement{
@@ -300,6 +302,7 @@ a paragraph`
 						types.DocumentAttributeDeclaration{Name: "date", Value: "2017-01-01"},
 						types.DocumentAttributeDeclaration{Name: "author", Value: "Xavier"},
 						types.Paragraph{
+							Attributes: map[string]interface{}{},
 							Lines: []types.InlineContent{
 								{
 									Elements: []types.InlineElement{
@@ -328,6 +331,7 @@ a paragraph`
 						types.DocumentAttributeDeclaration{Name: "date", Value: "2017-01-01"},
 						types.DocumentAttributeDeclaration{Name: "author", Value: "Xavier"},
 						types.Paragraph{
+							Attributes: map[string]interface{}{},
 							Lines: []types.InlineContent{
 								{
 									Elements: []types.InlineElement{
@@ -352,6 +356,7 @@ a paragraph`
 					ElementReferences: map[string]interface{}{},
 					Elements: []types.DocElement{
 						types.Paragraph{
+							Attributes: map[string]interface{}{},
 							Lines: []types.InlineContent{
 								{
 									Elements: []types.InlineElement{
@@ -381,6 +386,7 @@ a paragraph written by {author}.`
 					Elements: []types.DocElement{
 						types.DocumentAttributeDeclaration{Name: "author", Value: "Xavier"},
 						types.Paragraph{
+							Attributes: map[string]interface{}{},
 							Lines: []types.InlineContent{
 								{
 									Elements: []types.InlineElement{
@@ -410,6 +416,7 @@ a paragraph written by {author}.`
 						types.DocumentAttributeReset{Name: "author1"},
 						types.DocumentAttributeReset{Name: "author2"},
 						types.Paragraph{
+							Attributes: map[string]interface{}{},
 							Lines: []types.InlineContent{
 								{
 									Elements: []types.InlineElement{
@@ -437,8 +444,8 @@ This journey begins on a bleary Monday morning.`
 			expectedResult := types.Document{
 				Attributes: map[string]interface{}{
 					"doctitle": types.SectionTitle{
-						ID: types.ElementID{
-							Value: "_the_dangerous_and_thrilling_documentation_chronicles",
+						Attributes: map[string]interface{}{
+							types.AttrID: "_the_dangerous_and_thrilling_documentation_chronicles",
 						},
 						Content: types.InlineContent{
 							Elements: []types.InlineElement{
@@ -467,6 +474,7 @@ This journey begins on a bleary Monday morning.`
 				Elements: []types.DocElement{
 					types.TableOfContentsMacro{},
 					types.Paragraph{
+						Attributes: map[string]interface{}{},
 						Lines: []types.InlineContent{
 							{
 								Elements: []types.InlineElement{
@@ -490,8 +498,8 @@ a paragraph with *bold content*`
 			expectedResult := types.Document{
 				Attributes: map[string]interface{}{
 					"doctitle": types.SectionTitle{
-						ID: types.ElementID{
-							Value: "_a_header",
+						Attributes: map[string]interface{}{
+							types.AttrID: "_a_header",
 						},
 						Content: types.InlineContent{
 							Elements: []types.InlineElement{
@@ -502,8 +510,8 @@ a paragraph with *bold content*`
 				},
 				ElementReferences: map[string]interface{}{
 					"_section_1": types.SectionTitle{
-						ID: types.ElementID{
-							Value: "_section_1",
+						Attributes: map[string]interface{}{
+							types.AttrID: "_section_1",
 						},
 						Content: types.InlineContent{
 							Elements: []types.InlineElement{
@@ -516,8 +524,8 @@ a paragraph with *bold content*`
 					types.Section{
 						Level: 1,
 						Title: types.SectionTitle{
-							ID: types.ElementID{
-								Value: "_section_1",
+							Attributes: map[string]interface{}{
+								types.AttrID: "_section_1",
 							},
 							Content: types.InlineContent{
 								Elements: []types.InlineElement{
@@ -527,6 +535,7 @@ a paragraph with *bold content*`
 						},
 						Elements: []types.DocElement{
 							types.Paragraph{
+								Attributes: map[string]interface{}{},
 								Lines: []types.InlineContent{
 									types.InlineContent{
 										Elements: []types.InlineElement{
@@ -560,6 +569,7 @@ a paragraph with *bold content*`
 				ElementReferences: map[string]interface{}{},
 				Elements: []types.DocElement{
 					types.Paragraph{
+						Attributes: map[string]interface{}{},
 						Lines: []types.InlineContent{
 							{
 								Elements: []types.InlineElement{
@@ -596,6 +606,7 @@ a paragraph with *bold content*`
 				ElementReferences: map[string]interface{}{},
 				Elements: []types.DocElement{
 					types.Paragraph{
+						Attributes: map[string]interface{}{},
 						Lines: []types.InlineContent{
 							{
 								Elements: []types.InlineElement{
