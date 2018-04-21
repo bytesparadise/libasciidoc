@@ -6,8 +6,11 @@ import (
 
 	"github.com/bytesparadise/libasciidoc"
 	"github.com/bytesparadise/libasciidoc/renderer"
+	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 )
+
+var logLevel string
 
 // NewRootCmd returns the root command
 func NewRootCmd() *cobra.Command {
@@ -26,8 +29,19 @@ func NewRootCmd() *cobra.Command {
 			}
 			return nil
 		},
+		PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
+			lvl, err := log.ParseLevel(logLevel)
+			if err != nil {
+				log.Errorf("unable to parse log level %v", err)
+				return err
+			}
+			log.Debug("Setting log level to %v", lvl)
+			log.SetLevel(lvl)
+			return nil
+		},
 	}
 	flags := rootCmd.Flags()
 	flags.StringVarP(&source, "source", "s", "", "the path to the asciidoc source to process")
+	rootCmd.PersistentFlags().StringVar(&logLevel, "log", "warning", "log level to set {debug, info, warning, error, fatal, panic}")
 	return rootCmd
 }
