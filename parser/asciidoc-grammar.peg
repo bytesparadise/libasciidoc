@@ -348,7 +348,7 @@ Paragraph <- attributes:(ElementAttribute)* !("="+ WS+) lines:(InlineContentWith
 
 // an inline content element may start with and end with spaces, 
 // but it must contain at least an inline element (image, quoted text, external link, document attribute substitution, word, etc.)
-InlineContentWithTrailingSpaces <- !BlockDelimiter elements:(WS* !InlineElementID InlineElement WS*)+  { // absorbs heading and trailing spaces
+InlineContentWithTrailingSpaces <- !BlockDelimiter elements:(WS* !InlineElementID InlineElement WS*)+  { // includes heading and trailing spaces in the elements arg
     return types.NewInlineContent(elements.([]interface{}))
 } 
 
@@ -365,15 +365,20 @@ InlineElement <- CrossReference / Passthrough / InlineImage / QuotedText / Link 
 Admonition <- AdmonitionParagraph
 
 // a paragraph is a group of line ending with a blank line (or end of file)
-// a paragraph cannot start with the `section` sequence (`= `, `== `, etc.)
+// a paragraph cannot start with the `section` marker (`= `, `== `, etc.)
 AdmonitionParagraph <- attributes:(ElementAttribute)* !("="+ WS+) t:(AdmonitionKind) ": " content:(AdmonitionParagraphContent) { // paragraph style
-    return types.NewAdmonition(t.(types.AdmonitionKind), content, attributes.([]interface{}))
-} / attributes:(ElementAttribute)* "[" t:(AdmonitionKind) "]" WS* NEWLINE otherAttributes:(ElementAttribute)* content:(AdmonitionParagraphContent) { // block style
-    return types.NewAdmonition(t.(types.AdmonitionKind), content, append(attributes.([]interface{}), otherAttributes.([]interface{})...))
+    return types.NewAdmonitionParagraph(t.(types.AdmonitionKind), content, attributes.([]interface{}))
+} / attributes:(ElementAttribute)* k:(AdmonitionMarker) otherAttributes:(ElementAttribute)* content:(AdmonitionParagraphContent) { // block style
+    return types.NewAdmonitionParagraph(k.(types.AdmonitionKind), content, append(attributes.([]interface{}), otherAttributes.([]interface{})...))
 }
 
 AdmonitionParagraphContent <- lines:(InlineContentWithTrailingSpaces EOL)+ {
-    return types.NewAdmonitionParagraph(lines.([]interface{}))
+    return types.NewAdmonitionParagraphContent(lines.([]interface{}))
+}
+
+// expression for the whole admonition marker, but only retains the actual kind
+AdmonitionMarker <- "[" k:(AdmonitionKind) "]" WS* NEWLINE {
+    return k, nil
 }
 
 AdmonitionKind <- "TIP" {
@@ -587,28 +592,28 @@ ParagraphWithLiteralAttribute <- "[literal]" WS* NEWLINE content:(LiteralBlockCo
 // ------------------------------------------
 // Element Attributes
 // ------------------------------------------
-ElementAttribute <- attr:(ElementID / ElementTitle / AttributeGroup / InvalidElementAttribute) EOL {
+ElementAttribute <- !AdmonitionMarker attr:(ElementID / ElementTitle / AttributeGroup / InvalidElementAttribute) EOL {
     return attr, nil // avoid returning something like `[]interface{}{attr, EOL}`
 }
 
 ElementID <- id:(InlineElementID) {
     return id, nil
-} / "[#" id:(ID) "]" {
+} / "[#" id:(ID) "]" WS* {
     return types.NewElementID(id.(string))
 }
 
-InlineElementID <- "[[" id:(ID) "]]" {
+InlineElementID <- "[[" id:(ID) "]]" WS* {
     return types.NewElementID(id.(string))
 }
 
 // a title attached to an element, such as a BlockImage (
 // a title starts with a single "." followed by the value, without space in-between
-ElementTitle <- "." !"." !WS title:(!NEWLINE .)+ {
+ElementTitle <- "." !"." !WS title:(!NEWLINE .)+ WS* {
     return types.NewElementTitle(title.([]interface{}))
 }
 
 // one or more attributes. eg: [foo, key1=value1, key2=value2]
-AttributeGroup <- "[" attributes:(GenericAttribute)* "]" {
+AttributeGroup <- "[" attributes:(GenericAttribute)* "]" WS* {
     return types.NewAttributeGroup(attributes.([]interface{}))
 }
 
@@ -628,7 +633,7 @@ AttributeValue <- WS* value:(!WS !"=" !"]" .)* WS* {
     return value, nil
 }
 
-InvalidElementAttribute <- "[" WS+ content:(!"]" .)* "]" {
+InvalidElementAttribute <- "[" WS+ content:(!"]" .)* "]" WS* {
     return types.NewInvalidElementAttribute(c.text)
 }
 

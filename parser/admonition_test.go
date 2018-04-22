@@ -11,10 +11,10 @@ var _ = Describe("admonitions", func() {
 	Context("admonition paragraphs", func() {
 		It("note admonition paragraph", func() {
 			actualContent := `NOTE: this is a note.`
-			expectedResult := types.Admonition{
+			expectedResult := types.AdmonitionParagraph{
 				Kind:       types.Note,
 				Attributes: map[string]interface{}{},
-				Content: types.AdmonitionParagraph{
+				Content: types.AdmonitionParagraphContent{
 					Lines: []types.InlineContent{
 						{
 							Elements: []types.InlineElement{
@@ -32,10 +32,10 @@ var _ = Describe("admonitions", func() {
 		It("warning admonition paragraph", func() {
 			actualContent := `WARNING: this is a multiline
 warning!`
-			expectedResult := types.Admonition{
+			expectedResult := types.AdmonitionParagraph{
 				Kind:       types.Warning,
 				Attributes: map[string]interface{}{},
-				Content: types.AdmonitionParagraph{
+				Content: types.AdmonitionParagraphContent{
 					Lines: []types.InlineContent{
 						{
 							Elements: []types.InlineElement{
@@ -61,13 +61,13 @@ warning!`
 			actualContent := `[[foo]]
 .bar
 NOTE: this is a note.`
-			expectedResult := types.Admonition{
+			expectedResult := types.AdmonitionParagraph{
 				Attributes: map[string]interface{}{
 					types.AttrID:    "foo",
 					types.AttrTitle: "bar",
 				},
 				Kind: types.Note,
-				Content: types.AdmonitionParagraph{
+				Content: types.AdmonitionParagraphContent{
 					Lines: []types.InlineContent{
 						{
 							Elements: []types.InlineElement{
@@ -84,13 +84,13 @@ NOTE: this is a note.`
 	})
 
 	Context("admonition paragraphs", func() {
-		It("caution admonition paragraph", func() {
-			actualContent := `[CAUTION] 
+		It("caution admonition paragraph with single line", func() {
+			actualContent := `[CAUTION]
 this is a caution!`
-			expectedResult := types.Admonition{
+			expectedResult := types.AdmonitionParagraph{
 				Kind:       types.Caution,
 				Attributes: map[string]interface{}{},
-				Content: types.AdmonitionParagraph{
+				Content: types.AdmonitionParagraphContent{
 					Lines: []types.InlineContent{
 						{
 							Elements: []types.InlineElement{
@@ -111,13 +111,13 @@ this is a caution!`
 .bar
 this is a 
 *caution*!`
-			expectedResult := types.Admonition{
+			expectedResult := types.AdmonitionParagraph{
 				Attributes: map[string]interface{}{
 					types.AttrID:    "foo",
 					types.AttrTitle: "bar",
 				},
 				Kind: types.Caution,
-				Content: types.AdmonitionParagraph{
+				Content: types.AdmonitionParagraphContent{
 					Lines: []types.InlineContent{
 						{
 							Elements: []types.InlineElement{
@@ -145,6 +145,51 @@ this is a
 				},
 			}
 			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("BlockElement"))
+		})
+
+		It("multiple admonition paragraphs", func() {
+			actualContent := `[NOTE]
+No space after the [NOTE]!
+
+[CAUTION]
+And no space after [CAUTION] either.`
+			expectedResult := types.Document{
+				Attributes:        map[string]interface{}{},
+				ElementReferences: map[string]interface{}{},
+				Elements: []types.DocElement{
+					types.AdmonitionParagraph{
+						Kind:       types.Note,
+						Attributes: map[string]interface{}{},
+						Content: types.AdmonitionParagraphContent{
+							Lines: []types.InlineContent{
+								{
+									Elements: []types.InlineElement{
+										types.StringElement{
+											Content: "No space after the [NOTE]!",
+										},
+									},
+								},
+							},
+						},
+					},
+					types.AdmonitionParagraph{
+						Kind:       types.Caution,
+						Attributes: map[string]interface{}{},
+						Content: types.AdmonitionParagraphContent{
+							Lines: []types.InlineContent{
+								{
+									Elements: []types.InlineElement{
+										types.StringElement{
+											Content: "And no space after [CAUTION] either.",
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			}
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Document"))
 		})
 	})
 
