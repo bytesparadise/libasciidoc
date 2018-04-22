@@ -1220,11 +1220,11 @@ func NewParagraph(lines []interface{}, attributes []interface{}) (Paragraph, err
 }
 
 // ------------------------------------------
-// Admonition
+// Admonition Paragraph
 // ------------------------------------------
 
 // Admonition the structure for the admonition paragraphs
-type Admonition struct {
+type AdmonitionParagraph struct {
 	Kind       AdmonitionKind
 	Attributes map[string]interface{}
 	Content    DocElement
@@ -1247,10 +1247,10 @@ const (
 )
 
 // NewAdmonition returns a new Admonition element
-func NewAdmonition(kind AdmonitionKind, content DocElement, attributes []interface{}) (Admonition, error) {
+func NewAdmonitionParagraph(kind AdmonitionKind, content DocElement, attributes []interface{}) (AdmonitionParagraph, error) {
 	log.Debugf("Initializing a new Admonition...")
 	attrbs := NewElementAttributes(attributes)
-	return Admonition{
+	return AdmonitionParagraph{
 		Kind:       kind,
 		Attributes: attrbs,
 		Content:    content,
@@ -1261,14 +1261,14 @@ func NewAdmonition(kind AdmonitionKind, content DocElement, attributes []interfa
 // Admonition Paragraph
 // ------------------------------------------
 
-// AdmonitionParagraph the structure for the list paragraphs
-type AdmonitionParagraph struct {
+// AdmonitionParagraphContent the structure for the list paragraphs
+type AdmonitionParagraphContent struct {
 	Lines []InlineContent
 }
 
-// NewAdmonitionParagraph initializes a new `AdmonitionParagraph`
-func NewAdmonitionParagraph(lines []interface{}) (AdmonitionParagraph, error) {
-	// log.Debugf("Initializing a new AdmonitionParagraph with %d line(s)", len(lines))
+// NewAdmonitionParagraphContent initializes a new `AdmonitionParagraphContent`
+func NewAdmonitionParagraphContent(lines []interface{}) (AdmonitionParagraphContent, error) {
+	// log.Debugf("Initializing a new AdmonitionParagraphContent with %d line(s)", len(lines))
 	elements := make([]InlineContent, 0)
 	for _, line := range lines {
 		if lineElements, ok := line.([]interface{}); ok {
@@ -1281,7 +1281,7 @@ func NewAdmonitionParagraph(lines []interface{}) (AdmonitionParagraph, error) {
 			}
 		}
 	}
-	return AdmonitionParagraph{
+	return AdmonitionParagraphContent{
 		Lines: elements,
 	}, nil
 }
