@@ -59,3 +59,4 @@ tmp
 coverage.txt
 *.html
 .DS_Store
+*.html

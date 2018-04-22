@@ -25,7 +25,7 @@ It is is available under the terms of the https://raw.githubusercontent.com/byte
 * Admonition paragraphs
 
 
-See the http://LIMITATIONS.adoc[known limitations] page for differences between Asciidoc/Asciidoctor and Libasciidoc.
+See the link:LIMITATIONS.adoc[known limitations] page for differences between Asciidoc/Asciidoctor and Libasciidoc.
 
 Further elements will be supported in the future. Feel free to open issues https://github.com/bytesparadise/libasciidoc/issues[here] to help prioritizing the upcoming work.
 
@@ -61,4 +61,4 @@ The currently available option to pass as a last argument is `renderer.IncludeHe
 
 == How to contribute
 
-Please refer to the http://CONTRIBUTE.adoc[Contribute] page.
+Please refer to the link:CONTRIBUTE.adoc[Contribute] page.
