@@ -10,12 +10,12 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-var admonitionTmpl texttemplate.Template
 var admonitionParagraphTmpl texttemplate.Template
+var admonitionParagraphContentTmpl texttemplate.Template
 
 // initializes the templates
 func init() {
-	admonitionTmpl = newTextTemplate("admonition", `<div {{ if .ID }}id="{{ .ID }}" {{ end }}class="admonitionblock {{ .Class }}">
+	admonitionParagraphTmpl = newTextTemplate("admonition paragraph", `<div {{ if .ID }}id="{{ .ID }}" {{ end }}class="admonitionblock {{ .Class }}">
 <table>
 <tr>
 <td class="icon">
@@ -29,7 +29,7 @@ func init() {
 </table>
 </div>`)
 
-	admonitionParagraphTmpl = newTextTemplate("admonition paragraph",
+	admonitionParagraphContentTmpl = newTextTemplate("admonition paragraph content",
 		`{{ $ctx := .Context }}{{ with .Data }}{{ $lines := .Lines }}{{ range $index, $line := $lines }}{{ renderElement $ctx $line | printf "%s" }}{{ if notLastItem $index $lines }}{{ print "\n" }}{{ end }}{{ end }}{{ end }}`,
 		texttemplate.FuncMap{
 			"renderElement": renderElement,
@@ -37,7 +37,7 @@ func init() {
 		})
 }
 
-func renderAdmonition(ctx *renderer.Context, a types.Admonition) ([]byte, error) {
+func renderAdmonitionParagraph(ctx *renderer.Context, a types.AdmonitionParagraph) ([]byte, error) {
 	log.Debugf("rendering admonition")
 	result := bytes.NewBuffer(nil)
 	var id, title string
@@ -51,7 +51,7 @@ func renderAdmonition(ctx *renderer.Context, a types.Admonition) ([]byte, error)
 	if err != nil {
 		return nil, errors.Wrapf(err, "failed to render admonition")
 	}
-	err = admonitionTmpl.Execute(result, struct {
+	err = admonitionParagraphTmpl.Execute(result, struct {
 		ID      string
 		Class   string
 		Icon    string
@@ -70,10 +70,10 @@ func renderAdmonition(ctx *renderer.Context, a types.Admonition) ([]byte, error)
 	return result.Bytes(), nil
 }
 
-func renderAdmonitionParagraph(ctx *renderer.Context, p types.AdmonitionParagraph) ([]byte, error) {
+func renderAdmonitionParagraphContent(ctx *renderer.Context, p types.AdmonitionParagraphContent) ([]byte, error) {
 	result := bytes.NewBuffer(nil)
 	// here we must preserve the HTML tags
-	err := admonitionParagraphTmpl.Execute(result, ContextualPipeline{
+	err := admonitionParagraphContentTmpl.Execute(result, ContextualPipeline{
 		Context: ctx,
 		Data:    p,
 	})
