@@ -55,6 +55,20 @@ var _ = Describe("root cmd", func() {
 		require.Error(GinkgoT(), err)
 	})
 
+	It("should render without header/footer", func() {
+		// given
+		root := main.NewRootCmd()
+		buf := new(bytes.Buffer)
+		root.SetOutput(buf)
+		root.SetArgs([]string{"-n", "-s", "test/test.adoc"})
+		// when
+		err := root.Execute()
+		// then
+		require.NoError(GinkgoT(), err)
+		require.NotEmpty(GinkgoT(), buf)
+		Expect(buf.String()).ToNot(ContainSubstring(`<div id="footer">`))
+	})
+
 	It("should process stdin", func() {
 		// given
 		root := main.NewRootCmd()

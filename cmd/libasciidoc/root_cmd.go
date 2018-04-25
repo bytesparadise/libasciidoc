@@ -16,6 +16,7 @@ var logLevel string
 // NewRootCmd returns the root command
 func NewRootCmd() *cobra.Command {
 	var source string
+	var noHeaderFooter bool
 	rootCmd := &cobra.Command{
 		Use:   "libasciidoc",
 		Short: "libasciidoc is a tool to generate an html output from an asciidoc file",
@@ -25,10 +26,10 @@ func NewRootCmd() *cobra.Command {
 				return fmt.Errorf("flag 'source' is required")
 			}
 			if cmd.Flag("source").Value.String() == "-" {
-				_, err = libasciidoc.ConvertToHTML(context.Background(), os.Stdin, cmd.OutOrStdout(), renderer.IncludeHeaderFooter(true))
+				_, err = libasciidoc.ConvertToHTML(context.Background(), os.Stdin, cmd.OutOrStdout(), renderer.IncludeHeaderFooter(!noHeaderFooter))
 			} else {
 				source := cmd.Flag("source").Value.String()
-				_, err = libasciidoc.ConvertFileToHTML(context.Background(), source, cmd.OutOrStdout(), renderer.IncludeHeaderFooter(true)) //renderer.IncludeHeaderFooter(true)
+				_, err = libasciidoc.ConvertFileToHTML(context.Background(), source, cmd.OutOrStdout(), renderer.IncludeHeaderFooter(!noHeaderFooter)) //renderer.IncludeHeaderFooter(true)
 			}
 			if err != nil {
 				return err
@@ -48,6 +49,7 @@ func NewRootCmd() *cobra.Command {
 	}
 	flags := rootCmd.Flags()
 	flags.StringVarP(&source, "source", "s", "", "the path to the asciidoc source to process. Use '-' for reading from stdin")
+	flags.BoolVarP(&noHeaderFooter, "no-header-footer", "n", false, "Do not render header/footer (Default: false)")
 	rootCmd.PersistentFlags().StringVar(&logLevel, "log", "warning", "log level to set {debug, info, warning, error, fatal, panic}")
 	return rootCmd
 }
