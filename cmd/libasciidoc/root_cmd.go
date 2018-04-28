@@ -2,8 +2,10 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"os"
+	"strings"
+
+	"path/filepath"
 
 	"github.com/bytesparadise/libasciidoc"
 	"github.com/bytesparadise/libasciidoc/renderer"
@@ -11,30 +13,50 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var logLevel string
-
 // NewRootCmd returns the root command
 func NewRootCmd() *cobra.Command {
-	var source string
 	var noHeaderFooter bool
+	var logLevel string
 	rootCmd := &cobra.Command{
-		Use:   "libasciidoc",
-		Short: "libasciidoc is a tool to generate an html output from an asciidoc file",
+		Use: "libasciidoc FILE...",
+		Short: `libasciidoc is a tool to generate an html output from an asciidoc file
+
+Positional args:
+If no files are specified, input is read from STDIN
+If more than 1 file is specified, then output is written to ".html" file alongside the source file
+`,
+		Args: cobra.ArbitraryArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			var err error
-			if cmd.Flag("source").Value.String() == "" {
-				return fmt.Errorf("flag 'source' is required")
-			}
-			if cmd.Flag("source").Value.String() == "-" {
+			if len(args) == 0 {
 				_, err = libasciidoc.ConvertToHTML(context.Background(), os.Stdin, cmd.OutOrStdout(), renderer.IncludeHeaderFooter(!noHeaderFooter))
+			} else if len(args) == 1 {
+				_, err = libasciidoc.ConvertFileToHTML(context.Background(), args[0], cmd.OutOrStdout(), renderer.IncludeHeaderFooter(!noHeaderFooter)) //renderer.IncludeHeaderFooter(true)
 			} else {
-				source := cmd.Flag("source").Value.String()
-				_, err = libasciidoc.ConvertFileToHTML(context.Background(), source, cmd.OutOrStdout(), renderer.IncludeHeaderFooter(!noHeaderFooter)) //renderer.IncludeHeaderFooter(true)
+				for _, source := range args {
+					path, _ := filepath.Abs(source)
+					log.Debugf("Starting to process file %v", path)
+					outname := strings.TrimSuffix(path, filepath.Ext(path)) + ".html"
+					outfile, e := os.Create(outname)
+					if e != nil {
+						log.Warnf("Cannot create output file - %v, skipping", outname)
+						continue
+					}
+					defer func() {
+						e = outfile.Close()
+						if e != nil {
+							log.Errorf("Cannot close output file: %v", outname)
+						}
+					}()
+					_, e = libasciidoc.ConvertFileToHTML(context.Background(), source, outfile, renderer.IncludeHeaderFooter(!noHeaderFooter)) //renderer.IncludeHeaderFooter(true)
+					if e == nil {
+						log.Infof("File %v created", outname)
+					} else {
+						err = e
+					}
+				}
 			}
-			if err != nil {
-				return err
-			}
-			return nil
+			return err
 		},
 		PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
 			lvl, err := log.ParseLevel(logLevel)
@@ -48,8 +70,7 @@ func NewRootCmd() *cobra.Command {
 		},
 	}
 	flags := rootCmd.Flags()
-	flags.StringVarP(&source, "source", "s", "", "the path to the asciidoc source to process. Use '-' for reading from stdin")
-	flags.BoolVarP(&noHeaderFooter, "no-header-footer", "n", false, "Do not render header/footer (Default: false)")
+	flags.BoolVarP(&noHeaderFooter, "no-header-footer", "s", false, "Do not render header/footer (Default: false)")
 	rootCmd.PersistentFlags().StringVar(&logLevel, "log", "warning", "log level to set {debug, info, warning, error, fatal, panic}")
 	return rootCmd
 }
