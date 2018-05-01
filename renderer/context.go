@@ -28,6 +28,20 @@ func Wrap(ctx context.Context, document types.Document, options ...Option) *Cont
 	return result
 }
 
+// RenderBlankLine indicates if blank lines should be rendered (default false)
+func (ctx *Context) RenderBlankLine() bool {
+	if ignore, found := ctx.options["includeBlankLine"].(bool); found {
+		return !ignore
+	}
+	// by default, ignore blank lines
+	return false
+}
+
+// IgnoreBlankLine sets the rendering context to ignore (or not) the blank lines
+func (ctx *Context) IgnoreBlankLine(ignore bool) {
+	ctx.options["includeBlankLine"] = ignore
+}
+
 // Deadline wrapper implementation of context.Context.Deadline()
 func (ctx *Context) Deadline() (deadline time.Time, ok bool) {
 	return ctx.context.Deadline()

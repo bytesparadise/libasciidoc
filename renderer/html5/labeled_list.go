@@ -20,14 +20,14 @@ func init() {
 <dl>
 {{ $items := .Items }}{{ range $itemIndex, $item := $items }}<dt class="hdlist1">{{ $item.Term }}</dt>{{ if $item.Elements }}
 <dd>
-{{ $elements := $item.Elements }}{{ range $elementIndex, $element := $elements }}{{ renderElement $ctx $element | printf "%s" }}{{ if notLastItem $elementIndex $elements }}{{ print "\n" }}{{ end }}{{ end }}
+{{ $elements := $item.Elements }}{{ range $elementIndex, $element := $elements }}{{ renderElement $ctx $element | printf "%s" }}{{ if includeNewline $ctx $elementIndex $elements }}{{ print "\n" }}{{ end }}{{ end }}
 </dd>{{ end }}
 {{ end }}</dl>
 </div>{{ end }}`,
 		texttemplate.FuncMap{
-			"renderElement": renderElement,
-			"wrap":          wrap,
-			"notLastItem":   notLastItem,
+			"renderElement":  renderElement,
+			"wrap":           wrap,
+			"includeNewline": includeNewline,
 		})
 
 	horizontalLabeledListTmpl = newTextTemplate("labeled list with horizontal layout",
@@ -38,8 +38,8 @@ func init() {
 {{ $item.Term }}
 {{ if $item.Elements }}</td>
 <td class="hdlist2">
-{{ $elements := $item.Elements }}{{ range $elementIndex, $element := $elements }}{{ renderElement $ctx $element | printf "%s" }}{{ if notLastItem $elementIndex $elements }}{{ print "\n" }}{{ end }}{{ end }}
-{{ if notLastItem $itemIndex $items }}</td>
+{{ $elements := $item.Elements }}{{ range $elementIndex, $element := $elements }}{{ renderElement $ctx $element | printf "%s" }}{{ if includeNewline $ctx $elementIndex $elements }}{{ print "\n" }}{{ end }}{{ end }}
+{{ if includeNewline $ctx $itemIndex $items }}</td>
 </tr>
 <tr>
 <td class="hdlist1">{{ else }}</td>{{ end }}{{ else }}<br>{{ end }}{{ end }}
@@ -47,9 +47,9 @@ func init() {
 </table>
 </div>{{ end }}`,
 		texttemplate.FuncMap{
-			"renderElement": renderElement,
-			"wrap":          wrap,
-			"notLastItem":   notLastItem,
+			"renderElement":  renderElement,
+			"wrap":           wrap,
+			"includeNewline": includeNewline,
 		})
 
 }

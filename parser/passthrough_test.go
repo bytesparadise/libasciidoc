@@ -6,9 +6,9 @@ import (
 	. "github.com/onsi/ginkgo"
 )
 
-var _ = Describe("Passthroughs", func() {
+var _ = Describe("passthroughs", func() {
 
-	Context("TriplePlus Passthrough", func() {
+	Context("triplePlus Passthrough", func() {
 
 		It("tripleplus passthrough with words", func() {
 			actualContent := `+++hello, world+++`
@@ -72,7 +72,7 @@ var _ = Describe("Passthroughs", func() {
 		})
 	})
 
-	Context("SinglePlus Passthrough", func() {
+	Context("singlePlus Passthrough", func() {
 
 		It("singleplus passthrough with words", func() {
 			actualContent := `+hello, world+`
@@ -134,9 +134,9 @@ var _ = Describe("Passthroughs", func() {
 		})
 	})
 
-	Context("Passthrough Macro", func() {
+	Context("passthrough Macro", func() {
 
-		Context("Passthrough Base Macro", func() {
+		Context("passthrough Base Macro", func() {
 
 			It("passthrough macro with single word", func() {
 				actualContent := `pass:[hello]`
@@ -200,7 +200,7 @@ var _ = Describe("Passthroughs", func() {
 			})
 		})
 
-		Context("Passthrough Macro with Quoted Text", func() {
+		Context("passthrough Macro with Quoted Text", func() {
 
 			It("passthrough macro with single quoted word", func() {
 				actualContent := `pass:q[*hello*]`

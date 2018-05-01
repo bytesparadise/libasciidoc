@@ -3,7 +3,7 @@ package html5_test
 import . "github.com/onsi/ginkgo"
 
 var _ = Describe("Images", func() {
-	Context("Block Images", func() {
+	Context("block Images", func() {
 
 		It("block image alone", func() {
 
@@ -50,8 +50,8 @@ var _ = Describe("Images", func() {
 		})
 	})
 
-	Context("Inline Images", func() {
-		Context("Valid Inline Images", func() {
+	Context("inline Images", func() {
+		Context("valid Inline Images", func() {
 
 			It("inline image alone", func() {
 				actualContent := "image:foo.png[]"
@@ -86,7 +86,7 @@ var _ = Describe("Images", func() {
 			})
 		})
 
-		Context("Invalid Inline Images", func() {
+		Context("invalid Inline Images", func() {
 
 			It("paragraph with block image with alt and dimensions", func() {
 				actualContent := "a foo image::foo.png[foo image, 600, 400] bar"

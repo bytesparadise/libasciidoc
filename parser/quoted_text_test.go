@@ -6,7 +6,7 @@ import (
 	. "github.com/onsi/ginkgo"
 )
 
-var _ = Describe("Quoted Texts", func() {
+var _ = Describe("quoted texts", func() {
 
 	Context("Quoted text with single punctuation", func() {
 
@@ -711,9 +711,9 @@ var _ = Describe("Quoted Texts", func() {
 
 	})
 
-	Context("Prevented substitution", func() {
+	Context("prevented substitution", func() {
 
-		Context("Prevented Bold text substitution", func() {
+		Context("prevented Bold text substitution", func() {
 
 			It("escaped bold text with simple quote", func() {
 				actualContent := `\*bold content*`
@@ -806,7 +806,7 @@ var _ = Describe("Quoted Texts", func() {
 			})
 		})
 
-		Context("Prevented Italic text substitution", func() {
+		Context("prevented Italic text substitution", func() {
 
 			It("escaped italic text with simple quote", func() {
 				actualContent := `\_italic content_`
@@ -899,7 +899,7 @@ var _ = Describe("Quoted Texts", func() {
 			})
 		})
 
-		Context("Prevented Monospace text substitution", func() {
+		Context("prevented Monospace text substitution", func() {
 
 			It("escaped monospace text with simple quote", func() {
 				actualContent := "\\`monospace content`"
@@ -992,7 +992,7 @@ var _ = Describe("Quoted Texts", func() {
 			})
 		})
 
-		Context("Include nested substitution", func() {
+		Context("include nested substitution", func() {
 			It("escaped bold text with nested italic", func() {
 				actualContent := `\*bold _and italic_ content*`
 				expectedResult := types.Paragraph{

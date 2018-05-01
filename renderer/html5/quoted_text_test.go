@@ -2,9 +2,9 @@ package html5_test
 
 import . "github.com/onsi/ginkgo"
 
-var _ = Describe("Quoted Texts", func() {
+var _ = Describe("quoted texts", func() {
 
-	Context("Bold content", func() {
+	Context("bold content", func() {
 		It("bold content alone", func() {
 			actualContent := "*bold content*"
 			expectedResult := `<div class="paragraph">
@@ -22,7 +22,7 @@ var _ = Describe("Quoted Texts", func() {
 		})
 	})
 
-	Context("Italic content", func() {
+	Context("italic content", func() {
 		It("italic content alone", func() {
 			actualContent := "_italic content_"
 			expectedResult := `<div class="paragraph">
@@ -41,7 +41,7 @@ var _ = Describe("Quoted Texts", func() {
 		})
 	})
 
-	Context("Monospace content", func() {
+	Context("monospace content", func() {
 		It("monospace content alone", func() {
 			actualContent := "`monospace content`"
 			expectedResult := `<div class="paragraph">
@@ -80,7 +80,7 @@ var _ = Describe("Quoted Texts", func() {
 		})
 	})
 
-	Context("Invalid  content", func() {
+	Context("invalid  content", func() {
 
 		It("italic content within invalid bold quote in sentence", func() {
 			actualContent := "some *bold and _italic content_ * together."
@@ -100,7 +100,7 @@ var _ = Describe("Quoted Texts", func() {
 		})
 	})
 
-	Context("Prevented substitution", func() {
+	Context("prevented substitution", func() {
 
 		It("esacped bold content in sentence", func() {
 			actualContent := "some \\*bold content*."

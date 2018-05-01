@@ -7,9 +7,9 @@ import (
 	. "github.com/onsi/ginkgo"
 )
 
-var _ = Describe("Document Header", func() {
+var _ = Describe("document Header", func() {
 
-	Context("Header with attributes", func() {
+	Context("header with attributes", func() {
 
 		It("header with author and revision", func() {
 			actualContent := `= The Dangerous and Thrilling Documentation Chronicles

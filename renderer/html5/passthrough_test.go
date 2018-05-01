@@ -2,9 +2,9 @@ package html5_test
 
 import . "github.com/onsi/ginkgo"
 
-var _ = Describe("Passthroughs", func() {
+var _ = Describe("passthroughs", func() {
 
-	Context("Tripleplus Passthrough", func() {
+	Context("tripleplus passthrough", func() {
 
 		It("an empty standalone tripleplus passthrough", func() {
 			actualContent := `++++++`
@@ -37,7 +37,7 @@ var _ = Describe("Passthroughs", func() {
 		})
 	})
 
-	Context("Singleplus Passthrough", func() {
+	Context("singleplus Passthrough", func() {
 
 		It("an empty standalone singleplus passthrough", func() {
 			actualContent := `++`
@@ -70,7 +70,7 @@ var _ = Describe("Passthroughs", func() {
 		})
 	})
 
-	Context("Passthrough Macro", func() {
+	Context("passthrough Macro", func() {
 
 		It("passthrough macro with single word", func() {
 			actualContent := `pass:[hello]`
@@ -112,7 +112,7 @@ world</p>
 		})
 	})
 
-	Context("Passthrough Macro with Quoted Text", func() {
+	Context("passthrough Macro with Quoted Text", func() {
 
 		It("passthrough macro with single quoted word", func() {
 			actualContent := `pass:q[*hello*]`

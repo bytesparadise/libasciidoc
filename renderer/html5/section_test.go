@@ -2,9 +2,9 @@ package html5_test
 
 import . "github.com/onsi/ginkgo"
 
-var _ = Describe("Sections", func() {
+var _ = Describe("sections", func() {
 
-	Context("Sections only", func() {
+	Context("sections only", func() {
 
 		It("header section", func() {
 			actualContent := "= a title"
@@ -66,7 +66,7 @@ var _ = Describe("Sections", func() {
 		})
 	})
 
-	Context("Section with elements", func() {
+	Context("section with elements", func() {
 
 		It("section level 1 with 2 paragraphs", func() {
 			actualContent := `== a title

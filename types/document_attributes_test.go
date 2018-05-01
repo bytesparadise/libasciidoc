@@ -6,7 +6,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-var _ = Describe("Document Attributes", func() {
+var _ = Describe("document attributes", func() {
 
 	It("normal value", func() {
 		// given

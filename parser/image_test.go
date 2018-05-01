@@ -6,11 +6,11 @@ import (
 	. "github.com/onsi/ginkgo"
 )
 
-var _ = Describe("Images", func() {
+var _ = Describe("images", func() {
 
-	Context("Block Images", func() {
+	Context("block Images", func() {
 
-		Context("Correct behaviour", func() {
+		Context("correct behaviour", func() {
 
 			It("block image with empty alt", func() {
 				actualContent := "image::images/foo.png[]"
@@ -113,9 +113,9 @@ var _ = Describe("Images", func() {
 			})
 		})
 
-		Context("Errors", func() {
+		Context("errors", func() {
 
-			Context("Parsing the paragraph only", func() {
+			Context("parsing the paragraph only", func() {
 
 				It("block image appending inline content", func() {
 					actualContent := "a paragraph\nimage::images/foo.png[]"
@@ -138,7 +138,7 @@ var _ = Describe("Images", func() {
 				})
 			})
 
-			Context("Parsing the whole document", func() {
+			Context("parsing the whole document", func() {
 
 				It("paragraph with block image with alt and dimensions", func() {
 					actualContent := "a foo image::foo.png[foo image, 600, 400] bar"
@@ -164,9 +164,9 @@ var _ = Describe("Images", func() {
 		})
 	})
 
-	Context("Inline Images", func() {
+	Context("inline Images", func() {
 
-		Context("Correct behaviour", func() {
+		Context("correct behaviour", func() {
 
 			It("inline image with empty alt", func() {
 				actualContent := "image:images/foo.png[]"
@@ -242,7 +242,7 @@ var _ = Describe("Images", func() {
 				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineContent"))
 			})
 		})
-		Context("Errors", func() {
+		Context("errors", func() {
 			It("inline image appending inline content", func() {
 				actualContent := "a paragraph\nimage::images/foo.png[]"
 				expectedResult := types.Paragraph{

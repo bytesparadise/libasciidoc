@@ -292,8 +292,17 @@ another fenced block
 									Kind:       types.ListingBlock,
 									Attributes: map[string]interface{}{},
 									Elements: []types.DocElement{
-										types.StringElement{
-											Content: "a fenced block",
+										types.Paragraph{
+											Attributes: map[string]interface{}{},
+											Lines: []types.InlineContent{
+												{
+													Elements: []types.InlineElement{
+														types.StringElement{
+															Content: "a fenced block",
+														},
+													},
+												},
+											},
 										},
 									},
 								},
@@ -315,8 +324,17 @@ another fenced block
 									Kind:       types.ListingBlock,
 									Attributes: map[string]interface{}{},
 									Elements: []types.DocElement{
-										types.StringElement{
-											Content: "another fenced block",
+										types.Paragraph{
+											Attributes: map[string]interface{}{},
+											Lines: []types.InlineContent{
+												{
+													Elements: []types.InlineElement{
+														types.StringElement{
+															Content: "another fenced block",
+														},
+													},
+												},
+											},
 										},
 									},
 								},
@@ -355,8 +373,17 @@ another fenced block
 					Kind:       types.ListingBlock,
 					Attributes: map[string]interface{}{},
 					Elements: []types.DocElement{
-						types.StringElement{
-							Content: "a fenced block",
+						types.Paragraph{
+							Attributes: map[string]interface{}{},
+							Lines: []types.InlineContent{
+								{
+									Elements: []types.InlineElement{
+										types.StringElement{
+											Content: "a fenced block",
+										},
+									},
+								},
+							},
 						},
 					},
 				},
@@ -383,8 +410,17 @@ another fenced block
 					Kind:       types.ListingBlock,
 					Attributes: map[string]interface{}{},
 					Elements: []types.DocElement{
-						types.StringElement{
-							Content: "another fenced block",
+						types.Paragraph{
+							Attributes: map[string]interface{}{},
+							Lines: []types.InlineContent{
+								{
+									Elements: []types.InlineElement{
+										types.StringElement{
+											Content: "another fenced block",
+										},
+									},
+								},
+							},
 						},
 					},
 				},

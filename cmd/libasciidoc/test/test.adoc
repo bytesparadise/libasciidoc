@@ -1,1 +1,7 @@
-some *asciidoc* content
+[NOTE]
+----
+multiple
+
+paragraphs
+
+----

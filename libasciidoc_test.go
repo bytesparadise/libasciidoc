@@ -13,9 +13,9 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-var _ = Describe("Documents", func() {
+var _ = Describe("documents", func() {
 
-	Context("Document Body", func() {
+	Context("document Body", func() {
 
 		It("empty document", func() {
 			// main title alone is not rendered in the body
@@ -134,7 +134,7 @@ a paragraph with _italic content_`
 		})
 	})
 
-	Context("Complete Document ", func() {
+	Context("complete Document ", func() {
 
 		It("section levels 0 and 5", func() {
 			source := `= a document title

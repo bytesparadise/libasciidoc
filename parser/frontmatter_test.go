@@ -5,8 +5,8 @@ import (
 	. "github.com/onsi/ginkgo"
 )
 
-var _ = Describe("Front-Matter", func() {
-	Context("YAML Front-matter", func() {
+var _ = Describe("front-matter", func() {
+	Context("yaml front-matter", func() {
 
 		It("front-matter with simple attributes", func() {
 			actualDocument := `---

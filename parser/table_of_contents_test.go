@@ -5,7 +5,7 @@ import (
 	. "github.com/onsi/ginkgo"
 )
 
-var _ = Describe("Table of Contents", func() {
+var _ = Describe("table of contents", func() {
 
 	// reusable elements
 	doctitleAttribute := types.SectionTitle{
@@ -48,7 +48,7 @@ var _ = Describe("Table of Contents", func() {
 		Elements: []types.DocElement{},
 	}
 
-	It("TOC with default placement", func() {
+	It("toc with default placement", func() {
 
 		actualContent := `= A Title
 :toc:
@@ -83,7 +83,7 @@ A short preamble
 		verify(GinkgoT(), expectedResult, actualContent)
 	})
 
-	It("TOC with preamble placement", func() {
+	It("toc with preamble placement", func() {
 		actualContent := `= A Title
 :toc: preamble
 
@@ -117,7 +117,4 @@ A short preamble
 		verify(GinkgoT(), expectedResult, actualContent)
 	})
 
-	// Context("TOC macro", func() {
-
-	// })
 })

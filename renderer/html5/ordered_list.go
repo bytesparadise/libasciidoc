@@ -18,15 +18,15 @@ func init() {
 		`{{ $ctx := .Context }}{{ with .Data }}{{ $items := .Items }}{{ $firstItem := index $items 0 }}<div{{ if index .Attributes "ID" }} id="{{ index .Attributes "ID" }}"{{ end }} class="olist {{ $firstItem.NumberingStyle }}">
 <ol class="{{ $firstItem.NumberingStyle }}"{{ style $firstItem.NumberingStyle }}>
 {{ range $itemIndex, $item := $items }}<li>
-{{ $elements := $item.Elements }}{{ range $elementIndex, $element := $elements }}{{ renderElement $ctx $element | printf "%s" }}{{ if notLastItem $elementIndex $elements }}{{ print "\n" }}{{ end }}{{ end }}
+{{ $elements := $item.Elements }}{{ range $elementIndex, $element := $elements }}{{ renderElement $ctx $element | printf "%s" }}{{ if includeNewline $ctx $elementIndex $elements }}{{ print "\n" }}{{ end }}{{ end }}
 </li>
 {{ end }}</ol>
 </div>{{ end }}`,
 		texttemplate.FuncMap{
-			"renderElement": renderElement,
-			"wrap":          wrap,
-			"notLastItem":   notLastItem,
-			"style":         numberingType,
+			"renderElement":  renderElement,
+			"wrap":           wrap,
+			"includeNewline": includeNewline,
+			"style":          numberingType,
 		})
 
 }

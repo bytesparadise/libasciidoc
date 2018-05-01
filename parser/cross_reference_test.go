@@ -6,9 +6,9 @@ import (
 	. "github.com/onsi/ginkgo"
 )
 
-var _ = Describe("Cross References", func() {
+var _ = Describe("cross References", func() {
 
-	Context("Reference to section", func() {
+	Context("reference to section", func() {
 
 		Context("valid reference", func() {
 
