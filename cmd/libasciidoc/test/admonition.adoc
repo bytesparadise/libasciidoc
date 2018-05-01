@@ -1,0 +1,12 @@
+NOTE: this is a note
+
+[NOTE]
+a para note
+
+[NOTE]
+----
+multiple
+
+paras
+
+----

@@ -22,24 +22,12 @@ var _ = Describe("root cmd", func() {
 		root := main.NewRootCmd()
 		buf := new(bytes.Buffer)
 		root.SetOutput(buf)
-		root.SetArgs([]string{"-s", "test/test.adoc"})
+		root.SetArgs([]string{"test/test.adoc"})
 		// when
 		err := root.Execute()
 		// then
 		require.NoError(GinkgoT(), err)
 		require.NotEmpty(GinkgoT(), buf)
-	})
-
-	It("missing source flag", func() {
-		// given
-		root := main.NewRootCmd()
-		buf := new(bytes.Buffer)
-		root.SetOutput(buf)
-		// when
-		err := root.Execute()
-		// then
-		GinkgoT().Logf("command output: %v", buf.String())
-		require.Error(GinkgoT(), err)
 	})
 
 	It("should fail to parse bad log level", func() {
@@ -60,7 +48,7 @@ var _ = Describe("root cmd", func() {
 		root := main.NewRootCmd()
 		buf := new(bytes.Buffer)
 		root.SetOutput(buf)
-		root.SetArgs([]string{"-n", "-s", "test/test.adoc"})
+		root.SetArgs([]string{"-s", "test/test.adoc"})
 		// when
 		err := root.Execute()
 		// then
@@ -90,7 +78,7 @@ var _ = Describe("root cmd", func() {
 		os.Stdin = tmpfile
 		defer func() { os.Stdin = oldstdin }()
 
-		root.SetArgs([]string{"-s", "-"})
+		root.SetArgs([]string{})
 		// when
 		err = root.Execute()
 
@@ -99,6 +87,26 @@ var _ = Describe("root cmd", func() {
 		Expect(buf.String()).To(ContainSubstring(content))
 		require.NoError(GinkgoT(), err)
 		require.NotEmpty(GinkgoT(), buf)
+	})
+
+	It("should render multiple files", func() {
+		// given
+		root := main.NewRootCmd()
+		root.SetArgs([]string{"-s", "test/admonition.adoc", "test/test.adoc"})
+		// when
+		err := root.Execute()
+		// then
+		require.NoError(GinkgoT(), err)
+	})
+
+	It("when rendering multiple files, return last error", func() {
+		// given
+		root := main.NewRootCmd()
+		root.SetArgs([]string{"-s", "test/doesnotexist.adoc", "test/test.adoc"})
+		// when
+		err := root.Execute()
+		// then
+		require.Error(GinkgoT(), err)
 	})
 })
 
