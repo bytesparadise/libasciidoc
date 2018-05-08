@@ -25,6 +25,8 @@ func renderElement(ctx *renderer.Context, element types.DocElement) ([]byte, err
 		return renderSection(ctx, e)
 	case types.Preamble:
 		return renderPreamble(ctx, e)
+	case types.BlankLine:
+		return renderBlankLine(ctx, e)
 	case types.LabeledList:
 		return renderLabeledList(ctx, e)
 	case types.OrderedList:
@@ -33,10 +35,6 @@ func renderElement(ctx *renderer.Context, element types.DocElement) ([]byte, err
 		return renderUnorderedList(ctx, e)
 	case types.Paragraph:
 		return renderParagraph(ctx, e)
-	case types.AdmonitionParagraph:
-		return renderAdmonitionParagraph(ctx, e)
-	case types.AdmonitionParagraphContent:
-		return renderAdmonitionParagraphContent(ctx, e)
 	case types.ListParagraph:
 		return renderListParagraph(ctx, e)
 	case types.CrossReference:
@@ -74,6 +72,7 @@ func renderElement(ctx *renderer.Context, element types.DocElement) ([]byte, err
 }
 
 func renderPlainString(ctx *renderer.Context, element types.DocElement) ([]byte, error) {
+	log.Debugf("rendering plain string for element of type %T", element)
 	switch element := element.(type) {
 	case types.SectionTitle:
 		return renderPlainStringForInlineElements(ctx, element.Content.Elements)
@@ -83,15 +82,32 @@ func renderPlainString(ctx *renderer.Context, element types.DocElement) ([]byte,
 		return []byte(element.Macro.Alt), nil
 	case types.Link:
 		return []byte(element.Text), nil
+	case types.BlankLine:
+		return []byte("\n\n"), nil
 	case types.StringElement:
 		return []byte(element.Content), nil
+	case types.Paragraph:
+		return renderPlainStringForInlineContents(ctx, element.Lines)
 	default:
 		return nil, errors.Errorf("unexpectedResult type of element to process: %T", element)
 	}
 }
 
+func renderPlainStringForInlineContents(ctx *renderer.Context, elements []types.InlineContent) ([]byte, error) {
+	buff := bytes.NewBuffer(nil)
+	for _, e := range elements {
+		plainStringElement, err := renderPlainStringForInlineElements(ctx, e.Elements)
+		if err != nil {
+			return nil, errors.Wrap(err, "unable to render plain string value")
+		}
+		buff.Write(plainStringElement)
+	}
+	return buff.Bytes(), nil
+}
+
 func renderPlainStringForInlineElements(ctx *renderer.Context, elements []types.InlineElement) ([]byte, error) {
 	buff := bytes.NewBuffer(nil)
+	// for _, e := range discardTrailingBlankLinesInInlineElements(elements) {
 	for _, e := range elements {
 		plainStringElement, err := renderPlainString(ctx, e)
 		if err != nil {
@@ -110,19 +126,45 @@ func renderInlineContents(ctx *renderer.Context, elements []types.InlineContent)
 		if err != nil {
 			return nil, errors.Wrap(err, "unable to render element")
 		}
-		buff.Write(renderedElement)
-		if i < len(elements)-1 {
-			buff.WriteString("\n")
+		if len(renderedElement) > 0 {
+			buff.Write(renderedElement)
+			if i < len(elements)-1 {
+				log.Debugf("rendered element of type %T is not the last one", e)
+				buff.WriteString("\n")
+			}
 		}
 	}
 	return buff.Bytes(), nil
 }
 
-// notLastItem returns true if the given index is NOT the last entry in the given description lines, false otherwise.
-func notLastItem(index int, content interface{}) bool {
+func discardTrailingBlankLines(elements []types.DocElement) []types.DocElement {
+	// discard blank lines at the end
+	filteredElements := make([]types.DocElement, len(elements))
+	copy(filteredElements, elements)
+	for {
+		if len(filteredElements) == 0 {
+			break
+		}
+		if _, ok := filteredElements[len(filteredElements)-1].(types.BlankLine); ok {
+			log.Debugf("element of type %T at position %d is a blank line, discarding it", len(filteredElements)-1, filteredElements[len(filteredElements)-1])
+			// remove last element of the slice since it's a blankline
+			filteredElements = filteredElements[:len(filteredElements)-1]
+		} else {
+			break
+		}
+	}
+	return filteredElements
+}
+
+// includeNewline returns true if the given index is NOT the last entry in the given description lines, false otherwise.
+// also, it ignores the element if it is a blankline, depending on the context
+func includeNewline(ctx renderer.Context, index int, content interface{}) bool {
 	switch reflect.TypeOf(content).Kind() {
 	case reflect.Slice, reflect.Array:
 		s := reflect.ValueOf(content)
+		if _, match := s.Index(index).Interface().(types.BlankLine); match {
+			return ctx.RenderBlankLine()
+		}
 		return index < s.Len()-1
 	default:
 		log.Warnf("content of type %T is not an array or a slice")

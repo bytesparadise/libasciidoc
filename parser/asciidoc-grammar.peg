@@ -24,7 +24,7 @@ DocumentBlocks <- content:(Preamble Section+) / content:(BlockElement*) {
     return content, nil
 }
 
-BlockElement <- DocumentAttributeDeclaration / DocumentAttributeReset / TableOfContentsMacro / BlockImage / List / LiteralBlock / DelimitedBlock / Admonition / Paragraph / (ElementAttribute EOL) / BlankLine //TODO: should Paragraph be the last type ?
+BlockElement <- DocumentAttributeDeclaration / DocumentAttributeReset / TableOfContentsMacro / BlockImage / List / LiteralBlock / DelimitedBlock / Paragraph / (ElementAttribute EOL) / BlankLine //TODO: should Paragraph be the last type ?
 
 Preamble <- elements:(BlockElement*) {
     return types.NewPreamble(elements.([]interface{}))
@@ -123,6 +123,59 @@ AttributeName <- ([A-Z] / [a-z] / [0-9] / "_") ([A-Z] / [a-z] / [0-9] / "-")*
 // Table of Contents
 // ------------------------------------------
 TableOfContentsMacro <- "toc::[]" NEWLINE
+
+// ------------------------------------------
+// Element Attributes
+// ------------------------------------------
+ElementAttribute <- attr:(ElementID / ElementTitle / AdmonitionMarkerAttribute / AttributeGroup / InvalidElementAttribute) EOL {
+    return attr, nil // avoid returning something like `[]interface{}{attr, EOL}`
+}
+
+ElementID <- id:(InlineElementID) {
+    return id, nil
+} / "[#" id:(ID) "]" WS* {
+    return types.NewElementID(id.(string))
+}
+
+InlineElementID <- "[[" id:(ID) "]]" WS* {
+    return types.NewElementID(id.(string))
+}
+
+// a title attached to an element, such as a BlockImage (
+// a title starts with a single "." followed by the value, without space in-between
+ElementTitle <- "." !"." !WS title:(!NEWLINE .)+ WS* {
+    return types.NewElementTitle(title.([]interface{}))
+}
+
+// expression for the whole admonition marker, but only retains the actual kind
+AdmonitionMarkerAttribute <- "[" k:(AdmonitionKind) "]" WS* {
+    return k, nil
+}
+
+// one or more attributes. eg: [foo, key1=value1, key2=value2]
+AttributeGroup <- "[" attributes:(GenericAttribute)* "]" WS* {
+    return types.NewAttributeGroup(attributes.([]interface{}))
+}
+
+GenericAttribute <- key:(AttributeKey) "=" value:(AttributeValue) ("," WS*)? { // value is set
+    return types.NewGenericAttribute(key.([]interface{}), value.([]interface{}))
+} / key:(AttributeKey) ("," WS*)? { // value is not set
+    return types.NewGenericAttribute(key.([]interface{}), nil)
+}
+
+AttributeKey <- key: (!WS !"=" !"," !"]" .)+ WS*  {
+    // fmt.Printf("found attribute key: %v\n", key)
+    return key, nil
+}
+
+AttributeValue <- WS* value:(!WS !"=" !"]" .)* WS* {
+    // fmt.Printf("found attribute value: %v\n", value)
+    return value, nil
+}
+
+InvalidElementAttribute <- "[" WS+ content:(!"]" .)* "]" WS* {
+    return types.NewInvalidElementAttribute(c.text)
+}
 
 // ------------------------------------------
 // Sections
@@ -269,25 +322,6 @@ WS* style:(".") WS+ { // numbering style: "."
     return types.NewOrderedListItemPrefix(types.UpperRoman, 1)
 } 
 
-// OrderedListItemPrefix <- WS* prefix:(((!"." !WS .)+ ".") / ((!")" !WS .)+ ")") / ("."+)) WS+ { // ignore whitespaces, only return the relevant numbering characters
-//     return prefix, nil
-// }
-
-// OrderedListItemPrefix <- OrderedListItemDefaultPrefix / OrderedListItemAlphaPrefix / OrderedListItemRomanPrefix
-// // OrderedListItemPrefix <- OrderedListItemAlphaPrefix
-
-// OrderedListItemDefaultPrefix <- WS* prefix:("."+) WS+ {
-//     return prefix, nil
-// }
-
-// OrderedListItemAlphaPrefix <- WS* prefix:((!"." !WS !NEWLINE .)+ ".") WS+ {
-//     return prefix, nil
-// }
-
-// OrderedListItemRomanPrefix <- WS* prefix:((!")" !WS !NEWLINE .)+ ")") WS+ {
-//     return prefix, nil
-// }
-
 OrderedListItemContent <- elements:(ListParagraph+ ContinuedBlockElement*) { // Another list or a literal paragraph immediately following a list item will be implicitly included in the list item
     return types.NewListItemContent(elements.([]interface{}))
 } 
@@ -338,11 +372,29 @@ LabeledListItemDescription <- elements:(ListParagraph / ContinuedBlockElement)* 
 }
 
 // ------------------------------------------
+// Admonitions
+// ------------------------------------------
+
+AdmonitionKind <- "TIP" {
+    return types.Tip, nil
+} / "NOTE" {
+    return types.Note, nil
+} / "IMPORTANT" {
+    return types.Important, nil
+} / "WARNING" {
+    return types.Warning, nil
+} / "CAUTION" {
+    return types.Caution, nil
+}
+
+// ------------------------------------------
 // Paragraphs
 // ------------------------------------------
 // a paragraph is a group of line ending with a blank line (or end of file)
 // a paragraph cannot start with the `section` sequence (`= `, `== `, etc.)
-Paragraph <- attributes:(ElementAttribute)* !("="+ WS+) lines:(InlineContentWithTrailingSpaces EOL)+ {
+Paragraph <- attributes:(ElementAttribute)* !("="+ WS+) t:(AdmonitionKind) ": " lines:(InlineContentWithTrailingSpaces EOL)+ { // admonition paragraph 
+    return types.NewParagraph(lines.([]interface{}), append(attributes.([]interface{}), t.(types.AdmonitionKind)))
+} / attributes:(ElementAttribute)* !("="+ WS+) lines:(InlineContentWithTrailingSpaces EOL)+ { // regular paragraph
     return types.NewParagraph(lines.([]interface{}), attributes.([]interface{}))
 } 
 
@@ -357,41 +409,6 @@ InlineContent <- !BlockDelimiter elements:(WS* !InlineElementID InlineElement)+ 
 } 
 
 InlineElement <- CrossReference / Passthrough / InlineImage / QuotedText / Link / DocumentAttributeSubstitution / Characters
-
-// ------------------------------------------
-// Admonitions
-// ------------------------------------------
-
-Admonition <- AdmonitionParagraph
-
-// a paragraph is a group of line ending with a blank line (or end of file)
-// a paragraph cannot start with the `section` marker (`= `, `== `, etc.)
-AdmonitionParagraph <- attributes:(ElementAttribute)* !("="+ WS+) t:(AdmonitionKind) ": " content:(AdmonitionParagraphContent) { // paragraph style
-    return types.NewAdmonitionParagraph(t.(types.AdmonitionKind), content, attributes.([]interface{}))
-} / attributes:(ElementAttribute)* k:(AdmonitionMarker) otherAttributes:(ElementAttribute)* content:(AdmonitionParagraphContent) { // block style
-    return types.NewAdmonitionParagraph(k.(types.AdmonitionKind), content, append(attributes.([]interface{}), otherAttributes.([]interface{})...))
-}
-
-AdmonitionParagraphContent <- lines:(InlineContentWithTrailingSpaces EOL)+ {
-    return types.NewAdmonitionParagraphContent(lines.([]interface{}))
-}
-
-// expression for the whole admonition marker, but only retains the actual kind
-AdmonitionMarker <- "[" k:(AdmonitionKind) "]" WS* NEWLINE {
-    return k, nil
-}
-
-AdmonitionKind <- "TIP" {
-    return types.Tip, nil
-} / "NOTE" {
-    return types.Note, nil
-} / "IMPORTANT" {
-    return types.Important, nil
-} / "WARNING" {
-    return types.Warning, nil
-} / "CAUTION" {
-    return types.Caution, nil
-}
 
 // ----------------------------------------------------------------------------
 // Quoted Texts (bold, italic and monospace) including substitution prevention
@@ -543,14 +560,14 @@ BlockDelimiter <- LiteralBlockDelimiter / FencedBlockDelimiter / ListingBlockDel
 
 FencedBlockDelimiter <- "```"
 
-FencedBlock <- FencedBlockDelimiter WS* NEWLINE content:(!FencedBlockDelimiter .)* FencedBlockDelimiter WS* EOL {
-    return types.NewDelimitedBlock(types.FencedBlock, content.([]interface{}), nil)
+FencedBlock <- attributes:(ElementAttribute)* FencedBlockDelimiter WS* NEWLINE content:(List / Paragraph / BlankLine)* FencedBlockDelimiter WS* EOL {
+    return types.NewDelimitedBlock(types.FencedBlock, content.([]interface{}), attributes.([]interface{}))
 }
 
 ListingBlockDelimiter <- "----"
 
-ListingBlock <- ListingBlockDelimiter WS* NEWLINE content:(!ListingBlockDelimiter .)* ListingBlockDelimiter WS* EOL {
-    return types.NewDelimitedBlock(types.ListingBlock, content.([]interface{}), nil)
+ListingBlock <- attributes:(ElementAttribute)* ListingBlockDelimiter WS* NEWLINE content:(List / Paragraph / BlankLine)* ListingBlockDelimiter WS* EOL {
+    return types.NewDelimitedBlock(types.ListingBlock, content.([]interface{}), attributes.([]interface{}))
 }
 
 ExampleBlockDelimiter <- "===="
@@ -587,54 +604,6 @@ LiteralBlockDelimiter <- "...."
 // paragraph with the literal attribute (`[literal]`)
 ParagraphWithLiteralAttribute <- "[literal]" WS* NEWLINE content:(LiteralBlockContent) EndOfLiteralBlock {
     return types.NewLiteralBlock([]interface{}{}, content.([]interface{}))
-}
-
-// ------------------------------------------
-// Element Attributes
-// ------------------------------------------
-ElementAttribute <- !AdmonitionMarker attr:(ElementID / ElementTitle / AttributeGroup / InvalidElementAttribute) EOL {
-    return attr, nil // avoid returning something like `[]interface{}{attr, EOL}`
-}
-
-ElementID <- id:(InlineElementID) {
-    return id, nil
-} / "[#" id:(ID) "]" WS* {
-    return types.NewElementID(id.(string))
-}
-
-InlineElementID <- "[[" id:(ID) "]]" WS* {
-    return types.NewElementID(id.(string))
-}
-
-// a title attached to an element, such as a BlockImage (
-// a title starts with a single "." followed by the value, without space in-between
-ElementTitle <- "." !"." !WS title:(!NEWLINE .)+ WS* {
-    return types.NewElementTitle(title.([]interface{}))
-}
-
-// one or more attributes. eg: [foo, key1=value1, key2=value2]
-AttributeGroup <- "[" attributes:(GenericAttribute)* "]" WS* {
-    return types.NewAttributeGroup(attributes.([]interface{}))
-}
-
-GenericAttribute <- key:(AttributeKey) "=" value:(AttributeValue) ("," WS*)? { // value is set
-    return types.NewGenericAttribute(key.([]interface{}), value.([]interface{}))
-} / key:(AttributeKey) ("," WS*)? { // value is not set
-    return types.NewGenericAttribute(key.([]interface{}), nil)
-}
-
-AttributeKey <- key: (!WS !"=" !"," !"]" .)+ WS*  {
-    // fmt.Printf("found attribute key: %v\n", key)
-    return key, nil
-}
-
-AttributeValue <- WS* value:(!WS !"=" !"]" .)* WS* {
-    // fmt.Printf("found attribute value: %v\n", value)
-    return value, nil
-}
-
-InvalidElementAttribute <- "[" WS+ content:(!"]" .)* "]" WS* {
-    return types.NewInvalidElementAttribute(c.text)
 }
 
 // ------------------------------------------

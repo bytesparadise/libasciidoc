@@ -34,27 +34,61 @@ func toInlineElements(elements []interface{}) ([]InlineElement, error) {
 	return result, nil
 }
 
-// filterUnrelevantElements excludes the unrelevant (empty) blocks
-func filterUnrelevantElements(blocks []interface{}) []DocElement {
+// filterOption allows for filtering elements by type
+type filterOption func(element interface{}) bool
+
+// filterEmptyPremable filters the element if it is an empty preamble
+func filterEmptyPremable() filterOption {
+	return func(element interface{}) bool {
+		result := false
+		if p, match := element.(Preamble); match {
+			result = p.Elements == nil || len(p.Elements) == 0
+		}
+		log.Debugf(" element of type '%T' is an empty preamble: %t", element, result)
+		return result
+	}
+}
+
+// filterBlankLine filters the element if it is a blank line
+func filterBlankLine() filterOption {
+	return func(element interface{}) bool {
+		_, result := element.(BlankLine)
+		defer log.Debugf(" element of type '%T' is a blankline: %t", element, result)
+		return result
+	}
+}
+
+// filterEmptyElements excludes the unrelevant (empty) blocks
+func filterEmptyElements(blocks []interface{}, filters ...filterOption) []DocElement {
 	log.Debugf("Filtering %d blocks...", len(blocks))
 	elements := make([]DocElement, 0)
+blocks:
 	for _, block := range blocks {
-		log.Debugf(" converting block of type '%T' into a DocElement...", block)
+		// check if filter option applies to the element
 		switch block := block.(type) {
-		case BlankLine:
-			// exclude blank lines from here, we won't need them in the rendering anyways
-		case Preamble:
-			// exclude empty preambles
-			if len(block.Elements) > 0 {
-				// exclude empty preamble
-				elements = append(elements, block)
-			}
+		// case BlankLine:
+		// 	// exclude blank lines from here, we won't need them in the rendering anyways
+		// case Preamble:
+		// 	// exclude empty preambles
+		// 	if len(block.Elements) > 0 {
+		// 		// exclude empty preamble
+		// 		elements = append(elements, block)
+		// 	}
 		case []interface{}:
-			result := filterUnrelevantElements(block)
+			result := filterEmptyElements(block, filters...)
 			elements = append(elements, result...)
 		default:
 			if block != nil {
+				log.Debugf(" converting block of type '%T' into a DocElement...", block)
+				for _, filter := range filters {
+					if filter(block) {
+						log.Debugf(" discarding block of type '%T'.", block)
+						continue blocks
+					}
+				}
+				log.Debugf(" keeping block of type '%T'.", block)
 				elements = append(elements, block)
+				continue
 			}
 		}
 	}
@@ -151,7 +185,7 @@ func appendBuffer(elements []interface{}, buff *bytes.Buffer) ([]interface{}, *b
 type stringifyOption func(s string) (string, error)
 
 // stringify convert the given elements into a string, then applies the optional `funcs` to convert the string before returning it.
-// These StringifyFuncs can be used to trim the content, for example
+// These stringifyFuncs can be used to trim the content, for example
 func stringify(elements []interface{}, options ...stringifyOption) (string, error) {
 	mergedElements := mergeElements(elements)
 	b := make([]byte, 0)
@@ -160,6 +194,20 @@ func stringify(elements []interface{}, options ...stringifyOption) (string, erro
 		switch element := element.(type) {
 		case StringElement:
 			buff.WriteString(element.Content)
+		case BlankLine:
+			buff.WriteString("\n\n")
+		case Paragraph:
+			for _, line := range element.Lines {
+				el := make([]interface{}, len(line.Elements))
+				for i, e := range line.Elements {
+					el[i] = e
+				}
+				s, err := stringify(el, options...)
+				if err != nil {
+					return "", errors.Errorf("cannot convert element of type '%T' to string content", element)
+				}
+				buff.WriteString(s)
+			}
 		case []interface{}:
 			stringifiedElement, err := stringify(element)
 			if err != nil {

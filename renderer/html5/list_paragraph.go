@@ -15,10 +15,10 @@ var listParagraphTmpl texttemplate.Template
 // initializes the templates
 func init() {
 	listParagraphTmpl = newTextTemplate("list paragraph",
-		`{{ $ctx := .Context }}{{ with .Data }}<p>{{ $lines := .Lines }}{{ range $index, $line := $lines }}{{ renderElement $ctx $line | printf "%s" }}{{ if notLastItem $index $lines }}{{ print "\n" }}{{ end }}{{ end }}</p>{{ end }}`,
+		`{{ $ctx := .Context }}{{ with .Data }}<p>{{ $lines := .Lines }}{{ range $index, $line := $lines }}{{ renderElement $ctx $line | printf "%s" }}{{ if includeNewline $ctx $index $lines }}{{ print "\n" }}{{ end }}{{ end }}</p>{{ end }}`,
 		texttemplate.FuncMap{
-			"renderElement": renderElement,
-			"notLastItem":   notLastItem,
+			"renderElement":  renderElement,
+			"includeNewline": includeNewline,
 		})
 }
 

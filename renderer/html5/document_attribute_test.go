@@ -2,7 +2,7 @@ package html5_test
 
 import . "github.com/onsi/ginkgo"
 
-var _ = Describe("Document With Attributes", func() {
+var _ = Describe("document with attributes", func() {
 	It("some attributes then a paragraph", func() {
 		actualContent := `:toc:
 :date: 2017-01-01

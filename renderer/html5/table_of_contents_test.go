@@ -4,11 +4,11 @@ import (
 	. "github.com/onsi/ginkgo"
 )
 
-var _ = Describe("Document TOC", func() {
+var _ = Describe("document toc", func() {
 
-	Context("Document with TOC", func() {
+	Context("document with toc", func() {
 
-		It("TOC with default level", func() {
+		It("toc with default level", func() {
 			actualContent := `= A title
 :toc:
 
@@ -82,7 +82,7 @@ A preamble...
 			verify(GinkgoT(), expectedResult, actualContent)
 		})
 
-		It("TOC with custom level", func() {
+		It("toc with custom level", func() {
 			actualContent := `= A title
 :toc:
 :toclevels: 4

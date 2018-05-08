@@ -107,7 +107,7 @@ func renderElements(ctx *renderer.Context, elements []types.DocElement) ([]byte,
 			return nil, errors.Wrapf(err, "failed to render the elements")
 		}
 		// if there's already some content, we need to insert a `\n` before writing
-		// the rendering output of the current element (if application, ie, not empty)
+		// the rendering output of the current element (if output is not empty)
 		if hasContent && len(content) > 0 {
 			renderedElementsBuff.WriteString("\n")
 		}

@@ -59,7 +59,7 @@ func NewDocument(frontmatter, header interface{}, blocks []interface{}) (Documen
 		log.Debugf("Line #%d: %T", i, block)
 	}
 	// elements := convertBlocksToDocElements(blocks)
-	elements := filterUnrelevantElements(blocks)
+	elements := filterEmptyElements(blocks, filterBlankLine(), filterEmptyPremable())
 	attributes := make(map[string]interface{})
 
 	if frontmatter != nil {
@@ -460,7 +460,7 @@ type Preamble struct {
 // NewPreamble initializes a new Preamble from the given elements
 func NewPreamble(elements []interface{}) (Preamble, error) {
 	log.Debugf("Initialiazing new Preamble with %d elements", len(elements))
-	return Preamble{Elements: filterUnrelevantElements(elements)}, nil
+	return Preamble{Elements: filterEmptyElements(elements, filterBlankLine())}, nil
 }
 
 // ------------------------------------------
@@ -497,7 +497,7 @@ type Section struct {
 // NewSection initializes a new `Section` from the given section title and elements
 func NewSection(level int, sectionTitle SectionTitle, blocks []interface{}) (Section, error) {
 	log.Debugf("Initializing a new Section with %d block(s)", len(blocks))
-	elements := filterUnrelevantElements(blocks)
+	elements := filterEmptyElements(blocks, filterBlankLine())
 	log.Debugf("Initialized a new Section of level %d with %d block(s)", level, len(blocks))
 	return Section{
 		Level:    level,
@@ -1220,15 +1220,8 @@ func NewParagraph(lines []interface{}, attributes []interface{}) (Paragraph, err
 }
 
 // ------------------------------------------
-// Admonition Paragraph
+// Admonitions
 // ------------------------------------------
-
-// Admonition the structure for the admonition paragraphs
-type AdmonitionParagraph struct {
-	Kind       AdmonitionKind
-	Attributes map[string]interface{}
-	Content    DocElement
-}
 
 // AdmonitionKind the type of admonition
 type AdmonitionKind string
@@ -1244,47 +1237,9 @@ const (
 	Warning AdmonitionKind = "warning"
 	// Caution the 'CAUTION' type of admonition
 	Caution AdmonitionKind = "caution"
+	// Unknown is the zero value for admonition kind
+	Unknown AdmonitionKind = ""
 )
-
-// NewAdmonition returns a new Admonition element
-func NewAdmonitionParagraph(kind AdmonitionKind, content DocElement, attributes []interface{}) (AdmonitionParagraph, error) {
-	log.Debugf("Initializing a new Admonition...")
-	attrbs := NewElementAttributes(attributes)
-	return AdmonitionParagraph{
-		Kind:       kind,
-		Attributes: attrbs,
-		Content:    content,
-	}, nil
-}
-
-// ------------------------------------------
-// Admonition Paragraph
-// ------------------------------------------
-
-// AdmonitionParagraphContent the structure for the list paragraphs
-type AdmonitionParagraphContent struct {
-	Lines []InlineContent
-}
-
-// NewAdmonitionParagraphContent initializes a new `AdmonitionParagraphContent`
-func NewAdmonitionParagraphContent(lines []interface{}) (AdmonitionParagraphContent, error) {
-	// log.Debugf("Initializing a new AdmonitionParagraphContent with %d line(s)", len(lines))
-	elements := make([]InlineContent, 0)
-	for _, line := range lines {
-		if lineElements, ok := line.([]interface{}); ok {
-			for _, lineElement := range lineElements {
-				if lineElement, ok := lineElement.(InlineContent); ok {
-					// log.Debugf(" processing paragraph line of type %T", lineElement)
-					// each `line` element is an array with the actual `InlineContent` + `EOF`
-					elements = append(elements, lineElement)
-				}
-			}
-		}
-	}
-	return AdmonitionParagraphContent{
-		Lines: elements,
-	}, nil
-}
 
 // ------------------------------------------
 // InlineContent
@@ -1447,24 +1402,7 @@ type DelimitedBlock struct {
 // NewDelimitedBlock initializes a new `DelimitedBlock` of the given kind with the given content
 func NewDelimitedBlock(kind DelimitedBlockKind, content []interface{}, attributes []interface{}) (DelimitedBlock, error) {
 	attrbs := NewElementAttributes(attributes)
-	var elements []DocElement
-	switch kind {
-	case FencedBlock, ListingBlock:
-		s, err := stringify(content,
-			// remove "\n" or "\r\n", depending on the OS.
-			func(s string) (string, error) {
-				return strings.TrimRight(s, "\n"), nil
-			}, func(s string) (string, error) {
-				return strings.TrimRight(s, "\r"), nil
-			})
-		if err != nil {
-			return DelimitedBlock{}, errors.Wrapf(err, "unable to initialize a new delimited block")
-		}
-		elements = make([]DocElement, 1)
-		elements[0] = NewStringElement(s)
-	default:
-		elements = filterUnrelevantElements(content)
-	}
+	elements := filterEmptyElements(content)
 	log.Debugf("Initialized a new DelimitedBlock with content=`%s`", elements)
 	return DelimitedBlock{
 		Kind:       kind,
@@ -1510,17 +1448,22 @@ const (
 	AttrTitle string = "title"
 	// AttrLink the key to retrieve the link in the element attributes
 	AttrLink string = "link"
+	// AttrAdmonitionKind the key to retrieve the kind of admonition in the element attributes, if a "masquerade" is used
+	AttrAdmonitionKind string = "admonitionKind"
 )
 
 // NewElementAttributes retrieves the ElementID, ElementTitle and ElementLink from the given slice of attributes
 func NewElementAttributes(attributes []interface{}) map[string]interface{} {
 	attrbs := make(map[string]interface{})
 	for _, attrb := range attributes {
+		log.Debugf("processing attribute %[1]v (%[1]T)", attrb)
 		switch attrb := attrb.(type) {
 		case ElementID:
 			attrbs[AttrID] = attrb.Value
 		case ElementTitle:
 			attrbs[AttrTitle] = attrb.Value
+		case AdmonitionKind:
+			attrbs[AttrAdmonitionKind] = attrb
 		case map[string]interface{}:
 			for k, v := range attrb {
 				attrbs[k] = v

@@ -8,7 +8,39 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-var _ = Describe("Normalizing String", func() {
+var _ = Describe("convert to inline elements", func() {
+
+	It("inline content without trailing spaces", func() {
+		source := []interface{}{
+			StringElement{Content: "hello"},
+			StringElement{Content: "world"},
+		}
+		expected := []InlineElement{
+			StringElement{Content: "helloworld"},
+		}
+		// when
+		result, err := toInlineElements(source)
+		// then
+		require.NoError(GinkgoT(), err)
+		assert.Equal(GinkgoT(), expected, result)
+	})
+	It("inline content with trailing spaces", func() {
+		source := []interface{}{
+			StringElement{Content: "hello, "},
+			StringElement{Content: "world   "},
+		}
+		expected := []InlineElement{
+			StringElement{Content: "hello, world   "},
+		}
+		// when
+		result, err := toInlineElements(source)
+		// then
+		require.NoError(GinkgoT(), err)
+		assert.Equal(GinkgoT(), expected, result)
+	})
+})
+
+var _ = Describe("normalizing string", func() {
 
 	It("hello", func() {
 		source := InlineContent{
@@ -80,3 +112,49 @@ func verify(t GinkgoTInterface, expected string, inlineContent InlineContent) {
 	assert.Equal(t, expected, result)
 
 }
+
+var _ = Describe("filter elements", func() {
+
+	It("filter elements with all options", func() {
+		// given
+		actualContent := []interface{}{
+			BlankLine{},
+			Preamble{},
+			StringElement{
+				Content: "foo",
+			},
+			Preamble{
+				Elements: []DocElement{
+					StringElement{
+						Content: "bar",
+					},
+				},
+			},
+			[]interface{}{
+				BlankLine{},
+				StringElement{
+					Content: "baz",
+				},
+			},
+		}
+		// when
+		result := filterEmptyElements(actualContent, filterBlankLine(), filterEmptyPremable())
+		// then
+		expectedResult := []DocElement{
+			StringElement{
+				Content: "foo",
+			},
+			Preamble{
+				Elements: []DocElement{
+					StringElement{
+						Content: "bar",
+					},
+				},
+			},
+			StringElement{
+				Content: "baz",
+			},
+		}
+		assert.Equal(GinkgoT(), expectedResult, result)
+	})
+})

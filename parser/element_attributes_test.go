@@ -6,9 +6,9 @@ import (
 	. "github.com/onsi/ginkgo"
 )
 
-var _ = Describe("Element Attributes", func() {
+var _ = Describe("element attributes", func() {
 
-	Context("Element link", func() {
+	Context("element link", func() {
 
 		Context("valid syntax", func() {
 			It("element link alone", func() {
@@ -30,7 +30,7 @@ var _ = Describe("Element Attributes", func() {
 				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("ElementAttribute"))
 			})
 
-			Context("unbalanced brackets", func() {
+			Context("Unbalanced brackets", func() {
 				actualContent := "[link=http://foo.bar"
 				It("cannot be an attribute", func() {
 					expectError(GinkgoT(), actualContent, parser.Entrypoint("ElementAttribute"))
@@ -75,7 +75,7 @@ var _ = Describe("Element Attributes", func() {
 				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("ElementAttribute"))
 			})
 
-			Context("unbalanced brackets", func() {
+			Context("Unbalanced brackets", func() {
 				actualContent := "[#img-foobar"
 
 				It("cannot be an attribute", func() {

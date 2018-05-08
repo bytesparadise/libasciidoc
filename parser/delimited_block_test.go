@@ -17,8 +17,17 @@ var _ = Describe("delimited blocks", func() {
 				Kind:       types.FencedBlock,
 				Attributes: map[string]interface{}{},
 				Elements: []types.DocElement{
-					types.StringElement{
-						Content: content,
+					types.Paragraph{
+						Attributes: map[string]interface{}{},
+						Lines: []types.InlineContent{
+							{
+								Elements: []types.InlineElement{
+									types.StringElement{
+										Content: content,
+									},
+								},
+							},
+						},
 					},
 				},
 			}
@@ -26,29 +35,52 @@ var _ = Describe("delimited blocks", func() {
 		})
 
 		It("fenced block with no line", func() {
-			content := ""
-			actualContent := "```\n" + content + "```"
+			actualContent := "```\n```"
 			expectedResult := types.DelimitedBlock{
 				Kind:       types.FencedBlock,
 				Attributes: map[string]interface{}{},
-				Elements: []types.DocElement{
-					types.StringElement{
-						Content: content,
-					},
-				},
+				Elements:   []types.DocElement{},
 			}
 			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("BlockElement"))
 		})
 
-		It("fenced block with multiple lines", func() {
-			content := "some fenced code\nwith an empty line\n\nin the middle"
-			actualContent := "```\n" + content + "\n```"
+		It("fenced block with multiple lines alone", func() {
+			actualContent := "```\nsome fenced code\nwith an empty line\n\nin the middle\n```"
 			expectedResult := types.DelimitedBlock{
 				Kind:       types.FencedBlock,
 				Attributes: map[string]interface{}{},
 				Elements: []types.DocElement{
-					types.StringElement{
-						Content: content,
+					types.Paragraph{
+						Attributes: map[string]interface{}{},
+						Lines: []types.InlineContent{
+							{
+								Elements: []types.InlineElement{
+									types.StringElement{
+										Content: "some fenced code",
+									},
+								},
+							},
+							{
+								Elements: []types.InlineElement{
+									types.StringElement{
+										Content: "with an empty line",
+									},
+								},
+							},
+						},
+					},
+					types.BlankLine{},
+					types.Paragraph{
+						Attributes: map[string]interface{}{},
+						Lines: []types.InlineContent{
+							{
+								Elements: []types.InlineElement{
+									types.StringElement{
+										Content: "in the middle",
+									},
+								},
+							},
+						},
 					},
 				},
 			}
@@ -56,8 +88,7 @@ var _ = Describe("delimited blocks", func() {
 		})
 
 		It("fenced block with multiple lines then a paragraph", func() {
-			content := "some fenced code\nwith an empty line\n\nin the middle"
-			actualContent := "```\n" + content + "\n```\nthen a normal paragraph."
+			actualContent := "```\nsome fenced code\nwith an empty line\n\nin the middle\n```\nthen a normal paragraph."
 			expectedResult := types.Document{
 				Attributes:        map[string]interface{}{},
 				ElementReferences: map[string]interface{}{},
@@ -66,8 +97,37 @@ var _ = Describe("delimited blocks", func() {
 						Kind:       types.FencedBlock,
 						Attributes: map[string]interface{}{},
 						Elements: []types.DocElement{
-							types.StringElement{
-								Content: content,
+							types.Paragraph{
+								Attributes: map[string]interface{}{},
+								Lines: []types.InlineContent{
+									{
+										Elements: []types.InlineElement{
+											types.StringElement{
+												Content: "some fenced code",
+											},
+										},
+									},
+									{
+										Elements: []types.InlineElement{
+											types.StringElement{
+												Content: "with an empty line",
+											},
+										},
+									},
+								},
+							},
+							types.BlankLine{},
+							types.Paragraph{
+								Attributes: map[string]interface{}{},
+								Lines: []types.InlineContent{
+									{
+										Elements: []types.InlineElement{
+											types.StringElement{
+												Content: "in the middle",
+											},
+										},
+									},
+								},
 							},
 						},
 					},
@@ -107,8 +167,17 @@ var _ = Describe("delimited blocks", func() {
 						Kind:       types.FencedBlock,
 						Attributes: map[string]interface{}{},
 						Elements: []types.DocElement{
-							types.StringElement{
-								Content: content,
+							types.Paragraph{
+								Attributes: map[string]interface{}{},
+								Lines: []types.InlineContent{
+									{
+										Elements: []types.InlineElement{
+											types.StringElement{
+												Content: content,
+											},
+										},
+									},
+								},
 							},
 						},
 					},
@@ -128,8 +197,17 @@ some listing code
 				Kind:       types.ListingBlock,
 				Attributes: map[string]interface{}{},
 				Elements: []types.DocElement{
-					types.StringElement{
-						Content: "some listing code",
+					types.Paragraph{
+						Attributes: map[string]interface{}{},
+						Lines: []types.InlineContent{
+							{
+								Elements: []types.InlineElement{
+									types.StringElement{
+										Content: "some listing code",
+									},
+								},
+							},
+						},
 					},
 				},
 			}
@@ -137,29 +215,58 @@ some listing code
 		})
 
 		It("listing block with no line", func() {
-			content := ""
-			actualContent := "----\n" + content + "----"
+			actualContent := `----
+----`
 			expectedResult := types.DelimitedBlock{
 				Kind:       types.ListingBlock,
 				Attributes: map[string]interface{}{},
-				Elements: []types.DocElement{
-					types.StringElement{
-						Content: "",
-					},
-				},
+				Elements:   []types.DocElement{},
 			}
 			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("BlockElement"))
 		})
 
 		It("listing block with multiple lines", func() {
-			content := "some listing code\nwith an empty line\n\nin the middle"
-			actualContent := "----\n" + content + "\n----"
+			actualContent := `----
+some listing code
+with an empty line
+
+in the middle
+----`
 			expectedResult := types.DelimitedBlock{
 				Kind:       types.ListingBlock,
 				Attributes: map[string]interface{}{},
 				Elements: []types.DocElement{
-					types.StringElement{
-						Content: content,
+					types.Paragraph{
+						Attributes: map[string]interface{}{},
+						Lines: []types.InlineContent{
+							{
+								Elements: []types.InlineElement{
+									types.StringElement{
+										Content: "some listing code",
+									},
+								},
+							},
+							{
+								Elements: []types.InlineElement{
+									types.StringElement{
+										Content: "with an empty line",
+									},
+								},
+							},
+						},
+					},
+					types.BlankLine{},
+					types.Paragraph{
+						Attributes: map[string]interface{}{},
+						Lines: []types.InlineContent{
+							{
+								Elements: []types.InlineElement{
+									types.StringElement{
+										Content: "in the middle",
+									},
+								},
+							},
+						},
 					},
 				},
 			}
@@ -167,8 +274,13 @@ some listing code
 		})
 
 		It("listing block with multiple lines then a paragraph", func() {
-			content := "some listing code\nwith an empty line\n\nin the middle"
-			actualContent := "----\n" + content + "\n----\nthen a normal paragraph."
+			actualContent := `---- 
+some listing code
+with an empty line
+
+in the middle
+----
+then a normal paragraph.`
 			expectedResult := types.Document{
 				Attributes:        map[string]interface{}{},
 				ElementReferences: map[string]interface{}{},
@@ -177,8 +289,37 @@ some listing code
 						Kind:       types.ListingBlock,
 						Attributes: map[string]interface{}{},
 						Elements: []types.DocElement{
-							types.StringElement{
-								Content: content,
+							types.Paragraph{
+								Attributes: map[string]interface{}{},
+								Lines: []types.InlineContent{
+									{
+										Elements: []types.InlineElement{
+											types.StringElement{
+												Content: "some listing code",
+											},
+										},
+									},
+									{
+										Elements: []types.InlineElement{
+											types.StringElement{
+												Content: "with an empty line",
+											},
+										},
+									},
+								},
+							},
+							types.BlankLine{},
+							types.Paragraph{
+								Attributes: map[string]interface{}{},
+								Lines: []types.InlineContent{
+									{
+										Elements: []types.InlineElement{
+											types.StringElement{
+												Content: "in the middle",
+											},
+										},
+									},
+								},
 							},
 						},
 					},
@@ -221,8 +362,17 @@ some listing code
 						Kind:       types.ListingBlock,
 						Attributes: map[string]interface{}{},
 						Elements: []types.DocElement{
-							types.StringElement{
-								Content: "some listing code",
+							types.Paragraph{
+								Attributes: map[string]interface{}{},
+								Lines: []types.InlineContent{
+									{
+										Elements: []types.InlineElement{
+											types.StringElement{
+												Content: "some listing code",
+											},
+										},
+									},
+								},
 							},
 						},
 					},
@@ -232,7 +382,7 @@ some listing code
 		})
 	})
 
-	Context("Literal blocks with spaces indentation", func() {
+	Context("literal blocks with spaces indentation", func() {
 
 		It("literal block from 1-line paragraph with single space", func() {
 			actualContent := ` some literal content`
@@ -278,7 +428,7 @@ a normal paragraph.`
 		})
 	})
 
-	Context("Literal blocks with block delimiter", func() {
+	Context("literal blocks with block delimiter", func() {
 
 		It("literal block from 1-line paragraph with delimiter", func() {
 			actualContent := `....
@@ -404,6 +554,7 @@ with *bold content*
 							},
 						},
 					},
+					types.BlankLine{},
 					types.UnorderedList{
 						Attributes: map[string]interface{}{},
 						Items: []types.UnorderedListItem{
@@ -430,6 +581,89 @@ with *bold content*
 			}
 			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("BlockElement"))
 		})
+	})
+
+	Context("admonition blocks", func() {
+
+		It("example block as admonition", func() {
+			actualContent := `[NOTE]
+====
+foo
+====`
+			expectedResult := types.DelimitedBlock{
+				Kind: types.ExampleBlock,
+				Attributes: map[string]interface{}{
+					types.AttrAdmonitionKind: types.Note,
+				},
+				Elements: []types.DocElement{
+					types.Paragraph{
+						Attributes: map[string]interface{}{},
+						Lines: []types.InlineContent{
+							{
+								Elements: []types.InlineElement{
+									types.StringElement{
+										Content: "foo",
+									},
+								},
+							},
+						},
+					},
+				},
+			}
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("BlockElement"))
+
+		})
+
+		It("listing block as admonition", func() {
+			actualContent := `[NOTE]
+----
+multiple
+
+paragraphs
+----
+`
+			expectedResult := types.Document{
+				Attributes:        map[string]interface{}{},
+				ElementReferences: map[string]interface{}{},
+				Elements: []types.DocElement{
+					types.DelimitedBlock{
+						Kind: types.ListingBlock,
+						Attributes: map[string]interface{}{
+							types.AttrAdmonitionKind: types.Note,
+						},
+						Elements: []types.DocElement{
+							types.Paragraph{
+								Attributes: map[string]interface{}{},
+								Lines: []types.InlineContent{
+									{
+										Elements: []types.InlineElement{
+											types.StringElement{
+												Content: "multiple",
+											},
+										},
+									},
+								},
+							},
+							types.BlankLine{},
+							types.Paragraph{
+								Attributes: map[string]interface{}{},
+								Lines: []types.InlineContent{
+									{
+										Elements: []types.InlineElement{
+											types.StringElement{
+												Content: "paragraphs",
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			}
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Document"))
+		})
+
 	})
 
 })

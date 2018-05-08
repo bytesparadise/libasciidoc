@@ -8,7 +8,7 @@ import (
 
 var _ = Describe("unordered lists", func() {
 
-	Context("Valid content", func() {
+	Context("valid content", func() {
 
 		It("unordered list with a single item", func() {
 			actualContent := "* a list item"
@@ -721,8 +721,17 @@ another delimited block
 										Kind:       types.ListingBlock,
 										Attributes: map[string]interface{}{},
 										Elements: []types.DocElement{
-											types.StringElement{
-												Content: "a delimited block",
+											types.Paragraph{
+												Attributes: map[string]interface{}{},
+												Lines: []types.InlineContent{
+													{
+														Elements: []types.InlineElement{
+															types.StringElement{
+																Content: "a delimited block",
+															},
+														},
+													},
+												},
 											},
 										},
 									},
@@ -730,8 +739,17 @@ another delimited block
 										Kind:       types.ListingBlock,
 										Attributes: map[string]interface{}{},
 										Elements: []types.DocElement{
-											types.StringElement{
-												Content: "another delimited block",
+											types.Paragraph{
+												Attributes: map[string]interface{}{},
+												Lines: []types.InlineContent{
+													{
+														Elements: []types.InlineElement{
+															types.StringElement{
+																Content: "another delimited block",
+															},
+														},
+													},
+												},
 											},
 										},
 									},
@@ -796,8 +814,17 @@ another delimited block
 						Kind:       types.ListingBlock,
 						Attributes: map[string]interface{}{},
 						Elements: []types.DocElement{
-							types.StringElement{
-								Content: "a delimited block",
+							types.Paragraph{
+								Attributes: map[string]interface{}{},
+								Lines: []types.InlineContent{
+									{
+										Elements: []types.InlineElement{
+											types.StringElement{
+												Content: "a delimited block",
+											},
+										},
+									},
+								},
 							},
 						},
 					},
@@ -825,8 +852,17 @@ another delimited block
 						Kind:       types.ListingBlock,
 						Attributes: map[string]interface{}{},
 						Elements: []types.DocElement{
-							types.StringElement{
-								Content: "another delimited block",
+							types.Paragraph{
+								Attributes: map[string]interface{}{},
+								Lines: []types.InlineContent{
+									{
+										Elements: []types.InlineElement{
+											types.StringElement{
+												Content: "another delimited block",
+											},
+										},
+									},
+								},
 							},
 						},
 					},

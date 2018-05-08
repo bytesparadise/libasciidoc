@@ -6,9 +6,9 @@ import (
 	. "github.com/onsi/ginkgo"
 )
 
-var _ = Describe("Document Attributes", func() {
+var _ = Describe("document attributes", func() {
 
-	Context("Valid Document Header", func() {
+	Context("valid Document Header", func() {
 
 		It("header alone", func() {
 			actualContent := `= The Dangerous and Thrilling Documentation Chronicles
@@ -44,9 +44,9 @@ This journey begins on a bleary Monday morning.`
 			verify(GinkgoT(), expectedResult, actualContent)
 		})
 
-		Context("Document Authors", func() {
+		Context("document Authors", func() {
 
-			Context("Single Author", func() {
+			Context("single Author", func() {
 
 				It("all data", func() {
 					actualContent := `Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>`
@@ -117,7 +117,7 @@ This journey begins on a bleary Monday morning.`
 				})
 			})
 
-			Context("Multiple authors", func() {
+			Context("multiple authors", func() {
 				It("2 authors only", func() {
 					actualContent := `Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus@asciidoctor.org>`
 					expectedResult := []types.DocumentAuthor{
@@ -142,7 +142,7 @@ This journey begins on a bleary Monday morning.`
 			})
 		})
 
-		Context("Document Revision", func() {
+		Context("document Revision", func() {
 
 			It("Full document revision", func() {
 				actualContent := `v1.0, June 19, 2017: First incarnation`
@@ -237,7 +237,7 @@ This journey begins on a bleary Monday morning.`
 
 		})
 
-		Context("Document Header Attributes", func() {
+		Context("document Header Attributes", func() {
 
 			It("valid attribute names", func() {
 				actualContent := `:a:
@@ -374,7 +374,7 @@ a paragraph`
 			})
 		})
 
-		Context("Document Attribute Substitutions", func() {
+		Context("document Attribute Substitutions", func() {
 
 			It("paragraph with attribute substitution", func() {
 				actualContent := `:author: Xavier
@@ -557,7 +557,7 @@ a paragraph with *bold content*`
 		})
 	})
 
-	Context("Invalid document attributes", func() {
+	Context("invalid document attributes", func() {
 
 		It("paragraph without blank line before attribute declarations", func() {
 			actualContent := `a paragraph

@@ -6,9 +6,9 @@ import (
 	. "github.com/onsi/ginkgo"
 )
 
-var _ = Describe("Literal Blocks", func() {
+var _ = Describe("literal blocks", func() {
 
-	Context("Literal blocks with spaces indentation", func() {
+	Context("literal blocks with spaces indentation", func() {
 
 		It("literal block from 1-line paragraph with single space", func() {
 			actualContent := ` some literal content`
@@ -54,7 +54,7 @@ a normal paragraph.`
 		})
 	})
 
-	Context("Literal blocks with block delimiter", func() {
+	Context("literal blocks with block delimiter", func() {
 
 		It("literal block from 1-line paragraph with delimiter", func() {
 			actualContent := `....
@@ -85,7 +85,7 @@ a normal paragraph.`
 
 	})
 
-	Context("Literal blocks with attribute", func() {
+	Context("literal blocks with attribute", func() {
 
 		It("literal block from 1-line paragraph with attribute", func() {
 			actualContent := `[literal]   

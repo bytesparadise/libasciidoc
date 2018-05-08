@@ -18,14 +18,14 @@ func init() {
 		`{{ $ctx := .Context }}{{ with .Data }}<div{{ if index .Attributes "ID" }} id="{{ index .Attributes "ID" }}"{{ end }} class="ulist">
 <ul>
 {{ $items := .Items }}{{ range $itemIndex, $item := $items }}<li>
-{{ $elements := $item.Elements }}{{ range $elementIndex, $element := $elements }}{{ renderElement $ctx $element | printf "%s" }}{{ if notLastItem $elementIndex $elements }}{{ print "\n" }}{{ end }}{{ end }}
+{{ $elements := $item.Elements }}{{ range $elementIndex, $element := $elements }}{{ renderElement $ctx $element | printf "%s" }}{{ if includeNewline $ctx $elementIndex $elements }}{{ print "\n" }}{{ end }}{{ end }}
 </li>
 {{ end }}</ul>
 </div>{{ end }}`,
 		texttemplate.FuncMap{
-			"renderElement": renderElement,
-			"wrap":          wrap,
-			"notLastItem":   notLastItem,
+			"renderElement":  renderElement,
+			"wrap":           wrap,
+			"includeNewline": includeNewline,
 		})
 
 }

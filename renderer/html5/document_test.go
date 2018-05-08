@@ -7,9 +7,9 @@ import (
 	. "github.com/onsi/ginkgo"
 )
 
-var _ = Describe("Document Header", func() {
+var _ = Describe("document header", func() {
 
-	Context("Header with inline elements in title", func() {
+	Context("header with inline elements in title", func() {
 
 		It("header with quoted text", func() {
 			actualContent := `= The _Dangerous_ and *Thrilling* Documentation Chronicles`
@@ -39,7 +39,7 @@ Last updated {{.LastUpdated}}
 		})
 	})
 
-	Context("Header with attributes", func() {
+	Context("header with attributes", func() {
 
 		It("header with author and revision", func() {
 			actualContent := `= The Dangerous and Thrilling Documentation Chronicles
