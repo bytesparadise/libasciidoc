@@ -18,13 +18,11 @@ var _ = Describe("unordered lists", func() {
 					{
 						Level:       1,
 						BulletStyle: types.OneAsterisk,
-						Elements: []types.DocElement{
+						Elements: []interface{}{
 							types.ListParagraph{
-								Lines: []types.InlineContent{
+								Lines: []types.InlineElements{
 									{
-										Elements: []types.InlineElement{
-											types.StringElement{Content: "a list item"},
-										},
+										types.StringElement{Content: "a list item"},
 									},
 								},
 							},
@@ -46,13 +44,11 @@ var _ = Describe("unordered lists", func() {
 					{
 						Level:       1,
 						BulletStyle: types.OneAsterisk,
-						Elements: []types.DocElement{
+						Elements: []interface{}{
 							types.ListParagraph{
-								Lines: []types.InlineContent{
+								Lines: []types.InlineElements{
 									{
-										Elements: []types.InlineElement{
-											types.StringElement{Content: "a list item"},
-										},
+										types.StringElement{Content: "a list item"},
 									},
 								},
 							},
@@ -72,13 +68,11 @@ var _ = Describe("unordered lists", func() {
 					{
 						Level:       1,
 						BulletStyle: types.OneAsterisk,
-						Elements: []types.DocElement{
+						Elements: []interface{}{
 							types.ListParagraph{
-								Lines: []types.InlineContent{
+								Lines: []types.InlineElements{
 									{
-										Elements: []types.InlineElement{
-											types.StringElement{Content: "a first item"},
-										},
+										types.StringElement{Content: "a first item"},
 									},
 								},
 							},
@@ -87,16 +81,14 @@ var _ = Describe("unordered lists", func() {
 					{
 						Level:       1,
 						BulletStyle: types.OneAsterisk,
-						Elements: []types.DocElement{
+						Elements: []interface{}{
 							types.ListParagraph{
-								Lines: []types.InlineContent{
+								Lines: []types.InlineElements{
 									{
-										Elements: []types.InlineElement{
-											types.StringElement{Content: "a second item with "},
-											types.QuotedText{Kind: types.Bold,
-												Elements: []types.InlineElement{
-													types.StringElement{Content: "bold content"},
-												},
+										types.StringElement{Content: "a second item with "},
+										types.QuotedText{Kind: types.Bold,
+											Elements: []interface{}{
+												types.StringElement{Content: "bold content"},
 											},
 										},
 									},
@@ -118,13 +110,11 @@ var _ = Describe("unordered lists", func() {
 					{
 						Level:       1,
 						BulletStyle: types.Dash,
-						Elements: []types.DocElement{
+						Elements: []interface{}{
 							types.ListParagraph{
-								Lines: []types.InlineContent{
+								Lines: []types.InlineElements{
 									{
-										Elements: []types.InlineElement{
-											types.StringElement{Content: "a first item"},
-										},
+										types.StringElement{Content: "a first item"},
 									},
 								},
 							},
@@ -133,16 +123,14 @@ var _ = Describe("unordered lists", func() {
 					{
 						Level:       1,
 						BulletStyle: types.Dash,
-						Elements: []types.DocElement{
+						Elements: []interface{}{
 							types.ListParagraph{
-								Lines: []types.InlineContent{
+								Lines: []types.InlineElements{
 									{
-										Elements: []types.InlineElement{
-											types.StringElement{Content: "a second item with "},
-											types.QuotedText{Kind: types.Bold,
-												Elements: []types.InlineElement{
-													types.StringElement{Content: "bold content"},
-												},
+										types.StringElement{Content: "a second item with "},
+										types.QuotedText{Kind: types.Bold,
+											Elements: []interface{}{
+												types.StringElement{Content: "bold content"},
 											},
 										},
 									},
@@ -167,13 +155,11 @@ var _ = Describe("unordered lists", func() {
 					{
 						Level:       1,
 						BulletStyle: types.Dash,
-						Elements: []types.DocElement{
+						Elements: []interface{}{
 							types.ListParagraph{
-								Lines: []types.InlineContent{
+								Lines: []types.InlineElements{
 									{
-										Elements: []types.InlineElement{
-											types.StringElement{Content: "a parent item"},
-										},
+										types.StringElement{Content: "a parent item"},
 									},
 								},
 							},
@@ -183,13 +169,11 @@ var _ = Describe("unordered lists", func() {
 									{
 										Level:       2,
 										BulletStyle: types.OneAsterisk,
-										Elements: []types.DocElement{
+										Elements: []interface{}{
 											types.ListParagraph{
-												Lines: []types.InlineContent{
+												Lines: []types.InlineElements{
 													{
-														Elements: []types.InlineElement{
-															types.StringElement{Content: "a child item"},
-														},
+														types.StringElement{Content: "a child item"},
 													},
 												},
 											},
@@ -202,13 +186,11 @@ var _ = Describe("unordered lists", func() {
 					{
 						Level:       1,
 						BulletStyle: types.Dash,
-						Elements: []types.DocElement{
+						Elements: []interface{}{
 							types.ListParagraph{
-								Lines: []types.InlineContent{
+								Lines: []types.InlineElements{
 									{
-										Elements: []types.InlineElement{
-											types.StringElement{Content: "another parent item"},
-										},
+										types.StringElement{Content: "another parent item"},
 									},
 								},
 							},
@@ -218,13 +200,11 @@ var _ = Describe("unordered lists", func() {
 									{
 										Level:       2,
 										BulletStyle: types.OneAsterisk,
-										Elements: []types.DocElement{
+										Elements: []interface{}{
 											types.ListParagraph{
-												Lines: []types.InlineContent{
+												Lines: []types.InlineElements{
 													{
-														Elements: []types.InlineElement{
-															types.StringElement{Content: "another child item"},
-														},
+														types.StringElement{Content: "another child item"},
 													},
 												},
 											},
@@ -234,13 +214,11 @@ var _ = Describe("unordered lists", func() {
 													{
 														Level:       3,
 														BulletStyle: types.TwoAsterisks,
-														Elements: []types.DocElement{
+														Elements: []interface{}{
 															types.ListParagraph{
-																Lines: []types.InlineContent{
+																Lines: []types.InlineElements{
 																	{
-																		Elements: []types.InlineElement{
-																			types.StringElement{Content: "with a sub child item"},
-																		},
+																		types.StringElement{Content: "with a sub child item"},
 																	},
 																},
 															},
@@ -270,13 +248,11 @@ var _ = Describe("unordered lists", func() {
 					{
 						Level:       1,
 						BulletStyle: types.OneAsterisk,
-						Elements: []types.DocElement{
+						Elements: []interface{}{
 							types.ListParagraph{
-								Lines: []types.InlineContent{
+								Lines: []types.InlineElements{
 									{
-										Elements: []types.InlineElement{
-											types.StringElement{Content: "a first item"},
-										},
+										types.StringElement{Content: "a first item"},
 									},
 								},
 							},
@@ -285,16 +261,14 @@ var _ = Describe("unordered lists", func() {
 					{
 						Level:       1,
 						BulletStyle: types.OneAsterisk,
-						Elements: []types.DocElement{
+						Elements: []interface{}{
 							types.ListParagraph{
-								Lines: []types.InlineContent{
+								Lines: []types.InlineElements{
 									{
-										Elements: []types.InlineElement{
-											types.StringElement{Content: "a second item with "},
-											types.QuotedText{Kind: types.Bold,
-												Elements: []types.InlineElement{
-													types.StringElement{Content: "bold content"},
-												},
+										types.StringElement{Content: "a second item with "},
+										types.QuotedText{Kind: types.Bold,
+											Elements: []interface{}{
+												types.StringElement{Content: "bold content"},
 											},
 										},
 									},
@@ -317,18 +291,14 @@ var _ = Describe("unordered lists", func() {
 					{
 						Level:       1,
 						BulletStyle: types.OneAsterisk,
-						Elements: []types.DocElement{
+						Elements: []interface{}{
 							types.ListParagraph{
-								Lines: []types.InlineContent{
+								Lines: []types.InlineElements{
 									{
-										Elements: []types.InlineElement{
-											types.StringElement{Content: "item 1"},
-										},
+										types.StringElement{Content: "item 1"},
 									},
 									{
-										Elements: []types.InlineElement{
-											types.StringElement{Content: "  on 2 lines."},
-										},
+										types.StringElement{Content: "  on 2 lines."},
 									},
 								},
 							},
@@ -337,18 +307,14 @@ var _ = Describe("unordered lists", func() {
 					{
 						Level:       1,
 						BulletStyle: types.OneAsterisk,
-						Elements: []types.DocElement{
+						Elements: []interface{}{
 							types.ListParagraph{
-								Lines: []types.InlineContent{
+								Lines: []types.InlineElements{
 									{
-										Elements: []types.InlineElement{
-											types.StringElement{Content: "item 2"},
-										},
+										types.StringElement{Content: "item 2"},
 									},
 									{
-										Elements: []types.InlineElement{
-											types.StringElement{Content: "on 2 lines, too."},
-										},
+										types.StringElement{Content: "on 2 lines, too."},
 									},
 								},
 							},
@@ -367,20 +333,18 @@ var _ = Describe("unordered lists", func() {
 			expectedResult := types.Document{
 				Attributes:        map[string]interface{}{},
 				ElementReferences: map[string]interface{}{},
-				Elements: []types.DocElement{
+				Elements: []interface{}{
 					types.UnorderedList{
 						Attributes: map[string]interface{}{},
 						Items: []types.UnorderedListItem{
 							{
 								Level:       1,
 								BulletStyle: types.OneAsterisk,
-								Elements: []types.DocElement{
+								Elements: []interface{}{
 									types.ListParagraph{
-										Lines: []types.InlineContent{
+										Lines: []types.InlineElements{
 											{
-												Elements: []types.InlineElement{
-													types.StringElement{Content: "an item in the first list"},
-												},
+												types.StringElement{Content: "an item in the first list"},
 											},
 										},
 									},
@@ -394,13 +358,11 @@ var _ = Describe("unordered lists", func() {
 							{
 								Level:       1,
 								BulletStyle: types.OneAsterisk,
-								Elements: []types.DocElement{
+								Elements: []interface{}{
 									types.ListParagraph{
-										Lines: []types.InlineContent{
+										Lines: []types.InlineElements{
 											{
-												Elements: []types.InlineElement{
-													types.StringElement{Content: "an item in the second list"},
-												},
+												types.StringElement{Content: "an item in the second list"},
 											},
 										},
 									},
@@ -428,13 +390,11 @@ var _ = Describe("unordered lists", func() {
 					{
 						Level:       1,
 						BulletStyle: types.OneAsterisk,
-						Elements: []types.DocElement{
+						Elements: []interface{}{
 							types.ListParagraph{
-								Lines: []types.InlineContent{
+								Lines: []types.InlineElements{
 									{
-										Elements: []types.InlineElement{
-											types.StringElement{Content: "item 1"},
-										},
+										types.StringElement{Content: "item 1"},
 									},
 								},
 							},
@@ -444,13 +404,11 @@ var _ = Describe("unordered lists", func() {
 									{
 										Level:       2,
 										BulletStyle: types.TwoAsterisks,
-										Elements: []types.DocElement{
+										Elements: []interface{}{
 											types.ListParagraph{
-												Lines: []types.InlineContent{
+												Lines: []types.InlineElements{
 													{
-														Elements: []types.InlineElement{
-															types.StringElement{Content: "item 1.1"},
-														},
+														types.StringElement{Content: "item 1.1"},
 													},
 												},
 											},
@@ -459,13 +417,11 @@ var _ = Describe("unordered lists", func() {
 									{
 										Level:       2,
 										BulletStyle: types.TwoAsterisks,
-										Elements: []types.DocElement{
+										Elements: []interface{}{
 											types.ListParagraph{
-												Lines: []types.InlineContent{
+												Lines: []types.InlineElements{
 													{
-														Elements: []types.InlineElement{
-															types.StringElement{Content: "item 1.2"},
-														},
+														types.StringElement{Content: "item 1.2"},
 													},
 												},
 											},
@@ -475,13 +431,11 @@ var _ = Describe("unordered lists", func() {
 													{
 														Level:       3,
 														BulletStyle: types.ThreeAsterisks,
-														Elements: []types.DocElement{
+														Elements: []interface{}{
 															types.ListParagraph{
-																Lines: []types.InlineContent{
+																Lines: []types.InlineElements{
 																	{
-																		Elements: []types.InlineElement{
-																			types.StringElement{Content: "item 1.2.1"},
-																		},
+																		types.StringElement{Content: "item 1.2.1"},
 																	},
 																},
 															},
@@ -494,13 +448,11 @@ var _ = Describe("unordered lists", func() {
 									{
 										Level:       2,
 										BulletStyle: types.TwoAsterisks,
-										Elements: []types.DocElement{
+										Elements: []interface{}{
 											types.ListParagraph{
-												Lines: []types.InlineContent{
+												Lines: []types.InlineElements{
 													{
-														Elements: []types.InlineElement{
-															types.StringElement{Content: "item 1.3"},
-														},
+														types.StringElement{Content: "item 1.3"},
 													},
 												},
 											},
@@ -509,13 +461,11 @@ var _ = Describe("unordered lists", func() {
 									{
 										Level:       2,
 										BulletStyle: types.TwoAsterisks,
-										Elements: []types.DocElement{
+										Elements: []interface{}{
 											types.ListParagraph{
-												Lines: []types.InlineContent{
+												Lines: []types.InlineElements{
 													{
-														Elements: []types.InlineElement{
-															types.StringElement{Content: "item 1.4"},
-														},
+														types.StringElement{Content: "item 1.4"},
 													},
 												},
 											},
@@ -528,13 +478,11 @@ var _ = Describe("unordered lists", func() {
 					{
 						Level:       1,
 						BulletStyle: types.OneAsterisk,
-						Elements: []types.DocElement{
+						Elements: []interface{}{
 							types.ListParagraph{
-								Lines: []types.InlineContent{
+								Lines: []types.InlineElements{
 									{
-										Elements: []types.InlineElement{
-											types.StringElement{Content: "item 2"},
-										},
+										types.StringElement{Content: "item 2"},
 									},
 								},
 							},
@@ -544,13 +492,11 @@ var _ = Describe("unordered lists", func() {
 									{
 										Level:       2,
 										BulletStyle: types.TwoAsterisks,
-										Elements: []types.DocElement{
+										Elements: []interface{}{
 											types.ListParagraph{
-												Lines: []types.InlineContent{
+												Lines: []types.InlineElements{
 													{
-														Elements: []types.InlineElement{
-															types.StringElement{Content: "item 2.1"},
-														},
+														types.StringElement{Content: "item 2.1"},
 													},
 												},
 											},
@@ -580,13 +526,11 @@ var _ = Describe("unordered lists", func() {
 					{
 						Level:       1,
 						BulletStyle: types.OneAsterisk,
-						Elements: []types.DocElement{
+						Elements: []interface{}{
 							types.ListParagraph{
-								Lines: []types.InlineContent{
+								Lines: []types.InlineElements{
 									{
-										Elements: []types.InlineElement{
-											types.StringElement{Content: "item 1"},
-										},
+										types.StringElement{Content: "item 1"},
 									},
 								},
 							},
@@ -596,13 +540,11 @@ var _ = Describe("unordered lists", func() {
 									{
 										Level:       2,
 										BulletStyle: types.TwoAsterisks,
-										Elements: []types.DocElement{
+										Elements: []interface{}{
 											types.ListParagraph{
-												Lines: []types.InlineContent{
+												Lines: []types.InlineElements{
 													{
-														Elements: []types.InlineElement{
-															types.StringElement{Content: "item 1.1"},
-														},
+														types.StringElement{Content: "item 1.1"},
 													},
 												},
 											},
@@ -612,13 +554,11 @@ var _ = Describe("unordered lists", func() {
 													{
 														Level:       3,
 														BulletStyle: types.ThreeAsterisks,
-														Elements: []types.DocElement{
+														Elements: []interface{}{
 															types.ListParagraph{
-																Lines: []types.InlineContent{
+																Lines: []types.InlineElements{
 																	{
-																		Elements: []types.InlineElement{
-																			types.StringElement{Content: "item 1.1.1"},
-																		},
+																		types.StringElement{Content: "item 1.1.1"},
 																	},
 																},
 															},
@@ -631,13 +571,11 @@ var _ = Describe("unordered lists", func() {
 									{
 										Level:       2,
 										BulletStyle: types.TwoAsterisks,
-										Elements: []types.DocElement{
+										Elements: []interface{}{
 											types.ListParagraph{
-												Lines: []types.InlineContent{
+												Lines: []types.InlineElements{
 													{
-														Elements: []types.InlineElement{
-															types.StringElement{Content: "item 1.2"},
-														},
+														types.StringElement{Content: "item 1.2"},
 													},
 												},
 											},
@@ -650,13 +588,11 @@ var _ = Describe("unordered lists", func() {
 					{
 						Level:       1,
 						BulletStyle: types.OneAsterisk,
-						Elements: []types.DocElement{
+						Elements: []interface{}{
 							types.ListParagraph{
-								Lines: []types.InlineContent{
+								Lines: []types.InlineElements{
 									{
-										Elements: []types.InlineElement{
-											types.StringElement{Content: "item 2"},
-										},
+										types.StringElement{Content: "item 2"},
 									},
 								},
 							},
@@ -671,11 +607,9 @@ var _ = Describe("unordered lists", func() {
 			actualContent := "*an invalid list item"
 			expectedResult := types.Paragraph{
 				Attributes: map[string]interface{}{},
-				Lines: []types.InlineContent{
+				Lines: []types.InlineElements{
 					{
-						Elements: []types.InlineElement{
-							types.StringElement{Content: "*an invalid list item"},
-						},
+						types.StringElement{Content: "*an invalid list item"},
 					},
 				},
 			}
@@ -700,35 +634,31 @@ another delimited block
 			expectedResult := types.Document{
 				Attributes:        map[string]interface{}{},
 				ElementReferences: map[string]interface{}{},
-				Elements: []types.DocElement{
+				Elements: []interface{}{
 					types.UnorderedList{
 						Attributes: map[string]interface{}{},
 						Items: []types.UnorderedListItem{
 							{
 								Level:       1,
 								BulletStyle: types.OneAsterisk,
-								Elements: []types.DocElement{
+								Elements: []interface{}{
 									types.ListParagraph{
-										Lines: []types.InlineContent{
+										Lines: []types.InlineElements{
 											{
-												Elements: []types.InlineElement{
-													types.StringElement{Content: "foo"},
-												},
+												types.StringElement{Content: "foo"},
 											},
 										},
 									},
 									types.DelimitedBlock{
 										Kind:       types.ListingBlock,
 										Attributes: map[string]interface{}{},
-										Elements: []types.DocElement{
+										Elements: []interface{}{
 											types.Paragraph{
 												Attributes: map[string]interface{}{},
-												Lines: []types.InlineContent{
+												Lines: []types.InlineElements{
 													{
-														Elements: []types.InlineElement{
-															types.StringElement{
-																Content: "a delimited block",
-															},
+														types.StringElement{
+															Content: "a delimited block",
 														},
 													},
 												},
@@ -738,15 +668,13 @@ another delimited block
 									types.DelimitedBlock{
 										Kind:       types.ListingBlock,
 										Attributes: map[string]interface{}{},
-										Elements: []types.DocElement{
+										Elements: []interface{}{
 											types.Paragraph{
 												Attributes: map[string]interface{}{},
-												Lines: []types.InlineContent{
+												Lines: []types.InlineElements{
 													{
-														Elements: []types.InlineElement{
-															types.StringElement{
-																Content: "another delimited block",
-															},
+														types.StringElement{
+															Content: "another delimited block",
 														},
 													},
 												},
@@ -758,13 +686,11 @@ another delimited block
 							{
 								Level:       1,
 								BulletStyle: types.OneAsterisk,
-								Elements: []types.DocElement{
+								Elements: []interface{}{
 									types.ListParagraph{
-										Lines: []types.InlineContent{
+										Lines: []types.InlineElements{
 											{
-												Elements: []types.InlineElement{
-													types.StringElement{Content: "bar"},
-												},
+												types.StringElement{Content: "bar"},
 											},
 										},
 									},
@@ -789,20 +715,18 @@ another delimited block
 			expectedResult := types.Document{
 				Attributes:        map[string]interface{}{},
 				ElementReferences: map[string]interface{}{},
-				Elements: []types.DocElement{
+				Elements: []interface{}{
 					types.UnorderedList{
 						Attributes: map[string]interface{}{},
 						Items: []types.UnorderedListItem{
 							{
 								Level:       1,
 								BulletStyle: types.OneAsterisk,
-								Elements: []types.DocElement{
+								Elements: []interface{}{
 									types.ListParagraph{
-										Lines: []types.InlineContent{
+										Lines: []types.InlineElements{
 											{
-												Elements: []types.InlineElement{
-													types.StringElement{Content: "foo"},
-												},
+												types.StringElement{Content: "foo"},
 											},
 										},
 									},
@@ -813,15 +737,13 @@ another delimited block
 					types.DelimitedBlock{
 						Kind:       types.ListingBlock,
 						Attributes: map[string]interface{}{},
-						Elements: []types.DocElement{
+						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: map[string]interface{}{},
-								Lines: []types.InlineContent{
+								Lines: []types.InlineElements{
 									{
-										Elements: []types.InlineElement{
-											types.StringElement{
-												Content: "a delimited block",
-											},
+										types.StringElement{
+											Content: "a delimited block",
 										},
 									},
 								},
@@ -834,13 +756,11 @@ another delimited block
 							{
 								Level:       1,
 								BulletStyle: types.OneAsterisk,
-								Elements: []types.DocElement{
+								Elements: []interface{}{
 									types.ListParagraph{
-										Lines: []types.InlineContent{
+										Lines: []types.InlineElements{
 											{
-												Elements: []types.InlineElement{
-													types.StringElement{Content: "bar"},
-												},
+												types.StringElement{Content: "bar"},
 											},
 										},
 									},
@@ -851,15 +771,13 @@ another delimited block
 					types.DelimitedBlock{
 						Kind:       types.ListingBlock,
 						Attributes: map[string]interface{}{},
-						Elements: []types.DocElement{
+						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: map[string]interface{}{},
-								Lines: []types.InlineContent{
+								Lines: []types.InlineElements{
 									{
-										Elements: []types.InlineElement{
-											types.StringElement{
-												Content: "another delimited block",
-											},
+										types.StringElement{
+											Content: "another delimited block",
 										},
 									},
 								},

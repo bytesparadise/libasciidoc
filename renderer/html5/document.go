@@ -98,7 +98,7 @@ func renderDocument(ctx *renderer.Context, output io.Writer) (map[string]interfa
 	return metadata, nil
 }
 
-func renderElements(ctx *renderer.Context, elements []types.DocElement) ([]byte, error) {
+func renderElements(ctx *renderer.Context, elements []interface{}) ([]byte, error) {
 	renderedElementsBuff := bytes.NewBuffer(nil)
 	hasContent := false
 	for _, element := range elements {

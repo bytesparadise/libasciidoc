@@ -55,7 +55,7 @@ func renderTableOfContent(ctx *renderer.Context, m types.TableOfContentsMacro) (
 	return result.Bytes(), nil
 }
 
-func renderTableOfContentSections(ctx *renderer.Context, elements []types.DocElement, currentLevel int) (*template.HTML, error) {
+func renderTableOfContentSections(ctx *renderer.Context, elements []interface{}, currentLevel int) (*template.HTML, error) {
 	sections := make([]TableOfContentSection, 0)
 	for _, element := range elements {
 		log.Debugf("traversing document element of type %T", element)

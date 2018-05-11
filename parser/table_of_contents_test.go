@@ -12,22 +12,18 @@ var _ = Describe("table of contents", func() {
 		Attributes: map[string]interface{}{
 			types.AttrID: "_a_title",
 		},
-		Content: types.InlineContent{
-			Elements: []types.InlineElement{
-				types.StringElement{Content: "A Title"},
-			},
+		Content: types.InlineElements{
+			types.StringElement{Content: "A Title"},
 		},
 	}
 	tableOfContents := types.TableOfContentsMacro{}
 	preamble := types.Preamble{
-		Elements: []types.DocElement{
+		Elements: []interface{}{
 			types.Paragraph{
 				Attributes: map[string]interface{}{},
-				Lines: []types.InlineContent{
+				Lines: []types.InlineElements{
 					{
-						Elements: []types.InlineElement{
-							types.StringElement{Content: "A short preamble"},
-						},
+						types.StringElement{Content: "A short preamble"},
 					},
 				},
 			},
@@ -39,13 +35,11 @@ var _ = Describe("table of contents", func() {
 			Attributes: map[string]interface{}{
 				types.AttrID: "_section_1",
 			},
-			Content: types.InlineContent{
-				Elements: []types.InlineElement{
-					types.StringElement{Content: "section 1"},
-				},
+			Content: types.InlineElements{
+				types.StringElement{Content: "section 1"},
 			},
 		},
-		Elements: []types.DocElement{},
+		Elements: []interface{}{},
 	}
 
 	It("toc with default placement", func() {
@@ -67,14 +61,12 @@ A short preamble
 					Attributes: map[string]interface{}{
 						types.AttrID: "_section_1",
 					},
-					Content: types.InlineContent{
-						Elements: []types.InlineElement{
-							types.StringElement{Content: "section 1"},
-						},
+					Content: types.InlineElements{
+						types.StringElement{Content: "section 1"},
 					},
 				},
 			},
-			Elements: []types.DocElement{
+			Elements: []interface{}{
 				tableOfContents,
 				preamble,
 				section,
@@ -101,14 +93,12 @@ A short preamble
 					Attributes: map[string]interface{}{
 						types.AttrID: "_section_1",
 					},
-					Content: types.InlineContent{
-						Elements: []types.InlineElement{
-							types.StringElement{Content: "section 1"},
-						},
+					Content: types.InlineElements{
+						types.StringElement{Content: "section 1"},
 					},
 				},
 			},
-			Elements: []types.DocElement{
+			Elements: []interface{}{
 				preamble,
 				tableOfContents,
 				section,

@@ -17,18 +17,14 @@ on 2 lines`
 			Items: []types.LabeledListItem{
 				{
 					Term: "Item1",
-					Elements: []types.DocElement{
+					Elements: []interface{}{
 						types.ListParagraph{
-							Lines: []types.InlineContent{
+							Lines: []types.InlineElements{
 								{
-									Elements: []types.InlineElement{
-										types.StringElement{Content: "Item 1 description"},
-									},
+									types.StringElement{Content: "Item 1 description"},
 								},
 								{
-									Elements: []types.InlineElement{
-										types.StringElement{Content: "on 2 lines"},
-									},
+									types.StringElement{Content: "on 2 lines"},
 								},
 							},
 						},
@@ -62,13 +58,11 @@ Item1:: foo`
 			Items: []types.LabeledListItem{
 				{
 					Term: "Item1",
-					Elements: []types.DocElement{
+					Elements: []interface{}{
 						types.ListParagraph{
-							Lines: []types.InlineContent{
+							Lines: []types.InlineElements{
 								{
-									Elements: []types.InlineElement{
-										types.StringElement{Content: "foo"},
-									},
+									types.StringElement{Content: "foo"},
 								},
 							},
 						},
@@ -105,13 +99,11 @@ Item 3 description`
 			Items: []types.LabeledListItem{
 				{
 					Term: "Item 1",
-					Elements: []types.DocElement{
+					Elements: []interface{}{
 						types.ListParagraph{
-							Lines: []types.InlineContent{
+							Lines: []types.InlineElements{
 								{
-									Elements: []types.InlineElement{
-										types.StringElement{Content: "Item 1 description"},
-									},
+									types.StringElement{Content: "Item 1 description"},
 								},
 							},
 						},
@@ -119,13 +111,11 @@ Item 3 description`
 				},
 				{
 					Term: "Item 2",
-					Elements: []types.DocElement{
+					Elements: []interface{}{
 						types.ListParagraph{
-							Lines: []types.InlineContent{
+							Lines: []types.InlineElements{
 								{
-									Elements: []types.InlineElement{
-										types.StringElement{Content: "Item 2 description"},
-									},
+									types.StringElement{Content: "Item 2 description"},
 								},
 							},
 						},
@@ -133,13 +123,11 @@ Item 3 description`
 				},
 				{
 					Term: "Item 3",
-					Elements: []types.DocElement{
+					Elements: []interface{}{
 						types.ListParagraph{
-							Lines: []types.InlineContent{
+							Lines: []types.InlineElements{
 								{
-									Elements: []types.InlineElement{
-										types.StringElement{Content: "Item 3 description"},
-									},
+									types.StringElement{Content: "Item 3 description"},
 								},
 							},
 						},
@@ -160,20 +148,18 @@ Item with description:: something simple`
 			Items: []types.LabeledListItem{
 				{
 					Term: "Empty item",
-					Elements: []types.DocElement{
+					Elements: []interface{}{
 						types.UnorderedList{
 							Attributes: map[string]interface{}{},
 							Items: []types.UnorderedListItem{
 								{
 									Level:       1,
 									BulletStyle: types.OneAsterisk,
-									Elements: []types.DocElement{
+									Elements: []interface{}{
 										types.ListParagraph{
-											Lines: []types.InlineContent{
+											Lines: []types.InlineElements{
 												{
-													Elements: []types.InlineElement{
-														types.StringElement{Content: "foo"},
-													},
+													types.StringElement{Content: "foo"},
 												},
 											},
 										},
@@ -182,13 +168,11 @@ Item with description:: something simple`
 								{
 									Level:       1,
 									BulletStyle: types.OneAsterisk,
-									Elements: []types.DocElement{
+									Elements: []interface{}{
 										types.ListParagraph{
-											Lines: []types.InlineContent{
+											Lines: []types.InlineElements{
 												{
-													Elements: []types.InlineElement{
-														types.StringElement{Content: "bar"},
-													},
+													types.StringElement{Content: "bar"},
 												},
 											},
 										},
@@ -200,13 +184,11 @@ Item with description:: something simple`
 				},
 				{
 					Term: "Item with description",
-					Elements: []types.DocElement{
+					Elements: []interface{}{
 						types.ListParagraph{
-							Lines: []types.InlineContent{
+							Lines: []types.InlineElements{
 								{
-									Elements: []types.InlineElement{
-										types.StringElement{Content: "something simple"},
-									},
+									types.StringElement{Content: "something simple"},
 								},
 							},
 						},
@@ -227,24 +209,20 @@ a normal paragraph.`
 		expectedResult := types.Document{
 			Attributes:        map[string]interface{}{},
 			ElementReferences: map[string]interface{}{},
-			Elements: []types.DocElement{
+			Elements: []interface{}{
 				types.LabeledList{
 					Attributes: map[string]interface{}{},
 					Items: []types.LabeledListItem{
 						{
 							Term: "Item 1",
-							Elements: []types.DocElement{
+							Elements: []interface{}{
 								types.ListParagraph{
-									Lines: []types.InlineContent{
+									Lines: []types.InlineElements{
 										{
-											Elements: []types.InlineElement{
-												types.StringElement{Content: "foo"},
-											},
+											types.StringElement{Content: "foo"},
 										},
 										{
-											Elements: []types.InlineElement{
-												types.StringElement{Content: "bar"},
-											},
+											types.StringElement{Content: "bar"},
 										},
 									},
 								},
@@ -254,11 +232,9 @@ a normal paragraph.`
 				},
 				types.Paragraph{
 					Attributes: map[string]interface{}{},
-					Lines: []types.InlineContent{
+					Lines: []types.InlineElements{
 						{
-							Elements: []types.InlineElement{
-								types.StringElement{Content: "a normal paragraph."},
-							},
+							types.StringElement{Content: "a normal paragraph."},
 						},
 					},
 				},
@@ -281,25 +257,23 @@ another fenced block
 		expectedResult := types.Document{
 			Attributes:        map[string]interface{}{},
 			ElementReferences: map[string]interface{}{},
-			Elements: []types.DocElement{
+			Elements: []interface{}{
 				types.LabeledList{
 					Attributes: map[string]interface{}{},
 					Items: []types.LabeledListItem{
 						{
 							Term: "Item 1",
-							Elements: []types.DocElement{
+							Elements: []interface{}{
 								types.DelimitedBlock{
 									Kind:       types.ListingBlock,
 									Attributes: map[string]interface{}{},
-									Elements: []types.DocElement{
+									Elements: []interface{}{
 										types.Paragraph{
 											Attributes: map[string]interface{}{},
-											Lines: []types.InlineContent{
+											Lines: []types.InlineElements{
 												{
-													Elements: []types.InlineElement{
-														types.StringElement{
-															Content: "a fenced block",
-														},
+													types.StringElement{
+														Content: "a fenced block",
 													},
 												},
 											},
@@ -310,28 +284,24 @@ another fenced block
 						},
 						{
 							Term: "Item 2",
-							Elements: []types.DocElement{
+							Elements: []interface{}{
 								types.ListParagraph{
-									Lines: []types.InlineContent{
+									Lines: []types.InlineElements{
 										{
-											Elements: []types.InlineElement{
-												types.StringElement{Content: "something simple"},
-											},
+											types.StringElement{Content: "something simple"},
 										},
 									},
 								},
 								types.DelimitedBlock{
 									Kind:       types.ListingBlock,
 									Attributes: map[string]interface{}{},
-									Elements: []types.DocElement{
+									Elements: []interface{}{
 										types.Paragraph{
 											Attributes: map[string]interface{}{},
-											Lines: []types.InlineContent{
+											Lines: []types.InlineElements{
 												{
-													Elements: []types.InlineElement{
-														types.StringElement{
-															Content: "another fenced block",
-														},
+													types.StringElement{
+														Content: "another fenced block",
 													},
 												},
 											},
@@ -360,7 +330,7 @@ another fenced block
 		expectedResult := types.Document{
 			Attributes:        map[string]interface{}{},
 			ElementReferences: map[string]interface{}{},
-			Elements: []types.DocElement{
+			Elements: []interface{}{
 				types.LabeledList{
 					Attributes: map[string]interface{}{},
 					Items: []types.LabeledListItem{
@@ -372,15 +342,13 @@ another fenced block
 				types.DelimitedBlock{
 					Kind:       types.ListingBlock,
 					Attributes: map[string]interface{}{},
-					Elements: []types.DocElement{
+					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: map[string]interface{}{},
-							Lines: []types.InlineContent{
+							Lines: []types.InlineElements{
 								{
-									Elements: []types.InlineElement{
-										types.StringElement{
-											Content: "a fenced block",
-										},
+									types.StringElement{
+										Content: "a fenced block",
 									},
 								},
 							},
@@ -392,13 +360,11 @@ another fenced block
 					Items: []types.LabeledListItem{
 						{
 							Term: "Item 2",
-							Elements: []types.DocElement{
+							Elements: []interface{}{
 								types.ListParagraph{
-									Lines: []types.InlineContent{
+									Lines: []types.InlineElements{
 										{
-											Elements: []types.InlineElement{
-												types.StringElement{Content: "something simple"},
-											},
+											types.StringElement{Content: "something simple"},
 										},
 									},
 								},
@@ -409,15 +375,13 @@ another fenced block
 				types.DelimitedBlock{
 					Kind:       types.ListingBlock,
 					Attributes: map[string]interface{}{},
-					Elements: []types.DocElement{
+					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: map[string]interface{}{},
-							Lines: []types.InlineContent{
+							Lines: []types.InlineElements{
 								{
-									Elements: []types.InlineElement{
-										types.StringElement{
-											Content: "another fenced block",
-										},
+									types.StringElement{
+										Content: "another fenced block",
 									},
 								},
 							},

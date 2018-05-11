@@ -34,17 +34,15 @@ a normal paragraph.`
 			expectedResult := types.Document{
 				Attributes:        map[string]interface{}{},
 				ElementReferences: map[string]interface{}{},
-				Elements: []types.DocElement{
+				Elements: []interface{}{
 					types.LiteralBlock{
 						Content: "   some literal content",
 					},
 					types.Paragraph{
 						Attributes: map[string]interface{}{},
-						Lines: []types.InlineContent{
+						Lines: []types.InlineElements{
 							{
-								Elements: []types.InlineElement{
-									types.StringElement{Content: "a normal paragraph."},
-								},
+								types.StringElement{Content: "a normal paragraph."},
 							},
 						},
 					},
@@ -64,17 +62,15 @@ a normal paragraph.`
 			expectedResult := types.Document{
 				Attributes:        map[string]interface{}{},
 				ElementReferences: map[string]interface{}{},
-				Elements: []types.DocElement{
+				Elements: []interface{}{
 					types.LiteralBlock{
 						Content: "some literal content",
 					},
 					types.Paragraph{
 						Attributes: map[string]interface{}{},
-						Lines: []types.InlineContent{
+						Lines: []types.InlineElements{
 							{
-								Elements: []types.InlineElement{
-									types.StringElement{Content: "a normal paragraph."},
-								},
+								types.StringElement{Content: "a normal paragraph."},
 							},
 						},
 					},
@@ -95,17 +91,15 @@ a normal paragraph.`
 			expectedResult := types.Document{
 				Attributes:        map[string]interface{}{},
 				ElementReferences: map[string]interface{}{},
-				Elements: []types.DocElement{
+				Elements: []interface{}{
 					types.LiteralBlock{
 						Content: "some literal content",
 					},
 					types.Paragraph{
 						Attributes: map[string]interface{}{},
-						Lines: []types.InlineContent{
+						Lines: []types.InlineElements{
 							{
-								Elements: []types.InlineElement{
-									types.StringElement{Content: "a normal paragraph."},
-								},
+								types.StringElement{Content: "a normal paragraph."},
 							},
 						},
 					},

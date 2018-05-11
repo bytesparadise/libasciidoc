@@ -37,14 +37,12 @@ var _ = Describe("element attributes", func() {
 				})
 
 				It("is an inline content", func() {
-					expectedResult := types.InlineContent{
-						Elements: []types.InlineElement{
-							types.StringElement{
-								Content: "[link=http://foo.bar",
-							},
+					expectedResult := types.InlineElements{
+						types.StringElement{
+							Content: "[link=http://foo.bar",
 						},
 					}
-					verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineContent"))
+					verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
 				})
 			})
 		})
@@ -83,14 +81,12 @@ var _ = Describe("element attributes", func() {
 				})
 
 				It("is an inline content", func() {
-					expectedResult := types.InlineContent{
-						Elements: []types.InlineElement{
-							types.StringElement{
-								Content: "[#img-foobar",
-							},
+					expectedResult := types.InlineElements{
+						types.StringElement{
+							Content: "[#img-foobar",
 						},
 					}
-					verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineContent"))
+					verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
 				})
 			})
 		})
@@ -115,14 +111,12 @@ var _ = Describe("element attributes", func() {
 				})
 
 				It("is an inline content", func() {
-					expectedResult := types.InlineContent{
-						Elements: []types.InlineElement{
-							types.StringElement{
-								Content: ". a title",
-							},
+					expectedResult := types.InlineElements{
+						types.StringElement{
+							Content: ". a title",
 						},
 					}
-					verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineContent"))
+					verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
 				})
 			})
 
@@ -134,14 +128,12 @@ var _ = Describe("element attributes", func() {
 				})
 
 				It("is an inline content", func() {
-					expectedResult := types.InlineContent{
-						Elements: []types.InlineElement{
-							types.StringElement{
-								Content: "!a title",
-							},
+					expectedResult := types.InlineElements{
+						types.StringElement{
+							Content: "!a title",
 						},
 					}
-					verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineContent"))
+					verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
 				})
 			})
 		})

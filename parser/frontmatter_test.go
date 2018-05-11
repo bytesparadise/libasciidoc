@@ -21,14 +21,12 @@ first paragraph`
 					"author": "Xavier",
 				},
 				ElementReferences: map[string]interface{}{},
-				Elements: []types.DocElement{
+				Elements: []interface{}{
 					types.Paragraph{
 						Attributes: map[string]interface{}{},
-						Lines: []types.InlineContent{
+						Lines: []types.InlineElements{
 							{
-								Elements: []types.InlineElement{
-									types.StringElement{Content: "first paragraph"},
-								},
+								types.StringElement{Content: "first paragraph"},
 							},
 						},
 					},
@@ -45,14 +43,12 @@ first paragraph`
 			expectedResult := types.Document{
 				Attributes:        map[string]interface{}{},
 				ElementReferences: map[string]interface{}{},
-				Elements: []types.DocElement{
+				Elements: []interface{}{
 					types.Paragraph{
 						Attributes: map[string]interface{}{},
-						Lines: []types.InlineContent{
+						Lines: []types.InlineElements{
 							{
-								Elements: []types.InlineElement{
-									types.StringElement{Content: "first paragraph"},
-								},
+								types.StringElement{Content: "first paragraph"},
 							},
 						},
 					},

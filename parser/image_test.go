@@ -121,16 +121,12 @@ var _ = Describe("images", func() {
 					actualContent := "a paragraph\nimage::images/foo.png[]"
 					expectedResult := types.Paragraph{
 						Attributes: map[string]interface{}{},
-						Lines: []types.InlineContent{
-							types.InlineContent{
-								Elements: []types.InlineElement{
-									types.StringElement{Content: "a paragraph"},
-								},
+						Lines: []types.InlineElements{
+							{
+								types.StringElement{Content: "a paragraph"},
 							},
 							{
-								Elements: []types.InlineElement{
-									types.StringElement{Content: "image::images/foo.png[]"},
-								},
+								types.StringElement{Content: "image::images/foo.png[]"},
 							},
 						},
 					}
@@ -145,14 +141,12 @@ var _ = Describe("images", func() {
 					expectedResult := types.Document{
 						Attributes:        map[string]interface{}{},
 						ElementReferences: map[string]interface{}{},
-						Elements: []types.DocElement{
+						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: map[string]interface{}{},
-								Lines: []types.InlineContent{
+								Lines: []types.InlineElements{
 									{
-										Elements: []types.InlineElement{
-											types.StringElement{Content: "a foo image::foo.png[foo image, 600, 400] bar"},
-										},
+										types.StringElement{Content: "a foo image::foo.png[foo image, 600, 400] bar"},
 									},
 								},
 							},
@@ -170,35 +164,31 @@ var _ = Describe("images", func() {
 
 			It("inline image with empty alt", func() {
 				actualContent := "image:images/foo.png[]"
-				expectedResult := types.InlineContent{
-					Elements: []types.InlineElement{
-						types.InlineImage{
-							Macro: types.ImageMacro{
-								Path: "images/foo.png",
-								Alt:  "foo",
-							},
+				expectedResult := types.InlineElements{
+					types.InlineImage{
+						Macro: types.ImageMacro{
+							Path: "images/foo.png",
+							Alt:  "foo",
 						},
 					},
 				}
-				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineContent"))
+				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
 			})
 
 			It("inline image with empty alt and trailing spaces", func() {
 				actualContent := "image:images/foo.png[]  \t\t  "
 				expectedResult := types.Paragraph{
 					Attributes: map[string]interface{}{},
-					Lines: []types.InlineContent{
+					Lines: []types.InlineElements{
 						{
-							Elements: []types.InlineElement{
-								types.InlineImage{
-									Macro: types.ImageMacro{
-										Path: "images/foo.png",
-										Alt:  "foo",
-									},
+							types.InlineImage{
+								Macro: types.ImageMacro{
+									Path: "images/foo.png",
+									Alt:  "foo",
 								},
-								types.StringElement{
-									Content: "  \t\t  ",
-								},
+							},
+							types.StringElement{
+								Content: "  \t\t  ",
 							},
 						},
 					},
@@ -208,38 +198,34 @@ var _ = Describe("images", func() {
 
 			It("inline image surrounded with test", func() {
 				actualContent := "a foo image:images/foo.png[] bar..."
-				expectedResult := types.InlineContent{
-					Elements: []types.InlineElement{
-						types.StringElement{
-							Content: "a foo ",
-						},
-						types.InlineImage{
-							Macro: types.ImageMacro{
-								Path: "images/foo.png",
-								Alt:  "foo",
-							},
-						},
-						types.StringElement{
-							Content: " bar...",
+				expectedResult := types.InlineElements{
+					types.StringElement{
+						Content: "a foo ",
+					},
+					types.InlineImage{
+						Macro: types.ImageMacro{
+							Path: "images/foo.png",
+							Alt:  "foo",
 						},
 					},
+					types.StringElement{
+						Content: " bar...",
+					},
 				}
-				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineContent"))
+				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
 			})
 
 			It("inline image with alt", func() {
 				actualContent := "image:images/foo.png[the foo.png image]"
-				expectedResult := types.InlineContent{
-					Elements: []types.InlineElement{
-						types.InlineImage{
-							Macro: types.ImageMacro{
-								Path: "images/foo.png",
-								Alt:  "the foo.png image",
-							},
+				expectedResult := types.InlineElements{
+					types.InlineImage{
+						Macro: types.ImageMacro{
+							Path: "images/foo.png",
+							Alt:  "the foo.png image",
 						},
 					},
 				}
-				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineContent"))
+				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
 			})
 		})
 		Context("errors", func() {
@@ -247,16 +233,12 @@ var _ = Describe("images", func() {
 				actualContent := "a paragraph\nimage::images/foo.png[]"
 				expectedResult := types.Paragraph{
 					Attributes: map[string]interface{}{},
-					Lines: []types.InlineContent{
+					Lines: []types.InlineElements{
 						{
-							Elements: []types.InlineElement{
-								types.StringElement{Content: "a paragraph"},
-							},
+							types.StringElement{Content: "a paragraph"},
 						},
 						{
-							Elements: []types.InlineElement{
-								types.StringElement{Content: "image::images/foo.png[]"},
-							},
+							types.StringElement{Content: "image::images/foo.png[]"},
 						},
 					},
 				}
