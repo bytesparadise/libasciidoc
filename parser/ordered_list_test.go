@@ -11,13 +11,11 @@ var _ = Describe("ordered lists", func() {
 	Context("ordered list item alone", func() {
 
 		// same single item in the list for each test in this context
-		elements := []types.DocElement{
+		elements := []interface{}{
 			types.ListParagraph{
-				Lines: []types.InlineContent{
+				Lines: []types.InlineElements{
 					{
-						Elements: []types.InlineElement{
-							types.StringElement{Content: "item"},
-						},
+						types.StringElement{Content: "item"},
 					},
 				},
 			},
@@ -156,13 +154,11 @@ var _ = Describe("ordered lists", func() {
 						Position:       1,
 						NumberingStyle: types.Arabic,
 						Attributes:     map[string]interface{}{},
-						Elements: []types.DocElement{
+						Elements: []interface{}{
 							types.ListParagraph{
-								Lines: []types.InlineContent{
+								Lines: []types.InlineElements{
 									{
-										Elements: []types.InlineElement{
-											types.StringElement{Content: "a"},
-										},
+										types.StringElement{Content: "a"},
 									},
 								},
 							},
@@ -173,13 +169,11 @@ var _ = Describe("ordered lists", func() {
 						Position:       2,
 						NumberingStyle: types.Arabic,
 						Attributes:     map[string]interface{}{},
-						Elements: []types.DocElement{
+						Elements: []interface{}{
 							types.ListParagraph{
-								Lines: []types.InlineContent{
+								Lines: []types.InlineElements{
 									{
-										Elements: []types.InlineElement{
-											types.StringElement{Content: "b"},
-										},
+										types.StringElement{Content: "b"},
 									},
 								},
 							},
@@ -202,13 +196,11 @@ var _ = Describe("ordered lists", func() {
 						Position:       1,
 						NumberingStyle: types.Arabic,
 						Attributes:     map[string]interface{}{},
-						Elements: []types.DocElement{
+						Elements: []interface{}{
 							types.ListParagraph{
-								Lines: []types.InlineContent{
+								Lines: []types.InlineElements{
 									{
-										Elements: []types.InlineElement{
-											types.StringElement{Content: "item 1"},
-										},
+										types.StringElement{Content: "item 1"},
 									},
 								},
 							},
@@ -219,13 +211,11 @@ var _ = Describe("ordered lists", func() {
 						Position:       2,
 						NumberingStyle: types.Arabic,
 						Attributes:     map[string]interface{}{},
-						Elements: []types.DocElement{
+						Elements: []interface{}{
 							types.ListParagraph{
-								Lines: []types.InlineContent{
+								Lines: []types.InlineElements{
 									{
-										Elements: []types.InlineElement{
-											types.StringElement{Content: "item 2"},
-										},
+										types.StringElement{Content: "item 2"},
 									},
 								},
 							},
@@ -254,13 +244,11 @@ var _ = Describe("ordered lists", func() {
 						Position:       1,
 						NumberingStyle: types.Arabic,
 						Attributes:     map[string]interface{}{},
-						Elements: []types.DocElement{
+						Elements: []interface{}{
 							types.ListParagraph{
-								Lines: []types.InlineContent{
+								Lines: []types.InlineElements{
 									{
-										Elements: []types.InlineElement{
-											types.StringElement{Content: "item 1"},
-										},
+										types.StringElement{Content: "item 1"},
 									},
 								},
 							},
@@ -272,13 +260,11 @@ var _ = Describe("ordered lists", func() {
 										Position:       1,
 										NumberingStyle: types.LowerAlpha,
 										Attributes:     map[string]interface{}{},
-										Elements: []types.DocElement{
+										Elements: []interface{}{
 											types.ListParagraph{
-												Lines: []types.InlineContent{
+												Lines: []types.InlineElements{
 													{
-														Elements: []types.InlineElement{
-															types.StringElement{Content: "item 1.1"},
-														},
+														types.StringElement{Content: "item 1.1"},
 													},
 												},
 											},
@@ -292,13 +278,11 @@ var _ = Describe("ordered lists", func() {
 														Attributes: map[string]interface{}{
 															"upperroman": nil,
 														},
-														Elements: []types.DocElement{
+														Elements: []interface{}{
 															types.ListParagraph{
-																Lines: []types.InlineContent{
+																Lines: []types.InlineElements{
 																	{
-																		Elements: []types.InlineElement{
-																			types.StringElement{Content: "item 1.1.1"},
-																		},
+																		types.StringElement{Content: "item 1.1.1"},
 																	},
 																},
 															},
@@ -309,13 +293,11 @@ var _ = Describe("ordered lists", func() {
 														Position:       2,
 														NumberingStyle: types.UpperRoman,
 														Attributes:     map[string]interface{}{},
-														Elements: []types.DocElement{
+														Elements: []interface{}{
 															types.ListParagraph{
-																Lines: []types.InlineContent{
+																Lines: []types.InlineElements{
 																	{
-																		Elements: []types.InlineElement{
-																			types.StringElement{Content: "item 1.1.2"},
-																		},
+																		types.StringElement{Content: "item 1.1.2"},
 																	},
 																},
 															},
@@ -330,13 +312,11 @@ var _ = Describe("ordered lists", func() {
 										Position:       2,
 										NumberingStyle: types.LowerAlpha,
 										Attributes:     map[string]interface{}{},
-										Elements: []types.DocElement{
+										Elements: []interface{}{
 											types.ListParagraph{
-												Lines: []types.InlineContent{
+												Lines: []types.InlineElements{
 													{
-														Elements: []types.InlineElement{
-															types.StringElement{Content: "item 1.2"},
-														},
+														types.StringElement{Content: "item 1.2"},
 													},
 												},
 											},
@@ -351,13 +331,11 @@ var _ = Describe("ordered lists", func() {
 						Position:       2,
 						NumberingStyle: types.Arabic,
 						Attributes:     map[string]interface{}{},
-						Elements: []types.DocElement{
+						Elements: []interface{}{
 							types.ListParagraph{
-								Lines: []types.InlineContent{
+								Lines: []types.InlineElements{
 									{
-										Elements: []types.InlineElement{
-											types.StringElement{Content: "item 2"},
-										},
+										types.StringElement{Content: "item 2"},
 									},
 								},
 							},
@@ -369,13 +347,11 @@ var _ = Describe("ordered lists", func() {
 										Position:       1,
 										NumberingStyle: types.LowerAlpha,
 										Attributes:     map[string]interface{}{},
-										Elements: []types.DocElement{
+										Elements: []interface{}{
 											types.ListParagraph{
-												Lines: []types.InlineContent{
+												Lines: []types.InlineElements{
 													{
-														Elements: []types.InlineElement{
-															types.StringElement{Content: "item 2.1"},
-														},
+														types.StringElement{Content: "item 2.1"},
 													},
 												},
 											},
@@ -404,13 +380,11 @@ var _ = Describe("ordered lists", func() {
 						Position:       1,
 						NumberingStyle: types.Arabic,
 						Attributes:     map[string]interface{}{},
-						Elements: []types.DocElement{
+						Elements: []interface{}{
 							types.ListParagraph{
-								Lines: []types.InlineContent{
+								Lines: []types.InlineElements{
 									{
-										Elements: []types.InlineElement{
-											types.StringElement{Content: "Arabic (decimal) numbered list item."},
-										},
+										types.StringElement{Content: "Arabic (decimal) numbered list item."},
 									},
 								},
 							},
@@ -422,13 +396,11 @@ var _ = Describe("ordered lists", func() {
 										Position:       1,
 										NumberingStyle: types.LowerAlpha,
 										Attributes:     map[string]interface{}{},
-										Elements: []types.DocElement{
+										Elements: []interface{}{
 											types.ListParagraph{
-												Lines: []types.InlineContent{
+												Lines: []types.InlineElements{
 													{
-														Elements: []types.InlineElement{
-															types.StringElement{Content: "Lower case alpha (letter) numbered list item."},
-														},
+														types.StringElement{Content: "Lower case alpha (letter) numbered list item."},
 													},
 												},
 											},
@@ -440,13 +412,11 @@ var _ = Describe("ordered lists", func() {
 														Position:       1,
 														NumberingStyle: types.LowerRoman,
 														Attributes:     map[string]interface{}{},
-														Elements: []types.DocElement{
+														Elements: []interface{}{
 															types.ListParagraph{
-																Lines: []types.InlineContent{
+																Lines: []types.InlineElements{
 																	{
-																		Elements: []types.InlineElement{
-																			types.StringElement{Content: "Lower case roman numbered list item."},
-																		},
+																		types.StringElement{Content: "Lower case roman numbered list item."},
 																	},
 																},
 															},
@@ -458,13 +428,11 @@ var _ = Describe("ordered lists", func() {
 																		Position:       1,
 																		NumberingStyle: types.UpperAlpha,
 																		Attributes:     map[string]interface{}{},
-																		Elements: []types.DocElement{
+																		Elements: []interface{}{
 																			types.ListParagraph{
-																				Lines: []types.InlineContent{
+																				Lines: []types.InlineElements{
 																					{
-																						Elements: []types.InlineElement{
-																							types.StringElement{Content: "Upper case alpha (letter) numbered list item."},
-																						},
+																						types.StringElement{Content: "Upper case alpha (letter) numbered list item."},
 																					},
 																				},
 																			},
@@ -476,13 +444,11 @@ var _ = Describe("ordered lists", func() {
 																						Position:       1,
 																						NumberingStyle: types.UpperRoman,
 																						Attributes:     map[string]interface{}{},
-																						Elements: []types.DocElement{
+																						Elements: []interface{}{
 																							types.ListParagraph{
-																								Lines: []types.InlineContent{
+																								Lines: []types.InlineElements{
 																									{
-																										Elements: []types.InlineElement{
-																											types.StringElement{Content: "Upper case roman numbered list item."},
-																										},
+																										types.StringElement{Content: "Upper case roman numbered list item."},
 																									},
 																								},
 																							},
@@ -524,13 +490,11 @@ var _ = Describe("ordered lists", func() {
 						Position:       1,
 						NumberingStyle: types.Arabic,
 						Attributes:     map[string]interface{}{},
-						Elements: []types.DocElement{
+						Elements: []interface{}{
 							types.ListParagraph{
-								Lines: []types.InlineContent{
+								Lines: []types.InlineElements{
 									{
-										Elements: []types.InlineElement{
-											types.StringElement{Content: "a"},
-										},
+										types.StringElement{Content: "a"},
 									},
 								},
 							},
@@ -541,13 +505,11 @@ var _ = Describe("ordered lists", func() {
 						Position:       2,
 						NumberingStyle: types.Arabic,
 						Attributes:     map[string]interface{}{},
-						Elements: []types.DocElement{
+						Elements: []interface{}{
 							types.ListParagraph{
-								Lines: []types.InlineContent{
+								Lines: []types.InlineElements{
 									{
-										Elements: []types.InlineElement{
-											types.StringElement{Content: "b"},
-										},
+										types.StringElement{Content: "b"},
 									},
 								},
 							},
@@ -571,13 +533,11 @@ b. item 2.a`
 						Position:       1,
 						NumberingStyle: types.Arabic,
 						Attributes:     map[string]interface{}{},
-						Elements: []types.DocElement{
+						Elements: []interface{}{
 							types.ListParagraph{
-								Lines: []types.InlineContent{
+								Lines: []types.InlineElements{
 									{
-										Elements: []types.InlineElement{
-											types.StringElement{Content: "item 1"},
-										},
+										types.StringElement{Content: "item 1"},
 									},
 								},
 							},
@@ -589,13 +549,11 @@ b. item 2.a`
 										Position:       1,
 										NumberingStyle: types.LowerAlpha,
 										Attributes:     map[string]interface{}{},
-										Elements: []types.DocElement{
+										Elements: []interface{}{
 											types.ListParagraph{
-												Lines: []types.InlineContent{
+												Lines: []types.InlineElements{
 													{
-														Elements: []types.InlineElement{
-															types.StringElement{Content: "item 1.a"},
-														},
+														types.StringElement{Content: "item 1.a"},
 													},
 												},
 											},
@@ -610,13 +568,11 @@ b. item 2.a`
 						Position:       2,
 						NumberingStyle: types.Arabic,
 						Attributes:     map[string]interface{}{},
-						Elements: []types.DocElement{
+						Elements: []interface{}{
 							types.ListParagraph{
-								Lines: []types.InlineContent{
+								Lines: []types.InlineElements{
 									{
-										Elements: []types.InlineElement{
-											types.StringElement{Content: "item 2"},
-										},
+										types.StringElement{Content: "item 2"},
 									},
 								},
 							},
@@ -628,13 +584,11 @@ b. item 2.a`
 										Position:       1,
 										NumberingStyle: types.LowerAlpha,
 										Attributes:     map[string]interface{}{},
-										Elements: []types.DocElement{
+										Elements: []interface{}{
 											types.ListParagraph{
-												Lines: []types.InlineContent{
+												Lines: []types.InlineElements{
 													{
-														Elements: []types.InlineElement{
-															types.StringElement{Content: "item 2.a"},
-														},
+														types.StringElement{Content: "item 2.a"},
 													},
 												},
 											},
@@ -667,13 +621,11 @@ b. item 2.a`
 						Position:       1,
 						NumberingStyle: types.Arabic,
 						Attributes:     map[string]interface{}{},
-						Elements: []types.DocElement{
+						Elements: []interface{}{
 							types.ListParagraph{
-								Lines: []types.InlineContent{
+								Lines: []types.InlineElements{
 									{
-										Elements: []types.InlineElement{
-											types.StringElement{Content: "Item 1"},
-										},
+										types.StringElement{Content: "Item 1"},
 									},
 								},
 							},
@@ -683,13 +635,11 @@ b. item 2.a`
 									{
 										Level:       1,
 										BulletStyle: types.OneAsterisk,
-										Elements: []types.DocElement{
+										Elements: []interface{}{
 											types.ListParagraph{
-												Lines: []types.InlineContent{
+												Lines: []types.InlineElements{
 													{
-														Elements: []types.InlineElement{
-															types.StringElement{Content: "Item A"},
-														},
+														types.StringElement{Content: "Item A"},
 													},
 												},
 											},
@@ -698,13 +648,11 @@ b. item 2.a`
 									{
 										Level:       1,
 										BulletStyle: types.OneAsterisk,
-										Elements: []types.DocElement{
+										Elements: []interface{}{
 											types.ListParagraph{
-												Lines: []types.InlineContent{
+												Lines: []types.InlineElements{
 													{
-														Elements: []types.InlineElement{
-															types.StringElement{Content: "Item B"},
-														},
+														types.StringElement{Content: "Item B"},
 													},
 												},
 											},
@@ -719,13 +667,11 @@ b. item 2.a`
 						Position:       2,
 						NumberingStyle: types.Arabic,
 						Attributes:     map[string]interface{}{},
-						Elements: []types.DocElement{
+						Elements: []interface{}{
 							types.ListParagraph{
-								Lines: []types.InlineContent{
+								Lines: []types.InlineElements{
 									{
-										Elements: []types.InlineElement{
-											types.StringElement{Content: "Item 2"},
-										},
+										types.StringElement{Content: "Item 2"},
 									},
 								},
 							},
@@ -735,13 +681,11 @@ b. item 2.a`
 									{
 										Level:       1,
 										BulletStyle: types.OneAsterisk,
-										Elements: []types.DocElement{
+										Elements: []interface{}{
 											types.ListParagraph{
-												Lines: []types.InlineContent{
+												Lines: []types.InlineElements{
 													{
-														Elements: []types.InlineElement{
-															types.StringElement{Content: "Item C"},
-														},
+														types.StringElement{Content: "Item C"},
 													},
 												},
 											},
@@ -750,13 +694,11 @@ b. item 2.a`
 									{
 										Level:       1,
 										BulletStyle: types.OneAsterisk,
-										Elements: []types.DocElement{
+										Elements: []interface{}{
 											types.ListParagraph{
-												Lines: []types.InlineContent{
+												Lines: []types.InlineElements{
 													{
-														Elements: []types.InlineElement{
-															types.StringElement{Content: "Item D"},
-														},
+														types.StringElement{Content: "Item D"},
 													},
 												},
 											},
@@ -790,13 +732,11 @@ b. item 2.a`
 					{
 						Level:       1,
 						BulletStyle: types.Dash,
-						Elements: []types.DocElement{
+						Elements: []interface{}{
 							types.ListParagraph{
-								Lines: []types.InlineContent{
+								Lines: []types.InlineElements{
 									{
-										Elements: []types.InlineElement{
-											types.StringElement{Content: "unordered 1"},
-										},
+										types.StringElement{Content: "unordered 1"},
 									},
 								},
 							},
@@ -808,13 +748,11 @@ b. item 2.a`
 										Position:       1,
 										NumberingStyle: types.Arabic,
 										Attributes:     map[string]interface{}{},
-										Elements: []types.DocElement{
+										Elements: []interface{}{
 											types.ListParagraph{
-												Lines: []types.InlineContent{
+												Lines: []types.InlineElements{
 													{
-														Elements: []types.InlineElement{
-															types.StringElement{Content: "ordered 1.1"},
-														},
+														types.StringElement{Content: "ordered 1.1"},
 													},
 												},
 											},
@@ -826,13 +764,11 @@ b. item 2.a`
 														Position:       1,
 														NumberingStyle: types.LowerAlpha,
 														Attributes:     map[string]interface{}{},
-														Elements: []types.DocElement{
+														Elements: []interface{}{
 															types.ListParagraph{
-																Lines: []types.InlineContent{
+																Lines: []types.InlineElements{
 																	{
-																		Elements: []types.InlineElement{
-																			types.StringElement{Content: "ordered 1.1.a"},
-																		},
+																		types.StringElement{Content: "ordered 1.1.a"},
 																	},
 																},
 															},
@@ -843,13 +779,11 @@ b. item 2.a`
 														Position:       2,
 														NumberingStyle: types.LowerAlpha,
 														Attributes:     map[string]interface{}{},
-														Elements: []types.DocElement{
+														Elements: []interface{}{
 															types.ListParagraph{
-																Lines: []types.InlineContent{
+																Lines: []types.InlineElements{
 																	{
-																		Elements: []types.InlineElement{
-																			types.StringElement{Content: "ordered 1.1.b"},
-																		},
+																		types.StringElement{Content: "ordered 1.1.b"},
 																	},
 																},
 															},
@@ -860,13 +794,11 @@ b. item 2.a`
 														Position:       3,
 														NumberingStyle: types.LowerAlpha,
 														Attributes:     map[string]interface{}{},
-														Elements: []types.DocElement{
+														Elements: []interface{}{
 															types.ListParagraph{
-																Lines: []types.InlineContent{
+																Lines: []types.InlineElements{
 																	{
-																		Elements: []types.InlineElement{
-																			types.StringElement{Content: "ordered 1.1.c"},
-																		},
+																		types.StringElement{Content: "ordered 1.1.c"},
 																	},
 																},
 															},
@@ -881,13 +813,11 @@ b. item 2.a`
 										Position:       2,
 										NumberingStyle: types.Arabic,
 										Attributes:     map[string]interface{}{},
-										Elements: []types.DocElement{
+										Elements: []interface{}{
 											types.ListParagraph{
-												Lines: []types.InlineContent{
+												Lines: []types.InlineElements{
 													{
-														Elements: []types.InlineElement{
-															types.StringElement{Content: "ordered 1.2"},
-														},
+														types.StringElement{Content: "ordered 1.2"},
 													},
 												},
 											},
@@ -899,13 +829,11 @@ b. item 2.a`
 														Position:       1,
 														NumberingStyle: types.LowerRoman,
 														Attributes:     map[string]interface{}{},
-														Elements: []types.DocElement{
+														Elements: []interface{}{
 															types.ListParagraph{
-																Lines: []types.InlineContent{
+																Lines: []types.InlineElements{
 																	{
-																		Elements: []types.InlineElement{
-																			types.StringElement{Content: "ordered 1.2.i"},
-																		},
+																		types.StringElement{Content: "ordered 1.2.i"},
 																	},
 																},
 															},
@@ -916,13 +844,11 @@ b. item 2.a`
 														Position:       2,
 														NumberingStyle: types.LowerRoman,
 														Attributes:     map[string]interface{}{},
-														Elements: []types.DocElement{
+														Elements: []interface{}{
 															types.ListParagraph{
-																Lines: []types.InlineContent{
+																Lines: []types.InlineElements{
 																	{
-																		Elements: []types.InlineElement{
-																			types.StringElement{Content: "ordered 1.2.ii"},
-																		},
+																		types.StringElement{Content: "ordered 1.2.ii"},
 																	},
 																},
 															},
@@ -937,13 +863,11 @@ b. item 2.a`
 										Position:       3,
 										NumberingStyle: types.Arabic,
 										Attributes:     map[string]interface{}{},
-										Elements: []types.DocElement{
+										Elements: []interface{}{
 											types.ListParagraph{
-												Lines: []types.InlineContent{
+												Lines: []types.InlineElements{
 													{
-														Elements: []types.InlineElement{
-															types.StringElement{Content: "ordered 1.3"},
-														},
+														types.StringElement{Content: "ordered 1.3"},
 													},
 												},
 											},
@@ -954,13 +878,11 @@ b. item 2.a`
 										Position:       4,
 										NumberingStyle: types.Arabic,
 										Attributes:     map[string]interface{}{},
-										Elements: []types.DocElement{
+										Elements: []interface{}{
 											types.ListParagraph{
-												Lines: []types.InlineContent{
+												Lines: []types.InlineElements{
 													{
-														Elements: []types.InlineElement{
-															types.StringElement{Content: "ordered 1.4"},
-														},
+														types.StringElement{Content: "ordered 1.4"},
 													},
 												},
 											},
@@ -973,13 +895,11 @@ b. item 2.a`
 					{
 						Level:       1,
 						BulletStyle: types.Dash,
-						Elements: []types.DocElement{
+						Elements: []interface{}{
 							types.ListParagraph{
-								Lines: []types.InlineContent{
+								Lines: []types.InlineElements{
 									{
-										Elements: []types.InlineElement{
-											types.StringElement{Content: "unordered 2"},
-										},
+										types.StringElement{Content: "unordered 2"},
 									},
 								},
 							},
@@ -989,13 +909,11 @@ b. item 2.a`
 									{
 										Level:       2,
 										BulletStyle: types.OneAsterisk,
-										Elements: []types.DocElement{
+										Elements: []interface{}{
 											types.ListParagraph{
-												Lines: []types.InlineContent{
+												Lines: []types.InlineElements{
 													{
-														Elements: []types.InlineElement{
-															types.StringElement{Content: "unordered 2.1"},
-														},
+														types.StringElement{Content: "unordered 2.1"},
 													},
 												},
 											},
@@ -1041,13 +959,11 @@ b. item 2.a`
 					{
 						Level:       1,
 						BulletStyle: types.Dash,
-						Elements: []types.DocElement{
+						Elements: []interface{}{
 							types.ListParagraph{
-								Lines: []types.InlineContent{
+								Lines: []types.InlineElements{
 									{
-										Elements: []types.InlineElement{
-											types.StringElement{Content: "unordered 1"},
-										},
+										types.StringElement{Content: "unordered 1"},
 									},
 								},
 							},
@@ -1059,13 +975,11 @@ b. item 2.a`
 										Position:       1,
 										NumberingStyle: types.Arabic,
 										Attributes:     map[string]interface{}{},
-										Elements: []types.DocElement{
+										Elements: []interface{}{
 											types.ListParagraph{
-												Lines: []types.InlineContent{
+												Lines: []types.InlineElements{
 													{
-														Elements: []types.InlineElement{
-															types.StringElement{Content: "ordered 1.1"},
-														},
+														types.StringElement{Content: "ordered 1.1"},
 													},
 												},
 											},
@@ -1077,13 +991,11 @@ b. item 2.a`
 														Position:       1,
 														NumberingStyle: types.LowerAlpha,
 														Attributes:     map[string]interface{}{},
-														Elements: []types.DocElement{
+														Elements: []interface{}{
 															types.ListParagraph{
-																Lines: []types.InlineContent{
+																Lines: []types.InlineElements{
 																	{
-																		Elements: []types.InlineElement{
-																			types.StringElement{Content: "ordered 1.1.a"},
-																		},
+																		types.StringElement{Content: "ordered 1.1.a"},
 																	},
 																},
 															},
@@ -1094,13 +1006,11 @@ b. item 2.a`
 														Position:       2,
 														NumberingStyle: types.LowerAlpha,
 														Attributes:     map[string]interface{}{},
-														Elements: []types.DocElement{
+														Elements: []interface{}{
 															types.ListParagraph{
-																Lines: []types.InlineContent{
+																Lines: []types.InlineElements{
 																	{
-																		Elements: []types.InlineElement{
-																			types.StringElement{Content: "ordered 1.1.b"},
-																		},
+																		types.StringElement{Content: "ordered 1.1.b"},
 																	},
 																},
 															},
@@ -1111,13 +1021,11 @@ b. item 2.a`
 														Position:       3,
 														NumberingStyle: types.LowerAlpha,
 														Attributes:     map[string]interface{}{},
-														Elements: []types.DocElement{
+														Elements: []interface{}{
 															types.ListParagraph{
-																Lines: []types.InlineContent{
+																Lines: []types.InlineElements{
 																	{
-																		Elements: []types.InlineElement{
-																			types.StringElement{Content: "ordered 1.1.c"},
-																		},
+																		types.StringElement{Content: "ordered 1.1.c"},
 																	},
 																},
 															},
@@ -1132,13 +1040,11 @@ b. item 2.a`
 										Position:       2,
 										NumberingStyle: types.Arabic,
 										Attributes:     map[string]interface{}{},
-										Elements: []types.DocElement{
+										Elements: []interface{}{
 											types.ListParagraph{
-												Lines: []types.InlineContent{
+												Lines: []types.InlineElements{
 													{
-														Elements: []types.InlineElement{
-															types.StringElement{Content: "ordered 1.2"},
-														},
+														types.StringElement{Content: "ordered 1.2"},
 													},
 												},
 											},
@@ -1150,13 +1056,11 @@ b. item 2.a`
 														Position:       1,
 														NumberingStyle: types.LowerRoman,
 														Attributes:     map[string]interface{}{},
-														Elements: []types.DocElement{
+														Elements: []interface{}{
 															types.ListParagraph{
-																Lines: []types.InlineContent{
+																Lines: []types.InlineElements{
 																	{
-																		Elements: []types.InlineElement{
-																			types.StringElement{Content: "ordered 1.2.i"},
-																		},
+																		types.StringElement{Content: "ordered 1.2.i"},
 																	},
 																},
 															},
@@ -1167,13 +1071,11 @@ b. item 2.a`
 														Position:       2,
 														NumberingStyle: types.LowerRoman,
 														Attributes:     map[string]interface{}{},
-														Elements: []types.DocElement{
+														Elements: []interface{}{
 															types.ListParagraph{
-																Lines: []types.InlineContent{
+																Lines: []types.InlineElements{
 																	{
-																		Elements: []types.InlineElement{
-																			types.StringElement{Content: "ordered 1.2.ii"},
-																		},
+																		types.StringElement{Content: "ordered 1.2.ii"},
 																	},
 																},
 															},
@@ -1188,13 +1090,11 @@ b. item 2.a`
 										Position:       3,
 										NumberingStyle: types.Arabic,
 										Attributes:     map[string]interface{}{},
-										Elements: []types.DocElement{
+										Elements: []interface{}{
 											types.ListParagraph{
-												Lines: []types.InlineContent{
+												Lines: []types.InlineElements{
 													{
-														Elements: []types.InlineElement{
-															types.StringElement{Content: "ordered 1.3"},
-														},
+														types.StringElement{Content: "ordered 1.3"},
 													},
 												},
 											},
@@ -1205,13 +1105,11 @@ b. item 2.a`
 										Position:       4,
 										NumberingStyle: types.Arabic,
 										Attributes:     map[string]interface{}{},
-										Elements: []types.DocElement{
+										Elements: []interface{}{
 											types.ListParagraph{
-												Lines: []types.InlineContent{
+												Lines: []types.InlineElements{
 													{
-														Elements: []types.InlineElement{
-															types.StringElement{Content: "ordered 1.4"},
-														},
+														types.StringElement{Content: "ordered 1.4"},
 													},
 												},
 											},
@@ -1224,13 +1122,11 @@ b. item 2.a`
 					{
 						Level:       1,
 						BulletStyle: types.Dash,
-						Elements: []types.DocElement{
+						Elements: []interface{}{
 							types.ListParagraph{
-								Lines: []types.InlineContent{
+								Lines: []types.InlineElements{
 									{
-										Elements: []types.InlineElement{
-											types.StringElement{Content: "unordered 2"},
-										},
+										types.StringElement{Content: "unordered 2"},
 									},
 								},
 							},
@@ -1240,13 +1136,11 @@ b. item 2.a`
 									{
 										Level:       2,
 										BulletStyle: types.OneAsterisk,
-										Elements: []types.DocElement{
+										Elements: []interface{}{
 											types.ListParagraph{
-												Lines: []types.InlineContent{
+												Lines: []types.InlineElements{
 													{
-														Elements: []types.InlineElement{
-															types.StringElement{Content: "unordered 2.1"},
-														},
+														types.StringElement{Content: "unordered 2.1"},
 													},
 												},
 											},
@@ -1256,23 +1150,17 @@ b. item 2.a`
 													{
 														Level:       3,
 														BulletStyle: types.TwoAsterisks,
-														Elements: []types.DocElement{
+														Elements: []interface{}{
 															types.ListParagraph{
-																Lines: []types.InlineContent{
+																Lines: []types.InlineElements{
 																	{
-																		Elements: []types.InlineElement{
-																			types.StringElement{Content: "unordered 2.1.1"},
-																		},
+																		types.StringElement{Content: "unordered 2.1.1"},
 																	},
 																	{
-																		Elements: []types.InlineElement{
-																			types.StringElement{Content: "\twith some"},
-																		},
+																		types.StringElement{Content: "\twith some"},
 																	},
 																	{
-																		Elements: []types.InlineElement{
-																			types.StringElement{Content: "\textra lines."},
-																		},
+																		types.StringElement{Content: "\textra lines."},
 																	},
 																},
 															},
@@ -1281,13 +1169,11 @@ b. item 2.a`
 													{
 														Level:       3,
 														BulletStyle: types.TwoAsterisks,
-														Elements: []types.DocElement{
+														Elements: []interface{}{
 															types.ListParagraph{
-																Lines: []types.InlineContent{
+																Lines: []types.InlineElements{
 																	{
-																		Elements: []types.InlineElement{
-																			types.StringElement{Content: "unordered 2.1.2"},
-																		},
+																		types.StringElement{Content: "unordered 2.1.2"},
 																	},
 																},
 															},
@@ -1300,13 +1186,11 @@ b. item 2.a`
 									{
 										Level:       2,
 										BulletStyle: types.OneAsterisk,
-										Elements: []types.DocElement{
+										Elements: []interface{}{
 											types.ListParagraph{
-												Lines: []types.InlineContent{
+												Lines: []types.InlineElements{
 													{
-														Elements: []types.InlineElement{
-															types.StringElement{Content: "unordered 2.2"},
-														},
+														types.StringElement{Content: "unordered 2.2"},
 													},
 												},
 											},
@@ -1319,13 +1203,11 @@ b. item 2.a`
 					{
 						Level:       1,
 						BulletStyle: types.Dash,
-						Elements: []types.DocElement{
+						Elements: []interface{}{
 							types.ListParagraph{
-								Lines: []types.InlineContent{
+								Lines: []types.InlineElements{
 									{
-										Elements: []types.InlineElement{
-											types.StringElement{Content: "unordered 3"},
-										},
+										types.StringElement{Content: "unordered 3"},
 									},
 								},
 							},
@@ -1337,13 +1219,11 @@ b. item 2.a`
 										Position:       1,
 										NumberingStyle: types.Arabic,
 										Attributes:     map[string]interface{}{},
-										Elements: []types.DocElement{
+										Elements: []interface{}{
 											types.ListParagraph{
-												Lines: []types.InlineContent{
+												Lines: []types.InlineElements{
 													{
-														Elements: []types.InlineElement{
-															types.StringElement{Content: "ordered 3.1"},
-														},
+														types.StringElement{Content: "ordered 3.1"},
 													},
 												},
 											},
@@ -1354,13 +1234,11 @@ b. item 2.a`
 										Position:       2,
 										NumberingStyle: types.Arabic,
 										Attributes:     map[string]interface{}{},
-										Elements: []types.DocElement{
+										Elements: []interface{}{
 											types.ListParagraph{
-												Lines: []types.InlineContent{
+												Lines: []types.InlineElements{
 													{
-														Elements: []types.InlineElement{
-															types.StringElement{Content: "ordered 3.2"},
-														},
+														types.StringElement{Content: "ordered 3.2"},
 													},
 												},
 											},
@@ -1374,13 +1252,11 @@ b. item 2.a`
 														Attributes: map[string]interface{}{
 															"upperroman": nil,
 														},
-														Elements: []types.DocElement{
+														Elements: []interface{}{
 															types.ListParagraph{
-																Lines: []types.InlineContent{
+																Lines: []types.InlineElements{
 																	{
-																		Elements: []types.InlineElement{
-																			types.StringElement{Content: "ordered 3.2.I"},
-																		},
+																		types.StringElement{Content: "ordered 3.2.I"},
 																	},
 																},
 															},
@@ -1391,13 +1267,11 @@ b. item 2.a`
 														Position:       2,
 														NumberingStyle: types.UpperRoman,
 														Attributes:     map[string]interface{}{},
-														Elements: []types.DocElement{
+														Elements: []interface{}{
 															types.ListParagraph{
-																Lines: []types.InlineContent{
+																Lines: []types.InlineElements{
 																	{
-																		Elements: []types.InlineElement{
-																			types.StringElement{Content: "ordered 3.2.II"},
-																		},
+																		types.StringElement{Content: "ordered 3.2.II"},
 																	},
 																},
 															},
@@ -1412,13 +1286,11 @@ b. item 2.a`
 										Position:       3,
 										NumberingStyle: types.Arabic,
 										Attributes:     map[string]interface{}{},
-										Elements: []types.DocElement{
+										Elements: []interface{}{
 											types.ListParagraph{
-												Lines: []types.InlineContent{
+												Lines: []types.InlineElements{
 													{
-														Elements: []types.InlineElement{
-															types.StringElement{Content: "ordered 3.3"},
-														},
+														types.StringElement{Content: "ordered 3.3"},
 													},
 												},
 											},

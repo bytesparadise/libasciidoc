@@ -15,13 +15,12 @@ var _ = Describe("convert to inline elements", func() {
 			StringElement{Content: "hello"},
 			StringElement{Content: "world"},
 		}
-		expected := []InlineElement{
+		expected := InlineElements{
 			StringElement{Content: "helloworld"},
 		}
 		// when
-		result, err := toInlineElements(source)
+		result := mergeElements(source)
 		// then
-		require.NoError(GinkgoT(), err)
 		assert.Equal(GinkgoT(), expected, result)
 	})
 	It("inline content with trailing spaces", func() {
@@ -29,13 +28,12 @@ var _ = Describe("convert to inline elements", func() {
 			StringElement{Content: "hello, "},
 			StringElement{Content: "world   "},
 		}
-		expected := []InlineElement{
+		expected := InlineElements{
 			StringElement{Content: "hello, world   "},
 		}
 		// when
-		result, err := toInlineElements(source)
+		result := mergeElements(source)
 		// then
-		require.NoError(GinkgoT(), err)
 		assert.Equal(GinkgoT(), expected, result)
 	})
 })
@@ -43,60 +41,48 @@ var _ = Describe("convert to inline elements", func() {
 var _ = Describe("normalizing string", func() {
 
 	It("hello", func() {
-		source := InlineContent{
-			Elements: []InlineElement{
-				StringElement{Content: "hello"},
-			},
+		source := InlineElements{
+			StringElement{Content: "hello"},
 		}
 		verify(GinkgoT(), "_hello", source)
 	})
 
 	It("héllo with an accent", func() {
-		source := InlineContent{
-			Elements: []InlineElement{
-				StringElement{Content: "  héllo 1.2   and 3 Spaces"},
-			},
+		source := InlineElements{
+			StringElement{Content: "  héllo 1.2   and 3 Spaces"},
 		}
 		verify(GinkgoT(), "_héllo_1_2_and_3_spaces", source)
 	})
 
 	It("a an accent and a swedish character", func() {
-		source := InlineContent{
-			Elements: []InlineElement{
-				StringElement{Content: `A à ⌘`},
-			},
+		source := InlineElements{
+			StringElement{Content: `A à ⌘`},
 		}
 		verify(GinkgoT(), `_a_à`, source)
 	})
 
 	It("AŁA", func() {
-		source := InlineContent{
-			Elements: []InlineElement{
-				StringElement{Content: `AŁA 0.1 ?`},
-			},
+		source := InlineElements{
+			StringElement{Content: `AŁA 0.1 ?`},
 		}
 		verify(GinkgoT(), `_ała_0_1`, source)
 	})
 
 	It("it's  2 spaces, here !", func() {
-		source := InlineContent{
-			Elements: []InlineElement{
-				StringElement{Content: `it's  2 spaces, here !`},
-			},
+		source := InlineElements{
+			StringElement{Content: `it's  2 spaces, here !`},
 		}
 		verify(GinkgoT(), `_it_s_2_spaces_here`, source)
 	})
 
 	It("content with <strong> markup", func() {
 		// == a section title, with *bold content*
-		source := InlineContent{
-			Elements: []InlineElement{
-				StringElement{Content: "a section title, with"},
-				QuotedText{
-					Kind: Bold,
-					Elements: []InlineElement{
-						StringElement{Content: "bold content"},
-					},
+		source := InlineElements{
+			StringElement{Content: "a section title, with"},
+			QuotedText{
+				Kind: Bold,
+				Elements: []interface{}{
+					StringElement{Content: "bold content"},
 				},
 			},
 		}
@@ -104,7 +90,7 @@ var _ = Describe("normalizing string", func() {
 	})
 })
 
-func verify(t GinkgoTInterface, expected string, inlineContent InlineContent) {
+func verify(t GinkgoTInterface, expected string, inlineContent InlineElements) {
 	t.Logf("Processing '%s'", spew.Sprint(inlineContent))
 	result, err := ReplaceNonAlphanumerics(inlineContent, "_")
 	require.Nil(t, err)
@@ -124,7 +110,7 @@ var _ = Describe("filter elements", func() {
 				Content: "foo",
 			},
 			Preamble{
-				Elements: []DocElement{
+				Elements: []interface{}{
 					StringElement{
 						Content: "bar",
 					},
@@ -138,14 +124,14 @@ var _ = Describe("filter elements", func() {
 			},
 		}
 		// when
-		result := filterEmptyElements(actualContent, filterBlankLine(), filterEmptyPremable())
+		result := filterEmptyElements(actualContent, filterBlankLine(), filterEmptyPreamble())
 		// then
-		expectedResult := []DocElement{
+		expectedResult := []interface{}{
 			StringElement{
 				Content: "foo",
 			},
 			Preamble{
-				Elements: []DocElement{
+				Elements: []interface{}{
 					StringElement{
 						Content: "bar",
 					},

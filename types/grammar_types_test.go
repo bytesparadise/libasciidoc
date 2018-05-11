@@ -18,7 +18,7 @@ var _ = Describe("lists", func() {
 				types.UnorderedListItem{
 					Level:       1,
 					BulletStyle: types.Dash,
-					Elements: []types.DocElement{
+					Elements: []interface{}{
 						types.StringElement{
 							Content: "item 1",
 						},
@@ -27,7 +27,7 @@ var _ = Describe("lists", func() {
 				types.UnorderedListItem{
 					Level:       2,
 					BulletStyle: types.OneAsterisk,
-					Elements: []types.DocElement{
+					Elements: []interface{}{
 						types.StringElement{
 							Content: "item 1.1",
 						},
@@ -36,7 +36,7 @@ var _ = Describe("lists", func() {
 				types.UnorderedListItem{
 					Level:       1,
 					BulletStyle: types.Dash,
-					Elements: []types.DocElement{
+					Elements: []interface{}{
 						types.StringElement{
 							Content: "item 2",
 						},
@@ -53,7 +53,7 @@ var _ = Describe("lists", func() {
 					{
 						Level:       1,
 						BulletStyle: types.Dash,
-						Elements: []types.DocElement{
+						Elements: []interface{}{
 							types.StringElement{
 								Content: "item 1",
 							},
@@ -63,7 +63,7 @@ var _ = Describe("lists", func() {
 									{
 										Level:       2,
 										BulletStyle: types.OneAsterisk,
-										Elements: []types.DocElement{
+										Elements: []interface{}{
 											types.StringElement{
 												Content: "item 1.1",
 											},
@@ -76,7 +76,7 @@ var _ = Describe("lists", func() {
 					{
 						Level:       1,
 						BulletStyle: types.Dash,
-						Elements: []types.DocElement{
+						Elements: []interface{}{
 							types.StringElement{
 								Content: "item 2",
 							},
@@ -95,7 +95,7 @@ var _ = Describe("lists", func() {
 			elements := []interface{}{
 				types.LabeledListItem{
 					Term: "item 1",
-					Elements: []types.DocElement{
+					Elements: []interface{}{
 						types.StringElement{
 							Content: "item 1",
 						},
@@ -103,7 +103,7 @@ var _ = Describe("lists", func() {
 				},
 				types.LabeledListItem{
 					Term: "item 2",
-					Elements: []types.DocElement{
+					Elements: []interface{}{
 						types.StringElement{
 							Content: "item 2",
 						},
@@ -111,7 +111,7 @@ var _ = Describe("lists", func() {
 				},
 				types.LabeledListItem{
 					Term: "item 3",
-					Elements: []types.DocElement{
+					Elements: []interface{}{
 						types.StringElement{
 							Content: "item 3",
 						},
@@ -127,7 +127,7 @@ var _ = Describe("lists", func() {
 				Items: []types.LabeledListItem{
 					{
 						Term: "item 1",
-						Elements: []types.DocElement{
+						Elements: []interface{}{
 							types.StringElement{
 								Content: "item 1",
 							},
@@ -135,7 +135,7 @@ var _ = Describe("lists", func() {
 					},
 					{
 						Term: "item 2",
-						Elements: []types.DocElement{
+						Elements: []interface{}{
 							types.StringElement{
 								Content: "item 2",
 							},
@@ -143,7 +143,7 @@ var _ = Describe("lists", func() {
 					},
 					{
 						Term: "item 3",
-						Elements: []types.DocElement{
+						Elements: []interface{}{
 							types.StringElement{
 								Content: "item 3",
 							},
@@ -161,7 +161,7 @@ var _ = Describe("lists", func() {
 			elements := []interface{}{
 				types.LabeledListItem{
 					Term: "item A",
-					Elements: []types.DocElement{
+					Elements: []interface{}{
 						types.StringElement{
 							Content: "item A",
 						},
@@ -170,7 +170,7 @@ var _ = Describe("lists", func() {
 				types.UnorderedListItem{
 					Level:       1,
 					BulletStyle: types.Dash,
-					Elements: []types.DocElement{
+					Elements: []interface{}{
 						types.StringElement{
 							Content: "item A.1",
 						},
@@ -179,7 +179,7 @@ var _ = Describe("lists", func() {
 				types.UnorderedListItem{
 					Level:       2,
 					BulletStyle: types.OneAsterisk,
-					Elements: []types.DocElement{
+					Elements: []interface{}{
 						types.StringElement{
 							Content: "item A.1.1",
 						},
@@ -188,7 +188,7 @@ var _ = Describe("lists", func() {
 				types.UnorderedListItem{
 					Level:       1,
 					BulletStyle: types.Dash,
-					Elements: []types.DocElement{
+					Elements: []interface{}{
 						types.StringElement{
 							Content: "item A.2",
 						},
@@ -196,7 +196,7 @@ var _ = Describe("lists", func() {
 				},
 				types.LabeledListItem{
 					Term: "item B",
-					Elements: []types.DocElement{
+					Elements: []interface{}{
 						types.StringElement{
 							Content: "item B",
 						},
@@ -204,7 +204,7 @@ var _ = Describe("lists", func() {
 				},
 				types.LabeledListItem{
 					Term: "item C",
-					Elements: []types.DocElement{
+					Elements: []interface{}{
 						types.StringElement{
 							Content: "item C",
 						},
@@ -220,7 +220,7 @@ var _ = Describe("lists", func() {
 				Items: []types.LabeledListItem{
 					{
 						Term: "item A",
-						Elements: []types.DocElement{
+						Elements: []interface{}{
 							types.StringElement{
 								Content: "item A",
 							},
@@ -230,7 +230,7 @@ var _ = Describe("lists", func() {
 									{
 										Level:       1,
 										BulletStyle: types.Dash,
-										Elements: []types.DocElement{
+										Elements: []interface{}{
 											types.StringElement{
 												Content: "item A.1",
 											},
@@ -240,7 +240,7 @@ var _ = Describe("lists", func() {
 													{
 														Level:       2,
 														BulletStyle: types.OneAsterisk,
-														Elements: []types.DocElement{
+														Elements: []interface{}{
 															types.StringElement{
 																Content: "item A.1.1",
 															},
@@ -253,7 +253,7 @@ var _ = Describe("lists", func() {
 									{
 										Level:       1,
 										BulletStyle: types.Dash,
-										Elements: []types.DocElement{
+										Elements: []interface{}{
 											types.StringElement{
 												Content: "item A.2",
 											},
@@ -265,7 +265,7 @@ var _ = Describe("lists", func() {
 					},
 					{
 						Term: "item B",
-						Elements: []types.DocElement{
+						Elements: []interface{}{
 							types.StringElement{
 								Content: "item B",
 							},
@@ -273,7 +273,7 @@ var _ = Describe("lists", func() {
 					},
 					{
 						Term: "item C",
-						Elements: []types.DocElement{
+						Elements: []interface{}{
 							types.StringElement{
 								Content: "item C",
 							},

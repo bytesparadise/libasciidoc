@@ -43,7 +43,7 @@ func NewReplaceNonAlphanumericsFunc(replacement string) NormalizationFunc {
 }
 
 // ReplaceNonAlphanumerics replace all non alpha numeric characters with the given `replacement`
-func ReplaceNonAlphanumerics(source InlineContent, replacement string) (string, error) {
+func ReplaceNonAlphanumerics(source InlineElements, replacement string) (string, error) {
 	v := NewReplaceNonAlphanumericsVisitor()
 	err := source.Accept(&v)
 	if err != nil {
@@ -72,7 +72,7 @@ func NewReplaceNonAlphanumericsVisitor() ReplaceNonAlphanumericsVisitor {
 func (v *ReplaceNonAlphanumericsVisitor) Visit(element Visitable) error {
 	log.Debugf("visiting element of type '%T'", element)
 	switch element := element.(type) {
-	case InlineContent:
+	case InlineElements:
 		// log.Debugf("Prefixing with '_' while processing '%T'", element)
 		v.buf.WriteString("_")
 	case StringElement:

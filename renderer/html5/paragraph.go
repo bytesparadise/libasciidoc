@@ -22,7 +22,7 @@ func init() {
 <p>{{ $renderedElements }}</p>
 </div>{{ end }}{{ end }}`,
 		texttemplate.FuncMap{
-			"renderElements": renderInlineContents,
+			"renderElements": renderInlineElementss,
 			"includeNewline": includeNewline,
 		})
 
@@ -41,7 +41,7 @@ func init() {
 </table>
 </div>{{ end }}{{ end }}`,
 		texttemplate.FuncMap{
-			"renderElements": renderInlineContents,
+			"renderElements": renderInlineElementss,
 			"includeNewline": includeNewline,
 		})
 
@@ -78,7 +78,7 @@ func renderParagraph(ctx *renderer.Context, p types.Paragraph) ([]byte, error) {
 				Class string
 				Icon  string
 				Title string
-				Lines []types.InlineContent
+				Lines []types.InlineElements
 			}{
 				ID:    id,
 				Class: getClass(k),
@@ -93,7 +93,7 @@ func renderParagraph(ctx *renderer.Context, p types.Paragraph) ([]byte, error) {
 			Data: struct {
 				ID    string
 				Title string
-				Lines []types.InlineContent
+				Lines []types.InlineElements
 			}{
 				ID:    id,
 				Title: title,

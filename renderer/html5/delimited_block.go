@@ -89,7 +89,7 @@ func renderDelimitedBlock(ctx *renderer.Context, b types.DelimitedBlock) ([]byte
 					Class    string
 					Icon     string
 					Title    string
-					Elements []types.DocElement
+					Elements []interface{}
 				}{
 					Class:    getClass(k),
 					Icon:     getIcon(k),
@@ -101,7 +101,7 @@ func renderDelimitedBlock(ctx *renderer.Context, b types.DelimitedBlock) ([]byte
 			err = exampleBlockTmpl.Execute(result, ContextualPipeline{
 				Context: ctx,
 				Data: struct {
-					Elements []types.DocElement
+					Elements []interface{}
 				}{
 					Elements: elements,
 				},

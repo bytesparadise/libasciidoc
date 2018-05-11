@@ -16,15 +16,13 @@ var _ = Describe("delimited blocks", func() {
 			expectedResult := types.DelimitedBlock{
 				Kind:       types.FencedBlock,
 				Attributes: map[string]interface{}{},
-				Elements: []types.DocElement{
+				Elements: []interface{}{
 					types.Paragraph{
 						Attributes: map[string]interface{}{},
-						Lines: []types.InlineContent{
+						Lines: []types.InlineElements{
 							{
-								Elements: []types.InlineElement{
-									types.StringElement{
-										Content: content,
-									},
+								types.StringElement{
+									Content: content,
 								},
 							},
 						},
@@ -39,7 +37,7 @@ var _ = Describe("delimited blocks", func() {
 			expectedResult := types.DelimitedBlock{
 				Kind:       types.FencedBlock,
 				Attributes: map[string]interface{}{},
-				Elements:   []types.DocElement{},
+				Elements:   []interface{}{},
 			}
 			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("BlockElement"))
 		})
@@ -49,22 +47,18 @@ var _ = Describe("delimited blocks", func() {
 			expectedResult := types.DelimitedBlock{
 				Kind:       types.FencedBlock,
 				Attributes: map[string]interface{}{},
-				Elements: []types.DocElement{
+				Elements: []interface{}{
 					types.Paragraph{
 						Attributes: map[string]interface{}{},
-						Lines: []types.InlineContent{
+						Lines: []types.InlineElements{
 							{
-								Elements: []types.InlineElement{
-									types.StringElement{
-										Content: "some fenced code",
-									},
+								types.StringElement{
+									Content: "some fenced code",
 								},
 							},
 							{
-								Elements: []types.InlineElement{
-									types.StringElement{
-										Content: "with an empty line",
-									},
+								types.StringElement{
+									Content: "with an empty line",
 								},
 							},
 						},
@@ -72,12 +66,10 @@ var _ = Describe("delimited blocks", func() {
 					types.BlankLine{},
 					types.Paragraph{
 						Attributes: map[string]interface{}{},
-						Lines: []types.InlineContent{
+						Lines: []types.InlineElements{
 							{
-								Elements: []types.InlineElement{
-									types.StringElement{
-										Content: "in the middle",
-									},
+								types.StringElement{
+									Content: "in the middle",
 								},
 							},
 						},
@@ -92,26 +84,22 @@ var _ = Describe("delimited blocks", func() {
 			expectedResult := types.Document{
 				Attributes:        map[string]interface{}{},
 				ElementReferences: map[string]interface{}{},
-				Elements: []types.DocElement{
+				Elements: []interface{}{
 					types.DelimitedBlock{
 						Kind:       types.FencedBlock,
 						Attributes: map[string]interface{}{},
-						Elements: []types.DocElement{
+						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: map[string]interface{}{},
-								Lines: []types.InlineContent{
+								Lines: []types.InlineElements{
 									{
-										Elements: []types.InlineElement{
-											types.StringElement{
-												Content: "some fenced code",
-											},
+										types.StringElement{
+											Content: "some fenced code",
 										},
 									},
 									{
-										Elements: []types.InlineElement{
-											types.StringElement{
-												Content: "with an empty line",
-											},
+										types.StringElement{
+											Content: "with an empty line",
 										},
 									},
 								},
@@ -119,12 +107,10 @@ var _ = Describe("delimited blocks", func() {
 							types.BlankLine{},
 							types.Paragraph{
 								Attributes: map[string]interface{}{},
-								Lines: []types.InlineContent{
+								Lines: []types.InlineElements{
 									{
-										Elements: []types.InlineElement{
-											types.StringElement{
-												Content: "in the middle",
-											},
+										types.StringElement{
+											Content: "in the middle",
 										},
 									},
 								},
@@ -133,11 +119,9 @@ var _ = Describe("delimited blocks", func() {
 					},
 					types.Paragraph{
 						Attributes: map[string]interface{}{},
-						Lines: []types.InlineContent{
+						Lines: []types.InlineElements{
 							{
-								Elements: []types.InlineElement{
-									types.StringElement{Content: "then a normal paragraph."},
-								},
+								types.StringElement{Content: "then a normal paragraph."},
 							},
 						},
 					},
@@ -152,29 +136,25 @@ var _ = Describe("delimited blocks", func() {
 			expectedResult := types.Document{
 				Attributes:        map[string]interface{}{},
 				ElementReferences: map[string]interface{}{},
-				Elements: []types.DocElement{
+				Elements: []interface{}{
 					types.Paragraph{
 						Attributes: map[string]interface{}{},
-						Lines: []types.InlineContent{
+						Lines: []types.InlineElements{
 							{
-								Elements: []types.InlineElement{
-									types.StringElement{Content: "a paragraph."},
-								},
+								types.StringElement{Content: "a paragraph."},
 							},
 						},
 					},
 					types.DelimitedBlock{
 						Kind:       types.FencedBlock,
 						Attributes: map[string]interface{}{},
-						Elements: []types.DocElement{
+						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: map[string]interface{}{},
-								Lines: []types.InlineContent{
+								Lines: []types.InlineElements{
 									{
-										Elements: []types.InlineElement{
-											types.StringElement{
-												Content: content,
-											},
+										types.StringElement{
+											Content: content,
 										},
 									},
 								},
@@ -196,15 +176,13 @@ some listing code
 			expectedResult := types.DelimitedBlock{
 				Kind:       types.ListingBlock,
 				Attributes: map[string]interface{}{},
-				Elements: []types.DocElement{
+				Elements: []interface{}{
 					types.Paragraph{
 						Attributes: map[string]interface{}{},
-						Lines: []types.InlineContent{
+						Lines: []types.InlineElements{
 							{
-								Elements: []types.InlineElement{
-									types.StringElement{
-										Content: "some listing code",
-									},
+								types.StringElement{
+									Content: "some listing code",
 								},
 							},
 						},
@@ -220,7 +198,7 @@ some listing code
 			expectedResult := types.DelimitedBlock{
 				Kind:       types.ListingBlock,
 				Attributes: map[string]interface{}{},
-				Elements:   []types.DocElement{},
+				Elements:   []interface{}{},
 			}
 			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("BlockElement"))
 		})
@@ -235,22 +213,18 @@ in the middle
 			expectedResult := types.DelimitedBlock{
 				Kind:       types.ListingBlock,
 				Attributes: map[string]interface{}{},
-				Elements: []types.DocElement{
+				Elements: []interface{}{
 					types.Paragraph{
 						Attributes: map[string]interface{}{},
-						Lines: []types.InlineContent{
+						Lines: []types.InlineElements{
 							{
-								Elements: []types.InlineElement{
-									types.StringElement{
-										Content: "some listing code",
-									},
+								types.StringElement{
+									Content: "some listing code",
 								},
 							},
 							{
-								Elements: []types.InlineElement{
-									types.StringElement{
-										Content: "with an empty line",
-									},
+								types.StringElement{
+									Content: "with an empty line",
 								},
 							},
 						},
@@ -258,12 +232,10 @@ in the middle
 					types.BlankLine{},
 					types.Paragraph{
 						Attributes: map[string]interface{}{},
-						Lines: []types.InlineContent{
+						Lines: []types.InlineElements{
 							{
-								Elements: []types.InlineElement{
-									types.StringElement{
-										Content: "in the middle",
-									},
+								types.StringElement{
+									Content: "in the middle",
 								},
 							},
 						},
@@ -284,26 +256,22 @@ then a normal paragraph.`
 			expectedResult := types.Document{
 				Attributes:        map[string]interface{}{},
 				ElementReferences: map[string]interface{}{},
-				Elements: []types.DocElement{
+				Elements: []interface{}{
 					types.DelimitedBlock{
 						Kind:       types.ListingBlock,
 						Attributes: map[string]interface{}{},
-						Elements: []types.DocElement{
+						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: map[string]interface{}{},
-								Lines: []types.InlineContent{
+								Lines: []types.InlineElements{
 									{
-										Elements: []types.InlineElement{
-											types.StringElement{
-												Content: "some listing code",
-											},
+										types.StringElement{
+											Content: "some listing code",
 										},
 									},
 									{
-										Elements: []types.InlineElement{
-											types.StringElement{
-												Content: "with an empty line",
-											},
+										types.StringElement{
+											Content: "with an empty line",
 										},
 									},
 								},
@@ -311,12 +279,10 @@ then a normal paragraph.`
 							types.BlankLine{},
 							types.Paragraph{
 								Attributes: map[string]interface{}{},
-								Lines: []types.InlineContent{
+								Lines: []types.InlineElements{
 									{
-										Elements: []types.InlineElement{
-											types.StringElement{
-												Content: "in the middle",
-											},
+										types.StringElement{
+											Content: "in the middle",
 										},
 									},
 								},
@@ -325,11 +291,9 @@ then a normal paragraph.`
 					},
 					types.Paragraph{
 						Attributes: map[string]interface{}{},
-						Lines: []types.InlineContent{
+						Lines: []types.InlineElements{
 							{
-								Elements: []types.InlineElement{
-									types.StringElement{Content: "then a normal paragraph."},
-								},
+								types.StringElement{Content: "then a normal paragraph."},
 							},
 						},
 					},
@@ -347,29 +311,25 @@ some listing code
 			expectedResult := types.Document{
 				Attributes:        map[string]interface{}{},
 				ElementReferences: map[string]interface{}{},
-				Elements: []types.DocElement{
+				Elements: []interface{}{
 					types.Paragraph{
 						Attributes: map[string]interface{}{},
-						Lines: []types.InlineContent{
+						Lines: []types.InlineElements{
 							{
-								Elements: []types.InlineElement{
-									types.StringElement{Content: "a paragraph."},
-								},
+								types.StringElement{Content: "a paragraph."},
 							},
 						},
 					},
 					types.DelimitedBlock{
 						Kind:       types.ListingBlock,
 						Attributes: map[string]interface{}{},
-						Elements: []types.DocElement{
+						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: map[string]interface{}{},
-								Lines: []types.InlineContent{
+								Lines: []types.InlineElements{
 									{
-										Elements: []types.InlineElement{
-											types.StringElement{
-												Content: "some listing code",
-											},
+										types.StringElement{
+											Content: "some listing code",
 										},
 									},
 								},
@@ -408,17 +368,15 @@ a normal paragraph.`
 			expectedResult := types.Document{
 				Attributes:        map[string]interface{}{},
 				ElementReferences: map[string]interface{}{},
-				Elements: []types.DocElement{
+				Elements: []interface{}{
 					types.LiteralBlock{
 						Content: "   some literal content",
 					},
 					types.Paragraph{
 						Attributes: map[string]interface{}{},
-						Lines: []types.InlineContent{
+						Lines: []types.InlineElements{
 							{
-								Elements: []types.InlineElement{
-									types.StringElement{Content: "a normal paragraph."},
-								},
+								types.StringElement{Content: "a normal paragraph."},
 							},
 						},
 					},
@@ -438,17 +396,15 @@ a normal paragraph.`
 			expectedResult := types.Document{
 				Attributes:        map[string]interface{}{},
 				ElementReferences: map[string]interface{}{},
-				Elements: []types.DocElement{
+				Elements: []interface{}{
 					types.LiteralBlock{
 						Content: "some literal content",
 					},
 					types.Paragraph{
 						Attributes: map[string]interface{}{},
-						Lines: []types.InlineContent{
+						Lines: []types.InlineElements{
 							{
-								Elements: []types.InlineElement{
-									types.StringElement{Content: "a normal paragraph."},
-								},
+								types.StringElement{Content: "a normal paragraph."},
 							},
 						},
 					},
@@ -469,17 +425,15 @@ a normal paragraph.`
 			expectedResult := types.Document{
 				Attributes:        map[string]interface{}{},
 				ElementReferences: map[string]interface{}{},
-				Elements: []types.DocElement{
+				Elements: []interface{}{
 					types.LiteralBlock{
 						Content: "some literal content",
 					},
 					types.Paragraph{
 						Attributes: map[string]interface{}{},
-						Lines: []types.InlineContent{
+						Lines: []types.InlineElements{
 							{
-								Elements: []types.InlineElement{
-									types.StringElement{Content: "a normal paragraph."},
-								},
+								types.StringElement{Content: "a normal paragraph."},
 							},
 						},
 					},
@@ -498,15 +452,13 @@ some listing code
 			expectedResult := types.DelimitedBlock{
 				Kind:       types.ExampleBlock,
 				Attributes: map[string]interface{}{},
-				Elements: []types.DocElement{
+				Elements: []interface{}{
 					types.Paragraph{
 						Attributes: map[string]interface{}{},
-						Lines: []types.InlineContent{
+						Lines: []types.InlineElements{
 							{
-								Elements: []types.InlineElement{
-									types.StringElement{
-										Content: "some listing code",
-									},
+								types.StringElement{
+									Content: "some listing code",
 								},
 							},
 						},
@@ -526,28 +478,24 @@ with *bold content*
 			expectedResult := types.DelimitedBlock{
 				Kind:       types.ExampleBlock,
 				Attributes: map[string]interface{}{},
-				Elements: []types.DocElement{
+				Elements: []interface{}{
 					types.Paragraph{
 						Attributes: map[string]interface{}{},
-						Lines: []types.InlineContent{
+						Lines: []types.InlineElements{
 							{
-								Elements: []types.InlineElement{
-									types.StringElement{
-										Content: "some listing code",
-									},
+								types.StringElement{
+									Content: "some listing code",
 								},
 							},
 							{
-								Elements: []types.InlineElement{
-									types.StringElement{
-										Content: "with ",
-									},
-									types.QuotedText{
-										Kind: types.Bold,
-										Elements: []types.InlineElement{
-											types.StringElement{
-												Content: "bold content",
-											},
+								types.StringElement{
+									Content: "with ",
+								},
+								types.QuotedText{
+									Kind: types.Bold,
+									Elements: []interface{}{
+										types.StringElement{
+											Content: "bold content",
 										},
 									},
 								},
@@ -561,14 +509,12 @@ with *bold content*
 							{
 								Level:       1,
 								BulletStyle: types.OneAsterisk,
-								Elements: []types.DocElement{
+								Elements: []interface{}{
 									types.ListParagraph{
-										Lines: []types.InlineContent{
+										Lines: []types.InlineElements{
 											{
-												Elements: []types.InlineElement{
-													types.StringElement{
-														Content: "and a list item",
-													},
+												types.StringElement{
+													Content: "and a list item",
 												},
 											},
 										},
@@ -595,15 +541,13 @@ foo
 				Attributes: map[string]interface{}{
 					types.AttrAdmonitionKind: types.Note,
 				},
-				Elements: []types.DocElement{
+				Elements: []interface{}{
 					types.Paragraph{
 						Attributes: map[string]interface{}{},
-						Lines: []types.InlineContent{
+						Lines: []types.InlineElements{
 							{
-								Elements: []types.InlineElement{
-									types.StringElement{
-										Content: "foo",
-									},
+								types.StringElement{
+									Content: "foo",
 								},
 							},
 						},
@@ -625,21 +569,19 @@ paragraphs
 			expectedResult := types.Document{
 				Attributes:        map[string]interface{}{},
 				ElementReferences: map[string]interface{}{},
-				Elements: []types.DocElement{
+				Elements: []interface{}{
 					types.DelimitedBlock{
 						Kind: types.ListingBlock,
 						Attributes: map[string]interface{}{
 							types.AttrAdmonitionKind: types.Note,
 						},
-						Elements: []types.DocElement{
+						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: map[string]interface{}{},
-								Lines: []types.InlineContent{
+								Lines: []types.InlineElements{
 									{
-										Elements: []types.InlineElement{
-											types.StringElement{
-												Content: "multiple",
-											},
+										types.StringElement{
+											Content: "multiple",
 										},
 									},
 								},
@@ -647,12 +589,10 @@ paragraphs
 							types.BlankLine{},
 							types.Paragraph{
 								Attributes: map[string]interface{}{},
-								Lines: []types.InlineContent{
+								Lines: []types.InlineElements{
 									{
-										Elements: []types.InlineElement{
-											types.StringElement{
-												Content: "paragraphs",
-											},
+										types.StringElement{
+											Content: "paragraphs",
 										},
 									},
 								},

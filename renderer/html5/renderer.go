@@ -16,7 +16,7 @@ func Render(ctx *renderer.Context, output io.Writer) (map[string]interface{}, er
 	return renderDocument(ctx, output)
 }
 
-func renderElement(ctx *renderer.Context, element types.DocElement) ([]byte, error) {
+func renderElement(ctx *renderer.Context, element interface{}) ([]byte, error) {
 	log.Debugf("rendering element of type `%T`", element)
 	switch e := element.(type) {
 	case types.TableOfContentsMacro:
@@ -51,8 +51,8 @@ func renderElement(ctx *renderer.Context, element types.DocElement) ([]byte, err
 		return renderDelimitedBlock(ctx, e)
 	case types.LiteralBlock:
 		return renderLiteralBlock(ctx, e)
-	case types.InlineContent:
-		return renderInlineContent(ctx, e)
+	case types.InlineElements:
+		return renderInlineElements(ctx, e)
 	case types.Link:
 		return renderLink(ctx, e)
 	case types.StringElement:
@@ -71,11 +71,11 @@ func renderElement(ctx *renderer.Context, element types.DocElement) ([]byte, err
 	}
 }
 
-func renderPlainString(ctx *renderer.Context, element types.DocElement) ([]byte, error) {
+func renderPlainString(ctx *renderer.Context, element interface{}) ([]byte, error) {
 	log.Debugf("rendering plain string for element of type %T", element)
 	switch element := element.(type) {
 	case types.SectionTitle:
-		return renderPlainStringForInlineElements(ctx, element.Content.Elements)
+		return renderPlainStringForInlineElements(ctx, element.Content)
 	case types.QuotedText:
 		return renderPlainStringForInlineElements(ctx, element.Elements)
 	case types.InlineImage:
@@ -87,16 +87,46 @@ func renderPlainString(ctx *renderer.Context, element types.DocElement) ([]byte,
 	case types.StringElement:
 		return []byte(element.Content), nil
 	case types.Paragraph:
-		return renderPlainStringForInlineContents(ctx, element.Lines)
+		return renderPlainString(ctx, element.Lines)
+	case types.InlineElements:
+		buff := bytes.NewBuffer(nil)
+		for _, e := range element {
+			plainStringElement, err := renderPlainString(ctx, e)
+			if err != nil {
+				return nil, errors.Wrapf(err, "unable to render plain string for element of type %T", e)
+			}
+			buff.Write(plainStringElement)
+		}
+		return buff.Bytes(), nil
+	case []types.InlineElements:
+		buff := bytes.NewBuffer(nil)
+		for _, e := range element {
+			plainStringElement, err := renderPlainString(ctx, e)
+			if err != nil {
+				return nil, errors.Wrapf(err, "unable to render plain string for element of type %T", e)
+			}
+			buff.Write(plainStringElement)
+		}
+		return buff.Bytes(), nil
+	case []interface{}:
+		buff := bytes.NewBuffer(nil)
+		for _, e := range element {
+			plainStringElement, err := renderPlainString(ctx, e)
+			if err != nil {
+				return nil, errors.Wrapf(err, "unable to render plain string for element of type %T", e)
+			}
+			buff.Write(plainStringElement)
+		}
+		return buff.Bytes(), nil
 	default:
 		return nil, errors.Errorf("unexpectedResult type of element to process: %T", element)
 	}
 }
 
-func renderPlainStringForInlineContents(ctx *renderer.Context, elements []types.InlineContent) ([]byte, error) {
+func renderPlainStringForInlineElementss(ctx *renderer.Context, elements []types.InlineElements) ([]byte, error) {
 	buff := bytes.NewBuffer(nil)
 	for _, e := range elements {
-		plainStringElement, err := renderPlainStringForInlineElements(ctx, e.Elements)
+		plainStringElement, err := renderPlainString(ctx, e)
 		if err != nil {
 			return nil, errors.Wrap(err, "unable to render plain string value")
 		}
@@ -105,7 +135,7 @@ func renderPlainStringForInlineContents(ctx *renderer.Context, elements []types.
 	return buff.Bytes(), nil
 }
 
-func renderPlainStringForInlineElements(ctx *renderer.Context, elements []types.InlineElement) ([]byte, error) {
+func renderPlainStringForInlineElements(ctx *renderer.Context, elements []interface{}) ([]byte, error) {
 	buff := bytes.NewBuffer(nil)
 	// for _, e := range discardTrailingBlankLinesInInlineElements(elements) {
 	for _, e := range elements {
@@ -119,7 +149,7 @@ func renderPlainStringForInlineElements(ctx *renderer.Context, elements []types.
 }
 
 // renderElements renders each element and includes an `\n` character until the last item
-func renderInlineContents(ctx *renderer.Context, elements []types.InlineContent) ([]byte, error) {
+func renderInlineElementss(ctx *renderer.Context, elements []types.InlineElements) ([]byte, error) {
 	buff := bytes.NewBuffer(nil)
 	for i, e := range elements {
 		renderedElement, err := renderElement(ctx, e)
@@ -137,9 +167,9 @@ func renderInlineContents(ctx *renderer.Context, elements []types.InlineContent)
 	return buff.Bytes(), nil
 }
 
-func discardTrailingBlankLines(elements []types.DocElement) []types.DocElement {
+func discardTrailingBlankLines(elements []interface{}) []interface{} {
 	// discard blank lines at the end
-	filteredElements := make([]types.DocElement, len(elements))
+	filteredElements := make([]interface{}, len(elements))
 	copy(filteredElements, elements)
 	for {
 		if len(filteredElements) == 0 {

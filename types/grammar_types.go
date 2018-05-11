@@ -16,25 +16,15 @@ import (
 )
 
 // ------------------------------------------
-// DocElement (and other interfaces)
+// interface{} (and other interfaces)
 // ------------------------------------------
-
-// DocElement the interface for all document elements
-type DocElement interface {
-	// Visitable
-}
-
-// InlineElement the interface for inline elements
-type InlineElement interface {
-	DocElement
-}
 
 // Visitable the interface for visitable elements
 type Visitable interface {
 	Accept(Visitor) error
 }
 
-// Visitor a visitor that can visit/traverse the DocElement and its children (if applicable)
+// Visitor a visitor that can visit/traverse the interface{} and its children (if applicable)
 type Visitor interface {
 	BeforeVisit(Visitable) error
 	Visit(Visitable) error
@@ -48,7 +38,7 @@ type Visitor interface {
 // Document the top-level structure for a document
 type Document struct {
 	Attributes        DocumentAttributes
-	Elements          []DocElement
+	Elements          []interface{}
 	ElementReferences ElementReferences
 }
 
@@ -58,8 +48,8 @@ func NewDocument(frontmatter, header interface{}, blocks []interface{}) (Documen
 	for i, block := range blocks {
 		log.Debugf("Line #%d: %T", i, block)
 	}
-	// elements := convertBlocksToDocElements(blocks)
-	elements := filterEmptyElements(blocks, filterBlankLine(), filterEmptyPremable())
+	// elements := convertBlocksTointerface{}s(blocks)
+	elements := filterEmptyElements(blocks, filterBlankLine(), filterEmptyPreamble())
 	attributes := make(map[string]interface{})
 
 	if frontmatter != nil {
@@ -77,7 +67,7 @@ func NewDocument(frontmatter, header interface{}, blocks []interface{}) (Documen
 				switch attrValue {
 				case "", "auto":
 					// insert TableOfContentsMacro at first position
-					elements = append([]DocElement{TableOfContentsMacro{}}, elements...)
+					elements = append([]interface{}{TableOfContentsMacro{}}, elements...)
 				case "preamble":
 					// lookup preamble in elements (should be first)
 					preambleIndex := 0
@@ -88,7 +78,7 @@ func NewDocument(frontmatter, header interface{}, blocks []interface{}) (Documen
 						}
 					}
 					// insert TableOfContentsMacro just after preamble
-					remainingElements := make([]DocElement, len(elements)-(preambleIndex+1))
+					remainingElements := make([]interface{}, len(elements)-(preambleIndex+1))
 					copy(remainingElements, elements[preambleIndex+1:])
 					elements = append(elements[0:preambleIndex+1], TableOfContentsMacro{})
 					elements = append(elements, remainingElements...)
@@ -454,7 +444,7 @@ type TableOfContentsMacro struct {
 
 // Preamble the structure for document Preamble
 type Preamble struct {
-	Elements []DocElement
+	Elements []interface{}
 }
 
 // NewPreamble initializes a new Preamble from the given elements
@@ -491,7 +481,7 @@ func NewYamlFrontMatter(content string) (FrontMatter, error) {
 type Section struct {
 	Level    int
 	Title    SectionTitle
-	Elements []DocElement
+	Elements []interface{}
 }
 
 // NewSection initializes a new `Section` from the given section title and elements
@@ -539,12 +529,12 @@ func (s Section) Accept(v Visitor) error {
 // SectionTitle the structure for the section titles
 type SectionTitle struct {
 	Attributes map[string]interface{}
-	Content    InlineContent
+	Content    InlineElements
 }
 
 // NewSectionTitle initializes a new `SectionTitle`` from the given level and content, with the optional attributes.
 // In the attributes, only the ElementID is retained
-func NewSectionTitle(inlineContent InlineContent, attributes []interface{}) (SectionTitle, error) {
+func NewSectionTitle(inlineContent InlineElements, attributes []interface{}) (SectionTitle, error) {
 	// counting the lenght of the 'level' value (ie, the number of `=` chars)
 	attrbs := NewElementAttributes(attributes)
 	// make a default id from the sectionTitle's inline content
@@ -681,19 +671,19 @@ func newList(items []ListItem, attributes []interface{}) (List, error) {
 
 // ListParagraph the structure for the list paragraphs
 type ListParagraph struct {
-	Lines []InlineContent
+	Lines []InlineElements
 }
 
 // NewListParagraph initializes a new `ListParagraph`
 func NewListParagraph(lines []interface{}) (ListParagraph, error) {
 	// log.Debugf("Initializing a new ListParagraph with %d line(s): %v", len(lines), lines)
-	elements := make([]InlineContent, 0)
+	elements := make([]InlineElements, 0)
 	for _, line := range lines {
 		if lineElements, ok := line.([]interface{}); ok {
 			for _, lineElement := range lineElements {
-				if e, ok := lineElement.(InlineContent); ok {
+				if e, ok := lineElement.(InlineElements); ok {
 					// log.Debugf(" processing paragraph line of type %T", e)
-					// each `line` element is an array with the actual `InlineContent` + `EOF`
+					// each `line` element is an array with the actual `InlineElements` + `EOF`
 					elements = append(elements, e)
 				}
 			}
@@ -849,7 +839,7 @@ type OrderedListItem struct {
 	Level          int
 	Position       int
 	NumberingStyle NumberingStyle
-	Elements       []DocElement
+	Elements       []interface{}
 	Attributes     map[string]interface{}
 }
 
@@ -857,7 +847,7 @@ type OrderedListItem struct {
 var _ ListItem = &OrderedListItem{}
 
 // NewOrderedListItem initializes a new `orderedListItem` from the given content
-func NewOrderedListItem(prefix OrderedListItemPrefix, elements []DocElement, attributes []interface{}) (OrderedListItem, error) {
+func NewOrderedListItem(prefix OrderedListItemPrefix, elements []interface{}, attributes []interface{}) (OrderedListItem, error) {
 	log.Debugf("Initializing a new OrderedListItem with attributes %v", attributes)
 	p := 1 // default position
 	return OrderedListItem{
@@ -1011,11 +1001,11 @@ func NewUnorderedList(elements []ListItem, attributes []interface{}) (UnorderedL
 type UnorderedListItem struct {
 	Level       int
 	BulletStyle BulletStyle
-	Elements    []DocElement
+	Elements    []interface{}
 }
 
 // NewUnorderedListItem initializes a new `UnorderedListItem` from the given content
-func NewUnorderedListItem(prefix UnorderedListItemPrefix, elements []DocElement) (UnorderedListItem, error) {
+func NewUnorderedListItem(prefix UnorderedListItemPrefix, elements []interface{}) (UnorderedListItem, error) {
 	log.Debugf("Initializing a new UnorderedListItem...")
 	// log.Debugf("Initializing a new UnorderedListItem with '%d' lines (%T) and input level '%d'", len(elements), elements, lvl.Len())
 	return UnorderedListItem{
@@ -1099,20 +1089,19 @@ func NewUnorderedListItemPrefix(s BulletStyle, l int) (UnorderedListItemPrefix, 
 }
 
 // NewListItemContent initializes a new `UnorderedListItemContent`
-func NewListItemContent(content []interface{}) ([]DocElement, error) {
+func NewListItemContent(content []interface{}) ([]interface{}, error) {
 	// log.Debugf("Initializing a new ListItemContent with %d line(s)", len(content))
-	elements := make([]DocElement, 0)
+	elements := make([]interface{}, 0)
 	for _, element := range content {
 		// log.Debugf("Processing line element of type %T", element)
-		// here, `line` is an []interface{} in which we need to locate the relevant `*InlineContent` fragment
 		switch element := element.(type) {
 		case []interface{}:
 			for _, e := range element {
-				if e, ok := e.(DocElement); ok {
-					elements = append(elements, e)
-				}
+				// if e, ok := e.(interface{}); ok {
+				elements = append(elements, e)
+				// }
 			}
-		case DocElement:
+		case interface{}:
 			elements = append(elements, element)
 		}
 	}
@@ -1162,11 +1151,11 @@ func NewLabeledList(elements []ListItem, attributes []interface{}) (LabeledList,
 // LabeledListItem an item in a labeled
 type LabeledListItem struct {
 	Term     string
-	Elements []DocElement
+	Elements []interface{}
 }
 
 // NewLabeledListItem initializes a new LabeledListItem
-func NewLabeledListItem(term []interface{}, elements []DocElement) (LabeledListItem, error) {
+func NewLabeledListItem(term []interface{}, elements []interface{}) (LabeledListItem, error) {
 	log.Debugf("Initializing a new LabeledListItem with %d elements (%T)", len(elements), elements)
 	t, err := stringify(term)
 	if err != nil {
@@ -1194,20 +1183,19 @@ var _ ListItem = &LabeledListItem{}
 // Paragraph the structure for the paragraphs
 type Paragraph struct {
 	Attributes map[string]interface{}
-	Lines      []InlineContent
+	Lines      []InlineElements
 }
 
 // NewParagraph initializes a new `Paragraph`
 func NewParagraph(lines []interface{}, attributes []interface{}) (Paragraph, error) {
 	log.Debugf("Initializing a new Paragraph with %d line(s)", len(lines))
 	attrbs := NewElementAttributes(attributes)
-	elements := make([]InlineContent, 0)
+	elements := make([]InlineElements, 0)
 	for _, line := range lines {
 		if lineElements, ok := line.([]interface{}); ok {
 			for _, lineElement := range lineElements {
-				if lineElement, ok := lineElement.(InlineContent); ok {
+				if lineElement, ok := lineElement.(InlineElements); ok {
 					// log.Debugf(" processing paragraph line of type %T", lineElement)
-					// each `line` element is an array with the actual `InlineContent` + `EOF`
 					elements = append(elements, lineElement)
 				}
 			}
@@ -1242,26 +1230,19 @@ const (
 )
 
 // ------------------------------------------
-// InlineContent
+// InlineElements
 // ------------------------------------------
 
-// InlineContent the structure for the lines in paragraphs
-type InlineContent struct {
-	// Input    []byte
-	Elements []InlineElement
-}
+// InlineElements the structure for the lines in paragraphs
+type InlineElements []interface{}
 
-// NewInlineContent initializes a new `InlineContent` from the given values
-func NewInlineContent(elements []interface{}) (InlineContent, error) {
-	inlineElements, err := toInlineElements(elements)
-	if err != nil {
-		return InlineContent{}, errors.Wrap(err, "unable to initialize a new InlineContent")
-	}
-	return InlineContent{Elements: inlineElements}, nil
+// NewInlineElements initializes a new `InlineElements` from the given values
+func NewInlineElements(elements []interface{}) (InlineElements, error) {
+	return mergeElements(elements), nil
 }
 
 // Accept implements Visitable#Accept(Visitor)
-func (c InlineContent) Accept(v Visitor) error {
+func (c InlineElements) Accept(v Visitor) error {
 	err := v.BeforeVisit(c)
 	if err != nil {
 		return errors.Wrapf(err, "error while pre-visiting inline content")
@@ -1270,7 +1251,7 @@ func (c InlineContent) Accept(v Visitor) error {
 	if err != nil {
 		return errors.Wrapf(err, "error while visiting inline content")
 	}
-	for _, element := range c.Elements {
+	for _, element := range c {
 		if visitable, ok := element.(Visitable); ok {
 			err = visitable.Accept(v)
 			if err != nil {
@@ -1396,7 +1377,7 @@ const (
 type DelimitedBlock struct {
 	Kind       DelimitedBlockKind
 	Attributes map[string]interface{}
-	Elements   []DocElement
+	Elements   []interface{}
 }
 
 // NewDelimitedBlock initializes a new `DelimitedBlock` of the given kind with the given content
@@ -1602,7 +1583,7 @@ func (s StringElement) Accept(v Visitor) error {
 // QuotedText the structure for quoted text
 type QuotedText struct {
 	Kind     QuotedTextKind
-	Elements []InlineElement
+	Elements []interface{}
 }
 
 // QuotedTextKind the type for
@@ -1619,10 +1600,7 @@ const (
 
 // NewQuotedText initializes a new `QuotedText` from the given kind and content
 func NewQuotedText(kind QuotedTextKind, content []interface{}) (QuotedText, error) {
-	elements, err := toInlineElements(content)
-	if err != nil {
-		return QuotedText{}, errors.Wrapf(err, "unable to initialize a new QuotedText")
-	}
+	elements := mergeElements(content)
 	if log.GetLevel() == log.DebugLevel {
 		log.Debugf("Initialized a new QuotedText with %d elements:", len(elements))
 		spew.Dump(elements)
@@ -1659,8 +1637,8 @@ func (t QuotedText) Accept(v Visitor) error {
 // Escaped Quoted Text (i.e., with substitution prevention)
 // ------------------------------------------------------
 
-// NewEscapedQuotedText returns a new InlineContent where the nested elements are preserved (ie, substituted as expected)
-func NewEscapedQuotedText(backslashes []interface{}, punctuation string, content []interface{}) (InlineContent, error) {
+// NewEscapedQuotedText returns a new InlineElements where the nested elements are preserved (ie, substituted as expected)
+func NewEscapedQuotedText(backslashes []interface{}, punctuation string, content []interface{}) ([]interface{}, error) {
 	backslashesStr, err := stringify(backslashes,
 		func(s string) (string, error) {
 			// remove the number of back-slashes that match the length of the punctuation. Eg: `\*` or `\\**`, but keep extra back-slashes
@@ -1670,9 +1648,9 @@ func NewEscapedQuotedText(backslashes []interface{}, punctuation string, content
 			return "", nil
 		})
 	if err != nil {
-		return InlineContent{}, errors.Wrapf(err, "error while initializing quoted text with substitution prevention")
+		return []interface{}{}, errors.Wrapf(err, "error while initializing quoted text with substitution prevention")
 	}
-	return NewInlineContent([]interface{}{backslashesStr, punctuation, content, punctuation})
+	return []interface{}{backslashesStr, punctuation, content, punctuation}, nil
 }
 
 // ------------------------------------------
@@ -1682,7 +1660,7 @@ func NewEscapedQuotedText(backslashes []interface{}, punctuation string, content
 // Passthrough the structure for Passthroughs
 type Passthrough struct {
 	Kind     PassthroughKind
-	Elements []InlineElement
+	Elements []interface{}
 }
 
 // PassthroughKind the kind of passthrough
@@ -1699,14 +1677,9 @@ const (
 
 // NewPassthrough returns a new passthrough
 func NewPassthrough(kind PassthroughKind, elements []interface{}) (Passthrough, error) {
-	passthroughElements, err := toInlineElements(elements)
-	if err != nil {
-		return Passthrough{}, errors.Wrap(err, "unable to initialize a new Passthrough")
-	}
-	log.Debugf("Initialized a new Passthrough with content: '%v'", passthroughElements)
 	return Passthrough{
 		Kind:     kind,
-		Elements: passthroughElements,
+		Elements: mergeElements(elements),
 	}, nil
 
 }

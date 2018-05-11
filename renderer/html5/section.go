@@ -126,7 +126,7 @@ func renderSectionTitle(ctx *renderer.Context, level int, sectionTitle types.Sec
 	return result.Bytes(), nil
 }
 
-func renderSectionElements(ctx *renderer.Context, elements []types.DocElement) ([]byte, error) {
+func renderSectionElements(ctx *renderer.Context, elements []interface{}) ([]byte, error) {
 	renderedElementsBuff := bytes.NewBuffer(nil)
 	for i, element := range elements {
 		renderedElement, err := renderElement(ctx, element)

@@ -8,37 +8,11 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-func toDocElements(elements []interface{}) ([]DocElement, error) {
-	result := make([]DocElement, len(elements))
-	for i, element := range elements {
-		element, ok := element.(DocElement)
-		if !ok {
-			return nil, errors.Errorf("unexpected element of type: %T (expected a DocElement instead)", element)
-		}
-		result[i] = element
-	}
-	return result, nil
-}
-
-func toInlineElements(elements []interface{}) ([]InlineElement, error) {
-	mergedElements := mergeElements(elements)
-	result := make([]InlineElement, len(mergedElements))
-	for i, element := range mergedElements {
-		element, ok := element.(InlineElement)
-		if !ok {
-			return nil, errors.Errorf("unexpected element of type: %T (expected a InlineElement instead)", element)
-		}
-		result[i] = element
-	}
-
-	return result, nil
-}
-
 // filterOption allows for filtering elements by type
 type filterOption func(element interface{}) bool
 
-// filterEmptyPremable filters the element if it is an empty preamble
-func filterEmptyPremable() filterOption {
+// filterEmptyPreamble filters the element if it is an empty preamble
+func filterEmptyPreamble() filterOption {
 	return func(element interface{}) bool {
 		result := false
 		if p, match := element.(Preamble); match {
@@ -59,9 +33,9 @@ func filterBlankLine() filterOption {
 }
 
 // filterEmptyElements excludes the unrelevant (empty) blocks
-func filterEmptyElements(blocks []interface{}, filters ...filterOption) []DocElement {
+func filterEmptyElements(blocks []interface{}, filters ...filterOption) []interface{} {
 	log.Debugf("Filtering %d blocks...", len(blocks))
-	elements := make([]DocElement, 0)
+	elements := make([]interface{}, 0)
 blocks:
 	for _, block := range blocks {
 		// check if filter option applies to the element
@@ -79,7 +53,7 @@ blocks:
 			elements = append(elements, result...)
 		default:
 			if block != nil {
-				log.Debugf(" converting block of type '%T' into a DocElement...", block)
+				log.Debugf(" converting block of type '%T' into a interface{}...", block)
 				for _, filter := range filters {
 					if filter(block) {
 						log.Debugf(" discarding block of type '%T'.", block)
@@ -95,7 +69,7 @@ blocks:
 	return elements
 }
 
-func mergeElements(elements []interface{}, extraElements ...interface{}) []interface{} {
+func mergeElements(elements []interface{}, extraElements ...interface{}) InlineElements {
 	result := make([]interface{}, 0)
 	allElements := append(elements, extraElements...)
 	// log.Debugf("Merging %d element(s):", len(allElements))
@@ -116,12 +90,12 @@ func mergeElements(elements []interface{}, extraElements ...interface{}) []inter
 		case StringElement:
 			content := element.Content
 			buff.WriteString(content)
-		case InlineContent:
-			inlineElements := make([]interface{}, len(element.Elements))
-			for i, e := range element.Elements {
-				inlineElements[i] = e
-			}
-			result = mergeElements(result, inlineElements...)
+		// case InlineElements:
+		// 	inlineElements := make([]interface{}, len(element.Elements))
+		// 	for i, e := range element.Elements {
+		// 		inlineElements[i] = e
+		// 	}
+		// 	result = mergeElements(result, inlineElements...)
 		case []interface{}:
 			if len(element) > 0 {
 				f := mergeElements(element)
@@ -198,8 +172,8 @@ func stringify(elements []interface{}, options ...stringifyOption) (string, erro
 			buff.WriteString("\n\n")
 		case Paragraph:
 			for _, line := range element.Lines {
-				el := make([]interface{}, len(line.Elements))
-				for i, e := range line.Elements {
+				el := make([]interface{}, len(line))
+				for i, e := range line {
 					el[i] = e
 				}
 				s, err := stringify(el, options...)

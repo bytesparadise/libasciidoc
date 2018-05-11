@@ -14,11 +14,9 @@ var _ = Describe("paragraphs", func() {
 			actualContent := "hello"
 			expectedResult := types.Paragraph{
 				Attributes: map[string]interface{}{},
-				Lines: []types.InlineContent{
+				Lines: []types.InlineElements{
 					{
-						Elements: []types.InlineElement{
-							types.StringElement{Content: "hello"},
-						},
+						types.StringElement{Content: "hello"},
 					},
 				},
 			}
@@ -29,11 +27,9 @@ var _ = Describe("paragraphs", func() {
 			actualContent := "a paragraph with some content"
 			expectedResult := types.Paragraph{
 				Attributes: map[string]interface{}{},
-				Lines: []types.InlineContent{
+				Lines: []types.InlineElements{
 					{
-						Elements: []types.InlineElement{
-							types.StringElement{Content: "a paragraph with some content"},
-						},
+						types.StringElement{Content: "a paragraph with some content"},
 					},
 				},
 			}
@@ -44,15 +40,13 @@ var _ = Describe("paragraphs", func() {
 			actualContent := "a paragraph with *some bold content*"
 			expectedResult := types.Paragraph{
 				Attributes: map[string]interface{}{},
-				Lines: []types.InlineContent{
+				Lines: []types.InlineElements{
 					{
-						Elements: []types.InlineElement{
-							types.StringElement{Content: "a paragraph with "},
-							types.QuotedText{
-								Kind: types.Bold,
-								Elements: []types.InlineElement{
-									types.StringElement{Content: "some bold content"},
-								},
+						types.StringElement{Content: "a paragraph with "},
+						types.QuotedText{
+							Kind: types.Bold,
+							Elements: []interface{}{
+								types.StringElement{Content: "some bold content"},
 							},
 						},
 					},
@@ -70,11 +64,9 @@ a paragraph`
 					types.AttrID:    "foo",
 					types.AttrTitle: "a title",
 				},
-				Lines: []types.InlineContent{
+				Lines: []types.InlineElements{
 					{
-						Elements: []types.InlineElement{
-							types.StringElement{Content: "a paragraph"},
-						},
+						types.StringElement{Content: "a paragraph"},
 					},
 				},
 			}
@@ -89,12 +81,10 @@ a paragraph`
 				Attributes: map[string]interface{}{
 					types.AttrAdmonitionKind: types.Note,
 				},
-				Lines: []types.InlineContent{
+				Lines: []types.InlineElements{
 					{
-						Elements: []types.InlineElement{
-							types.StringElement{
-								Content: "this is a note.",
-							},
+						types.StringElement{
+							Content: "this is a note.",
 						},
 					},
 				},
@@ -109,19 +99,15 @@ warning!`
 				Attributes: map[string]interface{}{
 					types.AttrAdmonitionKind: types.Warning,
 				},
-				Lines: []types.InlineContent{
+				Lines: []types.InlineElements{
 					{
-						Elements: []types.InlineElement{
-							types.StringElement{
-								Content: "this is a multiline",
-							},
+						types.StringElement{
+							Content: "this is a multiline",
 						},
 					},
 					{
-						Elements: []types.InlineElement{
-							types.StringElement{
-								Content: "warning!",
-							},
+						types.StringElement{
+							Content: "warning!",
 						},
 					},
 				},
@@ -139,12 +125,10 @@ NOTE: this is a note.`
 					types.AttrID:             "foo",
 					types.AttrTitle:          "bar",
 				},
-				Lines: []types.InlineContent{
+				Lines: []types.InlineElements{
 					{
-						Elements: []types.InlineElement{
-							types.StringElement{
-								Content: "this is a note.",
-							},
+						types.StringElement{
+							Content: "this is a note.",
 						},
 					},
 				},
@@ -159,12 +143,10 @@ this is a caution!`
 				Attributes: map[string]interface{}{
 					types.AttrAdmonitionKind: types.Caution,
 				},
-				Lines: []types.InlineContent{
+				Lines: []types.InlineElements{
 					{
-						Elements: []types.InlineElement{
-							types.StringElement{
-								Content: "this is a caution!",
-							},
+						types.StringElement{
+							Content: "this is a caution!",
 						},
 					},
 				},
@@ -184,27 +166,23 @@ this is a
 					types.AttrID:             "foo",
 					types.AttrTitle:          "bar",
 				},
-				Lines: []types.InlineContent{
+				Lines: []types.InlineElements{
 					{
-						Elements: []types.InlineElement{
-							types.StringElement{
-								Content: "this is a ",
-							},
+						types.StringElement{
+							Content: "this is a ",
 						},
 					},
 					{
-						Elements: []types.InlineElement{
-							types.QuotedText{
-								Kind: types.Bold,
-								Elements: []types.InlineElement{
-									types.StringElement{
-										Content: "caution",
-									},
+						types.QuotedText{
+							Kind: types.Bold,
+							Elements: []interface{}{
+								types.StringElement{
+									Content: "caution",
 								},
 							},
-							types.StringElement{
-								Content: "!",
-							},
+						},
+						types.StringElement{
+							Content: "!",
 						},
 					},
 				},
@@ -221,17 +199,15 @@ And no space after [CAUTION] either.`
 			expectedResult := types.Document{
 				Attributes:        map[string]interface{}{},
 				ElementReferences: map[string]interface{}{},
-				Elements: []types.DocElement{
+				Elements: []interface{}{
 					types.Paragraph{
 						Attributes: map[string]interface{}{
 							types.AttrAdmonitionKind: types.Note,
 						},
-						Lines: []types.InlineContent{
+						Lines: []types.InlineElements{
 							{
-								Elements: []types.InlineElement{
-									types.StringElement{
-										Content: "No space after the [NOTE]!",
-									},
+								types.StringElement{
+									Content: "No space after the [NOTE]!",
 								},
 							},
 						},
@@ -240,12 +216,10 @@ And no space after [CAUTION] either.`
 						Attributes: map[string]interface{}{
 							types.AttrAdmonitionKind: types.Caution,
 						},
-						Lines: []types.InlineContent{
+						Lines: []types.InlineElements{
 							{
-								Elements: []types.InlineElement{
-									types.StringElement{
-										Content: "And no space after [CAUTION] either.",
-									},
+								types.StringElement{
+									Content: "And no space after [CAUTION] either.",
 								},
 							},
 						},

@@ -20,22 +20,18 @@ This journey begins on a bleary Monday morning.`
 						Attributes: map[string]interface{}{
 							types.AttrID: "_the_dangerous_and_thrilling_documentation_chronicles",
 						},
-						Content: types.InlineContent{
-							Elements: []types.InlineElement{
-								types.StringElement{Content: "The Dangerous and Thrilling Documentation Chronicles"},
-							},
+						Content: types.InlineElements{
+							types.StringElement{Content: "The Dangerous and Thrilling Documentation Chronicles"},
 						},
 					},
 				},
 				ElementReferences: map[string]interface{}{},
-				Elements: []types.DocElement{
+				Elements: []interface{}{
 					types.Paragraph{
 						Attributes: map[string]interface{}{},
-						Lines: []types.InlineContent{
+						Lines: []types.InlineElements{
 							{
-								Elements: []types.InlineElement{
-									types.StringElement{Content: "This journey begins on a bleary Monday morning."},
-								},
+								types.StringElement{Content: "This journey begins on a bleary Monday morning."},
 							},
 						},
 					},
@@ -249,7 +245,7 @@ This journey begins on a bleary Monday morning.`
 				expectedResult := types.Document{
 					Attributes:        map[string]interface{}{},
 					ElementReferences: map[string]interface{}{},
-					Elements: []types.DocElement{
+					Elements: []interface{}{
 						types.DocumentAttributeDeclaration{Name: "a"},
 						types.DocumentAttributeDeclaration{Name: "author", Value: "Xavier"},
 						types.DocumentAttributeDeclaration{Name: "_author", Value: "Xavier"},
@@ -269,17 +265,15 @@ a paragraph`
 				expectedResult := types.Document{
 					Attributes:        map[string]interface{}{},
 					ElementReferences: map[string]interface{}{},
-					Elements: []types.DocElement{
+					Elements: []interface{}{
 						types.DocumentAttributeDeclaration{Name: "toc"},
 						types.DocumentAttributeDeclaration{Name: "date", Value: "2017-01-01"},
 						types.DocumentAttributeDeclaration{Name: "author", Value: "Xavier"},
 						types.Paragraph{
 							Attributes: map[string]interface{}{},
-							Lines: []types.InlineContent{
+							Lines: []types.InlineElements{
 								{
-									Elements: []types.InlineElement{
-										types.StringElement{Content: "a paragraph"},
-									},
+									types.StringElement{Content: "a paragraph"},
 								},
 							},
 						},
@@ -297,17 +291,15 @@ a paragraph`
 				expectedResult := types.Document{
 					Attributes:        map[string]interface{}{},
 					ElementReferences: map[string]interface{}{},
-					Elements: []types.DocElement{
+					Elements: []interface{}{
 						types.DocumentAttributeDeclaration{Name: "toc"},
 						types.DocumentAttributeDeclaration{Name: "date", Value: "2017-01-01"},
 						types.DocumentAttributeDeclaration{Name: "author", Value: "Xavier"},
 						types.Paragraph{
 							Attributes: map[string]interface{}{},
-							Lines: []types.InlineContent{
+							Lines: []types.InlineElements{
 								{
-									Elements: []types.InlineElement{
-										types.StringElement{Content: "a paragraph"},
-									},
+									types.StringElement{Content: "a paragraph"},
 								},
 							},
 						},
@@ -326,17 +318,15 @@ a paragraph`
 				expectedResult := types.Document{
 					Attributes:        map[string]interface{}{},
 					ElementReferences: map[string]interface{}{},
-					Elements: []types.DocElement{
+					Elements: []interface{}{
 						types.DocumentAttributeDeclaration{Name: "toc"},
 						types.DocumentAttributeDeclaration{Name: "date", Value: "2017-01-01"},
 						types.DocumentAttributeDeclaration{Name: "author", Value: "Xavier"},
 						types.Paragraph{
 							Attributes: map[string]interface{}{},
-							Lines: []types.InlineContent{
+							Lines: []types.InlineElements{
 								{
-									Elements: []types.InlineElement{
-										types.StringElement{Content: "a paragraph"},
-									},
+									types.StringElement{Content: "a paragraph"},
 								},
 							},
 						},
@@ -354,14 +344,12 @@ a paragraph`
 				expectedResult := types.Document{
 					Attributes:        map[string]interface{}{},
 					ElementReferences: map[string]interface{}{},
-					Elements: []types.DocElement{
+					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: map[string]interface{}{},
-							Lines: []types.InlineContent{
+							Lines: []types.InlineElements{
 								{
-									Elements: []types.InlineElement{
-										types.StringElement{Content: "a paragraph"},
-									},
+									types.StringElement{Content: "a paragraph"},
 								},
 							},
 						},
@@ -383,17 +371,15 @@ a paragraph written by {author}.`
 				expectedResult := types.Document{
 					Attributes:        map[string]interface{}{},
 					ElementReferences: map[string]interface{}{},
-					Elements: []types.DocElement{
+					Elements: []interface{}{
 						types.DocumentAttributeDeclaration{Name: "author", Value: "Xavier"},
 						types.Paragraph{
 							Attributes: map[string]interface{}{},
-							Lines: []types.InlineContent{
+							Lines: []types.InlineElements{
 								{
-									Elements: []types.InlineElement{
-										types.StringElement{Content: "a paragraph written by "},
-										types.DocumentAttributeSubstitution{Name: "author"},
-										types.StringElement{Content: "."},
-									},
+									types.StringElement{Content: "a paragraph written by "},
+									types.DocumentAttributeSubstitution{Name: "author"},
+									types.StringElement{Content: "."},
 								},
 							},
 						},
@@ -411,19 +397,17 @@ a paragraph written by {author}.`
 				expectedResult := types.Document{
 					Attributes:        map[string]interface{}{},
 					ElementReferences: map[string]interface{}{},
-					Elements: []types.DocElement{
+					Elements: []interface{}{
 						types.DocumentAttributeDeclaration{Name: "author", Value: "Xavier"},
 						types.DocumentAttributeReset{Name: "author1"},
 						types.DocumentAttributeReset{Name: "author2"},
 						types.Paragraph{
 							Attributes: map[string]interface{}{},
-							Lines: []types.InlineContent{
+							Lines: []types.InlineElements{
 								{
-									Elements: []types.InlineElement{
-										types.StringElement{Content: "a paragraph written by "},
-										types.DocumentAttributeSubstitution{Name: "author"},
-										types.StringElement{Content: "."},
-									},
+									types.StringElement{Content: "a paragraph written by "},
+									types.DocumentAttributeSubstitution{Name: "author"},
+									types.StringElement{Content: "."},
 								},
 							},
 						},
@@ -447,10 +431,8 @@ This journey begins on a bleary Monday morning.`
 						Attributes: map[string]interface{}{
 							types.AttrID: "_the_dangerous_and_thrilling_documentation_chronicles",
 						},
-						Content: types.InlineContent{
-							Elements: []types.InlineElement{
-								types.StringElement{Content: "The Dangerous and Thrilling Documentation Chronicles"},
-							},
+						Content: types.InlineElements{
+							types.StringElement{Content: "The Dangerous and Thrilling Documentation Chronicles"},
 						},
 					},
 					"author":           "Kismet Rainbow Chameleon",
@@ -471,15 +453,13 @@ This journey begins on a bleary Monday morning.`
 					"toc":              "",
 				},
 				ElementReferences: map[string]interface{}{},
-				Elements: []types.DocElement{
+				Elements: []interface{}{
 					types.TableOfContentsMacro{},
 					types.Paragraph{
 						Attributes: map[string]interface{}{},
-						Lines: []types.InlineContent{
+						Lines: []types.InlineElements{
 							{
-								Elements: []types.InlineElement{
-									types.StringElement{Content: "This journey begins on a bleary Monday morning."},
-								},
+								types.StringElement{Content: "This journey begins on a bleary Monday morning."},
 							},
 						},
 					},
@@ -501,10 +481,8 @@ a paragraph with *bold content*`
 						Attributes: map[string]interface{}{
 							types.AttrID: "_a_header",
 						},
-						Content: types.InlineContent{
-							Elements: []types.InlineElement{
-								types.StringElement{Content: "a header"},
-							},
+						Content: types.InlineElements{
+							types.StringElement{Content: "a header"},
 						},
 					},
 				},
@@ -513,37 +491,31 @@ a paragraph with *bold content*`
 						Attributes: map[string]interface{}{
 							types.AttrID: "_section_1",
 						},
-						Content: types.InlineContent{
-							Elements: []types.InlineElement{
-								types.StringElement{Content: "section 1"},
-							},
+						Content: types.InlineElements{
+							types.StringElement{Content: "section 1"},
 						},
 					},
 				},
-				Elements: []types.DocElement{
+				Elements: []interface{}{
 					types.Section{
 						Level: 1,
 						Title: types.SectionTitle{
 							Attributes: map[string]interface{}{
 								types.AttrID: "_section_1",
 							},
-							Content: types.InlineContent{
-								Elements: []types.InlineElement{
-									types.StringElement{Content: "section 1"},
-								},
+							Content: types.InlineElements{
+								types.StringElement{Content: "section 1"},
 							},
 						},
-						Elements: []types.DocElement{
+						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: map[string]interface{}{},
-								Lines: []types.InlineContent{
-									types.InlineContent{
-										Elements: []types.InlineElement{
-											types.StringElement{Content: "a paragraph with "},
-											types.QuotedText{Kind: types.Bold,
-												Elements: []types.InlineElement{
-													types.StringElement{Content: "bold content"},
-												},
+								Lines: []types.InlineElements{
+									{
+										types.StringElement{Content: "a paragraph with "},
+										types.QuotedText{Kind: types.Bold,
+											Elements: []interface{}{
+												types.StringElement{Content: "bold content"},
 											},
 										},
 									},
@@ -567,29 +539,21 @@ a paragraph with *bold content*`
 			expectedResult := types.Document{
 				Attributes:        map[string]interface{}{},
 				ElementReferences: map[string]interface{}{},
-				Elements: []types.DocElement{
+				Elements: []interface{}{
 					types.Paragraph{
 						Attributes: map[string]interface{}{},
-						Lines: []types.InlineContent{
+						Lines: []types.InlineElements{
 							{
-								Elements: []types.InlineElement{
-									types.StringElement{Content: "a paragraph"},
-								},
+								types.StringElement{Content: "a paragraph"},
 							},
 							{
-								Elements: []types.InlineElement{
-									types.StringElement{Content: ":toc:"},
-								},
+								types.StringElement{Content: ":toc:"},
 							},
 							{
-								Elements: []types.InlineElement{
-									types.StringElement{Content: ":date: 2017-01-01"},
-								},
+								types.StringElement{Content: ":date: 2017-01-01"},
 							},
 							{
-								Elements: []types.InlineElement{
-									types.StringElement{Content: ":author: Xavier"},
-								},
+								types.StringElement{Content: ":author: Xavier"},
 							},
 						},
 					},
@@ -604,19 +568,15 @@ a paragraph with *bold content*`
 			expectedResult := types.Document{
 				Attributes:        map[string]interface{}{},
 				ElementReferences: map[string]interface{}{},
-				Elements: []types.DocElement{
+				Elements: []interface{}{
 					types.Paragraph{
 						Attributes: map[string]interface{}{},
-						Lines: []types.InlineContent{
+						Lines: []types.InlineElements{
 							{
-								Elements: []types.InlineElement{
-									types.StringElement{Content: ":@date: 2017-01-01"},
-								},
+								types.StringElement{Content: ":@date: 2017-01-01"},
 							},
 							{
-								Elements: []types.InlineElement{
-									types.StringElement{Content: ":{author}: Xavier"},
-								},
+								types.StringElement{Content: ":{author}: Xavier"},
 							},
 						},
 					},

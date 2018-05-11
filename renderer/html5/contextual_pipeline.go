@@ -2,7 +2,6 @@ package html5
 
 import (
 	"github.com/bytesparadise/libasciidoc/renderer"
-	"github.com/bytesparadise/libasciidoc/types"
 )
 
 // ContextualPipeline as structure that carries the renderer context along with
@@ -10,7 +9,7 @@ import (
 type ContextualPipeline struct {
 	Context *renderer.Context
 	// The actual pipeline
-	Data types.DocElement
+	Data interface{}
 }
 
 // wrap wraps the data with the context in a new ContextualPipeline
