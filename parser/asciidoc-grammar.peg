@@ -560,19 +560,19 @@ BlockDelimiter <- LiteralBlockDelimiter / FencedBlockDelimiter / ListingBlockDel
 
 FencedBlockDelimiter <- "```"
 
-FencedBlock <- attributes:(ElementAttribute)* FencedBlockDelimiter WS* NEWLINE content:(List / Paragraph / BlankLine)* FencedBlockDelimiter WS* EOL {
+FencedBlock <- attributes:(ElementAttribute)* FencedBlockDelimiter WS* NEWLINE content:(List / Paragraph / BlankLine)* ((FencedBlockDelimiter WS* EOL) / EOF) {
     return types.NewDelimitedBlock(types.FencedBlock, content.([]interface{}), attributes.([]interface{}))
 }
 
 ListingBlockDelimiter <- "----"
 
-ListingBlock <- attributes:(ElementAttribute)* ListingBlockDelimiter WS* NEWLINE content:(List / Paragraph / BlankLine)* ListingBlockDelimiter WS* EOL {
+ListingBlock <- attributes:(ElementAttribute)* ListingBlockDelimiter WS* NEWLINE content:(List / Paragraph / BlankLine)* ((ListingBlockDelimiter WS* EOL) / EOF) {
     return types.NewDelimitedBlock(types.ListingBlock, content.([]interface{}), attributes.([]interface{}))
 }
 
 ExampleBlockDelimiter <- "===="
 
-ExampleBlock <- attributes:(ElementAttribute)* ExampleBlockDelimiter WS* NEWLINE content:(List / Paragraph / BlankLine)*  ExampleBlockDelimiter WS* EOL {
+ExampleBlock <- attributes:(ElementAttribute)* ExampleBlockDelimiter WS* NEWLINE content:(List / Paragraph / BlankLine)*  ((ExampleBlockDelimiter WS* EOL) / EOF) {
     return types.NewDelimitedBlock(types.ExampleBlock, content.([]interface{}), attributes.([]interface{}))
 }
 

@@ -165,6 +165,27 @@ var _ = Describe("delimited blocks", func() {
 			}
 			verify(GinkgoT(), expectedResult, actualContent)
 		})
+
+		It("fenced block with unclosed delimiter", func() {
+			actualContent := "```\nEnd of file here"
+			expectedResult := types.DelimitedBlock{
+				Kind:       types.FencedBlock,
+				Attributes: map[string]interface{}{},
+				Elements: []interface{}{
+					types.Paragraph{
+						Attributes: map[string]interface{}{},
+						Lines: []types.InlineElements{
+							{
+								types.StringElement{
+									Content: "End of file here",
+								},
+							},
+						},
+					},
+				},
+			}
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("BlockElement"))
+		})
 	})
 
 	Context("listing blocks", func() {
@@ -339,6 +360,28 @@ some listing code
 				},
 			}
 			verify(GinkgoT(), expectedResult, actualContent)
+		})
+
+		It("listing block with unclosed delimiter", func() {
+			actualContent := `----
+End of file here.`
+			expectedResult := types.DelimitedBlock{
+				Kind:       types.ListingBlock,
+				Attributes: map[string]interface{}{},
+				Elements: []interface{}{
+					types.Paragraph{
+						Attributes: map[string]interface{}{},
+						Lines: []types.InlineElements{
+							{
+								types.StringElement{
+									Content: "End of file here.",
+								},
+							},
+						},
+					},
+				},
+			}
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("BlockElement"))
 		})
 	})
 
@@ -519,6 +562,28 @@ with *bold content*
 											},
 										},
 									},
+								},
+							},
+						},
+					},
+				},
+			}
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("BlockElement"))
+		})
+
+		It("example block with unclosed delimiter", func() {
+			actualContent := `====
+End of file here`
+			expectedResult := types.DelimitedBlock{
+				Kind:       types.ExampleBlock,
+				Attributes: map[string]interface{}{},
+				Elements: []interface{}{
+					types.Paragraph{
+						Attributes: map[string]interface{}{},
+						Lines: []types.InlineElements{
+							{
+								types.StringElement{
+									Content: "End of file here",
 								},
 							},
 						},
