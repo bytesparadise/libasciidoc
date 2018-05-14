@@ -1206,21 +1206,9 @@ const (
 // InlineElements the structure for the lines in paragraphs
 type InlineElements []interface{}
 
-func (e InlineElements) lastElement() interface{} {
-	if len(e) > 0 {
-		return e[len(e)-1]
-	}
-	return nil
-}
-
 // NewInlineElements initializes a new `InlineElements` from the given values
 func NewInlineElements(elements []interface{}) (InlineElements, error) {
 	result := mergeElements(elements)
-	// // trim righ spaces on content of last element if it is a StringElement
-	// lastElement := result.lastElement()
-	// if lastElement, ok := lastElement.(StringElement); ok {
-
-	// }
 	return result, nil
 }
 

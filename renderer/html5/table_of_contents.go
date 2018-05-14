@@ -81,10 +81,11 @@ func renderTableOfContentSections(ctx *renderer.Context, elements []interface{},
 			if i, ok := section.Title.Attributes[types.AttrID].(string); ok {
 				id = i
 			}
+			renderedTitleStr := strings.TrimSpace(string(renderedTitle))
 			sections = append(sections, TableOfContentSection{
 				Level:       section.Level,
 				Href:        id,
-				Title:       template.HTML(strings.TrimSpace(string(renderedTitle))),
+				Title:       template.HTML(renderedTitleStr),
 				Subelements: renderedChildSections,
 			})
 		}
