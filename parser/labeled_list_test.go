@@ -18,7 +18,8 @@ on 2 lines`
 				{
 					Term: "Item1",
 					Elements: []interface{}{
-						types.ListParagraph{
+						types.Paragraph{
+							Attributes: map[string]interface{}{},
 							Lines: []types.InlineElements{
 								{
 									types.StringElement{Content: "Item 1 description"},
@@ -59,7 +60,8 @@ Item1:: foo`
 				{
 					Term: "Item1",
 					Elements: []interface{}{
-						types.ListParagraph{
+						types.Paragraph{
+							Attributes: map[string]interface{}{},
 							Lines: []types.InlineElements{
 								{
 									types.StringElement{Content: "foo"},
@@ -100,7 +102,8 @@ Item 3 description`
 				{
 					Term: "Item 1",
 					Elements: []interface{}{
-						types.ListParagraph{
+						types.Paragraph{
+							Attributes: map[string]interface{}{},
 							Lines: []types.InlineElements{
 								{
 									types.StringElement{Content: "Item 1 description"},
@@ -112,7 +115,8 @@ Item 3 description`
 				{
 					Term: "Item 2",
 					Elements: []interface{}{
-						types.ListParagraph{
+						types.Paragraph{
+							Attributes: map[string]interface{}{},
 							Lines: []types.InlineElements{
 								{
 									types.StringElement{Content: "Item 2 description"},
@@ -124,7 +128,8 @@ Item 3 description`
 				{
 					Term: "Item 3",
 					Elements: []interface{}{
-						types.ListParagraph{
+						types.Paragraph{
+							Attributes: map[string]interface{}{},
 							Lines: []types.InlineElements{
 								{
 									types.StringElement{Content: "Item 3 description"},
@@ -156,7 +161,8 @@ Item with description:: something simple`
 									Level:       1,
 									BulletStyle: types.OneAsterisk,
 									Elements: []interface{}{
-										types.ListParagraph{
+										types.Paragraph{
+											Attributes: map[string]interface{}{},
 											Lines: []types.InlineElements{
 												{
 													types.StringElement{Content: "foo"},
@@ -169,7 +175,8 @@ Item with description:: something simple`
 									Level:       1,
 									BulletStyle: types.OneAsterisk,
 									Elements: []interface{}{
-										types.ListParagraph{
+										types.Paragraph{
+											Attributes: map[string]interface{}{},
 											Lines: []types.InlineElements{
 												{
 													types.StringElement{Content: "bar"},
@@ -185,7 +192,8 @@ Item with description:: something simple`
 				{
 					Term: "Item with description",
 					Elements: []interface{}{
-						types.ListParagraph{
+						types.Paragraph{
+							Attributes: map[string]interface{}{},
 							Lines: []types.InlineElements{
 								{
 									types.StringElement{Content: "something simple"},
@@ -216,7 +224,8 @@ a normal paragraph.`
 						{
 							Term: "Item 1",
 							Elements: []interface{}{
-								types.ListParagraph{
+								types.Paragraph{
+									Attributes: map[string]interface{}{},
 									Lines: []types.InlineElements{
 										{
 											types.StringElement{Content: "foo"},
@@ -285,7 +294,8 @@ another fenced block
 						{
 							Term: "Item 2",
 							Elements: []interface{}{
-								types.ListParagraph{
+								types.Paragraph{
+									Attributes: map[string]interface{}{},
 									Lines: []types.InlineElements{
 										{
 											types.StringElement{Content: "something simple"},
@@ -361,7 +371,8 @@ another fenced block
 						{
 							Term: "Item 2",
 							Elements: []interface{}{
-								types.ListParagraph{
+								types.Paragraph{
+									Attributes: map[string]interface{}{},
 									Lines: []types.InlineElements{
 										{
 											types.StringElement{Content: "something simple"},

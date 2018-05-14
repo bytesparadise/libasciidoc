@@ -7,7 +7,7 @@ import (
 )
 
 func renderBlankLine(ctx *renderer.Context, p types.BlankLine) ([]byte, error) {
-	if ctx.RenderBlankLine() {
+	if ctx.IncludeBlankLine() {
 		log.Debugf("rendering blankline")
 		return []byte("\n"), nil
 	}

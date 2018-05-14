@@ -59,14 +59,3 @@ func (ctx *Context) IncludeHeaderFooter() bool {
 	}
 	return false
 }
-
-// Entrypoint returns the value of the 'Entrypoint' Option if it was present,
-// otherwise it returns `nil
-func (ctx *Context) Entrypoint() *string {
-	if entrypoint, found := ctx.options[keyEntrypoint]; found {
-		if entrypoint, typeMatch := entrypoint.(string); typeMatch {
-			return &entrypoint
-		}
-	}
-	return nil
-}

@@ -109,7 +109,7 @@ item 2:: description 2.`
 			verify(GinkgoT(), expectedResult, actualContent)
 		})
 
-		It("labeled list with nested lists", func() {
+		It("labeled list with nested lists using regular layout", func() {
 			actualContent := `item 1:: 
 * foo
 * bar
@@ -182,7 +182,7 @@ on 2 lines, too.</p>
 			verify(GinkgoT(), expectedResult, actualContent)
 		})
 
-		It("labeled list with nested lists and horizontal layout", func() {
+		It("labeled list with nested lists using horizontal layout", func() {
 			actualContent := `[horizontal]
 item 1:: 
 * foo

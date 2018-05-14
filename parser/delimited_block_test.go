@@ -553,7 +553,8 @@ with *bold content*
 								Level:       1,
 								BulletStyle: types.OneAsterisk,
 								Elements: []interface{}{
-									types.ListParagraph{
+									types.Paragraph{
+										Attributes: map[string]interface{}{},
 										Lines: []types.InlineElements{
 											{
 												types.StringElement{

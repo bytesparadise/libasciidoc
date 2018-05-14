@@ -15,18 +15,17 @@ import (
 // ------------------------------------------
 // Document
 // ------------------------------------------
-
 Document <- frontMatter:(FrontMatter?) documentHeader:(DocumentHeader?) blocks:(DocumentBlocks) EOF {
 	return types.NewDocument(frontMatter, documentHeader, blocks.([]interface{}))
 }
 
-DocumentBlocks <- content:(Preamble Section+) / content:(BlockElement*) {
+DocumentBlocks <- content:(Preamble? Section+) / content:(BlockElement*) { 
     return content, nil
 }
 
-BlockElement <- DocumentAttributeDeclaration / DocumentAttributeReset / TableOfContentsMacro / BlockImage / List / LiteralBlock / DelimitedBlock / Paragraph / (ElementAttribute EOL) / BlankLine //TODO: should Paragraph be the last type ?
+BlockElement <- DocumentAttributeDeclaration / DocumentAttributeReset / TableOfContentsMacro / BlockImage / List / LiteralBlock / DelimitedBlock / BlankLine / Paragraph // element attribute alone should be take recognized as such 
 
-Preamble <- elements:(BlockElement*) {
+Preamble <- elements:(BlockElement+) {
     return types.NewPreamble(elements.([]interface{}))
 }
 
@@ -72,7 +71,7 @@ DocumentAuthor <- WS* namePart1:(DocumentAuthorNamePart) namePart2:(DocumentAuth
 } 
 
 // "<" marks the beginning of the author email, and ";" is the authors separator
-DocumentAuthorNamePart <- !"<" !";" Characters WS*
+DocumentAuthorNamePart <- !"<" !";" Word WS*
 
 DocumentAuthorEmail <- "<" email:(!">" !EOL .)+ ">" 
 
@@ -116,7 +115,7 @@ DocumentAttributeSubstitution <- "{" name:(AttributeName) "}" {
 
 // AttributeName must be at least one character long, 
 // must begin with a word character (A-Z, a-z, 0-9 or _) and 
-// must only contain word characters and hyphens ("-").
+// must only contain word Word and hyphens ("-").
 AttributeName <- ([A-Z] / [a-z] / [0-9] / "_") ([A-Z] / [a-z] / [0-9] / "-")*
 
 // ------------------------------------------
@@ -187,12 +186,20 @@ Section1 <- header:(Section1Title) elements:(Section1Block*) {
     return types.NewSection(1, header.(types.SectionTitle), elements.([]interface{}))
 }
 
+Section1Title <- attributes:(ElementAttribute)* level:("==") WS+ content:(InlineElements) WS* id:(InlineElementID)? WS* EOL (BlankLine? / EOF) { 
+    return types.NewSectionTitle(content.(types.InlineElements), append(attributes.([]interface{}), id))
+}
+
 Section1Block <- !Section1 content:(Section2 / Section3 / Section4 / Section5 / BlockElement) {
     return content, nil
 }
 
 Section2 <- header:(Section2Title) elements:(Section2Block*) &(Section2)* {
     return types.NewSection(2, header.(types.SectionTitle), elements.([]interface{}))
+}
+
+Section2Title <- attributes:(ElementAttribute)* level:("===") WS+ content:(InlineElements) WS* id:(InlineElementID)? WS* EOL (BlankLine? / EOF) {
+    return types.NewSectionTitle(content.(types.InlineElements), append(attributes.([]interface{}), id))
 }
 
 Section2Block <- !Section1 !Section2 content:(Section3 / Section4 / Section5 / BlockElement) {
@@ -203,12 +210,20 @@ Section3 <- header:(Section3Title) elements:(Section3Block*) {
     return types.NewSection(3, header.(types.SectionTitle), elements.([]interface{}))
 }
 
+Section3Title <- attributes:(ElementAttribute)* level:("====") WS+ content:(InlineElements) WS* id:(InlineElementID)? EOL (BlankLine? / EOF) {
+    return types.NewSectionTitle(content.(types.InlineElements), append(attributes.([]interface{}), id))
+}
+
 Section3Block <- !Section1 !Section2 !Section3 content:(Section4 / Section5 / BlockElement) {
     return content, nil
 }
 
 Section4 <- header:(Section4Title) elements:(Section4Block*) {
     return types.NewSection(4, header.(types.SectionTitle), elements.([]interface{}))
+}
+
+Section4Title <- attributes:(ElementAttribute)* level:("=====") WS+ content:(InlineElements) WS* id:(InlineElementID)? EOL (BlankLine? / EOF) {
+    return types.NewSectionTitle(content.(types.InlineElements), append(attributes.([]interface{}), id))
 }
 
 Section4Block <- !Section1 !Section2 !Section3 !Section4 content:(Section5 / BlockElement) {
@@ -219,34 +234,12 @@ Section5 <- header:(Section5Title) elements:(Section5Block*) {
     return types.NewSection(5, header.(types.SectionTitle), elements.([]interface{}))
 }
 
-Section5Block <- !Section1 !Section2 !Section3 !Section4 !Section5 content:(BlockElement) {
-    return content, nil
-}
-
-// ------------------------------------------
-// Section Titles
-// ------------------------------------------
-
-SectionTitle <- Section1Title / Section2Title / Section3Title / Section4Title / Section5Title
-
-Section1Title <- attributes:(ElementAttribute)* level:("==") WS+ content:(InlineElements) WS* id:(InlineElementID)? WS* EOL (BlankLine? / EOF) { 
-    return types.NewSectionTitle(content.(types.InlineElements), append(attributes.([]interface{}), id))
-}
-
-Section2Title <- attributes:(ElementAttribute)* level:("===") WS+ content:(InlineElements) WS* id:(InlineElementID)? WS* EOL (BlankLine? / EOF) {
-    return types.NewSectionTitle(content.(types.InlineElements), append(attributes.([]interface{}), id))
-}
-
-Section3Title <- attributes:(ElementAttribute)* level:("====") WS+ content:(InlineElements) WS* id:(InlineElementID)? EOL (BlankLine? / EOF) {
-    return types.NewSectionTitle(content.(types.InlineElements), append(attributes.([]interface{}), id))
-}
-
-Section4Title <- attributes:(ElementAttribute)* level:("=====") WS+ content:(InlineElements) WS* id:(InlineElementID)? EOL (BlankLine? / EOF) {
-    return types.NewSectionTitle(content.(types.InlineElements), append(attributes.([]interface{}), id))
-}
-
 Section5Title <- attributes:(ElementAttribute)* level:("======") WS+ content:(InlineElements) WS* id:(InlineElementID)? EOL (BlankLine? / EOF) {
     return types.NewSectionTitle(content.(types.InlineElements), append(attributes.([]interface{}), id))
+}
+
+Section5Block <- !Section1 !Section2 !Section3 !Section4 !Section5 content:(BlockElement) {
+    return content, nil
 }
 
 // ------------------------------------------
@@ -272,14 +265,15 @@ HorizontalLayout <- "[horizontal]" {
     return map[string]interface{}{"layout": "horizontal"}, nil
 }
 
-ListParagraph <-  lines:(
+InnerParagraph <-  lines:(
     !(OrderedListItemPrefix) 
     !(UnorderedListItemPrefix) 
     !(LabeledListItemTerm LabeledListItemSeparator) 
     !(ListItemContinuation) 
     !(ElementAttribute)
-    InlineElementsWithTrailingSpaces EOL)+ {
-    return types.NewListParagraph(lines.([]interface{}))
+    !(BlockDelimiter)
+    InlineElements EOL)+ {
+    return types.NewParagraph(lines.([]interface{}), nil)
 } 
 
 ListItemContinuation <- "+" WS* EOL {
@@ -322,7 +316,7 @@ WS* style:(".") WS+ { // numbering style: "."
     return types.NewOrderedListItemPrefix(types.UpperRoman, 1)
 } 
 
-OrderedListItemContent <- elements:(ListParagraph+ ContinuedBlockElement*) { // Another list or a literal paragraph immediately following a list item will be implicitly included in the list item
+OrderedListItemContent <- elements:(InnerParagraph+ ContinuedBlockElement*) { // Another list or a literal paragraph immediately following a list item will be implicitly included in the list item
     return types.NewListItemContent(elements.([]interface{}))
 } 
 
@@ -333,21 +327,21 @@ UnorderedListItem <- prefix:(UnorderedListItemPrefix) content:(UnorderedListItem
     return types.NewUnorderedListItem(prefix.(types.UnorderedListItemPrefix), content.([]interface{}))
 }
 
-UnorderedListItemPrefix <- WS* level:("*****") WS+ { // ignore whitespaces, only return the relevant "*"/"-" characters
+UnorderedListItemPrefix <- WS* level:("*****") WS+ { // ignore whitespaces, only return the relevant "*"/"-" Word
     return types.NewUnorderedListItemPrefix(types.FiveAsterisks, 5)
-} / WS* level:("****") WS+ { // ignore whitespaces, only return the relevant "*"/"-" characters
+} / WS* level:("****") WS+ { // ignore whitespaces, only return the relevant "*"/"-" Word
     return types.NewUnorderedListItemPrefix(types.FourAsterisks, 4)
-} / WS* level:("***") WS+ { // ignore whitespaces, only return the relevant "*"/"-" characters
+} / WS* level:("***") WS+ { // ignore whitespaces, only return the relevant "*"/"-" Word
     return types.NewUnorderedListItemPrefix(types.ThreeAsterisks, 3)
-} / WS* level:("**") WS+ { // ignore whitespaces, only return the relevant "*"/"-" characters
+} / WS* level:("**") WS+ { // ignore whitespaces, only return the relevant "*"/"-" Word
     return types.NewUnorderedListItemPrefix(types.TwoAsterisks, 2)
-} / WS* level:("*") WS+ { // ignore whitespaces, only return the relevant "*"/"-" characters
+} / WS* level:("*") WS+ { // ignore whitespaces, only return the relevant "*"/"-" Word
     return types.NewUnorderedListItemPrefix(types.OneAsterisk, 1)
-} / WS* level:("-") WS+ { // ignore whitespaces, only return the relevant "*"/"-" characters
+} / WS* level:("-") WS+ { // ignore whitespaces, only return the relevant "*"/"-" Word
     return types.NewUnorderedListItemPrefix(types.Dash, 1)
 } 
 
-UnorderedListItemContent <- elements:(ListParagraph+ ContinuedBlockElement*) { // Another list or a literal paragraph immediately following a list item will be implicitly included in the list item
+UnorderedListItemContent <- elements:(InnerParagraph+ ContinuedBlockElement*) { // Another list or a literal paragraph immediately following a list item will be implicitly included in the list item
     return types.NewListItemContent(elements.([]interface{}))
 } 
 
@@ -367,7 +361,7 @@ LabeledListItemTerm <- term:(!NEWLINE !"::" .)*  {
 // term separator: ('::') and at least one space or endline
 LabeledListItemSeparator <-  "::" (WS / NEWLINE)+
 
-LabeledListItemDescription <- elements:(ListParagraph / ContinuedBlockElement)* { // TODO: replace with (ListParagraph+ ContinuedBlockElement*) and use a single rule for all item contents ?
+LabeledListItemDescription <- elements:(InnerParagraph / ContinuedBlockElement)* { // TODO: replace with (InnerParagraph+ ContinuedBlockElement*) and use a single rule for all item contents ?
     return types.NewListItemContent(elements.([]interface{}))
 }
 
@@ -392,23 +386,21 @@ AdmonitionKind <- "TIP" {
 // ------------------------------------------
 // a paragraph is a group of line ending with a blank line (or end of file)
 // a paragraph cannot start with the `section` sequence (`= `, `== `, etc.)
-Paragraph <- attributes:(ElementAttribute)* !("="+ WS+) t:(AdmonitionKind) ": " lines:(InlineElementsWithTrailingSpaces EOL)+ { // admonition paragraph 
-    return types.NewParagraph(lines.([]interface{}), append(attributes.([]interface{}), t.(types.AdmonitionKind)))
-} / attributes:(ElementAttribute)* !("="+ WS+) lines:(InlineElementsWithTrailingSpaces EOL)+ { // regular paragraph
-    return types.NewParagraph(lines.([]interface{}), attributes.([]interface{}))
-} 
+Paragraph <- 
+    // admonition paragraph 
+    attributes:(ElementAttribute)* !("="+ WS+ !NEWLINE) t:(AdmonitionKind) ": " lines:(InlineElements EOL)+ { 
+        return types.NewParagraph(lines.([]interface{}), append(attributes.([]interface{}), t.(types.AdmonitionKind)))
+    } / 
+    // regular paragraph
+    attributes:(ElementAttribute)* !("="+ WS+ !NEWLINE) lines:(InlineElements EOL)+ { 
+        return types.NewParagraph(lines.([]interface{}), attributes.([]interface{}))
+    } 
 
-// an inline content element may start with and end with spaces, 
-// but it must contain at least an inline element (image, quoted text, external link, document attribute substitution, word, etc.)
-InlineElementsWithTrailingSpaces <- !BlockDelimiter elements:(WS* !InlineElementID InlineElement WS*)+  { // includes heading and trailing spaces in the elements arg
+InlineElements <- !BlockDelimiter elements:(WS* !InlineElementID InlineElement WS*)+ { // absorbs heading and trailing spaces
     return types.NewInlineElements(elements.([]interface{}))
 } 
 
-InlineElements <- !BlockDelimiter elements:(WS* !InlineElementID InlineElement)+  { // absorbs heading and trailing spaces
-    return types.NewInlineElements(elements.([]interface{}))
-} 
-
-InlineElement <- CrossReference / Passthrough / InlineImage / QuotedText / Link / DocumentAttributeSubstitution / Characters
+InlineElement <- CrossReference / Passthrough / InlineImage / QuotedText / Link / DocumentAttributeSubstitution / Word
 
 // ----------------------------------------------------------------------------
 // Quoted Texts (bold, italic and monospace) including substitution prevention
@@ -472,11 +464,11 @@ EscapedMonospaceText <- backslashes:(`\\` `\`*) "``" content:(QuotedTextContent)
 
 QuotedTextContent <- QuotedTextContentElement (WS+ QuotedTextContentElement)*
 
-QuotedTextContentElement <- QuotedText / QuotedTextCharacters / CharactersWithQuotePunctuation // word with quote punctuation is only accepted if nothing matched before, so we have a chance to stop
+QuotedTextContentElement <- QuotedText / QuotedTextWord / WordWithQuotePunctuation // word with quote punctuation is only accepted if nothing matched before, so we have a chance to stop
 
-QuotedTextCharacters <- (!NEWLINE !WS !"*" !"_" !"`" .)+ // cannot have "*", "_" or "`" within
+QuotedTextWord <- (!NEWLINE !WS !"*" !"_" !"`" .)+ // cannot have "*", "_" or "`" within
 
-CharactersWithQuotePunctuation <- (!NEWLINE !WS  .)+ { // can have "*", "_" or "`" within, maybe because the user inserted another quote, or made an error (extra or missing space, for example)
+WordWithQuotePunctuation <- (!NEWLINE !WS  .)+ { // can have "*", "_" or "`" within, maybe because the user inserted another quote, or made an error (extra or missing space, for example)
     return c.text, nil
 }
 
@@ -560,19 +552,19 @@ BlockDelimiter <- LiteralBlockDelimiter / FencedBlockDelimiter / ListingBlockDel
 
 FencedBlockDelimiter <- "```"
 
-FencedBlock <- attributes:(ElementAttribute)* FencedBlockDelimiter WS* NEWLINE content:(List / Paragraph / BlankLine)* ((FencedBlockDelimiter WS* EOL) / EOF) {
+FencedBlock <- attributes:(ElementAttribute)* FencedBlockDelimiter WS* NEWLINE content:(List / InnerParagraph / BlankLine)* ((FencedBlockDelimiter WS* EOL) / EOF) {
     return types.NewDelimitedBlock(types.FencedBlock, content.([]interface{}), attributes.([]interface{}))
 }
 
 ListingBlockDelimiter <- "----"
 
-ListingBlock <- attributes:(ElementAttribute)* ListingBlockDelimiter WS* NEWLINE content:(List / Paragraph / BlankLine)* ((ListingBlockDelimiter WS* EOL) / EOF) {
+ListingBlock <- attributes:(ElementAttribute)* ListingBlockDelimiter WS* NEWLINE content:(List / InnerParagraph / BlankLine)* ((ListingBlockDelimiter WS* EOL) / EOF) {
     return types.NewDelimitedBlock(types.ListingBlock, content.([]interface{}), attributes.([]interface{}))
 }
 
 ExampleBlockDelimiter <- "===="
 
-ExampleBlock <- attributes:(ElementAttribute)* ExampleBlockDelimiter WS* NEWLINE content:(List / Paragraph / BlankLine)*  ((ExampleBlockDelimiter WS* EOL) / EOF) {
+ExampleBlock <- attributes:(ElementAttribute)* ExampleBlockDelimiter WS* NEWLINE content:(List / InnerParagraph / BlankLine)*  ((ExampleBlockDelimiter WS* EOL) / EOF) {
     return types.NewDelimitedBlock(types.ExampleBlock, content.([]interface{}), attributes.([]interface{}))
 }
 
@@ -595,7 +587,7 @@ LiteralBlockContent <- content:(!(NEWLINE BlankLine) .)+ {
 EndOfLiteralBlock <- NEWLINE BlankLine / NEWLINE / EOF
 
 // paragraph with the literal block delimiter (`....`)
-ParagraphWithLiteralBlockDelimiter <- LiteralBlockDelimiter WS* NEWLINE content:(!LiteralBlockDelimiter .)* LiteralBlockDelimiter WS* EOL {
+ParagraphWithLiteralBlockDelimiter <- LiteralBlockDelimiter WS* NEWLINE content:(!LiteralBlockDelimiter .)* ((LiteralBlockDelimiter WS* EOL) / EOF) {
     return types.NewLiteralBlock([]interface{}{}, content.([]interface{}))
 }
 
@@ -616,7 +608,7 @@ BlankLine <- !EOF WS* EOL {
 // ------------------------------------------
 // Base Types
 // ------------------------------------------
-Characters <- (!NEWLINE !WS .)+ {
+Word <- (!NEWLINE !WS .)+ {
     return string(c.text), nil
 }
 

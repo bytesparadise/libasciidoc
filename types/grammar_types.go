@@ -666,36 +666,6 @@ func newList(items []ListItem, attributes []interface{}) (List, error) {
 }
 
 // ------------------------------------------
-// List Paragraph
-// ------------------------------------------
-
-// ListParagraph the structure for the list paragraphs
-type ListParagraph struct {
-	Lines []InlineElements
-}
-
-// NewListParagraph initializes a new `ListParagraph`
-func NewListParagraph(lines []interface{}) (ListParagraph, error) {
-	// log.Debugf("Initializing a new ListParagraph with %d line(s): %v", len(lines), lines)
-	elements := make([]InlineElements, 0)
-	for _, line := range lines {
-		if lineElements, ok := line.([]interface{}); ok {
-			for _, lineElement := range lineElements {
-				if e, ok := lineElement.(InlineElements); ok {
-					// log.Debugf(" processing paragraph line of type %T", e)
-					// each `line` element is an array with the actual `InlineElements` + `EOF`
-					elements = append(elements, e)
-				}
-			}
-		}
-	}
-	// log.Debugf("Initialized a new ListParagraph with %d element(s): %v", len(elements), elements)
-	return ListParagraph{
-		Lines: elements,
-	}, nil
-}
-
-// ------------------------------------------
 // Ordered Lists
 // ------------------------------------------
 
@@ -1238,20 +1208,21 @@ type InlineElements []interface{}
 
 // NewInlineElements initializes a new `InlineElements` from the given values
 func NewInlineElements(elements []interface{}) (InlineElements, error) {
-	return mergeElements(elements), nil
+	result := mergeElements(elements)
+	return result, nil
 }
 
 // Accept implements Visitable#Accept(Visitor)
-func (c InlineElements) Accept(v Visitor) error {
-	err := v.BeforeVisit(c)
+func (e InlineElements) Accept(v Visitor) error {
+	err := v.BeforeVisit(e)
 	if err != nil {
 		return errors.Wrapf(err, "error while pre-visiting inline content")
 	}
-	err = v.Visit(c)
+	err = v.Visit(e)
 	if err != nil {
 		return errors.Wrapf(err, "error while visiting inline content")
 	}
-	for _, element := range c {
+	for _, element := range e {
 		if visitable, ok := element.(Visitable); ok {
 			err = visitable.Accept(v)
 			if err != nil {
@@ -1259,7 +1230,7 @@ func (c InlineElements) Accept(v Visitor) error {
 			}
 		}
 	}
-	err = v.AfterVisit(c)
+	err = v.AfterVisit(e)
 	if err != nil {
 		return errors.Wrapf(err, "error while post-visiting sectionTitle")
 	}
