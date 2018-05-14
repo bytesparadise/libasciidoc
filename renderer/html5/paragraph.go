@@ -13,6 +13,7 @@ import (
 var paragraphTmpl texttemplate.Template
 var admonitionParagraphTmpl texttemplate.Template
 var admonitionParagraphContentTmpl texttemplate.Template
+var listParagraphTmpl texttemplate.Template
 
 // initializes the templates
 func init() {
@@ -47,6 +48,13 @@ func init() {
 
 	admonitionParagraphContentTmpl = newTextTemplate("admonition paragraph content",
 		`{{ $ctx := .Context }}{{ with .Data }}{{ $lines := .Lines }}{{ range $index, $line := $lines }}{{ renderElement $ctx $line | printf "%s" }}{{ if includeNewline $ctx $index $lines }}{{ print "\n" }}{{ end }}{{ end }}{{ end }}`,
+		texttemplate.FuncMap{
+			"renderElement":  renderElement,
+			"includeNewline": includeNewline,
+		})
+
+	listParagraphTmpl = newTextTemplate("list paragraph",
+		`{{ $ctx := .Context }}{{ with .Data }}<p>{{ $lines := .Lines }}{{ range $index, $line := $lines }}{{ renderElement $ctx $line | printf "%s" }}{{ if includeNewline $ctx $index $lines }}{{ print "\n" }}{{ end }}{{ end }}</p>{{ end }}`,
 		texttemplate.FuncMap{
 			"renderElement":  renderElement,
 			"includeNewline": includeNewline,
@@ -87,7 +95,22 @@ func renderParagraph(ctx *renderer.Context, p types.Paragraph) ([]byte, error) {
 				Lines: p.Lines,
 			},
 		})
+	} else if ctx.WithinDelimitedBlock() || ctx.WithinList() {
+		log.Debug("rendering paragraph within a delimited block or a list")
+		err = listParagraphTmpl.Execute(result, ContextualPipeline{
+			Context: ctx,
+			Data: struct {
+				ID    string
+				Title string
+				Lines []types.InlineElements
+			}{
+				ID:    id,
+				Title: title,
+				Lines: p.Lines,
+			},
+		})
 	} else {
+		log.Debug("rendering a standalone paragraph")
 		err = paragraphTmpl.Execute(result, ContextualPipeline{
 			Context: ctx,
 			Data: struct {
@@ -100,6 +123,7 @@ func renderParagraph(ctx *renderer.Context, p types.Paragraph) ([]byte, error) {
 				Lines: p.Lines,
 			},
 		})
+
 	}
 	if err != nil {
 		return nil, errors.Wrapf(err, "unable to render paragraph")

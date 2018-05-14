@@ -453,8 +453,36 @@ a paragraph`
 			verify(GinkgoT(), expectedResult, actualContent)
 		})
 
-		It("sections with IDs", func() {
-			actualContent := `= a header
+		It("single section with custom IDs", func() {
+			actualContent := `[[custom_header]]
+== a header`
+			sectionTitle := types.SectionTitle{
+				Attributes: map[string]interface{}{
+					types.AttrID: "custom_header",
+				},
+				Content: types.InlineElements{
+					types.StringElement{Content: "a header"},
+				},
+			}
+			expectedResult := types.Document{
+				Attributes: map[string]interface{}{},
+				ElementReferences: map[string]interface{}{
+					"custom_header": sectionTitle,
+				},
+				Elements: []interface{}{
+					types.Section{
+						Level:    1,
+						Title:    sectionTitle,
+						Elements: []interface{}{},
+					},
+				},
+			}
+			verify(GinkgoT(), expectedResult, actualContent)
+		})
+
+		It("multiple sections with custom IDs", func() {
+			actualContent := `[[custom_header]]
+= a header
 
 == Section F [[foo]]
 
@@ -463,7 +491,7 @@ a paragraph`
 a paragraph`
 			doctitle := types.SectionTitle{
 				Attributes: map[string]interface{}{
-					types.AttrID: "_a_header",
+					types.AttrID: "custom_header",
 				},
 				Content: types.InlineElements{
 					types.StringElement{Content: "a header"},
@@ -474,7 +502,7 @@ a paragraph`
 					types.AttrID: "foo",
 				},
 				Content: types.InlineElements{
-					types.StringElement{Content: "Section F"},
+					types.StringElement{Content: "Section F "},
 				},
 			}
 			barTitle := types.SectionTitle{

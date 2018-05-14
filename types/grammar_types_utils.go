@@ -40,14 +40,6 @@ blocks:
 	for _, block := range blocks {
 		// check if filter option applies to the element
 		switch block := block.(type) {
-		// case BlankLine:
-		// 	// exclude blank lines from here, we won't need them in the rendering anyways
-		// case Preamble:
-		// 	// exclude empty preambles
-		// 	if len(block.Elements) > 0 {
-		// 		// exclude empty preamble
-		// 		elements = append(elements, block)
-		// 	}
 		case []interface{}:
 			result := filterEmptyElements(block, filters...)
 			elements = append(elements, result...)
@@ -69,12 +61,16 @@ blocks:
 	return elements
 }
 
-func mergeElements(elements []interface{}, extraElements ...interface{}) InlineElements {
+type mergeOption func([]interface{}) []interface{}
+
+// removeEmptyTrailingStringElement removes the last
+// func removeEmptyTrailingStringElement([]interface{}) []interface{}
+
+func mergeElements(elements []interface{}, options ...mergeOption) InlineElements {
 	result := make([]interface{}, 0)
-	allElements := append(elements, extraElements...)
 	// log.Debugf("Merging %d element(s):", len(allElements))
 	buff := bytes.NewBuffer(nil)
-	for _, element := range allElements {
+	for _, element := range elements {
 		if element == nil {
 			continue
 		}
@@ -90,17 +86,11 @@ func mergeElements(elements []interface{}, extraElements ...interface{}) InlineE
 		case StringElement:
 			content := element.Content
 			buff.WriteString(content)
-		// case InlineElements:
-		// 	inlineElements := make([]interface{}, len(element.Elements))
-		// 	for i, e := range element.Elements {
-		// 		inlineElements[i] = e
-		// 	}
-		// 	result = mergeElements(result, inlineElements...)
 		case []interface{}:
 			if len(element) > 0 {
 				f := mergeElements(element)
 				result, buff = appendBuffer(result, buff)
-				result = mergeElements(result, f...)
+				result = mergeElements(append(result, f...))
 			}
 		default:
 			log.Debugf("Merging with 'default' case an element of type %[1]T", element)
@@ -110,7 +100,9 @@ func mergeElements(elements []interface{}, extraElements ...interface{}) InlineE
 	}
 	// if buff was filled because some text was found
 	result, _ = appendBuffer(result, buff)
-
+	for _, opt := range options {
+		result = opt(result)
+	}
 	return result
 }
 

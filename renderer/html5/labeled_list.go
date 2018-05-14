@@ -67,6 +67,12 @@ func renderLabeledList(ctx *renderer.Context, l types.LabeledList) ([]byte, erro
 		tmpl = defaultLabeledListTmpl
 	}
 
+	// make sure nested elements are aware of that their rendering occurs within a list
+	ctx.SetWithinList(true)
+	defer func() {
+		ctx.SetWithinList(false)
+	}()
+
 	result := bytes.NewBuffer(nil)
 	// here we must preserve the HTML tags
 	err := tmpl.Execute(result, ContextualPipeline{

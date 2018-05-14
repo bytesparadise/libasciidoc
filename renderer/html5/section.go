@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"html/template"
 	"strconv"
+	"strings"
 
 	"github.com/bytesparadise/libasciidoc/renderer"
 
@@ -105,7 +106,7 @@ func renderSectionTitle(ctx *renderer.Context, level int, sectionTitle types.Sec
 	if err != nil {
 		return nil, errors.Wrapf(err, "error while rendering sectionTitle content")
 	}
-	content := template.HTML(string(renderedContent))
+	content := template.HTML(strings.TrimSpace(string(renderedContent)))
 	var id string
 	if i, ok := sectionTitle.Attributes[types.AttrID].(string); ok {
 		id = i

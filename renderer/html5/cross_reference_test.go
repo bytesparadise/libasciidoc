@@ -4,16 +4,15 @@ import . "github.com/onsi/ginkgo"
 
 var _ = Describe("cross references", func() {
 
-	Context("reference to section", func() {
+	Context("section reference", func() {
 
-		Context("valid reference", func() {
+		It("valid section reference", func() {
 
-			It("custom id", func() {
-				actualContent := `[[thetitle]]
+			actualContent := `[[thetitle]]
 == a title
 
 with some content linked to <<thetitle>>!`
-				expectedResult := `<div class="sect1">
+			expectedResult := `<div class="sect1">
 <h2 id="thetitle">a title</h2>
 <div class="sectionbody">
 <div class="paragraph">
@@ -21,18 +20,16 @@ with some content linked to <<thetitle>>!`
 </div>
 </div>
 </div>`
-				verify(GinkgoT(), expectedResult, actualContent)
-			})
+			verify(GinkgoT(), expectedResult, actualContent)
 		})
 
-		Context("invalid reference", func() {
+		It("invalid section reference", func() {
 
-			It("custom id", func() {
-				actualContent := `[[thetitle]]
+			actualContent := `[[thetitle]]
 == a title
 
 with some content linked to <<thewrongtitle>>!`
-				expectedResult := `<div class="sect1">
+			expectedResult := `<div class="sect1">
 <h2 id="thetitle">a title</h2>
 <div class="sectionbody">
 <div class="paragraph">
@@ -40,8 +37,7 @@ with some content linked to <<thewrongtitle>>!`
 </div>
 </div>
 </div>`
-				verify(GinkgoT(), expectedResult, actualContent)
-			})
+			verify(GinkgoT(), expectedResult, actualContent)
 		})
 	})
 })

@@ -31,6 +31,12 @@ func init() {
 }
 
 func renderUnorderedList(ctx *renderer.Context, l types.UnorderedList) ([]byte, error) {
+	// make sure nested elements are aware of that their rendering occurs within a list
+	ctx.SetWithinList(true)
+	defer func() {
+		ctx.SetWithinList(false)
+	}()
+
 	result := bytes.NewBuffer(nil)
 	// here we must preserve the HTML tags
 	err := unorderedListTmpl.Execute(result, ContextualPipeline{

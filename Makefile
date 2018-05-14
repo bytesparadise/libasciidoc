@@ -93,6 +93,7 @@ endif
 .PHONY: generate
 ## generates the .go file based on the asciidoc grammar
 generate:
+	@echo "generating the parser..."
 	@pigeon ./parser/asciidoc-grammar.peg > ./parser/asciidoc_parser.go
 
 

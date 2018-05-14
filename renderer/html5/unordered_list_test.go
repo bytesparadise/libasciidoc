@@ -24,6 +24,31 @@ var _ = Describe("unordered lists", func() {
 		verify(GinkgoT(), expectedResult, actualContent)
 	})
 
+	It("simple unordered list with no title then a paragraph", func() {
+		actualContent := `* item 1
+* item 2
+* item 3
+
+and a standalone paragraph`
+		expectedResult := `<div class="ulist">
+<ul>
+<li>
+<p>item 1</p>
+</li>
+<li>
+<p>item 2</p>
+</li>
+<li>
+<p>item 3</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>and a standalone paragraph</p>
+</div>`
+		verify(GinkgoT(), expectedResult, actualContent)
+	})
+
 	It("simple unordered list with a title", func() {
 		actualContent := `[#foo]
 	* item 1

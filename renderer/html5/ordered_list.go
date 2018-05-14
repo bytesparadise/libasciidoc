@@ -33,7 +33,12 @@ func init() {
 
 func renderOrderedList(ctx *renderer.Context, l types.OrderedList) ([]byte, error) {
 	result := bytes.NewBuffer(nil)
-	// here we must preserve the HTML tags
+	// make sure nested elements are aware of that their rendering occurs within a list
+	ctx.SetWithinList(true)
+	defer func() {
+		ctx.SetWithinList(false)
+	}()
+
 	err := orderedListTmpl.Execute(result, ContextualPipeline{
 		Context: ctx,
 		Data:    l,

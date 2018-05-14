@@ -67,9 +67,11 @@ func renderDelimitedBlock(ctx *renderer.Context, b types.DelimitedBlock) ([]byte
 			}
 			content = append(content, s...)
 		}
-		ctx.IgnoreBlankLine(false)
+		ctx.SetIncludeBlankLine(true)
+		ctx.SetWithinDelimitedBlock(true)
 		defer func() {
-			ctx.IgnoreBlankLine(true)
+			ctx.SetIncludeBlankLine(false)
+			ctx.SetIncludeBlankLine(false)
 		}()
 
 		err = listingBlockTmpl.Execute(result, ContextualPipeline{

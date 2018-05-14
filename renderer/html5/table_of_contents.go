@@ -3,6 +3,7 @@ package html5
 import (
 	"bytes"
 	"html/template"
+	"strings"
 
 	"github.com/bytesparadise/libasciidoc/renderer"
 	"github.com/bytesparadise/libasciidoc/types"
@@ -83,7 +84,7 @@ func renderTableOfContentSections(ctx *renderer.Context, elements []interface{},
 			sections = append(sections, TableOfContentSection{
 				Level:       section.Level,
 				Href:        id,
-				Title:       template.HTML(string(renderedTitle)),
+				Title:       template.HTML(strings.TrimSpace(string(renderedTitle))),
 				Subelements: renderedChildSections,
 			})
 		}

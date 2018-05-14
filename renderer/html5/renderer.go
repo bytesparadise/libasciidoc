@@ -35,8 +35,6 @@ func renderElement(ctx *renderer.Context, element interface{}) ([]byte, error) {
 		return renderUnorderedList(ctx, e)
 	case types.Paragraph:
 		return renderParagraph(ctx, e)
-	case types.ListParagraph:
-		return renderListParagraph(ctx, e)
 	case types.CrossReference:
 		return renderCrossReference(ctx, e)
 	case types.QuotedText:
@@ -193,7 +191,7 @@ func includeNewline(ctx renderer.Context, index int, content interface{}) bool {
 	case reflect.Slice, reflect.Array:
 		s := reflect.ValueOf(content)
 		if _, match := s.Index(index).Interface().(types.BlankLine); match {
-			return ctx.RenderBlankLine()
+			return ctx.IncludeBlankLine()
 		}
 		return index < s.Len()-1
 	default:
