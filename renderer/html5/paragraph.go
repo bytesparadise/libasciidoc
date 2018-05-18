@@ -23,7 +23,7 @@ func init() {
 <p>{{ $renderedElements }}</p>
 </div>{{ end }}{{ end }}`,
 		texttemplate.FuncMap{
-			"renderElements": renderInlineElementss,
+			"renderElements": renderAllInlineElements,
 			"includeNewline": includeNewline,
 		})
 
@@ -42,7 +42,7 @@ func init() {
 </table>
 </div>{{ end }}{{ end }}`,
 		texttemplate.FuncMap{
-			"renderElements": renderInlineElementss,
+			"renderElements": renderAllInlineElements,
 			"includeNewline": includeNewline,
 		})
 

@@ -121,18 +121,6 @@ func renderPlainString(ctx *renderer.Context, element interface{}) ([]byte, erro
 	}
 }
 
-func renderPlainStringForInlineElementss(ctx *renderer.Context, elements []types.InlineElements) ([]byte, error) {
-	buff := bytes.NewBuffer(nil)
-	for _, e := range elements {
-		plainStringElement, err := renderPlainString(ctx, e)
-		if err != nil {
-			return nil, errors.Wrap(err, "unable to render plain string value")
-		}
-		buff.Write(plainStringElement)
-	}
-	return buff.Bytes(), nil
-}
-
 func renderPlainStringForInlineElements(ctx *renderer.Context, elements []interface{}) ([]byte, error) {
 	buff := bytes.NewBuffer(nil)
 	// for _, e := range discardTrailingBlankLinesInInlineElements(elements) {
@@ -142,25 +130,6 @@ func renderPlainStringForInlineElements(ctx *renderer.Context, elements []interf
 			return nil, errors.Wrap(err, "unable to render plain string value")
 		}
 		buff.Write(plainStringElement)
-	}
-	return buff.Bytes(), nil
-}
-
-// renderElements renders each element and includes an `\n` character until the last item
-func renderInlineElementss(ctx *renderer.Context, elements []types.InlineElements) ([]byte, error) {
-	buff := bytes.NewBuffer(nil)
-	for i, e := range elements {
-		renderedElement, err := renderElement(ctx, e)
-		if err != nil {
-			return nil, errors.Wrap(err, "unable to render element")
-		}
-		if len(renderedElement) > 0 {
-			buff.Write(renderedElement)
-			if i < len(elements)-1 {
-				log.Debugf("rendered element of type %T is not the last one", e)
-				buff.WriteString("\n")
-			}
-		}
 	}
 	return buff.Bytes(), nil
 }
