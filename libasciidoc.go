@@ -4,10 +4,10 @@ import (
 	"context"
 	"io"
 
-	"github.com/bytesparadise/libasciidoc/parser"
-	"github.com/bytesparadise/libasciidoc/renderer"
-	htmlrenderer "github.com/bytesparadise/libasciidoc/renderer/html5"
-	"github.com/bytesparadise/libasciidoc/types"
+	"github.com/bytesparadise/libasciidoc/pkg/parser"
+	"github.com/bytesparadise/libasciidoc/pkg/renderer"
+	htmlrenderer "github.com/bytesparadise/libasciidoc/pkg/renderer/html5"
+	"github.com/bytesparadise/libasciidoc/pkg/types"
 	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
 )

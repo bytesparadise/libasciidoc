@@ -11,8 +11,6 @@ GO_BIN_NAME := go
 GO_BIN := $(shell command -v $(GO_BIN_NAME) 2> /dev/null)
 EXTRA_PATH=$(shell dirname $(GO_BINDATA_BIN))
 
-PROJECT_NAME=libasciidoc
-PACKAGE_NAME := github.com/bytesparadise/libasciidoc
 CUR_DIR=$(shell pwd)
 TMP_PATH=$(CUR_DIR)/tmp
 INSTALL_PREFIX=$(CUR_DIR)/bin
@@ -94,7 +92,7 @@ endif
 ## generates the .go file based on the asciidoc grammar
 generate:
 	@echo "generating the parser..."
-	@pigeon ./parser/asciidoc-grammar.peg > ./parser/asciidoc_parser.go
+	@pigeon ./pkg/parser/asciidoc-grammar.peg > ./pkg/parser/asciidoc_parser.go
 
 
 .PHONY: test
