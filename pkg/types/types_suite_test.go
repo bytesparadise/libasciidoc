@@ -1,4 +1,4 @@
-package libasciidoc_test
+package types_test
 
 import (
 	. "github.com/onsi/ginkgo"
@@ -9,7 +9,7 @@ import (
 	_ "github.com/bytesparadise/libasciidoc/pkg/log"
 )
 
-func TestLibasciidoc(t *testing.T) {
+func TestTypes(t *testing.T) {
 	RegisterFailHandler(Fail)
-	RunSpecs(t, "Libasciidoc Suite")
+	RunSpecs(t, "Types Suite")
 }

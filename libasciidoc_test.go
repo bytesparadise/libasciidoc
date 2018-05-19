@@ -7,7 +7,7 @@ import (
 	"time"
 
 	. "github.com/bytesparadise/libasciidoc"
-	"github.com/bytesparadise/libasciidoc/renderer"
+	"github.com/bytesparadise/libasciidoc/pkg/renderer"
 	. "github.com/onsi/ginkgo"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"

@@ -8,7 +8,7 @@ import (
 	"path/filepath"
 
 	"github.com/bytesparadise/libasciidoc"
-	"github.com/bytesparadise/libasciidoc/renderer"
+	"github.com/bytesparadise/libasciidoc/pkg/renderer"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 )
