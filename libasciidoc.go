@@ -12,6 +12,15 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+var (
+	// BuildCommit lastest build commit (set by Makefile)
+	BuildCommit = ""
+	// BuildTag if the `BuildCommit` matches a tag
+	BuildTag = ""
+	// BuildTime set by build script (set by Makefile)
+	BuildTime = ""
+)
+
 // ConvertFileToHTML converts the content of the given filename into an HTML document.
 // The conversion result is written in the given writer `output`, whereas the document metadata (title, etc.) (or an error if a problem occurred) is returned
 // as the result of the function call.
