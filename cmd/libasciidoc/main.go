@@ -11,6 +11,7 @@ import (
 
 func main() {
 	rootCmd := NewRootCmd()
+	versionCmd := NewVersionCmd()
 	rootCmd.AddCommand(versionCmd)
 	rootCmd.SetHelpCommand(helpCommand)
 	// rootCmd.SetHelpTemplate(helpTemplate)

@@ -104,5 +104,13 @@ test: deps generate
 .PHONY: build
 ## builds the binary executable from CLI
 build: $(INSTALL_PREFIX) deps
-	@echo "building $(BINARY_PATH) ..."
-	@go build -o $(BINARY_PATH) cmd/libasciidoc/*.go
+	$(eval BUILD_COMMIT:=$(shell git rev-parse --short HEAD))
+	$(eval BUILD_TAG:=$(shell git tag --contains $(BUILD_COMMIT)))
+	$(eval BUILD_TIME:=$(shell date -u '+%Y-%m-%dT%H:%M:%SZ'))
+	@echo "building $(BINARY_PATH) (commit:$(BUILD_COMMIT) / tag:$(BUILD_TAG) / time:$(BUILD_TIME))"
+	@go build -ldflags \
+	  " -X github.com/bytesparadise/libasciidoc.BuildCommit=$(BUILD_COMMIT)\
+	    -X github.com/bytesparadise/libasciidoc.BuildTag=$(BUILD_TAG) \
+	    -X github.com/bytesparadise/libasciidoc.BuildTime=$(BUILD_TIME)" \
+	  -o $(BINARY_PATH) \
+	  cmd/libasciidoc/*.go
