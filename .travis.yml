@@ -28,6 +28,7 @@ matrix:
 script: 
   - make generate
   - make test
+  - make build
 
 after_success:
   - gover . coverage.txt

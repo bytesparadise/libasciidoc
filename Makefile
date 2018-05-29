@@ -94,7 +94,6 @@ generate:
 	@echo "generating the parser..."
 	@pigeon ./pkg/parser/asciidoc-grammar.peg > ./pkg/parser/asciidoc_parser.go
 
-
 .PHONY: test
 ## run all tests except in the 'vendor' package 
 test: deps generate
@@ -103,7 +102,7 @@ test: deps generate
 
 .PHONY: build
 ## builds the binary executable from CLI
-build: $(INSTALL_PREFIX) deps
+build: $(INSTALL_PREFIX) deps generate
 	$(eval BUILD_COMMIT:=$(shell git rev-parse --short HEAD))
 	$(eval BUILD_TAG:=$(shell git tag --contains $(BUILD_COMMIT)))
 	$(eval BUILD_TIME:=$(shell date -u '+%Y-%m-%dT%H:%M:%SZ'))
@@ -114,3 +113,8 @@ build: $(INSTALL_PREFIX) deps
 	    -X github.com/bytesparadise/libasciidoc.BuildTime=$(BUILD_TIME)" \
 	  -o $(BINARY_PATH) \
 	  cmd/libasciidoc/*.go
+
+.PHONY: install
+## installs the binary executable in the $GOPATH/bin directory
+install: build
+	cp $(BINARY_PATH) $(GOPATH)/bin
