@@ -511,8 +511,32 @@ some listing code
 			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("BlockElement"))
 		})
 
+		It("example block with single line starrting with a dot", func() {
+			actualContent := `====
+.foo
+====`
+			expectedResult := types.DelimitedBlock{
+				Kind:       types.ExampleBlock,
+				Attributes: map[string]interface{}{},
+				Elements: []interface{}{
+					types.Paragraph{
+						Attributes: map[string]interface{}{},
+						Lines: []types.InlineElements{
+							{
+								types.StringElement{
+									Content: ".foo",
+								},
+							},
+						},
+					},
+				},
+			}
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("BlockElement"))
+		})
+
 		It("example block with multiple lines", func() {
 			actualContent := `====
+.foo
 some listing code
 with *bold content*
 
@@ -525,6 +549,11 @@ with *bold content*
 					types.Paragraph{
 						Attributes: map[string]interface{}{},
 						Lines: []types.InlineElements{
+							{
+								types.StringElement{
+									Content: ".foo",
+								},
+							},
 							{
 								types.StringElement{
 									Content: "some listing code",

@@ -265,7 +265,7 @@ HorizontalLayout <- "[horizontal]" {
     return map[string]interface{}{"layout": "horizontal"}, nil
 }
 
-InnerParagraph <-  lines:(
+ListParagraph <-  lines:(
     !(OrderedListItemPrefix) 
     !(UnorderedListItemPrefix) 
     !(LabeledListItemTerm LabeledListItemSeparator) 
@@ -316,7 +316,7 @@ WS* style:(".") WS+ { // numbering style: "."
     return types.NewOrderedListItemPrefix(types.UpperRoman, 1)
 } 
 
-OrderedListItemContent <- elements:(InnerParagraph+ ContinuedBlockElement*) { // Another list or a literal paragraph immediately following a list item will be implicitly included in the list item
+OrderedListItemContent <- elements:(ListParagraph+ ContinuedBlockElement*) { // Another list or a literal paragraph immediately following a list item will be implicitly included in the list item
     return types.NewListItemContent(elements.([]interface{}))
 } 
 
@@ -341,7 +341,7 @@ UnorderedListItemPrefix <- WS* level:("*****") WS+ { // ignore whitespaces, only
     return types.NewUnorderedListItemPrefix(types.Dash, 1)
 } 
 
-UnorderedListItemContent <- elements:(InnerParagraph+ ContinuedBlockElement*) { // Another list or a literal paragraph immediately following a list item will be implicitly included in the list item
+UnorderedListItemContent <- elements:(ListParagraph+ ContinuedBlockElement*) { // Another list or a literal paragraph immediately following a list item will be implicitly included in the list item
     return types.NewListItemContent(elements.([]interface{}))
 } 
 
@@ -361,7 +361,7 @@ LabeledListItemTerm <- term:(!NEWLINE !"::" .)*  {
 // term separator: ('::') and at least one space or endline
 LabeledListItemSeparator <-  "::" (WS / NEWLINE)+
 
-LabeledListItemDescription <- elements:(InnerParagraph / ContinuedBlockElement)* { // TODO: replace with (InnerParagraph+ ContinuedBlockElement*) and use a single rule for all item contents ?
+LabeledListItemDescription <- elements:(ListParagraph / ContinuedBlockElement)* { // TODO: replace with (ListParagraph+ ContinuedBlockElement*) and use a single rule for all item contents ?
     return types.NewListItemContent(elements.([]interface{}))
 }
 
@@ -552,21 +552,32 @@ BlockDelimiter <- LiteralBlockDelimiter / FencedBlockDelimiter / ListingBlockDel
 
 FencedBlockDelimiter <- "```"
 
-FencedBlock <- attributes:(ElementAttribute)* FencedBlockDelimiter WS* NEWLINE content:(List / InnerParagraph / BlankLine)* ((FencedBlockDelimiter WS* EOL) / EOF) {
+FencedBlock <- attributes:(ElementAttribute)* FencedBlockDelimiter WS* NEWLINE content:(List / BlockParagraph / BlankLine)* ((FencedBlockDelimiter WS* EOL) / EOF) {
     return types.NewDelimitedBlock(types.FencedBlock, content.([]interface{}), attributes.([]interface{}))
 }
 
 ListingBlockDelimiter <- "----"
 
-ListingBlock <- attributes:(ElementAttribute)* ListingBlockDelimiter WS* NEWLINE content:(List / InnerParagraph / BlankLine)* ((ListingBlockDelimiter WS* EOL) / EOF) {
+ListingBlock <- attributes:(ElementAttribute)* ListingBlockDelimiter WS* NEWLINE content:(List / BlockParagraph / BlankLine)* ((ListingBlockDelimiter WS* EOL) / EOF) {
     return types.NewDelimitedBlock(types.ListingBlock, content.([]interface{}), attributes.([]interface{}))
 }
 
 ExampleBlockDelimiter <- "===="
 
-ExampleBlock <- attributes:(ElementAttribute)* ExampleBlockDelimiter WS* NEWLINE content:(List / InnerParagraph / BlankLine)*  ((ExampleBlockDelimiter WS* EOL) / EOF) {
+ExampleBlock <- attributes:(ElementAttribute)* ExampleBlockDelimiter WS* NEWLINE content:(List / BlockParagraph / BlankLine)*  ((ExampleBlockDelimiter WS* EOL) / EOF) {
     return types.NewDelimitedBlock(types.ExampleBlock, content.([]interface{}), attributes.([]interface{}))
 }
+
+BlockParagraph <-  lines:(
+    !(OrderedListItemPrefix) 
+    !(UnorderedListItemPrefix) 
+    !(LabeledListItemTerm LabeledListItemSeparator) 
+    !(ListItemContinuation) 
+    //!(ElementAttribute)
+    !(BlockDelimiter)
+    InlineElements EOL)+ {
+    return types.NewParagraph(lines.([]interface{}), nil)
+} 
 
 // -------------------------------------------------------------------------------------
 // Literal Blocks (see http://asciidoctor.org/docs/user-manual/#literal-text-and-blocks)
