@@ -17,7 +17,20 @@ import (
 var _ = Describe("root cmd", func() {
 	RegisterFailHandler(Fail)
 
-	It("ok", func() {
+	It("render with STDOUT output", func() {
+		// given
+		root := main.NewRootCmd()
+		buf := new(bytes.Buffer)
+		root.SetOutput(buf)
+		root.SetArgs([]string{"-o", "-", "test/test.adoc"})
+		// when
+		err := root.Execute()
+		// then
+		require.NoError(GinkgoT(), err)
+		require.NotEmpty(GinkgoT(), buf)
+	})
+
+	It("render with file output", func() {
 		// given
 		root := main.NewRootCmd()
 		buf := new(bytes.Buffer)
@@ -27,10 +40,12 @@ var _ = Describe("root cmd", func() {
 		err := root.Execute()
 		// then
 		require.NoError(GinkgoT(), err)
-		require.NotEmpty(GinkgoT(), buf)
+		content, err := ioutil.ReadFile("test/test.html")
+		require.NoError(GinkgoT(), err)
+		require.NotEmpty(GinkgoT(), content)
 	})
 
-	It("should fail to parse bad log level", func() {
+	It("fail to parse bad log level", func() {
 		// given
 		root := main.NewRootCmd()
 		buf := new(bytes.Buffer)
@@ -43,12 +58,12 @@ var _ = Describe("root cmd", func() {
 		require.Error(GinkgoT(), err)
 	})
 
-	It("should render without header/footer", func() {
+	It("render without header/footer", func() {
 		// given
 		root := main.NewRootCmd()
 		buf := new(bytes.Buffer)
 		root.SetOutput(buf)
-		root.SetArgs([]string{"-s", "test/test.adoc"})
+		root.SetArgs([]string{"-s", "-o", "-", "test/test.adoc"})
 		// when
 		err := root.Execute()
 		// then
@@ -57,7 +72,7 @@ var _ = Describe("root cmd", func() {
 		Expect(buf.String()).ToNot(ContainSubstring(`<div id="footer">`))
 	})
 
-	It("should process stdin", func() {
+	It("process stdin", func() {
 		// given
 		root := main.NewRootCmd()
 		buf := new(bytes.Buffer)
@@ -77,11 +92,9 @@ var _ = Describe("root cmd", func() {
 		oldstdin := os.Stdin
 		os.Stdin = tmpfile
 		defer func() { os.Stdin = oldstdin }()
-
 		root.SetArgs([]string{})
 		// when
 		err = root.Execute()
-
 		//then
 		GinkgoT().Logf("command output: %v", buf.String())
 		Expect(buf.String()).To(ContainSubstring(content))
@@ -89,7 +102,7 @@ var _ = Describe("root cmd", func() {
 		require.NotEmpty(GinkgoT(), buf)
 	})
 
-	It("should render multiple files", func() {
+	It("render multiple files", func() {
 		// given
 		root := main.NewRootCmd()
 		root.SetArgs([]string{"-s", "test/admonition.adoc", "test/test.adoc"})
