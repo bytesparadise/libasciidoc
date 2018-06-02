@@ -94,6 +94,14 @@ generate:
 	@echo "generating the parser..."
 	@pigeon ./pkg/parser/asciidoc-grammar.peg > ./pkg/parser/asciidoc_parser.go
 
+.PHONY: generate-optimized
+## generates the .go file based on the asciidoc grammar
+generate-optimized:
+	@echo "generating the parser..."
+	@pigeon -optimize-grammar ./pkg/parser/asciidoc-grammar.peg > ./pkg/parser/asciidoc_parser.go
+	# @pigeon -optimize-parser ./pkg/parser/asciidoc-grammar.peg > ./pkg/parser/asciidoc_parser.go
+
+
 .PHONY: test
 ## run all tests except in the 'vendor' package 
 test: deps generate
@@ -102,7 +110,7 @@ test: deps generate
 
 .PHONY: build
 ## builds the binary executable from CLI
-build: $(INSTALL_PREFIX) deps generate
+build: $(INSTALL_PREFIX) deps generate-optimized
 	$(eval BUILD_COMMIT:=$(shell git rev-parse --short HEAD))
 	$(eval BUILD_TAG:=$(shell git tag --contains $(BUILD_COMMIT)))
 	$(eval BUILD_TIME:=$(shell date -u '+%Y-%m-%dT%H:%M:%SZ'))

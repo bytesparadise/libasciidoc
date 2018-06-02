@@ -126,41 +126,49 @@ TableOfContentsMacro <- "toc::[]" NEWLINE
 // ------------------------------------------
 // Element Attributes
 // ------------------------------------------
-ElementAttribute <- attr:(ElementID / ElementTitle / AdmonitionMarkerAttribute / AttributeGroup / InvalidElementAttribute) EOL {
+ElementAttribute <- attr:(ElementID / ElementTitle / AdmonitionMarkerAttribute / AttributeGroup / InvalidElementAttribute) WS* EOL {
     return attr, nil // avoid returning something like `[]interface{}{attr, EOL}`
 }
 
 ElementID <- id:(InlineElementID) {
     return id, nil
-} / "[#" id:(ID) "]" WS* {
+} / "[#" id:(ID) "]" {
     return types.NewElementID(id.(string))
 }
 
-InlineElementID <- "[[" id:(ID) "]]" WS* {
+InlineElementID <- "[[" id:(ID) "]]" {
     return types.NewElementID(id.(string))
 }
 
 // a title attached to an element, such as a BlockImage (
 // a title starts with a single "." followed by the value, without space in-between
-ElementTitle <- "." !"." !WS title:(!NEWLINE .)+ WS* {
+ElementTitle <- "." !"." !WS title:(!NEWLINE .)+ {
     return types.NewElementTitle(title.([]interface{}))
 }
 
 // expression for the whole admonition marker, but only retains the actual kind
-AdmonitionMarkerAttribute <- "[" k:(AdmonitionKind) "]" WS* {
+AdmonitionMarkerAttribute <- "[" k:(AdmonitionKind) "]" {
     return k, nil
 }
 
-// one or more attributes. eg: [foo, key1=value1, key2=value2]
-AttributeGroup <- "[" attributes:(GenericAttribute)* "]" WS* {
-    return types.NewAttributeGroup(attributes.([]interface{}))
+// one or more attributes. eg: [foo, key1=value1, key2=value2]other
+AttributeGroup <- "[" attribute:(GenericAttribute) attributes:(OtherGenericAttribute)*  "]" {
+    return types.NewAttributeGroup(append([]interface{}{attribute}, attributes.([]interface{})...))
 }
 
-GenericAttribute <- key:(AttributeKey) "=" value:(AttributeValue) ("," WS*)? { // value is set
+GenericAttribute <- key:(AttributeKey) "=" value:(AttributeValue) { // value is set
     return types.NewGenericAttribute(key.([]interface{}), value.([]interface{}))
-} / key:(AttributeKey) ("," WS*)? { // value is not set
+} / key:(AttributeKey) { // value is not set
     return types.NewGenericAttribute(key.([]interface{}), nil)
 }
+
+OtherGenericAttribute <- "," WS* key:(AttributeKey) "=" value:(AttributeValue) { // value is set
+    return types.NewGenericAttribute(key.([]interface{}), value.([]interface{}))
+} / "," WS* key:(AttributeKey) { // value is not set
+    return types.NewGenericAttribute(key.([]interface{}), nil)
+}
+
+
 
 AttributeKey <- key: (!WS !"=" !"," !"]" .)+ WS*  {
     // fmt.Printf("found attribute key: %v\n", key)
