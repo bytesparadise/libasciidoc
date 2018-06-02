@@ -27,7 +27,7 @@ func filterEmptyPreamble() filterOption {
 func filterBlankLine() filterOption {
 	return func(element interface{}) bool {
 		_, result := element.(BlankLine)
-		defer log.Debugf(" element of type '%T' is a blankline: %t", element, result)
+		// defer log.Debugf(" element of type '%T' is a blankline: %t", element, result)
 		return result
 	}
 }
@@ -45,7 +45,7 @@ blocks:
 			elements = append(elements, result...)
 		default:
 			if block != nil {
-				log.Debugf(" converting block of type '%T' into a interface{}...", block)
+				// log.Debugf(" converting block of type '%T' into a interface{}...", block)
 				for _, filter := range filters {
 					if filter(block) {
 						log.Debugf(" discarding block of type '%T'.", block)
@@ -93,7 +93,7 @@ func mergeElements(elements []interface{}, options ...mergeOption) InlineElement
 				result = mergeElements(append(result, f...))
 			}
 		default:
-			log.Debugf("Merging with 'default' case an element of type %[1]T", element)
+			// log.Debugf("Merging with 'default' case an element of type %[1]T", element)
 			result, buff = appendBuffer(result, buff)
 			result = append(result, element)
 		}
