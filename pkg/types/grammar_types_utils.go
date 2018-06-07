@@ -61,6 +61,14 @@ blocks:
 	return elements
 }
 
+// nilSafe returns a new slice if the given elements is nil, otherwise it returns the given elements
+func nilSafe(elements []interface{}) []interface{} {
+	if elements != nil {
+		return elements
+	}
+	return make([]interface{}, 0)
+}
+
 type mergeOption func([]interface{}) []interface{}
 
 // removeEmptyTrailingStringElement removes the last

@@ -184,7 +184,7 @@ var _ = Describe("ordered lists", func() {
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("BlockElement"))
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 
 		It("ordered list with unnumbered items", func() {
@@ -228,7 +228,7 @@ var _ = Describe("ordered lists", func() {
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("BlockElement"))
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 
 		It("ordered list with custom numbering on child items", func() {
@@ -375,7 +375,7 @@ var _ = Describe("ordered lists", func() {
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("BlockElement"))
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 
 		It("ordered list with all default styles", func() {
@@ -490,7 +490,7 @@ var _ = Describe("ordered lists", func() {
 				},
 			}
 
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("BlockElement"))
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 	})
 
@@ -536,7 +536,7 @@ var _ = Describe("ordered lists", func() {
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("BlockElement"))
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 
 		It("ordered list with numbered items", func() {
@@ -623,7 +623,7 @@ b. item 2.a`
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("BlockElement"))
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 	})
 

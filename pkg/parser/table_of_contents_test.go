@@ -19,6 +19,7 @@ var _ = Describe("table of contents", func() {
 	tableOfContents := types.TableOfContentsMacro{}
 	preamble := types.Preamble{
 		Elements: []interface{}{
+			types.BlankLine{},
 			types.Paragraph{
 				Attributes: map[string]interface{}{},
 				Lines: []types.InlineElements{
@@ -27,6 +28,7 @@ var _ = Describe("table of contents", func() {
 					},
 				},
 			},
+			types.BlankLine{},
 		},
 	}
 	section := types.Section{

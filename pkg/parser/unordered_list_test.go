@@ -31,7 +31,7 @@ var _ = Describe("unordered lists", func() {
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("BlockElement"))
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 
 		It("unordered list with an ID and a single item", func() {
@@ -58,7 +58,7 @@ var _ = Describe("unordered lists", func() {
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("BlockElement"))
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 
 		It("unordered list with 2 items with stars", func() {
@@ -102,7 +102,7 @@ var _ = Describe("unordered lists", func() {
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("BlockElement"))
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 
 		It("unordered list with 2 items with carets", func() {
@@ -146,7 +146,7 @@ var _ = Describe("unordered lists", func() {
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("BlockElement"))
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 
 		It("unordered list with items with mixed styles", func() {
@@ -245,7 +245,7 @@ var _ = Describe("unordered lists", func() {
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("BlockElement"))
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 
 		It("unordered list with 2 items with empty line in-between", func() {
@@ -291,7 +291,7 @@ var _ = Describe("unordered lists", func() {
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("BlockElement"))
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 		It("unordered list with 2 items on multiple lines", func() {
 			actualContent := "* item 1\n" +
@@ -337,7 +337,7 @@ var _ = Describe("unordered lists", func() {
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("BlockElement"))
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 		It("2 unordered lists with 2 empty lines in-between", func() {
 			// the first blank lines after the first list is swallowed (for the list item)
@@ -368,6 +368,7 @@ var _ = Describe("unordered lists", func() {
 							},
 						},
 					},
+					types.BlankLine{},
 					types.UnorderedList{
 						Attributes: map[string]interface{}{},
 						Items: []types.UnorderedListItem{
@@ -533,7 +534,7 @@ var _ = Describe("unordered lists", func() {
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("BlockElement"))
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 
 	})
@@ -630,7 +631,7 @@ var _ = Describe("unordered lists", func() {
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("BlockElement"))
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 
 		It("invalid list item", func() {

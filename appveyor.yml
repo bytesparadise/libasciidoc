@@ -25,6 +25,8 @@ install:
   # Install dep and fetch dependencies
   - go get -u github.com/golang/dep/cmd/dep
   - dep ensure
+  # Install pigeon to generate the unoptimized parser for the tests
+  - go get -u github.com/mna/pigeon
   # Install ginkgo and gomega to run the tests
   - go get -v github.com/onsi/ginkgo/ginkgo
   - go get -v github.com/onsi/gomega
@@ -33,6 +35,7 @@ build: false
 deploy: false
 
 test_script:
+  - pigeon ./pkg/parser/asciidoc-grammar.peg > ./pkg/parser/asciidoc_parser.go
   - go build github.com/bytesparadise/libasciidoc
   # - for /f "" %%G in ('go list -f {{.Dir}} github.com/bytesparadise/libasciidoc/... ^| find /i /v "/vendor/"') do ( echo %%G & ginkgo -skipPackage log %%G & IF ERRORLEVEL == 1 EXIT 1)
   - ginkgo -r . & IF ERRORLEVEL == 1 EXIT 1

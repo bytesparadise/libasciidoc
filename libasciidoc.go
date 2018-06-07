@@ -30,7 +30,7 @@ func ConvertFileToHTML(ctx context.Context, filename string, output io.Writer, o
 	log.Infof("parsing the asciidoc source...")
 	stats := parser.Stats{}
 	start := time.Now()
-	doc, err := parser.ParseFile(filename, parser.Memoize(true), parser.Statistics(&stats, "no match"))
+	doc, err := parser.ParseFile(filename, parser.Memoize(false), parser.Statistics(&stats, "no match"))
 	if err != nil {
 		return nil, errors.Wrapf(err, "error while parsing the document")
 	}

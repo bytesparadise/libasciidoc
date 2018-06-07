@@ -195,6 +195,7 @@ a short preamble
 									},
 								},
 							},
+							types.BlankLine{},
 						},
 					},
 					types.Section{
@@ -303,6 +304,7 @@ and a paragraph`
 						Level: 1,
 						Title: section1Title,
 						Elements: []interface{}{
+							types.BlankLine{},
 							types.Paragraph{
 								Attributes: map[string]interface{}{},
 								Lines: []types.InlineElements{
@@ -338,6 +340,7 @@ and a paragraph`
 						Level: 1,
 						Title: section1Title,
 						Elements: []interface{}{
+							types.BlankLine{},
 							types.Paragraph{
 								Attributes: map[string]interface{}{},
 								Lines: []types.InlineElements{
@@ -418,6 +421,7 @@ a paragraph`
 									},
 								},
 							},
+							types.BlankLine{},
 							types.Section{
 								Level: 2,
 								Title: sectionAaTitle,
@@ -430,6 +434,7 @@ a paragraph`
 											},
 										},
 									},
+									types.BlankLine{},
 								},
 							},
 						},
@@ -523,9 +528,11 @@ a paragraph`
 				},
 				Elements: []interface{}{
 					types.Section{
-						Level:    1,
-						Title:    fooTitle,
-						Elements: []interface{}{},
+						Level: 1,
+						Title: fooTitle,
+						Elements: []interface{}{
+							types.BlankLine{},
+						},
 					},
 					types.Section{
 						Level: 1,
@@ -605,5 +612,71 @@ a paragraph`
 			verify(GinkgoT(), expectedResult, actualContent)
 		})
 
+		It("multiple sections level 0", func() {
+			actualContent := `= header 1
+
+foo
+
+= header 2
+bar`
+			header2Title := types.SectionTitle{
+				Attributes: map[string]interface{}{
+					types.AttrID: "_header_2",
+				},
+				Content: types.InlineElements{
+					types.StringElement{Content: "header 2"},
+				},
+			}
+			expectedResult := types.Document{
+				Attributes: map[string]interface{}{
+					"doctitle": types.SectionTitle{
+						Attributes: map[string]interface{}{
+							types.AttrID: "_header_1",
+						},
+						Content: types.InlineElements{
+							types.StringElement{Content: "header 1"},
+						},
+					},
+				},
+				ElementReferences: map[string]interface{}{
+					"_header_2": header2Title,
+				},
+
+				Elements: []interface{}{
+					types.Preamble{
+						Elements: []interface{}{
+							types.Paragraph{
+								Attributes: map[string]interface{}{},
+								Lines: []types.InlineElements{
+									{
+										types.StringElement{
+											Content: "foo",
+										},
+									},
+								},
+							},
+							types.BlankLine{},
+						},
+					},
+					types.Section{
+						Level: 0,
+						Title: header2Title,
+						Elements: []interface{}{
+							types.Paragraph{
+								Attributes: map[string]interface{}{},
+								Lines: []types.InlineElements{
+									{
+										types.StringElement{
+											Content: "bar",
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			}
+			verify(GinkgoT(), expectedResult, actualContent)
+		})
 	})
 })

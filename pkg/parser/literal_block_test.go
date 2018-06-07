@@ -15,7 +15,7 @@ var _ = Describe("literal blocks", func() {
 			expectedResult := types.LiteralBlock{
 				Content: " some literal content",
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("BlockElement"))
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 
 		It("literal block from paragraph with single space on first line", func() {
@@ -24,7 +24,7 @@ on 2 lines.`
 			expectedResult := types.LiteralBlock{
 				Content: " some literal content\non 2 lines.",
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("BlockElement"))
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 
 		It("mixing literal block and paragraph ", func() {

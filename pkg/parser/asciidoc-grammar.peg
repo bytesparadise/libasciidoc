@@ -15,19 +15,28 @@ import (
 // ------------------------------------------
 // Document
 // ------------------------------------------
-Document <- frontMatter:(FrontMatter?) documentHeader:(DocumentHeader?) blocks:(DocumentBlocks) EOF {
+Document <- frontMatter:(FrontMatter?) documentHeader:(DocumentHeader?) blocks:(DocumentBlock)* EOF {
 	return types.NewDocument(frontMatter, documentHeader, blocks.([]interface{}))
 }
 
-DocumentBlocks <- content:(Preamble? Section+) / content:(BlockElement*) { 
-    return content, nil
-}
+//TODO: 
+// - remove Preamble, but use GlobalStore to remember if first section with level `1` was parsed
+// - remove DocumentBlocks
+// - include Section in DocumentBlocks
+// - use `blocks:(DocumentBlock*)` in the `Document` rule.
 
-BlockElement <- DocumentAttributeDeclaration / DocumentAttributeReset / TableOfContentsMacro / BlockImage / List / LiteralBlock / DelimitedBlock / BlankLine / Paragraph // element attribute alone should be take recognized as such 
+// DocumentBlocks <- content:(Preamble? Section+) / content:(DocumentBlock*) { 
+//     return content, nil
+// }
 
-Preamble <- elements:(BlockElement+) {
+DocumentBlock <- Section / DocumentAttributeDeclaration / DocumentAttributeReset / TableOfContentsMacro / BlockImage / List / LiteralBlock / DelimitedBlock / BlankLine / Paragraph // element attribute alone should be take recognized as such 
+
+Preamble <- elements:(DocumentBlock+) {
     return types.NewPreamble(elements.([]interface{}))
 }
+
+
+
 
 // ------------------------------------------
 // Front Matter
@@ -187,18 +196,30 @@ InvalidElementAttribute <- "[" WS+ content:(!"]" .)* "]" WS* {
 // ------------------------------------------
 // Sections
 // ------------------------------------------
-Section <- Section1 / Section2 / Section3 / Section4 / Section5
+Section <- Section0 / Section1 / Section2 / Section3 / Section4 / Section5
 
+
+Section0 <- header:(Section0Title) elements:(Section0Block*) {
+    return types.NewSection(0, header.(types.SectionTitle), elements.([]interface{}))
+}
+
+Section0Title <- attributes:(ElementAttribute)* level:("=") WS+ content:(InlineElements) WS* id:(InlineElementID)? WS* EOL (&BlankLine? / EOF) { 
+    return types.NewSectionTitle(content.(types.InlineElements), append(attributes.([]interface{}), id))
+}
+
+Section0Block <- !Section0 content:(Section1 / Section2 / Section3 / Section4 / Section5 / DocumentBlock) {
+    return content, nil
+}
 
 Section1 <- header:(Section1Title) elements:(Section1Block*) {
     return types.NewSection(1, header.(types.SectionTitle), elements.([]interface{}))
 }
 
-Section1Title <- attributes:(ElementAttribute)* level:("==") WS+ content:(InlineElements) WS* id:(InlineElementID)? WS* EOL (BlankLine? / EOF) { 
+Section1Title <- attributes:(ElementAttribute)* level:("==") WS+ content:(InlineElements) WS* id:(InlineElementID)? WS* EOL (&BlankLine? / EOF) { 
     return types.NewSectionTitle(content.(types.InlineElements), append(attributes.([]interface{}), id))
 }
 
-Section1Block <- !Section1 content:(Section2 / Section3 / Section4 / Section5 / BlockElement) {
+Section1Block <- !Section1 content:(Section2 / Section3 / Section4 / Section5 / DocumentBlock) {
     return content, nil
 }
 
@@ -206,11 +227,11 @@ Section2 <- header:(Section2Title) elements:(Section2Block*) &(Section2)* {
     return types.NewSection(2, header.(types.SectionTitle), elements.([]interface{}))
 }
 
-Section2Title <- attributes:(ElementAttribute)* level:("===") WS+ content:(InlineElements) WS* id:(InlineElementID)? WS* EOL (BlankLine? / EOF) {
+Section2Title <- attributes:(ElementAttribute)* level:("===") WS+ content:(InlineElements) WS* id:(InlineElementID)? WS* EOL (&BlankLine? / EOF) {
     return types.NewSectionTitle(content.(types.InlineElements), append(attributes.([]interface{}), id))
 }
 
-Section2Block <- !Section1 !Section2 content:(Section3 / Section4 / Section5 / BlockElement) {
+Section2Block <- !Section1 !Section2 content:(Section3 / Section4 / Section5 / DocumentBlock) {
     return content, nil
 }
 
@@ -218,11 +239,11 @@ Section3 <- header:(Section3Title) elements:(Section3Block*) {
     return types.NewSection(3, header.(types.SectionTitle), elements.([]interface{}))
 }
 
-Section3Title <- attributes:(ElementAttribute)* level:("====") WS+ content:(InlineElements) WS* id:(InlineElementID)? EOL (BlankLine? / EOF) {
+Section3Title <- attributes:(ElementAttribute)* level:("====") WS+ content:(InlineElements) WS* id:(InlineElementID)? EOL (&BlankLine? / EOF) {
     return types.NewSectionTitle(content.(types.InlineElements), append(attributes.([]interface{}), id))
 }
 
-Section3Block <- !Section1 !Section2 !Section3 content:(Section4 / Section5 / BlockElement) {
+Section3Block <- !Section1 !Section2 !Section3 content:(Section4 / Section5 / DocumentBlock) {
     return content, nil
 }
 
@@ -230,11 +251,11 @@ Section4 <- header:(Section4Title) elements:(Section4Block*) {
     return types.NewSection(4, header.(types.SectionTitle), elements.([]interface{}))
 }
 
-Section4Title <- attributes:(ElementAttribute)* level:("=====") WS+ content:(InlineElements) WS* id:(InlineElementID)? EOL (BlankLine? / EOF) {
+Section4Title <- attributes:(ElementAttribute)* level:("=====") WS+ content:(InlineElements) WS* id:(InlineElementID)? EOL (&BlankLine? / EOF) {
     return types.NewSectionTitle(content.(types.InlineElements), append(attributes.([]interface{}), id))
 }
 
-Section4Block <- !Section1 !Section2 !Section3 !Section4 content:(Section5 / BlockElement) {
+Section4Block <- !Section1 !Section2 !Section3 !Section4 content:(Section5 / DocumentBlock) {
     return content, nil
 }
 
@@ -242,11 +263,11 @@ Section5 <- header:(Section5Title) elements:(Section5Block*) {
     return types.NewSection(5, header.(types.SectionTitle), elements.([]interface{}))
 }
 
-Section5Title <- attributes:(ElementAttribute)* level:("======") WS+ content:(InlineElements) WS* id:(InlineElementID)? EOL (BlankLine? / EOF) {
+Section5Title <- attributes:(ElementAttribute)* level:("======") WS+ content:(InlineElements) WS* id:(InlineElementID)? EOL (&BlankLine? / EOF) {
     return types.NewSectionTitle(content.(types.InlineElements), append(attributes.([]interface{}), id))
 }
 
-Section5Block <- !Section1 !Section2 !Section3 !Section4 !Section5 content:(BlockElement) {
+Section5Block <- !Section1 !Section2 !Section3 !Section4 !Section5 content:(DocumentBlock) {
     return content, nil
 }
 
@@ -288,7 +309,7 @@ ListItemContinuation <- "+" WS* EOL {
     return types.NewListItemContinuation()
 }
 
-ContinuedBlockElement <- ListItemContinuation element:BlockElement {
+ContinuedDocumentBlock <- ListItemContinuation element:DocumentBlock {
     return element, nil
 }
 
@@ -324,7 +345,7 @@ WS* style:(".") WS+ { // numbering style: "."
     return types.NewOrderedListItemPrefix(types.UpperRoman, 1)
 } 
 
-OrderedListItemContent <- elements:(ListParagraph+ ContinuedBlockElement*) { // Another list or a literal paragraph immediately following a list item will be implicitly included in the list item
+OrderedListItemContent <- elements:(ListParagraph+ ContinuedDocumentBlock*) { // Another list or a literal paragraph immediately following a list item will be implicitly included in the list item
     return types.NewListItemContent(elements.([]interface{}))
 } 
 
@@ -349,7 +370,7 @@ UnorderedListItemPrefix <- WS* level:("*****") WS+ { // ignore whitespaces, only
     return types.NewUnorderedListItemPrefix(types.Dash, 1)
 } 
 
-UnorderedListItemContent <- elements:(ListParagraph+ ContinuedBlockElement*) { // Another list or a literal paragraph immediately following a list item will be implicitly included in the list item
+UnorderedListItemContent <- elements:(ListParagraph+ ContinuedDocumentBlock*) { // Another list or a literal paragraph immediately following a list item will be implicitly included in the list item
     return types.NewListItemContent(elements.([]interface{}))
 } 
 
@@ -369,7 +390,7 @@ LabeledListItemTerm <- term:(!NEWLINE !"::" .)*  {
 // term separator: ('::') and at least one space or endline
 LabeledListItemSeparator <-  "::" (WS / NEWLINE)+
 
-LabeledListItemDescription <- elements:(ListParagraph / ContinuedBlockElement)* { // TODO: replace with (ListParagraph+ ContinuedBlockElement*) and use a single rule for all item contents ?
+LabeledListItemDescription <- elements:(ListParagraph / ContinuedDocumentBlock)* { // TODO: replace with (ListParagraph+ ContinuedDocumentBlock*) and use a single rule for all item contents ?
     return types.NewListItemContent(elements.([]interface{}))
 }
 
