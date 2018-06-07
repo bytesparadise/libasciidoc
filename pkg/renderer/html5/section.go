@@ -45,14 +45,19 @@ func init() {
 func renderPreamble(ctx *renderer.Context, p types.Preamble) ([]byte, error) {
 	log.Debugf("Rendering preamble...")
 	renderedElementsBuff := bytes.NewBuffer(nil)
-	for i, element := range p.Elements {
+	hasContent := false
+	for _, element := range p.Elements {
 		renderedElement, err := renderElement(ctx, element)
 		if err != nil {
 			return nil, errors.Wrapf(err, "unable to render preamble")
 		}
-		renderedElementsBuff.Write(renderedElement)
-		if i < len(p.Elements)-1 {
+		// include a `\n` before elelemt if something was written before
+		if len(renderedElement) > 0 && hasContent {
 			renderedElementsBuff.WriteString("\n")
+		}
+		if len(renderedElement) > 0 {
+			renderedElementsBuff.Write(renderedElement)
+			hasContent = true
 		}
 	}
 	result := bytes.NewBuffer(nil)
@@ -130,14 +135,18 @@ func renderSectionTitle(ctx *renderer.Context, level int, sectionTitle types.Sec
 
 func renderSectionElements(ctx *renderer.Context, elements []interface{}) ([]byte, error) {
 	renderedElementsBuff := bytes.NewBuffer(nil)
-	for i, element := range elements {
+	hasContent := false
+	for _, element := range elements {
 		renderedElement, err := renderElement(ctx, element)
 		if err != nil {
 			return nil, errors.Wrapf(err, "unable to render section element")
 		}
-		renderedElementsBuff.Write(renderedElement)
-		if i < len(elements)-1 {
+		if len(renderedElement) > 0 && hasContent {
 			renderedElementsBuff.WriteString("\n")
+		}
+		if len(renderedElement) > 0 {
+			renderedElementsBuff.Write(renderedElement)
+			hasContent = true
 		}
 	}
 	return renderedElementsBuff.Bytes(), nil

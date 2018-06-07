@@ -22,6 +22,7 @@ first paragraph`
 				},
 				ElementReferences: map[string]interface{}{},
 				Elements: []interface{}{
+					types.BlankLine{},
 					types.Paragraph{
 						Attributes: map[string]interface{}{},
 						Lines: []types.InlineElements{
@@ -44,6 +45,7 @@ first paragraph`
 				Attributes:        map[string]interface{}{},
 				ElementReferences: map[string]interface{}{},
 				Elements: []interface{}{
+					types.BlankLine{},
 					types.Paragraph{
 						Attributes: map[string]interface{}{},
 						Lines: []types.InlineElements{

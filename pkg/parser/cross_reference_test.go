@@ -43,6 +43,7 @@ with some content linked to <<thetitle>>!`
 							},
 						},
 						Elements: []interface{}{
+							types.BlankLine{},
 							types.Paragraph{
 								Attributes: map[string]interface{}{},
 								Lines: []types.InlineElements{
