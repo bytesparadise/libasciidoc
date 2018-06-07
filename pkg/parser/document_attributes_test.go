@@ -295,6 +295,7 @@ a paragraph`
 						types.DocumentAttributeDeclaration{Name: "toc"},
 						types.DocumentAttributeDeclaration{Name: "date", Value: "2017-01-01"},
 						types.DocumentAttributeDeclaration{Name: "author", Value: "Xavier"},
+						types.BlankLine{},
 						types.Paragraph{
 							Attributes: map[string]interface{}{},
 							Lines: []types.InlineElements{
@@ -321,7 +322,9 @@ a paragraph`
 					Elements: []interface{}{
 						types.DocumentAttributeDeclaration{Name: "toc"},
 						types.DocumentAttributeDeclaration{Name: "date", Value: "2017-01-01"},
+						types.BlankLine{},
 						types.DocumentAttributeDeclaration{Name: "author", Value: "Xavier"},
+						types.BlankLine{},
 						types.Paragraph{
 							Attributes: map[string]interface{}{},
 							Lines: []types.InlineElements{
@@ -353,6 +356,7 @@ a paragraph`
 								},
 							},
 						},
+						types.BlankLine{},
 						types.DocumentAttributeDeclaration{Name: "toc"},
 						types.DocumentAttributeDeclaration{Name: "date", Value: "2017-01-01"},
 						types.DocumentAttributeDeclaration{Name: "author", Value: "Xavier"},
@@ -373,6 +377,7 @@ a paragraph written by {author}.`
 					ElementReferences: map[string]interface{}{},
 					Elements: []interface{}{
 						types.DocumentAttributeDeclaration{Name: "author", Value: "Xavier"},
+						types.BlankLine{},
 						types.Paragraph{
 							Attributes: map[string]interface{}{},
 							Lines: []types.InlineElements{
@@ -399,6 +404,7 @@ a paragraph written by {author}.`
 					ElementReferences: map[string]interface{}{},
 					Elements: []interface{}{
 						types.DocumentAttributeDeclaration{Name: "author", Value: "Xavier"},
+						types.BlankLine{},
 						types.DocumentAttributeReset{Name: "author1"},
 						types.DocumentAttributeReset{Name: "author2"},
 						types.Paragraph{
@@ -455,6 +461,7 @@ This journey begins on a bleary Monday morning.`
 				ElementReferences: map[string]interface{}{},
 				Elements: []interface{}{
 					types.TableOfContentsMacro{},
+					types.BlankLine{},
 					types.Paragraph{
 						Attributes: map[string]interface{}{},
 						Lines: []types.InlineElements{
@@ -508,6 +515,7 @@ a paragraph with *bold content*`
 							},
 						},
 						Elements: []interface{}{
+							types.BlankLine{},
 							types.Paragraph{
 								Attributes: map[string]interface{}{},
 								Lines: []types.InlineElements{

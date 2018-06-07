@@ -20,7 +20,7 @@ var _ = Describe("paragraphs", func() {
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("BlockElement"))
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 
 		It("paragraph with few words", func() {
@@ -33,7 +33,7 @@ var _ = Describe("paragraphs", func() {
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("BlockElement"))
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 
 		It("paragraph with bold content", func() {
@@ -52,7 +52,7 @@ var _ = Describe("paragraphs", func() {
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("BlockElement"))
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 
 		It("paragraph with id and title", func() {
@@ -70,7 +70,7 @@ a paragraph`
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("BlockElement"))
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 	})
 
@@ -89,7 +89,7 @@ a paragraph`
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("BlockElement"))
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 
 		It("warning admonition paragraph", func() {
@@ -112,7 +112,7 @@ warning!`
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("BlockElement"))
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 
 		It("admonition note paragraph with id and title", func() {
@@ -133,7 +133,7 @@ NOTE: this is a note.`
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("BlockElement"))
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 
 		It("caution admonition paragraph with single line", func() {
@@ -151,7 +151,7 @@ this is a caution!`
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("BlockElement"))
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 
 		It("multiline caution admonition paragraph with title and id", func() {
@@ -187,7 +187,7 @@ this is a
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("BlockElement"))
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 
 		It("multiple admonition paragraphs", func() {
@@ -212,6 +212,7 @@ And no space after [CAUTION] either.`
 							},
 						},
 					},
+					types.BlankLine{},
 					types.Paragraph{
 						Attributes: map[string]interface{}{
 							types.AttrAdmonitionKind: types.Caution,

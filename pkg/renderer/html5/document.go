@@ -109,6 +109,7 @@ func renderElements(ctx *renderer.Context, elements []interface{}) ([]byte, erro
 		// if there's already some content, we need to insert a `\n` before writing
 		// the rendering output of the current element (if output is not empty)
 		if hasContent && len(content) > 0 {
+			log.Debugf("rendered element of type %T (%d)", element, len(content))
 			renderedElementsBuff.WriteString("\n")
 		}
 		// if the element was rendering into 'something' (ie, not enpty result)

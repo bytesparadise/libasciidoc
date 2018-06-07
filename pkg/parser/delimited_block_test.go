@@ -29,7 +29,7 @@ var _ = Describe("delimited blocks", func() {
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("BlockElement"))
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 
 		It("fenced block with no line", func() {
@@ -39,7 +39,7 @@ var _ = Describe("delimited blocks", func() {
 				Attributes: map[string]interface{}{},
 				Elements:   []interface{}{},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("BlockElement"))
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 
 		It("fenced block with multiple lines alone", func() {
@@ -76,7 +76,7 @@ var _ = Describe("delimited blocks", func() {
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("BlockElement"))
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 
 		It("fenced block with multiple lines then a paragraph", func() {
@@ -184,7 +184,7 @@ var _ = Describe("delimited blocks", func() {
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("BlockElement"))
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 	})
 
@@ -210,7 +210,7 @@ some listing code
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("BlockElement"))
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 
 		It("listing block with no line", func() {
@@ -221,7 +221,7 @@ some listing code
 				Attributes: map[string]interface{}{},
 				Elements:   []interface{}{},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("BlockElement"))
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 
 		It("listing block with multiple lines", func() {
@@ -263,7 +263,7 @@ in the middle
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("BlockElement"))
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 
 		It("listing block with multiple lines then a paragraph", func() {
@@ -341,6 +341,7 @@ some listing code
 							},
 						},
 					},
+					types.BlankLine{},
 					types.DelimitedBlock{
 						Kind:       types.ListingBlock,
 						Attributes: map[string]interface{}{},
@@ -381,7 +382,7 @@ End of file here.`
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("BlockElement"))
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 	})
 
@@ -392,7 +393,7 @@ End of file here.`
 			expectedResult := types.LiteralBlock{
 				Content: " some literal content",
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("BlockElement"))
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 
 		It("literal block from paragraph with single space on first line", func() {
@@ -401,7 +402,7 @@ on 2 lines.`
 			expectedResult := types.LiteralBlock{
 				Content: " some literal content\non 2 lines.",
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("BlockElement"))
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 
 		It("mixing literal block and paragraph ", func() {
@@ -508,7 +509,7 @@ some listing code
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("BlockElement"))
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 
 		It("example block with single line starrting with a dot", func() {
@@ -531,7 +532,7 @@ some listing code
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("BlockElement"))
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 
 		It("example block with multiple lines", func() {
@@ -598,7 +599,7 @@ with *bold content*
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("BlockElement"))
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 
 		It("example block with unclosed delimiter", func() {
@@ -620,7 +621,7 @@ End of file here`
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("BlockElement"))
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 	})
 
@@ -649,7 +650,7 @@ foo
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("BlockElement"))
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 
 		})
 

@@ -44,12 +44,10 @@ type Document struct {
 
 // NewDocument initializes a new `Document` from the given lines
 func NewDocument(frontmatter, header interface{}, blocks []interface{}) (Document, error) {
-	log.Debugf("Initializing a new Document with %d blocks(s)", len(blocks))
-	for i, block := range blocks {
-		log.Debugf("Line #%d: %T", i, block)
-	}
+	log.Debugf("Initializing a new Document with %d blocks(s): %v", len(blocks), blocks)
 	// elements := convertBlocksTointerface{}s(blocks)
-	elements := filterEmptyElements(blocks, filterBlankLine(), filterEmptyPreamble())
+	// elements := filterEmptyElements(blocks, filterBlankLine(), filterEmptyPreamble())
+	elements := insertPreamble(blocks)
 	attributes := make(map[string]interface{})
 
 	if frontmatter != nil {
@@ -105,6 +103,36 @@ func NewDocument(frontmatter, header interface{}, blocks []interface{}) (Documen
 
 	// visit all elements in the `AST` to retrieve their reference (ie, their ElementID if they have any)
 	return document, nil
+}
+
+func insertPreamble(blocks []interface{}) []interface{} {
+	log.Debugf("generating preamble from %d blocks", len(blocks))
+	preamble := Preamble{
+		Elements: make([]interface{}, 0),
+	}
+	for _, block := range blocks {
+		switch block.(type) {
+		case Section:
+			break
+		default:
+			preamble.Elements = append(preamble.Elements, block)
+		}
+	}
+	// no element in the preamble, or section in the document, so no preamble to generate
+	if len(preamble.Elements) == 0 || len(preamble.Elements) == len(blocks) {
+		return nilSafe(blocks)
+	}
+	// now, insert the preamble instead of the 'n' blocks that belong to the preamble
+	// and copy the other items
+	result := make([]interface{}, len(blocks)-len(preamble.Elements)+1)
+	result[0] = preamble
+	copy(result[1:], blocks[len(preamble.Elements):])
+	// idx := 1
+	// for i := len(preamble.Elements); i < len(blocks); i++ {
+	// 	result[idx] = blocks[i]
+	// 	idx++
+	// }
+	return result
 }
 
 // ------------------------------------------
@@ -351,18 +379,6 @@ func NewDocumentRevision(revnumber, revdate, revremark interface{}) (DocumentRev
 }
 
 func (r DocumentRevision) String() string {
-	// number := ""
-	// if r.Revnumber != nil {
-	// 	number = *r.Revnumber
-	// }
-	// date := ""
-	// if r.Revdate != nil {
-	// 	date = *r.Revdate
-	// }
-	// remark := ""
-	// if r.Revremark != nil {
-	// 	remark = *r.Revremark
-	// }
 	// return fmt.Sprintf("%v, %v: %v", number, date, remark)
 	return fmt.Sprintf("%v, %v: %v", r.Revnumber, r.Revdate, r.Revremark)
 }
@@ -487,12 +503,12 @@ type Section struct {
 // NewSection initializes a new `Section` from the given section title and elements
 func NewSection(level int, sectionTitle SectionTitle, blocks []interface{}) (Section, error) {
 	log.Debugf("Initializing a new Section with %d block(s)", len(blocks))
-	elements := filterEmptyElements(blocks, filterBlankLine())
+	// elements := filterEmptyElements(blocks, filterBlankLine())
 	log.Debugf("Initialized a new Section of level %d with %d block(s)", level, len(blocks))
 	return Section{
 		Level:    level,
 		Title:    sectionTitle,
-		Elements: elements,
+		Elements: nilSafe(blocks),
 	}, nil
 }
 
@@ -1354,12 +1370,12 @@ type DelimitedBlock struct {
 // NewDelimitedBlock initializes a new `DelimitedBlock` of the given kind with the given content
 func NewDelimitedBlock(kind DelimitedBlockKind, content []interface{}, attributes []interface{}) (DelimitedBlock, error) {
 	attrbs := NewElementAttributes(attributes)
-	elements := filterEmptyElements(content)
-	log.Debugf("Initialized a new DelimitedBlock with content=`%s`", elements)
+	// elements := filterEmptyElements(content)
+	log.Debugf("Initialized a new DelimitedBlock with content=`%s`", content)
 	return DelimitedBlock{
 		Kind:       kind,
 		Attributes: attrbs,
-		Elements:   elements,
+		Elements:   nilSafe(content),
 	}, nil
 }
 

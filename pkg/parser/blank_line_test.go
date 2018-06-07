@@ -22,6 +22,7 @@ second paragraph`
 						},
 					},
 				},
+				types.BlankLine{},
 				types.Paragraph{
 					Attributes: map[string]interface{}{},
 					Lines: []types.InlineElements{
@@ -53,6 +54,9 @@ second paragraph
 						},
 					},
 				},
+				types.BlankLine{},
+				types.BlankLine{},
+				types.BlankLine{},
 				types.Paragraph{
 					Attributes: map[string]interface{}{},
 					Lines: []types.InlineElements{

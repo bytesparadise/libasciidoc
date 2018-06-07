@@ -31,7 +31,7 @@ func renderAllInlineElements(ctx *renderer.Context, elements []types.InlineEleme
 		}
 		if len(renderedElement) > 0 {
 			buff.Write(renderedElement)
-			if i < len(elements)-1 {
+			if len(renderedElement) > 0 && i < len(elements)-1 {
 				log.Debugf("rendered element of type %T is not the last one", e)
 				buff.WriteString("\n")
 			}
