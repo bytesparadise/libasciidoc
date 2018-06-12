@@ -26,9 +26,12 @@ matrix:
   allow_failures:
   - go: tip
 script: 
-  - make generate
-  - make test
+  # verify that the commit code for the parser was optimized during the code generation
+  - make verify-parser
+  # verify that the library builds completly
   - make build
+  # run the tests
+  - make test
 
 after_success:
   - gover . coverage.txt
