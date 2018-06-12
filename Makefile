@@ -74,7 +74,7 @@ $(TMP_PATH):
 
 .PHONY: prebuild-checks
 prebuild-checks: $(TMP_PATH) $(INSTALL_PREFIX) 
-# Check that all tools where found
+## Check that all tools where found
 ifndef GIT_BIN
 	$(error The "$(GIT_BIN_NAME)" executable could not be found in your PATH)
 endif
@@ -89,17 +89,17 @@ ifndef GO_BIN
 endif
 
 .PHONY: generate
-## generates the .go file based on the asciidoc grammar
-generate:
+## generate the .go file based on the asciidoc grammar
+generate: prebuild-checks
 	@echo "generating the parser..."
 	@pigeon ./pkg/parser/asciidoc-grammar.peg > ./pkg/parser/asciidoc_parser.go
 
 .PHONY: generate-optimized
-## generates the .go file based on the asciidoc grammar
+## generate the .go file based on the asciidoc grammar
 generate-optimized:
 	@echo "generating the parser..."
+	## @pigeon -optimize-parser ./pkg/parser/asciidoc-grammar.peg > ./pkg/parser/asciidoc_parser.go
 	@pigeon -optimize-grammar ./pkg/parser/asciidoc-grammar.peg > ./pkg/parser/asciidoc_parser.go
-	# @pigeon -optimize-parser ./pkg/parser/asciidoc-grammar.peg > ./pkg/parser/asciidoc_parser.go
 
 
 .PHONY: test
@@ -109,7 +109,7 @@ test: deps generate
 	@ginkgo -r --randomizeAllSpecs --randomizeSuites --failOnPending --trace --race --compilers=2  --cover -coverpkg $(COVERPKGS)
 
 .PHONY: build
-## builds the binary executable from CLI
+## build the binary executable from CLI
 build: $(INSTALL_PREFIX) deps generate-optimized
 	$(eval BUILD_COMMIT:=$(shell git rev-parse --short HEAD))
 	$(eval BUILD_TAG:=$(shell git tag --contains $(BUILD_COMMIT)))
@@ -121,6 +121,19 @@ build: $(INSTALL_PREFIX) deps generate-optimized
 	    -X github.com/bytesparadise/libasciidoc.BuildTime=$(BUILD_TIME)" \
 	  -o $(BINARY_PATH) \
 	  cmd/libasciidoc/*.go
+
+
+PARSER_DIFF_STATUS := 
+
+.PHONY: verify-parser
+## verify that the parser was built with the latest version of pigeon, using the `optimize-grammar` option
+verify-parser: prebuild-checks
+ifneq ($(shell git diff --quiet pkg/parser/asciidoc_parser.go; echo $$?), 0)
+	$(error "parser was generated with an older version of 'mna/pigeon' or without the '-optimize' option(s).")
+else 
+	@echo "parser is ok"
+endif
+	
 
 .PHONY: install
 ## installs the binary executable in the $GOPATH/bin directory
