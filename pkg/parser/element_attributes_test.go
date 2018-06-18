@@ -12,38 +12,82 @@ var _ = Describe("element attributes", func() {
 
 		Context("valid syntax", func() {
 			It("element link alone", func() {
-				actualContent := "[link=http://foo.bar]"
-				expectedResult := map[string]interface{}{"link": "http://foo.bar"}
-				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("ElementAttribute"))
+				actualContent := `[link=http://foo.bar]
+a paragraph`
+				expectedResult := types.Paragraph{
+					Attributes: map[string]interface{}{
+						"link": "http://foo.bar",
+					},
+					Lines: []types.InlineElements{
+						{
+							types.StringElement{
+								Content: "a paragraph",
+							},
+						},
+					},
+				}
+				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 			})
 			It("spaces in link", func() {
-				actualContent := "[link= http://foo.bar  ]"
-				expectedResult := map[string]interface{}{"link": "http://foo.bar"}
-				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("ElementAttribute"))
+				actualContent := `[link= http://foo.bar  ]
+a paragraph`
+				expectedResult := types.Paragraph{
+					Attributes: map[string]interface{}{
+						"link": "http://foo.bar",
+					},
+					Lines: []types.InlineElements{
+						{
+							types.StringElement{
+								Content: "a paragraph",
+							},
+						},
+					},
+				}
+				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 			})
 		})
 
 		Context("invalid syntax", func() {
 			It("spaces before keyword", func() {
-				actualContent := "[ link=http://foo.bar]"
-				expectedResult := types.InvalidElementAttribute{Value: "[ link=http://foo.bar]"}
-				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("ElementAttribute"))
+				actualContent := `[ link=http://foo.bar]
+a paragraph`
+				expectedResult := types.Paragraph{
+					Attributes: map[string]interface{}{},
+					Lines: []types.InlineElements{
+						{
+							types.StringElement{
+								Content: "[ link=http://foo.bar]",
+							},
+						},
+						{
+							types.StringElement{
+								Content: "a paragraph",
+							},
+						},
+					},
+				}
+				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 			})
 
-			Context("Unbalanced brackets", func() {
-				actualContent := "[link=http://foo.bar"
-				It("cannot be an attribute", func() {
-					expectError(GinkgoT(), actualContent, parser.Entrypoint("ElementAttribute"))
-				})
-
-				It("is an inline content", func() {
-					expectedResult := types.InlineElements{
-						types.StringElement{
-							Content: "[link=http://foo.bar",
+			It("unbalanced brackets", func() {
+				actualContent := `[link=http://foo.bar
+a paragraph`
+				expectedResult := types.Paragraph{
+					Attributes: map[string]interface{}{},
+					Lines: []types.InlineElements{
+						{
+							types.StringElement{
+								Content: "[link=http://foo.bar",
+							},
 						},
-					}
-					verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
-				})
+						{
+							types.StringElement{
+								Content: "a paragraph",
+							},
+						},
+					},
+				}
+				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 			})
 		})
 	})
@@ -53,41 +97,84 @@ var _ = Describe("element attributes", func() {
 		Context("valid syntax", func() {
 
 			It("normal syntax", func() {
-				actualContent := "[[img-foobar]]"
-				expectedResult := types.ElementID{Value: "img-foobar"}
-				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("ElementAttribute"))
+				actualContent := `[[img-foobar]]
+a paragraph`
+				expectedResult := types.Paragraph{
+					Attributes: map[string]interface{}{
+						types.AttrID: "img-foobar",
+					},
+					Lines: []types.InlineElements{
+						{
+							types.StringElement{
+								Content: "a paragraph",
+							},
+						},
+					},
+				}
+				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 			})
 
 			It("short-hand syntax", func() {
-				actualContent := "[#img-foobar]"
-				expectedResult := types.ElementID{Value: "img-foobar"}
-				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("ElementAttribute"))
+				actualContent := `[#img-foobar]
+a paragraph`
+				expectedResult := types.Paragraph{
+					Attributes: map[string]interface{}{
+						types.AttrID: "img-foobar",
+					},
+					Lines: []types.InlineElements{
+						{
+							types.StringElement{
+								Content: "a paragraph",
+							},
+						},
+					},
+				}
+				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 			})
 		})
 
 		Context("invalid syntax", func() {
 
 			It("extra spaces", func() {
-				actualContent := "[ #img-foobar ]"
-				expectedResult := types.InvalidElementAttribute{Value: "[ #img-foobar ]"}
-				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("ElementAttribute"))
+				actualContent := `[ #img-foobar ]
+a paragraph`
+				expectedResult := types.Paragraph{
+					Attributes: map[string]interface{}{},
+					Lines: []types.InlineElements{
+						{
+							types.StringElement{
+								Content: "[ #img-foobar ]",
+							},
+						},
+						{
+							types.StringElement{
+								Content: "a paragraph",
+							},
+						},
+					},
+				}
+				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 			})
 
-			Context("Unbalanced brackets", func() {
-				actualContent := "[#img-foobar"
-
-				It("cannot be an attribute", func() {
-					expectError(GinkgoT(), actualContent, parser.Entrypoint("ElementAttribute"))
-				})
-
-				It("is an inline content", func() {
-					expectedResult := types.InlineElements{
-						types.StringElement{
-							Content: "[#img-foobar",
+			It("unbalanced brackets", func() {
+				actualContent := `[#img-foobar
+a paragraph`
+				expectedResult := types.Paragraph{
+					Attributes: map[string]interface{}{},
+					Lines: []types.InlineElements{
+						{
+							types.StringElement{
+								Content: "[#img-foobar",
+							},
 						},
-					}
-					verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
-				})
+						{
+							types.StringElement{
+								Content: "a paragraph",
+							},
+						},
+					},
+				}
+				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 			})
 		})
 	})
@@ -95,46 +182,82 @@ var _ = Describe("element attributes", func() {
 
 		Context("valid syntax", func() {
 
-			It("element title", func() {
-				actualContent := ".a title"
-				expectedResult := types.ElementTitle{Value: "a title"}
-				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("ElementAttribute"))
+			It("valid element title", func() {
+				actualContent := `.a title
+a paragraph`
+				expectedResult := types.Paragraph{
+					Attributes: map[string]interface{}{
+						"title": "a title",
+					},
+					Lines: []types.InlineElements{
+						{
+							types.StringElement{
+								Content: "a paragraph",
+							},
+						},
+					},
+				}
+				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 			})
 		})
 
 		Context("invalid syntax", func() {
-			Context("extra space after dot", func() {
+			It("extra space after dot", func() {
 
-				actualContent := ". a title"
-				It("cannot be an attribute", func() {
-					expectError(GinkgoT(), actualContent, parser.Entrypoint("ElementAttribute"))
-				})
-
-				It("is an inline content", func() {
-					expectedResult := types.InlineElements{
-						types.StringElement{
-							Content: ". a title",
+				actualContent := `. a title
+a list item!`
+				expectedResult := types.OrderedList{
+					Attributes: map[string]interface{}{},
+					Items: []types.OrderedListItem{
+						{
+							Attributes:     map[string]interface{}{},
+							Level:          1,
+							Position:       1,
+							NumberingStyle: types.Arabic,
+							Elements: []interface{}{
+								types.Paragraph{
+									Attributes: map[string]interface{}{},
+									Lines: []types.InlineElements{
+										{
+											types.StringElement{
+												Content: "a title",
+											},
+										},
+										{
+											types.StringElement{
+												Content: "a list item!",
+											},
+										},
+									},
+								},
+							},
 						},
-					}
-					verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
-				})
+					},
+				}
+
+				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 			})
 
-			Context("not a dot", func() {
-				actualContent := "!a title"
+			It("not a dot", func() {
+				actualContent := `!a title
+a paragraph`
 
-				It("cannot be an attribute", func() {
-					expectError(GinkgoT(), actualContent, parser.Entrypoint("ElementAttribute"))
-				})
-
-				It("is an inline content", func() {
-					expectedResult := types.InlineElements{
-						types.StringElement{
-							Content: "!a title",
+				expectedResult := types.Paragraph{
+					Attributes: map[string]interface{}{},
+					Lines: []types.InlineElements{
+						{
+							types.StringElement{
+								Content: "!a title",
+							},
 						},
-					}
-					verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
-				})
+						{
+							types.StringElement{
+								Content: "a paragraph",
+							},
+						},
+					},
+				}
+				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 			})
 		})
 	})

@@ -21,7 +21,7 @@ var _ = Describe("images", func() {
 						Alt:  "foo",
 					},
 				}
-				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("BlockImage"))
+				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 			})
 
 			It("block image with empty alt and trailing spaces", func() {
@@ -33,7 +33,7 @@ var _ = Describe("images", func() {
 						Alt:  "foo",
 					},
 				}
-				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("BlockImage"))
+				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 			})
 
 			It("block image with line return", func() {
@@ -47,7 +47,7 @@ var _ = Describe("images", func() {
 						Alt:  "foo",
 					},
 				}
-				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("BlockImage"))
+				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 			})
 
 			It("block image with 1 empty blank line", func() {
@@ -61,7 +61,7 @@ var _ = Describe("images", func() {
 						Alt:  "foo",
 					},
 				}
-				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("BlockImage"))
+				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 			})
 
 			It("block image with 2 blank lines with spaces and tabs", func() {
@@ -74,7 +74,7 @@ var _ = Describe("images", func() {
 						Alt:  "foo",
 					},
 				}
-				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("BlockImage"))
+				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 			})
 
 			It("block image with alt", func() {
@@ -86,7 +86,7 @@ var _ = Describe("images", func() {
 						Alt:  "the foo.png image",
 					},
 				}
-				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("BlockImage"))
+				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 			})
 
 			It("block image with dimensions and id link title meta", func() {
@@ -109,7 +109,7 @@ var _ = Describe("images", func() {
 						Height: &height,
 					},
 				}
-				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("BlockImage"))
+				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 			})
 		})
 

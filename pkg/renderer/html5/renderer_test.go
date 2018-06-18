@@ -19,7 +19,7 @@ import (
 func verify(t GinkgoTInterface, expectedResult, content string, rendererOpts ...renderer.Option) {
 	t.Logf("processing '%s'", content)
 	reader := strings.NewReader(content)
-	doc, err := parser.ParseReader("", reader, parser.Memoize(true))
+	doc, err := parser.ParseReader("", reader)
 	require.NoError(t, err, "Error found while parsing the document")
 	t.Logf("actual document: `%s`", spew.Sdump(doc))
 	buff := bytes.NewBuffer(nil)
