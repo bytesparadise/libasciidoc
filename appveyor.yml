@@ -8,11 +8,11 @@ clone_folder: c:\gopath\src\github.com\bytesparadise\libasciidoc
 
 environment:
   GOPATH: c:\gopath
-  DEPTESTBYPASS501: 1
+  DEPTESTBYPASS501: "1"
   matrix:
-    - GO_VERSION: 1.8
-    - GO_VERSION: 1.9
-    - GO_VERSION: 1.10
+    - GO_VERSION: "1.8"
+    - GO_VERSION: "1.9"
+    - GO_VERSION: "1.10"
 
 init:
   - git config --global core.autocrlf input
@@ -31,8 +31,8 @@ install:
   - go get -v github.com/onsi/ginkgo/ginkgo
   - go get -v github.com/onsi/gomega
 
-build: false
-deploy: false
+build: "off"
+deploy: "off"
 
 test_script:
   - pigeon ./pkg/parser/asciidoc-grammar.peg > ./pkg/parser/asciidoc_parser.go

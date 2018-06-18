@@ -14,7 +14,7 @@ import (
 func verify(t GinkgoTInterface, expectedResult interface{}, content string, options ...parser.Option) {
 	log.Debugf("processing: %s", content)
 	reader := strings.NewReader(content)
-	allOptions := append(options, parser.Memoize(true))
+	allOptions := append(options)
 	result, err := parser.ParseReader("", reader, allOptions...) //, Debug(true))
 	if err != nil {
 		log.WithError(err).Error("Error found while parsing the document")

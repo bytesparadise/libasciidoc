@@ -40,195 +40,457 @@ This journey begins on a bleary Monday morning.`
 			verify(GinkgoT(), expectedResult, actualContent)
 		})
 
-		Context("document Authors", func() {
+		Context("document authors", func() {
 
-			Context("single Author", func() {
+			Context("single author", func() {
 
 				It("all data", func() {
-					actualContent := `Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>`
-					expectedResult := []types.DocumentAuthor{
-						{
-							FullName:   "Kismet Rainbow Chameleon",
-							FirstName:  "Kismet",
-							MiddleName: "Rainbow",
-							LastName:   "Chameleon",
-							Initials:   "KRC",
-							Email:      "kismet@asciidoctor.org",
+					actualContent := `= title
+Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>`
+					expectedResult := types.DocumentHeader{
+						Content: types.DocumentAttributes{
+							"doctitle": types.SectionTitle{
+								Attributes: map[string]interface{}{
+									types.AttrID: "_title",
+								},
+								Content: types.InlineElements{
+									types.StringElement{
+										Content: "title",
+									},
+								},
+							},
+							"author":         "Kismet Rainbow Chameleon",
+							"firstname":      "Kismet",
+							"middlename":     "Rainbow",
+							"lastname":       "Chameleon",
+							"authorinitials": "KRC",
+							"email":          "kismet@asciidoctor.org",
 						},
 					}
-					verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentAuthors"))
+					verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentHeader"))
 				})
 
 				It("lastname with underscores", func() {
-					actualContent := `Lazarus het_Draeke <lazarus@asciidoctor.org>`
-					expectedResult := []types.DocumentAuthor{
-						{
-							FullName:  "Lazarus het Draeke",
-							FirstName: "Lazarus",
-							LastName:  "het Draeke",
-							Initials:  "Lh",
-							Email:     "lazarus@asciidoctor.org",
+					actualContent := `= title
+Lazarus het_Draeke <lazarus@asciidoctor.org>`
+					expectedResult := types.DocumentHeader{
+						Content: types.DocumentAttributes{
+							"doctitle": types.SectionTitle{
+								Attributes: map[string]interface{}{
+									types.AttrID: "_title",
+								},
+								Content: types.InlineElements{
+									types.StringElement{
+										Content: "title",
+									},
+								},
+							},
+							"author":         "Lazarus het Draeke",
+							"firstname":      "Lazarus",
+							"lastname":       "het Draeke",
+							"authorinitials": "Lh",
+							"email":          "lazarus@asciidoctor.org",
 						},
 					}
-					verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentAuthors"))
+					verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentHeader"))
 				})
 
 				It("firstname and lastname only", func() {
-					actualContent := `Kismet Chameleon`
-					expectedResult := []types.DocumentAuthor{
-						{
-							FullName:  "Kismet Chameleon",
-							FirstName: "Kismet",
-							LastName:  "Chameleon",
-							Initials:  "KC",
+					actualContent := `= title
+Kismet Chameleon`
+					expectedResult := types.DocumentHeader{
+						Content: types.DocumentAttributes{
+							"doctitle": types.SectionTitle{
+								Attributes: map[string]interface{}{
+									types.AttrID: "_title",
+								},
+								Content: types.InlineElements{
+									types.StringElement{
+										Content: "title",
+									},
+								},
+							},
+							"author":         "Kismet Chameleon",
+							"firstname":      "Kismet",
+							"lastname":       "Chameleon",
+							"authorinitials": "KC",
 						},
 					}
-					verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentAuthors"))
+					verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentHeader"))
 				})
 
 				It("firstname only", func() {
-					actualContent := `  Chameleon`
-					expectedResult := []types.DocumentAuthor{
-						{
-							FullName:  "Chameleon",
-							FirstName: "Chameleon",
-							Initials:  "C",
+					actualContent := `= title
+Chameleon`
+					expectedResult := types.DocumentHeader{
+						Content: types.DocumentAttributes{
+							"doctitle": types.SectionTitle{
+								Attributes: map[string]interface{}{
+									types.AttrID: "_title",
+								},
+								Content: types.InlineElements{
+									types.StringElement{
+										Content: "title",
+									},
+								},
+							},
+							"author":         "Chameleon",
+							"firstname":      "Chameleon",
+							"authorinitials": "C",
 						},
 					}
-					verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentAuthors"))
+					verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentHeader"))
 				})
 
 				It("alternate author input", func() {
-					actualContent := `:author: Kismet Rainbow Chameleon` // `:email:` is processed as a regular attribute
-					expectedResult := []types.DocumentAuthor{
-						{
-							FullName:   "Kismet Rainbow Chameleon",
-							FirstName:  "Kismet",
-							MiddleName: "Rainbow",
-							LastName:   "Chameleon",
-							Initials:   "KRC",
+					actualContent := `= title
+:author: Kismet Rainbow Chameleon` // `:"email":` is processed as a regular attribute
+					expectedResult := types.DocumentHeader{
+						Content: types.DocumentAttributes{
+							"doctitle": types.SectionTitle{
+								Attributes: map[string]interface{}{
+									types.AttrID: "_title",
+								},
+								Content: types.InlineElements{
+									types.StringElement{
+										Content: "title",
+									},
+								},
+							},
+							"author":         "Kismet Rainbow Chameleon",
+							"firstname":      "Kismet",
+							"middlename":     "Rainbow",
+							"lastname":       "Chameleon",
+							"authorinitials": "KRC",
 						},
 					}
-					verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentAuthors"))
+					verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentHeader"))
 				})
 			})
 
 			Context("multiple authors", func() {
 				It("2 authors only", func() {
-					actualContent := `Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus@asciidoctor.org>`
-					expectedResult := []types.DocumentAuthor{
-						{
-							FullName:   "Kismet Rainbow Chameleon",
-							FirstName:  "Kismet",
-							MiddleName: "Rainbow",
-							LastName:   "Chameleon",
-							Initials:   "KRC",
-							Email:      "kismet@asciidoctor.org",
-						},
-						{
-							FullName:  "Lazarus het Draeke",
-							FirstName: "Lazarus",
-							LastName:  "het Draeke",
-							Initials:  "Lh",
-							Email:     "lazarus@asciidoctor.org",
+					actualContent := `= title
+Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus@asciidoctor.org>`
+					expectedResult := types.DocumentHeader{
+						Content: types.DocumentAttributes{
+							"doctitle": types.SectionTitle{
+								Attributes: map[string]interface{}{
+									types.AttrID: "_title",
+								},
+								Content: types.InlineElements{
+									types.StringElement{
+										Content: "title",
+									},
+								},
+							},
+							"author":           "Kismet Rainbow Chameleon",
+							"firstname":        "Kismet",
+							"middlename":       "Rainbow",
+							"lastname":         "Chameleon",
+							"authorinitials":   "KRC",
+							"email":            "kismet@asciidoctor.org",
+							"author_2":         "Lazarus het Draeke",
+							"firstname_2":      "Lazarus",
+							"lastname_2":       "het Draeke",
+							"authorinitials_2": "Lh",
+							"email_2":          "lazarus@asciidoctor.org",
 						},
 					}
-					verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentAuthors"))
+					verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentHeader"))
 				})
 			})
 		})
 
-		Context("document Revision", func() {
+		Context("document revision", func() {
 
-			It("Full document revision", func() {
-				actualContent := `v1.0, June 19, 2017: First incarnation`
-				expectedResult := types.DocumentRevision{
-					Revnumber: "1.0",
-					Revdate:   "June 19, 2017",
-					Revremark: "First incarnation",
+			It("full document revision", func() {
+				actualContent := `= title
+				john doe
+				v1.0, June 19, 2017: First incarnation`
+				expectedResult := types.DocumentHeader{
+					Content: types.DocumentAttributes{
+						"doctitle": types.SectionTitle{
+							Attributes: map[string]interface{}{
+								types.AttrID: "_title",
+							},
+							Content: types.InlineElements{
+								types.StringElement{
+									Content: "title",
+								},
+							},
+						},
+						"author":         "john doe",
+						"authorinitials": "jd",
+						"firstname":      "john",
+						"lastname":       "doe",
+						"revnumber":      "1.0",
+						"revdate":        "June 19, 2017",
+						"revremark":      "First incarnation",
+					},
 				}
-				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentRevision"))
+				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentHeader"))
 			})
 
 			It("revision with revnumber and revdate only", func() {
-				actualContent := `v1.0, June 19, 2017`
-				expectedResult := types.DocumentRevision{
-					Revnumber: "1.0",
-					Revdate:   "June 19, 2017",
+				actualContent := `= title
+				john doe
+				v1.0, June 19, 2017`
+				expectedResult := types.DocumentHeader{
+					Content: types.DocumentAttributes{
+						"doctitle": types.SectionTitle{
+							Attributes: map[string]interface{}{
+								types.AttrID: "_title",
+							},
+							Content: types.InlineElements{
+								types.StringElement{
+									Content: "title",
+								},
+							},
+						},
+						"author":         "john doe",
+						"authorinitials": "jd",
+						"firstname":      "john",
+						"lastname":       "doe",
+						"revnumber":      "1.0",
+						"revdate":        "June 19, 2017",
+					},
 				}
-				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentRevision"))
+				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentHeader"))
 			})
 
 			It("revision with revnumber and revdate - with colon separator", func() {
-				actualContent := `v1.0, June 19, 2017:`
-				expectedResult := types.DocumentRevision{
-					Revnumber: "1.0",
-					Revdate:   "June 19, 2017",
+				actualContent := `= title
+				john doe
+				1.0, June 19, 2017:`
+				expectedResult := types.DocumentHeader{
+					Content: types.DocumentAttributes{
+						"doctitle": types.SectionTitle{
+							Attributes: map[string]interface{}{
+								types.AttrID: "_title",
+							},
+							Content: types.InlineElements{
+								types.StringElement{
+									Content: "title",
+								},
+							},
+						},
+						"author":         "john doe",
+						"authorinitials": "jd",
+						"firstname":      "john",
+						"lastname":       "doe",
+						"revnumber":      "1.0",
+						"revdate":        "June 19, 2017",
+					},
 				}
-				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentRevision"))
+				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentHeader"))
 			})
 			It("revision with revnumber only - comma suffix", func() {
-				actualContent := `1.0,`
-				expectedResult := types.DocumentRevision{
-					Revnumber: "1.0",
+				actualContent := `= title
+				john doe
+				1.0,`
+				expectedResult := types.DocumentHeader{
+					Content: types.DocumentAttributes{
+						"doctitle": types.SectionTitle{
+							Attributes: map[string]interface{}{
+								types.AttrID: "_title",
+							},
+							Content: types.InlineElements{
+								types.StringElement{
+									Content: "title",
+								},
+							},
+						},
+						"author":         "john doe",
+						"authorinitials": "jd",
+						"firstname":      "john",
+						"lastname":       "doe",
+						"revnumber":      "1.0",
+					},
 				}
-				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentRevision"))
+				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentHeader"))
 			})
 
 			It("revision with revdate as number - spaces and no prefix no suffix", func() {
-				actualContent := `1.0`
-				expectedResult := types.DocumentRevision{
-					Revdate: "1.0",
+				actualContent := `= title
+				john doe
+				1.0`
+				expectedResult := types.DocumentHeader{
+					Content: types.DocumentAttributes{
+						"doctitle": types.SectionTitle{
+							Attributes: map[string]interface{}{
+								types.AttrID: "_title",
+							},
+							Content: types.InlineElements{
+								types.StringElement{
+									Content: "title",
+								},
+							},
+						},
+						"author":         "john doe",
+						"authorinitials": "jd",
+						"firstname":      "john",
+						"lastname":       "doe",
+						"revdate":        "1.0",
+					},
 				}
-				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentRevision"))
+				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentHeader"))
 			})
 
 			It("revision with revdate as alphanum - spaces and no prefix no suffix", func() {
-				actualContent := `1.0a`
-				expectedResult := types.DocumentRevision{
-					Revdate: "1.0a",
+				actualContent := `= title
+				john doe
+				1.0a`
+				expectedResult := types.DocumentHeader{
+					Content: types.DocumentAttributes{
+						"doctitle": types.SectionTitle{
+							Attributes: map[string]interface{}{
+								types.AttrID: "_title",
+							},
+							Content: types.InlineElements{
+								types.StringElement{
+									Content: "title",
+								},
+							},
+						},
+						"author":         "john doe",
+						"authorinitials": "jd",
+						"firstname":      "john",
+						"lastname":       "doe",
+						"revdate":        "1.0a",
+					},
 				}
-				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentRevision"))
+				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentHeader"))
 			})
 
 			It("revision with revnumber only", func() {
-				actualContent := `v1.0:`
-				expectedResult := types.DocumentRevision{
-					Revnumber: "1.0",
+				actualContent := `= title
+				john doe
+				v1.0:`
+				expectedResult := types.DocumentHeader{
+					Content: types.DocumentAttributes{
+						"doctitle": types.SectionTitle{
+							Attributes: map[string]interface{}{
+								types.AttrID: "_title",
+							},
+							Content: types.InlineElements{
+								types.StringElement{
+									Content: "title",
+								},
+							},
+						},
+						"author":         "john doe",
+						"authorinitials": "jd",
+						"firstname":      "john",
+						"lastname":       "doe",
+						"revnumber":      "1.0",
+					},
 				}
-				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentRevision"))
+				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentHeader"))
 			})
 
 			It("revision with spaces and capital revnumber ", func() {
-				actualContent := `V1.0:`
-				expectedResult := types.DocumentRevision{
-					Revnumber: "1.0",
+				actualContent := `= title
+				john doe
+				V1.0:`
+				expectedResult := types.DocumentHeader{
+					Content: types.DocumentAttributes{
+						"doctitle": types.SectionTitle{
+							Attributes: map[string]interface{}{
+								types.AttrID: "_title",
+							},
+							Content: types.InlineElements{
+								types.StringElement{
+									Content: "title",
+								},
+							},
+						},
+						"author":         "john doe",
+						"authorinitials": "jd",
+						"firstname":      "john",
+						"lastname":       "doe",
+						"revnumber":      "1.0",
+					},
 				}
-				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentRevision"))
+				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentHeader"))
 			})
 
 			It("revision only - with comma separator", func() {
-				actualContent := `v1.0,`
-				expectedResult := types.DocumentRevision{
-					Revnumber: "1.0",
+				actualContent := `= title
+				john doe
+				v1.0,`
+				expectedResult := types.DocumentHeader{
+					Content: types.DocumentAttributes{
+						"doctitle": types.SectionTitle{
+							Attributes: map[string]interface{}{
+								types.AttrID: "_title",
+							},
+							Content: types.InlineElements{
+								types.StringElement{
+									Content: "title",
+								},
+							},
+						},
+						"author":         "john doe",
+						"authorinitials": "jd",
+						"firstname":      "john",
+						"lastname":       "doe",
+						"revnumber":      "1.0",
+					},
 				}
-				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentRevision"))
+				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentHeader"))
 			})
 
 			It("revision with revnumber plus comma and colon separators", func() {
-				actualContent := `v1.0,:`
-				expectedResult := types.DocumentRevision{
-					Revnumber: "1.0",
+				actualContent := `= title
+				john doe
+				v1.0,:`
+				expectedResult := types.DocumentHeader{
+					Content: types.DocumentAttributes{
+						"doctitle": types.SectionTitle{
+							Attributes: map[string]interface{}{
+								types.AttrID: "_title",
+							},
+							Content: types.InlineElements{
+								types.StringElement{
+									Content: "title",
+								},
+							},
+						},
+						"author":         "john doe",
+						"authorinitials": "jd",
+						"firstname":      "john",
+						"lastname":       "doe",
+						"revnumber":      "1.0",
+					},
 				}
-				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentRevision"))
+				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentHeader"))
 			})
 
 			It("revision with revnumber plus colon separator", func() {
-				actualContent := `v1.0:`
-				expectedResult := types.DocumentRevision{
-					Revnumber: "1.0",
+				actualContent := `= title
+john doe
+v1.0:`
+				expectedResult := types.DocumentHeader{
+					Content: types.DocumentAttributes{
+						"doctitle": types.SectionTitle{
+							Attributes: map[string]interface{}{
+								types.AttrID: "_title",
+							},
+							Content: types.InlineElements{
+								types.StringElement{
+									Content: "title",
+								},
+							},
+						},
+						"author":         "john doe",
+						"authorinitials": "jd",
+						"firstname":      "john",
+						"lastname":       "doe",
+						"revnumber":      "1.0",
+					},
 				}
-				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentRevision"))
+				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentHeader"))
 			})
 
 		})
