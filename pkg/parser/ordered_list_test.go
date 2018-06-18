@@ -379,11 +379,11 @@ var _ = Describe("ordered lists", func() {
 		})
 
 		It("ordered list with all default styles", func() {
-			actualContent := `. Arabic (decimal) numbered list item.
-.. Lower case alpha (letter) numbered list item.
-... Lower case roman numbered list item.
-.... Upper case alpha (letter) numbered list item.
-..... Upper case roman numbered list item.`
+			actualContent := `. level 1
+.. level 2
+... level 3
+.... level 4
+..... level 5.`
 			expectedResult := types.OrderedList{
 				Attributes: map[string]interface{}{},
 				Items: []types.OrderedListItem{
@@ -397,7 +397,7 @@ var _ = Describe("ordered lists", func() {
 								Attributes: map[string]interface{}{},
 								Lines: []types.InlineElements{
 									{
-										types.StringElement{Content: "Arabic (decimal) numbered list item."},
+										types.StringElement{Content: "level 1"},
 									},
 								},
 							},
@@ -414,7 +414,7 @@ var _ = Describe("ordered lists", func() {
 												Attributes: map[string]interface{}{},
 												Lines: []types.InlineElements{
 													{
-														types.StringElement{Content: "Lower case alpha (letter) numbered list item."},
+														types.StringElement{Content: "level 2"},
 													},
 												},
 											},
@@ -431,7 +431,7 @@ var _ = Describe("ordered lists", func() {
 																Attributes: map[string]interface{}{},
 																Lines: []types.InlineElements{
 																	{
-																		types.StringElement{Content: "Lower case roman numbered list item."},
+																		types.StringElement{Content: "level 3"},
 																	},
 																},
 															},
@@ -448,7 +448,7 @@ var _ = Describe("ordered lists", func() {
 																				Attributes: map[string]interface{}{},
 																				Lines: []types.InlineElements{
 																					{
-																						types.StringElement{Content: "Upper case alpha (letter) numbered list item."},
+																						types.StringElement{Content: "level 4"},
 																					},
 																				},
 																			},
@@ -465,7 +465,7 @@ var _ = Describe("ordered lists", func() {
 																								Attributes: map[string]interface{}{},
 																								Lines: []types.InlineElements{
 																									{
-																										types.StringElement{Content: "Upper case roman numbered list item."},
+																										types.StringElement{Content: "level 5."},
 																									},
 																								},
 																							},

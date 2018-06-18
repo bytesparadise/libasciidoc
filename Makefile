@@ -104,7 +104,7 @@ generate-optimized:
 
 .PHONY: test
 ## run all tests except in the 'vendor' package 
-test: deps generate
+test: deps generate-optimized
 	@echo $(COVERPKGS)
 	@ginkgo -r --randomizeAllSpecs --randomizeSuites --failOnPending --trace --race --compilers=2  --cover -coverpkg $(COVERPKGS)
 

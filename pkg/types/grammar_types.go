@@ -570,7 +570,7 @@ func NewSectionTitle(inlineContent InlineElements, attributes []interface{}) (Se
 		Content:    inlineContent,
 	}
 	if log.GetLevel() == log.DebugLevel {
-		log.Debugf("Initialized a new SectionTitle:")
+		log.Debugf("Initialized a new SectionTitle with content %v", inlineContent)
 		spew.Dump(sectionTitle)
 	}
 	return sectionTitle, nil
@@ -1307,13 +1307,18 @@ type ImageMacro struct {
 }
 
 // NewImageMacro initializes a new `ImageMacro`
-func NewImageMacro(path string, attributes interface{}) (ImageMacro, error) {
+func NewImageMacro(path string, attributes []interface{}) (ImageMacro, error) {
 	var alt string
 	var width, height *string
+	attrs, err := stringify(attributes)
+	if err != nil {
+		return ImageMacro{}, errors.Errorf("failed to initialize an image macro")
+	}
+
 	if attributes != nil {
 		// optionally, the width and height can be specified in the alt text, using `,` as a separator
 		// eg: `image::foo.png[a title,200,100]`
-		splittedAttributes := strings.Split(attributes.(string), ",")
+		splittedAttributes := strings.Split(attrs, ",")
 		// naively assume that if the splitted 'alt' contains more than 3 elements, the 2 last ones are for the width and height
 		splitCount := len(splittedAttributes)
 		alt = splittedAttributes[0]

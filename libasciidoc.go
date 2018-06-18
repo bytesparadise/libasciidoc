@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"io"
+	"os"
 	"time"
 
 	"github.com/bytesparadise/libasciidoc/pkg/parser"
@@ -27,29 +28,21 @@ var (
 // The conversion result is written in the given writer `output`, whereas the document metadata (title, etc.) (or an error if a problem occurred) is returned
 // as the result of the function call.
 func ConvertFileToHTML(ctx context.Context, filename string, output io.Writer, options ...renderer.Option) (map[string]interface{}, error) {
-	log.Infof("parsing the asciidoc source...")
-	stats := parser.Stats{}
-	start := time.Now()
-	doc, err := parser.ParseFile(filename, parser.Memoize(false), parser.Statistics(&stats, "no match"))
+	file, err := os.Open(filename)
 	if err != nil {
-		return nil, errors.Wrapf(err, "error while parsing the document")
+		return nil, errors.Wrapf(err, "error opening %s", filename)
 	}
-	duration := time.Since(start)
-	log.Infof("parsed the asciidoc source in %v ", duration)
-	b, err := json.MarshalIndent(stats.ChoiceAltCnt, "", "  ")
-	if err != nil {
-		log.Warnf("failed to produce stats ", err)
-	}
-	log.Infof("parsing stats: %s", string(b))
-	return convertToHTML(ctx, doc, output, options...)
+	defer file.Close()
+	return ConvertToHTML(ctx, file, output, options...)
 }
 
 // ConvertToHTML converts the content of the given reader `r` into a full HTML document, written in the given writer `output`.
 // Returns an error if a problem occurred
 func ConvertToHTML(ctx context.Context, r io.Reader, output io.Writer, options ...renderer.Option) (map[string]interface{}, error) {
+	log.Infof("parsing the asciidoc source...")
 	start := time.Now()
 	stats := parser.Stats{}
-	doc, err := parser.ParseReader("", r, parser.Memoize(true), parser.Statistics(&stats, "no match"))
+	doc, err := parser.ParseReader("", r, parser.Statistics(&stats, "no match"))
 	if err != nil {
 		return nil, errors.Wrapf(err, "error while parsing the document")
 	}
@@ -59,7 +52,10 @@ func ConvertToHTML(ctx context.Context, r io.Reader, output io.Writer, options .
 	if err != nil {
 		log.Warnf("failed to produce stats ", err)
 	}
-	log.Infof("parsing stats: %s", string(b))
+	log.Infof("parsing stats:")
+	log.Infof("- parsing duration:                %v", duration)
+	log.Infof("- expressions processed:           %v", stats.ExprCnt)
+	log.Infof("- choice expressions alternatives:\n%s", string(b))
 	return convertToHTML(ctx, doc, output, options...)
 }
 
