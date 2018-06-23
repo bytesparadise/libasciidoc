@@ -10,39 +10,61 @@ var _ = Describe("links", func() {
 
 	Context("external links", func() {
 
-		It("external link without label", func() {
+		It("external link without text", func() {
 			actualContent := "a link to https://foo.bar"
-			expectedResult := types.InlineElements{
-				types.StringElement{Content: "a link to "},
-				types.Link{
-					URL: "https://foo.bar",
+			expectedResult := types.Paragraph{
+				Attributes: map[string]interface{}{},
+				Lines: []types.InlineElements{
+					{
+						types.StringElement{Content: "a link to "},
+						types.Link{
+							URL: "https://foo.bar",
+							Attributes: map[string]interface{}{
+								"text": "",
+							},
+						},
+					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 
-		It("external link with empty label", func() {
+		It("external link with empty text", func() {
 			actualContent := "a link to https://foo.bar[]"
-			expectedResult := types.InlineElements{
-				types.StringElement{Content: "a link to "},
-				types.Link{
-					URL:  "https://foo.bar",
-					Text: "",
+			expectedResult := types.Paragraph{
+				Attributes: map[string]interface{}{},
+				Lines: []types.InlineElements{
+					{
+						types.StringElement{Content: "a link to "},
+						types.Link{
+							URL: "https://foo.bar",
+							Attributes: map[string]interface{}{
+								"text": "",
+							},
+						},
+					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 
 		It("external link with text", func() {
 			actualContent := "a link to mailto:foo@bar[the foo@bar email]"
-			expectedResult := types.InlineElements{
-				types.StringElement{Content: "a link to "},
-				types.Link{
-					URL:  "mailto:foo@bar",
-					Text: "the foo@bar email",
+			expectedResult := types.Paragraph{
+				Attributes: map[string]interface{}{},
+				Lines: []types.InlineElements{
+					{
+						types.StringElement{Content: "a link to "},
+						types.Link{
+							URL: "mailto:foo@bar",
+							Attributes: map[string]interface{}{
+								"text": "the foo@bar email",
+							},
+						},
+					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 	})
 
@@ -54,6 +76,9 @@ var _ = Describe("links", func() {
 				types.StringElement{Content: "a link to "},
 				types.Link{
 					URL: "foo.adoc",
+					Attributes: map[string]interface{}{
+						"text": "",
+					},
 				},
 			}
 			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
@@ -64,8 +89,10 @@ var _ = Describe("links", func() {
 			expectedResult := types.InlineElements{
 				types.StringElement{Content: "a link to "},
 				types.Link{
-					URL:  "foo.adoc",
-					Text: "foo doc",
+					URL: "foo.adoc",
+					Attributes: map[string]interface{}{
+						"text": "foo doc",
+					},
 				},
 			}
 			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
@@ -76,8 +103,10 @@ var _ = Describe("links", func() {
 			expectedResult := types.InlineElements{
 				types.StringElement{Content: "a link to "},
 				types.Link{
-					URL:  "https://foo.bar",
-					Text: "foo doc",
+					URL: "https://foo.bar",
+					Attributes: map[string]interface{}{
+						"text": "foo doc",
+					},
 				},
 			}
 			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
@@ -86,7 +115,9 @@ var _ = Describe("links", func() {
 		It("invalid relative link to doc", func() {
 			actualContent := "a link to link:foo.adoc"
 			expectedResult := types.InlineElements{
-				types.StringElement{Content: "a link to link:foo.adoc"},
+				types.StringElement{
+					Content: "a link to link:foo.adoc",
+				},
 			}
 			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
 		})

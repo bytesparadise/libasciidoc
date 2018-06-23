@@ -77,9 +77,9 @@ func renderPlainString(ctx *renderer.Context, element interface{}) ([]byte, erro
 	case types.QuotedText:
 		return renderPlainStringForInlineElements(ctx, element.Elements)
 	case types.InlineImage:
-		return []byte(element.Macro.Alt), nil
+		return []byte(element.Macro.Alt()), nil
 	case types.Link:
-		return []byte(element.Text), nil
+		return []byte(element.Text()), nil
 	case types.BlankLine:
 		return []byte("\n\n"), nil
 	case types.StringElement:
