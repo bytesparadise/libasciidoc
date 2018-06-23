@@ -156,7 +156,7 @@ func appendBuffer(elements []interface{}, buff *bytes.Buffer) ([]interface{}, *b
 }
 
 // stringifyOption a function to apply on the result of the `stringify` function below, before returning
-type stringifyOption func(s string) (string, error)
+type stringifyOption func(s string) string
 
 // stringify convert the given elements into a string, then applies the optional `funcs` to convert the string before returning it.
 // These stringifyFuncs can be used to trim the content, for example
@@ -196,11 +196,7 @@ func stringify(elements []interface{}, options ...stringifyOption) (string, erro
 	}
 	result := buff.String()
 	for _, f := range options {
-		var err error
-		result, err = f(result)
-		if err != nil {
-			return "", errors.Wrapf(err, "Failed to postprocess the stringified content")
-		}
+		result = f(result)
 	}
 	// log.Debugf("stringified %v -> '%s' (%v characters)", elements, result, len(result))
 	return result, nil

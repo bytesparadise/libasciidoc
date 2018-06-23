@@ -48,6 +48,16 @@ func renderBlockImage(ctx *renderer.Context, img types.BlockImage) ([]byte, erro
 		Link:  link,
 		Macro: img.Macro,
 	})
+
+	// var alt string
+	// width := attributes["width"].(string)
+	// height := attributes["height"].(string)
+	// for k, v := range attributes {
+	// 	if v == nil {
+	// 		alt = k
+	// 	}
+	// }
+
 	if err != nil {
 		return nil, errors.Wrapf(err, "unable to render block image")
 	}

@@ -77,9 +77,9 @@ func renderPlainString(ctx *renderer.Context, element interface{}) ([]byte, erro
 	case types.QuotedText:
 		return renderPlainStringForInlineElements(ctx, element.Elements)
 	case types.InlineImage:
-		return []byte(element.Macro.Alt), nil
+		return []byte(element.Macro.Alt()), nil
 	case types.Link:
-		return []byte(element.Text), nil
+		return []byte(element.Text()), nil
 	case types.BlankLine:
 		return []byte("\n\n"), nil
 	case types.StringElement:
@@ -97,16 +97,6 @@ func renderPlainString(ctx *renderer.Context, element interface{}) ([]byte, erro
 		}
 		return buff.Bytes(), nil
 	case []types.InlineElements:
-		buff := bytes.NewBuffer(nil)
-		for _, e := range element {
-			plainStringElement, err := renderPlainString(ctx, e)
-			if err != nil {
-				return nil, errors.Wrapf(err, "unable to render plain string for element of type %T", e)
-			}
-			buff.Write(plainStringElement)
-		}
-		return buff.Bytes(), nil
-	case []interface{}:
 		buff := bytes.NewBuffer(nil)
 		for _, e := range element {
 			plainStringElement, err := renderPlainString(ctx, e)

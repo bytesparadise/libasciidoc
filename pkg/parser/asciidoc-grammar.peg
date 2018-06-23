@@ -159,25 +159,12 @@ OtherGenericAttribute <- "," WS* key:(AttributeKey) "=" value:(AttributeValue) {
     return types.NewGenericAttribute(key.([]interface{}), nil)
 }
 
-AttributeKey <- key: (!WS !"=" !"," !"]" .)+ WS*  {
-    // fmt.Printf("found attribute key: %v\n", key)
+AttributeKey <- key:(!WS !"=" !"," !"]" .)+ WS*  {
     return key, nil
 }
 
 AttributeValue <- WS* value:(!WS !"=" !"]" .)* WS* {
-    // fmt.Printf("found attribute value: %v\n", value)
     return value, nil
-}
-
-InvalidElementAttribute <- "[" WS+ content:(!"]" .)* "]" WS* {
-    return types.NewInvalidElementAttribute(c.text)
-}
-
-// ------------------------------------------
-// Inline Attributes
-// ------------------------------------------
-InlineAttributes <- "[" attributes:(!"]" !NEWLINE !EOF .)* "]" {
-    return attributes, nil
 }
 
 // ------------------------------------------
@@ -582,15 +569,26 @@ CrossReference <- "<<" id:(ID) ">>" {
 // ------------------------------------------
 Link <- RelativeLink / ExternalLink 
 
-ExternalLink <- url:(URL_SCHEME URL) attributes:(InlineAttributes) {
-    return types.NewLink(url.([]interface{}), attributes.([]interface{}))
+ExternalLink <- url:(URL_SCHEME URL) attributes:(LinkAttributes) {
+    return types.NewLink(url.([]interface{}), attributes.(map[string]interface{}))
 } / url:(URL_SCHEME URL) {
     return types.NewLink(url.([]interface{}), nil)
 }
 
 // url preceeding with `link:` MUST be followed by square brackets
-RelativeLink <- "link:" url:(URL_SCHEME? URL) attributes:(InlineAttributes) {
-    return types.NewLink(url.([]interface{}), attributes.([]interface{}))
+RelativeLink <- "link:" url:(URL_SCHEME? URL) attributes:(LinkAttributes) {
+    return types.NewLink(url.([]interface{}), attributes.(map[string]interface{}))
+}
+
+LinkAttributes <- "[" text:(LinkTextAttribute)
+        otherAttrs:(OtherGenericAttribute)* "]" {
+    return types.NewLinkAttributes(text.([]interface{}), otherAttrs.([]interface{}))
+} / "[" otherAttrs:(OtherGenericAttribute)* "]" {
+    return types.NewLinkAttributes(nil, otherAttrs.([]interface{}))
+}
+
+LinkTextAttribute <- value:(!"," !"]" .)+ {
+    return value, nil
 }
 
 // ------------------------------------------
@@ -601,8 +599,8 @@ BlockImage <- attributes:(ElementAttribute)* image:BlockImageMacro  WS* EOL {
     return types.NewBlockImage(image.(types.ImageMacro), attributes.([]interface{}))
 }
 
-BlockImageMacro <- "image::" path:(URL) attributes:(InlineAttributes) {
-    return types.NewImageMacro(path.(string), attributes.([]interface{}))
+BlockImageMacro <- "image::" path:(URL) attributes:(ImageAttributes) {
+    return types.NewImageMacro(path.(string), attributes.(map[string]interface{}))
 }
 
 InlineImage <- image:InlineImageMacro {
@@ -610,8 +608,36 @@ InlineImage <- image:InlineImageMacro {
     return types.NewInlineImage(image.(types.ImageMacro))
 }
 
-InlineImageMacro <- "image:" !":" path:(URL) attributes:(InlineAttributes) {
-    return types.NewImageMacro(path.(string), attributes.([]interface{}))
+InlineImageMacro <- "image:" !":" path:(URL) attributes:(ImageAttributes) {
+    return types.NewImageMacro(path.(string), attributes.(map[string]interface{}))
+}
+
+ImageAttributes <- "[" alt:(ImageAltAttribute)
+        width:(ImageWidthAttribute)
+        height:(ImageHeightAttribute)
+        otherAttrs:(OtherGenericAttribute)* "]" {
+    return types.NewImageAttributes(alt.([]interface{}), width.([]interface{}), height.([]interface{}), otherAttrs.([]interface{}))
+} / "[" alt:(ImageAltAttribute)
+        width:(ImageWidthAttribute)
+        otherAttrs:(OtherGenericAttribute)* "]" {
+    return types.NewImageAttributes(alt.([]interface{}), width.([]interface{}), nil, otherAttrs.([]interface{}))
+} / "[" alt:(ImageAltAttribute)
+        otherAttrs:(OtherGenericAttribute)* "]" {
+    return types.NewImageAttributes(alt.([]interface{}), nil, nil, otherAttrs.([]interface{}))
+} / "[" otherAttrs:(OtherGenericAttribute)* "]" {
+    return types.NewImageAttributes(nil, nil, nil, otherAttrs.([]interface{}))
+}
+
+ImageAltAttribute <- value:(!"," !"]" .)+ {
+    return value, nil
+}
+
+ImageWidthAttribute <- "," value:(!"," !"]" .)+ {
+    return value, nil
+}
+
+ImageHeightAttribute <- "," value:(!"," !"]" .)+ {
+    return value, nil
 }
 
 // ------------------------------------------------------------------------------------

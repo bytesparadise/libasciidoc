@@ -8,7 +8,7 @@ import (
 
 var _ = Describe("images", func() {
 
-	Context("block Images", func() {
+	Context("block images", func() {
 
 		Context("correct behaviour", func() {
 
@@ -18,7 +18,11 @@ var _ = Describe("images", func() {
 					Attributes: map[string]interface{}{},
 					Macro: types.ImageMacro{
 						Path: "images/foo.png",
-						Alt:  "foo",
+						Attributes: map[string]interface{}{
+							types.AttrImageAlt:    "foo",
+							types.AttrImageWidth:  "",
+							types.AttrImageHeight: "",
+						},
 					},
 				}
 				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
@@ -30,7 +34,11 @@ var _ = Describe("images", func() {
 					Attributes: map[string]interface{}{},
 					Macro: types.ImageMacro{
 						Path: "images/foo.png",
-						Alt:  "foo",
+						Attributes: map[string]interface{}{
+							types.AttrImageAlt:    "foo",
+							types.AttrImageWidth:  "",
+							types.AttrImageHeight: "",
+						},
 					},
 				}
 				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
@@ -44,7 +52,11 @@ var _ = Describe("images", func() {
 					Attributes: map[string]interface{}{},
 					Macro: types.ImageMacro{
 						Path: "images/foo.png",
-						Alt:  "foo",
+						Attributes: map[string]interface{}{
+							types.AttrImageAlt:    "foo",
+							types.AttrImageWidth:  "",
+							types.AttrImageHeight: "",
+						},
 					},
 				}
 				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
@@ -58,7 +70,11 @@ var _ = Describe("images", func() {
 					Attributes: map[string]interface{}{},
 					Macro: types.ImageMacro{
 						Path: "images/foo.png",
-						Alt:  "foo",
+						Attributes: map[string]interface{}{
+							types.AttrImageAlt:    "foo",
+							types.AttrImageWidth:  "",
+							types.AttrImageHeight: "",
+						},
 					},
 				}
 				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
@@ -71,7 +87,11 @@ var _ = Describe("images", func() {
 					Attributes: map[string]interface{}{},
 					Macro: types.ImageMacro{
 						Path: "images/foo.png",
-						Alt:  "foo",
+						Attributes: map[string]interface{}{
+							types.AttrImageAlt:    "foo",
+							types.AttrImageWidth:  "",
+							types.AttrImageHeight: "",
+						},
 					},
 				}
 				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
@@ -83,7 +103,11 @@ var _ = Describe("images", func() {
 					Attributes: map[string]interface{}{},
 					Macro: types.ImageMacro{
 						Path: "images/foo.png",
-						Alt:  "the foo.png image",
+						Attributes: map[string]interface{}{
+							types.AttrImageAlt:    "the foo.png image",
+							types.AttrImageWidth:  "",
+							types.AttrImageHeight: "",
+						},
 					},
 				}
 				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
@@ -94,8 +118,6 @@ var _ = Describe("images", func() {
 					".A title to foobar\n" +
 					"[link=http://foo.bar]\n" +
 					"image::images/foo.png[the foo.png image, 600, 400]"
-				width := "600"
-				height := "400"
 				expectedResult := types.BlockImage{
 					Attributes: map[string]interface{}{
 						types.AttrID:    "img-foobar",
@@ -103,10 +125,12 @@ var _ = Describe("images", func() {
 						"link":          "http://foo.bar",
 					},
 					Macro: types.ImageMacro{
-						Path:   "images/foo.png",
-						Alt:    "the foo.png image",
-						Width:  &width,
-						Height: &height,
+						Path: "images/foo.png",
+						Attributes: map[string]interface{}{
+							types.AttrImageAlt:    "the foo.png image",
+							types.AttrImageWidth:  "600",
+							types.AttrImageHeight: "400",
+						},
 					},
 				}
 				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
@@ -158,7 +182,7 @@ var _ = Describe("images", func() {
 		})
 	})
 
-	Context("inline Images", func() {
+	Context("inline images", func() {
 
 		Context("correct behaviour", func() {
 
@@ -168,7 +192,11 @@ var _ = Describe("images", func() {
 					types.InlineImage{
 						Macro: types.ImageMacro{
 							Path: "images/foo.png",
-							Alt:  "foo",
+							Attributes: map[string]interface{}{
+								types.AttrImageAlt:    "foo",
+								types.AttrImageWidth:  "",
+								types.AttrImageHeight: "",
+							},
 						},
 					},
 				}
@@ -184,7 +212,11 @@ var _ = Describe("images", func() {
 							types.InlineImage{
 								Macro: types.ImageMacro{
 									Path: "images/foo.png",
-									Alt:  "foo",
+									Attributes: map[string]interface{}{
+										types.AttrImageAlt:    "foo",
+										types.AttrImageWidth:  "",
+										types.AttrImageHeight: "",
+									},
 								},
 							},
 							types.StringElement{
@@ -205,7 +237,11 @@ var _ = Describe("images", func() {
 					types.InlineImage{
 						Macro: types.ImageMacro{
 							Path: "images/foo.png",
-							Alt:  "foo",
+							Attributes: map[string]interface{}{
+								types.AttrImageAlt:    "foo",
+								types.AttrImageWidth:  "",
+								types.AttrImageHeight: "",
+							},
 						},
 					},
 					types.StringElement{
@@ -221,7 +257,11 @@ var _ = Describe("images", func() {
 					types.InlineImage{
 						Macro: types.ImageMacro{
 							Path: "images/foo.png",
-							Alt:  "the foo.png image",
+							Attributes: map[string]interface{}{
+								types.AttrImageAlt:    "the foo.png image",
+								types.AttrImageWidth:  "",
+								types.AttrImageHeight: "",
+							},
 						},
 					},
 				}

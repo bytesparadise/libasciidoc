@@ -19,9 +19,10 @@ func init() {
 
 func renderLink(ctx *renderer.Context, l types.Link) ([]byte, error) {
 	result := bytes.NewBuffer(nil)
-	text := l.Text
+	// text := l.Text
+	text := l.Text()
 	class := ""
-	if l.Text == "" {
+	if text == "" {
 		text = l.URL
 		class = "bare"
 	}
