@@ -106,16 +106,6 @@ func renderPlainString(ctx *renderer.Context, element interface{}) ([]byte, erro
 			buff.Write(plainStringElement)
 		}
 		return buff.Bytes(), nil
-	case []interface{}:
-		buff := bytes.NewBuffer(nil)
-		for _, e := range element {
-			plainStringElement, err := renderPlainString(ctx, e)
-			if err != nil {
-				return nil, errors.Wrapf(err, "unable to render plain string for element of type %T", e)
-			}
-			buff.Write(plainStringElement)
-		}
-		return buff.Bytes(), nil
 	default:
 		return nil, errors.Errorf("unexpectedResult type of element to process: %T", element)
 	}

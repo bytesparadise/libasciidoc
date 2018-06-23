@@ -1563,18 +1563,6 @@ func NewGenericAttribute(key []interface{}, value []interface{}) (GenericAttribu
 
 }
 
-// InvalidElementAttribute the struct for invalid element attributes
-type InvalidElementAttribute struct {
-	Value string
-}
-
-// NewInvalidElementAttribute initializes a new `InvalidElementAttribute` from the given text
-func NewInvalidElementAttribute(text []byte) (InvalidElementAttribute, error) {
-	value := string(text)
-	log.Debugf("Initializing a new InvalidElementAttribute with text=%s", value)
-	return InvalidElementAttribute{Value: value}, nil
-}
-
 // ------------------------------------------
 // StringElement
 // ------------------------------------------
