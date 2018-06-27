@@ -11,7 +11,7 @@ var _ = Describe("unordered lists", func() {
 	Context("valid content", func() {
 
 		It("unordered list with a single item", func() {
-			actualContent := "* a list item"
+			actualContent := `* a list item`
 			expectedResult := types.UnorderedList{
 				Attributes: map[string]interface{}{},
 				Items: []types.UnorderedListItem{
@@ -35,11 +35,37 @@ var _ = Describe("unordered lists", func() {
 		})
 
 		It("unordered list with an ID and a single item", func() {
-			actualContent := "[#listID]\n" +
-				"* a list item"
+			actualContent := `[#listID]
+* a list item`
 			expectedResult := types.UnorderedList{
 				Attributes: map[string]interface{}{
-					"ID": "listID",
+					types.AttrID: "listID",
+				},
+				Items: []types.UnorderedListItem{
+					{
+						Level:       1,
+						BulletStyle: types.OneAsterisk,
+						Elements: []interface{}{
+							types.Paragraph{
+								Attributes: map[string]interface{}{},
+								Lines: []types.InlineElements{
+									{
+										types.StringElement{Content: "a list item"},
+									},
+								},
+							},
+						},
+					},
+				},
+			}
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+		})
+		It("unordered list with a title and a single item", func() {
+			actualContent := `.a title
+* a list item`
+			expectedResult := types.UnorderedList{
+				Attributes: map[string]interface{}{
+					types.AttrTitle: "a title",
 				},
 				Items: []types.UnorderedListItem{
 					{
@@ -62,8 +88,8 @@ var _ = Describe("unordered lists", func() {
 		})
 
 		It("unordered list with 2 items with stars", func() {
-			actualContent := "* a first item\n" +
-				"* a second item with *bold content*"
+			actualContent := `* a first item
+				* a second item with *bold content*`
 			expectedResult := types.UnorderedList{
 				Attributes: map[string]interface{}{},
 				Items: []types.UnorderedListItem{
@@ -95,6 +121,153 @@ var _ = Describe("unordered lists", func() {
 												types.StringElement{Content: "bold content"},
 											},
 										},
+									},
+								},
+							},
+						},
+					},
+				},
+			}
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+		})
+
+		It("unordered list based on article.adoc", func() {
+			actualContent := `.Unordered list title
+			* list item 1
+			** nested list item A
+			*** nested nested list item A.1
+			*** nested nested list item A.2
+			** nested list item B
+			*** nested nested list item B.1
+			*** nested nested list item B.2
+			* list item 2`
+			expectedResult := types.UnorderedList{
+				Attributes: map[string]interface{}{
+					types.AttrTitle: "Unordered list title",
+				},
+				Items: []types.UnorderedListItem{
+					{
+						Level:       1,
+						BulletStyle: types.OneAsterisk,
+						Elements: []interface{}{
+							types.Paragraph{
+								Attributes: map[string]interface{}{},
+								Lines: []types.InlineElements{
+									{
+										types.StringElement{Content: "list item 1"},
+									},
+								},
+							},
+							types.UnorderedList{
+								Attributes: map[string]interface{}{},
+								Items: []types.UnorderedListItem{
+									{
+										Level:       2,
+										BulletStyle: types.TwoAsterisks,
+										Elements: []interface{}{
+											types.Paragraph{
+												Attributes: map[string]interface{}{},
+												Lines: []types.InlineElements{
+													{
+														types.StringElement{Content: "nested list item A"},
+													},
+												},
+											},
+											types.UnorderedList{
+												Attributes: map[string]interface{}{},
+												Items: []types.UnorderedListItem{
+													{
+														Level:       3,
+														BulletStyle: types.ThreeAsterisks,
+														Elements: []interface{}{
+															types.Paragraph{
+																Attributes: map[string]interface{}{},
+																Lines: []types.InlineElements{
+																	{
+																		types.StringElement{Content: "nested nested list item A.1"},
+																	},
+																},
+															},
+														},
+													},
+													{
+														Level:       3,
+														BulletStyle: types.ThreeAsterisks,
+														Elements: []interface{}{
+															types.Paragraph{
+																Attributes: map[string]interface{}{},
+																Lines: []types.InlineElements{
+																	{
+																		types.StringElement{Content: "nested nested list item A.2"},
+																	},
+																},
+															},
+														},
+													},
+												},
+											},
+										},
+									},
+									{
+										Level:       2,
+										BulletStyle: types.TwoAsterisks,
+										Elements: []interface{}{
+											types.Paragraph{
+												Attributes: map[string]interface{}{},
+												Lines: []types.InlineElements{
+													{
+														types.StringElement{Content: "nested list item B"},
+													},
+												},
+											},
+											types.UnorderedList{
+												Attributes: map[string]interface{}{},
+												Items: []types.UnorderedListItem{
+													{
+														Level:       3,
+														BulletStyle: types.ThreeAsterisks,
+														Elements: []interface{}{
+															types.Paragraph{
+																Attributes: map[string]interface{}{},
+																Lines: []types.InlineElements{
+																	{
+																		types.StringElement{Content: "nested nested list item B.1"},
+																	},
+																},
+															},
+														},
+													},
+													{
+														Level:       3,
+														BulletStyle: types.ThreeAsterisks,
+														Elements: []interface{}{
+															types.Paragraph{
+																Attributes: map[string]interface{}{},
+																Lines: []types.InlineElements{
+																	{
+																		types.StringElement{Content: "nested nested list item B.2"},
+																	},
+																},
+															},
+														},
+													},
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+					{
+						Level:       1,
+						BulletStyle: types.OneAsterisk,
+						Elements: []interface{}{
+							types.Paragraph{
+								Attributes: map[string]interface{}{},
+								Lines: []types.InlineElements{
+									{
+										types.StringElement{Content: "list item 2"},
 									},
 								},
 							},

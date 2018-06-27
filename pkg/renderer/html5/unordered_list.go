@@ -15,7 +15,7 @@ var unorderedListTmpl texttemplate.Template
 // initializes the templates
 func init() {
 	unorderedListTmpl = newTextTemplate("unordered list",
-		`{{ $ctx := .Context }}{{ with .Data }}<div{{ if index .Attributes "ID" }} id="{{ index .Attributes "ID" }}"{{ end }} class="ulist">
+		`{{ $ctx := .Context }}{{ with .Data }}<div{{ if hasID .Attributes }} id="{{ getID .Attributes }}"{{ end }} class="ulist">
 <ul>
 {{ $items := .Items }}{{ range $itemIndex, $item := $items }}<li>
 {{ $elements := $item.Elements }}{{ range $elementIndex, $element := $elements }}{{ renderElement $ctx $element | printf "%s" }}{{ if includeNewline $ctx $elementIndex $elements }}{{ print "\n" }}{{ end }}{{ end }}
@@ -26,6 +26,8 @@ func init() {
 			"renderElement":  renderElement,
 			"wrap":           wrap,
 			"includeNewline": includeNewline,
+			"hasID":          hasID,
+			"getID":          getID,
 		})
 
 }

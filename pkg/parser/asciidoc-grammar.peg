@@ -117,7 +117,7 @@ TableOfContentsMacro <- "toc::[]" NEWLINE
 // ------------------------------------------
 // Element Attributes
 // ------------------------------------------
-ElementAttribute <- attr:(ElementID / ElementTitle / AdmonitionMarkerAttribute / AttributeGroup) WS* EOL {
+ElementAttribute <- attr:(ElementID / ElementTitle / AdmonitionMarkerAttribute / HorizontalLayout / AttributeGroup) WS* EOL {
     return attr, nil // avoid returning something like `[]interface{}{attr, EOL}`
 }
 
@@ -139,7 +139,7 @@ ElementTitle <- "." !"." !WS title:(!NEWLINE .)+ {
 
 // expression for the whole admonition marker, but only retains the actual kind
 AdmonitionMarkerAttribute <- "[" k:(AdmonitionKind) "]" {
-    return k, nil
+    return types.NewAdmonitionAttribute(k.(types.AdmonitionKind))
 }
 
 // one or more attributes. eg: [foo, key1=value1, key2=value2]other
@@ -165,6 +165,10 @@ AttributeKey <- key:(!WS !"=" !"," !"]" .)+ WS*  {
 
 AttributeValue <- WS* value:(!WS !"=" !"]" .)* WS* {
     return value, nil
+}
+
+HorizontalLayout <- "[horizontal]" {
+    return map[string]interface{}{"layout": "horizontal"}, nil
 }
 
 // ------------------------------------------
@@ -293,25 +297,13 @@ TitleElement <- element:(CrossReference / Passthrough / InlineImage / QuotedText
 // ------------------------------------------
 // Lists
 // ------------------------------------------
-List <- attributes:(ListAttribute)* 
+List <- attributes:(ElementAttribute)* 
     // list items can be followed by an optional, single blank line
     elements:ListItems {
     return types.NewList(elements.([]interface{}), attributes.([]interface{}))
 }
 
 ListItems <- (OrderedListItem / UnorderedListItem / LabeledListItem)+
-
-ListAttribute <- attribute:(HorizontalLayout / ListID) NEWLINE {
-    return attribute, nil
-}
-
-ListID <- "[#" id:(ID) "]" {
-    return map[string]interface{}{"ID":id.(string)}, nil
-}
-
-HorizontalLayout <- "[horizontal]" {
-    return map[string]interface{}{"layout": "horizontal"}, nil
-}
 
 ListParagraph <-  lines:(
     !(OrderedListItemPrefix) 
@@ -446,7 +438,7 @@ AdmonitionKind <- "TIP" {
 Paragraph <- 
     // admonition paragraph 
     attributes:(ElementAttribute)* !("="+ WS+ !NEWLINE) t:(AdmonitionKind) ": " lines:(InlineElements EOL)+ { 
-        return types.NewParagraph(lines.([]interface{}), append(attributes.([]interface{}), t.(types.AdmonitionKind)))
+        return types.NewAdmonitionParagraph(lines.([]interface{}), t.(types.AdmonitionKind), attributes.([]interface{}))
     } / 
     // regular paragraph
     attributes:(ElementAttribute)* !("="+ WS+ !NEWLINE) lines:(InlineElements EOL)+ { 

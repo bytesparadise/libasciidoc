@@ -98,7 +98,6 @@ generate: prebuild-checks
 ## generate the .go file based on the asciidoc grammar
 generate-optimized:
 	@echo "generating the parser..."
-	## @pigeon -optimize-parser ./pkg/parser/asciidoc-grammar.peg > ./pkg/parser/asciidoc_parser.go
 	@pigeon -optimize-grammar ./pkg/parser/asciidoc-grammar.peg > ./pkg/parser/asciidoc_parser.go
 
 
@@ -110,7 +109,7 @@ test: deps generate-optimized
 
 .PHONY: build
 ## build the binary executable from CLI
-build: $(INSTALL_PREFIX) deps generate-optimized
+build: $(INSTALL_PREFIX) deps generate
 	$(eval BUILD_COMMIT:=$(shell git rev-parse --short HEAD))
 	$(eval BUILD_TAG:=$(shell git tag --contains $(BUILD_COMMIT)))
 	$(eval BUILD_TIME:=$(shell date -u '+%Y-%m-%dT%H:%M:%SZ'))
@@ -138,4 +137,4 @@ endif
 .PHONY: install
 ## installs the binary executable in the $GOPATH/bin directory
 install: build
-	cp $(BINARY_PATH) $(GOPATH)/bin
+	@cp $(BINARY_PATH) $(GOPATH)/bin

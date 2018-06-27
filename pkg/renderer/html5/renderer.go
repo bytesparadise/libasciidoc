@@ -158,3 +158,18 @@ func includeNewline(ctx renderer.Context, index int, content interface{}) bool {
 		return false
 	}
 }
+
+// hasID checks if the given map has an entry with key `types.AttrID`
+func hasID(attributes map[string]interface{}) bool {
+	_, found := attributes[types.AttrID]
+	return found
+}
+
+// getID returns the value for the entry with key `types.AttrID` in the given map
+func getID(attributes map[string]interface{}) string {
+	id, ok := attributes[types.AttrID].(string)
+	if !ok {
+		return ""
+	}
+	return id
+}

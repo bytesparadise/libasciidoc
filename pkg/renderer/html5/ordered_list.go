@@ -15,7 +15,7 @@ var orderedListTmpl texttemplate.Template
 // initializes the templates
 func init() {
 	orderedListTmpl = newTextTemplate("ordered list",
-		`{{ $ctx := .Context }}{{ with .Data }}{{ $items := .Items }}{{ $firstItem := index $items 0 }}<div{{ if index .Attributes "ID" }} id="{{ index .Attributes "ID" }}"{{ end }} class="olist {{ $firstItem.NumberingStyle }}">
+		`{{ $ctx := .Context }}{{ with .Data }}{{ $items := .Items }}{{ $firstItem := index $items 0 }}<div{{ if hasID .Attributes }} id="{{ getID .Attributes }}"{{ end }} class="olist {{ $firstItem.NumberingStyle }}">
 <ol class="{{ $firstItem.NumberingStyle }}"{{ style $firstItem.NumberingStyle }}>
 {{ range $itemIndex, $item := $items }}<li>
 {{ $elements := $item.Elements }}{{ range $elementIndex, $element := $elements }}{{ renderElement $ctx $element | printf "%s" }}{{ if includeNewline $ctx $elementIndex $elements }}{{ print "\n" }}{{ end }}{{ end }}
@@ -27,6 +27,8 @@ func init() {
 			"wrap":           wrap,
 			"includeNewline": includeNewline,
 			"style":          numberingType,
+			"hasID":          hasID,
+			"getID":          getID,
 		})
 
 }

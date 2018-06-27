@@ -16,7 +16,7 @@ var horizontalLabeledListTmpl texttemplate.Template
 // initializes the templates
 func init() {
 	defaultLabeledListTmpl = newTextTemplate("labeled list with default layout",
-		`{{ $ctx := .Context }}{{ with .Data }}<div{{ if index .Attributes "ID" }} id="{{ index .Attributes "ID" }}"{{ end }} class="dlist">
+		`{{ $ctx := .Context }}{{ with .Data }}<div{{ if hasID .Attributes }} id="{{ getID .Attributes }}"{{ end }} class="dlist">
 <dl>
 {{ $items := .Items }}{{ range $itemIndex, $item := $items }}<dt class="hdlist1">{{ $item.Term }}</dt>{{ if $item.Elements }}
 <dd>
@@ -28,10 +28,12 @@ func init() {
 			"renderElement":  renderElement,
 			"wrap":           wrap,
 			"includeNewline": includeNewline,
+			"hasID":          hasID,
+			"getID":          getID,
 		})
 
 	horizontalLabeledListTmpl = newTextTemplate("labeled list with horizontal layout",
-		`{{ $ctx := .Context }}{{ with .Data }}<div{{ if index .Attributes "ID" }} id="{{ index .Attributes "ID" }}"{{ end }} class="hdlist">
+		`{{ $ctx := .Context }}{{ with .Data }}<div{{ if hasID .Attributes }} id="{{ getID .Attributes }}"{{ end }} class="hdlist">
 <table>
 <tr>
 <td class="hdlist1">{{ $items := .Items }}{{ range $itemIndex, $item := $items }}
@@ -50,6 +52,8 @@ func init() {
 			"renderElement":  renderElement,
 			"wrap":           wrap,
 			"includeNewline": includeNewline,
+			"hasID":          hasID,
+			"getID":          getID,
 		})
 
 }
