@@ -559,11 +559,7 @@ func NewSectionTitle(inlineContent InlineElements, attributes []interface{}) (Se
 		if err != nil {
 			return SectionTitle{}, errors.Wrapf(err, "unable to generate default ID while instanciating a new SectionTitle element")
 		}
-		id, err := NewElementID(replacement)
-		if err != nil {
-			return SectionTitle{}, errors.Wrapf(err, "unable to generate default ID while instanciating a new SectionTitle element")
-		}
-		attrbs[AttrID] = id.Value
+		attrbs[AttrID] = replacement
 	}
 	sectionTitle := SectionTitle{
 		Attributes: attrbs,
@@ -931,18 +927,28 @@ func NewUnorderedList(elements []ListItem, attributes []interface{}) (UnorderedL
 		log.Debugf("Processing list item of level %d: %v", item.Level, item.Elements[0])
 		// join item *values* in the parent item when the level decreased
 		if item.Level < previousLevel {
-			log.Debugf("merging previously buffered items at level %d in parent", previousLevel)
-			parentLayer := bufferedItemsPerLevel[previousLevel-2]
-			parentItem := parentLayer[len(parentLayer)-1]
-			childList := UnorderedList{
-				Attributes: map[string]interface{}{}, // avoid nil `attributes`
+			// merge previous levels in parents.
+			// eg: when reaching `list item 2`, the level 3 items must be merged into the level 2 item, which must
+			// be itself merged in the level 1 item:
+			// * list item 1
+			// ** nested list item
+			// *** nested nested list item 1
+			// *** nested nested list item 2
+			// * list item 2
+			for l := previousLevel; l > item.Level; l-- {
+				log.Debugf("merging previously buffered items at level '%d' in parent", l)
+				parentLayer := bufferedItemsPerLevel[l-2]
+				parentItem := parentLayer[len(parentLayer)-1]
+				childList := UnorderedList{
+					Attributes: map[string]interface{}{}, // avoid nil `attributes`
+				}
+				for _, i := range bufferedItemsPerLevel[l-1] {
+					childList.Items = append(childList.Items, *i)
+				}
+				parentItem.Elements = append(parentItem.Elements, childList)
+				// clear the previously buffered items at level 'previousLevel'
+				delete(bufferedItemsPerLevel, l-1)
 			}
-			for _, i := range bufferedItemsPerLevel[previousLevel-1] {
-				childList.Items = append(childList.Items, *i)
-			}
-			parentItem.Elements = append(parentItem.Elements, childList)
-			// clear the previously buffered items at level 'previousLevel'
-			delete(bufferedItemsPerLevel, previousLevel-1)
 		}
 		// new level of element: put it in the buffer
 		if item.Level > len(bufferedItemsPerLevel) {
@@ -1009,7 +1015,7 @@ func (i *UnorderedListItem) AddChild(item interface{}) {
 // adjustBulletStyle
 func (i *UnorderedListItem) adjustBulletStyle(p BulletStyle) {
 	n := i.BulletStyle.nextLevelStyle(p)
-	log.Debugf("adjusting bullet style for item with level %v (previous=%v) to %v", i.BulletStyle, p, n)
+	log.Debugf("adjusting bullet style for item with level '%v' to '%v' (previously processed/parent level: '%v')", i.BulletStyle, p, n)
 	i.BulletStyle = n
 }
 
@@ -1191,6 +1197,16 @@ func NewParagraph(lines []interface{}, attributes []interface{}) (Paragraph, err
 		Attributes: attrbs,
 		Lines:      elements,
 	}, nil
+}
+
+// NewAdmonitionParagraph returns a new Paragraph with an extra admonition attribute
+func NewAdmonitionParagraph(lines []interface{}, admonitionKind AdmonitionKind, attributes []interface{}) (Paragraph, error) {
+	p, err := NewParagraph(lines, attributes)
+	if err != nil {
+		return p, err
+	}
+	p.Attributes[AttrAdmonitionKind] = admonitionKind
+	return p, nil
 }
 
 // ------------------------------------------
@@ -1469,13 +1485,8 @@ func NewElementAttributes(attributes []interface{}) map[string]interface{} {
 	for _, attrb := range attributes {
 		log.Debugf("processing attribute %[1]v (%[1]T)", attrb)
 		switch attrb := attrb.(type) {
-		case ElementID:
-			attrbs[AttrID] = attrb.Value
-		case ElementTitle:
-			attrbs[AttrTitle] = attrb.Value
-		case AdmonitionKind:
-			attrbs[AttrAdmonitionKind] = attrb
 		case map[string]interface{}:
+			// TODO: warn if attribute already exists and is overridden
 			for k, v := range attrb {
 				attrbs[k] = v
 			}
@@ -1488,30 +1499,25 @@ func NewElementAttributes(attributes []interface{}) map[string]interface{} {
 	return attrbs
 }
 
-// ElementID the structure for element IDs
-type ElementID struct {
-	Value string
-}
-
-// NewElementID initializes a new `ElementID` from the given ID
-func NewElementID(id string) (ElementID, error) {
+// NewElementID initializes a new attribute map with a single entry for the ID using the given value
+func NewElementID(id string) (map[string]interface{}, error) {
 	log.Debugf("Initializing a new ElementID with ID=%s", id)
-	return ElementID{Value: id}, nil
+	return map[string]interface{}{AttrID: id}, nil
 }
 
-// ElementTitle the structure for element Titles
-type ElementTitle struct {
-	Value string
-}
-
-// NewElementTitle initializes a new `ElementTitle` from the given value
-func NewElementTitle(value []interface{}) (ElementTitle, error) {
+// NewElementTitle initializes a new attribute map with a single entry for the title using the given value
+func NewElementTitle(value []interface{}) (map[string]interface{}, error) {
 	v, err := stringify(value)
 	if err != nil {
-		return ElementTitle{}, errors.Wrapf(err, "failed to initialize a new ElementTitle")
+		return map[string]interface{}{}, errors.Wrapf(err, "failed to initialize a new ElementTitle")
 	}
 	log.Debugf("Initializing a new ElementTitle with content=%s", v)
-	return ElementTitle{Value: v}, nil
+	return map[string]interface{}{AttrTitle: v}, nil
+}
+
+// NewAdmonitionAttribute initializes a new attribute map with a single entry for the admonition kind using the given value
+func NewAdmonitionAttribute(k AdmonitionKind) (map[string]interface{}, error) {
+	return map[string]interface{}{AttrAdmonitionKind: k}, nil
 }
 
 // NewAttributeGroup initializes a group of attributes from the given generic attributes.
