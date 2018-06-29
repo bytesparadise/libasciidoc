@@ -8,7 +8,7 @@ import (
 var _ = Describe("Blank lines", func() {
 	It("blank line between 2 paragraphs", func() {
 		actualDocument := `first paragraph
-
+ 
 second paragraph`
 		expectedResult := types.Document{
 			Attributes:        map[string]interface{}{},

@@ -168,27 +168,6 @@ func stringify(elements []interface{}, options ...stringifyOption) (string, erro
 		switch element := element.(type) {
 		case StringElement:
 			buff.WriteString(element.Content)
-		case BlankLine:
-			buff.WriteString("\n\n")
-		case Paragraph:
-			for _, line := range element.Lines {
-				el := make([]interface{}, len(line))
-				for i, e := range line {
-					el[i] = e
-				}
-				s, err := stringify(el, options...)
-				if err != nil {
-					return "", errors.Errorf("cannot convert element of type '%T' to string content", element)
-				}
-				buff.WriteString(s)
-			}
-		case []interface{}:
-			stringifiedElement, err := stringify(element)
-			if err != nil {
-				// no need to wrap the error again in the same function
-				return "", err
-			}
-			buff.WriteString(stringifiedElement)
 		default:
 			return "", errors.Errorf("cannot convert element of type '%T' to string content", element)
 		}

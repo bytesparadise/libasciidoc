@@ -44,7 +44,7 @@ type Document struct {
 
 // NewDocument initializes a new `Document` from the given lines
 func NewDocument(frontmatter, header interface{}, blocks []interface{}) (Document, error) {
-	log.Debugf("Initializing a new Document with %d blocks(s): %v", len(blocks), blocks)
+	log.Debugf("initializing a new Document with %d blocks(s)", len(blocks))
 	// elements := convertBlocksTointerface{}s(blocks)
 	// elements := filterEmptyElements(blocks, filterBlankLine(), filterEmptyPreamble())
 	elements := insertPreamble(blocks)
@@ -106,10 +106,8 @@ func NewDocument(frontmatter, header interface{}, blocks []interface{}) (Documen
 }
 
 func insertPreamble(blocks []interface{}) []interface{} {
-	log.Debugf("generating preamble from %d blocks", len(blocks))
-	preamble := Preamble{
-		Elements: make([]interface{}, 0),
-	}
+	// log.Debugf("generating preamble from %d blocks", len(blocks))
+	preamble := NewEmptyPreamble()
 	for _, block := range blocks {
 		switch block.(type) {
 		case Section:
@@ -118,8 +116,9 @@ func insertPreamble(blocks []interface{}) []interface{} {
 			preamble.Elements = append(preamble.Elements, block)
 		}
 	}
-	// no element in the preamble, or section in the document, so no preamble to generate
+	// no element in the preamble, or no section in the document, so no preamble to generate
 	if len(preamble.Elements) == 0 || len(preamble.Elements) == len(blocks) {
+		log.Debugf("skipping preamble (%d vs %d)", len(preamble.Elements), len(blocks))
 		return nilSafe(blocks)
 	}
 	// now, insert the preamble instead of the 'n' blocks that belong to the preamble
@@ -127,11 +126,7 @@ func insertPreamble(blocks []interface{}) []interface{} {
 	result := make([]interface{}, len(blocks)-len(preamble.Elements)+1)
 	result[0] = preamble
 	copy(result[1:], blocks[len(preamble.Elements):])
-	// idx := 1
-	// for i := len(preamble.Elements); i < len(blocks); i++ {
-	// 	result[idx] = blocks[i]
-	// 	idx++
-	// }
+	log.Debugf("generated preamble with %d blocks", len(preamble.Elements))
 	return result
 }
 
@@ -150,7 +145,7 @@ func NewDocumentHeader(header, authors, revision interface{}, otherAttributes []
 	if header != nil {
 		content["doctitle"] = header.(SectionTitle)
 	}
-	log.Debugf("Initializing a new DocumentHeader with content '%v', authors '%+v' and revision '%+v'", content, authors, revision)
+	log.Debugf("initializing a new DocumentHeader with content '%v', authors '%+v' and revision '%+v'", content, authors, revision)
 	if authors != nil {
 		for i, author := range authors.([]DocumentAuthor) {
 			if i == 0 {
@@ -202,7 +197,7 @@ type DocumentAuthor struct {
 
 // NewDocumentAuthors converts the given authors into an array of `DocumentAuthor`
 func NewDocumentAuthors(authors []interface{}) ([]DocumentAuthor, error) {
-	log.Debugf("Initializing a new array of document authors from `%+v`", authors)
+	log.Debugf("initializing a new array of document authors from `%+v`", authors)
 	result := make([]DocumentAuthor, len(authors))
 	for i, author := range authors {
 		switch author.(type) {
@@ -322,7 +317,7 @@ type DocumentRevision struct {
 
 // NewDocumentRevision intializes a new DocumentRevision
 func NewDocumentRevision(revnumber, revdate, revremark interface{}) (DocumentRevision, error) {
-	// log.Debugf("Initializing document revision with revnumber=%v, revdate=%v, revremark=%v", revnumber, revdate, revremark)
+	// log.Debugf("initializing document revision with revnumber=%v, revdate=%v, revremark=%v", revnumber, revdate, revremark)
 	// stringify, then remove the "v" prefix and trim spaces
 	var number, date, remark string
 	var err error
@@ -368,7 +363,7 @@ func NewDocumentRevision(revnumber, revdate, revremark interface{}) (DocumentRev
 		// 	remark = nil
 		// }
 	}
-	// log.Debugf("Initializing a new DocumentRevision with revnumber='%v', revdate='%v' and revremark='%v'", *n, *d, *r)
+	// log.Debugf("initializing a new DocumentRevision with revnumber='%v', revdate='%v' and revremark='%v'", *n, *d, *r)
 	result := DocumentRevision{
 		Revnumber: number,
 		Revdate:   date,
@@ -463,10 +458,11 @@ type Preamble struct {
 	Elements []interface{}
 }
 
-// NewPreamble initializes a new Preamble from the given elements
-func NewPreamble(elements []interface{}) (Preamble, error) {
-	log.Debugf("Initialiazing new Preamble with %d elements", len(elements))
-	return Preamble{Elements: filterEmptyElements(elements, filterBlankLine())}, nil
+// NewEmptyPreamble return an empty Preamble
+func NewEmptyPreamble() Preamble {
+	return Preamble{
+		Elements: make([]interface{}, 0),
+	}
 }
 
 // ------------------------------------------
@@ -502,7 +498,7 @@ type Section struct {
 
 // NewSection initializes a new `Section` from the given section title and elements
 func NewSection(level int, sectionTitle SectionTitle, blocks []interface{}) (Section, error) {
-	log.Debugf("Initializing a new Section with %d block(s)", len(blocks))
+	log.Debugf("initializing a new Section with %d block(s)", len(blocks))
 	// elements := filterEmptyElements(blocks, filterBlankLine())
 	log.Debugf("Initialized a new Section of level %d with %d block(s)", level, len(blocks))
 	return Section{
@@ -588,7 +584,7 @@ type ListItem interface {
 
 // NewList initializes a new `List` from the given content
 func NewList(elements []interface{}, attributes []interface{}) (List, error) {
-	log.Debugf("Initializing a new List with %d elements", len(elements))
+	log.Debugf("initializing a new List with %d elements", len(elements))
 	buffer := make(map[reflect.Type][]ListItem)
 	rootType := reflect.TypeOf(toPtr(elements[0])) // elements types will be pointers
 	previousType := rootType
@@ -609,7 +605,7 @@ func NewList(elements []interface{}, attributes []interface{}) (List, error) {
 			// change of type: make a list from the buffer[t], reset and keep iterating
 			sublist, err := newList(buffer[previousType], nil)
 			if err != nil {
-				return nil, errors.Wrapf(err, "failed to initialize a sublist")
+				return nil, errors.Wrapf(err, "failed to initialize a new sublist")
 			}
 			// look-up the previous item of the same type as the current type
 			parentItems := buffer[currentType]
@@ -649,7 +645,7 @@ func NewList(elements []interface{}, attributes []interface{}) (List, error) {
 		// build a new list from the remaining items at the current level of the stack
 		sublist, err := newList(buffer[stack[i]], nil)
 		if err != nil {
-			return nil, errors.Wrapf(err, "failed to initialize a sublist")
+			return nil, errors.Wrapf(err, "failed to initialize a new sublist")
 		}
 		// add this list to the parent
 		parentItem.AddChild(sublist)
@@ -719,7 +715,7 @@ func init() {
 
 // NewOrderedList initializes a new `OrderedList` from the given content
 func NewOrderedList(elements []ListItem, attributes []interface{}) (OrderedList, error) {
-	log.Debugf("Initializing a new OrderedList from %d element(s)...", len(elements))
+	log.Debugf("initializing a new OrderedList from %d element(s)...", len(elements))
 	result := make([]OrderedListItem, 0)
 	bufferedItemsPerLevel := make(map[int][]*OrderedListItem, 0) // buffered items for the current level
 	levelPerStyle := make(map[NumberingStyle]int, 0)
@@ -830,7 +826,7 @@ var _ ListItem = &OrderedListItem{}
 
 // NewOrderedListItem initializes a new `orderedListItem` from the given content
 func NewOrderedListItem(prefix OrderedListItemPrefix, elements []interface{}, attributes []interface{}) (OrderedListItem, error) {
-	log.Debugf("Initializing a new OrderedListItem with attributes %v", attributes)
+	log.Debugf("initializing a new OrderedListItem with attributes %v", attributes)
 	p := 1 // default position
 	return OrderedListItem{
 		NumberingStyle: prefix.NumberingStyle,
@@ -896,7 +892,7 @@ type UnorderedList struct {
 
 // NewUnorderedList initializes a new `UnorderedList` from the given content
 func NewUnorderedList(elements []ListItem, attributes []interface{}) (UnorderedList, error) {
-	log.Debugf("Initializing a new UnorderedList from %d element(s)...", len(elements))
+	log.Debugf("initializing a new UnorderedList from %d element(s)...", len(elements))
 	result := make([]UnorderedListItem, 0)
 	bufferedItemsPerLevel := make(map[int][]*UnorderedListItem, 0) // buffered items for the current level
 	levelPerStyle := make(map[BulletStyle]int, 0)
@@ -998,8 +994,8 @@ type UnorderedListItem struct {
 
 // NewUnorderedListItem initializes a new `UnorderedListItem` from the given content
 func NewUnorderedListItem(prefix UnorderedListItemPrefix, elements []interface{}) (UnorderedListItem, error) {
-	log.Debugf("Initializing a new UnorderedListItem...")
-	// log.Debugf("Initializing a new UnorderedListItem with '%d' lines (%T) and input level '%d'", len(elements), elements, lvl.Len())
+	log.Debugf("initializing a new UnorderedListItem...")
+	// log.Debugf("initializing a new UnorderedListItem with '%d' lines (%T) and input level '%d'", len(elements), elements, lvl.Len())
 	return UnorderedListItem{
 		Level:       prefix.Level,
 		BulletStyle: prefix.BulletStyle,
@@ -1082,7 +1078,7 @@ func NewUnorderedListItemPrefix(s BulletStyle, l int) (UnorderedListItemPrefix, 
 
 // NewListItemContent initializes a new `UnorderedListItemContent`
 func NewListItemContent(content []interface{}) ([]interface{}, error) {
-	// log.Debugf("Initializing a new ListItemContent with %d line(s)", len(content))
+	// log.Debugf("initializing a new ListItemContent with %d line(s)", len(content))
 	elements := make([]interface{}, 0)
 	for _, element := range content {
 		// log.Debugf("Processing line element of type %T", element)
@@ -1126,7 +1122,7 @@ type LabeledList struct {
 
 // NewLabeledList initializes a new `LabeledList` from the given content
 func NewLabeledList(elements []ListItem, attributes []interface{}) (LabeledList, error) {
-	log.Debugf("Initializing a new LabeledList from %d elements", len(elements))
+	log.Debugf("initializing a new LabeledList from %d elements", len(elements))
 	items := make([]LabeledListItem, 0)
 	for _, element := range elements {
 		if item, ok := element.(*LabeledListItem); ok {
@@ -1148,7 +1144,7 @@ type LabeledListItem struct {
 
 // NewLabeledListItem initializes a new LabeledListItem
 func NewLabeledListItem(term []interface{}, elements []interface{}) (LabeledListItem, error) {
-	log.Debugf("Initializing a new LabeledListItem with %d elements (%T)", len(elements), elements)
+	log.Debugf("initializing a new LabeledListItem with %d elements (%T)", len(elements), elements)
 	t, err := stringify(term)
 	if err != nil {
 		return LabeledListItem{}, errors.Wrapf(err, "unable to get term while instanciating a new LabeledListItem element")
@@ -1180,19 +1176,16 @@ type Paragraph struct {
 
 // NewParagraph initializes a new `Paragraph`
 func NewParagraph(lines []interface{}, attributes []interface{}) (Paragraph, error) {
-	log.Debugf("Initializing a new Paragraph with %d line(s)", len(lines))
+	log.Debugf("initializing a new Paragraph with %d line(s)", len(lines))
 	attrbs := NewElementAttributes(attributes)
 	elements := make([]InlineElements, 0)
 	for _, line := range lines {
-		if lineElements, ok := line.([]interface{}); ok {
-			for _, lineElement := range lineElements {
-				if lineElement, ok := lineElement.(InlineElements); ok {
-					// log.Debugf(" processing paragraph line of type %T", lineElement)
-					elements = append(elements, lineElement)
-				}
-			}
+		log.Debugf(" processing paragraph line of type %T", line)
+		if l, ok := line.(InlineElements); ok {
+			elements = append(elements, l)
 		}
 	}
+	log.Debugf("generated a paragraph with %d lines", len(elements))
 	return Paragraph{
 		Attributes: attrbs,
 		Lines:      elements,
@@ -1280,7 +1273,7 @@ type CrossReference struct {
 
 // NewCrossReference initializes a new `CrossReference` from the given ID
 func NewCrossReference(id string) (CrossReference, error) {
-	log.Debugf("Initializing a new CrossReference with ID=%s", id)
+	log.Debugf("initializing a new CrossReference with ID=%s", id)
 	return CrossReference{ID: id}, nil
 }
 
@@ -1417,6 +1410,8 @@ const (
 	ListingBlock
 	// ExampleBlock an example block
 	ExampleBlock
+	// CommentBlock a comment block
+	CommentBlock
 )
 
 // DelimitedBlock the structure for the delimited blocks
@@ -1426,15 +1421,42 @@ type DelimitedBlock struct {
 	Elements   []interface{}
 }
 
+// Substitution the substituion group to apply when initializing a delimited block
+type Substitution func([]interface{}) ([]interface{}, error)
+
+// None returns the content as-is, but nil-safe
+func None(content []interface{}) ([]interface{}, error) {
+	return nilSafe(content), nil
+}
+
+// Verbatim the verbatim substitution: the given content is converted into an array of strings.
+func Verbatim(content []interface{}) ([]interface{}, error) {
+	result := make([]interface{}, len(content))
+	for i, c := range content {
+		if c, ok := c.([]interface{}); ok {
+			s, err := stringify(c)
+			if err != nil {
+				return []interface{}{}, errors.Wrapf(err, "failed to apply the 'verbatim' substitution")
+			}
+			result[i] = NewStringElement(s)
+		}
+	}
+	return result, nil
+}
+
 // NewDelimitedBlock initializes a new `DelimitedBlock` of the given kind with the given content
-func NewDelimitedBlock(kind DelimitedBlockKind, content []interface{}, attributes []interface{}) (DelimitedBlock, error) {
+func NewDelimitedBlock(kind DelimitedBlockKind, content []interface{}, attributes []interface{}, substitution Substitution) (DelimitedBlock, error) {
 	attrbs := NewElementAttributes(attributes)
 	// elements := filterEmptyElements(content)
-	log.Debugf("Initialized a new DelimitedBlock with content=`%s`", content)
+	log.Debugf("Initializing a new DelimitedBlock")
+	elements, err := substitution(content)
+	if err != nil {
+		return DelimitedBlock{}, errors.Wrapf(err, "failed to initialize a new delimited block")
+	}
 	return DelimitedBlock{
 		Kind:       kind,
 		Attributes: attrbs,
-		Elements:   nilSafe(content),
+		Elements:   elements,
 	}, nil
 }
 
@@ -1451,7 +1473,7 @@ type LiteralBlock struct {
 // along with the given sectionTitle spaces
 func NewLiteralBlock(spaces, content []interface{}) (LiteralBlock, error) {
 	// concatenates the spaces with the actual content in a single 'stringified' value
-	// log.Debugf("Initializing a new LiteralBlock with spaces='%v' and content=`%v`", spaces, content)
+	// log.Debugf("initializing a new LiteralBlock with spaces='%v' and content=`%v`", spaces, content)
 	c, err := stringify(append(spaces, content...))
 	if err != nil {
 		return LiteralBlock{}, errors.Wrapf(err, "unable to initialize a new literal block")
@@ -1461,6 +1483,27 @@ func NewLiteralBlock(spaces, content []interface{}) (LiteralBlock, error) {
 	log.Debugf("Initialized a new LiteralBlock with content=`%s`", blockContent)
 	return LiteralBlock{
 		Content: blockContent,
+	}, nil
+}
+
+// ------------------------------------------
+// Comments
+// ------------------------------------------
+
+// SingleLineComment a single line comment
+type SingleLineComment struct {
+	Content string
+}
+
+// NewSingleLineComment initializes a new single line content
+func NewSingleLineComment(content []interface{}) (SingleLineComment, error) {
+	c, err := stringify(content)
+	if err != nil {
+		return SingleLineComment{}, errors.Wrapf(err, "failed to initialize a new single line comment")
+	}
+	log.Debugf("initializing a single line comment with content: '%s'", c)
+	return SingleLineComment{
+		Content: c,
 	}, nil
 }
 
@@ -1501,7 +1544,7 @@ func NewElementAttributes(attributes []interface{}) map[string]interface{} {
 
 // NewElementID initializes a new attribute map with a single entry for the ID using the given value
 func NewElementID(id string) (map[string]interface{}, error) {
-	log.Debugf("Initializing a new ElementID with ID=%s", id)
+	log.Debugf("initializing a new ElementID with ID=%s", id)
 	return map[string]interface{}{AttrID: id}, nil
 }
 
@@ -1511,7 +1554,7 @@ func NewElementTitle(value []interface{}) (map[string]interface{}, error) {
 	if err != nil {
 		return map[string]interface{}{}, errors.Wrapf(err, "failed to initialize a new ElementTitle")
 	}
-	log.Debugf("Initializing a new ElementTitle with content=%s", v)
+	log.Debugf("initializing a new ElementTitle with content=%s", v)
 	return map[string]interface{}{AttrTitle: v}, nil
 }
 
@@ -1522,7 +1565,7 @@ func NewAdmonitionAttribute(k AdmonitionKind) (map[string]interface{}, error) {
 
 // NewAttributeGroup initializes a group of attributes from the given generic attributes.
 func NewAttributeGroup(attributes []interface{}) (map[string]interface{}, error) {
-	// log.Debugf("Initializing a new AttributeGroup with %v", attributes)
+	// log.Debugf("initializing a new AttributeGroup with %v", attributes)
 	result := make(map[string]interface{}, 0)
 	for _, a := range attributes {
 		// log.Debugf("processing attribute group element of type %T", a)
@@ -1579,8 +1622,8 @@ type StringElement struct {
 }
 
 // NewStringElement initializes a new `StringElement` from the given content
-func NewStringElement(content interface{}) StringElement {
-	return StringElement{Content: content.(string)}
+func NewStringElement(content string) StringElement {
+	return StringElement{Content: content}
 }
 
 // Accept implements Visitable#Accept(Visitor)
@@ -1718,7 +1761,7 @@ type BlankLine struct {
 
 // NewBlankLine initializes a new `BlankLine`
 func NewBlankLine() (BlankLine, error) {
-	// log.Debug("Initializing a new BlankLine")
+	// log.Debug("initializing a new BlankLine")
 	return BlankLine{}, nil
 }
 

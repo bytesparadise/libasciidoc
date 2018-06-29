@@ -109,6 +109,8 @@ func renderDelimitedBlock(ctx *renderer.Context, b types.DelimitedBlock) ([]byte
 				},
 			})
 		}
+	case types.CommentBlock:
+		// nothing to do
 	default:
 		err = errors.Errorf("no template for block of kind %v", b.Kind)
 	}
