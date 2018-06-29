@@ -63,8 +63,9 @@ func renderElement(ctx *renderer.Context, element interface{}) ([]byte, error) {
 		return nil, processAttributeReset(ctx, e)
 	case types.DocumentAttributeSubstitution:
 		return renderAttributeSubstitution(ctx, e)
+	case types.SingleLineComment:
+		return nil, nil // nothing to do
 	default:
-		log.Errorf("unsupported type of element: %T", element)
 		return nil, errors.Errorf("unsupported type of element: %T", element)
 	}
 }

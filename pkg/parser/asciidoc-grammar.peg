@@ -305,16 +305,19 @@ List <- attributes:(ElementAttribute)*
 
 ListItems <- (OrderedListItem / UnorderedListItem / LabeledListItem)+
 
-ListParagraph <-  lines:(
-    !(OrderedListItemPrefix) 
-    !(UnorderedListItemPrefix) 
-    !(LabeledListItemTerm LabeledListItemSeparator) 
-    !(ListItemContinuation) 
-    !(ElementAttribute)
-    !(BlockDelimiter)
-    InlineElements EOL)+ {
+ListParagraph <- lines:(ListParagraphLine)+ {
     return types.NewParagraph(lines.([]interface{}), nil)
 } 
+
+ListParagraphLine <- !(OrderedListItemPrefix) 
+        !(UnorderedListItemPrefix) 
+        !(LabeledListItemTerm LabeledListItemSeparator) 
+        !(ListItemContinuation) 
+        !(ElementAttribute)
+        !(BlockDelimiter)
+        line:(InlineElements) {
+    return line, nil
+}
 
 ListItemContinuation <- "+" WS* EOL {
     return types.NewListItemContinuation()
@@ -437,21 +440,21 @@ AdmonitionKind <- "TIP" {
 // a paragraph cannot start with the `section` sequence (`= `, `== `, etc.)
 Paragraph <- 
     // admonition paragraph 
-    attributes:(ElementAttribute)* !("="+ WS+ !NEWLINE) t:(AdmonitionKind) ": " lines:(InlineElements EOL)+ { 
+    attributes:(ElementAttribute)* !("="+ WS+ !NEWLINE) t:(AdmonitionKind) ": " lines:(InlineElements)+ { 
         return types.NewAdmonitionParagraph(lines.([]interface{}), t.(types.AdmonitionKind), attributes.([]interface{}))
     } / 
     // regular paragraph
-    attributes:(ElementAttribute)* !("="+ WS+ !NEWLINE) lines:(InlineElements EOL)+ { 
+    attributes:(ElementAttribute)* !("="+ WS+ !NEWLINE) lines:(InlineElements)+ { 
         return types.NewParagraph(lines.([]interface{}), attributes.([]interface{}))
     } 
 
-InlineElements <- !EOF !BlockDelimiter elements:(!EOL WS* !InlineElementID InlineElement WS*)+ { // absorbs heading and trailing spaces
-    // fmt.Printf("matching inline elements: %v\n", elements)
+InlineElements <- comment:(SingleLineComment) {
+    return types.NewInlineElements([]interface{}{comment})
+} / !EOF !BlockDelimiter elements:(!EOL WS* !InlineElementID InlineElement WS*)+ EOL { // absorbs heading and trailing spaces
     return types.NewInlineElements(elements.([]interface{}))
 } 
 
 InlineElement <- element:(CrossReference / Passthrough / InlineImage / QuotedText / Link / DocumentAttributeSubstitution / Word) {
-    // fmt.Printf("matching inline element: %v\n", element)
     return element, nil
 }
 
@@ -635,38 +638,59 @@ ImageHeightAttribute <- "," value:(!"," !"]" .)+ {
 // ------------------------------------------------------------------------------------
 // Delimited Blocks (http://asciidoctor.org/docs/user-manual/#built-in-blocks-summary)
 // ------------------------------------------------------------------------------------
-DelimitedBlock <- FencedBlock / ListingBlock / ExampleBlock
+DelimitedBlock <- FencedBlock / ListingBlock / ExampleBlock / CommentBlock
 
-BlockDelimiter <- LiteralBlockDelimiter / FencedBlockDelimiter / ListingBlockDelimiter / ExampleBlockDelimiter
+BlockDelimiter <- LiteralBlockDelimiter / FencedBlockDelimiter / ListingBlockDelimiter / ExampleBlockDelimiter / CommentBlockDelimiter
 
 FencedBlockDelimiter <- "```"
 
 FencedBlock <- attributes:(ElementAttribute)* FencedBlockDelimiter WS* NEWLINE content:(List / BlockParagraph / BlankLine)* ((FencedBlockDelimiter WS* EOL) / EOF) {
-    return types.NewDelimitedBlock(types.FencedBlock, content.([]interface{}), attributes.([]interface{}))
+    return types.NewDelimitedBlock(types.FencedBlock, content.([]interface{}), attributes.([]interface{}), types.None)
 }
 
 ListingBlockDelimiter <- "----"
 
 ListingBlock <- attributes:(ElementAttribute)* ListingBlockDelimiter WS* NEWLINE content:(List / BlockParagraph / BlankLine)* ((ListingBlockDelimiter WS* EOL) / EOF) {
-    return types.NewDelimitedBlock(types.ListingBlock, content.([]interface{}), attributes.([]interface{}))
+    return types.NewDelimitedBlock(types.ListingBlock, content.([]interface{}), attributes.([]interface{}), types.None)
 }
 
 ExampleBlockDelimiter <- "===="
 
 ExampleBlock <- attributes:(ElementAttribute)* ExampleBlockDelimiter WS* NEWLINE content:(List / BlockParagraph / BlankLine)*  ((ExampleBlockDelimiter WS* EOL) / EOF) {
-    return types.NewDelimitedBlock(types.ExampleBlock, content.([]interface{}), attributes.([]interface{}))
+    return types.NewDelimitedBlock(types.ExampleBlock, content.([]interface{}), attributes.([]interface{}), types.None)
 }
 
-BlockParagraph <-  lines:(
-    !(OrderedListItemPrefix) 
-    !(UnorderedListItemPrefix) 
-    !(LabeledListItemTerm LabeledListItemSeparator) 
-    !(ListItemContinuation) 
-    //!(ElementAttribute)
-    !(BlockDelimiter)
-    InlineElements EOL)+ {
+BlockParagraph <-  lines:(BlockParagraphLine)+ {
     return types.NewParagraph(lines.([]interface{}), nil)
 } 
+
+BlockParagraphLine <- !(OrderedListItemPrefix) 
+        !(UnorderedListItemPrefix) 
+        !(LabeledListItemTerm LabeledListItemSeparator) 
+        !(ListItemContinuation) 
+        !(BlockDelimiter) 
+        line:(InlineElements) {
+    return line, nil
+}
+
+// -------------------------------------------------------------------------------------
+// Comments
+// -------------------------------------------------------------------------------------
+
+CommentBlockDelimiter <- "////"
+
+CommentBlock <- attributes:(ElementAttribute)* CommentBlockDelimiter WS* NEWLINE content:(CommentBlockLine)*  ((CommentBlockDelimiter WS* EOL) / EOF) {
+    return types.NewDelimitedBlock(types.CommentBlock, content.([]interface{}), attributes.([]interface{}), types.Verbatim)
+}
+
+CommentBlockLine <- content:(!CommentBlockDelimiter !EOL .)* EOL {
+    return content, nil
+}
+
+SingleLineComment <- !CommentBlockDelimiter "//" content:(!EOL .)* EOL {
+    return types.NewSingleLineComment(content.([]interface{}))
+}
+
 
 // -------------------------------------------------------------------------------------
 // Literal Blocks (see http://asciidoctor.org/docs/user-manual/#literal-text-and-blocks)

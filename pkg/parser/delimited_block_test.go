@@ -323,9 +323,8 @@ then a normal paragraph.`
 			verify(GinkgoT(), expectedResult, actualContent)
 		})
 
-		It("listing block after a paragraph", func() {
+		It("listing block just after a paragraph", func() {
 			actualContent := `a paragraph.
-			
 ----
 some listing code
 ----`
@@ -341,7 +340,6 @@ some listing code
 							},
 						},
 					},
-					types.BlankLine{},
 					types.DelimitedBlock{
 						Kind:       types.ListingBlock,
 						Attributes: map[string]interface{}{},
