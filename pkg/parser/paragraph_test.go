@@ -75,6 +75,7 @@ a paragraph`
 	})
 
 	Context("admonition paragraphs", func() {
+
 		It("note admonition paragraph", func() {
 			actualContent := `NOTE: this is a note.`
 			expectedResult := types.Paragraph{
@@ -228,6 +229,153 @@ And no space after [CAUTION] either.`
 				},
 			}
 			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Document"))
+		})
+	})
+
+	Context("verse paragraphs", func() {
+
+		It("regular paragraph as a verse with author and title", func() {
+			actualContent := `[verse, john doe, verse title]
+I am a verse paragraph.`
+			expectedResult := types.Paragraph{
+				Attributes: map[string]interface{}{
+					types.AttrBlockKind:   types.Verse,
+					types.AttrVerseAuthor: "john doe",
+					types.AttrVerseTitle:  "verse title",
+				},
+				Lines: []types.InlineElements{
+					{
+						types.StringElement{
+							Content: "I am a verse paragraph.",
+						},
+					},
+				},
+			}
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+		})
+
+		It("regular paragraph as a verse with author, title and other attributes", func() {
+			actualContent := `[[universe]]
+[verse, john doe, verse title]
+.universe
+I am a verse paragraph.`
+			expectedResult := types.Paragraph{
+				Attributes: map[string]interface{}{
+					types.AttrBlockKind:   types.Verse,
+					types.AttrVerseAuthor: "john doe",
+					types.AttrVerseTitle:  "verse title",
+					types.AttrID:          "universe",
+					types.AttrTitle:       "universe",
+				},
+				Lines: []types.InlineElements{
+					{
+						types.StringElement{
+							Content: "I am a verse paragraph.",
+						},
+					},
+				},
+			}
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+		})
+
+		It("regular paragraph as a verse with empty title", func() {
+			actualContent := `[verse, john doe, ]
+I am a verse paragraph.`
+			expectedResult := types.Paragraph{
+				Attributes: map[string]interface{}{
+					types.AttrBlockKind:   types.Verse,
+					types.AttrVerseAuthor: "john doe",
+					types.AttrVerseTitle:  "",
+				},
+				Lines: []types.InlineElements{
+					{
+						types.StringElement{
+							Content: "I am a verse paragraph.",
+						},
+					},
+				},
+			}
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+		})
+
+		It("regular paragraph as a verse without title", func() {
+			actualContent := `[verse, john doe ]
+I am a verse paragraph.`
+			expectedResult := types.Paragraph{
+				Attributes: map[string]interface{}{
+					types.AttrBlockKind:   types.Verse,
+					types.AttrVerseAuthor: "john doe",
+					types.AttrVerseTitle:  "",
+				},
+				Lines: []types.InlineElements{
+					{
+						types.StringElement{
+							Content: "I am a verse paragraph.",
+						},
+					},
+				},
+			}
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+		})
+
+		It("regular paragraph as a verse with empty author", func() {
+			actualContent := `[verse,  ]
+I am a verse paragraph.`
+			expectedResult := types.Paragraph{
+				Attributes: map[string]interface{}{
+					types.AttrBlockKind:   types.Verse,
+					types.AttrVerseAuthor: "",
+					types.AttrVerseTitle:  "",
+				},
+				Lines: []types.InlineElements{
+					{
+						types.StringElement{
+							Content: "I am a verse paragraph.",
+						},
+					},
+				},
+			}
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+		})
+
+		It("regular paragraph as a verse without author", func() {
+			actualContent := `[verse]
+I am a verse paragraph.`
+			expectedResult := types.Paragraph{
+				Attributes: map[string]interface{}{
+					types.AttrBlockKind:   types.Verse,
+					types.AttrVerseAuthor: "",
+					types.AttrVerseTitle:  "",
+				},
+				Lines: []types.InlineElements{
+					{
+						types.StringElement{
+							Content: "I am a verse paragraph.",
+						},
+					},
+				},
+			}
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Paragraph"))
+		})
+
+		It("image block as a verse", func() {
+			actualContent := `[verse, john doe, verse title]
+image::foo.png[]`
+			expectedResult := types.Paragraph{
+				Attributes: map[string]interface{}{
+					types.AttrBlockKind:   types.Verse,
+					types.AttrVerseAuthor: "john doe",
+					types.AttrVerseTitle:  "verse title",
+				},
+				Lines: []types.InlineElements{
+					{
+						types.StringElement{
+							Content: "image::foo.png[]",
+						},
+					},
+				},
+			}
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 	})
 })

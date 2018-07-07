@@ -121,6 +121,11 @@ ElementAttribute <- attr:(ElementID / ElementTitle / AdmonitionMarkerAttribute /
     return attr, nil // avoid returning something like `[]interface{}{attr, EOL}`
 }
 
+// identify all attributes that masquerade a block element into something else.
+MasqueradeAttribute <- attr:(VerseAttributes) WS* EOL {
+    return attr, nil // avoid returning something like `[]interface{}{attr, EOL}`
+}
+
 ElementID <- id:(InlineElementID) {
     return id, nil
 } / "[#" id:(ID) "]" {
@@ -169,6 +174,26 @@ AttributeValue <- WS* value:(!WS !"=" !"]" .)* WS* {
 
 HorizontalLayout <- "[horizontal]" {
     return map[string]interface{}{"layout": "horizontal"}, nil
+}
+
+VerseAttributes <- "[verse" WS* "," author:(VerseAuthor) "," title:(VerseTitle) "]" {
+        return types.NewVerseAttributes(author.(string), title.(string))
+    } / 
+    // verse without specific title
+    "[verse" WS* "," author:(VerseAuthor) "]" {
+        return types.NewVerseAttributes(author.(string), "")
+    } /
+    // verse without specific author
+    "[verse" WS* "]" {
+        return types.NewVerseAttributes("","")
+    }
+
+VerseAuthor <- (!EOL !"," !"]" .)* {
+    return string(c.text), nil
+}
+
+VerseTitle <- (!EOL !"," !"]" .)* {
+    return string(c.text), nil
 }
 
 // ------------------------------------------
@@ -284,12 +309,10 @@ Section5Block <- !Section1Title !Section2Title !Section3Title !Section4Title !Se
 }
 
 TitleElements <- elements:(!NEWLINE WS* !InlineElementID TitleElement WS*)+ { // absorbs heading and trailing spaces
-    // fmt.Printf("matching title elements: %v\n", elements)
     return types.NewInlineElements(elements.([]interface{}))
 } 
 
 TitleElement <- element:(CrossReference / Passthrough / InlineImage / QuotedText / Link / DocumentAttributeSubstitution / Word) {
-    // fmt.Printf("matching title element: %v\n", element)
     return element, nil
 }
 
@@ -309,14 +332,15 @@ ListParagraph <- lines:(ListParagraphLine)+ {
     return types.NewParagraph(lines.([]interface{}), nil)
 } 
 
-ListParagraphLine <- !(OrderedListItemPrefix) 
-        !(UnorderedListItemPrefix) 
-        !(LabeledListItemTerm LabeledListItemSeparator) 
-        !(ListItemContinuation) 
-        !(ElementAttribute)
-        !(BlockDelimiter)
-        line:(InlineElements) {
-    return line, nil
+ListParagraphLine <- 
+    !(OrderedListItemPrefix) 
+    !(UnorderedListItemPrefix) 
+    !(LabeledListItemTerm LabeledListItemSeparator) 
+    !(ListItemContinuation) 
+    !(ElementAttribute)
+    !(BlockDelimiter)
+    line:(InlineElements) {
+        return line, nil
 }
 
 ListItemContinuation <- "+" WS* EOL {
@@ -372,27 +396,28 @@ UnorderedListItem <- prefix:(UnorderedListItemPrefix) content:(UnorderedListItem
     return types.NewUnorderedListItem(prefix.(types.UnorderedListItemPrefix), content.([]interface{}))
 }
 
-UnorderedListItemPrefix <- WS* prefix:(
-    "*****" { // ignore whitespaces, only return the relevant "*"/"-" Word
-        return types.NewUnorderedListItemPrefix(types.FiveAsterisks, 5)
+UnorderedListItemPrefix <- 
+    WS* prefix:(
+        "*****" { // ignore whitespaces, only return the relevant "*"/"-" Word
+           return types.NewUnorderedListItemPrefix(types.FiveAsterisks, 5)
         } 
-    / "****" { // ignore whitespaces, only return the relevant "*"/"-" Word
-        return types.NewUnorderedListItemPrefix(types.FourAsterisks, 4)
+        / "****" { // ignore whitespaces, only return the relevant "*"/"-" Word
+            return types.NewUnorderedListItemPrefix(types.FourAsterisks, 4)
         } 
-    / "***" { // ignore whitespaces, only return the relevant "*"/"-" Word
-        return types.NewUnorderedListItemPrefix(types.ThreeAsterisks, 3)
+        / "***" { // ignore whitespaces, only return the relevant "*"/"-" Word
+            return types.NewUnorderedListItemPrefix(types.ThreeAsterisks, 3)
         } 
-    / "**" { // ignore whitespaces, only return the relevant "*"/"-" Word
-        return types.NewUnorderedListItemPrefix(types.TwoAsterisks, 2)
+        / "**" { // ignore whitespaces, only return the relevant "*"/"-" Word
+            return types.NewUnorderedListItemPrefix(types.TwoAsterisks, 2)
         } 
-    / "*" { // ignore whitespaces, only return the relevant "*"/"-" Word
-        return types.NewUnorderedListItemPrefix(types.OneAsterisk, 1)
+        / "*" { // ignore whitespaces, only return the relevant "*"/"-" Word
+            return types.NewUnorderedListItemPrefix(types.OneAsterisk, 1)
         } 
-    / "-" { // ignore whitespaces, only return the relevant "*"/"-" Word
-        return types.NewUnorderedListItemPrefix(types.Dash, 1)
+        / "-" { // ignore whitespaces, only return the relevant "*"/"-" Word
+            return types.NewUnorderedListItemPrefix(types.Dash, 1)
         }) WS+ {
-    return prefix, nil
-} 
+            return prefix, nil
+        } 
 
 UnorderedListItemContent <- elements:(ListParagraph+ ContinuedDocumentBlock*) { // Another list or a literal paragraph immediately following a list item will be implicitly included in the list item
     return types.NewListItemContent(elements.([]interface{}))
@@ -401,11 +426,12 @@ UnorderedListItemContent <- elements:(ListParagraph+ ContinuedDocumentBlock*) { 
 // ------------------------------------------
 // Labeled List Items
 // ------------------------------------------
-LabeledListItem <- term:(LabeledListItemTerm) LabeledListItemSeparator description:(LabeledListItemDescription) {
-    return types.NewLabeledListItem(term.([]interface{}), description.([]interface{}))
-} /  term:(LabeledListItemTerm) "::" WS* EOL { // here, WS is optional since there is no description afterwards
-    return types.NewLabeledListItem(term.([]interface{}), nil)
-}
+LabeledListItem <- 
+    term:(LabeledListItemTerm) LabeledListItemSeparator description:(LabeledListItemDescription) {
+        return types.NewLabeledListItem(term.([]interface{}), description.([]interface{}))
+    } /  term:(LabeledListItemTerm) "::" WS* EOL { // here, WS is optional since there is no description afterwards
+        return types.NewLabeledListItem(term.([]interface{}), nil)
+    }
 
 LabeledListItemTerm <- term:(!NEWLINE !"::" .)*  {
     return term, nil
@@ -440,19 +466,22 @@ AdmonitionKind <- "TIP" {
 // a paragraph cannot start with the `section` sequence (`= `, `== `, etc.)
 Paragraph <- 
     // admonition paragraph 
-    attributes:(ElementAttribute)* !("="+ WS+ !NEWLINE) t:(AdmonitionKind) ": " lines:(InlineElements)+ { 
+    attributes:(ParagraphAttribute)* !("="+ WS+ !NEWLINE) t:(AdmonitionKind) ": " lines:(InlineElements)+ { 
         return types.NewAdmonitionParagraph(lines.([]interface{}), t.(types.AdmonitionKind), attributes.([]interface{}))
     } / 
-    // regular paragraph
-    attributes:(ElementAttribute)* !("="+ WS+ !NEWLINE) lines:(InlineElements)+ { 
+    // other kind of paragraph (verse, regular, etc.)
+    attributes:(ParagraphAttribute)* !("="+ WS+ !NEWLINE) lines:(InlineElements)+ { 
         return types.NewParagraph(lines.([]interface{}), attributes.([]interface{}))
     } 
 
-InlineElements <- comment:(SingleLineComment) {
-    return types.NewInlineElements([]interface{}{comment})
-} / !EOF !BlockDelimiter elements:(!EOL WS* !InlineElementID InlineElement WS*)+ EOL { // absorbs heading and trailing spaces
-    return types.NewInlineElements(elements.([]interface{}))
-} 
+ParagraphAttribute <- MasqueradeAttribute / ElementAttribute // support masquerade attributes 
+
+InlineElements <- 
+    comment:(SingleLineComment) {
+        return types.NewInlineElements([]interface{}{comment})
+    } / !EOF !BlockDelimiter elements:(!EOL WS* !InlineElementID InlineElement WS*)+ EOL { // absorbs heading and trailing spaces
+        return types.NewInlineElements(elements.([]interface{}))
+    } 
 
 InlineElement <- element:(CrossReference / Passthrough / InlineImage / QuotedText / Link / DocumentAttributeSubstitution / Word) {
     return element, nil
@@ -464,59 +493,65 @@ InlineElement <- element:(CrossReference / Passthrough / InlineImage / QuotedTex
 QuotedText <- BoldText / ItalicText / MonospaceText /
             EscapedBoldText / EscapedItalicText / EscapedMonospaceText
 
-BoldText <- !`\\` "**" content:(QuotedTextContent) "**" { // double punctuation must be evaluated first
-    return types.NewQuotedText(types.Bold, content.([]interface{}))
-} / !`\\` "**" content:(QuotedTextContent) "*" { // unbalanced `**` vs `*` punctuation
-    result := append([]interface{}{"*"}, content.([]interface{}))
-    return types.NewQuotedText(types.Bold, result)
-} / !`\` "*" content:(QuotedTextContent) "*" { // single punctuation
-    return types.NewQuotedText(types.Bold, content.([]interface{}))
-} 
+BoldText <- 
+    !`\\` "**" content:(QuotedTextContent) "**" { // double punctuation must be evaluated first
+        return types.NewQuotedText(types.Bold, content.([]interface{}))
+    } / !`\\` "**" content:(QuotedTextContent) "*" { // unbalanced `**` vs `*` punctuation
+        result := append([]interface{}{"*"}, content.([]interface{}))
+        return types.NewQuotedText(types.Bold, result)
+    } / !`\` "*" content:(QuotedTextContent) "*" { // single punctuation
+        return types.NewQuotedText(types.Bold, content.([]interface{}))
+    } 
 
-EscapedBoldText <- backslashes:(`\\` `\`*) "**" content:(QuotedTextContent) "**" { // double punctuation must be evaluated first
-    return types.NewEscapedQuotedText(backslashes.([]interface{}), "**", content.([]interface{}))
-} / backslashes:(`\` `\`*) "**" content:(QuotedTextContent) "*" { // unbalanced `**` vs `*` punctuation
-    result := append([]interface{}{"*"}, content.([]interface{}))
-    return types.NewEscapedQuotedText(backslashes.([]interface{}), "*", result)
-} / backslashes:(`\` `\`*) "*" content:(QuotedTextContent) "*" { // simple punctuation must be evaluated last
-    return types.NewEscapedQuotedText(backslashes.([]interface{}), "*", content.([]interface{}))
-} 
+EscapedBoldText <- 
+    backslashes:(`\\` `\`*) "**" content:(QuotedTextContent) "**" { // double punctuation must be evaluated first
+        return types.NewEscapedQuotedText(backslashes.([]interface{}), "**", content.([]interface{}))
+    } / backslashes:(`\` `\`*) "**" content:(QuotedTextContent) "*" { // unbalanced `**` vs `*` punctuation
+        result := append([]interface{}{"*"}, content.([]interface{}))
+        return types.NewEscapedQuotedText(backslashes.([]interface{}), "*", result)
+    } / backslashes:(`\` `\`*) "*" content:(QuotedTextContent) "*" { // simple punctuation must be evaluated last
+        return types.NewEscapedQuotedText(backslashes.([]interface{}), "*", content.([]interface{}))
+    } 
 
-ItalicText <- !`\\` "__" content:(QuotedTextContent) "__" {
-    return types.NewQuotedText(types.Italic, content.([]interface{}))
-} / !`\\` "__" content:(QuotedTextContent) "_" { // unbalanced `__` vs `_` punctuation
-    result := append([]interface{}{"_"}, content.([]interface{}))
-    return types.NewQuotedText(types.Italic, result)
-} / !`\` "_" content:(QuotedTextContent) "_" {
-    return types.NewQuotedText(types.Italic, content.([]interface{}))
-}
+ItalicText <- 
+    !`\\` "__" content:(QuotedTextContent) "__" {
+        return types.NewQuotedText(types.Italic, content.([]interface{}))
+    } / !`\\` "__" content:(QuotedTextContent) "_" { // unbalanced `__` vs `_` punctuation
+        result := append([]interface{}{"_"}, content.([]interface{}))
+        return types.NewQuotedText(types.Italic, result)
+    } / !`\` "_" content:(QuotedTextContent) "_" {
+        return types.NewQuotedText(types.Italic, content.([]interface{}))
+    }
 
-EscapedItalicText <- backslashes:(`\\` `\`*) "__" content:(QuotedTextContent) "__" { // double punctuation must be evaluated first
-    return types.NewEscapedQuotedText(backslashes.([]interface{}), "__", content.([]interface{}))
-} / backslashes:(`\` `\`*) "__" content:(QuotedTextContent) "_" { // unbalanced `__` vs `_` punctuation
-    result := append([]interface{}{"_"}, content.([]interface{}))
-    return types.NewEscapedQuotedText(backslashes.([]interface{}), "_", result)
-} / backslashes:(`\` `\`*) "_" content:(QuotedTextContent) "_" { // simple punctuation must be evaluated last
-    return types.NewEscapedQuotedText(backslashes.([]interface{}), "_", content.([]interface{}))
-} 
+EscapedItalicText <- 
+    backslashes:(`\\` `\`*) "__" content:(QuotedTextContent) "__" { // double punctuation must be evaluated first
+        return types.NewEscapedQuotedText(backslashes.([]interface{}), "__", content.([]interface{}))
+    } / backslashes:(`\` `\`*) "__" content:(QuotedTextContent) "_" { // unbalanced `__` vs `_` punctuation
+        result := append([]interface{}{"_"}, content.([]interface{}))
+        return types.NewEscapedQuotedText(backslashes.([]interface{}), "_", result)
+    } / backslashes:(`\` `\`*) "_" content:(QuotedTextContent) "_" { // simple punctuation must be evaluated last
+        return types.NewEscapedQuotedText(backslashes.([]interface{}), "_", content.([]interface{}))
+    } 
 
-MonospaceText <- !`\\` "``" content:(QuotedTextContent) "``" { // double punctuation must be evaluated first
-    return types.NewQuotedText(types.Monospace, content.([]interface{}))
-} / !`\\` "``" content:(QuotedTextContent) "`" { // unbalanced "``" vs "`" punctuation
-    result := append([]interface{}{"`"}, content.([]interface{}))
-    return types.NewQuotedText(types.Monospace, result)
-} / !`\` "`" content:(QuotedTextContent) "`" { // simple punctuation must be evaluated last
-    return types.NewQuotedText(types.Monospace, content.([]interface{}))
-}
+MonospaceText <- 
+    !`\\` "``" content:(QuotedTextContent) "``" { // double punctuation must be evaluated first
+        return types.NewQuotedText(types.Monospace, content.([]interface{}))
+    } / !`\\` "``" content:(QuotedTextContent) "`" { // unbalanced "``" vs "`" punctuation
+        result := append([]interface{}{"`"}, content.([]interface{}))
+        return types.NewQuotedText(types.Monospace, result)
+    } / !`\` "`" content:(QuotedTextContent) "`" { // simple punctuation must be evaluated last
+        return types.NewQuotedText(types.Monospace, content.([]interface{}))
+    }
 
-EscapedMonospaceText <- backslashes:(`\\` `\`*) "``" content:(QuotedTextContent) "``" { // double punctuation must be evaluated first
-    return types.NewEscapedQuotedText(backslashes.([]interface{}), "``", content.([]interface{}))
-} / backslashes:(`\` `\`*) "``" content:(QuotedTextContent) "`" { // unbalanced "``" vs "`" punctuation
-    result := append([]interface{}{"`"}, content.([]interface{}))
-    return types.NewEscapedQuotedText(backslashes.([]interface{}), "`", result)
-} / backslashes:(`\` `\`*) "`" content:(QuotedTextContent) "`" { // simple punctuation must be evaluated last
-    return types.NewEscapedQuotedText(backslashes.([]interface{}), "`", content.([]interface{}))
-} 
+EscapedMonospaceText <- 
+    backslashes:(`\\` `\`*) "``" content:(QuotedTextContent) "``" { // double punctuation must be evaluated first
+        return types.NewEscapedQuotedText(backslashes.([]interface{}), "``", content.([]interface{}))
+    } / backslashes:(`\` `\`*) "``" content:(QuotedTextContent) "`" { // unbalanced "``" vs "`" punctuation
+        result := append([]interface{}{"`"}, content.([]interface{}))
+        return types.NewEscapedQuotedText(backslashes.([]interface{}), "`", result)
+    } / backslashes:(`\` `\`*) "`" content:(QuotedTextContent) "`" { // simple punctuation must be evaluated last
+        return types.NewEscapedQuotedText(backslashes.([]interface{}), "`", content.([]interface{}))
+    } 
 
 QuotedTextContent <- QuotedTextContentElement (WS+ QuotedTextContentElement)*
 
@@ -638,28 +673,34 @@ ImageHeightAttribute <- "," value:(!"," !"]" .)+ {
 // ------------------------------------------------------------------------------------
 // Delimited Blocks (http://asciidoctor.org/docs/user-manual/#built-in-blocks-summary)
 // ------------------------------------------------------------------------------------
-DelimitedBlock <- FencedBlock / ListingBlock / ExampleBlock / CommentBlock
+DelimitedBlock <- FencedBlock / ListingBlock / ExampleBlock / CommentBlock / VerseBlock
 
-BlockDelimiter <- LiteralBlockDelimiter / FencedBlockDelimiter / ListingBlockDelimiter / ExampleBlockDelimiter / CommentBlockDelimiter
+BlockDelimiter <- LiteralBlockDelimiter / FencedBlockDelimiter / ListingBlockDelimiter / ExampleBlockDelimiter / CommentBlockDelimiter / VerseBlockDelimiter
 
+
+// Fenced Blocks
 FencedBlockDelimiter <- "```"
 
 FencedBlock <- attributes:(ElementAttribute)* FencedBlockDelimiter WS* NEWLINE content:(List / BlockParagraph / BlankLine)* ((FencedBlockDelimiter WS* EOL) / EOF) {
-    return types.NewDelimitedBlock(types.FencedBlock, content.([]interface{}), attributes.([]interface{}), types.None)
+    return types.NewDelimitedBlock(types.Fenced, content.([]interface{}), attributes.([]interface{}), types.None)
 }
 
+// Listing blocks
 ListingBlockDelimiter <- "----"
 
 ListingBlock <- attributes:(ElementAttribute)* ListingBlockDelimiter WS* NEWLINE content:(List / BlockParagraph / BlankLine)* ((ListingBlockDelimiter WS* EOL) / EOF) {
-    return types.NewDelimitedBlock(types.ListingBlock, content.([]interface{}), attributes.([]interface{}), types.None)
+    return types.NewDelimitedBlock(types.Listing, content.([]interface{}), attributes.([]interface{}), types.None)
 }
 
+// Example blocks
 ExampleBlockDelimiter <- "===="
 
 ExampleBlock <- attributes:(ElementAttribute)* ExampleBlockDelimiter WS* NEWLINE content:(List / BlockParagraph / BlankLine)*  ((ExampleBlockDelimiter WS* EOL) / EOF) {
-    return types.NewDelimitedBlock(types.ExampleBlock, content.([]interface{}), attributes.([]interface{}), types.None)
+    return types.NewDelimitedBlock(types.Example, content.([]interface{}), attributes.([]interface{}), types.None)
 }
 
+
+// blocks content
 BlockParagraph <-  lines:(BlockParagraphLine)+ {
     return types.NewParagraph(lines.([]interface{}), nil)
 } 
@@ -673,6 +714,33 @@ BlockParagraphLine <- !(OrderedListItemPrefix)
     return line, nil
 }
 
+// Verse blocks
+VerseBlockDelimiter <- "____"
+
+VerseBlock <- attributes:(VerseBlockAttribute)* VerseBlockDelimiter WS* NEWLINE content:(VerseBlockParagraph)  ((VerseBlockDelimiter WS* EOL) / EOF) {
+    return types.NewDelimitedBlock(types.Verse, []interface{}{content}, attributes.([]interface{}), types.None)
+}
+
+VerseBlockAttribute <- 
+    attribute:(VerseAttributes) WS* EOL {
+        return attribute, nil 
+    } 
+    / attribute:(ElementAttribute) {
+        return attribute, nil 
+    }
+
+VerseBlockParagraph <- lines:(VerseBlockLine)* {
+    return types.NewParagraph(lines.([]interface{}), nil)
+}
+
+VerseBlockLine <- line:(VerseBlockLineContent) EOL {
+    return line, nil
+}
+
+VerseBlockLineContent <- content:(!VerseBlockDelimiter !EOL .)* { // skip EOL in line content, and stop when verse block delimiter is encountered
+    return types.NewInlineElements(strings.TrimSpace(string(c.text))) // directly use the content text of the current context 
+}
+
 // -------------------------------------------------------------------------------------
 // Comments
 // -------------------------------------------------------------------------------------
@@ -680,7 +748,7 @@ BlockParagraphLine <- !(OrderedListItemPrefix)
 CommentBlockDelimiter <- "////"
 
 CommentBlock <- attributes:(ElementAttribute)* CommentBlockDelimiter WS* NEWLINE content:(CommentBlockLine)*  ((CommentBlockDelimiter WS* EOL) / EOF) {
-    return types.NewDelimitedBlock(types.CommentBlock, content.([]interface{}), attributes.([]interface{}), types.Verbatim)
+    return types.NewDelimitedBlock(types.Comment, content.([]interface{}), attributes.([]interface{}), types.Verbatim)
 }
 
 CommentBlockLine <- content:(!CommentBlockDelimiter !EOL .)* EOL {

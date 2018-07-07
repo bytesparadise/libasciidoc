@@ -69,14 +69,12 @@ func nilSafe(elements []interface{}) []interface{} {
 	return make([]interface{}, 0)
 }
 
-type mergeOption func([]interface{}) []interface{}
-
 // removeEmptyTrailingStringElement removes the last
 // func removeEmptyTrailingStringElement([]interface{}) []interface{}
 
-func mergeElements(elements []interface{}, options ...mergeOption) InlineElements {
+func mergeElements(elements ...interface{}) InlineElements {
 	result := make([]interface{}, 0)
-	// log.Debugf("Merging %d element(s):", len(allElements))
+	// log.Debugf("merging %d element(s):", len(elements))
 	buff := bytes.NewBuffer(nil)
 	for _, element := range elements {
 		if element == nil {
@@ -96,9 +94,9 @@ func mergeElements(elements []interface{}, options ...mergeOption) InlineElement
 			buff.WriteString(content)
 		case []interface{}:
 			if len(element) > 0 {
-				f := mergeElements(element)
+				f := mergeElements(element...)
 				result, buff = appendBuffer(result, buff)
-				result = mergeElements(append(result, f...))
+				result = mergeElements(append(result, f...)...)
 			}
 		default:
 			// log.Debugf("Merging with 'default' case an element of type %[1]T", element)
@@ -108,9 +106,7 @@ func mergeElements(elements []interface{}, options ...mergeOption) InlineElement
 	}
 	// if buff was filled because some text was found
 	result, _ = appendBuffer(result, buff)
-	for _, opt := range options {
-		result = opt(result)
-	}
+	// log.Debugf(" -> '%[1]v' (%[1]T)", result)
 	return result
 }
 

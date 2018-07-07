@@ -116,7 +116,8 @@ var _ = Describe("unordered lists", func() {
 								Lines: []types.InlineElements{
 									{
 										types.StringElement{Content: "a second item with "},
-										types.QuotedText{Kind: types.Bold,
+										types.QuotedText{
+											Kind: types.Bold,
 											Elements: []interface{}{
 												types.StringElement{Content: "bold content"},
 											},
@@ -307,7 +308,8 @@ var _ = Describe("unordered lists", func() {
 								Lines: []types.InlineElements{
 									{
 										types.StringElement{Content: "a second item with "},
-										types.QuotedText{Kind: types.Bold,
+										types.QuotedText{
+											Kind: types.Bold,
 											Elements: []interface{}{
 												types.StringElement{Content: "bold content"},
 											},
@@ -452,7 +454,8 @@ var _ = Describe("unordered lists", func() {
 								Lines: []types.InlineElements{
 									{
 										types.StringElement{Content: "a second item with "},
-										types.QuotedText{Kind: types.Bold,
+										types.QuotedText{
+											Kind: types.Bold,
 											Elements: []interface{}{
 												types.StringElement{Content: "bold content"},
 											},
@@ -855,8 +858,9 @@ another delimited block
 										},
 									},
 									types.DelimitedBlock{
-										Kind:       types.ListingBlock,
-										Attributes: map[string]interface{}{},
+										Attributes: map[string]interface{}{
+											types.AttrBlockKind: types.Listing,
+										},
 										Elements: []interface{}{
 											types.Paragraph{
 												Attributes: map[string]interface{}{},
@@ -871,8 +875,9 @@ another delimited block
 										},
 									},
 									types.DelimitedBlock{
-										Kind:       types.ListingBlock,
-										Attributes: map[string]interface{}{},
+										Attributes: map[string]interface{}{
+											types.AttrBlockKind: types.Listing,
+										},
 										Elements: []interface{}{
 											types.Paragraph{
 												Attributes: map[string]interface{}{},
@@ -942,8 +947,9 @@ another delimited block
 						},
 					},
 					types.DelimitedBlock{
-						Kind:       types.ListingBlock,
-						Attributes: map[string]interface{}{},
+						Attributes: map[string]interface{}{
+							types.AttrBlockKind: types.Listing,
+						},
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: map[string]interface{}{},
@@ -977,8 +983,9 @@ another delimited block
 						},
 					},
 					types.DelimitedBlock{
-						Kind:       types.ListingBlock,
-						Attributes: map[string]interface{}{},
+						Attributes: map[string]interface{}{
+							types.AttrBlockKind: types.Listing,
+						},
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: map[string]interface{}{},
