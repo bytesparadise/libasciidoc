@@ -14,8 +14,9 @@ var _ = Describe("delimited blocks", func() {
 			content := "some fenced code"
 			actualContent := "```\n" + content + "\n```"
 			expectedResult := types.DelimitedBlock{
-				Kind:       types.FencedBlock,
-				Attributes: map[string]interface{}{},
+				Attributes: map[string]interface{}{
+					types.AttrBlockKind: types.Fenced,
+				},
 				Elements: []interface{}{
 					types.Paragraph{
 						Attributes: map[string]interface{}{},
@@ -35,9 +36,10 @@ var _ = Describe("delimited blocks", func() {
 		It("fenced block with no line", func() {
 			actualContent := "```\n```"
 			expectedResult := types.DelimitedBlock{
-				Kind:       types.FencedBlock,
-				Attributes: map[string]interface{}{},
-				Elements:   []interface{}{},
+				Attributes: map[string]interface{}{
+					types.AttrBlockKind: types.Fenced,
+				},
+				Elements: []interface{}{},
 			}
 			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
@@ -45,8 +47,9 @@ var _ = Describe("delimited blocks", func() {
 		It("fenced block with multiple lines alone", func() {
 			actualContent := "```\nsome fenced code\nwith an empty line\n\nin the middle\n```"
 			expectedResult := types.DelimitedBlock{
-				Kind:       types.FencedBlock,
-				Attributes: map[string]interface{}{},
+				Attributes: map[string]interface{}{
+					types.AttrBlockKind: types.Fenced,
+				},
 				Elements: []interface{}{
 					types.Paragraph{
 						Attributes: map[string]interface{}{},
@@ -86,8 +89,9 @@ var _ = Describe("delimited blocks", func() {
 				ElementReferences: map[string]interface{}{},
 				Elements: []interface{}{
 					types.DelimitedBlock{
-						Kind:       types.FencedBlock,
-						Attributes: map[string]interface{}{},
+						Attributes: map[string]interface{}{
+							types.AttrBlockKind: types.Fenced,
+						},
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: map[string]interface{}{},
@@ -146,8 +150,9 @@ var _ = Describe("delimited blocks", func() {
 						},
 					},
 					types.DelimitedBlock{
-						Kind:       types.FencedBlock,
-						Attributes: map[string]interface{}{},
+						Attributes: map[string]interface{}{
+							types.AttrBlockKind: types.Fenced,
+						},
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: map[string]interface{}{},
@@ -169,8 +174,9 @@ var _ = Describe("delimited blocks", func() {
 		It("fenced block with unclosed delimiter", func() {
 			actualContent := "```\nEnd of file here"
 			expectedResult := types.DelimitedBlock{
-				Kind:       types.FencedBlock,
-				Attributes: map[string]interface{}{},
+				Attributes: map[string]interface{}{
+					types.AttrBlockKind: types.Fenced,
+				},
 				Elements: []interface{}{
 					types.Paragraph{
 						Attributes: map[string]interface{}{},
@@ -195,8 +201,9 @@ var _ = Describe("delimited blocks", func() {
 some listing code
 ----`
 			expectedResult := types.DelimitedBlock{
-				Kind:       types.ListingBlock,
-				Attributes: map[string]interface{}{},
+				Attributes: map[string]interface{}{
+					types.AttrBlockKind: types.Listing,
+				},
 				Elements: []interface{}{
 					types.Paragraph{
 						Attributes: map[string]interface{}{},
@@ -217,9 +224,10 @@ some listing code
 			actualContent := `----
 ----`
 			expectedResult := types.DelimitedBlock{
-				Kind:       types.ListingBlock,
-				Attributes: map[string]interface{}{},
-				Elements:   []interface{}{},
+				Attributes: map[string]interface{}{
+					types.AttrBlockKind: types.Listing,
+				},
+				Elements: []interface{}{},
 			}
 			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
@@ -232,8 +240,9 @@ with an empty line
 in the middle
 ----`
 			expectedResult := types.DelimitedBlock{
-				Kind:       types.ListingBlock,
-				Attributes: map[string]interface{}{},
+				Attributes: map[string]interface{}{
+					types.AttrBlockKind: types.Listing,
+				},
 				Elements: []interface{}{
 					types.Paragraph{
 						Attributes: map[string]interface{}{},
@@ -279,8 +288,9 @@ then a normal paragraph.`
 				ElementReferences: map[string]interface{}{},
 				Elements: []interface{}{
 					types.DelimitedBlock{
-						Kind:       types.ListingBlock,
-						Attributes: map[string]interface{}{},
+						Attributes: map[string]interface{}{
+							types.AttrBlockKind: types.Listing,
+						},
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: map[string]interface{}{},
@@ -341,8 +351,9 @@ some listing code
 						},
 					},
 					types.DelimitedBlock{
-						Kind:       types.ListingBlock,
-						Attributes: map[string]interface{}{},
+						Attributes: map[string]interface{}{
+							types.AttrBlockKind: types.Listing,
+						},
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: map[string]interface{}{},
@@ -365,8 +376,9 @@ some listing code
 			actualContent := `----
 End of file here.`
 			expectedResult := types.DelimitedBlock{
-				Kind:       types.ListingBlock,
-				Attributes: map[string]interface{}{},
+				Attributes: map[string]interface{}{
+					types.AttrBlockKind: types.Listing,
+				},
 				Elements: []interface{}{
 					types.Paragraph{
 						Attributes: map[string]interface{}{},
@@ -403,7 +415,7 @@ on 2 lines.`
 			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 
-		It("mixing literal block and paragraph ", func() {
+		It("mixing literal block and paragraph", func() {
 			actualContent := `   some literal content
 
 a normal paragraph.`
@@ -492,8 +504,9 @@ a normal paragraph.`
 some listing code
 ====`
 			expectedResult := types.DelimitedBlock{
-				Kind:       types.ExampleBlock,
-				Attributes: map[string]interface{}{},
+				Attributes: map[string]interface{}{
+					types.AttrBlockKind: types.Example,
+				},
 				Elements: []interface{}{
 					types.Paragraph{
 						Attributes: map[string]interface{}{},
@@ -515,8 +528,9 @@ some listing code
 .foo
 ====`
 			expectedResult := types.DelimitedBlock{
-				Kind:       types.ExampleBlock,
-				Attributes: map[string]interface{}{},
+				Attributes: map[string]interface{}{
+					types.AttrBlockKind: types.Example,
+				},
 				Elements: []interface{}{
 					types.Paragraph{
 						Attributes: map[string]interface{}{},
@@ -542,8 +556,9 @@ with *bold content*
 * and a list item
 ====`
 			expectedResult := types.DelimitedBlock{
-				Kind:       types.ExampleBlock,
-				Attributes: map[string]interface{}{},
+				Attributes: map[string]interface{}{
+					types.AttrBlockKind: types.Example,
+				},
 				Elements: []interface{}{
 					types.Paragraph{
 						Attributes: map[string]interface{}{},
@@ -604,8 +619,9 @@ with *bold content*
 			actualContent := `====
 End of file here`
 			expectedResult := types.DelimitedBlock{
-				Kind:       types.ExampleBlock,
-				Attributes: map[string]interface{}{},
+				Attributes: map[string]interface{}{
+					types.AttrBlockKind: types.Example,
+				},
 				Elements: []interface{}{
 					types.Paragraph{
 						Attributes: map[string]interface{}{},
@@ -631,8 +647,8 @@ End of file here`
 foo
 ====`
 			expectedResult := types.DelimitedBlock{
-				Kind: types.ExampleBlock,
 				Attributes: map[string]interface{}{
+					types.AttrBlockKind:      types.Example,
 					types.AttrAdmonitionKind: types.Note,
 				},
 				Elements: []interface{}{
@@ -665,8 +681,8 @@ paragraphs
 				ElementReferences: map[string]interface{}{},
 				Elements: []interface{}{
 					types.DelimitedBlock{
-						Kind: types.ListingBlock,
 						Attributes: map[string]interface{}{
+							types.AttrBlockKind:      types.Listing,
 							types.AttrAdmonitionKind: types.Note,
 						},
 						Elements: []interface{}{
@@ -697,7 +713,187 @@ paragraphs
 			}
 			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Document"))
 		})
-
 	})
 
+	Context("verse blocks", func() {
+
+		It("single line verse with author and title", func() {
+			actualContent := `[verse, john doe, verse title]
+____
+some verse content
+____
+`
+			expectedResult := types.DelimitedBlock{
+				Attributes: map[string]interface{}{
+					types.AttrBlockKind:   types.Verse,
+					types.AttrVerseAuthor: "john doe",
+					types.AttrVerseTitle:  "verse title",
+				},
+				Elements: []interface{}{
+					types.Paragraph{
+						Attributes: map[string]interface{}{},
+						Lines: []types.InlineElements{
+							{
+								types.StringElement{
+									Content: "some verse content",
+								},
+							},
+						},
+					},
+				},
+			}
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+		})
+
+		It("multi-line verse with author only", func() {
+			actualContent := `[verse, john doe, ]
+____
+- some 
+- verse 
+- content 
+____
+`
+			expectedResult := types.DelimitedBlock{
+				Attributes: map[string]interface{}{
+					types.AttrBlockKind:   types.Verse,
+					types.AttrVerseAuthor: "john doe",
+					types.AttrVerseTitle:  "",
+				},
+				Elements: []interface{}{
+					types.Paragraph{
+						Attributes: map[string]interface{}{},
+						Lines: []types.InlineElements{
+							{
+								types.StringElement{
+									Content: "- some",
+								},
+							},
+							{
+								types.StringElement{
+									Content: "- verse",
+								},
+							},
+							{
+								types.StringElement{
+									Content: "- content",
+								},
+							},
+						},
+					},
+				},
+			}
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+		})
+
+		It("multi-line verse with title only", func() {
+			actualContent := `[verse, ,verse title]
+____
+- some 
+- verse 
+- content 
+____
+`
+			expectedResult := types.DelimitedBlock{
+				Attributes: map[string]interface{}{
+					types.AttrBlockKind:   types.Verse,
+					types.AttrVerseAuthor: "",
+					types.AttrVerseTitle:  "verse title",
+				},
+				Elements: []interface{}{
+					types.Paragraph{
+						Attributes: map[string]interface{}{},
+						Lines: []types.InlineElements{
+							{
+								types.StringElement{
+									Content: "- some",
+								},
+							},
+							{
+								types.StringElement{
+									Content: "- verse",
+								},
+							},
+							{
+								types.StringElement{
+									Content: "- content",
+								},
+							},
+						},
+					},
+				},
+			}
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+		})
+
+		It("multi-line verse without author and title", func() {
+			actualContent := `[verse]
+____
+* some
+----
+* verse 
+----
+* content
+____`
+			expectedResult := types.DelimitedBlock{
+				Attributes: map[string]interface{}{
+					types.AttrBlockKind:   types.Verse,
+					types.AttrVerseAuthor: "",
+					types.AttrVerseTitle:  "",
+				},
+				Elements: []interface{}{
+					types.Paragraph{
+						Attributes: map[string]interface{}{},
+						Lines: []types.InlineElements{
+							{
+								types.StringElement{
+									Content: "* some",
+								},
+							},
+							{
+								types.StringElement{
+									Content: "----",
+								},
+							},
+							{
+								types.StringElement{
+									Content: "* verse",
+								},
+							},
+							{
+								types.StringElement{
+									Content: "----",
+								},
+							},
+							{
+								types.StringElement{
+									Content: "* content",
+								},
+							},
+						},
+					},
+				},
+			}
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+		})
+
+		It("empty verse without author and title", func() {
+			actualContent := `[verse]
+____
+____`
+			expectedResult := types.DelimitedBlock{
+				Attributes: map[string]interface{}{
+					types.AttrBlockKind:   types.Verse,
+					types.AttrVerseAuthor: "",
+					types.AttrVerseTitle:  "",
+				},
+				Elements: []interface{}{
+					types.Paragraph{
+						Attributes: map[string]interface{}{},
+						Lines:      []types.InlineElements{},
+					},
+				},
+			}
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+		})
+	})
 })

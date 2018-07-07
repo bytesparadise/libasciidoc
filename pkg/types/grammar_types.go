@@ -442,6 +442,28 @@ func NewDocumentAttributeSubstitution(name []interface{}) (DocumentAttributeSubs
 }
 
 // ------------------------------------------
+// Element kinds
+// ------------------------------------------
+
+// BlockKind the kind of block
+type BlockKind int
+
+const (
+	// AttrBlockKind the key for the kind of block
+	AttrBlockKind string = "kind"
+	// Fenced a fenced block
+	Fenced BlockKind = iota
+	// Listing a listing block
+	Listing
+	// Example an example block
+	Example
+	// Comment a comment block
+	Comment
+	// Verse a verse block
+	Verse
+)
+
+// ------------------------------------------
 // Table of Contents
 // ------------------------------------------
 
@@ -1180,10 +1202,13 @@ func NewParagraph(lines []interface{}, attributes []interface{}) (Paragraph, err
 	attrbs := NewElementAttributes(attributes)
 	elements := make([]InlineElements, 0)
 	for _, line := range lines {
-		log.Debugf(" processing paragraph line of type %T", line)
 		if l, ok := line.(InlineElements); ok {
+			log.Debugf(" processing paragraph line of type %T", line)
 			elements = append(elements, l)
+		} else {
+			log.Debugf("unsupported paragraph line of type %T", line)
 		}
+
 	}
 	log.Debugf("generated a paragraph with %d lines", len(elements))
 	return Paragraph{
@@ -1232,8 +1257,8 @@ const (
 type InlineElements []interface{}
 
 // NewInlineElements initializes a new `InlineElements` from the given values
-func NewInlineElements(elements []interface{}) (InlineElements, error) {
-	result := mergeElements(elements)
+func NewInlineElements(elements ...interface{}) (InlineElements, error) {
+	result := mergeElements(elements...)
 	return result, nil
 }
 
@@ -1400,23 +1425,8 @@ func NewImageAttributes(alt, width, height []interface{}, otherAttrs []interface
 // Delimited blocks
 // ------------------------------------------
 
-// DelimitedBlockKind the type for delimited blocks
-type DelimitedBlockKind int
-
-const (
-	// FencedBlock a fenced block
-	FencedBlock DelimitedBlockKind = iota
-	// ListingBlock a listing block
-	ListingBlock
-	// ExampleBlock an example block
-	ExampleBlock
-	// CommentBlock a comment block
-	CommentBlock
-)
-
 // DelimitedBlock the structure for the delimited blocks
 type DelimitedBlock struct {
-	Kind       DelimitedBlockKind
 	Attributes map[string]interface{}
 	Elements   []interface{}
 }
@@ -1445,16 +1455,15 @@ func Verbatim(content []interface{}) ([]interface{}, error) {
 }
 
 // NewDelimitedBlock initializes a new `DelimitedBlock` of the given kind with the given content
-func NewDelimitedBlock(kind DelimitedBlockKind, content []interface{}, attributes []interface{}, substitution Substitution) (DelimitedBlock, error) {
+func NewDelimitedBlock(kind BlockKind, content []interface{}, attributes []interface{}, substitution Substitution) (DelimitedBlock, error) {
+	log.Debugf("Initializing a new DelimitedBlock of kind '%v'", kind)
 	attrbs := NewElementAttributes(attributes)
-	// elements := filterEmptyElements(content)
-	log.Debugf("Initializing a new DelimitedBlock")
+	attrbs[AttrBlockKind] = kind
 	elements, err := substitution(content)
 	if err != nil {
 		return DelimitedBlock{}, errors.Wrapf(err, "failed to initialize a new delimited block")
 	}
 	return DelimitedBlock{
-		Kind:       kind,
 		Attributes: attrbs,
 		Elements:   elements,
 	}, nil
@@ -1520,6 +1529,12 @@ const (
 	AttrLink string = "link"
 	// AttrAdmonitionKind the key to retrieve the kind of admonition in the element attributes, if a "masquerade" is used
 	AttrAdmonitionKind string = "admonitionKind"
+	// AttrVerseKind marker attribute to indicate that the element is a verse
+	AttrVerseKind string = "verse"
+	// AttrVerseAuthor attribute for the author of a verse
+	AttrVerseAuthor string = "verseAuthor"
+	// AttrVerseTitle attribute for the title of a verse
+	AttrVerseTitle string = "verseTitle"
 )
 
 // NewElementAttributes retrieves the ElementID, ElementTitle and ElementLink from the given slice of attributes
@@ -1609,7 +1624,16 @@ func NewGenericAttribute(key []interface{}, value []interface{}) (GenericAttribu
 	}
 	// log.Debugf("Initialized a new GenericAttribute: %v", result)
 	return result, nil
+}
 
+// NewVerseAttributes initializes a new map of attributes for a verse paragraph
+func NewVerseAttributes(author, title string) (map[string]interface{}, error) {
+	result := make(map[string]interface{}, 3)
+	result[AttrBlockKind] = Verse
+	result[AttrVerseAuthor] = strings.TrimSpace(author)
+	result[AttrVerseTitle] = strings.TrimSpace(title)
+	log.Debugf("initialized new verse attributes: %v", result)
+	return result, nil
 }
 
 // ------------------------------------------
@@ -1667,7 +1691,7 @@ const (
 
 // NewQuotedText initializes a new `QuotedText` from the given kind and content
 func NewQuotedText(kind QuotedTextKind, content []interface{}) (QuotedText, error) {
-	elements := mergeElements(content)
+	elements := mergeElements(content...)
 	if log.GetLevel() == log.DebugLevel {
 		log.Debugf("Initialized a new QuotedText with %d elements:", len(elements))
 		spew.Dump(elements)
@@ -1746,7 +1770,7 @@ const (
 func NewPassthrough(kind PassthroughKind, elements []interface{}) (Passthrough, error) {
 	return Passthrough{
 		Kind:     kind,
-		Elements: mergeElements(elements),
+		Elements: mergeElements(elements...),
 	}, nil
 
 }

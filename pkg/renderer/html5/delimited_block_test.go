@@ -160,4 +160,117 @@ this is an admonition paragraph.
 			verify(GinkgoT(), expectedResult, actualContent)
 		})
 	})
+
+	Context("verse blocks", func() {
+
+		It("single-line verse with author and title ", func() {
+			actualContent := `[verse, john doe, verse title]
+____
+some verse content
+____`
+			expectedResult := `<div class="verseblock">
+<pre class="content">some verse content</pre>
+<div class="attribution">
+&#8212; john doe<br>
+<cite>verse title</cite>
+</div>
+</div>`
+			verify(GinkgoT(), expectedResult, actualContent)
+		})
+
+		It("multi-line verse with author and title", func() {
+			actualContent := `[verse, john doe, verse title]
+____
+- some 
+- verse 
+- content
+____`
+			expectedResult := `<div class="verseblock">
+<pre class="content">- some
+- verse
+- content</pre>
+<div class="attribution">
+&#8212; john doe<br>
+<cite>verse title</cite>
+</div>
+</div>`
+			verify(GinkgoT(), expectedResult, actualContent)
+		})
+
+		It("multi-line verse with author only", func() {
+			actualContent := `[verse, john doe]
+____
+* some
+----
+* verse 
+----
+* content
+____`
+			expectedResult := `<div class="verseblock">
+<pre class="content">* some
+----
+* verse
+----
+* content</pre>
+<div class="attribution">
+&#8212; john doe
+</div>
+</div>`
+			verify(GinkgoT(), expectedResult, actualContent)
+		})
+
+		It("multi-line verse with title only", func() {
+			actualContent := `[verse, , verse title]
+____
+* some
+----
+* verse 
+----
+* content
+____`
+			expectedResult := `<div class="verseblock">
+<pre class="content">* some
+----
+* verse
+----
+* content</pre>
+<div class="attribution">
+&#8212; verse title
+</div>
+</div>`
+			verify(GinkgoT(), expectedResult, actualContent)
+		})
+
+		It("multi-line verse without author and title", func() {
+			actualContent := `[verse]
+____
+* some
+----
+* verse 
+----
+* content
+____`
+
+			expectedResult := `<div class="verseblock">
+<pre class="content">* some
+----
+* verse
+----
+* content</pre>
+</div>`
+			verify(GinkgoT(), expectedResult, actualContent)
+		})
+
+		It("empty verse without author and title", func() {
+			actualContent := `[verse]
+____
+____`
+			expectedResult := `<div class="verseblock">
+<pre class="content"></pre>
+</div>`
+			verify(GinkgoT(), expectedResult, actualContent)
+
+		})
+	})
+
 })

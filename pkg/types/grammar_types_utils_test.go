@@ -19,7 +19,7 @@ var _ = Describe("convert to inline elements", func() {
 			StringElement{Content: "helloworld"},
 		}
 		// when
-		result := mergeElements(source)
+		result := mergeElements(source...)
 		// then
 		assert.Equal(GinkgoT(), expected, result)
 	})
@@ -32,7 +32,7 @@ var _ = Describe("convert to inline elements", func() {
 			StringElement{Content: "hello, world   "},
 		}
 		// when
-		result := mergeElements(source)
+		result := mergeElements(source...)
 		// then
 		assert.Equal(GinkgoT(), expected, result)
 	})

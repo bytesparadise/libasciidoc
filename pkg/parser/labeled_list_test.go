@@ -275,8 +275,9 @@ another fenced block
 							Term: "Item 1",
 							Elements: []interface{}{
 								types.DelimitedBlock{
-									Kind:       types.ListingBlock,
-									Attributes: map[string]interface{}{},
+									Attributes: map[string]interface{}{
+										types.AttrBlockKind: types.Listing,
+									},
 									Elements: []interface{}{
 										types.Paragraph{
 											Attributes: map[string]interface{}{},
@@ -304,8 +305,9 @@ another fenced block
 									},
 								},
 								types.DelimitedBlock{
-									Kind:       types.ListingBlock,
-									Attributes: map[string]interface{}{},
+									Attributes: map[string]interface{}{
+										types.AttrBlockKind: types.Listing,
+									},
 									Elements: []interface{}{
 										types.Paragraph{
 											Attributes: map[string]interface{}{},
@@ -351,8 +353,9 @@ another fenced block
 					},
 				},
 				types.DelimitedBlock{
-					Kind:       types.ListingBlock,
-					Attributes: map[string]interface{}{},
+					Attributes: map[string]interface{}{
+						types.AttrBlockKind: types.Listing,
+					},
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: map[string]interface{}{},
@@ -385,8 +388,9 @@ another fenced block
 					},
 				},
 				types.DelimitedBlock{
-					Kind:       types.ListingBlock,
-					Attributes: map[string]interface{}{},
+					Attributes: map[string]interface{}{
+						types.AttrBlockKind: types.Listing,
+					},
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: map[string]interface{}{},

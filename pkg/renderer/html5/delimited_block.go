@@ -13,6 +13,7 @@ import (
 var listingBlockTmpl texttemplate.Template
 var exampleBlockTmpl texttemplate.Template
 var admonitionBlockTmpl texttemplate.Template
+var verseBlockTmpl texttemplate.Template
 
 // initializes the templates
 func init() {
@@ -34,7 +35,18 @@ func init() {
 			"renderElement":  renderElement,
 			"includeNewline": includeNewline,
 		})
-	admonitionBlockTmpl = newTextTemplate("example block", `{{ $ctx := .Context }}{{ with .Data }}<div class="admonitionblock {{ .Class }}">
+	verseBlockTmpl = newTextTemplate("verse block", `<div class="verseblock">
+{{ $ctx := .Context }}{{ with .Data }}<pre class="content">{{ $elements := .Elements }}{{ range $index, $element := $elements }}{{ renderElement $ctx $element | printf "%s" }}{{ if includeNewline $ctx $index $elements }}{{ print "\n" }}{{ end }}{{ end }}</pre>{{ if .Attribution.First }}
+<div class="attribution">
+&#8212; {{ .Attribution.First }}{{ if .Attribution.Second }}<br>
+<cite>{{ .Attribution.Second }}</cite>{{ end }}
+</div>{{ end }}{{ end }}
+</div>`,
+		texttemplate.FuncMap{
+			"renderElement":  renderElement,
+			"includeNewline": includeNewline,
+		})
+	admonitionBlockTmpl = newTextTemplate("admonition block", `{{ $ctx := .Context }}{{ with .Data }}<div class="admonitionblock {{ .Class }}">
 <table>
 <tr>
 <td class="icon">
@@ -57,8 +69,9 @@ func renderDelimitedBlock(ctx *renderer.Context, b types.DelimitedBlock) ([]byte
 	result := bytes.NewBuffer(nil)
 	var err error
 	elements := discardTrailingBlankLines(b.Elements)
-	switch b.Kind {
-	case types.FencedBlock, types.ListingBlock:
+	kind := b.Attributes[types.AttrBlockKind]
+	switch kind {
+	case types.Fenced, types.Listing:
 		content := make([]byte, 0)
 		for _, e := range elements {
 			s, err := renderPlainString(ctx, e)
@@ -82,7 +95,7 @@ func renderDelimitedBlock(ctx *renderer.Context, b types.DelimitedBlock) ([]byte
 				Element: string(content),
 			},
 		})
-	case types.ExampleBlock:
+	case types.Example:
 		if k, ok := b.Attributes[types.AttrAdmonitionKind].(types.AdmonitionKind); ok {
 			err = admonitionBlockTmpl.Execute(result, ContextualPipeline{
 				Context: ctx,
@@ -109,10 +122,45 @@ func renderDelimitedBlock(ctx *renderer.Context, b types.DelimitedBlock) ([]byte
 				},
 			})
 		}
-	case types.CommentBlock:
+	case types.Verse:
+		var elements []types.InlineElements
+		if len(b.Elements) > 0 {
+			if p, ok := b.Elements[0].(types.Paragraph); ok {
+				elements = p.Lines
+			}
+		} else {
+			elements = make([]types.InlineElements, 0)
+		}
+		var attribution struct {
+			First  string
+			Second string
+		}
+		if b.Attributes[types.AttrVerseAuthor].(string) != "" {
+			attribution.First = b.Attributes[types.AttrVerseAuthor].(string)
+			if b.Attributes[types.AttrVerseTitle].(string) != "" {
+				attribution.Second = b.Attributes[types.AttrVerseTitle].(string)
+			}
+		} else if b.Attributes[types.AttrVerseTitle].(string) != "" {
+			attribution.First = b.Attributes[types.AttrVerseTitle].(string)
+		}
+		err = verseBlockTmpl.Execute(result, ContextualPipeline{
+			Context: ctx,
+			Data: struct {
+				Attribution struct {
+					First  string
+					Second string
+				}
+				Title    string
+				Elements []types.InlineElements
+			}{
+				Attribution: attribution,
+				Elements:    elements,
+			},
+		})
+	case types.Comment:
 		// nothing to do
 	default:
-		err = errors.Errorf("no template for block of kind %v", b.Kind)
+		err = errors.Errorf("no template for block of kind %v", kind)
 	}
 
 	if err != nil {
