@@ -32,7 +32,14 @@ Further elements will be supported in the future. Feel free to open issues https
 
 == Installation
 
+First, install build dependencies:
+
+- link:https://github.com/mna/pigeon[Pigeon]
+- link:https://github.com/golang/dep[Dep]
+
     $ go get -u github.com/bytesparadise/libasciidoc
+    $ cd $GOPATH/src/github.com/bytesparadise/libasciidoc
+    $ make build
 
 == Usage
 
