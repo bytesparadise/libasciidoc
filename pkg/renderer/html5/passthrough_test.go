@@ -122,10 +122,18 @@ world</p>
 			verify(GinkgoT(), expectedResult, actualContent)
 		})
 
-		It("passthrough macro with quoted word in sentence", func() {
-			actualContent := `pass:q[ a *hello*, world ]`
+		It("passthrough macro with quoted word in sentence and trailing spaces", func() {
+			actualContent := `pass:q[ a *hello*, world ]   `
 			expectedResult := `<div class="paragraph">
 <p> a <strong>hello</strong>, world </p>
+</div>`
+			verify(GinkgoT(), expectedResult, actualContent)
+		})
+
+		It("passthrough macro within paragraph", func() {
+			actualContent := `an pass:q[ *hello*, world ] mention`
+			expectedResult := `<div class="paragraph">
+<p>an  <strong>hello</strong>, world  mention</p>
 </div>`
 			verify(GinkgoT(), expectedResult, actualContent)
 		})

@@ -9,12 +9,12 @@ var _ = Describe("delimited Blocks", func() {
 		It("fenced block with multiple lines", func() {
 			actualContent := "```\nsome source code\n\nhere\n\n\n\n```"
 			expectedResult := `<div class="listingblock">
-			<div class="content">
-			<pre class="highlight"><code>some source code
-			
-			here</code></pre>
-			</div>
-			</div>`
+<div class="content">
+<pre>some source code
+
+here</pre>
+</div>
+</div>`
 			verify(GinkgoT(), expectedResult, actualContent)
 		})
 	})
@@ -28,12 +28,12 @@ some source code
 here
 ----`
 			expectedResult := `<div class="listingblock">
-			<div class="content">
-			<pre class="highlight"><code>some source code
-			
-			here</code></pre>
-			</div>
-			</div>`
+<div class="content">
+<pre>some source code
+
+here</pre>
+</div>
+</div>`
 			verify(GinkgoT(), expectedResult, actualContent)
 		})
 	})
@@ -85,13 +85,14 @@ with <strong>bold content</strong></p>
 
 		It("admonition block with multiple elements alone", func() {
 			actualContent := `[NOTE]
+[#ID]
 ====
 some listing code
 with *bold content*
 
 * and a list item
 ====`
-			expectedResult := `<div class="admonitionblock note">
+			expectedResult := `<div id="ID" class="admonitionblock note">
 <table>
 <tr>
 <td class="icon">
@@ -147,11 +148,12 @@ this is an admonition paragraph.
 <div class="title">Note</div>
 </td>
 <td class="content">
+<div class="title">Title2</div>
 <div class="paragraph">
 <p>This is an admonition block</p>
 </div>
 <div class="paragraph">
-<p>with another paragraph    </p>
+<p>with another paragraph</p>
 </div>
 </td>
 </tr>
@@ -161,15 +163,157 @@ this is an admonition paragraph.
 		})
 	})
 
+	Context("quote blocks", func() {
+
+		It("single-line quote with author and title ", func() {
+			actualContent := `[quote, john doe, quote title]
+____
+some *quote* content
+____`
+			expectedResult := `<div class="quoteblock">
+<blockquote>
+<div class="paragraph">
+<p>some <strong>quote</strong> content</p>
+</div>
+</blockquote>
+<div class="attribution">
+&#8212; john doe<br>
+<cite>quote title</cite>
+</div>
+</div>`
+			verify(GinkgoT(), expectedResult, actualContent)
+		})
+
+		It("multi-line quote with author and title", func() {
+			actualContent := `[quote, john doe, quote title]
+____
+- some 
+- quote 
+- content
+____`
+			expectedResult := `<div class="quoteblock">
+<blockquote>
+<div class="ulist">
+<ul>
+<li>
+<p>some</p>
+</li>
+<li>
+<p>quote</p>
+</li>
+<li>
+<p>content</p>
+</li>
+</ul>
+</div>
+</blockquote>
+<div class="attribution">
+&#8212; john doe<br>
+<cite>quote title</cite>
+</div>
+</div>`
+			verify(GinkgoT(), expectedResult, actualContent)
+		})
+
+		It("multi-line quote with author only and nested listing", func() {
+			actualContent := `[quote, john doe]
+____
+* some
+----
+* quote 
+----
+* content
+____`
+			expectedResult := `<div class="quoteblock">
+<blockquote>
+<div class="ulist">
+<ul>
+<li>
+<p>some</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>* quote</pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>content</p>
+</li>
+</ul>
+</div>
+</blockquote>
+<div class="attribution">
+&#8212; john doe
+</div>
+</div>`
+			verify(GinkgoT(), expectedResult, actualContent)
+		})
+
+		It("single-line quote with title only", func() {
+			actualContent := `[quote, , quote title]
+____
+some quote content
+____`
+			expectedResult := `<div class="quoteblock">
+<blockquote>
+<div class="paragraph">
+<p>some quote content</p>
+</div>
+</blockquote>
+<div class="attribution">
+&#8212; quote title
+</div>
+</div>`
+			verify(GinkgoT(), expectedResult, actualContent)
+		})
+
+		It("multi-line quote without author and title", func() {
+			actualContent := `[quote]
+____
+lines 
+	and tabs 
+are preserved, but not trailing spaces   
+____`
+
+			expectedResult := `<div class="quoteblock">
+<blockquote>
+<div class="paragraph">
+<p>lines
+	and tabs
+are preserved, but not trailing spaces</p>
+</div>
+</blockquote>
+</div>`
+			verify(GinkgoT(), expectedResult, actualContent)
+		})
+
+		It("empty quote without author and title", func() {
+			actualContent := `[quote]
+____
+____`
+			// asciidoctor will include an emtpy line in the `blockquote` element, I'm not sure why.
+			expectedResult := `<div class="quoteblock">
+<blockquote>
+</blockquote>
+</div>`
+			verify(GinkgoT(), expectedResult, actualContent)
+
+		})
+	})
+
 	Context("verse blocks", func() {
 
 		It("single-line verse with author and title ", func() {
 			actualContent := `[verse, john doe, verse title]
 ____
-some verse content
+some *verse* content
 ____`
 			expectedResult := `<div class="verseblock">
-<pre class="content">some verse content</pre>
+<pre class="content">some <strong>verse</strong> content</pre>
 <div class="attribution">
 &#8212; john doe<br>
 <cite>verse title</cite>
@@ -197,21 +341,13 @@ ____`
 			verify(GinkgoT(), expectedResult, actualContent)
 		})
 
-		It("multi-line verse with author only", func() {
+		It("single-line verse with author only", func() {
 			actualContent := `[verse, john doe]
 ____
-* some
-----
-* verse 
-----
-* content
+some verse content
 ____`
 			expectedResult := `<div class="verseblock">
-<pre class="content">* some
-----
-* verse
-----
-* content</pre>
+<pre class="content">some verse content</pre>
 <div class="attribution">
 &#8212; john doe
 </div>
@@ -219,21 +355,13 @@ ____`
 			verify(GinkgoT(), expectedResult, actualContent)
 		})
 
-		It("multi-line verse with title only", func() {
+		It("single-line verse with title only", func() {
 			actualContent := `[verse, , verse title]
 ____
-* some
-----
-* verse 
-----
-* content
+some verse content
 ____`
 			expectedResult := `<div class="verseblock">
-<pre class="content">* some
-----
-* verse
-----
-* content</pre>
+<pre class="content">some verse content</pre>
 <div class="attribution">
 &#8212; verse title
 </div>
@@ -244,19 +372,15 @@ ____`
 		It("multi-line verse without author and title", func() {
 			actualContent := `[verse]
 ____
-* some
-----
-* verse 
-----
-* content
+lines 
+	and tabs 
+are preserved
 ____`
 
 			expectedResult := `<div class="verseblock">
-<pre class="content">* some
-----
-* verse
-----
-* content</pre>
+<pre class="content">lines
+	and tabs
+are preserved</pre>
 </div>`
 			verify(GinkgoT(), expectedResult, actualContent)
 		})

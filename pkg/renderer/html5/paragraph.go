@@ -2,6 +2,7 @@ package html5
 
 import (
 	"bytes"
+	"strings"
 	texttemplate "text/template"
 
 	"github.com/bytesparadise/libasciidoc/pkg/renderer"
@@ -12,23 +13,22 @@ import (
 
 var paragraphTmpl texttemplate.Template
 var admonitionParagraphTmpl texttemplate.Template
-var admonitionParagraphContentTmpl texttemplate.Template
 var listParagraphTmpl texttemplate.Template
 
 // initializes the templates
 func init() {
 	paragraphTmpl = newTextTemplate("paragraph",
-		`{{ $ctx := .Context }}{{ with .Data }}{{ $renderedElements := renderElements $ctx .Lines | printf "%s"  }}{{ if ne $renderedElements "" }}<div {{ if ne .ID "" }}id="{{ .ID }}" {{ end }}class="paragraph">{{ if ne .Title "" }}
+		`{{ $ctx := .Context }}{{ with .Data }}{{ $renderedLines := renderLines $ctx .Lines | printf "%s"  }}{{ if ne $renderedLines "" }}<div {{ if ne .ID "" }}id="{{ .ID }}" {{ end }}class="paragraph">{{ if ne .Title "" }}
 <div class="doctitle">{{ .Title }}</div>{{ end }}
-<p>{{ $renderedElements }}</p>
+<p>{{ $renderedLines }}</p>
 </div>{{ end }}{{ end }}`,
 		texttemplate.FuncMap{
-			"renderElements": renderAllInlineElements,
+			"renderLines":    renderLines,
 			"includeNewline": includeNewline,
 		})
 
 	admonitionParagraphTmpl = newTextTemplate("admonition paragraph",
-		`{{ $ctx := .Context }}{{ with .Data }}{{ $renderedElements := renderElements $ctx .Lines | printf "%s"  }}{{ if ne $renderedElements "" }}<div {{ if .ID }}id="{{ .ID }}" {{ end }}class="admonitionblock {{ .Class }}">
+		`{{ $ctx := .Context }}{{ with .Data }}{{ $renderedLines := renderLines $ctx .Lines | printf "%s"  }}{{ if ne $renderedLines "" }}<div {{ if .ID }}id="{{ .ID }}" {{ end }}class="admonitionblock {{ .Class }}">
 <table>
 <tr>
 <td class="icon">
@@ -36,27 +36,20 @@ func init() {
 </td>
 <td class="content">{{ if .Title }}
 <div class="title">{{ .Title }}</div>{{ end }}
-{{ $renderedElements }}
+{{ $renderedLines }}
 </td>
 </tr>
 </table>
 </div>{{ end }}{{ end }}`,
 		texttemplate.FuncMap{
-			"renderElements": renderAllInlineElements,
-			"includeNewline": includeNewline,
-		})
-
-	admonitionParagraphContentTmpl = newTextTemplate("admonition paragraph content",
-		`{{ $ctx := .Context }}{{ with .Data }}{{ $lines := .Lines }}{{ range $index, $line := $lines }}{{ renderElement $ctx $line | printf "%s" }}{{ if includeNewline $ctx $index $lines }}{{ print "\n" }}{{ end }}{{ end }}{{ end }}`,
-		texttemplate.FuncMap{
-			"renderElement":  renderElement,
+			"renderLines":    renderLines,
 			"includeNewline": includeNewline,
 		})
 
 	listParagraphTmpl = newTextTemplate("list paragraph",
 		`{{ $ctx := .Context }}{{ with .Data }}<p>{{ $lines := .Lines }}{{ range $index, $line := $lines }}{{ renderElement $ctx $line | printf "%s" }}{{ if includeNewline $ctx $index $lines }}{{ print "\n" }}{{ end }}{{ end }}</p>{{ end }}`,
 		texttemplate.FuncMap{
-			"renderElement":  renderElement,
+			"renderElement":  renderElement, // TODO: use `renderLines` func as above
 			"includeNewline": includeNewline,
 		})
 }
@@ -71,7 +64,7 @@ func renderParagraph(ctx *renderer.Context, p types.Paragraph) ([]byte, error) {
 		id = i
 	}
 	if t, ok := p.Attributes[types.AttrTitle].(string); ok {
-		title = t
+		title = strings.TrimSpace(t)
 	}
 	var err error
 	if _, ok := p.Attributes[types.AttrAdmonitionKind]; ok {

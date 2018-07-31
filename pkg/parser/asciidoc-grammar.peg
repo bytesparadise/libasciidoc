@@ -122,7 +122,7 @@ ElementAttribute <- attr:(ElementID / ElementTitle / AdmonitionMarkerAttribute /
 }
 
 // identify all attributes that masquerade a block element into something else.
-MasqueradeAttribute <- attr:(VerseAttributes) WS* EOL {
+MasqueradeAttribute <- attr:(QuoteAttributes / VerseAttributes) WS* EOL {
     return attr, nil // avoid returning something like `[]interface{}{attr, EOL}`
 }
 
@@ -176,23 +176,43 @@ HorizontalLayout <- "[horizontal]" {
     return map[string]interface{}{"layout": "horizontal"}, nil
 }
 
-VerseAttributes <- "[verse" WS* "," author:(VerseAuthor) "," title:(VerseTitle) "]" {
-        return types.NewVerseAttributes(author.(string), title.(string))
+QuoteAttributes <- "[" kind:(QuoteKind) WS* "," author:(QuoteAuthor) "," title:(QuoteTitle) "]" {
+        return types.NewQuoteAttributes(kind.(string), author.(string), title.(string))
     } / 
     // verse without specific title
-    "[verse" WS* "," author:(VerseAuthor) "]" {
-        return types.NewVerseAttributes(author.(string), "")
+    "[" kind:(QuoteKind) WS* "," author:(QuoteAuthor) "]" {
+        return types.NewQuoteAttributes(kind.(string), author.(string), "")
     } /
     // verse without specific author
-    "[verse" WS* "]" {
-        return types.NewVerseAttributes("","")
+    "[" kind:(QuoteKind) WS* "]" {
+        return types.NewQuoteAttributes(kind.(string), "","")
     }
 
-VerseAuthor <- (!EOL !"," !"]" .)* {
+QuoteKind <- !VerseKind (!EOL !WS !"," !"]" !"#" !"=" !AdmonitionKind .)* { // make sure quote attribute does not collide with other generic or specific attributes (ID, Admonition, etc)
     return string(c.text), nil
 }
 
-VerseTitle <- (!EOL !"," !"]" .)* {
+VerseAttributes <- "[" kind:(VerseKind) WS* "," author:(QuoteAuthor) "," title:(QuoteTitle) "]" {
+        return types.NewQuoteAttributes(kind.(string), author.(string), title.(string))
+    } / 
+    // verse without specific title
+    "[" kind:(VerseKind) WS* "," author:(QuoteAuthor) "]" {
+        return types.NewQuoteAttributes(kind.(string), author.(string), "")
+    } /
+    // verse without specific author
+    "[" kind:(VerseKind) WS* "]" {
+        return types.NewQuoteAttributes(kind.(string), "","")
+    }
+
+VerseKind <- "verse" {
+    return string(c.text), nil
+}
+
+QuoteAuthor <- (!EOL !"," !"]" .)* {
+    return string(c.text), nil
+}
+
+QuoteTitle <- (!EOL !"," !"]" .)* {
     return string(c.text), nil
 }
 
@@ -354,7 +374,7 @@ ContinuedDocumentBlock <- ListItemContinuation element:DocumentBlock {
 // ------------------------------------------
 // Ordered List Items
 // ------------------------------------------
-OrderedListItem <- attributes:(ElementAttribute)* prefix:(OrderedListItemPrefix) content:(OrderedListItemContent) BlankLine? {
+OrderedListItem <- attributes:(ElementAttribute)* prefix:(OrderedListItemPrefix) content:(OrderedListItemContent) BlankLine* {
     return types.NewOrderedListItem(prefix.(types.OrderedListItemPrefix), content.([]interface{}), attributes.([]interface{}))
 }
 
@@ -392,7 +412,7 @@ OrderedListItemContent <- elements:(ListParagraph+ ContinuedDocumentBlock*) { //
 // ------------------------------------------
 // Unordered List Items
 // ------------------------------------------
-UnorderedListItem <- prefix:(UnorderedListItemPrefix) content:(UnorderedListItemContent) BlankLine? {
+UnorderedListItem <- prefix:(UnorderedListItemPrefix) content:(UnorderedListItemContent) BlankLine* {
     return types.NewUnorderedListItem(prefix.(types.UnorderedListItemPrefix), content.([]interface{}))
 }
 
@@ -673,9 +693,9 @@ ImageHeightAttribute <- "," value:(!"," !"]" .)+ {
 // ------------------------------------------------------------------------------------
 // Delimited Blocks (http://asciidoctor.org/docs/user-manual/#built-in-blocks-summary)
 // ------------------------------------------------------------------------------------
-DelimitedBlock <- FencedBlock / ListingBlock / ExampleBlock / CommentBlock / VerseBlock
+DelimitedBlock <- FencedBlock / ListingBlock / ExampleBlock / CommentBlock / VerseBlock / QuoteBlock
 
-BlockDelimiter <- LiteralBlockDelimiter / FencedBlockDelimiter / ListingBlockDelimiter / ExampleBlockDelimiter / CommentBlockDelimiter / VerseBlockDelimiter
+BlockDelimiter <- LiteralBlockDelimiter / FencedBlockDelimiter / ListingBlockDelimiter / ExampleBlockDelimiter / CommentBlockDelimiter / QuoteBlockDelimiter
 
 
 // Fenced Blocks
@@ -688,8 +708,21 @@ FencedBlock <- attributes:(ElementAttribute)* FencedBlockDelimiter WS* NEWLINE c
 // Listing blocks
 ListingBlockDelimiter <- "----"
 
-ListingBlock <- attributes:(ElementAttribute)* ListingBlockDelimiter WS* NEWLINE content:(List / BlockParagraph / BlankLine)* ((ListingBlockDelimiter WS* EOL) / EOF) {
+// listing block: verbatim content
+ListingBlock <- attributes:(ElementAttribute)* ListingBlockDelimiter WS* NEWLINE content:(ListingBlockContent)* ((ListingBlockDelimiter WS* EOL) / EOF) {
     return types.NewDelimitedBlock(types.Listing, content.([]interface{}), attributes.([]interface{}), types.None)
+}
+
+ListingBlockContent <- lines:(ListingBlockLine)+ {
+    return types.NewParagraph(lines.([]interface{}), nil)
+}
+
+ListingBlockLine <- !ListingBlockDelimiter !EOF line:(ListingBlockLineContent) EOL {
+    return line.(types.InlineElements), nil
+}
+
+ListingBlockLineContent <- (!ListingBlockDelimiter !EOL .)* { // skip EOL in line content, and stop when quote block delimiter is encountered
+    return types.NewInlineElements(string(c.text))
 }
 
 // Example blocks
@@ -714,31 +747,55 @@ BlockParagraphLine <- !(OrderedListItemPrefix)
     return line, nil
 }
 
-// Verse blocks
-VerseBlockDelimiter <- "____"
+// Quote blocks
+QuoteBlockDelimiter <- "____" // same for verse blocks
 
-VerseBlock <- attributes:(VerseBlockAttribute)* VerseBlockDelimiter WS* NEWLINE content:(VerseBlockParagraph)  ((VerseBlockDelimiter WS* EOL) / EOF) {
-    return types.NewDelimitedBlock(types.Verse, []interface{}{content}, attributes.([]interface{}), types.None)
+QuoteBlock <- attributes:(QuoteBlockAttributes)+ QuoteBlockDelimiter WS* NEWLINE content:(QuoteBlockContent)*  ((QuoteBlockDelimiter WS* EOL) / EOF) {
+    return types.NewDelimitedBlock(types.Quote, 
+        content.([]interface{}), 
+        attributes.([]interface{}), 
+        types.None)
 }
 
-VerseBlockAttribute <- 
+QuoteBlockAttributes <- 
+    attribute:(QuoteAttributes) WS* EOL {
+        return attribute, nil 
+    } 
+    // / attribute:(ElementAttribute) {
+    //     return attribute, nil 
+    // }
+
+QuoteBlockContent <- 
+    !QuoteBlockDelimiter !EOF element:(DocumentBlock) {
+        return element, nil
+    } 
+
+// Verse blocks
+VerseBlock <- attributes:(VerseBlockAttributes)+ QuoteBlockDelimiter WS* NEWLINE content:(VerseBlockContent)* ((QuoteBlockDelimiter WS* EOL) / EOF) {
+    return types.NewDelimitedBlock(types.Verse, 
+        content.([]interface{}), 
+        attributes.([]interface{}), 
+        types.None)
+}
+
+VerseBlockAttributes <- 
     attribute:(VerseAttributes) WS* EOL {
         return attribute, nil 
     } 
-    / attribute:(ElementAttribute) {
-        return attribute, nil 
-    }
+    // / attribute:(ElementAttribute) {
+    //     return attribute, nil 
+    // }
 
-VerseBlockParagraph <- lines:(VerseBlockLine)* {
+VerseBlockContent <- lines:(VerseBlockLine)+ {
     return types.NewParagraph(lines.([]interface{}), nil)
 }
 
-VerseBlockLine <- line:(VerseBlockLineContent) EOL {
-    return line, nil
+VerseBlockLine <- !QuoteBlockDelimiter !EOF line:(VerseBlockLineContent) EOL {
+    return line.(types.InlineElements), nil
 }
 
-VerseBlockLineContent <- content:(!VerseBlockDelimiter !EOL .)* { // skip EOL in line content, and stop when verse block delimiter is encountered
-    return types.NewInlineElements(strings.TrimSpace(string(c.text))) // directly use the content text of the current context 
+VerseBlockLineContent <- elements:(!QuoteBlockDelimiter !EOL WS* InlineElement WS*)* { // skip EOL in line content, and stop when quote block delimiter is encountered
+    return types.NewInlineElements(elements.([]interface{}))
 }
 
 // -------------------------------------------------------------------------------------

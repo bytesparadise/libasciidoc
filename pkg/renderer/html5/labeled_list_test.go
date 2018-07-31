@@ -95,7 +95,7 @@ item 2:: description 2.`
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>a fenced block</code></pre>
+<pre>a fenced block</pre>
 </div>
 </div>
 <div class="dlist">
@@ -247,7 +247,7 @@ another delimited block
 <dd>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>a delimited block</code></pre>
+<pre>a delimited block</pre>
 </div>
 </div>
 </dd>
@@ -256,7 +256,7 @@ another delimited block
 <p>something simple</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>another delimited block</code></pre>
+<pre>another delimited block</pre>
 </div>
 </div>
 </dd>
@@ -282,7 +282,7 @@ another delimited block
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>a delimited block</code></pre>
+<pre>a delimited block</pre>
 </div>
 </div>
 <div class="dlist">
@@ -295,7 +295,7 @@ another delimited block
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>another delimited block</code></pre>
+<pre>another delimited block</pre>
 </div>
 </div>`
 

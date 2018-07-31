@@ -26,27 +26,32 @@ func init() {
 {{end}}</ul>`)
 }
 
-type TableOfContent struct {
+// TableOfContents the structure of the table of contents
+type TableOfContents struct {
 	Content template.HTML
 }
-type TableOfContentSectionGroup struct {
+
+// TableOfContentsSectionGroup a group of sections in the table of contents
+type TableOfContentsSectionGroup struct {
 	Level    int
-	Elements []TableOfContentSection
+	Elements []TableOfContentsSection
 }
-type TableOfContentSection struct {
+
+// TableOfContentsSection a section in the table of contents
+type TableOfContentsSection struct {
 	Level       int
 	Href        string
 	Title       template.HTML
 	Subelements *template.HTML
 }
 
-func renderTableOfContent(ctx *renderer.Context, m types.TableOfContentsMacro) ([]byte, error) {
+func renderTableOfContents(ctx *renderer.Context, m types.TableOfContentsMacro) ([]byte, error) {
 	result := bytes.NewBuffer(nil)
-	renderedSections, err := renderTableOfContentSections(ctx, ctx.Document.Elements, 1)
+	renderedSections, err := renderTableOfContentsSections(ctx, ctx.Document.Elements, 1)
 	if err != nil {
 		return nil, errors.Wrapf(err, "error while rendering table of content")
 	}
-	err = tableOfContentTmpl.Execute(result, TableOfContent{
+	err = tableOfContentTmpl.Execute(result, TableOfContents{
 		Content: *renderedSections,
 	})
 	if err != nil {
@@ -56,8 +61,8 @@ func renderTableOfContent(ctx *renderer.Context, m types.TableOfContentsMacro) (
 	return result.Bytes(), nil
 }
 
-func renderTableOfContentSections(ctx *renderer.Context, elements []interface{}, currentLevel int) (*template.HTML, error) {
-	sections := make([]TableOfContentSection, 0)
+func renderTableOfContentsSections(ctx *renderer.Context, elements []interface{}, currentLevel int) (*template.HTML, error) {
+	sections := make([]TableOfContentsSection, 0)
 	for _, element := range elements {
 		log.Debugf("traversing document element of type %T", element)
 		switch section := element.(type) {
@@ -72,7 +77,7 @@ func renderTableOfContentSections(ctx *renderer.Context, elements []interface{},
 			}
 			var renderedChildSections *template.HTML
 			if currentLevel < *tocLevels {
-				renderedChildSections, err = renderTableOfContentSections(ctx, section.Elements, currentLevel+1)
+				renderedChildSections, err = renderTableOfContentsSections(ctx, section.Elements, currentLevel+1)
 				if err != nil {
 					return nil, errors.Wrapf(err, "error while rendering table of content section")
 				}
@@ -82,7 +87,7 @@ func renderTableOfContentSections(ctx *renderer.Context, elements []interface{},
 				id = i
 			}
 			renderedTitleStr := strings.TrimSpace(string(renderedTitle))
-			sections = append(sections, TableOfContentSection{
+			sections = append(sections, TableOfContentsSection{
 				Level:       section.Level,
 				Href:        id,
 				Title:       template.HTML(renderedTitleStr),
@@ -94,10 +99,13 @@ func renderTableOfContentSections(ctx *renderer.Context, elements []interface{},
 		return nil, nil
 	}
 	resultBuf := bytes.NewBuffer(nil)
-	tableOfContentSectionSetTmpl.Execute(resultBuf, TableOfContentSectionGroup{
+	err := tableOfContentSectionSetTmpl.Execute(resultBuf, TableOfContentsSectionGroup{
 		Level:    sections[0].Level,
 		Elements: sections,
 	})
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to render document TOC")
+	}
 	log.Debugf("retrieved sections for TOC: %+v", sections)
 	result := template.HTML(resultBuf.String())
 	return &result, nil

@@ -378,12 +378,21 @@ var _ = Describe("ordered lists", func() {
 			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 
-		It("ordered list with all default styles", func() {
+		It("ordered list with all default styles and blank lines", func() {
 			actualContent := `. level 1
+
 .. level 2
+
+
 ... level 3
+
+
+
 .... level 4
-..... level 5.`
+..... level 5.
+
+
+`
 			expectedResult := types.OrderedList{
 				Attributes: map[string]interface{}{},
 				Items: []types.OrderedListItem{
