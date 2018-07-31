@@ -16,9 +16,9 @@ func isMn(r rune) bool {
 	return unicode.Is(unicode.Mn, r) // Mn: nonspacing marks
 }
 
-// NewReplaceNonAlphanumericsFunc replaces all non alphanumerical characters and remove (accents)
+// newReplaceNonAlphanumericsFunc replaces all non alphanumerical characters and remove (accents)
 // in the given 'source' with the given 'replacement'.
-func NewReplaceNonAlphanumericsFunc(replacement string) NormalizationFunc {
+func newReplaceNonAlphanumericsFunc(replacement string) NormalizationFunc {
 	return func(source string) ([]byte, error) {
 		buf := bytes.NewBuffer(nil)
 		lastCharIsSpace := false
@@ -42,95 +42,57 @@ func NewReplaceNonAlphanumericsFunc(replacement string) NormalizationFunc {
 	}
 }
 
-// ReplaceNonAlphanumerics replace all non alpha numeric characters with the given `replacement`
-func ReplaceNonAlphanumerics(source InlineElements, replacement string) (string, error) {
-	v := NewReplaceNonAlphanumericsVisitor()
+// replaceNonAlphanumerics replace all non alpha numeric characters with the given `replacement`
+func replaceNonAlphanumerics(source InlineElements, replacement string) (string, error) {
+	v := newreplaceNonAlphanumericsVisitor()
 	err := source.Accept(&v)
 	if err != nil {
 		return "", err
 	}
-	return v.NormalizedContent(), nil
+	return v.normalizedContent(), nil
 }
 
-//ReplaceNonAlphanumericsVisitor a visitor that builds a string representation of the visited elements,
+//replaceNonAlphanumericsVisitor a visitor that builds a string representation of the visited elements,
 // in which all non-alphanumeric characters have been replaced with a "_"
-type ReplaceNonAlphanumericsVisitor struct {
+type replaceNonAlphanumericsVisitor struct {
 	buf       bytes.Buffer
 	normalize NormalizationFunc
 }
 
-// NewReplaceNonAlphanumericsVisitor returns a new ReplaceNonAlphanumericsVisitor
-func NewReplaceNonAlphanumericsVisitor() ReplaceNonAlphanumericsVisitor {
+// newreplaceNonAlphanumericsVisitor returns a new replaceNonAlphanumericsVisitor
+func newreplaceNonAlphanumericsVisitor() replaceNonAlphanumericsVisitor {
 	buf := bytes.NewBuffer(nil)
-	return ReplaceNonAlphanumericsVisitor{
+	return replaceNonAlphanumericsVisitor{
 		buf:       *buf,
-		normalize: NewReplaceNonAlphanumericsFunc("_"),
+		normalize: newReplaceNonAlphanumericsFunc("_"),
 	}
 }
 
 // Visit method called when an element is visited
-func (v *ReplaceNonAlphanumericsVisitor) Visit(element Visitable) error {
+func (v *replaceNonAlphanumericsVisitor) Visit(element Visitable) error {
 	log.Debugf("visiting element of type '%T'", element)
-	switch element := element.(type) {
-	case InlineElements:
-		// log.Debugf("Prefixing with '_' while processing '%T'", element)
+	if element, ok := element.(StringElement); ok {
 		v.buf.WriteString("_")
-	case StringElement:
 		normalized, err := v.normalize(element.Content)
 		if err != nil {
 			return errors.Wrapf(err, "error while normalizing String Element")
 		}
 		v.buf.Write(normalized)
-	default:
-		// ignore
 	}
 	return nil
 }
 
 // BeforeVisit method called before visiting an element. Allows for performing "pre-actions"
-func (v *ReplaceNonAlphanumericsVisitor) BeforeVisit(element Visitable) error {
-	log.Debugf("Before visiting element of type '%T'...", element)
-	switch element := element.(type) {
-	case QuotedText:
-		// log.Debugf("Before visiting quoted element...")
-		switch element.Kind {
-		case Bold:
-			v.buf.WriteString("_strong_")
-		case Italic:
-			v.buf.WriteString("_italic_")
-		case Monospace:
-			v.buf.WriteString("_monospace_")
-		default:
-			return errors.Errorf("unsupported kind of quoted text: %d", element.Kind)
-		}
-	default:
-		// ignore
-	}
+func (v *replaceNonAlphanumericsVisitor) BeforeVisit(element Visitable) error {
 	return nil
 }
 
 // AfterVisit method called before visiting an element. Allows for performing "post-actions"
-func (v *ReplaceNonAlphanumericsVisitor) AfterVisit(element Visitable) error {
-	log.Debugf("After visiting element of type '%T'...", element)
-	switch element := element.(type) {
-	case QuotedText:
-		switch element.Kind {
-		case Bold:
-			v.buf.WriteString("_strong")
-		case Italic:
-			v.buf.WriteString("_italic")
-		case Monospace:
-			v.buf.WriteString("_monospace")
-		default:
-			return errors.Errorf("unsupported kind of quoted text: %d", element.Kind)
-		}
-	default:
-		// ignore
-	}
+func (v *replaceNonAlphanumericsVisitor) AfterVisit(element Visitable) error {
 	return nil
 }
 
 // NormalizedContent returns the normalized content
-func (v *ReplaceNonAlphanumericsVisitor) NormalizedContent() string {
+func (v *replaceNonAlphanumericsVisitor) normalizedContent() string {
 	return v.buf.String()
 }

@@ -15,11 +15,11 @@ var _ = Describe("sections", func() {
 		})
 
 		It("section level 1 alone", func() {
-			actualContent := "== a title"
+			actualContent := "== a title with *bold* content"
 			// top-level section is not rendered per-say,
 			// but the section will be used to set the HTML page's <title> element
 			expectedResult := `<div class="sect1">
-<h2 id="_a_title">a title</h2>
+<h2 id="_a_title_with_bold_content">a title with <strong>bold</strong> content</h2>
 <div class="sectionbody">
 </div>
 </div>`
@@ -39,7 +39,7 @@ var _ = Describe("sections", func() {
 		It("section level 1 with just bold content", func() {
 			actualContent := `==  *2 spaces and bold content*`
 			expectedResult := `<div class="sect1">
-<h2 id="__strong_2_spaces_and_bold_content_strong"><strong>2 spaces and bold content</strong></h2>
+<h2 id="_2_spaces_and_bold_content"><strong>2 spaces and bold content</strong></h2>
 <div class="sectionbody">
 </div>
 </div>`
@@ -49,7 +49,7 @@ var _ = Describe("sections", func() {
 		It("section level 2 with nested bold content", func() {
 			actualContent := `=== a section title, with *bold content*`
 			expectedResult := `<div class="sect2">
-<h3 id="_a_section_title_with_strong_bold_content_strong">a section title, with <strong>bold content</strong></h3>
+<h3 id="_a_section_title_with_bold_content">a section title, with <strong>bold content</strong></h3>
 </div>`
 			verify(GinkgoT(), expectedResult, actualContent)
 		})
