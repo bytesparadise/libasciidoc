@@ -26,7 +26,7 @@ func init() {
 <title>{{.Title}}</title>
 <body class="article">
 <div id="header">
-<h1>{{.Title}}</h1>{{ if .Details }}
+<h1>{{.Header}}</h1>{{ if .Details }}
 {{ .Details }}{{ end }}
 </div>
 <div id="content">
@@ -46,6 +46,7 @@ Last updated {{.LastUpdated}}
 func renderDocument(ctx *renderer.Context, output io.Writer) (map[string]interface{}, error) {
 	metadata := make(map[string]interface{})
 	renderedTitle, err := renderDocumentTitle(ctx)
+	renderedHeader, err := renderDocumentHeader(ctx)
 	if err != nil {
 		return nil, errors.Wrapf(err, "unable to render full document")
 	}
@@ -64,6 +65,7 @@ func renderDocument(ctx *renderer.Context, output io.Writer) (map[string]interfa
 		err = documentTmpl.Execute(output, struct {
 			Generator   string
 			Title       string
+			Header      string
 			Content     htmltemplate.HTML
 			RevNumber   *string
 			LastUpdated string
@@ -71,6 +73,7 @@ func renderDocument(ctx *renderer.Context, output io.Writer) (map[string]interfa
 		}{
 			Generator:   "libasciidoc", // TODO: externalize this value and include the lib version ?
 			Title:       string(renderedTitle),
+			Header:      string(renderedHeader),
 			Content:     htmltemplate.HTML(string(renderedElements)),
 			RevNumber:   ctx.Document.Attributes.GetAsString("revnumber"),
 			LastUpdated: ctx.LastUpdated(),
@@ -121,7 +124,6 @@ func renderElements(ctx *renderer.Context, elements []interface{}) ([]byte, erro
 	return renderedElementsBuff.Bytes(), nil
 }
 
-// renderDocumentTitle renders the document title
 func renderDocumentTitle(ctx *renderer.Context) ([]byte, error) {
 	documentTitle, err := ctx.Document.Attributes.GetTitle()
 	if err != nil {
@@ -129,6 +131,21 @@ func renderDocumentTitle(ctx *renderer.Context) ([]byte, error) {
 	}
 	if _, found := documentTitle.Attributes[types.AttrID]; found { // ignore if no ID was set, ie, title is not defined
 		title, err := renderPlainString(ctx, documentTitle)
+		if err != nil {
+			return nil, errors.Wrapf(err, "unable to render document title")
+		}
+		return title, nil
+	}
+	return nil, nil
+}
+
+func renderDocumentHeader(ctx *renderer.Context) ([]byte, error) {
+	documentTitle, err := ctx.Document.Attributes.GetTitle()
+	if err != nil {
+		return nil, errors.Wrapf(err, "unable to render document title")
+	}
+	if _, found := documentTitle.Attributes[types.AttrID]; found { // ignore if no ID was set, ie, title is not defined
+		title, err := renderElement(ctx, documentTitle.Content)
 		if err != nil {
 			return nil, errors.Wrapf(err, "unable to render document title")
 		}

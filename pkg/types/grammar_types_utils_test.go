@@ -86,13 +86,13 @@ var _ = Describe("normalizing string", func() {
 				},
 			},
 		}
-		verify(GinkgoT(), `_a_section_title_with_strong_bold_content_strong`, source)
+		verify(GinkgoT(), `_a_section_title_with_bold_content`, source)
 	})
 })
 
 func verify(t GinkgoTInterface, expected string, inlineContent InlineElements) {
 	t.Logf("Processing '%s'", spew.Sprint(inlineContent))
-	result, err := ReplaceNonAlphanumerics(inlineContent, "_")
+	result, err := replaceNonAlphanumerics(inlineContent, "_")
 	require.Nil(t, err)
 	t.Logf("Normalized result: '%s'", result)
 	assert.Equal(t, expected, result)

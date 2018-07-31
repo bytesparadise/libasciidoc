@@ -573,7 +573,7 @@ func NewSectionTitle(inlineContent InlineElements, attributes []interface{}) (Se
 	attrbs := NewElementAttributes(attributes)
 	// make a default id from the sectionTitle's inline content
 	if _, found := attrbs[AttrID]; !found {
-		replacement, err := ReplaceNonAlphanumerics(inlineContent, "_")
+		replacement, err := replaceNonAlphanumerics(inlineContent, "_")
 		if err != nil {
 			return SectionTitle{}, errors.Wrapf(err, "unable to generate default ID while instanciating a new SectionTitle element")
 		}

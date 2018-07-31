@@ -91,7 +91,7 @@ and a paragraph`
 			actualContent := `==  *2 spaces and bold content*`
 			sectionTitle := types.SectionTitle{
 				Attributes: map[string]interface{}{
-					types.AttrID: "__strong_2_spaces_and_bold_content_strong",
+					types.AttrID: "_2_spaces_and_bold_content",
 				},
 				Content: types.InlineElements{
 					types.QuotedText{
@@ -104,7 +104,7 @@ and a paragraph`
 			expectedResult := types.Document{
 				Attributes: map[string]interface{}{},
 				ElementReferences: map[string]interface{}{
-					"__strong_2_spaces_and_bold_content_strong": sectionTitle,
+					"_2_spaces_and_bold_content": sectionTitle,
 				},
 				Elements: []interface{}{
 					types.Section{

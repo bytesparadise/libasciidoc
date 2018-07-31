@@ -23,7 +23,7 @@ var _ = Describe("document header", func() {
 <title>The Dangerous and Thrilling Documentation Chronicles</title>
 <body class="article">
 <div id="header">
-<h1>The Dangerous and Thrilling Documentation Chronicles</h1>
+<h1>The <em>Dangerous</em> and <strong>Thrilling</strong> Documentation Chronicles</h1>
 </div>
 <div id="content">
 
