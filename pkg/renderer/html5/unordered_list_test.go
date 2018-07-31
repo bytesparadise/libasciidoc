@@ -141,12 +141,12 @@ another delimited block
 <p>foo</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>a delimited block</code></pre>
+<pre>a delimited block</pre>
 </div>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>another delimited block</code></pre>
+<pre>another delimited block</pre>
 </div>
 </div>
 </li>
@@ -176,7 +176,7 @@ another delimited block
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>a delimited block</code></pre>
+<pre>a delimited block</pre>
 </div>
 </div>
 <div class="ulist">
@@ -188,7 +188,7 @@ another delimited block
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>another delimited block</code></pre>
+<pre>another delimited block</pre>
 </div>
 </div>`
 		verify(GinkgoT(), expectedResult, actualContent)

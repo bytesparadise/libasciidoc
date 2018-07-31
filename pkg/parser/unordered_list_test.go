@@ -515,7 +515,7 @@ var _ = Describe("unordered lists", func() {
 			}
 			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
-		It("2 unordered lists with 2 empty lines in-between", func() {
+		It("unordered lists with 2 empty lines in-between", func() {
 			// the first blank lines after the first list is swallowed (for the list item)
 			actualContent := "* an item in the first list\n" +
 				"\n" +
@@ -542,12 +542,6 @@ var _ = Describe("unordered lists", func() {
 									},
 								},
 							},
-						},
-					},
-					types.BlankLine{},
-					types.UnorderedList{
-						Attributes: map[string]interface{}{},
-						Items: []types.UnorderedListItem{
 							{
 								Level:       1,
 								BulletStyle: types.OneAsterisk,

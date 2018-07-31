@@ -45,6 +45,22 @@ func (ctx *Context) IncludeBlankLine() bool {
 	return false
 }
 
+// const trimTrailingSpaces string = "trimTrailingSpaces"
+
+// // SetTrimTrailingSpaces sets the rendering context to trim (or not) trailing spaces
+// func (ctx *Context) SetTrimTrailingSpaces(b bool) {
+// 	ctx.options[trimTrailingSpaces] = b
+// }
+
+// // TrimTrailingSpaces indicates if trailing spaces should be trimmed
+// func (ctx *Context) TrimTrailingSpaces() bool {
+// 	if b, found := ctx.options[trimTrailingSpaces].(bool); found {
+// 		return b
+// 	}
+// 	// by default, do trim
+// 	return true
+// }
+
 const withinDelimitedBlock string = "withinDelimitedBlock"
 
 // SetWithinDelimitedBlock sets the rendering context to be within a delimited block
@@ -59,7 +75,7 @@ func (ctx *Context) WithinDelimitedBlock() bool {
 		log.Debugf("rendering elements within a delimited block? %t", b)
 		return b
 	}
-	// by default, ignore blank lines
+	// by default, consider not within a block
 	return false
 }
 

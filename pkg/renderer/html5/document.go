@@ -22,20 +22,20 @@ func init() {
 <meta charset="UTF-8">
 <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">{{ if .Generator }}
-<meta name="generator" content="{{.Generator}}">{{ end }}
-<title>{{.Title}}</title>
+<meta name="generator" content="{{ .Generator }}">{{ end }}
+<title>{{ .Title }}</title>
 <body class="article">
 <div id="header">
-<h1>{{.Header}}</h1>{{ if .Details }}
+<h1>{{ .Header }}</h1>{{ if .Details }}
 {{ .Details }}{{ end }}
 </div>
 <div id="content">
-{{.Content}}
+{{ .Content }}
 </div>
 <div id="footer">
 <div id="footer-text">{{ if .RevNumber }}
-Version {{.RevNumber}}<br>{{ end }}
-Last updated {{.LastUpdated}}
+Version {{ .RevNumber }}<br>{{ end }}
+Last updated {{ .LastUpdated }}
 </div>
 </div>
 </body>
@@ -46,6 +46,10 @@ Last updated {{.LastUpdated}}
 func renderDocument(ctx *renderer.Context, output io.Writer) (map[string]interface{}, error) {
 	metadata := make(map[string]interface{})
 	renderedTitle, err := renderDocumentTitle(ctx)
+	if err != nil {
+		return nil, errors.Wrapf(err, "unable to render full document")
+	}
+	log.Debugf("rendered title: '%s'\n", string(renderedTitle))
 	renderedHeader, err := renderDocumentHeader(ctx)
 	if err != nil {
 		return nil, errors.Wrapf(err, "unable to render full document")
@@ -142,12 +146,12 @@ func renderDocumentTitle(ctx *renderer.Context) ([]byte, error) {
 func renderDocumentHeader(ctx *renderer.Context) ([]byte, error) {
 	documentTitle, err := ctx.Document.Attributes.GetTitle()
 	if err != nil {
-		return nil, errors.Wrapf(err, "unable to render document title")
+		return nil, errors.Wrapf(err, "unable to render document header")
 	}
 	if _, found := documentTitle.Attributes[types.AttrID]; found { // ignore if no ID was set, ie, title is not defined
 		title, err := renderElement(ctx, documentTitle.Content)
 		if err != nil {
-			return nil, errors.Wrapf(err, "unable to render document title")
+			return nil, errors.Wrapf(err, "unable to render document header")
 		}
 		return title, nil
 	}

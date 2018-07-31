@@ -8,16 +8,16 @@ var _ = Describe("quoted texts", func() {
 		It("bold content alone", func() {
 			actualContent := "*bold content*"
 			expectedResult := `<div class="paragraph">
-	<p><strong>bold content</strong></p>
-	</div>`
+<p><strong>bold content</strong></p>
+</div>`
 			verify(GinkgoT(), expectedResult, actualContent)
 		})
 
 		It("bold content in sentence", func() {
 			actualContent := "some *bold content*."
 			expectedResult := `<div class="paragraph">
-	<p>some <strong>bold content</strong>.</p>
-	</div>`
+<p>some <strong>bold content</strong>.</p>
+</div>`
 			verify(GinkgoT(), expectedResult, actualContent)
 		})
 	})
@@ -85,8 +85,8 @@ var _ = Describe("quoted texts", func() {
 		It("italic content within invalid bold quote in sentence", func() {
 			actualContent := "some *bold and _italic content_ * together."
 			expectedResult := `<div class="paragraph">
-	<p>some *bold and <em>italic content</em> * together.</p>
-	</div>`
+<p>some *bold and <em>italic content</em> * together.</p>
+</div>`
 			verify(GinkgoT(), expectedResult, actualContent)
 		})
 

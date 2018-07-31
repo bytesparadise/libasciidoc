@@ -452,13 +452,15 @@ const (
 	// AttrBlockKind the key for the kind of block
 	AttrBlockKind string = "kind"
 	// Fenced a fenced block
-	Fenced BlockKind = iota
+	Fenced BlockKind = iota // 1
 	// Listing a listing block
 	Listing
 	// Example an example block
 	Example
 	// Comment a comment block
 	Comment
+	// Quote a quote block
+	Quote
 	// Verse a verse block
 	Verse
 )
@@ -1206,7 +1208,7 @@ func NewParagraph(lines []interface{}, attributes []interface{}) (Paragraph, err
 			log.Debugf(" processing paragraph line of type %T", line)
 			elements = append(elements, l)
 		} else {
-			log.Debugf("unsupported paragraph line of type %T", line)
+			return Paragraph{}, errors.Errorf("unsupported paragraph line of type %[1]T: %[1]v", line)
 		}
 
 	}
@@ -1458,7 +1460,9 @@ func Verbatim(content []interface{}) ([]interface{}, error) {
 func NewDelimitedBlock(kind BlockKind, content []interface{}, attributes []interface{}, substitution Substitution) (DelimitedBlock, error) {
 	log.Debugf("Initializing a new DelimitedBlock of kind '%v'", kind)
 	attrbs := NewElementAttributes(attributes)
-	attrbs[AttrBlockKind] = kind
+	if _, found := attrbs[AttrBlockKind]; !found {
+		attrbs[AttrBlockKind] = kind
+	}
 	elements, err := substitution(content)
 	if err != nil {
 		return DelimitedBlock{}, errors.Wrapf(err, "failed to initialize a new delimited block")
@@ -1529,12 +1533,10 @@ const (
 	AttrLink string = "link"
 	// AttrAdmonitionKind the key to retrieve the kind of admonition in the element attributes, if a "masquerade" is used
 	AttrAdmonitionKind string = "admonitionKind"
-	// AttrVerseKind marker attribute to indicate that the element is a verse
-	AttrVerseKind string = "verse"
-	// AttrVerseAuthor attribute for the author of a verse
-	AttrVerseAuthor string = "verseAuthor"
-	// AttrVerseTitle attribute for the title of a verse
-	AttrVerseTitle string = "verseTitle"
+	// AttrQuoteAuthor attribute for the author of a verse
+	AttrQuoteAuthor string = "quoteAuthor"
+	// AttrQuoteTitle attribute for the title of a verse
+	AttrQuoteTitle string = "quoteTitle"
 )
 
 // NewElementAttributes retrieves the ElementID, ElementTitle and ElementLink from the given slice of attributes
@@ -1626,13 +1628,18 @@ func NewGenericAttribute(key []interface{}, value []interface{}) (GenericAttribu
 	return result, nil
 }
 
-// NewVerseAttributes initializes a new map of attributes for a verse paragraph
-func NewVerseAttributes(author, title string) (map[string]interface{}, error) {
+// NewQuoteAttributes initializes a new map of attributes for a verse paragraph
+func NewQuoteAttributes(kind, author, title string) (map[string]interface{}, error) {
 	result := make(map[string]interface{}, 3)
-	result[AttrBlockKind] = Verse
-	result[AttrVerseAuthor] = strings.TrimSpace(author)
-	result[AttrVerseTitle] = strings.TrimSpace(title)
-	log.Debugf("initialized new verse attributes: %v", result)
+	switch kind {
+	case "verse":
+		result[AttrBlockKind] = Verse
+	default:
+		result[AttrBlockKind] = Quote
+	}
+	result[AttrQuoteAuthor] = strings.TrimSpace(author)
+	result[AttrQuoteTitle] = strings.TrimSpace(title)
+	log.Debugf("initialized new quote attributes: %v", result)
 	return result, nil
 }
 

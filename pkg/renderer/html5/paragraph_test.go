@@ -8,10 +8,10 @@ var _ = Describe("paragraphs", func() {
 
 		It("a standalone paragraph with special character", func() {
 			actualContent := `*bold content* 
-& more content afterwards...`
+& more content afterwards`
 			expectedResult := `<div class="paragraph">
-<p><strong>bold content</strong> 
-&amp; more content afterwards...</p>
+<p><strong>bold content</strong>
+&amp; more content afterwards</p>
 </div>`
 			verify(GinkgoT(), expectedResult, actualContent)
 		})

@@ -32,7 +32,7 @@ func verify(t GinkgoTInterface, expectedResult, content string, rendererOpts ...
 	}
 	t.Log("* Done processing document:")
 	result := buff.String()
-	expectedResult = strings.Replace(expectedResult, "\t", "", -1)
+	// expectedResult = strings.Replace(expectedResult, "\t", "", -1)
 	t.Logf("** Actual output:\n`%s`\n", result)
 	t.Logf("** expectedResult output:\n`%s`\n", expectedResult) // remove tabs that can be inserted by VSCode while formatting the tests code
 	dmp := diffmatchpatch.New()

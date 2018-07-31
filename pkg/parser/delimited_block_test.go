@@ -232,7 +232,7 @@ some listing code
 			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 
-		It("listing block with multiple lines", func() {
+		It("listing block with multiple lines alone", func() {
 			actualContent := `----
 some listing code
 with an empty line
@@ -257,15 +257,45 @@ in the middle
 									Content: "with an empty line",
 								},
 							},
+							{},
+							{
+								types.StringElement{
+									Content: "in the middle",
+								},
+							},
 						},
 					},
-					types.BlankLine{},
+				},
+			}
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+		})
+		It("listing block with unrendered list", func() {
+			actualContent := `----
+* some 
+* listing 
+* content
+----`
+			expectedResult := types.DelimitedBlock{
+				Attributes: map[string]interface{}{
+					types.AttrBlockKind: types.Listing,
+				},
+				Elements: []interface{}{
 					types.Paragraph{
 						Attributes: map[string]interface{}{},
 						Lines: []types.InlineElements{
 							{
 								types.StringElement{
-									Content: "in the middle",
+									Content: "* some ",
+								},
+							},
+							{
+								types.StringElement{
+									Content: "* listing ",
+								},
+							},
+							{
+								types.StringElement{
+									Content: "* content",
 								},
 							},
 						},
@@ -305,12 +335,7 @@ then a normal paragraph.`
 											Content: "with an empty line",
 										},
 									},
-								},
-							},
-							types.BlankLine{},
-							types.Paragraph{
-								Attributes: map[string]interface{}{},
-								Lines: []types.InlineElements{
+									{},
 									{
 										types.StringElement{
 											Content: "in the middle",
@@ -694,12 +719,7 @@ paragraphs
 											Content: "multiple",
 										},
 									},
-								},
-							},
-							types.BlankLine{},
-							types.Paragraph{
-								Attributes: map[string]interface{}{},
-								Lines: []types.InlineElements{
+									{},
 									{
 										types.StringElement{
 											Content: "paragraphs",
@@ -715,19 +735,18 @@ paragraphs
 		})
 	})
 
-	Context("verse blocks", func() {
+	Context("quote blocks", func() {
 
-		It("single line verse with author and title", func() {
-			actualContent := `[verse, john doe, verse title]
+		It("single-line quote block with author and title", func() {
+			actualContent := `[quote, john doe, quote title]
 ____
-some verse content
-____
-`
+some *quote* content
+____`
 			expectedResult := types.DelimitedBlock{
 				Attributes: map[string]interface{}{
-					types.AttrBlockKind:   types.Verse,
-					types.AttrVerseAuthor: "john doe",
-					types.AttrVerseTitle:  "verse title",
+					types.AttrBlockKind:   types.Quote,
+					types.AttrQuoteAuthor: "john doe",
+					types.AttrQuoteTitle:  "quote title",
 				},
 				Elements: []interface{}{
 					types.Paragraph{
@@ -735,7 +754,18 @@ ____
 						Lines: []types.InlineElements{
 							{
 								types.StringElement{
-									Content: "some verse content",
+									Content: "some ",
+								},
+								types.QuotedText{
+									Kind: types.Bold,
+									Elements: []interface{}{
+										types.StringElement{
+											Content: "quote",
+										},
+									},
+								},
+								types.StringElement{
+									Content: " content",
 								},
 							},
 						},
@@ -745,8 +775,348 @@ ____
 			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 
-		It("multi-line verse with author only", func() {
-			actualContent := `[verse, john doe, ]
+		It("multi-line quote with author only", func() {
+			actualContent := `[quote, john doe,   ]
+____
+- some 
+- quote 
+- content 
+____
+`
+			expectedResult := types.DelimitedBlock{
+				Attributes: map[string]interface{}{
+					types.AttrBlockKind:   types.Quote,
+					types.AttrQuoteAuthor: "john doe",
+					types.AttrQuoteTitle:  "",
+				},
+				Elements: []interface{}{
+					types.UnorderedList{
+						Attributes: map[string]interface{}{},
+						Items: []types.UnorderedListItem{
+							{
+								Level:       1,
+								BulletStyle: types.Dash,
+								Elements: []interface{}{
+									types.Paragraph{
+										Attributes: map[string]interface{}{},
+										Lines: []types.InlineElements{
+											{
+												types.StringElement{
+													Content: "some ",
+												},
+											},
+										},
+									},
+								},
+							},
+							{
+								Level:       1,
+								BulletStyle: types.Dash,
+								Elements: []interface{}{
+									types.Paragraph{
+										Attributes: map[string]interface{}{},
+										Lines: []types.InlineElements{
+											{
+												types.StringElement{
+													Content: "quote ",
+												},
+											},
+										},
+									},
+								},
+							},
+							{
+								Level:       1,
+								BulletStyle: types.Dash,
+								Elements: []interface{}{
+									types.Paragraph{
+										Attributes: map[string]interface{}{},
+										Lines: []types.InlineElements{
+											{
+												types.StringElement{
+													Content: "content ",
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			}
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+		})
+
+		It("single-line quote with title only", func() {
+			actualContent := `[quote, ,quote title]
+____
+some quote content 
+____
+`
+			expectedResult := types.DelimitedBlock{
+				Attributes: map[string]interface{}{
+					types.AttrBlockKind:   types.Quote,
+					types.AttrQuoteAuthor: "",
+					types.AttrQuoteTitle:  "quote title",
+				},
+				Elements: []interface{}{
+					types.Paragraph{
+						Attributes: map[string]interface{}{},
+						Lines: []types.InlineElements{
+							{
+								types.StringElement{
+									Content: "some quote content ",
+								},
+							},
+						},
+					},
+				},
+			}
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+		})
+
+		It("multi-line quote with rendered lists and block and without author and title", func() {
+			actualContent := `[quote]
+____
+* some
+----
+* quote 
+----
+* content
+____`
+			expectedResult := types.DelimitedBlock{
+				Attributes: map[string]interface{}{
+					types.AttrBlockKind:   types.Quote,
+					types.AttrQuoteAuthor: "",
+					types.AttrQuoteTitle:  "",
+				},
+				Elements: []interface{}{
+					types.UnorderedList{
+						Attributes: map[string]interface{}{},
+						Items: []types.UnorderedListItem{
+							{
+								Level:       1,
+								BulletStyle: types.OneAsterisk,
+								Elements: []interface{}{
+									types.Paragraph{
+										Attributes: map[string]interface{}{},
+										Lines: []types.InlineElements{
+											{
+												types.StringElement{
+													Content: "some",
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+					types.DelimitedBlock{
+						Attributes: map[string]interface{}{
+							types.AttrBlockKind: types.Listing,
+						},
+						Elements: []interface{}{
+							types.Paragraph{
+								Attributes: map[string]interface{}{},
+								Lines: []types.InlineElements{
+									{
+										types.StringElement{
+											Content: "* quote ",
+										},
+									},
+								},
+							},
+						},
+					},
+					types.UnorderedList{
+						Attributes: map[string]interface{}{},
+						Items: []types.UnorderedListItem{
+							{
+								Level:       1,
+								BulletStyle: types.OneAsterisk,
+								Elements: []interface{}{
+									types.Paragraph{
+										Attributes: map[string]interface{}{},
+										Lines: []types.InlineElements{
+											{
+												types.StringElement{
+													Content: "content",
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			}
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+		})
+
+		It("multi-line quote with rendered list and without author and title", func() {
+			actualContent := `[quote]
+____
+* some
+
+
+* quote 
+
+
+* content
+____`
+			expectedResult := types.DelimitedBlock{
+				Attributes: map[string]interface{}{
+					types.AttrBlockKind:   types.Quote,
+					types.AttrQuoteAuthor: "",
+					types.AttrQuoteTitle:  "",
+				},
+				Elements: []interface{}{
+					types.UnorderedList{
+						Attributes: map[string]interface{}{},
+						Items: []types.UnorderedListItem{
+							{
+								Level:       1,
+								BulletStyle: types.OneAsterisk,
+								Elements: []interface{}{
+									types.Paragraph{
+										Attributes: map[string]interface{}{},
+										Lines: []types.InlineElements{
+											{
+												types.StringElement{
+													Content: "some",
+												},
+											},
+										},
+									},
+								},
+							},
+							{
+								Level:       1,
+								BulletStyle: types.OneAsterisk,
+								Elements: []interface{}{
+									types.Paragraph{
+										Attributes: map[string]interface{}{},
+										Lines: []types.InlineElements{
+											{
+												types.StringElement{
+													Content: "quote ",
+												},
+											},
+										},
+									},
+								},
+							},
+							{
+								Level:       1,
+								BulletStyle: types.OneAsterisk,
+								Elements: []interface{}{
+									types.Paragraph{
+										Attributes: map[string]interface{}{},
+										Lines: []types.InlineElements{
+											{
+												types.StringElement{
+													Content: "content",
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			}
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+		})
+
+		It("empty quote without author and title", func() {
+			actualContent := `[quote]
+____
+____`
+			expectedResult := types.DelimitedBlock{
+				Attributes: map[string]interface{}{
+					types.AttrBlockKind:   types.Quote,
+					types.AttrQuoteAuthor: "",
+					types.AttrQuoteTitle:  "",
+				},
+				Elements: []interface{}{},
+			}
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+		})
+
+		It("unclosed quote without author and title", func() {
+			actualContent := `[quote]
+____
+foo
+`
+			expectedResult := types.DelimitedBlock{
+				Attributes: map[string]interface{}{
+					types.AttrBlockKind:   types.Quote,
+					types.AttrQuoteAuthor: "",
+					types.AttrQuoteTitle:  "",
+				},
+				Elements: []interface{}{
+					types.Paragraph{
+						Attributes: map[string]interface{}{},
+						Lines: []types.InlineElements{
+							{
+								types.StringElement{
+									Content: "foo",
+								},
+							},
+						},
+					},
+				},
+			}
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+		})
+	})
+
+	Context("verse blocks", func() {
+
+		It("single line verse with author and title", func() {
+			actualContent := `[verse, john doe, verse title]
+____
+some *verse* content
+____`
+			expectedResult := types.DelimitedBlock{
+				Attributes: map[string]interface{}{
+					types.AttrBlockKind:   types.Verse,
+					types.AttrQuoteAuthor: "john doe",
+					types.AttrQuoteTitle:  "verse title",
+				},
+				Elements: []interface{}{
+					types.Paragraph{
+						Attributes: map[string]interface{}{},
+						Lines: []types.InlineElements{
+							{
+								types.StringElement{
+									Content: "some ",
+								},
+								types.QuotedText{
+									Kind: types.Bold,
+									Elements: []interface{}{
+										types.StringElement{
+											Content: "verse",
+										},
+									},
+								},
+								types.StringElement{
+									Content: " content",
+								},
+							},
+						},
+					},
+				},
+			}
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+		})
+
+		It("multi-line verse with unrendered list author only", func() {
+			actualContent := `[verse, john doe,   ]
 ____
 - some 
 - verse 
@@ -756,8 +1126,8 @@ ____
 			expectedResult := types.DelimitedBlock{
 				Attributes: map[string]interface{}{
 					types.AttrBlockKind:   types.Verse,
-					types.AttrVerseAuthor: "john doe",
-					types.AttrVerseTitle:  "",
+					types.AttrQuoteAuthor: "john doe",
+					types.AttrQuoteTitle:  "",
 				},
 				Elements: []interface{}{
 					types.Paragraph{
@@ -765,17 +1135,17 @@ ____
 						Lines: []types.InlineElements{
 							{
 								types.StringElement{
-									Content: "- some",
+									Content: "- some ",
 								},
 							},
 							{
 								types.StringElement{
-									Content: "- verse",
+									Content: "- verse ",
 								},
 							},
 							{
 								types.StringElement{
-									Content: "- content",
+									Content: "- content ",
 								},
 							},
 						},
@@ -788,16 +1158,14 @@ ____
 		It("multi-line verse with title only", func() {
 			actualContent := `[verse, ,verse title]
 ____
-- some 
-- verse 
-- content 
+some verse content 
 ____
 `
 			expectedResult := types.DelimitedBlock{
 				Attributes: map[string]interface{}{
 					types.AttrBlockKind:   types.Verse,
-					types.AttrVerseAuthor: "",
-					types.AttrVerseTitle:  "verse title",
+					types.AttrQuoteAuthor: "",
+					types.AttrQuoteTitle:  "verse title",
 				},
 				Elements: []interface{}{
 					types.Paragraph{
@@ -805,27 +1173,17 @@ ____
 						Lines: []types.InlineElements{
 							{
 								types.StringElement{
-									Content: "- some",
-								},
-							},
-							{
-								types.StringElement{
-									Content: "- verse",
-								},
-							},
-							{
-								types.StringElement{
-									Content: "- content",
+									Content: "some verse content ",
 								},
 							},
 						},
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("VerseBlock"))
 		})
 
-		It("multi-line verse without author and title", func() {
+		It("multi-line verse with unrendered lists and block without author and title", func() {
 			actualContent := `[verse]
 ____
 * some
@@ -837,8 +1195,8 @@ ____`
 			expectedResult := types.DelimitedBlock{
 				Attributes: map[string]interface{}{
 					types.AttrBlockKind:   types.Verse,
-					types.AttrVerseAuthor: "",
-					types.AttrVerseTitle:  "",
+					types.AttrQuoteAuthor: "",
+					types.AttrQuoteTitle:  "",
 				},
 				Elements: []interface{}{
 					types.Paragraph{
@@ -856,7 +1214,7 @@ ____`
 							},
 							{
 								types.StringElement{
-									Content: "* verse",
+									Content: "* verse ",
 								},
 							},
 							{
@@ -876,6 +1234,43 @@ ____`
 			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 
+		It("multi-line verse with unrendered list without author and title", func() {
+			actualContent := `[verse]
+____
+* foo
+
+
+	* bar
+____`
+			expectedResult := types.DelimitedBlock{
+				Attributes: map[string]interface{}{
+					types.AttrBlockKind:   types.Verse,
+					types.AttrQuoteAuthor: "",
+					types.AttrQuoteTitle:  "",
+				},
+				Elements: []interface{}{
+					types.Paragraph{
+						Attributes: map[string]interface{}{},
+						Lines: []types.InlineElements{
+							{
+								types.StringElement{
+									Content: "* foo",
+								},
+							},
+							{},
+							{},
+							{
+								types.StringElement{
+									Content: "\t* bar",
+								},
+							},
+						},
+					},
+				},
+			}
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+		})
+
 		It("empty verse without author and title", func() {
 			actualContent := `[verse]
 ____
@@ -883,17 +1278,40 @@ ____`
 			expectedResult := types.DelimitedBlock{
 				Attributes: map[string]interface{}{
 					types.AttrBlockKind:   types.Verse,
-					types.AttrVerseAuthor: "",
-					types.AttrVerseTitle:  "",
+					types.AttrQuoteAuthor: "",
+					types.AttrQuoteTitle:  "",
+				},
+				Elements: []interface{}{},
+			}
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+		})
+
+		It("unclosed verse without author and title", func() {
+			actualContent := `[verse]
+____
+foo
+`
+			expectedResult := types.DelimitedBlock{
+				Attributes: map[string]interface{}{
+					types.AttrBlockKind:   types.Verse,
+					types.AttrQuoteAuthor: "",
+					types.AttrQuoteTitle:  "",
 				},
 				Elements: []interface{}{
 					types.Paragraph{
 						Attributes: map[string]interface{}{},
-						Lines:      []types.InlineElements{},
+						Lines: []types.InlineElements{
+							{
+								types.StringElement{
+									Content: "foo",
+								},
+							},
+						},
 					},
 				},
 			}
 			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 	})
+
 })

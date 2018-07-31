@@ -240,8 +240,8 @@ I am a verse paragraph.`
 			expectedResult := types.Paragraph{
 				Attributes: map[string]interface{}{
 					types.AttrBlockKind:   types.Verse,
-					types.AttrVerseAuthor: "john doe",
-					types.AttrVerseTitle:  "verse title",
+					types.AttrQuoteAuthor: "john doe",
+					types.AttrQuoteTitle:  "verse title",
 				},
 				Lines: []types.InlineElements{
 					{
@@ -262,8 +262,8 @@ I am a verse paragraph.`
 			expectedResult := types.Paragraph{
 				Attributes: map[string]interface{}{
 					types.AttrBlockKind:   types.Verse,
-					types.AttrVerseAuthor: "john doe",
-					types.AttrVerseTitle:  "verse title",
+					types.AttrQuoteAuthor: "john doe",
+					types.AttrQuoteTitle:  "verse title",
 					types.AttrID:          "universe",
 					types.AttrTitle:       "universe",
 				},
@@ -284,8 +284,8 @@ I am a verse paragraph.`
 			expectedResult := types.Paragraph{
 				Attributes: map[string]interface{}{
 					types.AttrBlockKind:   types.Verse,
-					types.AttrVerseAuthor: "john doe",
-					types.AttrVerseTitle:  "",
+					types.AttrQuoteAuthor: "john doe",
+					types.AttrQuoteTitle:  "",
 				},
 				Lines: []types.InlineElements{
 					{
@@ -304,8 +304,8 @@ I am a verse paragraph.`
 			expectedResult := types.Paragraph{
 				Attributes: map[string]interface{}{
 					types.AttrBlockKind:   types.Verse,
-					types.AttrVerseAuthor: "john doe",
-					types.AttrVerseTitle:  "",
+					types.AttrQuoteAuthor: "john doe",
+					types.AttrQuoteTitle:  "",
 				},
 				Lines: []types.InlineElements{
 					{
@@ -324,8 +324,8 @@ I am a verse paragraph.`
 			expectedResult := types.Paragraph{
 				Attributes: map[string]interface{}{
 					types.AttrBlockKind:   types.Verse,
-					types.AttrVerseAuthor: "",
-					types.AttrVerseTitle:  "",
+					types.AttrQuoteAuthor: "",
+					types.AttrQuoteTitle:  "",
 				},
 				Lines: []types.InlineElements{
 					{
@@ -344,8 +344,8 @@ I am a verse paragraph.`
 			expectedResult := types.Paragraph{
 				Attributes: map[string]interface{}{
 					types.AttrBlockKind:   types.Verse,
-					types.AttrVerseAuthor: "",
-					types.AttrVerseTitle:  "",
+					types.AttrQuoteAuthor: "",
+					types.AttrQuoteTitle:  "",
 				},
 				Lines: []types.InlineElements{
 					{
@@ -364,8 +364,8 @@ image::foo.png[]`
 			expectedResult := types.Paragraph{
 				Attributes: map[string]interface{}{
 					types.AttrBlockKind:   types.Verse,
-					types.AttrVerseAuthor: "john doe",
-					types.AttrVerseTitle:  "verse title",
+					types.AttrQuoteAuthor: "john doe",
+					types.AttrQuoteTitle:  "verse title",
 				},
 				Lines: []types.InlineElements{
 					{
