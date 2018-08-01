@@ -109,7 +109,7 @@ test: deps generate-optimized
 
 .PHONY: build
 ## build the binary executable from CLI
-build: $(INSTALL_PREFIX) deps generate
+build: $(INSTALL_PREFIX) deps generate-optimized
 	$(eval BUILD_COMMIT:=$(shell git rev-parse --short HEAD))
 	$(eval BUILD_TAG:=$(shell git tag --contains $(BUILD_COMMIT)))
 	$(eval BUILD_TIME:=$(shell date -u '+%Y-%m-%dT%H:%M:%SZ'))
