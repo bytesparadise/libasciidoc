@@ -31,6 +31,7 @@ script:
   # verify that the library builds completly
   - make build
   # run the tests
+  - export CI=travis-ci
   - make test
 
 after_success:
