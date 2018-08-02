@@ -11,6 +11,8 @@ import (
 
 var _ = Describe("parser benchmark", func() {
 
+	ci := os.Getenv("CI") != ""
+
 	Measure("bench parser on 10 lines", func(b Benchmarker) {
 		runtime := b.Time("runtime", func() {
 			// given
@@ -47,8 +49,11 @@ bar`
 			Expect(err).ShouldNot(HaveOccurred())
 			b.RecordValue("expr count", float64(stats.ExprCnt))
 		})
-
-		Expect(runtime.Seconds()).Should(BeNumerically("<", 0.5), "parsing shouldn't take too long (even on CI).")
+		timeout := 0.5
+		if ci {
+			timeout *= 10
+		}
+		Expect(runtime.Seconds()).Should(BeNumerically("<", timeout), "parsing shouldn't take too long (even on CI).")
 
 	}, 10)
 
@@ -64,8 +69,11 @@ bar2`
 			Expect(err).ShouldNot(HaveOccurred())
 			b.RecordValue("expr count", float64(stats.ExprCnt))
 		})
-
-		Expect(runtime.Seconds()).Should(BeNumerically("<", 0.1), "parsing shouldn't take too long (even on CI).")
+		timeout := 0.1
+		if ci {
+			timeout *= 10
+		}
+		Expect(runtime.Seconds()).Should(BeNumerically("<", timeout), "parsing shouldn't take too long (even on CI).")
 
 	}, 10)
 
@@ -78,8 +86,11 @@ bar1`
 			Expect(err).ShouldNot(HaveOccurred())
 			b.RecordValue("expr count", float64(stats.ExprCnt))
 		})
-
-		Expect(runtime.Seconds()).Should(BeNumerically("<", 0.1), "parsing shouldn't take too long (even on CI).")
+		timeout := 0.1
+		if ci {
+			timeout *= 10
+		}
+		Expect(runtime.Seconds()).Should(BeNumerically("<", timeout), "parsing shouldn't take too long (even on CI).")
 
 	}, 1)
 
