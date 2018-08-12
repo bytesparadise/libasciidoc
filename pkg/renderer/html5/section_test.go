@@ -7,7 +7,7 @@ var _ = Describe("sections", func() {
 	Context("sections only", func() {
 
 		It("header section", func() {
-			actualContent := "= a title"
+			actualContent := "=   a title  "
 			// top-level section is not rendered per-say,
 			// but the section will be used to set the HTML page's <title> element
 			expectedResult := ``

@@ -18,13 +18,12 @@ var listParagraphTmpl texttemplate.Template
 // initializes the templates
 func init() {
 	paragraphTmpl = newTextTemplate("paragraph",
-		`{{ $ctx := .Context }}{{ with .Data }}{{ $renderedLines := renderLines $ctx .Lines | printf "%s"  }}{{ if ne $renderedLines "" }}<div {{ if ne .ID "" }}id="{{ .ID }}" {{ end }}class="paragraph">{{ if ne .Title "" }}
+		`{{ $ctx := .Context }}{{ with .Data }}{{ $renderedLines := renderLines $ctx .Lines | printf "%s" }}{{ if ne $renderedLines "" }}<div {{ if ne .ID "" }}id="{{ .ID }}" {{ end }}class="paragraph">{{ if ne .Title "" }}
 <div class="doctitle">{{ .Title }}</div>{{ end }}
 <p>{{ $renderedLines }}</p>
 </div>{{ end }}{{ end }}`,
 		texttemplate.FuncMap{
-			"renderLines":    renderLines,
-			"includeNewline": includeNewline,
+			"renderLines": renderLines,
 		})
 
 	admonitionParagraphTmpl = newTextTemplate("admonition paragraph",
@@ -42,15 +41,13 @@ func init() {
 </table>
 </div>{{ end }}{{ end }}`,
 		texttemplate.FuncMap{
-			"renderLines":    renderLines,
-			"includeNewline": includeNewline,
+			"renderLines": renderLines,
 		})
 
 	listParagraphTmpl = newTextTemplate("list paragraph",
-		`{{ $ctx := .Context }}{{ with .Data }}<p>{{ $lines := .Lines }}{{ range $index, $line := $lines }}{{ renderElement $ctx $line | printf "%s" }}{{ if includeNewline $ctx $index $lines }}{{ print "\n" }}{{ end }}{{ end }}</p>{{ end }}`,
+		`{{ $ctx := .Context }}{{ with .Data }}<p>{{ renderLines $ctx .Lines | printf "%s" }}</p>{{ end }}`,
 		texttemplate.FuncMap{
-			"renderElement":  renderElement, // TODO: use `renderLines` func as above
-			"includeNewline": includeNewline,
+			"renderLines": renderLines,
 		})
 }
 
@@ -68,6 +65,7 @@ func renderParagraph(ctx *renderer.Context, p types.Paragraph) ([]byte, error) {
 	}
 	var err error
 	if _, ok := p.Attributes[types.AttrAdmonitionKind]; ok {
+		log.Debug("rendering admonition paragraph...")
 		k, ok := p.Attributes[types.AttrAdmonitionKind].(types.AdmonitionKind)
 		if !ok {
 			return nil, errors.Errorf("failed to render admonition with unknown kind: %T", p.Attributes[types.AttrAdmonitionKind])
@@ -84,12 +82,12 @@ func renderParagraph(ctx *renderer.Context, p types.Paragraph) ([]byte, error) {
 				ID:    id,
 				Class: getClass(k),
 				Icon:  getIcon(k),
-				Title: title,
+				Title: getTitle(p.Attributes[types.AttrTitle]),
 				Lines: p.Lines,
 			},
 		})
 	} else if ctx.WithinDelimitedBlock() || ctx.WithinList() {
-		log.Debug("rendering paragraph within a delimited block or a list")
+		log.Debugf("rendering paragraph with %d lines within a delimited block or a list", len(p.Lines))
 		err = listParagraphTmpl.Execute(result, ContextualPipeline{
 			Context: ctx,
 			Data: struct {
@@ -121,6 +119,7 @@ func renderParagraph(ctx *renderer.Context, p types.Paragraph) ([]byte, error) {
 	if err != nil {
 		return nil, errors.Wrapf(err, "unable to render paragraph")
 	}
+	log.Debugf("rendered paragraph: '%s'", result.String())
 	return result.Bytes(), nil
 }
 
@@ -158,4 +157,11 @@ func getIcon(kind types.AdmonitionKind) string {
 		log.Error("unexpected kind of admonition: %v", kind)
 		return ""
 	}
+}
+
+func getTitle(value interface{}) string {
+	if t, ok := value.(string); ok {
+		return strings.TrimSpace(t)
+	}
+	return ""
 }

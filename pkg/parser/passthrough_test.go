@@ -14,7 +14,7 @@ var _ = Describe("passthroughs", func() {
 			actualContent := `+++hello, world+++`
 			expectedResult := types.Passthrough{
 				Kind: types.TriplePlusPassthrough,
-				Elements: []interface{}{
+				Elements: types.InlineElements{
 					types.StringElement{
 						Content: "hello, world",
 					},
@@ -27,7 +27,7 @@ var _ = Describe("passthroughs", func() {
 			actualContent := `++++++`
 			expectedResult := types.Passthrough{
 				Kind:     types.TriplePlusPassthrough,
-				Elements: []interface{}{},
+				Elements: types.InlineElements{},
 			}
 			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Passthrough"))
 		})
@@ -36,7 +36,7 @@ var _ = Describe("passthroughs", func() {
 			actualContent := `+++ *hello*, world +++`
 			expectedResult := types.Passthrough{
 				Kind: types.TriplePlusPassthrough,
-				Elements: []interface{}{
+				Elements: types.InlineElements{
 					types.StringElement{
 						Content: " *hello*, world ",
 					},
@@ -49,7 +49,7 @@ var _ = Describe("passthroughs", func() {
 			actualContent := `+++ +++`
 			expectedResult := types.Passthrough{
 				Kind: types.TriplePlusPassthrough,
-				Elements: []interface{}{
+				Elements: types.InlineElements{
 					types.StringElement{
 						Content: " ",
 					},
@@ -62,7 +62,7 @@ var _ = Describe("passthroughs", func() {
 			actualContent := "+++hello,\nworld+++"
 			expectedResult := types.Passthrough{
 				Kind: types.TriplePlusPassthrough,
-				Elements: []interface{}{
+				Elements: types.InlineElements{
 					types.StringElement{
 						Content: "hello,\nworld",
 					},
@@ -78,7 +78,7 @@ var _ = Describe("passthroughs", func() {
 			actualContent := `+hello, world+`
 			expectedResult := types.Passthrough{
 				Kind: types.SinglePlusPassthrough,
-				Elements: []interface{}{
+				Elements: types.InlineElements{
 					types.StringElement{
 						Content: "hello, world",
 					},
@@ -91,7 +91,7 @@ var _ = Describe("passthroughs", func() {
 			actualContent := `++`
 			expectedResult := types.Passthrough{
 				Kind:     types.SinglePlusPassthrough,
-				Elements: []interface{}{},
+				Elements: types.InlineElements{},
 			}
 			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Passthrough"))
 		})
@@ -100,7 +100,7 @@ var _ = Describe("passthroughs", func() {
 			actualContent := `+ *hello*, world +`
 			expectedResult := types.Passthrough{
 				Kind: types.SinglePlusPassthrough,
-				Elements: []interface{}{
+				Elements: types.InlineElements{
 					types.StringElement{
 						Content: " *hello*, world ",
 					},
@@ -138,7 +138,7 @@ var _ = Describe("passthroughs", func() {
 				actualContent := `pass:[hello]`
 				expectedResult := types.Passthrough{
 					Kind: types.PassthroughMacro,
-					Elements: []interface{}{
+					Elements: types.InlineElements{
 						types.StringElement{
 							Content: "hello",
 						},
@@ -151,7 +151,7 @@ var _ = Describe("passthroughs", func() {
 				actualContent := `pass:[hello, world]`
 				expectedResult := types.Passthrough{
 					Kind: types.PassthroughMacro,
-					Elements: []interface{}{
+					Elements: types.InlineElements{
 						types.StringElement{
 							Content: "hello, world",
 						},
@@ -164,7 +164,7 @@ var _ = Describe("passthroughs", func() {
 				actualContent := `pass:[]`
 				expectedResult := types.Passthrough{
 					Kind:     types.PassthroughMacro,
-					Elements: []interface{}{},
+					Elements: types.InlineElements{},
 				}
 				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Passthrough"))
 			})
@@ -173,7 +173,7 @@ var _ = Describe("passthroughs", func() {
 				actualContent := `pass:[ *hello*, world ]`
 				expectedResult := types.Passthrough{
 					Kind: types.PassthroughMacro,
-					Elements: []interface{}{
+					Elements: types.InlineElements{
 						types.StringElement{
 							Content: " *hello*, world ",
 						},
@@ -186,7 +186,7 @@ var _ = Describe("passthroughs", func() {
 				actualContent := "pass:[hello,\nworld]"
 				expectedResult := types.Passthrough{
 					Kind: types.PassthroughMacro,
-					Elements: []interface{}{
+					Elements: types.InlineElements{
 						types.StringElement{
 							Content: "hello,\nworld",
 						},
@@ -202,10 +202,10 @@ var _ = Describe("passthroughs", func() {
 				actualContent := `pass:q[*hello*]`
 				expectedResult := types.Passthrough{
 					Kind: types.PassthroughMacro,
-					Elements: []interface{}{
+					Elements: types.InlineElements{
 						types.QuotedText{
 							Kind: types.Bold,
-							Elements: []interface{}{
+							Elements: types.InlineElements{
 								types.StringElement{
 									Content: "hello",
 								},
@@ -220,13 +220,13 @@ var _ = Describe("passthroughs", func() {
 				actualContent := `pass:q[ a *hello*, world ]`
 				expectedResult := types.Passthrough{
 					Kind: types.PassthroughMacro,
-					Elements: []interface{}{
+					Elements: types.InlineElements{
 						types.StringElement{
 							Content: " a ",
 						},
 						types.QuotedText{
 							Kind: types.Bold,
-							Elements: []interface{}{
+							Elements: types.InlineElements{
 								types.StringElement{
 									Content: "hello",
 								},

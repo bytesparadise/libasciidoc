@@ -118,7 +118,7 @@ var _ = Describe("unordered lists", func() {
 										types.StringElement{Content: "a second item with "},
 										types.QuotedText{
 											Kind: types.Bold,
-											Elements: []interface{}{
+											Elements: types.InlineElements{
 												types.StringElement{Content: "bold content"},
 											},
 										},
@@ -310,7 +310,7 @@ var _ = Describe("unordered lists", func() {
 										types.StringElement{Content: "a second item with "},
 										types.QuotedText{
 											Kind: types.Bold,
-											Elements: []interface{}{
+											Elements: types.InlineElements{
 												types.StringElement{Content: "bold content"},
 											},
 										},
@@ -456,7 +456,7 @@ var _ = Describe("unordered lists", func() {
 										types.StringElement{Content: "a second item with "},
 										types.QuotedText{
 											Kind: types.Bold,
-											Elements: []interface{}{
+											Elements: types.InlineElements{
 												types.StringElement{Content: "bold content"},
 											},
 										},
@@ -470,10 +470,10 @@ var _ = Describe("unordered lists", func() {
 			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 		It("unordered list with 2 items on multiple lines", func() {
-			actualContent := "* item 1\n" +
-				"  on 2 lines.\n" +
-				"* item 2\n" +
-				"on 2 lines, too."
+			actualContent := `* item 1
+  on 2 lines.
+* item 2
+on 2 lines, too.`
 			expectedResult := types.UnorderedList{
 				Attributes: map[string]interface{}{},
 				Items: []types.UnorderedListItem{

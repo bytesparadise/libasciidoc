@@ -20,14 +20,12 @@ func init() {
 <dl>
 {{ $items := .Items }}{{ range $itemIndex, $item := $items }}<dt class="hdlist1">{{ $item.Term }}</dt>{{ if $item.Elements }}
 <dd>
-{{ $elements := $item.Elements }}{{ range $elementIndex, $element := $elements }}{{ renderElement $ctx $element | printf "%s" }}{{ if includeNewline $ctx $elementIndex $elements }}{{ print "\n" }}{{ end }}{{ end }}
+{{ renderElements $ctx $item.Elements }}
 </dd>{{ end }}
 {{ end }}</dl>
 </div>{{ end }}`,
 		texttemplate.FuncMap{
-			"renderElement":  renderElement,
-			"wrap":           wrap,
-			"includeNewline": includeNewline,
+			"renderElements": renderElementsAsString,
 			"hasID":          hasID,
 			"getID":          getID,
 		})
@@ -40,7 +38,7 @@ func init() {
 {{ $item.Term }}
 {{ if $item.Elements }}</td>
 <td class="hdlist2">
-{{ $elements := $item.Elements }}{{ range $elementIndex, $element := $elements }}{{ renderElement $ctx $element | printf "%s" }}{{ if includeNewline $ctx $elementIndex $elements }}{{ print "\n" }}{{ end }}{{ end }}
+{{ renderElements $ctx $item.Elements }}
 {{ if includeNewline $ctx $itemIndex $items }}</td>
 </tr>
 <tr>
@@ -49,8 +47,7 @@ func init() {
 </table>
 </div>{{ end }}`,
 		texttemplate.FuncMap{
-			"renderElement":  renderElement,
-			"wrap":           wrap,
+			"renderElements": renderElementsAsString,
 			"includeNewline": includeNewline,
 			"hasID":          hasID,
 			"getID":          getID,

@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"html/template"
 	"strings"
+	texttemplate "text/template"
 
 	"github.com/bytesparadise/libasciidoc/pkg/renderer"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
@@ -11,15 +12,15 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-var tableOfContentTmpl template.Template
-var tableOfContentSectionSetTmpl template.Template
+var tableOfContentTmpl texttemplate.Template
+var tableOfContentSectionSetTmpl texttemplate.Template
 
 func init() {
-	tableOfContentTmpl = newHTMLTemplate("toc", `<div id="toc" class="toc">
+	tableOfContentTmpl = newTextTemplate("toc", `<div id="toc" class="toc">
 <div id="toctitle">Table of Contents</div>
 {{.Content}}
 </div>`)
-	tableOfContentSectionSetTmpl = newHTMLTemplate("toc section", `<ul class="sectlevel{{.Level}}">
+	tableOfContentSectionSetTmpl = newTextTemplate("toc section", `<ul class="sectlevel{{.Level}}">
 {{ range .Elements }}<li><a href="#{{.Href}}">{{.Title}}</a>{{ if .Subelements }}
 {{.Subelements}}
 </li>{{else}}</li>{{end}}

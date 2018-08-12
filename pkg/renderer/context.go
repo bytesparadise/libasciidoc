@@ -83,7 +83,7 @@ const withinList string = "withinList"
 
 // SetWithinList sets the rendering context to be within a list or a nest list
 func (ctx *Context) SetWithinList(w bool) {
-	log.Debugf("set rendering elements within a list to `%t`", w)
+	// log.Debugf("set rendering elements within a list to `%t`", w)
 	var counter int
 	var ok bool
 	if counter, ok = ctx.options[withinList].(int); ok {
@@ -107,7 +107,7 @@ func (ctx *Context) SetWithinList(w bool) {
 // WithinList indicates if the current element to render is within a list or not
 func (ctx *Context) WithinList() bool {
 	if counter, found := ctx.options[withinList].(int); found {
-		log.Debugf("rendering elements within a list? %t (%d)", (counter > 0), counter)
+		// log.Debugf("rendering elements within a list? %t (%d)", (counter > 0), counter)
 		return counter > 0
 	}
 	// by default, ignore blank lines

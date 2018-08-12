@@ -2,7 +2,7 @@ package html5
 
 import (
 	"bytes"
-	"html/template"
+	texttemplate "text/template"
 
 	"github.com/bytesparadise/libasciidoc/pkg/renderer"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
@@ -10,11 +10,11 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-var literalBlockTmpl template.Template
+var literalBlockTmpl texttemplate.Template
 
 // initializes the templates
 func init() {
-	literalBlockTmpl = newHTMLTemplate("literal block", `<div class="literalblock">
+	literalBlockTmpl = newTextTemplate("literal block", `<div class="literalblock">
 <div class="content">
 <pre>{{.Content}}</pre>
 </div>

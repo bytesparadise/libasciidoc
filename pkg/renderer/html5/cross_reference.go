@@ -3,7 +3,7 @@ package html5
 import (
 	"bytes"
 	"fmt"
-	"html/template"
+	texttemplate "text/template"
 
 	"github.com/bytesparadise/libasciidoc/pkg/renderer"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
@@ -11,11 +11,11 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-var crossReferenceTmpl template.Template
+var crossReferenceTmpl texttemplate.Template
 
 // initializes the templates
 func init() {
-	crossReferenceTmpl = newHTMLTemplate("cross reference", `<a href="#{{ .ID }}">{{ .Content }}</a>`)
+	crossReferenceTmpl = newTextTemplate("cross reference", `<a href="#{{ .ID }}">{{ .Content }}</a>`)
 }
 
 func renderCrossReference(ctx *renderer.Context, xref types.CrossReference) ([]byte, error) {

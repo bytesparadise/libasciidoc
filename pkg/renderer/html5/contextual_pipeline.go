@@ -11,11 +11,3 @@ type ContextualPipeline struct {
 	// The actual pipeline
 	Data interface{}
 }
-
-// wrap wraps the data with the context in a new ContextualPipeline
-func wrap(ctx *renderer.Context, data interface{}) *ContextualPipeline {
-	return &ContextualPipeline{
-		Context: ctx,
-		Data:    data,
-	}
-}

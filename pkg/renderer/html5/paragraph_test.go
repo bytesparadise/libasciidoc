@@ -16,6 +16,16 @@ var _ = Describe("paragraphs", func() {
 			verify(GinkgoT(), expectedResult, actualContent)
 		})
 
+		It("a standalone paragraph with trailing spaces", func() {
+			actualContent := `*bold content*    
+   & more content afterwards...`
+			expectedResult := `<div class="paragraph">
+<p><strong>bold content</strong>
+   &amp; more content afterwards...</p>
+</div>`
+			verify(GinkgoT(), expectedResult, actualContent)
+		})
+
 		It("a standalone paragraph with an ID and a title", func() {
 			actualContent := `[#foo]
 .a title
