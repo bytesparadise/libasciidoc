@@ -298,6 +298,7 @@ ____`
 			// asciidoctor will include an emtpy line in the `blockquote` element, I'm not sure why.
 			expectedResult := `<div class="quoteblock">
 <blockquote>
+
 </blockquote>
 </div>`
 			verify(GinkgoT(), expectedResult, actualContent)

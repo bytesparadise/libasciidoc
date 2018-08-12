@@ -1,7 +1,6 @@
 package html5
 
 import (
-	"bytes"
 	htmltemplate "html/template"
 	"io"
 	texttemplate "text/template"
@@ -58,7 +57,7 @@ func renderDocument(ctx *renderer.Context, output io.Writer) (map[string]interfa
 	if ctx.IncludeHeaderFooter() {
 		log.Debugf("Rendering full document...")
 		// use a temporary writer for the document's content
-		renderedElements, err := renderElements(ctx, ctx.Document.Elements)
+		renderedElements, err := renderElements(ctx, ctx.Document.Elements, renderElement)
 		if err != nil {
 			return nil, errors.Wrapf(err, "unable to render full document")
 		}
@@ -87,7 +86,7 @@ func renderDocument(ctx *renderer.Context, output io.Writer) (map[string]interfa
 			return nil, errors.Wrapf(err, "unable to render full document")
 		}
 	} else {
-		renderedElements, err := renderElements(ctx, ctx.Document.Elements)
+		renderedElements, err := renderElements(ctx, ctx.Document.Elements, renderElement)
 		if err != nil {
 			return nil, errors.Wrapf(err, "unable to render full document")
 		}
@@ -103,29 +102,6 @@ func renderDocument(ctx *renderer.Context, output io.Writer) (map[string]interfa
 		}
 	}
 	return metadata, nil
-}
-
-func renderElements(ctx *renderer.Context, elements []interface{}) ([]byte, error) {
-	renderedElementsBuff := bytes.NewBuffer(nil)
-	hasContent := false
-	for _, element := range elements {
-		content, err := renderElement(ctx, element)
-		if err != nil {
-			return nil, errors.Wrapf(err, "failed to render the elements")
-		}
-		// if there's already some content, we need to insert a `\n` before writing
-		// the rendering output of the current element (if output is not empty)
-		if hasContent && len(content) > 0 {
-			log.Debugf("rendered element of type %T (%d)", element, len(content))
-			renderedElementsBuff.WriteString("\n")
-		}
-		// if the element was rendering into 'something' (ie, not enpty result)
-		if len(content) > 0 {
-			renderedElementsBuff.Write(content)
-			hasContent = true
-		}
-	}
-	return renderedElementsBuff.Bytes(), nil
 }
 
 func renderDocumentTitle(ctx *renderer.Context) ([]byte, error) {

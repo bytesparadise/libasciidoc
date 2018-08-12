@@ -3,6 +3,7 @@ package html5
 import (
 	"bytes"
 	"html/template"
+	texttemplate "text/template"
 
 	"github.com/bytesparadise/libasciidoc/pkg/renderer"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
@@ -10,15 +11,15 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-var boldTextTmpl template.Template
-var italicTextTmpl template.Template
-var monospaceTextTmpl template.Template
+var boldTextTmpl texttemplate.Template
+var italicTextTmpl texttemplate.Template
+var monospaceTextTmpl texttemplate.Template
 
 // initializes the templates
 func init() {
-	boldTextTmpl = newHTMLTemplate("bold text", "<strong>{{.}}</strong>")
-	italicTextTmpl = newHTMLTemplate("italic text", "<em>{{.}}</em>")
-	monospaceTextTmpl = newHTMLTemplate("monospace text", "<code>{{.}}</code>")
+	boldTextTmpl = newTextTemplate("bold text", "<strong>{{.}}</strong>")
+	italicTextTmpl = newTextTemplate("italic text", "<em>{{.}}</em>")
+	monospaceTextTmpl = newTextTemplate("monospace text", "<code>{{.}}</code>")
 }
 
 func renderQuotedText(ctx *renderer.Context, t types.QuotedText) ([]byte, error) {
@@ -34,7 +35,7 @@ func renderQuotedText(ctx *renderer.Context, t types.QuotedText) ([]byte, error)
 		}
 	}
 	result := bytes.NewBuffer(nil)
-	var tmpl template.Template
+	var tmpl texttemplate.Template
 	switch t.Kind {
 	case types.Bold:
 		tmpl = boldTextTmpl

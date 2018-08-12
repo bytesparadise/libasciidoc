@@ -18,18 +18,15 @@ func init() {
 		`{{ $ctx := .Context }}{{ with .Data }}<div{{ if hasID .Attributes }} id="{{ getID .Attributes }}"{{ end }} class="ulist">
 <ul>
 {{ $items := .Items }}{{ range $itemIndex, $item := $items }}<li>
-{{ $elements := $item.Elements }}{{ range $elementIndex, $element := $elements }}{{ renderElement $ctx $element | printf "%s" }}{{ if includeNewline $ctx $elementIndex $elements }}{{ print "\n" }}{{ end }}{{ end }}
+{{ $elements := $item.Elements }}{{ renderElements $ctx $elements }}
 </li>
 {{ end }}</ul>
 </div>{{ end }}`,
 		texttemplate.FuncMap{
-			"renderElement":  renderElement,
-			"wrap":           wrap,
-			"includeNewline": includeNewline,
+			"renderElements": renderElementAsString,
 			"hasID":          hasID,
 			"getID":          getID,
 		})
-
 }
 
 func renderUnorderedList(ctx *renderer.Context, l types.UnorderedList) ([]byte, error) {

@@ -20,7 +20,7 @@ Document <- frontMatter:(FrontMatter?) documentHeader:(DocumentHeader?) blocks:(
 }
 
 DocumentBlock <- !EOF // when reaching EOF, do not try to parse a new document block again
-    block:(BlankLine / DocumentAttributeDeclaration / DocumentAttributeReset / TableOfContentsMacro / List / BlockImage / LiteralBlock / DelimitedBlock / Paragraph) { // element attribute alone should be take recognized as such 
+    block:(BlankLine / DocumentAttributeDeclaration / DocumentAttributeReset / TableOfContentsMacro / List / BlockImage / LiteralBlock / DelimitedBlock / Table / Paragraph) { // element attribute alone should be take recognized as such 
     return block, nil
 }
 
@@ -797,6 +797,36 @@ VerseBlockLine <- !QuoteBlockDelimiter !EOF line:(VerseBlockLineContent) EOL {
 VerseBlockLineContent <- elements:(!QuoteBlockDelimiter !EOL WS* InlineElement WS*)* { // skip EOL in line content, and stop when quote block delimiter is encountered
     return types.NewInlineElements(elements.([]interface{}))
 }
+
+// -------------------------------------------------------------------------------------
+// Tables
+// -------------------------------------------------------------------------------------
+
+Table <- attributes:(ElementAttribute)* 
+        TableDelimiter WS* NEWLINE
+        header:(TableLineHeader)?
+        lines:(TableLine)*
+        ((TableDelimiter WS* EOL) / EOF) { // end delimiter or end of file
+            return types.NewTable(header, lines.([]interface{}), attributes.([]interface{}))
+        }
+
+TableCellSeparator <- "|" WS*
+
+TableDelimiter <- "|==="
+        
+// table line header is a line followed by a blankline
+TableLineHeader <- !TableDelimiter cells:(TableCell)+ EOL BlankLine {
+    return types.NewTableLine(cells.([]interface{}))
+}
+
+TableLine <- !TableDelimiter cells:(TableCell)+ EOL BlankLine* {
+    return types.NewTableLine(cells.([]interface{}))
+}
+
+TableCell <- TableCellSeparator elements:(!TableCellSeparator !EOL WS* InlineElement WS*)+ {
+    return types.NewInlineElements(elements)
+}
+
 
 // -------------------------------------------------------------------------------------
 // Comments

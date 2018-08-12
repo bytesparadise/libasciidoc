@@ -29,6 +29,26 @@ var _ = Describe("sections", func() {
 			verify(GinkgoT(), expectedResult, actualContent)
 		})
 
+		It("header with many spaces around content", func() {
+			actualContent := "= a header   "
+			doctitle := types.SectionTitle{
+				Attributes: map[string]interface{}{
+					types.AttrID: "_a_header",
+				},
+				Content: types.InlineElements{
+					types.StringElement{Content: "a header   "},
+				},
+			}
+			expectedResult := types.Document{
+				Attributes: map[string]interface{}{
+					"doctitle": doctitle,
+				},
+				ElementReferences: map[string]interface{}{},
+				Elements:          []interface{}{},
+			}
+			verify(GinkgoT(), expectedResult, actualContent)
+		})
+
 		It("header and paragraph", func() {
 			actualContent := `= a header
 
@@ -95,7 +115,7 @@ and a paragraph`
 				},
 				Content: types.InlineElements{
 					types.QuotedText{
-						Elements: []interface{}{
+						Elements: types.InlineElements{
 							types.StringElement{Content: "2 spaces and bold content"},
 						},
 					},

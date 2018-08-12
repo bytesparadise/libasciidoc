@@ -23,21 +23,21 @@ var _ = Describe("paragraphs", func() {
 			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 
-		It("paragraph with few words", func() {
-			actualContent := "a paragraph with some content"
+		It("paragraph with few words and ending with spaces", func() {
+			actualContent := "a paragraph with some content  "
 			expectedResult := types.Paragraph{
 				Attributes: map[string]interface{}{},
 				Lines: []types.InlineElements{
 					{
-						types.StringElement{Content: "a paragraph with some content"},
+						types.StringElement{Content: "a paragraph with some content  "},
 					},
 				},
 			}
 			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 
-		It("paragraph with bold content", func() {
-			actualContent := "a paragraph with *some bold content*"
+		It("paragraph with bold content and spaces", func() {
+			actualContent := "a paragraph with *some bold content*  "
 			expectedResult := types.Paragraph{
 				Attributes: map[string]interface{}{},
 				Lines: []types.InlineElements{
@@ -45,10 +45,11 @@ var _ = Describe("paragraphs", func() {
 						types.StringElement{Content: "a paragraph with "},
 						types.QuotedText{
 							Kind: types.Bold,
-							Elements: []interface{}{
+							Elements: types.InlineElements{
 								types.StringElement{Content: "some bold content"},
 							},
 						},
+						types.StringElement{Content: "  "},
 					},
 				},
 			}
@@ -176,7 +177,7 @@ this is a
 					{
 						types.QuotedText{
 							Kind: types.Bold,
-							Elements: []interface{}{
+							Elements: types.InlineElements{
 								types.StringElement{
 									Content: "caution",
 								},

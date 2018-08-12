@@ -7,12 +7,14 @@ import (
 	"github.com/bytesparadise/libasciidoc/pkg/renderer"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 	"github.com/pkg/errors"
+	log "github.com/sirupsen/logrus"
 )
 
 var stringElementTmpl template.Template
 
 // initializes the templates
 func init() {
+	// TODO: unnecessary
 	stringElementTmpl = newHTMLTemplate("string element", "{{.}}")
 }
 
@@ -24,6 +26,6 @@ func renderStringElement(ctx *renderer.Context, str types.StringElement) ([]byte
 	if err != nil {
 		return nil, errors.Wrapf(err, "unable to render string element")
 	}
-	// log.Debugf("rendered string: %s", result.Bytes())
+	log.Debugf("rendered string: %s", result.String())
 	return result.Bytes(), nil
 }

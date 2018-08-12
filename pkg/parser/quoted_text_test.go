@@ -14,7 +14,7 @@ var _ = Describe("quoted texts", func() {
 			actualContent := "*hello*"
 			expectedResult := types.QuotedText{
 				Kind: types.Bold,
-				Elements: []interface{}{
+				Elements: types.InlineElements{
 					types.StringElement{Content: "hello"},
 				},
 			}
@@ -25,7 +25,7 @@ var _ = Describe("quoted texts", func() {
 			actualContent := "*bold    content*"
 			expectedResult := types.QuotedText{
 				Kind: types.Bold,
-				Elements: []interface{}{
+				Elements: types.InlineElements{
 					types.StringElement{Content: "bold    content"},
 				},
 			}
@@ -36,7 +36,7 @@ var _ = Describe("quoted texts", func() {
 			actualContent := "*some bold content*"
 			expectedResult := types.QuotedText{
 				Kind: types.Bold,
-				Elements: []interface{}{
+				Elements: types.InlineElements{
 					types.StringElement{Content: "some bold content"},
 				},
 			}
@@ -47,7 +47,7 @@ var _ = Describe("quoted texts", func() {
 			actualContent := "_some italic content_"
 			expectedResult := types.QuotedText{
 				Kind: types.Italic,
-				Elements: []interface{}{
+				Elements: types.InlineElements{
 					types.StringElement{Content: "some italic content"},
 				},
 			}
@@ -58,7 +58,7 @@ var _ = Describe("quoted texts", func() {
 			actualContent := "`some monospace content`"
 			expectedResult := types.QuotedText{
 				Kind: types.Monospace,
-				Elements: []interface{}{
+				Elements: types.InlineElements{
 					types.StringElement{Content: "some monospace content"},
 				},
 			}
@@ -69,11 +69,11 @@ var _ = Describe("quoted texts", func() {
 			actualContent := "_some *bold* content_"
 			expectedResult := types.QuotedText{
 				Kind: types.Italic,
-				Elements: []interface{}{
+				Elements: types.InlineElements{
 					types.StringElement{Content: "some "},
 					types.QuotedText{
 						Kind: types.Bold,
-						Elements: []interface{}{
+						Elements: types.InlineElements{
 							types.StringElement{Content: "bold"},
 						},
 					},
@@ -87,15 +87,15 @@ var _ = Describe("quoted texts", func() {
 			actualContent := "*some _italic and `monospaced content`_*"
 			expectedResult := types.QuotedText{
 				Kind: types.Bold,
-				Elements: []interface{}{
+				Elements: types.InlineElements{
 					types.StringElement{Content: "some "},
 					types.QuotedText{
 						Kind: types.Italic,
-						Elements: []interface{}{
+						Elements: types.InlineElements{
 							types.StringElement{Content: "italic and "},
 							types.QuotedText{
 								Kind: types.Monospace,
-								Elements: []interface{}{
+								Elements: types.InlineElements{
 									types.StringElement{Content: "monospaced content"},
 								},
 							},
@@ -110,11 +110,11 @@ var _ = Describe("quoted texts", func() {
 			actualContent := "_some _very italic_ content_"
 			expectedResult := types.QuotedText{
 				Kind: types.Italic,
-				Elements: []interface{}{
+				Elements: types.InlineElements{
 					types.StringElement{Content: "some "},
 					types.QuotedText{
 						Kind: types.Italic,
-						Elements: []interface{}{
+						Elements: types.InlineElements{
 							types.StringElement{Content: "very italic"},
 						},
 					},
@@ -131,7 +131,7 @@ var _ = Describe("quoted texts", func() {
 			actualContent := "**hello**"
 			expectedResult := types.QuotedText{
 				Kind: types.Bold,
-				Elements: []interface{}{
+				Elements: types.InlineElements{
 					types.StringElement{Content: "hello"},
 				},
 			}
@@ -142,7 +142,7 @@ var _ = Describe("quoted texts", func() {
 			actualContent := "__some italic content__"
 			expectedResult := types.QuotedText{
 				Kind: types.Italic,
-				Elements: []interface{}{
+				Elements: types.InlineElements{
 					types.StringElement{Content: "some italic content"},
 				},
 			}
@@ -153,7 +153,7 @@ var _ = Describe("quoted texts", func() {
 			actualContent := "``some monospace content``"
 			expectedResult := types.QuotedText{
 				Kind: types.Monospace,
-				Elements: []interface{}{
+				Elements: types.InlineElements{
 					types.StringElement{Content: "some monospace content"},
 				},
 			}
@@ -164,11 +164,11 @@ var _ = Describe("quoted texts", func() {
 			actualContent := "__some *bold* content__"
 			expectedResult := types.QuotedText{
 				Kind: types.Italic,
-				Elements: []interface{}{
+				Elements: types.InlineElements{
 					types.StringElement{Content: "some "},
 					types.QuotedText{
 						Kind: types.Bold,
-						Elements: []interface{}{
+						Elements: types.InlineElements{
 							types.StringElement{Content: "bold"},
 						},
 					},
@@ -182,15 +182,15 @@ var _ = Describe("quoted texts", func() {
 			actualContent := "**some _italic and ``monospaced content``_**"
 			expectedResult := types.QuotedText{
 				Kind: types.Bold,
-				Elements: []interface{}{
+				Elements: types.InlineElements{
 					types.StringElement{Content: "some "},
 					types.QuotedText{
 						Kind: types.Italic,
-						Elements: []interface{}{
+						Elements: types.InlineElements{
 							types.StringElement{Content: "italic and "},
 							types.QuotedText{
 								Kind: types.Monospace,
-								Elements: []interface{}{
+								Elements: types.InlineElements{
 									types.StringElement{Content: "monospaced content"},
 								},
 							},
@@ -211,7 +211,7 @@ var _ = Describe("quoted texts", func() {
 				types.StringElement{Content: "a paragraph with "},
 				types.QuotedText{
 					Kind: types.Bold,
-					Elements: []interface{}{
+					Elements: types.InlineElements{
 						types.StringElement{Content: "some bold content"},
 					},
 				},
@@ -249,7 +249,7 @@ var _ = Describe("quoted texts", func() {
 				types.StringElement{Content: "some "},
 				types.QuotedText{
 					Kind: types.Bold,
-					Elements: []interface{}{
+					Elements: types.InlineElements{
 						types.StringElement{Content: "bold and _italic content _ together"},
 					},
 				},
@@ -264,7 +264,7 @@ var _ = Describe("quoted texts", func() {
 				types.StringElement{Content: "some *bold and "},
 				types.QuotedText{
 					Kind: types.Italic,
-					Elements: []interface{}{
+					Elements: types.InlineElements{
 						types.StringElement{Content: "italic content"},
 					},
 				},
@@ -282,11 +282,11 @@ var _ = Describe("quoted texts", func() {
 				types.StringElement{Content: "some "},
 				types.QuotedText{
 					Kind: types.Bold,
-					Elements: []interface{}{
+					Elements: types.InlineElements{
 						types.StringElement{Content: "bold and "},
 						types.QuotedText{
 							Kind: types.Italic,
-							Elements: []interface{}{
+							Elements: types.InlineElements{
 								types.StringElement{Content: "italic content"},
 							},
 						},
@@ -304,11 +304,11 @@ var _ = Describe("quoted texts", func() {
 			expectedResult := types.InlineElements{
 				types.QuotedText{
 					Kind: types.Bold,
-					Elements: []interface{}{
+					Elements: types.InlineElements{
 						types.StringElement{Content: "some "},
 						types.QuotedText{
 							Kind: types.Bold,
-							Elements: []interface{}{
+							Elements: types.InlineElements{
 								types.StringElement{Content: "nested bold"},
 							},
 						},
@@ -325,11 +325,11 @@ var _ = Describe("quoted texts", func() {
 			expectedResult := types.InlineElements{
 				types.QuotedText{
 					Kind: types.Bold,
-					Elements: []interface{}{
+					Elements: types.InlineElements{
 						types.StringElement{Content: "some "},
 						types.QuotedText{
 							Kind: types.Bold,
-							Elements: []interface{}{
+							Elements: types.InlineElements{
 								types.StringElement{Content: "nested bold"},
 							},
 						},
@@ -346,11 +346,11 @@ var _ = Describe("quoted texts", func() {
 			expectedResult := types.InlineElements{
 				types.QuotedText{
 					Kind: types.Bold,
-					Elements: []interface{}{
+					Elements: types.InlineElements{
 						types.StringElement{Content: "some "},
 						types.QuotedText{
 							Kind: types.Bold,
-							Elements: []interface{}{
+							Elements: types.InlineElements{
 								types.StringElement{Content: "nested bold"},
 							},
 						},
@@ -367,11 +367,11 @@ var _ = Describe("quoted texts", func() {
 			expectedResult := types.InlineElements{
 				types.QuotedText{
 					Kind: types.Bold,
-					Elements: []interface{}{
+					Elements: types.InlineElements{
 						types.StringElement{Content: "some "},
 						types.QuotedText{
 							Kind: types.Bold,
-							Elements: []interface{}{
+							Elements: types.InlineElements{
 								types.StringElement{Content: "nested bold"},
 							},
 						},
@@ -388,11 +388,11 @@ var _ = Describe("quoted texts", func() {
 			expectedResult := types.InlineElements{
 				types.QuotedText{
 					Kind: types.Italic,
-					Elements: []interface{}{
+					Elements: types.InlineElements{
 						types.StringElement{Content: "some "},
 						types.QuotedText{
 							Kind: types.Italic,
-							Elements: []interface{}{
+							Elements: types.InlineElements{
 								types.StringElement{Content: "nested italic"},
 							},
 						},
@@ -409,11 +409,11 @@ var _ = Describe("quoted texts", func() {
 			expectedResult := types.InlineElements{
 				types.QuotedText{
 					Kind: types.Italic,
-					Elements: []interface{}{
+					Elements: types.InlineElements{
 						types.StringElement{Content: "some "},
 						types.QuotedText{
 							Kind: types.Italic,
-							Elements: []interface{}{
+							Elements: types.InlineElements{
 								types.StringElement{Content: "nested italic"},
 							},
 						},
@@ -430,11 +430,11 @@ var _ = Describe("quoted texts", func() {
 			expectedResult := types.InlineElements{
 				types.QuotedText{
 					Kind: types.Italic,
-					Elements: []interface{}{
+					Elements: types.InlineElements{
 						types.StringElement{Content: "some "},
 						types.QuotedText{
 							Kind: types.Italic,
-							Elements: []interface{}{
+							Elements: types.InlineElements{
 								types.StringElement{Content: "nested italic"},
 							},
 						},
@@ -451,11 +451,11 @@ var _ = Describe("quoted texts", func() {
 			expectedResult := types.InlineElements{
 				types.QuotedText{
 					Kind: types.Italic,
-					Elements: []interface{}{
+					Elements: types.InlineElements{
 						types.StringElement{Content: "some "},
 						types.QuotedText{
 							Kind: types.Italic,
-							Elements: []interface{}{
+							Elements: types.InlineElements{
 								types.StringElement{Content: "nested italic"},
 							},
 						},
@@ -472,11 +472,11 @@ var _ = Describe("quoted texts", func() {
 			expectedResult := types.InlineElements{
 				types.QuotedText{
 					Kind: types.Monospace,
-					Elements: []interface{}{
+					Elements: types.InlineElements{
 						types.StringElement{Content: "some "},
 						types.QuotedText{
 							Kind: types.Monospace,
-							Elements: []interface{}{
+							Elements: types.InlineElements{
 								types.StringElement{Content: "nested monospace"},
 							},
 						},
@@ -493,11 +493,11 @@ var _ = Describe("quoted texts", func() {
 			expectedResult := types.InlineElements{
 				types.QuotedText{
 					Kind: types.Monospace,
-					Elements: []interface{}{
+					Elements: types.InlineElements{
 						types.StringElement{Content: "some "},
 						types.QuotedText{
 							Kind: types.Monospace,
-							Elements: []interface{}{
+							Elements: types.InlineElements{
 								types.StringElement{Content: "nested monospace"},
 							},
 						},
@@ -514,11 +514,11 @@ var _ = Describe("quoted texts", func() {
 			expectedResult := types.InlineElements{
 				types.QuotedText{
 					Kind: types.Monospace,
-					Elements: []interface{}{
+					Elements: types.InlineElements{
 						types.StringElement{Content: "some "},
 						types.QuotedText{
 							Kind: types.Monospace,
-							Elements: []interface{}{
+							Elements: types.InlineElements{
 								types.StringElement{Content: "nested monospace"},
 							},
 						},
@@ -535,11 +535,11 @@ var _ = Describe("quoted texts", func() {
 			expectedResult := types.InlineElements{
 				types.QuotedText{
 					Kind: types.Monospace,
-					Elements: []interface{}{
+					Elements: types.InlineElements{
 						types.StringElement{Content: "some "},
 						types.QuotedText{
 							Kind: types.Monospace,
-							Elements: []interface{}{
+							Elements: types.InlineElements{
 								types.StringElement{Content: "nested monospace"},
 							},
 						},
@@ -561,7 +561,7 @@ var _ = Describe("quoted texts", func() {
 				expectedResult := types.InlineElements{
 					types.QuotedText{
 						Kind: types.Bold,
-						Elements: []interface{}{
+						Elements: types.InlineElements{
 							types.StringElement{Content: "*some bold content"},
 						},
 					},
@@ -574,7 +574,7 @@ var _ = Describe("quoted texts", func() {
 				expectedResult := types.InlineElements{
 					types.QuotedText{
 						Kind: types.Bold,
-						Elements: []interface{}{
+						Elements: types.InlineElements{
 							types.StringElement{Content: "some bold content"},
 						},
 					},
@@ -591,7 +591,7 @@ var _ = Describe("quoted texts", func() {
 				expectedResult := types.InlineElements{
 					types.QuotedText{
 						Kind: types.Italic,
-						Elements: []interface{}{
+						Elements: types.InlineElements{
 							types.StringElement{Content: "_some italic content"},
 						},
 					},
@@ -604,7 +604,7 @@ var _ = Describe("quoted texts", func() {
 				expectedResult := types.InlineElements{
 					types.QuotedText{
 						Kind: types.Italic,
-						Elements: []interface{}{
+						Elements: types.InlineElements{
 							types.StringElement{Content: "some italic content"},
 						},
 					},
@@ -621,7 +621,7 @@ var _ = Describe("quoted texts", func() {
 				expectedResult := types.InlineElements{
 					types.QuotedText{
 						Kind: types.Monospace,
-						Elements: []interface{}{
+						Elements: types.InlineElements{
 							types.StringElement{Content: "`some monospace content"},
 						},
 					},
@@ -634,7 +634,7 @@ var _ = Describe("quoted texts", func() {
 				expectedResult := types.InlineElements{
 					types.QuotedText{
 						Kind: types.Monospace,
-						Elements: []interface{}{
+						Elements: types.InlineElements{
 							types.StringElement{Content: "some monospace content"},
 						},
 					},
@@ -914,7 +914,7 @@ var _ = Describe("quoted texts", func() {
 							types.StringElement{Content: "*bold "},
 							types.QuotedText{
 								Kind: types.Italic,
-								Elements: []interface{}{
+								Elements: types.InlineElements{
 									types.StringElement{Content: "and italic"},
 								},
 							},

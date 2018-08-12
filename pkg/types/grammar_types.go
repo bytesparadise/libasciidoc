@@ -1206,7 +1206,9 @@ func NewParagraph(lines []interface{}, attributes []interface{}) (Paragraph, err
 	for _, line := range lines {
 		if l, ok := line.(InlineElements); ok {
 			log.Debugf(" processing paragraph line of type %T", line)
+			// if len(l) > 0 {
 			elements = append(elements, l)
+			// }
 		} else {
 			return Paragraph{}, errors.Errorf("unsupported paragraph line of type %[1]T: %[1]v", line)
 		}
@@ -1261,6 +1263,27 @@ type InlineElements []interface{}
 // NewInlineElements initializes a new `InlineElements` from the given values
 func NewInlineElements(elements ...interface{}) (InlineElements, error) {
 	result := mergeElements(elements...)
+	// // trim spaces on first and last elements if they are StringElements, or even remove them if needed.
+	// if len(result) > 0 {
+	// 	if s, ok := result[0].(StringElement); ok {
+	// 		t := strings.TrimLeft(s.Content, " \t")
+	// 		log.Debugf("processed first string element with content='%s' -> '%s'", s.Content, t)
+	// 		if len(t) > 0 {
+	// 			result[0] = NewStringElement(t)
+	// 		} else {
+	// 			result = result[1:] // remove element if empty
+	// 		}
+	// 	}
+	// 	if s, ok := result[len(result)-1].(StringElement); ok {
+	// 		t := strings.TrimRight(s.Content, " \t")
+	// 		log.Debugf("processed last string element with content='%s' -> '%s'", s.Content, t)
+	// 		if len(t) > 0 {
+	// 			result[len(result)-1] = NewStringElement(t)
+	// 		} else {
+	// 			result = result[:len(result)-1] // remove element if empty
+	// 		}
+	// 	}
+	// }
 	return result, nil
 }
 
@@ -1474,6 +1497,81 @@ func NewDelimitedBlock(kind BlockKind, content []interface{}, attributes []inter
 }
 
 // ------------------------------------------
+// Tables
+// ------------------------------------------
+
+// Table the structure for the tables
+type Table struct {
+	Attributes map[string]interface{}
+	Header     TableLine
+	Lines      []TableLine
+}
+
+// NewTable initializes a new table with the given lines and attributes
+func NewTable(header interface{}, lines []interface{}, attributes []interface{}) (Table, error) {
+	t := Table{
+		Attributes: NewElementAttributes(attributes),
+	}
+	columnsPerLine := -1 // unknown until first "line" is processed
+	if header, ok := header.(TableLine); ok {
+		t.Header = header
+		columnsPerLine = len(header.Cells)
+	}
+	// need to regroup columns of all lines, they dispatch on lines
+	cells := make([]InlineElements, 0)
+	for _, l := range lines {
+		if l, ok := l.(TableLine); ok {
+			// if no header line was set, inspect the first line to determine the number of columns per line
+			if columnsPerLine == -1 {
+				columnsPerLine = len(l.Cells)
+			}
+			cells = append(cells, l.Cells...)
+		}
+	}
+	t.Lines = make([]TableLine, 0)
+	if len(lines) > 0 {
+		log.Debugf("buffered %d columns for the table", len(cells))
+		l := TableLine{
+			Cells: make([]InlineElements, columnsPerLine),
+		}
+		for i, c := range cells {
+			log.Debugf("adding cell with content '%v' in table line at offset %d", c, (i % columnsPerLine))
+			l.Cells[i%columnsPerLine] = c
+			if (i+1)%columnsPerLine == 0 { // switch to next line
+				log.Debugf("adding line with content '%v' in table", l)
+				t.Lines = append(t.Lines, l)
+				l = TableLine{
+					Cells: make([]InlineElements, columnsPerLine),
+				}
+			}
+		}
+	}
+	log.Debugf("initialized a new table with %d lines", len(lines))
+	return t, nil
+}
+
+// TableLine a table line is made of columns, each column being a group of InlineElements (to support quoted text, etc.)
+type TableLine struct {
+	Cells []InlineElements
+}
+
+// NewTableLine initializes a new TableLine with the given columns
+func NewTableLine(columns []interface{}) (TableLine, error) {
+	c := make([]InlineElements, 0)
+	for _, column := range columns {
+		if e, ok := column.(InlineElements); ok {
+			c = append(c, e)
+		} else {
+			log.Debugf("unsupported element of type %T", column)
+		}
+	}
+	log.Debugf("initialized a new table line with %d columns", len(c))
+	return TableLine{
+		Cells: c,
+	}, nil
+}
+
+// ------------------------------------------
 // Literal blocks
 // ------------------------------------------
 
@@ -1681,7 +1779,7 @@ func (s StringElement) Accept(v Visitor) error {
 // QuotedText the structure for quoted text
 type QuotedText struct {
 	Kind     QuotedTextKind
-	Elements []interface{}
+	Elements InlineElements
 }
 
 // QuotedTextKind the type for
@@ -1758,7 +1856,7 @@ func NewEscapedQuotedText(backslashes []interface{}, punctuation string, content
 // Passthrough the structure for Passthroughs
 type Passthrough struct {
 	Kind     PassthroughKind
-	Elements []interface{}
+	Elements InlineElements
 }
 
 // PassthroughKind the kind of passthrough

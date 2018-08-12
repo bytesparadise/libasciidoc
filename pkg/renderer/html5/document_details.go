@@ -5,24 +5,25 @@ import (
 	"fmt"
 	htmltemplate "html/template"
 	"strconv"
+	texttemplate "text/template"
 
 	"github.com/bytesparadise/libasciidoc/pkg/renderer"
 	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
 )
 
-var documentDetailsTmpl htmltemplate.Template
-var documentAuthorDetailsTmpl htmltemplate.Template
+var documentDetailsTmpl texttemplate.Template
+var documentAuthorDetailsTmpl texttemplate.Template
 
 func init() {
-	documentDetailsTmpl = newHTMLTemplate("document details", `<div class="details">{{ if .Authors }}
+	documentDetailsTmpl = newTextTemplate("document details", `<div class="details">{{ if .Authors }}
 {{.Authors}}{{ end }}{{ if .RevNumber }}
 <span id="revnumber">version {{.RevNumber}},</span>{{ end }}{{ if .RevDate }}
 <span id="revdate">{{.RevDate}}</span>{{ end }}{{ if .RevRemark }}
 <br><span id="revremark">{{.RevRemark}}</span>{{ end }}
 </div>`)
 
-	documentAuthorDetailsTmpl = newHTMLTemplate("author details", `{{ if .Name }}<span id="author{{.Index}}" class="author">{{.Name}}</span><br>{{ end }}{{ if .Email }}
+	documentAuthorDetailsTmpl = newTextTemplate("author details", `{{ if .Name }}<span id="author{{.Index}}" class="author">{{.Name}}</span><br>{{ end }}{{ if .Email }}
 <span id="email{{.Index}}" class="email"><a href="mailto:{{.Email}}">{{.Email}}</a></span><br>{{ end }}`)
 }
 

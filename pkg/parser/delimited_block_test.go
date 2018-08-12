@@ -604,7 +604,7 @@ with *bold content*
 								},
 								types.QuotedText{
 									Kind: types.Bold,
-									Elements: []interface{}{
+									Elements: types.InlineElements{
 										types.StringElement{
 											Content: "bold content",
 										},
@@ -758,7 +758,7 @@ ____`
 								},
 								types.QuotedText{
 									Kind: types.Bold,
-									Elements: []interface{}{
+									Elements: types.InlineElements{
 										types.StringElement{
 											Content: "quote",
 										},
@@ -1098,7 +1098,7 @@ ____`
 								},
 								types.QuotedText{
 									Kind: types.Bold,
-									Elements: []interface{}{
+									Elements: types.InlineElements{
 										types.StringElement{
 											Content: "verse",
 										},

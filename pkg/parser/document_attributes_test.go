@@ -784,7 +784,7 @@ a paragraph with *bold content*`
 									{
 										types.StringElement{Content: "a paragraph with "},
 										types.QuotedText{Kind: types.Bold,
-											Elements: []interface{}{
+											Elements: types.InlineElements{
 												types.StringElement{Content: "bold content"},
 											},
 										},

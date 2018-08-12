@@ -25,23 +25,22 @@ func init() {
 </div>
 </div>`,
 		texttemplate.FuncMap{
-			"renderElement":  renderElement,
-			"includeNewline": includeNewline,
+			"renderElement": renderElement,
 		})
 
 	exampleBlockTmpl = newTextTemplate("example block", `<div class="exampleblock">
 <div class="content">
-{{ $ctx := .Context }}{{ with .Data }}{{ $elements := .Elements }}{{ range $index, $element := $elements }}{{ renderElement $ctx $element | printf "%s" }}{{ if includeNewline $ctx $index $elements }}{{ print "\n" }}{{ end }}{{ end }}{{ end }}
+{{ $ctx := .Context }}{{ with .Data }}{{ $elements := .Elements }}{{ renderElements $ctx $elements }}{{ end }}
 </div>
 </div>`,
 		texttemplate.FuncMap{
-			"renderElement":  renderElement,
+			"renderElements": renderElementsAsString,
 			"includeNewline": includeNewline,
 		})
 
 	quoteBlockTmpl = newTextTemplate("quote block", `<div class="quoteblock">
-{{ $ctx := .Context }}{{ with .Data }}<blockquote>{{ $elements := .Elements }}{{ range $index, $element := $elements }}
-{{ renderElement $ctx $element | printf "%s" }}{{ end }}
+{{ $ctx := .Context }}{{ with .Data }}<blockquote>
+{{ renderElements $ctx .Elements }}
 </blockquote>{{ if .Attribution.First }}
 <div class="attribution">
 &#8212; {{ .Attribution.First }}{{ if .Attribution.Second }}<br>
@@ -49,19 +48,18 @@ func init() {
 </div>{{ end }}{{ end }}
 </div>`,
 		texttemplate.FuncMap{
-			"renderElement":  renderElement,
-			"includeNewline": includeNewline,
+			"renderElements": renderElementsAsString,
 		})
 
 	verseBlockTmpl = newTextTemplate("verse block", `<div class="verseblock">
-{{ $ctx := .Context }}{{ with .Data }}<pre class="content">{{ $elements := .Elements }}{{ range $index, $element := $elements }}{{ renderElement $ctx $element | printf "%s" }}{{ if includeNewline $ctx $index $elements }}{{ print "\n" }}{{ end }}{{ end }}</pre>{{ if .Attribution.First }}
+{{ $ctx := .Context }}{{ with .Data }}<pre class="content">{{ renderElements $ctx .Elements }}</pre>{{ if .Attribution.First }}
 <div class="attribution">
 &#8212; {{ .Attribution.First }}{{ if .Attribution.Second }}<br>
 <cite>{{ .Attribution.Second }}</cite>{{ end }}
 </div>{{ end }}{{ end }}
 </div>`,
 		texttemplate.FuncMap{
-			"renderElement":  renderElement,
+			"renderElements": renderInlineElementsAsString,
 			"includeNewline": includeNewline,
 		})
 
@@ -71,15 +69,15 @@ func init() {
 <td class="icon">
 <div class="title">{{ .Icon }}</div>
 </td>
-<td class="content">{{ if .Title }}
-<div class="title">{{ .Title }}</div>{{ end}}
-{{ $elements := .Elements }}{{ range $index, $element := $elements }}{{ renderElement $ctx $element | printf "%s" }}{{ if includeNewline $ctx $index $elements }}{{ print "\n" }}{{ end }}{{ end }}
+<td class="content">
+{{ if .Title }}<div class="title">{{ .Title }}</div>
+{{ end }}{{ renderElements $ctx .Elements }}
 </td>
 </tr>
 </table>
 </div>{{ end }}`,
 		texttemplate.FuncMap{
-			"renderElement":  renderElement,
+			"renderElements": renderElementsAsString,
 			"includeNewline": includeNewline,
 		})
 }
