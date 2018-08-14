@@ -10,7 +10,7 @@ var _ = Describe("unordered lists", func() {
 
 	Context("valid content", func() {
 
-		It("unordered list with a single item", func() {
+		It("unordered list with a basic single item", func() {
 			actualContent := `* a list item`
 			expectedResult := types.UnorderedList{
 				Attributes: map[string]interface{}{},

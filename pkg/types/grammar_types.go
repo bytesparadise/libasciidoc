@@ -608,7 +608,7 @@ type ListItem interface {
 
 // NewList initializes a new `List` from the given content
 func NewList(elements []interface{}, attributes []interface{}) (List, error) {
-	log.Debugf("initializing a new List with %d elements", len(elements))
+	log.Debugf("initializing a new List with %d element(s)", len(elements))
 	buffer := make(map[reflect.Type][]ListItem)
 	rootType := reflect.TypeOf(toPtr(elements[0])) // elements types will be pointers
 	previousType := rootType
@@ -1214,7 +1214,7 @@ func NewParagraph(lines []interface{}, attributes []interface{}) (Paragraph, err
 		}
 
 	}
-	log.Debugf("generated a paragraph with %d lines", len(elements))
+	log.Debugf("generated a paragraph with %d line(s): %v", len(elements), elements)
 	return Paragraph{
 		Attributes: attrbs,
 		Lines:      elements,
@@ -1546,7 +1546,7 @@ func NewTable(header interface{}, lines []interface{}, attributes []interface{})
 			}
 		}
 	}
-	log.Debugf("initialized a new table with %d lines", len(lines))
+	log.Debugf("initialized a new table with %d line(s)", len(lines))
 	return t, nil
 }
 
