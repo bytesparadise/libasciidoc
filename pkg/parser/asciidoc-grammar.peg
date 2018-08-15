@@ -62,7 +62,7 @@ DocumentAuthor <- WS* namePart1:(DocumentAuthorNamePart) namePart2:(DocumentAuth
 } 
 
 // "<" marks the beginning of the author email, and ";" is the authors separator
-DocumentAuthorNamePart <- !"<" !";" Word WS*
+DocumentAuthorNamePart <- !"<" !";" (!NEWLINE !WS .)+ WS*
 
 DocumentAuthorEmail <- "<" email:(!">" !EOL .)+ ">" 
 
@@ -332,7 +332,7 @@ TitleElements <- elements:(!NEWLINE WS* !InlineElementID TitleElement WS*)+ { //
     return types.NewInlineElements(elements.([]interface{}))
 } 
 
-TitleElement <- element:(CrossReference / Passthrough / InlineImage / QuotedText / Link / DocumentAttributeSubstitution / Word) {
+TitleElement <- element:(CrossReference / Passthrough / InlineImage / QuotedText / Link / DocumentAttributeSubstitution / Word / Parenthesis) {
     return element, nil
 }
 
@@ -418,22 +418,22 @@ UnorderedListItem <- prefix:(UnorderedListItemPrefix) content:(UnorderedListItem
 
 UnorderedListItemPrefix <- 
     WS* prefix:(
-        "*****" { // ignore whitespaces, only return the relevant "*"/"-" Word
+        "*****" { // ignore whitespaces, only return the relevant "*"/"-" marker
            return types.NewUnorderedListItemPrefix(types.FiveAsterisks, 5)
         } 
-        / "****" { // ignore whitespaces, only return the relevant "*"/"-" Word
+        / "****" { // ignore whitespaces, only return the relevant "*"/"-" marker
             return types.NewUnorderedListItemPrefix(types.FourAsterisks, 4)
         } 
-        / "***" { // ignore whitespaces, only return the relevant "*"/"-" Word
+        / "***" { // ignore whitespaces, only return the relevant "*"/"-" marker
             return types.NewUnorderedListItemPrefix(types.ThreeAsterisks, 3)
         } 
-        / "**" { // ignore whitespaces, only return the relevant "*"/"-" Word
+        / "**" { // ignore whitespaces, only return the relevant "*"/"-" marker
             return types.NewUnorderedListItemPrefix(types.TwoAsterisks, 2)
         } 
-        / "*" { // ignore whitespaces, only return the relevant "*"/"-" Word
+        / "*" { // ignore whitespaces, only return the relevant "*"/"-" marker
             return types.NewUnorderedListItemPrefix(types.OneAsterisk, 1)
         } 
-        / "-" { // ignore whitespaces, only return the relevant "*"/"-" Word
+        / "-" { // ignore whitespaces, only return the relevant "*"/"-" marker
             return types.NewUnorderedListItemPrefix(types.Dash, 1)
         }) WS+ {
             return prefix, nil
@@ -503,7 +503,7 @@ InlineElements <-
         return types.NewInlineElements(elements.([]interface{}))
     } 
 
-InlineElement <- element:(CrossReference / Passthrough / InlineImage / QuotedText / Link / DocumentAttributeSubstitution / Word) {
+InlineElement <- element:(QuotedText / CrossReference / Passthrough / InlineImage / Link / DocumentAttributeSubstitution / Word / Parenthesis) {
     return element, nil
 }
 
@@ -519,7 +519,7 @@ BoldText <-
     } / !`\\` "**" content:(QuotedTextContent) "*" { // unbalanced `**` vs `*` punctuation
         result := append([]interface{}{"*"}, content.([]interface{}))
         return types.NewQuotedText(types.Bold, result)
-    } / !`\` "*" content:(QuotedTextContent) "*" { // single punctuation
+    } / !`\` "*" content:(QuotedTextContent) "*" !Alphanum { // single punctuation cannot be followed by a character (needs '**' to emphazise a portion of a word)
         return types.NewQuotedText(types.Bold, content.([]interface{}))
     } 
 
@@ -539,7 +539,7 @@ ItalicText <-
     } / !`\\` "__" content:(QuotedTextContent) "_" { // unbalanced `__` vs `_` punctuation
         result := append([]interface{}{"_"}, content.([]interface{}))
         return types.NewQuotedText(types.Italic, result)
-    } / !`\` "_" content:(QuotedTextContent) "_" {
+    } / !`\` "_" content:(QuotedTextContent) "_" !Alphanum { // single punctuation cannot be followed by a character (needs '**' to emphazise a portion of a word)
         return types.NewQuotedText(types.Italic, content.([]interface{}))
     }
 
@@ -559,7 +559,7 @@ MonospaceText <-
     } / !`\\` "``" content:(QuotedTextContent) "`" { // unbalanced "``" vs "`" punctuation
         result := append([]interface{}{"`"}, content.([]interface{}))
         return types.NewQuotedText(types.Monospace, result)
-    } / !`\` "`" content:(QuotedTextContent) "`" { // simple punctuation must be evaluated last
+    } / !`\` "`" content:(QuotedTextContent) "`" !Alphanum { // single punctuation cannot be followed by a character (needs '**' to emphazise a portion of a word)
         return types.NewQuotedText(types.Monospace, content.([]interface{}))
     }
 
@@ -617,7 +617,9 @@ CrossReference <- "<<" id:(ID) ">>" {
 // ------------------------------------------
 // Links
 // ------------------------------------------
-Link <- RelativeLink / ExternalLink 
+Link <- link:(RelativeLink / ExternalLink) {
+    return link, nil
+}
 
 ExternalLink <- url:(URL_SCHEME URL) attributes:(LinkAttributes) {
     return types.NewLink(url.([]interface{}), attributes.(map[string]interface{}))
@@ -887,7 +889,11 @@ BlankLine <- !EOF WS* EOL {
 // ------------------------------------------
 // Base Types
 // ------------------------------------------
-Word <- (!NEWLINE !WS .)+ {
+Alphanum <- [a-zA-Z0-9]
+
+Parenthesis <- "(" / ")" / "[" / "]"
+
+Word <- (!NEWLINE !WS !Parenthesis .)+ {
     return string(c.text), nil
 }
 
