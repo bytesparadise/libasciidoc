@@ -24,6 +24,7 @@ It is is available under the terms of the https://raw.githubusercontent.com/byte
 * Element attributes (`ID`, `link` and `title`, where applicable) on block images, paragraphs, lists and sections
 * Labeled, ordered and unordered lists (with nesting and attributes)
 * Admonition paragraphs
+* Tables (basic support: header line and cells on multiple lines)
 
 
 See the link:LIMITATIONS.adoc[known limitations] page for differences between Asciidoc/Asciidoctor and Libasciidoc.
