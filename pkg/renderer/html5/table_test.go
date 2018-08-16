@@ -8,7 +8,7 @@ var _ = Describe("tables", func() {
 		actualContent := `|===
 | *foo* foo  | _bar_  
 |===`
-		expectedResult := `<table class="tableblock frame-all grid-all spread">
+		expectedResult := `<table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -27,7 +27,7 @@ var _ = Describe("tables", func() {
 		actualContent := `|===
 | *foo* foo  | _bar_  | baz
 |===`
-		expectedResult := `<table class="tableblock frame-all grid-all spread">
+		expectedResult := `<table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -55,7 +55,7 @@ var _ = Describe("tables", func() {
 |Column 1, row 2
 |Column 2, row 2
 |===`
-		expectedResult := `<table class="tableblock frame-all grid-all spread">
+		expectedResult := `<table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 1. table title</caption>
 <colgroup>
 <col style="width: 50%;">
@@ -84,8 +84,85 @@ var _ = Describe("tables", func() {
 	It("empty table ", func() {
 		actualContent := `|===
 |===`
-		expectedResult := `<table class="tableblock frame-all grid-all spread">
+		expectedResult := `<table class="tableblock frame-all grid-all stretch">
 </table>`
 		verify(GinkgoT(), expectedResult, actualContent)
 	})
+
+	It("2 tables with 1 counter", func() {
+		actualContent := `|===
+| foo | bar
+|===
+
+.Title 2
+|===
+| foo | bar
+|===`
+		expectedResult := `<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">foo</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">bar</p></td>
+</tr>
+</tbody>
+</table>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 1. Title 2</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">foo</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">bar</p></td>
+</tr>
+</tbody>
+</table>`
+		verify(GinkgoT(), expectedResult, actualContent)
+	})
+
+	It("2 tables with 2 counters", func() {
+		actualContent := `.Title 1
+|===
+| foo | bar
+|===
+
+.Title 2
+|===
+| foo | bar
+|===`
+		expectedResult := `<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 1. Title 1</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">foo</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">bar</p></td>
+</tr>
+</tbody>
+</table>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 2. Title 2</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">foo</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">bar</p></td>
+</tr>
+</tbody>
+</table>`
+		verify(GinkgoT(), expectedResult, actualContent)
+	})
+
 })

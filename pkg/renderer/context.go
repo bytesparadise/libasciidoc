@@ -45,22 +45,6 @@ func (ctx *Context) IncludeBlankLine() bool {
 	return false
 }
 
-// const trimTrailingSpaces string = "trimTrailingSpaces"
-
-// // SetTrimTrailingSpaces sets the rendering context to trim (or not) trailing spaces
-// func (ctx *Context) SetTrimTrailingSpaces(b bool) {
-// 	ctx.options[trimTrailingSpaces] = b
-// }
-
-// // TrimTrailingSpaces indicates if trailing spaces should be trimmed
-// func (ctx *Context) TrimTrailingSpaces() bool {
-// 	if b, found := ctx.options[trimTrailingSpaces].(bool); found {
-// 		return b
-// 	}
-// 	// by default, do trim
-// 	return true
-// }
-
 const withinDelimitedBlock string = "withinDelimitedBlock"
 
 // SetWithinDelimitedBlock sets the rendering context to be within a delimited block
@@ -112,6 +96,22 @@ func (ctx *Context) WithinList() bool {
 	}
 	// by default, ignore blank lines
 	return false
+}
+
+const tableCounter = "tableCounter"
+
+// GetAndIncrementTableCounter returns the current value for the table counter after internally incrementing it.
+func (ctx *Context) GetAndIncrementTableCounter() int {
+	if _, found := ctx.options[tableCounter]; !found {
+		ctx.options[tableCounter] = 1
+	}
+	if c, ok := ctx.options[tableCounter].(int); ok {
+		ctx.options[tableCounter] = c + 1
+		return c
+	}
+	ctx.options[tableCounter] = 1
+	log.Warnf("table counter was set to a non-int value")
+	return 1
 }
 
 // Deadline wrapper implementation of context.Context.Deadline()
