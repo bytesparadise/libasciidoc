@@ -15,7 +15,7 @@ import (
 var tableTmpl texttemplate.Template
 
 func init() {
-	tableTmpl = newTextTemplate("table", `{{ $ctx := .Context }}{{ with .Data }}<table class="tableblock frame-all grid-all spread">{{ if .Lines }}
+	tableTmpl = newTextTemplate("table", `{{ $ctx := .Context }}{{ with .Data }}<table class="tableblock frame-all grid-all stretch">{{ if .Lines }}
 {{ if .Title }}<caption class="title">{{ .Title }}</caption>
 {{ end }}<colgroup>
 {{ $cellWidths := .CellWidths }}{{ range $index, $width := $cellWidths }}<col style="width: {{ $width }}%;">{{ includeNewline $ctx $index $cellWidths }}{{ end }}
@@ -59,7 +59,8 @@ func renderTable(ctx *renderer.Context, t types.Table) ([]byte, error) {
 	}
 	var title string
 	if titleAttr, ok := t.Attributes[types.AttrTitle].(string); ok {
-		title = fmt.Sprintf("Table 1. %s", titleAttr)
+		c := ctx.GetAndIncrementTableCounter()
+		title = fmt.Sprintf("Table %d. %s", c, titleAttr)
 	}
 	err := tableTmpl.Execute(result, ContextualPipeline{
 		Context: ctx,
