@@ -45,7 +45,7 @@ If more than 1 file is specified, then output is written to ".html" file alongsi
 						log.Debugf("Starting to process file %v", path)
 						_, e := libasciidoc.ConvertFileToHTML(context.Background(), source, out, renderer.IncludeHeaderFooter(!noHeaderFooter)) //renderer.IncludeHeaderFooter(true)
 						if e != nil {
-							log.Errorf("error while rendering file ", err)
+							log.Errorf("error while rendering file: %v ", e)
 							err = e
 						}
 					}

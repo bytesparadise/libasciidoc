@@ -55,7 +55,7 @@ func ConvertToHTML(ctx context.Context, r io.Reader, output io.Writer, options .
 	log.Infof("parsing stats:")
 	log.Infof("- parsing duration:                %v", duration)
 	log.Infof("- expressions processed:           %v", stats.ExprCnt)
-	log.Infof("- choice expressions alternatives:\n%s", string(b))
+	log.Debugf("- choice expressions alternatives:\n%s", string(b)) // only displayed in debug level, i.e, not always
 	return convertToHTML(ctx, doc, output, options...)
 }
 
