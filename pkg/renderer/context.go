@@ -114,6 +114,22 @@ func (ctx *Context) GetAndIncrementTableCounter() int {
 	return 1
 }
 
+const imagesdir = "imagesdir"
+
+// GetImagesDir returns the value of the `imagesdir` attribute if it was set (as a string), empty string otherwise
+func (ctx *Context) GetImagesDir() string {
+	if v := ctx.Document.Attributes[imagesdir]; v != nil {
+		if v, ok := v.(string); ok {
+			return v
+		}
+	}
+	return ""
+}
+
+// -----------------------
+// context.Context methods
+// -----------------------
+
 // Deadline wrapper implementation of context.Context.Deadline()
 func (ctx *Context) Deadline() (deadline time.Time, ok bool) {
 	return ctx.context.Deadline()
