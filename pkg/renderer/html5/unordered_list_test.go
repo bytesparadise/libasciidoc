@@ -49,11 +49,14 @@ and a standalone paragraph`
 		verify(GinkgoT(), expectedResult, actualContent)
 	})
 
-	It("simple unordered list with a title", func() {
-		actualContent := `[#foo]
-	* item 1
-	* item 2`
-		expectedResult := `<div id="foo" class="ulist">
+	It("simple unordered list with title and role", func() {
+		actualContent := `.mytitle
+[#foo]
+[.myrole]
+* item 1
+* item 2`
+		expectedResult := `<div id="foo" class="ulist myrole">
+<div class="title">mytitle</div>
 <ul>
 <li>
 <p>item 1</p>

@@ -39,13 +39,41 @@ var _ = Describe("images", func() {
 			verify(GinkgoT(), expectedResult, actualContent)
 		})
 
-		It("block image with alt and dimensions", func() {
-			actualContent := "[#img-foobar]\n.A title to foobar\n[link=http://foo.bar]\nimage::images/foo.png[the foo.png image,600,400]"
+		It("block image with title, alt and dimensions", func() {
+			actualContent := `[#img-foobar]
+.A title to foobar
+[link=http://foo.bar]
+image::images/foo.png[the foo.png image,600,400]`
 			expectedResult := `<div id="img-foobar" class="imageblock">
 <div class="content">
 <a class="image" href="http://foo.bar"><img src="images/foo.png" alt="the foo.png image" width="600" height="400"></a>
 </div>
-<div class="doctitle">A title to foobar</div>
+<div class="title">Figure 1. A title to foobar</div>
+</div>`
+			verify(GinkgoT(), expectedResult, actualContent)
+		})
+
+		It("block image with role above", func() {
+			actualContent := `.mytitle
+[#myid]
+[.myrole]
+image::foo.png[foo image, 600, 400]`
+			expectedResult := `<div id="myid" class="imageblock myrole">
+<div class="content">
+<img src="foo.png" alt="foo image" width="600" height="400">
+</div>
+<div class="title">Figure 1. mytitle</div>
+</div>`
+			verify(GinkgoT(), expectedResult, actualContent)
+		})
+
+		It("block image with id, title and role inline", func() {
+			actualContent := `image::foo.png[foo image, 600, 400,id = myid, title= mytitle, role=myrole]`
+			expectedResult := `<div id="myid" class="imageblock myrole">
+<div class="content">
+<img src="foo.png" alt="foo image" width="600" height="400">
+</div>
+<div class="title">Figure 1. mytitle</div>
 </div>`
 			verify(GinkgoT(), expectedResult, actualContent)
 		})
@@ -60,6 +88,14 @@ var _ = Describe("images", func() {
 				actualContent := "image:foo.png[]"
 				expectedResult := `<div class="paragraph">
 <p><span class="image"><img src="foo.png" alt="foo"></span></p>
+</div>`
+				verify(GinkgoT(), expectedResult, actualContent)
+			})
+
+			It("inline image with id, title and role", func() {
+				actualContent := "image:foo.png[id=myid, title=mytitle, role=myrole]"
+				expectedResult := `<div class="paragraph">
+<p><span class="image myrole"><img src="foo.png" alt="foo" title="mytitle"></span></p>
 </div>`
 				verify(GinkgoT(), expectedResult, actualContent)
 			})

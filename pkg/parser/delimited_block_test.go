@@ -14,12 +14,12 @@ var _ = Describe("delimited blocks", func() {
 			content := "some fenced code"
 			actualContent := "```\n" + content + "\n```"
 			expectedResult := types.DelimitedBlock{
-				Attributes: map[string]interface{}{
+				Attributes: types.ElementAttributes{
 					types.AttrBlockKind: types.Fenced,
 				},
 				Elements: []interface{}{
 					types.Paragraph{
-						Attributes: map[string]interface{}{},
+						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
 							{
 								types.StringElement{
@@ -36,7 +36,7 @@ var _ = Describe("delimited blocks", func() {
 		It("fenced block with no line", func() {
 			actualContent := "```\n```"
 			expectedResult := types.DelimitedBlock{
-				Attributes: map[string]interface{}{
+				Attributes: types.ElementAttributes{
 					types.AttrBlockKind: types.Fenced,
 				},
 				Elements: []interface{}{},
@@ -47,12 +47,12 @@ var _ = Describe("delimited blocks", func() {
 		It("fenced block with multiple lines alone", func() {
 			actualContent := "```\nsome fenced code\nwith an empty line\n\nin the middle\n```"
 			expectedResult := types.DelimitedBlock{
-				Attributes: map[string]interface{}{
+				Attributes: types.ElementAttributes{
 					types.AttrBlockKind: types.Fenced,
 				},
 				Elements: []interface{}{
 					types.Paragraph{
-						Attributes: map[string]interface{}{},
+						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
 							{
 								types.StringElement{
@@ -68,7 +68,7 @@ var _ = Describe("delimited blocks", func() {
 					},
 					types.BlankLine{},
 					types.Paragraph{
-						Attributes: map[string]interface{}{},
+						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
 							{
 								types.StringElement{
@@ -85,16 +85,16 @@ var _ = Describe("delimited blocks", func() {
 		It("fenced block with multiple lines then a paragraph", func() {
 			actualContent := "```\nsome fenced code\nwith an empty line\n\nin the middle\n```\nthen a normal paragraph."
 			expectedResult := types.Document{
-				Attributes:        map[string]interface{}{},
+				Attributes:        types.DocumentAttributes{},
 				ElementReferences: map[string]interface{}{},
 				Elements: []interface{}{
 					types.DelimitedBlock{
-						Attributes: map[string]interface{}{
+						Attributes: types.ElementAttributes{
 							types.AttrBlockKind: types.Fenced,
 						},
 						Elements: []interface{}{
 							types.Paragraph{
-								Attributes: map[string]interface{}{},
+								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
 										types.StringElement{
@@ -110,7 +110,7 @@ var _ = Describe("delimited blocks", func() {
 							},
 							types.BlankLine{},
 							types.Paragraph{
-								Attributes: map[string]interface{}{},
+								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
 										types.StringElement{
@@ -122,7 +122,7 @@ var _ = Describe("delimited blocks", func() {
 						},
 					},
 					types.Paragraph{
-						Attributes: map[string]interface{}{},
+						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
 							{
 								types.StringElement{Content: "then a normal paragraph."},
@@ -138,11 +138,11 @@ var _ = Describe("delimited blocks", func() {
 			content := "some fenced code"
 			actualContent := "a paragraph.\n```\n" + content + "\n```\n"
 			expectedResult := types.Document{
-				Attributes:        map[string]interface{}{},
+				Attributes:        types.DocumentAttributes{},
 				ElementReferences: map[string]interface{}{},
 				Elements: []interface{}{
 					types.Paragraph{
-						Attributes: map[string]interface{}{},
+						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
 							{
 								types.StringElement{Content: "a paragraph."},
@@ -150,12 +150,12 @@ var _ = Describe("delimited blocks", func() {
 						},
 					},
 					types.DelimitedBlock{
-						Attributes: map[string]interface{}{
+						Attributes: types.ElementAttributes{
 							types.AttrBlockKind: types.Fenced,
 						},
 						Elements: []interface{}{
 							types.Paragraph{
-								Attributes: map[string]interface{}{},
+								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
 										types.StringElement{
@@ -174,12 +174,12 @@ var _ = Describe("delimited blocks", func() {
 		It("fenced block with unclosed delimiter", func() {
 			actualContent := "```\nEnd of file here"
 			expectedResult := types.DelimitedBlock{
-				Attributes: map[string]interface{}{
+				Attributes: types.ElementAttributes{
 					types.AttrBlockKind: types.Fenced,
 				},
 				Elements: []interface{}{
 					types.Paragraph{
-						Attributes: map[string]interface{}{},
+						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
 							{
 								types.StringElement{
@@ -201,12 +201,12 @@ var _ = Describe("delimited blocks", func() {
 some listing code
 ----`
 			expectedResult := types.DelimitedBlock{
-				Attributes: map[string]interface{}{
+				Attributes: types.ElementAttributes{
 					types.AttrBlockKind: types.Listing,
 				},
 				Elements: []interface{}{
 					types.Paragraph{
-						Attributes: map[string]interface{}{},
+						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
 							{
 								types.StringElement{
@@ -224,7 +224,7 @@ some listing code
 			actualContent := `----
 ----`
 			expectedResult := types.DelimitedBlock{
-				Attributes: map[string]interface{}{
+				Attributes: types.ElementAttributes{
 					types.AttrBlockKind: types.Listing,
 				},
 				Elements: []interface{}{},
@@ -240,12 +240,12 @@ with an empty line
 in the middle
 ----`
 			expectedResult := types.DelimitedBlock{
-				Attributes: map[string]interface{}{
+				Attributes: types.ElementAttributes{
 					types.AttrBlockKind: types.Listing,
 				},
 				Elements: []interface{}{
 					types.Paragraph{
-						Attributes: map[string]interface{}{},
+						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
 							{
 								types.StringElement{
@@ -276,12 +276,12 @@ in the middle
 * content
 ----`
 			expectedResult := types.DelimitedBlock{
-				Attributes: map[string]interface{}{
+				Attributes: types.ElementAttributes{
 					types.AttrBlockKind: types.Listing,
 				},
 				Elements: []interface{}{
 					types.Paragraph{
-						Attributes: map[string]interface{}{},
+						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
 							{
 								types.StringElement{
@@ -318,12 +318,12 @@ then a normal paragraph.`
 				ElementReferences: map[string]interface{}{},
 				Elements: []interface{}{
 					types.DelimitedBlock{
-						Attributes: map[string]interface{}{
+						Attributes: types.ElementAttributes{
 							types.AttrBlockKind: types.Listing,
 						},
 						Elements: []interface{}{
 							types.Paragraph{
-								Attributes: map[string]interface{}{},
+								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
 										types.StringElement{
@@ -346,7 +346,7 @@ then a normal paragraph.`
 						},
 					},
 					types.Paragraph{
-						Attributes: map[string]interface{}{},
+						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
 							{
 								types.StringElement{Content: "then a normal paragraph."},
@@ -368,7 +368,7 @@ some listing code
 				ElementReferences: map[string]interface{}{},
 				Elements: []interface{}{
 					types.Paragraph{
-						Attributes: map[string]interface{}{},
+						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
 							{
 								types.StringElement{Content: "a paragraph."},
@@ -376,12 +376,12 @@ some listing code
 						},
 					},
 					types.DelimitedBlock{
-						Attributes: map[string]interface{}{
+						Attributes: types.ElementAttributes{
 							types.AttrBlockKind: types.Listing,
 						},
 						Elements: []interface{}{
 							types.Paragraph{
-								Attributes: map[string]interface{}{},
+								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
 										types.StringElement{
@@ -401,12 +401,12 @@ some listing code
 			actualContent := `----
 End of file here.`
 			expectedResult := types.DelimitedBlock{
-				Attributes: map[string]interface{}{
+				Attributes: types.ElementAttributes{
 					types.AttrBlockKind: types.Listing,
 				},
 				Elements: []interface{}{
 					types.Paragraph{
-						Attributes: map[string]interface{}{},
+						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
 							{
 								types.StringElement{
@@ -452,7 +452,7 @@ a normal paragraph.`
 						Content: "   some literal content",
 					},
 					types.Paragraph{
-						Attributes: map[string]interface{}{},
+						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
 							{
 								types.StringElement{Content: "a normal paragraph."},
@@ -480,7 +480,7 @@ a normal paragraph.`
 						Content: "some literal content",
 					},
 					types.Paragraph{
-						Attributes: map[string]interface{}{},
+						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
 							{
 								types.StringElement{Content: "a normal paragraph."},
@@ -509,7 +509,7 @@ a normal paragraph.`
 						Content: "some literal content",
 					},
 					types.Paragraph{
-						Attributes: map[string]interface{}{},
+						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
 							{
 								types.StringElement{Content: "a normal paragraph."},
@@ -529,12 +529,12 @@ a normal paragraph.`
 some listing code
 ====`
 			expectedResult := types.DelimitedBlock{
-				Attributes: map[string]interface{}{
+				Attributes: types.ElementAttributes{
 					types.AttrBlockKind: types.Example,
 				},
 				Elements: []interface{}{
 					types.Paragraph{
-						Attributes: map[string]interface{}{},
+						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
 							{
 								types.StringElement{
@@ -553,12 +553,12 @@ some listing code
 .foo
 ====`
 			expectedResult := types.DelimitedBlock{
-				Attributes: map[string]interface{}{
+				Attributes: types.ElementAttributes{
 					types.AttrBlockKind: types.Example,
 				},
 				Elements: []interface{}{
 					types.Paragraph{
-						Attributes: map[string]interface{}{},
+						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
 							{
 								types.StringElement{
@@ -581,12 +581,12 @@ with *bold content*
 * and a list item
 ====`
 			expectedResult := types.DelimitedBlock{
-				Attributes: map[string]interface{}{
+				Attributes: types.ElementAttributes{
 					types.AttrBlockKind: types.Example,
 				},
 				Elements: []interface{}{
 					types.Paragraph{
-						Attributes: map[string]interface{}{},
+						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
 							{
 								types.StringElement{
@@ -615,14 +615,14 @@ with *bold content*
 					},
 					types.BlankLine{},
 					types.UnorderedList{
-						Attributes: map[string]interface{}{},
+						Attributes: types.ElementAttributes{},
 						Items: []types.UnorderedListItem{
 							{
 								Level:       1,
 								BulletStyle: types.OneAsterisk,
 								Elements: []interface{}{
 									types.Paragraph{
-										Attributes: map[string]interface{}{},
+										Attributes: types.ElementAttributes{},
 										Lines: []types.InlineElements{
 											{
 												types.StringElement{
@@ -644,12 +644,12 @@ with *bold content*
 			actualContent := `====
 End of file here`
 			expectedResult := types.DelimitedBlock{
-				Attributes: map[string]interface{}{
+				Attributes: types.ElementAttributes{
 					types.AttrBlockKind: types.Example,
 				},
 				Elements: []interface{}{
 					types.Paragraph{
-						Attributes: map[string]interface{}{},
+						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
 							{
 								types.StringElement{
@@ -672,13 +672,13 @@ End of file here`
 foo
 ====`
 			expectedResult := types.DelimitedBlock{
-				Attributes: map[string]interface{}{
+				Attributes: types.ElementAttributes{
 					types.AttrBlockKind:      types.Example,
 					types.AttrAdmonitionKind: types.Note,
 				},
 				Elements: []interface{}{
 					types.Paragraph{
-						Attributes: map[string]interface{}{},
+						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
 							{
 								types.StringElement{
@@ -706,13 +706,13 @@ paragraphs
 				ElementReferences: map[string]interface{}{},
 				Elements: []interface{}{
 					types.DelimitedBlock{
-						Attributes: map[string]interface{}{
+						Attributes: types.ElementAttributes{
 							types.AttrBlockKind:      types.Listing,
 							types.AttrAdmonitionKind: types.Note,
 						},
 						Elements: []interface{}{
 							types.Paragraph{
-								Attributes: map[string]interface{}{},
+								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
 										types.StringElement{
@@ -743,14 +743,14 @@ ____
 some *quote* content
 ____`
 			expectedResult := types.DelimitedBlock{
-				Attributes: map[string]interface{}{
+				Attributes: types.ElementAttributes{
 					types.AttrBlockKind:   types.Quote,
 					types.AttrQuoteAuthor: "john doe",
 					types.AttrQuoteTitle:  "quote title",
 				},
 				Elements: []interface{}{
 					types.Paragraph{
-						Attributes: map[string]interface{}{},
+						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
 							{
 								types.StringElement{
@@ -784,21 +784,21 @@ ____
 ____
 `
 			expectedResult := types.DelimitedBlock{
-				Attributes: map[string]interface{}{
+				Attributes: types.ElementAttributes{
 					types.AttrBlockKind:   types.Quote,
 					types.AttrQuoteAuthor: "john doe",
 					types.AttrQuoteTitle:  "",
 				},
 				Elements: []interface{}{
 					types.UnorderedList{
-						Attributes: map[string]interface{}{},
+						Attributes: types.ElementAttributes{},
 						Items: []types.UnorderedListItem{
 							{
 								Level:       1,
 								BulletStyle: types.Dash,
 								Elements: []interface{}{
 									types.Paragraph{
-										Attributes: map[string]interface{}{},
+										Attributes: types.ElementAttributes{},
 										Lines: []types.InlineElements{
 											{
 												types.StringElement{
@@ -814,7 +814,7 @@ ____
 								BulletStyle: types.Dash,
 								Elements: []interface{}{
 									types.Paragraph{
-										Attributes: map[string]interface{}{},
+										Attributes: types.ElementAttributes{},
 										Lines: []types.InlineElements{
 											{
 												types.StringElement{
@@ -830,7 +830,7 @@ ____
 								BulletStyle: types.Dash,
 								Elements: []interface{}{
 									types.Paragraph{
-										Attributes: map[string]interface{}{},
+										Attributes: types.ElementAttributes{},
 										Lines: []types.InlineElements{
 											{
 												types.StringElement{
@@ -855,14 +855,14 @@ some quote content
 ____
 `
 			expectedResult := types.DelimitedBlock{
-				Attributes: map[string]interface{}{
+				Attributes: types.ElementAttributes{
 					types.AttrBlockKind:   types.Quote,
 					types.AttrQuoteAuthor: "",
 					types.AttrQuoteTitle:  "quote title",
 				},
 				Elements: []interface{}{
 					types.Paragraph{
-						Attributes: map[string]interface{}{},
+						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
 							{
 								types.StringElement{
@@ -886,21 +886,21 @@ ____
 * content
 ____`
 			expectedResult := types.DelimitedBlock{
-				Attributes: map[string]interface{}{
+				Attributes: types.ElementAttributes{
 					types.AttrBlockKind:   types.Quote,
 					types.AttrQuoteAuthor: "",
 					types.AttrQuoteTitle:  "",
 				},
 				Elements: []interface{}{
 					types.UnorderedList{
-						Attributes: map[string]interface{}{},
+						Attributes: types.ElementAttributes{},
 						Items: []types.UnorderedListItem{
 							{
 								Level:       1,
 								BulletStyle: types.OneAsterisk,
 								Elements: []interface{}{
 									types.Paragraph{
-										Attributes: map[string]interface{}{},
+										Attributes: types.ElementAttributes{},
 										Lines: []types.InlineElements{
 											{
 												types.StringElement{
@@ -914,12 +914,12 @@ ____`
 						},
 					},
 					types.DelimitedBlock{
-						Attributes: map[string]interface{}{
+						Attributes: types.ElementAttributes{
 							types.AttrBlockKind: types.Listing,
 						},
 						Elements: []interface{}{
 							types.Paragraph{
-								Attributes: map[string]interface{}{},
+								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
 										types.StringElement{
@@ -931,14 +931,14 @@ ____`
 						},
 					},
 					types.UnorderedList{
-						Attributes: map[string]interface{}{},
+						Attributes: types.ElementAttributes{},
 						Items: []types.UnorderedListItem{
 							{
 								Level:       1,
 								BulletStyle: types.OneAsterisk,
 								Elements: []interface{}{
 									types.Paragraph{
-										Attributes: map[string]interface{}{},
+										Attributes: types.ElementAttributes{},
 										Lines: []types.InlineElements{
 											{
 												types.StringElement{
@@ -968,21 +968,21 @@ ____
 * content
 ____`
 			expectedResult := types.DelimitedBlock{
-				Attributes: map[string]interface{}{
+				Attributes: types.ElementAttributes{
 					types.AttrBlockKind:   types.Quote,
 					types.AttrQuoteAuthor: "",
 					types.AttrQuoteTitle:  "",
 				},
 				Elements: []interface{}{
 					types.UnorderedList{
-						Attributes: map[string]interface{}{},
+						Attributes: types.ElementAttributes{},
 						Items: []types.UnorderedListItem{
 							{
 								Level:       1,
 								BulletStyle: types.OneAsterisk,
 								Elements: []interface{}{
 									types.Paragraph{
-										Attributes: map[string]interface{}{},
+										Attributes: types.ElementAttributes{},
 										Lines: []types.InlineElements{
 											{
 												types.StringElement{
@@ -998,7 +998,7 @@ ____`
 								BulletStyle: types.OneAsterisk,
 								Elements: []interface{}{
 									types.Paragraph{
-										Attributes: map[string]interface{}{},
+										Attributes: types.ElementAttributes{},
 										Lines: []types.InlineElements{
 											{
 												types.StringElement{
@@ -1014,7 +1014,7 @@ ____`
 								BulletStyle: types.OneAsterisk,
 								Elements: []interface{}{
 									types.Paragraph{
-										Attributes: map[string]interface{}{},
+										Attributes: types.ElementAttributes{},
 										Lines: []types.InlineElements{
 											{
 												types.StringElement{
@@ -1037,7 +1037,7 @@ ____`
 ____
 ____`
 			expectedResult := types.DelimitedBlock{
-				Attributes: map[string]interface{}{
+				Attributes: types.ElementAttributes{
 					types.AttrBlockKind:   types.Quote,
 					types.AttrQuoteAuthor: "",
 					types.AttrQuoteTitle:  "",
@@ -1053,14 +1053,14 @@ ____
 foo
 `
 			expectedResult := types.DelimitedBlock{
-				Attributes: map[string]interface{}{
+				Attributes: types.ElementAttributes{
 					types.AttrBlockKind:   types.Quote,
 					types.AttrQuoteAuthor: "",
 					types.AttrQuoteTitle:  "",
 				},
 				Elements: []interface{}{
 					types.Paragraph{
-						Attributes: map[string]interface{}{},
+						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
 							{
 								types.StringElement{
@@ -1083,14 +1083,14 @@ ____
 some *verse* content
 ____`
 			expectedResult := types.DelimitedBlock{
-				Attributes: map[string]interface{}{
+				Attributes: types.ElementAttributes{
 					types.AttrBlockKind:   types.Verse,
 					types.AttrQuoteAuthor: "john doe",
 					types.AttrQuoteTitle:  "verse title",
 				},
 				Elements: []interface{}{
 					types.Paragraph{
-						Attributes: map[string]interface{}{},
+						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
 							{
 								types.StringElement{
@@ -1124,14 +1124,14 @@ ____
 ____
 `
 			expectedResult := types.DelimitedBlock{
-				Attributes: map[string]interface{}{
+				Attributes: types.ElementAttributes{
 					types.AttrBlockKind:   types.Verse,
 					types.AttrQuoteAuthor: "john doe",
 					types.AttrQuoteTitle:  "",
 				},
 				Elements: []interface{}{
 					types.Paragraph{
-						Attributes: map[string]interface{}{},
+						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
 							{
 								types.StringElement{
@@ -1162,14 +1162,14 @@ some verse content
 ____
 `
 			expectedResult := types.DelimitedBlock{
-				Attributes: map[string]interface{}{
+				Attributes: types.ElementAttributes{
 					types.AttrBlockKind:   types.Verse,
 					types.AttrQuoteAuthor: "",
 					types.AttrQuoteTitle:  "verse title",
 				},
 				Elements: []interface{}{
 					types.Paragraph{
-						Attributes: map[string]interface{}{},
+						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
 							{
 								types.StringElement{
@@ -1193,14 +1193,14 @@ ____
 * content
 ____`
 			expectedResult := types.DelimitedBlock{
-				Attributes: map[string]interface{}{
+				Attributes: types.ElementAttributes{
 					types.AttrBlockKind:   types.Verse,
 					types.AttrQuoteAuthor: "",
 					types.AttrQuoteTitle:  "",
 				},
 				Elements: []interface{}{
 					types.Paragraph{
-						Attributes: map[string]interface{}{},
+						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
 							{
 								types.StringElement{
@@ -1243,14 +1243,14 @@ ____
 	* bar
 ____`
 			expectedResult := types.DelimitedBlock{
-				Attributes: map[string]interface{}{
+				Attributes: types.ElementAttributes{
 					types.AttrBlockKind:   types.Verse,
 					types.AttrQuoteAuthor: "",
 					types.AttrQuoteTitle:  "",
 				},
 				Elements: []interface{}{
 					types.Paragraph{
-						Attributes: map[string]interface{}{},
+						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
 							{
 								types.StringElement{
@@ -1276,7 +1276,7 @@ ____`
 ____
 ____`
 			expectedResult := types.DelimitedBlock{
-				Attributes: map[string]interface{}{
+				Attributes: types.ElementAttributes{
 					types.AttrBlockKind:   types.Verse,
 					types.AttrQuoteAuthor: "",
 					types.AttrQuoteTitle:  "",
@@ -1292,14 +1292,14 @@ ____
 foo
 `
 			expectedResult := types.DelimitedBlock{
-				Attributes: map[string]interface{}{
+				Attributes: types.ElementAttributes{
 					types.AttrBlockKind:   types.Verse,
 					types.AttrQuoteAuthor: "",
 					types.AttrQuoteTitle:  "",
 				},
 				Elements: []interface{}{
 					types.Paragraph{
-						Attributes: map[string]interface{}{},
+						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
 							{
 								types.StringElement{

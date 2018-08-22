@@ -11,11 +11,11 @@ var _ = Describe("Blank lines", func() {
  
 second paragraph`
 		expectedResult := types.Document{
-			Attributes:        map[string]interface{}{},
+			Attributes:        types.DocumentAttributes{},
 			ElementReferences: map[string]interface{}{},
 			Elements: []interface{}{
 				types.Paragraph{
-					Attributes: map[string]interface{}{},
+					Attributes: types.ElementAttributes{},
 					Lines: []types.InlineElements{
 						{
 							types.StringElement{Content: "first paragraph"},
@@ -24,7 +24,7 @@ second paragraph`
 				},
 				types.BlankLine{},
 				types.Paragraph{
-					Attributes: map[string]interface{}{},
+					Attributes: types.ElementAttributes{},
 					Lines: []types.InlineElements{
 						{
 							types.StringElement{Content: "second paragraph"},
@@ -43,11 +43,11 @@ second paragraph`
 second paragraph
 `
 		expectedResult := types.Document{
-			Attributes:        map[string]interface{}{},
+			Attributes:        types.DocumentAttributes{},
 			ElementReferences: map[string]interface{}{},
 			Elements: []interface{}{
 				types.Paragraph{
-					Attributes: map[string]interface{}{},
+					Attributes: types.ElementAttributes{},
 					Lines: []types.InlineElements{
 						{
 							types.StringElement{Content: "first paragraph"},
@@ -58,7 +58,7 @@ second paragraph
 				types.BlankLine{},
 				types.BlankLine{},
 				types.Paragraph{
-					Attributes: map[string]interface{}{},
+					Attributes: types.ElementAttributes{},
 					Lines: []types.InlineElements{
 						{
 							types.StringElement{Content: "second paragraph"},

@@ -15,15 +15,12 @@ var _ = Describe("images", func() {
 			It("block image with empty alt", func() {
 				actualContent := "image::images/foo.png[]"
 				expectedResult := types.BlockImage{
-					Attributes: map[string]interface{}{},
-					Macro: types.ImageMacro{
-						Path: "images/foo.png",
-						Attributes: map[string]interface{}{
-							types.AttrImageAlt:    "foo",
-							types.AttrImageWidth:  "",
-							types.AttrImageHeight: "",
-						},
+					Attributes: types.ElementAttributes{
+						types.AttrImageAlt:    "foo",
+						types.AttrImageWidth:  "",
+						types.AttrImageHeight: "",
 					},
+					Path: "images/foo.png",
 				}
 				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 			})
@@ -31,15 +28,12 @@ var _ = Describe("images", func() {
 			It("block image with empty alt and trailing spaces", func() {
 				actualContent := "image::images/foo.png[]  \t\t  "
 				expectedResult := types.BlockImage{
-					Attributes: map[string]interface{}{},
-					Macro: types.ImageMacro{
-						Path: "images/foo.png",
-						Attributes: map[string]interface{}{
-							types.AttrImageAlt:    "foo",
-							types.AttrImageWidth:  "",
-							types.AttrImageHeight: "",
-						},
+					Attributes: types.ElementAttributes{
+						types.AttrImageAlt:    "foo",
+						types.AttrImageWidth:  "",
+						types.AttrImageHeight: "",
 					},
+					Path: "images/foo.png",
 				}
 				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 			})
@@ -49,15 +43,12 @@ var _ = Describe("images", func() {
 				actualContent := `image::images/foo.png[]
 `
 				expectedResult := types.BlockImage{
-					Attributes: map[string]interface{}{},
-					Macro: types.ImageMacro{
-						Path: "images/foo.png",
-						Attributes: map[string]interface{}{
-							types.AttrImageAlt:    "foo",
-							types.AttrImageWidth:  "",
-							types.AttrImageHeight: "",
-						},
+					Attributes: types.ElementAttributes{
+						types.AttrImageAlt:    "foo",
+						types.AttrImageWidth:  "",
+						types.AttrImageHeight: "",
 					},
+					Path: "images/foo.png",
 				}
 				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 			})
@@ -67,15 +58,12 @@ var _ = Describe("images", func() {
 				actualContent := `image::images/foo.png[]
   `
 				expectedResult := types.BlockImage{
-					Attributes: map[string]interface{}{},
-					Macro: types.ImageMacro{
-						Path: "images/foo.png",
-						Attributes: map[string]interface{}{
-							types.AttrImageAlt:    "foo",
-							types.AttrImageWidth:  "",
-							types.AttrImageHeight: "",
-						},
+					Attributes: types.ElementAttributes{
+						types.AttrImageAlt:    "foo",
+						types.AttrImageWidth:  "",
+						types.AttrImageHeight: "",
 					},
+					Path: "images/foo.png",
 				}
 				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 			})
@@ -84,15 +72,12 @@ var _ = Describe("images", func() {
 				actualContent := `image::images/foo.png[]
 			`
 				expectedResult := types.BlockImage{
-					Attributes: map[string]interface{}{},
-					Macro: types.ImageMacro{
-						Path: "images/foo.png",
-						Attributes: map[string]interface{}{
-							types.AttrImageAlt:    "foo",
-							types.AttrImageWidth:  "",
-							types.AttrImageHeight: "",
-						},
+					Attributes: types.ElementAttributes{
+						types.AttrImageAlt:    "foo",
+						types.AttrImageWidth:  "",
+						types.AttrImageHeight: "",
 					},
+					Path: "images/foo.png",
 				}
 				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 			})
@@ -100,15 +85,12 @@ var _ = Describe("images", func() {
 			It("block image with alt", func() {
 				actualContent := "image::images/foo.png[the foo.png image]"
 				expectedResult := types.BlockImage{
-					Attributes: map[string]interface{}{},
-					Macro: types.ImageMacro{
-						Path: "images/foo.png",
-						Attributes: map[string]interface{}{
-							types.AttrImageAlt:    "the foo.png image",
-							types.AttrImageWidth:  "",
-							types.AttrImageHeight: "",
-						},
+					Attributes: types.ElementAttributes{
+						types.AttrImageAlt:    "the foo.png image",
+						types.AttrImageWidth:  "",
+						types.AttrImageHeight: "",
 					},
+					Path: "images/foo.png",
 				}
 				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 			})
@@ -119,19 +101,15 @@ var _ = Describe("images", func() {
 					"[link=http://foo.bar]\n" +
 					"image::images/foo.png[the foo.png image, 600, 400]"
 				expectedResult := types.BlockImage{
-					Attributes: map[string]interface{}{
-						types.AttrID:    "img-foobar",
-						types.AttrTitle: "A title to foobar",
-						"link":          "http://foo.bar",
+					Attributes: types.ElementAttributes{
+						types.AttrID:          "img-foobar",
+						types.AttrTitle:       "A title to foobar",
+						types.AttrLink:        "http://foo.bar",
+						types.AttrImageAlt:    "the foo.png image",
+						types.AttrImageWidth:  "600",
+						types.AttrImageHeight: "400",
 					},
-					Macro: types.ImageMacro{
-						Path: "images/foo.png",
-						Attributes: map[string]interface{}{
-							types.AttrImageAlt:    "the foo.png image",
-							types.AttrImageWidth:  "600",
-							types.AttrImageHeight: "400",
-						},
-					},
+					Path: "images/foo.png",
 				}
 				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 			})
@@ -144,7 +122,7 @@ var _ = Describe("images", func() {
 				It("block image appending inline content", func() {
 					actualContent := "a paragraph\nimage::images/foo.png[]"
 					expectedResult := types.Paragraph{
-						Attributes: map[string]interface{}{},
+						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
 							{
 								types.StringElement{Content: "a paragraph"},
@@ -167,7 +145,7 @@ var _ = Describe("images", func() {
 						ElementReferences: map[string]interface{}{},
 						Elements: []interface{}{
 							types.Paragraph{
-								Attributes: map[string]interface{}{},
+								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
 										types.StringElement{Content: "a foo image::foo.png[foo image, 600, 400] bar"},
@@ -190,14 +168,12 @@ var _ = Describe("images", func() {
 				actualContent := "image:images/foo.png[]"
 				expectedResult := types.InlineElements{
 					types.InlineImage{
-						Macro: types.ImageMacro{
-							Path: "images/foo.png",
-							Attributes: map[string]interface{}{
-								types.AttrImageAlt:    "foo",
-								types.AttrImageWidth:  "",
-								types.AttrImageHeight: "",
-							},
+						Attributes: types.ElementAttributes{
+							types.AttrImageAlt:    "foo",
+							types.AttrImageWidth:  "",
+							types.AttrImageHeight: "",
 						},
+						Path: "images/foo.png",
 					},
 				}
 				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
@@ -206,18 +182,16 @@ var _ = Describe("images", func() {
 			It("inline image with empty alt and trailing spaces", func() {
 				actualContent := "image:images/foo.png[]  \t\t  "
 				expectedResult := types.Paragraph{
-					Attributes: map[string]interface{}{},
+					Attributes: types.ElementAttributes{},
 					Lines: []types.InlineElements{
 						{
 							types.InlineImage{
-								Macro: types.ImageMacro{
-									Path: "images/foo.png",
-									Attributes: map[string]interface{}{
-										types.AttrImageAlt:    "foo",
-										types.AttrImageWidth:  "",
-										types.AttrImageHeight: "",
-									},
+								Attributes: types.ElementAttributes{
+									types.AttrImageAlt:    "foo",
+									types.AttrImageWidth:  "",
+									types.AttrImageHeight: "",
 								},
+								Path: "images/foo.png",
 							},
 							types.StringElement{
 								Content: "  \t\t  ",
@@ -235,14 +209,12 @@ var _ = Describe("images", func() {
 						Content: "a foo ",
 					},
 					types.InlineImage{
-						Macro: types.ImageMacro{
-							Path: "images/foo.png",
-							Attributes: map[string]interface{}{
-								types.AttrImageAlt:    "foo",
-								types.AttrImageWidth:  "",
-								types.AttrImageHeight: "",
-							},
+						Attributes: types.ElementAttributes{
+							types.AttrImageAlt:    "foo",
+							types.AttrImageWidth:  "",
+							types.AttrImageHeight: "",
 						},
+						Path: "images/foo.png",
 					},
 					types.StringElement{
 						Content: " bar...",
@@ -251,18 +223,98 @@ var _ = Describe("images", func() {
 				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
 			})
 
-			It("inline image with alt", func() {
+			It("inline image with alt alone", func() {
 				actualContent := "image:images/foo.png[the foo.png image]"
 				expectedResult := types.InlineElements{
 					types.InlineImage{
-						Macro: types.ImageMacro{
-							Path: "images/foo.png",
-							Attributes: map[string]interface{}{
-								types.AttrImageAlt:    "the foo.png image",
-								types.AttrImageWidth:  "",
-								types.AttrImageHeight: "",
-							},
+						Attributes: types.ElementAttributes{
+							types.AttrImageAlt:    "the foo.png image",
+							types.AttrImageWidth:  "",
+							types.AttrImageHeight: "",
 						},
+						Path: "images/foo.png",
+					},
+				}
+				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
+			})
+
+			It("inline image with alt and width", func() {
+				actualContent := "image:images/foo.png[the foo.png image, 600]"
+				expectedResult := types.InlineElements{
+					types.InlineImage{
+						Attributes: types.ElementAttributes{
+							types.AttrImageAlt:    "the foo.png image",
+							types.AttrImageWidth:  "600",
+							types.AttrImageHeight: "",
+						},
+						Path: "images/foo.png",
+					},
+				}
+				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
+			})
+
+			It("inline image with alt, width and height", func() {
+				actualContent := "image:images/foo.png[the foo.png image, 600, 400]"
+				expectedResult := types.InlineElements{
+					types.InlineImage{
+						Attributes: types.ElementAttributes{
+							types.AttrImageAlt:    "the foo.png image",
+							types.AttrImageWidth:  "600",
+							types.AttrImageHeight: "400",
+						},
+						Path: "images/foo.png",
+					},
+				}
+				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
+			})
+
+			It("inline image with single other attribute only", func() {
+				actualContent := "image:images/foo.png[id=myid]"
+				expectedResult := types.InlineElements{
+					types.InlineImage{
+						Attributes: types.ElementAttributes{
+							types.AttrImageAlt:    "foo", // based on filename
+							types.AttrImageWidth:  "",
+							types.AttrImageHeight: "",
+							types.AttrID:          "myid",
+						},
+						Path: "images/foo.png",
+					},
+				}
+				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"), parser.Debug(false))
+			})
+
+			It("inline image with multiple other attributes only", func() {
+				actualContent := "image:images/foo.png[id=myid, title= mytitle, role = myrole ]"
+				expectedResult := types.InlineElements{
+					types.InlineImage{
+						Attributes: types.ElementAttributes{
+							types.AttrImageAlt:    "foo", // based on filename
+							types.AttrImageWidth:  "",
+							types.AttrImageHeight: "",
+							types.AttrID:          "myid",
+							types.AttrTitle:       "mytitle",
+							types.AttrRole:        "myrole",
+						},
+						Path: "images/foo.png",
+					},
+				}
+				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
+			})
+
+			It("inline image with alt, width, height and other attributes", func() {
+				actualContent := "image:images/foo.png[ foo, 600, 400, id=myid, title=mytitle, role=myrole ]"
+				expectedResult := types.InlineElements{
+					types.InlineImage{
+						Attributes: types.ElementAttributes{
+							types.AttrImageAlt:    "foo",
+							types.AttrImageWidth:  "600",
+							types.AttrImageHeight: "400",
+							types.AttrID:          "myid",
+							types.AttrTitle:       "mytitle",
+							types.AttrRole:        "myrole",
+						},
+						Path: "images/foo.png",
 					},
 				}
 				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
@@ -272,7 +324,7 @@ var _ = Describe("images", func() {
 			It("inline image appending inline content", func() {
 				actualContent := "a paragraph\nimage::images/foo.png[]"
 				expectedResult := types.Paragraph{
-					Attributes: map[string]interface{}{},
+					Attributes: types.ElementAttributes{},
 					Lines: []types.InlineElements{
 						{
 							types.StringElement{Content: "a paragraph"},

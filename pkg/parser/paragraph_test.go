@@ -13,7 +13,7 @@ var _ = Describe("paragraphs", func() {
 		It("paragraph with 1 word", func() {
 			actualContent := "hello"
 			expectedResult := types.Paragraph{
-				Attributes: map[string]interface{}{},
+				Attributes: types.ElementAttributes{},
 				Lines: []types.InlineElements{
 					{
 						types.StringElement{Content: "hello"},
@@ -26,7 +26,7 @@ var _ = Describe("paragraphs", func() {
 		It("paragraph with few words and ending with spaces", func() {
 			actualContent := "a paragraph with some content  "
 			expectedResult := types.Paragraph{
-				Attributes: map[string]interface{}{},
+				Attributes: types.ElementAttributes{},
 				Lines: []types.InlineElements{
 					{
 						types.StringElement{Content: "a paragraph with some content  "},
@@ -39,7 +39,7 @@ var _ = Describe("paragraphs", func() {
 		It("paragraph with bold content and spaces", func() {
 			actualContent := "a paragraph with *some bold content*  "
 			expectedResult := types.Paragraph{
-				Attributes: map[string]interface{}{},
+				Attributes: types.ElementAttributes{},
 				Lines: []types.InlineElements{
 					{
 						types.StringElement{Content: "a paragraph with "},
@@ -61,7 +61,7 @@ var _ = Describe("paragraphs", func() {
 .a title
 a paragraph`
 			expectedResult := types.Paragraph{
-				Attributes: map[string]interface{}{
+				Attributes: types.ElementAttributes{
 					types.AttrID:    "foo",
 					types.AttrTitle: "a title",
 				},
@@ -80,7 +80,7 @@ a paragraph`
 		It("note admonition paragraph", func() {
 			actualContent := `NOTE: this is a note.`
 			expectedResult := types.Paragraph{
-				Attributes: map[string]interface{}{
+				Attributes: types.ElementAttributes{
 					types.AttrAdmonitionKind: types.Note,
 				},
 				Lines: []types.InlineElements{
@@ -98,7 +98,7 @@ a paragraph`
 			actualContent := `WARNING: this is a multiline
 warning!`
 			expectedResult := types.Paragraph{
-				Attributes: map[string]interface{}{
+				Attributes: types.ElementAttributes{
 					types.AttrAdmonitionKind: types.Warning,
 				},
 				Lines: []types.InlineElements{
@@ -122,7 +122,7 @@ warning!`
 .bar
 NOTE: this is a note.`
 			expectedResult := types.Paragraph{
-				Attributes: map[string]interface{}{
+				Attributes: types.ElementAttributes{
 					types.AttrAdmonitionKind: types.Note,
 					types.AttrID:             "foo",
 					types.AttrTitle:          "bar",
@@ -142,7 +142,7 @@ NOTE: this is a note.`
 			actualContent := `[CAUTION]
 this is a caution!`
 			expectedResult := types.Paragraph{
-				Attributes: map[string]interface{}{
+				Attributes: types.ElementAttributes{
 					types.AttrAdmonitionKind: types.Caution,
 				},
 				Lines: []types.InlineElements{
@@ -163,7 +163,7 @@ this is a caution!`
 this is a 
 *caution*!`
 			expectedResult := types.Paragraph{
-				Attributes: map[string]interface{}{
+				Attributes: types.ElementAttributes{
 					types.AttrAdmonitionKind: types.Caution,
 					types.AttrID:             "foo",
 					types.AttrTitle:          "bar",
@@ -203,7 +203,7 @@ And no space after [CAUTION] either.`
 				ElementReferences: map[string]interface{}{},
 				Elements: []interface{}{
 					types.Paragraph{
-						Attributes: map[string]interface{}{
+						Attributes: types.ElementAttributes{
 							types.AttrAdmonitionKind: types.Note,
 						},
 						Lines: []types.InlineElements{
@@ -216,7 +216,7 @@ And no space after [CAUTION] either.`
 					},
 					types.BlankLine{},
 					types.Paragraph{
-						Attributes: map[string]interface{}{
+						Attributes: types.ElementAttributes{
 							types.AttrAdmonitionKind: types.Caution,
 						},
 						Lines: []types.InlineElements{
@@ -239,7 +239,7 @@ And no space after [CAUTION] either.`
 			actualContent := `[verse, john doe, verse title]
 I am a verse paragraph.`
 			expectedResult := types.Paragraph{
-				Attributes: map[string]interface{}{
+				Attributes: types.ElementAttributes{
 					types.AttrBlockKind:   types.Verse,
 					types.AttrQuoteAuthor: "john doe",
 					types.AttrQuoteTitle:  "verse title",
@@ -261,7 +261,7 @@ I am a verse paragraph.`
 .universe
 I am a verse paragraph.`
 			expectedResult := types.Paragraph{
-				Attributes: map[string]interface{}{
+				Attributes: types.ElementAttributes{
 					types.AttrBlockKind:   types.Verse,
 					types.AttrQuoteAuthor: "john doe",
 					types.AttrQuoteTitle:  "verse title",
@@ -283,7 +283,7 @@ I am a verse paragraph.`
 			actualContent := `[verse, john doe, ]
 I am a verse paragraph.`
 			expectedResult := types.Paragraph{
-				Attributes: map[string]interface{}{
+				Attributes: types.ElementAttributes{
 					types.AttrBlockKind:   types.Verse,
 					types.AttrQuoteAuthor: "john doe",
 					types.AttrQuoteTitle:  "",
@@ -303,7 +303,7 @@ I am a verse paragraph.`
 			actualContent := `[verse, john doe ]
 I am a verse paragraph.`
 			expectedResult := types.Paragraph{
-				Attributes: map[string]interface{}{
+				Attributes: types.ElementAttributes{
 					types.AttrBlockKind:   types.Verse,
 					types.AttrQuoteAuthor: "john doe",
 					types.AttrQuoteTitle:  "",
@@ -323,7 +323,7 @@ I am a verse paragraph.`
 			actualContent := `[verse,  ]
 I am a verse paragraph.`
 			expectedResult := types.Paragraph{
-				Attributes: map[string]interface{}{
+				Attributes: types.ElementAttributes{
 					types.AttrBlockKind:   types.Verse,
 					types.AttrQuoteAuthor: "",
 					types.AttrQuoteTitle:  "",
@@ -343,7 +343,7 @@ I am a verse paragraph.`
 			actualContent := `[verse]
 I am a verse paragraph.`
 			expectedResult := types.Paragraph{
-				Attributes: map[string]interface{}{
+				Attributes: types.ElementAttributes{
 					types.AttrBlockKind:   types.Verse,
 					types.AttrQuoteAuthor: "",
 					types.AttrQuoteTitle:  "",
@@ -363,7 +363,7 @@ I am a verse paragraph.`
 			actualContent := `[verse, john doe, verse title]
 image::foo.png[]`
 			expectedResult := types.Paragraph{
-				Attributes: map[string]interface{}{
+				Attributes: types.ElementAttributes{
 					types.AttrBlockKind:   types.Verse,
 					types.AttrQuoteAuthor: "john doe",
 					types.AttrQuoteTitle:  "verse title",

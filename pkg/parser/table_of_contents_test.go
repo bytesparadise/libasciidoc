@@ -9,7 +9,7 @@ var _ = Describe("table of contents", func() {
 
 	// reusable elements
 	doctitleAttribute := types.SectionTitle{
-		Attributes: map[string]interface{}{
+		Attributes: types.ElementAttributes{
 			types.AttrID: "_a_title",
 		},
 		Content: types.InlineElements{
@@ -21,7 +21,7 @@ var _ = Describe("table of contents", func() {
 		Elements: []interface{}{
 			types.BlankLine{},
 			types.Paragraph{
-				Attributes: map[string]interface{}{},
+				Attributes: types.ElementAttributes{},
 				Lines: []types.InlineElements{
 					{
 						types.StringElement{Content: "A short preamble"},
@@ -34,7 +34,7 @@ var _ = Describe("table of contents", func() {
 	section := types.Section{
 		Level: 1,
 		Title: types.SectionTitle{
-			Attributes: map[string]interface{}{
+			Attributes: types.ElementAttributes{
 				types.AttrID: "_section_1",
 			},
 			Content: types.InlineElements{
@@ -54,13 +54,13 @@ A short preamble
 == section 1`
 
 		expectedResult := types.Document{
-			Attributes: map[string]interface{}{
+			Attributes: types.DocumentAttributes{
 				"doctitle": doctitleAttribute,
 				"toc":      "",
 			},
 			ElementReferences: map[string]interface{}{
 				"_section_1": types.SectionTitle{
-					Attributes: map[string]interface{}{
+					Attributes: types.ElementAttributes{
 						types.AttrID: "_section_1",
 					},
 					Content: types.InlineElements{
@@ -86,13 +86,13 @@ A short preamble
 == section 1`
 
 		expectedResult := types.Document{
-			Attributes: map[string]interface{}{
+			Attributes: types.DocumentAttributes{
 				"doctitle": doctitleAttribute,
 				"toc":      "preamble",
 			},
 			ElementReferences: map[string]interface{}{
 				"_section_1": types.SectionTitle{
-					Attributes: map[string]interface{}{
+					Attributes: types.ElementAttributes{
 						types.AttrID: "_section_1",
 					},
 					Content: types.InlineElements{

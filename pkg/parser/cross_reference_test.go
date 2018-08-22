@@ -16,11 +16,11 @@ var _ = Describe("cross References", func() {
 
 with some content linked to <<thetitle>>!`
 			expectedResult := types.Document{
-				Attributes: map[string]interface{}{},
+				Attributes: types.DocumentAttributes{},
 				ElementReferences: map[string]interface{}{
 					"thetitle": types.SectionTitle{
-						Attributes: map[string]interface{}{
-							"elementID": "thetitle",
+						Attributes: types.ElementAttributes{
+							types.AttrID: "thetitle",
 						},
 						Content: types.InlineElements{
 							types.StringElement{
@@ -33,8 +33,8 @@ with some content linked to <<thetitle>>!`
 					types.Section{
 						Level: 1,
 						Title: types.SectionTitle{
-							Attributes: map[string]interface{}{
-								"elementID": "thetitle",
+							Attributes: types.ElementAttributes{
+								types.AttrID: "thetitle",
 							},
 							Content: types.InlineElements{
 								types.StringElement{
@@ -45,7 +45,7 @@ with some content linked to <<thetitle>>!`
 						Elements: []interface{}{
 							types.BlankLine{},
 							types.Paragraph{
-								Attributes: map[string]interface{}{},
+								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
 										types.StringElement{Content: "with some content linked to "},

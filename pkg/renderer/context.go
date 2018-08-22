@@ -102,15 +102,27 @@ const tableCounter = "tableCounter"
 
 // GetAndIncrementTableCounter returns the current value for the table counter after internally incrementing it.
 func (ctx *Context) GetAndIncrementTableCounter() int {
-	if _, found := ctx.options[tableCounter]; !found {
-		ctx.options[tableCounter] = 1
+	return ctx.getAndIncrementCounter(tableCounter)
+}
+
+const imageCounter = "imageCounter"
+
+// GetAndIncrementImageCounter returns the current value for the image counter after internally incrementing it.
+func (ctx *Context) GetAndIncrementImageCounter() int {
+	return ctx.getAndIncrementCounter(imageCounter)
+}
+
+// getAndIncrementCounter returns the current value for the  counter after internally incrementing it.
+func (ctx *Context) getAndIncrementCounter(counter string) int {
+	if _, found := ctx.options[counter]; !found {
+		ctx.options[counter] = 1
 	}
-	if c, ok := ctx.options[tableCounter].(int); ok {
-		ctx.options[tableCounter] = c + 1
+	if c, ok := ctx.options[counter].(int); ok {
+		ctx.options[counter] = c + 1
 		return c
 	}
-	ctx.options[tableCounter] = 1
-	log.Warnf("table counter was set to a non-int value")
+	ctx.options[counter] = 1
+	log.Warnf("'%s' counter was set to a non-int value", counter)
 	return 1
 }
 

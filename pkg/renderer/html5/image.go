@@ -18,44 +18,40 @@ var inlineImageTmpl texttemplate.Template
 
 // initializes the templates
 func init() {
-	blockImageTmpl = newTextTemplate("block image", `<div{{ if ne .ID "" }} id="{{ .ID }}"{{ end }} class="imageblock">
+	blockImageTmpl = newTextTemplate("block image", `<div{{ if .ID }} id="{{ .ID }}"{{ end }} class="imageblock{{ if .Role }} {{ .Role }}{{ end }}">
 <div class="content">
 {{ if ne .Href "" }}<a class="image" href="{{ .Href }}">{{ end }}<img src="{{ .Path }}" alt="{{ .Alt }}"{{ if .Width }} width="{{ .Width }}"{{ end }}{{ if .Height }} height="{{ .Height }}"{{ end }}>{{ if ne .Href "" }}</a>{{ end }}
-</div>{{ if ne .Title "" }}
-<div class="doctitle">{{ .Title }}</div>
+</div>{{ if .Title }}
+<div class="title">{{ .Title }}</div>
 {{ else }}
 {{ end }}</div>`)
-	inlineImageTmpl = newTextTemplate("inline image", `<span class="image"><img src="{{ .Path }}" alt="{{ .Alt }}"{{ if .Width }} width="{{ .Width }}"{{ end }}{{ if .Height }} height="{{ .Height }}"{{ end }}></span>`)
+	inlineImageTmpl = newTextTemplate("inline image", `<span class="image{{ if .Role }} {{ .Role }}{{ end }}"><img src="{{ .Path }}" alt="{{ .Alt }}"{{ if .Width }} width="{{ .Width }}"{{ end }}{{ if .Height }} height="{{ .Height }}"{{ end }}{{ if .Title }} title="{{ .Title }}"{{ end }}></span>`)
 }
 
 func renderBlockImage(ctx *renderer.Context, img types.BlockImage) ([]byte, error) {
 	result := bytes.NewBuffer(nil)
-	var id, title, href string
-	if i, ok := img.Attributes[types.AttrID].(string); ok {
-		id = i
-	}
-	if t, ok := img.Attributes[types.AttrTitle].(string); ok {
-		title = t
-	}
-	if l, ok := img.Attributes[types.AttrLink].(string); ok {
-		href = l
+	title := ""
+	if t := img.Attributes.GetAsString(types.AttrTitle); t != "" {
+		title = fmt.Sprintf("Figure %d. %s", ctx.GetAndIncrementImageCounter(), t)
 	}
 	err := blockImageTmpl.Execute(result, struct {
 		ID     string
 		Title  string
+		Role   string
 		Href   string
-		Path   string
 		Alt    string
 		Width  string
 		Height string
+		Path   string
 	}{
-		ID:     id,
+		ID:     img.Attributes.GetAsString(types.AttrID),
 		Title:  title,
-		Href:   href,
-		Path:   getImageHref(ctx, img.Macro.Path),
-		Alt:    img.Macro.Alt(),
-		Width:  img.Macro.Width(),
-		Height: img.Macro.Height(),
+		Role:   img.Attributes.GetAsString(types.AttrRole),
+		Href:   img.Attributes.GetAsString(types.AttrLink),
+		Alt:    img.Attributes.GetAsString(types.AttrImageAlt),
+		Width:  img.Attributes.GetAsString(types.AttrImageWidth),
+		Height: img.Attributes.GetAsString(types.AttrImageHeight),
+		Path:   getImageHref(ctx, img.Path),
 	})
 
 	if err != nil {
@@ -68,18 +64,20 @@ func renderBlockImage(ctx *renderer.Context, img types.BlockImage) ([]byte, erro
 func renderInlineImage(ctx *renderer.Context, img types.InlineImage) ([]byte, error) {
 	result := bytes.NewBuffer(nil)
 	err := inlineImageTmpl.Execute(result, struct {
-		ID     string
+		Role   string
 		Title  string
 		Href   string
-		Path   string
 		Alt    string
 		Width  string
 		Height string
+		Path   string
 	}{
-		Path:   getImageHref(ctx, img.Macro.Path),
-		Alt:    img.Macro.Alt(),
-		Width:  img.Macro.Width(),
-		Height: img.Macro.Height(),
+		Title:  img.Attributes.GetAsString(types.AttrTitle),
+		Role:   img.Attributes.GetAsString(types.AttrRole),
+		Alt:    img.Attributes.GetAsString(types.AttrImageAlt),
+		Width:  img.Attributes.GetAsString(types.AttrImageWidth),
+		Height: img.Attributes.GetAsString(types.AttrImageHeight),
+		Path:   getImageHref(ctx, img.Path),
 	})
 
 	if err != nil {

@@ -4,6 +4,22 @@ import . "github.com/onsi/ginkgo"
 
 var _ = Describe("ordered lists", func() {
 
+	It("ordered list with title and role", func() {
+		actualContent := `.title
+[#myid]
+[.myrole]
+. item 1`
+		expectedResult := `<div id="myid" class="olist arabic myrole">
+<div class="title">title</div>
+<ol class="arabic">
+<li>
+<p>item 1</p>
+</li>
+</ol>
+</div>`
+		verify(GinkgoT(), expectedResult, actualContent)
+	})
+
 	It("ordered list with unnumbered items", func() {
 		actualContent := `. item 1
 		.. item 1.1

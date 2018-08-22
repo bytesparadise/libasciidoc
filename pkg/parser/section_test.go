@@ -12,7 +12,7 @@ var _ = Describe("sections", func() {
 		It("header only", func() {
 			actualContent := "= a header"
 			doctitle := types.SectionTitle{
-				Attributes: map[string]interface{}{
+				Attributes: types.ElementAttributes{
 					types.AttrID: "_a_header",
 				},
 				Content: types.InlineElements{
@@ -20,7 +20,7 @@ var _ = Describe("sections", func() {
 				},
 			}
 			expectedResult := types.Document{
-				Attributes: map[string]interface{}{
+				Attributes: types.DocumentAttributes{
 					"doctitle": doctitle,
 				},
 				ElementReferences: map[string]interface{}{},
@@ -32,7 +32,7 @@ var _ = Describe("sections", func() {
 		It("header with many spaces around content", func() {
 			actualContent := "= a header   "
 			doctitle := types.SectionTitle{
-				Attributes: map[string]interface{}{
+				Attributes: types.ElementAttributes{
 					types.AttrID: "_a_header",
 				},
 				Content: types.InlineElements{
@@ -40,7 +40,7 @@ var _ = Describe("sections", func() {
 				},
 			}
 			expectedResult := types.Document{
-				Attributes: map[string]interface{}{
+				Attributes: types.DocumentAttributes{
 					"doctitle": doctitle,
 				},
 				ElementReferences: map[string]interface{}{},
@@ -55,7 +55,7 @@ var _ = Describe("sections", func() {
 and a paragraph`
 
 			doctitle := types.SectionTitle{
-				Attributes: map[string]interface{}{
+				Attributes: types.ElementAttributes{
 					types.AttrID: "_a_header",
 				},
 				Content: types.InlineElements{
@@ -63,13 +63,13 @@ and a paragraph`
 				},
 			}
 			expectedResult := types.Document{
-				Attributes: map[string]interface{}{
+				Attributes: types.DocumentAttributes{
 					"doctitle": doctitle,
 				},
 				ElementReferences: map[string]interface{}{},
 				Elements: []interface{}{
 					types.Paragraph{
-						Attributes: map[string]interface{}{},
+						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
 							{
 								types.StringElement{Content: "and a paragraph"},
@@ -84,7 +84,7 @@ and a paragraph`
 		It("section level 1 alone", func() {
 			actualContent := `== section 1`
 			section1Title := types.SectionTitle{
-				Attributes: map[string]interface{}{
+				Attributes: types.ElementAttributes{
 					types.AttrID: "_section_1",
 				},
 				Content: types.InlineElements{
@@ -92,7 +92,7 @@ and a paragraph`
 				},
 			}
 			expectedResult := types.Document{
-				Attributes: map[string]interface{}{},
+				Attributes: types.DocumentAttributes{},
 				ElementReferences: map[string]interface{}{
 					"_section_1": section1Title,
 				},
@@ -110,7 +110,7 @@ and a paragraph`
 		It("section level 1 with quoted text", func() {
 			actualContent := `==  *2 spaces and bold content*`
 			sectionTitle := types.SectionTitle{
-				Attributes: map[string]interface{}{
+				Attributes: types.ElementAttributes{
 					types.AttrID: "_2_spaces_and_bold_content",
 				},
 				Content: types.InlineElements{
@@ -122,7 +122,7 @@ and a paragraph`
 				},
 			}
 			expectedResult := types.Document{
-				Attributes: map[string]interface{}{},
+				Attributes: types.DocumentAttributes{},
 				ElementReferences: map[string]interface{}{
 					"_2_spaces_and_bold_content": sectionTitle,
 				},
@@ -142,7 +142,7 @@ and a paragraph`
 
 == section 1`
 			doctitle := types.SectionTitle{
-				Attributes: map[string]interface{}{
+				Attributes: types.ElementAttributes{
 					types.AttrID: "_a_header",
 				},
 				Content: types.InlineElements{
@@ -150,7 +150,7 @@ and a paragraph`
 				},
 			}
 			section1Title := types.SectionTitle{
-				Attributes: map[string]interface{}{
+				Attributes: types.ElementAttributes{
 					types.AttrID: "_section_1",
 				},
 				Content: types.InlineElements{
@@ -158,7 +158,7 @@ and a paragraph`
 				},
 			}
 			expectedResult := types.Document{
-				Attributes: map[string]interface{}{
+				Attributes: types.DocumentAttributes{
 					"doctitle": doctitle,
 				},
 				ElementReferences: map[string]interface{}{
@@ -182,7 +182,7 @@ a short preamble
 
 == section 1`
 			section1Title := types.SectionTitle{
-				Attributes: map[string]interface{}{
+				Attributes: types.ElementAttributes{
 					types.AttrID: "_section_1",
 				},
 				Content: types.InlineElements{
@@ -190,7 +190,7 @@ a short preamble
 				},
 			}
 			doctitle := types.SectionTitle{
-				Attributes: map[string]interface{}{
+				Attributes: types.ElementAttributes{
 					types.AttrID: "_a_header",
 				},
 				Content: types.InlineElements{
@@ -198,7 +198,7 @@ a short preamble
 				},
 			}
 			expectedResult := types.Document{
-				Attributes: map[string]interface{}{
+				Attributes: types.DocumentAttributes{
 					"doctitle": doctitle,
 				},
 				ElementReferences: map[string]interface{}{
@@ -208,7 +208,7 @@ a short preamble
 					types.Preamble{
 						Elements: []interface{}{
 							types.Paragraph{
-								Attributes: map[string]interface{}{},
+								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
 										types.StringElement{Content: "a short preamble"},
@@ -233,7 +233,7 @@ a short preamble
 				"\n" +
 				"=== section 2"
 			doctitle := types.SectionTitle{
-				Attributes: map[string]interface{}{
+				Attributes: types.ElementAttributes{
 					types.AttrID: "_a_header",
 				},
 				Content: types.InlineElements{
@@ -241,7 +241,7 @@ a short preamble
 				},
 			}
 			section2Title := types.SectionTitle{
-				Attributes: map[string]interface{}{
+				Attributes: types.ElementAttributes{
 					types.AttrID: "_section_2",
 				},
 				Content: types.InlineElements{
@@ -249,7 +249,7 @@ a short preamble
 				},
 			}
 			expectedResult := types.Document{
-				Attributes: map[string]interface{}{
+				Attributes: types.DocumentAttributes{
 					"doctitle": doctitle,
 				},
 				ElementReferences: map[string]interface{}{
@@ -270,7 +270,7 @@ a short preamble
 			actualContent := `== a title
 and a paragraph`
 			section1Title := types.SectionTitle{
-				Attributes: map[string]interface{}{
+				Attributes: types.ElementAttributes{
 					types.AttrID: "_a_title",
 				},
 				Content: types.InlineElements{
@@ -278,7 +278,7 @@ and a paragraph`
 				},
 			}
 			expectedResult := types.Document{
-				Attributes: map[string]interface{}{},
+				Attributes: types.DocumentAttributes{},
 				ElementReferences: map[string]interface{}{
 					"_a_title": section1Title,
 				},
@@ -288,7 +288,7 @@ and a paragraph`
 						Title: section1Title,
 						Elements: []interface{}{
 							types.Paragraph{
-								Attributes: map[string]interface{}{},
+								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
 										types.StringElement{Content: "and a paragraph"},
@@ -307,7 +307,7 @@ and a paragraph`
 			
 and a paragraph`
 			section1Title := types.SectionTitle{
-				Attributes: map[string]interface{}{
+				Attributes: types.ElementAttributes{
 					types.AttrID: "_a_title",
 				},
 				Content: types.InlineElements{
@@ -315,7 +315,7 @@ and a paragraph`
 				},
 			}
 			expectedResult := types.Document{
-				Attributes: map[string]interface{}{},
+				Attributes: types.DocumentAttributes{},
 				ElementReferences: map[string]interface{}{
 					"_a_title": section1Title,
 				},
@@ -326,7 +326,7 @@ and a paragraph`
 						Elements: []interface{}{
 							types.BlankLine{},
 							types.Paragraph{
-								Attributes: map[string]interface{}{},
+								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
 										types.StringElement{Content: "and a paragraph"},
@@ -343,7 +343,7 @@ and a paragraph`
 		It("section level 1 with a paragraph separated by non-empty line", func() {
 			actualContent := "== a title\n    \nand a paragraph"
 			section1Title := types.SectionTitle{
-				Attributes: map[string]interface{}{
+				Attributes: types.ElementAttributes{
 					types.AttrID: "_a_title",
 				},
 				Content: types.InlineElements{
@@ -351,7 +351,7 @@ and a paragraph`
 				},
 			}
 			expectedResult := types.Document{
-				Attributes: map[string]interface{}{},
+				Attributes: types.DocumentAttributes{},
 				ElementReferences: map[string]interface{}{
 					"_a_title": section1Title,
 				},
@@ -362,7 +362,7 @@ and a paragraph`
 						Elements: []interface{}{
 							types.BlankLine{},
 							types.Paragraph{
-								Attributes: map[string]interface{}{},
+								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
 										types.StringElement{Content: "and a paragraph"},
@@ -388,7 +388,7 @@ a paragraph
 == Section B
 a paragraph`
 			doctitle := types.SectionTitle{
-				Attributes: map[string]interface{}{
+				Attributes: types.ElementAttributes{
 					types.AttrID: "_a_header",
 				},
 				Content: types.InlineElements{
@@ -396,7 +396,7 @@ a paragraph`
 				},
 			}
 			sectionATitle := types.SectionTitle{
-				Attributes: map[string]interface{}{
+				Attributes: types.ElementAttributes{
 					types.AttrID: "_section_a",
 				},
 				Content: types.InlineElements{
@@ -404,7 +404,7 @@ a paragraph`
 				},
 			}
 			sectionAaTitle := types.SectionTitle{
-				Attributes: map[string]interface{}{
+				Attributes: types.ElementAttributes{
 					types.AttrID: "_section_a_a",
 				},
 				Content: types.InlineElements{
@@ -412,7 +412,7 @@ a paragraph`
 				},
 			}
 			sectionBTitle := types.SectionTitle{
-				Attributes: map[string]interface{}{
+				Attributes: types.ElementAttributes{
 					types.AttrID: "_section_b",
 				},
 				Content: types.InlineElements{
@@ -420,7 +420,7 @@ a paragraph`
 				},
 			}
 			expectedResult := types.Document{
-				Attributes: map[string]interface{}{
+				Attributes: types.DocumentAttributes{
 					"doctitle": doctitle,
 				},
 				ElementReferences: map[string]interface{}{
@@ -434,7 +434,7 @@ a paragraph`
 						Title: sectionATitle,
 						Elements: []interface{}{
 							types.Paragraph{
-								Attributes: map[string]interface{}{},
+								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
 										types.StringElement{Content: "a paragraph"},
@@ -447,7 +447,7 @@ a paragraph`
 								Title: sectionAaTitle,
 								Elements: []interface{}{
 									types.Paragraph{
-										Attributes: map[string]interface{}{},
+										Attributes: types.ElementAttributes{},
 										Lines: []types.InlineElements{
 											{
 												types.StringElement{Content: "a paragraph"},
@@ -464,7 +464,7 @@ a paragraph`
 						Title: sectionBTitle,
 						Elements: []interface{}{
 							types.Paragraph{
-								Attributes: map[string]interface{}{},
+								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
 										types.StringElement{Content: "a paragraph"},
@@ -482,7 +482,7 @@ a paragraph`
 			actualContent := `[[custom_header]]
 == a header`
 			sectionTitle := types.SectionTitle{
-				Attributes: map[string]interface{}{
+				Attributes: types.ElementAttributes{
 					types.AttrID: "custom_header",
 				},
 				Content: types.InlineElements{
@@ -490,7 +490,7 @@ a paragraph`
 				},
 			}
 			expectedResult := types.Document{
-				Attributes: map[string]interface{}{},
+				Attributes: types.DocumentAttributes{},
 				ElementReferences: map[string]interface{}{
 					"custom_header": sectionTitle,
 				},
@@ -515,7 +515,7 @@ a paragraph`
 == Section B
 a paragraph`
 			doctitle := types.SectionTitle{
-				Attributes: map[string]interface{}{
+				Attributes: types.ElementAttributes{
 					types.AttrID: "custom_header",
 				},
 				Content: types.InlineElements{
@@ -523,7 +523,7 @@ a paragraph`
 				},
 			}
 			fooTitle := types.SectionTitle{
-				Attributes: map[string]interface{}{
+				Attributes: types.ElementAttributes{
 					types.AttrID: "foo",
 				},
 				Content: types.InlineElements{
@@ -531,7 +531,7 @@ a paragraph`
 				},
 			}
 			barTitle := types.SectionTitle{
-				Attributes: map[string]interface{}{
+				Attributes: types.ElementAttributes{
 					types.AttrID: "bar",
 				},
 				Content: types.InlineElements{
@@ -539,7 +539,7 @@ a paragraph`
 				},
 			}
 			expectedResult := types.Document{
-				Attributes: map[string]interface{}{
+				Attributes: types.DocumentAttributes{
 					"doctitle": doctitle,
 				},
 				ElementReferences: map[string]interface{}{
@@ -559,7 +559,7 @@ a paragraph`
 						Title: barTitle,
 						Elements: []interface{}{
 							types.Paragraph{
-								Attributes: map[string]interface{}{},
+								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
 										types.StringElement{Content: "a paragraph"},
@@ -582,7 +582,7 @@ a paragraph`
 				ElementReferences: map[string]interface{}{},
 				Elements: []interface{}{
 					types.Paragraph{
-						Attributes: map[string]interface{}{},
+						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
 							{
 								types.StringElement{Content: "=a header"},
@@ -612,9 +612,9 @@ a paragraph`
 				"\n" +
 				" == section 1"
 			expectedResult := types.Document{
-				Attributes: map[string]interface{}{
+				Attributes: types.DocumentAttributes{
 					"doctitle": types.SectionTitle{
-						Attributes: map[string]interface{}{
+						Attributes: types.ElementAttributes{
 							types.AttrID: "_a_header",
 						},
 						Content: types.InlineElements{
@@ -640,7 +640,7 @@ foo
 = header 2
 bar`
 			header2Title := types.SectionTitle{
-				Attributes: map[string]interface{}{
+				Attributes: types.ElementAttributes{
 					types.AttrID: "_header_2",
 				},
 				Content: types.InlineElements{
@@ -648,9 +648,9 @@ bar`
 				},
 			}
 			expectedResult := types.Document{
-				Attributes: map[string]interface{}{
+				Attributes: types.DocumentAttributes{
 					"doctitle": types.SectionTitle{
-						Attributes: map[string]interface{}{
+						Attributes: types.ElementAttributes{
 							types.AttrID: "_header_1",
 						},
 						Content: types.InlineElements{
@@ -666,7 +666,7 @@ bar`
 					types.Preamble{
 						Elements: []interface{}{
 							types.Paragraph{
-								Attributes: map[string]interface{}{},
+								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
 										types.StringElement{
@@ -683,7 +683,7 @@ bar`
 						Title: header2Title,
 						Elements: []interface{}{
 							types.Paragraph{
-								Attributes: map[string]interface{}{},
+								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
 										types.StringElement{

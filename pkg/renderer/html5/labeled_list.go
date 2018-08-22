@@ -16,7 +16,7 @@ var horizontalLabeledListTmpl texttemplate.Template
 // initializes the templates
 func init() {
 	defaultLabeledListTmpl = newTextTemplate("labeled list with default layout",
-		`{{ $ctx := .Context }}{{ with .Data }}<div{{ if hasID .Attributes }} id="{{ getID .Attributes }}"{{ end }} class="dlist">
+		`{{ $ctx := .Context }}{{ with .Data }}<div{{ if .ID }} id="{{ .ID }}"{{ end }} class="dlist{{ if .Role }} {{ .Role }}{{ end }}">
 <dl>
 {{ $items := .Items }}{{ range $itemIndex, $item := $items }}<dt class="hdlist1">{{ $item.Term }}</dt>{{ if $item.Elements }}
 <dd>
@@ -26,13 +26,12 @@ func init() {
 </div>{{ end }}`,
 		texttemplate.FuncMap{
 			"renderElements": renderElementsAsString,
-			"hasID":          hasID,
-			"getID":          getID,
 		})
 
 	horizontalLabeledListTmpl = newTextTemplate("labeled list with horizontal layout",
-		`{{ $ctx := .Context }}{{ with .Data }}<div{{ if hasID .Attributes }} id="{{ getID .Attributes }}"{{ end }} class="hdlist">
-<table>
+		`{{ $ctx := .Context }}{{ with .Data }}<div{{ if .ID }} id="{{ .ID }}"{{ end }} class="hdlist{{ if .Role }} {{ .Role }}{{ end }}">
+{{ if .Title }}<div class="title">{{ .Title }}</div>
+{{ end }}<table>
 <tr>
 <td class="hdlist1">{{ $items := .Items }}{{ range $itemIndex, $item := $items }}
 {{ $item.Term }}
@@ -49,8 +48,6 @@ func init() {
 		texttemplate.FuncMap{
 			"renderElements": renderElementsAsString,
 			"includeNewline": includeNewline,
-			"hasID":          hasID,
-			"getID":          getID,
 		})
 
 }
@@ -78,7 +75,17 @@ func renderLabeledList(ctx *renderer.Context, l types.LabeledList) ([]byte, erro
 	// here we must preserve the HTML tags
 	err := tmpl.Execute(result, ContextualPipeline{
 		Context: ctx,
-		Data:    l,
+		Data: struct {
+			ID    string
+			Title string
+			Role  string
+			Items []types.LabeledListItem
+		}{
+			ID:    l.Attributes.GetAsString(types.AttrID),
+			Title: l.Attributes.GetAsString(types.AttrTitle),
+			Role:  l.Attributes.GetAsString(types.AttrRole),
+			Items: l.Items,
+		},
 	})
 	if err != nil {
 		return nil, errors.Wrapf(err, "unable to render labeled list")

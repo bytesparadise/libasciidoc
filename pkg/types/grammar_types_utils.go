@@ -120,8 +120,8 @@ func WithNumberingStyle(t NumberingStyle) DefaultAttribute {
 	}
 }
 
-func mergeAttributes(attributes []interface{}, defaults ...DefaultAttribute) map[string]interface{} {
-	result := make(map[string]interface{})
+func mergeAttributes(attributes []interface{}, defaults ...DefaultAttribute) ElementAttributes {
+	result := make(ElementAttributes)
 	// fill with the default values, that can be overridden afterwards
 	for _, d := range defaults {
 		d(result)
@@ -132,7 +132,7 @@ func mergeAttributes(attributes []interface{}, defaults ...DefaultAttribute) map
 	log.Debugf("attributes with defaults: %v", result)
 	for _, attr := range attributes {
 		log.Debugf("processing attributes of %T", attr)
-		if attr, ok := attr.(map[string]interface{}); ok {
+		if attr, ok := attr.(ElementAttributes); ok {
 			for k, v := range attr {
 				result[k] = v
 			}

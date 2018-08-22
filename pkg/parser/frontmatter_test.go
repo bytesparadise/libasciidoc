@@ -16,7 +16,7 @@ author: Xavier
 
 first paragraph`
 			expectedResult := types.Document{
-				Attributes: map[string]interface{}{
+				Attributes: types.DocumentAttributes{
 					"title":  "a title", // TODO: convert `title` attribute from front-matter into `doctitle` here ?
 					"author": "Xavier",
 				},
@@ -24,7 +24,7 @@ first paragraph`
 				Elements: []interface{}{
 					types.BlankLine{},
 					types.Paragraph{
-						Attributes: map[string]interface{}{},
+						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
 							{
 								types.StringElement{Content: "first paragraph"},
@@ -47,7 +47,7 @@ first paragraph`
 				Elements: []interface{}{
 					types.BlankLine{},
 					types.Paragraph{
-						Attributes: map[string]interface{}{},
+						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
 							{
 								types.StringElement{Content: "first paragraph"},
