@@ -39,7 +39,7 @@ a normal paragraph.`
 						Content: "   some literal content",
 					},
 					types.Paragraph{
-						Attributes: map[string]interface{}{},
+						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
 							{
 								types.StringElement{Content: "a normal paragraph."},
@@ -67,7 +67,7 @@ a normal paragraph.`
 						Content: "some literal content",
 					},
 					types.Paragraph{
-						Attributes: map[string]interface{}{},
+						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
 							{
 								types.StringElement{Content: "a normal paragraph."},
@@ -96,7 +96,7 @@ a normal paragraph.`
 						Content: "some literal content",
 					},
 					types.Paragraph{
-						Attributes: map[string]interface{}{},
+						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
 							{
 								types.StringElement{Content: "a normal paragraph."},

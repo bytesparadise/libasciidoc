@@ -48,7 +48,7 @@ func NewDocument(frontmatter, header interface{}, blocks []interface{}) (Documen
 	// elements := convertBlocksTointerface{}s(blocks)
 	// elements := filterEmptyElements(blocks, filterBlankLine(), filterEmptyPreamble())
 	elements := insertPreamble(blocks)
-	attributes := make(map[string]interface{})
+	attributes := make(DocumentAttributes)
 
 	if frontmatter != nil {
 		for attrName, attrValue := range frontmatter.(FrontMatter).Content {
@@ -564,7 +564,7 @@ func (s Section) Accept(v Visitor) error {
 
 // SectionTitle the structure for the section titles
 type SectionTitle struct {
-	Attributes map[string]interface{}
+	Attributes ElementAttributes
 	Content    InlineElements
 }
 
@@ -703,7 +703,7 @@ func newList(items []ListItem, attributes []interface{}) (List, error) {
 
 // OrderedList the structure for the Ordered Lists
 type OrderedList struct {
-	Attributes map[string]interface{}
+	Attributes ElementAttributes
 	Items      []OrderedListItem
 }
 
@@ -820,7 +820,7 @@ func NewOrderedList(elements []ListItem, attributes []interface{}) (OrderedList,
 
 func toOrderedList(items []*OrderedListItem) OrderedList {
 	result := OrderedList{
-		Attributes: map[string]interface{}{}, // avoid nil `attributes`
+		Attributes: ElementAttributes{}, // avoid nil `attributes`
 	}
 	// set the position and numbering style based on the optional attributes of the first item
 	if len(items) == 0 {
@@ -842,7 +842,7 @@ type OrderedListItem struct {
 	Position       int
 	NumberingStyle NumberingStyle
 	Elements       []interface{}
-	Attributes     map[string]interface{}
+	Attributes     ElementAttributes
 }
 
 // making sure that the `ListItem` interface is implemented by `OrderedListItem`
@@ -910,7 +910,7 @@ func NewOrderedListItemPrefix(s NumberingStyle, l int) (OrderedListItemPrefix, e
 
 // UnorderedList the structure for the Unordered Lists
 type UnorderedList struct {
-	Attributes map[string]interface{}
+	Attributes ElementAttributes
 	Items      []UnorderedListItem
 }
 
@@ -960,7 +960,7 @@ func NewUnorderedList(elements []ListItem, attributes []interface{}) (UnorderedL
 				parentLayer := bufferedItemsPerLevel[l-2]
 				parentItem := parentLayer[len(parentLayer)-1]
 				childList := UnorderedList{
-					Attributes: map[string]interface{}{}, // avoid nil `attributes`
+					Attributes: ElementAttributes{}, // avoid nil `attributes`
 				}
 				for _, i := range bufferedItemsPerLevel[l-1] {
 					childList.Items = append(childList.Items, *i)
@@ -992,7 +992,7 @@ func NewUnorderedList(elements []ListItem, attributes []interface{}) (UnorderedL
 			}
 		} else {
 			childList := UnorderedList{
-				Attributes: map[string]interface{}{}, // avoid nil `attributes`
+				Attributes: ElementAttributes{}, // avoid nil `attributes`
 			}
 			for _, item := range items {
 				childList.Items = append(childList.Items, *item)
@@ -1140,7 +1140,7 @@ func NewListItemContinuation() (ListItemContinuation, error) {
 
 // LabeledList the structure for the Labeled Lists
 type LabeledList struct {
-	Attributes map[string]interface{}
+	Attributes ElementAttributes
 	Items      []LabeledListItem
 }
 
@@ -1194,7 +1194,7 @@ var _ ListItem = &LabeledListItem{}
 
 // Paragraph the structure for the paragraphs
 type Paragraph struct {
-	Attributes map[string]interface{}
+	Attributes ElementAttributes
 	Lines      []InlineElements
 }
 
@@ -1344,38 +1344,64 @@ const (
 
 // BlockImage the structure for the block images
 type BlockImage struct {
-	Macro      ImageMacro
-	Attributes map[string]interface{}
+	Path       string
+	Attributes ElementAttributes
 }
 
 // NewBlockImage initializes a new `BlockImage`
-func NewBlockImage(imageMacro ImageMacro, attributes []interface{}) (BlockImage, error) {
+func NewBlockImage(path string, attributes []interface{}, inlineAttributes ElementAttributes) (BlockImage, error) {
+	allAttributes := mergeAttributes(attributes)
+	for k, v := range inlineAttributes {
+		allAttributes[k] = v
+	}
+	if alt, found := allAttributes[AttrImageAlt]; !found || alt == "" {
+		_, filename := filepath.Split(path)
+		log.Debugf("adding alt based on filename '%s'", filename)
+		ext := filepath.Ext(filename)
+		if ext != "" {
+			allAttributes[AttrImageAlt] = strings.TrimRight(filename, fmt.Sprintf(".%s", ext))
+		} else {
+			allAttributes[AttrImageAlt] = filename
+		}
+	}
 	return BlockImage{
-		Macro:      imageMacro,
-		Attributes: NewElementAttributes(attributes),
+		Path:       path,
+		Attributes: allAttributes,
 	}, nil
 }
 
 // InlineImage the structure for the inline image macros
 type InlineImage struct {
-	Macro ImageMacro
+	Path       string
+	Attributes ElementAttributes
 }
 
 // NewInlineImage initializes a new `InlineImage` (similar to BlockImage, but without attributes)
-func NewInlineImage(imageMacro ImageMacro) (InlineImage, error) {
+func NewInlineImage(path string, attributes ElementAttributes) (InlineImage, error) {
+	if alt, found := attributes[AttrImageAlt]; !found || alt == "" {
+		_, filename := filepath.Split(path)
+		log.Debugf("adding alt based on filename '%s'", filename)
+		ext := filepath.Ext(filename)
+		if ext != "" {
+			attributes[AttrImageAlt] = strings.TrimRight(filename, fmt.Sprintf(".%s", ext))
+		} else {
+			attributes[AttrImageAlt] = filename
+		}
+	}
 	return InlineImage{
-		Macro: imageMacro,
+		Path:       path,
+		Attributes: attributes,
 	}, nil
 }
 
 // ImageMacro the structure for the block image macros
 type ImageMacro struct {
 	Path       string
-	Attributes map[string]interface{}
+	Attributes ElementAttributes
 }
 
 // NewImageMacro initializes a new `ImageMacro`
-func NewImageMacro(path string, attributes map[string]interface{}) (ImageMacro, error) {
+func NewImageMacro(path string, attributes ElementAttributes) (ImageMacro, error) {
 	// use the image filename without the extension as the default `alt` attribute
 	log.Debugf("processing alt: '%s'", attributes[AttrImageAlt])
 	if attributes[AttrImageAlt] == "" {
@@ -1394,50 +1420,26 @@ func NewImageMacro(path string, attributes map[string]interface{}) (ImageMacro, 
 	}, nil
 }
 
-// Alt returns the `alt` text for the ImageMacro,
-func (i ImageMacro) Alt() string {
-	if alt, ok := i.Attributes[AttrImageAlt].(string); ok {
-		return alt
-	}
-	return ""
-}
-
-// Width returns the `width` text for the ImageMacro,
-func (i ImageMacro) Width() string {
-	if width, ok := i.Attributes[AttrImageWidth].(string); ok {
-		return width
-	}
-	return ""
-}
-
-// Height returns the `height` text for the ImageMacro,
-func (i ImageMacro) Height() string {
-	if height, ok := i.Attributes[AttrImageHeight].(string); ok {
-		return height
-	}
-	return ""
-}
-
 // NewImageAttributes returns a map of image attributes, some of which have implict keys (`alt`, `width` and `height`)
-func NewImageAttributes(alt, width, height []interface{}, otherAttrs []interface{}) (map[string]interface{}, error) {
-	result := map[string]interface{}{}
+func NewImageAttributes(alt, width, height, otherAttrs []interface{}) (ElementAttributes, error) {
+	result := ElementAttributes{}
 	altStr, err := stringify(alt, strings.TrimSpace)
 	if err != nil {
-		return map[string]interface{}{}, errors.Wrapf(err, "unable to convert the 'alt' image attribute into a string: '%v'", alt)
+		return ElementAttributes{}, errors.Wrapf(err, "unable to convert the 'alt' image attribute into a string: '%v'", alt)
 	}
 	widthStr, err := stringify(width, strings.TrimSpace)
 	if err != nil {
-		return map[string]interface{}{}, errors.Wrapf(err, "unable to convert the 'width' image attribute into a string: '%v'", width)
+		return ElementAttributes{}, errors.Wrapf(err, "unable to convert the 'width' image attribute into a string: '%v'", width)
 	}
 	heightStr, err := stringify(height, strings.TrimSpace)
 	if err != nil {
-		return map[string]interface{}{}, errors.Wrapf(err, "unable to convert the 'height' image attribute into a string: '%v'", height)
+		return ElementAttributes{}, errors.Wrapf(err, "unable to convert the 'height' image attribute into a string: '%v'", height)
 	}
 	result[AttrImageAlt] = altStr
 	result[AttrImageWidth] = widthStr
 	result[AttrImageHeight] = heightStr
 	for _, otherAttr := range otherAttrs {
-		if otherAttr, ok := otherAttr.(map[string]interface{}); ok {
+		if otherAttr, ok := otherAttr.(ElementAttributes); ok {
 			for k, v := range otherAttr {
 				result[k] = v
 			}
@@ -1452,7 +1454,7 @@ func NewImageAttributes(alt, width, height []interface{}, otherAttrs []interface
 
 // DelimitedBlock the structure for the delimited blocks
 type DelimitedBlock struct {
-	Attributes map[string]interface{}
+	Attributes ElementAttributes
 	Elements   []interface{}
 }
 
@@ -1502,7 +1504,7 @@ func NewDelimitedBlock(kind BlockKind, content []interface{}, attributes []inter
 
 // Table the structure for the tables
 type Table struct {
-	Attributes map[string]interface{}
+	Attributes ElementAttributes
 	Header     TableLine
 	Lines      []TableLine
 }
@@ -1624,9 +1626,11 @@ func NewSingleLineComment(content []interface{}) (SingleLineComment, error) {
 
 const (
 	// AttrID the key to retrieve the ID in the element attributes
-	AttrID string = "elementID"
+	AttrID string = "id"
 	// AttrTitle the key to retrieve the title in the element attributes
 	AttrTitle string = "title"
+	// AttrRole the key to retrieve the role in the element attributes
+	AttrRole string = "role"
 	// AttrLink the key to retrieve the link in the element attributes
 	AttrLink string = "link"
 	// AttrAdmonitionKind the key to retrieve the kind of admonition in the element attributes, if a "masquerade" is used
@@ -1637,12 +1641,28 @@ const (
 	AttrQuoteTitle string = "quoteTitle"
 )
 
+// ElementAttributes is a map[string]interface{} with some utility methods
+type ElementAttributes map[string]interface{}
+
+// GetAsString returns the value of the key as a string, or empty string if the key did not exist
+func (a ElementAttributes) GetAsString(key string) string {
+	if v, ok := a[key]; ok {
+		return fmt.Sprintf("%v", v)
+	}
+	return ""
+}
+
 // NewElementAttributes retrieves the ElementID, ElementTitle and ElementLink from the given slice of attributes
-func NewElementAttributes(attributes []interface{}) map[string]interface{} {
-	attrbs := make(map[string]interface{})
+func NewElementAttributes(attributes []interface{}) ElementAttributes {
+	attrbs := make(ElementAttributes)
 	for _, attrb := range attributes {
 		log.Debugf("processing attribute %[1]v (%[1]T)", attrb)
 		switch attrb := attrb.(type) {
+		case ElementAttributes:
+			// TODO: warn if attribute already exists and is overridden
+			for k, v := range attrb {
+				attrbs[k] = v
+			}
 		case map[string]interface{}:
 			// TODO: warn if attribute already exists and is overridden
 			for k, v := range attrb {
@@ -1658,71 +1678,81 @@ func NewElementAttributes(attributes []interface{}) map[string]interface{} {
 }
 
 // NewElementID initializes a new attribute map with a single entry for the ID using the given value
-func NewElementID(id string) (map[string]interface{}, error) {
+func NewElementID(id string) (ElementAttributes, error) {
 	log.Debugf("initializing a new ElementID with ID=%s", id)
-	return map[string]interface{}{AttrID: id}, nil
+	return ElementAttributes{AttrID: id}, nil
 }
 
 // NewElementTitle initializes a new attribute map with a single entry for the title using the given value
-func NewElementTitle(value []interface{}) (map[string]interface{}, error) {
+func NewElementTitle(value []interface{}) (ElementAttributes, error) {
 	v, err := stringify(value)
 	if err != nil {
-		return map[string]interface{}{}, errors.Wrapf(err, "failed to initialize a new ElementTitle")
+		return ElementAttributes{}, errors.Wrapf(err, "failed to initialize a new ElementTitle")
 	}
 	log.Debugf("initializing a new ElementTitle with content=%s", v)
-	return map[string]interface{}{AttrTitle: v}, nil
+	return ElementAttributes{AttrTitle: v}, nil
+}
+
+// NewElementRole initializes a new attribute map with a single entry for the title using the given value
+func NewElementRole(value []interface{}) (ElementAttributes, error) {
+	v, err := stringify(value)
+	if err != nil {
+		return ElementAttributes{}, errors.Wrapf(err, "failed to initialize a new ElementRole")
+	}
+	log.Debugf("initializing a new ElementRole with content=%s", v)
+	return ElementAttributes{AttrRole: v}, nil
 }
 
 // NewAdmonitionAttribute initializes a new attribute map with a single entry for the admonition kind using the given value
-func NewAdmonitionAttribute(k AdmonitionKind) (map[string]interface{}, error) {
-	return map[string]interface{}{AttrAdmonitionKind: k}, nil
+func NewAdmonitionAttribute(k AdmonitionKind) (ElementAttributes, error) {
+	return ElementAttributes{AttrAdmonitionKind: k}, nil
 }
 
 // NewAttributeGroup initializes a group of attributes from the given generic attributes.
-func NewAttributeGroup(attributes []interface{}) (map[string]interface{}, error) {
+func NewAttributeGroup(attributes []interface{}) (ElementAttributes, error) {
 	// log.Debugf("initializing a new AttributeGroup with %v", attributes)
-	result := make(map[string]interface{}, 0)
+	result := make(ElementAttributes)
 	for _, a := range attributes {
-		// log.Debugf("processing attribute group element of type %T", a)
-		if a, ok := a.(GenericAttribute); ok {
+		log.Debugf("processing attribute group element of type %T", a)
+		if a, ok := a.(ElementAttributes); ok {
 			for k, v := range a {
 				result[k] = v
 			}
+		} else {
+			return result, errors.Errorf("unable to process element of type '%[1]T': '%[1]s'", a)
 		}
 	}
 	// log.Debugf("Initialized a new AttributeGroup: %v", result)
 	return result, nil
 }
 
-// GenericAttribute the structure for single, generic attribute.
-// If the attribute was specified in the form of [foo], then its key is 'foo' and its value is 'nil'.
-type GenericAttribute map[string]interface{}
-
-// NewGenericAttribute initializes a new GenericAttribute from the given key and optional value
-func NewGenericAttribute(key []interface{}, value []interface{}) (GenericAttribute, error) {
+// NewGenericAttribute initializes a new ElementAttribute from the given key and optional value
+func NewGenericAttribute(key []interface{}, value []interface{}) (ElementAttributes, error) {
 	result := make(map[string]interface{})
 	k, err := stringify(key,
 		// remove surrounding quotes
 		func(s string) string {
 			return strings.Trim(s, "\"")
-		})
+		},
+		strings.TrimSpace)
 	if err != nil {
-		return GenericAttribute{}, errors.Wrapf(err, "failed to initialize a new generic attribute")
+		return ElementAttributes{}, errors.Wrapf(err, "failed to initialize a new generic attribute")
 	}
 	if value != nil {
 		v, err := stringify(value,
 			// remove surrounding quotes
 			func(s string) string {
 				return strings.Trim(s, "\"")
-			})
+			},
+			strings.TrimSpace)
 		if err != nil {
-			return GenericAttribute{}, errors.Wrapf(err, "failed to initialize a new generic attribute")
+			return ElementAttributes{}, errors.Wrapf(err, "failed to initialize a new generic attribute")
 		}
 		result[k] = v
 	} else {
 		result[k] = nil
 	}
-	// log.Debugf("Initialized a new GenericAttribute: %v", result)
+	// log.Debugf("Initialized a new ElementAttributes: %v", result)
 	return result, nil
 }
 
@@ -1901,11 +1931,11 @@ func NewBlankLine() (BlankLine, error) {
 // Link the structure for the external links
 type Link struct {
 	URL        string
-	Attributes map[string]interface{}
+	Attributes ElementAttributes
 }
 
 // NewLink initializes a new `Link`
-func NewLink(url []interface{}, attributes map[string]interface{}) (Link, error) {
+func NewLink(url []interface{}, attributes ElementAttributes) (Link, error) {
 	urlStr, err := stringify(url)
 	if err != nil {
 		return Link{}, errors.Wrapf(err, "failed to initialize a new Link element")
@@ -1934,15 +1964,15 @@ func (l Link) Text() string {
 const AttrLinkText string = "text"
 
 // NewLinkAttributes returns a map of image attributes, some of which have implict keys (`text`)
-func NewLinkAttributes(text []interface{}, otherAttrs []interface{}) (map[string]interface{}, error) {
-	result := map[string]interface{}{}
+func NewLinkAttributes(text []interface{}, otherAttrs []interface{}) (ElementAttributes, error) {
+	result := ElementAttributes{}
 	textStr, err := stringify(text, strings.TrimSpace)
 	if err != nil {
-		return map[string]interface{}{}, errors.Wrapf(err, "unable to convert the 'text' link attribute into a string: '%v'", text)
+		return ElementAttributes{}, errors.Wrapf(err, "unable to convert the 'text' link attribute into a string: '%v'", text)
 	}
 	result[AttrLinkText] = textStr
 	for _, otherAttr := range otherAttrs {
-		if otherAttr, ok := otherAttr.(map[string]interface{}); ok {
+		if otherAttr, ok := otherAttr.(ElementAttributes); ok {
 			for k, v := range otherAttr {
 				result[k] = v
 			}

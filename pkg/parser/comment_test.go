@@ -13,7 +13,7 @@ var _ = Describe("comments", func() {
 		It("single line comment alone", func() {
 			actualDocument := `// A single-line comment.`
 			expectedResult := types.Paragraph{
-				Attributes: map[string]interface{}{},
+				Attributes: types.ElementAttributes{},
 				Lines: []types.InlineElements{
 					{
 						types.SingleLineComment{Content: " A single-line comment."},
@@ -26,7 +26,7 @@ var _ = Describe("comments", func() {
 		It("single line comment at end of line", func() {
 			actualDocument := `foo // A single-line comment.`
 			expectedResult := types.Paragraph{
-				Attributes: map[string]interface{}{},
+				Attributes: types.ElementAttributes{},
 				Lines: []types.InlineElements{
 					{
 						types.StringElement{Content: "foo // A single-line comment."},
@@ -41,7 +41,7 @@ var _ = Describe("comments", func() {
 // A single-line comment.
 another line`
 			expectedResult := types.Paragraph{
-				Attributes: map[string]interface{}{},
+				Attributes: types.ElementAttributes{},
 				Lines: []types.InlineElements{
 					{
 						types.StringElement{Content: "a first line"},
@@ -66,7 +66,7 @@ a *comment* block
 with multiple lines
 ////`
 			expectedResult := types.DelimitedBlock{
-				Attributes: map[string]interface{}{
+				Attributes: types.ElementAttributes{
 					types.AttrBlockKind: types.Comment,
 				},
 				Elements: []interface{}{
@@ -89,11 +89,11 @@ with multiple lines
 ////
 a second paragraph`
 			expectedResult := types.Document{
-				Attributes:        map[string]interface{}{},
+				Attributes:        types.DocumentAttributes{},
 				ElementReferences: map[string]interface{}{},
 				Elements: []interface{}{
 					types.Paragraph{
-						Attributes: map[string]interface{}{},
+						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
 							{
 								types.StringElement{Content: "a first paragraph"},
@@ -101,7 +101,7 @@ a second paragraph`
 						},
 					},
 					types.DelimitedBlock{
-						Attributes: map[string]interface{}{
+						Attributes: types.ElementAttributes{
 							types.AttrBlockKind: types.Comment,
 						},
 						Elements: []interface{}{
@@ -114,7 +114,7 @@ a second paragraph`
 						},
 					},
 					types.Paragraph{
-						Attributes: map[string]interface{}{},
+						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
 							{
 								types.StringElement{Content: "a second paragraph"},

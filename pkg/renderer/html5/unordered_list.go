@@ -15,8 +15,9 @@ var unorderedListTmpl texttemplate.Template
 // initializes the templates
 func init() {
 	unorderedListTmpl = newTextTemplate("unordered list",
-		`{{ $ctx := .Context }}{{ with .Data }}<div{{ if hasID .Attributes }} id="{{ getID .Attributes }}"{{ end }} class="ulist">
-<ul>
+		`{{ $ctx := .Context }}{{ with .Data }}<div{{ if .ID }} id="{{ .ID }}"{{ end }} class="ulist{{ if .Role }} {{ .Role }}{{ end}}">
+{{ if .Title }}<div class="title">{{ .Title }}</div>
+{{ end }}<ul>
 {{ $items := .Items }}{{ range $itemIndex, $item := $items }}<li>
 {{ $elements := $item.Elements }}{{ renderElements $ctx $elements }}
 </li>
@@ -24,8 +25,6 @@ func init() {
 </div>{{ end }}`,
 		texttemplate.FuncMap{
 			"renderElements": renderElementAsString,
-			"hasID":          hasID,
-			"getID":          getID,
 		})
 }
 
@@ -40,7 +39,17 @@ func renderUnorderedList(ctx *renderer.Context, l types.UnorderedList) ([]byte, 
 	// here we must preserve the HTML tags
 	err := unorderedListTmpl.Execute(result, ContextualPipeline{
 		Context: ctx,
-		Data:    l,
+		Data: struct {
+			ID    string
+			Title string
+			Role  string
+			Items []types.UnorderedListItem
+		}{
+			ID:    l.Attributes.GetAsString(types.AttrID),
+			Title: l.Attributes.GetAsString(types.AttrTitle),
+			Role:  l.Attributes.GetAsString(types.AttrRole),
+			Items: l.Items,
+		},
 	})
 	if err != nil {
 		return nil, errors.Wrapf(err, "unable to render unordered list")

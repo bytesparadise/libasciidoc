@@ -117,7 +117,7 @@ TableOfContentsMacro <- "toc::[]" NEWLINE
 // ------------------------------------------
 // Element Attributes
 // ------------------------------------------
-ElementAttribute <- attr:(ElementID / ElementTitle / AdmonitionMarkerAttribute / HorizontalLayout / AttributeGroup) WS* EOL {
+ElementAttribute <- attr:(ElementID / ElementTitle / ElementRole / AdmonitionMarkerAttribute / HorizontalLayout / AttributeGroup) WS* EOL {
     return attr, nil // avoid returning something like `[]interface{}{attr, EOL}`
 }
 
@@ -136,10 +136,16 @@ InlineElementID <- "[[" id:(ID) "]]" {
     return types.NewElementID(id.(string))
 }
 
-// a title attached to an element, such as a BlockImage (
+// a title attached to an element, such as a BlockImage
 // a title starts with a single "." followed by the value, without space in-between
 ElementTitle <- "." !"." !WS title:(!NEWLINE .)+ {
     return types.NewElementTitle(title.([]interface{}))
+}
+
+// a role attached to an element, such as a BlockImage
+// a role starts is wrapped in "[. ]" 
+ElementRole <- "[." !WS role:(!NEWLINE !"]" .)+ "]"{
+    return types.NewElementRole(role.([]interface{}))
 }
 
 // expression for the whole admonition marker, but only retains the actual kind
@@ -147,33 +153,27 @@ AdmonitionMarkerAttribute <- "[" k:(AdmonitionKind) "]" {
     return types.NewAdmonitionAttribute(k.(types.AdmonitionKind))
 }
 
-// one or more attributes. eg: [foo, key1=value1, key2=value2]other
-AttributeGroup <- "[" attribute:(GenericAttribute) attributes:(OtherGenericAttribute)*  "]" {
-    return types.NewAttributeGroup(append([]interface{}{attribute}, attributes.([]interface{})...))
+// one or more attributes. eg: [foo, key1=value1, key2 = value2 , ]
+AttributeGroup <- "[" !WS attributes:(GenericAttribute)*  "]" {
+    return types.NewAttributeGroup(attributes.([]interface{}))
 }
 
-GenericAttribute <- key:(AttributeKey) "=" value:(AttributeValue) { // value is set
+GenericAttribute <- key:(AttributeKey) "=" value:(AttributeValue) ","? WS* { // value is set
     return types.NewGenericAttribute(key.([]interface{}), value.([]interface{}))
-} / key:(AttributeKey) { // value is not set
+} / key:(AttributeKey) ","? WS* { // value is not set
     return types.NewGenericAttribute(key.([]interface{}), nil)
 }
 
-OtherGenericAttribute <- "," WS* key:(AttributeKey) "=" value:(AttributeValue) { // value is set
-    return types.NewGenericAttribute(key.([]interface{}), value.([]interface{}))
-} / "," WS* key:(AttributeKey) { // value is not set
-    return types.NewGenericAttribute(key.([]interface{}), nil)
-}
-
-AttributeKey <- key:(!WS !"=" !"," !"]" .)+ WS*  {
+AttributeKey <- !VerseKind key:(!"=" !"," !"]" .)+  {
     return key, nil
 }
 
-AttributeValue <- WS* value:(!WS !"=" !"]" .)* WS* {
+AttributeValue <- value:(!"=" !"," !"]" .)* {
     return value, nil
 }
 
 HorizontalLayout <- "[horizontal]" {
-    return map[string]interface{}{"layout": "horizontal"}, nil
+    return types.ElementAttributes{"layout": "horizontal"}, nil
 }
 
 QuoteAttributes <- "[" kind:(QuoteKind) WS* "," author:(QuoteAuthor) "," title:(QuoteTitle) "]" {
@@ -622,20 +622,20 @@ Link <- link:(RelativeLink / ExternalLink) {
 }
 
 ExternalLink <- url:(URL_SCHEME URL) attributes:(LinkAttributes) {
-    return types.NewLink(url.([]interface{}), attributes.(map[string]interface{}))
+    return types.NewLink(url.([]interface{}), attributes.(types.ElementAttributes))
 } / url:(URL_SCHEME URL) {
     return types.NewLink(url.([]interface{}), nil)
 }
 
 // url preceeding with `link:` MUST be followed by square brackets
 RelativeLink <- "link:" url:(URL_SCHEME? URL) attributes:(LinkAttributes) {
-    return types.NewLink(url.([]interface{}), attributes.(map[string]interface{}))
+    return types.NewLink(url.([]interface{}), attributes.(types.ElementAttributes))
 }
 
 LinkAttributes <- "[" text:(LinkTextAttribute)
-        otherAttrs:(OtherGenericAttribute)* "]" {
+        otherAttrs:(GenericAttribute)* "]" {
     return types.NewLinkAttributes(text.([]interface{}), otherAttrs.([]interface{}))
-} / "[" otherAttrs:(OtherGenericAttribute)* "]" {
+} / "[" otherAttrs:(GenericAttribute)* "]" {
     return types.NewLinkAttributes(nil, otherAttrs.([]interface{}))
 }
 
@@ -646,49 +646,33 @@ LinkTextAttribute <- value:(!"," !"]" .)+ {
 // ------------------------------------------
 // Images
 // ------------------------------------------
-BlockImage <- attributes:(ElementAttribute)* image:BlockImageMacro  WS* EOL {
-    // here we can ignore the blank line in the returned element
-    return types.NewBlockImage(image.(types.ImageMacro), attributes.([]interface{}))
+BlockImage <- attributes:(ElementAttribute)* "image::" path:(URL) inlineAttributes:(ImageAttributes) WS* EOL {
+    return types.NewBlockImage(path.(string), attributes.([]interface{}), inlineAttributes.(types.ElementAttributes))
 }
 
-BlockImageMacro <- "image::" path:(URL) attributes:(ImageAttributes) {
-    return types.NewImageMacro(path.(string), attributes.(map[string]interface{}))
+InlineImage <- "image:" !":" path:(URL) attributes:(ImageAttributes) {
+    return types.NewInlineImage(path.(string), attributes.(types.ElementAttributes))
 }
 
-InlineImage <- image:InlineImageMacro {
-    // here we can ignore the blank line in the returned element
-    return types.NewInlineImage(image.(types.ImageMacro))
-}
+// the 'ImageAttributes' rule could be simpler, but the grammar optimizer fails to produce a valid code :(
+ImageAttributes <- "[" alt:(ImageAttribute) 
+        width:(ImageAttribute) 
+        height:(ImageAttribute) 
+        otherAttrs:(GenericAttribute)* "]" {
+            return types.NewImageAttributes(alt.([]interface{}), width.([]interface{}), height.([]interface{}), otherAttrs.([]interface{}))
+    } / "[" alt:(ImageAttribute)
+        width:(ImageAttribute) 
+        otherAttrs:(GenericAttribute)* "]" {
+            return types.NewImageAttributes(alt.([]interface{}), width.([]interface{}), nil, otherAttrs.([]interface{}))
+    } / "[" alt:(ImageAttribute) 
+        otherAttrs:(GenericAttribute)* "]" {
+            return types.NewImageAttributes(alt.([]interface{}), nil, nil, otherAttrs.([]interface{}))
+    } / "[" otherAttrs:(GenericAttribute)* "]" {
+            return types.NewImageAttributes(nil, nil, nil, otherAttrs.([]interface{}))
+    } 
 
-InlineImageMacro <- "image:" !":" path:(URL) attributes:(ImageAttributes) {
-    return types.NewImageMacro(path.(string), attributes.(map[string]interface{}))
-}
 
-ImageAttributes <- "[" alt:(ImageAltAttribute)
-        width:(ImageWidthAttribute)
-        height:(ImageHeightAttribute)
-        otherAttrs:(OtherGenericAttribute)* "]" {
-    return types.NewImageAttributes(alt.([]interface{}), width.([]interface{}), height.([]interface{}), otherAttrs.([]interface{}))
-} / "[" alt:(ImageAltAttribute)
-        width:(ImageWidthAttribute)
-        otherAttrs:(OtherGenericAttribute)* "]" {
-    return types.NewImageAttributes(alt.([]interface{}), width.([]interface{}), nil, otherAttrs.([]interface{}))
-} / "[" alt:(ImageAltAttribute)
-        otherAttrs:(OtherGenericAttribute)* "]" {
-    return types.NewImageAttributes(alt.([]interface{}), nil, nil, otherAttrs.([]interface{}))
-} / "[" otherAttrs:(OtherGenericAttribute)* "]" {
-    return types.NewImageAttributes(nil, nil, nil, otherAttrs.([]interface{}))
-}
-
-ImageAltAttribute <- value:(!"," !"]" .)+ {
-    return value, nil
-}
-
-ImageWidthAttribute <- "," value:(!"," !"]" .)+ {
-    return value, nil
-}
-
-ImageHeightAttribute <- "," value:(!"," !"]" .)+ {
+ImageAttribute <- value:(!"," !"=" !"]" .)+ ("," / &"]") { // attribute is followed by "," or "]" (but do not consume the latter)
     return value, nil
 }
 
@@ -784,9 +768,6 @@ VerseBlockAttributes <-
     attribute:(VerseAttributes) WS* EOL {
         return attribute, nil 
     } 
-    // / attribute:(ElementAttribute) {
-    //     return attribute, nil 
-    // }
 
 VerseBlockContent <- lines:(VerseBlockLine)+ {
     return types.NewParagraph(lines.([]interface{}), nil)
@@ -803,7 +784,6 @@ VerseBlockLineContent <- elements:(!QuoteBlockDelimiter !EOL WS* InlineElement W
 // -------------------------------------------------------------------------------------
 // Tables
 // -------------------------------------------------------------------------------------
-
 Table <- attributes:(ElementAttribute)* 
         TableDelimiter WS* NEWLINE
         header:(TableLineHeader)?
@@ -833,7 +813,6 @@ TableCell <- TableCellSeparator elements:(!TableCellSeparator !EOL WS* InlineEle
 // -------------------------------------------------------------------------------------
 // Comments
 // -------------------------------------------------------------------------------------
-
 CommentBlockDelimiter <- "////"
 
 CommentBlock <- attributes:(ElementAttribute)* CommentBlockDelimiter WS* NEWLINE content:(CommentBlockLine)*  ((CommentBlockDelimiter WS* EOL) / EOF) {

@@ -8,14 +8,16 @@ var _ = Describe("labeled lists of items", func() {
 
 	Context("simple items", func() {
 
-		It("simple labeled list with a title and a default layout", func() {
-			actualContent := `[#listID]
+		It("simple labeled list with id, title, role and a default layout", func() {
+			actualContent := `.mytitle
+[#listID]
+[.myrole]
 item 1:: description 1.
 item 2:: description 2
 on 2 lines.
 item 3:: description 3
 on 2 lines, too.`
-			expectedResult := `<div id="listID" class="dlist">
+			expectedResult := `<div id="listID" class="dlist myrole">
 <dl>
 <dt class="hdlist1">item 1</dt>
 <dd>
@@ -150,13 +152,17 @@ item 2:: something simple`
 
 	Context("horizontal layout", func() {
 
-		It("simple labeled list with horizontal layout", func() {
-			actualContent := `[horizontal]
+		It("simple labeled list with horizontal layout, id, title and role", func() {
+			actualContent := `.title
+[#myid]
+[.myrole]
+[horizontal]
 item 1::
 item 2:: description 2 on 1 line.
 item 3:: description 3
 on 2 lines, too.`
-			expectedResult := `<div class="hdlist">
+			expectedResult := `<div id="myid" class="hdlist myrole">
+<div class="title">title</div>
 <table>
 <tr>
 <td class="hdlist1">

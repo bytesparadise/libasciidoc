@@ -13,7 +13,7 @@ var _ = Describe("ordered lists", func() {
 		// same single item in the list for each test in this context
 		elements := []interface{}{
 			types.Paragraph{
-				Attributes: map[string]interface{}{},
+				Attributes: types.ElementAttributes{},
 				Lines: []types.InlineElements{
 					{
 						types.StringElement{Content: "item"},
@@ -100,7 +100,7 @@ var _ = Describe("ordered lists", func() {
 				Level:          1,
 				Position:       1,
 				NumberingStyle: types.Arabic,
-				Attributes: map[string]interface{}{
+				Attributes: types.ElementAttributes{
 					"lowerroman": nil,
 				},
 				Elements: elements,
@@ -115,7 +115,7 @@ var _ = Describe("ordered lists", func() {
 				Level:          1,
 				Position:       1,
 				NumberingStyle: types.Arabic,
-				Attributes: map[string]interface{}{
+				Attributes: types.ElementAttributes{
 					"start": "5",
 				},
 				Elements: elements,
@@ -130,7 +130,7 @@ var _ = Describe("ordered lists", func() {
 				Level:          1,
 				Position:       1,
 				NumberingStyle: types.Arabic,
-				Attributes: map[string]interface{}{
+				Attributes: types.ElementAttributes{
 					"lowerroman": nil,
 					"start":      "5",
 				},
@@ -148,7 +148,7 @@ var _ = Describe("ordered lists", func() {
 . b`
 
 			expectedResult := types.OrderedList{
-				Attributes: map[string]interface{}{},
+				Attributes: types.ElementAttributes{},
 				Items: []types.OrderedListItem{
 					{
 						Level:          1,
@@ -157,7 +157,7 @@ var _ = Describe("ordered lists", func() {
 						Attributes:     map[string]interface{}{},
 						Elements: []interface{}{
 							types.Paragraph{
-								Attributes: map[string]interface{}{},
+								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
 										types.StringElement{Content: "a"},
@@ -173,7 +173,7 @@ var _ = Describe("ordered lists", func() {
 						Attributes:     map[string]interface{}{},
 						Elements: []interface{}{
 							types.Paragraph{
-								Attributes: map[string]interface{}{},
+								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
 										types.StringElement{Content: "b"},
@@ -192,7 +192,7 @@ var _ = Describe("ordered lists", func() {
 . item 2`
 
 			expectedResult := types.OrderedList{
-				Attributes: map[string]interface{}{},
+				Attributes: types.ElementAttributes{},
 				Items: []types.OrderedListItem{
 					{
 						Level:          1,
@@ -201,7 +201,7 @@ var _ = Describe("ordered lists", func() {
 						Attributes:     map[string]interface{}{},
 						Elements: []interface{}{
 							types.Paragraph{
-								Attributes: map[string]interface{}{},
+								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
 										types.StringElement{Content: "item 1"},
@@ -217,7 +217,7 @@ var _ = Describe("ordered lists", func() {
 						Attributes:     map[string]interface{}{},
 						Elements: []interface{}{
 							types.Paragraph{
-								Attributes: map[string]interface{}{},
+								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
 										types.StringElement{Content: "item 2"},
@@ -242,7 +242,7 @@ var _ = Describe("ordered lists", func() {
 .. item 2.1`
 
 			expectedResult := types.OrderedList{
-				Attributes: map[string]interface{}{},
+				Attributes: types.ElementAttributes{},
 				Items: []types.OrderedListItem{
 					{
 						Level:          1,
@@ -251,7 +251,7 @@ var _ = Describe("ordered lists", func() {
 						Attributes:     map[string]interface{}{},
 						Elements: []interface{}{
 							types.Paragraph{
-								Attributes: map[string]interface{}{},
+								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
 										types.StringElement{Content: "item 1"},
@@ -259,7 +259,7 @@ var _ = Describe("ordered lists", func() {
 								},
 							},
 							types.OrderedList{
-								Attributes: map[string]interface{}{},
+								Attributes: types.ElementAttributes{},
 								Items: []types.OrderedListItem{
 									{
 										Level:          2,
@@ -268,7 +268,7 @@ var _ = Describe("ordered lists", func() {
 										Attributes:     map[string]interface{}{},
 										Elements: []interface{}{
 											types.Paragraph{
-												Attributes: map[string]interface{}{},
+												Attributes: types.ElementAttributes{},
 												Lines: []types.InlineElements{
 													{
 														types.StringElement{Content: "item 1.1"},
@@ -276,18 +276,18 @@ var _ = Describe("ordered lists", func() {
 												},
 											},
 											types.OrderedList{
-												Attributes: map[string]interface{}{},
+												Attributes: types.ElementAttributes{},
 												Items: []types.OrderedListItem{
 													{
 														Level:          3,
 														Position:       1,
 														NumberingStyle: types.UpperRoman,
-														Attributes: map[string]interface{}{
+														Attributes: types.ElementAttributes{
 															"upperroman": nil,
 														},
 														Elements: []interface{}{
 															types.Paragraph{
-																Attributes: map[string]interface{}{},
+																Attributes: types.ElementAttributes{},
 																Lines: []types.InlineElements{
 																	{
 																		types.StringElement{Content: "item 1.1.1"},
@@ -303,7 +303,7 @@ var _ = Describe("ordered lists", func() {
 														Attributes:     map[string]interface{}{},
 														Elements: []interface{}{
 															types.Paragraph{
-																Attributes: map[string]interface{}{},
+																Attributes: types.ElementAttributes{},
 																Lines: []types.InlineElements{
 																	{
 																		types.StringElement{Content: "item 1.1.2"},
@@ -323,7 +323,7 @@ var _ = Describe("ordered lists", func() {
 										Attributes:     map[string]interface{}{},
 										Elements: []interface{}{
 											types.Paragraph{
-												Attributes: map[string]interface{}{},
+												Attributes: types.ElementAttributes{},
 												Lines: []types.InlineElements{
 													{
 														types.StringElement{Content: "item 1.2"},
@@ -343,7 +343,7 @@ var _ = Describe("ordered lists", func() {
 						Attributes:     map[string]interface{}{},
 						Elements: []interface{}{
 							types.Paragraph{
-								Attributes: map[string]interface{}{},
+								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
 										types.StringElement{Content: "item 2"},
@@ -351,7 +351,7 @@ var _ = Describe("ordered lists", func() {
 								},
 							},
 							types.OrderedList{
-								Attributes: map[string]interface{}{},
+								Attributes: types.ElementAttributes{},
 								Items: []types.OrderedListItem{
 									{
 										Level:          2,
@@ -360,7 +360,7 @@ var _ = Describe("ordered lists", func() {
 										Attributes:     map[string]interface{}{},
 										Elements: []interface{}{
 											types.Paragraph{
-												Attributes: map[string]interface{}{},
+												Attributes: types.ElementAttributes{},
 												Lines: []types.InlineElements{
 													{
 														types.StringElement{Content: "item 2.1"},
@@ -394,7 +394,7 @@ var _ = Describe("ordered lists", func() {
 
 `
 			expectedResult := types.OrderedList{
-				Attributes: map[string]interface{}{},
+				Attributes: types.ElementAttributes{},
 				Items: []types.OrderedListItem{
 					{
 						Level:          1,
@@ -403,7 +403,7 @@ var _ = Describe("ordered lists", func() {
 						Attributes:     map[string]interface{}{},
 						Elements: []interface{}{
 							types.Paragraph{
-								Attributes: map[string]interface{}{},
+								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
 										types.StringElement{Content: "level 1"},
@@ -411,7 +411,7 @@ var _ = Describe("ordered lists", func() {
 								},
 							},
 							types.OrderedList{
-								Attributes: map[string]interface{}{},
+								Attributes: types.ElementAttributes{},
 								Items: []types.OrderedListItem{
 									{
 										Level:          2,
@@ -420,7 +420,7 @@ var _ = Describe("ordered lists", func() {
 										Attributes:     map[string]interface{}{},
 										Elements: []interface{}{
 											types.Paragraph{
-												Attributes: map[string]interface{}{},
+												Attributes: types.ElementAttributes{},
 												Lines: []types.InlineElements{
 													{
 														types.StringElement{Content: "level 2"},
@@ -428,7 +428,7 @@ var _ = Describe("ordered lists", func() {
 												},
 											},
 											types.OrderedList{
-												Attributes: map[string]interface{}{},
+												Attributes: types.ElementAttributes{},
 												Items: []types.OrderedListItem{
 													{
 														Level:          3,
@@ -437,7 +437,7 @@ var _ = Describe("ordered lists", func() {
 														Attributes:     map[string]interface{}{},
 														Elements: []interface{}{
 															types.Paragraph{
-																Attributes: map[string]interface{}{},
+																Attributes: types.ElementAttributes{},
 																Lines: []types.InlineElements{
 																	{
 																		types.StringElement{Content: "level 3"},
@@ -445,7 +445,7 @@ var _ = Describe("ordered lists", func() {
 																},
 															},
 															types.OrderedList{
-																Attributes: map[string]interface{}{},
+																Attributes: types.ElementAttributes{},
 																Items: []types.OrderedListItem{
 																	{
 																		Level:          4,
@@ -454,7 +454,7 @@ var _ = Describe("ordered lists", func() {
 																		Attributes:     map[string]interface{}{},
 																		Elements: []interface{}{
 																			types.Paragraph{
-																				Attributes: map[string]interface{}{},
+																				Attributes: types.ElementAttributes{},
 																				Lines: []types.InlineElements{
 																					{
 																						types.StringElement{Content: "level 4"},
@@ -462,7 +462,7 @@ var _ = Describe("ordered lists", func() {
 																				},
 																			},
 																			types.OrderedList{
-																				Attributes: map[string]interface{}{},
+																				Attributes: types.ElementAttributes{},
 																				Items: []types.OrderedListItem{
 																					{
 																						Level:          5,
@@ -471,7 +471,7 @@ var _ = Describe("ordered lists", func() {
 																						Attributes:     map[string]interface{}{},
 																						Elements: []interface{}{
 																							types.Paragraph{
-																								Attributes: map[string]interface{}{},
+																								Attributes: types.ElementAttributes{},
 																								Lines: []types.InlineElements{
 																									{
 																										types.StringElement{Content: "level 5."},
@@ -509,7 +509,7 @@ var _ = Describe("ordered lists", func() {
 			actualContent := `1. a
 2. b`
 			expectedResult := types.OrderedList{
-				Attributes: map[string]interface{}{},
+				Attributes: types.ElementAttributes{},
 				Items: []types.OrderedListItem{
 					{
 						Level:          1,
@@ -518,7 +518,7 @@ var _ = Describe("ordered lists", func() {
 						Attributes:     map[string]interface{}{},
 						Elements: []interface{}{
 							types.Paragraph{
-								Attributes: map[string]interface{}{},
+								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
 										types.StringElement{Content: "a"},
@@ -534,7 +534,7 @@ var _ = Describe("ordered lists", func() {
 						Attributes:     map[string]interface{}{},
 						Elements: []interface{}{
 							types.Paragraph{
-								Attributes: map[string]interface{}{},
+								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
 										types.StringElement{Content: "b"},
@@ -554,7 +554,7 @@ a. item 1.a
 2. item 2
 b. item 2.a`
 			expectedResult := types.OrderedList{
-				Attributes: map[string]interface{}{},
+				Attributes: types.ElementAttributes{},
 				Items: []types.OrderedListItem{
 					{
 						Level:          1,
@@ -563,7 +563,7 @@ b. item 2.a`
 						Attributes:     map[string]interface{}{},
 						Elements: []interface{}{
 							types.Paragraph{
-								Attributes: map[string]interface{}{},
+								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
 										types.StringElement{Content: "item 1"},
@@ -571,7 +571,7 @@ b. item 2.a`
 								},
 							},
 							types.OrderedList{
-								Attributes: map[string]interface{}{},
+								Attributes: types.ElementAttributes{},
 								Items: []types.OrderedListItem{
 									{
 										Level:          2,
@@ -580,7 +580,7 @@ b. item 2.a`
 										Attributes:     map[string]interface{}{},
 										Elements: []interface{}{
 											types.Paragraph{
-												Attributes: map[string]interface{}{},
+												Attributes: types.ElementAttributes{},
 												Lines: []types.InlineElements{
 													{
 														types.StringElement{Content: "item 1.a"},
@@ -600,7 +600,7 @@ b. item 2.a`
 						Attributes:     map[string]interface{}{},
 						Elements: []interface{}{
 							types.Paragraph{
-								Attributes: map[string]interface{}{},
+								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
 										types.StringElement{Content: "item 2"},
@@ -608,7 +608,7 @@ b. item 2.a`
 								},
 							},
 							types.OrderedList{
-								Attributes: map[string]interface{}{},
+								Attributes: types.ElementAttributes{},
 								Items: []types.OrderedListItem{
 									{
 										Level:          2,
@@ -617,7 +617,7 @@ b. item 2.a`
 										Attributes:     map[string]interface{}{},
 										Elements: []interface{}{
 											types.Paragraph{
-												Attributes: map[string]interface{}{},
+												Attributes: types.ElementAttributes{},
 												Lines: []types.InlineElements{
 													{
 														types.StringElement{Content: "item 2.a"},
@@ -646,7 +646,7 @@ b. item 2.a`
 * Item C
 * Item D`
 			expectedResult := types.OrderedList{
-				Attributes: map[string]interface{}{},
+				Attributes: types.ElementAttributes{},
 				Items: []types.OrderedListItem{
 					{
 						Level:          1,
@@ -655,7 +655,7 @@ b. item 2.a`
 						Attributes:     map[string]interface{}{},
 						Elements: []interface{}{
 							types.Paragraph{
-								Attributes: map[string]interface{}{},
+								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
 										types.StringElement{Content: "Item 1"},
@@ -663,14 +663,14 @@ b. item 2.a`
 								},
 							},
 							types.UnorderedList{
-								Attributes: map[string]interface{}{},
+								Attributes: types.ElementAttributes{},
 								Items: []types.UnorderedListItem{
 									{
 										Level:       1,
 										BulletStyle: types.OneAsterisk,
 										Elements: []interface{}{
 											types.Paragraph{
-												Attributes: map[string]interface{}{},
+												Attributes: types.ElementAttributes{},
 												Lines: []types.InlineElements{
 													{
 														types.StringElement{Content: "Item A"},
@@ -684,7 +684,7 @@ b. item 2.a`
 										BulletStyle: types.OneAsterisk,
 										Elements: []interface{}{
 											types.Paragraph{
-												Attributes: map[string]interface{}{},
+												Attributes: types.ElementAttributes{},
 												Lines: []types.InlineElements{
 													{
 														types.StringElement{Content: "Item B"},
@@ -704,7 +704,7 @@ b. item 2.a`
 						Attributes:     map[string]interface{}{},
 						Elements: []interface{}{
 							types.Paragraph{
-								Attributes: map[string]interface{}{},
+								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
 										types.StringElement{Content: "Item 2"},
@@ -712,14 +712,14 @@ b. item 2.a`
 								},
 							},
 							types.UnorderedList{
-								Attributes: map[string]interface{}{},
+								Attributes: types.ElementAttributes{},
 								Items: []types.UnorderedListItem{
 									{
 										Level:       1,
 										BulletStyle: types.OneAsterisk,
 										Elements: []interface{}{
 											types.Paragraph{
-												Attributes: map[string]interface{}{},
+												Attributes: types.ElementAttributes{},
 												Lines: []types.InlineElements{
 													{
 														types.StringElement{Content: "Item C"},
@@ -733,7 +733,7 @@ b. item 2.a`
 										BulletStyle: types.OneAsterisk,
 										Elements: []interface{}{
 											types.Paragraph{
-												Attributes: map[string]interface{}{},
+												Attributes: types.ElementAttributes{},
 												Lines: []types.InlineElements{
 													{
 														types.StringElement{Content: "Item D"},
@@ -765,14 +765,14 @@ b. item 2.a`
 	- unordered 2
 	* unordered 2.1`
 			expectedResult := types.UnorderedList{
-				Attributes: map[string]interface{}{},
+				Attributes: types.ElementAttributes{},
 				Items: []types.UnorderedListItem{
 					{
 						Level:       1,
 						BulletStyle: types.Dash,
 						Elements: []interface{}{
 							types.Paragraph{
-								Attributes: map[string]interface{}{},
+								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
 										types.StringElement{Content: "unordered 1"},
@@ -780,7 +780,7 @@ b. item 2.a`
 								},
 							},
 							types.OrderedList{
-								Attributes: map[string]interface{}{},
+								Attributes: types.ElementAttributes{},
 								Items: []types.OrderedListItem{
 									{
 										Level:          1,
@@ -789,7 +789,7 @@ b. item 2.a`
 										Attributes:     map[string]interface{}{},
 										Elements: []interface{}{
 											types.Paragraph{
-												Attributes: map[string]interface{}{},
+												Attributes: types.ElementAttributes{},
 												Lines: []types.InlineElements{
 													{
 														types.StringElement{Content: "ordered 1.1"},
@@ -797,7 +797,7 @@ b. item 2.a`
 												},
 											},
 											types.OrderedList{
-												Attributes: map[string]interface{}{},
+												Attributes: types.ElementAttributes{},
 												Items: []types.OrderedListItem{
 													{
 														Level:          2,
@@ -806,7 +806,7 @@ b. item 2.a`
 														Attributes:     map[string]interface{}{},
 														Elements: []interface{}{
 															types.Paragraph{
-																Attributes: map[string]interface{}{},
+																Attributes: types.ElementAttributes{},
 																Lines: []types.InlineElements{
 																	{
 																		types.StringElement{Content: "ordered 1.1.a"},
@@ -822,7 +822,7 @@ b. item 2.a`
 														Attributes:     map[string]interface{}{},
 														Elements: []interface{}{
 															types.Paragraph{
-																Attributes: map[string]interface{}{},
+																Attributes: types.ElementAttributes{},
 																Lines: []types.InlineElements{
 																	{
 																		types.StringElement{Content: "ordered 1.1.b"},
@@ -838,7 +838,7 @@ b. item 2.a`
 														Attributes:     map[string]interface{}{},
 														Elements: []interface{}{
 															types.Paragraph{
-																Attributes: map[string]interface{}{},
+																Attributes: types.ElementAttributes{},
 																Lines: []types.InlineElements{
 																	{
 																		types.StringElement{Content: "ordered 1.1.c"},
@@ -858,7 +858,7 @@ b. item 2.a`
 										Attributes:     map[string]interface{}{},
 										Elements: []interface{}{
 											types.Paragraph{
-												Attributes: map[string]interface{}{},
+												Attributes: types.ElementAttributes{},
 												Lines: []types.InlineElements{
 													{
 														types.StringElement{Content: "ordered 1.2"},
@@ -866,7 +866,7 @@ b. item 2.a`
 												},
 											},
 											types.OrderedList{
-												Attributes: map[string]interface{}{},
+												Attributes: types.ElementAttributes{},
 												Items: []types.OrderedListItem{
 													{
 														Level:          2,
@@ -875,7 +875,7 @@ b. item 2.a`
 														Attributes:     map[string]interface{}{},
 														Elements: []interface{}{
 															types.Paragraph{
-																Attributes: map[string]interface{}{},
+																Attributes: types.ElementAttributes{},
 																Lines: []types.InlineElements{
 																	{
 																		types.StringElement{Content: "ordered 1.2.i"},
@@ -891,7 +891,7 @@ b. item 2.a`
 														Attributes:     map[string]interface{}{},
 														Elements: []interface{}{
 															types.Paragraph{
-																Attributes: map[string]interface{}{},
+																Attributes: types.ElementAttributes{},
 																Lines: []types.InlineElements{
 																	{
 																		types.StringElement{Content: "ordered 1.2.ii"},
@@ -911,7 +911,7 @@ b. item 2.a`
 										Attributes:     map[string]interface{}{},
 										Elements: []interface{}{
 											types.Paragraph{
-												Attributes: map[string]interface{}{},
+												Attributes: types.ElementAttributes{},
 												Lines: []types.InlineElements{
 													{
 														types.StringElement{Content: "ordered 1.3"},
@@ -927,7 +927,7 @@ b. item 2.a`
 										Attributes:     map[string]interface{}{},
 										Elements: []interface{}{
 											types.Paragraph{
-												Attributes: map[string]interface{}{},
+												Attributes: types.ElementAttributes{},
 												Lines: []types.InlineElements{
 													{
 														types.StringElement{Content: "ordered 1.4"},
@@ -945,7 +945,7 @@ b. item 2.a`
 						BulletStyle: types.Dash,
 						Elements: []interface{}{
 							types.Paragraph{
-								Attributes: map[string]interface{}{},
+								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
 										types.StringElement{Content: "unordered 2"},
@@ -953,14 +953,14 @@ b. item 2.a`
 								},
 							},
 							types.UnorderedList{
-								Attributes: map[string]interface{}{},
+								Attributes: types.ElementAttributes{},
 								Items: []types.UnorderedListItem{
 									{
 										Level:       2,
 										BulletStyle: types.OneAsterisk,
 										Elements: []interface{}{
 											types.Paragraph{
-												Attributes: map[string]interface{}{},
+												Attributes: types.ElementAttributes{},
 												Lines: []types.InlineElements{
 													{
 														types.StringElement{Content: "unordered 2.1"},
@@ -1004,14 +1004,14 @@ b. item 2.a`
 	.. ordered 3.2.II
 . ordered 3.3`
 			expectedResult := types.UnorderedList{
-				Attributes: map[string]interface{}{},
+				Attributes: types.ElementAttributes{},
 				Items: []types.UnorderedListItem{
 					{
 						Level:       1,
 						BulletStyle: types.Dash,
 						Elements: []interface{}{
 							types.Paragraph{
-								Attributes: map[string]interface{}{},
+								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
 										types.StringElement{Content: "unordered 1"},
@@ -1019,7 +1019,7 @@ b. item 2.a`
 								},
 							},
 							types.OrderedList{
-								Attributes: map[string]interface{}{},
+								Attributes: types.ElementAttributes{},
 								Items: []types.OrderedListItem{
 									{
 										Level:          1,
@@ -1028,7 +1028,7 @@ b. item 2.a`
 										Attributes:     map[string]interface{}{},
 										Elements: []interface{}{
 											types.Paragraph{
-												Attributes: map[string]interface{}{},
+												Attributes: types.ElementAttributes{},
 												Lines: []types.InlineElements{
 													{
 														types.StringElement{Content: "ordered 1.1"},
@@ -1036,7 +1036,7 @@ b. item 2.a`
 												},
 											},
 											types.OrderedList{
-												Attributes: map[string]interface{}{},
+												Attributes: types.ElementAttributes{},
 												Items: []types.OrderedListItem{
 													{
 														Level:          2,
@@ -1045,7 +1045,7 @@ b. item 2.a`
 														Attributes:     map[string]interface{}{},
 														Elements: []interface{}{
 															types.Paragraph{
-																Attributes: map[string]interface{}{},
+																Attributes: types.ElementAttributes{},
 																Lines: []types.InlineElements{
 																	{
 																		types.StringElement{Content: "ordered 1.1.a"},
@@ -1061,7 +1061,7 @@ b. item 2.a`
 														Attributes:     map[string]interface{}{},
 														Elements: []interface{}{
 															types.Paragraph{
-																Attributes: map[string]interface{}{},
+																Attributes: types.ElementAttributes{},
 																Lines: []types.InlineElements{
 																	{
 																		types.StringElement{Content: "ordered 1.1.b"},
@@ -1077,7 +1077,7 @@ b. item 2.a`
 														Attributes:     map[string]interface{}{},
 														Elements: []interface{}{
 															types.Paragraph{
-																Attributes: map[string]interface{}{},
+																Attributes: types.ElementAttributes{},
 																Lines: []types.InlineElements{
 																	{
 																		types.StringElement{Content: "ordered 1.1.c"},
@@ -1097,7 +1097,7 @@ b. item 2.a`
 										Attributes:     map[string]interface{}{},
 										Elements: []interface{}{
 											types.Paragraph{
-												Attributes: map[string]interface{}{},
+												Attributes: types.ElementAttributes{},
 												Lines: []types.InlineElements{
 													{
 														types.StringElement{Content: "ordered 1.2"},
@@ -1105,7 +1105,7 @@ b. item 2.a`
 												},
 											},
 											types.OrderedList{
-												Attributes: map[string]interface{}{},
+												Attributes: types.ElementAttributes{},
 												Items: []types.OrderedListItem{
 													{
 														Level:          2,
@@ -1114,7 +1114,7 @@ b. item 2.a`
 														Attributes:     map[string]interface{}{},
 														Elements: []interface{}{
 															types.Paragraph{
-																Attributes: map[string]interface{}{},
+																Attributes: types.ElementAttributes{},
 																Lines: []types.InlineElements{
 																	{
 																		types.StringElement{Content: "ordered 1.2.i"},
@@ -1130,7 +1130,7 @@ b. item 2.a`
 														Attributes:     map[string]interface{}{},
 														Elements: []interface{}{
 															types.Paragraph{
-																Attributes: map[string]interface{}{},
+																Attributes: types.ElementAttributes{},
 																Lines: []types.InlineElements{
 																	{
 																		types.StringElement{Content: "ordered 1.2.ii"},
@@ -1150,7 +1150,7 @@ b. item 2.a`
 										Attributes:     map[string]interface{}{},
 										Elements: []interface{}{
 											types.Paragraph{
-												Attributes: map[string]interface{}{},
+												Attributes: types.ElementAttributes{},
 												Lines: []types.InlineElements{
 													{
 														types.StringElement{Content: "ordered 1.3"},
@@ -1166,7 +1166,7 @@ b. item 2.a`
 										Attributes:     map[string]interface{}{},
 										Elements: []interface{}{
 											types.Paragraph{
-												Attributes: map[string]interface{}{},
+												Attributes: types.ElementAttributes{},
 												Lines: []types.InlineElements{
 													{
 														types.StringElement{Content: "ordered 1.4"},
@@ -1184,7 +1184,7 @@ b. item 2.a`
 						BulletStyle: types.Dash,
 						Elements: []interface{}{
 							types.Paragraph{
-								Attributes: map[string]interface{}{},
+								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
 										types.StringElement{Content: "unordered 2"},
@@ -1192,14 +1192,14 @@ b. item 2.a`
 								},
 							},
 							types.UnorderedList{
-								Attributes: map[string]interface{}{},
+								Attributes: types.ElementAttributes{},
 								Items: []types.UnorderedListItem{
 									{
 										Level:       2,
 										BulletStyle: types.OneAsterisk,
 										Elements: []interface{}{
 											types.Paragraph{
-												Attributes: map[string]interface{}{},
+												Attributes: types.ElementAttributes{},
 												Lines: []types.InlineElements{
 													{
 														types.StringElement{Content: "unordered 2.1"},
@@ -1207,14 +1207,14 @@ b. item 2.a`
 												},
 											},
 											types.UnorderedList{
-												Attributes: map[string]interface{}{},
+												Attributes: types.ElementAttributes{},
 												Items: []types.UnorderedListItem{
 													{
 														Level:       3,
 														BulletStyle: types.TwoAsterisks,
 														Elements: []interface{}{
 															types.Paragraph{
-																Attributes: map[string]interface{}{},
+																Attributes: types.ElementAttributes{},
 																Lines: []types.InlineElements{
 																	{
 																		types.StringElement{Content: "unordered 2.1.1"},
@@ -1234,7 +1234,7 @@ b. item 2.a`
 														BulletStyle: types.TwoAsterisks,
 														Elements: []interface{}{
 															types.Paragraph{
-																Attributes: map[string]interface{}{},
+																Attributes: types.ElementAttributes{},
 																Lines: []types.InlineElements{
 																	{
 																		types.StringElement{Content: "unordered 2.1.2"},
@@ -1252,7 +1252,7 @@ b. item 2.a`
 										BulletStyle: types.OneAsterisk,
 										Elements: []interface{}{
 											types.Paragraph{
-												Attributes: map[string]interface{}{},
+												Attributes: types.ElementAttributes{},
 												Lines: []types.InlineElements{
 													{
 														types.StringElement{Content: "unordered 2.2"},
@@ -1270,7 +1270,7 @@ b. item 2.a`
 						BulletStyle: types.Dash,
 						Elements: []interface{}{
 							types.Paragraph{
-								Attributes: map[string]interface{}{},
+								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
 										types.StringElement{Content: "unordered 3"},
@@ -1278,7 +1278,7 @@ b. item 2.a`
 								},
 							},
 							types.OrderedList{
-								Attributes: map[string]interface{}{},
+								Attributes: types.ElementAttributes{},
 								Items: []types.OrderedListItem{
 									{
 										Level:          1,
@@ -1287,7 +1287,7 @@ b. item 2.a`
 										Attributes:     map[string]interface{}{},
 										Elements: []interface{}{
 											types.Paragraph{
-												Attributes: map[string]interface{}{},
+												Attributes: types.ElementAttributes{},
 												Lines: []types.InlineElements{
 													{
 														types.StringElement{Content: "ordered 3.1"},
@@ -1303,7 +1303,7 @@ b. item 2.a`
 										Attributes:     map[string]interface{}{},
 										Elements: []interface{}{
 											types.Paragraph{
-												Attributes: map[string]interface{}{},
+												Attributes: types.ElementAttributes{},
 												Lines: []types.InlineElements{
 													{
 														types.StringElement{Content: "ordered 3.2"},
@@ -1311,18 +1311,18 @@ b. item 2.a`
 												},
 											},
 											types.OrderedList{
-												Attributes: map[string]interface{}{},
+												Attributes: types.ElementAttributes{},
 												Items: []types.OrderedListItem{
 													{
 														Level:          2,
 														Position:       1,
 														NumberingStyle: types.UpperRoman,
-														Attributes: map[string]interface{}{
+														Attributes: types.ElementAttributes{
 															"upperroman": nil,
 														},
 														Elements: []interface{}{
 															types.Paragraph{
-																Attributes: map[string]interface{}{},
+																Attributes: types.ElementAttributes{},
 																Lines: []types.InlineElements{
 																	{
 																		types.StringElement{Content: "ordered 3.2.I"},
@@ -1338,7 +1338,7 @@ b. item 2.a`
 														Attributes:     map[string]interface{}{},
 														Elements: []interface{}{
 															types.Paragraph{
-																Attributes: map[string]interface{}{},
+																Attributes: types.ElementAttributes{},
 																Lines: []types.InlineElements{
 																	{
 																		types.StringElement{Content: "ordered 3.2.II"},
@@ -1358,7 +1358,7 @@ b. item 2.a`
 										Attributes:     map[string]interface{}{},
 										Elements: []interface{}{
 											types.Paragraph{
-												Attributes: map[string]interface{}{},
+												Attributes: types.ElementAttributes{},
 												Lines: []types.InlineElements{
 													{
 														types.StringElement{Content: "ordered 3.3"},

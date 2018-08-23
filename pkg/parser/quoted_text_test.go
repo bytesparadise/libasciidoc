@@ -647,7 +647,7 @@ var _ = Describe("quoted texts", func() {
 		It("inline with unbalanced bold text", func() {
 			actualContent := "a paragraph with *some bold content"
 			expectedResult := types.Paragraph{
-				Attributes: map[string]interface{}{},
+				Attributes: types.ElementAttributes{},
 				Lines: []types.InlineElements{
 					{
 						types.StringElement{Content: "a paragraph with *some bold content"},
@@ -666,7 +666,7 @@ var _ = Describe("quoted texts", func() {
 			It("escaped bold text with simple quote", func() {
 				actualContent := `\*bold content*`
 				expectedResult := types.Paragraph{
-					Attributes: map[string]interface{}{},
+					Attributes: types.ElementAttributes{},
 					Lines: []types.InlineElements{
 						{
 							types.StringElement{Content: "*bold content*"},
@@ -679,7 +679,7 @@ var _ = Describe("quoted texts", func() {
 			It("escaped bold text with simple quote and more backslashes", func() {
 				actualContent := `\\*bold content*`
 				expectedResult := types.Paragraph{
-					Attributes: map[string]interface{}{},
+					Attributes: types.ElementAttributes{},
 					Lines: []types.InlineElements{
 						{
 							types.StringElement{Content: `\*bold content*`},
@@ -692,7 +692,7 @@ var _ = Describe("quoted texts", func() {
 			It("escaped bold text with double quote", func() {
 				actualContent := `\\**bold content**`
 				expectedResult := types.Paragraph{
-					Attributes: map[string]interface{}{},
+					Attributes: types.ElementAttributes{},
 					Lines: []types.InlineElements{
 						{
 							types.StringElement{Content: `**bold content**`},
@@ -705,7 +705,7 @@ var _ = Describe("quoted texts", func() {
 			It("escaped bold text with double quote and more backslashes", func() {
 				actualContent := `\\\**bold content**`
 				expectedResult := types.Paragraph{
-					Attributes: map[string]interface{}{},
+					Attributes: types.ElementAttributes{},
 					Lines: []types.InlineElements{
 						{
 							types.StringElement{Content: `\**bold content**`},
@@ -718,7 +718,7 @@ var _ = Describe("quoted texts", func() {
 			It("escaped bold text with unbalanced double quote", func() {
 				actualContent := `\**bold content*`
 				expectedResult := types.Paragraph{
-					Attributes: map[string]interface{}{},
+					Attributes: types.ElementAttributes{},
 					Lines: []types.InlineElements{
 						{
 							types.StringElement{Content: `**bold content*`},
@@ -731,7 +731,7 @@ var _ = Describe("quoted texts", func() {
 			It("escaped bold text with unbalanced double quote and more backslashes", func() {
 				actualContent := `\\\**bold content*`
 				expectedResult := types.Paragraph{
-					Attributes: map[string]interface{}{},
+					Attributes: types.ElementAttributes{},
 					Lines: []types.InlineElements{
 						{
 							types.StringElement{Content: `\\**bold content*`},
@@ -747,7 +747,7 @@ var _ = Describe("quoted texts", func() {
 			It("escaped italic text with simple quote", func() {
 				actualContent := `\_italic content_`
 				expectedResult := types.Paragraph{
-					Attributes: map[string]interface{}{},
+					Attributes: types.ElementAttributes{},
 					Lines: []types.InlineElements{
 						{
 							types.StringElement{Content: "_italic content_"},
@@ -760,7 +760,7 @@ var _ = Describe("quoted texts", func() {
 			It("escaped italic text with simple quote and more backslashes", func() {
 				actualContent := `\\_italic content_`
 				expectedResult := types.Paragraph{
-					Attributes: map[string]interface{}{},
+					Attributes: types.ElementAttributes{},
 					Lines: []types.InlineElements{
 						{
 							types.StringElement{Content: `\_italic content_`},
@@ -773,7 +773,7 @@ var _ = Describe("quoted texts", func() {
 			It("escaped italic text with double quote", func() {
 				actualContent := `\\__italic content__`
 				expectedResult := types.Paragraph{
-					Attributes: map[string]interface{}{},
+					Attributes: types.ElementAttributes{},
 					Lines: []types.InlineElements{
 						{
 							types.StringElement{Content: `__italic content__`},
@@ -786,7 +786,7 @@ var _ = Describe("quoted texts", func() {
 			It("escaped italic text with double quote and more backslashes", func() {
 				actualContent := `\\\__italic content__`
 				expectedResult := types.Paragraph{
-					Attributes: map[string]interface{}{},
+					Attributes: types.ElementAttributes{},
 					Lines: []types.InlineElements{
 						{
 							types.StringElement{Content: `\__italic content__`},
@@ -799,7 +799,7 @@ var _ = Describe("quoted texts", func() {
 			It("escaped italic text with unbalanced double quote", func() {
 				actualContent := `\__italic content_`
 				expectedResult := types.Paragraph{
-					Attributes: map[string]interface{}{},
+					Attributes: types.ElementAttributes{},
 					Lines: []types.InlineElements{
 						{
 							types.StringElement{Content: `__italic content_`},
@@ -812,7 +812,7 @@ var _ = Describe("quoted texts", func() {
 			It("escaped italic text with unbalanced double quote and more backslashes", func() {
 				actualContent := `\\\__italic content_`
 				expectedResult := types.Paragraph{
-					Attributes: map[string]interface{}{},
+					Attributes: types.ElementAttributes{},
 					Lines: []types.InlineElements{
 						{
 							types.StringElement{Content: `\\__italic content_`}, // only 1 backslash remove
@@ -828,7 +828,7 @@ var _ = Describe("quoted texts", func() {
 			It("escaped monospace text with simple quote", func() {
 				actualContent := "\\`monospace content`"
 				expectedResult := types.Paragraph{
-					Attributes: map[string]interface{}{},
+					Attributes: types.ElementAttributes{},
 					Lines: []types.InlineElements{
 						{
 							types.StringElement{Content: "`monospace content`"},
@@ -841,7 +841,7 @@ var _ = Describe("quoted texts", func() {
 			It("escaped monospace text with simple quote and more backslashes", func() {
 				actualContent := "\\\\`monospace content`"
 				expectedResult := types.Paragraph{
-					Attributes: map[string]interface{}{},
+					Attributes: types.ElementAttributes{},
 					Lines: []types.InlineElements{
 						{
 							types.StringElement{Content: "\\`monospace content`"}, // only 1 backslash remove
@@ -854,7 +854,7 @@ var _ = Describe("quoted texts", func() {
 			It("escaped monospace text with double quote", func() {
 				actualContent := "\\\\``monospace content``"
 				expectedResult := types.Paragraph{
-					Attributes: map[string]interface{}{},
+					Attributes: types.ElementAttributes{},
 					Lines: []types.InlineElements{
 						{
 							types.StringElement{Content: "``monospace content``"},
@@ -867,7 +867,7 @@ var _ = Describe("quoted texts", func() {
 			It("escaped monospace text with double quote and more backslashes", func() {
 				actualContent := "\\\\\\``monospace content``" // 3 backslashes
 				expectedResult := types.Paragraph{
-					Attributes: map[string]interface{}{},
+					Attributes: types.ElementAttributes{},
 					Lines: []types.InlineElements{
 						{
 							types.StringElement{Content: "\\``monospace content``"},
@@ -880,7 +880,7 @@ var _ = Describe("quoted texts", func() {
 			It("escaped monospace text with unbalanced double quote", func() {
 				actualContent := "\\``monospace content`"
 				expectedResult := types.Paragraph{
-					Attributes: map[string]interface{}{},
+					Attributes: types.ElementAttributes{},
 					Lines: []types.InlineElements{
 						{
 							types.StringElement{Content: "``monospace content`"},
@@ -893,7 +893,7 @@ var _ = Describe("quoted texts", func() {
 			It("escaped monospace text with unbalanced double quote and more backslashes", func() {
 				actualContent := "\\\\\\``monospace content`" // 3 backslashes
 				expectedResult := types.Paragraph{
-					Attributes: map[string]interface{}{},
+					Attributes: types.ElementAttributes{},
 					Lines: []types.InlineElements{
 						{
 							types.StringElement{Content: "\\\\``monospace content`"}, // only 1 backslash remove
@@ -908,7 +908,7 @@ var _ = Describe("quoted texts", func() {
 			It("escaped bold text with nested italic", func() {
 				actualContent := `\*bold _and italic_ content*`
 				expectedResult := types.Paragraph{
-					Attributes: map[string]interface{}{},
+					Attributes: types.ElementAttributes{},
 					Lines: []types.InlineElements{
 						{
 							types.StringElement{Content: "*bold "},

@@ -48,7 +48,7 @@ var _ = Describe("lists", func() {
 			// then
 			require.NoError(GinkgoT(), err)
 			expectation := types.UnorderedList{
-				Attributes: map[string]interface{}{},
+				Attributes: types.ElementAttributes{},
 				Items: []types.UnorderedListItem{
 					{
 						Level:       1,
@@ -58,7 +58,7 @@ var _ = Describe("lists", func() {
 								Content: "item 1",
 							},
 							types.UnorderedList{
-								Attributes: map[string]interface{}{},
+								Attributes: types.ElementAttributes{},
 								Items: []types.UnorderedListItem{
 									{
 										Level:       2,
@@ -123,7 +123,7 @@ var _ = Describe("lists", func() {
 			// then
 			require.NoError(GinkgoT(), err)
 			expectation := types.LabeledList{
-				Attributes: map[string]interface{}{},
+				Attributes: types.ElementAttributes{},
 				Items: []types.LabeledListItem{
 					{
 						Term: "item 1",
@@ -216,7 +216,7 @@ var _ = Describe("lists", func() {
 			// then
 			require.NoError(GinkgoT(), err)
 			expectation := types.LabeledList{
-				Attributes: map[string]interface{}{},
+				Attributes: types.ElementAttributes{},
 				Items: []types.LabeledListItem{
 					{
 						Term: "item A",
@@ -225,7 +225,7 @@ var _ = Describe("lists", func() {
 								Content: "item A",
 							},
 							types.UnorderedList{
-								Attributes: map[string]interface{}{},
+								Attributes: types.ElementAttributes{},
 								Items: []types.UnorderedListItem{
 									{
 										Level:       1,
@@ -235,7 +235,7 @@ var _ = Describe("lists", func() {
 												Content: "item A.1",
 											},
 											types.UnorderedList{
-												Attributes: map[string]interface{}{},
+												Attributes: types.ElementAttributes{},
 												Items: []types.UnorderedListItem{
 													{
 														Level:       2,

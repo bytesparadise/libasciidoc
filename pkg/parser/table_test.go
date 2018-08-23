@@ -14,7 +14,7 @@ var _ = Describe("tables", func() {
 |===
 `
 		expectedResult := types.Table{
-			Attributes: map[string]interface{}{},
+			Attributes: types.ElementAttributes{},
 			Lines: []types.TableLine{
 				{
 					Cells: []types.InlineElements{
@@ -56,7 +56,7 @@ var _ = Describe("tables", func() {
 | *foo* foo  | _bar_  | baz
 |===`
 		expectedResult := types.Table{
-			Attributes: map[string]interface{}{},
+			Attributes: types.ElementAttributes{},
 			Lines: []types.TableLine{
 				{
 					Cells: []types.InlineElements{
@@ -110,7 +110,7 @@ var _ = Describe("tables", func() {
 |row 2, column 2
 |===`
 		expectedResult := types.Table{
-			Attributes: map[string]interface{}{
+			Attributes: types.ElementAttributes{
 				types.AttrTitle: "table title",
 			},
 			Header: types.TableLine{
@@ -167,7 +167,7 @@ var _ = Describe("tables", func() {
 		actualContent := `|===
 |===`
 		expectedResult := types.Table{
-			Attributes: map[string]interface{}{},
+			Attributes: types.ElementAttributes{},
 			Lines:      []types.TableLine{},
 		}
 		verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))

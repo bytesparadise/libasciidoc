@@ -15,9 +15,9 @@ var _ = Describe("document attributes", func() {
 			
 This journey begins on a bleary Monday morning.`
 			expectedResult := types.Document{
-				Attributes: map[string]interface{}{
+				Attributes: types.DocumentAttributes{
 					"doctitle": types.SectionTitle{
-						Attributes: map[string]interface{}{
+						Attributes: types.ElementAttributes{
 							types.AttrID: "_the_dangerous_and_thrilling_documentation_chronicles",
 						},
 						Content: types.InlineElements{
@@ -28,7 +28,7 @@ This journey begins on a bleary Monday morning.`
 				ElementReferences: map[string]interface{}{},
 				Elements: []interface{}{
 					types.Paragraph{
-						Attributes: map[string]interface{}{},
+						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
 							{
 								types.StringElement{Content: "This journey begins on a bleary Monday morning."},
@@ -50,7 +50,7 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>`
 					expectedResult := types.DocumentHeader{
 						Content: types.DocumentAttributes{
 							"doctitle": types.SectionTitle{
-								Attributes: map[string]interface{}{
+								Attributes: types.ElementAttributes{
 									types.AttrID: "_title",
 								},
 								Content: types.InlineElements{
@@ -76,7 +76,7 @@ Lazarus het_Draeke <lazarus@asciidoctor.org>`
 					expectedResult := types.DocumentHeader{
 						Content: types.DocumentAttributes{
 							"doctitle": types.SectionTitle{
-								Attributes: map[string]interface{}{
+								Attributes: types.ElementAttributes{
 									types.AttrID: "_title",
 								},
 								Content: types.InlineElements{
@@ -101,7 +101,7 @@ Kismet Chameleon`
 					expectedResult := types.DocumentHeader{
 						Content: types.DocumentAttributes{
 							"doctitle": types.SectionTitle{
-								Attributes: map[string]interface{}{
+								Attributes: types.ElementAttributes{
 									types.AttrID: "_title",
 								},
 								Content: types.InlineElements{
@@ -125,7 +125,7 @@ Chameleon`
 					expectedResult := types.DocumentHeader{
 						Content: types.DocumentAttributes{
 							"doctitle": types.SectionTitle{
-								Attributes: map[string]interface{}{
+								Attributes: types.ElementAttributes{
 									types.AttrID: "_title",
 								},
 								Content: types.InlineElements{
@@ -148,7 +148,7 @@ Chameleon`
 					expectedResult := types.DocumentHeader{
 						Content: types.DocumentAttributes{
 							"doctitle": types.SectionTitle{
-								Attributes: map[string]interface{}{
+								Attributes: types.ElementAttributes{
 									types.AttrID: "_title",
 								},
 								Content: types.InlineElements{
@@ -175,7 +175,7 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 					expectedResult := types.DocumentHeader{
 						Content: types.DocumentAttributes{
 							"doctitle": types.SectionTitle{
-								Attributes: map[string]interface{}{
+								Attributes: types.ElementAttributes{
 									types.AttrID: "_title",
 								},
 								Content: types.InlineElements{
@@ -211,7 +211,7 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 				expectedResult := types.DocumentHeader{
 					Content: types.DocumentAttributes{
 						"doctitle": types.SectionTitle{
-							Attributes: map[string]interface{}{
+							Attributes: types.ElementAttributes{
 								types.AttrID: "_title",
 							},
 							Content: types.InlineElements{
@@ -239,7 +239,7 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 				expectedResult := types.DocumentHeader{
 					Content: types.DocumentAttributes{
 						"doctitle": types.SectionTitle{
-							Attributes: map[string]interface{}{
+							Attributes: types.ElementAttributes{
 								types.AttrID: "_title",
 							},
 							Content: types.InlineElements{
@@ -266,7 +266,7 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 				expectedResult := types.DocumentHeader{
 					Content: types.DocumentAttributes{
 						"doctitle": types.SectionTitle{
-							Attributes: map[string]interface{}{
+							Attributes: types.ElementAttributes{
 								types.AttrID: "_title",
 							},
 							Content: types.InlineElements{
@@ -292,7 +292,7 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 				expectedResult := types.DocumentHeader{
 					Content: types.DocumentAttributes{
 						"doctitle": types.SectionTitle{
-							Attributes: map[string]interface{}{
+							Attributes: types.ElementAttributes{
 								types.AttrID: "_title",
 							},
 							Content: types.InlineElements{
@@ -318,7 +318,7 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 				expectedResult := types.DocumentHeader{
 					Content: types.DocumentAttributes{
 						"doctitle": types.SectionTitle{
-							Attributes: map[string]interface{}{
+							Attributes: types.ElementAttributes{
 								types.AttrID: "_title",
 							},
 							Content: types.InlineElements{
@@ -344,7 +344,7 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 				expectedResult := types.DocumentHeader{
 					Content: types.DocumentAttributes{
 						"doctitle": types.SectionTitle{
-							Attributes: map[string]interface{}{
+							Attributes: types.ElementAttributes{
 								types.AttrID: "_title",
 							},
 							Content: types.InlineElements{
@@ -370,7 +370,7 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 				expectedResult := types.DocumentHeader{
 					Content: types.DocumentAttributes{
 						"doctitle": types.SectionTitle{
-							Attributes: map[string]interface{}{
+							Attributes: types.ElementAttributes{
 								types.AttrID: "_title",
 							},
 							Content: types.InlineElements{
@@ -396,7 +396,7 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 				expectedResult := types.DocumentHeader{
 					Content: types.DocumentAttributes{
 						"doctitle": types.SectionTitle{
-							Attributes: map[string]interface{}{
+							Attributes: types.ElementAttributes{
 								types.AttrID: "_title",
 							},
 							Content: types.InlineElements{
@@ -422,7 +422,7 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 				expectedResult := types.DocumentHeader{
 					Content: types.DocumentAttributes{
 						"doctitle": types.SectionTitle{
-							Attributes: map[string]interface{}{
+							Attributes: types.ElementAttributes{
 								types.AttrID: "_title",
 							},
 							Content: types.InlineElements{
@@ -448,7 +448,7 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 				expectedResult := types.DocumentHeader{
 					Content: types.DocumentAttributes{
 						"doctitle": types.SectionTitle{
-							Attributes: map[string]interface{}{
+							Attributes: types.ElementAttributes{
 								types.AttrID: "_title",
 							},
 							Content: types.InlineElements{
@@ -474,7 +474,7 @@ v1.0:`
 				expectedResult := types.DocumentHeader{
 					Content: types.DocumentAttributes{
 						"doctitle": types.SectionTitle{
-							Attributes: map[string]interface{}{
+							Attributes: types.ElementAttributes{
 								types.AttrID: "_title",
 							},
 							Content: types.InlineElements{
@@ -532,7 +532,7 @@ a paragraph`
 						types.DocumentAttributeDeclaration{Name: "date", Value: "2017-01-01"},
 						types.DocumentAttributeDeclaration{Name: "author", Value: "Xavier"},
 						types.Paragraph{
-							Attributes: map[string]interface{}{},
+							Attributes: types.ElementAttributes{},
 							Lines: []types.InlineElements{
 								{
 									types.StringElement{Content: "a paragraph"},
@@ -559,7 +559,7 @@ a paragraph`
 						types.DocumentAttributeDeclaration{Name: "author", Value: "Xavier"},
 						types.BlankLine{},
 						types.Paragraph{
-							Attributes: map[string]interface{}{},
+							Attributes: types.ElementAttributes{},
 							Lines: []types.InlineElements{
 								{
 									types.StringElement{Content: "a paragraph"},
@@ -588,7 +588,7 @@ a paragraph`
 						types.DocumentAttributeDeclaration{Name: "author", Value: "Xavier"},
 						types.BlankLine{},
 						types.Paragraph{
-							Attributes: map[string]interface{}{},
+							Attributes: types.ElementAttributes{},
 							Lines: []types.InlineElements{
 								{
 									types.StringElement{Content: "a paragraph"},
@@ -611,7 +611,7 @@ a paragraph`
 					ElementReferences: map[string]interface{}{},
 					Elements: []interface{}{
 						types.Paragraph{
-							Attributes: map[string]interface{}{},
+							Attributes: types.ElementAttributes{},
 							Lines: []types.InlineElements{
 								{
 									types.StringElement{Content: "a paragraph"},
@@ -641,7 +641,7 @@ a paragraph written by {author}.`
 						types.DocumentAttributeDeclaration{Name: "author", Value: "Xavier"},
 						types.BlankLine{},
 						types.Paragraph{
-							Attributes: map[string]interface{}{},
+							Attributes: types.ElementAttributes{},
 							Lines: []types.InlineElements{
 								{
 									types.StringElement{Content: "a paragraph written by "},
@@ -670,7 +670,7 @@ a paragraph written by {author}.`
 						types.DocumentAttributeReset{Name: "author1"},
 						types.DocumentAttributeReset{Name: "author2"},
 						types.Paragraph{
-							Attributes: map[string]interface{}{},
+							Attributes: types.ElementAttributes{},
 							Lines: []types.InlineElements{
 								{
 									types.StringElement{Content: "a paragraph written by "},
@@ -694,9 +694,9 @@ v1.0, June 19, 2017: First incarnation
 
 This journey begins on a bleary Monday morning.`
 			expectedResult := types.Document{
-				Attributes: map[string]interface{}{
+				Attributes: types.DocumentAttributes{
 					"doctitle": types.SectionTitle{
-						Attributes: map[string]interface{}{
+						Attributes: types.ElementAttributes{
 							types.AttrID: "_the_dangerous_and_thrilling_documentation_chronicles",
 						},
 						Content: types.InlineElements{
@@ -725,7 +725,7 @@ This journey begins on a bleary Monday morning.`
 					types.TableOfContentsMacro{},
 					types.BlankLine{},
 					types.Paragraph{
-						Attributes: map[string]interface{}{},
+						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
 							{
 								types.StringElement{Content: "This journey begins on a bleary Monday morning."},
@@ -745,9 +745,9 @@ This journey begins on a bleary Monday morning.`
 
 a paragraph with *bold content*`
 			expectedResult := types.Document{
-				Attributes: map[string]interface{}{
+				Attributes: types.DocumentAttributes{
 					"doctitle": types.SectionTitle{
-						Attributes: map[string]interface{}{
+						Attributes: types.ElementAttributes{
 							types.AttrID: "_a_header",
 						},
 						Content: types.InlineElements{
@@ -757,7 +757,7 @@ a paragraph with *bold content*`
 				},
 				ElementReferences: map[string]interface{}{
 					"_section_1": types.SectionTitle{
-						Attributes: map[string]interface{}{
+						Attributes: types.ElementAttributes{
 							types.AttrID: "_section_1",
 						},
 						Content: types.InlineElements{
@@ -769,7 +769,7 @@ a paragraph with *bold content*`
 					types.Section{
 						Level: 1,
 						Title: types.SectionTitle{
-							Attributes: map[string]interface{}{
+							Attributes: types.ElementAttributes{
 								types.AttrID: "_section_1",
 							},
 							Content: types.InlineElements{
@@ -779,7 +779,7 @@ a paragraph with *bold content*`
 						Elements: []interface{}{
 							types.BlankLine{},
 							types.Paragraph{
-								Attributes: map[string]interface{}{},
+								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
 										types.StringElement{Content: "a paragraph with "},
@@ -811,7 +811,7 @@ a paragraph with *bold content*`
 				ElementReferences: map[string]interface{}{},
 				Elements: []interface{}{
 					types.Paragraph{
-						Attributes: map[string]interface{}{},
+						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
 							{
 								types.StringElement{Content: "a paragraph"},
@@ -840,7 +840,7 @@ a paragraph with *bold content*`
 				ElementReferences: map[string]interface{}{},
 				Elements: []interface{}{
 					types.Paragraph{
-						Attributes: map[string]interface{}{},
+						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
 							{
 								types.StringElement{Content: ":@date: 2017-01-01"},

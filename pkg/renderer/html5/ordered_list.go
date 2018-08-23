@@ -15,8 +15,9 @@ var orderedListTmpl texttemplate.Template
 // initializes the templates
 func init() {
 	orderedListTmpl = newTextTemplate("ordered list",
-		`{{ $ctx := .Context }}{{ with .Data }}{{ $items := .Items }}{{ $firstItem := index $items 0 }}<div{{ if hasID .Attributes }} id="{{ getID .Attributes }}"{{ end }} class="olist {{ $firstItem.NumberingStyle }}">
-<ol class="{{ $firstItem.NumberingStyle }}"{{ style $firstItem.NumberingStyle }}>
+		`{{ $ctx := .Context }}{{ with .Data }}{{ $items := .Items }}{{ $firstItem := index $items 0 }}<div{{ if .ID }} id="{{ .ID }}"{{ end }} class="olist {{ $firstItem.NumberingStyle }}{{ if .Role }} {{ .Role }}{{ end}}">
+{{ if .Title }}<div class="title">{{ .Title }}</div>
+{{ end }}<ol class="{{ $firstItem.NumberingStyle }}"{{ style $firstItem.NumberingStyle }}>
 {{ range $itemIndex, $item := $items }}<li>
 {{ renderElements $ctx $item.Elements }}
 </li>
@@ -26,8 +27,6 @@ func init() {
 			"renderElements": renderElementsAsString,
 			"includeNewline": includeNewline,
 			"style":          numberingType,
-			"hasID":          hasID,
-			"getID":          getID,
 		})
 
 }
@@ -42,7 +41,17 @@ func renderOrderedList(ctx *renderer.Context, l types.OrderedList) ([]byte, erro
 
 	err := orderedListTmpl.Execute(result, ContextualPipeline{
 		Context: ctx,
-		Data:    l,
+		Data: struct {
+			ID    string
+			Title string
+			Role  string
+			Items []types.OrderedListItem
+		}{
+			l.Attributes.GetAsString(types.AttrID),
+			l.Attributes.GetAsString(types.AttrTitle),
+			l.Attributes.GetAsString(types.AttrRole),
+			l.Items,
+		},
 	})
 	if err != nil {
 		return nil, errors.Wrapf(err, "unable to render ordered list")

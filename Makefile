@@ -97,7 +97,7 @@ generate: prebuild-checks
 .PHONY: generate-optimized
 ## generate the .go file based on the asciidoc grammar
 generate-optimized:
-	@echo "generating the parser..."
+	@echo "generating the parser (optimized)..."
 	@pigeon -optimize-grammar ./pkg/parser/asciidoc-grammar.peg > ./pkg/parser/asciidoc_parser.go
 
 

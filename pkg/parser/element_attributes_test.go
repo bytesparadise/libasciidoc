@@ -15,7 +15,7 @@ var _ = Describe("element attributes", func() {
 				actualContent := `[link=http://foo.bar]
 a paragraph`
 				expectedResult := types.Paragraph{
-					Attributes: map[string]interface{}{
+					Attributes: types.ElementAttributes{
 						"link": "http://foo.bar",
 					},
 					Lines: []types.InlineElements{
@@ -32,7 +32,7 @@ a paragraph`
 				actualContent := `[link= http://foo.bar  ]
 a paragraph`
 				expectedResult := types.Paragraph{
-					Attributes: map[string]interface{}{
+					Attributes: types.ElementAttributes{
 						"link": "http://foo.bar",
 					},
 					Lines: []types.InlineElements{
@@ -52,7 +52,7 @@ a paragraph`
 				actualContent := `[ link=http://foo.bar]
 a paragraph`
 				expectedResult := types.Paragraph{
-					Attributes: map[string]interface{}{},
+					Attributes: types.ElementAttributes{},
 					Lines: []types.InlineElements{
 						{
 							types.StringElement{
@@ -73,7 +73,7 @@ a paragraph`
 				actualContent := `[link=http://foo.bar
 a paragraph`
 				expectedResult := types.Paragraph{
-					Attributes: map[string]interface{}{},
+					Attributes: types.ElementAttributes{},
 					Lines: []types.InlineElements{
 						{
 							types.StringElement{
@@ -100,7 +100,7 @@ a paragraph`
 				actualContent := `[[img-foobar]]
 a paragraph`
 				expectedResult := types.Paragraph{
-					Attributes: map[string]interface{}{
+					Attributes: types.ElementAttributes{
 						types.AttrID: "img-foobar",
 					},
 					Lines: []types.InlineElements{
@@ -118,7 +118,7 @@ a paragraph`
 				actualContent := `[#img-foobar]
 a paragraph`
 				expectedResult := types.Paragraph{
-					Attributes: map[string]interface{}{
+					Attributes: types.ElementAttributes{
 						types.AttrID: "img-foobar",
 					},
 					Lines: []types.InlineElements{
@@ -139,7 +139,7 @@ a paragraph`
 				actualContent := `[ #img-foobar ]
 a paragraph`
 				expectedResult := types.Paragraph{
-					Attributes: map[string]interface{}{},
+					Attributes: types.ElementAttributes{},
 					Lines: []types.InlineElements{
 						{
 							types.StringElement{
@@ -160,7 +160,7 @@ a paragraph`
 				actualContent := `[#img-foobar
 a paragraph`
 				expectedResult := types.Paragraph{
-					Attributes: map[string]interface{}{},
+					Attributes: types.ElementAttributes{},
 					Lines: []types.InlineElements{
 						{
 							types.StringElement{
@@ -178,6 +178,7 @@ a paragraph`
 			})
 		})
 	})
+
 	Context("element title", func() {
 
 		Context("valid syntax", func() {
@@ -186,8 +187,8 @@ a paragraph`
 				actualContent := `.a title
 a paragraph`
 				expectedResult := types.Paragraph{
-					Attributes: map[string]interface{}{
-						"title": "a title",
+					Attributes: types.ElementAttributes{
+						types.AttrTitle: "a title",
 					},
 					Lines: []types.InlineElements{
 						{
@@ -207,7 +208,7 @@ a paragraph`
 				actualContent := `. a title
 a list item!`
 				expectedResult := types.OrderedList{
-					Attributes: map[string]interface{}{},
+					Attributes: types.ElementAttributes{},
 					Items: []types.OrderedListItem{
 						{
 							Attributes:     map[string]interface{}{},
@@ -216,7 +217,7 @@ a list item!`
 							NumberingStyle: types.Arabic,
 							Elements: []interface{}{
 								types.Paragraph{
-									Attributes: map[string]interface{}{},
+									Attributes: types.ElementAttributes{},
 									Lines: []types.InlineElements{
 										{
 											types.StringElement{
@@ -243,7 +244,7 @@ a list item!`
 a paragraph`
 
 				expectedResult := types.Paragraph{
-					Attributes: map[string]interface{}{},
+					Attributes: types.ElementAttributes{},
 					Lines: []types.InlineElements{
 						{
 							types.StringElement{
@@ -261,4 +262,47 @@ a paragraph`
 			})
 		})
 	})
+
+	Context("element role", func() {
+
+		Context("valid syntax", func() {
+
+			It("shortcut role element", func() {
+				actualContent := `[.a role]
+a paragraph`
+				expectedResult := types.Paragraph{
+					Attributes: types.ElementAttributes{
+						types.AttrRole: "a role",
+					},
+					Lines: []types.InlineElements{
+						{
+							types.StringElement{
+								Content: "a paragraph",
+							},
+						},
+					},
+				}
+				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+			})
+
+			It("full role syntax", func() {
+				actualContent := `[role=a role]
+a paragraph`
+				expectedResult := types.Paragraph{
+					Attributes: types.ElementAttributes{
+						types.AttrRole: "a role",
+					},
+					Lines: []types.InlineElements{
+						{
+							types.StringElement{
+								Content: "a paragraph",
+							},
+						},
+					},
+				}
+				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+			})
+		})
+	})
+
 })

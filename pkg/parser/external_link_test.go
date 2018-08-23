@@ -13,13 +13,13 @@ var _ = Describe("links", func() {
 		It("external link without text", func() {
 			actualContent := "a link to https://foo.bar"
 			expectedResult := types.Paragraph{
-				Attributes: map[string]interface{}{},
+				Attributes: types.ElementAttributes{},
 				Lines: []types.InlineElements{
 					{
 						types.StringElement{Content: "a link to "},
 						types.Link{
 							URL: "https://foo.bar",
-							Attributes: map[string]interface{}{
+							Attributes: types.ElementAttributes{
 								"text": "",
 							},
 						},
@@ -32,13 +32,13 @@ var _ = Describe("links", func() {
 		It("external link with empty text", func() {
 			actualContent := "a link to https://foo.bar[]"
 			expectedResult := types.Paragraph{
-				Attributes: map[string]interface{}{},
+				Attributes: types.ElementAttributes{},
 				Lines: []types.InlineElements{
 					{
 						types.StringElement{Content: "a link to "},
 						types.Link{
 							URL: "https://foo.bar",
-							Attributes: map[string]interface{}{
+							Attributes: types.ElementAttributes{
 								"text": "",
 							},
 						},
@@ -51,13 +51,13 @@ var _ = Describe("links", func() {
 		It("external link with text", func() {
 			actualContent := "a link to mailto:foo@bar[the foo@bar email]"
 			expectedResult := types.Paragraph{
-				Attributes: map[string]interface{}{},
+				Attributes: types.ElementAttributes{},
 				Lines: []types.InlineElements{
 					{
 						types.StringElement{Content: "a link to "},
 						types.Link{
 							URL: "mailto:foo@bar",
-							Attributes: map[string]interface{}{
+							Attributes: types.ElementAttributes{
 								"text": "the foo@bar email",
 							},
 						},
@@ -76,7 +76,7 @@ var _ = Describe("links", func() {
 				types.StringElement{Content: "a link to "},
 				types.Link{
 					URL: "foo.adoc",
-					Attributes: map[string]interface{}{
+					Attributes: types.ElementAttributes{
 						"text": "",
 					},
 				},
@@ -90,7 +90,7 @@ var _ = Describe("links", func() {
 				types.StringElement{Content: "a link to "},
 				types.Link{
 					URL: "foo.adoc",
-					Attributes: map[string]interface{}{
+					Attributes: types.ElementAttributes{
 						"text": "foo doc",
 					},
 				},
@@ -104,7 +104,7 @@ var _ = Describe("links", func() {
 				types.StringElement{Content: "a link to "},
 				types.Link{
 					URL: "https://foo.bar",
-					Attributes: map[string]interface{}{
+					Attributes: types.ElementAttributes{
 						"text": "foo doc",
 					},
 				},

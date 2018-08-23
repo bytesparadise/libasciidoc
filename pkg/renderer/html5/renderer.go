@@ -152,7 +152,7 @@ func renderPlainString(ctx *renderer.Context, element interface{}) ([]byte, erro
 	case types.QuotedText:
 		return renderPlainString(ctx, element.Elements)
 	case types.InlineImage:
-		return []byte(element.Macro.Alt()), nil
+		return []byte(element.Attributes.GetAsString(types.AttrImageAlt)), nil
 	case types.Link:
 		return []byte(element.Text()), nil
 	case types.BlankLine:
@@ -208,21 +208,6 @@ func includeNewline(ctx renderer.Context, index int, content interface{}) string
 		log.Warnf("content of type %T is not an array or a slice")
 	}
 	return ""
-}
-
-// hasID checks if the given map has an entry with key `types.AttrID`
-func hasID(attributes map[string]interface{}) bool {
-	_, found := attributes[types.AttrID]
-	return found
-}
-
-// getID returns the value for the entry with key `types.AttrID` in the given map
-func getID(attributes map[string]interface{}) string {
-	id, ok := attributes[types.AttrID].(string)
-	if !ok {
-		return ""
-	}
-	return id
 }
 
 // returns the attribute value for the given if it exists and is a string, empty string otherwise

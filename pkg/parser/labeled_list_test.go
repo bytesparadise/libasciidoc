@@ -13,13 +13,13 @@ var _ = Describe("labeled lists", func() {
 Item 1 description
 on 2 lines`
 		expectedResult := types.LabeledList{
-			Attributes: map[string]interface{}{},
+			Attributes: types.ElementAttributes{},
 			Items: []types.LabeledListItem{
 				{
 					Term: "Item1",
 					Elements: []interface{}{
 						types.Paragraph{
-							Attributes: map[string]interface{}{},
+							Attributes: types.ElementAttributes{},
 							Lines: []types.InlineElements{
 								{
 									types.StringElement{Content: "Item 1 description"},
@@ -39,7 +39,7 @@ on 2 lines`
 	It("labeled list with a single term and no description", func() {
 		actualContent := `Item1::`
 		expectedResult := types.LabeledList{
-			Attributes: map[string]interface{}{},
+			Attributes: types.ElementAttributes{},
 			Items: []types.LabeledListItem{
 				{
 					Term: "Item1",
@@ -53,7 +53,7 @@ on 2 lines`
 		actualContent := `[horizontal]
 Item1:: foo`
 		expectedResult := types.LabeledList{
-			Attributes: map[string]interface{}{
+			Attributes: types.ElementAttributes{
 				"layout": "horizontal",
 			},
 			Items: []types.LabeledListItem{
@@ -61,7 +61,7 @@ Item1:: foo`
 					Term: "Item1",
 					Elements: []interface{}{
 						types.Paragraph{
-							Attributes: map[string]interface{}{},
+							Attributes: types.ElementAttributes{},
 							Lines: []types.InlineElements{
 								{
 									types.StringElement{Content: "foo"},
@@ -79,7 +79,7 @@ Item1:: foo`
 		actualContent := `Item1::
 			`
 		expectedResult := types.LabeledList{
-			Attributes: map[string]interface{}{},
+			Attributes: types.ElementAttributes{},
 			Items: []types.LabeledListItem{
 				{
 					Term: "Item1",
@@ -97,13 +97,13 @@ Item 2 description
 Item 3:: 
 Item 3 description`
 		expectedResult := types.LabeledList{
-			Attributes: map[string]interface{}{},
+			Attributes: types.ElementAttributes{},
 			Items: []types.LabeledListItem{
 				{
 					Term: "Item 1",
 					Elements: []interface{}{
 						types.Paragraph{
-							Attributes: map[string]interface{}{},
+							Attributes: types.ElementAttributes{},
 							Lines: []types.InlineElements{
 								{
 									types.StringElement{Content: "Item 1 description"},
@@ -116,7 +116,7 @@ Item 3 description`
 					Term: "Item 2",
 					Elements: []interface{}{
 						types.Paragraph{
-							Attributes: map[string]interface{}{},
+							Attributes: types.ElementAttributes{},
 							Lines: []types.InlineElements{
 								{
 									types.StringElement{Content: "Item 2 description"},
@@ -129,7 +129,7 @@ Item 3 description`
 					Term: "Item 3",
 					Elements: []interface{}{
 						types.Paragraph{
-							Attributes: map[string]interface{}{},
+							Attributes: types.ElementAttributes{},
 							Lines: []types.InlineElements{
 								{
 									types.StringElement{Content: "Item 3 description"},
@@ -149,20 +149,20 @@ Item 3 description`
 * bar
 Item with description:: something simple`
 		expectedResult := types.LabeledList{
-			Attributes: map[string]interface{}{},
+			Attributes: types.ElementAttributes{},
 			Items: []types.LabeledListItem{
 				{
 					Term: "Empty item",
 					Elements: []interface{}{
 						types.UnorderedList{
-							Attributes: map[string]interface{}{},
+							Attributes: types.ElementAttributes{},
 							Items: []types.UnorderedListItem{
 								{
 									Level:       1,
 									BulletStyle: types.OneAsterisk,
 									Elements: []interface{}{
 										types.Paragraph{
-											Attributes: map[string]interface{}{},
+											Attributes: types.ElementAttributes{},
 											Lines: []types.InlineElements{
 												{
 													types.StringElement{Content: "foo"},
@@ -176,7 +176,7 @@ Item with description:: something simple`
 									BulletStyle: types.OneAsterisk,
 									Elements: []interface{}{
 										types.Paragraph{
-											Attributes: map[string]interface{}{},
+											Attributes: types.ElementAttributes{},
 											Lines: []types.InlineElements{
 												{
 													types.StringElement{Content: "bar"},
@@ -193,7 +193,7 @@ Item with description:: something simple`
 					Term: "Item with description",
 					Elements: []interface{}{
 						types.Paragraph{
-							Attributes: map[string]interface{}{},
+							Attributes: types.ElementAttributes{},
 							Lines: []types.InlineElements{
 								{
 									types.StringElement{Content: "something simple"},
@@ -219,13 +219,13 @@ a normal paragraph.`
 			ElementReferences: map[string]interface{}{},
 			Elements: []interface{}{
 				types.LabeledList{
-					Attributes: map[string]interface{}{},
+					Attributes: types.ElementAttributes{},
 					Items: []types.LabeledListItem{
 						{
 							Term: "Item 1",
 							Elements: []interface{}{
 								types.Paragraph{
-									Attributes: map[string]interface{}{},
+									Attributes: types.ElementAttributes{},
 									Lines: []types.InlineElements{
 										{
 											types.StringElement{Content: "foo"},
@@ -241,7 +241,7 @@ a normal paragraph.`
 				},
 				types.BlankLine{},
 				types.Paragraph{
-					Attributes: map[string]interface{}{},
+					Attributes: types.ElementAttributes{},
 					Lines: []types.InlineElements{
 						{
 							types.StringElement{Content: "a normal paragraph."},
@@ -269,18 +269,18 @@ another fenced block
 			ElementReferences: map[string]interface{}{},
 			Elements: []interface{}{
 				types.LabeledList{
-					Attributes: map[string]interface{}{},
+					Attributes: types.ElementAttributes{},
 					Items: []types.LabeledListItem{
 						{
 							Term: "Item 1",
 							Elements: []interface{}{
 								types.DelimitedBlock{
-									Attributes: map[string]interface{}{
+									Attributes: types.ElementAttributes{
 										types.AttrBlockKind: types.Listing,
 									},
 									Elements: []interface{}{
 										types.Paragraph{
-											Attributes: map[string]interface{}{},
+											Attributes: types.ElementAttributes{},
 											Lines: []types.InlineElements{
 												{
 													types.StringElement{
@@ -297,7 +297,7 @@ another fenced block
 							Term: "Item 2",
 							Elements: []interface{}{
 								types.Paragraph{
-									Attributes: map[string]interface{}{},
+									Attributes: types.ElementAttributes{},
 									Lines: []types.InlineElements{
 										{
 											types.StringElement{Content: "something simple"},
@@ -305,12 +305,12 @@ another fenced block
 									},
 								},
 								types.DelimitedBlock{
-									Attributes: map[string]interface{}{
+									Attributes: types.ElementAttributes{
 										types.AttrBlockKind: types.Listing,
 									},
 									Elements: []interface{}{
 										types.Paragraph{
-											Attributes: map[string]interface{}{},
+											Attributes: types.ElementAttributes{},
 											Lines: []types.InlineElements{
 												{
 													types.StringElement{
@@ -345,7 +345,7 @@ another fenced block
 			ElementReferences: map[string]interface{}{},
 			Elements: []interface{}{
 				types.LabeledList{
-					Attributes: map[string]interface{}{},
+					Attributes: types.ElementAttributes{},
 					Items: []types.LabeledListItem{
 						{
 							Term: "Item 1",
@@ -353,12 +353,12 @@ another fenced block
 					},
 				},
 				types.DelimitedBlock{
-					Attributes: map[string]interface{}{
+					Attributes: types.ElementAttributes{
 						types.AttrBlockKind: types.Listing,
 					},
 					Elements: []interface{}{
 						types.Paragraph{
-							Attributes: map[string]interface{}{},
+							Attributes: types.ElementAttributes{},
 							Lines: []types.InlineElements{
 								{
 									types.StringElement{
@@ -370,13 +370,13 @@ another fenced block
 					},
 				},
 				types.LabeledList{
-					Attributes: map[string]interface{}{},
+					Attributes: types.ElementAttributes{},
 					Items: []types.LabeledListItem{
 						{
 							Term: "Item 2",
 							Elements: []interface{}{
 								types.Paragraph{
-									Attributes: map[string]interface{}{},
+									Attributes: types.ElementAttributes{},
 									Lines: []types.InlineElements{
 										{
 											types.StringElement{Content: "something simple"},
@@ -388,12 +388,12 @@ another fenced block
 					},
 				},
 				types.DelimitedBlock{
-					Attributes: map[string]interface{}{
+					Attributes: types.ElementAttributes{
 						types.AttrBlockKind: types.Listing,
 					},
 					Elements: []interface{}{
 						types.Paragraph{
-							Attributes: map[string]interface{}{},
+							Attributes: types.ElementAttributes{},
 							Lines: []types.InlineElements{
 								{
 									types.StringElement{
