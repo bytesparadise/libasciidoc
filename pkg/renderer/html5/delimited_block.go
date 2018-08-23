@@ -83,7 +83,7 @@ func init() {
 }
 
 func renderDelimitedBlock(ctx *renderer.Context, b types.DelimitedBlock) ([]byte, error) {
-	log.Debugf("rendering delimited block of kind '%v'", b.Attributes[types.AttrBlockKind])
+	log.Debugf("rendering delimited block of kind '%v'", b.Attributes[types.AttrKind])
 	result := bytes.NewBuffer(nil)
 	var err error
 	elements := discardTrailingBlankLines(b.Elements)
@@ -94,7 +94,7 @@ func renderDelimitedBlock(ctx *renderer.Context, b types.DelimitedBlock) ([]byte
 	if t, ok := b.Attributes[types.AttrTitle].(string); ok {
 		title = strings.TrimSpace(t)
 	}
-	kind := b.Attributes[types.AttrBlockKind]
+	kind := b.Attributes[types.AttrKind]
 	switch kind {
 	case types.Fenced, types.Listing:
 		ctx.SetWithinDelimitedBlock(true)

@@ -121,7 +121,9 @@ var _ = Describe("unordered lists", func() {
 									{
 										types.StringElement{Content: "a second item with "},
 										types.QuotedText{
-											Kind: types.Bold,
+											Attributes: types.ElementAttributes{
+												types.AttrKind: types.Bold,
+											},
 											Elements: types.InlineElements{
 												types.StringElement{Content: "bold content"},
 											},
@@ -313,7 +315,9 @@ var _ = Describe("unordered lists", func() {
 									{
 										types.StringElement{Content: "a second item with "},
 										types.QuotedText{
-											Kind: types.Bold,
+											Attributes: types.ElementAttributes{
+												types.AttrKind: types.Bold,
+											},
 											Elements: types.InlineElements{
 												types.StringElement{Content: "bold content"},
 											},
@@ -459,7 +463,9 @@ var _ = Describe("unordered lists", func() {
 									{
 										types.StringElement{Content: "a second item with "},
 										types.QuotedText{
-											Kind: types.Bold,
+											Attributes: types.ElementAttributes{
+												types.AttrKind: types.Bold,
+											},
 											Elements: types.InlineElements{
 												types.StringElement{Content: "bold content"},
 											},
@@ -857,7 +863,7 @@ another delimited block
 									},
 									types.DelimitedBlock{
 										Attributes: types.ElementAttributes{
-											types.AttrBlockKind: types.Listing,
+											types.AttrKind: types.Listing,
 										},
 										Elements: []interface{}{
 											types.Paragraph{
@@ -874,7 +880,7 @@ another delimited block
 									},
 									types.DelimitedBlock{
 										Attributes: types.ElementAttributes{
-											types.AttrBlockKind: types.Listing,
+											types.AttrKind: types.Listing,
 										},
 										Elements: []interface{}{
 											types.Paragraph{
@@ -946,7 +952,7 @@ another delimited block
 					},
 					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{
-							types.AttrBlockKind: types.Listing,
+							types.AttrKind: types.Listing,
 						},
 						Elements: []interface{}{
 							types.Paragraph{
@@ -982,7 +988,7 @@ another delimited block
 					},
 					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{
-							types.AttrBlockKind: types.Listing,
+							types.AttrKind: types.Listing,
 						},
 						Elements: []interface{}{
 							types.Paragraph{

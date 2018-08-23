@@ -204,7 +204,9 @@ var _ = Describe("passthroughs", func() {
 					Kind: types.PassthroughMacro,
 					Elements: types.InlineElements{
 						types.QuotedText{
-							Kind: types.Bold,
+							Attributes: types.ElementAttributes{
+								types.AttrKind: types.Bold,
+							},
 							Elements: types.InlineElements{
 								types.StringElement{
 									Content: "hello",
@@ -225,7 +227,9 @@ var _ = Describe("passthroughs", func() {
 							Content: " a ",
 						},
 						types.QuotedText{
-							Kind: types.Bold,
+							Attributes: types.ElementAttributes{
+								types.AttrKind: types.Bold,
+							},
 							Elements: types.InlineElements{
 								types.StringElement{
 									Content: "hello",

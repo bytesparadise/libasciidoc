@@ -36,7 +36,8 @@ func renderQuotedText(ctx *renderer.Context, t types.QuotedText) ([]byte, error)
 	}
 	result := bytes.NewBuffer(nil)
 	var tmpl texttemplate.Template
-	switch t.Kind {
+	kind := t.Attributes[types.AttrKind]
+	switch kind {
 	case types.Bold:
 		tmpl = boldTextTmpl
 	case types.Italic:
@@ -44,7 +45,7 @@ func renderQuotedText(ctx *renderer.Context, t types.QuotedText) ([]byte, error)
 	case types.Monospace:
 		tmpl = monospaceTextTmpl
 	default:
-		return nil, errors.Errorf("unsupported quoted text kind: %v", t.Kind)
+		return nil, errors.Errorf("unsupported quoted text kind: '%v'", kind)
 	}
 	err := tmpl.Execute(result, template.HTML(elementsBuffer.String()))
 	if err != nil {

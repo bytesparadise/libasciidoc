@@ -449,8 +449,8 @@ func NewDocumentAttributeSubstitution(name []interface{}) (DocumentAttributeSubs
 type BlockKind int
 
 const (
-	// AttrBlockKind the key for the kind of block
-	AttrBlockKind string = "kind"
+	// AttrKind the key for the kind of block
+	AttrKind string = "kind"
 	// Fenced a fenced block
 	Fenced BlockKind = iota // 1
 	// Listing a listing block
@@ -1485,8 +1485,8 @@ func Verbatim(content []interface{}) ([]interface{}, error) {
 func NewDelimitedBlock(kind BlockKind, content []interface{}, attributes []interface{}, substitution Substitution) (DelimitedBlock, error) {
 	log.Debugf("Initializing a new DelimitedBlock of kind '%v'", kind)
 	attrbs := NewElementAttributes(attributes)
-	if _, found := attrbs[AttrBlockKind]; !found {
-		attrbs[AttrBlockKind] = kind
+	if _, found := attrbs[AttrKind]; !found {
+		attrbs[AttrKind] = kind
 	}
 	elements, err := substitution(content)
 	if err != nil {
@@ -1761,9 +1761,9 @@ func NewQuoteAttributes(kind, author, title string) (map[string]interface{}, err
 	result := make(map[string]interface{}, 3)
 	switch kind {
 	case "verse":
-		result[AttrBlockKind] = Verse
+		result[AttrKind] = Verse
 	default:
-		result[AttrBlockKind] = Quote
+		result[AttrKind] = Quote
 	}
 	result[AttrQuoteAuthor] = strings.TrimSpace(author)
 	result[AttrQuoteTitle] = strings.TrimSpace(title)
@@ -1808,8 +1808,8 @@ func (s StringElement) Accept(v Visitor) error {
 
 // QuotedText the structure for quoted text
 type QuotedText struct {
-	Kind     QuotedTextKind
-	Elements InlineElements
+	Attributes ElementAttributes
+	Elements   InlineElements
 }
 
 // QuotedTextKind the type for
@@ -1831,7 +1831,10 @@ func NewQuotedText(kind QuotedTextKind, content []interface{}) (QuotedText, erro
 		log.Debugf("Initialized a new QuotedText with %d elements:", len(elements))
 		spew.Dump(elements)
 	}
-	return QuotedText{Kind: kind, Elements: elements}, nil
+	return QuotedText{
+		Attributes: map[string]interface{}{AttrKind: kind},
+		Elements:   elements,
+	}, nil
 }
 
 // Accept implements Visitable#Accept(Visitor)

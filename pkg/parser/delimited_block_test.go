@@ -15,7 +15,7 @@ var _ = Describe("delimited blocks", func() {
 			actualContent := "```\n" + content + "\n```"
 			expectedResult := types.DelimitedBlock{
 				Attributes: types.ElementAttributes{
-					types.AttrBlockKind: types.Fenced,
+					types.AttrKind: types.Fenced,
 				},
 				Elements: []interface{}{
 					types.Paragraph{
@@ -37,7 +37,7 @@ var _ = Describe("delimited blocks", func() {
 			actualContent := "```\n```"
 			expectedResult := types.DelimitedBlock{
 				Attributes: types.ElementAttributes{
-					types.AttrBlockKind: types.Fenced,
+					types.AttrKind: types.Fenced,
 				},
 				Elements: []interface{}{},
 			}
@@ -48,7 +48,7 @@ var _ = Describe("delimited blocks", func() {
 			actualContent := "```\nsome fenced code\nwith an empty line\n\nin the middle\n```"
 			expectedResult := types.DelimitedBlock{
 				Attributes: types.ElementAttributes{
-					types.AttrBlockKind: types.Fenced,
+					types.AttrKind: types.Fenced,
 				},
 				Elements: []interface{}{
 					types.Paragraph{
@@ -90,7 +90,7 @@ var _ = Describe("delimited blocks", func() {
 				Elements: []interface{}{
 					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{
-							types.AttrBlockKind: types.Fenced,
+							types.AttrKind: types.Fenced,
 						},
 						Elements: []interface{}{
 							types.Paragraph{
@@ -151,7 +151,7 @@ var _ = Describe("delimited blocks", func() {
 					},
 					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{
-							types.AttrBlockKind: types.Fenced,
+							types.AttrKind: types.Fenced,
 						},
 						Elements: []interface{}{
 							types.Paragraph{
@@ -175,7 +175,7 @@ var _ = Describe("delimited blocks", func() {
 			actualContent := "```\nEnd of file here"
 			expectedResult := types.DelimitedBlock{
 				Attributes: types.ElementAttributes{
-					types.AttrBlockKind: types.Fenced,
+					types.AttrKind: types.Fenced,
 				},
 				Elements: []interface{}{
 					types.Paragraph{
@@ -202,7 +202,7 @@ some listing code
 ----`
 			expectedResult := types.DelimitedBlock{
 				Attributes: types.ElementAttributes{
-					types.AttrBlockKind: types.Listing,
+					types.AttrKind: types.Listing,
 				},
 				Elements: []interface{}{
 					types.Paragraph{
@@ -225,7 +225,7 @@ some listing code
 ----`
 			expectedResult := types.DelimitedBlock{
 				Attributes: types.ElementAttributes{
-					types.AttrBlockKind: types.Listing,
+					types.AttrKind: types.Listing,
 				},
 				Elements: []interface{}{},
 			}
@@ -241,7 +241,7 @@ in the middle
 ----`
 			expectedResult := types.DelimitedBlock{
 				Attributes: types.ElementAttributes{
-					types.AttrBlockKind: types.Listing,
+					types.AttrKind: types.Listing,
 				},
 				Elements: []interface{}{
 					types.Paragraph{
@@ -277,7 +277,7 @@ in the middle
 ----`
 			expectedResult := types.DelimitedBlock{
 				Attributes: types.ElementAttributes{
-					types.AttrBlockKind: types.Listing,
+					types.AttrKind: types.Listing,
 				},
 				Elements: []interface{}{
 					types.Paragraph{
@@ -319,7 +319,7 @@ then a normal paragraph.`
 				Elements: []interface{}{
 					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{
-							types.AttrBlockKind: types.Listing,
+							types.AttrKind: types.Listing,
 						},
 						Elements: []interface{}{
 							types.Paragraph{
@@ -377,7 +377,7 @@ some listing code
 					},
 					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{
-							types.AttrBlockKind: types.Listing,
+							types.AttrKind: types.Listing,
 						},
 						Elements: []interface{}{
 							types.Paragraph{
@@ -402,7 +402,7 @@ some listing code
 End of file here.`
 			expectedResult := types.DelimitedBlock{
 				Attributes: types.ElementAttributes{
-					types.AttrBlockKind: types.Listing,
+					types.AttrKind: types.Listing,
 				},
 				Elements: []interface{}{
 					types.Paragraph{
@@ -530,7 +530,7 @@ some listing code
 ====`
 			expectedResult := types.DelimitedBlock{
 				Attributes: types.ElementAttributes{
-					types.AttrBlockKind: types.Example,
+					types.AttrKind: types.Example,
 				},
 				Elements: []interface{}{
 					types.Paragraph{
@@ -554,7 +554,7 @@ some listing code
 ====`
 			expectedResult := types.DelimitedBlock{
 				Attributes: types.ElementAttributes{
-					types.AttrBlockKind: types.Example,
+					types.AttrKind: types.Example,
 				},
 				Elements: []interface{}{
 					types.Paragraph{
@@ -582,7 +582,7 @@ with *bold content*
 ====`
 			expectedResult := types.DelimitedBlock{
 				Attributes: types.ElementAttributes{
-					types.AttrBlockKind: types.Example,
+					types.AttrKind: types.Example,
 				},
 				Elements: []interface{}{
 					types.Paragraph{
@@ -603,7 +603,9 @@ with *bold content*
 									Content: "with ",
 								},
 								types.QuotedText{
-									Kind: types.Bold,
+									Attributes: types.ElementAttributes{
+										types.AttrKind: types.Bold,
+									},
 									Elements: types.InlineElements{
 										types.StringElement{
 											Content: "bold content",
@@ -645,7 +647,7 @@ with *bold content*
 End of file here`
 			expectedResult := types.DelimitedBlock{
 				Attributes: types.ElementAttributes{
-					types.AttrBlockKind: types.Example,
+					types.AttrKind: types.Example,
 				},
 				Elements: []interface{}{
 					types.Paragraph{
@@ -673,7 +675,7 @@ foo
 ====`
 			expectedResult := types.DelimitedBlock{
 				Attributes: types.ElementAttributes{
-					types.AttrBlockKind:      types.Example,
+					types.AttrKind:           types.Example,
 					types.AttrAdmonitionKind: types.Note,
 				},
 				Elements: []interface{}{
@@ -707,7 +709,7 @@ paragraphs
 				Elements: []interface{}{
 					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{
-							types.AttrBlockKind:      types.Listing,
+							types.AttrKind:           types.Listing,
 							types.AttrAdmonitionKind: types.Note,
 						},
 						Elements: []interface{}{
@@ -744,7 +746,7 @@ some *quote* content
 ____`
 			expectedResult := types.DelimitedBlock{
 				Attributes: types.ElementAttributes{
-					types.AttrBlockKind:   types.Quote,
+					types.AttrKind:        types.Quote,
 					types.AttrQuoteAuthor: "john doe",
 					types.AttrQuoteTitle:  "quote title",
 				},
@@ -757,7 +759,9 @@ ____`
 									Content: "some ",
 								},
 								types.QuotedText{
-									Kind: types.Bold,
+									Attributes: types.ElementAttributes{
+										types.AttrKind: types.Bold,
+									},
 									Elements: types.InlineElements{
 										types.StringElement{
 											Content: "quote",
@@ -785,7 +789,7 @@ ____
 `
 			expectedResult := types.DelimitedBlock{
 				Attributes: types.ElementAttributes{
-					types.AttrBlockKind:   types.Quote,
+					types.AttrKind:        types.Quote,
 					types.AttrQuoteAuthor: "john doe",
 					types.AttrQuoteTitle:  "",
 				},
@@ -856,7 +860,7 @@ ____
 `
 			expectedResult := types.DelimitedBlock{
 				Attributes: types.ElementAttributes{
-					types.AttrBlockKind:   types.Quote,
+					types.AttrKind:        types.Quote,
 					types.AttrQuoteAuthor: "",
 					types.AttrQuoteTitle:  "quote title",
 				},
@@ -887,7 +891,7 @@ ____
 ____`
 			expectedResult := types.DelimitedBlock{
 				Attributes: types.ElementAttributes{
-					types.AttrBlockKind:   types.Quote,
+					types.AttrKind:        types.Quote,
 					types.AttrQuoteAuthor: "",
 					types.AttrQuoteTitle:  "",
 				},
@@ -915,7 +919,7 @@ ____`
 					},
 					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{
-							types.AttrBlockKind: types.Listing,
+							types.AttrKind: types.Listing,
 						},
 						Elements: []interface{}{
 							types.Paragraph{
@@ -969,7 +973,7 @@ ____
 ____`
 			expectedResult := types.DelimitedBlock{
 				Attributes: types.ElementAttributes{
-					types.AttrBlockKind:   types.Quote,
+					types.AttrKind:        types.Quote,
 					types.AttrQuoteAuthor: "",
 					types.AttrQuoteTitle:  "",
 				},
@@ -1038,7 +1042,7 @@ ____
 ____`
 			expectedResult := types.DelimitedBlock{
 				Attributes: types.ElementAttributes{
-					types.AttrBlockKind:   types.Quote,
+					types.AttrKind:        types.Quote,
 					types.AttrQuoteAuthor: "",
 					types.AttrQuoteTitle:  "",
 				},
@@ -1054,7 +1058,7 @@ foo
 `
 			expectedResult := types.DelimitedBlock{
 				Attributes: types.ElementAttributes{
-					types.AttrBlockKind:   types.Quote,
+					types.AttrKind:        types.Quote,
 					types.AttrQuoteAuthor: "",
 					types.AttrQuoteTitle:  "",
 				},
@@ -1084,7 +1088,7 @@ some *verse* content
 ____`
 			expectedResult := types.DelimitedBlock{
 				Attributes: types.ElementAttributes{
-					types.AttrBlockKind:   types.Verse,
+					types.AttrKind:        types.Verse,
 					types.AttrQuoteAuthor: "john doe",
 					types.AttrQuoteTitle:  "verse title",
 				},
@@ -1097,7 +1101,9 @@ ____`
 									Content: "some ",
 								},
 								types.QuotedText{
-									Kind: types.Bold,
+									Attributes: types.ElementAttributes{
+										types.AttrKind: types.Bold,
+									},
 									Elements: types.InlineElements{
 										types.StringElement{
 											Content: "verse",
@@ -1125,7 +1131,7 @@ ____
 `
 			expectedResult := types.DelimitedBlock{
 				Attributes: types.ElementAttributes{
-					types.AttrBlockKind:   types.Verse,
+					types.AttrKind:        types.Verse,
 					types.AttrQuoteAuthor: "john doe",
 					types.AttrQuoteTitle:  "",
 				},
@@ -1163,7 +1169,7 @@ ____
 `
 			expectedResult := types.DelimitedBlock{
 				Attributes: types.ElementAttributes{
-					types.AttrBlockKind:   types.Verse,
+					types.AttrKind:        types.Verse,
 					types.AttrQuoteAuthor: "",
 					types.AttrQuoteTitle:  "verse title",
 				},
@@ -1194,7 +1200,7 @@ ____
 ____`
 			expectedResult := types.DelimitedBlock{
 				Attributes: types.ElementAttributes{
-					types.AttrBlockKind:   types.Verse,
+					types.AttrKind:        types.Verse,
 					types.AttrQuoteAuthor: "",
 					types.AttrQuoteTitle:  "",
 				},
@@ -1244,7 +1250,7 @@ ____
 ____`
 			expectedResult := types.DelimitedBlock{
 				Attributes: types.ElementAttributes{
-					types.AttrBlockKind:   types.Verse,
+					types.AttrKind:        types.Verse,
 					types.AttrQuoteAuthor: "",
 					types.AttrQuoteTitle:  "",
 				},
@@ -1277,7 +1283,7 @@ ____
 ____`
 			expectedResult := types.DelimitedBlock{
 				Attributes: types.ElementAttributes{
-					types.AttrBlockKind:   types.Verse,
+					types.AttrKind:        types.Verse,
 					types.AttrQuoteAuthor: "",
 					types.AttrQuoteTitle:  "",
 				},
@@ -1293,7 +1299,7 @@ foo
 `
 			expectedResult := types.DelimitedBlock{
 				Attributes: types.ElementAttributes{
-					types.AttrBlockKind:   types.Verse,
+					types.AttrKind:        types.Verse,
 					types.AttrQuoteAuthor: "",
 					types.AttrQuoteTitle:  "",
 				},
