@@ -44,7 +44,9 @@ var _ = Describe("paragraphs", func() {
 					{
 						types.StringElement{Content: "a paragraph with "},
 						types.QuotedText{
-							Kind: types.Bold,
+							Attributes: types.ElementAttributes{
+								types.AttrKind: types.Bold,
+							},
 							Elements: types.InlineElements{
 								types.StringElement{Content: "some bold content"},
 							},
@@ -176,7 +178,9 @@ this is a
 					},
 					{
 						types.QuotedText{
-							Kind: types.Bold,
+							Attributes: types.ElementAttributes{
+								types.AttrKind: types.Bold,
+							},
 							Elements: types.InlineElements{
 								types.StringElement{
 									Content: "caution",
@@ -240,7 +244,7 @@ And no space after [CAUTION] either.`
 I am a verse paragraph.`
 			expectedResult := types.Paragraph{
 				Attributes: types.ElementAttributes{
-					types.AttrBlockKind:   types.Verse,
+					types.AttrKind:        types.Verse,
 					types.AttrQuoteAuthor: "john doe",
 					types.AttrQuoteTitle:  "verse title",
 				},
@@ -262,7 +266,7 @@ I am a verse paragraph.`
 I am a verse paragraph.`
 			expectedResult := types.Paragraph{
 				Attributes: types.ElementAttributes{
-					types.AttrBlockKind:   types.Verse,
+					types.AttrKind:        types.Verse,
 					types.AttrQuoteAuthor: "john doe",
 					types.AttrQuoteTitle:  "verse title",
 					types.AttrID:          "universe",
@@ -284,7 +288,7 @@ I am a verse paragraph.`
 I am a verse paragraph.`
 			expectedResult := types.Paragraph{
 				Attributes: types.ElementAttributes{
-					types.AttrBlockKind:   types.Verse,
+					types.AttrKind:        types.Verse,
 					types.AttrQuoteAuthor: "john doe",
 					types.AttrQuoteTitle:  "",
 				},
@@ -304,7 +308,7 @@ I am a verse paragraph.`
 I am a verse paragraph.`
 			expectedResult := types.Paragraph{
 				Attributes: types.ElementAttributes{
-					types.AttrBlockKind:   types.Verse,
+					types.AttrKind:        types.Verse,
 					types.AttrQuoteAuthor: "john doe",
 					types.AttrQuoteTitle:  "",
 				},
@@ -324,7 +328,7 @@ I am a verse paragraph.`
 I am a verse paragraph.`
 			expectedResult := types.Paragraph{
 				Attributes: types.ElementAttributes{
-					types.AttrBlockKind:   types.Verse,
+					types.AttrKind:        types.Verse,
 					types.AttrQuoteAuthor: "",
 					types.AttrQuoteTitle:  "",
 				},
@@ -344,7 +348,7 @@ I am a verse paragraph.`
 I am a verse paragraph.`
 			expectedResult := types.Paragraph{
 				Attributes: types.ElementAttributes{
-					types.AttrBlockKind:   types.Verse,
+					types.AttrKind:        types.Verse,
 					types.AttrQuoteAuthor: "",
 					types.AttrQuoteTitle:  "",
 				},
@@ -364,7 +368,7 @@ I am a verse paragraph.`
 image::foo.png[]`
 			expectedResult := types.Paragraph{
 				Attributes: types.ElementAttributes{
-					types.AttrBlockKind:   types.Verse,
+					types.AttrKind:        types.Verse,
 					types.AttrQuoteAuthor: "john doe",
 					types.AttrQuoteTitle:  "verse title",
 				},

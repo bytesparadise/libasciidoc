@@ -115,6 +115,9 @@ and a paragraph`
 				},
 				Content: types.InlineElements{
 					types.QuotedText{
+						Attributes: types.ElementAttributes{
+							types.AttrKind: types.Bold,
+						},
 						Elements: types.InlineElements{
 							types.StringElement{Content: "2 spaces and bold content"},
 						},

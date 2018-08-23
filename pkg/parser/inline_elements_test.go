@@ -12,7 +12,9 @@ var _ = Describe("inline elements", func() {
 		actualContent := "*some bold content*"
 		expectedResult := types.InlineElements{
 			types.QuotedText{
-				Kind: types.Bold,
+				Attributes: types.ElementAttributes{
+					types.AttrKind: types.Bold,
+				},
 				Elements: types.InlineElements{
 					types.StringElement{Content: "some bold content"},
 				},
@@ -27,7 +29,9 @@ var _ = Describe("inline elements", func() {
 		expectedResult := types.InlineElements{
 			types.StringElement{Content: "("},
 			types.QuotedText{
-				Kind: types.Bold,
+				Attributes: types.ElementAttributes{
+					types.AttrKind: types.Bold,
+				},
 				Elements: types.InlineElements{
 					types.StringElement{Content: "some bold content"},
 				},
@@ -58,7 +62,9 @@ var _ = Describe("inline elements", func() {
 		actualContent := "**foo**bar"
 		expectedResult := types.InlineElements{
 			types.QuotedText{
-				Kind: types.Bold,
+				Attributes: types.ElementAttributes{
+					types.AttrKind: types.Bold,
+				},
 				Elements: types.InlineElements{
 					types.StringElement{Content: "foo"},
 				},

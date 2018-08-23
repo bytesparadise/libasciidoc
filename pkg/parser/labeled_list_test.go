@@ -276,7 +276,7 @@ another fenced block
 							Elements: []interface{}{
 								types.DelimitedBlock{
 									Attributes: types.ElementAttributes{
-										types.AttrBlockKind: types.Listing,
+										types.AttrKind: types.Listing,
 									},
 									Elements: []interface{}{
 										types.Paragraph{
@@ -306,7 +306,7 @@ another fenced block
 								},
 								types.DelimitedBlock{
 									Attributes: types.ElementAttributes{
-										types.AttrBlockKind: types.Listing,
+										types.AttrKind: types.Listing,
 									},
 									Elements: []interface{}{
 										types.Paragraph{
@@ -354,7 +354,7 @@ another fenced block
 				},
 				types.DelimitedBlock{
 					Attributes: types.ElementAttributes{
-						types.AttrBlockKind: types.Listing,
+						types.AttrKind: types.Listing,
 					},
 					Elements: []interface{}{
 						types.Paragraph{
@@ -389,7 +389,7 @@ another fenced block
 				},
 				types.DelimitedBlock{
 					Attributes: types.ElementAttributes{
-						types.AttrBlockKind: types.Listing,
+						types.AttrKind: types.Listing,
 					},
 					Elements: []interface{}{
 						types.Paragraph{

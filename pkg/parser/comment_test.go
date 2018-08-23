@@ -67,7 +67,7 @@ with multiple lines
 ////`
 			expectedResult := types.DelimitedBlock{
 				Attributes: types.ElementAttributes{
-					types.AttrBlockKind: types.Comment,
+					types.AttrKind: types.Comment,
 				},
 				Elements: []interface{}{
 					types.StringElement{
@@ -102,7 +102,7 @@ a second paragraph`
 					},
 					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{
-							types.AttrBlockKind: types.Comment,
+							types.AttrKind: types.Comment,
 						},
 						Elements: []interface{}{
 							types.StringElement{
