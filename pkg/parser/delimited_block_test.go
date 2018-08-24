@@ -439,30 +439,6 @@ on 2 lines.`
 			}
 			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
-
-		It("mixing literal block and paragraph", func() {
-			actualContent := `   some literal content
-
-a normal paragraph.`
-			expectedResult := types.Document{
-				Attributes:        map[string]interface{}{},
-				ElementReferences: map[string]interface{}{},
-				Elements: []interface{}{
-					types.LiteralBlock{
-						Content: "   some literal content",
-					},
-					types.Paragraph{
-						Attributes: types.ElementAttributes{},
-						Lines: []types.InlineElements{
-							{
-								types.StringElement{Content: "a normal paragraph."},
-							},
-						},
-					},
-				},
-			}
-			verify(GinkgoT(), expectedResult, actualContent)
-		})
 	})
 
 	Context("literal blocks with block delimiter", func() {
@@ -492,34 +468,6 @@ a normal paragraph.`
 			verify(GinkgoT(), expectedResult, actualContent)
 		})
 
-	})
-
-	Context("literal blocks with attribute", func() {
-
-		It("literal block from 1-line paragraph with attribute", func() {
-			actualContent := `[literal]   
-some literal content
-
-a normal paragraph.`
-			expectedResult := types.Document{
-				Attributes:        map[string]interface{}{},
-				ElementReferences: map[string]interface{}{},
-				Elements: []interface{}{
-					types.LiteralBlock{
-						Content: "some literal content",
-					},
-					types.Paragraph{
-						Attributes: types.ElementAttributes{},
-						Lines: []types.InlineElements{
-							{
-								types.StringElement{Content: "a normal paragraph."},
-							},
-						},
-					},
-				},
-			}
-			verify(GinkgoT(), expectedResult, actualContent)
-		})
 	})
 
 	Context("example blocks", func() {

@@ -38,6 +38,7 @@ a normal paragraph.`
 					types.LiteralBlock{
 						Content: "   some literal content",
 					},
+					types.BlankLine{},
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
@@ -95,6 +96,33 @@ a normal paragraph.`
 					types.LiteralBlock{
 						Content: "some literal content",
 					},
+					types.BlankLine{},
+					types.Paragraph{
+						Attributes: types.ElementAttributes{},
+						Lines: []types.InlineElements{
+							{
+								types.StringElement{Content: "a normal paragraph."},
+							},
+						},
+					},
+				},
+			}
+			verify(GinkgoT(), expectedResult, actualContent)
+		})
+		It("literal block from 2-lines paragraph with attribute", func() {
+			actualContent := `[literal]   
+some literal content
+on two lines.
+
+a normal paragraph.`
+			expectedResult := types.Document{
+				Attributes:        map[string]interface{}{},
+				ElementReferences: map[string]interface{}{},
+				Elements: []interface{}{
+					types.LiteralBlock{
+						Content: "some literal content\non two lines.",
+					},
+					types.BlankLine{},
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{

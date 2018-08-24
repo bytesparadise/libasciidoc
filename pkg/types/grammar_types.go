@@ -213,9 +213,8 @@ func NewDocumentAuthors(authors []interface{}) ([]DocumentAuthor, error) {
 //NewDocumentAuthor initializes a new DocumentAuthor
 func NewDocumentAuthor(namePart1, namePart2, namePart3, emailAddress interface{}) (DocumentAuthor, error) {
 	var part1, part2, part3, email string
-	var err error
-	if namePart1 != nil {
-		part1, err = stringify(namePart1.([]interface{}),
+	if namePart1, ok := namePart1.(string); ok {
+		part1 = apply(namePart1,
 			func(s string) string {
 				return strings.TrimSpace(s)
 			},
@@ -223,12 +222,9 @@ func NewDocumentAuthor(namePart1, namePart2, namePart3, emailAddress interface{}
 				return strings.Replace(s, "_", " ", -1)
 			},
 		)
-		if err != nil {
-			return DocumentAuthor{}, errors.Wrapf(err, "error while initializing a DocumentAuthor")
-		}
 	}
-	if namePart2 != nil {
-		part2, err = stringify(namePart2.([]interface{}),
+	if namePart2, ok := namePart2.(string); ok {
+		part2 = apply(namePart2,
 			func(s string) string {
 				return strings.TrimSpace(s)
 			},
@@ -236,12 +232,9 @@ func NewDocumentAuthor(namePart1, namePart2, namePart3, emailAddress interface{}
 				return strings.Replace(s, "_", " ", -1)
 			},
 		)
-		if err != nil {
-			return DocumentAuthor{}, errors.Wrapf(err, "error while initializing a DocumentAuthor")
-		}
 	}
-	if namePart3 != nil {
-		part3, err = stringify(namePart3.([]interface{}),
+	if namePart3, ok := namePart3.(string); ok {
+		part3 = apply(namePart3,
 			func(s string) string {
 				return strings.TrimSpace(s)
 			},
@@ -249,12 +242,9 @@ func NewDocumentAuthor(namePart1, namePart2, namePart3, emailAddress interface{}
 				return strings.Replace(s, "_", " ", -1)
 			},
 		)
-		if err != nil {
-			return DocumentAuthor{}, errors.Wrapf(err, "error while initializing a DocumentAuthor")
-		}
 	}
-	if emailAddress != nil {
-		email, err = stringify(emailAddress.([]interface{}),
+	if emailAddress, ok := emailAddress.(string); ok {
+		email = apply(emailAddress,
 			func(s string) string {
 				return strings.TrimPrefix(s, "<")
 			}, func(s string) string {
@@ -262,9 +252,6 @@ func NewDocumentAuthor(namePart1, namePart2, namePart3, emailAddress interface{}
 			}, func(s string) string {
 				return strings.TrimSpace(s)
 			})
-		if err != nil {
-			return DocumentAuthor{}, errors.Wrapf(err, "error while initializing a DocumentAuthor")
-		}
 	}
 	result := DocumentAuthor{}
 	if part2 != "" && part3 != "" {
@@ -317,12 +304,11 @@ type DocumentRevision struct {
 
 // NewDocumentRevision intializes a new DocumentRevision
 func NewDocumentRevision(revnumber, revdate, revremark interface{}) (DocumentRevision, error) {
-	// log.Debugf("initializing document revision with revnumber=%v, revdate=%v, revremark=%v", revnumber, revdate, revremark)
-	// stringify, then remove the "v" prefix and trim spaces
+	log.Debugf("initializing document revision with revnumber=%v, revdate=%v, revremark=%v", revnumber, revdate, revremark)
+	// remove the "v" prefix and trim spaces
 	var number, date, remark string
-	var err error
-	if revnumber != nil {
-		number, err = stringify(revnumber.([]interface{}),
+	if revnumber, ok := revnumber.(string); ok {
+		number = apply(revnumber,
 			func(s string) string {
 				return strings.TrimPrefix(s, "v")
 			}, func(s string) string {
@@ -330,38 +316,22 @@ func NewDocumentRevision(revnumber, revdate, revremark interface{}) (DocumentRev
 			}, func(s string) string {
 				return strings.TrimSpace(s)
 			})
-		if err != nil {
-			return DocumentRevision{}, errors.Wrapf(err, "error while initializing a DocumentRevision")
-		}
 	}
-	if revdate != nil {
-		// stringify, then remove the "," prefix and trim spaces
-		date, err = stringify(revdate.([]interface{}), func(s string) string {
-			return strings.TrimSpace(s)
-		})
-		if err != nil {
-			return DocumentRevision{}, errors.Wrapf(err, "error while initializing a DocumentRevision")
-		}
-		// do not keep empty values
-		// if date == "" {
-		// 	date = nil
-		// }
+	if revdate, ok := revdate.(string); ok {
+		// trim spaces
+		date = apply(revdate,
+			func(s string) string {
+				return strings.TrimSpace(s)
+			})
 	}
-	if revremark != nil {
-		// then we need to strip the heading "," and spaces
-		remark, err = stringify(revremark.([]interface{}),
+	if revremark, ok := revremark.(string); ok {
+		// then we need to strip the heading ":" and spaces
+		remark = apply(revremark,
 			func(s string) string {
 				return strings.TrimPrefix(s, ":")
 			}, func(s string) string {
 				return strings.TrimSpace(s)
 			})
-		if err != nil {
-			return DocumentRevision{}, errors.Wrapf(err, "error while initializing a DocumentRevision")
-		}
-		// do not keep empty values
-		// if *remark == "" {
-		// 	remark = nil
-		// }
 	}
 	// log.Debugf("initializing a new DocumentRevision with revnumber='%v', revdate='%v' and revremark='%v'", *n, *d, *r)
 	result := DocumentRevision{
@@ -388,21 +358,18 @@ type DocumentAttributeDeclaration struct {
 	Value string
 }
 
-// NewDocumentAttributeDeclaration initializes a new DocumentAttributeDeclaration
-func NewDocumentAttributeDeclaration(name []interface{}, value []interface{}) (DocumentAttributeDeclaration, error) {
-	attrName, err := stringify(name,
+// NewDocumentAttributeDeclaration initializes a new DocumentAttributeDeclaration with the given name and optional value
+func NewDocumentAttributeDeclaration(name string, value interface{}) (DocumentAttributeDeclaration, error) {
+	var attrName, attrValue string
+	attrName = apply(name,
 		func(s string) string {
 			return strings.TrimSpace(s)
 		})
-	if err != nil {
-		return DocumentAttributeDeclaration{}, errors.Wrapf(err, "error while initializing a DocumentAttributeDeclaration")
-	}
-	attrValue, err := stringify(value,
-		func(s string) string {
-			return strings.TrimSpace(s)
-		})
-	if err != nil {
-		return DocumentAttributeDeclaration{}, errors.Wrapf(err, "error while initializing a DocumentAttributeDeclaration")
+	if value, ok := value.(string); ok {
+		attrValue = apply(value,
+			func(s string) string {
+				return strings.TrimSpace(s)
+			})
 	}
 	log.Debugf("Initialized a new DocumentAttributeDeclaration: '%s' -> '%s'", attrName, attrValue)
 	return DocumentAttributeDeclaration{
@@ -417,11 +384,7 @@ type DocumentAttributeReset struct {
 }
 
 // NewDocumentAttributeReset initializes a new Document Attribute Resets.
-func NewDocumentAttributeReset(name []interface{}) (DocumentAttributeReset, error) {
-	attrName, err := stringify(name)
-	if err != nil {
-		return DocumentAttributeReset{}, errors.Wrapf(err, "error while initializing a DocumentAttributeReset")
-	}
+func NewDocumentAttributeReset(attrName string) (DocumentAttributeReset, error) {
 	log.Debugf("Initialized a new DocumentAttributeReset: '%s'", attrName)
 	return DocumentAttributeReset{Name: attrName}, nil
 }
@@ -432,11 +395,7 @@ type DocumentAttributeSubstitution struct {
 }
 
 // NewDocumentAttributeSubstitution initializes a new Document Attribute Substitutions
-func NewDocumentAttributeSubstitution(name []interface{}) (DocumentAttributeSubstitution, error) {
-	attrName, err := stringify(name)
-	if err != nil {
-		return DocumentAttributeSubstitution{}, errors.Wrapf(err, "error while initializing a DocumentAttributeSubstitution")
-	}
+func NewDocumentAttributeSubstitution(attrName string) (DocumentAttributeSubstitution, error) {
 	log.Debugf("Initialized a new DocumentAttributeSubstitution: '%s'", attrName)
 	return DocumentAttributeSubstitution{Name: attrName}, nil
 }
@@ -1167,14 +1126,10 @@ type LabeledListItem struct {
 }
 
 // NewLabeledListItem initializes a new LabeledListItem
-func NewLabeledListItem(term []interface{}, elements []interface{}) (LabeledListItem, error) {
+func NewLabeledListItem(term string, elements []interface{}) (LabeledListItem, error) {
 	log.Debugf("initializing a new LabeledListItem with %d elements (%T)", len(elements), elements)
-	t, err := stringify(term)
-	if err != nil {
-		return LabeledListItem{}, errors.Wrapf(err, "unable to get term while instanciating a new LabeledListItem element")
-	}
 	return LabeledListItem{
-		Term:     t,
+		Term:     term,
 		Elements: elements,
 	}, nil
 }
@@ -1421,19 +1376,17 @@ func NewImageMacro(path string, attributes ElementAttributes) (ImageMacro, error
 }
 
 // NewImageAttributes returns a map of image attributes, some of which have implict keys (`alt`, `width` and `height`)
-func NewImageAttributes(alt, width, height, otherAttrs []interface{}) (ElementAttributes, error) {
+func NewImageAttributes(alt, width, height interface{}, otherAttrs []interface{}) (ElementAttributes, error) {
 	result := ElementAttributes{}
-	altStr, err := stringify(alt, strings.TrimSpace)
-	if err != nil {
-		return ElementAttributes{}, errors.Wrapf(err, "unable to convert the 'alt' image attribute into a string: '%v'", alt)
+	var altStr, widthStr, heightStr string
+	if alt, ok := alt.(string); ok {
+		altStr = apply(alt, strings.TrimSpace)
 	}
-	widthStr, err := stringify(width, strings.TrimSpace)
-	if err != nil {
-		return ElementAttributes{}, errors.Wrapf(err, "unable to convert the 'width' image attribute into a string: '%v'", width)
+	if width, ok := width.(string); ok {
+		widthStr = apply(width, strings.TrimSpace)
 	}
-	heightStr, err := stringify(height, strings.TrimSpace)
-	if err != nil {
-		return ElementAttributes{}, errors.Wrapf(err, "unable to convert the 'height' image attribute into a string: '%v'", height)
+	if height, ok := height.(string); ok {
+		heightStr = apply(height, strings.TrimSpace)
 	}
 	result[AttrImageAlt] = altStr
 	result[AttrImageWidth] = widthStr
@@ -1470,12 +1423,11 @@ func None(content []interface{}) ([]interface{}, error) {
 func Verbatim(content []interface{}) ([]interface{}, error) {
 	result := make([]interface{}, len(content))
 	for i, c := range content {
-		if c, ok := c.([]interface{}); ok {
-			s, err := stringify(c)
-			if err != nil {
-				return []interface{}{}, errors.Wrapf(err, "failed to apply the 'verbatim' substitution")
-			}
-			result[i] = NewStringElement(s)
+		if c, ok := c.(string); ok {
+			c = apply(c, func(s string) string {
+				return strings.TrimRight(c, "\n\r")
+			})
+			result[i] = NewStringElement(c)
 		}
 	}
 	return result, nil
@@ -1584,15 +1536,15 @@ type LiteralBlock struct {
 
 // NewLiteralBlock initializes a new `DelimitedBlock` of the given kind with the given content,
 // along with the given sectionTitle spaces
-func NewLiteralBlock(spaces, content []interface{}) (LiteralBlock, error) {
+func NewLiteralBlock(content string) (LiteralBlock, error) {
 	// concatenates the spaces with the actual content in a single 'stringified' value
 	// log.Debugf("initializing a new LiteralBlock with spaces='%v' and content=`%v`", spaces, content)
-	c, err := stringify(append(spaces, content...))
-	if err != nil {
-		return LiteralBlock{}, errors.Wrapf(err, "unable to initialize a new literal block")
-	}
 	// remove "\n" or "\r\n", depending on the OS.
-	blockContent := strings.TrimRight(strings.TrimRight(c, "\n"), "\r")
+	blockContent := apply(content,
+		func(s string) string {
+			return strings.TrimRight(s, "\n\r")
+		},
+	)
 	log.Debugf("Initialized a new LiteralBlock with content=`%s`", blockContent)
 	return LiteralBlock{
 		Content: blockContent,
@@ -1609,14 +1561,10 @@ type SingleLineComment struct {
 }
 
 // NewSingleLineComment initializes a new single line content
-func NewSingleLineComment(content []interface{}) (SingleLineComment, error) {
-	c, err := stringify(content)
-	if err != nil {
-		return SingleLineComment{}, errors.Wrapf(err, "failed to initialize a new single line comment")
-	}
-	log.Debugf("initializing a single line comment with content: '%s'", c)
+func NewSingleLineComment(content string) (SingleLineComment, error) {
+	log.Debugf("initializing a single line comment with content: '%s'", content)
 	return SingleLineComment{
-		Content: c,
+		Content: content,
 	}, nil
 }
 
@@ -1684,23 +1632,19 @@ func NewElementID(id string) (ElementAttributes, error) {
 }
 
 // NewElementTitle initializes a new attribute map with a single entry for the title using the given value
-func NewElementTitle(value []interface{}) (ElementAttributes, error) {
-	v, err := stringify(value)
-	if err != nil {
-		return ElementAttributes{}, errors.Wrapf(err, "failed to initialize a new ElementTitle")
-	}
-	log.Debugf("initializing a new ElementTitle with content=%s", v)
-	return ElementAttributes{AttrTitle: v}, nil
+func NewElementTitle(title string) (ElementAttributes, error) {
+	log.Debugf("initializing a new ElementTitle with content=%s", title)
+	return ElementAttributes{
+		AttrTitle: title,
+	}, nil
 }
 
 // NewElementRole initializes a new attribute map with a single entry for the title using the given value
-func NewElementRole(value []interface{}) (ElementAttributes, error) {
-	v, err := stringify(value)
-	if err != nil {
-		return ElementAttributes{}, errors.Wrapf(err, "failed to initialize a new ElementRole")
-	}
-	log.Debugf("initializing a new ElementRole with content=%s", v)
-	return ElementAttributes{AttrRole: v}, nil
+func NewElementRole(role string) (ElementAttributes, error) {
+	log.Debugf("initializing a new ElementRole with content=%s", role)
+	return ElementAttributes{
+		AttrRole: role,
+	}, nil
 }
 
 // NewAdmonitionAttribute initializes a new attribute map with a single entry for the admonition kind using the given value
@@ -1727,27 +1671,21 @@ func NewAttributeGroup(attributes []interface{}) (ElementAttributes, error) {
 }
 
 // NewGenericAttribute initializes a new ElementAttribute from the given key and optional value
-func NewGenericAttribute(key []interface{}, value []interface{}) (ElementAttributes, error) {
+func NewGenericAttribute(key string, value interface{}) (ElementAttributes, error) {
 	result := make(map[string]interface{})
-	k, err := stringify(key,
+	k := apply(key,
 		// remove surrounding quotes
 		func(s string) string {
 			return strings.Trim(s, "\"")
 		},
 		strings.TrimSpace)
-	if err != nil {
-		return ElementAttributes{}, errors.Wrapf(err, "failed to initialize a new generic attribute")
-	}
-	if value != nil {
-		v, err := stringify(value,
+	if value, ok := value.(string); ok {
+		v := apply(value,
 			// remove surrounding quotes
 			func(s string) string {
 				return strings.Trim(s, "\"")
 			},
 			strings.TrimSpace)
-		if err != nil {
-			return ElementAttributes{}, errors.Wrapf(err, "failed to initialize a new generic attribute")
-		}
 		result[k] = v
 	} else {
 		result[k] = nil
@@ -1867,8 +1805,8 @@ func (t QuotedText) Accept(v Visitor) error {
 // ------------------------------------------------------
 
 // NewEscapedQuotedText returns a new InlineElements where the nested elements are preserved (ie, substituted as expected)
-func NewEscapedQuotedText(backslashes []interface{}, punctuation string, content []interface{}) ([]interface{}, error) {
-	backslashesStr, err := stringify(backslashes,
+func NewEscapedQuotedText(backslashes string, punctuation string, content []interface{}) ([]interface{}, error) {
+	backslashesStr := apply(backslashes,
 		func(s string) string {
 			// remove the number of back-slashes that match the length of the punctuation. Eg: `\*` or `\\**`, but keep extra back-slashes
 			if len(s) > len(punctuation) {
@@ -1876,9 +1814,6 @@ func NewEscapedQuotedText(backslashes []interface{}, punctuation string, content
 			}
 			return ""
 		})
-	if err != nil {
-		return []interface{}{}, errors.Wrapf(err, "error while initializing quoted text with substitution prevention")
-	}
 	return []interface{}{backslashesStr, punctuation, content, punctuation}, nil
 }
 
@@ -1938,11 +1873,7 @@ type Link struct {
 }
 
 // NewLink initializes a new `Link`
-func NewLink(url []interface{}, attributes ElementAttributes) (Link, error) {
-	urlStr, err := stringify(url)
-	if err != nil {
-		return Link{}, errors.Wrapf(err, "failed to initialize a new Link element")
-	}
+func NewLink(url string, attributes ElementAttributes) (Link, error) {
 	// init attributes with empty 'text' attribute
 	if attributes == nil {
 		attributes = map[string]interface{}{
@@ -1950,7 +1881,7 @@ func NewLink(url []interface{}, attributes ElementAttributes) (Link, error) {
 		}
 	}
 	return Link{
-		URL:        urlStr,
+		URL:        url,
 		Attributes: attributes,
 	}, nil
 }
@@ -1967,11 +1898,11 @@ func (l Link) Text() string {
 const AttrLinkText string = "text"
 
 // NewLinkAttributes returns a map of image attributes, some of which have implict keys (`text`)
-func NewLinkAttributes(text []interface{}, otherAttrs []interface{}) (ElementAttributes, error) {
+func NewLinkAttributes(text interface{}, otherAttrs []interface{}) (ElementAttributes, error) {
 	result := ElementAttributes{}
-	textStr, err := stringify(text, strings.TrimSpace)
-	if err != nil {
-		return ElementAttributes{}, errors.Wrapf(err, "unable to convert the 'text' link attribute into a string: '%v'", text)
+	var textStr string
+	if text, ok := text.(string); ok {
+		textStr = apply(text, strings.TrimSpace)
 	}
 	result[AttrLinkText] = textStr
 	for _, otherAttr := range otherAttrs {
