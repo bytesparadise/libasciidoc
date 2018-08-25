@@ -15,31 +15,35 @@ var crossReferenceTmpl texttemplate.Template
 
 // initializes the templates
 func init() {
-	crossReferenceTmpl = newTextTemplate("cross reference", `<a href="#{{ .ID }}">{{ .Content }}</a>`)
+	crossReferenceTmpl = newTextTemplate("cross reference", `<a href="#{{ .ID }}">{{ .Label }}</a>`)
 }
 
 func renderCrossReference(ctx *renderer.Context, xref types.CrossReference) ([]byte, error) {
 	log.Debugf("rendering cross reference with ID: %s", xref.ID)
 	result := bytes.NewBuffer(nil)
-	renderedContentStr := fmt.Sprintf("[%s]", xref.ID)
-	if target, found := ctx.Document.ElementReferences[xref.ID]; found {
+	var label string
+	if xref.Label != "" {
+		label = xref.Label
+	} else if target, found := ctx.Document.ElementReferences[xref.ID]; found {
 		switch t := target.(type) {
 		case types.SectionTitle:
 			renderedContent, err := renderElement(ctx, t.Content)
 			if err != nil {
 				return nil, errors.Wrapf(err, "error while rendering sectionTitle content")
 			}
-			renderedContentStr = string(renderedContent)
+			label = string(renderedContent)
 		default:
 			return nil, errors.Errorf("unable to process cross-reference to element of type %T", target)
 		}
+	} else {
+		label = fmt.Sprintf("[%s]", xref.ID)
 	}
 	err := crossReferenceTmpl.Execute(result, struct {
-		ID      string
-		Content string
+		ID    string
+		Label string
 	}{
-		ID:      xref.ID,
-		Content: renderedContentStr,
+		ID:    xref.ID,
+		Label: label,
 	})
 	if err != nil {
 		return nil, errors.Wrapf(err, "unable to render cross reference")

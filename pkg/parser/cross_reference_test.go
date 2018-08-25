@@ -6,11 +6,11 @@ import (
 	. "github.com/onsi/ginkgo"
 )
 
-var _ = Describe("cross References", func() {
+var _ = Describe("cross-references", func() {
 
 	Context("section reference", func() {
 
-		It("xref with custom id", func() {
+		It("cross-reference with custom id", func() {
 			actualContent := `[[thetitle]]
 == a title
 
@@ -48,9 +48,74 @@ with some content linked to <<thetitle>>!`
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										types.StringElement{Content: "with some content linked to "},
-										types.CrossReference{ID: "thetitle"},
-										types.StringElement{Content: "!"},
+										types.StringElement{
+											Content: "with some content linked to ",
+										},
+										types.CrossReference{
+											ID:    "thetitle",
+											Label: "",
+										},
+										types.StringElement{
+											Content: "!",
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			}
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Document"))
+		})
+
+		It("cross-reference with custom id and label", func() {
+			actualContent := `[[thetitle]]
+== a title
+
+with some content linked to <<thetitle,a label to the title>>!`
+			expectedResult := types.Document{
+				Attributes: types.DocumentAttributes{},
+				ElementReferences: map[string]interface{}{
+					"thetitle": types.SectionTitle{
+						Attributes: types.ElementAttributes{
+							types.AttrID: "thetitle",
+						},
+						Content: types.InlineElements{
+							types.StringElement{
+								Content: "a title",
+							},
+						},
+					},
+				},
+				Elements: []interface{}{
+					types.Section{
+						Level: 1,
+						Title: types.SectionTitle{
+							Attributes: types.ElementAttributes{
+								types.AttrID: "thetitle",
+							},
+							Content: types.InlineElements{
+								types.StringElement{
+									Content: "a title",
+								},
+							},
+						},
+						Elements: []interface{}{
+							types.BlankLine{},
+							types.Paragraph{
+								Attributes: types.ElementAttributes{},
+								Lines: []types.InlineElements{
+									{
+										types.StringElement{
+											Content: "with some content linked to ",
+										},
+										types.CrossReference{
+											ID:    "thetitle",
+											Label: "a label to the title",
+										},
+										types.StringElement{
+											Content: "!",
+										},
 									},
 								},
 							},

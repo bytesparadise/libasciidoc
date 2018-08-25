@@ -642,8 +642,14 @@ PassthroughMacroCharacter <- (!"]" .)
 // ------------------------------------------
 // Cross References
 // ------------------------------------------
-CrossReference <- "<<" id:(ID) ">>" {
-    return types.NewCrossReference(id.(string))
+CrossReference <- "<<" id:(ID) WS* "," label:(CrossReferenceLabel) ">>" {
+    return types.NewCrossReference(id.(string), label.(string))
+} / "<<" id:(ID) ">>" {
+    return types.NewCrossReference(id.(string), nil)
+}
+
+CrossReferenceLabel <- (!">>" .)+ {
+    return string(c.text), nil
 }
 
 // ------------------------------------------
@@ -930,7 +936,7 @@ URL <- (!NEWLINE !WS !"[" !"]" .)+ {
     return string(c.text), nil
 }
 
-ID <- (!NEWLINE !WS !"[" !"]" !"<<" !">>".)+ {
+ID <- (!NEWLINE !WS !"[" !"]" !"<<" !">>" !"," .)+ {
     return string(c.text), nil
 }
 
