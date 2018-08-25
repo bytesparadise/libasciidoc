@@ -1218,27 +1218,6 @@ type InlineElements []interface{}
 // NewInlineElements initializes a new `InlineElements` from the given values
 func NewInlineElements(elements ...interface{}) (InlineElements, error) {
 	result := mergeElements(elements...)
-	// // trim spaces on first and last elements if they are StringElements, or even remove them if needed.
-	// if len(result) > 0 {
-	// 	if s, ok := result[0].(StringElement); ok {
-	// 		t := strings.TrimLeft(s.Content, " \t")
-	// 		log.Debugf("processed first string element with content='%s' -> '%s'", s.Content, t)
-	// 		if len(t) > 0 {
-	// 			result[0] = NewStringElement(t)
-	// 		} else {
-	// 			result = result[1:] // remove element if empty
-	// 		}
-	// 	}
-	// 	if s, ok := result[len(result)-1].(StringElement); ok {
-	// 		t := strings.TrimRight(s.Content, " \t")
-	// 		log.Debugf("processed last string element with content='%s' -> '%s'", s.Content, t)
-	// 		if len(t) > 0 {
-	// 			result[len(result)-1] = NewStringElement(t)
-	// 		} else {
-	// 			result = result[:len(result)-1] // remove element if empty
-	// 		}
-	// 	}
-	// }
 	return result, nil
 }
 
@@ -1273,13 +1252,21 @@ func (e InlineElements) Accept(v Visitor) error {
 
 // CrossReference the struct for Cross References
 type CrossReference struct {
-	ID string
+	ID    string
+	Label string
 }
 
 // NewCrossReference initializes a new `CrossReference` from the given ID
-func NewCrossReference(id string) (CrossReference, error) {
+func NewCrossReference(id string, label interface{}) (CrossReference, error) {
 	log.Debugf("initializing a new CrossReference with ID=%s", id)
-	return CrossReference{ID: id}, nil
+	var l string
+	if label, ok := label.(string); ok {
+		l = apply(label, strings.TrimSpace)
+	}
+	return CrossReference{
+		ID:    id,
+		Label: l,
+	}, nil
 }
 
 // ------------------------------------------
