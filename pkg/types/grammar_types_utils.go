@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"reflect"
 
-	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -151,30 +150,16 @@ func appendBuffer(elements []interface{}, buff *bytes.Buffer) ([]interface{}, *b
 	return elements, buff
 }
 
-// stringifyOption a function to apply on the result of the `stringify` function below, before returning
-type stringifyOption func(s string) string
+// applyOption a function to apply on the result of the `apply` function below, before returning
+type applyOption func(s string) string
 
-// stringify convert the given elements into a string, then applies the optional `funcs` to convert the string before returning it.
-// These stringifyFuncs can be used to trim the content, for example
-func stringify(elements []interface{}, options ...stringifyOption) (string, error) {
-	mergedElements := mergeElements(elements)
-	b := make([]byte, 0)
-	buff := bytes.NewBuffer(b)
-	for _, element := range mergedElements {
-		switch element := element.(type) {
-		case StringElement:
-			buff.WriteString(element.Content)
-		default:
-			return "", errors.Errorf("cannot convert element of type '%T' to string content", element)
-		}
-
-	}
-	result := buff.String()
+func apply(source string, options ...applyOption) string {
+	result := source
 	for _, f := range options {
 		result = f(result)
 	}
-	// log.Debugf("stringified %v -> '%s' (%v characters)", elements, result, len(result))
-	return result, nil
+	log.Debugf("applied '%s' -> '%s' (%v characters)", source, result, len(result))
+	return result
 }
 
 func toPtr(element interface{}) interface{} {
