@@ -2,7 +2,7 @@ package html5
 
 import (
 	"bytes"
-	"html/template"
+	"strings"
 
 	"github.com/bytesparadise/libasciidoc/pkg/renderer"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
@@ -10,22 +10,29 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-var stringElementTmpl template.Template
-
-// initializes the templates
-func init() {
-	// TODO: unnecessary
-	stringElementTmpl = newHTMLTemplate("string element", "{{.}}")
-}
+var stringTmpl = newHTMLTemplate("string element", "{{.}}")
 
 func renderStringElement(ctx *renderer.Context, str types.StringElement) ([]byte, error) {
-	// ctx.SetTrimTrailingSpaces(true) // trailing spaces can be trimmed if the last element of a line is a StringElement
-	result := bytes.NewBuffer(nil)
-	// content := strings.Replace(str.Content, "\t", "    ", -1)
-	err := stringElementTmpl.Execute(result, str.Content)
+	buf := bytes.NewBuffer(nil)
+	err := stringTmpl.Execute(buf, str.Content)
 	if err != nil {
-		return nil, errors.Wrapf(err, "unable to render string element")
+		return []byte{}, errors.Wrapf(err, "unable to render string")
 	}
-	log.Debugf("rendered string: %s", result.String())
-	return result.Bytes(), nil
+	result := convert(buf.String(), ellipsis)
+	log.Debugf("rendered string: %s", result)
+	return []byte(result), nil
+}
+
+func ellipsis(source string) string {
+	return strings.Replace(source, "...", "&#8230;&#8203;", -1)
+}
+
+type converter func(string) string
+
+func convert(source string, converters ...converter) string {
+	result := source
+	for _, convert := range converters {
+		result = convert(result)
+	}
+	return result
 }

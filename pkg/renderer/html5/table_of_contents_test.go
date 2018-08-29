@@ -48,7 +48,7 @@ A preamble...
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>A preamble...</p>
+<p>A preamble&#8230;&#8203;</p>
 </div>
 </div>
 </div>
@@ -133,7 +133,7 @@ A preamble...
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>A preamble...</p>
+<p>A preamble&#8230;&#8203;</p>
 </div>
 </div>
 </div>
