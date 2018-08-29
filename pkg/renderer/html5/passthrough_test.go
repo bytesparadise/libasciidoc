@@ -15,7 +15,7 @@ var _ = Describe("passthroughs", func() {
 		It("an empty tripleplus passthrough in a paragraph", func() {
 			actualContent := `++++++ with more content afterwards...`
 			expectedResult := `<div class="paragraph">
-<p> with more content afterwards...</p>
+<p> with more content afterwards&#8230;&#8203;</p>
 </div>`
 			verify(GinkgoT(), expectedResult, actualContent)
 		})
@@ -48,7 +48,7 @@ var _ = Describe("passthroughs", func() {
 		It("an empty singleplus passthrough in a paragraph", func() {
 			actualContent := `++ with more content afterwards...`
 			expectedResult := `<div class="paragraph">
-<p> with more content afterwards...</p>
+<p> with more content afterwards&#8230;&#8203;</p>
 </div>`
 			verify(GinkgoT(), expectedResult, actualContent)
 		})
