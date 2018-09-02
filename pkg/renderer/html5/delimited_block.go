@@ -16,6 +16,7 @@ var exampleBlockTmpl texttemplate.Template
 var admonitionBlockTmpl texttemplate.Template
 var quoteBlockTmpl texttemplate.Template
 var verseBlockTmpl texttemplate.Template
+var sidebarBlockTmpl texttemplate.Template
 
 // initializes the templates
 func init() {
@@ -35,7 +36,6 @@ func init() {
 </div>`,
 		texttemplate.FuncMap{
 			"renderElements": renderElementsAsString,
-			"includeNewline": includeNewline,
 		})
 
 	quoteBlockTmpl = newTextTemplate("quote block", `<div class="quoteblock">
@@ -60,7 +60,6 @@ func init() {
 </div>`,
 		texttemplate.FuncMap{
 			"renderElements": renderInlineElementsAsString,
-			"includeNewline": includeNewline,
 		})
 
 	admonitionBlockTmpl = newTextTemplate("admonition block", `{{ $ctx := .Context }}{{ with .Data }}<div {{ if .ID }}id="{{ .ID}}" {{ end}}class="admonitionblock {{ .Class }}">
@@ -78,22 +77,31 @@ func init() {
 </div>{{ end }}`,
 		texttemplate.FuncMap{
 			"renderElements": renderElementsAsString,
-			"includeNewline": includeNewline,
+		})
+
+	sidebarBlockTmpl = newTextTemplate("sidebar block", `{{ $ctx := .Context }}{{ with .Data }}<div {{ if .ID }}id="{{ .ID }}" {{ end }}class="sidebarblock">
+<div class="content">{{ if .Title }}
+<div class="title">{{ .Title }}</div>{{ end }}
+{{ renderElements $ctx .Elements }}
+</div>
+</div>{{ end }}`,
+		texttemplate.FuncMap{
+			"renderElements": renderElementsAsString,
 		})
 }
 
 func renderDelimitedBlock(ctx *renderer.Context, b types.DelimitedBlock) ([]byte, error) {
 	log.Debugf("rendering delimited block of kind '%v'", b.Attributes[types.AttrKind])
 	result := bytes.NewBuffer(nil)
-	var err error
 	elements := discardTrailingBlankLines(b.Elements)
 	var id, title string
 	if i, ok := b.Attributes[types.AttrID].(string); ok {
-		id = i
+		id = strings.TrimSpace(i)
 	}
 	if t, ok := b.Attributes[types.AttrTitle].(string); ok {
 		title = strings.TrimSpace(t)
 	}
+	var err error
 	kind := b.Attributes[types.AttrKind]
 	switch kind {
 	case types.Fenced, types.Listing:
@@ -213,6 +221,19 @@ func renderDelimitedBlock(ctx *renderer.Context, b types.DelimitedBlock) ([]byte
 		})
 	case types.Comment:
 		// nothing to do
+	case types.Sidebar:
+		err = sidebarBlockTmpl.Execute(result, ContextualPipeline{
+			Context: ctx,
+			Data: struct {
+				ID       string
+				Title    string
+				Elements []interface{}
+			}{
+				ID:       id,
+				Title:    title,
+				Elements: elements,
+			},
+		})
 	default:
 		err = errors.Errorf("no template for block of kind %v", kind)
 	}

@@ -422,6 +422,8 @@ const (
 	Quote
 	// Verse a verse block
 	Verse
+	// Sidebar a sidebar block
+	Sidebar
 )
 
 // ------------------------------------------

@@ -1,8 +1,10 @@
 package html5_test
 
-import . "github.com/onsi/ginkgo"
+import (
+	. "github.com/onsi/ginkgo"
+)
 
-var _ = Describe("delimited Blocks", func() {
+var _ = Describe("delimited blocks", func() {
 
 	Context("fenced blocks", func() {
 
@@ -398,4 +400,46 @@ ____`
 		})
 	})
 
+	Context("sidebar blocks", func() {
+
+		It("sidebar block with paragraph", func() {
+			actualContent := `****
+some *verse* content
+****`
+			expectedResult := `<div class="sidebarblock">
+<div class="content">
+<div class="paragraph">
+<p>some <strong>verse</strong> content</p>
+</div>
+</div>
+</div>`
+			verify(GinkgoT(), expectedResult, actualContent)
+		})
+
+		It("sidebar block with title, paragraph and sourcecode block", func() {
+			actualContent := `.a title
+****
+some *verse* content
+----
+foo
+bar
+----
+****`
+			expectedResult := `<div class="sidebarblock">
+<div class="content">
+<div class="title">a title</div>
+<div class="paragraph">
+<p>some <strong>verse</strong> content</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>foo
+bar</pre>
+</div>
+</div>
+</div>
+</div>`
+			verify(GinkgoT(), expectedResult, actualContent)
+		})
+	})
 })
