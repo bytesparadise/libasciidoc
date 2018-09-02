@@ -531,6 +531,17 @@ InlineElement <- element:(QuotedText / CrossReference / Passthrough / InlineImag
     return element, nil
 }
 
+// special case for re-parsing a group of elements after a document substitution:
+// we should treat substitution that did not happen (eg: missing attribute) as regulart
+// strings
+InlineElementsWithoutSubtitution <- !EOF !BlockDelimiter elements:(!EOL WS* !InlineElementID InlineElementWithoutSubtitution WS*)+ EOL { // absorbs heading and trailing spaces
+    return types.NewInlineElements(elements.([]interface{}))
+} 
+
+InlineElementWithoutSubtitution <- element:(QuotedText / CrossReference / Passthrough / InlineImage / Link / Word / Parenthesis) {
+    return element, nil
+}
+
 // ----------------------------------------------------------------------------
 // Quoted Texts (bold, italic and monospace) including substitution prevention
 // ----------------------------------------------------------------------------

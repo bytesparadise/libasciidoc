@@ -59,7 +59,7 @@ If more than 1 file is specified, then output is written to ".html" file alongsi
 				log.Errorf("unable to parse log level %v", err)
 				return err
 			}
-			log.Debug("Setting log level to %v", lvl)
+			log.Debugf("Setting log level to %v", lvl)
 			log.SetLevel(lvl)
 			return nil
 		},

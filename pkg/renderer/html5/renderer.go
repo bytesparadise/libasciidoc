@@ -127,8 +127,8 @@ func renderElement(ctx *renderer.Context, element interface{}) ([]byte, error) {
 	case types.DocumentAttributeReset:
 		// 'process' function do not return any rendered content, but may return an error
 		return nil, processAttributeReset(ctx, e)
-	case types.DocumentAttributeSubstitution:
-		return renderAttributeSubstitution(ctx, e)
+	// case types.DocumentAttributeSubstitution:
+	// 	return renderAttributeSubstitution(ctx, e)
 	case types.SingleLineComment:
 		return nil, nil // nothing to do
 	default:
@@ -205,7 +205,7 @@ func includeNewline(ctx renderer.Context, index int, content interface{}) string
 			return "\n"
 		}
 	default:
-		log.Warnf("content of type %T is not an array or a slice")
+		log.Warnf("content of type '%T' is not an array or a slice", content)
 	}
 	return ""
 }
