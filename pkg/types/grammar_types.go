@@ -271,7 +271,7 @@ func NewDocumentAuthor(namePart1, namePart2, namePart3, emailAddress interface{}
 		result.Initials = initials(result.FirstName)
 	}
 	result.Email = email
-	log.Debugf("Initialized a new document author: `%v`", result.String())
+	log.Debugf("initialized a new document author: `%v`", result.String())
 	return result, nil
 }
 
@@ -339,7 +339,7 @@ func NewDocumentRevision(revnumber, revdate, revremark interface{}) (DocumentRev
 		Revdate:   date,
 		Revremark: remark,
 	}
-	log.Debugf("Initialized a new document revision: `%s`", result.String())
+	log.Debugf("initialized a new document revision: `%s`", result.String())
 	return result, nil
 }
 
@@ -371,7 +371,7 @@ func NewDocumentAttributeDeclaration(name string, value interface{}) (DocumentAt
 				return strings.TrimSpace(s)
 			})
 	}
-	log.Debugf("Initialized a new DocumentAttributeDeclaration: '%s' -> '%s'", attrName, attrValue)
+	log.Debugf("initialized a new DocumentAttributeDeclaration: '%s' -> '%s'", attrName, attrValue)
 	return DocumentAttributeDeclaration{
 		Name:  attrName,
 		Value: attrValue,
@@ -385,7 +385,7 @@ type DocumentAttributeReset struct {
 
 // NewDocumentAttributeReset initializes a new Document Attribute Resets.
 func NewDocumentAttributeReset(attrName string) (DocumentAttributeReset, error) {
-	log.Debugf("Initialized a new DocumentAttributeReset: '%s'", attrName)
+	log.Debugf("initialized a new DocumentAttributeReset: '%s'", attrName)
 	return DocumentAttributeReset{Name: attrName}, nil
 }
 
@@ -396,7 +396,7 @@ type DocumentAttributeSubstitution struct {
 
 // NewDocumentAttributeSubstitution initializes a new Document Attribute Substitutions
 func NewDocumentAttributeSubstitution(attrName string) (DocumentAttributeSubstitution, error) {
-	log.Debugf("Initialized a new DocumentAttributeSubstitution: '%s'", attrName)
+	log.Debugf("initialized a new DocumentAttributeSubstitution: '%s'", attrName)
 	return DocumentAttributeSubstitution{Name: attrName}, nil
 }
 
@@ -464,7 +464,7 @@ func NewYamlFrontMatter(content string) (FrontMatter, error) {
 	if err != nil {
 		return FrontMatter{}, errors.Wrapf(err, "unable to parse yaml content in front-matter of document")
 	}
-	log.Debugf("Initialized a new FrontMatter with attributes: %+v", attributes)
+	log.Debugf("initialized a new FrontMatter with attributes: %+v", attributes)
 	return FrontMatter{Content: attributes}, nil
 }
 
@@ -483,7 +483,7 @@ type Section struct {
 func NewSection(level int, sectionTitle SectionTitle, blocks []interface{}) (Section, error) {
 	log.Debugf("initializing a new Section with %d block(s)", len(blocks))
 	// elements := filterEmptyElements(blocks, filterBlankLine())
-	log.Debugf("Initialized a new Section of level %d with %d block(s)", level, len(blocks))
+	log.Debugf("initialized a new Section of level %d with %d block(s)", level, len(blocks))
 	return Section{
 		Level:    level,
 		Title:    sectionTitle,
@@ -545,7 +545,7 @@ func NewSectionTitle(inlineContent InlineElements, attributes []interface{}) (Se
 		Content:    inlineContent,
 	}
 	if log.GetLevel() == log.DebugLevel {
-		log.Debugf("Initialized a new SectionTitle with content %v", inlineContent)
+		log.Debugf("initialized a new SectionTitle with content %v", inlineContent)
 		spew.Dump(sectionTitle)
 	}
 	return sectionTitle, nil
@@ -1076,7 +1076,7 @@ func NewListItemContent(content []interface{}) ([]interface{}, error) {
 			elements = append(elements, element)
 		}
 	}
-	// log.Debugf("Initialized a new ListItemContent with %d elements(s)", len(elements))
+	// log.Debugf("initialized a new ListItemContent with %d elements(s)", len(elements))
 	// no need to return an empty ListItemContent
 	if len(elements) == 0 {
 		return nil, nil
@@ -1112,7 +1112,7 @@ func NewLabeledList(elements []ListItem, attributes []interface{}) (LabeledList,
 			items = append(items, *item)
 		}
 	}
-	log.Debugf("Initialized a new LabeledList with %d root item(s)", len(items))
+	log.Debugf("initialized a new LabeledList with %d root item(s)", len(items))
 	return LabeledList{
 		Attributes: mergeAttributes(attributes),
 		Items:      items,
@@ -1532,7 +1532,7 @@ func NewLiteralBlock(content string) (LiteralBlock, error) {
 			return strings.TrimRight(s, "\n\r")
 		},
 	)
-	log.Debugf("Initialized a new LiteralBlock with content=`%s`", blockContent)
+	log.Debugf("initialized a new LiteralBlock with content=`%s`", blockContent)
 	return LiteralBlock{
 		Content: blockContent,
 	}, nil
@@ -1653,7 +1653,7 @@ func NewAttributeGroup(attributes []interface{}) (ElementAttributes, error) {
 			return result, errors.Errorf("unable to process element of type '%[1]T': '%[1]s'", a)
 		}
 	}
-	// log.Debugf("Initialized a new AttributeGroup: %v", result)
+	// log.Debugf("initialized a new AttributeGroup: %v", result)
 	return result, nil
 }
 
@@ -1677,7 +1677,7 @@ func NewGenericAttribute(key string, value interface{}) (ElementAttributes, erro
 	} else {
 		result[k] = nil
 	}
-	// log.Debugf("Initialized a new ElementAttributes: %v", result)
+	// log.Debugf("initialized a new ElementAttributes: %v", result)
 	return result, nil
 }
 
@@ -1753,7 +1753,7 @@ const (
 func NewQuotedText(kind QuotedTextKind, content []interface{}) (QuotedText, error) {
 	elements := mergeElements(content...)
 	if log.GetLevel() == log.DebugLevel {
-		log.Debugf("Initialized a new QuotedText with %d elements:", len(elements))
+		log.Debugf("initialized a new QuotedText with %d elements:", len(elements))
 		spew.Dump(elements)
 	}
 	return QuotedText{

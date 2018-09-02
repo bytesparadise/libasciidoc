@@ -18,16 +18,16 @@ var listParagraphTmpl texttemplate.Template
 // initializes the templates
 func init() {
 	paragraphTmpl = newTextTemplate("paragraph",
-		`{{ $ctx := .Context }}{{ with .Data }}{{ $renderedLines := renderLines $ctx .Lines | printf "%s" }}{{ if ne $renderedLines "" }}<div {{ if ne .ID "" }}id="{{ .ID }}" {{ end }}class="paragraph">{{ if ne .Title "" }}
+		`{{ $ctx := .Context }}{{ with .Data }}{{ $renderedLines := renderLines $ctx .Lines }}{{ if ne $renderedLines "" }}<div {{ if ne .ID "" }}id="{{ .ID }}" {{ end }}class="paragraph">{{ if ne .Title "" }}
 <div class="doctitle">{{ .Title }}</div>{{ end }}
 <p>{{ $renderedLines }}</p>
 </div>{{ end }}{{ end }}`,
 		texttemplate.FuncMap{
-			"renderLines": renderLines,
+			"renderLines": renderLinesAsString,
 		})
 
 	admonitionParagraphTmpl = newTextTemplate("admonition paragraph",
-		`{{ $ctx := .Context }}{{ with .Data }}{{ $renderedLines := renderLines $ctx .Lines | printf "%s"  }}{{ if ne $renderedLines "" }}<div {{ if .ID }}id="{{ .ID }}" {{ end }}class="admonitionblock {{ .Class }}">
+		`{{ $ctx := .Context }}{{ with .Data }}{{ $renderedLines := renderLines $ctx .Lines }}{{ if ne $renderedLines "" }}<div {{ if .ID }}id="{{ .ID }}" {{ end }}class="admonitionblock {{ .Class }}">
 <table>
 <tr>
 <td class="icon">
@@ -41,13 +41,13 @@ func init() {
 </table>
 </div>{{ end }}{{ end }}`,
 		texttemplate.FuncMap{
-			"renderLines": renderLines,
+			"renderLines": renderLinesAsString,
 		})
 
 	listParagraphTmpl = newTextTemplate("list paragraph",
-		`{{ $ctx := .Context }}{{ with .Data }}<p>{{ renderLines $ctx .Lines | printf "%s" }}</p>{{ end }}`,
+		`{{ $ctx := .Context }}{{ with .Data }}<p>{{ renderLines $ctx .Lines }}</p>{{ end }}`,
 		texttemplate.FuncMap{
-			"renderLines": renderLines,
+			"renderLines": renderLinesAsString,
 		})
 }
 
@@ -114,7 +114,6 @@ func renderParagraph(ctx *renderer.Context, p types.Paragraph) ([]byte, error) {
 				Lines: p.Lines,
 			},
 		})
-
 	}
 	if err != nil {
 		return nil, errors.Wrapf(err, "unable to render paragraph")
@@ -136,7 +135,7 @@ func getClass(kind types.AdmonitionKind) string {
 	case types.Caution:
 		return "caution"
 	default:
-		log.Error("unexpected kind of admonition: %v", kind)
+		log.Errorf("unexpected kind of admonition: %v", kind)
 		return ""
 	}
 }
@@ -154,7 +153,7 @@ func getIcon(kind types.AdmonitionKind) string {
 	case types.Caution:
 		return "Caution"
 	default:
-		log.Error("unexpected kind of admonition: %v", kind)
+		log.Errorf("unexpected kind of admonition: %v", kind)
 		return ""
 	}
 }
