@@ -1268,4 +1268,109 @@ foo
 		})
 	})
 
+	Context("sidebar blocks", func() {
+
+		It("sidebar block with paragraph", func() {
+			actualContent := `****
+some *verse* content
+****`
+			expectedResult := types.DelimitedBlock{
+				Attributes: types.ElementAttributes{
+					types.AttrKind: types.Sidebar,
+				},
+				Elements: []interface{}{
+					types.Paragraph{
+						Attributes: types.ElementAttributes{},
+						Lines: []types.InlineElements{
+							{
+								types.StringElement{
+									Content: "some ",
+								},
+								types.QuotedText{
+									Attributes: types.ElementAttributes{
+										types.AttrKind: types.Bold,
+									},
+									Elements: types.InlineElements{
+										types.StringElement{
+											Content: "verse",
+										},
+									},
+								},
+								types.StringElement{
+									Content: " content",
+								},
+							},
+						},
+					},
+				},
+			}
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+		})
+
+		It("sidebar block with title, paragraph and sourcecode block", func() {
+			actualContent := `.a title
+****
+some *verse* content
+----
+foo
+bar
+----
+****`
+			expectedResult := types.DelimitedBlock{
+				Attributes: types.ElementAttributes{
+					types.AttrKind:  types.Sidebar,
+					types.AttrTitle: "a title",
+				},
+				Elements: []interface{}{
+					types.Paragraph{
+						Attributes: types.ElementAttributes{},
+						Lines: []types.InlineElements{
+							{
+								types.StringElement{
+									Content: "some ",
+								},
+								types.QuotedText{
+									Attributes: types.ElementAttributes{
+										types.AttrKind: types.Bold,
+									},
+									Elements: types.InlineElements{
+										types.StringElement{
+											Content: "verse",
+										},
+									},
+								},
+								types.StringElement{
+									Content: " content",
+								},
+							},
+						},
+					},
+					types.DelimitedBlock{
+						Attributes: types.ElementAttributes{
+							types.AttrKind: types.Listing,
+						},
+						Elements: []interface{}{
+							types.Paragraph{
+								Attributes: types.ElementAttributes{},
+								Lines: []types.InlineElements{
+									{
+										types.StringElement{
+											Content: "foo",
+										},
+									},
+									{
+										types.StringElement{
+											Content: "bar",
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			}
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+		})
+	})
+
 })
