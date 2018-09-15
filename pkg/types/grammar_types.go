@@ -590,7 +590,6 @@ func (s SectionTitle) Accept(v Visitor) error {
 		return errors.Wrapf(err, "error while visiting section")
 	}
 	for _, element := range s.Elements {
-		log.Debugf("about to visit section title element of type %T")
 		visitable, ok := element.(Visitable)
 		log.Debugf("about to visit section title element of type %T (visitable: %t)", ok)
 		if ok {
