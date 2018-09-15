@@ -26,9 +26,7 @@ type Visitable interface {
 
 // Visitor a visitor that can visit/traverse the interface{} and its children (if applicable)
 type Visitor interface {
-	BeforeVisit(Visitable) error
 	Visit(Visitable) error
-	AfterVisit(Visitable) error
 }
 
 // ------------------------------------------
@@ -37,9 +35,11 @@ type Visitor interface {
 
 // Document the top-level structure for a document
 type Document struct {
-	Attributes        DocumentAttributes
-	Elements          []interface{}
-	ElementReferences ElementReferences
+	Attributes         DocumentAttributes
+	Elements           []interface{}
+	ElementReferences  ElementReferences
+	Footnotes          Footnotes
+	FootnoteReferences FootnoteReferences
 }
 
 // NewDocument initializes a new `Document` from the given lines
@@ -49,7 +49,6 @@ func NewDocument(frontmatter, header interface{}, blocks []interface{}) (Documen
 	// elements := filterEmptyElements(blocks, filterBlankLine(), filterEmptyPreamble())
 	elements := insertPreamble(blocks)
 	attributes := make(DocumentAttributes)
-
 	if frontmatter != nil {
 		for attrName, attrValue := range frontmatter.(FrontMatter).Content {
 			attributes[attrName] = attrValue
@@ -88,17 +87,30 @@ func NewDocument(frontmatter, header interface{}, blocks []interface{}) (Documen
 			}
 		}
 	}
-
-	c := NewElementReferencesCollector()
+	//TODO: those collectors could be called at the beginning of rendering, and in concurrent routines
+	// visit AST and collect element references
+	xrefsCollector := NewElementReferencesCollector()
 	for _, e := range elements {
 		if v, ok := e.(Visitable); ok {
-			v.Accept(c)
+			v.Accept(xrefsCollector)
 		}
 	}
+
+	// visit AST and collect footnotes
+	footnotesCollector := NewFootnotesCollector()
+	for _, e := range elements {
+		log.Debugf("collecting footnotes in element of type %T", e)
+		if v, ok := e.(Visitable); ok {
+			v.Accept(footnotesCollector)
+		}
+	}
+
 	document := Document{
-		Attributes:        attributes,
-		Elements:          elements,
-		ElementReferences: c.ElementReferences,
+		Attributes:         attributes,
+		Elements:           elements,
+		ElementReferences:  xrefsCollector.ElementReferences,
+		Footnotes:          footnotesCollector.Footnotes,
+		FootnoteReferences: footnotesCollector.FootnoteReferences,
 	}
 
 	// visit all elements in the `AST` to retrieve their reference (ie, their ElementID if they have any)
@@ -450,6 +462,23 @@ func NewEmptyPreamble() Preamble {
 	}
 }
 
+// Accept implements Visitable#Accept(Visitor)
+func (p Preamble) Accept(v Visitor) error {
+	err := v.Visit(p)
+	if err != nil {
+		return errors.Wrapf(err, "error while visiting section")
+	}
+	for _, element := range p.Elements {
+		if visitable, ok := element.(Visitable); ok {
+			err = visitable.Accept(v)
+			if err != nil {
+				return errors.Wrapf(err, "error while visiting section element")
+			}
+		}
+	}
+	return nil
+}
+
 // ------------------------------------------
 // Front Matter
 // ------------------------------------------
@@ -495,13 +524,13 @@ func NewSection(level int, sectionTitle SectionTitle, blocks []interface{}) (Sec
 
 // Accept implements Visitable#Accept(Visitor)
 func (s Section) Accept(v Visitor) error {
-	err := v.BeforeVisit(s)
-	if err != nil {
-		return errors.Wrapf(err, "error while pre-visiting section")
-	}
-	err = v.Visit(s)
+	err := v.Visit(s)
 	if err != nil {
 		return errors.Wrapf(err, "error while visiting section")
+	}
+	err = s.Title.Accept(v)
+	if err != nil {
+		return errors.Wrapf(err, "error while visiting section element")
 	}
 	for _, element := range s.Elements {
 		if visitable, ok := element.(Visitable); ok {
@@ -511,10 +540,6 @@ func (s Section) Accept(v Visitor) error {
 			}
 		}
 
-	}
-	err = v.AfterVisit(s)
-	if err != nil {
-		return errors.Wrapf(err, "error while post-visiting section")
 	}
 	return nil
 }
@@ -526,7 +551,7 @@ func (s Section) Accept(v Visitor) error {
 // SectionTitle the structure for the section titles
 type SectionTitle struct {
 	Attributes ElementAttributes
-	Content    InlineElements
+	Elements   InlineElements
 }
 
 // NewSectionTitle initializes a new `SectionTitle`` from the given level and content, with the optional attributes.
@@ -544,13 +569,33 @@ func NewSectionTitle(inlineContent InlineElements, attributes []interface{}) (Se
 	}
 	sectionTitle := SectionTitle{
 		Attributes: attrbs,
-		Content:    inlineContent,
+		Elements:   inlineContent,
 	}
 	if log.GetLevel() == log.DebugLevel {
-		log.Debugf("initialized a new SectionTitle with content %v", inlineContent)
-		spew.Dump(sectionTitle)
+		log.Debugf("initialized a new SectionTitle with %d element(s)", len(inlineContent))
 	}
 	return sectionTitle, nil
+}
+
+// Accept implements Visitable#Accept(Visitor)
+func (s SectionTitle) Accept(v Visitor) error {
+	err := v.Visit(s)
+	if err != nil {
+		return errors.Wrapf(err, "error while visiting section")
+	}
+	for _, element := range s.Elements {
+		log.Debugf("about to visit section title element of type %T")
+		visitable, ok := element.(Visitable)
+		log.Debugf("about to visit section title element of type %T (visitable: %t)", ok)
+		if ok {
+			err = visitable.Accept(v)
+			if err != nil {
+				return errors.Wrapf(err, "error while visiting section element")
+			}
+		}
+
+	}
+	return nil
 }
 
 // ------------------------------------------
@@ -1188,6 +1233,25 @@ func NewAdmonitionParagraph(lines []interface{}, admonitionKind AdmonitionKind, 
 	return p, nil
 }
 
+// Accept implements Visitable#Accept(Visitor)
+func (p Paragraph) Accept(v Visitor) error {
+	err := v.Visit(p)
+	if err != nil {
+		return errors.Wrapf(err, "error while visiting paragraph")
+	}
+	for _, line := range p.Lines {
+		for _, element := range line {
+			if visitable, ok := element.(Visitable); ok {
+				err = visitable.Accept(v)
+				if err != nil {
+					return errors.Wrapf(err, "error while visiting paragraph line")
+				}
+			}
+		}
+	}
+	return nil
+}
+
 // ------------------------------------------
 // Admonitions
 // ------------------------------------------
@@ -1225,11 +1289,7 @@ func NewInlineElements(elements ...interface{}) (InlineElements, error) {
 
 // Accept implements Visitable#Accept(Visitor)
 func (e InlineElements) Accept(v Visitor) error {
-	err := v.BeforeVisit(e)
-	if err != nil {
-		return errors.Wrapf(err, "error while pre-visiting inline content")
-	}
-	err = v.Visit(e)
+	err := v.Visit(e)
 	if err != nil {
 		return errors.Wrapf(err, "error while visiting inline content")
 	}
@@ -1240,10 +1300,6 @@ func (e InlineElements) Accept(v Visitor) error {
 				return errors.Wrapf(err, "error while visiting inline content element")
 			}
 		}
-	}
-	err = v.AfterVisit(e)
-	if err != nil {
-		return errors.Wrapf(err, "error while post-visiting sectionTitle")
 	}
 	return nil
 }
@@ -1388,6 +1444,49 @@ func NewImageAttributes(alt, width, height interface{}, otherAttrs []interface{}
 		}
 	}
 	return result, nil
+}
+
+// ------------------------------------------
+// Footnotes
+// ------------------------------------------
+
+var footnoteSequence int
+
+// ResetFootnoteSequence resets the footnote sequence (for test purpose only)
+func ResetFootnoteSequence() {
+	footnoteSequence = 0
+}
+
+// Footnote a foot note, without or without explicit reference (an explicit reference is used to refer
+// multiple times to the same footnote accross the document)
+type Footnote struct {
+	ID int
+	// Ref the optional reference
+	Ref string
+	// the footnote content (can be "rich")
+	Elements InlineElements
+}
+
+// NewFootnote returns a new Footnote with the given content
+func NewFootnote(ref string, elements InlineElements) (Footnote, error) {
+	defer func() {
+		footnoteSequence++
+	}()
+	footnote := Footnote{
+		ID:       footnoteSequence,
+		Ref:      ref,
+		Elements: elements,
+	}
+	return footnote, nil
+}
+
+// Accept implements Visitable#Accept(Visitor)
+func (f Footnote) Accept(v Visitor) error {
+	err := v.Visit(f)
+	if err != nil {
+		return errors.Wrapf(err, "error while visiting section")
+	}
+	return nil
 }
 
 // ------------------------------------------
@@ -1714,17 +1813,9 @@ func NewStringElement(content string) StringElement {
 
 // Accept implements Visitable#Accept(Visitor)
 func (s StringElement) Accept(v Visitor) error {
-	err := v.BeforeVisit(s)
-	if err != nil {
-		return errors.Wrapf(err, "error while pre-visiting string element")
-	}
-	err = v.Visit(s)
+	err := v.Visit(s)
 	if err != nil {
 		return errors.Wrapf(err, "error while visiting string element")
-	}
-	err = v.AfterVisit(s)
-	if err != nil {
-		return errors.Wrapf(err, "error while post-visiting string element")
 	}
 	return nil
 }
@@ -1755,8 +1846,7 @@ const (
 func NewQuotedText(kind QuotedTextKind, content []interface{}) (QuotedText, error) {
 	elements := mergeElements(content...)
 	if log.GetLevel() == log.DebugLevel {
-		log.Debugf("initialized a new QuotedText with %d elements:", len(elements))
-		spew.Dump(elements)
+		log.Debugf("initialized a new QuotedText with %d elements: %v", len(elements), spew.Sdump(elements))
 	}
 	return QuotedText{
 		Attributes: map[string]interface{}{AttrKind: kind},
@@ -1766,11 +1856,7 @@ func NewQuotedText(kind QuotedTextKind, content []interface{}) (QuotedText, erro
 
 // Accept implements Visitable#Accept(Visitor)
 func (t QuotedText) Accept(v Visitor) error {
-	err := v.BeforeVisit(t)
-	if err != nil {
-		return errors.Wrapf(err, "error while pre-visiting quoted text")
-	}
-	err = v.Visit(t)
+	err := v.Visit(t)
 	if err != nil {
 		return errors.Wrapf(err, "error while visiting quoted text")
 	}
@@ -1781,10 +1867,6 @@ func (t QuotedText) Accept(v Visitor) error {
 				return errors.Wrapf(err, "error while visiting quoted text element")
 			}
 		}
-	}
-	err = v.AfterVisit(t)
-	if err != nil {
-		return errors.Wrapf(err, "error while post-visiting quoted text")
 	}
 	return nil
 }

@@ -27,7 +27,7 @@ func renderCrossReference(ctx *renderer.Context, xref types.CrossReference) ([]b
 	} else if target, found := ctx.Document.ElementReferences[xref.ID]; found {
 		switch t := target.(type) {
 		case types.SectionTitle:
-			renderedContent, err := renderElement(ctx, t.Content)
+			renderedContent, err := renderElement(ctx, t.Elements)
 			if err != nil {
 				return nil, errors.Wrapf(err, "error while rendering sectionTitle content")
 			}

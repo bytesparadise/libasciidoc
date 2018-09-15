@@ -12,7 +12,7 @@ var _ = Describe("table of contents", func() {
 		Attributes: types.ElementAttributes{
 			types.AttrID: "_a_title",
 		},
-		Content: types.InlineElements{
+		Elements: types.InlineElements{
 			types.StringElement{Content: "A Title"},
 		},
 	}
@@ -37,7 +37,7 @@ var _ = Describe("table of contents", func() {
 			Attributes: types.ElementAttributes{
 				types.AttrID: "_section_1",
 			},
-			Content: types.InlineElements{
+			Elements: types.InlineElements{
 				types.StringElement{Content: "section 1"},
 			},
 		},
@@ -63,11 +63,13 @@ A short preamble
 					Attributes: types.ElementAttributes{
 						types.AttrID: "_section_1",
 					},
-					Content: types.InlineElements{
+					Elements: types.InlineElements{
 						types.StringElement{Content: "section 1"},
 					},
 				},
 			},
+			Footnotes:          types.Footnotes{},
+			FootnoteReferences: types.FootnoteReferences{},
 			Elements: []interface{}{
 				tableOfContents,
 				preamble,
@@ -95,11 +97,13 @@ A short preamble
 					Attributes: types.ElementAttributes{
 						types.AttrID: "_section_1",
 					},
-					Content: types.InlineElements{
+					Elements: types.InlineElements{
 						types.StringElement{Content: "section 1"},
 					},
 				},
 			},
+			Footnotes:          types.Footnotes{},
+			FootnoteReferences: types.FootnoteReferences{},
 			Elements: []interface{}{
 				preamble,
 				tableOfContents,

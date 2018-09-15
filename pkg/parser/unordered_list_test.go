@@ -532,8 +532,10 @@ on 2 lines, too.`
 				"\n" +
 				"* an item in the second list"
 			expectedResult := types.Document{
-				Attributes:        map[string]interface{}{},
-				ElementReferences: map[string]interface{}{},
+				Attributes:         map[string]interface{}{},
+				ElementReferences:  map[string]interface{}{},
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
 					types.UnorderedList{
 						Attributes: types.ElementAttributes{},
@@ -843,8 +845,10 @@ another delimited block
 * bar
 `
 			expectedResult := types.Document{
-				Attributes:        map[string]interface{}{},
-				ElementReferences: map[string]interface{}{},
+				Attributes:         map[string]interface{}{},
+				ElementReferences:  map[string]interface{}{},
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
 					types.UnorderedList{
 						Attributes: types.ElementAttributes{},
@@ -928,8 +932,10 @@ a delimited block
 another delimited block
 ----`
 			expectedResult := types.Document{
-				Attributes:        map[string]interface{}{},
-				ElementReferences: map[string]interface{}{},
+				Attributes:         map[string]interface{}{},
+				ElementReferences:  map[string]interface{}{},
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
 					types.UnorderedList{
 						Attributes: types.ElementAttributes{},

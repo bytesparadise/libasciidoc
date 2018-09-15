@@ -356,7 +356,7 @@ TitleElements <- elements:(!NEWLINE WS* !InlineElementID TitleElement WS*)+ { //
     return types.NewInlineElements(elements.([]interface{}))
 } 
 
-TitleElement <- element:(CrossReference / Passthrough / InlineImage / QuotedText / Link / DocumentAttributeSubstitution / Word / Parenthesis) {
+TitleElement <- element:(CrossReference / Passthrough / InlineImage / QuotedText / Link / DocumentAttributeSubstitution / InlineFootnote / Word / Parenthesis) {
     return element, nil
 }
 
@@ -527,7 +527,7 @@ InlineElements <-
         return types.NewInlineElements(elements.([]interface{}))
     } 
 
-InlineElement <- element:(QuotedText / CrossReference / Passthrough / InlineImage / Link / DocumentAttributeSubstitution / Word / Parenthesis) {
+InlineElement <- element:(QuotedText / CrossReference / Passthrough / InlineImage / Link / DocumentAttributeSubstitution / InlineFootnote / Word / Parenthesis) {
     return element, nil
 }
 
@@ -734,7 +734,27 @@ ImageAttribute <- (!"," !"=" !"]" .)+ { // attribute is followed by "," or "]" (
 }
 
 // ------------------------------------------------------------------------------------
-// Delimited Blocks (http://asciidoctor.org/docs/user-manual/#built-in-blocks-summary)
+// Inline foot notes
+// ------------------------------------------------------------------------------------
+InlineFootnote <- "footnote:[" content:(FootnoteContent) "]" {
+        return types.NewFootnote("", content.(types.InlineElements))
+    } / "footnoteref:[" ref:(FootnoteRef) "," content:(FootnoteContent) "]" {
+        return types.NewFootnote(ref.(string), content.(types.InlineElements))
+    } / "footnoteref:[" ref:(FootnoteRef) "]" {
+        return types.NewFootnote(ref.(string), types.InlineElements{}) // foot note referring to another note
+    }
+
+FootnoteRef <- (!"," !"]" !EOL .)*  { // footnote ID not may span multiple lines
+    return string(c.text), nil
+}
+
+FootnoteContent <- elements:(!"]" !EOL WS* !InlineElementID InlineElement WS*)+  { // footnote content may span multiple lines
+    return types.NewInlineElements(elements.([]interface{}))
+}
+
+
+// ------------------------------------------------------------------------------------
+// Delimited Blocks 
 // ------------------------------------------------------------------------------------
 DelimitedBlock <- FencedBlock / ListingBlock / ExampleBlock 
                 / CommentBlock / VerseBlock / QuoteBlock 

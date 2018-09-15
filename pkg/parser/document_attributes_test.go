@@ -20,12 +20,14 @@ This journey begins on a bleary Monday morning.`
 						Attributes: types.ElementAttributes{
 							types.AttrID: "_the_dangerous_and_thrilling_documentation_chronicles",
 						},
-						Content: types.InlineElements{
+						Elements: types.InlineElements{
 							types.StringElement{Content: "The Dangerous and Thrilling Documentation Chronicles"},
 						},
 					},
 				},
-				ElementReferences: map[string]interface{}{},
+				ElementReferences:  map[string]interface{}{},
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
@@ -53,7 +55,7 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>`
 								Attributes: types.ElementAttributes{
 									types.AttrID: "_title",
 								},
-								Content: types.InlineElements{
+								Elements: types.InlineElements{
 									types.StringElement{
 										Content: "title",
 									},
@@ -79,7 +81,7 @@ Lazarus het_Draeke <lazarus@asciidoctor.org>`
 								Attributes: types.ElementAttributes{
 									types.AttrID: "_title",
 								},
-								Content: types.InlineElements{
+								Elements: types.InlineElements{
 									types.StringElement{
 										Content: "title",
 									},
@@ -104,7 +106,7 @@ Kismet Chameleon`
 								Attributes: types.ElementAttributes{
 									types.AttrID: "_title",
 								},
-								Content: types.InlineElements{
+								Elements: types.InlineElements{
 									types.StringElement{
 										Content: "title",
 									},
@@ -128,7 +130,7 @@ Chameleon`
 								Attributes: types.ElementAttributes{
 									types.AttrID: "_title",
 								},
-								Content: types.InlineElements{
+								Elements: types.InlineElements{
 									types.StringElement{
 										Content: "title",
 									},
@@ -151,7 +153,7 @@ Chameleon`
 								Attributes: types.ElementAttributes{
 									types.AttrID: "_title",
 								},
-								Content: types.InlineElements{
+								Elements: types.InlineElements{
 									types.StringElement{
 										Content: "title",
 									},
@@ -178,7 +180,7 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 								Attributes: types.ElementAttributes{
 									types.AttrID: "_title",
 								},
-								Content: types.InlineElements{
+								Elements: types.InlineElements{
 									types.StringElement{
 										Content: "title",
 									},
@@ -214,7 +216,7 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 							Attributes: types.ElementAttributes{
 								types.AttrID: "_title",
 							},
-							Content: types.InlineElements{
+							Elements: types.InlineElements{
 								types.StringElement{
 									Content: "title",
 								},
@@ -242,7 +244,7 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 							Attributes: types.ElementAttributes{
 								types.AttrID: "_title",
 							},
-							Content: types.InlineElements{
+							Elements: types.InlineElements{
 								types.StringElement{
 									Content: "title",
 								},
@@ -269,7 +271,7 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 							Attributes: types.ElementAttributes{
 								types.AttrID: "_title",
 							},
-							Content: types.InlineElements{
+							Elements: types.InlineElements{
 								types.StringElement{
 									Content: "title",
 								},
@@ -295,7 +297,7 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 							Attributes: types.ElementAttributes{
 								types.AttrID: "_title",
 							},
-							Content: types.InlineElements{
+							Elements: types.InlineElements{
 								types.StringElement{
 									Content: "title",
 								},
@@ -321,7 +323,7 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 							Attributes: types.ElementAttributes{
 								types.AttrID: "_title",
 							},
-							Content: types.InlineElements{
+							Elements: types.InlineElements{
 								types.StringElement{
 									Content: "title",
 								},
@@ -347,7 +349,7 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 							Attributes: types.ElementAttributes{
 								types.AttrID: "_title",
 							},
-							Content: types.InlineElements{
+							Elements: types.InlineElements{
 								types.StringElement{
 									Content: "title",
 								},
@@ -373,7 +375,7 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 							Attributes: types.ElementAttributes{
 								types.AttrID: "_title",
 							},
-							Content: types.InlineElements{
+							Elements: types.InlineElements{
 								types.StringElement{
 									Content: "title",
 								},
@@ -399,7 +401,7 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 							Attributes: types.ElementAttributes{
 								types.AttrID: "_title",
 							},
-							Content: types.InlineElements{
+							Elements: types.InlineElements{
 								types.StringElement{
 									Content: "title",
 								},
@@ -425,7 +427,7 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 							Attributes: types.ElementAttributes{
 								types.AttrID: "_title",
 							},
-							Content: types.InlineElements{
+							Elements: types.InlineElements{
 								types.StringElement{
 									Content: "title",
 								},
@@ -451,7 +453,7 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 							Attributes: types.ElementAttributes{
 								types.AttrID: "_title",
 							},
-							Content: types.InlineElements{
+							Elements: types.InlineElements{
 								types.StringElement{
 									Content: "title",
 								},
@@ -477,7 +479,7 @@ v1.0:`
 							Attributes: types.ElementAttributes{
 								types.AttrID: "_title",
 							},
-							Content: types.InlineElements{
+							Elements: types.InlineElements{
 								types.StringElement{
 									Content: "title",
 								},
@@ -505,8 +507,10 @@ v1.0:`
 :0Author: Xavier
 :Auth0r: Xavier`
 				expectedResult := types.Document{
-					Attributes:        map[string]interface{}{},
-					ElementReferences: map[string]interface{}{},
+					Attributes:         map[string]interface{}{},
+					ElementReferences:  map[string]interface{}{},
+					Footnotes:          types.Footnotes{},
+					FootnoteReferences: types.FootnoteReferences{},
 					Elements: []interface{}{
 						types.DocumentAttributeDeclaration{Name: "a"},
 						types.DocumentAttributeDeclaration{Name: "author", Value: "Xavier"},
@@ -525,8 +529,10 @@ v1.0:`
 :author: Xavier
 a paragraph`
 				expectedResult := types.Document{
-					Attributes:        map[string]interface{}{},
-					ElementReferences: map[string]interface{}{},
+					Attributes:         map[string]interface{}{},
+					ElementReferences:  map[string]interface{}{},
+					Footnotes:          types.Footnotes{},
+					FootnoteReferences: types.FootnoteReferences{},
 					Elements: []interface{}{
 						types.DocumentAttributeDeclaration{Name: "toc"},
 						types.DocumentAttributeDeclaration{Name: "date", Value: "2017-01-01"},
@@ -551,8 +557,10 @@ a paragraph`
 
 a paragraph`
 				expectedResult := types.Document{
-					Attributes:        map[string]interface{}{},
-					ElementReferences: map[string]interface{}{},
+					Attributes:         map[string]interface{}{},
+					ElementReferences:  map[string]interface{}{},
+					Footnotes:          types.Footnotes{},
+					FootnoteReferences: types.FootnoteReferences{},
 					Elements: []interface{}{
 						types.DocumentAttributeDeclaration{Name: "toc"},
 						types.DocumentAttributeDeclaration{Name: "date", Value: "2017-01-01"},
@@ -579,8 +587,10 @@ a paragraph`
 
 a paragraph`
 				expectedResult := types.Document{
-					Attributes:        map[string]interface{}{},
-					ElementReferences: map[string]interface{}{},
+					Attributes:         map[string]interface{}{},
+					ElementReferences:  map[string]interface{}{},
+					Footnotes:          types.Footnotes{},
+					FootnoteReferences: types.FootnoteReferences{},
 					Elements: []interface{}{
 						types.DocumentAttributeDeclaration{Name: "toc"},
 						types.DocumentAttributeDeclaration{Name: "date", Value: "2017-01-01"},
@@ -607,8 +617,10 @@ a paragraph`
 :date: 2017-01-01
 :author: Xavier`
 				expectedResult := types.Document{
-					Attributes:        map[string]interface{}{},
-					ElementReferences: map[string]interface{}{},
+					Attributes:         map[string]interface{}{},
+					ElementReferences:  map[string]interface{}{},
+					Footnotes:          types.Footnotes{},
+					FootnoteReferences: types.FootnoteReferences{},
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
@@ -635,8 +647,10 @@ a paragraph`
 			
 a paragraph written by {author}.`
 				expectedResult := types.Document{
-					Attributes:        map[string]interface{}{},
-					ElementReferences: map[string]interface{}{},
+					Attributes:         map[string]interface{}{},
+					ElementReferences:  map[string]interface{}{},
+					Footnotes:          types.Footnotes{},
+					FootnoteReferences: types.FootnoteReferences{},
 					Elements: []interface{}{
 						types.DocumentAttributeDeclaration{Name: "author", Value: "Xavier"},
 						types.BlankLine{},
@@ -662,8 +676,10 @@ a paragraph written by {author}.`
 :author2!:
 a paragraph written by {author}.`
 				expectedResult := types.Document{
-					Attributes:        map[string]interface{}{},
-					ElementReferences: map[string]interface{}{},
+					Attributes:         map[string]interface{}{},
+					ElementReferences:  map[string]interface{}{},
+					Footnotes:          types.Footnotes{},
+					FootnoteReferences: types.FootnoteReferences{},
 					Elements: []interface{}{
 						types.DocumentAttributeDeclaration{Name: "author", Value: "Xavier"},
 						types.BlankLine{},
@@ -699,7 +715,7 @@ This journey begins on a bleary Monday morning.`
 						Attributes: types.ElementAttributes{
 							types.AttrID: "_the_dangerous_and_thrilling_documentation_chronicles",
 						},
-						Content: types.InlineElements{
+						Elements: types.InlineElements{
 							types.StringElement{Content: "The Dangerous and Thrilling Documentation Chronicles"},
 						},
 					},
@@ -720,7 +736,9 @@ This journey begins on a bleary Monday morning.`
 					"keywords":         "documentation, team, obstacles, journey, victory",
 					"toc":              "",
 				},
-				ElementReferences: map[string]interface{}{},
+				ElementReferences:  map[string]interface{}{},
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
 					types.TableOfContentsMacro{},
 					types.BlankLine{},
@@ -750,7 +768,7 @@ a paragraph with *bold content*`
 						Attributes: types.ElementAttributes{
 							types.AttrID: "_a_header",
 						},
-						Content: types.InlineElements{
+						Elements: types.InlineElements{
 							types.StringElement{Content: "a header"},
 						},
 					},
@@ -760,11 +778,13 @@ a paragraph with *bold content*`
 						Attributes: types.ElementAttributes{
 							types.AttrID: "_section_1",
 						},
-						Content: types.InlineElements{
+						Elements: types.InlineElements{
 							types.StringElement{Content: "section 1"},
 						},
 					},
 				},
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
 					types.Section{
 						Level: 1,
@@ -772,7 +792,7 @@ a paragraph with *bold content*`
 							Attributes: types.ElementAttributes{
 								types.AttrID: "_section_1",
 							},
-							Content: types.InlineElements{
+							Elements: types.InlineElements{
 								types.StringElement{Content: "section 1"},
 							},
 						},
@@ -810,8 +830,10 @@ a paragraph with *bold content*`
 :date: 2017-01-01
 :author: Xavier`
 			expectedResult := types.Document{
-				Attributes:        map[string]interface{}{},
-				ElementReferences: map[string]interface{}{},
+				Attributes:         map[string]interface{}{},
+				ElementReferences:  map[string]interface{}{},
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
@@ -839,8 +861,10 @@ a paragraph with *bold content*`
 			actualContent := `:@date: 2017-01-01
 :{author}: Xavier`
 			expectedResult := types.Document{
-				Attributes:        map[string]interface{}{},
-				ElementReferences: map[string]interface{}{},
+				Attributes:         map[string]interface{}{},
+				ElementReferences:  map[string]interface{}{},
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},

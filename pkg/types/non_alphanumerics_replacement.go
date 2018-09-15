@@ -79,16 +79,7 @@ func (v *replaceNonAlphanumericsVisitor) Visit(element Visitable) error {
 		}
 		v.buf.Write(normalized)
 	}
-	return nil
-}
-
-// BeforeVisit method called before visiting an element. Allows for performing "pre-actions"
-func (v *replaceNonAlphanumericsVisitor) BeforeVisit(element Visitable) error {
-	return nil
-}
-
-// AfterVisit method called before visiting an element. Allows for performing "post-actions"
-func (v *replaceNonAlphanumericsVisitor) AfterVisit(element Visitable) error {
+	// other types are ignored
 	return nil
 }
 

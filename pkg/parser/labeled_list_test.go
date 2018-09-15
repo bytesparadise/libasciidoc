@@ -215,8 +215,10 @@ bar
 
 a normal paragraph.`
 		expectedResult := types.Document{
-			Attributes:        map[string]interface{}{},
-			ElementReferences: map[string]interface{}{},
+			Attributes:         map[string]interface{}{},
+			ElementReferences:  map[string]interface{}{},
+			Footnotes:          types.Footnotes{},
+			FootnoteReferences: types.FootnoteReferences{},
 			Elements: []interface{}{
 				types.LabeledList{
 					Attributes: types.ElementAttributes{},
@@ -265,8 +267,10 @@ Item 2:: something simple
 another fenced block
 ----`
 		expectedResult := types.Document{
-			Attributes:        map[string]interface{}{},
-			ElementReferences: map[string]interface{}{},
+			Attributes:         map[string]interface{}{},
+			ElementReferences:  map[string]interface{}{},
+			Footnotes:          types.Footnotes{},
+			FootnoteReferences: types.FootnoteReferences{},
 			Elements: []interface{}{
 				types.LabeledList{
 					Attributes: types.ElementAttributes{},
@@ -341,8 +345,10 @@ Item 2:: something simple
 another fenced block
 ----`
 		expectedResult := types.Document{
-			Attributes:        map[string]interface{}{},
-			ElementReferences: map[string]interface{}{},
+			Attributes:         map[string]interface{}{},
+			ElementReferences:  map[string]interface{}{},
+			Footnotes:          types.Footnotes{},
+			FootnoteReferences: types.FootnoteReferences{},
 			Elements: []interface{}{
 				types.LabeledList{
 					Attributes: types.ElementAttributes{},

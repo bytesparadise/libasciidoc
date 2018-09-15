@@ -93,7 +93,7 @@ func renderSection(ctx *renderer.Context, s types.Section) ([]byte, error) {
 
 func renderSectionTitle(ctx *renderer.Context, level int, sectionTitle types.SectionTitle) (string, error) {
 	result := bytes.NewBuffer(nil)
-	renderedContent, err := renderElement(ctx, sectionTitle.Content)
+	renderedContent, err := renderElement(ctx, sectionTitle.Elements)
 	if err != nil {
 		return "", errors.Wrapf(err, "error while rendering sectionTitle content")
 	}

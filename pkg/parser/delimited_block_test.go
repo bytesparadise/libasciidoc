@@ -85,8 +85,10 @@ var _ = Describe("delimited blocks", func() {
 		It("fenced block with multiple lines then a paragraph", func() {
 			actualContent := "```\nsome fenced code\nwith an empty line\n\nin the middle\n```\nthen a normal paragraph."
 			expectedResult := types.Document{
-				Attributes:        types.DocumentAttributes{},
-				ElementReferences: map[string]interface{}{},
+				Attributes:         types.DocumentAttributes{},
+				ElementReferences:  map[string]interface{}{},
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
 					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{
@@ -138,8 +140,10 @@ var _ = Describe("delimited blocks", func() {
 			content := "some fenced code"
 			actualContent := "a paragraph.\n```\n" + content + "\n```\n"
 			expectedResult := types.Document{
-				Attributes:        types.DocumentAttributes{},
-				ElementReferences: map[string]interface{}{},
+				Attributes:         types.DocumentAttributes{},
+				ElementReferences:  map[string]interface{}{},
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
@@ -314,8 +318,10 @@ in the middle
 ----
 then a normal paragraph.`
 			expectedResult := types.Document{
-				Attributes:        map[string]interface{}{},
-				ElementReferences: map[string]interface{}{},
+				Attributes:         map[string]interface{}{},
+				ElementReferences:  map[string]interface{}{},
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
 					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{
@@ -364,8 +370,10 @@ then a normal paragraph.`
 some listing code
 ----`
 			expectedResult := types.Document{
-				Attributes:        map[string]interface{}{},
-				ElementReferences: map[string]interface{}{},
+				Attributes:         map[string]interface{}{},
+				ElementReferences:  map[string]interface{}{},
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
@@ -449,8 +457,10 @@ some literal content
 ....
 a normal paragraph.`
 			expectedResult := types.Document{
-				Attributes:        map[string]interface{}{},
-				ElementReferences: map[string]interface{}{},
+				Attributes:         map[string]interface{}{},
+				ElementReferences:  map[string]interface{}{},
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
 					types.LiteralBlock{
 						Content: "some literal content",
@@ -652,8 +662,10 @@ paragraphs
 ----
 `
 			expectedResult := types.Document{
-				Attributes:        map[string]interface{}{},
-				ElementReferences: map[string]interface{}{},
+				Attributes:         map[string]interface{}{},
+				ElementReferences:  map[string]interface{}{},
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
 					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{

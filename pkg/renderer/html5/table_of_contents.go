@@ -68,7 +68,7 @@ func renderTableOfContentsSections(ctx *renderer.Context, elements []interface{}
 		log.Debugf("traversing document element of type %T", element)
 		switch section := element.(type) {
 		case types.Section:
-			renderedTitle, err := renderElement(ctx, section.Title.Content)
+			renderedTitle, err := renderElement(ctx, section.Title.Elements)
 			if err != nil {
 				return nil, errors.Wrapf(err, "error while rendering table of content section")
 			}

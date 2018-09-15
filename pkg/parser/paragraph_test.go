@@ -203,8 +203,10 @@ No space after the [NOTE]!
 [CAUTION]
 And no space after [CAUTION] either.`
 			expectedResult := types.Document{
-				Attributes:        map[string]interface{}{},
-				ElementReferences: map[string]interface{}{},
+				Attributes:         map[string]interface{}{},
+				ElementReferences:  map[string]interface{}{},
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
 					types.Paragraph{
 						Attributes: types.ElementAttributes{

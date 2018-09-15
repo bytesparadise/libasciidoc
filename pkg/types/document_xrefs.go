@@ -20,11 +20,6 @@ func NewElementReferencesCollector() *ElementReferencesCollector {
 	}
 }
 
-// BeforeVisit Implements Visitable#BeforeVisit()
-func (c *ElementReferencesCollector) BeforeVisit(element Visitable) error {
-	return nil
-}
-
 // Visit Implements Visitable#Visit()
 func (c *ElementReferencesCollector) Visit(element Visitable) error {
 	switch e := element.(type) {
@@ -37,10 +32,5 @@ func (c *ElementReferencesCollector) Visit(element Visitable) error {
 			return errors.Errorf("unexpected type of element id: %T", elementID)
 		}
 	}
-	return nil
-}
-
-// AfterVisit Implements Visitable#AfterVisit()
-func (c *ElementReferencesCollector) AfterVisit(element Visitable) error {
 	return nil
 }

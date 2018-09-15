@@ -89,8 +89,10 @@ with multiple lines
 ////
 a second paragraph`
 			expectedResult := types.Document{
-				Attributes:        types.DocumentAttributes{},
-				ElementReferences: map[string]interface{}{},
+				Attributes:         types.DocumentAttributes{},
+				ElementReferences:  map[string]interface{}{},
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
