@@ -92,7 +92,10 @@ func NewDocument(frontmatter, header interface{}, blocks []interface{}) (Documen
 	xrefsCollector := NewElementReferencesCollector()
 	for _, e := range elements {
 		if v, ok := e.(Visitable); ok {
-			v.Accept(xrefsCollector)
+			err := v.Accept(xrefsCollector)
+			if err != nil {
+				return Document{}, errors.Wrapf(err, "unable to create document")
+			}
 		}
 	}
 
@@ -101,7 +104,10 @@ func NewDocument(frontmatter, header interface{}, blocks []interface{}) (Documen
 	for _, e := range elements {
 		log.Debugf("collecting footnotes in element of type %T", e)
 		if v, ok := e.(Visitable); ok {
-			v.Accept(footnotesCollector)
+			err := v.Accept(footnotesCollector)
+			if err != nil {
+				return Document{}, errors.Wrapf(err, "unable to create document")
+			}
 		}
 	}
 

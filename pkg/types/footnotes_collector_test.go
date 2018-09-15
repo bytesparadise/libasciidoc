@@ -39,8 +39,9 @@ var _ = Describe("footnotes collector", func() {
 		}
 		c := types.NewFootnotesCollector()
 		// when
-		content.Accept(c)
+		err := content.Accept(c)
 		// then
+		require.NoError(GinkgoT(), err)
 		require.Len(GinkgoT(), c.Footnotes, 2)
 		assert.Equal(GinkgoT(), footnote1, c.Footnotes[0])
 		assert.Equal(GinkgoT(), footnote2, c.Footnotes[1])
@@ -76,8 +77,9 @@ var _ = Describe("footnotes collector", func() {
 		}
 		c := types.NewFootnotesCollector()
 		// when
-		content.Accept(c)
+		err := content.Accept(c)
 		// then
+		require.NoError(GinkgoT(), err)
 		require.Len(GinkgoT(), c.Footnotes, 1) // a single, yet referenced twice elsewhere
 		assert.Equal(GinkgoT(), footnote1, c.Footnotes[0])
 		require.Len(GinkgoT(), c.FootnoteReferences, 1) // a single, yet referenced twice elsewhere
