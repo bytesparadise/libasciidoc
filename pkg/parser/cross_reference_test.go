@@ -22,13 +22,15 @@ with some content linked to <<thetitle>>!`
 						Attributes: types.ElementAttributes{
 							types.AttrID: "thetitle",
 						},
-						Content: types.InlineElements{
+						Elements: types.InlineElements{
 							types.StringElement{
 								Content: "a title",
 							},
 						},
 					},
 				},
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
 					types.Section{
 						Level: 1,
@@ -36,7 +38,7 @@ with some content linked to <<thetitle>>!`
 							Attributes: types.ElementAttributes{
 								types.AttrID: "thetitle",
 							},
-							Content: types.InlineElements{
+							Elements: types.InlineElements{
 								types.StringElement{
 									Content: "a title",
 								},
@@ -80,13 +82,15 @@ with some content linked to <<thetitle,a label to the title>>!`
 						Attributes: types.ElementAttributes{
 							types.AttrID: "thetitle",
 						},
-						Content: types.InlineElements{
+						Elements: types.InlineElements{
 							types.StringElement{
 								Content: "a title",
 							},
 						},
 					},
 				},
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
 					types.Section{
 						Level: 1,
@@ -94,7 +98,7 @@ with some content linked to <<thetitle,a label to the title>>!`
 							Attributes: types.ElementAttributes{
 								types.AttrID: "thetitle",
 							},
-							Content: types.InlineElements{
+							Elements: types.InlineElements{
 								types.StringElement{
 									Content: "a title",
 								},

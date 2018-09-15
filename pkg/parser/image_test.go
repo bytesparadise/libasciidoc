@@ -141,8 +141,10 @@ var _ = Describe("images", func() {
 				It("paragraph with block image with alt and dimensions", func() {
 					actualContent := "a foo image::foo.png[foo image, 600, 400] bar"
 					expectedResult := types.Document{
-						Attributes:        map[string]interface{}{},
-						ElementReferences: map[string]interface{}{},
+						Attributes:         map[string]interface{}{},
+						ElementReferences:  map[string]interface{}{},
+						Footnotes:          types.Footnotes{},
+						FootnoteReferences: types.FootnoteReferences{},
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},

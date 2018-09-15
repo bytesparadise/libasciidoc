@@ -15,7 +15,7 @@ var _ = Describe("sections", func() {
 				Attributes: types.ElementAttributes{
 					types.AttrID: "_a_header",
 				},
-				Content: types.InlineElements{
+				Elements: types.InlineElements{
 					types.StringElement{Content: "a header"},
 				},
 			}
@@ -23,8 +23,10 @@ var _ = Describe("sections", func() {
 				Attributes: types.DocumentAttributes{
 					"doctitle": doctitle,
 				},
-				ElementReferences: map[string]interface{}{},
-				Elements:          []interface{}{},
+				ElementReferences:  map[string]interface{}{},
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
+				Elements:           []interface{}{},
 			}
 			verify(GinkgoT(), expectedResult, actualContent)
 		})
@@ -35,7 +37,7 @@ var _ = Describe("sections", func() {
 				Attributes: types.ElementAttributes{
 					types.AttrID: "_a_header",
 				},
-				Content: types.InlineElements{
+				Elements: types.InlineElements{
 					types.StringElement{Content: "a header   "},
 				},
 			}
@@ -43,8 +45,10 @@ var _ = Describe("sections", func() {
 				Attributes: types.DocumentAttributes{
 					"doctitle": doctitle,
 				},
-				ElementReferences: map[string]interface{}{},
-				Elements:          []interface{}{},
+				ElementReferences:  map[string]interface{}{},
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
+				Elements:           []interface{}{},
 			}
 			verify(GinkgoT(), expectedResult, actualContent)
 		})
@@ -58,7 +62,7 @@ and a paragraph`
 				Attributes: types.ElementAttributes{
 					types.AttrID: "_a_header",
 				},
-				Content: types.InlineElements{
+				Elements: types.InlineElements{
 					types.StringElement{Content: "a header"},
 				},
 			}
@@ -66,7 +70,9 @@ and a paragraph`
 				Attributes: types.DocumentAttributes{
 					"doctitle": doctitle,
 				},
-				ElementReferences: map[string]interface{}{},
+				ElementReferences:  map[string]interface{}{},
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
@@ -87,7 +93,7 @@ and a paragraph`
 				Attributes: types.ElementAttributes{
 					types.AttrID: "_section_1",
 				},
-				Content: types.InlineElements{
+				Elements: types.InlineElements{
 					types.StringElement{Content: "section 1"},
 				},
 			}
@@ -96,6 +102,8 @@ and a paragraph`
 				ElementReferences: map[string]interface{}{
 					"_section_1": section1Title,
 				},
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
 					types.Section{
 						Level:    1,
@@ -113,7 +121,7 @@ and a paragraph`
 				Attributes: types.ElementAttributes{
 					types.AttrID: "_2_spaces_and_bold_content",
 				},
-				Content: types.InlineElements{
+				Elements: types.InlineElements{
 					types.QuotedText{
 						Attributes: types.ElementAttributes{
 							types.AttrKind: types.Bold,
@@ -129,6 +137,8 @@ and a paragraph`
 				ElementReferences: map[string]interface{}{
 					"_2_spaces_and_bold_content": sectionTitle,
 				},
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
 					types.Section{
 						Level:    1,
@@ -148,7 +158,7 @@ and a paragraph`
 				Attributes: types.ElementAttributes{
 					types.AttrID: "_a_header",
 				},
-				Content: types.InlineElements{
+				Elements: types.InlineElements{
 					types.StringElement{Content: "a header"},
 				},
 			}
@@ -156,7 +166,7 @@ and a paragraph`
 				Attributes: types.ElementAttributes{
 					types.AttrID: "_section_1",
 				},
-				Content: types.InlineElements{
+				Elements: types.InlineElements{
 					types.StringElement{Content: "section 1"},
 				},
 			}
@@ -167,6 +177,8 @@ and a paragraph`
 				ElementReferences: map[string]interface{}{
 					"_section_1": section1Title,
 				},
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
 					types.Section{
 						Level:    1,
@@ -188,7 +200,7 @@ a short preamble
 				Attributes: types.ElementAttributes{
 					types.AttrID: "_section_1",
 				},
-				Content: types.InlineElements{
+				Elements: types.InlineElements{
 					types.StringElement{Content: "section 1"},
 				},
 			}
@@ -196,7 +208,7 @@ a short preamble
 				Attributes: types.ElementAttributes{
 					types.AttrID: "_a_header",
 				},
-				Content: types.InlineElements{
+				Elements: types.InlineElements{
 					types.StringElement{Content: "a header"},
 				},
 			}
@@ -207,6 +219,8 @@ a short preamble
 				ElementReferences: map[string]interface{}{
 					"_section_1": section1Title,
 				},
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
 					types.Preamble{
 						Elements: []interface{}{
@@ -239,7 +253,7 @@ a short preamble
 				Attributes: types.ElementAttributes{
 					types.AttrID: "_a_header",
 				},
-				Content: types.InlineElements{
+				Elements: types.InlineElements{
 					types.StringElement{Content: "a header"},
 				},
 			}
@@ -247,7 +261,7 @@ a short preamble
 				Attributes: types.ElementAttributes{
 					types.AttrID: "_section_2",
 				},
-				Content: types.InlineElements{
+				Elements: types.InlineElements{
 					types.StringElement{Content: "section 2"},
 				},
 			}
@@ -258,6 +272,8 @@ a short preamble
 				ElementReferences: map[string]interface{}{
 					"_section_2": section2Title,
 				},
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
 					types.Section{
 						Level:    2,
@@ -276,7 +292,7 @@ and a paragraph`
 				Attributes: types.ElementAttributes{
 					types.AttrID: "_a_title",
 				},
-				Content: types.InlineElements{
+				Elements: types.InlineElements{
 					types.StringElement{Content: "a title"},
 				},
 			}
@@ -285,6 +301,8 @@ and a paragraph`
 				ElementReferences: map[string]interface{}{
 					"_a_title": section1Title,
 				},
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
 					types.Section{
 						Level: 1,
@@ -313,7 +331,7 @@ and a paragraph`
 				Attributes: types.ElementAttributes{
 					types.AttrID: "_a_title",
 				},
-				Content: types.InlineElements{
+				Elements: types.InlineElements{
 					types.StringElement{Content: "a title"},
 				},
 			}
@@ -322,6 +340,8 @@ and a paragraph`
 				ElementReferences: map[string]interface{}{
 					"_a_title": section1Title,
 				},
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
 					types.Section{
 						Level: 1,
@@ -349,7 +369,7 @@ and a paragraph`
 				Attributes: types.ElementAttributes{
 					types.AttrID: "_a_title",
 				},
-				Content: types.InlineElements{
+				Elements: types.InlineElements{
 					types.StringElement{Content: "a title"},
 				},
 			}
@@ -358,6 +378,8 @@ and a paragraph`
 				ElementReferences: map[string]interface{}{
 					"_a_title": section1Title,
 				},
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
 					types.Section{
 						Level: 1,
@@ -394,7 +416,7 @@ a paragraph`
 				Attributes: types.ElementAttributes{
 					types.AttrID: "_a_header",
 				},
-				Content: types.InlineElements{
+				Elements: types.InlineElements{
 					types.StringElement{Content: "a header"},
 				},
 			}
@@ -402,7 +424,7 @@ a paragraph`
 				Attributes: types.ElementAttributes{
 					types.AttrID: "_section_a",
 				},
-				Content: types.InlineElements{
+				Elements: types.InlineElements{
 					types.StringElement{Content: "Section A"},
 				},
 			}
@@ -410,7 +432,7 @@ a paragraph`
 				Attributes: types.ElementAttributes{
 					types.AttrID: "_section_a_a",
 				},
-				Content: types.InlineElements{
+				Elements: types.InlineElements{
 					types.StringElement{Content: "Section A.a"},
 				},
 			}
@@ -418,7 +440,7 @@ a paragraph`
 				Attributes: types.ElementAttributes{
 					types.AttrID: "_section_b",
 				},
-				Content: types.InlineElements{
+				Elements: types.InlineElements{
 					types.StringElement{Content: "Section B"},
 				},
 			}
@@ -431,6 +453,8 @@ a paragraph`
 					"_section_a_a": sectionAaTitle,
 					"_section_b":   sectionBTitle,
 				},
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
 					types.Section{
 						Level: 1,
@@ -488,7 +512,7 @@ a paragraph`
 				Attributes: types.ElementAttributes{
 					types.AttrID: "custom_header",
 				},
-				Content: types.InlineElements{
+				Elements: types.InlineElements{
 					types.StringElement{Content: "a header"},
 				},
 			}
@@ -497,6 +521,8 @@ a paragraph`
 				ElementReferences: map[string]interface{}{
 					"custom_header": sectionTitle,
 				},
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
 					types.Section{
 						Level:    1,
@@ -521,7 +547,7 @@ a paragraph`
 				Attributes: types.ElementAttributes{
 					types.AttrID: "custom_header",
 				},
-				Content: types.InlineElements{
+				Elements: types.InlineElements{
 					types.StringElement{Content: "a header"},
 				},
 			}
@@ -529,7 +555,7 @@ a paragraph`
 				Attributes: types.ElementAttributes{
 					types.AttrID: "foo",
 				},
-				Content: types.InlineElements{
+				Elements: types.InlineElements{
 					types.StringElement{Content: "Section F "},
 				},
 			}
@@ -537,7 +563,7 @@ a paragraph`
 				Attributes: types.ElementAttributes{
 					types.AttrID: "bar",
 				},
-				Content: types.InlineElements{
+				Elements: types.InlineElements{
 					types.StringElement{Content: "Section B"},
 				},
 			}
@@ -549,6 +575,8 @@ a paragraph`
 					"foo": fooTitle,
 					"bar": barTitle,
 				},
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
 					types.Section{
 						Level: 1,
@@ -581,8 +609,10 @@ a paragraph`
 		It("header invalid - missing space", func() {
 			actualContent := "=a header"
 			expectedResult := types.Document{
-				Attributes:        map[string]interface{}{},
-				ElementReferences: map[string]interface{}{},
+				Attributes:         map[string]interface{}{},
+				ElementReferences:  map[string]interface{}{},
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
@@ -599,8 +629,10 @@ a paragraph`
 		It("header invalid - header space", func() {
 			actualContent := " = a header"
 			expectedResult := types.Document{
-				Attributes:        map[string]interface{}{},
-				ElementReferences: map[string]interface{}{},
+				Attributes:         map[string]interface{}{},
+				ElementReferences:  map[string]interface{}{},
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
 					types.LiteralBlock{
 						Content: " = a header",
@@ -620,12 +652,14 @@ a paragraph`
 						Attributes: types.ElementAttributes{
 							types.AttrID: "_a_header",
 						},
-						Content: types.InlineElements{
+						Elements: types.InlineElements{
 							types.StringElement{Content: "a header"},
 						},
 					},
 				},
-				ElementReferences: map[string]interface{}{},
+				ElementReferences:  map[string]interface{}{},
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
 					types.LiteralBlock{
 						Content: " == section 1",
@@ -646,7 +680,7 @@ bar`
 				Attributes: types.ElementAttributes{
 					types.AttrID: "_header_2",
 				},
-				Content: types.InlineElements{
+				Elements: types.InlineElements{
 					types.StringElement{Content: "header 2"},
 				},
 			}
@@ -656,7 +690,7 @@ bar`
 						Attributes: types.ElementAttributes{
 							types.AttrID: "_header_1",
 						},
-						Content: types.InlineElements{
+						Elements: types.InlineElements{
 							types.StringElement{Content: "header 1"},
 						},
 					},
@@ -664,7 +698,8 @@ bar`
 				ElementReferences: map[string]interface{}{
 					"_header_2": header2Title,
 				},
-
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
 					types.Preamble{
 						Elements: []interface{}{

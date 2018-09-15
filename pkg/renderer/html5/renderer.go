@@ -121,6 +121,8 @@ func renderElement(ctx *renderer.Context, element interface{}) ([]byte, error) {
 		return renderLink(ctx, e)
 	case types.StringElement:
 		return renderStringElement(ctx, e)
+	case types.Footnote:
+		return renderFootnote(ctx, e)
 	case types.DocumentAttributeDeclaration:
 		// 'process' function do not return any rendered content, but may return an error
 		return nil, processAttributeDeclaration(ctx, e)
@@ -148,7 +150,7 @@ func renderPlainString(ctx *renderer.Context, element interface{}) ([]byte, erro
 	log.Debugf("rendering plain string for element of type %T", element)
 	switch element := element.(type) {
 	case types.SectionTitle:
-		return renderPlainString(ctx, element.Content)
+		return renderPlainString(ctx, element.Elements)
 	case types.QuotedText:
 		return renderPlainString(ctx, element.Elements)
 	case types.InlineImage:

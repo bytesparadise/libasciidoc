@@ -32,8 +32,10 @@ on 2 lines.`
 
 a normal paragraph.`
 			expectedResult := types.Document{
-				Attributes:        map[string]interface{}{},
-				ElementReferences: map[string]interface{}{},
+				Attributes:         map[string]interface{}{},
+				ElementReferences:  map[string]interface{}{},
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
 					types.LiteralBlock{
 						Content: "   some literal content",
@@ -61,8 +63,10 @@ some literal content
 ....
 a normal paragraph.`
 			expectedResult := types.Document{
-				Attributes:        map[string]interface{}{},
-				ElementReferences: map[string]interface{}{},
+				Attributes:         map[string]interface{}{},
+				ElementReferences:  map[string]interface{}{},
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
 					types.LiteralBlock{
 						Content: "some literal content",
@@ -90,8 +94,10 @@ some literal content
 
 a normal paragraph.`
 			expectedResult := types.Document{
-				Attributes:        map[string]interface{}{},
-				ElementReferences: map[string]interface{}{},
+				Attributes:         map[string]interface{}{},
+				ElementReferences:  map[string]interface{}{},
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
 					types.LiteralBlock{
 						Content: "some literal content",
@@ -116,8 +122,10 @@ on two lines.
 
 a normal paragraph.`
 			expectedResult := types.Document{
-				Attributes:        map[string]interface{}{},
-				ElementReferences: map[string]interface{}{},
+				Attributes:         map[string]interface{}{},
+				ElementReferences:  map[string]interface{}{},
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
 					types.LiteralBlock{
 						Content: "some literal content\non two lines.",

@@ -20,7 +20,9 @@ first paragraph`
 					"title":  "a title", // TODO: convert `title` attribute from front-matter into `doctitle` here ?
 					"author": "Xavier",
 				},
-				ElementReferences: map[string]interface{}{},
+				ElementReferences:  map[string]interface{}{},
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
 					types.BlankLine{},
 					types.Paragraph{
@@ -42,8 +44,10 @@ first paragraph`
 
 first paragraph`
 			expectedResult := types.Document{
-				Attributes:        map[string]interface{}{},
-				ElementReferences: map[string]interface{}{},
+				Attributes:         map[string]interface{}{},
+				ElementReferences:  map[string]interface{}{},
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
 					types.BlankLine{},
 					types.Paragraph{
