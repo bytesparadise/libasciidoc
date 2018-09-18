@@ -40,21 +40,6 @@ here</pre>
 		})
 	})
 
-	Context("literal blocks", func() {
-
-		It("literal block with multiple lines", func() {
-			actualContent := ` some source code
-here`
-			expectedResult := `<div class="literalblock">
-<div class="content">
-<pre> some source code
-here</pre>
-</div>
-</div>`
-			verify(GinkgoT(), expectedResult, actualContent)
-		})
-	})
-
 	Context("example blocks", func() {
 
 		It("example block with multiple elements", func() {

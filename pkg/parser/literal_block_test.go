@@ -13,6 +13,9 @@ var _ = Describe("literal blocks", func() {
 		It("literal block from 1-line paragraph with single space", func() {
 			actualContent := ` some literal content`
 			expectedResult := types.LiteralBlock{
+				Attributes: types.ElementAttributes{
+					types.AttrKind: types.Literal,
+				},
 				Content: " some literal content",
 			}
 			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
@@ -22,13 +25,18 @@ var _ = Describe("literal blocks", func() {
 			actualContent := ` some literal content
 on 2 lines.`
 			expectedResult := types.LiteralBlock{
+				Attributes: types.ElementAttributes{
+					types.AttrKind: types.Literal,
+				},
 				Content: " some literal content\non 2 lines.",
 			}
 			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 
-		It("mixing literal block and paragraph ", func() {
-			actualContent := `   some literal content
+		It("mixing literal block with attributes followed by a paragraph ", func() {
+			actualContent := `.title
+[#ID]
+  some literal content
 
 a normal paragraph.`
 			expectedResult := types.Document{
@@ -38,7 +46,12 @@ a normal paragraph.`
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
 					types.LiteralBlock{
-						Content: "   some literal content",
+						Attributes: types.ElementAttributes{
+							types.AttrKind:  types.Literal,
+							types.AttrID:    "ID",
+							types.AttrTitle: "title",
+						},
+						Content: "  some literal content",
 					},
 					types.BlankLine{},
 					types.Paragraph{
@@ -57,8 +70,10 @@ a normal paragraph.`
 
 	Context("literal blocks with block delimiter", func() {
 
-		It("literal block from 1-line paragraph with delimiter", func() {
-			actualContent := `....
+		It("literal block with delimited and attributes followed by 1-line paragraph", func() {
+			actualContent := `[#ID]
+.title
+....
 some literal content
 ....
 a normal paragraph.`
@@ -69,6 +84,11 @@ a normal paragraph.`
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
 					types.LiteralBlock{
+						Attributes: types.ElementAttributes{
+							types.AttrKind:  types.Literal,
+							types.AttrID:    "ID",
+							types.AttrTitle: "title",
+						},
 						Content: "some literal content",
 					},
 					types.Paragraph{
@@ -100,6 +120,9 @@ a normal paragraph.`
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
 					types.LiteralBlock{
+						Attributes: types.ElementAttributes{
+							types.AttrKind: types.Literal,
+						},
 						Content: "some literal content",
 					},
 					types.BlankLine{},
@@ -115,8 +138,11 @@ a normal paragraph.`
 			}
 			verify(GinkgoT(), expectedResult, actualContent)
 		})
+
 		It("literal block from 2-lines paragraph with attribute", func() {
-			actualContent := `[literal]   
+			actualContent := `[#ID]
+[literal]   
+.title
 some literal content
 on two lines.
 
@@ -128,6 +154,11 @@ a normal paragraph.`
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
 					types.LiteralBlock{
+						Attributes: types.ElementAttributes{
+							types.AttrKind:  types.Literal,
+							types.AttrID:    "ID",
+							types.AttrTitle: "title",
+						},
 						Content: "some literal content\non two lines.",
 					},
 					types.BlankLine{},
