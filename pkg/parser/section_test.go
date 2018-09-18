@@ -627,7 +627,7 @@ a paragraph`
 		})
 
 		It("header invalid - header space", func() {
-			actualContent := " = a header"
+			actualContent := " = a header with a prefix space"
 			expectedResult := types.Document{
 				Attributes:         map[string]interface{}{},
 				ElementReferences:  map[string]interface{}{},
@@ -635,7 +635,10 @@ a paragraph`
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
 					types.LiteralBlock{
-						Content: " = a header",
+						Attributes: types.ElementAttributes{
+							types.AttrKind: types.Literal,
+						},
+						Content: " = a header with a prefix space",
 					},
 				},
 			}
@@ -643,9 +646,9 @@ a paragraph`
 		})
 
 		It("header with invalid section1", func() {
-			actualContent := "= a header\n" +
-				"\n" +
-				" == section 1"
+			actualContent := `= a header
+
+ == section with prefix space`
 			expectedResult := types.Document{
 				Attributes: types.DocumentAttributes{
 					"doctitle": types.SectionTitle{
@@ -662,7 +665,10 @@ a paragraph`
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
 					types.LiteralBlock{
-						Content: " == section 1",
+						Attributes: types.ElementAttributes{
+							types.AttrKind: types.Literal,
+						},
+						Content: " == section with prefix space",
 					},
 				},
 			}

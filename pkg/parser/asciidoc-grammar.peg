@@ -188,7 +188,7 @@ GenericAttribute <- key:(AttributeKey) "=" value:(AttributeValue) ","? WS* { // 
     return types.NewGenericAttribute(key.(string), nil)
 }
 
-AttributeKey <- !VerseKind key:(!"=" !"," !"]" .)+  {
+AttributeKey <- !VerseKind !LiteralKind key:(!"=" !"," !"]" .)+  {
     return string(c.text), nil
 }
 
@@ -212,7 +212,7 @@ QuoteAttributes <- "[" kind:(QuoteKind) WS* "," author:(QuoteAuthor) "," title:(
         return types.NewQuoteAttributes(kind.(string), "","")
     }
 
-QuoteKind <- !VerseKind (!EOL !WS !"," !"]" !"#" !"=" !AdmonitionKind .)* { // make sure quote attribute does not collide with other generic or specific attributes (ID, Admonition, etc)
+QuoteKind <- !LiteralKind !VerseKind (!EOL !WS !"," !"]" !"#" !"=" !AdmonitionKind .)* { // make sure quote attribute does not collide with other generic or specific attributes (ID, Admonition, etc)
     return string(c.text), nil
 }
 
@@ -947,8 +947,8 @@ SingleLineCommentContent <- (!EOL .)* {
 LiteralBlock <- ParagraphWithSpaces / ParagraphWithLiteralBlockDelimiter / ParagraphWithLiteralAttribute
 
 // paragraph indented with one or more spaces on the first line
-ParagraphWithSpaces <- content:(ParagraphWithSpacesContent) EOL {
-    return types.NewLiteralBlock(content.(string))
+ParagraphWithSpaces <- attributes:(ElementAttribute)* content:(ParagraphWithSpacesContent) EOL {
+    return types.NewLiteralBlock(content.(string), attributes.([]interface{}))
 }
 
 // no NEWLINE allowed between the first spaces and the content of the block
@@ -957,8 +957,8 @@ ParagraphWithSpacesContent <- WS+ !NEWLINE (!(NEWLINE BlankLine) .)+ {
 }
 
 // paragraph with the literal block delimiter (`....`)
-ParagraphWithLiteralBlockDelimiter <- LiteralBlockDelimiter WS* NEWLINE content:(ParagraphWithLiteralBlockContent) ((LiteralBlockDelimiter WS* EOL) / EOF) {
-    return types.NewLiteralBlock(content.(string))
+ParagraphWithLiteralBlockDelimiter <- attributes:(ElementAttribute)* LiteralBlockDelimiter WS* NEWLINE content:(ParagraphWithLiteralBlockContent) ((LiteralBlockDelimiter WS* EOL) / EOF) {
+    return types.NewLiteralBlock(content.(string), attributes.([]interface{}))
 }
 
 ParagraphWithLiteralBlockContent <- (!LiteralBlockDelimiter .)* {
@@ -968,8 +968,16 @@ ParagraphWithLiteralBlockContent <- (!LiteralBlockDelimiter .)* {
 LiteralBlockDelimiter <- "...."
 
 // paragraph with the literal attribute (`[literal]`)
-ParagraphWithLiteralAttribute <- "[literal]" WS* NEWLINE content:(ParagraphWithLiteralAttributeContent) EOL {
-    return types.NewLiteralBlock(content.(string))
+ParagraphWithLiteralAttribute <- attributes:(ElementAttribute* LiteralAttribute ElementAttribute*) content:(ParagraphWithLiteralAttributeContent) EOL {
+    return types.NewLiteralBlock(content.(string), attributes.([]interface{}))
+}
+
+LiteralKind <- "literal" {
+    return string(c.text), nil
+}
+
+LiteralAttribute <- "[literal]" WS* NEWLINE {
+    return types.NewLiteralAttribute()
 }
 
 // no NEWLINE allowed between the first spaces and the content of the block

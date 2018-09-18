@@ -442,6 +442,8 @@ const (
 	Verse
 	// Sidebar a sidebar block
 	Sidebar
+	// Literal a literal block
+	Literal
 )
 
 // ------------------------------------------
@@ -1623,14 +1625,13 @@ func NewTableLine(columns []interface{}) (TableLine, error) {
 
 // LiteralBlock the structure for the literal blocks
 type LiteralBlock struct {
-	Content string
+	Attributes ElementAttributes
+	Content    string
 }
 
 // NewLiteralBlock initializes a new `DelimitedBlock` of the given kind with the given content,
 // along with the given sectionTitle spaces
-func NewLiteralBlock(content string) (LiteralBlock, error) {
-	// concatenates the spaces with the actual content in a single 'stringified' value
-	// log.Debugf("initializing a new LiteralBlock with spaces='%v' and content=`%v`", spaces, content)
+func NewLiteralBlock(content string, attributes []interface{}) (LiteralBlock, error) {
 	// remove "\n" or "\r\n", depending on the OS.
 	blockContent := apply(content,
 		func(s string) string {
@@ -1639,7 +1640,8 @@ func NewLiteralBlock(content string) (LiteralBlock, error) {
 	)
 	log.Debugf("initialized a new LiteralBlock with content=`%s`", blockContent)
 	return LiteralBlock{
-		Content: blockContent,
+		Attributes: NewElementAttributes(attributes, ElementAttributes{AttrKind: Literal}),
+		Content:    blockContent,
 	}, nil
 }
 
@@ -1693,11 +1695,19 @@ func (a ElementAttributes) GetAsString(key string) string {
 }
 
 // NewElementAttributes retrieves the ElementID, ElementTitle and ElementLink from the given slice of attributes
-func NewElementAttributes(attributes []interface{}) ElementAttributes {
+func NewElementAttributes(attributes []interface{}, extras ...ElementAttributes) ElementAttributes {
 	attrbs := make(ElementAttributes)
 	for _, attrb := range attributes {
 		log.Debugf("processing attribute %[1]v (%[1]T)", attrb)
 		switch attrb := attrb.(type) {
+		case []interface{}:
+			// nested case, because of the grammar syntax,
+			// eg: `attributes:(ElementAttribute* LiteralAttribute ElementAttribute*)`
+			// which is used to ensure that a `LiteralAttribute` element is set amongst the attributes
+			r := NewElementAttributes(attrb)
+			for k, v := range r {
+				attrbs[k] = v
+			}
 		case ElementAttributes:
 			// TODO: warn if attribute already exists and is overridden
 			for k, v := range attrb {
@@ -1711,7 +1721,13 @@ func NewElementAttributes(attributes []interface{}) ElementAttributes {
 		case nil:
 			// ignore
 		default:
-			log.Warnf("Unexpected attributes: %T", attrb)
+			log.Warnf("Unexpected attributes of type: %T", attrb)
+		}
+	}
+	for _, extra := range extras {
+		for k, v := range extra {
+			// no warning on override here
+			attrbs[k] = v
 		}
 	}
 	return attrbs
@@ -1799,6 +1815,12 @@ func NewQuoteAttributes(kind, author, title string) (map[string]interface{}, err
 	result[AttrQuoteTitle] = strings.TrimSpace(title)
 	log.Debugf("initialized new quote attributes: %v", result)
 	return result, nil
+}
+
+// NewLiteralAttribute initializes a new attribute map with a single entry for the literal kind of block
+func NewLiteralAttribute() (ElementAttributes, error) {
+	log.Debug("initializing a new Literal attribute")
+	return ElementAttributes{AttrKind: Literal}, nil
 }
 
 // ------------------------------------------
