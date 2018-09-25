@@ -71,9 +71,9 @@ var _ = Describe("footnotes", func() {
 					types.StringElement{
 						Content: " ",
 					},
-					types.Link{
+					types.InlineLink{
 						Attributes: types.ElementAttributes{
-							types.AttrLinkText: "content",
+							types.AttrInlineLinkText: "content",
 						},
 						URL: "http://foo.com",
 					},

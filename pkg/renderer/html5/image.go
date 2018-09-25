@@ -47,7 +47,7 @@ func renderBlockImage(ctx *renderer.Context, img types.BlockImage) ([]byte, erro
 		ID:     img.Attributes.GetAsString(types.AttrID),
 		Title:  title,
 		Role:   img.Attributes.GetAsString(types.AttrRole),
-		Href:   img.Attributes.GetAsString(types.AttrLink),
+		Href:   img.Attributes.GetAsString(types.AttrInlineLink),
 		Alt:    img.Attributes.GetAsString(types.AttrImageAlt),
 		Width:  img.Attributes.GetAsString(types.AttrImageWidth),
 		Height: img.Attributes.GetAsString(types.AttrImageHeight),

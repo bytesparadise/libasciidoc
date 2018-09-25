@@ -6,7 +6,6 @@ import (
 	"unicode"
 
 	"github.com/pkg/errors"
-	log "github.com/sirupsen/logrus"
 )
 
 //NormalizationFunc a function that is used to normalize a string.
@@ -70,7 +69,7 @@ func newreplaceNonAlphanumericsVisitor() replaceNonAlphanumericsVisitor {
 
 // Visit method called when an element is visited
 func (v *replaceNonAlphanumericsVisitor) Visit(element Visitable) error {
-	log.Debugf("visiting element of type '%T'", element)
+	// log.Debugf("visiting element of type '%T'", element)
 	if element, ok := element.(StringElement); ok {
 		v.buf.WriteString("_")
 		normalized, err := v.normalize(element.Content)

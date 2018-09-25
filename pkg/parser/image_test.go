@@ -104,7 +104,7 @@ var _ = Describe("images", func() {
 					Attributes: types.ElementAttributes{
 						types.AttrID:          "img-foobar",
 						types.AttrTitle:       "A title to foobar",
-						types.AttrLink:        "http://foo.bar",
+						types.AttrInlineLink:  "http://foo.bar",
 						types.AttrImageAlt:    "the foo.png image",
 						types.AttrImageWidth:  "600",
 						types.AttrImageHeight: "400",

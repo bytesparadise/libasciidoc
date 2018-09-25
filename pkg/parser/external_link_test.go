@@ -17,7 +17,7 @@ var _ = Describe("links", func() {
 				Lines: []types.InlineElements{
 					{
 						types.StringElement{Content: "a link to "},
-						types.Link{
+						types.InlineLink{
 							URL: "https://foo.bar",
 							Attributes: types.ElementAttributes{
 								"text": "",
@@ -36,7 +36,7 @@ var _ = Describe("links", func() {
 				Lines: []types.InlineElements{
 					{
 						types.StringElement{Content: "a link to "},
-						types.Link{
+						types.InlineLink{
 							URL: "https://foo.bar",
 							Attributes: types.ElementAttributes{
 								"text": "",
@@ -55,7 +55,7 @@ var _ = Describe("links", func() {
 				Lines: []types.InlineElements{
 					{
 						types.StringElement{Content: "a link to "},
-						types.Link{
+						types.InlineLink{
 							URL: "mailto:foo@bar",
 							Attributes: types.ElementAttributes{
 								"text": "the foo@bar email",
@@ -74,7 +74,7 @@ var _ = Describe("links", func() {
 			actualContent := "a link to link:foo.adoc[]"
 			expectedResult := types.InlineElements{
 				types.StringElement{Content: "a link to "},
-				types.Link{
+				types.InlineLink{
 					URL: "foo.adoc",
 					Attributes: types.ElementAttributes{
 						"text": "",
@@ -88,7 +88,7 @@ var _ = Describe("links", func() {
 			actualContent := "a link to link:foo.adoc[foo doc]"
 			expectedResult := types.InlineElements{
 				types.StringElement{Content: "a link to "},
-				types.Link{
+				types.InlineLink{
 					URL: "foo.adoc",
 					Attributes: types.ElementAttributes{
 						"text": "foo doc",
@@ -102,7 +102,7 @@ var _ = Describe("links", func() {
 			actualContent := "a link to link:https://foo.bar[foo doc]"
 			expectedResult := types.InlineElements{
 				types.StringElement{Content: "a link to "},
-				types.Link{
+				types.InlineLink{
 					URL: "https://foo.bar",
 					Attributes: types.ElementAttributes{
 						"text": "foo doc",
