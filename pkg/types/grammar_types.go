@@ -975,8 +975,8 @@ func init() {
 func NewOrderedList(elements []ListItem) (OrderedList, error) {
 	log.Debugf("initializing a new OrderedList from %d element(s)...", len(elements))
 	result := make([]OrderedListItem, 0)
-	bufferedItemsPerLevel := make(map[int][]*OrderedListItem, 0) // buffered items for the current level
-	levelPerStyle := make(map[NumberingStyle]int, 0)
+	bufferedItemsPerLevel := make(map[int][]*OrderedListItem) // buffered items for the current level
+	levelPerStyle := make(map[NumberingStyle]int)
 	previousLevel := 0
 	previousNumberingStyle := UnknownNumberingStyle
 	for _, element := range elements {
@@ -1010,7 +1010,10 @@ func NewOrderedList(elements []ListItem) (OrderedList, error) {
 			parentLayer := bufferedItemsPerLevel[previousLevel-2]
 			parentItem := parentLayer[len(parentLayer)-1]
 			log.Debugf("moving buffered items at level %d (%v) in parent (%v) ", previousLevel, bufferedItemsPerLevel[previousLevel-1][0].NumberingStyle, parentItem.NumberingStyle)
-			childList := toOrderedList(bufferedItemsPerLevel[previousLevel-1])
+			childList, err := toOrderedList(bufferedItemsPerLevel[previousLevel-1])
+			if err != nil {
+				return OrderedList{}, err
+			}
 			parentItem.Elements = append(parentItem.Elements, childList)
 			// clear the previously buffered items at level 'previousLevel'
 			delete(bufferedItemsPerLevel, previousLevel-1)
@@ -1039,7 +1042,10 @@ func NewOrderedList(elements []ListItem) (OrderedList, error) {
 				result = append(result, *item)
 			}
 		} else {
-			childList := toOrderedList(items)
+			childList, err := toOrderedList(items)
+			if err != nil {
+				return OrderedList{}, err
+			}
 			parentLayer := bufferedItemsPerLevel[level-1]
 			parentItem := parentLayer[len(parentLayer)-1]
 			parentItem.Elements = append(parentItem.Elements, childList)
@@ -1052,22 +1058,25 @@ func NewOrderedList(elements []ListItem) (OrderedList, error) {
 	}, nil
 }
 
-func toOrderedList(items []*OrderedListItem) OrderedList {
+func toOrderedList(items []*OrderedListItem) (OrderedList, error) {
 	result := OrderedList{
 		Attributes: ElementAttributes{}, // avoid nil `attributes`
 	}
 	// set the position and numbering style based on the optional attributes of the first item
 	if len(items) == 0 {
-		return result
+		return result, nil
 	}
-	items[0].applyAttributes()
+	err := items[0].applyAttributes()
+	if err != nil {
+		return result, errors.Wrapf(err, "failed to convert items into an ordered list")
+	}
 	for idx, item := range items {
 		// log.Debugf("setting item #%d position to %d+%d", (idx + 1), bufferedItemsPerLevel[previousLevel-1][0].Position, idx)
 		item.Position = items[0].Position + idx
 		item.NumberingStyle = items[0].NumberingStyle
 		result.Items = append(result.Items, *item)
 	}
-	return result
+	return result, nil
 }
 
 // AddAttributes adds all given attributes to the current set of attribute of the element
@@ -1162,8 +1171,8 @@ type UnorderedList struct {
 func NewUnorderedList(elements []ListItem) (UnorderedList, error) {
 	log.Debugf("initializing a new UnorderedList from %d element(s)...", len(elements))
 	result := make([]UnorderedListItem, 0)
-	bufferedItemsPerLevel := make(map[int][]*UnorderedListItem, 0) // buffered items for the current level
-	levelPerStyle := make(map[BulletStyle]int, 0)
+	bufferedItemsPerLevel := make(map[int][]*UnorderedListItem) // buffered items for the current level
+	levelPerStyle := make(map[BulletStyle]int)
 	previousLevel := 0
 	previousBulletStyle := UnknownBulletStyle
 	for _, element := range elements {
@@ -1363,11 +1372,7 @@ func NewListItemContent(content []interface{}) ([]interface{}, error) {
 		// log.Debugf("Processing line element of type %T", element)
 		switch element := element.(type) {
 		case []interface{}:
-			for _, e := range element {
-				// if e, ok := e.(interface{}); ok {
-				elements = append(elements, e)
-				// }
-			}
+			elements = append(elements, element...)
 		case interface{}:
 			elements = append(elements, element)
 		}

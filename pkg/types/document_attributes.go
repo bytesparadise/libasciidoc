@@ -18,7 +18,7 @@ const (
 // GetTOCLevels returns the value of the `toclevels` attribute if it was specified,
 // or `2` as the default value
 func (m DocumentAttributes) GetTOCLevels() (*int, error) {
-	if levels, exists := m["toclevels"]; exists {
+	if levels, exists := m[toclevels]; exists {
 		if levels, ok := levels.(int); ok {
 			return &levels, nil
 		}

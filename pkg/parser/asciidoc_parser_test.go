@@ -24,13 +24,3 @@ func verify(t GinkgoTInterface, expectedResult interface{}, content string, opti
 	t.Logf("expected document: `%s`", spew.Sdump(expectedResult))
 	assert.EqualValues(t, expectedResult, result)
 }
-
-func expectError(t GinkgoTInterface, content string, options ...parser.Option) {
-	log.Debugf("processing: %s", content)
-	reader := strings.NewReader(content)
-	_, err := parser.ParseReader("", reader, options...) //, Debug(true))
-	if err == nil {
-		log.Error("Expected an error while parsing the document, but none was reported")
-	}
-	require.Error(t, err)
-}
