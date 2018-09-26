@@ -39,7 +39,7 @@ func ConvertFileToHTML(ctx context.Context, filename string, output io.Writer, o
 // ConvertToHTML converts the content of the given reader `r` into a full HTML document, written in the given writer `output`.
 // Returns an error if a problem occurred
 func ConvertToHTML(ctx context.Context, r io.Reader, output io.Writer, options ...renderer.Option) (map[string]interface{}, error) {
-	log.Infof("parsing the asciidoc source...")
+	log.Debugf("parsing the asciidoc source...")
 	start := time.Now()
 	stats := parser.Stats{}
 	doc, err := parser.ParseReader("", r, parser.Statistics(&stats, "no match"))
@@ -47,7 +47,6 @@ func ConvertToHTML(ctx context.Context, r io.Reader, output io.Writer, options .
 		return nil, errors.Wrapf(err, "error while parsing the document")
 	}
 	duration := time.Since(start)
-	log.Infof("parsed the asciidoc source in %v ", duration)
 	b, err := json.MarshalIndent(stats.ChoiceAltCnt, "", "  ")
 	if err != nil {
 		log.Warnf("failed to produce stats: %v", err.Error())
@@ -55,7 +54,7 @@ func ConvertToHTML(ctx context.Context, r io.Reader, output io.Writer, options .
 	log.Infof("parsing stats:")
 	log.Infof("- parsing duration:                %v", duration)
 	log.Infof("- expressions processed:           %v", stats.ExprCnt)
-	log.Debugf("- choice expressions alternatives:\n%s", string(b)) // only displayed in debug level, i.e, not always
+	log.Infof("- choice expressions alternatives:\n%s", string(b)) // only displayed in debug level, i.e, not always
 	return convertToHTML(ctx, doc.(types.Document), output, options...)
 }
 

@@ -262,7 +262,7 @@ I am a verse paragraph.`
 		})
 
 		It("regular paragraph as a verse with author, title and other attributes", func() {
-			actualContent := `[[universe]]
+			actualContent := `[[universal]]
 [verse, john doe, verse title]
 .universe
 I am a verse paragraph.`
@@ -271,7 +271,7 @@ I am a verse paragraph.`
 					types.AttrKind:        types.Verse,
 					types.AttrQuoteAuthor: "john doe",
 					types.AttrQuoteTitle:  "verse title",
-					types.AttrID:          "universe",
+					types.AttrID:          "universal",
 					types.AttrTitle:       "universe",
 				},
 				Lines: []types.InlineElements{
@@ -362,7 +362,7 @@ I am a verse paragraph.`
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Paragraph"))
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 
 		It("image block as a verse", func() {

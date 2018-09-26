@@ -289,7 +289,7 @@ func NewDocumentAuthor(namePart1, namePart2, namePart3, emailAddress interface{}
 		result.Initials = initials(result.FirstName)
 	}
 	result.Email = email
-	log.Debugf("initialized a new document author: `%v`", result.String())
+	// log.Debugf("initialized a new document author: `%v`", result.String())
 	return result, nil
 }
 
@@ -357,7 +357,7 @@ func NewDocumentRevision(revnumber, revdate, revremark interface{}) (DocumentRev
 		Revdate:   date,
 		Revremark: remark,
 	}
-	log.Debugf("initialized a new document revision: `%s`", result.String())
+	// log.Debugf("initialized a new document revision: `%s`", result.String())
 	return result, nil
 }
 
@@ -396,6 +396,12 @@ func NewDocumentAttributeDeclaration(name string, value interface{}) (DocumentAt
 	}, nil
 }
 
+// AddAttributes adds all given attributes to the current set of attribute of the element
+func (d DocumentAttributeDeclaration) AddAttributes(attributes ElementAttributes) {
+	// nothing to do
+	// TODO: raise a warning?
+}
+
 // DocumentAttributeReset the type for DocumentAttributeReset
 type DocumentAttributeReset struct {
 	Name string
@@ -407,6 +413,12 @@ func NewDocumentAttributeReset(attrName string) (DocumentAttributeReset, error) 
 	return DocumentAttributeReset{Name: attrName}, nil
 }
 
+// AddAttributes adds all given attributes to the current set of attribute of the element
+func (r DocumentAttributeReset) AddAttributes(attributes ElementAttributes) {
+	// nothing to do
+	// TODO: raise a warning?
+}
+
 // DocumentAttributeSubstitution the type for DocumentAttributeSubstitution
 type DocumentAttributeSubstitution struct {
 	Name string
@@ -416,6 +428,199 @@ type DocumentAttributeSubstitution struct {
 func NewDocumentAttributeSubstitution(attrName string) (DocumentAttributeSubstitution, error) {
 	log.Debugf("initialized a new DocumentAttributeSubstitution: '%s'", attrName)
 	return DocumentAttributeSubstitution{Name: attrName}, nil
+}
+
+// ------------------------------------------
+// Elements attributes
+// ------------------------------------------
+
+const (
+	// AttrID the key to retrieve the ID in the element attributes
+	AttrID string = "id"
+	// AttrTitle the key to retrieve the title in the element attributes
+	AttrTitle string = "title"
+	// AttrRole the key to retrieve the role in the element attributes
+	AttrRole string = "role"
+	// AttrInlineLink the key to retrieve the link in the element attributes
+	AttrInlineLink string = "link"
+	// AttrAdmonitionKind the key to retrieve the kind of admonition in the element attributes, if a "masquerade" is used
+	AttrAdmonitionKind string = "admonitionKind"
+	// AttrQuoteAuthor attribute for the author of a verse
+	AttrQuoteAuthor string = "quoteAuthor"
+	// AttrQuoteTitle attribute for the title of a verse
+	AttrQuoteTitle string = "quoteTitle"
+)
+
+// DocumentElement an element on which attributes can be added/set
+type DocumentElement interface {
+	AddAttributes(attributes ElementAttributes)
+}
+
+// ElementAttributes is a map[string]interface{} with some utility methods
+type ElementAttributes map[string]interface{}
+
+// GetAsString returns the value of the key as a string, or empty string if the key did not exist
+func (a ElementAttributes) GetAsString(key string) string {
+	if v, ok := a[key]; ok {
+		return fmt.Sprintf("%v", v)
+	}
+	return ""
+}
+
+// AddAll adds all the given attributes to the current ones
+func (a ElementAttributes) AddAll(attributes ElementAttributes) {
+	for k, v := range attributes {
+		a[k] = v
+	}
+}
+
+// NewElementAttributes retrieves the ElementID, ElementTitle and ElementInlineLink from the given slice of attributes
+func NewElementAttributes(attributes []interface{}, extras ...ElementAttributes) ElementAttributes {
+	attrbs := make(ElementAttributes)
+	for _, attrb := range attributes {
+		log.Debugf("processing attribute %[1]v (%[1]T)", attrb)
+		switch attrb := attrb.(type) {
+		case []interface{}:
+			// nested case, because of the grammar syntax,
+			// eg: `attributes:(ElementAttribute* LiteralAttribute ElementAttribute*)`
+			// which is used to ensure that a `LiteralAttribute` element is set amongst the attributes
+			r := NewElementAttributes(attrb)
+			for k, v := range r {
+				attrbs[k] = v
+			}
+		case ElementAttributes:
+			// TODO: warn if attribute already exists and is overridden
+			for k, v := range attrb {
+				attrbs[k] = v
+			}
+		case map[string]interface{}:
+			// TODO: warn if attribute already exists and is overridden
+			for k, v := range attrb {
+				attrbs[k] = v
+			}
+		case nil:
+			// ignore
+		default:
+			log.Warnf("Unexpected attributes of type: %T", attrb)
+		}
+	}
+	for _, extra := range extras {
+		for k, v := range extra {
+			// no warning on override here
+			attrbs[k] = v
+		}
+	}
+	return attrbs
+}
+
+// NewElementID initializes a new attribute map with a single entry for the ID using the given value
+func NewElementID(id string) (ElementAttributes, error) {
+	log.Debugf("initializing a new ElementID with ID=%s", id)
+	return ElementAttributes{AttrID: id}, nil
+}
+
+// NewInlineElementID initializes a new attribute map with a single entry for the ID using the given value
+func NewInlineElementID(id string) (ElementAttributes, error) {
+	log.Debugf("initializing a new inline ElementID with ID=%s", id)
+	return ElementAttributes{AttrID: id}, nil
+}
+
+// NewElementTitle initializes a new attribute map with a single entry for the title using the given value
+func NewElementTitle(title string) (ElementAttributes, error) {
+	log.Debugf("initializing a new ElementTitle with content=%s", title)
+	return ElementAttributes{
+		AttrTitle: title,
+	}, nil
+}
+
+// NewElementRole initializes a new attribute map with a single entry for the title using the given value
+func NewElementRole(role string) (ElementAttributes, error) {
+	log.Debugf("initializing a new ElementRole with content=%s", role)
+	return ElementAttributes{
+		AttrRole: role,
+	}, nil
+}
+
+// NewAdmonitionAttribute initializes a new attribute map with a single entry for the admonition kind using the given value
+func NewAdmonitionAttribute(k AdmonitionKind) (ElementAttributes, error) {
+	return ElementAttributes{AttrAdmonitionKind: k}, nil
+}
+
+// NewAttributeGroup initializes a group of attributes from the given generic attributes.
+func NewAttributeGroup(attributes []interface{}) (ElementAttributes, error) {
+	// log.Debugf("initializing a new AttributeGroup with %v", attributes)
+	result := make(ElementAttributes)
+	for _, a := range attributes {
+		log.Debugf("processing attribute group element of type %T", a)
+		if a, ok := a.(ElementAttributes); ok {
+			for k, v := range a {
+				result[k] = v
+			}
+		} else {
+			return result, errors.Errorf("unable to process element of type '%[1]T': '%[1]s'", a)
+		}
+	}
+	// log.Debugf("initialized a new AttributeGroup: %v", result)
+	return result, nil
+}
+
+// NewGenericAttribute initializes a new ElementAttribute from the given key and optional value
+func NewGenericAttribute(key string, value interface{}) (ElementAttributes, error) {
+	result := make(map[string]interface{})
+	k := apply(key,
+		// remove surrounding quotes
+		func(s string) string {
+			return strings.Trim(s, "\"")
+		},
+		strings.TrimSpace)
+	if value, ok := value.(string); ok {
+		v := apply(value,
+			// remove surrounding quotes
+			func(s string) string {
+				return strings.Trim(s, "\"")
+			},
+			strings.TrimSpace)
+		result[k] = v
+	} else {
+		result[k] = nil
+	}
+	// log.Debugf("initialized a new ElementAttributes: %v", result)
+	return result, nil
+}
+
+// NewQuoteAttributes initializes a new map of attributes for a verse paragraph
+func NewQuoteAttributes(kind, author, title string) (map[string]interface{}, error) {
+	result := make(map[string]interface{}, 3)
+	switch kind {
+	case "verse":
+		result[AttrKind] = Verse
+	default:
+		result[AttrKind] = Quote
+	}
+	result[AttrQuoteAuthor] = strings.TrimSpace(author)
+	result[AttrQuoteTitle] = strings.TrimSpace(title)
+	log.Debugf("initialized new %s attributes: %v", kind, result)
+	return result, nil
+}
+
+// NewLiteralAttribute initializes a new attribute map with a single entry for the literal kind of block
+func NewLiteralAttribute() (ElementAttributes, error) {
+	log.Debug("initializing a new Literal attribute")
+	return ElementAttributes{AttrKind: Literal}, nil
+}
+
+// WithAttributes set the attributes on the given elements if its type is supported, otherwise returns an error
+func WithAttributes(element interface{}, attributes []interface{}) (interface{}, error) {
+	attrbs := NewElementAttributes(attributes)
+	if element, ok := element.(DocumentElement); ok {
+		if len(attributes) > 0 {
+			log.Debugf("setting %d attribute(s) on element of type %T", len(attributes), element)
+		}
+		element.AddAttributes(attrbs)
+		return element, nil
+	}
+	log.Warnf("cannot set attribute(s) on element of type %T", element)
+	return nil, errors.Errorf("cannot set attributes on element of type '%T'", element)
 }
 
 // ------------------------------------------
@@ -452,6 +657,11 @@ const (
 
 // TableOfContentsMacro the structure for Table of Contents
 type TableOfContentsMacro struct {
+}
+
+// AddAttributes adds all given attributes to the current set of attribute of the element
+func (m TableOfContentsMacro) AddAttributes(attributes ElementAttributes) {
+	// nothing to do
 }
 
 // ------------------------------------------
@@ -520,14 +730,17 @@ type Section struct {
 
 // NewSection initializes a new `Section` from the given section title and elements
 func NewSection(level int, sectionTitle SectionTitle, blocks []interface{}) (Section, error) {
-	log.Debugf("initializing a new Section with %d block(s)", len(blocks))
-	// elements := filterEmptyElements(blocks, filterBlankLine())
-	log.Debugf("initialized a new Section of level %d with %d block(s)", level, len(blocks))
+	log.Debugf("initialized a new Section level %d with %d block(s)", level, len(blocks))
 	return Section{
 		Level:    level,
 		Title:    sectionTitle,
 		Elements: nilSafe(blocks),
 	}, nil
+}
+
+// AddAttributes adds all given attributes to the current set of attribute of the element
+func (s Section) AddAttributes(attributes ElementAttributes) {
+	s.Title.AddAttributes(attributes)
 }
 
 // Accept implements Visitable#Accept(Visitor)
@@ -564,34 +777,44 @@ type SectionTitle struct {
 
 // NewSectionTitle initializes a new `SectionTitle`` from the given level and content, with the optional attributes.
 // In the attributes, only the ElementID is retained
-func NewSectionTitle(inlineContent InlineElements, attributes []interface{}) (SectionTitle, error) {
-	// counting the lenght of the 'level' value (ie, the number of `=` chars)
-	attrbs := NewElementAttributes(attributes)
+func NewSectionTitle(elements InlineElements, ids []interface{}) (SectionTitle, error) {
+	attributes := ElementAttributes{}
+	// multiple IDs can be defined (by mistake), and the last one is used
+	for _, id := range ids {
+		if id, ok := id.(ElementAttributes); ok {
+			attributes.AddAll(id)
+		}
+	}
 	// make a default id from the sectionTitle's inline content
-	if _, found := attrbs[AttrID]; !found {
-		replacement, err := replaceNonAlphanumerics(inlineContent, "_")
+	if _, found := attributes[AttrID]; !found {
+		replacement, err := replaceNonAlphanumerics(elements, "_")
 		if err != nil {
 			return SectionTitle{}, errors.Wrapf(err, "unable to generate default ID while instanciating a new SectionTitle element")
 		}
-		attrbs[AttrID] = replacement
+		attributes[AttrID] = replacement
 	}
 	sectionTitle := SectionTitle{
-		Attributes: attrbs,
-		Elements:   inlineContent,
+		Attributes: attributes,
+		Elements:   elements,
 	}
 	if log.GetLevel() == log.DebugLevel {
-		log.Debugf("initialized a new SectionTitle with %d element(s)", len(inlineContent))
+		log.Debugf("initialized a new SectionTitle with %d element(s)", len(elements))
 	}
 	return sectionTitle, nil
 }
 
+// AddAttributes adds all given attributes to the current set of attribute of the element
+func (st SectionTitle) AddAttributes(attributes ElementAttributes) {
+	st.Attributes.AddAll(attributes)
+}
+
 // Accept implements Visitable#Accept(Visitor)
-func (s SectionTitle) Accept(v Visitor) error {
-	err := v.Visit(s)
+func (st SectionTitle) Accept(v Visitor) error {
+	err := v.Visit(st)
 	if err != nil {
 		return errors.Wrapf(err, "error while visiting section")
 	}
-	for _, element := range s.Elements {
+	for _, element := range st.Elements {
 		visitable, ok := element.(Visitable)
 		if ok {
 			err = visitable.Accept(v)
@@ -599,7 +822,6 @@ func (s SectionTitle) Accept(v Visitor) error {
 				return errors.Wrapf(err, "error while visiting section element")
 			}
 		}
-
 	}
 	return nil
 }
@@ -608,7 +830,7 @@ func (s SectionTitle) Accept(v Visitor) error {
 // Lists
 // ------------------------------------------
 
-// List a List
+// List a list
 type List interface {
 	// AddItems() []interface{}
 }
@@ -619,7 +841,7 @@ type ListItem interface {
 }
 
 // NewList initializes a new `List` from the given content
-func NewList(elements []interface{}, attributes []interface{}) (List, error) {
+func NewList(elements []interface{}) (List, error) {
 	log.Debugf("initializing a new List with %d element(s)", len(elements))
 	buffer := make(map[reflect.Type][]ListItem)
 	rootType := reflect.TypeOf(toPtr(elements[0])) // elements types will be pointers
@@ -639,7 +861,7 @@ func NewList(elements []interface{}, attributes []interface{}) (List, error) {
 		if currentType != previousType && previousType != rootType {
 			log.Debugf(" detected a switch of type when processing item of type %T: currentType=%v != previousType=%v", item, currentType, previousType)
 			// change of type: make a list from the buffer[t], reset and keep iterating
-			sublist, err := newList(buffer[previousType], nil)
+			sublist, err := newList(buffer[previousType])
 			if err != nil {
 				return nil, errors.Wrapf(err, "failed to initialize a new sublist")
 			}
@@ -679,7 +901,7 @@ func NewList(elements []interface{}, attributes []interface{}) (List, error) {
 		// look-up parent in the layer
 		parentItem := parentItems[len(parentItems)-1]
 		// build a new list from the remaining items at the current level of the stack
-		sublist, err := newList(buffer[stack[i]], nil)
+		sublist, err := newList(buffer[stack[i]])
 		if err != nil {
 			return nil, errors.Wrapf(err, "failed to initialize a new sublist")
 		}
@@ -689,21 +911,21 @@ func NewList(elements []interface{}, attributes []interface{}) (List, error) {
 
 	// log.Debugf("end of list init: current type=%v / previous type=%v / buffer= %v", currentType, previousType, buffer)
 	// finally, the top-level list
-	return newList(buffer[rootType], attributes)
+	return newList(buffer[rootType])
 }
 
-func newList(items []ListItem, attributes []interface{}) (List, error) {
+func newList(items []ListItem) (List, error) {
 	// log.Debugf("initializing a new list with %d items", len(items))
 	if len(items) == 0 {
 		return nil, errors.Errorf("cannot build a list from an empty slice")
 	}
 	switch items[0].(type) {
 	case *OrderedListItem:
-		return NewOrderedList(items, attributes)
+		return NewOrderedList(items)
 	case *UnorderedListItem:
-		return NewUnorderedList(items, attributes)
+		return NewUnorderedList(items)
 	case *LabeledListItem:
-		return NewLabeledList(items, attributes)
+		return NewLabeledList(items)
 	default:
 		return nil, errors.Errorf("unsupported type of element as the root list: '%T'", items[0])
 	}
@@ -750,7 +972,7 @@ func init() {
 }
 
 // NewOrderedList initializes a new `OrderedList` from the given content
-func NewOrderedList(elements []ListItem, attributes []interface{}) (OrderedList, error) {
+func NewOrderedList(elements []ListItem) (OrderedList, error) {
 	log.Debugf("initializing a new OrderedList from %d element(s)...", len(elements))
 	result := make([]OrderedListItem, 0)
 	bufferedItemsPerLevel := make(map[int][]*OrderedListItem, 0) // buffered items for the current level
@@ -825,7 +1047,7 @@ func NewOrderedList(elements []ListItem, attributes []interface{}) (OrderedList,
 	}
 
 	return OrderedList{
-		Attributes: mergeAttributes(attributes),
+		Attributes: ElementAttributes{},
 		Items:      result,
 	}, nil
 }
@@ -848,13 +1070,18 @@ func toOrderedList(items []*OrderedListItem) OrderedList {
 	return result
 }
 
+// AddAttributes adds all given attributes to the current set of attribute of the element
+func (o OrderedList) AddAttributes(attributes ElementAttributes) {
+	o.Attributes.AddAll(attributes)
+}
+
 // OrderedListItem the structure for the ordered list items
 type OrderedListItem struct {
 	Level          int
 	Position       int
 	NumberingStyle NumberingStyle
-	Elements       []interface{}
 	Attributes     ElementAttributes
+	Elements       []interface{}
 }
 
 // making sure that the `ListItem` interface is implemented by `OrderedListItem`
@@ -871,6 +1098,11 @@ func NewOrderedListItem(prefix OrderedListItemPrefix, elements []interface{}, at
 		Elements:       elements,
 		Attributes:     mergeAttributes(attributes),
 	}, nil
+}
+
+// AddAttributes adds all given attributes to the current set of attribute of the element
+func (i *OrderedListItem) AddAttributes(attributes ElementAttributes) {
+	i.Attributes.AddAll(attributes)
 }
 
 // AddChild appends the given item to the content of this OrderedListItem
@@ -927,7 +1159,7 @@ type UnorderedList struct {
 }
 
 // NewUnorderedList initializes a new `UnorderedList` from the given content
-func NewUnorderedList(elements []ListItem, attributes []interface{}) (UnorderedList, error) {
+func NewUnorderedList(elements []ListItem) (UnorderedList, error) {
 	log.Debugf("initializing a new UnorderedList from %d element(s)...", len(elements))
 	result := make([]UnorderedListItem, 0)
 	bufferedItemsPerLevel := make(map[int][]*UnorderedListItem, 0) // buffered items for the current level
@@ -1016,15 +1248,21 @@ func NewUnorderedList(elements []ListItem, attributes []interface{}) (UnorderedL
 	}
 
 	return UnorderedList{
-		Attributes: mergeAttributes(attributes),
+		Attributes: ElementAttributes{},
 		Items:      result,
 	}, nil
+}
+
+// AddAttributes adds all given attributes to the current set of attribute of the element
+func (l UnorderedList) AddAttributes(attributes ElementAttributes) {
+	l.Attributes.AddAll(attributes)
 }
 
 // UnorderedListItem the structure for the unordered list items
 type UnorderedListItem struct {
 	Level       int
 	BulletStyle BulletStyle
+	Attributes  ElementAttributes
 	Elements    []interface{}
 }
 
@@ -1037,6 +1275,11 @@ func NewUnorderedListItem(prefix UnorderedListItemPrefix, elements []interface{}
 		BulletStyle: prefix.BulletStyle,
 		Elements:    elements,
 	}, nil
+}
+
+// AddAttributes adds all given attributes to the current set of attribute of the element
+func (i *UnorderedListItem) AddAttributes(attributes ElementAttributes) {
+	i.Attributes.AddAll(attributes)
 }
 
 // AddChild appends the given item to the content of this UnorderedListItem
@@ -1157,7 +1400,7 @@ type LabeledList struct {
 }
 
 // NewLabeledList initializes a new `LabeledList` from the given content
-func NewLabeledList(elements []ListItem, attributes []interface{}) (LabeledList, error) {
+func NewLabeledList(elements []ListItem) (LabeledList, error) {
 	log.Debugf("initializing a new LabeledList from %d elements", len(elements))
 	items := make([]LabeledListItem, 0)
 	for _, element := range elements {
@@ -1167,15 +1410,21 @@ func NewLabeledList(elements []ListItem, attributes []interface{}) (LabeledList,
 	}
 	log.Debugf("initialized a new LabeledList with %d root item(s)", len(items))
 	return LabeledList{
-		Attributes: mergeAttributes(attributes),
+		Attributes: ElementAttributes{},
 		Items:      items,
 	}, nil
 }
 
+// AddAttributes adds all given attributes to the current set of attribute of the element
+func (l LabeledList) AddAttributes(attributes ElementAttributes) {
+	l.Attributes.AddAll(attributes)
+}
+
 // LabeledListItem an item in a labeled
 type LabeledListItem struct {
-	Term     string
-	Elements []interface{}
+	Term       string
+	Attributes ElementAttributes
+	Elements   []interface{}
 }
 
 // NewLabeledListItem initializes a new LabeledListItem
@@ -1185,6 +1434,11 @@ func NewLabeledListItem(term string, elements []interface{}) (LabeledListItem, e
 		Term:     term,
 		Elements: elements,
 	}, nil
+}
+
+// AddAttributes adds all given attributes to the current set of attribute of the element
+func (i *LabeledListItem) AddAttributes(attributes ElementAttributes) {
+	i.Attributes.AddAll(attributes)
 }
 
 // AddChild appends the given item to the content of this LabeledListItem
@@ -1207,9 +1461,8 @@ type Paragraph struct {
 }
 
 // NewParagraph initializes a new `Paragraph`
-func NewParagraph(lines []interface{}, attributes []interface{}) (Paragraph, error) {
-	log.Debugf("initializing a new Paragraph with %d line(s)", len(lines))
-	attrbs := NewElementAttributes(attributes)
+func NewParagraph(lines []interface{}, attributes ...interface{}) (Paragraph, error) {
+	log.Debugf("initializing a new paragraph with %d line(s) and %d attribute(s)", len(lines), len(attributes))
 	elements := make([]InlineElements, 0)
 	for _, line := range lines {
 		if l, ok := line.(InlineElements); ok {
@@ -1224,19 +1477,25 @@ func NewParagraph(lines []interface{}, attributes []interface{}) (Paragraph, err
 	}
 	log.Debugf("generated a paragraph with %d line(s): %v", len(elements), elements)
 	return Paragraph{
-		Attributes: attrbs,
+		Attributes: NewElementAttributes(attributes),
 		Lines:      elements,
 	}, nil
 }
 
 // NewAdmonitionParagraph returns a new Paragraph with an extra admonition attribute
-func NewAdmonitionParagraph(lines []interface{}, admonitionKind AdmonitionKind, attributes []interface{}) (Paragraph, error) {
+func NewAdmonitionParagraph(lines []interface{}, admonitionKind AdmonitionKind, attributes ...interface{}) (Paragraph, error) {
+	log.Debugf("new admonition paragraph")
 	p, err := NewParagraph(lines, attributes)
 	if err != nil {
 		return p, err
 	}
 	p.Attributes[AttrAdmonitionKind] = admonitionKind
 	return p, nil
+}
+
+// AddAttributes adds all given attributes to the current set of attribute of the element
+func (p Paragraph) AddAttributes(attributes ElementAttributes) {
+	p.Attributes.AddAll(attributes)
 }
 
 // Accept implements Visitable#Accept(Visitor)
@@ -1355,8 +1614,9 @@ type BlockImage struct {
 }
 
 // NewBlockImage initializes a new `BlockImage`
-func NewBlockImage(path string, attributes []interface{}, inlineAttributes ElementAttributes) (BlockImage, error) {
-	allAttributes := mergeAttributes(attributes)
+func NewBlockImage(path string, inlineAttributes ElementAttributes) (BlockImage, error) {
+	// allAttributes := mergeAttributes(attributes)
+	allAttributes := ElementAttributes{}
 	for k, v := range inlineAttributes {
 		allAttributes[k] = v
 	}
@@ -1374,6 +1634,11 @@ func NewBlockImage(path string, attributes []interface{}, inlineAttributes Eleme
 		Path:       path,
 		Attributes: allAttributes,
 	}, nil
+}
+
+// AddAttributes adds all given attributes to the current set of attribute of the element
+func (i BlockImage) AddAttributes(attributes ElementAttributes) {
+	i.Attributes.AddAll(attributes)
 }
 
 // InlineImage the structure for the inline image macros
@@ -1398,6 +1663,11 @@ func NewInlineImage(path string, attributes ElementAttributes) (InlineImage, err
 		Path:       path,
 		Attributes: attributes,
 	}, nil
+}
+
+// AddAttributes adds all given attributes to the current set of attribute of the element
+func (i InlineImage) AddAttributes(attributes ElementAttributes) {
+	i.Attributes.AddAll(attributes)
 }
 
 // ImageMacro the structure for the block image macros
@@ -1528,7 +1798,7 @@ func Verbatim(content []interface{}) ([]interface{}, error) {
 }
 
 // NewDelimitedBlock initializes a new `DelimitedBlock` of the given kind with the given content
-func NewDelimitedBlock(kind BlockKind, content []interface{}, attributes []interface{}, substitution Substitution) (DelimitedBlock, error) {
+func NewDelimitedBlock(kind BlockKind, content []interface{}, substitution Substitution, attributes ...interface{}) (DelimitedBlock, error) {
 	log.Debugf("Initializing a new DelimitedBlock of kind '%v'", kind)
 	attrbs := NewElementAttributes(attributes)
 	if _, found := attrbs[AttrKind]; !found {
@@ -1544,6 +1814,11 @@ func NewDelimitedBlock(kind BlockKind, content []interface{}, attributes []inter
 	}, nil
 }
 
+// AddAttributes adds all given attributes to the current set of attribute of the element
+func (b DelimitedBlock) AddAttributes(attributes ElementAttributes) {
+	b.Attributes.AddAll(attributes)
+}
+
 // ------------------------------------------
 // Tables
 // ------------------------------------------
@@ -1556,9 +1831,9 @@ type Table struct {
 }
 
 // NewTable initializes a new table with the given lines and attributes
-func NewTable(header interface{}, lines []interface{}, attributes []interface{}) (Table, error) {
+func NewTable(header interface{}, lines []interface{}) (Table, error) {
 	t := Table{
-		Attributes: NewElementAttributes(attributes),
+		Attributes: ElementAttributes{},
 	}
 	columnsPerLine := -1 // unknown until first "line" is processed
 	if header, ok := header.(TableLine); ok {
@@ -1598,6 +1873,11 @@ func NewTable(header interface{}, lines []interface{}, attributes []interface{})
 	return t, nil
 }
 
+// AddAttributes adds all given attributes to the current set of attribute of the element
+func (t Table) AddAttributes(attributes ElementAttributes) {
+	t.Attributes.AddAll(attributes)
+}
+
 // TableLine a table line is made of columns, each column being a group of InlineElements (to support quoted text, etc.)
 type TableLine struct {
 	Cells []InlineElements
@@ -1631,7 +1911,7 @@ type LiteralBlock struct {
 
 // NewLiteralBlock initializes a new `DelimitedBlock` of the given kind with the given content,
 // along with the given sectionTitle spaces
-func NewLiteralBlock(content string, attributes []interface{}) (LiteralBlock, error) {
+func NewLiteralBlock(content string, attributes ...interface{}) (LiteralBlock, error) {
 	// remove "\n" or "\r\n", depending on the OS.
 	blockContent := apply(content,
 		func(s string) string {
@@ -1644,6 +1924,35 @@ func NewLiteralBlock(content string, attributes []interface{}) (LiteralBlock, er
 		Content:    blockContent,
 	}, nil
 }
+
+// AddAttributes adds all given attributes to the current set of attribute of the element
+func (b LiteralBlock) AddAttributes(attributes ElementAttributes) {
+	b.Attributes.AddAll(attributes)
+}
+
+// ------------------------------------------
+// BlankLine
+// ------------------------------------------
+
+// BlankLine the structure for the empty lines, which are used to separate logical blocks
+type BlankLine struct {
+}
+
+// NewBlankLine initializes a new `BlankLine`
+func NewBlankLine() (BlankLine, error) {
+	// log.Debug("initializing a new BlankLine")
+	return BlankLine{}, nil
+}
+
+// AddAttributes adds all given attributes to the current set of attribute of the element
+func (l BlankLine) AddAttributes(attributes ElementAttributes) {
+	// nothing to do
+	// TODO: raise a warning?
+}
+
+// ------------------------------------------------------------------------------------------------------------------------------
+// Inline elements
+// ------------------------------------------------------------------------------------------------------------------------------
 
 // ------------------------------------------
 // Comments
@@ -1660,167 +1969,6 @@ func NewSingleLineComment(content string) (SingleLineComment, error) {
 	return SingleLineComment{
 		Content: content,
 	}, nil
-}
-
-// ------------------------------------------
-// Elements attributes
-// ------------------------------------------
-
-const (
-	// AttrID the key to retrieve the ID in the element attributes
-	AttrID string = "id"
-	// AttrTitle the key to retrieve the title in the element attributes
-	AttrTitle string = "title"
-	// AttrRole the key to retrieve the role in the element attributes
-	AttrRole string = "role"
-	// AttrLink the key to retrieve the link in the element attributes
-	AttrLink string = "link"
-	// AttrAdmonitionKind the key to retrieve the kind of admonition in the element attributes, if a "masquerade" is used
-	AttrAdmonitionKind string = "admonitionKind"
-	// AttrQuoteAuthor attribute for the author of a verse
-	AttrQuoteAuthor string = "quoteAuthor"
-	// AttrQuoteTitle attribute for the title of a verse
-	AttrQuoteTitle string = "quoteTitle"
-)
-
-// ElementAttributes is a map[string]interface{} with some utility methods
-type ElementAttributes map[string]interface{}
-
-// GetAsString returns the value of the key as a string, or empty string if the key did not exist
-func (a ElementAttributes) GetAsString(key string) string {
-	if v, ok := a[key]; ok {
-		return fmt.Sprintf("%v", v)
-	}
-	return ""
-}
-
-// NewElementAttributes retrieves the ElementID, ElementTitle and ElementLink from the given slice of attributes
-func NewElementAttributes(attributes []interface{}, extras ...ElementAttributes) ElementAttributes {
-	attrbs := make(ElementAttributes)
-	for _, attrb := range attributes {
-		log.Debugf("processing attribute %[1]v (%[1]T)", attrb)
-		switch attrb := attrb.(type) {
-		case []interface{}:
-			// nested case, because of the grammar syntax,
-			// eg: `attributes:(ElementAttribute* LiteralAttribute ElementAttribute*)`
-			// which is used to ensure that a `LiteralAttribute` element is set amongst the attributes
-			r := NewElementAttributes(attrb)
-			for k, v := range r {
-				attrbs[k] = v
-			}
-		case ElementAttributes:
-			// TODO: warn if attribute already exists and is overridden
-			for k, v := range attrb {
-				attrbs[k] = v
-			}
-		case map[string]interface{}:
-			// TODO: warn if attribute already exists and is overridden
-			for k, v := range attrb {
-				attrbs[k] = v
-			}
-		case nil:
-			// ignore
-		default:
-			log.Warnf("Unexpected attributes of type: %T", attrb)
-		}
-	}
-	for _, extra := range extras {
-		for k, v := range extra {
-			// no warning on override here
-			attrbs[k] = v
-		}
-	}
-	return attrbs
-}
-
-// NewElementID initializes a new attribute map with a single entry for the ID using the given value
-func NewElementID(id string) (ElementAttributes, error) {
-	log.Debugf("initializing a new ElementID with ID=%s", id)
-	return ElementAttributes{AttrID: id}, nil
-}
-
-// NewElementTitle initializes a new attribute map with a single entry for the title using the given value
-func NewElementTitle(title string) (ElementAttributes, error) {
-	log.Debugf("initializing a new ElementTitle with content=%s", title)
-	return ElementAttributes{
-		AttrTitle: title,
-	}, nil
-}
-
-// NewElementRole initializes a new attribute map with a single entry for the title using the given value
-func NewElementRole(role string) (ElementAttributes, error) {
-	log.Debugf("initializing a new ElementRole with content=%s", role)
-	return ElementAttributes{
-		AttrRole: role,
-	}, nil
-}
-
-// NewAdmonitionAttribute initializes a new attribute map with a single entry for the admonition kind using the given value
-func NewAdmonitionAttribute(k AdmonitionKind) (ElementAttributes, error) {
-	return ElementAttributes{AttrAdmonitionKind: k}, nil
-}
-
-// NewAttributeGroup initializes a group of attributes from the given generic attributes.
-func NewAttributeGroup(attributes []interface{}) (ElementAttributes, error) {
-	// log.Debugf("initializing a new AttributeGroup with %v", attributes)
-	result := make(ElementAttributes)
-	for _, a := range attributes {
-		log.Debugf("processing attribute group element of type %T", a)
-		if a, ok := a.(ElementAttributes); ok {
-			for k, v := range a {
-				result[k] = v
-			}
-		} else {
-			return result, errors.Errorf("unable to process element of type '%[1]T': '%[1]s'", a)
-		}
-	}
-	// log.Debugf("initialized a new AttributeGroup: %v", result)
-	return result, nil
-}
-
-// NewGenericAttribute initializes a new ElementAttribute from the given key and optional value
-func NewGenericAttribute(key string, value interface{}) (ElementAttributes, error) {
-	result := make(map[string]interface{})
-	k := apply(key,
-		// remove surrounding quotes
-		func(s string) string {
-			return strings.Trim(s, "\"")
-		},
-		strings.TrimSpace)
-	if value, ok := value.(string); ok {
-		v := apply(value,
-			// remove surrounding quotes
-			func(s string) string {
-				return strings.Trim(s, "\"")
-			},
-			strings.TrimSpace)
-		result[k] = v
-	} else {
-		result[k] = nil
-	}
-	// log.Debugf("initialized a new ElementAttributes: %v", result)
-	return result, nil
-}
-
-// NewQuoteAttributes initializes a new map of attributes for a verse paragraph
-func NewQuoteAttributes(kind, author, title string) (map[string]interface{}, error) {
-	result := make(map[string]interface{}, 3)
-	switch kind {
-	case "verse":
-		result[AttrKind] = Verse
-	default:
-		result[AttrKind] = Quote
-	}
-	result[AttrQuoteAuthor] = strings.TrimSpace(author)
-	result[AttrQuoteTitle] = strings.TrimSpace(title)
-	log.Debugf("initialized new quote attributes: %v", result)
-	return result, nil
-}
-
-// NewLiteralAttribute initializes a new attribute map with a single entry for the literal kind of block
-func NewLiteralAttribute() (ElementAttributes, error) {
-	log.Debug("initializing a new Literal attribute")
-	return ElementAttributes{AttrKind: Literal}, nil
 }
 
 // ------------------------------------------
@@ -1946,62 +2094,48 @@ func NewPassthrough(kind PassthroughKind, elements []interface{}) (Passthrough, 
 }
 
 // ------------------------------------------
-// BlankLine
+// Inline Links
 // ------------------------------------------
 
-// BlankLine the structure for the empty lines, which are used to separate logical blocks
-type BlankLine struct {
-}
-
-// NewBlankLine initializes a new `BlankLine`
-func NewBlankLine() (BlankLine, error) {
-	// log.Debug("initializing a new BlankLine")
-	return BlankLine{}, nil
-}
-
-// ------------------------------------------
-// Links
-// ------------------------------------------
-
-// Link the structure for the external links
-type Link struct {
+// InlineLink the structure for the external links
+type InlineLink struct {
 	URL        string
 	Attributes ElementAttributes
 }
 
-// NewLink initializes a new `Link`
-func NewLink(url string, attributes ElementAttributes) (Link, error) {
+// NewInlineLink initializes a new inline `InlineLink`
+func NewInlineLink(url string, attributes ElementAttributes) (InlineLink, error) {
 	// init attributes with empty 'text' attribute
 	if attributes == nil {
 		attributes = map[string]interface{}{
-			AttrLinkText: "",
+			AttrInlineLinkText: "",
 		}
 	}
-	return Link{
+	return InlineLink{
 		URL:        url,
 		Attributes: attributes,
 	}, nil
 }
 
-// Text returns the `text` value for the Link,
-func (l Link) Text() string {
-	if text, ok := l.Attributes[AttrLinkText].(string); ok {
+// Text returns the `text` value for the InlineLink,
+func (l InlineLink) Text() string {
+	if text, ok := l.Attributes[AttrInlineLinkText].(string); ok {
 		return text
 	}
 	return ""
 }
 
-// AttrLinkText the link `text` attribute
-const AttrLinkText string = "text"
+// AttrInlineLinkText the link `text` attribute
+const AttrInlineLinkText string = "text"
 
-// NewLinkAttributes returns a map of image attributes, some of which have implict keys (`text`)
-func NewLinkAttributes(text interface{}, otherAttrs []interface{}) (ElementAttributes, error) {
+// NewInlineLinkAttributes returns a map of image attributes, some of which have implict keys (`text`)
+func NewInlineLinkAttributes(text interface{}, otherAttrs []interface{}) (ElementAttributes, error) {
 	result := ElementAttributes{}
 	var textStr string
 	if text, ok := text.(string); ok {
 		textStr = apply(text, strings.TrimSpace)
 	}
-	result[AttrLinkText] = textStr
+	result[AttrInlineLinkText] = textStr
 	for _, otherAttr := range otherAttrs {
 		if otherAttr, ok := otherAttr.(ElementAttributes); ok {
 			for k, v := range otherAttr {

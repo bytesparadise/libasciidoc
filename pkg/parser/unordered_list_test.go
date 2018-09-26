@@ -138,16 +138,16 @@ var _ = Describe("unordered lists", func() {
 			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 
-		It("unordered list based on article.adoc", func() {
+		It("unordered list based on article.adoc (with heading spaces)", func() {
 			actualContent := `.Unordered list title
-			* list item 1
-			** nested list item A
-			*** nested nested list item A.1
-			*** nested nested list item A.2
-			** nested list item B
-			*** nested nested list item B.1
-			*** nested nested list item B.2
-			* list item 2`
+	* list item 1
+	** nested list item A
+	*** nested nested list item A.1
+	*** nested nested list item A.2
+	** nested list item B
+	*** nested nested list item B.1
+	*** nested nested list item B.2
+	* list item 2`
 			expectedResult := types.UnorderedList{
 				Attributes: types.ElementAttributes{
 					types.AttrTitle: "Unordered list title",

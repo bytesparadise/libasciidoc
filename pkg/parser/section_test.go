@@ -538,7 +538,7 @@ a paragraph`
 			actualContent := `[[custom_header]]
 = a header
 
-== Section F [[foo]]
+== Section F [[ignored]] [[foo]]
 
 [[bar]]
 == Section B

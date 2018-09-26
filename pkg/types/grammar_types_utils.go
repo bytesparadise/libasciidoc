@@ -158,7 +158,7 @@ func apply(source string, options ...applyOption) string {
 	for _, f := range options {
 		result = f(result)
 	}
-	log.Debugf("applied '%s' -> '%s' (%v characters)", source, result, len(result))
+	// log.Debugf("applied '%s' -> '%s' (%v characters)", source, result, len(result))
 	return result
 }
 

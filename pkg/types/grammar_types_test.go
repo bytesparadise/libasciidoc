@@ -44,7 +44,7 @@ var _ = Describe("lists", func() {
 				},
 			}
 			// when
-			actual, err := types.NewList(elements, nil)
+			actual, err := types.NewList(elements)
 			// then
 			require.NoError(GinkgoT(), err)
 			expectation := types.UnorderedList{
@@ -119,7 +119,7 @@ var _ = Describe("lists", func() {
 				},
 			}
 			// when
-			actual, err := types.NewList(elements, nil)
+			actual, err := types.NewList(elements)
 			// then
 			require.NoError(GinkgoT(), err)
 			expectation := types.LabeledList{
@@ -212,7 +212,7 @@ var _ = Describe("lists", func() {
 				},
 			}
 			// when
-			actual, err := types.NewList(elements, nil)
+			actual, err := types.NewList(elements)
 			// then
 			require.NoError(GinkgoT(), err)
 			expectation := types.LabeledList{

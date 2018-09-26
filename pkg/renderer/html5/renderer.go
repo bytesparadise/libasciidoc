@@ -117,7 +117,7 @@ func renderElement(ctx *renderer.Context, element interface{}) ([]byte, error) {
 		return renderLine(ctx, e, renderElement)
 	case []interface{}:
 		return renderElements(ctx, e, renderElement)
-	case types.Link:
+	case types.InlineLink:
 		return renderLink(ctx, e)
 	case types.StringElement:
 		return renderStringElement(ctx, e)
@@ -155,7 +155,7 @@ func renderPlainString(ctx *renderer.Context, element interface{}) ([]byte, erro
 		return renderPlainString(ctx, element.Elements)
 	case types.InlineImage:
 		return []byte(element.Attributes.GetAsString(types.AttrImageAlt)), nil
-	case types.Link:
+	case types.InlineLink:
 		return []byte(element.Text()), nil
 	case types.BlankLine:
 		return []byte("\n\n"), nil

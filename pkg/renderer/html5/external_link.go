@@ -17,7 +17,7 @@ func init() {
 	linkTmpl = newTextTemplate("external link", `<a href="{{ .URL }}"{{if .Class}} class="{{ .Class }}"{{ end }}>{{ .Text }}</a>`)
 }
 
-func renderLink(ctx *renderer.Context, l types.Link) ([]byte, error) {
+func renderLink(ctx *renderer.Context, l types.InlineLink) ([]byte, error) {
 	result := bytes.NewBuffer(nil)
 	// text := l.Text
 	text := l.Text()
