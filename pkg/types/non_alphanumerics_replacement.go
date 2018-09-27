@@ -11,10 +11,6 @@ import (
 //NormalizationFunc a function that is used to normalize a string.
 type NormalizationFunc func(string) ([]byte, error)
 
-func isMn(r rune) bool {
-	return unicode.Is(unicode.Mn, r) // Mn: nonspacing marks
-}
-
 // newReplaceNonAlphanumericsFunc replaces all non alphanumerical characters and remove (accents)
 // in the given 'source' with the given 'replacement'.
 func newReplaceNonAlphanumericsFunc(replacement string) NormalizationFunc {

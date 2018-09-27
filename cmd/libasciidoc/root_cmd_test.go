@@ -88,7 +88,8 @@ var _ = Describe("root cmd", func() {
 		if _, err := tmpfile.Write([]byte(content)); err != nil {
 			log.Fatal(err)
 		}
-		tmpfile.Seek(0, 0)
+		_, err = tmpfile.Seek(0, 0)
+		require.NoError(GinkgoT(), err)
 		oldstdin := os.Stdin
 		os.Stdin = tmpfile
 		defer func() { os.Stdin = oldstdin }()

@@ -183,7 +183,7 @@ func verifyDocumentBody(t GinkgoTInterface, expectedRenderedTitle *string, expec
 	require.Nil(t, err, "Error found while parsing the document")
 	require.NotNil(t, metadata)
 	t.Log("Done processing document")
-	result := string(resultWriter.Bytes())
+	result := resultWriter.String()
 	t.Logf("** Actual output:\n`%s`\n", result)
 	t.Logf("** expectedContent output:\n`%s`\n", expectedContent)
 	assert.Equal(t, expectedContent, result)

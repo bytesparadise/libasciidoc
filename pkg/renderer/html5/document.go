@@ -92,7 +92,10 @@ func renderDocument(ctx *renderer.Context, output io.Writer) (map[string]interfa
 		if err != nil {
 			return nil, errors.Wrapf(err, "unable to render full document")
 		}
-		output.Write(renderedElements)
+		_, err = output.Write(renderedElements)
+		if err != nil {
+			return nil, errors.Wrapf(err, "unable to render full document")
+		}
 	}
 
 	// copy all document attributes, and override the title with its rendered value instead of the `types.Section` struct

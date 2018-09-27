@@ -39,7 +39,3 @@ func verify(t GinkgoTInterface, expectedResult, content string, rendererOpts ...
 	diffs := dmp.DiffMain(result, expectedResult, true)
 	assert.Equal(t, expectedResult, result, dmp.DiffPrettyText(diffs))
 }
-
-func singleLine(content string) string {
-	return strings.Replace(content, "\n", "", -1)
-}
