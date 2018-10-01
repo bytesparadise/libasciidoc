@@ -25,7 +25,6 @@ func init() {
 </div>{{ end }}`,
 		texttemplate.FuncMap{
 			"renderElements": renderElementsAsString,
-			"includeNewline": includeNewline,
 			"style":          numberingType,
 		})
 

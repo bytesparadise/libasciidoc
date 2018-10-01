@@ -1911,22 +1911,37 @@ func NewTableLine(columns []interface{}) (TableLine, error) {
 // LiteralBlock the structure for the literal blocks
 type LiteralBlock struct {
 	Attributes ElementAttributes
-	Content    string
+	Lines      []string
 }
+
+const (
+	// AttrLiteralBlockType the type of literal block, ie, how it was parsed
+	AttrLiteralBlockType = "literalBlockType"
+	// LiteralBlockWithDelimiter a literal block parsed with a delimiter
+	LiteralBlockWithDelimiter = "literalBlockWithDelimiter"
+	// LiteralBlockWithSpacesOnFirstLine a literal block parsed with one or more spaces on the first line
+	LiteralBlockWithSpacesOnFirstLine = "literalBlockWithSpacesOnFirstLine"
+	// LiteralBlockWithAttribute a literal block parsed with a `[literal]` attribute`
+	LiteralBlockWithAttribute = "literalBlockWithAttribute"
+)
 
 // NewLiteralBlock initializes a new `DelimitedBlock` of the given kind with the given content,
 // along with the given sectionTitle spaces
-func NewLiteralBlock(content string, attributes ...interface{}) (LiteralBlock, error) {
-	// remove "\n" or "\r\n", depending on the OS.
-	blockContent := apply(content,
-		func(s string) string {
-			return strings.TrimRight(s, "\n\r")
-		},
-	)
-	log.Debugf("initialized a new LiteralBlock with content=`%s`", blockContent)
+func NewLiteralBlock(origin string, lines []interface{}, attributes ...interface{}) (LiteralBlock, error) {
+	l, err := toString(lines)
+	if err != nil {
+		return LiteralBlock{}, errors.Wrapf(err, "unable to initialize a new LiteralBlock")
+	}
+	log.Debugf("initialized a new LiteralBlock with %d lines", len(lines))
 	return LiteralBlock{
-		Attributes: NewElementAttributes(attributes, ElementAttributes{AttrKind: Literal}),
-		Content:    blockContent,
+		Attributes: NewElementAttributes(
+			attributes,
+			ElementAttributes{
+				AttrKind:             Literal,
+				AttrLiteralBlockType: origin,
+			},
+		),
+		Lines: l,
 	}, nil
 }
 

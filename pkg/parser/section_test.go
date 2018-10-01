@@ -636,9 +636,12 @@ a paragraph`
 				Elements: []interface{}{
 					types.LiteralBlock{
 						Attributes: types.ElementAttributes{
-							types.AttrKind: types.Literal,
+							types.AttrKind:             types.Literal,
+							types.AttrLiteralBlockType: types.LiteralBlockWithSpacesOnFirstLine,
 						},
-						Content: " = a header with a prefix space",
+						Lines: []string{
+							" = a header with a prefix space",
+						},
 					},
 				},
 			}
@@ -666,9 +669,12 @@ a paragraph`
 				Elements: []interface{}{
 					types.LiteralBlock{
 						Attributes: types.ElementAttributes{
-							types.AttrKind: types.Literal,
+							types.AttrKind:             types.Literal,
+							types.AttrLiteralBlockType: types.LiteralBlockWithSpacesOnFirstLine,
 						},
-						Content: " == section with prefix space",
+						Lines: []string{
+							" == section with prefix space",
+						},
 					},
 				},
 			}

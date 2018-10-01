@@ -20,11 +20,41 @@ var _ = Describe("literal blocks", func() {
 
 		It("literal block from paragraph with single space on first line", func() {
 			actualContent := ` some literal content
-on 2 lines.`
+on 3
+lines.`
+			expectedResult := `<div class="literalblock">
+<div class="content">
+<pre> some literal content
+on 3
+lines.</pre>
+</div>
+</div>`
+			verify(GinkgoT(), expectedResult, actualContent)
+		})
+
+		It("literal block from paragraph with double spaces on each line", func() {
+			actualContent := `  some literal content
+  on 3
+  lines.`
 			expectedResult := `<div class="literalblock">
 <div class="content">
 <pre>some literal content
-on 2 lines.</pre>
+on 3
+lines.</pre>
+</div>
+</div>`
+			verify(GinkgoT(), expectedResult, actualContent)
+		})
+
+		It("literal block from paragraph with single spaces on each line", func() {
+			actualContent := ` literal content
+   on many lines  
+     has some heading spaces preserved.`
+			expectedResult := `<div class="literalblock">
+<div class="content">
+<pre>literal content
+  on many lines  
+    has some heading spaces preserved.</pre>
 </div>
 </div>`
 			verify(GinkgoT(), expectedResult, actualContent)
@@ -55,13 +85,13 @@ a normal paragraph.`
 			actualContent := `[#ID]
 .title
 ....
-some literal content
+ some literal content with space preserved
 ....
 a normal paragraph.`
 			expectedResult := `<div id="ID" class="literalblock">
 <div class="title">title</div>
 <div class="content">
-<pre>some literal content</pre>
+<pre> some literal content with space preserved</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -76,12 +106,16 @@ a normal paragraph.`
 
 		It("literal block from 1-line paragraph with attribute", func() {
 			actualContent := `[literal]   
-some literal content
+ literal content
+ on many lines 
+ has some heading spaces preserved.
 
 a normal paragraph.`
 			expectedResult := `<div class="literalblock">
 <div class="content">
-<pre>some literal content</pre>
+<pre> literal content
+ on many lines 
+ has some heading spaces preserved.</pre>
 </div>
 </div>
 <div class="paragraph">

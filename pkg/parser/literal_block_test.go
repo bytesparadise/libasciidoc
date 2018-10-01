@@ -14,21 +14,30 @@ var _ = Describe("literal blocks", func() {
 			actualContent := ` some literal content`
 			expectedResult := types.LiteralBlock{
 				Attributes: types.ElementAttributes{
-					types.AttrKind: types.Literal,
+					types.AttrKind:             types.Literal,
+					types.AttrLiteralBlockType: types.LiteralBlockWithSpacesOnFirstLine,
 				},
-				Content: " some literal content",
+				Lines: []string{
+					" some literal content",
+				},
 			}
 			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 
 		It("literal block from paragraph with single space on first line", func() {
 			actualContent := ` some literal content
-on 2 lines.`
+on 3
+lines.`
 			expectedResult := types.LiteralBlock{
 				Attributes: types.ElementAttributes{
-					types.AttrKind: types.Literal,
+					types.AttrKind:             types.Literal,
+					types.AttrLiteralBlockType: types.LiteralBlockWithSpacesOnFirstLine,
 				},
-				Content: " some literal content\non 2 lines.",
+				Lines: []string{
+					" some literal content",
+					"on 3",
+					"lines.",
+				},
 			}
 			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
@@ -47,11 +56,14 @@ a normal paragraph.`
 				Elements: []interface{}{
 					types.LiteralBlock{
 						Attributes: types.ElementAttributes{
-							types.AttrKind:  types.Literal,
-							types.AttrID:    "ID",
-							types.AttrTitle: "title",
+							types.AttrKind:             types.Literal,
+							types.AttrLiteralBlockType: types.LiteralBlockWithSpacesOnFirstLine,
+							types.AttrID:               "ID",
+							types.AttrTitle:            "title",
 						},
-						Content: "  some literal content",
+						Lines: []string{
+							"  some literal content",
+						},
 					},
 					types.BlankLine{},
 					types.Paragraph{
@@ -85,11 +97,14 @@ a normal paragraph.`
 				Elements: []interface{}{
 					types.LiteralBlock{
 						Attributes: types.ElementAttributes{
-							types.AttrKind:  types.Literal,
-							types.AttrID:    "ID",
-							types.AttrTitle: "title",
+							types.AttrKind:             types.Literal,
+							types.AttrLiteralBlockType: types.LiteralBlockWithDelimiter,
+							types.AttrID:               "ID",
+							types.AttrTitle:            "title",
 						},
-						Content: "some literal content",
+						Lines: []string{
+							"some literal content",
+						},
 					},
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
@@ -121,9 +136,12 @@ a normal paragraph.`
 				Elements: []interface{}{
 					types.LiteralBlock{
 						Attributes: types.ElementAttributes{
-							types.AttrKind: types.Literal,
+							types.AttrKind:             types.Literal,
+							types.AttrLiteralBlockType: types.LiteralBlockWithAttribute,
 						},
-						Content: "some literal content",
+						Lines: []string{
+							"some literal content",
+						},
 					},
 					types.BlankLine{},
 					types.Paragraph{
@@ -155,11 +173,15 @@ a normal paragraph.`
 				Elements: []interface{}{
 					types.LiteralBlock{
 						Attributes: types.ElementAttributes{
-							types.AttrKind:  types.Literal,
-							types.AttrID:    "ID",
-							types.AttrTitle: "title",
+							types.AttrKind:             types.Literal,
+							types.AttrID:               "ID",
+							types.AttrTitle:            "title",
+							types.AttrLiteralBlockType: types.LiteralBlockWithAttribute,
 						},
-						Content: "some literal content\non two lines.",
+						Lines: []string{
+							"some literal content",
+							"on two lines.",
+						},
 					},
 					types.BlankLine{},
 					types.Paragraph{

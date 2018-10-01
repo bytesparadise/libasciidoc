@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"reflect"
 
+	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -172,4 +173,16 @@ func toPtr(element interface{}) interface{} {
 	temp.Set(value)
 	// log.Debugf("Returning pointer of type %T", ptr.Interface())
 	return ptr.Interface()
+}
+
+func toString(lines []interface{}) ([]string, error) {
+	result := make([]string, len(lines))
+	for i, line := range lines {
+		l, ok := line.(string)
+		if !ok {
+			return []string{}, errors.Errorf("expected a string, but got a %T", line)
+		}
+		result[i] = l
+	}
+	return result, nil
 }
