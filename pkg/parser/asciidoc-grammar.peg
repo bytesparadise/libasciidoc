@@ -939,32 +939,48 @@ SingleLineCommentContent <- (!EOL .)* {
 // -------------------------------------------------------------------------------------
 // Literal Blocks (see http://asciidoctor.org/docs/user-manual/#literal-text-and-blocks)
 // -------------------------------------------------------------------------------------
-LiteralBlock <- ParagraphWithSpaces / ParagraphWithLiteralBlockDelimiter / ParagraphWithLiteralAttribute
-
-// paragraph indented with one or more spaces on the first line
-ParagraphWithSpaces <- content:(ParagraphWithSpacesContent) EOL {
-    return types.NewLiteralBlock(content.(string))
-}
-
-// no NEWLINE allowed between the first spaces and the content of the block
-ParagraphWithSpacesContent <- WS+ !NEWLINE (!(NEWLINE BlankLine) .)+ { 
-    return string(c.text), nil
-}
-
-// paragraph with the literal block delimiter (`....`)
-ParagraphWithLiteralBlockDelimiter <- LiteralBlockDelimiter WS* NEWLINE content:(ParagraphWithLiteralBlockContent) ((LiteralBlockDelimiter WS* EOL) / EOF) {
-    return types.NewLiteralBlock(content.(string))
-}
-
-ParagraphWithLiteralBlockContent <- (!LiteralBlockDelimiter .)* {
-    return string(c.text), nil
-}
+LiteralBlock <- ParagraphWithHeadingSpaces / ParagraphWithLiteralBlockDelimiter / ParagraphWithLiteralAttribute
 
 LiteralBlockDelimiter <- "...."
 
+// paragraph indented with one or more spaces on the first line
+ParagraphWithHeadingSpaces <- lines:(ParagraphWithHeadingSpacesLines) {
+    return types.NewLiteralBlock(types.LiteralBlockWithSpacesOnFirstLine, lines.([]interface{}))
+}
+
+// first line MUST start with one (or more) space. Stop when reaching a blank line
+ParagraphWithHeadingSpacesLines <- 
+    firstLine:(WS (!EOL .)+ {
+        return string(c.text), nil
+    }) EOL // do not include the trailing 'EOL' on the first line
+    otherLines:(
+        otherLine:(!BlankLine (!EOL .)+ {
+            return string(c.text), nil
+        }) EOL {
+            return otherLine, nil // do not include the trailing 'EOL'
+        })*
+    { 
+        return append([]interface{}{firstLine}, otherLines.([]interface{})...), nil
+    }
+
+// paragraph with the literal block delimiter (`....`)
+ParagraphWithLiteralBlockDelimiter <- LiteralBlockDelimiter WS* NEWLINE lines:(ParagraphWithLiteralBlockDelimiterLines) ((LiteralBlockDelimiter WS* EOL) / EOF) {
+    return types.NewLiteralBlock(types.LiteralBlockWithDelimiter, lines.([]interface{}))
+}
+
+// include all lines until delimiter is reached
+ParagraphWithLiteralBlockDelimiterLines <- lines:(
+    line:(!LiteralBlockDelimiter !(NEWLINE BlankLine) (!EOL .)+ {
+        return string(c.text), nil
+    }) EOL { 
+        return line, nil // do not include the trailing 'EOL'
+    })+ {
+        return lines.([]interface{}), nil
+    }
+
 // paragraph with the literal attribute (`[literal]`)
-ParagraphWithLiteralAttribute <- attributes:(LiteralAttribute ElementAttribute*) content:(ParagraphWithLiteralAttributeContent) EOL {
-    return types.NewLiteralBlock(content.(string), attributes.([]interface{}))
+ParagraphWithLiteralAttribute <- attributes:(LiteralAttribute ElementAttribute*) lines:(ParagraphWithLiteralAttributeLines) {
+    return types.NewLiteralBlock(types.LiteralBlockWithAttribute, lines.([]interface{}), attributes.([]interface{}))
 }
 
 LiteralKind <- "literal" {
@@ -975,10 +991,15 @@ LiteralAttribute <- "[literal]" WS* NEWLINE {
     return types.NewLiteralAttribute()
 }
 
-// no NEWLINE allowed between the first spaces and the content of the block
-ParagraphWithLiteralAttributeContent <- (!(NEWLINE BlankLine) .)+ { 
-    return string(c.text), nil
-}
+// include all lines until blankline
+ParagraphWithLiteralAttributeLines <- lines:(
+    line:(!(BlankLine) (!EOL .)+ {
+        return string(c.text), nil
+    }) EOL {
+        return line, nil // do not include the trailing 'EOL'
+    })+ { 
+        return lines.([]interface{}), nil
+    }
 
 // ------------------------------------------
 // BlankLine
