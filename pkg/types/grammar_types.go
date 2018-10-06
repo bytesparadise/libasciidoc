@@ -459,6 +459,12 @@ type DocumentElement interface {
 // ElementAttributes is a map[string]interface{} with some utility methods
 type ElementAttributes map[string]interface{}
 
+// Has returns the true if an entry with the given key exists
+func (a ElementAttributes) Has(key string) bool {
+	_, ok := a[key]
+	return ok
+}
+
 // GetAsString returns the value of the key as a string, or empty string if the key did not exist
 func (a ElementAttributes) GetAsString(key string) string {
 	if v, ok := a[key]; ok {
@@ -551,9 +557,10 @@ func NewAttributeGroup(attributes []interface{}) (ElementAttributes, error) {
 	// log.Debugf("initializing a new AttributeGroup with %v", attributes)
 	result := make(ElementAttributes)
 	for _, a := range attributes {
-		log.Debugf("processing attribute group element of type %T", a)
+		log.Debugf("processing attribute element of type %T", a)
 		if a, ok := a.(ElementAttributes); ok {
 			for k, v := range a {
+				log.Debugf("adding attribute %v='%v'", k, v)
 				result[k] = v
 			}
 		} else {
@@ -1465,6 +1472,12 @@ type Paragraph struct {
 	Lines      []InlineElements
 }
 
+// AttrHardBreaks the attribute to set on a paragraph to render with hard breaks on each line
+const AttrHardBreaks = "%hardbreaks"
+
+// DocumentAttrHardBreaks the attribute to set at the document level to render with hard breaks on each line of all paragraphs
+const DocumentAttrHardBreaks = "hardbreaks"
+
 // NewParagraph initializes a new `Paragraph`
 func NewParagraph(lines []interface{}, attributes ...interface{}) (Paragraph, error) {
 	log.Debugf("initializing a new paragraph with %d line(s) and %d attribute(s)", len(lines), len(attributes))
@@ -2012,6 +2025,18 @@ func (s StringElement) Accept(v Visitor) error {
 		return errors.Wrapf(err, "error while visiting string element")
 	}
 	return nil
+}
+
+// ------------------------------------------
+// Explicit line breaks
+// ------------------------------------------
+
+// LineBreak an explicit line break in a paragraph
+type LineBreak struct{}
+
+// NewLineBreak returns a new line break, that's all.
+func NewLineBreak() (LineBreak, error) {
+	return LineBreak{}, nil
 }
 
 // ------------------------------------------

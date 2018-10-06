@@ -20,12 +20,12 @@ func init() {
 <dl>
 {{ $items := .Items }}{{ range $itemIndex, $item := $items }}<dt class="hdlist1">{{ $item.Term }}</dt>{{ if $item.Elements }}
 <dd>
-{{ renderElements $ctx $item.Elements }}
+{{ renderElements $ctx $item.Elements | printf "%s" }}
 </dd>{{ end }}
 {{ end }}</dl>
 </div>{{ end }}`,
 		texttemplate.FuncMap{
-			"renderElements": renderElementsAsString,
+			"renderElements": renderElements,
 		})
 
 	horizontalLabeledListTmpl = newTextTemplate("labeled list with horizontal layout",
@@ -37,7 +37,7 @@ func init() {
 {{ $item.Term }}
 {{ if $item.Elements }}</td>
 <td class="hdlist2">
-{{ renderElements $ctx $item.Elements }}
+{{ renderElements $ctx $item.Elements | printf "%s" }}
 {{ if includeNewline $ctx $itemIndex $items }}</td>
 </tr>
 <tr>
@@ -46,7 +46,7 @@ func init() {
 </table>
 </div>{{ end }}`,
 		texttemplate.FuncMap{
-			"renderElements": renderElementsAsString,
+			"renderElements": renderElements,
 			"includeNewline": includeNewline,
 		})
 

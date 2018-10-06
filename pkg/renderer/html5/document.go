@@ -115,7 +115,7 @@ func renderDocument(ctx *renderer.Context, output io.Writer) (map[string]interfa
 func renderDocumentElements(ctx *renderer.Context, document types.Document) ([]byte, error) {
 	log.Debugf("rendered document with %d element(s)...", len(document.Elements))
 	buff := bytes.NewBuffer(nil)
-	renderedElements, err := renderElements(ctx, document.Elements, renderElement)
+	renderedElements, err := renderElements(ctx, document.Elements)
 	if err != nil {
 		return []byte{}, errors.Wrapf(err, "failed to render document elements")
 	}

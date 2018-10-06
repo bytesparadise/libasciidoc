@@ -18,14 +18,14 @@ func Render(ctx *renderer.Context, output io.Writer) (map[string]interface{}, er
 
 type rendererFunc func(*renderer.Context, interface{}) ([]byte, error)
 
-func renderElements(ctx *renderer.Context, elements []interface{}, renderElementFunc rendererFunc) ([]byte, error) {
+func renderElements(ctx *renderer.Context, elements []interface{}) ([]byte, error) {
 	log.Debugf("rendered %d element(s)...", len(elements))
 	buff := bytes.NewBuffer(nil)
 	hasContent := false
 	for _, element := range elements {
-		renderedElement, err := renderElementFunc(ctx, element)
+		renderedElement, err := renderElement(ctx, element)
 		if err != nil {
-			return nil, errors.Wrapf(err, "unable to render paragraph element")
+			return nil, errors.Wrapf(err, "unable to render an element")
 		}
 		// insert new line if there's already some content
 		if hasContent && len(renderedElement) > 0 {
@@ -38,44 +38,6 @@ func renderElements(ctx *renderer.Context, elements []interface{}, renderElement
 	}
 	// log.Debugf("rendered elements: '%s'", buff.String())
 	return buff.Bytes(), nil
-}
-
-func renderElementsAsString(ctx *renderer.Context, elements []interface{}) (string, error) {
-	result, err := renderElements(ctx, elements, renderElement)
-	if err != nil {
-		return "", err
-	}
-	return string(result), nil
-}
-
-func renderInlineElements(ctx *renderer.Context, elements []types.InlineElements, renderElementFunc rendererFunc) ([]byte, error) {
-	log.Debugf("rendered %d element(s)...", len(elements))
-	buff := bytes.NewBuffer(nil)
-	hasContent := false
-	for _, element := range elements {
-		renderedElement, err := renderElementFunc(ctx, element)
-		if err != nil {
-			return nil, errors.Wrapf(err, "unable to render paragraph element")
-		}
-		// insert new line if there's already some content
-		if hasContent && len(renderedElement) > 0 {
-			buff.WriteString("\n")
-		}
-		buff.Write(renderedElement)
-		if len(renderedElement) > 0 {
-			hasContent = true
-		}
-	}
-	// log.Debugf("rendered elements: '%s'", buff.String())
-	return buff.Bytes(), nil
-}
-
-func renderInlineElementsAsString(ctx *renderer.Context, elements []types.InlineElements) (string, error) {
-	result, err := renderInlineElements(ctx, elements, renderElement)
-	if err != nil {
-		return "", err
-	}
-	return string(result), nil
 }
 
 func renderElement(ctx *renderer.Context, element interface{}) ([]byte, error) {
@@ -116,7 +78,7 @@ func renderElement(ctx *renderer.Context, element interface{}) ([]byte, error) {
 	case types.InlineElements:
 		return renderLine(ctx, e, renderElement)
 	case []interface{}:
-		return renderElements(ctx, e, renderElement)
+		return renderElements(ctx, e)
 	case types.InlineLink:
 		return renderLink(ctx, e)
 	case types.StringElement:
@@ -129,21 +91,13 @@ func renderElement(ctx *renderer.Context, element interface{}) ([]byte, error) {
 	case types.DocumentAttributeReset:
 		// 'process' function do not return any rendered content, but may return an error
 		return nil, processAttributeReset(ctx, e)
-	// case types.DocumentAttributeSubstitution:
-	// 	return renderAttributeSubstitution(ctx, e)
+	case types.LineBreak:
+		return renderLineBreak()
 	case types.SingleLineComment:
 		return nil, nil // nothing to do
 	default:
 		return nil, errors.Errorf("unsupported type of element: %T", element)
 	}
-}
-
-func renderElementAsString(ctx *renderer.Context, element interface{}) (string, error) {
-	result, err := renderElement(ctx, element)
-	if err != nil {
-		return "", err
-	}
-	return string(result), nil
 }
 
 func renderPlainString(ctx *renderer.Context, element interface{}) ([]byte, error) {
@@ -162,33 +116,12 @@ func renderPlainString(ctx *renderer.Context, element interface{}) ([]byte, erro
 	case types.StringElement:
 		return []byte(element.Content), nil
 	case types.Paragraph:
-		return renderPlainString(ctx, element.Lines)
-	case []types.InlineElements:
-		return renderLines(ctx, element)
+		return renderLines(ctx, element.Lines, renderPlainString, false)
 	case types.InlineElements:
 		return renderLine(ctx, element, renderPlainString)
 	default:
 		return nil, errors.Errorf("unable to render plain string for element of type '%T'", element)
 	}
-}
-
-func discardTrailingBlankLines(elements []interface{}) []interface{} {
-	// discard blank lines at the end
-	filteredElements := make([]interface{}, len(elements))
-	copy(filteredElements, elements)
-	for {
-		if len(filteredElements) == 0 {
-			break
-		}
-		if _, ok := filteredElements[len(filteredElements)-1].(types.BlankLine); ok {
-			log.Debugf("element of type %T at position %d is a blank line, discarding it", len(filteredElements)-1, filteredElements[len(filteredElements)-1])
-			// remove last element of the slice since it's a blankline
-			filteredElements = filteredElements[:len(filteredElements)-1]
-		} else {
-			break
-		}
-	}
-	return filteredElements
 }
 
 // includeNewline returns an "\n" sequence if the given index is NOT the last entry in the given description lines, empty string otherwise.
@@ -208,16 +141,6 @@ func includeNewline(ctx renderer.Context, index int, content interface{}) string
 		}
 	default:
 		log.Warnf("content of type '%T' is not an array or a slice", content)
-	}
-	return ""
-}
-
-// returns the attribute value for the given if it exists and is a string, empty string otherwise
-func attributeAsString(attrs map[string]interface{}, key string) string {
-	if attr, ok := attrs[key]; ok {
-		if attr, ok := attr.(string); ok {
-			return attr
-		}
 	}
 	return ""
 }

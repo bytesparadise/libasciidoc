@@ -22,17 +22,17 @@ func init() {
 </colgroup>
 {{ if .Header.Cells }}<thead>
 <tr>
-{{ $headerCells := .Header.Cells }}{{ range $index, $cell := $headerCells }}<th class="tableblock halign-left valign-top">{{ renderElement $ctx $cell }}</th>{{ includeNewline $ctx $index $headerCells }}{{ end }}
+{{ $headerCells := .Header.Cells }}{{ range $index, $cell := $headerCells }}<th class="tableblock halign-left valign-top">{{ renderElement $ctx $cell | printf "%s" }}</th>{{ includeNewline $ctx $index $headerCells }}{{ end }}
 </tr>
 </thead>
 {{ end }}<tbody>
 {{ range $indexLine, $line := .Lines }}<tr>
-{{ range $indexCells, $cell := $line.Cells }}<td class="tableblock halign-left valign-top"><p class="tableblock">{{ renderElement $ctx $cell }}</p></td>{{ includeNewline $ctx $indexCells $line.Cells }}{{ end }}
+{{ range $indexCells, $cell := $line.Cells }}<td class="tableblock halign-left valign-top"><p class="tableblock">{{ renderElement $ctx $cell | printf "%s" }}</p></td>{{ includeNewline $ctx $indexCells $line.Cells }}{{ end }}
 </tr>
 {{ end }}</tbody>{{ end }}
 </table>{{ end }}`,
 		texttemplate.FuncMap{
-			"renderElement":  renderElementAsString,
+			"renderElement":  renderElement,
 			"includeNewline": includeNewline,
 		})
 }

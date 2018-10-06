@@ -527,6 +527,7 @@ v1.0:`
 				actualContent := `:toc:
 :date:  2017-01-01
 :author: Xavier
+:hardbreaks:
 a paragraph`
 				expectedResult := types.Document{
 					Attributes:         map[string]interface{}{},
@@ -537,6 +538,7 @@ a paragraph`
 						types.DocumentAttributeDeclaration{Name: "toc"},
 						types.DocumentAttributeDeclaration{Name: "date", Value: "2017-01-01"},
 						types.DocumentAttributeDeclaration{Name: "author", Value: "Xavier"},
+						types.DocumentAttributeDeclaration{Name: types.DocumentAttrHardBreaks},
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
 							Lines: []types.InlineElements{
@@ -585,6 +587,8 @@ a paragraph`
 
 :author: Xavier
 
+:hardbreaks:
+
 a paragraph`
 				expectedResult := types.Document{
 					Attributes:         map[string]interface{}{},
@@ -596,6 +600,8 @@ a paragraph`
 						types.DocumentAttributeDeclaration{Name: "date", Value: "2017-01-01"},
 						types.BlankLine{},
 						types.DocumentAttributeDeclaration{Name: "author", Value: "Xavier"},
+						types.BlankLine{},
+						types.DocumentAttributeDeclaration{Name: "hardbreaks"},
 						types.BlankLine{},
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
@@ -640,7 +646,7 @@ a paragraph`
 			})
 		})
 
-		Context("document Attribute Substitutions", func() {
+		Context("document attribute substitutions", func() {
 
 			It("paragraph with attribute substitution", func() {
 				actualContent := `:author: Xavier

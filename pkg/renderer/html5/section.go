@@ -23,33 +23,45 @@ func init() {
 	preambleTmpl = newTextTemplate("preamble",
 		`<div id="preamble">
 <div class="sectionbody">
-{{.}}
+{{ $ctx := .Context }}{{ with .Data }}{{ renderElements $ctx .Elements | printf "%s" }}{{ end }}
 </div>
-</div>`)
+</div>`,
+		texttemplate.FuncMap{
+			"renderElements": renderElements,
+		})
 	section1ContentTmpl = newTextTemplate("section 1",
-		`<div class="{{.Class}}">
+		`{{ $ctx := .Context }}{{ with .Data }}<div class="{{ .Class }}">
 {{.SectionTitle}}
-<div class="sectionbody">{{ if .Elements }}
-{{.Elements}}{{end}}
+<div class="sectionbody">{{ $elements := renderElements $ctx .Elements | printf "%s" }}{{ if $elements }}
+{{ $elements }}{{ end }}
 </div>
-</div>`)
+</div>{{ end }}`,
+		texttemplate.FuncMap{
+			"renderElements": renderElements,
+		})
 	otherSectionContentTmpl = newTextTemplate("other section",
-		`<div class="{{.Class}}">
-{{.SectionTitle}}{{ if .Elements }}
-{{.Elements}}{{end}}
-</div>`)
+		`{{ $ctx := .Context }}{{ with .Data }}<div class="{{ .Class }}">
+{{ .SectionTitle }}{{ $elements := renderElements $ctx .Elements | printf "%s" }}{{ if $elements }}
+{{ $elements }}{{ end }}
+</div>{{ end }}`,
+		texttemplate.FuncMap{
+			"renderElements": renderElements,
+		})
 	sectionHeaderTmpl = newTextTemplate("other sectionTitle",
 		`<h{{.Level}} id="{{.ID}}">{{.Content}}</h{{.Level}}>`)
 }
 
 func renderPreamble(ctx *renderer.Context, p types.Preamble) ([]byte, error) {
 	log.Debugf("Rendering preamble...")
-	renderedElements, err := renderElementsAsString(ctx, p.Elements)
-	if err != nil {
-		return nil, errors.Wrapf(err, "error while rendering preamble")
-	}
 	result := bytes.NewBuffer(nil)
-	err = preambleTmpl.Execute(result, renderedElements)
+	err := preambleTmpl.Execute(result, ContextualPipeline{
+		Context: ctx,
+		Data: struct {
+			Elements []interface{}
+		}{
+			Elements: p.Elements,
+		},
+	})
 	if err != nil {
 		return nil, errors.Wrapf(err, "error while rendering preamble")
 	}
@@ -63,10 +75,10 @@ func renderSection(ctx *renderer.Context, s types.Section) ([]byte, error) {
 	if err != nil {
 		return nil, errors.Wrapf(err, "error while rendering section")
 	}
-	renderedSectionElements, err := renderElementsAsString(ctx, s.Elements)
-	if err != nil {
-		return nil, errors.Wrapf(err, "error while rendering section")
-	}
+	// renderedSectionElements, err := renderElements(ctx, s.Elements)
+	// if err != nil {
+	// 	return nil, errors.Wrapf(err, "error while rendering section")
+	// }
 	result := bytes.NewBuffer(nil)
 	// select the appropriate template for the section
 	var tmpl texttemplate.Template
@@ -75,15 +87,17 @@ func renderSection(ctx *renderer.Context, s types.Section) ([]byte, error) {
 	} else {
 		tmpl = otherSectionContentTmpl
 	}
-	err = tmpl.Execute(result, struct {
-		Class        string
-		SectionTitle string
-		Elements     string
-	}{
-		Class:        "sect" + strconv.Itoa(s.Level),
-		SectionTitle: renderedSectionTitle,
-		Elements:     renderedSectionElements,
-	})
+	err = tmpl.Execute(result, ContextualPipeline{
+		Context: ctx,
+		Data: struct {
+			Class        string
+			SectionTitle string
+			Elements     []interface{}
+		}{
+			Class:        "sect" + strconv.Itoa(s.Level),
+			SectionTitle: renderedSectionTitle,
+			Elements:     s.Elements,
+		}})
 	if err != nil {
 		return nil, errors.Wrapf(err, "error while rendering section")
 	}
