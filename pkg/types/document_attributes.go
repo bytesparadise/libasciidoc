@@ -17,8 +17,8 @@ const (
 
 // GetTOCLevels returns the value of the `toclevels` attribute if it was specified,
 // or `2` as the default value
-func (m DocumentAttributes) GetTOCLevels() (*int, error) {
-	if levels, exists := m[toclevels]; exists {
+func (a DocumentAttributes) GetTOCLevels() (*int, error) {
+	if levels, exists := a[toclevels]; exists {
 		if levels, ok := levels.(int); ok {
 			return &levels, nil
 		}
@@ -36,15 +36,21 @@ func (m DocumentAttributes) GetTOCLevels() (*int, error) {
 	return &defaultLevels, nil
 }
 
+// Has returns the true if an entry with the given key exists
+func (a DocumentAttributes) Has(key string) bool {
+	_, ok := a[key]
+	return ok
+}
+
 // HasAuthors returns `true` if the document has one or more authors, `false` otherwise.
-func (m DocumentAttributes) HasAuthors() bool {
-	_, exists := m["author"]
+func (a DocumentAttributes) HasAuthors() bool {
+	_, exists := a["author"]
 	return exists
 }
 
 // GetTitle retrieves the document title in its metadata, or returns nil if the title was not specified
-func (m DocumentAttributes) GetTitle() (SectionTitle, error) {
-	if t, found := m[title]; found {
+func (a DocumentAttributes) GetTitle() (SectionTitle, error) {
+	if t, found := a[title]; found {
 		if t, ok := t.(SectionTitle); ok {
 			return t, nil
 		}
@@ -55,7 +61,7 @@ func (m DocumentAttributes) GetTitle() (SectionTitle, error) {
 
 // Add adds the given attribute if its value is non-nil
 // TODO: raise a warning if there was already a name/value
-func (m DocumentAttributes) Add(key string, value interface{}) {
+func (a DocumentAttributes) Add(key string, value interface{}) {
 	// do not add nil or empty values
 	if value == nil {
 		return
@@ -65,42 +71,42 @@ func (m DocumentAttributes) Add(key string, value interface{}) {
 	// if the argument is a pointer, then retrive the value it points to
 	if k == reflect.Ptr {
 		if v.Elem().IsValid() {
-			m[key] = v.Elem().Interface()
+			a[key] = v.Elem().Interface()
 		}
 	} else {
-		m[key] = value
+		a[key] = value
 	}
 }
 
 // AddNonEmpty adds the given attribute if its value is non-nil and non-empty
 // TODO: raise a warning if there was already a name/value
-func (m DocumentAttributes) AddNonEmpty(key string, value interface{}) {
+func (a DocumentAttributes) AddNonEmpty(key string, value interface{}) {
 	// do not add nil or empty values
 	if value == "" {
 		return
 	}
-	m.Add(key, value)
+	a.Add(key, value)
 }
 
 // AddAttribute adds the given attribute
 // TODO: raise a warning if there was already a name/value
-func (m DocumentAttributes) AddAttribute(attr DocumentAttributeDeclaration) {
+func (a DocumentAttributes) AddAttribute(attr DocumentAttributeDeclaration) {
 	// do not add nil values
 	// if attr == nil {
 	// 	return
 	// }
-	m.Add(attr.Name, attr.Value)
+	a.Add(attr.Name, attr.Value)
 }
 
 // Reset resets the given attribute
-func (m DocumentAttributes) Reset(attr DocumentAttributeReset) {
-	delete(m, attr.Name)
+func (a DocumentAttributes) Reset(attr DocumentAttributeReset) {
+	delete(a, attr.Name)
 }
 
 // GetAsString gets the string value for the given key, or nil if none was found
-func (m DocumentAttributes) GetAsString(key string) *string {
+func (a DocumentAttributes) GetAsString(key string) *string {
 	// TODO: raise a warning if there was no entry found
-	if value, found := m[key]; found {
+	if value, found := a[key]; found {
 		strValue := value.(string)
 		return &strValue
 	}

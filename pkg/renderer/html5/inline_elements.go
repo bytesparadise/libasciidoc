@@ -12,24 +12,29 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-// renderLines renders all lines (i.e, all `InlineElements`` - each `InlineElements` being a slice of elements to generate a line)
-// and includes an `\n` character in-between, until the last one.
-// Trailing spaces are removed for each line.
-func renderLinesAsString(ctx *renderer.Context, elements []types.InlineElements) (string, error) {
-	r, err := renderLines(ctx, elements)
-	if err != nil {
-		return "", err
-	}
-	return string(r), nil
+// // renderLines renders all lines (i.e, all `InlineElements`` - each `InlineElements` being a slice of elements to generate a line)
+// // and includes an `\n` character in-between, until the last one.
+// // Trailing spaces are removed for each line.
+// func renderLinesWithHardbreak(ctx *renderer.Context, elements []types.InlineElements, hardbreak bool) (string, error) {
+// 	r, err := renderLines(ctx, elements)
+// 	if err != nil {
+// 		return "", err
+// 	}
+// 	return string(r), nil
+// }
+
+func renderLinesAsString(ctx *renderer.Context, elements []types.InlineElements, hardbreak bool) (string, error) {
+	result, err := renderLines(ctx, elements, renderElement, hardbreak)
+	return string(result), err
 }
 
 // renderLines renders all lines (i.e, all `InlineElements`` - each `InlineElements` being a slice of elements to generate a line)
 // and includes an `\n` character in-between, until the last one.
 // Trailing spaces are removed for each line.
-func renderLines(ctx *renderer.Context, elements []types.InlineElements) ([]byte, error) {
+func renderLines(ctx *renderer.Context, elements []types.InlineElements, renderElementFunc rendererFunc, hardbreak bool) ([]byte, error) {
 	buff := bytes.NewBuffer(nil)
 	for i, e := range elements {
-		renderedElement, err := renderElement(ctx, e)
+		renderedElement, err := renderElementFunc(ctx, e)
 		if err != nil {
 			return nil, errors.Wrap(err, "unable to render lines")
 		}
@@ -42,7 +47,12 @@ func renderLines(ctx *renderer.Context, elements []types.InlineElements) ([]byte
 
 		if i < len(elements)-1 && (len(renderedElement) > 0 || ctx.WithinDelimitedBlock()) {
 			log.Debugf("rendered line is not the last one in the slice")
-			_, err := buff.WriteString("\n")
+			var err error
+			if hardbreak {
+				_, err = buff.WriteString("<br>\n")
+			} else {
+				_, err = buff.WriteString("\n")
+			}
 			if err != nil {
 				return nil, errors.Wrap(err, "unable to render lines")
 			}
@@ -53,20 +63,20 @@ func renderLines(ctx *renderer.Context, elements []types.InlineElements) ([]byte
 }
 
 func renderLine(ctx *renderer.Context, elements types.InlineElements, renderElementFunc rendererFunc) ([]byte, error) {
-	log.Debugf("rendered line with %d element(s)...", len(elements))
+	log.Debugf("rendering line with %d element(s)...", len(elements))
 	elements, err := applySubstitutions(ctx, elements)
 	if err != nil {
-		return nil, errors.Wrapf(err, "unable to render paragraph element")
+		return nil, errors.Wrapf(err, "unable to render line")
 	}
 
 	buff := bytes.NewBuffer(nil)
 	for i, element := range elements {
 		renderedElement, err := renderElementFunc(ctx, element)
 		if err != nil {
-			return nil, errors.Wrapf(err, "unable to render paragraph element")
+			return nil, errors.Wrapf(err, "unable to render line")
 		}
 		if i == len(elements)-1 {
-			if _, ok := element.(types.StringElement); ok {
+			if _, ok := element.(types.StringElement); ok { // TODO: only for StringElement? or for any kind of element?
 				// trim trailing spaces before returning the line
 				buff.WriteString(strings.TrimRight(string(renderedElement), " "))
 				log.Debugf("trimmed spaces on '%v'", string(renderedElement))

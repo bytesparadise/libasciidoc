@@ -22,25 +22,25 @@ var sidebarBlockTmpl texttemplate.Template
 func init() {
 	listingBlockTmpl = newTextTemplate("listing block", `<div class="listingblock">
 <div class="content">
-<pre>{{ $ctx := .Context }}{{ with .Data }}{{ .Content }}{{ end }}</pre>
+<pre>{{ $ctx := .Context }}{{ with .Data }}{{ range $index, $element := .Elements }}{{ renderPlainString $ctx $element | printf "%s" }}{{ end }}{{ end }}</pre>
 </div>
 </div>`,
 		texttemplate.FuncMap{
-			"renderElement": renderElement,
+			"renderPlainString": renderPlainString,
 		})
 
 	exampleBlockTmpl = newTextTemplate("example block", `<div class="exampleblock">
 <div class="content">
-{{ $ctx := .Context }}{{ with .Data }}{{ $elements := .Elements }}{{ renderElements $ctx $elements }}{{ end }}
+{{ $ctx := .Context }}{{ with .Data }}{{ $elements := .Elements }}{{ renderElements $ctx $elements | printf "%s" }}{{ end }}
 </div>
 </div>`,
 		texttemplate.FuncMap{
-			"renderElements": renderElementsAsString,
+			"renderElements": renderElements,
 		})
 
 	quoteBlockTmpl = newTextTemplate("quote block", `<div class="quoteblock">
 {{ $ctx := .Context }}{{ with .Data }}<blockquote>
-{{ renderElements $ctx .Elements }}
+{{ renderElements $ctx .Elements | printf "%s" }}
 </blockquote>{{ if .Attribution.First }}
 <div class="attribution">
 &#8212; {{ .Attribution.First }}{{ if .Attribution.Second }}<br>
@@ -48,18 +48,18 @@ func init() {
 </div>{{ end }}{{ end }}
 </div>`,
 		texttemplate.FuncMap{
-			"renderElements": renderElementsAsString,
+			"renderElements": renderElements,
 		})
 
 	verseBlockTmpl = newTextTemplate("verse block", `<div class="verseblock">
-{{ $ctx := .Context }}{{ with .Data }}<pre class="content">{{ renderElements $ctx .Elements }}</pre>{{ if .Attribution.First }}
+{{ $ctx := .Context }}{{ with .Data }}<pre class="content">{{ renderElements $ctx .Elements | printf "%s" }}</pre>{{ if .Attribution.First }}
 <div class="attribution">
 &#8212; {{ .Attribution.First }}{{ if .Attribution.Second }}<br>
 <cite>{{ .Attribution.Second }}</cite>{{ end }}
 </div>{{ end }}{{ end }}
 </div>`,
 		texttemplate.FuncMap{
-			"renderElements": renderInlineElementsAsString,
+			"renderElements": renderElements,
 		})
 
 	admonitionBlockTmpl = newTextTemplate("admonition block", `{{ $ctx := .Context }}{{ with .Data }}<div {{ if .ID }}id="{{ .ID}}" {{ end}}class="admonitionblock {{ .Class }}">
@@ -70,23 +70,23 @@ func init() {
 </td>
 <td class="content">
 {{ if .Title }}<div class="title">{{ .Title }}</div>
-{{ end }}{{ renderElements $ctx .Elements }}
+{{ end }}{{ renderElements $ctx .Elements | printf "%s" }}
 </td>
 </tr>
 </table>
 </div>{{ end }}`,
 		texttemplate.FuncMap{
-			"renderElements": renderElementsAsString,
+			"renderElements": renderElements,
 		})
 
 	sidebarBlockTmpl = newTextTemplate("sidebar block", `{{ $ctx := .Context }}{{ with .Data }}<div {{ if .ID }}id="{{ .ID }}" {{ end }}class="sidebarblock">
 <div class="content">{{ if .Title }}
 <div class="title">{{ .Title }}</div>{{ end }}
-{{ renderElements $ctx .Elements }}
+{{ renderElements $ctx .Elements | printf "%s" }}
 </div>
 </div>{{ end }}`,
 		texttemplate.FuncMap{
-			"renderElements": renderElementsAsString,
+			"renderElements": renderElements,
 		})
 }
 
@@ -105,26 +105,18 @@ func renderDelimitedBlock(ctx *renderer.Context, b types.DelimitedBlock) ([]byte
 	kind := b.Attributes[types.AttrKind]
 	switch kind {
 	case types.Fenced, types.Listing:
-		ctx.SetWithinDelimitedBlock(true)
-		ctx.SetIncludeBlankLine(true)
+		oldWithin := ctx.SetWithinDelimitedBlock(true)
+		oldInclude := ctx.SetIncludeBlankLine(true)
 		defer func() {
-			ctx.SetWithinDelimitedBlock(false)
-			ctx.SetIncludeBlankLine(false)
+			ctx.SetWithinDelimitedBlock(oldWithin)
+			ctx.SetIncludeBlankLine(oldInclude)
 		}()
-		content := make([]byte, 0)
-		for _, e := range elements {
-			s, err := renderPlainString(ctx, e)
-			if err != nil {
-				return nil, errors.Wrapf(err, "unable to initialize a new delimited block")
-			}
-			content = append(content, s...)
-		}
 		err = listingBlockTmpl.Execute(result, ContextualPipeline{
 			Context: ctx,
 			Data: struct {
-				Content string
+				Elements []interface{}
 			}{
-				Content: string(content),
+				Elements: elements,
 			},
 		})
 
@@ -162,12 +154,12 @@ func renderDelimitedBlock(ctx *renderer.Context, b types.DelimitedBlock) ([]byte
 			First  string
 			Second string
 		}
-		if author := attributeAsString(b.Attributes, types.AttrQuoteAuthor); author != "" {
+		if author := b.Attributes.GetAsString(types.AttrQuoteAuthor); author != "" {
 			attribution.First = author
-			if title := attributeAsString(b.Attributes, types.AttrQuoteTitle); title != "" {
+			if title := b.Attributes.GetAsString(types.AttrQuoteTitle); title != "" {
 				attribution.Second = title
 			}
-		} else if title := attributeAsString(b.Attributes, types.AttrQuoteTitle); title != "" {
+		} else if title := b.Attributes.GetAsString(types.AttrQuoteTitle); title != "" {
 			attribution.First = title
 		}
 		err = quoteBlockTmpl.Execute(result, ContextualPipeline{
@@ -185,24 +177,24 @@ func renderDelimitedBlock(ctx *renderer.Context, b types.DelimitedBlock) ([]byte
 			},
 		})
 	case types.Verse:
-		var elements []types.InlineElements
+		var elements = make([]interface{}, 0)
 		if len(b.Elements) > 0 {
 			if p, ok := b.Elements[0].(types.Paragraph); ok {
-				elements = p.Lines
+				for _, e := range p.Lines {
+					elements = append(elements, e)
+				}
 			}
-		} else {
-			elements = make([]types.InlineElements, 0)
 		}
 		var attribution struct {
 			First  string
 			Second string
 		}
-		if author := attributeAsString(b.Attributes, types.AttrQuoteAuthor); author != "" {
+		if author := b.Attributes.GetAsString(types.AttrQuoteAuthor); author != "" {
 			attribution.First = author
-			if title := attributeAsString(b.Attributes, types.AttrQuoteTitle); title != "" {
+			if title := b.Attributes.GetAsString(types.AttrQuoteTitle); title != "" {
 				attribution.Second = title
 			}
-		} else if title := attributeAsString(b.Attributes, types.AttrQuoteTitle); title != "" {
+		} else if title := b.Attributes.GetAsString(types.AttrQuoteTitle); title != "" {
 			attribution.First = title
 		}
 		err = verseBlockTmpl.Execute(result, ContextualPipeline{
@@ -213,7 +205,7 @@ func renderDelimitedBlock(ctx *renderer.Context, b types.DelimitedBlock) ([]byte
 					Second string
 				}
 				Title    string
-				Elements []types.InlineElements
+				Elements []interface{}
 			}{
 				Attribution: attribution,
 				Elements:    elements,
@@ -242,4 +234,23 @@ func renderDelimitedBlock(ctx *renderer.Context, b types.DelimitedBlock) ([]byte
 	}
 	log.Debugf("rendered delimited block: %s", result.Bytes())
 	return result.Bytes(), nil
+}
+
+func discardTrailingBlankLines(elements []interface{}) []interface{} {
+	// discard blank lines at the end
+	filteredElements := make([]interface{}, len(elements))
+	copy(filteredElements, elements)
+	for {
+		if len(filteredElements) == 0 {
+			break
+		}
+		if _, ok := filteredElements[len(filteredElements)-1].(types.BlankLine); ok {
+			log.Debugf("element of type '%T' at position %d is a blank line, discarding it", filteredElements[len(filteredElements)-1], len(filteredElements)-1)
+			// remove last element of the slice since it's a blankline
+			filteredElements = filteredElements[:len(filteredElements)-1]
+		} else {
+			break
+		}
+	}
+	return filteredElements
 }

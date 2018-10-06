@@ -32,8 +32,13 @@ func Wrap(ctx context.Context, document types.Document, options ...Option) *Cont
 const includeBlankLine string = "includeBlankLine"
 
 // SetIncludeBlankLine sets the rendering context to include (or not) the blank lines
-func (ctx *Context) SetIncludeBlankLine(b bool) {
+func (ctx *Context) SetIncludeBlankLine(b bool) bool {
+	var oldvalue bool
+	if v, ok := ctx.options[withinDelimitedBlock].(bool); ok {
+		oldvalue = v
+	}
 	ctx.options[includeBlankLine] = b
+	return oldvalue
 }
 
 // IncludeBlankLine indicates if blank lines should be rendered (default false)
@@ -48,9 +53,14 @@ func (ctx *Context) IncludeBlankLine() bool {
 const withinDelimitedBlock string = "withinDelimitedBlock"
 
 // SetWithinDelimitedBlock sets the rendering context to be within a delimited block
-func (ctx *Context) SetWithinDelimitedBlock(b bool) {
+func (ctx *Context) SetWithinDelimitedBlock(b bool) bool {
 	log.Debugf("set rendering elements within a delimited block to `%t`", b)
+	var oldvalue bool
+	if v, ok := ctx.options[withinDelimitedBlock].(bool); ok {
+		oldvalue = v
+	}
 	ctx.options[withinDelimitedBlock] = b
+	return oldvalue
 }
 
 // WithinDelimitedBlock indicates if the current element to render is within a delimited block or not

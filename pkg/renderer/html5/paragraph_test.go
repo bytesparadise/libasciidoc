@@ -1,6 +1,8 @@
 package html5_test
 
-import . "github.com/onsi/ginkgo"
+import (
+	. "github.com/onsi/ginkgo"
+)
 
 var _ = Describe("paragraphs", func() {
 
@@ -51,6 +53,49 @@ and here another paragraph
 <p>and here another paragraph</p>
 </div>`
 			verify(GinkgoT(), expectedResult, actualContent)
+		})
+
+		Context("paragraphs with line break", func() {
+
+			It("with explicit line break", func() {
+				actualContent := `foo +
+bar
+baz`
+				expectedResult := `<div class="paragraph">
+<p>foo<br>
+bar
+baz</p>
+</div>`
+				verify(GinkgoT(), expectedResult, actualContent)
+			})
+
+			It("with paragraph attribute", func() {
+
+				actualContent := `[%hardbreaks]
+foo
+bar
+baz`
+				expectedResult := `<div class="paragraph">
+<p>foo<br>
+bar<br>
+baz</p>
+</div>`
+				verify(GinkgoT(), expectedResult, actualContent)
+			})
+
+			It("with document attribute", func() {
+
+				actualContent := `:hardbreaks:
+foo
+bar
+baz`
+				expectedResult := `<div class="paragraph">
+<p>foo<br>
+bar<br>
+baz</p>
+</div>`
+				verify(GinkgoT(), expectedResult, actualContent)
+			})
 		})
 	})
 

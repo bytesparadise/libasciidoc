@@ -19,12 +19,12 @@ func init() {
 {{ if .Title }}<div class="title">{{ .Title }}</div>
 {{ end }}<ol class="{{ $firstItem.NumberingStyle }}"{{ style $firstItem.NumberingStyle }}>
 {{ range $itemIndex, $item := $items }}<li>
-{{ renderElements $ctx $item.Elements }}
+{{ renderElements $ctx $item.Elements | printf "%s" }}
 </li>
 {{ end }}</ol>
 </div>{{ end }}`,
 		texttemplate.FuncMap{
-			"renderElements": renderElementsAsString,
+			"renderElements": renderElements,
 			"style":          numberingType,
 		})
 

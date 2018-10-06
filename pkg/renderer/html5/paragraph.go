@@ -18,7 +18,7 @@ var listParagraphTmpl texttemplate.Template
 // initializes the templates
 func init() {
 	paragraphTmpl = newTextTemplate("paragraph",
-		`{{ $ctx := .Context }}{{ with .Data }}{{ $renderedLines := renderLines $ctx .Lines }}{{ if ne $renderedLines "" }}<div {{ if ne .ID "" }}id="{{ .ID }}" {{ end }}class="paragraph">{{ if ne .Title "" }}
+		`{{ $ctx := .Context }}{{ with .Data }}{{ $renderedLines := renderLines $ctx .Lines .HardBreak }}{{ if ne $renderedLines "" }}<div {{ if ne .ID "" }}id="{{ .ID }}" {{ end }}class="paragraph">{{ if ne .Title "" }}
 <div class="doctitle">{{ .Title }}</div>{{ end }}
 <p>{{ $renderedLines }}</p>
 </div>{{ end }}{{ end }}`,
@@ -27,7 +27,7 @@ func init() {
 		})
 
 	admonitionParagraphTmpl = newTextTemplate("admonition paragraph",
-		`{{ $ctx := .Context }}{{ with .Data }}{{ $renderedLines := renderLines $ctx .Lines }}{{ if ne $renderedLines "" }}<div {{ if .ID }}id="{{ .ID }}" {{ end }}class="admonitionblock {{ .Class }}">
+		`{{ $ctx := .Context }}{{ with .Data }}{{ $renderedLines := renderLines $ctx .Lines .HardBreak }}{{ if ne $renderedLines "" }}<div {{ if .ID }}id="{{ .ID }}" {{ end }}class="admonitionblock {{ .Class }}">
 <table>
 <tr>
 <td class="icon">
@@ -45,7 +45,7 @@ func init() {
 		})
 
 	listParagraphTmpl = newTextTemplate("list paragraph",
-		`{{ $ctx := .Context }}{{ with .Data }}<p>{{ renderLines $ctx .Lines }}</p>{{ end }}`,
+		`{{ $ctx := .Context }}{{ with .Data }}<p>{{ renderLines $ctx .Lines .HardBreak }}</p>{{ end }}`,
 		texttemplate.FuncMap{
 			"renderLines": renderLinesAsString,
 		})
@@ -73,17 +73,19 @@ func renderParagraph(ctx *renderer.Context, p types.Paragraph) ([]byte, error) {
 		err = admonitionParagraphTmpl.Execute(result, ContextualPipeline{
 			Context: ctx,
 			Data: struct {
-				ID    string
-				Class string
-				Icon  string
-				Title string
-				Lines []types.InlineElements
+				ID        string
+				Class     string
+				Icon      string
+				Title     string
+				Lines     []types.InlineElements
+				HardBreak bool
 			}{
-				ID:    id,
-				Class: getClass(k),
-				Icon:  getIcon(k),
-				Title: getTitle(p.Attributes[types.AttrTitle]),
-				Lines: p.Lines,
+				ID:        id,
+				Class:     getClass(k),
+				Icon:      getIcon(k),
+				Title:     getTitle(p.Attributes[types.AttrTitle]),
+				Lines:     p.Lines,
+				HardBreak: false,
 			},
 		})
 	} else if ctx.WithinDelimitedBlock() || ctx.WithinList() {
@@ -91,13 +93,15 @@ func renderParagraph(ctx *renderer.Context, p types.Paragraph) ([]byte, error) {
 		err = listParagraphTmpl.Execute(result, ContextualPipeline{
 			Context: ctx,
 			Data: struct {
-				ID    string
-				Title string
-				Lines []types.InlineElements
+				ID        string
+				Title     string
+				Lines     []types.InlineElements
+				HardBreak bool
 			}{
-				ID:    id,
-				Title: title,
-				Lines: p.Lines,
+				ID:        id,
+				Title:     title,
+				Lines:     p.Lines,
+				HardBreak: false,
 			},
 		})
 	} else {
@@ -105,13 +109,15 @@ func renderParagraph(ctx *renderer.Context, p types.Paragraph) ([]byte, error) {
 		err = paragraphTmpl.Execute(result, ContextualPipeline{
 			Context: ctx,
 			Data: struct {
-				ID    string
-				Title string
-				Lines []types.InlineElements
+				ID        string
+				Title     string
+				Lines     []types.InlineElements
+				HardBreak bool
 			}{
-				ID:    id,
-				Title: title,
-				Lines: p.Lines,
+				ID:        id,
+				Title:     title,
+				HardBreak: p.Attributes.Has(types.AttrHardBreaks) || ctx.Document.Attributes.Has(types.DocumentAttrHardBreaks),
+				Lines:     p.Lines,
 			},
 		})
 	}
@@ -120,6 +126,10 @@ func renderParagraph(ctx *renderer.Context, p types.Paragraph) ([]byte, error) {
 	}
 	log.Debugf("rendered paragraph: '%s'", result.String())
 	return result.Bytes(), nil
+}
+
+func renderLineBreak() ([]byte, error) {
+	return []byte("<br>"), nil
 }
 
 func getClass(kind types.AdmonitionKind) string {

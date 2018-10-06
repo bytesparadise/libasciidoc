@@ -75,6 +75,72 @@ a paragraph`
 			}
 			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
+
+		Context("paragraphs with line break", func() {
+
+			It("with explicit line break", func() {
+
+				actualContent := `foo +
+bar
+baz`
+				expectedResult := types.Paragraph{
+					Attributes: types.ElementAttributes{},
+					Lines: []types.InlineElements{
+						{
+							types.StringElement{Content: "foo"},
+							types.LineBreak{},
+						},
+						{
+							types.StringElement{Content: "bar"},
+						},
+						{
+							types.StringElement{Content: "baz"},
+						},
+					},
+				}
+				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+			})
+
+			It("with paragraph attribute", func() {
+
+				actualContent := `[%hardbreaks]
+foo
+bar
+baz`
+				expectedResult := types.Paragraph{
+					Attributes: types.ElementAttributes{
+						types.AttrHardBreaks: nil,
+					},
+					Lines: []types.InlineElements{
+						{
+							types.StringElement{Content: "foo"},
+						},
+						{
+							types.StringElement{Content: "bar"},
+						},
+						{
+							types.StringElement{Content: "baz"},
+						},
+					},
+				}
+				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+			})
+		})
+
+		// It("paragraph with InlineElementID", func() {
+		// 	actualContent := `foo [[id]] bar`
+		// 	expectedResult := types.Paragraph{
+		// 		Attributes: types.ElementAttributes{},
+		// 		Lines: []types.InlineElements{
+		// 			{
+		// 				types.StringElement{Content: "foo "},
+		// 				types.StringElement{Content: " bar"},
+		// 			},
+		// 		},
+		// 	}
+		// 	verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+		// })
+
 	})
 
 	Context("admonition paragraphs", func() {

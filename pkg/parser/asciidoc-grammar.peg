@@ -361,7 +361,7 @@ TitleElements <- elements:(!NEWLINE WS* !InlineElementID TitleElement WS*)+ { //
     return types.NewInlineElements(elements.([]interface{}))
 } 
 
-TitleElement <- element:(CrossReference / Passthrough / InlineImage / QuotedText / Link / DocumentAttributeSubstitution / InlineFootnote / Word / Parenthesis) {
+TitleElement <- element:(CrossReference / Passthrough / InlineImage / QuotedText / Link / DocumentAttributeSubstitution / InlineFootnote / Parenthesis / LineBreak / Word) {
     return element, nil
 }
 
@@ -538,23 +538,30 @@ MasqueradeParagraph <- // admonition paragraph
 InlineElements <- 
     comment:(SingleLineComment) {
         return types.NewInlineElements([]interface{}{comment})
-    } / !EOF !BlockDelimiter elements:(!EOL WS* !InlineElementID InlineElement WS*)+ EOL { // absorbs heading and trailing spaces
-        return types.NewInlineElements(elements.([]interface{}))
+    } / !BlankLine !BlockDelimiter elements:(InlineElement)+ linebreak:(LineBreak)? EOL? { // absorbs heading and trailing spaces
+        return types.NewInlineElements(append(elements.([]interface{}), linebreak))
     } 
 
-InlineElement <- element:(QuotedText / CrossReference / Passthrough / InlineImage / Link / DocumentAttributeSubstitution / InlineFootnote / Word / Parenthesis) {
+InlineElement <- !EOL !LineBreak element:(QuotedText / CrossReference / Passthrough / InlineImage / Link / DocumentAttributeSubstitution / InlineFootnote / InlineElementID / Parenthesis / LineBreak / Word / WS*) {
     return element, nil
 }
 
 // special case for re-parsing a group of elements after a document substitution:
-// we should treat substitution that did not happen (eg: missing attribute) as regulart
-// strings
-InlineElementsWithoutSubtitution <- !EOF !BlockDelimiter elements:(!EOL WS* !InlineElementID InlineElementWithoutSubtitution WS*)+ EOL { // absorbs heading and trailing spaces
-    return types.NewInlineElements(elements.([]interface{}))
+// we should treat substitution that did not happen (eg: missing attribute) as regular
+// strings - (used by the inline element renderer)
+InlineElementsWithoutSubtitution <- !BlankLine !BlockDelimiter elements:(InlineElementWithoutSubtitution)+ linebreak:(LineBreak)? EOL? { // absorbs heading and trailing spaces
+    return types.NewInlineElements(append(elements.([]interface{}), linebreak))
 } 
 
-InlineElementWithoutSubtitution <- element:(QuotedText / CrossReference / Passthrough / InlineImage / Link / Word / Parenthesis) {
+InlineElementWithoutSubtitution <- !EOL !LineBreak element:(QuotedText / CrossReference / Passthrough / InlineImage / Link / InlineElementID/ Parenthesis / Word / WS*) {
     return element, nil
+}
+
+// ----------------------------------------------------------------------------
+// Explicit line breaks
+// ----------------------------------------------------------------------------
+LineBreak <- WS "+" WS* EOL {
+    return types.NewLineBreak()    
 }
 
 // ----------------------------------------------------------------------------
@@ -1015,7 +1022,7 @@ Alphanum <- [a-zA-Z0-9]
 
 Parenthesis <- "(" / ")" / "[" / "]"
 
-Word <- (!NEWLINE !WS !Parenthesis .)+ {
+Word <- (!NEWLINE !WS !Parenthesis .)+ { // word cannot contain parenthesis
     return string(c.text), nil
 }
 
