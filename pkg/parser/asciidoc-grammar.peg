@@ -977,7 +977,7 @@ ParagraphWithLiteralBlockDelimiter <- LiteralBlockDelimiter WS* NEWLINE lines:(P
 
 // include all lines until delimiter is reached
 ParagraphWithLiteralBlockDelimiterLines <- lines:(
-    line:(!LiteralBlockDelimiter !(NEWLINE BlankLine) (!EOL .)+ {
+    line:(!LiteralBlockDelimiter (!EOL .)* {
         return string(c.text), nil
     }) EOL { 
         return line, nil // do not include the trailing 'EOL'
