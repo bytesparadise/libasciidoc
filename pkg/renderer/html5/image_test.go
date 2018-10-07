@@ -78,6 +78,22 @@ image::foo.png[foo image, 600, 400]`
 			verify(GinkgoT(), expectedResult, actualContent)
 		})
 
+		It("2 block images", func() {
+			actualContent := `image::app.png[]
+image::appa.png[]`
+			expectedResult := `<div class="imageblock">
+<div class="content">
+<img src="app.png" alt="app">
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="appa.png" alt="appa">
+</div>
+</div>`
+			verify(GinkgoT(), expectedResult, actualContent)
+		})
+
 	})
 
 	Context("inline images", func() {
@@ -85,9 +101,9 @@ image::foo.png[foo image, 600, 400]`
 		Context("valid inline Images", func() {
 
 			It("inline image alone", func() {
-				actualContent := "image:foo.png[]"
+				actualContent := "image:app.png[]"
 				expectedResult := `<div class="paragraph">
-<p><span class="image"><img src="foo.png" alt="foo"></span></p>
+<p><span class="image"><img src="app.png" alt="app"></span></p>
 </div>`
 				verify(GinkgoT(), expectedResult, actualContent)
 			})

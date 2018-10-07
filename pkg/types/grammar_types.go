@@ -1640,10 +1640,10 @@ func NewBlockImage(path string, inlineAttributes ElementAttributes) (BlockImage,
 	}
 	if alt, found := allAttributes[AttrImageAlt]; !found || alt == "" {
 		_, filename := filepath.Split(path)
-		log.Debugf("adding alt based on filename '%s'", filename)
 		ext := filepath.Ext(filename)
+		log.Debugf("adding alt based on filename '%s' (ext=%s)", filename, ext)
 		if ext != "" {
-			allAttributes[AttrImageAlt] = strings.TrimRight(filename, fmt.Sprintf(".%s", ext))
+			allAttributes[AttrImageAlt] = strings.TrimSuffix(filename, ext)
 		} else {
 			allAttributes[AttrImageAlt] = filename
 		}
@@ -1672,7 +1672,7 @@ func NewInlineImage(path string, attributes ElementAttributes) (InlineImage, err
 		log.Debugf("adding alt based on filename '%s'", filename)
 		ext := filepath.Ext(filename)
 		if ext != "" {
-			attributes[AttrImageAlt] = strings.TrimRight(filename, fmt.Sprintf(".%s", ext))
+			attributes[AttrImageAlt] = strings.TrimSuffix(filename, ext)
 		} else {
 			attributes[AttrImageAlt] = filename
 		}
@@ -1703,7 +1703,7 @@ func NewImageMacro(path string, attributes ElementAttributes) (ImageMacro, error
 		log.Debugf("adding alt based on filename '%s'", filename)
 		ext := filepath.Ext(filename)
 		if ext != "" {
-			attributes[AttrImageAlt] = strings.TrimRight(filename, fmt.Sprintf(".%s", ext))
+			attributes[AttrImageAlt] = strings.TrimSuffix(filename, ext)
 		} else {
 			attributes[AttrImageAlt] = filename
 		}

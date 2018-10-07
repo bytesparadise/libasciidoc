@@ -83,7 +83,7 @@ var _ = Describe("images", func() {
 			})
 
 			It("block image with alt", func() {
-				actualContent := "image::images/foo.png[the foo.png image]"
+				actualContent := `image::images/foo.png[the foo.png image]`
 				expectedResult := types.BlockImage{
 					Attributes: types.ElementAttributes{
 						types.AttrImageAlt:    "the foo.png image",
@@ -96,10 +96,10 @@ var _ = Describe("images", func() {
 			})
 
 			It("block image with dimensions and id link title meta", func() {
-				actualContent := "[#img-foobar]\n" +
-					".A title to foobar\n" +
-					"[link=http://foo.bar]\n" +
-					"image::images/foo.png[the foo.png image, 600, 400]"
+				actualContent := `[#img-foobar]
+.A title to foobar
+[link=http://foo.bar]
+image::images/foo.png[the foo.png image, 600, 400]`
 				expectedResult := types.BlockImage{
 					Attributes: types.ElementAttributes{
 						types.AttrID:          "img-foobar",
@@ -112,6 +112,36 @@ var _ = Describe("images", func() {
 					Path: "images/foo.png",
 				}
 				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+			})
+
+			It("2 block images", func() {
+				actualContent := `image::app.png[]
+image::appa.png[]`
+				expectedResult := types.Document{
+					Attributes:         types.DocumentAttributes{},
+					ElementReferences:  types.ElementReferences{},
+					Footnotes:          types.Footnotes{},
+					FootnoteReferences: types.FootnoteReferences{},
+					Elements: []interface{}{
+						types.BlockImage{
+							Attributes: types.ElementAttributes{
+								types.AttrImageAlt:    "app",
+								types.AttrImageWidth:  "",
+								types.AttrImageHeight: "",
+							},
+							Path: "app.png",
+						},
+						types.BlockImage{
+							Attributes: types.ElementAttributes{
+								types.AttrImageAlt:    "appa",
+								types.AttrImageWidth:  "",
+								types.AttrImageHeight: "",
+							},
+							Path: "appa.png",
+						},
+					},
+				}
+				verify(GinkgoT(), expectedResult, actualContent)
 			})
 		})
 
