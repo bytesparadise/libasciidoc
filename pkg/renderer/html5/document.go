@@ -24,6 +24,7 @@ func init() {
 <meta name="viewport" content="width=device-width, initial-scale=1.0">{{ if .Generator }}
 <meta name="generator" content="{{ .Generator }}">{{ end }}
 <title>{{ .Title }}</title>
+</head>
 <body class="article">
 <div id="header">
 <h1>{{ .Header }}</h1>{{ if .Details }}

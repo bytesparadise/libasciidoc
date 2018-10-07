@@ -21,6 +21,7 @@ var _ = Describe("document header", func() {
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="libasciidoc">
 <title>The Dangerous and Thrilling Documentation Chronicles</title>
+</head>
 <body class="article">
 <div id="header">
 <h1>The <em>Dangerous</em> and <strong>Thrilling</strong> Documentation Chronicles</h1>
@@ -55,6 +56,7 @@ v1.0, June 19, 2017: First incarnation`
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="libasciidoc">
 <title>The Dangerous and Thrilling Documentation Chronicles</title>
+</head>
 <body class="article">
 <div id="header">
 <h1>The Dangerous and Thrilling Documentation Chronicles</h1>
@@ -93,6 +95,7 @@ Kismet Rainbow Chameleon <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus@a
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="libasciidoc">
 <title>The Dangerous and Thrilling Documentation Chronicles</title>
+</head>
 <body class="article">
 <div id="header">
 <h1>The Dangerous and Thrilling Documentation Chronicles</h1>
