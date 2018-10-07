@@ -82,6 +82,25 @@ a normal paragraph.`
 
 	Context("literal blocks with block delimiter", func() {
 
+		It("literal block with empty blank line", func() {
+
+			actualContent := `....
+
+some content
+....`
+			expectedResult := types.LiteralBlock{
+				Attributes: types.ElementAttributes{
+					types.AttrKind:             types.Literal,
+					types.AttrLiteralBlockType: types.LiteralBlockWithDelimiter,
+				},
+				Lines: []string{
+					"",
+					"some content",
+				},
+			}
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+		})
+
 		It("literal block with delimited and attributes followed by 1-line paragraph", func() {
 			actualContent := `[#ID]
 .title
