@@ -16,7 +16,8 @@ on 2 lines`
 			Attributes: types.ElementAttributes{},
 			Items: []types.LabeledListItem{
 				{
-					Term: "Item1",
+					Attributes: types.ElementAttributes{},
+					Term:       "Item1",
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
@@ -42,7 +43,8 @@ on 2 lines`
 			Attributes: types.ElementAttributes{},
 			Items: []types.LabeledListItem{
 				{
-					Term: "Item1",
+					Attributes: types.ElementAttributes{},
+					Term:       "Item1",
 				},
 			},
 		}
@@ -58,7 +60,8 @@ Item1:: foo`
 			},
 			Items: []types.LabeledListItem{
 				{
-					Term: "Item1",
+					Attributes: types.ElementAttributes{},
+					Term:       "Item1",
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
@@ -82,7 +85,8 @@ Item1:: foo`
 			Attributes: types.ElementAttributes{},
 			Items: []types.LabeledListItem{
 				{
-					Term: "Item1",
+					Attributes: types.ElementAttributes{},
+					Term:       "Item1",
 				},
 			},
 		}
@@ -100,7 +104,8 @@ Item 3 description`
 			Attributes: types.ElementAttributes{},
 			Items: []types.LabeledListItem{
 				{
-					Term: "Item 1",
+					Attributes: types.ElementAttributes{},
+					Term:       "Item 1",
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
@@ -113,7 +118,8 @@ Item 3 description`
 					},
 				},
 				{
-					Term: "Item 2",
+					Attributes: types.ElementAttributes{},
+					Term:       "Item 2",
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
@@ -126,7 +132,8 @@ Item 3 description`
 					},
 				},
 				{
-					Term: "Item 3",
+					Attributes: types.ElementAttributes{},
+					Term:       "Item 3",
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
@@ -152,12 +159,14 @@ Item with description:: something simple`
 			Attributes: types.ElementAttributes{},
 			Items: []types.LabeledListItem{
 				{
-					Term: "Empty item",
+					Attributes: types.ElementAttributes{},
+					Term:       "Empty item",
 					Elements: []interface{}{
 						types.UnorderedList{
 							Attributes: types.ElementAttributes{},
 							Items: []types.UnorderedListItem{
 								{
+									Attributes:  types.ElementAttributes{},
 									Level:       1,
 									BulletStyle: types.OneAsterisk,
 									Elements: []interface{}{
@@ -172,6 +181,7 @@ Item with description:: something simple`
 									},
 								},
 								{
+									Attributes:  types.ElementAttributes{},
 									Level:       1,
 									BulletStyle: types.OneAsterisk,
 									Elements: []interface{}{
@@ -190,7 +200,8 @@ Item with description:: something simple`
 					},
 				},
 				{
-					Term: "Item with description",
+					Attributes: types.ElementAttributes{},
+					Term:       "Item with description",
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
@@ -224,7 +235,8 @@ a normal paragraph.`
 					Attributes: types.ElementAttributes{},
 					Items: []types.LabeledListItem{
 						{
-							Term: "Item 1",
+							Attributes: types.ElementAttributes{},
+							Term:       "Item 1",
 							Elements: []interface{}{
 								types.Paragraph{
 									Attributes: types.ElementAttributes{},
@@ -276,7 +288,8 @@ another fenced block
 					Attributes: types.ElementAttributes{},
 					Items: []types.LabeledListItem{
 						{
-							Term: "Item 1",
+							Attributes: types.ElementAttributes{},
+							Term:       "Item 1",
 							Elements: []interface{}{
 								types.DelimitedBlock{
 									Attributes: types.ElementAttributes{
@@ -298,7 +311,8 @@ another fenced block
 							},
 						},
 						{
-							Term: "Item 2",
+							Attributes: types.ElementAttributes{},
+							Term:       "Item 2",
 							Elements: []interface{}{
 								types.Paragraph{
 									Attributes: types.ElementAttributes{},
@@ -354,7 +368,8 @@ another fenced block
 					Attributes: types.ElementAttributes{},
 					Items: []types.LabeledListItem{
 						{
-							Term: "Item 1",
+							Attributes: types.ElementAttributes{},
+							Term:       "Item 1",
 						},
 					},
 				},
@@ -379,7 +394,8 @@ another fenced block
 					Attributes: types.ElementAttributes{},
 					Items: []types.LabeledListItem{
 						{
-							Term: "Item 2",
+							Attributes: types.ElementAttributes{},
+							Term:       "Item 2",
 							Elements: []interface{}{
 								types.Paragraph{
 									Attributes: types.ElementAttributes{},
@@ -412,8 +428,44 @@ another fenced block
 				},
 			},
 		}
-
 		verify(GinkgoT(), expectedResult, actualContent)
+	})
+
+	It("labeled list with nested unordered list", func() {
+		actualContent := `Labeled item::
+- unordered item`
+		expectedResult := types.LabeledList{
+			Attributes: types.ElementAttributes{},
+			Items: []types.LabeledListItem{
+				{
+					Attributes: types.ElementAttributes{},
+					Term:       "Labeled item",
+					Elements: []interface{}{
+						types.UnorderedList{
+							Attributes: types.ElementAttributes{},
+							Items: []types.UnorderedListItem{
+								{
+									Attributes:  types.ElementAttributes{},
+									Level:       1,
+									BulletStyle: types.Dash,
+									Elements: []interface{}{
+										types.Paragraph{
+											Attributes: types.ElementAttributes{},
+											Lines: []types.InlineElements{
+												{
+													types.StringElement{Content: "unordered item"},
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		}
+		verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 	})
 
 })

@@ -857,7 +857,6 @@ func NewList(elements []interface{}) (List, error) {
 	stack = append(stack, rootType)
 	for _, element := range elements {
 		log.Debugf("processing list item of type %T", element)
-		// val := reflect.ValueOf(element).Elem().Addr().Interface()
 		item, ok := toPtr(element).(ListItem)
 		if !ok {
 			return nil, errors.Errorf("element of type '%T' is not a valid list item", element)
@@ -865,6 +864,7 @@ func NewList(elements []interface{}) (List, error) {
 		// collect all elements of the same kind and make a sub list from them
 		// each time a change of type is detected, except for the root type
 		currentType := reflect.TypeOf(item)
+		log.Debugf(" checking a switch of type when processing item of type %T: currentType=%v / previousType=%v / rootType=%v", item, currentType, previousType, rootType)
 		if currentType != previousType && previousType != rootType {
 			log.Debugf(" detected a switch of type when processing item of type %T: currentType=%v != previousType=%v", item, currentType, previousType)
 			// change of type: make a list from the buffer[t], reset and keep iterating
@@ -876,27 +876,30 @@ func NewList(elements []interface{}) (List, error) {
 			parentItems := buffer[currentType]
 			parentItem := parentItems[len(parentItems)-1]
 			parentItem.AddChild(sublist)
-			buffer[previousType] = make([]ListItem, 0)
-			// add element type to stack if not already found
-			found := false
-			for _, t := range stack {
-				log.Debugf("comparing stack type %v to %v: %t", t, previousType, (t == previousType))
-				if t == previousType {
-					found = true
-					break
-				}
-			}
-			if !found {
-				log.Debugf("adding element of type %v to stack", previousType)
-				stack = append(stack, previousType)
-			}
+			// reset buffer and stack entries
+			buffer[previousType] = make([]ListItem, 0) // reset entry for the current t
+			stack = stack[:len(stack)-1]               // remove last entry in the stack
+
 		}
 		previousType = currentType
-		// add item to buffer
+		// add item to buffer and in stack if not already set
 		buffer[currentType] = append(buffer[currentType], item)
+		// add element type to stack if not already found
+		found := false
+		for _, t := range stack {
+			log.Debugf("comparing stack type %v to %v: %t", t, previousType, (t == previousType))
+			if t == previousType {
+				found = true
+				break
+			}
+		}
+		if !found {
+			log.Debugf("adding element of type %v to stack", previousType)
+			stack = append(stack, previousType)
+		}
 	}
 	// end of processing: take into account the remainings in the buffer, by stack
-	log.Debugf("end of list init: stack=%v, buffer= %v", stack, buffer)
+	log.Debugf("end of list init: stack=%v (%d), buffer=%v (%d)", stack, len(stack), buffer, len(buffer))
 	// process all sub lists
 	for i := len(stack) - 1; i > 0; i-- {
 		// skip if no item at this layer/level
@@ -908,6 +911,7 @@ func NewList(elements []interface{}) (List, error) {
 		// look-up parent in the layer
 		parentItem := parentItems[len(parentItems)-1]
 		// build a new list from the remaining items at the current level of the stack
+		log.Debugf("building a new list from the remaining items of type '%T' and parent of type '%T' at the current level of the stack", buffer[stack[i]][0], parentItem)
 		sublist, err := newList(buffer[stack[i]])
 		if err != nil {
 			return nil, errors.Wrapf(err, "failed to initialize a new sublist")
@@ -1288,6 +1292,7 @@ func NewUnorderedListItem(prefix UnorderedListItemPrefix, elements []interface{}
 	// log.Debugf("initializing a new UnorderedListItem with '%d' lines (%T) and input level '%d'", len(elements), elements, lvl.Len())
 	return UnorderedListItem{
 		Level:       prefix.Level,
+		Attributes:  ElementAttributes{},
 		BulletStyle: prefix.BulletStyle,
 		Elements:    elements,
 	}, nil
@@ -1443,8 +1448,9 @@ type LabeledListItem struct {
 func NewLabeledListItem(term string, elements []interface{}) (LabeledListItem, error) {
 	log.Debugf("initializing a new LabeledListItem with %d elements (%T)", len(elements), elements)
 	return LabeledListItem{
-		Term:     term,
-		Elements: elements,
+		Attributes: ElementAttributes{},
+		Term:       term,
+		Elements:   elements,
 	}, nil
 }
 
