@@ -16,6 +16,7 @@ var _ = Describe("lists", func() {
 			// // given
 			elements := []interface{}{
 				types.UnorderedListItem{
+					Attributes:  types.ElementAttributes{},
 					Level:       1,
 					BulletStyle: types.Dash,
 					Elements: []interface{}{
@@ -25,6 +26,7 @@ var _ = Describe("lists", func() {
 					},
 				},
 				types.UnorderedListItem{
+					Attributes:  types.ElementAttributes{},
 					Level:       2,
 					BulletStyle: types.OneAsterisk,
 					Elements: []interface{}{
@@ -34,6 +36,7 @@ var _ = Describe("lists", func() {
 					},
 				},
 				types.UnorderedListItem{
+					Attributes:  types.ElementAttributes{},
 					Level:       1,
 					BulletStyle: types.Dash,
 					Elements: []interface{}{
@@ -51,6 +54,7 @@ var _ = Describe("lists", func() {
 				Attributes: types.ElementAttributes{},
 				Items: []types.UnorderedListItem{
 					{
+						Attributes:  types.ElementAttributes{},
 						Level:       1,
 						BulletStyle: types.Dash,
 						Elements: []interface{}{
@@ -61,6 +65,7 @@ var _ = Describe("lists", func() {
 								Attributes: types.ElementAttributes{},
 								Items: []types.UnorderedListItem{
 									{
+										Attributes:  types.ElementAttributes{},
 										Level:       2,
 										BulletStyle: types.OneAsterisk,
 										Elements: []interface{}{
@@ -74,6 +79,7 @@ var _ = Describe("lists", func() {
 						},
 					},
 					{
+						Attributes:  types.ElementAttributes{},
 						Level:       1,
 						BulletStyle: types.Dash,
 						Elements: []interface{}{
@@ -94,7 +100,8 @@ var _ = Describe("lists", func() {
 			// // given
 			elements := []interface{}{
 				types.LabeledListItem{
-					Term: "item 1",
+					Attributes: types.ElementAttributes{},
+					Term:       "item 1",
 					Elements: []interface{}{
 						types.StringElement{
 							Content: "item 1",
@@ -102,7 +109,8 @@ var _ = Describe("lists", func() {
 					},
 				},
 				types.LabeledListItem{
-					Term: "item 2",
+					Attributes: types.ElementAttributes{},
+					Term:       "item 2",
 					Elements: []interface{}{
 						types.StringElement{
 							Content: "item 2",
@@ -110,7 +118,8 @@ var _ = Describe("lists", func() {
 					},
 				},
 				types.LabeledListItem{
-					Term: "item 3",
+					Attributes: types.ElementAttributes{},
+					Term:       "item 3",
 					Elements: []interface{}{
 						types.StringElement{
 							Content: "item 3",
@@ -126,7 +135,8 @@ var _ = Describe("lists", func() {
 				Attributes: types.ElementAttributes{},
 				Items: []types.LabeledListItem{
 					{
-						Term: "item 1",
+						Attributes: types.ElementAttributes{},
+						Term:       "item 1",
 						Elements: []interface{}{
 							types.StringElement{
 								Content: "item 1",
@@ -134,7 +144,8 @@ var _ = Describe("lists", func() {
 						},
 					},
 					{
-						Term: "item 2",
+						Attributes: types.ElementAttributes{},
+						Term:       "item 2",
 						Elements: []interface{}{
 							types.StringElement{
 								Content: "item 2",
@@ -142,7 +153,8 @@ var _ = Describe("lists", func() {
 						},
 					},
 					{
-						Term: "item 3",
+						Attributes: types.ElementAttributes{},
+						Term:       "item 3",
 						Elements: []interface{}{
 							types.StringElement{
 								Content: "item 3",
@@ -160,7 +172,8 @@ var _ = Describe("lists", func() {
 			// // given
 			elements := []interface{}{
 				types.LabeledListItem{
-					Term: "item A",
+					Attributes: types.ElementAttributes{},
+					Term:       "item A",
 					Elements: []interface{}{
 						types.StringElement{
 							Content: "item A",
@@ -168,6 +181,7 @@ var _ = Describe("lists", func() {
 					},
 				},
 				types.UnorderedListItem{
+					Attributes:  types.ElementAttributes{},
 					Level:       1,
 					BulletStyle: types.Dash,
 					Elements: []interface{}{
@@ -177,6 +191,7 @@ var _ = Describe("lists", func() {
 					},
 				},
 				types.UnorderedListItem{
+					Attributes:  types.ElementAttributes{},
 					Level:       2,
 					BulletStyle: types.OneAsterisk,
 					Elements: []interface{}{
@@ -186,6 +201,7 @@ var _ = Describe("lists", func() {
 					},
 				},
 				types.UnorderedListItem{
+					Attributes:  types.ElementAttributes{},
 					Level:       1,
 					BulletStyle: types.Dash,
 					Elements: []interface{}{
@@ -195,7 +211,8 @@ var _ = Describe("lists", func() {
 					},
 				},
 				types.LabeledListItem{
-					Term: "item B",
+					Attributes: types.ElementAttributes{},
+					Term:       "item B",
 					Elements: []interface{}{
 						types.StringElement{
 							Content: "item B",
@@ -203,7 +220,8 @@ var _ = Describe("lists", func() {
 					},
 				},
 				types.LabeledListItem{
-					Term: "item C",
+					Attributes: types.ElementAttributes{},
+					Term:       "item C",
 					Elements: []interface{}{
 						types.StringElement{
 							Content: "item C",
@@ -219,7 +237,8 @@ var _ = Describe("lists", func() {
 				Attributes: types.ElementAttributes{},
 				Items: []types.LabeledListItem{
 					{
-						Term: "item A",
+						Attributes: types.ElementAttributes{},
+						Term:       "item A",
 						Elements: []interface{}{
 							types.StringElement{
 								Content: "item A",
@@ -228,6 +247,7 @@ var _ = Describe("lists", func() {
 								Attributes: types.ElementAttributes{},
 								Items: []types.UnorderedListItem{
 									{
+										Attributes:  types.ElementAttributes{},
 										Level:       1,
 										BulletStyle: types.Dash,
 										Elements: []interface{}{
@@ -238,6 +258,7 @@ var _ = Describe("lists", func() {
 												Attributes: types.ElementAttributes{},
 												Items: []types.UnorderedListItem{
 													{
+														Attributes:  types.ElementAttributes{},
 														Level:       2,
 														BulletStyle: types.OneAsterisk,
 														Elements: []interface{}{
@@ -251,6 +272,7 @@ var _ = Describe("lists", func() {
 										},
 									},
 									{
+										Attributes:  types.ElementAttributes{},
 										Level:       1,
 										BulletStyle: types.Dash,
 										Elements: []interface{}{
@@ -264,7 +286,8 @@ var _ = Describe("lists", func() {
 						},
 					},
 					{
-						Term: "item B",
+						Attributes: types.ElementAttributes{},
+						Term:       "item B",
 						Elements: []interface{}{
 							types.StringElement{
 								Content: "item B",
@@ -272,7 +295,8 @@ var _ = Describe("lists", func() {
 						},
 					},
 					{
-						Term: "item C",
+						Attributes: types.ElementAttributes{},
+						Term:       "item C",
 						Elements: []interface{}{
 							types.StringElement{
 								Content: "item C",

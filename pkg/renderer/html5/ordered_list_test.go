@@ -237,4 +237,48 @@ extra lines.</p>
 		verify(GinkgoT(), expectedResult, actualContent)
 	})
 
+	It("all kinds of lists - complex case 3", func() {
+		actualContent := `* foo
+1. bar
+a. foo
+2. baz
+* foo2
+- bar2`
+		expectedResult := `<div class="ulist">
+<ul>
+<li>
+<p>foo</p>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>bar</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>foo</p>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>baz</p>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>foo2</p>
+<div class="ulist">
+<ul>
+<li>
+<p>bar2</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>`
+		verify(GinkgoT(), expectedResult, actualContent)
+	})
+
 })
