@@ -666,6 +666,7 @@ b. item 2.a`
 								Attributes: types.ElementAttributes{},
 								Items: []types.UnorderedListItem{
 									{
+										Attributes:  types.ElementAttributes{},
 										Level:       1,
 										BulletStyle: types.OneAsterisk,
 										Elements: []interface{}{
@@ -680,6 +681,7 @@ b. item 2.a`
 										},
 									},
 									{
+										Attributes:  types.ElementAttributes{},
 										Level:       1,
 										BulletStyle: types.OneAsterisk,
 										Elements: []interface{}{
@@ -698,10 +700,10 @@ b. item 2.a`
 						},
 					},
 					{
+						Attributes:     types.ElementAttributes{},
 						Level:          1,
 						Position:       2,
 						NumberingStyle: types.Arabic,
-						Attributes:     map[string]interface{}{},
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
@@ -715,6 +717,7 @@ b. item 2.a`
 								Attributes: types.ElementAttributes{},
 								Items: []types.UnorderedListItem{
 									{
+										Attributes:  types.ElementAttributes{},
 										Level:       1,
 										BulletStyle: types.OneAsterisk,
 										Elements: []interface{}{
@@ -729,6 +732,7 @@ b. item 2.a`
 										},
 									},
 									{
+										Attributes:  types.ElementAttributes{},
 										Level:       1,
 										BulletStyle: types.OneAsterisk,
 										Elements: []interface{}{
@@ -768,6 +772,7 @@ b. item 2.a`
 				Attributes: types.ElementAttributes{},
 				Items: []types.UnorderedListItem{
 					{
+						Attributes:  types.ElementAttributes{},
 						Level:       1,
 						BulletStyle: types.Dash,
 						Elements: []interface{}{
@@ -783,10 +788,10 @@ b. item 2.a`
 								Attributes: types.ElementAttributes{},
 								Items: []types.OrderedListItem{
 									{
+										Attributes:     types.ElementAttributes{},
 										Level:          1,
 										Position:       1,
 										NumberingStyle: types.Arabic,
-										Attributes:     map[string]interface{}{},
 										Elements: []interface{}{
 											types.Paragraph{
 												Attributes: types.ElementAttributes{},
@@ -800,10 +805,10 @@ b. item 2.a`
 												Attributes: types.ElementAttributes{},
 												Items: []types.OrderedListItem{
 													{
+														Attributes:     types.ElementAttributes{},
 														Level:          2,
 														Position:       1,
 														NumberingStyle: types.LowerAlpha,
-														Attributes:     map[string]interface{}{},
 														Elements: []interface{}{
 															types.Paragraph{
 																Attributes: types.ElementAttributes{},
@@ -816,10 +821,10 @@ b. item 2.a`
 														},
 													},
 													{
+														Attributes:     types.ElementAttributes{},
 														Level:          2,
 														Position:       2,
 														NumberingStyle: types.LowerAlpha,
-														Attributes:     map[string]interface{}{},
 														Elements: []interface{}{
 															types.Paragraph{
 																Attributes: types.ElementAttributes{},
@@ -832,10 +837,10 @@ b. item 2.a`
 														},
 													},
 													{
+														Attributes:     types.ElementAttributes{},
 														Level:          2,
 														Position:       3,
 														NumberingStyle: types.LowerAlpha,
-														Attributes:     map[string]interface{}{},
 														Elements: []interface{}{
 															types.Paragraph{
 																Attributes: types.ElementAttributes{},
@@ -852,10 +857,10 @@ b. item 2.a`
 										},
 									},
 									{
+										Attributes:     types.ElementAttributes{},
 										Level:          1,
 										Position:       2,
 										NumberingStyle: types.Arabic,
-										Attributes:     map[string]interface{}{},
 										Elements: []interface{}{
 											types.Paragraph{
 												Attributes: types.ElementAttributes{},
@@ -869,10 +874,10 @@ b. item 2.a`
 												Attributes: types.ElementAttributes{},
 												Items: []types.OrderedListItem{
 													{
+														Attributes:     types.ElementAttributes{},
 														Level:          2,
 														Position:       1,
 														NumberingStyle: types.LowerRoman,
-														Attributes:     map[string]interface{}{},
 														Elements: []interface{}{
 															types.Paragraph{
 																Attributes: types.ElementAttributes{},
@@ -885,10 +890,10 @@ b. item 2.a`
 														},
 													},
 													{
+														Attributes:     types.ElementAttributes{},
 														Level:          2,
 														Position:       2,
 														NumberingStyle: types.LowerRoman,
-														Attributes:     map[string]interface{}{},
 														Elements: []interface{}{
 															types.Paragraph{
 																Attributes: types.ElementAttributes{},
@@ -905,10 +910,10 @@ b. item 2.a`
 										},
 									},
 									{
+										Attributes:     types.ElementAttributes{},
 										Level:          1,
 										Position:       3,
 										NumberingStyle: types.Arabic,
-										Attributes:     map[string]interface{}{},
 										Elements: []interface{}{
 											types.Paragraph{
 												Attributes: types.ElementAttributes{},
@@ -921,10 +926,10 @@ b. item 2.a`
 										},
 									},
 									{
+										Attributes:     types.ElementAttributes{},
 										Level:          1,
 										Position:       4,
 										NumberingStyle: types.Arabic,
-										Attributes:     map[string]interface{}{},
 										Elements: []interface{}{
 											types.Paragraph{
 												Attributes: types.ElementAttributes{},
@@ -941,6 +946,7 @@ b. item 2.a`
 						},
 					},
 					{
+						Attributes:  types.ElementAttributes{},
 						Level:       1,
 						BulletStyle: types.Dash,
 						Elements: []interface{}{
@@ -956,6 +962,7 @@ b. item 2.a`
 								Attributes: types.ElementAttributes{},
 								Items: []types.UnorderedListItem{
 									{
+										Attributes:  types.ElementAttributes{},
 										Level:       2,
 										BulletStyle: types.OneAsterisk,
 										Elements: []interface{}{
@@ -1007,6 +1014,7 @@ b. item 2.a`
 				Attributes: types.ElementAttributes{},
 				Items: []types.UnorderedListItem{
 					{
+						Attributes:  types.ElementAttributes{},
 						Level:       1,
 						BulletStyle: types.Dash,
 						Elements: []interface{}{
@@ -1022,10 +1030,10 @@ b. item 2.a`
 								Attributes: types.ElementAttributes{},
 								Items: []types.OrderedListItem{
 									{
+										Attributes:     types.ElementAttributes{},
 										Level:          1,
 										Position:       1,
 										NumberingStyle: types.Arabic,
-										Attributes:     map[string]interface{}{},
 										Elements: []interface{}{
 											types.Paragraph{
 												Attributes: types.ElementAttributes{},
@@ -1039,10 +1047,10 @@ b. item 2.a`
 												Attributes: types.ElementAttributes{},
 												Items: []types.OrderedListItem{
 													{
+														Attributes:     types.ElementAttributes{},
 														Level:          2,
 														Position:       1,
 														NumberingStyle: types.LowerAlpha,
-														Attributes:     map[string]interface{}{},
 														Elements: []interface{}{
 															types.Paragraph{
 																Attributes: types.ElementAttributes{},
@@ -1055,10 +1063,10 @@ b. item 2.a`
 														},
 													},
 													{
+														Attributes:     types.ElementAttributes{},
 														Level:          2,
 														Position:       2,
 														NumberingStyle: types.LowerAlpha,
-														Attributes:     map[string]interface{}{},
 														Elements: []interface{}{
 															types.Paragraph{
 																Attributes: types.ElementAttributes{},
@@ -1071,10 +1079,10 @@ b. item 2.a`
 														},
 													},
 													{
+														Attributes:     types.ElementAttributes{},
 														Level:          2,
 														Position:       3,
 														NumberingStyle: types.LowerAlpha,
-														Attributes:     map[string]interface{}{},
 														Elements: []interface{}{
 															types.Paragraph{
 																Attributes: types.ElementAttributes{},
@@ -1091,10 +1099,10 @@ b. item 2.a`
 										},
 									},
 									{
+										Attributes:     types.ElementAttributes{},
 										Level:          1,
 										Position:       2,
 										NumberingStyle: types.Arabic,
-										Attributes:     map[string]interface{}{},
 										Elements: []interface{}{
 											types.Paragraph{
 												Attributes: types.ElementAttributes{},
@@ -1108,10 +1116,10 @@ b. item 2.a`
 												Attributes: types.ElementAttributes{},
 												Items: []types.OrderedListItem{
 													{
+														Attributes:     types.ElementAttributes{},
 														Level:          2,
 														Position:       1,
 														NumberingStyle: types.LowerRoman,
-														Attributes:     map[string]interface{}{},
 														Elements: []interface{}{
 															types.Paragraph{
 																Attributes: types.ElementAttributes{},
@@ -1124,10 +1132,10 @@ b. item 2.a`
 														},
 													},
 													{
+														Attributes:     types.ElementAttributes{},
 														Level:          2,
 														Position:       2,
 														NumberingStyle: types.LowerRoman,
-														Attributes:     map[string]interface{}{},
 														Elements: []interface{}{
 															types.Paragraph{
 																Attributes: types.ElementAttributes{},
@@ -1144,10 +1152,10 @@ b. item 2.a`
 										},
 									},
 									{
+										Attributes:     types.ElementAttributes{},
 										Level:          1,
 										Position:       3,
 										NumberingStyle: types.Arabic,
-										Attributes:     map[string]interface{}{},
 										Elements: []interface{}{
 											types.Paragraph{
 												Attributes: types.ElementAttributes{},
@@ -1160,10 +1168,10 @@ b. item 2.a`
 										},
 									},
 									{
+										Attributes:     types.ElementAttributes{},
 										Level:          1,
 										Position:       4,
 										NumberingStyle: types.Arabic,
-										Attributes:     map[string]interface{}{},
 										Elements: []interface{}{
 											types.Paragraph{
 												Attributes: types.ElementAttributes{},
@@ -1180,6 +1188,7 @@ b. item 2.a`
 						},
 					},
 					{
+						Attributes:  types.ElementAttributes{},
 						Level:       1,
 						BulletStyle: types.Dash,
 						Elements: []interface{}{
@@ -1195,6 +1204,7 @@ b. item 2.a`
 								Attributes: types.ElementAttributes{},
 								Items: []types.UnorderedListItem{
 									{
+										Attributes:  types.ElementAttributes{},
 										Level:       2,
 										BulletStyle: types.OneAsterisk,
 										Elements: []interface{}{
@@ -1210,6 +1220,7 @@ b. item 2.a`
 												Attributes: types.ElementAttributes{},
 												Items: []types.UnorderedListItem{
 													{
+														Attributes:  types.ElementAttributes{},
 														Level:       3,
 														BulletStyle: types.TwoAsterisks,
 														Elements: []interface{}{
@@ -1230,6 +1241,7 @@ b. item 2.a`
 														},
 													},
 													{
+														Attributes:  types.ElementAttributes{},
 														Level:       3,
 														BulletStyle: types.TwoAsterisks,
 														Elements: []interface{}{
@@ -1248,6 +1260,7 @@ b. item 2.a`
 										},
 									},
 									{
+										Attributes:  types.ElementAttributes{},
 										Level:       2,
 										BulletStyle: types.OneAsterisk,
 										Elements: []interface{}{
@@ -1266,6 +1279,7 @@ b. item 2.a`
 						},
 					},
 					{
+						Attributes:  types.ElementAttributes{},
 						Level:       1,
 						BulletStyle: types.Dash,
 						Elements: []interface{}{
@@ -1281,10 +1295,10 @@ b. item 2.a`
 								Attributes: types.ElementAttributes{},
 								Items: []types.OrderedListItem{
 									{
+										Attributes:     types.ElementAttributes{},
 										Level:          1,
 										Position:       1,
 										NumberingStyle: types.Arabic,
-										Attributes:     map[string]interface{}{},
 										Elements: []interface{}{
 											types.Paragraph{
 												Attributes: types.ElementAttributes{},
@@ -1297,10 +1311,10 @@ b. item 2.a`
 										},
 									},
 									{
+										Attributes:     types.ElementAttributes{},
 										Level:          1,
 										Position:       2,
 										NumberingStyle: types.Arabic,
-										Attributes:     map[string]interface{}{},
 										Elements: []interface{}{
 											types.Paragraph{
 												Attributes: types.ElementAttributes{},
@@ -1332,10 +1346,10 @@ b. item 2.a`
 														},
 													},
 													{
+														Attributes:     types.ElementAttributes{},
 														Level:          2,
 														Position:       2,
 														NumberingStyle: types.UpperRoman,
-														Attributes:     map[string]interface{}{},
 														Elements: []interface{}{
 															types.Paragraph{
 																Attributes: types.ElementAttributes{},
@@ -1352,10 +1366,10 @@ b. item 2.a`
 										},
 									},
 									{
+										Attributes:     types.ElementAttributes{},
 										Level:          1,
 										Position:       3,
 										NumberingStyle: types.Arabic,
-										Attributes:     map[string]interface{}{},
 										Elements: []interface{}{
 											types.Paragraph{
 												Attributes: types.ElementAttributes{},

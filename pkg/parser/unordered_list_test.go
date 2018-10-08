@@ -16,6 +16,7 @@ var _ = Describe("unordered lists", func() {
 				Attributes: types.ElementAttributes{},
 				Items: []types.UnorderedListItem{
 					{
+						Attributes:  types.ElementAttributes{},
 						Level:       1,
 						BulletStyle: types.OneAsterisk,
 						Elements: []interface{}{
@@ -47,6 +48,7 @@ var _ = Describe("unordered lists", func() {
 				},
 				Items: []types.UnorderedListItem{
 					{
+						Attributes:  types.ElementAttributes{},
 						Level:       1,
 						BulletStyle: types.OneAsterisk,
 						Elements: []interface{}{
@@ -73,6 +75,7 @@ var _ = Describe("unordered lists", func() {
 				},
 				Items: []types.UnorderedListItem{
 					{
+						Attributes:  types.ElementAttributes{},
 						Level:       1,
 						BulletStyle: types.OneAsterisk,
 						Elements: []interface{}{
@@ -98,6 +101,7 @@ var _ = Describe("unordered lists", func() {
 				Attributes: types.ElementAttributes{},
 				Items: []types.UnorderedListItem{
 					{
+						Attributes:  types.ElementAttributes{},
 						Level:       1,
 						BulletStyle: types.OneAsterisk,
 						Elements: []interface{}{
@@ -112,6 +116,7 @@ var _ = Describe("unordered lists", func() {
 						},
 					},
 					{
+						Attributes:  types.ElementAttributes{},
 						Level:       1,
 						BulletStyle: types.OneAsterisk,
 						Elements: []interface{}{
@@ -154,6 +159,7 @@ var _ = Describe("unordered lists", func() {
 				},
 				Items: []types.UnorderedListItem{
 					{
+						Attributes:  types.ElementAttributes{},
 						Level:       1,
 						BulletStyle: types.OneAsterisk,
 						Elements: []interface{}{
@@ -169,6 +175,7 @@ var _ = Describe("unordered lists", func() {
 								Attributes: types.ElementAttributes{},
 								Items: []types.UnorderedListItem{
 									{
+										Attributes:  types.ElementAttributes{},
 										Level:       2,
 										BulletStyle: types.TwoAsterisks,
 										Elements: []interface{}{
@@ -184,6 +191,7 @@ var _ = Describe("unordered lists", func() {
 												Attributes: types.ElementAttributes{},
 												Items: []types.UnorderedListItem{
 													{
+														Attributes:  types.ElementAttributes{},
 														Level:       3,
 														BulletStyle: types.ThreeAsterisks,
 														Elements: []interface{}{
@@ -198,6 +206,7 @@ var _ = Describe("unordered lists", func() {
 														},
 													},
 													{
+														Attributes:  types.ElementAttributes{},
 														Level:       3,
 														BulletStyle: types.ThreeAsterisks,
 														Elements: []interface{}{
@@ -216,6 +225,7 @@ var _ = Describe("unordered lists", func() {
 										},
 									},
 									{
+										Attributes:  types.ElementAttributes{},
 										Level:       2,
 										BulletStyle: types.TwoAsterisks,
 										Elements: []interface{}{
@@ -231,6 +241,7 @@ var _ = Describe("unordered lists", func() {
 												Attributes: types.ElementAttributes{},
 												Items: []types.UnorderedListItem{
 													{
+														Attributes:  types.ElementAttributes{},
 														Level:       3,
 														BulletStyle: types.ThreeAsterisks,
 														Elements: []interface{}{
@@ -245,6 +256,7 @@ var _ = Describe("unordered lists", func() {
 														},
 													},
 													{
+														Attributes:  types.ElementAttributes{},
 														Level:       3,
 														BulletStyle: types.ThreeAsterisks,
 														Elements: []interface{}{
@@ -267,6 +279,7 @@ var _ = Describe("unordered lists", func() {
 						},
 					},
 					{
+						Attributes:  types.ElementAttributes{},
 						Level:       1,
 						BulletStyle: types.OneAsterisk,
 						Elements: []interface{}{
@@ -292,6 +305,7 @@ var _ = Describe("unordered lists", func() {
 				Attributes: types.ElementAttributes{},
 				Items: []types.UnorderedListItem{
 					{
+						Attributes:  types.ElementAttributes{},
 						Level:       1,
 						BulletStyle: types.Dash,
 						Elements: []interface{}{
@@ -306,6 +320,7 @@ var _ = Describe("unordered lists", func() {
 						},
 					},
 					{
+						Attributes:  types.ElementAttributes{},
 						Level:       1,
 						BulletStyle: types.Dash,
 						Elements: []interface{}{
@@ -342,6 +357,7 @@ var _ = Describe("unordered lists", func() {
 				Attributes: types.ElementAttributes{},
 				Items: []types.UnorderedListItem{
 					{
+						Attributes:  types.ElementAttributes{},
 						Level:       1,
 						BulletStyle: types.Dash,
 						Elements: []interface{}{
@@ -357,6 +373,7 @@ var _ = Describe("unordered lists", func() {
 								Attributes: types.ElementAttributes{},
 								Items: []types.UnorderedListItem{
 									{
+										Attributes:  types.ElementAttributes{},
 										Level:       2,
 										BulletStyle: types.OneAsterisk,
 										Elements: []interface{}{
@@ -375,6 +392,7 @@ var _ = Describe("unordered lists", func() {
 						},
 					},
 					{
+						Attributes:  types.ElementAttributes{},
 						Level:       1,
 						BulletStyle: types.Dash,
 						Elements: []interface{}{
@@ -390,6 +408,7 @@ var _ = Describe("unordered lists", func() {
 								Attributes: types.ElementAttributes{},
 								Items: []types.UnorderedListItem{
 									{
+										Attributes:  types.ElementAttributes{},
 										Level:       2,
 										BulletStyle: types.OneAsterisk,
 										Elements: []interface{}{
@@ -405,6 +424,7 @@ var _ = Describe("unordered lists", func() {
 												Attributes: types.ElementAttributes{},
 												Items: []types.UnorderedListItem{
 													{
+														Attributes:  types.ElementAttributes{},
 														Level:       3,
 														BulletStyle: types.TwoAsterisks,
 														Elements: []interface{}{
@@ -440,6 +460,7 @@ var _ = Describe("unordered lists", func() {
 				Attributes: types.ElementAttributes{},
 				Items: []types.UnorderedListItem{
 					{
+						Attributes:  types.ElementAttributes{},
 						Level:       1,
 						BulletStyle: types.OneAsterisk,
 						Elements: []interface{}{
@@ -454,6 +475,7 @@ var _ = Describe("unordered lists", func() {
 						},
 					},
 					{
+						Attributes:  types.ElementAttributes{},
 						Level:       1,
 						BulletStyle: types.OneAsterisk,
 						Elements: []interface{}{
@@ -488,6 +510,7 @@ on 2 lines, too.`
 				Attributes: types.ElementAttributes{},
 				Items: []types.UnorderedListItem{
 					{
+						Attributes:  types.ElementAttributes{},
 						Level:       1,
 						BulletStyle: types.OneAsterisk,
 						Elements: []interface{}{
@@ -505,6 +528,7 @@ on 2 lines, too.`
 						},
 					},
 					{
+						Attributes:  types.ElementAttributes{},
 						Level:       1,
 						BulletStyle: types.OneAsterisk,
 						Elements: []interface{}{
@@ -541,6 +565,7 @@ on 2 lines, too.`
 						Attributes: types.ElementAttributes{},
 						Items: []types.UnorderedListItem{
 							{
+								Attributes:  types.ElementAttributes{},
 								Level:       1,
 								BulletStyle: types.OneAsterisk,
 								Elements: []interface{}{
@@ -555,6 +580,7 @@ on 2 lines, too.`
 								},
 							},
 							{
+								Attributes:  types.ElementAttributes{},
 								Level:       1,
 								BulletStyle: types.OneAsterisk,
 								Elements: []interface{}{
@@ -588,6 +614,7 @@ on 2 lines, too.`
 				Attributes: types.ElementAttributes{},
 				Items: []types.UnorderedListItem{
 					{
+						Attributes:  types.ElementAttributes{},
 						Level:       1,
 						BulletStyle: types.OneAsterisk,
 						Elements: []interface{}{
@@ -603,6 +630,7 @@ on 2 lines, too.`
 								Attributes: types.ElementAttributes{},
 								Items: []types.UnorderedListItem{
 									{
+										Attributes:  types.ElementAttributes{},
 										Level:       2,
 										BulletStyle: types.TwoAsterisks,
 										Elements: []interface{}{
@@ -617,6 +645,7 @@ on 2 lines, too.`
 										},
 									},
 									{
+										Attributes:  types.ElementAttributes{},
 										Level:       2,
 										BulletStyle: types.TwoAsterisks,
 										Elements: []interface{}{
@@ -632,6 +661,7 @@ on 2 lines, too.`
 												Attributes: types.ElementAttributes{},
 												Items: []types.UnorderedListItem{
 													{
+														Attributes:  types.ElementAttributes{},
 														Level:       3,
 														BulletStyle: types.ThreeAsterisks,
 														Elements: []interface{}{
@@ -650,6 +680,7 @@ on 2 lines, too.`
 										},
 									},
 									{
+										Attributes:  types.ElementAttributes{},
 										Level:       2,
 										BulletStyle: types.TwoAsterisks,
 										Elements: []interface{}{
@@ -664,6 +695,7 @@ on 2 lines, too.`
 										},
 									},
 									{
+										Attributes:  types.ElementAttributes{},
 										Level:       2,
 										BulletStyle: types.TwoAsterisks,
 										Elements: []interface{}{
@@ -682,6 +714,7 @@ on 2 lines, too.`
 						},
 					},
 					{
+						Attributes:  types.ElementAttributes{},
 						Level:       1,
 						BulletStyle: types.OneAsterisk,
 						Elements: []interface{}{
@@ -697,6 +730,7 @@ on 2 lines, too.`
 								Attributes: types.ElementAttributes{},
 								Items: []types.UnorderedListItem{
 									{
+										Attributes:  types.ElementAttributes{},
 										Level:       2,
 										BulletStyle: types.TwoAsterisks,
 										Elements: []interface{}{
@@ -732,6 +766,7 @@ on 2 lines, too.`
 				Attributes: types.ElementAttributes{},
 				Items: []types.UnorderedListItem{
 					{
+						Attributes:  types.ElementAttributes{},
 						Level:       1,
 						BulletStyle: types.OneAsterisk,
 						Elements: []interface{}{
@@ -747,6 +782,7 @@ on 2 lines, too.`
 								Attributes: types.ElementAttributes{},
 								Items: []types.UnorderedListItem{
 									{
+										Attributes:  types.ElementAttributes{},
 										Level:       2,
 										BulletStyle: types.TwoAsterisks,
 										Elements: []interface{}{
@@ -762,6 +798,7 @@ on 2 lines, too.`
 												Attributes: types.ElementAttributes{},
 												Items: []types.UnorderedListItem{
 													{
+														Attributes:  types.ElementAttributes{},
 														Level:       3,
 														BulletStyle: types.ThreeAsterisks,
 														Elements: []interface{}{
@@ -780,6 +817,7 @@ on 2 lines, too.`
 										},
 									},
 									{
+										Attributes:  types.ElementAttributes{},
 										Level:       2,
 										BulletStyle: types.TwoAsterisks,
 										Elements: []interface{}{
@@ -798,6 +836,7 @@ on 2 lines, too.`
 						},
 					},
 					{
+						Attributes:  types.ElementAttributes{},
 						Level:       1,
 						BulletStyle: types.OneAsterisk,
 						Elements: []interface{}{
@@ -854,6 +893,7 @@ another delimited block
 						Attributes: types.ElementAttributes{},
 						Items: []types.UnorderedListItem{
 							{
+								Attributes:  types.ElementAttributes{},
 								Level:       1,
 								BulletStyle: types.OneAsterisk,
 								Elements: []interface{}{
@@ -902,6 +942,7 @@ another delimited block
 								},
 							},
 							{
+								Attributes:  types.ElementAttributes{},
 								Level:       1,
 								BulletStyle: types.OneAsterisk,
 								Elements: []interface{}{
@@ -941,6 +982,7 @@ another delimited block
 						Attributes: types.ElementAttributes{},
 						Items: []types.UnorderedListItem{
 							{
+								Attributes:  types.ElementAttributes{},
 								Level:       1,
 								BulletStyle: types.OneAsterisk,
 								Elements: []interface{}{
@@ -977,6 +1019,7 @@ another delimited block
 						Attributes: types.ElementAttributes{},
 						Items: []types.UnorderedListItem{
 							{
+								Attributes:  types.ElementAttributes{},
 								Level:       1,
 								BulletStyle: types.OneAsterisk,
 								Elements: []interface{}{

@@ -527,6 +527,7 @@ with *bold content*
 						Attributes: types.ElementAttributes{},
 						Items: []types.UnorderedListItem{
 							{
+								Attributes:  types.ElementAttributes{},
 								Level:       1,
 								BulletStyle: types.OneAsterisk,
 								Elements: []interface{}{
@@ -707,6 +708,7 @@ ____
 						Attributes: types.ElementAttributes{},
 						Items: []types.UnorderedListItem{
 							{
+								Attributes:  types.ElementAttributes{},
 								Level:       1,
 								BulletStyle: types.Dash,
 								Elements: []interface{}{
@@ -723,6 +725,7 @@ ____
 								},
 							},
 							{
+								Attributes:  types.ElementAttributes{},
 								Level:       1,
 								BulletStyle: types.Dash,
 								Elements: []interface{}{
@@ -739,6 +742,7 @@ ____
 								},
 							},
 							{
+								Attributes:  types.ElementAttributes{},
 								Level:       1,
 								BulletStyle: types.Dash,
 								Elements: []interface{}{
@@ -809,6 +813,7 @@ ____`
 						Attributes: types.ElementAttributes{},
 						Items: []types.UnorderedListItem{
 							{
+								Attributes:  types.ElementAttributes{},
 								Level:       1,
 								BulletStyle: types.OneAsterisk,
 								Elements: []interface{}{
@@ -847,6 +852,7 @@ ____`
 						Attributes: types.ElementAttributes{},
 						Items: []types.UnorderedListItem{
 							{
+								Attributes:  types.ElementAttributes{},
 								Level:       1,
 								BulletStyle: types.OneAsterisk,
 								Elements: []interface{}{
@@ -891,6 +897,7 @@ ____`
 						Attributes: types.ElementAttributes{},
 						Items: []types.UnorderedListItem{
 							{
+								Attributes:  types.ElementAttributes{},
 								Level:       1,
 								BulletStyle: types.OneAsterisk,
 								Elements: []interface{}{
@@ -907,6 +914,7 @@ ____`
 								},
 							},
 							{
+								Attributes:  types.ElementAttributes{},
 								Level:       1,
 								BulletStyle: types.OneAsterisk,
 								Elements: []interface{}{
@@ -923,6 +931,7 @@ ____`
 								},
 							},
 							{
+								Attributes:  types.ElementAttributes{},
 								Level:       1,
 								BulletStyle: types.OneAsterisk,
 								Elements: []interface{}{
