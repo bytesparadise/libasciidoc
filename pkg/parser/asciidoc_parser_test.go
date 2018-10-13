@@ -15,7 +15,7 @@ func verify(t GinkgoTInterface, expectedResult interface{}, content string, opti
 	log.Debugf("processing: %s", content)
 	reader := strings.NewReader(content)
 	allOptions := append(options)
-	result, err := parser.ParseReader("", reader, allOptions...) //, Debug(true))
+	result, err := parser.ParseReader("", reader, allOptions...)
 	if err != nil {
 		log.WithError(err).Error("Error found while parsing the document")
 	}
@@ -23,4 +23,12 @@ func verify(t GinkgoTInterface, expectedResult interface{}, content string, opti
 	t.Logf("actual document: `%s`", spew.Sdump(result))
 	t.Logf("expected document: `%s`", spew.Sdump(expectedResult))
 	assert.EqualValues(t, expectedResult, result)
+}
+
+func verifyError(t GinkgoTInterface, content string, options ...parser.Option) {
+	log.Debugf("processing: %s", content)
+	reader := strings.NewReader(content)
+	allOptions := append(options)
+	_, err := parser.ParseReader("", reader, allOptions...)
+	require.Error(t, err)
 }

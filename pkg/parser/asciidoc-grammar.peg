@@ -426,9 +426,9 @@ OrderedListItemPrefix <- WS* prefix:(
     // explicit numbering
     } / ([0-9])+ "." {  // numbering style: "1."
         return types.NewOrderedListItemPrefix(types.Arabic, 1)
-    } / ([a-z])+ "." { // numbering style: "a."
+    } / ([a-z]) "." { // numbering style: "a."
         return types.NewOrderedListItemPrefix(types.LowerAlpha, 1)
-    } / ([A-Z])+ "." { // numbering style: "A."
+    } / ([A-Z]) "." { // numbering style: "A."
         return types.NewOrderedListItemPrefix(types.UpperAlpha, 1)
     } / ([a-z])+ ")" { // numbering style: "i)"
         return types.NewOrderedListItemPrefix(types.LowerRoman, 1)
