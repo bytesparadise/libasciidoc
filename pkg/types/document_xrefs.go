@@ -1,6 +1,8 @@
 package types
 
 import (
+	"fmt"
+
 	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
 )
@@ -26,8 +28,22 @@ func (c *ElementReferencesCollector) Visit(element Visitable) error {
 	case Section:
 		elementID := e.Title.Attributes[AttrID]
 		if elementID, ok := elementID.(string); ok {
-			log.Debugf("Adding element reference: %v", elementID)
-			c.ElementReferences[elementID] = e.Title
+			for i := 1; ; i++ {
+				var key string
+				if i == 1 {
+					key = elementID
+				} else {
+					key = fmt.Sprintf("%s_%d", elementID, i)
+				}
+				if _, found := c.ElementReferences[key]; !found {
+					log.Debugf("Adding element reference: %v", key)
+					c.ElementReferences[key] = e.Title
+					// override the element id
+					e.Title.Attributes[AttrID] = key
+					break
+				}
+
+			}
 		} else {
 			return errors.Errorf("unexpected type of element id: %T", elementID)
 		}

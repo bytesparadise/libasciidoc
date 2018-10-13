@@ -603,6 +603,53 @@ a paragraph`
 			}
 			verify(GinkgoT(), expectedResult, actualContent)
 		})
+
+		It("sections with same title", func() {
+			actualContent := `== section 1
+
+== section 1`
+			section1aTitle := types.SectionTitle{
+				Attributes: types.ElementAttributes{
+					types.AttrID: "_section_1",
+				},
+				Elements: types.InlineElements{
+					types.StringElement{Content: "section 1"},
+				},
+			}
+			section1bTitle := types.SectionTitle{
+				Attributes: types.ElementAttributes{
+					types.AttrID: "_section_1_2",
+				},
+				Elements: types.InlineElements{
+					types.StringElement{Content: "section 1"},
+				},
+			}
+
+			expectedResult := types.Document{
+				Attributes: types.DocumentAttributes{},
+				ElementReferences: map[string]interface{}{
+					"_section_1":   section1aTitle,
+					"_section_1_2": section1bTitle,
+				},
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
+				Elements: []interface{}{
+					types.Section{
+						Level: 1,
+						Title: section1aTitle,
+						Elements: []interface{}{
+							types.BlankLine{},
+						},
+					},
+					types.Section{
+						Level:    1,
+						Title:    section1bTitle,
+						Elements: []interface{}{},
+					},
+				},
+			}
+			verify(GinkgoT(), expectedResult, actualContent)
+		})
 	})
 
 	Context("invalid sections", func() {

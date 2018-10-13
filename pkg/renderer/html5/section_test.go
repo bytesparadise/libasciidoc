@@ -64,6 +64,23 @@ var _ = Describe("sections", func() {
 </div>`
 			verify(GinkgoT(), expectedResult, actualContent)
 		})
+
+		It("sections with same title", func() {
+			actualContent := `== section 1
+
+== section 1`
+			expectedResult := `<div class="sect1">
+<h2 id="_section_1">section 1</h2>
+<div class="sectionbody">
+</div>
+</div>
+<div class="sect1">
+<h2 id="_section_1_2">section 1</h2>
+<div class="sectionbody">
+</div>
+</div>`
+			verify(GinkgoT(), expectedResult, actualContent)
+		})
 	})
 
 	Context("section with elements", func() {
