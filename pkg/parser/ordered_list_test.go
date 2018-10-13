@@ -1391,4 +1391,12 @@ b. item 2.a`
 		})
 	})
 
+	Context("invalid ordered list item prefix", func() {
+
+		It("should not match", func() {
+			actualContent := `foo. content`
+			verifyError(GinkgoT(), actualContent, parser.Entrypoint("OrderedListItem"))
+		})
+	})
+
 })

@@ -76,6 +76,53 @@ a paragraph`
 			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 
+		It("paragraph with words and dots on same line", func() {
+			actualContent := `foo. bar.`
+			expectedResult := types.Document{
+				Attributes:         types.DocumentAttributes{},
+				ElementReferences:  types.ElementReferences{},
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
+				Elements: []interface{}{
+					types.Paragraph{
+						Attributes: types.ElementAttributes{},
+						Lines: []types.InlineElements{
+							{
+								types.StringElement{Content: "foo. bar."},
+							},
+						},
+					},
+				},
+			}
+
+			verify(GinkgoT(), expectedResult, actualContent)
+		})
+		It("paragraph with words and dots on two lines", func() {
+			actualContent := `foo. 
+bar.`
+			expectedResult := types.Document{
+				Attributes:         types.DocumentAttributes{},
+				ElementReferences:  types.ElementReferences{},
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
+				Elements: []interface{}{
+					types.Paragraph{
+						Attributes: types.ElementAttributes{},
+						Lines: []types.InlineElements{
+							{
+								types.StringElement{Content: "foo. "},
+							},
+							{
+								types.StringElement{Content: "bar."},
+							},
+						},
+					},
+				},
+			}
+
+			verify(GinkgoT(), expectedResult, actualContent)
+		})
+
 		Context("paragraphs with line break", func() {
 
 			It("with explicit line break", func() {
