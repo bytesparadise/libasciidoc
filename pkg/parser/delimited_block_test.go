@@ -455,7 +455,7 @@ some listing code
 			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 
-		It("example block with single line starrting with a dot", func() {
+		It("example block with single line starting with a dot", func() {
 			actualContent := `====
 .foo
 ====`

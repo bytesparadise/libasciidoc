@@ -103,6 +103,40 @@ var _ = Describe("footnotes", func() {
 			verify(GinkgoT(), expectedResult, actualContent) // need to get the whole document here
 		})
 
+		It("footnote in a paragraph", func() {
+			actualContent := `This is another paragraph.footnote:[I am footnote text and will be displayed at the bottom of the article.]`
+			footnote1 := types.Footnote{
+				ID: 0,
+				Elements: types.InlineElements{
+					types.StringElement{
+						Content: "I am footnote text and will be displayed at the bottom of the article.",
+					},
+				},
+			}
+			expectedResult := types.Document{
+				Attributes:        types.DocumentAttributes{},
+				ElementReferences: map[string]interface{}{},
+				Footnotes: []types.Footnote{
+					footnote1,
+				},
+				FootnoteReferences: types.FootnoteReferences{},
+				Elements: []interface{}{
+					types.Paragraph{
+						Attributes: types.ElementAttributes{},
+						Lines: []types.InlineElements{
+							{
+								types.StringElement{
+									Content: "This is another paragraph.",
+								},
+								footnote1,
+							},
+						},
+					},
+				},
+			}
+			verify(GinkgoT(), expectedResult, actualContent) // need to get the whole document here
+		})
+
 		// It("footnote with multi-line content", func() {
 		// 	footnoteContent := `some
 		// 	content`

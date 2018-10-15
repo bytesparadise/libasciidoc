@@ -1022,7 +1022,7 @@ Alphanum <- [a-zA-Z0-9]
 
 Parenthesis <- "(" / ")" / "[" / "]"
 
-Word <- (!NEWLINE !WS !Parenthesis .)+ { // word cannot contain parenthesis
+Word <- ((!NEWLINE !WS !Parenthesis !"." .)+  / "."+){ // word cannot contain parenthesis. Dots and ellipsis are treated as independent words (but will be combined afterwards)
     return string(c.text), nil
 }
 
