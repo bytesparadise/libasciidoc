@@ -351,6 +351,53 @@ image::appa.png[]`
 				}
 				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
 			})
+
+			It("inline image in a paragraph with space after colon", func() {
+				actualContent := "this is an image: image:images/foo.png[]"
+				expectedResult := types.Paragraph{
+					Attributes: types.ElementAttributes{},
+					Lines: []types.InlineElements{
+						{
+							types.StringElement{
+								Content: "this is an image: ",
+							},
+							types.InlineImage{
+								Attributes: types.ElementAttributes{
+									types.AttrImageAlt:    "foo",
+									types.AttrImageWidth:  "",
+									types.AttrImageHeight: "",
+								},
+								Path: "images/foo.png",
+							},
+						},
+					},
+				}
+				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+			})
+
+			It("inline image in a paragraph without space keyword", func() {
+				actualContent := "this is an inline.image:images/foo.png[]"
+				expectedResult := types.Paragraph{
+					Attributes: types.ElementAttributes{},
+					Lines: []types.InlineElements{
+						{
+							types.StringElement{
+								Content: "this is an inline.",
+							},
+							types.InlineImage{
+								Attributes: types.ElementAttributes{
+									types.AttrImageAlt:    "foo",
+									types.AttrImageWidth:  "",
+									types.AttrImageHeight: "",
+								},
+								Path: "images/foo.png",
+							},
+						},
+					},
+				}
+
+				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+			})
 		})
 		Context("errors", func() {
 			It("inline image appending inline content", func() {
