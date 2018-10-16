@@ -2,16 +2,7 @@ dist: trusty
 sudo: false
 
 install:
-  # dep is used to manage dependencies
-  - go get -u github.com/golang/dep/cmd/dep
-  - dep ensure
-  # pigeon is used to generate the parser
-  - go get -u github.com/mna/pigeon
-  # ginkgo and gomega are used to run the tests
-  - go get -v github.com/onsi/ginkgo/ginkgo
-  - go get -v github.com/onsi/gomega
-  - go get github.com/modocache/gover
-  - go get -u golang.org/x/lint/golint
+  - make deps
 
 language: go
 
@@ -27,6 +18,7 @@ matrix:
   fast_finish: true
   allow_failures:
   - go: tip
+
 script:
   # verify that the commit code for the parser was optimized during the code generation
   - make verify-parser
@@ -35,7 +27,6 @@ script:
   # run the tests
   - export CI=travis-ci
   - make test
-  - make linters
 
 after_success:
   - gover . coverage.txt

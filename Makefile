@@ -17,8 +17,15 @@ INSTALL_PREFIX=$(CUR_DIR)/bin
 VENDOR_DIR=vendor
 SOURCE_DIR ?= .
 SOURCES := $(shell find $(SOURCE_DIR) -path $(SOURCE_DIR)/vendor -prune -o -name '*.go' -print)
-PKGS := $(shell go list ./... | grep -v ^vendor )
 COVERPKGS := $(shell go list ./... | grep -v vendor | paste -sd "," -)
+
+DEVTOOLS=\
+				github.com/golang/dep/cmd/dep \
+				github.com/golangci/golangci-lint/cmd/golangci-lint \
+				github.com/mna/pigeon \
+				github.com/modocache/gover \
+				github.com/onsi/ginkgo/ginkgo \
+				github.com/onsi/gomega
 
 ifeq ($(OS),Windows_NT)
 BINARY_PATH=$(INSTALL_PREFIX)/libasciidoc.exe
@@ -61,7 +68,12 @@ help:/
 
 .PHONY: deps
 ## Download build dependencies.
-deps: $(VENDOR_DIR)
+deps: install-devtools $(VENDOR_DIR)
+
+.PHONY: install-devtools
+## Install development tools.
+install-devtools:
+	@go get -u -v $(DEVTOOLS)
 
 $(VENDOR_DIR):
 	$(DEP_BIN) ensure
@@ -74,8 +86,8 @@ $(TMP_PATH):
 	@mkdir -p $(TMP_PATH)
 
 .PHONY: prebuild-checks
-prebuild-checks: $(TMP_PATH) $(INSTALL_PREFIX)
 ## Check that all tools where found
+prebuild-checks: $(TMP_PATH) $(INSTALL_PREFIX)
 ifndef GIT_BIN
 	$(error The "$(GIT_BIN_NAME)" executable could not be found in your PATH)
 endif
@@ -123,21 +135,11 @@ build: $(INSTALL_PREFIX) deps generate-optimized
 	  cmd/libasciidoc/*.go
 
 
-.PHONY: linters
-## run gofmt and golint linters
-linters:
-	@if [[ "$(shell go version)" =~ go1.11 ]]; then \
-		for s in $(SOURCES) ; do \
-			if [ "`gofmt -l $$s | tee /dev/stderr`" ]; then \
-				echo "^ gofmt error found" && echo && exit 1; \
-			fi \
-		done; \
-		for p in $(PKGS) ; do \
-			if [ "`golint $$p | tee /dev/stderr`" ]; then \
-				echo "^ golint error found" && echo && exit 1; \
-			fi \
-		done; \
-	fi
+.PHONY: lint
+## run golangci-lint against project
+lint:
+	@golangci-lint run -E gofmt,golint,megacheck,misspell ./...
+
 
 PARSER_DIFF_STATUS :=
 
