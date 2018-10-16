@@ -12,9 +12,22 @@ var _ = Describe("delimited blocks", func() {
 			actualContent := "```\nsome source code\n\nhere\n\n\n\n```"
 			expectedResult := `<div class="listingblock">
 <div class="content">
-<pre>some source code
+<pre class="highlight"><code>some source code
 
-here</pre>
+here</code></pre>
+</div>
+</div>`
+			verify(GinkgoT(), expectedResult, actualContent)
+		})
+
+		It("fenced block with id and title", func() {
+			actualContent := "[#id-for-fences]\n.fenced block title\n```\nsome source code\n\nhere\n\n\n\n```"
+			expectedResult := `<div id="id-for-fences" class="listingblock">
+<div class="title">fenced block title</div>
+<div class="content">
+<pre class="highlight"><code>some source code
+
+here</code></pre>
 </div>
 </div>`
 			verify(GinkgoT(), expectedResult, actualContent)
@@ -34,6 +47,21 @@ here
 <pre>some source code
 
 here</pre>
+</div>
+</div>`
+			verify(GinkgoT(), expectedResult, actualContent)
+		})
+
+		It("listing block with ID and title", func() {
+			actualContent := `[#id-for-listing-block]
+.listing block title
+----
+some source code
+----`
+			expectedResult := `<div id="id-for-listing-block" class="listingblock">
+<div class="title">listing block title</div>
+<div class="content">
+<pre>some source code</pre>
 </div>
 </div>`
 			verify(GinkgoT(), expectedResult, actualContent)
@@ -66,26 +94,78 @@ with <strong>bold content</strong></p>
 </div>`
 			verify(GinkgoT(), expectedResult, actualContent)
 		})
+
+		It("example block with ID and title", func() {
+			actualContent := `[#id-for-example-block]
+.example block title
+====
+foo
+====`
+			expectedResult := `<div id="id-for-example-block" class="exampleblock">
+<div class="title">Example 1. example block title</div>
+<div class="content">
+<div class="paragraph">
+<p>foo</p>
+</div>
+</div>
+</div>`
+			verify(GinkgoT(), expectedResult, actualContent)
+		})
 	})
 
 	Context("admonition blocks", func() {
 
 		It("admonition block with multiple elements alone", func() {
 			actualContent := `[NOTE]
-[#ID]
 ====
 some listing code
 with *bold content*
 
 * and a list item
 ====`
-			expectedResult := `<div id="ID" class="admonitionblock note">
+			expectedResult := `<div class="admonitionblock note">
 <table>
 <tr>
 <td class="icon">
 <div class="title">Note</div>
 </td>
 <td class="content">
+<div class="paragraph">
+<p>some listing code
+with <strong>bold content</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>and a list item</p>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
+</div>`
+			verify(GinkgoT(), expectedResult, actualContent)
+		})
+
+		It("admonition block with ID and title", func() {
+			actualContent := `[NOTE]
+[#id-for-admonition-block]
+.title for admonition block
+====
+some listing code
+with *bold content*
+
+* and a list item
+====`
+			expectedResult := `<div id="id-for-admonition-block" class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+<div class="title">title for admonition block</div>
 <div class="paragraph">
 <p>some listing code
 with <strong>bold content</strong></p>
@@ -158,6 +238,28 @@ ____
 some *quote* content
 ____`
 			expectedResult := `<div class="quoteblock">
+<blockquote>
+<div class="paragraph">
+<p>some <strong>quote</strong> content</p>
+</div>
+</blockquote>
+<div class="attribution">
+&#8212; john doe<br>
+<cite>quote title</cite>
+</div>
+</div>`
+			verify(GinkgoT(), expectedResult, actualContent)
+		})
+
+		It("single-line quote with author and title, and ID and title ", func() {
+			actualContent := `[#id-for-quote-block]
+[quote, john doe, quote title]
+.title for quote block
+____
+some *quote* content
+____`
+			expectedResult := `<div id="id-for-quote-block" class="quoteblock">
+<div class="title">title for quote block</div>
 <blockquote>
 <div class="paragraph">
 <p>some <strong>quote</strong> content</p>
@@ -310,6 +412,24 @@ ____`
 			verify(GinkgoT(), expectedResult, actualContent)
 		})
 
+		It("single-line verse with author, id and title ", func() {
+			actualContent := `[verse, john doe, verse title]
+[#id-for-verse-block]
+.title for verse block
+____
+some *verse* content
+____`
+			expectedResult := `<div id="id-for-verse-block" class="verseblock">
+<div class="title">title for verse block</div>
+<pre class="content">some <strong>verse</strong> content</pre>
+<div class="attribution">
+&#8212; john doe<br>
+<cite>verse title</cite>
+</div>
+</div>`
+			verify(GinkgoT(), expectedResult, actualContent)
+		})
+
 		It("multi-line verse with author and title", func() {
 			actualContent := `[verse, john doe, verse title]
 ____
@@ -401,8 +521,9 @@ some *verse* content
 			verify(GinkgoT(), expectedResult, actualContent)
 		})
 
-		It("sidebar block with title, paragraph and sourcecode block", func() {
-			actualContent := `.a title
+		It("sidebar block with id, title, paragraph and sourcecode block", func() {
+			actualContent := `[#id-for-sidebar]
+.title for sidebar
 ****
 some *verse* content
 ----
@@ -410,9 +531,9 @@ foo
 bar
 ----
 ****`
-			expectedResult := `<div class="sidebarblock">
+			expectedResult := `<div id="id-for-sidebar" class="sidebarblock">
 <div class="content">
-<div class="title">a title</div>
+<div class="title">title for sidebar</div>
 <div class="paragraph">
 <p>some <strong>verse</strong> content</p>
 </div>

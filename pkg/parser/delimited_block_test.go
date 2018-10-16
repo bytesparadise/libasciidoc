@@ -572,6 +572,32 @@ End of file here`
 			}
 			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
+
+		It("example block with title", func() {
+			actualContent := `.example block title
+====
+foo
+====`
+			expectedResult := types.DelimitedBlock{
+				Attributes: types.ElementAttributes{
+					types.AttrKind: types.Example,
+					types.AttrTitle: "example block title",
+				},
+				Elements: []interface{}{
+					types.Paragraph{
+						Attributes: types.ElementAttributes{},
+						Lines: []types.InlineElements{
+							{
+								types.StringElement{
+									Content: "foo",
+								},
+							},
+						},
+					},
+				},
+			}
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+		})
 	})
 
 	Context("admonition blocks", func() {

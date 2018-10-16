@@ -97,7 +97,7 @@ item 2:: description 2.`
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>a fenced block</pre>
+<pre class="highlight"><code>a fenced block</code></pre>
 </div>
 </div>
 <div class="dlist">
