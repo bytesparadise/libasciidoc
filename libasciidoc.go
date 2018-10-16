@@ -1,3 +1,5 @@
+// Package libasciidoc is an open source Go library that converts Asciidoc
+// content into HTML.
 package libasciidoc
 
 import (
