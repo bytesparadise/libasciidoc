@@ -122,6 +122,13 @@ func (ctx *Context) GetAndIncrementImageCounter() int {
 	return ctx.getAndIncrementCounter(imageCounter)
 }
 
+const exampleBlockCounter = "exampleBlockCounter"
+
+// GetAndIncrementExampleBlockCounter returns the current value for the example block counter after internally incrementing it.
+func (ctx *Context) GetAndIncrementExampleBlockCounter() int {
+	return ctx.getAndIncrementCounter(exampleBlockCounter)
+}
+
 // getAndIncrementCounter returns the current value for the  counter after internally incrementing it.
 func (ctx *Context) getAndIncrementCounter(counter string) int {
 	if _, found := ctx.options[counter]; !found {

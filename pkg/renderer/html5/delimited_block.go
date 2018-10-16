@@ -2,6 +2,7 @@ package html5
 
 import (
 	"bytes"
+	"fmt"
 	"strings"
 	texttemplate "text/template"
 
@@ -11,6 +12,7 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+var fencedBlockTmpl texttemplate.Template
 var listingBlockTmpl texttemplate.Template
 var exampleBlockTmpl texttemplate.Template
 var admonitionBlockTmpl texttemplate.Template
@@ -20,44 +22,58 @@ var sidebarBlockTmpl texttemplate.Template
 
 // initializes the templates
 func init() {
-	listingBlockTmpl = newTextTemplate("listing block", `<div class="listingblock">
+	fencedBlockTmpl = newTextTemplate("listing block", `{{ $ctx := .Context }}{{ with .Data }}<div {{ if .ID }}id="{{ .ID }}" {{ end }}class="listingblock">{{ if .Title }}
+<div class="title">{{ .Title }}</div>{{ end }}
 <div class="content">
-<pre>{{ $ctx := .Context }}{{ with .Data }}{{ range $index, $element := .Elements }}{{ renderPlainString $ctx $element | printf "%s" }}{{ end }}{{ end }}</pre>
+<pre class="highlight"><code>{{ range $index, $element := .Elements }}{{ renderPlainString $ctx $element | printf "%s" }}{{ end }}</code></pre>
 </div>
-</div>`,
+</div>{{ end }}`,
 		texttemplate.FuncMap{
 			"renderPlainString": renderPlainString,
 		})
 
-	exampleBlockTmpl = newTextTemplate("example block", `<div class="exampleblock">
+	listingBlockTmpl = newTextTemplate("listing block", `{{ $ctx := .Context }}{{ with .Data }}<div {{ if .ID }}id="{{ .ID }}" {{ end }}class="listingblock">{{ if .Title }}
+<div class="title">{{ .Title }}</div>{{ end }}
 <div class="content">
-{{ $ctx := .Context }}{{ with .Data }}{{ $elements := .Elements }}{{ renderElements $ctx $elements | printf "%s" }}{{ end }}
+<pre>{{ range $index, $element := .Elements }}{{ renderPlainString $ctx $element | printf "%s" }}{{ end }}</pre>
 </div>
-</div>`,
+</div>{{ end }}`,
+		texttemplate.FuncMap{
+			"renderPlainString": renderPlainString,
+		})
+
+	exampleBlockTmpl = newTextTemplate("example block", `{{ $ctx := .Context }}{{ with .Data }}<div {{ if .ID }}id="{{ .ID }}" {{ end }}class="exampleblock">{{ if .Title }}
+<div class="title">{{ .Title }}</div>{{ end }}
+<div class="content">
+{{ $elements := .Elements }}{{ renderElements $ctx $elements | printf "%s" }}
+</div>
+</div>{{ end }}`,
 		texttemplate.FuncMap{
 			"renderElements": renderElements,
 		})
 
-	quoteBlockTmpl = newTextTemplate("quote block", `<div class="quoteblock">
-{{ $ctx := .Context }}{{ with .Data }}<blockquote>
+	quoteBlockTmpl = newTextTemplate("quote block", `{{ $ctx := .Context }}{{ with .Data }}<div {{ if .ID }}id="{{ .ID }}" {{ end }}class="quoteblock">{{ if .Title }}
+<div class="title">{{ .Title }}</div>{{ end }}
+<blockquote>
 {{ renderElements $ctx .Elements | printf "%s" }}
 </blockquote>{{ if .Attribution.First }}
 <div class="attribution">
 &#8212; {{ .Attribution.First }}{{ if .Attribution.Second }}<br>
 <cite>{{ .Attribution.Second }}</cite>{{ end }}
-</div>{{ end }}{{ end }}
-</div>`,
+</div>{{ end }}
+</div>{{ end }}`,
 		texttemplate.FuncMap{
 			"renderElements": renderElements,
 		})
 
-	verseBlockTmpl = newTextTemplate("verse block", `<div class="verseblock">
-{{ $ctx := .Context }}{{ with .Data }}<pre class="content">{{ renderElements $ctx .Elements | printf "%s" }}</pre>{{ if .Attribution.First }}
+	verseBlockTmpl = newTextTemplate("verse block", `{{ $ctx := .Context }}{{ with .Data }}<div {{ if .ID }}id="{{ .ID }}" {{ end }}class="verseblock">{{ if .Title }}
+<div class="title">{{ .Title }}</div>{{ end }}
+<pre class="content">{{ renderElements $ctx .Elements | printf "%s" }}</pre>{{ if .Attribution.First }}
 <div class="attribution">
 &#8212; {{ .Attribution.First }}{{ if .Attribution.Second }}<br>
 <cite>{{ .Attribution.Second }}</cite>{{ end }}
-</div>{{ end }}{{ end }}
-</div>`,
+</div>{{ end }}
+</div>{{ end }}`,
 		texttemplate.FuncMap{
 			"renderElements": renderElements,
 		})
@@ -104,7 +120,26 @@ func renderDelimitedBlock(ctx *renderer.Context, b types.DelimitedBlock) ([]byte
 	var err error
 	kind := b.Attributes[types.AttrKind]
 	switch kind {
-	case types.Fenced, types.Listing:
+	case types.Fenced:
+		oldWithin := ctx.SetWithinDelimitedBlock(true)
+		oldInclude := ctx.SetIncludeBlankLine(true)
+		defer func() {
+			ctx.SetWithinDelimitedBlock(oldWithin)
+			ctx.SetIncludeBlankLine(oldInclude)
+		}()
+		err = fencedBlockTmpl.Execute(result, ContextualPipeline{
+			Context: ctx,
+			Data: struct {
+				ID       string
+				Title    string
+				Elements []interface{}
+			}{
+				ID:       id,
+				Title:    title,
+				Elements: elements,
+			},
+		})
+	case types.Listing:
 		oldWithin := ctx.SetWithinDelimitedBlock(true)
 		oldInclude := ctx.SetIncludeBlankLine(true)
 		defer func() {
@@ -114,12 +149,15 @@ func renderDelimitedBlock(ctx *renderer.Context, b types.DelimitedBlock) ([]byte
 		err = listingBlockTmpl.Execute(result, ContextualPipeline{
 			Context: ctx,
 			Data: struct {
+				ID       string
+				Title    string
 				Elements []interface{}
 			}{
+				ID:       id,
+				Title:    title,
 				Elements: elements,
 			},
 		})
-
 	case types.Example:
 		if k, ok := b.Attributes[types.AttrAdmonitionKind].(types.AdmonitionKind); ok {
 			err = admonitionBlockTmpl.Execute(result, ContextualPipeline{
@@ -140,11 +178,18 @@ func renderDelimitedBlock(ctx *renderer.Context, b types.DelimitedBlock) ([]byte
 			})
 		} else {
 			// default, example block
+			if title != "" {
+				title = fmt.Sprintf("Example %d. %s", ctx.GetAndIncrementExampleBlockCounter(), title)
+			}
 			err = exampleBlockTmpl.Execute(result, ContextualPipeline{
 				Context: ctx,
 				Data: struct {
+					ID       string
+					Title    string
 					Elements []interface{}
 				}{
+					ID:       id,
+					Title:    title,
 					Elements: elements,
 				},
 			})
@@ -165,13 +210,16 @@ func renderDelimitedBlock(ctx *renderer.Context, b types.DelimitedBlock) ([]byte
 		err = quoteBlockTmpl.Execute(result, ContextualPipeline{
 			Context: ctx,
 			Data: struct {
+				ID          string
+				Title       string
 				Attribution struct {
 					First  string
 					Second string
 				}
-				Title    string
 				Elements []interface{}
 			}{
+				ID:          id,
+				Title:       title,
 				Attribution: attribution,
 				Elements:    b.Elements,
 			},
@@ -200,13 +248,16 @@ func renderDelimitedBlock(ctx *renderer.Context, b types.DelimitedBlock) ([]byte
 		err = verseBlockTmpl.Execute(result, ContextualPipeline{
 			Context: ctx,
 			Data: struct {
+				ID          string
+				Title       string
 				Attribution struct {
 					First  string
 					Second string
 				}
-				Title    string
 				Elements []interface{}
 			}{
+				ID:          id,
+				Title:       title,
 				Attribution: attribution,
 				Elements:    elements,
 			},
