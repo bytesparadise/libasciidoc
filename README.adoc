@@ -1,5 +1,6 @@
 = Libasciidoc
 
+image:https://godoc.org/github.com/bytesparadise/libasciidoc?status.svg["GoDoc", link="https://godoc.org/github.com/bytesparadise/libasciidoc"]
 image:https://goreportcard.com/badge/github.com/bytesparadise/libasciidoc["Go Report Card", link="https://goreportcard.com/report/github.com/bytesparadise/libasciidoc"]
 image:https://travis-ci.org/bytesparadise/libasciidoc.svg?branch=master["Build Status", link="https://travis-ci.org/bytesparadise/libasciidoc"]
 image:https://codecov.io/gh/bytesparadise/libasciidoc/branch/master/graph/badge.svg["Codecov", link="https://codecov.io/gh/bytesparadise/libasciidoc"]
