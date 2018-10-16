@@ -26,14 +26,15 @@ matrix:
   fast_finish: true
   allow_failures:
   - go: tip
-script: 
+script:
   # verify that the commit code for the parser was optimized during the code generation
   - make verify-parser
-  # verify that the library builds completly
+  # verify that the library builds completely
   - make build
   # run the tests
   - export CI=travis-ci
   - make test
+  - make linters
 
 after_success:
   - gover . coverage.txt
