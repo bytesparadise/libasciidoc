@@ -2,6 +2,7 @@ dist: trusty
 sudo: false
 
 install:
+  - make install-devtools
   - make deps
 
 language: go

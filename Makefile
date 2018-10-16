@@ -65,14 +65,14 @@ help:/
           } \
         }' $(MAKEFILE_LIST)
 
-.PHONY: deps
-## Download build dependencies.
-deps: install-devtools $(VENDOR_DIR)
-
 .PHONY: install-devtools
 ## Install development tools.
 install-devtools:
 	@go get -u -v $(DEVTOOLS)
+
+.PHONY: deps
+## Download build dependencies.
+deps: $(VENDOR_DIR)
 
 $(VENDOR_DIR):
 	$(DEP_BIN) ensure
