@@ -126,16 +126,18 @@ build: $(INSTALL_PREFIX) deps generate-optimized
 .PHONY: linters
 ## run gofmt and golint linters
 linters:
-	@for s in $(SOURCES) ; do \
-		if [ "`gofmt -l $$s | tee /dev/stderr`" ]; then \
-			echo "^ gofmt error found" && echo && exit 1; \
-		fi \
-	done
-	@for p in $(PKGS) ; do \
-		if [ "`golint $$p | tee /dev/stderr`" ]; then \
-			echo "^ golint error found" && echo && exit 1; \
-		fi \
-	done
+	@if [[ "$(shell go version)" =~ go1.11 ]]; then \
+		for s in $(SOURCES) ; do \
+			if [ "`gofmt -l $$s | tee /dev/stderr`" ]; then \
+				echo "^ gofmt error found" && echo && exit 1; \
+			fi \
+		done; \
+		for p in $(PKGS) ; do \
+			if [ "`golint $$p | tee /dev/stderr`" ]; then \
+				echo "^ golint error found" && echo && exit 1; \
+			fi \
+		done; \
+	fi
 
 PARSER_DIFF_STATUS :=
 
