@@ -21,7 +21,6 @@ COVERPKGS := $(shell go list ./... | grep -v vendor | paste -sd "," -)
 
 DEVTOOLS=\
 				github.com/golang/dep/cmd/dep \
-				github.com/golangci/golangci-lint/cmd/golangci-lint \
 				github.com/mna/pigeon \
 				github.com/modocache/gover \
 				github.com/onsi/ginkgo/ginkgo \
@@ -138,6 +137,7 @@ build: $(INSTALL_PREFIX) deps generate-optimized
 .PHONY: lint
 ## run golangci-lint against project
 lint:
+	@go get -v github.com/golangci/golangci-lint/cmd/golangci-lint
 	@golangci-lint run -E gofmt,golint,megacheck,misspell ./...
 
 
