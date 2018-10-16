@@ -31,7 +31,7 @@ func init() {
 <table>
 <tr>
 <td class="icon">
-<div class="title">{{ .Icon }}</div>
+{{ if .IconClass }}<i class="fa icon-{{ .IconClass }}" title="{{ .IconTitle }}"></i>{{ else }}<div class="title">{{ .IconTitle }}</div>{{ end }}
 </td>
 <td class="content">{{ if .Title }}
 <div class="title">{{ .Title }}</div>{{ end }}
@@ -74,16 +74,18 @@ func renderParagraph(ctx *renderer.Context, p types.Paragraph) ([]byte, error) {
 			Context: ctx,
 			Data: struct {
 				ID        string
-				Class     string
-				Icon      string
 				Title     string
+				Class     string
+				IconClass string
+				IconTitle string
 				Lines     []types.InlineElements
 				HardBreak bool
 			}{
 				ID:        id,
 				Class:     getClass(k),
-				Icon:      getIcon(k),
 				Title:     getTitle(p.Attributes[types.AttrTitle]),
+				IconClass: getIconClass(ctx, k),
+				IconTitle: getIconTitle(k),
 				Lines:     p.Lines,
 				HardBreak: false,
 			},
@@ -150,7 +152,14 @@ func getClass(kind types.AdmonitionKind) string {
 	}
 }
 
-func getIcon(kind types.AdmonitionKind) string {
+func getIconClass(ctx *renderer.Context, kind types.AdmonitionKind) string {
+	if ctx.Document.Attributes.GetAsString("icons") == "font" {
+		return getClass(kind)
+	}
+	return ""
+}
+
+func getIconTitle(kind types.AdmonitionKind) string {
 	switch kind {
 	case types.Tip:
 		return "Tip"

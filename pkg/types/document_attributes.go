@@ -104,11 +104,12 @@ func (a DocumentAttributes) Reset(attr DocumentAttributeReset) {
 }
 
 // GetAsString gets the string value for the given key, or nil if none was found
-func (a DocumentAttributes) GetAsString(key string) *string {
+func (a DocumentAttributes) GetAsString(key string) string {
 	// TODO: raise a warning if there was no entry found
 	if value, found := a[key]; found {
-		strValue := value.(string)
-		return &strValue
+		if value, ok := value.(string); ok {
+			return value
+		}
 	}
-	return nil
+	return ""
 }

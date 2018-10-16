@@ -36,9 +36,9 @@ func renderDocumentDetails(ctx *renderer.Context) (*htmltemplate.HTML, error) {
 		documentDetailsBuff := bytes.NewBuffer(nil)
 		err = documentDetailsTmpl.Execute(documentDetailsBuff, struct {
 			Authors   htmltemplate.HTML
-			RevNumber *string
-			RevDate   *string
-			RevRemark *string
+			RevNumber string
+			RevDate   string
+			RevRemark string
 		}{
 			Authors:   *authors,
 			RevNumber: ctx.Document.Attributes.GetAsString("revnumber"),
@@ -71,12 +71,12 @@ func renderDocumentAuthorsDetails(ctx *renderer.Context) (*htmltemplate.HTML, er
 			index = strconv.Itoa(i)
 		}
 		// having at least one author is the minimal requirement for document details
-		if author := ctx.Document.Attributes.GetAsString(authorKey); author != nil {
+		if author := ctx.Document.Attributes.GetAsString(authorKey); author != "" {
 			authorDetailsBuff := bytes.NewBuffer(nil)
 			err := documentAuthorDetailsTmpl.Execute(authorDetailsBuff, struct {
 				Index string
-				Name  *string
-				Email *string
+				Name  string
+				Email string
 			}{
 				Index: index,
 				Name:  author,

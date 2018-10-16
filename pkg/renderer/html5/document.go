@@ -73,7 +73,7 @@ func renderDocument(ctx *renderer.Context, output io.Writer) (map[string]interfa
 			Title       string
 			Header      string
 			Content     htmltemplate.HTML
-			RevNumber   *string
+			RevNumber   string
 			LastUpdated string
 			Details     *htmltemplate.HTML
 		}{
