@@ -183,6 +183,43 @@ with <strong>bold content</strong></p>
 </div>`
 			verify(GinkgoT(), expectedResult, actualContent)
 		})
+		It("admonition block with ID, title and icon", func() {
+			actualContent := `:icons: font
+			
+[NOTE]
+[#id-for-admonition-block]
+.title for admonition block
+====
+some listing code
+with *bold content*
+
+* and a list item
+====`
+			expectedResult := `<div id="id-for-admonition-block" class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="title">title for admonition block</div>
+<div class="paragraph">
+<p>some listing code
+with <strong>bold content</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>and a list item</p>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
+</div>`
+			verify(GinkgoT(), expectedResult, actualContent)
+		})
 
 		It("admonition paragraph and admonition block with multiple elements", func() {
 			actualContent := `[CAUTION]                      
@@ -222,6 +259,49 @@ this is an admonition paragraph.
 <div class="paragraph">
 <p>with another paragraph</p>
 </div>
+</td>
+</tr>
+</table>
+</div>`
+			verify(GinkgoT(), expectedResult, actualContent)
+		})
+
+		It("admonition paragraph with an icon", func() {
+			actualContent := `:icons: font
+
+TIP: an admonition text on
+2 lines.`
+			expectedResult := `<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+an admonition text on
+2 lines.
+</td>
+</tr>
+</table>
+</div>`
+			verify(GinkgoT(), expectedResult, actualContent)
+		})
+
+		It("admonition paragraph with ID, title and icon", func() {
+			actualContent := `:icons: font
+
+[#id-for-admonition-block]
+.title for the admonition block
+TIP: an admonition text on 1 line.`
+			expectedResult := `<div id="id-for-admonition-block" class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="title">title for the admonition block</div>
+an admonition text on 1 line.
 </td>
 </tr>
 </table>

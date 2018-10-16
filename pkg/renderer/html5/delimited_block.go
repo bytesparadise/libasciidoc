@@ -78,11 +78,11 @@ func init() {
 			"renderElements": renderElements,
 		})
 
-	admonitionBlockTmpl = newTextTemplate("admonition block", `{{ $ctx := .Context }}{{ with .Data }}<div {{ if .ID }}id="{{ .ID}}" {{ end}}class="admonitionblock {{ .Class }}">
+	admonitionBlockTmpl = newTextTemplate("admonition block", `{{ $ctx := .Context }}{{ with .Data }}<div {{ if .ID }}id="{{ .ID}}" {{ end }}class="admonitionblock {{ .Class }}">
 <table>
 <tr>
 <td class="icon">
-<div class="title">{{ .Icon }}</div>
+{{ if .IconClass }}<i class="fa icon-{{ .IconClass }}" title="{{ .IconTitle }}"></i>{{ else }}<div class="title">{{ .IconTitle }}</div>{{ end }}
 </td>
 <td class="content">
 {{ if .Title }}<div class="title">{{ .Title }}</div>
@@ -163,17 +163,19 @@ func renderDelimitedBlock(ctx *renderer.Context, b types.DelimitedBlock) ([]byte
 			err = admonitionBlockTmpl.Execute(result, ContextualPipeline{
 				Context: ctx,
 				Data: struct {
-					ID       string
-					Class    string
-					Icon     string
-					Title    string
-					Elements []interface{}
+					ID        string
+					Class     string
+					IconClass string
+					IconTitle string
+					Title     string
+					Elements  []interface{}
 				}{
-					ID:       id,
-					Class:    getClass(k),
-					Icon:     getIcon(k),
-					Title:    title,
-					Elements: elements,
+					ID:        id,
+					Class:     getClass(k),
+					IconClass: getIconClass(ctx, k),
+					IconTitle: getIconTitle(k),
+					Title:     title,
+					Elements:  elements,
 				},
 			})
 		} else {
