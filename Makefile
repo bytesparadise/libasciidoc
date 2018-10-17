@@ -19,6 +19,13 @@ SOURCE_DIR ?= .
 SOURCES := $(shell find $(SOURCE_DIR) -path $(SOURCE_DIR)/vendor -prune -o -name '*.go' -print)
 COVERPKGS := $(shell go list ./... | grep -v vendor | paste -sd "," -)
 
+DEVTOOLS=\
+				github.com/golang/dep/cmd/dep \
+				github.com/mna/pigeon \
+				github.com/modocache/gover \
+				github.com/onsi/ginkgo/ginkgo \
+				github.com/onsi/gomega
+
 ifeq ($(OS),Windows_NT)
 BINARY_PATH=$(INSTALL_PREFIX)/libasciidoc.exe
 else
@@ -58,12 +65,17 @@ help:/
           } \
         }' $(MAKEFILE_LIST)
 
-.PHONY: deps 
-## Download build dependencies.
-deps: $(VENDOR_DIR) 
+.PHONY: install-devtools
+## Install development tools.
+install-devtools:
+	@go get -u -v $(DEVTOOLS)
 
-$(VENDOR_DIR): 
-	$(DEP_BIN) ensure 
+.PHONY: deps
+## Download build dependencies.
+deps: $(VENDOR_DIR)
+
+$(VENDOR_DIR):
+	$(DEP_BIN) ensure
 
 $(INSTALL_PREFIX):
 # Build artifacts dir
@@ -73,8 +85,8 @@ $(TMP_PATH):
 	@mkdir -p $(TMP_PATH)
 
 .PHONY: prebuild-checks
-prebuild-checks: $(TMP_PATH) $(INSTALL_PREFIX) 
 ## Check that all tools where found
+prebuild-checks: $(TMP_PATH) $(INSTALL_PREFIX)
 ifndef GIT_BIN
 	$(error The "$(GIT_BIN_NAME)" executable could not be found in your PATH)
 endif
@@ -102,7 +114,7 @@ generate-optimized:
 
 
 .PHONY: test
-## run all tests except in the 'vendor' package 
+## run all tests except in the 'vendor' package
 test: deps generate-optimized
 	@echo $(COVERPKGS)
 	@ginkgo -r --randomizeAllSpecs --randomizeSuites --failOnPending --trace --race --compilers=2  --cover -coverpkg $(COVERPKGS)
@@ -122,17 +134,24 @@ build: $(INSTALL_PREFIX) deps generate-optimized
 	  cmd/libasciidoc/*.go
 
 
-PARSER_DIFF_STATUS := 
+.PHONY: lint
+## run golangci-lint against project
+lint:
+	@go get -v github.com/golangci/golangci-lint/cmd/golangci-lint
+	@golangci-lint run -E gofmt,golint,megacheck,misspell ./...
+
+
+PARSER_DIFF_STATUS :=
 
 .PHONY: verify-parser
 ## verify that the parser was built with the latest version of pigeon, using the `optimize-grammar` option
 verify-parser: prebuild-checks
 ifneq ($(shell git diff --quiet pkg/parser/asciidoc_parser.go; echo $$?), 0)
 	$(error "parser was generated with an older version of 'mna/pigeon' or without the '-optimize' option(s).")
-else 
+else
 	@echo "parser is ok"
 endif
-	
+
 
 .PHONY: install
 ## installs the binary executable in the $GOPATH/bin directory
