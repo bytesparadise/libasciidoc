@@ -23,8 +23,8 @@ func main() {
 	}
 }
 
-var helpTemplate = `
-{{if or .Runnable .HasSubCommands}}{{.UsageString}}{{end}}`
+// var helpTemplate = `
+// {{if or .Runnable .HasSubCommands}}{{.UsageString}}{{end}}`
 
 var helpCommand = &cobra.Command{
 	Use:               "help [command]",
