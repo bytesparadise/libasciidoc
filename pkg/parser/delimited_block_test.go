@@ -580,7 +580,7 @@ foo
 ====`
 			expectedResult := types.DelimitedBlock{
 				Attributes: types.ElementAttributes{
-					types.AttrKind: types.Example,
+					types.AttrKind:  types.Example,
 					types.AttrTitle: "example block title",
 				},
 				Elements: []interface{}{
