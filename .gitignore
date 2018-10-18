@@ -57,7 +57,7 @@ tmp
 
 # exclude code coverage merged results
 coverage.txt
-*.html
 .DS_Store
 *.html
 *.test
+!test/**
