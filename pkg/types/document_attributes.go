@@ -68,7 +68,7 @@ func (a DocumentAttributes) Add(key string, value interface{}) {
 	}
 	v := reflect.ValueOf(value)
 	k := v.Kind()
-	// if the argument is a pointer, then retrive the value it points to
+	// if the argument is a pointer, then retrieve the value it points to
 	if k == reflect.Ptr {
 		if v.Elem().IsValid() {
 			a[key] = v.Elem().Interface()

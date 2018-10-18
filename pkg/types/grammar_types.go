@@ -1720,7 +1720,7 @@ func NewImageMacro(path string, attributes ElementAttributes) (ImageMacro, error
 	}, nil
 }
 
-// NewImageAttributes returns a map of image attributes, some of which have implict keys (`alt`, `width` and `height`)
+// NewImageAttributes returns a map of image attributes, some of which have implicit keys (`alt`, `width` and `height`)
 func NewImageAttributes(alt, width, height interface{}, otherAttrs []interface{}) (ElementAttributes, error) {
 	result := ElementAttributes{}
 	var altStr, widthStr, heightStr string
@@ -1758,7 +1758,7 @@ func ResetFootnoteSequence() {
 }
 
 // Footnote a foot note, without or without explicit reference (an explicit reference is used to refer
-// multiple times to the same footnote accross the document)
+// multiple times to the same footnote across the document)
 type Footnote struct {
 	ID int
 	// Ref the optional reference
@@ -1799,7 +1799,7 @@ type DelimitedBlock struct {
 	Elements   []interface{}
 }
 
-// Substitution the substituion group to apply when initializing a delimited block
+// Substitution the substitution group to apply when initializing a delimited block
 type Substitution func([]interface{}) ([]interface{}, error)
 
 // None returns the content as-is, but nil-safe
@@ -2179,7 +2179,7 @@ func (l InlineLink) Text() string {
 // AttrInlineLinkText the link `text` attribute
 const AttrInlineLinkText string = "text"
 
-// NewInlineLinkAttributes returns a map of image attributes, some of which have implict keys (`text`)
+// NewInlineLinkAttributes returns a map of image attributes, some of which have implicit keys (`text`)
 func NewInlineLinkAttributes(text interface{}, otherAttrs []interface{}) (ElementAttributes, error) {
 	result := ElementAttributes{}
 	var textStr string
