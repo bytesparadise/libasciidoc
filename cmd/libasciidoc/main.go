@@ -14,17 +14,11 @@ func main() {
 	versionCmd := NewVersionCmd()
 	rootCmd.AddCommand(versionCmd)
 	rootCmd.SetHelpCommand(helpCommand)
-	// rootCmd.SetHelpTemplate(helpTemplate)
-	// rootCmd.PersistentFlags().BoolP("help", "h", false, "Print usage")
-	// rootCmd.PersistentFlags().MarkShorthandDeprecated("help", "please use --help")
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}
 }
-
-// var helpTemplate = `
-// {{if or .Runnable .HasSubCommands}}{{.UsageString}}{{end}}`
 
 var helpCommand = &cobra.Command{
 	Use:               "help [command]",
