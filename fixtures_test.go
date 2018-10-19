@@ -6,12 +6,12 @@ import (
 	"bytes"
 	"context"
 	"io/ioutil"
-	"os"
 	"path/filepath"
 
 	"github.com/bytesparadise/libasciidoc"
 	. "github.com/onsi/ginkgo"
-	"github.com/pmezard/go-difflib/difflib"
+	"github.com/sergi/go-diff/diffmatchpatch"
+	"github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -23,21 +23,17 @@ var _ = Describe("fixtures", func() {
 	require.NoError(GinkgoT(), err)
 
 	for _, input := range matches {
-		Context("["+input+"]", func() {
-			in := input
-			It("render HTML", func() {
-				verifyHTMLFixture(GinkgoT(), in)
-			})
+		in := input
+		It("render HTML "+in, func() {
+			logrus.SetLevel(logrus.FatalLevel)
+			verifyHTMLFixture(GinkgoT(), in)
 		})
 	}
 })
 
 func verifyHTMLFixture(t GinkgoTInterface, sourcePath string) {
 	w := bytes.NewBuffer(nil)
-	f, err := os.Open(sourcePath)
-	require.NoError(t, err)
-
-	_, err = libasciidoc.ConvertToHTML(context.Background(), f, w)
+	_, err := libasciidoc.ConvertFileToHTML(context.Background(), sourcePath, w)
 	require.NoError(t, err)
 	result := w.String()
 
@@ -46,16 +42,11 @@ func verifyHTMLFixture(t GinkgoTInterface, sourcePath string) {
 	require.NoError(t, err)
 	expect := string(b)
 
-	assert.Equal(t, expect, result, showDiff(goldPath, expect, result))
+	assert.Equal(t, expect, result, showDiff(expect, result))
 }
 
-func showDiff(name, expect, actual string) string {
-	d, _ := difflib.GetUnifiedDiffString(difflib.UnifiedDiff{
-		A:        difflib.SplitLines(expect),
-		B:        difflib.SplitLines(actual),
-		FromFile: "expect (" + name + ")",
-		ToFile:   "actual",
-		Context:  1,
-	})
-	return d
+func showDiff(expect, actual string) string {
+	dmp := diffmatchpatch.New()
+	// prepend normal color code to clear ginkgo colorization.
+	return "\x1b[0m" + dmp.DiffPrettyText(dmp.DiffMain(actual, expect, true))
 }
