@@ -464,7 +464,7 @@ are preserved, but not trailing spaces</p>
 			actualContent := `[quote]
 ____
 ____`
-			// asciidoctor will include an emtpy line in the `blockquote` element, I'm not sure why.
+			// asciidoctor will include an empty line in the `blockquote` element, I'm not sure why.
 			expectedResult := `<div class="quoteblock">
 <blockquote>
 
