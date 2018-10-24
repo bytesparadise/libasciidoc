@@ -1,24 +1,29 @@
 dist: trusty
 sudo: false
 
-install:
-  - make install-devtools
-  - make deps
-
 language: go
 
 go:
-  # - 1.7.x (abandonned - not supported by dep)
   - "1.8.x"
   - "1.9.x"
   - "1.10.x"
   - "1.11.x"
   - tip
 
+os:
+  - linux
+  - osx
+  - windows
+
 matrix:
   fast_finish: true
   allow_failures:
   - go: tip
+
+install:
+  - if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then git config --global core.autocrlf true ; fi
+  - make install-devtools
+  - make deps
 
 script:
   # verify that the commit code for the parser was optimized during the code generation

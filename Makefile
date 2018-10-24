@@ -1,22 +1,10 @@
 # Makefile for the `libasciidoc` project
 
 # tools
-GIT_BIN_NAME := git
-GIT_BIN := $(shell command -v $(GIT_BIN_NAME) 2> /dev/null)
-DEP_BIN_NAME := dep
-DEP_BIN := $(shell command -v $(DEP_BIN_NAME) 2> /dev/null)
-PIGEON_BIN_NAME := pigeon
-PIGEON_BIN := $(shell command -v $(PIGEON_BIN_NAME) 2> /dev/null)
-GO_BIN_NAME := go
-GO_BIN := $(shell command -v $(GO_BIN_NAME) 2> /dev/null)
-EXTRA_PATH=$(shell dirname $(GO_BINDATA_BIN))
-
 CUR_DIR=$(shell pwd)
-TMP_PATH=$(CUR_DIR)/tmp
 INSTALL_PREFIX=$(CUR_DIR)/bin
 VENDOR_DIR=vendor
 SOURCE_DIR ?= .
-SOURCES := $(shell find $(SOURCE_DIR) -path $(SOURCE_DIR)/vendor -prune -o -name '*.go' -print)
 COVERPKGS := $(shell go list ./... | grep -v vendor | paste -sd "," -)
 
 DEVTOOLS=\
@@ -75,30 +63,15 @@ install-devtools:
 deps: $(VENDOR_DIR)
 
 $(VENDOR_DIR):
-	$(DEP_BIN) ensure
+	dep ensure
 
 $(INSTALL_PREFIX):
 # Build artifacts dir
 	@mkdir -p $(INSTALL_PREFIX)
 
-$(TMP_PATH):
-	@mkdir -p $(TMP_PATH)
-
 .PHONY: prebuild-checks
 ## Check that all tools where found
-prebuild-checks: $(TMP_PATH) $(INSTALL_PREFIX)
-ifndef GIT_BIN
-	$(error The "$(GIT_BIN_NAME)" executable could not be found in your PATH)
-endif
-ifndef DEP_BIN
-	$(error The "$(DEP_BIN_NAME)" executable could not be found in your PATH)
-endif
-ifndef PIGEON_BIN
-	$(error The "$(PIGEON_BIN_NAME)" executable could not be found in your PATH)
-endif
-ifndef GO_BIN
-	$(error The "$(GO_BIN_NAME)" executable could not be found in your PATH)
-endif
+prebuild-checks: $(INSTALL_PREFIX)
 
 .PHONY: generate
 ## generate the .go file based on the asciidoc grammar
