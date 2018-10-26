@@ -35,6 +35,7 @@ Further elements will be supported in the future. Feel free to open issues https
 == Installation
 
     $ go get -u github.com/bytesparadise/libasciidoc
+    $ make install
 
 == Usage
 
