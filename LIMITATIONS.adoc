@@ -36,7 +36,7 @@ whereas Asciidoc/Asciidoctor will produce :
 
 == Two-line Section Titles
 
-Two-line section titles (setext headings) are not be supported, and there are no plans to support it for now.
+Two-line section titles (setext headings) are not supported, and there are no plans to support it for now.
 See https://github.com/bytesparadise/libasciidoc/issues/187[Issue #187] for more on this decision.
 
 == Passthroughs
