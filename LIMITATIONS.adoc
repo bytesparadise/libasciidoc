@@ -1,52 +1,57 @@
 = Known limitations and differences with Asciidoc/Asciidoctor
 
-This document reports the known limitations and differences with Asciidoc/Asciidoctor. 
-In any case, feel free to https://github.com/bytesparadise/libasciidoc/issues[open an issue] 
-if you want to discuss about an actual limitation of Libasciidoc or if you want to report a new one. 
+This document reports the known limitations and differences with Asciidoc/Asciidoctor.
+In any case, feel free to https://github.com/bytesparadise/libasciidoc/issues[open an issue]
+if you want to discuss about an actual limitation of Libasciidoc or if you want to report a new one.
 
 == Quoted Text
 
 Quoted text rendering can differ in the following cases:
 
 - when the punctuation is unbalanced. Eg:
-```
+....
 some **bold content*.
-```
+....
 will be rendered as the raw input:
-```
+....
 some **bold content*.
-```
+....
 instead of :
-```
+....
 <p>some <strong>*bold content</strong></p>
-```
+....
 
 - when quoted text uses the same punctuation. Eg:
-```
+....
 *some *nested bold* content*.
-```
+....
 Libasciidoc will detect the nested bold quote and renderer accordingly:
-```
+....
 <strong>some <strong>nested bold</strong> content</strong>.
-```
+....
 whereas Asciidoc/Asciidoctor will produce :
-```
+....
 <p><strong>some *nested bold</strong> content*.</p>
-```
+....
+
+== Two-line Section Titles
+
+Two-line section titles (setext headings) are not supported, and there are no plans to support it for now.
+See https://github.com/bytesparadise/libasciidoc/issues/187[Issue #187] for more on this decision.
 
 == Passthroughs
 
 The Inline pass macro will not render nothing at all instead of an empty paragraph
 when the macro is empty. I.e.:
 
-````
+....
 pass:[]
-````
+....
 
 will produce no HTML element at all, whereas Asciidoc/Asciidoctor will produce :
 
-````
+....
 <div class="paragraph">
 <p></p>
 </div>
-````
+....
