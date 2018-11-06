@@ -4,7 +4,10 @@ import (
 	"bytes"
 	"context"
 	"io/ioutil"
+	"os/exec"
 	"path/filepath"
+	"runtime"
+	"strings"
 
 	"github.com/bytesparadise/libasciidoc"
 
@@ -13,6 +16,24 @@ import (
 	. "github.com/onsi/gomega"
 	log "github.com/sirupsen/logrus"
 )
+
+var autocrlf string
+
+func init() {
+	cmd := exec.Command("git", "config", "--get", "core.autocrlf")
+	// Attach buffer to command
+	cmdOutput := bytes.NewBuffer(nil)
+	cmd.Stdout = cmdOutput
+	// execute command
+	err := cmd.Run()
+	if err != nil {
+		log.Errorf("failed to check the `git config --get autocrlf': %v", err)
+		return
+	}
+	autocrlf = strings.Trim(cmdOutput.String(), "\r\n")
+	log.Warnf("git autocrlf='%s'", autocrlf)
+
+}
 
 var _ = Describe("fixtures", func() {
 
@@ -31,8 +52,13 @@ func compare(file string) {
 	Expect(err).ShouldNot(HaveOccurred())
 	expected, err := getGoldenFile(file)
 	Expect(err).ShouldNot(HaveOccurred())
+	// if tests are executed on windows platform and git 'autocrlf' is set to 'true',
+	// then we need to remove the `\r` characters that were added in the 'expected'
+	// source at the time of the checkout
+	if runtime.GOOS == "windows" && autocrlf == "true" {
+		expected = strings.Replace(expected, "\r", "", -1)
+	}
 	// compare actual vs reference
-	GinkgoT().Logf("actual:\n%v\nexpected:%v", []byte(actual), []byte(expected))
 	Expect(actual).To(Equal(expected))
 }
 
