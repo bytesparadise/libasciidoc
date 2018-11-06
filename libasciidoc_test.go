@@ -7,13 +7,28 @@ import (
 	"time"
 
 	. "github.com/bytesparadise/libasciidoc"
+	_ "github.com/bytesparadise/libasciidoc/pkg/log"
 	"github.com/bytesparadise/libasciidoc/pkg/renderer"
 	. "github.com/onsi/ginkgo"
+	log "github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
 var _ = Describe("documents", func() {
+
+	var level log.Level
+
+	BeforeEach(func() {
+		// turn down the logger to `warn` to avoid the noise
+		level = log.GetLevel()
+		log.SetLevel(log.WarnLevel)
+	})
+
+	AfterEach(func() {
+		// restore the logger level
+		log.SetLevel(level)
+	})
 
 	Context("document Body", func() {
 
