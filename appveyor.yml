@@ -38,6 +38,5 @@ deploy: "off"
 test_script:
   - pigeon ./pkg/parser/asciidoc-grammar.peg > ./pkg/parser/asciidoc_parser.go
   - go build github.com/bytesparadise/libasciidoc
-  # - for /f "" %%G in ('go list -f {{.Dir}} github.com/bytesparadise/libasciidoc/... ^| find /i /v "/vendor/"') do ( echo %%G & ginkgo -skipPackage log %%G & IF ERRORLEVEL == 1 EXIT 1)
   - ginkgo -r . & IF ERRORLEVEL == 1 EXIT 1
    
