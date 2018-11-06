@@ -24,17 +24,20 @@
 #   go-tests = true
 #   unused-packages = true
 
+required = ["github.com/onsi/ginkgo/extensions/table"]
+
+
 [prune]
   go-tests = true
   unused-packages = true
 
 [[constraint]]
   name = "github.com/onsi/ginkgo"
-  version = "1.4.0"
+  version = "v1.6.0"
 
 [[constraint]]
   name = "github.com/onsi/gomega"
-  version = "1.2.0"
+  version = "v1.4.2"
 
 [[constraint]]
   name = "github.com/pkg/errors"
@@ -51,4 +54,8 @@
 
 [[constraint]]
   name = "github.com/spf13/cobra"
-  version = "0.0.2"
+  version = "0.0.3"
+
+[[override]]
+  name = "gopkg.in/fsnotify.v1"
+  source = "https://github.com/fsnotify/fsnotify.git"

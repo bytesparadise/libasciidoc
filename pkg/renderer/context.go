@@ -34,10 +34,11 @@ const includeBlankLine string = "includeBlankLine"
 // SetIncludeBlankLine sets the rendering context to include (or not) the blank lines
 func (ctx *Context) SetIncludeBlankLine(b bool) bool {
 	var oldvalue bool
-	if v, ok := ctx.options[withinDelimitedBlock].(bool); ok {
+	if v, ok := ctx.options[includeBlankLine].(bool); ok {
 		oldvalue = v
 	}
 	ctx.options[includeBlankLine] = b
+	log.Debugf("set '%s' context param to '%t' (was '%t' before)", includeBlankLine, b, oldvalue)
 	return oldvalue
 }
 
@@ -59,6 +60,7 @@ func (ctx *Context) SetWithinDelimitedBlock(b bool) bool {
 	if v, ok := ctx.options[withinDelimitedBlock].(bool); ok {
 		oldvalue = v
 	}
+	log.Debugf("set '%s' context param to '%t' (was '%t' before)", withinDelimitedBlock, b, oldvalue)
 	ctx.options[withinDelimitedBlock] = b
 	return oldvalue
 }
