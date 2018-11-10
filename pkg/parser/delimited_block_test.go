@@ -598,6 +598,17 @@ foo
 			}
 			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
+
+		It("example block starting delimiter only", func() {
+			actualContent := `====`
+			expectedResult := types.DelimitedBlock{
+				Attributes: types.ElementAttributes{
+					types.AttrKind: types.Example,
+				},
+				Elements: []interface{}{},
+			}
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+		})
 	})
 
 	Context("admonition blocks", func() {

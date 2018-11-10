@@ -480,18 +480,22 @@ UnorderedListItemContent <- elements:(ListParagraph+ ContinuedDocumentElement*) 
 // Labeled List Items
 // ------------------------------------------
 LabeledListItem <- 
-    term:(LabeledListItemTerm) LabeledListItemSeparator description:(LabeledListItemDescription) {
-        return types.NewLabeledListItem(term.(string), description.([]interface{}))
-    } /  term:(LabeledListItemTerm) "::" WS* EOL { // here, WS is optional since there is no description afterwards
-        return types.NewLabeledListItem(term.(string), nil)
+    term:(LabeledListItemTerm) separator:(LabeledListItemSeparator) (WS / NEWLINE)+ description:(LabeledListItemDescription) {
+        // level is '1' for a '::' separator, '2' for a ':::' separator and '3' for a '::::' separator
+        return types.NewLabeledListItem(len(separator.(string)) - 1, term.(string), description.([]interface{}))
+    } /  term:(LabeledListItemTerm) separator:(LabeledListItemSeparator) WS* EOL { // here, WS is optional since there is no description afterwards
+        // level is '1' for a '::' separator, '2' for a ':::' separator and '3' for a '::::' separator
+        return types.NewLabeledListItem(len(separator.(string)) - 1, term.(string), nil)
     }
 
 LabeledListItemTerm <- (!NEWLINE !"::" .)*  {
     return string(c.text), nil
 }
 
-// term separator: ('::') and at least one space or endline
-LabeledListItemSeparator <-  "::" (WS / NEWLINE)+
+// term separator: ('::', ':::' or '::::') and at least one space or endline
+LabeledListItemSeparator <- ("::::" / ":::" / "::")  {
+    return string(c.text), nil
+}
 
 LabeledListItemDescription <- elements:(ListParagraph / ContinuedDocumentElement)* { // TODO: replace with (ListParagraph+ ContinuedDocumentElement*) and use a single rule for all item contents ?
     return types.NewListItemContent(elements.([]interface{}))
@@ -790,9 +794,9 @@ BlockDelimiter <- LiteralBlockDelimiter / FencedBlockDelimiter / ListingBlockDel
 // -------------------------------------------------------------------------------------
 // Fenced Blocks
 // -------------------------------------------------------------------------------------
-FencedBlockDelimiter <- "```"
+FencedBlockDelimiter <- "```" WS* EOL
 
-FencedBlock <- FencedBlockDelimiter WS* NEWLINE content:(FencedBlockContent)* ((FencedBlockDelimiter WS* EOL) / EOF) {
+FencedBlock <- FencedBlockDelimiter content:(FencedBlockContent)* (FencedBlockDelimiter / EOF) {
     return types.NewDelimitedBlock(types.Fenced, content.([]interface{}), types.None)
 }
 
@@ -801,10 +805,10 @@ FencedBlockContent <- List / BlockParagraph / BlankLine
 // -------------------------------------------------------------------------------------
 // Listing blocks
 // -------------------------------------------------------------------------------------
-ListingBlockDelimiter <- "----"
+ListingBlockDelimiter <- "----" WS* EOL
 
 // listing block: verbatim content
-ListingBlock <- ListingBlockDelimiter WS* NEWLINE content:(ListingBlockContent)* ((ListingBlockDelimiter WS* EOL) / EOF) {
+ListingBlock <- ListingBlockDelimiter content:(ListingBlockContent)* ((ListingBlockDelimiter) / EOF) {
     return types.NewDelimitedBlock(types.Listing, content.([]interface{}), types.None)
 }
 
@@ -823,9 +827,9 @@ ListingBlockLineContent <- (!ListingBlockDelimiter !EOL .)* { // skip EOL in lin
 // -------------------------------------------------------------------------------------
 // Example blocks
 // -------------------------------------------------------------------------------------
-ExampleBlockDelimiter <- "===="
+ExampleBlockDelimiter <- "====" WS* EOL
 
-ExampleBlock <- ExampleBlockDelimiter WS* NEWLINE content:(List / BlockParagraph / BlankLine)*  ((ExampleBlockDelimiter WS* EOL) / EOF) {
+ExampleBlock <- ExampleBlockDelimiter content:(List / BlockParagraph / BlankLine)*  (ExampleBlockDelimiter / EOF) {
     return types.NewDelimitedBlock(types.Example, content.([]interface{}), types.None)
 }
 
@@ -846,9 +850,9 @@ BlockParagraphLine <- !(OrderedListItemPrefix)
 // -------------------------------------------------------------------------------------
 // Quote blocks
 // -------------------------------------------------------------------------------------
-QuoteBlockDelimiter <- "____" // same for verse blocks
+QuoteBlockDelimiter <- "____" WS* EOL // same for verse blocks
 
-QuoteBlock <- attributes:(QuoteAttributes ElementAttribute*) QuoteBlockDelimiter WS* NEWLINE content:(QuoteBlockContent)*  ((QuoteBlockDelimiter WS* EOL) / EOF) {
+QuoteBlock <- attributes:(QuoteAttributes ElementAttribute*) QuoteBlockDelimiter content:(QuoteBlockContent)*  (QuoteBlockDelimiter / EOF) {
     return types.NewDelimitedBlock(types.Quote, content.([]interface{}), types.None, attributes.([]interface{}))
 }
 
@@ -862,7 +866,7 @@ QuoteBlockContent <-
 // -------------------------------------------------------------------------------------
 // VerseBlockDelimiter: see QuoteBlockDelimiter
 
-VerseBlock <- attributes:(VerseAttributes ElementAttribute*) QuoteBlockDelimiter WS* NEWLINE content:(VerseBlockContent)* ((QuoteBlockDelimiter WS* EOL) / EOF) {
+VerseBlock <- attributes:(VerseAttributes ElementAttribute*) QuoteBlockDelimiter content:(VerseBlockContent)* (QuoteBlockDelimiter / EOF) {
     return types.NewDelimitedBlock(types.Verse, content.([]interface{}), types.None, attributes.([]interface{}))
 }
 
@@ -881,9 +885,9 @@ VerseBlockLineContent <- elements:(!QuoteBlockDelimiter !EOL WS* InlineElement W
 // -------------------------------------------------------------------------------------
 // Sidebars
 // -------------------------------------------------------------------------------------
-SidebarBlockDelimiter <- "****"
+SidebarBlockDelimiter <- "****" WS* EOL
 
-SidebarBlock <- SidebarBlockDelimiter WS* NEWLINE content:(SidebarBlockContent)*  ((SidebarBlockDelimiter WS* EOL) / EOF) {
+SidebarBlock <- SidebarBlockDelimiter content:(SidebarBlockContent)*  (SidebarBlockDelimiter / EOF) {
     return types.NewDelimitedBlock(types.Sidebar, content.([]interface{}), types.None)
 }
 
@@ -896,16 +900,16 @@ NonSidebarBlock <- !SidebarBlock content:(DelimitedBlock) {
 // -------------------------------------------------------------------------------------
 // Tables
 // -------------------------------------------------------------------------------------
-Table <- TableDelimiter WS* NEWLINE
+Table <- TableDelimiter
         header:(TableLineHeader)?
         lines:(TableLine)*
-        ((TableDelimiter WS* EOL) / EOF) { // end delimiter or end of file
+        (TableDelimiter / EOF) { // end delimiter or end of file
             return types.NewTable(header, lines.([]interface{}))
         }
 
 TableCellSeparator <- "|" WS*
 
-TableDelimiter <- "|==="
+TableDelimiter <- "|===" WS* EOL
         
 // table line header is a line followed by a blankline
 TableLineHeader <- !TableDelimiter cells:(TableCell)+ EOL BlankLine {

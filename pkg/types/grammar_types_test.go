@@ -101,6 +101,7 @@ var _ = Describe("lists", func() {
 			elements := []interface{}{
 				types.LabeledListItem{
 					Attributes: types.ElementAttributes{},
+					Level:      1,
 					Term:       "item 1",
 					Elements: []interface{}{
 						types.StringElement{
@@ -110,6 +111,7 @@ var _ = Describe("lists", func() {
 				},
 				types.LabeledListItem{
 					Attributes: types.ElementAttributes{},
+					Level:      1,
 					Term:       "item 2",
 					Elements: []interface{}{
 						types.StringElement{
@@ -119,6 +121,7 @@ var _ = Describe("lists", func() {
 				},
 				types.LabeledListItem{
 					Attributes: types.ElementAttributes{},
+					Level:      1,
 					Term:       "item 3",
 					Elements: []interface{}{
 						types.StringElement{
@@ -136,6 +139,7 @@ var _ = Describe("lists", func() {
 				Items: []types.LabeledListItem{
 					{
 						Attributes: types.ElementAttributes{},
+						Level:      1,
 						Term:       "item 1",
 						Elements: []interface{}{
 							types.StringElement{
@@ -145,6 +149,7 @@ var _ = Describe("lists", func() {
 					},
 					{
 						Attributes: types.ElementAttributes{},
+						Level:      1,
 						Term:       "item 2",
 						Elements: []interface{}{
 							types.StringElement{
@@ -154,6 +159,7 @@ var _ = Describe("lists", func() {
 					},
 					{
 						Attributes: types.ElementAttributes{},
+						Level:      1,
 						Term:       "item 3",
 						Elements: []interface{}{
 							types.StringElement{
@@ -168,11 +174,13 @@ var _ = Describe("lists", func() {
 	})
 
 	Context("mixed lists", func() {
+
 		It("labeled list with unordered sublist", func() {
-			// // given
+			// given
 			elements := []interface{}{
 				types.LabeledListItem{
 					Attributes: types.ElementAttributes{},
+					Level:      1,
 					Term:       "item A",
 					Elements: []interface{}{
 						types.StringElement{
@@ -212,6 +220,7 @@ var _ = Describe("lists", func() {
 				},
 				types.LabeledListItem{
 					Attributes: types.ElementAttributes{},
+					Level:      1,
 					Term:       "item B",
 					Elements: []interface{}{
 						types.StringElement{
@@ -221,6 +230,7 @@ var _ = Describe("lists", func() {
 				},
 				types.LabeledListItem{
 					Attributes: types.ElementAttributes{},
+					Level:      1,
 					Term:       "item C",
 					Elements: []interface{}{
 						types.StringElement{
@@ -238,6 +248,7 @@ var _ = Describe("lists", func() {
 				Items: []types.LabeledListItem{
 					{
 						Attributes: types.ElementAttributes{},
+						Level:      1,
 						Term:       "item A",
 						Elements: []interface{}{
 							types.StringElement{
@@ -287,6 +298,7 @@ var _ = Describe("lists", func() {
 					},
 					{
 						Attributes: types.ElementAttributes{},
+						Level:      1,
 						Term:       "item B",
 						Elements: []interface{}{
 							types.StringElement{
@@ -296,10 +308,253 @@ var _ = Describe("lists", func() {
 					},
 					{
 						Attributes: types.ElementAttributes{},
+						Level:      1,
 						Term:       "item C",
 						Elements: []interface{}{
 							types.StringElement{
 								Content: "item C",
+							},
+						},
+					},
+				},
+			}
+			verify(GinkgoT(), expectation, actual)
+		})
+
+		It("mixed lists - case 2", func() {
+			// // given
+			elements := []interface{}{
+				types.LabeledListItem{
+					Attributes: types.ElementAttributes{},
+					Level:      1,
+					Term:       "item A",
+					Elements: []interface{}{
+						types.StringElement{
+							Content: "item A",
+						},
+					},
+				},
+				types.OrderedListItem{
+					Attributes:     types.ElementAttributes{},
+					Level:          1,
+					NumberingStyle: types.Arabic,
+					Elements: []interface{}{
+						types.StringElement{
+							Content: "item A.1",
+						},
+					},
+				},
+				types.UnorderedListItem{
+					Attributes:  types.ElementAttributes{},
+					Level:       1,
+					BulletStyle: types.OneAsterisk,
+					Elements: []interface{}{
+						types.StringElement{
+							Content: "item A.1.1",
+						},
+					},
+				},
+			}
+			// when
+			actual, err := types.NewList(elements)
+			// then
+			require.NoError(GinkgoT(), err)
+			expectation := types.LabeledList{
+				Attributes: types.ElementAttributes{},
+				Items: []types.LabeledListItem{
+					{
+						Attributes: types.ElementAttributes{},
+						Level:      1,
+						Term:       "item A",
+						Elements: []interface{}{
+							types.StringElement{
+								Content: "item A",
+							},
+							types.OrderedList{
+								Attributes: types.ElementAttributes{},
+								Items: []types.OrderedListItem{
+									{
+										Attributes:     types.ElementAttributes{},
+										Level:          1,
+										NumberingStyle: types.Arabic,
+										Elements: []interface{}{
+											types.StringElement{
+												Content: "item A.1",
+											},
+											types.UnorderedList{
+												Attributes: types.ElementAttributes{},
+												Items: []types.UnorderedListItem{
+													{
+														Attributes:  types.ElementAttributes{},
+														Level:       1,
+														BulletStyle: types.OneAsterisk,
+														Elements: []interface{}{
+															types.StringElement{
+																Content: "item A.1.1",
+															},
+														},
+													},
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			}
+			verify(GinkgoT(), expectation, actual)
+		})
+
+		It("mixed lists - case 3", func() {
+			// // given
+			elements := []interface{}{
+				types.LabeledListItem{
+					Attributes: types.ElementAttributes{},
+					Level:      1,
+					Term:       "item A",
+					Elements: []interface{}{
+						types.StringElement{
+							Content: "item A",
+						},
+					},
+				},
+				types.OrderedListItem{
+					Attributes:     types.ElementAttributes{},
+					Level:          1,
+					NumberingStyle: types.Arabic,
+					Elements: []interface{}{
+						types.StringElement{
+							Content: "item A.1",
+						},
+					},
+				},
+				types.UnorderedListItem{
+					Attributes:  types.ElementAttributes{},
+					Level:       1,
+					BulletStyle: types.OneAsterisk,
+					Elements: []interface{}{
+						types.StringElement{
+							Content: "item A.1.1",
+						},
+					},
+				},
+				types.LabeledListItem{
+					Attributes: types.ElementAttributes{},
+					Level:      1,
+					Term:       "item B",
+					Elements: []interface{}{
+						types.StringElement{
+							Content: "item B",
+						},
+					},
+				},
+				types.OrderedListItem{
+					Attributes:     types.ElementAttributes{},
+					Level:          1,
+					NumberingStyle: types.Arabic,
+					Elements: []interface{}{
+						types.StringElement{
+							Content: "item B.1",
+						},
+					},
+				},
+				types.UnorderedListItem{
+					Attributes:  types.ElementAttributes{},
+					Level:       1,
+					BulletStyle: types.OneAsterisk,
+					Elements: []interface{}{
+						types.StringElement{
+							Content: "item B.1.1",
+						},
+					},
+				},
+			}
+			// when
+			actual, err := types.NewList(elements)
+			// then
+			require.NoError(GinkgoT(), err)
+			expectation := types.LabeledList{
+				Attributes: types.ElementAttributes{},
+				Items: []types.LabeledListItem{
+					{
+						Attributes: types.ElementAttributes{},
+						Level:      1,
+						Term:       "item A",
+						Elements: []interface{}{
+							types.StringElement{
+								Content: "item A",
+							},
+							types.OrderedList{
+								Attributes: types.ElementAttributes{},
+								Items: []types.OrderedListItem{
+									{
+										Attributes:     types.ElementAttributes{},
+										Level:          1,
+										NumberingStyle: types.Arabic,
+										Elements: []interface{}{
+											types.StringElement{
+												Content: "item A.1",
+											},
+											types.UnorderedList{
+												Attributes: types.ElementAttributes{},
+												Items: []types.UnorderedListItem{
+													{
+														Attributes:  types.ElementAttributes{},
+														Level:       1,
+														BulletStyle: types.OneAsterisk,
+														Elements: []interface{}{
+															types.StringElement{
+																Content: "item A.1.1",
+															},
+														},
+													},
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+					{
+						Attributes: types.ElementAttributes{},
+						Level:      1,
+						Term:       "item B",
+						Elements: []interface{}{
+							types.StringElement{
+								Content: "item B",
+							},
+							types.OrderedList{
+								Attributes: types.ElementAttributes{},
+								Items: []types.OrderedListItem{
+									{
+										Attributes:     types.ElementAttributes{},
+										Level:          1,
+										NumberingStyle: types.Arabic,
+										Elements: []interface{}{
+											types.StringElement{
+												Content: "item B.1",
+											},
+											types.UnorderedList{
+												Attributes: types.ElementAttributes{},
+												Items: []types.UnorderedListItem{
+													{
+														Attributes:  types.ElementAttributes{},
+														Level:       1,
+														BulletStyle: types.OneAsterisk,
+														Elements: []interface{}{
+															types.StringElement{
+																Content: "item B.1.1",
+															},
+														},
+													},
+												},
+											},
+										},
+									},
+								},
 							},
 						},
 					},
