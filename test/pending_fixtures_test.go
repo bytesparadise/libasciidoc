@@ -1,6 +1,6 @@
 // +build pending
 
-package compat_test
+package test_test
 
 import (
 	. "github.com/onsi/ginkgo"

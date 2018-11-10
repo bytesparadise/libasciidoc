@@ -60,4 +60,4 @@ coverage.txt
 .DS_Store
 *.html
 *.test
-!compat/**/*.html
+!test/**/*.html
