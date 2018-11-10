@@ -1,4 +1,4 @@
-package compat_test
+package test_test
 
 import (
 	"bytes"

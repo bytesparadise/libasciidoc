@@ -1,4 +1,4 @@
-package compat_test
+package test_test
 
 import (
 	. "github.com/onsi/ginkgo"
@@ -7,7 +7,7 @@ import (
 	"testing"
 )
 
-func TestCompat(t *testing.T) {
+func TestTest(t *testing.T) {
 	RegisterFailHandler(Fail)
-	RunSpecs(t, "Compat Suite")
+	RunSpecs(t, "Test Suite")
 }
