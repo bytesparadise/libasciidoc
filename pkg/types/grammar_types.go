@@ -946,7 +946,10 @@ func NewList(items []interface{}) (List, error) {
 		if !ok {
 			return nil, errors.Errorf("item of type '%T' is not a valid list item", item)
 		}
-		monitor.process(listItem)
+		err := monitor.process(listItem)
+		if err != nil {
+			return nil, errors.Wrap(err, "failed to initialize a list")
+		}
 	}
 	// finally, process the first level of the monitor's stack
 	return monitor.end()
