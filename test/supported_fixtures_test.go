@@ -43,11 +43,14 @@ var _ = Describe("fixtures", func() {
 
 func compare(file string) {
 	// set logger to a minimal verbose level, then restore at its initial level afterwards
-	level := log.GetLevel()
-	log.SetLevel(log.WarnLevel)
-	defer func() {
-		log.SetLevel(level)
-	}()
+	// unless the logger was at `DEBUG` level, in which case, it should remain as-is
+	if log.GetLevel() != log.DebugLevel {
+		level := log.GetLevel()
+		log.SetLevel(log.WarnLevel)
+		defer func() {
+			log.SetLevel(level)
+		}()
+	}
 	actual, err := convert(file)
 	Expect(err).ShouldNot(HaveOccurred())
 	expected, err := getGoldenFile(file)

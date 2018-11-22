@@ -236,8 +236,9 @@ item 2
 
 	})
 
-	It("labeled list with continuation", func() {
-		actualContent := `Item 1::
+	Context("list item continuation", func() {
+		It("labeled list with continuation", func() {
+			actualContent := `Item 1::
 +
 ----
 a delimited block
@@ -247,7 +248,7 @@ Item 2:: something simple
 ----
 another delimited block
 ----`
-		expectedDocument := `<div class="dlist">
+			expectedDocument := `<div class="dlist">
 <dl>
 <dt class="hdlist1">Item 1</dt>
 <dd>
@@ -269,11 +270,11 @@ another delimited block
 </dl>
 </div>`
 
-		verify(GinkgoT(), expectedDocument, actualContent)
-	})
+			verify(GinkgoT(), expectedDocument, actualContent)
+		})
 
-	It("labeled list without continuation", func() {
-		actualContent := `Item 1::
+		It("labeled list without continuation", func() {
+			actualContent := `Item 1::
 ----
 a delimited block
 ----
@@ -281,7 +282,7 @@ Item 2:: something simple
 ----
 another delimited block
 ----`
-		expectedDocument := `<div class="dlist">
+			expectedDocument := `<div class="dlist">
 <dl>
 <dt class="hdlist1">Item 1</dt>
 </dl>
@@ -305,6 +306,44 @@ another delimited block
 </div>
 </div>`
 
-		verify(GinkgoT(), expectedDocument, actualContent)
+			verify(GinkgoT(), expectedDocument, actualContent)
+		})
+	})
+
+	Context("nestedt labelled list items", func() {
+
+		It("labeled list with multiple nested items", func() {
+			actualContent := `Item 1::
+Item 1 description
+Item 2:::
+Item 2 description
+Item 3::::
+Item 3 description`
+			expectedDocument := `<div class="dlist">
+<dl>
+<dt class="hdlist1">Item 1</dt>
+<dd>
+<p>Item 1 description</p>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Item 2</dt>
+<dd>
+<p>Item 2 description</p>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Item 3</dt>
+<dd>
+<p>Item 3 description</p>
+</dd>
+</dl>
+</div>
+</dd>
+</dl>
+</div>
+</dd>
+</dl>
+</div>`
+			verify(GinkgoT(), expectedDocument, actualContent)
+		})
 	})
 })

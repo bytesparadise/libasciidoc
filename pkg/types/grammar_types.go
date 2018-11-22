@@ -848,15 +848,16 @@ type ListItem interface {
 }
 
 // NewList initializes a new `List` from the given content
-func NewList(elements []interface{}) (List, error) {
+func OldList(elements []interface{}) (List, error) {
 	log.Debugf("initializing a new List with %d element(s)", len(elements))
 	buffer := make(map[reflect.Type][]ListItem)
 	rootType := reflect.TypeOf(toPtr(elements[0])) // elements types will be pointers
 	previousType := rootType
+	parentTypes := make(map[reflect.Type]reflect.Type)
 	stack := make([]reflect.Type, 0)
 	stack = append(stack, rootType)
 	for _, element := range elements {
-		log.Debugf("processing list item of type %T", element)
+		log.Debugf("processing list item of type %T / buffer=%v", element, buffer)
 		item, ok := toPtr(element).(ListItem)
 		if !ok {
 			return nil, errors.Errorf("element of type '%T' is not a valid list item", element)
@@ -864,22 +865,33 @@ func NewList(elements []interface{}) (List, error) {
 		// collect all elements of the same kind and make a sub list from them
 		// each time a change of type is detected, except for the root type
 		currentType := reflect.TypeOf(item)
-		log.Debugf(" checking a switch of type when processing item of type %T: currentType=%v / previousType=%v / rootType=%v", item, currentType, previousType, rootType)
-		if currentType != previousType && previousType != rootType {
-			log.Debugf(" detected a switch of type when processing item of type %T: currentType=%v != previousType=%v", item, currentType, previousType)
+		// log.Debugf(" checking a switch of type when processing item of type %T: currentType=%v / previousType=%v / rootType=%v", item, currentType, previousType, rootType)
+		if _, exists := parentTypes[currentType]; !exists {
+			log.Debugf("storing parent type for %v: %v", currentType, previousType)
+			parentTypes[currentType] = previousType // remember now what is the type of the parent
+		}
+		parentType, parentTypeKnown := parentTypes[previousType]
+		_, currentTypeKnown := parentTypes[currentType]
+
+		if currentType != previousType && parentTypeKnown && !currentTypeKnown { // if we move up in the tree
+			log.Debugf("detected a switch of type when processing item of type %T: %v/%v (currentType/previousType)", item, currentType, previousType)
 			// change of type: make a list from the buffer[t], reset and keep iterating
 			sublist, err := newList(buffer[previousType])
 			if err != nil {
 				return nil, errors.Wrapf(err, "failed to initialize a new sublist")
 			}
-			// look-up the previous item of the same type as the current type
-			parentItems := buffer[currentType]
+			log.Debugf("obtained a new list of type %T", sublist)
+			log.Debugf("previous item type %v / parent of previous type: %v", previousType, parentTypes[previousType])
+			// look-up the parent item of the previous type since the newly created list is based on this type
+			parentItems := buffer[parentType]
 			parentItem := parentItems[len(parentItems)-1]
 			parentItem.AddChild(sublist)
 			// reset buffer and stack entries
 			buffer[previousType] = make([]ListItem, 0) // reset entry for the current t
-			stack = stack[:len(stack)-1]               // remove last entry in the stack
-
+			// stack = stack[:len(stack)-1]               // remove last entry in the stack
+			log.Debugf("buffer %v", buffer)
+			log.Debugf("stack %v", stack)
+			delete(parentTypes, previousType)
 		}
 		previousType = currentType
 		// add item to buffer and in stack if not already set
@@ -887,8 +899,8 @@ func NewList(elements []interface{}) (List, error) {
 		// add element type to stack if not already found
 		found := false
 		for _, t := range stack {
-			log.Debugf("comparing stack type %v to %v: %t", t, previousType, (t == previousType))
 			if t == previousType {
+				log.Debugf("stack already contains type %v", t)
 				found = true
 				break
 			}
@@ -925,6 +937,126 @@ func NewList(elements []interface{}) (List, error) {
 	return newList(buffer[rootType])
 }
 
+// NewList initializes a new `List` from the given content
+func NewList(items []interface{}) (List, error) {
+	log.Debugf("initializing a new List with %d items(s)", len(items))
+	monitor := newListMonitor()
+	for _, item := range items {
+		listItem, ok := toPtr(item).(ListItem)
+		if !ok {
+			return nil, errors.Errorf("item of type '%T' is not a valid list item", item)
+		}
+		err := monitor.process(listItem)
+		if err != nil {
+			return nil, errors.Wrap(err, "failed to initialize a list")
+		}
+	}
+	// finally, process the first level of the monitor's stack
+	return monitor.end()
+}
+
+type listMonitor struct {
+	stack                       [][]ListItem
+	currentDepth, previousDepth int
+}
+
+func newListMonitor() *listMonitor {
+	return &listMonitor{
+		stack:         make([][]ListItem, 0),
+		currentDepth:  0,
+		previousDepth: 0,
+	}
+}
+
+// process:
+// - checks if the given item's type is already known and at which level it is in the list
+// - stores the item in the inner stack, at the detemined level
+// (ie, if the list is a mixed list)
+// return the level (0-based offset) and `true` if the type of the item was already know, false otherwise
+func (l *listMonitor) process(item ListItem) error {
+	log.Debugf("processing item of type %T", item)
+	depth := l.depth(item)
+	// if moving up in the tree, then a new list needs to be build
+	if depth < l.previousDepth {
+		log.Debugf("moving up in the stack, need to build %d list(s)", (l.previousDepth - depth))
+		for i := l.previousDepth; i > depth; i-- {
+			subitems := l.stack[i]
+			sublist, err := newList(subitems)
+			if err != nil {
+				return errors.Wrap(err, "failed to initialize a new sublist")
+			}
+			// attach the new sublist to the last item of the parent level
+			parentItem, err := l.parentItem(i)
+			if err != nil {
+				return errors.Wrap(err, "failed to attach a new sublist to its parent item")
+			}
+			parentItem.AddChild(sublist)
+			// clear the stack
+			l.stack = l.stack[:len(l.stack)-1]
+		}
+	}
+	l.previousDepth = depth
+	// process the given item
+	items := l.stack[depth]
+	items = append(items, item)
+	l.stack[depth] = items // 'items' was changed, needs to be put in the stack again
+	return nil
+}
+
+// ends: builds a new list of each layer in the stack, starting by the end, and attach to the parent item
+func (l *listMonitor) end() (List, error) {
+	for i := len(l.stack) - 1; i > 0; i-- {
+		// if len(l.stack[i]) == 0 {
+		// 	// ignore empty layer
+		// 	continue
+		// }
+		sublist, err := newList(l.stack[i])
+		if err != nil {
+			return nil, errors.Wrapf(err, "failed to initialize a new sublist")
+		}
+		// look-up parent layer at the previous (ie, upper) level in the stack
+		parentItems := l.stack[i-1]
+		// look-up parent in the layer
+		parentItem := parentItems[len(parentItems)-1]
+		// build a new list from the remaining items at the current level of the stack
+		// log.Debugf("building a new list from the remaining items of type '%T' and parent of type '%T' at the current level of the stack", buffer[stack[i]][0], parentItem)
+		// add this list to the parent
+		parentItem.AddChild(sublist)
+	}
+	// finish with sublist
+	return newList(l.stack[0])
+}
+
+// depth finds at which depth of the stack the given item belongs
+func (l *listMonitor) depth(item ListItem) int {
+	itemType := reflect.TypeOf(item)
+	log.Debugf("checking depth of item of type %T in a stack of size: %d", item, len(l.stack))
+	for idx, items := range l.stack {
+		// if layer of the stack is empty ior if first item has the same type
+		if len(items) == 0 || reflect.TypeOf(items[0]) == itemType {
+			log.Debugf("found matching layer in the stack for item of type %T: %d", item, idx)
+			return idx
+		}
+	}
+	// if there's no match, then add a new depth in the stack for this
+	// type of item
+	log.Debugf("adding a new layer in the stack for item of type %T", item)
+	items := make([]ListItem, 0)
+	l.stack = append(l.stack, items)
+	return len(l.stack) - 1
+}
+
+func (l *listMonitor) parentItem(childDepth int) (ListItem, error) {
+	if childDepth == 0 {
+		return nil, errors.New("unable to lookup parent for a root item (depth=0)")
+	}
+	parentItems := l.stack[childDepth-1]
+	if len(parentItems) == 0 {
+		return nil, errors.New("unable to lookup parent (none found at this level)")
+	}
+	return parentItems[len(parentItems)-1], nil
+}
+
 func newList(items []ListItem) (List, error) {
 	// log.Debugf("initializing a new list with %d items", len(items))
 	if len(items) == 0 {
@@ -932,11 +1064,11 @@ func newList(items []ListItem) (List, error) {
 	}
 	switch items[0].(type) {
 	case *OrderedListItem:
-		return NewOrderedList(items)
+		return newOrderedList(items)
 	case *UnorderedListItem:
-		return NewUnorderedList(items)
+		return newUnorderedList(items)
 	case *LabeledListItem:
-		return NewLabeledList(items)
+		return newLabeledList(items)
 	default:
 		return nil, errors.Errorf("unsupported type of element as the root list: '%T'", items[0])
 	}
@@ -982,9 +1114,9 @@ func init() {
 	numberingStyles = []NumberingStyle{Arabic, Decimal, LowerAlpha, UpperAlpha, LowerRoman, UpperRoman, LowerGreek, UpperGreek}
 }
 
-// NewOrderedList initializes a new `OrderedList` from the given content
-func NewOrderedList(elements []ListItem) (OrderedList, error) {
-	log.Debugf("initializing a new OrderedList from %d element(s)...", len(elements))
+// newOrderedList initializes a new `OrderedList` from the given content
+func newOrderedList(elements []ListItem) (OrderedList, error) {
+	log.Debugf(" initializing a new ordered list from %d element(s)...", len(elements))
 	result := make([]OrderedListItem, 0)
 	bufferedItemsPerLevel := make(map[int][]*OrderedListItem) // buffered items for the current level
 	levelPerStyle := make(map[NumberingStyle]int)
@@ -993,9 +1125,8 @@ func NewOrderedList(elements []ListItem) (OrderedList, error) {
 	for _, element := range elements {
 		item, ok := element.(*OrderedListItem)
 		if !ok {
-			return OrderedList{}, errors.Errorf("element of type '%T' is not a valid unorderedlist item", element)
+			return OrderedList{}, errors.Errorf("element of type '%T' is not a valid orderedlist item", element)
 		}
-		log.Debugf("processing list item: %v", item.Elements[0])
 		if item.Level > previousLevel {
 			// force the current item level to (last seen level + 1)
 			item.Level = previousLevel + 1
@@ -1020,7 +1151,7 @@ func NewOrderedList(elements []ListItem) (OrderedList, error) {
 		if item.Level < previousLevel {
 			parentLayer := bufferedItemsPerLevel[previousLevel-2]
 			parentItem := parentLayer[len(parentLayer)-1]
-			log.Debugf("moving buffered items at level %d (%v) in parent (%v) ", previousLevel, bufferedItemsPerLevel[previousLevel-1][0].NumberingStyle, parentItem.NumberingStyle)
+			log.Debugf(" moving buffered items at level %d (%v) in parent (%v) ", previousLevel, bufferedItemsPerLevel[previousLevel-1][0].NumberingStyle, parentItem.NumberingStyle)
 			childList, err := toOrderedList(bufferedItemsPerLevel[previousLevel-1])
 			if err != nil {
 				return OrderedList{}, err
@@ -1035,12 +1166,12 @@ func NewOrderedList(elements []ListItem) (OrderedList, error) {
 			bufferedItemsPerLevel[item.Level-1] = make([]*OrderedListItem, 0)
 		}
 		// append item to buffer of its level
-		log.Debugf("adding list item %v in the current buffer at level %d", item.Elements[0], item.Level)
+		log.Debugf(" adding list item %v in the current buffer at level %d", item.Elements[0], item.Level)
 		bufferedItemsPerLevel[item.Level-1] = append(bufferedItemsPerLevel[item.Level-1], item)
 		previousLevel = item.Level
 		previousNumberingStyle = item.NumberingStyle
 	}
-	log.Debugf("processing the rest of the buffer...")
+	log.Debugf(" processing the rest of the buffer...")
 	// clear the remaining buffer and get the result in the reverse order of levels
 	for level := len(bufferedItemsPerLevel) - 1; level >= 0; level-- {
 		items := bufferedItemsPerLevel[level]
@@ -1127,7 +1258,7 @@ func (i *OrderedListItem) AddAttributes(attributes ElementAttributes) {
 
 // AddChild appends the given item to the content of this OrderedListItem
 func (i *OrderedListItem) AddChild(item interface{}) {
-	log.Debugf("Adding item %v to %v", item, i.Elements)
+	log.Debugf("adding item of type %T to list item of type %T (%v)", item, i, i.Elements)
 	i.Elements = append(i.Elements, item)
 }
 
@@ -1178,9 +1309,9 @@ type UnorderedList struct {
 	Items      []UnorderedListItem
 }
 
-// NewUnorderedList initializes a new `UnorderedList` from the given content
-func NewUnorderedList(elements []ListItem) (UnorderedList, error) {
-	log.Debugf("initializing a new UnorderedList from %d element(s)...", len(elements))
+// newUnorderedList initializes a new `UnorderedList` from the given content
+func newUnorderedList(elements []ListItem) (UnorderedList, error) {
+	log.Debugf("initializing a new unordered list from %d element(s)...", len(elements))
 	result := make([]UnorderedListItem, 0)
 	bufferedItemsPerLevel := make(map[int][]*UnorderedListItem) // buffered items for the current level
 	levelPerStyle := make(map[BulletStyle]int)
@@ -1189,7 +1320,7 @@ func NewUnorderedList(elements []ListItem) (UnorderedList, error) {
 	for _, element := range elements {
 		item, ok := element.(*UnorderedListItem)
 		if !ok {
-			return UnorderedList{}, errors.Errorf("element of type '%T' is not a valid unorderedlist item", element)
+			return UnorderedList{}, errors.Errorf("element of type '%T' is not a valid unordered list item", element)
 		}
 		if item.Level > previousLevel {
 			// force the current item level to (last seen level + 1)
@@ -1305,6 +1436,7 @@ func (i *UnorderedListItem) AddAttributes(attributes ElementAttributes) {
 
 // AddChild appends the given item to the content of this UnorderedListItem
 func (i *UnorderedListItem) AddChild(item interface{}) {
+	log.Debugf("adding item of type %T to list item of type %T (%v)", item, i, i.Elements)
 	i.Elements = append(i.Elements, item)
 }
 
@@ -1416,19 +1548,71 @@ type LabeledList struct {
 	Items      []LabeledListItem
 }
 
-// NewLabeledList initializes a new `LabeledList` from the given content
-func NewLabeledList(elements []ListItem) (LabeledList, error) {
-	log.Debugf("initializing a new LabeledList from %d elements", len(elements))
-	items := make([]LabeledListItem, 0)
+// newLabeledList initializes a new `LabeledList` from the given content
+func newLabeledList(elements []ListItem) (LabeledList, error) {
+	log.Debugf(" initializing a new labeled list from %d element(s)...", len(elements))
+	result := make([]LabeledListItem, 0)
+	bufferedItemsPerLevel := make(map[int][]*LabeledListItem) // buffered items for the current level
+	previousLevel := 0
 	for _, element := range elements {
-		if item, ok := element.(*LabeledListItem); ok {
-			items = append(items, *item)
+		item, ok := element.(*LabeledListItem)
+		if !ok {
+			return LabeledList{}, errors.Errorf("element of type '%T' is not a valid labeled list item", element)
+		}
+		if item.Level > previousLevel {
+			// force the current item level to (last seen level + 1)
+			item.Level = previousLevel + 1
+		}
+		log.Debugf("list item %v -> level= %d", item.Elements, item.Level)
+		// join item *values* in the parent item when the level decreased
+		for l := previousLevel; l > item.Level; l-- {
+			log.Debugf("merging previously buffered items at level '%d' in parent", l)
+			parentLayer := bufferedItemsPerLevel[l-2]
+			parentItem := parentLayer[len(parentLayer)-1]
+			childList := LabeledList{
+				Attributes: ElementAttributes{}, // avoid nil `attributes`
+			}
+			for _, i := range bufferedItemsPerLevel[l-1] {
+				childList.Items = append(childList.Items, *i)
+			}
+			parentItem.Elements = append(parentItem.Elements, childList)
+			// clear the previously buffered items at level 'previousLevel'
+			delete(bufferedItemsPerLevel, l-1)
+		}
+		// new level of element: put it in the buffer
+		if item.Level > len(bufferedItemsPerLevel) {
+			log.Debugf("initializing a new level of list items: %d", item.Level)
+			bufferedItemsPerLevel[item.Level-1] = make([]*LabeledListItem, 0)
+		}
+		// append item to buffer of its level
+		log.Debugf(" adding list item %v in the current buffer at level %d", item, item.Level)
+		bufferedItemsPerLevel[item.Level-1] = append(bufferedItemsPerLevel[item.Level-1], item)
+		previousLevel = item.Level
+	}
+	log.Debugf(" processing the rest of the buffer: %v", bufferedItemsPerLevel)
+	// clear the remaining buffer and get the result in the reverse order of levels
+	for level := len(bufferedItemsPerLevel) - 1; level >= 0; level-- {
+		items := bufferedItemsPerLevel[level]
+		// top-level items
+		if level == 0 {
+			for _, item := range items {
+				result = append(result, *item)
+			}
+		} else {
+			childList := LabeledList{
+				Attributes: ElementAttributes{}, // avoid nil `attributes`
+			}
+			for _, item := range items {
+				childList.Items = append(childList.Items, *item)
+			}
+			parentLayer := bufferedItemsPerLevel[level-1]
+			parentItem := parentLayer[len(parentLayer)-1]
+			parentItem.Elements = append(parentItem.Elements, childList)
 		}
 	}
-	log.Debugf("initialized a new LabeledList with %d root item(s)", len(items))
 	return LabeledList{
 		Attributes: ElementAttributes{},
-		Items:      items,
+		Items:      result,
 	}, nil
 }
 
@@ -1440,16 +1624,18 @@ func (l LabeledList) AddAttributes(attributes ElementAttributes) {
 // LabeledListItem an item in a labeled
 type LabeledListItem struct {
 	Term       string
+	Level      int
 	Attributes ElementAttributes
 	Elements   []interface{}
 }
 
 // NewLabeledListItem initializes a new LabeledListItem
-func NewLabeledListItem(term string, elements []interface{}) (LabeledListItem, error) {
-	log.Debugf("initializing a new LabeledListItem with %d elements (%T)", len(elements), elements)
+func NewLabeledListItem(level int, term string, elements []interface{}) (LabeledListItem, error) {
+	log.Debugf("initializing a new LabeledListItem")
 	return LabeledListItem{
+		Term:       strings.TrimSpace(term),
+		Level:      level,
 		Attributes: ElementAttributes{},
-		Term:       term,
 		Elements:   elements,
 	}, nil
 }
@@ -1461,7 +1647,7 @@ func (i *LabeledListItem) AddAttributes(attributes ElementAttributes) {
 
 // AddChild appends the given item to the content of this LabeledListItem
 func (i *LabeledListItem) AddChild(item interface{}) {
-	log.Debugf("Adding item %v to %v", item, i.Elements)
+	log.Debugf("adding item of type %T to list item of type %T (%v)", item, i, i.Elements)
 	i.Elements = append(i.Elements, item)
 }
 

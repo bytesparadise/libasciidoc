@@ -796,4 +796,42 @@ bar`
 			verify(GinkgoT(), expectedResult, actualContent)
 		})
 	})
+
+	Context("unsupported section syntax", func() {
+
+		It("should not fail with underlined title", func() {
+			actualContent := `Document Title
+==============
+Doc Writer <thedoc@asciidoctor.org>`
+			expectedResult := types.Document{
+				Attributes:         types.DocumentAttributes{},
+				ElementReferences:  map[string]interface{}{},
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
+				Elements: []interface{}{
+					types.Paragraph{
+						Attributes: types.ElementAttributes{},
+						Lines: []types.InlineElements{
+							{
+								types.StringElement{
+									Content: "Document Title",
+								},
+							},
+							{
+								types.StringElement{
+									Content: "==============",
+								},
+							},
+							{
+								types.StringElement{
+									Content: "Doc Writer <thedoc@asciidoctor.org>",
+								},
+							},
+						},
+					},
+				},
+			}
+			verify(GinkgoT(), expectedResult, actualContent)
+		})
+	})
 })

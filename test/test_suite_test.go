@@ -1,10 +1,12 @@
 package test_test
 
 import (
+	"testing"
+
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 
-	"testing"
+	_ "github.com/bytesparadise/libasciidoc/pkg/log"
 )
 
 func TestTest(t *testing.T) {
