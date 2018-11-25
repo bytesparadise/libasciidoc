@@ -60,10 +60,9 @@ install-devtools:
 
 .PHONY: deps
 ## Download build dependencies.
-deps: $(VENDOR_DIR)
+deps: 
+	dep ensure -v
 
-$(VENDOR_DIR):
-	dep ensure
 
 $(INSTALL_PREFIX):
 # Build artifacts dir
@@ -115,7 +114,6 @@ build: $(INSTALL_PREFIX) deps generate-optimized
 .PHONY: lint
 ## run golangci-lint against project
 lint:
-	@go get -v github.com/golangci/golangci-lint/cmd/golangci-lint
 	@golangci-lint run -E gofmt,golint,megacheck,misspell ./...
 
 
