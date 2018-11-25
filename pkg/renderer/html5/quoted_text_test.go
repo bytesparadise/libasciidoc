@@ -5,6 +5,7 @@ import . "github.com/onsi/ginkgo"
 var _ = Describe("quoted texts", func() {
 
 	Context("bold content", func() {
+
 		It("bold content alone", func() {
 			actualContent := "*bold content*"
 			expectedResult := `<div class="paragraph">
@@ -23,6 +24,7 @@ var _ = Describe("quoted texts", func() {
 	})
 
 	Context("italic content", func() {
+
 		It("italic content alone", func() {
 			actualContent := "_italic content_"
 			expectedResult := `<div class="paragraph">
@@ -42,6 +44,7 @@ var _ = Describe("quoted texts", func() {
 	})
 
 	Context("monospace content", func() {
+
 		It("monospace content alone", func() {
 			actualContent := "`monospace content`"
 			expectedResult := `<div class="paragraph">
@@ -60,7 +63,47 @@ var _ = Describe("quoted texts", func() {
 		})
 	})
 
-	Context("Nested content", func() {
+	Context("subscript content", func() {
+
+		It("subscript content alone", func() {
+			actualContent := "~subscript content~"
+			expectedResult := `<div class="paragraph">
+<p><sub>subscript content</sub></p>
+</div>`
+			verify(GinkgoT(), expectedResult, actualContent)
+		})
+
+		It("subscript content in sentence", func() {
+
+			actualContent := "some ~subscript content~."
+			expectedResult := `<div class="paragraph">
+<p>some <sub>subscript content</sub>.</p>
+</div>`
+			verify(GinkgoT(), expectedResult, actualContent)
+		})
+	})
+
+	Context("superscript content", func() {
+
+		It("superscript content alone", func() {
+			actualContent := "^superscript content^"
+			expectedResult := `<div class="paragraph">
+<p><sup>superscript content</sup></p>
+</div>`
+			verify(GinkgoT(), expectedResult, actualContent)
+		})
+
+		It("superscript content in sentence", func() {
+
+			actualContent := "some ^superscript content^."
+			expectedResult := `<div class="paragraph">
+<p>some <sup>superscript content</sup>.</p>
+</div>`
+			verify(GinkgoT(), expectedResult, actualContent)
+		})
+	})
+
+	Context("nested content", func() {
 
 		It("nested bold quote within bold quote with same punctuation", func() {
 
@@ -102,7 +145,7 @@ var _ = Describe("quoted texts", func() {
 
 	Context("prevented substitution", func() {
 
-		It("esacped bold content in sentence", func() {
+		It("escaped bold content in sentence", func() {
 			actualContent := "some \\*bold content*."
 			expectedResult := `<div class="paragraph">
 <p>some *bold content*.</p>

@@ -14,12 +14,16 @@ import (
 var boldTextTmpl texttemplate.Template
 var italicTextTmpl texttemplate.Template
 var monospaceTextTmpl texttemplate.Template
+var subscriptTextTmpl texttemplate.Template
+var superscriptTextTmpl texttemplate.Template
 
 // initializes the templates
 func init() {
 	boldTextTmpl = newTextTemplate("bold text", "<strong>{{.}}</strong>")
 	italicTextTmpl = newTextTemplate("italic text", "<em>{{.}}</em>")
 	monospaceTextTmpl = newTextTemplate("monospace text", "<code>{{.}}</code>")
+	subscriptTextTmpl = newTextTemplate("subscript text", "<sub>{{.}}</sub>")
+	superscriptTextTmpl = newTextTemplate("superscript text", "<sup>{{.}}</sup>")
 }
 
 func renderQuotedText(ctx *renderer.Context, t types.QuotedText) ([]byte, error) {
@@ -44,6 +48,10 @@ func renderQuotedText(ctx *renderer.Context, t types.QuotedText) ([]byte, error)
 		tmpl = italicTextTmpl
 	case types.Monospace:
 		tmpl = monospaceTextTmpl
+	case types.Subscript:
+		tmpl = subscriptTextTmpl
+	case types.Superscript:
+		tmpl = superscriptTextTmpl
 	default:
 		return nil, errors.Errorf("unsupported quoted text kind: '%v'", kind)
 	}

@@ -151,12 +151,12 @@ func appendBuffer(elements []interface{}, buff *bytes.Buffer) ([]interface{}, *b
 	return elements, buff
 }
 
-// applyOption a function to apply on the result of the `apply` function below, before returning
-type applyOption func(s string) string
+// applyFunc a function to apply on the result of the `apply` function below, before returning
+type applyFunc func(s string) string
 
-func apply(source string, options ...applyOption) string {
+func apply(source string, fs ...applyFunc) string {
 	result := source
-	for _, f := range options {
+	for _, f := range fs {
 		result = f(result)
 	}
 	// log.Debugf("applied '%s' -> '%s' (%v characters)", source, result, len(result))

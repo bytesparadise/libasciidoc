@@ -2245,12 +2245,16 @@ type QuotedText struct {
 type QuotedTextKind int
 
 const (
-	// Bold bold quoted text
+	// Bold bold quoted text (wrapped with '*' or '**')
 	Bold QuotedTextKind = iota
-	// Italic italic quoted text
+	// Italic italic quoted text (wrapped with '_' or '__')
 	Italic
-	// Monospace monospace quoted text
+	// Monospace monospace quoted text (wrapped with '`' or '``')
 	Monospace
+	// Subscript subscript quoted text (wrapped with '~' or '~~')
+	Subscript
+	// Superscript superscript quoted text (wrapped with '^' or '^^')
+	Superscript
 )
 
 // NewQuotedText initializes a new `QuotedText` from the given kind and content
@@ -2282,9 +2286,9 @@ func (t QuotedText) Accept(v Visitor) error {
 	return nil
 }
 
-// ------------------------------------------------------
-// Escaped Quoted Text (i.e., with substitution prevention)
-// ------------------------------------------------------
+// -------------------------------------------------------
+// Escaped Quoted Text (i.e., with substitution preserved)
+// -------------------------------------------------------
 
 // NewEscapedQuotedText returns a new InlineElements where the nested elements are preserved (ie, substituted as expected)
 func NewEscapedQuotedText(backslashes string, punctuation string, content []interface{}) ([]interface{}, error) {
