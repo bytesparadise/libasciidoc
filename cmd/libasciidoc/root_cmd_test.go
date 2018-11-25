@@ -3,9 +3,6 @@ package main_test
 import (
 	"bytes"
 	"io/ioutil"
-	"log"
-	"os"
-	"testing"
 
 	main "github.com/bytesparadise/libasciidoc/cmd/libasciidoc"
 	"github.com/stretchr/testify/require"
@@ -72,40 +69,11 @@ var _ = Describe("root cmd", func() {
 		Expect(buf.String()).ToNot(ContainSubstring(`<div id="footer">`))
 	})
 
-	It("process stdin", func() {
+	It("render multiple files", func() {
 		// given
 		root := main.NewRootCmd()
 		buf := new(bytes.Buffer)
 		root.SetOutput(buf)
-		content := "some content"
-		tmpfile, err := ioutil.TempFile("", "example")
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		defer os.Remove(tmpfile.Name()) // clean up
-
-		if _, err := tmpfile.Write([]byte(content)); err != nil {
-			log.Fatal(err)
-		}
-		_, err = tmpfile.Seek(0, 0)
-		require.NoError(GinkgoT(), err)
-		oldstdin := os.Stdin
-		os.Stdin = tmpfile
-		defer func() { os.Stdin = oldstdin }()
-		root.SetArgs([]string{})
-		// when
-		err = root.Execute()
-		//then
-		GinkgoT().Logf("command output: %v", buf.String())
-		Expect(buf.String()).To(ContainSubstring(content))
-		require.NoError(GinkgoT(), err)
-		require.NotEmpty(GinkgoT(), buf)
-	})
-
-	It("render multiple files", func() {
-		// given
-		root := main.NewRootCmd()
 		root.SetArgs([]string{"-s", "test/admonition.adoc", "test/test.adoc"})
 		// when
 		err := root.Execute()
@@ -116,14 +84,24 @@ var _ = Describe("root cmd", func() {
 	It("when rendering multiple files, return last error", func() {
 		// given
 		root := main.NewRootCmd()
+		buf := new(bytes.Buffer)
+		root.SetOutput(buf)
 		root.SetArgs([]string{"-s", "test/doesnotexist.adoc", "test/test.adoc"})
 		// when
 		err := root.Execute()
 		// then
 		require.Error(GinkgoT(), err)
 	})
+
+	It("show help when executed with no arg", func() {
+		// given
+		root := main.NewRootCmd()
+		buf := new(bytes.Buffer)
+		root.SetOutput(buf)
+		root.SetArgs([]string{})
+		// when
+		err := root.Execute()
+		// then
+		require.NoError(GinkgoT(), err)
+	})
 })
-
-func TestRootCommand(t *testing.T) {
-
-}

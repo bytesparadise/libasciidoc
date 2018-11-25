@@ -91,6 +91,12 @@ test: deps generate-optimized
 	@echo $(COVERPKGS)
 	@ginkgo -r --randomizeAllSpecs --randomizeSuites --failOnPending --trace --race --compilers=2  --cover -coverpkg $(COVERPKGS)
 
+.PHONY: test-no-coverage
+## run all tests excluding fixtures and vendored packages, without coverage
+test-no-coverage: deps generate-optimized
+	@echo $(COVERPKGS)
+	@ginkgo -r --randomizeAllSpecs --randomizeSuites --failOnPending --trace --race --compilers=2
+
 .PHONY: test-fixtures
 ## run all fixtures tests
 test-fixtures: deps generate-optimized

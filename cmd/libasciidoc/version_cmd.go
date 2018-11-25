@@ -11,7 +11,7 @@ import (
 func NewVersionCmd() *cobra.Command {
 	return &cobra.Command{
 		Use:   "version",
-		Short: "Print the version number of libasciidoc",
+		Short: "Print the version and build info",
 		Run: func(cmd *cobra.Command, args []string) {
 			if libasciidoc.BuildTag != "" {
 				fmt.Fprintf(cmd.OutOrStdout(), "tag:        %s\n", libasciidoc.BuildTag)
