@@ -10,7 +10,6 @@ environment:
   GOPATH: c:\gopath
   DEPTESTBYPASS501: "1"
   matrix:
-    - GO_VERSION: "1.8"
     - GO_VERSION: "1.9"
     - GO_VERSION: "1.10"
     - GO_VERSION: "1.11"
