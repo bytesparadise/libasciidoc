@@ -45,8 +45,7 @@ required = ["github.com/onsi/ginkgo/extensions/table"]
 
 [[constraint]]
   name = "github.com/sirupsen/logrus"
-  source = "https://github.com/sirupsen/logrus.git"
-  version = "1.0.0"
+  version = "1.2.0"
 
 [[constraint]]
   name = "github.com/stretchr/testify"
