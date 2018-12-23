@@ -14,7 +14,7 @@ var _ = Describe("images", func() {
 
 			It("block image with empty alt", func() {
 				actualContent := "image::images/foo.png[]"
-				expectedResult := types.BlockImage{
+				expectedResult := types.ImageBlock{
 					Attributes: types.ElementAttributes{
 						types.AttrImageAlt:    "foo",
 						types.AttrImageWidth:  "",
@@ -27,7 +27,7 @@ var _ = Describe("images", func() {
 
 			It("block image with empty alt and trailing spaces", func() {
 				actualContent := "image::images/foo.png[]  \t\t  "
-				expectedResult := types.BlockImage{
+				expectedResult := types.ImageBlock{
 					Attributes: types.ElementAttributes{
 						types.AttrImageAlt:    "foo",
 						types.AttrImageWidth:  "",
@@ -42,7 +42,7 @@ var _ = Describe("images", func() {
 				// line return here is not considered as a blank line
 				actualContent := `image::images/foo.png[]
 `
-				expectedResult := types.BlockImage{
+				expectedResult := types.ImageBlock{
 					Attributes: types.ElementAttributes{
 						types.AttrImageAlt:    "foo",
 						types.AttrImageWidth:  "",
@@ -57,7 +57,7 @@ var _ = Describe("images", func() {
 				// here, there's a real blank line with some spaces
 				actualContent := `image::images/foo.png[]
   `
-				expectedResult := types.BlockImage{
+				expectedResult := types.ImageBlock{
 					Attributes: types.ElementAttributes{
 						types.AttrImageAlt:    "foo",
 						types.AttrImageWidth:  "",
@@ -71,7 +71,7 @@ var _ = Describe("images", func() {
 			It("block image with 2 blank lines with spaces and tabs", func() {
 				actualContent := `image::images/foo.png[]
 			`
-				expectedResult := types.BlockImage{
+				expectedResult := types.ImageBlock{
 					Attributes: types.ElementAttributes{
 						types.AttrImageAlt:    "foo",
 						types.AttrImageWidth:  "",
@@ -84,7 +84,7 @@ var _ = Describe("images", func() {
 
 			It("block image with alt", func() {
 				actualContent := `image::images/foo.png[the foo.png image]`
-				expectedResult := types.BlockImage{
+				expectedResult := types.ImageBlock{
 					Attributes: types.ElementAttributes{
 						types.AttrImageAlt:    "the foo.png image",
 						types.AttrImageWidth:  "",
@@ -100,7 +100,7 @@ var _ = Describe("images", func() {
 .A title to foobar
 [link=http://foo.bar]
 image::images/foo.png[the foo.png image, 600, 400]`
-				expectedResult := types.BlockImage{
+				expectedResult := types.ImageBlock{
 					Attributes: types.ElementAttributes{
 						types.AttrID:          "img-foobar",
 						types.AttrTitle:       "A title to foobar",
@@ -123,7 +123,7 @@ image::appa.png[]`
 					Footnotes:          types.Footnotes{},
 					FootnoteReferences: types.FootnoteReferences{},
 					Elements: []interface{}{
-						types.BlockImage{
+						types.ImageBlock{
 							Attributes: types.ElementAttributes{
 								types.AttrImageAlt:    "app",
 								types.AttrImageWidth:  "",
@@ -131,7 +131,7 @@ image::appa.png[]`
 							},
 							Path: "app.png",
 						},
-						types.BlockImage{
+						types.ImageBlock{
 							Attributes: types.ElementAttributes{
 								types.AttrImageAlt:    "appa",
 								types.AttrImageWidth:  "",

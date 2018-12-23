@@ -126,7 +126,7 @@ DocumentAttributeValue <- (!NEWLINE .)* {
 // ------------------------------------------
 DocumentElement <- !EOF // when reaching EOF, do not try to parse a new document block again
     element:(BlankLine / DocumentAttributeDeclaration / DocumentAttributeReset / TableOfContentsMacro / 
-             MasqueradeParagraph / List / BlockImage / Table / DelimitedBlock / LiteralBlock / Paragraph) {
+             MasqueradeParagraph / List / ImageBlock / Table / DelimitedBlock / LiteralBlock / Paragraph) {
     return element, nil
 }
 
@@ -151,7 +151,7 @@ InlineElementID <- "[[" id:(ID) "]]" WS* {
     return types.NewInlineElementID(id.(string))
 }
 
-// a title attached to an element, such as a BlockImage
+// a title attached to an element, such as a ImageBlock
 // a title starts with a single "." followed by the value, without space in-between
 ElementTitle <- "." !"." !WS title:(ElementTitleContent) {
     return types.NewElementTitle(title.(string))
@@ -161,7 +161,7 @@ ElementTitleContent <- (!NEWLINE .)+ {
     return string(c.text), nil
 }
 
-// a role attached to an element, such as a BlockImage
+// a role attached to an element, such as a ImageBlock
 // a role starts is wrapped in "[. ]" 
 ElementRole <- "[." !WS role:(ElementRoleContent) "]" {
     return types.NewElementRole(role.(string))
@@ -772,8 +772,8 @@ LinkTextAttribute <- (!"," !"]" .)+ {
 // ------------------------------------------
 // Images
 // ------------------------------------------
-BlockImage <- "image::" path:(URL) inlineAttributes:(ImageAttributes) WS* EOL {
-    return types.NewBlockImage(path.(string), inlineAttributes.(types.ElementAttributes))
+ImageBlock <- "image::" path:(URL) inlineAttributes:(ImageAttributes) WS* EOL {
+    return types.NewImageBlock(path.(string), inlineAttributes.(types.ElementAttributes))
 }
 
 InlineImage <- "image:" !":" path:(URL) inlineAttributes:(ImageAttributes) {

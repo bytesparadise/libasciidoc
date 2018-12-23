@@ -1817,14 +1817,14 @@ const (
 	AttrImageTitle string = "title"
 )
 
-// BlockImage the structure for the block images
-type BlockImage struct {
+// ImageBlock the structure for the block images
+type ImageBlock struct {
 	Path       string
 	Attributes ElementAttributes
 }
 
-// NewBlockImage initializes a new `BlockImage`
-func NewBlockImage(path string, inlineAttributes ElementAttributes) (BlockImage, error) {
+// NewImageBlock initializes a new `ImageBlock`
+func NewImageBlock(path string, inlineAttributes ElementAttributes) (ImageBlock, error) {
 	// allAttributes := mergeAttributes(attributes)
 	allAttributes := ElementAttributes{}
 	for k, v := range inlineAttributes {
@@ -1840,14 +1840,14 @@ func NewBlockImage(path string, inlineAttributes ElementAttributes) (BlockImage,
 			allAttributes[AttrImageAlt] = filename
 		}
 	}
-	return BlockImage{
+	return ImageBlock{
 		Path:       path,
 		Attributes: allAttributes,
 	}, nil
 }
 
 // AddAttributes adds all given attributes to the current set of attribute of the element
-func (i BlockImage) AddAttributes(attributes ElementAttributes) {
+func (i ImageBlock) AddAttributes(attributes ElementAttributes) {
 	i.Attributes.AddAll(attributes)
 }
 
@@ -1857,7 +1857,7 @@ type InlineImage struct {
 	Attributes ElementAttributes
 }
 
-// NewInlineImage initializes a new `InlineImage` (similar to BlockImage, but without attributes)
+// NewInlineImage initializes a new `InlineImage` (similar to ImageBlock, but without attributes)
 func NewInlineImage(path string, attributes ElementAttributes) (InlineImage, error) {
 	if alt, found := attributes[AttrImageAlt]; !found || alt == "" {
 		_, filename := filepath.Split(path)

@@ -28,7 +28,7 @@ func init() {
 	inlineImageTmpl = newTextTemplate("inline image", `<span class="image{{ if .Role }} {{ .Role }}{{ end }}"><img src="{{ .Path }}" alt="{{ .Alt }}"{{ if .Width }} width="{{ .Width }}"{{ end }}{{ if .Height }} height="{{ .Height }}"{{ end }}{{ if .Title }} title="{{ .Title }}"{{ end }}></span>`)
 }
 
-func renderBlockImage(ctx *renderer.Context, img types.BlockImage) ([]byte, error) {
+func renderImageBlock(ctx *renderer.Context, img types.ImageBlock) ([]byte, error) {
 	result := bytes.NewBuffer(nil)
 	title := ""
 	if t := img.Attributes.GetAsString(types.AttrTitle); t != "" {
