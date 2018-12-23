@@ -133,9 +133,10 @@ DocumentElement <- !EOF // when reaching EOF, do not try to parse a new document
 // ------------------------------------------
 // Element Attributes
 // ------------------------------------------
-ElementAttribute <- attr:(ElementID / ElementTitle / ElementRole / AdmonitionMarkerAttribute / HorizontalLayout / AttributeGroup) WS* EOL {
-    return attr, nil // avoid returning something like `[]interface{}{attr, EOL}`
-}
+ElementAttribute <- &("[" / "." / "#") // skip if the content does not start with one of those characters
+    attr:(ElementID / ElementTitle / ElementRole / AdmonitionMarkerAttribute / HorizontalLayout / AttributeGroup) WS* EOL {
+        return attr, nil // avoid returning something like `[]interface{}{attr, EOL}`
+    }
 
 // identify all attributes that masquerade a block element into something else.
 MasqueradeAttribute <- QuoteAttributes / VerseAttributes
@@ -241,7 +242,7 @@ QuoteTitle <- (!EOL !"," !"]" .)* {
 // ------------------------------------------
 // Sections
 // ------------------------------------------
-Section <- // !EOF // when reaching EOF, do not try to parse a new section again
+Section <- &"=" // just skip if the content does not start with at least one '='
     section:(Section0 / Section1 / Section2 / Section3 / Section4 / Section5) {
         return section, nil
     }
