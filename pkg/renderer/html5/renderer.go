@@ -65,8 +65,8 @@ func renderElement(ctx *renderer.Context, element interface{}) ([]byte, error) {
 		return renderQuotedText(ctx, e)
 	case types.Passthrough:
 		return renderPassthrough(ctx, e)
-	case types.BlockImage:
-		return renderBlockImage(ctx, e)
+	case types.ImageBlock:
+		return renderImageBlock(ctx, e)
 	case types.InlineImage:
 		return renderInlineImage(ctx, e)
 	case types.DelimitedBlock:

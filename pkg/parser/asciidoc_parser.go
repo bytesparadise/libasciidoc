@@ -47978,7 +47978,7 @@ func (p *parser) callonDocumentElement548() (interface{}, error) {
 }
 
 func (c *current) onDocumentElement119(path, inlineAttributes interface{}) (interface{}, error) {
-	return types.NewBlockImage(path.(string), inlineAttributes.(types.ElementAttributes))
+	return types.NewImageBlock(path.(string), inlineAttributes.(types.ElementAttributes))
 }
 
 func (p *parser) callonDocumentElement119() (interface{}, error) {
