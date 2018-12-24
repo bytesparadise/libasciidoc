@@ -126,7 +126,7 @@ DocumentAttributeValue <- (!NEWLINE .)* {
 // ------------------------------------------
 DocumentElement <- !EOF // when reaching EOF, do not try to parse a new document block again
     element:(BlankLine / DocumentAttributeDeclaration / DocumentAttributeReset / TableOfContentsMacro / 
-             MasqueradeParagraph / List / ImageBlock / Table / DelimitedBlock / LiteralBlock / Paragraph) {
+             MasqueradeParagraph / ImageBlock / List / Table / DelimitedBlock / LiteralBlock / Paragraph) {
     return element, nil
 }
 
@@ -480,14 +480,9 @@ UnorderedListItemContent <- elements:(ListParagraph+ ContinuedDocumentElement*) 
 // ------------------------------------------
 // Labeled List Items
 // ------------------------------------------
-LabeledListItem <- 
-    term:(LabeledListItemTerm) separator:(LabeledListItemSeparator) (WS / NEWLINE)+ description:(LabeledListItemDescription) {
-        // level is '1' for a '::' separator, '2' for a ':::' separator and '3' for a '::::' separator
-        return types.NewLabeledListItem(len(separator.(string)) - 1, term.(string), description.([]interface{}))
-    } /  term:(LabeledListItemTerm) separator:(LabeledListItemSeparator) WS* EOL { // here, WS is optional since there is no description afterwards
-        // level is '1' for a '::' separator, '2' for a ':::' separator and '3' for a '::::' separator
-        return types.NewLabeledListItem(len(separator.(string)) - 1, term.(string), nil)
-    }
+LabeledListItem <- term:(LabeledListItemTerm) separator:(LabeledListItemSeparator) description:(LabeledListItemDescription) {
+    return types.NewLabeledListItem(len(separator.(string)) - 1, term.(string), description.([]interface{}))
+}
 
 LabeledListItemTerm <- (!NEWLINE !"::" .)*  {
     return string(c.text), nil
@@ -498,9 +493,14 @@ LabeledListItemSeparator <- ("::::" / ":::" / "::")  {
     return string(c.text), nil
 }
 
-LabeledListItemDescription <- elements:(ListParagraph / ContinuedDocumentElement)* { // TODO: replace with (ListParagraph+ ContinuedDocumentElement*) and use a single rule for all item contents ?
-    return types.NewListItemContent(elements.([]interface{}))
-}
+    
+LabeledListItemDescription <- 
+    (WS / NEWLINE)+ elements:(ListParagraph / ContinuedDocumentElement)* { // TODO: replace with (ListParagraph+ ContinuedDocumentElement*) and use a single rule for all item contents ?
+        return types.NewListItemContent(elements.([]interface{}))
+    } / WS* EOL { // here, WS is optional since there is no description afterwards
+        return []interface{}{}, nil
+    }
+
 
 // ------------------------------------------
 // Admonitions
