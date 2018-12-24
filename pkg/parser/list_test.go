@@ -49,6 +49,7 @@ on 2 lines`
 						Attributes: types.ElementAttributes{},
 						Term:       "Item1",
 						Level:      1,
+						Elements:   []interface{}{},
 					},
 				},
 			}
