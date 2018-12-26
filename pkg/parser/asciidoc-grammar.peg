@@ -149,9 +149,11 @@ DocumentElement <- !EOF // when reaching EOF, do not try to parse a new document
 // Element Attributes
 // ------------------------------------------
 ElementAttribute <- &("[" / "." / "#") // skip if the content does not start with one of those characters
-    attr:(ElementID / ElementTitle / ElementRole / QuoteAttributes / VerseAttributes / AdmonitionMarkerAttribute / HorizontalLayout / AttributeGroup) WS* EOL {
+    attr:(ElementID / ElementTitle / ElementRole / SourceAttributes / QuoteAttributes / VerseAttributes / AdmonitionMarkerAttribute / HorizontalLayout / AttributeGroup) WS* EOL {
         return attr, nil // avoid returning something like `[]interface{}{attr, EOL}`
     }
+
+ElementAttributePrefixMatch <- "[" / "." / "#"
 
 // identify all attributes that masquerade a block element into something else.
 MasqueradeAttribute <- QuoteAttributes / VerseAttributes
@@ -185,6 +187,15 @@ ElementRole <- "[." !WS role:((!NEWLINE !"]" .)+ {
 // expression for the whole admonition marker, but only retains the actual kind
 AdmonitionMarkerAttribute <- "[" k:(AdmonitionKind) "]" {
     return types.NewAdmonitionAttribute(k.(types.AdmonitionKind))
+}
+
+// a paragraph or a delimited block may contain source code in a given language
+SourceAttributes <- "[source]" {
+    return types.NewSourceAttributes("")
+} / "[source," language:((!NEWLINE !"]" .)+ {
+        return string(c.text), nil
+    })"]" {
+    return types.NewSourceAttributes(language.(string))
 }
 
 // one or more attributes. eg: [foo, key1=value1, key2 = value2 , ]

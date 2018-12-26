@@ -66,6 +66,76 @@ some source code
 </div>`
 			verify(GinkgoT(), expectedResult, actualContent)
 		})
+
+	})
+
+	Context("source blocks", func() {
+
+		It("with source attribute only", func() {
+			actualContent := `[source]
+----
+require 'sinatra'
+
+get '/hi' do
+  "Hello World!"
+end
+----`
+			expectedResult := `<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>require 'sinatra'
+
+get '/hi' do
+  "Hello World!"
+end</code></pre>
+</div>
+</div>`
+			verify(GinkgoT(), expectedResult, actualContent)
+		})
+
+		It("with source and languages attributes", func() {
+			actualContent := `[source,ruby]
+----
+require 'sinatra'
+
+get '/hi' do
+  "Hello World!"
+end
+----`
+			expectedResult := `<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-ruby" data-lang="ruby">require 'sinatra'
+
+get '/hi' do
+  "Hello World!"
+end</code></pre>
+</div>
+</div>`
+			verify(GinkgoT(), expectedResult, actualContent)
+		})
+
+		It("with id, title, source and languages attributes", func() {
+			actualContent := `[#id-for-source-block]
+[source,ruby]
+.app.rb
+----
+require 'sinatra'
+
+get '/hi' do
+  "Hello World!"
+end
+----`
+			expectedResult := `<div id="id-for-source-block" class="listingblock">
+<div class="title">app.rb</div>
+<div class="content">
+<pre class="highlight"><code class="language-ruby" data-lang="ruby">require 'sinatra'
+
+get '/hi' do
+  "Hello World!"
+end</code></pre>
+</div>
+</div>`
+			verify(GinkgoT(), expectedResult, actualContent)
+		})
 	})
 
 	Context("example blocks", func() {

@@ -1276,6 +1276,151 @@ foo
 		})
 	})
 
+	Context("source blocks", func() {
+
+		It("with source attribute only", func() {
+			actualContent := `[source]
+----
+require 'sinatra'
+
+get '/hi' do
+  "Hello World!"
+end
+----`
+			expectedResult := types.DelimitedBlock{
+				Attributes: types.ElementAttributes{
+					types.AttrKind:     types.Source,
+					types.AttrLanguage: "",
+				},
+				Elements: []interface{}{
+					types.Paragraph{
+						Attributes: types.ElementAttributes{},
+						Lines: []types.InlineElements{
+							{
+								types.StringElement{
+									Content: "require 'sinatra'",
+								},
+							},
+							{},
+							{
+								types.StringElement{
+									Content: "get '/hi' do",
+								},
+							},
+							{
+								types.StringElement{
+									Content: "  \"Hello World!\"",
+								},
+							},
+							{
+								types.StringElement{
+									Content: "end",
+								},
+							},
+						},
+					},
+				},
+			}
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+		})
+
+		It("with source and languages attributes", func() {
+			actualContent := `[source,ruby]
+----
+require 'sinatra'
+
+get '/hi' do
+  "Hello World!"
+end
+----`
+			expectedResult := types.DelimitedBlock{
+				Attributes: types.ElementAttributes{
+					types.AttrKind:     types.Source,
+					types.AttrLanguage: "ruby",
+				},
+				Elements: []interface{}{
+					types.Paragraph{
+						Attributes: types.ElementAttributes{},
+						Lines: []types.InlineElements{
+							{
+								types.StringElement{
+									Content: "require 'sinatra'",
+								},
+							},
+							{},
+							{
+								types.StringElement{
+									Content: "get '/hi' do",
+								},
+							},
+							{
+								types.StringElement{
+									Content: "  \"Hello World!\"",
+								},
+							},
+							{
+								types.StringElement{
+									Content: "end",
+								},
+							},
+						},
+					},
+				},
+			}
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+		})
+
+		It("with id, title, source and languages attributes", func() {
+			actualContent := `[#id-for-source-block]
+[source,ruby]
+.app.rb
+----
+require 'sinatra'
+
+get '/hi' do
+  "Hello World!"
+end
+----`
+			expectedResult := types.DelimitedBlock{
+				Attributes: types.ElementAttributes{
+					types.AttrKind:     types.Source,
+					types.AttrLanguage: "ruby",
+					types.AttrID:       "id-for-source-block",
+					types.AttrTitle:    "app.rb",
+				},
+				Elements: []interface{}{
+					types.Paragraph{
+						Attributes: types.ElementAttributes{},
+						Lines: []types.InlineElements{
+							{
+								types.StringElement{
+									Content: "require 'sinatra'",
+								},
+							},
+							{},
+							{
+								types.StringElement{
+									Content: "get '/hi' do",
+								},
+							},
+							{
+								types.StringElement{
+									Content: "  \"Hello World!\"",
+								},
+							},
+							{
+								types.StringElement{
+									Content: "end",
+								},
+							},
+						},
+					},
+				},
+			}
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+		})
+	})
+
 	Context("sidebar blocks", func() {
 
 		It("sidebar block with paragraph", func() {

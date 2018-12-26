@@ -456,6 +456,8 @@ const (
 	Sidebar
 	// Literal a literal block
 	Literal
+	// Source a source block
+	Source
 )
 
 // ------------------------------------------
@@ -1721,7 +1723,7 @@ func Verbatim(content []interface{}) ([]interface{}, error) {
 func NewDelimitedBlock(kind BlockKind, content []interface{}, substitution Substitution, attributes ...interface{}) (DelimitedBlock, error) {
 	log.Debugf("initializing a new DelimitedBlock of kind '%v' with %d elements", kind, len(content))
 	attrbs := NewElementAttributes(attributes)
-	if _, found := attrbs[AttrKind]; !found {
+	if _, found := attrbs[AttrKind]; !found { // add if missing
 		attrbs[AttrKind] = kind
 	}
 	elements, err := substitution(content)

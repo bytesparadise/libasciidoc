@@ -14,6 +14,7 @@ import (
 
 var fencedBlockTmpl texttemplate.Template
 var listingBlockTmpl texttemplate.Template
+var sourceBlockTmpl texttemplate.Template
 var exampleBlockTmpl texttemplate.Template
 var admonitionBlockTmpl texttemplate.Template
 var quoteBlockTmpl texttemplate.Template
@@ -36,6 +37,17 @@ func init() {
 <div class="title">{{ .Title }}</div>{{ end }}
 <div class="content">
 <pre>{{ range $index, $element := .Elements }}{{ renderPlainString $ctx $element | printf "%s" }}{{ end }}</pre>
+</div>
+</div>{{ end }}`,
+		texttemplate.FuncMap{
+			"renderPlainString": renderPlainString,
+		})
+
+	sourceBlockTmpl = newTextTemplate("source block",
+		`{{ $ctx := .Context }}{{ with .Data }}<div {{ if .ID }}id="{{ .ID }}" {{ end }}class="listingblock">{{ if .Title }}
+<div class="title">{{ .Title }}</div>{{ end }}
+<div class="content">
+<pre class="highlight"><code{{ if .Language}} class="language-{{ .Language}}" data-lang="{{ .Language}}"{{ end }}>{{ range $index, $element := .Elements }}{{ renderPlainString $ctx $element | printf "%s" }}{{ end }}</code></pre>
 </div>
 </div>{{ end }}`,
 		texttemplate.FuncMap{
@@ -156,6 +168,28 @@ func renderDelimitedBlock(ctx *renderer.Context, b types.DelimitedBlock) ([]byte
 			}{
 				ID:       id,
 				Title:    title,
+				Elements: elements,
+			},
+		})
+	case types.Source:
+		previouslyWithin := ctx.SetWithinDelimitedBlock(true)
+		previouslyInclude := ctx.SetIncludeBlankLine(true)
+		defer func() {
+			ctx.SetWithinDelimitedBlock(previouslyWithin)
+			ctx.SetIncludeBlankLine(previouslyInclude)
+		}()
+		language := b.Attributes.GetAsString(types.AttrLanguage)
+		err = sourceBlockTmpl.Execute(result, ContextualPipeline{
+			Context: ctx,
+			Data: struct {
+				ID       string
+				Title    string
+				Language string
+				Elements []interface{}
+			}{
+				ID:       id,
+				Title:    title,
+				Language: language,
 				Elements: elements,
 			},
 		})
