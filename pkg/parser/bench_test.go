@@ -57,14 +57,11 @@ bar`
 
 	}, 10)
 
-	Measure("bench parser on 2 lines", func(b Benchmarker) {
+	Measure("bench parser on 1 line", func(b Benchmarker) {
 		runtime := b.Time("runtime", func() {
 			// given
 			actualContent := `=== foo1
-bar1
-
-=== foo2
-bar2`
+bar1`
 			stats, err := parseReader(actualContent)
 			Expect(err).ShouldNot(HaveOccurred())
 			b.RecordValue("expr count", float64(stats.ExprCnt))
@@ -75,13 +72,24 @@ bar2`
 		}
 		Expect(runtime.Seconds()).Should(BeNumerically("<", timeout), "parsing shouldn't take too long (even on CI).")
 
-	}, 10)
+	}, 1)
 
-	Measure("bench parser on 1 line", func(b Benchmarker) {
+	Measure("bench parser on basic doc", func(b Benchmarker) {
 		runtime := b.Time("runtime", func() {
 			// given
-			actualContent := `=== foo1
-bar1`
+			actualContent := `= Introduction to AsciiDoc
+Doc Writer <doc@example.com>
+
+A preface about https://asciidoc.org[AsciiDoc].
+
+== First Section
+
+* item 1
+* item 2
+
+[source,ruby]
+puts "Hello, World!"
+`
 			stats, err := parseReader(actualContent)
 			Expect(err).ShouldNot(HaveOccurred())
 			b.RecordValue("expr count", float64(stats.ExprCnt))

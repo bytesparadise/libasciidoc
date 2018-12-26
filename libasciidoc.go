@@ -4,7 +4,6 @@ package libasciidoc
 
 import (
 	"context"
-	"encoding/json"
 	"io"
 	"os"
 	"time"
@@ -49,14 +48,12 @@ func ConvertToHTML(ctx context.Context, r io.Reader, output io.Writer, options .
 		return nil, errors.Wrapf(err, "error while parsing the document")
 	}
 	duration := time.Since(start)
-	b, err := json.MarshalIndent(stats.ChoiceAltCnt, "", "  ")
 	if err != nil {
 		log.Warnf("failed to produce stats: %v", err.Error())
 	}
 	log.Debugf("parsing stats:")
 	log.Debugf("- parsing duration:                %v", duration)
 	log.Debugf("- expressions processed:           %v", stats.ExprCnt)
-	log.Debugf("- choice expressions alternatives:\n%s", string(b)) // only displayed in debug level, i.e, not always
 	return convertToHTML(ctx, doc.(types.Document), output, options...)
 }
 
