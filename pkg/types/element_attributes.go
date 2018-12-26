@@ -27,6 +27,8 @@ const (
 	AttrQuoteAuthor string = "quoteAuthor"
 	// AttrQuoteTitle attribute for the title of a verse
 	AttrQuoteTitle string = "quoteTitle"
+	// AttrSource the "source" attribute for a source block or a source paragraph (this is a placeholder, ie, it does not expect any value for this attribute)
+	AttrSource string = "source"
 	// AttrLanguage the associated "language" attribute for a source block or a source paragraph
 	AttrLanguage string = "language"
 )
@@ -131,6 +133,15 @@ func NewQuoteAttributes(kind, author, title string) (map[string]interface{}, err
 func NewLiteralAttribute() (ElementAttributes, error) {
 	log.Debug("initializing a new Literal attribute")
 	return ElementAttributes{AttrKind: Literal}, nil
+}
+
+// NewSourceAttributes initializes a new attribute map with two entries, one for the kind of element ("source") and another optional one for the language of the source code
+func NewSourceAttributes(language string) (ElementAttributes, error) {
+	log.Debugf("initializing a new source attribute (language='%s')", language)
+	return ElementAttributes{
+		AttrKind:     Source,
+		AttrLanguage: strings.TrimSpace(language),
+	}, nil
 }
 
 // WithAttributes set the attributes on the given elements if its type is supported, otherwise returns an error

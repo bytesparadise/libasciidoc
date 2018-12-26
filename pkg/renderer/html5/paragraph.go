@@ -14,6 +14,7 @@ import (
 var paragraphTmpl texttemplate.Template
 var admonitionParagraphTmpl texttemplate.Template
 var listParagraphTmpl texttemplate.Template
+var sourceParagraphTmpl texttemplate.Template
 var verseParagraphTmpl texttemplate.Template
 var quoteParagraphTmpl texttemplate.Template
 
@@ -50,6 +51,16 @@ func init() {
 		`{{ $ctx := .Context }}{{ with .Data }}<p>{{ renderLines $ctx .Lines false }}</p>{{ end }}`,
 		texttemplate.FuncMap{
 			"renderLines": renderLinesAsString,
+		})
+
+	sourceParagraphTmpl = newTextTemplate("source paragraph",
+		`{{ $ctx := .Context }}{{ with .Data }}<div class="listingblock">
+<div class="content">
+<pre class="highlight">{{ if .Language }}<code class="language-{{ .Language }}" data-lang="{{ .Language }}">{{ else }}<code>{{ end }}{{ renderLines $ctx .Lines | printf "%s" }}</code></pre>
+</div>
+</div>{{ end }}`,
+		texttemplate.FuncMap{
+			"renderLines": renderPlainString,
 		})
 
 	verseParagraphTmpl = newTextTemplate("verse block", `{{ $ctx := .Context }}{{ with .Data }}<div {{ if .ID }}id="{{ .ID }}" {{ end }}class="verseblock">{{ if .Title }}
@@ -113,6 +124,22 @@ func renderParagraph(ctx *renderer.Context, p types.Paragraph) ([]byte, error) {
 				IconTitle: getIconTitle(k),
 				IconClass: getIconClass(ctx, k),
 				Lines:     p.Lines,
+			},
+		})
+	} else if kind, ok := p.Attributes[types.AttrKind]; ok && kind == types.Source {
+		log.Debug("rendering source paragraph...")
+		err = sourceParagraphTmpl.Execute(result, ContextualPipeline{
+			Context: ctx,
+			Data: struct {
+				ID       string
+				Title    string
+				Language string
+				Lines    []types.InlineElements
+			}{
+				ID:       id,
+				Title:    getTitle(p.Attributes[types.AttrTitle]),
+				Language: p.Attributes.GetAsString(types.AttrLanguage),
+				Lines:    p.Lines,
 			},
 		})
 	} else if kind, ok := p.Attributes[types.AttrKind]; ok && kind == types.Verse {
