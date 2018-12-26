@@ -111,7 +111,8 @@ func renderDelimitedBlock(ctx *renderer.Context, b types.DelimitedBlock) ([]byte
 	result := bytes.NewBuffer(nil)
 	elements := discardTrailingBlankLines(b.Elements)
 	var id, title string
-	if i, ok := b.Attributes[types.AttrID].(string); ok {
+
+	if i, ok := b.Attributes[types.AttrID].(string); ok { // TODO: replace with b.Attributes.GetAsString?
 		id = strings.TrimSpace(i)
 	}
 	if t, ok := b.Attributes[types.AttrTitle].(string); ok {
@@ -121,11 +122,11 @@ func renderDelimitedBlock(ctx *renderer.Context, b types.DelimitedBlock) ([]byte
 	kind := b.Attributes[types.AttrKind]
 	switch kind {
 	case types.Fenced:
-		oldWithin := ctx.SetWithinDelimitedBlock(true)
-		oldInclude := ctx.SetIncludeBlankLine(true)
+		previouslyWithin := ctx.SetWithinDelimitedBlock(true)
+		previouslyInclude := ctx.SetIncludeBlankLine(true)
 		defer func() {
-			ctx.SetWithinDelimitedBlock(oldWithin)
-			ctx.SetIncludeBlankLine(oldInclude)
+			ctx.SetWithinDelimitedBlock(previouslyWithin)
+			ctx.SetIncludeBlankLine(previouslyInclude)
 		}()
 		err = fencedBlockTmpl.Execute(result, ContextualPipeline{
 			Context: ctx,
@@ -140,11 +141,11 @@ func renderDelimitedBlock(ctx *renderer.Context, b types.DelimitedBlock) ([]byte
 			},
 		})
 	case types.Listing:
-		oldWithin := ctx.SetWithinDelimitedBlock(true)
-		oldInclude := ctx.SetIncludeBlankLine(true)
+		previouslyWithin := ctx.SetWithinDelimitedBlock(true)
+		previouslyInclude := ctx.SetIncludeBlankLine(true)
 		defer func() {
-			ctx.SetWithinDelimitedBlock(oldWithin)
-			ctx.SetIncludeBlankLine(oldInclude)
+			ctx.SetWithinDelimitedBlock(previouslyWithin)
+			ctx.SetIncludeBlankLine(previouslyInclude)
 		}()
 		err = listingBlockTmpl.Execute(result, ContextualPipeline{
 			Context: ctx,
