@@ -53,10 +53,10 @@ func ConvertToHTML(ctx context.Context, r io.Reader, output io.Writer, options .
 	if err != nil {
 		log.Warnf("failed to produce stats: %v", err.Error())
 	}
-	log.Infof("parsing stats:")
-	log.Infof("- parsing duration:                %v", duration)
-	log.Infof("- expressions processed:           %v", stats.ExprCnt)
-	log.Infof("- choice expressions alternatives:\n%s", string(b)) // only displayed in debug level, i.e, not always
+	log.Debugf("parsing stats:")
+	log.Debugf("- parsing duration:                %v", duration)
+	log.Debugf("- expressions processed:           %v", stats.ExprCnt)
+	log.Debugf("- choice expressions alternatives:\n%s", string(b)) // only displayed in debug level, i.e, not always
 	return convertToHTML(ctx, doc.(types.Document), output, options...)
 }
 
@@ -68,6 +68,6 @@ func convertToHTML(ctx context.Context, doc types.Document, output io.Writer, op
 	}
 	log.Debugf("Done processing document")
 	duration := time.Since(start)
-	log.Infof("rendered the HTML output in %v", duration)
+	log.Debugf("rendered the HTML output in %v", duration)
 	return metadata, nil
 }

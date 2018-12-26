@@ -125,8 +125,23 @@ DocumentAttributeValue <- (!NEWLINE .)* {
 // Document blocks
 // ------------------------------------------
 DocumentElement <- !EOF // when reaching EOF, do not try to parse a new document block again
-    element:(BlankLine / DocumentAttributeDeclaration / DocumentAttributeReset / TableOfContentsMacro / 
-             MasqueradeParagraph / ImageBlock / List / Table / DelimitedBlock / LiteralBlock / Paragraph) {
+    element:(BlankLine 
+            / DocumentAttributeDeclaration 
+            / DocumentAttributeReset 
+            / TableOfContentsMacro
+            / VerseBlock
+            / VerseParagraph
+            / ImageBlock 
+            / FencedBlock
+            / ListingBlock
+            / ExampleBlock
+            / CommentBlock
+            / QuoteBlock 
+            / SidebarBlock
+            / Table 
+            / List 
+            / LiteralBlock 
+            / Paragraph) {
     return element, nil
 }
 
@@ -134,7 +149,7 @@ DocumentElement <- !EOF // when reaching EOF, do not try to parse a new document
 // Element Attributes
 // ------------------------------------------
 ElementAttribute <- &("[" / "." / "#") // skip if the content does not start with one of those characters
-    attr:(ElementID / ElementTitle / ElementRole / AdmonitionMarkerAttribute / HorizontalLayout / AttributeGroup) WS* EOL {
+    attr:(ElementID / ElementTitle / ElementRole / QuoteAttributes / VerseAttributes / AdmonitionMarkerAttribute / HorizontalLayout / AttributeGroup) WS* EOL {
         return attr, nil // avoid returning something like `[]interface{}{attr, EOL}`
     }
 
@@ -153,22 +168,18 @@ InlineElementID <- "[[" id:(ID) "]]" WS* {
 
 // a title attached to an element, such as a ImageBlock
 // a title starts with a single "." followed by the value, without space in-between
-ElementTitle <- "." !"." !WS title:(ElementTitleContent) {
+ElementTitle <- "." !"." !WS title:((!NEWLINE .)+ {
+        return string(c.text), nil
+    }) {
     return types.NewElementTitle(title.(string))
-}
-
-ElementTitleContent <- (!NEWLINE .)+ {
-    return string(c.text), nil
 }
 
 // a role attached to an element, such as a ImageBlock
 // a role starts is wrapped in "[. ]" 
-ElementRole <- "[." !WS role:(ElementRoleContent) "]" {
+ElementRole <- "[." !WS role:((!NEWLINE !"]" .)+ {
+        return string(c.text), nil
+    }) "]" {
     return types.NewElementRole(role.(string))
-}
-
-ElementRoleContent <- (!NEWLINE !"]" .)+ {
-    return string(c.text), nil
 }
 
 // expression for the whole admonition marker, but only retains the actual kind
@@ -199,15 +210,15 @@ HorizontalLayout <- "[horizontal]" {
     return types.ElementAttributes{"layout": "horizontal"}, nil
 }
 
-QuoteAttributes <- "[" kind:(QuoteKind) WS* "," author:(QuoteAuthor) "," title:(QuoteTitle) "]" WS* EOL {
+QuoteAttributes <- "[" kind:(QuoteKind) WS* "," author:(QuoteAuthor) "," title:(QuoteTitle) "]" {
         return types.NewQuoteAttributes(kind.(string), author.(string), title.(string))
     } / 
     // verse without specific title
-    "[" kind:(QuoteKind) WS* "," author:(QuoteAuthor) "]" WS* EOL {
+    "[" kind:(QuoteKind) WS* "," author:(QuoteAuthor) "]" {
         return types.NewQuoteAttributes(kind.(string), author.(string), "")
     } /
     // verse without specific author
-    "[" kind:(QuoteKind) WS* "]" WS* EOL {
+    "[" kind:(QuoteKind) WS* "]" {
         return types.NewQuoteAttributes(kind.(string), "","")
     }
 
@@ -215,16 +226,23 @@ QuoteKind <- "quote" {
     return string(c.text), nil
 }
 
-VerseAttributes <- "[" kind:(VerseKind) WS* "," author:(QuoteAuthor) "," title:(QuoteTitle) "]" WS* EOL {
-        return types.NewQuoteAttributes(kind.(string), author.(string), title.(string))
-    } / 
-    // verse without specific title
-    "[" kind:(VerseKind) WS* "," author:(QuoteAuthor) "]" WS* EOL {
-        return types.NewQuoteAttributes(kind.(string), author.(string), "")
-    } /
-    // verse without specific author
-    "[" kind:(VerseKind) WS* "]" WS* EOL {
-        return types.NewQuoteAttributes(kind.(string), "","")
+VerseAttributes <- attribute:("[" kind:(VerseKind) WS* "," author:(QuoteAuthor) "," title:(QuoteTitle) "]" {
+            return types.NewQuoteAttributes(kind.(string), author.(string), title.(string))
+        } / 
+        // verse without specific title
+        "[" kind:(VerseKind) WS* "," author:(QuoteAuthor) "]" {
+            return types.NewQuoteAttributes(kind.(string), author.(string), "")
+        } /
+        // verse without specific author
+        "[" kind:(VerseKind) WS* "]" {
+            return types.NewQuoteAttributes(kind.(string), "","")
+        }
+    )
+    #{
+        c.state["verse"] = true
+        return nil
+    } {
+        return attribute, nil
     }
 
 VerseKind <- "verse" {
@@ -531,13 +549,26 @@ Paragraph <-
     !("="+ WS+ !NEWLINE) lines:(InlineElements)+ { 
         return types.NewParagraph(lines.([]interface{}))
     } 
-MasqueradeParagraph <- // admonition paragraph 
-    attributes:(MasqueradeAttribute ElementAttribute*) !("="+ WS+ !NEWLINE) t:(AdmonitionKind) ": " lines:(InlineElements)+ { 
-        return types.NewAdmonitionParagraph(lines.([]interface{}), t.(types.AdmonitionKind), attributes.([]interface{})...)
-    } / 
-    // other kind of paragraph (verse, regular, etc.)
-    attributes:(MasqueradeAttribute ElementAttribute*) !("="+ WS+ !NEWLINE) lines:(InlineElements)+ { 
-        return types.NewParagraph(lines.([]interface{}), attributes.([]interface{})...)
+
+VerseParagraph <- 
+    &{
+        verse, ok := c.state["verse"].(bool); 
+        return ok && verse, nil
+    }
+    verse:(
+        // admonition paragraph 
+        !("="+ WS+ !NEWLINE) t:(AdmonitionKind) ": " lines:(InlineElements)+ { 
+            return types.NewAdmonitionParagraph(lines.([]interface{}), t.(types.AdmonitionKind))
+        } / 
+        // other kind of paragraph (verse, regular, etc.)
+        !("="+ WS+ !NEWLINE) lines:(InlineElements)+ { 
+            return types.NewParagraph(lines.([]interface{}))
+        } 
+    ) #{
+        c.state["verse"] = false
+        return nil
+    } {
+        return verse, nil
     }
 
 InlineElements <- 
@@ -825,12 +856,20 @@ FootnoteContent <- elements:(!"]" !EOL WS* !InlineElementID InlineElement WS*)+ 
 // ------------------------------------------------------------------------------------
 // Delimited Blocks 
 // ------------------------------------------------------------------------------------
-DelimitedBlock <- FencedBlock / ListingBlock / ExampleBlock 
-                / CommentBlock / VerseBlock / QuoteBlock 
+DelimitedBlock <- FencedBlock 
+                / ListingBlock 
+                / ExampleBlock 
+                / CommentBlock 
+                / VerseBlock 
+                / QuoteBlock 
                 / SidebarBlock
 
-BlockDelimiter <- LiteralBlockDelimiter / FencedBlockDelimiter / ListingBlockDelimiter 
-                / ExampleBlockDelimiter / CommentBlockDelimiter / QuoteBlockDelimiter
+BlockDelimiter <- LiteralBlockDelimiter 
+                / FencedBlockDelimiter 
+                / ListingBlockDelimiter 
+                / ExampleBlockDelimiter 
+                / CommentBlockDelimiter 
+                / QuoteBlockDelimiter
                 / SidebarBlockDelimiter
 
 
@@ -895,11 +934,11 @@ BlockParagraphLine <- !(OrderedListItemPrefix)
 // -------------------------------------------------------------------------------------
 QuoteBlockDelimiter <- "____" WS* EOL // same for verse blocks
 
-QuoteBlock <- attributes:(QuoteAttributes ElementAttribute*) QuoteBlockDelimiter content:(QuoteBlockContent)*  (QuoteBlockDelimiter / EOF) {
-    return types.NewDelimitedBlock(types.Quote, content.([]interface{}), types.None, attributes.([]interface{}))
+QuoteBlock <- QuoteBlockDelimiter content:(QuoteBlockElement)* (QuoteBlockDelimiter / EOF) {
+    return types.NewDelimitedBlock(types.Quote, content.([]interface{}), types.None)
 }
 
-QuoteBlockContent <- 
+QuoteBlockElement <- 
     !QuoteBlockDelimiter !EOF element:(DocumentElement) {
         return element, nil
     } 
@@ -909,9 +948,18 @@ QuoteBlockContent <-
 // -------------------------------------------------------------------------------------
 // VerseBlockDelimiter: see QuoteBlockDelimiter
 
-VerseBlock <- attributes:(VerseAttributes ElementAttribute*) QuoteBlockDelimiter content:(VerseBlockContent)* (QuoteBlockDelimiter / EOF) {
-    return types.NewDelimitedBlock(types.Verse, content.([]interface{}), types.None, attributes.([]interface{}))
-}
+VerseBlock <- &{
+        verse, ok := c.state["verse"].(bool); 
+        return ok && verse, nil
+    }
+    verse:(QuoteBlockDelimiter content:(VerseBlockContent)* (QuoteBlockDelimiter / EOF) {
+        return types.NewDelimitedBlock(types.Verse, content.([]interface{}), types.None)
+    }) #{
+        c.state["verse"] = false
+        return nil
+    } {
+        return verse, nil
+    }
 
 VerseBlockContent <- lines:(VerseBlockLine)+ {
     return types.NewParagraph(lines.([]interface{}), nil)

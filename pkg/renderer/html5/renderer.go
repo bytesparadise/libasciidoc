@@ -119,6 +119,8 @@ func renderPlainString(ctx *renderer.Context, element interface{}) ([]byte, erro
 		return renderLines(ctx, element.Lines, renderPlainString, false)
 	case types.InlineElements:
 		return renderLine(ctx, element, renderPlainString)
+	case []types.InlineElements:
+		return renderLines(ctx, element, renderPlainString, false)
 	default:
 		return nil, errors.Errorf("unable to render plain string for element of type '%T'", element)
 	}

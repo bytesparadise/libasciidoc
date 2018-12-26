@@ -273,6 +273,7 @@ in the middle
 			}
 			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
+
 		It("listing block with unrendered list", func() {
 			actualContent := `----
 * some 
@@ -1141,7 +1142,7 @@ ____
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("VerseBlock"))
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 
 		It("multi-line verse with unrendered lists and block without author and title", func() {

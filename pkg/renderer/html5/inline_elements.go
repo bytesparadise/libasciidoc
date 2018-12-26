@@ -58,7 +58,7 @@ func renderLines(ctx *renderer.Context, elements []types.InlineElements, renderE
 			}
 		}
 	}
-	log.Debugf("rendered line(s): '%s'", buff.String())
+	log.Debugf("rendered lines: '%s'", buff.String())
 	return buff.Bytes(), nil
 }
 

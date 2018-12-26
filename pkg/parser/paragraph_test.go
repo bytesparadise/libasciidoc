@@ -8,7 +8,7 @@ import (
 
 var _ = Describe("paragraphs", func() {
 
-	Context("regular paragraphs", func() {
+	Context("paragraphs", func() {
 
 		It("paragraph with 1 word", func() {
 			actualContent := "hello"
@@ -119,59 +119,56 @@ bar.`
 					},
 				},
 			}
-
 			verify(GinkgoT(), expectedResult, actualContent)
 		})
+	})
 
-		Context("paragraphs with line break", func() {
+	Context("paragraphs with line break", func() {
 
-			It("with explicit line break", func() {
-
-				actualContent := `foo +
+		It("with explicit line break", func() {
+			actualContent := `foo +
 bar
 baz`
-				expectedResult := types.Paragraph{
-					Attributes: types.ElementAttributes{},
-					Lines: []types.InlineElements{
-						{
-							types.StringElement{Content: "foo"},
-							types.LineBreak{},
-						},
-						{
-							types.StringElement{Content: "bar"},
-						},
-						{
-							types.StringElement{Content: "baz"},
-						},
+			expectedResult := types.Paragraph{
+				Attributes: types.ElementAttributes{},
+				Lines: []types.InlineElements{
+					{
+						types.StringElement{Content: "foo"},
+						types.LineBreak{},
 					},
-				}
-				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
-			})
+					{
+						types.StringElement{Content: "bar"},
+					},
+					{
+						types.StringElement{Content: "baz"},
+					},
+				},
+			}
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+		})
 
-			It("with paragraph attribute", func() {
-
-				actualContent := `[%hardbreaks]
+		It("with paragraph attribute", func() {
+			actualContent := `[%hardbreaks]
 foo
 bar
 baz`
-				expectedResult := types.Paragraph{
-					Attributes: types.ElementAttributes{
-						types.AttrHardBreaks: nil,
+			expectedResult := types.Paragraph{
+				Attributes: types.ElementAttributes{
+					types.AttrHardBreaks: nil,
+				},
+				Lines: []types.InlineElements{
+					{
+						types.StringElement{Content: "foo"},
 					},
-					Lines: []types.InlineElements{
-						{
-							types.StringElement{Content: "foo"},
-						},
-						{
-							types.StringElement{Content: "bar"},
-						},
-						{
-							types.StringElement{Content: "baz"},
-						},
+					{
+						types.StringElement{Content: "bar"},
 					},
-				}
-				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
-			})
+					{
+						types.StringElement{Content: "baz"},
+					},
+				},
+			}
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 
 		// It("paragraph with InlineElementID", func() {
@@ -354,7 +351,7 @@ And no space after [CAUTION] either.`
 
 	Context("verse paragraphs", func() {
 
-		It("regular paragraph as a verse with author and title", func() {
+		It("paragraph as a verse with author and title", func() {
 			actualContent := `[verse, john doe, verse title]
 I am a verse paragraph.`
 			expectedResult := types.Paragraph{
@@ -374,7 +371,7 @@ I am a verse paragraph.`
 			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 
-		It("regular paragraph as a verse with author, title and other attributes", func() {
+		It("paragraph as a verse with author, title and other attributes", func() {
 			actualContent := `[[universal]]
 [verse, john doe, verse title]
 .universe
@@ -398,7 +395,7 @@ I am a verse paragraph.`
 			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 
-		It("regular paragraph as a verse with empty title", func() {
+		It("paragraph as a verse with empty title", func() {
 			actualContent := `[verse, john doe, ]
 I am a verse paragraph.`
 			expectedResult := types.Paragraph{
@@ -418,7 +415,7 @@ I am a verse paragraph.`
 			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 
-		It("regular paragraph as a verse without title", func() {
+		It("paragraph as a verse without title", func() {
 			actualContent := `[verse, john doe ]
 I am a verse paragraph.`
 			expectedResult := types.Paragraph{
@@ -438,7 +435,7 @@ I am a verse paragraph.`
 			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 
-		It("regular paragraph as a verse with empty author", func() {
+		It("paragraph as a verse with empty author", func() {
 			actualContent := `[verse,  ]
 I am a verse paragraph.`
 			expectedResult := types.Paragraph{
@@ -458,7 +455,7 @@ I am a verse paragraph.`
 			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 
-		It("regular paragraph as a verse without author", func() {
+		It("paragraph as a verse without author", func() {
 			actualContent := `[verse]
 I am a verse paragraph.`
 			expectedResult := types.Paragraph{
@@ -496,6 +493,179 @@ image::foo.png[]`
 				},
 			}
 			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+		})
+	})
+
+	Context("quote paragraphs", func() {
+
+		It("paragraph as a quote with author and title", func() {
+			actualContent := `[quote, john doe, quote title]
+I am a quote paragraph.`
+			expectedResult := types.Paragraph{
+				Attributes: types.ElementAttributes{
+					types.AttrKind:        types.Quote,
+					types.AttrQuoteAuthor: "john doe",
+					types.AttrQuoteTitle:  "quote title",
+				},
+				Lines: []types.InlineElements{
+					{
+						types.StringElement{
+							Content: "I am a quote paragraph.",
+						},
+					},
+				},
+			}
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+		})
+
+		It("paragraph as a quote with author, title and other attributes", func() {
+			actualContent := `[[universal]]
+[quote, john doe, quote title]
+.universe
+I am a quote paragraph.`
+			expectedResult := types.Paragraph{
+				Attributes: types.ElementAttributes{
+					types.AttrKind:        types.Quote,
+					types.AttrQuoteAuthor: "john doe",
+					types.AttrQuoteTitle:  "quote title",
+					types.AttrID:          "universal",
+					types.AttrTitle:       "universe",
+				},
+				Lines: []types.InlineElements{
+					{
+						types.StringElement{
+							Content: "I am a quote paragraph.",
+						},
+					},
+				},
+			}
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+		})
+
+		It("paragraph as a quote with empty title", func() {
+			actualContent := `[quote, john doe, ]
+I am a quote paragraph.`
+			expectedResult := types.Paragraph{
+				Attributes: types.ElementAttributes{
+					types.AttrKind:        types.Quote,
+					types.AttrQuoteAuthor: "john doe",
+					types.AttrQuoteTitle:  "",
+				},
+				Lines: []types.InlineElements{
+					{
+						types.StringElement{
+							Content: "I am a quote paragraph.",
+						},
+					},
+				},
+			}
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+		})
+
+		It("paragraph as a quote without title", func() {
+			actualContent := `[quote, john doe ]
+I am a quote paragraph.`
+			expectedResult := types.Paragraph{
+				Attributes: types.ElementAttributes{
+					types.AttrKind:        types.Quote,
+					types.AttrQuoteAuthor: "john doe",
+					types.AttrQuoteTitle:  "",
+				},
+				Lines: []types.InlineElements{
+					{
+						types.StringElement{
+							Content: "I am a quote paragraph.",
+						},
+					},
+				},
+			}
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+		})
+
+		It("paragraph as a quote with empty author", func() {
+			actualContent := `[quote,  ]
+I am a quote paragraph.`
+			expectedResult := types.Paragraph{
+				Attributes: types.ElementAttributes{
+					types.AttrKind:        types.Quote,
+					types.AttrQuoteAuthor: "",
+					types.AttrQuoteTitle:  "",
+				},
+				Lines: []types.InlineElements{
+					{
+						types.StringElement{
+							Content: "I am a quote paragraph.",
+						},
+					},
+				},
+			}
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+		})
+
+		It("paragraph as a quote without author", func() {
+			actualContent := `[quote]
+I am a quote paragraph.`
+			expectedResult := types.Paragraph{
+				Attributes: types.ElementAttributes{
+					types.AttrKind:        types.Quote,
+					types.AttrQuoteAuthor: "",
+					types.AttrQuoteTitle:  "",
+				},
+				Lines: []types.InlineElements{
+					{
+						types.StringElement{
+							Content: "I am a quote paragraph.",
+						},
+					},
+				},
+			}
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+		})
+
+		It("inline image within a quote", func() {
+			actualContent := `[quote, john doe, quote title]
+a foo image:foo.png[]`
+			expectedResult := types.Paragraph{
+				Attributes: types.ElementAttributes{
+					types.AttrKind:        types.Quote,
+					types.AttrQuoteAuthor: "john doe",
+					types.AttrQuoteTitle:  "quote title",
+				},
+				Lines: []types.InlineElements{
+					{
+						types.StringElement{
+							Content: "a foo ",
+						},
+						types.InlineImage{
+							Attributes: types.ElementAttributes{
+								types.AttrImageAlt:    "foo",
+								types.AttrImageWidth:  "",
+								types.AttrImageHeight: "",
+							},
+							Path: "foo.png",
+						},
+					},
+				},
+			}
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+		})
+
+		It("image block is NOT a quote", func() {
+			actualContent := `[quote, john doe, quote title]
+image::foo.png[]`
+			expectedResult := types.ImageBlock{
+				Attributes: types.ElementAttributes{
+					types.AttrImageAlt:    "foo",
+					types.AttrImageWidth:  "",
+					types.AttrImageHeight: "",
+					// quote attributes
+					types.AttrKind:        types.Quote,
+					types.AttrQuoteAuthor: "john doe",
+					types.AttrQuoteTitle:  "quote title",
+				},
+				Path: "foo.png",
+			}
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock")) //, parser.Debug(true))
 		})
 	})
 })

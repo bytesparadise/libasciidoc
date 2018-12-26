@@ -14,6 +14,8 @@ import (
 var paragraphTmpl texttemplate.Template
 var admonitionParagraphTmpl texttemplate.Template
 var listParagraphTmpl texttemplate.Template
+var verseParagraphTmpl texttemplate.Template
+var quoteParagraphTmpl texttemplate.Template
 
 // initializes the templates
 func init() {
@@ -27,7 +29,7 @@ func init() {
 		})
 
 	admonitionParagraphTmpl = newTextTemplate("admonition paragraph",
-		`{{ $ctx := .Context }}{{ with .Data }}{{ $renderedLines := renderLines $ctx .Lines .HardBreak }}{{ if ne $renderedLines "" }}<div {{ if .ID }}id="{{ .ID }}" {{ end }}class="admonitionblock {{ .Class }}">
+		`{{ $ctx := .Context }}{{ with .Data }}{{ $renderedLines := renderLines $ctx .Lines false }}{{ if ne $renderedLines "" }}<div {{ if .ID }}id="{{ .ID }}" {{ end }}class="admonitionblock {{ .Class }}">
 <table>
 <tr>
 <td class="icon">
@@ -45,9 +47,34 @@ func init() {
 		})
 
 	listParagraphTmpl = newTextTemplate("list paragraph",
-		`{{ $ctx := .Context }}{{ with .Data }}<p>{{ renderLines $ctx .Lines .HardBreak }}</p>{{ end }}`,
+		`{{ $ctx := .Context }}{{ with .Data }}<p>{{ renderLines $ctx .Lines false }}</p>{{ end }}`,
 		texttemplate.FuncMap{
 			"renderLines": renderLinesAsString,
+		})
+
+	verseParagraphTmpl = newTextTemplate("verse block", `{{ $ctx := .Context }}{{ with .Data }}<div {{ if .ID }}id="{{ .ID }}" {{ end }}class="verseblock">{{ if .Title }}
+<div class="title">{{ .Title }}</div>{{ end }}
+<pre class="content">{{ renderElements $ctx .Lines | printf "%s" }}</pre>{{ if .Attribution.First }}
+<div class="attribution">
+&#8212; {{ .Attribution.First }}{{ if .Attribution.Second }}<br>
+<cite>{{ .Attribution.Second }}</cite>{{ end }}
+</div>{{ end }}
+</div>{{ end }}`,
+		texttemplate.FuncMap{
+			"renderElements": renderPlainString,
+		})
+	quoteParagraphTmpl = newTextTemplate("quote paragraph", `{{ $ctx := .Context }}{{ with .Data }}<div {{ if .ID }}id="{{ .ID }}" {{ end }}class="quoteblock">{{ if .Title }}
+<div class="title">{{ .Title }}</div>{{ end }}
+<blockquote>
+{{ renderElements $ctx .Lines false | printf "%s" }}
+</blockquote>{{ if .Attribution.First }}
+<div class="attribution">
+&#8212; {{ .Attribution.First }}{{ if .Attribution.Second }}<br>
+<cite>{{ .Attribution.Second }}</cite>{{ end }}
+</div>{{ end }}
+</div>{{ end }}`,
+		texttemplate.FuncMap{
+			"renderElements": renderLinesAsString,
 		})
 }
 
@@ -76,18 +103,80 @@ func renderParagraph(ctx *renderer.Context, p types.Paragraph) ([]byte, error) {
 				ID        string
 				Title     string
 				Class     string
-				IconClass string
 				IconTitle string
+				IconClass string
 				Lines     []types.InlineElements
-				HardBreak bool
 			}{
 				ID:        id,
-				Class:     getClass(k),
 				Title:     getTitle(p.Attributes[types.AttrTitle]),
-				IconClass: getIconClass(ctx, k),
+				Class:     getClass(k),
 				IconTitle: getIconTitle(k),
+				IconClass: getIconClass(ctx, k),
 				Lines:     p.Lines,
-				HardBreak: false,
+			},
+		})
+	} else if kind, ok := p.Attributes[types.AttrKind]; ok && kind == types.Verse {
+		log.Debug("rendering verse paragraph...")
+		var attribution struct {
+			First  string
+			Second string
+		}
+		// TODO; duplicated code from `delimited_block`.
+		if author := p.Attributes.GetAsString(types.AttrQuoteAuthor); author != "" {
+			attribution.First = author
+			if title := p.Attributes.GetAsString(types.AttrQuoteTitle); title != "" {
+				attribution.Second = title
+			}
+		} else if title := p.Attributes.GetAsString(types.AttrQuoteTitle); title != "" {
+			attribution.First = title
+		}
+		err = verseParagraphTmpl.Execute(result, ContextualPipeline{
+			Context: ctx,
+			Data: struct {
+				ID          string
+				Title       string
+				Attribution struct {
+					First  string
+					Second string
+				}
+				Lines []types.InlineElements
+			}{
+				ID:          id,
+				Title:       title,
+				Attribution: attribution,
+				Lines:       p.Lines,
+			},
+		})
+	} else if kind, ok := p.Attributes[types.AttrKind]; ok && kind == types.Quote {
+		log.Debug("rendering quote paragraph...")
+		var attribution struct {
+			First  string
+			Second string
+		}
+		// TODO; duplicated code from `delimited_block`.
+		if author := p.Attributes.GetAsString(types.AttrQuoteAuthor); author != "" {
+			attribution.First = author
+			if title := p.Attributes.GetAsString(types.AttrQuoteTitle); title != "" {
+				attribution.Second = title
+			}
+		} else if title := p.Attributes.GetAsString(types.AttrQuoteTitle); title != "" {
+			attribution.First = title
+		}
+		err = quoteParagraphTmpl.Execute(result, ContextualPipeline{
+			Context: ctx,
+			Data: struct {
+				ID          string
+				Title       string
+				Attribution struct {
+					First  string
+					Second string
+				}
+				Lines []types.InlineElements
+			}{
+				ID:          id,
+				Title:       title,
+				Attribution: attribution,
+				Lines:       p.Lines,
 			},
 		})
 	} else if ctx.WithinDelimitedBlock() || ctx.WithinList() {
@@ -95,15 +184,13 @@ func renderParagraph(ctx *renderer.Context, p types.Paragraph) ([]byte, error) {
 		err = listParagraphTmpl.Execute(result, ContextualPipeline{
 			Context: ctx,
 			Data: struct {
-				ID        string
-				Title     string
-				Lines     []types.InlineElements
-				HardBreak bool
+				ID    string
+				Title string
+				Lines []types.InlineElements
 			}{
-				ID:        id,
-				Title:     title,
-				Lines:     p.Lines,
-				HardBreak: false,
+				ID:    id,
+				Title: title,
+				Lines: p.Lines,
 			},
 		})
 	} else {
@@ -118,8 +205,8 @@ func renderParagraph(ctx *renderer.Context, p types.Paragraph) ([]byte, error) {
 			}{
 				ID:        id,
 				Title:     title,
-				HardBreak: p.Attributes.Has(types.AttrHardBreaks) || ctx.Document.Attributes.Has(types.DocumentAttrHardBreaks),
 				Lines:     p.Lines,
+				HardBreak: p.Attributes.Has(types.AttrHardBreaks) || ctx.Document.Attributes.Has(types.DocumentAttrHardBreaks),
 			},
 		})
 	}
