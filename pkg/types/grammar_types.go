@@ -2057,16 +2057,17 @@ type InlineLink struct {
 }
 
 // NewInlineLink initializes a new inline `InlineLink`
-func NewInlineLink(url string, attributes ElementAttributes) (InlineLink, error) {
+func NewInlineLink(url string, attributes interface{}) (InlineLink, error) {
+	attrs, ok := attributes.(ElementAttributes)
 	// init attributes with empty 'text' attribute
-	if attributes == nil {
-		attributes = map[string]interface{}{
+	if !ok {
+		attrs = ElementAttributes{
 			AttrInlineLinkText: "",
 		}
 	}
 	return InlineLink{
 		URL:        url,
-		Attributes: attributes,
+		Attributes: attrs,
 	}, nil
 }
 
