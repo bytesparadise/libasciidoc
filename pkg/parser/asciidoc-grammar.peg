@@ -139,12 +139,10 @@ DocumentAttributeValue <- (Alphanums / Spaces / (!NEWLINE  .){
 // ------------------------------------------
 DocumentElement <- !EOF // when reaching EOF, do not try to parse a new document block again
     element:(BlankLine 
-            / DocumentAttributeDeclaration 
-            / DocumentAttributeReset 
-            / TableOfContentsMacro
             / VerseBlock
             / VerseParagraph
             / ImageBlock 
+            / List 
             / FencedBlock
             / ListingBlock
             / ExampleBlock
@@ -152,8 +150,10 @@ DocumentElement <- !EOF // when reaching EOF, do not try to parse a new document
             / QuoteBlock 
             / SidebarBlock
             / Table 
-            / List 
             / LiteralBlock 
+            / DocumentAttributeDeclaration 
+            / DocumentAttributeReset 
+            / TableOfContentsMacro
             / Paragraph) {
     return element, nil
 }
@@ -301,11 +301,30 @@ Section <- &"=" // just skip if the content does not start with at least one '='
         return section, nil
 }
 
+Section1_5 <- &"=" // just skip if the content does not start with at least one '='
+    section:(Section1 / Section2 / Section3 / Section4 / Section5) {
+        return section, nil
+}
+
+Section2_5 <- &"=" // just skip if the content does not start with at least one '='
+    section:(Section2 / Section3 / Section4 / Section5) {
+        return section, nil
+}
+
+Section3_5 <- &"=" // just skip if the content does not start with at least one '='
+    section:(Section3 / Section4 / Section5) {
+        return section, nil
+}
+
+Section4_5 <- &"=" // just skip if the content does not start with at least one '='
+    section:(Section4 / Section5) {
+        return section, nil
+}
+
 SectionTitlePrefix <- ("=")+ WS*
 
-Section0 <- !EOF // when reaching EOF, do not try to parse a new section again
-    header:(Section0Title) elements:(Section0Element*) {
-        return types.NewSection(0, header.(types.SectionTitle), elements.([]interface{}))
+Section0 <- header:(Section0Title) elements:(Section0Element*) {
+    return types.NewSection(0, header.(types.SectionTitle), elements.([]interface{}))
 }
 
 Section0TitlePrefix <- "=" WS+
@@ -321,70 +340,74 @@ Section0TitleWithAttributes <- attributes:(ElementAttribute)*
 
 Section0Element <- !Section0TitlePrefix
     attributes:(ElementAttribute)* 
-    element:(Section1 / Section2 / Section3 / Section4 / Section5 / DocumentElement) {
+    element:(Section1_5 / DocumentElement) {
         return types.WithAttributes(element, attributes.([]interface{}))
 }
     
 
-Section1 <- !EOF // when reaching EOF, do not try to parse a new section again
-    header:(Section1Title) elements:(Section1Element*) {
-        return types.NewSection(1, header.(types.SectionTitle), elements.([]interface{}))
+Section1 <- header:(Section1Title) elements:(Section1Element*) {
+    return types.NewSection(1, header.(types.SectionTitle), elements.([]interface{}))
 }
 
 Section1TitlePrefix <- "==" WS+
 
-Section1Title <- Section1TitlePrefix elements:(TitleElements) id:(InlineElementID*)   EOL {
+Section1Title <- Section1TitlePrefix elements:(TitleElements) id:(InlineElementID*) EOL {
     return types.NewSectionTitle(elements.(types.InlineElements), id.([]interface{})) 
 }
 
 Section1Element <- !Section1TitlePrefix 
     attributes:(ElementAttribute)* 
-    element:(Section2 / Section3 / Section4 / Section5 / DocumentElement) {
+    element:(Section2_5 / DocumentElement) {
         return types.WithAttributes(element, attributes.([]interface{}))
 }
 
-Section2 <- !EOF // when reaching EOF, do not try to parse a new section again
-    header:(Section2Title) elements:(Section2Element*) {
-        return types.NewSection(2, header.(types.SectionTitle), elements.([]interface{}))
+Section2 <- header:(Section2Title) elements:(Section2Element*) {
+    return types.NewSection(2, header.(types.SectionTitle), elements.([]interface{}))
 }
 
 Section2TitlePrefix <- "===" WS+ 
 
-Section2Title <- Section2TitlePrefix elements:(TitleElements) id:(InlineElementID*)   EOL {
+Section2Title <- Section2TitlePrefix elements:(TitleElements) id:(InlineElementID*) EOL {
+    return types.NewSectionTitle(elements.(types.InlineElements), id.([]interface{})) 
         return types.NewSectionTitle(elements.(types.InlineElements), id.([]interface{})) 
+    return types.NewSectionTitle(elements.(types.InlineElements), id.([]interface{})) 
+        return types.NewSectionTitle(elements.(types.InlineElements), id.([]interface{})) 
+    return types.NewSectionTitle(elements.(types.InlineElements), id.([]interface{})) 
 }
 
 Section2Element <- !Section1TitlePrefix !Section2TitlePrefix 
     attributes:(ElementAttribute)* 
-    element:(Section3 / Section4 / Section5 / DocumentElement) {
+    element:(Section3_5 / DocumentElement) {
         return types.WithAttributes(element, attributes.([]interface{}))
 }
 
-Section3 <- !EOF // when reaching EOF, do not try to parse a new section again
-    header:(Section3Title) elements:(Section3Element*) {
-        return types.NewSection(3, header.(types.SectionTitle), elements.([]interface{}))
+Section3 <- header:(Section3Title) elements:(Section3Element*) {
+    return types.NewSection(3, header.(types.SectionTitle), elements.([]interface{}))
 }
 
 Section3TitlePrefix <- "====" WS+ 
 
-Section3Title <- Section3TitlePrefix elements:(TitleElements) id:(InlineElementID*)   EOL {
+Section3Title <- Section3TitlePrefix elements:(TitleElements) id:(InlineElementID*) EOL {
+    return types.NewSectionTitle(elements.(types.InlineElements), id.([]interface{})) 
         return types.NewSectionTitle(elements.(types.InlineElements), id.([]interface{})) 
+    return types.NewSectionTitle(elements.(types.InlineElements), id.([]interface{})) 
+        return types.NewSectionTitle(elements.(types.InlineElements), id.([]interface{})) 
+    return types.NewSectionTitle(elements.(types.InlineElements), id.([]interface{})) 
 }
 
 Section3Element <- !Section1TitlePrefix !Section2TitlePrefix !Section3TitlePrefix
     attributes:(ElementAttribute)* 
-    element:(Section4 / Section5 / DocumentElement) {
+    element:(Section4_5 / DocumentElement) {
         return types.WithAttributes(element, attributes.([]interface{}))
 }
 
-Section4 <- !EOF // when reaching EOF, do not try to parse a new section again
-    header:(Section4Title) elements:(Section4Element*) {
-        return types.NewSection(4, header.(types.SectionTitle), elements.([]interface{}))
+Section4 <- header:(Section4Title) elements:(Section4Element*) {
+    return types.NewSection(4, header.(types.SectionTitle), elements.([]interface{}))
 }
 
 Section4TitlePrefix <- "=====" WS+ 
 
-Section4Title <- Section4TitlePrefix elements:(TitleElements) id:(InlineElementID*)  EOL {
+Section4Title <- Section4TitlePrefix elements:(TitleElements) id:(InlineElementID*) EOL {
     return types.NewSectionTitle(elements.(types.InlineElements), id.([]interface{})) 
 }
 
@@ -394,14 +417,13 @@ Section4Element <- !Section1TitlePrefix !Section2TitlePrefix !Section3TitlePrefi
         return types.WithAttributes(element, attributes.([]interface{}))
 }
 
-Section5 <- !EOF // when reaching EOF, do not try to parse a new section again
-    header:(Section5Title) elements:(Section5Element*) {
-        return types.NewSection(5, header.(types.SectionTitle), elements.([]interface{}))
+Section5 <- header:(Section5Title) elements:(Section5Element*) {
+    return types.NewSection(5, header.(types.SectionTitle), elements.([]interface{}))
 }
 
 Section5TitlePrefix <- "======" WS+ 
 
-Section5Title <- Section5TitlePrefix elements:(TitleElements) id:(InlineElementID*)   EOL {
+Section5Title <- Section5TitlePrefix elements:(TitleElements) id:(InlineElementID*) EOL {
     return types.NewSectionTitle(elements.(types.InlineElements), id.([]interface{})) 
 }
 
@@ -412,11 +434,11 @@ Section5Element <-
         return types.WithAttributes(element, attributes.([]interface{}))
 }
 
-TitleElements <- elements:(!NEWLINE WS* !InlineElementID TitleElement WS*)+ { // absorbs heading and trailing spaces
+TitleElements <- elements:(!NEWLINE !InlineElementID TitleElement)+ { // absorbs heading and trailing spaces
     return types.NewInlineElements(elements.([]interface{}))
 } 
 
-TitleElement <- element:(CrossReference / Passthrough / InlineImage / Link / InlineFootnote / Alphanums / WS+ / QuotedText / DocumentAttributeSubstitution / Parenthesis / LineBreak / Word) {
+TitleElement <- element:(Spaces / Dot / CrossReference / Passthrough / InlineImage / Link / InlineFootnote / Alphanums / QuotedText / DocumentAttributeSubstitution / Parenthesis / LineBreak / Word) {
     return element, nil
 }
 
@@ -441,15 +463,19 @@ ListParagraph <- lines:(ListParagraphLine)+ {
 } 
 
 ListParagraphLine <- 
-    !(OrderedListItemPrefix) 
-    !(UnorderedListItemPrefix) 
+    !BlankLine 
+    !OrderedListItemPrefix
+    !UnorderedListItemPrefix
     !(LabeledListItemTerm LabeledListItemSeparator) 
-    !(ListItemContinuation) 
-    !(ElementAttribute)
-    !(BlockDelimiter)
-    line:(InlineElements) {
-        return line, nil
-}
+    !ListItemContinuation
+    !ElementAttribute
+    !BlockDelimiter
+    line:(
+        elements:(InlineElement)+ linebreak:(LineBreak)? { // absorbs heading and trailing spaces
+            return types.NewInlineElements(append(elements.([]interface{}), linebreak))
+        }) EOL { // EOL may have been "swallowed" by 'linebreak rule'
+            return line, nil
+        }
 
 ListItemContinuation <- "+" WS* EOL {
     return types.NewListItemContinuation()
@@ -609,32 +635,58 @@ VerseParagraph <-
         return verse, nil
 }
 
-InlineElements <- 
-    comment:(SingleLineComment) {
+InlineElements <- !BlankLine 
+    elements:(comment:(SingleLineComment) {
         return types.NewInlineElements([]interface{}{comment})
-    } / !BlankLine !BlockDelimiter elements:(InlineElement)+ linebreak:(LineBreak)? EOL? { // absorbs heading and trailing spaces
+    } / !BlockDelimiter elements:(InlineElement)+ linebreak:(LineBreak)? EOL { 
         return types.NewInlineElements(append(elements.([]interface{}), linebreak))
-} 
+    }) {
+        return elements, nil
+    }
 
-InlineElement <- !EOL !LineBreak element:(InlineImage / Link / Passthrough / InlineFootnote / Alphanums / WS+ / QuotedText / CrossReference / DocumentAttributeSubstitution / InlineElementID / Parenthesis / LineBreak / Word) {
+InlineElement <- !EOL !LineBreak 
+    element:(Spaces 
+        / Dot 
+        / InlineImage 
+        / Link 
+        / Passthrough 
+        / InlineFootnote 
+        / Alphanums 
+        / QuotedText 
+        / CrossReference 
+        / DocumentAttributeSubstitution 
+        / InlineElementID 
+        / Parenthesis 
+        / Word) {
     return element, nil
 }
 
 // special case for re-parsing a group of elements after a document substitution:
 // we should treat substitution that did not happen (eg: missing attribute) as regular
 // strings - (used by the inline element renderer)
-InlineElementsWithoutSubtitution <- !BlankLine !BlockDelimiter elements:(InlineElementWithoutSubtitution)+ linebreak:(LineBreak)? EOL? { // absorbs heading and trailing spaces
+InlineElementsWithoutSubtitution <- !BlankLine !BlockDelimiter elements:(InlineElementWithoutSubtitution)+ linebreak:(LineBreak)? EOL { // absorbs heading and trailing spaces
     return types.NewInlineElements(append(elements.([]interface{}), linebreak))
 } 
 
-InlineElementWithoutSubtitution <- !EOL !LineBreak element:(InlineImage / Link / Passthrough / Alphanums / WS+ / QuotedText / CrossReference / InlineElementID/ Parenthesis / Word) {
+InlineElementWithoutSubtitution <- !EOL !LineBreak 
+    element:(Spaces 
+        / Dot 
+        / InlineImage 
+        / Link 
+        / Passthrough 
+        / Alphanums 
+        / QuotedText 
+        / CrossReference 
+        / InlineElementID
+        / Parenthesis 
+        / Word) {
     return element, nil
 }
 
 // ----------------------------------------------------------------------------
 // Explicit line breaks
 // ----------------------------------------------------------------------------
-LineBreak <- WS "+" WS* EOL {
+LineBreak <- WS "+" WS* &EOL {
     return types.NewLineBreak()    
 }
 
@@ -852,16 +904,15 @@ RelativeLinkURL <- URL_SCHEME? URL {
     return string(c.text), nil
 }
 
-LinkAttributes <- "[" text:(LinkTextAttribute)
-        otherAttrs:(GenericAttribute)* "]" {
+LinkAttributes <- "[" text:(LinkTextAttribute) ","? WS* otherAttrs:(GenericAttribute)* "]" {
     return types.NewInlineLinkAttributes(text, otherAttrs.([]interface{}))
 } / "[" otherAttrs:(GenericAttribute)* "]" {
     return types.NewInlineLinkAttributes(nil, otherAttrs.([]interface{}))
-}
+} 
 
-LinkTextAttribute <- (Alphanums / Spaces / (!"," !"]"  .){
+LinkTextAttribute <- (Alphanums / Spaces / (!"=" !"," !"]"  .) {
     return string(c.text), nil
-})+ {
+})* {
     return string(c.text), nil
 }
 
@@ -1203,6 +1254,10 @@ Alphanum <- [a-zA-Z0-9]
 Parenthesis <- "(" / ")" / "[" / "]"
 
 Alphanums <- [a-zA-Z0-9]+ {
+    return string(c.text), nil
+}
+
+Dot <- "." {
     return string(c.text), nil
 }
 

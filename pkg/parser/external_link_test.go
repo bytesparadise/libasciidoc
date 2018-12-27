@@ -66,6 +66,46 @@ var _ = Describe("links", func() {
 			}
 			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
+
+		It("external link with text and extra attributes", func() {
+			actualContent := "a link to mailto:foo@bar[the foo@bar email, foo=bar]"
+			expectedResult := types.Paragraph{
+				Attributes: types.ElementAttributes{},
+				Lines: []types.InlineElements{
+					{
+						types.StringElement{Content: "a link to "},
+						types.InlineLink{
+							URL: "mailto:foo@bar",
+							Attributes: types.ElementAttributes{
+								"text": "the foo@bar email",
+								"foo":  "bar",
+							},
+						},
+					},
+				},
+			}
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+		})
+
+		It("external link with extra attributes only", func() {
+			actualContent := "a link to mailto:foo@bar[foo=bar]"
+			expectedResult := types.Paragraph{
+				Attributes: types.ElementAttributes{},
+				Lines: []types.InlineElements{
+					{
+						types.StringElement{Content: "a link to "},
+						types.InlineLink{
+							URL: "mailto:foo@bar",
+							Attributes: types.ElementAttributes{
+								"text": "",
+								"foo":  "bar",
+							},
+						},
+					},
+				},
+			}
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+		})
 	})
 
 	Context("relative links", func() {
@@ -106,6 +146,36 @@ var _ = Describe("links", func() {
 					URL: "https://foo.bar",
 					Attributes: types.ElementAttributes{
 						"text": "foo doc",
+					},
+				},
+			}
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
+		})
+
+		It("relative link to external URL with text and extra attributes", func() {
+			actualContent := "a link to link:https://foo.bar[foo doc, foo=bar]"
+			expectedResult := types.InlineElements{
+				types.StringElement{Content: "a link to "},
+				types.InlineLink{
+					URL: "https://foo.bar",
+					Attributes: types.ElementAttributes{
+						"text": "foo doc",
+						"foo":  "bar",
+					},
+				},
+			}
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
+		})
+
+		It("relative link to external URL with extra attributes only", func() {
+			actualContent := "a link to link:https://foo.bar[foo=bar]"
+			expectedResult := types.InlineElements{
+				types.StringElement{Content: "a link to "},
+				types.InlineLink{
+					URL: "https://foo.bar",
+					Attributes: types.ElementAttributes{
+						"text": "",
+						"foo":  "bar",
 					},
 				},
 			}
