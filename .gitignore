@@ -48,12 +48,12 @@ _test
 # binaries
 bin/
 
-# Glide package manager
-.glide
-vendor/
+# dep package manager
+vendor
 
-# exclude tmp directory
+# exclude `tmp` and `dist` directories
 tmp
+dist
 
 # exclude code coverage merged results
 coverage.txt
