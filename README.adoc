@@ -6,28 +6,32 @@ image:https://travis-ci.org/bytesparadise/libasciidoc.svg?branch=master["Build S
 image:https://codecov.io/gh/bytesparadise/libasciidoc/branch/master/graph/badge.svg["Codecov", link="https://codecov.io/gh/bytesparadise/libasciidoc"]
 image:https://img.shields.io/badge/License-Apache%202.0-blue.svg["License", link="https://opensource.org/licenses/Apache-2.0"]
 
-Libasciidoc is an open source Go library that converts Asciidoc content into HTML (other output formats may be supported in the future).
+Libasciidoc is an open source Go library to convert from Asciidoc to HTML.
 It is is available under the terms of the https://raw.githubusercontent.com/bytesparadise/libasciidoc/LICENSE[Apache License 2.0].
 
 == Supported syntax
 
-* Title and Sections (level 1 to 6)
-* Document attribute declaration (after the title and within the rest of the document) and substitution
-* Paragraphs
-* Delimited Source Blocks (using the `+++```+++` ("fences") delimiter for source code or the `----` delimiter for listing)
+Although it does not support the full Asciidoc/Asciidoctor syntax, Libasciidoc already provides users with the following features:
+
+* Title and Sections level 1 to 6
+* Document authors and revision
+* Attribute declaration and substitution
+* Paragraphs and admonition paragraphs
+* Delimited Blocks (fenced blocks, listing blocks, example blocks, comment blocks, quoted blocks, sidebar blocks, verse blocks)
 * Literal blocks (paragraph starting with a space, with the `+++....+++` delimiter or with the `[literal]` attribute)
-* Quoted text (+bold+, _italic_ and `monospace`) and substitution prevention using the backslash (`\`) character
+* Quoted text (bold, italic, monospace, superscript and subscript) and substitution prevention using the backslash (`\`) character
 * Passtrough (wrapping with a single plus or a triple plus, or using the `+++pass:[]+++` or `+++pass:q[]+++` macros)
 * External links in paragraphs (`https://`, `http://`, `ftp://`, `irc://`, `mailto:`)
-* Inline images in paragraphs (`image://`)
-* Block images (`image:://`)
-* Element attributes (`ID`, `link` and `title`, where applicable) on block images, paragraphs, lists and sections
-* Labeled, ordered and unordered lists (with nesting and attributes)
-* Admonition paragraphs
+* Inline images in paragraphs (`image:`)
+* Image blocks (`image::`)
+* Element attributes (`ID`, `link`, `title`, `role`, etc.) 
+* Labeled, ordered and unordered lists (with nested lists and attributes on items)
 * Tables (basic support: header line and cells on multiple lines)
+* Table of contents
+* YAML front-matter
 
 
-See the link:LIMITATIONS.adoc[known limitations] page for differences between Asciidoc/Asciidoctor and Libasciidoc.
+See also the link:LIMITATIONS.adoc[known limitations] page for differences between Asciidoc/Asciidoctor and Libasciidoc.
 
 Further elements will be supported in the future. Feel free to open issues https://github.com/bytesparadise/libasciidoc/issues[here] to help prioritizing the upcoming work.
 
@@ -46,6 +50,8 @@ The libasciidoc library includes a minimalist command line interface to generate
 $ libasciidoc -s content.adoc
 ```
 
+use `libasciidoc --help` to check all available options.
+
 === Code integration
 
 Libasciidoc provides 2 functions to convert an Asciidoc content into HTML:
@@ -54,13 +60,13 @@ Libasciidoc provides 2 functions to convert an Asciidoc content into HTML:
 
     func ConvertToHTML(ctx context.Context, source io.Reader, output io.Writer, options renderer.Option...) (map[string]interface{}, error)
 
-2. Converting a file (giving its name) into an HTML document:
+2. Converting a file (given its name) into an HTML document:
 
     func ConvertFileToHTML(ctx context.Context, filename string, output io.Writer, options renderer.Option...) (map[string]interface{}, error)
 
-where the returned `map[string]interface{}` object contains the document's title (which is not rendered in the HTML's body) and its other attributes.
+where the returned `map[string]interface{}` object contains the document's title which is not part of the generated HTML `<body>` part, as well as the other attributes of the source document.
 
-The currently available option to pass as a last argument is `renderer.IncludeHeaderFooter(false)` to limit the generation to the body of the HTML document.
+For now, the sole option to pass as a last argument is `renderer.IncludeHeaderFooter` to include the `<header>` and `<footer>` elements in the generated HTML document or not. Default is `false`, which means that only the `<body>` part of the HTML document is generated.
 
 == How to contribute
 

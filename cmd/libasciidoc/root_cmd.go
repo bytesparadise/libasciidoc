@@ -22,7 +22,7 @@ func NewRootCmd() *cobra.Command {
 	var logLevel string
 	rootCmd := &cobra.Command{
 		Use:   "libasciidoc [flags] FILE",
-		Short: `libasciidoc is a tool to generate an html document from an Asciidoc file`,
+		Short: `libasciidoc is a tool to convert from Asciidoc to HTML`,
 		Args:  cobra.ArbitraryArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {
