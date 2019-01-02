@@ -14,7 +14,7 @@ func NewVersionCmd() *cobra.Command {
 		Short: "Print the version and build info",
 		Run: func(cmd *cobra.Command, args []string) {
 			if libasciidoc.BuildTag != "" {
-				fmt.Fprintf(cmd.OutOrStdout(), "tag:        %s\n", libasciidoc.BuildTag)
+				fmt.Fprintf(cmd.OutOrStdout(), "version:    %s\n", libasciidoc.BuildTag)
 			} else {
 				fmt.Fprintf(cmd.OutOrStdout(), "commit:     %s\n", libasciidoc.BuildCommit)
 			}
