@@ -19,7 +19,7 @@ func Render(ctx *renderer.Context, output io.Writer) (map[string]interface{}, er
 type rendererFunc func(*renderer.Context, interface{}) ([]byte, error)
 
 func renderElements(ctx *renderer.Context, elements []interface{}) ([]byte, error) {
-	log.Debugf("rendered %d element(s)...", len(elements))
+	log.Debugf("rendering %d element(s)...", len(elements))
 	buff := bytes.NewBuffer(nil)
 	hasContent := false
 	for _, element := range elements {
@@ -40,9 +40,12 @@ func renderElements(ctx *renderer.Context, elements []interface{}) ([]byte, erro
 	return buff.Bytes(), nil
 }
 
+
 func renderElement(ctx *renderer.Context, element interface{}) ([]byte, error) {
 	// log.Debugf("rendering element of type `%T`", element)
 	switch e := element.(type) {
+	case []interface{}:
+		return renderElements(ctx, e)
 	case types.TableOfContentsMacro:
 		return renderTableOfContents(ctx, e)
 	case types.Section:
@@ -77,8 +80,6 @@ func renderElement(ctx *renderer.Context, element interface{}) ([]byte, error) {
 		return renderLiteralBlock(ctx, e)
 	case types.InlineElements:
 		return renderLine(ctx, e, renderElement)
-	case []interface{}:
-		return renderElements(ctx, e)
 	case types.InlineLink:
 		return renderLink(ctx, e)
 	case types.StringElement:

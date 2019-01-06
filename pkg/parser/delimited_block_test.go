@@ -531,6 +531,7 @@ with *bold content*
 								Attributes:  types.ElementAttributes{},
 								Level:       1,
 								BulletStyle: types.OneAsterisk,
+								CheckStyle:  types.NoCheck,
 								Elements: []interface{}{
 									types.Paragraph{
 										Attributes: types.ElementAttributes{},
@@ -749,6 +750,7 @@ ____
 								Attributes:  types.ElementAttributes{},
 								Level:       1,
 								BulletStyle: types.Dash,
+								CheckStyle:  types.NoCheck,
 								Elements: []interface{}{
 									types.Paragraph{
 										Attributes: types.ElementAttributes{},
@@ -766,6 +768,7 @@ ____
 								Attributes:  types.ElementAttributes{},
 								Level:       1,
 								BulletStyle: types.Dash,
+								CheckStyle:  types.NoCheck,
 								Elements: []interface{}{
 									types.Paragraph{
 										Attributes: types.ElementAttributes{},
@@ -783,6 +786,7 @@ ____
 								Attributes:  types.ElementAttributes{},
 								Level:       1,
 								BulletStyle: types.Dash,
+								CheckStyle:  types.NoCheck,
 								Elements: []interface{}{
 									types.Paragraph{
 										Attributes: types.ElementAttributes{},
@@ -854,6 +858,7 @@ ____`
 								Attributes:  types.ElementAttributes{},
 								Level:       1,
 								BulletStyle: types.OneAsterisk,
+								CheckStyle:  types.NoCheck,
 								Elements: []interface{}{
 									types.Paragraph{
 										Attributes: types.ElementAttributes{},
@@ -893,6 +898,7 @@ ____`
 								Attributes:  types.ElementAttributes{},
 								Level:       1,
 								BulletStyle: types.OneAsterisk,
+								CheckStyle:  types.NoCheck,
 								Elements: []interface{}{
 									types.Paragraph{
 										Attributes: types.ElementAttributes{},
@@ -938,6 +944,7 @@ ____`
 								Attributes:  types.ElementAttributes{},
 								Level:       1,
 								BulletStyle: types.OneAsterisk,
+								CheckStyle:  types.NoCheck,
 								Elements: []interface{}{
 									types.Paragraph{
 										Attributes: types.ElementAttributes{},
@@ -955,6 +962,7 @@ ____`
 								Attributes:  types.ElementAttributes{},
 								Level:       1,
 								BulletStyle: types.OneAsterisk,
+								CheckStyle:  types.NoCheck,
 								Elements: []interface{}{
 									types.Paragraph{
 										Attributes: types.ElementAttributes{},
@@ -972,6 +980,7 @@ ____`
 								Attributes:  types.ElementAttributes{},
 								Level:       1,
 								BulletStyle: types.OneAsterisk,
+								CheckStyle:  types.NoCheck,
 								Elements: []interface{}{
 									types.Paragraph{
 										Attributes: types.ElementAttributes{},

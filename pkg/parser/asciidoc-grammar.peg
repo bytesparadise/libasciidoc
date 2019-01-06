@@ -526,8 +526,8 @@ OrderedListItemContent <- elements:(ListParagraph+ ContinuedDocumentElement*) { 
 // ------------------------------------------
 // Unordered List Items
 // ------------------------------------------
-UnorderedListItem <- prefix:(UnorderedListItemPrefix) content:(UnorderedListItemContent) BlankLine* {
-    return types.NewUnorderedListItem(prefix.(types.UnorderedListItemPrefix), content.([]interface{}))
+UnorderedListItem <- prefix:(UnorderedListItemPrefix) checkstyle:(UnorderedListItemCheckStyle)? content:(UnorderedListItemContent) BlankLine* {
+    return types.NewUnorderedListItem(prefix.(types.UnorderedListItemPrefix), checkstyle, content.([]interface{}))
 }
 
 UnorderedListItemPrefix <- 
@@ -552,6 +552,14 @@ UnorderedListItemPrefix <-
         }) WS+ {
             return prefix, nil
 } 
+
+UnorderedListItemCheckStyle <- &"[" style:(
+      "[ ]" { return types.Unchecked, nil } 
+    / "[*]" { return types.Checked, nil } 
+    / "[x]" { return types.Checked, nil }
+    ) WS+ {
+        return style, nil
+    }
 
 UnorderedListItemContent <- elements:(ListParagraph+ ContinuedDocumentElement*) { // Another list or a literal paragraph immediately following a list item will be implicitly included in the list item
     return types.NewListItemContent(elements.([]interface{}))
