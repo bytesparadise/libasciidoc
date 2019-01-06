@@ -1109,7 +1109,6 @@ func newUnorderedList(elements []ListItem) (UnorderedList, error) {
 			parentItem.Elements = append(parentItem.Elements, childList)
 		}
 	}
-
 	return UnorderedList{
 		Attributes: ElementAttributes{},
 		Items:      result,
@@ -1125,20 +1124,49 @@ func (l UnorderedList) AddAttributes(attributes ElementAttributes) {
 type UnorderedListItem struct {
 	Level       int
 	BulletStyle BulletStyle
+	CheckStyle  UnorderedListItemCheckStyle
 	Attributes  ElementAttributes
 	Elements    []interface{}
 }
 
 // NewUnorderedListItem initializes a new `UnorderedListItem` from the given content
-func NewUnorderedListItem(prefix UnorderedListItemPrefix, elements []interface{}) (UnorderedListItem, error) {
+func NewUnorderedListItem(prefix UnorderedListItemPrefix, checkstyle interface{}, elements []interface{}) (UnorderedListItem, error) {
 	log.Debugf("initializing a new UnorderedListItem...")
 	// log.Debugf("initializing a new UnorderedListItem with '%d' lines (%T) and input level '%d'", len(elements), elements, lvl.Len())
+	cs := toCheckStyle(checkstyle)
+	if cs != NoCheck && len(elements) > 0 {
+		if e, ok := elements[0].(DocumentElement); ok {
+			e.AddAttributes(ElementAttributes{
+				AttrCheckStyle: cs,
+			})
+		}
+	}
 	return UnorderedListItem{
 		Level:       prefix.Level,
 		Attributes:  ElementAttributes{},
 		BulletStyle: prefix.BulletStyle,
+		CheckStyle:  cs,
 		Elements:    elements,
 	}, nil
+}
+
+// UnorderedListItemCheckStyle the check style that applies on an unordered list item
+type UnorderedListItemCheckStyle string
+
+const (
+	// Checked when the unordered list item is checked
+	Checked UnorderedListItemCheckStyle = "checked"
+	// Unchecked when the unordered list item is not checked
+	Unchecked UnorderedListItemCheckStyle = "unchecked"
+	// NoCheck when the unodered list item has no specific check annotation
+	NoCheck UnorderedListItemCheckStyle = "nocheck"
+)
+
+func toCheckStyle(checkstyle interface{}) UnorderedListItemCheckStyle {
+	if cs, ok := checkstyle.(UnorderedListItemCheckStyle); ok {
+		return cs
+	}
+	return NoCheck
 }
 
 // AddAttributes adds all given attributes to the current set of attribute of the element

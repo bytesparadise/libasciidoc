@@ -15,9 +15,9 @@ var unorderedListTmpl texttemplate.Template
 // initializes the templates
 func init() {
 	unorderedListTmpl = newTextTemplate("unordered list",
-		`{{ $ctx := .Context }}{{ with .Data }}<div{{ if .ID }} id="{{ .ID }}"{{ end }} class="ulist{{ if .Role }} {{ .Role }}{{ end}}">
+		`{{ $ctx := .Context }}{{ with .Data }}<div{{ if .ID }} id="{{ .ID }}"{{ end }} class="ulist{{ if .Checklist }} checklist{{ end }}{{ if .Role }} {{ .Role }}{{ end}}">
 {{ if .Title }}<div class="title">{{ .Title }}</div>
-{{ end }}<ul>
+{{ end }}<ul{{ if .Checklist }} class="checklist"{{ end }}>
 {{ $items := .Items }}{{ range $itemIndex, $item := $items }}<li>
 {{ $elements := $item.Elements }}{{ renderElements $ctx $elements | printf "%s" }}
 </li>
@@ -34,21 +34,28 @@ func renderUnorderedList(ctx *renderer.Context, l types.UnorderedList) ([]byte, 
 	defer func() {
 		ctx.SetWithinList(false)
 	}()
-
+	checkList := false
+	if len(l.Items) > 0 {
+		if l.Items[0].CheckStyle != types.NoCheck {
+			checkList = true
+		}
+	}
 	result := bytes.NewBuffer(nil)
 	// here we must preserve the HTML tags
 	err := unorderedListTmpl.Execute(result, ContextualPipeline{
 		Context: ctx,
 		Data: struct {
-			ID    string
-			Title string
-			Role  string
-			Items []types.UnorderedListItem
+			ID        string
+			Title     string
+			Role      string
+			Checklist bool
+			Items     []types.UnorderedListItem
 		}{
-			ID:    l.Attributes.GetAsString(types.AttrID),
-			Title: l.Attributes.GetAsString(types.AttrTitle),
-			Role:  l.Attributes.GetAsString(types.AttrRole),
-			Items: l.Items,
+			ID:        l.Attributes.GetAsString(types.AttrID),
+			Title:     l.Attributes.GetAsString(types.AttrTitle),
+			Role:      l.Attributes.GetAsString(types.AttrRole),
+			Checklist: checkList,
+			Items:     l.Items,
 		},
 	})
 	if err != nil {

@@ -197,3 +197,95 @@ another delimited block
 		verify(GinkgoT(), expectedResult, actualContent)
 	})
 })
+
+var _ = Describe("checklists", func() {
+
+	It("checklist with title and dashes", func() {
+		actualContent := `.Checklist
+- [*] checked
+- [x] also checked
+- [ ] not checked
+-     normal list item`
+		expectedResult := `<div class="ulist checklist">
+<div class="title">Checklist</div>
+<ul class="checklist">
+<li>
+<p>&#10003; checked</p>
+</li>
+<li>
+<p>&#10003; also checked</p>
+</li>
+<li>
+<p>&#10063; not checked</p>
+</li>
+<li>
+<p>normal list item</p>
+</li>
+</ul>
+</div>`
+		verify(GinkgoT(), expectedResult, actualContent)
+	})
+
+	It("parent checklist with title and nested checklist", func() {
+		actualContent := `.Checklist
+* [ ] parent not checked
+** [*] checked
+** [x] also checked
+** [ ] not checked
+*     normal list item`
+		expectedResult := `<div class="ulist checklist">
+<div class="title">Checklist</div>
+<ul class="checklist">
+<li>
+<p>&#10063; parent not checked</p>
+<div class="ulist checklist">
+<ul class="checklist">
+<li>
+<p>&#10003; checked</p>
+</li>
+<li>
+<p>&#10003; also checked</p>
+</li>
+<li>
+<p>&#10063; not checked</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>normal list item</p>
+</li>
+</ul>
+</div>`
+		verify(GinkgoT(), expectedResult, actualContent)
+	})
+
+	It("parent checklist with role and nested normal list", func() {
+		actualContent := `[.Checklist]
+* [ ] parent not checked
+** a normal list item
+** another normal list item
+*     normal list item`
+		expectedResult := `<div class="ulist checklist Checklist">
+<ul class="checklist">
+<li>
+<p>&#10063; parent not checked</p>
+<div class="ulist">
+<ul>
+<li>
+<p>a normal list item</p>
+</li>
+<li>
+<p>another normal list item</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>normal list item</p>
+</li>
+</ul>
+</div>`
+		verify(GinkgoT(), expectedResult, actualContent)
+	})
+})

@@ -48,7 +48,7 @@ func init() {
 		})
 
 	listParagraphTmpl = newTextTemplate("list paragraph",
-		`{{ $ctx := .Context }}{{ with .Data }}<p>{{ renderLines $ctx .Lines false }}</p>{{ end }}`,
+		`{{ $ctx := .Context }}{{ with .Data }}<p>{{ .CheckStyle }}{{ renderLines $ctx .Lines false }}</p>{{ end }}`,
 		texttemplate.FuncMap{
 			"renderLines": renderLinesAsString,
 		})
@@ -208,16 +208,19 @@ func renderParagraph(ctx *renderer.Context, p types.Paragraph) ([]byte, error) {
 		})
 	} else if ctx.WithinDelimitedBlock() || ctx.WithinList() {
 		log.Debugf("rendering paragraph with %d lines within a delimited block or a list", len(p.Lines))
+
 		err = listParagraphTmpl.Execute(result, ContextualPipeline{
 			Context: ctx,
 			Data: struct {
-				ID    string
-				Title string
-				Lines []types.InlineElements
+				ID         string
+				Title      string
+				CheckStyle string
+				Lines      []types.InlineElements
 			}{
-				ID:    id,
-				Title: title,
-				Lines: p.Lines,
+				ID:         id,
+				Title:      title,
+				CheckStyle: renderCheckStyle(p.Attributes[types.AttrCheckStyle]),
+				Lines:      p.Lines,
 			},
 		})
 	} else {
@@ -242,6 +245,17 @@ func renderParagraph(ctx *renderer.Context, p types.Paragraph) ([]byte, error) {
 	}
 	log.Debugf("rendered paragraph: '%s'", result.String())
 	return result.Bytes(), nil
+}
+
+func renderCheckStyle(style interface{}) string {
+	switch style {
+	case types.Unchecked:
+		return "&#10063; "
+	case types.Checked:
+		return "&#10003; "
+	default:
+		return ""
+	}
 }
 
 func renderLineBreak() ([]byte, error) {
