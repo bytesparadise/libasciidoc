@@ -35,8 +35,8 @@ const (
 	AttrCheckStyle string = "checkstyle"
 )
 
-// DocumentElement an element on which attributes can be added/set
-type DocumentElement interface {
+// ElementWithAttributes an element on which attributes can be added/set
+type ElementWithAttributes interface {
 	AddAttributes(attributes ElementAttributes)
 }
 
@@ -149,7 +149,7 @@ func NewSourceAttributes(language string) (ElementAttributes, error) {
 // WithAttributes set the attributes on the given elements if its type is supported, otherwise returns an error
 func WithAttributes(element interface{}, attributes []interface{}) (interface{}, error) {
 	attrbs := NewElementAttributes(attributes)
-	if element, ok := element.(DocumentElement); ok {
+	if element, ok := element.(ElementWithAttributes); ok {
 		if len(attributes) > 0 {
 			log.Debugf("setting %d attribute(s) on element of type %T", len(attributes), element)
 		}
