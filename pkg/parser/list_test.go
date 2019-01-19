@@ -1502,9 +1502,7 @@ another fenced block
 										{
 											types.StringElement{Content: "a second item with "},
 											types.QuotedText{
-												Attributes: types.ElementAttributes{
-													types.AttrKind: types.Bold,
-												},
+												Kind: types.Bold,
 												Elements: types.InlineElements{
 													types.StringElement{Content: "bold content"},
 												},
@@ -1716,9 +1714,7 @@ another fenced block
 										{
 											types.StringElement{Content: "a second item with "},
 											types.QuotedText{
-												Attributes: types.ElementAttributes{
-													types.AttrKind: types.Bold,
-												},
+												Kind: types.Bold,
 												Elements: types.InlineElements{
 													types.StringElement{Content: "bold content"},
 												},
@@ -1878,9 +1874,7 @@ another fenced block
 										{
 											types.StringElement{Content: "a second item with "},
 											types.QuotedText{
-												Attributes: types.ElementAttributes{
-													types.AttrKind: types.Bold,
-												},
+												Kind: types.Bold,
 												Elements: types.InlineElements{
 													types.StringElement{Content: "bold content"},
 												},

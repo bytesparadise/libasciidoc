@@ -59,9 +59,7 @@ var _ = Describe("footnotes", func() {
 						Content: "some ",
 					},
 					types.QuotedText{
-						Attributes: types.ElementAttributes{
-							types.AttrKind: types.Bold,
-						},
+						Kind: types.Bold,
 						Elements: types.InlineElements{
 							types.StringElement{
 								Content: "rich",
