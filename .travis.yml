@@ -32,7 +32,7 @@ script:
   - make build
   # run the tests
   - export CI=travis-ci
-  - make test
+  - make test-with-coverage
 
 after_success:
   - gover . coverage.txt

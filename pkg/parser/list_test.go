@@ -378,9 +378,8 @@ another fenced block
 								Term:       "Item 1",
 								Elements: []interface{}{
 									types.DelimitedBlock{
-										Attributes: types.ElementAttributes{
-											types.AttrKind: types.Listing,
-										},
+										Attributes: types.ElementAttributes{},
+										Kind:       types.Listing,
 										Elements: []interface{}{
 											types.Paragraph{
 												Attributes: types.ElementAttributes{},
@@ -410,9 +409,8 @@ another fenced block
 										},
 									},
 									types.DelimitedBlock{
-										Attributes: types.ElementAttributes{
-											types.AttrKind: types.Listing,
-										},
+										Attributes: types.ElementAttributes{},
+										Kind:       types.Listing,
 										Elements: []interface{}{
 											types.Paragraph{
 												Attributes: types.ElementAttributes{},
@@ -462,9 +460,8 @@ another fenced block
 						},
 					},
 					types.DelimitedBlock{
-						Attributes: types.ElementAttributes{
-							types.AttrKind: types.Listing,
-						},
+						Attributes: types.ElementAttributes{},
+						Kind:       types.Listing,
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
@@ -499,9 +496,8 @@ another fenced block
 						},
 					},
 					types.DelimitedBlock{
-						Attributes: types.ElementAttributes{
-							types.AttrKind: types.Listing,
-						},
+						Attributes: types.ElementAttributes{},
+						Kind:       types.Listing,
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
@@ -2321,9 +2317,8 @@ another delimited block
 											},
 										},
 										types.DelimitedBlock{
-											Attributes: types.ElementAttributes{
-												types.AttrKind: types.Listing,
-											},
+											Attributes: types.ElementAttributes{},
+											Kind:       types.Listing,
 											Elements: []interface{}{
 												types.Paragraph{
 													Attributes: types.ElementAttributes{},
@@ -2338,9 +2333,8 @@ another delimited block
 											},
 										},
 										types.DelimitedBlock{
-											Attributes: types.ElementAttributes{
-												types.AttrKind: types.Listing,
-											},
+											Attributes: types.ElementAttributes{},
+											Kind:       types.Listing,
 											Elements: []interface{}{
 												types.Paragraph{
 													Attributes: types.ElementAttributes{},
@@ -2416,9 +2410,8 @@ another delimited block
 							},
 						},
 						types.DelimitedBlock{
-							Attributes: types.ElementAttributes{
-								types.AttrKind: types.Listing,
-							},
+							Attributes: types.ElementAttributes{},
+							Kind:       types.Listing,
 							Elements: []interface{}{
 								types.Paragraph{
 									Attributes: types.ElementAttributes{},
@@ -2454,9 +2447,8 @@ another delimited block
 							},
 						},
 						types.DelimitedBlock{
-							Attributes: types.ElementAttributes{
-								types.AttrKind: types.Listing,
-							},
+							Attributes: types.ElementAttributes{},
+							Kind:       types.Listing,
 							Elements: []interface{}{
 								types.Paragraph{
 									Attributes: types.ElementAttributes{},

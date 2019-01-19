@@ -435,29 +435,29 @@ func NewDocumentAttributeSubstitution(attrName string) (DocumentAttributeSubstit
 // ------------------------------------------
 
 // BlockKind the kind of block
-type BlockKind int
+type BlockKind string
 
 const (
 	// AttrKind the key for the kind of block
 	AttrKind string = "kind"
 	// Fenced a fenced block
-	Fenced BlockKind = iota // 1
+	Fenced BlockKind = "fenced"
 	// Listing a listing block
-	Listing
+	Listing BlockKind = "listing"
 	// Example an example block
-	Example
+	Example BlockKind = "example"
 	// Comment a comment block
-	Comment
+	Comment BlockKind = "comment"
 	// Quote a quote block
-	Quote
+	Quote BlockKind = "quote"
 	// Verse a verse block
-	Verse
+	Verse BlockKind = "verse"
 	// Sidebar a sidebar block
-	Sidebar
+	Sidebar BlockKind = "sidebar"
 	// Literal a literal block
-	Literal
+	Literal BlockKind = "literal"
 	// Source a source block
-	Source
+	Source BlockKind = "source"
 )
 
 // ------------------------------------------
@@ -1719,6 +1719,7 @@ func (f Footnote) Accept(v Visitor) error {
 
 // DelimitedBlock the structure for the delimited blocks
 type DelimitedBlock struct {
+	Kind       BlockKind
 	Attributes ElementAttributes
 	Elements   []interface{}
 }
@@ -1746,25 +1747,26 @@ func Verbatim(content []interface{}) ([]interface{}, error) {
 }
 
 // NewDelimitedBlock initializes a new `DelimitedBlock` of the given kind with the given content
-func NewDelimitedBlock(kind BlockKind, content []interface{}, substitution Substitution, attributes ...interface{}) (DelimitedBlock, error) {
+func NewDelimitedBlock(kind BlockKind, content []interface{}, substitution Substitution) (DelimitedBlock, error) {
 	log.Debugf("initializing a new DelimitedBlock of kind '%v' with %d elements", kind, len(content))
-	attrbs := NewElementAttributes(attributes)
-	if _, found := attrbs[AttrKind]; !found { // add if missing
-		attrbs[AttrKind] = kind
-	}
 	elements, err := substitution(content)
 	if err != nil {
 		return DelimitedBlock{}, errors.Wrapf(err, "failed to initialize a new delimited block")
 	}
 	return DelimitedBlock{
-		Attributes: attrbs,
+		Kind:       kind,
+		Attributes: ElementAttributes{},
 		Elements:   elements,
 	}, nil
 }
 
 // AddAttributes adds all given attributes to the current set of attribute of the element
-func (b DelimitedBlock) AddAttributes(attributes ElementAttributes) {
+func (b *DelimitedBlock) AddAttributes(attributes ElementAttributes) {
 	b.Attributes.AddAll(attributes)
+	if _, found := attributes[AttrKind]; found { // override default kind
+		log.Debugf("overriding kind '%s' to '%s'", b.Kind, attributes[AttrKind])
+		b.Kind = BlockKind(attributes.GetAsString(AttrKind))
+	}
 }
 
 // ------------------------------------------

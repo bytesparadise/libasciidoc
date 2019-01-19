@@ -156,6 +156,13 @@ func WithAttributes(element interface{}, attributes []interface{}) (interface{},
 		element.AddAttributes(attrbs)
 		return element, nil
 	}
+	// special case for DelimitedBlock where we need a pointer receiver to modify the `Kind` field of the struct.
+	if element, ok := element.(DelimitedBlock); ok {
+		block := &element
+		block.AddAttributes(attrbs)
+		return element, nil
+	}
+
 	log.Debugf("cannot set attribute(s) %[2]v on element of type %[1]T : %[1]v", element, attributes)
 	return nil, errors.Errorf("cannot set attributes on element of type '%T'", element)
 }
