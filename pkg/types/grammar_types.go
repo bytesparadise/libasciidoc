@@ -1595,7 +1595,6 @@ type ImageBlock struct {
 
 // NewImageBlock initializes a new `ImageBlock`
 func NewImageBlock(path string, inlineAttributes ElementAttributes) (ImageBlock, error) {
-	// allAttributes := mergeAttributes(attributes)
 	allAttributes := ElementAttributes{}
 	for k, v := range inlineAttributes {
 		allAttributes[k] = v
@@ -1640,37 +1639,6 @@ func NewInlineImage(path string, attributes ElementAttributes) (InlineImage, err
 		}
 	}
 	return InlineImage{
-		Path:       path,
-		Attributes: attributes,
-	}, nil
-}
-
-// AddAttributes adds all given attributes to the current set of attribute of the element
-func (i InlineImage) AddAttributes(attributes ElementAttributes) {
-	i.Attributes.AddAll(attributes)
-}
-
-// ImageMacro the structure for the block image macros
-type ImageMacro struct {
-	Path       string
-	Attributes ElementAttributes
-}
-
-// NewImageMacro initializes a new `ImageMacro`
-func NewImageMacro(path string, attributes ElementAttributes) (ImageMacro, error) {
-	// use the image filename without the extension as the default `alt` attribute
-	log.Debugf("processing alt: '%s'", attributes[AttrImageAlt])
-	if attributes[AttrImageAlt] == "" {
-		_, filename := filepath.Split(path)
-		log.Debugf("adding alt based on filename '%s'", filename)
-		ext := filepath.Ext(filename)
-		if ext != "" {
-			attributes[AttrImageAlt] = strings.TrimSuffix(filename, ext)
-		} else {
-			attributes[AttrImageAlt] = filename
-		}
-	}
-	return ImageMacro{
 		Path:       path,
 		Attributes: attributes,
 	}, nil
