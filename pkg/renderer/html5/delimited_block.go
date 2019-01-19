@@ -131,7 +131,7 @@ func renderDelimitedBlock(ctx *renderer.Context, b types.DelimitedBlock) ([]byte
 		title = strings.TrimSpace(t)
 	}
 	var err error
-	kind := b.Attributes[types.AttrKind]
+	kind := b.Kind
 	switch kind {
 	case types.Fenced:
 		previouslyWithin := ctx.SetWithinDelimitedBlock(true)

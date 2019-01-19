@@ -14,9 +14,8 @@ var _ = Describe("delimited blocks", func() {
 			content := "some fenced code"
 			actualContent := "```\n" + content + "\n```"
 			expectedResult := types.DelimitedBlock{
-				Attributes: types.ElementAttributes{
-					types.AttrKind: types.Fenced,
-				},
+				Attributes: types.ElementAttributes{},
+				Kind:       types.Fenced,
 				Elements: []interface{}{
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
@@ -36,10 +35,9 @@ var _ = Describe("delimited blocks", func() {
 		It("fenced block with no line", func() {
 			actualContent := "```\n```"
 			expectedResult := types.DelimitedBlock{
-				Attributes: types.ElementAttributes{
-					types.AttrKind: types.Fenced,
-				},
-				Elements: []interface{}{},
+				Attributes: types.ElementAttributes{},
+				Kind:       types.Fenced,
+				Elements:   []interface{}{},
 			}
 			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
@@ -47,9 +45,8 @@ var _ = Describe("delimited blocks", func() {
 		It("fenced block with multiple lines alone", func() {
 			actualContent := "```\nsome fenced code\nwith an empty line\n\nin the middle\n```"
 			expectedResult := types.DelimitedBlock{
-				Attributes: types.ElementAttributes{
-					types.AttrKind: types.Fenced,
-				},
+				Attributes: types.ElementAttributes{},
+				Kind:       types.Fenced,
 				Elements: []interface{}{
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
@@ -91,9 +88,8 @@ var _ = Describe("delimited blocks", func() {
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
 					types.DelimitedBlock{
-						Attributes: types.ElementAttributes{
-							types.AttrKind: types.Fenced,
-						},
+						Attributes: types.ElementAttributes{},
+						Kind:       types.Fenced,
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
@@ -154,9 +150,8 @@ var _ = Describe("delimited blocks", func() {
 						},
 					},
 					types.DelimitedBlock{
-						Attributes: types.ElementAttributes{
-							types.AttrKind: types.Fenced,
-						},
+						Attributes: types.ElementAttributes{},
+						Kind:       types.Fenced,
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
@@ -178,9 +173,8 @@ var _ = Describe("delimited blocks", func() {
 		It("fenced block with unclosed delimiter", func() {
 			actualContent := "```\nEnd of file here"
 			expectedResult := types.DelimitedBlock{
-				Attributes: types.ElementAttributes{
-					types.AttrKind: types.Fenced,
-				},
+				Attributes: types.ElementAttributes{},
+				Kind:       types.Fenced,
 				Elements: []interface{}{
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
@@ -205,9 +199,8 @@ var _ = Describe("delimited blocks", func() {
 some listing code
 ----`
 			expectedResult := types.DelimitedBlock{
-				Attributes: types.ElementAttributes{
-					types.AttrKind: types.Listing,
-				},
+				Attributes: types.ElementAttributes{},
+				Kind:       types.Listing,
 				Elements: []interface{}{
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
@@ -228,10 +221,9 @@ some listing code
 			actualContent := `----
 ----`
 			expectedResult := types.DelimitedBlock{
-				Attributes: types.ElementAttributes{
-					types.AttrKind: types.Listing,
-				},
-				Elements: []interface{}{},
+				Attributes: types.ElementAttributes{},
+				Kind:       types.Listing,
+				Elements:   []interface{}{},
 			}
 			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
@@ -244,9 +236,8 @@ with an empty line
 in the middle
 ----`
 			expectedResult := types.DelimitedBlock{
-				Attributes: types.ElementAttributes{
-					types.AttrKind: types.Listing,
-				},
+				Attributes: types.ElementAttributes{},
+				Kind:       types.Listing,
 				Elements: []interface{}{
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
@@ -281,9 +272,8 @@ in the middle
 * content
 ----`
 			expectedResult := types.DelimitedBlock{
-				Attributes: types.ElementAttributes{
-					types.AttrKind: types.Listing,
-				},
+				Attributes: types.ElementAttributes{},
+				Kind:       types.Listing,
 				Elements: []interface{}{
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
@@ -325,9 +315,8 @@ then a normal paragraph.`
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
 					types.DelimitedBlock{
-						Attributes: types.ElementAttributes{
-							types.AttrKind: types.Listing,
-						},
+						Attributes: types.ElementAttributes{},
+						Kind:       types.Listing,
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
@@ -385,9 +374,8 @@ some listing code
 						},
 					},
 					types.DelimitedBlock{
-						Attributes: types.ElementAttributes{
-							types.AttrKind: types.Listing,
-						},
+						Attributes: types.ElementAttributes{},
+						Kind:       types.Listing,
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
@@ -410,9 +398,8 @@ some listing code
 			actualContent := `----
 End of file here.`
 			expectedResult := types.DelimitedBlock{
-				Attributes: types.ElementAttributes{
-					types.AttrKind: types.Listing,
-				},
+				Attributes: types.ElementAttributes{},
+				Kind:       types.Listing,
 				Elements: []interface{}{
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
@@ -437,9 +424,8 @@ End of file here.`
 some listing code
 ====`
 			expectedResult := types.DelimitedBlock{
-				Attributes: types.ElementAttributes{
-					types.AttrKind: types.Example,
-				},
+				Attributes: types.ElementAttributes{},
+				Kind:       types.Example,
 				Elements: []interface{}{
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
@@ -461,9 +447,8 @@ some listing code
 .foo
 ====`
 			expectedResult := types.DelimitedBlock{
-				Attributes: types.ElementAttributes{
-					types.AttrKind: types.Example,
-				},
+				Attributes: types.ElementAttributes{},
+				Kind:       types.Example,
 				Elements: []interface{}{
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
@@ -489,9 +474,8 @@ with *bold content*
 * and a list item
 ====`
 			expectedResult := types.DelimitedBlock{
-				Attributes: types.ElementAttributes{
-					types.AttrKind: types.Example,
-				},
+				Attributes: types.ElementAttributes{},
+				Kind:       types.Example,
 				Elements: []interface{}{
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
@@ -556,9 +540,8 @@ with *bold content*
 			actualContent := `====
 End of file here`
 			expectedResult := types.DelimitedBlock{
-				Attributes: types.ElementAttributes{
-					types.AttrKind: types.Example,
-				},
+				Attributes: types.ElementAttributes{},
+				Kind:       types.Example,
 				Elements: []interface{}{
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
@@ -582,9 +565,9 @@ foo
 ====`
 			expectedResult := types.DelimitedBlock{
 				Attributes: types.ElementAttributes{
-					types.AttrKind:  types.Example,
 					types.AttrTitle: "example block title",
 				},
+				Kind: types.Example,
 				Elements: []interface{}{
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
@@ -604,10 +587,9 @@ foo
 		It("example block starting delimiter only", func() {
 			actualContent := `====`
 			expectedResult := types.DelimitedBlock{
-				Attributes: types.ElementAttributes{
-					types.AttrKind: types.Example,
-				},
-				Elements: []interface{}{},
+				Attributes: types.ElementAttributes{},
+				Kind:       types.Example,
+				Elements:   []interface{}{},
 			}
 			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
@@ -622,9 +604,9 @@ foo
 ====`
 			expectedResult := types.DelimitedBlock{
 				Attributes: types.ElementAttributes{
-					types.AttrKind:           types.Example,
 					types.AttrAdmonitionKind: types.Note,
 				},
+				Kind: types.Example,
 				Elements: []interface{}{
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
@@ -658,9 +640,9 @@ paragraphs
 				Elements: []interface{}{
 					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{
-							types.AttrKind:           types.Listing,
 							types.AttrAdmonitionKind: types.Note,
 						},
+						Kind: types.Listing,
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
@@ -699,6 +681,7 @@ ____`
 					types.AttrQuoteAuthor: "john doe",
 					types.AttrQuoteTitle:  "quote title",
 				},
+				Kind: types.Quote,
 				Elements: []interface{}{
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
@@ -742,6 +725,7 @@ ____
 					types.AttrQuoteAuthor: "john doe",
 					types.AttrQuoteTitle:  "",
 				},
+				Kind: types.Quote,
 				Elements: []interface{}{
 					types.UnorderedList{
 						Attributes: types.ElementAttributes{},
@@ -819,6 +803,7 @@ ____
 					types.AttrQuoteAuthor: "",
 					types.AttrQuoteTitle:  "quote title",
 				},
+				Kind: types.Quote,
 				Elements: []interface{}{
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
@@ -850,6 +835,7 @@ ____`
 					types.AttrQuoteAuthor: "",
 					types.AttrQuoteTitle:  "",
 				},
+				Kind: types.Quote,
 				Elements: []interface{}{
 					types.UnorderedList{
 						Attributes: types.ElementAttributes{},
@@ -875,9 +861,8 @@ ____`
 						},
 					},
 					types.DelimitedBlock{
-						Attributes: types.ElementAttributes{
-							types.AttrKind: types.Listing,
-						},
+						Attributes: types.ElementAttributes{},
+						Kind:       types.Listing,
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
@@ -936,6 +921,7 @@ ____`
 					types.AttrQuoteAuthor: "",
 					types.AttrQuoteTitle:  "",
 				},
+				Kind: types.Quote,
 				Elements: []interface{}{
 					types.UnorderedList{
 						Attributes: types.ElementAttributes{},
@@ -1011,6 +997,7 @@ ____`
 					types.AttrQuoteAuthor: "",
 					types.AttrQuoteTitle:  "",
 				},
+				Kind:     types.Quote,
 				Elements: []interface{}{},
 			}
 			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
@@ -1027,6 +1014,7 @@ foo
 					types.AttrQuoteAuthor: "",
 					types.AttrQuoteTitle:  "",
 				},
+				Kind: types.Quote,
 				Elements: []interface{}{
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
@@ -1057,6 +1045,7 @@ ____`
 					types.AttrQuoteAuthor: "john doe",
 					types.AttrQuoteTitle:  "verse title",
 				},
+				Kind: types.Verse,
 				Elements: []interface{}{
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
@@ -1100,6 +1089,7 @@ ____
 					types.AttrQuoteAuthor: "john doe",
 					types.AttrQuoteTitle:  "",
 				},
+				Kind: types.Verse,
 				Elements: []interface{}{
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
@@ -1138,6 +1128,7 @@ ____
 					types.AttrQuoteAuthor: "",
 					types.AttrQuoteTitle:  "verse title",
 				},
+				Kind: types.Verse,
 				Elements: []interface{}{
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
@@ -1169,6 +1160,7 @@ ____`
 					types.AttrQuoteAuthor: "",
 					types.AttrQuoteTitle:  "",
 				},
+				Kind: types.Verse,
 				Elements: []interface{}{
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
@@ -1219,6 +1211,7 @@ ____`
 					types.AttrQuoteAuthor: "",
 					types.AttrQuoteTitle:  "",
 				},
+				Kind: types.Verse,
 				Elements: []interface{}{
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
@@ -1252,6 +1245,7 @@ ____`
 					types.AttrQuoteAuthor: "",
 					types.AttrQuoteTitle:  "",
 				},
+				Kind:     types.Verse,
 				Elements: []interface{}{},
 			}
 			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
@@ -1268,6 +1262,7 @@ foo
 					types.AttrQuoteAuthor: "",
 					types.AttrQuoteTitle:  "",
 				},
+				Kind: types.Verse,
 				Elements: []interface{}{
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
@@ -1301,6 +1296,7 @@ end
 					types.AttrKind:     types.Source,
 					types.AttrLanguage: "",
 				},
+				Kind: types.Source,
 				Elements: []interface{}{
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
@@ -1344,9 +1340,10 @@ end
 ----`
 			expectedResult := types.DelimitedBlock{
 				Attributes: types.ElementAttributes{
-					types.AttrKind:     types.Source,
+					types.AttrKind:        types.Source,
 					types.AttrLanguage: "ruby",
 				},
+				Kind: types.Source,
 				Elements: []interface{}{
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
@@ -1392,11 +1389,12 @@ end
 ----`
 			expectedResult := types.DelimitedBlock{
 				Attributes: types.ElementAttributes{
-					types.AttrKind:     types.Source,
+					types.AttrKind:        types.Source,
 					types.AttrLanguage: "ruby",
 					types.AttrID:       "id-for-source-block",
 					types.AttrTitle:    "app.rb",
 				},
+				Kind: types.Source,
 				Elements: []interface{}{
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
@@ -1437,9 +1435,8 @@ end
 some *verse* content
 ****`
 			expectedResult := types.DelimitedBlock{
-				Attributes: types.ElementAttributes{
-					types.AttrKind: types.Sidebar,
-				},
+				Attributes: types.ElementAttributes{},
+				Kind:       types.Sidebar,
 				Elements: []interface{}{
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
@@ -1480,9 +1477,9 @@ bar
 ****`
 			expectedResult := types.DelimitedBlock{
 				Attributes: types.ElementAttributes{
-					types.AttrKind:  types.Sidebar,
 					types.AttrTitle: "a title",
 				},
+				Kind: types.Sidebar,
 				Elements: []interface{}{
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
@@ -1508,9 +1505,8 @@ bar
 						},
 					},
 					types.DelimitedBlock{
-						Attributes: types.ElementAttributes{
-							types.AttrKind: types.Listing,
-						},
+						Attributes: types.ElementAttributes{},
+						Kind:       types.Listing,
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},

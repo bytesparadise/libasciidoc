@@ -61,9 +61,8 @@ a *comment* block
 with multiple lines
 ////`
 			expectedResult := types.DelimitedBlock{
-				Attributes: types.ElementAttributes{
-					types.AttrKind: types.Comment,
-				},
+				Attributes: types.ElementAttributes{},
+				Kind:       types.Comment,
 				Elements: []interface{}{
 					types.StringElement{
 						Content: "a *comment* block",
@@ -98,9 +97,8 @@ a second paragraph`
 						},
 					},
 					types.DelimitedBlock{
-						Attributes: types.ElementAttributes{
-							types.AttrKind: types.Comment,
-						},
+						Attributes: types.ElementAttributes{},
+						Kind:       types.Comment,
 						Elements: []interface{}{
 							types.StringElement{
 								Content: "a *comment* block",
