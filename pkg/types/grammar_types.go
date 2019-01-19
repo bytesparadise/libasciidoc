@@ -1442,7 +1442,7 @@ const DocumentAttrHardBreaks = "hardbreaks"
 
 // NewParagraph initializes a new `Paragraph`
 func NewParagraph(lines []interface{}, attributes ...interface{}) (Paragraph, error) {
-	log.Debugf("initializing a new paragraph with %d line(s) and %d attribute(s): %v", len(lines), len(attributes), spew.Sprint(attributes))
+	log.Debugf("initializing a new paragraph with %d line(s) and %d attribute(s)", len(lines), len(attributes))
 	elements := make([]InlineElements, 0)
 	for _, line := range lines {
 		if l, ok := line.(InlineElements); ok {
@@ -1964,6 +1964,12 @@ func NewSingleLineComment(content string) (SingleLineComment, error) {
 	return SingleLineComment{
 		Content: content,
 	}, nil
+}
+
+// AddAttributes adds all given attributes to the current set of attribute of the element
+func (l SingleLineComment) AddAttributes(attributes ElementAttributes) {
+	// nothing to do
+	// TODO: raise a warning?
 }
 
 // ------------------------------------------

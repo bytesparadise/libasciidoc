@@ -12,13 +12,8 @@ var _ = Describe("comments", func() {
 
 		It("single line comment alone", func() {
 			actualDocument := `// A single-line comment.`
-			expectedResult := types.Paragraph{
-				Attributes: types.ElementAttributes{},
-				Lines: []types.InlineElements{
-					{
-						types.SingleLineComment{Content: " A single-line comment."},
-					},
-				},
+			expectedResult := types.SingleLineComment{
+				Content: " A single-line comment.",
 			}
 			verify(GinkgoT(), expectedResult, actualDocument, parser.Entrypoint("DocumentBlock"))
 		})

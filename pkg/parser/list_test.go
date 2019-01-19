@@ -4180,7 +4180,7 @@ Cloud Providers::
 			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Document"))
 		})
 
-		It("distinct lists - case 1", func() {
+		It("distinct lists with blankline and item attribute - case 1", func() {
 			actualContent := `[lowerroman, start=5]
 . Five
 
@@ -4273,7 +4273,7 @@ Cloud Providers::
 			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Document"))
 		})
 
-		It("distinct lists - case 2", func() {
+		It("distinct lists with blankline and item attribute - case 2", func() {
 
 			actualContent := `.Checklist
 - [*] checked
@@ -4381,6 +4381,272 @@ Cloud Providers::
 			}
 			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Document"))
 		})
+
+		It("same list with single comment line inside", func() {
+			actualContent := `. a
+// -
+. b`
+			expectedResult := types.Document{
+				Attributes:         types.DocumentAttributes{},
+				ElementReferences:  types.ElementReferences{},
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
+				Elements: []interface{}{
+					types.OrderedList{
+						Attributes: types.ElementAttributes{},
+						Items: []types.OrderedListItem{
+							{
+								Attributes:     types.ElementAttributes{},
+								Level:          1,
+								Position:       1,
+								NumberingStyle: types.Arabic,
+								Elements: []interface{}{
+									types.Paragraph{
+										Attributes: types.ElementAttributes{},
+										Lines: []types.InlineElements{
+											{
+												types.StringElement{
+													Content: "a",
+												},
+											},
+										},
+									},
+									types.SingleLineComment{
+										Content: " -",
+									},
+								},
+							},
+							{
+								Attributes:     types.ElementAttributes{},
+								Level:          1,
+								Position:       2,
+								NumberingStyle: types.Arabic,
+								Elements: []interface{}{
+									types.Paragraph{
+										Attributes: types.ElementAttributes{},
+										Lines: []types.InlineElements{
+											{
+												types.StringElement{
+													Content: "b",
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			}
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Document"))
+		})
+
+		It("same list with multiple comment lines inside", func() {
+			actualContent := `. a
+// -
+// -
+// -
+. b`
+			expectedResult := types.Document{
+				Attributes:         types.DocumentAttributes{},
+				ElementReferences:  types.ElementReferences{},
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
+				Elements: []interface{}{
+					types.OrderedList{
+						Attributes: types.ElementAttributes{},
+						Items: []types.OrderedListItem{
+							{
+								Attributes:     types.ElementAttributes{},
+								Level:          1,
+								Position:       1,
+								NumberingStyle: types.Arabic,
+								Elements: []interface{}{
+									types.Paragraph{
+										Attributes: types.ElementAttributes{},
+										Lines: []types.InlineElements{
+											{
+												types.StringElement{
+													Content: "a",
+												},
+											},
+										},
+									},
+									types.SingleLineComment{
+										Content: " -",
+									},
+									types.SingleLineComment{
+										Content: " -",
+									},
+									types.SingleLineComment{
+										Content: " -",
+									},
+								},
+							},
+							{
+								Attributes:     types.ElementAttributes{},
+								Level:          1,
+								Position:       2,
+								NumberingStyle: types.Arabic,
+								Elements: []interface{}{
+									types.Paragraph{
+										Attributes: types.ElementAttributes{},
+										Lines: []types.InlineElements{
+											{
+												types.StringElement{
+													Content: "b",
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			}
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Document"))
+		})
+
+		It("distinct lists separated by single comment line", func() {
+			actualContent := `. a
+
+// -
+. b`
+			expectedResult := types.Document{
+				Attributes:         types.DocumentAttributes{},
+				ElementReferences:  types.ElementReferences{},
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
+				Elements: []interface{}{
+					types.OrderedList{
+						Attributes: types.ElementAttributes{},
+						Items: []types.OrderedListItem{
+							{
+								Attributes:     types.ElementAttributes{},
+								Level:          1,
+								Position:       1,
+								NumberingStyle: types.Arabic,
+								Elements: []interface{}{
+									types.Paragraph{
+										Attributes: types.ElementAttributes{},
+										Lines: []types.InlineElements{
+											{
+												types.StringElement{
+													Content: "a",
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+					types.BlankLine{},
+					types.SingleLineComment{
+						Content: " -",
+					},
+					types.OrderedList{
+						Attributes: types.ElementAttributes{},
+						Items: []types.OrderedListItem{
+							{
+								Attributes:     types.ElementAttributes{},
+								Level:          1,
+								Position:       1,
+								NumberingStyle: types.Arabic,
+								Elements: []interface{}{
+									types.Paragraph{
+										Attributes: types.ElementAttributes{},
+										Lines: []types.InlineElements{
+											{
+												types.StringElement{
+													Content: "b",
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			}
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Document"))
+		})
+		It("distinct lists separated by multiple comment lines", func() {
+			actualContent := `. a
+
+// -
+// -
+// -
+. b`
+			expectedResult := types.Document{
+				Attributes:         types.DocumentAttributes{},
+				ElementReferences:  types.ElementReferences{},
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
+				Elements: []interface{}{
+					types.OrderedList{
+						Attributes: types.ElementAttributes{},
+						Items: []types.OrderedListItem{
+							{
+								Attributes:     types.ElementAttributes{},
+								Level:          1,
+								Position:       1,
+								NumberingStyle: types.Arabic,
+								Elements: []interface{}{
+									types.Paragraph{
+										Attributes: types.ElementAttributes{},
+										Lines: []types.InlineElements{
+											{
+												types.StringElement{
+													Content: "a",
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+					types.BlankLine{},
+					types.SingleLineComment{
+						Content: " -",
+					},
+					types.SingleLineComment{
+						Content: " -",
+					},
+					types.SingleLineComment{
+						Content: " -",
+					},
+					types.OrderedList{
+						Attributes: types.ElementAttributes{},
+						Items: []types.OrderedListItem{
+							{
+								Attributes:     types.ElementAttributes{},
+								Level:          1,
+								Position:       1,
+								NumberingStyle: types.Arabic,
+								Elements: []interface{}{
+									types.Paragraph{
+										Attributes: types.ElementAttributes{},
+										Lines: []types.InlineElements{
+											{
+												types.StringElement{
+													Content: "b",
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			}
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Document"))
+		})
+
 	})
 
 })

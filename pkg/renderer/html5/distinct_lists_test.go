@@ -59,7 +59,7 @@ var _ = Describe("lists of items", func() {
 			verify(GinkgoT(), expectedResult, actualContent)
 		})
 
-		It("distinct lists - case 1", func() {
+		It("distinct lists separated by blankline and item attribute - case 1", func() {
 			actualContent := `[lowerroman]
 . Five
 
@@ -90,7 +90,7 @@ var _ = Describe("lists of items", func() {
 			verify(GinkgoT(), expectedResult, actualContent)
 		})
 
-		It("distinct lists - case 2", func() {
+		It("distinct lists separated by blankline and item attribute - case 2", func() {
 
 			actualContent := `.Checklist
 - [*] checked
@@ -123,5 +123,87 @@ var _ = Describe("lists of items", func() {
 </div>`
 			verify(GinkgoT(), expectedResult, actualContent)
 		})
+	})
+
+	It("same list with single comment line inside", func() {
+		actualContent := `. a
+// -
+. b`
+		expectedResult := `<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>a</p>
+</li>
+<li>
+<p>b</p>
+</li>
+</ol>
+</div>`
+		verify(GinkgoT(), expectedResult, actualContent)
+	})
+
+	It("same list with multiple comment lines inside", func() {
+		actualContent := `. a
+// -
+// -
+// -
+. b`
+		expectedResult := `<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>a</p>
+</li>
+<li>
+<p>b</p>
+</li>
+</ol>
+</div>`
+		verify(GinkgoT(), expectedResult, actualContent)
+	})
+
+	It("distinct lists separated by single comment line", func() {
+		actualContent := `. a
+
+// -
+. b`
+		expectedResult := `<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>a</p>
+</li>
+</ol>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>b</p>
+</li>
+</ol>
+</div>`
+		verify(GinkgoT(), expectedResult, actualContent)
+	})
+
+	It("distinct lists separated by multiple comment lines", func() {
+		actualContent := `. a
+
+// -
+// -
+// -
+. b`
+		expectedResult := `<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>a</p>
+</li>
+</ol>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>b</p>
+</li>
+</ol>
+</div>`
+		verify(GinkgoT(), expectedResult, actualContent)
 	})
 })

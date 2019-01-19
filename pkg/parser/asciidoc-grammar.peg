@@ -147,6 +147,7 @@ DocumentElement <- !EOF // when reaching EOF, do not try to parse a new document
             / ListingBlock
             / ExampleBlock
             / CommentBlock
+            / SingleLineComment
             / QuoteBlock 
             / SidebarBlock
             / Table 
@@ -454,18 +455,21 @@ ListItem <-
     // list items can be separated with one or more blank lines, 
     // but as soon as an element attribute is set after one or more blank lines, 
     // then the item begins a new list
-    (!BlankLine &(ElementAttribute?) / BlankLine+ !ElementAttribute) 
+    (!BlankLine &ElementAttribute? / !BlankLine &SingleLineComment? / BlankLine+ !ElementAttribute) 
     attributes:(ElementAttribute)* 
     item:(OrderedListItem / UnorderedListItem / LabeledListItem) {
         return types.WithAttributes(item, attributes.([]interface{}))
     }
 
-ListParagraph <- lines:(ListParagraphLine)+ {
-    return types.NewParagraph(lines.([]interface{}))
-} 
+ListParagraph <- comment:(SingleLineComment) {
+        return comment, nil
+    } / lines:(ListParagraphLine)+ {
+        return types.NewParagraph(lines.([]interface{}))
+    } 
 
 ListParagraphLine <- 
     !BlankLine 
+    !SingleLineComment
     !OrderedListItemPrefix
     !UnorderedListItemPrefix
     !(LabeledListItemTerm LabeledListItemSeparator) 
@@ -475,7 +479,7 @@ ListParagraphLine <-
     line:(
         elements:(InlineElement)+ linebreak:(LineBreak)? { // absorbs heading and trailing spaces
             return types.NewInlineElements(append(elements.([]interface{}), linebreak))
-        }) EOL { // EOL may have been "swallowed" by 'linebreak rule'
+        }) EOL { 
             return line, nil
         }
 
