@@ -576,120 +576,177 @@ another fenced block
 			}
 			It("ordered list item with implicit numbering style", func() {
 				actualContent := `.. item`
-				expectedResult := types.OrderedListItem{
-					Level:          2,
-					Position:       1,
-					NumberingStyle: types.LowerAlpha,
-					Attributes:     map[string]interface{}{},
-					Elements:       elements,
+				expectedResult := types.OrderedList{
+					Attributes: types.ElementAttributes{},
+					Items: []types.OrderedListItem{
+						{
+							Level:          1,
+							Position:       1,
+							NumberingStyle: types.LowerAlpha,
+							Attributes:     map[string]interface{}{},
+							Elements:       elements,
+						},
+					},
 				}
-				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("OrderedListItem"))
+				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 			})
 
 			It("ordered list item with arabic numbering style", func() {
 				actualContent := `1. item`
-				expectedResult := types.OrderedListItem{
-					Level:          1,
-					Position:       1,
-					NumberingStyle: types.Arabic,
-					Attributes:     map[string]interface{}{},
-					Elements:       elements,
+				expectedResult := types.OrderedList{
+					Attributes: types.ElementAttributes{},
+					Items: []types.OrderedListItem{
+						{
+							Level:          1,
+							Position:       1,
+							NumberingStyle: types.Arabic,
+							Attributes:     map[string]interface{}{},
+							Elements:       elements,
+						},
+					},
 				}
-				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("OrderedListItem"))
+				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 			})
 
 			It("ordered list item with lower alpha numbering style", func() {
 				actualContent := `b. item`
-				expectedResult := types.OrderedListItem{
-					Level:          1,
-					Position:       1,
-					NumberingStyle: types.LowerAlpha,
-					Attributes:     map[string]interface{}{},
-					Elements:       elements,
+				expectedResult := types.OrderedList{
+					Attributes: types.ElementAttributes{},
+					Items: []types.OrderedListItem{
+						{
+							Level:          1,
+							Position:       1,
+							NumberingStyle: types.LowerAlpha,
+							Attributes:     map[string]interface{}{},
+							Elements:       elements,
+						},
+					},
 				}
-				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("OrderedListItem"))
+				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 			})
 
 			It("ordered list item with upper alpha numbering style", func() {
 				actualContent := `B. item`
-				expectedResult := types.OrderedListItem{
-					Level:          1,
-					Position:       1,
-					NumberingStyle: types.UpperAlpha,
-					Attributes:     map[string]interface{}{},
-					Elements:       elements,
+				expectedResult := types.OrderedList{
+					Attributes: types.ElementAttributes{},
+					Items: []types.OrderedListItem{
+						{
+
+							Level:          1,
+							Position:       1,
+							NumberingStyle: types.UpperAlpha,
+							Attributes:     map[string]interface{}{},
+							Elements:       elements,
+						},
+					},
 				}
-				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("OrderedListItem"))
+				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 			})
 
 			It("ordered list item with lower roman numbering style", func() {
 				actualContent := `i) item`
-				expectedResult := types.OrderedListItem{
-					Level:          1,
-					Position:       1,
-					NumberingStyle: types.LowerRoman,
-					Attributes:     map[string]interface{}{},
-					Elements:       elements,
+				expectedResult := types.OrderedList{
+					Attributes: types.ElementAttributes{},
+					Items: []types.OrderedListItem{
+						{
+							Level:          1,
+							Position:       1,
+							NumberingStyle: types.LowerRoman,
+							Attributes:     map[string]interface{}{},
+							Elements:       elements,
+						},
+					},
 				}
-				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("OrderedListItem"))
+				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 			})
 
 			It("ordered list item with upper roman numbering style", func() {
 				actualContent := `I) item`
-				expectedResult := types.OrderedListItem{
-					Level:          1,
-					Position:       1,
-					NumberingStyle: types.UpperRoman,
-					Attributes:     map[string]interface{}{},
-					Elements:       elements,
+				expectedResult := types.OrderedList{
+					Attributes: types.ElementAttributes{},
+					Items: []types.OrderedListItem{
+						{
+
+							Level:          1,
+							Position:       1,
+							NumberingStyle: types.UpperRoman,
+							Attributes:     map[string]interface{}{},
+							Elements:       elements,
+						},
+					},
 				}
-				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("OrderedListItem"))
+				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 			})
 
-			It("ordered list item with explicit numbering type only", func() {
+			It("ordered list item with explicit numbering style", func() {
 				actualContent := `[lowerroman]
-	. item`
-				expectedResult := types.OrderedListItem{
-					Level:          1,
-					Position:       1,
-					NumberingStyle: types.Arabic,
+. item
+. item`
+				expectedResult := types.OrderedList{
 					Attributes: types.ElementAttributes{
 						"lowerroman": nil,
 					},
-					Elements: elements,
+					Items: []types.OrderedListItem{
+						{
+							Attributes:     types.ElementAttributes{},
+							Level:          1,
+							Position:       1,
+							NumberingStyle: types.LowerRoman,
+							Elements:       elements,
+						},
+						{
+							Attributes:     types.ElementAttributes{},
+							Level:          1,
+							Position:       2,
+							NumberingStyle: types.LowerRoman,
+							Elements:       elements,
+						},
+					},
 				}
-				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("OrderedListItem"))
+				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 			})
 
 			It("ordered list item with explicit start only", func() {
 				actualContent := `[start=5]
 	. item`
-				expectedResult := types.OrderedListItem{
-					Level:          1,
-					Position:       1,
-					NumberingStyle: types.Arabic,
+				expectedResult := types.OrderedList{
 					Attributes: types.ElementAttributes{
 						"start": "5",
 					},
-					Elements: elements,
+					Items: []types.OrderedListItem{
+						{
+
+							Level:          1,
+							Position:       1,
+							NumberingStyle: types.Arabic,
+							Attributes:     types.ElementAttributes{},
+							Elements:       elements,
+						},
+					},
 				}
-				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("OrderedListItem"))
+				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 			})
 
 			It("ordered list item with explicit quoted numbering and start", func() {
 				actualContent := `["lowerroman", start="5"]
 	. item`
-				expectedResult := types.OrderedListItem{
-					Level:          1,
-					Position:       1,
-					NumberingStyle: types.Arabic,
+				expectedResult := types.OrderedList{
 					Attributes: types.ElementAttributes{
 						"lowerroman": nil,
 						"start":      "5",
 					},
-					Elements: elements,
+					Items: []types.OrderedListItem{
+						{
+
+							Level:          1,
+							Position:       1,
+							NumberingStyle: types.LowerRoman,
+							Attributes:     types.ElementAttributes{},
+							Elements:       elements,
+						},
+					},
 				}
-				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("OrderedListItem"))
+				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 			})
 
 		})
@@ -1319,7 +1376,7 @@ another fenced block
 
 			It("should not match", func() {
 				actualContent := `foo. content`
-				verifyError(GinkgoT(), actualContent, parser.Entrypoint("OrderedListItem"))
+				verifyError(GinkgoT(), actualContent, parser.Entrypoint("List")) // here we expect this will not be a valid list
 			})
 		})
 	})
@@ -3932,4 +3989,664 @@ Cloud Providers::
 			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 	})
+
+	Context("distinct list blocks", func() {
+
+		It("same list without attributes", func() {
+			actualContent := `[lowerroman, start=5]
+. Five
+.. a
+. Six`
+			expectedResult := types.Document{
+				Attributes:         types.DocumentAttributes{},
+				ElementReferences:  types.ElementReferences{},
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
+				Elements: []interface{}{ // a single ordered list
+					types.OrderedList{
+						Attributes: types.ElementAttributes{
+							"lowerroman": nil,
+							"start":      "5",
+						},
+						Items: []types.OrderedListItem{
+							{
+								Attributes:     types.ElementAttributes{},
+								Level:          1,
+								Position:       1,
+								NumberingStyle: types.LowerRoman,
+								Elements: []interface{}{
+									types.Paragraph{
+										Attributes: types.ElementAttributes{},
+										Lines: []types.InlineElements{
+											{
+												types.StringElement{
+													Content: "Five",
+												},
+											},
+										},
+									},
+									types.OrderedList{
+										Attributes: types.ElementAttributes{},
+										Items: []types.OrderedListItem{
+											{
+												Attributes:     types.ElementAttributes{},
+												Level:          2,
+												Position:       1,
+												NumberingStyle: types.LowerAlpha,
+												Elements: []interface{}{
+													types.Paragraph{
+														Attributes: types.ElementAttributes{},
+														Lines: []types.InlineElements{
+															{
+																types.StringElement{
+																	Content: "a",
+																},
+															},
+														},
+													},
+												},
+											},
+										},
+									},
+								},
+							},
+							{
+								Attributes:     types.ElementAttributes{},
+								Level:          1,
+								Position:       2,
+								NumberingStyle: types.LowerRoman,
+								Elements: []interface{}{
+									types.Paragraph{
+										Attributes: types.ElementAttributes{},
+										Lines: []types.InlineElements{
+											{
+												types.StringElement{
+													Content: "Six",
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			}
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Document"))
+		})
+
+		It("same list with custom number style on sublist", func() {
+			actualContent := `[lowerroman, start=5]
+. Five
+[upperalpha]
+.. a
+.. b
+. Six`
+			expectedResult := types.Document{
+				Attributes:         types.DocumentAttributes{},
+				ElementReferences:  types.ElementReferences{},
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
+				Elements: []interface{}{ // a single ordered list
+					types.OrderedList{
+						Attributes: types.ElementAttributes{
+							"lowerroman": nil,
+							"start":      "5",
+						},
+						Items: []types.OrderedListItem{
+							{
+								Attributes:     types.ElementAttributes{},
+								Level:          1,
+								Position:       1,
+								NumberingStyle: types.LowerRoman,
+								Elements: []interface{}{
+									types.Paragraph{
+										Attributes: types.ElementAttributes{},
+										Lines: []types.InlineElements{
+											{
+												types.StringElement{
+													Content: "Five",
+												},
+											},
+										},
+									},
+									types.OrderedList{
+										Attributes: types.ElementAttributes{},
+										Items: []types.OrderedListItem{
+											{
+												Attributes: types.ElementAttributes{
+													"upperalpha": nil,
+												},
+												Level:          2,
+												Position:       1,
+												NumberingStyle: types.UpperAlpha,
+												Elements: []interface{}{
+													types.Paragraph{
+														Attributes: types.ElementAttributes{},
+														Lines: []types.InlineElements{
+															{
+																types.StringElement{
+																	Content: "a",
+																},
+															},
+														},
+													},
+												},
+											},
+											{
+												Attributes:     types.ElementAttributes{},
+												Level:          2,
+												Position:       2,
+												NumberingStyle: types.UpperAlpha,
+												Elements: []interface{}{
+													types.Paragraph{
+														Attributes: types.ElementAttributes{},
+														Lines: []types.InlineElements{
+															{
+																types.StringElement{
+																	Content: "b",
+																},
+															},
+														},
+													},
+												},
+											},
+										},
+									},
+								},
+							},
+							{
+								Attributes:     types.ElementAttributes{},
+								Level:          1,
+								Position:       2,
+								NumberingStyle: types.LowerRoman,
+								Elements: []interface{}{
+									types.Paragraph{
+										Attributes: types.ElementAttributes{},
+										Lines: []types.InlineElements{
+											{
+												types.StringElement{
+													Content: "Six",
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			}
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Document"))
+		})
+
+		It("distinct lists with blankline and item attribute - case 1", func() {
+			actualContent := `[lowerroman, start=5]
+. Five
+
+[loweralpha]
+.. a
+. Six`
+			expectedResult := types.Document{
+				Attributes:         types.DocumentAttributes{},
+				ElementReferences:  types.ElementReferences{},
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
+				Elements: []interface{}{ // a single ordered list
+					types.OrderedList{
+						Attributes: types.ElementAttributes{
+							"lowerroman": nil,
+							"start":      "5",
+						},
+						Items: []types.OrderedListItem{
+							{
+								Attributes:     types.ElementAttributes{},
+								Level:          1,
+								Position:       1,
+								NumberingStyle: types.LowerRoman,
+								Elements: []interface{}{
+									types.Paragraph{
+										Attributes: types.ElementAttributes{},
+										Lines: []types.InlineElements{
+											{
+												types.StringElement{
+													Content: "Five",
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+					types.BlankLine{},
+					types.OrderedList{
+						Attributes: types.ElementAttributes{
+							"loweralpha": nil,
+						},
+						Items: []types.OrderedListItem{
+							{
+								Attributes:     types.ElementAttributes{},
+								Level:          1,
+								Position:       1,
+								NumberingStyle: types.LowerAlpha,
+								Elements: []interface{}{
+									types.Paragraph{
+										Attributes: types.ElementAttributes{},
+										Lines: []types.InlineElements{
+											{
+												types.StringElement{
+													Content: "a",
+												},
+											},
+										},
+									},
+									types.OrderedList{
+										Attributes: types.ElementAttributes{},
+										Items: []types.OrderedListItem{
+											{
+												Attributes:     types.ElementAttributes{},
+												Level:          2,
+												Position:       1,
+												NumberingStyle: types.Arabic,
+												Elements: []interface{}{
+													types.Paragraph{
+														Attributes: types.ElementAttributes{},
+														Lines: []types.InlineElements{
+															{
+																types.StringElement{
+																	Content: "Six",
+																},
+															},
+														},
+													},
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			}
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Document"))
+		})
+
+		It("distinct lists with blankline and item attribute - case 2", func() {
+
+			actualContent := `.Checklist
+- [*] checked
+-     normal list item
+
+.Ordered, basic
+. Step 1
+. Step 2`
+			expectedResult := types.Document{
+				Attributes:         types.DocumentAttributes{},
+				ElementReferences:  types.ElementReferences{},
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
+				Elements: []interface{}{
+					types.UnorderedList{
+						Attributes: types.ElementAttributes{
+							types.AttrTitle: "Checklist",
+						},
+						Items: []types.UnorderedListItem{
+							{
+								Attributes:  types.ElementAttributes{},
+								Level:       1,
+								BulletStyle: types.Dash,
+								CheckStyle:  types.Checked,
+								Elements: []interface{}{
+									types.Paragraph{
+										Attributes: types.ElementAttributes{
+											types.AttrCheckStyle: types.Checked,
+										},
+										Lines: []types.InlineElements{
+											{
+												types.StringElement{
+													Content: "checked",
+												},
+											},
+										},
+									},
+								},
+							},
+							{
+								Attributes:  types.ElementAttributes{},
+								Level:       1,
+								BulletStyle: types.Dash,
+								CheckStyle:  types.NoCheck,
+								Elements: []interface{}{
+									types.Paragraph{
+										Attributes: types.ElementAttributes{},
+										Lines: []types.InlineElements{
+											{
+												types.StringElement{
+													Content: "normal list item",
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+					types.BlankLine{},
+					types.OrderedList{
+						Attributes: types.ElementAttributes{
+							types.AttrTitle: "Ordered, basic",
+						},
+						Items: []types.OrderedListItem{
+							{
+								Attributes:     types.ElementAttributes{},
+								Level:          1,
+								Position:       1,
+								NumberingStyle: types.Arabic,
+								Elements: []interface{}{
+									types.Paragraph{
+										Attributes: types.ElementAttributes{},
+										Lines: []types.InlineElements{
+											{
+												types.StringElement{
+													Content: "Step 1",
+												},
+											},
+										},
+									},
+								},
+							},
+							{
+								Attributes:     types.ElementAttributes{},
+								Level:          1,
+								Position:       2,
+								NumberingStyle: types.Arabic,
+								Elements: []interface{}{
+									types.Paragraph{
+										Attributes: types.ElementAttributes{},
+										Lines: []types.InlineElements{
+											{
+												types.StringElement{
+													Content: "Step 2",
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			}
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Document"))
+		})
+
+		It("same list with single comment line inside", func() {
+			actualContent := `. a
+// -
+. b`
+			expectedResult := types.Document{
+				Attributes:         types.DocumentAttributes{},
+				ElementReferences:  types.ElementReferences{},
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
+				Elements: []interface{}{
+					types.OrderedList{
+						Attributes: types.ElementAttributes{},
+						Items: []types.OrderedListItem{
+							{
+								Attributes:     types.ElementAttributes{},
+								Level:          1,
+								Position:       1,
+								NumberingStyle: types.Arabic,
+								Elements: []interface{}{
+									types.Paragraph{
+										Attributes: types.ElementAttributes{},
+										Lines: []types.InlineElements{
+											{
+												types.StringElement{
+													Content: "a",
+												},
+											},
+										},
+									},
+									types.SingleLineComment{
+										Content: " -",
+									},
+								},
+							},
+							{
+								Attributes:     types.ElementAttributes{},
+								Level:          1,
+								Position:       2,
+								NumberingStyle: types.Arabic,
+								Elements: []interface{}{
+									types.Paragraph{
+										Attributes: types.ElementAttributes{},
+										Lines: []types.InlineElements{
+											{
+												types.StringElement{
+													Content: "b",
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			}
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Document"))
+		})
+
+		It("same list with multiple comment lines inside", func() {
+			actualContent := `. a
+// -
+// -
+// -
+. b`
+			expectedResult := types.Document{
+				Attributes:         types.DocumentAttributes{},
+				ElementReferences:  types.ElementReferences{},
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
+				Elements: []interface{}{
+					types.OrderedList{
+						Attributes: types.ElementAttributes{},
+						Items: []types.OrderedListItem{
+							{
+								Attributes:     types.ElementAttributes{},
+								Level:          1,
+								Position:       1,
+								NumberingStyle: types.Arabic,
+								Elements: []interface{}{
+									types.Paragraph{
+										Attributes: types.ElementAttributes{},
+										Lines: []types.InlineElements{
+											{
+												types.StringElement{
+													Content: "a",
+												},
+											},
+										},
+									},
+									types.SingleLineComment{
+										Content: " -",
+									},
+									types.SingleLineComment{
+										Content: " -",
+									},
+									types.SingleLineComment{
+										Content: " -",
+									},
+								},
+							},
+							{
+								Attributes:     types.ElementAttributes{},
+								Level:          1,
+								Position:       2,
+								NumberingStyle: types.Arabic,
+								Elements: []interface{}{
+									types.Paragraph{
+										Attributes: types.ElementAttributes{},
+										Lines: []types.InlineElements{
+											{
+												types.StringElement{
+													Content: "b",
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			}
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Document"))
+		})
+
+		It("distinct lists separated by single comment line", func() {
+			actualContent := `. a
+
+// -
+. b`
+			expectedResult := types.Document{
+				Attributes:         types.DocumentAttributes{},
+				ElementReferences:  types.ElementReferences{},
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
+				Elements: []interface{}{
+					types.OrderedList{
+						Attributes: types.ElementAttributes{},
+						Items: []types.OrderedListItem{
+							{
+								Attributes:     types.ElementAttributes{},
+								Level:          1,
+								Position:       1,
+								NumberingStyle: types.Arabic,
+								Elements: []interface{}{
+									types.Paragraph{
+										Attributes: types.ElementAttributes{},
+										Lines: []types.InlineElements{
+											{
+												types.StringElement{
+													Content: "a",
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+					types.BlankLine{},
+					types.SingleLineComment{
+						Content: " -",
+					},
+					types.OrderedList{
+						Attributes: types.ElementAttributes{},
+						Items: []types.OrderedListItem{
+							{
+								Attributes:     types.ElementAttributes{},
+								Level:          1,
+								Position:       1,
+								NumberingStyle: types.Arabic,
+								Elements: []interface{}{
+									types.Paragraph{
+										Attributes: types.ElementAttributes{},
+										Lines: []types.InlineElements{
+											{
+												types.StringElement{
+													Content: "b",
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			}
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Document"))
+		})
+		It("distinct lists separated by multiple comment lines", func() {
+			actualContent := `. a
+
+// -
+// -
+// -
+. b`
+			expectedResult := types.Document{
+				Attributes:         types.DocumentAttributes{},
+				ElementReferences:  types.ElementReferences{},
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
+				Elements: []interface{}{
+					types.OrderedList{
+						Attributes: types.ElementAttributes{},
+						Items: []types.OrderedListItem{
+							{
+								Attributes:     types.ElementAttributes{},
+								Level:          1,
+								Position:       1,
+								NumberingStyle: types.Arabic,
+								Elements: []interface{}{
+									types.Paragraph{
+										Attributes: types.ElementAttributes{},
+										Lines: []types.InlineElements{
+											{
+												types.StringElement{
+													Content: "a",
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+					types.BlankLine{},
+					types.SingleLineComment{
+						Content: " -",
+					},
+					types.SingleLineComment{
+						Content: " -",
+					},
+					types.SingleLineComment{
+						Content: " -",
+					},
+					types.OrderedList{
+						Attributes: types.ElementAttributes{},
+						Items: []types.OrderedListItem{
+							{
+								Attributes:     types.ElementAttributes{},
+								Level:          1,
+								Position:       1,
+								NumberingStyle: types.Arabic,
+								Elements: []interface{}{
+									types.Paragraph{
+										Attributes: types.ElementAttributes{},
+										Lines: []types.InlineElements{
+											{
+												types.StringElement{
+													Content: "b",
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			}
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Document"))
+		})
+
+	})
+
 })

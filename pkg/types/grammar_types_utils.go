@@ -120,28 +120,6 @@ func WithNumberingStyle(t NumberingStyle) DefaultAttribute {
 	}
 }
 
-func mergeAttributes(attributes []interface{}, defaults ...DefaultAttribute) ElementAttributes {
-	result := make(ElementAttributes)
-	// fill with the default values, that can be overridden afterwards
-	for _, d := range defaults {
-		d(result)
-	}
-	if attributes == nil {
-		return result
-	}
-	log.Debugf("attributes with defaults: %v", result)
-	for _, attr := range attributes {
-		log.Debugf("processing attributes of %T", attr)
-		if attr, ok := attr.(ElementAttributes); ok {
-			for k, v := range attr {
-				result[k] = v
-			}
-		}
-	}
-	log.Debugf("merged attributes : %v", result)
-	return result
-}
-
 // appendBuffer appends the content of the given buffer to the given array of elements,
 // and returns a new buffer, or returns the given arguments if the buffer was empty
 func appendBuffer(elements []interface{}, buff *bytes.Buffer) ([]interface{}, *bytes.Buffer) {

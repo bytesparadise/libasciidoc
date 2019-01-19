@@ -936,6 +936,35 @@ func toOrderedList(items []*OrderedListItem) (OrderedList, error) {
 // AddAttributes adds all given attributes to the current set of attribute of the element
 func (o OrderedList) AddAttributes(attributes ElementAttributes) {
 	o.Attributes.AddAll(attributes)
+	// override the numbering style if applicable
+	for attr := range attributes {
+		switch attr {
+		case string(Arabic):
+			setNumberingStyle(o.Items, Arabic)
+		case string(Decimal):
+			setNumberingStyle(o.Items, Decimal)
+		case string(LowerAlpha):
+			setNumberingStyle(o.Items, LowerAlpha)
+		case string(UpperAlpha):
+			setNumberingStyle(o.Items, UpperAlpha)
+		case string(LowerRoman):
+			setNumberingStyle(o.Items, LowerRoman)
+		case string(UpperRoman):
+			setNumberingStyle(o.Items, UpperRoman)
+		case string(LowerGreek):
+			setNumberingStyle(o.Items, LowerGreek)
+		case string(UpperGreek):
+			setNumberingStyle(o.Items, UpperGreek)
+		}
+	}
+}
+
+func setNumberingStyle(items []OrderedListItem, n NumberingStyle) {
+	log.Debugf("setting numbering style to %v on %d items", n, len(items))
+	for i, item := range items {
+		item.NumberingStyle = n
+		items[i] = item // copy back in the list since this is not a list of pointers :/
+	}
 }
 
 // OrderedListItem the structure for the ordered list items
@@ -951,21 +980,22 @@ type OrderedListItem struct {
 var _ ListItem = &OrderedListItem{}
 
 // NewOrderedListItem initializes a new `orderedListItem` from the given content
-func NewOrderedListItem(prefix OrderedListItemPrefix, elements []interface{}, attributes []interface{}) (OrderedListItem, error) {
-	log.Debugf("initializing a new OrderedListItem with attributes %v", attributes)
+func NewOrderedListItem(prefix OrderedListItemPrefix, elements []interface{}) (OrderedListItem, error) {
+	log.Debugf("initializing a new OrderedListItem")
 	p := 1 // default position
 	return OrderedListItem{
 		NumberingStyle: prefix.NumberingStyle,
 		Level:          prefix.Level,
 		Position:       p,
 		Elements:       elements,
-		Attributes:     mergeAttributes(attributes),
+		Attributes:     ElementAttributes{},
 	}, nil
 }
 
 // AddAttributes adds all given attributes to the current set of attribute of the element
-func (i *OrderedListItem) AddAttributes(attributes ElementAttributes) {
+func (i OrderedListItem) AddAttributes(attributes ElementAttributes) {
 	i.Attributes.AddAll(attributes)
+
 }
 
 // AddChild appends the given item to the content of this OrderedListItem
@@ -1135,7 +1165,7 @@ func NewUnorderedListItem(prefix UnorderedListItemPrefix, checkstyle interface{}
 	// log.Debugf("initializing a new UnorderedListItem with '%d' lines (%T) and input level '%d'", len(elements), elements, lvl.Len())
 	cs := toCheckStyle(checkstyle)
 	if cs != NoCheck && len(elements) > 0 {
-		if e, ok := elements[0].(DocumentElement); ok {
+		if e, ok := elements[0].(ElementWithAttributes); ok {
 			e.AddAttributes(ElementAttributes{
 				AttrCheckStyle: cs,
 			})
@@ -1148,6 +1178,11 @@ func NewUnorderedListItem(prefix UnorderedListItemPrefix, checkstyle interface{}
 		CheckStyle:  cs,
 		Elements:    elements,
 	}, nil
+}
+
+// AddAttributes adds all given attributes to the current set of attribute of the element
+func (i UnorderedListItem) AddAttributes(attributes ElementAttributes) {
+	i.Attributes.AddAll(attributes)
 }
 
 // UnorderedListItemCheckStyle the check style that applies on an unordered list item
@@ -1167,11 +1202,6 @@ func toCheckStyle(checkstyle interface{}) UnorderedListItemCheckStyle {
 		return cs
 	}
 	return NoCheck
-}
-
-// AddAttributes adds all given attributes to the current set of attribute of the element
-func (i *UnorderedListItem) AddAttributes(attributes ElementAttributes) {
-	i.Attributes.AddAll(attributes)
 }
 
 // AddChild appends the given item to the content of this UnorderedListItem
@@ -1381,7 +1411,7 @@ func NewLabeledListItem(level int, term string, elements []interface{}) (Labeled
 }
 
 // AddAttributes adds all given attributes to the current set of attribute of the element
-func (i *LabeledListItem) AddAttributes(attributes ElementAttributes) {
+func (i LabeledListItem) AddAttributes(attributes ElementAttributes) {
 	i.Attributes.AddAll(attributes)
 }
 
@@ -1412,7 +1442,7 @@ const DocumentAttrHardBreaks = "hardbreaks"
 
 // NewParagraph initializes a new `Paragraph`
 func NewParagraph(lines []interface{}, attributes ...interface{}) (Paragraph, error) {
-	log.Debugf("initializing a new paragraph with %d line(s) and %d attribute(s): %v", len(lines), len(attributes), spew.Sprint(attributes))
+	log.Debugf("initializing a new paragraph with %d line(s) and %d attribute(s)", len(lines), len(attributes))
 	elements := make([]InlineElements, 0)
 	for _, line := range lines {
 		if l, ok := line.(InlineElements); ok {
@@ -1565,7 +1595,6 @@ type ImageBlock struct {
 
 // NewImageBlock initializes a new `ImageBlock`
 func NewImageBlock(path string, inlineAttributes ElementAttributes) (ImageBlock, error) {
-	// allAttributes := mergeAttributes(attributes)
 	allAttributes := ElementAttributes{}
 	for k, v := range inlineAttributes {
 		allAttributes[k] = v
@@ -1610,37 +1639,6 @@ func NewInlineImage(path string, attributes ElementAttributes) (InlineImage, err
 		}
 	}
 	return InlineImage{
-		Path:       path,
-		Attributes: attributes,
-	}, nil
-}
-
-// AddAttributes adds all given attributes to the current set of attribute of the element
-func (i InlineImage) AddAttributes(attributes ElementAttributes) {
-	i.Attributes.AddAll(attributes)
-}
-
-// ImageMacro the structure for the block image macros
-type ImageMacro struct {
-	Path       string
-	Attributes ElementAttributes
-}
-
-// NewImageMacro initializes a new `ImageMacro`
-func NewImageMacro(path string, attributes ElementAttributes) (ImageMacro, error) {
-	// use the image filename without the extension as the default `alt` attribute
-	log.Debugf("processing alt: '%s'", attributes[AttrImageAlt])
-	if attributes[AttrImageAlt] == "" {
-		_, filename := filepath.Split(path)
-		log.Debugf("adding alt based on filename '%s'", filename)
-		ext := filepath.Ext(filename)
-		if ext != "" {
-			attributes[AttrImageAlt] = strings.TrimSuffix(filename, ext)
-		} else {
-			attributes[AttrImageAlt] = filename
-		}
-	}
-	return ImageMacro{
 		Path:       path,
 		Attributes: attributes,
 	}, nil
@@ -1934,6 +1932,12 @@ func NewSingleLineComment(content string) (SingleLineComment, error) {
 	return SingleLineComment{
 		Content: content,
 	}, nil
+}
+
+// AddAttributes adds all given attributes to the current set of attribute of the element
+func (l SingleLineComment) AddAttributes(attributes ElementAttributes) {
+	// nothing to do
+	// TODO: raise a warning?
 }
 
 // ------------------------------------------

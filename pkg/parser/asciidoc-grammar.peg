@@ -147,6 +147,7 @@ DocumentElement <- !EOF // when reaching EOF, do not try to parse a new document
             / ListingBlock
             / ExampleBlock
             / CommentBlock
+            / SingleLineComment
             / QuoteBlock 
             / SidebarBlock
             / Table 
@@ -369,10 +370,6 @@ Section2TitlePrefix <- "===" WS+
 
 Section2Title <- Section2TitlePrefix elements:(TitleElements) id:(InlineElementID*) EOL {
     return types.NewSectionTitle(elements.(types.InlineElements), id.([]interface{})) 
-        return types.NewSectionTitle(elements.(types.InlineElements), id.([]interface{})) 
-    return types.NewSectionTitle(elements.(types.InlineElements), id.([]interface{})) 
-        return types.NewSectionTitle(elements.(types.InlineElements), id.([]interface{})) 
-    return types.NewSectionTitle(elements.(types.InlineElements), id.([]interface{})) 
 }
 
 Section2Element <- !Section1TitlePrefix !Section2TitlePrefix 
@@ -388,10 +385,6 @@ Section3 <- header:(Section3Title) elements:(Section3Element*) {
 Section3TitlePrefix <- "====" WS+ 
 
 Section3Title <- Section3TitlePrefix elements:(TitleElements) id:(InlineElementID*) EOL {
-    return types.NewSectionTitle(elements.(types.InlineElements), id.([]interface{})) 
-        return types.NewSectionTitle(elements.(types.InlineElements), id.([]interface{})) 
-    return types.NewSectionTitle(elements.(types.InlineElements), id.([]interface{})) 
-        return types.NewSectionTitle(elements.(types.InlineElements), id.([]interface{})) 
     return types.NewSectionTitle(elements.(types.InlineElements), id.([]interface{})) 
 }
 
@@ -456,14 +449,27 @@ List <-
     return types.NewList(elements.([]interface{}))
 }
 
-ListItems <- (OrderedListItem / UnorderedListItem / LabeledListItem)+
+ListItems <- ListItem+
 
-ListParagraph <- lines:(ListParagraphLine)+ {
-    return types.NewParagraph(lines.([]interface{}))
-} 
+ListItem <- 
+    // list items can be separated with one or more blank lines, 
+    // but as soon as an element attribute is set after one or more blank lines, 
+    // then the item begins a new list
+    (!BlankLine &ElementAttribute? / !BlankLine &SingleLineComment? / BlankLine+ !ElementAttribute) 
+    attributes:(ElementAttribute)* 
+    item:(OrderedListItem / UnorderedListItem / LabeledListItem) {
+        return types.WithAttributes(item, attributes.([]interface{}))
+    }
+
+ListParagraph <- comment:(SingleLineComment) {
+        return comment, nil
+    } / lines:(ListParagraphLine)+ {
+        return types.NewParagraph(lines.([]interface{}))
+    } 
 
 ListParagraphLine <- 
     !BlankLine 
+    !SingleLineComment
     !OrderedListItemPrefix
     !UnorderedListItemPrefix
     !(LabeledListItemTerm LabeledListItemSeparator) 
@@ -473,7 +479,7 @@ ListParagraphLine <-
     line:(
         elements:(InlineElement)+ linebreak:(LineBreak)? { // absorbs heading and trailing spaces
             return types.NewInlineElements(append(elements.([]interface{}), linebreak))
-        }) EOL { // EOL may have been "swallowed" by 'linebreak rule'
+        }) EOL { 
             return line, nil
         }
 
@@ -488,8 +494,8 @@ ContinuedDocumentElement<- ListItemContinuation element:DocumentElement{
 // ------------------------------------------
 // Ordered List Items
 // ------------------------------------------
-OrderedListItem <- attributes:(ElementAttribute)* prefix:(OrderedListItemPrefix) content:(OrderedListItemContent) BlankLine* {
-    return types.NewOrderedListItem(prefix.(types.OrderedListItemPrefix), content.([]interface{}), attributes.([]interface{}))
+OrderedListItem <- prefix:(OrderedListItemPrefix) content:(OrderedListItemContent) {
+    return types.NewOrderedListItem(prefix.(types.OrderedListItemPrefix), content.([]interface{}))
 }
 
 OrderedListItemPrefix <- WS* prefix:(
@@ -526,7 +532,7 @@ OrderedListItemContent <- elements:(ListParagraph+ ContinuedDocumentElement*) { 
 // ------------------------------------------
 // Unordered List Items
 // ------------------------------------------
-UnorderedListItem <- prefix:(UnorderedListItemPrefix) checkstyle:(UnorderedListItemCheckStyle)? content:(UnorderedListItemContent) BlankLine* {
+UnorderedListItem <- prefix:(UnorderedListItemPrefix) checkstyle:(UnorderedListItemCheckStyle)? content:(UnorderedListItemContent) {
     return types.NewUnorderedListItem(prefix.(types.UnorderedListItemPrefix), checkstyle, content.([]interface{}))
 }
 
@@ -1010,7 +1016,7 @@ FencedBlock <- FencedBlockDelimiter content:(FencedBlockContent)* (FencedBlockDe
     return types.NewDelimitedBlock(types.Fenced, content.([]interface{}), types.None)
 }
 
-FencedBlockContent <- List / BlockParagraph / BlankLine
+FencedBlockContent <- BlankLine / List / BlockParagraph
 
 // -------------------------------------------------------------------------------------
 // Listing blocks
@@ -1041,7 +1047,7 @@ ListingBlockLineContent <- (Alphanums / Spaces / (!ListingBlockDelimiter !EOL  .
 // -------------------------------------------------------------------------------------
 ExampleBlockDelimiter <- "====" WS* EOL
 
-ExampleBlock <- ExampleBlockDelimiter content:(List / BlockParagraph / BlankLine)*  (ExampleBlockDelimiter / EOF) {
+ExampleBlock <- ExampleBlockDelimiter content:(BlankLine / List / BlockParagraph)*  (ExampleBlockDelimiter / EOF) {
     return types.NewDelimitedBlock(types.Example, content.([]interface{}), types.None)
 }
 
@@ -1112,7 +1118,7 @@ SidebarBlock <- SidebarBlockDelimiter content:(SidebarBlockContent)*  (SidebarBl
     return types.NewDelimitedBlock(types.Sidebar, content.([]interface{}), types.None)
 }
 
-SidebarBlockContent <- List / BlockParagraph / BlankLine / NonSidebarBlock
+SidebarBlockContent <- BlankLine / List / NonSidebarBlock / BlockParagraph
 
 NonSidebarBlock <- !SidebarBlock content:(DelimitedBlock) {
     return content, nil
