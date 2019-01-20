@@ -17,7 +17,8 @@ var horizontalLabeledListTmpl texttemplate.Template
 func init() {
 	defaultLabeledListTmpl = newTextTemplate("labeled list with default layout",
 		`{{ $ctx := .Context }}{{ with .Data }}<div{{ if .ID }} id="{{ .ID }}"{{ end }} class="dlist{{ if .Role }} {{ .Role }}{{ end }}">
-<dl>
+{{ if .Title }}<div class="title">{{ .Title }}</div>
+{{ end }}<dl>
 {{ $items := .Items }}{{ range $itemIndex, $item := $items }}<dt class="hdlist1">{{ $item.Term }}</dt>{{ if $item.Elements }}
 <dd>
 {{ renderElements $ctx $item.Elements | printf "%s" }}

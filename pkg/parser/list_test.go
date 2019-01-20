@@ -554,6 +554,54 @@ another fenced block
 			}
 			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
+
+		It("labeled list with title", func() {
+			actualContent := `.Labeled, single-line
+first term:: definition of the first term
+second term:: definition of the second term`
+			expectedResult := types.LabeledList{
+				Attributes: types.ElementAttributes{
+					types.AttrTitle: "Labeled, single-line",
+				},
+				Items: []types.LabeledListItem{
+					{
+						Attributes: types.ElementAttributes{},
+						Level:      1,
+						Term:       "first term",
+						Elements: []interface{}{
+							types.Paragraph{
+								Attributes: types.ElementAttributes{},
+								Lines: []types.InlineElements{
+									{
+										types.StringElement{
+											Content: "definition of the first term",
+										},
+									},
+								},
+							},
+						},
+					},
+					{
+						Attributes: types.ElementAttributes{},
+						Level:      1,
+						Term:       "second term",
+						Elements: []interface{}{
+							types.Paragraph{
+								Attributes: types.ElementAttributes{},
+								Lines: []types.InlineElements{
+									{
+										types.StringElement{
+											Content: "definition of the second term",
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			}
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+		})
 	})
 
 	Context("unordered list", func() {
