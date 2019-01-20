@@ -1983,8 +1983,8 @@ func NewLineBreak() (LineBreak, error) {
 
 // QuotedText the structure for quoted text
 type QuotedText struct {
-	Attributes ElementAttributes
-	Elements   InlineElements
+	Kind     QuotedTextKind
+	Elements InlineElements
 }
 
 // QuotedTextKind the type for
@@ -2010,8 +2010,8 @@ func NewQuotedText(kind QuotedTextKind, content []interface{}) (QuotedText, erro
 		log.Debugf("initialized a new QuotedText with %d elements: %v", len(elements), spew.Sdump(elements))
 	}
 	return QuotedText{
-		Attributes: map[string]interface{}{AttrKind: kind},
-		Elements:   elements,
+		Kind:     kind,
+		Elements: elements,
 	}, nil
 }
 

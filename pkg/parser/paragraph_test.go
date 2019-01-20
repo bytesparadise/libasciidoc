@@ -44,9 +44,7 @@ var _ = Describe("paragraphs", func() {
 					{
 						types.StringElement{Content: "a paragraph with "},
 						types.QuotedText{
-							Attributes: types.ElementAttributes{
-								types.AttrKind: types.Bold,
-							},
+							Kind: types.Bold,
 							Elements: types.InlineElements{
 								types.StringElement{Content: "some bold content"},
 							},
@@ -288,9 +286,7 @@ this is a
 					},
 					{
 						types.QuotedText{
-							Attributes: types.ElementAttributes{
-								types.AttrKind: types.Bold,
-							},
+							Kind: types.Bold,
 							Elements: types.InlineElements{
 								types.StringElement{
 									Content: "caution",

@@ -20,9 +20,7 @@ var _ = Describe("tables", func() {
 					Cells: []types.InlineElements{
 						{
 							types.QuotedText{
-								Attributes: types.ElementAttributes{
-									types.AttrKind: types.Bold,
-								},
+								Kind: types.Bold,
 								Elements: types.InlineElements{
 									types.StringElement{
 										Content: "foo",
@@ -35,9 +33,7 @@ var _ = Describe("tables", func() {
 						},
 						{
 							types.QuotedText{
-								Attributes: types.ElementAttributes{
-									types.AttrKind: types.Italic,
-								},
+								Kind: types.Italic,
 								Elements: types.InlineElements{
 									types.StringElement{
 										Content: "bar",
@@ -66,9 +62,7 @@ var _ = Describe("tables", func() {
 					Cells: []types.InlineElements{
 						{
 							types.QuotedText{
-								Attributes: types.ElementAttributes{
-									types.AttrKind: types.Bold,
-								},
+								Kind: types.Bold,
 								Elements: types.InlineElements{
 									types.StringElement{
 										Content: "foo",
@@ -81,9 +75,7 @@ var _ = Describe("tables", func() {
 						},
 						{
 							types.QuotedText{
-								Attributes: types.ElementAttributes{
-									types.AttrKind: types.Italic,
-								},
+								Kind: types.Italic,
 								Elements: types.InlineElements{
 									types.StringElement{
 										Content: "bar",

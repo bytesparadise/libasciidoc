@@ -495,9 +495,7 @@ with *bold content*
 									Content: "with ",
 								},
 								types.QuotedText{
-									Attributes: types.ElementAttributes{
-										types.AttrKind: types.Bold,
-									},
+									Kind: types.Bold,
 									Elements: types.InlineElements{
 										types.StringElement{
 											Content: "bold content",
@@ -691,9 +689,7 @@ ____`
 									Content: "some ",
 								},
 								types.QuotedText{
-									Attributes: types.ElementAttributes{
-										types.AttrKind: types.Bold,
-									},
+									Kind: types.Bold,
 									Elements: types.InlineElements{
 										types.StringElement{
 											Content: "quote",
@@ -1055,9 +1051,7 @@ ____`
 									Content: "some ",
 								},
 								types.QuotedText{
-									Attributes: types.ElementAttributes{
-										types.AttrKind: types.Bold,
-									},
+									Kind: types.Bold,
 									Elements: types.InlineElements{
 										types.StringElement{
 											Content: "verse",
@@ -1340,7 +1334,7 @@ end
 ----`
 			expectedResult := types.DelimitedBlock{
 				Attributes: types.ElementAttributes{
-					types.AttrKind:        types.Source,
+					types.AttrKind:     types.Source,
 					types.AttrLanguage: "ruby",
 				},
 				Kind: types.Source,
@@ -1389,7 +1383,7 @@ end
 ----`
 			expectedResult := types.DelimitedBlock{
 				Attributes: types.ElementAttributes{
-					types.AttrKind:        types.Source,
+					types.AttrKind:     types.Source,
 					types.AttrLanguage: "ruby",
 					types.AttrID:       "id-for-source-block",
 					types.AttrTitle:    "app.rb",
@@ -1446,9 +1440,7 @@ some *verse* content
 									Content: "some ",
 								},
 								types.QuotedText{
-									Attributes: types.ElementAttributes{
-										types.AttrKind: types.Bold,
-									},
+									Kind: types.Bold,
 									Elements: types.InlineElements{
 										types.StringElement{
 											Content: "verse",
@@ -1489,9 +1481,7 @@ bar
 									Content: "some ",
 								},
 								types.QuotedText{
-									Attributes: types.ElementAttributes{
-										types.AttrKind: types.Bold,
-									},
+									Kind: types.Bold,
 									Elements: types.InlineElements{
 										types.StringElement{
 											Content: "verse",

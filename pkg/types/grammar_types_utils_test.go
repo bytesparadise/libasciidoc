@@ -80,9 +80,7 @@ var _ = Describe("normalizing string", func() {
 		source := InlineElements{
 			StringElement{Content: "a section title, with"},
 			QuotedText{
-				Attributes: ElementAttributes{
-					AttrKind: Bold,
-				},
+				Kind: Bold,
 				Elements: []interface{}{
 					StringElement{Content: "bold content"},
 				},
