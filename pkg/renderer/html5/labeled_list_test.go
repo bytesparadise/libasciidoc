@@ -18,6 +18,7 @@ on 2 lines.
 item 3:: description 3
 on 2 lines, too.`
 			expectedResult := `<div id="listID" class="dlist myrole">
+<div class="title">mytitle</div>
 <dl>
 <dt class="hdlist1">item 1</dt>
 <dd>
@@ -142,6 +143,26 @@ item 2:: something simple`
 <dt class="hdlist1">item 2</dt>
 <dd>
 <p>something simple</p>
+</dd>
+</dl>
+</div>`
+			verify(GinkgoT(), expectedResult, actualContent)
+		})
+
+		It("labeled list with title", func() {
+			actualContent := `.Labeled, single-line
+first term:: definition of the first term
+second term:: definition of the second term`
+			expectedResult := `<div class="dlist">
+<div class="title">Labeled, single-line</div>
+<dl>
+<dt class="hdlist1">first term</dt>
+<dd>
+<p>definition of the first term</p>
+</dd>
+<dt class="hdlist1">second term</dt>
+<dd>
+<p>definition of the second term</p>
 </dd>
 </dl>
 </div>`
