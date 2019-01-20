@@ -17,7 +17,7 @@ func init() {
 	orderedListTmpl = newTextTemplate("ordered list",
 		`{{ $ctx := .Context }}{{ with .Data }}{{ $items := .Items }}{{ $firstItem := index $items 0 }}<div{{ if .ID }} id="{{ .ID }}"{{ end }} class="olist {{ $firstItem.NumberingStyle }}{{ if .Role }} {{ .Role }}{{ end}}">
 {{ if .Title }}<div class="title">{{ .Title }}</div>
-{{ end }}<ol class="{{ $firstItem.NumberingStyle }}"{{ style $firstItem.NumberingStyle }}>
+{{ end }}<ol class="{{ $firstItem.NumberingStyle }}"{{ style $firstItem.NumberingStyle }}{{ if .Start }} start="{{ .Start }}"{{ end }}>
 {{ range $itemIndex, $item := $items }}<li>
 {{ renderElements $ctx $item.Elements | printf "%s" }}
 </li>
@@ -44,11 +44,13 @@ func renderOrderedList(ctx *renderer.Context, l types.OrderedList) ([]byte, erro
 			ID    string
 			Title string
 			Role  string
+			Start string
 			Items []types.OrderedListItem
 		}{
 			l.Attributes.GetAsString(types.AttrID),
 			l.Attributes.GetAsString(types.AttrTitle),
 			l.Attributes.GetAsString(types.AttrRole),
+			l.Attributes.GetAsString(types.AttrStart),
 			l.Items,
 		},
 	})

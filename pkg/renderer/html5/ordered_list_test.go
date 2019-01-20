@@ -20,6 +20,32 @@ var _ = Describe("ordered lists", func() {
 		verify(GinkgoT(), expectedResult, actualContent)
 	})
 
+	It("ordered list item with explicit start only", func() {
+		actualContent := `[start=5]
+. item`
+		expectedResult := `<div class="olist arabic">
+<ol class="arabic" start="5">
+<li>
+<p>item</p>
+</li>
+</ol>
+</div>`
+		verify(GinkgoT(), expectedResult, actualContent)
+	})
+
+	It("ordered list item with explicit quoted numbering and start", func() {
+		actualContent := `["lowerroman", start="5"]
+. item`
+		expectedResult := `<div class="olist lowerroman">
+<ol class="lowerroman" type="i" start="5">
+<li>
+<p>item</p>
+</li>
+</ol>
+</div>`
+		verify(GinkgoT(), expectedResult, actualContent)
+	})
+
 	It("ordered list with unnumbered items", func() {
 		actualContent := `. item 1
 		.. item 1.1
