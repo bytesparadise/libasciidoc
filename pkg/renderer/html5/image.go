@@ -3,6 +3,7 @@ package html5
 import (
 	"bytes"
 	"fmt"
+	"html"
 	"net/url"
 	"path/filepath"
 	texttemplate "text/template"
@@ -22,17 +23,23 @@ func init() {
 <div class="content">
 {{ if ne .Href "" }}<a class="image" href="{{ .Href }}">{{ end }}<img src="{{ .Path }}" alt="{{ .Alt }}"{{ if .Width }} width="{{ .Width }}"{{ end }}{{ if .Height }} height="{{ .Height }}"{{ end }}>{{ if ne .Href "" }}</a>{{ end }}
 </div>{{ if .Title }}
-<div class="title">{{ .Title }}</div>
+<div class="title">{{ escape .Title }}</div>
 {{ else }}
-{{ end }}</div>`)
-	inlineImageTmpl = newTextTemplate("inline image", `<span class="image{{ if .Role }} {{ .Role }}{{ end }}"><img src="{{ .Path }}" alt="{{ .Alt }}"{{ if .Width }} width="{{ .Width }}"{{ end }}{{ if .Height }} height="{{ .Height }}"{{ end }}{{ if .Title }} title="{{ .Title }}"{{ end }}></span>`)
+{{ end }}</div>`,
+		texttemplate.FuncMap{
+			"escape": html.EscapeString,
+		})
+	inlineImageTmpl = newTextTemplate("inline image", `<span class="image{{ if .Role }} {{ .Role }}{{ end }}"><img src="{{ .Path }}" alt="{{ .Alt }}"{{ if .Width }} width="{{ .Width }}"{{ end }}{{ if .Height }} height="{{ .Height }}"{{ end }}{{ if .Title }} title="{{ escape .Title }}"{{ end }}></span>`,
+		texttemplate.FuncMap{
+			"escape": html.EscapeString,
+		})
 }
 
 func renderImageBlock(ctx *renderer.Context, img types.ImageBlock) ([]byte, error) {
 	result := bytes.NewBuffer(nil)
 	title := ""
 	if t := img.Attributes.GetAsString(types.AttrTitle); t != "" {
-		title = fmt.Sprintf("Figure %d. %s", ctx.GetAndIncrementImageCounter(), t)
+		title = fmt.Sprintf("Figure %d. %s", ctx.GetAndIncrementImageCounter(), html.EscapeString(t))
 	}
 	err := blockImageTmpl.Execute(result, struct {
 		ID     string
@@ -72,7 +79,7 @@ func renderInlineImage(ctx *renderer.Context, img types.InlineImage) ([]byte, er
 		Height string
 		Path   string
 	}{
-		Title:  img.Attributes.GetAsString(types.AttrTitle),
+		Title:  getTitle(img.Attributes),
 		Role:   img.Attributes.GetAsString(types.AttrRole),
 		Alt:    img.Attributes.GetAsString(types.AttrImageAlt),
 		Width:  img.Attributes.GetAsString(types.AttrImageWidth),

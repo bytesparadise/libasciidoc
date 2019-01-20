@@ -3,6 +3,7 @@ package html5
 import (
 	"bytes"
 	"fmt"
+	"html"
 	"strings"
 	texttemplate "text/template"
 
@@ -24,48 +25,52 @@ var sidebarBlockTmpl texttemplate.Template
 // initializes the templates
 func init() {
 	fencedBlockTmpl = newTextTemplate("listing block", `{{ $ctx := .Context }}{{ with .Data }}<div {{ if .ID }}id="{{ .ID }}" {{ end }}class="listingblock">{{ if .Title }}
-<div class="title">{{ .Title }}</div>{{ end }}
+<div class="title">{{ escape .Title }}</div>{{ end }}
 <div class="content">
 <pre class="highlight"><code>{{ range $index, $element := .Elements }}{{ renderPlainString $ctx $element | printf "%s" }}{{ end }}</code></pre>
 </div>
 </div>{{ end }}`,
 		texttemplate.FuncMap{
 			"renderPlainString": renderPlainString,
+			"escape":            html.EscapeString,
 		})
 
 	listingBlockTmpl = newTextTemplate("listing block", `{{ $ctx := .Context }}{{ with .Data }}<div {{ if .ID }}id="{{ .ID }}" {{ end }}class="listingblock">{{ if .Title }}
-<div class="title">{{ .Title }}</div>{{ end }}
+<div class="title">{{ escape .Title }}</div>{{ end }}
 <div class="content">
 <pre>{{ range $index, $element := .Elements }}{{ renderPlainString $ctx $element | printf "%s" }}{{ end }}</pre>
 </div>
 </div>{{ end }}`,
 		texttemplate.FuncMap{
 			"renderPlainString": renderPlainString,
+			"escape":            html.EscapeString,
 		})
 
 	sourceBlockTmpl = newTextTemplate("source block",
 		`{{ $ctx := .Context }}{{ with .Data }}<div {{ if .ID }}id="{{ .ID }}" {{ end }}class="listingblock">{{ if .Title }}
-<div class="title">{{ .Title }}</div>{{ end }}
+<div class="title">{{ escape .Title }}</div>{{ end }}
 <div class="content">
 <pre class="highlight"><code{{ if .Language}} class="language-{{ .Language}}" data-lang="{{ .Language}}"{{ end }}>{{ range $index, $element := .Elements }}{{ renderPlainString $ctx $element | printf "%s" }}{{ end }}</code></pre>
 </div>
 </div>{{ end }}`,
 		texttemplate.FuncMap{
 			"renderPlainString": renderPlainString,
+			"escape":            html.EscapeString,
 		})
 
 	exampleBlockTmpl = newTextTemplate("example block", `{{ $ctx := .Context }}{{ with .Data }}<div {{ if .ID }}id="{{ .ID }}" {{ end }}class="exampleblock">{{ if .Title }}
-<div class="title">{{ .Title }}</div>{{ end }}
+<div class="title">{{ escape .Title }}</div>{{ end }}
 <div class="content">
 {{ $elements := .Elements }}{{ renderElements $ctx $elements | printf "%s" }}
 </div>
 </div>{{ end }}`,
 		texttemplate.FuncMap{
 			"renderElements": renderElements,
+			"escape":         html.EscapeString,
 		})
 
 	quoteBlockTmpl = newTextTemplate("quote block", `{{ $ctx := .Context }}{{ with .Data }}<div {{ if .ID }}id="{{ .ID }}" {{ end }}class="quoteblock">{{ if .Title }}
-<div class="title">{{ .Title }}</div>{{ end }}
+<div class="title">{{ escape .Title }}</div>{{ end }}
 <blockquote>
 {{ renderElements $ctx .Elements | printf "%s" }}
 </blockquote>{{ if .Attribution.First }}
@@ -76,10 +81,11 @@ func init() {
 </div>{{ end }}`,
 		texttemplate.FuncMap{
 			"renderElements": renderElements,
+			"escape":         html.EscapeString,
 		})
 
 	verseBlockTmpl = newTextTemplate("verse block", `{{ $ctx := .Context }}{{ with .Data }}<div {{ if .ID }}id="{{ .ID }}" {{ end }}class="verseblock">{{ if .Title }}
-<div class="title">{{ .Title }}</div>{{ end }}
+<div class="title">{{ escape .Title }}</div>{{ end }}
 <pre class="content">{{ renderElements $ctx .Elements | printf "%s" }}</pre>{{ if .Attribution.First }}
 <div class="attribution">
 &#8212; {{ .Attribution.First }}{{ if .Attribution.Second }}<br>
@@ -88,6 +94,7 @@ func init() {
 </div>{{ end }}`,
 		texttemplate.FuncMap{
 			"renderElements": renderElements,
+			"escape":         html.EscapeString,
 		})
 
 	admonitionBlockTmpl = newTextTemplate("admonition block", `{{ $ctx := .Context }}{{ with .Data }}<div {{ if .ID }}id="{{ .ID}}" {{ end }}class="admonitionblock {{ .Class }}">
@@ -97,7 +104,7 @@ func init() {
 {{ if .IconClass }}<i class="fa icon-{{ .IconClass }}" title="{{ .IconTitle }}"></i>{{ else }}<div class="title">{{ .IconTitle }}</div>{{ end }}
 </td>
 <td class="content">
-{{ if .Title }}<div class="title">{{ .Title }}</div>
+{{ if .Title }}<div class="title">{{ escape .Title }}</div>
 {{ end }}{{ renderElements $ctx .Elements | printf "%s" }}
 </td>
 </tr>
@@ -105,16 +112,18 @@ func init() {
 </div>{{ end }}`,
 		texttemplate.FuncMap{
 			"renderElements": renderElements,
+			"escape":         html.EscapeString,
 		})
 
 	sidebarBlockTmpl = newTextTemplate("sidebar block", `{{ $ctx := .Context }}{{ with .Data }}<div {{ if .ID }}id="{{ .ID }}" {{ end }}class="sidebarblock">
 <div class="content">{{ if .Title }}
-<div class="title">{{ .Title }}</div>{{ end }}
+<div class="title">{{ escape .Title }}</div>{{ end }}
 {{ renderElements $ctx .Elements | printf "%s" }}
 </div>
 </div>{{ end }}`,
 		texttemplate.FuncMap{
 			"renderElements": renderElements,
+			"escape":         html.EscapeString,
 		})
 }
 
@@ -122,13 +131,9 @@ func renderDelimitedBlock(ctx *renderer.Context, b types.DelimitedBlock) ([]byte
 	log.Debugf("rendering delimited block of kind '%v'", b.Attributes[types.AttrKind])
 	result := bytes.NewBuffer(nil)
 	elements := discardTrailingBlankLines(b.Elements)
-	var id, title string
-
+	var id string
 	if i, ok := b.Attributes[types.AttrID].(string); ok { // TODO: replace with b.Attributes.GetAsString?
 		id = strings.TrimSpace(i)
-	}
-	if t, ok := b.Attributes[types.AttrTitle].(string); ok {
-		title = strings.TrimSpace(t)
 	}
 	var err error
 	kind := b.Kind
@@ -148,7 +153,7 @@ func renderDelimitedBlock(ctx *renderer.Context, b types.DelimitedBlock) ([]byte
 				Elements []interface{}
 			}{
 				ID:       id,
-				Title:    title,
+				Title:    getTitle(b.Attributes),
 				Elements: elements,
 			},
 		})
@@ -167,7 +172,7 @@ func renderDelimitedBlock(ctx *renderer.Context, b types.DelimitedBlock) ([]byte
 				Elements []interface{}
 			}{
 				ID:       id,
-				Title:    title,
+				Title:    getTitle(b.Attributes),
 				Elements: elements,
 			},
 		})
@@ -188,7 +193,7 @@ func renderDelimitedBlock(ctx *renderer.Context, b types.DelimitedBlock) ([]byte
 				Elements []interface{}
 			}{
 				ID:       id,
-				Title:    title,
+				Title:    getTitle(b.Attributes),
 				Language: language,
 				Elements: elements,
 			},
@@ -209,14 +214,15 @@ func renderDelimitedBlock(ctx *renderer.Context, b types.DelimitedBlock) ([]byte
 					Class:     getClass(k),
 					IconClass: getIconClass(ctx, k),
 					IconTitle: getIconTitle(k),
-					Title:     title,
+					Title:     getTitle(b.Attributes),
 					Elements:  elements,
 				},
 			})
 		} else {
 			// default, example block
-			if title != "" {
-				title = fmt.Sprintf("Example %d. %s", ctx.GetAndIncrementExampleBlockCounter(), title)
+			var title string
+			if b.Attributes.Has(types.AttrTitle) {
+				title = fmt.Sprintf("Example %d. %s", ctx.GetAndIncrementExampleBlockCounter(), getTitle(b.Attributes))
 			}
 			err = exampleBlockTmpl.Execute(result, ContextualPipeline{
 				Context: ctx,
@@ -256,7 +262,7 @@ func renderDelimitedBlock(ctx *renderer.Context, b types.DelimitedBlock) ([]byte
 				Elements []interface{}
 			}{
 				ID:          id,
-				Title:       title,
+				Title:       getTitle(b.Attributes),
 				Attribution: attribution,
 				Elements:    b.Elements,
 			},
@@ -294,7 +300,7 @@ func renderDelimitedBlock(ctx *renderer.Context, b types.DelimitedBlock) ([]byte
 				Elements []interface{}
 			}{
 				ID:          id,
-				Title:       title,
+				Title:       getTitle(b.Attributes),
 				Attribution: attribution,
 				Elements:    elements,
 			},
@@ -310,7 +316,7 @@ func renderDelimitedBlock(ctx *renderer.Context, b types.DelimitedBlock) ([]byte
 				Elements []interface{}
 			}{
 				ID:       id,
-				Title:    title,
+				Title:    getTitle(b.Attributes),
 				Elements: elements,
 			},
 		})

@@ -92,8 +92,9 @@ end</code></pre>
 			verify(GinkgoT(), expectedResult, actualContent)
 		})
 
-		It("with source and languages attributes", func() {
+		It("with title, source and languages attributes", func() {
 			actualContent := `[source,ruby]
+.Source block title
 ----
 require 'sinatra'
 
@@ -102,6 +103,7 @@ get '/hi' do
 end
 ----`
 			expectedResult := `<div class="listingblock">
+<div class="title">Source block title</div>
 <div class="content">
 <pre class="highlight"><code class="language-ruby" data-lang="ruby">require 'sinatra'
 

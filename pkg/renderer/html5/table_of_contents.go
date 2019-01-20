@@ -18,11 +18,11 @@ var tableOfContentSectionSetTmpl texttemplate.Template
 func init() {
 	tableOfContentTmpl = newTextTemplate("toc", `<div id="toc" class="toc">
 <div id="toctitle">Table of Contents</div>
-{{.Content}}
+{{ .Content }}
 </div>`)
-	tableOfContentSectionSetTmpl = newTextTemplate("toc section", `<ul class="sectlevel{{.Level}}">
-{{ range .Elements }}<li><a href="#{{.Href}}">{{.Title}}</a>{{ if .Subelements }}
-{{.Subelements}}
+	tableOfContentSectionSetTmpl = newTextTemplate("toc section", `<ul class="sectlevel{{ .Level }}">
+{{ range .Elements }}<li><a href="#{{ .Href }}">{{ .Title }}</a>{{ if .Subelements }}
+{{ .Subelements }}
 </li>{{else}}</li>{{end}}
 {{end}}</ul>`)
 }

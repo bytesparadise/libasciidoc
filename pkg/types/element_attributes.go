@@ -35,6 +35,8 @@ const (
 	AttrCheckStyle string = "checkstyle"
 	// AttrStart the "start" attribute in an ordered list
 	AttrStart string = "start"
+	// AttrQandA the "qanda" attribute for Q&A labeled lists
+	AttrQandA string = "qanda"
 )
 
 // ElementWithAttributes an element on which attributes can be added/set

@@ -1323,8 +1323,9 @@ end
 			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 
-		It("with source and languages attributes", func() {
+		It("with title, source and languages attributes", func() {
 			actualContent := `[source,ruby]
+.Source block title
 ----
 require 'sinatra'
 
@@ -1336,6 +1337,7 @@ end
 				Attributes: types.ElementAttributes{
 					types.AttrKind:     types.Source,
 					types.AttrLanguage: "ruby",
+					types.AttrTitle:    "Source block title",
 				},
 				Kind: types.Source,
 				Elements: []interface{}{

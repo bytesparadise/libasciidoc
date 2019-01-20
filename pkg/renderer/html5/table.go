@@ -3,6 +3,7 @@ package html5
 import (
 	"bytes"
 	"fmt"
+	"html"
 	"math"
 	texttemplate "text/template"
 
@@ -16,7 +17,7 @@ var tableTmpl texttemplate.Template
 
 func init() {
 	tableTmpl = newTextTemplate("table", `{{ $ctx := .Context }}{{ with .Data }}<table class="tableblock frame-all grid-all stretch">{{ if .Lines }}
-{{ if .Title }}<caption class="title">{{ .Title }}</caption>
+{{ if .Title }}<caption class="title">{{ escape .Title }}</caption>
 {{ end }}<colgroup>
 {{ $cellWidths := .CellWidths }}{{ range $index, $width := $cellWidths }}<col style="width: {{ $width }}%;">{{ includeNewline $ctx $index $cellWidths }}{{ end }}
 </colgroup>
@@ -34,6 +35,7 @@ func init() {
 		texttemplate.FuncMap{
 			"renderElement":  renderElement,
 			"includeNewline": includeNewline,
+			"escape":         html.EscapeString,
 		})
 }
 
@@ -59,8 +61,7 @@ func renderTable(ctx *renderer.Context, t types.Table) ([]byte, error) {
 	}
 	var title string
 	if titleAttr, ok := t.Attributes[types.AttrTitle].(string); ok {
-		c := ctx.GetAndIncrementTableCounter()
-		title = fmt.Sprintf("Table %d. %s", c, titleAttr)
+		title = fmt.Sprintf("Table %d. %s", ctx.GetAndIncrementTableCounter(), html.EscapeString(titleAttr))
 	}
 	err := tableTmpl.Execute(result, ContextualPipeline{
 		Context: ctx,

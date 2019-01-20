@@ -2,6 +2,7 @@ package html5
 
 import (
 	"bytes"
+	"html"
 	"strings"
 	texttemplate "text/template"
 
@@ -22,11 +23,12 @@ var quoteParagraphTmpl texttemplate.Template
 func init() {
 	paragraphTmpl = newTextTemplate("paragraph",
 		`{{ $ctx := .Context }}{{ with .Data }}{{ $renderedLines := renderLines $ctx .Lines .HardBreak }}{{ if ne $renderedLines "" }}<div {{ if ne .ID "" }}id="{{ .ID }}" {{ end }}class="paragraph">{{ if ne .Title "" }}
-<div class="doctitle">{{ .Title }}</div>{{ end }}
+<div class="doctitle">{{ escape .Title }}</div>{{ end }}
 <p>{{ $renderedLines }}</p>
 </div>{{ end }}{{ end }}`,
 		texttemplate.FuncMap{
 			"renderLines": renderLinesAsString,
+			"escape":      html.EscapeString,
 		})
 
 	admonitionParagraphTmpl = newTextTemplate("admonition paragraph",
@@ -37,7 +39,7 @@ func init() {
 {{ if .IconClass }}<i class="fa icon-{{ .IconClass }}" title="{{ .IconTitle }}"></i>{{ else }}<div class="title">{{ .IconTitle }}</div>{{ end }}
 </td>
 <td class="content">{{ if .Title }}
-<div class="title">{{ .Title }}</div>{{ end }}
+<div class="title">{{ escape .Title }}</div>{{ end }}
 {{ $renderedLines }}
 </td>
 </tr>
@@ -45,6 +47,7 @@ func init() {
 </div>{{ end }}{{ end }}`,
 		texttemplate.FuncMap{
 			"renderLines": renderLinesAsString,
+			"escape":      html.EscapeString,
 		})
 
 	listParagraphTmpl = newTextTemplate("list paragraph",
@@ -61,10 +64,11 @@ func init() {
 </div>{{ end }}`,
 		texttemplate.FuncMap{
 			"renderLines": renderPlainString,
+			"escape":      html.EscapeString,
 		})
 
 	verseParagraphTmpl = newTextTemplate("verse block", `{{ $ctx := .Context }}{{ with .Data }}<div {{ if .ID }}id="{{ .ID }}" {{ end }}class="verseblock">{{ if .Title }}
-<div class="title">{{ .Title }}</div>{{ end }}
+<div class="title">{{ escape .Title }}</div>{{ end }}
 <pre class="content">{{ renderElements $ctx .Lines | printf "%s" }}</pre>{{ if .Attribution.First }}
 <div class="attribution">
 &#8212; {{ .Attribution.First }}{{ if .Attribution.Second }}<br>
@@ -73,9 +77,10 @@ func init() {
 </div>{{ end }}`,
 		texttemplate.FuncMap{
 			"renderElements": renderPlainString,
+			"escape":         html.EscapeString,
 		})
 	quoteParagraphTmpl = newTextTemplate("quote paragraph", `{{ $ctx := .Context }}{{ with .Data }}<div {{ if .ID }}id="{{ .ID }}" {{ end }}class="quoteblock">{{ if .Title }}
-<div class="title">{{ .Title }}</div>{{ end }}
+<div class="title">{{ escape .Title }}</div>{{ end }}
 <blockquote>
 {{ renderElements $ctx .Lines false | printf "%s" }}
 </blockquote>{{ if .Attribution.First }}
@@ -86,6 +91,7 @@ func init() {
 </div>{{ end }}`,
 		texttemplate.FuncMap{
 			"renderElements": renderLinesAsString,
+			"escape":         html.EscapeString,
 		})
 }
 
@@ -94,12 +100,9 @@ func renderParagraph(ctx *renderer.Context, p types.Paragraph) ([]byte, error) {
 		return make([]byte, 0), nil
 	}
 	result := bytes.NewBuffer(nil)
-	var id, title string
+	var id string
 	if i, ok := p.Attributes[types.AttrID].(string); ok {
 		id = i
-	}
-	if t, ok := p.Attributes[types.AttrTitle].(string); ok {
-		title = strings.TrimSpace(t)
 	}
 	var err error
 	if _, ok := p.Attributes[types.AttrAdmonitionKind]; ok {
@@ -119,7 +122,7 @@ func renderParagraph(ctx *renderer.Context, p types.Paragraph) ([]byte, error) {
 				Lines     []types.InlineElements
 			}{
 				ID:        id,
-				Title:     getTitle(p.Attributes[types.AttrTitle]),
+				Title:     getTitle(p.Attributes),
 				Class:     getClass(k),
 				IconTitle: getIconTitle(k),
 				IconClass: getIconClass(ctx, k),
@@ -137,7 +140,7 @@ func renderParagraph(ctx *renderer.Context, p types.Paragraph) ([]byte, error) {
 				Lines    []types.InlineElements
 			}{
 				ID:       id,
-				Title:    getTitle(p.Attributes[types.AttrTitle]),
+				Title:    getTitle(p.Attributes),
 				Language: p.Attributes.GetAsString(types.AttrLanguage),
 				Lines:    p.Lines,
 			},
@@ -169,7 +172,7 @@ func renderParagraph(ctx *renderer.Context, p types.Paragraph) ([]byte, error) {
 				Lines []types.InlineElements
 			}{
 				ID:          id,
-				Title:       title,
+				Title:       getTitle(p.Attributes),
 				Attribution: attribution,
 				Lines:       p.Lines,
 			},
@@ -201,7 +204,7 @@ func renderParagraph(ctx *renderer.Context, p types.Paragraph) ([]byte, error) {
 				Lines []types.InlineElements
 			}{
 				ID:          id,
-				Title:       title,
+				Title:       getTitle(p.Attributes),
 				Attribution: attribution,
 				Lines:       p.Lines,
 			},
@@ -218,7 +221,7 @@ func renderParagraph(ctx *renderer.Context, p types.Paragraph) ([]byte, error) {
 				Lines      []types.InlineElements
 			}{
 				ID:         id,
-				Title:      title,
+				Title:      getTitle(p.Attributes),
 				CheckStyle: renderCheckStyle(p.Attributes[types.AttrCheckStyle]),
 				Lines:      p.Lines,
 			},
@@ -234,7 +237,7 @@ func renderParagraph(ctx *renderer.Context, p types.Paragraph) ([]byte, error) {
 				HardBreak bool
 			}{
 				ID:        id,
-				Title:     title,
+				Title:     getTitle(p.Attributes),
 				Lines:     p.Lines,
 				HardBreak: p.Attributes.Has(types.AttrHardBreaks) || ctx.Document.Attributes.Has(types.DocumentAttrHardBreaks),
 			},
@@ -305,9 +308,9 @@ func getIconTitle(kind types.AdmonitionKind) string {
 	}
 }
 
-func getTitle(value interface{}) string {
-	if t, ok := value.(string); ok {
-		return strings.TrimSpace(t)
+func getTitle(attrs types.ElementAttributes) string {
+	if attrs.Has(types.AttrTitle) {
+		return strings.TrimSpace(attrs.GetAsString(types.AttrTitle))
 	}
 	return ""
 }

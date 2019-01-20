@@ -19,11 +19,11 @@ var superscriptTextTmpl texttemplate.Template
 
 // initializes the templates
 func init() {
-	boldTextTmpl = newTextTemplate("bold text", "<strong>{{.}}</strong>")
-	italicTextTmpl = newTextTemplate("italic text", "<em>{{.}}</em>")
-	monospaceTextTmpl = newTextTemplate("monospace text", "<code>{{.}}</code>")
-	subscriptTextTmpl = newTextTemplate("subscript text", "<sub>{{.}}</sub>")
-	superscriptTextTmpl = newTextTemplate("superscript text", "<sup>{{.}}</sup>")
+	boldTextTmpl = newTextTemplate("bold text", "<strong>{{ . }}</strong>")
+	italicTextTmpl = newTextTemplate("italic text", "<em>{{ . }}</em>")
+	monospaceTextTmpl = newTextTemplate("monospace text", "<code>{{ . }}</code>")
+	subscriptTextTmpl = newTextTemplate("subscript text", "<sub>{{ . }}</sub>")
+	superscriptTextTmpl = newTextTemplate("superscript text", "<sup>{{ . }}</sup>")
 }
 
 func renderQuotedText(ctx *renderer.Context, t types.QuotedText) ([]byte, error) {

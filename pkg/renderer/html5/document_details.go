@@ -17,14 +17,14 @@ var documentAuthorDetailsTmpl texttemplate.Template
 
 func init() {
 	documentDetailsTmpl = newTextTemplate("document details", `<div class="details">{{ if .Authors }}
-{{.Authors}}{{ end }}{{ if .RevNumber }}
-<span id="revnumber">version {{.RevNumber}},</span>{{ end }}{{ if .RevDate }}
-<span id="revdate">{{.RevDate}}</span>{{ end }}{{ if .RevRemark }}
-<br><span id="revremark">{{.RevRemark}}</span>{{ end }}
+{{ .Authors }}{{ end }}{{ if .RevNumber }}
+<span id="revnumber">version {{ .RevNumber }},</span>{{ end }}{{ if .RevDate }}
+<span id="revdate">{{ .RevDate }}</span>{{ end }}{{ if .RevRemark }}
+<br><span id="revremark">{{ .RevRemark }}</span>{{ end }}
 </div>`)
 
-	documentAuthorDetailsTmpl = newTextTemplate("author details", `{{ if .Name }}<span id="author{{.Index}}" class="author">{{.Name}}</span><br>{{ end }}{{ if .Email }}
-<span id="email{{.Index}}" class="email"><a href="mailto:{{.Email}}">{{.Email}}</a></span><br>{{ end }}`)
+	documentAuthorDetailsTmpl = newTextTemplate("author details", `{{ if .Name }}<span id="author{{ .Index }}" class="author">{{ .Name }}</span><br>{{ end }}{{ if .Email }}
+<span id="email{{ .Index }}" class="email"><a href="mailto:{{ .Email }}">{{ .Email }}</a></span><br>{{ end }}`)
 }
 
 func renderDocumentDetails(ctx *renderer.Context) (*htmltemplate.HTML, error) {
