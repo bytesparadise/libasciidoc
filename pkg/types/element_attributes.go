@@ -33,6 +33,8 @@ const (
 	AttrLanguage string = "language"
 	// AttrCheckStyle the attribute to mark the first element of an unordered list itemd as a checked or not
 	AttrCheckStyle string = "checkstyle"
+	// AttrStart the "start" attribute in an ordered list
+	AttrStart string = "start"
 )
 
 // ElementWithAttributes an element on which attributes can be added/set
