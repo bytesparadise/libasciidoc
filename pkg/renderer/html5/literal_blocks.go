@@ -2,6 +2,7 @@ package html5
 
 import (
 	"bytes"
+	"html"
 	"math"
 	"strings"
 	texttemplate "text/template"
@@ -17,12 +18,13 @@ var literalBlockTmpl texttemplate.Template
 // initializes the templates
 func init() {
 	literalBlockTmpl = newTextTemplate("literal block", `{{ $ctx := .Context }}{{ with .Data }}<div {{ if .ID }}id="{{ .ID }}" {{ end }}class="literalblock">
-{{ if .Title }}<div class="title">{{ .Title }}</div>
+{{ if .Title }}<div class="title">{{ escape .Title }}</div>
 {{ end }}<div class="content">
 <pre>{{ $lines := .Lines }}{{ range $index, $line := $lines}}{{ $line }}{{ includeNewline $ctx $index $lines }}{{ end }}</pre>
 </div>
 </div>{{ end }}`, texttemplate.FuncMap{
 		"includeNewline": includeNewline,
+		"escape":         html.EscapeString,
 	})
 }
 
@@ -60,7 +62,7 @@ func renderLiteralBlock(ctx *renderer.Context, b types.LiteralBlock) ([]byte, er
 			Lines []string
 		}{
 			ID:    b.Attributes.GetAsString(types.AttrID),
-			Title: b.Attributes.GetAsString(types.AttrTitle),
+			Title: getTitle(b.Attributes),
 			Lines: lines,
 		}})
 	if err != nil {

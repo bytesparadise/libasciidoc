@@ -31,7 +31,7 @@ func init() {
 		})
 	section1ContentTmpl = newTextTemplate("section 1",
 		`{{ $ctx := .Context }}{{ with .Data }}<div class="{{ .Class }}">
-{{.SectionTitle}}
+{{ .SectionTitle }}
 <div class="sectionbody">{{ $elements := renderElements $ctx .Elements | printf "%s" }}{{ if $elements }}
 {{ $elements }}{{ end }}
 </div>
@@ -48,7 +48,7 @@ func init() {
 			"renderElements": renderElements,
 		})
 	sectionHeaderTmpl = newTextTemplate("other sectionTitle",
-		`<h{{.Level}} id="{{.ID}}">{{.Content}}</h{{.Level}}>`)
+		`<h{{ .Level }} id="{{ .ID }}">{{ .Content }}</h{{ .Level }}>`)
 }
 
 func renderPreamble(ctx *renderer.Context, p types.Preamble) ([]byte, error) {

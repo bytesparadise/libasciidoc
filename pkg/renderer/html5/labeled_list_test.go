@@ -367,4 +367,30 @@ Item 3 description`
 			verify(GinkgoT(), expectedDocument, actualContent)
 		})
 	})
+
+	Context("q and a", func() {
+
+		It("q and a with title", func() {
+			actualContent := `.Q&A
+[qanda]
+What is libsciidoc?::
+	An implementation of the AsciiDoc processor in Golang.
+What is the answer to the Ultimate Question?:: 42`
+
+			expectedDocument := `<div class="qlist qanda">
+<div class="title">Q&amp;A</div>
+<ol>
+<li>
+<p><em>What is libsciidoc?</em></p>
+<p>An implementation of the AsciiDoc processor in Golang.</p>
+</li>
+<li>
+<p><em>What is the answer to the Ultimate Question?</em></p>
+<p>42</p>
+</li>
+</ol>
+</div>`
+			verify(GinkgoT(), expectedDocument, actualContent)
+		})
+	})
 })

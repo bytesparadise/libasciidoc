@@ -2,6 +2,7 @@ package html5
 
 import (
 	"bytes"
+	"html"
 	texttemplate "text/template"
 
 	"github.com/bytesparadise/libasciidoc/pkg/renderer"
@@ -16,7 +17,7 @@ var orderedListTmpl texttemplate.Template
 func init() {
 	orderedListTmpl = newTextTemplate("ordered list",
 		`{{ $ctx := .Context }}{{ with .Data }}{{ $items := .Items }}{{ $firstItem := index $items 0 }}<div{{ if .ID }} id="{{ .ID }}"{{ end }} class="olist {{ $firstItem.NumberingStyle }}{{ if .Role }} {{ .Role }}{{ end}}">
-{{ if .Title }}<div class="title">{{ .Title }}</div>
+{{ if .Title }}<div class="title">{{ escape .Title }}</div>
 {{ end }}<ol class="{{ $firstItem.NumberingStyle }}"{{ style $firstItem.NumberingStyle }}{{ if .Start }} start="{{ .Start }}"{{ end }}>
 {{ range $itemIndex, $item := $items }}<li>
 {{ renderElements $ctx $item.Elements | printf "%s" }}
@@ -26,6 +27,7 @@ func init() {
 		texttemplate.FuncMap{
 			"renderElements": renderElements,
 			"style":          numberingType,
+			"escape":         html.EscapeString,
 		})
 
 }

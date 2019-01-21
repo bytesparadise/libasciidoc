@@ -10,7 +10,7 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-var stringTmpl = newHTMLTemplate("string element", "{{.}}")
+var stringTmpl = newHTMLTemplate("string element", "{{ . }}")
 
 func renderStringElement(ctx *renderer.Context, str types.StringElement) ([]byte, error) {
 	buf := bytes.NewBuffer(nil)
