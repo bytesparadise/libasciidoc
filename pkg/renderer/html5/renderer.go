@@ -40,6 +40,35 @@ func renderElements(ctx *renderer.Context, elements []interface{}) ([]byte, erro
 	return buff.Bytes(), nil
 }
 
+// renderListElements is similar to the `renderElements` func above,
+// but it sets the `withinList` context flag to true for the first element only
+func renderListElements(ctx *renderer.Context, elements []interface{}) ([]byte, error) {
+	log.Debugf("rendering list %d element(s)...", len(elements))
+	buff := bytes.NewBuffer(nil)
+	hasContent := false
+	for i, element := range elements {
+		if i == 0 {
+			ctx.SetWithinList(true)
+		}
+		renderedElement, err := renderElement(ctx, element)
+		if i == 0 {
+			ctx.SetWithinList(false)
+		}
+		if err != nil {
+			return nil, errors.Wrapf(err, "unable to render an element")
+		}
+		// insert new line if there's already some content
+		if hasContent && len(renderedElement) > 0 {
+			buff.WriteString("\n")
+		}
+		buff.Write(renderedElement)
+		if len(renderedElement) > 0 {
+			hasContent = true
+		}
+	}
+	// log.Debugf("rendered elements: '%s'", buff.String())
+	return buff.Bytes(), nil
+}
 
 func renderElement(ctx *renderer.Context, element interface{}) ([]byte, error) {
 	// log.Debugf("rendering element of type `%T`", element)

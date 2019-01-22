@@ -28,7 +28,7 @@ func init() {
 {{ end }}</dl>
 </div>{{ end }}`,
 		texttemplate.FuncMap{
-			"renderElements": renderElements,
+			"renderElements": renderListElements,
 			"escape":         html.EscapeString,
 		})
 
@@ -50,7 +50,7 @@ func init() {
 </table>
 </div>{{ end }}`,
 		texttemplate.FuncMap{
-			"renderElements": renderElements,
+			"renderElements": renderListElements,
 			"includeNewline": includeNewline,
 			"escape":         html.EscapeString,
 		})
@@ -66,7 +66,7 @@ func init() {
 {{ end }}</ol>
 </div>{{ end }}`,
 		texttemplate.FuncMap{
-			"renderElements": renderElements,
+			"renderElements": renderListElements,
 			"escape":         html.EscapeString,
 		})
 
@@ -78,12 +78,6 @@ func renderLabeledList(ctx *renderer.Context, l types.LabeledList) ([]byte, erro
 	if err != nil {
 		return nil, errors.Wrapf(err, "unable to render labeled list")
 	}
-
-	// make sure nested elements are aware of that their rendering occurs within a list
-	ctx.SetWithinList(true)
-	defer func() {
-		ctx.SetWithinList(false)
-	}()
 
 	result := bytes.NewBuffer(nil)
 	// here we must preserve the HTML tags

@@ -46,6 +46,44 @@ var _ = Describe("ordered lists", func() {
 		verify(GinkgoT(), expectedResult, actualContent)
 	})
 
+	It("ordered list with paragraph continuation", func() {
+		actualContent := `. item 1
++
+foo`
+		expectedResult := `<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>item 1</p>
+<div class="paragraph">
+<p>foo</p>
+</div>
+</li>
+</ol>
+</div>`
+		verify(GinkgoT(), expectedResult, actualContent)
+	})
+
+	It("ordered list with delimited block continuation", func() {
+		actualContent := `. item 1
++
+----
+foo
+----`
+		expectedResult := `<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>item 1</p>
+<div class="listingblock">
+<div class="content">
+<pre>foo</pre>
+</div>
+</div>
+</li>
+</ol>
+</div>`
+		verify(GinkgoT(), expectedResult, actualContent)
+	})
+
 	It("ordered list with unnumbered items", func() {
 		actualContent := `. item 1
 		.. item 1.1
