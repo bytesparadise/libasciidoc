@@ -8,7 +8,6 @@ import (
 	"github.com/bytesparadise/libasciidoc/pkg/renderer"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 	"github.com/pkg/errors"
-	log "github.com/sirupsen/logrus"
 )
 
 var orderedListTmpl texttemplate.Template
@@ -25,7 +24,7 @@ func init() {
 {{ end }}</ol>
 </div>{{ end }}`,
 		texttemplate.FuncMap{
-			"renderElements": renderElements,
+			"renderElements": renderListElements,
 			"style":          numberingType,
 			"escape":         html.EscapeString,
 		})
@@ -34,12 +33,6 @@ func init() {
 
 func renderOrderedList(ctx *renderer.Context, l types.OrderedList) ([]byte, error) {
 	result := bytes.NewBuffer(nil)
-	// make sure nested elements are aware of that their rendering occurs within a list
-	ctx.SetWithinList(true)
-	defer func() {
-		ctx.SetWithinList(false)
-	}()
-
 	err := orderedListTmpl.Execute(result, ContextualPipeline{
 		Context: ctx,
 		Data: struct {
@@ -59,7 +52,7 @@ func renderOrderedList(ctx *renderer.Context, l types.OrderedList) ([]byte, erro
 	if err != nil {
 		return nil, errors.Wrapf(err, "unable to render ordered list")
 	}
-	log.Debugf("rendered ordered list of items: %s", result.Bytes())
+	// log.Debugf("rendered ordered list of items: %s", result.Bytes())
 	return result.Bytes(), nil
 }
 

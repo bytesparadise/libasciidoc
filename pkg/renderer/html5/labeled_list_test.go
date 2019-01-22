@@ -257,8 +257,33 @@ item 2
 
 	})
 
-	Context("list item continuation", func() {
-		It("labeled list with continuation", func() {
+	Context("labeled lists with continuation", func() {
+
+		It("labeled list with paragraph continuation", func() {
+			actualContent := `item 1:: description 1
++
+foo
+
+item 2:: description 2.`
+			expectedResult := `<div class="dlist">
+<dl>
+<dt class="hdlist1">item 1</dt>
+<dd>
+<p>description 1</p>
+<div class="paragraph">
+<p>foo</p>
+</div>
+</dd>
+<dt class="hdlist1">item 2</dt>
+<dd>
+<p>description 2.</p>
+</dd>
+</dl>
+</div>`
+			verify(GinkgoT(), expectedResult, actualContent)
+		})
+
+		It("labeled list with blockcontinuation", func() {
 			actualContent := `Item 1::
 +
 ----

@@ -25,17 +25,13 @@ func init() {
 {{ end }}</ul>
 </div>{{ end }}`,
 		texttemplate.FuncMap{
-			"renderElements": renderElements,
+			"renderElements": renderListElements,
 			"escape":         html.EscapeString,
 		})
 }
 
 func renderUnorderedList(ctx *renderer.Context, l types.UnorderedList) ([]byte, error) {
 	// make sure nested elements are aware of that their rendering occurs within a list
-	ctx.SetWithinList(true)
-	defer func() {
-		ctx.SetWithinList(false)
-	}()
 	checkList := false
 	if len(l.Items) > 0 {
 		if l.Items[0].CheckStyle != types.NoCheck {

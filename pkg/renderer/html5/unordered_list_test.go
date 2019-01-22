@@ -69,6 +69,28 @@ and a standalone paragraph`
 		verify(GinkgoT(), expectedResult, actualContent)
 	})
 
+	It("simple unordered list with continuation", func() {
+		actualContent := `* item 1
++
+foo
+
+* item 2`
+		expectedResult := `<div class="ulist">
+<ul>
+<li>
+<p>item 1</p>
+<div class="paragraph">
+<p>foo</p>
+</div>
+</li>
+<li>
+<p>item 2</p>
+</li>
+</ul>
+</div>`
+		verify(GinkgoT(), expectedResult, actualContent)
+	})
+
 	It("nested unordered lists without a title", func() {
 		actualContent := `* item 1
 ** item 1.1
