@@ -23,7 +23,7 @@ var _ = Describe("sections", func() {
 				Attributes: types.DocumentAttributes{
 					"doctitle": doctitle,
 				},
-				ElementReferences:  map[string]interface{}{},
+				ElementReferences:  types.ElementReferences{},
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements:           []interface{}{},
@@ -45,7 +45,7 @@ var _ = Describe("sections", func() {
 				Attributes: types.DocumentAttributes{
 					"doctitle": doctitle,
 				},
-				ElementReferences:  map[string]interface{}{},
+				ElementReferences:  types.ElementReferences{},
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements:           []interface{}{},
@@ -70,7 +70,7 @@ and a paragraph`
 				Attributes: types.DocumentAttributes{
 					"doctitle": doctitle,
 				},
-				ElementReferences:  map[string]interface{}{},
+				ElementReferences:  types.ElementReferences{},
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
@@ -99,7 +99,7 @@ and a paragraph`
 			}
 			expectedResult := types.Document{
 				Attributes: types.DocumentAttributes{},
-				ElementReferences: map[string]interface{}{
+				ElementReferences: types.ElementReferences{
 					"_section_1": section1Title,
 				},
 				Footnotes:          types.Footnotes{},
@@ -132,7 +132,7 @@ and a paragraph`
 			}
 			expectedResult := types.Document{
 				Attributes: types.DocumentAttributes{},
-				ElementReferences: map[string]interface{}{
+				ElementReferences: types.ElementReferences{
 					"_2_spaces_and_bold_content": sectionTitle,
 				},
 				Footnotes:          types.Footnotes{},
@@ -172,7 +172,7 @@ and a paragraph`
 				Attributes: types.DocumentAttributes{
 					"doctitle": doctitle,
 				},
-				ElementReferences: map[string]interface{}{
+				ElementReferences: types.ElementReferences{
 					"_section_1": section1Title,
 				},
 				Footnotes:          types.Footnotes{},
@@ -214,7 +214,7 @@ a short preamble
 				Attributes: types.DocumentAttributes{
 					"doctitle": doctitle,
 				},
-				ElementReferences: map[string]interface{}{
+				ElementReferences: types.ElementReferences{
 					"_section_1": section1Title,
 				},
 				Footnotes:          types.Footnotes{},
@@ -267,7 +267,7 @@ a short preamble
 				Attributes: types.DocumentAttributes{
 					"doctitle": doctitle,
 				},
-				ElementReferences: map[string]interface{}{
+				ElementReferences: types.ElementReferences{
 					"_section_2": section2Title,
 				},
 				Footnotes:          types.Footnotes{},
@@ -296,7 +296,7 @@ and a paragraph`
 			}
 			expectedResult := types.Document{
 				Attributes: types.DocumentAttributes{},
-				ElementReferences: map[string]interface{}{
+				ElementReferences: types.ElementReferences{
 					"_a_title": section1Title,
 				},
 				Footnotes:          types.Footnotes{},
@@ -335,7 +335,7 @@ and a paragraph`
 			}
 			expectedResult := types.Document{
 				Attributes: types.DocumentAttributes{},
-				ElementReferences: map[string]interface{}{
+				ElementReferences: types.ElementReferences{
 					"_a_title": section1Title,
 				},
 				Footnotes:          types.Footnotes{},
@@ -373,7 +373,7 @@ and a paragraph`
 			}
 			expectedResult := types.Document{
 				Attributes: types.DocumentAttributes{},
-				ElementReferences: map[string]interface{}{
+				ElementReferences: types.ElementReferences{
 					"_a_title": section1Title,
 				},
 				Footnotes:          types.Footnotes{},
@@ -446,7 +446,7 @@ a paragraph`
 				Attributes: types.DocumentAttributes{
 					"doctitle": doctitle,
 				},
-				ElementReferences: map[string]interface{}{
+				ElementReferences: types.ElementReferences{
 					"_section_a":   sectionATitle,
 					"_section_a_a": sectionAaTitle,
 					"_section_b":   sectionBTitle,
@@ -516,7 +516,7 @@ a paragraph`
 			}
 			expectedResult := types.Document{
 				Attributes: types.DocumentAttributes{},
-				ElementReferences: map[string]interface{}{
+				ElementReferences: types.ElementReferences{
 					"custom_header": sectionTitle,
 				},
 				Footnotes:          types.Footnotes{},
@@ -569,7 +569,7 @@ a paragraph`
 				Attributes: types.DocumentAttributes{
 					"doctitle": doctitle,
 				},
-				ElementReferences: map[string]interface{}{
+				ElementReferences: types.ElementReferences{
 					"foo": fooTitle,
 					"bar": barTitle,
 				},
@@ -625,7 +625,7 @@ a paragraph`
 
 			expectedResult := types.Document{
 				Attributes: types.DocumentAttributes{},
-				ElementReferences: map[string]interface{}{
+				ElementReferences: types.ElementReferences{
 					"_section_1":   section1aTitle,
 					"_section_1_2": section1bTitle,
 				},
@@ -654,8 +654,8 @@ a paragraph`
 		It("header invalid - missing space", func() {
 			actualContent := "=a header"
 			expectedResult := types.Document{
-				Attributes:         map[string]interface{}{},
-				ElementReferences:  map[string]interface{}{},
+				Attributes:         types.DocumentAttributes{},
+				ElementReferences:  types.ElementReferences{},
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
@@ -674,8 +674,8 @@ a paragraph`
 		It("header invalid - header space", func() {
 			actualContent := " = a header with a prefix space"
 			expectedResult := types.Document{
-				Attributes:         map[string]interface{}{},
-				ElementReferences:  map[string]interface{}{},
+				Attributes:         types.DocumentAttributes{},
+				ElementReferences:  types.ElementReferences{},
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
@@ -708,7 +708,7 @@ a paragraph`
 						},
 					},
 				},
-				ElementReferences:  map[string]interface{}{},
+				ElementReferences:  types.ElementReferences{},
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
@@ -752,7 +752,7 @@ bar`
 						},
 					},
 				},
-				ElementReferences: map[string]interface{}{
+				ElementReferences: types.ElementReferences{
 					"_header_2": header2Title,
 				},
 				Footnotes:          types.Footnotes{},
@@ -803,7 +803,7 @@ bar`
 Doc Writer <thedoc@asciidoctor.org>`
 			expectedResult := types.Document{
 				Attributes:         types.DocumentAttributes{},
-				ElementReferences:  map[string]interface{}{},
+				ElementReferences:  types.ElementReferences{},
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{

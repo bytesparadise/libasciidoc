@@ -83,7 +83,7 @@ var _ = Describe("delimited blocks", func() {
 			actualContent := "```\nsome fenced code\nwith an empty line\n\nin the middle\n```\nthen a normal paragraph."
 			expectedResult := types.Document{
 				Attributes:         types.DocumentAttributes{},
-				ElementReferences:  map[string]interface{}{},
+				ElementReferences:  types.ElementReferences{},
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
@@ -137,7 +137,7 @@ var _ = Describe("delimited blocks", func() {
 			actualContent := "a paragraph.\n```\n" + content + "\n```\n"
 			expectedResult := types.Document{
 				Attributes:         types.DocumentAttributes{},
-				ElementReferences:  map[string]interface{}{},
+				ElementReferences:  types.ElementReferences{},
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
@@ -309,8 +309,8 @@ in the middle
 ----
 then a normal paragraph.`
 			expectedResult := types.Document{
-				Attributes:         map[string]interface{}{},
-				ElementReferences:  map[string]interface{}{},
+				Attributes:         types.DocumentAttributes{},
+				ElementReferences:  types.ElementReferences{},
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
@@ -360,8 +360,8 @@ then a normal paragraph.`
 some listing code
 ----`
 			expectedResult := types.Document{
-				Attributes:         map[string]interface{}{},
-				ElementReferences:  map[string]interface{}{},
+				Attributes:         types.DocumentAttributes{},
+				ElementReferences:  types.ElementReferences{},
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
@@ -631,8 +631,8 @@ paragraphs
 ----
 `
 			expectedResult := types.Document{
-				Attributes:         map[string]interface{}{},
-				ElementReferences:  map[string]interface{}{},
+				Attributes:         types.DocumentAttributes{},
+				ElementReferences:  types.ElementReferences{},
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{

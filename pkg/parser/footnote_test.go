@@ -28,7 +28,7 @@ var _ = Describe("footnotes", func() {
 			}
 			expectedResult := types.Document{
 				Attributes:        types.DocumentAttributes{},
-				ElementReferences: map[string]interface{}{},
+				ElementReferences: types.ElementReferences{},
 				Footnotes: []types.Footnote{
 					footnote1,
 				},
@@ -79,7 +79,7 @@ var _ = Describe("footnotes", func() {
 			}
 			expectedResult := types.Document{
 				Attributes:        types.DocumentAttributes{},
-				ElementReferences: map[string]interface{}{},
+				ElementReferences: types.ElementReferences{},
 				Footnotes: []types.Footnote{
 					footnote1,
 				},
@@ -113,7 +113,7 @@ var _ = Describe("footnotes", func() {
 			}
 			expectedResult := types.Document{
 				Attributes:        types.DocumentAttributes{},
-				ElementReferences: map[string]interface{}{},
+				ElementReferences: types.ElementReferences{},
 				Footnotes: []types.Footnote{
 					footnote1,
 				},
@@ -148,7 +148,7 @@ var _ = Describe("footnotes", func() {
 		// 	}
 		// 	expectedResult := types.Document{
 		// 		Attributes:        types.DocumentAttributes{},
-		// 		ElementReferences: map[string]interface{}{},
+		// 		ElementReferences: types.ElementReferences{},
 		// 		Footnotes: types.Footnotes{
 		// 			footnote1,
 		// 		},
@@ -193,7 +193,7 @@ var _ = Describe("footnotes", func() {
 			}
 			expectedResult := types.Document{
 				Attributes:        types.DocumentAttributes{},
-				ElementReferences: map[string]interface{}{},
+				ElementReferences: types.ElementReferences{},
 				Footnotes: types.Footnotes{
 					footnote1,
 				},
@@ -245,7 +245,7 @@ var _ = Describe("footnotes", func() {
 			}
 			expectedResult := types.Document{
 				Attributes:        types.DocumentAttributes{},
-				ElementReferences: map[string]interface{}{},
+				ElementReferences: types.ElementReferences{},
 				Footnotes: types.Footnotes{
 					footnote1,
 				},
@@ -335,7 +335,7 @@ a paragraph with another footnote:[baz]`
 			Attributes: types.DocumentAttributes{
 				"doctitle": docTitle,
 			},
-			ElementReferences: map[string]interface{}{
+			ElementReferences: types.ElementReferences{
 				"_section_1": section1Title,
 			},
 			Footnotes: types.Footnotes{

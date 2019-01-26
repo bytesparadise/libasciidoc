@@ -8,8 +8,9 @@ import (
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 )
 
+
 func processAttributeDeclaration(ctx *renderer.Context, attr types.DocumentAttributeDeclaration) error {
-	ctx.Document.Attributes.AddAttribute(attr)
+	ctx.Document.Attributes.AddDeclaration(attr)
 	return nil
 }
 
@@ -21,6 +22,8 @@ func processAttributeReset(ctx *renderer.Context, attr types.DocumentAttributeRe
 func renderAttributeSubstitution(ctx *renderer.Context, attr types.DocumentAttributeSubstitution) ([]byte, error) {
 	result := bytes.NewBuffer(nil)
 	if value, found := ctx.Document.Attributes[attr.Name]; found {
+		result.WriteString(fmt.Sprintf("%v", value))
+	} else if value, found := predefined[attr.Name]; found {
 		result.WriteString(fmt.Sprintf("%v", value))
 	} else {
 		result.WriteString(fmt.Sprintf("{%s}", attr.Name))

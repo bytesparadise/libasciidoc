@@ -1,6 +1,8 @@
 package html5_test
 
-import . "github.com/onsi/ginkgo"
+import (
+	. "github.com/onsi/ginkgo"
+)
 
 var _ = Describe("document with attributes", func() {
 
@@ -90,4 +92,32 @@ author is {author}.`
 		})
 	})
 
+	Context("predefined elements", func() {
+
+		It("single space", func() {
+			actualContent := `a {sp} here.`
+			expectedResult := `<div class="paragraph">
+<p>a   here.</p>
+</div>`
+			verify(GinkgoT(), expectedResult, actualContent)
+		})
+
+		It("blank", func() {
+			actualContent := `a {blank} here.`
+			expectedResult := `<div class="paragraph">
+<p>a  here.</p>
+</div>`
+			verify(GinkgoT(), expectedResult, actualContent)
+		})
+
+		It("overriding predefined attribute", func() {
+			actualContent := `:blank: foo
+			
+a {blank} here.`
+			expectedResult := `<div class="paragraph">
+<p>a foo here.</p>
+</div>`
+			verify(GinkgoT(), expectedResult, actualContent)
+		})
+	})
 })

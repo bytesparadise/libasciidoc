@@ -59,12 +59,20 @@ func (a DocumentAttributes) GetTitle() (SectionTitle, error) {
 	return SectionTitle{}, nil
 }
 
+// AddAll adds the given attributes
+func (a DocumentAttributes) AddAll(attrs DocumentAttributes) DocumentAttributes {
+	for k, v := range attrs {
+		a.Add(k, v)
+	}
+	return a
+}
+
 // Add adds the given attribute if its value is non-nil
 // TODO: raise a warning if there was already a name/value
-func (a DocumentAttributes) Add(key string, value interface{}) {
+func (a DocumentAttributes) Add(key string, value interface{}) DocumentAttributes {
 	// do not add nil or empty values
 	if value == nil {
-		return
+		return a
 	}
 	v := reflect.ValueOf(value)
 	k := v.Kind()
@@ -76,6 +84,7 @@ func (a DocumentAttributes) Add(key string, value interface{}) {
 	} else {
 		a[key] = value
 	}
+	return a
 }
 
 // AddNonEmpty adds the given attribute if its value is non-nil and non-empty
@@ -88,13 +97,9 @@ func (a DocumentAttributes) AddNonEmpty(key string, value interface{}) {
 	a.Add(key, value)
 }
 
-// AddAttribute adds the given attribute
+// AddDeclaration adds the given attribute
 // TODO: raise a warning if there was already a name/value
-func (a DocumentAttributes) AddAttribute(attr DocumentAttributeDeclaration) {
-	// do not add nil values
-	// if attr == nil {
-	// 	return
-	// }
+func (a DocumentAttributes) AddDeclaration(attr DocumentAttributeDeclaration) {
 	a.Add(attr.Name, attr.Value)
 }
 
