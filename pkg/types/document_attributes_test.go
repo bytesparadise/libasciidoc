@@ -1,39 +1,43 @@
 package types_test
 
 import (
-	. "github.com/bytesparadise/libasciidoc/pkg/types"
+	"github.com/bytesparadise/libasciidoc/pkg/types"
 	. "github.com/onsi/ginkgo"
 	"github.com/stretchr/testify/assert"
 )
 
 var _ = Describe("document attributes", func() {
 
-	It("normal value", func() {
-		// given
-		attributes := DocumentAttributes{}
-		// when
-		attributes.Add("foo", "bar")
-		// then
-		assert.Equal(GinkgoT(), "bar", attributes["foo"])
-	})
+	Context("custom attributes", func() {
 
-	It("pointer to value", func() {
-		// given
-		attributes := DocumentAttributes{}
-		// when
-		bar := "bar"
-		attributes.Add("foo", &bar)
-		// then
-		assert.Equal(GinkgoT(), "bar", attributes["foo"])
-	})
+		It("normal value", func() {
+			// given
+			attributes := types.DocumentAttributes{}
+			// when
+			attributes.Add("foo", "bar")
+			// then
+			assert.Equal(GinkgoT(), "bar", attributes["foo"])
+		})
 
-	It("nil value", func() {
-		// given
-		attributes := DocumentAttributes{}
-		// when
-		attributes.Add("foo", nil)
-		// then
-		_, found := attributes["foo"]
-		assert.False(GinkgoT(), found)
+		It("pointer to value", func() {
+			// given
+			attributes := types.DocumentAttributes{}
+			// when
+			bar := "bar"
+			attributes.Add("foo", &bar)
+			// then
+			assert.Equal(GinkgoT(), "bar", attributes["foo"])
+		})
+
+		It("nil value", func() {
+			// given
+			attributes := types.DocumentAttributes{}
+			// when
+			attributes.Add("foo", nil)
+			// then
+			_, found := attributes["foo"]
+			assert.False(GinkgoT(), found)
+		})
+
 	})
 })

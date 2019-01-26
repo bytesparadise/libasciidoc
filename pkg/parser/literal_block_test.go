@@ -49,8 +49,8 @@ lines.`
 
 a normal paragraph.`
 			expectedResult := types.Document{
-				Attributes:         map[string]interface{}{},
-				ElementReferences:  map[string]interface{}{},
+				Attributes:         types.DocumentAttributes{},
+				ElementReferences:  types.ElementReferences{},
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
@@ -109,8 +109,8 @@ some literal content
 ....
 a normal paragraph.`
 			expectedResult := types.Document{
-				Attributes:         map[string]interface{}{},
-				ElementReferences:  map[string]interface{}{},
+				Attributes:         types.DocumentAttributes{},
+				ElementReferences:  types.ElementReferences{},
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
@@ -148,8 +148,8 @@ some literal content
 
 a normal paragraph.`
 			expectedResult := types.Document{
-				Attributes:         map[string]interface{}{},
-				ElementReferences:  map[string]interface{}{},
+				Attributes:         types.DocumentAttributes{},
+				ElementReferences:  types.ElementReferences{},
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
@@ -185,8 +185,8 @@ on two lines.
 
 a normal paragraph.`
 			expectedResult := types.Document{
-				Attributes:         map[string]interface{}{},
-				ElementReferences:  map[string]interface{}{},
+				Attributes:         types.DocumentAttributes{},
+				ElementReferences:  types.ElementReferences{},
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{

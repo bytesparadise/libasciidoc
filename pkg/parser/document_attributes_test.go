@@ -25,7 +25,7 @@ This journey begins on a bleary Monday morning.`
 						},
 					},
 				},
-				ElementReferences:  map[string]interface{}{},
+				ElementReferences:  types.ElementReferences{},
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
@@ -507,8 +507,8 @@ v1.0:`
 :0Author: Xavier
 :Auth0r: Xavier`
 				expectedResult := types.Document{
-					Attributes:         map[string]interface{}{},
-					ElementReferences:  map[string]interface{}{},
+					Attributes:         types.DocumentAttributes{},
+					ElementReferences:  types.ElementReferences{},
 					Footnotes:          types.Footnotes{},
 					FootnoteReferences: types.FootnoteReferences{},
 					Elements: []interface{}{
@@ -530,8 +530,8 @@ v1.0:`
 :hardbreaks:
 a paragraph`
 				expectedResult := types.Document{
-					Attributes:         map[string]interface{}{},
-					ElementReferences:  map[string]interface{}{},
+					Attributes:         types.DocumentAttributes{},
+					ElementReferences:  types.ElementReferences{},
 					Footnotes:          types.Footnotes{},
 					FootnoteReferences: types.FootnoteReferences{},
 					Elements: []interface{}{
@@ -559,8 +559,8 @@ a paragraph`
 
 a paragraph`
 				expectedResult := types.Document{
-					Attributes:         map[string]interface{}{},
-					ElementReferences:  map[string]interface{}{},
+					Attributes:         types.DocumentAttributes{},
+					ElementReferences:  types.ElementReferences{},
 					Footnotes:          types.Footnotes{},
 					FootnoteReferences: types.FootnoteReferences{},
 					Elements: []interface{}{
@@ -591,8 +591,8 @@ a paragraph`
 
 a paragraph`
 				expectedResult := types.Document{
-					Attributes:         map[string]interface{}{},
-					ElementReferences:  map[string]interface{}{},
+					Attributes:         types.DocumentAttributes{},
+					ElementReferences:  types.ElementReferences{},
 					Footnotes:          types.Footnotes{},
 					FootnoteReferences: types.FootnoteReferences{},
 					Elements: []interface{}{
@@ -623,8 +623,8 @@ a paragraph`
 :date: 2017-01-01
 :author: Xavier`
 				expectedResult := types.Document{
-					Attributes:         map[string]interface{}{},
-					ElementReferences:  map[string]interface{}{},
+					Attributes:         types.DocumentAttributes{},
+					ElementReferences:  types.ElementReferences{},
 					Footnotes:          types.Footnotes{},
 					FootnoteReferences: types.FootnoteReferences{},
 					Elements: []interface{}{
@@ -653,8 +653,8 @@ a paragraph`
 			
 a paragraph written by {author}.`
 				expectedResult := types.Document{
-					Attributes:         map[string]interface{}{},
-					ElementReferences:  map[string]interface{}{},
+					Attributes:         types.DocumentAttributes{},
+					ElementReferences:  types.ElementReferences{},
 					Footnotes:          types.Footnotes{},
 					FootnoteReferences: types.FootnoteReferences{},
 					Elements: []interface{}{
@@ -682,8 +682,8 @@ a paragraph written by {author}.`
 :author2!:
 a paragraph written by {author}.`
 				expectedResult := types.Document{
-					Attributes:         map[string]interface{}{},
-					ElementReferences:  map[string]interface{}{},
+					Attributes:         types.DocumentAttributes{},
+					ElementReferences:  types.ElementReferences{},
 					Footnotes:          types.Footnotes{},
 					FootnoteReferences: types.FootnoteReferences{},
 					Elements: []interface{}{
@@ -742,7 +742,7 @@ This journey begins on a bleary Monday morning.`
 					"keywords":         "documentation, team, obstacles, journey, victory",
 					"toc":              "",
 				},
-				ElementReferences:  map[string]interface{}{},
+				ElementReferences:  types.ElementReferences{},
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
@@ -779,7 +779,7 @@ a paragraph with *bold content*`
 						},
 					},
 				},
-				ElementReferences: map[string]interface{}{
+				ElementReferences: types.ElementReferences{
 					"_section_1": types.SectionTitle{
 						Attributes: types.ElementAttributes{
 							types.AttrID: "_section_1",
@@ -834,8 +834,8 @@ a paragraph with *bold content*`
 :date: 2017-01-01
 :author: Xavier`
 			expectedResult := types.Document{
-				Attributes:         map[string]interface{}{},
-				ElementReferences:  map[string]interface{}{},
+				Attributes:         types.DocumentAttributes{},
+				ElementReferences:  types.ElementReferences{},
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
@@ -865,8 +865,8 @@ a paragraph with *bold content*`
 			actualContent := `:@date: 2017-01-01
 :{author}: Xavier`
 			expectedResult := types.Document{
-				Attributes:         map[string]interface{}{},
-				ElementReferences:  map[string]interface{}{},
+				Attributes:         types.DocumentAttributes{},
+				ElementReferences:  types.ElementReferences{},
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{

@@ -58,7 +58,7 @@ A short preamble
 				"doctitle": doctitleAttribute,
 				"toc":      "",
 			},
-			ElementReferences: map[string]interface{}{
+			ElementReferences: types.ElementReferences{
 				"_section_1": types.SectionTitle{
 					Attributes: types.ElementAttributes{
 						types.AttrID: "_section_1",
@@ -92,7 +92,7 @@ A short preamble
 				"doctitle": doctitleAttribute,
 				"toc":      "preamble",
 			},
-			ElementReferences: map[string]interface{}{
+			ElementReferences: types.ElementReferences{
 				"_section_1": types.SectionTitle{
 					Attributes: types.ElementAttributes{
 						types.AttrID: "_section_1",

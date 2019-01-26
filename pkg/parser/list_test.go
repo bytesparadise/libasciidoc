@@ -310,8 +310,8 @@ bar
 
 a normal paragraph.`
 			expectedResult := types.Document{
-				Attributes:         map[string]interface{}{},
-				ElementReferences:  map[string]interface{}{},
+				Attributes:         types.DocumentAttributes{},
+				ElementReferences:  types.ElementReferences{},
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
@@ -364,8 +364,8 @@ Item 2:: something simple
 another fenced block
 ----`
 			expectedResult := types.Document{
-				Attributes:         map[string]interface{}{},
-				ElementReferences:  map[string]interface{}{},
+				Attributes:         types.DocumentAttributes{},
+				ElementReferences:  types.ElementReferences{},
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
@@ -444,8 +444,8 @@ Item 2:: something simple
 another fenced block
 ----`
 			expectedResult := types.Document{
-				Attributes:         map[string]interface{}{},
-				ElementReferences:  map[string]interface{}{},
+				Attributes:         types.DocumentAttributes{},
+				ElementReferences:  types.ElementReferences{},
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
@@ -2048,8 +2048,8 @@ on 2 lines, too.`
 					"\n" +
 					"* an item in the second list"
 				expectedResult := types.Document{
-					Attributes:         map[string]interface{}{},
-					ElementReferences:  map[string]interface{}{},
+					Attributes:         types.DocumentAttributes{},
+					ElementReferences:  types.ElementReferences{},
 					Footnotes:          types.Footnotes{},
 					FootnoteReferences: types.FootnoteReferences{},
 					Elements: []interface{}{
@@ -2391,8 +2391,8 @@ another delimited block
 * bar
 `
 				expectedResult := types.Document{
-					Attributes:         map[string]interface{}{},
-					ElementReferences:  map[string]interface{}{},
+					Attributes:         types.DocumentAttributes{},
+					ElementReferences:  types.ElementReferences{},
 					Footnotes:          types.Footnotes{},
 					FootnoteReferences: types.FootnoteReferences{},
 					Elements: []interface{}{
@@ -2480,8 +2480,8 @@ a delimited block
 another delimited block
 ----`
 				expectedResult := types.Document{
-					Attributes:         map[string]interface{}{},
-					ElementReferences:  map[string]interface{}{},
+					Attributes:         types.DocumentAttributes{},
+					ElementReferences:  types.ElementReferences{},
 					Footnotes:          types.Footnotes{},
 					FootnoteReferences: types.FootnoteReferences{},
 					Elements: []interface{}{

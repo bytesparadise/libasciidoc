@@ -17,7 +17,7 @@ var _ = Describe("cross-references", func() {
 with some content linked to <<thetitle>>!`
 			expectedResult := types.Document{
 				Attributes: types.DocumentAttributes{},
-				ElementReferences: map[string]interface{}{
+				ElementReferences: types.ElementReferences{
 					"thetitle": types.SectionTitle{
 						Attributes: types.ElementAttributes{
 							types.AttrID: "thetitle",
@@ -77,7 +77,7 @@ with some content linked to <<thetitle>>!`
 with some content linked to <<thetitle,a label to the title>>!`
 			expectedResult := types.Document{
 				Attributes: types.DocumentAttributes{},
-				ElementReferences: map[string]interface{}{
+				ElementReferences: types.ElementReferences{
 					"thetitle": types.SectionTitle{
 						Attributes: types.ElementAttributes{
 							types.AttrID: "thetitle",

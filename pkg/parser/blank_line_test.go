@@ -12,7 +12,7 @@ var _ = Describe("Blank lines", func() {
 second paragraph`
 		expectedResult := types.Document{
 			Attributes:         types.DocumentAttributes{},
-			ElementReferences:  map[string]interface{}{},
+			ElementReferences:  types.ElementReferences{},
 			Footnotes:          types.Footnotes{},
 			FootnoteReferences: types.FootnoteReferences{},
 			Elements: []interface{}{
@@ -46,7 +46,7 @@ second paragraph
 `
 		expectedResult := types.Document{
 			Attributes:         types.DocumentAttributes{},
-			ElementReferences:  map[string]interface{}{},
+			ElementReferences:  types.ElementReferences{},
 			Footnotes:          types.Footnotes{},
 			FootnoteReferences: types.FootnoteReferences{},
 			Elements: []interface{}{

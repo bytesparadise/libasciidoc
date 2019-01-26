@@ -48,7 +48,7 @@ func NewDocument(frontmatter, header interface{}, blocks []interface{}) (Documen
 	// elements := convertBlocksTointerface{}s(blocks)
 	// elements := filterEmptyElements(blocks, filterBlankLine(), filterEmptyPreamble())
 	elements := insertPreamble(blocks)
-	attributes := make(DocumentAttributes)
+	attributes := DocumentAttributes{}
 	if frontmatter != nil {
 		for attrName, attrValue := range frontmatter.(FrontMatter).Content {
 			attributes[attrName] = attrValue
@@ -191,7 +191,7 @@ func NewDocumentHeader(header, authors, revision interface{}, otherAttributes []
 	}
 	for _, attr := range otherAttributes {
 		if attr, ok := attr.(DocumentAttributeDeclaration); ok {
-			content.AddAttribute(attr)
+			content.AddDeclaration(attr)
 		}
 	}
 	return DocumentHeader{
