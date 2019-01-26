@@ -345,4 +345,38 @@ a. foo
 		verify(GinkgoT(), expectedResult, actualContent)
 	})
 
+	It("drop principal text in list item", func() {
+		actualContent := `. {blank}
++
+----
+print("one")
+----
+. {blank}
++
+----
+print("one")
+----`
+		expectedResult := `<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p></p>
+<div class="listingblock">
+<div class="content">
+<pre>print("one")</pre>
+</div>
+</div>
+</li>
+<li>
+<p></p>
+<div class="listingblock">
+<div class="content">
+<pre>print("one")</pre>
+</div>
+</div>
+</li>
+</ol>
+</div>`
+		verify(GinkgoT(), expectedResult, actualContent)
+	})
+
 })
