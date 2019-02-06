@@ -52,7 +52,7 @@ func renderTableOfContents(ctx *renderer.Context, m types.TableOfContentsMacro) 
 		return nil, errors.Wrapf(err, "error while rendering table of content")
 	}
 	if renderedSections == template.HTML("") {
-		// nothing to render (doc has no section)
+		// nothing to render (document has no section)
 		return []byte{}, nil
 	}
 	result := bytes.NewBuffer(nil)
