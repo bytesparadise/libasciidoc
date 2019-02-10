@@ -170,5 +170,18 @@ A preamble...
 			verify(GinkgoT(), expectedResult, actualContent)
 		})
 
+		It("document with no section", func() {
+			actualContent := `= sect0
+:toc:
+
+level 1 sections not exists.`
+
+			expectedResult := `<div class="paragraph">
+<p>level 1 sections not exists.</p>
+</div>`
+			verify(GinkgoT(), expectedResult, actualContent)
+
+		})
 	})
+
 })
