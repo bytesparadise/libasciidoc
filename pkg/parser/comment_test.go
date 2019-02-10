@@ -18,6 +18,22 @@ var _ = Describe("comments", func() {
 			verify(GinkgoT(), expectedResult, actualDocument, parser.Entrypoint("DocumentBlock"))
 		})
 
+		It("single line comment with prefixing spaces alone", func() {
+			actualDocument := `  // A single-line comment.`
+			expectedResult := types.SingleLineComment{
+				Content: " A single-line comment.",
+			}
+			verify(GinkgoT(), expectedResult, actualDocument, parser.Entrypoint("DocumentBlock"))
+		})
+
+		It("single line comment with prefixing tabs alone", func() {
+			actualDocument := "\t\t// A single-line comment."
+			expectedResult := types.SingleLineComment{
+				Content: " A single-line comment.",
+			}
+			verify(GinkgoT(), expectedResult, actualDocument, parser.Entrypoint("DocumentBlock"))
+		})
+
 		It("single line comment at end of line", func() {
 			actualDocument := `foo // A single-line comment.`
 			expectedResult := types.Paragraph{
@@ -34,6 +50,27 @@ var _ = Describe("comments", func() {
 		It("single line comment within a paragraph", func() {
 			actualDocument := `a first line
 // A single-line comment.
+another line`
+			expectedResult := types.Paragraph{
+				Attributes: types.ElementAttributes{},
+				Lines: []types.InlineElements{
+					{
+						types.StringElement{Content: "a first line"},
+					},
+					{
+						types.SingleLineComment{Content: " A single-line comment."},
+					},
+					{
+						types.StringElement{Content: "another line"},
+					},
+				},
+			}
+			verify(GinkgoT(), expectedResult, actualDocument, parser.Entrypoint("DocumentBlock"))
+		})
+
+		It("single line comment within a paragraph with tab", func() {
+			actualDocument := `a first line
+	// A single-line comment.
 another line`
 			expectedResult := types.Paragraph{
 				Attributes: types.ElementAttributes{},

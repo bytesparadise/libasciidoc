@@ -1166,7 +1166,7 @@ CommentBlockLine <- (Alphanums / Spaces / (!CommentBlockDelimiter !EOL  .){
     return string(c.text), nil
 }
 
-SingleLineComment <- !CommentBlockDelimiter "//" content:(SingleLineCommentContent) EOL {
+SingleLineComment <- !CommentBlockDelimiter WS* "//" content:(SingleLineCommentContent) EOL {
     return types.NewSingleLineComment(content.(string))
 }
 
