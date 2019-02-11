@@ -379,4 +379,108 @@ print("one")
 		verify(GinkgoT(), expectedResult, actualContent)
 	})
 
+	Context("attach to ordered list item ancestor", func() {
+
+		It("attach to grandparent ordered list item", func() {
+			actualContent := `. grandparent list item
+.. parent list item
+... child list item
+
+
++
+paragraph attached to grandparent list item`
+			expectedResult := `<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>grandparent list item</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>parent list item</p>
+<div class="olist lowerroman">
+<ol class="lowerroman" type="i">
+<li>
+<p>child list item</p>
+</li>
+</ol>
+</div>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>paragraph attached to grandparent list item</p>
+</div>
+</li>
+</ol>
+</div>`
+			verify(GinkgoT(), expectedResult, actualContent)
+		})
+
+		It("attach to parent ordered list item", func() {
+			actualContent := `. grandparent list item
+.. parent list item
+... child list item
+
++
+paragraph attached to parent list item`
+			expectedResult := `<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>grandparent list item</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>parent list item</p>
+<div class="olist lowerroman">
+<ol class="lowerroman" type="i">
+<li>
+<p>child list item</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>paragraph attached to parent list item</p>
+</div>
+</li>
+</ol>
+</div>
+</li>
+</ol>
+</div>`
+			verify(GinkgoT(), expectedResult, actualContent)
+		})
+
+		It("attach to child ordered list item", func() {
+			actualContent := `. grandparent list item
+.. parent list item
+... child list item
++
+paragraph attached to child list item`
+			expectedResult := `<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>grandparent list item</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>parent list item</p>
+<div class="olist lowerroman">
+<ol class="lowerroman" type="i">
+<li>
+<p>child list item</p>
+<div class="paragraph">
+<p>paragraph attached to child list item</p>
+</div>
+</li>
+</ol>
+</div>
+</li>
+</ol>
+</div>
+</li>
+</ol>
+</div>`
+			verify(GinkgoT(), expectedResult, actualContent)
+		})
+	})
 })

@@ -483,13 +483,13 @@ ListParagraphLine <-
             return line, nil
         }
 
-ListItemContinuation <- "+" WS* EOL {
-    return types.NewListItemContinuation()
+ListItemContinuation <- "+" WS* EOL 
+
+ContinuedListElement <- blanklines:(BlankLine)* ListItemContinuation element:DocumentElement{
+    return types.NewContinuedListElement(-len(blanklines.([]interface{})), element) // offset is negative
 }
 
-ContinuedDocumentElement<- ListItemContinuation element:DocumentElement{
-    return element, nil
-}
+
 
 // ------------------------------------------
 // Ordered List Items
@@ -525,7 +525,7 @@ OrderedListItemPrefix <- WS* prefix:(
         return prefix, nil
 }
 
-OrderedListItemContent <- elements:(ListParagraph+ ContinuedDocumentElement*) { // Another list or a literal paragraph immediately following a list item will be implicitly included in the list item
+OrderedListItemContent <- elements:(ListParagraph+ ContinuedListElement*) { // Another list or a literal paragraph immediately following a list item will be implicitly included in the list item
     return types.NewListItemContent(elements.([]interface{}))
 } 
 
@@ -567,7 +567,7 @@ UnorderedListItemCheckStyle <- &"[" style:(
         return style, nil
     }
 
-UnorderedListItemContent <- elements:(ListParagraph+ ContinuedDocumentElement*) { // Another list or a literal paragraph immediately following a list item will be implicitly included in the list item
+UnorderedListItemContent <- elements:(ListParagraph+ ContinuedListElement*) { // Another list or a literal paragraph immediately following a list item will be implicitly included in the list item
     return types.NewListItemContent(elements.([]interface{}))
 } 
 
@@ -591,7 +591,7 @@ LabeledListItemSeparator <- ("::::" / ":::" / "::")  {
 
     
 LabeledListItemDescription <- 
-    (WS / NEWLINE)+ elements:(ListParagraph / ContinuedDocumentElement)* { // TODO: replace with (ListParagraph+ ContinuedDocumentElement*) and use a single rule for all item contents ?
+    (WS / NEWLINE)+ elements:(ListParagraph / ContinuedListElement)* { // TODO: replace with (ListParagraph+ ContinuedListElement*) and use a single rule for all item contents ?
         return types.NewListItemContent(elements.([]interface{}))
     } / WS* EOL { // here, WS is optional since there is no description afterwards
         return []interface{}{}, nil

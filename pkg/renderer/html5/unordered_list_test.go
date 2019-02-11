@@ -310,4 +310,109 @@ var _ = Describe("checklists", func() {
 </div>`
 		verify(GinkgoT(), expectedResult, actualContent)
 	})
+
+	Context("attach to unordered list item ancestor", func() {
+
+		It("attach to grandparent unordered list item", func() {
+			actualContent := `* grandparent list item
+** parent list item
+*** child list item
+
+
++
+paragraph attached to grandparent list item`
+			expectedResult := `<div class="ulist">
+<ul>
+<li>
+<p>grandparent list item</p>
+<div class="ulist">
+<ul>
+<li>
+<p>parent list item</p>
+<div class="ulist">
+<ul>
+<li>
+<p>child list item</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>paragraph attached to grandparent list item</p>
+</div>
+</li>
+</ul>
+</div>`
+			verify(GinkgoT(), expectedResult, actualContent)
+		})
+
+		It("attach to parent unordered list item", func() {
+			actualContent := `* grandparent list item
+** parent list item
+*** child list item
+
++
+paragraph attached to parent list item`
+			expectedResult := `<div class="ulist">
+<ul>
+<li>
+<p>grandparent list item</p>
+<div class="ulist">
+<ul>
+<li>
+<p>parent list item</p>
+<div class="ulist">
+<ul>
+<li>
+<p>child list item</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>paragraph attached to parent list item</p>
+</div>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>`
+			verify(GinkgoT(), expectedResult, actualContent)
+		})
+
+		It("attach to child unordered list item", func() {
+			actualContent := `* grandparent list item
+** parent list item
+*** child list item
++
+paragraph attached to child list item`
+			expectedResult := `<div class="ulist">
+<ul>
+<li>
+<p>grandparent list item</p>
+<div class="ulist">
+<ul>
+<li>
+<p>parent list item</p>
+<div class="ulist">
+<ul>
+<li>
+<p>child list item</p>
+<div class="paragraph">
+<p>paragraph attached to child list item</p>
+</div>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>`
+			verify(GinkgoT(), expectedResult, actualContent)
+		})
+	})
 })
