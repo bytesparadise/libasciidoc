@@ -641,109 +641,113 @@ func (st SectionTitle) Accept(v Visitor) error {
 
 // List a list
 type List interface {
-	// AddItems() []interface{}
+	GetItems() []ListItem
+	processContinuations(ancestors []ListItem) List
 }
 
 // ListItem a list item
 type ListItem interface {
-	AddChild(interface{})
+	GetElements() []interface{}
+	AddElement(interface{})
+	SetElements([]interface{})
+	processContinuations([]ListItem) ListItem
 }
 
 // NewList initializes a new `List` from the given content
 func NewList(items []interface{}) (List, error) {
 	log.Debugf("initializing a new List with %d items(s)", len(items))
-	monitor := newListMonitor()
+	builder := newListBuilder()
 	for _, item := range items {
 		listItem, ok := toPtr(item).(ListItem)
 		if !ok {
 			return nil, errors.Errorf("item of type '%T' is not a valid list item", item)
 		}
-		err := monitor.process(listItem)
+		err := builder.process(listItem)
 		if err != nil {
 			return nil, errors.Wrap(err, "failed to initialize a list")
 		}
 	}
-	// finally, process the first level of the monitor's stack
-	return monitor.end()
+	// finally, process the first level of the builder's stack
+	return builder.build()
 }
 
-type listMonitor struct {
-	stack                       [][]ListItem
-	currentDepth, previousDepth int
+type listBuilder struct {
+	stacks        [][]ListItem
+	previousDepth int
 }
 
-func newListMonitor() *listMonitor {
-	return &listMonitor{
-		stack:         make([][]ListItem, 0),
-		currentDepth:  0,
+func newListBuilder() *listBuilder {
+	return &listBuilder{
+		stacks:        make([][]ListItem, 0),
 		previousDepth: 0,
 	}
 }
 
 // process:
 // - checks if the given item's type is already known and at which level it is in the list
-// - stores the item in the inner stack, at the detemined level
-// (ie, if the list is a mixed list)
-// return the level (0-based offset) and `true` if the type of the item was already know, false otherwise
-func (l *listMonitor) process(item ListItem) error {
+// - stores the item in its stack, at the detemined level
+func (builder *listBuilder) process(item ListItem) error {
 	log.Debugf("processing item of type %T", item)
-	depth := l.depth(item)
+	depth := builder.depth(item)
 	// if moving up in the tree, then a new list needs to be build
-	if depth < l.previousDepth {
-		log.Debugf("moving up in the stack, need to build %d list(s)", (l.previousDepth - depth))
-		for i := l.previousDepth; i > depth; i-- {
-			subitems := l.stack[i]
+	if depth < builder.previousDepth {
+		log.Debugf("moving up in the stack, need to build %d list(s)", (builder.previousDepth - depth))
+		for i := builder.previousDepth; i > depth; i-- {
+			subitems := builder.stacks[i]
 			sublist, err := newList(subitems)
 			if err != nil {
 				return errors.Wrap(err, "failed to initialize a new sublist")
 			}
 			// attach the new sublist to the last item of the parent level
-			parentItem, err := l.parentItem(i)
+			parentItem, err := builder.parentItem(i)
 			if err != nil {
 				return errors.Wrap(err, "failed to attach a new sublist to its parent item")
 			}
-			parentItem.AddChild(sublist)
-			// clear the stack
-			l.stack = l.stack[:len(l.stack)-1]
+			parentItem.AddElement(sublist)
+			// clear the stack (ie, remove the last level)
+			builder.stacks = builder.stacks[:len(builder.stacks)-1]
 		}
 	}
-	l.previousDepth = depth
-	// process the given item
-	items := l.stack[depth]
+	builder.previousDepth = depth
+	items := builder.stacks[depth]
 	items = append(items, item)
-	l.stack[depth] = items // 'items' was changed, needs to be put in the stack again
+	builder.stacks[depth] = items // 'items' was changed, needs to be put in the stack again
 	return nil
 }
 
 // ends: builds a new list of each layer in the stack, starting by the end, and attach to the parent item
-func (l *listMonitor) end() (List, error) {
-	for i := len(l.stack) - 1; i > 0; i-- {
-		// if len(l.stack[i]) == 0 {
+func (builder *listBuilder) build() (List, error) {
+	for i := len(builder.stacks) - 1; i > 0; i-- {
+		// if len(builder.stacks[i]) == 0 {
 		// 	// ignore empty layer
 		// 	continue
 		// }
-		sublist, err := newList(l.stack[i])
+		sublist, err := newList(builder.stacks[i])
 		if err != nil {
-			return nil, errors.Wrapf(err, "failed to initialize a new sublist")
+			return nil, errors.Wrapf(err, "failed to initialize a new list")
 		}
 		// look-up parent layer at the previous (ie, upper) level in the stack
-		parentItems := l.stack[i-1]
+		parentItems := builder.stacks[i-1]
 		// look-up parent in the layer
 		parentItem := parentItems[len(parentItems)-1]
 		// build a new list from the remaining items at the current level of the stack
-		// log.Debugf("building a new list from the remaining items of type '%T' and parent of type '%T' at the current level of the stack", buffer[stack[i]][0], parentItem)
+		// log.Debugf("building a new list from the remaining items of type '%T' and parent of type '%T' at the current level of the stack", buffer[stacks[i]][0], parentItem)
 		// add this list to the parent
-		parentItem.AddChild(sublist)
+		parentItem.AddElement(sublist)
 	}
-	// finish with sublist
-	return newList(l.stack[0])
+	// finish with to "root" list
+	result, err := newList(builder.stacks[0])
+	if err != nil {
+		return nil, errors.Wrapf(err, "failed to initialize a new list")
+	}
+	return result.processContinuations([]ListItem{}), nil
 }
 
-// depth finds at which depth of the stack the given item belongs
-func (l *listMonitor) depth(item ListItem) int {
+// depth finds at which depth of the stack the given item belongs, based on its type
+func (builder *listBuilder) depth(item ListItem) int {
 	itemType := reflect.TypeOf(item)
-	log.Debugf("checking depth of item of type %T in a stack of size: %d", item, len(l.stack))
-	for idx, items := range l.stack {
+	log.Debugf("checking depth of item of type %T in a stack of size: %d", item, len(builder.stacks))
+	for idx, items := range builder.stacks {
 		// if layer of the stack is empty ior if first item has the same type
 		if len(items) == 0 || reflect.TypeOf(items[0]) == itemType {
 			log.Debugf("found matching layer in the stack for item of type %T: %d", item, idx)
@@ -754,15 +758,15 @@ func (l *listMonitor) depth(item ListItem) int {
 	// type of item
 	log.Debugf("adding a new layer in the stack for item of type %T", item)
 	items := make([]ListItem, 0)
-	l.stack = append(l.stack, items)
-	return len(l.stack) - 1
+	builder.stacks = append(builder.stacks, items)
+	return len(builder.stacks) - 1
 }
 
-func (l *listMonitor) parentItem(childDepth int) (ListItem, error) {
+func (builder *listBuilder) parentItem(childDepth int) (ListItem, error) {
 	if childDepth == 0 {
 		return nil, errors.New("unable to lookup parent for a root item (depth=0)")
 	}
-	parentItems := l.stack[childDepth-1]
+	parentItems := builder.stacks[childDepth-1]
 	if len(parentItems) == 0 {
 		return nil, errors.New("unable to lookup parent (none found at this level)")
 	}
@@ -786,6 +790,21 @@ func newList(items []ListItem) (List, error) {
 	}
 }
 
+// ContinuedListElement a wrapper for an element which should be attached to a list item (same level or an ancestor)
+type ContinuedListElement struct {
+	Offset  int // the relative ancestor. Should be a negative number
+	Element interface{}
+}
+
+// NewContinuedListElement returns a wrapper for an element which should be attached to a list item (same level or an ancestor)
+func NewContinuedListElement(offset int, element interface{}) (ContinuedListElement, error) {
+	log.Debugf("imitializing a new continued list element for element of type %T", element)
+	return ContinuedListElement{
+		Offset:  offset,
+		Element: element,
+	}, nil
+}
+
 // ------------------------------------------
 // Ordered Lists
 // ------------------------------------------
@@ -795,6 +814,8 @@ type OrderedList struct {
 	Attributes ElementAttributes
 	Items      []OrderedListItem
 }
+
+var _ List = OrderedList{}
 
 // NumberingStyle the type of numbering for items in an ordered list
 type NumberingStyle string
@@ -828,7 +849,7 @@ func init() {
 
 // newOrderedList initializes a new `OrderedList` from the given content
 func newOrderedList(elements []ListItem) (OrderedList, error) {
-	log.Debugf(" initializing a new ordered list from %d element(s)...", len(elements))
+	log.Debugf("initializing a new ordered list from %d element(s)...", len(elements))
 	result := make([]OrderedListItem, 0)
 	bufferedItemsPerLevel := make(map[int][]*OrderedListItem) // buffered items for the current level
 	levelPerStyle := make(map[NumberingStyle]int)
@@ -847,7 +868,7 @@ func newOrderedList(elements []ListItem) (OrderedList, error) {
 		} else if item.NumberingStyle != previousNumberingStyle {
 			// check if this numbering type was already found previously
 			if level, found := levelPerStyle[item.NumberingStyle]; found {
-				item.Level = level // 0-based offset in the bufferedItemsPerLevel
+				item.Level = level // 0-based level in the bufferedItemsPerLevel
 				// log.Debugf("setting item level to %d / %v (#2 - existing style)", item.Level, item.NumberingStyle)
 			} else {
 				item.Level = previousLevel + 1
@@ -863,7 +884,7 @@ func newOrderedList(elements []ListItem) (OrderedList, error) {
 		if item.Level < previousLevel {
 			parentLayer := bufferedItemsPerLevel[previousLevel-2]
 			parentItem := parentLayer[len(parentLayer)-1]
-			log.Debugf(" moving buffered items at level %d (%v) in parent (%v) ", previousLevel, bufferedItemsPerLevel[previousLevel-1][0].NumberingStyle, parentItem.NumberingStyle)
+			log.Debugf("moving buffered items at level %d (%v) in parent (%v) ", previousLevel, bufferedItemsPerLevel[previousLevel-1][0].NumberingStyle, parentItem.NumberingStyle)
 			childList, err := toOrderedList(bufferedItemsPerLevel[previousLevel-1])
 			if err != nil {
 				return OrderedList{}, err
@@ -878,12 +899,12 @@ func newOrderedList(elements []ListItem) (OrderedList, error) {
 			bufferedItemsPerLevel[item.Level-1] = make([]*OrderedListItem, 0)
 		}
 		// append item to buffer of its level
-		log.Debugf(" adding list item %v in the current buffer at level %d", item.Elements[0], item.Level)
+		log.Debugf("adding list item %v in the current buffer at level %d", item.Elements[0], item.Level)
 		bufferedItemsPerLevel[item.Level-1] = append(bufferedItemsPerLevel[item.Level-1], item)
 		previousLevel = item.Level
 		previousNumberingStyle = item.NumberingStyle
 	}
-	log.Debugf(" processing the rest of the buffer...")
+	log.Debugf("processing the rest of the buffer...")
 	// clear the remaining buffer and get the result in the reverse order of levels
 	for level := len(bufferedItemsPerLevel) - 1; level >= 0; level-- {
 		items := bufferedItemsPerLevel[level]
@@ -933,28 +954,37 @@ func toOrderedList(items []*OrderedListItem) (OrderedList, error) {
 	return result, nil
 }
 
+// GetItems returns the items of this list
+func (l OrderedList) GetItems() []ListItem {
+	items := make([]ListItem, len(l.Items))
+	for i, item := range l.Items {
+		items[i] = &item
+	}
+	return items
+}
+
 // AddAttributes adds all given attributes to the current set of attribute of the element
-func (o OrderedList) AddAttributes(attributes ElementAttributes) {
-	o.Attributes.AddAll(attributes)
+func (l OrderedList) AddAttributes(attributes ElementAttributes) {
+	l.Attributes.AddAll(attributes)
 	// override the numbering style if applicable
 	for attr := range attributes {
 		switch attr {
 		case string(Arabic):
-			setNumberingStyle(o.Items, Arabic)
+			setNumberingStyle(l.Items, Arabic)
 		case string(Decimal):
-			setNumberingStyle(o.Items, Decimal)
+			setNumberingStyle(l.Items, Decimal)
 		case string(LowerAlpha):
-			setNumberingStyle(o.Items, LowerAlpha)
+			setNumberingStyle(l.Items, LowerAlpha)
 		case string(UpperAlpha):
-			setNumberingStyle(o.Items, UpperAlpha)
+			setNumberingStyle(l.Items, UpperAlpha)
 		case string(LowerRoman):
-			setNumberingStyle(o.Items, LowerRoman)
+			setNumberingStyle(l.Items, LowerRoman)
 		case string(UpperRoman):
-			setNumberingStyle(o.Items, UpperRoman)
+			setNumberingStyle(l.Items, UpperRoman)
 		case string(LowerGreek):
-			setNumberingStyle(o.Items, LowerGreek)
+			setNumberingStyle(l.Items, LowerGreek)
 		case string(UpperGreek):
-			setNumberingStyle(o.Items, UpperGreek)
+			setNumberingStyle(l.Items, UpperGreek)
 		}
 	}
 }
@@ -967,13 +997,46 @@ func setNumberingStyle(items []OrderedListItem, n NumberingStyle) {
 	}
 }
 
+func (l OrderedList) processContinuations(ancestors []ListItem) List {
+	log.Debugf("processing continuations on OrderedList with %d item(s)", len(l.Items))
+	items := make([]OrderedListItem, len(l.Items))
+	for i, item := range l.Items {
+		pi := item.processContinuations(ancestors).(*OrderedListItem)
+		items[i] = *pi
+	}
+	return OrderedList{
+		Attributes: l.Attributes,
+		Items:      items,
+	}
+}
+
 // OrderedListItem the structure for the ordered list items
 type OrderedListItem struct {
+	Attributes     ElementAttributes
 	Level          int
 	Position       int
 	NumberingStyle NumberingStyle
-	Attributes     ElementAttributes
 	Elements       []interface{}
+}
+
+// GetElements returns the elements of this OrderedListItem
+func (i OrderedListItem) GetElements() []interface{} {
+	return i.Elements
+}
+
+// SetElements set the elements of this OrderedListItem
+func (i *OrderedListItem) SetElements(elements []interface{}) {
+	i.Elements = elements
+}
+
+// AddElement add an element to this OrderedListItem
+func (i *OrderedListItem) AddElement(element interface{}) {
+	i.Elements = append(i.Elements, element)
+}
+
+// AddAttributes adds all given attributes to the current set of attribute of the element
+func (i *OrderedListItem) AddAttributes(attributes ElementAttributes) {
+	i.Attributes.AddAll(attributes)
 }
 
 // making sure that the `ListItem` interface is implemented by `OrderedListItem`
@@ -984,24 +1047,12 @@ func NewOrderedListItem(prefix OrderedListItemPrefix, elements []interface{}) (O
 	log.Debugf("initializing a new OrderedListItem")
 	p := 1 // default position
 	return OrderedListItem{
+		Attributes:     ElementAttributes{},
 		NumberingStyle: prefix.NumberingStyle,
 		Level:          prefix.Level,
 		Position:       p,
 		Elements:       elements,
-		Attributes:     ElementAttributes{},
 	}, nil
-}
-
-// AddAttributes adds all given attributes to the current set of attribute of the element
-func (i OrderedListItem) AddAttributes(attributes ElementAttributes) {
-	i.Attributes.AddAll(attributes)
-
-}
-
-// AddChild appends the given item to the content of this OrderedListItem
-func (i *OrderedListItem) AddChild(item interface{}) {
-	log.Debugf("adding item of type %T to list item of type %T (%v)", item, i, i.Elements)
-	i.Elements = append(i.Elements, item)
 }
 
 func (i *OrderedListItem) applyAttributes() error {
@@ -1027,6 +1078,50 @@ func (i *OrderedListItem) applyAttributes() error {
 	return nil
 }
 
+func (i *OrderedListItem) processContinuations(ancestors []ListItem) ListItem {
+	return &OrderedListItem{
+		Attributes:     i.Attributes,
+		Level:          i.Level,
+		Position:       i.Position,
+		NumberingStyle: i.NumberingStyle,
+		Elements:       processContinuations(ancestors, i),
+	}
+}
+
+func processContinuations(ancestors []ListItem, i ListItem) []interface{} {
+	log.Debugf("processing continuations on item of type '%T' with %d elements - hierarchy: %d ancestor(s)", i, len(i.GetElements()), len(ancestors))
+
+	elements := []interface{}{}
+	log.Debugf("starting to process %d elements of %T", len(i.GetElements()), i)
+	s := len(i.GetElements())
+	for _, element := range i.GetElements() {
+		switch e := element.(type) {
+		case List:
+			// replace the list with a new list whose continued elements have been processed
+			elements = append(elements, e.processContinuations(append(ancestors, i)))
+		case ContinuedListElement:
+			// move the element wrapped in the `ContinuedListElement` to the target ancestor
+			idx := len(ancestors) + e.Offset
+			if idx < 0 {
+				idx = 0
+			}
+			// if no ancestor is available at all or no sibling at the expected level, then just add the wrapped element
+			if len(ancestors) == 0 || len(ancestors) <= idx {
+				elements = append(elements, e.Element)
+				continue
+			}
+			log.WithField("ancestor_offset", e.Offset).WithField("ancestor_index", idx).WithField("ancestors_count", len(ancestors)).Debugf("moving element of type '%T' to last item of ancestor level", e.Element)
+			ancestorItem := ancestors[idx]
+			ancestorItem.AddElement(e.Element) // but we need to add the wrapped element to the copy of the ancestor
+		default:
+			// any other kind of element is kept
+			elements = append(elements, element)
+		}
+	}
+	// add all elements that were appended to this item's elements while continuation in sublists were processed
+	return append(elements, i.GetElements()[s:]...)
+}
+
 // OrderedListItemPrefix the prefix used to construct an OrderedListItem
 type OrderedListItemPrefix struct {
 	NumberingStyle NumberingStyle
@@ -1050,6 +1145,8 @@ type UnorderedList struct {
 	Attributes ElementAttributes
 	Items      []UnorderedListItem
 }
+
+var _ List = UnorderedList{}
 
 // newUnorderedList initializes a new `UnorderedList` from the given content
 func newUnorderedList(elements []ListItem) (UnorderedList, error) {
@@ -1081,7 +1178,7 @@ func newUnorderedList(elements []ListItem) (UnorderedList, error) {
 			// of the latter has been adjusted before)
 			item.Level = previousLevel
 		}
-		log.Debugf("Processing list item of level %d: %v", item.Level, item.Elements[0])
+		log.Debugf("processing list item of level %d: %v", item.Level, item.Elements[0])
 		// join item *values* in the parent item when the level decreased
 		if item.Level < previousLevel {
 			// merge previous levels in parents.
@@ -1145,9 +1242,30 @@ func newUnorderedList(elements []ListItem) (UnorderedList, error) {
 	}, nil
 }
 
+// GetItems returns the items of this list
+func (l UnorderedList) GetItems() []ListItem {
+	items := make([]ListItem, len(l.Items))
+	for i, item := range l.Items {
+		items[i] = &item
+	}
+	return items
+}
+
 // AddAttributes adds all given attributes to the current set of attribute of the element
 func (l UnorderedList) AddAttributes(attributes ElementAttributes) {
 	l.Attributes.AddAll(attributes)
+}
+
+func (l UnorderedList) processContinuations(ancestors []ListItem) List {
+	items := make([]UnorderedListItem, len(l.Items))
+	for i, item := range l.Items {
+		pi := item.processContinuations(ancestors).(*UnorderedListItem)
+		items[i] = *pi
+	}
+	return UnorderedList{
+		Attributes: l.Attributes,
+		Items:      items,
+	}
 }
 
 // UnorderedListItem the structure for the unordered list items
@@ -1161,7 +1279,7 @@ type UnorderedListItem struct {
 
 // NewUnorderedListItem initializes a new `UnorderedListItem` from the given content
 func NewUnorderedListItem(prefix UnorderedListItemPrefix, checkstyle interface{}, elements []interface{}) (UnorderedListItem, error) {
-	log.Debugf("initializing a new UnorderedListItem...")
+	log.Debugf("initializing a new UnorderedListItem with %d elements", len(elements))
 	// log.Debugf("initializing a new UnorderedListItem with '%d' lines (%T) and input level '%d'", len(elements), elements, lvl.Len())
 	cs := toCheckStyle(checkstyle)
 	if cs != NoCheck && len(elements) > 0 {
@@ -1180,9 +1298,34 @@ func NewUnorderedListItem(prefix UnorderedListItemPrefix, checkstyle interface{}
 	}, nil
 }
 
+// GetElements returns the elements of this UnorderedListItem
+func (i UnorderedListItem) GetElements() []interface{} {
+	return i.Elements
+}
+
+// SetElements set the elements of this UnorderedListItem
+func (i *UnorderedListItem) SetElements(elements []interface{}) {
+	i.Elements = elements
+}
+
+// AddElement add an element to this UnorderedListItem
+func (i *UnorderedListItem) AddElement(element interface{}) {
+	i.Elements = append(i.Elements, element)
+}
+
 // AddAttributes adds all given attributes to the current set of attribute of the element
-func (i UnorderedListItem) AddAttributes(attributes ElementAttributes) {
+func (i *UnorderedListItem) AddAttributes(attributes ElementAttributes) {
 	i.Attributes.AddAll(attributes)
+}
+
+func (i *UnorderedListItem) processContinuations(ancestors []ListItem) ListItem {
+	return &UnorderedListItem{
+		Attributes:  i.Attributes,
+		Level:       i.Level,
+		BulletStyle: i.BulletStyle,
+		CheckStyle:  i.CheckStyle,
+		Elements:    processContinuations(ancestors, i),
+	}
 }
 
 // UnorderedListItemCheckStyle the check style that applies on an unordered list item
@@ -1202,12 +1345,6 @@ func toCheckStyle(checkstyle interface{}) UnorderedListItemCheckStyle {
 		return cs
 	}
 	return NoCheck
-}
-
-// AddChild appends the given item to the content of this UnorderedListItem
-func (i *UnorderedListItem) AddChild(item interface{}) {
-	log.Debugf("adding item of type %T to list item of type %T (%v)", item, i, i.Elements)
-	i.Elements = append(i.Elements, item)
 }
 
 // adjustBulletStyle
@@ -1299,14 +1436,14 @@ func NewListItemContent(content []interface{}) ([]interface{}, error) {
 	return elements, nil
 }
 
-// ListItemContinuation a list item continuation
-type ListItemContinuation struct {
-}
+// // ListItemContinuation a list item continuation
+// type ListItemContinuation struct {
+// }
 
-// NewListItemContinuation returns a new ListItemContinuation
-func NewListItemContinuation() (ListItemContinuation, error) {
-	return ListItemContinuation{}, nil
-}
+// // NewListItemContinuation returns a new ListItemContinuation
+// func NewListItemContinuation() (ListItemContinuation, error) {
+// 	return ListItemContinuation{}, nil
+// }
 
 // ------------------------------------------
 // Labeled List
@@ -1318,9 +1455,11 @@ type LabeledList struct {
 	Items      []LabeledListItem
 }
 
+var _ List = LabeledList{}
+
 // newLabeledList initializes a new `LabeledList` from the given content
 func newLabeledList(elements []ListItem) (LabeledList, error) {
-	log.Debugf(" initializing a new labeled list from %d element(s)...", len(elements))
+	log.Debugf("initializing a new labeled list from %d element(s)...", len(elements))
 	result := make([]LabeledListItem, 0)
 	bufferedItemsPerLevel := make(map[int][]*LabeledListItem) // buffered items for the current level
 	previousLevel := 0
@@ -1355,11 +1494,11 @@ func newLabeledList(elements []ListItem) (LabeledList, error) {
 			bufferedItemsPerLevel[item.Level-1] = make([]*LabeledListItem, 0)
 		}
 		// append item to buffer of its level
-		log.Debugf(" adding list item %v in the current buffer at level %d", item, item.Level)
+		log.Debugf("adding list item %v in the current buffer at level %d", item, item.Level)
 		bufferedItemsPerLevel[item.Level-1] = append(bufferedItemsPerLevel[item.Level-1], item)
 		previousLevel = item.Level
 	}
-	log.Debugf(" processing the rest of the buffer: %v", bufferedItemsPerLevel)
+	log.Debugf("processing the rest of the buffer: %v", bufferedItemsPerLevel)
 	// clear the remaining buffer and get the result in the reverse order of levels
 	for level := len(bufferedItemsPerLevel) - 1; level >= 0; level-- {
 		items := bufferedItemsPerLevel[level]
@@ -1386,9 +1525,31 @@ func newLabeledList(elements []ListItem) (LabeledList, error) {
 	}, nil
 }
 
+// GetItems returns the items of this list
+func (l LabeledList) GetItems() []ListItem {
+	items := make([]ListItem, len(l.Items))
+	for i, item := range l.Items {
+		items[i] = &item
+	}
+	return items
+}
+
 // AddAttributes adds all given attributes to the current set of attribute of the element
 func (l LabeledList) AddAttributes(attributes ElementAttributes) {
 	l.Attributes.AddAll(attributes)
+}
+
+func (l LabeledList) processContinuations(ancestors []ListItem) List {
+	log.Debugf("processing continuations on LabeledList with %d item(s)", len(l.Items))
+	items := make([]LabeledListItem, len(l.Items))
+	for i, item := range l.Items {
+		pi := item.processContinuations(ancestors).(*LabeledListItem)
+		items[i] = *pi
+	}
+	return LabeledList{
+		Attributes: l.Attributes,
+		Items:      items,
+	}
 }
 
 // LabeledListItem an item in a labeled
@@ -1398,6 +1559,9 @@ type LabeledListItem struct {
 	Attributes ElementAttributes
 	Elements   []interface{}
 }
+
+// making sure that the `ListItem` interface is implemented by `LabeledListItem`
+var _ ListItem = &LabeledListItem{}
 
 // NewLabeledListItem initializes a new LabeledListItem
 func NewLabeledListItem(level int, term string, elements []interface{}) (LabeledListItem, error) {
@@ -1410,19 +1574,34 @@ func NewLabeledListItem(level int, term string, elements []interface{}) (Labeled
 	}, nil
 }
 
+// GetElements returns the elements of this LabeledListItem
+func (i LabeledListItem) GetElements() []interface{} {
+	return i.Elements
+}
+
+// SetElements set the elements of this LabeledListItem
+func (i *LabeledListItem) SetElements(elements []interface{}) {
+	i.Elements = elements
+}
+
+// AddElement add an element to this LabeledListItem
+func (i *LabeledListItem) AddElement(element interface{}) {
+	i.Elements = append(i.Elements, element)
+}
+
 // AddAttributes adds all given attributes to the current set of attribute of the element
-func (i LabeledListItem) AddAttributes(attributes ElementAttributes) {
+func (i *LabeledListItem) AddAttributes(attributes ElementAttributes) {
 	i.Attributes.AddAll(attributes)
 }
 
-// AddChild appends the given item to the content of this LabeledListItem
-func (i *LabeledListItem) AddChild(item interface{}) {
-	log.Debugf("adding item of type %T to list item of type %T (%v)", item, i, i.Elements)
-	i.Elements = append(i.Elements, item)
+func (i *LabeledListItem) processContinuations(ancestors []ListItem) ListItem {
+	return &LabeledListItem{
+		Attributes: i.Attributes,
+		Level:      i.Level,
+		Term:       i.Term,
+		Elements:   processContinuations(ancestors, i),
+	}
 }
-
-// making sure that the `ListItem` interface is implemented by `LabeledListItem`
-var _ ListItem = &LabeledListItem{}
 
 // ------------------------------------------
 // Paragraph

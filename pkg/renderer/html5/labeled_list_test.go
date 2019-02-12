@@ -418,4 +418,127 @@ What is the answer to the Ultimate Question?:: 42`
 			verify(GinkgoT(), expectedDocument, actualContent)
 		})
 	})
+
+	Context("attach to labeled list item ancestor", func() {
+
+		It("attach to grandparent labeled list item", func() {
+			actualContent := `Item 1::
+Item 1 description
+Item 1.1:::
+Item 1.1 description
+Item 1.1.1::::
+Item 1.1.1 description
+
+
++
+paragraph attached to grandparent list item`
+			expectedResult := `<div class="dlist">
+<dl>
+<dt class="hdlist1">Item 1</dt>
+<dd>
+<p>Item 1 description</p>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Item 1.1</dt>
+<dd>
+<p>Item 1.1 description</p>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Item 1.1.1</dt>
+<dd>
+<p>Item 1.1.1 description</p>
+</dd>
+</dl>
+</div>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>paragraph attached to grandparent list item</p>
+</div>
+</dd>
+</dl>
+</div>`
+			verify(GinkgoT(), expectedResult, actualContent)
+		})
+
+		It("attach to parent labeled list item", func() {
+			actualContent := `Item 1::
+Item 1 description
+Item 1.1:::
+Item 1.1 description
+Item 1.1.1::::
+Item 1.1.1 description
+
++
+paragraph attached to parent list item`
+			expectedResult := `<div class="dlist">
+<dl>
+<dt class="hdlist1">Item 1</dt>
+<dd>
+<p>Item 1 description</p>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Item 1.1</dt>
+<dd>
+<p>Item 1.1 description</p>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Item 1.1.1</dt>
+<dd>
+<p>Item 1.1.1 description</p>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>paragraph attached to parent list item</p>
+</div>
+</dd>
+</dl>
+</div>
+</dd>
+</dl>
+</div>`
+			verify(GinkgoT(), expectedResult, actualContent)
+		})
+
+		It("attach to child labeled list item", func() {
+			actualContent := `Item 1::
+Item 1 description
+Item 1.1:::
+Item 1.1 description
+Item 1.1.1::::
+Item 1.1.1 description
++
+paragraph attached to child list item`
+			expectedResult := `<div class="dlist">
+<dl>
+<dt class="hdlist1">Item 1</dt>
+<dd>
+<p>Item 1 description</p>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Item 1.1</dt>
+<dd>
+<p>Item 1.1 description</p>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Item 1.1.1</dt>
+<dd>
+<p>Item 1.1.1 description</p>
+<div class="paragraph">
+<p>paragraph attached to child list item</p>
+</div>
+</dd>
+</dl>
+</div>
+</dd>
+</dl>
+</div>
+</dd>
+</dl>
+</div>`
+			verify(GinkgoT(), expectedResult, actualContent)
+		})
+	})
 })
