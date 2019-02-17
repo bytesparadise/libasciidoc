@@ -184,7 +184,6 @@ var _ = Describe("ordered lists", func() {
 				},
 				Items: []types.OrderedListItem{
 					{
-
 						Level:          1,
 						Position:       1,
 						NumberingStyle: types.LowerRoman,
@@ -196,6 +195,297 @@ var _ = Describe("ordered lists", func() {
 			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 
+		It("max level of ordered items - case 1", func() {
+			actualContent := `.Ordered, max nesting
+. level 1
+.. level 2
+... level 3
+.... level 4
+..... level 5
+. level 1`
+			expectedResult := types.OrderedList{
+				Attributes: types.ElementAttributes{
+					types.AttrTitle: "Ordered, max nesting",
+				},
+				Items: []types.OrderedListItem{
+					{
+						Level:          1,
+						Position:       1,
+						NumberingStyle: types.Arabic,
+						Attributes:     types.ElementAttributes{},
+						Elements: []interface{}{
+							types.Paragraph{
+								Attributes: types.ElementAttributes{},
+								Lines: []types.InlineElements{
+									{
+										types.StringElement{
+											Content: "level 1",
+										},
+									},
+								},
+							},
+							types.OrderedList{
+								Attributes: types.ElementAttributes{},
+								Items: []types.OrderedListItem{
+									{
+										Level:          2,
+										Position:       1,
+										NumberingStyle: types.LowerAlpha,
+										Attributes:     types.ElementAttributes{},
+										Elements: []interface{}{
+											types.Paragraph{
+												Attributes: types.ElementAttributes{},
+												Lines: []types.InlineElements{
+													{
+														types.StringElement{
+															Content: "level 2",
+														},
+													},
+												},
+											},
+											types.OrderedList{
+												Attributes: types.ElementAttributes{},
+												Items: []types.OrderedListItem{
+													{
+														Level:          3,
+														Position:       1,
+														NumberingStyle: types.LowerRoman,
+														Attributes:     types.ElementAttributes{},
+														Elements: []interface{}{
+															types.Paragraph{
+																Attributes: types.ElementAttributes{},
+																Lines: []types.InlineElements{
+																	{
+																		types.StringElement{
+																			Content: "level 3",
+																		},
+																	},
+																},
+															},
+															types.OrderedList{
+																Attributes: types.ElementAttributes{},
+																Items: []types.OrderedListItem{
+																	{
+																		Level:          4,
+																		Position:       1,
+																		NumberingStyle: types.UpperAlpha,
+																		Attributes:     types.ElementAttributes{},
+																		Elements: []interface{}{
+																			types.Paragraph{
+																				Attributes: types.ElementAttributes{},
+																				Lines: []types.InlineElements{
+																					{
+																						types.StringElement{
+																							Content: "level 4",
+																						},
+																					},
+																				},
+																			},
+																			types.OrderedList{
+																				Attributes: types.ElementAttributes{},
+																				Items: []types.OrderedListItem{
+																					{
+																						Level:          5,
+																						Position:       1,
+																						NumberingStyle: types.UpperRoman,
+																						Attributes:     types.ElementAttributes{},
+																						Elements: []interface{}{
+																							types.Paragraph{
+																								Attributes: types.ElementAttributes{},
+																								Lines: []types.InlineElements{
+																									{
+																										types.StringElement{
+																											Content: "level 5",
+																										},
+																									},
+																								},
+																							},
+																						},
+																					},
+																				},
+																			},
+																		},
+																	},
+																},
+															},
+														},
+													},
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+					{
+						Level:          1,
+						Position:       2,
+						NumberingStyle: types.Arabic,
+						Attributes:     types.ElementAttributes{},
+						Elements: []interface{}{
+							types.Paragraph{
+								Attributes: types.ElementAttributes{},
+								Lines: []types.InlineElements{
+									{
+										types.StringElement{
+											Content: "level 1",
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			}
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+		})
+
+		It("max level of ordered items - case 2", func() {
+			actualContent := `.Ordered, max nesting
+. level 1
+.. level 2
+... level 3
+.... level 4
+..... level 5
+.. level 2`
+			expectedResult := types.OrderedList{
+				Attributes: types.ElementAttributes{
+					types.AttrTitle: "Ordered, max nesting",
+				},
+				Items: []types.OrderedListItem{
+					{
+						Level:          1,
+						Position:       1,
+						NumberingStyle: types.Arabic,
+						Attributes:     types.ElementAttributes{},
+						Elements: []interface{}{
+							types.Paragraph{
+								Attributes: types.ElementAttributes{},
+								Lines: []types.InlineElements{
+									{
+										types.StringElement{
+											Content: "level 1",
+										},
+									},
+								},
+							},
+							types.OrderedList{
+								Attributes: types.ElementAttributes{},
+								Items: []types.OrderedListItem{
+									{
+										Level:          2,
+										Position:       1,
+										NumberingStyle: types.LowerAlpha,
+										Attributes:     types.ElementAttributes{},
+										Elements: []interface{}{
+											types.Paragraph{
+												Attributes: types.ElementAttributes{},
+												Lines: []types.InlineElements{
+													{
+														types.StringElement{
+															Content: "level 2",
+														},
+													},
+												},
+											},
+											types.OrderedList{
+												Attributes: types.ElementAttributes{},
+												Items: []types.OrderedListItem{
+													{
+														Level:          3,
+														Position:       1,
+														NumberingStyle: types.LowerRoman,
+														Attributes:     types.ElementAttributes{},
+														Elements: []interface{}{
+															types.Paragraph{
+																Attributes: types.ElementAttributes{},
+																Lines: []types.InlineElements{
+																	{
+																		types.StringElement{
+																			Content: "level 3",
+																		},
+																	},
+																},
+															},
+															types.OrderedList{
+																Attributes: types.ElementAttributes{},
+																Items: []types.OrderedListItem{
+																	{
+																		Level:          4,
+																		Position:       1,
+																		NumberingStyle: types.UpperAlpha,
+																		Attributes:     types.ElementAttributes{},
+																		Elements: []interface{}{
+																			types.Paragraph{
+																				Attributes: types.ElementAttributes{},
+																				Lines: []types.InlineElements{
+																					{
+																						types.StringElement{
+																							Content: "level 4",
+																						},
+																					},
+																				},
+																			},
+																			types.OrderedList{
+																				Attributes: types.ElementAttributes{},
+																				Items: []types.OrderedListItem{
+																					{
+																						Level:          5,
+																						Position:       1,
+																						NumberingStyle: types.UpperRoman,
+																						Attributes:     types.ElementAttributes{},
+																						Elements: []interface{}{
+																							types.Paragraph{
+																								Attributes: types.ElementAttributes{},
+																								Lines: []types.InlineElements{
+																									{
+																										types.StringElement{
+																											Content: "level 5",
+																										},
+																									},
+																								},
+																							},
+																						},
+																					},
+																				},
+																			},
+																		},
+																	},
+																},
+															},
+														},
+													},
+												},
+											},
+										},
+									},
+									{
+										Level:          2,
+										Position:       2,
+										NumberingStyle: types.LowerAlpha,
+										Attributes:     types.ElementAttributes{},
+										Elements: []interface{}{
+											types.Paragraph{
+												Attributes: types.ElementAttributes{},
+												Lines: []types.InlineElements{
+													{
+														types.StringElement{
+															Content: "level 2",
+														},
+													},
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			}
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+		})
 	})
 
 	Context("items without numbers", func() {
@@ -556,7 +846,6 @@ var _ = Describe("ordered lists", func() {
 					},
 				},
 			}
-
 			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 	})

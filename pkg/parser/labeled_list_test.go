@@ -602,4 +602,192 @@ second term:: definition of the second term`
 		}
 		verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 	})
+
+	It("max level of labeled items - case 1", func() {
+		actualContent := `.Labeled, max nesting
+level 1:: description 1
+level 2::: description 2
+level 3:::: description 3
+level 1:: description 1`
+		expectedResult := types.LabeledList{
+			Attributes: types.ElementAttributes{
+				types.AttrTitle: "Labeled, max nesting",
+			},
+			Items: []types.LabeledListItem{
+				{
+					Level:      1,
+					Term:       "level 1",
+					Attributes: types.ElementAttributes{},
+					Elements: []interface{}{
+						types.Paragraph{
+							Attributes: types.ElementAttributes{},
+							Lines: []types.InlineElements{
+								{
+									types.StringElement{
+										Content: "description 1",
+									},
+								},
+							},
+						},
+						types.LabeledList{
+							Attributes: types.ElementAttributes{},
+							Items: []types.LabeledListItem{
+								{
+									Level:      2,
+									Term:       "level 2",
+									Attributes: types.ElementAttributes{},
+									Elements: []interface{}{
+										types.Paragraph{
+											Attributes: types.ElementAttributes{},
+											Lines: []types.InlineElements{
+												{
+													types.StringElement{
+														Content: "description 2",
+													},
+												},
+											},
+										},
+										types.LabeledList{
+											Attributes: types.ElementAttributes{},
+											Items: []types.LabeledListItem{
+												{
+													Level:      3,
+													Term:       "level 3",
+													Attributes: types.ElementAttributes{},
+													Elements: []interface{}{
+														types.Paragraph{
+															Attributes: types.ElementAttributes{},
+															Lines: []types.InlineElements{
+																{
+																	types.StringElement{
+																		Content: "description 3",
+																	},
+																},
+															},
+														},
+													},
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+				{
+					Level:      1,
+					Term:       "level 1",
+					Attributes: types.ElementAttributes{},
+					Elements: []interface{}{
+						types.Paragraph{
+							Attributes: types.ElementAttributes{},
+							Lines: []types.InlineElements{
+								{
+									types.StringElement{
+										Content: "description 1",
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		}
+		verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+	})
+
+	It("max level of labeled items - case 2", func() {
+		actualContent := `.Labeled, max nesting
+level 1:: description 1
+level 2::: description 2
+level 3:::: description 3
+level 2::: description 2`
+		expectedResult := types.LabeledList{
+			Attributes: types.ElementAttributes{
+				types.AttrTitle: "Labeled, max nesting",
+			},
+			Items: []types.LabeledListItem{
+				{
+					Level:      1,
+					Term:       "level 1",
+					Attributes: types.ElementAttributes{},
+					Elements: []interface{}{
+						types.Paragraph{
+							Attributes: types.ElementAttributes{},
+							Lines: []types.InlineElements{
+								{
+									types.StringElement{
+										Content: "description 1",
+									},
+								},
+							},
+						},
+						types.LabeledList{
+							Attributes: types.ElementAttributes{},
+							Items: []types.LabeledListItem{
+								{
+									Level:      2,
+									Term:       "level 2",
+									Attributes: types.ElementAttributes{},
+									Elements: []interface{}{
+										types.Paragraph{
+											Attributes: types.ElementAttributes{},
+											Lines: []types.InlineElements{
+												{
+													types.StringElement{
+														Content: "description 2",
+													},
+												},
+											},
+										},
+										types.LabeledList{
+											Attributes: types.ElementAttributes{},
+											Items: []types.LabeledListItem{
+												{
+													Level:      3,
+													Term:       "level 3",
+													Attributes: types.ElementAttributes{},
+													Elements: []interface{}{
+														types.Paragraph{
+															Attributes: types.ElementAttributes{},
+															Lines: []types.InlineElements{
+																{
+																	types.StringElement{
+																		Content: "description 3",
+																	},
+																},
+															},
+														},
+													},
+												},
+											},
+										},
+									},
+								},
+								{
+									Level:      2,
+									Term:       "level 2",
+									Attributes: types.ElementAttributes{},
+									Elements: []interface{}{
+										types.Paragraph{
+											Attributes: types.ElementAttributes{},
+											Lines: []types.InlineElements{
+												{
+													types.StringElement{
+														Content: "description 2",
+													},
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		}
+		verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+	})
 })

@@ -882,16 +882,18 @@ func newOrderedList(elements []ListItem) (OrderedList, error) {
 		// log.Debugf("list item %v -> level= %d", item.Elements[0], item.Level)
 		// join item *values* in the parent item when the level decreased
 		if item.Level < previousLevel {
-			parentLayer := bufferedItemsPerLevel[previousLevel-2]
-			parentItem := parentLayer[len(parentLayer)-1]
-			log.Debugf("moving buffered items at level %d (%v) in parent (%v) ", previousLevel, bufferedItemsPerLevel[previousLevel-1][0].NumberingStyle, parentItem.NumberingStyle)
-			childList, err := toOrderedList(bufferedItemsPerLevel[previousLevel-1])
-			if err != nil {
-				return OrderedList{}, err
+			for i := previousLevel; i > item.Level; i-- {
+				parentLayer := bufferedItemsPerLevel[i-2]
+				parentItem := parentLayer[len(parentLayer)-1]
+				log.Debugf("moving buffered items at level %d (%v) in parent (%v) ", i, bufferedItemsPerLevel[i-1][0].NumberingStyle, parentItem.NumberingStyle)
+				childList, err := toOrderedList(bufferedItemsPerLevel[i-1])
+				if err != nil {
+					return OrderedList{}, err
+				}
+				parentItem.Elements = append(parentItem.Elements, childList)
+				// clear the previously buffered items at level 'previousLevel'
+				delete(bufferedItemsPerLevel, i-1)
 			}
-			parentItem.Elements = append(parentItem.Elements, childList)
-			// clear the previously buffered items at level 'previousLevel'
-			delete(bufferedItemsPerLevel, previousLevel-1)
 		}
 		// new level of element: put it in the buffer
 		if item.Level > len(bufferedItemsPerLevel) {

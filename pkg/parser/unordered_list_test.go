@@ -781,6 +781,297 @@ on 2 lines, too.`
 			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 
+		It("max level of unordered items - case 1", func() {
+			actualContent := `.Unordered, max nesting
+* level 1
+** level 2
+*** level 3
+**** level 4
+***** level 5
+* level 1`
+			expectedResult := types.UnorderedList{
+				Attributes: types.ElementAttributes{
+					types.AttrTitle: "Unordered, max nesting",
+				},
+				Items: []types.UnorderedListItem{
+					{
+						Level:       1,
+						BulletStyle: types.OneAsterisk,
+						CheckStyle:  types.NoCheck,
+						Attributes:  types.ElementAttributes{},
+						Elements: []interface{}{
+							types.Paragraph{
+								Attributes: types.ElementAttributes{},
+								Lines: []types.InlineElements{
+									{
+										types.StringElement{
+											Content: "level 1",
+										},
+									},
+								},
+							},
+							types.UnorderedList{
+								Attributes: types.ElementAttributes{},
+								Items: []types.UnorderedListItem{
+									{
+										Level:       2,
+										BulletStyle: types.TwoAsterisks,
+										CheckStyle:  types.NoCheck,
+										Attributes:  types.ElementAttributes{},
+										Elements: []interface{}{
+											types.Paragraph{
+												Attributes: types.ElementAttributes{},
+												Lines: []types.InlineElements{
+													{
+														types.StringElement{
+															Content: "level 2",
+														},
+													},
+												},
+											},
+											types.UnorderedList{
+												Attributes: types.ElementAttributes{},
+												Items: []types.UnorderedListItem{
+													{
+														Level:       3,
+														BulletStyle: types.ThreeAsterisks,
+														CheckStyle:  types.NoCheck,
+														Attributes:  types.ElementAttributes{},
+														Elements: []interface{}{
+															types.Paragraph{
+																Attributes: types.ElementAttributes{},
+																Lines: []types.InlineElements{
+																	{
+																		types.StringElement{
+																			Content: "level 3",
+																		},
+																	},
+																},
+															},
+															types.UnorderedList{
+																Attributes: types.ElementAttributes{},
+																Items: []types.UnorderedListItem{
+																	{
+																		Level:       4,
+																		BulletStyle: types.FourAsterisks,
+																		CheckStyle:  types.NoCheck,
+																		Attributes:  types.ElementAttributes{},
+																		Elements: []interface{}{
+																			types.Paragraph{
+																				Attributes: types.ElementAttributes{},
+																				Lines: []types.InlineElements{
+																					{
+																						types.StringElement{
+																							Content: "level 4",
+																						},
+																					},
+																				},
+																			},
+																			types.UnorderedList{
+																				Attributes: types.ElementAttributes{},
+																				Items: []types.UnorderedListItem{
+																					{
+																						Level:       5,
+																						BulletStyle: types.FiveAsterisks,
+																						CheckStyle:  types.NoCheck,
+																						Attributes:  types.ElementAttributes{},
+																						Elements: []interface{}{
+																							types.Paragraph{
+																								Attributes: types.ElementAttributes{},
+																								Lines: []types.InlineElements{
+																									{
+																										types.StringElement{
+																											Content: "level 5",
+																										},
+																									},
+																								},
+																							},
+																						},
+																					},
+																				},
+																			},
+																		},
+																	},
+																},
+															},
+														},
+													},
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+					{
+						Level:       1,
+						BulletStyle: types.OneAsterisk,
+						CheckStyle:  types.NoCheck,
+						Attributes:  types.ElementAttributes{},
+						Elements: []interface{}{
+							types.Paragraph{
+								Attributes: types.ElementAttributes{},
+								Lines: []types.InlineElements{
+									{
+										types.StringElement{
+											Content: "level 1",
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			}
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+		})
+
+		It("max level of unordered items - case 2", func() {
+			actualContent := `.Unordered, max nesting
+* level 1
+** level 2
+*** level 3
+**** level 4
+***** level 5
+** level 2`
+			expectedResult := types.UnorderedList{
+				Attributes: types.ElementAttributes{
+					types.AttrTitle: "Unordered, max nesting",
+				},
+				Items: []types.UnorderedListItem{
+					{
+						Level:       1,
+						BulletStyle: types.OneAsterisk,
+						CheckStyle:  types.NoCheck,
+						Attributes:  types.ElementAttributes{},
+						Elements: []interface{}{
+							types.Paragraph{
+								Attributes: types.ElementAttributes{},
+								Lines: []types.InlineElements{
+									{
+										types.StringElement{
+											Content: "level 1",
+										},
+									},
+								},
+							},
+							types.UnorderedList{
+								Attributes: types.ElementAttributes{},
+								Items: []types.UnorderedListItem{
+									{
+										Level:       2,
+										BulletStyle: types.TwoAsterisks,
+										CheckStyle:  types.NoCheck,
+										Attributes:  types.ElementAttributes{},
+										Elements: []interface{}{
+											types.Paragraph{
+												Attributes: types.ElementAttributes{},
+												Lines: []types.InlineElements{
+													{
+														types.StringElement{
+															Content: "level 2",
+														},
+													},
+												},
+											},
+											types.UnorderedList{
+												Attributes: types.ElementAttributes{},
+												Items: []types.UnorderedListItem{
+													{
+														Level:       3,
+														BulletStyle: types.ThreeAsterisks,
+														CheckStyle:  types.NoCheck,
+														Attributes:  types.ElementAttributes{},
+														Elements: []interface{}{
+															types.Paragraph{
+																Attributes: types.ElementAttributes{},
+																Lines: []types.InlineElements{
+																	{
+																		types.StringElement{
+																			Content: "level 3",
+																		},
+																	},
+																},
+															},
+															types.UnorderedList{
+																Attributes: types.ElementAttributes{},
+																Items: []types.UnorderedListItem{
+																	{
+																		Level:       4,
+																		BulletStyle: types.FourAsterisks,
+																		CheckStyle:  types.NoCheck,
+																		Attributes:  types.ElementAttributes{},
+																		Elements: []interface{}{
+																			types.Paragraph{
+																				Attributes: types.ElementAttributes{},
+																				Lines: []types.InlineElements{
+																					{
+																						types.StringElement{
+																							Content: "level 4",
+																						},
+																					},
+																				},
+																			},
+																			types.UnorderedList{
+																				Attributes: types.ElementAttributes{},
+																				Items: []types.UnorderedListItem{
+																					{
+																						Level:       5,
+																						BulletStyle: types.FiveAsterisks,
+																						CheckStyle:  types.NoCheck,
+																						Attributes:  types.ElementAttributes{},
+																						Elements: []interface{}{
+																							types.Paragraph{
+																								Attributes: types.ElementAttributes{},
+																								Lines: []types.InlineElements{
+																									{
+																										types.StringElement{
+																											Content: "level 5",
+																										},
+																									},
+																								},
+																							},
+																						},
+																					},
+																				},
+																			},
+																		},
+																	},
+																},
+															},
+														},
+													},
+												},
+											},
+										},
+									},
+									{
+										Level:       2,
+										BulletStyle: types.TwoAsterisks,
+										CheckStyle:  types.NoCheck,
+										Attributes:  types.ElementAttributes{},
+										Elements: []interface{}{
+											types.Paragraph{
+												Attributes: types.ElementAttributes{},
+												Lines: []types.InlineElements{
+													{
+														types.StringElement{
+															Content: "level 2",
+														},
+													},
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			}
+			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+		})
 	})
 
 	Context("invalid content", func() {
