@@ -678,7 +678,7 @@ InlineElement <- !EOL !LineBreak
 // special case for re-parsing a group of elements after a document substitution:
 // we should treat substitution that did not happen (eg: missing attribute) as regular
 // strings - (used by the inline element renderer)
-InlineElementsWithoutSubtitution <- !BlankLine !BlockDelimiter elements:(InlineElementWithoutSubtitution)+ linebreak:(LineBreak)? EOL { // absorbs heading and trailing spaces
+InlineElementsWithoutSubtitution <- !BlankLine !BlockDelimiter elements:(InlineElementWithoutSubtitution)* linebreak:(LineBreak)? EOL { // absorbs heading and trailing spaces
     return types.NewInlineElements(append(elements.([]interface{}), linebreak))
 } 
 
@@ -857,7 +857,7 @@ Passthrough <- TriplePlusPassthrough / SinglePlusPassthrough / PassthroughMacro
 
 SinglePlusPassthrough <- "+" content:(Alphanums / Spaces / (!NEWLINE !"+" . ){
     return string(c.text), nil
-})* "+" {
+})+ "+" {
     return types.NewPassthrough(types.SinglePlusPassthrough, content.([]interface{}))
 }
 

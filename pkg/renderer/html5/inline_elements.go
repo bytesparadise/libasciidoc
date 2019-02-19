@@ -4,6 +4,8 @@ import (
 	"bytes"
 	"strings"
 
+	"github.com/davecgh/go-spew/spew"
+
 	"github.com/bytesparadise/libasciidoc/pkg/parser"
 
 	"github.com/bytesparadise/libasciidoc/pkg/renderer"
@@ -11,17 +13,6 @@ import (
 	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
 )
-
-// // renderLines renders all lines (i.e, all `InlineElements`` - each `InlineElements` being a slice of elements to generate a line)
-// // and includes an `\n` character in-between, until the last one.
-// // Trailing spaces are removed for each line.
-// func renderLinesWithHardbreak(ctx *renderer.Context, elements []types.InlineElements, hardbreak bool) (string, error) {
-// 	r, err := renderLines(ctx, elements)
-// 	if err != nil {
-// 		return "", err
-// 	}
-// 	return string(r), nil
-// }
 
 func renderLinesAsString(ctx *renderer.Context, elements []types.InlineElements, hardbreak bool) (string, error) {
 	result, err := renderLines(ctx, elements, renderElement, hardbreak)
@@ -64,11 +55,8 @@ func renderLines(ctx *renderer.Context, elements []types.InlineElements, renderE
 
 func renderLine(ctx *renderer.Context, elements types.InlineElements, renderElementFunc rendererFunc) ([]byte, error) {
 	log.Debugf("rendering line with %d element(s)...", len(elements))
-	elements, err := applySubstitutions(ctx, elements)
-	if err != nil {
-		return nil, errors.Wrapf(err, "unable to render line")
-	}
 
+	// first pass or rendering, using the provided `renderElementFunc`:
 	buff := bytes.NewBuffer(nil)
 	for i, element := range elements {
 		renderedElement, err := renderElementFunc(ctx, element)
@@ -87,7 +75,48 @@ func renderLine(ctx *renderer.Context, elements types.InlineElements, renderElem
 			buff.Write(renderedElement)
 		}
 	}
-	log.Debugf("rendered elements: '%s'", buff.String())
+
+	log.Debugf("rendered line elements after 1st pass: '%s'", buff.String())
+
+	// check if the line has some substitution
+	if !hasSubstitutions(elements) {
+		log.Debug("no substitution in the line of elements")
+		return buff.Bytes(), nil
+	}
+	// otherwise, parse the rendered line, in case some new elements (links, etc.) "appeared" after document attribute substitutions
+	r, err := parser.Parse("", buff.Bytes(),
+		parser.Entrypoint("InlineElementsWithoutSubtitution")) // parse a single InlineElements
+	if err != nil {
+		return []byte{}, errors.Wrap(err, "failed process elements after substitution")
+	}
+	elements, ok := r.(types.InlineElements)
+	if !ok {
+		return []byte{}, errors.Errorf("failed process elements after substitution")
+	}
+	if log.IsLevelEnabled(log.DebugLevel) {
+		log.Debug("post-substitution line of elements:")
+		spew.Dump(elements)
+	}
+	buff = bytes.NewBuffer(nil)
+	// render all elements of the line, but StringElement must be rendered plain-text now, to avoid double HTML escape
+	for i, element := range elements {
+		switch element := element.(type) {
+		case types.StringElement:
+			if i == len(elements)-1 {
+				buff.WriteString(strings.TrimRight(element.Content, " "))
+			} else {
+				buff.WriteString(element.Content)
+			}
+		default:
+			renderedElement, err := renderElement(ctx, element)
+			if err != nil {
+				return nil, errors.Wrapf(err, "unable to render line")
+			}
+			buff.Write(renderedElement)
+		}
+	}
+
+	log.Debugf("rendered line elements: '%s'", buff.String())
 	return buff.Bytes(), nil
 }
 
@@ -103,7 +132,7 @@ func hasSubstitutions(e types.InlineElements) bool {
 
 func applySubstitutions(ctx *renderer.Context, e types.InlineElements) (types.InlineElements, error) {
 	if !hasSubstitutions(e) {
-		log.Debug("no subsitution in the line of elements")
+		log.Debug("no substitution in the line of elements")
 		return e, nil
 	}
 	log.Debugf("applying substitutions on %v (%d)", e, len(e))
@@ -116,7 +145,8 @@ func applySubstitutions(ctx *renderer.Context, e types.InlineElements) (types.In
 			if err != nil {
 				return types.InlineElements{}, errors.Wrap(err, "failed to apply substitution")
 			}
-			s = append(s, types.NewStringElement(string(r)))
+			s = append(s, types.NewStringElement(string(r))) // this string element will eventually be merged with surroundings StringElement(s)
+
 		default:
 			s = append(s, element)
 		}
@@ -128,10 +158,10 @@ func applySubstitutions(ctx *renderer.Context, e types.InlineElements) (types.In
 		return types.InlineElements{}, errors.Wrap(err, "failed to apply substitution")
 	}
 	log.Debugf("substitution(s) result: %v (%d)", s, len(s))
-	// now parse the StringElements
+	// now parse the StringElements again to look for new blocks (eg: external link appeared)
 	result := make([]interface{}, 0)
 	for _, element := range s {
-		log.Debugf("now processing element of type %T", element)
+		log.Debugf("now processing element of type %[1]T: %[1]v", element)
 		switch element := element.(type) {
 		case types.StringElement:
 			r, err := parser.Parse("",
@@ -141,10 +171,10 @@ func applySubstitutions(ctx *renderer.Context, e types.InlineElements) (types.In
 				return types.InlineElements{}, errors.Wrap(err, "failed process elements after substitution")
 			}
 			if r, ok := r.(types.InlineElements); ok {
-				// here the doc should have directly an InlineElements since we specified a specific entrypoint for the parser
+				// here the is an InlineElements since we specified a specific entrypoint for the parser
 				result = append(result, r...)
 			} else {
-				return types.InlineElements{}, errors.Errorf("expected an groupg of elements, but got a result of type %T", r)
+				return types.InlineElements{}, errors.Errorf("expected an group of InlineElements, but got a result of type %T", r)
 			}
 		default:
 			result = append(result, element)

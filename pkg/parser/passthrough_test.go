@@ -158,9 +158,8 @@ var _ = Describe("passthroughs", func() {
 				Attributes: types.ElementAttributes{},
 				Lines: []types.InlineElements{
 					{
-						types.Passthrough{
-							Kind:     types.SinglePlusPassthrough,
-							Elements: types.InlineElements{},
+						types.StringElement{
+							Content: "++",
 						},
 					},
 				},
