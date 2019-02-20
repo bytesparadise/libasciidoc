@@ -8,7 +8,6 @@ import (
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 )
 
-
 func processAttributeDeclaration(ctx *renderer.Context, attr types.DocumentAttributeDeclaration) error {
 	ctx.Document.Attributes.AddDeclaration(attr)
 	return nil

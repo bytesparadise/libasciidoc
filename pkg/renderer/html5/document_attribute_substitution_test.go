@@ -1,7 +1,10 @@
 package html5_test
 
 import (
+	"fmt"
+
 	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/ginkgo/extensions/table"
 )
 
 var _ = Describe("document with attributes", func() {
@@ -92,23 +95,46 @@ author is {author}.`
 		})
 	})
 
-	Context("predefined elements", func() {
+	Context("predefined attributes", func() {
 
-		It("single space", func() {
-			actualContent := `a {sp} here.`
-			expectedResult := `<div class="paragraph">
-<p>a   here.</p>
-</div>`
-			verify(GinkgoT(), expectedResult, actualContent)
-		})
-
-		It("blank", func() {
-			actualContent := `a {blank} here.`
-			expectedResult := `<div class="paragraph">
-<p>a  here.</p>
-</div>`
-			verify(GinkgoT(), expectedResult, actualContent)
-		})
+		DescribeTable("predefined attributes in a paragraph",
+			func(code, rendered string) {
+				actualContent := fmt.Sprintf(`the {%s} symbol`, code)
+				expectedResult := fmt.Sprintf(`<div class="paragraph">
+<p>the %s symbol</p>
+</div>`, rendered)
+				verify(GinkgoT(), expectedResult, actualContent)
+			},
+			Entry("sp symbol", "sp", " "),
+			Entry("blank symbol", "blank", ""),
+			Entry("empty symbol", "empty", ""),
+			Entry("nbsp symbol", "nbsp", "&#160;"),
+			Entry("zwsp symbol", "zwsp", "&#8203;"),
+			Entry("wj symbol", "wj", "&#8288;"),
+			Entry("apos symbol", "apos", "&#39;"),
+			Entry("quot symbol", "quot", "&#34;"),
+			Entry("lsquo symbol", "lsquo", "&#8216;"),
+			Entry("rsquo symbol", "rsquo", "&#8217;"),
+			Entry("ldquo symbol", "ldquo", "&#8220;"),
+			Entry("rdquo symbol", "rdquo", "&#8221;"),
+			Entry("deg symbol", "deg", "&#176;"),
+			Entry("plus symbol", "plus", "&#43;"),
+			Entry("brvbar symbol", "brvbar", "&#166;"),
+			Entry("vbar symbol", "vbar", "|"),
+			Entry("amp symbol", "amp", "&amp;"),
+			Entry("lt symbol", "lt", "&lt;"),
+			Entry("gt symbol", "gt", "&gt;"),
+			Entry("startsb symbol", "startsb", "["),
+			Entry("endsb symbol", "endsb", "]"),
+			Entry("caret symbol", "caret", "^"),
+			Entry("asterisk symbol", "asterisk", "*"),
+			Entry("tilde symbol", "tilde", "~"),
+			Entry("backslash symbol", "backslash", `\`),
+			Entry("backtick symbol", "backtick", "`"),
+			Entry("two-colons symbol", "two-colons", "::"),
+			Entry("two-semicolons symbol", "two-semicolons", ";"),
+			Entry("cpp symbol", "cpp", "C++"),
+		)
 
 		It("overriding predefined attribute", func() {
 			actualContent := `:blank: foo
@@ -120,4 +146,5 @@ a {blank} here.`
 			verify(GinkgoT(), expectedResult, actualContent)
 		})
 	})
+
 })
