@@ -21,11 +21,11 @@ var otherSectionContentTmpl texttemplate.Template
 // initializes the templates
 func init() {
 	preambleTmpl = newTextTemplate("preamble",
-		`<div id="preamble">
+		`{{ $ctx := .Context }}{{ with .Data }}{{ if .Wrapper }}<div id="preamble">
 <div class="sectionbody">
-{{ $ctx := .Context }}{{ with .Data }}{{ renderElements $ctx .Elements | printf "%s" }}{{ end }}
+{{ end }}{{ renderElements $ctx .Elements | printf "%s" }}{{ if .Wrapper }}
 </div>
-</div>`,
+</div>{{ end }}{{ end }}`,
 		texttemplate.FuncMap{
 			"renderElements": renderElements,
 		})
@@ -54,11 +54,19 @@ func init() {
 func renderPreamble(ctx *renderer.Context, p types.Preamble) ([]byte, error) {
 	log.Debugf("Rendering preamble...")
 	result := bytes.NewBuffer(nil)
+	// the <div id="preamble"> wrapper is only necessary
+	// if the document has a section 0
+	wrapper := false
+	if ctx.Document.Attributes.HasTitle() {
+		wrapper = true
+	}
 	err := preambleTmpl.Execute(result, ContextualPipeline{
 		Context: ctx,
 		Data: struct {
+			Wrapper  bool
 			Elements []interface{}
 		}{
+			Wrapper:  wrapper,
 			Elements: p.Elements,
 		},
 	})

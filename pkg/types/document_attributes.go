@@ -48,6 +48,12 @@ func (a DocumentAttributes) HasAuthors() bool {
 	return exists
 }
 
+// HasTitle returns `true` if the document has a title, ie, a section with level = 0
+func (a DocumentAttributes) HasTitle() bool {
+	_, found := a[title]
+	return found
+}
+
 // GetTitle retrieves the document title in its metadata, or returns nil if the title was not specified
 func (a DocumentAttributes) GetTitle() (SectionTitle, error) {
 	if t, found := a[title]; found {

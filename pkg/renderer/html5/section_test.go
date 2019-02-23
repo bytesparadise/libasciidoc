@@ -228,6 +228,59 @@ Listing block content is commonly used to preserve code input.</pre>
 </div>`
 			verify(GinkgoT(), expectedResult, actualContent)
 		})
+	})
 
+	Context("preambles", func() {
+
+		It("should include preamble wrapper", func() {
+			actualContent := `= Title
+
+preamble 
+here
+
+== section 1
+
+content here`
+			expectedResult := `<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>preamble
+here</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_section_1">section 1</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>content here</p>
+</div>
+</div>
+</div>`
+			verify(GinkgoT(), expectedResult, actualContent)
+		})
+
+		It("should not include preamble wrapper", func() {
+			actualContent := `preamble 
+here
+
+== section 1
+
+content here
+`
+			expectedResult := `<div class="paragraph">
+<p>preamble
+here</p>
+</div>
+<div class="sect1">
+<h2 id="_section_1">section 1</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>content here</p>
+</div>
+</div>
+</div>`
+			verify(GinkgoT(), expectedResult, actualContent)
+		})
 	})
 })
