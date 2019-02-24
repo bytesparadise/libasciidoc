@@ -87,10 +87,7 @@ func renderTableOfContentsSections(ctx *renderer.Context, elements []interface{}
 					return template.HTML(""), errors.Wrapf(err, "error while rendering table of content section")
 				}
 			}
-			var id string
-			if i, ok := section.Title.Attributes[types.AttrID].(string); ok {
-				id = i
-			}
+			id := generateID(ctx, section.Title.Attributes)
 			renderedTitleStr := strings.TrimSpace(string(renderedTitle))
 			sections = append(sections, TableOfContentsSection{
 				Level:       section.Level,

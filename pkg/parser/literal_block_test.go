@@ -59,6 +59,7 @@ a normal paragraph.`
 							types.AttrKind:             types.Literal,
 							types.AttrLiteralBlockType: types.LiteralBlockWithSpacesOnFirstLine,
 							types.AttrID:               "ID",
+							types.AttrCustomID:         true,
 							types.AttrTitle:            "title",
 						},
 						Lines: []string{
@@ -119,6 +120,7 @@ a normal paragraph.`
 							types.AttrKind:             types.Literal,
 							types.AttrLiteralBlockType: types.LiteralBlockWithDelimiter,
 							types.AttrID:               "ID",
+							types.AttrCustomID:         true,
 							types.AttrTitle:            "title",
 						},
 						Lines: []string{
@@ -194,6 +196,7 @@ a normal paragraph.`
 						Attributes: types.ElementAttributes{
 							types.AttrKind:             types.Literal,
 							types.AttrID:               "ID",
+							types.AttrCustomID:         true,
 							types.AttrTitle:            "title",
 							types.AttrLiteralBlockType: types.LiteralBlockWithAttribute,
 						},

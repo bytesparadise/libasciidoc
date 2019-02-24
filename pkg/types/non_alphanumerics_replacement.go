@@ -67,7 +67,9 @@ func newreplaceNonAlphanumericsVisitor() replaceNonAlphanumericsVisitor {
 func (v *replaceNonAlphanumericsVisitor) Visit(element Visitable) error {
 	// log.Debugf("visiting element of type '%T'", element)
 	if element, ok := element.(StringElement); ok {
-		v.buf.WriteString("_")
+		if v.buf.Len() > 0 {
+			v.buf.WriteString("_")
+		}
 		normalized, err := v.normalize(element.Content)
 		if err != nil {
 			return errors.Wrapf(err, "error while normalizing String Element")

@@ -13,7 +13,8 @@ var _ = Describe("sections", func() {
 			actualContent := "= a header"
 			doctitle := types.SectionTitle{
 				Attributes: types.ElementAttributes{
-					types.AttrID: "_a_header",
+					types.AttrID:       "a_header",
+					types.AttrCustomID: false,
 				},
 				Elements: types.InlineElements{
 					types.StringElement{Content: "a header"},
@@ -35,7 +36,8 @@ var _ = Describe("sections", func() {
 			actualContent := "= a header   "
 			doctitle := types.SectionTitle{
 				Attributes: types.ElementAttributes{
-					types.AttrID: "_a_header",
+					types.AttrID:       "a_header",
+					types.AttrCustomID: false,
 				},
 				Elements: types.InlineElements{
 					types.StringElement{Content: "a header   "},
@@ -60,7 +62,8 @@ and a paragraph`
 
 			doctitle := types.SectionTitle{
 				Attributes: types.ElementAttributes{
-					types.AttrID: "_a_header",
+					types.AttrID:       "a_header",
+					types.AttrCustomID: false,
 				},
 				Elements: types.InlineElements{
 					types.StringElement{Content: "a header"},
@@ -91,7 +94,8 @@ and a paragraph`
 			actualContent := `== section 1`
 			section1Title := types.SectionTitle{
 				Attributes: types.ElementAttributes{
-					types.AttrID: "_section_1",
+					types.AttrID:       "section_1",
+					types.AttrCustomID: false,
 				},
 				Elements: types.InlineElements{
 					types.StringElement{Content: "section 1"},
@@ -100,7 +104,7 @@ and a paragraph`
 			expectedResult := types.Document{
 				Attributes: types.DocumentAttributes{},
 				ElementReferences: types.ElementReferences{
-					"_section_1": section1Title,
+					"section_1": section1Title,
 				},
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
@@ -119,7 +123,8 @@ and a paragraph`
 			actualContent := `==  *2 spaces and bold content*`
 			sectionTitle := types.SectionTitle{
 				Attributes: types.ElementAttributes{
-					types.AttrID: "_2_spaces_and_bold_content",
+					types.AttrID:       "2_spaces_and_bold_content",
+					types.AttrCustomID: false,
 				},
 				Elements: types.InlineElements{
 					types.QuotedText{
@@ -133,7 +138,7 @@ and a paragraph`
 			expectedResult := types.Document{
 				Attributes: types.DocumentAttributes{},
 				ElementReferences: types.ElementReferences{
-					"_2_spaces_and_bold_content": sectionTitle,
+					"2_spaces_and_bold_content": sectionTitle,
 				},
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
@@ -154,7 +159,8 @@ and a paragraph`
 == section 1`
 			doctitle := types.SectionTitle{
 				Attributes: types.ElementAttributes{
-					types.AttrID: "_a_header",
+					types.AttrID:       "a_header",
+					types.AttrCustomID: false,
 				},
 				Elements: types.InlineElements{
 					types.StringElement{Content: "a header"},
@@ -162,7 +168,8 @@ and a paragraph`
 			}
 			section1Title := types.SectionTitle{
 				Attributes: types.ElementAttributes{
-					types.AttrID: "_section_1",
+					types.AttrID:       "section_1",
+					types.AttrCustomID: false,
 				},
 				Elements: types.InlineElements{
 					types.StringElement{Content: "section 1"},
@@ -173,7 +180,7 @@ and a paragraph`
 					"doctitle": doctitle,
 				},
 				ElementReferences: types.ElementReferences{
-					"_section_1": section1Title,
+					"section_1": section1Title,
 				},
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
@@ -196,7 +203,8 @@ a short preamble
 == section 1`
 			section1Title := types.SectionTitle{
 				Attributes: types.ElementAttributes{
-					types.AttrID: "_section_1",
+					types.AttrID:       "section_1",
+					types.AttrCustomID: false,
 				},
 				Elements: types.InlineElements{
 					types.StringElement{Content: "section 1"},
@@ -204,7 +212,8 @@ a short preamble
 			}
 			doctitle := types.SectionTitle{
 				Attributes: types.ElementAttributes{
-					types.AttrID: "_a_header",
+					types.AttrID:       "a_header",
+					types.AttrCustomID: false,
 				},
 				Elements: types.InlineElements{
 					types.StringElement{Content: "a header"},
@@ -215,7 +224,7 @@ a short preamble
 					"doctitle": doctitle,
 				},
 				ElementReferences: types.ElementReferences{
-					"_section_1": section1Title,
+					"section_1": section1Title,
 				},
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
@@ -249,7 +258,8 @@ a short preamble
 				"=== section 2"
 			doctitle := types.SectionTitle{
 				Attributes: types.ElementAttributes{
-					types.AttrID: "_a_header",
+					types.AttrID:       "a_header",
+					types.AttrCustomID: false,
 				},
 				Elements: types.InlineElements{
 					types.StringElement{Content: "a header"},
@@ -257,7 +267,8 @@ a short preamble
 			}
 			section2Title := types.SectionTitle{
 				Attributes: types.ElementAttributes{
-					types.AttrID: "_section_2",
+					types.AttrID:       "section_2",
+					types.AttrCustomID: false,
 				},
 				Elements: types.InlineElements{
 					types.StringElement{Content: "section 2"},
@@ -268,7 +279,7 @@ a short preamble
 					"doctitle": doctitle,
 				},
 				ElementReferences: types.ElementReferences{
-					"_section_2": section2Title,
+					"section_2": section2Title,
 				},
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
@@ -288,7 +299,8 @@ a short preamble
 and a paragraph`
 			section1Title := types.SectionTitle{
 				Attributes: types.ElementAttributes{
-					types.AttrID: "_a_title",
+					types.AttrID:       "a_title",
+					types.AttrCustomID: false,
 				},
 				Elements: types.InlineElements{
 					types.StringElement{Content: "a title"},
@@ -297,7 +309,7 @@ and a paragraph`
 			expectedResult := types.Document{
 				Attributes: types.DocumentAttributes{},
 				ElementReferences: types.ElementReferences{
-					"_a_title": section1Title,
+					"a_title": section1Title,
 				},
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
@@ -327,7 +339,8 @@ and a paragraph`
 and a paragraph`
 			section1Title := types.SectionTitle{
 				Attributes: types.ElementAttributes{
-					types.AttrID: "_a_title",
+					types.AttrID:       "a_title",
+					types.AttrCustomID: false,
 				},
 				Elements: types.InlineElements{
 					types.StringElement{Content: "a title"},
@@ -336,7 +349,7 @@ and a paragraph`
 			expectedResult := types.Document{
 				Attributes: types.DocumentAttributes{},
 				ElementReferences: types.ElementReferences{
-					"_a_title": section1Title,
+					"a_title": section1Title,
 				},
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
@@ -365,7 +378,8 @@ and a paragraph`
 			actualContent := "== a title\n    \nand a paragraph"
 			section1Title := types.SectionTitle{
 				Attributes: types.ElementAttributes{
-					types.AttrID: "_a_title",
+					types.AttrID:       "a_title",
+					types.AttrCustomID: false,
 				},
 				Elements: types.InlineElements{
 					types.StringElement{Content: "a title"},
@@ -374,7 +388,7 @@ and a paragraph`
 			expectedResult := types.Document{
 				Attributes: types.DocumentAttributes{},
 				ElementReferences: types.ElementReferences{
-					"_a_title": section1Title,
+					"a_title": section1Title,
 				},
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
@@ -412,7 +426,8 @@ a paragraph
 a paragraph`
 			doctitle := types.SectionTitle{
 				Attributes: types.ElementAttributes{
-					types.AttrID: "_a_header",
+					types.AttrID:       "a_header",
+					types.AttrCustomID: false,
 				},
 				Elements: types.InlineElements{
 					types.StringElement{Content: "a header"},
@@ -420,7 +435,8 @@ a paragraph`
 			}
 			sectionATitle := types.SectionTitle{
 				Attributes: types.ElementAttributes{
-					types.AttrID: "_section_a",
+					types.AttrID:       "section_a",
+					types.AttrCustomID: false,
 				},
 				Elements: types.InlineElements{
 					types.StringElement{Content: "Section A"},
@@ -428,7 +444,8 @@ a paragraph`
 			}
 			sectionAaTitle := types.SectionTitle{
 				Attributes: types.ElementAttributes{
-					types.AttrID: "_section_a_a",
+					types.AttrID:       "section_a_a",
+					types.AttrCustomID: false,
 				},
 				Elements: types.InlineElements{
 					types.StringElement{Content: "Section A.a"},
@@ -436,7 +453,8 @@ a paragraph`
 			}
 			sectionBTitle := types.SectionTitle{
 				Attributes: types.ElementAttributes{
-					types.AttrID: "_section_b",
+					types.AttrID:       "section_b",
+					types.AttrCustomID: false,
 				},
 				Elements: types.InlineElements{
 					types.StringElement{Content: "Section B"},
@@ -447,9 +465,9 @@ a paragraph`
 					"doctitle": doctitle,
 				},
 				ElementReferences: types.ElementReferences{
-					"_section_a":   sectionATitle,
-					"_section_a_a": sectionAaTitle,
-					"_section_b":   sectionBTitle,
+					"section_a":   sectionATitle,
+					"section_a_a": sectionAaTitle,
+					"section_b":   sectionBTitle,
 				},
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
@@ -508,7 +526,8 @@ a paragraph`
 == a header`
 			sectionTitle := types.SectionTitle{
 				Attributes: types.ElementAttributes{
-					types.AttrID: "custom_header",
+					types.AttrID:       "custom_header",
+					types.AttrCustomID: true,
 				},
 				Elements: types.InlineElements{
 					types.StringElement{Content: "a header"},
@@ -543,7 +562,8 @@ a paragraph`
 a paragraph`
 			doctitle := types.SectionTitle{
 				Attributes: types.ElementAttributes{
-					types.AttrID: "custom_header",
+					types.AttrID:       "custom_header",
+					types.AttrCustomID: true,
 				},
 				Elements: types.InlineElements{
 					types.StringElement{Content: "a header"},
@@ -551,7 +571,8 @@ a paragraph`
 			}
 			fooTitle := types.SectionTitle{
 				Attributes: types.ElementAttributes{
-					types.AttrID: "foo",
+					types.AttrID:       "foo",
+					types.AttrCustomID: true,
 				},
 				Elements: types.InlineElements{
 					types.StringElement{Content: "Section F "},
@@ -559,7 +580,8 @@ a paragraph`
 			}
 			barTitle := types.SectionTitle{
 				Attributes: types.ElementAttributes{
-					types.AttrID: "bar",
+					types.AttrID:       "bar",
+					types.AttrCustomID: true,
 				},
 				Elements: types.InlineElements{
 					types.StringElement{Content: "Section B"},
@@ -608,7 +630,8 @@ a paragraph`
 == section 1`
 			section1aTitle := types.SectionTitle{
 				Attributes: types.ElementAttributes{
-					types.AttrID: "_section_1",
+					types.AttrID:       "section_1",
+					types.AttrCustomID: false,
 				},
 				Elements: types.InlineElements{
 					types.StringElement{Content: "section 1"},
@@ -616,7 +639,8 @@ a paragraph`
 			}
 			section1bTitle := types.SectionTitle{
 				Attributes: types.ElementAttributes{
-					types.AttrID: "_section_1_2",
+					types.AttrID:       "section_1_2",
+					types.AttrCustomID: false,
 				},
 				Elements: types.InlineElements{
 					types.StringElement{Content: "section 1"},
@@ -626,8 +650,8 @@ a paragraph`
 			expectedResult := types.Document{
 				Attributes: types.DocumentAttributes{},
 				ElementReferences: types.ElementReferences{
-					"_section_1":   section1aTitle,
-					"_section_1_2": section1bTitle,
+					"section_1":   section1aTitle,
+					"section_1_2": section1bTitle,
 				},
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
@@ -701,7 +725,8 @@ a paragraph`
 				Attributes: types.DocumentAttributes{
 					"doctitle": types.SectionTitle{
 						Attributes: types.ElementAttributes{
-							types.AttrID: "_a_header",
+							types.AttrID:       "a_header",
+							types.AttrCustomID: false,
 						},
 						Elements: types.InlineElements{
 							types.StringElement{Content: "a header"},
@@ -735,7 +760,8 @@ foo
 bar`
 			header2Title := types.SectionTitle{
 				Attributes: types.ElementAttributes{
-					types.AttrID: "_header_2",
+					types.AttrID:       "header_2",
+					types.AttrCustomID: false,
 				},
 				Elements: types.InlineElements{
 					types.StringElement{Content: "header 2"},
@@ -745,7 +771,8 @@ bar`
 				Attributes: types.DocumentAttributes{
 					"doctitle": types.SectionTitle{
 						Attributes: types.ElementAttributes{
-							types.AttrID: "_header_1",
+							types.AttrID:       "header_1",
+							types.AttrCustomID: false,
 						},
 						Elements: types.InlineElements{
 							types.StringElement{Content: "header 1"},
@@ -753,7 +780,7 @@ bar`
 					},
 				},
 				ElementReferences: types.ElementReferences{
-					"_header_2": header2Title,
+					"header_2": header2Title,
 				},
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},

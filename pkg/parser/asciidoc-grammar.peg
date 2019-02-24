@@ -918,10 +918,10 @@ RelativeLinkURL <- URL_SCHEME? URL {
     return string(c.text), nil
 }
 
-LinkAttributes <- "[" text:(LinkTextAttribute) ","? WS* otherAttrs:(GenericAttribute)* "]" {
-    return types.NewInlineLinkAttributes(text, otherAttrs.([]interface{}))
-} / "[" otherAttrs:(GenericAttribute)* "]" {
-    return types.NewInlineLinkAttributes(nil, otherAttrs.([]interface{}))
+LinkAttributes <- "[" text:(LinkTextAttribute) ","? WS* otherattrs:(GenericAttribute)* "]" {
+    return types.NewInlineLinkAttributes(text, otherattrs.([]interface{}))
+} / "[" otherattrs:(GenericAttribute)* "]" {
+    return types.NewInlineLinkAttributes(nil, otherattrs.([]interface{}))
 } 
 
 LinkTextAttribute <- (Alphanums / Spaces / (!"=" !"," !"]"  .) {
@@ -945,17 +945,17 @@ InlineImage <- "image:" !":" path:(URL) inlineAttributes:(ImageAttributes) {
 ImageAttributes <- "[" alt:(ImageAttribute) ","
     width:(ImageAttribute)  ","
     height:(ImageAttribute) ","?
-    otherAttrs:(GenericAttribute)* "]" {
-        return types.NewImageAttributes(alt, width, height, otherAttrs.([]interface{}))
+    otherattrs:(GenericAttribute)* "]" {
+        return types.NewImageAttributes(alt, width, height, otherattrs.([]interface{}))
 } / "[" alt:(ImageAttribute) ","
     width:(ImageAttribute) ","?
-    otherAttrs:(GenericAttribute)* "]" {
-        return types.NewImageAttributes(alt, width, nil, otherAttrs.([]interface{}))
+    otherattrs:(GenericAttribute)* "]" {
+        return types.NewImageAttributes(alt, width, nil, otherattrs.([]interface{}))
 } / "[" alt:(ImageAttribute) ","?
-    otherAttrs:(GenericAttribute)* "]" {
-        return types.NewImageAttributes(alt, nil, nil, otherAttrs.([]interface{}))
-} / "[" otherAttrs:(GenericAttribute)* "]" {
-        return types.NewImageAttributes(nil, nil, nil, otherAttrs.([]interface{}))
+    otherattrs:(GenericAttribute)* "]" {
+        return types.NewImageAttributes(alt, nil, nil, otherattrs.([]interface{}))
+} / "[" otherattrs:(GenericAttribute)* "]" {
+        return types.NewImageAttributes(nil, nil, nil, otherattrs.([]interface{}))
 } 
 
 

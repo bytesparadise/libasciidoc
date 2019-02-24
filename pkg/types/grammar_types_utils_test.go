@@ -44,35 +44,35 @@ var _ = Describe("normalizing string", func() {
 		source := InlineElements{
 			StringElement{Content: "hello"},
 		}
-		verify(GinkgoT(), "_hello", source)
+		verify(GinkgoT(), "hello", source)
 	})
 
 	It("héllo with an accent", func() {
 		source := InlineElements{
 			StringElement{Content: "  héllo 1.2   and 3 Spaces"},
 		}
-		verify(GinkgoT(), "_héllo_1_2_and_3_spaces", source)
+		verify(GinkgoT(), "héllo_1_2_and_3_spaces", source)
 	})
 
 	It("a an accent and a swedish character", func() {
 		source := InlineElements{
 			StringElement{Content: `A à ⌘`},
 		}
-		verify(GinkgoT(), `_a_à`, source)
+		verify(GinkgoT(), `a_à`, source)
 	})
 
 	It("AŁA", func() {
 		source := InlineElements{
 			StringElement{Content: `AŁA 0.1 ?`},
 		}
-		verify(GinkgoT(), `_ała_0_1`, source)
+		verify(GinkgoT(), `ała_0_1`, source)
 	})
 
 	It("it's  2 spaces, here !", func() {
 		source := InlineElements{
 			StringElement{Content: `it's  2 spaces, here !`},
 		}
-		verify(GinkgoT(), `_it_s_2_spaces_here`, source)
+		verify(GinkgoT(), `it_s_2_spaces_here`, source)
 	})
 
 	It("content with <strong> markup", func() {
@@ -86,7 +86,7 @@ var _ = Describe("normalizing string", func() {
 				},
 			},
 		}
-		verify(GinkgoT(), `_a_section_title_with_bold_content`, source)
+		verify(GinkgoT(), `a_section_title_with_bold_content`, source)
 	})
 })
 

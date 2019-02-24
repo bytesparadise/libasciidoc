@@ -120,10 +120,7 @@ func renderSectionTitle(ctx *renderer.Context, level int, sectionTitle types.Sec
 		return "", errors.Wrapf(err, "error while rendering sectionTitle content")
 	}
 	renderedContentStr := strings.TrimSpace(string(renderedContent))
-	var id string
-	if i, ok := sectionTitle.Attributes[types.AttrID].(string); ok {
-		id = i
-	}
+	id := generateID(ctx, sectionTitle.Attributes)
 	err = sectionHeaderTmpl.Execute(result, struct {
 		Level   int
 		ID      string

@@ -103,6 +103,7 @@ image::images/foo.png[the foo.png image, 600, 400]`
 				expectedResult := types.ImageBlock{
 					Attributes: types.ElementAttributes{
 						types.AttrID:          "img-foobar",
+						types.AttrCustomID: true,
 						types.AttrTitle:       "A title to foobar",
 						types.AttrInlineLink:  "http://foo.bar",
 						types.AttrImageAlt:    "the foo.png image",
@@ -309,6 +310,7 @@ image::appa.png[]`
 							types.AttrImageWidth:  "",
 							types.AttrImageHeight: "",
 							types.AttrID:          "myid",
+							types.AttrCustomID: true,
 						},
 						Path: "images/foo.png",
 					},
@@ -325,6 +327,7 @@ image::appa.png[]`
 							types.AttrImageWidth:  "",
 							types.AttrImageHeight: "",
 							types.AttrID:          "myid",
+							types.AttrCustomID: true,
 							types.AttrTitle:       "mytitle",
 							types.AttrRole:        "myrole",
 						},
@@ -343,6 +346,7 @@ image::appa.png[]`
 							types.AttrImageWidth:  "600",
 							types.AttrImageHeight: "400",
 							types.AttrID:          "myid",
+							types.AttrCustomID: true,
 							types.AttrTitle:       "mytitle",
 							types.AttrRole:        "myrole",
 						},
