@@ -1,3 +1,34 @@
+# [](https://github.com/bytesparadise/libasciidoc/compare/v0.2.0...v) (2019-02-24)
+
+
+
+# [0.2.0](https://github.com/bytesparadise/libasciidoc/compare/v0.1.0...v0.2.0) (2019-02-24)
+
+
+### Bug Fixes
+
+* **renderer:** avoid double encoding of document attributes ([#296](https://github.com/bytesparadise/libasciidoc/issues/296)) ([00c0132](https://github.com/bytesparadise/libasciidoc/commit/00c0132)), closes [#43](https://github.com/bytesparadise/libasciidoc/issues/43) [#43](https://github.com/bytesparadise/libasciidoc/issues/43) [#295](https://github.com/bytesparadise/libasciidoc/issues/295)
+* **renderer:** do not always render preamble withing wrapper ([#299](https://github.com/bytesparadise/libasciidoc/issues/299)) ([76ea3f7](https://github.com/bytesparadise/libasciidoc/commit/76ea3f7)), closes [#298](https://github.com/bytesparadise/libasciidoc/issues/298)
+* **renderer:** fix panic in ToC when doc has no section ([#285](https://github.com/bytesparadise/libasciidoc/issues/285)) ([f7ee178](https://github.com/bytesparadise/libasciidoc/commit/f7ee178)), closes [#284](https://github.com/bytesparadise/libasciidoc/issues/284)
+* **renderer:** wrap continuing element in `<div>` ([#281](https://github.com/bytesparadise/libasciidoc/issues/281)) ([f94e69a](https://github.com/bytesparadise/libasciidoc/commit/f94e69a)), closes [#270](https://github.com/bytesparadise/libasciidoc/issues/270)
+* **types:** attach child elements to correct parent in ordered list ([#294](https://github.com/bytesparadise/libasciidoc/issues/294)) ([8d72ae0](https://github.com/bytesparadise/libasciidoc/commit/8d72ae0)), closes [#293](https://github.com/bytesparadise/libasciidoc/issues/293)
+
+
+### Features
+
+* **parser:** support spaces and tabs ahead of single line comment ([#289](https://github.com/bytesparadise/libasciidoc/issues/289)) ([061eb82](https://github.com/bytesparadise/libasciidoc/commit/061eb82)), closes [#288](https://github.com/bytesparadise/libasciidoc/issues/288)
+* **parser/renderer:** attach list item to ancestor ([#291](https://github.com/bytesparadise/libasciidoc/issues/291)) ([6d9eb0e](https://github.com/bytesparadise/libasciidoc/commit/6d9eb0e)), closes [#264](https://github.com/bytesparadise/libasciidoc/issues/264)
+* **parser/renderer:** support checklists ([#262](https://github.com/bytesparadise/libasciidoc/issues/262)) ([34598af](https://github.com/bytesparadise/libasciidoc/commit/34598af)), closes [#244](https://github.com/bytesparadise/libasciidoc/issues/244)
+* **parser/renderer:** support element ID prefix ([#302](https://github.com/bytesparadise/libasciidoc/issues/302)) ([9780fef](https://github.com/bytesparadise/libasciidoc/commit/9780fef)), closes [#300](https://github.com/bytesparadise/libasciidoc/issues/300)
+* **parser/renderer:** support list separation  ([#274](https://github.com/bytesparadise/libasciidoc/issues/274)) ([d2945ab](https://github.com/bytesparadise/libasciidoc/commit/d2945ab)), closes [#263](https://github.com/bytesparadise/libasciidoc/issues/263)
+* **renderer:** support 'start' attribute when rendering an ordered list ([#279](https://github.com/bytesparadise/libasciidoc/issues/279)) ([e7f692d](https://github.com/bytesparadise/libasciidoc/commit/e7f692d)), closes [#271](https://github.com/bytesparadise/libasciidoc/issues/271)
+* **renderer:** support "Q and A" labeled lists ([#280](https://github.com/bytesparadise/libasciidoc/issues/280)) ([6be62cd](https://github.com/bytesparadise/libasciidoc/commit/6be62cd)), closes [#271](https://github.com/bytesparadise/libasciidoc/issues/271)
+* **renderer:** support dropping of principal text in ordered list item ([#283](https://github.com/bytesparadise/libasciidoc/issues/283)) ([2387309](https://github.com/bytesparadise/libasciidoc/commit/2387309)), closes [#266](https://github.com/bytesparadise/libasciidoc/issues/266) [#265](https://github.com/bytesparadise/libasciidoc/issues/265)
+* **renderer:** support predefined attributes ([#282](https://github.com/bytesparadise/libasciidoc/issues/282)) ([99581b5](https://github.com/bytesparadise/libasciidoc/commit/99581b5)), closes [#266](https://github.com/bytesparadise/libasciidoc/issues/266)
+* **renderer:** support title on labeled lists ([#278](https://github.com/bytesparadise/libasciidoc/issues/278)) ([a50c637](https://github.com/bytesparadise/libasciidoc/commit/a50c637)), closes [#267](https://github.com/bytesparadise/libasciidoc/issues/267)
+
+
+
 # [0.1.0](https://github.com/bytesparadise/libasciidoc/compare/39964e8...v0.1.0) (2019-01-02)
 
 
