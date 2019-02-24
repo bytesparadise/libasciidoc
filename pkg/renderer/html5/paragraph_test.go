@@ -54,6 +54,14 @@ and here another paragraph
 </div>`
 			verify(GinkgoT(), expectedResult, actualContent)
 		})
+
+		It("paragraph with single quotes", func() {
+			actualContent := `a 'subsection' paragraph.`
+			expectedResult := `<div class="paragraph">
+<p>a &#39;subsection&#39; paragraph.</p>
+</div>`
+			verify(GinkgoT(), expectedResult, actualContent)
+		})
 	})
 
 	Context("paragraphs with line break", func() {
