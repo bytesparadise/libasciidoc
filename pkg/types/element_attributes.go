@@ -15,6 +15,10 @@ import (
 const (
 	// AttrID the key to retrieve the ID in the element attributes
 	AttrID string = "id"
+	// AttrCustomID the key to retrieve the flag that indicates if the element ID is custom or generated
+	AttrCustomID string = "customID"
+	// AttrIDPrefix the key to retrieve the ID Prefix in the element attributes
+	AttrIDPrefix string = "idprefix"
 	// AttrTitle the key to retrieve the title in the element attributes
 	AttrTitle string = "title"
 	// AttrRole the key to retrieve the role in the element attributes
@@ -152,34 +156,41 @@ func NewSourceAttributes(language string) (ElementAttributes, error) {
 
 // WithAttributes set the attributes on the given elements if its type is supported, otherwise returns an error
 func WithAttributes(element interface{}, attributes []interface{}) (interface{}, error) {
-	attrbs := NewElementAttributes(attributes)
+	attrs := NewElementAttributes(attributes)
+	// look for custom ID
+	for attrb := range attrs {
+		if attrb == AttrID {
+			// mark custom_id flag to `true`
+			attrs[AttrCustomID] = true
+		}
+	}
 	if element, ok := element.(ElementWithAttributes); ok {
 		if len(attributes) > 0 {
 			log.Debugf("setting %d attribute(s) on element of type %T", len(attributes), element)
 		}
-		element.AddAttributes(attrbs)
+		element.AddAttributes(attrs)
 		return element, nil
 	}
 	// special case for DelimitedBlock where we need a pointer receiver to modify the `Kind` field of the struct.
 	if element, ok := element.(DelimitedBlock); ok {
 		block := &element
-		block.AddAttributes(attrbs)
+		block.AddAttributes(attrs)
 		return element, nil
 	}
 	// special case for any ListItem where we need a pointer receiver to modify the `Kind` field of the struct.
 	if element, ok := element.(OrderedListItem); ok {
 		item := &element
-		item.AddAttributes(attrbs)
+		item.AddAttributes(attrs)
 		return element, nil
 	}
 	if element, ok := element.(UnorderedListItem); ok {
 		item := &element
-		item.AddAttributes(attrbs)
+		item.AddAttributes(attrs)
 		return element, nil
 	}
 	if element, ok := element.(LabeledListItem); ok {
 		item := &element
-		item.AddAttributes(attrbs)
+		item.AddAttributes(attrs)
 		return element, nil
 	}
 
@@ -204,6 +215,17 @@ func (a ElementAttributes) GetAsString(key string) string {
 	return ""
 }
 
+// GetAsBool returns the value of the key as a bool, or `false` if the key did not exist
+// or if its value was not a bool
+func (a ElementAttributes) GetAsBool(key string) bool {
+	if v, ok := a[key]; ok {
+		if v, ok := v.(bool); ok {
+			return v
+		}
+	}
+	return false
+}
+
 // AddAll adds all the given attributes to the current ones
 func (a ElementAttributes) AddAll(attributes ElementAttributes) {
 	for k, v := range attributes {
@@ -213,7 +235,7 @@ func (a ElementAttributes) AddAll(attributes ElementAttributes) {
 
 // NewElementAttributes retrieves the ElementID, ElementTitle and ElementInlineLink from the given slice of attributes
 func NewElementAttributes(attributes []interface{}, extras ...ElementAttributes) ElementAttributes {
-	attrbs := ElementAttributes{}
+	attrs := ElementAttributes{}
 	for _, attrb := range attributes {
 		log.Debugf("processing attribute %[1]v (%[1]T)", attrb)
 		switch attrb := attrb.(type) {
@@ -223,17 +245,17 @@ func NewElementAttributes(attributes []interface{}, extras ...ElementAttributes)
 			// which is used to ensure that a `LiteralAttribute` element is set amongst the attributes
 			r := NewElementAttributes(attrb)
 			for k, v := range r {
-				attrbs[k] = v
+				attrs[k] = v
 			}
 		case ElementAttributes:
 			// TODO: warn if attribute already exists and is overridden
 			for k, v := range attrb {
-				attrbs[k] = v
+				attrs[k] = v
 			}
 		case map[string]interface{}:
 			// TODO: warn if attribute already exists and is overridden
 			for k, v := range attrb {
-				attrbs[k] = v
+				attrs[k] = v
 			}
 		case nil:
 			// ignore
@@ -244,8 +266,8 @@ func NewElementAttributes(attributes []interface{}, extras ...ElementAttributes)
 	for _, extra := range extras {
 		for k, v := range extra {
 			// no warning on override here
-			attrbs[k] = v
+			attrs[k] = v
 		}
 	}
-	return attrbs
+	return attrs
 }

@@ -135,40 +135,6 @@ var _ = Describe("footnotes", func() {
 			verify(GinkgoT(), expectedResult, actualContent) // need to get the whole document here
 		})
 
-		// It("footnote with multi-line content", func() {
-		// 	footnoteContent := `some
-		// 	content`
-		// 	actualContent := fmt.Sprintf("foo footnote:[%s]", footnoteContent)
-		// 	footnote1 := types.Footnote{
-		// 		Elements: types.InlineElements{
-		// 			types.StringElement{
-		// 				Content: footnoteContent,
-		// 			},
-		// 		},
-		// 	}
-		// 	expectedResult := types.Document{
-		// 		Attributes:        types.DocumentAttributes{},
-		// 		ElementReferences: types.ElementReferences{},
-		// 		Footnotes: types.Footnotes{
-		// 			footnote1,
-		// 		},
-		// 		FootnoteReferences: types.FootnoteReferences{},
-		// 		Elements: []interface{}{
-		// 			types.Paragraph{
-		// 				Attributes: types.ElementAttributes{},
-		// 				Lines: []types.InlineElements{
-		// 					{
-		// 						types.StringElement{
-		// 							Content: "foo ",
-		// 						},
-		// 						footnote1,
-		// 					},
-		// 				},
-		// 			},
-		// 		},
-		// 	}
-		// 	verify(GinkgoT(), expectedResult, actualContent) // need to get the whole document here
-		// })
 	})
 
 	Context("footnoteref macro", func() {
@@ -280,6 +246,7 @@ var _ = Describe("footnotes", func() {
 	It("footnotes in document", func() {
 
 		actualContent := `= title
+:idprefix: id_
 
 a premable with a footnote:[foo]
 
@@ -312,7 +279,8 @@ a paragraph with another footnote:[baz]`
 		}
 		docTitle := types.SectionTitle{
 			Attributes: types.ElementAttributes{
-				types.AttrID: "_title",
+				types.AttrID:       "title",
+				types.AttrCustomID: false,
 			},
 			Elements: types.InlineElements{
 				types.StringElement{
@@ -322,7 +290,8 @@ a paragraph with another footnote:[baz]`
 		}
 		section1Title := types.SectionTitle{
 			Attributes: types.ElementAttributes{
-				types.AttrID: "_section_1",
+				types.AttrID:       "section_1",
+				types.AttrCustomID: false,
 			},
 			Elements: types.InlineElements{
 				types.StringElement{
@@ -334,9 +303,10 @@ a paragraph with another footnote:[baz]`
 		expectedResult := types.Document{
 			Attributes: types.DocumentAttributes{
 				"doctitle": docTitle,
+				"idprefix": "id_",
 			},
 			ElementReferences: types.ElementReferences{
-				"_section_1": section1Title,
+				"section_1": section1Title,
 			},
 			Footnotes: types.Footnotes{
 				footnote1,
@@ -347,6 +317,7 @@ a paragraph with another footnote:[baz]`
 			Elements: []interface{}{
 				types.Preamble{
 					Elements: []interface{}{
+						types.BlankLine{},
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
 							Lines: []types.InlineElements{

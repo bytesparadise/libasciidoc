@@ -61,7 +61,7 @@ func renderLiteralBlock(ctx *renderer.Context, b types.LiteralBlock) ([]byte, er
 			Title string
 			Lines []string
 		}{
-			ID:    b.Attributes.GetAsString(types.AttrID),
+			ID:    generateID(ctx, b.Attributes),
 			Title: getTitle(b.Attributes),
 			Lines: lines,
 		}})

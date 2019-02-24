@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"fmt"
 	"html"
-	"strings"
 	texttemplate "text/template"
 
 	"github.com/bytesparadise/libasciidoc/pkg/renderer"
@@ -131,10 +130,7 @@ func renderDelimitedBlock(ctx *renderer.Context, b types.DelimitedBlock) ([]byte
 	log.Debugf("rendering delimited block of kind '%v'", b.Attributes[types.AttrKind])
 	result := bytes.NewBuffer(nil)
 	elements := discardTrailingBlankLines(b.Elements)
-	var id string
-	if i, ok := b.Attributes[types.AttrID].(string); ok { // TODO: replace with b.Attributes.GetAsString?
-		id = strings.TrimSpace(i)
-	}
+	id := generateID(ctx, b.Attributes)
 	var err error
 	kind := b.Kind
 	switch kind {

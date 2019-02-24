@@ -20,7 +20,8 @@ with some content linked to <<thetitle>>!`
 				ElementReferences: types.ElementReferences{
 					"thetitle": types.SectionTitle{
 						Attributes: types.ElementAttributes{
-							types.AttrID: "thetitle",
+							types.AttrID:       "thetitle",
+							types.AttrCustomID: true,
 						},
 						Elements: types.InlineElements{
 							types.StringElement{
@@ -36,7 +37,8 @@ with some content linked to <<thetitle>>!`
 						Level: 1,
 						Title: types.SectionTitle{
 							Attributes: types.ElementAttributes{
-								types.AttrID: "thetitle",
+								types.AttrID:       "thetitle",
+								types.AttrCustomID: true,
 							},
 							Elements: types.InlineElements{
 								types.StringElement{
@@ -80,7 +82,8 @@ with some content linked to <<thetitle,a label to the title>>!`
 				ElementReferences: types.ElementReferences{
 					"thetitle": types.SectionTitle{
 						Attributes: types.ElementAttributes{
-							types.AttrID: "thetitle",
+							types.AttrID:       "thetitle",
+							types.AttrCustomID: true,
 						},
 						Elements: types.InlineElements{
 							types.StringElement{
@@ -96,7 +99,8 @@ with some content linked to <<thetitle,a label to the title>>!`
 						Level: 1,
 						Title: types.SectionTitle{
 							Attributes: types.ElementAttributes{
-								types.AttrID: "thetitle",
+								types.AttrID:       "thetitle",
+								types.AttrCustomID: true,
 							},
 							Elements: types.InlineElements{
 								types.StringElement{

@@ -18,7 +18,8 @@ This journey begins on a bleary Monday morning.`
 				Attributes: types.DocumentAttributes{
 					"doctitle": types.SectionTitle{
 						Attributes: types.ElementAttributes{
-							types.AttrID: "_the_dangerous_and_thrilling_documentation_chronicles",
+							types.AttrID:       "the_dangerous_and_thrilling_documentation_chronicles",
+							types.AttrCustomID: false,
 						},
 						Elements: types.InlineElements{
 							types.StringElement{Content: "The Dangerous and Thrilling Documentation Chronicles"},
@@ -53,7 +54,8 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>`
 						Content: types.DocumentAttributes{
 							"doctitle": types.SectionTitle{
 								Attributes: types.ElementAttributes{
-									types.AttrID: "_title",
+									types.AttrID:       "title",
+									types.AttrCustomID: false,
 								},
 								Elements: types.InlineElements{
 									types.StringElement{
@@ -79,7 +81,8 @@ Lazarus het_Draeke <lazarus@asciidoctor.org>`
 						Content: types.DocumentAttributes{
 							"doctitle": types.SectionTitle{
 								Attributes: types.ElementAttributes{
-									types.AttrID: "_title",
+									types.AttrID:       "title",
+									types.AttrCustomID: false,
 								},
 								Elements: types.InlineElements{
 									types.StringElement{
@@ -104,7 +107,8 @@ Kismet Chameleon`
 						Content: types.DocumentAttributes{
 							"doctitle": types.SectionTitle{
 								Attributes: types.ElementAttributes{
-									types.AttrID: "_title",
+									types.AttrID:       "title",
+									types.AttrCustomID: false,
 								},
 								Elements: types.InlineElements{
 									types.StringElement{
@@ -128,7 +132,8 @@ Chameleon`
 						Content: types.DocumentAttributes{
 							"doctitle": types.SectionTitle{
 								Attributes: types.ElementAttributes{
-									types.AttrID: "_title",
+									types.AttrID:       "title",
+									types.AttrCustomID: false,
 								},
 								Elements: types.InlineElements{
 									types.StringElement{
@@ -151,7 +156,8 @@ Chameleon`
 						Content: types.DocumentAttributes{
 							"doctitle": types.SectionTitle{
 								Attributes: types.ElementAttributes{
-									types.AttrID: "_title",
+									types.AttrID:       "title",
+									types.AttrCustomID: false,
 								},
 								Elements: types.InlineElements{
 									types.StringElement{
@@ -178,7 +184,8 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 						Content: types.DocumentAttributes{
 							"doctitle": types.SectionTitle{
 								Attributes: types.ElementAttributes{
-									types.AttrID: "_title",
+									types.AttrID:       "title",
+									types.AttrCustomID: false,
 								},
 								Elements: types.InlineElements{
 									types.StringElement{
@@ -214,7 +221,8 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 					Content: types.DocumentAttributes{
 						"doctitle": types.SectionTitle{
 							Attributes: types.ElementAttributes{
-								types.AttrID: "_title",
+								types.AttrID:       "title",
+								types.AttrCustomID: false,
 							},
 							Elements: types.InlineElements{
 								types.StringElement{
@@ -242,7 +250,8 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 					Content: types.DocumentAttributes{
 						"doctitle": types.SectionTitle{
 							Attributes: types.ElementAttributes{
-								types.AttrID: "_title",
+								types.AttrID:       "title",
+								types.AttrCustomID: false,
 							},
 							Elements: types.InlineElements{
 								types.StringElement{
@@ -269,7 +278,8 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 					Content: types.DocumentAttributes{
 						"doctitle": types.SectionTitle{
 							Attributes: types.ElementAttributes{
-								types.AttrID: "_title",
+								types.AttrID:       "title",
+								types.AttrCustomID: false,
 							},
 							Elements: types.InlineElements{
 								types.StringElement{
@@ -295,7 +305,8 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 					Content: types.DocumentAttributes{
 						"doctitle": types.SectionTitle{
 							Attributes: types.ElementAttributes{
-								types.AttrID: "_title",
+								types.AttrID:       "title",
+								types.AttrCustomID: false,
 							},
 							Elements: types.InlineElements{
 								types.StringElement{
@@ -321,7 +332,8 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 					Content: types.DocumentAttributes{
 						"doctitle": types.SectionTitle{
 							Attributes: types.ElementAttributes{
-								types.AttrID: "_title",
+								types.AttrID:       "title",
+								types.AttrCustomID: false,
 							},
 							Elements: types.InlineElements{
 								types.StringElement{
@@ -347,7 +359,8 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 					Content: types.DocumentAttributes{
 						"doctitle": types.SectionTitle{
 							Attributes: types.ElementAttributes{
-								types.AttrID: "_title",
+								types.AttrID:       "title",
+								types.AttrCustomID: false,
 							},
 							Elements: types.InlineElements{
 								types.StringElement{
@@ -373,7 +386,8 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 					Content: types.DocumentAttributes{
 						"doctitle": types.SectionTitle{
 							Attributes: types.ElementAttributes{
-								types.AttrID: "_title",
+								types.AttrID:       "title",
+								types.AttrCustomID: false,
 							},
 							Elements: types.InlineElements{
 								types.StringElement{
@@ -399,7 +413,8 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 					Content: types.DocumentAttributes{
 						"doctitle": types.SectionTitle{
 							Attributes: types.ElementAttributes{
-								types.AttrID: "_title",
+								types.AttrID:       "title",
+								types.AttrCustomID: false,
 							},
 							Elements: types.InlineElements{
 								types.StringElement{
@@ -425,7 +440,8 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 					Content: types.DocumentAttributes{
 						"doctitle": types.SectionTitle{
 							Attributes: types.ElementAttributes{
-								types.AttrID: "_title",
+								types.AttrID:       "title",
+								types.AttrCustomID: false,
 							},
 							Elements: types.InlineElements{
 								types.StringElement{
@@ -451,7 +467,8 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 					Content: types.DocumentAttributes{
 						"doctitle": types.SectionTitle{
 							Attributes: types.ElementAttributes{
-								types.AttrID: "_title",
+								types.AttrID:       "title",
+								types.AttrCustomID: false,
 							},
 							Elements: types.InlineElements{
 								types.StringElement{
@@ -477,7 +494,8 @@ v1.0:`
 					Content: types.DocumentAttributes{
 						"doctitle": types.SectionTitle{
 							Attributes: types.ElementAttributes{
-								types.AttrID: "_title",
+								types.AttrID:       "title",
+								types.AttrCustomID: false,
 							},
 							Elements: types.InlineElements{
 								types.StringElement{
@@ -719,7 +737,8 @@ This journey begins on a bleary Monday morning.`
 				Attributes: types.DocumentAttributes{
 					"doctitle": types.SectionTitle{
 						Attributes: types.ElementAttributes{
-							types.AttrID: "_the_dangerous_and_thrilling_documentation_chronicles",
+							types.AttrID:       "the_dangerous_and_thrilling_documentation_chronicles",
+							types.AttrCustomID: false,
 						},
 						Elements: types.InlineElements{
 							types.StringElement{Content: "The Dangerous and Thrilling Documentation Chronicles"},
@@ -772,7 +791,8 @@ a paragraph with *bold content*`
 				Attributes: types.DocumentAttributes{
 					"doctitle": types.SectionTitle{
 						Attributes: types.ElementAttributes{
-							types.AttrID: "_a_header",
+							types.AttrID:       "a_header",
+							types.AttrCustomID: false,
 						},
 						Elements: types.InlineElements{
 							types.StringElement{Content: "a header"},
@@ -780,9 +800,10 @@ a paragraph with *bold content*`
 					},
 				},
 				ElementReferences: types.ElementReferences{
-					"_section_1": types.SectionTitle{
+					"section_1": types.SectionTitle{
 						Attributes: types.ElementAttributes{
-							types.AttrID: "_section_1",
+							types.AttrID:       "section_1",
+							types.AttrCustomID: false,
 						},
 						Elements: types.InlineElements{
 							types.StringElement{Content: "section 1"},
@@ -796,7 +817,8 @@ a paragraph with *bold content*`
 						Level: 1,
 						Title: types.SectionTitle{
 							Attributes: types.ElementAttributes{
-								types.AttrID: "_section_1",
+								types.AttrID:       "section_1",
+								types.AttrCustomID: false,
 							},
 							Elements: types.InlineElements{
 								types.StringElement{Content: "section 1"},

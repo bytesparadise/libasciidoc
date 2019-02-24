@@ -549,6 +549,7 @@ func NewSection(level int, sectionTitle SectionTitle, blocks []interface{}) (Sec
 
 // AddAttributes adds all given attributes to the current set of attribute of the element
 func (s Section) AddAttributes(attributes ElementAttributes) {
+	log.Debugf("adding attributes to section: %v", attributes)
 	s.Title.AddAttributes(attributes)
 }
 
@@ -594,13 +595,16 @@ func NewSectionTitle(elements InlineElements, ids []interface{}) (SectionTitle, 
 			attributes.AddAll(id)
 		}
 	}
+	attributes[AttrCustomID] = true
 	// make a default id from the sectionTitle's inline content
 	if _, found := attributes[AttrID]; !found {
+		log.Debugf("did not find ID attribute for section with elements %v", elements)
 		replacement, err := replaceNonAlphanumerics(elements, "_")
 		if err != nil {
 			return SectionTitle{}, errors.Wrapf(err, "unable to generate default ID while instanciating a new SectionTitle element")
 		}
 		attributes[AttrID] = replacement
+		attributes[AttrCustomID] = false
 	}
 	sectionTitle := SectionTitle{
 		Attributes: attributes,
@@ -615,6 +619,13 @@ func NewSectionTitle(elements InlineElements, ids []interface{}) (SectionTitle, 
 // AddAttributes adds all given attributes to the current set of attribute of the element
 func (st SectionTitle) AddAttributes(attributes ElementAttributes) {
 	st.Attributes.AddAll(attributes)
+	// look for custom ID
+	for attr := range attributes {
+		if attr == AttrID {
+			// mark custom_id flag to `true`
+			st.Attributes[AttrCustomID] = true
+		}
+	}
 }
 
 // Accept implements Visitable#Accept(Visitor)
@@ -1826,7 +1837,7 @@ func NewInlineImage(path string, attributes ElementAttributes) (InlineImage, err
 }
 
 // NewImageAttributes returns a map of image attributes, some of which have implicit keys (`alt`, `width` and `height`)
-func NewImageAttributes(alt, width, height interface{}, otherAttrs []interface{}) (ElementAttributes, error) {
+func NewImageAttributes(alt, width, height interface{}, otherattrs []interface{}) (ElementAttributes, error) {
 	result := ElementAttributes{}
 	var altStr, widthStr, heightStr string
 	if alt, ok := alt.(string); ok {
@@ -1841,10 +1852,14 @@ func NewImageAttributes(alt, width, height interface{}, otherAttrs []interface{}
 	result[AttrImageAlt] = altStr
 	result[AttrImageWidth] = widthStr
 	result[AttrImageHeight] = heightStr
-	for _, otherAttr := range otherAttrs {
+	for _, otherAttr := range otherattrs {
 		if otherAttr, ok := otherAttr.(ElementAttributes); ok {
 			for k, v := range otherAttr {
 				result[k] = v
+				if k == AttrID {
+					// mark custom_id flag to `true`
+					result[AttrCustomID] = true
+				}
 			}
 		}
 	}
@@ -2298,14 +2313,14 @@ func (l InlineLink) Text() string {
 const AttrInlineLinkText string = "text"
 
 // NewInlineLinkAttributes returns a map of image attributes, some of which have implicit keys (`text`)
-func NewInlineLinkAttributes(text interface{}, otherAttrs []interface{}) (ElementAttributes, error) {
+func NewInlineLinkAttributes(text interface{}, otherattrs []interface{}) (ElementAttributes, error) {
 	result := ElementAttributes{}
 	var textStr string
 	if text, ok := text.(string); ok {
 		textStr = apply(text, strings.TrimSpace)
 	}
 	result[AttrInlineLinkText] = textStr
-	for _, otherAttr := range otherAttrs {
+	for _, otherAttr := range otherattrs {
 		if otherAttr, ok := otherAttr.(ElementAttributes); ok {
 			for k, v := range otherAttr {
 				result[k] = v

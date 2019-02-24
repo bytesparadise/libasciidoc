@@ -1388,6 +1388,7 @@ end
 					types.AttrKind:     types.Source,
 					types.AttrLanguage: "ruby",
 					types.AttrID:       "id-for-source-block",
+					types.AttrCustomID: true,
 					types.AttrTitle:    "app.rb",
 				},
 				Kind: types.Source,

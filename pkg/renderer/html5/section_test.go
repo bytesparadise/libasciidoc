@@ -55,10 +55,26 @@ var _ = Describe("sections", func() {
 		})
 
 		It("section level 1 with custom ID", func() {
-			actualContent := `[#custom_id]
+			actualContent := `
+:idprefix: ignored_
+			
+[#custom_id]
 == a section title, with *bold content*`
 			expectedResult := `<div class="sect1">
 <h2 id="custom_id">a section title, with <strong>bold content</strong></h2>
+<div class="sectionbody">
+</div>
+</div>`
+			verify(GinkgoT(), expectedResult, actualContent)
+		})
+
+		It("section level 1 with custom prefix id", func() {
+			actualContent := `
+:idprefix: id_
+
+== a section title`
+			expectedResult := `<div class="sect1">
+<h2 id="id_a_section_title">a section title</h2>
 <div class="sectionbody">
 </div>
 </div>`

@@ -10,7 +10,8 @@ var _ = Describe("table of contents", func() {
 	// reusable elements
 	doctitleAttribute := types.SectionTitle{
 		Attributes: types.ElementAttributes{
-			types.AttrID: "_a_title",
+			types.AttrID:       "a_title",
+			types.AttrCustomID: false,
 		},
 		Elements: types.InlineElements{
 			types.StringElement{Content: "A Title"},
@@ -35,7 +36,8 @@ var _ = Describe("table of contents", func() {
 		Level: 1,
 		Title: types.SectionTitle{
 			Attributes: types.ElementAttributes{
-				types.AttrID: "_section_1",
+				types.AttrID:       "section_1",
+				types.AttrCustomID: false,
 			},
 			Elements: types.InlineElements{
 				types.StringElement{Content: "section 1"},
@@ -59,9 +61,10 @@ A short preamble
 				"toc":      "",
 			},
 			ElementReferences: types.ElementReferences{
-				"_section_1": types.SectionTitle{
+				"section_1": types.SectionTitle{
 					Attributes: types.ElementAttributes{
-						types.AttrID: "_section_1",
+						types.AttrID:       "section_1",
+						types.AttrCustomID: false,
 					},
 					Elements: types.InlineElements{
 						types.StringElement{Content: "section 1"},
@@ -93,9 +96,10 @@ A short preamble
 				"toc":      "preamble",
 			},
 			ElementReferences: types.ElementReferences{
-				"_section_1": types.SectionTitle{
+				"section_1": types.SectionTitle{
 					Attributes: types.ElementAttributes{
-						types.AttrID: "_section_1",
+						types.AttrID:       "section_1",
+						types.AttrCustomID: false,
 					},
 					Elements: types.InlineElements{
 						types.StringElement{Content: "section 1"},

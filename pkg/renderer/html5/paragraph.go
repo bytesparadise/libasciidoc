@@ -100,10 +100,7 @@ func renderParagraph(ctx *renderer.Context, p types.Paragraph) ([]byte, error) {
 		return make([]byte, 0), nil
 	}
 	result := bytes.NewBuffer(nil)
-	var id string
-	if i, ok := p.Attributes[types.AttrID].(string); ok {
-		id = i
-	}
+	id := generateID(ctx, p.Attributes)
 	var err error
 	if _, ok := p.Attributes[types.AttrAdmonitionKind]; ok {
 		log.Debug("rendering admonition paragraph...")

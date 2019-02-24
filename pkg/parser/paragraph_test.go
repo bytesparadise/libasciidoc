@@ -62,8 +62,9 @@ var _ = Describe("paragraphs", func() {
 a paragraph`
 			expectedResult := types.Paragraph{
 				Attributes: types.ElementAttributes{
-					types.AttrID:    "foo",
-					types.AttrTitle: "a title",
+					types.AttrID:       "foo",
+					types.AttrCustomID: true,
+					types.AttrTitle:    "a title",
 				},
 				Lines: []types.InlineElements{
 					{
@@ -235,6 +236,7 @@ NOTE: this is a note.`
 				Attributes: types.ElementAttributes{
 					types.AttrAdmonitionKind: types.Note,
 					types.AttrID:             "foo",
+					types.AttrCustomID:       true,
 					types.AttrTitle:          "bar",
 				},
 				Lines: []types.InlineElements{
@@ -276,6 +278,7 @@ this is a
 				Attributes: types.ElementAttributes{
 					types.AttrAdmonitionKind: types.Caution,
 					types.AttrID:             "foo",
+					types.AttrCustomID:       true,
 					types.AttrTitle:          "bar",
 				},
 				Lines: []types.InlineElements{
@@ -378,6 +381,7 @@ I am a verse paragraph.`
 					types.AttrQuoteAuthor: "john doe",
 					types.AttrQuoteTitle:  "verse title",
 					types.AttrID:          "universal",
+					types.AttrCustomID:    true,
 					types.AttrTitle:       "universe",
 				},
 				Lines: []types.InlineElements{
@@ -525,6 +529,7 @@ I am a quote paragraph.`
 					types.AttrQuoteAuthor: "john doe",
 					types.AttrQuoteTitle:  "quote title",
 					types.AttrID:          "universal",
+					types.AttrCustomID:    true,
 					types.AttrTitle:       "universe",
 				},
 				Lines: []types.InlineElements{

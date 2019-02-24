@@ -43,9 +43,10 @@ var _ = Describe("unordered lists", func() {
 * a list item`
 			expectedResult := types.UnorderedList{
 				Attributes: types.ElementAttributes{
-					types.AttrID:    "listID",
-					types.AttrTitle: "mytitle",
-					types.AttrRole:  "myrole",
+					types.AttrID:       "listID",
+					types.AttrCustomID: true,
+					types.AttrTitle:    "mytitle",
+					types.AttrRole:     "myrole",
 				},
 				Items: []types.UnorderedListItem{
 					{

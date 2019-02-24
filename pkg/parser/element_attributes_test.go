@@ -101,7 +101,8 @@ a paragraph`
 a paragraph`
 				expectedResult := types.Paragraph{
 					Attributes: types.ElementAttributes{
-						types.AttrID: "img-foobar",
+						types.AttrID:       "img-foobar",
+						types.AttrCustomID: true,
 					},
 					Lines: []types.InlineElements{
 						{
@@ -119,7 +120,8 @@ a paragraph`
 a paragraph`
 				expectedResult := types.Paragraph{
 					Attributes: types.ElementAttributes{
-						types.AttrID: "img-foobar",
+						types.AttrID:       "img-foobar",
+						types.AttrCustomID: true,
 					},
 					Lines: []types.InlineElements{
 						{
