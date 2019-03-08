@@ -19,6 +19,7 @@ func insertTableOfContents(elements []interface{}, location string) []interface{
 	// insert a TableOfContentsMacro element if `toc` value is:
 	// - "auto" (or empty)
 	// - "preamble"
+	log.Debugf("inserting ToC macro with placement: '%s'", location)
 	switch location {
 	case "", "auto":
 		// insert TableOfContentsMacro at first position
@@ -36,7 +37,7 @@ func insertTableOfContents(elements []interface{}, location string) []interface{
 		remainingElements := make([]interface{}, len(elements)-(preambleIndex+1))
 		copy(remainingElements, elements[preambleIndex+1:])
 		result = append(elements[0:preambleIndex+1], types.TableOfContentsMacro{})
-		result = append(elements, remainingElements...)
+		result = append(result, remainingElements...)
 	case "macro":
 	default:
 		log.Warnf("invalid value for 'toc' attribute: '%s'", location)
