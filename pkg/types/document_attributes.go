@@ -11,7 +11,7 @@ import (
 type DocumentAttributes map[string]interface{}
 
 const (
-	title     string = "doctitle"
+	title     string = AttrTitle
 	toclevels string = "toclevels"
 )
 
@@ -114,13 +114,14 @@ func (a DocumentAttributes) Reset(attr DocumentAttributeReset) {
 	delete(a, attr.Name)
 }
 
-// GetAsString gets the string value for the given key, or nil if none was found
-func (a DocumentAttributes) GetAsString(key string) string {
+// GetAsString gets the string value for the given key (+ `true`),
+// or empty string (+ `false`) if none was found
+func (a DocumentAttributes) GetAsString(key string) (string, bool) {
 	// TODO: raise a warning if there was no entry found
 	if value, found := a[key]; found {
 		if value, ok := value.(string); ok {
-			return value
+			return value, true
 		}
 	}
-	return ""
+	return "", false
 }

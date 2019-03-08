@@ -29,7 +29,7 @@ func debugMode() bool {
 	}
 	// if the `-debug` flag was passed and captured by the `flag.Parse`
 	if debugMode {
-		log.Info("`-debug` flag found")
+		// log.Info("`debug` flag found")
 		return debugMode
 	}
 	// otherwise, check the OS args

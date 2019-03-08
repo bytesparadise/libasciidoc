@@ -34,6 +34,9 @@ func renderDocumentDetails(ctx *renderer.Context) (*htmltemplate.HTML, error) {
 			return nil, errors.Wrap(err, "error while rendering the document details")
 		}
 		documentDetailsBuff := bytes.NewBuffer(nil)
+		revNumber, _ := ctx.Document.Attributes.GetAsString("revnumber")
+		revDate, _ := ctx.Document.Attributes.GetAsString("revdate")
+		revRemark, _ := ctx.Document.Attributes.GetAsString("revremark")
 		err = documentDetailsTmpl.Execute(documentDetailsBuff, struct {
 			Authors   htmltemplate.HTML
 			RevNumber string
@@ -41,9 +44,9 @@ func renderDocumentDetails(ctx *renderer.Context) (*htmltemplate.HTML, error) {
 			RevRemark string
 		}{
 			Authors:   *authors,
-			RevNumber: ctx.Document.Attributes.GetAsString("revnumber"),
-			RevDate:   ctx.Document.Attributes.GetAsString("revdate"),
-			RevRemark: ctx.Document.Attributes.GetAsString("revremark"),
+			RevNumber: revNumber,
+			RevDate:   revDate,
+			RevRemark: revRemark,
 		})
 		if err != nil {
 			return nil, errors.Wrap(err, "error while rendering the document details")
@@ -71,8 +74,9 @@ func renderDocumentAuthorsDetails(ctx *renderer.Context) (*htmltemplate.HTML, er
 			index = strconv.Itoa(i)
 		}
 		// having at least one author is the minimal requirement for document details
-		if author := ctx.Document.Attributes.GetAsString(authorKey); author != "" {
+		if author, ok := ctx.Document.Attributes.GetAsString(authorKey); ok {
 			authorDetailsBuff := bytes.NewBuffer(nil)
+			email, _ := ctx.Document.Attributes.GetAsString(emailKey)
 			err := documentAuthorDetailsTmpl.Execute(authorDetailsBuff, struct {
 				Index string
 				Name  string
@@ -80,7 +84,7 @@ func renderDocumentAuthorsDetails(ctx *renderer.Context) (*htmltemplate.HTML, er
 			}{
 				Index: index,
 				Name:  author,
-				Email: ctx.Document.Attributes.GetAsString(emailKey),
+				Email: email,
 			})
 			if err != nil {
 				return nil, errors.Wrap(err, "error while rendering the document author")

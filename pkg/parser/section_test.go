@@ -22,7 +22,7 @@ var _ = Describe("sections", func() {
 			}
 			expectedResult := types.Document{
 				Attributes: types.DocumentAttributes{
-					"doctitle": doctitle,
+					types.AttrTitle: doctitle,
 				},
 				ElementReferences:  types.ElementReferences{},
 				Footnotes:          types.Footnotes{},
@@ -45,7 +45,7 @@ var _ = Describe("sections", func() {
 			}
 			expectedResult := types.Document{
 				Attributes: types.DocumentAttributes{
-					"doctitle": doctitle,
+					types.AttrTitle: doctitle,
 				},
 				ElementReferences:  types.ElementReferences{},
 				Footnotes:          types.Footnotes{},
@@ -71,7 +71,7 @@ and a paragraph`
 			}
 			expectedResult := types.Document{
 				Attributes: types.DocumentAttributes{
-					"doctitle": doctitle,
+					types.AttrTitle: doctitle,
 				},
 				ElementReferences:  types.ElementReferences{},
 				Footnotes:          types.Footnotes{},
@@ -177,7 +177,7 @@ and a paragraph`
 			}
 			expectedResult := types.Document{
 				Attributes: types.DocumentAttributes{
-					"doctitle": doctitle,
+					types.AttrTitle: doctitle,
 				},
 				ElementReferences: types.ElementReferences{
 					"section_1": section1Title,
@@ -185,63 +185,6 @@ and a paragraph`
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
-					types.Section{
-						Level:    1,
-						Title:    section1Title,
-						Elements: []interface{}{},
-					},
-				},
-			}
-			verify(GinkgoT(), expectedResult, actualContent)
-		})
-
-		It("section level 0 with preamble and section level 1", func() {
-			actualContent := `= a header
-
-a short preamble
-
-== section 1`
-			section1Title := types.SectionTitle{
-				Attributes: types.ElementAttributes{
-					types.AttrID:       "section_1",
-					types.AttrCustomID: false,
-				},
-				Elements: types.InlineElements{
-					types.StringElement{Content: "section 1"},
-				},
-			}
-			doctitle := types.SectionTitle{
-				Attributes: types.ElementAttributes{
-					types.AttrID:       "a_header",
-					types.AttrCustomID: false,
-				},
-				Elements: types.InlineElements{
-					types.StringElement{Content: "a header"},
-				},
-			}
-			expectedResult := types.Document{
-				Attributes: types.DocumentAttributes{
-					"doctitle": doctitle,
-				},
-				ElementReferences: types.ElementReferences{
-					"section_1": section1Title,
-				},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
-				Elements: []interface{}{
-					types.Preamble{
-						Elements: []interface{}{
-							types.Paragraph{
-								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
-									{
-										types.StringElement{Content: "a short preamble"},
-									},
-								},
-							},
-							types.BlankLine{},
-						},
-					},
 					types.Section{
 						Level:    1,
 						Title:    section1Title,
@@ -276,7 +219,7 @@ a short preamble
 			}
 			expectedResult := types.Document{
 				Attributes: types.DocumentAttributes{
-					"doctitle": doctitle,
+					types.AttrTitle: doctitle,
 				},
 				ElementReferences: types.ElementReferences{
 					"section_2": section2Title,
@@ -462,7 +405,7 @@ a paragraph`
 			}
 			expectedResult := types.Document{
 				Attributes: types.DocumentAttributes{
-					"doctitle": doctitle,
+					types.AttrTitle: doctitle,
 				},
 				ElementReferences: types.ElementReferences{
 					"section_a":   sectionATitle,
@@ -589,7 +532,7 @@ a paragraph`
 			}
 			expectedResult := types.Document{
 				Attributes: types.DocumentAttributes{
-					"doctitle": doctitle,
+					types.AttrTitle: doctitle,
 				},
 				ElementReferences: types.ElementReferences{
 					"foo": fooTitle,
@@ -723,7 +666,7 @@ a paragraph`
  == section with prefix space`
 			expectedResult := types.Document{
 				Attributes: types.DocumentAttributes{
-					"doctitle": types.SectionTitle{
+					types.AttrTitle: types.SectionTitle{
 						Attributes: types.ElementAttributes{
 							types.AttrID:       "a_header",
 							types.AttrCustomID: false,
@@ -751,75 +694,6 @@ a paragraph`
 			verify(GinkgoT(), expectedResult, actualContent)
 		})
 
-		It("multiple sections level 0", func() {
-			actualContent := `= header 1
-
-foo
-
-= header 2
-bar`
-			header2Title := types.SectionTitle{
-				Attributes: types.ElementAttributes{
-					types.AttrID:       "header_2",
-					types.AttrCustomID: false,
-				},
-				Elements: types.InlineElements{
-					types.StringElement{Content: "header 2"},
-				},
-			}
-			expectedResult := types.Document{
-				Attributes: types.DocumentAttributes{
-					"doctitle": types.SectionTitle{
-						Attributes: types.ElementAttributes{
-							types.AttrID:       "header_1",
-							types.AttrCustomID: false,
-						},
-						Elements: types.InlineElements{
-							types.StringElement{Content: "header 1"},
-						},
-					},
-				},
-				ElementReferences: types.ElementReferences{
-					"header_2": header2Title,
-				},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
-				Elements: []interface{}{
-					types.Preamble{
-						Elements: []interface{}{
-							types.Paragraph{
-								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
-									{
-										types.StringElement{
-											Content: "foo",
-										},
-									},
-								},
-							},
-							types.BlankLine{},
-						},
-					},
-					types.Section{
-						Level: 0,
-						Title: header2Title,
-						Elements: []interface{}{
-							types.Paragraph{
-								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
-									{
-										types.StringElement{
-											Content: "bar",
-										},
-									},
-								},
-							},
-						},
-					},
-				},
-			}
-			verify(GinkgoT(), expectedResult, actualContent)
-		})
 	})
 
 	Context("unsupported section syntax", func() {

@@ -6,6 +6,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/bytesparadise/libasciidoc/pkg/types"
+
 	. "github.com/bytesparadise/libasciidoc"
 	_ "github.com/bytesparadise/libasciidoc/pkg/log"
 	"github.com/bytesparadise/libasciidoc/pkg/renderer"
@@ -203,7 +205,7 @@ func verifyDocumentBody(t GinkgoTInterface, expectedRenderedTitle *string, expec
 	t.Logf("** Actual output:\n`%s`\n", result)
 	t.Logf("** expectedContent output:\n`%s`\n", expectedContent)
 	assert.Equal(t, expectedContent, result)
-	actualTitle := metadata["doctitle"]
+	actualTitle := metadata[types.AttrTitle]
 	if expectedRenderedTitle == nil {
 		assert.Nil(t, actualTitle)
 	} else {

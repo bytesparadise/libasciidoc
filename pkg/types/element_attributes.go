@@ -21,6 +21,8 @@ const (
 	AttrIDPrefix string = "idprefix"
 	// AttrTitle the key to retrieve the title in the element attributes
 	AttrTitle string = "title"
+	// AttrTableOfContents the `toc` attribute at document level
+	AttrTableOfContents = "toc"
 	// AttrRole the key to retrieve the role in the element attributes
 	AttrRole string = "role"
 	// AttrInlineLink the key to retrieve the link in the element attributes
@@ -31,16 +33,18 @@ const (
 	AttrQuoteAuthor string = "quoteAuthor"
 	// AttrQuoteTitle attribute for the title of a verse
 	AttrQuoteTitle string = "quoteTitle"
-	// AttrSource the "source" attribute for a source block or a source paragraph (this is a placeholder, ie, it does not expect any value for this attribute)
+	// AttrSource the `source` attribute for a source block or a source paragraph (this is a placeholder, ie, it does not expect any value for this attribute)
 	AttrSource string = "source"
-	// AttrLanguage the associated "language" attribute for a source block or a source paragraph
+	// AttrLanguage the associated `language` attribute for a source block or a source paragraph
 	AttrLanguage string = "language"
 	// AttrCheckStyle the attribute to mark the first element of an unordered list itemd as a checked or not
 	AttrCheckStyle string = "checkstyle"
-	// AttrStart the "start" attribute in an ordered list
+	// AttrStart the `start` attribute in an ordered list
 	AttrStart string = "start"
-	// AttrQandA the "qanda" attribute for Q&A labeled lists
+	// AttrQandA the `qanda` attribute for Q&A labeled lists
 	AttrQandA string = "qanda"
+	// AttrLevelOffset the `leveloffset` attribute used in file inclusions
+	AttrLevelOffset = "leveloffset"
 )
 
 // ElementWithAttributes an element on which attributes can be added/set
@@ -270,4 +274,17 @@ func NewElementAttributes(attributes []interface{}, extras ...ElementAttributes)
 		}
 	}
 	return attrs
+}
+
+// NewInlineAttributes returns a map of attributes
+func NewInlineAttributes(attrs []interface{}) (ElementAttributes, error) {
+	result := ElementAttributes{}
+	for _, attr := range attrs {
+		if attr, ok := attr.(ElementAttributes); ok {
+			for k, v := range attr {
+				result[k] = v
+			}
+		}
+	}
+	return result, nil
 }

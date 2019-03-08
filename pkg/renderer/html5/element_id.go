@@ -20,9 +20,9 @@ func generateID(ctx *renderer.Context, attrs types.ElementAttributes) string {
 		return id
 	}
 	// check if idprefix attribute is set, but only apply if ID attribute on element is not custom
-	if ctx.Document.Attributes.Has(types.AttrIDPrefix) {
+	if idPrefix, ok := ctx.Document.Attributes.GetAsString(types.AttrIDPrefix); ok {
 		log.Debugf("has ID prefix")
-		return fmt.Sprintf("%s%s", ctx.Document.Attributes.GetAsString(types.AttrIDPrefix), id)
+		return fmt.Sprintf("%s%s", idPrefix, id)
 	}
 	// default ID prefix is `_`
 	log.Debugf("default ID prefix")

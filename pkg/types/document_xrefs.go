@@ -15,6 +15,8 @@ type ElementReferencesCollector struct {
 	ElementReferences ElementReferences
 }
 
+var _ Visitor = &ElementReferencesCollector{}
+
 // NewElementReferencesCollector initializes a new ElementReferencesCollector
 func NewElementReferencesCollector() *ElementReferencesCollector {
 	return &ElementReferencesCollector{

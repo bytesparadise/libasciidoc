@@ -21,12 +21,29 @@ import (
 
 // Visitable the interface for visitable elements
 type Visitable interface {
-	Accept(Visitor) error
+	AcceptVisitor(Visitor) error
+}
+
+// Substituable the interface for substituable elements, ie, which can
+// be replaced by another element, for example if they include a FileInclusion
+type Substituable interface {
+	AcceptSubstitutor(Substitutor) (interface{}, error)
 }
 
 // Visitor a visitor that can visit/traverse the interface{} and its children (if applicable)
 type Visitor interface {
 	Visit(Visitable) error
+}
+
+// Substitutor a substitutor that can visit/traverse the interface{} and its children (if applicable)
+// and return a new element (or slice of elements) in replacement of the visited element
+type Substitutor interface {
+	Visit(Substituable) (interface{}, error)
+}
+
+// ElementContainer en element that has child elements as well
+type ElementContainer interface {
+	GetElements() []interface{}
 }
 
 // ------------------------------------------
@@ -43,56 +60,23 @@ type Document struct {
 }
 
 // NewDocument initializes a new `Document` from the given lines
-func NewDocument(frontmatter, header interface{}, blocks []interface{}) (Document, error) {
-	log.Debugf("initializing a new Document with %d blocks(s)", len(blocks))
-	// elements := convertBlocksTointerface{}s(blocks)
-	// elements := filterEmptyElements(blocks, filterBlankLine(), filterEmptyPreamble())
-	elements := insertPreamble(blocks)
+func NewDocument(frontmatter, header interface{}, elements []interface{}) (Document, error) {
+	log.Debugf("initializing a new Document with %d block element(s)", len(elements))
 	attributes := DocumentAttributes{}
 	if frontmatter != nil {
 		for attrName, attrValue := range frontmatter.(FrontMatter).Content {
 			attributes[attrName] = attrValue
 		}
 	}
-	if header != nil {
-		for attrName, attrValue := range header.(DocumentHeader).Content {
-			attributes[attrName] = attrValue
-			if attrName == "toc" {
-				// insert a TableOfContentsMacro element if `toc` value is:
-				// - "auto" (or empty)
-				// - "preamble"
-				switch attrValue {
-				case "", "auto":
-					// insert TableOfContentsMacro at first position
-					elements = append([]interface{}{TableOfContentsMacro{}}, elements...)
-				case "preamble":
-					// lookup preamble in elements (should be first)
-					preambleIndex := 0
-					for i, e := range elements {
-						if _, ok := e.(Preamble); ok {
-							preambleIndex = i
-							break
-						}
-					}
-					// insert TableOfContentsMacro just after preamble
-					remainingElements := make([]interface{}, len(elements)-(preambleIndex+1))
-					copy(remainingElements, elements[preambleIndex+1:])
-					elements = append(elements[0:preambleIndex+1], TableOfContentsMacro{})
-					elements = append(elements, remainingElements...)
-				case "macro":
-				default:
-					log.Warnf("invalid value for 'toc' attribute: '%s'", attrValue)
-
-				}
-			}
-		}
+	if header, ok := header.(DocumentHeader); ok {
+		attributes.AddAll(header.Attributes)
 	}
 	//TODO: those collectors could be called at the beginning of rendering, and in concurrent routines
 	// visit AST and collect element references
 	xrefsCollector := NewElementReferencesCollector()
 	for _, e := range elements {
 		if v, ok := e.(Visitable); ok {
-			err := v.Accept(xrefsCollector)
+			err := v.AcceptVisitor(xrefsCollector)
 			if err != nil {
 				return Document{}, errors.Wrapf(err, "unable to create document")
 			}
@@ -104,48 +88,21 @@ func NewDocument(frontmatter, header interface{}, blocks []interface{}) (Documen
 	for _, e := range elements {
 		log.Debugf("collecting footnotes in element of type %T", e)
 		if v, ok := e.(Visitable); ok {
-			err := v.Accept(footnotesCollector)
+			err := v.AcceptVisitor(footnotesCollector)
 			if err != nil {
 				return Document{}, errors.Wrapf(err, "unable to create document")
 			}
 		}
 	}
-
 	document := Document{
 		Attributes:         attributes,
-		Elements:           elements,
+		Elements:           NilSafe(elements),
 		ElementReferences:  xrefsCollector.ElementReferences,
 		Footnotes:          footnotesCollector.Footnotes,
 		FootnoteReferences: footnotesCollector.FootnoteReferences,
 	}
-
 	// visit all elements in the `AST` to retrieve their reference (ie, their ElementID if they have any)
 	return document, nil
-}
-
-func insertPreamble(blocks []interface{}) []interface{} {
-	// log.Debugf("generating preamble from %d blocks", len(blocks))
-	preamble := NewEmptyPreamble()
-	for _, block := range blocks {
-		switch block.(type) {
-		case Section:
-			break
-		default:
-			preamble.Elements = append(preamble.Elements, block)
-		}
-	}
-	// no element in the preamble, or no section in the document, so no preamble to generate
-	if len(preamble.Elements) == 0 || len(preamble.Elements) == len(blocks) {
-		log.Debugf("skipping preamble (%d vs %d)", len(preamble.Elements), len(blocks))
-		return nilSafe(blocks)
-	}
-	// now, insert the preamble instead of the 'n' blocks that belong to the preamble
-	// and copy the other items
-	result := make([]interface{}, len(blocks)-len(preamble.Elements)+1)
-	result[0] = preamble
-	copy(result[1:], blocks[len(preamble.Elements):])
-	log.Debugf("generated preamble with %d blocks", len(preamble.Elements))
-	return result
 }
 
 // ------------------------------------------
@@ -154,48 +111,48 @@ func insertPreamble(blocks []interface{}) []interface{} {
 
 // DocumentHeader the document header
 type DocumentHeader struct {
-	Content DocumentAttributes
+	Attributes DocumentAttributes
 }
 
 // NewDocumentHeader initializes a new DocumentHeader
 func NewDocumentHeader(header, authors, revision interface{}, otherAttributes []interface{}) (DocumentHeader, error) {
-	content := DocumentAttributes{}
+	attrs := DocumentAttributes{}
 	if header != nil {
-		content["doctitle"] = header.(SectionTitle)
+		attrs[AttrTitle] = header.(SectionTitle)
 	}
-	log.Debugf("initializing a new DocumentHeader with content '%v', authors '%+v' and revision '%+v'", content, authors, revision)
+	log.Debugf("initializing a new DocumentHeader with content '%v', authors '%+v' and revision '%+v'", attrs, authors, revision)
 	if authors != nil {
 		for i, author := range authors.([]DocumentAuthor) {
 			if i == 0 {
-				content.AddNonEmpty("firstname", author.FirstName)
-				content.AddNonEmpty("middlename", author.MiddleName)
-				content.AddNonEmpty("lastname", author.LastName)
-				content.AddNonEmpty("author", author.FullName)
-				content.AddNonEmpty("authorinitials", author.Initials)
-				content.AddNonEmpty("email", author.Email)
+				attrs.AddNonEmpty("firstname", author.FirstName)
+				attrs.AddNonEmpty("middlename", author.MiddleName)
+				attrs.AddNonEmpty("lastname", author.LastName)
+				attrs.AddNonEmpty("author", author.FullName)
+				attrs.AddNonEmpty("authorinitials", author.Initials)
+				attrs.AddNonEmpty("email", author.Email)
 			} else {
-				content.AddNonEmpty(fmt.Sprintf("firstname_%d", i+1), author.FirstName)
-				content.AddNonEmpty(fmt.Sprintf("middlename_%d", i+1), author.MiddleName)
-				content.AddNonEmpty(fmt.Sprintf("lastname_%d", i+1), author.LastName)
-				content.AddNonEmpty(fmt.Sprintf("author_%d", i+1), author.FullName)
-				content.AddNonEmpty(fmt.Sprintf("authorinitials_%d", i+1), author.Initials)
-				content.AddNonEmpty(fmt.Sprintf("email_%d", i+1), author.Email)
+				attrs.AddNonEmpty(fmt.Sprintf("firstname_%d", i+1), author.FirstName)
+				attrs.AddNonEmpty(fmt.Sprintf("middlename_%d", i+1), author.MiddleName)
+				attrs.AddNonEmpty(fmt.Sprintf("lastname_%d", i+1), author.LastName)
+				attrs.AddNonEmpty(fmt.Sprintf("author_%d", i+1), author.FullName)
+				attrs.AddNonEmpty(fmt.Sprintf("authorinitials_%d", i+1), author.Initials)
+				attrs.AddNonEmpty(fmt.Sprintf("email_%d", i+1), author.Email)
 			}
 		}
 	}
 	if revision != nil {
 		rev := revision.(DocumentRevision)
-		content.AddNonEmpty("revnumber", rev.Revnumber)
-		content.AddNonEmpty("revdate", rev.Revdate)
-		content.AddNonEmpty("revremark", rev.Revremark)
+		attrs.AddNonEmpty("revnumber", rev.Revnumber)
+		attrs.AddNonEmpty("revdate", rev.Revdate)
+		attrs.AddNonEmpty("revremark", rev.Revremark)
 	}
 	for _, attr := range otherAttributes {
 		if attr, ok := attr.(DocumentAttributeDeclaration); ok {
-			content.AddDeclaration(attr)
+			attrs.AddDeclaration(attr)
 		}
 	}
 	return DocumentHeader{
-		Content: content,
+		Attributes: attrs,
 	}, nil
 }
 
@@ -482,6 +439,9 @@ type Preamble struct {
 	Elements []interface{}
 }
 
+// verify interface(s)
+var _ ElementContainer = Preamble{}
+
 // NewEmptyPreamble return an empty Preamble
 func NewEmptyPreamble() Preamble {
 	return Preamble{
@@ -489,15 +449,20 @@ func NewEmptyPreamble() Preamble {
 	}
 }
 
-// Accept implements Visitable#Accept(Visitor)
-func (p Preamble) Accept(v Visitor) error {
+// GetElements returns the elements
+func (p Preamble) GetElements() []interface{} {
+	return p.Elements
+}
+
+// AcceptVisitor implements Visitable#AcceptVisitor(Visitor)
+func (p Preamble) AcceptVisitor(v Visitor) error {
 	err := v.Visit(p)
 	if err != nil {
 		return errors.Wrapf(err, "error while visiting section")
 	}
 	for _, element := range p.Elements {
 		if visitable, ok := element.(Visitable); ok {
-			err = visitable.Accept(v)
+			err = visitable.AcceptVisitor(v)
 			if err != nil {
 				return errors.Wrapf(err, "error while visiting section element")
 			}
@@ -537,13 +502,16 @@ type Section struct {
 	Elements []interface{}
 }
 
+// verify interface(s)
+var _ ElementContainer = Section{}
+
 // NewSection initializes a new `Section` from the given section title and elements
 func NewSection(level int, sectionTitle SectionTitle, blocks []interface{}) (Section, error) {
 	log.Debugf("initialized a new Section level %d with %d block(s)", level, len(blocks))
 	return Section{
 		Level:    level,
 		Title:    sectionTitle,
-		Elements: nilSafe(blocks),
+		Elements: NilSafe(blocks),
 	}, nil
 }
 
@@ -553,19 +521,24 @@ func (s Section) AddAttributes(attributes ElementAttributes) {
 	s.Title.AddAttributes(attributes)
 }
 
-// Accept implements Visitable#Accept(Visitor)
-func (s Section) Accept(v Visitor) error {
+// GetElements returns the elements
+func (s Section) GetElements() []interface{} {
+	return s.Elements
+}
+
+// AcceptVisitor implements Visitable#AcceptVisitor(Visitor)
+func (s Section) AcceptVisitor(v Visitor) error {
 	err := v.Visit(s)
 	if err != nil {
 		return errors.Wrapf(err, "error while visiting section")
 	}
-	err = s.Title.Accept(v)
+	err = s.Title.AcceptVisitor(v)
 	if err != nil {
 		return errors.Wrapf(err, "error while visiting section element")
 	}
 	for _, element := range s.Elements {
 		if visitable, ok := element.(Visitable); ok {
-			err = visitable.Accept(v)
+			err = visitable.AcceptVisitor(v)
 			if err != nil {
 				return errors.Wrapf(err, "error while visiting section element")
 			}
@@ -573,6 +546,28 @@ func (s Section) Accept(v Visitor) error {
 
 	}
 	return nil
+}
+
+// AcceptSubstitutor implements Substituable#AcceptSubstitutor(Substitutor)
+// in a section, the substitutor only cares about the elements for now.
+func (s Section) AcceptSubstitutor(v Substitutor) (interface{}, error) {
+	substitute := Section{
+		Level: s.Level,
+		Title: s.Title,
+	}
+	elements := []interface{}{}
+	for _, element := range s.Elements {
+		if e, ok := element.(Substituable); ok {
+			e, err := e.AcceptSubstitutor(v)
+			if err != nil {
+				return nil, errors.Wrapf(err, "error while visiting section element for substitution")
+			}
+			elements = append(elements, e)
+		}
+	}
+
+	substitute.Elements = elements
+	return substitute, nil
 }
 
 // ------------------------------------------
@@ -628,8 +623,8 @@ func (st SectionTitle) AddAttributes(attributes ElementAttributes) {
 	}
 }
 
-// Accept implements Visitable#Accept(Visitor)
-func (st SectionTitle) Accept(v Visitor) error {
+// AcceptVisitor implements Visitable#AcceptVisitor(Visitor)
+func (st SectionTitle) AcceptVisitor(v Visitor) error {
 	err := v.Visit(st)
 	if err != nil {
 		return errors.Wrapf(err, "error while visiting section")
@@ -637,7 +632,7 @@ func (st SectionTitle) Accept(v Visitor) error {
 	for _, element := range st.Elements {
 		visitable, ok := element.(Visitable)
 		if ok {
-			err = visitable.Accept(v)
+			err = visitable.AcceptVisitor(v)
 			if err != nil {
 				return errors.Wrapf(err, "error while visiting section element")
 			}
@@ -1670,8 +1665,8 @@ func (p Paragraph) AddAttributes(attributes ElementAttributes) {
 	p.Attributes.AddAll(attributes)
 }
 
-// Accept implements Visitable#Accept(Visitor)
-func (p Paragraph) Accept(v Visitor) error {
+// AcceptVisitor implements Visitable#AcceptVisitor(Visitor)
+func (p Paragraph) AcceptVisitor(v Visitor) error {
 	err := v.Visit(p)
 	if err != nil {
 		return errors.Wrapf(err, "error while visiting paragraph")
@@ -1679,7 +1674,7 @@ func (p Paragraph) Accept(v Visitor) error {
 	for _, line := range p.Lines {
 		for _, element := range line {
 			if visitable, ok := element.(Visitable); ok {
-				err = visitable.Accept(v)
+				err = visitable.AcceptVisitor(v)
 				if err != nil {
 					return errors.Wrapf(err, "error while visiting paragraph line")
 				}
@@ -1724,15 +1719,15 @@ func NewInlineElements(elements ...interface{}) (InlineElements, error) {
 	return result, nil
 }
 
-// Accept implements Visitable#Accept(Visitor)
-func (e InlineElements) Accept(v Visitor) error {
+// AcceptVisitor implements Visitable#AcceptVisitor(Visitor)
+func (e InlineElements) AcceptVisitor(v Visitor) error {
 	err := v.Visit(e)
 	if err != nil {
 		return errors.Wrapf(err, "error while visiting inline content")
 	}
 	for _, element := range e {
 		if visitable, ok := element.(Visitable); ok {
-			err = visitable.Accept(v)
+			err = visitable.AcceptVisitor(v)
 			if err != nil {
 				return errors.Wrapf(err, "error while visiting inline content element")
 			}
@@ -1900,8 +1895,8 @@ func NewFootnote(ref string, elements InlineElements) (Footnote, error) {
 	return footnote, nil
 }
 
-// Accept implements Visitable#Accept(Visitor)
-func (f Footnote) Accept(v Visitor) error {
+// AcceptVisitor implements Visitable#AcceptVisitor(Visitor)
+func (f Footnote) AcceptVisitor(v Visitor) error {
 	err := v.Visit(f)
 	if err != nil {
 		return errors.Wrapf(err, "error while visiting section")
@@ -1925,7 +1920,7 @@ type Substitution func([]interface{}) ([]interface{}, error)
 
 // None returns the content as-is, but nil-safe
 func None(content []interface{}) ([]interface{}, error) {
-	return nilSafe(content), nil
+	return NilSafe(content), nil
 }
 
 // Verbatim the verbatim substitution: the given content is converted into an array of strings.
@@ -2152,8 +2147,8 @@ func NewStringElement(content string) StringElement {
 	return StringElement{Content: content}
 }
 
-// Accept implements Visitable#Accept(Visitor)
-func (s StringElement) Accept(v Visitor) error {
+// AcceptVisitor implements Visitable#AcceptVisitor(Visitor)
+func (s StringElement) AcceptVisitor(v Visitor) error {
 	err := v.Visit(s)
 	if err != nil {
 		return errors.Wrapf(err, "error while visiting string element")
@@ -2211,15 +2206,15 @@ func NewQuotedText(kind QuotedTextKind, content []interface{}) (QuotedText, erro
 	}, nil
 }
 
-// Accept implements Visitable#Accept(Visitor)
-func (t QuotedText) Accept(v Visitor) error {
+// AcceptVisitor implements Visitable#AcceptVisitor(Visitor)
+func (t QuotedText) AcceptVisitor(v Visitor) error {
 	err := v.Visit(t)
 	if err != nil {
 		return errors.Wrapf(err, "error while visiting quoted text")
 	}
 	for _, element := range t.Elements {
 		if visitable, ok := element.(Visitable); ok {
-			err := visitable.Accept(v)
+			err := visitable.AcceptVisitor(v)
 			if err != nil {
 				return errors.Wrapf(err, "error while visiting quoted text element")
 			}
@@ -2312,7 +2307,7 @@ func (l InlineLink) Text() string {
 // AttrInlineLinkText the link `text` attribute
 const AttrInlineLinkText string = "text"
 
-// NewInlineLinkAttributes returns a map of image attributes, some of which have implicit keys (`text`)
+// NewInlineLinkAttributes returns a map of link attributes, some of which have implicit keys (`text`)
 func NewInlineLinkAttributes(text interface{}, otherattrs []interface{}) (ElementAttributes, error) {
 	result := ElementAttributes{}
 	var textStr string
@@ -2328,4 +2323,34 @@ func NewInlineLinkAttributes(text interface{}, otherattrs []interface{}) (Elemen
 		}
 	}
 	return result, nil
+}
+
+// ------------------------------------------
+// File Inclusions
+// ------------------------------------------
+
+// FileInclusion the structure for the file inclusions
+type FileInclusion struct {
+	Attributes ElementAttributes
+	Path       string
+}
+
+var _ ElementWithAttributes = FileInclusion{}
+
+// NewFileInclusion initializes a new inline `InlineLink`
+func NewFileInclusion(path string, attributes interface{}) (FileInclusion, error) {
+	attrs, ok := attributes.(ElementAttributes)
+	// init attributes with empty 'text' attribute
+	if !ok {
+		attrs = ElementAttributes{}
+	}
+	return FileInclusion{
+		Attributes: attrs,
+		Path:       path,
+	}, nil
+}
+
+// AddAttributes adds all given attributes to the current set of attribute of the element
+func (f FileInclusion) AddAttributes(attributes ElementAttributes) {
+	f.Attributes.AddAll(attributes)
 }

@@ -16,7 +16,7 @@ var _ = Describe("document attributes", func() {
 This journey begins on a bleary Monday morning.`
 			expectedResult := types.Document{
 				Attributes: types.DocumentAttributes{
-					"doctitle": types.SectionTitle{
+					types.AttrTitle: types.SectionTitle{
 						Attributes: types.ElementAttributes{
 							types.AttrID:       "the_dangerous_and_thrilling_documentation_chronicles",
 							types.AttrCustomID: false,
@@ -51,8 +51,8 @@ This journey begins on a bleary Monday morning.`
 					actualContent := `= title
 Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>`
 					expectedResult := types.DocumentHeader{
-						Content: types.DocumentAttributes{
-							"doctitle": types.SectionTitle{
+						Attributes: types.DocumentAttributes{
+							types.AttrTitle: types.SectionTitle{
 								Attributes: types.ElementAttributes{
 									types.AttrID:       "title",
 									types.AttrCustomID: false,
@@ -78,8 +78,8 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>`
 					actualContent := `= title
 Lazarus het_Draeke <lazarus@asciidoctor.org>`
 					expectedResult := types.DocumentHeader{
-						Content: types.DocumentAttributes{
-							"doctitle": types.SectionTitle{
+						Attributes: types.DocumentAttributes{
+							types.AttrTitle: types.SectionTitle{
 								Attributes: types.ElementAttributes{
 									types.AttrID:       "title",
 									types.AttrCustomID: false,
@@ -104,8 +104,8 @@ Lazarus het_Draeke <lazarus@asciidoctor.org>`
 					actualContent := `= title
 Kismet Chameleon`
 					expectedResult := types.DocumentHeader{
-						Content: types.DocumentAttributes{
-							"doctitle": types.SectionTitle{
+						Attributes: types.DocumentAttributes{
+							types.AttrTitle: types.SectionTitle{
 								Attributes: types.ElementAttributes{
 									types.AttrID:       "title",
 									types.AttrCustomID: false,
@@ -129,8 +129,8 @@ Kismet Chameleon`
 					actualContent := `= title
 Chameleon`
 					expectedResult := types.DocumentHeader{
-						Content: types.DocumentAttributes{
-							"doctitle": types.SectionTitle{
+						Attributes: types.DocumentAttributes{
+							types.AttrTitle: types.SectionTitle{
 								Attributes: types.ElementAttributes{
 									types.AttrID:       "title",
 									types.AttrCustomID: false,
@@ -153,8 +153,8 @@ Chameleon`
 					actualContent := `= title
 :author: Kismet Rainbow Chameleon` // `:"email":` is processed as a regular attribute
 					expectedResult := types.DocumentHeader{
-						Content: types.DocumentAttributes{
-							"doctitle": types.SectionTitle{
+						Attributes: types.DocumentAttributes{
+							types.AttrTitle: types.SectionTitle{
 								Attributes: types.ElementAttributes{
 									types.AttrID:       "title",
 									types.AttrCustomID: false,
@@ -181,8 +181,8 @@ Chameleon`
 					actualContent := `= title
 Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus@asciidoctor.org>`
 					expectedResult := types.DocumentHeader{
-						Content: types.DocumentAttributes{
-							"doctitle": types.SectionTitle{
+						Attributes: types.DocumentAttributes{
+							types.AttrTitle: types.SectionTitle{
 								Attributes: types.ElementAttributes{
 									types.AttrID:       "title",
 									types.AttrCustomID: false,
@@ -218,8 +218,8 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 				john doe
 				v1.0, June 19, 2017: First incarnation`
 				expectedResult := types.DocumentHeader{
-					Content: types.DocumentAttributes{
-						"doctitle": types.SectionTitle{
+					Attributes: types.DocumentAttributes{
+						types.AttrTitle: types.SectionTitle{
 							Attributes: types.ElementAttributes{
 								types.AttrID:       "title",
 								types.AttrCustomID: false,
@@ -247,8 +247,8 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 				john doe
 				v1.0, June 19, 2017`
 				expectedResult := types.DocumentHeader{
-					Content: types.DocumentAttributes{
-						"doctitle": types.SectionTitle{
+					Attributes: types.DocumentAttributes{
+						types.AttrTitle: types.SectionTitle{
 							Attributes: types.ElementAttributes{
 								types.AttrID:       "title",
 								types.AttrCustomID: false,
@@ -275,8 +275,8 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 				john doe
 				1.0, June 19, 2017:`
 				expectedResult := types.DocumentHeader{
-					Content: types.DocumentAttributes{
-						"doctitle": types.SectionTitle{
+					Attributes: types.DocumentAttributes{
+						types.AttrTitle: types.SectionTitle{
 							Attributes: types.ElementAttributes{
 								types.AttrID:       "title",
 								types.AttrCustomID: false,
@@ -302,8 +302,8 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 				john doe
 				1.0,`
 				expectedResult := types.DocumentHeader{
-					Content: types.DocumentAttributes{
-						"doctitle": types.SectionTitle{
+					Attributes: types.DocumentAttributes{
+						types.AttrTitle: types.SectionTitle{
 							Attributes: types.ElementAttributes{
 								types.AttrID:       "title",
 								types.AttrCustomID: false,
@@ -329,8 +329,8 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 				john doe
 				1.0`
 				expectedResult := types.DocumentHeader{
-					Content: types.DocumentAttributes{
-						"doctitle": types.SectionTitle{
+					Attributes: types.DocumentAttributes{
+						types.AttrTitle: types.SectionTitle{
 							Attributes: types.ElementAttributes{
 								types.AttrID:       "title",
 								types.AttrCustomID: false,
@@ -356,8 +356,8 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 				john doe
 				1.0a`
 				expectedResult := types.DocumentHeader{
-					Content: types.DocumentAttributes{
-						"doctitle": types.SectionTitle{
+					Attributes: types.DocumentAttributes{
+						types.AttrTitle: types.SectionTitle{
 							Attributes: types.ElementAttributes{
 								types.AttrID:       "title",
 								types.AttrCustomID: false,
@@ -383,8 +383,8 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 				john doe
 				v1.0:`
 				expectedResult := types.DocumentHeader{
-					Content: types.DocumentAttributes{
-						"doctitle": types.SectionTitle{
+					Attributes: types.DocumentAttributes{
+						types.AttrTitle: types.SectionTitle{
 							Attributes: types.ElementAttributes{
 								types.AttrID:       "title",
 								types.AttrCustomID: false,
@@ -410,8 +410,8 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 				john doe
 				V1.0:`
 				expectedResult := types.DocumentHeader{
-					Content: types.DocumentAttributes{
-						"doctitle": types.SectionTitle{
+					Attributes: types.DocumentAttributes{
+						types.AttrTitle: types.SectionTitle{
 							Attributes: types.ElementAttributes{
 								types.AttrID:       "title",
 								types.AttrCustomID: false,
@@ -437,8 +437,8 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 				john doe
 				v1.0,`
 				expectedResult := types.DocumentHeader{
-					Content: types.DocumentAttributes{
-						"doctitle": types.SectionTitle{
+					Attributes: types.DocumentAttributes{
+						types.AttrTitle: types.SectionTitle{
 							Attributes: types.ElementAttributes{
 								types.AttrID:       "title",
 								types.AttrCustomID: false,
@@ -464,8 +464,8 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 				john doe
 				v1.0,:`
 				expectedResult := types.DocumentHeader{
-					Content: types.DocumentAttributes{
-						"doctitle": types.SectionTitle{
+					Attributes: types.DocumentAttributes{
+						types.AttrTitle: types.SectionTitle{
 							Attributes: types.ElementAttributes{
 								types.AttrID:       "title",
 								types.AttrCustomID: false,
@@ -491,8 +491,8 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 john doe
 v1.0:`
 				expectedResult := types.DocumentHeader{
-					Content: types.DocumentAttributes{
-						"doctitle": types.SectionTitle{
+					Attributes: types.DocumentAttributes{
+						types.AttrTitle: types.SectionTitle{
 							Attributes: types.ElementAttributes{
 								types.AttrID:       "title",
 								types.AttrCustomID: false,
@@ -735,7 +735,7 @@ v1.0, June 19, 2017: First incarnation
 This journey begins on a bleary Monday morning.`
 			expectedResult := types.Document{
 				Attributes: types.DocumentAttributes{
-					"doctitle": types.SectionTitle{
+					types.AttrTitle: types.SectionTitle{
 						Attributes: types.ElementAttributes{
 							types.AttrID:       "the_dangerous_and_thrilling_documentation_chronicles",
 							types.AttrCustomID: false,
@@ -765,7 +765,6 @@ This journey begins on a bleary Monday morning.`
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
-					types.TableOfContentsMacro{},
 					types.BlankLine{},
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
@@ -789,7 +788,7 @@ This journey begins on a bleary Monday morning.`
 a paragraph with *bold content*`
 			expectedResult := types.Document{
 				Attributes: types.DocumentAttributes{
-					"doctitle": types.SectionTitle{
+					types.AttrTitle: types.SectionTitle{
 						Attributes: types.ElementAttributes{
 							types.AttrID:       "a_header",
 							types.AttrCustomID: false,

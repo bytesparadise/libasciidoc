@@ -39,7 +39,7 @@ var _ = Describe("footnotes collector", func() {
 		}
 		c := types.NewFootnotesCollector()
 		// when
-		err := content.Accept(c)
+		err := content.AcceptVisitor(c)
 		// then
 		require.NoError(GinkgoT(), err)
 		require.Len(GinkgoT(), c.Footnotes, 2)
@@ -77,7 +77,7 @@ var _ = Describe("footnotes collector", func() {
 		}
 		c := types.NewFootnotesCollector()
 		// when
-		err := content.Accept(c)
+		err := content.AcceptVisitor(c)
 		// then
 		require.NoError(GinkgoT(), err)
 		require.Len(GinkgoT(), c.Footnotes, 1) // a single, yet referenced twice elsewhere
