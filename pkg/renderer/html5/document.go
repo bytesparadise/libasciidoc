@@ -60,11 +60,10 @@ func renderDocument(ctx *renderer.Context, output io.Writer) (map[string]interfa
 	if err != nil {
 		return nil, errors.Wrapf(err, "unable to render full document")
 	}
-
 	if ctx.IncludeHeaderFooter() {
 		log.Debugf("Rendering full document...")
 		// use a temporary writer for the document's content
-		renderedElements, err := renderDocumentElements(ctx, ctx.Document)
+		renderedElements, err := renderDocumentElements(ctx)
 		if err != nil {
 			return nil, errors.Wrapf(err, "unable to render full document")
 		}
@@ -72,6 +71,7 @@ func renderDocument(ctx *renderer.Context, output io.Writer) (map[string]interfa
 		if err != nil {
 			return nil, errors.Wrapf(err, "unable to render full document")
 		}
+		revNumber, _ := ctx.Document.Attributes.GetAsString("revnumber")
 		err = documentTmpl.Execute(output, struct {
 			Generator   string
 			Title       string
@@ -85,7 +85,7 @@ func renderDocument(ctx *renderer.Context, output io.Writer) (map[string]interfa
 			Title:       string(renderedTitle),
 			Header:      string(renderedHeader),
 			Content:     htmltemplate.HTML(string(renderedElements)),
-			RevNumber:   ctx.Document.Attributes.GetAsString("revnumber"),
+			RevNumber:   revNumber,
 			LastUpdated: ctx.LastUpdated(),
 			Details:     documentDetails,
 		})
@@ -93,7 +93,7 @@ func renderDocument(ctx *renderer.Context, output io.Writer) (map[string]interfa
 			return nil, errors.Wrapf(err, "unable to render full document")
 		}
 	} else {
-		renderedElements, err := renderDocumentElements(ctx, ctx.Document)
+		renderedElements, err := renderDocumentElements(ctx)
 		if err != nil {
 			return nil, errors.Wrapf(err, "unable to render full document")
 		}
@@ -106,7 +106,7 @@ func renderDocument(ctx *renderer.Context, output io.Writer) (map[string]interfa
 	// copy all document attributes, and override the title with its rendered value instead of the `types.Section` struct
 	for k, v := range ctx.Document.Attributes {
 		switch k {
-		case "doctitle":
+		case types.AttrTitle:
 			metadata[k] = string(renderedTitle)
 		default:
 			metadata[k] = v
@@ -117,15 +117,15 @@ func renderDocument(ctx *renderer.Context, output io.Writer) (map[string]interfa
 
 // renderDocumentElements renders all document elements, including the footnotes,
 // but not the HEAD and BODY containers
-func renderDocumentElements(ctx *renderer.Context, document types.Document) ([]byte, error) {
-	log.Debugf("rendered document with %d element(s)...", len(document.Elements))
+func renderDocumentElements(ctx *renderer.Context) ([]byte, error) {
+	log.Debugf("rendered document with %d element(s)...", len(ctx.Document.Elements))
 	buff := bytes.NewBuffer(nil)
-	renderedElements, err := renderElements(ctx, document.Elements)
+	renderedElements, err := renderElements(ctx, ctx.Document.Elements)
 	if err != nil {
 		return []byte{}, errors.Wrapf(err, "failed to render document elements")
 	}
 	buff.Write(renderedElements)
-	renderedFootnotes, err := renderFootnotes(ctx, document.Footnotes)
+	renderedFootnotes, err := renderFootnotes(ctx, ctx.Document.Footnotes)
 	if err != nil {
 		return []byte{}, errors.Wrapf(err, "failed to render document elements")
 	}

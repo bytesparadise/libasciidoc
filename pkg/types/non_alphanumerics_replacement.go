@@ -39,8 +39,8 @@ func newReplaceNonAlphanumericsFunc(replacement string) NormalizationFunc {
 
 // replaceNonAlphanumerics replace all non alpha numeric characters with the given `replacement`
 func replaceNonAlphanumerics(source InlineElements, replacement string) (string, error) {
-	v := newreplaceNonAlphanumericsVisitor()
-	err := source.Accept(&v)
+	v := newReplaceNonAlphanumericsVisitor()
+	err := source.AcceptVisitor(v)
 	if err != nil {
 		return "", err
 	}
@@ -54,10 +54,12 @@ type replaceNonAlphanumericsVisitor struct {
 	normalize NormalizationFunc
 }
 
-// newreplaceNonAlphanumericsVisitor returns a new replaceNonAlphanumericsVisitor
-func newreplaceNonAlphanumericsVisitor() replaceNonAlphanumericsVisitor {
+var _ Visitor = &replaceNonAlphanumericsVisitor{}
+
+// newReplaceNonAlphanumericsVisitor returns a new replaceNonAlphanumericsVisitor
+func newReplaceNonAlphanumericsVisitor() *replaceNonAlphanumericsVisitor {
 	buf := bytes.NewBuffer(nil)
-	return replaceNonAlphanumericsVisitor{
+	return &replaceNonAlphanumericsVisitor{
 		buf:       *buf,
 		normalize: newReplaceNonAlphanumericsFunc("_"),
 	}
@@ -75,6 +77,7 @@ func (v *replaceNonAlphanumericsVisitor) Visit(element Visitable) error {
 			return errors.Wrapf(err, "error while normalizing String Element")
 		}
 		v.buf.Write(normalized)
+		return nil
 	}
 	// other types are ignored
 	return nil

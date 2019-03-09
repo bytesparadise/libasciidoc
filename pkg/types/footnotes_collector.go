@@ -28,6 +28,8 @@ type FootnotesCollector struct {
 	FootnoteReferences FootnoteReferences
 }
 
+var _ Visitor = &FootnotesCollector{}
+
 // NewFootnotesCollector initializes a new FootnotesCollector
 func NewFootnotesCollector() *FootnotesCollector {
 	return &FootnotesCollector{

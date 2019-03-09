@@ -302,8 +302,8 @@ a paragraph with another footnote:[baz]`
 		}
 		expectedResult := types.Document{
 			Attributes: types.DocumentAttributes{
-				"doctitle": docTitle,
-				"idprefix": "id_",
+				types.AttrTitle: docTitle,
+				"idprefix":      "id_",
 			},
 			ElementReferences: types.ElementReferences{
 				"section_1": section1Title,
@@ -315,23 +315,19 @@ a paragraph with another footnote:[baz]`
 			},
 			FootnoteReferences: types.FootnoteReferences{},
 			Elements: []interface{}{
-				types.Preamble{
-					Elements: []interface{}{
-						types.BlankLine{},
-						types.Paragraph{
-							Attributes: types.ElementAttributes{},
-							Lines: []types.InlineElements{
-								{
-									types.StringElement{
-										Content: "a premable with a ",
-									},
-									footnote1,
-								},
+				types.BlankLine{},
+				types.Paragraph{
+					Attributes: types.ElementAttributes{},
+					Lines: []types.InlineElements{
+						{
+							types.StringElement{
+								Content: "a premable with a ",
 							},
+							footnote1,
 						},
-						types.BlankLine{},
 					},
 				},
+				types.BlankLine{},
 				types.Section{
 					Level: 1,
 					Title: section1Title,

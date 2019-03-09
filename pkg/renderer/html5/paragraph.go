@@ -281,7 +281,7 @@ func getClass(kind types.AdmonitionKind) string {
 }
 
 func getIconClass(ctx *renderer.Context, kind types.AdmonitionKind) string {
-	if ctx.Document.Attributes.GetAsString("icons") == "font" {
+	if icons, _ := ctx.Document.Attributes.GetAsString("icons"); icons == "font" {
 		return getClass(kind)
 	}
 	return ""

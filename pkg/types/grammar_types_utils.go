@@ -61,8 +61,8 @@ blocks:
 	return elements
 }
 
-// nilSafe returns a new slice if the given elements is nil, otherwise it returns the given elements
-func nilSafe(elements []interface{}) []interface{} {
+// NilSafe returns a new slice if the given elements is nil, otherwise it returns the given elements
+func NilSafe(elements []interface{}) []interface{} {
 	if elements != nil {
 		return elements
 	}

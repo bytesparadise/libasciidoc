@@ -59,7 +59,13 @@ func ConvertToHTML(ctx context.Context, r io.Reader, output io.Writer, options .
 
 func convertToHTML(ctx context.Context, doc types.Document, output io.Writer, options ...renderer.Option) (map[string]interface{}, error) {
 	start := time.Now()
-	metadata, err := htmlrenderer.Render(renderer.Wrap(ctx, doc, options...), output)
+	rendererCtx := renderer.Wrap(ctx, doc, options...)
+	// insert tables of contents, preamble and process file inclusions
+	err := renderer.Prerender(rendererCtx)
+	if err != nil {
+		return nil, errors.Wrapf(err, "error while rendering the document")
+	}
+	metadata, err := htmlrenderer.Render(rendererCtx, output)
 	if err != nil {
 		return nil, errors.Wrapf(err, "error while rendering the document")
 	}

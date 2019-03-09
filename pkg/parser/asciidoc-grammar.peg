@@ -139,6 +139,7 @@ DocumentAttributeValue <- (Alphanums / Spaces / (!NEWLINE  .){
 // ------------------------------------------
 DocumentElement <- !EOF // when reaching EOF, do not try to parse a new document block again
     element:(BlankLine 
+            / FileInclude
             / VerseBlock
             / VerseParagraph
             / ImageBlock 
@@ -294,6 +295,11 @@ QuoteTitle <- (Alphanums / Spaces / (!EOL !"," !"]"  .))* {
     return string(c.text), nil
 }
 
+InlineAttributes <- "[" attrs:(GenericAttribute)* "]" {
+    return types.NewInlineAttributes(attrs.([]interface{}))
+} 
+
+
 // ------------------------------------------
 // Sections
 // ------------------------------------------
@@ -439,6 +445,13 @@ TitleElement <- element:(Spaces / Dot / CrossReference / Passthrough / InlineIma
 // Table of Contents
 // ------------------------------------------
 TableOfContentsMacro <- "toc::[]" NEWLINE
+
+// ------------------------------------------
+// File inclusions
+// ------------------------------------------
+FileInclude <- "include::" path:(URL) inlineAttributes:(InlineAttributes) {
+    return types.NewFileInclusion(path.(string), inlineAttributes.(types.ElementAttributes))
+}
 
 // ------------------------------------------
 // Lists
