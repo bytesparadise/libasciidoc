@@ -1,6 +1,9 @@
 package renderer
 
 import (
+	"bufio"
+	"os"
+	"path/filepath"
 	"strconv"
 
 	"github.com/bytesparadise/libasciidoc/pkg/parser"
@@ -24,8 +27,13 @@ func processFileInclusions(elements []interface{}) ([]interface{}, error) {
 	for _, element := range elements {
 		switch e := element.(type) {
 		case types.Section:
-			var err error
-			e.Elements, err = processFileInclusions(e.Elements)
+			err := processNestedFileInclusions(&e)
+			if err != nil {
+				return result, errors.Wrapf(err, "fail to process file inclusions")
+			}
+			result = append(result, e)
+		case types.DelimitedBlock:
+			err := processNestedFileInclusions(&e)
 			if err != nil {
 				return result, errors.Wrapf(err, "fail to process file inclusions")
 			}
@@ -43,20 +51,51 @@ func processFileInclusions(elements []interface{}) ([]interface{}, error) {
 	return result, nil
 }
 
+func processNestedFileInclusions(c types.ElementContainer) error {
+	elements, err := processFileInclusions(c.GetElements())
+	if err != nil {
+		return errors.Wrapf(err, "fail to process file inclusions")
+	}
+	c.SetElements(elements)
+	return nil
+}
+
 func getElementsToInclude(file types.FileInclusion) ([]interface{}, error) {
-	doc, err := parser.ParseFile(file.Path)
+	// parse the file if it is an Asciidoc only (.asciidoc, .adoc, .ad, .asc, or .txt)
+	if ext := filepath.Ext(file.Path); ext == ".asciidoc" || ext == ".adoc" || ext == ".ad" || ext == ".asc" || ext == ".txt" {
+		doc, err := parser.ParseFile(file.Path)
+		if err != nil {
+			return nil, errors.Wrapf(err, "unable to parse file to include")
+		}
+		if log.IsLevelEnabled(log.DebugLevel) {
+			log.Debug("document to include:")
+			spew.Dump(doc)
+		}
+		doc, err = ApplyLevelOffset(doc.(types.Document), file.Attributes.GetAsString(types.AttrLevelOffset))
+		if err != nil {
+			return nil, errors.Wrapf(err, "unable to parse file to include")
+		}
+		return doc.(types.Document).Elements, nil
+	}
+	// otherwise, read the files and wrap the lines in a paragraph
+	f, err := os.Open(file.Path)
 	if err != nil {
-		return nil, errors.Wrapf(err, "unable to parse file to include")
+		return nil, errors.Wrapf(err, "unable to read file to include")
 	}
-	if log.IsLevelEnabled(log.DebugLevel) {
-		log.Debug("document to include:")
-		spew.Dump(doc)
+	p := types.Paragraph{
+		Attributes: types.ElementAttributes{},
+		Lines:      []types.InlineElements{},
 	}
-	doc, err = ApplyLevelOffset(doc.(types.Document), file.Attributes.GetAsString(types.AttrLevelOffset))
-	if err != nil {
-		return nil, errors.Wrapf(err, "unable to parse file to include")
+	defer f.Close()
+	scanner := bufio.NewScanner(f)
+	for scanner.Scan() {
+		p.Lines = append(p.Lines, types.InlineElements{
+			types.StringElement{
+				Content: scanner.Text(),
+			},
+		})
 	}
-	return doc.(types.Document).Elements, nil
+	return []interface{}{p}, nil
 }
 
 // ApplyLevelOffset returns a document in which all section levels have been offset

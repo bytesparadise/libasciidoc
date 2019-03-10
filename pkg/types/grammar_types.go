@@ -44,6 +44,7 @@ type Substitutor interface {
 // ElementContainer en element that has child elements as well
 type ElementContainer interface {
 	GetElements() []interface{}
+	SetElements([]interface{})
 }
 
 // ------------------------------------------
@@ -439,9 +440,6 @@ type Preamble struct {
 	Elements []interface{}
 }
 
-// verify interface(s)
-var _ ElementContainer = Preamble{}
-
 // NewEmptyPreamble return an empty Preamble
 func NewEmptyPreamble() Preamble {
 	return Preamble{
@@ -503,7 +501,7 @@ type Section struct {
 }
 
 // verify interface(s)
-var _ ElementContainer = Section{}
+var _ ElementContainer = &Section{}
 
 // NewSection initializes a new `Section` from the given section title and elements
 func NewSection(level int, sectionTitle SectionTitle, blocks []interface{}) (Section, error) {
@@ -522,8 +520,13 @@ func (s Section) AddAttributes(attributes ElementAttributes) {
 }
 
 // GetElements returns the elements
-func (s Section) GetElements() []interface{} {
+func (s *Section) GetElements() []interface{} {
 	return s.Elements
+}
+
+// SetElements sets the elements of the section (overriding the existing ones)
+func (s *Section) SetElements(elements []interface{}) {
+	s.Elements = elements
 }
 
 // AcceptVisitor implements Visitable#AcceptVisitor(Visitor)
@@ -1915,6 +1918,9 @@ type DelimitedBlock struct {
 	Elements   []interface{}
 }
 
+// verify interface(s)
+var _ ElementContainer = &DelimitedBlock{}
+
 // Substitution the substitution group to apply when initializing a delimited block
 type Substitution func([]interface{}) ([]interface{}, error)
 
@@ -1958,6 +1964,16 @@ func (b *DelimitedBlock) AddAttributes(attributes ElementAttributes) {
 		log.Debugf("overriding kind '%s' to '%s'", b.Kind, attributes[AttrKind])
 		b.Kind = BlockKind(attributes.GetAsString(AttrKind))
 	}
+}
+
+// GetElements returns the elements
+func (b *DelimitedBlock) GetElements() []interface{} {
+	return b.Elements
+}
+
+// SetElements returns the elements
+func (b *DelimitedBlock) SetElements(elmts []interface{}) {
+	b.Elements = elmts
 }
 
 // ------------------------------------------

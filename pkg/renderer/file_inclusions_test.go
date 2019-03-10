@@ -11,7 +11,7 @@ import (
 
 var _ = Describe("file inclusions", func() {
 
-	It("should include file with section 0 at root level without offset", func() {
+	It("should include adoc file with section 0 at root level without offset", func() {
 		actualContent := types.Document{
 			Attributes:         types.DocumentAttributes{},
 			ElementReferences:  types.ElementReferences{},
@@ -93,7 +93,7 @@ var _ = Describe("file inclusions", func() {
 		verifyFileInclusions(expectedContent, actualContent)
 	})
 
-	It("should include file with section 0 at root level with valid offset", func() {
+	It("should include adoc file with section 0 at root level with valid offset", func() {
 		actualContent := types.Document{
 			Attributes:         types.DocumentAttributes{},
 			ElementReferences:  types.ElementReferences{},
@@ -177,7 +177,7 @@ var _ = Describe("file inclusions", func() {
 		verifyFileInclusions(expectedContent, actualContent)
 	})
 
-	It("should include file with section 0 within existin section with valid offset", func() {
+	It("should include adoc file with section 0 within existin section with valid offset", func() {
 		actualContent := types.Document{
 			Attributes:         types.DocumentAttributes{},
 			ElementReferences:  types.ElementReferences{},
@@ -292,7 +292,7 @@ var _ = Describe("file inclusions", func() {
 		verifyFileInclusions(expectedContent, actualContent)
 	})
 
-	It("should include file with 2 paragraphs at root level without offset", func() {
+	It("should include adoc file with 2 paragraphs at root level without offset", func() {
 		actualContent := types.Document{
 			Attributes:         types.DocumentAttributes{},
 			ElementReferences:  types.ElementReferences{},
@@ -366,6 +366,191 @@ var _ = Describe("file inclusions", func() {
 		verifyFileInclusions(expectedContent, actualContent)
 	})
 
+	It("should include raw file at root", func() {
+		actualContent := types.Document{
+			Attributes:         types.DocumentAttributes{},
+			ElementReferences:  types.ElementReferences{},
+			Footnotes:          types.Footnotes{},
+			FootnoteReferences: types.FootnoteReferences{},
+			Elements: []interface{}{
+				types.Paragraph{
+					Attributes: types.ElementAttributes{},
+					Lines: []types.InlineElements{
+						{
+							types.StringElement{Content: "a first paragraph"},
+						},
+					},
+				},
+				types.FileInclusion{
+					Attributes: types.ElementAttributes{},
+					Path:       "html5/includes/sample.html",
+				},
+				types.BlankLine{},
+				types.Paragraph{
+					Attributes: types.ElementAttributes{},
+					Lines: []types.InlineElements{
+						{
+							types.StringElement{Content: "a second paragraph"},
+						},
+					},
+				},
+			},
+		}
+		expectedContent := types.Document{
+			Attributes:         types.DocumentAttributes{},
+			ElementReferences:  types.ElementReferences{},
+			Footnotes:          types.Footnotes{},
+			FootnoteReferences: types.FootnoteReferences{},
+			Elements: []interface{}{
+				types.Paragraph{
+					Attributes: types.ElementAttributes{},
+					Lines: []types.InlineElements{
+						{
+							types.StringElement{Content: "a first paragraph"},
+						},
+					},
+				},
+				types.Paragraph{
+					Attributes: types.ElementAttributes{},
+					Lines: []types.InlineElements{
+						{
+							types.StringElement{Content: "<html>"},
+						},
+						{
+							types.StringElement{Content: "<head>"},
+						},
+						{
+							types.StringElement{Content: "    <title>*foo*</title>"},
+						},
+						{
+							types.StringElement{Content: `    <script src="main.js"></script>`},
+						},
+						{
+							types.StringElement{Content: "</head>"},
+						},
+						{
+							types.StringElement{Content: "<body>"},
+						},
+						{
+							types.StringElement{Content: "</body>"},
+						},
+						{
+							types.StringElement{Content: "</html>"},
+						},
+					},
+				},
+				types.BlankLine{},
+				types.Paragraph{
+					Attributes: types.ElementAttributes{},
+					Lines: []types.InlineElements{
+						{
+							types.StringElement{Content: "a second paragraph"},
+						},
+					},
+				},
+			},
+		}
+		verifyFileInclusions(expectedContent, actualContent)
+	})
+
+	It("should include raw file in delimited block", func() {
+		actualContent := types.Document{
+			Attributes:         types.DocumentAttributes{},
+			ElementReferences:  types.ElementReferences{},
+			Footnotes:          types.Footnotes{},
+			FootnoteReferences: types.FootnoteReferences{},
+			Elements: []interface{}{
+				types.Paragraph{
+					Attributes: types.ElementAttributes{},
+					Lines: []types.InlineElements{
+						{
+							types.StringElement{Content: "a first paragraph"},
+						},
+					},
+				},
+				types.DelimitedBlock{
+					Kind:       types.Source,
+					Attributes: types.ElementAttributes{},
+					Elements: []interface{}{
+						types.FileInclusion{
+							Attributes: types.ElementAttributes{},
+							Path:       "html5/includes/sample.html",
+						},
+					},
+				},
+				types.BlankLine{},
+				types.Paragraph{
+					Attributes: types.ElementAttributes{},
+					Lines: []types.InlineElements{
+						{
+							types.StringElement{Content: "a second paragraph"},
+						},
+					},
+				},
+			},
+		}
+		expectedContent := types.Document{
+			Attributes:         types.DocumentAttributes{},
+			ElementReferences:  types.ElementReferences{},
+			Footnotes:          types.Footnotes{},
+			FootnoteReferences: types.FootnoteReferences{},
+			Elements: []interface{}{
+				types.Paragraph{
+					Attributes: types.ElementAttributes{},
+					Lines: []types.InlineElements{
+						{
+							types.StringElement{Content: "a first paragraph"},
+						},
+					},
+				},
+				types.DelimitedBlock{
+					Kind:       types.Source,
+					Attributes: types.ElementAttributes{},
+					Elements: []interface{}{
+						types.Paragraph{
+							Attributes: types.ElementAttributes{},
+							Lines: []types.InlineElements{
+								{
+									types.StringElement{Content: "<html>"},
+								},
+								{
+									types.StringElement{Content: "<head>"},
+								},
+								{
+									types.StringElement{Content: "    <title>*foo*</title>"},
+								},
+								{
+									types.StringElement{Content: `    <script src="main.js"></script>`},
+								},
+								{
+									types.StringElement{Content: "</head>"},
+								},
+								{
+									types.StringElement{Content: "<body>"},
+								},
+								{
+									types.StringElement{Content: "</body>"},
+								},
+								{
+									types.StringElement{Content: "</html>"},
+								},
+							},
+						},
+					},
+				},
+				types.BlankLine{},
+				types.Paragraph{
+					Attributes: types.ElementAttributes{},
+					Lines: []types.InlineElements{
+						{
+							types.StringElement{Content: "a second paragraph"},
+						},
+					},
+				},
+			},
+		}
+		verifyFileInclusions(expectedContent, actualContent)
+	})
 })
 
 func verifyFileInclusions(expectedContent, actualContent types.Document) {
