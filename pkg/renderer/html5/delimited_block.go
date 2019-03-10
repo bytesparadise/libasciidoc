@@ -6,6 +6,8 @@ import (
 	"html"
 	texttemplate "text/template"
 
+	"github.com/davecgh/go-spew/spew"
+
 	"github.com/bytesparadise/libasciidoc/pkg/renderer"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 	"github.com/pkg/errors"
@@ -265,10 +267,18 @@ func renderDelimitedBlock(ctx *renderer.Context, b types.DelimitedBlock) ([]byte
 		})
 	case types.Verse:
 		var elements = make([]interface{}, 0)
+		log.Debugf("including elements in verse block: %v", spew.Sdump(b.Elements))
 		if len(b.Elements) > 0 {
-			if p, ok := b.Elements[0].(types.Paragraph); ok {
-				for _, e := range p.Lines {
+			for _, element := range b.Elements {
+				switch e := element.(type) {
+				case types.Paragraph:
+					for _, l := range e.Lines {
+						elements = append(elements, l)
+					}
+				case types.BlankLine:
 					elements = append(elements, e)
+				default:
+					log.Warnf("unexpected type of element to include in verse block: %T", element)
 				}
 			}
 		}
@@ -284,6 +294,8 @@ func renderDelimitedBlock(ctx *renderer.Context, b types.DelimitedBlock) ([]byte
 		} else if title := b.Attributes.GetAsString(types.AttrQuoteTitle); title != "" {
 			attribution.First = title
 		}
+		before := ctx.SetIncludeBlankLine(true)
+		defer ctx.SetIncludeBlankLine(before)
 		err = verseBlockTmpl.Execute(result, ContextualPipeline{
 			Context: ctx,
 			Data: struct {

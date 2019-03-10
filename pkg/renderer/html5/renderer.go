@@ -27,8 +27,9 @@ func renderElements(ctx *renderer.Context, elements []interface{}) ([]byte, erro
 		if err != nil {
 			return nil, errors.Wrapf(err, "unable to render an element")
 		}
-		// insert new line if there's already some content
-		if hasContent && len(renderedElement) > 0 {
+		// insert new line if there's already some content (except for BlankLine)
+		_, isBlankline := element.(types.BlankLine)
+		if !isBlankline && hasContent && len(renderedElement) > 0 {
 			buff.WriteString("\n")
 		}
 		buff.Write(renderedElement)

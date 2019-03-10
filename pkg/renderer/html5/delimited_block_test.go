@@ -142,7 +142,7 @@ end</code></pre>
 
 	Context("example blocks", func() {
 
-		It("example block with multiple elements", func() {
+		It("example block with multiple elements - case 1", func() {
 			actualContent := `====
 some listing code
 with *bold content*
@@ -161,6 +161,25 @@ with <strong>bold content</strong></p>
 <p>and a list item</p>
 </li>
 </ul>
+</div>
+</div>
+</div>`
+			verify(GinkgoT(), expectedResult, actualContent)
+		})
+
+		It("example block with multiple elements - case 2", func() {
+			actualContent := `====
+*bold content*
+
+and more content
+====`
+			expectedResult := `<div class="exampleblock">
+<div class="content">
+<div class="paragraph">
+<p><strong>bold content</strong></p>
+</div>
+<div class="paragraph">
+<p>and more content</p>
 </div>
 </div>
 </div>`
