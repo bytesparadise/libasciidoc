@@ -41,11 +41,6 @@ type Substitutor interface {
 	Visit(Substituable) (interface{}, error)
 }
 
-// ElementContainer en element that has child elements as well
-type ElementContainer interface {
-	GetElements() []interface{}
-}
-
 // ------------------------------------------
 // Document
 // ------------------------------------------
@@ -439,9 +434,6 @@ type Preamble struct {
 	Elements []interface{}
 }
 
-// verify interface(s)
-var _ ElementContainer = Preamble{}
-
 // NewEmptyPreamble return an empty Preamble
 func NewEmptyPreamble() Preamble {
 	return Preamble{
@@ -502,9 +494,6 @@ type Section struct {
 	Elements []interface{}
 }
 
-// verify interface(s)
-var _ ElementContainer = Section{}
-
 // NewSection initializes a new `Section` from the given section title and elements
 func NewSection(level int, sectionTitle SectionTitle, blocks []interface{}) (Section, error) {
 	log.Debugf("initialized a new Section level %d with %d block(s)", level, len(blocks))
@@ -522,7 +511,7 @@ func (s Section) AddAttributes(attributes ElementAttributes) {
 }
 
 // GetElements returns the elements
-func (s Section) GetElements() []interface{} {
+func (s *Section) GetElements() []interface{} {
 	return s.Elements
 }
 
@@ -655,7 +644,7 @@ type List interface {
 type ListItem interface {
 	GetElements() []interface{}
 	AddElement(interface{})
-	SetElements([]interface{})
+	SetElements([]interface{}) // TODO: remove this method?
 	processContinuations([]ListItem) ListItem
 }
 
@@ -1719,6 +1708,8 @@ func NewInlineElements(elements ...interface{}) (InlineElements, error) {
 	return result, nil
 }
 
+var _ Visitable = InlineElements{}
+
 // AcceptVisitor implements Visitable#AcceptVisitor(Visitor)
 func (e InlineElements) AcceptVisitor(v Visitor) error {
 	err := v.Visit(e)
@@ -1958,6 +1949,16 @@ func (b *DelimitedBlock) AddAttributes(attributes ElementAttributes) {
 		log.Debugf("overriding kind '%s' to '%s'", b.Kind, attributes[AttrKind])
 		b.Kind = BlockKind(attributes.GetAsString(AttrKind))
 	}
+}
+
+// GetElements returns the elements
+func (b *DelimitedBlock) GetElements() []interface{} {
+	return b.Elements
+}
+
+// SetElements returns the elements
+func (b *DelimitedBlock) SetElements(elmts []interface{}) {
+	b.Elements = elmts
 }
 
 // ------------------------------------------

@@ -29,4 +29,129 @@ include::includes/chapter-a.adoc[leveloffset=+1]`
 </div>`
 		verify(GinkgoT(), expectedResult, actualContent)
 	})
+
+	Context("file inclusion in delimited blocks", func() {
+
+		It("should include adoc file within listing block", func() {
+			actualContent := `= Master Document
+
+preamble
+
+----
+include::includes/chapter-a.adoc[]
+----`
+			expectedResult := `<div class="paragraph">
+<p>preamble</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>= Chapter A
+
+content</pre>
+</div>
+</div>`
+			verify(GinkgoT(), expectedResult, actualContent)
+		})
+
+		It("should include adoc file within fenced block", func() {
+			actualContent := "```\n" +
+				"include::includes/chapter-a.adoc[]\n" +
+				"```"
+			expectedResult := `<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>= Chapter A
+
+content</code></pre>
+</div>
+</div>`
+			verify(GinkgoT(), expectedResult, actualContent)
+		})
+
+		It("should include adoc file within listing block", func() {
+			actualContent := `----
+include::includes/chapter-a.adoc[]
+----`
+			expectedResult := `<div class="listingblock">
+<div class="content">
+<pre>= Chapter A
+
+content</pre>
+</div>
+</div>`
+			verify(GinkgoT(), expectedResult, actualContent)
+		})
+
+		It("should include adoc file within example block", func() {
+			actualContent := `====
+include::includes/chapter-a.adoc[]
+====`
+			expectedResult := `<div class="exampleblock">
+<div class="content">
+<div class="paragraph">
+<p>= Chapter A</p>
+</div>
+<div class="paragraph">
+<p>content</p>
+</div>
+</div>
+</div>`
+			verify(GinkgoT(), expectedResult, actualContent)
+		})
+
+		It("should include adoc file within quote block", func() {
+			actualContent := `____
+include::includes/chapter-a.adoc[]
+____`
+			expectedResult := `<div class="quoteblock">
+<blockquote>
+<div class="paragraph">
+<p>= Chapter A</p>
+</div>
+<div class="paragraph">
+<p>content</p>
+</div>
+</blockquote>
+</div>`
+			verify(GinkgoT(), expectedResult, actualContent)
+		})
+
+		It("should include adoc file within verse block", func() {
+			actualContent := `[verse]
+____
+include::includes/chapter-a.adoc[]
+____`
+			expectedResult := `<div class="verseblock">
+<pre class="content">= Chapter A
+
+content</pre>
+</div>`
+			verify(GinkgoT(), expectedResult, actualContent)
+		})
+
+		It("should include adoc file within sidebar block", func() {
+			actualContent := `****
+include::includes/chapter-a.adoc[]
+****`
+			expectedResult := `<div class="sidebarblock">
+<div class="content">
+<div class="paragraph">
+<p>= Chapter A</p>
+</div>
+<div class="paragraph">
+<p>content</p>
+</div>
+</div>
+</div>`
+			verify(GinkgoT(), expectedResult, actualContent)
+		})
+
+		It("should include adoc file within passthrough block", func() {
+			Skip("missing support for passthrough blocks")
+			actualContent := `++++
+include::includes/chapter-a.adoc[]
+++++`
+			expectedResult := ``
+			verify(GinkgoT(), expectedResult, actualContent)
+		})
+	})
 })

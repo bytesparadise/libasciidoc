@@ -449,7 +449,7 @@ TableOfContentsMacro <- "toc::[]" NEWLINE
 // ------------------------------------------
 // File inclusions
 // ------------------------------------------
-FileInclude <- "include::" path:(URL) inlineAttributes:(InlineAttributes) {
+FileInclude <- "include::" path:(URL) inlineAttributes:(InlineAttributes) WS* EOL {
     return types.NewFileInclusion(path.(string), inlineAttributes.(types.ElementAttributes))
 }
 
@@ -691,7 +691,7 @@ InlineElement <- !EOL !LineBreak
 // special case for re-parsing a group of elements after a document substitution:
 // we should treat substitution that did not happen (eg: missing attribute) as regular
 // strings - (used by the inline element renderer)
-InlineElementsWithoutSubtitution <- !BlankLine !BlockDelimiter elements:(InlineElementWithoutSubtitution)* linebreak:(LineBreak)? EOL { // absorbs heading and trailing spaces
+InlineElementsWithoutSubtitution <- !BlankLine !BlockDelimiter elements:(InlineElementWithoutSubtitution)* linebreak:(LineBreak)? EOL { 
     return types.NewInlineElements(append(elements.([]interface{}), linebreak))
 } 
 
@@ -708,6 +708,17 @@ InlineElementWithoutSubtitution <- !EOL !LineBreak
         / Parenthesis 
         / Word) {
     return element, nil
+}
+
+// special case for parsing files to include in delimited blocks
+DocumentToInclude <- elements:(BlankLine / ParagraphToInclude)* EOF {
+    return elements, nil
+}
+
+ParagraphToInclude <- lines:(!EOF line:(InlineElementsWithoutSubtitution) {
+    return line, nil
+})+ {
+    return types.NewParagraph(lines.([]interface{}))
 }
 
 // ----------------------------------------------------------------------------
@@ -1029,7 +1040,7 @@ FencedBlock <- FencedBlockDelimiter content:(FencedBlockContent)* (FencedBlockDe
     return types.NewDelimitedBlock(types.Fenced, content.([]interface{}), types.None)
 }
 
-FencedBlockContent <- BlankLine / List / BlockParagraph
+FencedBlockContent <- BlankLine / FileInclude / List / BlockParagraph
 
 // -------------------------------------------------------------------------------------
 // Listing blocks
@@ -1037,30 +1048,36 @@ FencedBlockContent <- BlankLine / List / BlockParagraph
 ListingBlockDelimiter <- "----" WS* EOL
 
 // listing block: verbatim content
-ListingBlock <- ListingBlockDelimiter content:(ListingBlockContent)* ((ListingBlockDelimiter) / EOF) {
+ListingBlock <- ListingBlockDelimiter content:(ListingBlockElement)* ((ListingBlockDelimiter) / EOF) {
     return types.NewDelimitedBlock(types.Listing, content.([]interface{}), types.None)
 }
 
-ListingBlockContent <- lines:(ListingBlockLine)+ {
+ListingBlockElement <- ListingFileInclude / ListingBlockParagraph
+
+ListingFileInclude <- !ListingBlockDelimiter !EOF include:(FileInclude) {
+    return include, nil
+}
+
+ListingBlockParagraph <- lines:(ListingBlockLine)+ {
     return types.NewParagraph(lines.([]interface{}), nil)
 }
 
 ListingBlockLine <- !ListingBlockDelimiter !EOF line:(ListingBlockLineContent) EOL {
-    return line.(types.InlineElements), nil
+    return line, nil
 }
 
 ListingBlockLineContent <- (Alphanums / Spaces / (!ListingBlockDelimiter !EOL  .){
-    return string(c.text), nil
-})* { // skip EOL in line content, and stop when quote block delimiter is encountered
-    return types.NewInlineElements(string(c.text))
-}
+        return string(c.text), nil
+    })* { // skip EOL in line content, and stop when quote block delimiter is encountered
+        return types.NewInlineElements(string(c.text))
+    }
 
 // -------------------------------------------------------------------------------------
 // Example blocks
 // -------------------------------------------------------------------------------------
 ExampleBlockDelimiter <- "====" WS* EOL
 
-ExampleBlock <- ExampleBlockDelimiter content:(BlankLine / List / BlockParagraph)*  (ExampleBlockDelimiter / EOF) {
+ExampleBlock <- ExampleBlockDelimiter content:(BlankLine / FileInclude / List / BlockParagraph)*  (ExampleBlockDelimiter / EOF) {
     return types.NewDelimitedBlock(types.Example, content.([]interface{}), types.None)
 }
 
@@ -1101,7 +1118,7 @@ VerseBlock <- &{
     verse, ok := c.state["verse"].(bool); 
     return ok && verse, nil
 }
-verse:(QuoteBlockDelimiter content:(VerseBlockContent)* (QuoteBlockDelimiter / EOF) {
+verse:(QuoteBlockDelimiter content:(VerseBlockElement)* (QuoteBlockDelimiter / EOF) {
     return types.NewDelimitedBlock(types.Verse, content.([]interface{}), types.None)
 }) #{
     c.state["verse"] = false
@@ -1110,7 +1127,14 @@ verse:(QuoteBlockDelimiter content:(VerseBlockContent)* (QuoteBlockDelimiter / E
     return verse, nil
 }
 
-VerseBlockContent <- lines:(VerseBlockLine)+ {
+VerseBlockElement <- VerseFileInclude / VerseBlockParagraph
+
+
+VerseFileInclude <- !QuoteBlockDelimiter !EOF include:(FileInclude) {
+    return include, nil
+}
+
+VerseBlockParagraph <- lines:(VerseBlockLine)+ {
     return types.NewParagraph(lines.([]interface{}), nil)
 }
 
@@ -1131,7 +1155,7 @@ SidebarBlock <- SidebarBlockDelimiter content:(SidebarBlockContent)*  (SidebarBl
     return types.NewDelimitedBlock(types.Sidebar, content.([]interface{}), types.None)
 }
 
-SidebarBlockContent <- BlankLine / List / NonSidebarBlock / BlockParagraph
+SidebarBlockContent <- BlankLine / FileInclude / List / NonSidebarBlock / BlockParagraph
 
 NonSidebarBlock <- !SidebarBlock content:(DelimitedBlock) {
     return content, nil
