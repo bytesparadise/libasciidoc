@@ -186,6 +186,25 @@ and more content
 			verify(GinkgoT(), expectedResult, actualContent)
 		})
 
+		It("example block with multiple elements - case 3", func() {
+			actualContent := `====
+*bold content*
+
+and "more" content
+====`
+			expectedResult := `<div class="exampleblock">
+<div class="content">
+<div class="paragraph">
+<p><strong>bold content</strong></p>
+</div>
+<div class="paragraph">
+<p>and &#34;more&#34; content</p>
+</div>
+</div>
+</div>`
+			verify(GinkgoT(), expectedResult, actualContent)
+		})
+
 		It("example block with ID and title", func() {
 			actualContent := `[#id-for-example-block]
 .example block title
