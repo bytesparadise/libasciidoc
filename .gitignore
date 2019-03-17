@@ -61,4 +61,5 @@ coverage.txt
 *.html
 *.test
 !test/**/*.html
+!pkg/**/*.html
 *libasciidoc.html

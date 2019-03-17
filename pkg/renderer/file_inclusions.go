@@ -59,6 +59,7 @@ func getElementsToInclude(file types.FileInclusion, withinDelimitedBlock bool) (
 	}
 	// parse the file if it is an Asciidoc only (.asciidoc, .adoc, .ad, .asc, or .txt)
 	if ext := filepath.Ext(file.Path); ext == ".asciidoc" || ext == ".adoc" || ext == ".ad" || ext == ".asc" || ext == ".txt" {
+		log.Debugf("parsing content from '%s'", file.Path)
 		doc, err := parser.ParseFile(file.Path)
 		if err != nil {
 			return nil, errors.Wrapf(err, "unable to parse file to include")
@@ -77,26 +78,7 @@ func getElementsToInclude(file types.FileInclusion, withinDelimitedBlock bool) (
 }
 
 func getRawLinesToInclude(file types.FileInclusion) ([]interface{}, error) {
-	// otherwise, read the files and wrap the lines in a paragraph
-	// f, err := os.Open(file.Path)
-	// if err != nil {
-	// 	return nil, errors.Wrapf(err, "unable to read file to include")
-	// }
-	// p := types.Paragraph{
-	// 	Attributes: types.ElementAttributes{},
-	// 	Lines:      []types.InlineElements{},
-	// }
-	// defer f.Close()
-	// scanner := bufio.NewScanner(f)
-	// for scanner.Scan() {
-	// 	p.Lines = append(p.Lines, types.InlineElements{
-	// 		types.StringElement{
-	// 			Content: scanner.Text(),
-	// 		},
-	// 	})
-	// }
-	// otherwise, parse the rendered line, in case some new elements (links, etc.) "appeared" after document attribute substitutions
-
+	log.Debug("including raw lines...")
 	f, err := os.Open(file.Path)
 	if err != nil {
 		return nil, errors.Wrapf(err, "unable to read file to include")
