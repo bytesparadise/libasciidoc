@@ -45,6 +45,8 @@ const (
 	AttrQandA string = "qanda"
 	// AttrLevelOffset the `leveloffset` attribute used in file inclusions
 	AttrLevelOffset = "leveloffset"
+	// AttrLineRanges the `lines` attribute used in file inclusions
+	AttrLineRanges = "lines"
 )
 
 // ElementWithAttributes an element on which attributes can be added/set

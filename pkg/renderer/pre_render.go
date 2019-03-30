@@ -9,18 +9,11 @@ import (
 // - wraps elements in a preamble
 // - generated the ToC
 func Prerender(ctx *Context) error {
-	doc, err := ProcessFileInclusions(ctx.Document)
+	err := ProcessFileInclusions(ctx)
 	if err != nil {
 		return errors.Wrap(err, "failed to pre-render document")
 	}
-	doc, err = IncludePreamble(doc)
-	if err != nil {
-		return errors.Wrap(err, "failed to pre-render document")
-	}
-	doc, err = IncludeTableOfContents(doc)
-	if err != nil {
-		return errors.Wrap(err, "failed to pre-render document")
-	}
-	ctx.Document = doc
+	IncludePreamble(ctx)
+	IncludeTableOfContents(ctx)
 	return nil
 }

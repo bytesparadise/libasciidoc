@@ -2,8 +2,9 @@ package renderer
 
 import (
 	"bufio"
+	"bytes"
+	"io/ioutil"
 	"os"
-	"path/filepath"
 	"strconv"
 
 	"github.com/bytesparadise/libasciidoc/pkg/parser"
@@ -15,10 +16,10 @@ import (
 )
 
 // ProcessFileInclusions inspects the DOM and replaces all `FileInclusions`
-func ProcessFileInclusions(doc types.Document) (types.Document, error) {
+func ProcessFileInclusions(ctx *Context) error {
 	var err error
-	doc.Elements, err = processFileInclusions(doc.Elements, false)
-	return doc, err
+	ctx.Document.Elements, err = processFileInclusions(ctx.Document.Elements, false)
+	return err
 }
 
 // ProcessFileInclusions inspects the DOM and replaces all `FileInclusions`
@@ -41,7 +42,7 @@ func processFileInclusions(elements []interface{}, withinDelimitedBlock bool) ([
 			e.Elements = elements
 			result = append(result, e)
 		case types.FileInclusion:
-			docElements, err := getElementsToInclude(e, withinDelimitedBlock)
+			docElements, err := parseFileToInclude(e, withinDelimitedBlock)
 			if err != nil {
 				return result, errors.Wrapf(err, "fail to process file inclusions")
 			}
@@ -53,37 +54,73 @@ func processFileInclusions(elements []interface{}, withinDelimitedBlock bool) ([
 	return result, nil
 }
 
-func getElementsToInclude(file types.FileInclusion, withinDelimitedBlock bool) ([]interface{}, error) {
-	if withinDelimitedBlock {
-		return getRawLinesToInclude(file)
+func parseFileToInclude(file types.FileInclusion, withinDelimitedBlock bool) ([]interface{}, error) {
+	if withinDelimitedBlock || !file.IsAsciidoc() {
+		return parseNestedFileToInclude(file)
 	}
-	// parse the file if it is an Asciidoc only (.asciidoc, .adoc, .ad, .asc, or .txt)
-	if ext := filepath.Ext(file.Path); ext == ".asciidoc" || ext == ".adoc" || ext == ".ad" || ext == ".asc" || ext == ".txt" {
-		log.Debugf("parsing content from '%s'", file.Path)
-		doc, err := parser.ParseFile(file.Path)
-		if err != nil {
-			return nil, errors.Wrapf(err, "unable to parse file to include")
-		}
-		if log.IsLevelEnabled(log.DebugLevel) {
-			log.Debug("document to include:")
-			spew.Dump(doc)
-		}
-		doc, err = ApplyLevelOffset(doc.(types.Document), file.Attributes.GetAsString(types.AttrLevelOffset))
-		if err != nil {
-			return nil, errors.Wrapf(err, "unable to parse file to include")
-		}
-		return doc.(types.Document).Elements, nil
+	log.Debugf("parsing content from '%s'", file.Path)
+	doc, err := parser.ParseFile(file.Path)
+	if err != nil {
+		return nil, errors.Wrapf(err, "unable to parse file to include")
 	}
-	return getRawLinesToInclude(file)
+	if log.IsLevelEnabled(log.DebugLevel) {
+		log.Debug("document to include:")
+		spew.Dump(doc)
+	}
+	doc, err = ApplyLevelOffset(doc.(types.Document), file.Attributes.GetAsString(types.AttrLevelOffset))
+	if err != nil {
+		return nil, errors.Wrapf(err, "unable to parse file to include")
+	}
+	return doc.(types.Document).Elements, nil
 }
 
-func getRawLinesToInclude(file types.FileInclusion) ([]interface{}, error) {
+func parseNestedFileToInclude(file types.FileInclusion) ([]interface{}, error) {
 	log.Debug("including raw lines...")
 	f, err := os.Open(file.Path)
 	if err != nil {
 		return nil, errors.Wrapf(err, "unable to read file to include")
 	}
-	r, err := parser.ParseReader("", bufio.NewReader(f),
+	defer func() {
+		if closeErr := f.Close(); closeErr != nil {
+			err = closeErr
+		}
+	}()
+	buf := new(bytes.Buffer)
+	if lr, exists := file.Attributes[types.AttrLineRanges]; exists {
+		if lineRanges, ok := lr.(types.LineRanges); ok { // could be a string if the input was invalid
+			scanner := bufio.NewScanner(bufio.NewReader(f))
+			line := 1
+			for scanner.Scan() {
+				log.Debugf("line %d: '%s'", line, scanner.Text())
+				// TODO: stop reading if current line above highest range
+				if lineRanges.Match(line) {
+					_, err := buf.WriteString(scanner.Text())
+					if err != nil {
+						return nil, err
+					}
+					_, err = buf.WriteString("\n")
+					if err != nil {
+						return nil, err
+					}
+					log.Debugf("wrote line %d in buffer: '%s'", line, buf.String())
+				}
+				line++
+			}
+			log.Debugf("document lines to include: \n%s", buf.String())
+		}
+	} else {
+		// just read all the doc
+		b, err := ioutil.ReadAll(f)
+		if err != nil {
+			return nil, err
+		}
+		_, err = buf.Write(b)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	r, err := parser.Parse(file.Path, buf.Bytes(),
 		parser.Entrypoint("DocumentToInclude"))
 	if err != nil {
 		return nil, errors.Wrap(err, "unable to parse file to include")

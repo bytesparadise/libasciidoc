@@ -2,7 +2,10 @@
 package parser 
 
 import (
+    "strconv"
+
     "github.com/bytesparadise/libasciidoc/pkg/types"
+
     log "github.com/sirupsen/logrus"
 )
 
@@ -224,9 +227,13 @@ AttributeGroup <- "[" !WS attributes:(GenericAttribute)*  "]" {
     return types.NewAttributeGroup(attributes.([]interface{}))
 }
 
-GenericAttribute <- key:(AttributeKey) "=" value:(AttributeValue) ","? WS* { // value is set
+GenericAttribute <-  GenericAttributeWithValue / GenericAttributeWithoutValue
+
+GenericAttributeWithValue <- key:(AttributeKey) "=" value:(AttributeValue) ","? WS* { // value is set
     return types.NewGenericAttribute(key.(string), value)
-} / key:(AttributeKey) ","? WS* { // value is not set
+}
+
+GenericAttributeWithoutValue <- key:(AttributeKey) ","? WS* { // value is not set
     return types.NewGenericAttribute(key.(string), nil)
 }
 
@@ -449,8 +456,60 @@ TableOfContentsMacro <- "toc::[]" NEWLINE
 // ------------------------------------------
 // File inclusions
 // ------------------------------------------
-FileInclude <- "include::" path:(URL) inlineAttributes:(InlineAttributes) WS* EOL {
+FileInclude <- "include::" path:(URL) inlineAttributes:(FileIncludeAttributes) WS* EOL {
     return types.NewFileInclusion(path.(string), inlineAttributes.(types.ElementAttributes))
+}
+
+FileIncludeAttributes <- "[" attrs:(LineRangesAttribute / GenericAttribute)* "]" {
+    return types.NewInlineAttributes(attrs.([]interface{}))
+} 
+
+LineRangesAttribute <- "lines=" lines:(LineRangesAttributeValue) ","? { 
+    return types.NewLineRangesAttribute(lines)
+} 
+
+LineRangesAttributeValue <- value:(MultipleRanges 
+                        / MultipleQuotedRanges 
+                        / MultilineRange 
+                        / MultilineQuotedRange 
+                        / SinglelineQuotedRange
+                        / SinglelineRange 
+                        / UndefinedLineRange) WS* (&"," / &"]") {
+    return value, nil
+}
+
+MultipleRanges <- first:(MultilineRange / SinglelineRange) 
+    others:(";" other:(MultilineRange / SinglelineRange) {
+        return other, nil
+    })+ {
+        return append([]interface{}{first}, others.([]interface{})...), nil
+    }
+
+MultipleQuotedRanges <- "\"" first:(MultilineRange / SinglelineRange) 
+    others:("," other:(MultilineRange / SinglelineRange) {
+        return other, nil
+    })+ "\"" {
+        return append([]interface{}{first}, others.([]interface{})...), nil
+    }
+
+MultilineRange <- start:(NUMBER) ".." end:(NUMBER) { // eg: lines=12..14
+    return types.NewMultilineRange(start.(int), end.(int))
+} 
+
+MultilineQuotedRange <- "\"" start:(NUMBER) ".." end:(NUMBER) "\"" { // eg: lines=12..14
+    return types.NewMultilineRange(start.(int), end.(int))
+} 
+
+SinglelineRange <- singleline:(NUMBER) { // eg: lines=12
+    return types.NewSingleLineRange(singleline.(int))
+}
+
+SinglelineQuotedRange <- "\"" singleline:(NUMBER) "\"" { // eg: lines=12
+    return types.NewSingleLineRange(singleline.(int))
+}
+
+UndefinedLineRange <- (!"]" !"," !WS .)* {
+    return string(c.text), nil
 }
 
 // ------------------------------------------
@@ -1344,6 +1403,10 @@ URL_SCHEME <- "http://" / "https://" / "ftp://" / "irc://" / "mailto:"
 
 DIGIT <- [0-9] {
     return string(c.text), nil
+}
+
+NUMBER <- "-"? DIGIT+ {
+    return strconv.Atoi(string(c.text))
 }
 
 WS <- " " / "\t" {
