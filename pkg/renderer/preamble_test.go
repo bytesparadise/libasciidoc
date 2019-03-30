@@ -1,6 +1,8 @@
 package renderer_test
 
 import (
+	"context"
+
 	"github.com/bytesparadise/libasciidoc/pkg/renderer"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 	. "github.com/onsi/ginkgo"
@@ -258,7 +260,7 @@ var _ = Describe("preambles", func() {
 })
 
 func verifyPreamble(expectedContent, actualContent types.Document) {
-	result, err := renderer.IncludePreamble(actualContent)
-	assert.NoError(GinkgoT(), err)
-	assert.Equal(GinkgoT(), expectedContent, result)
+	ctx := renderer.Wrap(context.Background(), actualContent)
+	renderer.IncludePreamble(ctx)
+	assert.Equal(GinkgoT(), expectedContent, ctx.Document)
 }

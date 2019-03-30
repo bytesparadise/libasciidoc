@@ -3,6 +3,7 @@ package types
 import (
 	"fmt"
 	"path/filepath"
+	"sort"
 	"strconv"
 	"strings"
 
@@ -2354,4 +2355,99 @@ func NewFileInclusion(path string, attributes interface{}) (FileInclusion, error
 // AddAttributes adds all given attributes to the current set of attribute of the element
 func (f FileInclusion) AddAttributes(attributes ElementAttributes) {
 	f.Attributes.AddAll(attributes)
+}
+
+// IsAsciidoc returns true if the file to include is an asciidoc file (based on the file path extension)
+func (f FileInclusion) IsAsciidoc() bool {
+	ext := filepath.Ext(f.Path)
+	return ext == ".asciidoc" || ext == ".adoc" || ext == ".ad" || ext == ".asc" || ext == ".txt"
+}
+
+// LineRanges the ranges of lines of the child doc to include in the master doc
+type LineRanges []LineRange
+
+// NewLineRangesAttribute returns an element attribute with a slice of line ranges attribute for a file inclusion.
+func NewLineRangesAttribute(ranges interface{}) (ElementAttributes, error) {
+	switch ranges := ranges.(type) {
+	case []interface{}:
+		return ElementAttributes{
+			AttrLineRanges: NewLineRanges(ranges...),
+		}, nil
+	case LineRange:
+		return ElementAttributes{
+			AttrLineRanges: NewLineRanges(ranges),
+		}, nil
+	default:
+		return ElementAttributes{
+			AttrLineRanges: ranges,
+		}, nil
+	}
+}
+
+// NewLineRanges returns a slice of line ranges attribute for a file inclusion.
+func NewLineRanges(ranges ...interface{}) LineRanges {
+	result := LineRanges{}
+	for _, r := range ranges {
+		if r, ok := r.(LineRange); ok {
+			result = append(result, r)
+		}
+	}
+	// sort the range by `start` line
+	sort.Sort(result)
+	return result
+}
+
+// Match checks if the given line number matches one of the line ranges
+func (r LineRanges) Match(line int) bool {
+	for _, lr := range r {
+		if lr.Start <= line && (lr.End >= line || lr.End == -1) {
+			return true
+		}
+		if lr.Start > line {
+			// no need to carry on with the ranges
+			return false
+		}
+	}
+	return false
+}
+
+// make sure that the LineRanges type implemnents the `sort.Interface
+var _ sort.Interface = LineRanges{}
+
+func (r LineRanges) Len() int           { return len(r) }
+func (r LineRanges) Swap(i, j int)      { r[i], r[j] = r[j], r[i] }
+func (r LineRanges) Less(i, j int) bool { return r[i].Start < r[j].Start }
+
+// LineRange the range of lines of the child doc to include in the master doc
+// `Start` and `End` are the included limits of the child document
+// - if there's a single line to include, then `End = Start`
+// - if there is all remaining content after a given line (included), then `End = -1`
+type LineRange struct {
+	Start int
+	End   int
+}
+
+// NewLineRangeAttribute returns a line range attribute for a file inclusion.
+// The attribute value can be a single line range, a slice of line ranges
+// or a string if the specified value could not be parsed.
+func NewLineRangeAttribute(lines interface{}) (ElementAttributes, error) {
+	return ElementAttributes{
+		AttrLineRanges: lines,
+	}, nil
+}
+
+// NewSingleLineRange returns a new single line range
+func NewSingleLineRange(line int) (LineRange, error) {
+	return LineRange{
+		Start: line,
+		End:   line,
+	}, nil
+}
+
+// NewMultilineRange returns a new multi-line range
+func NewMultilineRange(start, end int) (LineRange, error) {
+	return LineRange{
+		Start: start,
+		End:   end,
+	}, nil
 }

@@ -293,15 +293,89 @@ include::includes/hello_world.go[]
 </div>`
 				verify(GinkgoT(), expectedResult, actualContent)
 			})
+		})
+	})
 
-			It("should include go file within passthrough block", func() {
-				Skip("missing support for passthrough blocks")
-				actualContent := `++++
-include::includes/hello_world.go[]
-++++`
-				expectedResult := ``
+	Context("file inclusions with line range", func() {
+
+		Context("file inclusions as paragraph with line range", func() {
+
+			It("should include single line as paragraph", func() {
+				actualContent := `include::includes/hello_world.go[lines=1]`
+				expectedResult := `<div class="paragraph">
+<p>package includes</p>
+</div>`
+				verify(GinkgoT(), expectedResult, actualContent)
+			})
+
+			It("should include multiple lines as paragraph", func() {
+				actualContent := `include::includes/hello_world.go[lines=5..7]`
+				expectedResult := `<div class="paragraph">
+<p>func helloworld() {
+	fmt.Println(&#34;hello, world!&#34;)
+}</p>
+</div>`
+				verify(GinkgoT(), expectedResult, actualContent)
+			})
+
+			It("should include multiple ranges as paragraph", func() {
+				actualContent := `include::includes/hello_world.go[lines=1..2;5..7]`
+				expectedResult := `<div class="paragraph">
+<p>package includes</p>
+</div>
+<div class="paragraph">
+<p>func helloworld() {
+	fmt.Println(&#34;hello, world!&#34;)
+}</p>
+</div>`
 				verify(GinkgoT(), expectedResult, actualContent)
 			})
 		})
+
+		Context("file inclusions in listing blocks with line range", func() {
+
+			It("should include single line in listing block", func() {
+				actualContent := `----
+include::includes/hello_world.go[lines=1]
+----`
+				expectedResult := `<div class="listingblock">
+<div class="content">
+<pre>package includes</pre>
+</div>
+</div>`
+				verify(GinkgoT(), expectedResult, actualContent)
+			})
+
+			It("should include multiple lines in listing block", func() {
+				actualContent := `----
+include::includes/hello_world.go[lines=5..7]
+----`
+				expectedResult := `<div class="listingblock">
+<div class="content">
+<pre>func helloworld() {
+	fmt.Println("hello, world!")
+}</pre>
+</div>
+</div>`
+				verify(GinkgoT(), expectedResult, actualContent)
+			})
+
+			It("should include multiple ranges in listing block", func() {
+				actualContent := `----
+include::includes/hello_world.go[lines=1..2;5..7]
+----`
+				expectedResult := `<div class="listingblock">
+<div class="content">
+<pre>package includes
+
+func helloworld() {
+	fmt.Println("hello, world!")
+}</pre>
+</div>
+</div>`
+				verify(GinkgoT(), expectedResult, actualContent)
+			})
+		})
+
 	})
 })

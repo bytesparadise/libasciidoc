@@ -2,8 +2,11 @@ package types_test
 
 import (
 	"github.com/bytesparadise/libasciidoc/pkg/types"
+
 	"github.com/davecgh/go-spew/spew"
 	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/ginkgo/extensions/table"
+	. "github.com/onsi/gomega"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -1489,3 +1492,52 @@ func verify(t GinkgoTInterface, expectation, actual interface{}) {
 	t.Logf("expected document: `%s`", spew.Sdump(expectation))
 	assert.EqualValues(t, expectation, actual)
 }
+
+var _ = Describe("line ranges", func() {
+
+	ranges := newLineRanges(
+		types.LineRange{Start: 1, End: 1},
+		types.LineRange{Start: 3, End: 4},
+		types.LineRange{Start: 6, End: -1},
+	)
+
+	It("should match line 1", func() {
+		Expect(ranges.Match(1)).Should(BeTrue())
+	})
+
+	It("should not match line 2", func() {
+		Expect(ranges.Match(2)).Should(BeFalse())
+	})
+
+	It("should match line 6", func() {
+		Expect(ranges.Match(6)).Should(BeTrue())
+	})
+
+	It("should match line 100", func() {
+		Expect(ranges.Match(100)).Should(BeTrue())
+	})
+
+})
+
+func newLineRanges(values ...interface{}) types.LineRanges {
+	return types.NewLineRanges(values...)
+}
+
+var _ = Describe("fole inclusions", func() {
+
+	DescribeTable("check asciidoc file",
+		func(path string, expectation bool) {
+			f := types.FileInclusion{
+				Path: path,
+			}
+			Expect(f.IsAsciidoc()).Should(Equal(expectation))
+		},
+		Entry("foo.adoc", "foo.adoc", true),
+		Entry("foo.asc", "foo.asc", true),
+		Entry("foo.ad", "foo.ad", true),
+		Entry("foo.asciidoc", "foo.asciidoc", true),
+		Entry("foo.txt", "foo.txt", true),
+		Entry("foo.csv", "foo.csv", false),
+		Entry("foo.go", "foo.go", false),
+	)
+})

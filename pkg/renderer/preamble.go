@@ -7,9 +7,8 @@ import (
 
 // IncludePreamble wraps all document elements before the first section in a `Preamble`,
 // unless the document has no section. Returns a new document with the changes.
-func IncludePreamble(doc types.Document) (types.Document, error) {
-	doc.Elements = insertPreamble(doc.Elements)
-	return doc, nil
+func IncludePreamble(ctx *Context) {
+	ctx.Document.Elements = insertPreamble(ctx.Document.Elements)
 }
 
 func insertPreamble(blocks []interface{}) []interface{} {

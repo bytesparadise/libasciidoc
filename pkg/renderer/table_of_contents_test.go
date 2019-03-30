@@ -1,6 +1,8 @@
 package renderer_test
 
 import (
+	"context"
+
 	"github.com/bytesparadise/libasciidoc/pkg/renderer"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 	. "github.com/onsi/ginkgo"
@@ -156,7 +158,7 @@ var _ = Describe("table of contents", func() {
 })
 
 func verifyTableOfContents(expectedContent, actualContent types.Document) {
-	result, err := renderer.IncludeTableOfContents(actualContent)
-	assert.NoError(GinkgoT(), err)
-	assert.Equal(GinkgoT(), expectedContent, result)
+	ctx := renderer.Wrap(context.Background(), actualContent)
+	renderer.IncludeTableOfContents(ctx)
+	assert.Equal(GinkgoT(), expectedContent, ctx.Document)
 }
