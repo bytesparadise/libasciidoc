@@ -5,11 +5,11 @@ import (
 	"bytes"
 	"io/ioutil"
 	"os"
+	"path/filepath"
 	"strconv"
 
 	"github.com/bytesparadise/libasciidoc/pkg/parser"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
-	"github.com/davecgh/go-spew/spew"
 
 	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
@@ -24,6 +24,7 @@ func ProcessFileInclusions(ctx *Context) error {
 
 // ProcessFileInclusions inspects the DOM and replaces all `FileInclusions`
 func processFileInclusions(elements []interface{}, withinDelimitedBlock bool) ([]interface{}, error) {
+	log.Debugf("processing file inclusions in %d element(s)", len(elements))
 	result := []interface{}{}
 	for _, element := range elements {
 		switch e := element.(type) {
@@ -42,11 +43,11 @@ func processFileInclusions(elements []interface{}, withinDelimitedBlock bool) ([
 			e.Elements = elements
 			result = append(result, e)
 		case types.FileInclusion:
-			docElements, err := parseFileToInclude(e, withinDelimitedBlock)
+			elements, err := parseFileToInclude(e, withinDelimitedBlock)
 			if err != nil {
 				return result, errors.Wrapf(err, "fail to process file inclusions")
 			}
-			result = append(result, docElements...)
+			result = append(result, elements...)
 		default:
 			result = append(result, e)
 		}
@@ -55,38 +56,65 @@ func processFileInclusions(elements []interface{}, withinDelimitedBlock bool) ([
 }
 
 func parseFileToInclude(file types.FileInclusion, withinDelimitedBlock bool) ([]interface{}, error) {
-	if withinDelimitedBlock || !file.IsAsciidoc() {
-		return parseNestedFileToInclude(file)
+	log.Debugf("parsing file '%s' to include...", file.Path)
+	options := []parser.Option{}
+	if withinDelimitedBlock {
+		options = append(options, parser.Entrypoint("VerbatimBlock"))
 	}
-	log.Debugf("parsing content from '%s'", file.Path)
-	doc, err := parser.ParseFile(file.Path)
+	content, restoreWD, err := readFile(file)
+	if err != nil {
+		return nil, errors.Wrapf(err, "unable to read file to include: %s", file.Path)
+	}
+	defer restoreWD()
+	c, err := parser.Parse(file.Path, content, options...)
 	if err != nil {
 		return nil, errors.Wrapf(err, "unable to parse file to include")
 	}
-	if log.IsLevelEnabled(log.DebugLevel) {
-		log.Debug("document to include:")
-		spew.Dump(doc)
-	}
-	doc, err = ApplyLevelOffset(doc.(types.Document), file.Attributes.GetAsString(types.AttrLevelOffset))
+	doc, err := ApplyLevelOffset(c, file.Attributes.GetAsString(types.AttrLevelOffset))
 	if err != nil {
 		return nil, errors.Wrapf(err, "unable to parse file to include")
 	}
-	return doc.(types.Document).Elements, nil
+	// recursively process the elements returned by the parsing of the file to include
+	return processFileInclusions(doc.Elements, withinDelimitedBlock)
 }
 
-func parseNestedFileToInclude(file types.FileInclusion) ([]interface{}, error) {
-	log.Debug("including raw lines...")
-	f, err := os.Open(file.Path)
+// readFile returns the content of the file, taking into account the optional ranges to limit the content
+func readFile(file types.FileInclusion) ([]byte, func(), error) {
+	log.Debugf("reading '%s'...", file.Path)
+	// manage new working directory based on the file's location
+	// so that if this file also includes other files with relative path,
+	// then the it can work ;)
+	wd, err := os.Getwd()
 	if err != nil {
-		return nil, errors.Wrapf(err, "unable to read file to include")
+		return nil, func() {}, err
+	}
+	absPath, err := filepath.Abs(file.Path)
+	if err != nil {
+		return nil, func() {}, err
+	}
+	dir := filepath.Dir(absPath)
+	err = os.Chdir(dir)
+	if err != nil {
+		return nil, func() {}, err
+	}
+	restoreWDFunc := func() {
+		err = os.Chdir(wd) // restore the previous working directory
+		if err != nil {
+			log.WithError(err).Error("failed to restore previous working directory")
+		}
+	}
+	// read the file per-se
+	f, err := os.Open(absPath)
+	if err != nil {
+		return nil, nil, errors.Wrapf(err, "unable to read file to include")
 	}
 	defer func() {
 		if closeErr := f.Close(); closeErr != nil {
 			err = closeErr
 		}
 	}()
-	buf := new(bytes.Buffer)
 	if lr, exists := file.Attributes[types.AttrLineRanges]; exists {
+		buf := new(bytes.Buffer)
 		if lineRanges, ok := lr.(types.LineRanges); ok { // could be a string if the input was invalid
 			scanner := bufio.NewScanner(bufio.NewReader(f))
 			line := 1
@@ -96,48 +124,43 @@ func parseNestedFileToInclude(file types.FileInclusion) ([]interface{}, error) {
 				if lineRanges.Match(line) {
 					_, err := buf.WriteString(scanner.Text())
 					if err != nil {
-						return nil, err
+						return nil, nil, errors.Wrap(err, "unable to parse file to include")
 					}
 					_, err = buf.WriteString("\n")
 					if err != nil {
-						return nil, err
+						return nil, nil, errors.Wrap(err, "unable to parse file to include")
 					}
-					log.Debugf("wrote line %d in buffer: '%s'", line, buf.String())
 				}
 				line++
 			}
-			log.Debugf("document lines to include: \n%s", buf.String())
 		}
-	} else {
-		// just read all the doc
-		b, err := ioutil.ReadAll(f)
-		if err != nil {
-			return nil, err
-		}
-		_, err = buf.Write(b)
-		if err != nil {
-			return nil, err
-		}
+		return buf.Bytes(), restoreWDFunc, nil
 	}
-
-	r, err := parser.Parse(file.Path, buf.Bytes(),
-		parser.Entrypoint("DocumentToInclude"))
-	if err != nil {
-		return nil, errors.Wrap(err, "unable to parse file to include")
-	}
-	elements, ok := r.([]interface{})
-	if !ok {
-		return nil, errors.Wrap(err, "failed to include file")
-	}
-	return elements, nil
+	// just read all the doc
+	content, err := ioutil.ReadAll(f)
+	return content, restoreWDFunc, err
 }
 
 // ApplyLevelOffset returns a document in which all section levels have been offset
-func ApplyLevelOffset(doc types.Document, levelOffset string) (types.Document, error) {
-	elements := doc.Elements
+func ApplyLevelOffset(c interface{}, levelOffset string) (types.Document, error) {
+	var doc types.Document
+	switch c := c.(type) {
+	case types.Document:
+		doc = c
+	case []interface{}:
+		doc = types.Document{
+			Attributes:         types.DocumentAttributes{},
+			ElementReferences:  types.ElementReferences{},
+			Footnotes:          types.Footnotes{},
+			FootnoteReferences: types.FootnoteReferences{},
+			Elements:           c,
+		}
+	default:
+		return types.Document{}, errors.Errorf("fail to apply level offset '%s' to document to include: unexpected type of content: %T", levelOffset, c)
+	}
 	// before returning the the doc elements, we need to check if there's a 'section 0', i.e., a title
 	if title, ok := doc.Attributes[types.AttrTitle]; ok {
-		elements = []interface{}{
+		doc.Elements = []interface{}{
 			types.Section{
 				Level:    0,
 				Title:    title.(types.SectionTitle),
@@ -151,9 +174,8 @@ func ApplyLevelOffset(doc types.Document, levelOffset string) (types.Document, e
 			return types.Document{}, errors.Wrapf(err, "fail to apply level offset '%s' to document to include", levelOffset)
 		}
 		// traverse the document and apply the offset on all sections
-		elements = doApplyLevelOffset(elements, offset)
+		doc.Elements = doApplyLevelOffset(doc.Elements, offset)
 	}
-	doc.Elements = elements
 	return doc, nil
 }
 

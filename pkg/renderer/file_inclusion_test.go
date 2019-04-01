@@ -13,529 +13,724 @@ import (
 
 var _ = Describe("file inclusions", func() {
 
-	It("should include adoc file with section 0 at root level without offset", func() {
-		actualContent := types.Document{
-			Attributes:         types.DocumentAttributes{},
-			ElementReferences:  types.ElementReferences{},
-			Footnotes:          types.Footnotes{},
-			FootnoteReferences: types.FootnoteReferences{},
-			Elements: []interface{}{
-				types.Paragraph{
-					Attributes: types.ElementAttributes{},
-					Lines: []types.InlineElements{
-						{
-							types.StringElement{Content: "a first paragraph"},
-						},
-					},
-				},
-				types.FileInclusion{
-					Attributes: types.ElementAttributes{},
-					Path:       "html5/includes/chapter-a.adoc",
-				},
-				types.BlankLine{},
-				types.Paragraph{
-					Attributes: types.ElementAttributes{},
-					Lines: []types.InlineElements{
-						{
-							types.StringElement{Content: "a second paragraph"},
-						},
-					},
-				},
-			},
-		}
-		expectedResult := types.Document{
-			Attributes:         types.DocumentAttributes{},
-			ElementReferences:  types.ElementReferences{},
-			Footnotes:          types.Footnotes{},
-			FootnoteReferences: types.FootnoteReferences{},
-			Elements: []interface{}{
-				types.Paragraph{
-					Attributes: types.ElementAttributes{},
-					Lines: []types.InlineElements{
-						{
-							types.StringElement{Content: "a first paragraph"},
-						},
-					},
-				},
-				types.Section{
-					Level: 0,
-					Title: types.SectionTitle{
-						Attributes: types.ElementAttributes{
-							types.AttrID:       "chapter_a",
-							types.AttrCustomID: false,
-						},
-						Elements: []interface{}{
-							types.StringElement{
-								Content: "Chapter A",
+	Context("simple inclusions", func() {
+		It("should include adoc file with section 0 at root level without offset", func() {
+			actualContent := types.Document{
+				Attributes:         types.DocumentAttributes{},
+				ElementReferences:  types.ElementReferences{},
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
+				Elements: []interface{}{
+					types.Paragraph{
+						Attributes: types.ElementAttributes{},
+						Lines: []types.InlineElements{
+							{
+								types.StringElement{Content: "a first paragraph"},
 							},
 						},
 					},
-					Elements: []interface{}{
-						types.Paragraph{
-							Attributes: types.ElementAttributes{},
-							Lines: []types.InlineElements{
-								{
-									types.StringElement{Content: "content"},
-								},
+					types.FileInclusion{
+						Attributes: types.ElementAttributes{},
+						Path:       "html5/includes/chapter-a.adoc",
+					},
+					types.BlankLine{},
+					types.Paragraph{
+						Attributes: types.ElementAttributes{},
+						Lines: []types.InlineElements{
+							{
+								types.StringElement{Content: "a second paragraph"},
 							},
 						},
 					},
 				},
-				types.BlankLine{},
-				types.Paragraph{
-					Attributes: types.ElementAttributes{},
-					Lines: []types.InlineElements{
-						{
-							types.StringElement{Content: "a second paragraph"},
-						},
-					},
-				},
-			},
-		}
-		verifyFileInclusions(expectedResult, actualContent)
-	})
-
-	It("should include adoc file with section 0 at root level with valid offset", func() {
-		actualContent := types.Document{
-			Attributes:         types.DocumentAttributes{},
-			ElementReferences:  types.ElementReferences{},
-			Footnotes:          types.Footnotes{},
-			FootnoteReferences: types.FootnoteReferences{},
-			Elements: []interface{}{
-				types.Paragraph{
-					Attributes: types.ElementAttributes{},
-					Lines: []types.InlineElements{
-						{
-							types.StringElement{Content: "a first paragraph"},
-						},
-					},
-				},
-				types.FileInclusion{
-					Attributes: types.ElementAttributes{
-						types.AttrLevelOffset: "+1",
-					},
-					Path: "html5/includes/chapter-a.adoc",
-				},
-				types.BlankLine{},
-				types.Paragraph{
-					Attributes: types.ElementAttributes{},
-					Lines: []types.InlineElements{
-						{
-							types.StringElement{Content: "a second paragraph"},
-						},
-					},
-				},
-			},
-		}
-		expectedResult := types.Document{
-			Attributes:         types.DocumentAttributes{},
-			ElementReferences:  types.ElementReferences{},
-			Footnotes:          types.Footnotes{},
-			FootnoteReferences: types.FootnoteReferences{},
-			Elements: []interface{}{
-				types.Paragraph{
-					Attributes: types.ElementAttributes{},
-					Lines: []types.InlineElements{
-						{
-							types.StringElement{Content: "a first paragraph"},
-						},
-					},
-				},
-				types.Section{
-					Level: 1,
-					Title: types.SectionTitle{
-						Attributes: types.ElementAttributes{
-							types.AttrID:       "chapter_a",
-							types.AttrCustomID: false,
-						},
-						Elements: []interface{}{
-							types.StringElement{
-								Content: "Chapter A",
+			}
+			expectedResult := types.Document{
+				Attributes:         types.DocumentAttributes{},
+				ElementReferences:  types.ElementReferences{},
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
+				Elements: []interface{}{
+					types.Paragraph{
+						Attributes: types.ElementAttributes{},
+						Lines: []types.InlineElements{
+							{
+								types.StringElement{Content: "a first paragraph"},
 							},
 						},
 					},
-					Elements: []interface{}{
-						types.Paragraph{
-							Attributes: types.ElementAttributes{},
-							Lines: []types.InlineElements{
-								{
-									types.StringElement{Content: "content"},
-								},
-							},
-						},
-					},
-				},
-				types.BlankLine{},
-				types.Paragraph{
-					Attributes: types.ElementAttributes{},
-					Lines: []types.InlineElements{
-						{
-							types.StringElement{Content: "a second paragraph"},
-						},
-					},
-				},
-			},
-		}
-		verifyFileInclusions(expectedResult, actualContent)
-	})
-
-	It("should include adoc file with section 0 within existin section with valid offset", func() {
-		actualContent := types.Document{
-			Attributes:         types.DocumentAttributes{},
-			ElementReferences:  types.ElementReferences{},
-			Footnotes:          types.Footnotes{},
-			FootnoteReferences: types.FootnoteReferences{},
-			Elements: []interface{}{
-				types.Section{
-					Level: 1,
-					Title: types.SectionTitle{
-						Attributes: types.ElementAttributes{
-							types.AttrID:       "chapter_a",
-							types.AttrCustomID: false,
-						},
-						Elements: []interface{}{
-							types.StringElement{
-								Content: "Chapter A",
-							},
-						},
-					},
-					Elements: []interface{}{
-						types.Paragraph{
-							Attributes: types.ElementAttributes{},
-							Lines: []types.InlineElements{
-								{
-									types.StringElement{Content: "a first paragraph"},
-								},
-							},
-						},
-						types.FileInclusion{
+					types.Section{
+						Level: 0,
+						Title: types.SectionTitle{
 							Attributes: types.ElementAttributes{
-								types.AttrLevelOffset: "+2",
+								types.AttrID:       "chapter_a",
+								types.AttrCustomID: false,
 							},
-							Path: "html5/includes/chapter-a.adoc",
-						},
-						types.BlankLine{},
-						types.Paragraph{
-							Attributes: types.ElementAttributes{},
-							Lines: []types.InlineElements{
-								{
-									types.StringElement{Content: "a second paragraph"},
+							Elements: []interface{}{
+								types.StringElement{
+									Content: "Chapter A",
 								},
 							},
-						},
-					},
-				},
-			},
-		}
-		expectedResult := types.Document{
-			Attributes:         types.DocumentAttributes{},
-			ElementReferences:  types.ElementReferences{},
-			Footnotes:          types.Footnotes{},
-			FootnoteReferences: types.FootnoteReferences{},
-			Elements: []interface{}{
-				types.Section{
-					Level: 1,
-					Title: types.SectionTitle{
-						Attributes: types.ElementAttributes{
-							types.AttrID:       "chapter_a",
-							types.AttrCustomID: false,
 						},
 						Elements: []interface{}{
-							types.StringElement{
-								Content: "Chapter A",
-							},
-						},
-					},
-					Elements: []interface{}{
-						types.Paragraph{
-							Attributes: types.ElementAttributes{},
-							Lines: []types.InlineElements{
-								{
-									types.StringElement{Content: "a first paragraph"},
-								},
-							},
-						},
-						types.Section{
-							Level: 2,
-							Title: types.SectionTitle{
-								Attributes: types.ElementAttributes{
-									types.AttrID:       "chapter_a",
-									types.AttrCustomID: false,
-								},
-								Elements: []interface{}{
-									types.StringElement{
-										Content: "Chapter A",
+							types.Paragraph{
+								Attributes: types.ElementAttributes{},
+								Lines: []types.InlineElements{
+									{
+										types.StringElement{Content: "content"},
 									},
 								},
 							},
+						},
+					},
+					types.BlankLine{},
+					types.Paragraph{
+						Attributes: types.ElementAttributes{},
+						Lines: []types.InlineElements{
+							{
+								types.StringElement{Content: "a second paragraph"},
+							},
+						},
+					},
+				},
+			}
+			verifyFileInclusions(expectedResult, actualContent)
+		})
+
+		It("should include adoc file with section 0 at root level with valid offset", func() {
+			actualContent := types.Document{
+				Attributes:         types.DocumentAttributes{},
+				ElementReferences:  types.ElementReferences{},
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
+				Elements: []interface{}{
+					types.Paragraph{
+						Attributes: types.ElementAttributes{},
+						Lines: []types.InlineElements{
+							{
+								types.StringElement{Content: "a first paragraph"},
+							},
+						},
+					},
+					types.FileInclusion{
+						Attributes: types.ElementAttributes{
+							types.AttrLevelOffset: "+1",
+						},
+						Path: "html5/includes/chapter-a.adoc",
+					},
+					types.BlankLine{},
+					types.Paragraph{
+						Attributes: types.ElementAttributes{},
+						Lines: []types.InlineElements{
+							{
+								types.StringElement{Content: "a second paragraph"},
+							},
+						},
+					},
+				},
+			}
+			expectedResult := types.Document{
+				Attributes:         types.DocumentAttributes{},
+				ElementReferences:  types.ElementReferences{},
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
+				Elements: []interface{}{
+					types.Paragraph{
+						Attributes: types.ElementAttributes{},
+						Lines: []types.InlineElements{
+							{
+								types.StringElement{Content: "a first paragraph"},
+							},
+						},
+					},
+					types.Section{
+						Level: 1,
+						Title: types.SectionTitle{
+							Attributes: types.ElementAttributes{
+								types.AttrID:       "chapter_a",
+								types.AttrCustomID: false,
+							},
 							Elements: []interface{}{
-								types.Paragraph{
-									Attributes: types.ElementAttributes{},
-									Lines: []types.InlineElements{
-										{
-											types.StringElement{Content: "content"},
+								types.StringElement{
+									Content: "Chapter A",
+								},
+							},
+						},
+						Elements: []interface{}{
+							types.Paragraph{
+								Attributes: types.ElementAttributes{},
+								Lines: []types.InlineElements{
+									{
+										types.StringElement{Content: "content"},
+									},
+								},
+							},
+						},
+					},
+					types.BlankLine{},
+					types.Paragraph{
+						Attributes: types.ElementAttributes{},
+						Lines: []types.InlineElements{
+							{
+								types.StringElement{Content: "a second paragraph"},
+							},
+						},
+					},
+				},
+			}
+			verifyFileInclusions(expectedResult, actualContent)
+		})
+
+		It("should include adoc file with section 0 within existin section with valid offset", func() {
+			actualContent := types.Document{
+				Attributes:         types.DocumentAttributes{},
+				ElementReferences:  types.ElementReferences{},
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
+				Elements: []interface{}{
+					types.Section{
+						Level: 1,
+						Title: types.SectionTitle{
+							Attributes: types.ElementAttributes{
+								types.AttrID:       "chapter_a",
+								types.AttrCustomID: false,
+							},
+							Elements: []interface{}{
+								types.StringElement{
+									Content: "Chapter A",
+								},
+							},
+						},
+						Elements: []interface{}{
+							types.Paragraph{
+								Attributes: types.ElementAttributes{},
+								Lines: []types.InlineElements{
+									{
+										types.StringElement{Content: "a first paragraph"},
+									},
+								},
+							},
+							types.FileInclusion{
+								Attributes: types.ElementAttributes{
+									types.AttrLevelOffset: "+2",
+								},
+								Path: "html5/includes/chapter-a.adoc",
+							},
+							types.BlankLine{},
+							types.Paragraph{
+								Attributes: types.ElementAttributes{},
+								Lines: []types.InlineElements{
+									{
+										types.StringElement{Content: "a second paragraph"},
+									},
+								},
+							},
+						},
+					},
+				},
+			}
+			expectedResult := types.Document{
+				Attributes:         types.DocumentAttributes{},
+				ElementReferences:  types.ElementReferences{},
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
+				Elements: []interface{}{
+					types.Section{
+						Level: 1,
+						Title: types.SectionTitle{
+							Attributes: types.ElementAttributes{
+								types.AttrID:       "chapter_a",
+								types.AttrCustomID: false,
+							},
+							Elements: []interface{}{
+								types.StringElement{
+									Content: "Chapter A",
+								},
+							},
+						},
+						Elements: []interface{}{
+							types.Paragraph{
+								Attributes: types.ElementAttributes{},
+								Lines: []types.InlineElements{
+									{
+										types.StringElement{Content: "a first paragraph"},
+									},
+								},
+							},
+							types.Section{
+								Level: 2,
+								Title: types.SectionTitle{
+									Attributes: types.ElementAttributes{
+										types.AttrID:       "chapter_a",
+										types.AttrCustomID: false,
+									},
+									Elements: []interface{}{
+										types.StringElement{
+											Content: "Chapter A",
+										},
+									},
+								},
+								Elements: []interface{}{
+									types.Paragraph{
+										Attributes: types.ElementAttributes{},
+										Lines: []types.InlineElements{
+											{
+												types.StringElement{Content: "content"},
+											},
+										},
+									},
+								},
+							},
+							types.BlankLine{},
+							types.Paragraph{
+								Attributes: types.ElementAttributes{},
+								Lines: []types.InlineElements{
+									{
+										types.StringElement{Content: "a second paragraph"},
+									},
+								},
+							},
+						},
+					},
+				},
+			}
+			verifyFileInclusions(expectedResult, actualContent)
+		})
+
+		It("should include adoc file with 2 paragraphs at root level without offset", func() {
+			actualContent := types.Document{
+				Attributes:         types.DocumentAttributes{},
+				ElementReferences:  types.ElementReferences{},
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
+				Elements: []interface{}{
+					types.Paragraph{
+						Attributes: types.ElementAttributes{},
+						Lines: []types.InlineElements{
+							{
+								types.StringElement{Content: "a first paragraph"},
+							},
+						},
+					},
+					types.FileInclusion{
+						Path: "html5/includes/grandchild-include.adoc",
+					},
+					types.BlankLine{},
+					types.Paragraph{
+						Attributes: types.ElementAttributes{},
+						Lines: []types.InlineElements{
+							{
+								types.StringElement{Content: "a second paragraph"},
+							},
+						},
+					},
+				},
+			}
+			expectedResult := types.Document{
+				Attributes:         types.DocumentAttributes{},
+				ElementReferences:  types.ElementReferences{},
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
+				Elements: []interface{}{
+					types.Paragraph{
+						Attributes: types.ElementAttributes{},
+						Lines: []types.InlineElements{
+							{
+								types.StringElement{Content: "a first paragraph"},
+							},
+						},
+					},
+					types.Paragraph{
+						Attributes: types.ElementAttributes{},
+						Lines: []types.InlineElements{
+							{
+								types.StringElement{Content: "first line of grandchild"},
+							},
+						},
+					},
+					types.BlankLine{},
+					types.Paragraph{
+						Attributes: types.ElementAttributes{},
+						Lines: []types.InlineElements{
+							{
+								types.StringElement{Content: "last line of grandchild"},
+							},
+						},
+					},
+					types.BlankLine{},
+					types.Paragraph{
+						Attributes: types.ElementAttributes{},
+						Lines: []types.InlineElements{
+							{
+								types.StringElement{Content: "a second paragraph"},
+							},
+						},
+					},
+				},
+			}
+			verifyFileInclusions(expectedResult, actualContent)
+		})
+
+		It("should include unparsed adoc file in delimited block", func() {
+			actualContent := types.Document{
+				Attributes:         types.DocumentAttributes{},
+				ElementReferences:  types.ElementReferences{},
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
+				Elements: []interface{}{
+					types.Paragraph{
+						Attributes: types.ElementAttributes{},
+						Lines: []types.InlineElements{
+							{
+								types.StringElement{Content: "a first paragraph"},
+							},
+						},
+					},
+					types.DelimitedBlock{
+						Kind:       types.Source,
+						Attributes: types.ElementAttributes{},
+						Elements: []interface{}{
+							types.FileInclusion{
+								Attributes: types.ElementAttributes{},
+								Path:       "html5/includes/chapter-a.adoc",
+							},
+						},
+					},
+					types.BlankLine{},
+					types.Paragraph{
+						Attributes: types.ElementAttributes{},
+						Lines: []types.InlineElements{
+							{
+								types.StringElement{Content: "a second paragraph"},
+							},
+						},
+					},
+				},
+			}
+			expectedResult := types.Document{
+				Attributes:         types.DocumentAttributes{},
+				ElementReferences:  types.ElementReferences{},
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
+				Elements: []interface{}{
+					types.Paragraph{
+						Attributes: types.ElementAttributes{},
+						Lines: []types.InlineElements{
+							{
+								types.StringElement{Content: "a first paragraph"},
+							},
+						},
+					},
+					types.DelimitedBlock{
+						Kind:       types.Source,
+						Attributes: types.ElementAttributes{},
+						Elements: []interface{}{
+							types.Paragraph{
+								Attributes: types.ElementAttributes{},
+								Lines: []types.InlineElements{
+									{
+										types.StringElement{Content: "= Chapter A"},
+									},
+								},
+							},
+							types.BlankLine{},
+							types.Paragraph{
+								Attributes: types.ElementAttributes{},
+								Lines: []types.InlineElements{
+									{
+										types.StringElement{Content: "content"},
+									},
+								},
+							},
+						},
+					},
+					types.BlankLine{},
+					types.Paragraph{
+						Attributes: types.ElementAttributes{},
+						Lines: []types.InlineElements{
+							{
+								types.StringElement{Content: "a second paragraph"},
+							},
+						},
+					},
+				},
+			}
+			verifyFileInclusions(expectedResult, actualContent)
+		})
+
+		It("should include unparsed adoc file with line range in delimited block", func() {
+			actualContent := types.Document{
+				Attributes:         types.DocumentAttributes{},
+				ElementReferences:  types.ElementReferences{},
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
+				Elements: []interface{}{
+					types.Paragraph{
+						Attributes: types.ElementAttributes{},
+						Lines: []types.InlineElements{
+							{
+								types.StringElement{Content: "a first paragraph"},
+							},
+						},
+					},
+					types.DelimitedBlock{
+						Kind:       types.Source,
+						Attributes: types.ElementAttributes{},
+						Elements: []interface{}{
+							types.FileInclusion{
+								Attributes: types.ElementAttributes{
+									types.AttrLineRanges: types.LineRanges{
+										{Start: 3, End: 3},
+									},
+								},
+								Path: "html5/includes/chapter-a.adoc",
+							},
+						},
+					},
+					types.BlankLine{},
+					types.Paragraph{
+						Attributes: types.ElementAttributes{},
+						Lines: []types.InlineElements{
+							{
+								types.StringElement{Content: "a second paragraph"},
+							},
+						},
+					},
+				},
+			}
+			expectedResult := types.Document{
+				Attributes:         types.DocumentAttributes{},
+				ElementReferences:  types.ElementReferences{},
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
+				Elements: []interface{}{
+					types.Paragraph{
+						Attributes: types.ElementAttributes{},
+						Lines: []types.InlineElements{
+							{
+								types.StringElement{Content: "a first paragraph"},
+							},
+						},
+					},
+					types.DelimitedBlock{
+						Kind:       types.Source,
+						Attributes: types.ElementAttributes{},
+						Elements: []interface{}{
+							types.Paragraph{
+								Attributes: types.ElementAttributes{},
+								Lines: []types.InlineElements{
+									{
+										types.StringElement{Content: "content"},
+									},
+								},
+							},
+						},
+					},
+					types.BlankLine{},
+					types.Paragraph{
+						Attributes: types.ElementAttributes{},
+						Lines: []types.InlineElements{
+							{
+								types.StringElement{Content: "a second paragraph"},
+							},
+						},
+					},
+				},
+			}
+			verifyFileInclusions(expectedResult, actualContent)
+		})
+	})
+
+	Context("recursive file inclusions", func() {
+
+		It("should include child and grand child content in a paragraph", func() {
+			actualContent := types.Document{
+				Attributes:         types.DocumentAttributes{},
+				ElementReferences:  types.ElementReferences{},
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
+				Elements: []interface{}{
+					types.FileInclusion{
+						Attributes: types.ElementAttributes{},
+						Path:       "html5/includes/parent-include.adoc",
+					},
+				},
+			}
+			expectedResult := types.Document{
+				Attributes:         types.DocumentAttributes{},
+				ElementReferences:  types.ElementReferences{},
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
+				Elements: []interface{}{
+					types.Paragraph{
+						Attributes: types.ElementAttributes{},
+						Lines: []types.InlineElements{
+							{
+								types.StringElement{
+									Content: "first line of parent",
+								},
+							},
+						},
+					},
+					types.BlankLine{},
+					types.Paragraph{
+						Attributes: types.ElementAttributes{},
+						Lines: []types.InlineElements{
+							{
+								types.StringElement{
+									Content: "first line of child",
+								},
+							},
+						},
+					},
+					types.BlankLine{},
+					types.Paragraph{
+						Attributes: types.ElementAttributes{},
+						Lines: []types.InlineElements{
+							{
+								types.StringElement{
+									Content: "first line of grandchild",
+								},
+							},
+						},
+					},
+					types.BlankLine{},
+					types.Paragraph{
+						Attributes: types.ElementAttributes{},
+						Lines: []types.InlineElements{
+							{
+								types.StringElement{
+									Content: "last line of grandchild",
+								},
+							},
+						},
+					},
+					types.BlankLine{},
+					types.Paragraph{
+						Attributes: types.ElementAttributes{},
+						Lines: []types.InlineElements{
+							{
+								types.StringElement{
+									Content: "last line of child",
+								},
+							},
+						},
+					},
+					types.BlankLine{},
+					types.Paragraph{
+						Attributes: types.ElementAttributes{},
+						Lines: []types.InlineElements{
+							{
+								types.StringElement{
+									Content: "last line of parent",
+								},
+							},
+						},
+					},
+				},
+			}
+			verifyFileInclusions(expectedResult, actualContent)
+		})
+
+		It("should include child and grand child content in a listing block", func() {
+			actualContent := types.Document{
+				Attributes:         types.DocumentAttributes{},
+				ElementReferences:  types.ElementReferences{},
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
+				Elements: []interface{}{
+					types.DelimitedBlock{
+						Attributes: types.ElementAttributes{},
+						Kind:       types.Listing,
+						Elements: []interface{}{
+							types.FileInclusion{
+								Attributes: types.ElementAttributes{},
+								Path:       "html5/includes/parent-include.adoc",
+							},
+						},
+					},
+				},
+			}
+			expectedResult := types.Document{
+				Attributes:         types.DocumentAttributes{},
+				ElementReferences:  types.ElementReferences{},
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
+				Elements: []interface{}{
+					types.DelimitedBlock{
+						Attributes: types.ElementAttributes{},
+						Kind:       types.Listing,
+						Elements: []interface{}{
+							types.Paragraph{
+								Attributes: types.ElementAttributes{},
+								Lines: []types.InlineElements{
+									{
+										types.StringElement{
+											Content: "first line of parent",
+										},
+									},
+								},
+							},
+							types.BlankLine{},
+							types.Paragraph{
+								Attributes: types.ElementAttributes{},
+								Lines: []types.InlineElements{
+									{
+										types.StringElement{
+											Content: "first line of child",
+										},
+									},
+								},
+							},
+							types.BlankLine{},
+							types.Paragraph{
+								Attributes: types.ElementAttributes{},
+								Lines: []types.InlineElements{
+									{
+										types.StringElement{
+											Content: "first line of grandchild",
+										},
+									},
+								},
+							},
+							types.BlankLine{},
+							types.Paragraph{
+								Attributes: types.ElementAttributes{},
+								Lines: []types.InlineElements{
+									{
+										types.StringElement{
+											Content: "last line of grandchild",
+										},
+									},
+								},
+							},
+							types.BlankLine{},
+							types.Paragraph{
+								Attributes: types.ElementAttributes{},
+								Lines: []types.InlineElements{
+									{
+										types.StringElement{
+											Content: "last line of child",
+										},
+									},
+								},
+							},
+							types.BlankLine{},
+							types.Paragraph{
+								Attributes: types.ElementAttributes{},
+								Lines: []types.InlineElements{
+									{
+										types.StringElement{
+											Content: "last line of parent",
 										},
 									},
 								},
 							},
 						},
-						types.BlankLine{},
-						types.Paragraph{
-							Attributes: types.ElementAttributes{},
-							Lines: []types.InlineElements{
-								{
-									types.StringElement{Content: "a second paragraph"},
-								},
-							},
-						},
 					},
 				},
-			},
-		}
-		verifyFileInclusions(expectedResult, actualContent)
-	})
-
-	It("should include adoc file with 2 paragraphs at root level without offset", func() {
-		actualContent := types.Document{
-			Attributes:         types.DocumentAttributes{},
-			ElementReferences:  types.ElementReferences{},
-			Footnotes:          types.Footnotes{},
-			FootnoteReferences: types.FootnoteReferences{},
-			Elements: []interface{}{
-				types.Paragraph{
-					Attributes: types.ElementAttributes{},
-					Lines: []types.InlineElements{
-						{
-							types.StringElement{Content: "a first paragraph"},
-						},
-					},
-				},
-				types.FileInclusion{
-					Path: "html5/includes/grandchild-include.adoc",
-				},
-				types.BlankLine{},
-				types.Paragraph{
-					Attributes: types.ElementAttributes{},
-					Lines: []types.InlineElements{
-						{
-							types.StringElement{Content: "a second paragraph"},
-						},
-					},
-				},
-			},
-		}
-		expectedResult := types.Document{
-			Attributes:         types.DocumentAttributes{},
-			ElementReferences:  types.ElementReferences{},
-			Footnotes:          types.Footnotes{},
-			FootnoteReferences: types.FootnoteReferences{},
-			Elements: []interface{}{
-				types.Paragraph{
-					Attributes: types.ElementAttributes{},
-					Lines: []types.InlineElements{
-						{
-							types.StringElement{Content: "a first paragraph"},
-						},
-					},
-				},
-				types.Paragraph{
-					Attributes: types.ElementAttributes{},
-					Lines: []types.InlineElements{
-						{
-							types.StringElement{Content: "first line of grandchild"},
-						},
-					},
-				},
-				types.BlankLine{},
-				types.Paragraph{
-					Attributes: types.ElementAttributes{},
-					Lines: []types.InlineElements{
-						{
-							types.StringElement{Content: "last line of grandchild"},
-						},
-					},
-				},
-				types.BlankLine{},
-				types.Paragraph{
-					Attributes: types.ElementAttributes{},
-					Lines: []types.InlineElements{
-						{
-							types.StringElement{Content: "a second paragraph"},
-						},
-					},
-				},
-			},
-		}
-		verifyFileInclusions(expectedResult, actualContent)
-	})
-
-	It("should include unparsed adoc file in delimited block", func() {
-		actualContent := types.Document{
-			Attributes:         types.DocumentAttributes{},
-			ElementReferences:  types.ElementReferences{},
-			Footnotes:          types.Footnotes{},
-			FootnoteReferences: types.FootnoteReferences{},
-			Elements: []interface{}{
-				types.Paragraph{
-					Attributes: types.ElementAttributes{},
-					Lines: []types.InlineElements{
-						{
-							types.StringElement{Content: "a first paragraph"},
-						},
-					},
-				},
-				types.DelimitedBlock{
-					Kind:       types.Source,
-					Attributes: types.ElementAttributes{},
-					Elements: []interface{}{
-						types.FileInclusion{
-							Attributes: types.ElementAttributes{},
-							Path:       "html5/includes/chapter-a.adoc",
-						},
-					},
-				},
-				types.BlankLine{},
-				types.Paragraph{
-					Attributes: types.ElementAttributes{},
-					Lines: []types.InlineElements{
-						{
-							types.StringElement{Content: "a second paragraph"},
-						},
-					},
-				},
-			},
-		}
-		expectedResult := types.Document{
-			Attributes:         types.DocumentAttributes{},
-			ElementReferences:  types.ElementReferences{},
-			Footnotes:          types.Footnotes{},
-			FootnoteReferences: types.FootnoteReferences{},
-			Elements: []interface{}{
-				types.Paragraph{
-					Attributes: types.ElementAttributes{},
-					Lines: []types.InlineElements{
-						{
-							types.StringElement{Content: "a first paragraph"},
-						},
-					},
-				},
-				types.DelimitedBlock{
-					Kind:       types.Source,
-					Attributes: types.ElementAttributes{},
-					Elements: []interface{}{
-						types.Paragraph{
-							Attributes: types.ElementAttributes{},
-							Lines: []types.InlineElements{
-								{
-									types.StringElement{Content: "= Chapter A"},
-								},
-							},
-						},
-						types.BlankLine{},
-						types.Paragraph{
-							Attributes: types.ElementAttributes{},
-							Lines: []types.InlineElements{
-								{
-									types.StringElement{Content: "content"},
-								},
-							},
-						},
-					},
-				},
-				types.BlankLine{},
-				types.Paragraph{
-					Attributes: types.ElementAttributes{},
-					Lines: []types.InlineElements{
-						{
-							types.StringElement{Content: "a second paragraph"},
-						},
-					},
-				},
-			},
-		}
-		verifyFileInclusions(expectedResult, actualContent)
-	})
-
-	It("should include unparsed adoc file with line range in delimited block", func() {
-		actualContent := types.Document{
-			Attributes:         types.DocumentAttributes{},
-			ElementReferences:  types.ElementReferences{},
-			Footnotes:          types.Footnotes{},
-			FootnoteReferences: types.FootnoteReferences{},
-			Elements: []interface{}{
-				types.Paragraph{
-					Attributes: types.ElementAttributes{},
-					Lines: []types.InlineElements{
-						{
-							types.StringElement{Content: "a first paragraph"},
-						},
-					},
-				},
-				types.DelimitedBlock{
-					Kind:       types.Source,
-					Attributes: types.ElementAttributes{},
-					Elements: []interface{}{
-						types.FileInclusion{
-							Attributes: types.ElementAttributes{
-								types.AttrLineRanges: types.LineRanges{
-									{Start: 3, End: 3},
-								},
-							},
-							Path: "html5/includes/chapter-a.adoc",
-						},
-					},
-				},
-				types.BlankLine{},
-				types.Paragraph{
-					Attributes: types.ElementAttributes{},
-					Lines: []types.InlineElements{
-						{
-							types.StringElement{Content: "a second paragraph"},
-						},
-					},
-				},
-			},
-		}
-		expectedResult := types.Document{
-			Attributes:         types.DocumentAttributes{},
-			ElementReferences:  types.ElementReferences{},
-			Footnotes:          types.Footnotes{},
-			FootnoteReferences: types.FootnoteReferences{},
-			Elements: []interface{}{
-				types.Paragraph{
-					Attributes: types.ElementAttributes{},
-					Lines: []types.InlineElements{
-						{
-							types.StringElement{Content: "a first paragraph"},
-						},
-					},
-				},
-				types.DelimitedBlock{
-					Kind:       types.Source,
-					Attributes: types.ElementAttributes{},
-					Elements: []interface{}{
-						types.Paragraph{
-							Attributes: types.ElementAttributes{},
-							Lines: []types.InlineElements{
-								{
-									types.StringElement{Content: "content"},
-								},
-							},
-						},
-					},
-				},
-				types.BlankLine{},
-				types.Paragraph{
-					Attributes: types.ElementAttributes{},
-					Lines: []types.InlineElements{
-						{
-							types.StringElement{Content: "a second paragraph"},
-						},
-					},
-				},
-			},
-		}
-		verifyFileInclusions(expectedResult, actualContent)
+			}
+			verifyFileInclusions(expectedResult, actualContent)
+		})
 	})
 
 	Context("lines to include with ranges", func() {
