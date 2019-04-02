@@ -51,7 +51,7 @@ func renderDocumentDetails(ctx *renderer.Context) (*htmltemplate.HTML, error) {
 		if err != nil {
 			return nil, errors.Wrap(err, "error while rendering the document details")
 		}
-		documentDetails := htmltemplate.HTML(documentDetailsBuff.String())
+		documentDetails := htmltemplate.HTML(documentDetailsBuff.String()) //nolint: gosec
 		return &documentDetails, nil
 	}
 	return nil, nil
@@ -100,6 +100,6 @@ func renderDocumentAuthorsDetails(ctx *renderer.Context) (*htmltemplate.HTML, er
 			break
 		}
 	}
-	result := htmltemplate.HTML(authorsDetailsBuff.String())
+	result := htmltemplate.HTML(authorsDetailsBuff.String()) //nolint: gosec
 	return &result, nil
 }

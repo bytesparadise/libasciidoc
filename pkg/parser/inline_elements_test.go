@@ -8,7 +8,7 @@ import (
 
 var _ = Describe("inline elements", func() {
 
-	It("bold text without paranthesis", func() {
+	It("bold text without parenthesis", func() {
 		actualContent := "*some bold content*"
 		expectedResult := types.InlineElements{
 			types.QuotedText{
@@ -22,7 +22,7 @@ var _ = Describe("inline elements", func() {
 		verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
 	})
 
-	It("bold text within paranthesis", func() {
+	It("bold text within parenthesis", func() {
 		actualContent := "(*some bold content*)"
 		expectedResult := types.InlineElements{
 			types.StringElement{Content: "("},

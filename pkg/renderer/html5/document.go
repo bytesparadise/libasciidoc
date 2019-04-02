@@ -84,7 +84,7 @@ func renderDocument(ctx *renderer.Context, output io.Writer) (map[string]interfa
 			Generator:   "libasciidoc", // TODO: externalize this value and include the lib version ?
 			Title:       string(renderedTitle),
 			Header:      string(renderedHeader),
-			Content:     htmltemplate.HTML(string(renderedElements)),
+			Content:     htmltemplate.HTML(string(renderedElements)), //nolint: gosec
 			RevNumber:   revNumber,
 			LastUpdated: ctx.LastUpdated(),
 			Details:     documentDetails,

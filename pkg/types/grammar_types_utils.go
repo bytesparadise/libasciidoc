@@ -83,8 +83,6 @@ func mergeElements(elements ...interface{}) InlineElements {
 		switch element := element.(type) {
 		case string:
 			buff.WriteString(element)
-		case *string:
-			buff.WriteString(*element)
 		case []byte:
 			for _, b := range element {
 				buff.WriteByte(b)
@@ -108,16 +106,6 @@ func mergeElements(elements ...interface{}) InlineElements {
 	result, _ = appendBuffer(result, buff)
 	// log.Debugf(" -> '%[1]v' (%[1]T)", result)
 	return result
-}
-
-// DefaultAttribute a function to specify a default attribute
-type DefaultAttribute func(map[string]interface{})
-
-// WithNumberingStyle specifies the numbering type in an OrderedList
-func WithNumberingStyle(t NumberingStyle) DefaultAttribute {
-	return func(attributes map[string]interface{}) {
-		attributes["numbering"] = t
-	}
 }
 
 // appendBuffer appends the content of the given buffer to the given array of elements,

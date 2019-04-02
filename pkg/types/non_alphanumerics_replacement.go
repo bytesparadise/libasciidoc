@@ -8,38 +8,9 @@ import (
 	"github.com/pkg/errors"
 )
 
-//NormalizationFunc a function that is used to normalize a string.
-type NormalizationFunc func(string) ([]byte, error)
-
-// newReplaceNonAlphanumericsFunc replaces all non alphanumerical characters and remove (accents)
-// in the given 'source' with the given 'replacement'.
-func newReplaceNonAlphanumericsFunc(replacement string) NormalizationFunc {
-	return func(source string) ([]byte, error) {
-		buf := bytes.NewBuffer(nil)
-		lastCharIsSpace := false
-		for _, r := range strings.TrimLeft(source, " ") { // ignore header spaces
-			if unicode.Is(unicode.Letter, r) || unicode.Is(unicode.Number, r) {
-				_, err := buf.WriteString(strings.ToLower(string(r)))
-				if err != nil {
-					return nil, errors.Wrapf(err, "unable to normalize value")
-				}
-				lastCharIsSpace = false
-			} else if !lastCharIsSpace && (unicode.Is(unicode.Space, r) || unicode.Is(unicode.Punct, r)) {
-				_, err := buf.WriteString(replacement)
-				if err != nil {
-					return nil, errors.Wrapf(err, "unable to normalize value")
-				}
-				lastCharIsSpace = true
-			}
-		}
-		result := strings.TrimSuffix(buf.String(), replacement)
-		return []byte(result), nil
-	}
-}
-
 // replaceNonAlphanumerics replace all non alpha numeric characters with the given `replacement`
 func replaceNonAlphanumerics(source InlineElements, replacement string) (string, error) {
-	v := newReplaceNonAlphanumericsVisitor()
+	v := newReplaceNonAlphanumericsVisitor(replacement)
 	err := source.AcceptVisitor(v)
 	if err != nil {
 		return "", err
@@ -50,18 +21,18 @@ func replaceNonAlphanumerics(source InlineElements, replacement string) (string,
 //replaceNonAlphanumericsVisitor a visitor that builds a string representation of the visited elements,
 // in which all non-alphanumeric characters have been replaced with a "_"
 type replaceNonAlphanumericsVisitor struct {
-	buf       bytes.Buffer
-	normalize NormalizationFunc
+	buf         bytes.Buffer
+	replacement string
 }
 
 var _ Visitor = &replaceNonAlphanumericsVisitor{}
 
 // newReplaceNonAlphanumericsVisitor returns a new replaceNonAlphanumericsVisitor
-func newReplaceNonAlphanumericsVisitor() *replaceNonAlphanumericsVisitor {
+func newReplaceNonAlphanumericsVisitor(replacement string) *replaceNonAlphanumericsVisitor {
 	buf := bytes.NewBuffer(nil)
 	return &replaceNonAlphanumericsVisitor{
-		buf:       *buf,
-		normalize: newReplaceNonAlphanumericsFunc("_"),
+		buf:         *buf,
+		replacement: replacement,
 	}
 }
 
@@ -76,11 +47,33 @@ func (v *replaceNonAlphanumericsVisitor) Visit(element Visitable) error {
 		if err != nil {
 			return errors.Wrapf(err, "error while normalizing String Element")
 		}
-		v.buf.Write(normalized)
+		v.buf.WriteString(normalized)
 		return nil
 	}
 	// other types are ignored
 	return nil
+}
+
+// normalize returns the normalized content
+func (v *replaceNonAlphanumericsVisitor) normalize(source string) (string, error) {
+	buf := bytes.NewBuffer(nil)
+	lastCharIsSpace := false
+	for _, r := range strings.TrimLeft(source, " ") { // ignore header spaces
+		if unicode.Is(unicode.Letter, r) || unicode.Is(unicode.Number, r) {
+			_, err := buf.WriteString(strings.ToLower(string(r)))
+			if err != nil {
+				return "", errors.Wrapf(err, "unable to normalize value")
+			}
+			lastCharIsSpace = false
+		} else if !lastCharIsSpace && (unicode.Is(unicode.Space, r) || unicode.Is(unicode.Punct, r)) {
+			_, err := buf.WriteString(v.replacement)
+			if err != nil {
+				return "", errors.Wrapf(err, "unable to normalize value")
+			}
+			lastCharIsSpace = true
+		}
+	}
+	return strings.TrimSuffix(buf.String(), v.replacement), nil
 }
 
 // NormalizedContent returns the normalized content

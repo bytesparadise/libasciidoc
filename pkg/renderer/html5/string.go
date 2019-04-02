@@ -12,7 +12,7 @@ import (
 
 var stringTmpl = newHTMLTemplate("string element", "{{ . }}")
 
-func renderStringElement(ctx *renderer.Context, str types.StringElement) ([]byte, error) {
+func renderStringElement(ctx *renderer.Context, str types.StringElement) ([]byte, error) { //nolint: unparam
 	buf := bytes.NewBuffer(nil)
 	err := stringTmpl.Execute(buf, str.Content)
 	if err != nil {

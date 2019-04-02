@@ -254,14 +254,6 @@ func initials(firstPart string, otherParts ...string) string {
 	return result
 }
 
-func (a *DocumentAuthor) String() string {
-	email := ""
-	if a.Email != "" {
-		email = a.Email
-	}
-	return fmt.Sprintf("%s (%s)", a.FullName, email)
-}
-
 // ------------------------------------------
 // Document Revision
 // ------------------------------------------
@@ -304,7 +296,6 @@ func NewDocumentRevision(revnumber, revdate, revremark interface{}) (DocumentRev
 				return strings.TrimSpace(s)
 			})
 	}
-	// log.Debugf("initializing a new DocumentRevision with revnumber='%v', revdate='%v' and revremark='%v'", *n, *d, *r)
 	result := DocumentRevision{
 		Revnumber: number,
 		Revdate:   date,
@@ -312,11 +303,6 @@ func NewDocumentRevision(revnumber, revdate, revremark interface{}) (DocumentRev
 	}
 	// log.Debugf("initialized a new document revision: `%s`", result.String())
 	return result, nil
-}
-
-func (r DocumentRevision) String() string {
-	// return fmt.Sprintf("%v, %v: %v", number, date, remark)
-	return fmt.Sprintf("%v, %v: %v", r.Revnumber, r.Revdate, r.Revremark)
 }
 
 // ------------------------------------------
@@ -421,11 +407,6 @@ const (
 type TableOfContentsMacro struct {
 }
 
-// AddAttributes adds all given attributes to the current set of attribute of the element
-func (m TableOfContentsMacro) AddAttributes(attributes ElementAttributes) {
-	// nothing to do
-}
-
 // ------------------------------------------
 // Preamble
 // ------------------------------------------
@@ -440,28 +421,6 @@ func NewEmptyPreamble() Preamble {
 	return Preamble{
 		Elements: make([]interface{}, 0),
 	}
-}
-
-// GetElements returns the elements
-func (p Preamble) GetElements() []interface{} {
-	return p.Elements
-}
-
-// AcceptVisitor implements Visitable#AcceptVisitor(Visitor)
-func (p Preamble) AcceptVisitor(v Visitor) error {
-	err := v.Visit(p)
-	if err != nil {
-		return errors.Wrapf(err, "error while visiting section")
-	}
-	for _, element := range p.Elements {
-		if visitable, ok := element.(Visitable); ok {
-			err = visitable.AcceptVisitor(v)
-			if err != nil {
-				return errors.Wrapf(err, "error while visiting section element")
-			}
-		}
-	}
-	return nil
 }
 
 // ------------------------------------------
@@ -637,7 +596,6 @@ func (st SectionTitle) AcceptVisitor(v Visitor) error {
 
 // List a list
 type List interface {
-	GetItems() []ListItem
 	processContinuations(ancestors []ListItem) List
 }
 
@@ -645,7 +603,6 @@ type List interface {
 type ListItem interface {
 	GetElements() []interface{}
 	AddElement(interface{})
-	SetElements([]interface{}) // TODO: remove this method?
 	processContinuations([]ListItem) ListItem
 }
 
@@ -952,15 +909,6 @@ func toOrderedList(items []*OrderedListItem) (OrderedList, error) {
 	return result, nil
 }
 
-// GetItems returns the items of this list
-func (l OrderedList) GetItems() []ListItem {
-	items := make([]ListItem, len(l.Items))
-	for i, item := range l.Items {
-		items[i] = &item
-	}
-	return items
-}
-
 // AddAttributes adds all given attributes to the current set of attribute of the element
 func (l OrderedList) AddAttributes(attributes ElementAttributes) {
 	l.Attributes.AddAll(attributes)
@@ -1020,11 +968,6 @@ type OrderedListItem struct {
 // GetElements returns the elements of this OrderedListItem
 func (i OrderedListItem) GetElements() []interface{} {
 	return i.Elements
-}
-
-// SetElements set the elements of this OrderedListItem
-func (i *OrderedListItem) SetElements(elements []interface{}) {
-	i.Elements = elements
 }
 
 // AddElement add an element to this OrderedListItem
@@ -1088,7 +1031,6 @@ func (i *OrderedListItem) processContinuations(ancestors []ListItem) ListItem {
 
 func processContinuations(ancestors []ListItem, i ListItem) []interface{} {
 	log.Debugf("processing continuations on item of type '%T' with %d elements - hierarchy: %d ancestor(s)", i, len(i.GetElements()), len(ancestors))
-
 	elements := []interface{}{}
 	log.Debugf("starting to process %d elements of %T", len(i.GetElements()), i)
 	s := len(i.GetElements())
@@ -1240,15 +1182,6 @@ func newUnorderedList(elements []ListItem) (UnorderedList, error) {
 	}, nil
 }
 
-// GetItems returns the items of this list
-func (l UnorderedList) GetItems() []ListItem {
-	items := make([]ListItem, len(l.Items))
-	for i, item := range l.Items {
-		items[i] = &item
-	}
-	return items
-}
-
 // AddAttributes adds all given attributes to the current set of attribute of the element
 func (l UnorderedList) AddAttributes(attributes ElementAttributes) {
 	l.Attributes.AddAll(attributes)
@@ -1299,11 +1232,6 @@ func NewUnorderedListItem(prefix UnorderedListItemPrefix, checkstyle interface{}
 // GetElements returns the elements of this UnorderedListItem
 func (i UnorderedListItem) GetElements() []interface{} {
 	return i.Elements
-}
-
-// SetElements set the elements of this UnorderedListItem
-func (i *UnorderedListItem) SetElements(elements []interface{}) {
-	i.Elements = elements
 }
 
 // AddElement add an element to this UnorderedListItem
@@ -1523,15 +1451,6 @@ func newLabeledList(elements []ListItem) (LabeledList, error) {
 	}, nil
 }
 
-// GetItems returns the items of this list
-func (l LabeledList) GetItems() []ListItem {
-	items := make([]ListItem, len(l.Items))
-	for i, item := range l.Items {
-		items[i] = &item
-	}
-	return items
-}
-
 // AddAttributes adds all given attributes to the current set of attribute of the element
 func (l LabeledList) AddAttributes(attributes ElementAttributes) {
 	l.Attributes.AddAll(attributes)
@@ -1575,11 +1494,6 @@ func NewLabeledListItem(level int, term string, elements []interface{}) (Labeled
 // GetElements returns the elements of this LabeledListItem
 func (i LabeledListItem) GetElements() []interface{} {
 	return i.Elements
-}
-
-// SetElements set the elements of this LabeledListItem
-func (i *LabeledListItem) SetElements(elements []interface{}) {
-	i.Elements = elements
 }
 
 // AddElement add an element to this LabeledListItem
@@ -1950,16 +1864,6 @@ func (b *DelimitedBlock) AddAttributes(attributes ElementAttributes) {
 		log.Debugf("overriding kind '%s' to '%s'", b.Kind, attributes[AttrKind])
 		b.Kind = BlockKind(attributes.GetAsString(AttrKind))
 	}
-}
-
-// GetElements returns the elements
-func (b *DelimitedBlock) GetElements() []interface{} {
-	return b.Elements
-}
-
-// SetElements returns the elements
-func (b *DelimitedBlock) SetElements(elmts []interface{}) {
-	b.Elements = elmts
 }
 
 // ------------------------------------------
