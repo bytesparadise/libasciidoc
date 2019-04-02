@@ -376,6 +376,53 @@ func helloworld() {
 				verify(GinkgoT(), expectedResult, actualContent)
 			})
 		})
+	})
 
+	Context("recursive file inclusions", func() {
+
+		It("should include child and grandchild content in paragraphs", func() {
+			actualContent := `include::includes/parent-include.adoc[]`
+			expectedResult := `<div class="paragraph">
+<p>first line of parent</p>
+</div>
+<div class="paragraph">
+<p>first line of child</p>
+</div>
+<div class="paragraph">
+<p>first line of grandchild</p>
+</div>
+<div class="paragraph">
+<p>last line of grandchild</p>
+</div>
+<div class="paragraph">
+<p>last line of child</p>
+</div>
+<div class="paragraph">
+<p>last line of parent</p>
+</div>`
+			verify(GinkgoT(), expectedResult, actualContent)
+		})
+
+		It("should include child and grandchild content in listing block", func() {
+			actualContent := `----
+include::includes/parent-include.adoc[]
+----`
+			expectedResult := `<div class="listingblock">
+<div class="content">
+<pre>first line of parent
+
+first line of child
+
+first line of grandchild
+
+last line of grandchild
+
+last line of child
+
+last line of parent</pre>
+</div>
+</div>`
+			verify(GinkgoT(), expectedResult, actualContent)
+		})
 	})
 })

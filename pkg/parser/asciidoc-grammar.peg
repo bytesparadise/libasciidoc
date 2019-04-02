@@ -769,15 +769,23 @@ InlineElementWithoutSubtitution <- !EOL !LineBreak
     return element, nil
 }
 
-// special case for parsing files to include in delimited blocks
-DocumentToInclude <- elements:(BlankLine / ParagraphToInclude)* EOF {
+// special case for parsing files to include in delimited blocks with 'verbatim' substitution
+VerbatimBlock <- elements:(BlankLine / FileInclude / VerbatimParagraph)* EOF {
     return elements, nil
 }
 
-ParagraphToInclude <- lines:(!EOF line:(InlineElementsWithoutSubtitution) {
+VerbatimParagraph <- lines:(!EOF line:(VerbatimParagraphLine) {
     return line, nil
 })+ {
     return types.NewParagraph(lines.([]interface{}))
+}
+
+VerbatimParagraphLine <- !BlockDelimiter !BlankLine elements:(VerbatimParagraphLineElement)* linebreak:(LineBreak)? EOL { 
+    return types.NewInlineElements(append(elements.([]interface{}), linebreak))
+} 
+
+VerbatimParagraphLineElement <- (!EOL !LineBreak .)+ {
+    return string(c.text), nil
 }
 
 // ----------------------------------------------------------------------------
