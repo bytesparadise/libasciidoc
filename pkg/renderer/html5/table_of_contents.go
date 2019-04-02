@@ -92,7 +92,7 @@ func renderTableOfContentsSections(ctx *renderer.Context, elements []interface{}
 			sections = append(sections, TableOfContentsSection{
 				Level:       section.Level,
 				Href:        id,
-				Title:       template.HTML(renderedTitleStr),
+				Title:       template.HTML(renderedTitleStr), //nolint: gosec
 				Subelements: renderedChildSections,
 			})
 		}
@@ -109,5 +109,5 @@ func renderTableOfContentsSections(ctx *renderer.Context, elements []interface{}
 		return template.HTML(""), errors.Wrap(err, "failed to render document TOC")
 	}
 	log.Debugf("retrieved sections for TOC: %+v", sections)
-	return template.HTML(resultBuf.String()), nil
+	return template.HTML(resultBuf.String()), nil //nolint: gosec
 }

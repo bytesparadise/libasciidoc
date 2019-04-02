@@ -71,6 +71,7 @@ func renderListElements(ctx *renderer.Context, elements []interface{}) ([]byte, 
 	return buff.Bytes(), nil
 }
 
+// nolint: gocyclo
 func renderElement(ctx *renderer.Context, element interface{}) ([]byte, error) {
 	// log.Debugf("rendering element of type `%T`", element)
 	switch e := element.(type) {
@@ -133,6 +134,7 @@ func renderElement(ctx *renderer.Context, element interface{}) ([]byte, error) {
 	}
 }
 
+// nolint: gocyclo
 func renderPlainString(ctx *renderer.Context, element interface{}) ([]byte, error) {
 	log.Debugf("rendering plain string for element of type %T", element)
 	switch element := element.(type) {

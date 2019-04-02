@@ -103,126 +103,15 @@ func renderParagraph(ctx *renderer.Context, p types.Paragraph) ([]byte, error) {
 	id := generateID(ctx, p.Attributes)
 	var err error
 	if _, ok := p.Attributes[types.AttrAdmonitionKind]; ok {
-		log.Debug("rendering admonition paragraph...")
-		k, ok := p.Attributes[types.AttrAdmonitionKind].(types.AdmonitionKind)
-		if !ok {
-			return nil, errors.Errorf("failed to render admonition with unknown kind: %T", p.Attributes[types.AttrAdmonitionKind])
-		}
-		err = admonitionParagraphTmpl.Execute(result, ContextualPipeline{
-			Context: ctx,
-			Data: struct {
-				ID        string
-				Title     string
-				Class     string
-				IconTitle string
-				IconClass string
-				Lines     []types.InlineElements
-			}{
-				ID:        id,
-				Title:     getTitle(p.Attributes),
-				Class:     getClass(k),
-				IconTitle: getIconTitle(k),
-				IconClass: getIconClass(ctx, k),
-				Lines:     p.Lines,
-			},
-		})
+		return renderAdmonitionParagraph(ctx, p)
 	} else if kind, ok := p.Attributes[types.AttrKind]; ok && kind == types.Source {
-		log.Debug("rendering source paragraph...")
-		err = sourceParagraphTmpl.Execute(result, ContextualPipeline{
-			Context: ctx,
-			Data: struct {
-				ID       string
-				Title    string
-				Language string
-				Lines    []types.InlineElements
-			}{
-				ID:       id,
-				Title:    getTitle(p.Attributes),
-				Language: p.Attributes.GetAsString(types.AttrLanguage),
-				Lines:    p.Lines,
-			},
-		})
+		return renderSourceParagraph(ctx, p)
 	} else if kind, ok := p.Attributes[types.AttrKind]; ok && kind == types.Verse {
-		log.Debug("rendering verse paragraph...")
-		var attribution struct {
-			First  string
-			Second string
-		}
-		// TODO; duplicated code from `delimited_block`.
-		if author := p.Attributes.GetAsString(types.AttrQuoteAuthor); author != "" {
-			attribution.First = author
-			if title := p.Attributes.GetAsString(types.AttrQuoteTitle); title != "" {
-				attribution.Second = title
-			}
-		} else if title := p.Attributes.GetAsString(types.AttrQuoteTitle); title != "" {
-			attribution.First = title
-		}
-		err = verseParagraphTmpl.Execute(result, ContextualPipeline{
-			Context: ctx,
-			Data: struct {
-				ID          string
-				Title       string
-				Attribution struct {
-					First  string
-					Second string
-				}
-				Lines []types.InlineElements
-			}{
-				ID:          id,
-				Title:       getTitle(p.Attributes),
-				Attribution: attribution,
-				Lines:       p.Lines,
-			},
-		})
+		return renderVerseParagraph(ctx, p)
 	} else if kind, ok := p.Attributes[types.AttrKind]; ok && kind == types.Quote {
-		log.Debug("rendering quote paragraph...")
-		var attribution struct {
-			First  string
-			Second string
-		}
-		// TODO; duplicated code from `delimited_block`.
-		if author := p.Attributes.GetAsString(types.AttrQuoteAuthor); author != "" {
-			attribution.First = author
-			if title := p.Attributes.GetAsString(types.AttrQuoteTitle); title != "" {
-				attribution.Second = title
-			}
-		} else if title := p.Attributes.GetAsString(types.AttrQuoteTitle); title != "" {
-			attribution.First = title
-		}
-		err = quoteParagraphTmpl.Execute(result, ContextualPipeline{
-			Context: ctx,
-			Data: struct {
-				ID          string
-				Title       string
-				Attribution struct {
-					First  string
-					Second string
-				}
-				Lines []types.InlineElements
-			}{
-				ID:          id,
-				Title:       getTitle(p.Attributes),
-				Attribution: attribution,
-				Lines:       p.Lines,
-			},
-		})
+		return renderQuoteParagraph(ctx, p)
 	} else if ctx.WithinDelimitedBlock() || ctx.WithinList() {
-		log.Debugf("rendering paragraph with %d lines within a delimited block or a list", len(p.Lines))
-
-		err = listParagraphTmpl.Execute(result, ContextualPipeline{
-			Context: ctx,
-			Data: struct {
-				ID         string
-				Title      string
-				CheckStyle string
-				Lines      []types.InlineElements
-			}{
-				ID:         id,
-				Title:      getTitle(p.Attributes),
-				CheckStyle: renderCheckStyle(p.Attributes[types.AttrCheckStyle]),
-				Lines:      p.Lines,
-			},
-		})
+		return renderDelimitedBlockParagraph(ctx, p)
 	} else {
 		log.Debug("rendering a standalone paragraph")
 		err = paragraphTmpl.Execute(result, ContextualPipeline{
@@ -245,6 +134,114 @@ func renderParagraph(ctx *renderer.Context, p types.Paragraph) ([]byte, error) {
 	}
 	log.Debugf("rendered paragraph: '%s'", result.String())
 	return result.Bytes(), nil
+}
+
+func renderAdmonitionParagraph(ctx *renderer.Context, p types.Paragraph) ([]byte, error) {
+	log.Debug("rendering admonition paragraph...")
+	result := bytes.NewBuffer(nil)
+	k, ok := p.Attributes[types.AttrAdmonitionKind].(types.AdmonitionKind)
+	if !ok {
+		return nil, errors.Errorf("failed to render admonition with unknown kind: %T", p.Attributes[types.AttrAdmonitionKind])
+	}
+	err := admonitionParagraphTmpl.Execute(result, ContextualPipeline{
+		Context: ctx,
+		Data: struct {
+			ID        string
+			Title     string
+			Class     string
+			IconTitle string
+			IconClass string
+			Lines     []types.InlineElements
+		}{
+			ID:        generateID(ctx, p.Attributes),
+			Title:     getTitle(p.Attributes),
+			Class:     getClass(k),
+			IconTitle: getIconTitle(k),
+			IconClass: getIconClass(ctx, k),
+			Lines:     p.Lines,
+		},
+	})
+	return result.Bytes(), err
+}
+
+func renderSourceParagraph(ctx *renderer.Context, p types.Paragraph) ([]byte, error) {
+	log.Debug("rendering source paragraph...")
+	result := bytes.NewBuffer(nil)
+	err := sourceParagraphTmpl.Execute(result, ContextualPipeline{
+		Context: ctx,
+		Data: struct {
+			ID       string
+			Title    string
+			Language string
+			Lines    []types.InlineElements
+		}{
+			ID:       generateID(ctx, p.Attributes),
+			Title:    getTitle(p.Attributes),
+			Language: p.Attributes.GetAsString(types.AttrLanguage),
+			Lines:    p.Lines,
+		},
+	})
+	return result.Bytes(), err
+}
+
+func renderVerseParagraph(ctx *renderer.Context, p types.Paragraph) ([]byte, error) {
+	log.Debug("rendering verse paragraph...")
+	result := bytes.NewBuffer(nil)
+	err := verseParagraphTmpl.Execute(result, ContextualPipeline{
+		Context: ctx,
+		Data: struct {
+			ID          string
+			Title       string
+			Attribution Attribution
+			Lines       []types.InlineElements
+		}{
+			ID:          generateID(ctx, p.Attributes),
+			Title:       getTitle(p.Attributes),
+			Attribution: NewParagraphAttribution(p),
+			Lines:       p.Lines,
+		},
+	})
+	return result.Bytes(), err
+}
+
+func renderQuoteParagraph(ctx *renderer.Context, p types.Paragraph) ([]byte, error) {
+	log.Debug("rendering quote paragraph...")
+	result := bytes.NewBuffer(nil)
+	err := quoteParagraphTmpl.Execute(result, ContextualPipeline{
+		Context: ctx,
+		Data: struct {
+			ID          string
+			Title       string
+			Attribution Attribution
+			Lines       []types.InlineElements
+		}{
+			ID:          generateID(ctx, p.Attributes),
+			Title:       getTitle(p.Attributes),
+			Attribution: NewParagraphAttribution(p),
+			Lines:       p.Lines,
+		},
+	})
+	return result.Bytes(), err
+}
+
+func renderDelimitedBlockParagraph(ctx *renderer.Context, p types.Paragraph) ([]byte, error) {
+	log.Debugf("rendering paragraph with %d lines within a delimited block or a list", len(p.Lines))
+	result := bytes.NewBuffer(nil)
+	err := listParagraphTmpl.Execute(result, ContextualPipeline{
+		Context: ctx,
+		Data: struct {
+			ID         string
+			Title      string
+			CheckStyle string
+			Lines      []types.InlineElements
+		}{
+			ID:         generateID(ctx, p.Attributes),
+			Title:      getTitle(p.Attributes),
+			CheckStyle: renderCheckStyle(p.Attributes[types.AttrCheckStyle]),
+			Lines:      p.Lines,
+		},
+	})
+	return result.Bytes(), err
 }
 
 func renderCheckStyle(style interface{}) string {

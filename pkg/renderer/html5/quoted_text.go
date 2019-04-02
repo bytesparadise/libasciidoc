@@ -54,7 +54,7 @@ func renderQuotedText(ctx *renderer.Context, t types.QuotedText) ([]byte, error)
 	default:
 		return nil, errors.Errorf("unsupported quoted text kind: '%v'", t.Kind)
 	}
-	err := tmpl.Execute(result, template.HTML(elementsBuffer.String()))
+	err := tmpl.Execute(result, template.HTML(elementsBuffer.String())) //nolint: gosec
 	if err != nil {
 		return nil, errors.Wrapf(err, "unable to render monospaced quote")
 	}

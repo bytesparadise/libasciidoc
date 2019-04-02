@@ -130,212 +130,221 @@ func init() {
 
 func renderDelimitedBlock(ctx *renderer.Context, b types.DelimitedBlock) ([]byte, error) {
 	log.Debugf("rendering delimited block of kind '%v'", b.Attributes[types.AttrKind])
-	result := bytes.NewBuffer(nil)
-	elements := discardTrailingBlankLines(b.Elements)
-	id := generateID(ctx, b.Attributes)
 	var err error
 	kind := b.Kind
 	switch kind {
 	case types.Fenced:
-		previouslyWithin := ctx.SetWithinDelimitedBlock(true)
-		previouslyInclude := ctx.SetIncludeBlankLine(true)
-		defer func() {
-			ctx.SetWithinDelimitedBlock(previouslyWithin)
-			ctx.SetIncludeBlankLine(previouslyInclude)
-		}()
-		err = fencedBlockTmpl.Execute(result, ContextualPipeline{
-			Context: ctx,
-			Data: struct {
-				ID       string
-				Title    string
-				Elements []interface{}
-			}{
-				ID:       id,
-				Title:    getTitle(b.Attributes),
-				Elements: elements,
-			},
-		})
+		return renderFencedBlock(ctx, b)
 	case types.Listing:
-		previouslyWithin := ctx.SetWithinDelimitedBlock(true)
-		previouslyInclude := ctx.SetIncludeBlankLine(true)
-		defer func() {
-			ctx.SetWithinDelimitedBlock(previouslyWithin)
-			ctx.SetIncludeBlankLine(previouslyInclude)
-		}()
-		err = listingBlockTmpl.Execute(result, ContextualPipeline{
-			Context: ctx,
-			Data: struct {
-				ID       string
-				Title    string
-				Elements []interface{}
-			}{
-				ID:       id,
-				Title:    getTitle(b.Attributes),
-				Elements: elements,
-			},
-		})
+		return renderListingBlock(ctx, b)
 	case types.Source:
-		previouslyWithin := ctx.SetWithinDelimitedBlock(true)
-		previouslyInclude := ctx.SetIncludeBlankLine(true)
-		defer func() {
-			ctx.SetWithinDelimitedBlock(previouslyWithin)
-			ctx.SetIncludeBlankLine(previouslyInclude)
-		}()
-		language := b.Attributes.GetAsString(types.AttrLanguage)
-		err = sourceBlockTmpl.Execute(result, ContextualPipeline{
-			Context: ctx,
-			Data: struct {
-				ID       string
-				Title    string
-				Language string
-				Elements []interface{}
-			}{
-				ID:       id,
-				Title:    getTitle(b.Attributes),
-				Language: language,
-				Elements: elements,
-			},
-		})
+		return renderSourceBlock(ctx, b)
 	case types.Example:
-		if k, ok := b.Attributes[types.AttrAdmonitionKind].(types.AdmonitionKind); ok {
-			err = admonitionBlockTmpl.Execute(result, ContextualPipeline{
-				Context: ctx,
-				Data: struct {
-					ID        string
-					Class     string
-					IconClass string
-					IconTitle string
-					Title     string
-					Elements  []interface{}
-				}{
-					ID:        id,
-					Class:     getClass(k),
-					IconClass: getIconClass(ctx, k),
-					IconTitle: getIconTitle(k),
-					Title:     getTitle(b.Attributes),
-					Elements:  elements,
-				},
-			})
-		} else {
-			// default, example block
-			var title string
-			if b.Attributes.Has(types.AttrTitle) {
-				title = fmt.Sprintf("Example %d. %s", ctx.GetAndIncrementExampleBlockCounter(), getTitle(b.Attributes))
-			}
-			err = exampleBlockTmpl.Execute(result, ContextualPipeline{
-				Context: ctx,
-				Data: struct {
-					ID       string
-					Title    string
-					Elements []interface{}
-				}{
-					ID:       id,
-					Title:    title,
-					Elements: elements,
-				},
-			})
-		}
+		return renderExampleBlock(ctx, b)
 	case types.Quote:
-		var attribution struct {
-			First  string
-			Second string
-		}
-		if author := b.Attributes.GetAsString(types.AttrQuoteAuthor); author != "" {
-			attribution.First = author
-			if title := b.Attributes.GetAsString(types.AttrQuoteTitle); title != "" {
-				attribution.Second = title
-			}
-		} else if title := b.Attributes.GetAsString(types.AttrQuoteTitle); title != "" {
-			attribution.First = title
-		}
-		err = quoteBlockTmpl.Execute(result, ContextualPipeline{
-			Context: ctx,
-			Data: struct {
-				ID          string
-				Title       string
-				Attribution struct {
-					First  string
-					Second string
-				}
-				Elements []interface{}
-			}{
-				ID:          id,
-				Title:       getTitle(b.Attributes),
-				Attribution: attribution,
-				Elements:    b.Elements,
-			},
-		})
+		return renderQuoteBlock(ctx, b)
 	case types.Verse:
-		var elements = make([]interface{}, 0)
-		log.Debugf("including elements in verse block: %v", spew.Sdump(b.Elements))
-		if len(b.Elements) > 0 {
-			for _, element := range b.Elements {
-				switch e := element.(type) {
-				case types.Paragraph:
-					for _, l := range e.Lines {
-						elements = append(elements, l)
-					}
-				case types.BlankLine:
-					elements = append(elements, e)
-				default:
-					log.Warnf("unexpected type of element to include in verse block: %T", element)
-				}
-			}
-		}
-		var attribution struct {
-			First  string
-			Second string
-		}
-		if author := b.Attributes.GetAsString(types.AttrQuoteAuthor); author != "" {
-			attribution.First = author
-			if title := b.Attributes.GetAsString(types.AttrQuoteTitle); title != "" {
-				attribution.Second = title
-			}
-		} else if title := b.Attributes.GetAsString(types.AttrQuoteTitle); title != "" {
-			attribution.First = title
-		}
-		before := ctx.SetIncludeBlankLine(true)
-		defer ctx.SetIncludeBlankLine(before)
-		err = verseBlockTmpl.Execute(result, ContextualPipeline{
-			Context: ctx,
-			Data: struct {
-				ID          string
-				Title       string
-				Attribution struct {
-					First  string
-					Second string
-				}
-				Elements []interface{}
-			}{
-				ID:          id,
-				Title:       getTitle(b.Attributes),
-				Attribution: attribution,
-				Elements:    elements,
-			},
-		})
-	case types.Comment:
-		// nothing to do
+		return renderVerseBlock(ctx, b)
 	case types.Sidebar:
-		err = sidebarBlockTmpl.Execute(result, ContextualPipeline{
-			Context: ctx,
-			Data: struct {
-				ID       string
-				Title    string
-				Elements []interface{}
-			}{
-				ID:       id,
-				Title:    getTitle(b.Attributes),
-				Elements: elements,
-			},
-		})
+		return renderSidebarBlock(ctx, b)
+	case types.Comment:
+		return renderCommentBlock(ctx, b)
 	default:
-		err = errors.Errorf("no template for block of kind %v", kind)
-	}
-	if err != nil {
 		return nil, errors.Wrapf(err, "unable to render delimited block")
 	}
-	log.Debugf("rendered delimited block: %s", result.Bytes())
-	return result.Bytes(), nil
+}
+
+func renderFencedBlock(ctx *renderer.Context, b types.DelimitedBlock) ([]byte, error) {
+	previouslyWithin := ctx.SetWithinDelimitedBlock(true)
+	previouslyInclude := ctx.SetIncludeBlankLine(true)
+	defer func() {
+		ctx.SetWithinDelimitedBlock(previouslyWithin)
+		ctx.SetIncludeBlankLine(previouslyInclude)
+	}()
+	result := bytes.NewBuffer(nil)
+	err := fencedBlockTmpl.Execute(result, ContextualPipeline{
+		Context: ctx,
+		Data: struct {
+			ID       string
+			Title    string
+			Elements []interface{}
+		}{
+			ID:       generateID(ctx, b.Attributes),
+			Title:    getTitle(b.Attributes),
+			Elements: discardTrailingBlankLines(b.Elements),
+		},
+	})
+	return result.Bytes(), err
+}
+
+func renderListingBlock(ctx *renderer.Context, b types.DelimitedBlock) ([]byte, error) {
+	previouslyWithin := ctx.SetWithinDelimitedBlock(true)
+	previouslyInclude := ctx.SetIncludeBlankLine(true)
+	defer func() {
+		ctx.SetWithinDelimitedBlock(previouslyWithin)
+		ctx.SetIncludeBlankLine(previouslyInclude)
+	}()
+	result := bytes.NewBuffer(nil)
+	err := listingBlockTmpl.Execute(result, ContextualPipeline{
+		Context: ctx,
+		Data: struct {
+			ID       string
+			Title    string
+			Elements []interface{}
+		}{
+			ID:       generateID(ctx, b.Attributes),
+			Title:    getTitle(b.Attributes),
+			Elements: discardTrailingBlankLines(b.Elements),
+		},
+	})
+	return result.Bytes(), err
+}
+
+func renderSourceBlock(ctx *renderer.Context, b types.DelimitedBlock) ([]byte, error) {
+	previouslyWithin := ctx.SetWithinDelimitedBlock(true)
+	previouslyInclude := ctx.SetIncludeBlankLine(true)
+	defer func() {
+		ctx.SetWithinDelimitedBlock(previouslyWithin)
+		ctx.SetIncludeBlankLine(previouslyInclude)
+	}()
+	language := b.Attributes.GetAsString(types.AttrLanguage)
+	result := bytes.NewBuffer(nil)
+	err := sourceBlockTmpl.Execute(result, ContextualPipeline{
+		Context: ctx,
+		Data: struct {
+			ID       string
+			Title    string
+			Language string
+			Elements []interface{}
+		}{
+			ID:       generateID(ctx, b.Attributes),
+			Title:    getTitle(b.Attributes),
+			Language: language,
+			Elements: discardTrailingBlankLines(b.Elements),
+		},
+	})
+	return result.Bytes(), err
+}
+
+func renderExampleBlock(ctx *renderer.Context, b types.DelimitedBlock) ([]byte, error) {
+	result := bytes.NewBuffer(nil)
+	if k, ok := b.Attributes[types.AttrAdmonitionKind].(types.AdmonitionKind); ok {
+		err := admonitionBlockTmpl.Execute(result, ContextualPipeline{
+			Context: ctx,
+			Data: struct {
+				ID        string
+				Class     string
+				IconClass string
+				IconTitle string
+				Title     string
+				Elements  []interface{}
+			}{
+				ID:        generateID(ctx, b.Attributes),
+				Class:     getClass(k),
+				IconClass: getIconClass(ctx, k),
+				IconTitle: getIconTitle(k),
+				Title:     getTitle(b.Attributes),
+				Elements:  discardTrailingBlankLines(b.Elements),
+			},
+		})
+		return result.Bytes(), err
+	}
+	// default, example block
+	var title string
+	if b.Attributes.Has(types.AttrTitle) {
+		title = fmt.Sprintf("Example %d. %s", ctx.GetAndIncrementExampleBlockCounter(), getTitle(b.Attributes))
+	}
+	err := exampleBlockTmpl.Execute(result, ContextualPipeline{
+		Context: ctx,
+		Data: struct {
+			ID       string
+			Title    string
+			Elements []interface{}
+		}{
+			ID:       generateID(ctx, b.Attributes),
+			Title:    title,
+			Elements: discardTrailingBlankLines(b.Elements),
+		},
+	})
+	return result.Bytes(), err
+}
+
+func renderQuoteBlock(ctx *renderer.Context, b types.DelimitedBlock) ([]byte, error) {
+	result := bytes.NewBuffer(nil)
+	err := quoteBlockTmpl.Execute(result, ContextualPipeline{
+		Context: ctx,
+		Data: struct {
+			ID          string
+			Title       string
+			Attribution Attribution
+			Elements    []interface{}
+		}{
+			ID:          generateID(ctx, b.Attributes),
+			Title:       getTitle(b.Attributes),
+			Attribution: NewDelimitedBlockAttribution(b),
+			Elements:    b.Elements,
+		},
+	})
+	return result.Bytes(), err
+}
+
+func renderVerseBlock(ctx *renderer.Context, b types.DelimitedBlock) ([]byte, error) {
+	var elements = make([]interface{}, 0)
+	log.Debugf("including elements in verse block: %v", spew.Sdump(b.Elements))
+	if len(b.Elements) > 0 {
+		for _, element := range b.Elements {
+			switch e := element.(type) {
+			case types.Paragraph:
+				for _, l := range e.Lines {
+					elements = append(elements, l)
+				}
+			case types.BlankLine:
+				elements = append(elements, e)
+			default:
+				log.Warnf("unexpected type of element to include in verse block: %T", element)
+			}
+		}
+	}
+	before := ctx.SetIncludeBlankLine(true)
+	defer ctx.SetIncludeBlankLine(before)
+	result := bytes.NewBuffer(nil)
+	err := verseBlockTmpl.Execute(result, ContextualPipeline{
+		Context: ctx,
+		Data: struct {
+			ID          string
+			Title       string
+			Attribution Attribution
+			Elements    []interface{}
+		}{
+			ID:          generateID(ctx, b.Attributes),
+			Title:       getTitle(b.Attributes),
+			Attribution: NewDelimitedBlockAttribution(b),
+			Elements:    elements,
+		},
+	})
+	return result.Bytes(), err
+}
+
+func renderCommentBlock(ctx *renderer.Context, b types.DelimitedBlock) ([]byte, error) { //nolint: unparam
+	// comments block are not preserved during rendering
+	return []byte{}, nil
+}
+
+func renderSidebarBlock(ctx *renderer.Context, b types.DelimitedBlock) ([]byte, error) {
+	result := bytes.NewBuffer(nil)
+	err := sidebarBlockTmpl.Execute(result, ContextualPipeline{
+		Context: ctx,
+		Data: struct {
+			ID       string
+			Title    string
+			Elements []interface{}
+		}{
+			ID:       generateID(ctx, b.Attributes),
+			Title:    getTitle(b.Attributes),
+			Elements: discardTrailingBlankLines(b.Elements),
+		},
+	})
+	return result.Bytes(), err
 }
 
 func discardTrailingBlankLines(elements []interface{}) []interface{} {

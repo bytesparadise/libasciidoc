@@ -1,3 +1,20 @@
 run:
   skip-dirs:
     - pkg/renderer/html5/includes
+  skip-files:
+    - pkg/parser/asciidoc_parser.go # generated
+
+linters:
+  enable:
+    - megacheck
+    - govet
+    - gocyclo
+  enable-all: false
+  disable:
+    - maligned
+    - prealloc
+  disable-all: false
+  presets:
+    - bugs
+    - unused
+  fast: false
