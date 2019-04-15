@@ -13,7 +13,8 @@ import (
 
 var _ = Describe("file inclusions", func() {
 
-	Context("simple inclusions", func() {
+	Context("simple inclusions with level offset", func() {
+
 		It("should include adoc file with section 0 at root level without offset", func() {
 			actualContent := types.Document{
 				Attributes:         types.DocumentAttributes{},
@@ -456,44 +457,26 @@ var _ = Describe("file inclusions", func() {
 			}
 			verifyFileInclusions(expectedResult, actualContent)
 		})
+	})
 
-		It("should include unparsed adoc file with line range in delimited block", func() {
+	Context("multiple inclusions", func() {
+
+		It("include 2 files", func() {
 			actualContent := types.Document{
 				Attributes:         types.DocumentAttributes{},
 				ElementReferences:  types.ElementReferences{},
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
-					types.Paragraph{
-						Attributes: types.ElementAttributes{},
-						Lines: []types.InlineElements{
-							{
-								types.StringElement{Content: "a first paragraph"},
-							},
+					types.FileInclusion{
+						Attributes: types.ElementAttributes{
+							types.AttrLevelOffset: "+1",
 						},
+						Path: "html5/includes/grandchild-include.adoc",
 					},
-					types.DelimitedBlock{
-						Kind:       types.Source,
+					types.FileInclusion{
 						Attributes: types.ElementAttributes{},
-						Elements: []interface{}{
-							types.FileInclusion{
-								Attributes: types.ElementAttributes{
-									types.AttrLineRanges: types.LineRanges{
-										{Start: 3, End: 3},
-									},
-								},
-								Path: "html5/includes/chapter-a.adoc",
-							},
-						},
-					},
-					types.BlankLine{},
-					types.Paragraph{
-						Attributes: types.ElementAttributes{},
-						Lines: []types.InlineElements{
-							{
-								types.StringElement{Content: "a second paragraph"},
-							},
-						},
+						Path:       "html5/includes/hello_world.go",
 					},
 				},
 			}
@@ -507,20 +490,25 @@ var _ = Describe("file inclusions", func() {
 						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
 							{
-								types.StringElement{Content: "a first paragraph"},
+								types.StringElement{Content: "first line of grandchild"},
 							},
 						},
 					},
-					types.DelimitedBlock{
-						Kind:       types.Source,
+					types.BlankLine{},
+					types.Paragraph{
 						Attributes: types.ElementAttributes{},
-						Elements: []interface{}{
-							types.Paragraph{
-								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
-									{
-										types.StringElement{Content: "content"},
-									},
+						Lines: []types.InlineElements{
+							{
+								types.StringElement{Content: "last line of grandchild"},
+							},
+						},
+					},
+					types.Paragraph{
+						Attributes: types.ElementAttributes{},
+						Lines: []types.InlineElements{
+							{
+								types.StringElement{
+									Content: "package includes",
 								},
 							},
 						},
@@ -530,7 +518,30 @@ var _ = Describe("file inclusions", func() {
 						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
 							{
-								types.StringElement{Content: "a second paragraph"},
+								types.StringElement{
+									Content: "import \"fmt\"",
+								},
+							},
+						},
+					},
+					types.BlankLine{},
+					types.Paragraph{
+						Attributes: types.ElementAttributes{},
+						Lines: []types.InlineElements{
+							{
+								types.StringElement{
+									Content: "func helloworld() {",
+								},
+							},
+							{
+								types.StringElement{
+									Content: `	fmt.Println("hello, world!")`,
+								},
+							},
+							{
+								types.StringElement{
+									Content: "}",
+								},
 							},
 						},
 					},
@@ -795,6 +806,87 @@ var _ = Describe("file inclusions", func() {
 			verifyFileInclusions(expectedResult, actualContent)
 		})
 
+		It("should include unparsed adoc file with line range in delimited block", func() {
+			actualContent := types.Document{
+				Attributes:         types.DocumentAttributes{},
+				ElementReferences:  types.ElementReferences{},
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
+				Elements: []interface{}{
+					types.Paragraph{
+						Attributes: types.ElementAttributes{},
+						Lines: []types.InlineElements{
+							{
+								types.StringElement{Content: "a first paragraph"},
+							},
+						},
+					},
+					types.DelimitedBlock{
+						Kind:       types.Source,
+						Attributes: types.ElementAttributes{},
+						Elements: []interface{}{
+							types.FileInclusion{
+								Attributes: types.ElementAttributes{
+									types.AttrLineRanges: types.LineRanges{
+										{Start: 3, End: 3},
+									},
+								},
+								Path: "html5/includes/chapter-a.adoc",
+							},
+						},
+					},
+					types.BlankLine{},
+					types.Paragraph{
+						Attributes: types.ElementAttributes{},
+						Lines: []types.InlineElements{
+							{
+								types.StringElement{Content: "a second paragraph"},
+							},
+						},
+					},
+				},
+			}
+			expectedResult := types.Document{
+				Attributes:         types.DocumentAttributes{},
+				ElementReferences:  types.ElementReferences{},
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
+				Elements: []interface{}{
+					types.Paragraph{
+						Attributes: types.ElementAttributes{},
+						Lines: []types.InlineElements{
+							{
+								types.StringElement{Content: "a first paragraph"},
+							},
+						},
+					},
+					types.DelimitedBlock{
+						Kind:       types.Source,
+						Attributes: types.ElementAttributes{},
+						Elements: []interface{}{
+							types.Paragraph{
+								Attributes: types.ElementAttributes{},
+								Lines: []types.InlineElements{
+									{
+										types.StringElement{Content: "content"},
+									},
+								},
+							},
+						},
+					},
+					types.BlankLine{},
+					types.Paragraph{
+						Attributes: types.ElementAttributes{},
+						Lines: []types.InlineElements{
+							{
+								types.StringElement{Content: "a second paragraph"},
+							},
+						},
+					},
+				},
+			}
+			verifyFileInclusions(expectedResult, actualContent)
+		})
 	})
 })
 
