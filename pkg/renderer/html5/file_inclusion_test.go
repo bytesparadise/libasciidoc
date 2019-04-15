@@ -53,6 +53,37 @@ include::includes/hello_world.go[]`
 		verify(GinkgoT(), expectedResult, actualContent)
 	})
 
+	It("include 2 files", func() {
+		actualContent := `= Master Document
+
+preamble
+
+include::includes/grandchild-include.adoc[]
+
+include::includes/hello_world.go[]`
+		expectedResult := `<div class="paragraph">
+<p>preamble</p>
+</div>
+<div class="paragraph">
+<p>first line of grandchild</p>
+</div>
+<div class="paragraph">
+<p>last line of grandchild</p>
+</div>
+<div class="paragraph">
+<p>package includes</p>
+</div>
+<div class="paragraph">
+<p>import &#34;fmt&#34;</p>
+</div>
+<div class="paragraph">
+<p>func helloworld() {
+	fmt.Println(&#34;hello, world!&#34;)
+}</p>
+</div>`
+		verify(GinkgoT(), expectedResult, actualContent)
+	})
+
 	Context("file inclusion in delimited blocks", func() {
 
 		Context("adoc file inclusion in delimited blocks", func() {
