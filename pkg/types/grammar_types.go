@@ -104,6 +104,25 @@ func NewDocument(frontmatter interface{}, elements []interface{}) (Document, err
 	return document, nil
 }
 
+// HasTitle returns `true` if the document has a title, ie, a section with level 0 as the root (or first element)
+func (d Document) HasTitle() bool {
+	if len(d.Elements) > 0 {
+		section, found := d.Elements[0].(Section)
+		return found && section.Level == 0
+	}
+	return false
+}
+
+// GetTitle retrieves the document title in its metadata, or empty section title if the title was not specified
+func (d Document) GetTitle() (SectionTitle, bool) {
+	if len(d.Elements) > 0 {
+		if section, ok := d.Elements[0].(Section); ok && section.Level == 0 {
+			return section.Title, true
+		}
+	}
+	return SectionTitle{}, false
+}
+
 // ------------------------------------------
 // Document Author
 // ------------------------------------------

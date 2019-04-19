@@ -27,6 +27,8 @@ const (
 	AttrRevision string = "revision"
 	// AttrTableOfContents the `toc` attribute at document level
 	AttrTableOfContents = "toc"
+	// AttrTableOfContentsLevels the document attribute which specifies the number of levels to display in the ToC
+	AttrTableOfContentsLevels = "toclevels"
 	// AttrRole the key to retrieve the role in the element attributes
 	AttrRole string = "role"
 	// AttrInlineLink the key to retrieve the link in the element attributes

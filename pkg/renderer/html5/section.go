@@ -57,7 +57,7 @@ func renderPreamble(ctx *renderer.Context, p types.Preamble) ([]byte, error) {
 	// the <div id="preamble"> wrapper is only necessary
 	// if the document has a section 0
 	wrapper := false
-	if ctx.Document.Attributes.HasTitle() {
+	if ctx.Document.HasTitle() {
 		wrapper = true
 	}
 	err := preambleTmpl.Execute(result, ContextualPipeline{
