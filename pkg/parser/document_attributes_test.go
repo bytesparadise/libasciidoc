@@ -14,27 +14,36 @@ var _ = Describe("document attributes", func() {
 			actualContent := `= The Dangerous and Thrilling Documentation Chronicles
 			
 This journey begins on a bleary Monday morning.`
-			expectedResult := types.Document{
-				Attributes: types.DocumentAttributes{
-					types.AttrTitle: types.SectionTitle{
-						Attributes: types.ElementAttributes{
-							types.AttrID:       "the_dangerous_and_thrilling_documentation_chronicles",
-							types.AttrCustomID: false,
-						},
-						Elements: types.InlineElements{
-							types.StringElement{Content: "The Dangerous and Thrilling Documentation Chronicles"},
-						},
-					},
+
+			title := types.SectionTitle{
+				Attributes: types.ElementAttributes{
+					types.AttrID:       "the_dangerous_and_thrilling_documentation_chronicles",
+					types.AttrCustomID: false,
 				},
-				ElementReferences:  types.ElementReferences{},
+				Elements: types.InlineElements{
+					types.StringElement{Content: "The Dangerous and Thrilling Documentation Chronicles"},
+				},
+			}
+			expectedResult := types.Document{
+				Attributes: types.DocumentAttributes{},
+				ElementReferences: types.ElementReferences{
+					"the_dangerous_and_thrilling_documentation_chronicles": title,
+				},
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
-					types.Paragraph{
+					types.Section{
+						Level:      0,
+						Title:      title,
 						Attributes: types.ElementAttributes{},
-						Lines: []types.InlineElements{
-							{
-								types.StringElement{Content: "This journey begins on a bleary Monday morning."},
+						Elements: []interface{}{
+							types.Paragraph{
+								Attributes: types.ElementAttributes{},
+								Lines: []types.InlineElements{
+									{
+										types.StringElement{Content: "This journey begins on a bleary Monday morning."},
+									},
+								},
 							},
 						},
 					},
@@ -47,166 +56,185 @@ This journey begins on a bleary Monday morning.`
 
 			Context("single author", func() {
 
-				It("all data", func() {
+				It("all author data", func() {
 					actualContent := `= title
 Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>`
-					expectedResult := types.DocumentHeader{
-						Attributes: types.DocumentAttributes{
-							types.AttrTitle: types.SectionTitle{
-								Attributes: types.ElementAttributes{
-									types.AttrID:       "title",
-									types.AttrCustomID: false,
-								},
-								Elements: types.InlineElements{
-									types.StringElement{
-										Content: "title",
-									},
+					expectedResult := types.Section{
+						Level: 0,
+						Title: types.SectionTitle{
+							Attributes: types.ElementAttributes{
+								types.AttrID:       "title",
+								types.AttrCustomID: false,
+							},
+							Elements: types.InlineElements{
+								types.StringElement{
+									Content: "title",
 								},
 							},
-							"author":         "Kismet Rainbow Chameleon",
-							"firstname":      "Kismet",
-							"middlename":     "Rainbow",
-							"lastname":       "Chameleon",
-							"authorinitials": "KRC",
-							"email":          "kismet@asciidoctor.org",
 						},
+						Attributes: types.ElementAttributes{
+							types.AttrAuthors: []types.DocumentAuthor{
+								{
+									FullName: "Kismet  Rainbow Chameleon  ",
+									Email:    "kismet@asciidoctor.org",
+								},
+							},
+						},
+						Elements: []interface{}{},
 					}
-					verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentHeader"))
+					verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Section0WithMetadata"))
 				})
 
 				It("lastname with underscores", func() {
 					actualContent := `= title
 Lazarus het_Draeke <lazarus@asciidoctor.org>`
-					expectedResult := types.DocumentHeader{
-						Attributes: types.DocumentAttributes{
-							types.AttrTitle: types.SectionTitle{
-								Attributes: types.ElementAttributes{
-									types.AttrID:       "title",
-									types.AttrCustomID: false,
-								},
-								Elements: types.InlineElements{
-									types.StringElement{
-										Content: "title",
-									},
+					expectedResult := types.Section{
+						Level: 0,
+						Title: types.SectionTitle{
+							Attributes: types.ElementAttributes{
+								types.AttrID:       "title",
+								types.AttrCustomID: false,
+							},
+							Elements: types.InlineElements{
+								types.StringElement{
+									Content: "title",
 								},
 							},
-							"author":         "Lazarus het Draeke",
-							"firstname":      "Lazarus",
-							"lastname":       "het Draeke",
-							"authorinitials": "Lh",
-							"email":          "lazarus@asciidoctor.org",
 						},
+						Attributes: types.ElementAttributes{
+							types.AttrAuthors: []types.DocumentAuthor{
+								{
+									FullName: "Lazarus het_Draeke ",
+									Email:    "lazarus@asciidoctor.org",
+								},
+							},
+						},
+						Elements: []interface{}{},
 					}
-					verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentHeader"))
+					verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Section0WithMetadata"))
 				})
 
 				It("firstname and lastname only", func() {
 					actualContent := `= title
 Kismet Chameleon`
-					expectedResult := types.DocumentHeader{
-						Attributes: types.DocumentAttributes{
-							types.AttrTitle: types.SectionTitle{
-								Attributes: types.ElementAttributes{
-									types.AttrID:       "title",
-									types.AttrCustomID: false,
-								},
-								Elements: types.InlineElements{
-									types.StringElement{
-										Content: "title",
-									},
+					expectedResult := types.Section{
+						Level: 0,
+						Title: types.SectionTitle{
+							Attributes: types.ElementAttributes{
+								types.AttrID:       "title",
+								types.AttrCustomID: false,
+							},
+							Elements: types.InlineElements{
+								types.StringElement{
+									Content: "title",
 								},
 							},
-							"author":         "Kismet Chameleon",
-							"firstname":      "Kismet",
-							"lastname":       "Chameleon",
-							"authorinitials": "KC",
 						},
+						Attributes: types.ElementAttributes{
+							types.AttrAuthors: []types.DocumentAuthor{
+								{
+									FullName: "Kismet Chameleon",
+									Email:    "",
+								},
+							},
+						},
+						Elements: []interface{}{},
 					}
-					verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentHeader"))
+					verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Section0WithMetadata"))
 				})
 
 				It("firstname only", func() {
 					actualContent := `= title
 Chameleon`
-					expectedResult := types.DocumentHeader{
-						Attributes: types.DocumentAttributes{
-							types.AttrTitle: types.SectionTitle{
-								Attributes: types.ElementAttributes{
-									types.AttrID:       "title",
-									types.AttrCustomID: false,
-								},
-								Elements: types.InlineElements{
-									types.StringElement{
-										Content: "title",
-									},
+					expectedResult := types.Section{
+						Level: 0,
+						Title: types.SectionTitle{
+							Attributes: types.ElementAttributes{
+								types.AttrID:       "title",
+								types.AttrCustomID: false,
+							},
+							Elements: types.InlineElements{
+								types.StringElement{
+									Content: "title",
 								},
 							},
-							"author":         "Chameleon",
-							"firstname":      "Chameleon",
-							"authorinitials": "C",
 						},
+						Attributes: types.ElementAttributes{
+							types.AttrAuthors: []types.DocumentAuthor{
+								{
+									FullName: "Chameleon",
+									Email:    "",
+								},
+							},
+						},
+						Elements: []interface{}{},
 					}
-					verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentHeader"))
+					verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Section0WithMetadata"))
 				})
 
 				It("alternate author input", func() {
 					actualContent := `= title
 :author: Kismet Rainbow Chameleon` // `:"email":` is processed as a regular attribute
-					expectedResult := types.DocumentHeader{
-						Attributes: types.DocumentAttributes{
-							types.AttrTitle: types.SectionTitle{
-								Attributes: types.ElementAttributes{
-									types.AttrID:       "title",
-									types.AttrCustomID: false,
-								},
-								Elements: types.InlineElements{
-									types.StringElement{
-										Content: "title",
-									},
+					expectedResult := types.Section{
+						Level: 0,
+						Title: types.SectionTitle{
+							Attributes: types.ElementAttributes{
+								types.AttrID:       "title",
+								types.AttrCustomID: false,
+							},
+							Elements: types.InlineElements{
+								types.StringElement{
+									Content: "title",
 								},
 							},
-							"author":         "Kismet Rainbow Chameleon",
-							"firstname":      "Kismet",
-							"middlename":     "Rainbow",
-							"lastname":       "Chameleon",
-							"authorinitials": "KRC",
 						},
+						Attributes: types.ElementAttributes{
+							types.AttrAuthors: []types.DocumentAuthor{
+								{
+									FullName: "Kismet Rainbow Chameleon",
+									Email:    "",
+								},
+							},
+						},
+						Elements: []interface{}{},
 					}
-					verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentHeader"))
+					verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Section0WithMetadata"))
 				})
 			})
 
 			Context("multiple authors", func() {
+
 				It("2 authors only", func() {
 					actualContent := `= title
 Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus@asciidoctor.org>`
-					expectedResult := types.DocumentHeader{
-						Attributes: types.DocumentAttributes{
-							types.AttrTitle: types.SectionTitle{
-								Attributes: types.ElementAttributes{
-									types.AttrID:       "title",
-									types.AttrCustomID: false,
-								},
-								Elements: types.InlineElements{
-									types.StringElement{
-										Content: "title",
-									},
+					expectedResult := types.Section{
+						Level: 0,
+						Title: types.SectionTitle{
+							Attributes: types.ElementAttributes{
+								types.AttrID:       "title",
+								types.AttrCustomID: false,
+							},
+							Elements: types.InlineElements{
+								types.StringElement{
+									Content: "title",
 								},
 							},
-							"author":           "Kismet Rainbow Chameleon",
-							"firstname":        "Kismet",
-							"middlename":       "Rainbow",
-							"lastname":         "Chameleon",
-							"authorinitials":   "KRC",
-							"email":            "kismet@asciidoctor.org",
-							"author_2":         "Lazarus het Draeke",
-							"firstname_2":      "Lazarus",
-							"lastname_2":       "het Draeke",
-							"authorinitials_2": "Lh",
-							"email_2":          "lazarus@asciidoctor.org",
 						},
+						Attributes: types.ElementAttributes{
+							types.AttrAuthors: []types.DocumentAuthor{
+								{
+									FullName: "Kismet  Rainbow Chameleon  ",
+									Email:    "kismet@asciidoctor.org",
+								},
+								{
+									FullName: "Lazarus het_Draeke ",
+									Email:    "lazarus@asciidoctor.org",
+								},
+							},
+						},
+						Elements: []interface{}{},
 					}
-					verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentHeader"))
+					verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Section0WithMetadata"))
 				})
 			})
 		})
@@ -217,300 +245,384 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 				actualContent := `= title
 				john doe
 				v1.0, June 19, 2017: First incarnation`
-				expectedResult := types.DocumentHeader{
-					Attributes: types.DocumentAttributes{
-						types.AttrTitle: types.SectionTitle{
-							Attributes: types.ElementAttributes{
-								types.AttrID:       "title",
-								types.AttrCustomID: false,
-							},
-							Elements: types.InlineElements{
-								types.StringElement{
-									Content: "title",
-								},
+				expectedResult := types.Section{
+					Level: 0,
+					Title: types.SectionTitle{
+						Attributes: types.ElementAttributes{
+							types.AttrID:       "title",
+							types.AttrCustomID: false,
+						},
+						Elements: types.InlineElements{
+							types.StringElement{
+								Content: "title",
 							},
 						},
-						"author":         "john doe",
-						"authorinitials": "jd",
-						"firstname":      "john",
-						"lastname":       "doe",
-						"revnumber":      "1.0",
-						"revdate":        "June 19, 2017",
-						"revremark":      "First incarnation",
 					},
+					Attributes: types.ElementAttributes{
+						types.AttrAuthors: []types.DocumentAuthor{
+							{
+								FullName: "john doe",
+								Email:    "",
+							},
+						},
+						types.AttrRevision: types.DocumentRevision{
+							Revnumber: "1.0",
+							Revdate:   "June 19, 2017",
+							Revremark: "First incarnation",
+						},
+					},
+					Elements: []interface{}{},
 				}
-				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentHeader"))
+				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Section0WithMetadata"))
 			})
 
 			It("revision with revnumber and revdate only", func() {
 				actualContent := `= title
 				john doe
 				v1.0, June 19, 2017`
-				expectedResult := types.DocumentHeader{
-					Attributes: types.DocumentAttributes{
-						types.AttrTitle: types.SectionTitle{
-							Attributes: types.ElementAttributes{
-								types.AttrID:       "title",
-								types.AttrCustomID: false,
-							},
-							Elements: types.InlineElements{
-								types.StringElement{
-									Content: "title",
-								},
+				expectedResult := types.Section{
+					Level: 0,
+					Title: types.SectionTitle{
+						Attributes: types.ElementAttributes{
+							types.AttrID:       "title",
+							types.AttrCustomID: false,
+						},
+						Elements: types.InlineElements{
+							types.StringElement{
+								Content: "title",
 							},
 						},
-						"author":         "john doe",
-						"authorinitials": "jd",
-						"firstname":      "john",
-						"lastname":       "doe",
-						"revnumber":      "1.0",
-						"revdate":        "June 19, 2017",
 					},
+					Attributes: types.ElementAttributes{
+						types.AttrAuthors: []types.DocumentAuthor{
+							{
+								FullName: "john doe",
+								Email:    "",
+							},
+						},
+						types.AttrRevision: types.DocumentRevision{
+							Revnumber: "1.0",
+							Revdate:   "June 19, 2017",
+							Revremark: "",
+						},
+					},
+					Elements: []interface{}{},
 				}
-				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentHeader"))
+				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Section0WithMetadata"))
 			})
 
 			It("revision with revnumber and revdate - with colon separator", func() {
 				actualContent := `= title
 				john doe
 				1.0, June 19, 2017:`
-				expectedResult := types.DocumentHeader{
-					Attributes: types.DocumentAttributes{
-						types.AttrTitle: types.SectionTitle{
-							Attributes: types.ElementAttributes{
-								types.AttrID:       "title",
-								types.AttrCustomID: false,
-							},
-							Elements: types.InlineElements{
-								types.StringElement{
-									Content: "title",
-								},
+				expectedResult := types.Section{
+					Level: 0,
+					Title: types.SectionTitle{
+						Attributes: types.ElementAttributes{
+							types.AttrID:       "title",
+							types.AttrCustomID: false,
+						},
+						Elements: types.InlineElements{
+							types.StringElement{
+								Content: "title",
 							},
 						},
-						"author":         "john doe",
-						"authorinitials": "jd",
-						"firstname":      "john",
-						"lastname":       "doe",
-						"revnumber":      "1.0",
-						"revdate":        "June 19, 2017",
 					},
+					Attributes: types.ElementAttributes{
+						types.AttrAuthors: []types.DocumentAuthor{
+							{
+								FullName: "john doe",
+								Email:    "",
+							},
+						},
+						types.AttrRevision: types.DocumentRevision{
+							Revnumber: "1.0",
+							Revdate:   "June 19, 2017",
+							Revremark: "",
+						},
+					},
+					Elements: []interface{}{},
 				}
-				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentHeader"))
+				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Section0WithMetadata"))
 			})
 			It("revision with revnumber only - comma suffix", func() {
 				actualContent := `= title
 				john doe
 				1.0,`
-				expectedResult := types.DocumentHeader{
-					Attributes: types.DocumentAttributes{
-						types.AttrTitle: types.SectionTitle{
-							Attributes: types.ElementAttributes{
-								types.AttrID:       "title",
-								types.AttrCustomID: false,
-							},
-							Elements: types.InlineElements{
-								types.StringElement{
-									Content: "title",
-								},
+				expectedResult := types.Section{
+					Level: 0,
+					Title: types.SectionTitle{
+						Attributes: types.ElementAttributes{
+							types.AttrID:       "title",
+							types.AttrCustomID: false,
+						},
+						Elements: types.InlineElements{
+							types.StringElement{
+								Content: "title",
 							},
 						},
-						"author":         "john doe",
-						"authorinitials": "jd",
-						"firstname":      "john",
-						"lastname":       "doe",
-						"revnumber":      "1.0",
 					},
+					Attributes: types.ElementAttributes{
+						types.AttrAuthors: []types.DocumentAuthor{
+							{
+								FullName: "john doe",
+								Email:    "",
+							},
+						},
+						types.AttrRevision: types.DocumentRevision{
+							Revnumber: "1.0",
+							Revdate:   "",
+							Revremark: "",
+						},
+					},
+					Elements: []interface{}{},
 				}
-				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentHeader"))
+				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Section0WithMetadata"))
 			})
 
 			It("revision with revdate as number - spaces and no prefix no suffix", func() {
 				actualContent := `= title
 				john doe
 				1.0`
-				expectedResult := types.DocumentHeader{
-					Attributes: types.DocumentAttributes{
-						types.AttrTitle: types.SectionTitle{
-							Attributes: types.ElementAttributes{
-								types.AttrID:       "title",
-								types.AttrCustomID: false,
-							},
-							Elements: types.InlineElements{
-								types.StringElement{
-									Content: "title",
-								},
+				expectedResult := types.Section{
+					Level: 0,
+					Title: types.SectionTitle{
+						Attributes: types.ElementAttributes{
+							types.AttrID:       "title",
+							types.AttrCustomID: false,
+						},
+						Elements: types.InlineElements{
+							types.StringElement{
+								Content: "title",
 							},
 						},
-						"author":         "john doe",
-						"authorinitials": "jd",
-						"firstname":      "john",
-						"lastname":       "doe",
-						"revdate":        "1.0",
 					},
+					Attributes: types.ElementAttributes{
+						types.AttrAuthors: []types.DocumentAuthor{
+							{
+								FullName: "john doe",
+								Email:    "",
+							},
+						},
+						types.AttrRevision: types.DocumentRevision{
+							Revnumber: "",
+							Revdate:   "1.0",
+							Revremark: "",
+						},
+					},
+					Elements: []interface{}{},
 				}
-				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentHeader"))
+				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Section0WithMetadata"))
 			})
 
 			It("revision with revdate as alphanum - spaces and no prefix no suffix", func() {
 				actualContent := `= title
 				john doe
 				1.0a`
-				expectedResult := types.DocumentHeader{
-					Attributes: types.DocumentAttributes{
-						types.AttrTitle: types.SectionTitle{
-							Attributes: types.ElementAttributes{
-								types.AttrID:       "title",
-								types.AttrCustomID: false,
-							},
-							Elements: types.InlineElements{
-								types.StringElement{
-									Content: "title",
-								},
+				expectedResult := types.Section{
+					Level: 0,
+					Title: types.SectionTitle{
+						Attributes: types.ElementAttributes{
+							types.AttrID:       "title",
+							types.AttrCustomID: false,
+						},
+						Elements: types.InlineElements{
+							types.StringElement{
+								Content: "title",
 							},
 						},
-						"author":         "john doe",
-						"authorinitials": "jd",
-						"firstname":      "john",
-						"lastname":       "doe",
-						"revdate":        "1.0a",
 					},
+					Attributes: types.ElementAttributes{
+						types.AttrAuthors: []types.DocumentAuthor{
+							{
+								FullName: "john doe",
+								Email:    "",
+							},
+						},
+						types.AttrRevision: types.DocumentRevision{
+							Revnumber: "",
+							Revdate:   "1.0a",
+							Revremark: "",
+						},
+					},
+					Elements: []interface{}{},
 				}
-				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentHeader"))
+				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Section0WithMetadata"))
 			})
 
 			It("revision with revnumber only", func() {
 				actualContent := `= title
 				john doe
 				v1.0:`
-				expectedResult := types.DocumentHeader{
-					Attributes: types.DocumentAttributes{
-						types.AttrTitle: types.SectionTitle{
-							Attributes: types.ElementAttributes{
-								types.AttrID:       "title",
-								types.AttrCustomID: false,
-							},
-							Elements: types.InlineElements{
-								types.StringElement{
-									Content: "title",
-								},
+				expectedResult := types.Section{
+					Level: 0,
+					Title: types.SectionTitle{
+						Attributes: types.ElementAttributes{
+							types.AttrID:       "title",
+							types.AttrCustomID: false,
+						},
+						Elements: types.InlineElements{
+							types.StringElement{
+								Content: "title",
 							},
 						},
-						"author":         "john doe",
-						"authorinitials": "jd",
-						"firstname":      "john",
-						"lastname":       "doe",
-						"revnumber":      "1.0",
 					},
+					Attributes: types.ElementAttributes{
+						types.AttrAuthors: []types.DocumentAuthor{
+							{
+								FullName: "john doe",
+								Email:    "",
+							},
+						},
+						types.AttrRevision: types.DocumentRevision{
+							Revnumber: "1.0",
+							Revdate:   "",
+							Revremark: "",
+						},
+					},
+					Elements: []interface{}{},
 				}
-				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentHeader"))
+				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Section0WithMetadata"))
 			})
 
 			It("revision with spaces and capital revnumber ", func() {
 				actualContent := `= title
 				john doe
 				V1.0:`
-				expectedResult := types.DocumentHeader{
-					Attributes: types.DocumentAttributes{
-						types.AttrTitle: types.SectionTitle{
-							Attributes: types.ElementAttributes{
-								types.AttrID:       "title",
-								types.AttrCustomID: false,
-							},
-							Elements: types.InlineElements{
-								types.StringElement{
-									Content: "title",
-								},
+				expectedResult := types.Section{
+					Level: 0,
+					Title: types.SectionTitle{
+						Attributes: types.ElementAttributes{
+							types.AttrID:       "title",
+							types.AttrCustomID: false,
+						},
+						Elements: types.InlineElements{
+							types.StringElement{
+								Content: "title",
 							},
 						},
-						"author":         "john doe",
-						"authorinitials": "jd",
-						"firstname":      "john",
-						"lastname":       "doe",
-						"revnumber":      "1.0",
 					},
+					Attributes: types.ElementAttributes{
+						types.AttrAuthors: []types.DocumentAuthor{
+							{
+								FullName: "john doe",
+								Email:    "",
+							},
+						},
+						types.AttrRevision: types.DocumentRevision{
+							Revnumber: "1.0",
+							Revdate:   "",
+							Revremark: "",
+						},
+					},
+					Elements: []interface{}{},
 				}
-				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentHeader"))
+				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Section0WithMetadata"))
 			})
 
 			It("revision only - with comma separator", func() {
 				actualContent := `= title
 				john doe
 				v1.0,`
-				expectedResult := types.DocumentHeader{
-					Attributes: types.DocumentAttributes{
-						types.AttrTitle: types.SectionTitle{
-							Attributes: types.ElementAttributes{
-								types.AttrID:       "title",
-								types.AttrCustomID: false,
-							},
-							Elements: types.InlineElements{
-								types.StringElement{
-									Content: "title",
-								},
+				expectedResult := types.Section{
+					Level: 0,
+					Title: types.SectionTitle{
+						Attributes: types.ElementAttributes{
+							types.AttrID:       "title",
+							types.AttrCustomID: false,
+						},
+						Elements: types.InlineElements{
+							types.StringElement{
+								Content: "title",
 							},
 						},
-						"author":         "john doe",
-						"authorinitials": "jd",
-						"firstname":      "john",
-						"lastname":       "doe",
-						"revnumber":      "1.0",
 					},
+					Attributes: types.ElementAttributes{
+						types.AttrAuthors: []types.DocumentAuthor{
+							{
+								FullName: "john doe",
+								Email:    "",
+							},
+						},
+						types.AttrRevision: types.DocumentRevision{
+							Revnumber: "1.0",
+							Revdate:   "",
+							Revremark: "",
+						},
+					},
+					Elements: []interface{}{},
 				}
-				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentHeader"))
+				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Section0WithMetadata"))
 			})
 
 			It("revision with revnumber plus comma and colon separators", func() {
 				actualContent := `= title
 				john doe
 				v1.0,:`
-				expectedResult := types.DocumentHeader{
-					Attributes: types.DocumentAttributes{
-						types.AttrTitle: types.SectionTitle{
-							Attributes: types.ElementAttributes{
-								types.AttrID:       "title",
-								types.AttrCustomID: false,
-							},
-							Elements: types.InlineElements{
-								types.StringElement{
-									Content: "title",
-								},
+				expectedResult := types.Section{
+					Level: 0,
+					Title: types.SectionTitle{
+						Attributes: types.ElementAttributes{
+							types.AttrID:       "title",
+							types.AttrCustomID: false,
+						},
+						Elements: types.InlineElements{
+							types.StringElement{
+								Content: "title",
 							},
 						},
-						"author":         "john doe",
-						"authorinitials": "jd",
-						"firstname":      "john",
-						"lastname":       "doe",
-						"revnumber":      "1.0",
 					},
+					Attributes: types.ElementAttributes{
+						types.AttrAuthors: []types.DocumentAuthor{
+							{
+								FullName: "john doe",
+								Email:    "",
+							},
+						},
+						types.AttrRevision: types.DocumentRevision{
+							Revnumber: "1.0",
+							Revdate:   "",
+							Revremark: "",
+						},
+					},
+					Elements: []interface{}{},
 				}
-				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentHeader"))
+				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Section0WithMetadata"))
 			})
 
 			It("revision with revnumber plus colon separator", func() {
 				actualContent := `= title
 john doe
 v1.0:`
-				expectedResult := types.DocumentHeader{
-					Attributes: types.DocumentAttributes{
-						types.AttrTitle: types.SectionTitle{
-							Attributes: types.ElementAttributes{
-								types.AttrID:       "title",
-								types.AttrCustomID: false,
-							},
-							Elements: types.InlineElements{
-								types.StringElement{
-									Content: "title",
-								},
+				expectedResult := types.Section{
+					Level: 0,
+					Title: types.SectionTitle{
+						Attributes: types.ElementAttributes{
+							types.AttrID:       "title",
+							types.AttrCustomID: false,
+						},
+						Elements: types.InlineElements{
+							types.StringElement{
+								Content: "title",
 							},
 						},
-						"author":         "john doe",
-						"authorinitials": "jd",
-						"firstname":      "john",
-						"lastname":       "doe",
-						"revnumber":      "1.0",
 					},
+					Attributes: types.ElementAttributes{
+						types.AttrAuthors: []types.DocumentAuthor{
+							{
+								FullName: "john doe",
+								Email:    "",
+							},
+						},
+						types.AttrRevision: types.DocumentRevision{
+							Revnumber: "1.0",
+							Revdate:   "",
+							Revremark: "",
+						},
+					},
+					Elements: []interface{}{},
 				}
-				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentHeader"))
+				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Section0WithMetadata"))
 			})
 
 		})
@@ -733,44 +845,60 @@ v1.0, June 19, 2017: First incarnation
 :keywords: documentation, team, obstacles, journey, victory
 
 This journey begins on a bleary Monday morning.`
-			expectedResult := types.Document{
-				Attributes: types.DocumentAttributes{
-					types.AttrTitle: types.SectionTitle{
-						Attributes: types.ElementAttributes{
-							types.AttrID:       "the_dangerous_and_thrilling_documentation_chronicles",
-							types.AttrCustomID: false,
-						},
-						Elements: types.InlineElements{
-							types.StringElement{Content: "The Dangerous and Thrilling Documentation Chronicles"},
-						},
-					},
-					"author":           "Kismet Rainbow Chameleon",
-					"firstname":        "Kismet",
-					"middlename":       "Rainbow",
-					"lastname":         "Chameleon",
-					"authorinitials":   "KRC",
-					"email":            "kismet@asciidoctor.org",
-					"author_2":         "Lazarus het Draeke",
-					"firstname_2":      "Lazarus",
-					"lastname_2":       "het Draeke",
-					"authorinitials_2": "Lh",
-					"email_2":          "lazarus@asciidoctor.org",
-					"revnumber":        "1.0",
-					"revdate":          "June 19, 2017",
-					"revremark":        "First incarnation",
-					"keywords":         "documentation, team, obstacles, journey, victory",
-					"toc":              "",
+			title := types.SectionTitle{
+				Attributes: types.ElementAttributes{
+					types.AttrID:       "the_dangerous_and_thrilling_documentation_chronicles",
+					types.AttrCustomID: false,
 				},
-				ElementReferences:  types.ElementReferences{},
+				Elements: types.InlineElements{
+					types.StringElement{Content: "The Dangerous and Thrilling Documentation Chronicles"},
+				},
+			}
+			expectedResult := types.Document{
+				Attributes: types.DocumentAttributes{},
+				ElementReferences: types.ElementReferences{
+					"the_dangerous_and_thrilling_documentation_chronicles": title,
+				},
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
-					types.BlankLine{},
-					types.Paragraph{
-						Attributes: types.ElementAttributes{},
-						Lines: []types.InlineElements{
-							{
-								types.StringElement{Content: "This journey begins on a bleary Monday morning."},
+					types.Section{
+						Level: 0,
+						Title: title,
+						Attributes: types.ElementAttributes{
+							types.AttrAuthors: []types.DocumentAuthor{
+								{
+									FullName: "Kismet Rainbow Chameleon ",
+									Email:    "kismet@asciidoctor.org",
+								},
+								{
+									FullName: "Lazarus het_Draeke ",
+									Email:    "lazarus@asciidoctor.org",
+								},
+							},
+							types.AttrRevision: types.DocumentRevision{
+								Revnumber: "1.0",
+								Revdate:   "June 19, 2017",
+								Revremark: "First incarnation",
+							},
+						},
+						Elements: []interface{}{
+							types.DocumentAttributeDeclaration{
+								Name:  "toc",
+								Value: "",
+							},
+							types.DocumentAttributeDeclaration{
+								Name:  "keywords",
+								Value: "documentation, team, obstacles, journey, victory",
+							},
+							types.BlankLine{},
+							types.Paragraph{
+								Attributes: types.ElementAttributes{},
+								Lines: []types.InlineElements{
+									{
+										types.StringElement{Content: "This journey begins on a bleary Monday morning."},
+									},
+								},
 							},
 						},
 					},
@@ -786,54 +914,55 @@ This journey begins on a bleary Monday morning.`
 == section 1
 
 a paragraph with *bold content*`
-			expectedResult := types.Document{
-				Attributes: types.DocumentAttributes{
-					types.AttrTitle: types.SectionTitle{
-						Attributes: types.ElementAttributes{
-							types.AttrID:       "a_header",
-							types.AttrCustomID: false,
-						},
-						Elements: types.InlineElements{
-							types.StringElement{Content: "a header"},
-						},
-					},
+
+			title := types.SectionTitle{
+				Attributes: types.ElementAttributes{
+					types.AttrID:       "a_header",
+					types.AttrCustomID: false,
 				},
+				Elements: types.InlineElements{
+					types.StringElement{Content: "a header"},
+				},
+			}
+			section1Title := types.SectionTitle{
+				Attributes: types.ElementAttributes{
+					types.AttrID:       "section_1",
+					types.AttrCustomID: false,
+				},
+				Elements: types.InlineElements{
+					types.StringElement{Content: "section 1"},
+				},
+			}
+			expectedResult := types.Document{
+				Attributes: types.DocumentAttributes{},
 				ElementReferences: types.ElementReferences{
-					"section_1": types.SectionTitle{
-						Attributes: types.ElementAttributes{
-							types.AttrID:       "section_1",
-							types.AttrCustomID: false,
-						},
-						Elements: types.InlineElements{
-							types.StringElement{Content: "section 1"},
-						},
-					},
+					"a_header":  title,
+					"section_1": section1Title,
 				},
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
 					types.Section{
-						Level: 1,
-						Title: types.SectionTitle{
-							Attributes: types.ElementAttributes{
-								types.AttrID:       "section_1",
-								types.AttrCustomID: false,
-							},
-							Elements: types.InlineElements{
-								types.StringElement{Content: "section 1"},
-							},
-						},
+						Level:      0,
+						Title:      title,
+						Attributes: types.ElementAttributes{},
 						Elements: []interface{}{
-							types.BlankLine{},
-							types.Paragraph{
+							types.Section{
+								Level:      1,
+								Title:      section1Title,
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
-									{
-										types.StringElement{Content: "a paragraph with "},
-										types.QuotedText{
-											Kind: types.Bold,
-											Elements: types.InlineElements{
-												types.StringElement{Content: "bold content"},
+								Elements: []interface{}{
+									types.Paragraph{
+										Attributes: types.ElementAttributes{},
+										Lines: []types.InlineElements{
+											{
+												types.StringElement{Content: "a paragraph with "},
+												types.QuotedText{
+													Kind: types.Bold,
+													Elements: types.InlineElements{
+														types.StringElement{Content: "bold content"},
+													},
+												},
 											},
 										},
 									},

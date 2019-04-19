@@ -66,7 +66,7 @@ func (a DocumentAttributes) GetTitle() (SectionTitle, error) {
 }
 
 // AddAll adds the given attributes
-func (a DocumentAttributes) AddAll(attrs DocumentAttributes) DocumentAttributes {
+func (a DocumentAttributes) AddAll(attrs map[string]interface{}) DocumentAttributes {
 	for k, v := range attrs {
 		a.Add(k, v)
 	}

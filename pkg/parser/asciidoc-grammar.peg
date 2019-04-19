@@ -18,8 +18,15 @@ import (
 // ------------------------------------------
 // Document
 // ------------------------------------------
-Document <- frontMatter:(FrontMatter?) documentHeader:(DocumentHeader?) blocks:(DocumentBlock)* EOF {
-    return types.NewDocument(frontMatter, documentHeader, blocks.([]interface{}))
+Document <- frontMatter:(FrontMatter?) blocks:(DocumentBlocks) EOF {
+    return types.NewDocument(frontMatter, blocks.([]interface{}))
+}
+
+DocumentBlocks <- block:(Section0WithMetadata?) blocks:(DocumentBlock*) {
+    if block != nil {
+        return append([]interface{}{block}, blocks.([]interface{})...), nil
+    }
+    return blocks.([]interface{}), nil
 }
 
 DocumentBlock <- attributes:(ElementAttribute)* block:(Section / DocumentElement) {
@@ -44,12 +51,8 @@ YamlFrontMatterContent <- (Alphanums / Spaces / (!YamlFrontMatterToken  .){
 }
 
 // ------------------------------------------
-// Document Header
+// Document Metadata
 // ------------------------------------------
-// TODO: include main title | subtitle with support for custom separator
-DocumentHeader <- header:(Section0TitleWithAttributes) authors:(DocumentAuthors?) revision:(DocumentRevision?) otherAttributes:(DocumentAttributeDeclaration*){ 
-    return types.NewDocumentHeader(header, authors, revision, otherAttributes.([]interface{}))
-}
 
 DocumentAuthors <- DocumentAuthorsInlineForm / DocumentAuthorsAttributeForm
 
@@ -57,51 +60,54 @@ DocumentAuthorsInlineForm <- WS* !":" authors:(DocumentAuthor+) EOL {
     return types.NewDocumentAuthors(authors.([]interface{}))
 }
 
-DocumentAuthorsAttributeForm <- WS* ":author:" author:(DocumentAuthor) {
+DocumentAuthorsAttributeForm <- WS* ":author:" author:(DocumentAuthor) EOL {
     return []types.DocumentAuthor{author.(types.DocumentAuthor)}, nil
 }
 
-DocumentAuthor <- WS* namePart1:(DocumentAuthorNamePart) namePart2:(DocumentAuthorNamePart)? namePart3:(DocumentAuthorNamePart)? email:(DocumentAuthorEmail)? WS* ";"? WS*{
-    return types.NewDocumentAuthor(namePart1, namePart2, namePart3, email)
-} 
+DocumentAuthor <- WS* fullname:(DocumentAuthorName) email:(DocumentAuthorEmail)? WS* ";"? WS* {
+    return types.NewDocumentAuthor(fullname, email)
+}
 
 // "<" marks the beginning of the author email, and ";" is the authors separator
-DocumentAuthorNamePart <- (Alphanums / (!"<" !";" !NEWLINE !WS .){
-    return string(c.text), nil
-})+ WS* {
+DocumentAuthorName <- (Alphanums / (!"<" !";" !NEWLINE .))+ {
     return string(c.text), nil
 }
 
-DocumentAuthorEmail <- "<" email:(Alphanums / (!">" !EOL  .){
+DocumentAuthorEmail <- "<" email:((Alphanums / (!">" !EOL  .))+ {
     return string(c.text), nil
-})+ ">" {
-    return string(c.text), nil
+}) ">" {
+    return email, nil
 }
 
 // see http://asciidoctor.org/docs/user-manual/#revision-number-date-and-remark
 // Eg: "v1.0, October 2, 2013: First incarnation"
-DocumentRevision <- WS* !":" revnumber:(DocumentRevisionNumber)? ","? revdate:(DocumentRevisionDate)? ":"? revremark:(DocumentRevisionRemark)? EOL {
-    return types.NewDocumentRevision(revnumber, revdate, revremark)
+DocumentRevision <- WS* !":" revision:(
+        (revnumber:(DocumentRevisionNumber) ","? revdate:(DocumentRevisionDate)? ":"? revremark:(DocumentRevisionRemark)? {
+            return types.NewDocumentRevision(revnumber, revdate, revremark)
+        }) / (revdate:(DocumentRevisionDate) ":"? revremark:(DocumentRevisionRemark)? {
+            return types.NewDocumentRevision(nil, revdate, revremark)
+        })) EOL {
+    return revision, nil
 }
 
 // DocumentRevisionNumber MUST start with a `v` or MAY start with a `v` but MUST end with a `,`
 DocumentRevisionNumber <- "v"i DIGIT  (Alphanums / Spaces / (!EOL !"," !":"  .){
     return string(c.text), nil
-})* {
+})+ {
     return string(c.text), nil
-} / "v"i? DIGIT  (Alphanums / Spaces / (!EOL !"," !":"  .))* WS* &"," {
+} / "v"i? DIGIT  (Alphanums / Spaces / (!EOL !"," !":"  .))+ WS* &"," {
     return string(c.text), nil
 }
 
 DocumentRevisionDate <- (Alphanums / Spaces / (!EOL !":"  .){
     return string(c.text), nil
-})* {
+})+ {
     return string(c.text), nil
 }
 
 DocumentRevisionRemark <- (Alphanums / Spaces / (!EOL  .){
     return string(c.text), nil
-})* {
+})+ {
     return string(c.text), nil
 }
 
@@ -337,29 +343,41 @@ Section4_5 <- &"=" // just skip if the content does not start with at least one 
 
 SectionTitlePrefix <- ("=")+ WS*
 
-Section0 <- header:(Section0Title) elements:(Section0Element*) {
+Section0TitlePrefix <- "=" WS+
+
+Section0WithMetadata <- title:(Section0Title) 
+        authors:(DocumentAuthors?) 
+        revision:(DocumentRevision?) 
+        BlankLine* 
+        elements:(Section0Element*) {
+    return types.NewSection0WithMetadata(title.(types.SectionTitle), authors, revision, elements.([]interface{}))
+}
+
+Section0 <- header:(Section0Title) 
+        BlankLine*
+        elements:(Section0Element*) {
     return types.NewSection(0, header.(types.SectionTitle), elements.([]interface{}))
 }
 
-Section0TitlePrefix <- "=" WS+
-
-Section0Title <- Section0TitlePrefix elements:(TitleElements) id:(InlineElementID*) EOL { 
+Section0Title <- Section0TitlePrefix elements:(TitleElements) id:(InlineElementID*) EOL {
     return types.NewSectionTitle(elements.(types.InlineElements), id.([]interface{})) 
 }
 
-Section0TitleWithAttributes <- attributes:(ElementAttribute)* 
-    title:(Section0Title) {
-        return types.WithAttributes(title, attributes.([]interface{}))
+
+// Section0TitleWithAttributes <- attributes:(ElementAttribute)* 
+//         title:(Section0Title) {
+//     return types.WithAttributes(title, attributes.([]interface{}))
+// }
+
+Section0Element <- !Section0TitlePrefix 
+        attributes:(ElementAttribute)* 
+        element:(Section1_5 / DocumentElement) {
+    return types.WithAttributes(element, attributes.([]interface{}))
 }
 
-Section0Element <- !Section0TitlePrefix
-    attributes:(ElementAttribute)* 
-    element:(Section1_5 / DocumentElement) {
-        return types.WithAttributes(element, attributes.([]interface{}))
-}
-    
-
-Section1 <- header:(Section1Title) elements:(Section1Element*) {
+Section1 <- header:(Section1Title) 
+        BlankLine*
+        elements:(Section1Element*) {
     return types.NewSection(1, header.(types.SectionTitle), elements.([]interface{}))
 }
 
@@ -370,12 +388,14 @@ Section1Title <- Section1TitlePrefix elements:(TitleElements) id:(InlineElementI
 }
 
 Section1Element <- !Section1TitlePrefix 
-    attributes:(ElementAttribute)* 
-    element:(Section2_5 / DocumentElement) {
-        return types.WithAttributes(element, attributes.([]interface{}))
+        attributes:(ElementAttribute)* 
+        element:(Section2_5 / DocumentElement) {
+    return types.WithAttributes(element, attributes.([]interface{}))
 }
 
-Section2 <- header:(Section2Title) elements:(Section2Element*) {
+Section2 <- header:(Section2Title) 
+        BlankLine*
+        elements:(Section2Element*) {
     return types.NewSection(2, header.(types.SectionTitle), elements.([]interface{}))
 }
 
@@ -391,7 +411,9 @@ Section2Element <- !Section1TitlePrefix !Section2TitlePrefix
         return types.WithAttributes(element, attributes.([]interface{}))
 }
 
-Section3 <- header:(Section3Title) elements:(Section3Element*) {
+Section3 <- header:(Section3Title) 
+        BlankLine*
+        elements:(Section3Element*) {
     return types.NewSection(3, header.(types.SectionTitle), elements.([]interface{}))
 }
 
@@ -407,7 +429,9 @@ Section3Element <- !Section1TitlePrefix !Section2TitlePrefix !Section3TitlePrefi
         return types.WithAttributes(element, attributes.([]interface{}))
 }
 
-Section4 <- header:(Section4Title) elements:(Section4Element*) {
+Section4 <- header:(Section4Title) 
+        BlankLine*
+        elements:(Section4Element*) {
     return types.NewSection(4, header.(types.SectionTitle), elements.([]interface{}))
 }
 
@@ -423,7 +447,9 @@ Section4Element <- !Section1TitlePrefix !Section2TitlePrefix !Section3TitlePrefi
         return types.WithAttributes(element, attributes.([]interface{}))
 }
 
-Section5 <- header:(Section5Title) elements:(Section5Element*) {
+Section5 <- header:(Section5Title) 
+        BlankLine*
+        elements:(Section5Element*) {
     return types.NewSection(5, header.(types.SectionTitle), elements.([]interface{}))
 }
 

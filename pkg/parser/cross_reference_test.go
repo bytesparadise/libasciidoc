@@ -46,8 +46,8 @@ with some content linked to <<thetitle>>!`
 								},
 							},
 						},
+						Attributes: types.ElementAttributes{},
 						Elements: []interface{}{
-							types.BlankLine{},
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
@@ -108,8 +108,8 @@ with some content linked to <<thetitle,a label to the title>>!`
 								},
 							},
 						},
+						Attributes: types.ElementAttributes{},
 						Elements: []interface{}{
-							types.BlankLine{},
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{

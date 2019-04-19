@@ -1,7 +1,6 @@
 package types
 
 import (
-	"fmt"
 	"path/filepath"
 	"sort"
 	"strconv"
@@ -56,7 +55,7 @@ type Document struct {
 }
 
 // NewDocument initializes a new `Document` from the given lines
-func NewDocument(frontmatter, header interface{}, elements []interface{}) (Document, error) {
+func NewDocument(frontmatter interface{}, elements []interface{}) (Document, error) {
 	log.Debugf("initializing a new Document with %d block element(s)", len(elements))
 	attributes := DocumentAttributes{}
 	if frontmatter != nil {
@@ -64,9 +63,13 @@ func NewDocument(frontmatter, header interface{}, elements []interface{}) (Docum
 			attributes[attrName] = attrValue
 		}
 	}
-	if header, ok := header.(DocumentHeader); ok {
-		attributes.AddAll(header.Attributes)
-	}
+	// if len(elements) > 0 {
+	// 	if header, ok := elements[0].(Section); ok && header.Level == 0 {
+	// 		attributes[AttrTitle] = header.Title
+	// 		// also copy all attributes of the header into the document attributes
+	// 		attributes.AddAll(header.Attributes)
+	// 	}
+	// }
 	//TODO: those collectors could be called at the beginning of rendering, and in concurrent routines
 	// visit AST and collect element references
 	xrefsCollector := NewElementReferencesCollector()
@@ -102,68 +105,17 @@ func NewDocument(frontmatter, header interface{}, elements []interface{}) (Docum
 }
 
 // ------------------------------------------
-// Document Header
-// ------------------------------------------
-
-// DocumentHeader the document header
-type DocumentHeader struct {
-	Attributes DocumentAttributes
-}
-
-// NewDocumentHeader initializes a new DocumentHeader
-func NewDocumentHeader(header, authors, revision interface{}, otherAttributes []interface{}) (DocumentHeader, error) {
-	attrs := DocumentAttributes{}
-	if header != nil {
-		attrs[AttrTitle] = header.(SectionTitle)
-	}
-	log.Debugf("initializing a new DocumentHeader with content '%v', authors '%+v' and revision '%+v'", attrs, authors, revision)
-	if authors != nil {
-		for i, author := range authors.([]DocumentAuthor) {
-			if i == 0 {
-				attrs.AddNonEmpty("firstname", author.FirstName)
-				attrs.AddNonEmpty("middlename", author.MiddleName)
-				attrs.AddNonEmpty("lastname", author.LastName)
-				attrs.AddNonEmpty("author", author.FullName)
-				attrs.AddNonEmpty("authorinitials", author.Initials)
-				attrs.AddNonEmpty("email", author.Email)
-			} else {
-				attrs.AddNonEmpty(fmt.Sprintf("firstname_%d", i+1), author.FirstName)
-				attrs.AddNonEmpty(fmt.Sprintf("middlename_%d", i+1), author.MiddleName)
-				attrs.AddNonEmpty(fmt.Sprintf("lastname_%d", i+1), author.LastName)
-				attrs.AddNonEmpty(fmt.Sprintf("author_%d", i+1), author.FullName)
-				attrs.AddNonEmpty(fmt.Sprintf("authorinitials_%d", i+1), author.Initials)
-				attrs.AddNonEmpty(fmt.Sprintf("email_%d", i+1), author.Email)
-			}
-		}
-	}
-	if revision != nil {
-		rev := revision.(DocumentRevision)
-		attrs.AddNonEmpty("revnumber", rev.Revnumber)
-		attrs.AddNonEmpty("revdate", rev.Revdate)
-		attrs.AddNonEmpty("revremark", rev.Revremark)
-	}
-	for _, attr := range otherAttributes {
-		if attr, ok := attr.(DocumentAttributeDeclaration); ok {
-			attrs.AddDeclaration(attr)
-		}
-	}
-	return DocumentHeader{
-		Attributes: attrs,
-	}, nil
-}
-
-// ------------------------------------------
 // Document Author
 // ------------------------------------------
 
 // DocumentAuthor a document author
 type DocumentAuthor struct {
-	FullName   string
-	Initials   string
-	FirstName  string
-	MiddleName string
-	LastName   string
-	Email      string
+	FullName string
+	// Initials   string
+	// FirstName  string
+	// MiddleName string
+	// LastName   string
+	Email string
 }
 
 // NewDocumentAuthors converts the given authors into an array of `DocumentAuthor`
@@ -181,70 +133,82 @@ func NewDocumentAuthors(authors []interface{}) ([]DocumentAuthor, error) {
 	return result, nil
 }
 
-//NewDocumentAuthor initializes a new DocumentAuthor
-func NewDocumentAuthor(namePart1, namePart2, namePart3, emailAddress interface{}) (DocumentAuthor, error) {
-	var part1, part2, part3, email string
-	if namePart1, ok := namePart1.(string); ok {
-		part1 = apply(namePart1,
-			func(s string) string {
-				return strings.TrimSpace(s)
-			},
-			func(s string) string {
-				return strings.Replace(s, "_", " ", -1)
-			},
-		)
+// NewDocumentAuthor initializes a new DocumentAuthor
+func NewDocumentAuthor(fullName, email interface{}) (DocumentAuthor, error) {
+	author := DocumentAuthor{}
+	if fullName, ok := fullName.(string); ok {
+		author.FullName = fullName
 	}
-	if namePart2, ok := namePart2.(string); ok {
-		part2 = apply(namePart2,
-			func(s string) string {
-				return strings.TrimSpace(s)
-			},
-			func(s string) string {
-				return strings.Replace(s, "_", " ", -1)
-			},
-		)
+	if email, ok := email.(string); ok {
+		author.Email = email
 	}
-	if namePart3, ok := namePart3.(string); ok {
-		part3 = apply(namePart3,
-			func(s string) string {
-				return strings.TrimSpace(s)
-			},
-			func(s string) string {
-				return strings.Replace(s, "_", " ", -1)
-			},
-		)
-	}
-	if emailAddress, ok := emailAddress.(string); ok {
-		email = apply(emailAddress,
-			func(s string) string {
-				return strings.TrimPrefix(s, "<")
-			}, func(s string) string {
-				return strings.TrimSuffix(s, ">")
-			}, func(s string) string {
-				return strings.TrimSpace(s)
-			})
-	}
-	result := DocumentAuthor{}
-	if part2 != "" && part3 != "" {
-		result.FirstName = part1
-		result.MiddleName = part2
-		result.LastName = part3
-		result.FullName = fmt.Sprintf("%s %s %s", part1, part2, part3)
-		result.Initials = initials(result.FirstName, result.MiddleName, result.LastName)
-	} else if part2 != "" {
-		result.FirstName = part1
-		result.LastName = part2
-		result.FullName = fmt.Sprintf("%s %s", part1, part2)
-		result.Initials = initials(result.FirstName, result.LastName)
-	} else {
-		result.FirstName = part1
-		result.FullName = part1
-		result.Initials = initials(result.FirstName)
-	}
-	result.Email = email
-	// log.Debugf("initialized a new document author: `%v`", result.String())
-	return result, nil
+	return author, nil
 }
+
+// //NewDocumentAuthor initializes a new DocumentAuthor
+// func NewDocumentAuthor(namePart1, namePart2, namePart3, emailAddress interface{}) (DocumentAuthor, error) {
+// 	var part1, part2, part3, email string
+// 	if namePart1, ok := namePart1.(string); ok {
+// 		part1 = apply(namePart1,
+// 			func(s string) string {
+// 				return strings.TrimSpace(s)
+// 			},
+// 			func(s string) string {
+// 				return strings.Replace(s, "_", " ", -1)
+// 			},
+// 		)
+// 	}
+// 	if namePart2, ok := namePart2.(string); ok {
+// 		part2 = apply(namePart2,
+// 			func(s string) string {
+// 				return strings.TrimSpace(s)
+// 			},
+// 			func(s string) string {
+// 				return strings.Replace(s, "_", " ", -1)
+// 			},
+// 		)
+// 	}
+// 	if namePart3, ok := namePart3.(string); ok {
+// 		part3 = apply(namePart3,
+// 			func(s string) string {
+// 				return strings.TrimSpace(s)
+// 			},
+// 			func(s string) string {
+// 				return strings.Replace(s, "_", " ", -1)
+// 			},
+// 		)
+// 	}
+// 	if emailAddress, ok := emailAddress.(string); ok {
+// 		email = apply(emailAddress,
+// 			func(s string) string {
+// 				return strings.TrimPrefix(s, "<")
+// 			}, func(s string) string {
+// 				return strings.TrimSuffix(s, ">")
+// 			}, func(s string) string {
+// 				return strings.TrimSpace(s)
+// 			})
+// 	}
+// 	result := DocumentAuthor{}
+// 	if part2 != "" && part3 != "" {
+// 		result.FirstName = part1
+// 		result.MiddleName = part2
+// 		result.LastName = part3
+// 		result.FullName = fmt.Sprintf("%s %s %s", part1, part2, part3)
+// 		result.Initials = initials(result.FirstName, result.MiddleName, result.LastName)
+// 	} else if part2 != "" {
+// 		result.FirstName = part1
+// 		result.LastName = part2
+// 		result.FullName = fmt.Sprintf("%s %s", part1, part2)
+// 		result.Initials = initials(result.FirstName, result.LastName)
+// 	} else {
+// 		result.FirstName = part1
+// 		result.FullName = part1
+// 		result.Initials = initials(result.FirstName)
+// 	}
+// 	result.Email = email
+// 	// log.Debugf("initialized a new document author: `%v`", result.String())
+// 	return result, nil
+// }
 
 func initials(firstPart string, otherParts ...string) string {
 	result := firstPart[0:1]
@@ -449,19 +413,66 @@ func NewYamlFrontMatter(content string) (FrontMatter, error) {
 
 // Section the structure for a section
 type Section struct {
-	Level    int
-	Title    SectionTitle
-	Elements []interface{}
+	Level      int
+	Title      SectionTitle
+	Attributes ElementAttributes
+	Elements   []interface{}
 }
 
 // NewSection initializes a new `Section` from the given section title and elements
-func NewSection(level int, sectionTitle SectionTitle, blocks []interface{}) (Section, error) {
-	log.Debugf("initialized a new Section level %d with %d block(s)", level, len(blocks))
+func NewSection(level int, title SectionTitle, elements []interface{}) (Section, error) {
+	log.Debugf("initialized a new Section level %d with %d block(s)", level, len(elements))
 	return Section{
-		Level:    level,
-		Title:    sectionTitle,
-		Elements: NilSafe(blocks),
+		Level:      level,
+		Title:      title,
+		Attributes: ElementAttributes{},
+		Elements:   NilSafe(elements),
 	}, nil
+}
+
+// NewSection0WithMetadata initializes a new Section with level 0 which can have authors and a revision, among other attributes
+func NewSection0WithMetadata(title SectionTitle, authors interface{}, revision interface{}, elements []interface{}) (Section, error) {
+	log.Debugf("initializing a new Section0 with authors '%v' and revision '%v'", authors, revision)
+	section := Section{
+		Level:      0,
+		Title:      title,
+		Attributes: ElementAttributes{},
+		Elements:   NilSafe(elements),
+	}
+	if _, ok := authors.([]DocumentAuthor); ok {
+		section.Attributes[AttrAuthors] = authors
+		// for i, author := range authors {
+		// 	if i == 0 {
+		// 		section.Attributes.AddNonEmpty("firstname", author.FirstName)
+		// 		section.Attributes.AddNonEmpty("middlename", author.MiddleName)
+		// 		section.Attributes.AddNonEmpty("lastname", author.LastName)
+		// 		section.Attributes.AddNonEmpty("author", author.FullName)
+		// 		section.Attributes.AddNonEmpty("authorinitials", author.Initials)
+		// 		section.Attributes.AddNonEmpty("email", author.Email)
+		// 	} else {
+		// 		section.Attributes.AddNonEmpty(fmt.Sprintf("firstname_%d", i+1), author.FirstName)
+		// 		section.Attributes.AddNonEmpty(fmt.Sprintf("middlename_%d", i+1), author.MiddleName)
+		// 		section.Attributes.AddNonEmpty(fmt.Sprintf("lastname_%d", i+1), author.LastName)
+		// 		section.Attributes.AddNonEmpty(fmt.Sprintf("author_%d", i+1), author.FullName)
+		// 		section.Attributes.AddNonEmpty(fmt.Sprintf("authorinitials_%d", i+1), author.Initials)
+		// 		section.Attributes.AddNonEmpty(fmt.Sprintf("email_%d", i+1), author.Email)
+		// 	}
+		// }
+	}
+	if _, ok := revision.(DocumentRevision); ok {
+		section.Attributes[AttrRevision] = revision
+		// rev := revision.(DocumentRevision)
+		// section.Attributes.AddNonEmpty("revnumber", rev.Revnumber)
+		// section.Attributes.AddNonEmpty("revdate", rev.Revdate)
+		// section.Attributes.AddNonEmpty("revremark", rev.Revremark)
+
+	}
+	// for _, attr := range otherAttributes {
+	// 	if attr, ok := attr.(DocumentAttributeDeclaration); ok {
+	// 		section.Attributes[attr.Name] = attr.Value
+	// 	}
+	// }
+	return section, nil
 }
 
 // AddAttributes adds all given attributes to the current set of attribute of the element

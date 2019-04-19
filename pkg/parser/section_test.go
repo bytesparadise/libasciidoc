@@ -21,13 +21,20 @@ var _ = Describe("sections", func() {
 				},
 			}
 			expectedResult := types.Document{
-				Attributes: types.DocumentAttributes{
-					types.AttrTitle: doctitle,
+				Attributes: types.DocumentAttributes{},
+				ElementReferences: types.ElementReferences{
+					"a_header": doctitle,
 				},
-				ElementReferences:  types.ElementReferences{},
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
-				Elements:           []interface{}{},
+				Elements: []interface{}{
+					types.Section{
+						Level:      0,
+						Title:      doctitle,
+						Attributes: types.ElementAttributes{},
+						Elements:   []interface{}{},
+					},
+				},
 			}
 			verify(GinkgoT(), expectedResult, actualContent)
 		})
@@ -44,13 +51,20 @@ var _ = Describe("sections", func() {
 				},
 			}
 			expectedResult := types.Document{
-				Attributes: types.DocumentAttributes{
-					types.AttrTitle: doctitle,
+				Attributes: types.DocumentAttributes{},
+				ElementReferences: types.ElementReferences{
+					"a_header": doctitle,
 				},
-				ElementReferences:  types.ElementReferences{},
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
-				Elements:           []interface{}{},
+				Elements: []interface{}{
+					types.Section{
+						Level:      0,
+						Title:      doctitle,
+						Attributes: types.ElementAttributes{},
+						Elements:   []interface{}{},
+					},
+				},
 			}
 			verify(GinkgoT(), expectedResult, actualContent)
 		})
@@ -70,20 +84,76 @@ and a paragraph`
 				},
 			}
 			expectedResult := types.Document{
-				Attributes: types.DocumentAttributes{
-					types.AttrTitle: doctitle,
+				Attributes: types.DocumentAttributes{},
+				ElementReferences: types.ElementReferences{
+					"a_header": doctitle,
 				},
-				ElementReferences:  types.ElementReferences{},
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
-					types.Paragraph{
+					types.Section{
+						Level:      0,
+						Title:      doctitle,
 						Attributes: types.ElementAttributes{},
-						Lines: []types.InlineElements{
-							{
-								types.StringElement{Content: "and a paragraph"},
+						Elements: []interface{}{
+							types.Paragraph{
+								Attributes: types.ElementAttributes{},
+								Lines: []types.InlineElements{
+									{
+										types.StringElement{Content: "and a paragraph"},
+									},
+								},
 							},
 						},
+					},
+				},
+			}
+			verify(GinkgoT(), expectedResult, actualContent)
+		})
+
+		It("two sections with level 0", func() {
+			actualContent := `= a first header
+
+= a second header`
+			doctitle := types.SectionTitle{
+				Attributes: types.ElementAttributes{
+					types.AttrID:       "a_first_header",
+					types.AttrCustomID: false,
+				},
+				Elements: types.InlineElements{
+					types.StringElement{Content: "a first header"},
+				},
+			}
+			otherDoctitle := types.SectionTitle{
+				Attributes: types.ElementAttributes{
+					types.AttrID:       "a_second_header",
+					types.AttrCustomID: false,
+				},
+				Elements: types.InlineElements{
+					types.StringElement{Content: "a second header"},
+				},
+			}
+
+			expectedResult := types.Document{
+				Attributes: types.DocumentAttributes{},
+				ElementReferences: types.ElementReferences{
+					"a_first_header":  doctitle,
+					"a_second_header": otherDoctitle,
+				},
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
+				Elements: []interface{}{
+					types.Section{
+						Level:      0,
+						Title:      doctitle,
+						Attributes: types.ElementAttributes{},
+						Elements:   []interface{}{},
+					},
+					types.Section{
+						Level:      0,
+						Title:      otherDoctitle,
+						Attributes: types.ElementAttributes{},
+						Elements:   []interface{}{},
 					},
 				},
 			}
@@ -110,9 +180,10 @@ and a paragraph`
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
 					types.Section{
-						Level:    1,
-						Title:    section1Title,
-						Elements: []interface{}{},
+						Level:      1,
+						Title:      section1Title,
+						Attributes: types.ElementAttributes{},
+						Elements:   []interface{}{},
 					},
 				},
 			}
@@ -144,9 +215,10 @@ and a paragraph`
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
 					types.Section{
-						Level:    1,
-						Title:    sectionTitle,
-						Elements: []interface{}{},
+						Level:      1,
+						Title:      sectionTitle,
+						Attributes: types.ElementAttributes{},
+						Elements:   []interface{}{},
 					},
 				},
 			}
@@ -176,19 +248,26 @@ and a paragraph`
 				},
 			}
 			expectedResult := types.Document{
-				Attributes: types.DocumentAttributes{
-					types.AttrTitle: doctitle,
-				},
+				Attributes: types.DocumentAttributes{},
 				ElementReferences: types.ElementReferences{
+					"a_header":  doctitle,
 					"section_1": section1Title,
 				},
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
 					types.Section{
-						Level:    1,
-						Title:    section1Title,
-						Elements: []interface{}{},
+						Level:      0,
+						Title:      doctitle,
+						Attributes: types.ElementAttributes{},
+						Elements: []interface{}{
+							types.Section{
+								Level:      1,
+								Title:      section1Title,
+								Attributes: types.ElementAttributes{},
+								Elements:   []interface{}{},
+							},
+						},
 					},
 				},
 			}
@@ -196,9 +275,9 @@ and a paragraph`
 		})
 
 		It("section level 0 with nested section level 2", func() {
-			actualContent := "= a header\n" +
-				"\n" +
-				"=== section 2"
+			actualContent := `= a header
+
+=== section 2`
 			doctitle := types.SectionTitle{
 				Attributes: types.ElementAttributes{
 					types.AttrID:       "a_header",
@@ -218,19 +297,26 @@ and a paragraph`
 				},
 			}
 			expectedResult := types.Document{
-				Attributes: types.DocumentAttributes{
-					types.AttrTitle: doctitle,
-				},
+				Attributes: types.DocumentAttributes{},
 				ElementReferences: types.ElementReferences{
+					"a_header":  doctitle,
 					"section_2": section2Title,
 				},
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
 					types.Section{
-						Level:    2,
-						Title:    section2Title,
-						Elements: []interface{}{},
+						Level:      0,
+						Title:      doctitle,
+						Attributes: types.ElementAttributes{},
+						Elements: []interface{}{
+							types.Section{
+								Level:      2,
+								Title:      section2Title,
+								Attributes: types.ElementAttributes{},
+								Elements:   []interface{}{},
+							},
+						},
 					},
 				},
 			}
@@ -258,8 +344,9 @@ and a paragraph`
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
 					types.Section{
-						Level: 1,
-						Title: section1Title,
+						Level:      1,
+						Title:      section1Title,
+						Attributes: types.ElementAttributes{},
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
@@ -298,10 +385,10 @@ and a paragraph`
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
 					types.Section{
-						Level: 1,
-						Title: section1Title,
+						Level:      1,
+						Title:      section1Title,
+						Attributes: types.ElementAttributes{},
 						Elements: []interface{}{
-							types.BlankLine{},
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
@@ -337,10 +424,10 @@ and a paragraph`
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
 					types.Section{
-						Level: 1,
-						Title: section1Title,
+						Level:      1,
+						Title:      section1Title,
+						Attributes: types.ElementAttributes{},
 						Elements: []interface{}{
-							types.BlankLine{},
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
@@ -404,10 +491,9 @@ a paragraph`
 				},
 			}
 			expectedResult := types.Document{
-				Attributes: types.DocumentAttributes{
-					types.AttrTitle: doctitle,
-				},
+				Attributes: types.DocumentAttributes{},
 				ElementReferences: types.ElementReferences{
+					"a_header":    doctitle,
 					"section_a":   sectionATitle,
 					"section_a_a": sectionAaTitle,
 					"section_b":   sectionBTitle,
@@ -416,21 +502,14 @@ a paragraph`
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
 					types.Section{
-						Level: 1,
-						Title: sectionATitle,
+						Level:      0,
+						Title:      doctitle,
+						Attributes: types.ElementAttributes{},
 						Elements: []interface{}{
-							types.Paragraph{
-								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
-									{
-										types.StringElement{Content: "a paragraph"},
-									},
-								},
-							},
-							types.BlankLine{},
 							types.Section{
-								Level: 2,
-								Title: sectionAaTitle,
+								Level:      1,
+								Title:      sectionATitle,
+								Attributes: types.ElementAttributes{},
 								Elements: []interface{}{
 									types.Paragraph{
 										Attributes: types.ElementAttributes{},
@@ -441,19 +520,36 @@ a paragraph`
 										},
 									},
 									types.BlankLine{},
+									types.Section{
+										Level:      2,
+										Title:      sectionAaTitle,
+										Attributes: types.ElementAttributes{},
+										Elements: []interface{}{
+											types.Paragraph{
+												Attributes: types.ElementAttributes{},
+												Lines: []types.InlineElements{
+													{
+														types.StringElement{Content: "a paragraph"},
+													},
+												},
+											},
+											types.BlankLine{},
+										},
+									},
 								},
 							},
-						},
-					},
-					types.Section{
-						Level: 1,
-						Title: sectionBTitle,
-						Elements: []interface{}{
-							types.Paragraph{
+							types.Section{
+								Level:      1,
+								Title:      sectionBTitle,
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
-									{
-										types.StringElement{Content: "a paragraph"},
+								Elements: []interface{}{
+									types.Paragraph{
+										Attributes: types.ElementAttributes{},
+										Lines: []types.InlineElements{
+											{
+												types.StringElement{Content: "a paragraph"},
+											},
+										},
 									},
 								},
 							},
@@ -485,9 +581,10 @@ a paragraph`
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
 					types.Section{
-						Level:    1,
-						Title:    sectionTitle,
-						Elements: []interface{}{},
+						Level:      1,
+						Title:      sectionTitle,
+						Attributes: types.ElementAttributes{},
+						Elements:   []interface{}{},
 					},
 				},
 			}
@@ -531,32 +628,38 @@ a paragraph`
 				},
 			}
 			expectedResult := types.Document{
-				Attributes: types.DocumentAttributes{
-					types.AttrTitle: doctitle,
-				},
+				Attributes: types.DocumentAttributes{},
 				ElementReferences: types.ElementReferences{
-					"foo": fooTitle,
-					"bar": barTitle,
+					"custom_header": doctitle,
+					"foo":           fooTitle,
+					"bar":           barTitle,
 				},
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
 					types.Section{
-						Level: 1,
-						Title: fooTitle,
+						Level:      0,
+						Title:      doctitle,
+						Attributes: types.ElementAttributes{},
 						Elements: []interface{}{
-							types.BlankLine{},
-						},
-					},
-					types.Section{
-						Level: 1,
-						Title: barTitle,
-						Elements: []interface{}{
-							types.Paragraph{
+							types.Section{
+								Level:      1,
+								Title:      fooTitle,
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
-									{
-										types.StringElement{Content: "a paragraph"},
+								Elements:   []interface{}{},
+							},
+							types.Section{
+								Level:      1,
+								Title:      barTitle,
+								Attributes: types.ElementAttributes{},
+								Elements: []interface{}{
+									types.Paragraph{
+										Attributes: types.ElementAttributes{},
+										Lines: []types.InlineElements{
+											{
+												types.StringElement{Content: "a paragraph"},
+											},
+										},
 									},
 								},
 							},
@@ -600,16 +703,16 @@ a paragraph`
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
 					types.Section{
-						Level: 1,
-						Title: section1aTitle,
-						Elements: []interface{}{
-							types.BlankLine{},
-						},
+						Level:      1,
+						Title:      section1aTitle,
+						Attributes: types.ElementAttributes{},
+						Elements:   []interface{}{},
 					},
 					types.Section{
-						Level:    1,
-						Title:    section1bTitle,
-						Elements: []interface{}{},
+						Level:      1,
+						Title:      section1bTitle,
+						Attributes: types.ElementAttributes{},
+						Elements:   []interface{}{},
 					},
 				},
 			}
@@ -664,29 +767,36 @@ a paragraph`
 			actualContent := `= a header
 
  == section with prefix space`
-			expectedResult := types.Document{
-				Attributes: types.DocumentAttributes{
-					types.AttrTitle: types.SectionTitle{
-						Attributes: types.ElementAttributes{
-							types.AttrID:       "a_header",
-							types.AttrCustomID: false,
-						},
-						Elements: types.InlineElements{
-							types.StringElement{Content: "a header"},
-						},
-					},
+			title := types.SectionTitle{
+				Attributes: types.ElementAttributes{
+					types.AttrID:       "a_header",
+					types.AttrCustomID: false,
 				},
-				ElementReferences:  types.ElementReferences{},
-				Footnotes:          types.Footnotes{},
+				Elements: types.InlineElements{
+					types.StringElement{Content: "a header"},
+				},
+			}
+			expectedResult := types.Document{
+				Attributes: types.DocumentAttributes{},
+				ElementReferences: types.ElementReferences{
+					"a_header": title,
+				}, Footnotes: types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
-					types.LiteralBlock{
-						Attributes: types.ElementAttributes{
-							types.AttrKind:             types.Literal,
-							types.AttrLiteralBlockType: types.LiteralBlockWithSpacesOnFirstLine,
-						},
-						Lines: []string{
-							" == section with prefix space",
+					types.Section{
+						Level:      0,
+						Title:      title,
+						Attributes: types.ElementAttributes{},
+						Elements: []interface{}{
+							types.LiteralBlock{
+								Attributes: types.ElementAttributes{
+									types.AttrKind:             types.Literal,
+									types.AttrLiteralBlockType: types.LiteralBlockWithSpacesOnFirstLine,
+								},
+								Lines: []string{
+									" == section with prefix space",
+								},
+							},
 						},
 					},
 				},

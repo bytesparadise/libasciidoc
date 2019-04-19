@@ -15,5 +15,7 @@ func Prerender(ctx *Context) error {
 	}
 	IncludePreamble(ctx)
 	IncludeTableOfContents(ctx)
+	// TODO: IncludeAuthors: process author names as document atributes, based on the `Section0.Attributes[AttrAuthors]` (eg: 'firstname', firstname_2' etc.)
+	// TODO: IncludeRevision: same logic with `Section0.Attributes[AttrRevision]`
 	return nil
 }

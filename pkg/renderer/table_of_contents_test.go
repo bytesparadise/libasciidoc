@@ -47,7 +47,8 @@ var _ = Describe("table of contents", func() {
 				types.StringElement{Content: "section 1"},
 			},
 		},
-		Elements: []interface{}{},
+		Attributes: types.ElementAttributes{},
+		Elements:   []interface{}{},
 	}
 
 	It("table of contents with default placement", func() {

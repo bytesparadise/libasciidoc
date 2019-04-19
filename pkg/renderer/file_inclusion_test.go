@@ -72,6 +72,7 @@ var _ = Describe("file inclusions", func() {
 								},
 							},
 						},
+						Attributes: types.ElementAttributes{},
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
@@ -156,6 +157,7 @@ var _ = Describe("file inclusions", func() {
 								},
 							},
 						},
+						Attributes: types.ElementAttributes{},
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
@@ -201,6 +203,7 @@ var _ = Describe("file inclusions", func() {
 								},
 							},
 						},
+						Attributes: types.ElementAttributes{},
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
@@ -248,6 +251,7 @@ var _ = Describe("file inclusions", func() {
 								},
 							},
 						},
+						Attributes: types.ElementAttributes{},
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
@@ -270,6 +274,7 @@ var _ = Describe("file inclusions", func() {
 										},
 									},
 								},
+								Attributes: types.ElementAttributes{},
 								Elements: []interface{}{
 									types.Paragraph{
 										Attributes: types.ElementAttributes{},
@@ -949,9 +954,10 @@ var _ = Describe("sections level offset", func() {
 							},
 						},
 						types.Section{
-							Level:    2,
-							Title:    section2Title,
-							Elements: []interface{}{},
+							Level:      2,
+							Title:      section2Title,
+							Attributes: types.ElementAttributes{},
+							Elements:   []interface{}{},
 						},
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
@@ -992,9 +998,10 @@ var _ = Describe("sections level offset", func() {
 							},
 						},
 						types.Section{
-							Level:    3,
-							Title:    section2Title,
-							Elements: []interface{}{},
+							Level:      3,
+							Title:      section2Title,
+							Attributes: types.ElementAttributes{},
+							Elements:   []interface{}{},
 						},
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
@@ -1015,17 +1022,6 @@ var _ = Describe("sections level offset", func() {
 	})
 
 	It("should apply level offset with section 0", func() {
-		docTitle := types.SectionTitle{
-			Attributes: types.ElementAttributes{
-				types.AttrID:       "title",
-				types.AttrCustomID: false,
-			},
-			Elements: types.InlineElements{
-				types.StringElement{
-					Content: "title",
-				},
-			},
-		}
 		section1Title := types.SectionTitle{
 			Attributes: types.ElementAttributes{
 				types.AttrID:       "section_1",
@@ -1039,10 +1035,7 @@ var _ = Describe("sections level offset", func() {
 		}
 
 		actualContent := types.Document{
-			Attributes: types.DocumentAttributes{
-				types.AttrTitle: docTitle,
-				"idprefix":      "id_",
-			},
+			Attributes: types.DocumentAttributes{},
 			ElementReferences: types.ElementReferences{
 				"section_1": section1Title,
 			},
@@ -1050,18 +1043,16 @@ var _ = Describe("sections level offset", func() {
 			FootnoteReferences: types.FootnoteReferences{},
 			Elements: []interface{}{
 				types.Section{
-					Level:    1,
-					Title:    section1Title,
-					Elements: []interface{}{},
+					Level:      1,
+					Title:      section1Title,
+					Attributes: types.ElementAttributes{},
+					Elements:   []interface{}{},
 				},
 			},
 		}
 
 		expectedResult := types.Document{
-			Attributes: types.DocumentAttributes{
-				types.AttrTitle: docTitle,
-				"idprefix":      "id_",
-			},
+			Attributes: types.DocumentAttributes{},
 			ElementReferences: types.ElementReferences{
 				"section_1": section1Title,
 			},
@@ -1069,15 +1060,10 @@ var _ = Describe("sections level offset", func() {
 			FootnoteReferences: types.FootnoteReferences{},
 			Elements: []interface{}{
 				types.Section{
-					Level: 1,
-					Title: docTitle,
-					Elements: []interface{}{
-						types.Section{
-							Level:    2,
-							Title:    section1Title,
-							Elements: []interface{}{},
-						},
-					},
+					Level:      2,
+					Title:      section1Title,
+					Attributes: types.ElementAttributes{},
+					Elements:   []interface{}{},
 				},
 			},
 		}
@@ -1119,8 +1105,9 @@ var _ = Describe("sections level offset", func() {
 			FootnoteReferences: types.FootnoteReferences{},
 			Elements: []interface{}{
 				types.Section{
-					Level: 1,
-					Title: section1Title,
+					Level:      1,
+					Title:      section1Title,
+					Attributes: types.ElementAttributes{},
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
@@ -1133,9 +1120,10 @@ var _ = Describe("sections level offset", func() {
 							},
 						},
 						types.Section{
-							Level:    2,
-							Title:    section2Title,
-							Elements: []interface{}{},
+							Level:      2,
+							Title:      section2Title,
+							Attributes: types.ElementAttributes{},
+							Elements:   []interface{}{},
 						},
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
@@ -1161,8 +1149,9 @@ var _ = Describe("sections level offset", func() {
 			FootnoteReferences: types.FootnoteReferences{},
 			Elements: []interface{}{
 				types.Section{
-					Level: 1,
-					Title: section1Title,
+					Level:      1,
+					Title:      section1Title,
+					Attributes: types.ElementAttributes{},
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
@@ -1175,9 +1164,10 @@ var _ = Describe("sections level offset", func() {
 							},
 						},
 						types.Section{
-							Level:    2,
-							Title:    section2Title,
-							Elements: []interface{}{},
+							Level:      2,
+							Title:      section2Title,
+							Attributes: types.ElementAttributes{},
+							Elements:   []interface{}{},
 						},
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
