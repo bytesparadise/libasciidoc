@@ -17,7 +17,7 @@ func Prerender(ctx *Context) error {
 	}
 	IncludePreamble(ctx)
 	IncludeTableOfContents(ctx)
-	// TODO: IncludeAuthors: process author names as document atributes, based on the `Section0.Attributes[AttrAuthors]` (eg: 'firstname', firstname_2' etc.)
+	ProcessDocumentHeader(ctx)
 	// TODO: IncludeRevision: same logic with `Section0.Attributes[AttrRevision]`
 	if log.IsLevelEnabled(log.DebugLevel) {
 		log.Debug("pre-rendered document:")

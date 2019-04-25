@@ -48,6 +48,7 @@ type TableOfContentsSection struct {
 }
 
 func renderTableOfContents(ctx *renderer.Context, m types.TableOfContentsMacro) ([]byte, error) {
+	log.Debug("rendering table of contents...")
 	renderedSections, err := renderTableOfContentsSections(ctx, ctx.Document.Elements, 1)
 	if err != nil {
 		return nil, errors.Wrapf(err, "error while rendering table of content")

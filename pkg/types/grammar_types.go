@@ -63,13 +63,6 @@ func NewDocument(frontmatter interface{}, elements []interface{}) (Document, err
 			attributes[attrName] = attrValue
 		}
 	}
-	// if len(elements) > 0 {
-	// 	if header, ok := elements[0].(Section); ok && header.Level == 0 {
-	// 		attributes[AttrTitle] = header.Title
-	// 		// also copy all attributes of the header into the document attributes
-	// 		attributes.AddAll(header.Attributes)
-	// 	}
-	// }
 	//TODO: those collectors could be called at the beginning of rendering, and in concurrent routines
 	// visit AST and collect element references
 	xrefsCollector := NewElementReferencesCollector()
@@ -104,23 +97,42 @@ func NewDocument(frontmatter interface{}, elements []interface{}) (Document, err
 	return document, nil
 }
 
-// HasTitle returns `true` if the document has a title, ie, a section with level 0 as the root (or first element)
-func (d Document) HasTitle() bool {
-	if len(d.Elements) > 0 {
-		section, found := d.Elements[0].(Section)
-		return found && section.Level == 0
-	}
-	return false
-}
-
-// GetTitle retrieves the document title in its metadata, or empty section title if the title was not specified
-func (d Document) GetTitle() (SectionTitle, bool) {
-	if len(d.Elements) > 0 {
-		if section, ok := d.Elements[0].(Section); ok && section.Level == 0 {
-			return section.Title, true
-		}
+// Title retrieves the document title in its metadata, or empty section title if the title was not specified
+func (d Document) Title() (SectionTitle, bool) {
+	if header, ok := d.Header(); ok {
+		return header.Title, true
 	}
 	return SectionTitle{}, false
+}
+
+// Authors retrieves the document authors from the document header, or empty array if no author was found
+func (d Document) Authors() ([]DocumentAuthor, bool) {
+	if header, ok := d.Header(); ok {
+		if authors, ok := header.Attributes[AttrAuthors].([]DocumentAuthor); ok {
+			return authors, true
+		}
+	}
+	return []DocumentAuthor{}, false
+}
+
+// Revision retrieves the document revision from the document header, or empty array if no revision was found
+func (d Document) Revision() (DocumentRevision, bool) {
+	if header, ok := d.Header(); ok {
+		if rev, ok := header.Attributes[AttrRevision].(DocumentRevision); ok {
+			return rev, true
+		}
+	}
+	return DocumentRevision{}, false
+}
+
+// Header returns the header, i.e., the section with level 0 if it exists as the first element of the document
+func (d Document) Header() (Section, bool) {
+	if len(d.Elements) > 0 {
+		if section, ok := d.Elements[0].(Section); ok && section.Level == 0 {
+			return section, true
+		}
+	}
+	return Section{}, false
 }
 
 // ------------------------------------------
@@ -130,11 +142,7 @@ func (d Document) GetTitle() (SectionTitle, bool) {
 // DocumentAuthor a document author
 type DocumentAuthor struct {
 	FullName string
-	// Initials   string
-	// FirstName  string
-	// MiddleName string
-	// LastName   string
-	Email string
+	Email    string
 }
 
 // NewDocumentAuthors converts the given authors into an array of `DocumentAuthor`
@@ -164,79 +172,6 @@ func NewDocumentAuthor(fullName, email interface{}) (DocumentAuthor, error) {
 	return author, nil
 }
 
-// //NewDocumentAuthor initializes a new DocumentAuthor
-// func NewDocumentAuthor(namePart1, namePart2, namePart3, emailAddress interface{}) (DocumentAuthor, error) {
-// 	var part1, part2, part3, email string
-// 	if namePart1, ok := namePart1.(string); ok {
-// 		part1 = apply(namePart1,
-// 			func(s string) string {
-// 				return strings.TrimSpace(s)
-// 			},
-// 			func(s string) string {
-// 				return strings.Replace(s, "_", " ", -1)
-// 			},
-// 		)
-// 	}
-// 	if namePart2, ok := namePart2.(string); ok {
-// 		part2 = apply(namePart2,
-// 			func(s string) string {
-// 				return strings.TrimSpace(s)
-// 			},
-// 			func(s string) string {
-// 				return strings.Replace(s, "_", " ", -1)
-// 			},
-// 		)
-// 	}
-// 	if namePart3, ok := namePart3.(string); ok {
-// 		part3 = apply(namePart3,
-// 			func(s string) string {
-// 				return strings.TrimSpace(s)
-// 			},
-// 			func(s string) string {
-// 				return strings.Replace(s, "_", " ", -1)
-// 			},
-// 		)
-// 	}
-// 	if emailAddress, ok := emailAddress.(string); ok {
-// 		email = apply(emailAddress,
-// 			func(s string) string {
-// 				return strings.TrimPrefix(s, "<")
-// 			}, func(s string) string {
-// 				return strings.TrimSuffix(s, ">")
-// 			}, func(s string) string {
-// 				return strings.TrimSpace(s)
-// 			})
-// 	}
-// 	result := DocumentAuthor{}
-// 	if part2 != "" && part3 != "" {
-// 		result.FirstName = part1
-// 		result.MiddleName = part2
-// 		result.LastName = part3
-// 		result.FullName = fmt.Sprintf("%s %s %s", part1, part2, part3)
-// 		result.Initials = initials(result.FirstName, result.MiddleName, result.LastName)
-// 	} else if part2 != "" {
-// 		result.FirstName = part1
-// 		result.LastName = part2
-// 		result.FullName = fmt.Sprintf("%s %s", part1, part2)
-// 		result.Initials = initials(result.FirstName, result.LastName)
-// 	} else {
-// 		result.FirstName = part1
-// 		result.FullName = part1
-// 		result.Initials = initials(result.FirstName)
-// 	}
-// 	result.Email = email
-// 	// log.Debugf("initialized a new document author: `%v`", result.String())
-// 	return result, nil
-// }
-
-func initials(firstPart string, otherParts ...string) string {
-	result := firstPart[0:1]
-	for _, otherPart := range otherParts {
-		result = result + otherPart[0:1]
-	}
-	return result
-}
-
 // ------------------------------------------
 // Document Revision
 // ------------------------------------------
@@ -254,7 +189,7 @@ func NewDocumentRevision(revnumber, revdate, revremark interface{}) (DocumentRev
 	// remove the "v" prefix and trim spaces
 	var number, date, remark string
 	if revnumber, ok := revnumber.(string); ok {
-		number = apply(revnumber,
+		number = Apply(revnumber,
 			func(s string) string {
 				return strings.TrimPrefix(s, "v")
 			}, func(s string) string {
@@ -265,14 +200,14 @@ func NewDocumentRevision(revnumber, revdate, revremark interface{}) (DocumentRev
 	}
 	if revdate, ok := revdate.(string); ok {
 		// trim spaces
-		date = apply(revdate,
+		date = Apply(revdate,
 			func(s string) string {
 				return strings.TrimSpace(s)
 			})
 	}
 	if revremark, ok := revremark.(string); ok {
 		// then we need to strip the heading ":" and spaces
-		remark = apply(revremark,
+		remark = Apply(revremark,
 			func(s string) string {
 				return strings.TrimPrefix(s, ":")
 			}, func(s string) string {
@@ -301,12 +236,12 @@ type DocumentAttributeDeclaration struct {
 // NewDocumentAttributeDeclaration initializes a new DocumentAttributeDeclaration with the given name and optional value
 func NewDocumentAttributeDeclaration(name string, value interface{}) (DocumentAttributeDeclaration, error) {
 	var attrName, attrValue string
-	attrName = apply(name,
+	attrName = Apply(name,
 		func(s string) string {
 			return strings.TrimSpace(s)
 		})
 	if value, ok := value.(string); ok {
-		attrValue = apply(value,
+		attrValue = Apply(value,
 			func(s string) string {
 				return strings.TrimSpace(s)
 			})
@@ -460,37 +395,10 @@ func NewSection0WithMetadata(title SectionTitle, authors interface{}, revision i
 	}
 	if _, ok := authors.([]DocumentAuthor); ok {
 		section.Attributes[AttrAuthors] = authors
-		// for i, author := range authors {
-		// 	if i == 0 {
-		// 		section.Attributes.AddNonEmpty("firstname", author.FirstName)
-		// 		section.Attributes.AddNonEmpty("middlename", author.MiddleName)
-		// 		section.Attributes.AddNonEmpty("lastname", author.LastName)
-		// 		section.Attributes.AddNonEmpty("author", author.FullName)
-		// 		section.Attributes.AddNonEmpty("authorinitials", author.Initials)
-		// 		section.Attributes.AddNonEmpty("email", author.Email)
-		// 	} else {
-		// 		section.Attributes.AddNonEmpty(fmt.Sprintf("firstname_%d", i+1), author.FirstName)
-		// 		section.Attributes.AddNonEmpty(fmt.Sprintf("middlename_%d", i+1), author.MiddleName)
-		// 		section.Attributes.AddNonEmpty(fmt.Sprintf("lastname_%d", i+1), author.LastName)
-		// 		section.Attributes.AddNonEmpty(fmt.Sprintf("author_%d", i+1), author.FullName)
-		// 		section.Attributes.AddNonEmpty(fmt.Sprintf("authorinitials_%d", i+1), author.Initials)
-		// 		section.Attributes.AddNonEmpty(fmt.Sprintf("email_%d", i+1), author.Email)
-		// 	}
-		// }
 	}
 	if _, ok := revision.(DocumentRevision); ok {
 		section.Attributes[AttrRevision] = revision
-		// rev := revision.(DocumentRevision)
-		// section.Attributes.AddNonEmpty("revnumber", rev.Revnumber)
-		// section.Attributes.AddNonEmpty("revdate", rev.Revdate)
-		// section.Attributes.AddNonEmpty("revremark", rev.Revremark)
-
 	}
-	// for _, attr := range otherAttributes {
-	// 	if attr, ok := attr.(DocumentAttributeDeclaration); ok {
-	// 		section.Attributes[attr.Name] = attr.Value
-	// 	}
-	// }
 	return section, nil
 }
 
@@ -1687,7 +1595,7 @@ func NewCrossReference(id string, label interface{}) (CrossReference, error) {
 	log.Debugf("initializing a new CrossReference with ID=%s", id)
 	var l string
 	if label, ok := label.(string); ok {
-		l = apply(label, strings.TrimSpace)
+		l = Apply(label, strings.TrimSpace)
 	}
 	return CrossReference{
 		ID:    id,
@@ -1772,13 +1680,13 @@ func NewImageAttributes(alt, width, height interface{}, otherattrs []interface{}
 	result := ElementAttributes{}
 	var altStr, widthStr, heightStr string
 	if alt, ok := alt.(string); ok {
-		altStr = apply(alt, strings.TrimSpace)
+		altStr = Apply(alt, strings.TrimSpace)
 	}
 	if width, ok := width.(string); ok {
-		widthStr = apply(width, strings.TrimSpace)
+		widthStr = Apply(width, strings.TrimSpace)
 	}
 	if height, ok := height.(string); ok {
-		heightStr = apply(height, strings.TrimSpace)
+		heightStr = Apply(height, strings.TrimSpace)
 	}
 	result[AttrImageAlt] = altStr
 	result[AttrImageWidth] = widthStr
@@ -1864,7 +1772,7 @@ func Verbatim(content []interface{}) ([]interface{}, error) {
 	result := make([]interface{}, len(content))
 	for i, c := range content {
 		if c, ok := c.(string); ok {
-			c = apply(c, func(s string) string {
+			c = Apply(c, func(s string) string {
 				return strings.TrimRight(c, "\n\r")
 			})
 			result[i] = NewStringElement(c)
@@ -2165,7 +2073,7 @@ func (t QuotedText) AcceptVisitor(v Visitor) error {
 
 // NewEscapedQuotedText returns a new InlineElements where the nested elements are preserved (ie, substituted as expected)
 func NewEscapedQuotedText(backslashes string, punctuation string, content []interface{}) ([]interface{}, error) {
-	backslashesStr := apply(backslashes,
+	backslashesStr := Apply(backslashes,
 		func(s string) string {
 			// remove the number of back-slashes that match the length of the punctuation. Eg: `\*` or `\\**`, but keep extra back-slashes
 			if len(s) > len(punctuation) {
@@ -2248,7 +2156,7 @@ func NewInlineLinkAttributes(text interface{}, otherattrs []interface{}) (Elemen
 	result := ElementAttributes{}
 	var textStr string
 	if text, ok := text.(string); ok {
-		textStr = apply(text, strings.TrimSpace)
+		textStr = Apply(text, strings.TrimSpace)
 	}
 	result[AttrInlineLinkText] = textStr
 	for _, otherAttr := range otherattrs {

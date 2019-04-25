@@ -52,12 +52,12 @@ func init() {
 }
 
 func renderPreamble(ctx *renderer.Context, p types.Preamble) ([]byte, error) {
-	log.Debugf("Rendering preamble...")
+	log.Debugf("rendering preamble...")
 	result := bytes.NewBuffer(nil)
 	// the <div id="preamble"> wrapper is only necessary
 	// if the document has a section 0
 	wrapper := false
-	if ctx.Document.HasTitle() {
+	if _, ok := ctx.Document.Title(); ok {
 		wrapper = true
 	}
 	err := preambleTmpl.Execute(result, ContextualPipeline{

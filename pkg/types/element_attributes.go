@@ -115,14 +115,14 @@ func NewAttributeGroup(attributes []interface{}) (ElementAttributes, error) {
 // NewGenericAttribute initializes a new ElementAttribute from the given key and optional value
 func NewGenericAttribute(key string, value interface{}) (ElementAttributes, error) {
 	result := make(map[string]interface{})
-	k := apply(key,
+	k := Apply(key,
 		// remove surrounding quotes
 		func(s string) string {
 			return strings.Trim(s, "\"")
 		},
 		strings.TrimSpace)
 	if value, ok := value.(string); ok {
-		v := apply(value,
+		v := Apply(value,
 			// remove surrounding quotes
 			func(s string) string {
 				return strings.Trim(s, "\"")
