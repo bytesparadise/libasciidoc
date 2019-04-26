@@ -118,13 +118,11 @@ func renderElement(ctx *renderer.Context, element interface{}) ([]byte, error) {
 	case types.Footnote:
 		return renderFootnote(ctx, e)
 	case types.DocumentAttributeDeclaration:
-		// 'process' function do not return any rendered content, but may return an error
-		return nil, processAttributeDeclaration(ctx, e)
+		return processAttributeDeclaration(ctx, e), nil
 	case types.DocumentAttributeReset:
-		// 'process' function do not return any rendered content, but may return an error
-		return nil, processAttributeReset(ctx, e)
+		return processAttributeReset(ctx, e), nil
 	case types.DocumentAttributeSubstitution:
-		return renderAttributeSubstitution(ctx, e)
+		return renderAttributeSubstitution(ctx, e), nil
 	case types.LineBreak:
 		return renderLineBreak()
 	case types.SingleLineComment:

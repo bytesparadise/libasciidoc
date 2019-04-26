@@ -80,7 +80,7 @@ func renderLine(ctx *renderer.Context, elements types.InlineElements, renderElem
 
 	// check if the line has some substitution
 	if !hasSubstitutions(elements) {
-		log.Debug("no substitution in the line of elements")
+		// log.Debug("no substitution in the line of elements")
 		return buff.Bytes(), nil
 	}
 	// otherwise, parse the rendered line, in case some new elements (links, etc.) "appeared" after document attribute substitutions

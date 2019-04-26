@@ -162,9 +162,10 @@ func ApplyLevelOffset(c interface{}, levelOffset string) (types.Document, error)
 	if title, ok := doc.Attributes[types.AttrTitle]; ok {
 		doc.Elements = []interface{}{
 			types.Section{
-				Level:    0,
-				Title:    title.(types.SectionTitle),
-				Elements: doc.Elements,
+				Level:      0,
+				Title:      title.(types.SectionTitle),
+				Attributes: types.ElementAttributes{},
+				Elements:   doc.Elements,
 			},
 		}
 	}

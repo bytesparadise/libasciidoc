@@ -8,40 +8,56 @@ import (
 // IncludeTableOfContents includes a Table Of Contents in the document
 // if the `toc` attribute is present
 func IncludeTableOfContents(ctx *Context) {
-	if location, ok := ctx.Document.Attributes.GetAsString(types.AttrTableOfContents); ok {
-		ctx.Document.Elements = insertTableOfContents(ctx.Document.Elements, location)
+	if d, found := types.SearchAttributeDeclaration(ctx.Document.Elements, types.AttrTableOfContents); found {
+		insertTableOfContents(&ctx.Document, d.Value)
 	}
 }
-func insertTableOfContents(elements []interface{}, location string) []interface{} {
+
+func insertTableOfContents(doc *types.Document, location string) {
 	log.Debugf("inserting a table of contents at location `%s`", location)
-	result := []interface{}{}
 	// insert a TableOfContentsMacro element if `toc` value is:
 	// - "auto" (or empty)
 	// - "preamble"
 	log.Debugf("inserting ToC macro with placement: '%s'", location)
+	toc := types.TableOfContentsMacro{}
 	switch location {
 	case "", "auto":
-		// insert TableOfContentsMacro at first position
-		result = append([]interface{}{types.TableOfContentsMacro{}}, elements...)
+		// insert TableOfContentsMacro at first position (in section0 if it exists)
+		if header, ok := doc.Header(); ok {
+			header.Elements = append([]interface{}{toc}, header.Elements...)
+			doc.Elements[0] = header
+		} else {
+			doc.Elements = append([]interface{}{toc}, doc.Elements...)
+		}
 	case "preamble":
 		// lookup preamble in elements (should be first)
-		preambleIndex := 0
-		for i, e := range result {
-			if _, ok := e.(types.Preamble); ok {
-				preambleIndex = i
-				break
-			}
-		}
 		// insert TableOfContentsMacro just after preamble
-		remainingElements := make([]interface{}, len(elements)-(preambleIndex+1))
-		copy(remainingElements, elements[preambleIndex+1:])
-		result = append(elements[0:preambleIndex+1], types.TableOfContentsMacro{})
-		result = append(result, remainingElements...)
-	case "macro":
+		if header, ok := doc.Header(); ok {
+			if preambleIndex, ok := lookupPreamble(header.Elements); ok {
+				header.Elements = insert(header.Elements, toc, preambleIndex)
+				doc.Elements[0] = header
+			}
+		} else if preambleIndex, ok := lookupPreamble(doc.Elements); ok {
+			doc.Elements = insert(doc.Elements, toc, preambleIndex)
+		}
+	// case "macro":
 	default:
-		log.Warnf("invalid value for 'toc' attribute: '%s'", location)
-
+		log.Warnf("invalid or unsupported value for 'toc' attribute: '%s'", location)
 	}
+}
 
+func lookupPreamble(elements []interface{}) (int, bool) {
+	for i, e := range elements {
+		if _, ok := e.(types.Preamble); ok {
+			return i, true
+		}
+	}
+	return -1, false
+}
+func insert(elements []interface{}, element interface{}, index int) []interface{} {
+	remainingElements := make([]interface{}, len(elements)-(index+1))
+	copy(remainingElements, elements[index+1:])
+	result := append(elements[0:index+1], element)
+	result = append(result, remainingElements...)
 	return result
 }

@@ -120,7 +120,8 @@ func appendBuffer(elements []interface{}, buff *bytes.Buffer) ([]interface{}, *b
 // applyFunc a function to apply on the result of the `apply` function below, before returning
 type applyFunc func(s string) string
 
-func apply(source string, fs ...applyFunc) string {
+// Apply applies the given funcs to transform the given input
+func Apply(source string, fs ...applyFunc) string {
 	result := source
 	for _, f := range fs {
 		result = f(result)
@@ -151,4 +152,25 @@ func toString(lines []interface{}) ([]string, error) {
 		result[i] = l
 	}
 	return result, nil
+}
+
+// SearchAttributeDeclaration returns the value of the DocumentAttributeDeclaration whose name is given
+func SearchAttributeDeclaration(elements []interface{}, name string) (DocumentAttributeDeclaration, bool) {
+	for _, e := range elements {
+		switch e := e.(type) {
+		case Section:
+			if result, found := SearchAttributeDeclaration(e.Elements, name); found {
+				return result, found
+			}
+		case Preamble:
+			if result, found := SearchAttributeDeclaration(e.Elements, name); found {
+				return result, found
+			}
+		case DocumentAttributeDeclaration:
+			if e.Name == name {
+				return e, true
+			}
+		}
+	}
+	return DocumentAttributeDeclaration{}, false
 }

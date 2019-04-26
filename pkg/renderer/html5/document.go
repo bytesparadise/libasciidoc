@@ -50,7 +50,6 @@ Last updated {{ .LastUpdated }}
 
 // renderDocument renders the whole document, including the HEAD and BODY containers if needed
 func renderDocument(ctx *renderer.Context, output io.Writer) (map[string]interface{}, error) {
-	metadata := make(map[string]interface{})
 	renderedTitle, err := renderDocumentTitle(ctx)
 	if err != nil {
 		return nil, errors.Wrapf(err, "unable to render full document")
@@ -104,13 +103,9 @@ func renderDocument(ctx *renderer.Context, output io.Writer) (map[string]interfa
 	}
 
 	// copy all document attributes, and override the title with its rendered value instead of the `types.Section` struct
-	for k, v := range ctx.Document.Attributes {
-		switch k {
-		case types.AttrTitle:
-			metadata[k] = string(renderedTitle)
-		default:
-			metadata[k] = v
-		}
+	metadata := ctx.Document.Attributes
+	if len(renderedTitle) > 0 {
+		metadata[types.AttrTitle] = string(renderedTitle)
 	}
 	return metadata, nil
 }
@@ -118,9 +113,21 @@ func renderDocument(ctx *renderer.Context, output io.Writer) (map[string]interfa
 // renderDocumentElements renders all document elements, including the footnotes,
 // but not the HEAD and BODY containers
 func renderDocumentElements(ctx *renderer.Context) ([]byte, error) {
-	log.Debugf("rendered document with %d element(s)...", len(ctx.Document.Elements))
+	elements := []interface{}{}
+	if len(ctx.Document.Elements) > 0 {
+		// retrieve elements of the first section 0 (if available), plus remaining elements
+		if s, ok := ctx.Document.Elements[0].(types.Section); ok && s.Level == 0 {
+			elements = append(elements, s.Elements)
+			if len(ctx.Document.Elements) > 1 {
+				elements = append(elements, ctx.Document.Elements[1:]...)
+			}
+		} else {
+			elements = ctx.Document.Elements
+		}
+	}
+	log.Debugf("rendered document with %d element(s)...", len(elements))
 	buff := bytes.NewBuffer(nil)
-	renderedElements, err := renderElements(ctx, ctx.Document.Elements)
+	renderedElements, err := renderElements(ctx, elements)
 	if err != nil {
 		return []byte{}, errors.Wrapf(err, "failed to render document elements")
 	}
@@ -135,11 +142,7 @@ func renderDocumentElements(ctx *renderer.Context) ([]byte, error) {
 }
 
 func renderDocumentTitle(ctx *renderer.Context) ([]byte, error) {
-	documentTitle, err := ctx.Document.Attributes.GetTitle()
-	if err != nil {
-		return nil, errors.Wrapf(err, "unable to render document title")
-	}
-	if _, found := documentTitle.Attributes[types.AttrID]; found { // ignore if no ID was set, ie, title is not defined
+	if documentTitle, hasTitle := ctx.Document.Title(); hasTitle && documentTitle.Attributes.Has(types.AttrID) {
 		title, err := renderPlainString(ctx, documentTitle)
 		if err != nil {
 			return nil, errors.Wrapf(err, "unable to render document title")
@@ -150,11 +153,7 @@ func renderDocumentTitle(ctx *renderer.Context) ([]byte, error) {
 }
 
 func renderDocumentHeader(ctx *renderer.Context) ([]byte, error) {
-	documentTitle, err := ctx.Document.Attributes.GetTitle()
-	if err != nil {
-		return nil, errors.Wrapf(err, "unable to render document header")
-	}
-	if _, found := documentTitle.Attributes[types.AttrID]; found { // ignore if no ID was set, ie, title is not defined
+	if documentTitle, hasTitle := ctx.Document.Title(); hasTitle && documentTitle.Attributes.Has(types.AttrID) {
 		title, err := renderElement(ctx, documentTitle.Elements)
 		if err != nil {
 			return nil, errors.Wrapf(err, "unable to render document header")

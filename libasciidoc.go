@@ -48,9 +48,6 @@ func ConvertToHTML(ctx context.Context, r io.Reader, output io.Writer, options .
 		return nil, errors.Wrapf(err, "error while parsing the document")
 	}
 	duration := time.Since(start)
-	if err != nil {
-		log.Warnf("failed to produce stats: %v", err.Error())
-	}
 	log.Debugf("parsing stats:")
 	log.Debugf("- parsing duration:                %v", duration)
 	log.Debugf("- expressions processed:           %v", stats.ExprCnt)

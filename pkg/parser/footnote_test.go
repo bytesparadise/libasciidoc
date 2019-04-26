@@ -301,11 +301,9 @@ a paragraph with another footnote:[baz]`
 			},
 		}
 		expectedResult := types.Document{
-			Attributes: types.DocumentAttributes{
-				types.AttrTitle: docTitle,
-				"idprefix":      "id_",
-			},
+			Attributes: types.DocumentAttributes{},
 			ElementReferences: types.ElementReferences{
+				"title":     docTitle,
 				"section_1": section1Title,
 			},
 			Footnotes: types.Footnotes{
@@ -315,32 +313,43 @@ a paragraph with another footnote:[baz]`
 			},
 			FootnoteReferences: types.FootnoteReferences{},
 			Elements: []interface{}{
-				types.BlankLine{},
-				types.Paragraph{
-					Attributes: types.ElementAttributes{},
-					Lines: []types.InlineElements{
-						{
-							types.StringElement{
-								Content: "a premable with a ",
-							},
-							footnote1,
-						},
-					},
-				},
-				types.BlankLine{},
 				types.Section{
-					Level: 1,
-					Title: section1Title,
+					Level:      0,
+					Title:      docTitle,
+					Attributes: types.ElementAttributes{},
 					Elements: []interface{}{
+						types.DocumentAttributeDeclaration{
+							Name:  "idprefix",
+							Value: "id_",
+						},
 						types.BlankLine{},
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
 							Lines: []types.InlineElements{
 								{
 									types.StringElement{
-										Content: "a paragraph with another ",
+										Content: "a premable with a ",
 									},
-									footnote3,
+									footnote1,
+								},
+							},
+						},
+						types.BlankLine{},
+						types.Section{
+							Level:      1,
+							Title:      section1Title,
+							Attributes: types.ElementAttributes{},
+							Elements: []interface{}{
+								types.Paragraph{
+									Attributes: types.ElementAttributes{},
+									Lines: []types.InlineElements{
+										{
+											types.StringElement{
+												Content: "a paragraph with another ",
+											},
+											footnote3,
+										},
+									},
 								},
 							},
 						},

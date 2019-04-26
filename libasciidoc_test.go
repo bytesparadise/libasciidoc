@@ -205,10 +205,11 @@ func verifyDocumentBody(t GinkgoTInterface, expectedRenderedTitle *string, expec
 	t.Logf("** Actual output:\n`%s`\n", result)
 	t.Logf("** expectedContent output:\n`%s`\n", expectedContent)
 	assert.Equal(t, expectedContent, result)
-	actualTitle := metadata[types.AttrTitle]
 	if expectedRenderedTitle == nil {
-		assert.Nil(t, actualTitle)
+		_, found := metadata[types.AttrTitle]
+		assert.False(t, found)
 	} else {
+		actualTitle := metadata[types.AttrTitle]
 		t.Logf("Actual title: %v", actualTitle)
 		t.Logf("Expected title: %v", *expectedRenderedTitle)
 		assert.Equal(t, *expectedRenderedTitle, actualTitle)

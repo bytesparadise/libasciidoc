@@ -3,6 +3,7 @@ package html5
 import (
 	"bytes"
 	"html/template"
+	"strconv"
 	"strings"
 	texttemplate "text/template"
 
@@ -21,8 +22,8 @@ func init() {
 {{ .Content }}
 </div>`)
 	tableOfContentSectionSetTmpl = newTextTemplate("toc section", `<ul class="sectlevel{{ .Level }}">
-{{ range .Elements }}<li><a href="#{{ .Href }}">{{ .Title }}</a>{{ if .Subelements }}
-{{ .Subelements }}
+{{ range .Elements }}<li><a href="#{{ .Href }}">{{ .Title }}</a>{{ if .Elements }}
+{{ .Elements }}
 </li>{{else}}</li>{{end}}
 {{end}}</ul>`)
 }
@@ -40,13 +41,14 @@ type TableOfContentsSectionGroup struct {
 
 // TableOfContentsSection a section in the table of contents
 type TableOfContentsSection struct {
-	Level       int
-	Href        string
-	Title       template.HTML
-	Subelements template.HTML
+	Level    int
+	Href     string
+	Title    template.HTML
+	Elements template.HTML
 }
 
 func renderTableOfContents(ctx *renderer.Context, m types.TableOfContentsMacro) ([]byte, error) {
+	log.Debug("rendering table of contents...")
 	renderedSections, err := renderTableOfContentsSections(ctx, ctx.Document.Elements, 1)
 	if err != nil {
 		return nil, errors.Wrapf(err, "error while rendering table of content")
@@ -72,16 +74,20 @@ func renderTableOfContentsSections(ctx *renderer.Context, elements []interface{}
 		log.Debugf("traversing document element of type %T", element)
 		switch section := element.(type) {
 		case types.Section:
+			// do not render document header in ToC
+			if section.Level == 0 {
+				return renderTableOfContentsSections(ctx, section.Elements, currentLevel)
+			}
 			renderedTitle, err := renderElement(ctx, section.Title.Elements)
 			if err != nil {
 				return template.HTML(""), errors.Wrapf(err, "error while rendering table of content section")
 			}
-			tocLevels, err := ctx.Document.Attributes.GetTOCLevels()
+			tocLevels, err := getTocLevels(ctx.Document)
 			if err != nil {
 				return template.HTML(""), errors.Wrapf(err, "error while rendering table of content section")
 			}
 			var renderedChildSections template.HTML
-			if currentLevel < *tocLevels {
+			if currentLevel < tocLevels {
 				renderedChildSections, err = renderTableOfContentsSections(ctx, section.Elements, currentLevel+1)
 				if err != nil {
 					return template.HTML(""), errors.Wrapf(err, "error while rendering table of content section")
@@ -90,10 +96,10 @@ func renderTableOfContentsSections(ctx *renderer.Context, elements []interface{}
 			id := generateID(ctx, section.Title.Attributes)
 			renderedTitleStr := strings.TrimSpace(string(renderedTitle))
 			sections = append(sections, TableOfContentsSection{
-				Level:       section.Level,
-				Href:        id,
-				Title:       template.HTML(renderedTitleStr), //nolint: gosec
-				Subelements: renderedChildSections,
+				Level:    section.Level,
+				Href:     id,
+				Title:    template.HTML(renderedTitleStr), //nolint: gosec
+				Elements: renderedChildSections,
 			})
 		}
 	}
@@ -110,4 +116,11 @@ func renderTableOfContentsSections(ctx *renderer.Context, elements []interface{}
 	}
 	log.Debugf("retrieved sections for TOC: %+v", sections)
 	return template.HTML(resultBuf.String()), nil //nolint: gosec
+}
+
+func getTocLevels(doc types.Document) (int, error) {
+	if d, found := types.SearchAttributeDeclaration(doc.Elements, types.AttrTableOfContentsLevels); found {
+		return strconv.Atoi(d.Value)
+	}
+	return 2, nil
 }

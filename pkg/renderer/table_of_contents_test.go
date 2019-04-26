@@ -12,7 +12,7 @@ import (
 var _ = Describe("table of contents", func() {
 
 	// reusable elements
-	doctitleAttribute := types.SectionTitle{
+	doctitle := types.SectionTitle{
 		Attributes: types.ElementAttributes{
 			types.AttrID:       "a_title",
 			types.AttrCustomID: false,
@@ -21,7 +21,13 @@ var _ = Describe("table of contents", func() {
 			types.StringElement{Content: "A Title"},
 		},
 	}
-	tableOfContents := types.TableOfContentsMacro{}
+	toc := types.DocumentAttributeDeclaration{
+		Name: "toc",
+	}
+	preambletoc := types.DocumentAttributeDeclaration{
+		Name:  "toc",
+		Value: "preamble",
+	}
 	preamble := types.Preamble{
 		Elements: []interface{}{
 			types.BlankLine{},
@@ -47,55 +53,31 @@ var _ = Describe("table of contents", func() {
 				types.StringElement{Content: "section 1"},
 			},
 		},
-		Elements: []interface{}{},
+		Attributes: types.ElementAttributes{},
+		Elements:   []interface{}{},
 	}
+	tableOfContents := types.TableOfContentsMacro{}
 
-	It("table of contents with default placement", func() {
-
+	It("table of contents with default placement and no header with content", func() {
 		actualContent := types.Document{
-			Attributes: types.DocumentAttributes{
-				types.AttrTitle: doctitleAttribute,
-				"toc":           "",
-			},
-			ElementReferences: types.ElementReferences{
-				"section_1": types.SectionTitle{
-					Attributes: types.ElementAttributes{
-						types.AttrID:       "section_1",
-						types.AttrCustomID: false,
-					},
-					Elements: types.InlineElements{
-						types.StringElement{Content: "section 1"},
-					},
-				},
-			},
+			Attributes:         types.DocumentAttributes{},
+			ElementReferences:  types.ElementReferences{}, // can leave empty for this test
 			Footnotes:          types.Footnotes{},
 			FootnoteReferences: types.FootnoteReferences{},
 			Elements: []interface{}{
+				toc,
 				preamble,
 				section,
 			},
 		}
-
 		expectedResult := types.Document{
-			Attributes: types.DocumentAttributes{
-				types.AttrTitle: doctitleAttribute,
-				"toc":           "",
-			},
-			ElementReferences: types.ElementReferences{
-				"section_1": types.SectionTitle{
-					Attributes: types.ElementAttributes{
-						types.AttrID:       "section_1",
-						types.AttrCustomID: false,
-					},
-					Elements: types.InlineElements{
-						types.StringElement{Content: "section 1"},
-					},
-				},
-			},
+			Attributes:         types.DocumentAttributes{},
+			ElementReferences:  types.ElementReferences{},
 			Footnotes:          types.Footnotes{},
 			FootnoteReferences: types.FootnoteReferences{},
 			Elements: []interface{}{
 				tableOfContents,
+				toc,
 				preamble,
 				section,
 			},
@@ -103,53 +85,188 @@ var _ = Describe("table of contents", func() {
 		verifyTableOfContents(expectedResult, actualContent)
 	})
 
-	It("table of contents with preamble placement", func() {
+	It("table of contents with default placement and a header with content", func() {
 		actualContent := types.Document{
-			Attributes: types.DocumentAttributes{
-				types.AttrTitle: doctitleAttribute,
-				"toc":           "preamble",
-			},
-			ElementReferences: types.ElementReferences{
-				"section_1": types.SectionTitle{
-					Attributes: types.ElementAttributes{
-						types.AttrID:       "section_1",
-						types.AttrCustomID: false,
-					},
-					Elements: types.InlineElements{
-						types.StringElement{Content: "section 1"},
-					},
-				},
-			},
+			Attributes:         types.DocumentAttributes{},
+			ElementReferences:  types.ElementReferences{}, // can leave empty for this test
 			Footnotes:          types.Footnotes{},
 			FootnoteReferences: types.FootnoteReferences{},
 			Elements: []interface{}{
+				types.Section{
+					Level:      0,
+					Title:      doctitle,
+					Attributes: types.ElementAttributes{},
+					Elements: []interface{}{
+						toc,
+						preamble,
+						section,
+					},
+				},
+			},
+		}
+		expectedResult := types.Document{
+			Attributes:         types.DocumentAttributes{},
+			ElementReferences:  types.ElementReferences{}, // can leave empty for this test
+			Footnotes:          types.Footnotes{},
+			FootnoteReferences: types.FootnoteReferences{},
+			Elements: []interface{}{
+				types.Section{
+					Level:      0,
+					Title:      doctitle,
+					Attributes: types.ElementAttributes{},
+					Elements: []interface{}{
+						tableOfContents,
+						toc,
+						preamble,
+						section,
+					},
+				},
+			},
+		}
+		verifyTableOfContents(expectedResult, actualContent)
+	})
+
+	It("table of contents with default placement and a header without content", func() {
+		actualContent := types.Document{
+			Attributes:         types.DocumentAttributes{},
+			ElementReferences:  types.ElementReferences{}, // can leave empty for this test
+			Footnotes:          types.Footnotes{},
+			FootnoteReferences: types.FootnoteReferences{},
+			Elements: []interface{}{
+				types.Section{
+					Level:      0,
+					Title:      doctitle,
+					Attributes: types.ElementAttributes{},
+					Elements: []interface{}{
+						toc,
+						preamble,
+					},
+				},
+			},
+		}
+		expectedResult := types.Document{
+			Attributes:         types.DocumentAttributes{},
+			ElementReferences:  types.ElementReferences{}, // can leave empty for this test
+			Footnotes:          types.Footnotes{},
+			FootnoteReferences: types.FootnoteReferences{},
+			Elements: []interface{}{
+				types.Section{
+					Level:      0,
+					Title:      doctitle,
+					Attributes: types.ElementAttributes{},
+					Elements: []interface{}{
+						tableOfContents,
+						toc,
+						preamble,
+					},
+				},
+			},
+		}
+		verifyTableOfContents(expectedResult, actualContent)
+	})
+
+	It("table of contents with preamble placement and no header with content", func() {
+		actualContent := types.Document{
+			Attributes:         types.DocumentAttributes{},
+			ElementReferences:  types.ElementReferences{},
+			Footnotes:          types.Footnotes{},
+			FootnoteReferences: types.FootnoteReferences{},
+			Elements: []interface{}{
+				preambletoc,
 				preamble,
 				section,
 			},
 		}
-
 		expectedResult := types.Document{
-			Attributes: types.DocumentAttributes{
-				types.AttrTitle: doctitleAttribute,
-				"toc":           "preamble",
-			},
-			ElementReferences: types.ElementReferences{
-				"section_1": types.SectionTitle{
-					Attributes: types.ElementAttributes{
-						types.AttrID:       "section_1",
-						types.AttrCustomID: false,
-					},
-					Elements: types.InlineElements{
-						types.StringElement{Content: "section 1"},
-					},
-				},
-			},
+			Attributes:         types.DocumentAttributes{},
+			ElementReferences:  types.ElementReferences{},
 			Footnotes:          types.Footnotes{},
 			FootnoteReferences: types.FootnoteReferences{},
 			Elements: []interface{}{
+				preambletoc,
 				preamble,
 				tableOfContents,
 				section,
+			},
+		}
+		verifyTableOfContents(expectedResult, actualContent)
+	})
+
+	It("table of contents with preamble placement and header with content", func() {
+		actualContent := types.Document{
+			Attributes:         types.DocumentAttributes{},
+			ElementReferences:  types.ElementReferences{},
+			Footnotes:          types.Footnotes{},
+			FootnoteReferences: types.FootnoteReferences{},
+			Elements: []interface{}{
+				types.Section{
+					Level:      0,
+					Title:      doctitle,
+					Attributes: types.ElementAttributes{},
+					Elements: []interface{}{
+						preambletoc,
+						preamble,
+						section,
+					},
+				},
+			},
+		}
+		expectedResult := types.Document{
+			Attributes:         types.DocumentAttributes{},
+			ElementReferences:  types.ElementReferences{},
+			Footnotes:          types.Footnotes{},
+			FootnoteReferences: types.FootnoteReferences{},
+			Elements: []interface{}{
+				types.Section{
+					Level:      0,
+					Title:      doctitle,
+					Attributes: types.ElementAttributes{},
+					Elements: []interface{}{
+						preambletoc,
+						preamble,
+						tableOfContents,
+						section,
+					},
+				},
+			},
+		}
+		verifyTableOfContents(expectedResult, actualContent)
+	})
+
+	It("table of contents with preamble placement and header without content", func() {
+		actualContent := types.Document{
+			Attributes:         types.DocumentAttributes{},
+			ElementReferences:  types.ElementReferences{},
+			Footnotes:          types.Footnotes{},
+			FootnoteReferences: types.FootnoteReferences{},
+			Elements: []interface{}{
+				types.Section{
+					Level:      0,
+					Title:      doctitle,
+					Attributes: types.ElementAttributes{},
+					Elements: []interface{}{
+						preambletoc,
+						preamble,
+					},
+				},
+			},
+		}
+		expectedResult := types.Document{
+			Attributes:         types.DocumentAttributes{},
+			ElementReferences:  types.ElementReferences{},
+			Footnotes:          types.Footnotes{},
+			FootnoteReferences: types.FootnoteReferences{},
+			Elements: []interface{}{
+				types.Section{
+					Level:      0,
+					Title:      doctitle,
+					Attributes: types.ElementAttributes{},
+					Elements: []interface{}{
+						preambletoc,
+						preamble,
+						tableOfContents,
+					},
+				},
 			},
 		}
 		verifyTableOfContents(expectedResult, actualContent)

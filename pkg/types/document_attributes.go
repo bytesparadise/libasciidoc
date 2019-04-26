@@ -2,39 +2,10 @@ package types
 
 import (
 	"reflect"
-	"strconv"
-
-	"github.com/pkg/errors"
 )
 
 // DocumentAttributes the document attributes
 type DocumentAttributes map[string]interface{}
-
-const (
-	title     string = AttrTitle
-	toclevels string = "toclevels"
-)
-
-// GetTOCLevels returns the value of the `toclevels` attribute if it was specified,
-// or `2` as the default value
-func (a DocumentAttributes) GetTOCLevels() (*int, error) {
-	if levels, exists := a[toclevels]; exists {
-		if levels, ok := levels.(int); ok {
-			return &levels, nil
-		}
-		if _, ok := levels.(string); ok {
-			levels, err := strconv.Atoi(levels.(string))
-			if err != nil {
-				return nil, errors.Wrapf(err, "the value of the 'toclevels' attribute is not an integer: %T", levels)
-			}
-			return &levels, nil
-		}
-		return nil, errors.Errorf("the value of the 'toclevels' attribute is not an integer: %T", levels)
-	}
-	// return default value if the "toclevels" doc attribute was not specified
-	defaultLevels := 2
-	return &defaultLevels, nil
-}
 
 // Has returns the true if an entry with the given key exists
 func (a DocumentAttributes) Has(key string) bool {
@@ -48,25 +19,8 @@ func (a DocumentAttributes) HasAuthors() bool {
 	return exists
 }
 
-// HasTitle returns `true` if the document has a title, ie, a section with level = 0
-func (a DocumentAttributes) HasTitle() bool {
-	_, found := a[title]
-	return found
-}
-
-// GetTitle retrieves the document title in its metadata, or returns nil if the title was not specified
-func (a DocumentAttributes) GetTitle() (SectionTitle, error) {
-	if t, found := a[title]; found {
-		if t, ok := t.(SectionTitle); ok {
-			return t, nil
-		}
-		return SectionTitle{}, errors.Errorf("document title type is not valid: %T", t)
-	}
-	return SectionTitle{}, nil
-}
-
 // AddAll adds the given attributes
-func (a DocumentAttributes) AddAll(attrs DocumentAttributes) DocumentAttributes {
+func (a DocumentAttributes) AddAll(attrs map[string]interface{}) DocumentAttributes {
 	for k, v := range attrs {
 		a.Add(k, v)
 	}

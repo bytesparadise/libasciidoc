@@ -21,8 +21,14 @@ const (
 	AttrIDPrefix string = "idprefix"
 	// AttrTitle the key to retrieve the title in the element attributes
 	AttrTitle string = "title"
+	// AttrAuthors the key to the authors declared after the section level 0 (at the beginning of the doc)
+	AttrAuthors string = "authors"
+	// AttrRevision the key to the revision declared after the section level 0 (at the beginning of the doc)
+	AttrRevision string = "revision"
 	// AttrTableOfContents the `toc` attribute at document level
 	AttrTableOfContents = "toc"
+	// AttrTableOfContentsLevels the document attribute which specifies the number of levels to display in the ToC
+	AttrTableOfContentsLevels = "toclevels"
 	// AttrRole the key to retrieve the role in the element attributes
 	AttrRole string = "role"
 	// AttrInlineLink the key to retrieve the link in the element attributes
@@ -109,14 +115,14 @@ func NewAttributeGroup(attributes []interface{}) (ElementAttributes, error) {
 // NewGenericAttribute initializes a new ElementAttribute from the given key and optional value
 func NewGenericAttribute(key string, value interface{}) (ElementAttributes, error) {
 	result := make(map[string]interface{})
-	k := apply(key,
+	k := Apply(key,
 		// remove surrounding quotes
 		func(s string) string {
 			return strings.Trim(s, "\"")
 		},
 		strings.TrimSpace)
 	if value, ok := value.(string); ok {
-		v := apply(value,
+		v := Apply(value,
 			// remove surrounding quotes
 			func(s string) string {
 				return strings.Trim(s, "\"")
@@ -237,6 +243,16 @@ func (a ElementAttributes) AddAll(attributes ElementAttributes) {
 	for k, v := range attributes {
 		a[k] = v
 	}
+}
+
+// AddNonEmpty adds the given attribute if its value is non-nil and non-empty
+// TODO: raise a warning if there was already a name/value
+func (a ElementAttributes) AddNonEmpty(key string, value interface{}) {
+	// do not add nil or empty values
+	if value == "" {
+		return
+	}
+	a[key] = value
 }
 
 // NewElementAttributes retrieves the ElementID, ElementTitle and ElementInlineLink from the given slice of attributes
