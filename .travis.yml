@@ -14,6 +14,9 @@ os:
   - osx
   - windows
 
+env:
+  - GO111MODULE=on
+
 matrix:
   fast_finish: true
   allow_failures:
@@ -23,7 +26,6 @@ install:
   - if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then git config --global core.autocrlf true ; fi
   - if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then choco install make; fi
   - make install-devtools
-  - make deps
 
 script:
   # verify that the commit code for the parser was optimized during the code generation
