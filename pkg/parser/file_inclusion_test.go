@@ -267,8 +267,8 @@ include::includes/chapter-a.adoc[]
 				expectedResult := types.FileInclusion{
 					Attributes: types.ElementAttributes{
 						types.AttrLineRanges: `"1`, // viewed as a string
-						"3..4":              nil,
-						"6..foo":            nil,
+						"3..4":               nil,
+						"6..foo":             nil,
 					},
 					Path: "includes/chapter-a.adoc",
 				}

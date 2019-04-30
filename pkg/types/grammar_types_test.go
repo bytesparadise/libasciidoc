@@ -925,7 +925,7 @@ var _ = Describe("lists", func() {
 			expectation := types.LabeledList{
 				Attributes: types.ElementAttributes{},
 				Items: []types.LabeledListItem{
-					types.LabeledListItem{
+					{
 						Attributes: types.ElementAttributes{},
 						Level:      1,
 						Term:       "item 1",
@@ -942,7 +942,7 @@ var _ = Describe("lists", func() {
 							types.LabeledList{
 								Attributes: types.ElementAttributes{},
 								Items: []types.LabeledListItem{
-									types.LabeledListItem{
+									{
 										Attributes: types.ElementAttributes{},
 										Level:      2,
 										Term:       "item 1.1",
@@ -959,7 +959,7 @@ var _ = Describe("lists", func() {
 											types.LabeledList{
 												Attributes: types.ElementAttributes{},
 												Items: []types.LabeledListItem{
-													types.LabeledListItem{
+													{
 														Attributes: types.ElementAttributes{},
 														Level:      3,
 														Term:       "item 1.1.1",
@@ -1070,7 +1070,7 @@ var _ = Describe("lists", func() {
 			expectation := types.UnorderedList{
 				Attributes: types.ElementAttributes{},
 				Items: []types.UnorderedListItem{
-					types.UnorderedListItem{
+					{
 						Attributes:  types.ElementAttributes{},
 						Level:       1,
 						BulletStyle: types.OneAsterisk,
@@ -1088,7 +1088,7 @@ var _ = Describe("lists", func() {
 							types.UnorderedList{
 								Attributes: types.ElementAttributes{},
 								Items: []types.UnorderedListItem{
-									types.UnorderedListItem{
+									{
 										Attributes:  types.ElementAttributes{},
 										Level:       2,
 										BulletStyle: types.TwoAsterisks,
@@ -1106,7 +1106,7 @@ var _ = Describe("lists", func() {
 											types.UnorderedList{
 												Attributes: types.ElementAttributes{},
 												Items: []types.UnorderedListItem{
-													types.UnorderedListItem{
+													{
 														Attributes:  types.ElementAttributes{},
 														Level:       3,
 														BulletStyle: types.ThreeAsterisks,
@@ -1450,7 +1450,7 @@ var _ = Describe("lists", func() {
 							types.OrderedList{
 								Attributes: types.ElementAttributes{},
 								Items: []types.OrderedListItem{
-									types.OrderedListItem{
+									{
 										Attributes:     types.ElementAttributes{},
 										Position:       0,
 										Level:          2,
