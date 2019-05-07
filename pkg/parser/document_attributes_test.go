@@ -49,7 +49,7 @@ This journey begins on a bleary Monday morning.`
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent)
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent)
 		})
 
 		Context("document authors", func() {
@@ -82,7 +82,7 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>`
 						},
 						Elements: []interface{}{},
 					}
-					verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Section0WithMetadata"))
+					verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Section0WithMetadata"))
 				})
 
 				It("lastname with underscores", func() {
@@ -111,7 +111,7 @@ Lazarus het_Draeke <lazarus@asciidoctor.org>`
 						},
 						Elements: []interface{}{},
 					}
-					verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Section0WithMetadata"))
+					verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Section0WithMetadata"))
 				})
 
 				It("firstname and lastname only", func() {
@@ -140,7 +140,7 @@ Kismet Chameleon`
 						},
 						Elements: []interface{}{},
 					}
-					verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Section0WithMetadata"))
+					verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Section0WithMetadata"))
 				})
 
 				It("firstname only", func() {
@@ -169,7 +169,7 @@ Chameleon`
 						},
 						Elements: []interface{}{},
 					}
-					verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Section0WithMetadata"))
+					verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Section0WithMetadata"))
 				})
 
 				It("alternate author input", func() {
@@ -198,7 +198,7 @@ Chameleon`
 						},
 						Elements: []interface{}{},
 					}
-					verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Section0WithMetadata"))
+					verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Section0WithMetadata"))
 				})
 			})
 
@@ -234,7 +234,7 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 						},
 						Elements: []interface{}{},
 					}
-					verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Section0WithMetadata"))
+					verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Section0WithMetadata"))
 				})
 			})
 		})
@@ -273,7 +273,7 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 					},
 					Elements: []interface{}{},
 				}
-				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Section0WithMetadata"))
+				verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Section0WithMetadata"))
 			})
 
 			It("revision with revnumber and revdate only", func() {
@@ -308,7 +308,7 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 					},
 					Elements: []interface{}{},
 				}
-				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Section0WithMetadata"))
+				verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Section0WithMetadata"))
 			})
 
 			It("revision with revnumber and revdate - with colon separator", func() {
@@ -343,7 +343,7 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 					},
 					Elements: []interface{}{},
 				}
-				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Section0WithMetadata"))
+				verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Section0WithMetadata"))
 			})
 			It("revision with revnumber only - comma suffix", func() {
 				actualContent := `= title
@@ -377,7 +377,7 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 					},
 					Elements: []interface{}{},
 				}
-				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Section0WithMetadata"))
+				verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Section0WithMetadata"))
 			})
 
 			It("revision with revdate as number - spaces and no prefix no suffix", func() {
@@ -412,7 +412,7 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 					},
 					Elements: []interface{}{},
 				}
-				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Section0WithMetadata"))
+				verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Section0WithMetadata"))
 			})
 
 			It("revision with revdate as alphanum - spaces and no prefix no suffix", func() {
@@ -447,7 +447,7 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 					},
 					Elements: []interface{}{},
 				}
-				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Section0WithMetadata"))
+				verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Section0WithMetadata"))
 			})
 
 			It("revision with revnumber only", func() {
@@ -482,7 +482,7 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 					},
 					Elements: []interface{}{},
 				}
-				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Section0WithMetadata"))
+				verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Section0WithMetadata"))
 			})
 
 			It("revision with spaces and capital revnumber ", func() {
@@ -517,7 +517,7 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 					},
 					Elements: []interface{}{},
 				}
-				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Section0WithMetadata"))
+				verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Section0WithMetadata"))
 			})
 
 			It("revision only - with comma separator", func() {
@@ -552,7 +552,7 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 					},
 					Elements: []interface{}{},
 				}
-				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Section0WithMetadata"))
+				verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Section0WithMetadata"))
 			})
 
 			It("revision with revnumber plus comma and colon separators", func() {
@@ -587,7 +587,7 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 					},
 					Elements: []interface{}{},
 				}
-				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Section0WithMetadata"))
+				verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Section0WithMetadata"))
 			})
 
 			It("revision with revnumber plus colon separator", func() {
@@ -622,7 +622,7 @@ v1.0:`
 					},
 					Elements: []interface{}{},
 				}
-				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Section0WithMetadata"))
+				verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Section0WithMetadata"))
 			})
 
 		})
@@ -650,7 +650,7 @@ v1.0:`
 						types.DocumentAttributeDeclaration{Name: "Auth0r", Value: "Xavier"},
 					},
 				}
-				verify(GinkgoT(), expectedResult, actualContent)
+				verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent)
 			})
 
 			It("attributes and paragraph without blank line in-between", func() {
@@ -679,7 +679,7 @@ a paragraph`
 						},
 					},
 				}
-				verify(GinkgoT(), expectedResult, actualContent)
+				verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent)
 			})
 
 			It("contiguous attributes and paragraph with blank line in-between", func() {
@@ -708,7 +708,7 @@ a paragraph`
 						},
 					},
 				}
-				verify(GinkgoT(), expectedResult, actualContent)
+				verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent)
 			})
 
 			It("splitted attributes and paragraph with blank line in-between", func() {
@@ -743,7 +743,7 @@ a paragraph`
 						},
 					},
 				}
-				verify(GinkgoT(), expectedResult, actualContent)
+				verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent)
 			})
 
 			It("no header and attributes in body", func() {
@@ -772,7 +772,7 @@ a paragraph`
 						types.DocumentAttributeDeclaration{Name: "author", Value: "Xavier"},
 					},
 				}
-				verify(GinkgoT(), expectedResult, actualContent)
+				verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent)
 			})
 		})
 
@@ -802,7 +802,7 @@ a paragraph written by {author}.`
 						},
 					},
 				}
-				verify(GinkgoT(), expectedResult, actualContent)
+				verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent)
 			})
 
 			It("paragraph with attribute resets", func() {
@@ -833,7 +833,7 @@ a paragraph written by {author}.`
 						},
 					},
 				}
-				verify(GinkgoT(), expectedResult, actualContent)
+				verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent)
 			})
 		})
 
@@ -904,7 +904,7 @@ This journey begins on a bleary Monday morning.`
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent)
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent)
 		})
 
 		It("header section inline with bold quote", func() {
@@ -972,7 +972,7 @@ a paragraph with *bold content*`
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent)
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent)
 		})
 	})
 
@@ -1008,7 +1008,7 @@ a paragraph with *bold content*`
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent)
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent)
 		})
 
 		It("invalid attribute names", func() {
@@ -1033,7 +1033,7 @@ a paragraph with *bold content*`
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent)
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent)
 		})
 	})
 })

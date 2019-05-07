@@ -27,7 +27,7 @@ var _ = Describe("passthroughs", func() {
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 
 		It("tripleplus empty passthrough ", func() {
@@ -43,7 +43,7 @@ var _ = Describe("passthroughs", func() {
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 
 		It("tripleplus passthrough with spaces", func() {
@@ -63,7 +63,7 @@ var _ = Describe("passthroughs", func() {
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 
 		It("tripleplus passthrough with only spaces", func() {
@@ -83,7 +83,7 @@ var _ = Describe("passthroughs", func() {
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 
 		It("tripleplus passthrough with line break", func() {
@@ -103,7 +103,7 @@ var _ = Describe("passthroughs", func() {
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 
 		It("tripleplus passthrough in paragraph", func() {
@@ -125,7 +125,7 @@ var _ = Describe("passthroughs", func() {
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 
 	})
@@ -149,7 +149,7 @@ var _ = Describe("passthroughs", func() {
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 
 		It("singleplus empty passthrough", func() {
@@ -164,7 +164,7 @@ var _ = Describe("passthroughs", func() {
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 
 		It("singleplus passthrough with spaces", func() {
@@ -184,7 +184,7 @@ var _ = Describe("passthroughs", func() {
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 
 		It("singleplus passthrough with line break", func() {
@@ -204,7 +204,7 @@ var _ = Describe("passthroughs", func() {
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 
 	})
@@ -230,7 +230,7 @@ var _ = Describe("passthroughs", func() {
 						},
 					},
 				}
-				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+				verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 			})
 
 			It("passthrough macro with words", func() {
@@ -250,7 +250,7 @@ var _ = Describe("passthroughs", func() {
 						},
 					},
 				}
-				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+				verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 			})
 
 			It("empty passthrough macro", func() {
@@ -266,7 +266,7 @@ var _ = Describe("passthroughs", func() {
 						},
 					},
 				}
-				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+				verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 			})
 
 			It("passthrough macro with spaces", func() {
@@ -286,7 +286,7 @@ var _ = Describe("passthroughs", func() {
 						},
 					},
 				}
-				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+				verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 			})
 
 			It("passthrough macro with line break", func() {
@@ -306,7 +306,7 @@ var _ = Describe("passthroughs", func() {
 						},
 					},
 				}
-				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+				verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 			})
 		})
 
@@ -334,7 +334,7 @@ var _ = Describe("passthroughs", func() {
 						},
 					},
 				}
-				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+				verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 			})
 
 			It("passthrough macro with quoted word in sentence", func() {
@@ -365,7 +365,7 @@ var _ = Describe("passthroughs", func() {
 						},
 					},
 				}
-				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+				verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 			})
 		})
 	})

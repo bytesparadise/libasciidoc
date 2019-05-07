@@ -21,7 +21,7 @@ var _ = Describe("literal blocks", func() {
 					" some literal content",
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 
 		It("literal block from paragraph with single space on first line", func() {
@@ -39,7 +39,7 @@ lines.`
 					"lines.",
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 
 		It("mixing literal block with attributes followed by a paragraph ", func() {
@@ -77,7 +77,7 @@ a normal paragraph.`
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent)
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent)
 		})
 	})
 
@@ -99,7 +99,7 @@ some content
 					"some content",
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 
 		It("literal block with delimited and attributes followed by 1-line paragraph", func() {
@@ -137,7 +137,7 @@ a normal paragraph.`
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent)
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent)
 		})
 
 	})
@@ -175,7 +175,7 @@ a normal paragraph.`
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent)
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent)
 		})
 
 		It("literal block from 2-lines paragraph with attribute", func() {
@@ -216,7 +216,7 @@ a normal paragraph.`
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent)
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent)
 		})
 	})
 

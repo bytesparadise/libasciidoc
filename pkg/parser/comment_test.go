@@ -15,7 +15,7 @@ var _ = Describe("comments", func() {
 			expectedResult := types.SingleLineComment{
 				Content: " A single-line comment.",
 			}
-			verify(GinkgoT(), expectedResult, actualDocument, parser.Entrypoint("DocumentBlock"))
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualDocument, parser.Entrypoint("DocumentBlock"))
 		})
 
 		It("single line comment with prefixing spaces alone", func() {
@@ -23,7 +23,7 @@ var _ = Describe("comments", func() {
 			expectedResult := types.SingleLineComment{
 				Content: " A single-line comment.",
 			}
-			verify(GinkgoT(), expectedResult, actualDocument, parser.Entrypoint("DocumentBlock"))
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualDocument, parser.Entrypoint("DocumentBlock"))
 		})
 
 		It("single line comment with prefixing tabs alone", func() {
@@ -31,7 +31,7 @@ var _ = Describe("comments", func() {
 			expectedResult := types.SingleLineComment{
 				Content: " A single-line comment.",
 			}
-			verify(GinkgoT(), expectedResult, actualDocument, parser.Entrypoint("DocumentBlock"))
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualDocument, parser.Entrypoint("DocumentBlock"))
 		})
 
 		It("single line comment at end of line", func() {
@@ -44,7 +44,7 @@ var _ = Describe("comments", func() {
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualDocument, parser.Entrypoint("DocumentBlock"))
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualDocument, parser.Entrypoint("DocumentBlock"))
 		})
 
 		It("single line comment within a paragraph", func() {
@@ -65,7 +65,7 @@ another line`
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualDocument, parser.Entrypoint("DocumentBlock"))
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualDocument, parser.Entrypoint("DocumentBlock"))
 		})
 
 		It("single line comment within a paragraph with tab", func() {
@@ -86,7 +86,7 @@ another line`
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualDocument, parser.Entrypoint("DocumentBlock"))
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualDocument, parser.Entrypoint("DocumentBlock"))
 		})
 	})
 
@@ -109,7 +109,7 @@ with multiple lines
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualDocument, parser.Entrypoint("DocumentBlock"))
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualDocument, parser.Entrypoint("DocumentBlock"))
 		})
 
 		It("comment block with paragraphs around", func() {
@@ -155,7 +155,7 @@ a second paragraph`
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualDocument)
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualDocument)
 		})
 	})
 

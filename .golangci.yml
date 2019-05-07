@@ -1,5 +1,6 @@
 run:
   skip-dirs:
+    - pkg/parser/includes
     - pkg/renderer/html5/includes
   skip-files:
     - pkg/parser/asciidoc_parser.go # generated

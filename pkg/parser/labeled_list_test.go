@@ -35,7 +35,7 @@ on 2 lines`
 				},
 			},
 		}
-		verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+		verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 	})
 
 	It("labeled list with a single term and no description", func() {
@@ -51,7 +51,7 @@ on 2 lines`
 				},
 			},
 		}
-		verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+		verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 	})
 
 	It("labeled list with a horizontal layout attribute", func() {
@@ -79,7 +79,7 @@ Item1:: foo`
 				},
 			},
 		}
-		verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+		verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 	})
 
 	It("labeled list with a single term and a blank line", func() {
@@ -96,7 +96,7 @@ Item1:: foo`
 				},
 			},
 		}
-		verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+		verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 	})
 
 	It("labeled list with multiple sibling items", func() {
@@ -156,7 +156,7 @@ Item 3 description`
 				},
 			},
 		}
-		verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+		verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 	})
 
 	It("labeled list with multiple nested items", func() {
@@ -226,7 +226,7 @@ Item 3 description`
 				},
 			},
 		}
-		verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+		verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 	})
 
 	It("labeled list with nested list", func() {
@@ -299,7 +299,7 @@ Item with description:: something simple`
 			},
 		}
 
-		verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+		verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 	})
 
 	It("labeled list with a single item and paragraph", func() {
@@ -348,7 +348,7 @@ a normal paragraph.`
 				},
 			},
 		}
-		verify(GinkgoT(), expectedResult, actualContent)
+		verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent)
 	})
 
 	It("labeled list with item continuation", func() {
@@ -430,7 +430,7 @@ another fenced block
 			},
 		}
 
-		verify(GinkgoT(), expectedResult, actualContent)
+		verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent)
 	})
 
 	It("labeled list without item continuation", func() {
@@ -513,7 +513,7 @@ another fenced block
 				},
 			},
 		}
-		verify(GinkgoT(), expectedResult, actualContent)
+		verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent)
 	})
 
 	It("labeled list with nested unordered list", func() {
@@ -552,7 +552,7 @@ another fenced block
 				},
 			},
 		}
-		verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+		verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 	})
 
 	It("labeled list with title", func() {
@@ -600,7 +600,7 @@ second term:: definition of the second term`
 				},
 			},
 		}
-		verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+		verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 	})
 
 	It("max level of labeled items - case 1", func() {
@@ -694,7 +694,7 @@ level 1:: description 1`
 				},
 			},
 		}
-		verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+		verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 	})
 
 	It("max level of labeled items - case 2", func() {
@@ -788,6 +788,6 @@ level 2::: description 2`
 				},
 			},
 		}
-		verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+		verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 	})
 })

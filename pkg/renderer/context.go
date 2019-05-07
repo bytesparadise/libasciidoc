@@ -149,10 +149,8 @@ const imagesdir = "imagesdir"
 
 // GetImagesDir returns the value of the `imagesdir` attribute if it was set (as a string), empty string otherwise
 func (ctx *Context) GetImagesDir() string {
-	if v := ctx.Document.Attributes[imagesdir]; v != nil {
-		if v, ok := v.(string); ok {
-			return v
-		}
+	if imagesdir, found := ctx.Document.Attributes.GetAsString(imagesdir); found {
+		return imagesdir
 	}
 	return ""
 }

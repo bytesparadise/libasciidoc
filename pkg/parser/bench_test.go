@@ -112,6 +112,6 @@ func parseReader(content string) (parser.Stats, error) {
 	if os.Getenv("DEBUG") == "true" {
 		allOptions = append(allOptions, parser.Debug(true))
 	}
-	_, err := parser.ParseReader("", reader, allOptions...) //, Debug(true))
+	_, err := parser.ParseDocument("", reader, allOptions...) //, Debug(true))
 	return stats, err
 }

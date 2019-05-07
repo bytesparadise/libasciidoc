@@ -1,6 +1,7 @@
 package types
 
 import (
+	"bytes"
 	"path/filepath"
 	"sort"
 	"strconv"
@@ -285,6 +286,114 @@ type DocumentAttributeSubstitution struct {
 func NewDocumentAttributeSubstitution(attrName string) (DocumentAttributeSubstitution, error) {
 	log.Debugf("initialized a new DocumentAttributeSubstitution: '%s'", attrName)
 	return DocumentAttributeSubstitution{Name: attrName}, nil
+}
+
+// ------------------------------------------
+// PreparsedDocument (plus related types)
+// ------------------------------------------
+
+// PreparsedDocument a preprocessed document, aimed for file inclusions,
+// beofre being fully parsed to obtain a Document
+type PreparsedDocument struct {
+	Elements []interface{}
+}
+
+// NewPreparsedDocument initializes a new PreparsedDocument with the given elements
+func NewPreparsedDocument(elements []interface{}) (PreparsedDocument, error) {
+	return PreparsedDocument{
+		Elements: elements,
+	}, nil
+}
+
+// RawSectionTitle a section. Just need to have the prefix which can be changed
+// if there is a file inclusion with a level offset defined.
+type RawSectionTitle struct {
+	Prefix RawSectionTitlePrefix
+	Title  RawSectionTitleContent
+}
+
+// NewRawSectionTitle return a new RawSectionTitle
+func NewRawSectionTitle(prefix RawSectionTitlePrefix, title RawSectionTitleContent) (RawSectionTitle, error) {
+	return RawSectionTitle{
+		Prefix: prefix,
+		Title:  title,
+	}, nil
+}
+
+// Bytes returns the content of the preparsed section as an array of byte
+func (s RawSectionTitle) Bytes(levelOffset string) ([]byte, error) {
+	result := bytes.NewBuffer(nil)
+	b, err := s.Prefix.Bytes(levelOffset)
+	if err != nil {
+		return nil, errors.Wrapf(err, "failed to convert section title")
+	}
+	result.Write(b)
+	result.Write(s.Title)
+	return result.Bytes(), nil
+}
+
+// RawSectionTitlePrefix a raw section prefix, with a distinction between the sequence of `=` characters
+// and the following spaces
+type RawSectionTitlePrefix struct {
+	Level  []byte
+	Spaces []byte
+}
+
+// NewRawSectionTitlePrefix returns a new RawSectionTitlePrefix with the given `=` sequences following by spaces.
+func NewRawSectionTitlePrefix(level, spaces []byte) (RawSectionTitlePrefix, error) {
+	return RawSectionTitlePrefix{
+		Level:  level,
+		Spaces: spaces,
+	}, nil
+}
+
+// Bytes return the representation of this raw title prefix as an array of bytes,
+// while applying an optional offset (if non-empty)
+func (p RawSectionTitlePrefix) Bytes(levelOffset string) ([]byte, error) {
+	result := bytes.NewBuffer(nil)
+	if levelOffset != "" {
+		log.Debugf("applying level offset '%s'", levelOffset)
+		offset, err := strconv.Atoi(levelOffset)
+		if err != nil {
+			return nil, errors.Wrapf(err, "fail to apply level offset '%s' to document to include", levelOffset)
+		}
+		if offset > 0 {
+			result.Write(p.Level)
+			for i := 0; i < offset; i++ {
+				result.WriteRune('=')
+			}
+		}
+	} else {
+		result.Write(p.Level)
+	}
+	result.Write(p.Spaces)
+	return result.Bytes(), nil
+}
+
+// RawSectionTitleContent a raw title prefix
+type RawSectionTitleContent []byte
+
+// NewRawSectionTitleContent returns a new raw section title
+func NewRawSectionTitleContent(content []byte) (RawSectionTitleContent, error) {
+	return RawSectionTitleContent(content), nil
+}
+
+// Bytes return the content of the title as an array of bytes
+func (t RawSectionTitleContent) Bytes() []byte {
+	return []byte(t)
+}
+
+// RawText a line of raw text without the trailing `EOL`
+type RawText []byte
+
+// NewRawText initializes a RawText with the given content
+func NewRawText(content []byte) (RawText, error) {
+	return RawText(content), nil
+}
+
+// Bytes return the content of the text as an array of bytes
+func (t RawText) Bytes() []byte {
+	return []byte(t)
 }
 
 // ------------------------------------------

@@ -29,7 +29,7 @@ var _ = Describe("delimited blocks", func() {
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 
 		It("fenced block with no line", func() {
@@ -39,7 +39,7 @@ var _ = Describe("delimited blocks", func() {
 				Kind:       types.Fenced,
 				Elements:   []interface{}{},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 
 		It("fenced block with multiple lines alone", func() {
@@ -76,7 +76,7 @@ var _ = Describe("delimited blocks", func() {
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 
 		It("fenced block with multiple lines then a paragraph", func() {
@@ -129,7 +129,7 @@ var _ = Describe("delimited blocks", func() {
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent)
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent)
 		})
 
 		It("fenced block after a paragraph", func() {
@@ -167,7 +167,7 @@ var _ = Describe("delimited blocks", func() {
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent)
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent)
 		})
 
 		It("fenced block with unclosed delimiter", func() {
@@ -188,7 +188,7 @@ var _ = Describe("delimited blocks", func() {
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 	})
 
@@ -214,7 +214,7 @@ some listing code
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 
 		It("listing block with no line", func() {
@@ -225,7 +225,7 @@ some listing code
 				Kind:       types.Listing,
 				Elements:   []interface{}{},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 
 		It("listing block with multiple lines alone", func() {
@@ -262,7 +262,7 @@ in the middle
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 
 		It("listing block with unrendered list", func() {
@@ -297,7 +297,7 @@ in the middle
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 
 		It("listing block with multiple lines then a paragraph", func() {
@@ -351,7 +351,7 @@ then a normal paragraph.`
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent)
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent)
 		})
 
 		It("listing block just after a paragraph", func() {
@@ -391,7 +391,7 @@ some listing code
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent)
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent)
 		})
 
 		It("listing block with unclosed delimiter", func() {
@@ -413,7 +413,7 @@ End of file here.`
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 	})
 
@@ -439,7 +439,7 @@ some listing code
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 
 		It("example block with single line starting with a dot", func() {
@@ -462,7 +462,7 @@ some listing code
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 
 		It("example block with multiple lines", func() {
@@ -531,7 +531,7 @@ with *bold content*
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 
 		It("example block with unclosed delimiter", func() {
@@ -553,7 +553,7 @@ End of file here`
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 
 		It("example block with title", func() {
@@ -579,7 +579,7 @@ foo
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 
 		It("example block starting delimiter only", func() {
@@ -589,7 +589,7 @@ foo
 				Kind:       types.Example,
 				Elements:   []interface{}{},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 	})
 
@@ -618,7 +618,7 @@ foo
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 
 		})
 
@@ -662,7 +662,7 @@ paragraphs
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Document"))
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Document"))
 		})
 	})
 
@@ -704,7 +704,7 @@ ____`
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 
 		It("multi-line quote with author only", func() {
@@ -784,7 +784,7 @@ ____
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 
 		It("single-line quote with title only", func() {
@@ -813,7 +813,7 @@ ____
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 
 		It("multi-line quote with rendered lists and block and without author and title", func() {
@@ -897,7 +897,7 @@ ____`
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 
 		It("multi-line quote with rendered list and without author and title", func() {
@@ -980,7 +980,7 @@ ____`
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 
 		It("empty quote without author and title", func() {
@@ -996,7 +996,7 @@ ____`
 				Kind:     types.Quote,
 				Elements: []interface{}{},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 
 		It("unclosed quote without author and title", func() {
@@ -1024,7 +1024,7 @@ foo
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 	})
 
@@ -1066,7 +1066,7 @@ ____`
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 
 		It("multi-line verse with unrendered list author only", func() {
@@ -1107,7 +1107,7 @@ ____
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 
 		It("multi-line verse with title only", func() {
@@ -1136,7 +1136,7 @@ ____
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 
 		It("multi-line verse with unrendered lists and block without author and title", func() {
@@ -1188,7 +1188,7 @@ ____`
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 
 		It("multi-line verse with unrendered list without author and title", func() {
@@ -1215,8 +1215,13 @@ ____`
 									Content: "* foo",
 								},
 							},
-							{},
-							{},
+						},
+					},
+					types.BlankLine{},
+					types.BlankLine{},
+					types.Paragraph{
+						Attributes: types.ElementAttributes{},
+						Lines: []types.InlineElements{
 							{
 								types.StringElement{
 									Content: "\t* bar",
@@ -1226,7 +1231,7 @@ ____`
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 
 		It("empty verse without author and title", func() {
@@ -1242,7 +1247,7 @@ ____`
 				Kind:     types.Verse,
 				Elements: []interface{}{},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 
 		It("unclosed verse without author and title", func() {
@@ -1270,7 +1275,7 @@ foo
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 	})
 
@@ -1320,7 +1325,7 @@ end
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 
 		It("with title, source and languages attributes", func() {
@@ -1369,7 +1374,7 @@ end
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 
 		It("with id, title, source and languages attributes", func() {
@@ -1421,7 +1426,7 @@ end
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 	})
 
@@ -1458,7 +1463,7 @@ some *verse* content
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 
 		It("sidebar block with title, paragraph and sourcecode block", func() {
@@ -1520,7 +1525,7 @@ bar
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 	})
 

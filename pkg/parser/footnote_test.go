@@ -47,7 +47,7 @@ var _ = Describe("footnotes", func() {
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent) // need to get the whole document here
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent) // need to get the whole document here
 		})
 
 		It("footnote with single-line rich content", func() {
@@ -98,7 +98,7 @@ var _ = Describe("footnotes", func() {
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent) // need to get the whole document here
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent) // need to get the whole document here
 		})
 
 		It("footnote in a paragraph", func() {
@@ -132,7 +132,7 @@ var _ = Describe("footnotes", func() {
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent) // need to get the whole document here
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent) // need to get the whole document here
 		})
 
 	})
@@ -187,7 +187,7 @@ var _ = Describe("footnotes", func() {
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent)
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent)
 		})
 
 		It("footnoteref with unknown reference", func() {
@@ -239,7 +239,7 @@ var _ = Describe("footnotes", func() {
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent)
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent)
 		})
 	})
 
@@ -357,6 +357,6 @@ a paragraph with another footnote:[baz]`
 				},
 			},
 		}
-		verify(GinkgoT(), expectedResult, actualContent) // need to get the whole document here
+		verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent) // need to get the whole document here
 	})
 })

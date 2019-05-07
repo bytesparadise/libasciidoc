@@ -18,7 +18,7 @@ var _ = Describe("quoted texts", func() {
 					types.StringElement{Content: "hello"},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("QuotedText"))
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("QuotedText"))
 		})
 
 		It("bold text with 2 words", func() {
@@ -29,7 +29,7 @@ var _ = Describe("quoted texts", func() {
 					types.StringElement{Content: "bold    content"},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("QuotedText"))
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("QuotedText"))
 		})
 
 		It("bold text with 3 words", func() {
@@ -40,7 +40,7 @@ var _ = Describe("quoted texts", func() {
 					types.StringElement{Content: "some bold content"},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("QuotedText"))
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("QuotedText"))
 		})
 
 		It("italic text with 3 words", func() {
@@ -51,7 +51,7 @@ var _ = Describe("quoted texts", func() {
 					types.StringElement{Content: "some italic content"},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("QuotedText"))
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("QuotedText"))
 		})
 
 		It("monospace text with 3 words", func() {
@@ -62,7 +62,7 @@ var _ = Describe("quoted texts", func() {
 					types.StringElement{Content: "some monospace content"},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("QuotedText"))
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("QuotedText"))
 		})
 
 		It("subscript text with 3 words", func() {
@@ -73,7 +73,7 @@ var _ = Describe("quoted texts", func() {
 					types.StringElement{Content: "some subscript content"},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("QuotedText"))
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("QuotedText"))
 		})
 
 		It("superscript text with 3 words", func() {
@@ -84,7 +84,7 @@ var _ = Describe("quoted texts", func() {
 					types.StringElement{Content: "some superscript content"},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("QuotedText"))
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("QuotedText"))
 		})
 
 		It("bold text within italic text", func() {
@@ -102,7 +102,7 @@ var _ = Describe("quoted texts", func() {
 					types.StringElement{Content: " content"},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("QuotedText"))
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("QuotedText"))
 		})
 
 		It("monospace text within bold text within italic quote", func() {
@@ -125,7 +125,7 @@ var _ = Describe("quoted texts", func() {
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("QuotedText"))
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("QuotedText"))
 		})
 
 		It("italic text within italic text", func() {
@@ -143,7 +143,7 @@ var _ = Describe("quoted texts", func() {
 					types.StringElement{Content: " content"},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("QuotedText"))
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("QuotedText"))
 		})
 	})
 
@@ -157,7 +157,7 @@ var _ = Describe("quoted texts", func() {
 					types.StringElement{Content: "hello"},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("QuotedText"))
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("QuotedText"))
 		})
 
 		It("italic text with 3 words", func() {
@@ -168,7 +168,7 @@ var _ = Describe("quoted texts", func() {
 					types.StringElement{Content: "some italic content"},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("QuotedText"))
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("QuotedText"))
 		})
 
 		It("monospace text with 3 words", func() {
@@ -179,7 +179,7 @@ var _ = Describe("quoted texts", func() {
 					types.StringElement{Content: "some monospace content"},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("QuotedText"))
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("QuotedText"))
 		})
 
 		It("subscript text with 3 words", func() {
@@ -190,7 +190,7 @@ var _ = Describe("quoted texts", func() {
 					types.StringElement{Content: "some subscript content"},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("QuotedText"))
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("QuotedText"))
 		})
 
 		It("superscript text attached", func() {
@@ -206,7 +206,7 @@ var _ = Describe("quoted texts", func() {
 				types.StringElement{Content: " is a molecule"},
 			}
 
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
 		})
 
 		It("superscript text with 3 words", func() {
@@ -217,7 +217,7 @@ var _ = Describe("quoted texts", func() {
 					types.StringElement{Content: "some superscript content"},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("QuotedText"))
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("QuotedText"))
 		})
 
 		It("superscript text attached", func() {
@@ -233,7 +233,7 @@ var _ = Describe("quoted texts", func() {
 				types.StringElement{Content: " White"},
 			}
 
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
 		})
 
 		It("superscript text within italic text", func() {
@@ -251,7 +251,7 @@ var _ = Describe("quoted texts", func() {
 					types.StringElement{Content: " content"},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("QuotedText"))
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("QuotedText"))
 		})
 
 		It("superscript text within italic text within bold quote", func() {
@@ -274,7 +274,7 @@ var _ = Describe("quoted texts", func() {
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("QuotedText"))
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("QuotedText"))
 		})
 
 	})
@@ -292,7 +292,7 @@ var _ = Describe("quoted texts", func() {
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
 		})
 
 		It("inline content with invalid bold text - use case 1", func() {
@@ -300,7 +300,7 @@ var _ = Describe("quoted texts", func() {
 			expectedResult := types.InlineElements{
 				types.StringElement{Content: "a paragraph with *some bold content"},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
 		})
 
 		It("inline content with invalid bold text - use case 2", func() {
@@ -308,7 +308,7 @@ var _ = Describe("quoted texts", func() {
 			expectedResult := types.InlineElements{
 				types.StringElement{Content: "a paragraph with *some bold content *"},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
 		})
 
 		It("inline content with invalid bold text - use case 3", func() {
@@ -316,7 +316,7 @@ var _ = Describe("quoted texts", func() {
 			expectedResult := types.InlineElements{
 				types.StringElement{Content: "a paragraph with * some bold content*"},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
 		})
 
 		It("invalid italic text within bold text", func() {
@@ -331,7 +331,7 @@ var _ = Describe("quoted texts", func() {
 				},
 				types.StringElement{Content: "."},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
 		})
 
 		It("italic text within invalid bold text", func() {
@@ -346,7 +346,7 @@ var _ = Describe("quoted texts", func() {
 				},
 				types.StringElement{Content: " together *."},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
 		})
 
 		It("inline content with invalid subscript text - use case 1", func() {
@@ -354,7 +354,7 @@ var _ = Describe("quoted texts", func() {
 			expectedResult := types.InlineElements{
 				types.StringElement{Content: "a paragraph with ~some subscript content"},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
 		})
 
 		It("inline content with invalid subscript text - use case 2", func() {
@@ -362,7 +362,7 @@ var _ = Describe("quoted texts", func() {
 			expectedResult := types.InlineElements{
 				types.StringElement{Content: "a paragraph with ~some subscript content ~"},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
 		})
 
 		It("inline content with invalid subscript text - use case 3", func() {
@@ -370,7 +370,7 @@ var _ = Describe("quoted texts", func() {
 			expectedResult := types.InlineElements{
 				types.StringElement{Content: "a paragraph with ~ some subscript content~"},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
 		})
 
 		It("inline content with invalid superscript text - use case 1", func() {
@@ -378,7 +378,7 @@ var _ = Describe("quoted texts", func() {
 			expectedResult := types.InlineElements{
 				types.StringElement{Content: "a paragraph with ^some superscript content"},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
 		})
 
 		It("inline content with invalid superscript text - use case 2", func() {
@@ -386,7 +386,7 @@ var _ = Describe("quoted texts", func() {
 			expectedResult := types.InlineElements{
 				types.StringElement{Content: "a paragraph with ^some superscript content ^"},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
 		})
 
 		It("inline content with invalid superscript text - use case 3", func() {
@@ -394,7 +394,7 @@ var _ = Describe("quoted texts", func() {
 			expectedResult := types.InlineElements{
 				types.StringElement{Content: "a paragraph with ^ some superscript content^"},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
 		})
 	})
 
@@ -419,7 +419,7 @@ var _ = Describe("quoted texts", func() {
 				},
 				types.StringElement{Content: "."},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
 		})
 
 		It("simple-quote bold within simple-quote bold text", func() {
@@ -440,7 +440,7 @@ var _ = Describe("quoted texts", func() {
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
 		})
 
 		It("double-quote bold within double-quote bold text", func() {
@@ -461,7 +461,7 @@ var _ = Describe("quoted texts", func() {
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
 		})
 
 		It("simple-quote bold within double-quote bold text", func() {
@@ -482,7 +482,7 @@ var _ = Describe("quoted texts", func() {
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
 		})
 
 		It("double-quote bold within simple-quote bold text", func() {
@@ -503,7 +503,7 @@ var _ = Describe("quoted texts", func() {
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
 		})
 
 		It("simple-quote italic within simple-quote italic text", func() {
@@ -524,7 +524,7 @@ var _ = Describe("quoted texts", func() {
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
 		})
 
 		It("double-quote italic within double-quote italic text", func() {
@@ -545,7 +545,7 @@ var _ = Describe("quoted texts", func() {
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
 		})
 
 		It("simple-quote italic within double-quote italic text", func() {
@@ -566,7 +566,7 @@ var _ = Describe("quoted texts", func() {
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
 		})
 
 		It("double-quote italic within simple-quote italic text", func() {
@@ -587,7 +587,7 @@ var _ = Describe("quoted texts", func() {
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
 		})
 
 		It("simple-quote monospace within simple-quote monospace text", func() {
@@ -608,7 +608,7 @@ var _ = Describe("quoted texts", func() {
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
 		})
 
 		It("double-quote monospace within double-quote monospace text", func() {
@@ -629,7 +629,7 @@ var _ = Describe("quoted texts", func() {
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
 		})
 
 		It("simple-quote monospace within double-quote monospace text", func() {
@@ -650,7 +650,7 @@ var _ = Describe("quoted texts", func() {
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
 		})
 
 		It("double-quote monospace within simple-quote monospace text", func() {
@@ -671,7 +671,7 @@ var _ = Describe("quoted texts", func() {
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
 		})
 
 	})
@@ -690,7 +690,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
+				verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
 			})
 
 			It("unbalanced bold text - extra on right", func() {
@@ -704,7 +704,7 @@ var _ = Describe("quoted texts", func() {
 					},
 					types.StringElement{Content: "*"},
 				}
-				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
+				verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
 			})
 		})
 
@@ -720,7 +720,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
+				verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
 			})
 
 			It("unbalanced italic text - extra on right", func() {
@@ -734,7 +734,7 @@ var _ = Describe("quoted texts", func() {
 					},
 					types.StringElement{Content: "_"},
 				}
-				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
+				verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
 			})
 		})
 
@@ -750,7 +750,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
+				verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
 			})
 
 			It("unbalanced monospace text - extra on right", func() {
@@ -764,7 +764,7 @@ var _ = Describe("quoted texts", func() {
 					},
 					types.StringElement{Content: "`"},
 				}
-				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
+				verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
 			})
 		})
 
@@ -778,7 +778,7 @@ var _ = Describe("quoted texts", func() {
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 
 	})
@@ -799,7 +799,7 @@ var _ = Describe("quoted texts", func() {
 							},
 						},
 					}
-					verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+					verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 				})
 
 				It("escaped bold text with simple quote and more backslashes", func() {
@@ -812,7 +812,7 @@ var _ = Describe("quoted texts", func() {
 							},
 						},
 					}
-					verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+					verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 				})
 
 				It("escaped bold text with double quote", func() {
@@ -825,7 +825,7 @@ var _ = Describe("quoted texts", func() {
 							},
 						},
 					}
-					verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+					verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 				})
 
 				It("escaped bold text with double quote and more backslashes", func() {
@@ -838,7 +838,7 @@ var _ = Describe("quoted texts", func() {
 							},
 						},
 					}
-					verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+					verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 				})
 
 				It("escaped bold text with unbalanced double quote", func() {
@@ -851,7 +851,7 @@ var _ = Describe("quoted texts", func() {
 							},
 						},
 					}
-					verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+					verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 				})
 
 				It("escaped bold text with unbalanced double quote and more backslashes", func() {
@@ -864,7 +864,7 @@ var _ = Describe("quoted texts", func() {
 							},
 						},
 					}
-					verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+					verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 				})
 			})
 
@@ -887,7 +887,7 @@ var _ = Describe("quoted texts", func() {
 							},
 						},
 					}
-					verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+					verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 				})
 
 				It("escaped bold text with unbalanced double quote and nested italic test", func() {
@@ -907,7 +907,7 @@ var _ = Describe("quoted texts", func() {
 							},
 						},
 					}
-					verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+					verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 				})
 
 				It("escaped bold text with nested italic", func() {
@@ -927,7 +927,7 @@ var _ = Describe("quoted texts", func() {
 							},
 						},
 					}
-					verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+					verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 				})
 			})
 
@@ -947,7 +947,7 @@ var _ = Describe("quoted texts", func() {
 							},
 						},
 					}
-					verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+					verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 				})
 
 				It("escaped italic text with simple quote and more backslashes", func() {
@@ -960,7 +960,7 @@ var _ = Describe("quoted texts", func() {
 							},
 						},
 					}
-					verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+					verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 				})
 
 				It("escaped italic text with double quote", func() {
@@ -973,7 +973,7 @@ var _ = Describe("quoted texts", func() {
 							},
 						},
 					}
-					verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+					verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 				})
 
 				It("escaped italic text with double quote and more backslashes", func() {
@@ -986,7 +986,7 @@ var _ = Describe("quoted texts", func() {
 							},
 						},
 					}
-					verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+					verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 				})
 
 				It("escaped italic text with unbalanced double quote", func() {
@@ -999,7 +999,7 @@ var _ = Describe("quoted texts", func() {
 							},
 						},
 					}
-					verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+					verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 				})
 
 				It("escaped italic text with unbalanced double quote and more backslashes", func() {
@@ -1012,7 +1012,7 @@ var _ = Describe("quoted texts", func() {
 							},
 						},
 					}
-					verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+					verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 				})
 			})
 
@@ -1035,7 +1035,7 @@ var _ = Describe("quoted texts", func() {
 							},
 						},
 					}
-					verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+					verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 				})
 
 				It("escaped italic text with unbalanced double quote and nested bold test", func() {
@@ -1055,7 +1055,7 @@ var _ = Describe("quoted texts", func() {
 							},
 						},
 					}
-					verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+					verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 				})
 
 				It("escaped italic text with nested bold text", func() {
@@ -1075,7 +1075,7 @@ var _ = Describe("quoted texts", func() {
 							},
 						},
 					}
-					verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+					verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 				})
 			})
 		})
@@ -1094,7 +1094,7 @@ var _ = Describe("quoted texts", func() {
 							},
 						},
 					}
-					verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+					verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 				})
 
 				It("escaped monospace text with simple quote and more backslashes", func() {
@@ -1107,7 +1107,7 @@ var _ = Describe("quoted texts", func() {
 							},
 						},
 					}
-					verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+					verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 				})
 
 				It("escaped monospace text with double quote", func() {
@@ -1120,7 +1120,7 @@ var _ = Describe("quoted texts", func() {
 							},
 						},
 					}
-					verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+					verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 				})
 
 				It("escaped monospace text with double quote and more backslashes", func() {
@@ -1133,7 +1133,7 @@ var _ = Describe("quoted texts", func() {
 							},
 						},
 					}
-					verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+					verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 				})
 
 				It("escaped monospace text with unbalanced double quote", func() {
@@ -1146,7 +1146,7 @@ var _ = Describe("quoted texts", func() {
 							},
 						},
 					}
-					verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+					verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 				})
 
 				It("escaped monospace text with unbalanced double quote and more backslashes", func() {
@@ -1159,7 +1159,7 @@ var _ = Describe("quoted texts", func() {
 							},
 						},
 					}
-					verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+					verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 				})
 			})
 
@@ -1182,7 +1182,7 @@ var _ = Describe("quoted texts", func() {
 							},
 						},
 					}
-					verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+					verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 				})
 
 				It("escaped monospace text with unbalanced double backquote and nested bold test", func() {
@@ -1202,7 +1202,7 @@ var _ = Describe("quoted texts", func() {
 							},
 						},
 					}
-					verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+					verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 				})
 
 				It("escaped monospace text with nested bold text", func() {
@@ -1222,7 +1222,7 @@ var _ = Describe("quoted texts", func() {
 							},
 						},
 					}
-					verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+					verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 				})
 			})
 		})
@@ -1241,7 +1241,7 @@ var _ = Describe("quoted texts", func() {
 							},
 						},
 					}
-					verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+					verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 				})
 
 				It("escaped subscript text with simple quote and more backslashes", func() {
@@ -1254,7 +1254,7 @@ var _ = Describe("quoted texts", func() {
 							},
 						},
 					}
-					verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+					verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 				})
 
 				It("escaped subscript text with double quote", func() {
@@ -1267,7 +1267,7 @@ var _ = Describe("quoted texts", func() {
 							},
 						},
 					}
-					verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+					verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 				})
 
 				It("escaped subscript text with double quote and more backslashes", func() {
@@ -1280,7 +1280,7 @@ var _ = Describe("quoted texts", func() {
 							},
 						},
 					}
-					verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+					verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 				})
 
 				It("escaped subscript text with unbalanced double quote", func() {
@@ -1293,7 +1293,7 @@ var _ = Describe("quoted texts", func() {
 							},
 						},
 					}
-					verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+					verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 				})
 
 				It("escaped subscript text with unbalanced double quote and more backslashes", func() {
@@ -1306,7 +1306,7 @@ var _ = Describe("quoted texts", func() {
 							},
 						},
 					}
-					verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+					verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 				})
 			})
 
@@ -1329,7 +1329,7 @@ var _ = Describe("quoted texts", func() {
 							},
 						},
 					}
-					verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+					verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 				})
 
 				It("escaped subscript text with unbalanced double backquote and nested bold test", func() {
@@ -1349,7 +1349,7 @@ var _ = Describe("quoted texts", func() {
 							},
 						},
 					}
-					verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+					verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 				})
 
 				It("escaped subscript text with nested bold text", func() {
@@ -1369,7 +1369,7 @@ var _ = Describe("quoted texts", func() {
 							},
 						},
 					}
-					verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+					verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 				})
 			})
 		})
@@ -1388,7 +1388,7 @@ var _ = Describe("quoted texts", func() {
 							},
 						},
 					}
-					verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+					verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 				})
 
 				It("escaped superscript text with simple quote and more backslashes", func() {
@@ -1401,7 +1401,7 @@ var _ = Describe("quoted texts", func() {
 							},
 						},
 					}
-					verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+					verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 				})
 
 				It("escaped superscript text with double quote", func() {
@@ -1414,7 +1414,7 @@ var _ = Describe("quoted texts", func() {
 							},
 						},
 					}
-					verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+					verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 				})
 
 				It("escaped superscript text with double quote and more backslashes", func() {
@@ -1427,7 +1427,7 @@ var _ = Describe("quoted texts", func() {
 							},
 						},
 					}
-					verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+					verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 				})
 
 				It("escaped superscript text with unbalanced double quote", func() {
@@ -1440,7 +1440,7 @@ var _ = Describe("quoted texts", func() {
 							},
 						},
 					}
-					verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+					verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 				})
 
 				It("escaped superscript text with unbalanced double quote and more backslashes", func() {
@@ -1453,7 +1453,7 @@ var _ = Describe("quoted texts", func() {
 							},
 						},
 					}
-					verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+					verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 				})
 			})
 
@@ -1476,7 +1476,7 @@ var _ = Describe("quoted texts", func() {
 							},
 						},
 					}
-					verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+					verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 				})
 
 				It("escaped superscript text with unbalanced double backquote and nested bold test", func() {
@@ -1496,7 +1496,7 @@ var _ = Describe("quoted texts", func() {
 							},
 						},
 					}
-					verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+					verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 				})
 
 				It("escaped superscript text with nested bold text", func() {
@@ -1516,7 +1516,7 @@ var _ = Describe("quoted texts", func() {
 							},
 						},
 					}
-					verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+					verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 				})
 			})
 		})

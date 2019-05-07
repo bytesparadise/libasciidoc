@@ -84,6 +84,34 @@ include::includes/hello_world.go[]`
 		verify(GinkgoT(), expectedResult, actualContent)
 	})
 
+	It("include file and append following elements in included section", func() {
+		actualContent := `a first paragraph
+
+include::includes/chapter-a.adoc[leveloffset=+1]
+
+a second paragraph
+
+a third paragraph`
+		expectedResult := `<div class="paragraph">
+<p>a first paragraph</p>
+</div>
+<div class="sect1">
+<h2 id="_chapter_a">Chapter A</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>content</p>
+</div>
+<div class="paragraph">
+<p>a second paragraph</p>
+</div>
+<div class="paragraph">
+<p>a third paragraph</p>
+</div>
+</div>
+</div>`
+		verify(GinkgoT(), expectedResult, actualContent)
+	})
+
 	Context("file inclusion in delimited blocks", func() {
 
 		Context("adoc file inclusion in delimited blocks", func() {

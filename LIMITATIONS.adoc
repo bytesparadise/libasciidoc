@@ -55,3 +55,9 @@ will produce no HTML element at all, whereas Asciidoc/Asciidoctor will produce :
 <p></p>
 </div>
 ....
+
+== File Inclusions
+
+File inclusions are performed before the full parsing takes place. During this phase, the main file is parsed to look for `include::` directives and then replace them with the content of the file to include. 
+If the file to include has an empty last line, it will be ignored, so it's always a good practice to include a blank line after the `include::` directive in the main document, to avoid side-effects during
+the "full" parsing.

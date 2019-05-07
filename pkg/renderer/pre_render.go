@@ -2,7 +2,6 @@ package renderer
 
 import (
 	"github.com/davecgh/go-spew/spew"
-	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -11,10 +10,6 @@ import (
 // - wraps elements in a preamble
 // - generated the ToC
 func Prerender(ctx *Context) error {
-	err := ProcessFileInclusions(ctx)
-	if err != nil {
-		return errors.Wrap(err, "failed to pre-render document")
-	}
 	IncludePreamble(ctx)
 	IncludeTableOfContents(ctx)
 	ProcessDocumentHeader(ctx)

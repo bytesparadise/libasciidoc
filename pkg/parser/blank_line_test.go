@@ -35,7 +35,7 @@ second paragraph`
 				},
 			},
 		}
-		verify(GinkgoT(), expectedResult, actualDocument)
+		verifyWithPreprocessing(GinkgoT(), expectedResult, actualDocument)
 	})
 	It("blank line with spaces and tabs between 2 paragraphs and after second paragraph", func() {
 		actualDocument := `first paragraph
@@ -71,7 +71,7 @@ second paragraph
 				},
 			},
 		}
-		verify(GinkgoT(), expectedResult, actualDocument)
+		verifyWithPreprocessing(GinkgoT(), expectedResult, actualDocument)
 	})
 
 })

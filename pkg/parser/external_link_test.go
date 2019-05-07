@@ -26,7 +26,7 @@ var _ = Describe("links", func() {
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 
 		It("external link with empty text", func() {
@@ -45,7 +45,7 @@ var _ = Describe("links", func() {
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 
 		It("external link with text", func() {
@@ -64,7 +64,7 @@ var _ = Describe("links", func() {
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 
 		It("external link with text and extra attributes", func() {
@@ -84,7 +84,7 @@ var _ = Describe("links", func() {
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 
 		It("external link with extra attributes only", func() {
@@ -104,7 +104,7 @@ var _ = Describe("links", func() {
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 	})
 
@@ -121,7 +121,7 @@ var _ = Describe("links", func() {
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
 		})
 
 		It("relative link to doc with text", func() {
@@ -135,7 +135,7 @@ var _ = Describe("links", func() {
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
 		})
 
 		It("relative link to external URL with text", func() {
@@ -149,7 +149,7 @@ var _ = Describe("links", func() {
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
 		})
 
 		It("relative link to external URL with text and extra attributes", func() {
@@ -164,7 +164,7 @@ var _ = Describe("links", func() {
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
 		})
 
 		It("relative link to external URL with extra attributes only", func() {
@@ -179,7 +179,7 @@ var _ = Describe("links", func() {
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
 		})
 
 		It("invalid relative link to doc", func() {
@@ -189,7 +189,7 @@ var _ = Describe("links", func() {
 					Content: "a link to link:foo.adoc",
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
 		})
 	})
 

@@ -36,7 +36,7 @@ var _ = Describe("sections", func() {
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent)
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent)
 		})
 
 		It("header with many spaces around content", func() {
@@ -66,7 +66,7 @@ var _ = Describe("sections", func() {
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent)
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent)
 		})
 
 		It("header and paragraph", func() {
@@ -108,7 +108,7 @@ and a paragraph`
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent)
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent)
 		})
 
 		It("two sections with level 0", func() {
@@ -157,7 +157,7 @@ and a paragraph`
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent)
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent)
 		})
 
 		It("section level 1 alone", func() {
@@ -187,7 +187,7 @@ and a paragraph`
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent)
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent)
 		})
 
 		It("section level 1 with quoted text", func() {
@@ -222,7 +222,7 @@ and a paragraph`
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent)
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent)
 		})
 
 		It("section level 0 with nested section level 1", func() {
@@ -271,7 +271,7 @@ and a paragraph`
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent)
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent)
 		})
 
 		It("section level 0 with nested section level 2", func() {
@@ -320,7 +320,7 @@ and a paragraph`
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent)
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent)
 		})
 
 		It("section level 1 with immediate paragraph", func() {
@@ -360,7 +360,7 @@ and a paragraph`
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent)
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent)
 		})
 
 		It("section level 1 with a paragraph separated by empty line", func() {
@@ -401,7 +401,7 @@ and a paragraph`
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent)
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent)
 		})
 
 		It("section level 1 with a paragraph separated by non-empty line", func() {
@@ -440,7 +440,7 @@ and a paragraph`
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent)
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent)
 		})
 
 		It("section levels 1, 2, 3, 2", func() {
@@ -557,7 +557,7 @@ a paragraph`
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent)
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent)
 		})
 
 		It("single section with custom IDs", func() {
@@ -588,7 +588,7 @@ a paragraph`
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent)
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent)
 		})
 
 		It("multiple sections with custom IDs", func() {
@@ -667,7 +667,7 @@ a paragraph`
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent)
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent)
 		})
 
 		It("sections with same title", func() {
@@ -716,7 +716,7 @@ a paragraph`
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent)
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent)
 		})
 	})
 
@@ -738,7 +738,7 @@ a paragraph`
 						},
 					},
 				}}
-			verify(GinkgoT(), expectedResult, actualContent)
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent)
 		})
 
 		It("header invalid - header space", func() {
@@ -760,7 +760,7 @@ a paragraph`
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent)
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent)
 		})
 
 		It("header with invalid section1", func() {
@@ -801,7 +801,7 @@ a paragraph`
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent)
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent)
 		})
 
 	})
@@ -840,7 +840,7 @@ Doc Writer <thedoc@asciidoctor.org>`
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent)
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent)
 		})
 	})
 })

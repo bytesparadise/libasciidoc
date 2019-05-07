@@ -8,7 +8,6 @@ import (
 	"github.com/bytesparadise/libasciidoc/pkg/parser"
 	"github.com/bytesparadise/libasciidoc/pkg/renderer"
 	"github.com/bytesparadise/libasciidoc/pkg/renderer/html5"
-	"github.com/bytesparadise/libasciidoc/pkg/types"
 	"github.com/davecgh/go-spew/spew"
 	. "github.com/onsi/ginkgo"
 	"github.com/sergi/go-diff/diffmatchpatch"
@@ -17,13 +16,12 @@ import (
 )
 
 func verify(t GinkgoTInterface, expectedResult, content string, rendererOpts ...renderer.Option) {
-	t.Logf("processing '%s'", content)
+	// t.Logf("processing '%s'", content)
 	reader := strings.NewReader(content)
-	doc, err := parser.ParseReader("", reader)
+	actualDocument, err := parser.ParseDocument("", reader)
 	require.NoError(t, err, "Error found while parsing the document")
-	t.Logf("actual document: `%s`", spew.Sdump(doc))
+	t.Logf("actual document: `%s`", spew.Sdump(actualDocument))
 	buff := bytes.NewBuffer(nil)
-	actualDocument := doc.(types.Document)
 	rendererCtx := renderer.Wrap(context.Background(), actualDocument, rendererOpts...)
 	// insert tables of contents, preamble and process file inclusions
 	err = renderer.Prerender(rendererCtx)

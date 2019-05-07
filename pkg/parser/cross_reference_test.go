@@ -69,7 +69,7 @@ with some content linked to <<thetitle>>!`
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Document"))
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Document"))
 		})
 
 		It("cross-reference with custom id and label", func() {
@@ -131,7 +131,7 @@ with some content linked to <<thetitle,a label to the title>>!`
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Document"))
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Document"))
 		})
 	})
 })

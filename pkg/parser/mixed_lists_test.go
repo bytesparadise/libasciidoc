@@ -128,7 +128,7 @@ var _ = Describe("mixed lists", func() {
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 
 	})
@@ -373,7 +373,7 @@ var _ = Describe("mixed lists", func() {
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 
 		It("complex case 2 - mixed lists", func() {
@@ -785,7 +785,7 @@ ii) ordered 1.2.ii
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 
 		It("complex case 4 - mixed lists", func() {
@@ -853,7 +853,7 @@ Operating Systems::
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 
 		It("complex case 5 - mixed lists", func() {
@@ -1164,7 +1164,7 @@ Cloud Providers::
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 	})
 
@@ -1250,7 +1250,7 @@ Cloud Providers::
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Document"))
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Document"))
 		})
 
 		It("same list with custom number style on sublist", func() {
@@ -1356,7 +1356,7 @@ Cloud Providers::
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Document"))
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Document"))
 		})
 
 		It("distinct lists with blankline and item attribute - case 1", func() {
@@ -1449,7 +1449,7 @@ Cloud Providers::
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Document"))
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Document"))
 		})
 
 		It("distinct lists with blankline and item attribute - case 2", func() {
@@ -1558,7 +1558,7 @@ Cloud Providers::
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Document"))
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Document"))
 		})
 
 		It("same list with single comment line inside", func() {
@@ -1617,7 +1617,7 @@ Cloud Providers::
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Document"))
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Document"))
 		})
 
 		It("same list with multiple comment lines inside", func() {
@@ -1684,7 +1684,7 @@ Cloud Providers::
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Document"))
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Document"))
 		})
 
 		It("distinct lists separated by single comment line", func() {
@@ -1750,7 +1750,7 @@ Cloud Providers::
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Document"))
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Document"))
 		})
 
 		It("distinct lists separated by multiple comment lines", func() {
@@ -1824,7 +1824,7 @@ Cloud Providers::
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Document"))
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Document"))
 		})
 	})
 })

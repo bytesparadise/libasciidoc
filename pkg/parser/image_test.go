@@ -22,7 +22,7 @@ var _ = Describe("images", func() {
 					},
 					Path: "images/foo.png",
 				}
-				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+				verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 			})
 
 			It("block image with empty alt and trailing spaces", func() {
@@ -35,7 +35,7 @@ var _ = Describe("images", func() {
 					},
 					Path: "images/foo.png",
 				}
-				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+				verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 			})
 
 			It("block image with line return", func() {
@@ -50,7 +50,7 @@ var _ = Describe("images", func() {
 					},
 					Path: "images/foo.png",
 				}
-				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+				verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 			})
 
 			It("block image with 1 empty blank line", func() {
@@ -65,7 +65,7 @@ var _ = Describe("images", func() {
 					},
 					Path: "images/foo.png",
 				}
-				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+				verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 			})
 
 			It("block image with 2 blank lines with spaces and tabs", func() {
@@ -79,7 +79,7 @@ var _ = Describe("images", func() {
 					},
 					Path: "images/foo.png",
 				}
-				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+				verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 			})
 
 			It("block image with alt", func() {
@@ -92,7 +92,7 @@ var _ = Describe("images", func() {
 					},
 					Path: "images/foo.png",
 				}
-				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+				verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 			})
 
 			It("block image with dimensions and id link title meta", func() {
@@ -112,7 +112,7 @@ image::images/foo.png[the foo.png image, 600, 400]`
 					},
 					Path: "images/foo.png",
 				}
-				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+				verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 			})
 
 			It("2 block images", func() {
@@ -142,7 +142,7 @@ image::appa.png[]`
 						},
 					},
 				}
-				verify(GinkgoT(), expectedResult, actualContent)
+				verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent)
 			})
 		})
 
@@ -163,7 +163,7 @@ image::appa.png[]`
 							},
 						},
 					}
-					verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Paragraph"))
+					verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Paragraph"))
 				})
 			})
 
@@ -187,7 +187,7 @@ image::appa.png[]`
 							},
 						},
 					}
-					verify(GinkgoT(), expectedResult, actualContent)
+					verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent)
 				})
 			})
 		})
@@ -209,7 +209,7 @@ image::appa.png[]`
 						Path: "images/foo.png",
 					},
 				}
-				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
+				verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
 			})
 
 			It("inline image with empty alt and trailing spaces", func() {
@@ -232,7 +232,7 @@ image::appa.png[]`
 						},
 					},
 				}
-				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Paragraph"))
+				verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Paragraph"))
 			})
 
 			It("inline image surrounded with test", func() {
@@ -253,7 +253,7 @@ image::appa.png[]`
 						Content: " bar...",
 					},
 				}
-				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
+				verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
 			})
 
 			It("inline image with alt alone", func() {
@@ -268,7 +268,7 @@ image::appa.png[]`
 						Path: "images/foo.png",
 					},
 				}
-				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
+				verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
 			})
 
 			It("inline image with alt and width", func() {
@@ -283,7 +283,7 @@ image::appa.png[]`
 						Path: "images/foo.png",
 					},
 				}
-				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
+				verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
 			})
 
 			It("inline image with alt, width and height", func() {
@@ -298,7 +298,7 @@ image::appa.png[]`
 						Path: "images/foo.png",
 					},
 				}
-				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
+				verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
 			})
 
 			It("inline image with single other attribute only", func() {
@@ -315,7 +315,7 @@ image::appa.png[]`
 						Path: "images/foo.png",
 					},
 				}
-				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"), parser.Debug(false))
+				verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"), parser.Debug(false))
 			})
 
 			It("inline image with multiple other attributes only", func() {
@@ -334,7 +334,7 @@ image::appa.png[]`
 						Path: "images/foo.png",
 					},
 				}
-				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
+				verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
 			})
 
 			It("inline image with alt, width, height and other attributes", func() {
@@ -353,7 +353,7 @@ image::appa.png[]`
 						Path: "images/foo.png",
 					},
 				}
-				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
+				verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
 			})
 
 			It("inline image in a paragraph with space after colon", func() {
@@ -376,7 +376,7 @@ image::appa.png[]`
 						},
 					},
 				}
-				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+				verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 			})
 
 			It("inline image in a paragraph without space keyword", func() {
@@ -400,7 +400,7 @@ image::appa.png[]`
 					},
 				}
 
-				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+				verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 			})
 		})
 		Context("errors", func() {
@@ -417,7 +417,7 @@ image::appa.png[]`
 						},
 					},
 				}
-				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Paragraph"))
+				verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Paragraph"))
 			})
 		})
 	})

@@ -7,16 +7,35 @@ import (
     "github.com/bytesparadise/libasciidoc/pkg/types"
 
     log "github.com/sirupsen/logrus"
+    errs "github.com/pkg/errors"
 )
 
 // *****************************************************************************************
 // This file is generated after its sibling `asciidoc-grammar.peg` file. DO NOT MODIFY !
 // *****************************************************************************************
 
+// Parse parses the data from b using filename as information in the
+// error messages.
+func ParseDocument(filename string, r io.Reader, opts ...Option) (types.Document, error) {
+	preparsedDoc, err := PreparseDocument(filename, r, opts...)
+	if err != nil {
+		return types.Document{}, err
+	}
+    result, err := Parse(filename, preparsedDoc, opts...)
+	if err != nil {
+		return types.Document{}, err
+	}
+	doc, ok := result.(types.Document)
+	if !ok {
+		return types.Document{}, errs.Errorf("invalid type of result: %T (expected a Document)", result)
+	}
+	return doc, nil
+}
+
 }
 
 // ------------------------------------------
-// Document
+// Document - fully parsed document
 // ------------------------------------------
 Document <- frontMatter:(FrontMatter?) blocks:(DocumentBlocks) EOF {
     return types.NewDocument(frontMatter, blocks.([]interface{}))
@@ -31,6 +50,36 @@ DocumentBlocks <- block:(Section0WithMetadata?) blocks:(DocumentBlock*) {
 
 DocumentBlock <- attributes:(ElementAttribute)* block:(Section / DocumentElement) {
     return types.WithAttributes(block, attributes.([]interface{}))
+}
+
+// ------------------------------------------------------------------------------------
+// PreparsedDocument: document where only preprocessing directives are parsed,
+// while the rest is just retrieved as raw text
+// ------------------------------------------------------------------------------------
+PreparsedDocument <- blocks:(PreparsedDocumentBlocks) EOF {
+    return types.NewPreparsedDocument(blocks.([]interface{}))
+}
+
+PreparsedDocumentBlocks <- (DocumentAttributeDeclaration / 
+        RawSectionTitle /
+        FileInclude / 
+        BlankLine / 
+        RawText)* 
+
+RawSectionTitle <- prefix:(RawSectionTitlePrefix) title:RawSectionTitleContent {
+    return types.NewRawSectionTitle(prefix.(types.RawSectionTitlePrefix), title.(types.RawSectionTitleContent))
+}
+
+RawSectionTitlePrefix <- level:("="+ { return c.text, nil }) spaces:(WS+ { return c.text, nil }) {
+    return types.NewRawSectionTitlePrefix(level.([]byte), spaces.([]byte))
+}
+
+RawSectionTitleContent <- content:((!EOL .)+ { return c.text, nil }) EOL {
+    return types.NewRawSectionTitleContent(content.([]byte))
+}
+
+RawText <- content:((!EOL .)+ { return c.text, nil }) EOL {
+    return types.NewRawText(content.([]byte))
 }
 
 // ------------------------------------------
@@ -173,8 +222,16 @@ DocumentElement <- !EOF // when reaching EOF, do not try to parse a new document
 // Element Attributes
 // ------------------------------------------
 ElementAttribute <- &("[" / "." / "#") // skip if the content does not start with one of those characters
-    attr:(ElementID / ElementTitle / ElementRole / SourceAttributes / QuoteAttributes / VerseAttributes / AdmonitionMarkerAttribute / HorizontalLayout / AttributeGroup) WS* EOL {
-        return attr, nil // avoid returning something like `[]interface{}{attr, EOL}`
+    attr:(ElementID / 
+        ElementTitle / 
+        ElementRole / 
+        SourceAttributes / 
+        QuoteAttributes / 
+        VerseAttributes / 
+        AdmonitionMarkerAttribute / 
+        HorizontalLayout / 
+        AttributeGroup) WS* EOL {
+    return attr, nil // avoid returning something like `[]interface{}{attr, EOL}`
 }
 
 ElementAttributePrefixMatch <- "[" / "." / "#"
@@ -326,7 +383,7 @@ Section1_5 <- &"=" // just skip if the content does not start with at least one 
         return section, nil
 }
 
-Section2_5 <- &"=" // just skip if the content does not start with at least one '='
+Section2_5 <- &"="  // just skip if the content does not start with at least one '='
     section:(Section2 / Section3 / Section4 / Section5) {
         return section, nil
 }
@@ -341,9 +398,16 @@ Section4_5 <- &"=" // just skip if the content does not start with at least one 
         return section, nil
 }
 
-SectionTitlePrefix <- ("=")+ WS*
+SectionTitlePrefix <- Section0TitlePrefix /
+                        Section1TitlePrefix /
+                        Section2TitlePrefix /
+                        Section3TitlePrefix /
+                        Section4TitlePrefix /
+                        Section5TitlePrefix
 
-Section0TitlePrefix <- "=" WS+
+Section0TitlePrefix <- "=" WS+ {
+    return c.text, nil
+}
 
 Section0WithMetadata <- title:(Section0Title) 
         authors:(DocumentAuthors?) 
@@ -364,11 +428,6 @@ Section0Title <- Section0TitlePrefix elements:(TitleElements) id:(InlineElementI
 }
 
 
-// Section0TitleWithAttributes <- attributes:(ElementAttribute)* 
-//         title:(Section0Title) {
-//     return types.WithAttributes(title, attributes.([]interface{}))
-// }
-
 Section0Element <- !Section0TitlePrefix 
         attributes:(ElementAttribute)* 
         element:(Section1_5 / DocumentElement) {
@@ -381,10 +440,12 @@ Section1 <- header:(Section1Title)
     return types.NewSection(1, header.(types.SectionTitle), elements.([]interface{}))
 }
 
-Section1TitlePrefix <- "==" WS+
+Section1TitlePrefix <- "==" WS+ {
+    return c.text, nil
+}
 
 Section1Title <- Section1TitlePrefix elements:(TitleElements) id:(InlineElementID*) EOL {
-    return types.NewSectionTitle(elements.(types.InlineElements), id.([]interface{})) 
+    return types.NewSectionTitle(elements.(types.InlineElements), id.([]interface{}))
 }
 
 Section1Element <- !Section1TitlePrefix 
@@ -399,7 +460,9 @@ Section2 <- header:(Section2Title)
     return types.NewSection(2, header.(types.SectionTitle), elements.([]interface{}))
 }
 
-Section2TitlePrefix <- "===" WS+ 
+Section2TitlePrefix <- "===" WS+ {
+    return c.text, nil
+}
 
 Section2Title <- Section2TitlePrefix elements:(TitleElements) id:(InlineElementID*) EOL {
     return types.NewSectionTitle(elements.(types.InlineElements), id.([]interface{})) 
@@ -417,7 +480,9 @@ Section3 <- header:(Section3Title)
     return types.NewSection(3, header.(types.SectionTitle), elements.([]interface{}))
 }
 
-Section3TitlePrefix <- "====" WS+ 
+Section3TitlePrefix <- "====" WS+ {
+    return c.text, nil
+}
 
 Section3Title <- Section3TitlePrefix elements:(TitleElements) id:(InlineElementID*) EOL {
     return types.NewSectionTitle(elements.(types.InlineElements), id.([]interface{})) 
@@ -435,7 +500,9 @@ Section4 <- header:(Section4Title)
     return types.NewSection(4, header.(types.SectionTitle), elements.([]interface{}))
 }
 
-Section4TitlePrefix <- "=====" WS+ 
+Section4TitlePrefix <- "=====" WS+ {
+    return c.text, nil
+}
 
 Section4Title <- Section4TitlePrefix elements:(TitleElements) id:(InlineElementID*) EOL {
     return types.NewSectionTitle(elements.(types.InlineElements), id.([]interface{})) 
@@ -453,7 +520,9 @@ Section5 <- header:(Section5Title)
     return types.NewSection(5, header.(types.SectionTitle), elements.([]interface{}))
 }
 
-Section5TitlePrefix <- "======" WS+ 
+Section5TitlePrefix <- "======" WS+ {
+    return c.text, nil
+}
 
 Section5Title <- Section5TitlePrefix elements:(TitleElements) id:(InlineElementID*) EOL {
     return types.NewSectionTitle(elements.(types.InlineElements), id.([]interface{})) 
@@ -733,11 +802,11 @@ VerseParagraph <-
     }
     verse:(
         // admonition paragraph 
-        !("="+ WS+ !NEWLINE) t:(AdmonitionKind) ": " lines:(InlineElements)+ { 
+        t:(AdmonitionKind) ": " lines:(InlineElements)+ { 
             return types.NewAdmonitionParagraph(lines.([]interface{}), t.(types.AdmonitionKind))
         } / 
         // other kind of paragraph (verse, regular, etc.)
-        !("="+ WS+ !NEWLINE) lines:(InlineElements)+ { 
+        lines:(InlineElements)+ { 
             return types.NewParagraph(lines.([]interface{}))
         } 
     ) #{
@@ -747,7 +816,7 @@ VerseParagraph <-
         return verse, nil
 }
 
-InlineElements <- !BlankLine 
+InlineElements <- !BlankLine
     elements:(comment:(SingleLineComment) {
         return types.NewInlineElements([]interface{}{comment})
     } / !BlockDelimiter elements:(InlineElement)+ linebreak:(LineBreak)? EOL { 
@@ -1198,9 +1267,31 @@ QuoteBlock <- QuoteBlockDelimiter content:(QuoteBlockElement)* (QuoteBlockDelimi
 }
 
 QuoteBlockElement <- 
-    !QuoteBlockDelimiter !EOF element:(DocumentElement) {
+    !QuoteBlockDelimiter !EOF element:(BlankLine 
+            / FileInclude
+            / VerseBlock
+            / VerseParagraph
+            / ImageBlock 
+            / List 
+            / FencedBlock
+            / ListingBlock
+            / ExampleBlock
+            / CommentBlock
+            / SingleLineComment
+            / QuoteBlock 
+            / SidebarBlock
+            / Table 
+            / LiteralBlock 
+            / DocumentAttributeDeclaration 
+            / DocumentAttributeReset 
+            / TableOfContentsMacro
+            / QuoteBlockParagraph) {
         return element, nil
     } 
+
+QuoteBlockParagraph <- lines:(InlineElements)+ { 
+    return types.NewParagraph(lines.([]interface{}))
+}
 
 // -------------------------------------------------------------------------------------
 // Verse blocks
@@ -1220,7 +1311,7 @@ verse:(QuoteBlockDelimiter content:(VerseBlockElement)* (QuoteBlockDelimiter / E
     return verse, nil
 }
 
-VerseBlockElement <- VerseFileInclude / VerseBlockParagraph
+VerseBlockElement <- VerseFileInclude / BlankLine / VerseBlockParagraph
 
 
 VerseFileInclude <- !QuoteBlockDelimiter !EOF include:(FileInclude) {
@@ -1231,7 +1322,7 @@ VerseBlockParagraph <- lines:(VerseBlockLine)+ {
     return types.NewParagraph(lines.([]interface{}), nil)
 }
 
-VerseBlockLine <- !QuoteBlockDelimiter !EOF line:(VerseBlockLineContent) EOL {
+VerseBlockLine <- !QuoteBlockDelimiter !BlankLine !EOF line:(VerseBlockLineContent) EOL {
     return line.(types.InlineElements), nil
 }
 
