@@ -48,7 +48,7 @@ var _ = Describe("tables", func() {
 				},
 			},
 		}
-		verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+		verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 	})
 
 	It("1-line table with 3 cells", func() {
@@ -95,7 +95,7 @@ var _ = Describe("tables", func() {
 				},
 			},
 		}
-		verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+		verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 	})
 
 	It("table with title, headers and 1 line per cell", func() {
@@ -160,7 +160,7 @@ var _ = Describe("tables", func() {
 				},
 			},
 		}
-		verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+		verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 	})
 
 	It("empty table ", func() {
@@ -170,6 +170,6 @@ var _ = Describe("tables", func() {
 			Attributes: types.ElementAttributes{},
 			Lines:      []types.TableLine{},
 		}
-		verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+		verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 	})
 })

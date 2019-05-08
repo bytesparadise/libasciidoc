@@ -26,7 +26,7 @@ a paragraph`
 						},
 					},
 				}
-				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+				verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 			})
 			It("spaces in link", func() {
 				actualContent := `[link= http://foo.bar  ]
@@ -43,7 +43,7 @@ a paragraph`
 						},
 					},
 				}
-				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+				verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 			})
 		})
 
@@ -66,7 +66,7 @@ a paragraph`
 						},
 					},
 				}
-				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+				verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 			})
 
 			It("unbalanced brackets", func() {
@@ -87,7 +87,7 @@ a paragraph`
 						},
 					},
 				}
-				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+				verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 			})
 		})
 	})
@@ -112,7 +112,7 @@ a paragraph`
 						},
 					},
 				}
-				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+				verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 			})
 
 			It("short-hand syntax", func() {
@@ -131,7 +131,7 @@ a paragraph`
 						},
 					},
 				}
-				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+				verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 			})
 		})
 
@@ -155,7 +155,7 @@ a paragraph`
 						},
 					},
 				}
-				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+				verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 			})
 
 			It("unbalanced brackets", func() {
@@ -176,7 +176,7 @@ a paragraph`
 						},
 					},
 				}
-				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+				verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 			})
 		})
 	})
@@ -200,7 +200,7 @@ a paragraph`
 						},
 					},
 				}
-				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+				verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 			})
 		})
 
@@ -238,7 +238,7 @@ a list item!`
 					},
 				}
 
-				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+				verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 			})
 
 			It("not a dot", func() {
@@ -260,7 +260,7 @@ a paragraph`
 						},
 					},
 				}
-				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+				verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 			})
 		})
 	})
@@ -284,7 +284,7 @@ a paragraph`
 						},
 					},
 				}
-				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+				verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 			})
 
 			It("full role syntax", func() {
@@ -302,7 +302,7 @@ a paragraph`
 						},
 					},
 				}
-				verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+				verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 			})
 		})
 	})

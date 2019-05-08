@@ -4,8 +4,6 @@ import (
 	"bytes"
 	"strings"
 
-	"github.com/davecgh/go-spew/spew"
-
 	"github.com/bytesparadise/libasciidoc/pkg/parser"
 
 	"github.com/bytesparadise/libasciidoc/pkg/renderer"
@@ -93,10 +91,10 @@ func renderLine(ctx *renderer.Context, elements types.InlineElements, renderElem
 	if !ok {
 		return []byte{}, errors.Errorf("failed process elements after substitution")
 	}
-	if log.IsLevelEnabled(log.DebugLevel) {
-		log.Debug("post-substitution line of elements:")
-		spew.Dump(elements)
-	}
+	// if log.IsLevelEnabled(log.DebugLevel) {
+	// 	log.Debug("post-substitution line of elements:")
+	// 	spew.Dump(elements)
+	// }
 	buff = bytes.NewBuffer(nil)
 	// render all elements of the line, but StringElement must be rendered plain-text now, to avoid double HTML escape
 	for i, element := range elements {

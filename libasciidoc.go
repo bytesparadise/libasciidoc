@@ -43,7 +43,7 @@ func ConvertToHTML(ctx context.Context, r io.Reader, output io.Writer, options .
 	log.Debugf("parsing the asciidoc source...")
 	start := time.Now()
 	stats := parser.Stats{}
-	doc, err := parser.ParseReader("", r, parser.Statistics(&stats, "no match"))
+	doc, err := parser.ParseDocument("", r, parser.Statistics(&stats, "no match"))
 	if err != nil {
 		return nil, errors.Wrapf(err, "error while parsing the document")
 	}
@@ -51,7 +51,7 @@ func ConvertToHTML(ctx context.Context, r io.Reader, output io.Writer, options .
 	log.Debugf("parsing stats:")
 	log.Debugf("- parsing duration:                %v", duration)
 	log.Debugf("- expressions processed:           %v", stats.ExprCnt)
-	return convertToHTML(ctx, doc.(types.Document), output, options...)
+	return convertToHTML(ctx, doc, output, options...)
 }
 
 func convertToHTML(ctx context.Context, doc types.Document, output io.Writer, options ...renderer.Option) (map[string]interface{}, error) {

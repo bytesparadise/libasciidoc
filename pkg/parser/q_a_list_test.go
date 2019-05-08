@@ -57,6 +57,6 @@ What is the answer to the Ultimate Question?:: 42`
 				},
 			},
 		}
-		verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+		verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 	})
 })

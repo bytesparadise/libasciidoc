@@ -82,7 +82,7 @@ generate: prebuild-checks
 ## generate the .go file based on the asciidoc grammar
 generate-optimized:
 	@echo "generating the parser (optimized)..."
-	@pigeon -optimize-grammar -alternate-entrypoints InlineElementsWithoutSubtitution,VerbatimBlock ./pkg/parser/asciidoc-grammar.peg > ./pkg/parser/asciidoc_parser.go
+	@pigeon -optimize-grammar -alternate-entrypoints PreparsedDocument,InlineElementsWithoutSubtitution,VerbatimBlock ./pkg/parser/asciidoc-grammar.peg > ./pkg/parser/asciidoc_parser.go
 
 
 .PHONY: test

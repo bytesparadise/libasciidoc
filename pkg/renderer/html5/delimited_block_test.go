@@ -626,11 +626,15 @@ ____
 - some 
 - verse 
 - content
+
+and more!
 ____`
 			expectedResult := `<div class="verseblock">
 <pre class="content">- some
 - verse
-- content</pre>
+- content
+
+and more!</pre>
 <div class="attribution">
 &#8212; john doe<br>
 <cite>verse title</cite>

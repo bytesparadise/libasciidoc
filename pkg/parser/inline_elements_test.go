@@ -19,7 +19,7 @@ var _ = Describe("inline elements", func() {
 			},
 		}
 
-		verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
+		verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
 	})
 
 	It("bold text within parenthesis", func() {
@@ -35,7 +35,7 @@ var _ = Describe("inline elements", func() {
 			types.StringElement{Content: ")"},
 		}
 
-		verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
+		verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
 	})
 
 	It("bold text within words", func() {
@@ -43,7 +43,7 @@ var _ = Describe("inline elements", func() {
 		expectedResult := types.InlineElements{
 			types.StringElement{Content: "some*bold*content"},
 		}
-		verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
+		verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
 	})
 
 	It("invalid bold portion of text", func() {
@@ -51,7 +51,7 @@ var _ = Describe("inline elements", func() {
 		expectedResult := types.InlineElements{
 			types.StringElement{Content: "*foo*bar"},
 		}
-		verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
+		verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
 	})
 
 	It("valid bold portion of text", func() {
@@ -65,6 +65,6 @@ var _ = Describe("inline elements", func() {
 			},
 			types.StringElement{Content: "bar"},
 		}
-		verify(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
+		verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
 	})
 })

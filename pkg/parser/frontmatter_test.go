@@ -35,7 +35,7 @@ first paragraph`
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualDocument)
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualDocument)
 		})
 
 		It("empty front-matter", func() {
@@ -60,7 +60,7 @@ first paragraph`
 					},
 				},
 			}
-			verify(GinkgoT(), expectedResult, actualDocument)
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualDocument)
 		})
 	})
 
