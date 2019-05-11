@@ -86,8 +86,8 @@ var _ = Describe("passthroughs", func() {
 			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 
-		It("tripleplus passthrough with line break", func() {
-			actualContent := "+++hello,\nworld+++"
+		It("tripleplus passthrough with line breaks", func() {
+			actualContent := "+++\nhello,\nworld\n+++"
 			expectedResult := types.Paragraph{
 				Attributes: types.ElementAttributes{},
 				Lines: []types.InlineElements{
@@ -96,7 +96,7 @@ var _ = Describe("passthroughs", func() {
 							Kind: types.TriplePlusPassthrough,
 							Elements: types.InlineElements{
 								types.StringElement{
-									Content: "hello,\nworld",
+									Content: "\nhello,\nworld\n",
 								},
 							},
 						},
@@ -130,7 +130,7 @@ var _ = Describe("passthroughs", func() {
 
 	})
 
-	Context("singlePlus Passthrough", func() {
+	Context("singleplus passthrough", func() {
 
 		It("singleplus passthrough with words", func() {
 			actualContent := `+hello, world+`
@@ -149,7 +149,7 @@ var _ = Describe("passthroughs", func() {
 					},
 				},
 			}
-			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Paragraph"))
 		})
 
 		It("singleplus empty passthrough", func() {
@@ -167,19 +167,52 @@ var _ = Describe("passthroughs", func() {
 			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 
-		It("singleplus passthrough with spaces", func() {
-			actualContent := `+ *hello*, world +`
+		It("invalid singleplus passthrough with spaces - case 1", func() {
+			actualContent := `+*hello*, world +` // invalid: space before last `+`
 			expectedResult := types.Paragraph{
 				Attributes: types.ElementAttributes{},
 				Lines: []types.InlineElements{
 					{
-						types.Passthrough{
-							Kind: types.SinglePlusPassthrough,
+						types.StringElement{
+							Content: "+",
+						},
+						types.QuotedText{
+							Kind: types.Bold,
 							Elements: types.InlineElements{
 								types.StringElement{
-									Content: " *hello*, world ",
+									Content: "hello",
 								},
 							},
+						},
+						types.StringElement{
+							Content: ", world",
+						},
+						types.LineBreak{},
+					},
+				},
+			}
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+		})
+
+		It("invalid singleplus passthrough with spaces - case 2", func() {
+			actualContent := `+ *hello*, world+` // invalid: space after first `+`
+			expectedResult := types.Paragraph{
+				Attributes: types.ElementAttributes{},
+				Lines: []types.InlineElements{
+					{
+						types.StringElement{
+							Content: "+ ",
+						},
+						types.QuotedText{
+							Kind: types.Bold,
+							Elements: types.InlineElements{
+								types.StringElement{
+									Content: "hello",
+								},
+							},
+						},
+						types.StringElement{
+							Content: ", world+",
 						},
 					},
 				},
@@ -187,7 +220,34 @@ var _ = Describe("passthroughs", func() {
 			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 
-		It("singleplus passthrough with line break", func() {
+		It("invalid singleplus passthrough with spaces - case 3", func() {
+			actualContent := `+ *hello*, world +` // invalid: spaces within
+			expectedResult := types.Paragraph{
+				Attributes: types.ElementAttributes{},
+				Lines: []types.InlineElements{
+					{
+						types.StringElement{
+							Content: "+ ",
+						},
+						types.QuotedText{
+							Kind: types.Bold,
+							Elements: types.InlineElements{
+								types.StringElement{
+									Content: "hello",
+								},
+							},
+						},
+						types.StringElement{
+							Content: ", world",
+						},
+						types.LineBreak{},
+					},
+				},
+			}
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+		})
+
+		It("invalid singleplus passthrough with line break", func() {
 			actualContent := "+hello,\nworld+"
 			expectedResult := types.Paragraph{
 				Attributes: types.ElementAttributes{},
