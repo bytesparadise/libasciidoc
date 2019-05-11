@@ -82,10 +82,10 @@ end
 ----`
 			expectedResult := `<div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>require 'sinatra'
+<pre class="highlight"><code>require &#39;sinatra&#39;
 
-get '/hi' do
-  "Hello World!"
+get &#39;/hi&#39; do
+  &#34;Hello World!&#34;
 end</code></pre>
 </div>
 </div>`
@@ -105,10 +105,10 @@ end
 			expectedResult := `<div class="listingblock">
 <div class="title">Source block title</div>
 <div class="content">
-<pre class="highlight"><code class="language-ruby" data-lang="ruby">require 'sinatra'
+<pre class="highlight"><code class="language-ruby" data-lang="ruby">require &#39;sinatra&#39;
 
-get '/hi' do
-  "Hello World!"
+get &#39;/hi&#39; do
+  &#34;Hello World!&#34;
 end</code></pre>
 </div>
 </div>`
@@ -129,11 +129,35 @@ end
 			expectedResult := `<div id="id-for-source-block" class="listingblock">
 <div class="title">app.rb</div>
 <div class="content">
-<pre class="highlight"><code class="language-ruby" data-lang="ruby">require 'sinatra'
+<pre class="highlight"><code class="language-ruby" data-lang="ruby">require &#39;sinatra&#39;
 
-get '/hi' do
-  "Hello World!"
+get &#39;/hi&#39; do
+  &#34;Hello World!&#34;
 end</code></pre>
+</div>
+</div>`
+			verify(GinkgoT(), expectedResult, actualContent)
+		})
+
+		It("with html content", func() {
+			actualContent := `----
+<a>link</a>
+----`
+			expectedResult := `<div class="listingblock">
+<div class="content">
+<pre>&lt;a&gt;link&lt;/a&gt;</pre>
+</div>
+</div>`
+			verify(GinkgoT(), expectedResult, actualContent)
+		})
+
+		It("with other content", func() {
+			actualContent := `----
+  a<<b
+----`
+			expectedResult := `<div class="listingblock">
+<div class="content">
+<pre>  a&lt;&lt;b</pre>
 </div>
 </div>`
 			verify(GinkgoT(), expectedResult, actualContent)
