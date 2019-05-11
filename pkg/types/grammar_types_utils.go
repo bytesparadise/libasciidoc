@@ -112,7 +112,8 @@ func mergeElements(elements ...interface{}) InlineElements {
 // and returns a new buffer, or returns the given arguments if the buffer was empty
 func appendBuffer(elements []interface{}, buff *bytes.Buffer) ([]interface{}, *bytes.Buffer) {
 	if buff.Len() > 0 {
-		return append(elements, NewStringElement(buff.String())), bytes.NewBuffer(nil)
+		s, _ := NewStringElement(buff.String())
+		return append(elements, s), bytes.NewBuffer(nil)
 	}
 	return elements, buff
 }

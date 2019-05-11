@@ -56,6 +56,25 @@ var _ = Describe("paragraphs", func() {
 			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 
+		It("paragraph with non-alphnum character before bold text", func() {
+			actualContent := "+*some bold content*"
+			expectedResult := types.Paragraph{
+				Attributes: types.ElementAttributes{},
+				Lines: []types.InlineElements{
+					{
+						types.StringElement{Content: "+"},
+						types.QuotedText{
+							Kind: types.Bold,
+							Elements: types.InlineElements{
+								types.StringElement{Content: "some bold content"},
+							},
+						},
+					},
+				},
+			}
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+		})
+
 		It("paragraph with id and title", func() {
 			actualContent := `[#foo]
 .a title
