@@ -70,6 +70,14 @@ var _ = Describe("passthroughs", func() {
 </div>`
 			verify(GinkgoT(), expectedResult, actualContent)
 		})
+
+		It("invalid singleplus passthrough in paragraph", func() {
+			actualContent := `The text + *hello*, world + is not passed through.`
+			expectedResult := `<div class="paragraph">
+<p>The text &#43; <strong>hello</strong>, world &#43; is not passed through.</p>
+</div>`
+			verify(GinkgoT(), expectedResult, actualContent)
+		})
 	})
 
 	Context("passthrough Macro", func() {

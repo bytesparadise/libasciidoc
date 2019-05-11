@@ -905,6 +905,9 @@ QuotedText <- BoldText
             / EscapedSuperscriptText
             / SubScriptOrSuperScriptPrefix // if a '^' or '~' is alone (ie, badly formatted superscript or subscript, then accept it as-is) 
 
+QuotedTextPrefix <- "**" / "*" / "__" / "_" / "``" / "`" / "^^" / "^" / "~~" / "~"
+
+// TODO: remove this?
 SubScriptOrSuperScriptPrefix <- "^" / "~" { // rule used withn `words` to detect superscript or subscript portions, eg in math formulae.
     return string(c.text), nil
 }
@@ -1041,26 +1044,38 @@ UnbalancedQuotePunctuation <- "*" / "_" / "`" / "~" / "^"
 // ------------------------------------------
 Passthrough <- TriplePlusPassthrough / SinglePlusPassthrough / PassthroughMacro
 
-SinglePlusPassthrough <- "+" content:(Alphanums / Spaces / (!NEWLINE !"+" . ){
-    return string(c.text), nil
-})+ "+" {
-    return types.NewPassthrough(types.SinglePlusPassthrough, content.([]interface{}))
+SinglePlusPassthroughPrefix <- "+"
+
+SinglePlusPassthrough <- SinglePlusPassthroughPrefix content:(SinglePlusPassthroughContent) SinglePlusPassthroughPrefix !Alphanum {
+    return types.NewPassthrough(types.SinglePlusPassthrough, []interface{}{content})
 }
 
-TriplePlusPassthrough <- "+++" content:(Alphanums / Spaces / (!"+++" .) {
-    return string(c.text), nil
-})* "+++" {
-    return types.NewPassthrough(types.TriplePlusPassthrough, content.([]interface{}))
+SinglePlusPassthroughContent <- ((!SinglePlusPassthroughPrefix !WS !NEWLINE .) (!(WS+ SinglePlusPassthroughPrefix) !SinglePlusPassthroughPrefix !NEWLINE .)* { // no space in the first or last position of the content, but allowed elsewhere
+    return types.NewStringElement(string(c.text))
+}) / ((!WS !NEWLINE !SinglePlusPassthroughPrefix .)  { // a single character
+    return types.NewStringElement(string(c.text))
+})
+
+TriplePlusPassthroughPrefix <- "+++"
+
+TriplePlusPassthrough <- TriplePlusPassthroughPrefix content:(TriplePlusPassthroughContent) TriplePlusPassthroughPrefix !Alphanum {
+    return types.NewPassthrough(types.TriplePlusPassthrough, []interface{}{content})
 }
+
+TriplePlusPassthroughContent <- ((!TriplePlusPassthroughPrefix .)* { // spaces and newlines are also allowed in the first or last position of the content and elsewhere too
+    return types.NewStringElement(string(c.text))
+}) / ((!WS !NEWLINE !TriplePlusPassthroughPrefix .)?  { // a single character
+    return types.NewStringElement(string(c.text))
+})
 
 PassthroughMacro <- "pass:[" content:(PassthroughMacroCharacter)* "]" {
-    return types.NewPassthrough(types.PassthroughMacro, content.([]interface{}))
+    return types.NewPassthrough(types.PassthroughMacro, []interface{}{content})
 } / "pass:q[" content:(QuotedText / PassthroughMacroCharacter)* "]" {
     return types.NewPassthrough(types.PassthroughMacro, content.([]interface{}))
 }
 
-PassthroughMacroCharacter <- (Alphanums / Spaces / (!"]"  .){
-    return string(c.text), nil
+PassthroughMacroCharacter <- (Alphanums / Spaces / (!"]" .){
+    return types.NewStringElement(string(c.text))
 })
 
 // ------------------------------------------
@@ -1496,7 +1511,7 @@ Dot <- "." {
     return string(c.text), nil
 }
 
-Word <- (Alphanums / ((!NEWLINE !WS !Parenthesis !"." !SubScriptOrSuperScriptPrefix  .){
+Word <- (Alphanums / QuotedTextPrefix / ((!NEWLINE !WS !Parenthesis !"." !QuotedTextPrefix .){
     return string(c.text), nil
 })+ / "."+){ // word cannot contain parenthesis. Dots and ellipsis are treated as independent words (but will be combined afterwards)
     return string(c.text), nil

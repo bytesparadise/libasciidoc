@@ -1884,7 +1884,7 @@ func Verbatim(content []interface{}) ([]interface{}, error) {
 			c = Apply(c, func(s string) string {
 				return strings.TrimRight(c, "\n\r")
 			})
-			result[i] = NewStringElement(c)
+			result[i], _ = NewStringElement(c)
 		}
 	}
 	return result, nil
@@ -2096,8 +2096,8 @@ type StringElement struct {
 }
 
 // NewStringElement initializes a new `StringElement` from the given content
-func NewStringElement(content string) StringElement {
-	return StringElement{Content: content}
+func NewStringElement(content string) (StringElement, error) {
+	return StringElement{Content: content}, nil
 }
 
 // AcceptVisitor implements Visitable#AcceptVisitor(Visitor)
