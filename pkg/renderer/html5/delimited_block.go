@@ -39,7 +39,7 @@ func init() {
 	listingBlockTmpl = newTextTemplate("listing block", `{{ $ctx := .Context }}{{ with .Data }}<div {{ if .ID }}id="{{ .ID }}" {{ end }}class="listingblock">{{ if .Title }}
 <div class="title">{{ escape .Title }}</div>{{ end }}
 <div class="content">
-<pre>{{ range $index, $element := .Elements }}{{ renderPlainString $ctx $element | printf "%s" }}{{ end }}</pre>
+<pre>{{ range $index, $element := .Elements }}{{ renderPlainString $ctx $element | printf "%s" | escape }}{{ end }}</pre>
 </div>
 </div>{{ end }}`,
 		texttemplate.FuncMap{
@@ -51,7 +51,7 @@ func init() {
 		`{{ $ctx := .Context }}{{ with .Data }}<div {{ if .ID }}id="{{ .ID }}" {{ end }}class="listingblock">{{ if .Title }}
 <div class="title">{{ escape .Title }}</div>{{ end }}
 <div class="content">
-<pre class="highlight"><code{{ if .Language}} class="language-{{ .Language}}" data-lang="{{ .Language}}"{{ end }}>{{ range $index, $element := .Elements }}{{ renderPlainString $ctx $element | printf "%s" }}{{ end }}</code></pre>
+<pre class="highlight"><code{{ if .Language}} class="language-{{ .Language}}" data-lang="{{ .Language}}"{{ end }}>{{ range $index, $element := .Elements }}{{ renderPlainString $ctx $element | printf "%s" | escape }}{{ end }}</code></pre>
 </div>
 </div>{{ end }}`,
 		texttemplate.FuncMap{

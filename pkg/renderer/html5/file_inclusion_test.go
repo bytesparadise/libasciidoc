@@ -242,10 +242,10 @@ include::includes/hello_world.go[]
 <div class="content">
 <pre>package includes
 
-import "fmt"
+import &#34;fmt&#34;
 
 func helloworld() {
-	fmt.Println("hello, world!")
+	fmt.Println(&#34;hello, world!&#34;)
 }</pre>
 </div>
 </div>`
@@ -412,7 +412,7 @@ include::includes/hello_world.go[lines=5..7]
 				expectedResult := `<div class="listingblock">
 <div class="content">
 <pre>func helloworld() {
-	fmt.Println("hello, world!")
+	fmt.Println(&#34;hello, world!&#34;)
 }</pre>
 </div>
 </div>`
@@ -428,7 +428,7 @@ include::includes/hello_world.go[lines=1..2;5..7]
 <pre>package includes
 
 func helloworld() {
-	fmt.Println("hello, world!")
+	fmt.Println(&#34;hello, world!&#34;)
 }</pre>
 </div>
 </div>`
