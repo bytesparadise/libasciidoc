@@ -6,11 +6,10 @@ import (
 	"strings"
 	"time"
 
+	. "github.com/bytesparadise/libasciidoc"
+	"github.com/bytesparadise/libasciidoc/pkg/renderer"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 
-	. "github.com/bytesparadise/libasciidoc"
-	_ "github.com/bytesparadise/libasciidoc/pkg/log"
-	"github.com/bytesparadise/libasciidoc/pkg/renderer"
 	. "github.com/onsi/ginkgo"
 	log "github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/assert"

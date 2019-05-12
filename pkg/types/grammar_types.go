@@ -2286,12 +2286,13 @@ func NewInlineLinkAttributes(text interface{}, otherattrs []interface{}) (Elemen
 type FileInclusion struct {
 	Attributes ElementAttributes
 	Path       string
+	RawText    string
 }
 
 var _ ElementWithAttributes = FileInclusion{}
 
 // NewFileInclusion initializes a new inline `InlineLink`
-func NewFileInclusion(path string, attributes interface{}) (FileInclusion, error) {
+func NewFileInclusion(path string, attributes interface{}, rawtext string) (FileInclusion, error) {
 	attrs, ok := attributes.(ElementAttributes)
 	// init attributes with empty 'text' attribute
 	if !ok {
@@ -2300,6 +2301,7 @@ func NewFileInclusion(path string, attributes interface{}) (FileInclusion, error
 	return FileInclusion{
 		Attributes: attrs,
 		Path:       path,
+		RawText:    rawtext,
 	}, nil
 }
 

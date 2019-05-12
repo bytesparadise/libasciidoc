@@ -6,7 +6,7 @@ import (
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 
-	_ "github.com/bytesparadise/libasciidoc/pkg/log"
+	_ "github.com/bytesparadise/libasciidoc/testsupport"
 )
 
 func TestTest(t *testing.T) {

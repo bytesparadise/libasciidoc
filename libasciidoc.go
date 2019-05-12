@@ -12,6 +12,7 @@ import (
 	"github.com/bytesparadise/libasciidoc/pkg/renderer"
 	htmlrenderer "github.com/bytesparadise/libasciidoc/pkg/renderer/html5"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
+
 	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
 )

@@ -84,7 +84,6 @@ generate-optimized:
 	@echo "generating the parser (optimized)..."
 	@pigeon -optimize-grammar -alternate-entrypoints PreparsedDocument,InlineElementsWithoutSubtitution,VerbatimBlock ./pkg/parser/asciidoc-grammar.peg > ./pkg/parser/asciidoc_parser.go
 
-
 .PHONY: test
 ## run all tests excluding fixtures and vendored packages
 test: deps generate-optimized
@@ -122,12 +121,10 @@ build: $(INSTALL_PREFIX) deps generate-optimized
 	  -o $(BINARY_PATH) \
 	  cmd/libasciidoc/*.go
 
-
 .PHONY: lint
 ## run golangci-lint against project
 lint:
 	@golangci-lint run -E gofmt,golint,megacheck,misspell ./...
-
 
 PARSER_DIFF_STATUS :=
 
@@ -140,8 +137,22 @@ else
 	@echo "parser is ok"
 endif
 
-
 .PHONY: install
 ## installs the binary executable in the $GOPATH/bin directory
 install: install-devtools build
+	@cp $(BINARY_PATH) $(GOPATH)/bin
+
+.PHONY: quick-install
+## installs the binary executable in the $GOPATH/bin directory without prior tools setup and parser generation
+quick-install:
+	$(eval BUILD_COMMIT:=$(shell git rev-parse --short HEAD))
+	$(eval BUILD_TAG:=$(shell git tag --contains $(BUILD_COMMIT)))
+	$(eval BUILD_TIME:=$(shell date -u '+%Y-%m-%dT%H:%M:%SZ'))
+	@echo "building $(BINARY_PATH) (commit:$(BUILD_COMMIT) / tag:$(BUILD_TAG) / time:$(BUILD_TIME))"
+	@go build -ldflags \
+	  " -X github.com/bytesparadise/libasciidoc.BuildCommit=$(BUILD_COMMIT)\
+	    -X github.com/bytesparadise/libasciidoc.BuildTag=$(BUILD_TAG) \
+	    -X github.com/bytesparadise/libasciidoc.BuildTime=$(BUILD_TIME)" \
+	  -o $(BINARY_PATH) \
+	  cmd/libasciidoc/*.go
 	@cp $(BINARY_PATH) $(GOPATH)/bin

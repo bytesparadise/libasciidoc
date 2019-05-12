@@ -62,7 +62,7 @@ PreparsedDocument <- blocks:(PreparsedDocumentBlocks) EOF {
 
 PreparsedDocumentBlocks <- (DocumentAttributeDeclaration / 
         RawSectionTitle /
-        FileInclude / 
+        FileInclusion / 
         BlankLine / 
         RawText)* 
 
@@ -197,7 +197,7 @@ DocumentAttributeValue <- (Alphanums / Spaces / (!NEWLINE  .){
 // ------------------------------------------
 DocumentElement <- !EOF // when reaching EOF, do not try to parse a new document block again
     element:(BlankLine 
-            / FileInclude
+            / FileInclusion
             / VerseBlock
             / VerseParagraph
             / ImageBlock 
@@ -325,7 +325,7 @@ QuoteAttributes <- "[" kind:(QuoteKind) WS* "," author:(QuoteAuthor) "," title:(
 } /
 // verse without specific author
 "[" kind:(QuoteKind) WS* "]" {
-    return types.NewQuoteAttributes(kind.(string), "","")
+    return types.NewQuoteAttributes(kind.(string), "", "")
 }
 
 QuoteKind <- "quote" {
@@ -341,7 +341,7 @@ VerseAttributes <- attribute:("[" kind:(VerseKind) WS* "," author:(QuoteAuthor) 
     } /
     // verse without specific author
     "[" kind:(VerseKind) WS* "]" {
-        return types.NewQuoteAttributes(kind.(string), "","")
+        return types.NewQuoteAttributes(kind.(string), "", "")
     }
 )
 #{
@@ -551,8 +551,10 @@ TableOfContentsMacro <- "toc::[]" NEWLINE
 // ------------------------------------------
 // File inclusions
 // ------------------------------------------
-FileInclude <- "include::" path:(URL) inlineAttributes:(FileIncludeAttributes) WS* EOL {
-    return types.NewFileInclusion(path.(string), inlineAttributes.(types.ElementAttributes))
+FileInclusion <- incl:("include::" path:(URL) inlineAttributes:(FileIncludeAttributes) { 
+        return types.NewFileInclusion(path.(string), inlineAttributes.(types.ElementAttributes), string(c.text))
+    }) WS* EOL {
+    return incl.(types.FileInclusion), nil
 }
 
 FileIncludeAttributes <- "[" attrs:(LineRangesAttribute / GenericAttribute)* "]" {
@@ -865,7 +867,7 @@ InlineElementWithoutSubtitution <- !EOL !LineBreak
 }
 
 // special case for parsing files to include in delimited blocks with 'verbatim' substitution
-VerbatimBlock <- elements:(BlankLine / FileInclude / VerbatimParagraph)* EOF {
+VerbatimBlock <- elements:(BlankLine / FileInclusion / VerbatimParagraph)* EOF {
     return elements, nil
 }
 
@@ -1217,7 +1219,7 @@ FencedBlock <- FencedBlockDelimiter content:(FencedBlockContent)* (FencedBlockDe
     return types.NewDelimitedBlock(types.Fenced, content.([]interface{}), types.None)
 }
 
-FencedBlockContent <- BlankLine / FileInclude / List / BlockParagraph
+FencedBlockContent <- BlankLine / FileInclusion / List / BlockParagraph
 
 // -------------------------------------------------------------------------------------
 // Listing blocks
@@ -1231,7 +1233,7 @@ ListingBlock <- ListingBlockDelimiter content:(ListingBlockElement)* ((ListingBl
 
 ListingBlockElement <- ListingFileInclude / ListingBlockParagraph
 
-ListingFileInclude <- !ListingBlockDelimiter !EOF include:(FileInclude) {
+ListingFileInclude <- !ListingBlockDelimiter !EOF include:(FileInclusion) {
     return include, nil
 }
 
@@ -1254,7 +1256,7 @@ ListingBlockLineContent <- (Alphanums / Spaces / (!ListingBlockDelimiter !EOL  .
 // -------------------------------------------------------------------------------------
 ExampleBlockDelimiter <- "====" WS* EOL
 
-ExampleBlock <- ExampleBlockDelimiter content:(BlankLine / FileInclude / List / BlockParagraph)*  (ExampleBlockDelimiter / EOF) {
+ExampleBlock <- ExampleBlockDelimiter content:(BlankLine / FileInclusion / List / BlockParagraph)*  (ExampleBlockDelimiter / EOF) {
     return types.NewDelimitedBlock(types.Example, content.([]interface{}), types.None)
 }
 
@@ -1283,7 +1285,7 @@ QuoteBlock <- QuoteBlockDelimiter content:(QuoteBlockElement)* (QuoteBlockDelimi
 
 QuoteBlockElement <- 
     !QuoteBlockDelimiter !EOF element:(BlankLine 
-            / FileInclude
+            / FileInclusion
             / VerseBlock
             / VerseParagraph
             / ImageBlock 
@@ -1329,7 +1331,7 @@ verse:(QuoteBlockDelimiter content:(VerseBlockElement)* (QuoteBlockDelimiter / E
 VerseBlockElement <- VerseFileInclude / BlankLine / VerseBlockParagraph
 
 
-VerseFileInclude <- !QuoteBlockDelimiter !EOF include:(FileInclude) {
+VerseFileInclude <- !QuoteBlockDelimiter !EOF include:(FileInclusion) {
     return include, nil
 }
 
@@ -1354,7 +1356,7 @@ SidebarBlock <- SidebarBlockDelimiter content:(SidebarBlockContent)*  (SidebarBl
     return types.NewDelimitedBlock(types.Sidebar, content.([]interface{}), types.None)
 }
 
-SidebarBlockContent <- BlankLine / FileInclude / List / NonSidebarBlock / BlockParagraph
+SidebarBlockContent <- BlankLine / FileInclusion / List / NonSidebarBlock / BlockParagraph
 
 NonSidebarBlock <- !SidebarBlock content:(DelimitedBlock) {
     return content, nil

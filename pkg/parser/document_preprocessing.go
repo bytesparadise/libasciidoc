@@ -6,11 +6,11 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	"text/template"
 
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 
 	"github.com/pkg/errors"
-	errs "github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -31,10 +31,7 @@ func preparseDocument(filename string, r io.Reader, levelOffset string, opts ...
 	if err != nil {
 		return nil, err
 	}
-	doc, ok := d.(types.PreparsedDocument)
-	if !ok {
-		return nil, errs.Errorf("invalid type of result: %T (expected a PreparsedDocument)", d)
-	}
+	doc := d.(types.PreparsedDocument)
 	result := bytes.NewBuffer(nil)
 	for i, e := range doc.Elements {
 		switch e := e.(type) {
@@ -42,7 +39,8 @@ func preparseDocument(filename string, r io.Reader, levelOffset string, opts ...
 			// read the file and include its content
 			content, err := parseFileToInclude(e, opts...)
 			if err != nil {
-				return nil, errors.Wrapf(err, "failed to include file '%s", e.Path)
+				// do not fail, but instead report the error in the console
+				log.Errorf("failed to include file '%s': %v", e.Path, err)
 			}
 			result.Write(content)
 		case types.DocumentAttributeDeclaration:
@@ -76,6 +74,22 @@ func preparseDocument(filename string, r io.Reader, levelOffset string, opts ...
 	return result.Bytes(), nil
 }
 
+var invalidFileTmpl *template.Template
+
+func init() {
+	var err error
+	invalidFileTmpl, err = template.New("invalid file to include").Parse(`Unresolved directive in test.adoc - {{ . }}`)
+	if err != nil {
+		log.Fatalf("failed to initialize template: %v", err)
+	}
+}
+
+func invalidFileErrMsg(incl types.FileInclusion) []byte {
+	buf := bytes.NewBuffer(nil)
+	invalidFileTmpl.Execute(buf, incl.RawText)
+	return buf.Bytes()
+}
+
 func parseFileToInclude(incl types.FileInclusion, opts ...Option) ([]byte, error) {
 	log.Debugf("parsing '%s'...", incl.Path)
 	// manage new working directory based on the file's location
@@ -87,12 +101,12 @@ func parseFileToInclude(incl types.FileInclusion, opts ...Option) ([]byte, error
 	}
 	absPath, err := filepath.Abs(incl.Path)
 	if err != nil {
-		return nil, err
+		return invalidFileErrMsg(incl), err
 	}
 	dir := filepath.Dir(absPath)
 	err = os.Chdir(dir)
 	if err != nil {
-		return nil, err
+		return invalidFileErrMsg(incl), err
 	}
 	defer func() {
 		err = os.Chdir(wd) // restore the previous working directory
@@ -103,7 +117,7 @@ func parseFileToInclude(incl types.FileInclusion, opts ...Option) ([]byte, error
 	// read the file per-se
 	f, err := os.Open(absPath)
 	if err != nil {
-		return nil, errors.Wrapf(err, "unable to read file to include")
+		return invalidFileErrMsg(incl), err
 	}
 	defer func() {
 		if closeErr := f.Close(); closeErr != nil {
@@ -130,17 +144,17 @@ func parseFileToInclude(incl types.FileInclusion, opts ...Option) ([]byte, error
 		if lineRanges.Match(line) {
 			_, err := content.WriteString(scanner.Text())
 			if err != nil {
-				return nil, errors.Wrap(err, "unable to read file to include")
+				return invalidFileErrMsg(incl), err
 			}
 			_, err = content.WriteString("\n")
 			if err != nil {
-				return nil, errors.Wrap(err, "unable to read file to include")
+				return invalidFileErrMsg(incl), err
 			}
 		}
 		line++
 	}
 	if err := scanner.Err(); err != nil {
-		return nil, errors.Wrap(err, "unable to read file to include")
+		return invalidFileErrMsg(incl), errors.Wrap(err, "unable to read file to include")
 	}
 	if levelOffset, ok := incl.Attributes[types.AttrLevelOffset].(string); ok {
 		return preparseDocument(incl.Path, content, levelOffset, opts...)
