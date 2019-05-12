@@ -484,4 +484,29 @@ last line of parent</pre>
 			verify(GinkgoT(), expectedResult, actualContent)
 		})
 	})
+
+	Context("missing file to include", func() {
+
+		It("should replace with string element if file is missing in standalone block", func() {
+			actualContent := `include::includes/unknown.adoc[leveloffset=+1]`
+			expectedResult := `<div class="paragraph">
+<p>Unresolved directive in test.adoc - include::includes/unknown.adoc[leveloffset=&#43;1]</p>
+</div>`
+			// TODO: also verify that an error was reported in the console.
+			verify(GinkgoT(), expectedResult, actualContent)
+		})
+
+		It("should replace with string element if file is missing in listing block", func() {
+			actualContent := `----
+include::includes/unknown.adoc[leveloffset=+1]
+----`
+			expectedResult := `<div class="listingblock">
+<div class="content">
+<pre>Unresolved directive in test.adoc - include::includes/unknown.adoc[leveloffset=+1]</pre>
+</div>
+</div>`
+			// TODO: also verify that an error was reported in the console.
+			verify(GinkgoT(), expectedResult, actualContent)
+		})
+	})
 })

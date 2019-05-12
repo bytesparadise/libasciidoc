@@ -10,20 +10,41 @@ import (
 	"path/filepath"
 
 	"github.com/bytesparadise/libasciidoc"
+	logsupport "github.com/bytesparadise/libasciidoc/pkg/log"
 	"github.com/bytesparadise/libasciidoc/pkg/renderer"
+
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 )
 
 // NewRootCmd returns the root command
 func NewRootCmd() *cobra.Command {
+
 	var noHeaderFooter bool
 	var outputName string
 	var logLevel string
+
 	rootCmd := &cobra.Command{
 		Use:   "libasciidoc [flags] FILE",
 		Short: `libasciidoc is a tool to convert from Asciidoc to HTML`,
 		Args:  cobra.ArbitraryArgs,
+		PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
+			lvl, err := log.ParseLevel(logLevel)
+			if err != nil {
+				fmt.Fprintf(cmd.OutOrStderr(), "unable to parse log level '%v'", logLevel)
+				return err
+			}
+			// customFormatter := new(log.TextFormatter)
+			// customFormatter.EnvironmentOverrideColors = true
+			// customFormatter.DisableLevelTruncation = true
+			// customFormatter.DisableTimestamp = true
+			// log.SetFormatter(customFormatter)
+			// log.Debugf("Setting log level to %v", lvl)
+			logsupport.Setup()
+			log.SetLevel(lvl)
+			log.SetOutput(cmd.OutOrStdout())
+			return nil
+		},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {
 				return helpCommand.RunE(cmd, args)
@@ -41,16 +62,6 @@ func NewRootCmd() *cobra.Command {
 					}
 				}
 			}
-			return nil
-		},
-		PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
-			lvl, err := log.ParseLevel(logLevel)
-			if err != nil {
-				fmt.Fprintf(cmd.OutOrStderr(), "unable to parse log level '%v'", logLevel)
-				return err
-			}
-			log.Debugf("Setting log level to %v", lvl)
-			log.SetLevel(lvl)
 			return nil
 		},
 	}

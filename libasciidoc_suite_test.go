@@ -1,12 +1,10 @@
 package libasciidoc_test
 
 import (
-	. "github.com/onsi/ginkgo"
-	. "github.com/onsi/gomega"
-
 	"testing"
 
-	_ "github.com/bytesparadise/libasciidoc/pkg/log"
+	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/gomega"
 )
 
 func TestLibasciidoc(t *testing.T) {

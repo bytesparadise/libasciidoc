@@ -6,7 +6,7 @@ import (
 
 	"testing"
 
-	_ "github.com/bytesparadise/libasciidoc/pkg/log"
+	_ "github.com/bytesparadise/libasciidoc/testsupport"
 )
 
 func TestTypes(t *testing.T) {

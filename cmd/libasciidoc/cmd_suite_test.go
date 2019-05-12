@@ -5,6 +5,8 @@ import (
 	. "github.com/onsi/gomega"
 
 	"testing"
+
+	_ "github.com/bytesparadise/libasciidoc/testsupport"
 )
 
 func TestCmd(t *testing.T) {
