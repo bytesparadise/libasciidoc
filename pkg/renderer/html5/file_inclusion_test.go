@@ -519,26 +519,56 @@ last line of grandchild</pre>
 
 	Context("missing file to include", func() {
 
-		It("should replace with string element if file is missing in standalone block", func() {
-			actualContent := `include::includes/unknown.adoc[leveloffset=+1]`
-			expectedResult := `<div class="paragraph">
+		Context("in standalone block", func() {
+
+			It("should replace with string element if file is missing", func() {
+
+				actualContent := `include::includes/unknown.adoc[leveloffset=+1]`
+				expectedResult := `<div class="paragraph">
 <p>Unresolved directive in test.adoc - include::includes/unknown.adoc[leveloffset=&#43;1]</p>
 </div>`
-			// TODO: also verify that an error was reported in the console.
-			verify(GinkgoT(), expectedResult, actualContent)
+				// TODO: also verify that an error was reported in the console.
+				verify(GinkgoT(), expectedResult, actualContent)
+			})
+
+			It("should replace with string element if file with attribute in path is not resolved", func() {
+
+				actualContent := `include::{includedir}/unknown.adoc[leveloffset=+1]`
+				expectedResult := `<div class="paragraph">
+<p>Unresolved directive in test.adoc - include::{includedir}/unknown.adoc[leveloffset=&#43;1]</p>
+</div>`
+				// TODO: also verify that an error was reported in the console.
+				verify(GinkgoT(), expectedResult, actualContent)
+			})
 		})
 
-		It("should replace with string element if file is missing in listing block", func() {
-			actualContent := `----
+		Context("in listing block", func() {
+
+			It("should replace with string element if file is missing", func() {
+				actualContent := `----
 include::includes/unknown.adoc[leveloffset=+1]
 ----`
-			expectedResult := `<div class="listingblock">
+				expectedResult := `<div class="listingblock">
 <div class="content">
 <pre>Unresolved directive in test.adoc - include::includes/unknown.adoc[leveloffset=+1]</pre>
 </div>
 </div>`
-			// TODO: also verify that an error was reported in the console.
-			verify(GinkgoT(), expectedResult, actualContent)
+				// TODO: also verify that an error was reported in the console.
+				verify(GinkgoT(), expectedResult, actualContent)
+			})
+
+			It("should replace with string element if file with attribute in path is not resolved", func() {
+				actualContent := `----
+include::{includedir}/unknown.adoc[leveloffset=+1]
+----`
+				expectedResult := `<div class="listingblock">
+<div class="content">
+<pre>Unresolved directive in test.adoc - include::{includedir}/unknown.adoc[leveloffset=+1]</pre>
+</div>
+</div>`
+				// TODO: also verify that an error was reported in the console.
+				verify(GinkgoT(), expectedResult, actualContent)
+			})
 		})
 	})
 })
