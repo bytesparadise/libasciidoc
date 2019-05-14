@@ -551,8 +551,8 @@ TableOfContentsMacro <- "toc::[]" NEWLINE
 // ------------------------------------------
 // File inclusions
 // ------------------------------------------
-FileInclusion <- incl:("include::" path:(URL) inlineAttributes:(FileIncludeAttributes) { 
-        return types.NewFileInclusion(path.(string), inlineAttributes.(types.ElementAttributes), string(c.text))
+FileInclusion <- incl:("include::" path:(Location) inlineAttributes:(FileIncludeAttributes) { 
+        return types.NewFileInclusion(path.(types.Location), inlineAttributes.(types.ElementAttributes), string(c.text))
     }) WS* EOL {
     return incl.(types.FileInclusion), nil
 }
@@ -1514,13 +1514,17 @@ Dot <- "." {
 }
 
 Word <- (Alphanums / QuotedTextPrefix / ((!NEWLINE !WS !Parenthesis !"." !QuotedTextPrefix .){
-    return string(c.text), nil
+    return types.NewStringElement(string(c.text))
 })+ / "."+){ // word cannot contain parenthesis. Dots and ellipsis are treated as independent words (but will be combined afterwards)
-    return string(c.text), nil
+    return types.NewStringElement(string(c.text))
 }
 
 Spaces <- WS+ {
     return string(c.text), nil
+}
+
+Location <- elements:(URL_SCHEME? (DocumentAttributeSubstitution / Word)+) {
+    return types.NewLocation(elements.([]interface{}))
 }
 
 URL <- (Alphanums / (!NEWLINE !WS !"[" !"]"  .){
@@ -1542,7 +1546,6 @@ URL_TEXT <- (Alphanums / (!NEWLINE !"[" !"]" .){
 }
 
 URL_SCHEME <- "http://" / "https://" / "ftp://" / "irc://" / "mailto:"
-
 DIGIT <- [0-9] {
     return string(c.text), nil
 }

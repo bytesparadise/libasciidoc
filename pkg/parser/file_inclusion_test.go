@@ -625,6 +625,94 @@ include::includes/unknown.adoc[leveloffset=+1]
 			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 	})
+
+	Context("inclusion with attribute in path", func() {
+
+		It("should resolve path with attribute in standaldone block", func() {
+			actualContent := `:includedir: ./includes
+			
+include::{includedir}/grandchild-include.adoc[]`
+			expectedResult := types.Document{
+				Attributes:         types.DocumentAttributes{},
+				ElementReferences:  types.ElementReferences{},
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
+				Elements: []interface{}{
+					types.DocumentAttributeDeclaration{
+						Name:  "includedir",
+						Value: "./includes",
+					},
+					types.BlankLine{},
+					types.Paragraph{
+						Attributes: types.ElementAttributes{},
+						Lines: []types.InlineElements{
+							{
+								types.StringElement{
+									Content: "first line of grandchild",
+								},
+							},
+						},
+					},
+					types.BlankLine{},
+					types.Paragraph{
+						Attributes: types.ElementAttributes{},
+						Lines: []types.InlineElements{
+							{
+								types.StringElement{
+									Content: "last line of grandchild",
+								},
+							},
+						},
+					},
+				},
+			}
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Document"))
+		})
+
+		It("should resolve path with attribute in delimited block", func() {
+			actualContent := `:includedir: ./includes
+
+----
+include::{includedir}/grandchild-include.adoc[]
+----`
+			expectedResult := types.Document{
+				Attributes:         types.DocumentAttributes{},
+				ElementReferences:  types.ElementReferences{},
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
+				Elements: []interface{}{
+					types.DocumentAttributeDeclaration{
+						Name:  "includedir",
+						Value: "./includes",
+					},
+					types.BlankLine{},
+					types.DelimitedBlock{
+						Attributes: types.ElementAttributes{},
+						Kind:       types.Listing,
+						Elements: []interface{}{
+							types.Paragraph{
+								Attributes: types.ElementAttributes{},
+								Lines: []types.InlineElements{
+									{
+										types.StringElement{
+											Content: "first line of grandchild",
+										},
+									},
+									{},
+									{
+										types.StringElement{
+											Content: "last line of grandchild",
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			}
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Document"))
+		})
+	})
 })
 
 var _ = Describe("ignore file inclusions", func() {
@@ -635,7 +723,11 @@ var _ = Describe("ignore file inclusions", func() {
 			Attributes: types.ElementAttributes{
 				types.AttrLevelOffset: "+1",
 			},
-			Path:    "includes/chapter-a.adoc",
+			Location: types.Location{
+				types.StringElement{
+					Content: "includes/chapter-a.adoc",
+				},
+			},
 			RawText: `include::includes/chapter-a.adoc[leveloffset=+1]`,
 		}
 		verifyWithoutPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
@@ -653,8 +745,12 @@ var _ = Describe("ignore file inclusions", func() {
 				Elements: []interface{}{
 					types.FileInclusion{
 						Attributes: types.ElementAttributes{},
-						Path:       "includes/chapter-a.adoc",
-						RawText:    `include::includes/chapter-a.adoc[]`,
+						Location: types.Location{
+							types.StringElement{
+								Content: "includes/chapter-a.adoc",
+							},
+						},
+						RawText: `include::includes/chapter-a.adoc[]`,
 					},
 				},
 			}
@@ -671,8 +767,12 @@ include::includes/chapter-a.adoc[]
 				Elements: []interface{}{
 					types.FileInclusion{
 						Attributes: types.ElementAttributes{},
-						Path:       "includes/chapter-a.adoc",
-						RawText:    `include::includes/chapter-a.adoc[]`,
+						Location: types.Location{
+							types.StringElement{
+								Content: "includes/chapter-a.adoc",
+							},
+						},
+						RawText: `include::includes/chapter-a.adoc[]`,
 					},
 				},
 			}
@@ -689,8 +789,12 @@ include::includes/chapter-a.adoc[]
 				Elements: []interface{}{
 					types.FileInclusion{
 						Attributes: types.ElementAttributes{},
-						Path:       "includes/chapter-a.adoc",
-						RawText:    `include::includes/chapter-a.adoc[]`,
+						Location: types.Location{
+							types.StringElement{
+								Content: "includes/chapter-a.adoc",
+							},
+						},
+						RawText: `include::includes/chapter-a.adoc[]`,
 					},
 				},
 			}
@@ -707,8 +811,12 @@ ____`
 				Elements: []interface{}{
 					types.FileInclusion{
 						Attributes: types.ElementAttributes{},
-						Path:       "includes/chapter-a.adoc",
-						RawText:    `include::includes/chapter-a.adoc[]`,
+						Location: types.Location{
+							types.StringElement{
+								Content: "includes/chapter-a.adoc",
+							},
+						},
+						RawText: `include::includes/chapter-a.adoc[]`,
 					},
 				},
 			}
@@ -730,8 +838,12 @@ ____`
 				Elements: []interface{}{
 					types.FileInclusion{
 						Attributes: types.ElementAttributes{},
-						Path:       "includes/chapter-a.adoc",
-						RawText:    `include::includes/chapter-a.adoc[]`,
+						Location: types.Location{
+							types.StringElement{
+								Content: "includes/chapter-a.adoc",
+							},
+						},
+						RawText: `include::includes/chapter-a.adoc[]`,
 					},
 				},
 			}
@@ -748,8 +860,12 @@ include::includes/chapter-a.adoc[]
 				Elements: []interface{}{
 					types.FileInclusion{
 						Attributes: types.ElementAttributes{},
-						Path:       "includes/chapter-a.adoc",
-						RawText:    `include::includes/chapter-a.adoc[]`,
+						Location: types.Location{
+							types.StringElement{
+								Content: "includes/chapter-a.adoc",
+							},
+						},
+						RawText: `include::includes/chapter-a.adoc[]`,
 					},
 				},
 			}
@@ -767,8 +883,12 @@ include::includes/chapter-a.adoc[]
 				Elements: []interface{}{
 					types.FileInclusion{
 						Attributes: types.ElementAttributes{},
-						Path:       "includes/chapter-a.adoc",
-						RawText:    `include::includes/chapter-a.adoc[]`,
+						Location: types.Location{
+							types.StringElement{
+								Content: "includes/chapter-a.adoc",
+							},
+						},
+						RawText: `include::includes/chapter-a.adoc[]`,
 					},
 				},
 			}
@@ -788,7 +908,11 @@ include::includes/chapter-a.adoc[]
 							{Start: 1, End: 1},
 						},
 					},
-					Path:    "includes/chapter-a.adoc",
+					Location: types.Location{
+						types.StringElement{
+							Content: "includes/chapter-a.adoc",
+						},
+					},
 					RawText: `include::includes/chapter-a.adoc[lines=1]`,
 				}
 				verifyWithoutPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
@@ -802,7 +926,11 @@ include::includes/chapter-a.adoc[]
 							{Start: 1, End: 2},
 						},
 					},
-					Path:    "includes/chapter-a.adoc",
+					Location: types.Location{
+						types.StringElement{
+							Content: "includes/chapter-a.adoc",
+						},
+					},
 					RawText: `include::includes/chapter-a.adoc[lines=1..2]`,
 				}
 				verifyWithoutPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
@@ -818,7 +946,11 @@ include::includes/chapter-a.adoc[]
 							{Start: 6, End: -1},
 						},
 					},
-					Path:    "includes/chapter-a.adoc",
+					Location: types.Location{
+						types.StringElement{
+							Content: "includes/chapter-a.adoc",
+						},
+					},
 					RawText: `include::includes/chapter-a.adoc[lines=1;3..4;6..-1]`,
 				}
 				verifyWithoutPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
@@ -830,7 +962,11 @@ include::includes/chapter-a.adoc[]
 					Attributes: types.ElementAttributes{
 						types.AttrLineRanges: `1;3..4;6..foo`,
 					},
-					Path:    "includes/chapter-a.adoc",
+					Location: types.Location{
+						types.StringElement{
+							Content: "includes/chapter-a.adoc",
+						},
+					},
 					RawText: `include::includes/chapter-a.adoc[lines=1;3..4;6..foo]`,
 				}
 				verifyWithoutPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
@@ -846,7 +982,11 @@ include::includes/chapter-a.adoc[]
 						"3..4":  nil,
 						"6..-1": nil,
 					},
-					Path:    "includes/chapter-a.adoc",
+					Location: types.Location{
+						types.StringElement{
+							Content: "includes/chapter-a.adoc",
+						},
+					},
 					RawText: `include::includes/chapter-a.adoc[lines=1,3..4,6..-1]`,
 				}
 				verifyWithoutPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
@@ -863,7 +1003,11 @@ include::includes/chapter-a.adoc[]
 							{Start: 1, End: 1},
 						},
 					},
-					Path:    "includes/chapter-a.adoc",
+					Location: types.Location{
+						types.StringElement{
+							Content: "includes/chapter-a.adoc",
+						},
+					},
 					RawText: `include::includes/chapter-a.adoc[lines="1"]`,
 				}
 				verifyWithoutPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
@@ -877,7 +1021,11 @@ include::includes/chapter-a.adoc[]
 							{Start: 1, End: 2},
 						},
 					},
-					Path:    "includes/chapter-a.adoc",
+					Location: types.Location{
+						types.StringElement{
+							Content: "includes/chapter-a.adoc",
+						},
+					},
 					RawText: `include::includes/chapter-a.adoc[lines="1..2"]`,
 				}
 				verifyWithoutPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
@@ -893,7 +1041,11 @@ include::includes/chapter-a.adoc[]
 							{Start: 6, End: -1},
 						},
 					},
-					Path:    "includes/chapter-a.adoc",
+					Location: types.Location{
+						types.StringElement{
+							Content: "includes/chapter-a.adoc",
+						},
+					},
 					RawText: `include::includes/chapter-a.adoc[lines="1,3..4,6..-1"]`,
 				}
 				verifyWithoutPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
@@ -907,7 +1059,11 @@ include::includes/chapter-a.adoc[]
 						"3..4":               nil,
 						"6..foo":             nil,
 					},
-					Path:    "includes/chapter-a.adoc",
+					Location: types.Location{
+						types.StringElement{
+							Content: "includes/chapter-a.adoc",
+						},
+					},
 					RawText: `include::includes/chapter-a.adoc[lines="1,3..4,6..foo"]`,
 				}
 				verifyWithoutPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
@@ -919,7 +1075,11 @@ include::includes/chapter-a.adoc[]
 					Attributes: types.ElementAttributes{
 						types.AttrLineRanges: `"1;3..4;6..10"`,
 					},
-					Path:    "includes/chapter-a.adoc",
+					Location: types.Location{
+						types.StringElement{
+							Content: "includes/chapter-a.adoc",
+						},
+					},
 					RawText: `include::includes/chapter-a.adoc[lines="1;3..4;6..10"]`,
 				}
 				verifyWithoutPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))

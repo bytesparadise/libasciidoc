@@ -1562,21 +1562,50 @@ func verifyLevelOffset(expectation string, actual types.RawSectionTitlePrefix, l
 	assert.EqualValues(GinkgoT(), expectation, result)
 }
 
-var _ = Describe("file inclusions", func() {
+// var _ = Describe("file inclusions", func() {
 
-	DescribeTable("check asciidoc file",
-		func(path string, expectation bool) {
+// 	DescribeTable("check asciidoc file",
+// 		func(path string, expectation bool) {
+// 			f := types.FileInclusion{
+// 				Path: path,
+// 			}
+// 			Expect(f.IsAsciidoc()).Should(Equal(expectation))
+// 		},
+// 		Entry("foo.adoc", "foo.adoc", true),
+// 		Entry("foo.asc", "foo.asc", true),
+// 		Entry("foo.ad", "foo.ad", true),
+// 		Entry("foo.asciidoc", "foo.asciidoc", true),
+// 		Entry("foo.txt", "foo.txt", true),
+// 		Entry("foo.csv", "foo.csv", false),
+// 		Entry("foo.go", "foo.go", false),
+// 	)
+// })
+
+var _ = Describe("Location resolution", func() {
+
+	attrs := map[string]string{
+		"includedir": "includes",
+		"foo":        "bar",
+	}
+	DescribeTable("resolve URL",
+		func(location types.Location, expectation string) {
 			f := types.FileInclusion{
-				Path: path,
+				Location: location,
 			}
-			Expect(f.IsAsciidoc()).Should(Equal(expectation))
+			Expect(f.Location.Resolve(attrs)).Should(Equal(expectation))
 		},
-		Entry("foo.adoc", "foo.adoc", true),
-		Entry("foo.asc", "foo.asc", true),
-		Entry("foo.ad", "foo.ad", true),
-		Entry("foo.asciidoc", "foo.asciidoc", true),
-		Entry("foo.txt", "foo.txt", true),
-		Entry("foo.csv", "foo.csv", false),
-		Entry("foo.go", "foo.go", false),
+		Entry("includes/file.ext", types.Location{
+			types.StringElement{Content: "includes/file.ext"},
+		}, "includes/file.ext"),
+		Entry("./{includedir}/file.ext", types.Location{
+			types.StringElement{Content: "./"},
+			types.DocumentAttributeSubstitution{Name: "includedir"},
+			types.StringElement{Content: "/file.ext"},
+		}, "./includes/file.ext"),
+		Entry("./{unknown}/file.ext", types.Location{
+			types.StringElement{Content: "./"},
+			types.DocumentAttributeSubstitution{Name: "unknown"},
+			types.StringElement{Content: "/file.ext"},
+		}, "./{unknown}/file.ext"),
 	)
 })
