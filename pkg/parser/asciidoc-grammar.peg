@@ -214,6 +214,7 @@ DocumentElement <- !EOF // when reaching EOF, do not try to parse a new document
             / DocumentAttributeDeclaration 
             / DocumentAttributeReset 
             / TableOfContentsMacro
+            / UserMacroBlock
             / Paragraph) {
     return element, nil
 }
@@ -549,6 +550,29 @@ TitleElement <- element:(Spaces / Dot / CrossReference / Passthrough / InlineIma
 TableOfContentsMacro <- "toc::[]" NEWLINE
 
 // ------------------------------------------
+// User Macro
+// ------------------------------------------
+UserMacroBlock <- name:(UserMacroName) "::" value:(UserMacroValue) attrs:(UserMacroAttributes) {
+    return types.NewUserMacroBlock(name.(string), value.(string), attrs.(types.ElementAttributes), string(c.text))
+}
+
+InlineUserMacro <- name:(UserMacroName) ":" value:(UserMacroValue) attrs:(UserMacroAttributes) {
+    return types.NewInlineUserMacro(name.(string), value.(string), attrs.(types.ElementAttributes), string(c.text))
+}
+
+UserMacroName <- (!URL_SCHEME !"." !":" !"[" !"]" !WS !EOL .)+ {
+    return string(c.text), nil
+}
+
+UserMacroValue <- (!":" !"[" !"]" !EOL .)* {
+    return string(c.text), nil
+}
+
+UserMacroAttributes <- "[" attrs:(GenericAttribute)* "]" {
+    return types.NewInlineAttributes(attrs.([]interface{}))
+}
+
+// ------------------------------------------
 // File inclusions
 // ------------------------------------------
 FileInclusion <- incl:("include::" path:(Location) inlineAttributes:(FileIncludeAttributes) { 
@@ -834,6 +858,7 @@ InlineElement <- !EOL !LineBreak
         / Link 
         / Passthrough 
         / InlineFootnote 
+        / InlineUserMacro 
         / Alphanums 
         / QuotedText 
         / CrossReference 

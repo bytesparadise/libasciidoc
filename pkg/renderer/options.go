@@ -1,6 +1,8 @@
 package renderer
 
-import "time"
+import (
+	"time"
+)
 
 //Option the options when rendering a document
 type Option func(ctx *Context)
@@ -35,6 +37,13 @@ func IncludeHeaderFooter(value bool) Option {
 func Entrypoint(entrypoint string) Option {
 	return func(ctx *Context) {
 		ctx.options[keyEntrypoint] = entrypoint
+	}
+}
+
+// DefineMacro defines the given template to a user macro with the given name
+func DefineMacro(name string, t MacroTemplate) Option {
+	return func(ctx *Context) {
+		ctx.macros[name] = t
 	}
 }
 

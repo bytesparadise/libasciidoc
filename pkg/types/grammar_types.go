@@ -436,6 +436,45 @@ type TableOfContentsMacro struct {
 }
 
 // ------------------------------------------
+// User Macro
+// ------------------------------------------
+
+const (
+	// InlineMacro a inline user macro
+	InlineMacro MacroKind = "inline"
+	// BlockMacro a block user macro
+	BlockMacro MacroKind = "block"
+)
+
+// MacroKind the type of user macro
+type MacroKind string
+
+// UserMacro the structure for User Macro
+type UserMacro struct {
+	Kind       MacroKind
+	Name       string
+	Value      string
+	Attributes ElementAttributes
+	RawText    string
+}
+
+// NewUserMacroBlock returns an UserMacro
+func NewUserMacroBlock(name, value string, attrs ElementAttributes, raw string) (UserMacro, error) {
+	return UserMacro{Name: name, Kind: BlockMacro, Value: value, Attributes: attrs, RawText: raw}, nil
+}
+
+// AddAttributes adds all given attributes to the current set of attribute of the element
+func (d UserMacro) AddAttributes(attributes ElementAttributes) {
+	d.Attributes.AddAll(attributes)
+
+}
+
+// NewInlineUserMacro returns an UserMacro
+func NewInlineUserMacro(name, value string, attrs ElementAttributes, raw string) (UserMacro, error) {
+	return UserMacro{Name: name, Kind: InlineMacro, Value: value, Attributes: attrs, RawText: raw}, nil
+}
+
+// ------------------------------------------
 // Preamble
 // ------------------------------------------
 
