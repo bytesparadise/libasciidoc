@@ -2,6 +2,7 @@ package types
 
 import (
 	"bytes"
+	"fmt"
 	"path/filepath"
 	"sort"
 	"strconv"
@@ -2109,6 +2110,10 @@ func (s StringElement) AcceptVisitor(v Visitor) error {
 	return nil
 }
 
+func (s StringElement) String() string {
+	return s.Content
+}
+
 // ------------------------------------------
 // Explicit line breaks
 // ------------------------------------------
@@ -2285,14 +2290,14 @@ func NewInlineLinkAttributes(text interface{}, otherattrs []interface{}) (Elemen
 // FileInclusion the structure for the file inclusions
 type FileInclusion struct {
 	Attributes ElementAttributes
-	Path       string
+	Location   Location
 	RawText    string
 }
 
 var _ ElementWithAttributes = FileInclusion{}
 
 // NewFileInclusion initializes a new inline `InlineLink`
-func NewFileInclusion(path string, attributes interface{}, rawtext string) (FileInclusion, error) {
+func NewFileInclusion(location Location, attributes interface{}, rawtext string) (FileInclusion, error) {
 	attrs, ok := attributes.(ElementAttributes)
 	// init attributes with empty 'text' attribute
 	if !ok {
@@ -2300,7 +2305,7 @@ func NewFileInclusion(path string, attributes interface{}, rawtext string) (File
 	}
 	return FileInclusion{
 		Attributes: attrs,
-		Path:       path,
+		Location:   location,
 		RawText:    rawtext,
 	}, nil
 }
@@ -2310,11 +2315,11 @@ func (f FileInclusion) AddAttributes(attributes ElementAttributes) {
 	f.Attributes.AddAll(attributes)
 }
 
-// IsAsciidoc returns true if the file to include is an asciidoc file (based on the file path extension)
-func (f FileInclusion) IsAsciidoc() bool {
-	ext := filepath.Ext(f.Path)
-	return ext == ".asciidoc" || ext == ".adoc" || ext == ".ad" || ext == ".asc" || ext == ".txt"
-}
+// // IsAsciidoc returns true if the file to include is an asciidoc file (based on the file location extension)
+// func (f FileInclusion) IsAsciidoc() bool {
+// 	ext := filepath.Ext(f.Path)
+// 	return ext == ".asciidoc" || ext == ".adoc" || ext == ".ad" || ext == ".asc" || ext == ".txt"
+// }
 
 // LineRanges the ranges of lines of the child doc to include in the master doc
 type LineRanges []LineRange
@@ -2404,3 +2409,47 @@ func NewMultilineRange(start, end int) (LineRange, error) {
 		End:   end,
 	}, nil
 }
+
+// -------------------------------------------------------------------------------------
+// Location: a Location (ie, with a scheme) or a path to a file (can be absolute or relative)
+// -------------------------------------------------------------------------------------
+
+// Location a Location contains characters and optionaly, document attributes
+type Location []interface{}
+
+// NewLocation return a new location with the given elements
+func NewLocation(elements []interface{}) (Location, error) {
+	return Location(mergeElements(elements)), nil
+}
+
+// Resolve resolves the Location by replacing all document attribute substitutions
+// with their associated values, or their corresponding raw text if
+// no attribute matched
+func (u Location) Resolve(attrs map[string]string) string {
+	result := bytes.NewBuffer(nil)
+	for _, e := range u {
+		switch s := e.(type) {
+		case DocumentAttributeSubstitution:
+			if value, found := attrs[s.Name]; found {
+				result.WriteString(value)
+			} else {
+				result.WriteRune('{')
+				result.WriteString(s.Name)
+				result.WriteRune('}')
+			}
+		default:
+			result.WriteString(fmt.Sprintf("%s", e))
+		}
+	}
+	return result.String()
+}
+
+// Ext return the extension of the file of this location.
+// Eg:
+// - `http://foo.com/bar.png` -> `png`
+// - `images/bar.png` -> `png`
+// return empty string if the resolved path has no extension
+// func (u Location) Ext(attrs map[string]string) string {
+// 	resolved := u.Resolve(attrs)
+// 	return ""
+// }

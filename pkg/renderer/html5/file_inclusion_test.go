@@ -485,6 +485,38 @@ last line of parent</pre>
 		})
 	})
 
+	Context("inclusion with attribute in path", func() {
+
+		It("should resolve path with attribute in standaldone block", func() {
+			actualContent := `:includedir: ./includes
+			
+include::{includedir}/grandchild-include.adoc[]`
+			expectedResult := `<div class="paragraph">
+<p>first line of grandchild</p>
+</div>
+<div class="paragraph">
+<p>last line of grandchild</p>
+</div>`
+			verify(GinkgoT(), expectedResult, actualContent)
+		})
+
+		It("should resolve path with attribute in delimited block", func() {
+			actualContent := `:includedir: ./includes
+
+----
+include::{includedir}/grandchild-include.adoc[]
+----`
+			expectedResult := `<div class="listingblock">
+<div class="content">
+<pre>first line of grandchild
+
+last line of grandchild</pre>
+</div>
+</div>`
+			verify(GinkgoT(), expectedResult, actualContent)
+		})
+	})
+
 	Context("missing file to include", func() {
 
 		It("should replace with string element if file is missing in standalone block", func() {

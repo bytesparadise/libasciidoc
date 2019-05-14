@@ -33,17 +33,19 @@ func preparseDocument(filename string, r io.Reader, levelOffset string, opts ...
 	}
 	doc := d.(types.PreparsedDocument)
 	result := bytes.NewBuffer(nil)
+	attrs := map[string]string{}
 	for i, e := range doc.Elements {
 		switch e := e.(type) {
 		case types.FileInclusion:
 			// read the file and include its content
-			content, err := parseFileToInclude(e, opts...)
+			content, err := parseFileToInclude(e, attrs, opts...)
 			if err != nil {
 				// do not fail, but instead report the error in the console
-				log.Errorf("failed to include file '%s': %v", e.Path, err)
+				log.Errorf("failed to include file '%s': %v", e.Location, err)
 			}
 			result.Write(content)
 		case types.DocumentAttributeDeclaration:
+			attrs[e.Name] = e.Value
 			result.WriteRune(':')
 			result.WriteString(e.Name)
 			result.WriteRune(':')
@@ -90,8 +92,9 @@ func invalidFileErrMsg(incl types.FileInclusion) []byte {
 	return buf.Bytes()
 }
 
-func parseFileToInclude(incl types.FileInclusion, opts ...Option) ([]byte, error) {
-	log.Debugf("parsing '%s'...", incl.Path)
+func parseFileToInclude(incl types.FileInclusion, attrs map[string]string, opts ...Option) ([]byte, error) {
+	path := incl.Location.Resolve(attrs)
+	log.Debugf("parsing '%s'...", path)
 	// manage new working directory based on the file's location
 	// so that if this file also includes other files with relative path,
 	// then the it can work ;)
@@ -99,7 +102,7 @@ func parseFileToInclude(incl types.FileInclusion, opts ...Option) ([]byte, error
 	if err != nil {
 		return nil, err
 	}
-	absPath, err := filepath.Abs(incl.Path)
+	absPath, err := filepath.Abs(path)
 	if err != nil {
 		return invalidFileErrMsg(incl), err
 	}
@@ -157,7 +160,7 @@ func parseFileToInclude(incl types.FileInclusion, opts ...Option) ([]byte, error
 		return invalidFileErrMsg(incl), errors.Wrap(err, "unable to read file to include")
 	}
 	if levelOffset, ok := incl.Attributes[types.AttrLevelOffset].(string); ok {
-		return preparseDocument(incl.Path, content, levelOffset, opts...)
+		return preparseDocument(path, content, levelOffset, opts...)
 	}
-	return preparseDocument(incl.Path, content, "", opts...)
+	return preparseDocument(path, content, "", opts...)
 }
