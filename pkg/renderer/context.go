@@ -2,11 +2,18 @@ package renderer
 
 import (
 	"context"
+	"errors"
+	"io"
 	"time"
 
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 	log "github.com/sirupsen/logrus"
 )
+
+// MacroTemplate an interface of template for user macro.
+type MacroTemplate interface {
+	Execute(wr io.Writer, data interface{}) error
+}
 
 // Context is a custom implementation of the standard golang context.Context interface,
 // which carries the types.Document which is being processed
@@ -14,6 +21,7 @@ type Context struct {
 	context  context.Context
 	Document types.Document
 	options  map[string]interface{}
+	macros   map[string]MacroTemplate
 }
 
 // Wrap wraps the given `ctx` context into a new context which will contain the given `document` document.
@@ -22,6 +30,7 @@ func Wrap(ctx context.Context, document types.Document, options ...Option) *Cont
 		context:  ctx,
 		Document: document,
 		options:  make(map[string]interface{}),
+		macros:   make(map[string]MacroTemplate),
 	}
 	for _, option := range options {
 		option(result)
@@ -153,6 +162,15 @@ func (ctx *Context) GetImagesDir() string {
 		return imagesdir
 	}
 	return ""
+}
+
+// MacroTemplate finds and returns a user macro function by specified name.
+func (ctx *Context) MacroTemplate(name string) (MacroTemplate, error) {
+	macro, ok := ctx.macros[name]
+	if ok {
+		return macro, nil
+	}
+	return nil, errors.New("unknown user macro: " + name)
 }
 
 // -----------------------
