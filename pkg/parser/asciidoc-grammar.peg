@@ -932,34 +932,45 @@ QuotedText <- BoldText
             / EscapedSuperscriptText
             / SubScriptOrSuperScriptPrefix // if a '^' or '~' is alone (ie, badly formatted superscript or subscript, then accept it as-is) 
 
-QuotedTextPrefix <- "**" / "*" / "__" / "_" / "``" / "`" / "^^" / "^" / "~~" / "~"
+QuotedTextPrefix <- "**" / "*" / "__" / "_" / "``" / "`" / "^" / "~"
 
-// TODO: remove this?
 SubScriptOrSuperScriptPrefix <- "^" / "~" { // rule used withn `words` to detect superscript or subscript portions, eg in math formulae.
     return string(c.text), nil
 }
 
 BoldText <- 
-    !`\\` "**" content:(QuotedTextContent) "**" { // double punctuation must be evaluated first
+    !`\\` "**" content:(BoldTextElements) "**" { // double punctuation must be evaluated first
         return types.NewQuotedText(types.Bold, content.([]interface{}))
-    } / !`\\` "**" content:(QuotedTextContent) "*" { // unbalanced `**` vs `*` punctuation
+    } / !`\\` "**" content:(BoldTextElements) "*" { // unbalanced `**` vs `*` punctuation
         result := append([]interface{}{"*"}, content.([]interface{}))
         return types.NewQuotedText(types.Bold, result)
-    } / !`\` "*" content:(QuotedTextContent) "*" !Alphanum { // single punctuation cannot be followed by a character (needs '**' to emphazise a portion of a word)
+    } / !`\` "*" content:(BoldTextElements) "*" !Alphanum { // single punctuation cannot be followed by a character (needs '**' to emphazise a portion of a word)
         return types.NewQuotedText(types.Bold, content.([]interface{}))
 } 
 
+BoldTextElements <- BoldTextElement (WS* BoldTextElement)*
+
+BoldTextElement <- QuotedText
+        / InlineImage 
+        / Link 
+        / Passthrough 
+        / NonBoldText // word with quote punctuation is only accepted if nothing matched before, so we have a chance to stop
+
+NonBoldText <- (!NEWLINE !WS !"*"  !"^" !"~" .)+ { 
+    return c.text, nil
+}
+
 EscapedBoldText <- 
-    backslashes:(TwoOrMoreBackslashes) "**" content:(QuotedTextContent) "**" { // double punctuation must be evaluated first
+    backslashes:(TwoOrMoreBackslashes) "**" content:(BoldTextElements) "**" { // double punctuation must be evaluated first
         return types.NewEscapedQuotedText(backslashes.(string), "**", content.([]interface{}))
-    } / backslashes:(OneOrMoreBackslashes) "**" content:(QuotedTextContent) "*" { // unbalanced `**` vs `*` punctuation
+    } / backslashes:(OneOrMoreBackslashes) "**" content:(BoldTextElements) "*" { // unbalanced `**` vs `*` punctuation
         result := append([]interface{}{"*"}, content.([]interface{}))
         return types.NewEscapedQuotedText(backslashes.(string), "*", result)
-    } / backslashes:(OneOrMoreBackslashes) "*" content:(QuotedTextContent) "*" { // simple punctuation must be evaluated last
+    } / backslashes:(OneOrMoreBackslashes) "*" content:(BoldTextElements) "*" { // simple punctuation must be evaluated last
         return types.NewEscapedQuotedText(backslashes.(string), "*", content.([]interface{}))
 } 
 
-OneOrMoreBackslashes <- `\` `\`* {
+OneOrMoreBackslashes <- `\`+ {
     return string(c.text), nil
 }
 
@@ -968,103 +979,96 @@ TwoOrMoreBackslashes <- `\\` `\`* {
 }
 
 ItalicText <- 
-    !`\\` "__" content:(QuotedTextContent) "__" {
+    !`\\` "__" content:(ItalicTextElements) "__" {
         return types.NewQuotedText(types.Italic, content.([]interface{}))
-    } / !`\\` "__" content:(QuotedTextContent) "_" { // unbalanced `__` vs `_` punctuation
+    } / !`\\` "__" content:(ItalicTextElements) "_" { // unbalanced `__` vs `_` punctuation
         result := append([]interface{}{"_"}, content.([]interface{}))
         return types.NewQuotedText(types.Italic, result)
-    } / !`\` "_" content:(QuotedTextContent) "_" !Alphanum { // single punctuation cannot be followed by a character (needs '__' to emphazise a portion of a word)
+    } / !`\` "_" content:(ItalicTextElements) "_" !Alphanum { // single punctuation cannot be followed by a character (needs '__' to emphazise a portion of a word)
         return types.NewQuotedText(types.Italic, content.([]interface{}))
 }
 
+ItalicTextElements <- ItalicTextElement (WS* ItalicTextElement)*
+
+ItalicTextElement <- QuotedText
+        / InlineImage 
+        / Link 
+        / Passthrough 
+        / NonItalicText // word with quote punctuation is only accepted if nothing matched before, so we have a chance to stop
+
+NonItalicText <- (!NEWLINE !WS !"_"  !"^" !"~" .)+ { 
+    return c.text, nil
+}
+
 EscapedItalicText <- 
-    backslashes:(TwoOrMoreBackslashes) "__" content:(QuotedTextContent) "__" { // double punctuation must be evaluated first
+    backslashes:(TwoOrMoreBackslashes) "__" content:(ItalicTextElements) "__" { // double punctuation must be evaluated first
         return types.NewEscapedQuotedText(backslashes.(string), "__", content.([]interface{}))
-    } / backslashes:(OneOrMoreBackslashes) "__" content:(QuotedTextContent) "_" { // unbalanced `__` vs `_` punctuation
+    } / backslashes:(OneOrMoreBackslashes) "__" content:(ItalicTextElements) "_" { // unbalanced `__` vs `_` punctuation
         result := append([]interface{}{"_"}, content.([]interface{}))
         return types.NewEscapedQuotedText(backslashes.(string), "_", result)
-    } / backslashes:(OneOrMoreBackslashes) "_" content:(QuotedTextContent) "_" { // simple punctuation must be evaluated last
+    } / backslashes:(OneOrMoreBackslashes) "_" content:(ItalicTextElements) "_" { // simple punctuation must be evaluated last
         return types.NewEscapedQuotedText(backslashes.(string), "_", content.([]interface{}))
 } 
 
 MonospaceText <- 
-    !`\\` "``" content:(QuotedTextContent) "``" { // double punctuation must be evaluated first
+    !`\\` "``" content:(MonospaceTextElements) "``" { // double punctuation must be evaluated first
         return types.NewQuotedText(types.Monospace, content.([]interface{}))
-    } / !`\\` "``" content:(QuotedTextContent) "`" { // unbalanced "``" vs "`" punctuation
+    } / !`\\` "``" content:(MonospaceTextElements) "`" { // unbalanced "``" vs "`" punctuation
         result := append([]interface{}{"`"}, content.([]interface{}))
         return types.NewQuotedText(types.Monospace, result)
-    } / !`\` "`" content:(QuotedTextContent) "`" !Alphanum { // single punctuation cannot be followed by a character (needs '``' to emphazise a portion of a word)
+    } / !`\` "`" content:(MonospaceTextElements) "`" !Alphanum { // single punctuation cannot be followed by a character (needs '``' to emphazise a portion of a word)
         return types.NewQuotedText(types.Monospace, content.([]interface{}))
+}
+
+MonospaceTextElements <- MonospaceTextElement ((WS / NEWLINE)* MonospaceTextElement)*
+
+MonospaceTextElement <- QuotedText 
+        / InlineImage 
+        / Link 
+        / Passthrough 
+        / NonMonospaceText // word with quote punctuation is only accepted if nothing matched before, so we have a chance to stop
+
+NonMonospaceText <- (!WS !NEWLINE !"`" !"^" !"~" .)+ { 
+    return c.text, nil
 }
 
 EscapedMonospaceText <- 
-    backslashes:(TwoOrMoreBackslashes) "``" content:(QuotedTextContent) "``" { // double punctuation must be evaluated first
+    backslashes:(TwoOrMoreBackslashes) "``" content:(MonospaceTextElements) "``" { // double punctuation must be evaluated first
         return types.NewEscapedQuotedText(backslashes.(string), "``", content.([]interface{}))
-    } / backslashes:(OneOrMoreBackslashes) "``" content:(QuotedTextContent) "`" { // unbalanced "``" vs "`" punctuation
+    } / backslashes:(OneOrMoreBackslashes) "``" content:(MonospaceTextElements) "`" { // unbalanced "``" vs "`" punctuation
         result := append([]interface{}{"`"}, content.([]interface{}))
         return types.NewEscapedQuotedText(backslashes.(string), "`", result)
-    } / backslashes:(OneOrMoreBackslashes) "`" content:(QuotedTextContent) "`" { // simple punctuation must be evaluated last
+    } / backslashes:(OneOrMoreBackslashes) "`" content:(MonospaceTextElements) "`" { // simple punctuation must be evaluated last
         return types.NewEscapedQuotedText(backslashes.(string), "`", content.([]interface{}))
 } 
 
-SubscriptText <- 
-    !`\\` "~~" content:(QuotedTextContent) "~~" { // double punctuation must be evaluated first
-        return types.NewQuotedText(types.Subscript, content.([]interface{}))
-    } / !`\\` "~~" content:(QuotedTextContent) "~" { // unbalanced "~~" vs "~" punctuation
-        result := append([]interface{}{"~"}, content.([]interface{}))
-        return types.NewQuotedText(types.Subscript, result)
-    } / !`\` "~" content:(QuotedTextContent) "~" { // single punctuation cannot be followed by a character (needs '~~' to emphazise a portion of a word)
-        return types.NewQuotedText(types.Subscript, content.([]interface{}))
+SubscriptText <- !`\` "~" content:(SubscriptTextElement) "~" { // wraps a single word
+    return types.NewQuotedText(types.Subscript, content)
 }
 
-EscapedSubscriptText <- 
-    backslashes:(TwoOrMoreBackslashes) "~~" content:(QuotedTextContent) "~~" { // double punctuation must be evaluated first
-        return types.NewEscapedQuotedText(backslashes.(string), "~~", content.([]interface{}))
-    } / backslashes:(OneOrMoreBackslashes) "~~" content:(QuotedTextContent) "~" { // unbalanced "~~" vs "~" punctuation
-        result := append([]interface{}{"~"}, content.([]interface{}))
-        return types.NewEscapedQuotedText(backslashes.(string), "~", result)
-    } / backslashes:(OneOrMoreBackslashes) "~" content:(QuotedTextContent) "~" { // simple punctuation must be evaluated last
-        return types.NewEscapedQuotedText(backslashes.(string), "~", content.([]interface{}))
-} 
+SubscriptTextElement <- QuotedText / NonSubscriptText 
 
-SuperscriptText <- 
-    !`\\` "^^" content:(QuotedTextContent) "^^" { // double punctuation must be evaluated first
-        return types.NewQuotedText(types.Superscript, content.([]interface{}))
-    } / !`\\` "^^" content:(QuotedTextContent) "^" { // unbalanced "^^" vs "^" punctuation
-        result := append([]interface{}{"^"}, content.([]interface{}))
-        return types.NewQuotedText(types.Superscript, result)
-    } / !`\` "^" content:(QuotedTextContent) "^" { // single punctuation cannot be followed by a character (needs '**' to emphazise a portion of a word)
-        return types.NewQuotedText(types.Superscript, content.([]interface{}))
-}
-
-EscapedSuperscriptText <- 
-    backslashes:(TwoOrMoreBackslashes) "^^" content:(QuotedTextContent) "^^" { // double punctuation must be evaluated first
-        return types.NewEscapedQuotedText(backslashes.(string), "^^", content.([]interface{}))
-    } / backslashes:(OneOrMoreBackslashes) "^^" content:(QuotedTextContent) "^" { // unbalanced "^^" vs "^" punctuation
-        result := append([]interface{}{"^"}, content.([]interface{}))
-        return types.NewEscapedQuotedText(backslashes.(string), "^", result)
-    } / backslashes:(OneOrMoreBackslashes) "^" content:(QuotedTextContent) "^" { // simple punctuation must be evaluated last
-        return types.NewEscapedQuotedText(backslashes.(string), "^", content.([]interface{}))
-} 
-
-QuotedTextContent <- QuotedTextContentElement (WS+ QuotedTextContentElement)*
-
-QuotedTextContentElement <- QuotedText / QuotedTextWord / WordWithQuotePunctuation // word with quote punctuation is only accepted if nothing matched before, so we have a chance to stop
-
-QuotedTextWord <- (Alphanums / (!NEWLINE !WS !"*" !"_" !"`" !"~" !"^" .){ 
-    return string(c.text), nil // cannot have "*", "_", "`", "~" or "^" within
-})+ { 
+NonSubscriptText <- (!NEWLINE !WS !"~" .)+ { 
     return c.text, nil
 }
 
-WordWithQuotePunctuation <- (Alphanums / (!NEWLINE !WS .){ 
-    return string(c.text), nil // cannot have "*", "_", "`", "~" or "^" within
-})+ { 
+EscapedSubscriptText <- backslashes:(OneOrMoreBackslashes) "~" content:(SubscriptTextElement) "~" { // simple punctuation must be evaluated last
+    return types.NewEscapedQuotedText(backslashes.(string), "~", content)
+} 
+
+SuperscriptText <- !`\` "^" content:(SuperscriptTextElement) "^" { // wraps a single word
+    return types.NewQuotedText(types.Superscript, content)
+}
+
+SuperscriptTextElement <- QuotedText / NonSuperscriptText 
+
+NonSuperscriptText <- (!NEWLINE !WS !"^" .)+ { 
     return c.text, nil
 }
 
-// make sure unbalanced punctuation for quoted text is treated accordingly
-UnbalancedQuotePunctuation <- "*" / "_" / "`" / "~" / "^" 
+EscapedSuperscriptText <- backslashes:(OneOrMoreBackslashes) "^" content:(SuperscriptTextElement) "^" { // simple punctuation must be evaluated last
+    return types.NewEscapedQuotedText(backslashes.(string), "^", content)
+} 
 
 // ------------------------------------------
 // Passthrough

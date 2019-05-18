@@ -2192,7 +2192,7 @@ const (
 )
 
 // NewQuotedText initializes a new `QuotedText` from the given kind and content
-func NewQuotedText(kind QuotedTextKind, content []interface{}) (QuotedText, error) {
+func NewQuotedText(kind QuotedTextKind, content ...interface{}) (QuotedText, error) {
 	elements := mergeElements(content...)
 	if log.GetLevel() == log.DebugLevel {
 		log.Debugf("initialized a new QuotedText with %d elements: %v", len(elements), spew.Sdump(elements))
@@ -2225,7 +2225,7 @@ func (t QuotedText) AcceptVisitor(v Visitor) error {
 // -------------------------------------------------------
 
 // NewEscapedQuotedText returns a new InlineElements where the nested elements are preserved (ie, substituted as expected)
-func NewEscapedQuotedText(backslashes string, punctuation string, content []interface{}) ([]interface{}, error) {
+func NewEscapedQuotedText(backslashes string, punctuation string, content interface{}) ([]interface{}, error) {
 	backslashesStr := Apply(backslashes,
 		func(s string) string {
 			// remove the number of back-slashes that match the length of the punctuation. Eg: `\*` or `\\**`, but keep extra back-slashes
