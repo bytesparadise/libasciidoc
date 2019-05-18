@@ -128,6 +128,26 @@ var _ = Describe("passthroughs", func() {
 			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 
+		It("tripleplus passthrough with embedded image", func() {
+			actualContent := `+++image:foo.png[]+++`
+			expectedResult := types.Paragraph{
+				Attributes: types.ElementAttributes{},
+				Lines: []types.InlineElements{
+					{
+						types.Passthrough{
+							Kind: types.TriplePlusPassthrough,
+							Elements: types.InlineElements{
+								types.StringElement{
+									Content: "image:foo.png[]",
+								},
+							},
+						},
+					},
+				},
+			}
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+		})
+
 	})
 
 	Context("singleplus passthrough", func() {
@@ -160,6 +180,26 @@ var _ = Describe("passthroughs", func() {
 					{
 						types.StringElement{
 							Content: "++",
+						},
+					},
+				},
+			}
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+		})
+
+		It("singleplus passthrough with embedded image", func() {
+			actualContent := `+image:foo.png[]+`
+			expectedResult := types.Paragraph{
+				Attributes: types.ElementAttributes{},
+				Lines: []types.InlineElements{
+					{
+						types.Passthrough{
+							Kind: types.SinglePlusPassthrough,
+							Elements: types.InlineElements{
+								types.StringElement{
+									Content: "image:foo.png[]",
+								},
+							},
 						},
 					},
 				},
@@ -269,9 +309,9 @@ var _ = Describe("passthroughs", func() {
 
 	})
 
-	Context("passthrough Macro", func() {
+	Context("passthrough macro", func() {
 
-		Context("passthrough Base Macro", func() {
+		Context("passthrough base macro", func() {
 
 			It("passthrough macro with single word", func() {
 				actualContent := `pass:[hello]`
@@ -370,7 +410,7 @@ var _ = Describe("passthroughs", func() {
 			})
 		})
 
-		Context("passthrough Macro with Quoted Text", func() {
+		Context("passthrough macro with Quoted Text", func() {
 
 			It("passthrough macro with single quoted word", func() {
 				actualContent := `pass:q[*hello*]`

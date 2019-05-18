@@ -1,6 +1,8 @@
 package html5_test
 
-import . "github.com/onsi/ginkgo"
+import (
+	. "github.com/onsi/ginkgo"
+)
 
 var _ = Describe("quoted texts", func() {
 
@@ -66,18 +68,18 @@ var _ = Describe("quoted texts", func() {
 	Context("subscript content", func() {
 
 		It("subscript content alone", func() {
-			actualContent := "~subscript content~"
+			actualContent := "~subscriptcontent~"
 			expectedResult := `<div class="paragraph">
-<p><sub>subscript content</sub></p>
+<p><sub>subscriptcontent</sub></p>
 </div>`
 			verify(GinkgoT(), expectedResult, actualContent)
 		})
 
 		It("subscript content in sentence", func() {
 
-			actualContent := "some ~subscript content~."
+			actualContent := "some ~subscriptcontent~."
 			expectedResult := `<div class="paragraph">
-<p>some <sub>subscript content</sub>.</p>
+<p>some <sub>subscriptcontent</sub>.</p>
 </div>`
 			verify(GinkgoT(), expectedResult, actualContent)
 		})
@@ -86,18 +88,18 @@ var _ = Describe("quoted texts", func() {
 	Context("superscript content", func() {
 
 		It("superscript content alone", func() {
-			actualContent := "^superscript content^"
+			actualContent := "^superscriptcontent^"
 			expectedResult := `<div class="paragraph">
-<p><sup>superscript content</sup></p>
+<p><sup>superscriptcontent</sup></p>
 </div>`
 			verify(GinkgoT(), expectedResult, actualContent)
 		})
 
 		It("superscript content in sentence", func() {
 
-			actualContent := "some ^superscript content^."
+			actualContent := "some ^superscriptcontent^."
 			expectedResult := `<div class="paragraph">
-<p>some <sup>superscript content</sup>.</p>
+<p>some <sup>superscriptcontent</sup>.</p>
 </div>`
 			verify(GinkgoT(), expectedResult, actualContent)
 		})
@@ -157,6 +159,172 @@ var _ = Describe("quoted texts", func() {
 			actualContent := "some \\*bold and _italic content_* together."
 			expectedResult := `<div class="paragraph">
 <p>some *bold and <em>italic content</em>* together.</p>
+</div>`
+			verify(GinkgoT(), expectedResult, actualContent)
+		})
+
+	})
+
+	Context("mixed content", func() {
+
+		It("unbalanced bold in monospace - case 1", func() {
+			actualContent := "`*a`"
+			expectedResult := `<div class="paragraph">
+<p><code>*a</code></p>
+</div>`
+			verify(GinkgoT(), expectedResult, actualContent)
+		})
+
+		It("unbalanced bold in monospace - case 2", func() {
+			actualContent := "`a*b`"
+			expectedResult := `<div class="paragraph">
+<p><code>a*b</code></p>
+</div>`
+			verify(GinkgoT(), expectedResult, actualContent)
+		})
+
+		It("italic in monospace", func() {
+			actualContent := "`_a_`"
+			expectedResult := `<div class="paragraph">
+<p><code><em>a</em></code></p>
+</div>`
+			verify(GinkgoT(), expectedResult, actualContent)
+		})
+
+		It("unbalanced italic in monospace", func() {
+			actualContent := "`a_b`"
+			expectedResult := `<div class="paragraph">
+<p><code>a_b</code></p>
+</div>`
+			verify(GinkgoT(), expectedResult, actualContent)
+		})
+
+		It("unparsed bold in monospace", func() {
+			actualContent := "`a*b*`"
+			expectedResult := `<div class="paragraph">
+<p><code>a*b*</code></p>
+</div>`
+			verify(GinkgoT(), expectedResult, actualContent)
+		})
+
+		It("parsed subscript in monospace", func() {
+			actualContent := "`a~b~`"
+			expectedResult := `<div class="paragraph">
+<p><code>a<sub>b</sub></code></p>
+</div>`
+			verify(GinkgoT(), expectedResult, actualContent)
+		})
+
+		It("multiline in monospace - case 1", func() {
+			actualContent := "`a\nb`"
+			expectedResult := `<div class="paragraph">
+<p><code>a
+b</code></p>
+</div>`
+			verify(GinkgoT(), expectedResult, actualContent)
+		})
+
+		It("multiline in monospace - case 2", func() {
+			actualContent := "`a\n*b*`"
+			expectedResult := `<div class="paragraph">
+<p><code>a
+<strong>b</strong></code></p>
+</div>`
+			verify(GinkgoT(), expectedResult, actualContent)
+		})
+
+		It("link in bold", func() {
+			actualContent := "*a link:/[b]*"
+			expectedResult := `<div class="paragraph">
+<p><strong>a <a href="/">b</a></strong></p>
+</div>`
+			verify(GinkgoT(), expectedResult, actualContent)
+		})
+
+		It("image in bold", func() {
+			actualContent := "*a image:foo.png[]*"
+			expectedResult := `<div class="paragraph">
+<p><strong>a <span class="image"><img src="foo.png" alt="foo"></span></strong></p>
+</div>`
+			verify(GinkgoT(), expectedResult, actualContent)
+		})
+
+		It("singleplus passthrough in bold", func() {
+			actualContent := "*a +image:foo.png[]+*"
+			expectedResult := `<div class="paragraph">
+<p><strong>a image:foo.png[]</strong></p>
+</div>`
+			verify(GinkgoT(), expectedResult, actualContent)
+		})
+
+		It("tripleplus passthrough in bold", func() {
+			actualContent := "*a +++image:foo.png[]+++*"
+			expectedResult := `<div class="paragraph">
+<p><strong>a image:foo.png[]</strong></p>
+</div>`
+			verify(GinkgoT(), expectedResult, actualContent)
+		})
+
+		It("link in italic", func() {
+			actualContent := "_a link:/[b]_"
+			expectedResult := `<div class="paragraph">
+<p><em>a <a href="/">b</a></em></p>
+</div>`
+			verify(GinkgoT(), expectedResult, actualContent)
+		})
+
+		It("image in italic", func() {
+			actualContent := "_a image:foo.png[]_"
+			expectedResult := `<div class="paragraph">
+<p><em>a <span class="image"><img src="foo.png" alt="foo"></span></em></p>
+</div>`
+			verify(GinkgoT(), expectedResult, actualContent)
+		})
+
+		It("singleplus passthrough in italic", func() {
+			actualContent := "_a +image:foo.png[]+_"
+			expectedResult := `<div class="paragraph">
+<p><em>a image:foo.png[]</em></p>
+</div>`
+			verify(GinkgoT(), expectedResult, actualContent)
+		})
+
+		It("tripleplus passthrough in italic", func() {
+			actualContent := "_a +++image:foo.png[]+++_"
+			expectedResult := `<div class="paragraph">
+<p><em>a image:foo.png[]</em></p>
+</div>`
+			verify(GinkgoT(), expectedResult, actualContent)
+		})
+
+		It("link in monospace", func() {
+			actualContent := "`a link:/[b]`"
+			expectedResult := `<div class="paragraph">
+<p><code>a <a href="/">b</a></code></p>
+</div>`
+			verify(GinkgoT(), expectedResult, actualContent)
+		})
+
+		It("image in monospace", func() {
+			actualContent := "`a image:foo.png[]`"
+			expectedResult := `<div class="paragraph">
+<p><code>a <span class="image"><img src="foo.png" alt="foo"></span></code></p>
+</div>`
+			verify(GinkgoT(), expectedResult, actualContent)
+		})
+
+		It("singleplus passthrough in monospace", func() {
+			actualContent := "`a +image:foo.png[]+`"
+			expectedResult := `<div class="paragraph">
+<p><code>a image:foo.png[]</code></p>
+</div>`
+			verify(GinkgoT(), expectedResult, actualContent)
+		})
+
+		It("tripleplus passthrough in monospace", func() {
+			actualContent := "`a +++image:foo.png[]+++`"
+			expectedResult := `<div class="paragraph">
+<p><code>a image:foo.png[]</code></p>
 </div>`
 			verify(GinkgoT(), expectedResult, actualContent)
 		})

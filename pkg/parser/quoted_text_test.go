@@ -65,26 +65,30 @@ var _ = Describe("quoted texts", func() {
 			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("QuotedText"))
 		})
 
-		It("subscript text with 3 words", func() {
+		It("invalid subscript text with 3 words", func() {
 			actualContent := "~some subscript content~"
-			expectedResult := types.QuotedText{
-				Kind: types.Subscript,
-				Elements: types.InlineElements{
-					types.StringElement{Content: "some subscript content"},
+			expectedResult := types.Paragraph{
+				Attributes: types.ElementAttributes{},
+				Lines: []types.InlineElements{
+					{
+						types.StringElement{Content: "~some subscript content~"},
+					},
 				},
 			}
-			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("QuotedText"))
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Paragraph"))
 		})
 
-		It("superscript text with 3 words", func() {
+		It("invalid superscript text with 3 words", func() {
 			actualContent := "^some superscript content^"
-			expectedResult := types.QuotedText{
-				Kind: types.Superscript,
-				Elements: types.InlineElements{
-					types.StringElement{Content: "some superscript content"},
+			expectedResult := types.Paragraph{
+				Attributes: types.ElementAttributes{},
+				Lines: []types.InlineElements{
+					{
+						types.StringElement{Content: "^some superscript content^"},
+					},
 				},
 			}
-			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("QuotedText"))
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Paragraph"))
 		})
 
 		It("bold text within italic text", func() {
@@ -145,6 +149,52 @@ var _ = Describe("quoted texts", func() {
 			}
 			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("QuotedText"))
 		})
+
+		It("subscript text attached", func() {
+			actualContent := "O~2~ is a molecule"
+			expectedResult := types.InlineElements{
+				types.StringElement{Content: "O"},
+				types.QuotedText{
+					Kind: types.Subscript,
+					Elements: types.InlineElements{
+						types.StringElement{Content: "2"},
+					},
+				},
+				types.StringElement{Content: " is a molecule"},
+			}
+
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
+		})
+
+		It("superscript text attached", func() {
+			actualContent := "M^me^ White"
+			expectedResult := types.InlineElements{
+				types.StringElement{Content: "M"},
+				types.QuotedText{
+					Kind: types.Superscript,
+					Elements: types.InlineElements{
+						types.StringElement{Content: "me"},
+					},
+				},
+				types.StringElement{Content: " White"},
+			}
+
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
+		})
+
+		It("invalid subscript text with 3 words", func() {
+			actualContent := "~some subscript content~"
+			expectedResult := types.Paragraph{
+				Attributes: types.ElementAttributes{},
+				Lines: []types.InlineElements{
+					{
+						types.StringElement{Content: "~some subscript content~"},
+					},
+				},
+			}
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Paragraph"))
+		})
+
 	})
 
 	Context("Quoted text with double punctuation", func() {
@@ -182,60 +232,6 @@ var _ = Describe("quoted texts", func() {
 			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("QuotedText"))
 		})
 
-		It("subscript text with 3 words", func() {
-			actualContent := "~~some subscript content~~"
-			expectedResult := types.QuotedText{
-				Kind: types.Subscript,
-				Elements: types.InlineElements{
-					types.StringElement{Content: "some subscript content"},
-				},
-			}
-			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("QuotedText"))
-		})
-
-		It("superscript text attached", func() {
-			actualContent := "O~2~ is a molecule"
-			expectedResult := types.InlineElements{
-				types.StringElement{Content: "O"},
-				types.QuotedText{
-					Kind: types.Subscript,
-					Elements: types.InlineElements{
-						types.StringElement{Content: "2"},
-					},
-				},
-				types.StringElement{Content: " is a molecule"},
-			}
-
-			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
-		})
-
-		It("superscript text with 3 words", func() {
-			actualContent := "^^some superscript content^^"
-			expectedResult := types.QuotedText{
-				Kind: types.Superscript,
-				Elements: types.InlineElements{
-					types.StringElement{Content: "some superscript content"},
-				},
-			}
-			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("QuotedText"))
-		})
-
-		It("superscript text attached", func() {
-			actualContent := "M^me^ White"
-			expectedResult := types.InlineElements{
-				types.StringElement{Content: "M"},
-				types.QuotedText{
-					Kind: types.Superscript,
-					Elements: types.InlineElements{
-						types.StringElement{Content: "me"},
-					},
-				},
-				types.StringElement{Content: " White"},
-			}
-
-			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
-		})
-
 		It("superscript text within italic text", func() {
 			actualContent := "__some ^superscript^ content__"
 			expectedResult := types.QuotedText{
@@ -255,7 +251,7 @@ var _ = Describe("quoted texts", func() {
 		})
 
 		It("superscript text within italic text within bold quote", func() {
-			actualContent := "**some _italic and ^^superscript content^^_**"
+			actualContent := "**some _italic and ^superscriptcontent^_**"
 			expectedResult := types.QuotedText{
 				Kind: types.Bold,
 				Elements: types.InlineElements{
@@ -267,7 +263,7 @@ var _ = Describe("quoted texts", func() {
 							types.QuotedText{
 								Kind: types.Superscript,
 								Elements: types.InlineElements{
-									types.StringElement{Content: "superscript content"},
+									types.StringElement{Content: "superscriptcontent"},
 								},
 							},
 						},
@@ -674,11 +670,366 @@ var _ = Describe("quoted texts", func() {
 			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
 		})
 
+		It("unbalanced bold in monospace - case 1", func() {
+			actualContent := "`*a`"
+			expectedResult := types.InlineElements{
+				types.QuotedText{
+					Kind: types.Monospace,
+					Elements: types.InlineElements{
+						types.StringElement{Content: "*a"},
+					},
+				},
+			}
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
+		})
+
+		It("unbalanced bold in monospace - case 2", func() {
+			actualContent := "`a*b`"
+			expectedResult := types.InlineElements{
+				types.QuotedText{
+					Kind: types.Monospace,
+					Elements: types.InlineElements{
+						types.StringElement{Content: "a*b"},
+					},
+				},
+			}
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
+		})
+
+		It("italic in monospace", func() {
+			actualContent := "`_a_`"
+			expectedResult := types.InlineElements{
+				types.QuotedText{
+					Kind: types.Monospace,
+					Elements: types.InlineElements{
+						types.QuotedText{
+							Kind: types.Italic,
+							Elements: types.InlineElements{
+								types.StringElement{Content: "a"},
+							},
+						},
+					},
+				},
+			}
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
+		})
+
+		It("unbalanced italic in monospace", func() {
+			actualContent := "`a_b`"
+			expectedResult := types.InlineElements{
+				types.QuotedText{
+					Kind: types.Monospace,
+					Elements: types.InlineElements{
+						types.StringElement{Content: "a_b"},
+					},
+				},
+			}
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
+		})
+
+		It("unparsed bold in monospace", func() {
+			actualContent := "`a*b*`"
+			expectedResult := types.InlineElements{
+				types.QuotedText{
+					Kind: types.Monospace,
+					Elements: types.InlineElements{
+						types.StringElement{Content: "a*b*"},
+					},
+				},
+			}
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
+		})
+
+		It("parsed subscript in monospace", func() {
+			actualContent := "`a~b~`"
+			expectedResult := types.InlineElements{
+				types.QuotedText{
+					Kind: types.Monospace,
+					Elements: types.InlineElements{
+						types.StringElement{Content: "a"},
+						types.QuotedText{
+							Kind: types.Subscript,
+							Elements: types.InlineElements{
+								types.StringElement{Content: "b"},
+							},
+						},
+					},
+				},
+			}
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
+		})
+
+		It("multiline in monospace - case 1", func() {
+			actualContent := "`a\nb`"
+			expectedResult := types.InlineElements{
+				types.QuotedText{
+					Kind: types.Monospace,
+					Elements: types.InlineElements{
+						types.StringElement{Content: "a\nb"},
+					},
+				},
+			}
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
+		})
+
+		It("multiline in monospace - case 2", func() {
+			actualContent := "`a\n*b*`"
+			expectedResult := types.InlineElements{
+				types.QuotedText{
+					Kind: types.Monospace,
+					Elements: types.InlineElements{
+						types.StringElement{Content: "a\n"},
+						types.QuotedText{
+							Kind: types.Bold,
+							Elements: types.InlineElements{
+								types.StringElement{Content: "b"},
+							},
+						},
+					},
+				},
+			}
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
+		})
+
+		It("link in bold", func() {
+			actualContent := "*a link:/[b]*"
+			expectedResult := types.InlineElements{
+				types.QuotedText{
+					Kind: types.Bold,
+					Elements: types.InlineElements{
+						types.StringElement{Content: "a "},
+						types.InlineLink{
+							Attributes: types.ElementAttributes{
+								"text": "b",
+							},
+							URL: "/",
+						},
+					},
+				},
+			}
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
+		})
+
+		It("image in bold", func() {
+			actualContent := "*a image:foo.png[]*"
+			expectedResult := types.InlineElements{
+				types.QuotedText{
+					Kind: types.Bold,
+					Elements: types.InlineElements{
+						types.StringElement{Content: "a "},
+						types.InlineImage{
+							Attributes: types.ElementAttributes{
+								types.AttrImageAlt:    "foo",
+								types.AttrImageHeight: "",
+								types.AttrImageWidth:  "",
+							},
+							Path: "foo.png",
+						},
+					},
+				},
+			}
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
+		})
+
+		It("singleplus passthrough in bold", func() {
+			actualContent := "*a +image:foo.png[]+*"
+			expectedResult := types.InlineElements{
+				types.QuotedText{
+					Kind: types.Bold,
+					Elements: types.InlineElements{
+						types.StringElement{Content: "a "},
+						types.Passthrough{
+							Kind: types.SinglePlusPassthrough,
+							Elements: types.InlineElements{
+								types.StringElement{Content: "image:foo.png[]"},
+							},
+						},
+					},
+				},
+			}
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
+		})
+
+		It("tripleplus passthrough in bold", func() {
+			actualContent := "*a +++image:foo.png[]+++*"
+			expectedResult := types.InlineElements{
+				types.QuotedText{
+					Kind: types.Bold,
+					Elements: types.InlineElements{
+						types.StringElement{Content: "a "},
+						types.Passthrough{
+							Kind: types.TriplePlusPassthrough,
+							Elements: types.InlineElements{
+								types.StringElement{Content: "image:foo.png[]"},
+							},
+						},
+					},
+				},
+			}
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
+		})
+
+		It("link in italic", func() {
+			actualContent := "_a link:/[b]_"
+			expectedResult := types.InlineElements{
+				types.QuotedText{
+					Kind: types.Italic,
+					Elements: types.InlineElements{
+						types.StringElement{Content: "a "},
+						types.InlineLink{
+							Attributes: types.ElementAttributes{
+								"text": "b",
+							},
+							URL: "/",
+						},
+					},
+				},
+			}
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
+		})
+
+		It("image in italic", func() {
+			actualContent := "_a image:foo.png[]_"
+			expectedResult := types.InlineElements{
+				types.QuotedText{
+					Kind: types.Italic,
+					Elements: types.InlineElements{
+						types.StringElement{Content: "a "},
+						types.InlineImage{
+							Attributes: types.ElementAttributes{
+								types.AttrImageAlt:    "foo",
+								types.AttrImageHeight: "",
+								types.AttrImageWidth:  "",
+							},
+							Path: "foo.png",
+						},
+					},
+				},
+			}
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
+		})
+
+		It("singleplus passthrough in italic", func() {
+			actualContent := "_a +image:foo.png[]+_"
+			expectedResult := types.InlineElements{
+				types.QuotedText{
+					Kind: types.Italic,
+					Elements: types.InlineElements{
+						types.StringElement{Content: "a "},
+						types.Passthrough{
+							Kind: types.SinglePlusPassthrough,
+							Elements: types.InlineElements{
+								types.StringElement{Content: "image:foo.png[]"},
+							},
+						},
+					},
+				},
+			}
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
+		})
+
+		It("tripleplus passthrough in italic", func() {
+			actualContent := "_a +++image:foo.png[]+++_"
+			expectedResult := types.InlineElements{
+				types.QuotedText{
+					Kind: types.Italic,
+					Elements: types.InlineElements{
+						types.StringElement{Content: "a "},
+						types.Passthrough{
+							Kind: types.TriplePlusPassthrough,
+							Elements: types.InlineElements{
+								types.StringElement{Content: "image:foo.png[]"},
+							},
+						},
+					},
+				},
+			}
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
+		})
+
+		It("link in monospace", func() {
+			actualContent := "`a link:/[b]`"
+			expectedResult := types.InlineElements{
+				types.QuotedText{
+					Kind: types.Monospace,
+					Elements: types.InlineElements{
+						types.StringElement{Content: "a "},
+						types.InlineLink{
+							Attributes: types.ElementAttributes{
+								"text": "b",
+							},
+							URL: "/",
+						},
+					},
+				},
+			}
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
+		})
+
+		It("image in monospace", func() {
+			actualContent := "`a image:foo.png[]`"
+			expectedResult := types.InlineElements{
+				types.QuotedText{
+					Kind: types.Monospace,
+					Elements: types.InlineElements{
+						types.StringElement{Content: "a "},
+						types.InlineImage{
+							Attributes: types.ElementAttributes{
+								types.AttrImageAlt:    "foo",
+								types.AttrImageHeight: "",
+								types.AttrImageWidth:  "",
+							},
+							Path: "foo.png",
+						},
+					},
+				},
+			}
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
+		})
+
+		It("singleplus passthrough in monospace", func() {
+			actualContent := "`a +image:foo.png[]+`"
+			expectedResult := types.InlineElements{
+				types.QuotedText{
+					Kind: types.Monospace,
+					Elements: types.InlineElements{
+						types.StringElement{Content: "a "},
+						types.Passthrough{
+							Kind: types.SinglePlusPassthrough,
+							Elements: types.InlineElements{
+								types.StringElement{Content: "image:foo.png[]"},
+							},
+						},
+					},
+				},
+			}
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
+		})
+
+		It("tripleplus passthrough in monospace", func() {
+			actualContent := "`a +++image:foo.png[]+++`"
+			expectedResult := types.InlineElements{
+				types.QuotedText{
+					Kind: types.Monospace,
+					Elements: types.InlineElements{
+						types.StringElement{Content: "a "},
+						types.Passthrough{
+							Kind: types.TriplePlusPassthrough,
+							Elements: types.InlineElements{
+								types.StringElement{Content: "image:foo.png[]"},
+							},
+						},
+					},
+				},
+			}
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
+		})
+
 	})
 
-	Context("Unbalanced quoted text", func() {
+	Context("unbalanced quoted text", func() {
 
-		Context("Unbalanced bold text", func() {
+		Context("unbalanced bold text", func() {
 
 			It("unbalanced bold text - extra on left", func() {
 				actualContent := "**some bold content*"
@@ -789,7 +1140,7 @@ var _ = Describe("quoted texts", func() {
 
 			Context("without nested quoted text", func() {
 
-				It("escaped bold text with simple quote", func() {
+				It("escaped bold text with single backslash", func() {
 					actualContent := `\*bold content*`
 					expectedResult := types.Paragraph{
 						Attributes: types.ElementAttributes{},
@@ -802,7 +1153,7 @@ var _ = Describe("quoted texts", func() {
 					verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 				})
 
-				It("escaped bold text with simple quote and more backslashes", func() {
+				It("escaped bold text with multiple backslashes", func() {
 					actualContent := `\\*bold content*`
 					expectedResult := types.Paragraph{
 						Attributes: types.ElementAttributes{},
@@ -1232,12 +1583,12 @@ var _ = Describe("quoted texts", func() {
 			Context("without nested quoted text", func() {
 
 				It("escaped subscript text with simple quote", func() {
-					actualContent := `\~subscript content~`
+					actualContent := `\~subscriptcontent~`
 					expectedResult := types.Paragraph{
 						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
 							{
-								types.StringElement{Content: "~subscript content~"},
+								types.StringElement{Content: "~subscriptcontent~"},
 							},
 						},
 					}
@@ -1245,75 +1596,24 @@ var _ = Describe("quoted texts", func() {
 				})
 
 				It("escaped subscript text with simple quote and more backslashes", func() {
-					actualContent := `\\~subscript content~`
+					actualContent := `\\~subscriptcontent~`
 					expectedResult := types.Paragraph{
 						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
 							{
-								types.StringElement{Content: `\~subscript content~`}, // only 1 backslash removed
+								types.StringElement{Content: `\~subscriptcontent~`}, // only 1 backslash removed
 							},
 						},
 					}
 					verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 				})
 
-				It("escaped subscript text with double quote", func() {
-					actualContent := `\\~subscript content~~`
-					expectedResult := types.Paragraph{
-						Attributes: types.ElementAttributes{},
-						Lines: []types.InlineElements{
-							{
-								types.StringElement{Content: `\~subscript content~~`},
-							},
-						},
-					}
-					verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
-				})
-
-				It("escaped subscript text with double quote and more backslashes", func() {
-					actualContent := `\\\~~subscript content~~` // 3 backslashes
-					expectedResult := types.Paragraph{
-						Attributes: types.ElementAttributes{},
-						Lines: []types.InlineElements{
-							{
-								types.StringElement{Content: `\~~subscript content~~`}, // 2 backslashes removed
-							},
-						},
-					}
-					verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
-				})
-
-				It("escaped subscript text with unbalanced double quote", func() {
-					actualContent := `\~~subscript content~`
-					expectedResult := types.Paragraph{
-						Attributes: types.ElementAttributes{},
-						Lines: []types.InlineElements{
-							{
-								types.StringElement{Content: "~~subscript content~"},
-							},
-						},
-					}
-					verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
-				})
-
-				It("escaped subscript text with unbalanced double quote and more backslashes", func() {
-					actualContent := `\\\~~subscript content~` // 3 backslashes
-					expectedResult := types.Paragraph{
-						Attributes: types.ElementAttributes{},
-						Lines: []types.InlineElements{
-							{
-								types.StringElement{Content: `\\~~subscript content~`}, // 2 backslashes removed
-							},
-						},
-					}
-					verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
-				})
 			})
 
 			Context("with nested quoted text", func() {
 
 				It("escaped subscript text with nested bold text", func() {
-					actualContent := `\~*bold content*~`
+					actualContent := `\~*boldcontent*~`
 					expectedResult := types.Paragraph{
 						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
@@ -1322,27 +1622,7 @@ var _ = Describe("quoted texts", func() {
 								types.QuotedText{
 									Kind: types.Bold,
 									Elements: types.InlineElements{
-										types.StringElement{Content: "bold content"},
-									},
-								},
-								types.StringElement{Content: "~"},
-							},
-						},
-					}
-					verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
-				})
-
-				It("escaped subscript text with unbalanced double backquote and nested bold test", func() {
-					actualContent := `\~~*bold content*~`
-					expectedResult := types.Paragraph{
-						Attributes: types.ElementAttributes{},
-						Lines: []types.InlineElements{
-							{
-								types.StringElement{Content: "~~"},
-								types.QuotedText{
-									Kind: types.Bold,
-									Elements: types.InlineElements{
-										types.StringElement{Content: "bold content"},
+										types.StringElement{Content: "boldcontent"},
 									},
 								},
 								types.StringElement{Content: "~"},
@@ -1358,7 +1638,7 @@ var _ = Describe("quoted texts", func() {
 						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
 							{
-								types.StringElement{Content: "~subscript "},
+								types.StringElement{Content: `\~subscript `},
 								types.QuotedText{
 									Kind: types.Bold,
 									Elements: types.InlineElements{
@@ -1379,12 +1659,12 @@ var _ = Describe("quoted texts", func() {
 			Context("without nested quoted text", func() {
 
 				It("escaped superscript text with simple quote", func() {
-					actualContent := `\^superscript content^`
+					actualContent := `\^superscriptcontent^`
 					expectedResult := types.Paragraph{
 						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
 							{
-								types.StringElement{Content: "^superscript content^"},
+								types.StringElement{Content: "^superscriptcontent^"},
 							},
 						},
 					}
@@ -1392,74 +1672,43 @@ var _ = Describe("quoted texts", func() {
 				})
 
 				It("escaped superscript text with simple quote and more backslashes", func() {
-					actualContent := `\\^superscript content^`
+					actualContent := `\\^superscriptcontent^`
 					expectedResult := types.Paragraph{
 						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
 							{
-								types.StringElement{Content: `\^superscript content^`}, // only 1 backslash removed
+								types.StringElement{Content: `\^superscriptcontent^`}, // only 1 backslash removed
 							},
 						},
 					}
 					verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 				})
 
-				It("escaped superscript text with double quote", func() {
-					actualContent := `\\^^superscript content^^`
-					expectedResult := types.Paragraph{
-						Attributes: types.ElementAttributes{},
-						Lines: []types.InlineElements{
-							{
-								types.StringElement{Content: `^^superscript content^^`}, // 2 backslashes removed
-							},
-						},
-					}
-					verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
-				})
-
-				It("escaped superscript text with double quote and more backslashes", func() {
-					actualContent := `\\\` + "^^superscript content^^" // 3 backslashes
-					expectedResult := types.Paragraph{
-						Attributes: types.ElementAttributes{},
-						Lines: []types.InlineElements{
-							{
-								types.StringElement{Content: `\^^superscript content^^`}, // 2 backslashes removed
-							},
-						},
-					}
-					verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
-				})
-
-				It("escaped superscript text with unbalanced double quote", func() {
-					actualContent := `\^^superscript content^`
-					expectedResult := types.Paragraph{
-						Attributes: types.ElementAttributes{},
-						Lines: []types.InlineElements{
-							{
-								types.StringElement{Content: "^^superscript content^"},
-							},
-						},
-					}
-					verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
-				})
-
-				It("escaped superscript text with unbalanced double quote and more backslashes", func() {
-					actualContent := `\\\^^superscript content^` // 3 backslashes
-					expectedResult := types.Paragraph{
-						Attributes: types.ElementAttributes{},
-						Lines: []types.InlineElements{
-							{
-								types.StringElement{Content: `\\^^superscript content^`}, // only 1 backslash removed
-							},
-						},
-					}
-					verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
-				})
 			})
 
 			Context("with nested quoted text", func() {
 
-				It("escaped superscript text with nested bold text", func() {
+				It("escaped superscript text with nested bold text - case 1", func() {
+					actualContent := `\^*bold content*^` // valid escaped superscript since it has no space within
+					expectedResult := types.Paragraph{
+						Attributes: types.ElementAttributes{},
+						Lines: []types.InlineElements{
+							{
+								types.StringElement{Content: `^`},
+								types.QuotedText{
+									Kind: types.Bold,
+									Elements: types.InlineElements{
+										types.StringElement{Content: "bold content"},
+									},
+								},
+								types.StringElement{Content: "^"},
+							},
+						},
+					}
+					verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+				})
+
+				It("escaped superscript text with unbalanced double backquote and nested bold test", func() {
 					actualContent := `\^*bold content*^`
 					expectedResult := types.Paragraph{
 						Attributes: types.ElementAttributes{},
@@ -1479,33 +1728,13 @@ var _ = Describe("quoted texts", func() {
 					verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 				})
 
-				It("escaped superscript text with unbalanced double backquote and nested bold test", func() {
-					actualContent := `\^^*bold content*^`
+				It("escaped superscript text with nested bold text - case 2", func() {
+					actualContent := `\^superscript *and bold* content^` // invalid superscript text since it has spaces within
 					expectedResult := types.Paragraph{
 						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
 							{
-								types.StringElement{Content: "^^"},
-								types.QuotedText{
-									Kind: types.Bold,
-									Elements: types.InlineElements{
-										types.StringElement{Content: "bold content"},
-									},
-								},
-								types.StringElement{Content: "^"},
-							},
-						},
-					}
-					verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
-				})
-
-				It("escaped superscript text with nested bold text", func() {
-					actualContent := `\^superscript *and bold* content^`
-					expectedResult := types.Paragraph{
-						Attributes: types.ElementAttributes{},
-						Lines: []types.InlineElements{
-							{
-								types.StringElement{Content: "^superscript "},
+								types.StringElement{Content: `\^superscript `},
 								types.QuotedText{
 									Kind: types.Bold,
 									Elements: types.InlineElements{
