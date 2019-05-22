@@ -18,10 +18,12 @@ var _ = Describe("links", func() {
 					{
 						types.StringElement{Content: "a link to "},
 						types.InlineLink{
-							URL: "https://foo.bar",
-							Attributes: types.ElementAttributes{
-								"text": "",
+							Location: types.Location{
+								types.StringElement{
+									Content: "https://foo.bar",
+								},
 							},
+							Attributes: types.ElementAttributes{},
 						},
 					},
 				},
@@ -37,10 +39,12 @@ var _ = Describe("links", func() {
 					{
 						types.StringElement{Content: "a link to "},
 						types.InlineLink{
-							URL: "https://foo.bar",
-							Attributes: types.ElementAttributes{
-								"text": "",
+							Location: types.Location{
+								types.StringElement{
+									Content: "https://foo.bar",
+								},
 							},
+							Attributes: types.ElementAttributes{},
 						},
 					},
 				},
@@ -56,9 +60,18 @@ var _ = Describe("links", func() {
 					{
 						types.StringElement{Content: "a link to "},
 						types.InlineLink{
-							URL: "mailto:foo@bar",
+							Location: types.Location{
+								types.StringElement{
+									Content: "mailto:foo@bar",
+								},
+							},
+
 							Attributes: types.ElementAttributes{
-								"text": "the foo@bar email",
+								types.AttrInlineLinkText: types.InlineElements{
+									types.StringElement{
+										Content: "the foo@bar email",
+									},
+								},
 							},
 						},
 					},
@@ -75,10 +88,18 @@ var _ = Describe("links", func() {
 					{
 						types.StringElement{Content: "a link to "},
 						types.InlineLink{
-							URL: "mailto:foo@bar",
+							Location: types.Location{
+								types.StringElement{
+									Content: "mailto:foo@bar",
+								},
+							},
 							Attributes: types.ElementAttributes{
-								"text": "the foo@bar email",
-								"foo":  "bar",
+								types.AttrInlineLinkText: types.InlineElements{
+									types.StringElement{
+										Content: "the foo@bar email",
+									},
+								},
+								"foo": "bar",
 							},
 						},
 					},
@@ -87,25 +108,6 @@ var _ = Describe("links", func() {
 			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 		})
 
-		It("external link with extra attributes only", func() {
-			actualContent := "a link to mailto:foo@bar[foo=bar]"
-			expectedResult := types.Paragraph{
-				Attributes: types.ElementAttributes{},
-				Lines: []types.InlineElements{
-					{
-						types.StringElement{Content: "a link to "},
-						types.InlineLink{
-							URL: "mailto:foo@bar",
-							Attributes: types.ElementAttributes{
-								"text": "",
-								"foo":  "bar",
-							},
-						},
-					},
-				},
-			}
-			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
-		})
 	})
 
 	Context("relative links", func() {
@@ -115,10 +117,12 @@ var _ = Describe("links", func() {
 			expectedResult := types.InlineElements{
 				types.StringElement{Content: "a link to "},
 				types.InlineLink{
-					URL: "foo.adoc",
-					Attributes: types.ElementAttributes{
-						"text": "",
+					Location: types.Location{
+						types.StringElement{
+							Content: "foo.adoc",
+						},
 					},
+					Attributes: types.ElementAttributes{},
 				},
 			}
 			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
@@ -129,9 +133,17 @@ var _ = Describe("links", func() {
 			expectedResult := types.InlineElements{
 				types.StringElement{Content: "a link to "},
 				types.InlineLink{
-					URL: "foo.adoc",
+					Location: types.Location{
+						types.StringElement{
+							Content: "foo.adoc",
+						},
+					},
 					Attributes: types.ElementAttributes{
-						"text": "foo doc",
+						types.AttrInlineLinkText: types.InlineElements{
+							types.StringElement{
+								Content: "foo doc",
+							},
+						},
 					},
 				},
 			}
@@ -143,9 +155,17 @@ var _ = Describe("links", func() {
 			expectedResult := types.InlineElements{
 				types.StringElement{Content: "a link to "},
 				types.InlineLink{
-					URL: "https://foo.bar",
+					Location: types.Location{
+						types.StringElement{
+							Content: "https://foo.bar",
+						},
+					},
 					Attributes: types.ElementAttributes{
-						"text": "foo doc",
+						types.AttrInlineLinkText: types.InlineElements{
+							types.StringElement{
+								Content: "foo doc",
+							},
+						},
 					},
 				},
 			}
@@ -157,10 +177,18 @@ var _ = Describe("links", func() {
 			expectedResult := types.InlineElements{
 				types.StringElement{Content: "a link to "},
 				types.InlineLink{
-					URL: "https://foo.bar",
+					Location: types.Location{
+						types.StringElement{
+							Content: "https://foo.bar",
+						},
+					},
 					Attributes: types.ElementAttributes{
-						"text": "foo doc",
-						"foo":  "bar",
+						types.AttrInlineLinkText: types.InlineElements{
+							types.StringElement{
+								Content: "foo doc",
+							},
+						},
+						"foo": "bar",
 					},
 				},
 			}
@@ -172,10 +200,13 @@ var _ = Describe("links", func() {
 			expectedResult := types.InlineElements{
 				types.StringElement{Content: "a link to "},
 				types.InlineLink{
-					URL: "https://foo.bar",
+					Location: types.Location{
+						types.StringElement{
+							Content: "https://foo.bar",
+						},
+					},
 					Attributes: types.ElementAttributes{
-						"text": "",
-						"foo":  "bar",
+						"foo": "bar",
 					},
 				},
 			}
@@ -191,6 +222,54 @@ var _ = Describe("links", func() {
 			}
 			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
 		})
+
+		It("relative link with quoted text", func() {
+			actualContent := "link:/[_a_ *b* `c`]"
+			expectedResult := types.InlineLink{
+				Location: types.Location{
+					types.StringElement{
+						Content: "/",
+					},
+				},
+				Attributes: types.ElementAttributes{
+					types.AttrInlineLinkText: types.InlineElements{
+						types.QuotedText{
+							Kind: types.Italic,
+							Elements: types.InlineElements{
+								types.StringElement{
+									Content: "a",
+								},
+							},
+						},
+						types.StringElement{
+							Content: " ",
+						},
+						types.QuotedText{
+							Kind: types.Bold,
+							Elements: types.InlineElements{
+								types.StringElement{
+									Content: "b",
+								},
+							},
+						},
+						types.StringElement{
+							Content: " ",
+						},
+						types.QuotedText{
+							Kind: types.Monospace,
+							Elements: types.InlineElements{
+								types.StringElement{
+									Content: "c",
+								},
+							},
+						},
+					},
+				},
+			}
+			// verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("RelativeLink"), parser.Debug(true))
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("RelativeLink"))
+		})
+
 	})
 
 })

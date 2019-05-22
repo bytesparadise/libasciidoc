@@ -107,7 +107,7 @@ puts "Hello, World!"
 func parseReader(content string) (parser.Stats, error) {
 	reader := strings.NewReader(content)
 	stats := parser.Stats{}
-	allOptions := make([]parser.Option, 0)
+	allOptions := []parser.Option{}
 	allOptions = append(allOptions, parser.AllowInvalidUTF8(false), parser.Statistics(&stats, "no match"))
 	if os.Getenv("DEBUG") == "true" {
 		allOptions = append(allOptions, parser.Debug(true))

@@ -25,6 +25,14 @@ var _ = Describe("links", func() {
 </div>`
 			verify(GinkgoT(), expectedResult, actualContent)
 		})
+
+		It("external link with quoted text", func() {
+			actualContent := "https://foo.com[_a_ *b* `c`]"
+			expectedResult := `<div class="paragraph">
+<p><a href="https://foo.com"><em>a</em> <strong>b</strong> <code>c</code></a></p>
+</div>`
+			verify(GinkgoT(), expectedResult, actualContent)
+		})
 	})
 
 	Context("relative links", func() {
@@ -57,6 +65,14 @@ var _ = Describe("links", func() {
 			actualContent := "a link to link:foo.adoc."
 			expectedResult := `<div class="paragraph">
 <p>a link to link:foo.adoc.</p>
+</div>`
+			verify(GinkgoT(), expectedResult, actualContent)
+		})
+
+		It("relative link with quoted text", func() {
+			actualContent := "link:/[_a_ *b* `c`]"
+			expectedResult := `<div class="paragraph">
+<p><a href="/"><em>a</em> <strong>b</strong> <code>c</code></a></p>
 </div>`
 			verify(GinkgoT(), expectedResult, actualContent)
 		})

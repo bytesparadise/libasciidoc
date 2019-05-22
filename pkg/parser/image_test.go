@@ -315,7 +315,7 @@ image::appa.png[]`
 						Path: "images/foo.png",
 					},
 				}
-				verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"), parser.Debug(false))
+				verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
 			})
 
 			It("inline image with multiple other attributes only", func() {

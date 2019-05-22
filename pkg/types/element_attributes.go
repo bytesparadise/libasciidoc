@@ -170,8 +170,8 @@ func NewSourceAttributes(language string) (ElementAttributes, error) {
 func WithAttributes(element interface{}, attributes []interface{}) (interface{}, error) {
 	attrs := NewElementAttributes(attributes)
 	// look for custom ID
-	for attrb := range attrs {
-		if attrb == AttrID {
+	for attr := range attrs {
+		if attr == AttrID {
 			// mark custom_id flag to `true`
 			attrs[AttrCustomID] = true
 		}
@@ -258,31 +258,31 @@ func (a ElementAttributes) AddNonEmpty(key string, value interface{}) {
 // NewElementAttributes retrieves the ElementID, ElementTitle and ElementInlineLink from the given slice of attributes
 func NewElementAttributes(attributes []interface{}, extras ...ElementAttributes) ElementAttributes {
 	attrs := ElementAttributes{}
-	for _, attrb := range attributes {
-		log.Debugf("processing attribute %[1]v (%[1]T)", attrb)
-		switch attrb := attrb.(type) {
+	for _, attr := range attributes {
+		log.Debugf("processing attribute %[1]v (%[1]T)", attr)
+		switch attr := attr.(type) {
 		case []interface{}:
 			// nested case, because of the grammar syntax,
 			// eg: `attributes:(ElementAttribute* LiteralAttribute ElementAttribute*)`
 			// which is used to ensure that a `LiteralAttribute` element is set amongst the attributes
-			r := NewElementAttributes(attrb)
+			r := NewElementAttributes(attr)
 			for k, v := range r {
 				attrs[k] = v
 			}
 		case ElementAttributes:
 			// TODO: warn if attribute already exists and is overridden
-			for k, v := range attrb {
+			for k, v := range attr {
 				attrs[k] = v
 			}
 		case map[string]interface{}:
 			// TODO: warn if attribute already exists and is overridden
-			for k, v := range attrb {
+			for k, v := range attr {
 				attrs[k] = v
 			}
 		case nil:
 			// ignore
 		default:
-			log.Warnf("unexpected attributes of type: %T", attrb)
+			log.Warnf("unexpected attributes of type: %T", attr)
 		}
 	}
 	for _, extra := range extras {

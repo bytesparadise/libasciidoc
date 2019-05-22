@@ -1583,7 +1583,7 @@ func verifyLevelOffset(expectation string, actual types.RawSectionTitlePrefix, l
 
 var _ = Describe("Location resolution", func() {
 
-	attrs := map[string]string{
+	attrs := types.DocumentAttributes{
 		"includedir": "includes",
 		"foo":        "bar",
 	}

@@ -43,7 +43,7 @@ var _ = Describe("quoted texts", func() {
 			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("QuotedText"))
 		})
 
-		It("italic text with 3 words", func() {
+		It("italic text with 3 words in single quote", func() {
 			actualContent := "_some italic content_"
 			expectedResult := types.QuotedText{
 				Kind: types.Italic,
@@ -134,20 +134,16 @@ var _ = Describe("quoted texts", func() {
 
 		It("italic text within italic text", func() {
 			actualContent := "_some _very italic_ content_"
-			expectedResult := types.QuotedText{
-				Kind: types.Italic,
-				Elements: types.InlineElements{
-					types.StringElement{Content: "some "},
-					types.QuotedText{
-						Kind: types.Italic,
-						Elements: types.InlineElements{
-							types.StringElement{Content: "very italic"},
-						},
+			expectedResult := types.InlineElements{
+				types.QuotedText{
+					Kind: types.Italic,
+					Elements: types.InlineElements{
+						types.StringElement{Content: "some _very italic"},
 					},
-					types.StringElement{Content: " content"},
 				},
+				types.StringElement{Content: " content_"},
 			}
-			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("QuotedText"))
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
 		})
 
 		It("subscript text attached", func() {
@@ -199,7 +195,7 @@ var _ = Describe("quoted texts", func() {
 
 	Context("Quoted text with double punctuation", func() {
 
-		It("bold text of 1 word", func() {
+		It("bold text of 1 word in double quote", func() {
 			actualContent := "**hello**"
 			expectedResult := types.QuotedText{
 				Kind: types.Bold,
@@ -210,7 +206,7 @@ var _ = Describe("quoted texts", func() {
 			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("QuotedText"))
 		})
 
-		It("italic text with 3 words", func() {
+		It("italic text with 3 words in double quote", func() {
 			actualContent := "__some italic content__"
 			expectedResult := types.QuotedText{
 				Kind: types.Italic,
@@ -221,7 +217,7 @@ var _ = Describe("quoted texts", func() {
 			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("QuotedText"))
 		})
 
-		It("monospace text with 3 words", func() {
+		It("monospace text with 3 words in double quote", func() {
 			actualContent := "``some monospace content``"
 			expectedResult := types.QuotedText{
 				Kind: types.Monospace,
@@ -418,23 +414,17 @@ var _ = Describe("quoted texts", func() {
 			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
 		})
 
-		It("simple-quote bold within simple-quote bold text", func() {
+		It("single-quote bold within single-quote bold text", func() {
 			// here we don't allow for bold text within bold text, to comply with the existing implementations (asciidoc and asciidoctor)
 			actualContent := "*some *nested bold* content*"
 			expectedResult := types.InlineElements{
 				types.QuotedText{
 					Kind: types.Bold,
 					Elements: types.InlineElements{
-						types.StringElement{Content: "some "},
-						types.QuotedText{
-							Kind: types.Bold,
-							Elements: types.InlineElements{
-								types.StringElement{Content: "nested bold"},
-							},
-						},
-						types.StringElement{Content: " content"},
+						types.StringElement{Content: "some *nested bold"},
 					},
 				},
+				types.StringElement{Content: " content*"},
 			}
 			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
 		})
@@ -447,12 +437,12 @@ var _ = Describe("quoted texts", func() {
 					Kind: types.Bold,
 					Elements: types.InlineElements{
 						types.StringElement{Content: "some "},
-						types.QuotedText{
-							Kind: types.Bold,
-							Elements: types.InlineElements{
-								types.StringElement{Content: "nested bold"},
-							},
-						},
+					},
+				},
+				types.StringElement{Content: "nested bold"},
+				types.QuotedText{
+					Kind: types.Bold,
+					Elements: types.InlineElements{
 						types.StringElement{Content: " content"},
 					},
 				},
@@ -460,7 +450,7 @@ var _ = Describe("quoted texts", func() {
 			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
 		})
 
-		It("simple-quote bold within double-quote bold text", func() {
+		It("single-quote bold within double-quote bold text", func() {
 			// here we don't allow for bold text within bold text, to comply with the existing implementations (asciidoc and asciidoctor)
 			actualContent := "**some *nested bold* content**"
 			expectedResult := types.InlineElements{
@@ -481,7 +471,7 @@ var _ = Describe("quoted texts", func() {
 			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
 		})
 
-		It("double-quote bold within simple-quote bold text", func() {
+		It("double-quote bold within single-quote bold text", func() {
 			// here we don't allow for bold text within bold text, to comply with the existing implementations (asciidoc and asciidoctor)
 			actualContent := "*some **nested bold** content*"
 			expectedResult := types.InlineElements{
@@ -502,23 +492,17 @@ var _ = Describe("quoted texts", func() {
 			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
 		})
 
-		It("simple-quote italic within simple-quote italic text", func() {
+		It("single-quote italic within single-quote italic text", func() {
 			// here we don't allow for italic text within italic text, to comply with the existing implementations (asciidoc and asciidoctor)
 			actualContent := "_some _nested italic_ content_"
 			expectedResult := types.InlineElements{
 				types.QuotedText{
 					Kind: types.Italic,
 					Elements: types.InlineElements{
-						types.StringElement{Content: "some "},
-						types.QuotedText{
-							Kind: types.Italic,
-							Elements: types.InlineElements{
-								types.StringElement{Content: "nested italic"},
-							},
-						},
-						types.StringElement{Content: " content"},
+						types.StringElement{Content: "some _nested italic"},
 					},
 				},
+				types.StringElement{Content: " content_"},
 			}
 			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
 		})
@@ -531,12 +515,12 @@ var _ = Describe("quoted texts", func() {
 					Kind: types.Italic,
 					Elements: types.InlineElements{
 						types.StringElement{Content: "some "},
-						types.QuotedText{
-							Kind: types.Italic,
-							Elements: types.InlineElements{
-								types.StringElement{Content: "nested italic"},
-							},
-						},
+					},
+				},
+				types.StringElement{Content: "nested italic"},
+				types.QuotedText{
+					Kind: types.Italic,
+					Elements: types.InlineElements{
 						types.StringElement{Content: " content"},
 					},
 				},
@@ -544,7 +528,7 @@ var _ = Describe("quoted texts", func() {
 			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
 		})
 
-		It("simple-quote italic within double-quote italic text", func() {
+		It("single-quote italic within double-quote italic text", func() {
 			// here we allow for italic text within italic text, to comply with the existing implementations (asciidoc and asciidoctor)
 			actualContent := "_some __nested italic__ content_"
 			expectedResult := types.InlineElements{
@@ -565,7 +549,7 @@ var _ = Describe("quoted texts", func() {
 			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
 		})
 
-		It("double-quote italic within simple-quote italic text", func() {
+		It("double-quote italic within single-quote italic text", func() {
 			// here we allow for italic text within italic text, to comply with the existing implementations (asciidoc and asciidoctor)
 			actualContent := "_some __nested italic__ content_"
 			expectedResult := types.InlineElements{
@@ -586,23 +570,17 @@ var _ = Describe("quoted texts", func() {
 			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
 		})
 
-		It("simple-quote monospace within simple-quote monospace text", func() {
+		It("single-quote monospace within single-quote monospace text", func() {
 			// here we don't allow for monospace text within monospace text, to comply with the existing implementations (asciidoc and asciidoctor)
 			actualContent := "`some `nested monospace` content`"
 			expectedResult := types.InlineElements{
 				types.QuotedText{
 					Kind: types.Monospace,
 					Elements: types.InlineElements{
-						types.StringElement{Content: "some "},
-						types.QuotedText{
-							Kind: types.Monospace,
-							Elements: types.InlineElements{
-								types.StringElement{Content: "nested monospace"},
-							},
-						},
-						types.StringElement{Content: " content"},
+						types.StringElement{Content: "some `nested monospace"},
 					},
 				},
+				types.StringElement{Content: " content`"},
 			}
 			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
 		})
@@ -615,12 +593,12 @@ var _ = Describe("quoted texts", func() {
 					Kind: types.Monospace,
 					Elements: types.InlineElements{
 						types.StringElement{Content: "some "},
-						types.QuotedText{
-							Kind: types.Monospace,
-							Elements: types.InlineElements{
-								types.StringElement{Content: "nested monospace"},
-							},
-						},
+					},
+				},
+				types.StringElement{Content: "nested monospace"},
+				types.QuotedText{
+					Kind: types.Monospace,
+					Elements: types.InlineElements{
 						types.StringElement{Content: " content"},
 					},
 				},
@@ -628,7 +606,7 @@ var _ = Describe("quoted texts", func() {
 			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
 		})
 
-		It("simple-quote monospace within double-quote monospace text", func() {
+		It("single-quote monospace within double-quote monospace text", func() {
 			// here we allow for monospace text within monospace text, to comply with the existing implementations (asciidoc and asciidoctor)
 			actualContent := "`some ``nested monospace`` content`"
 			expectedResult := types.InlineElements{
@@ -649,7 +627,7 @@ var _ = Describe("quoted texts", func() {
 			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
 		})
 
-		It("double-quote monospace within simple-quote monospace text", func() {
+		It("double-quote monospace within single-quote monospace text", func() {
 			// here we allow for monospace text within monospace text, to comply with the existing implementations (asciidoc and asciidoctor)
 			actualContent := "`some ``nested monospace`` content`"
 			expectedResult := types.InlineElements{
@@ -759,7 +737,7 @@ var _ = Describe("quoted texts", func() {
 			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
 		})
 
-		It("multiline in monospace - case 1", func() {
+		It("multiline in single quoted monospace - case 1", func() {
 			actualContent := "`a\nb`"
 			expectedResult := types.InlineElements{
 				types.QuotedText{
@@ -772,7 +750,39 @@ var _ = Describe("quoted texts", func() {
 			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
 		})
 
-		It("multiline in monospace - case 2", func() {
+		It("multiline in double quoted monospace - case 1", func() {
+			actualContent := "`a\nb`"
+			expectedResult := types.InlineElements{
+				types.QuotedText{
+					Kind: types.Monospace,
+					Elements: types.InlineElements{
+						types.StringElement{Content: "a\nb"},
+					},
+				},
+			}
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
+		})
+
+		It("multiline in single quoted  monospace - case 2", func() {
+			actualContent := "`a\n*b*`"
+			expectedResult := types.InlineElements{
+				types.QuotedText{
+					Kind: types.Monospace,
+					Elements: types.InlineElements{
+						types.StringElement{Content: "a\n"},
+						types.QuotedText{
+							Kind: types.Bold,
+							Elements: types.InlineElements{
+								types.StringElement{Content: "b"},
+							},
+						},
+					},
+				},
+			}
+			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
+		})
+
+		It("multiline in double quoted  monospace - case 2", func() {
 			actualContent := "`a\n*b*`"
 			expectedResult := types.InlineElements{
 				types.QuotedText{
@@ -800,9 +810,17 @@ var _ = Describe("quoted texts", func() {
 						types.StringElement{Content: "a "},
 						types.InlineLink{
 							Attributes: types.ElementAttributes{
-								"text": "b",
+								types.AttrInlineLinkText: types.InlineElements{
+									types.StringElement{
+										Content: "b",
+									},
+								},
 							},
-							URL: "/",
+							Location: types.Location{
+								types.StringElement{
+									Content: "/",
+								},
+							},
 						},
 					},
 				},
@@ -878,9 +896,17 @@ var _ = Describe("quoted texts", func() {
 						types.StringElement{Content: "a "},
 						types.InlineLink{
 							Attributes: types.ElementAttributes{
-								"text": "b",
+								types.AttrInlineLinkText: types.InlineElements{
+									types.StringElement{
+										Content: "b",
+									},
+								},
 							},
-							URL: "/",
+							Location: types.Location{
+								types.StringElement{
+									Content: "/",
+								},
+							},
 						},
 					},
 				},
@@ -956,9 +982,17 @@ var _ = Describe("quoted texts", func() {
 						types.StringElement{Content: "a "},
 						types.InlineLink{
 							Attributes: types.ElementAttributes{
-								"text": "b",
+								types.AttrInlineLinkText: types.InlineElements{
+									types.StringElement{
+										Content: "b",
+									},
+								},
 							},
-							URL: "/",
+							Location: types.Location{
+								types.StringElement{
+									Content: "/",
+								},
+							},
 						},
 					},
 				},
@@ -1288,7 +1322,7 @@ var _ = Describe("quoted texts", func() {
 
 			Context("without nested quoted text", func() {
 
-				It("escaped italic text with simple quote", func() {
+				It("escaped italic text with single quote", func() {
 					actualContent := `\_italic content_`
 					expectedResult := types.Paragraph{
 						Attributes: types.ElementAttributes{},
@@ -1301,7 +1335,7 @@ var _ = Describe("quoted texts", func() {
 					verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 				})
 
-				It("escaped italic text with simple quote and more backslashes", func() {
+				It("escaped italic text with single quote and more backslashes", func() {
 					actualContent := `\\_italic content_`
 					expectedResult := types.Paragraph{
 						Attributes: types.ElementAttributes{},
@@ -1314,7 +1348,7 @@ var _ = Describe("quoted texts", func() {
 					verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 				})
 
-				It("escaped italic text with double quote", func() {
+				It("escaped italic text with double quote with 2 backslashes", func() {
 					actualContent := `\\__italic content__`
 					expectedResult := types.Paragraph{
 						Attributes: types.ElementAttributes{},
@@ -1327,7 +1361,7 @@ var _ = Describe("quoted texts", func() {
 					verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 				})
 
-				It("escaped italic text with double quote and more backslashes", func() {
+				It("escaped italic text with double quote with 3 backslashes", func() {
 					actualContent := `\\\__italic content__`
 					expectedResult := types.Paragraph{
 						Attributes: types.ElementAttributes{},
@@ -1435,7 +1469,7 @@ var _ = Describe("quoted texts", func() {
 
 			Context("without nested quoted text", func() {
 
-				It("escaped monospace text with simple quote", func() {
+				It("escaped monospace text with single quote", func() {
 					actualContent := `\` + "`monospace content`"
 					expectedResult := types.Paragraph{
 						Attributes: types.ElementAttributes{},
@@ -1448,7 +1482,7 @@ var _ = Describe("quoted texts", func() {
 					verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 				})
 
-				It("escaped monospace text with simple quote and more backslashes", func() {
+				It("escaped monospace text with single quote and more backslashes", func() {
 					actualContent := `\\` + "`monospace content`"
 					expectedResult := types.Paragraph{
 						Attributes: types.ElementAttributes{},
@@ -1582,7 +1616,7 @@ var _ = Describe("quoted texts", func() {
 
 			Context("without nested quoted text", func() {
 
-				It("escaped subscript text with simple quote", func() {
+				It("escaped subscript text with single quote", func() {
 					actualContent := `\~subscriptcontent~`
 					expectedResult := types.Paragraph{
 						Attributes: types.ElementAttributes{},
@@ -1595,7 +1629,7 @@ var _ = Describe("quoted texts", func() {
 					verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 				})
 
-				It("escaped subscript text with simple quote and more backslashes", func() {
+				It("escaped subscript text with single quote and more backslashes", func() {
 					actualContent := `\\~subscriptcontent~`
 					expectedResult := types.Paragraph{
 						Attributes: types.ElementAttributes{},
@@ -1658,7 +1692,7 @@ var _ = Describe("quoted texts", func() {
 
 			Context("without nested quoted text", func() {
 
-				It("escaped superscript text with simple quote", func() {
+				It("escaped superscript text with single quote", func() {
 					actualContent := `\^superscriptcontent^`
 					expectedResult := types.Paragraph{
 						Attributes: types.ElementAttributes{},
@@ -1671,7 +1705,7 @@ var _ = Describe("quoted texts", func() {
 					verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
 				})
 
-				It("escaped superscript text with simple quote and more backslashes", func() {
+				It("escaped superscript text with single quote and more backslashes", func() {
 					actualContent := `\\^superscriptcontent^`
 					expectedResult := types.Paragraph{
 						Attributes: types.ElementAttributes{},

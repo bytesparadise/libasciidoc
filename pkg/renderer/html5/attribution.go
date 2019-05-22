@@ -20,14 +20,14 @@ func NewDelimitedBlockAttribution(b types.DelimitedBlock) Attribution {
 	return newAttribution(b.Attributes)
 }
 
-func newAttribution(attrbs types.ElementAttributes) Attribution {
+func newAttribution(attrs types.ElementAttributes) Attribution {
 	result := Attribution{}
-	if author := attrbs.GetAsString(types.AttrQuoteAuthor); author != "" {
+	if author := attrs.GetAsString(types.AttrQuoteAuthor); author != "" {
 		result.First = author
-		if title := attrbs.GetAsString(types.AttrQuoteTitle); title != "" {
+		if title := attrs.GetAsString(types.AttrQuoteTitle); title != "" {
 			result.Second = title
 		}
-	} else if title := attrbs.GetAsString(types.AttrQuoteTitle); title != "" {
+	} else if title := attrs.GetAsString(types.AttrQuoteTitle); title != "" {
 		result.First = title
 	}
 	return result

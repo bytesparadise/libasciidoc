@@ -86,10 +86,10 @@ author is {author}.`
 	Context("substitutions to elements", func() {
 
 		It("replace to inline link in paragraph", func() {
-			actualContent := `:quick-uri: http://foo.com/bar
+			actualContent := `:quick-uri: https://foo.com/bar
 {quick-uri}[foo]`
 			expectedResult := `<div class="paragraph">
-<p><a href="http://foo.com/bar">foo</a></p>
+<p><a href="https://foo.com/bar">foo</a></p>
 </div>`
 			verify(GinkgoT(), expectedResult, actualContent)
 		})

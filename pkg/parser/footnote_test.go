@@ -51,7 +51,7 @@ var _ = Describe("footnotes", func() {
 		})
 
 		It("footnote with single-line rich content", func() {
-			actualContent := `foo footnote:[some *rich* http://foo.com[content]]`
+			actualContent := `foo footnote:[some *rich* https://foo.com[content]]`
 			footnote1 := types.Footnote{
 				ID: 0,
 				Elements: types.InlineElements{
@@ -71,9 +71,17 @@ var _ = Describe("footnotes", func() {
 					},
 					types.InlineLink{
 						Attributes: types.ElementAttributes{
-							types.AttrInlineLinkText: "content",
+							types.AttrInlineLinkText: types.InlineElements{
+								types.StringElement{
+									Content: "content",
+								},
+							},
 						},
-						URL: "http://foo.com",
+						Location: types.Location{
+							types.StringElement{
+								Content: "https://foo.com",
+							},
+						},
 					},
 				},
 			}
