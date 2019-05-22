@@ -87,7 +87,7 @@ RawText <- content:((!EOL .)+ { return c.text, nil }) EOL {
 // ------------------------------------------
 FrontMatter <- YamlFrontMatter 
 
-FrontMatter <- YamlFrontMatterToken content:(YamlFrontMatterContent) YamlFrontMatterToken {
+YamlFrontMatter <- YamlFrontMatterToken content:(YamlFrontMatterContent) YamlFrontMatterToken {
     return types.NewYamlFrontMatter(content.(string))
 }
 
