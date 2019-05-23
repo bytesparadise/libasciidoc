@@ -111,7 +111,7 @@ var _ = Describe("quoted texts", func() {
 
 			actualContent := "*some *nested bold* content*."
 			expectedResult := `<div class="paragraph">
-<p><strong>some <strong>nested bold</strong> content</strong>.</p>
+<p><strong>some *nested bold</strong> content*.</p>
 </div>`
 			verify(GinkgoT(), expectedResult, actualContent)
 		})

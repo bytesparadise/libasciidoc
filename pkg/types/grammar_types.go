@@ -2226,6 +2226,7 @@ func (t QuotedText) AcceptVisitor(v Visitor) error {
 
 // NewEscapedQuotedText returns a new InlineElements where the nested elements are preserved (ie, substituted as expected)
 func NewEscapedQuotedText(backslashes string, punctuation string, content interface{}) ([]interface{}, error) {
+	log.Debugf("new escaped quoted text: %s %s %v", backslashes, punctuation, content)
 	backslashesStr := Apply(backslashes,
 		func(s string) string {
 			// remove the number of back-slashes that match the length of the punctuation. Eg: `\*` or `\\**`, but keep extra back-slashes
@@ -2234,7 +2235,18 @@ func NewEscapedQuotedText(backslashes string, punctuation string, content interf
 			}
 			return ""
 		})
-	return []interface{}{backslashesStr, punctuation, content, punctuation}, nil
+	return []interface{}{
+		StringElement{
+			Content: backslashesStr,
+		},
+		StringElement{
+			Content: punctuation,
+		},
+		content,
+		StringElement{
+			Content: punctuation,
+		},
+	}, nil
 }
 
 // ------------------------------------------
@@ -2274,44 +2286,27 @@ func NewPassthrough(kind PassthroughKind, elements []interface{}) (Passthrough, 
 
 // InlineLink the structure for the external links
 type InlineLink struct {
-	URL        string
+	Location   Location
 	Attributes ElementAttributes
 }
 
 // NewInlineLink initializes a new inline `InlineLink`
-func NewInlineLink(url string, attributes interface{}) (InlineLink, error) {
-	attrs, ok := attributes.(ElementAttributes)
-	// init attributes with empty 'text' attribute
-	if !ok {
-		attrs = ElementAttributes{
-			AttrInlineLinkText: "",
-		}
-	}
+func NewInlineLink(url Location, attrs ElementAttributes) (InlineLink, error) {
 	return InlineLink{
-		URL:        url,
+		Location:   url,
 		Attributes: attrs,
 	}, nil
-}
-
-// Text returns the `text` value for the InlineLink,
-func (l InlineLink) Text() string {
-	if text, ok := l.Attributes[AttrInlineLinkText].(string); ok {
-		return text
-	}
-	return ""
 }
 
 // AttrInlineLinkText the link `text` attribute
 const AttrInlineLinkText string = "text"
 
 // NewInlineLinkAttributes returns a map of link attributes, some of which have implicit keys (`text`)
-func NewInlineLinkAttributes(text interface{}, otherattrs []interface{}) (ElementAttributes, error) {
+func NewInlineLinkAttributes(text InlineElements, otherattrs []interface{}) (ElementAttributes, error) {
 	result := ElementAttributes{}
-	var textStr string
-	if text, ok := text.(string); ok {
-		textStr = Apply(text, strings.TrimSpace)
+	if text != nil {
+		result[AttrInlineLinkText] = text
 	}
-	result[AttrInlineLinkText] = textStr
 	for _, otherAttr := range otherattrs {
 		if otherAttr, ok := otherAttr.(ElementAttributes); ok {
 			for k, v := range otherAttr {
@@ -2464,12 +2459,12 @@ func NewLocation(elements []interface{}) (Location, error) {
 // Resolve resolves the Location by replacing all document attribute substitutions
 // with their associated values, or their corresponding raw text if
 // no attribute matched
-func (u Location) Resolve(attrs map[string]string) string {
+func (u Location) Resolve(attrs DocumentAttributes) string {
 	result := bytes.NewBuffer(nil)
 	for _, e := range u {
 		switch s := e.(type) {
 		case DocumentAttributeSubstitution:
-			if value, found := attrs[s.Name]; found {
+			if value, found := attrs[s.Name].(string); found {
 				result.WriteString(value)
 			} else {
 				result.WriteRune('{')
@@ -2485,7 +2480,7 @@ func (u Location) Resolve(attrs map[string]string) string {
 
 // Ext return the extension of the file of this location.
 // Eg:
-// - `http://foo.com/bar.png` -> `png`
+// - `https://foo.com/bar.png` -> `png`
 // - `images/bar.png` -> `png`
 // return empty string if the resolved path has no extension
 // func (u Location) Ext(attrs map[string]string) string {

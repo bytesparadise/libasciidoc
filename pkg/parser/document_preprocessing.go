@@ -33,7 +33,7 @@ func preparseDocument(filename string, r io.Reader, levelOffset string, opts ...
 	}
 	doc := d.(types.PreparsedDocument)
 	result := bytes.NewBuffer(nil)
-	attrs := map[string]string{}
+	attrs := types.DocumentAttributes{}
 	for i, e := range doc.Elements {
 		switch e := e.(type) {
 		case types.FileInclusion:
@@ -86,13 +86,16 @@ func init() {
 	}
 }
 
-func invalidFileErrMsg(incl types.FileInclusion) []byte {
+func invalidFileErrMsg(incl types.FileInclusion) ([]byte, error) {
 	buf := bytes.NewBuffer(nil)
-	invalidFileTmpl.Execute(buf, incl.RawText)
-	return buf.Bytes()
+	err := invalidFileTmpl.Execute(buf, incl.RawText)
+	if err != nil {
+		return nil, err
+	}
+	return buf.Bytes(), nil
 }
 
-func parseFileToInclude(incl types.FileInclusion, attrs map[string]string, opts ...Option) ([]byte, error) {
+func parseFileToInclude(incl types.FileInclusion, attrs types.DocumentAttributes, opts ...Option) ([]byte, error) {
 	path := incl.Location.Resolve(attrs)
 	log.Debugf("parsing '%s'...", path)
 	// manage new working directory based on the file's location
@@ -104,12 +107,12 @@ func parseFileToInclude(incl types.FileInclusion, attrs map[string]string, opts 
 	}
 	absPath, err := filepath.Abs(path)
 	if err != nil {
-		return invalidFileErrMsg(incl), err
+		return invalidFileErrMsg(incl)
 	}
 	dir := filepath.Dir(absPath)
 	err = os.Chdir(dir)
 	if err != nil {
-		return invalidFileErrMsg(incl), err
+		return invalidFileErrMsg(incl)
 	}
 	defer func() {
 		err = os.Chdir(wd) // restore the previous working directory
@@ -120,7 +123,7 @@ func parseFileToInclude(incl types.FileInclusion, attrs map[string]string, opts 
 	// read the file per-se
 	f, err := os.Open(absPath)
 	if err != nil {
-		return invalidFileErrMsg(incl), err
+		return invalidFileErrMsg(incl)
 	}
 	defer func() {
 		if closeErr := f.Close(); closeErr != nil {
@@ -147,17 +150,21 @@ func parseFileToInclude(incl types.FileInclusion, attrs map[string]string, opts 
 		if lineRanges.Match(line) {
 			_, err := content.WriteString(scanner.Text())
 			if err != nil {
-				return invalidFileErrMsg(incl), err
+				return invalidFileErrMsg(incl)
 			}
 			_, err = content.WriteString("\n")
 			if err != nil {
-				return invalidFileErrMsg(incl), err
+				return invalidFileErrMsg(incl)
 			}
 		}
 		line++
 	}
 	if err := scanner.Err(); err != nil {
-		return invalidFileErrMsg(incl), errors.Wrap(err, "unable to read file to include")
+		msg, err2 := invalidFileErrMsg(incl)
+		if err2 != nil {
+			return nil, err2
+		}
+		return msg, errors.Wrap(err, "unable to read file to include")
 	}
 	if levelOffset, ok := incl.Attributes[types.AttrLevelOffset].(string); ok {
 		return preparseDocument(path, content, levelOffset, opts...)

@@ -74,7 +74,10 @@ func NilSafe(elements []interface{}) []interface{} {
 
 func mergeElements(elements ...interface{}) InlineElements {
 	result := make([]interface{}, 0)
-	// log.Debugf("merging %d element(s):", len(elements))
+	// if log.IsLevelEnabled(log.DebugLevel) {
+	// 	log.Debugf("merging %d element(s):", len(elements))
+	// 	spew.Dump(elements)
+	// }
 	buff := bytes.NewBuffer(nil)
 	for _, element := range elements {
 		if element == nil {
@@ -104,7 +107,10 @@ func mergeElements(elements ...interface{}) InlineElements {
 	}
 	// if buff was filled because some text was found
 	result, _ = appendBuffer(result, buff)
-	// log.Debugf(" -> '%[1]v' (%[1]T)", result)
+	// if log.IsLevelEnabled(log.DebugLevel) {
+	// 	log.Debug(" merged elements:")
+	// 	spew.Dump(result)
+	// }
 	return result
 }
 

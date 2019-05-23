@@ -26,14 +26,14 @@ var _ = Describe("footnotes", func() {
 	})
 
 	It("rich footnote in a paragraph", func() {
-		actualContent := `foo footnote:[some *rich* http://foo.com[content]]`
+		actualContent := `foo footnote:[some *rich* https://foo.com[content]]`
 		expectedResult := `<div class="paragraph">
 <p>foo <sup class="footnote">[<a id="_footnoteref_1" class="footnote" href="#_footnotedef_1" title="View footnote.">1</a>]</sup></p>
 </div>
 <div id="footnotes">
 <hr>
 <div class="footnote" id="_footnotedef_1">
-<a href="#_footnoteref_1">1</a>. some <strong>rich</strong> <a href="http://foo.com">content</a>
+<a href="#_footnoteref_1">1</a>. some <strong>rich</strong> <a href="https://foo.com">content</a>
 </div>
 </div>`
 		verify(GinkgoT(), expectedResult, actualContent)

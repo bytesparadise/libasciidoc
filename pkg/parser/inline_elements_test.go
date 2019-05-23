@@ -34,7 +34,6 @@ var _ = Describe("inline elements", func() {
 			},
 			types.StringElement{Content: ")"},
 		}
-
 		verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
 	})
 

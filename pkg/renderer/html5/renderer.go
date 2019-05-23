@@ -145,7 +145,10 @@ func renderPlainString(ctx *renderer.Context, element interface{}) ([]byte, erro
 	case types.InlineImage:
 		return []byte(element.Attributes.GetAsString(types.AttrImageAlt)), nil
 	case types.InlineLink:
-		return []byte(element.Text()), nil
+		if alt, ok := element.Attributes[types.AttrInlineLinkText].(types.InlineElements); ok {
+			return renderPlainString(ctx, alt)
+		}
+		return []byte(element.Location.Resolve(ctx.Document.Attributes)), nil
 	case types.BlankLine:
 		return []byte("\n\n"), nil
 	case types.StringElement:
