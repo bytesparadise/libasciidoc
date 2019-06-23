@@ -16,7 +16,7 @@ var _ = Describe("parser benchmark", func() {
 	Measure("bench parser on 10 lines", func(b Benchmarker) {
 		runtime := b.Time("runtime", func() {
 			// given
-			actualContent := `=== foo
+			source := `=== foo
 bar
 
 === foo
@@ -45,9 +45,9 @@ bar
 
 === foo
 bar`
-			stats, err := parseReader(actualContent)
+			err := parseReader(source)
 			Expect(err).ShouldNot(HaveOccurred())
-			b.RecordValue("expr count", float64(stats.ExprCnt))
+			// b.RecordValue("expr count", float64(stats.ExprCnt))
 		})
 		timeout := 0.5
 		if ci {
@@ -60,11 +60,11 @@ bar`
 	Measure("bench parser on 1 line", func(b Benchmarker) {
 		runtime := b.Time("runtime", func() {
 			// given
-			actualContent := `=== foo1
+			source := `=== foo1
 bar1`
-			stats, err := parseReader(actualContent)
+			err := parseReader(source)
 			Expect(err).ShouldNot(HaveOccurred())
-			b.RecordValue("expr count", float64(stats.ExprCnt))
+			// b.RecordValue("expr count", float64(stats.ExprCnt))
 		})
 		timeout := 0.1
 		if ci {
@@ -77,7 +77,7 @@ bar1`
 	Measure("bench parser on basic doc", func(b Benchmarker) {
 		runtime := b.Time("runtime", func() {
 			// given
-			actualContent := `= Introduction to AsciiDoc
+			source := `= Introduction to AsciiDoc
 Doc Writer <doc@example.com>
 
 A preface about https://asciidoc.org[AsciiDoc].
@@ -90,9 +90,9 @@ A preface about https://asciidoc.org[AsciiDoc].
 [source,ruby]
 puts "Hello, World!"
 `
-			stats, err := parseReader(actualContent)
+			err := parseReader(source)
 			Expect(err).ShouldNot(HaveOccurred())
-			b.RecordValue("expr count", float64(stats.ExprCnt))
+			// b.RecordValue("expr count", float64(stats.ExprCnt))
 		})
 		timeout := 0.1
 		if ci {
@@ -104,14 +104,14 @@ puts "Hello, World!"
 
 })
 
-func parseReader(content string) (parser.Stats, error) {
+func parseReader(content string) error {
 	reader := strings.NewReader(content)
-	stats := parser.Stats{}
-	allOptions := []parser.Option{}
-	allOptions = append(allOptions, parser.AllowInvalidUTF8(false), parser.Statistics(&stats, "no match"))
-	if os.Getenv("DEBUG") == "true" {
-		allOptions = append(allOptions, parser.Debug(true))
-	}
-	_, err := parser.ParseDocument("", reader, allOptions...) //, Debug(true))
-	return stats, err
+	// stats := parser.Stats{}
+	// opts := []parser.Option{parser.AllowInvalidUTF8(false), parser.Statistics(&stats, "no match")}
+	opts := []parser.Option{parser.AllowInvalidUTF8(false)}
+	// if os.Getenv("DEBUG") == "true" {
+	// 	opts = append(opts, parser.Debug(true))
+	// }
+	_, err := parser.ParseDocument("", reader, opts...) //, Debug(true))
+	return err
 }

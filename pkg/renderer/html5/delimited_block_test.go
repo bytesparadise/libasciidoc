@@ -9,20 +9,20 @@ var _ = Describe("delimited blocks", func() {
 	Context("fenced blocks", func() {
 
 		It("fenced block with multiple lines", func() {
-			actualContent := "```\nsome source code\n\nhere\n\n\n\n```"
-			expectedResult := `<div class="listingblock">
+			source := "```\nsome source code\n\nhere\n\n\n\n```"
+			expected := `<div class="listingblock">
 <div class="content">
 <pre class="highlight"><code>some source code
 
 here</code></pre>
 </div>
 </div>`
-			verify(GinkgoT(), expectedResult, actualContent)
+			verify(expected, source)
 		})
 
 		It("fenced block with id and title", func() {
-			actualContent := "[#id-for-fences]\n.fenced block title\n```\nsome source code\n\nhere\n\n\n\n```"
-			expectedResult := `<div id="id-for-fences" class="listingblock">
+			source := "[#id-for-fences]\n.fenced block title\n```\nsome source code\n\nhere\n\n\n\n```"
+			expected := `<div id="id-for-fences" class="listingblock">
 <div class="title">fenced block title</div>
 <div class="content">
 <pre class="highlight"><code>some source code
@@ -30,41 +30,41 @@ here</code></pre>
 here</code></pre>
 </div>
 </div>`
-			verify(GinkgoT(), expectedResult, actualContent)
+			verify(expected, source)
 		})
 	})
 
 	Context("listing blocks", func() {
 
 		It("listing block with multiple lines", func() {
-			actualContent := `----
+			source := `----
 some source code
 
 here
 ----`
-			expectedResult := `<div class="listingblock">
+			expected := `<div class="listingblock">
 <div class="content">
 <pre>some source code
 
 here</pre>
 </div>
 </div>`
-			verify(GinkgoT(), expectedResult, actualContent)
+			verify(expected, source)
 		})
 
 		It("listing block with ID and title", func() {
-			actualContent := `[#id-for-listing-block]
+			source := `[#id-for-listing-block]
 .listing block title
 ----
 some source code
 ----`
-			expectedResult := `<div id="id-for-listing-block" class="listingblock">
+			expected := `<div id="id-for-listing-block" class="listingblock">
 <div class="title">listing block title</div>
 <div class="content">
 <pre>some source code</pre>
 </div>
 </div>`
-			verify(GinkgoT(), expectedResult, actualContent)
+			verify(expected, source)
 		})
 
 	})
@@ -72,7 +72,7 @@ some source code
 	Context("source blocks", func() {
 
 		It("with source attribute only", func() {
-			actualContent := `[source]
+			source := `[source]
 ----
 require 'sinatra'
 
@@ -80,7 +80,7 @@ get '/hi' do
   "Hello World!"
 end
 ----`
-			expectedResult := `<div class="listingblock">
+			expected := `<div class="listingblock">
 <div class="content">
 <pre class="highlight"><code>require &#39;sinatra&#39;
 
@@ -89,11 +89,11 @@ get &#39;/hi&#39; do
 end</code></pre>
 </div>
 </div>`
-			verify(GinkgoT(), expectedResult, actualContent)
+			verify(expected, source)
 		})
 
 		It("with title, source and languages attributes", func() {
-			actualContent := `[source,ruby]
+			source := `[source,ruby]
 .Source block title
 ----
 require 'sinatra'
@@ -102,7 +102,7 @@ get '/hi' do
   "Hello World!"
 end
 ----`
-			expectedResult := `<div class="listingblock">
+			expected := `<div class="listingblock">
 <div class="title">Source block title</div>
 <div class="content">
 <pre class="highlight"><code class="language-ruby" data-lang="ruby">require &#39;sinatra&#39;
@@ -112,11 +112,11 @@ get &#39;/hi&#39; do
 end</code></pre>
 </div>
 </div>`
-			verify(GinkgoT(), expectedResult, actualContent)
+			verify(expected, source)
 		})
 
 		It("with id, title, source and languages attributes", func() {
-			actualContent := `[#id-for-source-block]
+			source := `[#id-for-source-block]
 [source,ruby]
 .app.rb
 ----
@@ -126,7 +126,7 @@ get '/hi' do
   "Hello World!"
 end
 ----`
-			expectedResult := `<div id="id-for-source-block" class="listingblock">
+			expected := `<div id="id-for-source-block" class="listingblock">
 <div class="title">app.rb</div>
 <div class="content">
 <pre class="highlight"><code class="language-ruby" data-lang="ruby">require &#39;sinatra&#39;
@@ -136,44 +136,44 @@ get &#39;/hi&#39; do
 end</code></pre>
 </div>
 </div>`
-			verify(GinkgoT(), expectedResult, actualContent)
+			verify(expected, source)
 		})
 
 		It("with html content", func() {
-			actualContent := `----
+			source := `----
 <a>link</a>
 ----`
-			expectedResult := `<div class="listingblock">
+			expected := `<div class="listingblock">
 <div class="content">
 <pre>&lt;a&gt;link&lt;/a&gt;</pre>
 </div>
 </div>`
-			verify(GinkgoT(), expectedResult, actualContent)
+			verify(expected, source)
 		})
 
 		It("with other content", func() {
-			actualContent := `----
+			source := `----
   a<<b
 ----`
-			expectedResult := `<div class="listingblock">
+			expected := `<div class="listingblock">
 <div class="content">
 <pre>  a&lt;&lt;b</pre>
 </div>
 </div>`
-			verify(GinkgoT(), expectedResult, actualContent)
+			verify(expected, source)
 		})
 	})
 
 	Context("example blocks", func() {
 
 		It("example block with multiple elements - case 1", func() {
-			actualContent := `====
+			source := `====
 some listing code
 with *bold content*
 
 * and a list item
 ====`
-			expectedResult := `<div class="exampleblock">
+			expected := `<div class="exampleblock">
 <div class="content">
 <div class="paragraph">
 <p>some listing code
@@ -188,16 +188,16 @@ with <strong>bold content</strong></p>
 </div>
 </div>
 </div>`
-			verify(GinkgoT(), expectedResult, actualContent)
+			verify(expected, source)
 		})
 
 		It("example block with multiple elements - case 2", func() {
-			actualContent := `====
+			source := `====
 *bold content*
 
 and more content
 ====`
-			expectedResult := `<div class="exampleblock">
+			expected := `<div class="exampleblock">
 <div class="content">
 <div class="paragraph">
 <p><strong>bold content</strong></p>
@@ -207,16 +207,16 @@ and more content
 </div>
 </div>
 </div>`
-			verify(GinkgoT(), expectedResult, actualContent)
+			verify(expected, source)
 		})
 
 		It("example block with multiple elements - case 3", func() {
-			actualContent := `====
+			source := `====
 *bold content*
 
 and "more" content
 ====`
-			expectedResult := `<div class="exampleblock">
+			expected := `<div class="exampleblock">
 <div class="content">
 <div class="paragraph">
 <p><strong>bold content</strong></p>
@@ -226,16 +226,16 @@ and "more" content
 </div>
 </div>
 </div>`
-			verify(GinkgoT(), expectedResult, actualContent)
+			verify(expected, source)
 		})
 
 		It("example block with ID and title", func() {
-			actualContent := `[#id-for-example-block]
+			source := `[#id-for-example-block]
 .example block title
 ====
 foo
 ====`
-			expectedResult := `<div id="id-for-example-block" class="exampleblock">
+			expected := `<div id="id-for-example-block" class="exampleblock">
 <div class="title">Example 1. example block title</div>
 <div class="content">
 <div class="paragraph">
@@ -243,21 +243,21 @@ foo
 </div>
 </div>
 </div>`
-			verify(GinkgoT(), expectedResult, actualContent)
+			verify(expected, source)
 		})
 	})
 
 	Context("admonition blocks", func() {
 
 		It("admonition block with multiple elements alone", func() {
-			actualContent := `[NOTE]
+			source := `[NOTE]
 ====
 some listing code
 with *bold content*
 
 * and a list item
 ====`
-			expectedResult := `<div class="admonitionblock note">
+			expected := `<div class="admonitionblock note">
 <table>
 <tr>
 <td class="icon">
@@ -279,11 +279,11 @@ with <strong>bold content</strong></p>
 </tr>
 </table>
 </div>`
-			verify(GinkgoT(), expectedResult, actualContent)
+			verify(expected, source)
 		})
 
 		It("admonition block with ID and title", func() {
-			actualContent := `[NOTE]
+			source := `[NOTE]
 [#id-for-admonition-block]
 .title for admonition block
 ====
@@ -292,7 +292,7 @@ with *bold content*
 
 * and a list item
 ====`
-			expectedResult := `<div id="id-for-admonition-block" class="admonitionblock note">
+			expected := `<div id="id-for-admonition-block" class="admonitionblock note">
 <table>
 <tr>
 <td class="icon">
@@ -315,10 +315,10 @@ with <strong>bold content</strong></p>
 </tr>
 </table>
 </div>`
-			verify(GinkgoT(), expectedResult, actualContent)
+			verify(expected, source)
 		})
 		It("admonition block with ID, title and icon", func() {
-			actualContent := `:icons: font
+			source := `:icons: font
 			
 [NOTE]
 [#id-for-admonition-block]
@@ -329,7 +329,7 @@ with *bold content*
 
 * and a list item
 ====`
-			expectedResult := `<div id="id-for-admonition-block" class="admonitionblock note">
+			expected := `<div id="id-for-admonition-block" class="admonitionblock note">
 <table>
 <tr>
 <td class="icon">
@@ -352,11 +352,11 @@ with <strong>bold content</strong></p>
 </tr>
 </table>
 </div>`
-			verify(GinkgoT(), expectedResult, actualContent)
+			verify(expected, source)
 		})
 
 		It("admonition paragraph and admonition block with multiple elements", func() {
-			actualContent := `[CAUTION]                      
+			source := `[CAUTION]                      
 this is an admonition paragraph.
 								
 								
@@ -367,7 +367,7 @@ This is an admonition block
 								
 with another paragraph    
 ====      `
-			expectedResult := `<div class="admonitionblock caution">
+			expected := `<div class="admonitionblock caution">
 <table>
 <tr>
 <td class="icon">
@@ -397,15 +397,15 @@ this is an admonition paragraph.
 </tr>
 </table>
 </div>`
-			verify(GinkgoT(), expectedResult, actualContent)
+			verify(expected, source)
 		})
 
 		It("admonition paragraph with an icon", func() {
-			actualContent := `:icons: font
+			source := `:icons: font
 
 TIP: an admonition text on
 2 lines.`
-			expectedResult := `<div class="admonitionblock tip">
+			expected := `<div class="admonitionblock tip">
 <table>
 <tr>
 <td class="icon">
@@ -418,16 +418,16 @@ an admonition text on
 </tr>
 </table>
 </div>`
-			verify(GinkgoT(), expectedResult, actualContent)
+			verify(expected, source)
 		})
 
 		It("admonition paragraph with ID, title and icon", func() {
-			actualContent := `:icons: font
+			source := `:icons: font
 
 [#id-for-admonition-block]
 .title for the admonition block
 TIP: an admonition text on 1 line.`
-			expectedResult := `<div id="id-for-admonition-block" class="admonitionblock tip">
+			expected := `<div id="id-for-admonition-block" class="admonitionblock tip">
 <table>
 <tr>
 <td class="icon">
@@ -440,18 +440,18 @@ an admonition text on 1 line.
 </tr>
 </table>
 </div>`
-			verify(GinkgoT(), expectedResult, actualContent)
+			verify(expected, source)
 		})
 	})
 
 	Context("quote blocks", func() {
 
 		It("single-line quote with author and title ", func() {
-			actualContent := `[quote, john doe, quote title]
+			source := `[quote, john doe, quote title]
 ____
 some *quote* content
 ____`
-			expectedResult := `<div class="quoteblock">
+			expected := `<div class="quoteblock">
 <blockquote>
 <div class="paragraph">
 <p>some <strong>quote</strong> content</p>
@@ -462,17 +462,17 @@ ____`
 <cite>quote title</cite>
 </div>
 </div>`
-			verify(GinkgoT(), expectedResult, actualContent)
+			verify(expected, source)
 		})
 
 		It("single-line quote with author and title, and ID and title ", func() {
-			actualContent := `[#id-for-quote-block]
+			source := `[#id-for-quote-block]
 [quote, john doe, quote title]
 .title for quote block
 ____
 some *quote* content
 ____`
-			expectedResult := `<div id="id-for-quote-block" class="quoteblock">
+			expected := `<div id="id-for-quote-block" class="quoteblock">
 <div class="title">title for quote block</div>
 <blockquote>
 <div class="paragraph">
@@ -484,17 +484,17 @@ ____`
 <cite>quote title</cite>
 </div>
 </div>`
-			verify(GinkgoT(), expectedResult, actualContent)
+			verify(expected, source)
 		})
 
 		It("multi-line quote with author and title", func() {
-			actualContent := `[quote, john doe, quote title]
+			source := `[quote, john doe, quote title]
 ____
 - some 
 - quote 
 - content
 ____`
-			expectedResult := `<div class="quoteblock">
+			expected := `<div class="quoteblock">
 <blockquote>
 <div class="ulist">
 <ul>
@@ -515,11 +515,11 @@ ____`
 <cite>quote title</cite>
 </div>
 </div>`
-			verify(GinkgoT(), expectedResult, actualContent)
+			verify(expected, source)
 		})
 
 		It("multi-line quote with author only and nested listing", func() {
-			actualContent := `[quote, john doe]
+			source := `[quote, john doe]
 ____
 * some
 ----
@@ -527,7 +527,7 @@ ____
 ----
 * content
 ____`
-			expectedResult := `<div class="quoteblock">
+			expected := `<div class="quoteblock">
 <blockquote>
 <div class="ulist">
 <ul>
@@ -553,15 +553,15 @@ ____`
 &#8212; john doe
 </div>
 </div>`
-			verify(GinkgoT(), expectedResult, actualContent)
+			verify(expected, source)
 		})
 
 		It("single-line quote with title only", func() {
-			actualContent := `[quote, , quote title]
+			source := `[quote, , quote title]
 ____
 some quote content
 ____`
-			expectedResult := `<div class="quoteblock">
+			expected := `<div class="quoteblock">
 <blockquote>
 <div class="paragraph">
 <p>some quote content</p>
@@ -571,18 +571,18 @@ ____`
 &#8212; quote title
 </div>
 </div>`
-			verify(GinkgoT(), expectedResult, actualContent)
+			verify(expected, source)
 		})
 
 		It("multi-line quote without author and title", func() {
-			actualContent := `[quote]
+			source := `[quote]
 ____
 lines 
 	and tabs 
 are preserved, but not trailing spaces   
 ____`
 
-			expectedResult := `<div class="quoteblock">
+			expected := `<div class="quoteblock">
 <blockquote>
 <div class="paragraph">
 <p>lines
@@ -591,20 +591,20 @@ are preserved, but not trailing spaces</p>
 </div>
 </blockquote>
 </div>`
-			verify(GinkgoT(), expectedResult, actualContent)
+			verify(expected, source)
 		})
 
 		It("empty quote without author and title", func() {
-			actualContent := `[quote]
+			source := `[quote]
 ____
 ____`
 			// asciidoctor will include an empty line in the `blockquote` element, I'm not sure why.
-			expectedResult := `<div class="quoteblock">
+			expected := `<div class="quoteblock">
 <blockquote>
 
 </blockquote>
 </div>`
-			verify(GinkgoT(), expectedResult, actualContent)
+			verify(expected, source)
 
 		})
 	})
@@ -612,28 +612,28 @@ ____`
 	Context("verse blocks", func() {
 
 		It("single-line verse with author and title ", func() {
-			actualContent := `[verse, john doe, verse title]
+			source := `[verse, john doe, verse title]
 ____
 some *verse* content
 ____`
-			expectedResult := `<div class="verseblock">
+			expected := `<div class="verseblock">
 <pre class="content">some <strong>verse</strong> content</pre>
 <div class="attribution">
 &#8212; john doe<br>
 <cite>verse title</cite>
 </div>
 </div>`
-			verify(GinkgoT(), expectedResult, actualContent)
+			verify(expected, source)
 		})
 
 		It("single-line verse with author, id and title ", func() {
-			actualContent := `[verse, john doe, verse title]
+			source := `[verse, john doe, verse title]
 [#id-for-verse-block]
 .title for verse block
 ____
 some *verse* content
 ____`
-			expectedResult := `<div id="id-for-verse-block" class="verseblock">
+			expected := `<div id="id-for-verse-block" class="verseblock">
 <div class="title">title for verse block</div>
 <pre class="content">some <strong>verse</strong> content</pre>
 <div class="attribution">
@@ -641,11 +641,11 @@ ____`
 <cite>verse title</cite>
 </div>
 </div>`
-			verify(GinkgoT(), expectedResult, actualContent)
+			verify(expected, source)
 		})
 
 		It("multi-line verse with author and title", func() {
-			actualContent := `[verse, john doe, verse title]
+			source := `[verse, john doe, verse title]
 ____
 - some 
 - verse 
@@ -653,7 +653,7 @@ ____
 
 and more!
 ____`
-			expectedResult := `<div class="verseblock">
+			expected := `<div class="verseblock">
 <pre class="content">- some
 - verse
 - content
@@ -664,61 +664,61 @@ and more!</pre>
 <cite>verse title</cite>
 </div>
 </div>`
-			verify(GinkgoT(), expectedResult, actualContent)
+			verify(expected, source)
 		})
 
 		It("single-line verse with author only", func() {
-			actualContent := `[verse, john doe]
+			source := `[verse, john doe]
 ____
 some verse content
 ____`
-			expectedResult := `<div class="verseblock">
+			expected := `<div class="verseblock">
 <pre class="content">some verse content</pre>
 <div class="attribution">
 &#8212; john doe
 </div>
 </div>`
-			verify(GinkgoT(), expectedResult, actualContent)
+			verify(expected, source)
 		})
 
 		It("single-line verse with title only", func() {
-			actualContent := `[verse, , verse title]
+			source := `[verse, , verse title]
 ____
 some verse content
 ____`
-			expectedResult := `<div class="verseblock">
+			expected := `<div class="verseblock">
 <pre class="content">some verse content</pre>
 <div class="attribution">
 &#8212; verse title
 </div>
 </div>`
-			verify(GinkgoT(), expectedResult, actualContent)
+			verify(expected, source)
 		})
 
 		It("multi-line verse without author and title", func() {
-			actualContent := `[verse]
+			source := `[verse]
 ____
 lines 
 	and tabs 
 are preserved
 ____`
 
-			expectedResult := `<div class="verseblock">
+			expected := `<div class="verseblock">
 <pre class="content">lines
 	and tabs
 are preserved</pre>
 </div>`
-			verify(GinkgoT(), expectedResult, actualContent)
+			verify(expected, source)
 		})
 
 		It("empty verse without author and title", func() {
-			actualContent := `[verse]
+			source := `[verse]
 ____
 ____`
-			expectedResult := `<div class="verseblock">
+			expected := `<div class="verseblock">
 <pre class="content"></pre>
 </div>`
-			verify(GinkgoT(), expectedResult, actualContent)
+			verify(expected, source)
 
 		})
 	})
@@ -726,21 +726,21 @@ ____`
 	Context("sidebar blocks", func() {
 
 		It("sidebar block with paragraph", func() {
-			actualContent := `****
+			source := `****
 some *verse* content
 ****`
-			expectedResult := `<div class="sidebarblock">
+			expected := `<div class="sidebarblock">
 <div class="content">
 <div class="paragraph">
 <p>some <strong>verse</strong> content</p>
 </div>
 </div>
 </div>`
-			verify(GinkgoT(), expectedResult, actualContent)
+			verify(expected, source)
 		})
 
 		It("sidebar block with id, title, paragraph and sourcecode block", func() {
-			actualContent := `[#id-for-sidebar]
+			source := `[#id-for-sidebar]
 .title for sidebar
 ****
 some *verse* content
@@ -749,7 +749,7 @@ foo
 bar
 ----
 ****`
-			expectedResult := `<div id="id-for-sidebar" class="sidebarblock">
+			expected := `<div id="id-for-sidebar" class="sidebarblock">
 <div class="content">
 <div class="title">title for sidebar</div>
 <div class="paragraph">
@@ -763,7 +763,7 @@ bar</pre>
 </div>
 </div>
 </div>`
-			verify(GinkgoT(), expectedResult, actualContent)
+			verify(expected, source)
 		})
 	})
 })

@@ -26,7 +26,7 @@ func init() {
 	superscriptTextTmpl = newTextTemplate("superscript text", "<sup>{{ . }}</sup>")
 }
 
-func renderQuotedText(ctx *renderer.Context, t types.QuotedText) ([]byte, error) {
+func renderQuotedText(ctx *renderer.Context, t *types.QuotedText) ([]byte, error) {
 	elementsBuffer := bytes.NewBuffer(nil)
 	for _, element := range t.Elements {
 		b, err := renderElement(ctx, element)

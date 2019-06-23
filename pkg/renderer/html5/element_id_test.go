@@ -13,7 +13,7 @@ var _ = Describe("element ID generation", func() {
 	It("should generate ID with default prefix", func() {
 		// given
 		ctx := &renderer.Context{
-			Document: types.Document{
+			Document: &types.Document{
 				Attributes: types.DocumentAttributes{},
 			},
 		}
@@ -30,7 +30,7 @@ var _ = Describe("element ID generation", func() {
 	It("should generate ID with custom prefix", func() {
 		// given
 		ctx := &renderer.Context{
-			Document: types.Document{
+			Document: &types.Document{
 				Attributes: types.DocumentAttributes{
 					types.AttrIDPrefix: "id#",
 				},
@@ -49,7 +49,7 @@ var _ = Describe("element ID generation", func() {
 	It("should generate custom ID", func() {
 		// given
 		ctx := &renderer.Context{
-			Document: types.Document{
+			Document: &types.Document{
 				Attributes: types.DocumentAttributes{
 					types.AttrIDPrefix: "id#",
 				},
@@ -68,7 +68,7 @@ var _ = Describe("element ID generation", func() {
 	It("should generate empty ID from empty value", func() {
 		// given
 		ctx := &renderer.Context{
-			Document: types.Document{
+			Document: &types.Document{
 				Attributes: types.DocumentAttributes{
 					types.AttrIDPrefix: "id#",
 				},
@@ -87,7 +87,7 @@ var _ = Describe("element ID generation", func() {
 	It("should generate empty ID from missing value", func() {
 		// given
 		ctx := &renderer.Context{
-			Document: types.Document{
+			Document: &types.Document{
 				Attributes: types.DocumentAttributes{
 					types.AttrIDPrefix: "id#",
 				},

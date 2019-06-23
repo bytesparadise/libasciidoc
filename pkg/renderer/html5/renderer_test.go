@@ -15,28 +15,26 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func verify(t GinkgoTInterface, expectedResult, content string, rendererOpts ...renderer.Option) {
-	// t.Logf("processing '%s'", content)
+func verify(expected, content string, rendererOpts ...renderer.Option) {
 	reader := strings.NewReader(content)
-	actualDocument, err := parser.ParseDocument("", reader)
-	require.NoError(t, err, "Error found while parsing the document")
-	t.Logf("actual document: `%s`", spew.Sdump(actualDocument))
+	doc, err := parser.ParseDocument("", reader)
+	require.NoError(GinkgoT(), err, "Error found while parsing the document")
+	GinkgoT().Logf("actual document: `%s`", spew.Sdump(doc))
 	buff := bytes.NewBuffer(nil)
-	rendererCtx := renderer.Wrap(context.Background(), actualDocument, rendererOpts...)
+	rendererCtx := renderer.Wrap(context.Background(), doc, rendererOpts...)
 	// insert tables of contents, preamble and process file inclusions
 	err = renderer.Prerender(rendererCtx)
-	require.NoError(t, err)
+	require.NoError(GinkgoT(), err)
 	_, err = html5.Render(rendererCtx, buff)
-	require.NoError(t, err)
-	if strings.Contains(expectedResult, "{{.LastUpdated}}") {
-		expectedResult = strings.Replace(expectedResult, "{{.LastUpdated}}", rendererCtx.LastUpdated(), 1)
+	require.NoError(GinkgoT(), err)
+	if strings.Contains(expected, "{{.LastUpdated}}") {
+		expected = strings.Replace(expected, "{{.LastUpdated}}", rendererCtx.LastUpdated(), 1)
 	}
-	t.Log("* Done processing document:")
+	GinkgoT().Log("* Done processing document:")
 	result := buff.String()
-	// expectedResult = strings.Replace(expectedResult, "\t", "", -1)
-	t.Logf("** Actual output:\n`%s`\n", result)
-	t.Logf("** expectedResult output:\n`%s`\n", expectedResult) // remove tabs that can be inserted by VSCode while formatting the tests code
+	GinkgoT().Logf("** Actual output:\n`%s`\n", result)
+	GinkgoT().Logf("** expected output:\n`%s`\n", expected) // remove tabs that can be inserted by VSCode while formatting the tests code
 	dmp := diffmatchpatch.New()
-	diffs := dmp.DiffMain(result, expectedResult, true)
-	assert.Equal(t, expectedResult, result, dmp.DiffPrettyText(diffs))
+	diffs := dmp.DiffMain(result, expected, true)
+	assert.Equal(GinkgoT(), expected, result, dmp.DiffPrettyText(diffs))
 }

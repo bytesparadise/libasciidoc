@@ -15,45 +15,45 @@ var _ = Describe("document metadata", func() {
 	Context("document authors", func() {
 
 		It("should include no author", func() {
-			actualContent := types.Document{
+			source := &types.Document{
 				Attributes:         types.DocumentAttributes{},
 				ElementReferences:  types.ElementReferences{},
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
-					types.Section{
+					&types.Section{
 						Level:      0,
 						Attributes: types.ElementAttributes{},
-						Title:      types.SectionTitle{},
+						Title:      types.InlineElements{},
 						Elements:   []interface{}{},
 					},
 				},
 			}
-			expectedContent := types.Document{
+			expectedContent := &types.Document{
 				Attributes:         types.DocumentAttributes{},
 				ElementReferences:  types.ElementReferences{},
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
-					types.Section{
+					&types.Section{
 						Level:      0,
 						Attributes: types.ElementAttributes{},
-						Title:      types.SectionTitle{},
+						Title:      types.InlineElements{},
 						Elements:   []interface{}{},
 					},
 				},
 			}
-			verifyDocumentMetadata(expectedContent, actualContent)
+			verifyDocumentMetadata(expectedContent, source)
 		})
 
 		It("should include single author without middlename", func() {
-			actualContent := types.Document{
+			source := &types.Document{
 				Attributes:         types.DocumentAttributes{},
 				ElementReferences:  types.ElementReferences{},
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
-					types.Section{
+					&types.Section{
 						Level: 0,
 						Attributes: types.ElementAttributes{
 							types.AttrAuthors: []types.DocumentAuthor{
@@ -63,12 +63,12 @@ var _ = Describe("document metadata", func() {
 								},
 							},
 						},
-						Title:    types.SectionTitle{},
+						Title:    types.InlineElements{},
 						Elements: []interface{}{},
 					},
 				},
 			}
-			expectedContent := types.Document{
+			expectedContent := &types.Document{
 				Attributes: types.DocumentAttributes{
 					"author":         "Kismet Chameleon",
 					"firstname":      "Kismet",
@@ -80,7 +80,7 @@ var _ = Describe("document metadata", func() {
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
-					types.Section{
+					&types.Section{
 						Level: 0,
 						Attributes: types.ElementAttributes{
 							types.AttrAuthors: []types.DocumentAuthor{
@@ -90,22 +90,22 @@ var _ = Describe("document metadata", func() {
 								},
 							},
 						},
-						Title:    types.SectionTitle{},
+						Title:    types.InlineElements{},
 						Elements: []interface{}{},
 					},
 				},
 			}
-			verifyDocumentMetadata(expectedContent, actualContent)
+			verifyDocumentMetadata(expectedContent, source)
 		})
 
 		It("should include single author without middlename, last name and email", func() {
-			actualContent := types.Document{
+			source := &types.Document{
 				Attributes:         types.DocumentAttributes{},
 				ElementReferences:  types.ElementReferences{},
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
-					types.Section{
+					&types.Section{
 						Level: 0,
 						Attributes: types.ElementAttributes{
 							types.AttrAuthors: []types.DocumentAuthor{
@@ -114,12 +114,12 @@ var _ = Describe("document metadata", func() {
 								},
 							},
 						},
-						Title:    types.SectionTitle{},
+						Title:    types.InlineElements{},
 						Elements: []interface{}{},
 					},
 				},
 			}
-			expectedContent := types.Document{
+			expectedContent := &types.Document{
 				Attributes: types.DocumentAttributes{
 					"author":         "Kismet",
 					"firstname":      "Kismet",
@@ -129,7 +129,7 @@ var _ = Describe("document metadata", func() {
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
-					types.Section{
+					&types.Section{
 						Level: 0,
 						Attributes: types.ElementAttributes{
 							types.AttrAuthors: []types.DocumentAuthor{
@@ -138,22 +138,22 @@ var _ = Describe("document metadata", func() {
 								},
 							},
 						},
-						Title:    types.SectionTitle{},
+						Title:    types.InlineElements{},
 						Elements: []interface{}{},
 					},
 				},
 			}
-			verifyDocumentMetadata(expectedContent, actualContent)
+			verifyDocumentMetadata(expectedContent, source)
 		})
 
 		It("should include multiple authors", func() {
-			actualContent := types.Document{
+			source := &types.Document{
 				Attributes:         types.DocumentAttributes{},
 				ElementReferences:  types.ElementReferences{},
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
-					types.Section{
+					&types.Section{
 						Level: 0,
 						Attributes: types.ElementAttributes{
 							types.AttrAuthors: []types.DocumentAuthor{
@@ -167,12 +167,12 @@ var _ = Describe("document metadata", func() {
 								},
 							},
 						},
-						Title:    types.SectionTitle{},
+						Title:    types.InlineElements{},
 						Elements: []interface{}{},
 					},
 				},
 			}
-			expectedContent := types.Document{
+			expectedContent := &types.Document{
 				Attributes: types.DocumentAttributes{
 					"author":           "Kismet Rainbow Chameleon",
 					"firstname":        "Kismet",
@@ -190,7 +190,7 @@ var _ = Describe("document metadata", func() {
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
-					types.Section{
+					&types.Section{
 						Level: 0,
 						Attributes: types.ElementAttributes{
 							types.AttrAuthors: []types.DocumentAuthor{
@@ -204,25 +204,25 @@ var _ = Describe("document metadata", func() {
 								},
 							},
 						},
-						Title:    types.SectionTitle{},
+						Title:    types.InlineElements{},
 						Elements: []interface{}{},
 					},
 				},
 			}
-			verifyDocumentMetadata(expectedContent, actualContent)
+			verifyDocumentMetadata(expectedContent, source)
 		})
 	})
 
 	Context("document revision", func() {
 
 		It("should include full revision", func() {
-			actualContent := types.Document{
+			source := &types.Document{
 				Attributes:         types.DocumentAttributes{},
 				ElementReferences:  types.ElementReferences{},
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
-					types.Section{
+					&types.Section{
 						Level: 0,
 						Attributes: types.ElementAttributes{
 							types.AttrAuthors: []types.DocumentAuthor{
@@ -236,12 +236,12 @@ var _ = Describe("document metadata", func() {
 								Revremark: "First incarnation",
 							},
 						},
-						Title:    types.SectionTitle{},
+						Title:    types.InlineElements{},
 						Elements: []interface{}{},
 					},
 				},
 			}
-			expectedContent := types.Document{
+			expectedContent := &types.Document{
 				Attributes: types.DocumentAttributes{
 					"author":         "Kismet",
 					"firstname":      "Kismet",
@@ -254,7 +254,7 @@ var _ = Describe("document metadata", func() {
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
-					types.Section{
+					&types.Section{
 						Level: 0,
 						Attributes: types.ElementAttributes{
 							types.AttrAuthors: []types.DocumentAuthor{
@@ -268,21 +268,21 @@ var _ = Describe("document metadata", func() {
 								Revremark: "First incarnation",
 							},
 						},
-						Title:    types.SectionTitle{},
+						Title:    types.InlineElements{},
 						Elements: []interface{}{},
 					},
 				},
 			}
-			verifyDocumentMetadata(expectedContent, actualContent)
+			verifyDocumentMetadata(expectedContent, source)
 		})
 	})
 
 })
 
-func verifyDocumentMetadata(expectedResult, actualContent types.Document) {
-	ctx := renderer.Wrap(context.Background(), actualContent)
+func verifyDocumentMetadata(expected, source *types.Document) {
+	ctx := renderer.Wrap(context.Background(), source)
 	renderer.ProcessDocumentHeader(ctx)
 	GinkgoT().Logf("actual document: `%s`", spew.Sdump(ctx.Document))
-	GinkgoT().Logf("expected document: `%s`", spew.Sdump(expectedResult))
-	assert.EqualValues(GinkgoT(), expectedResult, ctx.Document)
+	GinkgoT().Logf("expected document: `%s`", spew.Sdump(expected))
+	assert.EqualValues(GinkgoT(), expected, ctx.Document)
 }

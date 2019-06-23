@@ -51,7 +51,7 @@ func renderFootnoteIndex(idx int) string {
 	return strconv.Itoa(idx + 1)
 }
 
-func renderFootnote(ctx *renderer.Context, note types.Footnote) ([]byte, error) {
+func renderFootnote(ctx *renderer.Context, note *types.Footnote) ([]byte, error) {
 	result := bytes.NewBuffer(nil)
 	ref := ""
 	noteRef, hasRef := ctx.Document.FootnoteReferences[note.Ref]

@@ -7,7 +7,7 @@ import (
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 )
 
-func renderUserMacro(ctx *renderer.Context, um types.UserMacro) ([]byte, error) {
+func renderUserMacro(ctx *renderer.Context, um *types.UserMacro) ([]byte, error) {
 	buf := bytes.NewBuffer([]byte{})
 	macro, err := ctx.MacroTemplate(um.Name)
 	if err != nil {
@@ -15,7 +15,7 @@ func renderUserMacro(ctx *renderer.Context, um types.UserMacro) ([]byte, error) 
 			// fallback to paragraph
 			p, _ := types.NewParagraph([]interface{}{
 				types.InlineElements{
-					types.StringElement{Content: um.RawText},
+					&types.StringElement{Content: um.RawText},
 				},
 			}, nil)
 			return renderParagraph(ctx, p)

@@ -1,7 +1,7 @@
 package renderer
 
 import (
-	"fmt"
+	"strconv"
 	"strings"
 
 	"github.com/bytesparadise/libasciidoc/pkg/types"
@@ -76,7 +76,7 @@ func key(k string, i int) string {
 	if i == 0 {
 		return k
 	}
-	return fmt.Sprintf("%s_%d", k, i+1)
+	return k + "_" + strconv.Itoa(i+1)
 }
 
 func initial(s string) string {

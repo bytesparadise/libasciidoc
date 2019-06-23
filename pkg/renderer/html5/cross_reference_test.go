@@ -8,11 +8,11 @@ var _ = Describe("cross-references", func() {
 
 		It("cross-reference with custom id", func() {
 
-			actualContent := `[[thetitle]]
+			source := `[[thetitle]]
 == a title
 
 with some content linked to <<thetitle>>!`
-			expectedResult := `<div class="sect1">
+			expected := `<div class="sect1">
 <h2 id="thetitle">a title</h2>
 <div class="sectionbody">
 <div class="paragraph">
@@ -20,15 +20,15 @@ with some content linked to <<thetitle>>!`
 </div>
 </div>
 </div>`
-			verify(GinkgoT(), expectedResult, actualContent)
+			verify(expected, source)
 		})
 
 		It("cross-reference with custom id and label", func() {
-			actualContent := `[[thetitle]]
+			source := `[[thetitle]]
 == a title
 
 with some content linked to <<thetitle,a label to the title>>!`
-			expectedResult := `<div class="sect1">
+			expected := `<div class="sect1">
 <h2 id="thetitle">a title</h2>
 <div class="sectionbody">
 <div class="paragraph">
@@ -36,16 +36,16 @@ with some content linked to <<thetitle,a label to the title>>!`
 </div>
 </div>
 </div>`
-			verify(GinkgoT(), expectedResult, actualContent)
+			verify(expected, source)
 		})
 
 		It("invalid section reference", func() {
 
-			actualContent := `[[thetitle]]
+			source := `[[thetitle]]
 == a title
 
 with some content linked to <<thewrongtitle>>!`
-			expectedResult := `<div class="sect1">
+			expected := `<div class="sect1">
 <h2 id="thetitle">a title</h2>
 <div class="sectionbody">
 <div class="paragraph">
@@ -53,7 +53,7 @@ with some content linked to <<thewrongtitle>>!`
 </div>
 </div>
 </div>`
-			verify(GinkgoT(), expectedResult, actualContent)
+			verify(expected, source)
 		})
 	})
 })

@@ -5,73 +5,65 @@ import (
 	. "github.com/onsi/ginkgo"
 )
 
-var _ = Describe("Blank lines", func() {
+var _ = Describe("blank lines - preflight", func() {
 	It("blank line between 2 paragraphs", func() {
-		actualDocument := `first paragraph
+		doc := `first paragraph
  
 second paragraph`
-		expectedResult := types.Document{
-			Attributes:         types.DocumentAttributes{},
-			ElementReferences:  types.ElementReferences{},
-			Footnotes:          types.Footnotes{},
-			FootnoteReferences: types.FootnoteReferences{},
-			Elements: []interface{}{
-				types.Paragraph{
+		expected := &types.PreflightDocument{
+			Blocks: []interface{}{
+				&types.Paragraph{
 					Attributes: types.ElementAttributes{},
 					Lines: []types.InlineElements{
 						{
-							types.StringElement{Content: "first paragraph"},
+							&types.StringElement{Content: "first paragraph"},
 						},
 					},
 				},
-				types.BlankLine{},
-				types.Paragraph{
+				&types.BlankLine{},
+				&types.Paragraph{
 					Attributes: types.ElementAttributes{},
 					Lines: []types.InlineElements{
 						{
-							types.StringElement{Content: "second paragraph"},
+							&types.StringElement{Content: "second paragraph"},
 						},
 					},
 				},
 			},
 		}
-		verifyWithPreprocessing(GinkgoT(), expectedResult, actualDocument)
+		verifyPreflight(expected, doc)
 	})
 	It("blank line with spaces and tabs between 2 paragraphs and after second paragraph", func() {
-		actualDocument := `first paragraph
+		doc := `first paragraph
 		 
 
 		
 second paragraph
 `
-		expectedResult := types.Document{
-			Attributes:         types.DocumentAttributes{},
-			ElementReferences:  types.ElementReferences{},
-			Footnotes:          types.Footnotes{},
-			FootnoteReferences: types.FootnoteReferences{},
-			Elements: []interface{}{
-				types.Paragraph{
+		expected := &types.PreflightDocument{
+			Blocks: []interface{}{
+				&types.Paragraph{
 					Attributes: types.ElementAttributes{},
 					Lines: []types.InlineElements{
 						{
-							types.StringElement{Content: "first paragraph"},
+							&types.StringElement{Content: "first paragraph"},
 						},
 					},
 				},
-				types.BlankLine{},
-				types.BlankLine{},
-				types.BlankLine{},
-				types.Paragraph{
+				&types.BlankLine{},
+				&types.BlankLine{},
+				&types.BlankLine{},
+				&types.Paragraph{
 					Attributes: types.ElementAttributes{},
 					Lines: []types.InlineElements{
 						{
-							types.StringElement{Content: "second paragraph"},
+							&types.StringElement{Content: "second paragraph"},
 						},
 					},
 				},
 			},
 		}
-		verifyWithPreprocessing(GinkgoT(), expectedResult, actualDocument)
+		verifyPreflight(expected, doc)
 	})
 
 })

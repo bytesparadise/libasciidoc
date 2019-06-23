@@ -11,34 +11,46 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func verifyWithPreprocessing(t GinkgoTInterface, expectedResult interface{}, content string, options ...parser.Option) {
+func verifyDocument(expected interface{}, content string) {
 	log.Debugf("processing: %s", content)
 	r := strings.NewReader(content)
-	allOptions := append(options)
-	preparsedDoc, err := parser.PreparseDocument("", r, allOptions...)
-	require.NoError(t, err)
-	result, err := parser.Parse("", preparsedDoc, allOptions...)
-	require.NoError(t, err)
-	t.Logf("actual document: `%s`", spew.Sdump(result))
-	t.Logf("expected document: `%s`", spew.Sdump(expectedResult))
-	assert.EqualValues(t, expectedResult, result)
+	preflightDoc, err := parser.ParseDocument("", r)
+	require.NoError(GinkgoT(), err)
+	GinkgoT().Logf("actual document: `%s`", spew.Sdump(preflightDoc))
+	GinkgoT().Logf("expected document: `%s`", spew.Sdump(expected))
+	assert.EqualValues(GinkgoT(), expected, preflightDoc)
 }
 
-func verifyWithoutPreprocessing(t GinkgoTInterface, expectedResult interface{}, content string, options ...parser.Option) {
+func verifyPreflight(expected interface{}, content string) {
 	log.Debugf("processing: %s", content)
 	r := strings.NewReader(content)
-	allOptions := append(options)
-	result, err := parser.ParseReader("", r, allOptions...)
-	require.NoError(t, err)
-	t.Logf("actual document: `%s`", spew.Sdump(result))
-	t.Logf("expected document: `%s`", spew.Sdump(expectedResult))
-	assert.EqualValues(t, expectedResult, result)
+	preflightDoc, err := parser.ParsePreflightDocument("", r)
+	require.NoError(GinkgoT(), err)
+	GinkgoT().Logf("actual document: `%s`", spew.Sdump(preflightDoc))
+	GinkgoT().Logf("expected document: `%s`", spew.Sdump(expected))
+	assert.EqualValues(GinkgoT(), expected, preflightDoc)
 }
 
-func verifyError(t GinkgoTInterface, content string, options ...parser.Option) {
+func verifyPreflightWithoutPreprocessing(expected interface{}, content string) {
 	log.Debugf("processing: %s", content)
-	reader := strings.NewReader(content)
-	allOptions := append(options, parser.Recover(false))
-	_, err := parser.ParseDocument("", reader, allOptions...)
-	require.Error(t, err)
+	r := strings.NewReader(content)
+	result, err := parser.ParseReader("", r, parser.Entrypoint("PreflightDocument"))
+	require.NoError(GinkgoT(), err)
+	GinkgoT().Logf("actual document: `%s`", spew.Sdump(result))
+	GinkgoT().Logf("expected document: `%s`", spew.Sdump(expected))
+	assert.EqualValues(GinkgoT(), expected, result)
+}
+
+func verifyDocumentBlock(expected interface{}, content string) {
+	log.Debugf("processing: %s", content)
+	r := strings.NewReader(content)
+	opts := []parser.Option{parser.Entrypoint("DocumentBlock")}
+	// if os.Getenv("DEBUG") == "true" {
+	// 	opts = append(opts, parser.Debug(true))
+	// }
+	result, err := parser.ParseReader("", r, opts...)
+	require.NoError(GinkgoT(), err)
+	GinkgoT().Logf("actual document: `%s`", spew.Sdump(result))
+	GinkgoT().Logf("expected document: `%s`", spew.Sdump(expected))
+	assert.EqualValues(GinkgoT(), expected, result)
 }

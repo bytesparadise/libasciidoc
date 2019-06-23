@@ -2,7 +2,6 @@ package html5
 
 import (
 	"bytes"
-	"fmt"
 	htmltemplate "html/template"
 	"strconv"
 	texttemplate "text/template"
@@ -69,9 +68,9 @@ func renderDocumentAuthorsDetails(ctx *renderer.Context) (*htmltemplate.HTML, er
 			emailKey = "email"
 			index = ""
 		} else {
-			authorKey = fmt.Sprintf("author_%d", i)
-			emailKey = fmt.Sprintf("email_%d", i)
 			index = strconv.Itoa(i)
+			authorKey = "author_" + index
+			emailKey = "email_" + index
 		}
 		// having at least one author is the minimal requirement for document details
 		if author, ok := ctx.Document.Attributes.GetAsString(authorKey); ok {

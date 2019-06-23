@@ -5,10 +5,10 @@ import . "github.com/onsi/ginkgo"
 var _ = Describe("tables", func() {
 
 	It("1-line table with 2 cells", func() {
-		actualContent := `|===
+		source := `|===
 | *foo* foo  | _bar_  
 |===`
-		expectedResult := `<table class="tableblock frame-all grid-all stretch">
+		expected := `<table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -20,14 +20,14 @@ var _ = Describe("tables", func() {
 </tr>
 </tbody>
 </table>`
-		verify(GinkgoT(), expectedResult, actualContent)
+		verify(expected, source)
 	})
 
 	It("1-line table with 3 cells", func() {
-		actualContent := `|===
+		source := `|===
 | *foo* foo  | _bar_  | baz
 |===`
-		expectedResult := `<table class="tableblock frame-all grid-all stretch">
+		expected := `<table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -41,11 +41,11 @@ var _ = Describe("tables", func() {
 </tr>
 </tbody>
 </table>`
-		verify(GinkgoT(), expectedResult, actualContent)
+		verify(expected, source)
 	})
 
 	It("table with title, headers and 1 line per cell", func() {
-		actualContent := `.table title
+		source := `.table title
 |===
 |Column heading 1 |Column heading 2
 
@@ -55,7 +55,7 @@ var _ = Describe("tables", func() {
 |Column 1, row 2
 |Column 2, row 2
 |===`
-		expectedResult := `<table class="tableblock frame-all grid-all stretch">
+		expected := `<table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 1. table title</caption>
 <colgroup>
 <col style="width: 50%;">
@@ -78,19 +78,19 @@ var _ = Describe("tables", func() {
 </tr>
 </tbody>
 </table>`
-		verify(GinkgoT(), expectedResult, actualContent)
+		verify(expected, source)
 	})
 
 	It("empty table ", func() {
-		actualContent := `|===
+		source := `|===
 |===`
-		expectedResult := `<table class="tableblock frame-all grid-all stretch">
+		expected := `<table class="tableblock frame-all grid-all stretch">
 </table>`
-		verify(GinkgoT(), expectedResult, actualContent)
+		verify(expected, source)
 	})
 
 	It("2 tables with 1 counter", func() {
-		actualContent := `|===
+		source := `|===
 | foo | bar
 |===
 
@@ -98,7 +98,7 @@ var _ = Describe("tables", func() {
 |===
 | foo | bar
 |===`
-		expectedResult := `<table class="tableblock frame-all grid-all stretch">
+		expected := `<table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -123,11 +123,11 @@ var _ = Describe("tables", func() {
 </tr>
 </tbody>
 </table>`
-		verify(GinkgoT(), expectedResult, actualContent)
+		verify(expected, source)
 	})
 
 	It("2 tables with 2 counters", func() {
-		actualContent := `.Title 1
+		source := `.Title 1
 |===
 | foo | bar
 |===
@@ -136,7 +136,7 @@ var _ = Describe("tables", func() {
 |===
 | foo | bar
 |===`
-		expectedResult := `<table class="tableblock frame-all grid-all stretch">
+		expected := `<table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 1. Title 1</caption>
 <colgroup>
 <col style="width: 50%;">
@@ -162,7 +162,7 @@ var _ = Describe("tables", func() {
 </tr>
 </tbody>
 </table>`
-		verify(GinkgoT(), expectedResult, actualContent)
+		verify(expected, source)
 	})
 
 })

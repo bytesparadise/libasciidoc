@@ -11,28 +11,16 @@ import (
 
 var _ = Describe("preambles", func() {
 
-	sectionATitle := types.SectionTitle{
-		Attributes: types.ElementAttributes{
-			types.AttrID:       "section_a",
-			types.AttrCustomID: false,
-		},
-		Elements: types.InlineElements{
-			types.StringElement{Content: "Section A"},
-		},
+	sectionATitle := types.InlineElements{
+		&types.StringElement{Content: "Section A"},
 	}
 
-	sectionBTitle := types.SectionTitle{
-		Attributes: types.ElementAttributes{
-			types.AttrID:       "section_b",
-			types.AttrCustomID: false,
-		},
-		Elements: types.InlineElements{
-			types.StringElement{Content: "Section B"},
-		},
+	sectionBTitle := types.InlineElements{
+		&types.StringElement{Content: "Section B"},
 	}
 
 	It("doc without sections", func() {
-		actualContent := types.Document{
+		source := &types.Document{
 			Attributes: types.DocumentAttributes{
 				types.AttrTitle: "foo",
 			},
@@ -43,26 +31,26 @@ var _ = Describe("preambles", func() {
 			Footnotes:          types.Footnotes{},
 			FootnoteReferences: types.FootnoteReferences{},
 			Elements: []interface{}{
-				types.Paragraph{
+				&types.Paragraph{
 					Attributes: types.ElementAttributes{},
 					Lines: []types.InlineElements{
 						{
-							types.StringElement{Content: "a short paragraph"},
+							&types.StringElement{Content: "a short paragraph"},
 						},
 					},
 				},
 				types.BlankLine{},
-				types.Paragraph{
+				&types.Paragraph{
 					Attributes: types.ElementAttributes{},
 					Lines: []types.InlineElements{
 						{
-							types.StringElement{Content: "another short paragraph"},
+							&types.StringElement{Content: "another short paragraph"},
 						},
 					},
 				},
 			},
 		}
-		expectedContent := types.Document{
+		expectedContent := &types.Document{
 			Attributes: types.DocumentAttributes{
 				types.AttrTitle: "foo",
 			},
@@ -73,30 +61,30 @@ var _ = Describe("preambles", func() {
 			Footnotes:          types.Footnotes{},
 			FootnoteReferences: types.FootnoteReferences{},
 			Elements: []interface{}{
-				types.Paragraph{
+				&types.Paragraph{
 					Attributes: types.ElementAttributes{},
 					Lines: []types.InlineElements{
 						{
-							types.StringElement{Content: "a short paragraph"},
+							&types.StringElement{Content: "a short paragraph"},
 						},
 					},
 				},
 				types.BlankLine{},
-				types.Paragraph{
+				&types.Paragraph{
 					Attributes: types.ElementAttributes{},
 					Lines: []types.InlineElements{
 						{
-							types.StringElement{Content: "another short paragraph"},
+							&types.StringElement{Content: "another short paragraph"},
 						},
 					},
 				},
 			},
 		}
-		verifyPreamble(expectedContent, actualContent)
+		verifyPreamble(expectedContent, source)
 	})
 
 	It("doc with 1-paragraph preamble", func() {
-		actualContent := types.Document{
+		source := &types.Document{
 			Attributes: types.DocumentAttributes{
 				types.AttrTitle: "foo",
 			},
@@ -107,30 +95,37 @@ var _ = Describe("preambles", func() {
 			Footnotes:          types.Footnotes{},
 			FootnoteReferences: types.FootnoteReferences{},
 			Elements: []interface{}{
-				types.Paragraph{
+				&types.Paragraph{
 					Attributes: types.ElementAttributes{},
 					Lines: []types.InlineElements{
 						{
-							types.StringElement{Content: "a short paragraph"},
+							&types.StringElement{Content: "a short paragraph"},
 						},
 					},
 				},
 				types.BlankLine{},
-				types.Section{
-					Level:      1,
-					Title:      sectionATitle,
-					Attributes: types.ElementAttributes{},
-					Elements:   []interface{}{},
+				&types.Section{
+					Level: 1,
+					Title: sectionATitle,
+					Attributes: types.ElementAttributes{
+						types.AttrID:       "section_a",
+						types.AttrCustomID: false,
+					},
+
+					Elements: []interface{}{},
 				},
-				types.Section{
-					Level:      1,
-					Title:      sectionBTitle,
-					Attributes: types.ElementAttributes{},
-					Elements:   []interface{}{},
+				&types.Section{
+					Level: 1,
+					Title: sectionBTitle,
+					Attributes: types.ElementAttributes{
+						types.AttrID:       "section_b",
+						types.AttrCustomID: false,
+					},
+					Elements: []interface{}{},
 				},
 			},
 		}
-		expectedContent := types.Document{
+		expectedContent := &types.Document{
 			Attributes: types.DocumentAttributes{
 				types.AttrTitle: "foo",
 			},
@@ -141,38 +136,45 @@ var _ = Describe("preambles", func() {
 			Footnotes:          types.Footnotes{},
 			FootnoteReferences: types.FootnoteReferences{},
 			Elements: []interface{}{
-				types.Preamble{
+				&types.Preamble{
 					Elements: []interface{}{
-						types.Paragraph{
+						&types.Paragraph{
 							Attributes: types.ElementAttributes{},
 							Lines: []types.InlineElements{
 								{
-									types.StringElement{Content: "a short paragraph"},
+									&types.StringElement{Content: "a short paragraph"},
 								},
 							},
 						},
 						types.BlankLine{},
 					},
 				},
-				types.Section{
-					Level:      1,
-					Title:      sectionATitle,
-					Attributes: types.ElementAttributes{},
-					Elements:   []interface{}{},
+				&types.Section{
+					Level: 1,
+					Title: sectionATitle,
+					Attributes: types.ElementAttributes{
+						types.AttrID:       "section_a",
+						types.AttrCustomID: false,
+					},
+
+					Elements: []interface{}{},
 				},
-				types.Section{
-					Level:      1,
-					Title:      sectionBTitle,
-					Attributes: types.ElementAttributes{},
-					Elements:   []interface{}{},
+				&types.Section{
+					Level: 1,
+					Title: sectionBTitle,
+					Attributes: types.ElementAttributes{
+						types.AttrID:       "section_b",
+						types.AttrCustomID: false,
+					},
+					Elements: []interface{}{},
 				},
 			},
 		}
-		verifyPreamble(expectedContent, actualContent)
+		verifyPreamble(expectedContent, source)
 	})
 
 	It("doc with 2-paragraph preamble", func() {
-		actualContent := types.Document{
+		source := &types.Document{
 			Attributes: types.DocumentAttributes{
 				types.AttrTitle: "foo",
 			},
@@ -183,39 +185,46 @@ var _ = Describe("preambles", func() {
 			Footnotes:          types.Footnotes{},
 			FootnoteReferences: types.FootnoteReferences{},
 			Elements: []interface{}{
-				types.Paragraph{
+				&types.Paragraph{
 					Attributes: types.ElementAttributes{},
 					Lines: []types.InlineElements{
 						{
-							types.StringElement{Content: "a short paragraph"},
+							&types.StringElement{Content: "a short paragraph"},
 						},
 					},
 				},
 				types.BlankLine{},
-				types.Paragraph{
+				&types.Paragraph{
 					Attributes: types.ElementAttributes{},
 					Lines: []types.InlineElements{
 						{
-							types.StringElement{Content: "another short paragraph"},
+							&types.StringElement{Content: "another short paragraph"},
 						},
 					},
 				},
 				types.BlankLine{},
-				types.Section{
-					Level:      1,
-					Title:      sectionATitle,
-					Attributes: types.ElementAttributes{},
-					Elements:   []interface{}{},
+				&types.Section{
+					Level: 1,
+					Title: sectionATitle,
+					Attributes: types.ElementAttributes{
+						types.AttrID:       "section_a",
+						types.AttrCustomID: false,
+					},
+
+					Elements: []interface{}{},
 				},
-				types.Section{
-					Level:      1,
-					Title:      sectionBTitle,
-					Attributes: types.ElementAttributes{},
-					Elements:   []interface{}{},
+				&types.Section{
+					Level: 1,
+					Title: sectionBTitle,
+					Attributes: types.ElementAttributes{
+						types.AttrID:       "section_b",
+						types.AttrCustomID: false,
+					},
+					Elements: []interface{}{},
 				},
 			},
 		}
-		expectedContent := types.Document{
+		expectedContent := &types.Document{
 			Attributes: types.DocumentAttributes{
 				types.AttrTitle: "foo",
 			},
@@ -226,49 +235,56 @@ var _ = Describe("preambles", func() {
 			Footnotes:          types.Footnotes{},
 			FootnoteReferences: types.FootnoteReferences{},
 			Elements: []interface{}{
-				types.Preamble{
+				&types.Preamble{
 					Elements: []interface{}{
-						types.Paragraph{
+						&types.Paragraph{
 							Attributes: types.ElementAttributes{},
 							Lines: []types.InlineElements{
 								{
-									types.StringElement{Content: "a short paragraph"},
+									&types.StringElement{Content: "a short paragraph"},
 								},
 							},
 						},
 						types.BlankLine{},
-						types.Paragraph{
+						&types.Paragraph{
 							Attributes: types.ElementAttributes{},
 							Lines: []types.InlineElements{
 								{
-									types.StringElement{Content: "another short paragraph"},
+									&types.StringElement{Content: "another short paragraph"},
 								},
 							},
 						},
 						types.BlankLine{},
 					},
 				},
-				types.Section{
-					Level:      1,
-					Title:      sectionATitle,
-					Attributes: types.ElementAttributes{},
-					Elements:   []interface{}{},
+				&types.Section{
+					Level: 1,
+					Title: sectionATitle,
+					Attributes: types.ElementAttributes{
+						types.AttrID:       "section_a",
+						types.AttrCustomID: false,
+					},
+
+					Elements: []interface{}{},
 				},
-				types.Section{
-					Level:      1,
-					Title:      sectionBTitle,
-					Attributes: types.ElementAttributes{},
-					Elements:   []interface{}{},
+				&types.Section{
+					Level: 1,
+					Title: sectionBTitle,
+					Attributes: types.ElementAttributes{
+						types.AttrID:       "section_b",
+						types.AttrCustomID: false,
+					},
+					Elements: []interface{}{},
 				},
 			},
 		}
-		verifyPreamble(expectedContent, actualContent)
+		verifyPreamble(expectedContent, source)
 	})
 
 })
 
-func verifyPreamble(expectedContent, actualContent types.Document) {
-	ctx := renderer.Wrap(context.Background(), actualContent)
+func verifyPreamble(expectedContent, source *types.Document) {
+	ctx := renderer.Wrap(context.Background(), source)
 	renderer.IncludePreamble(ctx)
 	assert.Equal(GinkgoT(), expectedContent, ctx.Document)
 }

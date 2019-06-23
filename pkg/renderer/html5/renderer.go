@@ -22,13 +22,23 @@ func renderElements(ctx *renderer.Context, elements []interface{}) ([]byte, erro
 	log.Debugf("rendering %d element(s)...", len(elements))
 	buff := bytes.NewBuffer(nil)
 	hasContent := false
+	if !ctx.IncludeHeaderFooter() && len(elements) > 0 {
+		if s, ok := elements[0].(*types.Section); ok && s.Level == 0 {
+			// don't render the top-level section, but only its elements (plus the rest if there's anything)
+			if len(elements) > 1 {
+				elements = append(s.Elements, elements[1:])
+			} else {
+				elements = s.Elements
+			}
+		}
+	}
 	for _, element := range elements {
 		renderedElement, err := renderElement(ctx, element)
 		if err != nil {
 			return nil, errors.Wrapf(err, "unable to render an element")
 		}
 		// insert new line if there's already some content (except for BlankLine)
-		_, isBlankline := element.(types.BlankLine)
+		_, isBlankline := element.(*types.BlankLine)
 		if !isBlankline && hasContent && len(renderedElement) > 0 {
 			buff.WriteString("\n")
 		}
@@ -77,57 +87,57 @@ func renderElement(ctx *renderer.Context, element interface{}) ([]byte, error) {
 	switch e := element.(type) {
 	case []interface{}:
 		return renderElements(ctx, e)
-	case types.TableOfContentsMacro:
+	case *types.TableOfContentsMacro:
 		return renderTableOfContents(ctx, e)
-	case types.Section:
+	case *types.Section:
 		return renderSection(ctx, e)
-	case types.Preamble:
+	case *types.Preamble:
 		return renderPreamble(ctx, e)
-	case types.BlankLine:
+	case *types.BlankLine:
 		return renderBlankLine(ctx, e)
-	case types.LabeledList:
+	case *types.LabeledList:
 		return renderLabeledList(ctx, e)
-	case types.OrderedList:
+	case *types.OrderedList:
 		return renderOrderedList(ctx, e)
-	case types.UnorderedList:
+	case *types.UnorderedList:
 		return renderUnorderedList(ctx, e)
-	case types.Paragraph:
+	case *types.Paragraph:
 		return renderParagraph(ctx, e)
-	case types.CrossReference:
+	case *types.CrossReference:
 		return renderCrossReference(ctx, e)
-	case types.QuotedText:
+	case *types.QuotedText:
 		return renderQuotedText(ctx, e)
-	case types.Passthrough:
+	case *types.Passthrough:
 		return renderPassthrough(ctx, e)
-	case types.ImageBlock:
+	case *types.ImageBlock:
 		return renderImageBlock(ctx, e)
-	case types.InlineImage:
+	case *types.InlineImage:
 		return renderInlineImage(ctx, e)
-	case types.DelimitedBlock:
+	case *types.DelimitedBlock:
 		return renderDelimitedBlock(ctx, e)
-	case types.Table:
+	case *types.Table:
 		return renderTable(ctx, e)
-	case types.LiteralBlock:
+	case *types.LiteralBlock:
 		return renderLiteralBlock(ctx, e)
 	case types.InlineElements:
 		return renderLine(ctx, e, renderElement)
-	case types.InlineLink:
+	case *types.InlineLink:
 		return renderLink(ctx, e)
-	case types.StringElement:
+	case *types.StringElement:
 		return renderStringElement(ctx, e)
-	case types.Footnote:
+	case *types.Footnote:
 		return renderFootnote(ctx, e)
-	case types.DocumentAttributeDeclaration:
+	case *types.DocumentAttributeDeclaration:
 		return processAttributeDeclaration(ctx, e), nil
-	case types.DocumentAttributeReset:
+	case *types.DocumentAttributeReset:
 		return processAttributeReset(ctx, e), nil
-	case types.DocumentAttributeSubstitution:
+	case *types.DocumentAttributeSubstitution:
 		return renderAttributeSubstitution(ctx, e), nil
-	case types.LineBreak:
+	case *types.LineBreak:
 		return renderLineBreak()
-	case types.UserMacro:
+	case *types.UserMacro:
 		return renderUserMacro(ctx, e)
-	case types.SingleLineComment:
+	case *types.SingleLineComment:
 		return nil, nil // nothing to do
 	default:
 		return nil, errors.Errorf("unsupported type of element: %T", element)
@@ -138,22 +148,22 @@ func renderElement(ctx *renderer.Context, element interface{}) ([]byte, error) {
 func renderPlainString(ctx *renderer.Context, element interface{}) ([]byte, error) {
 	log.Debugf("rendering plain string for element of type %T", element)
 	switch element := element.(type) {
-	case types.SectionTitle:
+	case *types.SectionTitle:
 		return renderPlainString(ctx, element.Elements)
-	case types.QuotedText:
+	case *types.QuotedText:
 		return renderPlainString(ctx, element.Elements)
-	case types.InlineImage:
+	case *types.InlineImage:
 		return []byte(element.Attributes.GetAsString(types.AttrImageAlt)), nil
-	case types.InlineLink:
+	case *types.InlineLink:
 		if alt, ok := element.Attributes[types.AttrInlineLinkText].(types.InlineElements); ok {
 			return renderPlainString(ctx, alt)
 		}
 		return []byte(element.Location.Resolve(ctx.Document.Attributes)), nil
-	case types.BlankLine:
+	case *types.BlankLine:
 		return []byte("\n\n"), nil
-	case types.StringElement:
+	case *types.StringElement:
 		return []byte(element.Content), nil
-	case types.Paragraph:
+	case *types.Paragraph:
 		return renderLines(ctx, element.Lines, renderPlainString, false)
 	case types.InlineElements:
 		return renderLine(ctx, element, renderPlainString)

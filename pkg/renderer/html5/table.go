@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"html"
 	"math"
+	"strconv"
 	texttemplate "text/template"
 
 	"github.com/bytesparadise/libasciidoc/pkg/renderer"
@@ -21,12 +22,12 @@ func init() {
 {{ end }}<colgroup>
 {{ $cellWidths := .CellWidths }}{{ range $index, $width := $cellWidths }}<col style="width: {{ $width }}%;">{{ includeNewline $ctx $index $cellWidths }}{{ end }}
 </colgroup>
-{{ if .Header.Cells }}<thead>
+{{ if .Header }}{{ if .Header.Cells }}<thead>
 <tr>
 {{ $headerCells := .Header.Cells }}{{ range $index, $cell := $headerCells }}<th class="tableblock halign-left valign-top">{{ renderElement $ctx $cell | printf "%s" }}</th>{{ includeNewline $ctx $index $headerCells }}{{ end }}
 </tr>
 </thead>
-{{ end }}<tbody>
+{{ end }}{{ end }}<tbody>
 {{ range $indexLine, $line := .Lines }}<tr>
 {{ range $indexCells, $cell := $line.Cells }}<td class="tableblock halign-left valign-top"><p class="tableblock">{{ renderElement $ctx $cell | printf "%s" }}</p></td>{{ includeNewline $ctx $indexCells $line.Cells }}{{ end }}
 </tr>
@@ -39,7 +40,7 @@ func init() {
 		})
 }
 
-func renderTable(ctx *renderer.Context, t types.Table) ([]byte, error) {
+func renderTable(ctx *renderer.Context, t *types.Table) ([]byte, error) {
 	result := bytes.NewBuffer(nil)
 	// inspect first line to obtain cell width ratio
 	widths := []string{}
@@ -68,8 +69,8 @@ func renderTable(ctx *renderer.Context, t types.Table) ([]byte, error) {
 		Data: struct {
 			Title      string
 			CellWidths []string
-			Header     types.TableLine
-			Lines      []types.TableLine
+			Header     *types.TableLine
+			Lines      []*types.TableLine
 		}{
 			Title:      title,
 			CellWidths: widths,
@@ -94,7 +95,7 @@ func lastColumn() formatColumnWidthOption {
 func formatColumnWidth(v float64, options ...formatColumnWidthOption) string {
 	if v == math.Trunc(v) {
 		// whole numbers don't need 4 decimals
-		return fmt.Sprintf("%d", int(v))
+		return strconv.Itoa(int(v))
 	}
 	for _, opt := range options {
 		v = opt(v)

@@ -12,40 +12,40 @@ var _ = Describe("document with attributes", func() {
 	Context("plaintext substitutions", func() {
 
 		It("some attributes then a paragraph", func() {
-			actualContent := `:toc:
+			source := `:toc:
 :date: 2017-01-01
 :author: Xavier
 a paragraph`
-			expectedResult := `<div class="paragraph">
+			expected := `<div class="paragraph">
 <p>a paragraph</p>
 </div>`
-			verify(GinkgoT(), expectedResult, actualContent)
+			verify(expected, source)
 		})
 
 		It("a paragraph then some attributes", func() {
-			actualContent := `a paragraph
+			source := `a paragraph
 
 :toc:
 :date: 2017-01-01
 :author: Xavier`
-			expectedResult := `<div class="paragraph">
+			expected := `<div class="paragraph">
 <p>a paragraph</p>
 </div>`
-			verify(GinkgoT(), expectedResult, actualContent)
+			verify(expected, source)
 		})
 
 		It("a paragraph with substitution", func() {
-			actualContent := `:author: Xavier
+			source := `:author: Xavier
 
 a paragraph written by {author}`
-			expectedResult := `<div class="paragraph">
+			expected := `<div class="paragraph">
 <p>a paragraph written by Xavier</p>
 </div>`
-			verify(GinkgoT(), expectedResult, actualContent)
+			verify(expected, source)
 		})
 
 		It("paragraphs with definitions, substitutions and resets", func() {
-			actualContent := `author is {author}.
+			source := `author is {author}.
 		
 :author: me
 author is now {author}.
@@ -55,7 +55,7 @@ author is now {author}.
 
 :author!:
 author is now {author}.`
-			expectedResult := `<div class="paragraph">
+			expected := `<div class="paragraph">
 <p>author is {author}.</p>
 </div>
 <div class="paragraph">
@@ -67,31 +67,31 @@ author is now {author}.`
 <div class="paragraph">
 <p>author is now {author}.</p>
 </div>`
-			verify(GinkgoT(), expectedResult, actualContent)
+			verify(expected, source)
 		})
 
 		It("front-matter then paragraph with substitutions", func() {
-			actualContent := `---
+			source := `---
 author: Xavier
 ---
 		
 author is {author}.`
-			expectedResult := `<div class="paragraph">
+			expected := `<div class="paragraph">
 <p>author is Xavier.</p>
 </div>`
-			verify(GinkgoT(), expectedResult, actualContent)
+			verify(expected, source)
 		})
 	})
 
 	Context("substitutions to elements", func() {
 
 		It("replace to inline link in paragraph", func() {
-			actualContent := `:quick-uri: https://foo.com/bar
+			source := `:quick-uri: https://foo.com/bar
 {quick-uri}[foo]`
-			expectedResult := `<div class="paragraph">
+			expected := `<div class="paragraph">
 <p><a href="https://foo.com/bar">foo</a></p>
 </div>`
-			verify(GinkgoT(), expectedResult, actualContent)
+			verify(expected, source)
 		})
 	})
 
@@ -99,11 +99,11 @@ author is {author}.`
 
 		DescribeTable("predefined attributes in a paragraph",
 			func(code, rendered string) {
-				actualContent := fmt.Sprintf(`the {%s} symbol`, code)
-				expectedResult := fmt.Sprintf(`<div class="paragraph">
+				source := fmt.Sprintf(`the {%s} symbol`, code)
+				expected := fmt.Sprintf(`<div class="paragraph">
 <p>the %s symbol</p>
 </div>`, rendered)
-				verify(GinkgoT(), expectedResult, actualContent)
+				verify(expected, source)
 			},
 			Entry("sp symbol", "sp", " "),
 			Entry("blank symbol", "blank", ""),
@@ -137,13 +137,13 @@ author is {author}.`
 		)
 
 		It("overriding predefined attribute", func() {
-			actualContent := `:blank: foo
+			source := `:blank: foo
 			
 a {blank} here.`
-			expectedResult := `<div class="paragraph">
+			expected := `<div class="paragraph">
 <p>a foo here.</p>
 </div>`
-			verify(GinkgoT(), expectedResult, actualContent)
+			verify(expected, source)
 		})
 	})
 

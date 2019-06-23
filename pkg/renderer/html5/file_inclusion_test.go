@@ -7,12 +7,12 @@ import (
 var _ = Describe("file inclusions", func() {
 
 	It("include adoc file with leveloffset attribute", func() {
-		actualContent := `= Master Document
+		source := `= Master Document
 
 preamble
 
 include::includes/chapter-a.adoc[leveloffset=+1]`
-		expectedResult := `<div id="preamble">
+		expected := `<div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
 <p>preamble</p>
@@ -27,16 +27,16 @@ include::includes/chapter-a.adoc[leveloffset=+1]`
 </div>
 </div>
 </div>`
-		verify(GinkgoT(), expectedResult, actualContent)
+		verify(expected, source)
 	})
 
 	It("include non adoc file", func() {
-		actualContent := `= Master Document
+		source := `= Master Document
 
 preamble
 
 include::includes/hello_world.go[]`
-		expectedResult := `<div class="paragraph">
+		expected := `<div class="paragraph">
 <p>preamble</p>
 </div>
 <div class="paragraph">
@@ -50,18 +50,18 @@ include::includes/hello_world.go[]`
 	fmt.Println(&#34;hello, world!&#34;)
 }</p>
 </div>`
-		verify(GinkgoT(), expectedResult, actualContent)
+		verify(expected, source)
 	})
 
 	It("include 2 files", func() {
-		actualContent := `= Master Document
+		source := `= Master Document
 
 preamble
 
 include::includes/grandchild-include.adoc[]
 
 include::includes/hello_world.go[]`
-		expectedResult := `<div class="paragraph">
+		expected := `<div class="paragraph">
 <p>preamble</p>
 </div>
 <div class="paragraph">
@@ -81,18 +81,18 @@ include::includes/hello_world.go[]`
 	fmt.Println(&#34;hello, world!&#34;)
 }</p>
 </div>`
-		verify(GinkgoT(), expectedResult, actualContent)
+		verify(expected, source)
 	})
 
 	It("include file and append following elements in included section", func() {
-		actualContent := `a first paragraph
+		source := `a first paragraph
 
 include::includes/chapter-a.adoc[leveloffset=+1]
 
 a second paragraph
 
 a third paragraph`
-		expectedResult := `<div class="paragraph">
+		expected := `<div class="paragraph">
 <p>a first paragraph</p>
 </div>
 <div class="sect1">
@@ -109,7 +109,7 @@ a third paragraph`
 </div>
 </div>
 </div>`
-		verify(GinkgoT(), expectedResult, actualContent)
+		verify(expected, source)
 	})
 
 	Context("file inclusion in delimited blocks", func() {
@@ -117,14 +117,14 @@ a third paragraph`
 		Context("adoc file inclusion in delimited blocks", func() {
 
 			It("should include adoc file within listing block", func() {
-				actualContent := `= Master Document
+				source := `= Master Document
 
 preamble
 
 ----
 include::includes/chapter-a.adoc[]
 ----`
-				expectedResult := `<div class="paragraph">
+				expected := `<div class="paragraph">
 <p>preamble</p>
 </div>
 <div class="listingblock">
@@ -134,28 +134,28 @@ include::includes/chapter-a.adoc[]
 content</pre>
 </div>
 </div>`
-				verify(GinkgoT(), expectedResult, actualContent)
+				verify(expected, source)
 			})
 
 			It("should include adoc file within fenced block", func() {
-				actualContent := "```\n" +
+				source := "```\n" +
 					"include::includes/chapter-a.adoc[]\n" +
 					"```"
-				expectedResult := `<div class="listingblock">
+				expected := `<div class="listingblock">
 <div class="content">
 <pre class="highlight"><code>= Chapter A
 
 content</code></pre>
 </div>
 </div>`
-				verify(GinkgoT(), expectedResult, actualContent)
+				verify(expected, source)
 			})
 
 			It("should include adoc file within example block", func() {
-				actualContent := `====
+				source := `====
 include::includes/chapter-a.adoc[]
 ====`
-				expectedResult := `<div class="exampleblock">
+				expected := `<div class="exampleblock">
 <div class="content">
 <div class="paragraph">
 <p>= Chapter A</p>
@@ -165,14 +165,14 @@ include::includes/chapter-a.adoc[]
 </div>
 </div>
 </div>`
-				verify(GinkgoT(), expectedResult, actualContent)
+				verify(expected, source)
 			})
 
 			It("should include adoc file within quote block", func() {
-				actualContent := `____
+				source := `____
 include::includes/chapter-a.adoc[]
 ____`
-				expectedResult := `<div class="quoteblock">
+				expected := `<div class="quoteblock">
 <blockquote>
 <div class="paragraph">
 <p>= Chapter A</p>
@@ -182,27 +182,27 @@ ____`
 </div>
 </blockquote>
 </div>`
-				verify(GinkgoT(), expectedResult, actualContent)
+				verify(expected, source)
 			})
 
 			It("should include adoc file within verse block", func() {
-				actualContent := `[verse]
+				source := `[verse]
 ____
 include::includes/chapter-a.adoc[]
 ____`
-				expectedResult := `<div class="verseblock">
+				expected := `<div class="verseblock">
 <pre class="content">= Chapter A
 
 content</pre>
 </div>`
-				verify(GinkgoT(), expectedResult, actualContent)
+				verify(expected, source)
 			})
 
 			It("should include adoc file within sidebar block", func() {
-				actualContent := `****
+				source := `****
 include::includes/chapter-a.adoc[]
 ****`
-				expectedResult := `<div class="sidebarblock">
+				expected := `<div class="sidebarblock">
 <div class="content">
 <div class="paragraph">
 <p>= Chapter A</p>
@@ -212,30 +212,30 @@ include::includes/chapter-a.adoc[]
 </div>
 </div>
 </div>`
-				verify(GinkgoT(), expectedResult, actualContent)
+				verify(expected, source)
 			})
 
 			It("should include adoc file within passthrough block", func() {
 				Skip("missing support for passthrough blocks")
-				actualContent := `++++
+				source := `++++
 include::includes/chapter-a.adoc[]
 ++++`
-				expectedResult := ``
-				verify(GinkgoT(), expectedResult, actualContent)
+				expected := ``
+				verify(expected, source)
 			})
 		})
 
 		Context("other file inclusion in delimited blocks", func() {
 
 			It("should include go file within listing block", func() {
-				actualContent := `= Master Document
+				source := `= Master Document
 
 preamble
 
 ----
 include::includes/hello_world.go[]
 ----`
-				expectedResult := `<div class="paragraph">
+				expected := `<div class="paragraph">
 <p>preamble</p>
 </div>
 <div class="listingblock">
@@ -249,14 +249,14 @@ func helloworld() {
 }</pre>
 </div>
 </div>`
-				verify(GinkgoT(), expectedResult, actualContent)
+				verify(expected, source)
 			})
 
 			It("should include go file within fenced block", func() {
-				actualContent := "```\n" +
+				source := "```\n" +
 					"include::includes/hello_world.go[]\n" +
 					"```"
-				expectedResult := `<div class="listingblock">
+				expected := `<div class="listingblock">
 <div class="content">
 <pre class="highlight"><code>package includes
 
@@ -267,14 +267,14 @@ func helloworld() {
 }</code></pre>
 </div>
 </div>`
-				verify(GinkgoT(), expectedResult, actualContent)
+				verify(expected, source)
 			})
 
 			It("should include go file within example block", func() {
-				actualContent := `====
+				source := `====
 include::includes/hello_world.go[]
 ====`
-				expectedResult := `<div class="exampleblock">
+				expected := `<div class="exampleblock">
 <div class="content">
 <div class="paragraph">
 <p>package includes</p>
@@ -289,14 +289,14 @@ include::includes/hello_world.go[]
 </div>
 </div>
 </div>`
-				verify(GinkgoT(), expectedResult, actualContent)
+				verify(expected, source)
 			})
 
 			It("should include go file within quote block", func() {
-				actualContent := `____
+				source := `____
 include::includes/hello_world.go[]
 ____`
-				expectedResult := `<div class="quoteblock">
+				expected := `<div class="quoteblock">
 <blockquote>
 <div class="paragraph">
 <p>package includes</p>
@@ -311,15 +311,15 @@ ____`
 </div>
 </blockquote>
 </div>`
-				verify(GinkgoT(), expectedResult, actualContent)
+				verify(expected, source)
 			})
 
 			It("should include go file within verse block", func() {
-				actualContent := `[verse]
+				source := `[verse]
 ____
 include::includes/hello_world.go[]
 ____`
-				expectedResult := `<div class="verseblock">
+				expected := `<div class="verseblock">
 <pre class="content">package includes
 
 import &#34;fmt&#34;
@@ -328,14 +328,14 @@ func helloworld() {
 	fmt.Println(&#34;hello, world!&#34;)
 }</pre>
 </div>`
-				verify(GinkgoT(), expectedResult, actualContent)
+				verify(expected, source)
 			})
 
 			It("should include go file within sidebar block", func() {
-				actualContent := `****
+				source := `****
 include::includes/hello_world.go[]
 ****`
-				expectedResult := `<div class="sidebarblock">
+				expected := `<div class="sidebarblock">
 <div class="content">
 <div class="paragraph">
 <p>package includes</p>
@@ -350,7 +350,7 @@ include::includes/hello_world.go[]
 </div>
 </div>
 </div>`
-				verify(GinkgoT(), expectedResult, actualContent)
+				verify(expected, source)
 			})
 		})
 	})
@@ -360,26 +360,26 @@ include::includes/hello_world.go[]
 		Context("file inclusions as paragraph with line range", func() {
 
 			It("should include single line as paragraph", func() {
-				actualContent := `include::includes/hello_world.go[lines=1]`
-				expectedResult := `<div class="paragraph">
+				source := `include::includes/hello_world.go[lines=1]`
+				expected := `<div class="paragraph">
 <p>package includes</p>
 </div>`
-				verify(GinkgoT(), expectedResult, actualContent)
+				verify(expected, source)
 			})
 
 			It("should include multiple lines as paragraph", func() {
-				actualContent := `include::includes/hello_world.go[lines=5..7]`
-				expectedResult := `<div class="paragraph">
+				source := `include::includes/hello_world.go[lines=5..7]`
+				expected := `<div class="paragraph">
 <p>func helloworld() {
 	fmt.Println(&#34;hello, world!&#34;)
 }</p>
 </div>`
-				verify(GinkgoT(), expectedResult, actualContent)
+				verify(expected, source)
 			})
 
 			It("should include multiple ranges as paragraph", func() {
-				actualContent := `include::includes/hello_world.go[lines=1..2;5..7]`
-				expectedResult := `<div class="paragraph">
+				source := `include::includes/hello_world.go[lines=1..2;5..7]`
+				expected := `<div class="paragraph">
 <p>package includes</p>
 </div>
 <div class="paragraph">
@@ -387,43 +387,43 @@ include::includes/hello_world.go[]
 	fmt.Println(&#34;hello, world!&#34;)
 }</p>
 </div>`
-				verify(GinkgoT(), expectedResult, actualContent)
+				verify(expected, source)
 			})
 		})
 
 		Context("file inclusions in listing blocks with line range", func() {
 
 			It("should include single line in listing block", func() {
-				actualContent := `----
+				source := `----
 include::includes/hello_world.go[lines=1]
 ----`
-				expectedResult := `<div class="listingblock">
+				expected := `<div class="listingblock">
 <div class="content">
 <pre>package includes</pre>
 </div>
 </div>`
-				verify(GinkgoT(), expectedResult, actualContent)
+				verify(expected, source)
 			})
 
 			It("should include multiple lines in listing block", func() {
-				actualContent := `----
+				source := `----
 include::includes/hello_world.go[lines=5..7]
 ----`
-				expectedResult := `<div class="listingblock">
+				expected := `<div class="listingblock">
 <div class="content">
 <pre>func helloworld() {
 	fmt.Println(&#34;hello, world!&#34;)
 }</pre>
 </div>
 </div>`
-				verify(GinkgoT(), expectedResult, actualContent)
+				verify(expected, source)
 			})
 
 			It("should include multiple ranges in listing block", func() {
-				actualContent := `----
+				source := `----
 include::includes/hello_world.go[lines=1..2;5..7]
 ----`
-				expectedResult := `<div class="listingblock">
+				expected := `<div class="listingblock">
 <div class="content">
 <pre>package includes
 
@@ -432,7 +432,7 @@ func helloworld() {
 }</pre>
 </div>
 </div>`
-				verify(GinkgoT(), expectedResult, actualContent)
+				verify(expected, source)
 			})
 		})
 	})
@@ -440,8 +440,8 @@ func helloworld() {
 	Context("recursive file inclusions", func() {
 
 		It("should include child and grandchild content in paragraphs", func() {
-			actualContent := `include::includes/parent-include.adoc[]`
-			expectedResult := `<div class="paragraph">
+			source := `include::includes/parent-include.adoc[]`
+			expected := `<div class="paragraph">
 <p>first line of parent</p>
 </div>
 <div class="paragraph">
@@ -459,14 +459,14 @@ func helloworld() {
 <div class="paragraph">
 <p>last line of parent</p>
 </div>`
-			verify(GinkgoT(), expectedResult, actualContent)
+			verify(expected, source)
 		})
 
 		It("should include child and grandchild content in listing block", func() {
-			actualContent := `----
+			source := `----
 include::includes/parent-include.adoc[]
 ----`
-			expectedResult := `<div class="listingblock">
+			expected := `<div class="listingblock">
 <div class="content">
 <pre>first line of parent
 
@@ -481,39 +481,39 @@ last line of child
 last line of parent</pre>
 </div>
 </div>`
-			verify(GinkgoT(), expectedResult, actualContent)
+			verify(expected, source)
 		})
 	})
 
 	Context("inclusion with attribute in path", func() {
 
-		It("should resolve path with attribute in standaldone block", func() {
-			actualContent := `:includedir: ./includes
+		It("should resolve path with attribute in standalone block", func() {
+			source := `:includedir: ./includes
 			
 include::{includedir}/grandchild-include.adoc[]`
-			expectedResult := `<div class="paragraph">
+			expected := `<div class="paragraph">
 <p>first line of grandchild</p>
 </div>
 <div class="paragraph">
 <p>last line of grandchild</p>
 </div>`
-			verify(GinkgoT(), expectedResult, actualContent)
+			verify(expected, source)
 		})
 
 		It("should resolve path with attribute in delimited block", func() {
-			actualContent := `:includedir: ./includes
+			source := `:includedir: ./includes
 
 ----
 include::{includedir}/grandchild-include.adoc[]
 ----`
-			expectedResult := `<div class="listingblock">
+			expected := `<div class="listingblock">
 <div class="content">
 <pre>first line of grandchild
 
 last line of grandchild</pre>
 </div>
 </div>`
-			verify(GinkgoT(), expectedResult, actualContent)
+			verify(expected, source)
 		})
 	})
 
@@ -523,51 +523,51 @@ last line of grandchild</pre>
 
 			It("should replace with string element if file is missing", func() {
 
-				actualContent := `include::includes/unknown.adoc[leveloffset=+1]`
-				expectedResult := `<div class="paragraph">
+				source := `include::includes/unknown.adoc[leveloffset=+1]`
+				expected := `<div class="paragraph">
 <p>Unresolved directive in test.adoc - include::includes/unknown.adoc[leveloffset=&#43;1]</p>
 </div>`
 				// TODO: also verify that an error was reported in the console.
-				verify(GinkgoT(), expectedResult, actualContent)
+				verify(expected, source)
 			})
 
 			It("should replace with string element if file with attribute in path is not resolved", func() {
 
-				actualContent := `include::{includedir}/unknown.adoc[leveloffset=+1]`
-				expectedResult := `<div class="paragraph">
+				source := `include::{includedir}/unknown.adoc[leveloffset=+1]`
+				expected := `<div class="paragraph">
 <p>Unresolved directive in test.adoc - include::{includedir}/unknown.adoc[leveloffset=&#43;1]</p>
 </div>`
 				// TODO: also verify that an error was reported in the console.
-				verify(GinkgoT(), expectedResult, actualContent)
+				verify(expected, source)
 			})
 		})
 
 		Context("in listing block", func() {
 
 			It("should replace with string element if file is missing", func() {
-				actualContent := `----
+				source := `----
 include::includes/unknown.adoc[leveloffset=+1]
 ----`
-				expectedResult := `<div class="listingblock">
+				expected := `<div class="listingblock">
 <div class="content">
 <pre>Unresolved directive in test.adoc - include::includes/unknown.adoc[leveloffset=+1]</pre>
 </div>
 </div>`
 				// TODO: also verify that an error was reported in the console.
-				verify(GinkgoT(), expectedResult, actualContent)
+				verify(expected, source)
 			})
 
 			It("should replace with string element if file with attribute in path is not resolved", func() {
-				actualContent := `----
+				source := `----
 include::{includedir}/unknown.adoc[leveloffset=+1]
 ----`
-				expectedResult := `<div class="listingblock">
+				expected := `<div class="listingblock">
 <div class="content">
 <pre>Unresolved directive in test.adoc - include::{includedir}/unknown.adoc[leveloffset=+1]</pre>
 </div>
 </div>`
 				// TODO: also verify that an error was reported in the console.
-				verify(GinkgoT(), expectedResult, actualContent)
+				verify(expected, source)
 			})
 		})
 	})

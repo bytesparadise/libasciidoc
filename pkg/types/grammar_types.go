@@ -5,14 +5,10 @@ import (
 	"fmt"
 	"path/filepath"
 	"sort"
-	"strconv"
 	"strings"
 
 	yaml "gopkg.in/yaml.v2"
 
-	"reflect"
-
-	"github.com/davecgh/go-spew/spew"
 	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
 )
@@ -44,67 +40,47 @@ type Substitutor interface {
 }
 
 // ------------------------------------------
+// Preflight Document: document parsed in a linear fashion, and which needs further
+// processing before rendering
+// ------------------------------------------
+
+// PreflightDocument the linear-level structure for a document
+type PreflightDocument struct {
+	FrontMatter *FrontMatter
+	Blocks      []interface{}
+}
+
+// NewPreflightDocument initializes a new Preflight`Document` from the given lines
+func NewPreflightDocument(frontMatter interface{}, blocks []interface{}) (*PreflightDocument, error) {
+	log.Debugf("initializing a new PreflightDocument with %d block element(s)", len(blocks))
+	result := &PreflightDocument{
+		Blocks: NilSafe(blocks),
+	}
+	if fm, ok := frontMatter.(*FrontMatter); ok {
+		result.FrontMatter = fm
+	}
+	return result, nil
+}
+
+// ------------------------------------------
 // Document
 // ------------------------------------------
 
 // Document the top-level structure for a document
 type Document struct {
 	Attributes         DocumentAttributes
-	Elements           []interface{}
+	Elements           []interface{} // TODO: rename to Blocks?
 	ElementReferences  ElementReferences
 	Footnotes          Footnotes
 	FootnoteReferences FootnoteReferences
 }
 
-// NewDocument initializes a new `Document` from the given lines
-func NewDocument(frontmatter interface{}, elements []interface{}) (Document, error) {
-	log.Debugf("initializing a new Document with %d block element(s)", len(elements))
-	attributes := DocumentAttributes{}
-	if frontmatter != nil {
-		for attrName, attrValue := range frontmatter.(FrontMatter).Content {
-			attributes[attrName] = attrValue
-		}
-	}
-	//TODO: those collectors could be called at the beginning of rendering, and in concurrent routines
-	// visit AST and collect element references
-	xrefsCollector := NewElementReferencesCollector()
-	for _, e := range elements {
-		if v, ok := e.(Visitable); ok {
-			err := v.AcceptVisitor(xrefsCollector)
-			if err != nil {
-				return Document{}, errors.Wrapf(err, "unable to create document")
-			}
-		}
-	}
-
-	// visit AST and collect footnotes
-	footnotesCollector := NewFootnotesCollector()
-	for _, e := range elements {
-		log.Debugf("collecting footnotes in element of type %T", e)
-		if v, ok := e.(Visitable); ok {
-			err := v.AcceptVisitor(footnotesCollector)
-			if err != nil {
-				return Document{}, errors.Wrapf(err, "unable to create document")
-			}
-		}
-	}
-	document := Document{
-		Attributes:         attributes,
-		Elements:           NilSafe(elements),
-		ElementReferences:  xrefsCollector.ElementReferences,
-		Footnotes:          footnotesCollector.Footnotes,
-		FootnoteReferences: footnotesCollector.FootnoteReferences,
-	}
-	// visit all elements in the `AST` to retrieve their reference (ie, their ElementID if they have any)
-	return document, nil
-}
-
 // Title retrieves the document title in its metadata, or empty section title if the title was not specified
-func (d Document) Title() (SectionTitle, bool) {
+func (d Document) Title() (InlineElements, bool) {
 	if header, ok := d.Header(); ok {
 		return header.Title, true
 	}
-	return SectionTitle{}, false
+	return InlineElements{}, false
 }
 
 // Authors retrieves the document authors from the document header, or empty array if no author was found
@@ -128,13 +104,13 @@ func (d Document) Revision() (DocumentRevision, bool) {
 }
 
 // Header returns the header, i.e., the section with level 0 if it exists as the first element of the document
-func (d Document) Header() (Section, bool) {
+func (d Document) Header() (*Section, bool) {
 	if len(d.Elements) > 0 {
-		if section, ok := d.Elements[0].(Section); ok && section.Level == 0 {
+		if section, ok := d.Elements[0].(*Section); ok && section.Level == 0 {
 			return section, true
 		}
 	}
-	return Section{}, false
+	return nil, false
 }
 
 // ------------------------------------------
@@ -221,7 +197,6 @@ func NewDocumentRevision(revnumber, revdate, revremark interface{}) (DocumentRev
 		Revdate:   date,
 		Revremark: remark,
 	}
-	// log.Debugf("initialized a new document revision: `%s`", result.String())
 	return result, nil
 }
 
@@ -236,7 +211,7 @@ type DocumentAttributeDeclaration struct {
 }
 
 // NewDocumentAttributeDeclaration initializes a new DocumentAttributeDeclaration with the given name and optional value
-func NewDocumentAttributeDeclaration(name string, value interface{}) (DocumentAttributeDeclaration, error) {
+func NewDocumentAttributeDeclaration(name string, value interface{}) (*DocumentAttributeDeclaration, error) {
 	var attrName, attrValue string
 	attrName = Apply(name,
 		func(s string) string {
@@ -249,7 +224,7 @@ func NewDocumentAttributeDeclaration(name string, value interface{}) (DocumentAt
 			})
 	}
 	log.Debugf("initialized a new DocumentAttributeDeclaration: '%s' -> '%s'", attrName, attrValue)
-	return DocumentAttributeDeclaration{
+	return &DocumentAttributeDeclaration{
 		Name:  attrName,
 		Value: attrValue,
 	}, nil
@@ -267,9 +242,9 @@ type DocumentAttributeReset struct {
 }
 
 // NewDocumentAttributeReset initializes a new Document Attribute Resets.
-func NewDocumentAttributeReset(attrName string) (DocumentAttributeReset, error) {
+func NewDocumentAttributeReset(attrName string) (*DocumentAttributeReset, error) {
 	log.Debugf("initialized a new DocumentAttributeReset: '%s'", attrName)
-	return DocumentAttributeReset{Name: attrName}, nil
+	return &DocumentAttributeReset{Name: attrName}, nil
 }
 
 // AddAttributes adds all given attributes to the current set of attribute of the element
@@ -284,117 +259,9 @@ type DocumentAttributeSubstitution struct {
 }
 
 // NewDocumentAttributeSubstitution initializes a new Document Attribute Substitutions
-func NewDocumentAttributeSubstitution(attrName string) (DocumentAttributeSubstitution, error) {
+func NewDocumentAttributeSubstitution(attrName string) (*DocumentAttributeSubstitution, error) {
 	log.Debugf("initialized a new DocumentAttributeSubstitution: '%s'", attrName)
-	return DocumentAttributeSubstitution{Name: attrName}, nil
-}
-
-// ------------------------------------------
-// PreparsedDocument (plus related types)
-// ------------------------------------------
-
-// PreparsedDocument a preprocessed document, aimed for file inclusions,
-// beofre being fully parsed to obtain a Document
-type PreparsedDocument struct {
-	Elements []interface{}
-}
-
-// NewPreparsedDocument initializes a new PreparsedDocument with the given elements
-func NewPreparsedDocument(elements []interface{}) (PreparsedDocument, error) {
-	return PreparsedDocument{
-		Elements: elements,
-	}, nil
-}
-
-// RawSectionTitle a section. Just need to have the prefix which can be changed
-// if there is a file inclusion with a level offset defined.
-type RawSectionTitle struct {
-	Prefix RawSectionTitlePrefix
-	Title  RawSectionTitleContent
-}
-
-// NewRawSectionTitle return a new RawSectionTitle
-func NewRawSectionTitle(prefix RawSectionTitlePrefix, title RawSectionTitleContent) (RawSectionTitle, error) {
-	return RawSectionTitle{
-		Prefix: prefix,
-		Title:  title,
-	}, nil
-}
-
-// Bytes returns the content of the preparsed section as an array of byte
-func (s RawSectionTitle) Bytes(levelOffset string) ([]byte, error) {
-	result := bytes.NewBuffer(nil)
-	b, err := s.Prefix.Bytes(levelOffset)
-	if err != nil {
-		return nil, errors.Wrapf(err, "failed to convert section title")
-	}
-	result.Write(b)
-	result.Write(s.Title)
-	return result.Bytes(), nil
-}
-
-// RawSectionTitlePrefix a raw section prefix, with a distinction between the sequence of `=` characters
-// and the following spaces
-type RawSectionTitlePrefix struct {
-	Level  []byte
-	Spaces []byte
-}
-
-// NewRawSectionTitlePrefix returns a new RawSectionTitlePrefix with the given `=` sequences following by spaces.
-func NewRawSectionTitlePrefix(level, spaces []byte) (RawSectionTitlePrefix, error) {
-	return RawSectionTitlePrefix{
-		Level:  level,
-		Spaces: spaces,
-	}, nil
-}
-
-// Bytes return the representation of this raw title prefix as an array of bytes,
-// while applying an optional offset (if non-empty)
-func (p RawSectionTitlePrefix) Bytes(levelOffset string) ([]byte, error) {
-	result := bytes.NewBuffer(nil)
-	if levelOffset != "" {
-		log.Debugf("applying level offset '%s'", levelOffset)
-		offset, err := strconv.Atoi(levelOffset)
-		if err != nil {
-			return nil, errors.Wrapf(err, "fail to apply level offset '%s' to document to include", levelOffset)
-		}
-		if offset > 0 {
-			result.Write(p.Level)
-			for i := 0; i < offset; i++ {
-				result.WriteRune('=')
-			}
-		}
-	} else {
-		result.Write(p.Level)
-	}
-	result.Write(p.Spaces)
-	return result.Bytes(), nil
-}
-
-// RawSectionTitleContent a raw title prefix
-type RawSectionTitleContent []byte
-
-// NewRawSectionTitleContent returns a new raw section title
-func NewRawSectionTitleContent(content []byte) (RawSectionTitleContent, error) {
-	return RawSectionTitleContent(content), nil
-}
-
-// Bytes return the content of the title as an array of bytes
-func (t RawSectionTitleContent) Bytes() []byte {
-	return []byte(t)
-}
-
-// RawText a line of raw text without the trailing `EOL`
-type RawText []byte
-
-// NewRawText initializes a RawText with the given content
-func NewRawText(content []byte) (RawText, error) {
-	return RawText(content), nil
-}
-
-// Bytes return the content of the text as an array of bytes
-func (t RawText) Bytes() []byte {
-	return []byte(t)
+	return &DocumentAttributeSubstitution{Name: attrName}, nil
 }
 
 // ------------------------------------------
@@ -459,8 +326,14 @@ type UserMacro struct {
 }
 
 // NewUserMacroBlock returns an UserMacro
-func NewUserMacroBlock(name, value string, attrs ElementAttributes, raw string) (UserMacro, error) {
-	return UserMacro{Name: name, Kind: BlockMacro, Value: value, Attributes: attrs, RawText: raw}, nil
+func NewUserMacroBlock(name string, value string, attrs ElementAttributes, raw string) (*UserMacro, error) {
+	return &UserMacro{
+		Name:       name,
+		Kind:       BlockMacro,
+		Value:      value,
+		Attributes: attrs,
+		RawText:    raw,
+	}, nil
 }
 
 // AddAttributes adds all given attributes to the current set of attribute of the element
@@ -470,8 +343,8 @@ func (d UserMacro) AddAttributes(attributes ElementAttributes) {
 }
 
 // NewInlineUserMacro returns an UserMacro
-func NewInlineUserMacro(name, value string, attrs ElementAttributes, raw string) (UserMacro, error) {
-	return UserMacro{Name: name, Kind: InlineMacro, Value: value, Attributes: attrs, RawText: raw}, nil
+func NewInlineUserMacro(name, value string, attrs ElementAttributes, raw string) (*UserMacro, error) {
+	return &UserMacro{Name: name, Kind: InlineMacro, Value: value, Attributes: attrs, RawText: raw}, nil
 }
 
 // ------------------------------------------
@@ -484,8 +357,8 @@ type Preamble struct {
 }
 
 // NewEmptyPreamble return an empty Preamble
-func NewEmptyPreamble() Preamble {
-	return Preamble{
+func NewEmptyPreamble() *Preamble {
+	return &Preamble{
 		Elements: make([]interface{}, 0),
 	}
 }
@@ -500,14 +373,14 @@ type FrontMatter struct {
 }
 
 // NewYamlFrontMatter initializes a new FrontMatter from the given `content`
-func NewYamlFrontMatter(content string) (FrontMatter, error) {
+func NewYamlFrontMatter(content string) (*FrontMatter, error) {
 	attributes := make(map[string]interface{})
 	err := yaml.Unmarshal([]byte(content), &attributes)
 	if err != nil {
-		return FrontMatter{}, errors.Wrapf(err, "unable to parse yaml content in front-matter of document")
+		return nil, errors.Wrapf(err, "unable to parse yaml content in front-matter of document")
 	}
 	log.Debugf("initialized a new FrontMatter with attributes: %+v", attributes)
-	return FrontMatter{Content: attributes}, nil
+	return &FrontMatter{Content: attributes}, nil
 }
 
 // ------------------------------------------
@@ -517,30 +390,55 @@ func NewYamlFrontMatter(content string) (FrontMatter, error) {
 // Section the structure for a section
 type Section struct {
 	Level      int
-	Title      SectionTitle
 	Attributes ElementAttributes
+	Title      InlineElements
 	Elements   []interface{}
 }
 
 // NewSection initializes a new `Section` from the given section title and elements
-func NewSection(level int, title SectionTitle, elements []interface{}) (Section, error) {
-	log.Debugf("initialized a new Section level %d with %d block(s)", level, len(elements))
-	return Section{
+func NewSection(level int, title InlineElements, ids []interface{}, attributes interface{}) (*Section, error) {
+	attrs := ElementAttributes{}
+	if attributes, ok := attributes.(ElementAttributes); ok {
+		attrs.AddAll(attributes)
+	}
+	log.Debugf("initialized a new Section level %d", level)
+	// multiple IDs can be defined (by mistake), and the last one is used
+	for _, id := range ids {
+		if id, ok := id.(ElementAttributes); ok {
+			attrs.AddAll(id)
+		}
+	}
+	attrs[AttrCustomID] = true
+	// make a default id from the sectionTitle's inline content
+	if _, found := attrs[AttrID]; !found {
+		replacement, err := replaceNonAlphanumerics(title, "_")
+		if err != nil {
+			return nil, errors.Wrapf(err, "unable to generate default ID while instanciating a new Section element")
+		}
+		attrs[AttrID] = replacement
+		attrs[AttrCustomID] = false
+	}
+	return &Section{
 		Level:      level,
+		Attributes: attrs,
 		Title:      title,
-		Attributes: ElementAttributes{},
-		Elements:   NilSafe(elements),
+		Elements:   []interface{}{},
 	}, nil
 }
 
-// NewSection0WithMetadata initializes a new Section with level 0 which can have authors and a revision, among other attributes
-func NewSection0WithMetadata(title SectionTitle, authors interface{}, revision interface{}, elements []interface{}) (Section, error) {
+// Footnotes returns the footnotes found in all the lines of this paragraph
+func (s *Section) Footnotes() (Footnotes, FootnoteReferences, error) {
+	v := NewFootnotesCollector()
+	err := s.Title.AcceptVisitor(v)
+	return v.Footnotes, v.FootnoteReferences, err
+}
+
+// NewDocumentHeader initializes a new Section with level 0 which can have authors and a revision, among other attributes
+func NewDocumentHeader(title InlineElements, authors interface{}, revision interface{}) (*Section, error) {
 	log.Debugf("initializing a new Section0 with authors '%v' and revision '%v'", authors, revision)
-	section := Section{
-		Level:      0,
-		Title:      title,
-		Attributes: ElementAttributes{},
-		Elements:   NilSafe(elements),
+	section, err := NewSection(0, title, nil, nil)
+	if err != nil {
+		return nil, err
 	}
 	if _, ok := authors.([]DocumentAuthor); ok {
 		section.Attributes[AttrAuthors] = authors
@@ -552,9 +450,9 @@ func NewSection0WithMetadata(title SectionTitle, authors interface{}, revision i
 }
 
 // AddAttributes adds all given attributes to the current set of attribute of the element
-func (s Section) AddAttributes(attributes ElementAttributes) {
-	log.Debugf("adding attributes to section: %v", attributes)
-	s.Title.AddAttributes(attributes)
+func (s *Section) AddAttributes(attributes ElementAttributes) {
+	// log.Debugf("adding attributes to section: %v", attributes)
+	s.Attributes.AddAll(attributes)
 }
 
 // GetElements returns the elements
@@ -563,7 +461,7 @@ func (s *Section) GetElements() []interface{} {
 }
 
 // AcceptVisitor implements Visitable#AcceptVisitor(Visitor)
-func (s Section) AcceptVisitor(v Visitor) error {
+func (s *Section) AcceptVisitor(v Visitor) error {
 	err := v.Visit(s)
 	if err != nil {
 		return errors.Wrapf(err, "error while visiting section")
@@ -586,7 +484,7 @@ func (s Section) AcceptVisitor(v Visitor) error {
 
 // AcceptSubstitutor implements Substituable#AcceptSubstitutor(Substitutor)
 // in a section, the substitutor only cares about the elements for now.
-func (s Section) AcceptSubstitutor(v Substitutor) (interface{}, error) {
+func (s *Section) AcceptSubstitutor(v Substitutor) (interface{}, error) {
 	substitute := Section{
 		Level: s.Level,
 		Title: s.Title,
@@ -648,7 +546,7 @@ func NewSectionTitle(elements InlineElements, ids []interface{}) (SectionTitle, 
 }
 
 // AddAttributes adds all given attributes to the current set of attribute of the element
-func (st SectionTitle) AddAttributes(attributes ElementAttributes) {
+func (st *SectionTitle) AddAttributes(attributes ElementAttributes) {
 	st.Attributes.AddAll(attributes)
 	// look for custom ID
 	for attr := range attributes {
@@ -660,7 +558,7 @@ func (st SectionTitle) AddAttributes(attributes ElementAttributes) {
 }
 
 // AcceptVisitor implements Visitable#AcceptVisitor(Visitor)
-func (st SectionTitle) AcceptVisitor(v Visitor) error {
+func (st *SectionTitle) AcceptVisitor(v Visitor) error {
 	err := v.Visit(st)
 	if err != nil {
 		return errors.Wrapf(err, "error while visiting section")
@@ -683,166 +581,42 @@ func (st SectionTitle) AcceptVisitor(v Visitor) error {
 
 // List a list
 type List interface {
-	processContinuations(ancestors []ListItem) List
+	LastItem() ListItem
 }
 
 // ListItem a list item
 type ListItem interface {
 	GetElements() []interface{}
 	AddElement(interface{})
-	processContinuations([]ListItem) ListItem
+	GetAttributes() ElementAttributes
 }
 
-// NewList initializes a new `List` from the given content
-func NewList(items []interface{}) (List, error) {
-	log.Debugf("initializing a new List with %d items(s)", len(items))
-	builder := newListBuilder()
-	for _, item := range items {
-		listItem, ok := toPtr(item).(ListItem)
-		if !ok {
-			return nil, errors.Errorf("item of type '%T' is not a valid list item", item)
-		}
-		err := builder.process(listItem)
-		if err != nil {
-			return nil, errors.Wrap(err, "failed to initialize a list")
-		}
-	}
-	// finally, process the first level of the builder's stack
-	return builder.build()
-}
-
-type listBuilder struct {
-	stacks        [][]ListItem
-	previousDepth int
-}
-
-func newListBuilder() *listBuilder {
-	return &listBuilder{
-		stacks:        make([][]ListItem, 0),
-		previousDepth: 0,
-	}
-}
-
-// process:
-// - checks if the given item's type is already known and at which level it is in the list
-// - stores the item in its stack, at the detemined level
-func (builder *listBuilder) process(item ListItem) error {
-	log.Debugf("processing item of type %T", item)
-	depth := builder.depth(item)
-	// if moving up in the tree, then a new list needs to be build
-	if depth < builder.previousDepth {
-		log.Debugf("moving up in the stack, need to build %d list(s)", (builder.previousDepth - depth))
-		for i := builder.previousDepth; i > depth; i-- {
-			subitems := builder.stacks[i]
-			sublist, err := newList(subitems)
-			if err != nil {
-				return errors.Wrap(err, "failed to initialize a new sublist")
-			}
-			// attach the new sublist to the last item of the parent level
-			parentItem, err := builder.parentItem(i)
-			if err != nil {
-				return errors.Wrap(err, "failed to attach a new sublist to its parent item")
-			}
-			parentItem.AddElement(sublist)
-			// clear the stack (ie, remove the last level)
-			builder.stacks = builder.stacks[:len(builder.stacks)-1]
-		}
-	}
-	builder.previousDepth = depth
-	items := builder.stacks[depth]
-	items = append(items, item)
-	builder.stacks[depth] = items // 'items' was changed, needs to be put in the stack again
-	return nil
-}
-
-// ends: builds a new list of each layer in the stack, starting by the end, and attach to the parent item
-func (builder *listBuilder) build() (List, error) {
-	for i := len(builder.stacks) - 1; i > 0; i-- {
-		// if len(builder.stacks[i]) == 0 {
-		// 	// ignore empty layer
-		// 	continue
-		// }
-		sublist, err := newList(builder.stacks[i])
-		if err != nil {
-			return nil, errors.Wrapf(err, "failed to initialize a new list")
-		}
-		// look-up parent layer at the previous (ie, upper) level in the stack
-		parentItems := builder.stacks[i-1]
-		// look-up parent in the layer
-		parentItem := parentItems[len(parentItems)-1]
-		// build a new list from the remaining items at the current level of the stack
-		// log.Debugf("building a new list from the remaining items of type '%T' and parent of type '%T' at the current level of the stack", buffer[stacks[i]][0], parentItem)
-		// add this list to the parent
-		parentItem.AddElement(sublist)
-	}
-	// finish with to "root" list
-	result, err := newList(builder.stacks[0])
-	if err != nil {
-		return nil, errors.Wrapf(err, "failed to initialize a new list")
-	}
-	return result.processContinuations([]ListItem{}), nil
-}
-
-// depth finds at which depth of the stack the given item belongs, based on its type
-func (builder *listBuilder) depth(item ListItem) int {
-	itemType := reflect.TypeOf(item)
-	log.Debugf("checking depth of item of type %T in a stack of size: %d", item, len(builder.stacks))
-	for idx, items := range builder.stacks {
-		// if layer of the stack is empty ior if first item has the same type
-		if len(items) == 0 || reflect.TypeOf(items[0]) == itemType {
-			log.Debugf("found matching layer in the stack for item of type %T: %d", item, idx)
-			return idx
-		}
-	}
-	// if there's no match, then add a new depth in the stack for this
-	// type of item
-	log.Debugf("adding a new layer in the stack for item of type %T", item)
-	items := make([]ListItem, 0)
-	builder.stacks = append(builder.stacks, items)
-	return len(builder.stacks) - 1
-}
-
-func (builder *listBuilder) parentItem(childDepth int) (ListItem, error) {
-	if childDepth == 0 {
-		return nil, errors.New("unable to lookup parent for a root item (depth=0)")
-	}
-	parentItems := builder.stacks[childDepth-1]
-	if len(parentItems) == 0 {
-		return nil, errors.New("unable to lookup parent (none found at this level)")
-	}
-	return parentItems[len(parentItems)-1], nil
-}
-
-func newList(items []ListItem) (List, error) {
-	// log.Debugf("initializing a new list with %d items", len(items))
-	if len(items) == 0 {
-		return nil, errors.Errorf("cannot build a list from an empty slice")
-	}
-	switch items[0].(type) {
-	case *OrderedListItem:
-		return newOrderedList(items)
-	case *UnorderedListItem:
-		return newUnorderedList(items)
-	case *LabeledListItem:
-		return newLabeledList(items)
-	default:
-		return nil, errors.Errorf("unsupported type of element as the root list: '%T'", items[0])
-	}
-}
-
-// ContinuedListElement a wrapper for an element which should be attached to a list item (same level or an ancestor)
-type ContinuedListElement struct {
+// ContinuedListItemElement a wrapper for an element which should be attached to a list item (same level or an ancestor)
+type ContinuedListItemElement struct {
 	Offset  int // the relative ancestor. Should be a negative number
 	Element interface{}
 }
 
-// NewContinuedListElement returns a wrapper for an element which should be attached to a list item (same level or an ancestor)
-func NewContinuedListElement(offset int, element interface{}) (ContinuedListElement, error) {
-	log.Debugf("imitializing a new continued list element for element of type %T", element)
-	return ContinuedListElement{
+// NewContinuedListItemElement returns a wrapper for an element which should be attached to a list item (same level or an ancestor)
+func NewContinuedListItemElement(offset int, element interface{}) (*ContinuedListItemElement, error) {
+	// log.Debugf("initializing a new continued list element for element of type %T", element)
+	return &ContinuedListItemElement{
 		Offset:  offset,
 		Element: element,
 	}, nil
+}
+
+// ------------------------------------------
+// List Item Continuation
+// ------------------------------------------
+
+// ListItemContinuation the special "+" character to specify that an element belongs to a list item
+type ListItemContinuation struct {
+}
+
+// NewListItemContinuation returns a new ListItemContinuation
+func NewListItemContinuation() (*ListItemContinuation, error) {
+	return &ListItemContinuation{}, nil
 }
 
 // ------------------------------------------
@@ -852,10 +626,10 @@ func NewContinuedListElement(offset int, element interface{}) (ContinuedListElem
 // OrderedList the structure for the Ordered Lists
 type OrderedList struct {
 	Attributes ElementAttributes
-	Items      []OrderedListItem
+	Items      []*OrderedListItem
 }
 
-var _ List = OrderedList{}
+var _ List = &OrderedList{}
 
 // NumberingStyle the type of numbering for items in an ordered list
 type NumberingStyle string
@@ -881,126 +655,61 @@ const (
 	UpperGreek NumberingStyle = "uppergreek"
 )
 
-var numberingStyles []NumberingStyle
+// DefaultNumberingStyles the default numbering styles of ordered list items, based on their level
+var DefaultNumberingStyles map[int]NumberingStyle
 
 func init() {
-	numberingStyles = []NumberingStyle{Arabic, Decimal, LowerAlpha, UpperAlpha, LowerRoman, UpperRoman, LowerGreek, UpperGreek}
+	DefaultNumberingStyles = map[int]NumberingStyle{
+		1: Arabic,
+		2: LowerAlpha,
+		3: LowerRoman,
+		4: UpperAlpha,
+		5: UpperRoman,
+	}
 }
 
-// newOrderedList initializes a new `OrderedList` from the given content
-func newOrderedList(elements []ListItem) (OrderedList, error) {
-	log.Debugf("initializing a new ordered list from %d element(s)...", len(elements))
-	result := make([]OrderedListItem, 0)
-	bufferedItemsPerLevel := make(map[int][]*OrderedListItem) // buffered items for the current level
-	levelPerStyle := make(map[NumberingStyle]int)
-	previousLevel := 0
-	previousNumberingStyle := UnknownNumberingStyle
-	for _, element := range elements {
-		item, ok := element.(*OrderedListItem)
-		if !ok {
-			return OrderedList{}, errors.Errorf("element of type '%T' is not a valid orderedlist item", element)
-		}
-		if item.Level > previousLevel {
-			// force the current item level to (last seen level + 1)
-			item.Level = previousLevel + 1
-			// log.Debugf("setting item level to %d (#1 - new level)", item.Level)
-			levelPerStyle[item.NumberingStyle] = item.Level
-		} else if item.NumberingStyle != previousNumberingStyle {
-			// check if this numbering type was already found previously
-			if level, found := levelPerStyle[item.NumberingStyle]; found {
-				item.Level = level // 0-based level in the bufferedItemsPerLevel
-				// log.Debugf("setting item level to %d / %v (#2 - existing style)", item.Level, item.NumberingStyle)
-			} else {
-				item.Level = previousLevel + 1
-				// log.Debugf("setting item level to %d (#3 - new level for numbering style %v)", item.Level, item.NumberingStyle)
-				levelPerStyle[item.NumberingStyle] = item.Level
-			}
-		} else if item.NumberingStyle == previousNumberingStyle {
-			item.Level = previousLevel
-			// log.Debugf("setting item level to %d (#4 - same as previous item)", item.Level)
-		}
-		// log.Debugf("list item %v -> level= %d", item.Elements[0], item.Level)
-		// join item *values* in the parent item when the level decreased
-		if item.Level < previousLevel {
-			for i := previousLevel; i > item.Level; i-- {
-				parentLayer := bufferedItemsPerLevel[i-2]
-				parentItem := parentLayer[len(parentLayer)-1]
-				log.Debugf("moving buffered items at level %d (%v) in parent (%v) ", i, bufferedItemsPerLevel[i-1][0].NumberingStyle, parentItem.NumberingStyle)
-				childList, err := toOrderedList(bufferedItemsPerLevel[i-1])
-				if err != nil {
-					return OrderedList{}, err
-				}
-				parentItem.Elements = append(parentItem.Elements, childList)
-				// clear the previously buffered items at level 'previousLevel'
-				delete(bufferedItemsPerLevel, i-1)
-			}
-		}
-		// new level of element: put it in the buffer
-		if item.Level > len(bufferedItemsPerLevel) {
-			// log.Debugf("initializing a new level of list items: %d", item.Level)
-			bufferedItemsPerLevel[item.Level-1] = make([]*OrderedListItem, 0)
-		}
-		// append item to buffer of its level
-		log.Debugf("adding list item %v in the current buffer at level %d", item.Elements[0], item.Level)
-		bufferedItemsPerLevel[item.Level-1] = append(bufferedItemsPerLevel[item.Level-1], item)
-		previousLevel = item.Level
-		previousNumberingStyle = item.NumberingStyle
+// NewOrderedList initializes a new ordered list with the given item
+func NewOrderedList(item *OrderedListItem) *OrderedList {
+	list := &OrderedList{
+		Attributes: rearrangeListAttributes(item.Attributes), // move the item's attributes to the list level
+		Items: []*OrderedListItem{
+			item,
+		},
 	}
-	log.Debugf("processing the rest of the buffer...")
-	// clear the remaining buffer and get the result in the reverse order of levels
-	for level := len(bufferedItemsPerLevel) - 1; level >= 0; level-- {
-		items := bufferedItemsPerLevel[level]
-		// top-level items
-		if level == 0 {
-			for idx, item := range items {
-				// set the position
-				// log.Debugf("setting item #%d position to %d+%d", (idx + 1), items[0].Position, idx)
-				item.Position = items[0].Position + idx
-				result = append(result, *item)
-			}
-		} else {
-			childList, err := toOrderedList(items)
-			if err != nil {
-				return OrderedList{}, err
-			}
-			parentLayer := bufferedItemsPerLevel[level-1]
-			parentItem := parentLayer[len(parentLayer)-1]
-			parentItem.Elements = append(parentItem.Elements, childList)
-		}
-	}
-
-	return OrderedList{
-		Attributes: ElementAttributes{},
-		Items:      result,
-	}, nil
+	item.Attributes = ElementAttributes{}
+	return list
 }
 
-func toOrderedList(items []*OrderedListItem) (OrderedList, error) {
-	result := OrderedList{
-		Attributes: ElementAttributes{}, // avoid nil `attributes`
+// moves the "upperroman", etc. attributes as values of the `AttrNumberingStyle` key
+func rearrangeListAttributes(attributes ElementAttributes) ElementAttributes {
+	for k := range attributes {
+		switch k {
+		case "upperalpha":
+			attributes[AttrNumberingStyle] = "upperalpha"
+			delete(attributes, k)
+		case "upperroman":
+			attributes[AttrNumberingStyle] = "upperroman"
+			delete(attributes, k)
+		case "lowerroman":
+			attributes[AttrNumberingStyle] = "lowerroman"
+			delete(attributes, k)
+		case "loweralpha":
+			attributes[AttrNumberingStyle] = "loweralpha"
+			delete(attributes, k)
+		case "arabic":
+			attributes[AttrNumberingStyle] = "arabic"
+			delete(attributes, k)
+		}
+
 	}
-	// set the position and numbering style based on the optional attributes of the first item
-	if len(items) == 0 {
-		return result, nil
-	}
-	err := items[0].applyAttributes()
-	if err != nil {
-		return result, errors.Wrapf(err, "failed to convert items into an ordered list")
-	}
-	for idx, item := range items {
-		// log.Debugf("setting item #%d position to %d+%d", (idx + 1), bufferedItemsPerLevel[previousLevel-1][0].Position, idx)
-		item.Position = items[0].Position + idx
-		item.NumberingStyle = items[0].NumberingStyle
-		result.Items = append(result.Items, *item)
-	}
-	return result, nil
+	return attributes
 }
 
-// AddAttributes adds all given attributes to the current set of attribute of the element
-func (l OrderedList) AddAttributes(attributes ElementAttributes) {
-	l.Attributes.AddAll(attributes)
-	// override the numbering style if applicable
-	for attr := range attributes {
+// UpdateNumberingStyle updates the numbering style for all items
+// This function should only be called when the list is complete.
+func (l *OrderedList) UpdateNumberingStyle() {
+	// override the numbering style on all items at once, if applicable
+	for attr := range l.Attributes {
 		switch attr {
 		case string(Arabic):
 			setNumberingStyle(l.Items, Arabic)
@@ -1022,24 +731,30 @@ func (l OrderedList) AddAttributes(attributes ElementAttributes) {
 	}
 }
 
-func setNumberingStyle(items []OrderedListItem, n NumberingStyle) {
-	log.Debugf("setting numbering style to %v on %d items", n, len(items))
-	for i, item := range items {
-		item.NumberingStyle = n
-		items[i] = item // copy back in the list since this is not a list of pointers :/
-	}
+// AddAttributes adds all given attributes to the current set of attribute of the element
+func (l *OrderedList) AddAttributes(attributes ElementAttributes) {
+	l.Attributes.AddAll(attributes)
 }
 
-func (l OrderedList) processContinuations(ancestors []ListItem) List {
-	log.Debugf("processing continuations on OrderedList with %d item(s)", len(l.Items))
-	items := make([]OrderedListItem, len(l.Items))
-	for i, item := range l.Items {
-		pi := item.processContinuations(ancestors).(*OrderedListItem)
-		items[i] = *pi
-	}
-	return OrderedList{
-		Attributes: l.Attributes,
-		Items:      items,
+// AddItem adds the given item
+func (l *OrderedList) AddItem(item *OrderedListItem) {
+	l.Items = append(l.Items, item)
+}
+
+// FirstItem returns the first item in this list
+func (l *OrderedList) FirstItem() ListItem {
+	return l.Items[0]
+}
+
+// LastItem returns the last item in this list
+func (l *OrderedList) LastItem() ListItem {
+	return l.Items[len(l.Items)-1]
+}
+
+func setNumberingStyle(items []*OrderedListItem, n NumberingStyle) {
+	log.Debugf("setting numbering style to %v on %d items", n, len(items))
+	for _, item := range items {
+		item.NumberingStyle = n
 	}
 }
 
@@ -1047,13 +762,18 @@ func (l OrderedList) processContinuations(ancestors []ListItem) List {
 type OrderedListItem struct {
 	Attributes     ElementAttributes
 	Level          int
-	Position       int
+	Position       int // TODO is it useful?
 	NumberingStyle NumberingStyle
 	Elements       []interface{}
 }
 
+// GetAttributes returns the elements of this UnorderedListItem
+func (i *OrderedListItem) GetAttributes() ElementAttributes {
+	return i.Attributes
+}
+
 // GetElements returns the elements of this OrderedListItem
-func (i OrderedListItem) GetElements() []interface{} {
+func (i *OrderedListItem) GetElements() []interface{} {
 	return i.Elements
 }
 
@@ -1071,82 +791,20 @@ func (i *OrderedListItem) AddAttributes(attributes ElementAttributes) {
 var _ ListItem = &OrderedListItem{}
 
 // NewOrderedListItem initializes a new `orderedListItem` from the given content
-func NewOrderedListItem(prefix OrderedListItemPrefix, elements []interface{}) (OrderedListItem, error) {
+func NewOrderedListItem(prefix OrderedListItemPrefix, elements []interface{}, attributes interface{}) (*OrderedListItem, error) {
 	log.Debugf("initializing a new OrderedListItem")
+	attrs := ElementAttributes{}
+	if attributes, ok := attributes.(ElementAttributes); ok {
+		attrs.AddAll(attributes)
+	}
 	p := 1 // default position
-	return OrderedListItem{
-		Attributes:     ElementAttributes{},
+	return &OrderedListItem{
+		Attributes:     attrs,
 		NumberingStyle: prefix.NumberingStyle,
 		Level:          prefix.Level,
 		Position:       p,
 		Elements:       elements,
 	}, nil
-}
-
-func (i *OrderedListItem) applyAttributes() error {
-	log.Debugf("applying attributes on %[1]v: %[2]v (%[2]T)", i.Elements[0], i.Attributes)
-	// numbering type override
-	for _, style := range numberingStyles {
-		if _, ok := i.Attributes[string(style)]; ok {
-			i.NumberingStyle = style
-			break
-		}
-	}
-	// numbering offset
-	if start, ok := i.Attributes["start"]; ok {
-		if start, ok := start.(string); ok {
-			s, err := strconv.ParseInt(start, 10, 64)
-			if err != nil {
-				return errors.Wrapf(err, "unable to parse 'start' value %v", start)
-			}
-			i.Position = int(s)
-		}
-	}
-	log.Debugf("applied attributes on %v: position=%d, numbering=%v", i.Elements[0], i.Position, i.NumberingStyle)
-	return nil
-}
-
-func (i *OrderedListItem) processContinuations(ancestors []ListItem) ListItem {
-	return &OrderedListItem{
-		Attributes:     i.Attributes,
-		Level:          i.Level,
-		Position:       i.Position,
-		NumberingStyle: i.NumberingStyle,
-		Elements:       processContinuations(ancestors, i),
-	}
-}
-
-func processContinuations(ancestors []ListItem, i ListItem) []interface{} {
-	log.Debugf("processing continuations on item of type '%T' with %d elements - hierarchy: %d ancestor(s)", i, len(i.GetElements()), len(ancestors))
-	elements := []interface{}{}
-	log.Debugf("starting to process %d elements of %T", len(i.GetElements()), i)
-	s := len(i.GetElements())
-	for _, element := range i.GetElements() {
-		switch e := element.(type) {
-		case List:
-			// replace the list with a new list whose continued elements have been processed
-			elements = append(elements, e.processContinuations(append(ancestors, i)))
-		case ContinuedListElement:
-			// move the element wrapped in the `ContinuedListElement` to the target ancestor
-			idx := len(ancestors) + e.Offset
-			if idx < 0 {
-				idx = 0
-			}
-			// if no ancestor is available at all or no sibling at the expected level, then just add the wrapped element
-			if len(ancestors) == 0 || len(ancestors) <= idx {
-				elements = append(elements, e.Element)
-				continue
-			}
-			log.WithField("ancestor_offset", e.Offset).WithField("ancestor_index", idx).WithField("ancestors_count", len(ancestors)).Debugf("moving element of type '%T' to last item of ancestor level", e.Element)
-			ancestorItem := ancestors[idx]
-			ancestorItem.AddElement(e.Element) // but we need to add the wrapped element to the copy of the ancestor
-		default:
-			// any other kind of element is kept
-			elements = append(elements, element)
-		}
-	}
-	// add all elements that were appended to this item's elements while continuation in sublists were processed
-	return append(elements, i.GetElements()[s:]...)
 }
 
 // OrderedListItemPrefix the prefix used to construct an OrderedListItem
@@ -1170,120 +828,37 @@ func NewOrderedListItemPrefix(s NumberingStyle, l int) (OrderedListItemPrefix, e
 // UnorderedList the structure for the Unordered Lists
 type UnorderedList struct {
 	Attributes ElementAttributes
-	Items      []UnorderedListItem
+	Items      []*UnorderedListItem
 }
 
-var _ List = UnorderedList{}
+var _ List = &UnorderedList{}
 
-// newUnorderedList initializes a new `UnorderedList` from the given content
-func newUnorderedList(elements []ListItem) (UnorderedList, error) {
-	log.Debugf("initializing a new unordered list from %d element(s)...", len(elements))
-	result := make([]UnorderedListItem, 0)
-	bufferedItemsPerLevel := make(map[int][]*UnorderedListItem) // buffered items for the current level
-	levelPerStyle := make(map[BulletStyle]int)
-	previousLevel := 0
-	previousBulletStyle := UnknownBulletStyle
-	for _, element := range elements {
-		item, ok := element.(*UnorderedListItem)
-		if !ok {
-			return UnorderedList{}, errors.Errorf("element of type '%T' is not a valid unordered list item", element)
-		}
-		if item.Level > previousLevel {
-			// force the current item level to (last seen level + 1)
-			item.adjustBulletStyle(previousBulletStyle)
-			item.Level = previousLevel + 1
-			levelPerStyle[item.BulletStyle] = item.Level
-		} else if item.BulletStyle != previousBulletStyle {
-			if level, found := levelPerStyle[item.BulletStyle]; found {
-				item.Level = level
-			} else {
-				item.Level = previousLevel + 1
-				levelPerStyle[item.BulletStyle] = item.Level
-			}
-		} else if item.BulletStyle == previousBulletStyle {
-			// adjust level on previous item of same style (in case the level
-			// of the latter has been adjusted before)
-			item.Level = previousLevel
-		}
-		log.Debugf("processing list item of level %d: %v", item.Level, item.Elements[0])
-		// join item *values* in the parent item when the level decreased
-		if item.Level < previousLevel {
-			// merge previous levels in parents.
-			// eg: when reaching `list item 2`, the level 3 items must be merged into the level 2 item, which must
-			// be itself merged in the level 1 item:
-			// * list item 1
-			// ** nested list item
-			// *** nested nested list item 1
-			// *** nested nested list item 2
-			// * list item 2
-			for l := previousLevel; l > item.Level; l-- {
-				log.Debugf("merging previously buffered items at level '%d' in parent", l)
-				parentLayer := bufferedItemsPerLevel[l-2]
-				parentItem := parentLayer[len(parentLayer)-1]
-				childList := UnorderedList{
-					Attributes: ElementAttributes{}, // avoid nil `attributes`
-				}
-				for _, i := range bufferedItemsPerLevel[l-1] {
-					childList.Items = append(childList.Items, *i)
-				}
-				parentItem.Elements = append(parentItem.Elements, childList)
-				// clear the previously buffered items at level 'previousLevel'
-				delete(bufferedItemsPerLevel, l-1)
-			}
-		}
-		// new level of element: put it in the buffer
-		if item.Level > len(bufferedItemsPerLevel) {
-			log.Debugf("initializing a new level of list items: %d", item.Level)
-			bufferedItemsPerLevel[item.Level-1] = make([]*UnorderedListItem, 0)
-		}
-		// append item to buffer of its level
-		log.Debugf("adding list item %v in the current buffer", item.Elements[0])
-		bufferedItemsPerLevel[item.Level-1] = append(bufferedItemsPerLevel[item.Level-1], item)
-		previousLevel = item.Level
-		previousBulletStyle = item.BulletStyle
+// NewUnorderedList returns a new UnorderedList with 1 item
+// The attributes of the given item are moved to the resulting list
+func NewUnorderedList(item *UnorderedListItem) *UnorderedList {
+	result := &UnorderedList{
+		Attributes: rearrangeListAttributes(item.Attributes), // move the item's attributes to the list level
+		Items: []*UnorderedListItem{
+			item,
+		},
 	}
-	log.Debugf("processing the rest of the buffer: %v", bufferedItemsPerLevel)
-	// clear the remaining buffer and get the result in the reverse order of levels
-	for level := len(bufferedItemsPerLevel) - 1; level >= 0; level-- {
-		items := bufferedItemsPerLevel[level]
-		// top-level items
-		if level == 0 {
-			for _, item := range items {
-				result = append(result, *item)
-			}
-		} else {
-			childList := UnorderedList{
-				Attributes: ElementAttributes{}, // avoid nil `attributes`
-			}
-			for _, item := range items {
-				childList.Items = append(childList.Items, *item)
-			}
-			parentLayer := bufferedItemsPerLevel[level-1]
-			parentItem := parentLayer[len(parentLayer)-1]
-			parentItem.Elements = append(parentItem.Elements, childList)
-		}
-	}
-	return UnorderedList{
-		Attributes: ElementAttributes{},
-		Items:      result,
-	}, nil
+	item.Attributes = ElementAttributes{}
+	return result
 }
 
 // AddAttributes adds all given attributes to the current set of attribute of the element
-func (l UnorderedList) AddAttributes(attributes ElementAttributes) {
+func (l *UnorderedList) AddAttributes(attributes ElementAttributes) {
 	l.Attributes.AddAll(attributes)
 }
 
-func (l UnorderedList) processContinuations(ancestors []ListItem) List {
-	items := make([]UnorderedListItem, len(l.Items))
-	for i, item := range l.Items {
-		pi := item.processContinuations(ancestors).(*UnorderedListItem)
-		items[i] = *pi
-	}
-	return UnorderedList{
-		Attributes: l.Attributes,
-		Items:      items,
-	}
+// AddItem adds the given item
+func (l *UnorderedList) AddItem(item *UnorderedListItem) {
+	l.Items = append(l.Items, item)
+}
+
+// LastItem returns the last item in this list
+func (l *UnorderedList) LastItem() ListItem {
+	return l.Items[len(l.Items)-1]
 }
 
 // UnorderedListItem the structure for the unordered list items
@@ -1296,9 +871,13 @@ type UnorderedListItem struct {
 }
 
 // NewUnorderedListItem initializes a new `UnorderedListItem` from the given content
-func NewUnorderedListItem(prefix UnorderedListItemPrefix, checkstyle interface{}, elements []interface{}) (UnorderedListItem, error) {
+func NewUnorderedListItem(prefix UnorderedListItemPrefix, checkstyle interface{}, elements []interface{}, attributes interface{}) (*UnorderedListItem, error) {
 	log.Debugf("initializing a new UnorderedListItem with %d elements", len(elements))
 	// log.Debugf("initializing a new UnorderedListItem with '%d' lines (%T) and input level '%d'", len(elements), elements, lvl.Len())
+	attrs := ElementAttributes{}
+	if attributes, ok := attributes.(ElementAttributes); ok {
+		attrs.AddAll(attributes)
+	}
 	cs := toCheckStyle(checkstyle)
 	if cs != NoCheck && len(elements) > 0 {
 		if e, ok := elements[0].(ElementWithAttributes); ok {
@@ -1307,17 +886,22 @@ func NewUnorderedListItem(prefix UnorderedListItemPrefix, checkstyle interface{}
 			})
 		}
 	}
-	return UnorderedListItem{
+	return &UnorderedListItem{
 		Level:       prefix.Level,
-		Attributes:  ElementAttributes{},
+		Attributes:  attrs,
 		BulletStyle: prefix.BulletStyle,
 		CheckStyle:  cs,
 		Elements:    elements,
 	}, nil
 }
 
+// GetAttributes returns the elements of this UnorderedListItem
+func (i *UnorderedListItem) GetAttributes() ElementAttributes {
+	return i.Attributes
+}
+
 // GetElements returns the elements of this UnorderedListItem
-func (i UnorderedListItem) GetElements() []interface{} {
+func (i *UnorderedListItem) GetElements() []interface{} {
 	return i.Elements
 }
 
@@ -1329,16 +913,6 @@ func (i *UnorderedListItem) AddElement(element interface{}) {
 // AddAttributes adds all given attributes to the current set of attribute of the element
 func (i *UnorderedListItem) AddAttributes(attributes ElementAttributes) {
 	i.Attributes.AddAll(attributes)
-}
-
-func (i *UnorderedListItem) processContinuations(ancestors []ListItem) ListItem {
-	return &UnorderedListItem{
-		Attributes:  i.Attributes,
-		Level:       i.Level,
-		BulletStyle: i.BulletStyle,
-		CheckStyle:  i.CheckStyle,
-		Elements:    processContinuations(ancestors, i),
-	}
 }
 
 // UnorderedListItemCheckStyle the check style that applies on an unordered list item
@@ -1360,9 +934,9 @@ func toCheckStyle(checkstyle interface{}) UnorderedListItemCheckStyle {
 	return NoCheck
 }
 
-// adjustBulletStyle
-func (i *UnorderedListItem) adjustBulletStyle(p BulletStyle) {
-	n := i.BulletStyle.nextLevelStyle(p)
+// AdjustBulletStyle adjusts the BulletStyle value of this item
+func (i *UnorderedListItem) AdjustBulletStyle(p BulletStyle) {
+	n := i.BulletStyle.NextLevel(p)
 	log.Debugf("adjusting bullet style for item with level '%v' to '%v' (previously processed/parent level: '%v')", i.BulletStyle, p, n)
 	i.BulletStyle = n
 }
@@ -1387,15 +961,14 @@ const (
 	FiveAsterisks BulletStyle = "5asterisks"
 )
 
-// nextLevelStyle returns the BulletStyle for the next level:
+// NextLevel returns the BulletStyle for the next level:
 // `-` -> `*`
 // `*` -> `**`
 // `**` -> `***`
 // `***` -> `****`
 // `****` -> `*****`
 // `*****` -> `-`
-
-func (b BulletStyle) nextLevelStyle(p BulletStyle) BulletStyle {
+func (b BulletStyle) NextLevel(p BulletStyle) BulletStyle {
 	switch p {
 	case Dash:
 		return OneAsterisk
@@ -1465,95 +1038,37 @@ func NewListItemContent(content []interface{}) ([]interface{}, error) {
 // LabeledList the structure for the Labeled Lists
 type LabeledList struct {
 	Attributes ElementAttributes
-	Items      []LabeledListItem
+	Items      []*LabeledListItem
 }
 
-var _ List = LabeledList{}
+var _ List = &LabeledList{}
 
-// newLabeledList initializes a new `LabeledList` from the given content
-func newLabeledList(elements []ListItem) (LabeledList, error) {
-	log.Debugf("initializing a new labeled list from %d element(s)...", len(elements))
-	result := make([]LabeledListItem, 0)
-	bufferedItemsPerLevel := make(map[int][]*LabeledListItem) // buffered items for the current level
-	previousLevel := 0
-	for _, element := range elements {
-		item, ok := element.(*LabeledListItem)
-		if !ok {
-			return LabeledList{}, errors.Errorf("element of type '%T' is not a valid labeled list item", element)
-		}
-		if item.Level > previousLevel {
-			// force the current item level to (last seen level + 1)
-			item.Level = previousLevel + 1
-		}
-		log.Debugf("list item %v -> level= %d", item.Elements, item.Level)
-		// join item *values* in the parent item when the level decreased
-		for l := previousLevel; l > item.Level; l-- {
-			log.Debugf("merging previously buffered items at level '%d' in parent", l)
-			parentLayer := bufferedItemsPerLevel[l-2]
-			parentItem := parentLayer[len(parentLayer)-1]
-			childList := LabeledList{
-				Attributes: ElementAttributes{}, // avoid nil `attributes`
-			}
-			for _, i := range bufferedItemsPerLevel[l-1] {
-				childList.Items = append(childList.Items, *i)
-			}
-			parentItem.Elements = append(parentItem.Elements, childList)
-			// clear the previously buffered items at level 'previousLevel'
-			delete(bufferedItemsPerLevel, l-1)
-		}
-		// new level of element: put it in the buffer
-		if item.Level > len(bufferedItemsPerLevel) {
-			log.Debugf("initializing a new level of list items: %d", item.Level)
-			bufferedItemsPerLevel[item.Level-1] = make([]*LabeledListItem, 0)
-		}
-		// append item to buffer of its level
-		log.Debugf("adding list item %v in the current buffer at level %d", item, item.Level)
-		bufferedItemsPerLevel[item.Level-1] = append(bufferedItemsPerLevel[item.Level-1], item)
-		previousLevel = item.Level
+// NewLabeledList returns a new LabeledList with 1 item
+// The attributes of the given item are moved to the resulting list
+func NewLabeledList(item *LabeledListItem) *LabeledList {
+	result := &LabeledList{
+		Attributes: rearrangeListAttributes(item.Attributes), // move the item's attributes to the list level
+		Items: []*LabeledListItem{
+			item,
+		},
 	}
-	log.Debugf("processing the rest of the buffer: %v", bufferedItemsPerLevel)
-	// clear the remaining buffer and get the result in the reverse order of levels
-	for level := len(bufferedItemsPerLevel) - 1; level >= 0; level-- {
-		items := bufferedItemsPerLevel[level]
-		// top-level items
-		if level == 0 {
-			for _, item := range items {
-				result = append(result, *item)
-			}
-		} else {
-			childList := LabeledList{
-				Attributes: ElementAttributes{}, // avoid nil `attributes`
-			}
-			for _, item := range items {
-				childList.Items = append(childList.Items, *item)
-			}
-			parentLayer := bufferedItemsPerLevel[level-1]
-			parentItem := parentLayer[len(parentLayer)-1]
-			parentItem.Elements = append(parentItem.Elements, childList)
-		}
-	}
-	return LabeledList{
-		Attributes: ElementAttributes{},
-		Items:      result,
-	}, nil
+	item.Attributes = ElementAttributes{}
+	return result
 }
 
 // AddAttributes adds all given attributes to the current set of attribute of the element
-func (l LabeledList) AddAttributes(attributes ElementAttributes) {
+func (l *LabeledList) AddAttributes(attributes ElementAttributes) {
 	l.Attributes.AddAll(attributes)
 }
 
-func (l LabeledList) processContinuations(ancestors []ListItem) List {
-	log.Debugf("processing continuations on LabeledList with %d item(s)", len(l.Items))
-	items := make([]LabeledListItem, len(l.Items))
-	for i, item := range l.Items {
-		pi := item.processContinuations(ancestors).(*LabeledListItem)
-		items[i] = *pi
-	}
-	return LabeledList{
-		Attributes: l.Attributes,
-		Items:      items,
-	}
+// AddItem adds the given item
+func (l *LabeledList) AddItem(item *LabeledListItem) {
+	l.Items = append(l.Items, item)
+}
+
+// LastItem returns the last item in this list
+func (l *LabeledList) LastItem() ListItem {
+	return l.Items[len(l.Items)-1]
 }
 
 // LabeledListItem an item in a labeled
@@ -1568,18 +1083,33 @@ type LabeledListItem struct {
 var _ ListItem = &LabeledListItem{}
 
 // NewLabeledListItem initializes a new LabeledListItem
-func NewLabeledListItem(level int, term string, elements []interface{}) (LabeledListItem, error) {
+func NewLabeledListItem(level int, term string, description interface{}, attributes interface{}) (*LabeledListItem, error) {
 	log.Debugf("initializing a new LabeledListItem")
-	return LabeledListItem{
+	attrs := ElementAttributes{}
+	if attributes, ok := attributes.(ElementAttributes); ok {
+		attrs.AddAll(attributes)
+	}
+	var elements []interface{}
+	if description, ok := description.([]interface{}); ok {
+		elements = description
+	} else {
+		elements = []interface{}{}
+	}
+	return &LabeledListItem{
+		Attributes: attrs,
 		Term:       strings.TrimSpace(term),
 		Level:      level,
-		Attributes: ElementAttributes{},
 		Elements:   elements,
 	}, nil
 }
 
+// GetAttributes returns the elements of this UnorderedListItem
+func (i *LabeledListItem) GetAttributes() ElementAttributes {
+	return i.Attributes
+}
+
 // GetElements returns the elements of this LabeledListItem
-func (i LabeledListItem) GetElements() []interface{} {
+func (i *LabeledListItem) GetElements() []interface{} {
 	return i.Elements
 }
 
@@ -1591,15 +1121,6 @@ func (i *LabeledListItem) AddElement(element interface{}) {
 // AddAttributes adds all given attributes to the current set of attribute of the element
 func (i *LabeledListItem) AddAttributes(attributes ElementAttributes) {
 	i.Attributes.AddAll(attributes)
-}
-
-func (i *LabeledListItem) processContinuations(ancestors []ListItem) ListItem {
-	return &LabeledListItem{
-		Attributes: i.Attributes,
-		Level:      i.Level,
-		Term:       i.Term,
-		Elements:   processContinuations(ancestors, i),
-	}
 }
 
 // ------------------------------------------
@@ -1619,8 +1140,12 @@ const AttrHardBreaks = "%hardbreaks"
 const DocumentAttrHardBreaks = "hardbreaks"
 
 // NewParagraph initializes a new `Paragraph`
-func NewParagraph(lines []interface{}, attributes ...interface{}) (Paragraph, error) {
-	log.Debugf("initializing a new paragraph with %d line(s) and %d attribute(s)", len(lines), len(attributes))
+func NewParagraph(lines []interface{}, attributes interface{}) (*Paragraph, error) {
+	attrs := ElementAttributes{}
+	if attributes, ok := attributes.(ElementAttributes); ok {
+		attrs.AddAll(attributes)
+	}
+	log.Debugf("initializing a new paragraph with %d line(s) and %d attribute(s)", len(lines), len(attrs))
 	elements := make([]InlineElements, 0)
 	for _, line := range lines {
 		if l, ok := line.(InlineElements); ok {
@@ -1629,23 +1154,37 @@ func NewParagraph(lines []interface{}, attributes ...interface{}) (Paragraph, er
 			elements = append(elements, l)
 			// }
 		} else {
-			return Paragraph{}, errors.Errorf("unsupported paragraph line of type %[1]T: %[1]v", line)
+			return nil, errors.Errorf("unsupported paragraph line of type %[1]T: %[1]v", line)
 		}
 
 	}
 	log.Debugf("generated a paragraph with %d line(s): %v", len(elements), elements)
-	return Paragraph{
-		Attributes: NewElementAttributes(attributes),
+	return &Paragraph{
+		Attributes: attrs,
 		Lines:      elements,
 	}, nil
 }
 
-// NewAdmonitionParagraph returns a new Paragraph with an extra admonition attribute
-func NewAdmonitionParagraph(lines []interface{}, admonitionKind AdmonitionKind, attributes ...interface{}) (Paragraph, error) {
-	log.Debugf("new admonition paragraph")
-	p, err := NewParagraph(lines, attributes)
+// Footnotes returns the footnotes found in all the lines of this paragraph
+func (p *Paragraph) Footnotes() (Footnotes, FootnoteReferences, error) {
+	v := NewFootnotesCollector()
+	err := p.AcceptVisitor(v)
 	if err != nil {
-		return p, err
+		return nil, nil, err
+	}
+	return v.Footnotes, v.FootnoteReferences, nil
+}
+
+// NewAdmonitionParagraph returns a new Paragraph with an extra admonition attribute
+func NewAdmonitionParagraph(lines []interface{}, admonitionKind AdmonitionKind, attributes interface{}) (*Paragraph, error) {
+	log.Debugf("new admonition paragraph")
+	attrs := ElementAttributes{}
+	if attributes, ok := attributes.(ElementAttributes); ok {
+		attrs.AddAll(attributes)
+	}
+	p, err := NewParagraph(lines, attrs)
+	if err != nil {
+		return nil, err
 	}
 	p.Attributes[AttrAdmonitionKind] = admonitionKind
 	return p, nil
@@ -1657,19 +1196,15 @@ func (p Paragraph) AddAttributes(attributes ElementAttributes) {
 }
 
 // AcceptVisitor implements Visitable#AcceptVisitor(Visitor)
-func (p Paragraph) AcceptVisitor(v Visitor) error {
+func (p *Paragraph) AcceptVisitor(v Visitor) error {
 	err := v.Visit(p)
 	if err != nil {
 		return errors.Wrapf(err, "error while visiting paragraph")
 	}
 	for _, line := range p.Lines {
-		for _, element := range line {
-			if visitable, ok := element.(Visitable); ok {
-				err = visitable.AcceptVisitor(v)
-				if err != nil {
-					return errors.Wrapf(err, "error while visiting paragraph line")
-				}
-			}
+		err = line.AcceptVisitor(v)
+		if err != nil {
+			return errors.Wrapf(err, "error while visiting paragraph line")
 		}
 	}
 	return nil
@@ -1740,13 +1275,13 @@ type CrossReference struct {
 }
 
 // NewCrossReference initializes a new `CrossReference` from the given ID
-func NewCrossReference(id string, label interface{}) (CrossReference, error) {
+func NewCrossReference(id string, label interface{}) (*CrossReference, error) {
 	log.Debugf("initializing a new CrossReference with ID=%s", id)
 	var l string
 	if label, ok := label.(string); ok {
 		l = Apply(label, strings.TrimSpace)
 	}
-	return CrossReference{
+	return &CrossReference{
 		ID:    id,
 		Label: l,
 	}, nil
@@ -1774,24 +1309,25 @@ type ImageBlock struct {
 }
 
 // NewImageBlock initializes a new `ImageBlock`
-func NewImageBlock(path string, inlineAttributes ElementAttributes) (ImageBlock, error) {
-	allAttributes := ElementAttributes{}
-	for k, v := range inlineAttributes {
-		allAttributes[k] = v
+func NewImageBlock(path string, inlineAttributes ElementAttributes, attributes interface{}) (*ImageBlock, error) {
+	attrs := ElementAttributes{}
+	if attributes, ok := attributes.(ElementAttributes); ok {
+		attrs.AddAll(attributes)
 	}
-	if alt, found := allAttributes[AttrImageAlt]; !found || alt == "" {
+	attrs.AddAll(inlineAttributes)
+	if alt, found := attrs[AttrImageAlt]; !found || alt == "" {
 		_, filename := filepath.Split(path)
 		ext := filepath.Ext(filename)
 		log.Debugf("adding alt based on filename '%s' (ext=%s)", filename, ext)
 		if ext != "" {
-			allAttributes[AttrImageAlt] = strings.TrimSuffix(filename, ext)
+			attrs[AttrImageAlt] = strings.TrimSuffix(filename, ext)
 		} else {
-			allAttributes[AttrImageAlt] = filename
+			attrs[AttrImageAlt] = filename
 		}
 	}
-	return ImageBlock{
+	return &ImageBlock{
 		Path:       path,
-		Attributes: allAttributes,
+		Attributes: attrs,
 	}, nil
 }
 
@@ -1807,7 +1343,7 @@ type InlineImage struct {
 }
 
 // NewInlineImage initializes a new `InlineImage` (similar to ImageBlock, but without attributes)
-func NewInlineImage(path string, attributes ElementAttributes) (InlineImage, error) {
+func NewInlineImage(path string, attributes ElementAttributes) (*InlineImage, error) {
 	if alt, found := attributes[AttrImageAlt]; !found || alt == "" {
 		_, filename := filepath.Split(path)
 		log.Debugf("adding alt based on filename '%s'", filename)
@@ -1818,7 +1354,7 @@ func NewInlineImage(path string, attributes ElementAttributes) (InlineImage, err
 			attributes[AttrImageAlt] = filename
 		}
 	}
-	return InlineImage{
+	return &InlineImage{
 		Path:       path,
 		Attributes: attributes,
 	}, nil
@@ -1876,11 +1412,11 @@ type Footnote struct {
 }
 
 // NewFootnote returns a new Footnote with the given content
-func NewFootnote(ref string, elements InlineElements) (Footnote, error) {
+func NewFootnote(ref string, elements InlineElements) (*Footnote, error) {
 	defer func() {
 		footnoteSequence++
 	}()
-	footnote := Footnote{
+	footnote := &Footnote{
 		ID:       footnoteSequence,
 		Ref:      ref,
 		Elements: elements,
@@ -1889,7 +1425,7 @@ func NewFootnote(ref string, elements InlineElements) (Footnote, error) {
 }
 
 // AcceptVisitor implements Visitable#AcceptVisitor(Visitor)
-func (f Footnote) AcceptVisitor(v Visitor) error {
+func (f *Footnote) AcceptVisitor(v Visitor) error {
 	err := v.Visit(f)
 	if err != nil {
 		return errors.Wrapf(err, "error while visiting section")
@@ -1931,15 +1467,23 @@ func Verbatim(content []interface{}) ([]interface{}, error) {
 }
 
 // NewDelimitedBlock initializes a new `DelimitedBlock` of the given kind with the given content
-func NewDelimitedBlock(kind BlockKind, content []interface{}, substitution Substitution) (DelimitedBlock, error) {
-	log.Debugf("initializing a new DelimitedBlock of kind '%v' with %d elements", kind, len(content))
+func NewDelimitedBlock(kind BlockKind, content []interface{}, substitution Substitution, attributes interface{}) (*DelimitedBlock, error) {
+	// log.Debugf("initializing a new DelimitedBlock of kind '%v' with %d elements", kind, len(content))
+	attrs := ElementAttributes{}
+	if attributes, ok := attributes.(ElementAttributes); ok {
+		attrs.AddAll(attributes)
+	}
 	elements, err := substitution(content)
 	if err != nil {
-		return DelimitedBlock{}, errors.Wrapf(err, "failed to initialize a new delimited block")
+		return nil, errors.Wrapf(err, "failed to initialize a new delimited block")
 	}
-	return DelimitedBlock{
+	if k := attrs.GetAsString(AttrKind); k != "" { // override default kind
+		// log.Debugf("overriding kind '%s' to '%s'", b.Kind, attributes[AttrKind])
+		kind = BlockKind(k)
+	}
+	return &DelimitedBlock{
+		Attributes: attrs,
 		Kind:       kind,
-		Attributes: ElementAttributes{},
 		Elements:   elements,
 	}, nil
 }
@@ -1960,24 +1504,28 @@ func (b *DelimitedBlock) AddAttributes(attributes ElementAttributes) {
 // Table the structure for the tables
 type Table struct {
 	Attributes ElementAttributes
-	Header     TableLine
-	Lines      []TableLine
+	Header     *TableLine
+	Lines      []*TableLine
 }
 
 // NewTable initializes a new table with the given lines and attributes
-func NewTable(header interface{}, lines []interface{}) (Table, error) {
-	t := Table{
-		Attributes: ElementAttributes{},
+func NewTable(header interface{}, lines []interface{}, attributes interface{}) (*Table, error) {
+	attrs := ElementAttributes{}
+	if attributes, ok := attributes.(ElementAttributes); ok {
+		attrs.AddAll(attributes)
+	}
+	t := &Table{
+		Attributes: attrs,
 	}
 	columnsPerLine := -1 // unknown until first "line" is processed
-	if header, ok := header.(TableLine); ok {
+	if header, ok := header.(*TableLine); ok {
 		t.Header = header
 		columnsPerLine = len(header.Cells)
 	}
 	// need to regroup columns of all lines, they dispatch on lines
 	cells := make([]InlineElements, 0)
 	for _, l := range lines {
-		if l, ok := l.(TableLine); ok {
+		if l, ok := l.(*TableLine); ok {
 			// if no header line was set, inspect the first line to determine the number of columns per line
 			if columnsPerLine == -1 {
 				columnsPerLine = len(l.Cells)
@@ -1985,10 +1533,10 @@ func NewTable(header interface{}, lines []interface{}) (Table, error) {
 			cells = append(cells, l.Cells...)
 		}
 	}
-	t.Lines = make([]TableLine, 0)
+	t.Lines = make([]*TableLine, 0)
 	if len(lines) > 0 {
 		log.Debugf("buffered %d columns for the table", len(cells))
-		l := TableLine{
+		l := &TableLine{
 			Cells: make([]InlineElements, columnsPerLine),
 		}
 		for i, c := range cells {
@@ -1997,7 +1545,7 @@ func NewTable(header interface{}, lines []interface{}) (Table, error) {
 			if (i+1)%columnsPerLine == 0 { // switch to next line
 				log.Debugf("adding line with content '%v' in table", l)
 				t.Lines = append(t.Lines, l)
-				l = TableLine{
+				l = &TableLine{
 					Cells: make([]InlineElements, columnsPerLine),
 				}
 			}
@@ -2018,7 +1566,7 @@ type TableLine struct {
 }
 
 // NewTableLine initializes a new TableLine with the given columns
-func NewTableLine(columns []interface{}) (TableLine, error) {
+func NewTableLine(columns []interface{}) (*TableLine, error) {
 	c := make([]InlineElements, 0)
 	for _, column := range columns {
 		if e, ok := column.(InlineElements); ok {
@@ -2028,7 +1576,7 @@ func NewTableLine(columns []interface{}) (TableLine, error) {
 		}
 	}
 	log.Debugf("initialized a new table line with %d columns", len(c))
-	return TableLine{
+	return &TableLine{
 		Cells: c,
 	}, nil
 }
@@ -2056,21 +1604,23 @@ const (
 
 // NewLiteralBlock initializes a new `DelimitedBlock` of the given kind with the given content,
 // along with the given sectionTitle spaces
-func NewLiteralBlock(origin string, lines []interface{}, attributes ...interface{}) (LiteralBlock, error) {
+func NewLiteralBlock(origin string, lines []interface{}, attributes interface{}) (*LiteralBlock, error) {
 	l, err := toString(lines)
 	if err != nil {
-		return LiteralBlock{}, errors.Wrapf(err, "unable to initialize a new LiteralBlock")
+		return nil, errors.Wrapf(err, "unable to initialize a new LiteralBlock")
 	}
 	log.Debugf("initialized a new LiteralBlock with %d lines", len(lines))
-	return LiteralBlock{
-		Attributes: NewElementAttributes(
-			attributes,
-			ElementAttributes{
-				AttrKind:             Literal,
-				AttrLiteralBlockType: origin,
-			},
-		),
-		Lines: l,
+	attrs := ElementAttributes{}
+	if attributes, ok := attributes.(ElementAttributes); ok {
+		attrs.AddAll(attributes)
+	}
+	attrs.AddAll(ElementAttributes{
+		AttrKind:             Literal,
+		AttrLiteralBlockType: origin,
+	})
+	return &LiteralBlock{
+		Attributes: attrs,
+		Lines:      l,
 	}, nil
 }
 
@@ -2088,9 +1638,9 @@ type BlankLine struct {
 }
 
 // NewBlankLine initializes a new `BlankLine`
-func NewBlankLine() (BlankLine, error) {
+func NewBlankLine() (*BlankLine, error) {
 	// log.Debug("initializing a new BlankLine")
-	return BlankLine{}, nil
+	return &BlankLine{}, nil
 }
 
 // AddAttributes adds all given attributes to the current set of attribute of the element
@@ -2098,10 +1648,6 @@ func (l BlankLine) AddAttributes(attributes ElementAttributes) {
 	// nothing to do
 	// TODO: raise a warning?
 }
-
-// ------------------------------------------------------------------------------------------------------------------------------
-// Inline elements
-// ------------------------------------------------------------------------------------------------------------------------------
 
 // ------------------------------------------
 // Comments
@@ -2113,15 +1659,15 @@ type SingleLineComment struct {
 }
 
 // NewSingleLineComment initializes a new single line content
-func NewSingleLineComment(content string) (SingleLineComment, error) {
+func NewSingleLineComment(content string) (*SingleLineComment, error) {
 	log.Debugf("initializing a single line comment with content: '%s'", content)
-	return SingleLineComment{
+	return &SingleLineComment{
 		Content: content,
 	}, nil
 }
 
 // AddAttributes adds all given attributes to the current set of attribute of the element
-func (l SingleLineComment) AddAttributes(attributes ElementAttributes) {
+func (l *SingleLineComment) AddAttributes(attributes ElementAttributes) {
 	// nothing to do
 	// TODO: raise a warning?
 }
@@ -2136,8 +1682,8 @@ type StringElement struct {
 }
 
 // NewStringElement initializes a new `StringElement` from the given content
-func NewStringElement(content string) (StringElement, error) {
-	return StringElement{Content: content}, nil
+func NewStringElement(content string) (*StringElement, error) {
+	return &StringElement{Content: content}, nil
 }
 
 // AcceptVisitor implements Visitable#AcceptVisitor(Visitor)
@@ -2161,8 +1707,8 @@ func (s StringElement) String() string {
 type LineBreak struct{}
 
 // NewLineBreak returns a new line break, that's all.
-func NewLineBreak() (LineBreak, error) {
-	return LineBreak{}, nil
+func NewLineBreak() (*LineBreak, error) {
+	return &LineBreak{}, nil
 }
 
 // ------------------------------------------
@@ -2192,12 +1738,9 @@ const (
 )
 
 // NewQuotedText initializes a new `QuotedText` from the given kind and content
-func NewQuotedText(kind QuotedTextKind, content ...interface{}) (QuotedText, error) {
+func NewQuotedText(kind QuotedTextKind, content ...interface{}) (*QuotedText, error) {
 	elements := mergeElements(content...)
-	if log.GetLevel() == log.DebugLevel {
-		log.Debugf("initialized a new QuotedText with %d elements: %v", len(elements), spew.Sdump(elements))
-	}
-	return QuotedText{
+	return &QuotedText{
 		Kind:     kind,
 		Elements: elements,
 	}, nil
@@ -2272,8 +1815,8 @@ const (
 )
 
 // NewPassthrough returns a new passthrough
-func NewPassthrough(kind PassthroughKind, elements []interface{}) (Passthrough, error) {
-	return Passthrough{
+func NewPassthrough(kind PassthroughKind, elements []interface{}) (*Passthrough, error) {
+	return &Passthrough{
 		Kind:     kind,
 		Elements: mergeElements(elements...),
 	}, nil
@@ -2291,8 +1834,8 @@ type InlineLink struct {
 }
 
 // NewInlineLink initializes a new inline `InlineLink`
-func NewInlineLink(url Location, attrs ElementAttributes) (InlineLink, error) {
-	return InlineLink{
+func NewInlineLink(url Location, attrs ElementAttributes) (*InlineLink, error) {
+	return &InlineLink{
 		Location:   url,
 		Attributes: attrs,
 	}, nil
@@ -2331,13 +1874,13 @@ type FileInclusion struct {
 var _ ElementWithAttributes = FileInclusion{}
 
 // NewFileInclusion initializes a new inline `InlineLink`
-func NewFileInclusion(location Location, attributes interface{}, rawtext string) (FileInclusion, error) {
+func NewFileInclusion(location Location, attributes interface{}, rawtext string) (*FileInclusion, error) {
 	attrs, ok := attributes.(ElementAttributes)
 	// init attributes with empty 'text' attribute
 	if !ok {
 		attrs = ElementAttributes{}
 	}
-	return FileInclusion{
+	return &FileInclusion{
 		Attributes: attrs,
 		Location:   location,
 		RawText:    rawtext,
@@ -2349,11 +1892,24 @@ func (f FileInclusion) AddAttributes(attributes ElementAttributes) {
 	f.Attributes.AddAll(attributes)
 }
 
-// // IsAsciidoc returns true if the file to include is an asciidoc file (based on the file location extension)
-// func (f FileInclusion) IsAsciidoc() bool {
-// 	ext := filepath.Ext(f.Path)
-// 	return ext == ".asciidoc" || ext == ".adoc" || ext == ".ad" || ext == ".asc" || ext == ".txt"
-// }
+// IsAsciidoc returns true if the file to include is an asciidoc file (based on the file location extension)
+func IsAsciidoc(path string) bool {
+	ext := filepath.Ext(path)
+	return ext == ".asciidoc" || ext == ".adoc" || ext == ".ad" || ext == ".asc" || ext == ".txt"
+}
+
+// LineRanges returns the line ranges of the file to include.
+func (f *FileInclusion) LineRanges() LineRanges {
+	if lr, ok := f.Attributes[AttrLineRanges].(LineRanges); ok {
+		return lr
+	}
+	return LineRanges{ // default line ranges: include all content
+		{
+			Start: 1,
+			End:   -1,
+		},
+	}
+}
 
 // LineRanges the ranges of lines of the child doc to include in the master doc
 type LineRanges []LineRange
@@ -2430,6 +1986,7 @@ func NewLineRangeAttribute(lines interface{}) (ElementAttributes, error) {
 
 // NewSingleLineRange returns a new single line range
 func NewSingleLineRange(line int) (LineRange, error) {
+	log.Debugf("initializing a new singleline range: %d", line)
 	return LineRange{
 		Start: line,
 		End:   line,
@@ -2438,6 +1995,7 @@ func NewSingleLineRange(line int) (LineRange, error) {
 
 // NewMultilineRange returns a new multi-line range
 func NewMultilineRange(start, end int) (LineRange, error) {
+	log.Debugf("initializing a new multiline range: %d..%d", start, end)
 	return LineRange{
 		Start: start,
 		End:   end,
@@ -2463,7 +2021,7 @@ func (u Location) Resolve(attrs DocumentAttributes) string {
 	result := bytes.NewBuffer(nil)
 	for _, e := range u {
 		switch s := e.(type) {
-		case DocumentAttributeSubstitution:
+		case *DocumentAttributeSubstitution:
 			if value, found := attrs[s.Name].(string); found {
 				result.WriteString(value)
 			} else {

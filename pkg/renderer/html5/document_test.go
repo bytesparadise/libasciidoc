@@ -12,8 +12,8 @@ var _ = Describe("document header", func() {
 	Context("header with inline elements in title", func() {
 
 		It("header with quoted text", func() {
-			actualContent := `= The _Dangerous_ and *Thrilling* Documentation Chronicles`
-			expectedResult := `<!DOCTYPE html>
+			source := `= The _Dangerous_ and *Thrilling* Documentation Chronicles`
+			expected := `<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -36,7 +36,7 @@ Last updated {{.LastUpdated}}
 </div>
 </body>
 </html>`
-			verify(GinkgoT(), expectedResult, actualContent, renderer.IncludeHeaderFooter(true), renderer.LastUpdated(time.Now()))
+			verify(expected, source, renderer.IncludeHeaderFooter(true), renderer.LastUpdated(time.Now()))
 		})
 	})
 

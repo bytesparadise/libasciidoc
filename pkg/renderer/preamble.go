@@ -21,7 +21,7 @@ func insertPreamble(blocks []interface{}) []interface{} {
 	preamble := types.NewEmptyPreamble()
 	for _, block := range blocks {
 		switch block.(type) {
-		case types.Section:
+		case *types.Section:
 			break
 		default:
 			preamble.Elements = append(preamble.Elements, block)
