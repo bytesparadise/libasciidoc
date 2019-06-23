@@ -211,7 +211,6 @@ a list item!`
 				expected := &types.OrderedListItem{
 					Attributes:     map[string]interface{}{},
 					Level:          1,
-					Position:       1,
 					NumberingStyle: types.Arabic,
 					Elements: []interface{}{
 						&types.Paragraph{

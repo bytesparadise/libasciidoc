@@ -124,9 +124,6 @@ func appendOrderedListItem(lists []types.List, item *types.OrderedListItem) []ty
 			maxLevel++
 			if list.Items[0].NumberingStyle == item.NumberingStyle {
 				log.Debugf("found a matching ordered list")
-				if lastItem, ok := list.LastItem().(*types.OrderedListItem); ok {
-					item.Position = lastItem.Position + 1
-				}
 				list.AddItem(item)
 				// apply the same level
 				item.Level = list.Items[0].Level

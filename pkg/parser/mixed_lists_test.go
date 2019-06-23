@@ -27,7 +27,6 @@ var _ = Describe("mixed lists - document", func() {
 						Items: []*types.OrderedListItem{
 							{
 								Level:          1,
-								Position:       1,
 								NumberingStyle: types.Arabic,
 								Attributes:     map[string]interface{}{},
 								Elements: []interface{}{
@@ -81,7 +80,6 @@ var _ = Describe("mixed lists - document", func() {
 							{
 								Attributes:     types.ElementAttributes{},
 								Level:          1,
-								Position:       2,
 								NumberingStyle: types.Arabic,
 								Elements: []interface{}{
 									&types.Paragraph{
@@ -183,7 +181,6 @@ var _ = Describe("mixed lists - document", func() {
 											{
 												Attributes:     types.ElementAttributes{},
 												Level:          1,
-												Position:       1,
 												NumberingStyle: types.Arabic,
 												Elements: []interface{}{
 													&types.Paragraph{
@@ -200,7 +197,6 @@ var _ = Describe("mixed lists - document", func() {
 															{
 																Attributes:     types.ElementAttributes{},
 																Level:          2,
-																Position:       1,
 																NumberingStyle: types.LowerAlpha,
 																Elements: []interface{}{
 																	&types.Paragraph{
@@ -216,7 +212,6 @@ var _ = Describe("mixed lists - document", func() {
 															{
 																Attributes:     types.ElementAttributes{},
 																Level:          2,
-																Position:       2,
 																NumberingStyle: types.LowerAlpha,
 																Elements: []interface{}{
 																	&types.Paragraph{
@@ -232,7 +227,6 @@ var _ = Describe("mixed lists - document", func() {
 															{
 																Attributes:     types.ElementAttributes{},
 																Level:          2,
-																Position:       3,
 																NumberingStyle: types.LowerAlpha,
 																Elements: []interface{}{
 																	&types.Paragraph{
@@ -252,7 +246,6 @@ var _ = Describe("mixed lists - document", func() {
 											{
 												Attributes:     types.ElementAttributes{},
 												Level:          1,
-												Position:       2,
 												NumberingStyle: types.Arabic,
 												Elements: []interface{}{
 													&types.Paragraph{
@@ -269,7 +262,6 @@ var _ = Describe("mixed lists - document", func() {
 															{
 																Attributes:     types.ElementAttributes{},
 																Level:          2,
-																Position:       1,
 																NumberingStyle: types.LowerRoman,
 																Elements: []interface{}{
 																	&types.Paragraph{
@@ -285,7 +277,6 @@ var _ = Describe("mixed lists - document", func() {
 															{
 																Attributes:     types.ElementAttributes{},
 																Level:          2,
-																Position:       2,
 																NumberingStyle: types.LowerRoman,
 																Elements: []interface{}{
 																	&types.Paragraph{
@@ -305,7 +296,6 @@ var _ = Describe("mixed lists - document", func() {
 											{
 												Attributes:     types.ElementAttributes{},
 												Level:          1,
-												Position:       3,
 												NumberingStyle: types.Arabic,
 												Elements: []interface{}{
 													&types.Paragraph{
@@ -321,7 +311,6 @@ var _ = Describe("mixed lists - document", func() {
 											{
 												Attributes:     types.ElementAttributes{},
 												Level:          1,
-												Position:       4,
 												NumberingStyle: types.Arabic,
 												Elements: []interface{}{
 													&types.Paragraph{
@@ -436,7 +425,6 @@ ii) ordered 1.2.ii
 											{
 												Attributes:     types.ElementAttributes{},
 												Level:          1,
-												Position:       1,
 												NumberingStyle: types.Arabic,
 												Elements: []interface{}{
 													&types.Paragraph{
@@ -453,7 +441,6 @@ ii) ordered 1.2.ii
 															{
 																Attributes:     types.ElementAttributes{},
 																Level:          2,
-																Position:       1,
 																NumberingStyle: types.LowerAlpha,
 																Elements: []interface{}{
 																	&types.Paragraph{
@@ -469,7 +456,6 @@ ii) ordered 1.2.ii
 															{
 																Attributes:     types.ElementAttributes{},
 																Level:          2,
-																Position:       2,
 																NumberingStyle: types.LowerAlpha,
 																Elements: []interface{}{
 																	&types.Paragraph{
@@ -485,7 +471,6 @@ ii) ordered 1.2.ii
 															{
 																Attributes:     types.ElementAttributes{},
 																Level:          2,
-																Position:       3,
 																NumberingStyle: types.LowerAlpha,
 																Elements: []interface{}{
 																	&types.Paragraph{
@@ -505,7 +490,6 @@ ii) ordered 1.2.ii
 											{
 												Attributes:     types.ElementAttributes{},
 												Level:          1,
-												Position:       2,
 												NumberingStyle: types.Arabic,
 												Elements: []interface{}{
 													&types.Paragraph{
@@ -522,7 +506,6 @@ ii) ordered 1.2.ii
 															{
 																Attributes:     types.ElementAttributes{},
 																Level:          2,
-																Position:       1,
 																NumberingStyle: types.LowerRoman,
 																Elements: []interface{}{
 																	&types.Paragraph{
@@ -538,7 +521,6 @@ ii) ordered 1.2.ii
 															{
 																Attributes:     types.ElementAttributes{},
 																Level:          2,
-																Position:       2,
 																NumberingStyle: types.LowerRoman,
 																Elements: []interface{}{
 																	&types.Paragraph{
@@ -558,7 +540,6 @@ ii) ordered 1.2.ii
 											{
 												Attributes:     types.ElementAttributes{},
 												Level:          1,
-												Position:       3,
 												NumberingStyle: types.Arabic,
 												Elements: []interface{}{
 													&types.Paragraph{
@@ -574,7 +555,6 @@ ii) ordered 1.2.ii
 											{
 												Attributes:     types.ElementAttributes{},
 												Level:          1,
-												Position:       4,
 												NumberingStyle: types.Arabic,
 												Elements: []interface{}{
 													&types.Paragraph{
@@ -707,7 +687,6 @@ ii) ordered 1.2.ii
 											{
 												Attributes:     types.ElementAttributes{},
 												Level:          1,
-												Position:       1,
 												NumberingStyle: types.Arabic,
 												Elements: []interface{}{
 													&types.Paragraph{
@@ -723,7 +702,6 @@ ii) ordered 1.2.ii
 											{
 												Attributes:     types.ElementAttributes{},
 												Level:          1,
-												Position:       2,
 												NumberingStyle: types.Arabic,
 												Elements: []interface{}{
 													&types.Paragraph{
@@ -742,7 +720,6 @@ ii) ordered 1.2.ii
 															{
 																Attributes:     types.ElementAttributes{},
 																Level:          2,
-																Position:       1,
 																NumberingStyle: types.LowerAlpha,
 																Elements: []interface{}{
 																	&types.Paragraph{
@@ -758,7 +735,6 @@ ii) ordered 1.2.ii
 															{
 																Attributes:     types.ElementAttributes{},
 																Level:          2,
-																Position:       2,
 																NumberingStyle: types.LowerAlpha,
 																Elements: []interface{}{
 																	&types.Paragraph{
@@ -778,7 +754,6 @@ ii) ordered 1.2.ii
 											{
 												Attributes:     types.ElementAttributes{},
 												Level:          1,
-												Position:       3,
 												NumberingStyle: types.Arabic,
 												Elements: []interface{}{
 													&types.Paragraph{
@@ -829,7 +804,6 @@ Operating Systems::
 											{
 												Attributes:     types.ElementAttributes{},
 												Level:          1,
-												Position:       1,
 												NumberingStyle: types.Arabic,
 												Elements: []interface{}{
 													&types.Paragraph{
@@ -929,7 +903,6 @@ Cloud Providers::
 															{
 																Attributes:     types.ElementAttributes{},
 																Level:          1,
-																Position:       1,
 																NumberingStyle: types.Arabic,
 																Elements: []interface{}{
 																	&types.Paragraph{
@@ -970,7 +943,6 @@ Cloud Providers::
 															{
 																Attributes:     types.ElementAttributes{},
 																Level:          1,
-																Position:       2,
 																NumberingStyle: types.Arabic,
 																Elements: []interface{}{
 																	&types.Paragraph{
@@ -1041,7 +1013,6 @@ Cloud Providers::
 															{
 																Attributes:     types.ElementAttributes{},
 																Level:          1,
-																Position:       1,
 																NumberingStyle: types.Arabic,
 																Elements: []interface{}{
 																	&types.Paragraph{
@@ -1059,7 +1030,6 @@ Cloud Providers::
 															{
 																Attributes:     types.ElementAttributes{},
 																Level:          1,
-																Position:       2,
 																NumberingStyle: types.Arabic,
 																Elements: []interface{}{
 																	&types.Paragraph{
@@ -1101,7 +1071,6 @@ Cloud Providers::
 															{
 																Attributes:     types.ElementAttributes{},
 																Level:          1,
-																Position:       1,
 																NumberingStyle: types.Arabic,
 																Elements: []interface{}{
 																	&types.Paragraph{
@@ -1119,7 +1088,6 @@ Cloud Providers::
 															{
 																Attributes:     types.ElementAttributes{},
 																Level:          1,
-																Position:       2,
 																NumberingStyle: types.Arabic,
 																Elements: []interface{}{
 																	&types.Paragraph{
@@ -1149,7 +1117,6 @@ Cloud Providers::
 															{
 																Attributes:     types.ElementAttributes{},
 																Level:          1,
-																Position:       1,
 																NumberingStyle: types.Arabic,
 																Elements: []interface{}{
 																	&types.Paragraph{
@@ -1167,7 +1134,6 @@ Cloud Providers::
 															{
 																Attributes:     types.ElementAttributes{},
 																Level:          1,
-																Position:       2,
 																NumberingStyle: types.Arabic,
 																Elements: []interface{}{
 																	&types.Paragraph{
@@ -1220,7 +1186,6 @@ Cloud Providers::
 							{
 								Attributes:     types.ElementAttributes{},
 								Level:          1,
-								Position:       1,
 								NumberingStyle: types.Arabic, // will be overridden during rendering
 								Elements: []interface{}{
 									&types.Paragraph{
@@ -1239,7 +1204,6 @@ Cloud Providers::
 											{
 												Attributes:     types.ElementAttributes{},
 												Level:          2,
-												Position:       1,
 												NumberingStyle: types.LowerAlpha,
 												Elements: []interface{}{
 													&types.Paragraph{
@@ -1261,7 +1225,6 @@ Cloud Providers::
 							{
 								Attributes:     types.ElementAttributes{},
 								Level:          1,
-								Position:       2,
 								NumberingStyle: types.Arabic, // will be overridden during rendering
 								Elements: []interface{}{
 									&types.Paragraph{
@@ -1306,7 +1269,6 @@ Cloud Providers::
 							{
 								Attributes:     types.ElementAttributes{},
 								Level:          1,
-								Position:       1,
 								NumberingStyle: types.Arabic, // will be overridden during rendering
 								Elements: []interface{}{
 									&types.Paragraph{
@@ -1327,7 +1289,6 @@ Cloud Providers::
 											{
 												Attributes:     types.ElementAttributes{},
 												Level:          2,
-												Position:       1,
 												NumberingStyle: types.LowerAlpha, // will be overridden during rendering
 												Elements: []interface{}{
 													&types.Paragraph{
@@ -1345,7 +1306,6 @@ Cloud Providers::
 											{
 												Attributes:     types.ElementAttributes{},
 												Level:          2,
-												Position:       2,
 												NumberingStyle: types.LowerAlpha, // will be overridden during rendering
 												Elements: []interface{}{
 													&types.Paragraph{
@@ -1367,7 +1327,6 @@ Cloud Providers::
 							{
 								Attributes:     types.ElementAttributes{},
 								Level:          1,
-								Position:       2,
 								NumberingStyle: types.Arabic, // will be overridden during rendering
 								Elements: []interface{}{
 									&types.Paragraph{
@@ -1411,7 +1370,6 @@ Cloud Providers::
 							{
 								Attributes:     types.ElementAttributes{},
 								Level:          1,
-								Position:       1,
 								NumberingStyle: types.Arabic,
 								Elements: []interface{}{
 									&types.Paragraph{
@@ -1436,7 +1394,6 @@ Cloud Providers::
 							{
 								Attributes:     types.ElementAttributes{},
 								Level:          1,
-								Position:       1,
 								NumberingStyle: types.LowerAlpha,
 								Elements: []interface{}{
 									&types.Paragraph{
@@ -1455,7 +1412,6 @@ Cloud Providers::
 											{
 												Attributes:     types.ElementAttributes{},
 												Level:          2,
-												Position:       1,
 												NumberingStyle: types.Arabic,
 												Elements: []interface{}{
 													&types.Paragraph{
@@ -1549,7 +1505,6 @@ Cloud Providers::
 							{
 								Attributes:     types.ElementAttributes{},
 								Level:          1,
-								Position:       1,
 								NumberingStyle: types.Arabic,
 								Elements: []interface{}{
 									&types.Paragraph{
@@ -1567,7 +1522,6 @@ Cloud Providers::
 							{
 								Attributes:     types.ElementAttributes{},
 								Level:          1,
-								Position:       2,
 								NumberingStyle: types.Arabic,
 								Elements: []interface{}{
 									&types.Paragraph{
@@ -1605,7 +1559,6 @@ Cloud Providers::
 							{
 								Attributes:     types.ElementAttributes{},
 								Level:          1,
-								Position:       1,
 								NumberingStyle: types.Arabic,
 								Elements: []interface{}{
 									&types.Paragraph{
@@ -1626,7 +1579,6 @@ Cloud Providers::
 							{
 								Attributes:     types.ElementAttributes{},
 								Level:          1,
-								Position:       2,
 								NumberingStyle: types.Arabic,
 								Elements: []interface{}{
 									&types.Paragraph{
@@ -1666,7 +1618,6 @@ Cloud Providers::
 							{
 								Attributes:     types.ElementAttributes{},
 								Level:          1,
-								Position:       1,
 								NumberingStyle: types.Arabic,
 								Elements: []interface{}{
 									&types.Paragraph{
@@ -1693,7 +1644,6 @@ Cloud Providers::
 							{
 								Attributes:     types.ElementAttributes{},
 								Level:          1,
-								Position:       2,
 								NumberingStyle: types.Arabic,
 								Elements: []interface{}{
 									&types.Paragraph{
@@ -1732,7 +1682,6 @@ Cloud Providers::
 							{
 								Attributes:     types.ElementAttributes{},
 								Level:          1,
-								Position:       1,
 								NumberingStyle: types.Arabic,
 								Elements: []interface{}{
 									&types.Paragraph{
@@ -1758,7 +1707,6 @@ Cloud Providers::
 							{
 								Attributes:     types.ElementAttributes{},
 								Level:          1,
-								Position:       1,
 								NumberingStyle: types.Arabic,
 								Elements: []interface{}{
 									&types.Paragraph{
@@ -1799,7 +1747,6 @@ Cloud Providers::
 							{
 								Attributes:     types.ElementAttributes{},
 								Level:          1,
-								Position:       1,
 								NumberingStyle: types.Arabic,
 								Elements: []interface{}{
 									&types.Paragraph{
@@ -1831,7 +1778,6 @@ Cloud Providers::
 							{
 								Attributes:     types.ElementAttributes{},
 								Level:          1,
-								Position:       1,
 								NumberingStyle: types.Arabic,
 								Elements: []interface{}{
 									&types.Paragraph{

@@ -1,4 +1,4 @@
-package parser_test 
+package parser_test
 
 import (
 	"github.com/bytesparadise/libasciidoc/pkg/types"
