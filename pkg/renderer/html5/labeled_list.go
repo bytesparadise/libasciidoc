@@ -72,7 +72,7 @@ func init() {
 
 }
 
-func renderLabeledList(ctx *renderer.Context, l types.LabeledList) ([]byte, error) {
+func renderLabeledList(ctx *renderer.Context, l *types.LabeledList) ([]byte, error) {
 	var tmpl texttemplate.Template
 	tmpl, err := getLabeledListTmpl(l)
 	if err != nil {
@@ -87,7 +87,7 @@ func renderLabeledList(ctx *renderer.Context, l types.LabeledList) ([]byte, erro
 			ID    string
 			Title string
 			Role  string
-			Items []types.LabeledListItem
+			Items []*types.LabeledListItem
 		}{
 			ID:    generateID(ctx, l.Attributes),
 			Title: getTitle(l.Attributes),
@@ -102,7 +102,7 @@ func renderLabeledList(ctx *renderer.Context, l types.LabeledList) ([]byte, erro
 	return result.Bytes(), nil
 }
 
-func getLabeledListTmpl(l types.LabeledList) (texttemplate.Template, error) {
+func getLabeledListTmpl(l *types.LabeledList) (texttemplate.Template, error) {
 	if layout, ok := l.Attributes["layout"]; ok {
 		switch layout {
 		case "horizontal":

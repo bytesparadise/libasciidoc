@@ -116,7 +116,7 @@ func renderDocumentElements(ctx *renderer.Context) ([]byte, error) {
 	elements := []interface{}{}
 	if len(ctx.Document.Elements) > 0 {
 		// retrieve elements of the first section 0 (if available), plus remaining elements
-		if s, ok := ctx.Document.Elements[0].(types.Section); ok && s.Level == 0 {
+		if s, ok := ctx.Document.Elements[0].(*types.Section); ok && s.Level == 0 {
 			elements = append(elements, s.Elements)
 			if len(ctx.Document.Elements) > 1 {
 				elements = append(elements, ctx.Document.Elements[1:]...)
@@ -142,7 +142,7 @@ func renderDocumentElements(ctx *renderer.Context) ([]byte, error) {
 }
 
 func renderDocumentTitle(ctx *renderer.Context) ([]byte, error) {
-	if documentTitle, hasTitle := ctx.Document.Title(); hasTitle && documentTitle.Attributes.Has(types.AttrID) {
+	if documentTitle, hasTitle := ctx.Document.Title(); hasTitle {
 		title, err := renderPlainString(ctx, documentTitle)
 		if err != nil {
 			return nil, errors.Wrapf(err, "unable to render document title")
@@ -153,8 +153,8 @@ func renderDocumentTitle(ctx *renderer.Context) ([]byte, error) {
 }
 
 func renderDocumentHeader(ctx *renderer.Context) ([]byte, error) {
-	if documentTitle, hasTitle := ctx.Document.Title(); hasTitle && documentTitle.Attributes.Has(types.AttrID) {
-		title, err := renderElement(ctx, documentTitle.Elements)
+	if documentTitle, hasTitle := ctx.Document.Title(); hasTitle {
+		title, err := renderElement(ctx, documentTitle)
 		if err != nil {
 			return nil, errors.Wrapf(err, "unable to render document header")
 		}

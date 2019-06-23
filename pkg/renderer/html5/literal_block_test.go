@@ -9,64 +9,64 @@ var _ = Describe("literal blocks", func() {
 	Context("literal blocks with spaces indentation", func() {
 
 		It("literal block from 1-line paragraph with single space", func() {
-			actualContent := ` some literal content`
-			expectedResult := `<div class="literalblock">
+			source := ` some literal content`
+			expected := `<div class="literalblock">
 <div class="content">
 <pre>some literal content</pre>
 </div>
 </div>`
-			verify(GinkgoT(), expectedResult, actualContent)
+			verify(expected, source)
 		})
 
 		It("literal block from paragraph with single space on first line", func() {
-			actualContent := ` some literal content
+			source := ` some literal content
 on 3
 lines.`
-			expectedResult := `<div class="literalblock">
+			expected := `<div class="literalblock">
 <div class="content">
 <pre> some literal content
 on 3
 lines.</pre>
 </div>
 </div>`
-			verify(GinkgoT(), expectedResult, actualContent)
+			verify(expected, source)
 		})
 
-		It("literal block from paragraph with double spaces on each line", func() {
-			actualContent := `  some literal content
+		It("literal block from paragraph with same spaces on each line", func() {
+			source := `  some literal content
   on 3
   lines.`
-			expectedResult := `<div class="literalblock">
+			expected := `<div class="literalblock">
 <div class="content">
 <pre>some literal content
 on 3
 lines.</pre>
 </div>
 </div>`
-			verify(GinkgoT(), expectedResult, actualContent)
+			verify(expected, source)
 		})
 
 		It("literal block from paragraph with single spaces on each line", func() {
-			actualContent := ` literal content
+			source := ` literal content
    on many lines  
      has some heading spaces preserved.`
-			expectedResult := `<div class="literalblock">
+			expected := `<div class="literalblock">
 <div class="content">
 <pre>literal content
   on many lines  
     has some heading spaces preserved.</pre>
 </div>
 </div>`
-			verify(GinkgoT(), expectedResult, actualContent)
+			verify(expected, source)
 		})
 
 		It("mixing literal block with attributes followed by a paragraph ", func() {
-			actualContent := `.title
+			source := `.title
 [#ID]
   some literal content
 
 a normal paragraph.`
-			expectedResult := `<div id="ID" class="literalblock">
+			expected := `<div id="ID" class="literalblock">
 <div class="title">title</div>
 <div class="content">
 <pre>some literal content</pre>
@@ -75,20 +75,20 @@ a normal paragraph.`
 <div class="paragraph">
 <p>a normal paragraph.</p>
 </div>`
-			verify(GinkgoT(), expectedResult, actualContent)
+			verify(expected, source)
 		})
 	})
 
 	Context("literal blocks with block delimiter", func() {
 
 		It("literal block with delimited and attributes followed by 1-line paragraph", func() {
-			actualContent := `[#ID]
+			source := `[#ID]
 .title
 ....
  some literal content with space preserved
 ....
 a normal paragraph.`
-			expectedResult := `<div id="ID" class="literalblock">
+			expected := `<div id="ID" class="literalblock">
 <div class="title">title</div>
 <div class="content">
 <pre> some literal content with space preserved</pre>
@@ -97,7 +97,7 @@ a normal paragraph.`
 <div class="paragraph">
 <p>a normal paragraph.</p>
 </div>`
-			verify(GinkgoT(), expectedResult, actualContent)
+			verify(expected, source)
 		})
 
 	})
@@ -105,34 +105,34 @@ a normal paragraph.`
 	Context("literal blocks with attribute", func() {
 
 		It("literal block from 1-line paragraph with attribute", func() {
-			actualContent := `[literal]   
+			source := `[literal]   
  literal content
  on many lines 
- has some heading spaces preserved.
+ has its heading spaces preserved.
 
 a normal paragraph.`
-			expectedResult := `<div class="literalblock">
+			expected := `<div class="literalblock">
 <div class="content">
 <pre> literal content
  on many lines 
- has some heading spaces preserved.</pre>
+ has its heading spaces preserved.</pre>
 </div>
 </div>
 <div class="paragraph">
 <p>a normal paragraph.</p>
 </div>`
-			verify(GinkgoT(), expectedResult, actualContent)
+			verify(expected, source)
 		})
 
 		It("literal block from 2-lines paragraph with attribute", func() {
-			actualContent := `[#ID]
+			source := `[#ID]
 [literal]   
 .title
 some literal content
 on two lines.
 
 a normal paragraph.`
-			expectedResult := `<div id="ID" class="literalblock">
+			expected := `<div id="ID" class="literalblock">
 <div class="title">title</div>
 <div class="content">
 <pre>some literal content
@@ -142,7 +142,7 @@ on two lines.</pre>
 <div class="paragraph">
 <p>a normal paragraph.</p>
 </div>`
-			verify(GinkgoT(), expectedResult, actualContent)
+			verify(expected, source)
 		})
 	})
 

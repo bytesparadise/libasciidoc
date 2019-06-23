@@ -15,9 +15,9 @@ var orderedListTmpl texttemplate.Template
 // initializes the templates
 func init() {
 	orderedListTmpl = newTextTemplate("ordered list",
-		`{{ $ctx := .Context }}{{ with .Data }}{{ $items := .Items }}{{ $firstItem := index $items 0 }}<div{{ if .ID }} id="{{ .ID }}"{{ end }} class="olist {{ $firstItem.NumberingStyle }}{{ if .Role }} {{ .Role }}{{ end}}">
+		`{{ $ctx := .Context }}{{ with .Data }}{{ $items := .Items }}<div{{ if .ID }} id="{{ .ID }}"{{ end }} class="olist {{ .NumberingStyle }}{{ if .Role }} {{ .Role }}{{ end}}">
 {{ if .Title }}<div class="title">{{ escape .Title }}</div>
-{{ end }}<ol class="{{ $firstItem.NumberingStyle }}"{{ style $firstItem.NumberingStyle }}{{ if .Start }} start="{{ .Start }}"{{ end }}>
+{{ end }}<ol class="{{ .NumberingStyle }}"{{ style .NumberingStyle }}{{ if .Start }} start="{{ .Start }}"{{ end }}>
 {{ range $itemIndex, $item := $items }}<li>
 {{ renderElements $ctx $item.Elements | printf "%s" }}
 </li>
@@ -31,20 +31,22 @@ func init() {
 
 }
 
-func renderOrderedList(ctx *renderer.Context, l types.OrderedList) ([]byte, error) {
+func renderOrderedList(ctx *renderer.Context, l *types.OrderedList) ([]byte, error) {
 	result := bytes.NewBuffer(nil)
 	err := orderedListTmpl.Execute(result, ContextualPipeline{
 		Context: ctx,
 		Data: struct {
-			ID    string
-			Title string
-			Role  string
-			Start string
-			Items []types.OrderedListItem
+			ID             string
+			Title          string
+			Role           string
+			NumberingStyle string
+			Start          string
+			Items          []*types.OrderedListItem
 		}{
 			generateID(ctx, l.Attributes),
 			l.Attributes.GetAsString(types.AttrTitle),
 			l.Attributes.GetAsString(types.AttrRole),
+			getNumberingStyle(l),
 			l.Attributes.GetAsString(types.AttrStart),
 			l.Items,
 		},
@@ -52,19 +54,25 @@ func renderOrderedList(ctx *renderer.Context, l types.OrderedList) ([]byte, erro
 	if err != nil {
 		return nil, errors.Wrapf(err, "unable to render ordered list")
 	}
-	// log.Debugf("rendered ordered list of items: %s", result.Bytes())
 	return result.Bytes(), nil
 }
 
-func numberingType(s types.NumberingStyle) string {
-	switch s {
-	case types.LowerAlpha:
+func getNumberingStyle(l *types.OrderedList) string {
+	if s := l.Attributes.GetAsString(types.AttrNumberingStyle); s != "" {
+		return s
+	}
+	return string(l.Items[0].NumberingStyle)
+}
+
+func numberingType(style string) string {
+	switch style {
+	case string(types.LowerAlpha):
 		return ` type="a"`
-	case types.UpperAlpha:
+	case string(types.UpperAlpha):
 		return ` type="A"`
-	case types.LowerRoman:
+	case string(types.LowerRoman):
 		return ` type="i"`
-	case types.UpperRoman:
+	case string(types.UpperRoman):
 		return ` type="I"`
 	default:
 		return ""

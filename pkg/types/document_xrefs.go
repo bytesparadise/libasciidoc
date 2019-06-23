@@ -1,7 +1,7 @@
 package types
 
 import (
-	"fmt"
+	"strconv"
 
 	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
@@ -27,21 +27,21 @@ func NewElementReferencesCollector() *ElementReferencesCollector {
 // Visit Implements Visitable#Visit()
 func (c *ElementReferencesCollector) Visit(element Visitable) error {
 	switch e := element.(type) {
-	case Section:
-		elementID := e.Title.Attributes[AttrID]
+	case *Section:
+		elementID := e.Attributes[AttrID]
 		if elementID, ok := elementID.(string); ok {
 			for i := 1; ; i++ {
 				var key string
 				if i == 1 {
 					key = elementID
 				} else {
-					key = fmt.Sprintf("%s_%d", elementID, i)
+					key = elementID + "_" + strconv.Itoa(i)
 				}
 				if _, found := c.ElementReferences[key]; !found {
 					log.Debugf("Adding element reference: %v", key)
 					c.ElementReferences[key] = e.Title
 					// override the element id
-					e.Title.Attributes[AttrID] = key
+					e.Attributes[AttrID] = key
 					break
 				}
 

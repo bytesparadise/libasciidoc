@@ -95,7 +95,7 @@ func init() {
 		})
 }
 
-func renderParagraph(ctx *renderer.Context, p types.Paragraph) ([]byte, error) {
+func renderParagraph(ctx *renderer.Context, p *types.Paragraph) ([]byte, error) {
 	if len(p.Lines) == 0 {
 		return make([]byte, 0), nil
 	}
@@ -136,7 +136,7 @@ func renderParagraph(ctx *renderer.Context, p types.Paragraph) ([]byte, error) {
 	return result.Bytes(), nil
 }
 
-func renderAdmonitionParagraph(ctx *renderer.Context, p types.Paragraph) ([]byte, error) {
+func renderAdmonitionParagraph(ctx *renderer.Context, p *types.Paragraph) ([]byte, error) {
 	log.Debug("rendering admonition paragraph...")
 	result := bytes.NewBuffer(nil)
 	k, ok := p.Attributes[types.AttrAdmonitionKind].(types.AdmonitionKind)
@@ -164,7 +164,7 @@ func renderAdmonitionParagraph(ctx *renderer.Context, p types.Paragraph) ([]byte
 	return result.Bytes(), err
 }
 
-func renderSourceParagraph(ctx *renderer.Context, p types.Paragraph) ([]byte, error) {
+func renderSourceParagraph(ctx *renderer.Context, p *types.Paragraph) ([]byte, error) {
 	log.Debug("rendering source paragraph...")
 	result := bytes.NewBuffer(nil)
 	err := sourceParagraphTmpl.Execute(result, ContextualPipeline{
@@ -184,7 +184,7 @@ func renderSourceParagraph(ctx *renderer.Context, p types.Paragraph) ([]byte, er
 	return result.Bytes(), err
 }
 
-func renderVerseParagraph(ctx *renderer.Context, p types.Paragraph) ([]byte, error) {
+func renderVerseParagraph(ctx *renderer.Context, p *types.Paragraph) ([]byte, error) {
 	log.Debug("rendering verse paragraph...")
 	result := bytes.NewBuffer(nil)
 	err := verseParagraphTmpl.Execute(result, ContextualPipeline{
@@ -204,7 +204,7 @@ func renderVerseParagraph(ctx *renderer.Context, p types.Paragraph) ([]byte, err
 	return result.Bytes(), err
 }
 
-func renderQuoteParagraph(ctx *renderer.Context, p types.Paragraph) ([]byte, error) {
+func renderQuoteParagraph(ctx *renderer.Context, p *types.Paragraph) ([]byte, error) {
 	log.Debug("rendering quote paragraph...")
 	result := bytes.NewBuffer(nil)
 	err := quoteParagraphTmpl.Execute(result, ContextualPipeline{
@@ -224,7 +224,7 @@ func renderQuoteParagraph(ctx *renderer.Context, p types.Paragraph) ([]byte, err
 	return result.Bytes(), err
 }
 
-func renderDelimitedBlockParagraph(ctx *renderer.Context, p types.Paragraph) ([]byte, error) {
+func renderDelimitedBlockParagraph(ctx *renderer.Context, p *types.Paragraph) ([]byte, error) {
 	log.Debugf("rendering paragraph with %d lines within a delimited block or a list", len(p.Lines))
 	result := bytes.NewBuffer(nil)
 	err := listParagraphTmpl.Execute(result, ContextualPipeline{

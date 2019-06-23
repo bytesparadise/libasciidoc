@@ -5,11 +5,11 @@ import . "github.com/onsi/ginkgo"
 var _ = Describe("ordered lists", func() {
 
 	It("ordered list with title and role", func() {
-		actualContent := `.title
+		source := `.title
 [#myid]
 [.myrole]
 . item 1`
-		expectedResult := `<div id="myid" class="olist arabic myrole">
+		expected := `<div id="myid" class="olist arabic myrole">
 <div class="title">title</div>
 <ol class="arabic">
 <li>
@@ -17,40 +17,40 @@ var _ = Describe("ordered lists", func() {
 </li>
 </ol>
 </div>`
-		verify(GinkgoT(), expectedResult, actualContent)
+		verify(expected, source)
 	})
 
 	It("ordered list item with explicit start only", func() {
-		actualContent := `[start=5]
+		source := `[start=5]
 . item`
-		expectedResult := `<div class="olist arabic">
+		expected := `<div class="olist arabic">
 <ol class="arabic" start="5">
 <li>
 <p>item</p>
 </li>
 </ol>
 </div>`
-		verify(GinkgoT(), expectedResult, actualContent)
+		verify(expected, source)
 	})
 
 	It("ordered list item with explicit quoted numbering and start", func() {
-		actualContent := `["lowerroman", start="5"]
+		source := `["lowerroman", start="5"]
 . item`
-		expectedResult := `<div class="olist lowerroman">
+		expected := `<div class="olist lowerroman">
 <ol class="lowerroman" type="i" start="5">
 <li>
 <p>item</p>
 </li>
 </ol>
 </div>`
-		verify(GinkgoT(), expectedResult, actualContent)
+		verify(expected, source)
 	})
 
 	It("ordered list with paragraph continuation", func() {
-		actualContent := `. item 1
+		source := `. item 1
 +
 foo`
-		expectedResult := `<div class="olist arabic">
+		expected := `<div class="olist arabic">
 <ol class="arabic">
 <li>
 <p>item 1</p>
@@ -60,16 +60,16 @@ foo`
 </li>
 </ol>
 </div>`
-		verify(GinkgoT(), expectedResult, actualContent)
+		verify(expected, source)
 	})
 
 	It("ordered list with delimited block continuation", func() {
-		actualContent := `. item 1
+		source := `. item 1
 +
 ----
 foo
 ----`
-		expectedResult := `<div class="olist arabic">
+		expected := `<div class="olist arabic">
 <ol class="arabic">
 <li>
 <p>item 1</p>
@@ -81,18 +81,18 @@ foo
 </li>
 </ol>
 </div>`
-		verify(GinkgoT(), expectedResult, actualContent)
+		verify(expected, source)
 	})
 
 	It("ordered list with unnumbered items", func() {
-		actualContent := `. item 1
+		source := `. item 1
 		.. item 1.1
 		... item 1.1.1
 		... item 1.1.2
 		.. item 1.2
 		. item 2
 		.. item 2.1`
-		expectedResult := `<div class="olist arabic">
+		expected := `<div class="olist arabic">
 <ol class="arabic">
 <li>
 <p>item 1</p>
@@ -129,18 +129,18 @@ foo
 </li>
 </ol>
 </div>`
-		verify(GinkgoT(), expectedResult, actualContent)
+		verify(expected, source)
 	})
 
 	It("ordered list mixed with unordered list - simple case", func() {
-		actualContent := `. Linux
+		source := `. Linux
 * Fedora
 * Ubuntu
 * Slackware
 . BSD
 * FreeBSD
 * NetBSD`
-		expectedResult := `<div class="olist arabic">
+		expected := `<div class="olist arabic">
 <ol class="arabic">
 <li>
 <p>Linux</p>
@@ -173,11 +173,11 @@ foo
 </li>
 </ol>
 </div>`
-		verify(GinkgoT(), expectedResult, actualContent)
+		verify(expected, source)
 	})
 
 	It("ordered list mixed with unordered list - complex case", func() {
-		actualContent := `- unordered 1
+		source := `- unordered 1
 1. ordered 1.1
 	a. ordered 1.1.a
 	b. ordered 1.1.b
@@ -201,7 +201,7 @@ extra lines.
 	.. ordered 3.2.I
 	.. ordered 3.2.II
 . ordered 3.3`
-		expectedResult := `<div class="ulist">
+		expected := `<div class="ulist">
 <ul>
 <li>
 <p>unordered 1</p>
@@ -298,17 +298,17 @@ extra lines.</p>
 </li>
 </ul>
 </div>`
-		verify(GinkgoT(), expectedResult, actualContent)
+		verify(expected, source)
 	})
 
 	It("all kinds of lists - complex case 3", func() {
-		actualContent := `* foo
+		source := `* foo
 1. bar
 a. foo
 2. baz
 * foo2
 - bar2`
-		expectedResult := `<div class="ulist">
+		expected := `<div class="ulist">
 <ul>
 <li>
 <p>foo</p>
@@ -342,11 +342,11 @@ a. foo
 </li>
 </ul>
 </div>`
-		verify(GinkgoT(), expectedResult, actualContent)
+		verify(expected, source)
 	})
 
 	It("drop principal text in list item", func() {
-		actualContent := `. {blank}
+		source := `. {blank}
 +
 ----
 print("one")
@@ -356,7 +356,7 @@ print("one")
 ----
 print("one")
 ----`
-		expectedResult := `<div class="olist arabic">
+		expected := `<div class="olist arabic">
 <ol class="arabic">
 <li>
 <p></p>
@@ -376,20 +376,20 @@ print("one")
 </li>
 </ol>
 </div>`
-		verify(GinkgoT(), expectedResult, actualContent)
+		verify(expected, source)
 	})
 
 	Context("attach to ordered list item ancestor", func() {
 
 		It("attach to grandparent ordered list item", func() {
-			actualContent := `. grandparent list item
+			source := `. grandparent list item
 .. parent list item
 ... child list item
 
 
 +
 paragraph attached to grandparent list item`
-			expectedResult := `<div class="olist arabic">
+			expected := `<div class="olist arabic">
 <ol class="arabic">
 <li>
 <p>grandparent list item</p>
@@ -413,17 +413,17 @@ paragraph attached to grandparent list item`
 </li>
 </ol>
 </div>`
-			verify(GinkgoT(), expectedResult, actualContent)
+			verify(expected, source)
 		})
 
 		It("attach to parent ordered list item", func() {
-			actualContent := `. grandparent list item
+			source := `. grandparent list item
 .. parent list item
 ... child list item
 
 +
 paragraph attached to parent list item`
-			expectedResult := `<div class="olist arabic">
+			expected := `<div class="olist arabic">
 <ol class="arabic">
 <li>
 <p>grandparent list item</p>
@@ -447,16 +447,16 @@ paragraph attached to parent list item`
 </li>
 </ol>
 </div>`
-			verify(GinkgoT(), expectedResult, actualContent)
+			verify(expected, source)
 		})
 
 		It("attach to child ordered list item", func() {
-			actualContent := `. grandparent list item
+			source := `. grandparent list item
 .. parent list item
 ... child list item
 +
 paragraph attached to child list item`
-			expectedResult := `<div class="olist arabic">
+			expected := `<div class="olist arabic">
 <ol class="arabic">
 <li>
 <p>grandparent list item</p>
@@ -480,7 +480,7 @@ paragraph attached to child list item`
 </li>
 </ol>
 </div>`
-			verify(GinkgoT(), expectedResult, actualContent)
+			verify(expected, source)
 		})
 	})
 })

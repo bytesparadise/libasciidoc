@@ -6,9 +6,9 @@ import (
 )
 
 // Prerender runs the pre-rendering phase, with the following steps (if needed/applicable):
-// - process file inclusions
 // - wraps elements in a preamble
-// - generated the ToC
+// - generates the ToC
+// - processes the document headers (added in the document attributes)
 func Prerender(ctx *Context) error {
 	IncludePreamble(ctx)
 	IncludeTableOfContents(ctx)

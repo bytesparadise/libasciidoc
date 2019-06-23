@@ -2,7 +2,6 @@ package types
 
 import (
 	"bytes"
-	"reflect"
 
 	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
@@ -74,10 +73,6 @@ func NilSafe(elements []interface{}) []interface{} {
 
 func mergeElements(elements ...interface{}) InlineElements {
 	result := make([]interface{}, 0)
-	// if log.IsLevelEnabled(log.DebugLevel) {
-	// 	log.Debugf("merging %d element(s):", len(elements))
-	// 	spew.Dump(elements)
-	// }
 	buff := bytes.NewBuffer(nil)
 	for _, element := range elements {
 		if element == nil {
@@ -91,6 +86,9 @@ func mergeElements(elements ...interface{}) InlineElements {
 				buff.WriteByte(b)
 			}
 		case StringElement:
+			content := element.Content
+			buff.WriteString(content)
+		case *StringElement:
 			content := element.Content
 			buff.WriteString(content)
 		case []interface{}:
@@ -107,10 +105,6 @@ func mergeElements(elements ...interface{}) InlineElements {
 	}
 	// if buff was filled because some text was found
 	result, _ = appendBuffer(result, buff)
-	// if log.IsLevelEnabled(log.DebugLevel) {
-	// 	log.Debug(" merged elements:")
-	// 	spew.Dump(result)
-	// }
 	return result
 }
 
@@ -137,18 +131,6 @@ func Apply(source string, fs ...applyFunc) string {
 	return result
 }
 
-func toPtr(element interface{}) interface{} {
-	value := reflect.ValueOf(element)
-	if value.Type().Kind() == reflect.Ptr {
-		return element
-	}
-	ptr := reflect.New(reflect.TypeOf(element))
-	temp := ptr.Elem()
-	temp.Set(value)
-	// log.Debugf("Returning pointer of type %T", ptr.Interface())
-	return ptr.Interface()
-}
-
 func toString(lines []interface{}) ([]string, error) {
 	result := make([]string, len(lines))
 	for i, line := range lines {
@@ -162,22 +144,22 @@ func toString(lines []interface{}) ([]string, error) {
 }
 
 // SearchAttributeDeclaration returns the value of the DocumentAttributeDeclaration whose name is given
-func SearchAttributeDeclaration(elements []interface{}, name string) (DocumentAttributeDeclaration, bool) {
+func SearchAttributeDeclaration(elements []interface{}, name string) (*DocumentAttributeDeclaration, bool) {
 	for _, e := range elements {
 		switch e := e.(type) {
-		case Section:
+		case *Section:
 			if result, found := SearchAttributeDeclaration(e.Elements, name); found {
 				return result, found
 			}
-		case Preamble:
+		case *Preamble:
 			if result, found := SearchAttributeDeclaration(e.Elements, name); found {
 				return result, found
 			}
-		case DocumentAttributeDeclaration:
+		case *DocumentAttributeDeclaration:
 			if e.Name == name {
 				return e, true
 			}
 		}
 	}
-	return DocumentAttributeDeclaration{}, false
+	return nil, false
 }

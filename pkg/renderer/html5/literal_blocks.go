@@ -28,29 +28,34 @@ func init() {
 	})
 }
 
-func renderLiteralBlock(ctx *renderer.Context, b types.LiteralBlock) ([]byte, error) {
+func renderLiteralBlock(ctx *renderer.Context, b *types.LiteralBlock) ([]byte, error) {
 	log.Debugf("rendering delimited block with content: %s", b.Lines)
 	var lines []string
-	if b.Attributes.GetAsString(types.AttrLiteralBlockType) == types.LiteralBlockWithSpacesOnFirstLine {
-		// remove as many spaces as needed on each line
-		lines = make([]string, len(b.Lines))
-		spaceCount := float64(0)
-		// first pass to detemine the minimum number of spaces to remove
-		for i, line := range b.Lines {
-			l := strings.TrimLeft(line, " ")
-			if i == 0 {
-				spaceCount = float64(len(line) - len(l))
-			} else {
-				spaceCount = math.Min(spaceCount, float64(len(line)-len(l)))
+	switch b.Attributes.GetAsString(types.AttrLiteralBlockType) {
+	case types.LiteralBlockWithSpacesOnFirstLine:
+		if len(b.Lines) == 1 {
+			lines = []string{strings.TrimLeft(b.Lines[0], " ")}
+		} else {
+			lines = make([]string, len(b.Lines))
+			// remove as many spaces as needed on each line
+			spaceCount := float64(0)
+			// first pass to detemine the minimum number of spaces to remove
+			for i, line := range b.Lines {
+				l := strings.TrimLeft(line, " ")
+				if i == 0 {
+					spaceCount = float64(len(line) - len(l))
+				} else {
+					spaceCount = math.Min(spaceCount, float64(len(line)-len(l)))
+				}
+			}
+			log.Debugf("trimming %d space(s) on each line", int(spaceCount))
+			// then remove the same number of spaces on each line
+			spaces := strings.Repeat(" ", int(spaceCount))
+			for i, line := range b.Lines {
+				lines[i] = strings.TrimPrefix(line, spaces)
 			}
 		}
-		// then remove the same number of spaces on each line
-		spaces := strings.Repeat(" ", int(spaceCount))
-		for i, line := range b.Lines {
-			lines[i] = strings.TrimPrefix(line, spaces)
-		}
-	} else {
-		// just use the lines as-is
+	default:
 		lines = b.Lines
 	}
 	result := bytes.NewBuffer(nil)

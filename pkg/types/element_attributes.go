@@ -2,6 +2,7 @@ package types
 
 import (
 	"fmt"
+	"strconv"
 	"strings"
 
 	"github.com/pkg/errors"
@@ -47,6 +48,8 @@ const (
 	AttrCheckStyle string = "checkstyle"
 	// AttrStart the `start` attribute in an ordered list
 	AttrStart string = "start"
+	// AttrNumberingStyle the numbering style of items in a list
+	AttrNumberingStyle = "numberingStyle"
 	// AttrQandA the `qanda` attribute for Q&A labeled lists
 	AttrQandA string = "qanda"
 	// AttrLevelOffset the `leveloffset` attribute used in file inclusions
@@ -63,7 +66,10 @@ type ElementWithAttributes interface {
 // NewElementID initializes a new attribute map with a single entry for the ID using the given value
 func NewElementID(id string) (ElementAttributes, error) {
 	log.Debugf("initializing a new ElementID with ID=%s", id)
-	return ElementAttributes{AttrID: id}, nil
+	return ElementAttributes{
+		AttrID:       id,
+		AttrCustomID: true,
+	}, nil
 }
 
 // NewInlineElementID initializes a new attribute map with a single entry for the ID using the given value
@@ -98,10 +104,10 @@ func NewAttributeGroup(attributes []interface{}) (ElementAttributes, error) {
 	// log.Debugf("initializing a new AttributeGroup with %v", attributes)
 	result := make(ElementAttributes)
 	for _, a := range attributes {
-		log.Debugf("processing attribute element of type %T", a)
+		// log.Debugf("processing attribute element of type %T", a)
 		if a, ok := a.(ElementAttributes); ok {
 			for k, v := range a {
-				log.Debugf("adding attribute %v='%v'", k, v)
+				// log.Debugf("adding attribute %v='%v'", k, v)
 				result[k] = v
 			}
 		} else {
@@ -167,42 +173,41 @@ func NewSourceAttributes(language string) (ElementAttributes, error) {
 }
 
 // WithAttributes set the attributes on the given elements if its type is supported, otherwise returns an error
-func WithAttributes(element interface{}, attributes []interface{}) (interface{}, error) {
-	attrs := NewElementAttributes(attributes)
+func WithAttributes(element interface{}, attributes ElementAttributes) (interface{}, error) {
 	// look for custom ID
-	for attr := range attrs {
+	for attr := range attributes {
 		if attr == AttrID {
 			// mark custom_id flag to `true`
-			attrs[AttrCustomID] = true
+			attributes[AttrCustomID] = true
 		}
 	}
 	if element, ok := element.(ElementWithAttributes); ok {
 		if len(attributes) > 0 {
 			log.Debugf("setting %d attribute(s) on element of type %T", len(attributes), element)
 		}
-		element.AddAttributes(attrs)
+		element.AddAttributes(attributes)
 		return element, nil
 	}
 	// special case for DelimitedBlock where we need a pointer receiver to modify the `Kind` field of the struct.
 	if element, ok := element.(DelimitedBlock); ok {
 		block := &element
-		block.AddAttributes(attrs)
+		block.AddAttributes(attributes)
 		return element, nil
 	}
 	// special case for any ListItem where we need a pointer receiver to modify the `Kind` field of the struct.
 	if element, ok := element.(OrderedListItem); ok {
 		item := &element
-		item.AddAttributes(attrs)
+		item.AddAttributes(attributes)
 		return element, nil
 	}
 	if element, ok := element.(UnorderedListItem); ok {
 		item := &element
-		item.AddAttributes(attrs)
+		item.AddAttributes(attributes)
 		return element, nil
 	}
 	if element, ok := element.(LabeledListItem); ok {
 		item := &element
-		item.AddAttributes(attrs)
+		item.AddAttributes(attributes)
 		return element, nil
 	}
 
@@ -227,6 +232,21 @@ func (a ElementAttributes) GetAsString(key string) string {
 	return ""
 }
 
+// GetAsInt returns the value of the key as an int (and true), or (-1, false) string if the key did not exist
+func (a ElementAttributes) GetAsInt(key string) (int, bool) {
+	if v, ok := a[key]; ok {
+		if v, ok := v.(string); ok {
+			i, err := strconv.ParseInt(v, 10, 64)
+			if err != nil {
+				log.WithError(err).Errorf("unable to parse '%s' value %v", key, v)
+				return -1, false
+			}
+			return int(i), true
+		}
+	}
+	return -1, false
+}
+
 // GetAsBool returns the value of the key as a bool, or `false` if the key did not exist
 // or if its value was not a bool
 func (a ElementAttributes) GetAsBool(key string) bool {
@@ -240,6 +260,9 @@ func (a ElementAttributes) GetAsBool(key string) bool {
 
 // AddAll adds all the given attributes to the current ones
 func (a ElementAttributes) AddAll(attributes ElementAttributes) {
+	if attributes == nil {
+		return
+	}
 	for k, v := range attributes {
 		a[k] = v
 	}

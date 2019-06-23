@@ -62,7 +62,7 @@ func renderLine(ctx *renderer.Context, elements types.InlineElements, renderElem
 			return nil, errors.Wrapf(err, "unable to render line")
 		}
 		if i == len(elements)-1 {
-			if _, ok := element.(types.StringElement); ok { // TODO: only for StringElement? or for any kind of element?
+			if _, ok := element.(*types.StringElement); ok { // TODO: only for StringElement? or for any kind of element?
 				// trim trailing spaces before returning the line
 				buff.WriteString(strings.TrimRight(string(renderedElement), " "))
 				log.Debugf("trimmed spaces on '%v'", string(renderedElement))
@@ -78,7 +78,6 @@ func renderLine(ctx *renderer.Context, elements types.InlineElements, renderElem
 
 	// check if the line has some substitution
 	if !hasSubstitutions(elements) {
-		// log.Debug("no substitution in the line of elements")
 		return buff.Bytes(), nil
 	}
 	// otherwise, parse the rendered line, in case some new elements (links, etc.) "appeared" after document attribute substitutions
@@ -91,15 +90,11 @@ func renderLine(ctx *renderer.Context, elements types.InlineElements, renderElem
 	if !ok {
 		return []byte{}, errors.Errorf("failed process elements after substitution")
 	}
-	// if log.IsLevelEnabled(log.DebugLevel) {
-	// 	log.Debug("post-substitution line of elements:")
-	// 	spew.Dump(elements)
-	// }
 	buff = bytes.NewBuffer(nil)
 	// render all elements of the line, but StringElement must be rendered plain-text now, to avoid double HTML escape
 	for i, element := range elements {
 		switch element := element.(type) {
-		case types.StringElement:
+		case *types.StringElement:
 			if i == len(elements)-1 {
 				buff.WriteString(strings.TrimRight(element.Content, " "))
 			} else {
@@ -121,7 +116,7 @@ func renderLine(ctx *renderer.Context, elements types.InlineElements, renderElem
 // check if there's at least on substitution before doing the whole process
 func hasSubstitutions(e types.InlineElements) bool {
 	for _, element := range e {
-		if _, ok := element.(types.DocumentAttributeSubstitution); ok {
+		if _, ok := element.(*types.DocumentAttributeSubstitution); ok {
 			return true
 		}
 	}

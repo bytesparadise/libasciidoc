@@ -2,11 +2,9 @@ package html5
 
 import (
 	"bytes"
-	"fmt"
 	"html"
+	"strconv"
 	texttemplate "text/template"
-
-	"github.com/davecgh/go-spew/spew"
 
 	"github.com/bytesparadise/libasciidoc/pkg/renderer"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
@@ -128,7 +126,7 @@ func init() {
 		})
 }
 
-func renderDelimitedBlock(ctx *renderer.Context, b types.DelimitedBlock) ([]byte, error) {
+func renderDelimitedBlock(ctx *renderer.Context, b *types.DelimitedBlock) ([]byte, error) {
 	log.Debugf("rendering delimited block of kind '%v'", b.Attributes[types.AttrKind])
 	var err error
 	kind := b.Kind
@@ -154,7 +152,7 @@ func renderDelimitedBlock(ctx *renderer.Context, b types.DelimitedBlock) ([]byte
 	}
 }
 
-func renderFencedBlock(ctx *renderer.Context, b types.DelimitedBlock) ([]byte, error) {
+func renderFencedBlock(ctx *renderer.Context, b *types.DelimitedBlock) ([]byte, error) {
 	previouslyWithin := ctx.SetWithinDelimitedBlock(true)
 	previouslyInclude := ctx.SetIncludeBlankLine(true)
 	defer func() {
@@ -177,7 +175,7 @@ func renderFencedBlock(ctx *renderer.Context, b types.DelimitedBlock) ([]byte, e
 	return result.Bytes(), err
 }
 
-func renderListingBlock(ctx *renderer.Context, b types.DelimitedBlock) ([]byte, error) {
+func renderListingBlock(ctx *renderer.Context, b *types.DelimitedBlock) ([]byte, error) {
 	previouslyWithin := ctx.SetWithinDelimitedBlock(true)
 	previouslyInclude := ctx.SetIncludeBlankLine(true)
 	defer func() {
@@ -200,7 +198,7 @@ func renderListingBlock(ctx *renderer.Context, b types.DelimitedBlock) ([]byte, 
 	return result.Bytes(), err
 }
 
-func renderSourceBlock(ctx *renderer.Context, b types.DelimitedBlock) ([]byte, error) {
+func renderSourceBlock(ctx *renderer.Context, b *types.DelimitedBlock) ([]byte, error) {
 	previouslyWithin := ctx.SetWithinDelimitedBlock(true)
 	previouslyInclude := ctx.SetIncludeBlankLine(true)
 	defer func() {
@@ -226,7 +224,7 @@ func renderSourceBlock(ctx *renderer.Context, b types.DelimitedBlock) ([]byte, e
 	return result.Bytes(), err
 }
 
-func renderExampleBlock(ctx *renderer.Context, b types.DelimitedBlock) ([]byte, error) {
+func renderExampleBlock(ctx *renderer.Context, b *types.DelimitedBlock) ([]byte, error) {
 	result := bytes.NewBuffer(nil)
 	if k, ok := b.Attributes[types.AttrAdmonitionKind].(types.AdmonitionKind); ok {
 		err := admonitionBlockTmpl.Execute(result, ContextualPipeline{
@@ -252,7 +250,7 @@ func renderExampleBlock(ctx *renderer.Context, b types.DelimitedBlock) ([]byte, 
 	// default, example block
 	var title string
 	if b.Attributes.Has(types.AttrTitle) {
-		title = fmt.Sprintf("Example %d. %s", ctx.GetAndIncrementExampleBlockCounter(), getTitle(b.Attributes))
+		title = "Example " + strconv.Itoa(ctx.GetAndIncrementExampleBlockCounter()) + ". " + getTitle(b.Attributes)
 	}
 	err := exampleBlockTmpl.Execute(result, ContextualPipeline{
 		Context: ctx,
@@ -269,7 +267,7 @@ func renderExampleBlock(ctx *renderer.Context, b types.DelimitedBlock) ([]byte, 
 	return result.Bytes(), err
 }
 
-func renderQuoteBlock(ctx *renderer.Context, b types.DelimitedBlock) ([]byte, error) {
+func renderQuoteBlock(ctx *renderer.Context, b *types.DelimitedBlock) ([]byte, error) {
 	result := bytes.NewBuffer(nil)
 	err := quoteBlockTmpl.Execute(result, ContextualPipeline{
 		Context: ctx,
@@ -288,17 +286,16 @@ func renderQuoteBlock(ctx *renderer.Context, b types.DelimitedBlock) ([]byte, er
 	return result.Bytes(), err
 }
 
-func renderVerseBlock(ctx *renderer.Context, b types.DelimitedBlock) ([]byte, error) {
+func renderVerseBlock(ctx *renderer.Context, b *types.DelimitedBlock) ([]byte, error) {
 	var elements = make([]interface{}, 0)
-	log.Debugf("including elements in verse block: %v", spew.Sdump(b.Elements))
 	if len(b.Elements) > 0 {
 		for _, element := range b.Elements {
 			switch e := element.(type) {
-			case types.Paragraph:
+			case *types.Paragraph:
 				for _, l := range e.Lines {
 					elements = append(elements, l)
 				}
-			case types.BlankLine:
+			case *types.BlankLine:
 				elements = append(elements, e)
 			default:
 				log.Warnf("unexpected type of element to include in verse block: %T", element)
@@ -325,12 +322,12 @@ func renderVerseBlock(ctx *renderer.Context, b types.DelimitedBlock) ([]byte, er
 	return result.Bytes(), err
 }
 
-func renderCommentBlock(ctx *renderer.Context, b types.DelimitedBlock) ([]byte, error) { //nolint: unparam
+func renderCommentBlock(ctx *renderer.Context, b *types.DelimitedBlock) ([]byte, error) { //nolint: unparam
 	// comments block are not preserved during rendering
 	return []byte{}, nil
 }
 
-func renderSidebarBlock(ctx *renderer.Context, b types.DelimitedBlock) ([]byte, error) {
+func renderSidebarBlock(ctx *renderer.Context, b *types.DelimitedBlock) ([]byte, error) {
 	result := bytes.NewBuffer(nil)
 	err := sidebarBlockTmpl.Execute(result, ContextualPipeline{
 		Context: ctx,
@@ -355,7 +352,7 @@ func discardTrailingBlankLines(elements []interface{}) []interface{} {
 		if len(filteredElements) == 0 {
 			break
 		}
-		if _, ok := filteredElements[len(filteredElements)-1].(types.BlankLine); ok {
+		if _, ok := filteredElements[len(filteredElements)-1].(*types.BlankLine); ok {
 			log.Debugf("element of type '%T' at position %d is a blank line, discarding it", filteredElements[len(filteredElements)-1], len(filteredElements)-1)
 			// remove last element of the slice since it's a blankline
 			filteredElements = filteredElements[:len(filteredElements)-1]

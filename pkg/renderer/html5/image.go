@@ -35,7 +35,7 @@ func init() {
 		})
 }
 
-func renderImageBlock(ctx *renderer.Context, img types.ImageBlock) ([]byte, error) {
+func renderImageBlock(ctx *renderer.Context, img *types.ImageBlock) ([]byte, error) {
 	result := bytes.NewBuffer(nil)
 	title := ""
 	if t := img.Attributes.GetAsString(types.AttrTitle); t != "" {
@@ -68,7 +68,7 @@ func renderImageBlock(ctx *renderer.Context, img types.ImageBlock) ([]byte, erro
 	return result.Bytes(), nil
 }
 
-func renderInlineImage(ctx *renderer.Context, img types.InlineImage) ([]byte, error) {
+func renderInlineImage(ctx *renderer.Context, img *types.InlineImage) ([]byte, error) {
 	result := bytes.NewBuffer(nil)
 	err := inlineImageTmpl.Execute(result, struct {
 		Role   string
@@ -101,20 +101,16 @@ func renderInlineImage(ctx *renderer.Context, img types.InlineImage) ([]byte, er
 func getImageHref(ctx *renderer.Context, l string) string {
 	if _, err := url.ParseRequestURI(l); err == nil {
 		// location is a valid URL, so return it as-is
-		log.Debugf("location '%s' is an URL", l)
 		return l
 	}
 	if filepath.IsAbs(l) {
-		log.Debugf("location '%s' is an absolute path", l)
 		return l
 	}
 	// use `imagesdir` attribute if it is set
 	if imagesdir := ctx.GetImagesDir(); imagesdir != "" {
-		log.Debugf("location '%s' is a relative path, adding '%s' as a prefix", l, imagesdir)
-		return fmt.Sprintf("%s/%s", imagesdir, l)
+		return imagesdir + "/" + l
 	}
 	// default
-	log.Debugf("location '%s' is a relative path, but 'imagesdir' attribute was not set", l)
 	return l
 
 }

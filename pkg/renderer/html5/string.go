@@ -11,14 +11,13 @@ import (
 
 var stringTmpl = newHTMLTemplate("string element", "{{ . }}")
 
-func renderStringElement(ctx *renderer.Context, str types.StringElement) ([]byte, error) { //nolint: unparam
+func renderStringElement(ctx *renderer.Context, str *types.StringElement) ([]byte, error) { //nolint: unparam
 	buf := bytes.NewBuffer(nil)
 	err := stringTmpl.Execute(buf, str.Content)
 	if err != nil {
 		return []byte{}, errors.Wrapf(err, "unable to render string")
 	}
 	result := convert(buf.String(), ellipsis)
-	// log.Debugf("rendered string: %s", result)
 	return []byte(result), nil
 }
 
