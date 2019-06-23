@@ -762,7 +762,6 @@ func setNumberingStyle(items []*OrderedListItem, n NumberingStyle) {
 type OrderedListItem struct {
 	Attributes     ElementAttributes
 	Level          int
-	Position       int // TODO is it useful?
 	NumberingStyle NumberingStyle
 	Elements       []interface{}
 }
@@ -797,12 +796,10 @@ func NewOrderedListItem(prefix OrderedListItemPrefix, elements []interface{}, at
 	if attributes, ok := attributes.(ElementAttributes); ok {
 		attrs.AddAll(attributes)
 	}
-	p := 1 // default position
 	return &OrderedListItem{
 		Attributes:     attrs,
 		NumberingStyle: prefix.NumberingStyle,
 		Level:          prefix.Level,
-		Position:       p,
 		Elements:       elements,
 	}, nil
 }

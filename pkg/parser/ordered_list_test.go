@@ -27,7 +27,6 @@ var _ = Describe("ordered lists - preflight", func() {
 				Blocks: []interface{}{
 					&types.OrderedListItem{
 						Level:          2,
-						Position:       1,
 						NumberingStyle: types.LowerAlpha,
 						Attributes:     map[string]interface{}{},
 						Elements:       elements,
@@ -43,7 +42,6 @@ var _ = Describe("ordered lists - preflight", func() {
 				Blocks: []interface{}{
 					&types.OrderedListItem{
 						Level:          1,
-						Position:       1,
 						NumberingStyle: types.Arabic,
 						Attributes:     map[string]interface{}{},
 						Elements:       elements,
@@ -59,7 +57,6 @@ var _ = Describe("ordered lists - preflight", func() {
 				Blocks: []interface{}{
 					&types.OrderedListItem{
 						Level:          1,
-						Position:       1,
 						NumberingStyle: types.LowerAlpha,
 						Attributes:     map[string]interface{}{},
 						Elements:       elements,
@@ -75,7 +72,6 @@ var _ = Describe("ordered lists - preflight", func() {
 				Blocks: []interface{}{
 					&types.OrderedListItem{
 						Level:          1,
-						Position:       1,
 						NumberingStyle: types.UpperAlpha,
 						Attributes:     map[string]interface{}{},
 						Elements:       elements,
@@ -91,7 +87,6 @@ var _ = Describe("ordered lists - preflight", func() {
 				Blocks: []interface{}{
 					&types.OrderedListItem{
 						Level:          1,
-						Position:       1,
 						NumberingStyle: types.LowerRoman,
 						Attributes:     map[string]interface{}{},
 						Elements:       elements,
@@ -107,7 +102,6 @@ var _ = Describe("ordered lists - preflight", func() {
 				Blocks: []interface{}{
 					&types.OrderedListItem{
 						Level:          1,
-						Position:       1,
 						NumberingStyle: types.UpperRoman,
 						Attributes:     map[string]interface{}{},
 						Elements:       elements,
@@ -128,14 +122,12 @@ var _ = Describe("ordered lists - preflight", func() {
 							"lowerroman": nil,
 						},
 						Level:          1,
-						Position:       1,
 						NumberingStyle: types.Arabic,
 						Elements:       elements,
 					},
 					&types.OrderedListItem{
 						Attributes:     types.ElementAttributes{},
 						Level:          1,
-						Position:       1,
 						NumberingStyle: types.Arabic,
 						Elements:       elements,
 					},
@@ -151,7 +143,6 @@ var _ = Describe("ordered lists - preflight", func() {
 				Blocks: []interface{}{
 					&types.OrderedListItem{
 						Level:          1,
-						Position:       1,
 						NumberingStyle: types.Arabic,
 						Attributes: types.ElementAttributes{
 							"start": "5",
@@ -170,7 +161,6 @@ var _ = Describe("ordered lists - preflight", func() {
 				Blocks: []interface{}{
 					&types.OrderedListItem{
 						Level:          1,
-						Position:       1,
 						NumberingStyle: types.Arabic,
 						Attributes: types.ElementAttributes{
 							"lowerroman": nil,
@@ -195,7 +185,6 @@ var _ = Describe("ordered lists - preflight", func() {
 				Blocks: []interface{}{
 					&types.OrderedListItem{
 						Level:          1,
-						Position:       1,
 						NumberingStyle: types.Arabic,
 						Attributes: types.ElementAttributes{
 							types.AttrTitle: "Ordered, max nesting",
@@ -215,7 +204,6 @@ var _ = Describe("ordered lists - preflight", func() {
 					},
 					&types.OrderedListItem{
 						Level:          2,
-						Position:       1,
 						NumberingStyle: types.LowerAlpha,
 						Attributes:     types.ElementAttributes{},
 						Elements: []interface{}{
@@ -233,7 +221,6 @@ var _ = Describe("ordered lists - preflight", func() {
 					},
 					&types.OrderedListItem{
 						Level:          3,
-						Position:       1,
 						NumberingStyle: types.LowerRoman,
 						Attributes:     types.ElementAttributes{},
 						Elements: []interface{}{
@@ -251,7 +238,6 @@ var _ = Describe("ordered lists - preflight", func() {
 					},
 					&types.OrderedListItem{
 						Level:          4,
-						Position:       1,
 						NumberingStyle: types.UpperAlpha,
 						Attributes:     types.ElementAttributes{},
 						Elements: []interface{}{
@@ -269,7 +255,6 @@ var _ = Describe("ordered lists - preflight", func() {
 					},
 					&types.OrderedListItem{
 						Level:          5,
-						Position:       1,
 						NumberingStyle: types.UpperRoman,
 						Attributes:     types.ElementAttributes{},
 						Elements: []interface{}{
@@ -287,7 +272,6 @@ var _ = Describe("ordered lists - preflight", func() {
 					},
 					&types.OrderedListItem{
 						Level:          1,
-						Position:       1,
 						NumberingStyle: types.Arabic,
 						Attributes:     types.ElementAttributes{},
 						Elements: []interface{}{
@@ -320,7 +304,6 @@ var _ = Describe("ordered lists - preflight", func() {
 				Blocks: []interface{}{
 					&types.OrderedListItem{
 						Level:          1,
-						Position:       1,
 						NumberingStyle: types.Arabic,
 						Attributes: types.ElementAttributes{
 							types.AttrTitle: "Ordered, max nesting",
@@ -340,7 +323,6 @@ var _ = Describe("ordered lists - preflight", func() {
 					},
 					&types.OrderedListItem{
 						Level:          2,
-						Position:       1,
 						NumberingStyle: types.LowerAlpha,
 						Attributes:     types.ElementAttributes{},
 						Elements: []interface{}{
@@ -358,7 +340,6 @@ var _ = Describe("ordered lists - preflight", func() {
 					},
 					&types.OrderedListItem{
 						Level:          3,
-						Position:       1,
 						NumberingStyle: types.LowerRoman,
 						Attributes:     types.ElementAttributes{},
 						Elements: []interface{}{
@@ -376,7 +357,6 @@ var _ = Describe("ordered lists - preflight", func() {
 					},
 					&types.OrderedListItem{
 						Level:          4,
-						Position:       1,
 						NumberingStyle: types.UpperAlpha,
 						Attributes:     types.ElementAttributes{},
 						Elements: []interface{}{
@@ -394,7 +374,6 @@ var _ = Describe("ordered lists - preflight", func() {
 					},
 					&types.OrderedListItem{
 						Level:          5,
-						Position:       1,
 						NumberingStyle: types.UpperRoman,
 						Attributes:     types.ElementAttributes{},
 						Elements: []interface{}{
@@ -412,7 +391,6 @@ var _ = Describe("ordered lists - preflight", func() {
 					},
 					&types.OrderedListItem{
 						Level:          2,
-						Position:       1,
 						NumberingStyle: types.LowerAlpha,
 						Attributes:     types.ElementAttributes{},
 						Elements: []interface{}{
@@ -444,7 +422,6 @@ var _ = Describe("ordered lists - preflight", func() {
 				Blocks: []interface{}{
 					&types.OrderedListItem{
 						Level:          1,
-						Position:       1,
 						NumberingStyle: types.Arabic,
 						Attributes:     map[string]interface{}{},
 						Elements: []interface{}{
@@ -460,7 +437,6 @@ var _ = Describe("ordered lists - preflight", func() {
 					},
 					&types.OrderedListItem{
 						Level:          1,
-						Position:       1,
 						NumberingStyle: types.Arabic,
 						Attributes:     map[string]interface{}{},
 						Elements: []interface{}{
@@ -487,7 +463,6 @@ var _ = Describe("ordered lists - preflight", func() {
 				Blocks: []interface{}{
 					&types.OrderedListItem{
 						Level:          1,
-						Position:       1,
 						NumberingStyle: types.Arabic,
 						Attributes:     map[string]interface{}{},
 						Elements: []interface{}{
@@ -503,7 +478,6 @@ var _ = Describe("ordered lists - preflight", func() {
 					},
 					&types.OrderedListItem{
 						Level:          1,
-						Position:       1,
 						NumberingStyle: types.Arabic,
 						Attributes:     map[string]interface{}{},
 						Elements: []interface{}{
@@ -537,7 +511,6 @@ var _ = Describe("ordered lists - preflight", func() {
 				Blocks: []interface{}{
 					&types.OrderedListItem{
 						Level:          1,
-						Position:       1,
 						NumberingStyle: types.Arabic,
 						Attributes:     map[string]interface{}{},
 						Elements: []interface{}{
@@ -553,7 +526,6 @@ var _ = Describe("ordered lists - preflight", func() {
 					},
 					&types.OrderedListItem{
 						Level:          2,
-						Position:       1,
 						NumberingStyle: types.LowerAlpha,
 						Attributes:     map[string]interface{}{},
 						Elements: []interface{}{
@@ -569,7 +541,6 @@ var _ = Describe("ordered lists - preflight", func() {
 					},
 					&types.OrderedListItem{
 						Level:          3,
-						Position:       1,
 						NumberingStyle: types.LowerRoman,
 						Attributes: types.ElementAttributes{
 							"upperroman": nil,
@@ -587,7 +558,6 @@ var _ = Describe("ordered lists - preflight", func() {
 					},
 					&types.OrderedListItem{
 						Level:          3,
-						Position:       1,
 						NumberingStyle: types.LowerRoman,
 						Attributes:     map[string]interface{}{},
 						Elements: []interface{}{
@@ -603,7 +573,6 @@ var _ = Describe("ordered lists - preflight", func() {
 					},
 					&types.OrderedListItem{
 						Level:          2,
-						Position:       1,
 						NumberingStyle: types.LowerAlpha,
 						Attributes:     map[string]interface{}{},
 						Elements: []interface{}{
@@ -619,7 +588,6 @@ var _ = Describe("ordered lists - preflight", func() {
 					},
 					&types.OrderedListItem{
 						Level:          1,
-						Position:       1,
 						NumberingStyle: types.Arabic,
 						Attributes:     map[string]interface{}{},
 						Elements: []interface{}{
@@ -635,7 +603,6 @@ var _ = Describe("ordered lists - preflight", func() {
 					},
 					&types.OrderedListItem{
 						Level:          2,
-						Position:       1,
 						NumberingStyle: types.LowerAlpha,
 						Attributes:     map[string]interface{}{},
 						Elements: []interface{}{
@@ -673,7 +640,6 @@ var _ = Describe("ordered lists - preflight", func() {
 				Blocks: []interface{}{
 					&types.OrderedListItem{
 						Level:          1,
-						Position:       1,
 						NumberingStyle: types.Arabic,
 						Attributes:     map[string]interface{}{},
 						Elements: []interface{}{
@@ -690,7 +656,6 @@ var _ = Describe("ordered lists - preflight", func() {
 					&types.BlankLine{},
 					&types.OrderedListItem{
 						Level:          2,
-						Position:       1,
 						NumberingStyle: types.LowerAlpha,
 						Attributes:     map[string]interface{}{},
 						Elements: []interface{}{
@@ -708,7 +673,6 @@ var _ = Describe("ordered lists - preflight", func() {
 					&types.BlankLine{},
 					&types.OrderedListItem{
 						Level:          3,
-						Position:       1,
 						NumberingStyle: types.LowerRoman,
 						Attributes:     map[string]interface{}{},
 						Elements: []interface{}{
@@ -727,7 +691,6 @@ var _ = Describe("ordered lists - preflight", func() {
 					&types.BlankLine{},
 					&types.OrderedListItem{
 						Level:          4,
-						Position:       1,
 						NumberingStyle: types.UpperAlpha,
 						Attributes:     map[string]interface{}{},
 						Elements: []interface{}{
@@ -743,7 +706,6 @@ var _ = Describe("ordered lists - preflight", func() {
 					},
 					&types.OrderedListItem{
 						Level:          5,
-						Position:       1,
 						NumberingStyle: types.UpperRoman,
 						Attributes:     map[string]interface{}{},
 						Elements: []interface{}{
@@ -774,7 +736,6 @@ var _ = Describe("ordered lists - preflight", func() {
 				Blocks: []interface{}{
 					&types.OrderedListItem{
 						Level:          1,
-						Position:       1,
 						NumberingStyle: types.Arabic,
 						Attributes:     map[string]interface{}{},
 						Elements: []interface{}{
@@ -790,7 +751,6 @@ var _ = Describe("ordered lists - preflight", func() {
 					},
 					&types.OrderedListItem{
 						Level:          1,
-						Position:       1,
 						NumberingStyle: types.Arabic,
 						Attributes:     map[string]interface{}{},
 						Elements: []interface{}{
@@ -818,7 +778,6 @@ b. item 2.a`
 				Blocks: []interface{}{
 					&types.OrderedListItem{
 						Level:          1,
-						Position:       1,
 						NumberingStyle: types.Arabic,
 						Attributes:     map[string]interface{}{},
 						Elements: []interface{}{
@@ -834,7 +793,6 @@ b. item 2.a`
 					},
 					&types.OrderedListItem{
 						Level:          1,
-						Position:       1,
 						NumberingStyle: types.LowerAlpha,
 						Attributes:     map[string]interface{}{},
 						Elements: []interface{}{
@@ -850,7 +808,6 @@ b. item 2.a`
 					},
 					&types.OrderedListItem{
 						Level:          1,
-						Position:       1,
 						NumberingStyle: types.Arabic,
 						Attributes:     map[string]interface{}{},
 						Elements: []interface{}{
@@ -866,7 +823,6 @@ b. item 2.a`
 					},
 					&types.OrderedListItem{
 						Level:          1,
-						Position:       1,
 						NumberingStyle: types.LowerAlpha,
 						Attributes:     map[string]interface{}{},
 						Elements: []interface{}{
@@ -905,7 +861,6 @@ another delimited block
 					&types.OrderedListItem{
 						Attributes:     types.ElementAttributes{},
 						Level:          1,
-						Position:       1,
 						NumberingStyle: types.Arabic,
 						Elements: []interface{}{
 							&types.Paragraph{
@@ -959,7 +914,6 @@ another delimited block
 					&types.OrderedListItem{
 						Attributes:     types.ElementAttributes{},
 						Level:          1,
-						Position:       1,
 						NumberingStyle: types.Arabic,
 						Elements: []interface{}{
 							&types.Paragraph{
@@ -1007,7 +961,6 @@ var _ = Describe("ordered lists - document", func() {
 						Items: []*types.OrderedListItem{
 							{
 								Level:          1,
-								Position:       1,
 								NumberingStyle: types.LowerAlpha,
 								Attributes:     map[string]interface{}{},
 								Elements:       elements,
@@ -1032,7 +985,6 @@ var _ = Describe("ordered lists - document", func() {
 						Items: []*types.OrderedListItem{
 							{
 								Level:          1,
-								Position:       1,
 								NumberingStyle: types.Arabic,
 								Attributes:     map[string]interface{}{},
 								Elements:       elements,
@@ -1057,7 +1009,6 @@ var _ = Describe("ordered lists - document", func() {
 						Items: []*types.OrderedListItem{
 							{
 								Level:          1,
-								Position:       1,
 								NumberingStyle: types.LowerAlpha,
 								Attributes:     map[string]interface{}{},
 								Elements:       elements,
@@ -1083,7 +1034,6 @@ var _ = Describe("ordered lists - document", func() {
 							{
 
 								Level:          1,
-								Position:       1,
 								NumberingStyle: types.UpperAlpha,
 								Attributes:     map[string]interface{}{},
 								Elements:       elements,
@@ -1108,7 +1058,6 @@ var _ = Describe("ordered lists - document", func() {
 						Items: []*types.OrderedListItem{
 							{
 								Level:          1,
-								Position:       1,
 								NumberingStyle: types.LowerRoman,
 								Attributes:     map[string]interface{}{},
 								Elements:       elements,
@@ -1134,7 +1083,6 @@ var _ = Describe("ordered lists - document", func() {
 							{
 
 								Level:          1,
-								Position:       1,
 								NumberingStyle: types.UpperRoman,
 								Attributes:     map[string]interface{}{},
 								Elements:       elements,
@@ -1164,14 +1112,12 @@ var _ = Describe("ordered lists - document", func() {
 							{
 								Attributes:     types.ElementAttributes{},
 								Level:          1,
-								Position:       1,
 								NumberingStyle: types.Arabic, // will be overridden during rendering
 								Elements:       elements,
 							},
 							{
 								Attributes:     types.ElementAttributes{},
 								Level:          1,
-								Position:       2,
 								NumberingStyle: types.Arabic, // will be overridden during rendering
 								Elements:       elements,
 							},
@@ -1198,7 +1144,6 @@ var _ = Describe("ordered lists - document", func() {
 						Items: []*types.OrderedListItem{
 							{
 								Level:          1,
-								Position:       1,
 								NumberingStyle: types.Arabic,
 								Attributes:     types.ElementAttributes{},
 								Elements:       elements,
@@ -1227,7 +1172,6 @@ var _ = Describe("ordered lists - document", func() {
 						Items: []*types.OrderedListItem{
 							{
 								Level:          1,
-								Position:       1,            // will be overridden during rendering
 								NumberingStyle: types.Arabic, // will be overridden during rendering
 								Attributes:     types.ElementAttributes{},
 								Elements:       elements,
@@ -1260,7 +1204,6 @@ var _ = Describe("ordered lists - document", func() {
 						Items: []*types.OrderedListItem{
 							{
 								Level:          1,
-								Position:       1,
 								NumberingStyle: types.Arabic,
 								Attributes:     types.ElementAttributes{},
 								Elements: []interface{}{
@@ -1279,7 +1222,6 @@ var _ = Describe("ordered lists - document", func() {
 										Items: []*types.OrderedListItem{
 											{
 												Level:          2,
-												Position:       1,
 												NumberingStyle: types.LowerAlpha,
 												Attributes:     types.ElementAttributes{},
 												Elements: []interface{}{
@@ -1298,7 +1240,6 @@ var _ = Describe("ordered lists - document", func() {
 														Items: []*types.OrderedListItem{
 															{
 																Level:          3,
-																Position:       1,
 																NumberingStyle: types.LowerRoman,
 																Attributes:     types.ElementAttributes{},
 																Elements: []interface{}{
@@ -1317,7 +1258,6 @@ var _ = Describe("ordered lists - document", func() {
 																		Items: []*types.OrderedListItem{
 																			{
 																				Level:          4,
-																				Position:       1,
 																				NumberingStyle: types.UpperAlpha,
 																				Attributes:     types.ElementAttributes{},
 																				Elements: []interface{}{
@@ -1336,7 +1276,6 @@ var _ = Describe("ordered lists - document", func() {
 																						Items: []*types.OrderedListItem{
 																							{
 																								Level:          5,
-																								Position:       1,
 																								NumberingStyle: types.UpperRoman,
 																								Attributes:     types.ElementAttributes{},
 																								Elements: []interface{}{
@@ -1370,7 +1309,6 @@ var _ = Describe("ordered lists - document", func() {
 							},
 							{
 								Level:          1,
-								Position:       2,
 								NumberingStyle: types.Arabic,
 								Attributes:     types.ElementAttributes{},
 								Elements: []interface{}{
@@ -1414,7 +1352,6 @@ var _ = Describe("ordered lists - document", func() {
 						Items: []*types.OrderedListItem{
 							{
 								Level:          1,
-								Position:       1,
 								NumberingStyle: types.Arabic,
 								Attributes:     types.ElementAttributes{},
 								Elements: []interface{}{
@@ -1433,7 +1370,6 @@ var _ = Describe("ordered lists - document", func() {
 										Items: []*types.OrderedListItem{
 											{
 												Level:          2,
-												Position:       1,
 												NumberingStyle: types.LowerAlpha,
 												Attributes:     types.ElementAttributes{},
 												Elements: []interface{}{
@@ -1452,7 +1388,6 @@ var _ = Describe("ordered lists - document", func() {
 														Items: []*types.OrderedListItem{
 															{
 																Level:          3,
-																Position:       1,
 																NumberingStyle: types.LowerRoman,
 																Attributes:     types.ElementAttributes{},
 																Elements: []interface{}{
@@ -1471,7 +1406,6 @@ var _ = Describe("ordered lists - document", func() {
 																		Items: []*types.OrderedListItem{
 																			{
 																				Level:          4,
-																				Position:       1,
 																				NumberingStyle: types.UpperAlpha,
 																				Attributes:     types.ElementAttributes{},
 																				Elements: []interface{}{
@@ -1490,7 +1424,6 @@ var _ = Describe("ordered lists - document", func() {
 																						Items: []*types.OrderedListItem{
 																							{
 																								Level:          5,
-																								Position:       1,
 																								NumberingStyle: types.UpperRoman,
 																								Attributes:     types.ElementAttributes{},
 																								Elements: []interface{}{
@@ -1520,7 +1453,6 @@ var _ = Describe("ordered lists - document", func() {
 											},
 											{
 												Level:          2,
-												Position:       2,
 												NumberingStyle: types.LowerAlpha,
 												Attributes:     types.ElementAttributes{},
 												Elements: []interface{}{
@@ -1565,7 +1497,6 @@ var _ = Describe("ordered lists - document", func() {
 						Items: []*types.OrderedListItem{
 							{
 								Level:          1,
-								Position:       1,
 								NumberingStyle: types.Arabic,
 								Attributes:     map[string]interface{}{},
 								Elements: []interface{}{
@@ -1581,7 +1512,6 @@ var _ = Describe("ordered lists - document", func() {
 							},
 							{
 								Level:          1,
-								Position:       2,
 								NumberingStyle: types.Arabic,
 								Attributes:     map[string]interface{}{},
 								Elements: []interface{}{
@@ -1617,7 +1547,6 @@ var _ = Describe("ordered lists - document", func() {
 						Items: []*types.OrderedListItem{
 							{
 								Level:          1,
-								Position:       1,
 								NumberingStyle: types.Arabic,
 								Attributes:     map[string]interface{}{},
 								Elements: []interface{}{
@@ -1633,7 +1562,6 @@ var _ = Describe("ordered lists - document", func() {
 							},
 							{
 								Level:          1,
-								Position:       2,
 								NumberingStyle: types.Arabic,
 								Attributes:     map[string]interface{}{},
 								Elements: []interface{}{
@@ -1676,7 +1604,6 @@ var _ = Describe("ordered lists - document", func() {
 						Items: []*types.OrderedListItem{
 							{
 								Level:          1,
-								Position:       1,
 								NumberingStyle: types.Arabic,
 								Attributes:     map[string]interface{}{},
 								Elements: []interface{}{
@@ -1693,7 +1620,6 @@ var _ = Describe("ordered lists - document", func() {
 										Items: []*types.OrderedListItem{
 											{
 												Level:          2,
-												Position:       1,
 												NumberingStyle: types.LowerAlpha,
 												Attributes:     map[string]interface{}{},
 												Elements: []interface{}{
@@ -1712,7 +1638,6 @@ var _ = Describe("ordered lists - document", func() {
 														Items: []*types.OrderedListItem{
 															{
 																Level:          3,
-																Position:       1,
 																NumberingStyle: types.LowerRoman, // will be overridden during rendering
 																Attributes:     types.ElementAttributes{},
 																Elements: []interface{}{
@@ -1728,7 +1653,6 @@ var _ = Describe("ordered lists - document", func() {
 															},
 															{
 																Level:          3,
-																Position:       2,
 																NumberingStyle: types.LowerRoman, // will be overridden during rendering
 																Attributes:     map[string]interface{}{},
 																Elements: []interface{}{
@@ -1748,7 +1672,6 @@ var _ = Describe("ordered lists - document", func() {
 											},
 											{
 												Level:          2,
-												Position:       2,
 												NumberingStyle: types.LowerAlpha,
 												Attributes:     map[string]interface{}{},
 												Elements: []interface{}{
@@ -1768,7 +1691,6 @@ var _ = Describe("ordered lists - document", func() {
 							},
 							{
 								Level:          1,
-								Position:       2,
 								NumberingStyle: types.Arabic,
 								Attributes:     map[string]interface{}{},
 								Elements: []interface{}{
@@ -1785,7 +1707,6 @@ var _ = Describe("ordered lists - document", func() {
 										Items: []*types.OrderedListItem{
 											{
 												Level:          2,
-												Position:       1,
 												NumberingStyle: types.LowerAlpha,
 												Attributes:     map[string]interface{}{},
 												Elements: []interface{}{
@@ -1836,7 +1757,6 @@ var _ = Describe("ordered lists - document", func() {
 						Items: []*types.OrderedListItem{
 							{
 								Level:          1,
-								Position:       1,
 								NumberingStyle: types.Arabic,
 								Attributes:     map[string]interface{}{},
 								Elements: []interface{}{
@@ -1853,7 +1773,6 @@ var _ = Describe("ordered lists - document", func() {
 										Items: []*types.OrderedListItem{
 											{
 												Level:          2,
-												Position:       1,
 												NumberingStyle: types.LowerAlpha,
 												Attributes:     map[string]interface{}{},
 												Elements: []interface{}{
@@ -1870,7 +1789,6 @@ var _ = Describe("ordered lists - document", func() {
 														Items: []*types.OrderedListItem{
 															{
 																Level:          3,
-																Position:       1,
 																NumberingStyle: types.LowerRoman,
 																Attributes:     map[string]interface{}{},
 																Elements: []interface{}{
@@ -1887,7 +1805,6 @@ var _ = Describe("ordered lists - document", func() {
 																		Items: []*types.OrderedListItem{
 																			{
 																				Level:          4,
-																				Position:       1,
 																				NumberingStyle: types.UpperAlpha,
 																				Attributes:     map[string]interface{}{},
 																				Elements: []interface{}{
@@ -1904,7 +1821,6 @@ var _ = Describe("ordered lists - document", func() {
 																						Items: []*types.OrderedListItem{
 																							{
 																								Level:          5,
-																								Position:       1,
 																								NumberingStyle: types.UpperRoman,
 																								Attributes:     map[string]interface{}{},
 																								Elements: []interface{}{
@@ -1958,7 +1874,6 @@ var _ = Describe("ordered lists - document", func() {
 						Items: []*types.OrderedListItem{
 							{
 								Level:          1,
-								Position:       1,
 								NumberingStyle: types.Arabic,
 								Attributes:     map[string]interface{}{},
 								Elements: []interface{}{
@@ -1974,7 +1889,6 @@ var _ = Describe("ordered lists - document", func() {
 							},
 							{
 								Level:          1,
-								Position:       2,
 								NumberingStyle: types.Arabic,
 								Attributes:     map[string]interface{}{},
 								Elements: []interface{}{
@@ -2011,7 +1925,6 @@ b. item 2.a`
 						Items: []*types.OrderedListItem{
 							{
 								Level:          1,
-								Position:       1,
 								NumberingStyle: types.Arabic,
 								Attributes:     map[string]interface{}{},
 								Elements: []interface{}{
@@ -2028,7 +1941,6 @@ b. item 2.a`
 										Items: []*types.OrderedListItem{
 											{
 												Level:          2,
-												Position:       1,
 												NumberingStyle: types.LowerAlpha,
 												Attributes:     map[string]interface{}{},
 												Elements: []interface{}{
@@ -2048,7 +1960,6 @@ b. item 2.a`
 							},
 							{
 								Level:          1,
-								Position:       2,
 								NumberingStyle: types.Arabic,
 								Attributes:     map[string]interface{}{},
 								Elements: []interface{}{
@@ -2065,7 +1976,6 @@ b. item 2.a`
 										Items: []*types.OrderedListItem{
 											{
 												Level:          2,
-												Position:       1,
 												NumberingStyle: types.LowerAlpha,
 												Attributes:     map[string]interface{}{},
 												Elements: []interface{}{
@@ -2117,7 +2027,6 @@ another delimited block
 							{
 								Attributes:     types.ElementAttributes{},
 								Level:          1,
-								Position:       1,
 								NumberingStyle: types.Arabic,
 								Elements: []interface{}{
 									&types.Paragraph{
@@ -2165,7 +2074,6 @@ another delimited block
 							{
 								Attributes:     types.ElementAttributes{},
 								Level:          1,
-								Position:       2,
 								NumberingStyle: types.Arabic,
 								Elements: []interface{}{
 									&types.Paragraph{
