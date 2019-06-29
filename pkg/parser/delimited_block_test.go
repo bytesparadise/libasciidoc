@@ -181,6 +181,92 @@ var _ = Describe("delimited blocks - preflight", func() {
 			}
 			verifyDocumentBlock(expected, source)
 		})
+
+		It("fenced block with external link inside - without attributes", func() {
+			source := "```" + "\n" +
+				"a http://website.com" + "\n" +
+				"and more text on the" + "\n" +
+				"next lines" + "\n" +
+				"```"
+			expected := &types.DelimitedBlock{
+				Attributes: types.ElementAttributes{},
+				Kind:       types.Fenced,
+				Elements: []interface{}{
+					&types.Paragraph{
+						Attributes: types.ElementAttributes{},
+						Lines: []types.InlineElements{
+							{
+								&types.StringElement{
+									Content: "a ",
+								},
+								&types.InlineLink{
+									Attributes: types.ElementAttributes{},
+									Location: types.Location{
+										&types.StringElement{
+											Content: "http://website.com",
+										},
+									},
+								},
+							},
+							{
+								&types.StringElement{
+									Content: "and more text on the",
+								},
+							},
+							{
+								&types.StringElement{
+									Content: "next lines",
+								},
+							},
+						},
+					},
+				},
+			}
+			verifyDocumentBlock(expected, source)
+		})
+
+		It("fenced block with external link inside - with attributes", func() {
+			source := "```" + "\n" +
+				"a http://website.com[]" + "\n" +
+				"and more text on the" + "\n" +
+				"next lines" + "\n" +
+				"```"
+			expected := &types.DelimitedBlock{
+				Attributes: types.ElementAttributes{},
+				Kind:       types.Fenced,
+				Elements: []interface{}{
+					&types.Paragraph{
+						Attributes: types.ElementAttributes{},
+						Lines: []types.InlineElements{
+							{
+								&types.StringElement{
+									Content: "a ",
+								},
+								&types.InlineLink{
+									Attributes: types.ElementAttributes{},
+									Location: types.Location{
+										&types.StringElement{
+											Content: "http://website.com",
+										},
+									},
+								},
+							},
+							{
+								&types.StringElement{
+									Content: "and more text on the",
+								},
+							},
+							{
+								&types.StringElement{
+									Content: "next lines",
+								},
+							},
+						},
+					},
+				},
+			}
+			verifyDocumentBlock(expected, source)
+		})
 	})
 
 	Context("listing blocks", func() {
@@ -1694,6 +1780,58 @@ var _ = Describe("delimited blocks - document", func() {
 									{
 										&types.StringElement{
 											Content: "End of file here",
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			}
+			verifyDocument(expected, source)
+		})
+
+		It("fenced block with external link inside", func() {
+			source := "```" + "\n" +
+				"a http://website.com" + "\n" +
+				"and more text on the" + "\n" +
+				"next lines" + "\n" +
+				"```"
+
+			expected := &types.Document{
+				Attributes:         types.DocumentAttributes{},
+				ElementReferences:  types.ElementReferences{},
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
+				Elements: []interface{}{
+					&types.DelimitedBlock{
+						Attributes: types.ElementAttributes{},
+						Kind:       types.Fenced,
+						Elements: []interface{}{
+							&types.Paragraph{
+								Attributes: types.ElementAttributes{},
+								Lines: []types.InlineElements{
+									{
+										&types.StringElement{
+											Content: "a ",
+										},
+										&types.InlineLink{
+											Attributes: types.ElementAttributes{},
+											Location: types.Location{
+												&types.StringElement{
+													Content: "http://website.com",
+												},
+											},
+										},
+									},
+									{
+										&types.StringElement{
+											Content: "and more text on the",
+										},
+									},
+									{
+										&types.StringElement{
+											Content: "next lines",
 										},
 									},
 								},

@@ -107,6 +107,78 @@ var _ = Describe("links - preflight", func() {
 			verifyDocumentBlock(expected, source)
 		})
 
+		It("external link inside a multiline paragraph -  without attributes", func() {
+			source := `a http://website.com
+and more text on the
+next lines`
+
+			expected := &types.Paragraph{
+				Attributes: types.ElementAttributes{},
+				Lines: []types.InlineElements{
+					{
+						&types.StringElement{
+							Content: "a ",
+						},
+						&types.InlineLink{
+							Attributes: types.ElementAttributes{},
+							Location: types.Location{
+								&types.StringElement{
+									Content: "http://website.com",
+								},
+							},
+						},
+					},
+					{
+						&types.StringElement{
+							Content: "and more text on the",
+						},
+					},
+					{
+						&types.StringElement{
+							Content: "next lines",
+						},
+					},
+				},
+			}
+			verifyDocumentBlock(expected, source)
+		})
+
+		It("external link inside a multiline paragraph -  with attributes", func() {
+			source := `a http://website.com[]
+and more text on the
+next lines`
+
+			expected := &types.Paragraph{
+				Attributes: types.ElementAttributes{},
+				Lines: []types.InlineElements{
+					{
+						&types.StringElement{
+							Content: "a ",
+						},
+						&types.InlineLink{
+							Attributes: types.ElementAttributes{},
+							Location: types.Location{
+								&types.StringElement{
+									Content: "http://website.com",
+								},
+							},
+						},
+					},
+					{
+						&types.StringElement{
+							Content: "and more text on the",
+						},
+					},
+					{
+						&types.StringElement{
+							Content: "next lines",
+						},
+					},
+				},
+			}
+			verifyDocumentBlock(expected, source)
+		})
+
 	})
 
 	Context("relative links", func() {
