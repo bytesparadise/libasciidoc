@@ -33,6 +33,19 @@ var _ = Describe("links", func() {
 </div>`
 			verify(expected, source)
 		})
+
+		It("external link inside a multiline paragraph", func() {
+			source := `a http://website.com
+and more text on the
+next lines`
+
+			expected := `<div class="paragraph">
+<p>a <a href="http://website.com" class="bare">http://website.com</a>
+and more text on the
+next lines</p>
+</div>`
+			verify(expected, source)
+		})
 	})
 
 	Context("relative links", func() {

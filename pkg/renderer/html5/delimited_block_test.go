@@ -32,6 +32,22 @@ here</code></pre>
 </div>`
 			verify(expected, source)
 		})
+
+		It("fenced block with external link inside", func() {
+			source := "```" + "\n" +
+				"a http://website.com" + "\n" +
+				"and more text on the" + "\n" +
+				"next lines" + "\n" +
+				"```"
+			expected := `<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>a http://website.com
+and more text on the
+next lines</code></pre>
+</div>
+</div>`
+			verify(expected, source)
+		})
 	})
 
 	Context("listing blocks", func() {
