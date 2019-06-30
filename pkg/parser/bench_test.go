@@ -1,6 +1,7 @@
 package parser_test
 
 import (
+	"io/ioutil"
 	"os"
 	"strings"
 
@@ -47,7 +48,6 @@ bar
 bar`
 			err := parseReader(source)
 			Expect(err).ShouldNot(HaveOccurred())
-			// b.RecordValue("expr count", float64(stats.ExprCnt))
 		})
 		timeout := 0.5
 		if ci {
@@ -64,7 +64,6 @@ bar`
 bar1`
 			err := parseReader(source)
 			Expect(err).ShouldNot(HaveOccurred())
-			// b.RecordValue("expr count", float64(stats.ExprCnt))
 		})
 		timeout := 0.1
 		if ci {
@@ -74,33 +73,27 @@ bar1`
 
 	}, 1)
 
-	Measure("bench parser on basic doc", func(b Benchmarker) {
+	Measure("bench parser on 'vert.x examples' doc", func(b Benchmarker) {
+		f, err := os.Open("../../test/bench/vertx-examples.adoc")
+		Expect(err).ShouldNot(HaveOccurred())
+		defer func() {
+			err := f.Close()
+			Expect(err).ShouldNot(HaveOccurred())
+		}()
+		content, err := ioutil.ReadAll(f)
+		Expect(err).ShouldNot(HaveOccurred())
 		runtime := b.Time("runtime", func() {
 			// given
-			source := `= Introduction to AsciiDoc
-Doc Writer <doc@example.com>
-
-A preface about https://asciidoc.org[AsciiDoc].
-
-== First Section
-
-* item 1
-* item 2
-
-[source,ruby]
-puts "Hello, World!"
-`
-			err := parseReader(source)
+			_, err := parser.Parse("vert.x samples", content)
 			Expect(err).ShouldNot(HaveOccurred())
-			// b.RecordValue("expr count", float64(stats.ExprCnt))
 		})
-		timeout := 0.1
+		timeout := 0.2
 		if ci {
-			timeout *= 10
+			timeout *= 50
 		}
 		Expect(runtime.Seconds()).Should(BeNumerically("<", timeout), "parsing shouldn't take too long (even on CI).")
 
-	}, 1)
+	}, 50)
 
 })
 
