@@ -87,9 +87,9 @@ bar1`
 			_, err := parser.Parse("vert.x samples", content)
 			Expect(err).ShouldNot(HaveOccurred())
 		})
-		timeout := 0.2
+		timeout := 0.2 * 50
 		if ci {
-			timeout *= 50
+			timeout *= 10
 		}
 		Expect(runtime.Seconds()).Should(BeNumerically("<", timeout), "parsing shouldn't take too long (even on CI).")
 
