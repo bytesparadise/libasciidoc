@@ -281,9 +281,7 @@ AttributeKey <- !QuoteKind !VerseKind !LiteralKind key:(Alphanums / Spaces / (!"
     return string(c.text), nil
 }
 
-AttributeValue <- value:(Alphanums / Spaces / (!"=" !"," !"]"  .){
-    return string(c.text), nil
-})* {
+AttributeValue <- value:(Alphanums / Spaces / (!"=" !"," !"]"  .))* !(WS* "="){ // attribute value cannot be followed by a `=`, otherwise it causes troubles for standalone values (eg: in images)
     return string(c.text), nil
 }
 
@@ -1096,27 +1094,12 @@ InlineImage <- "image:" !":" path:(URL) inlineAttributes:(ImageAttributes) {
     return types.NewInlineImage(path.(string), inlineAttributes.(types.ElementAttributes))
 }
 
-// the 'ImageAttributes' rule could be simpler, but the grammar optimizer fails to produce a valid code :(
-ImageAttributes <- "[" alt:(ImageAttribute) ","
-    width:(ImageAttribute)  ","
-    height:(ImageAttribute) ","?
-    otherattrs:(GenericAttribute)* "]" {
-        return types.NewImageAttributes(alt, width, height, otherattrs.([]interface{}))
-} / "[" alt:(ImageAttribute) ","
-    width:(ImageAttribute) ","?
-    otherattrs:(GenericAttribute)* "]" {
-        return types.NewImageAttributes(alt, width, nil, otherattrs.([]interface{}))
-} / "[" alt:(ImageAttribute) ","?
-    otherattrs:(GenericAttribute)* "]" {
-        return types.NewImageAttributes(alt, nil, nil, otherattrs.([]interface{}))
-} / "[" otherattrs:(GenericAttribute)* "]" {
-        return types.NewImageAttributes(nil, nil, nil, otherattrs.([]interface{}))
-} 
+ImageAttributes <- "[" alt:(AttributeValue)? ","? width:(AttributeValue)? ","? height:(AttributeValue)? ","? otherattrs:(GenericAttribute)* "]" {
+    return types.NewImageAttributes(alt, width, height, otherattrs.([]interface{}))
+}
 
 
-ImageAttribute <- (Alphanums / Spaces / (!"," !"=" !"]" .){
-    return string(c.text), nil
-})+ { // attribute is followed by "," or "]" (but do not consume the latter)
+ImageAttribute <- (Alphanums / Spaces / (!"," !"=" !"]" .))+ { // attribute is followed by "," or "]" (but do not consume the latter)
     return string(c.text), nil
 }
 

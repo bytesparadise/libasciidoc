@@ -1366,13 +1366,17 @@ func NewImageAttributes(alt, width, height interface{}, otherattrs []interface{}
 	}
 	if width, ok := width.(string); ok {
 		widthStr = Apply(width, strings.TrimSpace)
+		if widthStr != "" {
+			result[AttrImageWidth] = widthStr
+		}
 	}
 	if height, ok := height.(string); ok {
 		heightStr = Apply(height, strings.TrimSpace)
+		if heightStr != "" {
+			result[AttrImageHeight] = heightStr
+		}
 	}
 	result[AttrImageAlt] = altStr
-	result[AttrImageWidth] = widthStr
-	result[AttrImageHeight] = heightStr
 	for _, otherAttr := range otherattrs {
 		if otherAttr, ok := otherAttr.(ElementAttributes); ok {
 			for k, v := range otherAttr {

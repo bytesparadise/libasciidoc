@@ -15,9 +15,7 @@ var _ = Describe("images", func() {
 				source := "image::images/foo.png[]"
 				expected := &types.ImageBlock{
 					Attributes: types.ElementAttributes{
-						types.AttrImageAlt:    "foo",
-						types.AttrImageWidth:  "",
-						types.AttrImageHeight: "",
+						types.AttrImageAlt: "foo",
 					},
 					Path: "images/foo.png",
 				}
@@ -28,9 +26,7 @@ var _ = Describe("images", func() {
 				source := "image::images/foo.png[]  \t\t  "
 				expected := &types.ImageBlock{
 					Attributes: types.ElementAttributes{
-						types.AttrImageAlt:    "foo",
-						types.AttrImageWidth:  "",
-						types.AttrImageHeight: "",
+						types.AttrImageAlt: "foo",
 					},
 					Path: "images/foo.png",
 				}
@@ -43,9 +39,7 @@ var _ = Describe("images", func() {
 `
 				expected := &types.ImageBlock{
 					Attributes: types.ElementAttributes{
-						types.AttrImageAlt:    "foo",
-						types.AttrImageWidth:  "",
-						types.AttrImageHeight: "",
+						types.AttrImageAlt: "foo",
 					},
 					Path: "images/foo.png",
 				}
@@ -58,9 +52,7 @@ var _ = Describe("images", func() {
   `
 				expected := &types.ImageBlock{
 					Attributes: types.ElementAttributes{
-						types.AttrImageAlt:    "foo",
-						types.AttrImageWidth:  "",
-						types.AttrImageHeight: "",
+						types.AttrImageAlt: "foo",
 					},
 					Path: "images/foo.png",
 				}
@@ -72,9 +64,7 @@ var _ = Describe("images", func() {
 			`
 				expected := &types.ImageBlock{
 					Attributes: types.ElementAttributes{
-						types.AttrImageAlt:    "foo",
-						types.AttrImageWidth:  "",
-						types.AttrImageHeight: "",
+						types.AttrImageAlt: "foo",
 					},
 					Path: "images/foo.png",
 				}
@@ -85,9 +75,7 @@ var _ = Describe("images", func() {
 				source := `image::images/foo.png[the foo.png image]`
 				expected := &types.ImageBlock{
 					Attributes: types.ElementAttributes{
-						types.AttrImageAlt:    "the foo.png image",
-						types.AttrImageWidth:  "",
-						types.AttrImageHeight: "",
+						types.AttrImageAlt: "the foo.png image",
 					},
 					Path: "images/foo.png",
 				}
@@ -121,17 +109,13 @@ image::appa.png[]`
 					Blocks: []interface{}{
 						&types.ImageBlock{
 							Attributes: types.ElementAttributes{
-								types.AttrImageAlt:    "app",
-								types.AttrImageWidth:  "",
-								types.AttrImageHeight: "",
+								types.AttrImageAlt: "app",
 							},
 							Path: "app.png",
 						},
 						&types.ImageBlock{
 							Attributes: types.ElementAttributes{
-								types.AttrImageAlt:    "appa",
-								types.AttrImageWidth:  "",
-								types.AttrImageHeight: "",
+								types.AttrImageAlt: "appa",
 							},
 							Path: "appa.png",
 						},
@@ -196,9 +180,7 @@ image::appa.png[]`
 						{
 							&types.InlineImage{
 								Attributes: types.ElementAttributes{
-									types.AttrImageAlt:    "foo",
-									types.AttrImageWidth:  "",
-									types.AttrImageHeight: "",
+									types.AttrImageAlt: "foo",
 								},
 								Path: "images/foo.png",
 							},
@@ -216,9 +198,7 @@ image::appa.png[]`
 						{
 							&types.InlineImage{
 								Attributes: types.ElementAttributes{
-									types.AttrImageAlt:    "foo",
-									types.AttrImageWidth:  "",
-									types.AttrImageHeight: "",
+									types.AttrImageAlt: "foo",
 								},
 								Path: "images/foo.png",
 							},
@@ -242,9 +222,7 @@ image::appa.png[]`
 							},
 							&types.InlineImage{
 								Attributes: types.ElementAttributes{
-									types.AttrImageAlt:    "foo",
-									types.AttrImageWidth:  "",
-									types.AttrImageHeight: "",
+									types.AttrImageAlt: "foo",
 								},
 								Path: "images/foo.png",
 							},
@@ -265,9 +243,7 @@ image::appa.png[]`
 						{
 							&types.InlineImage{
 								Attributes: types.ElementAttributes{
-									types.AttrImageAlt:    "the foo.png image",
-									types.AttrImageWidth:  "",
-									types.AttrImageHeight: "",
+									types.AttrImageAlt: "the foo.png image",
 								},
 								Path: "images/foo.png",
 							},
@@ -285,9 +261,8 @@ image::appa.png[]`
 						{
 							&types.InlineImage{
 								Attributes: types.ElementAttributes{
-									types.AttrImageAlt:    "the foo.png image",
-									types.AttrImageWidth:  "600",
-									types.AttrImageHeight: "",
+									types.AttrImageAlt:   "the foo.png image",
+									types.AttrImageWidth: "600",
 								},
 								Path: "images/foo.png",
 							},
@@ -317,6 +292,24 @@ image::appa.png[]`
 				verifyDocumentBlock(expected, source)
 			})
 
+			It("inline image with alt, but empty width and height", func() {
+				source := "image:images/foo.png[the foo.png image, , ]"
+				expected := &types.Paragraph{
+					Attributes: types.ElementAttributes{},
+					Lines: []types.InlineElements{
+						{
+							&types.InlineImage{
+								Attributes: types.ElementAttributes{
+									types.AttrImageAlt: "the foo.png image",
+								},
+								Path: "images/foo.png",
+							},
+						},
+					},
+				}
+				verifyDocumentBlock(expected, source)
+			})
+
 			It("inline image with single other attribute only", func() {
 				source := "image:images/foo.png[id=myid]"
 				expected := &types.Paragraph{
@@ -325,11 +318,9 @@ image::appa.png[]`
 						{
 							&types.InlineImage{
 								Attributes: types.ElementAttributes{
-									types.AttrImageAlt:    "foo", // based on filename
-									types.AttrImageWidth:  "",
-									types.AttrImageHeight: "",
-									types.AttrID:          "myid",
-									types.AttrCustomID:    true,
+									types.AttrImageAlt: "foo", // based on filename
+									types.AttrID:       "myid",
+									types.AttrCustomID: true,
 								},
 								Path: "images/foo.png",
 							},
@@ -347,13 +338,11 @@ image::appa.png[]`
 						{
 							&types.InlineImage{
 								Attributes: types.ElementAttributes{
-									types.AttrImageAlt:    "foo", // based on filename
-									types.AttrImageWidth:  "",
-									types.AttrImageHeight: "",
-									types.AttrID:          "myid",
-									types.AttrCustomID:    true,
-									types.AttrTitle:       "mytitle",
-									types.AttrRole:        "myrole",
+									types.AttrImageAlt: "foo", // based on filename
+									types.AttrID:       "myid",
+									types.AttrCustomID: true,
+									types.AttrTitle:    "mytitle",
+									types.AttrRole:     "myrole",
 								},
 								Path: "images/foo.png",
 							},
@@ -398,9 +387,7 @@ image::appa.png[]`
 							},
 							&types.InlineImage{
 								Attributes: types.ElementAttributes{
-									types.AttrImageAlt:    "foo",
-									types.AttrImageWidth:  "",
-									types.AttrImageHeight: "",
+									types.AttrImageAlt: "foo",
 								},
 								Path: "images/foo.png",
 							},
@@ -421,9 +408,7 @@ image::appa.png[]`
 							},
 							&types.InlineImage{
 								Attributes: types.ElementAttributes{
-									types.AttrImageAlt:    "foo",
-									types.AttrImageWidth:  "",
-									types.AttrImageHeight: "",
+									types.AttrImageAlt: "foo",
 								},
 								Path: "images/foo.png",
 							},

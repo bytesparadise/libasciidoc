@@ -1167,9 +1167,7 @@ var _ = Describe("quoted texts - preflight", func() {
 								&types.StringElement{Content: "a "},
 								&types.InlineImage{
 									Attributes: types.ElementAttributes{
-										types.AttrImageAlt:    "foo",
-										types.AttrImageHeight: "",
-										types.AttrImageWidth:  "",
+										types.AttrImageAlt: "foo",
 									},
 									Path: "foo.png",
 								},
@@ -1273,9 +1271,7 @@ var _ = Describe("quoted texts - preflight", func() {
 								&types.StringElement{Content: "a "},
 								&types.InlineImage{
 									Attributes: types.ElementAttributes{
-										types.AttrImageAlt:    "foo",
-										types.AttrImageHeight: "",
-										types.AttrImageWidth:  "",
+										types.AttrImageAlt: "foo",
 									},
 									Path: "foo.png",
 								},
@@ -1379,9 +1375,7 @@ var _ = Describe("quoted texts - preflight", func() {
 								&types.StringElement{Content: "a "},
 								&types.InlineImage{
 									Attributes: types.ElementAttributes{
-										types.AttrImageAlt:    "foo",
-										types.AttrImageHeight: "",
-										types.AttrImageWidth:  "",
+										types.AttrImageAlt: "foo",
 									},
 									Path: "foo.png",
 								},

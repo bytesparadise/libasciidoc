@@ -623,9 +623,7 @@ a foo image:foo.png[]`
 						},
 						&types.InlineImage{
 							Attributes: types.ElementAttributes{
-								types.AttrImageAlt:    "foo",
-								types.AttrImageWidth:  "",
-								types.AttrImageHeight: "",
+								types.AttrImageAlt: "foo",
 							},
 							Path: "foo.png",
 						},
@@ -640,9 +638,7 @@ a foo image:foo.png[]`
 image::foo.png[]`
 			expected := &types.ImageBlock{
 				Attributes: types.ElementAttributes{
-					types.AttrImageAlt:    "foo",
-					types.AttrImageWidth:  "",
-					types.AttrImageHeight: "",
+					types.AttrImageAlt: "foo",
 					// quote attributes
 					types.AttrKind:        types.Quote,
 					types.AttrQuoteAuthor: "john doe",
