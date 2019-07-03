@@ -89,4 +89,17 @@ var _ = Describe("inline elements", func() {
 		}
 		verifyDocumentBlock(expected, source)
 	})
+
+	It("latin characters", func() {
+		source := "à bientôt"
+		expected := &types.Paragraph{
+			Attributes: types.ElementAttributes{},
+			Lines: []types.InlineElements{
+				{
+					&types.StringElement{Content: "à bientôt"},
+				},
+			},
+		}
+		verifyDocumentBlock(expected, source)
+	})
 })

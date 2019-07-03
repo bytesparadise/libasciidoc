@@ -1457,11 +1457,11 @@ BlankLine <- !EOF WS* EOL {
 // ------------------------------------------
 // Base Types
 // ------------------------------------------
-Alphanum <- [a-zA-Z0-9]
+Alphanum <- [\pL0-9]
 
 Parenthesis <- "(" / ")" / "[" / "]"
 
-Alphanums <- [a-zA-Z0-9]+ {
+Alphanums <- [\pL0-9]+ {
     return string(c.text), nil
 }
 
