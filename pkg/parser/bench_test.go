@@ -4,20 +4,26 @@ import (
 	"io/ioutil"
 	"os"
 	"strings"
+	"testing"
 
 	"github.com/bytesparadise/libasciidoc/pkg/parser"
-	. "github.com/onsi/ginkgo"
-	. "github.com/onsi/gomega"
 )
 
-var _ = Describe("parser benchmark", func() {
+func BenchmarkParser1(b *testing.B) {
+	source := `=== foo1
+bar1`
 
-	ci := os.Getenv("CI") != ""
+	for n := 0; n < b.N; n++ {
+		err := parseReader(source)
+		if err != nil {
+			b.Error(err)
+		}
+	}
+}
 
-	Measure("bench parser on 10 lines", func(b Benchmarker) {
-		runtime := b.Time("runtime", func() {
-			// given
-			source := `=== foo
+func BenchmarkParser10(b *testing.B) {
+	// given
+	source := `=== foo
 bar
 
 === foo
@@ -46,56 +52,38 @@ bar
 
 === foo
 bar`
-			err := parseReader(source)
-			Expect(err).ShouldNot(HaveOccurred())
-		})
-		timeout := 0.5
-		if ci {
-			timeout *= 10
+	for n := 0; n < b.N; n++ {
+		err := parseReader(source)
+		if err != nil {
+			b.Error(err)
 		}
-		Expect(runtime.Seconds()).Should(BeNumerically("<", timeout), "parsing shouldn't take too long (even on CI).")
+	}
+}
 
-	}, 10)
-
-	Measure("bench parser on 1 line", func(b Benchmarker) {
-		runtime := b.Time("runtime", func() {
-			// given
-			source := `=== foo1
-bar1`
-			err := parseReader(source)
-			Expect(err).ShouldNot(HaveOccurred())
-		})
-		timeout := 0.1
-		if ci {
-			timeout *= 10
+func BenchmarkParserFile(b *testing.B) {
+	f, err := os.Open("../../test/bench/vertx-examples.adoc")
+	if err != nil {
+		b.Error(err)
+	}
+	defer func() {
+		err2 := f.Close()
+		if err2 != nil {
+			b.Error(err2)
 		}
-		Expect(runtime.Seconds()).Should(BeNumerically("<", timeout), "parsing shouldn't take too long (even on CI).")
+	}()
+	content, err := ioutil.ReadAll(f)
+	if err != nil {
+		b.Error(err)
+	}
 
-	}, 1)
-
-	Measure("bench parser on 'vert.x examples' doc", func(b Benchmarker) {
-		f, err := os.Open("../../test/bench/vertx-examples.adoc")
-		Expect(err).ShouldNot(HaveOccurred())
-		defer func() {
-			err := f.Close()
-			Expect(err).ShouldNot(HaveOccurred())
-		}()
-		content, err := ioutil.ReadAll(f)
-		Expect(err).ShouldNot(HaveOccurred())
-		runtime := b.Time("runtime", func() {
-			// given
-			_, err := parser.Parse("vert.x samples", content)
-			Expect(err).ShouldNot(HaveOccurred())
-		})
-		timeout := 0.2 * 50
-		if ci {
-			timeout *= 10
+	b.ResetTimer()
+	for n := 0; n < b.N; n++ {
+		_, err := parser.Parse("vert.x samples", content)
+		if err != nil {
+			b.Error(err)
 		}
-		Expect(runtime.Seconds()).Should(BeNumerically("<", timeout), "parsing shouldn't take too long (even on CI).")
-
-	}, 50)
-
-})
+	}
+}
 
 func parseReader(content string) error {
 	reader := strings.NewReader(content)

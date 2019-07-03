@@ -29,3 +29,47 @@ Don’t get discouraged if you don't get an immediate response, this is a side-p
 
 Testing existing features is a good way to contribute to the project, too!
 
+
+== Benchmarking
+
+This project uses http://onsi.github.io/ginkgo/[Ginkgo] as the main testing framework but uses the standard Go toolchain for benchmarking and performance comparisons.
+
+Since we use Ginkgo, it's generally a good idea to skip the normal tests when running benchmarks.
+To do that, use something like `go test -run=XXX` to skip normal tests (assuming no test contains "XXX").
+
+It's also a good idea to run multiple iterations of the benchmarks to avoid anomolies and gather better statistics.
+
+Example command:
+
+```
+go test -run=XXX -bench=. -benchmem -count=10 ./... | tee tmp/bench-branch1.txt
+```
+
+After making changes to your branch, run the same benchmarks and save to a second file:
+
+```
+go test -run=XXX -bench=. -benchmem -count=10 ./... | tee tmp/bench-branch2.txt
+```
+
+Compare results using https://godoc.org/golang.org/x/perf/cmd/benchstat[benchstat].  Example output:
+
+```
+$ benchstat tmp/bench-branch1.txt tmp/bench-branch2.txt
+name          old time/op    new time/op    delta
+Parser1-2        108µs ± 4%      98µs ±12%   -8.82%  (p=0.001 n=9+10)
+Parser10-2      1.19ms ± 3%    0.99ms ± 2%  -17.13%  (p=0.000 n=10+9)
+ParserFile-2    98.9ms ± 7%    79.6ms ± 3%  -19.59%  (p=0.000 n=10+8)
+
+name          old alloc/op   new alloc/op   delta
+Parser1-2       42.2kB ± 0%    41.6kB ± 0%   -1.40%  (p=0.000 n=9+9)
+Parser10-2       325kB ± 0%     315kB ± 0%   -2.85%  (p=0.000 n=10+10)
+ParserFile-2    21.5MB ± 0%    20.5MB ± 0%   -4.70%  (p=0.000 n=9+10)
+
+name          old allocs/op  new allocs/op  delta
+Parser1-2          716 ± 0%       732 ± 0%   +2.23%  (p=0.000 n=10+10)
+Parser10-2       9.13k ± 0%     9.31k ± 0%   +1.95%  (p=0.000 n=10+10)
+ParserFile-2      786k ± 0%      795k ± 0%   +1.09%  (p=0.000 n=10+10)
+```
+
+The go-test and benchstat output don't need to be committed to git since they are heavily dependent on the local system running the benchmarks at the time,
+but it may be helpful to include relevant benchstat output in git commit messages.
