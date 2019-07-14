@@ -127,6 +127,7 @@ func NewGenericAttribute(key string, value interface{}) (ElementAttributes, erro
 			return strings.Trim(s, "\"")
 		},
 		strings.TrimSpace)
+	result[k] = nil
 	if value, ok := value.(string); ok {
 		v := Apply(value,
 			// remove surrounding quotes
@@ -134,16 +135,16 @@ func NewGenericAttribute(key string, value interface{}) (ElementAttributes, erro
 				return strings.Trim(s, "\"")
 			},
 			strings.TrimSpace)
-		result[k] = v
-	} else {
-		result[k] = nil
+		if len(v) > 0 {
+			result[k] = v
+		}
 	}
 	// log.Debugf("initialized a new ElementAttributes: %v", result)
 	return result, nil
 }
 
 // NewQuoteAttributes initializes a new map of attributes for a verse paragraph
-func NewQuoteAttributes(kind, author, title string) (map[string]interface{}, error) {
+func NewQuoteAttributes(kind string, author, title interface{}) (map[string]interface{}, error) {
 	result := make(map[string]interface{}, 3)
 	switch kind {
 	case "verse":
@@ -151,8 +152,18 @@ func NewQuoteAttributes(kind, author, title string) (map[string]interface{}, err
 	default:
 		result[AttrKind] = Quote
 	}
-	result[AttrQuoteAuthor] = strings.TrimSpace(author)
-	result[AttrQuoteTitle] = strings.TrimSpace(title)
+	if author, ok := author.(string); ok {
+		author = strings.TrimSpace(author)
+		if len(author) > 0 {
+			result[AttrQuoteAuthor] = author
+		}
+	}
+	if title, ok := title.(string); ok {
+		title = strings.TrimSpace(title)
+		if len(title) > 0 {
+			result[AttrQuoteTitle] = title
+		}
+	}
 	log.Debugf("initialized new %s attributes: %v", kind, result)
 	return result, nil
 }
@@ -164,12 +175,15 @@ func NewLiteralAttribute() (ElementAttributes, error) {
 }
 
 // NewSourceAttributes initializes a new attribute map with two entries, one for the kind of element ("source") and another optional one for the language of the source code
-func NewSourceAttributes(language string) (ElementAttributes, error) {
+func NewSourceAttributes(language interface{}) (ElementAttributes, error) {
 	log.Debugf("initializing a new source attribute (language='%s')", language)
-	return ElementAttributes{
-		AttrKind:     Source,
-		AttrLanguage: strings.TrimSpace(language),
-	}, nil
+	result := ElementAttributes{
+		AttrKind: Source,
+	}
+	if language, ok := language.(string); ok {
+		result[AttrLanguage] = strings.TrimSpace(language)
+	}
+	return result, nil
 }
 
 // WithAttributes set the attributes on the given elements if its type is supported, otherwise returns an error

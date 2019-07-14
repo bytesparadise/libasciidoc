@@ -386,7 +386,6 @@ I am a verse paragraph.`
 				Attributes: types.ElementAttributes{
 					types.AttrKind:        types.Verse,
 					types.AttrQuoteAuthor: "john doe",
-					types.AttrQuoteTitle:  "",
 				},
 				Lines: []types.InlineElements{
 					{
@@ -406,7 +405,6 @@ I am a verse paragraph.`
 				Attributes: types.ElementAttributes{
 					types.AttrKind:        types.Verse,
 					types.AttrQuoteAuthor: "john doe",
-					types.AttrQuoteTitle:  "",
 				},
 				Lines: []types.InlineElements{
 					{
@@ -424,9 +422,7 @@ I am a verse paragraph.`
 I am a verse paragraph.`
 			expected := &types.Paragraph{
 				Attributes: types.ElementAttributes{
-					types.AttrKind:        types.Verse,
-					types.AttrQuoteAuthor: "",
-					types.AttrQuoteTitle:  "",
+					types.AttrKind: types.Verse,
 				},
 				Lines: []types.InlineElements{
 					{
@@ -444,9 +440,7 @@ I am a verse paragraph.`
 I am a verse paragraph.`
 			expected := &types.Paragraph{
 				Attributes: types.ElementAttributes{
-					types.AttrKind:        types.Verse,
-					types.AttrQuoteAuthor: "",
-					types.AttrQuoteTitle:  "",
+					types.AttrKind: types.Verse,
 				},
 				Lines: []types.InlineElements{
 					{
@@ -534,7 +528,6 @@ I am a quote paragraph.`
 				Attributes: types.ElementAttributes{
 					types.AttrKind:        types.Quote,
 					types.AttrQuoteAuthor: "john doe",
-					types.AttrQuoteTitle:  "",
 				},
 				Lines: []types.InlineElements{
 					{
@@ -554,7 +547,6 @@ I am a quote paragraph.`
 				Attributes: types.ElementAttributes{
 					types.AttrKind:        types.Quote,
 					types.AttrQuoteAuthor: "john doe",
-					types.AttrQuoteTitle:  "",
 				},
 				Lines: []types.InlineElements{
 					{
@@ -572,9 +564,7 @@ I am a quote paragraph.`
 I am a quote paragraph.`
 			expected := &types.Paragraph{
 				Attributes: types.ElementAttributes{
-					types.AttrKind:        types.Quote,
-					types.AttrQuoteAuthor: "",
-					types.AttrQuoteTitle:  "",
+					types.AttrKind: types.Quote,
 				},
 				Lines: []types.InlineElements{
 					{
@@ -592,9 +582,7 @@ I am a quote paragraph.`
 I am a quote paragraph.`
 			expected := &types.Paragraph{
 				Attributes: types.ElementAttributes{
-					types.AttrKind:        types.Quote,
-					types.AttrQuoteAuthor: "",
-					types.AttrQuoteTitle:  "",
+					types.AttrKind: types.Quote,
 				},
 				Lines: []types.InlineElements{
 					{

@@ -325,7 +325,7 @@ next lines`
 		})
 
 		It("relative link with quoted text", func() {
-			source := "link:/[_a_ *b* `c`]"
+			source := "link:/[a _a_ b *b* c `c`]"
 			expected := &types.Paragraph{
 				Attributes: types.ElementAttributes{},
 				Lines: []types.InlineElements{
@@ -338,6 +338,9 @@ next lines`
 							},
 							Attributes: types.ElementAttributes{
 								types.AttrInlineLinkText: types.InlineElements{
+									&types.StringElement{
+										Content: "a ",
+									},
 									&types.QuotedText{
 										Kind: types.Italic,
 										Elements: types.InlineElements{
@@ -347,7 +350,7 @@ next lines`
 										},
 									},
 									&types.StringElement{
-										Content: " ",
+										Content: " b ",
 									},
 									&types.QuotedText{
 										Kind: types.Bold,
@@ -358,7 +361,7 @@ next lines`
 										},
 									},
 									&types.StringElement{
-										Content: " ",
+										Content: " c ",
 									},
 									&types.QuotedText{
 										Kind: types.Monospace,

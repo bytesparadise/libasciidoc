@@ -309,9 +309,7 @@ ____`
 				Blocks: []interface{}{
 					&types.DelimitedBlock{
 						Attributes: types.ElementAttributes{
-							types.AttrKind:        types.Verse,
-							types.AttrQuoteAuthor: "",
-							types.AttrQuoteTitle:  "",
+							types.AttrKind: types.Verse,
 						},
 						Kind: types.Verse,
 						Elements: []interface{}{
@@ -1049,9 +1047,7 @@ ____`
 				Blocks: []interface{}{
 					&types.DelimitedBlock{
 						Attributes: types.ElementAttributes{
-							types.AttrKind:        types.Verse,
-							types.AttrQuoteAuthor: "",
-							types.AttrQuoteTitle:  "",
+							types.AttrKind: types.Verse,
 						},
 						Kind: types.Verse,
 						Elements: []interface{}{
