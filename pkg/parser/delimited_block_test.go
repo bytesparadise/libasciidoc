@@ -779,7 +779,6 @@ ____
 				Attributes: types.ElementAttributes{
 					types.AttrKind:        types.Quote,
 					types.AttrQuoteAuthor: "john doe",
-					types.AttrQuoteTitle:  "",
 				},
 				Kind: types.Quote,
 				Elements: []interface{}{
@@ -850,9 +849,8 @@ ____
 `
 			expected := &types.DelimitedBlock{
 				Attributes: types.ElementAttributes{
-					types.AttrKind:        types.Quote,
-					types.AttrQuoteAuthor: "",
-					types.AttrQuoteTitle:  "quote title",
+					types.AttrKind:       types.Quote,
+					types.AttrQuoteTitle: "quote title",
 				},
 				Kind: types.Quote,
 				Elements: []interface{}{
@@ -882,9 +880,7 @@ ____
 ____`
 			expected := &types.DelimitedBlock{
 				Attributes: types.ElementAttributes{
-					types.AttrKind:        types.Quote,
-					types.AttrQuoteAuthor: "",
-					types.AttrQuoteTitle:  "",
+					types.AttrKind: types.Quote,
 				},
 				Kind: types.Quote,
 				Elements: []interface{}{
@@ -958,9 +954,7 @@ ____
 ____`
 			expected := &types.DelimitedBlock{
 				Attributes: types.ElementAttributes{
-					types.AttrKind:        types.Quote,
-					types.AttrQuoteAuthor: "",
-					types.AttrQuoteTitle:  "",
+					types.AttrKind: types.Quote,
 				},
 				Kind: types.Quote,
 				Elements: []interface{}{
@@ -1033,9 +1027,7 @@ ____
 ____`
 			expected := &types.DelimitedBlock{
 				Attributes: types.ElementAttributes{
-					types.AttrKind:        types.Quote,
-					types.AttrQuoteAuthor: "",
-					types.AttrQuoteTitle:  "",
+					types.AttrKind: types.Quote,
 				},
 				Kind:     types.Quote,
 				Elements: []interface{}{},
@@ -1050,9 +1042,7 @@ foo
 `
 			expected := &types.DelimitedBlock{
 				Attributes: types.ElementAttributes{
-					types.AttrKind:        types.Quote,
-					types.AttrQuoteAuthor: "",
-					types.AttrQuoteTitle:  "",
+					types.AttrKind: types.Quote,
 				},
 				Kind: types.Quote,
 				Elements: []interface{}{
@@ -1125,7 +1115,6 @@ ____
 				Attributes: types.ElementAttributes{
 					types.AttrKind:        types.Verse,
 					types.AttrQuoteAuthor: "john doe",
-					types.AttrQuoteTitle:  "",
 				},
 				Kind: types.Verse,
 				Elements: []interface{}{
@@ -1162,9 +1151,8 @@ ____
 `
 			expected := &types.DelimitedBlock{
 				Attributes: types.ElementAttributes{
-					types.AttrKind:        types.Verse,
-					types.AttrQuoteAuthor: "",
-					types.AttrQuoteTitle:  "verse title",
+					types.AttrKind:       types.Verse,
+					types.AttrQuoteTitle: "verse title",
 				},
 				Kind: types.Verse,
 				Elements: []interface{}{
@@ -1194,9 +1182,7 @@ ____
 ____`
 			expected := &types.DelimitedBlock{
 				Attributes: types.ElementAttributes{
-					types.AttrKind:        types.Verse,
-					types.AttrQuoteAuthor: "",
-					types.AttrQuoteTitle:  "",
+					types.AttrKind: types.Verse,
 				},
 				Kind: types.Verse,
 				Elements: []interface{}{
@@ -1245,9 +1231,7 @@ ____
 ____`
 			expected := &types.DelimitedBlock{
 				Attributes: types.ElementAttributes{
-					types.AttrKind:        types.Verse,
-					types.AttrQuoteAuthor: "",
-					types.AttrQuoteTitle:  "",
+					types.AttrKind: types.Verse,
 				},
 				Kind: types.Verse,
 				Elements: []interface{}{
@@ -1284,9 +1268,7 @@ ____
 ____`
 			expected := &types.DelimitedBlock{
 				Attributes: types.ElementAttributes{
-					types.AttrKind:        types.Verse,
-					types.AttrQuoteAuthor: "",
-					types.AttrQuoteTitle:  "",
+					types.AttrKind: types.Verse,
 				},
 				Kind:     types.Verse,
 				Elements: []interface{}{},
@@ -1301,9 +1283,7 @@ foo
 `
 			expected := &types.DelimitedBlock{
 				Attributes: types.ElementAttributes{
-					types.AttrKind:        types.Verse,
-					types.AttrQuoteAuthor: "",
-					types.AttrQuoteTitle:  "",
+					types.AttrKind: types.Verse,
 				},
 				Kind: types.Verse,
 				Elements: []interface{}{
@@ -1336,8 +1316,7 @@ end
 ----`
 			expected := &types.DelimitedBlock{
 				Attributes: types.ElementAttributes{
-					types.AttrKind:     types.Source,
-					types.AttrLanguage: "",
+					types.AttrKind: types.Source,
 				},
 				Kind: types.Source,
 				Elements: []interface{}{
@@ -2481,7 +2460,6 @@ ____
 						Attributes: types.ElementAttributes{
 							types.AttrKind:        types.Quote,
 							types.AttrQuoteAuthor: "john doe",
-							types.AttrQuoteTitle:  "",
 						},
 						Kind: types.Quote,
 						Elements: []interface{}{
@@ -2565,9 +2543,8 @@ ____
 				Elements: []interface{}{
 					&types.DelimitedBlock{
 						Attributes: types.ElementAttributes{
-							types.AttrKind:        types.Quote,
-							types.AttrQuoteAuthor: "",
-							types.AttrQuoteTitle:  "quote title",
+							types.AttrKind:       types.Quote,
+							types.AttrQuoteTitle: "quote title",
 						},
 						Kind: types.Quote,
 						Elements: []interface{}{
@@ -2605,9 +2582,7 @@ ____`
 				Elements: []interface{}{
 					&types.DelimitedBlock{
 						Attributes: types.ElementAttributes{
-							types.AttrKind:        types.Quote,
-							types.AttrQuoteAuthor: "",
-							types.AttrQuoteTitle:  "",
+							types.AttrKind: types.Quote,
 						},
 						Kind: types.Quote,
 						Elements: []interface{}{
@@ -2699,9 +2674,7 @@ ____`
 				Elements: []interface{}{
 					&types.DelimitedBlock{
 						Attributes: types.ElementAttributes{
-							types.AttrKind:        types.Quote,
-							types.AttrQuoteAuthor: "",
-							types.AttrQuoteTitle:  "",
+							types.AttrKind: types.Quote,
 						},
 						Kind: types.Quote,
 						Elements: []interface{}{
@@ -2783,9 +2756,7 @@ ____`
 				Elements: []interface{}{
 					&types.DelimitedBlock{
 						Attributes: types.ElementAttributes{
-							types.AttrKind:        types.Quote,
-							types.AttrQuoteAuthor: "",
-							types.AttrQuoteTitle:  "",
+							types.AttrKind: types.Quote,
 						},
 						Kind:     types.Quote,
 						Elements: []interface{}{},
@@ -2808,9 +2779,7 @@ foo
 				Elements: []interface{}{
 					&types.DelimitedBlock{
 						Attributes: types.ElementAttributes{
-							types.AttrKind:        types.Quote,
-							types.AttrQuoteAuthor: "",
-							types.AttrQuoteTitle:  "",
+							types.AttrKind: types.Quote,
 						},
 						Kind: types.Quote,
 						Elements: []interface{}{
@@ -2899,7 +2868,6 @@ ____
 						Attributes: types.ElementAttributes{
 							types.AttrKind:        types.Verse,
 							types.AttrQuoteAuthor: "john doe",
-							types.AttrQuoteTitle:  "",
 						},
 						Kind: types.Verse,
 						Elements: []interface{}{
@@ -2944,9 +2912,8 @@ ____
 				Elements: []interface{}{
 					&types.DelimitedBlock{
 						Attributes: types.ElementAttributes{
-							types.AttrKind:        types.Verse,
-							types.AttrQuoteAuthor: "",
-							types.AttrQuoteTitle:  "verse title",
+							types.AttrKind:       types.Verse,
+							types.AttrQuoteTitle: "verse title",
 						},
 						Kind: types.Verse,
 						Elements: []interface{}{
@@ -2984,9 +2951,7 @@ ____`
 				Elements: []interface{}{
 					&types.DelimitedBlock{
 						Attributes: types.ElementAttributes{
-							types.AttrKind:        types.Verse,
-							types.AttrQuoteAuthor: "",
-							types.AttrQuoteTitle:  "",
+							types.AttrKind: types.Verse,
 						},
 						Kind: types.Verse,
 						Elements: []interface{}{
@@ -3043,9 +3008,7 @@ ____`
 				Elements: []interface{}{
 					&types.DelimitedBlock{
 						Attributes: types.ElementAttributes{
-							types.AttrKind:        types.Verse,
-							types.AttrQuoteAuthor: "",
-							types.AttrQuoteTitle:  "",
+							types.AttrKind: types.Verse,
 						},
 						Kind: types.Verse,
 						Elements: []interface{}{
@@ -3090,9 +3053,7 @@ ____`
 				Elements: []interface{}{
 					&types.DelimitedBlock{
 						Attributes: types.ElementAttributes{
-							types.AttrKind:        types.Verse,
-							types.AttrQuoteAuthor: "",
-							types.AttrQuoteTitle:  "",
+							types.AttrKind: types.Verse,
 						},
 						Kind:     types.Verse,
 						Elements: []interface{}{},
@@ -3115,9 +3076,7 @@ foo
 				Elements: []interface{}{
 					&types.DelimitedBlock{
 						Attributes: types.ElementAttributes{
-							types.AttrKind:        types.Verse,
-							types.AttrQuoteAuthor: "",
-							types.AttrQuoteTitle:  "",
+							types.AttrKind: types.Verse,
 						},
 						Kind: types.Verse,
 						Elements: []interface{}{
@@ -3158,8 +3117,7 @@ end
 				Elements: []interface{}{
 					&types.DelimitedBlock{
 						Attributes: types.ElementAttributes{
-							types.AttrKind:     types.Source,
-							types.AttrLanguage: "",
+							types.AttrKind: types.Source,
 						},
 						Kind: types.Source,
 						Elements: []interface{}{

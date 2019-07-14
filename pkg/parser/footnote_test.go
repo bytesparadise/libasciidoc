@@ -99,14 +99,6 @@ var _ = Describe("footnotes - preflight", func() {
 
 		It("footnote in a paragraph", func() {
 			source := `This is another paragraph.footnote:[I am footnote text and will be displayed at the bottom of the article.]`
-			footnote1 := types.Footnote{
-				ID: 0,
-				Elements: types.InlineElements{
-					&types.StringElement{
-						Content: "I am footnote text and will be displayed at the bottom of the article.",
-					},
-				},
-			}
 			expected := &types.PreflightDocument{
 				Blocks: []interface{}{
 					&types.Paragraph{
@@ -116,7 +108,14 @@ var _ = Describe("footnotes - preflight", func() {
 								&types.StringElement{
 									Content: "This is another paragraph.",
 								},
-								&footnote1,
+								&types.Footnote{
+									ID: 0,
+									Elements: types.InlineElements{
+										&types.StringElement{
+											Content: "I am footnote text and will be displayed at the bottom of the article.",
+										},
+									},
+								},
 							},
 						},
 					},

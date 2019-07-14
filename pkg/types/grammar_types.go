@@ -655,19 +655,6 @@ const (
 	UpperGreek NumberingStyle = "uppergreek"
 )
 
-// DefaultNumberingStyles the default numbering styles of ordered list items, based on their level
-var DefaultNumberingStyles map[int]NumberingStyle
-
-func init() {
-	DefaultNumberingStyles = map[int]NumberingStyle{
-		1: Arabic,
-		2: LowerAlpha,
-		3: LowerRoman,
-		4: UpperAlpha,
-		5: UpperRoman,
-	}
-}
-
 // NewOrderedList initializes a new ordered list with the given item
 func NewOrderedList(item *OrderedListItem) *OrderedList {
 	list := &OrderedList{
@@ -1835,20 +1822,25 @@ type InlineLink struct {
 }
 
 // NewInlineLink initializes a new inline `InlineLink`
-func NewInlineLink(url Location, attrs ElementAttributes) (*InlineLink, error) {
-	return &InlineLink{
-		Location:   url,
-		Attributes: attrs,
-	}, nil
+func NewInlineLink(url Location, attrs interface{}) (*InlineLink, error) {
+	result := &InlineLink{
+		Location: url,
+	}
+	if attrs, ok := attrs.(ElementAttributes); ok {
+		result.Attributes = attrs
+	} else {
+		result.Attributes = ElementAttributes{}
+	}
+	return result, nil
 }
 
 // AttrInlineLinkText the link `text` attribute
 const AttrInlineLinkText string = "text"
 
 // NewInlineLinkAttributes returns a map of link attributes, some of which have implicit keys (`text`)
-func NewInlineLinkAttributes(text InlineElements, otherattrs []interface{}) (ElementAttributes, error) {
+func NewInlineLinkAttributes(text interface{}, otherattrs []interface{}) (ElementAttributes, error) {
 	result := ElementAttributes{}
-	if text != nil {
+	if text, ok := text.(InlineElements); ok {
 		result[AttrInlineLinkText] = text
 	}
 	for _, otherAttr := range otherattrs {
