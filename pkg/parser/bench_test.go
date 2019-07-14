@@ -3,27 +3,15 @@ package parser_test
 import (
 	"io/ioutil"
 	"os"
-	"strings"
 	"testing"
 
 	"github.com/bytesparadise/libasciidoc/pkg/parser"
 )
 
-func BenchmarkParser1(b *testing.B) {
-	source := `=== foo1
+const (
+	doc1line = `=== foo1
 bar1`
-
-	for n := 0; n < b.N; n++ {
-		err := parseReader(source)
-		if err != nil {
-			b.Error(err)
-		}
-	}
-}
-
-func BenchmarkParser10(b *testing.B) {
-	// given
-	source := `=== foo
+	doc10lines = `=== foo
 bar
 
 === foo
@@ -52,16 +40,43 @@ bar
 
 === foo
 bar`
-	for n := 0; n < b.N; n++ {
-		err := parseReader(source)
-		if err != nil {
-			b.Error(err)
-		}
+)
+
+func BenchmarkParser(b *testing.B) {
+	usecases := []struct {
+		name    string
+		content []byte
+	}{
+		{
+			name:    "1 line",
+			content: []byte(doc1line),
+		},
+		{
+			name:    "10 lines",
+			content: []byte(doc10lines),
+		},
+		{
+			name:    "vert.x doc",
+			content: load(b, "../../test/bench/vertx-examples.adoc"),
+		},
 	}
+	for _, usecase := range usecases {
+		name := usecase.name
+		content := usecase.content
+		b.Run(name, func(b *testing.B) {
+			for n := 0; n < b.N; n++ {
+				_, err := parser.Parse(name, content)
+				if err != nil {
+					b.Error(err)
+				}
+			}
+		})
+	}
+
 }
 
-func BenchmarkParserFile(b *testing.B) {
-	f, err := os.Open("../../test/bench/vertx-examples.adoc")
+func load(b *testing.B, filename string) []byte {
+	f, err := os.Open(filename)
 	if err != nil {
 		b.Error(err)
 	}
@@ -75,24 +90,5 @@ func BenchmarkParserFile(b *testing.B) {
 	if err != nil {
 		b.Error(err)
 	}
-
-	b.ResetTimer()
-	for n := 0; n < b.N; n++ {
-		_, err := parser.Parse("vert.x samples", content)
-		if err != nil {
-			b.Error(err)
-		}
-	}
-}
-
-func parseReader(content string) error {
-	reader := strings.NewReader(content)
-	// stats := parser.Stats{}
-	// opts := []parser.Option{parser.AllowInvalidUTF8(false), parser.Statistics(&stats, "no match")}
-	opts := []parser.Option{parser.AllowInvalidUTF8(false)}
-	// if os.Getenv("DEBUG") == "true" {
-	// 	opts = append(opts, parser.Debug(true))
-	// }
-	_, err := parser.ParseDocument("", reader, opts...) //, Debug(true))
-	return err
+	return content
 }

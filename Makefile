@@ -107,6 +107,14 @@ test-no-coverage: deps generate-optimized
 test-fixtures: deps generate-optimized
 	@ginkgo -r --randomizeAllSpecs --randomizeSuites --failOnPending --trace --race --compilers=2 -tags=fixtures --focus=fixtures
 
+.PHONE: bench-parser
+## run the benchmarks on the parser
+bench-parser: generate-optimized
+	$(eval GIT_BRANCH:=$(shell git rev-parse --abbrev-ref HEAD))
+	go test -run="XXX" -bench=. -benchmem -count=10 \
+		github.com/bytesparadise/libasciidoc/pkg/parser | \
+		tee ./tmp/bench-$(GIT_BRANCH).txt
+
 .PHONY: build
 ## build the binary executable from CLI
 build: $(INSTALL_PREFIX) deps generate-optimized
