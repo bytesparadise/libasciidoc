@@ -72,8 +72,37 @@ func BenchmarkParser(b *testing.B) {
 			}
 		})
 	}
-
 }
+
+// func TestParserWithStats(t *testing.T) {
+// 	usecases := []struct {
+// 		name    string
+// 		content []byte
+// 	}{
+// 		{
+// 			name:    "1 line",
+// 			content: []byte(doc1line),
+// 		},
+// 		{
+// 			name:    "10 lines",
+// 			content: []byte(doc10lines),
+// 		},
+// 	}
+// 	for _, usecase := range usecases {
+// 		name := usecase.name
+// 		content := usecase.content
+// 		t.Run(name, func(t *testing.T) {
+// 			stats := parser.Stats{}
+// 			_, err := parser.Parse(name, content, parser.Statistics(&stats, "no match"))
+// 			if err != nil {
+// 				t.Error(err)
+// 			}
+// 			t.Logf("ExprCnt:      %d", stats.ExprCnt)
+// 			result, _ := json.MarshalIndent(stats.ChoiceAltCnt, " ", " ")
+// 			t.Logf("ChoiceAltCnt: \n%s", result)
+// 		})
+// 	}
+// }
 
 func load(b *testing.B, filename string) []byte {
 	f, err := os.Open(filename)

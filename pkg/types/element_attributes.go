@@ -164,19 +164,16 @@ func NewQuoteAttributes(kind string, author, title interface{}) (map[string]inte
 			result[AttrQuoteTitle] = title
 		}
 	}
-	log.Debugf("initialized new %s attributes: %v", kind, result)
 	return result, nil
 }
 
 // NewLiteralAttribute initializes a new attribute map with a single entry for the literal kind of block
 func NewLiteralAttribute() (ElementAttributes, error) {
-	log.Debug("initializing a new Literal attribute")
 	return ElementAttributes{AttrKind: Literal}, nil
 }
 
 // NewSourceAttributes initializes a new attribute map with two entries, one for the kind of element ("source") and another optional one for the language of the source code
 func NewSourceAttributes(language interface{}) (ElementAttributes, error) {
-	log.Debugf("initializing a new source attribute (language='%s')", language)
 	result := ElementAttributes{
 		AttrKind: Source,
 	}
