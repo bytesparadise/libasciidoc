@@ -79,7 +79,7 @@ YamlFrontMatter <- YamlFrontMatterToken content:(YamlFrontMatterContent)? YamlFr
     return types.NewYamlFrontMatter(content.(string))
 }
 
-YamlFrontMatterToken  <- "---" WS* EOL
+YamlFrontMatterToken  <- "---" EOLS
 
 YamlFrontMatterContent <- ((!YamlFrontMatterToken .)+)* {
     return string(c.text), nil
@@ -149,7 +149,7 @@ DocumentRevisionRemark <- (Alphanums / Spaces / (!EOL  .))+ {
 // ------------------------------------------
 // Document Attributes
 // ------------------------------------------
-DocumentAttributeDeclaration <- ":" name:(DocumentAttributeName) ":" value:((WS+ value:(DocumentAttributeValue)) { return value, nil })? WS* EOL {
+DocumentAttributeDeclaration <- ":" name:(DocumentAttributeName) ":" value:((WS+ value:(DocumentAttributeValue)) { return value, nil })? EOLS {
     return types.NewDocumentAttributeDeclaration(name.(string), value)
 } 
 
@@ -164,9 +164,9 @@ DocumentAttributeValue <- (!NEWLINE .)+ {
     return string(c.text), nil
 }
 
-DocumentAttributeReset <- ":!" name:(DocumentAttributeName) ":" WS* EOL {
+DocumentAttributeReset <- ":!" name:(DocumentAttributeName) ":" EOLS {
     return types.NewDocumentAttributeReset(name.(string))
-} / ":" name:(DocumentAttributeName) "!:" WS* EOL {
+} / ":" name:(DocumentAttributeName) "!:" EOLS {
     return types.NewDocumentAttributeReset(name.(string))
 }
 
@@ -198,9 +198,9 @@ ElementAttribute <- &("[" / "." / "#") // skip if the content does not start wit
 // identify all attributes that masquerade a block element into something else.
 MasqueradeAttribute <- QuoteAttributes / VerseAttributes
 
-ElementID <- "[[" id:(ID) "]]" WS* EOL {
+ElementID <- "[[" id:(ID) "]]" EOLS {
     return types.NewElementID(id.(string))
-} / "[#" id:(ID) "]"  WS* EOL {
+} / "[#" id:(ID) "]"  EOLS {
     return types.NewElementID(id.(string))
 }
 
@@ -210,17 +210,17 @@ InlineElementID <- "[[" id:(ID) "]]" WS* { // no EOL here since there can be mul
 
 // a title attached to an element, such as a ImageBlock
 // a title starts with a single "." followed by the value, without space in-between
-ElementTitle <- "." !"." !WS title:((Alphanums / Spaces / (!NEWLINE  .))+ {
+ElementTitle <- "." title:(Alphanums (Alphanums / Spaces / (!NEWLINE .))* {
     return string(c.text), nil
-}) WS* EOL {
+}) EOL {
     return types.NewElementTitle(title.(string))
 }
 
 // a role attached to an element, such as a ImageBlock
 // a role starts is wrapped in "[. ]" 
-ElementRole <- "[." !WS role:((Alphanums / Spaces / (!NEWLINE !"]"  .))+ {
+ElementRole <- "[." role:(Alphanums (Alphanums / Spaces / (!NEWLINE !"]" .))* {
     return string(c.text), nil
-}) "]" WS* EOL {
+}) "]" EOLS {
     return types.NewElementRole(role.(string))
 }
 
@@ -229,19 +229,19 @@ LiteralAttribute <- "[literal]" WS* NEWLINE {
 }
 
 // expression for the whole admonition marker, but only retains the actual kind
-AdmonitionMarkerAttribute <- "[" k:(AdmonitionKind) "]" WS* EOL {
+AdmonitionMarkerAttribute <- "[" k:(AdmonitionKind) "]" EOLS {
     return types.NewAdmonitionAttribute(k.(types.AdmonitionKind))
 }
 
 // a paragraph or a delimited block may contain source code in a given language
 SourceAttributes <- "[source" ","? language:((Alphanums / Spaces / (!NEWLINE !"]" .))+ {
         return string(c.text), nil
-    })? "]" WS* EOL {
+    })? "]" EOLS {
     return types.NewSourceAttributes(language)
 }
 
 // one or more attributes. eg: [foo, key1=value1, key2 = value2 , ]
-AttributeGroup <- "[" !WS attributes:(GenericAttribute)*  "]" WS* EOL {
+AttributeGroup <- "[" attributes:(GenericAttribute)* "]" EOLS {
     return types.NewAttributeGroup(attributes.([]interface{}))
 }
 
@@ -249,23 +249,25 @@ GenericAttribute <- key:(AttributeKey) "="? value:(AttributeValue)? ","? WS* { /
     return types.NewGenericAttribute(key.(string), value)
 }
 
-AttributeKey <- !"quote" !"verse" !"literal" key:(Alphanums / Spaces / (!"=" !"," !"]"  .))+ {
+AttributeKey <- !"quote" !"verse" !"literal" key:(Alphanums / OtherAttributeChar)+ WS* {
     return string(c.text), nil
 }
 
-AttributeValue <- value:(Alphanums / Spaces / (!"=" !"," !"]" .))* !(WS* "="){ // attribute value cannot be followed by a `=`, otherwise it causes troubles for standalone values (eg: in images)
+AttributeValue <- value:(Alphanums / Spaces / OtherAttributeChar)+ !"=" { // attribute value cannot be followed by a `=`, otherwise it causes troubles for standalone values (eg: in images)
     return string(c.text), nil
 }
 
-HorizontalLayout <- "[horizontal]" WS* EOL {
+OtherAttributeChar <- (!WS !"=" !"," !"]" .)
+
+HorizontalLayout <- "[horizontal]" EOLS {
     return types.ElementAttributes{"layout": "horizontal"}, nil
 }
 
-QuoteAttributes <- "[quote" WS* ","? author:(QuoteAttribute)? ","? title:(QuoteAttribute)? "]" WS* EOL {
+QuoteAttributes <- "[quote" WS* ","? author:(QuoteAttribute)? ","? title:(QuoteAttribute)? "]" EOLS {
     return types.NewQuoteAttributes("quote", author, title)
 }
 
-VerseAttributes <- "[verse" WS* ","? author:(QuoteAttribute)? ","? title:(QuoteAttribute)? "]" WS* EOL {
+VerseAttributes <- "[verse" WS* ","? author:(QuoteAttribute)? ","? title:(QuoteAttribute)? "]" EOLS {
     return types.NewQuoteAttributes("verse", author.(string), title.(string))
 }
 
@@ -298,13 +300,13 @@ TitleElements <- elements:(!NEWLINE !InlineElementID TitleElement)+ { // absorbs
     return types.NewInlineElements(elements.([]interface{}))
 } 
 
-TitleElement <- element:(Spaces 
+TitleElement <- element:(SimpleWord
+        / Spaces 
         / CrossReference
         / Passthrough
         / InlineImage 
         / Link
         / InlineFootnote
-        / Alphanums
         / QuotedText
         / DocumentAttributeSubstitution
         / LineBreak
@@ -345,7 +347,7 @@ UserMacroAttributes <- "[" attrs:(GenericAttribute)* "]" {
 // ------------------------------------------
 FileInclusion <- incl:("include::" path:(FileLocation) inlineAttributes:(FileIncludeAttributes) { 
         return types.NewFileInclusion(path.(types.Location), inlineAttributes.(types.ElementAttributes), string(c.text))
-    }) WS* EOL {
+    }) EOLS {
     return incl.(*types.FileInclusion), nil
 }
 
@@ -431,7 +433,7 @@ ListParagraphLine <- !EOF
             return line, nil
         }
 
-ListItemContinuation <- "+" WS* EOL 
+ListItemContinuation <- "+" EOLS 
 
 ContinuedListItemElement <- blanklines:(BlankLine*) ListItemContinuation element:DocumentBlock{
     return types.NewContinuedListItemElement(-len(blanklines.([]interface{})), element) // offset is negative
@@ -544,13 +546,13 @@ LabeledListItem <- attributes:(ElementAttributes)? term:(LabeledListItemTerm) se
     return types.NewLabeledListItem(len(separator.(string)) - 1, term.(string), description, attributes)
 }
 
-LabeledListItemTerm <- (Alphanums / Spaces / (!NEWLINE !"::"  .))*  {
+LabeledListItemTerm <- (Alphanums / Spaces / (!NEWLINE !"::" .))+  {
     return string(c.text), nil
 }
 
 LabeledListItemSeparator <- 
     separator:((":")+ {   
-        return string(c.text), nil 
+        return string(c.text), nil
     }) 
     &{  
         // use a predicate to make sure that only `::` to `::::` are allowed
@@ -681,11 +683,11 @@ InlineElementsWithoutSubtitution <- !BlankLine !BlockDelimiter elements:(InlineE
 } 
 
 InlineElementWithoutSubtitution <- !EOL !LineBreak 
-    element:(Spaces 
+    element:(SimpleWord
+        / Spaces 
         / InlineImage 
         / Link 
         / Passthrough 
-        / Alphanums 
         / QuotedText 
         / CrossReference 
         / InlineElementID
@@ -1057,7 +1059,7 @@ LinkTextAttribute <- elements:(!"=" !"," !"]" (QuotedText / SimpleWord / Spaces 
 // ------------------------------------------
 // Images
 // ------------------------------------------
-ImageBlock <- attributes:(ElementAttributes)? "image::" path:(URL) inlineAttributes:(ImageAttributes) WS* EOL {
+ImageBlock <- attributes:(ElementAttributes)? "image::" path:(URL) inlineAttributes:(ImageAttributes) EOLS {
     return types.NewImageBlock(path.(string), inlineAttributes.(types.ElementAttributes), attributes)
 }
 
@@ -1065,7 +1067,7 @@ InlineImage <- "image:" !":" path:(URL) inlineAttributes:(ImageAttributes) {
     return types.NewInlineImage(path.(string), inlineAttributes.(types.ElementAttributes))
 }
 
-ImageAttributes <- "[" alt:(AttributeValue)? ","? width:(AttributeValue)? ","? height:(AttributeValue)? ","? otherattrs:(GenericAttribute)* "]" {
+ImageAttributes <- "[" alt:(AttributeValue)? ","? width:(AttributeValue)? ","? height:(AttributeValue)? ","? WS* otherattrs:(GenericAttribute)* "]" {
     return types.NewImageAttributes(alt, width, height, otherattrs.([]interface{}))
 }
 
@@ -1116,7 +1118,7 @@ BlockDelimiter <- LiteralBlockDelimiter
 // -------------------------------------------------------------------------------------
 // Fenced Blocks
 // -------------------------------------------------------------------------------------
-FencedBlockDelimiter <- "```" WS* EOL
+FencedBlockDelimiter <- "```" EOLS
 
 FencedBlock <- attributes:(ElementAttributes)? FencedBlockDelimiter content:(FencedBlockContent)* (FencedBlockDelimiter / EOF) {
     return types.NewDelimitedBlock(types.Fenced, content.([]interface{}), types.None, attributes)
@@ -1136,7 +1138,7 @@ FencedBlockParagraphLine <- !FencedBlockDelimiter !BlankLine line:(InlineElement
 // -------------------------------------------------------------------------------------
 // Listing blocks
 // -------------------------------------------------------------------------------------
-ListingBlockDelimiter <- "----" WS* EOL
+ListingBlockDelimiter <- "----" EOLS
 
 // listing block: verbatim content
 ListingBlock <- attributes:(ElementAttributes)? ListingBlockDelimiter content:(ListingBlockElement)* (ListingBlockDelimiter / EOF) {
@@ -1156,7 +1158,7 @@ ListingBlockParagraphLine <- !ListingBlockDelimiter line:(!EOF (Alphanums / Spac
 // -------------------------------------------------------------------------------------
 // Example blocks
 // -------------------------------------------------------------------------------------
-ExampleBlockDelimiter <- "====" WS* EOL
+ExampleBlockDelimiter <- "====" EOLS
 
 ExampleBlock <- attributes:(ElementAttributes)? ExampleBlockDelimiter content:(BlankLine / FileInclusion / ListItem / ExampleBlockParagraph)*  (ExampleBlockDelimiter / EOF) {
     return types.NewDelimitedBlock(types.Example, content.([]interface{}), types.None, attributes)
@@ -1174,7 +1176,7 @@ ExampleBlockParagraphLine <- !ExampleBlockDelimiter !BlankLine line:(InlineEleme
 // -------------------------------------------------------------------------------------
 // Quote blocks
 // -------------------------------------------------------------------------------------
-QuoteBlockDelimiter <- "____" WS* EOL // same for verse blocks
+QuoteBlockDelimiter <- "____" EOLS // same for verse blocks
 
 QuoteBlock <- attributes:(ElementAttributes)? QuoteBlockDelimiter content:(QuoteBlockElement)* (QuoteBlockDelimiter / EOF) {
     return types.NewDelimitedBlock(types.Quote, content.([]interface{}), types.None, attributes)
@@ -1254,7 +1256,7 @@ VerseBlockParagraphLineElement <- !EOL !LineBreak
 // -------------------------------------------------------------------------------------
 // Sidebars
 // -------------------------------------------------------------------------------------
-SidebarBlockDelimiter <- "****" WS* EOL
+SidebarBlockDelimiter <- "****" EOLS
 
 SidebarBlock <- attributes:(ElementAttributes)? SidebarBlockDelimiter content:(SidebarBlockContent)*  (SidebarBlockDelimiter / EOF) {
     return types.NewDelimitedBlock(types.Sidebar, content.([]interface{}), types.None, attributes)
@@ -1288,7 +1290,7 @@ Table <- attributes:(ElementAttributes)? TableDelimiter
 
 TableCellSeparator <- "|" WS*
 
-TableDelimiter <- "|===" WS* EOL
+TableDelimiter <- "|===" EOLS
         
 // table line header is a line followed by a blankline
 TableLineHeader <- !TableDelimiter cells:(TableCell)+ EOL BlankLine {
@@ -1308,7 +1310,7 @@ TableCell <- TableCellSeparator elements:(!TableCellSeparator !EOL WS* InlineEle
 // -------------------------------------------------------------------------------------
 CommentBlockDelimiter <- "////"
 
-CommentBlock <- CommentBlockDelimiter WS* NEWLINE content:(CommentBlockLine)*  ((CommentBlockDelimiter WS* EOL) / EOF) {
+CommentBlock <- CommentBlockDelimiter WS* NEWLINE content:(CommentBlockLine)*  ((CommentBlockDelimiter EOLS) / EOF) {
     return types.NewDelimitedBlock(types.Comment, content.([]interface{}), types.Verbatim, nil)
 }
 
@@ -1356,7 +1358,7 @@ ParagraphWithHeadingSpacesLines <-
 
 // paragraph with the literal block delimiter (`....`)
 ParagraphWithLiteralBlockDelimiter <- attributes:(ElementAttributes)?
-        LiteralBlockDelimiter WS* NEWLINE lines:(ParagraphWithLiteralBlockDelimiterLines) ((LiteralBlockDelimiter WS* EOL) / EOF) {
+        LiteralBlockDelimiter WS* NEWLINE lines:(ParagraphWithLiteralBlockDelimiterLines) ((LiteralBlockDelimiter EOLS) / EOF) {
     return types.NewLiteralBlock(types.LiteralBlockWithDelimiter, lines.([]interface{}), attributes)
 }
 
@@ -1404,7 +1406,7 @@ ParagraphWithLiteralAttributeLine <- line:(!(BlankLine) (Alphanums / Spaces / (!
 // ------------------------------------------
 // BlankLine
 // ------------------------------------------
-BlankLine <- !EOF WS* EOL {
+BlankLine <- !EOF EOLS {
     return types.NewBlankLine()
 }
 
@@ -1427,12 +1429,6 @@ SimpleWord <- Alphanums &(WS / EOL) { // very straightforward content: alphanums
 OtherWord <- (Alphanums / QuotedTextPrefix / Parenthesis / ((!NEWLINE !WS !Dot !QuotedTextPrefix .) Dot? { // TODO: remove check on parenthesis and dot?
     return types.NewStringElement(string(c.text))
 })+ / "."+){ // word cannot contain parenthesis. Dots and ellipsis are treated as independent words (but will be combined afterwards)
-    return types.NewStringElement(string(c.text))
-}
-
-Text <- (Alphanums / Spaces / (!EOL .){ // TODO: remove check on parenthesis and dot?
-    return types.NewStringElement(string(c.text))
-})+{ // word cannot contain parenthesis. Dots and ellipsis are treated as independent words (but will be combined afterwards)
     return types.NewStringElement(string(c.text))
 }
 
@@ -1475,3 +1471,5 @@ NEWLINE <- "\r\n" / "\r" / "\n"
 EOF <- !.
 
 EOL <- NEWLINE / EOF
+
+EOLS <- WS* EOL
