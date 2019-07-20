@@ -107,7 +107,7 @@ test-no-coverage: deps generate-optimized
 test-fixtures: deps generate-optimized
 	@ginkgo -r --randomizeAllSpecs --randomizeSuites --failOnPending --trace --race --compilers=2 -tags=fixtures --focus=fixtures
 
-.PHONE: bench-parser
+.PHONY: bench-parser
 ## run the benchmarks on the parser
 bench-parser: generate-optimized
 	$(eval GIT_BRANCH:=$(shell git rev-parse --abbrev-ref HEAD))
