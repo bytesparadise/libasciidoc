@@ -54,7 +54,7 @@ func renderDocument(ctx *renderer.Context, output io.Writer) (map[string]interfa
 	if err != nil {
 		return nil, errors.Wrapf(err, "unable to render full document")
 	}
-	log.Debugf("rendered title: '%s'\n", string(renderedTitle))
+	// log.Debugf("rendered title: '%s'\n", string(renderedTitle))
 	renderedHeader, err := renderDocumentHeader(ctx)
 	if err != nil {
 		return nil, errors.Wrapf(err, "unable to render full document")
@@ -116,7 +116,7 @@ func renderDocumentElements(ctx *renderer.Context) ([]byte, error) {
 	elements := []interface{}{}
 	if len(ctx.Document.Elements) > 0 {
 		// retrieve elements of the first section 0 (if available), plus remaining elements
-		if s, ok := ctx.Document.Elements[0].(*types.Section); ok && s.Level == 0 {
+		if s, ok := ctx.Document.Elements[0].(types.Section); ok && s.Level == 0 {
 			elements = append(elements, s.Elements)
 			if len(ctx.Document.Elements) > 1 {
 				elements = append(elements, ctx.Document.Elements[1:]...)
@@ -125,7 +125,7 @@ func renderDocumentElements(ctx *renderer.Context) ([]byte, error) {
 			elements = ctx.Document.Elements
 		}
 	}
-	log.Debugf("rendered document with %d element(s)...", len(elements))
+	// log.Debugf("rendered document with %d element(s)...", len(elements))
 	buff := bytes.NewBuffer(nil)
 	renderedElements, err := renderElements(ctx, elements)
 	if err != nil {

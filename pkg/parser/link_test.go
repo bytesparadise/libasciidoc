@@ -11,14 +11,14 @@ var _ = Describe("links - preflight", func() {
 
 		It("external link without text", func() {
 			source := "a link to https://foo.bar"
-			expected := &types.Paragraph{
+			expected := types.Paragraph{
 				Attributes: types.ElementAttributes{},
 				Lines: []types.InlineElements{
 					{
-						&types.StringElement{Content: "a link to "},
-						&types.InlineLink{
+						types.StringElement{Content: "a link to "},
+						types.InlineLink{
 							Location: types.Location{
-								&types.StringElement{
+								types.StringElement{
 									Content: "https://foo.bar",
 								},
 							},
@@ -32,14 +32,14 @@ var _ = Describe("links - preflight", func() {
 
 		It("external link with empty text", func() {
 			source := "a link to https://foo.bar[]"
-			expected := &types.Paragraph{
+			expected := types.Paragraph{
 				Attributes: types.ElementAttributes{},
 				Lines: []types.InlineElements{
 					{
-						&types.StringElement{Content: "a link to "},
-						&types.InlineLink{
+						types.StringElement{Content: "a link to "},
+						types.InlineLink{
 							Location: types.Location{
-								&types.StringElement{
+								types.StringElement{
 									Content: "https://foo.bar",
 								},
 							},
@@ -53,26 +53,26 @@ var _ = Describe("links - preflight", func() {
 
 		It("external link with text only", func() {
 			source := "a link to mailto:foo@bar[the foo@bar email]."
-			expected := &types.Paragraph{
+			expected := types.Paragraph{
 				Attributes: types.ElementAttributes{},
 				Lines: []types.InlineElements{
 					{
-						&types.StringElement{Content: "a link to "},
-						&types.InlineLink{
+						types.StringElement{Content: "a link to "},
+						types.InlineLink{
 							Location: types.Location{
-								&types.StringElement{
+								types.StringElement{
 									Content: "mailto:foo@bar",
 								},
 							},
 							Attributes: types.ElementAttributes{
 								types.AttrInlineLinkText: types.InlineElements{
-									&types.StringElement{
+									types.StringElement{
 										Content: "the foo@bar email",
 									},
 								},
 							},
 						},
-						&types.StringElement{Content: "."},
+						types.StringElement{Content: "."},
 					},
 				},
 			}
@@ -81,20 +81,20 @@ var _ = Describe("links - preflight", func() {
 
 		It("external link with text and extra attributes", func() {
 			source := "a link to mailto:foo@bar[the foo@bar email, foo=bar]"
-			expected := &types.Paragraph{
+			expected := types.Paragraph{
 				Attributes: types.ElementAttributes{},
 				Lines: []types.InlineElements{
 					{
-						&types.StringElement{Content: "a link to "},
-						&types.InlineLink{
+						types.StringElement{Content: "a link to "},
+						types.InlineLink{
 							Location: types.Location{
-								&types.StringElement{
+								types.StringElement{
 									Content: "mailto:foo@bar",
 								},
 							},
 							Attributes: types.ElementAttributes{
 								types.AttrInlineLinkText: types.InlineElements{
-									&types.StringElement{
+									types.StringElement{
 										Content: "the foo@bar email",
 									},
 								},
@@ -112,29 +112,29 @@ var _ = Describe("links - preflight", func() {
 and more text on the
 next lines`
 
-			expected := &types.Paragraph{
+			expected := types.Paragraph{
 				Attributes: types.ElementAttributes{},
 				Lines: []types.InlineElements{
 					{
-						&types.StringElement{
+						types.StringElement{
 							Content: "a ",
 						},
-						&types.InlineLink{
+						types.InlineLink{
 							Attributes: types.ElementAttributes{},
 							Location: types.Location{
-								&types.StringElement{
+								types.StringElement{
 									Content: "http://website.com",
 								},
 							},
 						},
 					},
 					{
-						&types.StringElement{
+						types.StringElement{
 							Content: "and more text on the",
 						},
 					},
 					{
-						&types.StringElement{
+						types.StringElement{
 							Content: "next lines",
 						},
 					},
@@ -148,29 +148,29 @@ next lines`
 and more text on the
 next lines`
 
-			expected := &types.Paragraph{
+			expected := types.Paragraph{
 				Attributes: types.ElementAttributes{},
 				Lines: []types.InlineElements{
 					{
-						&types.StringElement{
+						types.StringElement{
 							Content: "a ",
 						},
-						&types.InlineLink{
+						types.InlineLink{
 							Attributes: types.ElementAttributes{},
 							Location: types.Location{
-								&types.StringElement{
+								types.StringElement{
 									Content: "http://website.com",
 								},
 							},
 						},
 					},
 					{
-						&types.StringElement{
+						types.StringElement{
 							Content: "and more text on the",
 						},
 					},
 					{
-						&types.StringElement{
+						types.StringElement{
 							Content: "next lines",
 						},
 					},
@@ -185,14 +185,14 @@ next lines`
 
 		It("relative link to doc without text", func() {
 			source := "a link to link:foo.adoc[]"
-			expected := &types.Paragraph{
+			expected := types.Paragraph{
 				Attributes: types.ElementAttributes{},
 				Lines: []types.InlineElements{
 					{
-						&types.StringElement{Content: "a link to "},
-						&types.InlineLink{
+						types.StringElement{Content: "a link to "},
+						types.InlineLink{
 							Location: types.Location{
-								&types.StringElement{
+								types.StringElement{
 									Content: "foo.adoc",
 								},
 							},
@@ -206,20 +206,20 @@ next lines`
 
 		It("relative link to doc with text", func() {
 			source := "a link to link:foo.adoc[foo doc]"
-			expected := &types.Paragraph{
+			expected := types.Paragraph{
 				Attributes: types.ElementAttributes{},
 				Lines: []types.InlineElements{
 					{
-						&types.StringElement{Content: "a link to "},
-						&types.InlineLink{
+						types.StringElement{Content: "a link to "},
+						types.InlineLink{
 							Location: types.Location{
-								&types.StringElement{
+								types.StringElement{
 									Content: "foo.adoc",
 								},
 							},
 							Attributes: types.ElementAttributes{
 								types.AttrInlineLinkText: types.InlineElements{
-									&types.StringElement{
+									types.StringElement{
 										Content: "foo doc",
 									},
 								},
@@ -233,20 +233,20 @@ next lines`
 
 		It("relative link to external URL with text only", func() {
 			source := "a link to link:https://foo.bar[foo doc]"
-			expected := &types.Paragraph{
+			expected := types.Paragraph{
 				Attributes: types.ElementAttributes{},
 				Lines: []types.InlineElements{
 					{
-						&types.StringElement{Content: "a link to "},
-						&types.InlineLink{
+						types.StringElement{Content: "a link to "},
+						types.InlineLink{
 							Location: types.Location{
-								&types.StringElement{
+								types.StringElement{
 									Content: "https://foo.bar",
 								},
 							},
 							Attributes: types.ElementAttributes{
 								types.AttrInlineLinkText: types.InlineElements{
-									&types.StringElement{
+									types.StringElement{
 										Content: "foo doc",
 									},
 								},
@@ -260,20 +260,20 @@ next lines`
 
 		It("relative link to external URL with text and extra attributes", func() {
 			source := "a link to link:https://foo.bar[foo doc, foo=bar]"
-			expected := &types.Paragraph{
+			expected := types.Paragraph{
 				Attributes: types.ElementAttributes{},
 				Lines: []types.InlineElements{
 					{
-						&types.StringElement{Content: "a link to "},
-						&types.InlineLink{
+						types.StringElement{Content: "a link to "},
+						types.InlineLink{
 							Location: types.Location{
-								&types.StringElement{
+								types.StringElement{
 									Content: "https://foo.bar",
 								},
 							},
 							Attributes: types.ElementAttributes{
 								types.AttrInlineLinkText: types.InlineElements{
-									&types.StringElement{
+									types.StringElement{
 										Content: "foo doc",
 									},
 								},
@@ -288,14 +288,14 @@ next lines`
 
 		It("relative link to external URL with extra attributes only", func() {
 			source := "a link to link:https://foo.bar[foo=bar]"
-			expected := &types.Paragraph{
+			expected := types.Paragraph{
 				Attributes: types.ElementAttributes{},
 				Lines: []types.InlineElements{
 					{
-						&types.StringElement{Content: "a link to "},
-						&types.InlineLink{
+						types.StringElement{Content: "a link to "},
+						types.InlineLink{
 							Location: types.Location{
-								&types.StringElement{
+								types.StringElement{
 									Content: "https://foo.bar",
 								},
 							},
@@ -311,11 +311,11 @@ next lines`
 
 		It("invalid relative link to doc", func() {
 			source := "a link to link:foo.adoc"
-			expected := &types.Paragraph{
+			expected := types.Paragraph{
 				Attributes: types.ElementAttributes{},
 				Lines: []types.InlineElements{
 					{
-						&types.StringElement{
+						types.StringElement{
 							Content: "a link to link:foo.adoc",
 						},
 					},
@@ -326,47 +326,47 @@ next lines`
 
 		It("relative link with quoted text", func() {
 			source := "link:/[a _a_ b *b* c `c`]"
-			expected := &types.Paragraph{
+			expected := types.Paragraph{
 				Attributes: types.ElementAttributes{},
 				Lines: []types.InlineElements{
 					{
-						&types.InlineLink{
+						types.InlineLink{
 							Location: types.Location{
-								&types.StringElement{
+								types.StringElement{
 									Content: "/",
 								},
 							},
 							Attributes: types.ElementAttributes{
 								types.AttrInlineLinkText: types.InlineElements{
-									&types.StringElement{
+									types.StringElement{
 										Content: "a ",
 									},
-									&types.QuotedText{
+									types.QuotedText{
 										Kind: types.Italic,
 										Elements: types.InlineElements{
-											&types.StringElement{
+											types.StringElement{
 												Content: "a",
 											},
 										},
 									},
-									&types.StringElement{
+									types.StringElement{
 										Content: " b ",
 									},
-									&types.QuotedText{
+									types.QuotedText{
 										Kind: types.Bold,
 										Elements: types.InlineElements{
-											&types.StringElement{
+											types.StringElement{
 												Content: "b",
 											},
 										},
 									},
-									&types.StringElement{
+									types.StringElement{
 										Content: " c ",
 									},
-									&types.QuotedText{
+									types.QuotedText{
 										Kind: types.Monospace,
 										Elements: types.InlineElements{
-											&types.StringElement{
+											types.StringElement{
 												Content: "c",
 											},
 										},

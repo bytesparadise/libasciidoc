@@ -11,11 +11,11 @@ var _ = Describe("paragraphs - preflight", func() {
 
 		It("paragraph with 1 word", func() {
 			source := "hello"
-			expected := &types.Paragraph{
+			expected := types.Paragraph{
 				Attributes: types.ElementAttributes{},
 				Lines: []types.InlineElements{
 					{
-						&types.StringElement{Content: "hello"},
+						types.StringElement{Content: "hello"},
 					},
 				},
 			}
@@ -24,11 +24,11 @@ var _ = Describe("paragraphs - preflight", func() {
 
 		It("paragraph with few words and ending with spaces", func() {
 			source := "a paragraph with some content  "
-			expected := &types.Paragraph{
+			expected := types.Paragraph{
 				Attributes: types.ElementAttributes{},
 				Lines: []types.InlineElements{
 					{
-						&types.StringElement{Content: "a paragraph with some content  "},
+						types.StringElement{Content: "a paragraph with some content  "},
 					},
 				},
 			}
@@ -37,18 +37,18 @@ var _ = Describe("paragraphs - preflight", func() {
 
 		It("paragraph with bold content and spaces", func() {
 			source := "a paragraph with *some bold content*  "
-			expected := &types.Paragraph{
+			expected := types.Paragraph{
 				Attributes: types.ElementAttributes{},
 				Lines: []types.InlineElements{
 					{
-						&types.StringElement{Content: "a paragraph with "},
-						&types.QuotedText{
+						types.StringElement{Content: "a paragraph with "},
+						types.QuotedText{
 							Kind: types.Bold,
 							Elements: types.InlineElements{
-								&types.StringElement{Content: "some bold content"},
+								types.StringElement{Content: "some bold content"},
 							},
 						},
-						&types.StringElement{Content: "  "},
+						types.StringElement{Content: "  "},
 					},
 				},
 			}
@@ -57,15 +57,15 @@ var _ = Describe("paragraphs - preflight", func() {
 
 		It("paragraph with non-alphnum character before bold text", func() {
 			source := "+*some bold content*"
-			expected := &types.Paragraph{
+			expected := types.Paragraph{
 				Attributes: types.ElementAttributes{},
 				Lines: []types.InlineElements{
 					{
-						&types.StringElement{Content: "+"},
-						&types.QuotedText{
+						types.StringElement{Content: "+"},
+						types.QuotedText{
 							Kind: types.Bold,
 							Elements: types.InlineElements{
-								&types.StringElement{Content: "some bold content"},
+								types.StringElement{Content: "some bold content"},
 							},
 						},
 					},
@@ -78,7 +78,7 @@ var _ = Describe("paragraphs - preflight", func() {
 			source := `[#foo]
 .a title
 a paragraph`
-			expected := &types.Paragraph{
+			expected := types.Paragraph{
 				Attributes: types.ElementAttributes{
 					types.AttrID:       "foo",
 					types.AttrCustomID: true,
@@ -86,7 +86,7 @@ a paragraph`
 				},
 				Lines: []types.InlineElements{
 					{
-						&types.StringElement{Content: "a paragraph"},
+						types.StringElement{Content: "a paragraph"},
 					},
 				},
 			}
@@ -95,11 +95,11 @@ a paragraph`
 
 		It("paragraph with words and dots on same line", func() {
 			source := `foo. bar.`
-			expected := &types.Paragraph{
+			expected := types.Paragraph{
 				Attributes: types.ElementAttributes{},
 				Lines: []types.InlineElements{
 					{
-						&types.StringElement{Content: "foo. bar."},
+						types.StringElement{Content: "foo. bar."},
 					},
 				},
 			}
@@ -109,14 +109,14 @@ a paragraph`
 		It("paragraph with words and dots on two lines", func() {
 			source := `foo. 
 bar.`
-			expected := &types.Paragraph{
+			expected := types.Paragraph{
 				Attributes: types.ElementAttributes{},
 				Lines: []types.InlineElements{
 					{
-						&types.StringElement{Content: "foo. "},
+						types.StringElement{Content: "foo. "},
 					},
 					{
-						&types.StringElement{Content: "bar."},
+						types.StringElement{Content: "bar."},
 					},
 				},
 			}
@@ -130,18 +130,18 @@ bar.`
 			source := `foo +
 bar
 baz`
-			expected := &types.Paragraph{
+			expected := types.Paragraph{
 				Attributes: types.ElementAttributes{},
 				Lines: []types.InlineElements{
 					{
-						&types.StringElement{Content: "foo"},
-						&types.LineBreak{},
+						types.StringElement{Content: "foo"},
+						types.LineBreak{},
 					},
 					{
-						&types.StringElement{Content: "bar"},
+						types.StringElement{Content: "bar"},
 					},
 					{
-						&types.StringElement{Content: "baz"},
+						types.StringElement{Content: "baz"},
 					},
 				},
 			}
@@ -153,19 +153,19 @@ baz`
 foo
 bar
 baz`
-			expected := &types.Paragraph{
+			expected := types.Paragraph{
 				Attributes: types.ElementAttributes{
 					types.AttrHardBreaks: nil,
 				},
 				Lines: []types.InlineElements{
 					{
-						&types.StringElement{Content: "foo"},
+						types.StringElement{Content: "foo"},
 					},
 					{
-						&types.StringElement{Content: "bar"},
+						types.StringElement{Content: "bar"},
 					},
 					{
-						&types.StringElement{Content: "baz"},
+						types.StringElement{Content: "baz"},
 					},
 				},
 			}
@@ -178,13 +178,13 @@ baz`
 
 		It("note admonition paragraph", func() {
 			source := `NOTE: this is a note.`
-			expected := &types.Paragraph{
+			expected := types.Paragraph{
 				Attributes: types.ElementAttributes{
 					types.AttrAdmonitionKind: types.Note,
 				},
 				Lines: []types.InlineElements{
 					{
-						&types.StringElement{
+						types.StringElement{
 							Content: "this is a note.",
 						},
 					},
@@ -196,18 +196,18 @@ baz`
 		It("warning admonition paragraph", func() {
 			source := `WARNING: this is a multiline
 warning!`
-			expected := &types.Paragraph{
+			expected := types.Paragraph{
 				Attributes: types.ElementAttributes{
 					types.AttrAdmonitionKind: types.Warning,
 				},
 				Lines: []types.InlineElements{
 					{
-						&types.StringElement{
+						types.StringElement{
 							Content: "this is a multiline",
 						},
 					},
 					{
-						&types.StringElement{
+						types.StringElement{
 							Content: "warning!",
 						},
 					},
@@ -220,7 +220,7 @@ warning!`
 			source := `[[foo]]
 .bar
 NOTE: this is a note.`
-			expected := &types.Paragraph{
+			expected := types.Paragraph{
 				Attributes: types.ElementAttributes{
 					types.AttrAdmonitionKind: types.Note,
 					types.AttrID:             "foo",
@@ -229,7 +229,7 @@ NOTE: this is a note.`
 				},
 				Lines: []types.InlineElements{
 					{
-						&types.StringElement{
+						types.StringElement{
 							Content: "this is a note.",
 						},
 					},
@@ -241,13 +241,13 @@ NOTE: this is a note.`
 		It("caution admonition paragraph with single line", func() {
 			source := `[CAUTION]
 this is a caution!`
-			expected := &types.Paragraph{
+			expected := types.Paragraph{
 				Attributes: types.ElementAttributes{
 					types.AttrAdmonitionKind: types.Caution,
 				},
 				Lines: []types.InlineElements{
 					{
-						&types.StringElement{
+						types.StringElement{
 							Content: "this is a caution!",
 						},
 					},
@@ -262,7 +262,7 @@ this is a caution!`
 .bar
 this is a 
 *caution*!`
-			expected := &types.Paragraph{
+			expected := types.Paragraph{
 				Attributes: types.ElementAttributes{
 					types.AttrAdmonitionKind: types.Caution,
 					types.AttrID:             "foo",
@@ -271,20 +271,20 @@ this is a
 				},
 				Lines: []types.InlineElements{
 					{
-						&types.StringElement{
+						types.StringElement{
 							Content: "this is a ",
 						},
 					},
 					{
-						&types.QuotedText{
+						types.QuotedText{
 							Kind: types.Bold,
 							Elements: types.InlineElements{
-								&types.StringElement{
+								types.StringElement{
 									Content: "caution",
 								},
 							},
 						},
-						&types.StringElement{
+						types.StringElement{
 							Content: "!",
 						},
 					},
@@ -299,28 +299,28 @@ No space after the [NOTE]!
 
 [CAUTION]
 And no space after [CAUTION] either.`
-			expected := &types.PreflightDocument{
+			expected := types.PreflightDocument{
 				Blocks: []interface{}{
-					&types.Paragraph{
+					types.Paragraph{
 						Attributes: types.ElementAttributes{
 							types.AttrAdmonitionKind: types.Note,
 						},
 						Lines: []types.InlineElements{
 							{
-								&types.StringElement{
+								types.StringElement{
 									Content: "No space after the [NOTE]!",
 								},
 							},
 						},
 					},
-					&types.BlankLine{},
-					&types.Paragraph{
+					types.BlankLine{},
+					types.Paragraph{
 						Attributes: types.ElementAttributes{
 							types.AttrAdmonitionKind: types.Caution,
 						},
 						Lines: []types.InlineElements{
 							{
-								&types.StringElement{
+								types.StringElement{
 									Content: "And no space after [CAUTION] either.",
 								},
 							},
@@ -337,7 +337,7 @@ And no space after [CAUTION] either.`
 		It("paragraph as a verse with author and title", func() {
 			source := `[verse, john doe, verse title]
 I am a verse paragraph.`
-			expected := &types.Paragraph{
+			expected := types.Paragraph{
 				Attributes: types.ElementAttributes{
 					types.AttrKind:        types.Verse,
 					types.AttrQuoteAuthor: "john doe",
@@ -345,7 +345,7 @@ I am a verse paragraph.`
 				},
 				Lines: []types.InlineElements{
 					{
-						&types.StringElement{
+						types.StringElement{
 							Content: "I am a verse paragraph.",
 						},
 					},
@@ -359,7 +359,7 @@ I am a verse paragraph.`
 [verse, john doe, verse title]
 .universe
 I am a verse paragraph.`
-			expected := &types.Paragraph{
+			expected := types.Paragraph{
 				Attributes: types.ElementAttributes{
 					types.AttrKind:        types.Verse,
 					types.AttrQuoteAuthor: "john doe",
@@ -370,7 +370,7 @@ I am a verse paragraph.`
 				},
 				Lines: []types.InlineElements{
 					{
-						&types.StringElement{
+						types.StringElement{
 							Content: "I am a verse paragraph.",
 						},
 					},
@@ -382,14 +382,14 @@ I am a verse paragraph.`
 		It("paragraph as a verse with empty title", func() {
 			source := `[verse, john doe, ]
 I am a verse paragraph.`
-			expected := &types.Paragraph{
+			expected := types.Paragraph{
 				Attributes: types.ElementAttributes{
 					types.AttrKind:        types.Verse,
 					types.AttrQuoteAuthor: "john doe",
 				},
 				Lines: []types.InlineElements{
 					{
-						&types.StringElement{
+						types.StringElement{
 							Content: "I am a verse paragraph.",
 						},
 					},
@@ -401,14 +401,14 @@ I am a verse paragraph.`
 		It("paragraph as a verse without title", func() {
 			source := `[verse, john doe ]
 I am a verse paragraph.`
-			expected := &types.Paragraph{
+			expected := types.Paragraph{
 				Attributes: types.ElementAttributes{
 					types.AttrKind:        types.Verse,
 					types.AttrQuoteAuthor: "john doe",
 				},
 				Lines: []types.InlineElements{
 					{
-						&types.StringElement{
+						types.StringElement{
 							Content: "I am a verse paragraph.",
 						},
 					},
@@ -420,13 +420,13 @@ I am a verse paragraph.`
 		It("paragraph as a verse with empty author", func() {
 			source := `[verse,  ]
 I am a verse paragraph.`
-			expected := &types.Paragraph{
+			expected := types.Paragraph{
 				Attributes: types.ElementAttributes{
 					types.AttrKind: types.Verse,
 				},
 				Lines: []types.InlineElements{
 					{
-						&types.StringElement{
+						types.StringElement{
 							Content: "I am a verse paragraph.",
 						},
 					},
@@ -438,13 +438,13 @@ I am a verse paragraph.`
 		It("paragraph as a verse without author", func() {
 			source := `[verse]
 I am a verse paragraph.`
-			expected := &types.Paragraph{
+			expected := types.Paragraph{
 				Attributes: types.ElementAttributes{
 					types.AttrKind: types.Verse,
 				},
 				Lines: []types.InlineElements{
 					{
-						&types.StringElement{
+						types.StringElement{
 							Content: "I am a verse paragraph.",
 						},
 					},
@@ -456,7 +456,7 @@ I am a verse paragraph.`
 		It("image block as a verse", func() {
 			source := `[verse, john doe, verse title]
 image::foo.png[]`
-			expected := &types.Paragraph{
+			expected := types.Paragraph{
 				Attributes: types.ElementAttributes{
 					types.AttrKind:        types.Verse,
 					types.AttrQuoteAuthor: "john doe",
@@ -464,7 +464,7 @@ image::foo.png[]`
 				},
 				Lines: []types.InlineElements{
 					{
-						&types.StringElement{
+						types.StringElement{
 							Content: "image::foo.png[]",
 						},
 					},
@@ -479,7 +479,7 @@ image::foo.png[]`
 		It("paragraph as a quote with author and title", func() {
 			source := `[quote, john doe, quote title]
 I am a quote paragraph.`
-			expected := &types.Paragraph{
+			expected := types.Paragraph{
 				Attributes: types.ElementAttributes{
 					types.AttrKind:        types.Quote,
 					types.AttrQuoteAuthor: "john doe",
@@ -487,7 +487,7 @@ I am a quote paragraph.`
 				},
 				Lines: []types.InlineElements{
 					{
-						&types.StringElement{
+						types.StringElement{
 							Content: "I am a quote paragraph.",
 						},
 					},
@@ -501,7 +501,7 @@ I am a quote paragraph.`
 [quote, john doe, quote title]
 .universe
 I am a quote paragraph.`
-			expected := &types.Paragraph{
+			expected := types.Paragraph{
 				Attributes: types.ElementAttributes{
 					types.AttrKind:        types.Quote,
 					types.AttrQuoteAuthor: "john doe",
@@ -512,7 +512,7 @@ I am a quote paragraph.`
 				},
 				Lines: []types.InlineElements{
 					{
-						&types.StringElement{
+						types.StringElement{
 							Content: "I am a quote paragraph.",
 						},
 					},
@@ -524,14 +524,14 @@ I am a quote paragraph.`
 		It("paragraph as a quote with empty title", func() {
 			source := `[quote, john doe, ]
 I am a quote paragraph.`
-			expected := &types.Paragraph{
+			expected := types.Paragraph{
 				Attributes: types.ElementAttributes{
 					types.AttrKind:        types.Quote,
 					types.AttrQuoteAuthor: "john doe",
 				},
 				Lines: []types.InlineElements{
 					{
-						&types.StringElement{
+						types.StringElement{
 							Content: "I am a quote paragraph.",
 						},
 					},
@@ -543,14 +543,14 @@ I am a quote paragraph.`
 		It("paragraph as a quote without title", func() {
 			source := `[quote, john doe ]
 I am a quote paragraph.`
-			expected := &types.Paragraph{
+			expected := types.Paragraph{
 				Attributes: types.ElementAttributes{
 					types.AttrKind:        types.Quote,
 					types.AttrQuoteAuthor: "john doe",
 				},
 				Lines: []types.InlineElements{
 					{
-						&types.StringElement{
+						types.StringElement{
 							Content: "I am a quote paragraph.",
 						},
 					},
@@ -562,13 +562,13 @@ I am a quote paragraph.`
 		It("paragraph as a quote with empty author", func() {
 			source := `[quote,  ]
 I am a quote paragraph.`
-			expected := &types.Paragraph{
+			expected := types.Paragraph{
 				Attributes: types.ElementAttributes{
 					types.AttrKind: types.Quote,
 				},
 				Lines: []types.InlineElements{
 					{
-						&types.StringElement{
+						types.StringElement{
 							Content: "I am a quote paragraph.",
 						},
 					},
@@ -580,13 +580,13 @@ I am a quote paragraph.`
 		It("paragraph as a quote without author", func() {
 			source := `[quote]
 I am a quote paragraph.`
-			expected := &types.Paragraph{
+			expected := types.Paragraph{
 				Attributes: types.ElementAttributes{
 					types.AttrKind: types.Quote,
 				},
 				Lines: []types.InlineElements{
 					{
-						&types.StringElement{
+						types.StringElement{
 							Content: "I am a quote paragraph.",
 						},
 					},
@@ -598,7 +598,7 @@ I am a quote paragraph.`
 		It("inline image within a quote", func() {
 			source := `[quote, john doe, quote title]
 a foo image:foo.png[]`
-			expected := &types.Paragraph{
+			expected := types.Paragraph{
 				Attributes: types.ElementAttributes{
 					types.AttrKind:        types.Quote,
 					types.AttrQuoteAuthor: "john doe",
@@ -606,10 +606,10 @@ a foo image:foo.png[]`
 				},
 				Lines: []types.InlineElements{
 					{
-						&types.StringElement{
+						types.StringElement{
 							Content: "a foo ",
 						},
-						&types.InlineImage{
+						types.InlineImage{
 							Attributes: types.ElementAttributes{
 								types.AttrImageAlt: "foo",
 							},
@@ -624,7 +624,7 @@ a foo image:foo.png[]`
 		It("image block is NOT a quote", func() {
 			source := `[quote, john doe, quote title]
 image::foo.png[]`
-			expected := &types.ImageBlock{
+			expected := types.ImageBlock{
 				Attributes: types.ElementAttributes{
 					types.AttrImageAlt: "foo",
 					// quote attributes

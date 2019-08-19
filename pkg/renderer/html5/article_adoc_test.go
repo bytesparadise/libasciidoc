@@ -27,6 +27,5 @@ var _ = Describe("article.adoc", func() {
 		rendererCtx := renderer.Wrap(context.Background(), doc)
 		_, err = html5.Render(rendererCtx, buff)
 		require.NoError(GinkgoT(), err)
-
 	})
 })

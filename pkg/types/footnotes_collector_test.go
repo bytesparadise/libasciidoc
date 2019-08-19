@@ -12,28 +12,28 @@ var _ = Describe("footnotes collector", func() {
 
 	It("index footnotes without reference", func() {
 		// given
-		footnote1 := &types.Footnote{
+		footnote1 := types.Footnote{
 			ID: 0,
 			Elements: types.InlineElements{
-				&types.StringElement{
+				types.StringElement{
 					Content: "a note",
 				},
 			},
 		}
-		footnote2 := &types.Footnote{
+		footnote2 := types.Footnote{
 			ID: 1,
 			Elements: types.InlineElements{
-				&types.StringElement{
+				types.StringElement{
 					Content: "another note",
 				},
 			},
 		}
 		content := types.InlineElements{
-			&types.StringElement{
+			types.StringElement{
 				Content: "foo",
 			},
 			footnote1,
-			&types.StringElement{
+			types.StringElement{
 				Content: "bar",
 			},
 			footnote2,
@@ -51,26 +51,26 @@ var _ = Describe("footnotes collector", func() {
 
 	It("index footnotes with reference", func() {
 		// given
-		footnote1 := &types.Footnote{
+		footnote1 := types.Footnote{
 			Ref: "ref",
 			Elements: types.InlineElements{
-				&types.StringElement{
+				types.StringElement{
 					Content: "a note",
 				},
 			},
 		}
-		footnote2 := &types.Footnote{
+		footnote2 := types.Footnote{
 			Ref: "ref",
 		}
-		footnote3 := &types.Footnote{
+		footnote3 := types.Footnote{
 			Ref: "ref",
 		}
 		content := types.InlineElements{
-			&types.StringElement{
+			types.StringElement{
 				Content: "foo",
 			},
 			footnote1,
-			&types.StringElement{
+			types.StringElement{
 				Content: "bar",
 			},
 			footnote2,

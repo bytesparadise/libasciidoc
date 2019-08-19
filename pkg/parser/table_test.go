@@ -12,34 +12,34 @@ var _ = Describe("tables", func() {
 | *foo* foo  | _bar_  
 |===
 `
-		expected := &types.Table{
+		expected := types.Table{
 			Attributes: types.ElementAttributes{},
-			Lines: []*types.TableLine{
+			Lines: []types.TableLine{
 				{
 					Cells: []types.InlineElements{
 						{
-							&types.QuotedText{
+							types.QuotedText{
 								Kind: types.Bold,
 								Elements: types.InlineElements{
-									&types.StringElement{
+									types.StringElement{
 										Content: "foo",
 									},
 								},
 							},
-							&types.StringElement{
+							types.StringElement{
 								Content: " foo  ",
 							},
 						},
 						{
-							&types.QuotedText{
+							types.QuotedText{
 								Kind: types.Italic,
 								Elements: types.InlineElements{
-									&types.StringElement{
+									types.StringElement{
 										Content: "bar",
 									},
 								},
 							},
-							&types.StringElement{
+							types.StringElement{
 								Content: "  ",
 							},
 						},
@@ -54,39 +54,39 @@ var _ = Describe("tables", func() {
 		source := `|===
 | *foo* foo  | _bar_  | baz
 |===`
-		expected := &types.Table{
+		expected := types.Table{
 			Attributes: types.ElementAttributes{},
-			Lines: []*types.TableLine{
+			Lines: []types.TableLine{
 				{
 					Cells: []types.InlineElements{
 						{
-							&types.QuotedText{
+							types.QuotedText{
 								Kind: types.Bold,
 								Elements: types.InlineElements{
-									&types.StringElement{
+									types.StringElement{
 										Content: "foo",
 									},
 								},
 							},
-							&types.StringElement{
+							types.StringElement{
 								Content: " foo  ",
 							},
 						},
 						{
-							&types.QuotedText{
+							types.QuotedText{
 								Kind: types.Italic,
 								Elements: types.InlineElements{
-									&types.StringElement{
+									types.StringElement{
 										Content: "bar",
 									},
 								},
 							},
-							&types.StringElement{
+							types.StringElement{
 								Content: "  ",
 							},
 						},
 						{
-							&types.StringElement{
+							types.StringElement{
 								Content: "baz",
 							},
 						},
@@ -108,35 +108,35 @@ var _ = Describe("tables", func() {
 |row 2, column 1
 |row 2, column 2
 |===`
-		expected := &types.Table{
+		expected := types.Table{
 			Attributes: types.ElementAttributes{
 				types.AttrTitle: "table title",
 			},
-			Header: &types.TableLine{
+			Header: types.TableLine{
 				Cells: []types.InlineElements{
 					{
-						&types.StringElement{
+						types.StringElement{
 							Content: "heading 1 ",
 						},
 					},
 					{
-						&types.StringElement{
+						types.StringElement{
 							Content: "heading 2",
 						},
 					},
 				},
 			},
 
-			Lines: []*types.TableLine{
+			Lines: []types.TableLine{
 				{
 					Cells: []types.InlineElements{
 						{
-							&types.StringElement{
+							types.StringElement{
 								Content: "row 1, column 1",
 							},
 						},
 						{
-							&types.StringElement{
+							types.StringElement{
 								Content: "row 1, column 2",
 							},
 						},
@@ -145,12 +145,12 @@ var _ = Describe("tables", func() {
 				{
 					Cells: []types.InlineElements{
 						{
-							&types.StringElement{
+							types.StringElement{
 								Content: "row 2, column 1",
 							},
 						},
 						{
-							&types.StringElement{
+							types.StringElement{
 								Content: "row 2, column 2",
 							},
 						},
@@ -164,9 +164,9 @@ var _ = Describe("tables", func() {
 	It("empty table ", func() {
 		source := `|===
 |===`
-		expected := &types.Table{
+		expected := types.Table{
 			Attributes: types.ElementAttributes{},
-			Lines:      []*types.TableLine{},
+			Lines:      []types.TableLine{},
 		}
 		verifyDocumentBlock(expected, source)
 	})

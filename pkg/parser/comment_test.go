@@ -11,7 +11,7 @@ var _ = Describe("comments - preflight", func() {
 
 		It("single line comment alone", func() {
 			doc := `// A single-line comment.`
-			expected := &types.SingleLineComment{
+			expected := types.SingleLineComment{
 				Content: " A single-line comment.",
 			}
 			verifyDocumentBlock(expected, doc)
@@ -19,7 +19,7 @@ var _ = Describe("comments - preflight", func() {
 
 		It("single line comment with prefixing spaces alone", func() {
 			doc := `  // A single-line comment.`
-			expected := &types.SingleLineComment{
+			expected := types.SingleLineComment{
 				Content: " A single-line comment.",
 			}
 			verifyDocumentBlock(expected, doc)
@@ -27,7 +27,7 @@ var _ = Describe("comments - preflight", func() {
 
 		It("single line comment with prefixing tabs alone", func() {
 			doc := "\t\t// A single-line comment."
-			expected := &types.SingleLineComment{
+			expected := types.SingleLineComment{
 				Content: " A single-line comment.",
 			}
 			verifyDocumentBlock(expected, doc)
@@ -35,11 +35,11 @@ var _ = Describe("comments - preflight", func() {
 
 		It("single line comment at end of line", func() {
 			doc := `foo // A single-line comment.`
-			expected := &types.Paragraph{
+			expected := types.Paragraph{
 				Attributes: types.ElementAttributes{},
 				Lines: []types.InlineElements{
 					{
-						&types.StringElement{Content: "foo // A single-line comment."},
+						types.StringElement{Content: "foo // A single-line comment."},
 					},
 				},
 			}
@@ -50,17 +50,17 @@ var _ = Describe("comments - preflight", func() {
 			doc := `a first line
 // A single-line comment.
 another line`
-			expected := &types.Paragraph{
+			expected := types.Paragraph{
 				Attributes: types.ElementAttributes{},
 				Lines: []types.InlineElements{
 					{
-						&types.StringElement{Content: "a first line"},
+						types.StringElement{Content: "a first line"},
 					},
 					{
-						&types.SingleLineComment{Content: " A single-line comment."},
+						types.SingleLineComment{Content: " A single-line comment."},
 					},
 					{
-						&types.StringElement{Content: "another line"},
+						types.StringElement{Content: "another line"},
 					},
 				},
 			}
@@ -71,17 +71,17 @@ another line`
 			doc := `a first line
 	// A single-line comment.
 another line`
-			expected := &types.Paragraph{
+			expected := types.Paragraph{
 				Attributes: types.ElementAttributes{},
 				Lines: []types.InlineElements{
 					{
-						&types.StringElement{Content: "a first line"},
+						types.StringElement{Content: "a first line"},
 					},
 					{
-						&types.SingleLineComment{Content: " A single-line comment."},
+						types.SingleLineComment{Content: " A single-line comment."},
 					},
 					{
-						&types.StringElement{Content: "another line"},
+						types.StringElement{Content: "another line"},
 					},
 				},
 			}
@@ -96,14 +96,14 @@ another line`
 a *comment* block
 with multiple lines
 ////`
-			expected := &types.DelimitedBlock{
+			expected := types.DelimitedBlock{
 				Attributes: types.ElementAttributes{},
 				Kind:       types.Comment,
 				Elements: []interface{}{
-					&types.StringElement{
+					types.StringElement{
 						Content: "a *comment* block",
 					},
-					&types.StringElement{
+					types.StringElement{
 						Content: "with multiple lines",
 					},
 				},
@@ -118,33 +118,33 @@ a *comment* block
 with multiple lines
 ////
 a second paragraph`
-			expected := &types.PreflightDocument{
+			expected := types.PreflightDocument{
 				Blocks: []interface{}{
-					&types.Paragraph{
+					types.Paragraph{
 						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
 							{
-								&types.StringElement{Content: "a first paragraph"},
+								types.StringElement{Content: "a first paragraph"},
 							},
 						},
 					},
-					&types.DelimitedBlock{
+					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{},
 						Kind:       types.Comment,
 						Elements: []interface{}{
-							&types.StringElement{
+							types.StringElement{
 								Content: "a *comment* block",
 							},
-							&types.StringElement{
+							types.StringElement{
 								Content: "with multiple lines",
 							},
 						},
 					},
-					&types.Paragraph{
+					types.Paragraph{
 						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
 							{
-								&types.StringElement{Content: "a second paragraph"},
+								types.StringElement{Content: "a second paragraph"},
 							},
 						},
 					},

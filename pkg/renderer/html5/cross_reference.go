@@ -17,7 +17,7 @@ func init() {
 	crossReferenceTmpl = newTextTemplate("cross reference", `<a href="#{{ .ID }}">{{ .Label }}</a>`)
 }
 
-func renderCrossReference(ctx *renderer.Context, xref *types.CrossReference) ([]byte, error) {
+func renderCrossReference(ctx *renderer.Context, xref types.CrossReference) ([]byte, error) {
 	log.Debugf("rendering cross reference with ID: %s", xref.ID)
 	result := bytes.NewBuffer(nil)
 	var label string

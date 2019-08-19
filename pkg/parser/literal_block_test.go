@@ -11,7 +11,7 @@ var _ = Describe("literal blocks - preflight", func() {
 
 		It("literal block from 1-line paragraph with single space", func() {
 			source := ` some literal content`
-			expected := &types.LiteralBlock{
+			expected := types.LiteralBlock{
 				Attributes: types.ElementAttributes{
 					types.AttrKind:             types.Literal,
 					types.AttrLiteralBlockType: types.LiteralBlockWithSpacesOnFirstLine,
@@ -27,7 +27,7 @@ var _ = Describe("literal blocks - preflight", func() {
 			source := ` some literal content
 on 3
 lines.`
-			expected := &types.LiteralBlock{
+			expected := types.LiteralBlock{
 				Attributes: types.ElementAttributes{
 					types.AttrKind:             types.Literal,
 					types.AttrLiteralBlockType: types.LiteralBlockWithSpacesOnFirstLine,
@@ -47,9 +47,9 @@ lines.`
   some literal content
 
 a normal paragraph.`
-			expected := &types.PreflightDocument{
+			expected := types.PreflightDocument{
 				Blocks: []interface{}{
-					&types.LiteralBlock{
+					types.LiteralBlock{
 						Attributes: types.ElementAttributes{
 							types.AttrKind:             types.Literal,
 							types.AttrLiteralBlockType: types.LiteralBlockWithSpacesOnFirstLine,
@@ -61,12 +61,12 @@ a normal paragraph.`
 							"  some literal content",
 						},
 					},
-					&types.BlankLine{},
-					&types.Paragraph{
+					types.BlankLine{},
+					types.Paragraph{
 						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
 							{
-								&types.StringElement{Content: "a normal paragraph."},
+								types.StringElement{Content: "a normal paragraph."},
 							},
 						},
 					},
@@ -84,7 +84,7 @@ a normal paragraph.`
 
 some content
 ....`
-			expected := &types.LiteralBlock{
+			expected := types.LiteralBlock{
 				Attributes: types.ElementAttributes{
 					types.AttrKind:             types.Literal,
 					types.AttrLiteralBlockType: types.LiteralBlockWithDelimiter,
@@ -104,9 +104,9 @@ some content
 some literal content
 ....
 a normal paragraph.`
-			expected := &types.PreflightDocument{
+			expected := types.PreflightDocument{
 				Blocks: []interface{}{
-					&types.LiteralBlock{
+					types.LiteralBlock{
 						Attributes: types.ElementAttributes{
 							types.AttrKind:             types.Literal,
 							types.AttrLiteralBlockType: types.LiteralBlockWithDelimiter,
@@ -118,11 +118,11 @@ a normal paragraph.`
 							"some literal content",
 						},
 					},
-					&types.Paragraph{
+					types.Paragraph{
 						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
 							{
-								&types.StringElement{Content: "a normal paragraph."},
+								types.StringElement{Content: "a normal paragraph."},
 							},
 						},
 					},
@@ -139,9 +139,9 @@ a normal paragraph.`
 some literal content
 
 a normal paragraph.`
-			expected := &types.PreflightDocument{
+			expected := types.PreflightDocument{
 				Blocks: []interface{}{
-					&types.LiteralBlock{
+					types.LiteralBlock{
 						Attributes: types.ElementAttributes{
 							types.AttrKind:             types.Literal,
 							types.AttrLiteralBlockType: types.LiteralBlockWithAttribute,
@@ -150,12 +150,12 @@ a normal paragraph.`
 							"some literal content",
 						},
 					},
-					&types.BlankLine{},
-					&types.Paragraph{
+					types.BlankLine{},
+					types.Paragraph{
 						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
 							{
-								&types.StringElement{Content: "a normal paragraph."},
+								types.StringElement{Content: "a normal paragraph."},
 							},
 						},
 					},
@@ -172,9 +172,9 @@ some literal content
 on two lines.
 
 a normal paragraph.`
-			expected := &types.PreflightDocument{
+			expected := types.PreflightDocument{
 				Blocks: []interface{}{
-					&types.LiteralBlock{
+					types.LiteralBlock{
 						Attributes: types.ElementAttributes{
 							types.AttrKind:             types.Literal,
 							types.AttrID:               "ID",
@@ -187,12 +187,12 @@ a normal paragraph.`
 							"on two lines.",
 						},
 					},
-					&types.BlankLine{},
-					&types.Paragraph{
+					types.BlankLine{},
+					types.Paragraph{
 						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
 							{
-								&types.StringElement{Content: "a normal paragraph."},
+								types.StringElement{Content: "a normal paragraph."},
 							},
 						},
 					},

@@ -31,7 +31,7 @@ func init() {
 
 }
 
-func renderOrderedList(ctx *renderer.Context, l *types.OrderedList) ([]byte, error) {
+func renderOrderedList(ctx *renderer.Context, l types.OrderedList) ([]byte, error) {
 	result := bytes.NewBuffer(nil)
 	err := orderedListTmpl.Execute(result, ContextualPipeline{
 		Context: ctx,
@@ -41,7 +41,7 @@ func renderOrderedList(ctx *renderer.Context, l *types.OrderedList) ([]byte, err
 			Role           string
 			NumberingStyle string
 			Start          string
-			Items          []*types.OrderedListItem
+			Items          []types.OrderedListItem
 		}{
 			generateID(ctx, l.Attributes),
 			l.Attributes.GetAsString(types.AttrTitle),
@@ -57,7 +57,7 @@ func renderOrderedList(ctx *renderer.Context, l *types.OrderedList) ([]byte, err
 	return result.Bytes(), nil
 }
 
-func getNumberingStyle(l *types.OrderedList) string {
+func getNumberingStyle(l types.OrderedList) string {
 	if s := l.Attributes.GetAsString(types.AttrNumberingStyle); s != "" {
 		return s
 	}

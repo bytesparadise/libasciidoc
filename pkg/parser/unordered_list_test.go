@@ -11,19 +11,19 @@ var _ = Describe("unordered lists - preflight", func() {
 
 		It("unordered list with a basic single item", func() {
 			source := `* a list item`
-			expected := &types.PreflightDocument{
+			expected := types.PreflightDocument{
 				Blocks: []interface{}{
-					&types.UnorderedListItem{
+					types.UnorderedListItem{
 						Attributes:  types.ElementAttributes{},
 						Level:       1,
 						BulletStyle: types.OneAsterisk,
 						CheckStyle:  types.NoCheck,
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{Content: "a list item"},
+										types.StringElement{Content: "a list item"},
 									},
 								},
 							},
@@ -39,9 +39,9 @@ var _ = Describe("unordered lists - preflight", func() {
 [#listID]
 [.myrole]
 * a list item`
-			expected := &types.PreflightDocument{
+			expected := types.PreflightDocument{
 				Blocks: []interface{}{
-					&types.UnorderedListItem{
+					types.UnorderedListItem{
 						Attributes: types.ElementAttributes{
 							types.AttrTitle:    "mytitle",
 							types.AttrID:       "listID",
@@ -52,11 +52,11 @@ var _ = Describe("unordered lists - preflight", func() {
 						BulletStyle: types.OneAsterisk,
 						CheckStyle:  types.NoCheck,
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{Content: "a list item"},
+										types.StringElement{Content: "a list item"},
 									},
 								},
 							},
@@ -69,9 +69,9 @@ var _ = Describe("unordered lists - preflight", func() {
 		It("unordered list with a title and a single item", func() {
 			source := `.a title
 	* a list item`
-			expected := &types.PreflightDocument{
+			expected := types.PreflightDocument{
 				Blocks: []interface{}{
-					&types.UnorderedListItem{
+					types.UnorderedListItem{
 						Attributes: types.ElementAttributes{
 							types.AttrTitle: "a title",
 						},
@@ -79,11 +79,11 @@ var _ = Describe("unordered lists - preflight", func() {
 						BulletStyle: types.OneAsterisk,
 						CheckStyle:  types.NoCheck,
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{Content: "a list item"},
+										types.StringElement{Content: "a list item"},
 									},
 								},
 							},
@@ -97,39 +97,39 @@ var _ = Describe("unordered lists - preflight", func() {
 		It("unordered list with 2 items with stars", func() {
 			source := `* a first item
 					* a second item with *bold content*`
-			expected := &types.PreflightDocument{
+			expected := types.PreflightDocument{
 				Blocks: []interface{}{
-					&types.UnorderedListItem{
+					types.UnorderedListItem{
 						Attributes:  types.ElementAttributes{},
 						Level:       1,
 						BulletStyle: types.OneAsterisk,
 						CheckStyle:  types.NoCheck,
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{Content: "a first item"},
+										types.StringElement{Content: "a first item"},
 									},
 								},
 							},
 						},
 					},
-					&types.UnorderedListItem{
+					types.UnorderedListItem{
 						Attributes:  types.ElementAttributes{},
 						Level:       1,
 						BulletStyle: types.OneAsterisk,
 						CheckStyle:  types.NoCheck,
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{Content: "a second item with "},
-										&types.QuotedText{
+										types.StringElement{Content: "a second item with "},
+										types.QuotedText{
 											Kind: types.Bold,
 											Elements: types.InlineElements{
-												&types.StringElement{Content: "bold content"},
+												types.StringElement{Content: "bold content"},
 											},
 										},
 									},
@@ -152,9 +152,9 @@ var _ = Describe("unordered lists - preflight", func() {
 		*** nested nested list item B.1
 		*** nested nested list item B.2
 		* list item 2`
-			expected := &types.PreflightDocument{
+			expected := types.PreflightDocument{
 				Blocks: []interface{}{
-					&types.UnorderedListItem{
+					types.UnorderedListItem{
 						Attributes: types.ElementAttributes{
 							types.AttrTitle: "Unordered list title",
 						},
@@ -162,123 +162,123 @@ var _ = Describe("unordered lists - preflight", func() {
 						BulletStyle: types.OneAsterisk,
 						CheckStyle:  types.NoCheck,
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{Content: "list item 1"},
+										types.StringElement{Content: "list item 1"},
 									},
 								},
 							},
 						},
 					},
-					&types.UnorderedListItem{
+					types.UnorderedListItem{
 						Attributes:  types.ElementAttributes{},
 						Level:       2,
 						BulletStyle: types.TwoAsterisks,
 						CheckStyle:  types.NoCheck,
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{Content: "nested list item A"},
+										types.StringElement{Content: "nested list item A"},
 									},
 								},
 							},
 						},
 					},
-					&types.UnorderedListItem{
+					types.UnorderedListItem{
 						Attributes:  types.ElementAttributes{},
 						Level:       3,
 						BulletStyle: types.ThreeAsterisks,
 						CheckStyle:  types.NoCheck,
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{Content: "nested nested list item A.1"},
+										types.StringElement{Content: "nested nested list item A.1"},
 									},
 								},
 							},
 						},
 					},
-					&types.UnorderedListItem{
+					types.UnorderedListItem{
 						Attributes:  types.ElementAttributes{},
 						Level:       3,
 						BulletStyle: types.ThreeAsterisks,
 						CheckStyle:  types.NoCheck,
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{Content: "nested nested list item A.2"},
+										types.StringElement{Content: "nested nested list item A.2"},
 									},
 								},
 							},
 						},
 					},
-					&types.UnorderedListItem{
+					types.UnorderedListItem{
 						Attributes:  types.ElementAttributes{},
 						Level:       2,
 						BulletStyle: types.TwoAsterisks,
 						CheckStyle:  types.NoCheck,
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{Content: "nested list item B"},
+										types.StringElement{Content: "nested list item B"},
 									},
 								},
 							},
 						},
 					},
-					&types.UnorderedListItem{
+					types.UnorderedListItem{
 						Attributes:  types.ElementAttributes{},
 						Level:       3,
 						BulletStyle: types.ThreeAsterisks,
 						CheckStyle:  types.NoCheck,
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{Content: "nested nested list item B.1"},
+										types.StringElement{Content: "nested nested list item B.1"},
 									},
 								},
 							},
 						},
 					},
-					&types.UnorderedListItem{
+					types.UnorderedListItem{
 						Attributes:  types.ElementAttributes{},
 						Level:       3,
 						BulletStyle: types.ThreeAsterisks,
 						CheckStyle:  types.NoCheck,
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{Content: "nested nested list item B.2"},
+										types.StringElement{Content: "nested nested list item B.2"},
 									},
 								},
 							},
 						},
 					},
-					&types.UnorderedListItem{
+					types.UnorderedListItem{
 						Attributes:  types.ElementAttributes{},
 						Level:       1,
 						BulletStyle: types.OneAsterisk,
 						CheckStyle:  types.NoCheck,
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{Content: "list item 2"},
+										types.StringElement{Content: "list item 2"},
 									},
 								},
 							},
@@ -292,39 +292,39 @@ var _ = Describe("unordered lists - preflight", func() {
 		It("unordered list with 2 items with carets", func() {
 			source := "- a first item\n" +
 				"- a second item with *bold content*"
-			expected := &types.PreflightDocument{
+			expected := types.PreflightDocument{
 				Blocks: []interface{}{
-					&types.UnorderedListItem{
+					types.UnorderedListItem{
 						Attributes:  types.ElementAttributes{},
 						Level:       1,
 						BulletStyle: types.Dash,
 						CheckStyle:  types.NoCheck,
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{Content: "a first item"},
+										types.StringElement{Content: "a first item"},
 									},
 								},
 							},
 						},
 					},
-					&types.UnorderedListItem{
+					types.UnorderedListItem{
 						Attributes:  types.ElementAttributes{},
 						Level:       1,
 						BulletStyle: types.Dash,
 						CheckStyle:  types.NoCheck,
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{Content: "a second item with "},
-										&types.QuotedText{
+										types.StringElement{Content: "a second item with "},
+										types.QuotedText{
 											Kind: types.Bold,
 											Elements: types.InlineElements{
-												&types.StringElement{Content: "bold content"},
+												types.StringElement{Content: "bold content"},
 											},
 										},
 									},
@@ -343,83 +343,83 @@ var _ = Describe("unordered lists - preflight", func() {
 					- another parent item
 					* another child item
 					** with a sub child item`
-			expected := &types.PreflightDocument{
+			expected := types.PreflightDocument{
 				Blocks: []interface{}{
-					&types.UnorderedListItem{
+					types.UnorderedListItem{
 						Attributes:  types.ElementAttributes{},
 						Level:       1,
 						BulletStyle: types.Dash,
 						CheckStyle:  types.NoCheck,
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{Content: "a parent item"},
+										types.StringElement{Content: "a parent item"},
 									},
 								},
 							},
 						},
 					},
-					&types.UnorderedListItem{
+					types.UnorderedListItem{
 						Attributes:  types.ElementAttributes{},
 						Level:       1,
 						BulletStyle: types.OneAsterisk,
 						CheckStyle:  types.NoCheck,
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{Content: "a child item"},
+										types.StringElement{Content: "a child item"},
 									},
 								},
 							},
 						},
 					},
-					&types.UnorderedListItem{
+					types.UnorderedListItem{
 						Attributes:  types.ElementAttributes{},
 						Level:       1,
 						BulletStyle: types.Dash,
 						CheckStyle:  types.NoCheck,
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{Content: "another parent item"},
+										types.StringElement{Content: "another parent item"},
 									},
 								},
 							},
 						},
 					},
-					&types.UnorderedListItem{
+					types.UnorderedListItem{
 						Attributes:  types.ElementAttributes{},
 						Level:       1,
 						BulletStyle: types.OneAsterisk,
 						CheckStyle:  types.NoCheck,
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{Content: "another child item"},
+										types.StringElement{Content: "another child item"},
 									},
 								},
 							},
 						},
 					},
-					&types.UnorderedListItem{
+					types.UnorderedListItem{
 						Attributes:  types.ElementAttributes{},
 						Level:       2,
 						BulletStyle: types.TwoAsterisks,
 						CheckStyle:  types.NoCheck,
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{Content: "with a sub child item"},
+										types.StringElement{Content: "with a sub child item"},
 									},
 								},
 							},
@@ -435,40 +435,40 @@ var _ = Describe("unordered lists - preflight", func() {
 			source := "* a first item\n" +
 				"\n" +
 				"* a second item with *bold content*"
-			expected := &types.PreflightDocument{
+			expected := types.PreflightDocument{
 				Blocks: []interface{}{
-					&types.UnorderedListItem{
+					types.UnorderedListItem{
 						Attributes:  types.ElementAttributes{},
 						Level:       1,
 						BulletStyle: types.OneAsterisk,
 						CheckStyle:  types.NoCheck,
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{Content: "a first item"},
+										types.StringElement{Content: "a first item"},
 									},
 								},
 							},
 						},
 					},
-					&types.BlankLine{},
-					&types.UnorderedListItem{
+					types.BlankLine{},
+					types.UnorderedListItem{
 						Attributes:  types.ElementAttributes{},
 						Level:       1,
 						BulletStyle: types.OneAsterisk,
 						CheckStyle:  types.NoCheck,
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{Content: "a second item with "},
-										&types.QuotedText{
+										types.StringElement{Content: "a second item with "},
+										types.QuotedText{
 											Kind: types.Bold,
 											Elements: types.InlineElements{
-												&types.StringElement{Content: "bold content"},
+												types.StringElement{Content: "bold content"},
 											},
 										},
 									},
@@ -485,41 +485,41 @@ var _ = Describe("unordered lists - preflight", func() {
   on 2 lines.
 * item 2
 on 2 lines, too.`
-			expected := &types.PreflightDocument{
+			expected := types.PreflightDocument{
 				Blocks: []interface{}{
-					&types.UnorderedListItem{
+					types.UnorderedListItem{
 						Attributes:  types.ElementAttributes{},
 						Level:       1,
 						BulletStyle: types.OneAsterisk,
 						CheckStyle:  types.NoCheck,
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{Content: "item 1"},
+										types.StringElement{Content: "item 1"},
 									},
 									{
-										&types.StringElement{Content: "  on 2 lines."},
+										types.StringElement{Content: "  on 2 lines."},
 									},
 								},
 							},
 						},
 					},
-					&types.UnorderedListItem{
+					types.UnorderedListItem{
 						Attributes:  types.ElementAttributes{},
 						Level:       1,
 						BulletStyle: types.OneAsterisk,
 						CheckStyle:  types.NoCheck,
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{Content: "item 2"},
+										types.StringElement{Content: "item 2"},
 									},
 									{
-										&types.StringElement{Content: "on 2 lines, too."},
+										types.StringElement{Content: "on 2 lines, too."},
 									},
 								},
 							},
@@ -534,37 +534,37 @@ on 2 lines, too.`
 			
 
 * an item in the second list`
-			expected := &types.PreflightDocument{
+			expected := types.PreflightDocument{
 				Blocks: []interface{}{
-					&types.UnorderedListItem{
+					types.UnorderedListItem{
 						Attributes:  types.ElementAttributes{},
 						Level:       1,
 						BulletStyle: types.OneAsterisk,
 						CheckStyle:  types.NoCheck,
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{Content: "an item in the first list"},
+										types.StringElement{Content: "an item in the first list"},
 									},
 								},
 							},
 						},
 					},
-					&types.BlankLine{},
-					&types.BlankLine{},
-					&types.UnorderedListItem{
+					types.BlankLine{},
+					types.BlankLine{},
+					types.UnorderedListItem{
 						Attributes:  types.ElementAttributes{},
 						Level:       1,
 						BulletStyle: types.OneAsterisk,
 						CheckStyle:  types.NoCheck,
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{Content: "an item in the second list"},
+										types.StringElement{Content: "an item in the second list"},
 									},
 								},
 							},
@@ -584,131 +584,131 @@ on 2 lines, too.`
 	** item 1.4
 	* item 2
 	** item 2.1`
-			expected := &types.PreflightDocument{
+			expected := types.PreflightDocument{
 				Blocks: []interface{}{
-					&types.UnorderedListItem{
+					types.UnorderedListItem{
 						Attributes:  types.ElementAttributes{},
 						Level:       1,
 						BulletStyle: types.OneAsterisk,
 						CheckStyle:  types.NoCheck,
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{Content: "item 1"},
+										types.StringElement{Content: "item 1"},
 									},
 								},
 							},
 						},
 					},
-					&types.UnorderedListItem{
+					types.UnorderedListItem{
 						Attributes:  types.ElementAttributes{},
 						Level:       2,
 						BulletStyle: types.TwoAsterisks,
 						CheckStyle:  types.NoCheck,
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{Content: "item 1.1"},
+										types.StringElement{Content: "item 1.1"},
 									},
 								},
 							},
 						},
 					},
-					&types.UnorderedListItem{
+					types.UnorderedListItem{
 						Attributes:  types.ElementAttributes{},
 						Level:       2,
 						BulletStyle: types.TwoAsterisks,
 						CheckStyle:  types.NoCheck,
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{Content: "item 1.2"},
+										types.StringElement{Content: "item 1.2"},
 									},
 								},
 							},
 						},
 					},
-					&types.UnorderedListItem{
+					types.UnorderedListItem{
 						Attributes:  types.ElementAttributes{},
 						Level:       3,
 						BulletStyle: types.ThreeAsterisks,
 						CheckStyle:  types.NoCheck,
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{Content: "item 1.2.1"},
+										types.StringElement{Content: "item 1.2.1"},
 									},
 								},
 							},
 						},
 					},
-					&types.UnorderedListItem{
+					types.UnorderedListItem{
 						Attributes:  types.ElementAttributes{},
 						Level:       2,
 						BulletStyle: types.TwoAsterisks,
 						CheckStyle:  types.NoCheck,
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{Content: "item 1.3"},
+										types.StringElement{Content: "item 1.3"},
 									},
 								},
 							},
 						},
 					},
-					&types.UnorderedListItem{
+					types.UnorderedListItem{
 						Attributes:  types.ElementAttributes{},
 						Level:       2,
 						BulletStyle: types.TwoAsterisks,
 						CheckStyle:  types.NoCheck,
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{Content: "item 1.4"},
+										types.StringElement{Content: "item 1.4"},
 									},
 								},
 							},
 						},
 					},
-					&types.UnorderedListItem{
+					types.UnorderedListItem{
 						Attributes:  types.ElementAttributes{},
 						Level:       1,
 						BulletStyle: types.OneAsterisk,
 						CheckStyle:  types.NoCheck,
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{Content: "item 2"},
+										types.StringElement{Content: "item 2"},
 									},
 								},
 							},
 						},
 					},
-					&types.UnorderedListItem{
+					types.UnorderedListItem{
 						Attributes:  types.ElementAttributes{},
 						Level:       2,
 						BulletStyle: types.TwoAsterisks,
 						CheckStyle:  types.NoCheck,
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{Content: "item 2.1"},
+										types.StringElement{Content: "item 2.1"},
 									},
 								},
 							},
@@ -727,9 +727,9 @@ on 2 lines, too.`
 **** level 4
 ***** level 5
 * level 1`
-			expected := &types.PreflightDocument{
+			expected := types.PreflightDocument{
 				Blocks: []interface{}{
-					&types.UnorderedListItem{
+					types.UnorderedListItem{
 						Level:       1,
 						BulletStyle: types.OneAsterisk,
 						CheckStyle:  types.NoCheck,
@@ -737,11 +737,11 @@ on 2 lines, too.`
 							types.AttrTitle: "Unordered, max nesting",
 						},
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{
+										types.StringElement{
 											Content: "level 1",
 										},
 									},
@@ -749,17 +749,17 @@ on 2 lines, too.`
 							},
 						},
 					},
-					&types.UnorderedListItem{
+					types.UnorderedListItem{
 						Level:       2,
 						BulletStyle: types.TwoAsterisks,
 						CheckStyle:  types.NoCheck,
 						Attributes:  types.ElementAttributes{},
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{
+										types.StringElement{
 											Content: "level 2",
 										},
 									},
@@ -767,17 +767,17 @@ on 2 lines, too.`
 							},
 						},
 					},
-					&types.UnorderedListItem{
+					types.UnorderedListItem{
 						Level:       3,
 						BulletStyle: types.ThreeAsterisks,
 						CheckStyle:  types.NoCheck,
 						Attributes:  types.ElementAttributes{},
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{
+										types.StringElement{
 											Content: "level 3",
 										},
 									},
@@ -785,17 +785,17 @@ on 2 lines, too.`
 							},
 						},
 					},
-					&types.UnorderedListItem{
+					types.UnorderedListItem{
 						Level:       4,
 						BulletStyle: types.FourAsterisks,
 						CheckStyle:  types.NoCheck,
 						Attributes:  types.ElementAttributes{},
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{
+										types.StringElement{
 											Content: "level 4",
 										},
 									},
@@ -803,17 +803,17 @@ on 2 lines, too.`
 							},
 						},
 					},
-					&types.UnorderedListItem{
+					types.UnorderedListItem{
 						Level:       5,
 						BulletStyle: types.FiveAsterisks,
 						CheckStyle:  types.NoCheck,
 						Attributes:  types.ElementAttributes{},
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{
+										types.StringElement{
 											Content: "level 5",
 										},
 									},
@@ -821,17 +821,17 @@ on 2 lines, too.`
 							},
 						},
 					},
-					&types.UnorderedListItem{
+					types.UnorderedListItem{
 						Level:       1,
 						BulletStyle: types.OneAsterisk,
 						CheckStyle:  types.NoCheck,
 						Attributes:  types.ElementAttributes{},
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{
+										types.StringElement{
 											Content: "level 1",
 										},
 									},
@@ -852,9 +852,9 @@ on 2 lines, too.`
 **** level 4
 ***** level 5
 ** level 2`
-			expected := &types.PreflightDocument{
+			expected := types.PreflightDocument{
 				Blocks: []interface{}{
-					&types.UnorderedListItem{
+					types.UnorderedListItem{
 						Attributes: types.ElementAttributes{
 							types.AttrTitle: "Unordered, max nesting",
 						},
@@ -862,11 +862,11 @@ on 2 lines, too.`
 						BulletStyle: types.OneAsterisk,
 						CheckStyle:  types.NoCheck,
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{
+										types.StringElement{
 											Content: "level 1",
 										},
 									},
@@ -874,17 +874,17 @@ on 2 lines, too.`
 							},
 						},
 					},
-					&types.UnorderedListItem{
+					types.UnorderedListItem{
 						Level:       2,
 						BulletStyle: types.TwoAsterisks,
 						CheckStyle:  types.NoCheck,
 						Attributes:  types.ElementAttributes{},
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{
+										types.StringElement{
 											Content: "level 2",
 										},
 									},
@@ -892,17 +892,17 @@ on 2 lines, too.`
 							},
 						},
 					},
-					&types.UnorderedListItem{
+					types.UnorderedListItem{
 						Level:       3,
 						BulletStyle: types.ThreeAsterisks,
 						CheckStyle:  types.NoCheck,
 						Attributes:  types.ElementAttributes{},
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{
+										types.StringElement{
 											Content: "level 3",
 										},
 									},
@@ -910,16 +910,16 @@ on 2 lines, too.`
 							},
 						},
 					},
-					&types.UnorderedListItem{Level: 4,
+					types.UnorderedListItem{Level: 4,
 						BulletStyle: types.FourAsterisks,
 						CheckStyle:  types.NoCheck,
 						Attributes:  types.ElementAttributes{},
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{
+										types.StringElement{
 											Content: "level 4",
 										},
 									},
@@ -927,17 +927,17 @@ on 2 lines, too.`
 							},
 						},
 					},
-					&types.UnorderedListItem{
+					types.UnorderedListItem{
 						Level:       5,
 						BulletStyle: types.FiveAsterisks,
 						CheckStyle:  types.NoCheck,
 						Attributes:  types.ElementAttributes{},
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{
+										types.StringElement{
 											Content: "level 5",
 										},
 									},
@@ -945,17 +945,17 @@ on 2 lines, too.`
 							},
 						},
 					},
-					&types.UnorderedListItem{
+					types.UnorderedListItem{
 						Level:       2,
 						BulletStyle: types.TwoAsterisks,
 						CheckStyle:  types.NoCheck,
 						Attributes:  types.ElementAttributes{},
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{
+										types.StringElement{
 											Content: "level 2",
 										},
 									},
@@ -976,83 +976,83 @@ on 2 lines, too.`
 					*** item 1.1.1
 					** item 1.2
 					* item 2`
-			expected := &types.PreflightDocument{
+			expected := types.PreflightDocument{
 				Blocks: []interface{}{
-					&types.UnorderedListItem{
+					types.UnorderedListItem{
 						Attributes:  types.ElementAttributes{},
 						Level:       1,
 						BulletStyle: types.OneAsterisk,
 						CheckStyle:  types.NoCheck,
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{Content: "item 1"},
+										types.StringElement{Content: "item 1"},
 									},
 								},
 							},
 						},
 					},
-					&types.UnorderedListItem{
+					types.UnorderedListItem{
 						Attributes:  types.ElementAttributes{},
 						Level:       3,
 						BulletStyle: types.ThreeAsterisks,
 						CheckStyle:  types.NoCheck,
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{Content: "item 1.1"},
+										types.StringElement{Content: "item 1.1"},
 									},
 								},
 							},
 						},
 					},
-					&types.UnorderedListItem{
+					types.UnorderedListItem{
 						Attributes:  types.ElementAttributes{},
 						Level:       3,
 						BulletStyle: types.ThreeAsterisks,
 						CheckStyle:  types.NoCheck,
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{Content: "item 1.1.1"},
+										types.StringElement{Content: "item 1.1.1"},
 									},
 								},
 							},
 						},
 					},
-					&types.UnorderedListItem{
+					types.UnorderedListItem{
 						Attributes:  types.ElementAttributes{},
 						Level:       2,
 						BulletStyle: types.TwoAsterisks,
 						CheckStyle:  types.NoCheck,
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{Content: "item 1.2"},
+										types.StringElement{Content: "item 1.2"},
 									},
 								},
 							},
 						},
 					},
-					&types.UnorderedListItem{
+					types.UnorderedListItem{
 						Attributes:  types.ElementAttributes{},
 						Level:       1,
 						BulletStyle: types.OneAsterisk,
 						CheckStyle:  types.NoCheck,
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{Content: "item 2"},
+										types.StringElement{Content: "item 2"},
 									},
 								},
 							},
@@ -1065,13 +1065,13 @@ on 2 lines, too.`
 
 		It("invalid list item", func() {
 			source := "*an invalid list item"
-			expected := &types.PreflightDocument{
+			expected := types.PreflightDocument{
 				Blocks: []interface{}{
-					&types.Paragraph{
+					types.Paragraph{
 						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
 							{
-								&types.StringElement{Content: "*an invalid list item"},
+								types.StringElement{Content: "*an invalid list item"},
 							},
 						},
 					},
@@ -1095,35 +1095,35 @@ another delimited block
 ----
 * bar
 `
-			expected := &types.PreflightDocument{
+			expected := types.PreflightDocument{
 				Blocks: []interface{}{
-					&types.UnorderedListItem{
+					types.UnorderedListItem{
 						Attributes:  types.ElementAttributes{},
 						Level:       1,
 						BulletStyle: types.OneAsterisk,
 						CheckStyle:  types.NoCheck,
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{Content: "foo"},
+										types.StringElement{Content: "foo"},
 									},
 								},
 							},
 						},
 					},
-					&types.ContinuedListItemElement{
+					types.ContinuedListItemElement{
 						Offset: 0,
-						Element: &types.DelimitedBlock{
+						Element: types.DelimitedBlock{
 							Attributes: types.ElementAttributes{},
 							Kind:       types.Listing,
 							Elements: []interface{}{
-								&types.Paragraph{
+								types.Paragraph{
 									Attributes: types.ElementAttributes{},
 									Lines: []types.InlineElements{
 										{
-											&types.StringElement{
+											types.StringElement{
 												Content: "a delimited block",
 											},
 										},
@@ -1132,17 +1132,17 @@ another delimited block
 							},
 						},
 					},
-					&types.ContinuedListItemElement{
+					types.ContinuedListItemElement{
 						Offset: 0,
-						Element: &types.DelimitedBlock{
+						Element: types.DelimitedBlock{
 							Attributes: types.ElementAttributes{},
 							Kind:       types.Listing,
 							Elements: []interface{}{
-								&types.Paragraph{
+								types.Paragraph{
 									Attributes: types.ElementAttributes{},
 									Lines: []types.InlineElements{
 										{
-											&types.StringElement{
+											types.StringElement{
 												Content: "another delimited block",
 											},
 										},
@@ -1151,17 +1151,17 @@ another delimited block
 							},
 						},
 					},
-					&types.UnorderedListItem{
+					types.UnorderedListItem{
 						Attributes:  types.ElementAttributes{},
 						Level:       1,
 						BulletStyle: types.OneAsterisk,
 						CheckStyle:  types.NoCheck,
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{Content: "bar"},
+										types.StringElement{Content: "bar"},
 									},
 								},
 							},
@@ -1186,9 +1186,9 @@ The {plus} symbol is on a new line.
 
 ***** level 5
 `
-			expected := &types.PreflightDocument{
+			expected := types.PreflightDocument{
 				Blocks: []interface{}{
-					&types.UnorderedListItem{
+					types.UnorderedListItem{
 						Level:       1,
 						BulletStyle: types.OneAsterisk,
 						CheckStyle:  types.NoCheck,
@@ -1196,11 +1196,11 @@ The {plus} symbol is on a new line.
 							types.AttrTitle: "Unordered, complex",
 						},
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{
+										types.StringElement{
 											Content: "level 1",
 										},
 									},
@@ -1208,17 +1208,17 @@ The {plus} symbol is on a new line.
 							},
 						},
 					},
-					&types.UnorderedListItem{
+					types.UnorderedListItem{
 						Level:       2,
 						BulletStyle: types.TwoAsterisks,
 						CheckStyle:  types.NoCheck,
 						Attributes:  types.ElementAttributes{},
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{
+										types.StringElement{
 											Content: "level 2",
 										},
 									},
@@ -1226,39 +1226,39 @@ The {plus} symbol is on a new line.
 							},
 						},
 					},
-					&types.UnorderedListItem{
+					types.UnorderedListItem{
 						Level:       3,
 						BulletStyle: types.ThreeAsterisks,
 						CheckStyle:  types.NoCheck,
 						Attributes:  types.ElementAttributes{},
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{
+										types.StringElement{
 											Content: "level 3",
 										},
 									},
 									{
-										&types.StringElement{
+										types.StringElement{
 											Content: "This is a new line inside an unordered list using ",
 										},
-										&types.DocumentAttributeSubstitution{
+										types.DocumentAttributeSubstitution{
 											Name: "plus",
 										},
-										&types.StringElement{
+										types.StringElement{
 											Content: " symbol.",
 										},
 									},
 									{
-										&types.StringElement{
+										types.StringElement{
 											Content: "We can even force content to start on a separate line...",
 										},
-										&types.LineBreak{},
+										types.LineBreak{},
 									},
 									{
-										&types.StringElement{
+										types.StringElement{
 											Content: "Amazing, isn't it?",
 										},
 									},
@@ -1266,17 +1266,17 @@ The {plus} symbol is on a new line.
 							},
 						},
 					},
-					&types.UnorderedListItem{
+					types.UnorderedListItem{
 						Level:       4,
 						BulletStyle: types.FourAsterisks,
 						CheckStyle:  types.NoCheck,
 						Attributes:  types.ElementAttributes{},
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{
+										types.StringElement{
 											Content: "level 4",
 										},
 									},
@@ -1285,37 +1285,37 @@ The {plus} symbol is on a new line.
 						},
 					},
 					// the `+` continuation produces the second paragraph below
-					&types.ContinuedListItemElement{
+					types.ContinuedListItemElement{
 						Offset: 0,
-						Element: &types.Paragraph{
+						Element: types.Paragraph{
 							Attributes: types.ElementAttributes{},
 							Lines: []types.InlineElements{
 								{
-									&types.StringElement{
+									types.StringElement{
 										Content: "The ",
 									},
-									&types.DocumentAttributeSubstitution{
+									types.DocumentAttributeSubstitution{
 										Name: "plus",
 									},
-									&types.StringElement{
+									types.StringElement{
 										Content: " symbol is on a new line.",
 									},
 								},
 							},
 						},
 					},
-					&types.BlankLine{},
-					&types.UnorderedListItem{
+					types.BlankLine{},
+					types.UnorderedListItem{
 						Level:       5,
 						BulletStyle: types.FiveAsterisks,
 						CheckStyle:  types.NoCheck,
 						Attributes:  types.ElementAttributes{},
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{
+										types.StringElement{
 											Content: "level 5",
 										},
 									},
@@ -1337,33 +1337,33 @@ a delimited block
 ----
 another delimited block
 ----`
-			expected := &types.PreflightDocument{
+			expected := types.PreflightDocument{
 				Blocks: []interface{}{
-					&types.UnorderedListItem{
+					types.UnorderedListItem{
 						Attributes:  types.ElementAttributes{},
 						Level:       1,
 						BulletStyle: types.OneAsterisk,
 						CheckStyle:  types.NoCheck,
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{Content: "foo"},
+										types.StringElement{Content: "foo"},
 									},
 								},
 							},
 						},
 					},
-					&types.DelimitedBlock{
+					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{},
 						Kind:       types.Listing,
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{
+										types.StringElement{
 											Content: "a delimited block",
 										},
 									},
@@ -1371,31 +1371,31 @@ another delimited block
 							},
 						},
 					},
-					&types.UnorderedListItem{
+					types.UnorderedListItem{
 						Attributes:  types.ElementAttributes{},
 						Level:       1,
 						BulletStyle: types.OneAsterisk,
 						CheckStyle:  types.NoCheck,
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{Content: "bar"},
+										types.StringElement{Content: "bar"},
 									},
 								},
 							},
 						},
 					},
-					&types.DelimitedBlock{
+					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{},
 						Kind:       types.Listing,
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{
+										types.StringElement{
 											Content: "another delimited block",
 										},
 									},
@@ -1419,63 +1419,63 @@ another delimited block
 
 +
 paragraph attached to grand parent list item`
-			expected := &types.PreflightDocument{
+			expected := types.PreflightDocument{
 				Blocks: []interface{}{
-					&types.UnorderedListItem{
+					types.UnorderedListItem{
 						Attributes:  types.ElementAttributes{},
 						Level:       1,
 						BulletStyle: types.OneAsterisk,
 						CheckStyle:  types.NoCheck,
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{Content: "grand parent list item"},
+										types.StringElement{Content: "grand parent list item"},
 									},
 								},
 							},
 						},
 					},
-					&types.UnorderedListItem{
+					types.UnorderedListItem{
 						Attributes:  types.ElementAttributes{},
 						Level:       2,
 						BulletStyle: types.TwoAsterisks,
 						CheckStyle:  types.NoCheck,
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{Content: "parent list item"},
+										types.StringElement{Content: "parent list item"},
 									},
 								},
 							},
 						},
 					},
-					&types.UnorderedListItem{
+					types.UnorderedListItem{
 						Attributes:  types.ElementAttributes{},
 						Level:       3,
 						BulletStyle: types.ThreeAsterisks,
 						CheckStyle:  types.NoCheck,
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{Content: "child list item"},
+										types.StringElement{Content: "child list item"},
 									},
 								},
 							},
 						},
 					},
-					&types.ContinuedListItemElement{
+					types.ContinuedListItemElement{
 						Offset: -2,
-						Element: &types.Paragraph{
+						Element: types.Paragraph{
 							Attributes: types.ElementAttributes{},
 							Lines: []types.InlineElements{
 								{
-									&types.StringElement{Content: "paragraph attached to grand parent list item"},
+									types.StringElement{Content: "paragraph attached to grand parent list item"},
 								},
 							},
 						},
@@ -1492,63 +1492,63 @@ paragraph attached to grand parent list item`
 
 +
 paragraph attached to parent list item`
-			expected := &types.PreflightDocument{
+			expected := types.PreflightDocument{
 				Blocks: []interface{}{
-					&types.UnorderedListItem{
+					types.UnorderedListItem{
 						Attributes:  types.ElementAttributes{},
 						Level:       1,
 						BulletStyle: types.OneAsterisk,
 						CheckStyle:  types.NoCheck,
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{Content: "grandparent list item"},
+										types.StringElement{Content: "grandparent list item"},
 									},
 								},
 							},
 						},
 					},
-					&types.UnorderedListItem{
+					types.UnorderedListItem{
 						Attributes:  types.ElementAttributes{},
 						Level:       2,
 						BulletStyle: types.TwoAsterisks,
 						CheckStyle:  types.NoCheck,
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{Content: "parent list item"},
+										types.StringElement{Content: "parent list item"},
 									},
 								},
 							},
 						},
 					},
-					&types.UnorderedListItem{
+					types.UnorderedListItem{
 						Attributes:  types.ElementAttributes{},
 						Level:       3,
 						BulletStyle: types.ThreeAsterisks,
 						CheckStyle:  types.NoCheck,
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{Content: "child list item"},
+										types.StringElement{Content: "child list item"},
 									},
 								},
 							},
 						},
 					},
-					&types.ContinuedListItemElement{
+					types.ContinuedListItemElement{
 						Offset: -1,
-						Element: &types.Paragraph{
+						Element: types.Paragraph{
 							Attributes: types.ElementAttributes{},
 							Lines: []types.InlineElements{
 								{
-									&types.StringElement{Content: "paragraph attached to parent list item"},
+									types.StringElement{Content: "paragraph attached to parent list item"},
 								},
 							},
 						},
@@ -1566,26 +1566,26 @@ var _ = Describe("unordered lists - document", func() {
 
 		It("unordered list with a basic single item", func() {
 			source := `* a list item`
-			expected := &types.Document{
+			expected := types.Document{
 				Attributes:         types.DocumentAttributes{},
 				ElementReferences:  types.ElementReferences{},
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
-					&types.UnorderedList{
+					types.UnorderedList{
 						Attributes: types.ElementAttributes{},
-						Items: []*types.UnorderedListItem{
+						Items: []types.UnorderedListItem{
 							{
 								Attributes:  types.ElementAttributes{},
 								Level:       1,
 								BulletStyle: types.OneAsterisk,
 								CheckStyle:  types.NoCheck,
 								Elements: []interface{}{
-									&types.Paragraph{
+									types.Paragraph{
 										Attributes: types.ElementAttributes{},
 										Lines: []types.InlineElements{
 											{
-												&types.StringElement{Content: "a list item"},
+												types.StringElement{Content: "a list item"},
 											},
 										},
 									},
@@ -1603,31 +1603,31 @@ var _ = Describe("unordered lists - document", func() {
 [#listID]
 [.myrole]
 * a list item`
-			expected := &types.Document{
+			expected := types.Document{
 				Attributes:         types.DocumentAttributes{},
 				ElementReferences:  types.ElementReferences{},
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
-					&types.UnorderedList{
+					types.UnorderedList{
 						Attributes: types.ElementAttributes{
 							types.AttrID:       "listID",
 							types.AttrCustomID: true,
 							types.AttrTitle:    "mytitle",
 							types.AttrRole:     "myrole",
 						},
-						Items: []*types.UnorderedListItem{
+						Items: []types.UnorderedListItem{
 							{
 								Attributes:  types.ElementAttributes{},
 								Level:       1,
 								BulletStyle: types.OneAsterisk,
 								CheckStyle:  types.NoCheck,
 								Elements: []interface{}{
-									&types.Paragraph{
+									types.Paragraph{
 										Attributes: types.ElementAttributes{},
 										Lines: []types.InlineElements{
 											{
-												&types.StringElement{Content: "a list item"},
+												types.StringElement{Content: "a list item"},
 											},
 										},
 									},
@@ -1642,28 +1642,28 @@ var _ = Describe("unordered lists - document", func() {
 		It("unordered list with a title and a single item", func() {
 			source := `.a title
 	* a list item`
-			expected := &types.Document{
+			expected := types.Document{
 				Attributes:         types.DocumentAttributes{},
 				ElementReferences:  types.ElementReferences{},
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
-					&types.UnorderedList{
+					types.UnorderedList{
 						Attributes: types.ElementAttributes{
 							types.AttrTitle: "a title",
 						},
-						Items: []*types.UnorderedListItem{
+						Items: []types.UnorderedListItem{
 							{
 								Attributes:  types.ElementAttributes{},
 								Level:       1,
 								BulletStyle: types.OneAsterisk,
 								CheckStyle:  types.NoCheck,
 								Elements: []interface{}{
-									&types.Paragraph{
+									types.Paragraph{
 										Attributes: types.ElementAttributes{},
 										Lines: []types.InlineElements{
 											{
-												&types.StringElement{Content: "a list item"},
+												types.StringElement{Content: "a list item"},
 											},
 										},
 									},
@@ -1679,26 +1679,26 @@ var _ = Describe("unordered lists - document", func() {
 		It("unordered list with 2 items with stars", func() {
 			source := `* a first item
 					* a second item with *bold content*`
-			expected := &types.Document{
+			expected := types.Document{
 				Attributes:         types.DocumentAttributes{},
 				ElementReferences:  types.ElementReferences{},
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
-					&types.UnorderedList{
+					types.UnorderedList{
 						Attributes: types.ElementAttributes{},
-						Items: []*types.UnorderedListItem{
+						Items: []types.UnorderedListItem{
 							{
 								Attributes:  types.ElementAttributes{},
 								Level:       1,
 								BulletStyle: types.OneAsterisk,
 								CheckStyle:  types.NoCheck,
 								Elements: []interface{}{
-									&types.Paragraph{
+									types.Paragraph{
 										Attributes: types.ElementAttributes{},
 										Lines: []types.InlineElements{
 											{
-												&types.StringElement{Content: "a first item"},
+												types.StringElement{Content: "a first item"},
 											},
 										},
 									},
@@ -1710,15 +1710,15 @@ var _ = Describe("unordered lists - document", func() {
 								BulletStyle: types.OneAsterisk,
 								CheckStyle:  types.NoCheck,
 								Elements: []interface{}{
-									&types.Paragraph{
+									types.Paragraph{
 										Attributes: types.ElementAttributes{},
 										Lines: []types.InlineElements{
 											{
-												&types.StringElement{Content: "a second item with "},
-												&types.QuotedText{
+												types.StringElement{Content: "a second item with "},
+												types.QuotedText{
 													Kind: types.Bold,
 													Elements: types.InlineElements{
-														&types.StringElement{Content: "bold content"},
+														types.StringElement{Content: "bold content"},
 													},
 												},
 											},
@@ -1743,62 +1743,62 @@ var _ = Describe("unordered lists - document", func() {
 		*** nested nested list item B.1
 		*** nested nested list item B.2
 		* list item 2`
-			expected := &types.Document{
+			expected := types.Document{
 				Attributes:         types.DocumentAttributes{},
 				ElementReferences:  types.ElementReferences{},
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
-					&types.UnorderedList{
+					types.UnorderedList{
 						Attributes: types.ElementAttributes{
 							types.AttrTitle: "Unordered list title",
 						},
-						Items: []*types.UnorderedListItem{
+						Items: []types.UnorderedListItem{
 							{
 								Attributes:  types.ElementAttributes{},
 								Level:       1,
 								BulletStyle: types.OneAsterisk,
 								CheckStyle:  types.NoCheck,
 								Elements: []interface{}{
-									&types.Paragraph{
+									types.Paragraph{
 										Attributes: types.ElementAttributes{},
 										Lines: []types.InlineElements{
 											{
-												&types.StringElement{Content: "list item 1"},
+												types.StringElement{Content: "list item 1"},
 											},
 										},
 									},
-									&types.UnorderedList{
+									types.UnorderedList{
 										Attributes: types.ElementAttributes{},
-										Items: []*types.UnorderedListItem{
+										Items: []types.UnorderedListItem{
 											{
 												Attributes:  types.ElementAttributes{},
 												Level:       2,
 												BulletStyle: types.TwoAsterisks,
 												CheckStyle:  types.NoCheck,
 												Elements: []interface{}{
-													&types.Paragraph{
+													types.Paragraph{
 														Attributes: types.ElementAttributes{},
 														Lines: []types.InlineElements{
 															{
-																&types.StringElement{Content: "nested list item A"},
+																types.StringElement{Content: "nested list item A"},
 															},
 														},
 													},
-													&types.UnorderedList{
+													types.UnorderedList{
 														Attributes: types.ElementAttributes{},
-														Items: []*types.UnorderedListItem{
+														Items: []types.UnorderedListItem{
 															{
 																Attributes:  types.ElementAttributes{},
 																Level:       3,
 																BulletStyle: types.ThreeAsterisks,
 																CheckStyle:  types.NoCheck,
 																Elements: []interface{}{
-																	&types.Paragraph{
+																	types.Paragraph{
 																		Attributes: types.ElementAttributes{},
 																		Lines: []types.InlineElements{
 																			{
-																				&types.StringElement{Content: "nested nested list item A.1"},
+																				types.StringElement{Content: "nested nested list item A.1"},
 																			},
 																		},
 																	},
@@ -1810,11 +1810,11 @@ var _ = Describe("unordered lists - document", func() {
 																BulletStyle: types.ThreeAsterisks,
 																CheckStyle:  types.NoCheck,
 																Elements: []interface{}{
-																	&types.Paragraph{
+																	types.Paragraph{
 																		Attributes: types.ElementAttributes{},
 																		Lines: []types.InlineElements{
 																			{
-																				&types.StringElement{Content: "nested nested list item A.2"},
+																				types.StringElement{Content: "nested nested list item A.2"},
 																			},
 																		},
 																	},
@@ -1830,28 +1830,28 @@ var _ = Describe("unordered lists - document", func() {
 												BulletStyle: types.TwoAsterisks,
 												CheckStyle:  types.NoCheck,
 												Elements: []interface{}{
-													&types.Paragraph{
+													types.Paragraph{
 														Attributes: types.ElementAttributes{},
 														Lines: []types.InlineElements{
 															{
-																&types.StringElement{Content: "nested list item B"},
+																types.StringElement{Content: "nested list item B"},
 															},
 														},
 													},
-													&types.UnorderedList{
+													types.UnorderedList{
 														Attributes: types.ElementAttributes{},
-														Items: []*types.UnorderedListItem{
+														Items: []types.UnorderedListItem{
 															{
 																Attributes:  types.ElementAttributes{},
 																Level:       3,
 																BulletStyle: types.ThreeAsterisks,
 																CheckStyle:  types.NoCheck,
 																Elements: []interface{}{
-																	&types.Paragraph{
+																	types.Paragraph{
 																		Attributes: types.ElementAttributes{},
 																		Lines: []types.InlineElements{
 																			{
-																				&types.StringElement{Content: "nested nested list item B.1"},
+																				types.StringElement{Content: "nested nested list item B.1"},
 																			},
 																		},
 																	},
@@ -1863,11 +1863,11 @@ var _ = Describe("unordered lists - document", func() {
 																BulletStyle: types.ThreeAsterisks,
 																CheckStyle:  types.NoCheck,
 																Elements: []interface{}{
-																	&types.Paragraph{
+																	types.Paragraph{
 																		Attributes: types.ElementAttributes{},
 																		Lines: []types.InlineElements{
 																			{
-																				&types.StringElement{Content: "nested nested list item B.2"},
+																				types.StringElement{Content: "nested nested list item B.2"},
 																			},
 																		},
 																	},
@@ -1887,11 +1887,11 @@ var _ = Describe("unordered lists - document", func() {
 								BulletStyle: types.OneAsterisk,
 								CheckStyle:  types.NoCheck,
 								Elements: []interface{}{
-									&types.Paragraph{
+									types.Paragraph{
 										Attributes: types.ElementAttributes{},
 										Lines: []types.InlineElements{
 											{
-												&types.StringElement{Content: "list item 2"},
+												types.StringElement{Content: "list item 2"},
 											},
 										},
 									},
@@ -1907,26 +1907,26 @@ var _ = Describe("unordered lists - document", func() {
 		It("unordered list with 2 items with carets", func() {
 			source := "- a first item\n" +
 				"- a second item with *bold content*"
-			expected := &types.Document{
+			expected := types.Document{
 				Attributes:         types.DocumentAttributes{},
 				ElementReferences:  types.ElementReferences{},
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
-					&types.UnorderedList{
+					types.UnorderedList{
 						Attributes: types.ElementAttributes{},
-						Items: []*types.UnorderedListItem{
+						Items: []types.UnorderedListItem{
 							{
 								Attributes:  types.ElementAttributes{},
 								Level:       1,
 								BulletStyle: types.Dash,
 								CheckStyle:  types.NoCheck,
 								Elements: []interface{}{
-									&types.Paragraph{
+									types.Paragraph{
 										Attributes: types.ElementAttributes{},
 										Lines: []types.InlineElements{
 											{
-												&types.StringElement{Content: "a first item"},
+												types.StringElement{Content: "a first item"},
 											},
 										},
 									},
@@ -1938,15 +1938,15 @@ var _ = Describe("unordered lists - document", func() {
 								BulletStyle: types.Dash,
 								CheckStyle:  types.NoCheck,
 								Elements: []interface{}{
-									&types.Paragraph{
+									types.Paragraph{
 										Attributes: types.ElementAttributes{},
 										Lines: []types.InlineElements{
 											{
-												&types.StringElement{Content: "a second item with "},
-												&types.QuotedText{
+												types.StringElement{Content: "a second item with "},
+												types.QuotedText{
 													Kind: types.Bold,
 													Elements: types.InlineElements{
-														&types.StringElement{Content: "bold content"},
+														types.StringElement{Content: "bold content"},
 													},
 												},
 											},
@@ -1967,43 +1967,43 @@ var _ = Describe("unordered lists - document", func() {
 					- another parent item
 					* another child item
 					** with a sub child item`
-			expected := &types.Document{
+			expected := types.Document{
 				Attributes:         types.DocumentAttributes{},
 				ElementReferences:  types.ElementReferences{},
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
-					&types.UnorderedList{
+					types.UnorderedList{
 						Attributes: types.ElementAttributes{},
-						Items: []*types.UnorderedListItem{
+						Items: []types.UnorderedListItem{
 							{
 								Attributes:  types.ElementAttributes{},
 								Level:       1,
 								BulletStyle: types.Dash,
 								CheckStyle:  types.NoCheck,
 								Elements: []interface{}{
-									&types.Paragraph{
+									types.Paragraph{
 										Attributes: types.ElementAttributes{},
 										Lines: []types.InlineElements{
 											{
-												&types.StringElement{Content: "a parent item"},
+												types.StringElement{Content: "a parent item"},
 											},
 										},
 									},
-									&types.UnorderedList{
+									types.UnorderedList{
 										Attributes: types.ElementAttributes{},
-										Items: []*types.UnorderedListItem{
+										Items: []types.UnorderedListItem{
 											{
 												Attributes:  types.ElementAttributes{},
 												Level:       2,
 												BulletStyle: types.OneAsterisk,
 												CheckStyle:  types.NoCheck,
 												Elements: []interface{}{
-													&types.Paragraph{
+													types.Paragraph{
 														Attributes: types.ElementAttributes{},
 														Lines: []types.InlineElements{
 															{
-																&types.StringElement{Content: "a child item"},
+																types.StringElement{Content: "a child item"},
 															},
 														},
 													},
@@ -2019,45 +2019,45 @@ var _ = Describe("unordered lists - document", func() {
 								BulletStyle: types.Dash,
 								CheckStyle:  types.NoCheck,
 								Elements: []interface{}{
-									&types.Paragraph{
+									types.Paragraph{
 										Attributes: types.ElementAttributes{},
 										Lines: []types.InlineElements{
 											{
-												&types.StringElement{Content: "another parent item"},
+												types.StringElement{Content: "another parent item"},
 											},
 										},
 									},
-									&types.UnorderedList{
+									types.UnorderedList{
 										Attributes: types.ElementAttributes{},
-										Items: []*types.UnorderedListItem{
+										Items: []types.UnorderedListItem{
 											{
 												Attributes:  types.ElementAttributes{},
 												Level:       2,
 												BulletStyle: types.OneAsterisk,
 												CheckStyle:  types.NoCheck,
 												Elements: []interface{}{
-													&types.Paragraph{
+													types.Paragraph{
 														Attributes: types.ElementAttributes{},
 														Lines: []types.InlineElements{
 															{
-																&types.StringElement{Content: "another child item"},
+																types.StringElement{Content: "another child item"},
 															},
 														},
 													},
-													&types.UnorderedList{
+													types.UnorderedList{
 														Attributes: types.ElementAttributes{},
-														Items: []*types.UnorderedListItem{
+														Items: []types.UnorderedListItem{
 															{
 																Attributes:  types.ElementAttributes{},
 																Level:       3,
 																BulletStyle: types.TwoAsterisks,
 																CheckStyle:  types.NoCheck,
 																Elements: []interface{}{
-																	&types.Paragraph{
+																	types.Paragraph{
 																		Attributes: types.ElementAttributes{},
 																		Lines: []types.InlineElements{
 																			{
-																				&types.StringElement{Content: "with a sub child item"},
+																				types.StringElement{Content: "with a sub child item"},
 																			},
 																		},
 																	},
@@ -2083,26 +2083,26 @@ var _ = Describe("unordered lists - document", func() {
 			source := "* a first item\n" +
 				"\n" +
 				"* a second item with *bold content*"
-			expected := &types.Document{
+			expected := types.Document{
 				Attributes:         types.DocumentAttributes{},
 				ElementReferences:  types.ElementReferences{},
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
-					&types.UnorderedList{
+					types.UnorderedList{
 						Attributes: types.ElementAttributes{},
-						Items: []*types.UnorderedListItem{
+						Items: []types.UnorderedListItem{
 							{
 								Attributes:  types.ElementAttributes{},
 								Level:       1,
 								BulletStyle: types.OneAsterisk,
 								CheckStyle:  types.NoCheck,
 								Elements: []interface{}{
-									&types.Paragraph{
+									types.Paragraph{
 										Attributes: types.ElementAttributes{},
 										Lines: []types.InlineElements{
 											{
-												&types.StringElement{Content: "a first item"},
+												types.StringElement{Content: "a first item"},
 											},
 										},
 									},
@@ -2114,15 +2114,15 @@ var _ = Describe("unordered lists - document", func() {
 								BulletStyle: types.OneAsterisk,
 								CheckStyle:  types.NoCheck,
 								Elements: []interface{}{
-									&types.Paragraph{
+									types.Paragraph{
 										Attributes: types.ElementAttributes{},
 										Lines: []types.InlineElements{
 											{
-												&types.StringElement{Content: "a second item with "},
-												&types.QuotedText{
+												types.StringElement{Content: "a second item with "},
+												types.QuotedText{
 													Kind: types.Bold,
 													Elements: types.InlineElements{
-														&types.StringElement{Content: "bold content"},
+														types.StringElement{Content: "bold content"},
 													},
 												},
 											},
@@ -2141,29 +2141,29 @@ var _ = Describe("unordered lists - document", func() {
   on 2 lines.
 * item 2
 on 2 lines, too.`
-			expected := &types.Document{
+			expected := types.Document{
 				Attributes:         types.DocumentAttributes{},
 				ElementReferences:  types.ElementReferences{},
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
-					&types.UnorderedList{
+					types.UnorderedList{
 						Attributes: types.ElementAttributes{},
-						Items: []*types.UnorderedListItem{
+						Items: []types.UnorderedListItem{
 							{
 								Attributes:  types.ElementAttributes{},
 								Level:       1,
 								BulletStyle: types.OneAsterisk,
 								CheckStyle:  types.NoCheck,
 								Elements: []interface{}{
-									&types.Paragraph{
+									types.Paragraph{
 										Attributes: types.ElementAttributes{},
 										Lines: []types.InlineElements{
 											{
-												&types.StringElement{Content: "item 1"},
+												types.StringElement{Content: "item 1"},
 											},
 											{
-												&types.StringElement{Content: "  on 2 lines."},
+												types.StringElement{Content: "  on 2 lines."},
 											},
 										},
 									},
@@ -2175,14 +2175,14 @@ on 2 lines, too.`
 								BulletStyle: types.OneAsterisk,
 								CheckStyle:  types.NoCheck,
 								Elements: []interface{}{
-									&types.Paragraph{
+									types.Paragraph{
 										Attributes: types.ElementAttributes{},
 										Lines: []types.InlineElements{
 											{
-												&types.StringElement{Content: "item 2"},
+												types.StringElement{Content: "item 2"},
 											},
 											{
-												&types.StringElement{Content: "on 2 lines, too."},
+												types.StringElement{Content: "on 2 lines, too."},
 											},
 										},
 									},
@@ -2200,26 +2200,26 @@ on 2 lines, too.`
 				"\n" +
 				"\n" +
 				"* an item in the second list"
-			expected := &types.Document{
+			expected := types.Document{
 				Attributes:         types.DocumentAttributes{},
 				ElementReferences:  types.ElementReferences{},
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
-					&types.UnorderedList{
+					types.UnorderedList{
 						Attributes: types.ElementAttributes{},
-						Items: []*types.UnorderedListItem{
+						Items: []types.UnorderedListItem{
 							{
 								Attributes:  types.ElementAttributes{},
 								Level:       1,
 								BulletStyle: types.OneAsterisk,
 								CheckStyle:  types.NoCheck,
 								Elements: []interface{}{
-									&types.Paragraph{
+									types.Paragraph{
 										Attributes: types.ElementAttributes{},
 										Lines: []types.InlineElements{
 											{
-												&types.StringElement{Content: "an item in the first list"},
+												types.StringElement{Content: "an item in the first list"},
 											},
 										},
 									},
@@ -2231,11 +2231,11 @@ on 2 lines, too.`
 								BulletStyle: types.OneAsterisk,
 								CheckStyle:  types.NoCheck,
 								Elements: []interface{}{
-									&types.Paragraph{
+									types.Paragraph{
 										Attributes: types.ElementAttributes{},
 										Lines: []types.InlineElements{
 											{
-												&types.StringElement{Content: "an item in the second list"},
+												types.StringElement{Content: "an item in the second list"},
 											},
 										},
 									},
@@ -2257,43 +2257,43 @@ on 2 lines, too.`
 	** item 1.4
 	* item 2
 	** item 2.1`
-			expected := &types.Document{
+			expected := types.Document{
 				Attributes:         types.DocumentAttributes{},
 				ElementReferences:  types.ElementReferences{},
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
-					&types.UnorderedList{
+					types.UnorderedList{
 						Attributes: types.ElementAttributes{},
-						Items: []*types.UnorderedListItem{
+						Items: []types.UnorderedListItem{
 							{
 								Attributes:  types.ElementAttributes{},
 								Level:       1,
 								BulletStyle: types.OneAsterisk,
 								CheckStyle:  types.NoCheck,
 								Elements: []interface{}{
-									&types.Paragraph{
+									types.Paragraph{
 										Attributes: types.ElementAttributes{},
 										Lines: []types.InlineElements{
 											{
-												&types.StringElement{Content: "item 1"},
+												types.StringElement{Content: "item 1"},
 											},
 										},
 									},
-									&types.UnorderedList{
+									types.UnorderedList{
 										Attributes: types.ElementAttributes{},
-										Items: []*types.UnorderedListItem{
+										Items: []types.UnorderedListItem{
 											{
 												Attributes:  types.ElementAttributes{},
 												Level:       2,
 												BulletStyle: types.TwoAsterisks,
 												CheckStyle:  types.NoCheck,
 												Elements: []interface{}{
-													&types.Paragraph{
+													types.Paragraph{
 														Attributes: types.ElementAttributes{},
 														Lines: []types.InlineElements{
 															{
-																&types.StringElement{Content: "item 1.1"},
+																types.StringElement{Content: "item 1.1"},
 															},
 														},
 													},
@@ -2305,28 +2305,28 @@ on 2 lines, too.`
 												BulletStyle: types.TwoAsterisks,
 												CheckStyle:  types.NoCheck,
 												Elements: []interface{}{
-													&types.Paragraph{
+													types.Paragraph{
 														Attributes: types.ElementAttributes{},
 														Lines: []types.InlineElements{
 															{
-																&types.StringElement{Content: "item 1.2"},
+																types.StringElement{Content: "item 1.2"},
 															},
 														},
 													},
-													&types.UnorderedList{
+													types.UnorderedList{
 														Attributes: types.ElementAttributes{},
-														Items: []*types.UnorderedListItem{
+														Items: []types.UnorderedListItem{
 															{
 																Attributes:  types.ElementAttributes{},
 																Level:       3,
 																BulletStyle: types.ThreeAsterisks,
 																CheckStyle:  types.NoCheck,
 																Elements: []interface{}{
-																	&types.Paragraph{
+																	types.Paragraph{
 																		Attributes: types.ElementAttributes{},
 																		Lines: []types.InlineElements{
 																			{
-																				&types.StringElement{Content: "item 1.2.1"},
+																				types.StringElement{Content: "item 1.2.1"},
 																			},
 																		},
 																	},
@@ -2342,11 +2342,11 @@ on 2 lines, too.`
 												BulletStyle: types.TwoAsterisks,
 												CheckStyle:  types.NoCheck,
 												Elements: []interface{}{
-													&types.Paragraph{
+													types.Paragraph{
 														Attributes: types.ElementAttributes{},
 														Lines: []types.InlineElements{
 															{
-																&types.StringElement{Content: "item 1.3"},
+																types.StringElement{Content: "item 1.3"},
 															},
 														},
 													},
@@ -2358,11 +2358,11 @@ on 2 lines, too.`
 												BulletStyle: types.TwoAsterisks,
 												CheckStyle:  types.NoCheck,
 												Elements: []interface{}{
-													&types.Paragraph{
+													types.Paragraph{
 														Attributes: types.ElementAttributes{},
 														Lines: []types.InlineElements{
 															{
-																&types.StringElement{Content: "item 1.4"},
+																types.StringElement{Content: "item 1.4"},
 															},
 														},
 													},
@@ -2378,28 +2378,28 @@ on 2 lines, too.`
 								BulletStyle: types.OneAsterisk,
 								CheckStyle:  types.NoCheck,
 								Elements: []interface{}{
-									&types.Paragraph{
+									types.Paragraph{
 										Attributes: types.ElementAttributes{},
 										Lines: []types.InlineElements{
 											{
-												&types.StringElement{Content: "item 2"},
+												types.StringElement{Content: "item 2"},
 											},
 										},
 									},
-									&types.UnorderedList{
+									types.UnorderedList{
 										Attributes: types.ElementAttributes{},
-										Items: []*types.UnorderedListItem{
+										Items: []types.UnorderedListItem{
 											{
 												Attributes:  types.ElementAttributes{},
 												Level:       2,
 												BulletStyle: types.TwoAsterisks,
 												CheckStyle:  types.NoCheck,
 												Elements: []interface{}{
-													&types.Paragraph{
+													types.Paragraph{
 														Attributes: types.ElementAttributes{},
 														Lines: []types.InlineElements{
 															{
-																&types.StringElement{Content: "item 2.1"},
+																types.StringElement{Content: "item 2.1"},
 															},
 														},
 													},
@@ -2424,104 +2424,104 @@ on 2 lines, too.`
 **** level 4
 ***** level 5
 * level 1`
-			expected := &types.Document{
+			expected := types.Document{
 				Attributes:         types.DocumentAttributes{},
 				ElementReferences:  types.ElementReferences{},
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
-					&types.UnorderedList{
+					types.UnorderedList{
 						Attributes: types.ElementAttributes{
 							types.AttrTitle: "Unordered, max nesting",
 						},
-						Items: []*types.UnorderedListItem{
+						Items: []types.UnorderedListItem{
 							{
 								Level:       1,
 								BulletStyle: types.OneAsterisk,
 								CheckStyle:  types.NoCheck,
 								Attributes:  types.ElementAttributes{},
 								Elements: []interface{}{
-									&types.Paragraph{
+									types.Paragraph{
 										Attributes: types.ElementAttributes{},
 										Lines: []types.InlineElements{
 											{
-												&types.StringElement{
+												types.StringElement{
 													Content: "level 1",
 												},
 											},
 										},
 									},
-									&types.UnorderedList{
+									types.UnorderedList{
 										Attributes: types.ElementAttributes{},
-										Items: []*types.UnorderedListItem{
+										Items: []types.UnorderedListItem{
 											{
 												Level:       2,
 												BulletStyle: types.TwoAsterisks,
 												CheckStyle:  types.NoCheck,
 												Attributes:  types.ElementAttributes{},
 												Elements: []interface{}{
-													&types.Paragraph{
+													types.Paragraph{
 														Attributes: types.ElementAttributes{},
 														Lines: []types.InlineElements{
 															{
-																&types.StringElement{
+																types.StringElement{
 																	Content: "level 2",
 																},
 															},
 														},
 													},
-													&types.UnorderedList{
+													types.UnorderedList{
 														Attributes: types.ElementAttributes{},
-														Items: []*types.UnorderedListItem{
+														Items: []types.UnorderedListItem{
 															{
 																Level:       3,
 																BulletStyle: types.ThreeAsterisks,
 																CheckStyle:  types.NoCheck,
 																Attributes:  types.ElementAttributes{},
 																Elements: []interface{}{
-																	&types.Paragraph{
+																	types.Paragraph{
 																		Attributes: types.ElementAttributes{},
 																		Lines: []types.InlineElements{
 																			{
-																				&types.StringElement{
+																				types.StringElement{
 																					Content: "level 3",
 																				},
 																			},
 																		},
 																	},
-																	&types.UnorderedList{
+																	types.UnorderedList{
 																		Attributes: types.ElementAttributes{},
-																		Items: []*types.UnorderedListItem{
+																		Items: []types.UnorderedListItem{
 																			{
 																				Level:       4,
 																				BulletStyle: types.FourAsterisks,
 																				CheckStyle:  types.NoCheck,
 																				Attributes:  types.ElementAttributes{},
 																				Elements: []interface{}{
-																					&types.Paragraph{
+																					types.Paragraph{
 																						Attributes: types.ElementAttributes{},
 																						Lines: []types.InlineElements{
 																							{
-																								&types.StringElement{
+																								types.StringElement{
 																									Content: "level 4",
 																								},
 																							},
 																						},
 																					},
-																					&types.UnorderedList{
+																					types.UnorderedList{
 																						Attributes: types.ElementAttributes{},
-																						Items: []*types.UnorderedListItem{
+																						Items: []types.UnorderedListItem{
 																							{
 																								Level:       5,
 																								BulletStyle: types.FiveAsterisks,
 																								CheckStyle:  types.NoCheck,
 																								Attributes:  types.ElementAttributes{},
 																								Elements: []interface{}{
-																									&types.Paragraph{
+																									types.Paragraph{
 																										Attributes: types.ElementAttributes{},
 																										Lines: []types.InlineElements{
 																											{
-																												&types.StringElement{
+																												types.StringElement{
 																													Content: "level 5",
 																												},
 																											},
@@ -2551,11 +2551,11 @@ on 2 lines, too.`
 								CheckStyle:  types.NoCheck,
 								Attributes:  types.ElementAttributes{},
 								Elements: []interface{}{
-									&types.Paragraph{
+									types.Paragraph{
 										Attributes: types.ElementAttributes{},
 										Lines: []types.InlineElements{
 											{
-												&types.StringElement{
+												types.StringElement{
 													Content: "level 1",
 												},
 											},
@@ -2578,104 +2578,104 @@ on 2 lines, too.`
 **** level 4
 ***** level 5
 ** level 2`
-			expected := &types.Document{
+			expected := types.Document{
 				Attributes:         types.DocumentAttributes{},
 				ElementReferences:  types.ElementReferences{},
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
-					&types.UnorderedList{
+					types.UnorderedList{
 						Attributes: types.ElementAttributes{
 							types.AttrTitle: "Unordered, max nesting",
 						},
-						Items: []*types.UnorderedListItem{
+						Items: []types.UnorderedListItem{
 							{
 								Level:       1,
 								BulletStyle: types.OneAsterisk,
 								CheckStyle:  types.NoCheck,
 								Attributes:  types.ElementAttributes{},
 								Elements: []interface{}{
-									&types.Paragraph{
+									types.Paragraph{
 										Attributes: types.ElementAttributes{},
 										Lines: []types.InlineElements{
 											{
-												&types.StringElement{
+												types.StringElement{
 													Content: "level 1",
 												},
 											},
 										},
 									},
-									&types.UnorderedList{
+									types.UnorderedList{
 										Attributes: types.ElementAttributes{},
-										Items: []*types.UnorderedListItem{
+										Items: []types.UnorderedListItem{
 											{
 												Level:       2,
 												BulletStyle: types.TwoAsterisks,
 												CheckStyle:  types.NoCheck,
 												Attributes:  types.ElementAttributes{},
 												Elements: []interface{}{
-													&types.Paragraph{
+													types.Paragraph{
 														Attributes: types.ElementAttributes{},
 														Lines: []types.InlineElements{
 															{
-																&types.StringElement{
+																types.StringElement{
 																	Content: "level 2",
 																},
 															},
 														},
 													},
-													&types.UnorderedList{
+													types.UnorderedList{
 														Attributes: types.ElementAttributes{},
-														Items: []*types.UnorderedListItem{
+														Items: []types.UnorderedListItem{
 															{
 																Level:       3,
 																BulletStyle: types.ThreeAsterisks,
 																CheckStyle:  types.NoCheck,
 																Attributes:  types.ElementAttributes{},
 																Elements: []interface{}{
-																	&types.Paragraph{
+																	types.Paragraph{
 																		Attributes: types.ElementAttributes{},
 																		Lines: []types.InlineElements{
 																			{
-																				&types.StringElement{
+																				types.StringElement{
 																					Content: "level 3",
 																				},
 																			},
 																		},
 																	},
-																	&types.UnorderedList{
+																	types.UnorderedList{
 																		Attributes: types.ElementAttributes{},
-																		Items: []*types.UnorderedListItem{
+																		Items: []types.UnorderedListItem{
 																			{
 																				Level:       4,
 																				BulletStyle: types.FourAsterisks,
 																				CheckStyle:  types.NoCheck,
 																				Attributes:  types.ElementAttributes{},
 																				Elements: []interface{}{
-																					&types.Paragraph{
+																					types.Paragraph{
 																						Attributes: types.ElementAttributes{},
 																						Lines: []types.InlineElements{
 																							{
-																								&types.StringElement{
+																								types.StringElement{
 																									Content: "level 4",
 																								},
 																							},
 																						},
 																					},
-																					&types.UnorderedList{
+																					types.UnorderedList{
 																						Attributes: types.ElementAttributes{},
-																						Items: []*types.UnorderedListItem{
+																						Items: []types.UnorderedListItem{
 																							{
 																								Level:       5,
 																								BulletStyle: types.FiveAsterisks,
 																								CheckStyle:  types.NoCheck,
 																								Attributes:  types.ElementAttributes{},
 																								Elements: []interface{}{
-																									&types.Paragraph{
+																									types.Paragraph{
 																										Attributes: types.ElementAttributes{},
 																										Lines: []types.InlineElements{
 																											{
-																												&types.StringElement{
+																												types.StringElement{
 																													Content: "level 5",
 																												},
 																											},
@@ -2701,11 +2701,11 @@ on 2 lines, too.`
 												CheckStyle:  types.NoCheck,
 												Attributes:  types.ElementAttributes{},
 												Elements: []interface{}{
-													&types.Paragraph{
+													types.Paragraph{
 														Attributes: types.ElementAttributes{},
 														Lines: []types.InlineElements{
 															{
-																&types.StringElement{
+																types.StringElement{
 																	Content: "level 2",
 																},
 															},
@@ -2732,60 +2732,60 @@ on 2 lines, too.`
 					*** item 1.1.1
 					** item 1.2
 					* item 2`
-			expected := &types.Document{
+			expected := types.Document{
 				Attributes:         types.DocumentAttributes{},
 				ElementReferences:  types.ElementReferences{},
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
-					&types.UnorderedList{
+					types.UnorderedList{
 						Attributes: types.ElementAttributes{},
-						Items: []*types.UnorderedListItem{
+						Items: []types.UnorderedListItem{
 							{
 								Attributes:  types.ElementAttributes{},
 								Level:       1,
 								BulletStyle: types.OneAsterisk,
 								CheckStyle:  types.NoCheck,
 								Elements: []interface{}{
-									&types.Paragraph{
+									types.Paragraph{
 										Attributes: types.ElementAttributes{},
 										Lines: []types.InlineElements{
 											{
-												&types.StringElement{Content: "item 1"},
+												types.StringElement{Content: "item 1"},
 											},
 										},
 									},
-									&types.UnorderedList{
+									types.UnorderedList{
 										Attributes: types.ElementAttributes{},
-										Items: []*types.UnorderedListItem{
+										Items: []types.UnorderedListItem{
 											{
 												Attributes:  types.ElementAttributes{},
 												Level:       2,
 												BulletStyle: types.TwoAsterisks,
 												CheckStyle:  types.NoCheck,
 												Elements: []interface{}{
-													&types.Paragraph{
+													types.Paragraph{
 														Attributes: types.ElementAttributes{},
 														Lines: []types.InlineElements{
 															{
-																&types.StringElement{Content: "item 1.1"},
+																types.StringElement{Content: "item 1.1"},
 															},
 														},
 													},
-													&types.UnorderedList{
+													types.UnorderedList{
 														Attributes: types.ElementAttributes{},
-														Items: []*types.UnorderedListItem{
+														Items: []types.UnorderedListItem{
 															{
 																Attributes:  types.ElementAttributes{},
 																Level:       3,
 																BulletStyle: types.ThreeAsterisks,
 																CheckStyle:  types.NoCheck,
 																Elements: []interface{}{
-																	&types.Paragraph{
+																	types.Paragraph{
 																		Attributes: types.ElementAttributes{},
 																		Lines: []types.InlineElements{
 																			{
-																				&types.StringElement{Content: "item 1.1.1"},
+																				types.StringElement{Content: "item 1.1.1"},
 																			},
 																		},
 																	},
@@ -2801,11 +2801,11 @@ on 2 lines, too.`
 												BulletStyle: types.TwoAsterisks,
 												CheckStyle:  types.NoCheck,
 												Elements: []interface{}{
-													&types.Paragraph{
+													types.Paragraph{
 														Attributes: types.ElementAttributes{},
 														Lines: []types.InlineElements{
 															{
-																&types.StringElement{Content: "item 1.2"},
+																types.StringElement{Content: "item 1.2"},
 															},
 														},
 													},
@@ -2821,11 +2821,11 @@ on 2 lines, too.`
 								BulletStyle: types.OneAsterisk,
 								CheckStyle:  types.NoCheck,
 								Elements: []interface{}{
-									&types.Paragraph{
+									types.Paragraph{
 										Attributes: types.ElementAttributes{},
 										Lines: []types.InlineElements{
 											{
-												&types.StringElement{Content: "item 2"},
+												types.StringElement{Content: "item 2"},
 											},
 										},
 									},
@@ -2840,17 +2840,17 @@ on 2 lines, too.`
 
 		It("invalid list item", func() {
 			source := "*an invalid list item"
-			expected := &types.Document{
+			expected := types.Document{
 				Attributes:         types.DocumentAttributes{},
 				ElementReferences:  types.ElementReferences{},
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
-					&types.Paragraph{
+					types.Paragraph{
 						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
 							{
-								&types.StringElement{Content: "*an invalid list item"},
+								types.StringElement{Content: "*an invalid list item"},
 							},
 						},
 					},
@@ -2874,38 +2874,38 @@ another delimited block
 ----
 * bar
 `
-			expected := &types.Document{
+			expected := types.Document{
 				Attributes:         types.DocumentAttributes{},
 				ElementReferences:  types.ElementReferences{},
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
-					&types.UnorderedList{
+					types.UnorderedList{
 						Attributes: types.ElementAttributes{},
-						Items: []*types.UnorderedListItem{
+						Items: []types.UnorderedListItem{
 							{
 								Attributes:  types.ElementAttributes{},
 								Level:       1,
 								BulletStyle: types.OneAsterisk,
 								CheckStyle:  types.NoCheck,
 								Elements: []interface{}{
-									&types.Paragraph{
+									types.Paragraph{
 										Attributes: types.ElementAttributes{},
 										Lines: []types.InlineElements{
 											{
-												&types.StringElement{Content: "foo"},
+												types.StringElement{Content: "foo"},
 											},
 										},
 									},
-									&types.DelimitedBlock{
+									types.DelimitedBlock{
 										Attributes: types.ElementAttributes{},
 										Kind:       types.Listing,
 										Elements: []interface{}{
-											&types.Paragraph{
+											types.Paragraph{
 												Attributes: types.ElementAttributes{},
 												Lines: []types.InlineElements{
 													{
-														&types.StringElement{
+														types.StringElement{
 															Content: "a delimited block",
 														},
 													},
@@ -2913,15 +2913,15 @@ another delimited block
 											},
 										},
 									},
-									&types.DelimitedBlock{
+									types.DelimitedBlock{
 										Attributes: types.ElementAttributes{},
 										Kind:       types.Listing,
 										Elements: []interface{}{
-											&types.Paragraph{
+											types.Paragraph{
 												Attributes: types.ElementAttributes{},
 												Lines: []types.InlineElements{
 													{
-														&types.StringElement{
+														types.StringElement{
 															Content: "another delimited block",
 														},
 													},
@@ -2937,11 +2937,11 @@ another delimited block
 								BulletStyle: types.OneAsterisk,
 								CheckStyle:  types.NoCheck,
 								Elements: []interface{}{
-									&types.Paragraph{
+									types.Paragraph{
 										Attributes: types.ElementAttributes{},
 										Lines: []types.InlineElements{
 											{
-												&types.StringElement{Content: "bar"},
+												types.StringElement{Content: "bar"},
 											},
 										},
 									},
@@ -2968,144 +2968,144 @@ The {plus} symbol is on a new line.
 
 ***** level 5
 `
-			expected := &types.Document{
+			expected := types.Document{
 				Attributes:         types.DocumentAttributes{},
 				ElementReferences:  types.ElementReferences{},
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
-					&types.UnorderedList{
+					types.UnorderedList{
 						Attributes: types.ElementAttributes{
 							types.AttrTitle: "Unordered, complex",
 						},
-						Items: []*types.UnorderedListItem{
+						Items: []types.UnorderedListItem{
 							{
 								Level:       1,
 								BulletStyle: types.OneAsterisk,
 								CheckStyle:  types.NoCheck,
 								Attributes:  types.ElementAttributes{},
 								Elements: []interface{}{
-									&types.Paragraph{
+									types.Paragraph{
 										Attributes: types.ElementAttributes{},
 										Lines: []types.InlineElements{
 											{
-												&types.StringElement{
+												types.StringElement{
 													Content: "level 1",
 												},
 											},
 										},
 									},
-									&types.UnorderedList{
+									types.UnorderedList{
 										Attributes: types.ElementAttributes{},
-										Items: []*types.UnorderedListItem{
+										Items: []types.UnorderedListItem{
 											{
 												Level:       2,
 												BulletStyle: types.TwoAsterisks,
 												CheckStyle:  types.NoCheck,
 												Attributes:  types.ElementAttributes{},
 												Elements: []interface{}{
-													&types.Paragraph{
+													types.Paragraph{
 														Attributes: types.ElementAttributes{},
 														Lines: []types.InlineElements{
 															{
-																&types.StringElement{
+																types.StringElement{
 																	Content: "level 2",
 																},
 															},
 														},
 													},
-													&types.UnorderedList{
+													types.UnorderedList{
 														Attributes: types.ElementAttributes{},
-														Items: []*types.UnorderedListItem{
+														Items: []types.UnorderedListItem{
 															{
 																Level:       3,
 																BulletStyle: types.ThreeAsterisks,
 																CheckStyle:  types.NoCheck,
 																Attributes:  types.ElementAttributes{},
 																Elements: []interface{}{
-																	&types.Paragraph{
+																	types.Paragraph{
 																		Attributes: types.ElementAttributes{},
 																		Lines: []types.InlineElements{
 																			{
-																				&types.StringElement{
+																				types.StringElement{
 																					Content: "level 3",
 																				},
 																			},
 																			{
-																				&types.StringElement{
+																				types.StringElement{
 																					Content: "This is a new line inside an unordered list using ",
 																				},
-																				&types.DocumentAttributeSubstitution{
+																				types.DocumentAttributeSubstitution{
 																					Name: "plus",
 																				},
-																				&types.StringElement{
+																				types.StringElement{
 																					Content: " symbol.",
 																				},
 																			},
 																			{
-																				&types.StringElement{
+																				types.StringElement{
 																					Content: "We can even force content to start on a separate line...",
 																				},
-																				&types.LineBreak{},
+																				types.LineBreak{},
 																			},
 																			{
-																				&types.StringElement{
+																				types.StringElement{
 																					Content: "Amazing, isn't it?",
 																				},
 																			},
 																		},
 																	},
-																	&types.UnorderedList{
+																	types.UnorderedList{
 																		Attributes: types.ElementAttributes{},
-																		Items: []*types.UnorderedListItem{
+																		Items: []types.UnorderedListItem{
 																			{
 																				Level:       4,
 																				BulletStyle: types.FourAsterisks,
 																				CheckStyle:  types.NoCheck,
 																				Attributes:  types.ElementAttributes{},
 																				Elements: []interface{}{
-																					&types.Paragraph{
+																					types.Paragraph{
 																						Attributes: types.ElementAttributes{},
 																						Lines: []types.InlineElements{
 																							{
-																								&types.StringElement{
+																								types.StringElement{
 																									Content: "level 4",
 																								},
 																							},
 																						},
 																					},
 																					// the `+` continuation produces the second paragrap below
-																					&types.Paragraph{
+																					types.Paragraph{
 																						Attributes: types.ElementAttributes{},
 																						Lines: []types.InlineElements{
 																							{
-																								&types.StringElement{
+																								types.StringElement{
 																									Content: "The ",
 																								},
-																								&types.DocumentAttributeSubstitution{
+																								types.DocumentAttributeSubstitution{
 																									Name: "plus",
 																								},
-																								&types.StringElement{
+																								types.StringElement{
 																									Content: " symbol is on a new line.",
 																								},
 																							},
 																						},
 																					},
 
-																					&types.UnorderedList{
+																					types.UnorderedList{
 																						Attributes: types.ElementAttributes{},
-																						Items: []*types.UnorderedListItem{
+																						Items: []types.UnorderedListItem{
 																							{
 																								Level:       5,
 																								BulletStyle: types.FiveAsterisks,
 																								CheckStyle:  types.NoCheck,
 																								Attributes:  types.ElementAttributes{},
 																								Elements: []interface{}{
-																									&types.Paragraph{
+																									types.Paragraph{
 																										Attributes: types.ElementAttributes{},
 																										Lines: []types.InlineElements{
 																											{
-																												&types.StringElement{
+																												types.StringElement{
 																													Content: "level 5",
 																												},
 																											},
@@ -3145,26 +3145,26 @@ a delimited block
 ----
 another delimited block
 ----`
-			expected := &types.Document{
+			expected := types.Document{
 				Attributes:         types.DocumentAttributes{},
 				ElementReferences:  types.ElementReferences{},
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
-					&types.UnorderedList{
+					types.UnorderedList{
 						Attributes: types.ElementAttributes{},
-						Items: []*types.UnorderedListItem{
+						Items: []types.UnorderedListItem{
 							{
 								Attributes:  types.ElementAttributes{},
 								Level:       1,
 								BulletStyle: types.OneAsterisk,
 								CheckStyle:  types.NoCheck,
 								Elements: []interface{}{
-									&types.Paragraph{
+									types.Paragraph{
 										Attributes: types.ElementAttributes{},
 										Lines: []types.InlineElements{
 											{
-												&types.StringElement{Content: "foo"},
+												types.StringElement{Content: "foo"},
 											},
 										},
 									},
@@ -3172,15 +3172,15 @@ another delimited block
 							},
 						},
 					},
-					&types.DelimitedBlock{
+					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{},
 						Kind:       types.Listing,
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{
+										types.StringElement{
 											Content: "a delimited block",
 										},
 									},
@@ -3188,20 +3188,20 @@ another delimited block
 							},
 						},
 					},
-					&types.UnorderedList{
+					types.UnorderedList{
 						Attributes: types.ElementAttributes{},
-						Items: []*types.UnorderedListItem{
+						Items: []types.UnorderedListItem{
 							{
 								Attributes:  types.ElementAttributes{},
 								Level:       1,
 								BulletStyle: types.OneAsterisk,
 								CheckStyle:  types.NoCheck,
 								Elements: []interface{}{
-									&types.Paragraph{
+									types.Paragraph{
 										Attributes: types.ElementAttributes{},
 										Lines: []types.InlineElements{
 											{
-												&types.StringElement{Content: "bar"},
+												types.StringElement{Content: "bar"},
 											},
 										},
 									},
@@ -3209,15 +3209,15 @@ another delimited block
 							},
 						},
 					},
-					&types.DelimitedBlock{
+					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{},
 						Kind:       types.Listing,
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{
+										types.StringElement{
 											Content: "another delimited block",
 										},
 									},
@@ -3241,60 +3241,60 @@ another delimited block
 
 +
 paragraph attached to grand parent list item`
-			expected := &types.Document{
+			expected := types.Document{
 				Attributes:         types.DocumentAttributes{},
 				ElementReferences:  types.ElementReferences{},
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
-					&types.UnorderedList{
+					types.UnorderedList{
 						Attributes: types.ElementAttributes{},
-						Items: []*types.UnorderedListItem{
+						Items: []types.UnorderedListItem{
 							{
 								Attributes:  types.ElementAttributes{},
 								Level:       1,
 								BulletStyle: types.OneAsterisk,
 								CheckStyle:  types.NoCheck,
 								Elements: []interface{}{
-									&types.Paragraph{
+									types.Paragraph{
 										Attributes: types.ElementAttributes{},
 										Lines: []types.InlineElements{
 											{
-												&types.StringElement{Content: "grand parent list item"},
+												types.StringElement{Content: "grand parent list item"},
 											},
 										},
 									},
-									&types.UnorderedList{
+									types.UnorderedList{
 										Attributes: types.ElementAttributes{},
-										Items: []*types.UnorderedListItem{
+										Items: []types.UnorderedListItem{
 											{
 												Attributes:  types.ElementAttributes{},
 												Level:       2,
 												BulletStyle: types.TwoAsterisks,
 												CheckStyle:  types.NoCheck,
 												Elements: []interface{}{
-													&types.Paragraph{
+													types.Paragraph{
 														Attributes: types.ElementAttributes{},
 														Lines: []types.InlineElements{
 															{
-																&types.StringElement{Content: "parent list item"},
+																types.StringElement{Content: "parent list item"},
 															},
 														},
 													},
-													&types.UnorderedList{
+													types.UnorderedList{
 														Attributes: types.ElementAttributes{},
-														Items: []*types.UnorderedListItem{
+														Items: []types.UnorderedListItem{
 															{
 																Attributes:  types.ElementAttributes{},
 																Level:       3,
 																BulletStyle: types.ThreeAsterisks,
 																CheckStyle:  types.NoCheck,
 																Elements: []interface{}{
-																	&types.Paragraph{
+																	types.Paragraph{
 																		Attributes: types.ElementAttributes{},
 																		Lines: []types.InlineElements{
 																			{
-																				&types.StringElement{Content: "child list item"},
+																				types.StringElement{Content: "child list item"},
 																			},
 																		},
 																	},
@@ -3306,11 +3306,11 @@ paragraph attached to grand parent list item`
 											},
 										},
 									},
-									&types.Paragraph{
+									types.Paragraph{
 										Attributes: types.ElementAttributes{},
 										Lines: []types.InlineElements{
 											{
-												&types.StringElement{Content: "paragraph attached to grand parent list item"},
+												types.StringElement{Content: "paragraph attached to grand parent list item"},
 											},
 										},
 									},
@@ -3330,60 +3330,60 @@ paragraph attached to grand parent list item`
 
 +
 paragraph attached to parent list item`
-			expected := &types.Document{
+			expected := types.Document{
 				Attributes:         types.DocumentAttributes{},
 				ElementReferences:  types.ElementReferences{},
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
-					&types.UnorderedList{
+					types.UnorderedList{
 						Attributes: types.ElementAttributes{},
-						Items: []*types.UnorderedListItem{
+						Items: []types.UnorderedListItem{
 							{
 								Attributes:  types.ElementAttributes{},
 								Level:       1,
 								BulletStyle: types.OneAsterisk,
 								CheckStyle:  types.NoCheck,
 								Elements: []interface{}{
-									&types.Paragraph{
+									types.Paragraph{
 										Attributes: types.ElementAttributes{},
 										Lines: []types.InlineElements{
 											{
-												&types.StringElement{Content: "grandparent list item"},
+												types.StringElement{Content: "grandparent list item"},
 											},
 										},
 									},
-									&types.UnorderedList{
+									types.UnorderedList{
 										Attributes: types.ElementAttributes{},
-										Items: []*types.UnorderedListItem{
+										Items: []types.UnorderedListItem{
 											{
 												Attributes:  types.ElementAttributes{},
 												Level:       2,
 												BulletStyle: types.TwoAsterisks,
 												CheckStyle:  types.NoCheck,
 												Elements: []interface{}{
-													&types.Paragraph{
+													types.Paragraph{
 														Attributes: types.ElementAttributes{},
 														Lines: []types.InlineElements{
 															{
-																&types.StringElement{Content: "parent list item"},
+																types.StringElement{Content: "parent list item"},
 															},
 														},
 													},
-													&types.UnorderedList{
+													types.UnorderedList{
 														Attributes: types.ElementAttributes{},
-														Items: []*types.UnorderedListItem{
+														Items: []types.UnorderedListItem{
 															{
 																Attributes:  types.ElementAttributes{},
 																Level:       3,
 																BulletStyle: types.ThreeAsterisks,
 																CheckStyle:  types.NoCheck,
 																Elements: []interface{}{
-																	&types.Paragraph{
+																	types.Paragraph{
 																		Attributes: types.ElementAttributes{},
 																		Lines: []types.InlineElements{
 																			{
-																				&types.StringElement{Content: "child list item"},
+																				types.StringElement{Content: "child list item"},
 																			},
 																		},
 																	},
@@ -3391,11 +3391,11 @@ paragraph attached to parent list item`
 															},
 														},
 													},
-													&types.Paragraph{
+													types.Paragraph{
 														Attributes: types.ElementAttributes{},
 														Lines: []types.InlineElements{
 															{
-																&types.StringElement{Content: "paragraph attached to parent list item"},
+																types.StringElement{Content: "paragraph attached to parent list item"},
 															},
 														},
 													},

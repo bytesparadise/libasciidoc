@@ -14,28 +14,28 @@ What is libsciidoc?::
 	An implementation of the AsciiDoc processor in Golang.
 What is the answer to the Ultimate Question?:: 42`
 
-		expected := &types.Document{
+		expected := types.Document{
 			Attributes:         types.DocumentAttributes{},
 			ElementReferences:  types.ElementReferences{},
 			Footnotes:          types.Footnotes{},
 			FootnoteReferences: types.FootnoteReferences{},
 			Elements: []interface{}{
-				&types.LabeledList{
+				types.LabeledList{
 					Attributes: types.ElementAttributes{
 						types.AttrTitle: "Q&A",
 						types.AttrQandA: nil,
 					},
-					Items: []*types.LabeledListItem{
+					Items: []types.LabeledListItem{
 						{
 							Attributes: types.ElementAttributes{},
 							Level:      1,
 							Term:       "What is libsciidoc?",
 							Elements: []interface{}{
-								&types.Paragraph{
+								types.Paragraph{
 									Attributes: types.ElementAttributes{},
 									Lines: []types.InlineElements{
 										{
-											&types.StringElement{
+											types.StringElement{
 												Content: "An implementation of the AsciiDoc processor in Golang.",
 											},
 										},
@@ -48,11 +48,11 @@ What is the answer to the Ultimate Question?:: 42`
 							Level:      1,
 							Term:       "What is the answer to the Ultimate Question?",
 							Elements: []interface{}{
-								&types.Paragraph{
+								types.Paragraph{
 									Attributes: types.ElementAttributes{},
 									Lines: []types.InlineElements{
 										{
-											&types.StringElement{
+											types.StringElement{
 												Content: "42",
 											},
 										},

@@ -107,17 +107,17 @@ var _ = Describe("Location resolution", func() {
 			Expect(f.Location.Resolve(attrs)).Should(Equal(expectation))
 		},
 		Entry("includes/file.ext", types.Location{
-			&types.StringElement{Content: "includes/file.ext"},
+			types.StringElement{Content: "includes/file.ext"},
 		}, "includes/file.ext"),
 		Entry("./{includedir}/file.ext", types.Location{
-			&types.StringElement{Content: "./"},
-			&types.DocumentAttributeSubstitution{Name: "includedir"},
-			&types.StringElement{Content: "/file.ext"},
+			types.StringElement{Content: "./"},
+			types.DocumentAttributeSubstitution{Name: "includedir"},
+			types.StringElement{Content: "/file.ext"},
 		}, "./includes/file.ext"),
 		Entry("./{unknown}/file.ext", types.Location{
-			&types.StringElement{Content: "./"},
-			&types.DocumentAttributeSubstitution{Name: "unknown"},
-			&types.StringElement{Content: "/file.ext"},
+			types.StringElement{Content: "./"},
+			types.DocumentAttributeSubstitution{Name: "unknown"},
+			types.StringElement{Content: "/file.ext"},
 		}, "./{unknown}/file.ext"),
 	)
 })

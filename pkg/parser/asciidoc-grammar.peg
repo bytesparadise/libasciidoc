@@ -348,7 +348,7 @@ UserMacroAttributes <- "[" attrs:(GenericAttribute)* "]" {
 FileInclusion <- incl:("include::" path:(FileLocation) inlineAttributes:(FileIncludeAttributes) { 
         return types.NewFileInclusion(path.(types.Location), inlineAttributes.(types.ElementAttributes), string(c.text))
     }) EOLS {
-    return incl.(*types.FileInclusion), nil
+    return incl.(types.FileInclusion), nil
 }
 
 FileIncludeAttributes <- "[" attrs:(LineRangesAttribute / GenericAttribute)* "]" {

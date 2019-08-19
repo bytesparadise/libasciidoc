@@ -13,7 +13,7 @@ var _ = Describe("images", func() {
 
 			It("block image with empty alt", func() {
 				source := "image::images/foo.png[]"
-				expected := &types.ImageBlock{
+				expected := types.ImageBlock{
 					Attributes: types.ElementAttributes{
 						types.AttrImageAlt: "foo",
 					},
@@ -24,7 +24,7 @@ var _ = Describe("images", func() {
 
 			It("block image with empty alt and trailing spaces", func() {
 				source := "image::images/foo.png[]  \t\t  "
-				expected := &types.ImageBlock{
+				expected := types.ImageBlock{
 					Attributes: types.ElementAttributes{
 						types.AttrImageAlt: "foo",
 					},
@@ -37,7 +37,7 @@ var _ = Describe("images", func() {
 				// line return here is not considered as a blank line
 				source := `image::images/foo.png[]
 `
-				expected := &types.ImageBlock{
+				expected := types.ImageBlock{
 					Attributes: types.ElementAttributes{
 						types.AttrImageAlt: "foo",
 					},
@@ -50,7 +50,7 @@ var _ = Describe("images", func() {
 				// here, there's a real blank line with some spaces
 				source := `image::images/foo.png[]
   `
-				expected := &types.ImageBlock{
+				expected := types.ImageBlock{
 					Attributes: types.ElementAttributes{
 						types.AttrImageAlt: "foo",
 					},
@@ -62,7 +62,7 @@ var _ = Describe("images", func() {
 			It("block image with 2 blank lines with spaces and tabs", func() {
 				source := `image::images/foo.png[]
 			`
-				expected := &types.ImageBlock{
+				expected := types.ImageBlock{
 					Attributes: types.ElementAttributes{
 						types.AttrImageAlt: "foo",
 					},
@@ -73,7 +73,7 @@ var _ = Describe("images", func() {
 
 			It("block image with alt", func() {
 				source := `image::images/foo.png[the foo.png image]`
-				expected := &types.ImageBlock{
+				expected := types.ImageBlock{
 					Attributes: types.ElementAttributes{
 						types.AttrImageAlt: "the foo.png image",
 					},
@@ -87,7 +87,7 @@ var _ = Describe("images", func() {
 .A title to foobar
 [link=http://foo.bar]
 image::images/foo.png[the foo.png image, 600, 400]`
-				expected := &types.ImageBlock{
+				expected := types.ImageBlock{
 					Attributes: types.ElementAttributes{
 						types.AttrID:          "img-foobar",
 						types.AttrCustomID:    true,
@@ -105,15 +105,15 @@ image::images/foo.png[the foo.png image, 600, 400]`
 			It("2 block images", func() {
 				source := `image::app.png[]
 image::appa.png[]`
-				expected := &types.PreflightDocument{
+				expected := types.PreflightDocument{
 					Blocks: []interface{}{
-						&types.ImageBlock{
+						types.ImageBlock{
 							Attributes: types.ElementAttributes{
 								types.AttrImageAlt: "app",
 							},
 							Path: "app.png",
 						},
-						&types.ImageBlock{
+						types.ImageBlock{
 							Attributes: types.ElementAttributes{
 								types.AttrImageAlt: "appa",
 							},
@@ -131,14 +131,14 @@ image::appa.png[]`
 
 				It("block image appending inline content", func() {
 					source := "a paragraph\nimage::images/foo.png[]"
-					expected := &types.Paragraph{
+					expected := types.Paragraph{
 						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
 							{
-								&types.StringElement{Content: "a paragraph"},
+								types.StringElement{Content: "a paragraph"},
 							},
 							{
-								&types.StringElement{Content: "image::images/foo.png[]"},
+								types.StringElement{Content: "image::images/foo.png[]"},
 							},
 						},
 					}
@@ -150,13 +150,13 @@ image::appa.png[]`
 
 				It("paragraph with block image with alt and dimensions", func() {
 					source := "a foo image::foo.png[foo image, 600, 400] bar"
-					expected := &types.PreflightDocument{
+					expected := types.PreflightDocument{
 						Blocks: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{Content: "a foo image::foo.png[foo image, 600, 400] bar"},
+										types.StringElement{Content: "a foo image::foo.png[foo image, 600, 400] bar"},
 									},
 								},
 							},
@@ -174,11 +174,11 @@ image::appa.png[]`
 
 			It("inline image with empty alt only", func() {
 				source := "image:images/foo.png[]"
-				expected := &types.Paragraph{
+				expected := types.Paragraph{
 					Attributes: types.ElementAttributes{},
 					Lines: []types.InlineElements{
 						{
-							&types.InlineImage{
+							types.InlineImage{
 								Attributes: types.ElementAttributes{
 									types.AttrImageAlt: "foo",
 								},
@@ -192,17 +192,17 @@ image::appa.png[]`
 
 			It("inline image with empty alt and trailing spaces", func() {
 				source := "image:images/foo.png[]  \t\t  "
-				expected := &types.Paragraph{
+				expected := types.Paragraph{
 					Attributes: types.ElementAttributes{},
 					Lines: []types.InlineElements{
 						{
-							&types.InlineImage{
+							types.InlineImage{
 								Attributes: types.ElementAttributes{
 									types.AttrImageAlt: "foo",
 								},
 								Path: "images/foo.png",
 							},
-							&types.StringElement{
+							types.StringElement{
 								Content: "  \t\t  ",
 							},
 						},
@@ -213,20 +213,20 @@ image::appa.png[]`
 
 			It("inline image surrounded with test", func() {
 				source := "a foo image:images/foo.png[] bar..."
-				expected := &types.Paragraph{
+				expected := types.Paragraph{
 					Attributes: types.ElementAttributes{},
 					Lines: []types.InlineElements{
 						{
-							&types.StringElement{
+							types.StringElement{
 								Content: "a foo ",
 							},
-							&types.InlineImage{
+							types.InlineImage{
 								Attributes: types.ElementAttributes{
 									types.AttrImageAlt: "foo",
 								},
 								Path: "images/foo.png",
 							},
-							&types.StringElement{
+							types.StringElement{
 								Content: " bar...",
 							},
 						},
@@ -237,11 +237,11 @@ image::appa.png[]`
 
 			It("inline image with alt alone", func() {
 				source := "image:images/foo.png[the foo.png image]"
-				expected := &types.Paragraph{
+				expected := types.Paragraph{
 					Attributes: types.ElementAttributes{},
 					Lines: []types.InlineElements{
 						{
-							&types.InlineImage{
+							types.InlineImage{
 								Attributes: types.ElementAttributes{
 									types.AttrImageAlt: "the foo.png image",
 								},
@@ -255,11 +255,11 @@ image::appa.png[]`
 
 			It("inline image with alt and width", func() {
 				source := "image:images/foo.png[the foo.png image, 600]"
-				expected := &types.Paragraph{
+				expected := types.Paragraph{
 					Attributes: types.ElementAttributes{},
 					Lines: []types.InlineElements{
 						{
-							&types.InlineImage{
+							types.InlineImage{
 								Attributes: types.ElementAttributes{
 									types.AttrImageAlt:   "the foo.png image",
 									types.AttrImageWidth: "600",
@@ -274,11 +274,11 @@ image::appa.png[]`
 
 			It("inline image with alt, width and height", func() {
 				source := "image:images/foo.png[the foo.png image, 600, 400]"
-				expected := &types.Paragraph{
+				expected := types.Paragraph{
 					Attributes: types.ElementAttributes{},
 					Lines: []types.InlineElements{
 						{
-							&types.InlineImage{
+							types.InlineImage{
 								Attributes: types.ElementAttributes{
 									types.AttrImageAlt:    "the foo.png image",
 									types.AttrImageWidth:  "600",
@@ -294,11 +294,11 @@ image::appa.png[]`
 
 			It("inline image with alt, but empty width and height", func() {
 				source := "image:images/foo.png[the foo.png image, , ]"
-				expected := &types.Paragraph{
+				expected := types.Paragraph{
 					Attributes: types.ElementAttributes{},
 					Lines: []types.InlineElements{
 						{
-							&types.InlineImage{
+							types.InlineImage{
 								Attributes: types.ElementAttributes{
 									types.AttrImageAlt: "the foo.png image",
 								},
@@ -312,11 +312,11 @@ image::appa.png[]`
 
 			It("inline image with single other attribute only", func() {
 				source := "image:images/foo.png[id=myid]"
-				expected := &types.Paragraph{
+				expected := types.Paragraph{
 					Attributes: types.ElementAttributes{},
 					Lines: []types.InlineElements{
 						{
-							&types.InlineImage{
+							types.InlineImage{
 								Attributes: types.ElementAttributes{
 									types.AttrImageAlt: "foo", // based on filename
 									types.AttrID:       "myid",
@@ -332,11 +332,11 @@ image::appa.png[]`
 
 			It("inline image with multiple other attributes only", func() {
 				source := "image:images/foo.png[id=myid, title= mytitle, role = myrole ]"
-				expected := &types.Paragraph{
+				expected := types.Paragraph{
 					Attributes: types.ElementAttributes{},
 					Lines: []types.InlineElements{
 						{
-							&types.InlineImage{
+							types.InlineImage{
 								Attributes: types.ElementAttributes{
 									types.AttrImageAlt: "foo", // based on filename
 									types.AttrID:       "myid",
@@ -354,11 +354,11 @@ image::appa.png[]`
 
 			It("inline image with alt, width, height and other attributes", func() {
 				source := "image:images/foo.png[ foo, 600, 400, id=myid, title=mytitle, role=myrole ]"
-				expected := &types.Paragraph{
+				expected := types.Paragraph{
 					Attributes: types.ElementAttributes{},
 					Lines: []types.InlineElements{
 						{
-							&types.InlineImage{
+							types.InlineImage{
 								Attributes: types.ElementAttributes{
 									types.AttrImageAlt:    "foo",
 									types.AttrImageWidth:  "600",
@@ -378,14 +378,14 @@ image::appa.png[]`
 
 			It("inline image in a paragraph with space after colon", func() {
 				source := "this is an image: image:images/foo.png[]"
-				expected := &types.Paragraph{
+				expected := types.Paragraph{
 					Attributes: types.ElementAttributes{},
 					Lines: []types.InlineElements{
 						{
-							&types.StringElement{
+							types.StringElement{
 								Content: "this is an image: ",
 							},
-							&types.InlineImage{
+							types.InlineImage{
 								Attributes: types.ElementAttributes{
 									types.AttrImageAlt: "foo",
 								},
@@ -399,14 +399,14 @@ image::appa.png[]`
 
 			It("inline image in a paragraph without space keyword", func() {
 				source := "this is an inline.image:images/foo.png[]"
-				expected := &types.Paragraph{
+				expected := types.Paragraph{
 					Attributes: types.ElementAttributes{},
 					Lines: []types.InlineElements{
 						{
-							&types.StringElement{
+							types.StringElement{
 								Content: "this is an inline.",
 							},
-							&types.InlineImage{
+							types.InlineImage{
 								Attributes: types.ElementAttributes{
 									types.AttrImageAlt: "foo",
 								},
@@ -422,14 +422,14 @@ image::appa.png[]`
 		Context("errors", func() {
 			It("inline image appending inline content", func() {
 				source := "a paragraph\nimage::images/foo.png[]"
-				expected := &types.Paragraph{
+				expected := types.Paragraph{
 					Attributes: types.ElementAttributes{},
 					Lines: []types.InlineElements{
 						{
-							&types.StringElement{Content: "a paragraph"},
+							types.StringElement{Content: "a paragraph"},
 						},
 						{
-							&types.StringElement{Content: "image::images/foo.png[]"},
+							types.StringElement{Content: "image::images/foo.png[]"},
 						},
 					},
 				}

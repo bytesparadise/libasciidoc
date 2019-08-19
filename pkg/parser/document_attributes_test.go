@@ -15,9 +15,9 @@ var _ = Describe("document attributes", func() {
 This journey begins on a bleary Monday morning.`
 
 			title := types.InlineElements{
-				&types.StringElement{Content: "The Dangerous and Thrilling Documentation Chronicles"},
+				types.StringElement{Content: "The Dangerous and Thrilling Documentation Chronicles"},
 			}
-			expected := &types.Document{
+			expected := types.Document{
 				Attributes: types.DocumentAttributes{},
 				ElementReferences: types.ElementReferences{
 					"the_dangerous_and_thrilling_documentation_chronicles": title,
@@ -25,7 +25,7 @@ This journey begins on a bleary Monday morning.`
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
-					&types.Section{
+					types.Section{
 						Level: 0,
 						Attributes: types.ElementAttributes{
 							types.AttrID:       "the_dangerous_and_thrilling_documentation_chronicles",
@@ -33,11 +33,11 @@ This journey begins on a bleary Monday morning.`
 						},
 						Title: title,
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{Content: "This journey begins on a bleary Monday morning."},
+										types.StringElement{Content: "This journey begins on a bleary Monday morning."},
 									},
 								},
 							},
@@ -56,11 +56,11 @@ This journey begins on a bleary Monday morning.`
 					source := `= title
 Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>`
 					title := types.InlineElements{
-						&types.StringElement{
+						types.StringElement{
 							Content: "title",
 						},
 					}
-					expected := &types.Document{
+					expected := types.Document{
 						Attributes: types.DocumentAttributes{},
 						ElementReferences: types.ElementReferences{
 							"title": title,
@@ -68,7 +68,7 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>`
 						Footnotes:          types.Footnotes{},
 						FootnoteReferences: types.FootnoteReferences{},
 						Elements: []interface{}{
-							&types.Section{
+							types.Section{
 								Level: 0,
 								Attributes: types.ElementAttributes{
 									types.AttrID:       "title",
@@ -92,11 +92,11 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>`
 					source := `= title
 Lazarus het_Draeke <lazarus@asciidoctor.org>`
 					title := types.InlineElements{
-						&types.StringElement{
+						types.StringElement{
 							Content: "title",
 						},
 					}
-					expected := &types.Document{
+					expected := types.Document{
 						Attributes: types.DocumentAttributes{},
 						ElementReferences: types.ElementReferences{
 							"title": title,
@@ -104,7 +104,7 @@ Lazarus het_Draeke <lazarus@asciidoctor.org>`
 						Footnotes:          types.Footnotes{},
 						FootnoteReferences: types.FootnoteReferences{},
 						Elements: []interface{}{
-							&types.Section{
+							types.Section{
 								Level: 0,
 								Attributes: types.ElementAttributes{
 									types.AttrID:       "title",
@@ -128,11 +128,11 @@ Lazarus het_Draeke <lazarus@asciidoctor.org>`
 					source := `= title
 Kismet Chameleon`
 					title := types.InlineElements{
-						&types.StringElement{
+						types.StringElement{
 							Content: "title",
 						},
 					}
-					expected := &types.Document{
+					expected := types.Document{
 						Attributes: types.DocumentAttributes{},
 						ElementReferences: types.ElementReferences{
 							"title": title,
@@ -140,7 +140,7 @@ Kismet Chameleon`
 						Footnotes:          types.Footnotes{},
 						FootnoteReferences: types.FootnoteReferences{},
 						Elements: []interface{}{
-							&types.Section{
+							types.Section{
 								Level: 0,
 								Attributes: types.ElementAttributes{
 									types.AttrID:       "title",
@@ -164,11 +164,11 @@ Kismet Chameleon`
 					source := `= title
 Chameleon`
 					title := types.InlineElements{
-						&types.StringElement{
+						types.StringElement{
 							Content: "title",
 						},
 					}
-					expected := &types.Document{
+					expected := types.Document{
 						Attributes: types.DocumentAttributes{},
 						ElementReferences: types.ElementReferences{
 							"title": title,
@@ -176,7 +176,7 @@ Chameleon`
 						Footnotes:          types.Footnotes{},
 						FootnoteReferences: types.FootnoteReferences{},
 						Elements: []interface{}{
-							&types.Section{
+							types.Section{
 								Level: 0,
 								Attributes: types.ElementAttributes{
 									types.AttrID:       "title",
@@ -200,11 +200,11 @@ Chameleon`
 					source := `= title
 :author: Kismet Rainbow Chameleon` // `:"email":` is processed as a regular attribute
 					title := types.InlineElements{
-						&types.StringElement{
+						types.StringElement{
 							Content: "title",
 						},
 					}
-					expected := &types.Document{
+					expected := types.Document{
 						Attributes: types.DocumentAttributes{},
 						ElementReferences: types.ElementReferences{
 							"title": title,
@@ -212,7 +212,7 @@ Chameleon`
 						Footnotes:          types.Footnotes{},
 						FootnoteReferences: types.FootnoteReferences{},
 						Elements: []interface{}{
-							&types.Section{
+							types.Section{
 								Level: 0,
 								Attributes: types.ElementAttributes{
 									types.AttrID:       "title",
@@ -239,11 +239,11 @@ Chameleon`
 					source := `= title
 Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus@asciidoctor.org>`
 					title := types.InlineElements{
-						&types.StringElement{
+						types.StringElement{
 							Content: "title",
 						},
 					}
-					expected := &types.Document{
+					expected := types.Document{
 						Attributes: types.DocumentAttributes{},
 						ElementReferences: types.ElementReferences{
 							"title": title,
@@ -251,7 +251,7 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 						Footnotes:          types.Footnotes{},
 						FootnoteReferences: types.FootnoteReferences{},
 						Elements: []interface{}{
-							&types.Section{
+							types.Section{
 								Level: 0,
 								Attributes: types.ElementAttributes{
 									types.AttrID:       "title",
@@ -284,11 +284,11 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 				john doe
 				v1.0, June 19, 2017: First incarnation`
 				title := types.InlineElements{
-					&types.StringElement{
+					types.StringElement{
 						Content: "title",
 					},
 				}
-				expected := &types.Document{
+				expected := types.Document{
 					Attributes: types.DocumentAttributes{},
 					ElementReferences: types.ElementReferences{
 						"title": title,
@@ -296,7 +296,7 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 					Footnotes:          types.Footnotes{},
 					FootnoteReferences: types.FootnoteReferences{},
 					Elements: []interface{}{
-						&types.Section{
+						types.Section{
 							Level: 0,
 							Attributes: types.ElementAttributes{
 								types.AttrID:       "title",
@@ -326,11 +326,11 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 				john doe
 				v1.0, June 19, 2017`
 				title := types.InlineElements{
-					&types.StringElement{
+					types.StringElement{
 						Content: "title",
 					},
 				}
-				expected := &types.Document{
+				expected := types.Document{
 					Attributes: types.DocumentAttributes{},
 					ElementReferences: types.ElementReferences{
 						"title": title,
@@ -338,7 +338,7 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 					Footnotes:          types.Footnotes{},
 					FootnoteReferences: types.FootnoteReferences{},
 					Elements: []interface{}{
-						&types.Section{
+						types.Section{
 							Level: 0,
 							Attributes: types.ElementAttributes{
 								types.AttrID:       "title",
@@ -368,11 +368,11 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 				john doe
 				1.0, June 19, 2017:`
 				title := types.InlineElements{
-					&types.StringElement{
+					types.StringElement{
 						Content: "title",
 					},
 				}
-				expected := &types.Document{
+				expected := types.Document{
 					Attributes: types.DocumentAttributes{},
 					ElementReferences: types.ElementReferences{
 						"title": title,
@@ -380,7 +380,7 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 					Footnotes:          types.Footnotes{},
 					FootnoteReferences: types.FootnoteReferences{},
 					Elements: []interface{}{
-						&types.Section{
+						types.Section{
 							Level: 0,
 							Attributes: types.ElementAttributes{
 								types.AttrID:       "title",
@@ -409,11 +409,11 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 				john doe
 				1.0,`
 				title := types.InlineElements{
-					&types.StringElement{
+					types.StringElement{
 						Content: "title",
 					},
 				}
-				expected := &types.Document{
+				expected := types.Document{
 					Attributes: types.DocumentAttributes{},
 					ElementReferences: types.ElementReferences{
 						"title": title,
@@ -421,7 +421,7 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 					Footnotes:          types.Footnotes{},
 					FootnoteReferences: types.FootnoteReferences{},
 					Elements: []interface{}{
-						&types.Section{
+						types.Section{
 							Level: 0,
 							Attributes: types.ElementAttributes{
 								types.AttrID:       "title",
@@ -451,11 +451,11 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 				john doe
 				1.0`
 				title := types.InlineElements{
-					&types.StringElement{
+					types.StringElement{
 						Content: "title",
 					},
 				}
-				expected := &types.Document{
+				expected := types.Document{
 					Attributes: types.DocumentAttributes{},
 					ElementReferences: types.ElementReferences{
 						"title": title,
@@ -463,7 +463,7 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 					Footnotes:          types.Footnotes{},
 					FootnoteReferences: types.FootnoteReferences{},
 					Elements: []interface{}{
-						&types.Section{
+						types.Section{
 							Level: 0,
 							Attributes: types.ElementAttributes{
 								types.AttrID:       "title",
@@ -493,11 +493,11 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 				john doe
 				1.0a`
 				title := types.InlineElements{
-					&types.StringElement{
+					types.StringElement{
 						Content: "title",
 					},
 				}
-				expected := &types.Document{
+				expected := types.Document{
 					Attributes: types.DocumentAttributes{},
 					ElementReferences: types.ElementReferences{
 						"title": title,
@@ -505,7 +505,7 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 					Footnotes:          types.Footnotes{},
 					FootnoteReferences: types.FootnoteReferences{},
 					Elements: []interface{}{
-						&types.Section{
+						types.Section{
 							Level: 0,
 							Attributes: types.ElementAttributes{
 								types.AttrID:       "title",
@@ -535,11 +535,11 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 				john doe
 				v1.0:`
 				title := types.InlineElements{
-					&types.StringElement{
+					types.StringElement{
 						Content: "title",
 					},
 				}
-				expected := &types.Document{
+				expected := types.Document{
 					Attributes: types.DocumentAttributes{},
 					ElementReferences: types.ElementReferences{
 						"title": title,
@@ -547,7 +547,7 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 					Footnotes:          types.Footnotes{},
 					FootnoteReferences: types.FootnoteReferences{},
 					Elements: []interface{}{
-						&types.Section{
+						types.Section{
 							Level: 0,
 							Attributes: types.ElementAttributes{
 								types.AttrID:       "title",
@@ -577,11 +577,11 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 				john doe
 				V1.0:`
 				title := types.InlineElements{
-					&types.StringElement{
+					types.StringElement{
 						Content: "title",
 					},
 				}
-				expected := &types.Document{
+				expected := types.Document{
 					Attributes: types.DocumentAttributes{},
 					ElementReferences: types.ElementReferences{
 						"title": title,
@@ -589,7 +589,7 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 					Footnotes:          types.Footnotes{},
 					FootnoteReferences: types.FootnoteReferences{},
 					Elements: []interface{}{
-						&types.Section{
+						types.Section{
 							Level: 0,
 							Attributes: types.ElementAttributes{
 								types.AttrID:       "title",
@@ -619,11 +619,11 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 				john doe
 				v1.0,`
 				title := types.InlineElements{
-					&types.StringElement{
+					types.StringElement{
 						Content: "title",
 					},
 				}
-				expected := &types.Document{
+				expected := types.Document{
 					Attributes: types.DocumentAttributes{},
 					ElementReferences: types.ElementReferences{
 						"title": title,
@@ -631,7 +631,7 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 					Footnotes:          types.Footnotes{},
 					FootnoteReferences: types.FootnoteReferences{},
 					Elements: []interface{}{
-						&types.Section{
+						types.Section{
 							Level: 0,
 							Attributes: types.ElementAttributes{
 								types.AttrID:       "title",
@@ -661,11 +661,11 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 				john doe
 				v1.0,:`
 				title := types.InlineElements{
-					&types.StringElement{
+					types.StringElement{
 						Content: "title",
 					},
 				}
-				expected := &types.Document{
+				expected := types.Document{
 					Attributes: types.DocumentAttributes{},
 					ElementReferences: types.ElementReferences{
 						"title": title,
@@ -673,7 +673,7 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 					Footnotes:          types.Footnotes{},
 					FootnoteReferences: types.FootnoteReferences{},
 					Elements: []interface{}{
-						&types.Section{
+						types.Section{
 							Level: 0,
 							Attributes: types.ElementAttributes{
 								types.AttrID:       "title",
@@ -703,11 +703,11 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 john doe
 v1.0:`
 				title := types.InlineElements{
-					&types.StringElement{
+					types.StringElement{
 						Content: "title",
 					},
 				}
-				expected := &types.Document{
+				expected := types.Document{
 					Attributes: types.DocumentAttributes{},
 					ElementReferences: types.ElementReferences{
 						"title": title,
@@ -715,7 +715,7 @@ v1.0:`
 					Footnotes:          types.Footnotes{},
 					FootnoteReferences: types.FootnoteReferences{},
 					Elements: []interface{}{
-						&types.Section{
+						types.Section{
 							Level: 0,
 							Attributes: types.ElementAttributes{
 								types.AttrID:       "title",
@@ -751,18 +751,18 @@ v1.0:`
 :Author: Xavier
 :0Author: Xavier
 :Auth0r: Xavier`
-				expected := &types.Document{
+				expected := types.Document{
 					Attributes:         types.DocumentAttributes{},
 					ElementReferences:  types.ElementReferences{},
 					Footnotes:          types.Footnotes{},
 					FootnoteReferences: types.FootnoteReferences{},
 					Elements: []interface{}{
-						&types.DocumentAttributeDeclaration{Name: "a"},
-						&types.DocumentAttributeDeclaration{Name: "author", Value: "Xavier"},
-						&types.DocumentAttributeDeclaration{Name: "_author", Value: "Xavier"},
-						&types.DocumentAttributeDeclaration{Name: "Author", Value: "Xavier"},
-						&types.DocumentAttributeDeclaration{Name: "0Author", Value: "Xavier"},
-						&types.DocumentAttributeDeclaration{Name: "Auth0r", Value: "Xavier"},
+						types.DocumentAttributeDeclaration{Name: "a"},
+						types.DocumentAttributeDeclaration{Name: "author", Value: "Xavier"},
+						types.DocumentAttributeDeclaration{Name: "_author", Value: "Xavier"},
+						types.DocumentAttributeDeclaration{Name: "Author", Value: "Xavier"},
+						types.DocumentAttributeDeclaration{Name: "0Author", Value: "Xavier"},
+						types.DocumentAttributeDeclaration{Name: "Auth0r", Value: "Xavier"},
 					},
 				}
 				verifyDocument(expected, source)
@@ -774,21 +774,21 @@ v1.0:`
 :author: Xavier
 :hardbreaks:
 a paragraph`
-				expected := &types.Document{
+				expected := types.Document{
 					Attributes:         types.DocumentAttributes{},
 					ElementReferences:  types.ElementReferences{},
 					Footnotes:          types.Footnotes{},
 					FootnoteReferences: types.FootnoteReferences{},
 					Elements: []interface{}{
-						&types.DocumentAttributeDeclaration{Name: "toc"},
-						&types.DocumentAttributeDeclaration{Name: "date", Value: "2017-01-01"},
-						&types.DocumentAttributeDeclaration{Name: "author", Value: "Xavier"},
-						&types.DocumentAttributeDeclaration{Name: types.DocumentAttrHardBreaks},
-						&types.Paragraph{
+						types.DocumentAttributeDeclaration{Name: "toc"},
+						types.DocumentAttributeDeclaration{Name: "date", Value: "2017-01-01"},
+						types.DocumentAttributeDeclaration{Name: "author", Value: "Xavier"},
+						types.DocumentAttributeDeclaration{Name: types.DocumentAttrHardBreaks},
+						types.Paragraph{
 							Attributes: types.ElementAttributes{},
 							Lines: []types.InlineElements{
 								{
-									&types.StringElement{Content: "a paragraph"},
+									types.StringElement{Content: "a paragraph"},
 								},
 							},
 						},
@@ -803,20 +803,20 @@ a paragraph`
 :author: Xavier
 
 a paragraph`
-				expected := &types.Document{
+				expected := types.Document{
 					Attributes:         types.DocumentAttributes{},
 					ElementReferences:  types.ElementReferences{},
 					Footnotes:          types.Footnotes{},
 					FootnoteReferences: types.FootnoteReferences{},
 					Elements: []interface{}{
-						&types.DocumentAttributeDeclaration{Name: "toc"},
-						&types.DocumentAttributeDeclaration{Name: "date", Value: "2017-01-01"},
-						&types.DocumentAttributeDeclaration{Name: "author", Value: "Xavier"},
-						&types.Paragraph{
+						types.DocumentAttributeDeclaration{Name: "toc"},
+						types.DocumentAttributeDeclaration{Name: "date", Value: "2017-01-01"},
+						types.DocumentAttributeDeclaration{Name: "author", Value: "Xavier"},
+						types.Paragraph{
 							Attributes: types.ElementAttributes{},
 							Lines: []types.InlineElements{
 								{
-									&types.StringElement{Content: "a paragraph"},
+									types.StringElement{Content: "a paragraph"},
 								},
 							},
 						},
@@ -834,21 +834,21 @@ a paragraph`
 :hardbreaks:
 
 a paragraph`
-				expected := &types.Document{
+				expected := types.Document{
 					Attributes:         types.DocumentAttributes{},
 					ElementReferences:  types.ElementReferences{},
 					Footnotes:          types.Footnotes{},
 					FootnoteReferences: types.FootnoteReferences{},
 					Elements: []interface{}{
-						&types.DocumentAttributeDeclaration{Name: "toc"},
-						&types.DocumentAttributeDeclaration{Name: "date", Value: "2017-01-01"},
-						&types.DocumentAttributeDeclaration{Name: "author", Value: "Xavier"},
-						&types.DocumentAttributeDeclaration{Name: "hardbreaks"},
-						&types.Paragraph{
+						types.DocumentAttributeDeclaration{Name: "toc"},
+						types.DocumentAttributeDeclaration{Name: "date", Value: "2017-01-01"},
+						types.DocumentAttributeDeclaration{Name: "author", Value: "Xavier"},
+						types.DocumentAttributeDeclaration{Name: "hardbreaks"},
+						types.Paragraph{
 							Attributes: types.ElementAttributes{},
 							Lines: []types.InlineElements{
 								{
-									&types.StringElement{Content: "a paragraph"},
+									types.StringElement{Content: "a paragraph"},
 								},
 							},
 						},
@@ -863,23 +863,23 @@ a paragraph`
 :toc:
 :date: 2017-01-01
 :author: Xavier`
-				expected := &types.Document{
+				expected := types.Document{
 					Attributes:         types.DocumentAttributes{},
 					ElementReferences:  types.ElementReferences{},
 					Footnotes:          types.Footnotes{},
 					FootnoteReferences: types.FootnoteReferences{},
 					Elements: []interface{}{
-						&types.Paragraph{
+						types.Paragraph{
 							Attributes: types.ElementAttributes{},
 							Lines: []types.InlineElements{
 								{
-									&types.StringElement{Content: "a paragraph"},
+									types.StringElement{Content: "a paragraph"},
 								},
 							},
 						},
-						&types.DocumentAttributeDeclaration{Name: "toc"},
-						&types.DocumentAttributeDeclaration{Name: "date", Value: "2017-01-01"},
-						&types.DocumentAttributeDeclaration{Name: "author", Value: "Xavier"},
+						types.DocumentAttributeDeclaration{Name: "toc"},
+						types.DocumentAttributeDeclaration{Name: "date", Value: "2017-01-01"},
+						types.DocumentAttributeDeclaration{Name: "author", Value: "Xavier"},
 					},
 				}
 				verifyDocument(expected, source)
@@ -892,20 +892,20 @@ a paragraph`
 				source := `:author: Xavier
 			
 a paragraph written by {author}.`
-				expected := &types.Document{
+				expected := types.Document{
 					Attributes:         types.DocumentAttributes{},
 					ElementReferences:  types.ElementReferences{},
 					Footnotes:          types.Footnotes{},
 					FootnoteReferences: types.FootnoteReferences{},
 					Elements: []interface{}{
-						&types.DocumentAttributeDeclaration{Name: "author", Value: "Xavier"},
-						&types.Paragraph{
+						types.DocumentAttributeDeclaration{Name: "author", Value: "Xavier"},
+						types.Paragraph{
 							Attributes: types.ElementAttributes{},
 							Lines: []types.InlineElements{
 								{
-									&types.StringElement{Content: "a paragraph written by "},
-									&types.DocumentAttributeSubstitution{Name: "author"},
-									&types.StringElement{Content: "."},
+									types.StringElement{Content: "a paragraph written by "},
+									types.DocumentAttributeSubstitution{Name: "author"},
+									types.StringElement{Content: "."},
 								},
 							},
 						},
@@ -920,22 +920,22 @@ a paragraph written by {author}.`
 :!author1:
 :author2!:
 a paragraph written by {author}.`
-				expected := &types.Document{
+				expected := types.Document{
 					Attributes:         types.DocumentAttributes{},
 					ElementReferences:  types.ElementReferences{},
 					Footnotes:          types.Footnotes{},
 					FootnoteReferences: types.FootnoteReferences{},
 					Elements: []interface{}{
-						&types.DocumentAttributeDeclaration{Name: "author", Value: "Xavier"},
-						&types.DocumentAttributeReset{Name: "author1"},
-						&types.DocumentAttributeReset{Name: "author2"},
-						&types.Paragraph{
+						types.DocumentAttributeDeclaration{Name: "author", Value: "Xavier"},
+						types.DocumentAttributeReset{Name: "author1"},
+						types.DocumentAttributeReset{Name: "author2"},
+						types.Paragraph{
 							Attributes: types.ElementAttributes{},
 							Lines: []types.InlineElements{
 								{
-									&types.StringElement{Content: "a paragraph written by "},
-									&types.DocumentAttributeSubstitution{Name: "author"},
-									&types.StringElement{Content: "."},
+									types.StringElement{Content: "a paragraph written by "},
+									types.DocumentAttributeSubstitution{Name: "author"},
+									types.StringElement{Content: "."},
 								},
 							},
 						},
@@ -954,9 +954,9 @@ v1.0, June 19, 2017: First incarnation
 
 This journey begins on a bleary Monday morning.`
 			title := types.InlineElements{
-				&types.StringElement{Content: "The Dangerous and Thrilling Documentation Chronicles"},
+				types.StringElement{Content: "The Dangerous and Thrilling Documentation Chronicles"},
 			}
-			expected := &types.Document{
+			expected := types.Document{
 				Attributes: types.DocumentAttributes{},
 				ElementReferences: types.ElementReferences{
 					"the_dangerous_and_thrilling_documentation_chronicles": title,
@@ -964,7 +964,7 @@ This journey begins on a bleary Monday morning.`
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
-					&types.Section{
+					types.Section{
 						Level: 0,
 						Attributes: types.ElementAttributes{
 							types.AttrID:       "the_dangerous_and_thrilling_documentation_chronicles",
@@ -987,19 +987,19 @@ This journey begins on a bleary Monday morning.`
 						},
 						Title: title,
 						Elements: []interface{}{
-							&types.DocumentAttributeDeclaration{
+							types.DocumentAttributeDeclaration{
 								Name:  "toc",
 								Value: "",
 							},
-							&types.DocumentAttributeDeclaration{
+							types.DocumentAttributeDeclaration{
 								Name:  "keywords",
 								Value: "documentation, team, obstacles, journey, victory",
 							},
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{Content: "This journey begins on a bleary Monday morning."},
+										types.StringElement{Content: "This journey begins on a bleary Monday morning."},
 									},
 								},
 							},
@@ -1019,12 +1019,12 @@ This journey begins on a bleary Monday morning.`
 a paragraph with *bold content*`
 
 			title := types.InlineElements{
-				&types.StringElement{Content: "a header"},
+				types.StringElement{Content: "a header"},
 			}
 			section1Title := types.InlineElements{
-				&types.StringElement{Content: "section 1"},
+				types.StringElement{Content: "section 1"},
 			}
-			expected := &types.Document{
+			expected := types.Document{
 				Attributes: types.DocumentAttributes{},
 				ElementReferences: types.ElementReferences{
 					"a_header":  title,
@@ -1033,7 +1033,7 @@ a paragraph with *bold content*`
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
-					&types.Section{
+					types.Section{
 						Level: 0,
 						Attributes: types.ElementAttributes{
 							types.AttrID:       "a_header",
@@ -1041,7 +1041,7 @@ a paragraph with *bold content*`
 						},
 						Title: title,
 						Elements: []interface{}{
-							&types.Section{
+							types.Section{
 								Level: 1,
 								Title: section1Title,
 								Attributes: types.ElementAttributes{
@@ -1049,15 +1049,15 @@ a paragraph with *bold content*`
 									types.AttrCustomID: false,
 								},
 								Elements: []interface{}{
-									&types.Paragraph{
+									types.Paragraph{
 										Attributes: types.ElementAttributes{},
 										Lines: []types.InlineElements{
 											{
-												&types.StringElement{Content: "a paragraph with "},
-												&types.QuotedText{
+												types.StringElement{Content: "a paragraph with "},
+												types.QuotedText{
 													Kind: types.Bold,
 													Elements: types.InlineElements{
-														&types.StringElement{Content: "bold content"},
+														types.StringElement{Content: "bold content"},
 													},
 												},
 											},
@@ -1080,26 +1080,26 @@ a paragraph with *bold content*`
 :toc:
 :date: 2017-01-01
 :author: Xavier`
-			expected := &types.Document{
+			expected := types.Document{
 				Attributes:         types.DocumentAttributes{},
 				ElementReferences:  types.ElementReferences{},
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
-					&types.Paragraph{
+					types.Paragraph{
 						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
 							{
-								&types.StringElement{Content: "a paragraph"},
+								types.StringElement{Content: "a paragraph"},
 							},
 							{
-								&types.StringElement{Content: ":toc:"},
+								types.StringElement{Content: ":toc:"},
 							},
 							{
-								&types.StringElement{Content: ":date: 2017-01-01"},
+								types.StringElement{Content: ":date: 2017-01-01"},
 							},
 							{
-								&types.StringElement{Content: ":author: Xavier"},
+								types.StringElement{Content: ":author: Xavier"},
 							},
 						},
 					},
@@ -1111,20 +1111,20 @@ a paragraph with *bold content*`
 		It("invalid attribute names", func() {
 			source := `:@date: 2017-01-01
 :{author}: Xavier`
-			expected := &types.Document{
+			expected := types.Document{
 				Attributes:         types.DocumentAttributes{},
 				ElementReferences:  types.ElementReferences{},
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
-					&types.Paragraph{
+					types.Paragraph{
 						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
 							{
-								&types.StringElement{Content: ":@date: 2017-01-01"},
+								types.StringElement{Content: ":@date: 2017-01-01"},
 							},
 							{
-								&types.StringElement{Content: ":{author}: Xavier"},
+								types.StringElement{Content: ":{author}: Xavier"},
 							},
 						},
 					},

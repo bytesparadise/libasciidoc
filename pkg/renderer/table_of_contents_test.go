@@ -15,42 +15,42 @@ var _ = Describe("table of contents", func() {
 	doctitle := types.InlineElements{
 		types.StringElement{Content: "A Title"},
 	}
-	toc := &types.DocumentAttributeDeclaration{
+	toc := types.DocumentAttributeDeclaration{
 		Name: "toc",
 	}
-	preambletoc := &types.DocumentAttributeDeclaration{
+	preambletoc := types.DocumentAttributeDeclaration{
 		Name:  "toc",
 		Value: "preamble",
 	}
-	preamble := &types.Preamble{
+	preamble := types.Preamble{
 		Elements: []interface{}{
-			&types.BlankLine{},
-			&types.Paragraph{
+			types.BlankLine{},
+			types.Paragraph{
 				Attributes: types.ElementAttributes{},
 				Lines: []types.InlineElements{
 					{
-						&types.StringElement{Content: "A short preamble"},
+						types.StringElement{Content: "A short preamble"},
 					},
 				},
 			},
-			&types.BlankLine{},
+			types.BlankLine{},
 		},
 	}
-	section := &types.Section{
+	section := types.Section{
 		Level: 1,
 		Attributes: types.ElementAttributes{
 			types.AttrID:       "section_1",
 			types.AttrCustomID: false,
 		},
 		Title: types.InlineElements{
-			&types.StringElement{Content: "section 1"},
+			types.StringElement{Content: "section 1"},
 		},
 		Elements: []interface{}{},
 	}
-	tableOfContents := &types.TableOfContentsMacro{}
+	tableOfContents := types.TableOfContentsMacro{}
 
 	It("table of contents with default placement and no header with content", func() {
-		source := &types.Document{
+		source := types.Document{
 			Attributes:         types.DocumentAttributes{},
 			ElementReferences:  types.ElementReferences{}, // can leave empty for this test
 			Footnotes:          types.Footnotes{},
@@ -61,7 +61,7 @@ var _ = Describe("table of contents", func() {
 				section,
 			},
 		}
-		expected := &types.Document{
+		expected := types.Document{
 			Attributes:         types.DocumentAttributes{},
 			ElementReferences:  types.ElementReferences{},
 			Footnotes:          types.Footnotes{},
@@ -77,13 +77,13 @@ var _ = Describe("table of contents", func() {
 	})
 
 	It("table of contents with default placement and a header with content", func() {
-		source := &types.Document{
+		source := types.Document{
 			Attributes:         types.DocumentAttributes{},
 			ElementReferences:  types.ElementReferences{}, // can leave empty for this test
 			Footnotes:          types.Footnotes{},
 			FootnoteReferences: types.FootnoteReferences{},
 			Elements: []interface{}{
-				&types.Section{
+				types.Section{
 					Level: 0,
 					Title: doctitle,
 					Attributes: types.ElementAttributes{
@@ -98,13 +98,13 @@ var _ = Describe("table of contents", func() {
 				},
 			},
 		}
-		expected := &types.Document{
+		expected := types.Document{
 			Attributes:         types.DocumentAttributes{},
 			ElementReferences:  types.ElementReferences{}, // can leave empty for this test
 			Footnotes:          types.Footnotes{},
 			FootnoteReferences: types.FootnoteReferences{},
 			Elements: []interface{}{
-				&types.Section{
+				types.Section{
 					Level: 0,
 					Title: doctitle,
 					Attributes: types.ElementAttributes{
@@ -124,13 +124,13 @@ var _ = Describe("table of contents", func() {
 	})
 
 	It("table of contents with default placement and a header without content", func() {
-		source := &types.Document{
+		source := types.Document{
 			Attributes:         types.DocumentAttributes{},
 			ElementReferences:  types.ElementReferences{}, // can leave empty for this test
 			Footnotes:          types.Footnotes{},
 			FootnoteReferences: types.FootnoteReferences{},
 			Elements: []interface{}{
-				&types.Section{
+				types.Section{
 					Level: 0,
 					Title: doctitle,
 					Attributes: types.ElementAttributes{
@@ -144,13 +144,13 @@ var _ = Describe("table of contents", func() {
 				},
 			},
 		}
-		expected := &types.Document{
+		expected := types.Document{
 			Attributes:         types.DocumentAttributes{},
 			ElementReferences:  types.ElementReferences{}, // can leave empty for this test
 			Footnotes:          types.Footnotes{},
 			FootnoteReferences: types.FootnoteReferences{},
 			Elements: []interface{}{
-				&types.Section{
+				types.Section{
 					Level: 0,
 					Title: doctitle,
 					Attributes: types.ElementAttributes{
@@ -169,7 +169,7 @@ var _ = Describe("table of contents", func() {
 	})
 
 	It("table of contents with preamble placement and no header with content", func() {
-		source := &types.Document{
+		source := types.Document{
 			Attributes:         types.DocumentAttributes{},
 			ElementReferences:  types.ElementReferences{},
 			Footnotes:          types.Footnotes{},
@@ -180,7 +180,7 @@ var _ = Describe("table of contents", func() {
 				section,
 			},
 		}
-		expected := &types.Document{
+		expected := types.Document{
 			Attributes:         types.DocumentAttributes{},
 			ElementReferences:  types.ElementReferences{},
 			Footnotes:          types.Footnotes{},
@@ -196,13 +196,13 @@ var _ = Describe("table of contents", func() {
 	})
 
 	It("table of contents with preamble placement and header with content", func() {
-		source := &types.Document{
+		source := types.Document{
 			Attributes:         types.DocumentAttributes{},
 			ElementReferences:  types.ElementReferences{},
 			Footnotes:          types.Footnotes{},
 			FootnoteReferences: types.FootnoteReferences{},
 			Elements: []interface{}{
-				&types.Section{
+				types.Section{
 					Level: 0,
 					Title: doctitle,
 					Attributes: types.ElementAttributes{
@@ -217,13 +217,13 @@ var _ = Describe("table of contents", func() {
 				},
 			},
 		}
-		expected := &types.Document{
+		expected := types.Document{
 			Attributes:         types.DocumentAttributes{},
 			ElementReferences:  types.ElementReferences{},
 			Footnotes:          types.Footnotes{},
 			FootnoteReferences: types.FootnoteReferences{},
 			Elements: []interface{}{
-				&types.Section{
+				types.Section{
 					Level: 0,
 					Title: doctitle,
 					Attributes: types.ElementAttributes{
@@ -243,13 +243,13 @@ var _ = Describe("table of contents", func() {
 	})
 
 	It("table of contents with preamble placement and header without content", func() {
-		source := &types.Document{
+		source := types.Document{
 			Attributes:         types.DocumentAttributes{},
 			ElementReferences:  types.ElementReferences{},
 			Footnotes:          types.Footnotes{},
 			FootnoteReferences: types.FootnoteReferences{},
 			Elements: []interface{}{
-				&types.Section{
+				types.Section{
 					Level: 0,
 					Title: doctitle,
 					Attributes: types.ElementAttributes{
@@ -263,13 +263,13 @@ var _ = Describe("table of contents", func() {
 				},
 			},
 		}
-		expected := &types.Document{
+		expected := types.Document{
 			Attributes:         types.DocumentAttributes{},
 			ElementReferences:  types.ElementReferences{},
 			Footnotes:          types.Footnotes{},
 			FootnoteReferences: types.FootnoteReferences{},
 			Elements: []interface{}{
-				&types.Section{
+				types.Section{
 					Level: 0,
 					Title: doctitle,
 					Attributes: types.ElementAttributes{
@@ -289,7 +289,7 @@ var _ = Describe("table of contents", func() {
 
 })
 
-func verifyTableOfContents(expectedContent, source *types.Document) {
+func verifyTableOfContents(expectedContent, source types.Document) {
 	ctx := renderer.Wrap(context.Background(), source)
 	renderer.IncludeTableOfContents(ctx)
 	assert.Equal(GinkgoT(), expectedContent, ctx.Document)

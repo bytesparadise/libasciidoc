@@ -12,11 +12,11 @@ var _ = Describe("sections - preflight", func() {
 		It("header only", func() {
 			source := "= a header"
 			doctitle := types.InlineElements{
-				&types.StringElement{Content: "a header"},
+				types.StringElement{Content: "a header"},
 			}
-			expected := &types.PreflightDocument{
+			expected := types.PreflightDocument{
 				Blocks: []interface{}{
-					&types.Section{
+					types.Section{
 						Attributes: types.ElementAttributes{
 							types.AttrID:       "a_header",
 							types.AttrCustomID: false,
@@ -33,11 +33,11 @@ var _ = Describe("sections - preflight", func() {
 		It("header with many spaces around content", func() {
 			source := "= a header   "
 			doctitle := types.InlineElements{
-				&types.StringElement{Content: "a header   "},
+				types.StringElement{Content: "a header   "},
 			}
-			expected := &types.PreflightDocument{
+			expected := types.PreflightDocument{
 				Blocks: []interface{}{
-					&types.Section{
+					types.Section{
 						Attributes: types.ElementAttributes{
 							types.AttrID:       "a_header",
 							types.AttrCustomID: false,
@@ -57,11 +57,11 @@ var _ = Describe("sections - preflight", func() {
 and a paragraph`
 
 			doctitle := types.InlineElements{
-				&types.StringElement{Content: "a header"},
+				types.StringElement{Content: "a header"},
 			}
-			expected := &types.PreflightDocument{
+			expected := types.PreflightDocument{
 				Blocks: []interface{}{
-					&types.Section{
+					types.Section{
 						Attributes: types.ElementAttributes{
 							types.AttrID:       "a_header",
 							types.AttrCustomID: false,
@@ -70,12 +70,12 @@ and a paragraph`
 						Title:    doctitle,
 						Elements: []interface{}{},
 					},
-					&types.BlankLine{},
-					&types.Paragraph{
+					types.BlankLine{},
+					types.Paragraph{
 						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
 							{
-								&types.StringElement{Content: "and a paragraph"},
+								types.StringElement{Content: "and a paragraph"},
 							},
 						},
 					},
@@ -89,15 +89,15 @@ and a paragraph`
 
 = a second header`
 			doctitle := types.InlineElements{
-				&types.StringElement{Content: "a first header"},
+				types.StringElement{Content: "a first header"},
 			}
 			otherDoctitle := types.InlineElements{
-				&types.StringElement{Content: "a second header"},
+				types.StringElement{Content: "a second header"},
 			}
 
-			expected := &types.PreflightDocument{
+			expected := types.PreflightDocument{
 				Blocks: []interface{}{
-					&types.Section{
+					types.Section{
 						Attributes: types.ElementAttributes{
 							types.AttrID:       "a_first_header",
 							types.AttrCustomID: false,
@@ -106,8 +106,8 @@ and a paragraph`
 						Title:    doctitle,
 						Elements: []interface{}{},
 					},
-					&types.BlankLine{},
-					&types.Section{
+					types.BlankLine{},
+					types.Section{
 						Attributes: types.ElementAttributes{
 							types.AttrID:       "a_second_header",
 							types.AttrCustomID: false,
@@ -124,11 +124,11 @@ and a paragraph`
 		It("section level 1 alone", func() {
 			source := `== section 1`
 			section1Title := types.InlineElements{
-				&types.StringElement{Content: "section 1"},
+				types.StringElement{Content: "section 1"},
 			}
-			expected := &types.PreflightDocument{
+			expected := types.PreflightDocument{
 				Blocks: []interface{}{
-					&types.Section{
+					types.Section{
 						Attributes: types.ElementAttributes{
 							types.AttrID:       "section_1",
 							types.AttrCustomID: false,
@@ -145,16 +145,16 @@ and a paragraph`
 		It("section level 1 with quoted text", func() {
 			source := `==  *2 spaces and bold content*`
 			sectionTitle := types.InlineElements{
-				&types.QuotedText{
+				types.QuotedText{
 					Kind: types.Bold,
 					Elements: types.InlineElements{
-						&types.StringElement{Content: "2 spaces and bold content"},
+						types.StringElement{Content: "2 spaces and bold content"},
 					},
 				},
 			}
-			expected := &types.PreflightDocument{
+			expected := types.PreflightDocument{
 				Blocks: []interface{}{
-					&types.Section{
+					types.Section{
 						Attributes: types.ElementAttributes{
 							types.AttrID:       "2_spaces_and_bold_content",
 							types.AttrCustomID: false,
@@ -173,14 +173,14 @@ and a paragraph`
 
 == section 1`
 			doctitle := types.InlineElements{
-				&types.StringElement{Content: "a header"},
+				types.StringElement{Content: "a header"},
 			}
 			section1Title := types.InlineElements{
-				&types.StringElement{Content: "section 1"},
+				types.StringElement{Content: "section 1"},
 			}
-			expected := &types.PreflightDocument{
+			expected := types.PreflightDocument{
 				Blocks: []interface{}{
-					&types.Section{
+					types.Section{
 						Attributes: types.ElementAttributes{
 							types.AttrID:       "a_header",
 							types.AttrCustomID: false,
@@ -189,8 +189,8 @@ and a paragraph`
 						Title:    doctitle,
 						Elements: []interface{}{},
 					},
-					&types.BlankLine{},
-					&types.Section{
+					types.BlankLine{},
+					types.Section{
 						Attributes: types.ElementAttributes{
 							types.AttrID:       "section_1",
 							types.AttrCustomID: false,
@@ -209,14 +209,14 @@ and a paragraph`
 
 === section 2`
 			doctitle := types.InlineElements{
-				&types.StringElement{Content: "a header"},
+				types.StringElement{Content: "a header"},
 			}
 			section2Title := types.InlineElements{
-				&types.StringElement{Content: "section 2"},
+				types.StringElement{Content: "section 2"},
 			}
-			expected := &types.PreflightDocument{
+			expected := types.PreflightDocument{
 				Blocks: []interface{}{
-					&types.Section{
+					types.Section{
 						Attributes: types.ElementAttributes{
 							types.AttrID:       "a_header",
 							types.AttrCustomID: false,
@@ -225,8 +225,8 @@ and a paragraph`
 						Title:    doctitle,
 						Elements: []interface{}{},
 					},
-					&types.BlankLine{},
-					&types.Section{
+					types.BlankLine{},
+					types.Section{
 						Attributes: types.ElementAttributes{
 							types.AttrID:       "section_2",
 							types.AttrCustomID: false,
@@ -244,11 +244,11 @@ and a paragraph`
 			source := `== a title
 and a paragraph`
 			section1Title := types.InlineElements{
-				&types.StringElement{Content: "a title"},
+				types.StringElement{Content: "a title"},
 			}
-			expected := &types.PreflightDocument{
+			expected := types.PreflightDocument{
 				Blocks: []interface{}{
-					&types.Section{
+					types.Section{
 						Attributes: types.ElementAttributes{
 							types.AttrID:       "a_title",
 							types.AttrCustomID: false,
@@ -257,11 +257,11 @@ and a paragraph`
 						Title:    section1Title,
 						Elements: []interface{}{},
 					},
-					&types.Paragraph{
+					types.Paragraph{
 						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
 							{
-								&types.StringElement{Content: "and a paragraph"},
+								types.StringElement{Content: "and a paragraph"},
 							},
 						},
 					},
@@ -275,11 +275,11 @@ and a paragraph`
 			
 and a paragraph`
 			section1Title := types.InlineElements{
-				&types.StringElement{Content: "a title"},
+				types.StringElement{Content: "a title"},
 			}
-			expected := &types.PreflightDocument{
+			expected := types.PreflightDocument{
 				Blocks: []interface{}{
-					&types.Section{
+					types.Section{
 						Attributes: types.ElementAttributes{
 							types.AttrID:       "a_title",
 							types.AttrCustomID: false,
@@ -288,12 +288,12 @@ and a paragraph`
 						Title:    section1Title,
 						Elements: []interface{}{},
 					},
-					&types.BlankLine{},
-					&types.Paragraph{
+					types.BlankLine{},
+					types.Paragraph{
 						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
 							{
-								&types.StringElement{Content: "and a paragraph"},
+								types.StringElement{Content: "and a paragraph"},
 							},
 						},
 					},
@@ -305,11 +305,11 @@ and a paragraph`
 		It("section level 1 with a paragraph separated by non-empty line", func() {
 			source := "== a title\n    \nand a paragraph"
 			section1Title := types.InlineElements{
-				&types.StringElement{Content: "a title"},
+				types.StringElement{Content: "a title"},
 			}
-			expected := &types.PreflightDocument{
+			expected := types.PreflightDocument{
 				Blocks: []interface{}{
-					&types.Section{
+					types.Section{
 						Attributes: types.ElementAttributes{
 							types.AttrID:       "a_title",
 							types.AttrCustomID: false,
@@ -318,12 +318,12 @@ and a paragraph`
 						Title:    section1Title,
 						Elements: []interface{}{},
 					},
-					&types.BlankLine{},
-					&types.Paragraph{
+					types.BlankLine{},
+					types.Paragraph{
 						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
 							{
-								&types.StringElement{Content: "and a paragraph"},
+								types.StringElement{Content: "and a paragraph"},
 							},
 						},
 					},
@@ -343,76 +343,76 @@ a paragraph
 
 == Section B
 a paragraph`
-			expected := &types.PreflightDocument{
+			expected := types.PreflightDocument{
 				Blocks: []interface{}{
-					&types.Section{
+					types.Section{
 						Attributes: types.ElementAttributes{
 							types.AttrID:       "a_header",
 							types.AttrCustomID: false,
 						},
 						Level: 0,
 						Title: types.InlineElements{
-							&types.StringElement{Content: "a header"},
+							types.StringElement{Content: "a header"},
 						},
 						Elements: []interface{}{},
 					},
-					&types.BlankLine{},
-					&types.Section{
+					types.BlankLine{},
+					types.Section{
 						Attributes: types.ElementAttributes{
 							types.AttrID:       "section_a",
 							types.AttrCustomID: false,
 						},
 						Level: 1,
 						Title: types.InlineElements{
-							&types.StringElement{Content: "Section A"},
+							types.StringElement{Content: "Section A"},
 						},
 						Elements: []interface{}{},
 					},
-					&types.Paragraph{
+					types.Paragraph{
 						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
 							{
-								&types.StringElement{Content: "a paragraph"},
+								types.StringElement{Content: "a paragraph"},
 							},
 						},
 					},
-					&types.BlankLine{},
-					&types.Section{
+					types.BlankLine{},
+					types.Section{
 						Attributes: types.ElementAttributes{
 							types.AttrID:       "section_a_a",
 							types.AttrCustomID: false,
 						},
 						Level: 2,
 						Title: types.InlineElements{
-							&types.StringElement{Content: "Section A.a"},
+							types.StringElement{Content: "Section A.a"},
 						},
 						Elements: []interface{}{},
 					},
-					&types.Paragraph{
+					types.Paragraph{
 						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
 							{
-								&types.StringElement{Content: "a paragraph"},
+								types.StringElement{Content: "a paragraph"},
 							},
 						},
 					},
-					&types.BlankLine{},
-					&types.Section{
+					types.BlankLine{},
+					types.Section{
 						Attributes: types.ElementAttributes{
 							types.AttrID:       "section_b",
 							types.AttrCustomID: false,
 						},
 						Level: 1,
 						Title: types.InlineElements{
-							&types.StringElement{Content: "Section B"},
+							types.StringElement{Content: "Section B"},
 						},
 						Elements: []interface{}{},
 					},
-					&types.Paragraph{
+					types.Paragraph{
 						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
 							{
-								&types.StringElement{Content: "a paragraph"},
+								types.StringElement{Content: "a paragraph"},
 							},
 						},
 					},
@@ -425,11 +425,11 @@ a paragraph`
 			source := `[[custom_header]]
 == a header`
 			sectionTitle := types.InlineElements{
-				&types.StringElement{Content: "a header"},
+				types.StringElement{Content: "a header"},
 			}
-			expected := &types.PreflightDocument{
+			expected := types.PreflightDocument{
 				Blocks: []interface{}{
-					&types.Section{
+					types.Section{
 						Attributes: types.ElementAttributes{
 							types.AttrID:       "custom_header",
 							types.AttrCustomID: true,
@@ -453,17 +453,17 @@ a paragraph`
 == Section B
 a paragraph`
 			doctitle := types.InlineElements{
-				&types.StringElement{Content: "a header"},
+				types.StringElement{Content: "a header"},
 			}
 			fooTitle := types.InlineElements{
-				&types.StringElement{Content: "Section F "},
+				types.StringElement{Content: "Section F "},
 			}
 			barTitle := types.InlineElements{
-				&types.StringElement{Content: "Section B"},
+				types.StringElement{Content: "Section B"},
 			}
-			expected := &types.PreflightDocument{
+			expected := types.PreflightDocument{
 				Blocks: []interface{}{
-					&types.Section{
+					types.Section{
 						Attributes: types.ElementAttributes{
 							types.AttrID:       "custom_header",
 							types.AttrCustomID: true,
@@ -472,8 +472,8 @@ a paragraph`
 						Title:    doctitle,
 						Elements: []interface{}{},
 					},
-					&types.BlankLine{},
-					&types.Section{
+					types.BlankLine{},
+					types.Section{
 						Attributes: types.ElementAttributes{
 							types.AttrID:       "foo",
 							types.AttrCustomID: true,
@@ -482,8 +482,8 @@ a paragraph`
 						Title:    fooTitle,
 						Elements: []interface{}{},
 					},
-					&types.BlankLine{},
-					&types.Section{
+					types.BlankLine{},
+					types.Section{
 						Attributes: types.ElementAttributes{
 							types.AttrID:       "bar",
 							types.AttrCustomID: true,
@@ -492,11 +492,11 @@ a paragraph`
 						Title:    barTitle,
 						Elements: []interface{}{},
 					},
-					&types.Paragraph{
+					types.Paragraph{
 						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
 							{
-								&types.StringElement{Content: "a paragraph"},
+								types.StringElement{Content: "a paragraph"},
 							},
 						},
 					},
@@ -510,14 +510,14 @@ a paragraph`
 
 == section 1`
 			section1aTitle := types.InlineElements{
-				&types.StringElement{Content: "section 1"},
+				types.StringElement{Content: "section 1"},
 			}
 			section1bTitle := types.InlineElements{
-				&types.StringElement{Content: "section 1"},
+				types.StringElement{Content: "section 1"},
 			}
-			expected := &types.PreflightDocument{
+			expected := types.PreflightDocument{
 				Blocks: []interface{}{
-					&types.Section{
+					types.Section{
 						Attributes: types.ElementAttributes{
 							types.AttrID:       "section_1",
 							types.AttrCustomID: false,
@@ -526,8 +526,8 @@ a paragraph`
 						Title:    section1aTitle,
 						Elements: []interface{}{},
 					},
-					&types.BlankLine{},
-					&types.Section{
+					types.BlankLine{},
+					types.Section{
 						Attributes: types.ElementAttributes{
 							types.AttrID:       "section_1", // duplicate ID will be processed afterwards
 							types.AttrCustomID: false,
@@ -545,13 +545,13 @@ a paragraph`
 	Context("invalid sections", func() {
 		It("header invalid - missing space", func() {
 			source := "=a header"
-			expected := &types.PreflightDocument{
+			expected := types.PreflightDocument{
 				Blocks: []interface{}{
-					&types.Paragraph{
+					types.Paragraph{
 						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
 							{
-								&types.StringElement{Content: "=a header"},
+								types.StringElement{Content: "=a header"},
 							},
 						},
 					},
@@ -561,9 +561,9 @@ a paragraph`
 
 		It("header invalid - header space", func() {
 			source := " = a header with a prefix space"
-			expected := &types.PreflightDocument{
+			expected := types.PreflightDocument{
 				Blocks: []interface{}{
-					&types.LiteralBlock{
+					types.LiteralBlock{
 						Attributes: types.ElementAttributes{
 							types.AttrKind:             types.Literal,
 							types.AttrLiteralBlockType: types.LiteralBlockWithSpacesOnFirstLine,
@@ -582,11 +582,11 @@ a paragraph`
 
    == section with prefix space`
 			title := types.InlineElements{
-				&types.StringElement{Content: "a header"},
+				types.StringElement{Content: "a header"},
 			}
-			expected := &types.PreflightDocument{
+			expected := types.PreflightDocument{
 				Blocks: []interface{}{
-					&types.Section{
+					types.Section{
 						Attributes: types.ElementAttributes{
 							types.AttrID:       "a_header",
 							types.AttrCustomID: false,
@@ -595,8 +595,8 @@ a paragraph`
 						Title:    title,
 						Elements: []interface{}{},
 					},
-					&types.BlankLine{},
-					&types.LiteralBlock{
+					types.BlankLine{},
+					types.LiteralBlock{
 						Attributes: types.ElementAttributes{
 							types.AttrKind:             types.Literal,
 							types.AttrLiteralBlockType: types.LiteralBlockWithSpacesOnFirstLine,
@@ -618,23 +618,23 @@ a paragraph`
 			source := `Document Title
 ==============
 Doc Writer <thedoc@asciidoctor.org>`
-			expected := &types.PreflightDocument{
+			expected := types.PreflightDocument{
 				Blocks: []interface{}{
-					&types.Paragraph{
+					types.Paragraph{
 						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
 							{
-								&types.StringElement{
+								types.StringElement{
 									Content: "Document Title",
 								},
 							},
 							{
-								&types.StringElement{
+								types.StringElement{
 									Content: "==============",
 								},
 							},
 							{
-								&types.StringElement{
+								types.StringElement{
 									Content: "Doc Writer <thedoc@asciidoctor.org>",
 								},
 							},
@@ -654,9 +654,9 @@ var _ = Describe("sections - document", func() {
 		It("header only", func() {
 			source := "= a header"
 			doctitle := types.InlineElements{
-				&types.StringElement{Content: "a header"},
+				types.StringElement{Content: "a header"},
 			}
-			expected := &types.Document{
+			expected := types.Document{
 				Attributes: types.DocumentAttributes{},
 				ElementReferences: types.ElementReferences{
 					"a_header": doctitle,
@@ -664,7 +664,7 @@ var _ = Describe("sections - document", func() {
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
-					&types.Section{
+					types.Section{
 						Attributes: types.ElementAttributes{
 							types.AttrID:       "a_header",
 							types.AttrCustomID: false,
@@ -681,9 +681,9 @@ var _ = Describe("sections - document", func() {
 		It("header with many spaces around content", func() {
 			source := "= a header   "
 			doctitle := types.InlineElements{
-				&types.StringElement{Content: "a header   "},
+				types.StringElement{Content: "a header   "},
 			}
-			expected := &types.Document{
+			expected := types.Document{
 				Attributes: types.DocumentAttributes{},
 				ElementReferences: types.ElementReferences{
 					"a_header": doctitle,
@@ -691,7 +691,7 @@ var _ = Describe("sections - document", func() {
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
-					&types.Section{
+					types.Section{
 						Attributes: types.ElementAttributes{
 							types.AttrID:       "a_header",
 							types.AttrCustomID: false,
@@ -711,9 +711,9 @@ var _ = Describe("sections - document", func() {
 and a paragraph`
 
 			doctitle := types.InlineElements{
-				&types.StringElement{Content: "a header"},
+				types.StringElement{Content: "a header"},
 			}
-			expected := &types.Document{
+			expected := types.Document{
 				Attributes: types.DocumentAttributes{},
 				ElementReferences: types.ElementReferences{
 					"a_header": doctitle,
@@ -721,7 +721,7 @@ and a paragraph`
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
-					&types.Section{
+					types.Section{
 						Attributes: types.ElementAttributes{
 							types.AttrID:       "a_header",
 							types.AttrCustomID: false,
@@ -729,11 +729,11 @@ and a paragraph`
 						Level: 0,
 						Title: doctitle,
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{Content: "and a paragraph"},
+										types.StringElement{Content: "and a paragraph"},
 									},
 								},
 							},
@@ -749,13 +749,13 @@ and a paragraph`
 
 = a second header`
 			doctitle := types.InlineElements{
-				&types.StringElement{Content: "a first header"},
+				types.StringElement{Content: "a first header"},
 			}
 			otherDoctitle := types.InlineElements{
-				&types.StringElement{Content: "a second header"},
+				types.StringElement{Content: "a second header"},
 			}
 
-			expected := &types.Document{
+			expected := types.Document{
 				Attributes: types.DocumentAttributes{},
 				ElementReferences: types.ElementReferences{
 					"a_first_header":  doctitle,
@@ -764,7 +764,7 @@ and a paragraph`
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
-					&types.Section{
+					types.Section{
 						Attributes: types.ElementAttributes{
 							types.AttrID:       "a_first_header",
 							types.AttrCustomID: false,
@@ -773,7 +773,7 @@ and a paragraph`
 						Title:    doctitle,
 						Elements: []interface{}{},
 					},
-					&types.Section{
+					types.Section{
 						Attributes: types.ElementAttributes{
 							types.AttrID:       "a_second_header",
 							types.AttrCustomID: false,
@@ -790,9 +790,9 @@ and a paragraph`
 		It("section level 1 alone", func() {
 			source := `== section 1`
 			section1Title := types.InlineElements{
-				&types.StringElement{Content: "section 1"},
+				types.StringElement{Content: "section 1"},
 			}
-			expected := &types.Document{
+			expected := types.Document{
 				Attributes: types.DocumentAttributes{},
 				ElementReferences: types.ElementReferences{
 					"section_1": section1Title,
@@ -800,7 +800,7 @@ and a paragraph`
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
-					&types.Section{
+					types.Section{
 						Attributes: types.ElementAttributes{
 							types.AttrID:       "section_1",
 							types.AttrCustomID: false,
@@ -817,14 +817,14 @@ and a paragraph`
 		It("section level 1 with quoted text", func() {
 			source := `==  *2 spaces and bold content*`
 			sectionTitle := types.InlineElements{
-				&types.QuotedText{
+				types.QuotedText{
 					Kind: types.Bold,
 					Elements: types.InlineElements{
-						&types.StringElement{Content: "2 spaces and bold content"},
+						types.StringElement{Content: "2 spaces and bold content"},
 					},
 				},
 			}
-			expected := &types.Document{
+			expected := types.Document{
 				Attributes: types.DocumentAttributes{},
 				ElementReferences: types.ElementReferences{
 					"2_spaces_and_bold_content": sectionTitle,
@@ -832,7 +832,7 @@ and a paragraph`
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
-					&types.Section{
+					types.Section{
 						Attributes: types.ElementAttributes{
 							types.AttrID:       "2_spaces_and_bold_content",
 							types.AttrCustomID: false,
@@ -851,12 +851,12 @@ and a paragraph`
 
 == section 1`
 			doctitle := types.InlineElements{
-				&types.StringElement{Content: "a header"},
+				types.StringElement{Content: "a header"},
 			}
 			section1Title := types.InlineElements{
-				&types.StringElement{Content: "section 1"},
+				types.StringElement{Content: "section 1"},
 			}
-			expected := &types.Document{
+			expected := types.Document{
 				Attributes: types.DocumentAttributes{},
 				ElementReferences: types.ElementReferences{
 					"a_header":  doctitle,
@@ -865,7 +865,7 @@ and a paragraph`
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
-					&types.Section{
+					types.Section{
 						Attributes: types.ElementAttributes{
 							types.AttrID:       "a_header",
 							types.AttrCustomID: false,
@@ -873,7 +873,7 @@ and a paragraph`
 						Level: 0,
 						Title: doctitle,
 						Elements: []interface{}{
-							&types.Section{
+							types.Section{
 								Attributes: types.ElementAttributes{
 									types.AttrID:       "section_1",
 									types.AttrCustomID: false,
@@ -894,12 +894,12 @@ and a paragraph`
 
 === section 2`
 			doctitle := types.InlineElements{
-				&types.StringElement{Content: "a header"},
+				types.StringElement{Content: "a header"},
 			}
 			section2Title := types.InlineElements{
-				&types.StringElement{Content: "section 2"},
+				types.StringElement{Content: "section 2"},
 			}
-			expected := &types.Document{
+			expected := types.Document{
 				Attributes: types.DocumentAttributes{},
 				ElementReferences: types.ElementReferences{
 					"a_header":  doctitle,
@@ -908,7 +908,7 @@ and a paragraph`
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
-					&types.Section{
+					types.Section{
 						Attributes: types.ElementAttributes{
 							types.AttrID:       "a_header",
 							types.AttrCustomID: false,
@@ -916,7 +916,7 @@ and a paragraph`
 						Level: 0,
 						Title: doctitle,
 						Elements: []interface{}{
-							&types.Section{
+							types.Section{
 								Attributes: types.ElementAttributes{
 									types.AttrID:       "section_2",
 									types.AttrCustomID: false,
@@ -936,9 +936,9 @@ and a paragraph`
 			source := `== a title
 and a paragraph`
 			section1Title := types.InlineElements{
-				&types.StringElement{Content: "a title"},
+				types.StringElement{Content: "a title"},
 			}
-			expected := &types.Document{
+			expected := types.Document{
 				Attributes: types.DocumentAttributes{},
 				ElementReferences: types.ElementReferences{
 					"a_title": section1Title,
@@ -946,7 +946,7 @@ and a paragraph`
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
-					&types.Section{
+					types.Section{
 						Attributes: types.ElementAttributes{
 							types.AttrID:       "a_title",
 							types.AttrCustomID: false,
@@ -954,11 +954,11 @@ and a paragraph`
 						Level: 1,
 						Title: section1Title,
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{Content: "and a paragraph"},
+										types.StringElement{Content: "and a paragraph"},
 									},
 								},
 							},
@@ -974,9 +974,9 @@ and a paragraph`
 			
 and a paragraph`
 			section1Title := types.InlineElements{
-				&types.StringElement{Content: "a title"},
+				types.StringElement{Content: "a title"},
 			}
-			expected := &types.Document{
+			expected := types.Document{
 				Attributes: types.DocumentAttributes{},
 				ElementReferences: types.ElementReferences{
 					"a_title": section1Title,
@@ -984,7 +984,7 @@ and a paragraph`
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
-					&types.Section{
+					types.Section{
 						Attributes: types.ElementAttributes{
 							types.AttrID:       "a_title",
 							types.AttrCustomID: false,
@@ -992,11 +992,11 @@ and a paragraph`
 						Level: 1,
 						Title: section1Title,
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{Content: "and a paragraph"},
+										types.StringElement{Content: "and a paragraph"},
 									},
 								},
 							},
@@ -1010,9 +1010,9 @@ and a paragraph`
 		It("section level 1 with a paragraph separated by non-empty line", func() {
 			source := "== a title\n    \nand a paragraph"
 			section1Title := types.InlineElements{
-				&types.StringElement{Content: "a title"},
+				types.StringElement{Content: "a title"},
 			}
-			expected := &types.Document{
+			expected := types.Document{
 				Attributes: types.DocumentAttributes{},
 				ElementReferences: types.ElementReferences{
 					"a_title": section1Title,
@@ -1020,7 +1020,7 @@ and a paragraph`
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
-					&types.Section{
+					types.Section{
 						Attributes: types.ElementAttributes{
 							types.AttrID:       "a_title",
 							types.AttrCustomID: false,
@@ -1028,11 +1028,11 @@ and a paragraph`
 						Level: 1,
 						Title: section1Title,
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{Content: "and a paragraph"},
+										types.StringElement{Content: "and a paragraph"},
 									},
 								},
 							},
@@ -1055,18 +1055,18 @@ a paragraph
 == Section B
 a paragraph`
 			doctitle := types.InlineElements{
-				&types.StringElement{Content: "a header"},
+				types.StringElement{Content: "a header"},
 			}
 			sectionATitle := types.InlineElements{
-				&types.StringElement{Content: "Section A"},
+				types.StringElement{Content: "Section A"},
 			}
 			sectionAaTitle := types.InlineElements{
-				&types.StringElement{Content: "Section A.a"},
+				types.StringElement{Content: "Section A.a"},
 			}
 			sectionBTitle := types.InlineElements{
-				&types.StringElement{Content: "Section B"},
+				types.StringElement{Content: "Section B"},
 			}
-			expected := &types.Document{
+			expected := types.Document{
 				Attributes: types.DocumentAttributes{},
 				ElementReferences: types.ElementReferences{
 					"a_header":    doctitle,
@@ -1077,7 +1077,7 @@ a paragraph`
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
-					&types.Section{
+					types.Section{
 						Attributes: types.ElementAttributes{
 							types.AttrID:       "a_header",
 							types.AttrCustomID: false,
@@ -1085,7 +1085,7 @@ a paragraph`
 						Level: 0,
 						Title: doctitle,
 						Elements: []interface{}{
-							&types.Section{
+							types.Section{
 								Attributes: types.ElementAttributes{
 									types.AttrID:       "section_a",
 									types.AttrCustomID: false,
@@ -1093,15 +1093,15 @@ a paragraph`
 								Level: 1,
 								Title: sectionATitle,
 								Elements: []interface{}{
-									&types.Paragraph{
+									types.Paragraph{
 										Attributes: types.ElementAttributes{},
 										Lines: []types.InlineElements{
 											{
-												&types.StringElement{Content: "a paragraph"},
+												types.StringElement{Content: "a paragraph"},
 											},
 										},
 									},
-									&types.Section{
+									types.Section{
 										Attributes: types.ElementAttributes{
 											types.AttrID:       "section_a_a",
 											types.AttrCustomID: false,
@@ -1109,11 +1109,11 @@ a paragraph`
 										Level: 2,
 										Title: sectionAaTitle,
 										Elements: []interface{}{
-											&types.Paragraph{
+											types.Paragraph{
 												Attributes: types.ElementAttributes{},
 												Lines: []types.InlineElements{
 													{
-														&types.StringElement{Content: "a paragraph"},
+														types.StringElement{Content: "a paragraph"},
 													},
 												},
 											},
@@ -1121,7 +1121,7 @@ a paragraph`
 									},
 								},
 							},
-							&types.Section{
+							types.Section{
 								Attributes: types.ElementAttributes{
 									types.AttrID:       "section_b",
 									types.AttrCustomID: false,
@@ -1129,11 +1129,11 @@ a paragraph`
 								Level: 1,
 								Title: sectionBTitle,
 								Elements: []interface{}{
-									&types.Paragraph{
+									types.Paragraph{
 										Attributes: types.ElementAttributes{},
 										Lines: []types.InlineElements{
 											{
-												&types.StringElement{Content: "a paragraph"},
+												types.StringElement{Content: "a paragraph"},
 											},
 										},
 									},
@@ -1150,9 +1150,9 @@ a paragraph`
 			source := `[[custom_header]]
 == a header`
 			sectionTitle := types.InlineElements{
-				&types.StringElement{Content: "a header"},
+				types.StringElement{Content: "a header"},
 			}
-			expected := &types.Document{
+			expected := types.Document{
 				Attributes: types.DocumentAttributes{},
 				ElementReferences: types.ElementReferences{
 					"custom_header": sectionTitle,
@@ -1160,7 +1160,7 @@ a paragraph`
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
-					&types.Section{
+					types.Section{
 						Attributes: types.ElementAttributes{
 							types.AttrID:       "custom_header",
 							types.AttrCustomID: true,
@@ -1184,15 +1184,15 @@ a paragraph`
 == Section B
 a paragraph`
 			doctitle := types.InlineElements{
-				&types.StringElement{Content: "a header"},
+				types.StringElement{Content: "a header"},
 			}
 			fooTitle := types.InlineElements{
-				&types.StringElement{Content: "Section F "},
+				types.StringElement{Content: "Section F "},
 			}
 			barTitle := types.InlineElements{
-				&types.StringElement{Content: "Section B"},
+				types.StringElement{Content: "Section B"},
 			}
-			expected := &types.Document{
+			expected := types.Document{
 				Attributes: types.DocumentAttributes{},
 				ElementReferences: types.ElementReferences{
 					"custom_header": doctitle,
@@ -1202,7 +1202,7 @@ a paragraph`
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
-					&types.Section{
+					types.Section{
 						Attributes: types.ElementAttributes{
 							types.AttrID:       "custom_header",
 							types.AttrCustomID: true,
@@ -1210,7 +1210,7 @@ a paragraph`
 						Level: 0,
 						Title: doctitle,
 						Elements: []interface{}{
-							&types.Section{
+							types.Section{
 								Attributes: types.ElementAttributes{
 									types.AttrID:       "foo",
 									types.AttrCustomID: true,
@@ -1219,7 +1219,7 @@ a paragraph`
 								Title:    fooTitle,
 								Elements: []interface{}{},
 							},
-							&types.Section{
+							types.Section{
 								Attributes: types.ElementAttributes{
 									types.AttrID:       "bar",
 									types.AttrCustomID: true,
@@ -1227,11 +1227,11 @@ a paragraph`
 								Level: 1,
 								Title: barTitle,
 								Elements: []interface{}{
-									&types.Paragraph{
+									types.Paragraph{
 										Attributes: types.ElementAttributes{},
 										Lines: []types.InlineElements{
 											{
-												&types.StringElement{Content: "a paragraph"},
+												types.StringElement{Content: "a paragraph"},
 											},
 										},
 									},
@@ -1249,13 +1249,13 @@ a paragraph`
 
 == section 1`
 			section1aTitle := types.InlineElements{
-				&types.StringElement{Content: "section 1"},
+				types.StringElement{Content: "section 1"},
 			}
 			section1bTitle := types.InlineElements{
-				&types.StringElement{Content: "section 1"},
+				types.StringElement{Content: "section 1"},
 			}
 
-			expected := &types.Document{
+			expected := types.Document{
 				Attributes: types.DocumentAttributes{},
 				ElementReferences: types.ElementReferences{
 					"section_1":   section1aTitle,
@@ -1264,7 +1264,7 @@ a paragraph`
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
-					&types.Section{
+					types.Section{
 						Attributes: types.ElementAttributes{
 							types.AttrID:       "section_1",
 							types.AttrCustomID: false,
@@ -1273,7 +1273,7 @@ a paragraph`
 						Title:    section1aTitle,
 						Elements: []interface{}{},
 					},
-					&types.Section{
+					types.Section{
 						Attributes: types.ElementAttributes{
 							types.AttrID:       "section_1_2",
 							types.AttrCustomID: false,
@@ -1292,17 +1292,17 @@ a paragraph`
 
 		It("header invalid - too many spaces", func() {
 			source := "======= a header"
-			expected := &types.Document{
+			expected := types.Document{
 				Attributes:         types.DocumentAttributes{},
 				ElementReferences:  types.ElementReferences{},
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
-					&types.Paragraph{
+					types.Paragraph{
 						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
 							{
-								&types.StringElement{Content: "======= a header"},
+								types.StringElement{Content: "======= a header"},
 							},
 						},
 					},
@@ -1312,17 +1312,17 @@ a paragraph`
 
 		It("header invalid - missing space", func() {
 			source := "=a header"
-			expected := &types.Document{
+			expected := types.Document{
 				Attributes:         types.DocumentAttributes{},
 				ElementReferences:  types.ElementReferences{},
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
-					&types.Paragraph{
+					types.Paragraph{
 						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
 							{
-								&types.StringElement{Content: "=a header"},
+								types.StringElement{Content: "=a header"},
 							},
 						},
 					},
@@ -1332,13 +1332,13 @@ a paragraph`
 
 		It("header invalid - header space", func() {
 			source := " = a header with a prefix space"
-			expected := &types.Document{
+			expected := types.Document{
 				Attributes:         types.DocumentAttributes{},
 				ElementReferences:  types.ElementReferences{},
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
-					&types.LiteralBlock{
+					types.LiteralBlock{
 						Attributes: types.ElementAttributes{
 							types.AttrKind:             types.Literal,
 							types.AttrLiteralBlockType: types.LiteralBlockWithSpacesOnFirstLine,
@@ -1357,16 +1357,16 @@ a paragraph`
 
  == section with prefix space`
 			title := types.InlineElements{
-				&types.StringElement{Content: "a header"},
+				types.StringElement{Content: "a header"},
 			}
-			expected := &types.Document{
+			expected := types.Document{
 				Attributes: types.DocumentAttributes{},
 				ElementReferences: types.ElementReferences{
 					"a_header": title,
 				}, Footnotes: types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
-					&types.Section{
+					types.Section{
 						Attributes: types.ElementAttributes{
 							types.AttrID:       "a_header",
 							types.AttrCustomID: false,
@@ -1374,7 +1374,7 @@ a paragraph`
 						Level: 0,
 						Title: title,
 						Elements: []interface{}{
-							&types.LiteralBlock{
+							types.LiteralBlock{
 								Attributes: types.ElementAttributes{
 									types.AttrKind:             types.Literal,
 									types.AttrLiteralBlockType: types.LiteralBlockWithSpacesOnFirstLine,
@@ -1398,27 +1398,27 @@ a paragraph`
 			source := `Document Title
 ==============
 Doc Writer <thedoc@asciidoctor.org>`
-			expected := &types.Document{
+			expected := types.Document{
 				Attributes:         types.DocumentAttributes{},
 				ElementReferences:  types.ElementReferences{},
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
-					&types.Paragraph{
+					types.Paragraph{
 						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
 							{
-								&types.StringElement{
+								types.StringElement{
 									Content: "Document Title",
 								},
 							},
 							{
-								&types.StringElement{
+								types.StringElement{
 									Content: "==============",
 								},
 							},
 							{
-								&types.StringElement{
+								types.StringElement{
 									Content: "Doc Writer <thedoc@asciidoctor.org>",
 								},
 							},
