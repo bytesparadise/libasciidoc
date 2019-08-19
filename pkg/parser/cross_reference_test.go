@@ -14,34 +14,34 @@ var _ = Describe("cross-references - preflight", func() {
 == a title
 
 with some content linked to <<thetitle>>!`
-			expected := &types.PreflightDocument{
+			expected := types.PreflightDocument{
 				Blocks: []interface{}{
-					&types.Section{
+					types.Section{
 						Level: 1,
 						Attributes: types.ElementAttributes{
 							types.AttrID:       "thetitle",
 							types.AttrCustomID: true,
 						},
 						Title: types.InlineElements{
-							&types.StringElement{
+							types.StringElement{
 								Content: "a title",
 							},
 						},
 						Elements: []interface{}{},
 					},
-					&types.BlankLine{},
-					&types.Paragraph{
+					types.BlankLine{},
+					types.Paragraph{
 						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
 							{
-								&types.StringElement{
+								types.StringElement{
 									Content: "with some content linked to ",
 								},
-								&types.CrossReference{
+								types.CrossReference{
 									ID:    "thetitle",
 									Label: "",
 								},
-								&types.StringElement{
+								types.StringElement{
 									Content: "!",
 								},
 							},
@@ -57,34 +57,34 @@ with some content linked to <<thetitle>>!`
 == a title
 
 with some content linked to <<thetitle,a label to the title>>!`
-			expected := &types.PreflightDocument{
+			expected := types.PreflightDocument{
 				Blocks: []interface{}{
-					&types.Section{
+					types.Section{
 						Level: 1,
 						Attributes: types.ElementAttributes{
 							types.AttrID:       "thetitle",
 							types.AttrCustomID: true,
 						},
 						Title: types.InlineElements{
-							&types.StringElement{
+							types.StringElement{
 								Content: "a title",
 							},
 						},
 						Elements: []interface{}{},
 					},
-					&types.BlankLine{},
-					&types.Paragraph{
+					types.BlankLine{},
+					types.Paragraph{
 						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
 							{
-								&types.StringElement{
+								types.StringElement{
 									Content: "with some content linked to ",
 								},
-								&types.CrossReference{
+								types.CrossReference{
 									ID:    "thetitle",
 									Label: "a label to the title",
 								},
-								&types.StringElement{
+								types.StringElement{
 									Content: "!",
 								},
 							},
@@ -106,11 +106,11 @@ var _ = Describe("cross-references - document", func() {
 == a title
 
 with some content linked to <<thetitle>>!`
-			expected := &types.Document{
+			expected := types.Document{
 				Attributes: types.DocumentAttributes{},
 				ElementReferences: types.ElementReferences{
 					"thetitle": types.InlineElements{
-						&types.StringElement{
+						types.StringElement{
 							Content: "a title",
 						},
 					},
@@ -118,30 +118,30 @@ with some content linked to <<thetitle>>!`
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
-					&types.Section{
+					types.Section{
 						Level: 1,
 						Attributes: types.ElementAttributes{
 							types.AttrID:       "thetitle",
 							types.AttrCustomID: true,
 						},
 						Title: types.InlineElements{
-							&types.StringElement{
+							types.StringElement{
 								Content: "a title",
 							},
 						},
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{
+										types.StringElement{
 											Content: "with some content linked to ",
 										},
-										&types.CrossReference{
+										types.CrossReference{
 											ID:    "thetitle",
 											Label: "",
 										},
-										&types.StringElement{
+										types.StringElement{
 											Content: "!",
 										},
 									},
@@ -159,11 +159,11 @@ with some content linked to <<thetitle>>!`
 == a title
 
 with some content linked to <<thetitle,a label to the title>>!`
-			expected := &types.Document{
+			expected := types.Document{
 				Attributes: types.DocumentAttributes{},
 				ElementReferences: types.ElementReferences{
 					"thetitle": types.InlineElements{
-						&types.StringElement{
+						types.StringElement{
 							Content: "a title",
 						},
 					},
@@ -171,30 +171,30 @@ with some content linked to <<thetitle,a label to the title>>!`
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
-					&types.Section{
+					types.Section{
 						Level: 1,
 						Attributes: types.ElementAttributes{
 							types.AttrID:       "thetitle",
 							types.AttrCustomID: true,
 						},
 						Title: types.InlineElements{
-							&types.StringElement{
+							types.StringElement{
 								Content: "a title",
 							},
 						},
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{
+										types.StringElement{
 											Content: "with some content linked to ",
 										},
-										&types.CrossReference{
+										types.CrossReference{
 											ID:    "thetitle",
 											Label: "a label to the title",
 										},
-										&types.StringElement{
+										types.StringElement{
 											Content: "!",
 										},
 									},

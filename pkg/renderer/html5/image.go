@@ -11,7 +11,6 @@ import (
 	"github.com/bytesparadise/libasciidoc/pkg/renderer"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 	"github.com/pkg/errors"
-	log "github.com/sirupsen/logrus"
 )
 
 var blockImageTmpl texttemplate.Template
@@ -35,7 +34,7 @@ func init() {
 		})
 }
 
-func renderImageBlock(ctx *renderer.Context, img *types.ImageBlock) ([]byte, error) {
+func renderImageBlock(ctx *renderer.Context, img types.ImageBlock) ([]byte, error) {
 	result := bytes.NewBuffer(nil)
 	title := ""
 	if t := img.Attributes.GetAsString(types.AttrTitle); t != "" {
@@ -64,11 +63,11 @@ func renderImageBlock(ctx *renderer.Context, img *types.ImageBlock) ([]byte, err
 	if err != nil {
 		return nil, errors.Wrapf(err, "unable to render block image")
 	}
-	log.Debugf("rendered block image: %s", result.Bytes())
+	// log.Debugf("rendered block image: %s", result.Bytes())
 	return result.Bytes(), nil
 }
 
-func renderInlineImage(ctx *renderer.Context, img *types.InlineImage) ([]byte, error) {
+func renderInlineImage(ctx *renderer.Context, img types.InlineImage) ([]byte, error) {
 	result := bytes.NewBuffer(nil)
 	err := inlineImageTmpl.Execute(result, struct {
 		Role   string
@@ -90,7 +89,7 @@ func renderInlineImage(ctx *renderer.Context, img *types.InlineImage) ([]byte, e
 	if err != nil {
 		return nil, errors.Wrapf(err, "unable to render inline image")
 	}
-	log.Debugf("rendered inline image: %s", result.Bytes())
+	// log.Debugf("rendered inline image: %s", result.Bytes())
 	return result.Bytes(), nil
 }
 

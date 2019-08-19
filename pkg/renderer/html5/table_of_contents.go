@@ -36,7 +36,7 @@ type TableOfContents struct {
 // TableOfContentsSectionGroup a group of sections in the table of contents
 type TableOfContentsSectionGroup struct {
 	Level    int
-	Elements []*TableOfContentsSection
+	Elements []TableOfContentsSection
 }
 
 // TableOfContentsSection a section in the table of contents
@@ -47,7 +47,7 @@ type TableOfContentsSection struct {
 	Elements template.HTML
 }
 
-func renderTableOfContents(ctx *renderer.Context, m *types.TableOfContentsMacro) ([]byte, error) { //nolint:unparam
+func renderTableOfContents(ctx *renderer.Context, m types.TableOfContentsMacro) ([]byte, error) { //nolint:unparam
 	log.Debug("rendering table of contents...")
 	renderedSections, err := renderTableOfContentsSections(ctx, ctx.Document.Elements, 1)
 	if err != nil {
@@ -64,16 +64,16 @@ func renderTableOfContents(ctx *renderer.Context, m *types.TableOfContentsMacro)
 	if err != nil {
 		return nil, errors.Wrapf(err, "error while rendering table of content")
 	}
-	log.Debugf("rendered TOC: %s", result.Bytes())
+	// log.Debugf("rendered TOC: %s", result.Bytes())
 	return result.Bytes(), nil
 }
 
 func renderTableOfContentsSections(ctx *renderer.Context, elements []interface{}, currentLevel int) (template.HTML, error) {
-	sections := make([]*TableOfContentsSection, 0)
+	sections := make([]TableOfContentsSection, 0)
 	for _, element := range elements {
 		log.Debugf("traversing document element of type %T", element)
 		switch section := element.(type) {
-		case *types.Section:
+		case types.Section:
 			// do not render document header in ToC
 			if section.Level == 0 {
 				return renderTableOfContentsSections(ctx, section.Elements, currentLevel)
@@ -95,7 +95,7 @@ func renderTableOfContentsSections(ctx *renderer.Context, elements []interface{}
 			}
 			id := generateID(ctx, section.Attributes)
 			renderedTitleStr := strings.TrimSpace(string(renderedTitle))
-			sections = append(sections, &TableOfContentsSection{
+			sections = append(sections, TableOfContentsSection{
 				Level:    section.Level,
 				Href:     id,
 				Title:    template.HTML(renderedTitleStr), //nolint: gosec
@@ -118,7 +118,7 @@ func renderTableOfContentsSections(ctx *renderer.Context, elements []interface{}
 	return template.HTML(resultBuf.String()), nil //nolint: gosec
 }
 
-func getTocLevels(doc *types.Document) (int, error) {
+func getTocLevels(doc types.Document) (int, error) {
 	if d, found := types.SearchAttributeDeclaration(doc.Elements, types.AttrTableOfContentsLevels); found {
 		return strconv.Atoi(d.Value)
 	}

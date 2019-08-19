@@ -26,52 +26,52 @@ var _ = Describe("file location", func() {
 			assert.Equal(GinkgoT(), expected, actual)
 		},
 		Entry("'chapter'", "chapter", types.Location{
-			&types.StringElement{
+			types.StringElement{
 				Content: "chapter",
 			},
 		}),
 		Entry("'chapter.adoc'", "chapter.adoc", types.Location{
-			&types.StringElement{
+			types.StringElement{
 				Content: "chapter.adoc",
 			},
 		}),
 		Entry("'chapter-a.adoc'", "chapter-a.adoc", types.Location{
-			&types.StringElement{
+			types.StringElement{
 				Content: "chapter-a.adoc",
 			},
 		}),
 		Entry("'chapter_a.adoc'", "chapter_a.adoc", types.Location{
-			&types.StringElement{
+			types.StringElement{
 				Content: "chapter_a.adoc",
 			},
 		}),
 		Entry("'includes/chapter_a.adoc'", "includes/chapter_a.adoc", types.Location{
-			&types.StringElement{
+			types.StringElement{
 				Content: "includes/chapter_a.adoc",
 			},
 		}),
 		Entry("'chapter-{foo}.adoc'", "chapter-{foo}.adoc", types.Location{
-			&types.StringElement{
+			types.StringElement{
 				Content: "chapter-",
 			},
-			&types.DocumentAttributeSubstitution{
+			types.DocumentAttributeSubstitution{
 				Name: "foo",
 			},
-			&types.StringElement{
+			types.StringElement{
 				Content: ".adoc",
 			},
 		}),
 		Entry("'{includedir}/chapter-{foo}.adoc'", "{includedir}/chapter-{foo}.adoc", types.Location{
-			&types.DocumentAttributeSubstitution{
+			types.DocumentAttributeSubstitution{
 				Name: "includedir",
 			},
-			&types.StringElement{
+			types.StringElement{
 				Content: "/chapter-",
 			},
-			&types.DocumentAttributeSubstitution{
+			types.DocumentAttributeSubstitution{
 				Name: "foo",
 			},
-			&types.StringElement{
+			types.StringElement{
 				Content: ".adoc",
 			},
 		}),
@@ -82,27 +82,27 @@ var _ = Describe("file inclusions - preflight", func() {
 
 	It("should include adoc file without leveloffset", func() {
 		source := "include::includes/chapter-a.adoc[]"
-		expected := &types.PreflightDocument{
+		expected := types.PreflightDocument{
 			Blocks: []interface{}{
-				&types.Section{
+				types.Section{
 					Attributes: types.ElementAttributes{
 						types.AttrID:       "chapter_a",
 						types.AttrCustomID: false,
 					},
 					Level: 0,
 					Title: types.InlineElements{
-						&types.StringElement{
+						types.StringElement{
 							Content: "Chapter A",
 						},
 					},
 					Elements: []interface{}{},
 				},
-				&types.BlankLine{},
-				&types.Paragraph{
+				types.BlankLine{},
+				types.Paragraph{
 					Attributes: types.ElementAttributes{},
 					Lines: []types.InlineElements{
 						{
-							&types.StringElement{
+							types.StringElement{
 								Content: "content",
 							},
 						},
@@ -115,27 +115,27 @@ var _ = Describe("file inclusions - preflight", func() {
 
 	It("should include adoc file with leveloffset", func() {
 		source := "include::includes/chapter-a.adoc[leveloffset=+1]"
-		expected := &types.PreflightDocument{
+		expected := types.PreflightDocument{
 			Blocks: []interface{}{
-				&types.Section{
+				types.Section{
 					Attributes: types.ElementAttributes{
 						types.AttrID:       "chapter_a",
 						types.AttrCustomID: false,
 					},
 					Level: 1,
 					Title: types.InlineElements{
-						&types.StringElement{
+						types.StringElement{
 							Content: "Chapter A",
 						},
 					},
 					Elements: []interface{}{},
 				},
-				&types.BlankLine{},
-				&types.Paragraph{
+				types.BlankLine{},
+				types.Paragraph{
 					Attributes: types.ElementAttributes{},
 					Lines: []types.InlineElements{
 						{
-							&types.StringElement{
+							types.StringElement{
 								Content: "content",
 							},
 						},
@@ -152,28 +152,28 @@ var _ = Describe("file inclusions - preflight", func() {
 			source := "```\n" +
 				"include::includes/chapter-a.adoc[]\n" +
 				"```"
-			expected := &types.PreflightDocument{
+			expected := types.PreflightDocument{
 				Blocks: []interface{}{
-					&types.DelimitedBlock{
+					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{},
 						Kind:       types.Fenced,
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{
+										types.StringElement{
 											Content: "= Chapter A",
 										},
 									},
 								},
 							},
-							&types.BlankLine{},
-							&types.Paragraph{
+							types.BlankLine{},
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{
+										types.StringElement{
 											Content: "content",
 										},
 									},
@@ -190,28 +190,28 @@ var _ = Describe("file inclusions - preflight", func() {
 			source := `----
 include::includes/chapter-a.adoc[]
 ----`
-			expected := &types.PreflightDocument{
+			expected := types.PreflightDocument{
 				Blocks: []interface{}{
-					&types.DelimitedBlock{
+					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{},
 						Kind:       types.Listing,
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{
+										types.StringElement{
 											Content: "= Chapter A",
 										},
 									},
 								},
 							},
-							&types.BlankLine{},
-							&types.Paragraph{
+							types.BlankLine{},
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{
+										types.StringElement{
 											Content: "content",
 										},
 									},
@@ -228,28 +228,28 @@ include::includes/chapter-a.adoc[]
 			source := `====
 include::includes/chapter-a.adoc[]
 ====`
-			expected := &types.PreflightDocument{
+			expected := types.PreflightDocument{
 				Blocks: []interface{}{
-					&types.DelimitedBlock{
+					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{},
 						Kind:       types.Example,
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{
+										types.StringElement{
 											Content: "= Chapter A",
 										},
 									},
 								},
 							},
-							&types.BlankLine{},
-							&types.Paragraph{
+							types.BlankLine{},
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{
+										types.StringElement{
 											Content: "content",
 										},
 									},
@@ -266,28 +266,28 @@ include::includes/chapter-a.adoc[]
 			source := `____
 include::includes/chapter-a.adoc[]
 ____`
-			expected := &types.PreflightDocument{
+			expected := types.PreflightDocument{
 				Blocks: []interface{}{
-					&types.DelimitedBlock{
+					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{},
 						Kind:       types.Quote,
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{
+										types.StringElement{
 											Content: "= Chapter A",
 										},
 									},
 								},
 							},
-							&types.BlankLine{},
-							&types.Paragraph{
+							types.BlankLine{},
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{
+										types.StringElement{
 											Content: "content",
 										},
 									},
@@ -305,30 +305,30 @@ ____`
 ____
 include::includes/chapter-a.adoc[]
 ____`
-			expected := &types.PreflightDocument{
+			expected := types.PreflightDocument{
 				Blocks: []interface{}{
-					&types.DelimitedBlock{
+					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{
 							types.AttrKind: types.Verse,
 						},
 						Kind: types.Verse,
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{
+										types.StringElement{
 											Content: "= Chapter A",
 										},
 									},
 								},
 							},
-							&types.BlankLine{},
-							&types.Paragraph{
+							types.BlankLine{},
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{
+										types.StringElement{
 											Content: "content",
 										},
 									},
@@ -345,28 +345,28 @@ ____`
 			source := `****
 include::includes/chapter-a.adoc[]
 ****`
-			expected := &types.PreflightDocument{
+			expected := types.PreflightDocument{
 				Blocks: []interface{}{
-					&types.DelimitedBlock{
+					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{},
 						Kind:       types.Sidebar,
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{
+										types.StringElement{
 											Content: "= Chapter A",
 										},
 									},
 								},
 							},
-							&types.BlankLine{},
-							&types.Paragraph{
+							types.BlankLine{},
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{
+										types.StringElement{
 											Content: "content",
 										},
 									},
@@ -384,26 +384,26 @@ include::includes/chapter-a.adoc[]
 			source := `++++
 include::includes/chapter-a.adoc[]
 ++++`
-			expected := &types.DelimitedBlock{
+			expected := types.DelimitedBlock{
 				Attributes: types.ElementAttributes{},
 				// Kind:       types.Passthrough,
 				Elements: []interface{}{
-					&types.Paragraph{
+					types.Paragraph{
 						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
 							{
-								&types.StringElement{
+								types.StringElement{
 									Content: "= Chapter A",
 								},
 							},
 						},
 					},
-					&types.BlankLine{},
-					&types.Paragraph{
+					types.BlankLine{},
+					types.Paragraph{
 						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
 							{
-								&types.StringElement{
+								types.StringElement{
 									Content: "content",
 								},
 							},
@@ -421,16 +421,16 @@ include::includes/chapter-a.adoc[]
 
 			It("file inclusion with single unquoted line", func() {
 				source := `include::includes/chapter-a.adoc[lines=1]`
-				expected := &types.PreflightDocument{
+				expected := types.PreflightDocument{
 					Blocks: []interface{}{
-						&types.Section{
+						types.Section{
 							Attributes: types.ElementAttributes{
 								types.AttrID:       "chapter_a",
 								types.AttrCustomID: false,
 							},
 							Level: 0,
 							Title: types.InlineElements{
-								&types.StringElement{
+								types.StringElement{
 									Content: "Chapter A",
 								},
 							},
@@ -443,22 +443,22 @@ include::includes/chapter-a.adoc[]
 
 			It("file inclusion with multiple unquoted lines", func() {
 				source := `include::includes/chapter-a.adoc[lines=1..2]`
-				expected := &types.PreflightDocument{
+				expected := types.PreflightDocument{
 					Blocks: []interface{}{
-						&types.Section{
+						types.Section{
 							Level: 0,
 							Attributes: types.ElementAttributes{
 								types.AttrID:       "chapter_a",
 								types.AttrCustomID: false,
 							},
 							Title: types.InlineElements{
-								&types.StringElement{
+								types.StringElement{
 									Content: "Chapter A",
 								},
 							},
 							Elements: []interface{}{},
 						},
-						&types.BlankLine{},
+						types.BlankLine{},
 					},
 				}
 				verifyPreflight(expected, source)
@@ -466,9 +466,9 @@ include::includes/chapter-a.adoc[]
 
 			It("file inclusion with multiple unquoted ranges", func() {
 				source := `include::includes/chapter-a.adoc[lines=1;3..4;6..-1]` // paragraph becomes the author since the in-between blank line is stripped out
-				expected := &types.PreflightDocument{
+				expected := types.PreflightDocument{
 					Blocks: []interface{}{
-						&types.Section{
+						types.Section{
 							Level: 0,
 							Attributes: types.ElementAttributes{
 								types.AttrID:       "chapter_a",
@@ -480,7 +480,7 @@ include::includes/chapter-a.adoc[]
 								},
 							},
 							Title: types.InlineElements{
-								&types.StringElement{
+								types.StringElement{
 									Content: "Chapter A",
 								},
 							},
@@ -493,27 +493,27 @@ include::includes/chapter-a.adoc[]
 
 			It("file inclusion with invalid unquoted range - case 1", func() {
 				source := `include::includes/chapter-a.adoc[lines=1;3..4;6..foo]` // not a number
-				expected := &types.PreflightDocument{
+				expected := types.PreflightDocument{
 					Blocks: []interface{}{
-						&types.Section{
+						types.Section{
 							Level: 0,
 							Attributes: types.ElementAttributes{
 								types.AttrID:       "chapter_a",
 								types.AttrCustomID: false,
 							},
 							Title: types.InlineElements{
-								&types.StringElement{
+								types.StringElement{
 									Content: "Chapter A",
 								},
 							},
 							Elements: []interface{}{},
 						},
-						&types.BlankLine{},
-						&types.Paragraph{
+						types.BlankLine{},
+						types.Paragraph{
 							Attributes: types.ElementAttributes{},
 							Lines: []types.InlineElements{
 								{
-									&types.StringElement{
+									types.StringElement{
 										Content: "content",
 									},
 								},
@@ -526,16 +526,16 @@ include::includes/chapter-a.adoc[]
 
 			It("file inclusion with invalid unquoted range - case 2", func() {
 				source := `include::includes/chapter-a.adoc[lines=1,3..4,6..-1]` // using commas instead of semi-colons
-				expected := &types.PreflightDocument{
+				expected := types.PreflightDocument{
 					Blocks: []interface{}{
-						&types.Section{
+						types.Section{
 							Level: 0,
 							Attributes: types.ElementAttributes{
 								types.AttrID:       "chapter_a",
 								types.AttrCustomID: false,
 							},
 							Title: types.InlineElements{
-								&types.StringElement{
+								types.StringElement{
 									Content: "Chapter A",
 								},
 							},
@@ -551,16 +551,16 @@ include::includes/chapter-a.adoc[]
 
 			It("file inclusion with single quoted line", func() {
 				source := `include::includes/chapter-a.adoc[lines="1"]`
-				expected := &types.PreflightDocument{
+				expected := types.PreflightDocument{
 					Blocks: []interface{}{
-						&types.Section{
+						types.Section{
 							Level: 0,
 							Attributes: types.ElementAttributes{
 								types.AttrID:       "chapter_a",
 								types.AttrCustomID: false,
 							},
 							Title: types.InlineElements{
-								&types.StringElement{
+								types.StringElement{
 									Content: "Chapter A",
 								},
 							},
@@ -573,22 +573,22 @@ include::includes/chapter-a.adoc[]
 
 			It("file inclusion with multiple quoted lines", func() {
 				source := `include::includes/chapter-a.adoc[lines="1..2"]`
-				expected := &types.PreflightDocument{
+				expected := types.PreflightDocument{
 					Blocks: []interface{}{
-						&types.Section{
+						types.Section{
 							Level: 0,
 							Attributes: types.ElementAttributes{
 								types.AttrID:       "chapter_a",
 								types.AttrCustomID: false,
 							},
 							Title: types.InlineElements{
-								&types.StringElement{
+								types.StringElement{
 									Content: "Chapter A",
 								},
 							},
 							Elements: []interface{}{},
 						},
-						&types.BlankLine{},
+						types.BlankLine{},
 					},
 				}
 				verifyPreflight(expected, source)
@@ -597,9 +597,9 @@ include::includes/chapter-a.adoc[]
 			It("file inclusion with multiple quoted ranges", func() {
 				// here, the `content` paragraph gets attached to the header and becomes the author
 				source := `include::includes/chapter-a.adoc[lines="1,3..4,6..-1"]`
-				expected := &types.PreflightDocument{
+				expected := types.PreflightDocument{
 					Blocks: []interface{}{
-						&types.Section{
+						types.Section{
 							Level: 0,
 							Attributes: types.ElementAttributes{
 								types.AttrID:       "chapter_a",
@@ -611,7 +611,7 @@ include::includes/chapter-a.adoc[]
 								},
 							},
 							Title: types.InlineElements{
-								&types.StringElement{
+								types.StringElement{
 									Content: "Chapter A",
 								},
 							},
@@ -624,27 +624,27 @@ include::includes/chapter-a.adoc[]
 
 			It("file inclusion with invalid quoted range - case 1", func() {
 				source := `include::includes/chapter-a.adoc[lines="1,3..4,6..foo"]` // not a number
-				expected := &types.PreflightDocument{
+				expected := types.PreflightDocument{
 					Blocks: []interface{}{
-						&types.Section{
+						types.Section{
 							Level: 0,
 							Attributes: types.ElementAttributes{
 								types.AttrID:       "chapter_a",
 								types.AttrCustomID: false,
 							},
 							Title: types.InlineElements{
-								&types.StringElement{
+								types.StringElement{
 									Content: "Chapter A",
 								},
 							},
 							Elements: []interface{}{},
 						},
-						&types.BlankLine{},
-						&types.Paragraph{
+						types.BlankLine{},
+						types.Paragraph{
 							Attributes: types.ElementAttributes{},
 							Lines: []types.InlineElements{
 								{
-									&types.StringElement{
+									types.StringElement{
 										Content: "content",
 									},
 								},
@@ -657,27 +657,27 @@ include::includes/chapter-a.adoc[]
 
 			It("file inclusion with invalid quoted range - case 2", func() {
 				source := `include::includes/chapter-a.adoc[lines="1;3..4;6..10"]` // using semi-colons instead of commas
-				expected := &types.PreflightDocument{
+				expected := types.PreflightDocument{
 					Blocks: []interface{}{
-						&types.Section{
+						types.Section{
 							Level: 0,
 							Attributes: types.ElementAttributes{
 								types.AttrID:       "chapter_a",
 								types.AttrCustomID: false,
 							},
 							Title: types.InlineElements{
-								&types.StringElement{
+								types.StringElement{
 									Content: "Chapter A",
 								},
 							},
 							Elements: []interface{}{},
 						},
-						&types.BlankLine{},
-						&types.Paragraph{
+						types.BlankLine{},
+						types.Paragraph{
 							Attributes: types.ElementAttributes{},
 							Lines: []types.InlineElements{
 								{
-									&types.StringElement{
+									types.StringElement{
 										Content: "content",
 									},
 								},
@@ -694,13 +694,13 @@ include::includes/chapter-a.adoc[]
 
 		It("should replace with string element if directory does not exist in standalone block", func() {
 			source := `include::{unknown}/unknown.adoc[leveloffset=+1]`
-			expected := &types.PreflightDocument{
+			expected := types.PreflightDocument{
 				Blocks: []interface{}{
-					&types.Paragraph{
+					types.Paragraph{
 						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
 							{
-								&types.StringElement{
+								types.StringElement{
 									Content: "Unresolved directive in test.adoc - include::{unknown}/unknown.adoc[leveloffset=+1]",
 								},
 							},
@@ -714,13 +714,13 @@ include::includes/chapter-a.adoc[]
 
 		It("should replace with string element if file is missing in standalone block", func() {
 			source := `include::includes/unknown.adoc[leveloffset=+1]`
-			expected := &types.PreflightDocument{
+			expected := types.PreflightDocument{
 				Blocks: []interface{}{
-					&types.Paragraph{
+					types.Paragraph{
 						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
 							{
-								&types.StringElement{
+								types.StringElement{
 									Content: "Unresolved directive in test.adoc - include::includes/unknown.adoc[leveloffset=+1]",
 								},
 							},
@@ -736,17 +736,17 @@ include::includes/chapter-a.adoc[]
 			source := `----
 include::includes/unknown.adoc[leveloffset=+1]
 ----`
-			expected := &types.PreflightDocument{
+			expected := types.PreflightDocument{
 				Blocks: []interface{}{
-					&types.DelimitedBlock{
+					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{},
 						Kind:       types.Listing,
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{
+										types.StringElement{
 											Content: "Unresolved directive in test.adoc - include::includes/unknown.adoc[leveloffset=+1]",
 										},
 									},
@@ -767,29 +767,29 @@ include::includes/unknown.adoc[leveloffset=+1]
 			source := `:includedir: ./includes
 			
 include::{includedir}/grandchild-include.adoc[]`
-			expected := &types.PreflightDocument{
+			expected := types.PreflightDocument{
 				Blocks: []interface{}{
-					&types.DocumentAttributeDeclaration{
+					types.DocumentAttributeDeclaration{
 						Name:  "includedir",
 						Value: "./includes",
 					},
-					&types.BlankLine{},
-					&types.Paragraph{
+					types.BlankLine{},
+					types.Paragraph{
 						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
 							{
-								&types.StringElement{
+								types.StringElement{
 									Content: "first line of grandchild",
 								},
 							},
 						},
 					},
-					&types.BlankLine{},
-					&types.Paragraph{
+					types.BlankLine{},
+					types.Paragraph{
 						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
 							{
-								&types.StringElement{
+								types.StringElement{
 									Content: "last line of grandchild",
 								},
 							},
@@ -806,33 +806,33 @@ include::{includedir}/grandchild-include.adoc[]`
 ----
 include::{includedir}/grandchild-include.adoc[]
 ----`
-			expected := &types.PreflightDocument{
+			expected := types.PreflightDocument{
 				Blocks: []interface{}{
-					&types.DocumentAttributeDeclaration{
+					types.DocumentAttributeDeclaration{
 						Name:  "includedir",
 						Value: "./includes",
 					},
-					&types.BlankLine{},
-					&types.DelimitedBlock{
+					types.BlankLine{},
+					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{},
 						Kind:       types.Listing,
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{
+										types.StringElement{
 											Content: "first line of grandchild",
 										},
 									},
 								},
 							},
-							&types.BlankLine{},
-							&types.Paragraph{
+							types.BlankLine{},
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{
+										types.StringElement{
 											Content: "last line of grandchild",
 										},
 									},
@@ -853,49 +853,49 @@ include::{includedir}/grandchild-include.adoc[]
 			source := `----
 include::includes/hello_world.go[] 
 ----`
-			expected := &types.PreflightDocument{
+			expected := types.PreflightDocument{
 				Blocks: []interface{}{
-					&types.DelimitedBlock{
+					types.DelimitedBlock{
 						Kind:       types.Listing,
 						Attributes: types.ElementAttributes{},
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{
+										types.StringElement{
 											Content: `package includes`,
 										},
 									},
 								},
 							},
-							&types.BlankLine{},
-							&types.Paragraph{
+							types.BlankLine{},
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{
+										types.StringElement{
 											Content: `import "fmt"`,
 										},
 									},
 								},
 							},
-							&types.BlankLine{},
-							&types.Paragraph{
+							types.BlankLine{},
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{
+										types.StringElement{
 											Content: `func helloworld() {`,
 										},
 									},
 									{
-										&types.StringElement{
+										types.StringElement{
 											Content: `	fmt.Println("hello, world!")`,
 										},
 									},
 									{
-										&types.StringElement{
+										types.StringElement{
 											Content: `}`,
 										},
 									},
@@ -914,14 +914,14 @@ var _ = Describe("file inclusions - ignored at preflight", func() {
 
 	It("should include adoc file with leveloffset attribute", func() {
 		source := "include::includes/chapter-a.adoc[leveloffset=+1]"
-		expected := &types.PreflightDocument{
+		expected := types.PreflightDocument{
 			Blocks: []interface{}{
-				&types.FileInclusion{
+				types.FileInclusion{
 					Attributes: types.ElementAttributes{
 						types.AttrLevelOffset: "+1",
 					},
 					Location: types.Location{
-						&types.StringElement{
+						types.StringElement{
 							Content: "includes/chapter-a.adoc",
 						},
 					},
@@ -938,16 +938,16 @@ var _ = Describe("file inclusions - ignored at preflight", func() {
 			source := "```\n" +
 				"include::includes/chapter-a.adoc[]\n" +
 				"```"
-			expected := &types.PreflightDocument{
+			expected := types.PreflightDocument{
 				Blocks: []interface{}{
-					&types.DelimitedBlock{
+					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{},
 						Kind:       types.Fenced,
 						Elements: []interface{}{
-							&types.FileInclusion{
+							types.FileInclusion{
 								Attributes: types.ElementAttributes{},
 								Location: types.Location{
-									&types.StringElement{
+									types.StringElement{
 										Content: "includes/chapter-a.adoc",
 									},
 								},
@@ -964,16 +964,16 @@ var _ = Describe("file inclusions - ignored at preflight", func() {
 			source := `----
 include::includes/chapter-a.adoc[]
 ----`
-			expected := &types.PreflightDocument{
+			expected := types.PreflightDocument{
 				Blocks: []interface{}{
-					&types.DelimitedBlock{
+					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{},
 						Kind:       types.Listing,
 						Elements: []interface{}{
-							&types.FileInclusion{
+							types.FileInclusion{
 								Attributes: types.ElementAttributes{},
 								Location: types.Location{
-									&types.StringElement{
+									types.StringElement{
 										Content: "includes/chapter-a.adoc",
 									},
 								},
@@ -990,16 +990,16 @@ include::includes/chapter-a.adoc[]
 			source := `====
 include::includes/chapter-a.adoc[]
 ====`
-			expected := &types.PreflightDocument{
+			expected := types.PreflightDocument{
 				Blocks: []interface{}{
-					&types.DelimitedBlock{
+					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{},
 						Kind:       types.Example,
 						Elements: []interface{}{
-							&types.FileInclusion{
+							types.FileInclusion{
 								Attributes: types.ElementAttributes{},
 								Location: types.Location{
-									&types.StringElement{
+									types.StringElement{
 										Content: "includes/chapter-a.adoc",
 									},
 								},
@@ -1016,16 +1016,16 @@ include::includes/chapter-a.adoc[]
 			source := `____
 include::includes/chapter-a.adoc[]
 ____`
-			expected := &types.PreflightDocument{
+			expected := types.PreflightDocument{
 				Blocks: []interface{}{
-					&types.DelimitedBlock{
+					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{},
 						Kind:       types.Quote,
 						Elements: []interface{}{
-							&types.FileInclusion{
+							types.FileInclusion{
 								Attributes: types.ElementAttributes{},
 								Location: types.Location{
-									&types.StringElement{
+									types.StringElement{
 										Content: "includes/chapter-a.adoc",
 									},
 								},
@@ -1043,18 +1043,18 @@ ____`
 ____
 include::includes/chapter-a.adoc[]
 ____`
-			expected := &types.PreflightDocument{
+			expected := types.PreflightDocument{
 				Blocks: []interface{}{
-					&types.DelimitedBlock{
+					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{
 							types.AttrKind: types.Verse,
 						},
 						Kind: types.Verse,
 						Elements: []interface{}{
-							&types.FileInclusion{
+							types.FileInclusion{
 								Attributes: types.ElementAttributes{},
 								Location: types.Location{
-									&types.StringElement{
+									types.StringElement{
 										Content: "includes/chapter-a.adoc",
 									},
 								},
@@ -1071,16 +1071,16 @@ ____`
 			source := `****
 include::includes/chapter-a.adoc[]
 ****`
-			expected := &types.PreflightDocument{
+			expected := types.PreflightDocument{
 				Blocks: []interface{}{
-					&types.DelimitedBlock{
+					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{},
 						Kind:       types.Sidebar,
 						Elements: []interface{}{
-							&types.FileInclusion{
+							types.FileInclusion{
 								Attributes: types.ElementAttributes{},
 								Location: types.Location{
-									&types.StringElement{
+									types.StringElement{
 										Content: "includes/chapter-a.adoc",
 									},
 								},
@@ -1098,16 +1098,16 @@ include::includes/chapter-a.adoc[]
 			source := `++++
 include::includes/chapter-a.adoc[]
 ++++`
-			expected := &types.PreflightDocument{
+			expected := types.PreflightDocument{
 				Blocks: []interface{}{
-					&types.DelimitedBlock{
+					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{},
 						// Kind:       types.Passthrough,
 						Elements: []interface{}{
-							&types.FileInclusion{
+							types.FileInclusion{
 								Attributes: types.ElementAttributes{},
 								Location: types.Location{
-									&types.StringElement{
+									types.StringElement{
 										Content: "includes/chapter-a.adoc",
 									},
 								},
@@ -1127,16 +1127,16 @@ include::includes/chapter-a.adoc[]
 
 			It("file inclusion with single unquoted line", func() {
 				source := `include::includes/chapter-a.adoc[lines=1]`
-				expected := &types.PreflightDocument{
+				expected := types.PreflightDocument{
 					Blocks: []interface{}{
-						&types.FileInclusion{
+						types.FileInclusion{
 							Attributes: types.ElementAttributes{
 								types.AttrLineRanges: types.LineRanges{
 									{Start: 1, End: 1},
 								},
 							},
 							Location: types.Location{
-								&types.StringElement{
+								types.StringElement{
 									Content: "includes/chapter-a.adoc",
 								},
 							},
@@ -1149,16 +1149,16 @@ include::includes/chapter-a.adoc[]
 
 			It("file inclusion with multiple unquoted lines", func() {
 				source := `include::includes/chapter-a.adoc[lines=1..2]`
-				expected := &types.PreflightDocument{
+				expected := types.PreflightDocument{
 					Blocks: []interface{}{
-						&types.FileInclusion{
+						types.FileInclusion{
 							Attributes: types.ElementAttributes{
 								types.AttrLineRanges: types.LineRanges{
 									{Start: 1, End: 2},
 								},
 							},
 							Location: types.Location{
-								&types.StringElement{
+								types.StringElement{
 									Content: "includes/chapter-a.adoc",
 								},
 							},
@@ -1171,9 +1171,9 @@ include::includes/chapter-a.adoc[]
 
 			It("file inclusion with multiple unquoted ranges", func() {
 				source := `include::includes/chapter-a.adoc[lines=1;3..4;6..-1]`
-				expected := &types.PreflightDocument{
+				expected := types.PreflightDocument{
 					Blocks: []interface{}{
-						&types.FileInclusion{
+						types.FileInclusion{
 							Attributes: types.ElementAttributes{
 								types.AttrLineRanges: types.LineRanges{
 									{Start: 1, End: 1},
@@ -1182,7 +1182,7 @@ include::includes/chapter-a.adoc[]
 								},
 							},
 							Location: types.Location{
-								&types.StringElement{
+								types.StringElement{
 									Content: "includes/chapter-a.adoc",
 								},
 							},
@@ -1195,14 +1195,14 @@ include::includes/chapter-a.adoc[]
 
 			It("file inclusion with invalid unquoted range - case 1", func() {
 				source := `include::includes/chapter-a.adoc[lines=1;3..4;6..foo]` // not a number
-				expected := &types.PreflightDocument{
+				expected := types.PreflightDocument{
 					Blocks: []interface{}{
-						&types.FileInclusion{
+						types.FileInclusion{
 							Attributes: types.ElementAttributes{
 								types.AttrLineRanges: `1;3..4;6..foo`,
 							},
 							Location: types.Location{
-								&types.StringElement{
+								types.StringElement{
 									Content: "includes/chapter-a.adoc",
 								},
 							},
@@ -1215,9 +1215,9 @@ include::includes/chapter-a.adoc[]
 
 			It("file inclusion with invalid unquoted range - case 2", func() {
 				source := `include::includes/chapter-a.adoc[lines=1,3..4,6..-1]` // using commas instead of semi-colons
-				expected := &types.PreflightDocument{
+				expected := types.PreflightDocument{
 					Blocks: []interface{}{
-						&types.FileInclusion{
+						types.FileInclusion{
 							Attributes: types.ElementAttributes{
 								types.AttrLineRanges: types.LineRanges{
 									{Start: 1, End: 1},
@@ -1226,7 +1226,7 @@ include::includes/chapter-a.adoc[]
 								"6..-1": nil,
 							},
 							Location: types.Location{
-								&types.StringElement{
+								types.StringElement{
 									Content: "includes/chapter-a.adoc",
 								},
 							},
@@ -1239,14 +1239,14 @@ include::includes/chapter-a.adoc[]
 
 			It("file inclusion with invalid unquoted range - case 3", func() {
 				source := `include::includes/chapter-a.adoc[lines=foo]` // using commas instead of semi-colons
-				expected := &types.PreflightDocument{
+				expected := types.PreflightDocument{
 					Blocks: []interface{}{
-						&types.FileInclusion{
+						types.FileInclusion{
 							Attributes: types.ElementAttributes{
 								types.AttrLineRanges: "foo",
 							},
 							Location: types.Location{
-								&types.StringElement{
+								types.StringElement{
 									Content: "includes/chapter-a.adoc",
 								},
 							},
@@ -1262,16 +1262,16 @@ include::includes/chapter-a.adoc[]
 
 			It("file inclusion with single quoted line", func() {
 				source := `include::includes/chapter-a.adoc[lines="1"]`
-				expected := &types.PreflightDocument{
+				expected := types.PreflightDocument{
 					Blocks: []interface{}{
-						&types.FileInclusion{
+						types.FileInclusion{
 							Attributes: types.ElementAttributes{
 								types.AttrLineRanges: types.LineRanges{
 									{Start: 1, End: 1},
 								},
 							},
 							Location: types.Location{
-								&types.StringElement{
+								types.StringElement{
 									Content: "includes/chapter-a.adoc",
 								},
 							},
@@ -1284,16 +1284,16 @@ include::includes/chapter-a.adoc[]
 
 			It("file inclusion with multiple quoted lines", func() {
 				source := `include::includes/chapter-a.adoc[lines="1..2"]`
-				expected := &types.PreflightDocument{
+				expected := types.PreflightDocument{
 					Blocks: []interface{}{
-						&types.FileInclusion{
+						types.FileInclusion{
 							Attributes: types.ElementAttributes{
 								types.AttrLineRanges: types.LineRanges{
 									{Start: 1, End: 2},
 								},
 							},
 							Location: types.Location{
-								&types.StringElement{
+								types.StringElement{
 									Content: "includes/chapter-a.adoc",
 								},
 							},
@@ -1306,9 +1306,9 @@ include::includes/chapter-a.adoc[]
 
 			It("file inclusion with multiple quoted ranges", func() {
 				source := `include::includes/chapter-a.adoc[lines="1,3..4,6..-1"]`
-				expected := &types.PreflightDocument{
+				expected := types.PreflightDocument{
 					Blocks: []interface{}{
-						&types.FileInclusion{
+						types.FileInclusion{
 							Attributes: types.ElementAttributes{
 								types.AttrLineRanges: types.LineRanges{
 									{Start: 1, End: 1},
@@ -1317,7 +1317,7 @@ include::includes/chapter-a.adoc[]
 								},
 							},
 							Location: types.Location{
-								&types.StringElement{
+								types.StringElement{
 									Content: "includes/chapter-a.adoc",
 								},
 							},
@@ -1330,16 +1330,16 @@ include::includes/chapter-a.adoc[]
 
 			It("file inclusion with invalid quoted range - case 1", func() {
 				source := `include::includes/chapter-a.adoc[lines="1,3..4,6..foo"]` // not a number
-				expected := &types.PreflightDocument{
+				expected := types.PreflightDocument{
 					Blocks: []interface{}{
-						&types.FileInclusion{
+						types.FileInclusion{
 							Attributes: types.ElementAttributes{
 								types.AttrLineRanges: `"1`, // viewed as a string
 								"3..4":               nil,
 								"6..foo":             nil,
 							},
 							Location: types.Location{
-								&types.StringElement{
+								types.StringElement{
 									Content: "includes/chapter-a.adoc",
 								},
 							},
@@ -1352,14 +1352,14 @@ include::includes/chapter-a.adoc[]
 
 			It("file inclusion with invalid quoted range - case 2", func() {
 				source := `include::includes/chapter-a.adoc[lines="1;3..4;6..10"]` // using semi-colons instead of commas
-				expected := &types.PreflightDocument{
+				expected := types.PreflightDocument{
 					Blocks: []interface{}{
-						&types.FileInclusion{
+						types.FileInclusion{
 							Attributes: types.ElementAttributes{
 								types.AttrLineRanges: `"1;3..4;6..10"`,
 							},
 							Location: types.Location{
-								&types.StringElement{
+								types.StringElement{
 									Content: "includes/chapter-a.adoc",
 								},
 							},

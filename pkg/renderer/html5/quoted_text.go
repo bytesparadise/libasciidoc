@@ -8,7 +8,6 @@ import (
 	"github.com/bytesparadise/libasciidoc/pkg/renderer"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 	"github.com/pkg/errors"
-	log "github.com/sirupsen/logrus"
 )
 
 var boldTextTmpl texttemplate.Template
@@ -26,7 +25,7 @@ func init() {
 	superscriptTextTmpl = newTextTemplate("superscript text", "<sup>{{ . }}</sup>")
 }
 
-func renderQuotedText(ctx *renderer.Context, t *types.QuotedText) ([]byte, error) {
+func renderQuotedText(ctx *renderer.Context, t types.QuotedText) ([]byte, error) {
 	elementsBuffer := bytes.NewBuffer(nil)
 	for _, element := range t.Elements {
 		b, err := renderElement(ctx, element)
@@ -58,6 +57,6 @@ func renderQuotedText(ctx *renderer.Context, t *types.QuotedText) ([]byte, error
 	if err != nil {
 		return nil, errors.Wrapf(err, "unable to render monospaced quote")
 	}
-	log.Debugf("rendered bold quote: %s", result.Bytes())
+	// log.Debugf("rendered bold quote: %s", result.Bytes())
 	return result.Bytes(), nil
 }

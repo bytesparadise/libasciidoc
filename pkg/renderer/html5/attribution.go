@@ -10,13 +10,13 @@ type Attribution struct {
 
 // NewParagraphAttribution return a new attribution for the given paragraph.
 // Can be empty if no attribution was specified.
-func NewParagraphAttribution(p *types.Paragraph) Attribution {
+func NewParagraphAttribution(p types.Paragraph) Attribution {
 	return newAttribution(p.Attributes)
 }
 
 // NewDelimitedBlockAttribution return a new attribution for the given delimited block.
 // Can be empty if no attribution was specified.
-func NewDelimitedBlockAttribution(b *types.DelimitedBlock) Attribution {
+func NewDelimitedBlockAttribution(b types.DelimitedBlock) Attribution {
 	return newAttribution(b.Attributes)
 }
 

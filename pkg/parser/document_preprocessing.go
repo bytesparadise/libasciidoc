@@ -22,7 +22,7 @@ type ContextKey string
 const LevelOffset ContextKey = "leveloffset"
 
 // ParsePreflightDocument parses a document's content and applies the preprocessing directives (file inclusions)
-func ParsePreflightDocument(filename string, r io.Reader, opts ...Option) (*types.PreflightDocument, error) {
+func ParsePreflightDocument(filename string, r io.Reader, opts ...Option) (types.PreflightDocument, error) {
 	// opts = append(opts, Entrypoint("PreflightDocument"), Memoize(true), Recover(false))
 	// if os.Getenv("DEBUG") == "true" {
 	// 	opts = append(opts, Debug(true))
@@ -42,16 +42,16 @@ func ParsePreflightDocument(filename string, r io.Reader, opts ...Option) (*type
 	return parsePreflightDocument(filename, r, "", opts...)
 }
 
-func parsePreflightDocument(filename string, r io.Reader, levelOffset string, opts ...Option) (*types.PreflightDocument, error) {
+func parsePreflightDocument(filename string, r io.Reader, levelOffset string, opts ...Option) (types.PreflightDocument, error) {
 	d, err := ParseReader(filename, r, opts...)
 	if err != nil {
-		return nil, err
+		return types.PreflightDocument{}, err
 	}
-	doc := d.(*types.PreflightDocument)
+	doc := d.(types.PreflightDocument)
 	attrs := types.DocumentAttributes{}
 	blocks, err := parseElements(filename, doc.Blocks, attrs, levelOffset, opts...)
 	if err != nil {
-		return nil, err
+		return types.PreflightDocument{}, err
 	}
 	doc.Blocks = blocks
 	return doc, nil
@@ -62,10 +62,10 @@ func parseElements(filename string, elements []interface{}, attrs types.Document
 	result := []interface{}{}
 	for _, e := range elements {
 		switch e := e.(type) {
-		case *types.DocumentAttributeDeclaration:
+		case types.DocumentAttributeDeclaration:
 			attrs[e.Name] = e.Value
 			result = append(result, e)
-		case *types.FileInclusion:
+		case types.FileInclusion:
 			// read the file and include its content
 			embedded, err := parseFileToInclude(e, attrs, opts...)
 			if err != nil {
@@ -73,19 +73,19 @@ func parseElements(filename string, elements []interface{}, attrs types.Document
 				log.Errorf("failed to include file '%s': %v", e.Location, err)
 			}
 			result = append(result, embedded.Blocks...)
-		case *types.DelimitedBlock:
+		case types.DelimitedBlock:
 			elmts, err := parseElements(filename, e.Elements, attrs, levelOffset,
 				// use a new var to avoid overridding the current one which needs to stay as-is for the rest of the doc parsing
 				append(opts, Entrypoint("PreflightDocumentWithinDelimitedBlock"))...)
 			if err != nil {
 				return nil, err
 			}
-			result = append(result, &types.DelimitedBlock{
+			result = append(result, types.DelimitedBlock{
 				Attributes: e.Attributes,
 				Kind:       e.Kind,
 				Elements:   elmts,
 			})
-		case *types.Section:
+		case types.Section:
 			if levelOffset != "" {
 				log.Debugf("applying level offset '%s'", levelOffset)
 				offset, err := strconv.Atoi(levelOffset)
@@ -112,19 +112,19 @@ func init() {
 	}
 }
 
-func invalidFileErrMsg(incl *types.FileInclusion) (*types.PreflightDocument, error) {
+func invalidFileErrMsg(incl types.FileInclusion) (types.PreflightDocument, error) {
 	buf := bytes.NewBuffer(nil)
 	err := invalidFileTmpl.Execute(buf, incl.RawText)
 	if err != nil {
-		return nil, err
+		return types.PreflightDocument{}, err
 	}
-	return &types.PreflightDocument{
+	return types.PreflightDocument{
 		Blocks: []interface{}{
-			&types.Paragraph{
+			types.Paragraph{
 				Attributes: types.ElementAttributes{},
 				Lines: []types.InlineElements{
 					{
-						&types.StringElement{
+						types.StringElement{
 							Content: buf.String(),
 						},
 					},
@@ -134,7 +134,7 @@ func invalidFileErrMsg(incl *types.FileInclusion) (*types.PreflightDocument, err
 	}, nil
 }
 
-func parseFileToInclude(incl *types.FileInclusion, attrs types.DocumentAttributes, opts ...Option) (*types.PreflightDocument, error) {
+func parseFileToInclude(incl types.FileInclusion, attrs types.DocumentAttributes, opts ...Option) (types.PreflightDocument, error) {
 	path := incl.Location.Resolve(attrs)
 	log.Debugf("parsing '%s'...", path)
 	// manage new working directory based on the file's location
@@ -143,7 +143,7 @@ func parseFileToInclude(incl *types.FileInclusion, attrs types.DocumentAttribute
 	return parseAsciidocFile(incl, path, opts...)
 }
 
-func parseAsciidocFile(incl *types.FileInclusion, path string, opts ...Option) (*types.PreflightDocument, error) {
+func parseAsciidocFile(incl types.FileInclusion, path string, opts ...Option) (types.PreflightDocument, error) {
 	f, absPath, done, err := open(path)
 	defer done()
 	if err != nil {
@@ -172,7 +172,7 @@ func parseAsciidocFile(incl *types.FileInclusion, path string, opts ...Option) (
 	if err := scanner.Err(); err != nil {
 		msg, err2 := invalidFileErrMsg(incl)
 		if err2 != nil {
-			return nil, err2
+			return types.PreflightDocument{}, err2
 		}
 		return msg, errors.Wrap(err, "unable to read file to include")
 	}

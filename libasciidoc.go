@@ -49,7 +49,7 @@ func ConvertToHTML(ctx context.Context, r io.Reader, output io.Writer, options .
 	return convertToHTML(ctx, doc, output, options...)
 }
 
-func convertToHTML(ctx context.Context, doc *types.Document, output io.Writer, options ...renderer.Option) (map[string]interface{}, error) {
+func convertToHTML(ctx context.Context, doc types.Document, output io.Writer, options ...renderer.Option) (map[string]interface{}, error) {
 	start := time.Now()
 	rendererCtx := renderer.Wrap(ctx, doc, options...)
 	// insert tables of contents, preamble and process file inclusions

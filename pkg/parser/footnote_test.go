@@ -21,21 +21,21 @@ var _ = Describe("footnotes - preflight", func() {
 			footnote1 := types.Footnote{
 				ID: 0,
 				Elements: types.InlineElements{
-					&types.StringElement{
+					types.StringElement{
 						Content: footnoteContent,
 					},
 				},
 			}
-			expected := &types.PreflightDocument{
+			expected := types.PreflightDocument{
 				Blocks: []interface{}{
-					&types.Paragraph{
+					types.Paragraph{
 						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
 							{
-								&types.StringElement{
+								types.StringElement{
 									Content: "foo ",
 								},
-								&footnote1,
+								footnote1,
 							},
 						},
 					},
@@ -49,46 +49,46 @@ var _ = Describe("footnotes - preflight", func() {
 			footnote1 := types.Footnote{
 				ID: 0,
 				Elements: types.InlineElements{
-					&types.StringElement{
+					types.StringElement{
 						Content: "some ",
 					},
-					&types.QuotedText{
+					types.QuotedText{
 						Kind: types.Bold,
 						Elements: types.InlineElements{
-							&types.StringElement{
+							types.StringElement{
 								Content: "rich",
 							},
 						},
 					},
-					&types.StringElement{
+					types.StringElement{
 						Content: " ",
 					},
-					&types.InlineLink{
+					types.InlineLink{
 						Attributes: types.ElementAttributes{
 							types.AttrInlineLinkText: types.InlineElements{
-								&types.StringElement{
+								types.StringElement{
 									Content: "content",
 								},
 							},
 						},
 						Location: types.Location{
-							&types.StringElement{
+							types.StringElement{
 								Content: "https://foo.com",
 							},
 						},
 					},
 				},
 			}
-			expected := &types.PreflightDocument{
+			expected := types.PreflightDocument{
 				Blocks: []interface{}{
-					&types.Paragraph{
+					types.Paragraph{
 						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
 							{
-								&types.StringElement{
+								types.StringElement{
 									Content: "foo ",
 								},
-								&footnote1,
+								footnote1,
 							},
 						},
 					},
@@ -99,19 +99,19 @@ var _ = Describe("footnotes - preflight", func() {
 
 		It("footnote in a paragraph", func() {
 			source := `This is another paragraph.footnote:[I am footnote text and will be displayed at the bottom of the article.]`
-			expected := &types.PreflightDocument{
+			expected := types.PreflightDocument{
 				Blocks: []interface{}{
-					&types.Paragraph{
+					types.Paragraph{
 						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
 							{
-								&types.StringElement{
+								types.StringElement{
 									Content: "This is another paragraph.",
 								},
-								&types.Footnote{
+								types.Footnote{
 									ID: 0,
 									Elements: types.InlineElements{
-										&types.StringElement{
+										types.StringElement{
 											Content: "I am footnote text and will be displayed at the bottom of the article.",
 										},
 									},
@@ -136,7 +136,7 @@ var _ = Describe("footnotes - preflight", func() {
 				ID:  0,
 				Ref: footnoteRef,
 				Elements: types.InlineElements{
-					&types.StringElement{
+					types.StringElement{
 						Content: footnoteContent,
 					},
 				},
@@ -146,21 +146,21 @@ var _ = Describe("footnotes - preflight", func() {
 				Ref:      footnoteRef,
 				Elements: types.InlineElements{},
 			}
-			expected := &types.PreflightDocument{
+			expected := types.PreflightDocument{
 				Blocks: []interface{}{
-					&types.Paragraph{
+					types.Paragraph{
 						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
 							{
-								&types.StringElement{
+								types.StringElement{
 									Content: "foo ",
 								},
-								&footnote1,
-								&types.StringElement{
+								footnote1,
+								types.StringElement{
 									Content: " and ",
 								},
-								&footnote2,
-								&types.StringElement{
+								footnote2,
+								types.StringElement{
 									Content: " again",
 								},
 							},
@@ -180,7 +180,7 @@ var _ = Describe("footnotes - preflight", func() {
 				ID:  0,
 				Ref: footnoteRef1,
 				Elements: types.InlineElements{
-					&types.StringElement{
+					types.StringElement{
 						Content: footnoteContent,
 					},
 				},
@@ -190,21 +190,21 @@ var _ = Describe("footnotes - preflight", func() {
 				Ref:      footnoteRef2,
 				Elements: types.InlineElements{},
 			}
-			expected := &types.PreflightDocument{
+			expected := types.PreflightDocument{
 				Blocks: []interface{}{
-					&types.Paragraph{
+					types.Paragraph{
 						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
 							{
-								&types.StringElement{
+								types.StringElement{
 									Content: "foo ",
 								},
-								&footnote1,
-								&types.StringElement{
+								footnote1,
+								types.StringElement{
 									Content: " and ",
 								},
-								&footnote2,
-								&types.StringElement{
+								footnote2,
+								types.StringElement{
 									Content: " again",
 								},
 							},
@@ -229,7 +229,7 @@ a paragraph with another footnote:[baz]`
 		footnote1 := types.Footnote{
 			ID: 0,
 			Elements: types.InlineElements{
-				&types.StringElement{
+				types.StringElement{
 					Content: "foo",
 				},
 			},
@@ -237,7 +237,7 @@ a paragraph with another footnote:[baz]`
 		footnote2 := types.Footnote{
 			ID: 1,
 			Elements: types.InlineElements{
-				&types.StringElement{
+				types.StringElement{
 					Content: "bar",
 				},
 			},
@@ -245,25 +245,25 @@ a paragraph with another footnote:[baz]`
 		footnote3 := types.Footnote{
 			ID: 2,
 			Elements: types.InlineElements{
-				&types.StringElement{
+				types.StringElement{
 					Content: "baz",
 				},
 			},
 		}
 		docTitle := types.InlineElements{
-			&types.StringElement{
+			types.StringElement{
 				Content: "title",
 			},
 		}
 		section1Title := types.InlineElements{
-			&types.StringElement{
+			types.StringElement{
 				Content: "section 1 ",
 			},
-			&footnote2,
+			footnote2,
 		}
-		expected := &types.PreflightDocument{
+		expected := types.PreflightDocument{
 			Blocks: []interface{}{
-				&types.Section{
+				types.Section{
 					Level: 0,
 					Title: docTitle,
 					Attributes: types.ElementAttributes{
@@ -273,24 +273,24 @@ a paragraph with another footnote:[baz]`
 
 					Elements: []interface{}{},
 				},
-				&types.DocumentAttributeDeclaration{
+				types.DocumentAttributeDeclaration{
 					Name:  "idprefix",
 					Value: "id_",
 				},
-				&types.BlankLine{},
-				&types.Paragraph{
+				types.BlankLine{},
+				types.Paragraph{
 					Attributes: types.ElementAttributes{},
 					Lines: []types.InlineElements{
 						{
-							&types.StringElement{
+							types.StringElement{
 								Content: "a premable with a ",
 							},
-							&footnote1,
+							footnote1,
 						},
 					},
 				},
-				&types.BlankLine{},
-				&types.Section{
+				types.BlankLine{},
+				types.Section{
 					Attributes: types.ElementAttributes{
 						types.AttrID:       "section_1",
 						types.AttrCustomID: false,
@@ -299,15 +299,15 @@ a paragraph with another footnote:[baz]`
 					Title:    section1Title,
 					Elements: []interface{}{},
 				},
-				&types.BlankLine{},
-				&types.Paragraph{
+				types.BlankLine{},
+				types.Paragraph{
 					Attributes: types.ElementAttributes{},
 					Lines: []types.InlineElements{
 						{
-							&types.StringElement{
+							types.StringElement{
 								Content: "a paragraph with another ",
 							},
-							&footnote3,
+							footnote3,
 						},
 					},
 				},
@@ -331,27 +331,27 @@ var _ = Describe("footnotes - document", func() {
 			footnote1 := types.Footnote{
 				ID: 0,
 				Elements: types.InlineElements{
-					&types.StringElement{
+					types.StringElement{
 						Content: footnoteContent,
 					},
 				},
 			}
-			expected := &types.Document{
+			expected := types.Document{
 				Attributes:        types.DocumentAttributes{},
 				ElementReferences: types.ElementReferences{},
-				Footnotes: []*types.Footnote{
-					&footnote1,
+				Footnotes: []types.Footnote{
+					footnote1,
 				},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
-					&types.Paragraph{
+					types.Paragraph{
 						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
 							{
-								&types.StringElement{
+								types.StringElement{
 									Content: "foo ",
 								},
-								&footnote1,
+								footnote1,
 							},
 						},
 					},
@@ -365,52 +365,52 @@ var _ = Describe("footnotes - document", func() {
 			footnote1 := types.Footnote{
 				ID: 0,
 				Elements: types.InlineElements{
-					&types.StringElement{
+					types.StringElement{
 						Content: "some ",
 					},
-					&types.QuotedText{
+					types.QuotedText{
 						Kind: types.Bold,
 						Elements: types.InlineElements{
-							&types.StringElement{
+							types.StringElement{
 								Content: "rich",
 							},
 						},
 					},
-					&types.StringElement{
+					types.StringElement{
 						Content: " ",
 					},
-					&types.InlineLink{
+					types.InlineLink{
 						Attributes: types.ElementAttributes{
 							types.AttrInlineLinkText: types.InlineElements{
-								&types.StringElement{
+								types.StringElement{
 									Content: "content",
 								},
 							},
 						},
 						Location: types.Location{
-							&types.StringElement{
+							types.StringElement{
 								Content: "https://foo.com",
 							},
 						},
 					},
 				},
 			}
-			expected := &types.Document{
+			expected := types.Document{
 				Attributes:        types.DocumentAttributes{},
 				ElementReferences: types.ElementReferences{},
-				Footnotes: []*types.Footnote{
-					&footnote1,
+				Footnotes: []types.Footnote{
+					footnote1,
 				},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
-					&types.Paragraph{
+					types.Paragraph{
 						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
 							{
-								&types.StringElement{
+								types.StringElement{
 									Content: "foo ",
 								},
-								&footnote1,
+								footnote1,
 							},
 						},
 					},
@@ -424,27 +424,27 @@ var _ = Describe("footnotes - document", func() {
 			footnote1 := types.Footnote{
 				ID: 0,
 				Elements: types.InlineElements{
-					&types.StringElement{
+					types.StringElement{
 						Content: "I am footnote text and will be displayed at the bottom of the article.",
 					},
 				},
 			}
-			expected := &types.Document{
+			expected := types.Document{
 				Attributes:        types.DocumentAttributes{},
 				ElementReferences: types.ElementReferences{},
-				Footnotes: []*types.Footnote{
-					&footnote1,
+				Footnotes: []types.Footnote{
+					footnote1,
 				},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
-					&types.Paragraph{
+					types.Paragraph{
 						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
 							{
-								&types.StringElement{
+								types.StringElement{
 									Content: "This is another paragraph.",
 								},
-								&footnote1,
+								footnote1,
 							},
 						},
 					},
@@ -465,7 +465,7 @@ var _ = Describe("footnotes - document", func() {
 				ID:  0,
 				Ref: footnoteRef,
 				Elements: types.InlineElements{
-					&types.StringElement{
+					types.StringElement{
 						Content: footnoteContent,
 					},
 				},
@@ -475,29 +475,29 @@ var _ = Describe("footnotes - document", func() {
 				Ref:      footnoteRef,
 				Elements: types.InlineElements{},
 			}
-			expected := &types.Document{
+			expected := types.Document{
 				Attributes:        types.DocumentAttributes{},
 				ElementReferences: types.ElementReferences{},
 				Footnotes: types.Footnotes{
-					&footnote1,
+					footnote1,
 				},
 				FootnoteReferences: types.FootnoteReferences{
-					"ref": &footnote1,
+					"ref": footnote1,
 				},
 				Elements: []interface{}{
-					&types.Paragraph{
+					types.Paragraph{
 						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
 							{
-								&types.StringElement{
+								types.StringElement{
 									Content: "foo ",
 								},
-								&footnote1,
-								&types.StringElement{
+								footnote1,
+								types.StringElement{
 									Content: " and ",
 								},
-								&footnote2,
-								&types.StringElement{
+								footnote2,
+								types.StringElement{
 									Content: " again",
 								},
 							},
@@ -517,7 +517,7 @@ var _ = Describe("footnotes - document", func() {
 				ID:  0,
 				Ref: footnoteRef1,
 				Elements: types.InlineElements{
-					&types.StringElement{
+					types.StringElement{
 						Content: footnoteContent,
 					},
 				},
@@ -527,29 +527,29 @@ var _ = Describe("footnotes - document", func() {
 				Ref:      footnoteRef2,
 				Elements: types.InlineElements{},
 			}
-			expected := &types.Document{
+			expected := types.Document{
 				Attributes:        types.DocumentAttributes{},
 				ElementReferences: types.ElementReferences{},
 				Footnotes: types.Footnotes{
-					&footnote1,
+					footnote1,
 				},
 				FootnoteReferences: types.FootnoteReferences{
-					"ref": &footnote1,
+					"ref": footnote1,
 				},
 				Elements: []interface{}{
-					&types.Paragraph{
+					types.Paragraph{
 						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
 							{
-								&types.StringElement{
+								types.StringElement{
 									Content: "foo ",
 								},
-								&footnote1,
-								&types.StringElement{
+								footnote1,
+								types.StringElement{
 									Content: " and ",
 								},
-								&footnote2,
-								&types.StringElement{
+								footnote2,
+								types.StringElement{
 									Content: " again",
 								},
 							},
@@ -574,7 +574,7 @@ a paragraph with another footnote:[baz]`
 		footnote1 := types.Footnote{
 			ID: 0,
 			Elements: types.InlineElements{
-				&types.StringElement{
+				types.StringElement{
 					Content: "foo",
 				},
 			},
@@ -582,7 +582,7 @@ a paragraph with another footnote:[baz]`
 		footnote2 := types.Footnote{
 			ID: 1,
 			Elements: types.InlineElements{
-				&types.StringElement{
+				types.StringElement{
 					Content: "bar",
 				},
 			},
@@ -590,36 +590,36 @@ a paragraph with another footnote:[baz]`
 		footnote3 := types.Footnote{
 			ID: 2,
 			Elements: types.InlineElements{
-				&types.StringElement{
+				types.StringElement{
 					Content: "baz",
 				},
 			},
 		}
 		docTitle := types.InlineElements{
-			&types.StringElement{
+			types.StringElement{
 				Content: "title",
 			},
 		}
 		section1Title := types.InlineElements{
-			&types.StringElement{
+			types.StringElement{
 				Content: "section 1 ",
 			},
-			&footnote2,
+			footnote2,
 		}
-		expected := &types.Document{
+		expected := types.Document{
 			Attributes: types.DocumentAttributes{},
 			ElementReferences: types.ElementReferences{
 				"title":     docTitle,
 				"section_1": section1Title,
 			},
 			Footnotes: types.Footnotes{
-				&footnote1,
-				&footnote2,
-				&footnote3,
+				footnote1,
+				footnote2,
+				footnote3,
 			},
 			FootnoteReferences: types.FootnoteReferences{},
 			Elements: []interface{}{
-				&types.Section{
+				types.Section{
 					Level: 0,
 					Title: docTitle,
 					Attributes: types.ElementAttributes{
@@ -627,22 +627,22 @@ a paragraph with another footnote:[baz]`
 						types.AttrCustomID: false,
 					},
 					Elements: []interface{}{
-						&types.DocumentAttributeDeclaration{
+						types.DocumentAttributeDeclaration{
 							Name:  "idprefix",
 							Value: "id_",
 						},
-						&types.Paragraph{
+						types.Paragraph{
 							Attributes: types.ElementAttributes{},
 							Lines: []types.InlineElements{
 								{
-									&types.StringElement{
+									types.StringElement{
 										Content: "a premable with a ",
 									},
-									&footnote1,
+									footnote1,
 								},
 							},
 						},
-						&types.Section{
+						types.Section{
 							Attributes: types.ElementAttributes{
 								types.AttrID:       "section_1",
 								types.AttrCustomID: false,
@@ -650,14 +650,14 @@ a paragraph with another footnote:[baz]`
 							Level: 1,
 							Title: section1Title,
 							Elements: []interface{}{
-								&types.Paragraph{
+								types.Paragraph{
 									Attributes: types.ElementAttributes{},
 									Lines: []types.InlineElements{
 										{
-											&types.StringElement{
+											types.StringElement{
 												Content: "a paragraph with another ",
 											},
-											&footnote3,
+											footnote3,
 										},
 									},
 								},

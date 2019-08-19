@@ -58,7 +58,7 @@ func (ctx *Context) LastUpdated() string {
 	return time.Now().Format(LastUpdatedFormat)
 }
 
-// IncludeHeaderFooter returns the value of the 'LastUpdated' Option if it was present,
+// IncludeHeaderFooter returns the value of the 'IncludeHeaderFooter' Option if it was present,
 // otherwise it returns `false`
 func (ctx *Context) IncludeHeaderFooter() bool {
 	if includeHeaderFooter, found := ctx.options[keyIncludeHeaderFooter]; found {

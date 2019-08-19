@@ -9,14 +9,14 @@ var _ = Describe("inline elements", func() {
 
 	It("bold text without parenthesis", func() {
 		source := "*some bold content*"
-		expected := &types.Paragraph{
+		expected := types.Paragraph{
 			Attributes: types.ElementAttributes{},
 			Lines: []types.InlineElements{
 				{
-					&types.QuotedText{
+					types.QuotedText{
 						Kind: types.Bold,
 						Elements: types.InlineElements{
-							&types.StringElement{Content: "some bold content"},
+							types.StringElement{Content: "some bold content"},
 						},
 					},
 				},
@@ -27,18 +27,18 @@ var _ = Describe("inline elements", func() {
 
 	It("bold text within parenthesis", func() {
 		source := "(*some bold content*)"
-		expected := &types.Paragraph{
+		expected := types.Paragraph{
 			Attributes: types.ElementAttributes{},
 			Lines: []types.InlineElements{
 				{
-					&types.StringElement{Content: "("},
-					&types.QuotedText{
+					types.StringElement{Content: "("},
+					types.QuotedText{
 						Kind: types.Bold,
 						Elements: types.InlineElements{
-							&types.StringElement{Content: "some bold content"},
+							types.StringElement{Content: "some bold content"},
 						},
 					},
-					&types.StringElement{Content: ")"},
+					types.StringElement{Content: ")"},
 				},
 			},
 		}
@@ -47,11 +47,11 @@ var _ = Describe("inline elements", func() {
 
 	It("bold text within words", func() {
 		source := "some*bold*content"
-		expected := &types.Paragraph{
+		expected := types.Paragraph{
 			Attributes: types.ElementAttributes{},
 			Lines: []types.InlineElements{
 				{
-					&types.StringElement{Content: "some*bold*content"},
+					types.StringElement{Content: "some*bold*content"},
 				},
 			},
 		}
@@ -60,11 +60,11 @@ var _ = Describe("inline elements", func() {
 
 	It("invalid bold portion of text", func() {
 		source := "*foo*bar"
-		expected := &types.Paragraph{
+		expected := types.Paragraph{
 			Attributes: types.ElementAttributes{},
 			Lines: []types.InlineElements{
 				{
-					&types.StringElement{Content: "*foo*bar"},
+					types.StringElement{Content: "*foo*bar"},
 				},
 			},
 		}
@@ -73,17 +73,17 @@ var _ = Describe("inline elements", func() {
 
 	It("valid bold portion of text", func() {
 		source := "**foo**bar"
-		expected := &types.Paragraph{
+		expected := types.Paragraph{
 			Attributes: types.ElementAttributes{},
 			Lines: []types.InlineElements{
 				{
-					&types.QuotedText{
+					types.QuotedText{
 						Kind: types.Bold,
 						Elements: types.InlineElements{
-							&types.StringElement{Content: "foo"},
+							types.StringElement{Content: "foo"},
 						},
 					},
-					&types.StringElement{Content: "bar"},
+					types.StringElement{Content: "bar"},
 				},
 			},
 		}
@@ -92,11 +92,11 @@ var _ = Describe("inline elements", func() {
 
 	It("latin characters", func() {
 		source := "à bientôt"
-		expected := &types.Paragraph{
+		expected := types.Paragraph{
 			Attributes: types.ElementAttributes{},
 			Lines: []types.InlineElements{
 				{
-					&types.StringElement{Content: "à bientôt"},
+					types.StringElement{Content: "à bientôt"},
 				},
 			},
 		}

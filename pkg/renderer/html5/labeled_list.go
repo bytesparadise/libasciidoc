@@ -8,7 +8,6 @@ import (
 	"github.com/bytesparadise/libasciidoc/pkg/renderer"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 	"github.com/pkg/errors"
-	log "github.com/sirupsen/logrus"
 )
 
 var defaultLabeledListTmpl texttemplate.Template
@@ -72,7 +71,7 @@ func init() {
 
 }
 
-func renderLabeledList(ctx *renderer.Context, l *types.LabeledList) ([]byte, error) {
+func renderLabeledList(ctx *renderer.Context, l types.LabeledList) ([]byte, error) {
 	var tmpl texttemplate.Template
 	tmpl, err := getLabeledListTmpl(l)
 	if err != nil {
@@ -87,7 +86,7 @@ func renderLabeledList(ctx *renderer.Context, l *types.LabeledList) ([]byte, err
 			ID    string
 			Title string
 			Role  string
-			Items []*types.LabeledListItem
+			Items []types.LabeledListItem
 		}{
 			ID:    generateID(ctx, l.Attributes),
 			Title: getTitle(l.Attributes),
@@ -98,11 +97,11 @@ func renderLabeledList(ctx *renderer.Context, l *types.LabeledList) ([]byte, err
 	if err != nil {
 		return nil, errors.Wrapf(err, "unable to render labeled list")
 	}
-	log.Debugf("rendered labeled list: %s", result.Bytes())
+	// log.Debugf("rendered labeled list: %s", result.Bytes())
 	return result.Bytes(), nil
 }
 
-func getLabeledListTmpl(l *types.LabeledList) (texttemplate.Template, error) {
+func getLabeledListTmpl(l types.LabeledList) (texttemplate.Template, error) {
 	if layout, ok := l.Attributes["layout"]; ok {
 		switch layout {
 		case "horizontal":

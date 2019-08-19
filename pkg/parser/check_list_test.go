@@ -13,30 +13,30 @@ var _ = Describe("checked lists - document", func() {
 - [x] also checked
 - [ ] not checked
 -     normal list item`
-		expected := &types.Document{
+		expected := types.Document{
 			Attributes:         types.DocumentAttributes{},
 			ElementReferences:  types.ElementReferences{},
 			Footnotes:          types.Footnotes{},
 			FootnoteReferences: types.FootnoteReferences{},
 			Elements: []interface{}{
-				&types.UnorderedList{
+				types.UnorderedList{
 					Attributes: types.ElementAttributes{
 						types.AttrTitle: "Checklist",
 					},
-					Items: []*types.UnorderedListItem{
+					Items: []types.UnorderedListItem{
 						{
 							Attributes:  types.ElementAttributes{},
 							Level:       1,
 							BulletStyle: types.Dash,
 							CheckStyle:  types.Checked,
 							Elements: []interface{}{
-								&types.Paragraph{
+								types.Paragraph{
 									Attributes: types.ElementAttributes{
 										types.AttrCheckStyle: types.Checked,
 									},
 									Lines: []types.InlineElements{
 										{
-											&types.StringElement{
+											types.StringElement{
 												Content: "checked",
 											},
 										},
@@ -50,13 +50,13 @@ var _ = Describe("checked lists - document", func() {
 							BulletStyle: types.Dash,
 							CheckStyle:  types.Checked,
 							Elements: []interface{}{
-								&types.Paragraph{
+								types.Paragraph{
 									Attributes: types.ElementAttributes{
 										types.AttrCheckStyle: types.Checked,
 									},
 									Lines: []types.InlineElements{
 										{
-											&types.StringElement{
+											types.StringElement{
 												Content: "also checked",
 											},
 										},
@@ -70,13 +70,13 @@ var _ = Describe("checked lists - document", func() {
 							BulletStyle: types.Dash,
 							CheckStyle:  types.Unchecked,
 							Elements: []interface{}{
-								&types.Paragraph{
+								types.Paragraph{
 									Attributes: types.ElementAttributes{
 										types.AttrCheckStyle: types.Unchecked,
 									},
 									Lines: []types.InlineElements{
 										{
-											&types.StringElement{
+											types.StringElement{
 												Content: "not checked",
 											},
 										},
@@ -90,11 +90,11 @@ var _ = Describe("checked lists - document", func() {
 							BulletStyle: types.Dash,
 							CheckStyle:  types.NoCheck,
 							Elements: []interface{}{
-								&types.Paragraph{
+								types.Paragraph{
 									Attributes: types.ElementAttributes{},
 									Lines: []types.InlineElements{
 										{
-											&types.StringElement{
+											types.StringElement{
 												Content: "normal list item",
 											},
 										},
@@ -116,51 +116,51 @@ var _ = Describe("checked lists - document", func() {
 ** [x] also checked
 ** [ ] not checked
 *     normal list item`
-		expected := &types.Document{
+		expected := types.Document{
 			Attributes:         types.DocumentAttributes{},
 			ElementReferences:  types.ElementReferences{},
 			Footnotes:          types.Footnotes{},
 			FootnoteReferences: types.FootnoteReferences{},
 			Elements: []interface{}{
-				&types.UnorderedList{
+				types.UnorderedList{
 					Attributes: types.ElementAttributes{
 						types.AttrTitle: "Checklist",
 					},
-					Items: []*types.UnorderedListItem{
+					Items: []types.UnorderedListItem{
 						{
 							Attributes:  types.ElementAttributes{},
 							Level:       1,
 							BulletStyle: types.OneAsterisk,
 							CheckStyle:  types.Unchecked,
 							Elements: []interface{}{
-								&types.Paragraph{
+								types.Paragraph{
 									Attributes: types.ElementAttributes{
 										types.AttrCheckStyle: types.Unchecked,
 									},
 									Lines: []types.InlineElements{
 										{
-											&types.StringElement{
+											types.StringElement{
 												Content: "parent not checked",
 											},
 										},
 									},
 								},
-								&types.UnorderedList{
+								types.UnorderedList{
 									Attributes: types.ElementAttributes{},
-									Items: []*types.UnorderedListItem{
+									Items: []types.UnorderedListItem{
 										{
 											Attributes:  types.ElementAttributes{},
 											Level:       2,
 											BulletStyle: types.TwoAsterisks,
 											CheckStyle:  types.Checked,
 											Elements: []interface{}{
-												&types.Paragraph{
+												types.Paragraph{
 													Attributes: types.ElementAttributes{
 														types.AttrCheckStyle: types.Checked,
 													},
 													Lines: []types.InlineElements{
 														{
-															&types.StringElement{
+															types.StringElement{
 																Content: "checked",
 															},
 														},
@@ -174,13 +174,13 @@ var _ = Describe("checked lists - document", func() {
 											BulletStyle: types.TwoAsterisks,
 											CheckStyle:  types.Checked,
 											Elements: []interface{}{
-												&types.Paragraph{
+												types.Paragraph{
 													Attributes: types.ElementAttributes{
 														types.AttrCheckStyle: types.Checked,
 													},
 													Lines: []types.InlineElements{
 														{
-															&types.StringElement{
+															types.StringElement{
 																Content: "also checked",
 															},
 														},
@@ -194,13 +194,13 @@ var _ = Describe("checked lists - document", func() {
 											BulletStyle: types.TwoAsterisks,
 											CheckStyle:  types.Unchecked,
 											Elements: []interface{}{
-												&types.Paragraph{
+												types.Paragraph{
 													Attributes: types.ElementAttributes{
 														types.AttrCheckStyle: types.Unchecked,
 													},
 													Lines: []types.InlineElements{
 														{
-															&types.StringElement{
+															types.StringElement{
 																Content: "not checked",
 															},
 														},
@@ -218,11 +218,11 @@ var _ = Describe("checked lists - document", func() {
 							BulletStyle: types.OneAsterisk,
 							CheckStyle:  types.NoCheck,
 							Elements: []interface{}{
-								&types.Paragraph{
+								types.Paragraph{
 									Attributes: types.ElementAttributes{},
 									Lines: []types.InlineElements{
 										{
-											&types.StringElement{
+											types.StringElement{
 												Content: "normal list item",
 											},
 										},
@@ -243,49 +243,49 @@ var _ = Describe("checked lists - document", func() {
 ** a normal list item
 ** another normal list item
 *     normal list item`
-		expected := &types.Document{
+		expected := types.Document{
 			Attributes:         types.DocumentAttributes{},
 			ElementReferences:  types.ElementReferences{},
 			Footnotes:          types.Footnotes{},
 			FootnoteReferences: types.FootnoteReferences{},
 			Elements: []interface{}{
-				&types.UnorderedList{
+				types.UnorderedList{
 					Attributes: types.ElementAttributes{
 						types.AttrTitle: "Checklist",
 					},
-					Items: []*types.UnorderedListItem{
+					Items: []types.UnorderedListItem{
 						{
 							Attributes:  types.ElementAttributes{},
 							Level:       1,
 							BulletStyle: types.OneAsterisk,
 							CheckStyle:  types.Unchecked,
 							Elements: []interface{}{
-								&types.Paragraph{
+								types.Paragraph{
 									Attributes: types.ElementAttributes{
 										types.AttrCheckStyle: types.Unchecked,
 									},
 									Lines: []types.InlineElements{
 										{
-											&types.StringElement{
+											types.StringElement{
 												Content: "parent not checked",
 											},
 										},
 									},
 								},
-								&types.UnorderedList{
+								types.UnorderedList{
 									Attributes: types.ElementAttributes{},
-									Items: []*types.UnorderedListItem{
+									Items: []types.UnorderedListItem{
 										{
 											Attributes:  types.ElementAttributes{},
 											Level:       2,
 											BulletStyle: types.TwoAsterisks,
 											CheckStyle:  types.NoCheck,
 											Elements: []interface{}{
-												&types.Paragraph{
+												types.Paragraph{
 													Attributes: types.ElementAttributes{},
 													Lines: []types.InlineElements{
 														{
-															&types.StringElement{
+															types.StringElement{
 																Content: "a normal list item",
 															},
 														},
@@ -299,11 +299,11 @@ var _ = Describe("checked lists - document", func() {
 											BulletStyle: types.TwoAsterisks,
 											CheckStyle:  types.NoCheck,
 											Elements: []interface{}{
-												&types.Paragraph{
+												types.Paragraph{
 													Attributes: types.ElementAttributes{},
 													Lines: []types.InlineElements{
 														{
-															&types.StringElement{
+															types.StringElement{
 																Content: "another normal list item",
 															},
 														},
@@ -321,11 +321,11 @@ var _ = Describe("checked lists - document", func() {
 							BulletStyle: types.OneAsterisk,
 							CheckStyle:  types.NoCheck,
 							Elements: []interface{}{
-								&types.Paragraph{
+								types.Paragraph{
 									Attributes: types.ElementAttributes{},
 									Lines: []types.InlineElements{
 										{
-											&types.StringElement{
+											types.StringElement{
 												Content: "normal list item",
 											},
 										},

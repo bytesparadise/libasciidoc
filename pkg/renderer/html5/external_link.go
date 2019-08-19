@@ -17,7 +17,7 @@ func init() {
 	linkTmpl = newTextTemplate("external link", `<a href="{{ .URL }}"{{if .Class}} class="{{ .Class }}"{{ end }}>{{ .Text }}</a>`)
 }
 
-func renderLink(ctx *renderer.Context, l *types.InlineLink) ([]byte, error) { //nolint: unparam
+func renderLink(ctx *renderer.Context, l types.InlineLink) ([]byte, error) { //nolint: unparam
 	result := bytes.NewBuffer(nil)
 	location := l.Location.Resolve(ctx.Document.Attributes)
 	var text []byte
@@ -44,6 +44,6 @@ func renderLink(ctx *renderer.Context, l *types.InlineLink) ([]byte, error) { //
 	if err != nil {
 		return nil, errors.Wrapf(err, "unable to render external link")
 	}
-	log.Debugf("rendered external link: %s", result.Bytes())
+	log.Debugf("/rendered external link: %s", result.Bytes())
 	return result.Bytes(), nil
 }

@@ -35,7 +35,7 @@ func renderLines(ctx *renderer.Context, elements []types.InlineElements, renderE
 		}
 
 		if i < len(elements)-1 && (len(renderedElement) > 0 || ctx.WithinDelimitedBlock()) {
-			log.Debugf("rendered line is not the last one in the slice")
+			// log.Debugf("rendered line is not the last one in the slice")
 			var err error
 			if hardbreak {
 				_, err = buff.WriteString("<br>\n")
@@ -47,7 +47,7 @@ func renderLines(ctx *renderer.Context, elements []types.InlineElements, renderE
 			}
 		}
 	}
-	log.Debugf("rendered lines: '%s'", buff.String())
+	// log.Debugf("rendered lines: '%s'", buff.String())
 	return buff.Bytes(), nil
 }
 
@@ -62,7 +62,7 @@ func renderLine(ctx *renderer.Context, elements types.InlineElements, renderElem
 			return nil, errors.Wrapf(err, "unable to render line")
 		}
 		if i == len(elements)-1 {
-			if _, ok := element.(*types.StringElement); ok { // TODO: only for StringElement? or for any kind of element?
+			if _, ok := element.(types.StringElement); ok { // TODO: only for StringElement? or for any kind of element?
 				// trim trailing spaces before returning the line
 				buff.WriteString(strings.TrimRight(string(renderedElement), " "))
 				log.Debugf("trimmed spaces on '%v'", string(renderedElement))
@@ -74,7 +74,7 @@ func renderLine(ctx *renderer.Context, elements types.InlineElements, renderElem
 		}
 	}
 
-	log.Debugf("rendered line elements after 1st pass: '%s'", buff.String())
+	// log.Debugf("rendered line elements after 1st pass: '%s'", buff.String())
 
 	// check if the line has some substitution
 	if !hasSubstitutions(elements) {
@@ -94,7 +94,7 @@ func renderLine(ctx *renderer.Context, elements types.InlineElements, renderElem
 	// render all elements of the line, but StringElement must be rendered plain-text now, to avoid double HTML escape
 	for i, element := range elements {
 		switch element := element.(type) {
-		case *types.StringElement:
+		case types.StringElement:
 			if i == len(elements)-1 {
 				buff.WriteString(strings.TrimRight(element.Content, " "))
 			} else {
@@ -108,15 +108,14 @@ func renderLine(ctx *renderer.Context, elements types.InlineElements, renderElem
 			buff.Write(renderedElement)
 		}
 	}
-
-	log.Debugf("rendered line elements: '%s'", buff.String())
+	// log.Debugf("rendered line elements: '%s'", buff.String())
 	return buff.Bytes(), nil
 }
 
 // check if there's at least on substitution before doing the whole process
 func hasSubstitutions(e types.InlineElements) bool {
 	for _, element := range e {
-		if _, ok := element.(*types.DocumentAttributeSubstitution); ok {
+		if _, ok := element.(types.DocumentAttributeSubstitution); ok {
 			return true
 		}
 	}

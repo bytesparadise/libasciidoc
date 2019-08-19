@@ -10,22 +10,22 @@ var _ = Describe("blank lines - preflight", func() {
 		doc := `first paragraph
  
 second paragraph`
-		expected := &types.PreflightDocument{
+		expected := types.PreflightDocument{
 			Blocks: []interface{}{
-				&types.Paragraph{
+				types.Paragraph{
 					Attributes: types.ElementAttributes{},
 					Lines: []types.InlineElements{
 						{
-							&types.StringElement{Content: "first paragraph"},
+							types.StringElement{Content: "first paragraph"},
 						},
 					},
 				},
-				&types.BlankLine{},
-				&types.Paragraph{
+				types.BlankLine{},
+				types.Paragraph{
 					Attributes: types.ElementAttributes{},
 					Lines: []types.InlineElements{
 						{
-							&types.StringElement{Content: "second paragraph"},
+							types.StringElement{Content: "second paragraph"},
 						},
 					},
 				},
@@ -40,24 +40,24 @@ second paragraph`
 		
 second paragraph
 `
-		expected := &types.PreflightDocument{
+		expected := types.PreflightDocument{
 			Blocks: []interface{}{
-				&types.Paragraph{
+				types.Paragraph{
 					Attributes: types.ElementAttributes{},
 					Lines: []types.InlineElements{
 						{
-							&types.StringElement{Content: "first paragraph"},
+							types.StringElement{Content: "first paragraph"},
 						},
 					},
 				},
-				&types.BlankLine{},
-				&types.BlankLine{},
-				&types.BlankLine{},
-				&types.Paragraph{
+				types.BlankLine{},
+				types.BlankLine{},
+				types.BlankLine{},
+				types.Paragraph{
 					Attributes: types.ElementAttributes{},
 					Lines: []types.InlineElements{
 						{
-							&types.StringElement{Content: "second paragraph"},
+							types.StringElement{Content: "second paragraph"},
 						},
 					},
 				},

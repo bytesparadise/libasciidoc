@@ -144,22 +144,22 @@ func toString(lines []interface{}) ([]string, error) {
 }
 
 // SearchAttributeDeclaration returns the value of the DocumentAttributeDeclaration whose name is given
-func SearchAttributeDeclaration(elements []interface{}, name string) (*DocumentAttributeDeclaration, bool) {
+func SearchAttributeDeclaration(elements []interface{}, name string) (DocumentAttributeDeclaration, bool) {
 	for _, e := range elements {
 		switch e := e.(type) {
-		case *Section:
+		case Section:
 			if result, found := SearchAttributeDeclaration(e.Elements, name); found {
 				return result, found
 			}
-		case *Preamble:
+		case Preamble:
 			if result, found := SearchAttributeDeclaration(e.Elements, name); found {
 				return result, found
 			}
-		case *DocumentAttributeDeclaration:
+		case DocumentAttributeDeclaration:
 			if e.Name == name {
 				return e, true
 			}
 		}
 	}
-	return nil, false
+	return DocumentAttributeDeclaration{}, false
 }

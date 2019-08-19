@@ -12,15 +12,15 @@ var _ = Describe("delimited blocks - preflight", func() {
 		It("fenced block with single line", func() {
 			content := "some fenced code"
 			source := "```\n" + content + "\n```"
-			expected := &types.DelimitedBlock{
+			expected := types.DelimitedBlock{
 				Attributes: types.ElementAttributes{},
 				Kind:       types.Fenced,
 				Elements: []interface{}{
-					&types.Paragraph{
+					types.Paragraph{
 						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
 							{
-								&types.StringElement{
+								types.StringElement{
 									Content: content,
 								},
 							},
@@ -33,7 +33,7 @@ var _ = Describe("delimited blocks - preflight", func() {
 
 		It("fenced block with no line", func() {
 			source := "```\n```"
-			expected := &types.DelimitedBlock{
+			expected := types.DelimitedBlock{
 				Attributes: types.ElementAttributes{},
 				Kind:       types.Fenced,
 				Elements:   []interface{}{},
@@ -43,31 +43,31 @@ var _ = Describe("delimited blocks - preflight", func() {
 
 		It("fenced block with multiple lines alone", func() {
 			source := "```\nsome fenced code\nwith an empty line\n\nin the middle\n```"
-			expected := &types.DelimitedBlock{
+			expected := types.DelimitedBlock{
 				Attributes: types.ElementAttributes{},
 				Kind:       types.Fenced,
 				Elements: []interface{}{
-					&types.Paragraph{
+					types.Paragraph{
 						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
 							{
-								&types.StringElement{
+								types.StringElement{
 									Content: "some fenced code",
 								},
 							},
 							{
-								&types.StringElement{
+								types.StringElement{
 									Content: "with an empty line",
 								},
 							},
 						},
 					},
-					&types.BlankLine{},
-					&types.Paragraph{
+					types.BlankLine{},
+					types.Paragraph{
 						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
 							{
-								&types.StringElement{
+								types.StringElement{
 									Content: "in the middle",
 								},
 							},
@@ -80,33 +80,33 @@ var _ = Describe("delimited blocks - preflight", func() {
 
 		It("fenced block with multiple lines then a paragraph", func() {
 			source := "```\nsome fenced code\nwith an empty line\n\nin the middle\n```\nthen a normal paragraph."
-			expected := &types.PreflightDocument{
+			expected := types.PreflightDocument{
 				Blocks: []interface{}{
-					&types.DelimitedBlock{
+					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{},
 						Kind:       types.Fenced,
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{
+										types.StringElement{
 											Content: "some fenced code",
 										},
 									},
 									{
-										&types.StringElement{
+										types.StringElement{
 											Content: "with an empty line",
 										},
 									},
 								},
 							},
-							&types.BlankLine{},
-							&types.Paragraph{
+							types.BlankLine{},
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{
+										types.StringElement{
 											Content: "in the middle",
 										},
 									},
@@ -114,11 +114,11 @@ var _ = Describe("delimited blocks - preflight", func() {
 							},
 						},
 					},
-					&types.Paragraph{
+					types.Paragraph{
 						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
 							{
-								&types.StringElement{Content: "then a normal paragraph."},
+								types.StringElement{Content: "then a normal paragraph."},
 							},
 						},
 					},
@@ -130,25 +130,25 @@ var _ = Describe("delimited blocks - preflight", func() {
 		It("fenced block after a paragraph", func() {
 			content := "some fenced code"
 			source := "a paragraph.\n```\n" + content + "\n```\n"
-			expected := &types.PreflightDocument{
+			expected := types.PreflightDocument{
 				Blocks: []interface{}{
-					&types.Paragraph{
+					types.Paragraph{
 						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
 							{
-								&types.StringElement{Content: "a paragraph."},
+								types.StringElement{Content: "a paragraph."},
 							},
 						},
 					},
-					&types.DelimitedBlock{
+					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{},
 						Kind:       types.Fenced,
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{
+										types.StringElement{
 											Content: content,
 										},
 									},
@@ -163,15 +163,15 @@ var _ = Describe("delimited blocks - preflight", func() {
 
 		It("fenced block with unclosed delimiter", func() {
 			source := "```\nEnd of file here"
-			expected := &types.DelimitedBlock{
+			expected := types.DelimitedBlock{
 				Attributes: types.ElementAttributes{},
 				Kind:       types.Fenced,
 				Elements: []interface{}{
-					&types.Paragraph{
+					types.Paragraph{
 						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
 							{
-								&types.StringElement{
+								types.StringElement{
 									Content: "End of file here",
 								},
 							},
@@ -188,33 +188,33 @@ var _ = Describe("delimited blocks - preflight", func() {
 				"and more text on the" + "\n" +
 				"next lines" + "\n" +
 				"```"
-			expected := &types.DelimitedBlock{
+			expected := types.DelimitedBlock{
 				Attributes: types.ElementAttributes{},
 				Kind:       types.Fenced,
 				Elements: []interface{}{
-					&types.Paragraph{
+					types.Paragraph{
 						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
 							{
-								&types.StringElement{
+								types.StringElement{
 									Content: "a ",
 								},
-								&types.InlineLink{
+								types.InlineLink{
 									Attributes: types.ElementAttributes{},
 									Location: types.Location{
-										&types.StringElement{
+										types.StringElement{
 											Content: "http://website.com",
 										},
 									},
 								},
 							},
 							{
-								&types.StringElement{
+								types.StringElement{
 									Content: "and more text on the",
 								},
 							},
 							{
-								&types.StringElement{
+								types.StringElement{
 									Content: "next lines",
 								},
 							},
@@ -231,33 +231,33 @@ var _ = Describe("delimited blocks - preflight", func() {
 				"and more text on the" + "\n" +
 				"next lines" + "\n" +
 				"```"
-			expected := &types.DelimitedBlock{
+			expected := types.DelimitedBlock{
 				Attributes: types.ElementAttributes{},
 				Kind:       types.Fenced,
 				Elements: []interface{}{
-					&types.Paragraph{
+					types.Paragraph{
 						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
 							{
-								&types.StringElement{
+								types.StringElement{
 									Content: "a ",
 								},
-								&types.InlineLink{
+								types.InlineLink{
 									Attributes: types.ElementAttributes{},
 									Location: types.Location{
-										&types.StringElement{
+										types.StringElement{
 											Content: "http://website.com",
 										},
 									},
 								},
 							},
 							{
-								&types.StringElement{
+								types.StringElement{
 									Content: "and more text on the",
 								},
 							},
 							{
-								&types.StringElement{
+								types.StringElement{
 									Content: "next lines",
 								},
 							},
@@ -275,15 +275,15 @@ var _ = Describe("delimited blocks - preflight", func() {
 			source := `----
 some listing code
 ----`
-			expected := &types.DelimitedBlock{
+			expected := types.DelimitedBlock{
 				Attributes: types.ElementAttributes{},
 				Kind:       types.Listing,
 				Elements: []interface{}{
-					&types.Paragraph{
+					types.Paragraph{
 						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
 							{
-								&types.StringElement{
+								types.StringElement{
 									Content: "some listing code",
 								},
 							},
@@ -297,7 +297,7 @@ some listing code
 		It("listing block with no line", func() {
 			source := `----
 ----`
-			expected := &types.DelimitedBlock{
+			expected := types.DelimitedBlock{
 				Attributes: types.ElementAttributes{},
 				Kind:       types.Listing,
 				Elements:   []interface{}{},
@@ -312,26 +312,26 @@ with an empty line
 
 in the middle
 ----`
-			expected := &types.DelimitedBlock{
+			expected := types.DelimitedBlock{
 				Attributes: types.ElementAttributes{},
 				Kind:       types.Listing,
 				Elements: []interface{}{
-					&types.Paragraph{
+					types.Paragraph{
 						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
 							{
-								&types.StringElement{
+								types.StringElement{
 									Content: "some listing code",
 								},
 							},
 							{
-								&types.StringElement{
+								types.StringElement{
 									Content: "with an empty line",
 								},
 							},
 							{},
 							{
-								&types.StringElement{
+								types.StringElement{
 									Content: "in the middle",
 								},
 							},
@@ -348,25 +348,25 @@ in the middle
 * listing 
 * content
 ----`
-			expected := &types.DelimitedBlock{
+			expected := types.DelimitedBlock{
 				Attributes: types.ElementAttributes{},
 				Kind:       types.Listing,
 				Elements: []interface{}{
-					&types.Paragraph{
+					types.Paragraph{
 						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
 							{
-								&types.StringElement{
+								types.StringElement{
 									Content: "* some ",
 								},
 							},
 							{
-								&types.StringElement{
+								types.StringElement{
 									Content: "* listing ",
 								},
 							},
 							{
-								&types.StringElement{
+								types.StringElement{
 									Content: "* content",
 								},
 							},
@@ -385,28 +385,28 @@ with an empty line
 in the middle
 ----
 then a normal paragraph.`
-			expected := &types.PreflightDocument{
+			expected := types.PreflightDocument{
 				Blocks: []interface{}{
-					&types.DelimitedBlock{
+					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{},
 						Kind:       types.Listing,
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{
+										types.StringElement{
 											Content: "some listing code",
 										},
 									},
 									{
-										&types.StringElement{
+										types.StringElement{
 											Content: "with an empty line",
 										},
 									},
 									{},
 									{
-										&types.StringElement{
+										types.StringElement{
 											Content: "in the middle",
 										},
 									},
@@ -414,11 +414,11 @@ then a normal paragraph.`
 							},
 						},
 					},
-					&types.Paragraph{
+					types.Paragraph{
 						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
 							{
-								&types.StringElement{Content: "then a normal paragraph."},
+								types.StringElement{Content: "then a normal paragraph."},
 							},
 						},
 					},
@@ -432,25 +432,25 @@ then a normal paragraph.`
 ----
 some listing code
 ----`
-			expected := &types.PreflightDocument{
+			expected := types.PreflightDocument{
 				Blocks: []interface{}{
-					&types.Paragraph{
+					types.Paragraph{
 						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
 							{
-								&types.StringElement{Content: "a paragraph."},
+								types.StringElement{Content: "a paragraph."},
 							},
 						},
 					},
-					&types.DelimitedBlock{
+					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{},
 						Kind:       types.Listing,
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{
+										types.StringElement{
 											Content: "some listing code",
 										},
 									},
@@ -466,15 +466,15 @@ some listing code
 		It("listing block with unclosed delimiter", func() {
 			source := `----
 End of file here.`
-			expected := &types.DelimitedBlock{
+			expected := types.DelimitedBlock{
 				Attributes: types.ElementAttributes{},
 				Kind:       types.Listing,
 				Elements: []interface{}{
-					&types.Paragraph{
+					types.Paragraph{
 						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
 							{
-								&types.StringElement{
+								types.StringElement{
 									Content: "End of file here.",
 								},
 							},
@@ -492,15 +492,15 @@ End of file here.`
 			source := `====
 some listing code
 ====`
-			expected := &types.DelimitedBlock{
+			expected := types.DelimitedBlock{
 				Attributes: types.ElementAttributes{},
 				Kind:       types.Example,
 				Elements: []interface{}{
-					&types.Paragraph{
+					types.Paragraph{
 						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
 							{
-								&types.StringElement{
+								types.StringElement{
 									Content: "some listing code",
 								},
 							},
@@ -515,15 +515,15 @@ some listing code
 			source := `====
 .foo
 ====`
-			expected := &types.DelimitedBlock{
+			expected := types.DelimitedBlock{
 				Attributes: types.ElementAttributes{},
 				Kind:       types.Example,
 				Elements: []interface{}{
-					&types.Paragraph{
+					types.Paragraph{
 						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
 							{
-								&types.StringElement{
+								types.StringElement{
 									Content: ".foo",
 								},
 							},
@@ -542,31 +542,31 @@ with *bold content*
 
 * and a list item
 ====`
-			expected := &types.DelimitedBlock{
+			expected := types.DelimitedBlock{
 				Attributes: types.ElementAttributes{},
 				Kind:       types.Example,
 				Elements: []interface{}{
-					&types.Paragraph{
+					types.Paragraph{
 						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
 							{
-								&types.StringElement{
+								types.StringElement{
 									Content: ".foo",
 								},
 							},
 							{
-								&types.StringElement{
+								types.StringElement{
 									Content: "some listing code",
 								},
 							},
 							{
-								&types.StringElement{
+								types.StringElement{
 									Content: "with ",
 								},
-								&types.QuotedText{
+								types.QuotedText{
 									Kind: types.Bold,
 									Elements: types.InlineElements{
-										&types.StringElement{
+										types.StringElement{
 											Content: "bold content",
 										},
 									},
@@ -574,18 +574,18 @@ with *bold content*
 							},
 						},
 					},
-					&types.BlankLine{},
-					&types.UnorderedListItem{
+					types.BlankLine{},
+					types.UnorderedListItem{
 						Attributes:  types.ElementAttributes{},
 						Level:       1,
 						BulletStyle: types.OneAsterisk,
 						CheckStyle:  types.NoCheck,
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{
+										types.StringElement{
 											Content: "and a list item",
 										},
 									},
@@ -601,15 +601,15 @@ with *bold content*
 		It("example block with unclosed delimiter", func() {
 			source := `====
 End of file here`
-			expected := &types.DelimitedBlock{
+			expected := types.DelimitedBlock{
 				Attributes: types.ElementAttributes{},
 				Kind:       types.Example,
 				Elements: []interface{}{
-					&types.Paragraph{
+					types.Paragraph{
 						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
 							{
-								&types.StringElement{
+								types.StringElement{
 									Content: "End of file here",
 								},
 							},
@@ -625,17 +625,17 @@ End of file here`
 ====
 foo
 ====`
-			expected := &types.DelimitedBlock{
+			expected := types.DelimitedBlock{
 				Attributes: types.ElementAttributes{
 					types.AttrTitle: "example block title",
 				},
 				Kind: types.Example,
 				Elements: []interface{}{
-					&types.Paragraph{
+					types.Paragraph{
 						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
 							{
-								&types.StringElement{
+								types.StringElement{
 									Content: "foo",
 								},
 							},
@@ -648,7 +648,7 @@ foo
 
 		It("example block starting delimiter only", func() {
 			source := `====`
-			expected := &types.DelimitedBlock{
+			expected := types.DelimitedBlock{
 				Attributes: types.ElementAttributes{},
 				Kind:       types.Example,
 				Elements:   []interface{}{},
@@ -664,17 +664,17 @@ foo
 ====
 foo
 ====`
-			expected := &types.DelimitedBlock{
+			expected := types.DelimitedBlock{
 				Attributes: types.ElementAttributes{
 					types.AttrAdmonitionKind: types.Note,
 				},
 				Kind: types.Example,
 				Elements: []interface{}{
-					&types.Paragraph{
+					types.Paragraph{
 						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
 							{
-								&types.StringElement{
+								types.StringElement{
 									Content: "foo",
 								},
 							},
@@ -694,25 +694,25 @@ multiple
 paragraphs
 ----
 `
-			expected := &types.PreflightDocument{
+			expected := types.PreflightDocument{
 				Blocks: []interface{}{
-					&types.DelimitedBlock{
+					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{
 							types.AttrAdmonitionKind: types.Note,
 						},
 						Kind: types.Listing,
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{
+										types.StringElement{
 											Content: "multiple",
 										},
 									},
 									{},
 									{
-										&types.StringElement{
+										types.StringElement{
 											Content: "paragraphs",
 										},
 									},
@@ -733,7 +733,7 @@ paragraphs
 ____
 some *quote* content
 ____`
-			expected := &types.DelimitedBlock{
+			expected := types.DelimitedBlock{
 				Attributes: types.ElementAttributes{
 					types.AttrKind:        types.Quote,
 					types.AttrQuoteAuthor: "john doe",
@@ -741,22 +741,22 @@ ____`
 				},
 				Kind: types.Quote,
 				Elements: []interface{}{
-					&types.Paragraph{
+					types.Paragraph{
 						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
 							{
-								&types.StringElement{
+								types.StringElement{
 									Content: "some ",
 								},
-								&types.QuotedText{
+								types.QuotedText{
 									Kind: types.Bold,
 									Elements: types.InlineElements{
-										&types.StringElement{
+										types.StringElement{
 											Content: "quote",
 										},
 									},
 								},
-								&types.StringElement{
+								types.StringElement{
 									Content: " content",
 								},
 							},
@@ -775,24 +775,24 @@ ____
 - content 
 ____
 `
-			expected := &types.DelimitedBlock{
+			expected := types.DelimitedBlock{
 				Attributes: types.ElementAttributes{
 					types.AttrKind:        types.Quote,
 					types.AttrQuoteAuthor: "john doe",
 				},
 				Kind: types.Quote,
 				Elements: []interface{}{
-					&types.UnorderedListItem{
+					types.UnorderedListItem{
 						Attributes:  types.ElementAttributes{},
 						Level:       1,
 						BulletStyle: types.Dash,
 						CheckStyle:  types.NoCheck,
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{
+										types.StringElement{
 											Content: "some ",
 										},
 									},
@@ -800,17 +800,17 @@ ____
 							},
 						},
 					},
-					&types.UnorderedListItem{
+					types.UnorderedListItem{
 						Attributes:  types.ElementAttributes{},
 						Level:       1,
 						BulletStyle: types.Dash,
 						CheckStyle:  types.NoCheck,
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{
+										types.StringElement{
 											Content: "quote ",
 										},
 									},
@@ -818,17 +818,17 @@ ____
 							},
 						},
 					},
-					&types.UnorderedListItem{
+					types.UnorderedListItem{
 						Attributes:  types.ElementAttributes{},
 						Level:       1,
 						BulletStyle: types.Dash,
 						CheckStyle:  types.NoCheck,
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{
+										types.StringElement{
 											Content: "content ",
 										},
 									},
@@ -847,18 +847,18 @@ ____
 some quote content 
 ____
 `
-			expected := &types.DelimitedBlock{
+			expected := types.DelimitedBlock{
 				Attributes: types.ElementAttributes{
 					types.AttrKind:       types.Quote,
 					types.AttrQuoteTitle: "quote title",
 				},
 				Kind: types.Quote,
 				Elements: []interface{}{
-					&types.Paragraph{
+					types.Paragraph{
 						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
 							{
-								&types.StringElement{
+								types.StringElement{
 									Content: "some quote content ",
 								},
 							},
@@ -878,23 +878,23 @@ ____
 ----
 * content
 ____`
-			expected := &types.DelimitedBlock{
+			expected := types.DelimitedBlock{
 				Attributes: types.ElementAttributes{
 					types.AttrKind: types.Quote,
 				},
 				Kind: types.Quote,
 				Elements: []interface{}{
-					&types.UnorderedListItem{
+					types.UnorderedListItem{
 						Attributes:  types.ElementAttributes{},
 						Level:       1,
 						BulletStyle: types.OneAsterisk,
 						CheckStyle:  types.NoCheck,
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{
+										types.StringElement{
 											Content: "some",
 										},
 									},
@@ -902,15 +902,15 @@ ____`
 							},
 						},
 					},
-					&types.DelimitedBlock{
+					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{},
 						Kind:       types.Listing,
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{
+										types.StringElement{
 											Content: "* quote ",
 										},
 									},
@@ -918,17 +918,17 @@ ____`
 							},
 						},
 					},
-					&types.UnorderedListItem{
+					types.UnorderedListItem{
 						Attributes:  types.ElementAttributes{},
 						Level:       1,
 						BulletStyle: types.OneAsterisk,
 						CheckStyle:  types.NoCheck,
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{
+										types.StringElement{
 											Content: "content",
 										},
 									},
@@ -952,23 +952,23 @@ ____
 
 * content
 ____`
-			expected := &types.DelimitedBlock{
+			expected := types.DelimitedBlock{
 				Attributes: types.ElementAttributes{
 					types.AttrKind: types.Quote,
 				},
 				Kind: types.Quote,
 				Elements: []interface{}{
-					&types.UnorderedListItem{
+					types.UnorderedListItem{
 						Attributes:  types.ElementAttributes{},
 						Level:       1,
 						BulletStyle: types.OneAsterisk,
 						CheckStyle:  types.NoCheck,
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{
+										types.StringElement{
 											Content: "some",
 										},
 									},
@@ -976,19 +976,19 @@ ____`
 							},
 						},
 					},
-					&types.BlankLine{},
-					&types.BlankLine{},
-					&types.UnorderedListItem{
+					types.BlankLine{},
+					types.BlankLine{},
+					types.UnorderedListItem{
 						Attributes:  types.ElementAttributes{},
 						Level:       1,
 						BulletStyle: types.OneAsterisk,
 						CheckStyle:  types.NoCheck,
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{
+										types.StringElement{
 											Content: "quote ",
 										},
 									},
@@ -996,19 +996,19 @@ ____`
 							},
 						},
 					},
-					&types.BlankLine{},
-					&types.BlankLine{},
-					&types.UnorderedListItem{
+					types.BlankLine{},
+					types.BlankLine{},
+					types.UnorderedListItem{
 						Attributes:  types.ElementAttributes{},
 						Level:       1,
 						BulletStyle: types.OneAsterisk,
 						CheckStyle:  types.NoCheck,
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{
+										types.StringElement{
 											Content: "content",
 										},
 									},
@@ -1025,7 +1025,7 @@ ____`
 			source := `[quote]
 ____
 ____`
-			expected := &types.DelimitedBlock{
+			expected := types.DelimitedBlock{
 				Attributes: types.ElementAttributes{
 					types.AttrKind: types.Quote,
 				},
@@ -1040,17 +1040,17 @@ ____`
 ____
 foo
 `
-			expected := &types.DelimitedBlock{
+			expected := types.DelimitedBlock{
 				Attributes: types.ElementAttributes{
 					types.AttrKind: types.Quote,
 				},
 				Kind: types.Quote,
 				Elements: []interface{}{
-					&types.Paragraph{
+					types.Paragraph{
 						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
 							{
-								&types.StringElement{
+								types.StringElement{
 									Content: "foo",
 								},
 							},
@@ -1069,7 +1069,7 @@ foo
 ____
 some *verse* content
 ____`
-			expected := &types.DelimitedBlock{
+			expected := types.DelimitedBlock{
 				Attributes: types.ElementAttributes{
 					types.AttrKind:        types.Verse,
 					types.AttrQuoteAuthor: "john doe",
@@ -1077,22 +1077,22 @@ ____`
 				},
 				Kind: types.Verse,
 				Elements: []interface{}{
-					&types.Paragraph{
+					types.Paragraph{
 						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
 							{
-								&types.StringElement{
+								types.StringElement{
 									Content: "some ",
 								},
-								&types.QuotedText{
+								types.QuotedText{
 									Kind: types.Bold,
 									Elements: types.InlineElements{
-										&types.StringElement{
+										types.StringElement{
 											Content: "verse",
 										},
 									},
 								},
-								&types.StringElement{
+								types.StringElement{
 									Content: " content",
 								},
 							},
@@ -1111,28 +1111,28 @@ ____
 - content 
 ____
 `
-			expected := &types.DelimitedBlock{
+			expected := types.DelimitedBlock{
 				Attributes: types.ElementAttributes{
 					types.AttrKind:        types.Verse,
 					types.AttrQuoteAuthor: "john doe",
 				},
 				Kind: types.Verse,
 				Elements: []interface{}{
-					&types.Paragraph{
+					types.Paragraph{
 						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
 							{
-								&types.StringElement{
+								types.StringElement{
 									Content: "- some ",
 								},
 							},
 							{
-								&types.StringElement{
+								types.StringElement{
 									Content: "- verse ",
 								},
 							},
 							{
-								&types.StringElement{
+								types.StringElement{
 									Content: "- content ",
 								},
 							},
@@ -1149,18 +1149,18 @@ ____
 some verse content 
 ____
 `
-			expected := &types.DelimitedBlock{
+			expected := types.DelimitedBlock{
 				Attributes: types.ElementAttributes{
 					types.AttrKind:       types.Verse,
 					types.AttrQuoteTitle: "verse title",
 				},
 				Kind: types.Verse,
 				Elements: []interface{}{
-					&types.Paragraph{
+					types.Paragraph{
 						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
 							{
-								&types.StringElement{
+								types.StringElement{
 									Content: "some verse content ",
 								},
 							},
@@ -1180,37 +1180,37 @@ ____
 ----
 * content
 ____`
-			expected := &types.DelimitedBlock{
+			expected := types.DelimitedBlock{
 				Attributes: types.ElementAttributes{
 					types.AttrKind: types.Verse,
 				},
 				Kind: types.Verse,
 				Elements: []interface{}{
-					&types.Paragraph{
+					types.Paragraph{
 						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
 							{
-								&types.StringElement{
+								types.StringElement{
 									Content: "* some",
 								},
 							},
 							{
-								&types.StringElement{
+								types.StringElement{
 									Content: "----",
 								},
 							},
 							{
-								&types.StringElement{
+								types.StringElement{
 									Content: "* verse ",
 								},
 							},
 							{
-								&types.StringElement{
+								types.StringElement{
 									Content: "----",
 								},
 							},
 							{
-								&types.StringElement{
+								types.StringElement{
 									Content: "* content",
 								},
 							},
@@ -1229,29 +1229,29 @@ ____
 
 	* bar
 ____`
-			expected := &types.DelimitedBlock{
+			expected := types.DelimitedBlock{
 				Attributes: types.ElementAttributes{
 					types.AttrKind: types.Verse,
 				},
 				Kind: types.Verse,
 				Elements: []interface{}{
-					&types.Paragraph{
+					types.Paragraph{
 						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
 							{
-								&types.StringElement{
+								types.StringElement{
 									Content: "* foo",
 								},
 							},
 						},
 					},
-					&types.BlankLine{},
-					&types.BlankLine{},
-					&types.Paragraph{
+					types.BlankLine{},
+					types.BlankLine{},
+					types.Paragraph{
 						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
 							{
-								&types.StringElement{
+								types.StringElement{
 									Content: "\t* bar",
 								},
 							},
@@ -1266,7 +1266,7 @@ ____`
 			source := `[verse]
 ____
 ____`
-			expected := &types.DelimitedBlock{
+			expected := types.DelimitedBlock{
 				Attributes: types.ElementAttributes{
 					types.AttrKind: types.Verse,
 				},
@@ -1281,17 +1281,17 @@ ____`
 ____
 foo
 `
-			expected := &types.DelimitedBlock{
+			expected := types.DelimitedBlock{
 				Attributes: types.ElementAttributes{
 					types.AttrKind: types.Verse,
 				},
 				Kind: types.Verse,
 				Elements: []interface{}{
-					&types.Paragraph{
+					types.Paragraph{
 						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
 							{
-								&types.StringElement{
+								types.StringElement{
 									Content: "foo",
 								},
 							},
@@ -1314,33 +1314,33 @@ get '/hi' do
   "Hello World!"
 end
 ----`
-			expected := &types.DelimitedBlock{
+			expected := types.DelimitedBlock{
 				Attributes: types.ElementAttributes{
 					types.AttrKind: types.Source,
 				},
 				Kind: types.Source,
 				Elements: []interface{}{
-					&types.Paragraph{
+					types.Paragraph{
 						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
 							{
-								&types.StringElement{
+								types.StringElement{
 									Content: "require 'sinatra'",
 								},
 							},
 							{},
 							{
-								&types.StringElement{
+								types.StringElement{
 									Content: "get '/hi' do",
 								},
 							},
 							{
-								&types.StringElement{
+								types.StringElement{
 									Content: "  \"Hello World!\"",
 								},
 							},
 							{
-								&types.StringElement{
+								types.StringElement{
 									Content: "end",
 								},
 							},
@@ -1361,7 +1361,7 @@ get '/hi' do
   "Hello World!"
 end
 ----`
-			expected := &types.DelimitedBlock{
+			expected := types.DelimitedBlock{
 				Attributes: types.ElementAttributes{
 					types.AttrKind:     types.Source,
 					types.AttrLanguage: "ruby",
@@ -1369,27 +1369,27 @@ end
 				},
 				Kind: types.Source,
 				Elements: []interface{}{
-					&types.Paragraph{
+					types.Paragraph{
 						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
 							{
-								&types.StringElement{
+								types.StringElement{
 									Content: "require 'sinatra'",
 								},
 							},
 							{},
 							{
-								&types.StringElement{
+								types.StringElement{
 									Content: "get '/hi' do",
 								},
 							},
 							{
-								&types.StringElement{
+								types.StringElement{
 									Content: "  \"Hello World!\"",
 								},
 							},
 							{
-								&types.StringElement{
+								types.StringElement{
 									Content: "end",
 								},
 							},
@@ -1411,7 +1411,7 @@ get '/hi' do
   "Hello World!"
 end
 ----`
-			expected := &types.DelimitedBlock{
+			expected := types.DelimitedBlock{
 				Attributes: types.ElementAttributes{
 					types.AttrKind:     types.Source,
 					types.AttrLanguage: "ruby",
@@ -1421,27 +1421,27 @@ end
 				},
 				Kind: types.Source,
 				Elements: []interface{}{
-					&types.Paragraph{
+					types.Paragraph{
 						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
 							{
-								&types.StringElement{
+								types.StringElement{
 									Content: "require 'sinatra'",
 								},
 							},
 							{},
 							{
-								&types.StringElement{
+								types.StringElement{
 									Content: "get '/hi' do",
 								},
 							},
 							{
-								&types.StringElement{
+								types.StringElement{
 									Content: "  \"Hello World!\"",
 								},
 							},
 							{
-								&types.StringElement{
+								types.StringElement{
 									Content: "end",
 								},
 							},
@@ -1459,26 +1459,26 @@ end
 			source := `****
 some *verse* content
 ****`
-			expected := &types.DelimitedBlock{
+			expected := types.DelimitedBlock{
 				Attributes: types.ElementAttributes{},
 				Kind:       types.Sidebar,
 				Elements: []interface{}{
-					&types.Paragraph{
+					types.Paragraph{
 						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
 							{
-								&types.StringElement{
+								types.StringElement{
 									Content: "some ",
 								},
-								&types.QuotedText{
+								types.QuotedText{
 									Kind: types.Bold,
 									Elements: types.InlineElements{
-										&types.StringElement{
+										types.StringElement{
 											Content: "verse",
 										},
 									},
 								},
-								&types.StringElement{
+								types.StringElement{
 									Content: " content",
 								},
 							},
@@ -1498,47 +1498,47 @@ foo
 bar
 ----
 ****`
-			expected := &types.DelimitedBlock{
+			expected := types.DelimitedBlock{
 				Attributes: types.ElementAttributes{
 					types.AttrTitle: "a title",
 				},
 				Kind: types.Sidebar,
 				Elements: []interface{}{
-					&types.Paragraph{
+					types.Paragraph{
 						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
 							{
-								&types.StringElement{
+								types.StringElement{
 									Content: "some ",
 								},
-								&types.QuotedText{
+								types.QuotedText{
 									Kind: types.Bold,
 									Elements: types.InlineElements{
-										&types.StringElement{
+										types.StringElement{
 											Content: "verse",
 										},
 									},
 								},
-								&types.StringElement{
+								types.StringElement{
 									Content: " content",
 								},
 							},
 						},
 					},
-					&types.DelimitedBlock{
+					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{},
 						Kind:       types.Listing,
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{
+										types.StringElement{
 											Content: "foo",
 										},
 									},
 									{
-										&types.StringElement{
+										types.StringElement{
 											Content: "bar",
 										},
 									},
@@ -1560,21 +1560,21 @@ var _ = Describe("delimited blocks - document", func() {
 		It("fenced block with single line", func() {
 			content := "some fenced code"
 			source := "```\n" + content + "\n```"
-			expected := &types.Document{
+			expected := types.Document{
 				Attributes:         types.DocumentAttributes{},
 				ElementReferences:  types.ElementReferences{},
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
-					&types.DelimitedBlock{
+					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{},
 						Kind:       types.Fenced,
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{
+										types.StringElement{
 											Content: content,
 										},
 									},
@@ -1589,13 +1589,13 @@ var _ = Describe("delimited blocks - document", func() {
 
 		It("fenced block with no line", func() {
 			source := "```\n```"
-			expected := &types.Document{
+			expected := types.Document{
 				Attributes:         types.DocumentAttributes{},
 				ElementReferences:  types.ElementReferences{},
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
-					&types.DelimitedBlock{
+					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{},
 						Kind:       types.Fenced,
 						Elements:   []interface{}{},
@@ -1607,37 +1607,37 @@ var _ = Describe("delimited blocks - document", func() {
 
 		It("fenced block with multiple lines alone", func() {
 			source := "```\nsome fenced code\nwith an empty line\n\nin the middle\n```"
-			expected := &types.Document{
+			expected := types.Document{
 				Attributes:         types.DocumentAttributes{},
 				ElementReferences:  types.ElementReferences{},
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
-					&types.DelimitedBlock{
+					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{},
 						Kind:       types.Fenced,
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{
+										types.StringElement{
 											Content: "some fenced code",
 										},
 									},
 									{
-										&types.StringElement{
+										types.StringElement{
 											Content: "with an empty line",
 										},
 									},
 								},
 							},
-							&types.BlankLine{},
-							&types.Paragraph{
+							types.BlankLine{},
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{
+										types.StringElement{
 											Content: "in the middle",
 										},
 									},
@@ -1652,37 +1652,37 @@ var _ = Describe("delimited blocks - document", func() {
 
 		It("fenced block with multiple lines then a paragraph", func() {
 			source := "```\nsome fenced code\nwith an empty line\n\nin the middle\n```\nthen a normal paragraph."
-			expected := &types.Document{
+			expected := types.Document{
 				Attributes:         types.DocumentAttributes{},
 				ElementReferences:  types.ElementReferences{},
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
-					&types.DelimitedBlock{
+					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{},
 						Kind:       types.Fenced,
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{
+										types.StringElement{
 											Content: "some fenced code",
 										},
 									},
 									{
-										&types.StringElement{
+										types.StringElement{
 											Content: "with an empty line",
 										},
 									},
 								},
 							},
-							&types.BlankLine{},
-							&types.Paragraph{
+							types.BlankLine{},
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{
+										types.StringElement{
 											Content: "in the middle",
 										},
 									},
@@ -1690,11 +1690,11 @@ var _ = Describe("delimited blocks - document", func() {
 							},
 						},
 					},
-					&types.Paragraph{
+					types.Paragraph{
 						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
 							{
-								&types.StringElement{Content: "then a normal paragraph."},
+								types.StringElement{Content: "then a normal paragraph."},
 							},
 						},
 					},
@@ -1706,29 +1706,29 @@ var _ = Describe("delimited blocks - document", func() {
 		It("fenced block after a paragraph", func() {
 			content := "some fenced code"
 			source := "a paragraph.\n```\n" + content + "\n```\n"
-			expected := &types.Document{
+			expected := types.Document{
 				Attributes:         types.DocumentAttributes{},
 				ElementReferences:  types.ElementReferences{},
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
-					&types.Paragraph{
+					types.Paragraph{
 						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
 							{
-								&types.StringElement{Content: "a paragraph."},
+								types.StringElement{Content: "a paragraph."},
 							},
 						},
 					},
-					&types.DelimitedBlock{
+					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{},
 						Kind:       types.Fenced,
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{
+										types.StringElement{
 											Content: content,
 										},
 									},
@@ -1743,21 +1743,21 @@ var _ = Describe("delimited blocks - document", func() {
 
 		It("fenced block with unclosed delimiter", func() {
 			source := "```\nEnd of file here"
-			expected := &types.Document{
+			expected := types.Document{
 				Attributes:         types.DocumentAttributes{},
 				ElementReferences:  types.ElementReferences{},
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
-					&types.DelimitedBlock{
+					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{},
 						Kind:       types.Fenced,
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{
+										types.StringElement{
 											Content: "End of file here",
 										},
 									},
@@ -1777,39 +1777,39 @@ var _ = Describe("delimited blocks - document", func() {
 				"next lines" + "\n" +
 				"```"
 
-			expected := &types.Document{
+			expected := types.Document{
 				Attributes:         types.DocumentAttributes{},
 				ElementReferences:  types.ElementReferences{},
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
-					&types.DelimitedBlock{
+					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{},
 						Kind:       types.Fenced,
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{
+										types.StringElement{
 											Content: "a ",
 										},
-										&types.InlineLink{
+										types.InlineLink{
 											Attributes: types.ElementAttributes{},
 											Location: types.Location{
-												&types.StringElement{
+												types.StringElement{
 													Content: "http://website.com",
 												},
 											},
 										},
 									},
 									{
-										&types.StringElement{
+										types.StringElement{
 											Content: "and more text on the",
 										},
 									},
 									{
-										&types.StringElement{
+										types.StringElement{
 											Content: "next lines",
 										},
 									},
@@ -1829,21 +1829,21 @@ var _ = Describe("delimited blocks - document", func() {
 			source := `----
 some listing code
 ----`
-			expected := &types.Document{
+			expected := types.Document{
 				Attributes:         types.DocumentAttributes{},
 				ElementReferences:  types.ElementReferences{},
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
-					&types.DelimitedBlock{
+					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{},
 						Kind:       types.Listing,
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{
+										types.StringElement{
 											Content: "some listing code",
 										},
 									},
@@ -1859,13 +1859,13 @@ some listing code
 		It("listing block with no line", func() {
 			source := `----
 ----`
-			expected := &types.Document{
+			expected := types.Document{
 				Attributes:         types.DocumentAttributes{},
 				ElementReferences:  types.ElementReferences{},
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
-					&types.DelimitedBlock{
+					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{},
 						Kind:       types.Listing,
 						Elements:   []interface{}{},
@@ -1882,32 +1882,32 @@ with an empty line
 
 in the middle
 ----`
-			expected := &types.Document{
+			expected := types.Document{
 				Attributes:         types.DocumentAttributes{},
 				ElementReferences:  types.ElementReferences{},
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
-					&types.DelimitedBlock{
+					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{},
 						Kind:       types.Listing,
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{
+										types.StringElement{
 											Content: "some listing code",
 										},
 									},
 									{
-										&types.StringElement{
+										types.StringElement{
 											Content: "with an empty line",
 										},
 									},
 									{},
 									{
-										&types.StringElement{
+										types.StringElement{
 											Content: "in the middle",
 										},
 									},
@@ -1926,31 +1926,31 @@ in the middle
 * listing 
 * content
 ----`
-			expected := &types.Document{
+			expected := types.Document{
 				Attributes:         types.DocumentAttributes{},
 				ElementReferences:  types.ElementReferences{},
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
-					&types.DelimitedBlock{
+					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{},
 						Kind:       types.Listing,
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{
+										types.StringElement{
 											Content: "* some ",
 										},
 									},
 									{
-										&types.StringElement{
+										types.StringElement{
 											Content: "* listing ",
 										},
 									},
 									{
-										&types.StringElement{
+										types.StringElement{
 											Content: "* content",
 										},
 									},
@@ -1971,32 +1971,32 @@ with an empty line
 in the middle
 ----
 then a normal paragraph.`
-			expected := &types.Document{
+			expected := types.Document{
 				Attributes:         types.DocumentAttributes{},
 				ElementReferences:  types.ElementReferences{},
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
-					&types.DelimitedBlock{
+					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{},
 						Kind:       types.Listing,
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{
+										types.StringElement{
 											Content: "some listing code",
 										},
 									},
 									{
-										&types.StringElement{
+										types.StringElement{
 											Content: "with an empty line",
 										},
 									},
 									{},
 									{
-										&types.StringElement{
+										types.StringElement{
 											Content: "in the middle",
 										},
 									},
@@ -2004,11 +2004,11 @@ then a normal paragraph.`
 							},
 						},
 					},
-					&types.Paragraph{
+					types.Paragraph{
 						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
 							{
-								&types.StringElement{Content: "then a normal paragraph."},
+								types.StringElement{Content: "then a normal paragraph."},
 							},
 						},
 					},
@@ -2022,29 +2022,29 @@ then a normal paragraph.`
 ----
 some listing code
 ----`
-			expected := &types.Document{
+			expected := types.Document{
 				Attributes:         types.DocumentAttributes{},
 				ElementReferences:  types.ElementReferences{},
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
-					&types.Paragraph{
+					types.Paragraph{
 						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
 							{
-								&types.StringElement{Content: "a paragraph."},
+								types.StringElement{Content: "a paragraph."},
 							},
 						},
 					},
-					&types.DelimitedBlock{
+					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{},
 						Kind:       types.Listing,
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{
+										types.StringElement{
 											Content: "some listing code",
 										},
 									},
@@ -2060,21 +2060,21 @@ some listing code
 		It("listing block with unclosed delimiter", func() {
 			source := `----
 End of file here.`
-			expected := &types.Document{
+			expected := types.Document{
 				Attributes:         types.DocumentAttributes{},
 				ElementReferences:  types.ElementReferences{},
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
-					&types.DelimitedBlock{
+					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{},
 						Kind:       types.Listing,
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{
+										types.StringElement{
 											Content: "End of file here.",
 										},
 									},
@@ -2094,21 +2094,21 @@ End of file here.`
 			source := `====
 some listing code
 ====`
-			expected := &types.Document{
+			expected := types.Document{
 				Attributes:         types.DocumentAttributes{},
 				ElementReferences:  types.ElementReferences{},
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
-					&types.DelimitedBlock{
+					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{},
 						Kind:       types.Example,
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{
+										types.StringElement{
 											Content: "some listing code",
 										},
 									},
@@ -2125,21 +2125,21 @@ some listing code
 			source := `====
 .foo
 ====`
-			expected := &types.Document{
+			expected := types.Document{
 				Attributes:         types.DocumentAttributes{},
 				ElementReferences:  types.ElementReferences{},
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
-					&types.DelimitedBlock{
+					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{},
 						Kind:       types.Example,
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{
+										types.StringElement{
 											Content: ".foo",
 										},
 									},
@@ -2160,37 +2160,37 @@ with *bold content*
 
 * and a list item
 ====`
-			expected := &types.Document{
+			expected := types.Document{
 				Attributes:         types.DocumentAttributes{},
 				ElementReferences:  types.ElementReferences{},
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
-					&types.DelimitedBlock{
+					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{},
 						Kind:       types.Example,
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{
+										types.StringElement{
 											Content: ".foo",
 										},
 									},
 									{
-										&types.StringElement{
+										types.StringElement{
 											Content: "some listing code",
 										},
 									},
 									{
-										&types.StringElement{
+										types.StringElement{
 											Content: "with ",
 										},
-										&types.QuotedText{
+										types.QuotedText{
 											Kind: types.Bold,
 											Elements: types.InlineElements{
-												&types.StringElement{
+												types.StringElement{
 													Content: "bold content",
 												},
 											},
@@ -2198,21 +2198,21 @@ with *bold content*
 									},
 								},
 							},
-							&types.BlankLine{},
-							&types.UnorderedList{
+							types.BlankLine{},
+							types.UnorderedList{
 								Attributes: types.ElementAttributes{},
-								Items: []*types.UnorderedListItem{
+								Items: []types.UnorderedListItem{
 									{
 										Attributes:  types.ElementAttributes{},
 										Level:       1,
 										BulletStyle: types.OneAsterisk,
 										CheckStyle:  types.NoCheck,
 										Elements: []interface{}{
-											&types.Paragraph{
+											types.Paragraph{
 												Attributes: types.ElementAttributes{},
 												Lines: []types.InlineElements{
 													{
-														&types.StringElement{
+														types.StringElement{
 															Content: "and a list item",
 														},
 													},
@@ -2232,21 +2232,21 @@ with *bold content*
 		It("example block with unclosed delimiter", func() {
 			source := `====
 End of file here`
-			expected := &types.Document{
+			expected := types.Document{
 				Attributes:         types.DocumentAttributes{},
 				ElementReferences:  types.ElementReferences{},
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
-					&types.DelimitedBlock{
+					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{},
 						Kind:       types.Example,
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{
+										types.StringElement{
 											Content: "End of file here",
 										},
 									},
@@ -2264,23 +2264,23 @@ End of file here`
 ====
 foo
 ====`
-			expected := &types.Document{
+			expected := types.Document{
 				Attributes:         types.DocumentAttributes{},
 				ElementReferences:  types.ElementReferences{},
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
-					&types.DelimitedBlock{
+					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{
 							types.AttrTitle: "example block title",
 						},
 						Kind: types.Example,
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{
+										types.StringElement{
 											Content: "foo",
 										},
 									},
@@ -2295,13 +2295,13 @@ foo
 
 		It("example block starting delimiter only", func() {
 			source := `====`
-			expected := &types.Document{
+			expected := types.Document{
 				Attributes:         types.DocumentAttributes{},
 				ElementReferences:  types.ElementReferences{},
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
-					&types.DelimitedBlock{
+					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{},
 						Kind:       types.Example,
 						Elements:   []interface{}{},
@@ -2319,23 +2319,23 @@ foo
 ====
 foo
 ====`
-			expected := &types.Document{
+			expected := types.Document{
 				Attributes:         types.DocumentAttributes{},
 				ElementReferences:  types.ElementReferences{},
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
-					&types.DelimitedBlock{
+					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{
 							types.AttrAdmonitionKind: types.Note,
 						},
 						Kind: types.Example,
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{
+										types.StringElement{
 											Content: "foo",
 										},
 									},
@@ -2357,29 +2357,29 @@ multiple
 paragraphs
 ----
 `
-			expected := &types.Document{
+			expected := types.Document{
 				Attributes:         types.DocumentAttributes{},
 				ElementReferences:  types.ElementReferences{},
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
-					&types.DelimitedBlock{
+					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{
 							types.AttrAdmonitionKind: types.Note,
 						},
 						Kind: types.Listing,
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{
+										types.StringElement{
 											Content: "multiple",
 										},
 									},
 									{},
 									{
-										&types.StringElement{
+										types.StringElement{
 											Content: "paragraphs",
 										},
 									},
@@ -2400,13 +2400,13 @@ paragraphs
 ____
 some *quote* content
 ____`
-			expected := &types.Document{
+			expected := types.Document{
 				Attributes:         types.DocumentAttributes{},
 				ElementReferences:  types.ElementReferences{},
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
-					&types.DelimitedBlock{
+					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{
 							types.AttrKind:        types.Quote,
 							types.AttrQuoteAuthor: "john doe",
@@ -2414,22 +2414,22 @@ ____`
 						},
 						Kind: types.Quote,
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{
+										types.StringElement{
 											Content: "some ",
 										},
-										&types.QuotedText{
+										types.QuotedText{
 											Kind: types.Bold,
 											Elements: types.InlineElements{
-												&types.StringElement{
+												types.StringElement{
 													Content: "quote",
 												},
 											},
 										},
-										&types.StringElement{
+										types.StringElement{
 											Content: " content",
 										},
 									},
@@ -2450,33 +2450,33 @@ ____
 - content 
 ____
 `
-			expected := &types.Document{
+			expected := types.Document{
 				Attributes:         types.DocumentAttributes{},
 				ElementReferences:  types.ElementReferences{},
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
-					&types.DelimitedBlock{
+					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{
 							types.AttrKind:        types.Quote,
 							types.AttrQuoteAuthor: "john doe",
 						},
 						Kind: types.Quote,
 						Elements: []interface{}{
-							&types.UnorderedList{
+							types.UnorderedList{
 								Attributes: types.ElementAttributes{},
-								Items: []*types.UnorderedListItem{
+								Items: []types.UnorderedListItem{
 									{
 										Attributes:  types.ElementAttributes{},
 										Level:       1,
 										BulletStyle: types.Dash,
 										CheckStyle:  types.NoCheck,
 										Elements: []interface{}{
-											&types.Paragraph{
+											types.Paragraph{
 												Attributes: types.ElementAttributes{},
 												Lines: []types.InlineElements{
 													{
-														&types.StringElement{
+														types.StringElement{
 															Content: "some ",
 														},
 													},
@@ -2490,11 +2490,11 @@ ____
 										BulletStyle: types.Dash,
 										CheckStyle:  types.NoCheck,
 										Elements: []interface{}{
-											&types.Paragraph{
+											types.Paragraph{
 												Attributes: types.ElementAttributes{},
 												Lines: []types.InlineElements{
 													{
-														&types.StringElement{
+														types.StringElement{
 															Content: "quote ",
 														},
 													},
@@ -2508,11 +2508,11 @@ ____
 										BulletStyle: types.Dash,
 										CheckStyle:  types.NoCheck,
 										Elements: []interface{}{
-											&types.Paragraph{
+											types.Paragraph{
 												Attributes: types.ElementAttributes{},
 												Lines: []types.InlineElements{
 													{
-														&types.StringElement{
+														types.StringElement{
 															Content: "content ",
 														},
 													},
@@ -2535,24 +2535,24 @@ ____
 some quote content 
 ____
 `
-			expected := &types.Document{
+			expected := types.Document{
 				Attributes:         types.DocumentAttributes{},
 				ElementReferences:  types.ElementReferences{},
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
-					&types.DelimitedBlock{
+					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{
 							types.AttrKind:       types.Quote,
 							types.AttrQuoteTitle: "quote title",
 						},
 						Kind: types.Quote,
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{
+										types.StringElement{
 											Content: "some quote content ",
 										},
 									},
@@ -2574,32 +2574,32 @@ ____
 ----
 * content
 ____`
-			expected := &types.Document{
+			expected := types.Document{
 				Attributes:         types.DocumentAttributes{},
 				ElementReferences:  types.ElementReferences{},
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
-					&types.DelimitedBlock{
+					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{
 							types.AttrKind: types.Quote,
 						},
 						Kind: types.Quote,
 						Elements: []interface{}{
-							&types.UnorderedList{
+							types.UnorderedList{
 								Attributes: types.ElementAttributes{},
-								Items: []*types.UnorderedListItem{
+								Items: []types.UnorderedListItem{
 									{
 										Attributes:  types.ElementAttributes{},
 										Level:       1,
 										BulletStyle: types.OneAsterisk,
 										CheckStyle:  types.NoCheck,
 										Elements: []interface{}{
-											&types.Paragraph{
+											types.Paragraph{
 												Attributes: types.ElementAttributes{},
 												Lines: []types.InlineElements{
 													{
-														&types.StringElement{
+														types.StringElement{
 															Content: "some",
 														},
 													},
@@ -2609,15 +2609,15 @@ ____`
 									},
 								},
 							},
-							&types.DelimitedBlock{
+							types.DelimitedBlock{
 								Attributes: types.ElementAttributes{},
 								Kind:       types.Listing,
 								Elements: []interface{}{
-									&types.Paragraph{
+									types.Paragraph{
 										Attributes: types.ElementAttributes{},
 										Lines: []types.InlineElements{
 											{
-												&types.StringElement{
+												types.StringElement{
 													Content: "* quote ",
 												},
 											},
@@ -2625,20 +2625,20 @@ ____`
 									},
 								},
 							},
-							&types.UnorderedList{
+							types.UnorderedList{
 								Attributes: types.ElementAttributes{},
-								Items: []*types.UnorderedListItem{
+								Items: []types.UnorderedListItem{
 									{
 										Attributes:  types.ElementAttributes{},
 										Level:       1,
 										BulletStyle: types.OneAsterisk,
 										CheckStyle:  types.NoCheck,
 										Elements: []interface{}{
-											&types.Paragraph{
+											types.Paragraph{
 												Attributes: types.ElementAttributes{},
 												Lines: []types.InlineElements{
 													{
-														&types.StringElement{
+														types.StringElement{
 															Content: "content",
 														},
 													},
@@ -2666,32 +2666,32 @@ ____
 
 * content
 ____`
-			expected := &types.Document{
+			expected := types.Document{
 				Attributes:         types.DocumentAttributes{},
 				ElementReferences:  types.ElementReferences{},
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
-					&types.DelimitedBlock{
+					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{
 							types.AttrKind: types.Quote,
 						},
 						Kind: types.Quote,
 						Elements: []interface{}{
-							&types.UnorderedList{
+							types.UnorderedList{
 								Attributes: types.ElementAttributes{},
-								Items: []*types.UnorderedListItem{
+								Items: []types.UnorderedListItem{
 									{
 										Attributes:  types.ElementAttributes{},
 										Level:       1,
 										BulletStyle: types.OneAsterisk,
 										CheckStyle:  types.NoCheck,
 										Elements: []interface{}{
-											&types.Paragraph{
+											types.Paragraph{
 												Attributes: types.ElementAttributes{},
 												Lines: []types.InlineElements{
 													{
-														&types.StringElement{
+														types.StringElement{
 															Content: "some",
 														},
 													},
@@ -2705,11 +2705,11 @@ ____`
 										BulletStyle: types.OneAsterisk,
 										CheckStyle:  types.NoCheck,
 										Elements: []interface{}{
-											&types.Paragraph{
+											types.Paragraph{
 												Attributes: types.ElementAttributes{},
 												Lines: []types.InlineElements{
 													{
-														&types.StringElement{
+														types.StringElement{
 															Content: "quote ",
 														},
 													},
@@ -2723,11 +2723,11 @@ ____`
 										BulletStyle: types.OneAsterisk,
 										CheckStyle:  types.NoCheck,
 										Elements: []interface{}{
-											&types.Paragraph{
+											types.Paragraph{
 												Attributes: types.ElementAttributes{},
 												Lines: []types.InlineElements{
 													{
-														&types.StringElement{
+														types.StringElement{
 															Content: "content",
 														},
 													},
@@ -2748,13 +2748,13 @@ ____`
 			source := `[quote]
 ____
 ____`
-			expected := &types.Document{
+			expected := types.Document{
 				Attributes:         types.DocumentAttributes{},
 				ElementReferences:  types.ElementReferences{},
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
-					&types.DelimitedBlock{
+					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{
 							types.AttrKind: types.Quote,
 						},
@@ -2771,23 +2771,23 @@ ____`
 ____
 foo
 `
-			expected := &types.Document{
+			expected := types.Document{
 				Attributes:         types.DocumentAttributes{},
 				ElementReferences:  types.ElementReferences{},
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
-					&types.DelimitedBlock{
+					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{
 							types.AttrKind: types.Quote,
 						},
 						Kind: types.Quote,
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{
+										types.StringElement{
 											Content: "foo",
 										},
 									},
@@ -2808,13 +2808,13 @@ foo
 ____
 some *verse* content
 ____`
-			expected := &types.Document{
+			expected := types.Document{
 				Attributes:         types.DocumentAttributes{},
 				ElementReferences:  types.ElementReferences{},
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
-					&types.DelimitedBlock{
+					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{
 							types.AttrKind:        types.Verse,
 							types.AttrQuoteAuthor: "john doe",
@@ -2822,22 +2822,22 @@ ____`
 						},
 						Kind: types.Verse,
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{
+										types.StringElement{
 											Content: "some ",
 										},
-										&types.QuotedText{
+										types.QuotedText{
 											Kind: types.Bold,
 											Elements: types.InlineElements{
-												&types.StringElement{
+												types.StringElement{
 													Content: "verse",
 												},
 											},
 										},
-										&types.StringElement{
+										types.StringElement{
 											Content: " content",
 										},
 									},
@@ -2858,34 +2858,34 @@ ____
 - content 
 ____
 `
-			expected := &types.Document{
+			expected := types.Document{
 				Attributes:         types.DocumentAttributes{},
 				ElementReferences:  types.ElementReferences{},
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
-					&types.DelimitedBlock{
+					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{
 							types.AttrKind:        types.Verse,
 							types.AttrQuoteAuthor: "john doe",
 						},
 						Kind: types.Verse,
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{
+										types.StringElement{
 											Content: "- some ",
 										},
 									},
 									{
-										&types.StringElement{
+										types.StringElement{
 											Content: "- verse ",
 										},
 									},
 									{
-										&types.StringElement{
+										types.StringElement{
 											Content: "- content ",
 										},
 									},
@@ -2904,24 +2904,24 @@ ____
 some verse content 
 ____
 `
-			expected := &types.Document{
+			expected := types.Document{
 				Attributes:         types.DocumentAttributes{},
 				ElementReferences:  types.ElementReferences{},
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
-					&types.DelimitedBlock{
+					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{
 							types.AttrKind:       types.Verse,
 							types.AttrQuoteTitle: "verse title",
 						},
 						Kind: types.Verse,
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{
+										types.StringElement{
 											Content: "some verse content ",
 										},
 									},
@@ -2943,43 +2943,43 @@ ____
 ----
 * content
 ____`
-			expected := &types.Document{
+			expected := types.Document{
 				Attributes:         types.DocumentAttributes{},
 				ElementReferences:  types.ElementReferences{},
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
-					&types.DelimitedBlock{
+					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{
 							types.AttrKind: types.Verse,
 						},
 						Kind: types.Verse,
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{
+										types.StringElement{
 											Content: "* some",
 										},
 									},
 									{
-										&types.StringElement{
+										types.StringElement{
 											Content: "----",
 										},
 									},
 									{
-										&types.StringElement{
+										types.StringElement{
 											Content: "* verse ",
 										},
 									},
 									{
-										&types.StringElement{
+										types.StringElement{
 											Content: "----",
 										},
 									},
 									{
-										&types.StringElement{
+										types.StringElement{
 											Content: "* content",
 										},
 									},
@@ -3000,35 +3000,35 @@ ____
 
 	* bar
 ____`
-			expected := &types.Document{
+			expected := types.Document{
 				Attributes:         types.DocumentAttributes{},
 				ElementReferences:  types.ElementReferences{},
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
-					&types.DelimitedBlock{
+					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{
 							types.AttrKind: types.Verse,
 						},
 						Kind: types.Verse,
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{
+										types.StringElement{
 											Content: "* foo",
 										},
 									},
 								},
 							},
-							&types.BlankLine{},
-							&types.BlankLine{},
-							&types.Paragraph{
+							types.BlankLine{},
+							types.BlankLine{},
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{
+										types.StringElement{
 											Content: "\t* bar",
 										},
 									},
@@ -3045,13 +3045,13 @@ ____`
 			source := `[verse]
 ____
 ____`
-			expected := &types.Document{
+			expected := types.Document{
 				Attributes:         types.DocumentAttributes{},
 				ElementReferences:  types.ElementReferences{},
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
-					&types.DelimitedBlock{
+					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{
 							types.AttrKind: types.Verse,
 						},
@@ -3068,23 +3068,23 @@ ____`
 ____
 foo
 `
-			expected := &types.Document{
+			expected := types.Document{
 				Attributes:         types.DocumentAttributes{},
 				ElementReferences:  types.ElementReferences{},
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
-					&types.DelimitedBlock{
+					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{
 							types.AttrKind: types.Verse,
 						},
 						Kind: types.Verse,
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{
+										types.StringElement{
 											Content: "foo",
 										},
 									},
@@ -3109,39 +3109,39 @@ get '/hi' do
   "Hello World!"
 end
 ----`
-			expected := &types.Document{
+			expected := types.Document{
 				Attributes:         types.DocumentAttributes{},
 				ElementReferences:  types.ElementReferences{},
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
-					&types.DelimitedBlock{
+					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{
 							types.AttrKind: types.Source,
 						},
 						Kind: types.Source,
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{
+										types.StringElement{
 											Content: "require 'sinatra'",
 										},
 									},
 									{},
 									{
-										&types.StringElement{
+										types.StringElement{
 											Content: "get '/hi' do",
 										},
 									},
 									{
-										&types.StringElement{
+										types.StringElement{
 											Content: "  \"Hello World!\"",
 										},
 									},
 									{
-										&types.StringElement{
+										types.StringElement{
 											Content: "end",
 										},
 									},
@@ -3164,13 +3164,13 @@ get '/hi' do
   "Hello World!"
 end
 ----`
-			expected := &types.Document{
+			expected := types.Document{
 				Attributes:         types.DocumentAttributes{},
 				ElementReferences:  types.ElementReferences{},
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
-					&types.DelimitedBlock{
+					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{
 							types.AttrKind:     types.Source,
 							types.AttrLanguage: "ruby",
@@ -3178,27 +3178,27 @@ end
 						},
 						Kind: types.Source,
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{
+										types.StringElement{
 											Content: "require 'sinatra'",
 										},
 									},
 									{},
 									{
-										&types.StringElement{
+										types.StringElement{
 											Content: "get '/hi' do",
 										},
 									},
 									{
-										&types.StringElement{
+										types.StringElement{
 											Content: "  \"Hello World!\"",
 										},
 									},
 									{
-										&types.StringElement{
+										types.StringElement{
 											Content: "end",
 										},
 									},
@@ -3222,13 +3222,13 @@ get '/hi' do
   "Hello World!"
 end
 ----`
-			expected := &types.Document{
+			expected := types.Document{
 				Attributes:         types.DocumentAttributes{},
 				ElementReferences:  types.ElementReferences{},
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
-					&types.DelimitedBlock{
+					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{
 							types.AttrKind:     types.Source,
 							types.AttrLanguage: "ruby",
@@ -3238,27 +3238,27 @@ end
 						},
 						Kind: types.Source,
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{
+										types.StringElement{
 											Content: "require 'sinatra'",
 										},
 									},
 									{},
 									{
-										&types.StringElement{
+										types.StringElement{
 											Content: "get '/hi' do",
 										},
 									},
 									{
-										&types.StringElement{
+										types.StringElement{
 											Content: "  \"Hello World!\"",
 										},
 									},
 									{
-										&types.StringElement{
+										types.StringElement{
 											Content: "end",
 										},
 									},
@@ -3278,32 +3278,32 @@ end
 			source := `****
 some *verse* content
 ****`
-			expected := &types.Document{
+			expected := types.Document{
 				Attributes:         types.DocumentAttributes{},
 				ElementReferences:  types.ElementReferences{},
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
-					&types.DelimitedBlock{
+					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{},
 						Kind:       types.Sidebar,
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{
+										types.StringElement{
 											Content: "some ",
 										},
-										&types.QuotedText{
+										types.QuotedText{
 											Kind: types.Bold,
 											Elements: types.InlineElements{
-												&types.StringElement{
+												types.StringElement{
 													Content: "verse",
 												},
 											},
 										},
-										&types.StringElement{
+										types.StringElement{
 											Content: " content",
 										},
 									},
@@ -3325,53 +3325,53 @@ foo
 bar
 ----
 ****`
-			expected := &types.Document{
+			expected := types.Document{
 				Attributes:         types.DocumentAttributes{},
 				ElementReferences:  types.ElementReferences{},
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
 				Elements: []interface{}{
-					&types.DelimitedBlock{
+					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{
 							types.AttrTitle: "a title",
 						},
 						Kind: types.Sidebar,
 						Elements: []interface{}{
-							&types.Paragraph{
+							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
 									{
-										&types.StringElement{
+										types.StringElement{
 											Content: "some ",
 										},
-										&types.QuotedText{
+										types.QuotedText{
 											Kind: types.Bold,
 											Elements: types.InlineElements{
-												&types.StringElement{
+												types.StringElement{
 													Content: "verse",
 												},
 											},
 										},
-										&types.StringElement{
+										types.StringElement{
 											Content: " content",
 										},
 									},
 								},
 							},
-							&types.DelimitedBlock{
+							types.DelimitedBlock{
 								Attributes: types.ElementAttributes{},
 								Kind:       types.Listing,
 								Elements: []interface{}{
-									&types.Paragraph{
+									types.Paragraph{
 										Attributes: types.ElementAttributes{},
 										Lines: []types.InlineElements{
 											{
-												&types.StringElement{
+												types.StringElement{
 													Content: "foo",
 												},
 											},
 											{
-												&types.StringElement{
+												types.StringElement{
 													Content: "bar",
 												},
 											},

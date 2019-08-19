@@ -65,7 +65,7 @@ type ElementWithAttributes interface {
 
 // NewElementID initializes a new attribute map with a single entry for the ID using the given value
 func NewElementID(id string) (ElementAttributes, error) {
-	log.Debugf("initializing a new ElementID with ID=%s", id)
+	// log.Debugf("initializing a new ElementID with ID=%s", id)
 	return ElementAttributes{
 		AttrID:       id,
 		AttrCustomID: true,
@@ -88,7 +88,7 @@ func NewElementTitle(title string) (ElementAttributes, error) {
 
 // NewElementRole initializes a new attribute map with a single entry for the title using the given value
 func NewElementRole(role string) (ElementAttributes, error) {
-	log.Debugf("initializing a new ElementRole with content=%s", role)
+	// log.Debugf("initializing a new ElementRole with content=%s", role)
 	return ElementAttributes{
 		AttrRole: role,
 	}, nil
@@ -293,7 +293,7 @@ func (a ElementAttributes) AddNonEmpty(key string, value interface{}) {
 func NewElementAttributes(attributes []interface{}, extras ...ElementAttributes) ElementAttributes {
 	attrs := ElementAttributes{}
 	for _, attr := range attributes {
-		log.Debugf("processing attribute %[1]v (%[1]T)", attr)
+		// log.Debugf("processing attribute %[1]v (%[1]T)", attr)
 		switch attr := attr.(type) {
 		case []interface{}:
 			// nested case, because of the grammar syntax,

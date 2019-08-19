@@ -59,12 +59,12 @@ func (a DocumentAttributes) AddNonEmpty(key string, value interface{}) {
 
 // AddDeclaration adds the given attribute
 // TODO: raise a warning if there was already a name/value
-func (a DocumentAttributes) AddDeclaration(attr *DocumentAttributeDeclaration) {
+func (a DocumentAttributes) AddDeclaration(attr DocumentAttributeDeclaration) {
 	a.Add(attr.Name, attr.Value)
 }
 
 // Reset resets the given attribute
-func (a DocumentAttributes) Reset(attr *DocumentAttributeReset) {
+func (a DocumentAttributes) Reset(attr DocumentAttributeReset) {
 	delete(a, attr.Name)
 }
 

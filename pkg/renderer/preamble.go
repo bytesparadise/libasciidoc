@@ -18,10 +18,12 @@ func IncludePreamble(ctx *Context) {
 
 func insertPreamble(blocks []interface{}) []interface{} {
 	log.Debugf("generating preamble from %d blocks", len(blocks))
-	preamble := types.NewEmptyPreamble()
+	preamble := types.Preamble{
+		Elements: make([]interface{}, 0),
+	}
 	for _, block := range blocks {
 		switch block.(type) {
-		case *types.Section:
+		case types.Section:
 			break
 		default:
 			preamble.Elements = append(preamble.Elements, block)

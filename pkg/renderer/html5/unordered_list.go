@@ -8,7 +8,6 @@ import (
 	"github.com/bytesparadise/libasciidoc/pkg/renderer"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 	"github.com/pkg/errors"
-	log "github.com/sirupsen/logrus"
 )
 
 var unorderedListTmpl texttemplate.Template
@@ -30,7 +29,7 @@ func init() {
 		})
 }
 
-func renderUnorderedList(ctx *renderer.Context, l *types.UnorderedList) ([]byte, error) {
+func renderUnorderedList(ctx *renderer.Context, l types.UnorderedList) ([]byte, error) {
 	// make sure nested elements are aware of that their rendering occurs within a list
 	checkList := false
 	if len(l.Items) > 0 {
@@ -47,7 +46,7 @@ func renderUnorderedList(ctx *renderer.Context, l *types.UnorderedList) ([]byte,
 			Title     string
 			Role      string
 			Checklist bool
-			Items     []*types.UnorderedListItem
+			Items     []types.UnorderedListItem
 		}{
 			ID:        generateID(ctx, l.Attributes),
 			Title:     getTitle(l.Attributes),
@@ -59,6 +58,6 @@ func renderUnorderedList(ctx *renderer.Context, l *types.UnorderedList) ([]byte,
 	if err != nil {
 		return nil, errors.Wrapf(err, "unable to render unordered list")
 	}
-	log.Debugf("rendered unordered list of items: %s", result.Bytes())
+	// log.Debugf("rendered unordered list of items: %s", result.Bytes())
 	return result.Bytes(), nil
 }
