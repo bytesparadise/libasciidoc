@@ -35,7 +35,7 @@ build: "off"
 deploy: "off"
 
 test_script:
-  - pigeon ./pkg/parser/asciidoc-grammar.peg > ./pkg/parser/asciidoc_parser.go
+  - pigeon ./pkg/parser/parser.peg > ./pkg/parser/parser.go
   - go build github.com/bytesparadise/libasciidoc
   - ginkgo -r . & IF ERRORLEVEL == 1 EXIT 1
    
