@@ -76,13 +76,15 @@ prebuild-checks: $(INSTALL_PREFIX)
 ## generate the .go file based on the asciidoc grammar
 generate: prebuild-checks
 	@echo "generating the parser..."
-	@pigeon ./pkg/parser/asciidoc-grammar.peg > ./pkg/parser/asciidoc_parser.go
+	@pigeon ./pkg/parser/parser.peg > ./pkg/parser/parser.go
 
 .PHONY: generate-optimized
 ## generate the .go file based on the asciidoc grammar
 generate-optimized:
 	@echo "generating the parser (optimized)..."
-	@pigeon -optimize-parser -alternate-entrypoints PreflightDocument,PreflightDocumentWithinDelimitedBlock,DocumentBlock,InlineElementsWithoutSubtitution,FileInclusion,FileLocation -o ./pkg/parser/asciidoc_parser.go ./pkg/parser/asciidoc-grammar.peg
+	@pigeon -optimize-parser \
+		-alternate-entrypoints PreflightDocument,PreflightDocumentWithinDelimitedBlock,DocumentBlock,InlineElementsWithoutSubtitution,FileInclusion,FileLocation \
+		-o ./pkg/parser/parser.go ./pkg/parser/parser.peg
 
 .PHONY: test
 ## run all tests excluding fixtures and vendored packages
@@ -139,7 +141,7 @@ PARSER_DIFF_STATUS :=
 .PHONY: verify-parser
 ## verify that the parser was built with the latest version of pigeon, using the `optimize-grammar` option
 verify-parser: prebuild-checks
-ifneq ($(shell git diff --quiet pkg/parser/asciidoc_parser.go; echo $$?), 0)
+ifneq ($(shell git diff --quiet pkg/parser/parser.go; echo $$?), 0)
 	$(error "parser was generated with an older version of 'mna/pigeon' or without the '-optimize' option(s).")
 else
 	@echo "parser is ok"
