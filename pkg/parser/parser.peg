@@ -245,11 +245,14 @@ AttributeGroup <- "[" attributes:(GenericAttribute)* "]" EOLS {
     return types.NewAttributeGroup(attributes.([]interface{}))
 }
 
-GenericAttribute <- key:(AttributeKey) "="? value:(AttributeValue)? ","? WS* { // value is set
-    return types.NewGenericAttribute(key.(string), value)
-}
+GenericAttribute <- 
+    key:(AttributeKey) "=" value:(AttributeValue)? ","? WS* { // value is (optionally) set
+        return types.NewGenericAttribute(key.(string), value)
+    } / key:(AttributeKey) ","? WS* { // value is not set
+        return types.NewGenericAttribute(key.(string), nil)
+    }
 
-AttributeKey <- !"quote" !"verse" !"literal" key:(Alphanums / OtherAttributeChar)+ WS* {
+AttributeKey <- !"quote" !"verse" !"literal" !Spaces key:(Alphanums / OtherAttributeChar)+ WS* {
     return string(c.text), nil
 }
 
@@ -257,7 +260,7 @@ AttributeValue <- value:(Alphanums / Spaces / OtherAttributeChar)+ !"=" { // att
     return string(c.text), nil
 }
 
-OtherAttributeChar <- (!WS !"=" !"," !"]" .)
+OtherAttributeChar <- (!"=" !"," !"]" .)
 
 HorizontalLayout <- "[horizontal]" EOLS {
     return types.ElementAttributes{"layout": "horizontal"}, nil
@@ -1046,15 +1049,44 @@ ExternalLink <- url:(Location) inlineAttributes:(LinkAttributes)? {
     return types.NewInlineLink(url.(types.Location), inlineAttributes)
 }
 
-LinkAttributes <- "[" text:(LinkTextAttribute)? ","? WS* otherattrs:(GenericAttribute)* "]" {
+LinkAttributes <- TextOnlyLinkAttributes / TextAndMoreLinkAttributes
+
+TextOnlyLinkAttributes <- "[" text:(LinkTextWithCommaAttribute)? "]" {
+    return types.NewInlineLinkAttributes(text, nil)
+} 
+
+LinkTextWithCommaAttribute <- 
+    // surrounded with double quotes
+    "\"" elements:(!"=" !"]" !"\"" (QuotedText / SimpleWord / Spaces / ((!QuotedTextPrefix .) {
+        return types.NewStringElement(string(c.text))
+    })))+ "\"" Spaces* &(!"=") {
+        return types.NewInlineElements(elements.([]interface{}))
+    } /
+    // not surrounded with double quotes
+    elements:(!"=" !"]" (QuotedText / SimpleWord / Spaces / ((!QuotedTextPrefix .) {
+        return types.NewStringElement(string(c.text))
+    })))+ &(!"=") {
+        return types.NewInlineElements(elements.([]interface{}))
+    }
+
+
+TextAndMoreLinkAttributes <- "[" text:(LinkTextAttribute)? ","? WS* otherattrs:(GenericAttribute)* "]" {
     return types.NewInlineLinkAttributes(text, otherattrs.([]interface{}))
 } 
 
-LinkTextAttribute <- elements:(!"=" !"," !"]" (QuotedText / SimpleWord / Spaces / ((!QuotedTextPrefix .) {
-    return types.NewStringElement(string(c.text))
-})))+ &(!"=") {
-    return types.NewInlineElements(elements.([]interface{}))
-}
+LinkTextAttribute <- 
+    // surrounded with double quotes
+    "\"" elements:(!"=" !"]" !"\"" (QuotedText / SimpleWord / Spaces / ((!QuotedTextPrefix .) {
+        return types.NewStringElement(string(c.text))
+    })))+ "\"" Spaces* &(!"=") {
+        return types.NewInlineElements(elements.([]interface{}))
+    } /
+    // not surrounded with double quotes
+    elements:(!"=" !"," !"]" (QuotedText / SimpleWord / Spaces / ((!QuotedTextPrefix .) {
+        return types.NewStringElement(string(c.text))
+    })))+ &(!"=") {
+        return types.NewInlineElements(elements.([]interface{}))
+    }
 
 // ------------------------------------------
 // Images
