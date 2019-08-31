@@ -8,15 +8,6 @@ var _ = Describe("links", func() {
 
 	Context("external links", func() {
 
-		It("external link with text only", func() {
-
-			source := "a link to https://foo.com[the website]."
-			expected := `<div class="paragraph">
-<p>a link to <a href="https://foo.com">the website</a>.</p>
-</div>`
-			verify(expected, source)
-		})
-
 		It("external link without text", func() {
 
 			source := "a link to https://foo.com[]."
@@ -30,6 +21,14 @@ var _ = Describe("links", func() {
 			source := "https://foo.com[_a_ *b* `c`]"
 			expected := `<div class="paragraph">
 <p><a href="https://foo.com"><em>a</em> <strong>b</strong> <code>c</code></a></p>
+</div>`
+			verify(expected, source)
+		})
+
+		It("external link with text having comma", func() {
+			source := "https://foo.com[A, B, and C]"
+			expected := `<div class="paragraph">
+<p><a href="https://foo.com">A, B, and C</a></p>
 </div>`
 			verify(expected, source)
 		})
@@ -62,6 +61,14 @@ next lines</p>
 			source := "a link to link:foo.adoc[foo doc]."
 			expected := `<div class="paragraph">
 <p>a link to <a href="foo.adoc">foo doc</a>.</p>
+</div>`
+			verify(expected, source)
+		})
+
+		It("relative link with text having comma", func() {
+			source := "a link to link:foo.adoc[A, B, and C]"
+			expected := `<div class="paragraph">
+<p>a link to <a href="foo.adoc">A, B, and C</a></p>
 </div>`
 			verify(expected, source)
 		})
