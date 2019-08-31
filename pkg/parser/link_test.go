@@ -179,6 +179,121 @@ next lines`
 			verifyDocumentBlock(expected, source)
 		})
 
+		Context("text attribute with comma", func() {
+
+			It("relative link only with text having comma", func() {
+				source := `a link to http://website.com[A, B, and C]`
+				expected := types.Paragraph{
+					Attributes: types.ElementAttributes{},
+					Lines: []types.InlineElements{
+						{
+							types.StringElement{Content: "a link to "},
+							types.InlineLink{
+								Location: types.Location{
+									types.StringElement{
+										Content: "http://website.com",
+									},
+								},
+								Attributes: types.ElementAttributes{
+									types.AttrInlineLinkText: types.InlineElements{
+										types.StringElement{
+											Content: "A, B, and C",
+										},
+									},
+								},
+							},
+						},
+					},
+				}
+				verifyDocumentBlock(expected, source)
+			})
+
+			It("relative link only with doublequoted text having comma", func() {
+				source := `a link to http://website.com["A, B, and C"]`
+				expected := types.Paragraph{
+					Attributes: types.ElementAttributes{},
+					Lines: []types.InlineElements{
+						{
+							types.StringElement{Content: "a link to "},
+							types.InlineLink{
+								Location: types.Location{
+									types.StringElement{
+										Content: "http://website.com",
+									},
+								},
+								Attributes: types.ElementAttributes{
+									types.AttrInlineLinkText: types.InlineElements{
+										types.StringElement{
+											Content: "A, B, and C",
+										},
+									},
+								},
+							},
+						},
+					},
+				}
+				verifyDocumentBlock(expected, source)
+			})
+
+			It("relative link with doublequoted text having comma and other attrs", func() {
+				source := `a link to http://website.com["A, B, and C", role=foo]`
+				expected := types.Paragraph{
+					Attributes: types.ElementAttributes{},
+					Lines: []types.InlineElements{
+						{
+							types.StringElement{Content: "a link to "},
+							types.InlineLink{
+								Location: types.Location{
+									types.StringElement{
+										Content: "http://website.com",
+									},
+								},
+								Attributes: types.ElementAttributes{
+									types.AttrInlineLinkText: types.InlineElements{
+										types.StringElement{
+											Content: "A, B, and C",
+										},
+									},
+									"role": "foo",
+								},
+							},
+						},
+					},
+				}
+				verifyDocumentBlock(expected, source)
+			})
+
+			It("relative link with text having comma and other attributes", func() {
+				source := `a link to http://website.com[A, B, and C, role=foo]`
+				expected := types.Paragraph{
+					Attributes: types.ElementAttributes{},
+					Lines: []types.InlineElements{
+						{
+							types.StringElement{Content: "a link to "},
+							types.InlineLink{
+								Location: types.Location{
+									types.StringElement{
+										Content: "http://website.com",
+									},
+								},
+								Attributes: types.ElementAttributes{
+									types.AttrInlineLinkText: types.InlineElements{
+										types.StringElement{
+											Content: "A",
+										},
+									},
+									"B":     nil,
+									"and C": nil,
+									"role":  "foo",
+								},
+							},
+						},
+					},
+				}
+				verifyDocumentBlock(expected, source)
+			})
+		})
+
 	})
 
 	Context("relative links", func() {
@@ -378,6 +493,121 @@ next lines`
 				},
 			}
 			verifyDocumentBlock(expected, source)
+		})
+
+		Context("text attribute with comma", func() {
+
+			It("relative link only with text having comma", func() {
+				source := `a link to link:https://foo.bar[A, B, and C]`
+				expected := types.Paragraph{
+					Attributes: types.ElementAttributes{},
+					Lines: []types.InlineElements{
+						{
+							types.StringElement{Content: "a link to "},
+							types.InlineLink{
+								Location: types.Location{
+									types.StringElement{
+										Content: "https://foo.bar",
+									},
+								},
+								Attributes: types.ElementAttributes{
+									types.AttrInlineLinkText: types.InlineElements{
+										types.StringElement{
+											Content: "A, B, and C",
+										},
+									},
+								},
+							},
+						},
+					},
+				}
+				verifyDocumentBlock(expected, source)
+			})
+
+			It("relative link only with doublequoted text having comma", func() {
+				source := `a link to link:https://foo.bar["A, B, and C"]`
+				expected := types.Paragraph{
+					Attributes: types.ElementAttributes{},
+					Lines: []types.InlineElements{
+						{
+							types.StringElement{Content: "a link to "},
+							types.InlineLink{
+								Location: types.Location{
+									types.StringElement{
+										Content: "https://foo.bar",
+									},
+								},
+								Attributes: types.ElementAttributes{
+									types.AttrInlineLinkText: types.InlineElements{
+										types.StringElement{
+											Content: "A, B, and C",
+										},
+									},
+								},
+							},
+						},
+					},
+				}
+				verifyDocumentBlock(expected, source)
+			})
+
+			It("relative link with doublequoted text having comma and other attrs", func() {
+				source := `a link to link:https://foo.bar["A, B, and C", role=foo]`
+				expected := types.Paragraph{
+					Attributes: types.ElementAttributes{},
+					Lines: []types.InlineElements{
+						{
+							types.StringElement{Content: "a link to "},
+							types.InlineLink{
+								Location: types.Location{
+									types.StringElement{
+										Content: "https://foo.bar",
+									},
+								},
+								Attributes: types.ElementAttributes{
+									types.AttrInlineLinkText: types.InlineElements{
+										types.StringElement{
+											Content: "A, B, and C",
+										},
+									},
+									"role": "foo",
+								},
+							},
+						},
+					},
+				}
+				verifyDocumentBlock(expected, source)
+			})
+
+			It("relative link with text having comma and other attributes", func() {
+				source := `a link to link:https://foo.bar[A, B, and C, role=foo]`
+				expected := types.Paragraph{
+					Attributes: types.ElementAttributes{},
+					Lines: []types.InlineElements{
+						{
+							types.StringElement{Content: "a link to "},
+							types.InlineLink{
+								Location: types.Location{
+									types.StringElement{
+										Content: "https://foo.bar",
+									},
+								},
+								Attributes: types.ElementAttributes{
+									types.AttrInlineLinkText: types.InlineElements{
+										types.StringElement{
+											Content: "A",
+										},
+									},
+									"B":     nil,
+									"and C": nil,
+									"role":  "foo",
+								},
+							},
+						},
+					},
+				}
+				verifyDocumentBlock(expected, source)
+			})
 		})
 
 	})
