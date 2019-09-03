@@ -437,6 +437,66 @@ func helloworld() {
 		})
 	})
 
+	Context("file inclusions with tag ranges", func() {
+
+		It("file inclusion with single tag", func() {
+			source := `include::includes/tag-include.adoc[tag=section]`
+			expected := `<div class="sect1">
+<h2 id="_section_1">Section 1</h2>
+<div class="sectionbody">
+</div>
+</div>`
+			verify(expected, source)
+		})
+
+		It("file inclusion with surrounding tag", func() {
+			source := `include::includes/tag-include.adoc[tag=doc]`
+			expected := `<div class="sect1">
+<h2 id="_section_1">Section 1</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>content</p>
+</div>
+</div>
+</div>`
+			verify(expected, source)
+		})
+
+		It("file inclusion with unclosed tag", func() {
+			source := `include::includes/tag-include.adoc[tag=unclosed]`
+			expected := `<div class="paragraph">
+<p>content</p>
+</div>
+<div class="paragraph">
+<p>end</p>
+</div>`
+			verify(expected, source)
+		})
+
+		It("file inclusion with unknown tag", func() {
+			source := `include::includes/tag-include.adoc[tag=unknown]`
+			expected := ``
+			// TODO: verify error in logs
+			verify(expected, source)
+		})
+
+		It("file inclusion with no tag", func() {
+			source := `include::includes/tag-include.adoc[]`
+			expected := `<div class="sect1">
+<h2 id="_section_1">Section 1</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>content</p>
+</div>
+<div class="paragraph">
+<p>end</p>
+</div>
+</div>
+</div>`
+			verify(expected, source)
+		})
+	})
+
 	Context("recursive file inclusions", func() {
 
 		It("should include child and grandchild content in paragraphs", func() {

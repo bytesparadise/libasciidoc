@@ -78,7 +78,7 @@ var _ = Describe("file location", func() {
 	)
 })
 
-var _ = Describe("file inclusions - preflight", func() {
+var _ = Describe("file inclusions - preflight with preprocessing", func() {
 
 	It("should include adoc file without leveloffset", func() {
 		source := "include::includes/chapter-a.adoc[]"
@@ -146,7 +146,7 @@ var _ = Describe("file inclusions - preflight", func() {
 		verifyPreflight(expected, source)
 	})
 
-	Context("file inclusion in delimited blocks", func() {
+	Context("file inclusions in delimited blocks", func() {
 
 		It("should include adoc file within fenced block", func() {
 			source := "```\n" +
@@ -415,9 +415,9 @@ include::includes/chapter-a.adoc[]
 		})
 	})
 
-	Context("file inclusion with line ranges", func() {
+	Context("file inclusions with line ranges", func() {
 
-		Context("file inclusion with unquoted line ranges", func() {
+		Context("file inclusions with unquoted line ranges", func() {
 
 			It("file inclusion with single unquoted line", func() {
 				source := `include::includes/chapter-a.adoc[lines=1]`
@@ -547,7 +547,7 @@ include::includes/chapter-a.adoc[]
 			})
 		})
 
-		Context("file inclusion with quoted line ranges", func() {
+		Context("file inclusions with quoted line ranges", func() {
 
 			It("file inclusion with single quoted line", func() {
 				source := `include::includes/chapter-a.adoc[lines="1"]`
@@ -687,7 +687,178 @@ include::includes/chapter-a.adoc[]
 				}
 				verifyPreflight(expected, source)
 			})
+
+			It("file inclusion with ignored tags", func() {
+				// include using a line range a file having tags
+				source := `include::includes/tag-include.adoc[lines=3]`
+				expected := types.PreflightDocument{
+					Blocks: []interface{}{
+						types.Section{
+							Attributes: types.ElementAttributes{
+								types.AttrID:       "section_1",
+								types.AttrCustomID: false,
+							},
+							Level: 1,
+							Title: types.InlineElements{
+								types.StringElement{
+									Content: "Section 1",
+								},
+							},
+							Elements: []interface{}{},
+						},
+					},
+				}
+				verifyPreflight(expected, source)
+			})
 		})
+	})
+
+	Context("file inclusions with tag ranges", func() {
+
+		It("file inclusion with single tag", func() {
+			source := `include::includes/tag-include.adoc[tag=section]`
+			expected := types.PreflightDocument{
+				Blocks: []interface{}{
+					types.Section{
+						Attributes: types.ElementAttributes{
+							types.AttrID:       "section_1",
+							types.AttrCustomID: false,
+						},
+						Level: 1,
+						Title: types.InlineElements{
+							types.StringElement{
+								Content: "Section 1",
+							},
+						},
+						Elements: []interface{}{},
+					},
+				},
+			}
+			verifyPreflight(expected, source)
+		})
+
+		It("file inclusion with surrounding tag", func() {
+			source := `include::includes/tag-include.adoc[tag=doc]`
+			expected := types.PreflightDocument{
+				Blocks: []interface{}{
+					types.Section{
+						Attributes: types.ElementAttributes{
+							types.AttrID:       "section_1",
+							types.AttrCustomID: false,
+						},
+						Level: 1,
+						Title: types.InlineElements{
+							types.StringElement{
+								Content: "Section 1",
+							},
+						},
+						Elements: []interface{}{},
+					},
+					types.BlankLine{},
+					types.BlankLine{},
+					types.Paragraph{
+						Attributes: types.ElementAttributes{},
+						Lines: []types.InlineElements{
+							{
+								types.StringElement{
+									Content: "content",
+								},
+							},
+						},
+					},
+					types.BlankLine{},
+				},
+			}
+			verifyPreflight(expected, source)
+		})
+
+		It("file inclusion with unclosed tag", func() {
+			source := `include::includes/tag-include.adoc[tag=unclosed]`
+			expected := types.PreflightDocument{
+				Blocks: []interface{}{
+					types.BlankLine{},
+					types.Paragraph{
+						Attributes: types.ElementAttributes{},
+						Lines: []types.InlineElements{
+							{
+								types.StringElement{
+									Content: "content",
+								},
+							},
+						},
+					},
+					types.BlankLine{},
+					types.BlankLine{},
+					types.Paragraph{
+						Attributes: types.ElementAttributes{},
+						Lines: []types.InlineElements{
+							{
+								types.StringElement{
+									Content: "end",
+								},
+							},
+						},
+					},
+				},
+			}
+			verifyPreflight(expected, source)
+		})
+
+		It("file inclusion with unknown tag", func() {
+			source := `include::includes/tag-include.adoc[tag=unknown]`
+			expected := types.PreflightDocument{
+				Blocks: []interface{}{},
+			}
+			// TODO: verify error in logs
+			verifyPreflight(expected, source)
+		})
+
+		It("file inclusion with no tag", func() {
+			source := `include::includes/tag-include.adoc[]`
+			expected := types.PreflightDocument{
+				Blocks: []interface{}{
+					types.Section{
+						Attributes: types.ElementAttributes{
+							types.AttrID:       "section_1",
+							types.AttrCustomID: false,
+						},
+						Level: 1,
+						Title: types.InlineElements{
+							types.StringElement{
+								Content: "Section 1",
+							},
+						},
+						Elements: []interface{}{},
+					},
+					types.BlankLine{},
+					types.BlankLine{},
+					types.Paragraph{
+						Attributes: types.ElementAttributes{},
+						Lines: []types.InlineElements{
+							{
+								types.StringElement{
+									Content: "content",
+								},
+							},
+						},
+					},
+					types.BlankLine{},
+					types.BlankLine{},
+					types.Paragraph{
+						Attributes: types.ElementAttributes{},
+						Lines: []types.InlineElements{
+							{
+								types.StringElement{
+									Content: "end",
+								},
+							},
+						},
+					},
+				},
+			}
+			verifyPreflight(expected, source)
+		})
+
 	})
 
 	Context("missing file to include", func() {
@@ -848,7 +1019,7 @@ include::{includedir}/grandchild-include.adoc[]
 
 	Context("inclusion of non-asciidoc file", func() {
 
-		It("include go file without line range", func() {
+		It("include go file without any range", func() {
 
 			source := `----
 include::includes/hello_world.go[] 
@@ -910,7 +1081,7 @@ include::includes/hello_world.go[]
 	})
 })
 
-var _ = Describe("file inclusions - ignored at preflight", func() {
+var _ = Describe("file inclusions - preflight without preprocessing", func() {
 
 	It("should include adoc file with leveloffset attribute", func() {
 		source := "include::includes/chapter-a.adoc[leveloffset=+1]"
@@ -932,7 +1103,7 @@ var _ = Describe("file inclusions - ignored at preflight", func() {
 		verifyPreflightWithoutPreprocessing(expected, source)
 	})
 
-	Context("file inclusion in delimited blocks", func() {
+	Context("file inclusions in delimited blocks", func() {
 
 		It("should include adoc file within fenced block", func() {
 			source := "```\n" +
@@ -1121,9 +1292,9 @@ include::includes/chapter-a.adoc[]
 		})
 	})
 
-	Context("file inclusion with line ranges", func() {
+	Context("file inclusions with line ranges", func() {
 
-		Context("file inclusion with unquoted line ranges", func() {
+		Context("file inclusions with unquoted line ranges", func() {
 
 			It("file inclusion with single unquoted line", func() {
 				source := `include::includes/chapter-a.adoc[lines=1]`
@@ -1258,7 +1429,7 @@ include::includes/chapter-a.adoc[]
 			})
 		})
 
-		Context("file inclusion with quoted line ranges", func() {
+		Context("file inclusions with quoted line ranges", func() {
 
 			It("file inclusion with single quoted line", func() {
 				source := `include::includes/chapter-a.adoc[lines="1"]`
@@ -1363,12 +1534,61 @@ include::includes/chapter-a.adoc[]
 									Content: "includes/chapter-a.adoc",
 								},
 							},
-							RawText: `include::includes/chapter-a.adoc[lines="1;3..4;6..10"]`,
+							RawText: source,
 						},
 					},
 				}
 				verifyPreflightWithoutPreprocessing(expected, source)
 			})
+		})
+
+		Context("file inclusions with tag ranges", func() {
+
+			It("file inclusion with single tag", func() {
+				source := `include::includes/tag-include.adoc[tag=section]`
+				expected := types.PreflightDocument{
+					Blocks: []interface{}{
+						types.FileInclusion{
+							Attributes: types.ElementAttributes{
+								types.AttrTagRanges: types.TagRanges{
+									`section`,
+								},
+							},
+							Location: types.Location{
+								types.StringElement{
+									Content: "includes/tag-include.adoc",
+								},
+							},
+							RawText: source,
+						},
+					},
+				}
+				verifyPreflightWithoutPreprocessing(expected, source)
+			})
+
+			It("file inclusion with multiple tags", func() {
+				source := `include::includes/tag-include.adoc[tags=section;content]`
+				expected := types.PreflightDocument{
+					Blocks: []interface{}{
+						types.FileInclusion{
+							Attributes: types.ElementAttributes{
+								types.AttrTagRanges: types.TagRanges{
+									`section`,
+									"content",
+								},
+							},
+							Location: types.Location{
+								types.StringElement{
+									Content: "includes/tag-include.adoc",
+								},
+							},
+							RawText: source,
+						},
+					},
+				}
+				verifyPreflightWithoutPreprocessing(expected, source)
+			})
+
 		})
 	})
 

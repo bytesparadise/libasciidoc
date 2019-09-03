@@ -1588,7 +1588,7 @@ func NewTable(header interface{}, lines []interface{}, attributes interface{}) (
 			}
 		}
 	}
-	log.Debugf("initialized a new table with %d line(s)", len(lines))
+	// log.Debugf("initialized a new table with %d line(s)", len(lines))
 	return t, nil
 }
 
@@ -1609,10 +1609,10 @@ func NewTableLine(columns []interface{}) (TableLine, error) {
 		if e, ok := column.(InlineElements); ok {
 			c = append(c, e)
 		} else {
-			log.Debugf("unsupported element of type %T", column)
+			return TableLine{}, errors.Errorf("unsupported element of type %T", column)
 		}
 	}
-	log.Debugf("initialized a new table line with %d columns", len(c))
+	// log.Debugf("initialized a new table line with %d columns", len(c))
 	return TableLine{
 		Cells: c,
 	}, nil
@@ -1646,7 +1646,7 @@ func NewLiteralBlock(origin string, lines []interface{}, attributes interface{})
 	if err != nil {
 		return LiteralBlock{}, errors.Wrapf(err, "unable to initialize a new LiteralBlock")
 	}
-	log.Debugf("initialized a new LiteralBlock with %d lines", len(lines))
+	// log.Debugf("initialized a new LiteralBlock with %d lines", len(lines))
 	attrs := ElementAttributes{}
 	if attributes, ok := attributes.(ElementAttributes); ok {
 		attrs.AddAll(attributes)
@@ -1697,7 +1697,7 @@ type SingleLineComment struct {
 
 // NewSingleLineComment initializes a new single line content
 func NewSingleLineComment(content string) (SingleLineComment, error) {
-	log.Debugf("initializing a single line comment with content: '%s'", content)
+	// log.Debugf("initializing a single line comment with content: '%s'", content)
 	return SingleLineComment{
 		Content: content,
 	}, nil
@@ -1806,7 +1806,7 @@ func (t QuotedText) AcceptVisitor(v Visitor) error {
 
 // NewEscapedQuotedText returns a new InlineElements where the nested elements are preserved (ie, substituted as expected)
 func NewEscapedQuotedText(backslashes string, punctuation string, content interface{}) ([]interface{}, error) {
-	log.Debugf("new escaped quoted text: %s %s %v", backslashes, punctuation, content)
+	// log.Debugf("new escaped quoted text: %s %s %v", backslashes, punctuation, content)
 	backslashesStr := Apply(backslashes,
 		func(s string) string {
 			// remove the number of back-slashes that match the length of the punctuation. Eg: `\*` or `\\**`, but keep extra back-slashes
@@ -1941,20 +1941,29 @@ func IsAsciidoc(path string) bool {
 }
 
 // LineRanges returns the line ranges of the file to include.
-func (f *FileInclusion) LineRanges() LineRanges {
+func (f *FileInclusion) LineRanges() (LineRanges, bool) {
 	if lr, ok := f.Attributes[AttrLineRanges].(LineRanges); ok {
-		return lr
+		return lr, true
 	}
 	return LineRanges{ // default line ranges: include all content
 		{
 			Start: 1,
 			End:   -1,
 		},
-	}
+	}, false
 }
 
-// LineRanges the ranges of lines of the child doc to include in the master doc
-type LineRanges []LineRange
+// TagRanges returns the tag ranges of the file to include.
+func (f *FileInclusion) TagRanges() (TagRanges, bool) {
+	if lr, ok := f.Attributes[AttrTagRanges].(TagRanges); ok {
+		return lr, true
+	}
+	return TagRanges{}, false // default tag ranges: include all content
+}
+
+// -------------------------------------------------------------------------------------
+// LineRanges: one or more ranges of lines to limit the content of a file to include
+// -------------------------------------------------------------------------------------
 
 // NewLineRangesAttribute returns an element attribute with a slice of line ranges attribute for a file inclusion.
 func NewLineRangesAttribute(ranges interface{}) (ElementAttributes, error) {
@@ -1974,12 +1983,33 @@ func NewLineRangesAttribute(ranges interface{}) (ElementAttributes, error) {
 	}
 }
 
+// LineRange the range of lines of the child doc to include in the master doc
+// `Start` and `End` are the included limits of the child document
+// - if there's a single line to include, then `End = Start`
+// - if there is all remaining content after a given line (included), then `End = -1`
+type LineRange struct {
+	Start int
+	End   int
+}
+
+// NewLineRange returns a new line range
+func NewLineRange(start, end int) (LineRange, error) {
+	// log.Debugf("initializing a new multiline range: %d..%d", start, end)
+	return LineRange{
+		Start: start,
+		End:   end,
+	}, nil
+}
+
+// LineRanges the ranges of lines of the child doc to include in the master doc
+type LineRanges []LineRange
+
 // NewLineRanges returns a slice of line ranges attribute for a file inclusion.
 func NewLineRanges(ranges ...interface{}) LineRanges {
 	result := LineRanges{}
 	for _, r := range ranges {
-		if r, ok := r.(LineRange); ok {
-			result = append(result, r)
+		if lr, ok := r.(LineRange); ok {
+			result = append(result, lr)
 		}
 	}
 	// sort the range by `start` line
@@ -2001,47 +2031,122 @@ func (r LineRanges) Match(line int) bool {
 	return false
 }
 
-// make sure that the LineRanges type implemnents the `sort.Interface
+// make sure that the LineRanges type implements the `sort.Interface
 var _ sort.Interface = LineRanges{}
 
 func (r LineRanges) Len() int           { return len(r) }
 func (r LineRanges) Swap(i, j int)      { r[i], r[j] = r[j], r[i] }
 func (r LineRanges) Less(i, j int) bool { return r[i].Start < r[j].Start }
 
-// LineRange the range of lines of the child doc to include in the master doc
-// `Start` and `End` are the included limits of the child document
-// - if there's a single line to include, then `End = Start`
-// - if there is all remaining content after a given line (included), then `End = -1`
-type LineRange struct {
-	Start int
-	End   int
+// -------------------------------------------------------------------------------------
+// TagRanges: one or more ranges of tags to limit the content of a file to include
+// -------------------------------------------------------------------------------------
+
+// NewTagRangesAttribute returns an element attribute with a slice of tag ranges attribute for a file inclusion.
+func NewTagRangesAttribute(ranges interface{}) (ElementAttributes, error) {
+	switch ranges := ranges.(type) {
+	case []interface{}:
+		return ElementAttributes{
+			AttrTagRanges: NewTagRanges(ranges...),
+		}, nil
+	case string:
+		return ElementAttributes{
+			AttrTagRanges: NewTagRanges(ranges),
+		}, nil
+	default:
+		return ElementAttributes{
+			AttrTagRanges: ranges,
+		}, nil
+	}
 }
 
-// NewLineRangeAttribute returns a line range attribute for a file inclusion.
-// The attribute value can be a single line range, a slice of line ranges
-// or a string if the specified value could not be parsed.
-func NewLineRangeAttribute(lines interface{}) (ElementAttributes, error) {
-	return ElementAttributes{
-		AttrLineRanges: lines,
-	}, nil
+// TagRanges the ranges of tags of the child doc to include in the master doc
+type TagRanges []string
+
+// NewTagRanges returns a slice of tag ranges attribute for a file inclusion.
+func NewTagRanges(ranges ...interface{}) TagRanges {
+	result := TagRanges{}
+	for _, r := range ranges {
+		if tr, ok := r.(string); ok {
+			result = append(result, tr)
+		} else {
+			log.Warnf("unexpected type of tag range: %T", r)
+		}
+	}
+	return result
 }
 
-// NewSingleLineRange returns a new single line range
-func NewSingleLineRange(line int) (LineRange, error) {
-	log.Debugf("initializing a new singleline range: %d", line)
-	return LineRange{
-		Start: line,
-		End:   line,
-	}, nil
+// Match checks if the given tag matches one of the range
+func (r TagRanges) Match(ranges map[string]bool) bool {
+	for _, t := range r {
+		if match, found := ranges[t]; found && match {
+			return true
+		}
+	}
+	return false
 }
 
-// NewMultilineRange returns a new multi-line range
-func NewMultilineRange(start, end int) (LineRange, error) {
-	log.Debugf("initializing a new multiline range: %d..%d", start, end)
-	return LineRange{
-		Start: start,
-		End:   end,
-	}, nil
+// -------------------------------------------------------------------------------------
+// IncludedFileLine a line of a file that is being included
+// -------------------------------------------------------------------------------------
+
+// IncludedFileLine a line, containing raw text and inclusion tags
+type IncludedFileLine []interface{}
+
+// NewIncludedFileLine returns a new IncludedFileLine
+func NewIncludedFileLine(content []interface{}) (IncludedFileLine, error) {
+	return IncludedFileLine(mergeElements(content)), nil
+}
+
+// HasTag returns true if the line has at least one inclusion tag (start or end), false otherwise
+func (l IncludedFileLine) HasTag() bool {
+	for _, e := range l {
+		if _, ok := e.(IncludedFileStartTag); ok {
+			return true
+		}
+		if _, ok := e.(IncludedFileEndTag); ok {
+			return true
+		}
+	}
+	return false
+}
+
+// GetStartTag returns the first IncludedFileStartTag found in the line // TODO: support multiple tags on the same line ?
+func (l IncludedFileLine) GetStartTag() (IncludedFileStartTag, bool) {
+	for _, e := range l {
+		if s, ok := e.(IncludedFileStartTag); ok {
+			return s, true
+		}
+	}
+	return IncludedFileStartTag{}, false
+}
+
+// GetEndTag returns the first IncludedFileEndTag found in the line // TODO: support multiple tags on the same line ?
+func (l IncludedFileLine) GetEndTag() (IncludedFileEndTag, bool) {
+	for _, e := range l {
+		if s, ok := e.(IncludedFileEndTag); ok {
+			return s, true
+		}
+	}
+	return IncludedFileEndTag{}, false
+}
+
+// IncludedFileStartTag the type for the `tag::` macro
+type IncludedFileStartTag struct {
+	Value string
+}
+
+func NewIncludedFileStartTag(tag string) (IncludedFileStartTag, error) {
+	return IncludedFileStartTag{Value: tag}, nil
+}
+
+// IncludedFileEndTag the type for the `end::` macro
+type IncludedFileEndTag struct {
+	Value string
+}
+
+func NewIncludedFileEndTag(tag string) (IncludedFileEndTag, error) {
+	return IncludedFileEndTag{Value: tag}, nil
 }
 
 // -------------------------------------------------------------------------------------

@@ -23,21 +23,6 @@ const LevelOffset ContextKey = "leveloffset"
 
 // ParsePreflightDocument parses a document's content and applies the preprocessing directives (file inclusions)
 func ParsePreflightDocument(filename string, r io.Reader, opts ...Option) (types.PreflightDocument, error) {
-	// opts = append(opts, Entrypoint("PreflightDocument"), Memoize(true), Recover(false))
-	// if os.Getenv("DEBUG") == "true" {
-	// 	opts = append(opts, Debug(true))
-	// }
-	// if log.IsLevelEnabled(log.DebugLevel) {
-	// 	preparsingStats := Stats{}
-	// 	opts = append(opts, Statistics(&preparsingStats, "no match"))
-	// 	start := time.Now()
-	// 	defer func() {
-	// 		preparseDuration := time.Since(start)
-	// 		log.Infof("preparsing stats:")
-	// 		log.Infof("- duration:                  %v", preparseDuration)
-	// 		log.Infof("- expressions:               %v", preparsingStats.ExprCnt)
-	// 	}()
-	// }
 	opts = append(opts, Entrypoint("PreflightDocument"))
 	return parsePreflightDocument(filename, r, "", opts...)
 }
@@ -112,9 +97,10 @@ func init() {
 	}
 }
 
-func invalidFileErrMsg(incl types.FileInclusion) (types.PreflightDocument, error) {
+func invalidFileErrMsg(incl types.FileInclusion, err error) (types.PreflightDocument, error) {
+	log.WithError(err).Errorf("failed to include '%s'", incl.Location)
 	buf := bytes.NewBuffer(nil)
-	err := invalidFileTmpl.Execute(buf, incl.RawText)
+	err = invalidFileTmpl.Execute(buf, incl.RawText)
 	if err != nil {
 		return types.PreflightDocument{}, err
 	}
@@ -137,50 +123,133 @@ func invalidFileErrMsg(incl types.FileInclusion) (types.PreflightDocument, error
 func parseFileToInclude(incl types.FileInclusion, attrs types.DocumentAttributes, opts ...Option) (types.PreflightDocument, error) {
 	path := incl.Location.Resolve(attrs)
 	log.Debugf("parsing '%s'...", path)
-	// manage new working directory based on the file's location
-	// so that if this file also includes other files with relative path,
-	// then the it can work ;)
-	return parseAsciidocFile(incl, path, opts...)
-}
-
-func parseAsciidocFile(incl types.FileInclusion, path string, opts ...Option) (types.PreflightDocument, error) {
 	f, absPath, done, err := open(path)
 	defer done()
 	if err != nil {
-		return invalidFileErrMsg(incl)
+		return invalidFileErrMsg(incl, err)
 	}
 	content := bytes.NewBuffer(nil)
 	scanner := bufio.NewScanner(bufio.NewReader(f))
-	lineRanges := incl.LineRanges()
-	log.Debugf("limiting to line range: %v", lineRanges)
-	line := 1
-	for scanner.Scan() {
-		log.Debugf("line %d: '%s' (matching range: %t)", line, scanner.Text(), lineRanges.Match(line))
-		// TODO: stop reading if current line above highest range
-		if lineRanges.Match(line) {
-			_, err := content.WriteString(scanner.Text())
-			if err != nil {
-				return invalidFileErrMsg(incl)
-			}
-			_, err = content.WriteString("\n")
-			if err != nil {
-				return invalidFileErrMsg(incl)
-			}
+	if lineRanges, ok := incl.LineRanges(); ok {
+		if err := readWithinLines(scanner, content, lineRanges); err != nil {
+			return invalidFileErrMsg(incl, err)
 		}
-		line++
+	} else if tagRanges, ok := incl.TagRanges(); ok {
+		if err := readWithinTags(scanner, content, tagRanges); err != nil {
+			return invalidFileErrMsg(incl, err)
+		}
+	} else {
+		if err := readAll(scanner, content); err != nil {
+			return invalidFileErrMsg(incl, err)
+		}
 	}
 	if err := scanner.Err(); err != nil {
-		msg, err2 := invalidFileErrMsg(incl)
+		msg, err2 := invalidFileErrMsg(incl, err)
 		if err2 != nil {
 			return types.PreflightDocument{}, err2
 		}
 		return msg, errors.Wrap(err, "unable to read file to include")
 	}
 	// parse the content, and returns the corresponding elements
-	if levelOffset, ok := incl.Attributes[types.AttrLevelOffset].(string); ok {
-		return parsePreflightDocument(absPath, content, levelOffset, opts...)
+	levelOffset := incl.Attributes.GetAsString(types.AttrLevelOffset)
+	return parsePreflightDocument(absPath, content, levelOffset, opts...)
+}
+
+func readWithinLines(scanner *bufio.Scanner, content *bytes.Buffer, lineRanges types.LineRanges) error {
+	log.Debugf("limiting to line ranges: %v", lineRanges)
+	line := 0
+	for scanner.Scan() {
+		line++
+		log.Debugf("line %d: '%s' (matching range: %t)", line, scanner.Text(), lineRanges.Match(line))
+		// parse the line in search for the `tag::<tag>[]` or `end:<tag>[]` macros
+		l, err := Parse("", scanner.Bytes(), Entrypoint("IncludedFileLine"))
+		if err != nil {
+			return err
+		}
+		fl, ok := l.(types.IncludedFileLine)
+		if !ok {
+			return errors.Errorf("unexpected type of parsed line in file to include: %T", l)
+		}
+		// skip if the line has tags
+		if fl.HasTag() {
+			continue
+		}
+		// TODO: stop reading if current line above highest range
+		if lineRanges.Match(line) {
+			_, err := content.Write(scanner.Bytes())
+			if err != nil {
+				return err
+			}
+			_, err = content.WriteString("\n")
+			if err != nil {
+				return err
+			}
+		}
 	}
-	return parsePreflightDocument(absPath, content, "", opts...)
+	return nil
+}
+
+func readWithinTags(scanner *bufio.Scanner, content *bytes.Buffer, tagRanges types.TagRanges) error {
+	log.Debugf("limiting to tag ranges: %v", tagRanges)
+	ranges := make(map[string]bool, len(tagRanges)) // ensure capacity
+	for scanner.Scan() {
+		line := scanner.Bytes()
+		// parse the line in search for the `tag::<tag>[]` or `end:<tag>[]` macros
+		l, err := Parse("", line, Entrypoint("IncludedFileLine"))
+		if err != nil {
+			return err
+		}
+		fl, ok := l.(types.IncludedFileLine)
+		if !ok {
+			return errors.Errorf("unexpected type of parsed line in file to include: %T", l)
+		}
+		// check if a start or end tag was found in the line
+		if startTag, ok := fl.GetStartTag(); ok {
+			ranges[startTag.Value] = true
+		}
+		if endTag, ok := fl.GetEndTag(); ok {
+			ranges[endTag.Value] = false
+		}
+
+		if tagRanges.Match(ranges) && !fl.HasTag() {
+			_, err := content.Write(scanner.Bytes())
+			if err != nil {
+				return err
+			}
+			_, err = content.WriteString("\n")
+			if err != nil {
+				return err
+			}
+		}
+	}
+	return nil
+}
+
+func readAll(scanner *bufio.Scanner, content *bytes.Buffer) error {
+	for scanner.Scan() {
+		// parse the line in search for the `tag::<tag>[]` or `end:<tag>[]` macros
+		l, err := Parse("", scanner.Bytes(), Entrypoint("IncludedFileLine"))
+		if err != nil {
+			return err
+		}
+		fl, ok := l.(types.IncludedFileLine)
+		if !ok {
+			return errors.Errorf("unexpected type of parsed line in file to include: %T", l)
+		}
+		// skip if the line has tags
+		if fl.HasTag() {
+			continue
+		}
+		_, err = content.Write(scanner.Bytes())
+		if err != nil {
+			return err
+		}
+		_, err = content.WriteString("\n")
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 func open(path string) (*os.File, string, func(), error) {

@@ -1,0 +1,14 @@
+// tag::doc[]
+// tag::section[]
+== Section 1
+// end::section[]
+
+// tag::unclosed[]
+
+// tag::content[]
+content
+
+// end::content[]
+// end::doc[]
+
+end

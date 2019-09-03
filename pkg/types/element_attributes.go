@@ -56,6 +56,8 @@ const (
 	AttrLevelOffset = "leveloffset"
 	// AttrLineRanges the `lines` attribute used in file inclusions
 	AttrLineRanges = "lines"
+	// AttrTagRanges the `tag`/`tags` attribute used in file inclusions
+	AttrTagRanges = "tags"
 )
 
 // ElementWithAttributes an element on which attributes can be added/set
