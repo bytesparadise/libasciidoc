@@ -83,7 +83,7 @@ generate: prebuild-checks
 generate-optimized:
 	@echo "generating the parser (optimized)..."
 	@pigeon -optimize-parser \
-		-alternate-entrypoints PreflightDocument,PreflightDocumentWithinDelimitedBlock,DocumentBlock,InlineElementsWithoutSubtitution,FileInclusion,FileLocation \
+		-alternate-entrypoints PreflightDocument,PreflightDocumentWithinDelimitedBlock,DocumentBlock,InlineElementsWithoutSubtitution,FileLocation,IncludedFileLine \
 		-o ./pkg/parser/parser.go ./pkg/parser/parser.peg
 
 .PHONY: test

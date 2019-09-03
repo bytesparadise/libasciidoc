@@ -354,7 +354,7 @@ FileInclusion <- incl:("include::" path:(FileLocation) inlineAttributes:(FileInc
     return incl.(types.FileInclusion), nil
 }
 
-FileIncludeAttributes <- "[" attrs:(LineRangesAttribute / GenericAttribute)* "]" {
+FileIncludeAttributes <- "[" attrs:(LineRangesAttribute / TagRangesAttribute / GenericAttribute)* "]" {
     return types.NewInlineAttributes(attrs.([]interface{}))
 } 
 
@@ -362,49 +362,82 @@ LineRangesAttribute <- "lines=" lines:(LineRangesAttributeValue) ","? {
     return types.NewLineRangesAttribute(lines)
 } 
 
-// specific entry point for parsing 
-LineRangesAttributeValue <- value:(MultipleRanges // TODO: just have MultipleRanges, MultipleQuotedRanges and UndefinedLineRange?
-        / MultipleQuotedRanges 
-        / MultilineRange 
-        / MultilineQuotedRange 
-        / SinglelineQuotedRange
-        / SinglelineRange 
+LineRangesAttributeValue <- value:(MultipleLineRanges // TODO: just have MultipleLineRanges, MultipleQuotedLineRanges and UndefinedLineRange?
+        / MultipleQuotedLineRanges 
+        / MultiLineRange 
+        / MultiLineQuotedRange 
+        / SingleLineQuotedRange
+        / SingleLineRange 
         / UndefinedLineRange) WS* (&"," / &"]") {
     return value, nil
 }
 
-MultipleRanges <- first:(MultilineRange / SinglelineRange) 
-    others:(";" other:(MultilineRange / SinglelineRange) {
+MultipleLineRanges <- first:(MultiLineRange / SingleLineRange) 
+    others:(";" other:(MultiLineRange / SingleLineRange) {
         return other, nil
     })+ {
         return append([]interface{}{first}, others.([]interface{})...), nil
     }
 
-MultipleQuotedRanges <- "\"" first:(MultilineRange / SinglelineRange) 
-    others:("," other:(MultilineRange / SinglelineRange) {
+MultipleQuotedLineRanges <- "\"" first:(MultiLineRange / SingleLineRange) 
+    others:("," other:(MultiLineRange / SingleLineRange) {
         return other, nil
     })+ "\"" {
         return append([]interface{}{first}, others.([]interface{})...), nil
     }
 
-MultilineRange <- start:(NUMBER) ".." end:(NUMBER) { // eg: lines=12..14
-    return types.NewMultilineRange(start.(int), end.(int))
+MultiLineRange <- start:(NUMBER) ".." end:(NUMBER) { // eg: lines=12..14
+    return types.NewLineRange(start.(int), end.(int))
 } 
 
-MultilineQuotedRange <- "\"" start:(NUMBER) ".." end:(NUMBER) "\"" { // eg: lines=12..14
-    return types.NewMultilineRange(start.(int), end.(int))
+MultiLineQuotedRange <- "\"" start:(NUMBER) ".." end:(NUMBER) "\"" { // eg: lines=12..14
+    return types.NewLineRange(start.(int), end.(int))
 } 
 
-SinglelineRange <- singleline:(NUMBER) { // eg: lines=12
-    return types.NewSingleLineRange(singleline.(int))
+SingleLineRange <- singleline:(NUMBER) { // eg: lines=12
+    return types.NewLineRange(singleline.(int), singleline.(int))
 }
 
-SinglelineQuotedRange <- "\"" singleline:(NUMBER) "\"" { // eg: lines=12
-    return types.NewSingleLineRange(singleline.(int))
+SingleLineQuotedRange <- "\"" singleline:(NUMBER) "\"" { // eg: lines=12
+    return types.NewLineRange(singleline.(int), singleline.(int))
 }
 
 UndefinedLineRange <- (!"]" !"," !WS .)* {
     return string(c.text), nil
+}
+
+TagRangesAttribute <- ("tags=" / "tag=") tags:(TagRangesAttributeValue) ","? { //TODO: check if 'tags'/'tag' is allowed for both single and multiple values
+    return types.NewTagRangesAttribute(tags)
+} 
+
+TagRangesAttributeValue <- value:(MultipleTagRanges) WS* (&"," / &"]") {
+    return value, nil
+}
+
+MultipleTagRanges <- first:(Alphanums {
+        return string(c.text), nil
+    })
+    others:(";" other:(Alphanums {
+        return string(c.text), nil
+    }) {
+        return other, nil
+    })* {
+        return append([]interface{}{first}, others.([]interface{})...), nil
+    }
+
+// ------------------------------------------
+// Tag macros in lines of files to include
+// ------------------------------------------
+IncludedFileLine <- content:(IncludedFileStartTag / IncludedFileEndTag / . {return string(c.text), nil})* EOL {
+    return types.NewIncludedFileLine(content.([]interface{}))
+}
+
+IncludedFileStartTag <- "tag::" tag:(Alphanums {return string(c.text), nil}) "[]" {
+    return types.NewIncludedFileStartTag(tag.(string))
+}
+
+IncludedFileEndTag <- "end::" tag:(Alphanums {return string(c.text), nil}) "[]" {
+    return types.NewIncludedFileEndTag(tag.(string))
 }
 
 // ------------------------------------------
