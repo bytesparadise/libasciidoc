@@ -235,20 +235,6 @@ func appendUnorderedListItem(lists []types.List, item *types.UnorderedListItem) 
 		}
 	}
 	list := types.NewUnorderedList(item)
-	// also, attach this list to the one above, if it exists ;)
-	// if len(lists) > 0 {
-	// 	parentList := &(lists[len(lists)-1])
-	// 	parentItem := (*parentList).LastItem()
-	// 	parentItem.AddElement(list)
-	// 	// also, force the bullet style
-	// 	if parentItem, ok := parentItem.(*types.UnorderedListItem); ok {
-	// 		item.BulletStyle = item.BulletStyle.NextLevel(parentItem.BulletStyle)
-	// 	}
-	// 	err := (*parentList).SetLastItem(parentItem)
-	// 	if err != nil {
-	// 		return nil, errors.Wrap(err, "unable to append unordered list item")
-	// 	}
-	// }
 	return append(lists, list), nil
 }
 
@@ -275,16 +261,6 @@ func appendLabeledListItem(lists []types.List, item types.LabeledListItem) ([]ty
 	// also, force the current item level to (last seen level + 1)
 	item.Level = maxLevel + 1
 	list := types.NewLabeledList(item)
-	// // also, attach this list to the one above, if it exists ;)
-	// if len(lists) > 0 {
-	// 	parentList := &(lists[len(lists)-1])
-	// 	parentItem := (*parentList).LastItem()
-	// 	parentItem.AddElement(list)
-	// 	err := (*parentList).SetLastItem(parentItem)
-	// 	if err != nil {
-	// 		return nil, errors.Wrap(err, "unable to append labeled list item")
-	// 	}
-	// }
 	return append(lists, list), nil
 }
 

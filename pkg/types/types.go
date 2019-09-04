@@ -239,12 +239,6 @@ func NewDocumentAttributeDeclaration(name string, value interface{}) (DocumentAt
 	}, nil
 }
 
-// AddAttributes adds all given attributes to the current set of attribute of the element
-func (d DocumentAttributeDeclaration) AddAttributes(attributes ElementAttributes) {
-	// nothing to do
-	// TODO: raise a warning?
-}
-
 // DocumentAttributeReset the type for DocumentAttributeReset
 type DocumentAttributeReset struct {
 	Name string
@@ -254,12 +248,6 @@ type DocumentAttributeReset struct {
 func NewDocumentAttributeReset(attrName string) (DocumentAttributeReset, error) {
 	log.Debugf("initialized a new DocumentAttributeReset: '%s'", attrName)
 	return DocumentAttributeReset{Name: attrName}, nil
-}
-
-// AddAttributes adds all given attributes to the current set of attribute of the element
-func (r DocumentAttributeReset) AddAttributes(attributes ElementAttributes) {
-	// nothing to do
-	// TODO: raise a warning?
 }
 
 // DocumentAttributeSubstitution the type for DocumentAttributeSubstitution
@@ -462,33 +450,6 @@ func (s *Section) AddAttributes(attributes ElementAttributes) {
 	s.Attributes.AddAll(attributes)
 }
 
-// GetElements returns the elements
-func (s *Section) GetElements() []interface{} {
-	return s.Elements
-}
-
-// AcceptVisitor implements Visitable#AcceptVisitor(Visitor)
-func (s *Section) AcceptVisitor(v Visitor) error {
-	err := v.Visit(s)
-	if err != nil {
-		return errors.Wrapf(err, "error while visiting section")
-	}
-	err = s.Title.AcceptVisitor(v)
-	if err != nil {
-		return errors.Wrapf(err, "error while visiting section element")
-	}
-	for _, element := range s.Elements {
-		if visitable, ok := element.(Visitable); ok {
-			err = visitable.AcceptVisitor(v)
-			if err != nil {
-				return errors.Wrapf(err, "error while visiting section element")
-			}
-		}
-
-	}
-	return nil
-}
-
 // AcceptSubstitutor implements Substituable#AcceptSubstitutor(Substitutor)
 // in a section, the substitutor only cares about the elements for now.
 func (s *Section) AcceptSubstitutor(v Substitutor) (interface{}, error) {
@@ -512,89 +473,16 @@ func (s *Section) AcceptSubstitutor(v Substitutor) (interface{}, error) {
 }
 
 // ------------------------------------------
-// SectionTitle
-// ------------------------------------------
-
-// SectionTitle the structure for the section titles
-type SectionTitle struct {
-	Attributes ElementAttributes
-	Elements   InlineElements
-}
-
-// NewSectionTitle initializes a new `SectionTitle`` from the given level and content, with the optional attributes.
-// In the attributes, only the ElementID is retained
-func NewSectionTitle(elements InlineElements, ids []interface{}) (SectionTitle, error) {
-	attributes := ElementAttributes{}
-	// multiple IDs can be defined (by mistake), and the last one is used
-	for _, id := range ids {
-		if id, ok := id.(ElementAttributes); ok {
-			attributes.AddAll(id)
-		}
-	}
-	attributes[AttrCustomID] = true
-	// make a default id from the sectionTitle's inline content
-	if _, found := attributes[AttrID]; !found {
-		log.Debugf("did not find ID attribute for section with elements %v", elements)
-		replacement, err := replaceNonAlphanumerics(elements, "_")
-		if err != nil {
-			return SectionTitle{}, errors.Wrapf(err, "unable to generate default ID while instanciating a new SectionTitle element")
-		}
-		attributes[AttrID] = replacement
-		attributes[AttrCustomID] = false
-	}
-	sectionTitle := SectionTitle{
-		Attributes: attributes,
-		Elements:   elements,
-	}
-	if log.GetLevel() == log.DebugLevel {
-		log.Debugf("initialized a new SectionTitle with %d element(s)", len(elements))
-	}
-	return sectionTitle, nil
-}
-
-// AddAttributes adds all given attributes to the current set of attribute of the element
-func (st *SectionTitle) AddAttributes(attributes ElementAttributes) {
-	st.Attributes.AddAll(attributes)
-	// look for custom ID
-	for attr := range attributes {
-		if attr == AttrID {
-			// mark custom_id flag to `true`
-			st.Attributes[AttrCustomID] = true
-		}
-	}
-}
-
-// AcceptVisitor implements Visitable#AcceptVisitor(Visitor)
-func (st *SectionTitle) AcceptVisitor(v Visitor) error {
-	err := v.Visit(st)
-	if err != nil {
-		return errors.Wrapf(err, "error while visiting section")
-	}
-	for _, element := range st.Elements {
-		visitable, ok := element.(Visitable)
-		if ok {
-			err = visitable.AcceptVisitor(v)
-			if err != nil {
-				return errors.Wrapf(err, "error while visiting section element")
-			}
-		}
-	}
-	return nil
-}
-
-// ------------------------------------------
 // Lists
 // ------------------------------------------
 
 // List a list of items
 type List interface {
 	LastItem() ListItem
-	SetLastItem(ListItem) error
 }
 
 // ListItem a list item
 type ListItem interface {
-	GetElements() []interface{}
 	AddElement(interface{})
 }
 
@@ -700,32 +588,6 @@ func rearrangeListAttributes(attributes ElementAttributes) ElementAttributes {
 	return attributes
 }
 
-// UpdateNumberingStyle updates the numbering style for all items
-// This function should only be called when the list is complete.
-func (l *OrderedList) UpdateNumberingStyle() {
-	// override the numbering style on all items at once, if applicable
-	for attr := range l.Attributes {
-		switch attr {
-		case string(Arabic):
-			setNumberingStyle(l.Items, Arabic)
-		case string(Decimal):
-			setNumberingStyle(l.Items, Decimal)
-		case string(LowerAlpha):
-			setNumberingStyle(l.Items, LowerAlpha)
-		case string(UpperAlpha):
-			setNumberingStyle(l.Items, UpperAlpha)
-		case string(LowerRoman):
-			setNumberingStyle(l.Items, LowerRoman)
-		case string(UpperRoman):
-			setNumberingStyle(l.Items, UpperRoman)
-		case string(LowerGreek):
-			setNumberingStyle(l.Items, LowerGreek)
-		case string(UpperGreek):
-			setNumberingStyle(l.Items, UpperGreek)
-		}
-	}
-}
-
 // AddAttributes adds all given attributes to the current set of attribute of the element
 func (l *OrderedList) AddAttributes(attributes ElementAttributes) {
 	l.Attributes.AddAll(attributes)
@@ -745,22 +607,6 @@ func (l *OrderedList) FirstItem() ListItem {
 // LastItem returns the last item in this list
 func (l *OrderedList) LastItem() ListItem {
 	return &(l.Items[len(l.Items)-1])
-}
-
-// SetLastItem replaces the last item in this list
-func (l *OrderedList) SetLastItem(i ListItem) error {
-	if i, ok := i.(*OrderedListItem); ok {
-		l.Items[len(l.Items)-1] = *i
-		return nil
-	}
-	return errors.Errorf("item to set at the end of the list is not an OrderedListItem: %T", i)
-}
-
-func setNumberingStyle(items []OrderedListItem, n NumberingStyle) {
-	log.Debugf("setting numbering style to %v on %d items", n, len(items))
-	for _, item := range items {
-		item.NumberingStyle = n
-	}
 }
 
 // OrderedListItem the structure for the ordered list items
@@ -792,11 +638,6 @@ func NewOrderedListItem(prefix OrderedListItemPrefix, elements []interface{}, at
 // GetAttributes returns the elements of this UnorderedListItem
 func (i OrderedListItem) GetAttributes() ElementAttributes {
 	return i.Attributes
-}
-
-// GetElements returns the elements of this OrderedListItem
-func (i *OrderedListItem) GetElements() []interface{} {
-	return i.Elements
 }
 
 // AddElement add an element to this OrderedListItem
@@ -864,15 +705,6 @@ func (l *UnorderedList) LastItem() ListItem {
 	return &(l.Items[len(l.Items)-1])
 }
 
-// SetLastItem replaces the last item in this list
-func (l *UnorderedList) SetLastItem(i ListItem) error {
-	if i, ok := i.(*UnorderedListItem); ok {
-		l.Items[len(l.Items)-1] = *i
-		return nil
-	}
-	return errors.Errorf("item to set at the end of the list is not an UnorderedListItem: %T", i)
-}
-
 // UnorderedListItem the structure for the unordered list items
 type UnorderedListItem struct {
 	Level       int
@@ -912,11 +744,6 @@ func (i UnorderedListItem) GetAttributes() ElementAttributes {
 	return i.Attributes
 }
 
-// GetElements returns the elements of this UnorderedListItem
-func (i *UnorderedListItem) GetElements() []interface{} {
-	return i.Elements
-}
-
 // AddElement add an element to this UnorderedListItem
 func (i *UnorderedListItem) AddElement(element interface{}) {
 	i.Elements = append(i.Elements, element)
@@ -949,13 +776,6 @@ func toCheckStyle(checkstyle interface{}) UnorderedListItemCheckStyle {
 		return cs
 	}
 	return NoCheck
-}
-
-// AdjustBulletStyle adjusts the BulletStyle value of this item
-func (i *UnorderedListItem) AdjustBulletStyle(p BulletStyle) {
-	n := i.BulletStyle.NextLevel(p)
-	log.Debugf("adjusting bullet style for item with level '%v' to '%v' (previously processed/parent level: '%v')", i.BulletStyle, p, n)
-	i.BulletStyle = n
 }
 
 // BulletStyle the type of bullet for items in an unordered list
@@ -1090,15 +910,6 @@ func (l *LabeledList) LastItem() ListItem {
 	return &(l.Items[len(l.Items)-1])
 }
 
-// SetLastItem replaces the last item in this list
-func (l *LabeledList) SetLastItem(i ListItem) error {
-	if i, ok := i.(*LabeledListItem); ok {
-		l.Items[len(l.Items)-1] = *i
-		return nil
-	}
-	return errors.Errorf("item to set at the end of the list is not an LabeledListItem: %T", i)
-}
-
 // LabeledListItem an item in a labeled
 type LabeledListItem struct {
 	Term       string
@@ -1134,11 +945,6 @@ func NewLabeledListItem(level int, term string, description interface{}, attribu
 // GetAttributes returns the elements of this UnorderedListItem
 func (i LabeledListItem) GetAttributes() ElementAttributes {
 	return i.Attributes
-}
-
-// GetElements returns the elements of this LabeledListItem
-func (i *LabeledListItem) GetElements() []interface{} {
-	return i.Elements
 }
 
 // AddElement add an element to this LabeledListItem
@@ -1701,12 +1507,6 @@ func NewSingleLineComment(content string) (SingleLineComment, error) {
 	return SingleLineComment{
 		Content: content,
 	}, nil
-}
-
-// AddAttributes adds all given attributes to the current set of attribute of the element
-func (l *SingleLineComment) AddAttributes(attributes ElementAttributes) {
-	// nothing to do
-	// TODO: raise a warning?
 }
 
 // ------------------------------------------
