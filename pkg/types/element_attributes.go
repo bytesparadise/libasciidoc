@@ -2,7 +2,6 @@ package types
 
 import (
 	"fmt"
-	"strconv"
 	"strings"
 
 	"github.com/pkg/errors"
@@ -185,49 +184,6 @@ func NewSourceAttributes(language interface{}) (ElementAttributes, error) {
 	return result, nil
 }
 
-// WithAttributes set the attributes on the given elements if its type is supported, otherwise returns an error
-func WithAttributes(element interface{}, attributes ElementAttributes) (interface{}, error) {
-	// look for custom ID
-	for attr := range attributes {
-		if attr == AttrID {
-			// mark custom_id flag to `true`
-			attributes[AttrCustomID] = true
-		}
-	}
-	if element, ok := element.(ElementWithAttributes); ok {
-		if len(attributes) > 0 {
-			log.Debugf("setting %d attribute(s) on element of type %T", len(attributes), element)
-		}
-		element.AddAttributes(attributes)
-		return element, nil
-	}
-	// special case for DelimitedBlock where we need a pointer receiver to modify the `Kind` field of the struct.
-	if element, ok := element.(DelimitedBlock); ok {
-		block := &element
-		block.AddAttributes(attributes)
-		return element, nil
-	}
-	// special case for any ListItem where we need a pointer receiver to modify the `Kind` field of the struct.
-	if element, ok := element.(OrderedListItem); ok {
-		item := &element
-		item.AddAttributes(attributes)
-		return element, nil
-	}
-	if element, ok := element.(UnorderedListItem); ok {
-		item := &element
-		item.AddAttributes(attributes)
-		return element, nil
-	}
-	if element, ok := element.(LabeledListItem); ok {
-		item := &element
-		item.AddAttributes(attributes)
-		return element, nil
-	}
-
-	log.Debugf("cannot set attribute(s) %[2]v on element of type %[1]T : %[1]v", element, attributes)
-	return nil, errors.Errorf("cannot set attributes on element of type '%T'", element)
-}
-
 // ElementAttributes is a map[string]interface{} with some utility methods
 type ElementAttributes map[string]interface{}
 
@@ -243,21 +199,6 @@ func (a ElementAttributes) GetAsString(key string) string {
 		return fmt.Sprintf("%v", v)
 	}
 	return ""
-}
-
-// GetAsInt returns the value of the key as an int (and true), or (-1, false) string if the key did not exist
-func (a ElementAttributes) GetAsInt(key string) (int, bool) {
-	if v, ok := a[key]; ok {
-		if v, ok := v.(string); ok {
-			i, err := strconv.ParseInt(v, 10, 64)
-			if err != nil {
-				log.WithError(err).Errorf("unable to parse '%s' value %v", key, v)
-				return -1, false
-			}
-			return int(i), true
-		}
-	}
-	return -1, false
 }
 
 // GetAsBool returns the value of the key as a bool, or `false` if the key did not exist
@@ -281,18 +222,8 @@ func (a ElementAttributes) AddAll(attributes ElementAttributes) {
 	}
 }
 
-// AddNonEmpty adds the given attribute if its value is non-nil and non-empty
-// TODO: raise a warning if there was already a name/value
-func (a ElementAttributes) AddNonEmpty(key string, value interface{}) {
-	// do not add nil or empty values
-	if value == "" {
-		return
-	}
-	a[key] = value
-}
-
 // NewElementAttributes retrieves the ElementID, ElementTitle and ElementInlineLink from the given slice of attributes
-func NewElementAttributes(attributes []interface{}, extras ...ElementAttributes) ElementAttributes {
+func NewElementAttributes(attributes []interface{}) ElementAttributes {
 	attrs := ElementAttributes{}
 	for _, attr := range attributes {
 		// log.Debugf("processing attribute %[1]v (%[1]T)", attr)
@@ -319,12 +250,6 @@ func NewElementAttributes(attributes []interface{}, extras ...ElementAttributes)
 			// ignore
 		default:
 			log.Warnf("unexpected attributes of type: %T", attr)
-		}
-	}
-	for _, extra := range extras {
-		for k, v := range extra {
-			// no warning on override here
-			attrs[k] = v
 		}
 	}
 	return attrs

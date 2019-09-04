@@ -148,8 +148,6 @@ func renderElement(ctx *renderer.Context, element interface{}) ([]byte, error) {
 func renderPlainString(ctx *renderer.Context, element interface{}) ([]byte, error) {
 	log.Debugf("rendering plain string for element of type %T", element)
 	switch element := element.(type) {
-	case types.SectionTitle:
-		return renderPlainString(ctx, element.Elements)
 	case types.QuotedText:
 		return renderPlainString(ctx, element.Elements)
 	case types.InlineImage:
