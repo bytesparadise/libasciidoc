@@ -11,7 +11,7 @@ var _ = Describe("file inclusions", func() {
 
 preamble
 
-include::includes/chapter-a.adoc[leveloffset=+1]`
+include::../../../test/includes/chapter-a.adoc[leveloffset=+1]`
 		expected := `<div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
@@ -35,7 +35,7 @@ include::includes/chapter-a.adoc[leveloffset=+1]`
 
 preamble
 
-include::includes/hello_world.go[]`
+include::../../../test/includes/hello_world.go[]`
 		expected := `<div class="paragraph">
 <p>preamble</p>
 </div>
@@ -58,9 +58,9 @@ include::includes/hello_world.go[]`
 
 preamble
 
-include::includes/grandchild-include.adoc[]
+include::../../../test/includes/grandchild-include.adoc[]
 
-include::includes/hello_world.go[]`
+include::../../../test/includes/hello_world.go[]`
 		expected := `<div class="paragraph">
 <p>preamble</p>
 </div>
@@ -87,7 +87,7 @@ include::includes/hello_world.go[]`
 	It("include file and append following elements in included section", func() {
 		source := `a first paragraph
 
-include::includes/chapter-a.adoc[leveloffset=+1]
+include::../../../test/includes/chapter-a.adoc[leveloffset=+1]
 
 a second paragraph
 
@@ -122,7 +122,7 @@ a third paragraph`
 preamble
 
 ----
-include::includes/chapter-a.adoc[]
+include::../../../test/includes/chapter-a.adoc[]
 ----`
 				expected := `<div class="paragraph">
 <p>preamble</p>
@@ -139,7 +139,7 @@ content</pre>
 
 			It("should include adoc file within fenced block", func() {
 				source := "```\n" +
-					"include::includes/chapter-a.adoc[]\n" +
+					"include::../../../test/includes/chapter-a.adoc[]\n" +
 					"```"
 				expected := `<div class="listingblock">
 <div class="content">
@@ -153,7 +153,7 @@ content</code></pre>
 
 			It("should include adoc file within example block", func() {
 				source := `====
-include::includes/chapter-a.adoc[]
+include::../../../test/includes/chapter-a.adoc[]
 ====`
 				expected := `<div class="exampleblock">
 <div class="content">
@@ -170,7 +170,7 @@ include::includes/chapter-a.adoc[]
 
 			It("should include adoc file within quote block", func() {
 				source := `____
-include::includes/chapter-a.adoc[]
+include::../../../test/includes/chapter-a.adoc[]
 ____`
 				expected := `<div class="quoteblock">
 <blockquote>
@@ -188,7 +188,7 @@ ____`
 			It("should include adoc file within verse block", func() {
 				source := `[verse]
 ____
-include::includes/chapter-a.adoc[]
+include::../../../test/includes/chapter-a.adoc[]
 ____`
 				expected := `<div class="verseblock">
 <pre class="content">= Chapter A
@@ -200,7 +200,7 @@ content</pre>
 
 			It("should include adoc file within sidebar block", func() {
 				source := `****
-include::includes/chapter-a.adoc[]
+include::../../../test/includes/chapter-a.adoc[]
 ****`
 				expected := `<div class="sidebarblock">
 <div class="content">
@@ -218,7 +218,7 @@ include::includes/chapter-a.adoc[]
 			It("should include adoc file within passthrough block", func() {
 				Skip("missing support for passthrough blocks")
 				source := `++++
-include::includes/chapter-a.adoc[]
+include::../../../test/includes/chapter-a.adoc[]
 ++++`
 				expected := ``
 				verify(expected, source)
@@ -233,7 +233,7 @@ include::includes/chapter-a.adoc[]
 preamble
 
 ----
-include::includes/hello_world.go[]
+include::../../../test/includes/hello_world.go[]
 ----`
 				expected := `<div class="paragraph">
 <p>preamble</p>
@@ -254,7 +254,7 @@ func helloworld() {
 
 			It("should include go file within fenced block", func() {
 				source := "```\n" +
-					"include::includes/hello_world.go[]\n" +
+					"include::../../../test/includes/hello_world.go[]\n" +
 					"```"
 				expected := `<div class="listingblock">
 <div class="content">
@@ -272,7 +272,7 @@ func helloworld() {
 
 			It("should include go file within example block", func() {
 				source := `====
-include::includes/hello_world.go[]
+include::../../../test/includes/hello_world.go[]
 ====`
 				expected := `<div class="exampleblock">
 <div class="content">
@@ -294,7 +294,7 @@ include::includes/hello_world.go[]
 
 			It("should include go file within quote block", func() {
 				source := `____
-include::includes/hello_world.go[]
+include::../../../test/includes/hello_world.go[]
 ____`
 				expected := `<div class="quoteblock">
 <blockquote>
@@ -317,7 +317,7 @@ ____`
 			It("should include go file within verse block", func() {
 				source := `[verse]
 ____
-include::includes/hello_world.go[]
+include::../../../test/includes/hello_world.go[]
 ____`
 				expected := `<div class="verseblock">
 <pre class="content">package includes
@@ -333,7 +333,7 @@ func helloworld() {
 
 			It("should include go file within sidebar block", func() {
 				source := `****
-include::includes/hello_world.go[]
+include::../../../test/includes/hello_world.go[]
 ****`
 				expected := `<div class="sidebarblock">
 <div class="content">
@@ -360,7 +360,7 @@ include::includes/hello_world.go[]
 		Context("file inclusions as paragraph with line range", func() {
 
 			It("should include single line as paragraph", func() {
-				source := `include::includes/hello_world.go[lines=1]`
+				source := `include::../../../test/includes/hello_world.go[lines=1]`
 				expected := `<div class="paragraph">
 <p>package includes</p>
 </div>`
@@ -368,7 +368,7 @@ include::includes/hello_world.go[]
 			})
 
 			It("should include multiple lines as paragraph", func() {
-				source := `include::includes/hello_world.go[lines=5..7]`
+				source := `include::../../../test/includes/hello_world.go[lines=5..7]`
 				expected := `<div class="paragraph">
 <p>func helloworld() {
 	fmt.Println(&#34;hello, world!&#34;)
@@ -378,7 +378,7 @@ include::includes/hello_world.go[]
 			})
 
 			It("should include multiple ranges as paragraph", func() {
-				source := `include::includes/hello_world.go[lines=1..2;5..7]`
+				source := `include::../../../test/includes/hello_world.go[lines=1..2;5..7]`
 				expected := `<div class="paragraph">
 <p>package includes</p>
 </div>
@@ -395,7 +395,7 @@ include::includes/hello_world.go[]
 
 			It("should include single line in listing block", func() {
 				source := `----
-include::includes/hello_world.go[lines=1]
+include::../../../test/includes/hello_world.go[lines=1]
 ----`
 				expected := `<div class="listingblock">
 <div class="content">
@@ -407,7 +407,7 @@ include::includes/hello_world.go[lines=1]
 
 			It("should include multiple lines in listing block", func() {
 				source := `----
-include::includes/hello_world.go[lines=5..7]
+include::../../../test/includes/hello_world.go[lines=5..7]
 ----`
 				expected := `<div class="listingblock">
 <div class="content">
@@ -421,7 +421,7 @@ include::includes/hello_world.go[lines=5..7]
 
 			It("should include multiple ranges in listing block", func() {
 				source := `----
-include::includes/hello_world.go[lines=1..2;5..7]
+include::../../../test/includes/hello_world.go[lines=1..2;5..7]
 ----`
 				expected := `<div class="listingblock">
 <div class="content">
@@ -440,7 +440,7 @@ func helloworld() {
 	Context("file inclusions with tag ranges", func() {
 
 		It("file inclusion with single tag", func() {
-			source := `include::includes/tag-include.adoc[tag=section]`
+			source := `include::../../../test/includes/tag-include.adoc[tag=section]`
 			expected := `<div class="sect1">
 <h2 id="_section_1">Section 1</h2>
 <div class="sectionbody">
@@ -450,7 +450,7 @@ func helloworld() {
 		})
 
 		It("file inclusion with surrounding tag", func() {
-			source := `include::includes/tag-include.adoc[tag=doc]`
+			source := `include::../../../test/includes/tag-include.adoc[tag=doc]`
 			expected := `<div class="sect1">
 <h2 id="_section_1">Section 1</h2>
 <div class="sectionbody">
@@ -463,7 +463,7 @@ func helloworld() {
 		})
 
 		It("file inclusion with unclosed tag", func() {
-			source := `include::includes/tag-include.adoc[tag=unclosed]`
+			source := `include::../../../test/includes/tag-include.adoc[tag=unclosed]`
 			expected := `<div class="paragraph">
 <p>content</p>
 </div>
@@ -474,14 +474,14 @@ func helloworld() {
 		})
 
 		It("file inclusion with unknown tag", func() {
-			source := `include::includes/tag-include.adoc[tag=unknown]`
+			source := `include::../../../test/includes/tag-include.adoc[tag=unknown]`
 			expected := ``
 			// TODO: verify error in logs
 			verify(expected, source)
 		})
 
 		It("file inclusion with no tag", func() {
-			source := `include::includes/tag-include.adoc[]`
+			source := `include::../../../test/includes/tag-include.adoc[]`
 			expected := `<div class="sect1">
 <h2 id="_section_1">Section 1</h2>
 <div class="sectionbody">
@@ -500,7 +500,7 @@ func helloworld() {
 	Context("recursive file inclusions", func() {
 
 		It("should include child and grandchild content in paragraphs", func() {
-			source := `include::includes/parent-include.adoc[]`
+			source := `include::../../../test/includes/parent-include.adoc[]`
 			expected := `<div class="paragraph">
 <p>first line of parent</p>
 </div>
@@ -524,7 +524,7 @@ func helloworld() {
 
 		It("should include child and grandchild content in listing block", func() {
 			source := `----
-include::includes/parent-include.adoc[]
+include::../../../test/includes/parent-include.adoc[]
 ----`
 			expected := `<div class="listingblock">
 <div class="content">
@@ -548,7 +548,7 @@ last line of parent</pre>
 	Context("inclusion with attribute in path", func() {
 
 		It("should resolve path with attribute in standalone block", func() {
-			source := `:includedir: ./includes
+			source := `:includedir: ../../../test/includes
 			
 include::{includedir}/grandchild-include.adoc[]`
 			expected := `<div class="paragraph">
@@ -561,7 +561,7 @@ include::{includedir}/grandchild-include.adoc[]`
 		})
 
 		It("should resolve path with attribute in delimited block", func() {
-			source := `:includedir: ./includes
+			source := `:includedir: ../../../test/includes
 
 ----
 include::{includedir}/grandchild-include.adoc[]
@@ -583,9 +583,9 @@ last line of grandchild</pre>
 
 			It("should replace with string element if file is missing", func() {
 
-				source := `include::includes/unknown.adoc[leveloffset=+1]`
+				source := `include::../../../test/includes/unknown.adoc[leveloffset=+1]`
 				expected := `<div class="paragraph">
-<p>Unresolved directive in test.adoc - include::includes/unknown.adoc[leveloffset=&#43;1]</p>
+<p>Unresolved directive in test.adoc - include::../../../test/includes/unknown.adoc[leveloffset=&#43;1]</p>
 </div>`
 				// TODO: also verify that an error was reported in the console.
 				verify(expected, source)
@@ -606,11 +606,11 @@ last line of grandchild</pre>
 
 			It("should replace with string element if file is missing", func() {
 				source := `----
-include::includes/unknown.adoc[leveloffset=+1]
+include::../../../test/includes/unknown.adoc[leveloffset=+1]
 ----`
 				expected := `<div class="listingblock">
 <div class="content">
-<pre>Unresolved directive in test.adoc - include::includes/unknown.adoc[leveloffset=+1]</pre>
+<pre>Unresolved directive in test.adoc - include::../../../test/includes/unknown.adoc[leveloffset=+1]</pre>
 </div>
 </div>`
 				// TODO: also verify that an error was reported in the console.
