@@ -45,9 +45,9 @@ var _ = Describe("file location", func() {
 				Content: "chapter_a.adoc",
 			},
 		}),
-		Entry("'includes/chapter_a.adoc'", "includes/chapter_a.adoc", types.Location{
+		Entry("'../../test/includes/chapter_a.adoc'", "../../test/includes/chapter_a.adoc", types.Location{
 			types.StringElement{
-				Content: "includes/chapter_a.adoc",
+				Content: "../../test/includes/chapter_a.adoc",
 			},
 		}),
 		Entry("'chapter-{foo}.adoc'", "chapter-{foo}.adoc", types.Location{
@@ -81,7 +81,7 @@ var _ = Describe("file location", func() {
 var _ = Describe("file inclusions - preflight with preprocessing", func() {
 
 	It("should include adoc file without leveloffset", func() {
-		source := "include::includes/chapter-a.adoc[]"
+		source := "include::../../test/includes/chapter-a.adoc[]"
 		expected := types.PreflightDocument{
 			Blocks: []interface{}{
 				types.Section{
@@ -114,7 +114,7 @@ var _ = Describe("file inclusions - preflight with preprocessing", func() {
 	})
 
 	It("should include adoc file with leveloffset", func() {
-		source := "include::includes/chapter-a.adoc[leveloffset=+1]"
+		source := "include::../../test/includes/chapter-a.adoc[leveloffset=+1]"
 		expected := types.PreflightDocument{
 			Blocks: []interface{}{
 				types.Section{
@@ -150,7 +150,7 @@ var _ = Describe("file inclusions - preflight with preprocessing", func() {
 
 		It("should include adoc file within fenced block", func() {
 			source := "```\n" +
-				"include::includes/chapter-a.adoc[]\n" +
+				"include::../../test/includes/chapter-a.adoc[]\n" +
 				"```"
 			expected := types.PreflightDocument{
 				Blocks: []interface{}{
@@ -188,7 +188,7 @@ var _ = Describe("file inclusions - preflight with preprocessing", func() {
 
 		It("should include adoc file within listing block", func() {
 			source := `----
-include::includes/chapter-a.adoc[]
+include::../../test/includes/chapter-a.adoc[]
 ----`
 			expected := types.PreflightDocument{
 				Blocks: []interface{}{
@@ -226,7 +226,7 @@ include::includes/chapter-a.adoc[]
 
 		It("should include adoc file within example block", func() {
 			source := `====
-include::includes/chapter-a.adoc[]
+include::../../test/includes/chapter-a.adoc[]
 ====`
 			expected := types.PreflightDocument{
 				Blocks: []interface{}{
@@ -264,7 +264,7 @@ include::includes/chapter-a.adoc[]
 
 		It("should include adoc file within quote block", func() {
 			source := `____
-include::includes/chapter-a.adoc[]
+include::../../test/includes/chapter-a.adoc[]
 ____`
 			expected := types.PreflightDocument{
 				Blocks: []interface{}{
@@ -303,7 +303,7 @@ ____`
 		It("should include adoc file within verse block", func() {
 			source := `[verse]
 ____
-include::includes/chapter-a.adoc[]
+include::../../test/includes/chapter-a.adoc[]
 ____`
 			expected := types.PreflightDocument{
 				Blocks: []interface{}{
@@ -343,7 +343,7 @@ ____`
 
 		It("should include adoc file within sidebar block", func() {
 			source := `****
-include::includes/chapter-a.adoc[]
+include::../../test/includes/chapter-a.adoc[]
 ****`
 			expected := types.PreflightDocument{
 				Blocks: []interface{}{
@@ -382,7 +382,7 @@ include::includes/chapter-a.adoc[]
 		It("should include adoc file within passthrough block", func() {
 			Skip("missing support for passthrough blocks")
 			source := `++++
-include::includes/chapter-a.adoc[]
+include::../../test/includes/chapter-a.adoc[]
 ++++`
 			expected := types.DelimitedBlock{
 				Attributes: types.ElementAttributes{},
@@ -420,7 +420,7 @@ include::includes/chapter-a.adoc[]
 		Context("file inclusions with unquoted line ranges", func() {
 
 			It("file inclusion with single unquoted line", func() {
-				source := `include::includes/chapter-a.adoc[lines=1]`
+				source := `include::../../test/includes/chapter-a.adoc[lines=1]`
 				expected := types.PreflightDocument{
 					Blocks: []interface{}{
 						types.Section{
@@ -442,7 +442,7 @@ include::includes/chapter-a.adoc[]
 			})
 
 			It("file inclusion with multiple unquoted lines", func() {
-				source := `include::includes/chapter-a.adoc[lines=1..2]`
+				source := `include::../../test/includes/chapter-a.adoc[lines=1..2]`
 				expected := types.PreflightDocument{
 					Blocks: []interface{}{
 						types.Section{
@@ -465,7 +465,7 @@ include::includes/chapter-a.adoc[]
 			})
 
 			It("file inclusion with multiple unquoted ranges", func() {
-				source := `include::includes/chapter-a.adoc[lines=1;3..4;6..-1]` // paragraph becomes the author since the in-between blank line is stripped out
+				source := `include::../../test/includes/chapter-a.adoc[lines=1;3..4;6..-1]` // paragraph becomes the author since the in-between blank line is stripped out
 				expected := types.PreflightDocument{
 					Blocks: []interface{}{
 						types.Section{
@@ -492,7 +492,7 @@ include::includes/chapter-a.adoc[]
 			})
 
 			It("file inclusion with invalid unquoted range - case 1", func() {
-				source := `include::includes/chapter-a.adoc[lines=1;3..4;6..foo]` // not a number
+				source := `include::../../test/includes/chapter-a.adoc[lines=1;3..4;6..foo]` // not a number
 				expected := types.PreflightDocument{
 					Blocks: []interface{}{
 						types.Section{
@@ -525,7 +525,7 @@ include::includes/chapter-a.adoc[]
 			})
 
 			It("file inclusion with invalid unquoted range - case 2", func() {
-				source := `include::includes/chapter-a.adoc[lines=1,3..4,6..-1]` // using commas instead of semi-colons
+				source := `include::../../test/includes/chapter-a.adoc[lines=1,3..4,6..-1]` // using commas instead of semi-colons
 				expected := types.PreflightDocument{
 					Blocks: []interface{}{
 						types.Section{
@@ -550,7 +550,7 @@ include::includes/chapter-a.adoc[]
 		Context("file inclusions with quoted line ranges", func() {
 
 			It("file inclusion with single quoted line", func() {
-				source := `include::includes/chapter-a.adoc[lines="1"]`
+				source := `include::../../test/includes/chapter-a.adoc[lines="1"]`
 				expected := types.PreflightDocument{
 					Blocks: []interface{}{
 						types.Section{
@@ -572,7 +572,7 @@ include::includes/chapter-a.adoc[]
 			})
 
 			It("file inclusion with multiple quoted lines", func() {
-				source := `include::includes/chapter-a.adoc[lines="1..2"]`
+				source := `include::../../test/includes/chapter-a.adoc[lines="1..2"]`
 				expected := types.PreflightDocument{
 					Blocks: []interface{}{
 						types.Section{
@@ -596,7 +596,7 @@ include::includes/chapter-a.adoc[]
 
 			It("file inclusion with multiple quoted ranges", func() {
 				// here, the `content` paragraph gets attached to the header and becomes the author
-				source := `include::includes/chapter-a.adoc[lines="1,3..4,6..-1"]`
+				source := `include::../../test/includes/chapter-a.adoc[lines="1,3..4,6..-1"]`
 				expected := types.PreflightDocument{
 					Blocks: []interface{}{
 						types.Section{
@@ -623,7 +623,7 @@ include::includes/chapter-a.adoc[]
 			})
 
 			It("file inclusion with invalid quoted range - case 1", func() {
-				source := `include::includes/chapter-a.adoc[lines="1,3..4,6..foo"]` // not a number
+				source := `include::../../test/includes/chapter-a.adoc[lines="1,3..4,6..foo"]` // not a number
 				expected := types.PreflightDocument{
 					Blocks: []interface{}{
 						types.Section{
@@ -656,7 +656,7 @@ include::includes/chapter-a.adoc[]
 			})
 
 			It("file inclusion with invalid quoted range - case 2", func() {
-				source := `include::includes/chapter-a.adoc[lines="1;3..4;6..10"]` // using semi-colons instead of commas
+				source := `include::../../test/includes/chapter-a.adoc[lines="1;3..4;6..10"]` // using semi-colons instead of commas
 				expected := types.PreflightDocument{
 					Blocks: []interface{}{
 						types.Section{
@@ -690,7 +690,7 @@ include::includes/chapter-a.adoc[]
 
 			It("file inclusion with ignored tags", func() {
 				// include using a line range a file having tags
-				source := `include::includes/tag-include.adoc[lines=3]`
+				source := `include::../../test/includes/tag-include.adoc[lines=3]`
 				expected := types.PreflightDocument{
 					Blocks: []interface{}{
 						types.Section{
@@ -716,7 +716,7 @@ include::includes/chapter-a.adoc[]
 	Context("file inclusions with tag ranges", func() {
 
 		It("file inclusion with single tag", func() {
-			source := `include::includes/tag-include.adoc[tag=section]`
+			source := `include::../../test/includes/tag-include.adoc[tag=section]`
 			expected := types.PreflightDocument{
 				Blocks: []interface{}{
 					types.Section{
@@ -738,7 +738,7 @@ include::includes/chapter-a.adoc[]
 		})
 
 		It("file inclusion with surrounding tag", func() {
-			source := `include::includes/tag-include.adoc[tag=doc]`
+			source := `include::../../test/includes/tag-include.adoc[tag=doc]`
 			expected := types.PreflightDocument{
 				Blocks: []interface{}{
 					types.Section{
@@ -773,7 +773,7 @@ include::includes/chapter-a.adoc[]
 		})
 
 		It("file inclusion with unclosed tag", func() {
-			source := `include::includes/tag-include.adoc[tag=unclosed]`
+			source := `include::../../test/includes/tag-include.adoc[tag=unclosed]`
 			expected := types.PreflightDocument{
 				Blocks: []interface{}{
 					types.BlankLine{},
@@ -805,7 +805,7 @@ include::includes/chapter-a.adoc[]
 		})
 
 		It("file inclusion with unknown tag", func() {
-			source := `include::includes/tag-include.adoc[tag=unknown]`
+			source := `include::../../test/includes/tag-include.adoc[tag=unknown]`
 			expected := types.PreflightDocument{
 				Blocks: []interface{}{},
 			}
@@ -814,7 +814,7 @@ include::includes/chapter-a.adoc[]
 		})
 
 		It("file inclusion with no tag", func() {
-			source := `include::includes/tag-include.adoc[]`
+			source := `include::../../test/includes/tag-include.adoc[]`
 			expected := types.PreflightDocument{
 				Blocks: []interface{}{
 					types.Section{
@@ -884,7 +884,7 @@ include::includes/chapter-a.adoc[]
 		})
 
 		It("should replace with string element if file is missing in standalone block", func() {
-			source := `include::includes/unknown.adoc[leveloffset=+1]`
+			source := `include::../../test/includes/unknown.adoc[leveloffset=+1]`
 			expected := types.PreflightDocument{
 				Blocks: []interface{}{
 					types.Paragraph{
@@ -892,7 +892,7 @@ include::includes/chapter-a.adoc[]
 						Lines: []types.InlineElements{
 							{
 								types.StringElement{
-									Content: "Unresolved directive in test.adoc - include::includes/unknown.adoc[leveloffset=+1]",
+									Content: "Unresolved directive in test.adoc - include::../../test/includes/unknown.adoc[leveloffset=+1]",
 								},
 							},
 						},
@@ -905,7 +905,7 @@ include::includes/chapter-a.adoc[]
 
 		It("should replace with string element if file is missing in delimited block", func() {
 			source := `----
-include::includes/unknown.adoc[leveloffset=+1]
+include::../../test/includes/unknown.adoc[leveloffset=+1]
 ----`
 			expected := types.PreflightDocument{
 				Blocks: []interface{}{
@@ -918,7 +918,7 @@ include::includes/unknown.adoc[leveloffset=+1]
 								Lines: []types.InlineElements{
 									{
 										types.StringElement{
-											Content: "Unresolved directive in test.adoc - include::includes/unknown.adoc[leveloffset=+1]",
+											Content: "Unresolved directive in test.adoc - include::../../test/includes/unknown.adoc[leveloffset=+1]",
 										},
 									},
 								},
@@ -935,14 +935,14 @@ include::includes/unknown.adoc[leveloffset=+1]
 	Context("inclusion with attribute in path", func() {
 
 		It("should resolve path with attribute in standalone block", func() {
-			source := `:includedir: ./includes
+			source := `:includedir: ../../test/includes
 			
 include::{includedir}/grandchild-include.adoc[]`
 			expected := types.PreflightDocument{
 				Blocks: []interface{}{
 					types.DocumentAttributeDeclaration{
 						Name:  "includedir",
-						Value: "./includes",
+						Value: "../../test/includes",
 					},
 					types.BlankLine{},
 					types.Paragraph{
@@ -972,7 +972,7 @@ include::{includedir}/grandchild-include.adoc[]`
 		})
 
 		It("should resolve path with attribute in delimited block", func() {
-			source := `:includedir: ./includes
+			source := `:includedir: ../../test/includes
 
 ----
 include::{includedir}/grandchild-include.adoc[]
@@ -981,7 +981,7 @@ include::{includedir}/grandchild-include.adoc[]
 				Blocks: []interface{}{
 					types.DocumentAttributeDeclaration{
 						Name:  "includedir",
-						Value: "./includes",
+						Value: "../../test/includes",
 					},
 					types.BlankLine{},
 					types.DelimitedBlock{
@@ -1022,7 +1022,7 @@ include::{includedir}/grandchild-include.adoc[]
 		It("include go file without any range", func() {
 
 			source := `----
-include::includes/hello_world.go[] 
+include::../../test/includes/hello_world.go[] 
 ----`
 			expected := types.PreflightDocument{
 				Blocks: []interface{}{
@@ -1084,7 +1084,7 @@ include::includes/hello_world.go[]
 var _ = Describe("file inclusions - preflight without preprocessing", func() {
 
 	It("should include adoc file with leveloffset attribute", func() {
-		source := "include::includes/chapter-a.adoc[leveloffset=+1]"
+		source := "include::../../test/includes/chapter-a.adoc[leveloffset=+1]"
 		expected := types.PreflightDocument{
 			Blocks: []interface{}{
 				types.FileInclusion{
@@ -1093,10 +1093,10 @@ var _ = Describe("file inclusions - preflight without preprocessing", func() {
 					},
 					Location: types.Location{
 						types.StringElement{
-							Content: "includes/chapter-a.adoc",
+							Content: "../../test/includes/chapter-a.adoc",
 						},
 					},
-					RawText: `include::includes/chapter-a.adoc[leveloffset=+1]`,
+					RawText: `include::../../test/includes/chapter-a.adoc[leveloffset=+1]`,
 				},
 			},
 		}
@@ -1107,7 +1107,7 @@ var _ = Describe("file inclusions - preflight without preprocessing", func() {
 
 		It("should include adoc file within fenced block", func() {
 			source := "```\n" +
-				"include::includes/chapter-a.adoc[]\n" +
+				"include::../../test/includes/chapter-a.adoc[]\n" +
 				"```"
 			expected := types.PreflightDocument{
 				Blocks: []interface{}{
@@ -1119,10 +1119,10 @@ var _ = Describe("file inclusions - preflight without preprocessing", func() {
 								Attributes: types.ElementAttributes{},
 								Location: types.Location{
 									types.StringElement{
-										Content: "includes/chapter-a.adoc",
+										Content: "../../test/includes/chapter-a.adoc",
 									},
 								},
-								RawText: `include::includes/chapter-a.adoc[]`,
+								RawText: `include::../../test/includes/chapter-a.adoc[]`,
 							},
 						},
 					},
@@ -1133,7 +1133,7 @@ var _ = Describe("file inclusions - preflight without preprocessing", func() {
 
 		It("should include adoc file within listing block", func() {
 			source := `----
-include::includes/chapter-a.adoc[]
+include::../../test/includes/chapter-a.adoc[]
 ----`
 			expected := types.PreflightDocument{
 				Blocks: []interface{}{
@@ -1145,10 +1145,10 @@ include::includes/chapter-a.adoc[]
 								Attributes: types.ElementAttributes{},
 								Location: types.Location{
 									types.StringElement{
-										Content: "includes/chapter-a.adoc",
+										Content: "../../test/includes/chapter-a.adoc",
 									},
 								},
-								RawText: `include::includes/chapter-a.adoc[]`,
+								RawText: `include::../../test/includes/chapter-a.adoc[]`,
 							},
 						},
 					},
@@ -1159,7 +1159,7 @@ include::includes/chapter-a.adoc[]
 
 		It("should include adoc file within example block", func() {
 			source := `====
-include::includes/chapter-a.adoc[]
+include::../../test/includes/chapter-a.adoc[]
 ====`
 			expected := types.PreflightDocument{
 				Blocks: []interface{}{
@@ -1171,10 +1171,10 @@ include::includes/chapter-a.adoc[]
 								Attributes: types.ElementAttributes{},
 								Location: types.Location{
 									types.StringElement{
-										Content: "includes/chapter-a.adoc",
+										Content: "../../test/includes/chapter-a.adoc",
 									},
 								},
-								RawText: `include::includes/chapter-a.adoc[]`,
+								RawText: `include::../../test/includes/chapter-a.adoc[]`,
 							},
 						},
 					},
@@ -1185,7 +1185,7 @@ include::includes/chapter-a.adoc[]
 
 		It("should include adoc file within quote block", func() {
 			source := `____
-include::includes/chapter-a.adoc[]
+include::../../test/includes/chapter-a.adoc[]
 ____`
 			expected := types.PreflightDocument{
 				Blocks: []interface{}{
@@ -1197,10 +1197,10 @@ ____`
 								Attributes: types.ElementAttributes{},
 								Location: types.Location{
 									types.StringElement{
-										Content: "includes/chapter-a.adoc",
+										Content: "../../test/includes/chapter-a.adoc",
 									},
 								},
-								RawText: `include::includes/chapter-a.adoc[]`,
+								RawText: `include::../../test/includes/chapter-a.adoc[]`,
 							},
 						},
 					},
@@ -1212,7 +1212,7 @@ ____`
 		It("should include adoc file within verse block", func() {
 			source := `[verse]
 ____
-include::includes/chapter-a.adoc[]
+include::../../test/includes/chapter-a.adoc[]
 ____`
 			expected := types.PreflightDocument{
 				Blocks: []interface{}{
@@ -1226,10 +1226,10 @@ ____`
 								Attributes: types.ElementAttributes{},
 								Location: types.Location{
 									types.StringElement{
-										Content: "includes/chapter-a.adoc",
+										Content: "../../test/includes/chapter-a.adoc",
 									},
 								},
-								RawText: `include::includes/chapter-a.adoc[]`,
+								RawText: `include::../../test/includes/chapter-a.adoc[]`,
 							},
 						},
 					},
@@ -1240,7 +1240,7 @@ ____`
 
 		It("should include adoc file within sidebar block", func() {
 			source := `****
-include::includes/chapter-a.adoc[]
+include::../../test/includes/chapter-a.adoc[]
 ****`
 			expected := types.PreflightDocument{
 				Blocks: []interface{}{
@@ -1252,10 +1252,10 @@ include::includes/chapter-a.adoc[]
 								Attributes: types.ElementAttributes{},
 								Location: types.Location{
 									types.StringElement{
-										Content: "includes/chapter-a.adoc",
+										Content: "../../test/includes/chapter-a.adoc",
 									},
 								},
-								RawText: `include::includes/chapter-a.adoc[]`,
+								RawText: `include::../../test/includes/chapter-a.adoc[]`,
 							},
 						},
 					},
@@ -1267,7 +1267,7 @@ include::includes/chapter-a.adoc[]
 		It("should include adoc file within passthrough block", func() {
 			Skip("missing support for passthrough blocks")
 			source := `++++
-include::includes/chapter-a.adoc[]
+include::../../test/includes/chapter-a.adoc[]
 ++++`
 			expected := types.PreflightDocument{
 				Blocks: []interface{}{
@@ -1279,10 +1279,10 @@ include::includes/chapter-a.adoc[]
 								Attributes: types.ElementAttributes{},
 								Location: types.Location{
 									types.StringElement{
-										Content: "includes/chapter-a.adoc",
+										Content: "../../test/includes/chapter-a.adoc",
 									},
 								},
-								RawText: `include::includes/chapter-a.adoc[]`,
+								RawText: `include::../../test/includes/chapter-a.adoc[]`,
 							},
 						},
 					},
@@ -1297,7 +1297,7 @@ include::includes/chapter-a.adoc[]
 		Context("file inclusions with unquoted line ranges", func() {
 
 			It("file inclusion with single unquoted line", func() {
-				source := `include::includes/chapter-a.adoc[lines=1]`
+				source := `include::../../test/includes/chapter-a.adoc[lines=1]`
 				expected := types.PreflightDocument{
 					Blocks: []interface{}{
 						types.FileInclusion{
@@ -1308,10 +1308,10 @@ include::includes/chapter-a.adoc[]
 							},
 							Location: types.Location{
 								types.StringElement{
-									Content: "includes/chapter-a.adoc",
+									Content: "../../test/includes/chapter-a.adoc",
 								},
 							},
-							RawText: `include::includes/chapter-a.adoc[lines=1]`,
+							RawText: `include::../../test/includes/chapter-a.adoc[lines=1]`,
 						},
 					},
 				}
@@ -1319,7 +1319,7 @@ include::includes/chapter-a.adoc[]
 			})
 
 			It("file inclusion with multiple unquoted lines", func() {
-				source := `include::includes/chapter-a.adoc[lines=1..2]`
+				source := `include::../../test/includes/chapter-a.adoc[lines=1..2]`
 				expected := types.PreflightDocument{
 					Blocks: []interface{}{
 						types.FileInclusion{
@@ -1330,10 +1330,10 @@ include::includes/chapter-a.adoc[]
 							},
 							Location: types.Location{
 								types.StringElement{
-									Content: "includes/chapter-a.adoc",
+									Content: "../../test/includes/chapter-a.adoc",
 								},
 							},
-							RawText: `include::includes/chapter-a.adoc[lines=1..2]`,
+							RawText: `include::../../test/includes/chapter-a.adoc[lines=1..2]`,
 						},
 					},
 				}
@@ -1341,7 +1341,7 @@ include::includes/chapter-a.adoc[]
 			})
 
 			It("file inclusion with multiple unquoted ranges", func() {
-				source := `include::includes/chapter-a.adoc[lines=1;3..4;6..-1]`
+				source := `include::../../test/includes/chapter-a.adoc[lines=1;3..4;6..-1]`
 				expected := types.PreflightDocument{
 					Blocks: []interface{}{
 						types.FileInclusion{
@@ -1354,10 +1354,10 @@ include::includes/chapter-a.adoc[]
 							},
 							Location: types.Location{
 								types.StringElement{
-									Content: "includes/chapter-a.adoc",
+									Content: "../../test/includes/chapter-a.adoc",
 								},
 							},
-							RawText: `include::includes/chapter-a.adoc[lines=1;3..4;6..-1]`,
+							RawText: `include::../../test/includes/chapter-a.adoc[lines=1;3..4;6..-1]`,
 						},
 					},
 				}
@@ -1365,7 +1365,7 @@ include::includes/chapter-a.adoc[]
 			})
 
 			It("file inclusion with invalid unquoted range - case 1", func() {
-				source := `include::includes/chapter-a.adoc[lines=1;3..4;6..foo]` // not a number
+				source := `include::../../test/includes/chapter-a.adoc[lines=1;3..4;6..foo]` // not a number
 				expected := types.PreflightDocument{
 					Blocks: []interface{}{
 						types.FileInclusion{
@@ -1374,10 +1374,10 @@ include::includes/chapter-a.adoc[]
 							},
 							Location: types.Location{
 								types.StringElement{
-									Content: "includes/chapter-a.adoc",
+									Content: "../../test/includes/chapter-a.adoc",
 								},
 							},
-							RawText: `include::includes/chapter-a.adoc[lines=1;3..4;6..foo]`,
+							RawText: `include::../../test/includes/chapter-a.adoc[lines=1;3..4;6..foo]`,
 						},
 					},
 				}
@@ -1385,7 +1385,7 @@ include::includes/chapter-a.adoc[]
 			})
 
 			It("file inclusion with invalid unquoted range - case 2", func() {
-				source := `include::includes/chapter-a.adoc[lines=1,3..4,6..-1]` // using commas instead of semi-colons
+				source := `include::../../test/includes/chapter-a.adoc[lines=1,3..4,6..-1]` // using commas instead of semi-colons
 				expected := types.PreflightDocument{
 					Blocks: []interface{}{
 						types.FileInclusion{
@@ -1398,10 +1398,10 @@ include::includes/chapter-a.adoc[]
 							},
 							Location: types.Location{
 								types.StringElement{
-									Content: "includes/chapter-a.adoc",
+									Content: "../../test/includes/chapter-a.adoc",
 								},
 							},
-							RawText: `include::includes/chapter-a.adoc[lines=1,3..4,6..-1]`,
+							RawText: `include::../../test/includes/chapter-a.adoc[lines=1,3..4,6..-1]`,
 						},
 					},
 				}
@@ -1409,7 +1409,7 @@ include::includes/chapter-a.adoc[]
 			})
 
 			It("file inclusion with invalid unquoted range - case 3", func() {
-				source := `include::includes/chapter-a.adoc[lines=foo]` // using commas instead of semi-colons
+				source := `include::../../test/includes/chapter-a.adoc[lines=foo]` // using commas instead of semi-colons
 				expected := types.PreflightDocument{
 					Blocks: []interface{}{
 						types.FileInclusion{
@@ -1418,10 +1418,10 @@ include::includes/chapter-a.adoc[]
 							},
 							Location: types.Location{
 								types.StringElement{
-									Content: "includes/chapter-a.adoc",
+									Content: "../../test/includes/chapter-a.adoc",
 								},
 							},
-							RawText: `include::includes/chapter-a.adoc[lines=foo]`,
+							RawText: `include::../../test/includes/chapter-a.adoc[lines=foo]`,
 						},
 					},
 				}
@@ -1432,7 +1432,7 @@ include::includes/chapter-a.adoc[]
 		Context("file inclusions with quoted line ranges", func() {
 
 			It("file inclusion with single quoted line", func() {
-				source := `include::includes/chapter-a.adoc[lines="1"]`
+				source := `include::../../test/includes/chapter-a.adoc[lines="1"]`
 				expected := types.PreflightDocument{
 					Blocks: []interface{}{
 						types.FileInclusion{
@@ -1443,10 +1443,10 @@ include::includes/chapter-a.adoc[]
 							},
 							Location: types.Location{
 								types.StringElement{
-									Content: "includes/chapter-a.adoc",
+									Content: "../../test/includes/chapter-a.adoc",
 								},
 							},
-							RawText: `include::includes/chapter-a.adoc[lines="1"]`,
+							RawText: `include::../../test/includes/chapter-a.adoc[lines="1"]`,
 						},
 					},
 				}
@@ -1454,7 +1454,7 @@ include::includes/chapter-a.adoc[]
 			})
 
 			It("file inclusion with multiple quoted lines", func() {
-				source := `include::includes/chapter-a.adoc[lines="1..2"]`
+				source := `include::../../test/includes/chapter-a.adoc[lines="1..2"]`
 				expected := types.PreflightDocument{
 					Blocks: []interface{}{
 						types.FileInclusion{
@@ -1465,10 +1465,10 @@ include::includes/chapter-a.adoc[]
 							},
 							Location: types.Location{
 								types.StringElement{
-									Content: "includes/chapter-a.adoc",
+									Content: "../../test/includes/chapter-a.adoc",
 								},
 							},
-							RawText: `include::includes/chapter-a.adoc[lines="1..2"]`,
+							RawText: `include::../../test/includes/chapter-a.adoc[lines="1..2"]`,
 						},
 					},
 				}
@@ -1476,7 +1476,7 @@ include::includes/chapter-a.adoc[]
 			})
 
 			It("file inclusion with multiple quoted ranges", func() {
-				source := `include::includes/chapter-a.adoc[lines="1,3..4,6..-1"]`
+				source := `include::../../test/includes/chapter-a.adoc[lines="1,3..4,6..-1"]`
 				expected := types.PreflightDocument{
 					Blocks: []interface{}{
 						types.FileInclusion{
@@ -1489,10 +1489,10 @@ include::includes/chapter-a.adoc[]
 							},
 							Location: types.Location{
 								types.StringElement{
-									Content: "includes/chapter-a.adoc",
+									Content: "../../test/includes/chapter-a.adoc",
 								},
 							},
-							RawText: `include::includes/chapter-a.adoc[lines="1,3..4,6..-1"]`,
+							RawText: `include::../../test/includes/chapter-a.adoc[lines="1,3..4,6..-1"]`,
 						},
 					},
 				}
@@ -1500,7 +1500,7 @@ include::includes/chapter-a.adoc[]
 			})
 
 			It("file inclusion with invalid quoted range - case 1", func() {
-				source := `include::includes/chapter-a.adoc[lines="1,3..4,6..foo"]` // not a number
+				source := `include::../../test/includes/chapter-a.adoc[lines="1,3..4,6..foo"]` // not a number
 				expected := types.PreflightDocument{
 					Blocks: []interface{}{
 						types.FileInclusion{
@@ -1511,10 +1511,10 @@ include::includes/chapter-a.adoc[]
 							},
 							Location: types.Location{
 								types.StringElement{
-									Content: "includes/chapter-a.adoc",
+									Content: "../../test/includes/chapter-a.adoc",
 								},
 							},
-							RawText: `include::includes/chapter-a.adoc[lines="1,3..4,6..foo"]`,
+							RawText: `include::../../test/includes/chapter-a.adoc[lines="1,3..4,6..foo"]`,
 						},
 					},
 				}
@@ -1522,7 +1522,7 @@ include::includes/chapter-a.adoc[]
 			})
 
 			It("file inclusion with invalid quoted range - case 2", func() {
-				source := `include::includes/chapter-a.adoc[lines="1;3..4;6..10"]` // using semi-colons instead of commas
+				source := `include::../../test/includes/chapter-a.adoc[lines="1;3..4;6..10"]` // using semi-colons instead of commas
 				expected := types.PreflightDocument{
 					Blocks: []interface{}{
 						types.FileInclusion{
@@ -1531,7 +1531,7 @@ include::includes/chapter-a.adoc[]
 							},
 							Location: types.Location{
 								types.StringElement{
-									Content: "includes/chapter-a.adoc",
+									Content: "../../test/includes/chapter-a.adoc",
 								},
 							},
 							RawText: source,
@@ -1545,7 +1545,7 @@ include::includes/chapter-a.adoc[]
 		Context("file inclusions with tag ranges", func() {
 
 			It("file inclusion with single tag", func() {
-				source := `include::includes/tag-include.adoc[tag=section]`
+				source := `include::../../test/includes/tag-include.adoc[tag=section]`
 				expected := types.PreflightDocument{
 					Blocks: []interface{}{
 						types.FileInclusion{
@@ -1556,7 +1556,7 @@ include::includes/chapter-a.adoc[]
 							},
 							Location: types.Location{
 								types.StringElement{
-									Content: "includes/tag-include.adoc",
+									Content: "../../test/includes/tag-include.adoc",
 								},
 							},
 							RawText: source,
@@ -1567,7 +1567,7 @@ include::includes/chapter-a.adoc[]
 			})
 
 			It("file inclusion with multiple tags", func() {
-				source := `include::includes/tag-include.adoc[tags=section;content]`
+				source := `include::../../test/includes/tag-include.adoc[tags=section;content]`
 				expected := types.PreflightDocument{
 					Blocks: []interface{}{
 						types.FileInclusion{
@@ -1579,7 +1579,7 @@ include::includes/chapter-a.adoc[]
 							},
 							Location: types.Location{
 								types.StringElement{
-									Content: "includes/tag-include.adoc",
+									Content: "../../test/includes/tag-include.adoc",
 								},
 							},
 							RawText: source,
