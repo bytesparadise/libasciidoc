@@ -97,10 +97,10 @@ func init() {
 	}
 }
 
-func invalidFileErrMsg(incl types.FileInclusion, err error) (types.PreflightDocument, error) {
-	log.WithError(err).Errorf("failed to include '%s'", incl.Location)
+func invalidFileErrMsg(path, rawText string, err error) (types.PreflightDocument, error) {
+	log.WithError(err).Errorf("failed to include '%s'", path)
 	buf := bytes.NewBuffer(nil)
-	err = invalidFileTmpl.Execute(buf, incl.RawText)
+	err = invalidFileTmpl.Execute(buf, rawText)
 	if err != nil {
 		return types.PreflightDocument{}, err
 	}
@@ -126,25 +126,25 @@ func parseFileToInclude(incl types.FileInclusion, attrs types.DocumentAttributes
 	f, absPath, done, err := open(path)
 	defer done()
 	if err != nil {
-		return invalidFileErrMsg(incl, err)
+		return invalidFileErrMsg(path, incl.RawText, err)
 	}
 	content := bytes.NewBuffer(nil)
 	scanner := bufio.NewScanner(bufio.NewReader(f))
 	if lineRanges, ok := incl.LineRanges(); ok {
 		if err := readWithinLines(scanner, content, lineRanges); err != nil {
-			return invalidFileErrMsg(incl, err)
+			return invalidFileErrMsg(path, incl.RawText, err)
 		}
 	} else if tagRanges, ok := incl.TagRanges(); ok {
 		if err := readWithinTags(scanner, content, tagRanges); err != nil {
-			return invalidFileErrMsg(incl, err)
+			return invalidFileErrMsg(path, incl.RawText, err)
 		}
 	} else {
 		if err := readAll(scanner, content); err != nil {
-			return invalidFileErrMsg(incl, err)
+			return invalidFileErrMsg(path, incl.RawText, err)
 		}
 	}
 	if err := scanner.Err(); err != nil {
-		msg, err2 := invalidFileErrMsg(incl, err)
+		msg, err2 := invalidFileErrMsg(path, incl.RawText, err)
 		if err2 != nil {
 			return types.PreflightDocument{}, err2
 		}
@@ -269,7 +269,6 @@ func open(path string) (*os.File, string, func(), error) {
 	dir := filepath.Dir(absPath)
 	err = os.Chdir(dir)
 	if err != nil {
-		log.Errorf("error while opening '%s': %v", path, err)
 		return nil, "", func() {
 			log.Debugf("restoring current working dir to: %s", wd)
 			if err := os.Chdir(wd); err != nil { // restore the previous working directory
