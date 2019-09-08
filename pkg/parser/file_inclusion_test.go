@@ -1,16 +1,20 @@
 package parser_test
 
 import (
+	"bytes"
+	"encoding/json"
+	"os"
 	"strings"
-
-	"github.com/davecgh/go-spew/spew"
-
-	"github.com/stretchr/testify/assert"
 
 	"github.com/bytesparadise/libasciidoc/pkg/parser"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
+
+	"github.com/davecgh/go-spew/spew"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/ginkgo/extensions/table"
+	. "github.com/onsi/gomega"
+	log "github.com/sirupsen/logrus"
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
@@ -805,11 +809,12 @@ include::../../test/includes/chapter-a.adoc[]
 		})
 
 		It("file inclusion with unknown tag", func() {
+			// given
 			source := `include::../../test/includes/tag-include.adoc[tag=unknown]`
 			expected := types.PreflightDocument{
 				Blocks: []interface{}{},
 			}
-			// TODO: verify error in logs
+			// when/then
 			verifyPreflight(expected, source)
 		})
 
@@ -864,6 +869,10 @@ include::../../test/includes/chapter-a.adoc[]
 	Context("missing file to include", func() {
 
 		It("should replace with string element if directory does not exist in standalone block", func() {
+			// setup logger to write in a buffer so we can check the output
+			console, reset := configureLogger()
+			defer reset()
+
 			source := `include::{unknown}/unknown.adoc[leveloffset=+1]`
 			expected := types.PreflightDocument{
 				Blocks: []interface{}{
@@ -879,11 +888,17 @@ include::../../test/includes/chapter-a.adoc[]
 					},
 				},
 			}
-			// TODO: also verify that an error was reported in the console.
 			verifyPreflight(expected, source)
+			// verify error in logs
+			verifyConsoleOutput(console, "failed to include '{unknown}/unknown.adoc'")
+
 		})
 
 		It("should replace with string element if file is missing in standalone block", func() {
+			// setup logger to write in a buffer so we can check the output
+			console, reset := configureLogger()
+			defer reset()
+
 			source := `include::../../test/includes/unknown.adoc[leveloffset=+1]`
 			expected := types.PreflightDocument{
 				Blocks: []interface{}{
@@ -899,11 +914,16 @@ include::../../test/includes/chapter-a.adoc[]
 					},
 				},
 			}
-			// TODO: also verify that an error was reported in the console.
 			verifyPreflight(expected, source)
+			// verify error in logs
+			verifyConsoleOutput(console, "failed to include '../../test/includes/unknown.adoc'")
 		})
 
 		It("should replace with string element if file is missing in delimited block", func() {
+			// setup logger to write in a buffer so we can check the output
+			console, reset := configureLogger()
+			defer reset()
+
 			source := `----
 include::../../test/includes/unknown.adoc[leveloffset=+1]
 ----`
@@ -927,8 +947,9 @@ include::../../test/includes/unknown.adoc[leveloffset=+1]
 					},
 				},
 			}
-			// TODO: also verify that an error was reported in the console.
 			verifyPreflight(expected, source)
+			// verify error in logs
+			verifyConsoleOutput(console, "failed to include '../../test/includes/unknown.adoc'")
 		})
 	})
 
@@ -1022,7 +1043,7 @@ include::{includedir}/grandchild-include.adoc[]
 		It("include go file without any range", func() {
 
 			source := `----
-include::../../test/includes/hello_world.go[] 
+include::../../test/includes/hello_world.go.txt[] 
 ----`
 			expected := types.PreflightDocument{
 				Blocks: []interface{}{
@@ -1591,14 +1612,32 @@ include::../../test/includes/chapter-a.adoc[]
 
 		})
 	})
-
 })
 
-var _ = Describe("full document with file inclusions", func() {
+func verifyConsoleOutput(console Readable, errorMsg string) {
+	GinkgoT().Logf(console.String())
+	out := make(map[string]interface{})
+	err := json.Unmarshal(console.Bytes(), &out)
+	Expect(err).ShouldNot(HaveOccurred())
+	Expect(out["level"]).Should(Equal("error"))
+	Expect(out["msg"]).Should(Equal(errorMsg))
+}
 
-	// TODO: verify that section in `chapter-a.adoc` in delimited blocks
-	// becomes a paragraph in delimited blocks.
-	// also, verify that quoted text are kept as-is or turn into string elements
-	// (using their raw content)
+func configureLogger() (Readable, func()) {
+	fmtr := log.StandardLogger().Formatter
 
-})
+	buf := bytes.NewBuffer(nil)
+	log.SetOutput(buf)
+	log.SetFormatter(&log.JSONFormatter{
+		DisableTimestamp: true,
+	})
+	return buf, func() {
+		log.SetOutput(os.Stdout)
+		log.SetFormatter(fmtr)
+	}
+}
+
+type Readable interface {
+	Bytes() []byte
+	String() string
+}
