@@ -15,9 +15,9 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func verify(expected, content string, rendererOpts ...renderer.Option) {
+func verify(filename, expected, content string, rendererOpts ...renderer.Option) {
 	reader := strings.NewReader(content)
-	doc, err := parser.ParseDocument("", reader)
+	doc, err := parser.ParseDocument(filename, reader)
 	require.NoError(GinkgoT(), err, "Error found while parsing the document")
 	GinkgoT().Logf("actual document: `%s`", spew.Sdump(doc))
 	buff := bytes.NewBuffer(nil)

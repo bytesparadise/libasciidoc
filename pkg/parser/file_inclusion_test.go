@@ -114,7 +114,7 @@ var _ = Describe("file inclusions - preflight with preprocessing", func() {
 				},
 			},
 		}
-		verifyPreflight(expected, source)
+		verifyPreflight("test.adoc", expected, source)
 	})
 
 	It("should include adoc file with leveloffset", func() {
@@ -147,7 +147,7 @@ var _ = Describe("file inclusions - preflight with preprocessing", func() {
 				},
 			},
 		}
-		verifyPreflight(expected, source)
+		verifyPreflight("test.adoc", expected, source)
 	})
 
 	Context("file inclusions in delimited blocks", func() {
@@ -187,7 +187,7 @@ var _ = Describe("file inclusions - preflight with preprocessing", func() {
 					},
 				},
 			}
-			verifyPreflight(expected, source)
+			verifyPreflight("test.adoc", expected, source)
 		})
 
 		It("should include adoc file within listing block", func() {
@@ -225,7 +225,7 @@ include::../../test/includes/chapter-a.adoc[]
 					},
 				},
 			}
-			verifyPreflight(expected, source)
+			verifyPreflight("test.adoc", expected, source)
 		})
 
 		It("should include adoc file within example block", func() {
@@ -263,7 +263,7 @@ include::../../test/includes/chapter-a.adoc[]
 					},
 				},
 			}
-			verifyPreflight(expected, source)
+			verifyPreflight("test.adoc", expected, source)
 		})
 
 		It("should include adoc file within quote block", func() {
@@ -301,7 +301,7 @@ ____`
 					},
 				},
 			}
-			verifyPreflight(expected, source)
+			verifyPreflight("test.adoc", expected, source)
 		})
 
 		It("should include adoc file within verse block", func() {
@@ -342,7 +342,7 @@ ____`
 					},
 				},
 			}
-			verifyPreflight(expected, source)
+			verifyPreflight("test.adoc", expected, source)
 		})
 
 		It("should include adoc file within sidebar block", func() {
@@ -380,7 +380,7 @@ include::../../test/includes/chapter-a.adoc[]
 					},
 				},
 			}
-			verifyPreflight(expected, source)
+			verifyPreflight("test.adoc", expected, source)
 		})
 
 		It("should include adoc file within passthrough block", func() {
@@ -415,7 +415,7 @@ include::../../test/includes/chapter-a.adoc[]
 					},
 				},
 			}
-			verifyPreflight(expected, source)
+			verifyPreflight("test.adoc", expected, source)
 		})
 	})
 
@@ -442,7 +442,7 @@ include::../../test/includes/chapter-a.adoc[]
 						},
 					},
 				}
-				verifyPreflight(expected, source)
+				verifyPreflight("test.adoc", expected, source)
 			})
 
 			It("file inclusion with multiple unquoted lines", func() {
@@ -465,7 +465,7 @@ include::../../test/includes/chapter-a.adoc[]
 						types.BlankLine{},
 					},
 				}
-				verifyPreflight(expected, source)
+				verifyPreflight("test.adoc", expected, source)
 			})
 
 			It("file inclusion with multiple unquoted ranges", func() {
@@ -492,7 +492,7 @@ include::../../test/includes/chapter-a.adoc[]
 						},
 					},
 				}
-				verifyPreflight(expected, source)
+				verifyPreflight("test.adoc", expected, source)
 			})
 
 			It("file inclusion with invalid unquoted range - case 1", func() {
@@ -525,7 +525,7 @@ include::../../test/includes/chapter-a.adoc[]
 						},
 					},
 				}
-				verifyPreflight(expected, source)
+				verifyPreflight("test.adoc", expected, source)
 			})
 
 			It("file inclusion with invalid unquoted range - case 2", func() {
@@ -547,7 +547,7 @@ include::../../test/includes/chapter-a.adoc[]
 						},
 					},
 				}
-				verifyPreflight(expected, source)
+				verifyPreflight("test.adoc", expected, source)
 			})
 		})
 
@@ -572,7 +572,7 @@ include::../../test/includes/chapter-a.adoc[]
 						},
 					},
 				}
-				verifyPreflight(expected, source)
+				verifyPreflight("test.adoc", expected, source)
 			})
 
 			It("file inclusion with multiple quoted lines", func() {
@@ -595,7 +595,7 @@ include::../../test/includes/chapter-a.adoc[]
 						types.BlankLine{},
 					},
 				}
-				verifyPreflight(expected, source)
+				verifyPreflight("test.adoc", expected, source)
 			})
 
 			It("file inclusion with multiple quoted ranges", func() {
@@ -623,7 +623,7 @@ include::../../test/includes/chapter-a.adoc[]
 						},
 					},
 				}
-				verifyPreflight(expected, source)
+				verifyPreflight("test.adoc", expected, source)
 			})
 
 			It("file inclusion with invalid quoted range - case 1", func() {
@@ -656,7 +656,7 @@ include::../../test/includes/chapter-a.adoc[]
 						},
 					},
 				}
-				verifyPreflight(expected, source)
+				verifyPreflight("test.adoc", expected, source)
 			})
 
 			It("file inclusion with invalid quoted range - case 2", func() {
@@ -689,7 +689,7 @@ include::../../test/includes/chapter-a.adoc[]
 						},
 					},
 				}
-				verifyPreflight(expected, source)
+				verifyPreflight("test.adoc", expected, source)
 			})
 
 			It("file inclusion with ignored tags", func() {
@@ -712,7 +712,7 @@ include::../../test/includes/chapter-a.adoc[]
 						},
 					},
 				}
-				verifyPreflight(expected, source)
+				verifyPreflight("test.adoc", expected, source)
 			})
 		})
 	})
@@ -738,7 +738,7 @@ include::../../test/includes/chapter-a.adoc[]
 					},
 				},
 			}
-			verifyPreflight(expected, source)
+			verifyPreflight("test.adoc", expected, source)
 		})
 
 		It("file inclusion with surrounding tag", func() {
@@ -773,7 +773,7 @@ include::../../test/includes/chapter-a.adoc[]
 					types.BlankLine{},
 				},
 			}
-			verifyPreflight(expected, source)
+			verifyPreflight("test.adoc", expected, source)
 		})
 
 		It("file inclusion with unclosed tag", func() {
@@ -805,7 +805,7 @@ include::../../test/includes/chapter-a.adoc[]
 					},
 				},
 			}
-			verifyPreflight(expected, source)
+			verifyPreflight("test.adoc", expected, source)
 		})
 
 		It("file inclusion with unknown tag", func() {
@@ -815,7 +815,7 @@ include::../../test/includes/chapter-a.adoc[]
 				Blocks: []interface{}{},
 			}
 			// when/then
-			verifyPreflight(expected, source)
+			verifyPreflight("test.adoc", expected, source)
 		})
 
 		It("file inclusion with no tag", func() {
@@ -861,7 +861,7 @@ include::../../test/includes/chapter-a.adoc[]
 					},
 				},
 			}
-			verifyPreflight(expected, source)
+			verifyPreflight("test.adoc", expected, source)
 		})
 
 	})
@@ -872,7 +872,6 @@ include::../../test/includes/chapter-a.adoc[]
 			// setup logger to write in a buffer so we can check the output
 			console, reset := configureLogger()
 			defer reset()
-
 			source := `include::{unknown}/unknown.adoc[leveloffset=+1]`
 			expected := types.PreflightDocument{
 				Blocks: []interface{}{
@@ -881,14 +880,14 @@ include::../../test/includes/chapter-a.adoc[]
 						Lines: []types.InlineElements{
 							{
 								types.StringElement{
-									Content: "Unresolved directive in test.adoc - include::{unknown}/unknown.adoc[leveloffset=+1]",
+									Content: "Unresolved directive in foo.adoc - include::{unknown}/unknown.adoc[leveloffset=+1]",
 								},
 							},
 						},
 					},
 				},
 			}
-			verifyPreflight(expected, source)
+			verifyPreflight("foo.adoc", expected, source)
 			// verify error in logs
 			verifyConsoleOutput(console, "failed to include '{unknown}/unknown.adoc'")
 
@@ -907,14 +906,14 @@ include::../../test/includes/chapter-a.adoc[]
 						Lines: []types.InlineElements{
 							{
 								types.StringElement{
-									Content: "Unresolved directive in test.adoc - include::../../test/includes/unknown.adoc[leveloffset=+1]",
+									Content: "Unresolved directive in foo.adoc - include::../../test/includes/unknown.adoc[leveloffset=+1]",
 								},
 							},
 						},
 					},
 				},
 			}
-			verifyPreflight(expected, source)
+			verifyPreflight("foo.adoc", expected, source)
 			// verify error in logs
 			verifyConsoleOutput(console, "failed to include '../../test/includes/unknown.adoc'")
 		})
@@ -938,7 +937,7 @@ include::../../test/includes/unknown.adoc[leveloffset=+1]
 								Lines: []types.InlineElements{
 									{
 										types.StringElement{
-											Content: "Unresolved directive in test.adoc - include::../../test/includes/unknown.adoc[leveloffset=+1]",
+											Content: "Unresolved directive in foo.adoc - include::../../test/includes/unknown.adoc[leveloffset=+1]",
 										},
 									},
 								},
@@ -947,7 +946,7 @@ include::../../test/includes/unknown.adoc[leveloffset=+1]
 					},
 				},
 			}
-			verifyPreflight(expected, source)
+			verifyPreflight("foo.adoc", expected, source)
 			// verify error in logs
 			verifyConsoleOutput(console, "failed to include '../../test/includes/unknown.adoc'")
 		})
@@ -989,7 +988,7 @@ include::{includedir}/grandchild-include.adoc[]`
 					},
 				},
 			}
-			verifyPreflight(expected, source)
+			verifyPreflight("test.adoc", expected, source)
 		})
 
 		It("should resolve path with attribute in delimited block", func() {
@@ -1034,7 +1033,7 @@ include::{includedir}/grandchild-include.adoc[]
 					},
 				},
 			}
-			verifyPreflight(expected, source)
+			verifyPreflight("test.adoc", expected, source)
 		})
 	})
 
@@ -1097,7 +1096,7 @@ include::../../test/includes/hello_world.go.txt[]
 					},
 				},
 			}
-			verifyPreflight(expected, source)
+			verifyPreflight("test.adoc", expected, source)
 		})
 	})
 })

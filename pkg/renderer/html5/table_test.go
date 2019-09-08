@@ -20,7 +20,7 @@ var _ = Describe("tables", func() {
 </tr>
 </tbody>
 </table>`
-		verify(expected, source)
+		verify("test.adoc", expected, source)
 	})
 
 	It("1-line table with 3 cells", func() {
@@ -41,7 +41,7 @@ var _ = Describe("tables", func() {
 </tr>
 </tbody>
 </table>`
-		verify(expected, source)
+		verify("test.adoc", expected, source)
 	})
 
 	It("table with title, headers and 1 line per cell", func() {
@@ -78,7 +78,7 @@ var _ = Describe("tables", func() {
 </tr>
 </tbody>
 </table>`
-		verify(expected, source)
+		verify("test.adoc", expected, source)
 	})
 
 	It("empty table ", func() {
@@ -86,7 +86,7 @@ var _ = Describe("tables", func() {
 |===`
 		expected := `<table class="tableblock frame-all grid-all stretch">
 </table>`
-		verify(expected, source)
+		verify("test.adoc", expected, source)
 	})
 
 	It("2 tables with 1 counter", func() {
@@ -123,7 +123,7 @@ var _ = Describe("tables", func() {
 </tr>
 </tbody>
 </table>`
-		verify(expected, source)
+		verify("test.adoc", expected, source)
 	})
 
 	It("2 tables with 2 counters", func() {
@@ -162,7 +162,7 @@ var _ = Describe("tables", func() {
 </tr>
 </tbody>
 </table>`
-		verify(expected, source)
+		verify("test.adoc", expected, source)
 	})
 
 })

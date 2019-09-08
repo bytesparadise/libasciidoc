@@ -124,7 +124,7 @@ var _ = Describe("delimited blocks - preflight", func() {
 					},
 				},
 			}
-			verifyPreflight(expected, source)
+			verifyPreflight("test.adoc", expected, source)
 		})
 
 		It("fenced block after a paragraph", func() {
@@ -158,7 +158,7 @@ var _ = Describe("delimited blocks - preflight", func() {
 					},
 				},
 			}
-			verifyPreflight(expected, source)
+			verifyPreflight("test.adoc", expected, source)
 		})
 
 		It("fenced block with unclosed delimiter", func() {
@@ -424,7 +424,7 @@ then a normal paragraph.`
 					},
 				},
 			}
-			verifyPreflight(expected, source)
+			verifyPreflight("test.adoc", expected, source)
 		})
 
 		It("listing block just after a paragraph", func() {
@@ -460,7 +460,7 @@ some listing code
 					},
 				},
 			}
-			verifyPreflight(expected, source)
+			verifyPreflight("test.adoc", expected, source)
 		})
 
 		It("listing block with unclosed delimiter", func() {
@@ -722,7 +722,7 @@ paragraphs
 					},
 				},
 			}
-			verifyPreflight(expected, source)
+			verifyPreflight("test.adoc", expected, source)
 		})
 	})
 

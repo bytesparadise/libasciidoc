@@ -28,7 +28,7 @@ var _ = Describe("quoted texts - preflight", func() {
 					},
 				},
 			}
-			verifyPreflight(expected, source)
+			verifyPreflight("test.adoc", expected, source)
 		})
 
 		It("bold text with 2 words", func() {
@@ -50,7 +50,7 @@ var _ = Describe("quoted texts - preflight", func() {
 					},
 				},
 			}
-			verifyPreflight(expected, source)
+			verifyPreflight("test.adoc", expected, source)
 		})
 
 		It("bold text with 3 words", func() {
@@ -72,7 +72,7 @@ var _ = Describe("quoted texts - preflight", func() {
 					},
 				},
 			}
-			verifyPreflight(expected, source)
+			verifyPreflight("test.adoc", expected, source)
 		})
 
 		It("italic text with 3 words in single quote", func() {
@@ -94,7 +94,7 @@ var _ = Describe("quoted texts - preflight", func() {
 					},
 				},
 			}
-			verifyPreflight(expected, source)
+			verifyPreflight("test.adoc", expected, source)
 		})
 
 		It("monospace text with 3 words", func() {
@@ -116,7 +116,7 @@ var _ = Describe("quoted texts - preflight", func() {
 					},
 				},
 			}
-			verifyPreflight(expected, source)
+			verifyPreflight("test.adoc", expected, source)
 		})
 
 		It("invalid subscript text with 3 words", func() {
@@ -171,7 +171,7 @@ var _ = Describe("quoted texts - preflight", func() {
 					},
 				},
 			}
-			verifyPreflight(expected, source)
+			verifyPreflight("test.adoc", expected, source)
 		})
 
 		It("monospace text within bold text within italic quote", func() {
@@ -205,7 +205,7 @@ var _ = Describe("quoted texts - preflight", func() {
 					},
 				},
 			}
-			verifyPreflight(expected, source)
+			verifyPreflight("test.adoc", expected, source)
 		})
 
 		It("italic text within italic text", func() {
@@ -303,7 +303,7 @@ var _ = Describe("quoted texts - preflight", func() {
 					},
 				},
 			}
-			verifyPreflight(expected, source)
+			verifyPreflight("test.adoc", expected, source)
 		})
 
 		It("italic text with 3 words in double quote", func() {
@@ -325,7 +325,7 @@ var _ = Describe("quoted texts - preflight", func() {
 					},
 				},
 			}
-			verifyPreflight(expected, source)
+			verifyPreflight("test.adoc", expected, source)
 		})
 
 		It("monospace text with 3 words in double quote", func() {
@@ -347,7 +347,7 @@ var _ = Describe("quoted texts - preflight", func() {
 					},
 				},
 			}
-			verifyPreflight(expected, source)
+			verifyPreflight("test.adoc", expected, source)
 		})
 
 		It("superscript text within italic text", func() {
@@ -376,7 +376,7 @@ var _ = Describe("quoted texts - preflight", func() {
 					},
 				},
 			}
-			verifyPreflight(expected, source)
+			verifyPreflight("test.adoc", expected, source)
 		})
 
 		It("superscript text within italic text within bold quote", func() {
@@ -410,7 +410,7 @@ var _ = Describe("quoted texts - preflight", func() {
 					},
 				},
 			}
-			verifyPreflight(expected, source)
+			verifyPreflight("test.adoc", expected, source)
 		})
 	})
 

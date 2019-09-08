@@ -22,7 +22,7 @@ var _ = Describe("footnotes", func() {
 <a href="#_footnoteref_1">1</a>. a note for foo
 </div>
 </div>`
-		verify(expected, source)
+		verify("test.adoc", expected, source)
 	})
 
 	It("rich footnote in a paragraph", func() {
@@ -36,7 +36,7 @@ var _ = Describe("footnotes", func() {
 <a href="#_footnoteref_1">1</a>. some <strong>rich</strong> <a href="https://foo.com">content</a>
 </div>
 </div>`
-		verify(expected, source)
+		verify("test.adoc", expected, source)
 	})
 
 	It("footnoteref with valid ref in a paragraph", func() {
@@ -50,7 +50,7 @@ var _ = Describe("footnotes", func() {
 <a href="#_footnoteref_1">1</a>. a note for foo
 </div>
 </div>`
-		verify(expected, source)
+		verify("test.adoc", expected, source)
 	})
 
 	It("footnoteref with invalid ref in a paragraph", func() {
@@ -64,7 +64,7 @@ var _ = Describe("footnotes", func() {
 <a href="#_footnoteref_1">1</a>. a note for foo
 </div>
 </div>`
-		verify(expected, source)
+		verify("test.adoc", expected, source)
 	})
 
 	It("footnotes everywhere", func() {
@@ -105,6 +105,6 @@ a paragraph with another footnote:[baz]`
 <a href="#_footnoteref_3">3</a>. baz
 </div>
 </div>`
-		verify(expected, source)
+		verify("test.adoc", expected, source)
 	})
 })

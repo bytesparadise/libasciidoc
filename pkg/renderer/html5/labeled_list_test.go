@@ -36,7 +36,7 @@ on 2 lines, too.</p>
 </dd>
 </dl>
 </div>`
-			verify(expected, source)
+			verify("test.adoc", expected, source)
 		})
 
 		It("labeled list with an empty entry", func() {
@@ -51,7 +51,7 @@ item 2:: description 2.`
 </dd>
 </dl>
 </div>`
-			verify(expected, source)
+			verify("test.adoc", expected, source)
 		})
 
 		It("labeled list with an image", func() {
@@ -69,7 +69,7 @@ item 2:: description 2.`
 </dd>
 </dl>
 </div>`
-			verify(expected, source)
+			verify("test.adoc", expected, source)
 		})
 
 		It("labeled list with script injection", func() {
@@ -82,7 +82,7 @@ item 2:: description 2.`
 </dd>
 </dl>
 </div>`
-			verify(expected, source)
+			verify("test.adoc", expected, source)
 		})
 
 		It("labeled list with fenced block", func() {
@@ -109,7 +109,7 @@ item 2:: description 2.`
 </dd>
 </dl>
 </div>`
-			verify(expected, source)
+			verify("test.adoc", expected, source)
 		})
 
 		It("labeled list with nested lists using regular layout", func() {
@@ -146,7 +146,7 @@ item 2:: something simple`
 </dd>
 </dl>
 </div>`
-			verify(expected, source)
+			verify("test.adoc", expected, source)
 		})
 
 		It("labeled list with title", func() {
@@ -166,7 +166,7 @@ second term:: definition of the second term`
 </dd>
 </dl>
 </div>`
-			verify(expected, source)
+			verify("test.adoc", expected, source)
 		})
 
 	})
@@ -206,7 +206,7 @@ on 2 lines, too.</p>
 </tr>
 </table>
 </div>`
-			verify(expected, source)
+			verify("test.adoc", expected, source)
 		})
 
 		It("labeled list with nested lists using horizontal layout", func() {
@@ -252,7 +252,7 @@ item 2
 </tr>
 </table>
 </div>`
-			verify(expected, source)
+			verify("test.adoc", expected, source)
 		})
 
 	})
@@ -280,7 +280,7 @@ item 2:: description 2.`
 </dd>
 </dl>
 </div>`
-			verify(expected, source)
+			verify("test.adoc", expected, source)
 		})
 
 		It("labeled list with blockcontinuation", func() {
@@ -294,7 +294,7 @@ Item 2:: something simple
 ----
 another delimited block
 ----`
-			expectedDocument := `<div class="dlist">
+			expected := `<div class="dlist">
 <dl>
 <dt class="hdlist1">Item 1</dt>
 <dd>
@@ -316,7 +316,7 @@ another delimited block
 </dl>
 </div>`
 
-			verify(expectedDocument, source)
+			verify("test.adoc", expected, source)
 		})
 
 		It("labeled list without continuation", func() {
@@ -328,7 +328,7 @@ Item 2:: something simple
 ----
 another delimited block
 ----`
-			expectedDocument := `<div class="dlist">
+			expected := `<div class="dlist">
 <dl>
 <dt class="hdlist1">Item 1</dt>
 </dl>
@@ -352,7 +352,7 @@ another delimited block
 </div>
 </div>`
 
-			verify(expectedDocument, source)
+			verify("test.adoc", expected, source)
 		})
 	})
 
@@ -365,7 +365,7 @@ Item 2:::
 Item 2 description
 Item 3::::
 Item 3 description`
-			expectedDocument := `<div class="dlist">
+			expected := `<div class="dlist">
 <dl>
 <dt class="hdlist1">Item 1</dt>
 <dd>
@@ -389,7 +389,7 @@ Item 3 description`
 </dd>
 </dl>
 </div>`
-			verify(expectedDocument, source)
+			verify("test.adoc", expected, source)
 		})
 	})
 
@@ -402,7 +402,7 @@ What is libsciidoc?::
 	An implementation of the AsciiDoc processor in Golang.
 What is the answer to the Ultimate Question?:: 42`
 
-			expectedDocument := `<div class="qlist qanda">
+			expected := `<div class="qlist qanda">
 <div class="title">Q&amp;A</div>
 <ol>
 <li>
@@ -415,7 +415,7 @@ What is the answer to the Ultimate Question?:: 42`
 </li>
 </ol>
 </div>`
-			verify(expectedDocument, source)
+			verify("test.adoc", expected, source)
 		})
 	})
 
@@ -459,7 +459,7 @@ paragraph attached to grandparent list item`
 </dd>
 </dl>
 </div>`
-			verify(expected, source)
+			verify("test.adoc", expected, source)
 		})
 
 		It("attach to parent labeled list item", func() {
@@ -499,7 +499,7 @@ paragraph attached to parent list item`
 </dd>
 </dl>
 </div>`
-			verify(expected, source)
+			verify("test.adoc", expected, source)
 		})
 
 		It("attach to child labeled list item", func() {
@@ -538,7 +538,7 @@ paragraph attached to child list item`
 </dd>
 </dl>
 </div>`
-			verify(expected, source)
+			verify("test.adoc", expected, source)
 		})
 	})
 })

@@ -328,7 +328,7 @@ And no space after [CAUTION] either.`
 					},
 				},
 			}
-			verifyPreflight(expected, source)
+			verifyPreflight("test.adoc", expected, source)
 		})
 	})
 

@@ -36,7 +36,7 @@ Last updated {{.LastUpdated}}
 </div>
 </body>
 </html>`
-			verify(expected, source, renderer.IncludeHeaderFooter(true), renderer.LastUpdated(time.Now()))
+			verify("test.adoc", expected, source, renderer.IncludeHeaderFooter(true), renderer.LastUpdated(time.Now()))
 		})
 	})
 
