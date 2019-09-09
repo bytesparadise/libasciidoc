@@ -121,7 +121,7 @@ image::appa.png[]`
 						},
 					},
 				}
-				verifyPreflight(expected, source)
+				verifyPreflight("test.adoc", expected, source)
 			})
 		})
 
@@ -162,7 +162,7 @@ image::appa.png[]`
 							},
 						},
 					}
-					verifyPreflight(expected, source)
+					verifyPreflight("test.adoc", expected, source)
 				})
 			})
 		})

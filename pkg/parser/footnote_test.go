@@ -41,7 +41,7 @@ var _ = Describe("footnotes - preflight", func() {
 					},
 				},
 			}
-			verifyPreflight(expected, source) // need to get the whole document here
+			verifyPreflight("test.adoc", expected, source) // need to get the whole document here
 		})
 
 		It("footnote with single-line rich content", func() {
@@ -94,7 +94,7 @@ var _ = Describe("footnotes - preflight", func() {
 					},
 				},
 			}
-			verifyPreflight(expected, source) // need to get the whole document here
+			verifyPreflight("test.adoc", expected, source) // need to get the whole document here
 		})
 
 		It("footnote in a paragraph", func() {
@@ -121,7 +121,7 @@ var _ = Describe("footnotes - preflight", func() {
 					},
 				},
 			}
-			verifyPreflight(expected, source) // need to get the whole document here
+			verifyPreflight("test.adoc", expected, source) // need to get the whole document here
 		})
 
 	})
@@ -168,7 +168,7 @@ var _ = Describe("footnotes - preflight", func() {
 					},
 				},
 			}
-			verifyPreflight(expected, source)
+			verifyPreflight("test.adoc", expected, source)
 		})
 
 		It("footnoteref with unknown reference", func() {
@@ -212,7 +212,7 @@ var _ = Describe("footnotes - preflight", func() {
 					},
 				},
 			}
-			verifyPreflight(expected, source)
+			verifyPreflight("test.adoc", expected, source)
 		})
 	})
 
@@ -313,7 +313,7 @@ a paragraph with another footnote:[baz]`
 				},
 			},
 		}
-		verifyPreflight(expected, source) // need to get the whole document here
+		verifyPreflight("test.adoc", expected, source) // need to get the whole document here
 	})
 })
 

@@ -35,7 +35,7 @@ first paragraph`
 					},
 				},
 			}
-			verifyPreflight(expected, source)
+			verifyPreflight("test.adoc", expected, source)
 		})
 
 		It("empty front-matter", func() {
@@ -59,7 +59,7 @@ first paragraph`
 					},
 				},
 			}
-			verifyPreflight(expected, source)
+			verifyPreflight("test.adoc", expected, source)
 		})
 	})
 

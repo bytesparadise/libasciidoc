@@ -79,7 +79,7 @@ A preamble...
 <div class="sectionbody">
 </div>
 </div>`
-			verify(expected, source)
+			verify("test.adoc", expected, source)
 		})
 
 		It("toc with custom level", func() {
@@ -167,7 +167,7 @@ A preamble...
 <div class="sectionbody">
 </div>
 </div>`
-			verify(expected, source)
+			verify("test.adoc", expected, source)
 		})
 
 		It("document with no section", func() {
@@ -179,7 +179,7 @@ level 1 sections not exists.`
 			expected := `<div class="paragraph">
 <p>level 1 sections not exists.</p>
 </div>`
-			verify(expected, source)
+			verify("test.adoc", expected, source)
 
 		})
 	})

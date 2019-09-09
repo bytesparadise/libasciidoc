@@ -72,7 +72,7 @@ a normal paragraph.`
 					},
 				},
 			}
-			verifyPreflight(expected, source)
+			verifyPreflight("test.adoc", expected, source)
 		})
 	})
 
@@ -128,7 +128,7 @@ a normal paragraph.`
 					},
 				},
 			}
-			verifyPreflight(expected, source)
+			verifyPreflight("test.adoc", expected, source)
 		})
 	})
 
@@ -161,7 +161,7 @@ a normal paragraph.`
 					},
 				},
 			}
-			verifyPreflight(expected, source)
+			verifyPreflight("test.adoc", expected, source)
 		})
 
 		It("literal block from 2-lines paragraph with attribute", func() {
@@ -198,7 +198,7 @@ a normal paragraph.`
 					},
 				},
 			}
-			verifyPreflight(expected, source)
+			verifyPreflight("test.adoc", expected, source)
 		})
 	})
 

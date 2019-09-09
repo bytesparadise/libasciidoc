@@ -31,7 +31,7 @@ second paragraph`
 				},
 			},
 		}
-		verifyPreflight(expected, doc)
+		verifyPreflight("test.adoc", expected, doc)
 	})
 	It("blank line with spaces and tabs between 2 paragraphs and after second paragraph", func() {
 		doc := `first paragraph
@@ -63,7 +63,7 @@ second paragraph
 				},
 			},
 		}
-		verifyPreflight(expected, doc)
+		verifyPreflight("test.adoc", expected, doc)
 	})
 
 })

@@ -49,7 +49,7 @@ with some content linked to <<thetitle>>!`
 					},
 				},
 			}
-			verifyPreflight(expected, source)
+			verifyPreflight("test.adoc", expected, source)
 		})
 
 		It("cross-reference with custom id and label", func() {
@@ -92,7 +92,7 @@ with some content linked to <<thetitle,a label to the title>>!`
 					},
 				},
 			}
-			verifyPreflight(expected, source)
+			verifyPreflight("test.adoc", expected, source)
 		})
 	})
 })

@@ -21,10 +21,10 @@ func verifyDocument(expected interface{}, content string) {
 	assert.EqualValues(GinkgoT(), expected, preflightDoc)
 }
 
-func verifyPreflight(expected interface{}, content string) {
-	log.Debugf("processing: %s", content)
+func verifyPreflight(filename string, expected interface{}, content string) {
+	log.Debugf("processing %s: %s", filename, content)
 	r := strings.NewReader(content)
-	preflightDoc, err := parser.ParsePreflightDocument("", r)
+	preflightDoc, err := parser.ParsePreflightDocument(filename, r)
 	require.NoError(GinkgoT(), err)
 	GinkgoT().Logf("actual document: `%s`", spew.Sdump(preflightDoc))
 	GinkgoT().Logf("expected document: `%s`", spew.Sdump(expected))

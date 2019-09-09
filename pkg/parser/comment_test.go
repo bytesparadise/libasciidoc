@@ -150,7 +150,7 @@ a second paragraph`
 					},
 				},
 			}
-			verifyPreflight(expected, doc)
+			verifyPreflight("test.adoc", expected, doc)
 		})
 	})
 

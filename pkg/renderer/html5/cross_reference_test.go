@@ -20,7 +20,7 @@ with some content linked to <<thetitle>>!`
 </div>
 </div>
 </div>`
-			verify(expected, source)
+			verify("test.adoc", expected, source)
 		})
 
 		It("cross-reference with custom id and label", func() {
@@ -36,7 +36,7 @@ with some content linked to <<thetitle,a label to the title>>!`
 </div>
 </div>
 </div>`
-			verify(expected, source)
+			verify("test.adoc", expected, source)
 		})
 
 		It("invalid section reference", func() {
@@ -53,7 +53,7 @@ with some content linked to <<thewrongtitle>>!`
 </div>
 </div>
 </div>`
-			verify(expected, source)
+			verify("test.adoc", expected, source)
 		})
 	})
 })

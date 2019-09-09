@@ -15,7 +15,7 @@ var _ = Describe("strings", func() {
 			expected := `<div class="paragraph">
 <p>some text&#8230;&#8203;</p>
 </div>`
-			verify(expected, source)
+			verify("test.adoc", expected, source)
 		})
 	})
 })

@@ -52,7 +52,7 @@ func parseElements(filename string, elements []interface{}, attrs types.Document
 			result = append(result, e)
 		case types.FileInclusion:
 			// read the file and include its content
-			embedded, err := parseFileToInclude(e, attrs, opts...)
+			embedded, err := parseFileToInclude(filename, e, attrs, opts...)
 			if err != nil {
 				// do not fail, but instead report the error in the console
 				log.Errorf("failed to include file '%s': %v", e.Location, err)
@@ -91,16 +91,24 @@ var invalidFileTmpl *template.Template
 
 func init() {
 	var err error
-	invalidFileTmpl, err = template.New("invalid file to include").Parse(`Unresolved directive in test.adoc - {{ . }}`)
+	invalidFileTmpl, err = template.New("invalid file to include").Parse(`Unresolved directive in {{ .Filename }} - {{ .Error }}`)
 	if err != nil {
 		log.Fatalf("failed to initialize template: %v", err)
 	}
 }
 
-func invalidFileErrMsg(path, rawText string, err error) (types.PreflightDocument, error) {
+type invalidFileData struct {
+	Filename string
+	Error    string
+}
+
+func invalidFileErrMsg(filename, path, rawText string, err error) (types.PreflightDocument, error) {
 	log.WithError(err).Errorf("failed to include '%s'", path)
 	buf := bytes.NewBuffer(nil)
-	err = invalidFileTmpl.Execute(buf, rawText)
+	err = invalidFileTmpl.Execute(buf, invalidFileData{
+		Filename: filename,
+		Error:    rawText,
+	})
 	if err != nil {
 		return types.PreflightDocument{}, err
 	}
@@ -120,31 +128,31 @@ func invalidFileErrMsg(path, rawText string, err error) (types.PreflightDocument
 	}, nil
 }
 
-func parseFileToInclude(incl types.FileInclusion, attrs types.DocumentAttributes, opts ...Option) (types.PreflightDocument, error) {
+func parseFileToInclude(filename string, incl types.FileInclusion, attrs types.DocumentAttributes, opts ...Option) (types.PreflightDocument, error) {
 	path := incl.Location.Resolve(attrs)
 	log.Debugf("parsing '%s'...", path)
 	f, absPath, done, err := open(path)
 	defer done()
 	if err != nil {
-		return invalidFileErrMsg(path, incl.RawText, err)
+		return invalidFileErrMsg(filename, path, incl.RawText, err)
 	}
 	content := bytes.NewBuffer(nil)
 	scanner := bufio.NewScanner(bufio.NewReader(f))
 	if lineRanges, ok := incl.LineRanges(); ok {
 		if err := readWithinLines(scanner, content, lineRanges); err != nil {
-			return invalidFileErrMsg(path, incl.RawText, err)
+			return invalidFileErrMsg(filename, path, incl.RawText, err)
 		}
 	} else if tagRanges, ok := incl.TagRanges(); ok {
 		if err := readWithinTags(scanner, content, tagRanges); err != nil {
-			return invalidFileErrMsg(path, incl.RawText, err)
+			return invalidFileErrMsg(filename, path, incl.RawText, err)
 		}
 	} else {
 		if err := readAll(scanner, content); err != nil {
-			return invalidFileErrMsg(path, incl.RawText, err)
+			return invalidFileErrMsg(filename, path, incl.RawText, err)
 		}
 	}
 	if err := scanner.Err(); err != nil {
-		msg, err2 := invalidFileErrMsg(path, incl.RawText, err)
+		msg, err2 := invalidFileErrMsg(filename, path, incl.RawText, err)
 		if err2 != nil {
 			return types.PreflightDocument{}, err2
 		}
