@@ -29,8 +29,8 @@ install:
   - go install github.com/onsi/ginkgo/ginkgo
   - go install github.com/onsi/gomega
 
-build: "off"
-deploy: "off"
+build: false
+deploy: false
 
 test_script:
   - pigeon ./pkg/parser/parser.peg > ./pkg/parser/parser.go
