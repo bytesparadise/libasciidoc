@@ -1,19 +1,18 @@
 package parser_test
 
 import (
-	"github.com/bytesparadise/libasciidoc/pkg/parser"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 	. "github.com/onsi/ginkgo"
 )
 
-var _ = Describe("delimited blocks", func() {
+var _ = Describe("delimited blocks - preflight", func() {
 
 	Context("fenced blocks", func() {
 
 		It("fenced block with single line", func() {
 			content := "some fenced code"
-			actualContent := "```\n" + content + "\n```"
-			expectedResult := types.DelimitedBlock{
+			source := "```\n" + content + "\n```"
+			expected := types.DelimitedBlock{
 				Attributes: types.ElementAttributes{},
 				Kind:       types.Fenced,
 				Elements: []interface{}{
@@ -29,22 +28,22 @@ var _ = Describe("delimited blocks", func() {
 					},
 				},
 			}
-			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+			verifyDocumentBlock(expected, source)
 		})
 
 		It("fenced block with no line", func() {
-			actualContent := "```\n```"
-			expectedResult := types.DelimitedBlock{
+			source := "```\n```"
+			expected := types.DelimitedBlock{
 				Attributes: types.ElementAttributes{},
 				Kind:       types.Fenced,
 				Elements:   []interface{}{},
 			}
-			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+			verifyDocumentBlock(expected, source)
 		})
 
 		It("fenced block with multiple lines alone", func() {
-			actualContent := "```\nsome fenced code\nwith an empty line\n\nin the middle\n```"
-			expectedResult := types.DelimitedBlock{
+			source := "```\nsome fenced code\nwith an empty line\n\nin the middle\n```"
+			expected := types.DelimitedBlock{
 				Attributes: types.ElementAttributes{},
 				Kind:       types.Fenced,
 				Elements: []interface{}{
@@ -76,17 +75,13 @@ var _ = Describe("delimited blocks", func() {
 					},
 				},
 			}
-			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+			verifyDocumentBlock(expected, source)
 		})
 
 		It("fenced block with multiple lines then a paragraph", func() {
-			actualContent := "```\nsome fenced code\nwith an empty line\n\nin the middle\n```\nthen a normal paragraph."
-			expectedResult := types.Document{
-				Attributes:         types.DocumentAttributes{},
-				ElementReferences:  types.ElementReferences{},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
-				Elements: []interface{}{
+			source := "```\nsome fenced code\nwith an empty line\n\nin the middle\n```\nthen a normal paragraph."
+			expected := types.PreflightDocument{
+				Blocks: []interface{}{
 					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{},
 						Kind:       types.Fenced,
@@ -129,18 +124,14 @@ var _ = Describe("delimited blocks", func() {
 					},
 				},
 			}
-			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent)
+			verifyPreflight("test.adoc", expected, source)
 		})
 
 		It("fenced block after a paragraph", func() {
 			content := "some fenced code"
-			actualContent := "a paragraph.\n```\n" + content + "\n```\n"
-			expectedResult := types.Document{
-				Attributes:         types.DocumentAttributes{},
-				ElementReferences:  types.ElementReferences{},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
-				Elements: []interface{}{
+			source := "a paragraph.\n```\n" + content + "\n```\n"
+			expected := types.PreflightDocument{
+				Blocks: []interface{}{
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
@@ -167,12 +158,12 @@ var _ = Describe("delimited blocks", func() {
 					},
 				},
 			}
-			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent)
+			verifyPreflight("test.adoc", expected, source)
 		})
 
 		It("fenced block with unclosed delimiter", func() {
-			actualContent := "```\nEnd of file here"
-			expectedResult := types.DelimitedBlock{
+			source := "```\nEnd of file here"
+			expected := types.DelimitedBlock{
 				Attributes: types.ElementAttributes{},
 				Kind:       types.Fenced,
 				Elements: []interface{}{
@@ -188,17 +179,103 @@ var _ = Describe("delimited blocks", func() {
 					},
 				},
 			}
-			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+			verifyDocumentBlock(expected, source)
+		})
+
+		It("fenced block with external link inside - without attributes", func() {
+			source := "```" + "\n" +
+				"a http://website.com" + "\n" +
+				"and more text on the" + "\n" +
+				"next lines" + "\n" +
+				"```"
+			expected := types.DelimitedBlock{
+				Attributes: types.ElementAttributes{},
+				Kind:       types.Fenced,
+				Elements: []interface{}{
+					types.Paragraph{
+						Attributes: types.ElementAttributes{},
+						Lines: []types.InlineElements{
+							{
+								types.StringElement{
+									Content: "a ",
+								},
+								types.InlineLink{
+									Attributes: types.ElementAttributes{},
+									Location: types.Location{
+										types.StringElement{
+											Content: "http://website.com",
+										},
+									},
+								},
+							},
+							{
+								types.StringElement{
+									Content: "and more text on the",
+								},
+							},
+							{
+								types.StringElement{
+									Content: "next lines",
+								},
+							},
+						},
+					},
+				},
+			}
+			verifyDocumentBlock(expected, source)
+		})
+
+		It("fenced block with external link inside - with attributes", func() {
+			source := "```" + "\n" +
+				"a http://website.com[]" + "\n" +
+				"and more text on the" + "\n" +
+				"next lines" + "\n" +
+				"```"
+			expected := types.DelimitedBlock{
+				Attributes: types.ElementAttributes{},
+				Kind:       types.Fenced,
+				Elements: []interface{}{
+					types.Paragraph{
+						Attributes: types.ElementAttributes{},
+						Lines: []types.InlineElements{
+							{
+								types.StringElement{
+									Content: "a ",
+								},
+								types.InlineLink{
+									Attributes: types.ElementAttributes{},
+									Location: types.Location{
+										types.StringElement{
+											Content: "http://website.com",
+										},
+									},
+								},
+							},
+							{
+								types.StringElement{
+									Content: "and more text on the",
+								},
+							},
+							{
+								types.StringElement{
+									Content: "next lines",
+								},
+							},
+						},
+					},
+				},
+			}
+			verifyDocumentBlock(expected, source)
 		})
 	})
 
 	Context("listing blocks", func() {
 
 		It("listing block with single line", func() {
-			actualContent := `----
+			source := `----
 some listing code
 ----`
-			expectedResult := types.DelimitedBlock{
+			expected := types.DelimitedBlock{
 				Attributes: types.ElementAttributes{},
 				Kind:       types.Listing,
 				Elements: []interface{}{
@@ -214,28 +291,28 @@ some listing code
 					},
 				},
 			}
-			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+			verifyDocumentBlock(expected, source)
 		})
 
 		It("listing block with no line", func() {
-			actualContent := `----
+			source := `----
 ----`
-			expectedResult := types.DelimitedBlock{
+			expected := types.DelimitedBlock{
 				Attributes: types.ElementAttributes{},
 				Kind:       types.Listing,
 				Elements:   []interface{}{},
 			}
-			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+			verifyDocumentBlock(expected, source)
 		})
 
 		It("listing block with multiple lines alone", func() {
-			actualContent := `----
+			source := `----
 some listing code
 with an empty line
 
 in the middle
 ----`
-			expectedResult := types.DelimitedBlock{
+			expected := types.DelimitedBlock{
 				Attributes: types.ElementAttributes{},
 				Kind:       types.Listing,
 				Elements: []interface{}{
@@ -262,16 +339,16 @@ in the middle
 					},
 				},
 			}
-			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+			verifyDocumentBlock(expected, source)
 		})
 
 		It("listing block with unrendered list", func() {
-			actualContent := `----
+			source := `----
 * some 
 * listing 
 * content
 ----`
-			expectedResult := types.DelimitedBlock{
+			expected := types.DelimitedBlock{
 				Attributes: types.ElementAttributes{},
 				Kind:       types.Listing,
 				Elements: []interface{}{
@@ -297,23 +374,19 @@ in the middle
 					},
 				},
 			}
-			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+			verifyDocumentBlock(expected, source)
 		})
 
 		It("listing block with multiple lines then a paragraph", func() {
-			actualContent := `---- 
+			source := `---- 
 some listing code
 with an empty line
 
 in the middle
 ----
 then a normal paragraph.`
-			expectedResult := types.Document{
-				Attributes:         types.DocumentAttributes{},
-				ElementReferences:  types.ElementReferences{},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
-				Elements: []interface{}{
+			expected := types.PreflightDocument{
+				Blocks: []interface{}{
 					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{},
 						Kind:       types.Listing,
@@ -351,20 +424,16 @@ then a normal paragraph.`
 					},
 				},
 			}
-			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent)
+			verifyPreflight("test.adoc", expected, source)
 		})
 
 		It("listing block just after a paragraph", func() {
-			actualContent := `a paragraph.
+			source := `a paragraph.
 ----
 some listing code
 ----`
-			expectedResult := types.Document{
-				Attributes:         types.DocumentAttributes{},
-				ElementReferences:  types.ElementReferences{},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
-				Elements: []interface{}{
+			expected := types.PreflightDocument{
+				Blocks: []interface{}{
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
@@ -391,13 +460,13 @@ some listing code
 					},
 				},
 			}
-			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent)
+			verifyPreflight("test.adoc", expected, source)
 		})
 
 		It("listing block with unclosed delimiter", func() {
-			actualContent := `----
+			source := `----
 End of file here.`
-			expectedResult := types.DelimitedBlock{
+			expected := types.DelimitedBlock{
 				Attributes: types.ElementAttributes{},
 				Kind:       types.Listing,
 				Elements: []interface{}{
@@ -413,17 +482,17 @@ End of file here.`
 					},
 				},
 			}
-			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+			verifyDocumentBlock(expected, source)
 		})
 	})
 
 	Context("example blocks", func() {
 
 		It("example block with single line", func() {
-			actualContent := `====
+			source := `====
 some listing code
 ====`
-			expectedResult := types.DelimitedBlock{
+			expected := types.DelimitedBlock{
 				Attributes: types.ElementAttributes{},
 				Kind:       types.Example,
 				Elements: []interface{}{
@@ -439,14 +508,14 @@ some listing code
 					},
 				},
 			}
-			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+			verifyDocumentBlock(expected, source)
 		})
 
 		It("example block with single line starting with a dot", func() {
-			actualContent := `====
+			source := `====
 .foo
 ====`
-			expectedResult := types.DelimitedBlock{
+			expected := types.DelimitedBlock{
 				Attributes: types.ElementAttributes{},
 				Kind:       types.Example,
 				Elements: []interface{}{
@@ -462,18 +531,18 @@ some listing code
 					},
 				},
 			}
-			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+			verifyDocumentBlock(expected, source)
 		})
 
 		It("example block with multiple lines", func() {
-			actualContent := `====
+			source := `====
 .foo
 some listing code
 with *bold content*
 
 * and a list item
 ====`
-			expectedResult := types.DelimitedBlock{
+			expected := types.DelimitedBlock{
 				Attributes: types.ElementAttributes{},
 				Kind:       types.Example,
 				Elements: []interface{}{
@@ -506,23 +575,18 @@ with *bold content*
 						},
 					},
 					types.BlankLine{},
-					types.UnorderedList{
-						Attributes: types.ElementAttributes{},
-						Items: []types.UnorderedListItem{
-							{
-								Attributes:  types.ElementAttributes{},
-								Level:       1,
-								BulletStyle: types.OneAsterisk,
-								CheckStyle:  types.NoCheck,
-								Elements: []interface{}{
-									types.Paragraph{
-										Attributes: types.ElementAttributes{},
-										Lines: []types.InlineElements{
-											{
-												types.StringElement{
-													Content: "and a list item",
-												},
-											},
+					types.UnorderedListItem{
+						Attributes:  types.ElementAttributes{},
+						Level:       1,
+						BulletStyle: types.OneAsterisk,
+						CheckStyle:  types.NoCheck,
+						Elements: []interface{}{
+							types.Paragraph{
+								Attributes: types.ElementAttributes{},
+								Lines: []types.InlineElements{
+									{
+										types.StringElement{
+											Content: "and a list item",
 										},
 									},
 								},
@@ -531,13 +595,13 @@ with *bold content*
 					},
 				},
 			}
-			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+			verifyDocumentBlock(expected, source)
 		})
 
 		It("example block with unclosed delimiter", func() {
-			actualContent := `====
+			source := `====
 End of file here`
-			expectedResult := types.DelimitedBlock{
+			expected := types.DelimitedBlock{
 				Attributes: types.ElementAttributes{},
 				Kind:       types.Example,
 				Elements: []interface{}{
@@ -553,15 +617,15 @@ End of file here`
 					},
 				},
 			}
-			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+			verifyDocumentBlock(expected, source)
 		})
 
 		It("example block with title", func() {
-			actualContent := `.example block title
+			source := `.example block title
 ====
 foo
 ====`
-			expectedResult := types.DelimitedBlock{
+			expected := types.DelimitedBlock{
 				Attributes: types.ElementAttributes{
 					types.AttrTitle: "example block title",
 				},
@@ -579,28 +643,28 @@ foo
 					},
 				},
 			}
-			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+			verifyDocumentBlock(expected, source)
 		})
 
 		It("example block starting delimiter only", func() {
-			actualContent := `====`
-			expectedResult := types.DelimitedBlock{
+			source := `====`
+			expected := types.DelimitedBlock{
 				Attributes: types.ElementAttributes{},
 				Kind:       types.Example,
 				Elements:   []interface{}{},
 			}
-			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+			verifyDocumentBlock(expected, source)
 		})
 	})
 
 	Context("admonition blocks", func() {
 
 		It("example block as admonition", func() {
-			actualContent := `[NOTE]
+			source := `[NOTE]
 ====
 foo
 ====`
-			expectedResult := types.DelimitedBlock{
+			expected := types.DelimitedBlock{
 				Attributes: types.ElementAttributes{
 					types.AttrAdmonitionKind: types.Note,
 				},
@@ -618,24 +682,20 @@ foo
 					},
 				},
 			}
-			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+			verifyDocumentBlock(expected, source)
 
 		})
 
 		It("listing block as admonition", func() {
-			actualContent := `[NOTE]
+			source := `[NOTE]
 ----
 multiple
 
 paragraphs
 ----
 `
-			expectedResult := types.Document{
-				Attributes:         types.DocumentAttributes{},
-				ElementReferences:  types.ElementReferences{},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
-				Elements: []interface{}{
+			expected := types.PreflightDocument{
+				Blocks: []interface{}{
 					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{
 							types.AttrAdmonitionKind: types.Note,
@@ -662,18 +722,18 @@ paragraphs
 					},
 				},
 			}
-			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Document"))
+			verifyPreflight("test.adoc", expected, source)
 		})
 	})
 
 	Context("quote blocks", func() {
 
 		It("single-line quote block with author and title", func() {
-			actualContent := `[quote, john doe, quote title]
+			source := `[quote, john doe, quote title]
 ____
 some *quote* content
 ____`
-			expectedResult := types.DelimitedBlock{
+			expected := types.DelimitedBlock{
 				Attributes: types.ElementAttributes{
 					types.AttrKind:        types.Quote,
 					types.AttrQuoteAuthor: "john doe",
@@ -704,78 +764,72 @@ ____`
 					},
 				},
 			}
-			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+			verifyDocumentBlock(expected, source)
 		})
 
 		It("multi-line quote with author only", func() {
-			actualContent := `[quote, john doe,   ]
+			source := `[quote, john doe,   ]
 ____
 - some 
 - quote 
 - content 
 ____
 `
-			expectedResult := types.DelimitedBlock{
+			expected := types.DelimitedBlock{
 				Attributes: types.ElementAttributes{
 					types.AttrKind:        types.Quote,
 					types.AttrQuoteAuthor: "john doe",
-					types.AttrQuoteTitle:  "",
 				},
 				Kind: types.Quote,
 				Elements: []interface{}{
-					types.UnorderedList{
-						Attributes: types.ElementAttributes{},
-						Items: []types.UnorderedListItem{
-							{
-								Attributes:  types.ElementAttributes{},
-								Level:       1,
-								BulletStyle: types.Dash,
-								CheckStyle:  types.NoCheck,
-								Elements: []interface{}{
-									types.Paragraph{
-										Attributes: types.ElementAttributes{},
-										Lines: []types.InlineElements{
-											{
-												types.StringElement{
-													Content: "some ",
-												},
-											},
+					types.UnorderedListItem{
+						Attributes:  types.ElementAttributes{},
+						Level:       1,
+						BulletStyle: types.Dash,
+						CheckStyle:  types.NoCheck,
+						Elements: []interface{}{
+							types.Paragraph{
+								Attributes: types.ElementAttributes{},
+								Lines: []types.InlineElements{
+									{
+										types.StringElement{
+											Content: "some ",
 										},
 									},
 								},
 							},
-							{
-								Attributes:  types.ElementAttributes{},
-								Level:       1,
-								BulletStyle: types.Dash,
-								CheckStyle:  types.NoCheck,
-								Elements: []interface{}{
-									types.Paragraph{
-										Attributes: types.ElementAttributes{},
-										Lines: []types.InlineElements{
-											{
-												types.StringElement{
-													Content: "quote ",
-												},
-											},
+						},
+					},
+					types.UnorderedListItem{
+						Attributes:  types.ElementAttributes{},
+						Level:       1,
+						BulletStyle: types.Dash,
+						CheckStyle:  types.NoCheck,
+						Elements: []interface{}{
+							types.Paragraph{
+								Attributes: types.ElementAttributes{},
+								Lines: []types.InlineElements{
+									{
+										types.StringElement{
+											Content: "quote ",
 										},
 									},
 								},
 							},
-							{
-								Attributes:  types.ElementAttributes{},
-								Level:       1,
-								BulletStyle: types.Dash,
-								CheckStyle:  types.NoCheck,
-								Elements: []interface{}{
-									types.Paragraph{
-										Attributes: types.ElementAttributes{},
-										Lines: []types.InlineElements{
-											{
-												types.StringElement{
-													Content: "content ",
-												},
-											},
+						},
+					},
+					types.UnorderedListItem{
+						Attributes:  types.ElementAttributes{},
+						Level:       1,
+						BulletStyle: types.Dash,
+						CheckStyle:  types.NoCheck,
+						Elements: []interface{}{
+							types.Paragraph{
+								Attributes: types.ElementAttributes{},
+								Lines: []types.InlineElements{
+									{
+										types.StringElement{
+											Content: "content ",
 										},
 									},
 								},
@@ -784,20 +838,19 @@ ____
 					},
 				},
 			}
-			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+			verifyDocumentBlock(expected, source)
 		})
 
 		It("single-line quote with title only", func() {
-			actualContent := `[quote, ,quote title]
+			source := `[quote, ,quote title]
 ____
 some quote content 
 ____
 `
-			expectedResult := types.DelimitedBlock{
+			expected := types.DelimitedBlock{
 				Attributes: types.ElementAttributes{
-					types.AttrKind:        types.Quote,
-					types.AttrQuoteAuthor: "",
-					types.AttrQuoteTitle:  "quote title",
+					types.AttrKind:       types.Quote,
+					types.AttrQuoteTitle: "quote title",
 				},
 				Kind: types.Quote,
 				Elements: []interface{}{
@@ -813,11 +866,11 @@ ____
 					},
 				},
 			}
-			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+			verifyDocumentBlock(expected, source)
 		})
 
 		It("multi-line quote with rendered lists and block and without author and title", func() {
-			actualContent := `[quote]
+			source := `[quote]
 ____
 * some
 ----
@@ -825,31 +878,24 @@ ____
 ----
 * content
 ____`
-			expectedResult := types.DelimitedBlock{
+			expected := types.DelimitedBlock{
 				Attributes: types.ElementAttributes{
-					types.AttrKind:        types.Quote,
-					types.AttrQuoteAuthor: "",
-					types.AttrQuoteTitle:  "",
+					types.AttrKind: types.Quote,
 				},
 				Kind: types.Quote,
 				Elements: []interface{}{
-					types.UnorderedList{
-						Attributes: types.ElementAttributes{},
-						Items: []types.UnorderedListItem{
-							{
-								Attributes:  types.ElementAttributes{},
-								Level:       1,
-								BulletStyle: types.OneAsterisk,
-								CheckStyle:  types.NoCheck,
-								Elements: []interface{}{
-									types.Paragraph{
-										Attributes: types.ElementAttributes{},
-										Lines: []types.InlineElements{
-											{
-												types.StringElement{
-													Content: "some",
-												},
-											},
+					types.UnorderedListItem{
+						Attributes:  types.ElementAttributes{},
+						Level:       1,
+						BulletStyle: types.OneAsterisk,
+						CheckStyle:  types.NoCheck,
+						Elements: []interface{}{
+							types.Paragraph{
+								Attributes: types.ElementAttributes{},
+								Lines: []types.InlineElements{
+									{
+										types.StringElement{
+											Content: "some",
 										},
 									},
 								},
@@ -872,23 +918,18 @@ ____`
 							},
 						},
 					},
-					types.UnorderedList{
-						Attributes: types.ElementAttributes{},
-						Items: []types.UnorderedListItem{
-							{
-								Attributes:  types.ElementAttributes{},
-								Level:       1,
-								BulletStyle: types.OneAsterisk,
-								CheckStyle:  types.NoCheck,
-								Elements: []interface{}{
-									types.Paragraph{
-										Attributes: types.ElementAttributes{},
-										Lines: []types.InlineElements{
-											{
-												types.StringElement{
-													Content: "content",
-												},
-											},
+					types.UnorderedListItem{
+						Attributes:  types.ElementAttributes{},
+						Level:       1,
+						BulletStyle: types.OneAsterisk,
+						CheckStyle:  types.NoCheck,
+						Elements: []interface{}{
+							types.Paragraph{
+								Attributes: types.ElementAttributes{},
+								Lines: []types.InlineElements{
+									{
+										types.StringElement{
+											Content: "content",
 										},
 									},
 								},
@@ -897,11 +938,11 @@ ____`
 					},
 				},
 			}
-			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+			verifyDocumentBlock(expected, source)
 		})
 
 		It("multi-line quote with rendered list and without author and title", func() {
-			actualContent := `[quote]
+			source := `[quote]
 ____
 * some
 
@@ -911,67 +952,64 @@ ____
 
 * content
 ____`
-			expectedResult := types.DelimitedBlock{
+			expected := types.DelimitedBlock{
 				Attributes: types.ElementAttributes{
-					types.AttrKind:        types.Quote,
-					types.AttrQuoteAuthor: "",
-					types.AttrQuoteTitle:  "",
+					types.AttrKind: types.Quote,
 				},
 				Kind: types.Quote,
 				Elements: []interface{}{
-					types.UnorderedList{
-						Attributes: types.ElementAttributes{},
-						Items: []types.UnorderedListItem{
-							{
-								Attributes:  types.ElementAttributes{},
-								Level:       1,
-								BulletStyle: types.OneAsterisk,
-								CheckStyle:  types.NoCheck,
-								Elements: []interface{}{
-									types.Paragraph{
-										Attributes: types.ElementAttributes{},
-										Lines: []types.InlineElements{
-											{
-												types.StringElement{
-													Content: "some",
-												},
-											},
+					types.UnorderedListItem{
+						Attributes:  types.ElementAttributes{},
+						Level:       1,
+						BulletStyle: types.OneAsterisk,
+						CheckStyle:  types.NoCheck,
+						Elements: []interface{}{
+							types.Paragraph{
+								Attributes: types.ElementAttributes{},
+								Lines: []types.InlineElements{
+									{
+										types.StringElement{
+											Content: "some",
 										},
 									},
 								},
 							},
-							{
-								Attributes:  types.ElementAttributes{},
-								Level:       1,
-								BulletStyle: types.OneAsterisk,
-								CheckStyle:  types.NoCheck,
-								Elements: []interface{}{
-									types.Paragraph{
-										Attributes: types.ElementAttributes{},
-										Lines: []types.InlineElements{
-											{
-												types.StringElement{
-													Content: "quote ",
-												},
-											},
+						},
+					},
+					types.BlankLine{},
+					types.BlankLine{},
+					types.UnorderedListItem{
+						Attributes:  types.ElementAttributes{},
+						Level:       1,
+						BulletStyle: types.OneAsterisk,
+						CheckStyle:  types.NoCheck,
+						Elements: []interface{}{
+							types.Paragraph{
+								Attributes: types.ElementAttributes{},
+								Lines: []types.InlineElements{
+									{
+										types.StringElement{
+											Content: "quote ",
 										},
 									},
 								},
 							},
-							{
-								Attributes:  types.ElementAttributes{},
-								Level:       1,
-								BulletStyle: types.OneAsterisk,
-								CheckStyle:  types.NoCheck,
-								Elements: []interface{}{
-									types.Paragraph{
-										Attributes: types.ElementAttributes{},
-										Lines: []types.InlineElements{
-											{
-												types.StringElement{
-													Content: "content",
-												},
-											},
+						},
+					},
+					types.BlankLine{},
+					types.BlankLine{},
+					types.UnorderedListItem{
+						Attributes:  types.ElementAttributes{},
+						Level:       1,
+						BulletStyle: types.OneAsterisk,
+						CheckStyle:  types.NoCheck,
+						Elements: []interface{}{
+							types.Paragraph{
+								Attributes: types.ElementAttributes{},
+								Lines: []types.InlineElements{
+									{
+										types.StringElement{
+											Content: "content",
 										},
 									},
 								},
@@ -980,35 +1018,31 @@ ____`
 					},
 				},
 			}
-			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+			verifyDocumentBlock(expected, source)
 		})
 
 		It("empty quote without author and title", func() {
-			actualContent := `[quote]
+			source := `[quote]
 ____
 ____`
-			expectedResult := types.DelimitedBlock{
+			expected := types.DelimitedBlock{
 				Attributes: types.ElementAttributes{
-					types.AttrKind:        types.Quote,
-					types.AttrQuoteAuthor: "",
-					types.AttrQuoteTitle:  "",
+					types.AttrKind: types.Quote,
 				},
 				Kind:     types.Quote,
 				Elements: []interface{}{},
 			}
-			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+			verifyDocumentBlock(expected, source)
 		})
 
 		It("unclosed quote without author and title", func() {
-			actualContent := `[quote]
+			source := `[quote]
 ____
 foo
 `
-			expectedResult := types.DelimitedBlock{
+			expected := types.DelimitedBlock{
 				Attributes: types.ElementAttributes{
-					types.AttrKind:        types.Quote,
-					types.AttrQuoteAuthor: "",
-					types.AttrQuoteTitle:  "",
+					types.AttrKind: types.Quote,
 				},
 				Kind: types.Quote,
 				Elements: []interface{}{
@@ -1024,18 +1058,18 @@ foo
 					},
 				},
 			}
-			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+			verifyDocumentBlock(expected, source)
 		})
 	})
 
 	Context("verse blocks", func() {
 
 		It("single line verse with author and title", func() {
-			actualContent := `[verse, john doe, verse title]
+			source := `[verse, john doe, verse title]
 ____
 some *verse* content
 ____`
-			expectedResult := types.DelimitedBlock{
+			expected := types.DelimitedBlock{
 				Attributes: types.ElementAttributes{
 					types.AttrKind:        types.Verse,
 					types.AttrQuoteAuthor: "john doe",
@@ -1066,22 +1100,21 @@ ____`
 					},
 				},
 			}
-			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+			verifyDocumentBlock(expected, source)
 		})
 
-		It("multi-line verse with unrendered list author only", func() {
-			actualContent := `[verse, john doe,   ]
+		It("multi-line verse with unrendered list and author only", func() {
+			source := `[verse, john doe,   ]
 ____
 - some 
 - verse 
 - content 
 ____
 `
-			expectedResult := types.DelimitedBlock{
+			expected := types.DelimitedBlock{
 				Attributes: types.ElementAttributes{
 					types.AttrKind:        types.Verse,
 					types.AttrQuoteAuthor: "john doe",
-					types.AttrQuoteTitle:  "",
 				},
 				Kind: types.Verse,
 				Elements: []interface{}{
@@ -1107,20 +1140,19 @@ ____
 					},
 				},
 			}
-			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+			verifyDocumentBlock(expected, source)
 		})
 
 		It("multi-line verse with title only", func() {
-			actualContent := `[verse, ,verse title]
+			source := `[verse, ,verse title]
 ____
 some verse content 
 ____
 `
-			expectedResult := types.DelimitedBlock{
+			expected := types.DelimitedBlock{
 				Attributes: types.ElementAttributes{
-					types.AttrKind:        types.Verse,
-					types.AttrQuoteAuthor: "",
-					types.AttrQuoteTitle:  "verse title",
+					types.AttrKind:       types.Verse,
+					types.AttrQuoteTitle: "verse title",
 				},
 				Kind: types.Verse,
 				Elements: []interface{}{
@@ -1136,11 +1168,11 @@ ____
 					},
 				},
 			}
-			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+			verifyDocumentBlock(expected, source)
 		})
 
 		It("multi-line verse with unrendered lists and block without author and title", func() {
-			actualContent := `[verse]
+			source := `[verse]
 ____
 * some
 ----
@@ -1148,11 +1180,9 @@ ____
 ----
 * content
 ____`
-			expectedResult := types.DelimitedBlock{
+			expected := types.DelimitedBlock{
 				Attributes: types.ElementAttributes{
-					types.AttrKind:        types.Verse,
-					types.AttrQuoteAuthor: "",
-					types.AttrQuoteTitle:  "",
+					types.AttrKind: types.Verse,
 				},
 				Kind: types.Verse,
 				Elements: []interface{}{
@@ -1188,22 +1218,20 @@ ____`
 					},
 				},
 			}
-			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+			verifyDocumentBlock(expected, source)
 		})
 
 		It("multi-line verse with unrendered list without author and title", func() {
-			actualContent := `[verse]
+			source := `[verse]
 ____
 * foo
 
 
 	* bar
 ____`
-			expectedResult := types.DelimitedBlock{
+			expected := types.DelimitedBlock{
 				Attributes: types.ElementAttributes{
-					types.AttrKind:        types.Verse,
-					types.AttrQuoteAuthor: "",
-					types.AttrQuoteTitle:  "",
+					types.AttrKind: types.Verse,
 				},
 				Kind: types.Verse,
 				Elements: []interface{}{
@@ -1231,35 +1259,31 @@ ____`
 					},
 				},
 			}
-			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+			verifyDocumentBlock(expected, source)
 		})
 
 		It("empty verse without author and title", func() {
-			actualContent := `[verse]
+			source := `[verse]
 ____
 ____`
-			expectedResult := types.DelimitedBlock{
+			expected := types.DelimitedBlock{
 				Attributes: types.ElementAttributes{
-					types.AttrKind:        types.Verse,
-					types.AttrQuoteAuthor: "",
-					types.AttrQuoteTitle:  "",
+					types.AttrKind: types.Verse,
 				},
 				Kind:     types.Verse,
 				Elements: []interface{}{},
 			}
-			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+			verifyDocumentBlock(expected, source)
 		})
 
 		It("unclosed verse without author and title", func() {
-			actualContent := `[verse]
+			source := `[verse]
 ____
 foo
 `
-			expectedResult := types.DelimitedBlock{
+			expected := types.DelimitedBlock{
 				Attributes: types.ElementAttributes{
-					types.AttrKind:        types.Verse,
-					types.AttrQuoteAuthor: "",
-					types.AttrQuoteTitle:  "",
+					types.AttrKind: types.Verse,
 				},
 				Kind: types.Verse,
 				Elements: []interface{}{
@@ -1275,14 +1299,14 @@ foo
 					},
 				},
 			}
-			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+			verifyDocumentBlock(expected, source)
 		})
 	})
 
 	Context("source blocks", func() {
 
 		It("with source attribute only", func() {
-			actualContent := `[source]
+			source := `[source]
 ----
 require 'sinatra'
 
@@ -1290,10 +1314,9 @@ get '/hi' do
   "Hello World!"
 end
 ----`
-			expectedResult := types.DelimitedBlock{
+			expected := types.DelimitedBlock{
 				Attributes: types.ElementAttributes{
-					types.AttrKind:     types.Source,
-					types.AttrLanguage: "",
+					types.AttrKind: types.Source,
 				},
 				Kind: types.Source,
 				Elements: []interface{}{
@@ -1325,11 +1348,11 @@ end
 					},
 				},
 			}
-			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+			verifyDocumentBlock(expected, source)
 		})
 
 		It("with title, source and languages attributes", func() {
-			actualContent := `[source,ruby]
+			source := `[source,ruby]
 .Source block title
 ----
 require 'sinatra'
@@ -1338,7 +1361,7 @@ get '/hi' do
   "Hello World!"
 end
 ----`
-			expectedResult := types.DelimitedBlock{
+			expected := types.DelimitedBlock{
 				Attributes: types.ElementAttributes{
 					types.AttrKind:     types.Source,
 					types.AttrLanguage: "ruby",
@@ -1374,11 +1397,11 @@ end
 					},
 				},
 			}
-			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+			verifyDocumentBlock(expected, source)
 		})
 
 		It("with id, title, source and languages attributes", func() {
-			actualContent := `[#id-for-source-block]
+			source := `[#id-for-source-block]
 [source,ruby]
 .app.rb
 ----
@@ -1388,7 +1411,7 @@ get '/hi' do
   "Hello World!"
 end
 ----`
-			expectedResult := types.DelimitedBlock{
+			expected := types.DelimitedBlock{
 				Attributes: types.ElementAttributes{
 					types.AttrKind:     types.Source,
 					types.AttrLanguage: "ruby",
@@ -1426,17 +1449,17 @@ end
 					},
 				},
 			}
-			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+			verifyDocumentBlock(expected, source)
 		})
 	})
 
 	Context("sidebar blocks", func() {
 
 		It("sidebar block with paragraph", func() {
-			actualContent := `****
+			source := `****
 some *verse* content
 ****`
-			expectedResult := types.DelimitedBlock{
+			expected := types.DelimitedBlock{
 				Attributes: types.ElementAttributes{},
 				Kind:       types.Sidebar,
 				Elements: []interface{}{
@@ -1463,11 +1486,11 @@ some *verse* content
 					},
 				},
 			}
-			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+			verifyDocumentBlock(expected, source)
 		})
 
 		It("sidebar block with title, paragraph and sourcecode block", func() {
-			actualContent := `.a title
+			source := `.a title
 ****
 some *verse* content
 ----
@@ -1475,7 +1498,7 @@ foo
 bar
 ----
 ****`
-			expectedResult := types.DelimitedBlock{
+			expected := types.DelimitedBlock{
 				Attributes: types.ElementAttributes{
 					types.AttrTitle: "a title",
 				},
@@ -1525,8 +1548,1842 @@ bar
 					},
 				},
 			}
-			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+			verifyDocumentBlock(expected, source)
+		})
+	})
+})
+
+var _ = Describe("delimited blocks - document", func() {
+
+	Context("fenced blocks", func() {
+
+		It("fenced block with single line", func() {
+			content := "some fenced code"
+			source := "```\n" + content + "\n```"
+			expected := types.Document{
+				Attributes:         types.DocumentAttributes{},
+				ElementReferences:  types.ElementReferences{},
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
+				Elements: []interface{}{
+					types.DelimitedBlock{
+						Attributes: types.ElementAttributes{},
+						Kind:       types.Fenced,
+						Elements: []interface{}{
+							types.Paragraph{
+								Attributes: types.ElementAttributes{},
+								Lines: []types.InlineElements{
+									{
+										types.StringElement{
+											Content: content,
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			}
+			verifyDocument(expected, source)
+		})
+
+		It("fenced block with no line", func() {
+			source := "```\n```"
+			expected := types.Document{
+				Attributes:         types.DocumentAttributes{},
+				ElementReferences:  types.ElementReferences{},
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
+				Elements: []interface{}{
+					types.DelimitedBlock{
+						Attributes: types.ElementAttributes{},
+						Kind:       types.Fenced,
+						Elements:   []interface{}{},
+					},
+				},
+			}
+			verifyDocument(expected, source)
+		})
+
+		It("fenced block with multiple lines alone", func() {
+			source := "```\nsome fenced code\nwith an empty line\n\nin the middle\n```"
+			expected := types.Document{
+				Attributes:         types.DocumentAttributes{},
+				ElementReferences:  types.ElementReferences{},
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
+				Elements: []interface{}{
+					types.DelimitedBlock{
+						Attributes: types.ElementAttributes{},
+						Kind:       types.Fenced,
+						Elements: []interface{}{
+							types.Paragraph{
+								Attributes: types.ElementAttributes{},
+								Lines: []types.InlineElements{
+									{
+										types.StringElement{
+											Content: "some fenced code",
+										},
+									},
+									{
+										types.StringElement{
+											Content: "with an empty line",
+										},
+									},
+								},
+							},
+							types.BlankLine{},
+							types.Paragraph{
+								Attributes: types.ElementAttributes{},
+								Lines: []types.InlineElements{
+									{
+										types.StringElement{
+											Content: "in the middle",
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			}
+			verifyDocument(expected, source)
+		})
+
+		It("fenced block with multiple lines then a paragraph", func() {
+			source := "```\nsome fenced code\nwith an empty line\n\nin the middle\n```\nthen a normal paragraph."
+			expected := types.Document{
+				Attributes:         types.DocumentAttributes{},
+				ElementReferences:  types.ElementReferences{},
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
+				Elements: []interface{}{
+					types.DelimitedBlock{
+						Attributes: types.ElementAttributes{},
+						Kind:       types.Fenced,
+						Elements: []interface{}{
+							types.Paragraph{
+								Attributes: types.ElementAttributes{},
+								Lines: []types.InlineElements{
+									{
+										types.StringElement{
+											Content: "some fenced code",
+										},
+									},
+									{
+										types.StringElement{
+											Content: "with an empty line",
+										},
+									},
+								},
+							},
+							types.BlankLine{},
+							types.Paragraph{
+								Attributes: types.ElementAttributes{},
+								Lines: []types.InlineElements{
+									{
+										types.StringElement{
+											Content: "in the middle",
+										},
+									},
+								},
+							},
+						},
+					},
+					types.Paragraph{
+						Attributes: types.ElementAttributes{},
+						Lines: []types.InlineElements{
+							{
+								types.StringElement{Content: "then a normal paragraph."},
+							},
+						},
+					},
+				},
+			}
+			verifyDocument(expected, source)
+		})
+
+		It("fenced block after a paragraph", func() {
+			content := "some fenced code"
+			source := "a paragraph.\n```\n" + content + "\n```\n"
+			expected := types.Document{
+				Attributes:         types.DocumentAttributes{},
+				ElementReferences:  types.ElementReferences{},
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
+				Elements: []interface{}{
+					types.Paragraph{
+						Attributes: types.ElementAttributes{},
+						Lines: []types.InlineElements{
+							{
+								types.StringElement{Content: "a paragraph."},
+							},
+						},
+					},
+					types.DelimitedBlock{
+						Attributes: types.ElementAttributes{},
+						Kind:       types.Fenced,
+						Elements: []interface{}{
+							types.Paragraph{
+								Attributes: types.ElementAttributes{},
+								Lines: []types.InlineElements{
+									{
+										types.StringElement{
+											Content: content,
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			}
+			verifyDocument(expected, source)
+		})
+
+		It("fenced block with unclosed delimiter", func() {
+			source := "```\nEnd of file here"
+			expected := types.Document{
+				Attributes:         types.DocumentAttributes{},
+				ElementReferences:  types.ElementReferences{},
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
+				Elements: []interface{}{
+					types.DelimitedBlock{
+						Attributes: types.ElementAttributes{},
+						Kind:       types.Fenced,
+						Elements: []interface{}{
+							types.Paragraph{
+								Attributes: types.ElementAttributes{},
+								Lines: []types.InlineElements{
+									{
+										types.StringElement{
+											Content: "End of file here",
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			}
+			verifyDocument(expected, source)
+		})
+
+		It("fenced block with external link inside", func() {
+			source := "```" + "\n" +
+				"a http://website.com" + "\n" +
+				"and more text on the" + "\n" +
+				"next lines" + "\n" +
+				"```"
+
+			expected := types.Document{
+				Attributes:         types.DocumentAttributes{},
+				ElementReferences:  types.ElementReferences{},
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
+				Elements: []interface{}{
+					types.DelimitedBlock{
+						Attributes: types.ElementAttributes{},
+						Kind:       types.Fenced,
+						Elements: []interface{}{
+							types.Paragraph{
+								Attributes: types.ElementAttributes{},
+								Lines: []types.InlineElements{
+									{
+										types.StringElement{
+											Content: "a ",
+										},
+										types.InlineLink{
+											Attributes: types.ElementAttributes{},
+											Location: types.Location{
+												types.StringElement{
+													Content: "http://website.com",
+												},
+											},
+										},
+									},
+									{
+										types.StringElement{
+											Content: "and more text on the",
+										},
+									},
+									{
+										types.StringElement{
+											Content: "next lines",
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			}
+			verifyDocument(expected, source)
 		})
 	})
 
+	Context("listing blocks", func() {
+
+		It("listing block with single line", func() {
+			source := `----
+some listing code
+----`
+			expected := types.Document{
+				Attributes:         types.DocumentAttributes{},
+				ElementReferences:  types.ElementReferences{},
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
+				Elements: []interface{}{
+					types.DelimitedBlock{
+						Attributes: types.ElementAttributes{},
+						Kind:       types.Listing,
+						Elements: []interface{}{
+							types.Paragraph{
+								Attributes: types.ElementAttributes{},
+								Lines: []types.InlineElements{
+									{
+										types.StringElement{
+											Content: "some listing code",
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			}
+			verifyDocument(expected, source)
+		})
+
+		It("listing block with no line", func() {
+			source := `----
+----`
+			expected := types.Document{
+				Attributes:         types.DocumentAttributes{},
+				ElementReferences:  types.ElementReferences{},
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
+				Elements: []interface{}{
+					types.DelimitedBlock{
+						Attributes: types.ElementAttributes{},
+						Kind:       types.Listing,
+						Elements:   []interface{}{},
+					},
+				},
+			}
+			verifyDocument(expected, source)
+		})
+
+		It("listing block with multiple lines alone", func() {
+			source := `----
+some listing code
+with an empty line
+
+in the middle
+----`
+			expected := types.Document{
+				Attributes:         types.DocumentAttributes{},
+				ElementReferences:  types.ElementReferences{},
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
+				Elements: []interface{}{
+					types.DelimitedBlock{
+						Attributes: types.ElementAttributes{},
+						Kind:       types.Listing,
+						Elements: []interface{}{
+							types.Paragraph{
+								Attributes: types.ElementAttributes{},
+								Lines: []types.InlineElements{
+									{
+										types.StringElement{
+											Content: "some listing code",
+										},
+									},
+									{
+										types.StringElement{
+											Content: "with an empty line",
+										},
+									},
+									{},
+									{
+										types.StringElement{
+											Content: "in the middle",
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			}
+			verifyDocument(expected, source)
+		})
+
+		It("listing block with unrendered list", func() {
+			source := `----
+* some 
+* listing 
+* content
+----`
+			expected := types.Document{
+				Attributes:         types.DocumentAttributes{},
+				ElementReferences:  types.ElementReferences{},
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
+				Elements: []interface{}{
+					types.DelimitedBlock{
+						Attributes: types.ElementAttributes{},
+						Kind:       types.Listing,
+						Elements: []interface{}{
+							types.Paragraph{
+								Attributes: types.ElementAttributes{},
+								Lines: []types.InlineElements{
+									{
+										types.StringElement{
+											Content: "* some ",
+										},
+									},
+									{
+										types.StringElement{
+											Content: "* listing ",
+										},
+									},
+									{
+										types.StringElement{
+											Content: "* content",
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			}
+			verifyDocument(expected, source)
+		})
+
+		It("listing block with multiple lines then a paragraph", func() {
+			source := `---- 
+some listing code
+with an empty line
+
+in the middle
+----
+then a normal paragraph.`
+			expected := types.Document{
+				Attributes:         types.DocumentAttributes{},
+				ElementReferences:  types.ElementReferences{},
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
+				Elements: []interface{}{
+					types.DelimitedBlock{
+						Attributes: types.ElementAttributes{},
+						Kind:       types.Listing,
+						Elements: []interface{}{
+							types.Paragraph{
+								Attributes: types.ElementAttributes{},
+								Lines: []types.InlineElements{
+									{
+										types.StringElement{
+											Content: "some listing code",
+										},
+									},
+									{
+										types.StringElement{
+											Content: "with an empty line",
+										},
+									},
+									{},
+									{
+										types.StringElement{
+											Content: "in the middle",
+										},
+									},
+								},
+							},
+						},
+					},
+					types.Paragraph{
+						Attributes: types.ElementAttributes{},
+						Lines: []types.InlineElements{
+							{
+								types.StringElement{Content: "then a normal paragraph."},
+							},
+						},
+					},
+				},
+			}
+			verifyDocument(expected, source)
+		})
+
+		It("listing block just after a paragraph", func() {
+			source := `a paragraph.
+----
+some listing code
+----`
+			expected := types.Document{
+				Attributes:         types.DocumentAttributes{},
+				ElementReferences:  types.ElementReferences{},
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
+				Elements: []interface{}{
+					types.Paragraph{
+						Attributes: types.ElementAttributes{},
+						Lines: []types.InlineElements{
+							{
+								types.StringElement{Content: "a paragraph."},
+							},
+						},
+					},
+					types.DelimitedBlock{
+						Attributes: types.ElementAttributes{},
+						Kind:       types.Listing,
+						Elements: []interface{}{
+							types.Paragraph{
+								Attributes: types.ElementAttributes{},
+								Lines: []types.InlineElements{
+									{
+										types.StringElement{
+											Content: "some listing code",
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			}
+			verifyDocument(expected, source)
+		})
+
+		It("listing block with unclosed delimiter", func() {
+			source := `----
+End of file here.`
+			expected := types.Document{
+				Attributes:         types.DocumentAttributes{},
+				ElementReferences:  types.ElementReferences{},
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
+				Elements: []interface{}{
+					types.DelimitedBlock{
+						Attributes: types.ElementAttributes{},
+						Kind:       types.Listing,
+						Elements: []interface{}{
+							types.Paragraph{
+								Attributes: types.ElementAttributes{},
+								Lines: []types.InlineElements{
+									{
+										types.StringElement{
+											Content: "End of file here.",
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			}
+			verifyDocument(expected, source)
+		})
+	})
+
+	Context("example blocks", func() {
+
+		It("example block with single line", func() {
+			source := `====
+some listing code
+====`
+			expected := types.Document{
+				Attributes:         types.DocumentAttributes{},
+				ElementReferences:  types.ElementReferences{},
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
+				Elements: []interface{}{
+					types.DelimitedBlock{
+						Attributes: types.ElementAttributes{},
+						Kind:       types.Example,
+						Elements: []interface{}{
+							types.Paragraph{
+								Attributes: types.ElementAttributes{},
+								Lines: []types.InlineElements{
+									{
+										types.StringElement{
+											Content: "some listing code",
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			}
+			verifyDocument(expected, source)
+		})
+
+		It("example block with single line starting with a dot", func() {
+			source := `====
+.foo
+====`
+			expected := types.Document{
+				Attributes:         types.DocumentAttributes{},
+				ElementReferences:  types.ElementReferences{},
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
+				Elements: []interface{}{
+					types.DelimitedBlock{
+						Attributes: types.ElementAttributes{},
+						Kind:       types.Example,
+						Elements: []interface{}{
+							types.Paragraph{
+								Attributes: types.ElementAttributes{},
+								Lines: []types.InlineElements{
+									{
+										types.StringElement{
+											Content: ".foo",
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			}
+			verifyDocument(expected, source)
+		})
+
+		It("example block with multiple lines", func() {
+			source := `====
+.foo
+some listing code
+with *bold content*
+
+* and a list item
+====`
+			expected := types.Document{
+				Attributes:         types.DocumentAttributes{},
+				ElementReferences:  types.ElementReferences{},
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
+				Elements: []interface{}{
+					types.DelimitedBlock{
+						Attributes: types.ElementAttributes{},
+						Kind:       types.Example,
+						Elements: []interface{}{
+							types.Paragraph{
+								Attributes: types.ElementAttributes{},
+								Lines: []types.InlineElements{
+									{
+										types.StringElement{
+											Content: ".foo",
+										},
+									},
+									{
+										types.StringElement{
+											Content: "some listing code",
+										},
+									},
+									{
+										types.StringElement{
+											Content: "with ",
+										},
+										types.QuotedText{
+											Kind: types.Bold,
+											Elements: types.InlineElements{
+												types.StringElement{
+													Content: "bold content",
+												},
+											},
+										},
+									},
+								},
+							},
+							types.BlankLine{},
+							types.UnorderedList{
+								Attributes: types.ElementAttributes{},
+								Items: []types.UnorderedListItem{
+									{
+										Attributes:  types.ElementAttributes{},
+										Level:       1,
+										BulletStyle: types.OneAsterisk,
+										CheckStyle:  types.NoCheck,
+										Elements: []interface{}{
+											types.Paragraph{
+												Attributes: types.ElementAttributes{},
+												Lines: []types.InlineElements{
+													{
+														types.StringElement{
+															Content: "and a list item",
+														},
+													},
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			}
+			verifyDocument(expected, source)
+		})
+
+		It("example block with unclosed delimiter", func() {
+			source := `====
+End of file here`
+			expected := types.Document{
+				Attributes:         types.DocumentAttributes{},
+				ElementReferences:  types.ElementReferences{},
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
+				Elements: []interface{}{
+					types.DelimitedBlock{
+						Attributes: types.ElementAttributes{},
+						Kind:       types.Example,
+						Elements: []interface{}{
+							types.Paragraph{
+								Attributes: types.ElementAttributes{},
+								Lines: []types.InlineElements{
+									{
+										types.StringElement{
+											Content: "End of file here",
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			}
+			verifyDocument(expected, source)
+		})
+
+		It("example block with title", func() {
+			source := `.example block title
+====
+foo
+====`
+			expected := types.Document{
+				Attributes:         types.DocumentAttributes{},
+				ElementReferences:  types.ElementReferences{},
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
+				Elements: []interface{}{
+					types.DelimitedBlock{
+						Attributes: types.ElementAttributes{
+							types.AttrTitle: "example block title",
+						},
+						Kind: types.Example,
+						Elements: []interface{}{
+							types.Paragraph{
+								Attributes: types.ElementAttributes{},
+								Lines: []types.InlineElements{
+									{
+										types.StringElement{
+											Content: "foo",
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			}
+			verifyDocument(expected, source)
+		})
+
+		It("example block starting delimiter only", func() {
+			source := `====`
+			expected := types.Document{
+				Attributes:         types.DocumentAttributes{},
+				ElementReferences:  types.ElementReferences{},
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
+				Elements: []interface{}{
+					types.DelimitedBlock{
+						Attributes: types.ElementAttributes{},
+						Kind:       types.Example,
+						Elements:   []interface{}{},
+					},
+				},
+			}
+			verifyDocument(expected, source)
+		})
+	})
+
+	Context("admonition blocks", func() {
+
+		It("example block as admonition", func() {
+			source := `[NOTE]
+====
+foo
+====`
+			expected := types.Document{
+				Attributes:         types.DocumentAttributes{},
+				ElementReferences:  types.ElementReferences{},
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
+				Elements: []interface{}{
+					types.DelimitedBlock{
+						Attributes: types.ElementAttributes{
+							types.AttrAdmonitionKind: types.Note,
+						},
+						Kind: types.Example,
+						Elements: []interface{}{
+							types.Paragraph{
+								Attributes: types.ElementAttributes{},
+								Lines: []types.InlineElements{
+									{
+										types.StringElement{
+											Content: "foo",
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			}
+			verifyDocument(expected, source)
+
+		})
+
+		It("listing block as admonition", func() {
+			source := `[NOTE]
+----
+multiple
+
+paragraphs
+----
+`
+			expected := types.Document{
+				Attributes:         types.DocumentAttributes{},
+				ElementReferences:  types.ElementReferences{},
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
+				Elements: []interface{}{
+					types.DelimitedBlock{
+						Attributes: types.ElementAttributes{
+							types.AttrAdmonitionKind: types.Note,
+						},
+						Kind: types.Listing,
+						Elements: []interface{}{
+							types.Paragraph{
+								Attributes: types.ElementAttributes{},
+								Lines: []types.InlineElements{
+									{
+										types.StringElement{
+											Content: "multiple",
+										},
+									},
+									{},
+									{
+										types.StringElement{
+											Content: "paragraphs",
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			}
+			verifyDocument(expected, source)
+		})
+	})
+
+	Context("quote blocks", func() {
+
+		It("single-line quote block with author and title", func() {
+			source := `[quote, john doe, quote title]
+____
+some *quote* content
+____`
+			expected := types.Document{
+				Attributes:         types.DocumentAttributes{},
+				ElementReferences:  types.ElementReferences{},
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
+				Elements: []interface{}{
+					types.DelimitedBlock{
+						Attributes: types.ElementAttributes{
+							types.AttrKind:        types.Quote,
+							types.AttrQuoteAuthor: "john doe",
+							types.AttrQuoteTitle:  "quote title",
+						},
+						Kind: types.Quote,
+						Elements: []interface{}{
+							types.Paragraph{
+								Attributes: types.ElementAttributes{},
+								Lines: []types.InlineElements{
+									{
+										types.StringElement{
+											Content: "some ",
+										},
+										types.QuotedText{
+											Kind: types.Bold,
+											Elements: types.InlineElements{
+												types.StringElement{
+													Content: "quote",
+												},
+											},
+										},
+										types.StringElement{
+											Content: " content",
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			}
+			verifyDocument(expected, source)
+		})
+
+		It("multi-line quote with author only", func() {
+			source := `[quote, john doe,   ]
+____
+- some 
+- quote 
+- content 
+____
+`
+			expected := types.Document{
+				Attributes:         types.DocumentAttributes{},
+				ElementReferences:  types.ElementReferences{},
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
+				Elements: []interface{}{
+					types.DelimitedBlock{
+						Attributes: types.ElementAttributes{
+							types.AttrKind:        types.Quote,
+							types.AttrQuoteAuthor: "john doe",
+						},
+						Kind: types.Quote,
+						Elements: []interface{}{
+							types.UnorderedList{
+								Attributes: types.ElementAttributes{},
+								Items: []types.UnorderedListItem{
+									{
+										Attributes:  types.ElementAttributes{},
+										Level:       1,
+										BulletStyle: types.Dash,
+										CheckStyle:  types.NoCheck,
+										Elements: []interface{}{
+											types.Paragraph{
+												Attributes: types.ElementAttributes{},
+												Lines: []types.InlineElements{
+													{
+														types.StringElement{
+															Content: "some ",
+														},
+													},
+												},
+											},
+										},
+									},
+									{
+										Attributes:  types.ElementAttributes{},
+										Level:       1,
+										BulletStyle: types.Dash,
+										CheckStyle:  types.NoCheck,
+										Elements: []interface{}{
+											types.Paragraph{
+												Attributes: types.ElementAttributes{},
+												Lines: []types.InlineElements{
+													{
+														types.StringElement{
+															Content: "quote ",
+														},
+													},
+												},
+											},
+										},
+									},
+									{
+										Attributes:  types.ElementAttributes{},
+										Level:       1,
+										BulletStyle: types.Dash,
+										CheckStyle:  types.NoCheck,
+										Elements: []interface{}{
+											types.Paragraph{
+												Attributes: types.ElementAttributes{},
+												Lines: []types.InlineElements{
+													{
+														types.StringElement{
+															Content: "content ",
+														},
+													},
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			}
+			verifyDocument(expected, source)
+		})
+
+		It("single-line quote with title only", func() {
+			source := `[quote, ,quote title]
+____
+some quote content 
+____
+`
+			expected := types.Document{
+				Attributes:         types.DocumentAttributes{},
+				ElementReferences:  types.ElementReferences{},
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
+				Elements: []interface{}{
+					types.DelimitedBlock{
+						Attributes: types.ElementAttributes{
+							types.AttrKind:       types.Quote,
+							types.AttrQuoteTitle: "quote title",
+						},
+						Kind: types.Quote,
+						Elements: []interface{}{
+							types.Paragraph{
+								Attributes: types.ElementAttributes{},
+								Lines: []types.InlineElements{
+									{
+										types.StringElement{
+											Content: "some quote content ",
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			}
+			verifyDocument(expected, source)
+		})
+
+		It("multi-line quote with rendered lists and block and without author and title", func() {
+			source := `[quote]
+____
+* some
+----
+* quote 
+----
+* content
+____`
+			expected := types.Document{
+				Attributes:         types.DocumentAttributes{},
+				ElementReferences:  types.ElementReferences{},
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
+				Elements: []interface{}{
+					types.DelimitedBlock{
+						Attributes: types.ElementAttributes{
+							types.AttrKind: types.Quote,
+						},
+						Kind: types.Quote,
+						Elements: []interface{}{
+							types.UnorderedList{
+								Attributes: types.ElementAttributes{},
+								Items: []types.UnorderedListItem{
+									{
+										Attributes:  types.ElementAttributes{},
+										Level:       1,
+										BulletStyle: types.OneAsterisk,
+										CheckStyle:  types.NoCheck,
+										Elements: []interface{}{
+											types.Paragraph{
+												Attributes: types.ElementAttributes{},
+												Lines: []types.InlineElements{
+													{
+														types.StringElement{
+															Content: "some",
+														},
+													},
+												},
+											},
+										},
+									},
+								},
+							},
+							types.DelimitedBlock{
+								Attributes: types.ElementAttributes{},
+								Kind:       types.Listing,
+								Elements: []interface{}{
+									types.Paragraph{
+										Attributes: types.ElementAttributes{},
+										Lines: []types.InlineElements{
+											{
+												types.StringElement{
+													Content: "* quote ",
+												},
+											},
+										},
+									},
+								},
+							},
+							types.UnorderedList{
+								Attributes: types.ElementAttributes{},
+								Items: []types.UnorderedListItem{
+									{
+										Attributes:  types.ElementAttributes{},
+										Level:       1,
+										BulletStyle: types.OneAsterisk,
+										CheckStyle:  types.NoCheck,
+										Elements: []interface{}{
+											types.Paragraph{
+												Attributes: types.ElementAttributes{},
+												Lines: []types.InlineElements{
+													{
+														types.StringElement{
+															Content: "content",
+														},
+													},
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			}
+			verifyDocument(expected, source)
+		})
+
+		It("multi-line quote with rendered list and without author and title", func() {
+			source := `[quote]
+____
+* some
+
+
+* quote 
+
+
+* content
+____`
+			expected := types.Document{
+				Attributes:         types.DocumentAttributes{},
+				ElementReferences:  types.ElementReferences{},
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
+				Elements: []interface{}{
+					types.DelimitedBlock{
+						Attributes: types.ElementAttributes{
+							types.AttrKind: types.Quote,
+						},
+						Kind: types.Quote,
+						Elements: []interface{}{
+							types.UnorderedList{
+								Attributes: types.ElementAttributes{},
+								Items: []types.UnorderedListItem{
+									{
+										Attributes:  types.ElementAttributes{},
+										Level:       1,
+										BulletStyle: types.OneAsterisk,
+										CheckStyle:  types.NoCheck,
+										Elements: []interface{}{
+											types.Paragraph{
+												Attributes: types.ElementAttributes{},
+												Lines: []types.InlineElements{
+													{
+														types.StringElement{
+															Content: "some",
+														},
+													},
+												},
+											},
+										},
+									},
+									{
+										Attributes:  types.ElementAttributes{},
+										Level:       1,
+										BulletStyle: types.OneAsterisk,
+										CheckStyle:  types.NoCheck,
+										Elements: []interface{}{
+											types.Paragraph{
+												Attributes: types.ElementAttributes{},
+												Lines: []types.InlineElements{
+													{
+														types.StringElement{
+															Content: "quote ",
+														},
+													},
+												},
+											},
+										},
+									},
+									{
+										Attributes:  types.ElementAttributes{},
+										Level:       1,
+										BulletStyle: types.OneAsterisk,
+										CheckStyle:  types.NoCheck,
+										Elements: []interface{}{
+											types.Paragraph{
+												Attributes: types.ElementAttributes{},
+												Lines: []types.InlineElements{
+													{
+														types.StringElement{
+															Content: "content",
+														},
+													},
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			}
+			verifyDocument(expected, source)
+		})
+
+		It("empty quote without author and title", func() {
+			source := `[quote]
+____
+____`
+			expected := types.Document{
+				Attributes:         types.DocumentAttributes{},
+				ElementReferences:  types.ElementReferences{},
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
+				Elements: []interface{}{
+					types.DelimitedBlock{
+						Attributes: types.ElementAttributes{
+							types.AttrKind: types.Quote,
+						},
+						Kind:     types.Quote,
+						Elements: []interface{}{},
+					},
+				},
+			}
+			verifyDocument(expected, source)
+		})
+
+		It("unclosed quote without author and title", func() {
+			source := `[quote]
+____
+foo
+`
+			expected := types.Document{
+				Attributes:         types.DocumentAttributes{},
+				ElementReferences:  types.ElementReferences{},
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
+				Elements: []interface{}{
+					types.DelimitedBlock{
+						Attributes: types.ElementAttributes{
+							types.AttrKind: types.Quote,
+						},
+						Kind: types.Quote,
+						Elements: []interface{}{
+							types.Paragraph{
+								Attributes: types.ElementAttributes{},
+								Lines: []types.InlineElements{
+									{
+										types.StringElement{
+											Content: "foo",
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			}
+			verifyDocument(expected, source)
+		})
+	})
+
+	Context("verse blocks", func() {
+
+		It("single line verse with author and title", func() {
+			source := `[verse, john doe, verse title]
+____
+some *verse* content
+____`
+			expected := types.Document{
+				Attributes:         types.DocumentAttributes{},
+				ElementReferences:  types.ElementReferences{},
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
+				Elements: []interface{}{
+					types.DelimitedBlock{
+						Attributes: types.ElementAttributes{
+							types.AttrKind:        types.Verse,
+							types.AttrQuoteAuthor: "john doe",
+							types.AttrQuoteTitle:  "verse title",
+						},
+						Kind: types.Verse,
+						Elements: []interface{}{
+							types.Paragraph{
+								Attributes: types.ElementAttributes{},
+								Lines: []types.InlineElements{
+									{
+										types.StringElement{
+											Content: "some ",
+										},
+										types.QuotedText{
+											Kind: types.Bold,
+											Elements: types.InlineElements{
+												types.StringElement{
+													Content: "verse",
+												},
+											},
+										},
+										types.StringElement{
+											Content: " content",
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			}
+			verifyDocument(expected, source)
+		})
+
+		It("multi-line verse with unrendered list and author only", func() {
+			source := `[verse, john doe,   ]
+____
+- some 
+- verse 
+- content 
+____
+`
+			expected := types.Document{
+				Attributes:         types.DocumentAttributes{},
+				ElementReferences:  types.ElementReferences{},
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
+				Elements: []interface{}{
+					types.DelimitedBlock{
+						Attributes: types.ElementAttributes{
+							types.AttrKind:        types.Verse,
+							types.AttrQuoteAuthor: "john doe",
+						},
+						Kind: types.Verse,
+						Elements: []interface{}{
+							types.Paragraph{
+								Attributes: types.ElementAttributes{},
+								Lines: []types.InlineElements{
+									{
+										types.StringElement{
+											Content: "- some ",
+										},
+									},
+									{
+										types.StringElement{
+											Content: "- verse ",
+										},
+									},
+									{
+										types.StringElement{
+											Content: "- content ",
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			}
+			verifyDocument(expected, source)
+		})
+
+		It("multi-line verse with title only", func() {
+			source := `[verse, ,verse title]
+____
+some verse content 
+____
+`
+			expected := types.Document{
+				Attributes:         types.DocumentAttributes{},
+				ElementReferences:  types.ElementReferences{},
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
+				Elements: []interface{}{
+					types.DelimitedBlock{
+						Attributes: types.ElementAttributes{
+							types.AttrKind:       types.Verse,
+							types.AttrQuoteTitle: "verse title",
+						},
+						Kind: types.Verse,
+						Elements: []interface{}{
+							types.Paragraph{
+								Attributes: types.ElementAttributes{},
+								Lines: []types.InlineElements{
+									{
+										types.StringElement{
+											Content: "some verse content ",
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			}
+			verifyDocument(expected, source)
+		})
+
+		It("multi-line verse with unrendered lists and block without author and title", func() {
+			source := `[verse]
+____
+* some
+----
+* verse 
+----
+* content
+____`
+			expected := types.Document{
+				Attributes:         types.DocumentAttributes{},
+				ElementReferences:  types.ElementReferences{},
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
+				Elements: []interface{}{
+					types.DelimitedBlock{
+						Attributes: types.ElementAttributes{
+							types.AttrKind: types.Verse,
+						},
+						Kind: types.Verse,
+						Elements: []interface{}{
+							types.Paragraph{
+								Attributes: types.ElementAttributes{},
+								Lines: []types.InlineElements{
+									{
+										types.StringElement{
+											Content: "* some",
+										},
+									},
+									{
+										types.StringElement{
+											Content: "----",
+										},
+									},
+									{
+										types.StringElement{
+											Content: "* verse ",
+										},
+									},
+									{
+										types.StringElement{
+											Content: "----",
+										},
+									},
+									{
+										types.StringElement{
+											Content: "* content",
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			}
+			verifyDocument(expected, source)
+		})
+
+		It("multi-line verse with unrendered list without author and title", func() {
+			source := `[verse]
+____
+* foo
+
+
+	* bar
+____`
+			expected := types.Document{
+				Attributes:         types.DocumentAttributes{},
+				ElementReferences:  types.ElementReferences{},
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
+				Elements: []interface{}{
+					types.DelimitedBlock{
+						Attributes: types.ElementAttributes{
+							types.AttrKind: types.Verse,
+						},
+						Kind: types.Verse,
+						Elements: []interface{}{
+							types.Paragraph{
+								Attributes: types.ElementAttributes{},
+								Lines: []types.InlineElements{
+									{
+										types.StringElement{
+											Content: "* foo",
+										},
+									},
+								},
+							},
+							types.BlankLine{},
+							types.BlankLine{},
+							types.Paragraph{
+								Attributes: types.ElementAttributes{},
+								Lines: []types.InlineElements{
+									{
+										types.StringElement{
+											Content: "\t* bar",
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			}
+			verifyDocument(expected, source)
+		})
+
+		It("empty verse without author and title", func() {
+			source := `[verse]
+____
+____`
+			expected := types.Document{
+				Attributes:         types.DocumentAttributes{},
+				ElementReferences:  types.ElementReferences{},
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
+				Elements: []interface{}{
+					types.DelimitedBlock{
+						Attributes: types.ElementAttributes{
+							types.AttrKind: types.Verse,
+						},
+						Kind:     types.Verse,
+						Elements: []interface{}{},
+					},
+				},
+			}
+			verifyDocument(expected, source)
+		})
+
+		It("unclosed verse without author and title", func() {
+			source := `[verse]
+____
+foo
+`
+			expected := types.Document{
+				Attributes:         types.DocumentAttributes{},
+				ElementReferences:  types.ElementReferences{},
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
+				Elements: []interface{}{
+					types.DelimitedBlock{
+						Attributes: types.ElementAttributes{
+							types.AttrKind: types.Verse,
+						},
+						Kind: types.Verse,
+						Elements: []interface{}{
+							types.Paragraph{
+								Attributes: types.ElementAttributes{},
+								Lines: []types.InlineElements{
+									{
+										types.StringElement{
+											Content: "foo",
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			}
+			verifyDocument(expected, source)
+		})
+	})
+
+	Context("source blocks", func() {
+
+		It("with source attribute only", func() {
+			source := `[source]
+----
+require 'sinatra'
+
+get '/hi' do
+  "Hello World!"
+end
+----`
+			expected := types.Document{
+				Attributes:         types.DocumentAttributes{},
+				ElementReferences:  types.ElementReferences{},
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
+				Elements: []interface{}{
+					types.DelimitedBlock{
+						Attributes: types.ElementAttributes{
+							types.AttrKind: types.Source,
+						},
+						Kind: types.Source,
+						Elements: []interface{}{
+							types.Paragraph{
+								Attributes: types.ElementAttributes{},
+								Lines: []types.InlineElements{
+									{
+										types.StringElement{
+											Content: "require 'sinatra'",
+										},
+									},
+									{},
+									{
+										types.StringElement{
+											Content: "get '/hi' do",
+										},
+									},
+									{
+										types.StringElement{
+											Content: "  \"Hello World!\"",
+										},
+									},
+									{
+										types.StringElement{
+											Content: "end",
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			}
+			verifyDocument(expected, source)
+		})
+
+		It("with title, source and languages attributes", func() {
+			source := `[source,ruby]
+.Source block title
+----
+require 'sinatra'
+
+get '/hi' do
+  "Hello World!"
+end
+----`
+			expected := types.Document{
+				Attributes:         types.DocumentAttributes{},
+				ElementReferences:  types.ElementReferences{},
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
+				Elements: []interface{}{
+					types.DelimitedBlock{
+						Attributes: types.ElementAttributes{
+							types.AttrKind:     types.Source,
+							types.AttrLanguage: "ruby",
+							types.AttrTitle:    "Source block title",
+						},
+						Kind: types.Source,
+						Elements: []interface{}{
+							types.Paragraph{
+								Attributes: types.ElementAttributes{},
+								Lines: []types.InlineElements{
+									{
+										types.StringElement{
+											Content: "require 'sinatra'",
+										},
+									},
+									{},
+									{
+										types.StringElement{
+											Content: "get '/hi' do",
+										},
+									},
+									{
+										types.StringElement{
+											Content: "  \"Hello World!\"",
+										},
+									},
+									{
+										types.StringElement{
+											Content: "end",
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			}
+			verifyDocument(expected, source)
+		})
+
+		It("with id, title, source and languages attributes", func() {
+			source := `[#id-for-source-block]
+[source,ruby]
+.app.rb
+----
+require 'sinatra'
+
+get '/hi' do
+  "Hello World!"
+end
+----`
+			expected := types.Document{
+				Attributes:         types.DocumentAttributes{},
+				ElementReferences:  types.ElementReferences{},
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
+				Elements: []interface{}{
+					types.DelimitedBlock{
+						Attributes: types.ElementAttributes{
+							types.AttrKind:     types.Source,
+							types.AttrLanguage: "ruby",
+							types.AttrID:       "id-for-source-block",
+							types.AttrCustomID: true,
+							types.AttrTitle:    "app.rb",
+						},
+						Kind: types.Source,
+						Elements: []interface{}{
+							types.Paragraph{
+								Attributes: types.ElementAttributes{},
+								Lines: []types.InlineElements{
+									{
+										types.StringElement{
+											Content: "require 'sinatra'",
+										},
+									},
+									{},
+									{
+										types.StringElement{
+											Content: "get '/hi' do",
+										},
+									},
+									{
+										types.StringElement{
+											Content: "  \"Hello World!\"",
+										},
+									},
+									{
+										types.StringElement{
+											Content: "end",
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			}
+			verifyDocument(expected, source)
+		})
+	})
+
+	Context("sidebar blocks", func() {
+
+		It("sidebar block with paragraph", func() {
+			source := `****
+some *verse* content
+****`
+			expected := types.Document{
+				Attributes:         types.DocumentAttributes{},
+				ElementReferences:  types.ElementReferences{},
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
+				Elements: []interface{}{
+					types.DelimitedBlock{
+						Attributes: types.ElementAttributes{},
+						Kind:       types.Sidebar,
+						Elements: []interface{}{
+							types.Paragraph{
+								Attributes: types.ElementAttributes{},
+								Lines: []types.InlineElements{
+									{
+										types.StringElement{
+											Content: "some ",
+										},
+										types.QuotedText{
+											Kind: types.Bold,
+											Elements: types.InlineElements{
+												types.StringElement{
+													Content: "verse",
+												},
+											},
+										},
+										types.StringElement{
+											Content: " content",
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			}
+			verifyDocument(expected, source)
+		})
+
+		It("sidebar block with title, paragraph and sourcecode block", func() {
+			source := `.a title
+****
+some *verse* content
+----
+foo
+bar
+----
+****`
+			expected := types.Document{
+				Attributes:         types.DocumentAttributes{},
+				ElementReferences:  types.ElementReferences{},
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
+				Elements: []interface{}{
+					types.DelimitedBlock{
+						Attributes: types.ElementAttributes{
+							types.AttrTitle: "a title",
+						},
+						Kind: types.Sidebar,
+						Elements: []interface{}{
+							types.Paragraph{
+								Attributes: types.ElementAttributes{},
+								Lines: []types.InlineElements{
+									{
+										types.StringElement{
+											Content: "some ",
+										},
+										types.QuotedText{
+											Kind: types.Bold,
+											Elements: types.InlineElements{
+												types.StringElement{
+													Content: "verse",
+												},
+											},
+										},
+										types.StringElement{
+											Content: " content",
+										},
+									},
+								},
+							},
+							types.DelimitedBlock{
+								Attributes: types.ElementAttributes{},
+								Kind:       types.Listing,
+								Elements: []interface{}{
+									types.Paragraph{
+										Attributes: types.ElementAttributes{},
+										Lines: []types.InlineElements{
+											{
+												types.StringElement{
+													Content: "foo",
+												},
+											},
+											{
+												types.StringElement{
+													Content: "bar",
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			}
+			verifyDocument(expected, source)
+		})
+	})
 })

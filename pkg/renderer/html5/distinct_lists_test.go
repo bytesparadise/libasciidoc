@@ -9,11 +9,11 @@ var _ = Describe("lists of items", func() {
 	Context("distinct list blocks", func() {
 
 		It("same list without attributes", func() {
-			actualContent := `[lowerroman]
+			source := `[lowerroman]
 . Five
 .. a
 . Six`
-			expectedResult := `<div class="olist lowerroman">
+			expected := `<div class="olist lowerroman">
 <ol class="lowerroman" type="i">
 <li>
 <p>Five</p>
@@ -30,16 +30,16 @@ var _ = Describe("lists of items", func() {
 </li>
 </ol>
 </div>`
-			verify(GinkgoT(), expectedResult, actualContent)
+			verify("test.adoc", expected, source)
 		})
 
 		It("same list with attribute on middle item", func() {
-			actualContent := `[lowerroman]
+			source := `[lowerroman]
 . Five
 [loweralpha]
 .. a
 . Six`
-			expectedResult := `<div class="olist lowerroman">
+			expected := `<div class="olist lowerroman">
 <ol class="lowerroman" type="i">
 <li>
 <p>Five</p>
@@ -56,17 +56,17 @@ var _ = Describe("lists of items", func() {
 </li>
 </ol>
 </div>`
-			verify(GinkgoT(), expectedResult, actualContent)
+			verify("test.adoc", expected, source)
 		})
 
 		It("distinct lists separated by blankline and item attribute - case 1", func() {
-			actualContent := `[lowerroman]
+			source := `[lowerroman]
 . Five
 
 [loweralpha]
 .. a
 . Six`
-			expectedResult := `<div class="olist lowerroman">
+			expected := `<div class="olist lowerroman">
 <ol class="lowerroman" type="i">
 <li>
 <p>Five</p>
@@ -87,19 +87,19 @@ var _ = Describe("lists of items", func() {
 </li>
 </ol>
 </div>`
-			verify(GinkgoT(), expectedResult, actualContent)
+			verify("test.adoc", expected, source)
 		})
 
 		It("distinct lists separated by blankline and item attribute - case 2", func() {
 
-			actualContent := `.Checklist
+			source := `.Checklist
 - [*] checked
 -     normal list item
 
 .Ordered, basic
 . Step 1
 . Step 2`
-			expectedResult := `<div class="ulist checklist">
+			expected := `<div class="ulist checklist">
 <div class="title">Checklist</div>
 <ul class="checklist">
 <li>
@@ -121,15 +121,15 @@ var _ = Describe("lists of items", func() {
 </li>
 </ol>
 </div>`
-			verify(GinkgoT(), expectedResult, actualContent)
+			verify("test.adoc", expected, source)
 		})
 	})
 
 	It("same list with single comment line inside", func() {
-		actualContent := `. a
+		source := `. a
 // -
 . b`
-		expectedResult := `<div class="olist arabic">
+		expected := `<div class="olist arabic">
 <ol class="arabic">
 <li>
 <p>a</p>
@@ -139,16 +139,16 @@ var _ = Describe("lists of items", func() {
 </li>
 </ol>
 </div>`
-		verify(GinkgoT(), expectedResult, actualContent)
+		verify("test.adoc", expected, source)
 	})
 
 	It("same list with multiple comment lines inside", func() {
-		actualContent := `. a
+		source := `. a
 // -
 // -
 // -
 . b`
-		expectedResult := `<div class="olist arabic">
+		expected := `<div class="olist arabic">
 <ol class="arabic">
 <li>
 <p>a</p>
@@ -158,15 +158,15 @@ var _ = Describe("lists of items", func() {
 </li>
 </ol>
 </div>`
-		verify(GinkgoT(), expectedResult, actualContent)
+		verify("test.adoc", expected, source)
 	})
 
 	It("distinct lists separated by single comment line", func() {
-		actualContent := `. a
+		source := `. a
 
 // -
 . b`
-		expectedResult := `<div class="olist arabic">
+		expected := `<div class="olist arabic">
 <ol class="arabic">
 <li>
 <p>a</p>
@@ -180,17 +180,17 @@ var _ = Describe("lists of items", func() {
 </li>
 </ol>
 </div>`
-		verify(GinkgoT(), expectedResult, actualContent)
+		verify("test.adoc", expected, source)
 	})
 
 	It("distinct lists separated by multiple comment lines", func() {
-		actualContent := `. a
+		source := `. a
 
 // -
 // -
 // -
 . b`
-		expectedResult := `<div class="olist arabic">
+		expected := `<div class="olist arabic">
 <ol class="arabic">
 <li>
 <p>a</p>
@@ -204,6 +204,6 @@ var _ = Describe("lists of items", func() {
 </li>
 </ol>
 </div>`
-		verify(GinkgoT(), expectedResult, actualContent)
+		verify("test.adoc", expected, source)
 	})
 })

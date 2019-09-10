@@ -9,108 +9,108 @@ var _ = Describe("paragraphs", func() {
 	Context("paragraphs", func() {
 
 		It("a standalone paragraph with special character", func() {
-			actualContent := `*bold content* 
+			source := `*bold content* 
 & more content afterwards`
-			expectedResult := `<div class="paragraph">
+			expected := `<div class="paragraph">
 <p><strong>bold content</strong>
 &amp; more content afterwards</p>
 </div>`
-			verify(GinkgoT(), expectedResult, actualContent)
+			verify("test.adoc", expected, source)
 		})
 
 		It("a standalone paragraph with trailing spaces", func() {
-			actualContent := `*bold content*    
+			source := `*bold content*    
    & more content afterwards...`
-			expectedResult := `<div class="paragraph">
+			expected := `<div class="paragraph">
 <p><strong>bold content</strong>
    &amp; more content afterwards&#8230;&#8203;</p>
 </div>`
-			verify(GinkgoT(), expectedResult, actualContent)
+			verify("test.adoc", expected, source)
 		})
 
 		It("a standalone paragraph with an ID and a title", func() {
-			actualContent := `[#foo]
+			source := `[#foo]
 .a title
 *bold content* with more content afterwards...`
-			expectedResult := `<div id="foo" class="paragraph">
+			expected := `<div id="foo" class="paragraph">
 <div class="doctitle">a title</div>
 <p><strong>bold content</strong> with more content afterwards&#8230;&#8203;</p>
 </div>`
-			verify(GinkgoT(), expectedResult, actualContent)
+			verify("test.adoc", expected, source)
 		})
 
 		It("2 paragraphs and blank line", func() {
-			actualContent := `
+			source := `
 *bold content* with more content afterwards...
 
 and here another paragraph
 
 `
-			expectedResult := `<div class="paragraph">
+			expected := `<div class="paragraph">
 <p><strong>bold content</strong> with more content afterwards&#8230;&#8203;</p>
 </div>
 <div class="paragraph">
 <p>and here another paragraph</p>
 </div>`
-			verify(GinkgoT(), expectedResult, actualContent)
+			verify("test.adoc", expected, source)
 		})
 
 		It("paragraph with single quotes", func() {
-			actualContent := `a 'subsection' paragraph.`
-			expectedResult := `<div class="paragraph">
+			source := `a 'subsection' paragraph.`
+			expected := `<div class="paragraph">
 <p>a &#39;subsection&#39; paragraph.</p>
 </div>`
-			verify(GinkgoT(), expectedResult, actualContent)
+			verify("test.adoc", expected, source)
 		})
 	})
 
 	Context("paragraphs with line break", func() {
 
 		It("with explicit line break", func() {
-			actualContent := `foo +
+			source := `foo +
 bar
 baz`
-			expectedResult := `<div class="paragraph">
+			expected := `<div class="paragraph">
 <p>foo<br>
 bar
 baz</p>
 </div>`
-			verify(GinkgoT(), expectedResult, actualContent)
+			verify("test.adoc", expected, source)
 		})
 
 		It("with paragraph attribute", func() {
 
-			actualContent := `[%hardbreaks]
+			source := `[%hardbreaks]
 foo
 bar
 baz`
-			expectedResult := `<div class="paragraph">
+			expected := `<div class="paragraph">
 <p>foo<br>
 bar<br>
 baz</p>
 </div>`
-			verify(GinkgoT(), expectedResult, actualContent)
+			verify("test.adoc", expected, source)
 		})
 
 		It("with document attribute", func() {
-			actualContent := `:hardbreaks:
+			source := `:hardbreaks:
 foo
 bar
 baz`
-			expectedResult := `<div class="paragraph">
+			expected := `<div class="paragraph">
 <p>foo<br>
 bar<br>
 baz</p>
 </div>`
-			verify(GinkgoT(), expectedResult, actualContent)
+			verify("test.adoc", expected, source)
 		})
 	})
 
 	Context("admonition paragraphs", func() {
 
 		It("note admonition paragraph", func() {
-			actualContent := `NOTE: this is a note.`
-			expectedResult := `<div class="admonitionblock note">
+			source := `NOTE: this is a note.`
+			expected := `<div class="admonitionblock note">
 <table>
 <tr>
 <td class="icon">
@@ -122,13 +122,13 @@ this is a note.
 </tr>
 </table>
 </div>`
-			verify(GinkgoT(), expectedResult, actualContent)
+			verify("test.adoc", expected, source)
 		})
 
 		It("multiline warning admonition paragraph", func() {
-			actualContent := `WARNING: this is a multiline
+			source := `WARNING: this is a multiline
 warning!`
-			expectedResult := `<div class="admonitionblock warning">
+			expected := `<div class="admonitionblock warning">
 <table>
 <tr>
 <td class="icon">
@@ -141,14 +141,14 @@ warning!
 </tr>
 </table>
 </div>`
-			verify(GinkgoT(), expectedResult, actualContent)
+			verify("test.adoc", expected, source)
 		})
 
 		It("admonition note paragraph with id and title", func() {
-			actualContent := `[[foo]]
+			source := `[[foo]]
 .bar
 NOTE: this is a note.`
-			expectedResult := `<div id="foo" class="admonitionblock note">
+			expected := `<div id="foo" class="admonitionblock note">
 <table>
 <tr>
 <td class="icon">
@@ -161,16 +161,16 @@ this is a note.
 </tr>
 </table>
 </div>`
-			verify(GinkgoT(), expectedResult, actualContent)
+			verify("test.adoc", expected, source)
 		})
 	})
 
 	Context("admonition paragraphs", func() {
 
 		It("simple caution admonition paragraph", func() {
-			actualContent := `[CAUTION] 
+			source := `[CAUTION] 
 this is a caution!`
-			expectedResult := `<div class="admonitionblock caution">
+			expected := `<div class="admonitionblock caution">
 <table>
 <tr>
 <td class="icon">
@@ -182,16 +182,16 @@ this is a caution!
 </tr>
 </table>
 </div>`
-			verify(GinkgoT(), expectedResult, actualContent)
+			verify("test.adoc", expected, source)
 		})
 
 		It("multiline caution admonition paragraph with title and id", func() {
-			actualContent := `[[foo]]
+			source := `[[foo]]
 [CAUTION] 
 .bar
 this is a
 *caution*!`
-			expectedResult := `<div id="foo" class="admonitionblock caution">
+			expected := `<div id="foo" class="admonitionblock caution">
 <table>
 <tr>
 <td class="icon">
@@ -205,31 +205,31 @@ this is a
 </tr>
 </table>
 </div>`
-			verify(GinkgoT(), expectedResult, actualContent)
+			verify("test.adoc", expected, source)
 		})
 	})
 
 	Context("verse paragraphs", func() {
 
 		It("paragraph as a verse with author and title", func() {
-			actualContent := `[verse, john doe, verse title]
+			source := `[verse, john doe, verse title]
 I am a verse paragraph.`
-			expectedResult := `<div class="verseblock">
+			expected := `<div class="verseblock">
 <pre class="content">I am a verse paragraph.</pre>
 <div class="attribution">
 &#8212; john doe<br>
 <cite>verse title</cite>
 </div>
 </div>`
-			verify(GinkgoT(), expectedResult, actualContent)
+			verify("test.adoc", expected, source)
 		})
 
 		It("paragraph as a verse with author, title and other attributes", func() {
-			actualContent := `[[universal]]
+			source := `[[universal]]
 [verse, john doe, verse title]
 .universe
 I am a verse paragraph.`
-			expectedResult := `<div id="universal" class="verseblock">
+			expected := `<div id="universal" class="verseblock">
 <div class="title">universe</div>
 <pre class="content">I am a verse paragraph.</pre>
 <div class="attribution">
@@ -237,71 +237,71 @@ I am a verse paragraph.`
 <cite>verse title</cite>
 </div>
 </div>`
-			verify(GinkgoT(), expectedResult, actualContent)
+			verify("test.adoc", expected, source)
 		})
 
 		It("paragraph as a verse with empty title", func() {
-			actualContent := `[verse, john doe, ]
+			source := `[verse, john doe, ]
 I am a verse paragraph.`
-			expectedResult := `<div class="verseblock">
+			expected := `<div class="verseblock">
 <pre class="content">I am a verse paragraph.</pre>
 <div class="attribution">
 &#8212; john doe
 </div>
 </div>`
-			verify(GinkgoT(), expectedResult, actualContent)
+			verify("test.adoc", expected, source)
 		})
 
 		It("paragraph as a verse without title", func() {
-			actualContent := `[verse, john doe ]
+			source := `[verse, john doe ]
 I am a verse paragraph.`
-			expectedResult := `<div class="verseblock">
+			expected := `<div class="verseblock">
 <pre class="content">I am a verse paragraph.</pre>
 <div class="attribution">
 &#8212; john doe
 </div>
 </div>`
-			verify(GinkgoT(), expectedResult, actualContent)
+			verify("test.adoc", expected, source)
 		})
 
 		It("paragraph as a verse with empty author", func() {
-			actualContent := `[verse,  ]
+			source := `[verse,  ]
 I am a verse paragraph.`
-			expectedResult := `<div class="verseblock">
+			expected := `<div class="verseblock">
 <pre class="content">I am a verse paragraph.</pre>
 </div>`
-			verify(GinkgoT(), expectedResult, actualContent)
+			verify("test.adoc", expected, source)
 		})
 
 		It("paragraph as a verse without author", func() {
-			actualContent := `[verse]
+			source := `[verse]
 I am a verse paragraph.`
-			expectedResult := `<div class="verseblock">
+			expected := `<div class="verseblock">
 <pre class="content">I am a verse paragraph.</pre>
 </div>`
-			verify(GinkgoT(), expectedResult, actualContent)
+			verify("test.adoc", expected, source)
 		})
 
 		It("image block as a verse", func() {
-			actualContent := `[verse, john doe, verse title]
+			source := `[verse, john doe, verse title]
 image::foo.png[]`
-			expectedResult := `<div class="verseblock">
+			expected := `<div class="verseblock">
 <pre class="content">image::foo.png[]</pre>
 <div class="attribution">
 &#8212; john doe<br>
 <cite>verse title</cite>
 </div>
 </div>`
-			verify(GinkgoT(), expectedResult, actualContent)
+			verify("test.adoc", expected, source)
 		})
 	})
 
 	Context("quote paragraphs", func() {
 
 		It("single-line quote paragraph with author and title", func() {
-			actualContent := `[quote, john doe, quote title]
+			source := `[quote, john doe, quote title]
 some *quote* content`
-			expectedResult := `<div class="quoteblock">
+			expected := `<div class="quoteblock">
 <blockquote>
 some <strong>quote</strong> content
 </blockquote>
@@ -310,15 +310,15 @@ some <strong>quote</strong> content
 <cite>quote title</cite>
 </div>
 </div>`
-			verify(GinkgoT(), expectedResult, actualContent)
+			verify("test.adoc", expected, source)
 		})
 
 		It("paragraph as a quote with author, title and other attributes", func() {
-			actualContent := `[[universal]]
+			source := `[[universal]]
 [quote, john doe, quote title]
 .universe
 I am a quote paragraph.`
-			expectedResult := `<div id="universal" class="quoteblock">
+			expected := `<div id="universal" class="quoteblock">
 <div class="title">universe</div>
 <blockquote>
 I am a quote paragraph.
@@ -328,13 +328,13 @@ I am a quote paragraph.
 <cite>quote title</cite>
 </div>
 </div>`
-			verify(GinkgoT(), expectedResult, actualContent)
+			verify("test.adoc", expected, source)
 		})
 
 		It("paragraph as a quote with empty title", func() {
-			actualContent := `[quote, john doe, ]
+			source := `[quote, john doe, ]
 I am a quote paragraph.`
-			expectedResult := `<div class="quoteblock">
+			expected := `<div class="quoteblock">
 <blockquote>
 I am a quote paragraph.
 </blockquote>
@@ -342,13 +342,13 @@ I am a quote paragraph.
 &#8212; john doe
 </div>
 </div>`
-			verify(GinkgoT(), expectedResult, actualContent)
+			verify("test.adoc", expected, source)
 		})
 
 		It("paragraph as a quote without title", func() {
-			actualContent := `[quote, john doe ]
+			source := `[quote, john doe ]
 I am a quote paragraph.`
-			expectedResult := `<div class="quoteblock">
+			expected := `<div class="quoteblock">
 <blockquote>
 I am a quote paragraph.
 </blockquote>
@@ -356,35 +356,35 @@ I am a quote paragraph.
 &#8212; john doe
 </div>
 </div>`
-			verify(GinkgoT(), expectedResult, actualContent)
+			verify("test.adoc", expected, source)
 		})
 
 		It("paragraph as a quote with empty author", func() {
-			actualContent := `[quote,  ]
+			source := `[quote,  ]
 I am a quote paragraph.`
-			expectedResult := `<div class="quoteblock">
+			expected := `<div class="quoteblock">
 <blockquote>
 I am a quote paragraph.
 </blockquote>
 </div>`
-			verify(GinkgoT(), expectedResult, actualContent)
+			verify("test.adoc", expected, source)
 		})
 
 		It("paragraph as a quote without author", func() {
-			actualContent := `[quote]
+			source := `[quote]
 I am a quote paragraph.`
-			expectedResult := `<div class="quoteblock">
+			expected := `<div class="quoteblock">
 <blockquote>
 I am a quote paragraph.
 </blockquote>
 </div>`
-			verify(GinkgoT(), expectedResult, actualContent)
+			verify("test.adoc", expected, source)
 		})
 
 		It("inline image within a quote", func() {
-			actualContent := `[quote, john doe, quote title]
+			source := `[quote, john doe, quote title]
 a foo image:foo.png[]`
-			expectedResult := `<div class="quoteblock">
+			expected := `<div class="quoteblock">
 <blockquote>
 a foo <span class="image"><img src="foo.png" alt="foo"></span>
 </blockquote>
@@ -393,18 +393,18 @@ a foo <span class="image"><img src="foo.png" alt="foo"></span>
 <cite>quote title</cite>
 </div>
 </div>`
-			verify(GinkgoT(), expectedResult, actualContent)
+			verify("test.adoc", expected, source)
 		})
 
 		It("image block is NOT a quote", func() {
-			actualContent := `[quote, john doe, quote title]
+			source := `[quote, john doe, quote title]
 image::foo.png[]`
-			expectedResult := `<div class="imageblock">
+			expected := `<div class="imageblock">
 <div class="content">
 <img src="foo.png" alt="foo">
 </div>
 </div>`
-			verify(GinkgoT(), expectedResult, actualContent)
+			verify("test.adoc", expected, source)
 		})
 
 	})

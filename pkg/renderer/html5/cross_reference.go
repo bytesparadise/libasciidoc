@@ -2,7 +2,6 @@ package html5
 
 import (
 	"bytes"
-	"fmt"
 	texttemplate "text/template"
 
 	"github.com/bytesparadise/libasciidoc/pkg/renderer"
@@ -25,18 +24,17 @@ func renderCrossReference(ctx *renderer.Context, xref types.CrossReference) ([]b
 	if xref.Label != "" {
 		label = xref.Label
 	} else if target, found := ctx.Document.ElementReferences[xref.ID]; found {
-		switch t := target.(type) {
-		case types.SectionTitle:
-			renderedContent, err := renderElement(ctx, t.Elements)
+		if t, ok := target.(types.InlineElements); ok {
+			renderedContent, err := renderElement(ctx, t)
 			if err != nil {
 				return nil, errors.Wrapf(err, "error while rendering sectionTitle content")
 			}
 			label = string(renderedContent)
-		default:
+		} else {
 			return nil, errors.Errorf("unable to process cross-reference to element of type %T", target)
 		}
 	} else {
-		label = fmt.Sprintf("[%s]", xref.ID)
+		label = "[" + xref.ID + "]"
 	}
 	err := crossReferenceTmpl.Execute(result, struct {
 		ID    string

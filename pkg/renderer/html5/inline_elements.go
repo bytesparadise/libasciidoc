@@ -35,7 +35,7 @@ func renderLines(ctx *renderer.Context, elements []types.InlineElements, renderE
 		}
 
 		if i < len(elements)-1 && (len(renderedElement) > 0 || ctx.WithinDelimitedBlock()) {
-			log.Debugf("rendered line is not the last one in the slice")
+			// log.Debugf("rendered line is not the last one in the slice")
 			var err error
 			if hardbreak {
 				_, err = buff.WriteString("<br>\n")
@@ -47,7 +47,7 @@ func renderLines(ctx *renderer.Context, elements []types.InlineElements, renderE
 			}
 		}
 	}
-	log.Debugf("rendered lines: '%s'", buff.String())
+	// log.Debugf("rendered lines: '%s'", buff.String())
 	return buff.Bytes(), nil
 }
 
@@ -74,11 +74,10 @@ func renderLine(ctx *renderer.Context, elements types.InlineElements, renderElem
 		}
 	}
 
-	log.Debugf("rendered line elements after 1st pass: '%s'", buff.String())
+	// log.Debugf("rendered line elements after 1st pass: '%s'", buff.String())
 
 	// check if the line has some substitution
 	if !hasSubstitutions(elements) {
-		// log.Debug("no substitution in the line of elements")
 		return buff.Bytes(), nil
 	}
 	// otherwise, parse the rendered line, in case some new elements (links, etc.) "appeared" after document attribute substitutions
@@ -91,10 +90,6 @@ func renderLine(ctx *renderer.Context, elements types.InlineElements, renderElem
 	if !ok {
 		return []byte{}, errors.Errorf("failed process elements after substitution")
 	}
-	// if log.IsLevelEnabled(log.DebugLevel) {
-	// 	log.Debug("post-substitution line of elements:")
-	// 	spew.Dump(elements)
-	// }
 	buff = bytes.NewBuffer(nil)
 	// render all elements of the line, but StringElement must be rendered plain-text now, to avoid double HTML escape
 	for i, element := range elements {
@@ -113,8 +108,7 @@ func renderLine(ctx *renderer.Context, elements types.InlineElements, renderElem
 			buff.Write(renderedElement)
 		}
 	}
-
-	log.Debugf("rendered line elements: '%s'", buff.String())
+	// log.Debugf("rendered line elements: '%s'", buff.String())
 	return buff.Bytes(), nil
 }
 

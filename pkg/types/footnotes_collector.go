@@ -9,6 +9,11 @@ import (
 // during the rendering.
 type Footnotes []Footnote
 
+// FootnotesContainer interface for all types which may contain footnotes
+type FootnotesContainer interface {
+	Footnotes() (Footnotes, FootnoteReferences, error)
+}
+
 // IndexOf returns the index of the given note in the footnotes.
 func (f Footnotes) IndexOf(note Footnote) (int, bool) {
 	for i, n := range f {

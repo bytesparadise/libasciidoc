@@ -11,9 +11,9 @@ environment:
   DEPTESTBYPASS501: "1"
   GO111MODULE: "on"
   matrix:
-    - GO_VERSION: "1.10"
     - GO_VERSION: "1.11"
     - GO_VERSION: "1.12"
+    - GO_VERSION: "1.13"
 
 init:
   - git config --global core.autocrlf input
@@ -33,6 +33,6 @@ build: "off"
 deploy: "off"
 
 test_script:
-  - pigeon ./pkg/parser/asciidoc-grammar.peg > ./pkg/parser/asciidoc_parser.go
+  - pigeon ./pkg/parser/parser.peg > ./pkg/parser/parser.go
   - go build github.com/bytesparadise/libasciidoc
   - ginkgo -r . & IF ERRORLEVEL == 1 EXIT 1

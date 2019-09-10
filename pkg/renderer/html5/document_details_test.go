@@ -12,12 +12,12 @@ var _ = Describe("document details", func() {
 	Context("header with attributes", func() {
 
 		It("header with author and revision", func() {
-			actualContent := `= The Dangerous and Thrilling Documentation Chronicles
+			source := `= The Dangerous and Thrilling Documentation Chronicles
 Kismet Rainbow Chameleon <kismet@asciidoctor.org>
 v1.0, June 19, 2017: First incarnation`
 			// top-level section is not rendered per-say,
 			// but the section will be used to set the HTML page's <title> element
-			expectedResult := `<!DOCTYPE html>
+			expected := `<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -48,15 +48,15 @@ Last updated {{.LastUpdated}}
 </div>
 </body>
 </html>`
-			verify(GinkgoT(), expectedResult, actualContent, renderer.IncludeHeaderFooter(true), renderer.LastUpdated(time.Now()))
+			verify("test.adoc", expected, source, renderer.IncludeHeaderFooter(true), renderer.LastUpdated(time.Now()))
 		})
 
 		It("header with 2 authors and no revision", func() {
-			actualContent := `= The Dangerous and Thrilling Documentation Chronicles
+			source := `= The Dangerous and Thrilling Documentation Chronicles
 Kismet Rainbow Chameleon <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus@asciidoctor.org>`
 			// top-level section is not rendered per-say,
 			// but the section will be used to set the HTML page's <title> element
-			expectedResult := `<!DOCTYPE html>
+			expected := `<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -85,7 +85,7 @@ Last updated {{.LastUpdated}}
 </div>
 </body>
 </html>`
-			verify(GinkgoT(), expectedResult, actualContent, renderer.IncludeHeaderFooter(true), renderer.LastUpdated(time.Now()))
+			verify("test.adoc", expected, source, renderer.IncludeHeaderFooter(true), renderer.LastUpdated(time.Now()))
 
 		})
 	})

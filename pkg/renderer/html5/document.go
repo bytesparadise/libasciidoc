@@ -54,7 +54,7 @@ func renderDocument(ctx *renderer.Context, output io.Writer) (map[string]interfa
 	if err != nil {
 		return nil, errors.Wrapf(err, "unable to render full document")
 	}
-	log.Debugf("rendered title: '%s'\n", string(renderedTitle))
+	// log.Debugf("rendered title: '%s'\n", string(renderedTitle))
 	renderedHeader, err := renderDocumentHeader(ctx)
 	if err != nil {
 		return nil, errors.Wrapf(err, "unable to render full document")
@@ -125,7 +125,7 @@ func renderDocumentElements(ctx *renderer.Context) ([]byte, error) {
 			elements = ctx.Document.Elements
 		}
 	}
-	log.Debugf("rendered document with %d element(s)...", len(elements))
+	// log.Debugf("rendered document with %d element(s)...", len(elements))
 	buff := bytes.NewBuffer(nil)
 	renderedElements, err := renderElements(ctx, elements)
 	if err != nil {
@@ -142,7 +142,7 @@ func renderDocumentElements(ctx *renderer.Context) ([]byte, error) {
 }
 
 func renderDocumentTitle(ctx *renderer.Context) ([]byte, error) {
-	if documentTitle, hasTitle := ctx.Document.Title(); hasTitle && documentTitle.Attributes.Has(types.AttrID) {
+	if documentTitle, hasTitle := ctx.Document.Title(); hasTitle {
 		title, err := renderPlainString(ctx, documentTitle)
 		if err != nil {
 			return nil, errors.Wrapf(err, "unable to render document title")
@@ -153,8 +153,8 @@ func renderDocumentTitle(ctx *renderer.Context) ([]byte, error) {
 }
 
 func renderDocumentHeader(ctx *renderer.Context) ([]byte, error) {
-	if documentTitle, hasTitle := ctx.Document.Title(); hasTitle && documentTitle.Attributes.Has(types.AttrID) {
-		title, err := renderElement(ctx, documentTitle.Elements)
+	if documentTitle, hasTitle := ctx.Document.Title(); hasTitle {
+		title, err := renderElement(ctx, documentTitle)
 		if err != nil {
 			return nil, errors.Wrapf(err, "unable to render document header")
 		}

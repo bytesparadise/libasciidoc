@@ -1,7 +1,6 @@
 package parser_test
 
 import (
-	"github.com/bytesparadise/libasciidoc/pkg/parser"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 	. "github.com/onsi/ginkgo"
 )
@@ -13,94 +12,82 @@ var _ = Describe("images", func() {
 		Context("correct behaviour", func() {
 
 			It("block image with empty alt", func() {
-				actualContent := "image::images/foo.png[]"
-				expectedResult := types.ImageBlock{
+				source := "image::images/foo.png[]"
+				expected := types.ImageBlock{
 					Attributes: types.ElementAttributes{
-						types.AttrImageAlt:    "foo",
-						types.AttrImageWidth:  "",
-						types.AttrImageHeight: "",
+						types.AttrImageAlt: "foo",
 					},
 					Path: "images/foo.png",
 				}
-				verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+				verifyDocumentBlock(expected, source)
 			})
 
 			It("block image with empty alt and trailing spaces", func() {
-				actualContent := "image::images/foo.png[]  \t\t  "
-				expectedResult := types.ImageBlock{
+				source := "image::images/foo.png[]  \t\t  "
+				expected := types.ImageBlock{
 					Attributes: types.ElementAttributes{
-						types.AttrImageAlt:    "foo",
-						types.AttrImageWidth:  "",
-						types.AttrImageHeight: "",
+						types.AttrImageAlt: "foo",
 					},
 					Path: "images/foo.png",
 				}
-				verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+				verifyDocumentBlock(expected, source)
 			})
 
 			It("block image with line return", func() {
 				// line return here is not considered as a blank line
-				actualContent := `image::images/foo.png[]
+				source := `image::images/foo.png[]
 `
-				expectedResult := types.ImageBlock{
+				expected := types.ImageBlock{
 					Attributes: types.ElementAttributes{
-						types.AttrImageAlt:    "foo",
-						types.AttrImageWidth:  "",
-						types.AttrImageHeight: "",
+						types.AttrImageAlt: "foo",
 					},
 					Path: "images/foo.png",
 				}
-				verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+				verifyDocumentBlock(expected, source)
 			})
 
 			It("block image with 1 empty blank line", func() {
 				// here, there's a real blank line with some spaces
-				actualContent := `image::images/foo.png[]
+				source := `image::images/foo.png[]
   `
-				expectedResult := types.ImageBlock{
+				expected := types.ImageBlock{
 					Attributes: types.ElementAttributes{
-						types.AttrImageAlt:    "foo",
-						types.AttrImageWidth:  "",
-						types.AttrImageHeight: "",
+						types.AttrImageAlt: "foo",
 					},
 					Path: "images/foo.png",
 				}
-				verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+				verifyDocumentBlock(expected, source)
 			})
 
 			It("block image with 2 blank lines with spaces and tabs", func() {
-				actualContent := `image::images/foo.png[]
+				source := `image::images/foo.png[]
 			`
-				expectedResult := types.ImageBlock{
+				expected := types.ImageBlock{
 					Attributes: types.ElementAttributes{
-						types.AttrImageAlt:    "foo",
-						types.AttrImageWidth:  "",
-						types.AttrImageHeight: "",
+						types.AttrImageAlt: "foo",
 					},
 					Path: "images/foo.png",
 				}
-				verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+				verifyDocumentBlock(expected, source)
 			})
 
 			It("block image with alt", func() {
-				actualContent := `image::images/foo.png[the foo.png image]`
-				expectedResult := types.ImageBlock{
+				source := `image::images/foo.png[the foo.png image]`
+				expected := types.ImageBlock{
 					Attributes: types.ElementAttributes{
-						types.AttrImageAlt:    "the foo.png image",
-						types.AttrImageWidth:  "",
-						types.AttrImageHeight: "",
+						types.AttrImageAlt: "the foo.png image",
 					},
 					Path: "images/foo.png",
 				}
-				verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+				verifyDocumentBlock(expected, source)
 			})
 
 			It("block image with dimensions and id link title meta", func() {
-				actualContent := `[#img-foobar]
+				source := `[#img-foobar]
 .A title to foobar
 [link=http://foo.bar]
 image::images/foo.png[the foo.png image, 600, 400]`
-				expectedResult := types.ImageBlock{
+				expected := types.ImageBlock{
 					Attributes: types.ElementAttributes{
 						types.AttrID:          "img-foobar",
 						types.AttrCustomID:    true,
@@ -112,37 +99,29 @@ image::images/foo.png[the foo.png image, 600, 400]`
 					},
 					Path: "images/foo.png",
 				}
-				verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+				verifyDocumentBlock(expected, source)
 			})
 
 			It("2 block images", func() {
-				actualContent := `image::app.png[]
+				source := `image::app.png[]
 image::appa.png[]`
-				expectedResult := types.Document{
-					Attributes:         types.DocumentAttributes{},
-					ElementReferences:  types.ElementReferences{},
-					Footnotes:          types.Footnotes{},
-					FootnoteReferences: types.FootnoteReferences{},
-					Elements: []interface{}{
+				expected := types.PreflightDocument{
+					Blocks: []interface{}{
 						types.ImageBlock{
 							Attributes: types.ElementAttributes{
-								types.AttrImageAlt:    "app",
-								types.AttrImageWidth:  "",
-								types.AttrImageHeight: "",
+								types.AttrImageAlt: "app",
 							},
 							Path: "app.png",
 						},
 						types.ImageBlock{
 							Attributes: types.ElementAttributes{
-								types.AttrImageAlt:    "appa",
-								types.AttrImageWidth:  "",
-								types.AttrImageHeight: "",
+								types.AttrImageAlt: "appa",
 							},
 							Path: "appa.png",
 						},
 					},
 				}
-				verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent)
+				verifyPreflight("test.adoc", expected, source)
 			})
 		})
 
@@ -151,8 +130,8 @@ image::appa.png[]`
 			Context("parsing the paragraph only", func() {
 
 				It("block image appending inline content", func() {
-					actualContent := "a paragraph\nimage::images/foo.png[]"
-					expectedResult := types.Paragraph{
+					source := "a paragraph\nimage::images/foo.png[]"
+					expected := types.Paragraph{
 						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
 							{
@@ -163,20 +142,16 @@ image::appa.png[]`
 							},
 						},
 					}
-					verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Paragraph"))
+					verifyDocumentBlock(expected, source)
 				})
 			})
 
 			Context("parsing the whole document", func() {
 
 				It("paragraph with block image with alt and dimensions", func() {
-					actualContent := "a foo image::foo.png[foo image, 600, 400] bar"
-					expectedResult := types.Document{
-						Attributes:         types.DocumentAttributes{},
-						ElementReferences:  types.ElementReferences{},
-						Footnotes:          types.Footnotes{},
-						FootnoteReferences: types.FootnoteReferences{},
-						Elements: []interface{}{
+					source := "a foo image::foo.png[foo image, 600, 400] bar"
+					expected := types.PreflightDocument{
+						Blocks: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{
@@ -187,7 +162,7 @@ image::appa.png[]`
 							},
 						},
 					}
-					verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent)
+					verifyPreflight("test.adoc", expected, source)
 				})
 			})
 		})
@@ -197,32 +172,33 @@ image::appa.png[]`
 
 		Context("correct behaviour", func() {
 
-			It("inline image with empty alt", func() {
-				actualContent := "image:images/foo.png[]"
-				expectedResult := types.InlineElements{
-					types.InlineImage{
-						Attributes: types.ElementAttributes{
-							types.AttrImageAlt:    "foo",
-							types.AttrImageWidth:  "",
-							types.AttrImageHeight: "",
-						},
-						Path: "images/foo.png",
-					},
-				}
-				verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
-			})
-
-			It("inline image with empty alt and trailing spaces", func() {
-				actualContent := "image:images/foo.png[]  \t\t  "
-				expectedResult := types.Paragraph{
+			It("inline image with empty alt only", func() {
+				source := "image:images/foo.png[]"
+				expected := types.Paragraph{
 					Attributes: types.ElementAttributes{},
 					Lines: []types.InlineElements{
 						{
 							types.InlineImage{
 								Attributes: types.ElementAttributes{
-									types.AttrImageAlt:    "foo",
-									types.AttrImageWidth:  "",
-									types.AttrImageHeight: "",
+									types.AttrImageAlt: "foo",
+								},
+								Path: "images/foo.png",
+							},
+						},
+					},
+				}
+				verifyDocumentBlock(expected, source)
+			})
+
+			It("inline image with empty alt and trailing spaces", func() {
+				source := "image:images/foo.png[]  \t\t  "
+				expected := types.Paragraph{
+					Attributes: types.ElementAttributes{},
+					Lines: []types.InlineElements{
+						{
+							types.InlineImage{
+								Attributes: types.ElementAttributes{
+									types.AttrImageAlt: "foo",
 								},
 								Path: "images/foo.png",
 							},
@@ -232,133 +208,177 @@ image::appa.png[]`
 						},
 					},
 				}
-				verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Paragraph"))
+				verifyDocumentBlock(expected, source)
 			})
 
 			It("inline image surrounded with test", func() {
-				actualContent := "a foo image:images/foo.png[] bar..."
-				expectedResult := types.InlineElements{
-					types.StringElement{
-						Content: "a foo ",
-					},
-					types.InlineImage{
-						Attributes: types.ElementAttributes{
-							types.AttrImageAlt:    "foo",
-							types.AttrImageWidth:  "",
-							types.AttrImageHeight: "",
+				source := "a foo image:images/foo.png[] bar..."
+				expected := types.Paragraph{
+					Attributes: types.ElementAttributes{},
+					Lines: []types.InlineElements{
+						{
+							types.StringElement{
+								Content: "a foo ",
+							},
+							types.InlineImage{
+								Attributes: types.ElementAttributes{
+									types.AttrImageAlt: "foo",
+								},
+								Path: "images/foo.png",
+							},
+							types.StringElement{
+								Content: " bar...",
+							},
 						},
-						Path: "images/foo.png",
-					},
-					types.StringElement{
-						Content: " bar...",
 					},
 				}
-				verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
+				verifyDocumentBlock(expected, source)
 			})
 
 			It("inline image with alt alone", func() {
-				actualContent := "image:images/foo.png[the foo.png image]"
-				expectedResult := types.InlineElements{
-					types.InlineImage{
-						Attributes: types.ElementAttributes{
-							types.AttrImageAlt:    "the foo.png image",
-							types.AttrImageWidth:  "",
-							types.AttrImageHeight: "",
+				source := "image:images/foo.png[the foo.png image]"
+				expected := types.Paragraph{
+					Attributes: types.ElementAttributes{},
+					Lines: []types.InlineElements{
+						{
+							types.InlineImage{
+								Attributes: types.ElementAttributes{
+									types.AttrImageAlt: "the foo.png image",
+								},
+								Path: "images/foo.png",
+							},
 						},
-						Path: "images/foo.png",
 					},
 				}
-				verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
+				verifyDocumentBlock(expected, source)
 			})
 
 			It("inline image with alt and width", func() {
-				actualContent := "image:images/foo.png[the foo.png image, 600]"
-				expectedResult := types.InlineElements{
-					types.InlineImage{
-						Attributes: types.ElementAttributes{
-							types.AttrImageAlt:    "the foo.png image",
-							types.AttrImageWidth:  "600",
-							types.AttrImageHeight: "",
+				source := "image:images/foo.png[the foo.png image, 600]"
+				expected := types.Paragraph{
+					Attributes: types.ElementAttributes{},
+					Lines: []types.InlineElements{
+						{
+							types.InlineImage{
+								Attributes: types.ElementAttributes{
+									types.AttrImageAlt:   "the foo.png image",
+									types.AttrImageWidth: "600",
+								},
+								Path: "images/foo.png",
+							},
 						},
-						Path: "images/foo.png",
 					},
 				}
-				verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
+				verifyDocumentBlock(expected, source)
 			})
 
 			It("inline image with alt, width and height", func() {
-				actualContent := "image:images/foo.png[the foo.png image, 600, 400]"
-				expectedResult := types.InlineElements{
-					types.InlineImage{
-						Attributes: types.ElementAttributes{
-							types.AttrImageAlt:    "the foo.png image",
-							types.AttrImageWidth:  "600",
-							types.AttrImageHeight: "400",
+				source := "image:images/foo.png[the foo.png image, 600, 400]"
+				expected := types.Paragraph{
+					Attributes: types.ElementAttributes{},
+					Lines: []types.InlineElements{
+						{
+							types.InlineImage{
+								Attributes: types.ElementAttributes{
+									types.AttrImageAlt:    "the foo.png image",
+									types.AttrImageWidth:  "600",
+									types.AttrImageHeight: "400",
+								},
+								Path: "images/foo.png",
+							},
 						},
-						Path: "images/foo.png",
 					},
 				}
-				verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
+				verifyDocumentBlock(expected, source)
+			})
+
+			It("inline image with alt, but empty width and height", func() {
+				source := "image:images/foo.png[the foo.png image, , ]"
+				expected := types.Paragraph{
+					Attributes: types.ElementAttributes{},
+					Lines: []types.InlineElements{
+						{
+							types.InlineImage{
+								Attributes: types.ElementAttributes{
+									types.AttrImageAlt: "the foo.png image",
+								},
+								Path: "images/foo.png",
+							},
+						},
+					},
+				}
+				verifyDocumentBlock(expected, source)
 			})
 
 			It("inline image with single other attribute only", func() {
-				actualContent := "image:images/foo.png[id=myid]"
-				expectedResult := types.InlineElements{
-					types.InlineImage{
-						Attributes: types.ElementAttributes{
-							types.AttrImageAlt:    "foo", // based on filename
-							types.AttrImageWidth:  "",
-							types.AttrImageHeight: "",
-							types.AttrID:          "myid",
-							types.AttrCustomID:    true,
+				source := "image:images/foo.png[id=myid]"
+				expected := types.Paragraph{
+					Attributes: types.ElementAttributes{},
+					Lines: []types.InlineElements{
+						{
+							types.InlineImage{
+								Attributes: types.ElementAttributes{
+									types.AttrImageAlt: "foo", // based on filename
+									types.AttrID:       "myid",
+									types.AttrCustomID: true,
+								},
+								Path: "images/foo.png",
+							},
 						},
-						Path: "images/foo.png",
 					},
 				}
-				verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"), parser.Debug(false))
+				verifyDocumentBlock(expected, source)
 			})
 
 			It("inline image with multiple other attributes only", func() {
-				actualContent := "image:images/foo.png[id=myid, title= mytitle, role = myrole ]"
-				expectedResult := types.InlineElements{
-					types.InlineImage{
-						Attributes: types.ElementAttributes{
-							types.AttrImageAlt:    "foo", // based on filename
-							types.AttrImageWidth:  "",
-							types.AttrImageHeight: "",
-							types.AttrID:          "myid",
-							types.AttrCustomID:    true,
-							types.AttrTitle:       "mytitle",
-							types.AttrRole:        "myrole",
+				source := "image:images/foo.png[id=myid, title= mytitle, role = myrole ]"
+				expected := types.Paragraph{
+					Attributes: types.ElementAttributes{},
+					Lines: []types.InlineElements{
+						{
+							types.InlineImage{
+								Attributes: types.ElementAttributes{
+									types.AttrImageAlt: "foo", // based on filename
+									types.AttrID:       "myid",
+									types.AttrCustomID: true,
+									types.AttrTitle:    "mytitle",
+									types.AttrRole:     "myrole",
+								},
+								Path: "images/foo.png",
+							},
 						},
-						Path: "images/foo.png",
 					},
 				}
-				verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
+				verifyDocumentBlock(expected, source)
 			})
 
 			It("inline image with alt, width, height and other attributes", func() {
-				actualContent := "image:images/foo.png[ foo, 600, 400, id=myid, title=mytitle, role=myrole ]"
-				expectedResult := types.InlineElements{
-					types.InlineImage{
-						Attributes: types.ElementAttributes{
-							types.AttrImageAlt:    "foo",
-							types.AttrImageWidth:  "600",
-							types.AttrImageHeight: "400",
-							types.AttrID:          "myid",
-							types.AttrCustomID:    true,
-							types.AttrTitle:       "mytitle",
-							types.AttrRole:        "myrole",
+				source := "image:images/foo.png[ foo, 600, 400, id=myid, title=mytitle, role=myrole ]"
+				expected := types.Paragraph{
+					Attributes: types.ElementAttributes{},
+					Lines: []types.InlineElements{
+						{
+							types.InlineImage{
+								Attributes: types.ElementAttributes{
+									types.AttrImageAlt:    "foo",
+									types.AttrImageWidth:  "600",
+									types.AttrImageHeight: "400",
+									types.AttrID:          "myid",
+									types.AttrCustomID:    true,
+									types.AttrTitle:       "mytitle",
+									types.AttrRole:        "myrole",
+								},
+								Path: "images/foo.png",
+							},
 						},
-						Path: "images/foo.png",
 					},
 				}
-				verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("InlineElements"))
+				verifyDocumentBlock(expected, source)
 			})
 
 			It("inline image in a paragraph with space after colon", func() {
-				actualContent := "this is an image: image:images/foo.png[]"
-				expectedResult := types.Paragraph{
+				source := "this is an image: image:images/foo.png[]"
+				expected := types.Paragraph{
 					Attributes: types.ElementAttributes{},
 					Lines: []types.InlineElements{
 						{
@@ -367,21 +387,19 @@ image::appa.png[]`
 							},
 							types.InlineImage{
 								Attributes: types.ElementAttributes{
-									types.AttrImageAlt:    "foo",
-									types.AttrImageWidth:  "",
-									types.AttrImageHeight: "",
+									types.AttrImageAlt: "foo",
 								},
 								Path: "images/foo.png",
 							},
 						},
 					},
 				}
-				verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+				verifyDocumentBlock(expected, source)
 			})
 
 			It("inline image in a paragraph without space keyword", func() {
-				actualContent := "this is an inline.image:images/foo.png[]"
-				expectedResult := types.Paragraph{
+				source := "this is an inline.image:images/foo.png[]"
+				expected := types.Paragraph{
 					Attributes: types.ElementAttributes{},
 					Lines: []types.InlineElements{
 						{
@@ -390,9 +408,7 @@ image::appa.png[]`
 							},
 							types.InlineImage{
 								Attributes: types.ElementAttributes{
-									types.AttrImageAlt:    "foo",
-									types.AttrImageWidth:  "",
-									types.AttrImageHeight: "",
+									types.AttrImageAlt: "foo",
 								},
 								Path: "images/foo.png",
 							},
@@ -400,13 +416,13 @@ image::appa.png[]`
 					},
 				}
 
-				verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+				verifyDocumentBlock(expected, source)
 			})
 		})
 		Context("errors", func() {
 			It("inline image appending inline content", func() {
-				actualContent := "a paragraph\nimage::images/foo.png[]"
-				expectedResult := types.Paragraph{
+				source := "a paragraph\nimage::images/foo.png[]"
+				expected := types.Paragraph{
 					Attributes: types.ElementAttributes{},
 					Lines: []types.InlineElements{
 						{
@@ -417,7 +433,7 @@ image::appa.png[]`
 						},
 					},
 				}
-				verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Paragraph"))
+				verifyDocumentBlock(expected, source)
 			})
 		})
 	})

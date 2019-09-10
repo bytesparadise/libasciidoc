@@ -19,12 +19,9 @@ func init() {
 func debugMode() bool {
 	debugMode := false
 	flag.BoolVar(&debugMode, "debug", false, "when set, enables debug log messages")
-	if !flag.Parsed() {
-		flag.Parse()
-	}
 	// if the `-debug` flag was passed and captured by the `flag.Parse`
 	if debugMode {
-		// log.Info("`debug` flag found")
+		log.Info("`debug` flag found")
 		return debugMode
 	}
 	// otherwise, check the OS args

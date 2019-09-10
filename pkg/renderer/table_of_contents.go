@@ -9,11 +9,11 @@ import (
 // if the `toc` attribute is present
 func IncludeTableOfContents(ctx *Context) {
 	if d, found := types.SearchAttributeDeclaration(ctx.Document.Elements, types.AttrTableOfContents); found {
-		insertTableOfContents(&ctx.Document, d.Value)
+		ctx.Document = insertTableOfContents(ctx.Document, d.Value)
 	}
 }
 
-func insertTableOfContents(doc *types.Document, location string) {
+func insertTableOfContents(doc types.Document, location string) types.Document {
 	log.Debugf("inserting a table of contents at location `%s`", location)
 	// insert a TableOfContentsMacro element if `toc` value is:
 	// - "auto" (or empty)
@@ -44,6 +44,7 @@ func insertTableOfContents(doc *types.Document, location string) {
 	default:
 		log.Warnf("invalid or unsupported value for 'toc' attribute: '%s'", location)
 	}
+	return doc
 }
 
 func lookupPreamble(elements []interface{}) (int, bool) {

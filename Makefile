@@ -68,13 +68,15 @@ prebuild-checks: $(INSTALL_PREFIX)
 ## generate the .go file based on the asciidoc grammar
 generate: prebuild-checks
 	@echo "generating the parser..."
-	@pigeon ./pkg/parser/asciidoc-grammar.peg > ./pkg/parser/asciidoc_parser.go
+	@pigeon ./pkg/parser/parser.peg > ./pkg/parser/parser.go
 
 .PHONY: generate-optimized
 ## generate the .go file based on the asciidoc grammar
 generate-optimized:
 	@echo "generating the parser (optimized)..."
-	@pigeon -optimize-grammar -alternate-entrypoints PreparsedDocument,InlineElementsWithoutSubtitution,VerbatimBlock ./pkg/parser/asciidoc-grammar.peg > ./pkg/parser/asciidoc_parser.go
+	@pigeon -optimize-parser \
+		-alternate-entrypoints PreflightDocument,PreflightDocumentWithinDelimitedBlock,DocumentBlock,InlineElementsWithoutSubtitution,FileLocation,IncludedFileLine \
+		-o ./pkg/parser/parser.go ./pkg/parser/parser.peg
 
 .PHONY: test
 ## run all tests excluding fixtures and vendored packages
@@ -98,6 +100,14 @@ test-no-coverage: generate-optimized
 ## run all fixtures tests
 test-fixtures: generate-optimized
 	@ginkgo -r --randomizeAllSpecs --randomizeSuites --failOnPending --trace --race --compilers=2 -tags=fixtures --focus=fixtures
+
+.PHONY: bench-parser
+## run the benchmarks on the parser
+bench-parser: generate-optimized
+	$(eval GIT_BRANCH:=$(shell git rev-parse --abbrev-ref HEAD))
+	go test -run="XXX" -bench=. -benchmem -count=10 \
+		github.com/bytesparadise/libasciidoc/pkg/parser | \
+		tee ./tmp/bench-$(GIT_BRANCH).txt
 
 .PHONY: build
 ## build the binary executable from CLI
@@ -123,7 +133,7 @@ PARSER_DIFF_STATUS :=
 .PHONY: verify-parser
 ## verify that the parser was built with the latest version of pigeon, using the `optimize-grammar` option
 verify-parser: prebuild-checks
-ifneq ($(shell git diff --quiet pkg/parser/asciidoc_parser.go; echo $$?), 0)
+ifneq ($(shell git diff --quiet pkg/parser/parser.go; echo $$?), 0)
 	$(error "parser was generated with an older version of 'mna/pigeon' or without the '-optimize' option(s).")
 else
 	@echo "parser is ok"

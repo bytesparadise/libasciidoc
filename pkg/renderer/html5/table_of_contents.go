@@ -47,7 +47,7 @@ type TableOfContentsSection struct {
 	Elements template.HTML
 }
 
-func renderTableOfContents(ctx *renderer.Context, m types.TableOfContentsMacro) ([]byte, error) {
+func renderTableOfContents(ctx *renderer.Context, m types.TableOfContentsMacro) ([]byte, error) { //nolint:unparam
 	log.Debug("rendering table of contents...")
 	renderedSections, err := renderTableOfContentsSections(ctx, ctx.Document.Elements, 1)
 	if err != nil {
@@ -64,7 +64,7 @@ func renderTableOfContents(ctx *renderer.Context, m types.TableOfContentsMacro) 
 	if err != nil {
 		return nil, errors.Wrapf(err, "error while rendering table of content")
 	}
-	log.Debugf("rendered TOC: %s", result.Bytes())
+	// log.Debugf("rendered TOC: %s", result.Bytes())
 	return result.Bytes(), nil
 }
 
@@ -78,7 +78,7 @@ func renderTableOfContentsSections(ctx *renderer.Context, elements []interface{}
 			if section.Level == 0 {
 				return renderTableOfContentsSections(ctx, section.Elements, currentLevel)
 			}
-			renderedTitle, err := renderElement(ctx, section.Title.Elements)
+			renderedTitle, err := renderElement(ctx, section.Title)
 			if err != nil {
 				return template.HTML(""), errors.Wrapf(err, "error while rendering table of content section")
 			}
@@ -93,7 +93,7 @@ func renderTableOfContentsSections(ctx *renderer.Context, elements []interface{}
 					return template.HTML(""), errors.Wrapf(err, "error while rendering table of content section")
 				}
 			}
-			id := generateID(ctx, section.Title.Attributes)
+			id := generateID(ctx, section.Attributes)
 			renderedTitleStr := strings.TrimSpace(string(renderedTitle))
 			sections = append(sections, TableOfContentsSection{
 				Level:    section.Level,

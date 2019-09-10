@@ -8,7 +8,6 @@ import (
 	"github.com/bytesparadise/libasciidoc/pkg/renderer"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 	"github.com/pkg/errors"
-	log "github.com/sirupsen/logrus"
 )
 
 var unorderedListTmpl texttemplate.Template
@@ -59,6 +58,6 @@ func renderUnorderedList(ctx *renderer.Context, l types.UnorderedList) ([]byte, 
 	if err != nil {
 		return nil, errors.Wrapf(err, "unable to render unordered list")
 	}
-	log.Debugf("rendered unordered list of items: %s", result.Bytes())
+	// log.Debugf("rendered unordered list of items: %s", result.Bytes())
 	return result.Bytes(), nil
 }

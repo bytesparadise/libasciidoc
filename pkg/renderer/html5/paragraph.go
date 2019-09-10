@@ -132,7 +132,7 @@ func renderParagraph(ctx *renderer.Context, p types.Paragraph) ([]byte, error) {
 	if err != nil {
 		return nil, errors.Wrapf(err, "unable to render paragraph")
 	}
-	log.Debugf("rendered paragraph: '%s'", result.String())
+	// log.Debugf("rendered paragraph: '%s'", result.String())
 	return result.Bytes(), nil
 }
 

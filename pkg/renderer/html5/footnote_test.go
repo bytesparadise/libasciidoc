@@ -12,8 +12,8 @@ var _ = Describe("footnotes", func() {
 	})
 
 	It("basic footnote in a paragraph", func() {
-		actualContent := `foo footnote:[a note for foo]`
-		expectedResult := `<div class="paragraph">
+		source := `foo footnote:[a note for foo]`
+		expected := `<div class="paragraph">
 <p>foo <sup class="footnote">[<a id="_footnoteref_1" class="footnote" href="#_footnotedef_1" title="View footnote.">1</a>]</sup></p>
 </div>
 <div id="footnotes">
@@ -22,26 +22,26 @@ var _ = Describe("footnotes", func() {
 <a href="#_footnoteref_1">1</a>. a note for foo
 </div>
 </div>`
-		verify(GinkgoT(), expectedResult, actualContent)
+		verify("test.adoc", expected, source)
 	})
 
 	It("rich footnote in a paragraph", func() {
-		actualContent := `foo footnote:[some *rich* http://foo.com[content]]`
-		expectedResult := `<div class="paragraph">
+		source := `foo footnote:[some *rich* https://foo.com[content]]`
+		expected := `<div class="paragraph">
 <p>foo <sup class="footnote">[<a id="_footnoteref_1" class="footnote" href="#_footnotedef_1" title="View footnote.">1</a>]</sup></p>
 </div>
 <div id="footnotes">
 <hr>
 <div class="footnote" id="_footnotedef_1">
-<a href="#_footnoteref_1">1</a>. some <strong>rich</strong> <a href="http://foo.com">content</a>
+<a href="#_footnoteref_1">1</a>. some <strong>rich</strong> <a href="https://foo.com">content</a>
 </div>
 </div>`
-		verify(GinkgoT(), expectedResult, actualContent)
+		verify("test.adoc", expected, source)
 	})
 
 	It("footnoteref with valid ref in a paragraph", func() {
-		actualContent := `a note here footnoteref:[foo, a note for foo] and an there footnoteref:[foo] too`
-		expectedResult := `<div class="paragraph">
+		source := `a note here footnoteref:[foo, a note for foo] and an there footnoteref:[foo] too`
+		expected := `<div class="paragraph">
 <p>a note here <sup class="footnote" id="_footnote_foo">[<a id="_footnoteref_1" class="footnote" href="#_footnotedef_1" title="View footnote.">1</a>]</sup> and an there <sup class="footnoteref">[<a class="footnote" href="#_footnotedef_1" title="View footnote.">1</a>]</sup> too</p>
 </div>
 <div id="footnotes">
@@ -50,12 +50,12 @@ var _ = Describe("footnotes", func() {
 <a href="#_footnoteref_1">1</a>. a note for foo
 </div>
 </div>`
-		verify(GinkgoT(), expectedResult, actualContent)
+		verify("test.adoc", expected, source)
 	})
 
 	It("footnoteref with invalid ref in a paragraph", func() {
-		actualContent := `a note here footnoteref:[foo, a note for foo] and an unknown there footnoteref:[bar]`
-		expectedResult := `<div class="paragraph">
+		source := `a note here footnoteref:[foo, a note for foo] and an unknown there footnoteref:[bar]`
+		expected := `<div class="paragraph">
 <p>a note here <sup class="footnote" id="_footnote_foo">[<a id="_footnoteref_1" class="footnote" href="#_footnotedef_1" title="View footnote.">1</a>]</sup> and an unknown there <sup class="footnoteref red" title="Unresolved footnote reference.">[bar]</sup></p>
 </div>
 <div id="footnotes">
@@ -64,12 +64,12 @@ var _ = Describe("footnotes", func() {
 <a href="#_footnoteref_1">1</a>. a note for foo
 </div>
 </div>`
-		verify(GinkgoT(), expectedResult, actualContent)
+		verify("test.adoc", expected, source)
 	})
 
 	It("footnotes everywhere", func() {
 
-		actualContent := `= title
+		source := `= title
 	
 a premable with a footnote:[foo]
 
@@ -78,7 +78,7 @@ a premable with a footnote:[foo]
 a paragraph with another footnote:[baz]`
 
 		// differs from asciidoc in the footnotes at the end of the doc, and the section id (numbering)
-		expectedResult := `<div id="preamble">
+		expected := `<div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
 <p>a premable with a <sup class="footnote">[<a id="_footnoteref_1" class="footnote" href="#_footnotedef_1" title="View footnote.">1</a>]</sup></p>
@@ -105,6 +105,6 @@ a paragraph with another footnote:[baz]`
 <a href="#_footnoteref_3">3</a>. baz
 </div>
 </div>`
-		verify(GinkgoT(), expectedResult, actualContent)
+		verify("test.adoc", expected, source)
 	})
 })

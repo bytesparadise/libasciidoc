@@ -1,7 +1,6 @@
 package parser_test
 
 import (
-	"github.com/bytesparadise/libasciidoc/pkg/parser"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 	. "github.com/onsi/ginkgo"
 )
@@ -9,11 +8,11 @@ import (
 var _ = Describe("tables", func() {
 
 	It("1-line table with 2 cells", func() {
-		actualContent := `|===
+		source := `|===
 | *foo* foo  | _bar_  
 |===
 `
-		expectedResult := types.Table{
+		expected := types.Table{
 			Attributes: types.ElementAttributes{},
 			Lines: []types.TableLine{
 				{
@@ -48,14 +47,14 @@ var _ = Describe("tables", func() {
 				},
 			},
 		}
-		verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+		verifyDocumentBlock(expected, source)
 	})
 
 	It("1-line table with 3 cells", func() {
-		actualContent := `|===
+		source := `|===
 | *foo* foo  | _bar_  | baz
 |===`
-		expectedResult := types.Table{
+		expected := types.Table{
 			Attributes: types.ElementAttributes{},
 			Lines: []types.TableLine{
 				{
@@ -95,11 +94,11 @@ var _ = Describe("tables", func() {
 				},
 			},
 		}
-		verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+		verifyDocumentBlock(expected, source)
 	})
 
 	It("table with title, headers and 1 line per cell", func() {
-		actualContent := `.table title
+		source := `.table title
 |===
 |heading 1 |heading 2
 
@@ -109,7 +108,7 @@ var _ = Describe("tables", func() {
 |row 2, column 1
 |row 2, column 2
 |===`
-		expectedResult := types.Table{
+		expected := types.Table{
 			Attributes: types.ElementAttributes{
 				types.AttrTitle: "table title",
 			},
@@ -129,7 +128,6 @@ var _ = Describe("tables", func() {
 			},
 
 			Lines: []types.TableLine{
-				// types.BlankLine{},
 				{
 					Cells: []types.InlineElements{
 						{
@@ -160,16 +158,16 @@ var _ = Describe("tables", func() {
 				},
 			},
 		}
-		verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+		verifyDocumentBlock(expected, source)
 	})
 
 	It("empty table ", func() {
-		actualContent := `|===
+		source := `|===
 |===`
-		expectedResult := types.Table{
+		expected := types.Table{
 			Attributes: types.ElementAttributes{},
 			Lines:      []types.TableLine{},
 		}
-		verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+		verifyDocumentBlock(expected, source)
 	})
 })

@@ -7,85 +7,85 @@ var _ = Describe("sections", func() {
 	Context("sections only", func() {
 
 		It("header section", func() {
-			actualContent := "=   a title  "
+			source := "=   a title  "
 			// top-level section is not rendered per-say,
 			// but the section will be used to set the HTML page's <title> element
-			expectedResult := ``
-			verify(GinkgoT(), expectedResult, actualContent)
+			expected := ``
+			verify("test.adoc", expected, source)
 		})
 
 		It("section level 1 alone", func() {
-			actualContent := "== a title with *bold* content"
+			source := "== a title with *bold* content"
 			// top-level section is not rendered per-say,
 			// but the section will be used to set the HTML page's <title> element
-			expectedResult := `<div class="sect1">
+			expected := `<div class="sect1">
 <h2 id="_a_title_with_bold_content">a title with <strong>bold</strong> content</h2>
 <div class="sectionbody">
 </div>
 </div>`
-			verify(GinkgoT(), expectedResult, actualContent)
+			verify("test.adoc", expected, source)
 		})
 
 		It("section level 2 alone", func() {
-			actualContent := "=== a title"
+			source := "=== a title"
 			// top-level section is not rendered per-say,
 			// but the section will be used to set the HTML page's <title> element
-			expectedResult := `<div class="sect2">
+			expected := `<div class="sect2">
 <h3 id="_a_title">a title</h3>
 </div>`
-			verify(GinkgoT(), expectedResult, actualContent)
+			verify("test.adoc", expected, source)
 		})
 
 		It("section level 1 with just bold content", func() {
-			actualContent := `==  *2 spaces and bold content*`
-			expectedResult := `<div class="sect1">
+			source := `==  *2 spaces and bold content*`
+			expected := `<div class="sect1">
 <h2 id="_2_spaces_and_bold_content"><strong>2 spaces and bold content</strong></h2>
 <div class="sectionbody">
 </div>
 </div>`
-			verify(GinkgoT(), expectedResult, actualContent)
+			verify("test.adoc", expected, source)
 		})
 
 		It("section level 2 with nested bold content", func() {
-			actualContent := `=== a section title, with *bold content*`
-			expectedResult := `<div class="sect2">
+			source := `=== a section title, with *bold content*`
+			expected := `<div class="sect2">
 <h3 id="_a_section_title_with_bold_content">a section title, with <strong>bold content</strong></h3>
 </div>`
-			verify(GinkgoT(), expectedResult, actualContent)
+			verify("test.adoc", expected, source)
 		})
 
 		It("section level 1 with custom ID", func() {
-			actualContent := `
+			source := `
 :idprefix: ignored_
 			
 [#custom_id]
 == a section title, with *bold content*`
-			expectedResult := `<div class="sect1">
+			expected := `<div class="sect1">
 <h2 id="custom_id">a section title, with <strong>bold content</strong></h2>
 <div class="sectionbody">
 </div>
 </div>`
-			verify(GinkgoT(), expectedResult, actualContent)
+			verify("test.adoc", expected, source)
 		})
 
 		It("section level 1 with custom prefix id", func() {
-			actualContent := `
+			source := `
 :idprefix: id_
 
 == a section title`
-			expectedResult := `<div class="sect1">
+			expected := `<div class="sect1">
 <h2 id="id_a_section_title">a section title</h2>
 <div class="sectionbody">
 </div>
 </div>`
-			verify(GinkgoT(), expectedResult, actualContent)
+			verify("test.adoc", expected, source)
 		})
 
 		It("sections with same title", func() {
-			actualContent := `== section 1
+			source := `== section 1
 
 == section 1`
-			expectedResult := `<div class="sect1">
+			expected := `<div class="sect1">
 <h2 id="_section_1">section 1</h2>
 <div class="sectionbody">
 </div>
@@ -95,21 +95,21 @@ var _ = Describe("sections", func() {
 <div class="sectionbody">
 </div>
 </div>`
-			verify(GinkgoT(), expectedResult, actualContent)
+			verify("test.adoc", expected, source)
 		})
 	})
 
 	Context("section with elements", func() {
 
 		It("section level 1 with 2 paragraphs", func() {
-			actualContent := `== a title
+			source := `== a title
 		
 and a first paragraph
 
 and a second paragraph`
 			// top-level section is not rendered per-say,
 			// but the section will be used to set the HTML page's <title> element
-			expectedResult := `<div class="sect1">
+			expected := `<div class="sect1">
 <h2 id="_a_title">a title</h2>
 <div class="sectionbody">
 <div class="paragraph">
@@ -120,23 +120,23 @@ and a second paragraph`
 </div>
 </div>
 </div>`
-			verify(GinkgoT(), expectedResult, actualContent)
+			verify("test.adoc", expected, source)
 		})
 
 		It("section with just a paragraph", func() {
-			actualContent := `= a title
+			source := `= a title
 		
 a paragraph`
 			// top-level section is not rendered per-say,
 			// but the section will be used to set the HTML page's <title> element
-			expectedResult := `<div class="paragraph">
+			expected := `<div class="paragraph">
 <p>a paragraph</p>
 </div>`
-			verify(GinkgoT(), expectedResult, actualContent)
+			verify("test.adoc", expected, source)
 		})
 
 		It("header with preamble then section level 1", func() {
-			actualContent := `= a title
+			source := `= a title
 		
 a preamble
 
@@ -147,7 +147,7 @@ splitted in 2 paragraphs
 with some text`
 			// top-level section is not rendered per-say,
 			// but the section will be used to set the HTML page's <title> element
-			expectedResult := `<div id="preamble">
+			expected := `<div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
 <p>a preamble</p>
@@ -165,11 +165,11 @@ with some text`
 </div>
 </div>
 </div>`
-			verify(GinkgoT(), expectedResult, actualContent)
+			verify("test.adoc", expected, source)
 		})
 
 		It("header with preamble then 2 sections level 1", func() {
-			actualContent := `= a title
+			source := `= a title
 		
 a preamble
 
@@ -184,7 +184,7 @@ with some text
 with some text, too`
 			// top-level section is not rendered per-say,
 			// but the section will be used to set the HTML page's <title> element
-			expectedResult := `<div id="preamble">
+			expected := `<div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
 <p>a preamble</p>
@@ -210,11 +210,11 @@ with some text, too`
 </div>
 </div>
 </div>`
-			verify(GinkgoT(), expectedResult, actualContent)
+			verify("test.adoc", expected, source)
 		})
 
 		It("section with listing block and subsection", func() {
-			actualContent := `==== Third level heading
+			source := `==== Third level heading
 
 [#id-for-listing-block]
 .Listing block title
@@ -226,7 +226,7 @@ Listing block content is commonly used to preserve code input.
 ===== Fourth level heading
 foo`
 
-			expectedResult := `<div class="sect3">
+			expected := `<div class="sect3">
 <h4 id="_third_level_heading">Third level heading</h4>
 <div id="id-for-listing-block" class="listingblock">
 <div class="title">Listing block title</div>
@@ -242,14 +242,14 @@ Listing block content is commonly used to preserve code input.</pre>
 </div>
 </div>
 </div>`
-			verify(GinkgoT(), expectedResult, actualContent)
+			verify("test.adoc", expected, source)
 		})
 	})
 
 	Context("preambles", func() {
 
 		It("should include preamble wrapper", func() {
-			actualContent := `= Title
+			source := `= Title
 
 preamble 
 here
@@ -257,7 +257,7 @@ here
 == section 1
 
 content here`
-			expectedResult := `<div id="preamble">
+			expected := `<div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
 <p>preamble
@@ -273,18 +273,18 @@ here</p>
 </div>
 </div>
 </div>`
-			verify(GinkgoT(), expectedResult, actualContent)
+			verify("test.adoc", expected, source)
 		})
 
 		It("should not include preamble wrapper", func() {
-			actualContent := `preamble 
+			source := `preamble 
 here
 
 == section 1
 
 content here
 `
-			expectedResult := `<div class="paragraph">
+			expected := `<div class="paragraph">
 <p>preamble
 here</p>
 </div>
@@ -296,7 +296,7 @@ here</p>
 </div>
 </div>
 </div>`
-			verify(GinkgoT(), expectedResult, actualContent)
+			verify("test.adoc", expected, source)
 		})
 	})
 })

@@ -2,6 +2,7 @@ package types_test
 
 import (
 	"github.com/bytesparadise/libasciidoc/pkg/types"
+
 	. "github.com/onsi/ginkgo"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"

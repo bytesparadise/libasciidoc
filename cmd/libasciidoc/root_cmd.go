@@ -34,12 +34,6 @@ func NewRootCmd() *cobra.Command {
 				fmt.Fprintf(cmd.OutOrStderr(), "unable to parse log level '%v'", logLevel)
 				return err
 			}
-			// customFormatter := new(log.TextFormatter)
-			// customFormatter.EnvironmentOverrideColors = true
-			// customFormatter.DisableLevelTruncation = true
-			// customFormatter.DisableTimestamp = true
-			// log.SetFormatter(customFormatter)
-			// log.Debugf("Setting log level to %v", lvl)
 			logsupport.Setup()
 			log.SetLevel(lvl)
 			log.SetOutput(cmd.OutOrStdout())
@@ -57,7 +51,6 @@ func NewRootCmd() *cobra.Command {
 					log.Debugf("Starting to process file %v", path)
 					_, err := libasciidoc.ConvertFileToHTML(context.Background(), source, out, renderer.IncludeHeaderFooter(!noHeaderFooter)) //renderer.IncludeHeaderFooter(true)
 					if err != nil {
-						// fmt.Fprintf(cmd.OutOrStderr(), "error while rendering file: %v ", e)
 						return err
 					}
 				}

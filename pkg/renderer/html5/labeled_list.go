@@ -8,7 +8,6 @@ import (
 	"github.com/bytesparadise/libasciidoc/pkg/renderer"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 	"github.com/pkg/errors"
-	log "github.com/sirupsen/logrus"
 )
 
 var defaultLabeledListTmpl texttemplate.Template
@@ -98,7 +97,7 @@ func renderLabeledList(ctx *renderer.Context, l types.LabeledList) ([]byte, erro
 	if err != nil {
 		return nil, errors.Wrapf(err, "unable to render labeled list")
 	}
-	log.Debugf("rendered labeled list: %s", result.Bytes())
+	// log.Debugf("rendered labeled list: %s", result.Bytes())
 	return result.Bytes(), nil
 }
 

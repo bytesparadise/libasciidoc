@@ -11,28 +11,16 @@ import (
 
 var _ = Describe("preambles", func() {
 
-	sectionATitle := types.SectionTitle{
-		Attributes: types.ElementAttributes{
-			types.AttrID:       "section_a",
-			types.AttrCustomID: false,
-		},
-		Elements: types.InlineElements{
-			types.StringElement{Content: "Section A"},
-		},
+	sectionATitle := types.InlineElements{
+		types.StringElement{Content: "Section A"},
 	}
 
-	sectionBTitle := types.SectionTitle{
-		Attributes: types.ElementAttributes{
-			types.AttrID:       "section_b",
-			types.AttrCustomID: false,
-		},
-		Elements: types.InlineElements{
-			types.StringElement{Content: "Section B"},
-		},
+	sectionBTitle := types.InlineElements{
+		types.StringElement{Content: "Section B"},
 	}
 
 	It("doc without sections", func() {
-		actualContent := types.Document{
+		source := types.Document{
 			Attributes: types.DocumentAttributes{
 				types.AttrTitle: "foo",
 			},
@@ -92,11 +80,11 @@ var _ = Describe("preambles", func() {
 				},
 			},
 		}
-		verifyPreamble(expectedContent, actualContent)
+		verifyPreamble(expectedContent, source)
 	})
 
 	It("doc with 1-paragraph preamble", func() {
-		actualContent := types.Document{
+		source := types.Document{
 			Attributes: types.DocumentAttributes{
 				types.AttrTitle: "foo",
 			},
@@ -117,16 +105,23 @@ var _ = Describe("preambles", func() {
 				},
 				types.BlankLine{},
 				types.Section{
-					Level:      1,
-					Title:      sectionATitle,
-					Attributes: types.ElementAttributes{},
-					Elements:   []interface{}{},
+					Level: 1,
+					Title: sectionATitle,
+					Attributes: types.ElementAttributes{
+						types.AttrID:       "section_a",
+						types.AttrCustomID: false,
+					},
+
+					Elements: []interface{}{},
 				},
 				types.Section{
-					Level:      1,
-					Title:      sectionBTitle,
-					Attributes: types.ElementAttributes{},
-					Elements:   []interface{}{},
+					Level: 1,
+					Title: sectionBTitle,
+					Attributes: types.ElementAttributes{
+						types.AttrID:       "section_b",
+						types.AttrCustomID: false,
+					},
+					Elements: []interface{}{},
 				},
 			},
 		}
@@ -155,24 +150,31 @@ var _ = Describe("preambles", func() {
 					},
 				},
 				types.Section{
-					Level:      1,
-					Title:      sectionATitle,
-					Attributes: types.ElementAttributes{},
-					Elements:   []interface{}{},
+					Level: 1,
+					Title: sectionATitle,
+					Attributes: types.ElementAttributes{
+						types.AttrID:       "section_a",
+						types.AttrCustomID: false,
+					},
+
+					Elements: []interface{}{},
 				},
 				types.Section{
-					Level:      1,
-					Title:      sectionBTitle,
-					Attributes: types.ElementAttributes{},
-					Elements:   []interface{}{},
+					Level: 1,
+					Title: sectionBTitle,
+					Attributes: types.ElementAttributes{
+						types.AttrID:       "section_b",
+						types.AttrCustomID: false,
+					},
+					Elements: []interface{}{},
 				},
 			},
 		}
-		verifyPreamble(expectedContent, actualContent)
+		verifyPreamble(expectedContent, source)
 	})
 
 	It("doc with 2-paragraph preamble", func() {
-		actualContent := types.Document{
+		source := types.Document{
 			Attributes: types.DocumentAttributes{
 				types.AttrTitle: "foo",
 			},
@@ -202,16 +204,23 @@ var _ = Describe("preambles", func() {
 				},
 				types.BlankLine{},
 				types.Section{
-					Level:      1,
-					Title:      sectionATitle,
-					Attributes: types.ElementAttributes{},
-					Elements:   []interface{}{},
+					Level: 1,
+					Title: sectionATitle,
+					Attributes: types.ElementAttributes{
+						types.AttrID:       "section_a",
+						types.AttrCustomID: false,
+					},
+
+					Elements: []interface{}{},
 				},
 				types.Section{
-					Level:      1,
-					Title:      sectionBTitle,
-					Attributes: types.ElementAttributes{},
-					Elements:   []interface{}{},
+					Level: 1,
+					Title: sectionBTitle,
+					Attributes: types.ElementAttributes{
+						types.AttrID:       "section_b",
+						types.AttrCustomID: false,
+					},
+					Elements: []interface{}{},
 				},
 			},
 		}
@@ -249,26 +258,33 @@ var _ = Describe("preambles", func() {
 					},
 				},
 				types.Section{
-					Level:      1,
-					Title:      sectionATitle,
-					Attributes: types.ElementAttributes{},
-					Elements:   []interface{}{},
+					Level: 1,
+					Title: sectionATitle,
+					Attributes: types.ElementAttributes{
+						types.AttrID:       "section_a",
+						types.AttrCustomID: false,
+					},
+
+					Elements: []interface{}{},
 				},
 				types.Section{
-					Level:      1,
-					Title:      sectionBTitle,
-					Attributes: types.ElementAttributes{},
-					Elements:   []interface{}{},
+					Level: 1,
+					Title: sectionBTitle,
+					Attributes: types.ElementAttributes{
+						types.AttrID:       "section_b",
+						types.AttrCustomID: false,
+					},
+					Elements: []interface{}{},
 				},
 			},
 		}
-		verifyPreamble(expectedContent, actualContent)
+		verifyPreamble(expectedContent, source)
 	})
 
 })
 
-func verifyPreamble(expectedContent, actualContent types.Document) {
-	ctx := renderer.Wrap(context.Background(), actualContent)
+func verifyPreamble(expectedContent, source types.Document) {
+	ctx := renderer.Wrap(context.Background(), source)
 	renderer.IncludePreamble(ctx)
 	assert.Equal(GinkgoT(), expectedContent, ctx.Document)
 }

@@ -9,7 +9,7 @@ var _ = Describe("labeled lists of items", func() {
 	Context("simple items", func() {
 
 		It("simple labeled list with id, title, role and a default layout", func() {
-			actualContent := `.mytitle
+			source := `.mytitle
 [#listID]
 [.myrole]
 item 1:: description 1.
@@ -17,7 +17,7 @@ item 2:: description 2
 on 2 lines.
 item 3:: description 3
 on 2 lines, too.`
-			expectedResult := `<div id="listID" class="dlist myrole">
+			expected := `<div id="listID" class="dlist myrole">
 <div class="title">mytitle</div>
 <dl>
 <dt class="hdlist1">item 1</dt>
@@ -36,13 +36,13 @@ on 2 lines, too.</p>
 </dd>
 </dl>
 </div>`
-			verify(GinkgoT(), expectedResult, actualContent)
+			verify("test.adoc", expected, source)
 		})
 
 		It("labeled list with an empty entry", func() {
-			actualContent := `item 1::
+			source := `item 1::
 item 2:: description 2.`
-			expectedResult := `<div class="dlist">
+			expected := `<div class="dlist">
 <dl>
 <dt class="hdlist1">item 1</dt>
 <dt class="hdlist1">item 2</dt>
@@ -51,13 +51,13 @@ item 2:: description 2.`
 </dd>
 </dl>
 </div>`
-			verify(GinkgoT(), expectedResult, actualContent)
+			verify("test.adoc", expected, source)
 		})
 
 		It("labeled list with an image", func() {
-			actualContent := `item 1:: image:foo.png[]
+			source := `item 1:: image:foo.png[]
 item 2:: description 2.`
-			expectedResult := `<div class="dlist">
+			expected := `<div class="dlist">
 <dl>
 <dt class="hdlist1">item 1</dt>
 <dd>
@@ -69,12 +69,12 @@ item 2:: description 2.`
 </dd>
 </dl>
 </div>`
-			verify(GinkgoT(), expectedResult, actualContent)
+			verify("test.adoc", expected, source)
 		})
 
 		It("labeled list with script injection", func() {
-			actualContent := `item 1:: <script>alert("foo!")</script>`
-			expectedResult := `<div class="dlist">
+			source := `item 1:: <script>alert("foo!")</script>`
+			expected := `<div class="dlist">
 <dl>
 <dt class="hdlist1">item 1</dt>
 <dd>
@@ -82,16 +82,16 @@ item 2:: description 2.`
 </dd>
 </dl>
 </div>`
-			verify(GinkgoT(), expectedResult, actualContent)
+			verify("test.adoc", expected, source)
 		})
 
 		It("labeled list with fenced block", func() {
-			actualContent := "item 1::\n" +
+			source := "item 1::\n" +
 				"```\n" +
 				"a fenced block\n" +
 				"```\n" +
 				"item 2:: something simple"
-			expectedResult := `<div class="dlist">
+			expected := `<div class="dlist">
 <dl>
 <dt class="hdlist1">item 1</dt>
 </dl>
@@ -109,16 +109,16 @@ item 2:: description 2.`
 </dd>
 </dl>
 </div>`
-			verify(GinkgoT(), expectedResult, actualContent)
+			verify("test.adoc", expected, source)
 		})
 
 		It("labeled list with nested lists using regular layout", func() {
-			actualContent := `item 1:: 
+			source := `item 1:: 
 * foo
 * bar
 ** baz
 item 2:: something simple`
-			expectedResult := `<div class="dlist">
+			expected := `<div class="dlist">
 <dl>
 <dt class="hdlist1">item 1</dt>
 <dd>
@@ -146,14 +146,14 @@ item 2:: something simple`
 </dd>
 </dl>
 </div>`
-			verify(GinkgoT(), expectedResult, actualContent)
+			verify("test.adoc", expected, source)
 		})
 
 		It("labeled list with title", func() {
-			actualContent := `.Labeled, single-line
+			source := `.Labeled, single-line
 first term:: definition of the first term
 second term:: definition of the second term`
-			expectedResult := `<div class="dlist">
+			expected := `<div class="dlist">
 <div class="title">Labeled, single-line</div>
 <dl>
 <dt class="hdlist1">first term</dt>
@@ -166,7 +166,7 @@ second term:: definition of the second term`
 </dd>
 </dl>
 </div>`
-			verify(GinkgoT(), expectedResult, actualContent)
+			verify("test.adoc", expected, source)
 		})
 
 	})
@@ -174,7 +174,7 @@ second term:: definition of the second term`
 	Context("horizontal layout", func() {
 
 		It("simple labeled list with horizontal layout, id, title and role", func() {
-			actualContent := `.title
+			source := `.title
 [#myid]
 [.myrole]
 [horizontal]
@@ -182,7 +182,7 @@ item 1::
 item 2:: description 2 on 1 line.
 item 3:: description 3
 on 2 lines, too.`
-			expectedResult := `<div id="myid" class="hdlist myrole">
+			expected := `<div id="myid" class="hdlist myrole">
 <div class="title">title</div>
 <table>
 <tr>
@@ -206,17 +206,17 @@ on 2 lines, too.</p>
 </tr>
 </table>
 </div>`
-			verify(GinkgoT(), expectedResult, actualContent)
+			verify("test.adoc", expected, source)
 		})
 
 		It("labeled list with nested lists using horizontal layout", func() {
-			actualContent := `[horizontal]
+			source := `[horizontal]
 item 1:: 
 * foo
 * bar
 ** baz
 item 2:: something simple`
-			expectedResult := `<div class="hdlist">
+			expected := `<div class="hdlist">
 <table>
 <tr>
 <td class="hdlist1">
@@ -252,7 +252,7 @@ item 2
 </tr>
 </table>
 </div>`
-			verify(GinkgoT(), expectedResult, actualContent)
+			verify("test.adoc", expected, source)
 		})
 
 	})
@@ -260,12 +260,12 @@ item 2
 	Context("labeled lists with continuation", func() {
 
 		It("labeled list with paragraph continuation", func() {
-			actualContent := `item 1:: description 1
+			source := `item 1:: description 1
 +
 foo
 
 item 2:: description 2.`
-			expectedResult := `<div class="dlist">
+			expected := `<div class="dlist">
 <dl>
 <dt class="hdlist1">item 1</dt>
 <dd>
@@ -280,11 +280,11 @@ item 2:: description 2.`
 </dd>
 </dl>
 </div>`
-			verify(GinkgoT(), expectedResult, actualContent)
+			verify("test.adoc", expected, source)
 		})
 
 		It("labeled list with blockcontinuation", func() {
-			actualContent := `Item 1::
+			source := `Item 1::
 +
 ----
 a delimited block
@@ -294,7 +294,7 @@ Item 2:: something simple
 ----
 another delimited block
 ----`
-			expectedDocument := `<div class="dlist">
+			expected := `<div class="dlist">
 <dl>
 <dt class="hdlist1">Item 1</dt>
 <dd>
@@ -316,11 +316,11 @@ another delimited block
 </dl>
 </div>`
 
-			verify(GinkgoT(), expectedDocument, actualContent)
+			verify("test.adoc", expected, source)
 		})
 
 		It("labeled list without continuation", func() {
-			actualContent := `Item 1::
+			source := `Item 1::
 ----
 a delimited block
 ----
@@ -328,7 +328,7 @@ Item 2:: something simple
 ----
 another delimited block
 ----`
-			expectedDocument := `<div class="dlist">
+			expected := `<div class="dlist">
 <dl>
 <dt class="hdlist1">Item 1</dt>
 </dl>
@@ -352,20 +352,20 @@ another delimited block
 </div>
 </div>`
 
-			verify(GinkgoT(), expectedDocument, actualContent)
+			verify("test.adoc", expected, source)
 		})
 	})
 
 	Context("nestedt labelled list items", func() {
 
 		It("labeled list with multiple nested items", func() {
-			actualContent := `Item 1::
+			source := `Item 1::
 Item 1 description
 Item 2:::
 Item 2 description
 Item 3::::
 Item 3 description`
-			expectedDocument := `<div class="dlist">
+			expected := `<div class="dlist">
 <dl>
 <dt class="hdlist1">Item 1</dt>
 <dd>
@@ -389,20 +389,20 @@ Item 3 description`
 </dd>
 </dl>
 </div>`
-			verify(GinkgoT(), expectedDocument, actualContent)
+			verify("test.adoc", expected, source)
 		})
 	})
 
 	Context("q and a", func() {
 
 		It("q and a with title", func() {
-			actualContent := `.Q&A
+			source := `.Q&A
 [qanda]
 What is libsciidoc?::
 	An implementation of the AsciiDoc processor in Golang.
 What is the answer to the Ultimate Question?:: 42`
 
-			expectedDocument := `<div class="qlist qanda">
+			expected := `<div class="qlist qanda">
 <div class="title">Q&amp;A</div>
 <ol>
 <li>
@@ -415,14 +415,14 @@ What is the answer to the Ultimate Question?:: 42`
 </li>
 </ol>
 </div>`
-			verify(GinkgoT(), expectedDocument, actualContent)
+			verify("test.adoc", expected, source)
 		})
 	})
 
 	Context("attach to labeled list item ancestor", func() {
 
 		It("attach to grandparent labeled list item", func() {
-			actualContent := `Item 1::
+			source := `Item 1::
 Item 1 description
 Item 1.1:::
 Item 1.1 description
@@ -432,7 +432,7 @@ Item 1.1.1 description
 
 +
 paragraph attached to grandparent list item`
-			expectedResult := `<div class="dlist">
+			expected := `<div class="dlist">
 <dl>
 <dt class="hdlist1">Item 1</dt>
 <dd>
@@ -459,11 +459,11 @@ paragraph attached to grandparent list item`
 </dd>
 </dl>
 </div>`
-			verify(GinkgoT(), expectedResult, actualContent)
+			verify("test.adoc", expected, source)
 		})
 
 		It("attach to parent labeled list item", func() {
-			actualContent := `Item 1::
+			source := `Item 1::
 Item 1 description
 Item 1.1:::
 Item 1.1 description
@@ -472,7 +472,7 @@ Item 1.1.1 description
 
 +
 paragraph attached to parent list item`
-			expectedResult := `<div class="dlist">
+			expected := `<div class="dlist">
 <dl>
 <dt class="hdlist1">Item 1</dt>
 <dd>
@@ -499,11 +499,11 @@ paragraph attached to parent list item`
 </dd>
 </dl>
 </div>`
-			verify(GinkgoT(), expectedResult, actualContent)
+			verify("test.adoc", expected, source)
 		})
 
 		It("attach to child labeled list item", func() {
-			actualContent := `Item 1::
+			source := `Item 1::
 Item 1 description
 Item 1.1:::
 Item 1.1 description
@@ -511,7 +511,7 @@ Item 1.1.1::::
 Item 1.1.1 description
 +
 paragraph attached to child list item`
-			expectedResult := `<div class="dlist">
+			expected := `<div class="dlist">
 <dl>
 <dt class="hdlist1">Item 1</dt>
 <dd>
@@ -538,7 +538,7 @@ paragraph attached to child list item`
 </dd>
 </dl>
 </div>`
-			verify(GinkgoT(), expectedResult, actualContent)
+			verify("test.adoc", expected, source)
 		})
 	})
 })

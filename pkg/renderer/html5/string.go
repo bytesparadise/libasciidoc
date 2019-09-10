@@ -18,7 +18,6 @@ func renderStringElement(ctx *renderer.Context, str types.StringElement) ([]byte
 		return []byte{}, errors.Wrapf(err, "unable to render string")
 	}
 	result := convert(buf.String(), ellipsis)
-	// log.Debugf("rendered string: %s", result)
 	return []byte(result), nil
 }
 

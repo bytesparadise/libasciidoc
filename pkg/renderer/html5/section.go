@@ -73,20 +73,16 @@ func renderPreamble(ctx *renderer.Context, p types.Preamble) ([]byte, error) {
 	if err != nil {
 		return nil, errors.Wrapf(err, "error while rendering preamble")
 	}
-	log.Debugf("rendered preamble: %s", result.Bytes())
+	// log.Debugf("rendered preamble: %s", result.Bytes())
 	return result.Bytes(), nil
 }
 
 func renderSection(ctx *renderer.Context, s types.Section) ([]byte, error) {
 	log.Debugf("rendering section level %d", s.Level)
-	renderedSectionTitle, err := renderSectionTitle(ctx, s.Level, s.Title)
+	renderedSectionTitle, err := renderSectionTitle(ctx, s)
 	if err != nil {
 		return nil, errors.Wrapf(err, "error while rendering section")
 	}
-	// renderedSectionElements, err := renderElements(ctx, s.Elements)
-	// if err != nil {
-	// 	return nil, errors.Wrapf(err, "error while rendering section")
-	// }
 	result := bytes.NewBuffer(nil)
 	// select the appropriate template for the section
 	var tmpl texttemplate.Template
@@ -109,24 +105,24 @@ func renderSection(ctx *renderer.Context, s types.Section) ([]byte, error) {
 	if err != nil {
 		return nil, errors.Wrapf(err, "error while rendering section")
 	}
-	log.Debugf("rendered section: %s", result.Bytes())
+	// log.Debugf("rendered section: %s", result.Bytes())
 	return result.Bytes(), nil
 }
 
-func renderSectionTitle(ctx *renderer.Context, level int, sectionTitle types.SectionTitle) (string, error) {
+func renderSectionTitle(ctx *renderer.Context, s types.Section) (string, error) {
 	result := bytes.NewBuffer(nil)
-	renderedContent, err := renderElement(ctx, sectionTitle.Elements)
+	renderedContent, err := renderElement(ctx, s.Title)
 	if err != nil {
 		return "", errors.Wrapf(err, "error while rendering sectionTitle content")
 	}
 	renderedContentStr := strings.TrimSpace(string(renderedContent))
-	id := generateID(ctx, sectionTitle.Attributes)
+	id := generateID(ctx, s.Attributes)
 	err = sectionHeaderTmpl.Execute(result, struct {
 		Level   int
 		ID      string
 		Content string
 	}{
-		Level:   level + 1,
+		Level:   s.Level + 1,
 		ID:      id,
 		Content: renderedContentStr,
 	})

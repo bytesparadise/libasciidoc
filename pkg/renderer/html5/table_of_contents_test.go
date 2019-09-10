@@ -9,7 +9,7 @@ var _ = Describe("document toc", func() {
 	Context("document with toc", func() {
 
 		It("toc with default level", func() {
-			actualContent := `= A title
+			source := `= A title
 :toc:
 
 A preamble...
@@ -28,7 +28,7 @@ A preamble...
 
 == Section C`
 
-			expectedResult := `<div id="toc" class="toc">
+			expected := `<div id="toc" class="toc">
 <div id="toctitle">Table of Contents</div>
 <ul class="sectlevel1">
 <li><a href="#_section_a">Section A</a>
@@ -79,11 +79,11 @@ A preamble...
 <div class="sectionbody">
 </div>
 </div>`
-			verify(GinkgoT(), expectedResult, actualContent)
+			verify("test.adoc", expected, source)
 		})
 
 		It("toc with custom level", func() {
-			actualContent := `= A title
+			source := `= A title
 :toc:
 :toclevels: 4
 
@@ -105,7 +105,7 @@ A preamble...
 
 == Section C`
 
-			expectedResult := `<div id="toc" class="toc">
+			expected := `<div id="toc" class="toc">
 <div id="toctitle">Table of Contents</div>
 <ul class="sectlevel1">
 <li><a href="#_section_a">Section A</a>
@@ -167,19 +167,19 @@ A preamble...
 <div class="sectionbody">
 </div>
 </div>`
-			verify(GinkgoT(), expectedResult, actualContent)
+			verify("test.adoc", expected, source)
 		})
 
 		It("document with no section", func() {
-			actualContent := `= sect0
+			source := `= sect0
 :toc:
 
 level 1 sections not exists.`
 
-			expectedResult := `<div class="paragraph">
+			expected := `<div class="paragraph">
 <p>level 1 sections not exists.</p>
 </div>`
-			verify(GinkgoT(), expectedResult, actualContent)
+			verify("test.adoc", expected, source)
 
 		})
 	})

@@ -1,22 +1,17 @@
 package parser_test
 
 import (
+	"io/ioutil"
 	"os"
-	"strings"
+	"testing"
 
 	"github.com/bytesparadise/libasciidoc/pkg/parser"
-	. "github.com/onsi/ginkgo"
-	. "github.com/onsi/gomega"
 )
 
-var _ = Describe("parser benchmark", func() {
-
-	ci := os.Getenv("CI") != ""
-
-	Measure("bench parser on 10 lines", func(b Benchmarker) {
-		runtime := b.Time("runtime", func() {
-			// given
-			actualContent := `=== foo
+const (
+	doc1line = `=== foo1
+bar1`
+	doc10lines = `=== foo
 bar
 
 === foo
@@ -45,73 +40,84 @@ bar
 
 === foo
 bar`
-			stats, err := parseReader(actualContent)
-			Expect(err).ShouldNot(HaveOccurred())
-			b.RecordValue("expr count", float64(stats.ExprCnt))
-		})
-		timeout := 0.5
-		if ci {
-			timeout *= 10
-		}
-		Expect(runtime.Seconds()).Should(BeNumerically("<", timeout), "parsing shouldn't take too long (even on CI).")
+)
 
-	}, 10)
-
-	Measure("bench parser on 1 line", func(b Benchmarker) {
-		runtime := b.Time("runtime", func() {
-			// given
-			actualContent := `=== foo1
-bar1`
-			stats, err := parseReader(actualContent)
-			Expect(err).ShouldNot(HaveOccurred())
-			b.RecordValue("expr count", float64(stats.ExprCnt))
-		})
-		timeout := 0.1
-		if ci {
-			timeout *= 10
-		}
-		Expect(runtime.Seconds()).Should(BeNumerically("<", timeout), "parsing shouldn't take too long (even on CI).")
-
-	}, 1)
-
-	Measure("bench parser on basic doc", func(b Benchmarker) {
-		runtime := b.Time("runtime", func() {
-			// given
-			actualContent := `= Introduction to AsciiDoc
-Doc Writer <doc@example.com>
-
-A preface about https://asciidoc.org[AsciiDoc].
-
-== First Section
-
-* item 1
-* item 2
-
-[source,ruby]
-puts "Hello, World!"
-`
-			stats, err := parseReader(actualContent)
-			Expect(err).ShouldNot(HaveOccurred())
-			b.RecordValue("expr count", float64(stats.ExprCnt))
-		})
-		timeout := 0.1
-		if ci {
-			timeout *= 10
-		}
-		Expect(runtime.Seconds()).Should(BeNumerically("<", timeout), "parsing shouldn't take too long (even on CI).")
-
-	}, 1)
-
-})
-
-func parseReader(content string) (parser.Stats, error) {
-	reader := strings.NewReader(content)
-	stats := parser.Stats{}
-	allOptions := make([]parser.Option, 0)
-	allOptions = append(allOptions, parser.AllowInvalidUTF8(false), parser.Statistics(&stats, "no match"))
-	if os.Getenv("DEBUG") == "true" {
-		allOptions = append(allOptions, parser.Debug(true))
+func BenchmarkParser(b *testing.B) {
+	usecases := []struct {
+		name    string
+		content []byte
+	}{
+		{
+			name:    "1 line",
+			content: []byte(doc1line),
+		},
+		{
+			name:    "10 lines",
+			content: []byte(doc10lines),
+		},
+		{
+			name:    "vert.x doc",
+			content: load(b, "../../test/bench/vertx-examples.adoc"),
+		},
 	}
-	_, err := parser.ParseDocument("", reader, allOptions...) //, Debug(true))
-	return stats, err
+	for _, usecase := range usecases {
+		name := usecase.name
+		content := usecase.content
+		b.Run(name, func(b *testing.B) {
+			for n := 0; n < b.N; n++ {
+				_, err := parser.Parse(name, content)
+				if err != nil {
+					b.Error(err)
+				}
+			}
+		})
+	}
+}
+
+// func TestParserWithStats(t *testing.T) {
+// 	usecases := []struct {
+// 		name    string
+// 		content []byte
+// 	}{
+// 		{
+// 			name:    "1 line",
+// 			content: []byte(doc1line),
+// 		},
+// 		{
+// 			name:    "10 lines",
+// 			content: []byte(doc10lines),
+// 		},
+// 	}
+// 	for _, usecase := range usecases {
+// 		name := usecase.name
+// 		content := usecase.content
+// 		t.Run(name, func(t *testing.T) {
+// 			stats := parser.Stats{}
+// 			_, err := parser.Parse(name, content, parser.Statistics(&stats, "no match"))
+// 			if err != nil {
+// 				t.Error(err)
+// 			}
+// 			t.Logf("ExprCnt:      %d", stats.ExprCnt)
+// 			result, _ := json.MarshalIndent(stats.ChoiceAltCnt, " ", " ")
+// 			t.Logf("ChoiceAltCnt: \n%s", result)
+// 		})
+// 	}
+// }
+
+func load(b *testing.B, filename string) []byte {
+	f, err := os.Open(filename)
+	if err != nil {
+		b.Error(err)
+	}
+	defer func() {
+		err2 := f.Close()
+		if err2 != nil {
+			b.Error(err2)
+		}
+	}()
+	content, err := ioutil.ReadAll(f)
+	if err != nil {
+		b.Error(err)
+	}
+	return content
 }

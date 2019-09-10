@@ -11,7 +11,6 @@ import (
 	"github.com/bytesparadise/libasciidoc/pkg/renderer"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 	"github.com/pkg/errors"
-	log "github.com/sirupsen/logrus"
 )
 
 var blockImageTmpl texttemplate.Template
@@ -64,7 +63,7 @@ func renderImageBlock(ctx *renderer.Context, img types.ImageBlock) ([]byte, erro
 	if err != nil {
 		return nil, errors.Wrapf(err, "unable to render block image")
 	}
-	log.Debugf("rendered block image: %s", result.Bytes())
+	// log.Debugf("rendered block image: %s", result.Bytes())
 	return result.Bytes(), nil
 }
 
@@ -90,7 +89,7 @@ func renderInlineImage(ctx *renderer.Context, img types.InlineImage) ([]byte, er
 	if err != nil {
 		return nil, errors.Wrapf(err, "unable to render inline image")
 	}
-	log.Debugf("rendered inline image: %s", result.Bytes())
+	// log.Debugf("rendered inline image: %s", result.Bytes())
 	return result.Bytes(), nil
 }
 
@@ -101,20 +100,16 @@ func renderInlineImage(ctx *renderer.Context, img types.InlineImage) ([]byte, er
 func getImageHref(ctx *renderer.Context, l string) string {
 	if _, err := url.ParseRequestURI(l); err == nil {
 		// location is a valid URL, so return it as-is
-		log.Debugf("location '%s' is an URL", l)
 		return l
 	}
 	if filepath.IsAbs(l) {
-		log.Debugf("location '%s' is an absolute path", l)
 		return l
 	}
 	// use `imagesdir` attribute if it is set
 	if imagesdir := ctx.GetImagesDir(); imagesdir != "" {
-		log.Debugf("location '%s' is a relative path, adding '%s' as a prefix", l, imagesdir)
-		return fmt.Sprintf("%s/%s", imagesdir, l)
+		return imagesdir + "/" + l
 	}
 	// default
-	log.Debugf("location '%s' is a relative path, but 'imagesdir' attribute was not set", l)
 	return l
 
 }

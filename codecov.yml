@@ -31,4 +31,4 @@ ignore:
   # - "test_*.rb"       # wildcards accepted
   # - "**/*.py"         # glob accepted
   # - "[a-z]+/test_.*"  # regexp accepted
-  - "pkg/parser/asciidoc_parser.go"
+  - "pkg/parser/parser.go"

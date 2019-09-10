@@ -5,10 +5,10 @@ import . "github.com/onsi/ginkgo"
 var _ = Describe("unordered lists", func() {
 
 	It("simple unordered list with no title", func() {
-		actualContent := `* item 1
+		source := `* item 1
 * item 2
 * item 3`
-		expectedResult := `<div class="ulist">
+		expected := `<div class="ulist">
 <ul>
 <li>
 <p>item 1</p>
@@ -21,16 +21,16 @@ var _ = Describe("unordered lists", func() {
 </li>
 </ul>
 </div>`
-		verify(GinkgoT(), expectedResult, actualContent)
+		verify("test.adoc", expected, source)
 	})
 
 	It("simple unordered list with no title then a paragraph", func() {
-		actualContent := `* item 1
+		source := `* item 1
 * item 2
 * item 3
 
 and a standalone paragraph`
-		expectedResult := `<div class="ulist">
+		expected := `<div class="ulist">
 <ul>
 <li>
 <p>item 1</p>
@@ -46,16 +46,16 @@ and a standalone paragraph`
 <div class="paragraph">
 <p>and a standalone paragraph</p>
 </div>`
-		verify(GinkgoT(), expectedResult, actualContent)
+		verify("test.adoc", expected, source)
 	})
 
 	It("simple unordered list with title and role", func() {
-		actualContent := `.mytitle
+		source := `.mytitle
 [#foo]
 [.myrole]
 * item 1
 * item 2`
-		expectedResult := `<div id="foo" class="ulist myrole">
+		expected := `<div id="foo" class="ulist myrole">
 <div class="title">mytitle</div>
 <ul>
 <li>
@@ -66,16 +66,16 @@ and a standalone paragraph`
 </li>
 </ul>
 </div>`
-		verify(GinkgoT(), expectedResult, actualContent)
+		verify("test.adoc", expected, source)
 	})
 
 	It("simple unordered list with continuation", func() {
-		actualContent := `* item 1
+		source := `* item 1
 +
 foo
 
 * item 2`
-		expectedResult := `<div class="ulist">
+		expected := `<div class="ulist">
 <ul>
 <li>
 <p>item 1</p>
@@ -88,15 +88,15 @@ foo
 </li>
 </ul>
 </div>`
-		verify(GinkgoT(), expectedResult, actualContent)
+		verify("test.adoc", expected, source)
 	})
 
 	It("nested unordered lists without a title", func() {
-		actualContent := `* item 1
+		source := `* item 1
 ** item 1.1
 ** item 1.2
 * item 2`
-		expectedResult := `<div class="ulist">
+		expected := `<div class="ulist">
 <ul>
 <li>
 <p>item 1</p>
@@ -116,16 +116,16 @@ foo
 </li>
 </ul>
 </div>`
-		verify(GinkgoT(), expectedResult, actualContent)
+		verify("test.adoc", expected, source)
 	})
 
 	It("nested unordered lists with a title", func() {
-		actualContent := `[#listID]
+		source := `[#listID]
 * item 1
 ** item 1.1
 ** item 1.2
 * item 2`
-		expectedResult := `<div id="listID" class="ulist">
+		expected := `<div id="listID" class="ulist">
 <ul>
 <li>
 <p>item 1</p>
@@ -145,11 +145,11 @@ foo
 </li>
 </ul>
 </div>`
-		verify(GinkgoT(), expectedResult, actualContent)
+		verify("test.adoc", expected, source)
 	})
 
 	It("unordered list with item continuation", func() {
-		actualContent := `* foo
+		source := `* foo
 +
 ----
 a delimited block
@@ -160,7 +160,7 @@ another delimited block
 ----
 * bar
 `
-		expectedResult := `<div class="ulist">
+		expected := `<div class="ulist">
 <ul>
 <li>
 <p>foo</p>
@@ -180,11 +180,11 @@ another delimited block
 </li>
 </ul>
 </div>`
-		verify(GinkgoT(), expectedResult, actualContent)
+		verify("test.adoc", expected, source)
 	})
 
 	It("unordered list without item continuation", func() {
-		actualContent := `* foo
+		source := `* foo
 ----
 a delimited block
 ----
@@ -192,7 +192,7 @@ a delimited block
 ----
 another delimited block
 ----`
-		expectedResult := `<div class="ulist">
+		expected := `<div class="ulist">
 <ul>
 <li>
 <p>foo</p>
@@ -216,19 +216,19 @@ another delimited block
 <pre>another delimited block</pre>
 </div>
 </div>`
-		verify(GinkgoT(), expectedResult, actualContent)
+		verify("test.adoc", expected, source)
 	})
 })
 
 var _ = Describe("checklists", func() {
 
 	It("checklist with title and dashes", func() {
-		actualContent := `.Checklist
+		source := `.Checklist
 - [*] checked
 - [x] also checked
 - [ ] not checked
 -     normal list item`
-		expectedResult := `<div class="ulist checklist">
+		expected := `<div class="ulist checklist">
 <div class="title">Checklist</div>
 <ul class="checklist">
 <li>
@@ -245,17 +245,17 @@ var _ = Describe("checklists", func() {
 </li>
 </ul>
 </div>`
-		verify(GinkgoT(), expectedResult, actualContent)
+		verify("test.adoc", expected, source)
 	})
 
 	It("parent checklist with title and nested checklist", func() {
-		actualContent := `.Checklist
+		source := `.Checklist
 * [ ] parent not checked
 ** [*] checked
 ** [x] also checked
 ** [ ] not checked
 *     normal list item`
-		expectedResult := `<div class="ulist checklist">
+		expected := `<div class="ulist checklist">
 <div class="title">Checklist</div>
 <ul class="checklist">
 <li>
@@ -279,16 +279,16 @@ var _ = Describe("checklists", func() {
 </li>
 </ul>
 </div>`
-		verify(GinkgoT(), expectedResult, actualContent)
+		verify("test.adoc", expected, source)
 	})
 
 	It("parent checklist with role and nested normal list", func() {
-		actualContent := `[.Checklist]
+		source := `[.Checklist]
 * [ ] parent not checked
 ** a normal list item
 ** another normal list item
 *     normal list item`
-		expectedResult := `<div class="ulist checklist Checklist">
+		expected := `<div class="ulist checklist Checklist">
 <ul class="checklist">
 <li>
 <p>&#10063; parent not checked</p>
@@ -308,20 +308,20 @@ var _ = Describe("checklists", func() {
 </li>
 </ul>
 </div>`
-		verify(GinkgoT(), expectedResult, actualContent)
+		verify("test.adoc", expected, source)
 	})
 
 	Context("attach to unordered list item ancestor", func() {
 
 		It("attach to grandparent unordered list item", func() {
-			actualContent := `* grandparent list item
+			source := `* grandparent list item
 ** parent list item
 *** child list item
 
 
 +
 paragraph attached to grandparent list item`
-			expectedResult := `<div class="ulist">
+			expected := `<div class="ulist">
 <ul>
 <li>
 <p>grandparent list item</p>
@@ -345,17 +345,17 @@ paragraph attached to grandparent list item`
 </li>
 </ul>
 </div>`
-			verify(GinkgoT(), expectedResult, actualContent)
+			verify("test.adoc", expected, source)
 		})
 
 		It("attach to parent unordered list item", func() {
-			actualContent := `* grandparent list item
+			source := `* grandparent list item
 ** parent list item
 *** child list item
 
 +
 paragraph attached to parent list item`
-			expectedResult := `<div class="ulist">
+			expected := `<div class="ulist">
 <ul>
 <li>
 <p>grandparent list item</p>
@@ -379,16 +379,16 @@ paragraph attached to parent list item`
 </li>
 </ul>
 </div>`
-			verify(GinkgoT(), expectedResult, actualContent)
+			verify("test.adoc", expected, source)
 		})
 
 		It("attach to child unordered list item", func() {
-			actualContent := `* grandparent list item
+			source := `* grandparent list item
 ** parent list item
 *** child list item
 +
 paragraph attached to child list item`
-			expectedResult := `<div class="ulist">
+			expected := `<div class="ulist">
 <ul>
 <li>
 <p>grandparent list item</p>
@@ -412,7 +412,7 @@ paragraph attached to child list item`
 </li>
 </ul>
 </div>`
-			verify(GinkgoT(), expectedResult, actualContent)
+			verify("test.adoc", expected, source)
 		})
 	})
 })

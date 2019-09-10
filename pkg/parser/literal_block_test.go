@@ -1,18 +1,17 @@
 package parser_test
 
 import (
-	"github.com/bytesparadise/libasciidoc/pkg/parser"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 	. "github.com/onsi/ginkgo"
 )
 
-var _ = Describe("literal blocks", func() {
+var _ = Describe("literal blocks - preflight", func() {
 
 	Context("literal blocks with spaces indentation", func() {
 
 		It("literal block from 1-line paragraph with single space", func() {
-			actualContent := ` some literal content`
-			expectedResult := types.LiteralBlock{
+			source := ` some literal content`
+			expected := types.LiteralBlock{
 				Attributes: types.ElementAttributes{
 					types.AttrKind:             types.Literal,
 					types.AttrLiteralBlockType: types.LiteralBlockWithSpacesOnFirstLine,
@@ -21,14 +20,14 @@ var _ = Describe("literal blocks", func() {
 					" some literal content",
 				},
 			}
-			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+			verifyDocumentBlock(expected, source)
 		})
 
 		It("literal block from paragraph with single space on first line", func() {
-			actualContent := ` some literal content
+			source := ` some literal content
 on 3
 lines.`
-			expectedResult := types.LiteralBlock{
+			expected := types.LiteralBlock{
 				Attributes: types.ElementAttributes{
 					types.AttrKind:             types.Literal,
 					types.AttrLiteralBlockType: types.LiteralBlockWithSpacesOnFirstLine,
@@ -39,21 +38,17 @@ lines.`
 					"lines.",
 				},
 			}
-			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+			verifyDocumentBlock(expected, source)
 		})
 
 		It("mixing literal block with attributes followed by a paragraph ", func() {
-			actualContent := `.title
+			source := `.title
 [#ID]
   some literal content
 
 a normal paragraph.`
-			expectedResult := types.Document{
-				Attributes:         types.DocumentAttributes{},
-				ElementReferences:  types.ElementReferences{},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
-				Elements: []interface{}{
+			expected := types.PreflightDocument{
+				Blocks: []interface{}{
 					types.LiteralBlock{
 						Attributes: types.ElementAttributes{
 							types.AttrKind:             types.Literal,
@@ -77,7 +72,7 @@ a normal paragraph.`
 					},
 				},
 			}
-			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent)
+			verifyPreflight("test.adoc", expected, source)
 		})
 	})
 
@@ -85,11 +80,11 @@ a normal paragraph.`
 
 		It("literal block with empty blank line", func() {
 
-			actualContent := `....
+			source := `....
 
 some content
 ....`
-			expectedResult := types.LiteralBlock{
+			expected := types.LiteralBlock{
 				Attributes: types.ElementAttributes{
 					types.AttrKind:             types.Literal,
 					types.AttrLiteralBlockType: types.LiteralBlockWithDelimiter,
@@ -99,22 +94,18 @@ some content
 					"some content",
 				},
 			}
-			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+			verifyDocumentBlock(expected, source)
 		})
 
 		It("literal block with delimited and attributes followed by 1-line paragraph", func() {
-			actualContent := `[#ID]
+			source := `[#ID]
 .title
 ....
 some literal content
 ....
 a normal paragraph.`
-			expectedResult := types.Document{
-				Attributes:         types.DocumentAttributes{},
-				ElementReferences:  types.ElementReferences{},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
-				Elements: []interface{}{
+			expected := types.PreflightDocument{
+				Blocks: []interface{}{
 					types.LiteralBlock{
 						Attributes: types.ElementAttributes{
 							types.AttrKind:             types.Literal,
@@ -137,24 +128,19 @@ a normal paragraph.`
 					},
 				},
 			}
-			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent)
+			verifyPreflight("test.adoc", expected, source)
 		})
-
 	})
 
 	Context("literal blocks with attribute", func() {
 
 		It("literal block from 1-line paragraph with attribute", func() {
-			actualContent := `[literal]   
+			source := `[literal]   
 some literal content
 
 a normal paragraph.`
-			expectedResult := types.Document{
-				Attributes:         types.DocumentAttributes{},
-				ElementReferences:  types.ElementReferences{},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
-				Elements: []interface{}{
+			expected := types.PreflightDocument{
+				Blocks: []interface{}{
 					types.LiteralBlock{
 						Attributes: types.ElementAttributes{
 							types.AttrKind:             types.Literal,
@@ -175,23 +161,19 @@ a normal paragraph.`
 					},
 				},
 			}
-			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent)
+			verifyPreflight("test.adoc", expected, source)
 		})
 
 		It("literal block from 2-lines paragraph with attribute", func() {
-			actualContent := `[#ID]
+			source := `[#ID]
 [literal]   
 .title
 some literal content
 on two lines.
 
 a normal paragraph.`
-			expectedResult := types.Document{
-				Attributes:         types.DocumentAttributes{},
-				ElementReferences:  types.ElementReferences{},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
-				Elements: []interface{}{
+			expected := types.PreflightDocument{
+				Blocks: []interface{}{
 					types.LiteralBlock{
 						Attributes: types.ElementAttributes{
 							types.AttrKind:             types.Literal,
@@ -216,7 +198,7 @@ a normal paragraph.`
 					},
 				},
 			}
-			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent)
+			verifyPreflight("test.adoc", expected, source)
 		})
 	})
 

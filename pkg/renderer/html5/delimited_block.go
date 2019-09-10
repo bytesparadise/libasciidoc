@@ -2,11 +2,9 @@ package html5
 
 import (
 	"bytes"
-	"fmt"
 	"html"
+	"strconv"
 	texttemplate "text/template"
-
-	"github.com/davecgh/go-spew/spew"
 
 	"github.com/bytesparadise/libasciidoc/pkg/renderer"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
@@ -252,7 +250,7 @@ func renderExampleBlock(ctx *renderer.Context, b types.DelimitedBlock) ([]byte, 
 	// default, example block
 	var title string
 	if b.Attributes.Has(types.AttrTitle) {
-		title = fmt.Sprintf("Example %d. %s", ctx.GetAndIncrementExampleBlockCounter(), getTitle(b.Attributes))
+		title = "Example " + strconv.Itoa(ctx.GetAndIncrementExampleBlockCounter()) + ". " + getTitle(b.Attributes)
 	}
 	err := exampleBlockTmpl.Execute(result, ContextualPipeline{
 		Context: ctx,
@@ -290,7 +288,6 @@ func renderQuoteBlock(ctx *renderer.Context, b types.DelimitedBlock) ([]byte, er
 
 func renderVerseBlock(ctx *renderer.Context, b types.DelimitedBlock) ([]byte, error) {
 	var elements = make([]interface{}, 0)
-	log.Debugf("including elements in verse block: %v", spew.Sdump(b.Elements))
 	if len(b.Elements) > 0 {
 		for _, element := range b.Elements {
 			switch e := element.(type) {

@@ -1,42 +1,41 @@
 package parser_test
 
 import (
-	"github.com/bytesparadise/libasciidoc/pkg/parser"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 	. "github.com/onsi/ginkgo"
 )
 
-var _ = Describe("comments", func() {
+var _ = Describe("comments - preflight", func() {
 
 	Context("single line comments", func() {
 
 		It("single line comment alone", func() {
-			actualDocument := `// A single-line comment.`
-			expectedResult := types.SingleLineComment{
+			doc := `// A single-line comment.`
+			expected := types.SingleLineComment{
 				Content: " A single-line comment.",
 			}
-			verifyWithPreprocessing(GinkgoT(), expectedResult, actualDocument, parser.Entrypoint("DocumentBlock"))
+			verifyDocumentBlock(expected, doc)
 		})
 
 		It("single line comment with prefixing spaces alone", func() {
-			actualDocument := `  // A single-line comment.`
-			expectedResult := types.SingleLineComment{
+			doc := `  // A single-line comment.`
+			expected := types.SingleLineComment{
 				Content: " A single-line comment.",
 			}
-			verifyWithPreprocessing(GinkgoT(), expectedResult, actualDocument, parser.Entrypoint("DocumentBlock"))
+			verifyDocumentBlock(expected, doc)
 		})
 
 		It("single line comment with prefixing tabs alone", func() {
-			actualDocument := "\t\t// A single-line comment."
-			expectedResult := types.SingleLineComment{
+			doc := "\t\t// A single-line comment."
+			expected := types.SingleLineComment{
 				Content: " A single-line comment.",
 			}
-			verifyWithPreprocessing(GinkgoT(), expectedResult, actualDocument, parser.Entrypoint("DocumentBlock"))
+			verifyDocumentBlock(expected, doc)
 		})
 
 		It("single line comment at end of line", func() {
-			actualDocument := `foo // A single-line comment.`
-			expectedResult := types.Paragraph{
+			doc := `foo // A single-line comment.`
+			expected := types.Paragraph{
 				Attributes: types.ElementAttributes{},
 				Lines: []types.InlineElements{
 					{
@@ -44,14 +43,14 @@ var _ = Describe("comments", func() {
 					},
 				},
 			}
-			verifyWithPreprocessing(GinkgoT(), expectedResult, actualDocument, parser.Entrypoint("DocumentBlock"))
+			verifyDocumentBlock(expected, doc)
 		})
 
 		It("single line comment within a paragraph", func() {
-			actualDocument := `a first line
+			doc := `a first line
 // A single-line comment.
 another line`
-			expectedResult := types.Paragraph{
+			expected := types.Paragraph{
 				Attributes: types.ElementAttributes{},
 				Lines: []types.InlineElements{
 					{
@@ -65,14 +64,14 @@ another line`
 					},
 				},
 			}
-			verifyWithPreprocessing(GinkgoT(), expectedResult, actualDocument, parser.Entrypoint("DocumentBlock"))
+			verifyDocumentBlock(expected, doc)
 		})
 
 		It("single line comment within a paragraph with tab", func() {
-			actualDocument := `a first line
+			doc := `a first line
 	// A single-line comment.
 another line`
-			expectedResult := types.Paragraph{
+			expected := types.Paragraph{
 				Attributes: types.ElementAttributes{},
 				Lines: []types.InlineElements{
 					{
@@ -86,18 +85,18 @@ another line`
 					},
 				},
 			}
-			verifyWithPreprocessing(GinkgoT(), expectedResult, actualDocument, parser.Entrypoint("DocumentBlock"))
+			verifyDocumentBlock(expected, doc)
 		})
 	})
 
 	Context("comment blocks", func() {
 
 		It("comment block alone", func() {
-			actualDocument := `//// 
+			doc := `//// 
 a *comment* block
 with multiple lines
 ////`
-			expectedResult := types.DelimitedBlock{
+			expected := types.DelimitedBlock{
 				Attributes: types.ElementAttributes{},
 				Kind:       types.Comment,
 				Elements: []interface{}{
@@ -109,22 +108,18 @@ with multiple lines
 					},
 				},
 			}
-			verifyWithPreprocessing(GinkgoT(), expectedResult, actualDocument, parser.Entrypoint("DocumentBlock"))
+			verifyDocumentBlock(expected, doc)
 		})
 
 		It("comment block with paragraphs around", func() {
-			actualDocument := `a first paragraph
+			doc := `a first paragraph
 //// 
 a *comment* block
 with multiple lines
 ////
 a second paragraph`
-			expectedResult := types.Document{
-				Attributes:         types.DocumentAttributes{},
-				ElementReferences:  types.ElementReferences{},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
-				Elements: []interface{}{
+			expected := types.PreflightDocument{
+				Blocks: []interface{}{
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
@@ -155,7 +150,7 @@ a second paragraph`
 					},
 				},
 			}
-			verifyWithPreprocessing(GinkgoT(), expectedResult, actualDocument)
+			verifyPreflight("test.adoc", expected, doc)
 		})
 	})
 

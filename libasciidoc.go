@@ -42,16 +42,10 @@ func ConvertFileToHTML(ctx context.Context, filename string, output io.Writer, o
 // Returns an error if a problem occurred
 func ConvertToHTML(ctx context.Context, r io.Reader, output io.Writer, options ...renderer.Option) (map[string]interface{}, error) {
 	log.Debugf("parsing the asciidoc source...")
-	start := time.Now()
-	stats := parser.Stats{}
-	doc, err := parser.ParseDocument("", r, parser.Statistics(&stats, "no match"))
+	doc, err := parser.ParseDocument("", r)
 	if err != nil {
 		return nil, errors.Wrapf(err, "error while parsing the document")
 	}
-	duration := time.Since(start)
-	log.Debugf("parsing stats:")
-	log.Debugf("- parsing duration:                %v", duration)
-	log.Debugf("- expressions processed:           %v", stats.ExprCnt)
 	return convertToHTML(ctx, doc, output, options...)
 }
 

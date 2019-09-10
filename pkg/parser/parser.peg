@@ -1,0 +1,1540 @@
+{
+package parser 
+
+import (
+    "strconv"
+    "io"
+    "unicode"
+
+    "github.com/bytesparadise/libasciidoc/pkg/types"
+)
+
+}
+
+// ---------------------------------------------------
+// PreflightDocument - fully parsed document, linearly
+// ---------------------------------------------------
+PreflightDocument <- frontmatter:(FrontMatter?) blocks:(DocumentBlocks) EOF {
+    return types.NewPreflightDocument(frontmatter, blocks.([]interface{}))
+}
+
+PreflightDocumentWithinDelimitedBlock <- frontmatter:(FrontMatter?) blocks:(DocumentBlocksWithinDelimitedBlock) EOF {
+    return types.NewPreflightDocument(frontmatter, blocks.([]interface{}))
+}
+
+// ------------------------------------------
+// Document blocks
+// ------------------------------------------
+DocumentBlocks <- header:(DocumentHeader?) others:(DocumentBlock*) {
+    if header != nil && others != nil {
+        return append([]interface{}{header}, others.([]interface{})...), nil
+    } else if others != nil {
+        return others.([]interface{}), nil
+    }
+    return []interface{}{}, nil
+}
+
+DocumentBlock <- !EOF 
+    block:(SimpleParagraph
+        / Section 
+        / DelimitedBlock
+        / FileInclusion
+        / VerseParagraph // must be before ImageBlock
+        / ImageBlock 
+        / ListItem
+        / BlankLine // must be before LiteralBlock
+        / LiteralBlock 
+        / DocumentAttributeDeclaration 
+        / DocumentAttributeReset 
+        / TableOfContentsMacro
+        / UserMacroBlock
+        / Paragraph) {
+    return block, nil
+}
+
+DocumentBlocksWithinDelimitedBlock <- blocks:(DocumentBlockWithinDelimitedBlock)*
+
+DocumentBlockWithinDelimitedBlock <- !EOF 
+    block:(DelimitedBlock
+        / FileInclusion
+        / VerseParagraph
+        / ImageBlock 
+        / ListItem
+        / BlankLine // must be before LiteralBlock
+        / LiteralBlock 
+        / DocumentAttributeDeclaration 
+        / DocumentAttributeReset 
+        / TableOfContentsMacro
+        / UserMacroBlock
+        / Paragraph) {
+    return block, nil
+}
+
+// ------------------------------------------
+// Front Matter
+// ------------------------------------------
+FrontMatter <- YamlFrontMatter 
+
+YamlFrontMatter <- YamlFrontMatterToken content:(YamlFrontMatterContent)? YamlFrontMatterToken {
+    return types.NewYamlFrontMatter(content.(string))
+}
+
+YamlFrontMatterToken  <- "---" EOLS
+
+YamlFrontMatterContent <- ((!YamlFrontMatterToken .)+)* {
+    return string(c.text), nil
+}
+
+// ------------------------------------------
+// Document Header and Metadata
+// ------------------------------------------
+DocumentHeader <- "=" WS+ title:(TitleElements) id:(InlineElementID*) EOL
+        authors:(DocumentAuthors?) 
+        revision:(DocumentRevision?) {
+    return types.NewDocumentHeader(title.(types.InlineElements), authors, revision)
+}
+
+
+DocumentAuthors <- DocumentAuthorsInlineForm / DocumentAuthorsAttributeForm
+
+DocumentAuthorsInlineForm <- WS* !":" authors:(DocumentAuthor+) EOL {
+    return types.NewDocumentAuthors(authors.([]interface{}))
+}
+
+DocumentAuthorsAttributeForm <- WS* ":author:" author:(DocumentAuthor) EOL {
+    return []types.DocumentAuthor{author.(types.DocumentAuthor)}, nil
+}
+
+DocumentAuthor <- WS* fullname:(DocumentAuthorName) email:(DocumentAuthorEmail)? WS* ";"? WS* {
+    return types.NewDocumentAuthor(fullname, email)
+}
+
+// "<" marks the beginning of the author email, and ";" is the authors separator
+DocumentAuthorName <- (Alphanums / (!"<" !";" !NEWLINE .))+ {
+    return string(c.text), nil
+}
+
+DocumentAuthorEmail <- "<" email:((Alphanums / (!">" !EOL  .))+ {
+    return string(c.text), nil
+}) ">" {
+    return email, nil
+}
+
+// see http://asciidoctor.org/docs/user-manual/#revision-number-date-and-remark
+// Eg: "v1.0, October 2, 2013: First incarnation"
+DocumentRevision <- WS* !":" revision:(
+        (revnumber:(DocumentRevisionNumber) ","? revdate:(DocumentRevisionDate)? ":"? revremark:(DocumentRevisionRemark)? {
+            return types.NewDocumentRevision(revnumber, revdate, revremark)
+        }) / (revdate:(DocumentRevisionDate) ":"? revremark:(DocumentRevisionRemark)? {
+            return types.NewDocumentRevision(nil, revdate, revremark)
+        })) EOL {
+    return revision, nil
+}
+
+// DocumentRevisionNumber MUST start with a `v` or MAY start with a `v` but MUST end with a `,`
+DocumentRevisionNumber <- "v"i DIGIT  (Alphanums / Spaces / (!EOL !"," !":"  .))+ {
+    return string(c.text), nil
+} / "v"i? DIGIT  (Alphanums / Spaces / (!EOL !"," !":"  .))+ WS* &"," {
+    return string(c.text), nil
+}
+
+DocumentRevisionDate <- (Alphanums / Spaces / (!EOL !":"  .))+ {
+    return string(c.text), nil
+}
+
+DocumentRevisionRemark <- (Alphanums / Spaces / (!EOL  .))+ {
+    return string(c.text), nil
+}
+
+// ------------------------------------------
+// Document Attributes
+// ------------------------------------------
+DocumentAttributeDeclaration <- ":" name:(DocumentAttributeName) ":" value:((WS+ value:(DocumentAttributeValue)) { return value, nil })? EOLS {
+    return types.NewDocumentAttributeDeclaration(name.(string), value)
+} 
+
+// AttributeName must be at least one character long, 
+// must begin with a word character (A-Z, a-z, 0-9 or _) and 
+// must only contain word Word and hyphens ("-").
+DocumentAttributeName <- ([A-Z] / [a-z] / [0-9] / "_") ([A-Z] / [a-z] / [0-9] / "-")* {
+    return string(c.text), nil
+}
+
+DocumentAttributeValue <- (!NEWLINE .)+ {
+    return string(c.text), nil
+}
+
+DocumentAttributeReset <- ":!" name:(DocumentAttributeName) ":" EOLS {
+    return types.NewDocumentAttributeReset(name.(string))
+} / ":" name:(DocumentAttributeName) "!:" EOLS {
+    return types.NewDocumentAttributeReset(name.(string))
+}
+
+DocumentAttributeSubstitution <- "{" name:(DocumentAttributeName) "}" {
+    return types.NewDocumentAttributeSubstitution(name.(string))
+}
+
+// ------------------------------------------
+// Element Attributes
+// ------------------------------------------
+ElementAttributes <- attrs:(ElementAttribute)+ {
+    return types.NewElementAttributes(attrs.([]interface{})), nil
+}
+
+ElementAttribute <- &("[" / "." / "#") // skip if the content does not start with one of those characters
+    attr:(ElementID / 
+        ElementTitle / 
+        ElementRole / 
+        LiteralAttribute / 
+        SourceAttributes / 
+        QuoteAttributes / 
+        VerseAttributes / 
+        AdmonitionMarkerAttribute / 
+        HorizontalLayout / 
+        AttributeGroup) {
+    return attr, nil // avoid returning something like `[]interface{}{attr, EOL}`
+}
+
+// identify all attributes that masquerade a block element into something else.
+MasqueradeAttribute <- QuoteAttributes / VerseAttributes
+
+ElementID <- "[[" id:(ID) "]]" EOLS {
+    return types.NewElementID(id.(string))
+} / "[#" id:(ID) "]"  EOLS {
+    return types.NewElementID(id.(string))
+}
+
+InlineElementID <- "[[" id:(ID) "]]" WS* { // no EOL here since there can be multiple InlineElementID on the same line
+    return types.NewInlineElementID(id.(string))
+}
+
+// a title attached to an element, such as a ImageBlock
+// a title starts with a single "." followed by the value, without space in-between
+ElementTitle <- "." title:(Alphanums (Alphanums / Spaces / (!NEWLINE .))* {
+    return string(c.text), nil
+}) EOL {
+    return types.NewElementTitle(title.(string))
+}
+
+// a role attached to an element, such as a ImageBlock
+// a role starts is wrapped in "[. ]" 
+ElementRole <- "[." role:(Alphanums (Alphanums / Spaces / (!NEWLINE !"]" .))* {
+    return string(c.text), nil
+}) "]" EOLS {
+    return types.NewElementRole(role.(string))
+}
+
+LiteralAttribute <- "[literal]" WS* NEWLINE {
+    return types.NewLiteralAttribute()
+}
+
+// expression for the whole admonition marker, but only retains the actual kind
+AdmonitionMarkerAttribute <- "[" k:(AdmonitionKind) "]" EOLS {
+    return types.NewAdmonitionAttribute(k.(types.AdmonitionKind))
+}
+
+// a paragraph or a delimited block may contain source code in a given language
+SourceAttributes <- "[source" ","? language:((Alphanums / Spaces / (!NEWLINE !"]" .))+ {
+        return string(c.text), nil
+    })? "]" EOLS {
+    return types.NewSourceAttributes(language)
+}
+
+// one or more attributes. eg: [foo, key1=value1, key2 = value2 , ]
+AttributeGroup <- "[" attributes:(GenericAttribute)* "]" EOLS {
+    return types.NewAttributeGroup(attributes.([]interface{}))
+}
+
+GenericAttribute <- 
+    key:(AttributeKey) "=" value:(AttributeValue)? ","? WS* { // value is (optionally) set
+        return types.NewGenericAttribute(key.(string), value)
+    } / key:(AttributeKey) ","? WS* { // value is not set
+        return types.NewGenericAttribute(key.(string), nil)
+    }
+
+AttributeKey <- !"quote" !"verse" !"literal" !Spaces key:(Alphanums / OtherAttributeChar)+ WS* {
+    return string(c.text), nil
+}
+
+AttributeValue <- value:(Alphanums / Spaces / OtherAttributeChar)+ !"=" { // attribute value cannot be followed by a `=`, otherwise it causes troubles for standalone values (eg: in images)
+    return string(c.text), nil
+}
+
+OtherAttributeChar <- (!"=" !"," !"]" .)
+
+HorizontalLayout <- "[horizontal]" EOLS {
+    return types.ElementAttributes{"layout": "horizontal"}, nil
+}
+
+QuoteAttributes <- "[quote" WS* ","? author:(QuoteAttribute)? ","? title:(QuoteAttribute)? "]" EOLS {
+    return types.NewQuoteAttributes("quote", author, title)
+}
+
+VerseAttributes <- "[verse" WS* ","? author:(QuoteAttribute)? ","? title:(QuoteAttribute)? "]" EOLS {
+    return types.NewQuoteAttributes("verse", author.(string), title.(string))
+}
+
+QuoteAttribute <- (Alphanums / Spaces / (!"," !"]" !EOL .))* {
+    return string(c.text), nil
+}
+
+InlineAttributes <- "[" attrs:(GenericAttribute)* "]" {
+    return types.NewInlineAttributes(attrs.([]interface{}))
+} 
+
+// ------------------------------------------
+// Sections
+// ------------------------------------------
+Section <- attributes:(ElementAttributes)?
+    level:(("=")+ {   
+        // `=` is level 0, etc.
+        return (len(c.text)-1), nil 
+    })
+    &{  
+        // use a predicate to make sure that only `=` (level 0) to `======` (level 5) are allowed
+        return level.(int) <= 5, nil 
+    } 
+    WS+ title:(TitleElements) id:(InlineElementID*) EOL {
+    return types.NewSection(level.(int), title.(types.InlineElements), id.([]interface{}), attributes) 
+}
+
+
+TitleElements <- elements:(!NEWLINE !InlineElementID TitleElement)+ { // absorbs heading and trailing spaces
+    return types.NewInlineElements(elements.([]interface{}))
+} 
+
+TitleElement <- element:(SimpleWord
+        / Spaces 
+        / CrossReference
+        / Passthrough
+        / InlineImage 
+        / Link
+        / InlineFootnote
+        / QuotedText
+        / DocumentAttributeSubstitution
+        / LineBreak
+        / OtherWord) {
+    return element, nil
+}
+
+// ------------------------------------------
+// Table of Contents
+// ------------------------------------------
+TableOfContentsMacro <- "toc::[]" EOL
+
+// ------------------------------------------
+// User Macro
+// ------------------------------------------
+UserMacroBlock <- name:(UserMacroName) "::" value:(UserMacroValue) attrs:(UserMacroAttributes) {
+    return types.NewUserMacroBlock(name.(string), value.(string), attrs.(types.ElementAttributes), string(c.text))
+}
+
+InlineUserMacro <- name:(UserMacroName) ":" value:(UserMacroValue) attrs:(UserMacroAttributes) {
+    return types.NewInlineUserMacro(name.(string), value.(string), attrs.(types.ElementAttributes), string(c.text))
+}
+
+UserMacroName <- ([a-zA-Z0-9] / "_" / "-")+ {
+    return string(c.text), nil
+}
+
+UserMacroValue <- (Alphanums / (!":" !"[" !EOL .))* {
+    return string(c.text), nil
+}
+
+UserMacroAttributes <- "[" attrs:(GenericAttribute)* "]" {
+    return types.NewInlineAttributes(attrs.([]interface{}))
+}
+
+// ------------------------------------------
+// File inclusions
+// ------------------------------------------
+FileInclusion <- incl:("include::" path:(FileLocation) inlineAttributes:(FileIncludeAttributes) { 
+        return types.NewFileInclusion(path.(types.Location), inlineAttributes.(types.ElementAttributes), string(c.text))
+    }) EOLS {
+    return incl.(types.FileInclusion), nil
+}
+
+FileIncludeAttributes <- "[" attrs:(LineRangesAttribute / TagRangesAttribute / GenericAttribute)* "]" {
+    return types.NewInlineAttributes(attrs.([]interface{}))
+} 
+
+LineRangesAttribute <- "lines=" lines:(LineRangesAttributeValue) ","? { 
+    return types.NewLineRangesAttribute(lines)
+} 
+
+LineRangesAttributeValue <- value:(MultipleLineRanges // TODO: just have MultipleLineRanges, MultipleQuotedLineRanges and UndefinedLineRange?
+        / MultipleQuotedLineRanges 
+        / MultiLineRange 
+        / MultiLineQuotedRange 
+        / SingleLineQuotedRange
+        / SingleLineRange 
+        / UndefinedLineRange) WS* (&"," / &"]") {
+    return value, nil
+}
+
+MultipleLineRanges <- first:(MultiLineRange / SingleLineRange) 
+    others:(";" other:(MultiLineRange / SingleLineRange) {
+        return other, nil
+    })+ {
+        return append([]interface{}{first}, others.([]interface{})...), nil
+    }
+
+MultipleQuotedLineRanges <- "\"" first:(MultiLineRange / SingleLineRange) 
+    others:("," other:(MultiLineRange / SingleLineRange) {
+        return other, nil
+    })+ "\"" {
+        return append([]interface{}{first}, others.([]interface{})...), nil
+    }
+
+MultiLineRange <- start:(NUMBER) ".." end:(NUMBER) { // eg: lines=12..14
+    return types.NewLineRange(start.(int), end.(int))
+} 
+
+MultiLineQuotedRange <- "\"" start:(NUMBER) ".." end:(NUMBER) "\"" { // eg: lines=12..14
+    return types.NewLineRange(start.(int), end.(int))
+} 
+
+SingleLineRange <- singleline:(NUMBER) { // eg: lines=12
+    return types.NewLineRange(singleline.(int), singleline.(int))
+}
+
+SingleLineQuotedRange <- "\"" singleline:(NUMBER) "\"" { // eg: lines=12
+    return types.NewLineRange(singleline.(int), singleline.(int))
+}
+
+UndefinedLineRange <- (!"]" !"," !WS .)* {
+    return string(c.text), nil
+}
+
+TagRangesAttribute <- ("tags=" / "tag=") tags:(TagRangesAttributeValue) ","? { //TODO: check if 'tags'/'tag' is allowed for both single and multiple values
+    return types.NewTagRangesAttribute(tags)
+} 
+
+TagRangesAttributeValue <- value:(MultipleTagRanges) WS* (&"," / &"]") {
+    return value, nil
+}
+
+MultipleTagRanges <- first:(Alphanums {
+        return string(c.text), nil
+    })
+    others:(";" other:(Alphanums {
+        return string(c.text), nil
+    }) {
+        return other, nil
+    })* {
+        return append([]interface{}{first}, others.([]interface{})...), nil
+    }
+
+// ------------------------------------------
+// Tag macros in lines of files to include
+// ------------------------------------------
+IncludedFileLine <- content:(IncludedFileStartTag / IncludedFileEndTag / . {return string(c.text), nil})* EOL {
+    return types.NewIncludedFileLine(content.([]interface{}))
+}
+
+IncludedFileStartTag <- "tag::" tag:(Alphanums {return string(c.text), nil}) "[]" {
+    return types.NewIncludedFileStartTag(tag.(string))
+}
+
+IncludedFileEndTag <- "end::" tag:(Alphanums {return string(c.text), nil}) "[]" {
+    return types.NewIncludedFileEndTag(tag.(string))
+}
+
+// ------------------------------------------
+// Lists
+// ------------------------------------------
+ListItems <- ListItem+
+
+ListItem <- OrderedListItem / UnorderedListItem / LabeledListItem / ContinuedListItemElement
+
+ListParagraph <- comment:(SingleLineComment) {
+        return comment, nil
+    } / lines:(ListParagraphLine)+ {
+        return types.NewParagraph(lines.([]interface{}), nil)
+    } 
+
+ListParagraphLine <- !EOF
+    !BlankLine 
+    !SingleLineComment
+    !OrderedListItemPrefix
+    !UnorderedListItemPrefix
+    !(LabeledListItemTerm LabeledListItemSeparator) 
+    !ListItemContinuation
+    !ElementAttribute
+    !BlockDelimiter
+    line:(
+        elements:(InlineElement)+ linebreak:(LineBreak)? { // absorbs heading and trailing spaces
+            return types.NewInlineElements(append(elements.([]interface{}), linebreak))
+        }) EOL { 
+            return line, nil
+        }
+
+ListItemContinuation <- "+" EOLS 
+
+ContinuedListItemElement <- blanklines:(BlankLine*) ListItemContinuation element:DocumentBlock{
+    return types.NewContinuedListItemElement(-len(blanklines.([]interface{})), element) // offset is negative
+}
+
+// ------------------------------------------
+// Ordered List Items
+// ------------------------------------------
+OrderedListItem <- attributes:(ElementAttributes)? prefix:(OrderedListItemPrefix) content:(OrderedListItemContent) {
+    return types.NewOrderedListItem(prefix.(types.OrderedListItemPrefix), content.([]interface{}), attributes)
+}
+
+OrderedListItemPrefix <- 
+    WS* prefix:(
+        // implicit numbering: "." to "....."
+        depth:((".")+ {   
+            // `.` is 1, etc.
+            return (len(c.text)), nil 
+        }) 
+        &{  
+            // use a predicate to make sure that only `.` to `.....` are allowed
+            return depth.(int) <= 5, nil 
+        } 
+        {
+            switch depth.(int){
+            case 1:
+                return types.NewOrderedListItemPrefix(types.Arabic, 1)
+            case 2:
+                return types.NewOrderedListItemPrefix(types.LowerAlpha, 2)
+            case 3:
+                return types.NewOrderedListItemPrefix(types.LowerRoman, 3)
+            case 4:
+                return types.NewOrderedListItemPrefix(types.UpperAlpha, 4)
+            default:
+                return types.NewOrderedListItemPrefix(types.UpperRoman, 5)
+            }
+        }
+        // explicit numbering
+        / ([0-9])+ "." {  // numbering style: "1."
+            return types.NewOrderedListItemPrefix(types.Arabic, 1)
+        } / ([a-z]) "." { // numbering style: "a."
+            return types.NewOrderedListItemPrefix(types.LowerAlpha, 1)
+        } / ([A-Z]) "." { // numbering style: "A."
+            return types.NewOrderedListItemPrefix(types.UpperAlpha, 1)
+        } / ([a-z])+ ")" { // numbering style: "i)"
+            return types.NewOrderedListItemPrefix(types.LowerRoman, 1)
+        } / ([A-Z])+ ")" { // numbering style: "I)"
+            return types.NewOrderedListItemPrefix(types.UpperRoman, 1)
+        }) WS+ {
+    return prefix, nil
+}
+
+OrderedListItemContent <- elements:(ListParagraph+) {
+    return types.NewListItemContent(elements.([]interface{}))
+} 
+
+// ------------------------------------------
+// Unordered List Items
+// ------------------------------------------
+UnorderedListItem <- attributes:(ElementAttributes)? prefix:(UnorderedListItemPrefix) checkstyle:(UnorderedListItemCheckStyle)? content:(UnorderedListItemContent) {
+    return types.NewUnorderedListItem(prefix.(types.UnorderedListItemPrefix), checkstyle, content.([]interface{}), attributes)
+}
+
+UnorderedListItemPrefix <- 
+    WS* prefix:((
+        // implicit numbering: "*" to "*****" 
+        depth:(("*")+ {   
+            // `*` is 1, etc.
+            return (len(c.text)), nil 
+        }) 
+        &{  
+            // use a predicate to make sure that only `*` to `*****` are allowed
+            return depth.(int) <= 5, nil 
+        } 
+        {
+            switch depth.(int){
+            case 1:
+                return types.NewUnorderedListItemPrefix(types.OneAsterisk, 1)
+            case 2:
+                return types.NewUnorderedListItemPrefix(types.TwoAsterisks, 2)
+            case 3:
+                return types.NewUnorderedListItemPrefix(types.ThreeAsterisks, 3)
+            case 4:
+                return types.NewUnorderedListItemPrefix(types.FourAsterisks, 4)
+            default:
+                return types.NewUnorderedListItemPrefix(types.FiveAsterisks, 5)
+            }
+        }) / depth:(("-") {
+            return types.NewUnorderedListItemPrefix(types.Dash, 1)
+        })) WS+ {
+    return prefix, nil
+} 
+
+UnorderedListItemCheckStyle <- &"[" style:(
+      "[ ]" { return types.Unchecked, nil } 
+    / "[*]" { return types.Checked, nil } 
+    / "[x]" { return types.Checked, nil }
+    ) WS+ {
+        return style, nil
+    }
+
+UnorderedListItemContent <- elements:(ListParagraph+) { // Another list or a literal paragraph immediately following a list item will be implicitly included in the list item
+    return types.NewListItemContent(elements.([]interface{}))
+} 
+
+// ------------------------------------------
+// Labeled List Items
+// ------------------------------------------
+LabeledListItem <- attributes:(ElementAttributes)? term:(LabeledListItemTerm) separator:(LabeledListItemSeparator) description:(LabeledListItemDescription)? {
+    return types.NewLabeledListItem(len(separator.(string)) - 1, term.(string), description, attributes)
+}
+
+LabeledListItemTerm <- (Alphanums / Spaces / (!NEWLINE !"::" .))+  {
+    return string(c.text), nil
+}
+
+LabeledListItemSeparator <- 
+    separator:((":")+ {   
+        return string(c.text), nil
+    }) 
+    &{  
+        // use a predicate to make sure that only `::` to `::::` are allowed
+        return len(separator.(string)) >= 2 && len(separator.(string)) <= 4, nil 
+    } 
+    ((WS / NEWLINE)+ / EOL) {
+    return separator, nil
+}
+    
+LabeledListItemDescription <- elements:(ListParagraph)+ { 
+    return types.NewListItemContent(elements.([]interface{}))
+}
+
+// ------------------------------------------
+// Admonitions
+// ------------------------------------------
+AdmonitionKind <- "TIP" {
+        return types.Tip, nil
+    } / "NOTE" {
+        return types.Note, nil
+    } / "IMPORTANT" {
+        return types.Important, nil
+    } / "WARNING" {
+        return types.Warning, nil
+    } / "CAUTION" {
+        return types.Caution, nil
+}
+
+// ------------------------------------------
+// Paragraphs
+// ------------------------------------------
+// a paragraph is a group of line ending with a blank line (or end of file)
+// a paragraph cannot start with the `section` sequence (`= `, `== `, etc.)
+Paragraph <- 
+    // admonition paragraph 
+    attributes:(ElementAttributes)? t:(AdmonitionKind) ": " lines:(InlineElements)+ { 
+        return types.NewAdmonitionParagraph(lines.([]interface{}), t.(types.AdmonitionKind), attributes)
+    } / 
+    // other kind of paragraph (verse, regular, etc.)
+    attributes:(ElementAttributes)? lines:(InlineElements)+ { 
+        return types.NewParagraph(lines.([]interface{}), attributes)
+} 
+
+// a paragraph whose first line begins with a word surrounded by spaces
+SimpleParagraph <- attributes:(ElementAttributes)? 
+    &{
+        // skip if the '[literal]' attribute was set on this paragraph
+        if attrs, ok := attributes.(types.ElementAttributes); ok {
+            kind, found := attrs[types.AttrKind]
+            return !found || kind != types.Literal, nil
+        }
+        return true, nil
+    }
+    firstLine: FirstParagraphLine
+    otherLines:(OtherParagraphLine)* { 
+    return types.NewParagraph(append([]interface{}{firstLine}, otherLines.([]interface{})...), attributes)
+}
+
+ParagraphLines <- firstLine:(FirstParagraphLine) otherLines:(OtherParagraphLine)* {
+    return append([]interface{}{firstLine}, otherLines.([]interface{})...), nil
+}
+
+FirstParagraphLine <- !(LabeledListItemTerm LabeledListItemSeparator)
+    elements:(SimpleWord InlineElement*) linebreak:(LineBreak)? EOL { 
+    return types.NewInlineElements(append(elements.([]interface{}), linebreak))
+}
+
+OtherParagraphLine <- elements:(InlineElements) {
+    return elements, nil
+}
+
+VerseParagraph <- 
+    // admonition paragraph 
+    attributes:(ElementAttributes)?
+    &{
+        if attrs, ok := attributes.(types.ElementAttributes); ok {
+            kind, ok := attrs[types.AttrKind]
+            return ok && kind == types.Verse, nil
+        }
+        return false, nil
+    }
+    t:(AdmonitionKind) ": " lines:(InlineElements)+ { 
+        return types.NewAdmonitionParagraph(lines.([]interface{}), t.(types.AdmonitionKind), attributes)
+    } / 
+    // other kind of paragraph (verse, regular, etc.)
+    attributes:(ElementAttributes)?
+    &{
+        if attrs, ok := attributes.(types.ElementAttributes); ok {
+            kind, ok := attrs[types.AttrKind]
+            return ok && kind == types.Verse, nil
+        }
+        return false, nil
+    }
+    lines:(InlineElements)+ { 
+        return types.NewParagraph(lines.([]interface{}), attributes)
+    } 
+    
+InlineElements <- !EOF !BlankLine
+    elements:(comment:(SingleLineComment) {
+        return types.NewInlineElements([]interface{}{comment})
+    } / !BlockDelimiter elements:(InlineElement)+ linebreak:(LineBreak)? EOL { 
+        return types.NewInlineElements(append(elements.([]interface{}), linebreak))
+    }) {
+        return elements, nil
+    }
+
+InlineElement <- !EOL !LineBreak 
+    element:(SimpleWord
+        / Spaces 
+        / InlineImage 
+        / Link 
+        / Passthrough 
+        / InlineFootnote 
+        / InlineUserMacro 
+        / QuotedText 
+        / CrossReference 
+        / DocumentAttributeSubstitution 
+        / InlineElementID 
+        / OtherWord) {
+    return element, nil
+}
+
+// special case for re-parsing a group of elements after a document substitution:
+// we should treat substitution that did not happen (eg: missing attribute) as regular
+// strings - (used by the inline element renderer)
+InlineElementsWithoutSubtitution <- !BlankLine !BlockDelimiter elements:(InlineElementWithoutSubtitution)* linebreak:(LineBreak)? EOL { 
+    return types.NewInlineElements(append(elements.([]interface{}), linebreak))
+} 
+
+InlineElementWithoutSubtitution <- !EOL !LineBreak 
+    element:(SimpleWord
+        / Spaces 
+        / InlineImage 
+        / Link 
+        / Passthrough 
+        / QuotedText 
+        / CrossReference 
+        / InlineElementID
+        / OtherWord) {
+    return element, nil
+}
+
+// special case for parsing files to include in delimited blocks with 'verbatim' substitution
+VerbatimBlock <- elements:(BlankLine / FileInclusion / VerbatimParagraph)* EOF {
+    return elements, nil
+}
+
+VerbatimParagraph <- attributes:(ElementAttributes)? lines:(!EOF line:(VerbatimParagraphLine) {
+    return line, nil
+})+ {
+    return types.NewParagraph(lines.([]interface{}), attributes)
+}
+
+VerbatimParagraphLine <- !BlockDelimiter !BlankLine elements:(VerbatimParagraphLineElement)* linebreak:(LineBreak)? EOL { 
+    return types.NewInlineElements(append(elements.([]interface{}), linebreak))
+} 
+
+VerbatimParagraphLineElement <- (!EOL !LineBreak .)+ {
+    return string(c.text), nil
+}
+
+// ----------------------------------------------------------------------------
+// Explicit line breaks
+// ----------------------------------------------------------------------------
+LineBreak <- WS "+" WS* &EOL {
+    return types.NewLineBreak()    
+}
+
+// ----------------------------------------------------------------------------
+// Quoted Texts (bold, italic and monospace) including substitution prevention
+// ----------------------------------------------------------------------------
+QuotedText <- !WS text:(BoldText 
+            / ItalicText 
+            / MonospaceText 
+            / SubscriptText 
+            / SuperscriptText 
+            / EscapedBoldText 
+            / EscapedItalicText 
+            / EscapedMonospaceText 
+            / EscapedSubscriptText 
+            / EscapedSuperscriptText
+            / SubscriptOrSuperscriptPrefix) { // if a '^' or '~' is alone (ie, badly formatted superscript or subscript, then accept it as-is) 
+    return text, nil
+}
+
+QuotedTextPrefix <- "**" / "*" / "__" / "_" / "``" / "`" / "^" / "~"
+
+SubscriptOrSuperscriptPrefix <- "^" / "~" { // rule used withn `words` to detect superscript or subscript portions, eg in math formulae.
+    return string(c.text), nil
+}
+
+OneOrMoreBackslashes <- `\`+ {
+    return string(c.text), nil
+}
+
+TwoOrMoreBackslashes <- `\\` `\`* {
+    return string(c.text), nil
+}
+
+// -----------------
+// Bold text
+// -----------------
+
+BoldText <- DoubleQuoteBoldText / SingleQuoteBoldText
+
+DoubleQuoteBoldText <- !`\\` "**" content:(DoubleQuoteBoldTextContent) "**" { // double punctuation must be evaluated first
+    return types.NewQuotedText(types.Bold, content.([]interface{}))
+} 
+
+DoubleQuoteBoldTextContent <- DoubleQuoteBoldTextElement (!("**") element:(WS / DoubleQuoteBoldTextElement) { // may start and end with spaces
+    return element, nil
+})*
+
+DoubleQuoteBoldTextElement <- !NEWLINE element:(SingleQuoteBoldText 
+        / ItalicText 
+        / MonospaceText
+        / SubscriptText
+        / SuperscriptText
+        / InlineImage 
+        / Link 
+        / Passthrough 
+        / NonDoubleQuoteBoldText) { // word with quote punctuation is only accepted if nothing matched before, so we have a chance to stop
+    return element, nil
+}
+
+NonDoubleQuoteBoldText <- (.) (!"**" !WS !"^" !"~" !NEWLINE .)* { 
+    return types.NewStringElement(string(c.text))
+}
+
+SingleQuoteBoldText <- !`\` !"**" "*" content:(SingleQuoteBoldTextContent) "*" { // single punctuation cannot be followed by a character (needs '**' to emphazise a portion of a word)
+    return types.NewQuotedText(types.Bold, content.([]interface{}))
+} / !`\\` "**" content:(SingleQuoteBoldTextContent) "*" { // unbalanced `**` vs `*` punctuation.
+    return types.NewQuotedText(types.Bold, append([]interface{}{types.StringElement{Content:"*"}}, content.([]interface{})...)) // include the second heading `*` as a regular StringElement in the bold content
+} 
+
+SingleQuoteBoldTextContent <- !WS SingleQuoteBoldTextElement (!("*" !Alphanum) spaces:(WS*) element:(SingleQuoteBoldTextElement) {
+    return append(spaces.([]interface{}), element), nil
+})*
+
+SingleQuoteBoldTextElement <- !NEWLINE element:(DoubleQuoteBoldText
+        / ItalicText 
+        / MonospaceText
+        / SubscriptText
+        / SuperscriptText
+        / InlineImage 
+        / Link 
+        / Passthrough 
+        / NonSingleQuoteBoldText) { // word with quote punctuation is only accepted if nothing matched before, so we have a chance to stop
+    return element, nil
+}
+
+NonSingleQuoteBoldText <- (.) (!"*" !WS !"^" !"~" !NEWLINE .)* { 
+    return types.NewStringElement(string(c.text))
+}
+
+EscapedBoldText <- 
+    backslashes:(TwoOrMoreBackslashes) "**" content:(DoubleQuoteBoldTextContent) "**" { // double punctuation must be evaluated first
+        return types.NewEscapedQuotedText(backslashes.(string), "**", content.([]interface{}))
+    } / backslashes:(OneOrMoreBackslashes) "**" content:(SingleQuoteBoldTextContent) "*" { // unbalanced `**` vs `*` punctuation
+        result := append([]interface{}{"*"}, content.([]interface{}))
+        return types.NewEscapedQuotedText(backslashes.(string), "*", result)
+    } / backslashes:(OneOrMoreBackslashes) "*" content:(SingleQuoteBoldTextContent) "*" { // simple punctuation must be evaluated last
+        return types.NewEscapedQuotedText(backslashes.(string), "*", content.([]interface{}))
+} 
+
+// -----------------
+// Italic text
+// -----------------
+
+ItalicText <- DoubleQuoteItalicText / SingleQuoteItalicText
+
+DoubleQuoteItalicText <- !`\\` "__" content:(DoubleQuoteItalicTextContent) "__" { // double punctuation must be evaluated first
+    return types.NewQuotedText(types.Italic, content.([]interface{}))
+}
+
+DoubleQuoteItalicTextContent <- DoubleQuoteItalicTextElement (!("__") element:(WS / DoubleQuoteItalicTextElement) { // may start and end with spaces
+    return element, nil
+})*
+
+DoubleQuoteItalicTextElement <- !NEWLINE element:(SingleQuoteItalicText 
+        / BoldText 
+        / MonospaceText
+        / SubscriptText
+        / SuperscriptText
+        / InlineImage 
+        / Link 
+        / Passthrough 
+        / NonDoubleQuoteItalicText) { // word with quote punctuation is only accepted if nothing matched before, so we have a chance to stop
+    return element, nil
+}
+
+NonDoubleQuoteItalicText <- (.) (!"__" !"^" !"~" !NEWLINE .)* { 
+    return types.NewStringElement(string(c.text))
+}
+
+SingleQuoteItalicText <- !`\` !"__" "_" content:(SingleQuoteItalicTextContent) "_" { // single punctuation cannot be followed by a character (needs '__' to emphazise a portion of a word)
+    return types.NewQuotedText(types.Italic, content.([]interface{}))
+} / !`\\` "__" content:(SingleQuoteItalicTextContent) "_" { // unbalanced `__` vs `_` punctuation.
+    return types.NewQuotedText(types.Italic, append([]interface{}{types.StringElement{Content:"_"}}, content.([]interface{})...)) // include the second heading `_` as a regular StringElement in the italic content
+} 
+
+SingleQuoteItalicTextContent <- !WS SingleQuoteItalicTextElement (!("_" !Alphanum) spaces:(WS*) element:(SingleQuoteItalicTextElement) {
+    return append(spaces.([]interface{}), element), nil
+})*
+
+SingleQuoteItalicTextElement <- !NEWLINE element:(DoubleQuoteItalicText
+        / BoldText 
+        / MonospaceText
+        / SubscriptText
+        / SuperscriptText
+        / InlineImage 
+        / Link 
+        / Passthrough 
+        / NonSingleQuoteItalicText) { // word with quote punctuation is only accepted if nothing matched before, so we have a chance to stop
+    return element, nil
+}
+
+NonSingleQuoteItalicText <- (.) (!"_" !WS !"^" !"~" !NEWLINE .)* { 
+    return types.NewStringElement(string(c.text))
+}
+
+EscapedItalicText <- 
+    backslashes:(TwoOrMoreBackslashes) "__" content:(DoubleQuoteItalicTextContent) "__" { // double punctuation must be evaluated first
+        return types.NewEscapedQuotedText(backslashes.(string), "__", content.([]interface{}))
+    } / backslashes:(OneOrMoreBackslashes) "__" content:(SingleQuoteItalicTextContent) "_" { // unbalanced `__` vs `_` punctuation
+        result := append([]interface{}{"_"}, content.([]interface{}))
+        return types.NewEscapedQuotedText(backslashes.(string), "_", result)
+    } / backslashes:(OneOrMoreBackslashes) "_" content:(SingleQuoteItalicTextContent) "_" { // simple punctuation must be evaluated last
+        return types.NewEscapedQuotedText(backslashes.(string), "_", content.([]interface{}))
+} 
+
+// -----------------
+// Monospace text
+// -----------------
+MonospaceText <- DoubleQuoteMonospaceText / SingleQuoteMonospaceText
+
+DoubleQuoteMonospaceText <- !`\\` "``" content:(DoubleQuoteMonospaceTextContent) "``" { // double punctuation must be evaluated first
+    return types.NewQuotedText(types.Monospace, content.([]interface{}))
+}
+
+DoubleQuoteMonospaceTextContent <- DoubleQuoteMonospaceTextElement (!("``") element:(WS / DoubleQuoteMonospaceTextElement) { // may start and end with spaces
+    return element, nil
+})*
+
+DoubleQuoteMonospaceTextElement <- !NEWLINE element:(SingleQuoteMonospaceText 
+        / BoldText
+        / ItalicText 
+        / SubscriptText
+        / SuperscriptText
+        / InlineImage 
+        / Link 
+        / Passthrough 
+        / NonDoubleQuoteMonospaceText) { // word with quote punctuation is only accepted if nothing matched before, so we have a chance to stop
+    return element, nil
+}
+
+NonDoubleQuoteMonospaceText <- (.) (!"``" !WS !"^" !"~" !NEWLINE .)* { 
+    return types.NewStringElement(string(c.text))
+}
+
+SingleQuoteMonospaceText <- !`\` !"``" "`" content:(SingleQuoteMonospaceTextContent) "`" { // single punctuation cannot be followed by a character (needs "``" to emphazise a portion of a word)
+    return types.NewQuotedText(types.Monospace, content.([]interface{}))
+} / !`\\` "``" content:(SingleQuoteMonospaceTextContent) "`" { // unbalanced "``" vs "`" punctuation.
+    return types.NewQuotedText(types.Monospace, append([]interface{}{types.StringElement{Content:"`"}}, content.([]interface{})...)) // include the second heading "`" as a regular StringElement in the monospace content
+} 
+
+SingleQuoteMonospaceTextContent <- !WS SingleQuoteMonospaceTextElement (!("`" !Alphanum) spaces:(WS*) element:(SingleQuoteMonospaceTextElement) {
+    return append(spaces.([]interface{}), element), nil
+})*
+
+SingleQuoteMonospaceTextElement <-  element:(NEWLINE // allows multiline
+        / DoubleQuoteMonospaceText 
+        / BoldText 
+        / ItalicText
+        / SubscriptText
+        / SuperscriptText
+        / InlineImage 
+        / Link 
+        / Passthrough 
+        / NonSingleQuoteMonospaceText) { // word with quote punctuation is only accepted if nothing matched before, so we have a chance to stop
+    return element, nil
+}
+
+NonSingleQuoteMonospaceText <- (.) (!WS !"`" !"^" !"~" !NEWLINE .)* { // break at multiline
+    return types.NewStringElement(string(c.text))
+}
+
+EscapedMonospaceText <- 
+    backslashes:(TwoOrMoreBackslashes) "``" content:(DoubleQuoteMonospaceTextContent) "``" { // double punctuation must be evaluated first
+        return types.NewEscapedQuotedText(backslashes.(string), "``", content.([]interface{}))
+    } / backslashes:(OneOrMoreBackslashes) "``" content:(SingleQuoteMonospaceTextContent) "`" { // unbalanced "``" vs "`" punctuation
+        result := append([]interface{}{"`"}, content.([]interface{}))
+        return types.NewEscapedQuotedText(backslashes.(string), "`", result)
+    } / backslashes:(OneOrMoreBackslashes) "`" content:(SingleQuoteMonospaceTextContent) "`" { // simple punctuation must be evaluated last
+        return types.NewEscapedQuotedText(backslashes.(string), "`", content.([]interface{}))
+} 
+
+SubscriptText <- !`\` "~" content:(SubscriptTextElement) "~" { // wraps a single word
+    return types.NewQuotedText(types.Subscript, content)
+}
+
+SubscriptTextElement <- QuotedText / NonSubscriptText 
+
+NonSubscriptText <- (!NEWLINE !WS !"~" .)+ { 
+    return c.text, nil
+}
+
+EscapedSubscriptText <- backslashes:(OneOrMoreBackslashes) "~" content:(SubscriptTextElement) "~" { // simple punctuation must be evaluated last
+    return types.NewEscapedQuotedText(backslashes.(string), "~", content)
+} 
+
+SuperscriptText <- !`\` "^" content:(SuperscriptTextElement) "^" { // wraps a single word
+    return types.NewQuotedText(types.Superscript, content)
+}
+
+SuperscriptTextElement <- QuotedText / NonSuperscriptText 
+
+NonSuperscriptText <- (!NEWLINE !WS !"^" .)+ { 
+    return c.text, nil
+}
+
+EscapedSuperscriptText <- backslashes:(OneOrMoreBackslashes) "^" content:(SuperscriptTextElement) "^" { // simple punctuation must be evaluated last
+    return types.NewEscapedQuotedText(backslashes.(string), "^", content)
+} 
+
+// ------------------------------------------
+// Passthrough
+// ------------------------------------------
+Passthrough <- TriplePlusPassthrough / SinglePlusPassthrough / PassthroughMacro
+
+SinglePlusPassthroughPrefix <- "+"
+
+SinglePlusPassthrough <- SinglePlusPassthroughPrefix content:(SinglePlusPassthroughContent) SinglePlusPassthroughPrefix !Alphanum {
+    return types.NewPassthrough(types.SinglePlusPassthrough, []interface{}{content})
+}
+
+SinglePlusPassthroughContent <- ((!SinglePlusPassthroughPrefix !WS !NEWLINE .) (!(WS+ SinglePlusPassthroughPrefix) !SinglePlusPassthroughPrefix !NEWLINE .)* { // no space in the first or last position of the content, but allowed elsewhere
+    return types.NewStringElement(string(c.text))
+}) / ((!WS !NEWLINE !SinglePlusPassthroughPrefix .)  { // a single character
+    return types.NewStringElement(string(c.text))
+})
+
+TriplePlusPassthroughPrefix <- "+++"
+
+TriplePlusPassthrough <- TriplePlusPassthroughPrefix content:(TriplePlusPassthroughContent) TriplePlusPassthroughPrefix !Alphanum {
+    return types.NewPassthrough(types.TriplePlusPassthrough, []interface{}{content})
+}
+
+TriplePlusPassthroughContent <- ((!TriplePlusPassthroughPrefix .)* { // spaces and newlines are also allowed in the first or last position of the content and elsewhere too
+    return types.NewStringElement(string(c.text))
+}) / ((!WS !NEWLINE !TriplePlusPassthroughPrefix .)?  { // a single character
+    return types.NewStringElement(string(c.text))
+})
+
+PassthroughMacro <- "pass:[" content:(PassthroughMacroCharacter)* "]" {
+    return types.NewPassthrough(types.PassthroughMacro, []interface{}{content})
+} / "pass:q[" content:(QuotedText / PassthroughMacroCharacter)* "]" {
+    return types.NewPassthrough(types.PassthroughMacro, content.([]interface{}))
+}
+
+PassthroughMacroCharacter <- (Alphanums / Spaces / (!"]" .){
+    return types.NewStringElement(string(c.text))
+})
+
+// ------------------------------------------
+// Cross References
+// ------------------------------------------
+CrossReference <- "<<" id:(ID) WS* "," label:(CrossReferenceLabel) ">>" {
+    return types.NewCrossReference(id.(string), label.(string))
+} / "<<" id:(ID) ">>" {
+    return types.NewCrossReference(id.(string), nil)
+}
+
+CrossReferenceLabel <- (Alphanums / Spaces / (!">>"  .))+ {
+    return string(c.text), nil
+}
+
+// ------------------------------------------
+// Links
+// ------------------------------------------
+Link <- link:(RelativeLink / ExternalLink) {
+    return link, nil
+}
+
+// url preceeding with `link:` MUST be followed by square brackets
+RelativeLink <- "link:" url:(Location / FileLocation) inlineAttributes:(LinkAttributes) {
+    return types.NewInlineLink(url.(types.Location), inlineAttributes.(types.ElementAttributes))
+}
+
+ExternalLink <- url:(Location) inlineAttributes:(LinkAttributes)? {
+    return types.NewInlineLink(url.(types.Location), inlineAttributes)
+}
+
+LinkAttributes <- TextOnlyLinkAttributes / TextAndMoreLinkAttributes
+
+TextOnlyLinkAttributes <- "[" text:(LinkTextWithCommaAttribute)? "]" {
+    return types.NewInlineLinkAttributes(text, nil)
+} 
+
+LinkTextWithCommaAttribute <- 
+    // surrounded with double quotes
+    "\"" elements:(!"=" !"]" !"\"" (QuotedText / SimpleWord / Spaces / ((!QuotedTextPrefix .) {
+        return types.NewStringElement(string(c.text))
+    })))+ "\"" Spaces* &(!"=") {
+        return types.NewInlineElements(elements.([]interface{}))
+    } /
+    // not surrounded with double quotes
+    elements:(!"=" !"]" (QuotedText / SimpleWord / Spaces / ((!QuotedTextPrefix .) {
+        return types.NewStringElement(string(c.text))
+    })))+ &(!"=") {
+        return types.NewInlineElements(elements.([]interface{}))
+    }
+
+
+TextAndMoreLinkAttributes <- "[" text:(LinkTextAttribute)? ","? WS* otherattrs:(GenericAttribute)* "]" {
+    return types.NewInlineLinkAttributes(text, otherattrs.([]interface{}))
+} 
+
+LinkTextAttribute <- 
+    // surrounded with double quotes
+    "\"" elements:(!"=" !"]" !"\"" (QuotedText / SimpleWord / Spaces / ((!QuotedTextPrefix .) {
+        return types.NewStringElement(string(c.text))
+    })))+ "\"" Spaces* &(!"=") {
+        return types.NewInlineElements(elements.([]interface{}))
+    } /
+    // not surrounded with double quotes
+    elements:(!"=" !"," !"]" (QuotedText / SimpleWord / Spaces / ((!QuotedTextPrefix .) {
+        return types.NewStringElement(string(c.text))
+    })))+ &(!"=") {
+        return types.NewInlineElements(elements.([]interface{}))
+    }
+
+// ------------------------------------------
+// Images
+// ------------------------------------------
+ImageBlock <- attributes:(ElementAttributes)? "image::" path:(URL) inlineAttributes:(ImageAttributes) EOLS {
+    return types.NewImageBlock(path.(string), inlineAttributes.(types.ElementAttributes), attributes)
+}
+
+InlineImage <- "image:" !":" path:(URL) inlineAttributes:(ImageAttributes) {
+    return types.NewInlineImage(path.(string), inlineAttributes.(types.ElementAttributes))
+}
+
+ImageAttributes <- "[" alt:(AttributeValue)? ","? width:(AttributeValue)? ","? height:(AttributeValue)? ","? WS* otherattrs:(GenericAttribute)* "]" {
+    return types.NewImageAttributes(alt, width, height, otherattrs.([]interface{}))
+}
+
+// ------------------------------------------------------------------------------------
+// Inline foot notes
+// ------------------------------------------------------------------------------------
+InlineFootnote <- "footnote:[" content:(FootnoteContent) "]" {
+    return types.NewFootnote("", content.(types.InlineElements))
+} / "footnoteref:[" ref:(FootnoteRef) "," content:(FootnoteContent) "]" {
+    return types.NewFootnote(ref.(string), content.(types.InlineElements))
+} / "footnoteref:[" ref:(FootnoteRef) "]" {
+    return types.NewFootnote(ref.(string), types.InlineElements{}) // foot note referring to another note
+}
+
+FootnoteRef <- (Alphanums / Spaces / (!"," !"]" !EOL  .))*  { // footnote ID not may span multiple lines
+    return string(c.text), nil
+}
+
+FootnoteContent <- elements:(!"]" !EOL WS* !InlineElementID InlineElement WS*)+  { // footnote content may span multiple lines
+    return types.NewInlineElements(elements.([]interface{}))
+}
+
+// ------------------------------------------------------------------------------------
+// Delimited Blocks 
+// ------------------------------------------------------------------------------------
+DelimitedBlock <- !Alphanum // quick escape
+    block:(FencedBlock 
+        / ListingBlock 
+        / ExampleBlock 
+        / VerseBlock 
+        / QuoteBlock 
+        / SidebarBlock
+        / SingleLineComment
+        / Table
+        / CommentBlock) {
+    return block, nil
+}
+
+BlockDelimiter <- LiteralBlockDelimiter 
+                / FencedBlockDelimiter 
+                / ListingBlockDelimiter 
+                / ExampleBlockDelimiter 
+                / CommentBlockDelimiter 
+                / QuoteBlockDelimiter
+                / SidebarBlockDelimiter
+
+
+// -------------------------------------------------------------------------------------
+// Fenced Blocks
+// -------------------------------------------------------------------------------------
+FencedBlockDelimiter <- "```" EOLS
+
+FencedBlock <- attributes:(ElementAttributes)? FencedBlockDelimiter content:(FencedBlockContent)* (FencedBlockDelimiter / EOF) {
+    return types.NewDelimitedBlock(types.Fenced, content.([]interface{}), types.None, attributes)
+}
+
+FencedBlockContent <- BlankLine / FileInclusion / ListItem / FencedBlockParagraph
+
+// blocks content
+FencedBlockParagraph <- lines:(FencedBlockParagraphLine)+ {
+    return types.NewParagraph(lines.([]interface{}), types.ElementAttributes{})
+} 
+
+FencedBlockParagraphLine <- !FencedBlockDelimiter !BlankLine line:(InlineElements) {
+    return line, nil
+}
+
+// -------------------------------------------------------------------------------------
+// Listing blocks
+// -------------------------------------------------------------------------------------
+ListingBlockDelimiter <- "----" EOLS
+
+// listing block: verbatim content
+ListingBlock <- attributes:(ElementAttributes)? ListingBlockDelimiter content:(ListingBlockElement)* (ListingBlockDelimiter / EOF) {
+    return types.NewDelimitedBlock(types.Listing, content.([]interface{}), types.None, attributes)
+}
+
+ListingBlockElement <- FileInclusion / ListingBlockParagraph
+
+ListingBlockParagraph <- lines:(ListingBlockParagraphLine)+ { 
+    return types.NewParagraph(lines.([]interface{}), nil) // no attributes supported
+}
+
+ListingBlockParagraphLine <- !ListingBlockDelimiter line:(!EOF (Alphanums / Spaces / (!EOL .))* {return string(c.text), nil }) EOL { // skip EOL in line content, and stop when quote block delimiter is encountered
+    return types.NewInlineElements(line)
+}
+
+// -------------------------------------------------------------------------------------
+// Example blocks
+// -------------------------------------------------------------------------------------
+ExampleBlockDelimiter <- "====" EOLS
+
+ExampleBlock <- attributes:(ElementAttributes)? ExampleBlockDelimiter content:(BlankLine / FileInclusion / ListItem / ExampleBlockParagraph)*  (ExampleBlockDelimiter / EOF) {
+    return types.NewDelimitedBlock(types.Example, content.([]interface{}), types.None, attributes)
+}
+
+// blocks content
+ExampleBlockParagraph <- lines:(ExampleBlockParagraphLine)+ {
+    return types.NewParagraph(lines.([]interface{}), types.ElementAttributes{})
+} 
+
+ExampleBlockParagraphLine <- !ExampleBlockDelimiter !BlankLine line:(InlineElements) {
+    return line, nil
+}
+
+// -------------------------------------------------------------------------------------
+// Quote blocks
+// -------------------------------------------------------------------------------------
+QuoteBlockDelimiter <- "____" EOLS // same for verse blocks
+
+QuoteBlock <- attributes:(ElementAttributes)? QuoteBlockDelimiter content:(QuoteBlockElement)* (QuoteBlockDelimiter / EOF) {
+    return types.NewDelimitedBlock(types.Quote, content.([]interface{}), types.None, attributes)
+}
+
+QuoteBlockElement <- 
+    !QuoteBlockDelimiter !EOF element:(BlankLine 
+            / FileInclusion
+            / ImageBlock 
+            / ListItem
+            / FencedBlock
+            / ListingBlock
+            / ExampleBlock
+            / CommentBlock
+            / SingleLineComment
+            / QuoteBlock 
+            / SidebarBlock
+            / Table 
+            / LiteralBlock 
+            / DocumentAttributeDeclaration 
+            / DocumentAttributeReset 
+            / TableOfContentsMacro
+            / QuoteBlockParagraph) {
+        return element, nil
+    } 
+
+QuoteBlockParagraph <- lines:(InlineElements)+ { 
+    return types.NewParagraph(lines.([]interface{}), types.ElementAttributes{})
+}
+
+// -------------------------------------------------------------------------------------
+// Verse blocks
+// -------------------------------------------------------------------------------------
+// VerseBlockDelimiter: see QuoteBlockDelimiter
+
+VerseBlock <- attributes:(ElementAttributes) 
+    &{  
+        kind := attributes.(types.ElementAttributes).GetAsString("kind") // once we got the attributes, check that `[verse]`  was set
+        return kind == "verse", nil
+    } 
+    QuoteBlockDelimiter content:(VerseBlockElement)* (QuoteBlockDelimiter / EOF) {
+        return types.NewDelimitedBlock(types.Verse, content.([]interface{}), types.None, attributes)
+    }
+
+VerseBlockElement <- VerseFileInclude / BlankLine / VerseBlockParagraph
+
+VerseFileInclude <- !QuoteBlockDelimiter include:(FileInclusion) {
+    return include, nil
+}
+
+// blocks content
+VerseBlockParagraph <- lines:(VerseBlockParagraphLine)+ {
+    return types.NewParagraph(lines.([]interface{}), nil)
+} 
+
+VerseBlockParagraphLine <- !QuoteBlockDelimiter !BlankLine line:(elements:(VerseBlockParagraphLineElement)+ EOL {
+    return types.NewInlineElements(elements.([]interface{}))
+}) {
+    return line, nil
+}
+
+VerseBlockParagraphLineElement <- !EOL !LineBreak 
+    element:(Spaces 
+        / InlineImage 
+        / Link 
+        / Passthrough 
+        / InlineFootnote 
+        / InlineUserMacro 
+        / QuotedText 
+        / CrossReference 
+        / DocumentAttributeSubstitution 
+        / InlineElementID 
+        / OtherWord) {
+    return element, nil
+}
+
+// -------------------------------------------------------------------------------------
+// Sidebars
+// -------------------------------------------------------------------------------------
+SidebarBlockDelimiter <- "****" EOLS
+
+SidebarBlock <- attributes:(ElementAttributes)? SidebarBlockDelimiter content:(SidebarBlockContent)*  (SidebarBlockDelimiter / EOF) {
+    return types.NewDelimitedBlock(types.Sidebar, content.([]interface{}), types.None, attributes)
+}
+
+SidebarBlockContent <- BlankLine / FileInclusion / ListItem / NonSidebarBlock / SidebarBlockParagraph
+
+NonSidebarBlock <- !SidebarBlock content:(DelimitedBlock) {
+    return content, nil
+}
+
+// blocks content
+SidebarBlockParagraph <- lines:(SidebarBlockParagraphLine)+ {
+    return types.NewParagraph(lines.([]interface{}), types.ElementAttributes{})
+} 
+
+SidebarBlockParagraphLine <- !SidebarBlockDelimiter !BlankLine line:(InlineElements) {
+    return line, nil
+}
+
+
+// -------------------------------------------------------------------------------------
+// Tables
+// -------------------------------------------------------------------------------------
+Table <- attributes:(ElementAttributes)? TableDelimiter
+    header:(TableLineHeader)?
+    lines:(TableLine)*
+    (TableDelimiter / EOF) { // end delimiter or end of file
+        return types.NewTable(header, lines.([]interface{}), attributes)
+}
+
+TableCellSeparator <- "|" WS*
+
+TableDelimiter <- "|===" EOLS
+        
+// table line header is a line followed by a blankline
+TableLineHeader <- !TableDelimiter cells:(TableCell)+ EOL BlankLine {
+    return types.NewTableLine(cells.([]interface{}))
+}
+
+TableLine <- !TableDelimiter cells:(TableCell)+ EOL BlankLine* {
+    return types.NewTableLine(cells.([]interface{}))
+}
+
+TableCell <- TableCellSeparator elements:(!TableCellSeparator !EOL WS* InlineElement WS*)+ {
+    return types.NewInlineElements(elements)
+}
+
+// -------------------------------------------------------------------------------------
+// Comments
+// -------------------------------------------------------------------------------------
+CommentBlockDelimiter <- "////"
+
+CommentBlock <- CommentBlockDelimiter WS* NEWLINE content:(CommentBlockLine)*  ((CommentBlockDelimiter EOLS) / EOF) {
+    return types.NewDelimitedBlock(types.Comment, content.([]interface{}), types.Verbatim, nil)
+}
+
+CommentBlockLine <- (Alphanums / Spaces / (!CommentBlockDelimiter !EOL  .))* EOL {
+    return string(c.text), nil
+}
+
+SingleLineComment <- !CommentBlockDelimiter WS* "//" content:(SingleLineCommentContent) EOL {
+    return types.NewSingleLineComment(content.(string))
+}
+
+SingleLineCommentContent <- (Alphanums / Spaces / (!EOL  .))* {
+    return string(c.text), nil
+}
+
+
+// -------------------------------------------------------------------------------------
+// Literal Blocks (see http://asciidoctor.org/docs/user-manual/#literal-text-and-blocks)
+// -------------------------------------------------------------------------------------
+LiteralBlock <- ParagraphWithLiteralAttribute / ParagraphWithHeadingSpaces / ParagraphWithLiteralBlockDelimiter
+
+LiteralBlockDelimiter <- "...."
+
+// paragraph indented with one or more spaces on the first line
+ParagraphWithHeadingSpaces <- attributes:(ElementAttributes)? lines:(ParagraphWithHeadingSpacesLines) {
+    return types.NewLiteralBlock(types.LiteralBlockWithSpacesOnFirstLine, lines.([]interface{}), attributes)
+}
+
+// first line MUST start with one (or more) space. Stop when reaching a blank line
+ParagraphWithHeadingSpacesLines <- 
+    firstLine:(WS (Alphanums / Spaces / (!EOL  .){
+        return string(c.text), nil
+    })+ {
+        return string(c.text), nil
+    }) EOL // do not include the trailing 'EOL' on the first line
+    otherLines:(
+        !BlankLine 
+        otherLine:((Alphanums / Spaces / (!EOL  .))+ {
+            return string(c.text), nil
+        }) EOL {
+            return otherLine, nil // do not include the trailing 'EOL'
+        })* { 
+    return append([]interface{}{firstLine}, otherLines.([]interface{})...), nil
+}
+
+// paragraph with the literal block delimiter (`....`)
+ParagraphWithLiteralBlockDelimiter <- attributes:(ElementAttributes)?
+        LiteralBlockDelimiter WS* NEWLINE lines:(ParagraphWithLiteralBlockDelimiterLines) ((LiteralBlockDelimiter EOLS) / EOF) {
+    return types.NewLiteralBlock(types.LiteralBlockWithDelimiter, lines.([]interface{}), attributes)
+}
+
+// include all lines until delimiter is reached
+ParagraphWithLiteralBlockDelimiterLines <- lines:(ParagraphWithLiteralBlockDelimiterLine)* {
+    return lines.([]interface{}), nil
+}
+
+ParagraphWithLiteralBlockDelimiterLine <-         
+    line:((Alphanums / Spaces / (!LiteralBlockDelimiter !EOL .))* {
+        return string(c.text), nil
+    }) EOL { 
+        return line, nil // do not include the trailing 'EOL'
+}
+
+// paragraph with the literal attribute (`[literal]`)
+ParagraphWithLiteralAttribute <- 
+    attributes:(ElementAttributes)?
+    &{
+        if attrs, ok := attributes.(types.ElementAttributes); ok {
+            kind, ok := attrs[types.AttrKind]
+            return ok && kind == types.Literal, nil
+        }
+        return false, nil
+    }
+    lines:(ParagraphWithLiteralAttributeLines) {
+        return types.NewLiteralBlock(types.LiteralBlockWithAttribute, lines.([]interface{}), attributes)
+    }
+
+LiteralKind <- "literal" {
+    return string(c.text), nil
+}
+
+// include all lines until blankline
+ParagraphWithLiteralAttributeLines <- lines:(ParagraphWithLiteralAttributeLine)+ { 
+    return lines.([]interface{}), nil
+}
+
+ParagraphWithLiteralAttributeLine <- line:(!(BlankLine) (Alphanums / Spaces / (!EOL  .))+ {
+    return string(c.text), nil
+}) EOL {
+    return line, nil // do not include the trailing 'EOL'
+}
+
+// ------------------------------------------
+// BlankLine
+// ------------------------------------------
+BlankLine <- !EOF EOLS {
+    return types.NewBlankLine()
+}
+
+// ------------------------------------------
+// Base Types
+// ------------------------------------------
+Alphanum <- [\pL0-9]
+
+Parenthesis <- "(" / ")" / "[" / "]"
+
+Alphanums <- [\pL0-9]+
+
+Dot <- "."
+
+SimpleWord <- Alphanums &(WS / EOL) { // very straightforward content: alphanums followed by spaces but not the "+" signs because it needs a heading space to become a LineBreak element
+    return types.NewStringElement(string(c.text))
+}
+
+// a word may end with a dot, but cannot have dots within
+OtherWord <- (Alphanums / QuotedTextPrefix / Parenthesis / ((!NEWLINE !WS !Dot !QuotedTextPrefix .) Dot? { // TODO: remove check on parenthesis and dot?
+    return types.NewStringElement(string(c.text))
+})+ / "."+){ // word cannot contain parenthesis. Dots and ellipsis are treated as independent words (but will be combined afterwards)
+    return types.NewStringElement(string(c.text))
+}
+
+Spaces <- WS+ 
+
+FileLocation <- elements:(FILENAME / DocumentAttributeSubstitution)+ {
+    return types.NewLocation(elements.([]interface{}))
+}
+
+Location <- elements:(URL_SCHEME (FILENAME / DocumentAttributeSubstitution / !EOL !"[" .)+) {
+    return types.NewLocation(elements.([]interface{}))
+}
+
+FILENAME <- (Alphanums / "." / "_" / "/" / "-")+
+
+URL <- (Alphanums / (!NEWLINE !WS !"[" !"]"  .))+ {
+    return string(c.text), nil
+}
+
+URL_SCHEME <- "http://" / "https://" / "ftp://" / "irc://" / "mailto:"
+
+ID <- (Alphanums / (!NEWLINE !WS !"[" !"]" !"<<" !">>" !","  .))+ {
+    return string(c.text), nil
+}
+
+DIGIT <- [0-9] {
+    return string(c.text), nil
+}
+
+NUMBER <- "-"? DIGIT+ {
+    return strconv.Atoi(string(c.text))
+}
+
+WS <- " " / "\t" {
+    return string(c.text), nil
+}
+
+NEWLINE <- "\r\n" / "\r" / "\n"
+
+EOF <- !.
+
+EOL <- NEWLINE / EOF
+
+EOLS <- WS* EOL

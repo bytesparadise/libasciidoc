@@ -1,18 +1,17 @@
 package parser_test
 
 import (
-	"github.com/bytesparadise/libasciidoc/pkg/parser"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 	. "github.com/onsi/ginkgo"
 )
 
-var _ = Describe("passthroughs", func() {
+var _ = Describe("passthroughs - preflight", func() {
 
 	Context("triplePlus Passthrough", func() {
 
 		It("tripleplus passthrough with words", func() {
-			actualContent := `+++hello, world+++`
-			expectedResult := types.Paragraph{
+			source := `+++hello, world+++`
+			expected := types.Paragraph{
 				Attributes: types.ElementAttributes{},
 				Lines: []types.InlineElements{
 					{
@@ -27,12 +26,12 @@ var _ = Describe("passthroughs", func() {
 					},
 				},
 			}
-			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+			verifyDocumentBlock(expected, source)
 		})
 
 		It("tripleplus empty passthrough ", func() {
-			actualContent := `++++++`
-			expectedResult := types.Paragraph{
+			source := `++++++`
+			expected := types.Paragraph{
 				Attributes: types.ElementAttributes{},
 				Lines: []types.InlineElements{
 					{
@@ -43,12 +42,12 @@ var _ = Describe("passthroughs", func() {
 					},
 				},
 			}
-			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+			verifyDocumentBlock(expected, source)
 		})
 
 		It("tripleplus passthrough with spaces", func() {
-			actualContent := `+++ *hello*, world +++`
-			expectedResult := types.Paragraph{
+			source := `+++ *hello*, world +++`
+			expected := types.Paragraph{
 				Attributes: types.ElementAttributes{},
 				Lines: []types.InlineElements{
 					{
@@ -63,12 +62,12 @@ var _ = Describe("passthroughs", func() {
 					},
 				},
 			}
-			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+			verifyDocumentBlock(expected, source)
 		})
 
 		It("tripleplus passthrough with only spaces", func() {
-			actualContent := `+++ +++`
-			expectedResult := types.Paragraph{
+			source := `+++ +++`
+			expected := types.Paragraph{
 				Attributes: types.ElementAttributes{},
 				Lines: []types.InlineElements{
 					{
@@ -83,12 +82,12 @@ var _ = Describe("passthroughs", func() {
 					},
 				},
 			}
-			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+			verifyDocumentBlock(expected, source)
 		})
 
 		It("tripleplus passthrough with line breaks", func() {
-			actualContent := "+++\nhello,\nworld\n+++"
-			expectedResult := types.Paragraph{
+			source := "+++\nhello,\nworld\n+++"
+			expected := types.Paragraph{
 				Attributes: types.ElementAttributes{},
 				Lines: []types.InlineElements{
 					{
@@ -103,12 +102,12 @@ var _ = Describe("passthroughs", func() {
 					},
 				},
 			}
-			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+			verifyDocumentBlock(expected, source)
 		})
 
 		It("tripleplus passthrough in paragraph", func() {
-			actualContent := `The text +++<u>underline & me</u>+++ is underlined.`
-			expectedResult := types.Paragraph{
+			source := `The text +++<u>underline & me</u>+++ is underlined.`
+			expected := types.Paragraph{
 				Attributes: types.ElementAttributes{},
 				Lines: []types.InlineElements{
 					{
@@ -125,7 +124,27 @@ var _ = Describe("passthroughs", func() {
 					},
 				},
 			}
-			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+			verifyDocumentBlock(expected, source)
+		})
+
+		It("tripleplus passthrough with embedded image", func() {
+			source := `+++image:foo.png[]+++`
+			expected := types.Paragraph{
+				Attributes: types.ElementAttributes{},
+				Lines: []types.InlineElements{
+					{
+						types.Passthrough{
+							Kind: types.TriplePlusPassthrough,
+							Elements: types.InlineElements{
+								types.StringElement{
+									Content: "image:foo.png[]",
+								},
+							},
+						},
+					},
+				},
+			}
+			verifyDocumentBlock(expected, source)
 		})
 
 	})
@@ -133,8 +152,8 @@ var _ = Describe("passthroughs", func() {
 	Context("singleplus passthrough", func() {
 
 		It("singleplus passthrough with words", func() {
-			actualContent := `+hello, world+`
-			expectedResult := types.Paragraph{
+			source := `+hello, world+`
+			expected := types.Paragraph{
 				Attributes: types.ElementAttributes{},
 				Lines: []types.InlineElements{
 					{
@@ -149,12 +168,12 @@ var _ = Describe("passthroughs", func() {
 					},
 				},
 			}
-			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("Paragraph"))
+			verifyDocumentBlock(expected, source)
 		})
 
 		It("singleplus empty passthrough", func() {
-			actualContent := `++`
-			expectedResult := types.Paragraph{
+			source := `++`
+			expected := types.Paragraph{
 				Attributes: types.ElementAttributes{},
 				Lines: []types.InlineElements{
 					{
@@ -164,12 +183,32 @@ var _ = Describe("passthroughs", func() {
 					},
 				},
 			}
-			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+			verifyDocumentBlock(expected, source)
+		})
+
+		It("singleplus passthrough with embedded image", func() {
+			source := `+image:foo.png[]+`
+			expected := types.Paragraph{
+				Attributes: types.ElementAttributes{},
+				Lines: []types.InlineElements{
+					{
+						types.Passthrough{
+							Kind: types.SinglePlusPassthrough,
+							Elements: types.InlineElements{
+								types.StringElement{
+									Content: "image:foo.png[]",
+								},
+							},
+						},
+					},
+				},
+			}
+			verifyDocumentBlock(expected, source)
 		})
 
 		It("invalid singleplus passthrough with spaces - case 1", func() {
-			actualContent := `+*hello*, world +` // invalid: space before last `+`
-			expectedResult := types.Paragraph{
+			source := `+*hello*, world +` // invalid: space before last `+`
+			expected := types.Paragraph{
 				Attributes: types.ElementAttributes{},
 				Lines: []types.InlineElements{
 					{
@@ -191,12 +230,12 @@ var _ = Describe("passthroughs", func() {
 					},
 				},
 			}
-			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+			verifyDocumentBlock(expected, source)
 		})
 
 		It("invalid singleplus passthrough with spaces - case 2", func() {
-			actualContent := `+ *hello*, world+` // invalid: space after first `+`
-			expectedResult := types.Paragraph{
+			source := `+ *hello*, world+` // invalid: space after first `+`
+			expected := types.Paragraph{
 				Attributes: types.ElementAttributes{},
 				Lines: []types.InlineElements{
 					{
@@ -217,12 +256,12 @@ var _ = Describe("passthroughs", func() {
 					},
 				},
 			}
-			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+			verifyDocumentBlock(expected, source)
 		})
 
 		It("invalid singleplus passthrough with spaces - case 3", func() {
-			actualContent := `+ *hello*, world +` // invalid: spaces within
-			expectedResult := types.Paragraph{
+			source := `+ *hello*, world +` // invalid: spaces within
+			expected := types.Paragraph{
 				Attributes: types.ElementAttributes{},
 				Lines: []types.InlineElements{
 					{
@@ -244,12 +283,12 @@ var _ = Describe("passthroughs", func() {
 					},
 				},
 			}
-			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+			verifyDocumentBlock(expected, source)
 		})
 
 		It("invalid singleplus passthrough with line break", func() {
-			actualContent := "+hello,\nworld+"
-			expectedResult := types.Paragraph{
+			source := "+hello,\nworld+"
+			expected := types.Paragraph{
 				Attributes: types.ElementAttributes{},
 				Lines: []types.InlineElements{
 					{
@@ -264,18 +303,18 @@ var _ = Describe("passthroughs", func() {
 					},
 				},
 			}
-			verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+			verifyDocumentBlock(expected, source)
 		})
 
 	})
 
-	Context("passthrough Macro", func() {
+	Context("passthrough macro", func() {
 
-		Context("passthrough Base Macro", func() {
+		Context("passthrough base macro", func() {
 
 			It("passthrough macro with single word", func() {
-				actualContent := `pass:[hello]`
-				expectedResult := types.Paragraph{
+				source := `pass:[hello]`
+				expected := types.Paragraph{
 					Attributes: types.ElementAttributes{},
 					Lines: []types.InlineElements{
 						{
@@ -290,12 +329,12 @@ var _ = Describe("passthroughs", func() {
 						},
 					},
 				}
-				verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+				verifyDocumentBlock(expected, source)
 			})
 
 			It("passthrough macro with words", func() {
-				actualContent := `pass:[hello, world]`
-				expectedResult := types.Paragraph{
+				source := `pass:[hello, world]`
+				expected := types.Paragraph{
 					Attributes: types.ElementAttributes{},
 					Lines: []types.InlineElements{
 						{
@@ -310,12 +349,12 @@ var _ = Describe("passthroughs", func() {
 						},
 					},
 				}
-				verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+				verifyDocumentBlock(expected, source)
 			})
 
 			It("empty passthrough macro", func() {
-				actualContent := `pass:[]`
-				expectedResult := types.Paragraph{
+				source := `pass:[]`
+				expected := types.Paragraph{
 					Attributes: types.ElementAttributes{},
 					Lines: []types.InlineElements{
 						{
@@ -326,12 +365,12 @@ var _ = Describe("passthroughs", func() {
 						},
 					},
 				}
-				verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+				verifyDocumentBlock(expected, source)
 			})
 
 			It("passthrough macro with spaces", func() {
-				actualContent := `pass:[ *hello*, world ]`
-				expectedResult := types.Paragraph{
+				source := `pass:[ *hello*, world ]`
+				expected := types.Paragraph{
 					Attributes: types.ElementAttributes{},
 					Lines: []types.InlineElements{
 						{
@@ -346,12 +385,12 @@ var _ = Describe("passthroughs", func() {
 						},
 					},
 				}
-				verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+				verifyDocumentBlock(expected, source)
 			})
 
 			It("passthrough macro with line break", func() {
-				actualContent := "pass:[hello,\nworld]"
-				expectedResult := types.Paragraph{
+				source := "pass:[hello,\nworld]"
+				expected := types.Paragraph{
 					Attributes: types.ElementAttributes{},
 					Lines: []types.InlineElements{
 						{
@@ -366,15 +405,15 @@ var _ = Describe("passthroughs", func() {
 						},
 					},
 				}
-				verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+				verifyDocumentBlock(expected, source)
 			})
 		})
 
-		Context("passthrough Macro with Quoted Text", func() {
+		Context("passthrough macro with Quoted Text", func() {
 
 			It("passthrough macro with single quoted word", func() {
-				actualContent := `pass:q[*hello*]`
-				expectedResult := types.Paragraph{
+				source := `pass:q[*hello*]`
+				expected := types.Paragraph{
 					Attributes: types.ElementAttributes{},
 					Lines: []types.InlineElements{
 						{
@@ -394,12 +433,12 @@ var _ = Describe("passthroughs", func() {
 						},
 					},
 				}
-				verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+				verifyDocumentBlock(expected, source)
 			})
 
 			It("passthrough macro with quoted word in sentence", func() {
-				actualContent := `pass:q[ a *hello*, world ]`
-				expectedResult := types.Paragraph{
+				source := `pass:q[ a *hello*, world ]`
+				expected := types.Paragraph{
 					Attributes: types.ElementAttributes{},
 					Lines: []types.InlineElements{
 						{
@@ -425,7 +464,7 @@ var _ = Describe("passthroughs", func() {
 						},
 					},
 				}
-				verifyWithPreprocessing(GinkgoT(), expectedResult, actualContent, parser.Entrypoint("DocumentBlock"))
+				verifyDocumentBlock(expected, source)
 			})
 		})
 	})

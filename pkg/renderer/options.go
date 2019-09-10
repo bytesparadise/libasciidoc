@@ -1,6 +1,8 @@
 package renderer
 
-import "time"
+import (
+	"time"
+)
 
 //Option the options when rendering a document
 type Option func(ctx *Context)
@@ -38,6 +40,13 @@ func Entrypoint(entrypoint string) Option {
 	}
 }
 
+// DefineMacro defines the given template to a user macro with the given name
+func DefineMacro(name string, t MacroTemplate) Option {
+	return func(ctx *Context) {
+		ctx.macros[name] = t
+	}
+}
+
 // LastUpdated returns the value of the 'LastUpdated' Option if it was present,
 // otherwise it returns the current time using the `2006/01/02 15:04:05 MST` format
 func (ctx *Context) LastUpdated() string {
@@ -49,7 +58,7 @@ func (ctx *Context) LastUpdated() string {
 	return time.Now().Format(LastUpdatedFormat)
 }
 
-// IncludeHeaderFooter returns the value of the 'LastUpdated' Option if it was present,
+// IncludeHeaderFooter returns the value of the 'IncludeHeaderFooter' Option if it was present,
 // otherwise it returns `false`
 func (ctx *Context) IncludeHeaderFooter() bool {
 	if includeHeaderFooter, found := ctx.options[keyIncludeHeaderFooter]; found {

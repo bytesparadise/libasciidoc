@@ -10,7 +10,6 @@ import (
 )
 
 func renderPassthrough(ctx *renderer.Context, p types.Passthrough) ([]byte, error) {
-	// ctx.SetTrimTrailingSpaces(false) // unless overridden by another element afterwards
 	renderedContent, err := renderPassthroughContent(ctx, p)
 	if err != nil {
 		return nil, errors.Wrap(err, "unable to render passthrough")
