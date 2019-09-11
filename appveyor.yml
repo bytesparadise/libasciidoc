@@ -9,6 +9,7 @@ clone_folder: c:\gopath\src\github.com\bytesparadise\libasciidoc
 environment:
   GOPATH: c:\gopath
   DEPTESTBYPASS501: "1"
+  GO111MODULE: "on"
   matrix:
     - GO_VERSION: "1.11"
     - GO_VERSION: "1.12"
@@ -22,20 +23,16 @@ install:
   - set Path=%PATH%;c:\go\bin;%GOPATH%\bin
   - go version
   - go env
-  # Install dep and fetch dependencies
-  - go get -u github.com/golang/dep/cmd/dep
-  - dep ensure
   # Install pigeon to generate the unoptimized parser for the tests
-  - go get -u github.com/mna/pigeon
+  - go install github.com/mna/pigeon
   # Install ginkgo and gomega to run the tests
-  - go get -v github.com/onsi/ginkgo/ginkgo
-  - go get -v github.com/onsi/gomega
+  - go install github.com/onsi/ginkgo/ginkgo
+  - go install github.com/onsi/gomega
 
-build: "off"
-deploy: "off"
+build: false
+deploy: false
 
 test_script:
   - pigeon ./pkg/parser/parser.peg > ./pkg/parser/parser.go
   - go build github.com/bytesparadise/libasciidoc
   - ginkgo -r . & IF ERRORLEVEL == 1 EXIT 1
-   

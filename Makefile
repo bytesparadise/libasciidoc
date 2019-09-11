@@ -8,11 +8,9 @@ SOURCE_DIR ?= .
 COVERPKGS := $(shell go list ./... | grep -v vendor | paste -sd "," -)
 
 DEVTOOLS=\
-				github.com/golang/dep/cmd/dep \
 				github.com/mna/pigeon \
-				github.com/modocache/gover \
 				github.com/onsi/ginkgo/ginkgo \
-				github.com/onsi/gomega
+				github.com/sozorogami/gover
 
 ifeq ($(OS),Windows_NT)
 BINARY_PATH=$(INSTALL_PREFIX)/libasciidoc.exe
@@ -56,13 +54,8 @@ help:/
 .PHONY: install-devtools
 ## Install development tools.
 install-devtools:
-	@go get -u -v $(DEVTOOLS)
-
-.PHONY: deps
-## Download build dependencies.
-deps: 
-	dep ensure -v
-
+	@go mod download
+	@go install -v $(DEVTOOLS)
 
 $(INSTALL_PREFIX):
 # Build artifacts dir
@@ -88,25 +81,19 @@ generate-optimized:
 
 .PHONY: test
 ## run all tests excluding fixtures and vendored packages
-test: deps generate-optimized
+test: generate-optimized
 	@echo $(COVERPKGS)
 	@ginkgo -r --randomizeAllSpecs --randomizeSuites --failOnPending --trace --race --compilers=0
 
 .PHONY: test-with-coverage
 ## run all tests excluding fixtures and vendored packages
-test-with-coverage: deps generate-optimized
+test-with-coverage: generate-optimized
 	@echo $(COVERPKGS)
 	@ginkgo -r --randomizeAllSpecs --randomizeSuites --failOnPending --trace --race --compilers=0  --cover -coverpkg $(COVERPKGS)
 
-.PHONY: test-no-coverage
-## run all tests excluding fixtures and vendored packages, without coverage
-test-no-coverage: deps generate-optimized
-	@echo $(COVERPKGS)
-	@ginkgo -r --randomizeAllSpecs --randomizeSuites --failOnPending --trace --race --compilers=2
-
 .PHONY: test-fixtures
 ## run all fixtures tests
-test-fixtures: deps generate-optimized
+test-fixtures: generate-optimized
 	@ginkgo -r --randomizeAllSpecs --randomizeSuites --failOnPending --trace --race --compilers=2 -tags=fixtures --focus=fixtures
 
 .PHONY: bench-parser
@@ -119,7 +106,7 @@ bench-parser: generate-optimized
 
 .PHONY: build
 ## build the binary executable from CLI
-build: $(INSTALL_PREFIX) deps generate-optimized
+build: $(INSTALL_PREFIX) generate-optimized
 	$(eval BUILD_COMMIT:=$(shell git rev-parse --short HEAD))
 	$(eval BUILD_TAG:=$(shell git tag --contains $(BUILD_COMMIT)))
 	$(eval BUILD_TIME:=$(shell date -u '+%Y-%m-%dT%H:%M:%SZ'))
