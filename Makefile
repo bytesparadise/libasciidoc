@@ -54,6 +54,7 @@ help:/
 .PHONY: install-devtools
 ## Install development tools.
 install-devtools:
+	@go mod vendor
 	@go get -u -v $(DEVTOOLS)
 
 $(INSTALL_PREFIX):
@@ -89,12 +90,6 @@ test: generate-optimized
 test-with-coverage: generate-optimized
 	@echo $(COVERPKGS)
 	@ginkgo -r --randomizeAllSpecs --randomizeSuites --failOnPending --trace --race --compilers=0  --cover -coverpkg $(COVERPKGS)
-
-.PHONY: test-no-coverage
-## run all tests excluding fixtures and vendored packages, without coverage
-test-no-coverage: generate-optimized
-	@echo $(COVERPKGS)
-	@ginkgo -r --randomizeAllSpecs --randomizeSuites --failOnPending --trace --race --compilers=2
 
 .PHONY: test-fixtures
 ## run all fixtures tests

@@ -16,7 +16,8 @@ os:
 
 env:
   - GO111MODULE=on
-
+  - CI=travis-ci
+  
 matrix:
   fast_finish: true
   allow_failures:
@@ -33,7 +34,6 @@ script:
   # verify that the library builds completely
   - make build
   # run the tests
-  - export CI=travis-ci
   - make test-with-coverage
 
 after_success:
