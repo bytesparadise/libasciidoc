@@ -582,27 +582,41 @@ last line of grandchild</pre>
 		Context("in standalone block", func() {
 
 			It("should replace with string element if file is missing", func() {
+				// setup logger to write in a buffer so we can check the output
+				console, reset := configureLogger()
+				defer reset()
 
 				source := `include::../../../test/includes/unknown.adoc[leveloffset=+1]`
 				expected := `<div class="paragraph">
 <p>Unresolved directive in foo.adoc - include::../../../test/includes/unknown.adoc[leveloffset=&#43;1]</p>
 </div>`
 				verify("foo.adoc", expected, source)
+				// verify error in logs
+				verifyConsoleOutput(console, "failed to include '../../../test/includes/unknown.adoc'")
 			})
 
 			It("should replace with string element if file with attribute in path is not resolved", func() {
+				// setup logger to write in a buffer so we can check the output
+				console, reset := configureLogger()
+				defer reset()
 
 				source := `include::{includedir}/unknown.adoc[leveloffset=+1]`
 				expected := `<div class="paragraph">
 <p>Unresolved directive in foo.adoc - include::{includedir}/unknown.adoc[leveloffset=&#43;1]</p>
 </div>`
 				verify("foo.adoc", expected, source)
+				// verify error in logs
+				verifyConsoleOutput(console, "failed to include '{includedir}/unknown.adoc'")
 			})
 		})
 
 		Context("in listing block", func() {
 
 			It("should replace with string element if file is missing", func() {
+				// setup logger to write in a buffer so we can check the output
+				console, reset := configureLogger()
+				defer reset()
+
 				source := `----
 include::../../../test/includes/unknown.adoc[leveloffset=+1]
 ----`
@@ -612,9 +626,15 @@ include::../../../test/includes/unknown.adoc[leveloffset=+1]
 </div>
 </div>`
 				verify("foo.adoc", expected, source)
+				// verify error in logs
+				verifyConsoleOutput(console, "failed to include '../../../test/includes/unknown.adoc'")
 			})
 
 			It("should replace with string element if file with attribute in path is not resolved", func() {
+				// setup logger to write in a buffer so we can check the output
+				console, reset := configureLogger()
+				defer reset()
+
 				source := `----
 include::{includedir}/unknown.adoc[leveloffset=+1]
 ----`
@@ -624,6 +644,8 @@ include::{includedir}/unknown.adoc[leveloffset=+1]
 </div>
 </div>`
 				verify("foo.adoc", expected, source)
+				// verify error in logs
+				verifyConsoleOutput(console, "failed to include '{includedir}/unknown.adoc'")
 			})
 		})
 	})
