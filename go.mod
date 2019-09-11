@@ -20,6 +20,6 @@ require (
 	golang.org/x/net v0.0.0-20190909003024-a7b16738d86b // indirect
 	golang.org/x/sys v0.0.0-20190910064555-bbd175535a8b // indirect
 	golang.org/x/text v0.3.2 // indirect
-	golang.org/x/tools v0.0.0-20190910165522-3cd124fa3ebb // indirect
+	golang.org/x/tools v0.0.0-20190911174233-4f2ddba30aff // indirect
 	gopkg.in/yaml.v2 v2.2.1
 )

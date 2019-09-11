@@ -54,8 +54,8 @@ help:/
 .PHONY: install-devtools
 ## Install development tools.
 install-devtools:
-	@go mod vendor
-	@go get -u -v $(DEVTOOLS)
+	@go mod download
+	@go install -v $(DEVTOOLS)
 
 $(INSTALL_PREFIX):
 # Build artifacts dir
