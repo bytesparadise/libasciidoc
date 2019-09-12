@@ -806,12 +806,17 @@ include::../../test/includes/chapter-a.adoc[]
 
 		It("file inclusion with unknown tag", func() {
 			// given
+			// setup logger to write in a buffer so we can check the output
+			console, reset := testsupport.ConfigureLogger()
+			defer reset()
 			source := `include::../../test/includes/tag-include.adoc[tag=unknown]`
 			expected := types.PreflightDocument{
 				Blocks: []interface{}{},
 			}
 			// when/then
 			verifyPreflight("test.adoc", expected, source)
+			// verify error in logs
+			testsupport.VerifyConsoleOutput(console, "tag 'unknown' not found in include file: ../../test/includes/tag-include.adoc")
 		})
 
 		It("file inclusion with no tag", func() {
@@ -886,7 +891,6 @@ include::../../test/includes/chapter-a.adoc[]
 			verifyPreflight("foo.adoc", expected, source)
 			// verify error in logs
 			testsupport.VerifyConsoleOutput(console, "failed to include '{unknown}/unknown.adoc'")
-
 		})
 
 		It("should replace with string element if file is missing in standalone block", func() {
