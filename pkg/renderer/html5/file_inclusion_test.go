@@ -1,6 +1,7 @@
 package html5_test
 
 import (
+	"github.com/bytesparadise/libasciidoc/testsupport"
 	. "github.com/onsi/ginkgo"
 )
 
@@ -583,7 +584,7 @@ last line of grandchild</pre>
 
 			It("should replace with string element if file is missing", func() {
 				// setup logger to write in a buffer so we can check the output
-				console, reset := configureLogger()
+				console, reset := testsupport.ConfigureLogger()
 				defer reset()
 
 				source := `include::../../../test/includes/unknown.adoc[leveloffset=+1]`
@@ -592,12 +593,12 @@ last line of grandchild</pre>
 </div>`
 				verify("foo.adoc", expected, source)
 				// verify error in logs
-				verifyConsoleOutput(console, "failed to include '../../../test/includes/unknown.adoc'")
+				testsupport.VerifyConsoleOutput(console, "failed to include '../../../test/includes/unknown.adoc'")
 			})
 
 			It("should replace with string element if file with attribute in path is not resolved", func() {
 				// setup logger to write in a buffer so we can check the output
-				console, reset := configureLogger()
+				console, reset := testsupport.ConfigureLogger()
 				defer reset()
 
 				source := `include::{includedir}/unknown.adoc[leveloffset=+1]`
@@ -606,7 +607,7 @@ last line of grandchild</pre>
 </div>`
 				verify("foo.adoc", expected, source)
 				// verify error in logs
-				verifyConsoleOutput(console, "failed to include '{includedir}/unknown.adoc'")
+				testsupport.VerifyConsoleOutput(console, "failed to include '{includedir}/unknown.adoc'")
 			})
 		})
 
@@ -614,7 +615,7 @@ last line of grandchild</pre>
 
 			It("should replace with string element if file is missing", func() {
 				// setup logger to write in a buffer so we can check the output
-				console, reset := configureLogger()
+				console, reset := testsupport.ConfigureLogger()
 				defer reset()
 
 				source := `----
@@ -627,12 +628,12 @@ include::../../../test/includes/unknown.adoc[leveloffset=+1]
 </div>`
 				verify("foo.adoc", expected, source)
 				// verify error in logs
-				verifyConsoleOutput(console, "failed to include '../../../test/includes/unknown.adoc'")
+				testsupport.VerifyConsoleOutput(console, "failed to include '../../../test/includes/unknown.adoc'")
 			})
 
 			It("should replace with string element if file with attribute in path is not resolved", func() {
 				// setup logger to write in a buffer so we can check the output
-				console, reset := configureLogger()
+				console, reset := testsupport.ConfigureLogger()
 				defer reset()
 
 				source := `----
@@ -645,7 +646,7 @@ include::{includedir}/unknown.adoc[leveloffset=+1]
 </div>`
 				verify("foo.adoc", expected, source)
 				// verify error in logs
-				verifyConsoleOutput(console, "failed to include '{includedir}/unknown.adoc'")
+				testsupport.VerifyConsoleOutput(console, "failed to include '{includedir}/unknown.adoc'")
 			})
 		})
 	})

@@ -1,4 +1,4 @@
-package log
+package testsupport
 
 import (
 	"flag"
