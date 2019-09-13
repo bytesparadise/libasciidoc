@@ -773,6 +773,9 @@ include::../../test/includes/chapter-a.adoc[]
 		})
 
 		It("file inclusion with unclosed tag", func() {
+			// setup logger to write in a buffer so we can check the output
+			console, reset := testsupport.ConfigureLogger()
+			defer reset()
 			source := `include::../../test/includes/tag-include.adoc[tag=unclosed]`
 			expected := types.PreflightDocument{
 				Blocks: []interface{}{
@@ -802,6 +805,8 @@ include::../../test/includes/chapter-a.adoc[]
 				},
 			}
 			verifyPreflight("test.adoc", expected, source)
+			// verify error in logs
+			testsupport.VerifyConsoleOutput(console, "detected unclosed tag 'unclosed' starting at line 6 of include file: ../../test/includes/tag-include.adoc")
 		})
 
 		It("file inclusion with unknown tag", func() {

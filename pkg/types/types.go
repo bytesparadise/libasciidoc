@@ -1863,6 +1863,13 @@ func NewTagRangesAttribute(ranges interface{}) (ElementAttributes, error) {
 // TagRanges the ranges of tags of the child doc to include in the master doc
 type TagRanges []string
 
+// TagRange a tag range found while processing a document. When the 'start' tag is found,
+// the `EndLine` is still unknown and thus its value is set to `-1`
+type TagRange struct {
+	StartLine int
+	EndLine   int
+}
+
 // NewTagRanges returns a slice of tag ranges attribute for a file inclusion.
 func NewTagRanges(ranges ...interface{}) TagRanges {
 	result := TagRanges{}
@@ -1877,9 +1884,9 @@ func NewTagRanges(ranges ...interface{}) TagRanges {
 }
 
 // Match checks if the given tag matches one of the range
-func (r TagRanges) Match(ranges map[string]bool) bool {
+func (r TagRanges) Match(line int, ranges map[string]*TagRange) bool {
 	for _, t := range r {
-		if match, found := ranges[t]; found && match {
+		if r, found := ranges[t]; found && r.StartLine <= line && r.EndLine == -1 {
 			return true
 		}
 	}

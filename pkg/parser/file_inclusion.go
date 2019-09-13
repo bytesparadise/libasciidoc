@@ -121,10 +121,12 @@ func readWithinLines(scanner *bufio.Scanner, content *bytes.Buffer, lineRanges t
 	return nil
 }
 
-func readWithinTags(path string, scanner *bufio.Scanner, content *bytes.Buffer, tagRanges types.TagRanges) error {
-	log.Debugf("limiting to tag ranges: %v", tagRanges)
-	ranges := make(map[string]bool, len(tagRanges)) // ensure capacity
+func readWithinTags(path string, scanner *bufio.Scanner, content *bytes.Buffer, expectedRanges types.TagRanges) error {
+	log.Debugf("limiting to tag ranges: %v", expectedRanges)
+	actualRanges := make(map[string]*types.TagRange, len(expectedRanges)) // ensure capacity
+	lineNumber := 0
 	for scanner.Scan() {
+		lineNumber++
 		line := scanner.Bytes()
 		// parse the line in search for the `tag::<tag>[]` or `end:<tag>[]` macros
 		l, err := Parse("", line, Entrypoint("IncludedFileLine"))
@@ -137,13 +139,15 @@ func readWithinTags(path string, scanner *bufio.Scanner, content *bytes.Buffer, 
 		}
 		// check if a start or end tag was found in the line
 		if startTag, ok := fl.GetStartTag(); ok {
-			ranges[startTag.Value] = true
+			actualRanges[startTag.Value] = &types.TagRange{
+				StartLine: lineNumber,
+				EndLine:   -1,
+			}
 		}
 		if endTag, ok := fl.GetEndTag(); ok {
-			ranges[endTag.Value] = false
+			actualRanges[endTag.Value].EndLine = lineNumber
 		}
-
-		if tagRanges.Match(ranges) && !fl.HasTag() {
+		if expectedRanges.Match(lineNumber, actualRanges) && !fl.HasTag() {
 			_, err := content.Write(scanner.Bytes())
 			if err != nil {
 				return err
@@ -155,10 +159,13 @@ func readWithinTags(path string, scanner *bufio.Scanner, content *bytes.Buffer, 
 		}
 	}
 	// after the file has been processed, let's check if all tags were "found"
-	for _, tag := range tagRanges {
+	for _, tag := range expectedRanges {
 		log.Debugf("checking if tag '%s' was found...", tag)
-		if _, found := ranges[tag]; !found {
+		tr, found := actualRanges[tag]
+		if !found {
 			log.Errorf("tag '%s' not found in include file: %s", tag, path)
+		} else if tr.EndLine == -1 {
+			log.Errorf("detected unclosed tag '%s' starting at line %d of include file: %s", tag, tr.StartLine, path)
 		}
 	}
 	return nil

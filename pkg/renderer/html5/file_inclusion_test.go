@@ -464,6 +464,8 @@ func helloworld() {
 		})
 
 		It("file inclusion with unclosed tag", func() {
+			console, reset := testsupport.ConfigureLogger()
+			defer reset()
 			source := `include::../../../test/includes/tag-include.adoc[tag=unclosed]`
 			expected := `<div class="paragraph">
 <p>content</p>
@@ -472,13 +474,19 @@ func helloworld() {
 <p>end</p>
 </div>`
 			verify("test.adoc", expected, source)
+			// verify error in logs
+			testsupport.VerifyConsoleOutput(console, "detected unclosed tag 'unclosed' starting at line 6 of include file: ../../../test/includes/tag-include.adoc")
 		})
 
 		It("file inclusion with unknown tag", func() {
+			console, reset := testsupport.ConfigureLogger()
+			defer reset()
 			source := `include::../../../test/includes/tag-include.adoc[tag=unknown]`
 			expected := ``
 			// TODO: verify error in logs
 			verify("test.adoc", expected, source)
+			// verify error in logs
+			testsupport.VerifyConsoleOutput(console, "tag 'unknown' not found in include file: ../../../test/includes/tag-include.adoc")
 		})
 
 		It("file inclusion with no tag", func() {
