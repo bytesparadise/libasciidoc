@@ -2,7 +2,10 @@ package parser_test
 
 import (
 	"github.com/bytesparadise/libasciidoc/pkg/types"
+	. "github.com/bytesparadise/libasciidoc/testsupport"
+
 	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/gomega"
 )
 
 var _ = Describe("user macros", func() {
@@ -28,7 +31,7 @@ var _ = Describe("user macros", func() {
 					},
 				},
 			}
-			verifyDocumentBlock(expected, source)
+			Expect(source).To(EqualDocumentBlock(expected))
 		})
 
 		It("inline macro with attribute", func() {
@@ -52,7 +55,7 @@ var _ = Describe("user macros", func() {
 					},
 				},
 			}
-			verifyDocumentBlock(expected, source)
+			Expect(source).To(EqualDocumentBlock(expected))
 		})
 
 		It("inline macro with value", func() {
@@ -74,7 +77,7 @@ var _ = Describe("user macros", func() {
 					},
 				},
 			}
-			verifyDocumentBlock(expected, source)
+			Expect(source).To(EqualDocumentBlock(expected))
 		})
 
 		It("inline user macro with value and attributes", func() {
@@ -99,7 +102,7 @@ var _ = Describe("user macros", func() {
 					},
 				},
 			}
-			verifyDocumentBlock(expected, source)
+			Expect(source).To(EqualDocumentBlock(expected))
 		})
 	})
 
@@ -115,7 +118,7 @@ var _ = Describe("user macros", func() {
 				Attributes: types.ElementAttributes{},
 				RawText:    "git::[]",
 			}
-			verifyDocumentBlock(expected, source)
+			Expect(source).To(EqualDocumentBlock(expected))
 		})
 
 		It("user block macro with value and attributes", func() {
@@ -130,7 +133,7 @@ var _ = Describe("user macros", func() {
 				},
 				RawText: "git::some/url.git[key1=value1,key2=value2]",
 			}
-			verifyDocumentBlock(expected, source)
+			Expect(source).To(EqualDocumentBlock(expected))
 		})
 
 		It("user macro block with attribute", func() {
@@ -144,7 +147,7 @@ var _ = Describe("user macros", func() {
 				},
 				RawText: `git::[key1="value1"]`,
 			}
-			verifyDocumentBlock(expected, source)
+			Expect(source).To(EqualDocumentBlock(expected))
 		})
 
 		It("user macro block with value", func() {
@@ -156,7 +159,7 @@ var _ = Describe("user macros", func() {
 				Attributes: types.ElementAttributes{},
 				RawText:    "git::some/url.git[]",
 			}
-			verifyDocumentBlock(expected, source)
+			Expect(source).To(EqualDocumentBlock(expected))
 		})
 
 	})

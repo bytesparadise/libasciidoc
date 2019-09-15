@@ -1,6 +1,11 @@
 package html5_test
 
-import . "github.com/onsi/ginkgo"
+import (
+	. "github.com/bytesparadise/libasciidoc/testsupport"
+
+	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/gomega"
+)
 
 var _ = Describe("cross-references", func() {
 
@@ -20,7 +25,7 @@ with some content linked to <<thetitle>>!`
 </div>
 </div>
 </div>`
-			verify("test.adoc", expected, source)
+			Expect(source).To(RenderHTML5(expected))
 		})
 
 		It("cross-reference with custom id and label", func() {
@@ -36,7 +41,7 @@ with some content linked to <<thetitle,a label to the title>>!`
 </div>
 </div>
 </div>`
-			verify("test.adoc", expected, source)
+			Expect(source).To(RenderHTML5(expected))
 		})
 
 		It("invalid section reference", func() {
@@ -53,7 +58,7 @@ with some content linked to <<thewrongtitle>>!`
 </div>
 </div>
 </div>`
-			verify("test.adoc", expected, source)
+			Expect(source).To(RenderHTML5(expected))
 		})
 	})
 })

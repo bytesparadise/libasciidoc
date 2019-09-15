@@ -2,7 +2,10 @@ package parser_test
 
 import (
 	"github.com/bytesparadise/libasciidoc/pkg/types"
+	. "github.com/bytesparadise/libasciidoc/testsupport"
+
 	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/gomega"
 )
 
 var _ = Describe("delimited blocks - preflight", func() {
@@ -28,7 +31,7 @@ var _ = Describe("delimited blocks - preflight", func() {
 					},
 				},
 			}
-			verifyDocumentBlock(expected, source)
+			Expect(source).To(EqualDocumentBlock(expected))
 		})
 
 		It("fenced block with no line", func() {
@@ -38,7 +41,7 @@ var _ = Describe("delimited blocks - preflight", func() {
 				Kind:       types.Fenced,
 				Elements:   []interface{}{},
 			}
-			verifyDocumentBlock(expected, source)
+			Expect(source).To(EqualDocumentBlock(expected))
 		})
 
 		It("fenced block with multiple lines alone", func() {
@@ -75,7 +78,7 @@ var _ = Describe("delimited blocks - preflight", func() {
 					},
 				},
 			}
-			verifyDocumentBlock(expected, source)
+			Expect(source).To(EqualDocumentBlock(expected))
 		})
 
 		It("fenced block with multiple lines then a paragraph", func() {
@@ -124,7 +127,7 @@ var _ = Describe("delimited blocks - preflight", func() {
 					},
 				},
 			}
-			verifyPreflight("test.adoc", expected, source)
+			Expect(source).To(EqualPreflightDocument(expected))
 		})
 
 		It("fenced block after a paragraph", func() {
@@ -158,7 +161,7 @@ var _ = Describe("delimited blocks - preflight", func() {
 					},
 				},
 			}
-			verifyPreflight("test.adoc", expected, source)
+			Expect(source).To(EqualPreflightDocument(expected))
 		})
 
 		It("fenced block with unclosed delimiter", func() {
@@ -179,7 +182,7 @@ var _ = Describe("delimited blocks - preflight", func() {
 					},
 				},
 			}
-			verifyDocumentBlock(expected, source)
+			Expect(source).To(EqualDocumentBlock(expected))
 		})
 
 		It("fenced block with external link inside - without attributes", func() {
@@ -222,7 +225,7 @@ var _ = Describe("delimited blocks - preflight", func() {
 					},
 				},
 			}
-			verifyDocumentBlock(expected, source)
+			Expect(source).To(EqualDocumentBlock(expected))
 		})
 
 		It("fenced block with external link inside - with attributes", func() {
@@ -265,7 +268,7 @@ var _ = Describe("delimited blocks - preflight", func() {
 					},
 				},
 			}
-			verifyDocumentBlock(expected, source)
+			Expect(source).To(EqualDocumentBlock(expected))
 		})
 	})
 
@@ -291,7 +294,7 @@ some listing code
 					},
 				},
 			}
-			verifyDocumentBlock(expected, source)
+			Expect(source).To(EqualDocumentBlock(expected))
 		})
 
 		It("listing block with no line", func() {
@@ -302,7 +305,7 @@ some listing code
 				Kind:       types.Listing,
 				Elements:   []interface{}{},
 			}
-			verifyDocumentBlock(expected, source)
+			Expect(source).To(EqualDocumentBlock(expected))
 		})
 
 		It("listing block with multiple lines alone", func() {
@@ -339,7 +342,7 @@ in the middle
 					},
 				},
 			}
-			verifyDocumentBlock(expected, source)
+			Expect(source).To(EqualDocumentBlock(expected))
 		})
 
 		It("listing block with unrendered list", func() {
@@ -374,7 +377,7 @@ in the middle
 					},
 				},
 			}
-			verifyDocumentBlock(expected, source)
+			Expect(source).To(EqualDocumentBlock(expected))
 		})
 
 		It("listing block with multiple lines then a paragraph", func() {
@@ -424,7 +427,7 @@ then a normal paragraph.`
 					},
 				},
 			}
-			verifyPreflight("test.adoc", expected, source)
+			Expect(source).To(EqualPreflightDocument(expected))
 		})
 
 		It("listing block just after a paragraph", func() {
@@ -460,7 +463,7 @@ some listing code
 					},
 				},
 			}
-			verifyPreflight("test.adoc", expected, source)
+			Expect(source).To(EqualPreflightDocument(expected))
 		})
 
 		It("listing block with unclosed delimiter", func() {
@@ -482,7 +485,7 @@ End of file here.`
 					},
 				},
 			}
-			verifyDocumentBlock(expected, source)
+			Expect(source).To(EqualDocumentBlock(expected))
 		})
 	})
 
@@ -508,7 +511,7 @@ some listing code
 					},
 				},
 			}
-			verifyDocumentBlock(expected, source)
+			Expect(source).To(EqualDocumentBlock(expected))
 		})
 
 		It("example block with single line starting with a dot", func() {
@@ -531,7 +534,7 @@ some listing code
 					},
 				},
 			}
-			verifyDocumentBlock(expected, source)
+			Expect(source).To(EqualDocumentBlock(expected))
 		})
 
 		It("example block with multiple lines", func() {
@@ -595,7 +598,7 @@ with *bold content*
 					},
 				},
 			}
-			verifyDocumentBlock(expected, source)
+			Expect(source).To(EqualDocumentBlock(expected))
 		})
 
 		It("example block with unclosed delimiter", func() {
@@ -617,7 +620,7 @@ End of file here`
 					},
 				},
 			}
-			verifyDocumentBlock(expected, source)
+			Expect(source).To(EqualDocumentBlock(expected))
 		})
 
 		It("example block with title", func() {
@@ -643,7 +646,7 @@ foo
 					},
 				},
 			}
-			verifyDocumentBlock(expected, source)
+			Expect(source).To(EqualDocumentBlock(expected))
 		})
 
 		It("example block starting delimiter only", func() {
@@ -653,7 +656,7 @@ foo
 				Kind:       types.Example,
 				Elements:   []interface{}{},
 			}
-			verifyDocumentBlock(expected, source)
+			Expect(source).To(EqualDocumentBlock(expected))
 		})
 	})
 
@@ -682,7 +685,7 @@ foo
 					},
 				},
 			}
-			verifyDocumentBlock(expected, source)
+			Expect(source).To(EqualDocumentBlock(expected))
 
 		})
 
@@ -722,7 +725,7 @@ paragraphs
 					},
 				},
 			}
-			verifyPreflight("test.adoc", expected, source)
+			Expect(source).To(EqualPreflightDocument(expected))
 		})
 	})
 
@@ -764,7 +767,7 @@ ____`
 					},
 				},
 			}
-			verifyDocumentBlock(expected, source)
+			Expect(source).To(EqualDocumentBlock(expected))
 		})
 
 		It("multi-line quote with author only", func() {
@@ -838,7 +841,7 @@ ____
 					},
 				},
 			}
-			verifyDocumentBlock(expected, source)
+			Expect(source).To(EqualDocumentBlock(expected))
 		})
 
 		It("single-line quote with title only", func() {
@@ -866,7 +869,7 @@ ____
 					},
 				},
 			}
-			verifyDocumentBlock(expected, source)
+			Expect(source).To(EqualDocumentBlock(expected))
 		})
 
 		It("multi-line quote with rendered lists and block and without author and title", func() {
@@ -938,7 +941,7 @@ ____`
 					},
 				},
 			}
-			verifyDocumentBlock(expected, source)
+			Expect(source).To(EqualDocumentBlock(expected))
 		})
 
 		It("multi-line quote with rendered list and without author and title", func() {
@@ -1018,7 +1021,7 @@ ____`
 					},
 				},
 			}
-			verifyDocumentBlock(expected, source)
+			Expect(source).To(EqualDocumentBlock(expected))
 		})
 
 		It("empty quote without author and title", func() {
@@ -1032,7 +1035,7 @@ ____`
 				Kind:     types.Quote,
 				Elements: []interface{}{},
 			}
-			verifyDocumentBlock(expected, source)
+			Expect(source).To(EqualDocumentBlock(expected))
 		})
 
 		It("unclosed quote without author and title", func() {
@@ -1058,7 +1061,7 @@ foo
 					},
 				},
 			}
-			verifyDocumentBlock(expected, source)
+			Expect(source).To(EqualDocumentBlock(expected))
 		})
 	})
 
@@ -1100,7 +1103,7 @@ ____`
 					},
 				},
 			}
-			verifyDocumentBlock(expected, source)
+			Expect(source).To(EqualDocumentBlock(expected))
 		})
 
 		It("multi-line verse with unrendered list and author only", func() {
@@ -1140,7 +1143,7 @@ ____
 					},
 				},
 			}
-			verifyDocumentBlock(expected, source)
+			Expect(source).To(EqualDocumentBlock(expected))
 		})
 
 		It("multi-line verse with title only", func() {
@@ -1168,7 +1171,7 @@ ____
 					},
 				},
 			}
-			verifyDocumentBlock(expected, source)
+			Expect(source).To(EqualDocumentBlock(expected))
 		})
 
 		It("multi-line verse with unrendered lists and block without author and title", func() {
@@ -1218,7 +1221,7 @@ ____`
 					},
 				},
 			}
-			verifyDocumentBlock(expected, source)
+			Expect(source).To(EqualDocumentBlock(expected))
 		})
 
 		It("multi-line verse with unrendered list without author and title", func() {
@@ -1259,7 +1262,7 @@ ____`
 					},
 				},
 			}
-			verifyDocumentBlock(expected, source)
+			Expect(source).To(EqualDocumentBlock(expected))
 		})
 
 		It("empty verse without author and title", func() {
@@ -1273,7 +1276,7 @@ ____`
 				Kind:     types.Verse,
 				Elements: []interface{}{},
 			}
-			verifyDocumentBlock(expected, source)
+			Expect(source).To(EqualDocumentBlock(expected))
 		})
 
 		It("unclosed verse without author and title", func() {
@@ -1299,7 +1302,7 @@ foo
 					},
 				},
 			}
-			verifyDocumentBlock(expected, source)
+			Expect(source).To(EqualDocumentBlock(expected))
 		})
 	})
 
@@ -1348,7 +1351,7 @@ end
 					},
 				},
 			}
-			verifyDocumentBlock(expected, source)
+			Expect(source).To(EqualDocumentBlock(expected))
 		})
 
 		It("with title, source and languages attributes", func() {
@@ -1397,7 +1400,7 @@ end
 					},
 				},
 			}
-			verifyDocumentBlock(expected, source)
+			Expect(source).To(EqualDocumentBlock(expected))
 		})
 
 		It("with id, title, source and languages attributes", func() {
@@ -1449,7 +1452,7 @@ end
 					},
 				},
 			}
-			verifyDocumentBlock(expected, source)
+			Expect(source).To(EqualDocumentBlock(expected))
 		})
 	})
 
@@ -1486,7 +1489,7 @@ some *verse* content
 					},
 				},
 			}
-			verifyDocumentBlock(expected, source)
+			Expect(source).To(EqualDocumentBlock(expected))
 		})
 
 		It("sidebar block with title, paragraph and sourcecode block", func() {
@@ -1548,7 +1551,7 @@ bar
 					},
 				},
 			}
-			verifyDocumentBlock(expected, source)
+			Expect(source).To(EqualDocumentBlock(expected))
 		})
 	})
 })
@@ -1584,7 +1587,7 @@ var _ = Describe("delimited blocks - document", func() {
 					},
 				},
 			}
-			verifyDocument(expected, source)
+			Expect(source).To(EqualDocument(expected))
 		})
 
 		It("fenced block with no line", func() {
@@ -1602,7 +1605,7 @@ var _ = Describe("delimited blocks - document", func() {
 					},
 				},
 			}
-			verifyDocument(expected, source)
+			Expect(source).To(EqualDocument(expected))
 		})
 
 		It("fenced block with multiple lines alone", func() {
@@ -1647,7 +1650,7 @@ var _ = Describe("delimited blocks - document", func() {
 					},
 				},
 			}
-			verifyDocument(expected, source)
+			Expect(source).To(EqualDocument(expected))
 		})
 
 		It("fenced block with multiple lines then a paragraph", func() {
@@ -1700,7 +1703,7 @@ var _ = Describe("delimited blocks - document", func() {
 					},
 				},
 			}
-			verifyDocument(expected, source)
+			Expect(source).To(EqualDocument(expected))
 		})
 
 		It("fenced block after a paragraph", func() {
@@ -1738,7 +1741,7 @@ var _ = Describe("delimited blocks - document", func() {
 					},
 				},
 			}
-			verifyDocument(expected, source)
+			Expect(source).To(EqualDocument(expected))
 		})
 
 		It("fenced block with unclosed delimiter", func() {
@@ -1767,7 +1770,7 @@ var _ = Describe("delimited blocks - document", func() {
 					},
 				},
 			}
-			verifyDocument(expected, source)
+			Expect(source).To(EqualDocument(expected))
 		})
 
 		It("fenced block with external link inside", func() {
@@ -1819,7 +1822,7 @@ var _ = Describe("delimited blocks - document", func() {
 					},
 				},
 			}
-			verifyDocument(expected, source)
+			Expect(source).To(EqualDocument(expected))
 		})
 	})
 
@@ -1853,7 +1856,7 @@ some listing code
 					},
 				},
 			}
-			verifyDocument(expected, source)
+			Expect(source).To(EqualDocument(expected))
 		})
 
 		It("listing block with no line", func() {
@@ -1872,7 +1875,7 @@ some listing code
 					},
 				},
 			}
-			verifyDocument(expected, source)
+			Expect(source).To(EqualDocument(expected))
 		})
 
 		It("listing block with multiple lines alone", func() {
@@ -1917,7 +1920,7 @@ in the middle
 					},
 				},
 			}
-			verifyDocument(expected, source)
+			Expect(source).To(EqualDocument(expected))
 		})
 
 		It("listing block with unrendered list", func() {
@@ -1960,7 +1963,7 @@ in the middle
 					},
 				},
 			}
-			verifyDocument(expected, source)
+			Expect(source).To(EqualDocument(expected))
 		})
 
 		It("listing block with multiple lines then a paragraph", func() {
@@ -2014,7 +2017,7 @@ then a normal paragraph.`
 					},
 				},
 			}
-			verifyDocument(expected, source)
+			Expect(source).To(EqualDocument(expected))
 		})
 
 		It("listing block just after a paragraph", func() {
@@ -2054,7 +2057,7 @@ some listing code
 					},
 				},
 			}
-			verifyDocument(expected, source)
+			Expect(source).To(EqualDocument(expected))
 		})
 
 		It("listing block with unclosed delimiter", func() {
@@ -2084,7 +2087,7 @@ End of file here.`
 					},
 				},
 			}
-			verifyDocument(expected, source)
+			Expect(source).To(EqualDocument(expected))
 		})
 	})
 
@@ -2118,7 +2121,7 @@ some listing code
 					},
 				},
 			}
-			verifyDocument(expected, source)
+			Expect(source).To(EqualDocument(expected))
 		})
 
 		It("example block with single line starting with a dot", func() {
@@ -2149,7 +2152,7 @@ some listing code
 					},
 				},
 			}
-			verifyDocument(expected, source)
+			Expect(source).To(EqualDocument(expected))
 		})
 
 		It("example block with multiple lines", func() {
@@ -2226,7 +2229,7 @@ with *bold content*
 					},
 				},
 			}
-			verifyDocument(expected, source)
+			Expect(source).To(EqualDocument(expected))
 		})
 
 		It("example block with unclosed delimiter", func() {
@@ -2256,7 +2259,7 @@ End of file here`
 					},
 				},
 			}
-			verifyDocument(expected, source)
+			Expect(source).To(EqualDocument(expected))
 		})
 
 		It("example block with title", func() {
@@ -2290,7 +2293,7 @@ foo
 					},
 				},
 			}
-			verifyDocument(expected, source)
+			Expect(source).To(EqualDocument(expected))
 		})
 
 		It("example block starting delimiter only", func() {
@@ -2308,7 +2311,7 @@ foo
 					},
 				},
 			}
-			verifyDocument(expected, source)
+			Expect(source).To(EqualDocument(expected))
 		})
 	})
 
@@ -2345,7 +2348,7 @@ foo
 					},
 				},
 			}
-			verifyDocument(expected, source)
+			Expect(source).To(EqualDocument(expected))
 
 		})
 
@@ -2389,7 +2392,7 @@ paragraphs
 					},
 				},
 			}
-			verifyDocument(expected, source)
+			Expect(source).To(EqualDocument(expected))
 		})
 	})
 
@@ -2439,7 +2442,7 @@ ____`
 					},
 				},
 			}
-			verifyDocument(expected, source)
+			Expect(source).To(EqualDocument(expected))
 		})
 
 		It("multi-line quote with author only", func() {
@@ -2526,7 +2529,7 @@ ____
 					},
 				},
 			}
-			verifyDocument(expected, source)
+			Expect(source).To(EqualDocument(expected))
 		})
 
 		It("single-line quote with title only", func() {
@@ -2562,7 +2565,7 @@ ____
 					},
 				},
 			}
-			verifyDocument(expected, source)
+			Expect(source).To(EqualDocument(expected))
 		})
 
 		It("multi-line quote with rendered lists and block and without author and title", func() {
@@ -2652,7 +2655,7 @@ ____`
 					},
 				},
 			}
-			verifyDocument(expected, source)
+			Expect(source).To(EqualDocument(expected))
 		})
 
 		It("multi-line quote with rendered list and without author and title", func() {
@@ -2741,7 +2744,7 @@ ____`
 					},
 				},
 			}
-			verifyDocument(expected, source)
+			Expect(source).To(EqualDocument(expected))
 		})
 
 		It("empty quote without author and title", func() {
@@ -2763,7 +2766,7 @@ ____`
 					},
 				},
 			}
-			verifyDocument(expected, source)
+			Expect(source).To(EqualDocument(expected))
 		})
 
 		It("unclosed quote without author and title", func() {
@@ -2797,7 +2800,7 @@ foo
 					},
 				},
 			}
-			verifyDocument(expected, source)
+			Expect(source).To(EqualDocument(expected))
 		})
 	})
 
@@ -2847,7 +2850,7 @@ ____`
 					},
 				},
 			}
-			verifyDocument(expected, source)
+			Expect(source).To(EqualDocument(expected))
 		})
 
 		It("multi-line verse with unrendered list and author only", func() {
@@ -2895,7 +2898,7 @@ ____
 					},
 				},
 			}
-			verifyDocument(expected, source)
+			Expect(source).To(EqualDocument(expected))
 		})
 
 		It("multi-line verse with title only", func() {
@@ -2931,7 +2934,7 @@ ____
 					},
 				},
 			}
-			verifyDocument(expected, source)
+			Expect(source).To(EqualDocument(expected))
 		})
 
 		It("multi-line verse with unrendered lists and block without author and title", func() {
@@ -2989,7 +2992,7 @@ ____`
 					},
 				},
 			}
-			verifyDocument(expected, source)
+			Expect(source).To(EqualDocument(expected))
 		})
 
 		It("multi-line verse with unrendered list without author and title", func() {
@@ -3038,7 +3041,7 @@ ____`
 					},
 				},
 			}
-			verifyDocument(expected, source)
+			Expect(source).To(EqualDocument(expected))
 		})
 
 		It("empty verse without author and title", func() {
@@ -3060,7 +3063,7 @@ ____`
 					},
 				},
 			}
-			verifyDocument(expected, source)
+			Expect(source).To(EqualDocument(expected))
 		})
 
 		It("unclosed verse without author and title", func() {
@@ -3094,7 +3097,7 @@ foo
 					},
 				},
 			}
-			verifyDocument(expected, source)
+			Expect(source).To(EqualDocument(expected))
 		})
 	})
 
@@ -3151,7 +3154,7 @@ end
 					},
 				},
 			}
-			verifyDocument(expected, source)
+			Expect(source).To(EqualDocument(expected))
 		})
 
 		It("with title, source and languages attributes", func() {
@@ -3208,7 +3211,7 @@ end
 					},
 				},
 			}
-			verifyDocument(expected, source)
+			Expect(source).To(EqualDocument(expected))
 		})
 
 		It("with id, title, source and languages attributes", func() {
@@ -3268,7 +3271,7 @@ end
 					},
 				},
 			}
-			verifyDocument(expected, source)
+			Expect(source).To(EqualDocument(expected))
 		})
 	})
 
@@ -3313,7 +3316,7 @@ some *verse* content
 					},
 				},
 			}
-			verifyDocument(expected, source)
+			Expect(source).To(EqualDocument(expected))
 		})
 
 		It("sidebar block with title, paragraph and sourcecode block", func() {
@@ -3383,7 +3386,7 @@ bar
 					},
 				},
 			}
-			verifyDocument(expected, source)
+			Expect(source).To(EqualDocument(expected))
 		})
 	})
 })

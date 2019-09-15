@@ -1,7 +1,10 @@
 package html5_test
 
 import (
+	. "github.com/bytesparadise/libasciidoc/testsupport"
+
 	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/gomega"
 )
 
 var _ = Describe("comments", func() {
@@ -9,44 +12,44 @@ var _ = Describe("comments", func() {
 	Context("single line comments", func() {
 
 		It("single line comment alone", func() {
-			doc := `// A single-line comment.`
+			source := `// A single-line comment.`
 			expected := ""
-			verify("test.adoc", expected, doc)
+			Expect(source).To(RenderHTML5(expected))
 		})
 
 		It("single line comment at end of line", func() {
-			doc := `foo // A single-line comment.`
+			source := `foo // A single-line comment.`
 			expected := `<div class="paragraph">
 <p>foo // A single-line comment.</p>
 </div>`
-			verify("test.adoc", expected, doc)
+			Expect(source).To(RenderHTML5(expected))
 		})
 
 		It("single line comment within a paragraph", func() {
-			doc := `a first line
+			source := `a first line
 // A single-line comment.
 another line`
 			expected := `<div class="paragraph">
 <p>a first line
 another line</p>
 </div>`
-			verify("test.adoc", expected, doc)
+			Expect(source).To(RenderHTML5(expected))
 		})
 	})
 
 	Context("comment blocks", func() {
 
 		It("comment block alone", func() {
-			doc := `//// 
+			source := `//// 
 a *comment* block
 with multiple lines
 ////`
 			expected := ""
-			verify("test.adoc", expected, doc)
+			Expect(source).To(RenderHTML5(expected))
 		})
 
 		It("comment block with paragraphs around", func() {
-			doc := `a first paragraph
+			source := `a first paragraph
 //// 
 a *comment* block
 with multiple lines
@@ -58,7 +61,7 @@ a second paragraph`
 <div class="paragraph">
 <p>a second paragraph</p>
 </div>`
-			verify("test.adoc", expected, doc)
+			Expect(source).To(RenderHTML5(expected))
 		})
 	})
 

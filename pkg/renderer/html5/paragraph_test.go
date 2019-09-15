@@ -1,7 +1,10 @@
 package html5_test
 
 import (
+	. "github.com/bytesparadise/libasciidoc/testsupport"
+
 	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/gomega"
 )
 
 var _ = Describe("paragraphs", func() {
@@ -15,7 +18,7 @@ var _ = Describe("paragraphs", func() {
 <p><strong>bold content</strong>
 &amp; more content afterwards</p>
 </div>`
-			verify("test.adoc", expected, source)
+			Expect(source).To(RenderHTML5(expected))
 		})
 
 		It("a standalone paragraph with trailing spaces", func() {
@@ -25,7 +28,7 @@ var _ = Describe("paragraphs", func() {
 <p><strong>bold content</strong>
    &amp; more content afterwards&#8230;&#8203;</p>
 </div>`
-			verify("test.adoc", expected, source)
+			Expect(source).To(RenderHTML5(expected))
 		})
 
 		It("a standalone paragraph with an ID and a title", func() {
@@ -36,7 +39,7 @@ var _ = Describe("paragraphs", func() {
 <div class="doctitle">a title</div>
 <p><strong>bold content</strong> with more content afterwards&#8230;&#8203;</p>
 </div>`
-			verify("test.adoc", expected, source)
+			Expect(source).To(RenderHTML5(expected))
 		})
 
 		It("2 paragraphs and blank line", func() {
@@ -52,7 +55,7 @@ and here another paragraph
 <div class="paragraph">
 <p>and here another paragraph</p>
 </div>`
-			verify("test.adoc", expected, source)
+			Expect(source).To(RenderHTML5(expected))
 		})
 
 		It("paragraph with single quotes", func() {
@@ -60,7 +63,7 @@ and here another paragraph
 			expected := `<div class="paragraph">
 <p>a &#39;subsection&#39; paragraph.</p>
 </div>`
-			verify("test.adoc", expected, source)
+			Expect(source).To(RenderHTML5(expected))
 		})
 	})
 
@@ -75,7 +78,7 @@ baz`
 bar
 baz</p>
 </div>`
-			verify("test.adoc", expected, source)
+			Expect(source).To(RenderHTML5(expected))
 		})
 
 		It("with paragraph attribute", func() {
@@ -89,7 +92,7 @@ baz`
 bar<br>
 baz</p>
 </div>`
-			verify("test.adoc", expected, source)
+			Expect(source).To(RenderHTML5(expected))
 		})
 
 		It("with document attribute", func() {
@@ -102,7 +105,7 @@ baz`
 bar<br>
 baz</p>
 </div>`
-			verify("test.adoc", expected, source)
+			Expect(source).To(RenderHTML5(expected))
 		})
 	})
 
@@ -122,7 +125,7 @@ this is a note.
 </tr>
 </table>
 </div>`
-			verify("test.adoc", expected, source)
+			Expect(source).To(RenderHTML5(expected))
 		})
 
 		It("multiline warning admonition paragraph", func() {
@@ -141,7 +144,7 @@ warning!
 </tr>
 </table>
 </div>`
-			verify("test.adoc", expected, source)
+			Expect(source).To(RenderHTML5(expected))
 		})
 
 		It("admonition note paragraph with id and title", func() {
@@ -161,7 +164,7 @@ this is a note.
 </tr>
 </table>
 </div>`
-			verify("test.adoc", expected, source)
+			Expect(source).To(RenderHTML5(expected))
 		})
 	})
 
@@ -182,7 +185,7 @@ this is a caution!
 </tr>
 </table>
 </div>`
-			verify("test.adoc", expected, source)
+			Expect(source).To(RenderHTML5(expected))
 		})
 
 		It("multiline caution admonition paragraph with title and id", func() {
@@ -205,7 +208,7 @@ this is a
 </tr>
 </table>
 </div>`
-			verify("test.adoc", expected, source)
+			Expect(source).To(RenderHTML5(expected))
 		})
 	})
 
@@ -221,7 +224,7 @@ I am a verse paragraph.`
 <cite>verse title</cite>
 </div>
 </div>`
-			verify("test.adoc", expected, source)
+			Expect(source).To(RenderHTML5(expected))
 		})
 
 		It("paragraph as a verse with author, title and other attributes", func() {
@@ -237,7 +240,7 @@ I am a verse paragraph.`
 <cite>verse title</cite>
 </div>
 </div>`
-			verify("test.adoc", expected, source)
+			Expect(source).To(RenderHTML5(expected))
 		})
 
 		It("paragraph as a verse with empty title", func() {
@@ -249,7 +252,7 @@ I am a verse paragraph.`
 &#8212; john doe
 </div>
 </div>`
-			verify("test.adoc", expected, source)
+			Expect(source).To(RenderHTML5(expected))
 		})
 
 		It("paragraph as a verse without title", func() {
@@ -261,7 +264,7 @@ I am a verse paragraph.`
 &#8212; john doe
 </div>
 </div>`
-			verify("test.adoc", expected, source)
+			Expect(source).To(RenderHTML5(expected))
 		})
 
 		It("paragraph as a verse with empty author", func() {
@@ -270,7 +273,7 @@ I am a verse paragraph.`
 			expected := `<div class="verseblock">
 <pre class="content">I am a verse paragraph.</pre>
 </div>`
-			verify("test.adoc", expected, source)
+			Expect(source).To(RenderHTML5(expected))
 		})
 
 		It("paragraph as a verse without author", func() {
@@ -279,7 +282,7 @@ I am a verse paragraph.`
 			expected := `<div class="verseblock">
 <pre class="content">I am a verse paragraph.</pre>
 </div>`
-			verify("test.adoc", expected, source)
+			Expect(source).To(RenderHTML5(expected))
 		})
 
 		It("image block as a verse", func() {
@@ -292,7 +295,7 @@ image::foo.png[]`
 <cite>verse title</cite>
 </div>
 </div>`
-			verify("test.adoc", expected, source)
+			Expect(source).To(RenderHTML5(expected))
 		})
 	})
 
@@ -310,7 +313,7 @@ some <strong>quote</strong> content
 <cite>quote title</cite>
 </div>
 </div>`
-			verify("test.adoc", expected, source)
+			Expect(source).To(RenderHTML5(expected))
 		})
 
 		It("paragraph as a quote with author, title and other attributes", func() {
@@ -328,7 +331,7 @@ I am a quote paragraph.
 <cite>quote title</cite>
 </div>
 </div>`
-			verify("test.adoc", expected, source)
+			Expect(source).To(RenderHTML5(expected))
 		})
 
 		It("paragraph as a quote with empty title", func() {
@@ -342,7 +345,7 @@ I am a quote paragraph.
 &#8212; john doe
 </div>
 </div>`
-			verify("test.adoc", expected, source)
+			Expect(source).To(RenderHTML5(expected))
 		})
 
 		It("paragraph as a quote without title", func() {
@@ -356,7 +359,7 @@ I am a quote paragraph.
 &#8212; john doe
 </div>
 </div>`
-			verify("test.adoc", expected, source)
+			Expect(source).To(RenderHTML5(expected))
 		})
 
 		It("paragraph as a quote with empty author", func() {
@@ -367,7 +370,7 @@ I am a quote paragraph.`
 I am a quote paragraph.
 </blockquote>
 </div>`
-			verify("test.adoc", expected, source)
+			Expect(source).To(RenderHTML5(expected))
 		})
 
 		It("paragraph as a quote without author", func() {
@@ -378,7 +381,7 @@ I am a quote paragraph.`
 I am a quote paragraph.
 </blockquote>
 </div>`
-			verify("test.adoc", expected, source)
+			Expect(source).To(RenderHTML5(expected))
 		})
 
 		It("inline image within a quote", func() {
@@ -393,7 +396,7 @@ a foo <span class="image"><img src="foo.png" alt="foo"></span>
 <cite>quote title</cite>
 </div>
 </div>`
-			verify("test.adoc", expected, source)
+			Expect(source).To(RenderHTML5(expected))
 		})
 
 		It("image block is NOT a quote", func() {
@@ -404,7 +407,7 @@ image::foo.png[]`
 <img src="foo.png" alt="foo">
 </div>
 </div>`
-			verify("test.adoc", expected, source)
+			Expect(source).To(RenderHTML5(expected))
 		})
 
 	})

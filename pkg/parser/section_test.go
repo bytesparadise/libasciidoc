@@ -2,6 +2,9 @@ package parser_test
 
 import (
 	"github.com/bytesparadise/libasciidoc/pkg/types"
+	. "github.com/bytesparadise/libasciidoc/testsupport"
+	
+	. "github.com/onsi/gomega"
 	. "github.com/onsi/ginkgo"
 )
 
@@ -27,7 +30,7 @@ var _ = Describe("sections - preflight", func() {
 					},
 				},
 			}
-			verifyPreflight("test.adoc", expected, source)
+			Expect(source).To(EqualPreflightDocument(expected))
 		})
 
 		It("header with many spaces around content", func() {
@@ -48,7 +51,7 @@ var _ = Describe("sections - preflight", func() {
 					},
 				},
 			}
-			verifyPreflight("test.adoc", expected, source)
+			Expect(source).To(EqualPreflightDocument(expected))
 		})
 
 		It("header and paragraph", func() {
@@ -81,7 +84,7 @@ and a paragraph`
 					},
 				},
 			}
-			verifyPreflight("test.adoc", expected, source)
+			Expect(source).To(EqualPreflightDocument(expected))
 		})
 
 		It("two sections with level 0", func() {
@@ -118,7 +121,7 @@ and a paragraph`
 					},
 				},
 			}
-			verifyPreflight("test.adoc", expected, source)
+			Expect(source).To(EqualPreflightDocument(expected))
 		})
 
 		It("section level 1 alone", func() {
@@ -139,7 +142,7 @@ and a paragraph`
 					},
 				},
 			}
-			verifyPreflight("test.adoc", expected, source)
+			Expect(source).To(EqualPreflightDocument(expected))
 		})
 
 		It("section level 1 with quoted text", func() {
@@ -165,7 +168,7 @@ and a paragraph`
 					},
 				},
 			}
-			verifyPreflight("test.adoc", expected, source)
+			Expect(source).To(EqualPreflightDocument(expected))
 		})
 
 		It("section level 0 with nested section level 1", func() {
@@ -201,7 +204,7 @@ and a paragraph`
 					},
 				},
 			}
-			verifyPreflight("test.adoc", expected, source)
+			Expect(source).To(EqualPreflightDocument(expected))
 		})
 
 		It("section level 0 with nested section level 2", func() {
@@ -237,7 +240,7 @@ and a paragraph`
 					},
 				},
 			}
-			verifyPreflight("test.adoc", expected, source)
+			Expect(source).To(EqualPreflightDocument(expected))
 		})
 
 		It("section level 1 with immediate paragraph", func() {
@@ -267,7 +270,7 @@ and a paragraph`
 					},
 				},
 			}
-			verifyPreflight("test.adoc", expected, source)
+			Expect(source).To(EqualPreflightDocument(expected))
 		})
 
 		It("section level 1 with a paragraph separated by empty line", func() {
@@ -299,7 +302,7 @@ and a paragraph`
 					},
 				},
 			}
-			verifyPreflight("test.adoc", expected, source)
+			Expect(source).To(EqualPreflightDocument(expected))
 		})
 
 		It("section level 1 with a paragraph separated by non-empty line", func() {
@@ -329,7 +332,7 @@ and a paragraph`
 					},
 				},
 			}
-			verifyPreflight("test.adoc", expected, source)
+			Expect(source).To(EqualPreflightDocument(expected))
 		})
 
 		It("section levels 1, 2, 3, 2", func() {
@@ -418,7 +421,7 @@ a paragraph`
 					},
 				},
 			}
-			verifyPreflight("test.adoc", expected, source)
+			Expect(source).To(EqualPreflightDocument(expected))
 		})
 
 		It("single section with custom IDs", func() {
@@ -440,7 +443,7 @@ a paragraph`
 					},
 				},
 			}
-			verifyPreflight("test.adoc", expected, source)
+			Expect(source).To(EqualPreflightDocument(expected))
 		})
 
 		It("multiple sections with custom IDs", func() {
@@ -502,7 +505,7 @@ a paragraph`
 					},
 				},
 			}
-			verifyPreflight("test.adoc", expected, source)
+			Expect(source).To(EqualPreflightDocument(expected))
 		})
 
 		It("sections with same title", func() {
@@ -538,7 +541,7 @@ a paragraph`
 					},
 				},
 			}
-			verifyPreflight("test.adoc", expected, source)
+			Expect(source).To(EqualPreflightDocument(expected))
 		})
 	})
 
@@ -556,7 +559,7 @@ a paragraph`
 						},
 					},
 				}}
-			verifyPreflight("test.adoc", expected, source)
+			Expect(source).To(EqualPreflightDocument(expected))
 		})
 
 		It("header invalid - header space", func() {
@@ -574,7 +577,7 @@ a paragraph`
 					},
 				},
 			}
-			verifyPreflight("test.adoc", expected, source)
+			Expect(source).To(EqualPreflightDocument(expected))
 		})
 
 		It("header with invalid section1", func() {
@@ -607,7 +610,7 @@ a paragraph`
 					},
 				},
 			}
-			verifyPreflight("test.adoc", expected, source)
+			Expect(source).To(EqualPreflightDocument(expected))
 		})
 
 	})
@@ -642,7 +645,7 @@ Doc Writer <thedoc@asciidoctor.org>`
 					},
 				},
 			}
-			verifyPreflight("test.adoc", expected, source)
+			Expect(source).To(EqualPreflightDocument(expected))
 		})
 	})
 })
@@ -675,7 +678,7 @@ var _ = Describe("sections - document", func() {
 					},
 				},
 			}
-			verifyDocument(expected, source)
+			Expect(source).To(EqualDocument(expected))
 		})
 
 		It("header with many spaces around content", func() {
@@ -702,7 +705,7 @@ var _ = Describe("sections - document", func() {
 					},
 				},
 			}
-			verifyDocument(expected, source)
+			Expect(source).To(EqualDocument(expected))
 		})
 
 		It("header and paragraph", func() {
@@ -741,7 +744,7 @@ and a paragraph`
 					},
 				},
 			}
-			verifyDocument(expected, source)
+			Expect(source).To(EqualDocument(expected))
 		})
 
 		It("two sections with level 0", func() {
@@ -784,7 +787,7 @@ and a paragraph`
 					},
 				},
 			}
-			verifyDocument(expected, source)
+			Expect(source).To(EqualDocument(expected))
 		})
 
 		It("section level 1 alone", func() {
@@ -811,7 +814,7 @@ and a paragraph`
 					},
 				},
 			}
-			verifyDocument(expected, source)
+			Expect(source).To(EqualDocument(expected))
 		})
 
 		It("section level 1 with quoted text", func() {
@@ -843,7 +846,7 @@ and a paragraph`
 					},
 				},
 			}
-			verifyDocument(expected, source)
+			Expect(source).To(EqualDocument(expected))
 		})
 
 		It("section level 0 with nested section level 1", func() {
@@ -886,7 +889,7 @@ and a paragraph`
 					},
 				},
 			}
-			verifyDocument(expected, source)
+			Expect(source).To(EqualDocument(expected))
 		})
 
 		It("section level 0 with nested section level 2", func() {
@@ -929,7 +932,7 @@ and a paragraph`
 					},
 				},
 			}
-			verifyDocument(expected, source)
+			Expect(source).To(EqualDocument(expected))
 		})
 
 		It("section level 1 with immediate paragraph", func() {
@@ -966,7 +969,7 @@ and a paragraph`
 					},
 				},
 			}
-			verifyDocument(expected, source)
+			Expect(source).To(EqualDocument(expected))
 		})
 
 		It("section level 1 with a paragraph separated by empty line", func() {
@@ -1004,7 +1007,7 @@ and a paragraph`
 					},
 				},
 			}
-			verifyDocument(expected, source)
+			Expect(source).To(EqualDocument(expected))
 		})
 
 		It("section level 1 with a paragraph separated by non-empty line", func() {
@@ -1040,7 +1043,7 @@ and a paragraph`
 					},
 				},
 			}
-			verifyDocument(expected, source)
+			Expect(source).To(EqualDocument(expected))
 		})
 
 		It("section levels 1, 2, 3, 2", func() {
@@ -1143,7 +1146,7 @@ a paragraph`
 					},
 				},
 			}
-			verifyDocument(expected, source)
+			Expect(source).To(EqualDocument(expected))
 		})
 
 		It("single section with custom IDs", func() {
@@ -1171,7 +1174,7 @@ a paragraph`
 					},
 				},
 			}
-			verifyDocument(expected, source)
+			Expect(source).To(EqualDocument(expected))
 		})
 
 		It("multiple sections with custom IDs", func() {
@@ -1241,7 +1244,7 @@ a paragraph`
 					},
 				},
 			}
-			verifyDocument(expected, source)
+			Expect(source).To(EqualDocument(expected))
 		})
 
 		It("sections with same title", func() {
@@ -1284,7 +1287,7 @@ a paragraph`
 					},
 				},
 			}
-			verifyDocument(expected, source)
+			Expect(source).To(EqualDocument(expected))
 		})
 	})
 
@@ -1307,7 +1310,7 @@ a paragraph`
 						},
 					},
 				}}
-			verifyDocument(expected, source)
+			Expect(source).To(EqualDocument(expected))
 		})
 
 		It("header invalid - missing space", func() {
@@ -1327,7 +1330,7 @@ a paragraph`
 						},
 					},
 				}}
-			verifyDocument(expected, source)
+			Expect(source).To(EqualDocument(expected))
 		})
 
 		It("header invalid - header space", func() {
@@ -1349,7 +1352,7 @@ a paragraph`
 					},
 				},
 			}
-			verifyDocument(expected, source)
+			Expect(source).To(EqualDocument(expected))
 		})
 
 		It("header with invalid section1", func() {
@@ -1387,7 +1390,7 @@ a paragraph`
 					},
 				},
 			}
-			verifyDocument(expected, source)
+			Expect(source).To(EqualDocument(expected))
 		})
 
 	})
@@ -1426,7 +1429,7 @@ Doc Writer <thedoc@asciidoctor.org>`
 					},
 				},
 			}
-			verifyDocument(expected, source)
+			Expect(source).To(EqualDocument(expected))
 		})
 	})
 })

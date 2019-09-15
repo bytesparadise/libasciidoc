@@ -1,7 +1,10 @@
 package html5_test
 
 import (
+	. "github.com/bytesparadise/libasciidoc/testsupport"
+
 	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/gomega"
 )
 
 var _ = Describe("strings", func() {
@@ -15,7 +18,7 @@ var _ = Describe("strings", func() {
 			expected := `<div class="paragraph">
 <p>some text&#8230;&#8203;</p>
 </div>`
-			verify("test.adoc", expected, source)
+			Expect(source).To(RenderHTML5(expected))
 		})
 	})
 })

@@ -2,7 +2,10 @@ package parser_test
 
 import (
 	"github.com/bytesparadise/libasciidoc/pkg/types"
+	. "github.com/bytesparadise/libasciidoc/testsupport"
+
 	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/gomega"
 )
 
 var _ = Describe("element attributes - preflight", func() {
@@ -25,7 +28,7 @@ a paragraph`
 						},
 					},
 				}
-				verifyDocumentBlock(expected, source)
+				Expect(source).To(EqualDocumentBlock(expected))
 			})
 			It("spaces in link", func() {
 				source := `[link= http://foo.bar  ]
@@ -42,7 +45,7 @@ a paragraph`
 						},
 					},
 				}
-				verifyDocumentBlock(expected, source)
+				Expect(source).To(EqualDocumentBlock(expected))
 			})
 		})
 
@@ -65,7 +68,7 @@ a paragraph`
 						},
 					},
 				}
-				verifyDocumentBlock(expected, source)
+				Expect(source).To(EqualDocumentBlock(expected))
 			})
 
 			It("unbalanced brackets", func() {
@@ -86,7 +89,7 @@ a paragraph`
 						},
 					},
 				}
-				verifyDocumentBlock(expected, source)
+				Expect(source).To(EqualDocumentBlock(expected))
 			})
 		})
 	})
@@ -111,7 +114,7 @@ a paragraph`
 						},
 					},
 				}
-				verifyDocumentBlock(expected, source)
+				Expect(source).To(EqualDocumentBlock(expected))
 			})
 
 			It("short-hand syntax", func() {
@@ -130,7 +133,7 @@ a paragraph`
 						},
 					},
 				}
-				verifyDocumentBlock(expected, source)
+				Expect(source).To(EqualDocumentBlock(expected))
 			})
 		})
 
@@ -154,7 +157,7 @@ a paragraph`
 						},
 					},
 				}
-				verifyDocumentBlock(expected, source)
+				Expect(source).To(EqualDocumentBlock(expected))
 			})
 
 			It("unbalanced brackets", func() {
@@ -175,7 +178,7 @@ a paragraph`
 						},
 					},
 				}
-				verifyDocumentBlock(expected, source)
+				Expect(source).To(EqualDocumentBlock(expected))
 			})
 		})
 	})
@@ -199,7 +202,7 @@ a paragraph`
 						},
 					},
 				}
-				verifyDocumentBlock(expected, source)
+				Expect(source).To(EqualDocumentBlock(expected))
 			})
 		})
 
@@ -230,7 +233,7 @@ a list item!`
 						},
 					},
 				}
-				verifyDocumentBlock(expected, source)
+				Expect(source).To(EqualDocumentBlock(expected))
 			})
 
 			It("not a dot", func() {
@@ -252,7 +255,7 @@ a paragraph`
 						},
 					},
 				}
-				verifyDocumentBlock(expected, source)
+				Expect(source).To(EqualDocumentBlock(expected))
 			})
 		})
 	})
@@ -276,7 +279,7 @@ a paragraph`
 						},
 					},
 				}
-				verifyDocumentBlock(expected, source)
+				Expect(source).To(EqualDocumentBlock(expected))
 			})
 
 			It("full role syntax", func() {
@@ -294,7 +297,7 @@ a paragraph`
 						},
 					},
 				}
-				verifyDocumentBlock(expected, source)
+				Expect(source).To(EqualDocumentBlock(expected))
 			})
 		})
 	})

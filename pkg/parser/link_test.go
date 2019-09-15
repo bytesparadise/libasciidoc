@@ -2,7 +2,10 @@ package parser_test
 
 import (
 	"github.com/bytesparadise/libasciidoc/pkg/types"
+	. "github.com/bytesparadise/libasciidoc/testsupport"
+
 	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/gomega"
 )
 
 var _ = Describe("links - preflight", func() {
@@ -27,7 +30,7 @@ var _ = Describe("links - preflight", func() {
 					},
 				},
 			}
-			verifyDocumentBlock(expected, source)
+			Expect(source).To(EqualDocumentBlock(expected))
 		})
 
 		It("external link with empty text", func() {
@@ -48,7 +51,7 @@ var _ = Describe("links - preflight", func() {
 					},
 				},
 			}
-			verifyDocumentBlock(expected, source)
+			Expect(source).To(EqualDocumentBlock(expected))
 		})
 
 		It("external link with text only", func() {
@@ -76,7 +79,7 @@ var _ = Describe("links - preflight", func() {
 					},
 				},
 			}
-			verifyDocumentBlock(expected, source)
+			Expect(source).To(EqualDocumentBlock(expected))
 		})
 
 		It("external link with text and extra attributes", func() {
@@ -104,7 +107,7 @@ var _ = Describe("links - preflight", func() {
 					},
 				},
 			}
-			verifyDocumentBlock(expected, source)
+			Expect(source).To(EqualDocumentBlock(expected))
 		})
 
 		It("external link inside a multiline paragraph -  without attributes", func() {
@@ -140,7 +143,7 @@ next lines`
 					},
 				},
 			}
-			verifyDocumentBlock(expected, source)
+			Expect(source).To(EqualDocumentBlock(expected))
 		})
 
 		It("external link inside a multiline paragraph -  with attributes", func() {
@@ -176,7 +179,7 @@ next lines`
 					},
 				},
 			}
-			verifyDocumentBlock(expected, source)
+			Expect(source).To(EqualDocumentBlock(expected))
 		})
 
 		Context("text attribute with comma", func() {
@@ -205,7 +208,7 @@ next lines`
 						},
 					},
 				}
-				verifyDocumentBlock(expected, source)
+				Expect(source).To(EqualDocumentBlock(expected))
 			})
 
 			It("relative link only with doublequoted text having comma", func() {
@@ -232,7 +235,7 @@ next lines`
 						},
 					},
 				}
-				verifyDocumentBlock(expected, source)
+				Expect(source).To(EqualDocumentBlock(expected))
 			})
 
 			It("relative link with doublequoted text having comma and other attrs", func() {
@@ -260,7 +263,7 @@ next lines`
 						},
 					},
 				}
-				verifyDocumentBlock(expected, source)
+				Expect(source).To(EqualDocumentBlock(expected))
 			})
 
 			It("relative link with text having comma and other attributes", func() {
@@ -290,7 +293,7 @@ next lines`
 						},
 					},
 				}
-				verifyDocumentBlock(expected, source)
+				Expect(source).To(EqualDocumentBlock(expected))
 			})
 		})
 
@@ -316,7 +319,7 @@ next lines`
 					},
 				},
 			}
-			verifyDocumentBlock(expected, source)
+			Expect(source).To(EqualDocumentBlock(expected))
 		})
 
 		It("relative link to doc with text", func() {
@@ -343,7 +346,7 @@ next lines`
 					},
 				},
 			}
-			verifyDocumentBlock(expected, source)
+			Expect(source).To(EqualDocumentBlock(expected))
 		})
 
 		It("relative link to external URL with text only", func() {
@@ -370,7 +373,7 @@ next lines`
 					},
 				},
 			}
-			verifyDocumentBlock(expected, source)
+			Expect(source).To(EqualDocumentBlock(expected))
 		})
 
 		It("relative link to external URL with text and extra attributes", func() {
@@ -398,7 +401,7 @@ next lines`
 					},
 				},
 			}
-			verifyDocumentBlock(expected, source)
+			Expect(source).To(EqualDocumentBlock(expected))
 		})
 
 		It("relative link to external URL with extra attributes only", func() {
@@ -421,7 +424,7 @@ next lines`
 					},
 				},
 			}
-			verifyDocumentBlock(expected, source)
+			Expect(source).To(EqualDocumentBlock(expected))
 		})
 
 		It("invalid relative link to doc", func() {
@@ -436,7 +439,7 @@ next lines`
 					},
 				},
 			}
-			verifyDocumentBlock(expected, source)
+			Expect(source).To(EqualDocumentBlock(expected))
 		})
 
 		It("relative link with quoted text", func() {
@@ -519,7 +522,7 @@ next lines`
 					},
 				},
 			}
-			verifyDocumentBlock(expected, source)
+			Expect(source).To(EqualDocumentBlock(expected))
 		})
 
 		Context("text attribute with comma", func() {
@@ -548,7 +551,7 @@ next lines`
 						},
 					},
 				}
-				verifyDocumentBlock(expected, source)
+				Expect(source).To(EqualDocumentBlock(expected))
 			})
 
 			It("relative link only with doublequoted text having comma", func() {
@@ -575,7 +578,7 @@ next lines`
 						},
 					},
 				}
-				verifyDocumentBlock(expected, source)
+				Expect(source).To(EqualDocumentBlock(expected))
 			})
 
 			It("relative link with doublequoted text having comma and other attrs", func() {
@@ -603,7 +606,7 @@ next lines`
 						},
 					},
 				}
-				verifyDocumentBlock(expected, source)
+				Expect(source).To(EqualDocumentBlock(expected))
 			})
 
 			It("relative link with text having comma and other attributes", func() {
@@ -633,7 +636,7 @@ next lines`
 						},
 					},
 				}
-				verifyDocumentBlock(expected, source)
+				Expect(source).To(EqualDocumentBlock(expected))
 			})
 		})
 

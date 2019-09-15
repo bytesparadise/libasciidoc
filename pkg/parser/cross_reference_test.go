@@ -2,7 +2,10 @@ package parser_test
 
 import (
 	"github.com/bytesparadise/libasciidoc/pkg/types"
+	. "github.com/bytesparadise/libasciidoc/testsupport"
+
 	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/gomega"
 )
 
 var _ = Describe("cross-references - preflight", func() {
@@ -49,7 +52,7 @@ with some content linked to <<thetitle>>!`
 					},
 				},
 			}
-			verifyPreflight("test.adoc", expected, source)
+			Expect(source).To(EqualPreflightDocument(expected))
 		})
 
 		It("cross-reference with custom id and label", func() {
@@ -92,7 +95,7 @@ with some content linked to <<thetitle,a label to the title>>!`
 					},
 				},
 			}
-			verifyPreflight("test.adoc", expected, source)
+			Expect(source).To(EqualPreflightDocument(expected))
 		})
 	})
 })
@@ -151,7 +154,7 @@ with some content linked to <<thetitle>>!`
 					},
 				},
 			}
-			verifyDocument(expected, source)
+			Expect(source).To(EqualDocument(expected))
 		})
 
 		It("cross-reference with custom id and label", func() {
@@ -204,7 +207,7 @@ with some content linked to <<thetitle,a label to the title>>!`
 					},
 				},
 			}
-			verifyDocument(expected, source)
+			Expect(source).To(EqualDocument(expected))
 		})
 	})
 })

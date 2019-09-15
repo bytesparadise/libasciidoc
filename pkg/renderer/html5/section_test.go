@@ -1,6 +1,11 @@
 package html5_test
 
-import . "github.com/onsi/ginkgo"
+import (
+	. "github.com/bytesparadise/libasciidoc/testsupport"
+
+	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/gomega"
+)
 
 var _ = Describe("sections", func() {
 
@@ -11,7 +16,7 @@ var _ = Describe("sections", func() {
 			// top-level section is not rendered per-say,
 			// but the section will be used to set the HTML page's <title> element
 			expected := ``
-			verify("test.adoc", expected, source)
+			Expect(source).To(RenderHTML5(expected))
 		})
 
 		It("section level 1 alone", func() {
@@ -23,7 +28,7 @@ var _ = Describe("sections", func() {
 <div class="sectionbody">
 </div>
 </div>`
-			verify("test.adoc", expected, source)
+			Expect(source).To(RenderHTML5(expected))
 		})
 
 		It("section level 2 alone", func() {
@@ -33,7 +38,7 @@ var _ = Describe("sections", func() {
 			expected := `<div class="sect2">
 <h3 id="_a_title">a title</h3>
 </div>`
-			verify("test.adoc", expected, source)
+			Expect(source).To(RenderHTML5(expected))
 		})
 
 		It("section level 1 with just bold content", func() {
@@ -43,7 +48,7 @@ var _ = Describe("sections", func() {
 <div class="sectionbody">
 </div>
 </div>`
-			verify("test.adoc", expected, source)
+			Expect(source).To(RenderHTML5(expected))
 		})
 
 		It("section level 2 with nested bold content", func() {
@@ -51,7 +56,7 @@ var _ = Describe("sections", func() {
 			expected := `<div class="sect2">
 <h3 id="_a_section_title_with_bold_content">a section title, with <strong>bold content</strong></h3>
 </div>`
-			verify("test.adoc", expected, source)
+			Expect(source).To(RenderHTML5(expected))
 		})
 
 		It("section level 1 with custom ID", func() {
@@ -65,7 +70,7 @@ var _ = Describe("sections", func() {
 <div class="sectionbody">
 </div>
 </div>`
-			verify("test.adoc", expected, source)
+			Expect(source).To(RenderHTML5(expected))
 		})
 
 		It("section level 1 with custom prefix id", func() {
@@ -78,7 +83,7 @@ var _ = Describe("sections", func() {
 <div class="sectionbody">
 </div>
 </div>`
-			verify("test.adoc", expected, source)
+			Expect(source).To(RenderHTML5(expected))
 		})
 
 		It("sections with same title", func() {
@@ -95,7 +100,7 @@ var _ = Describe("sections", func() {
 <div class="sectionbody">
 </div>
 </div>`
-			verify("test.adoc", expected, source)
+			Expect(source).To(RenderHTML5(expected))
 		})
 	})
 
@@ -120,7 +125,7 @@ and a second paragraph`
 </div>
 </div>
 </div>`
-			verify("test.adoc", expected, source)
+			Expect(source).To(RenderHTML5(expected))
 		})
 
 		It("section with just a paragraph", func() {
@@ -132,7 +137,7 @@ a paragraph`
 			expected := `<div class="paragraph">
 <p>a paragraph</p>
 </div>`
-			verify("test.adoc", expected, source)
+			Expect(source).To(RenderHTML5(expected))
 		})
 
 		It("header with preamble then section level 1", func() {
@@ -165,7 +170,7 @@ with some text`
 </div>
 </div>
 </div>`
-			verify("test.adoc", expected, source)
+			Expect(source).To(RenderHTML5(expected))
 		})
 
 		It("header with preamble then 2 sections level 1", func() {
@@ -210,7 +215,7 @@ with some text, too`
 </div>
 </div>
 </div>`
-			verify("test.adoc", expected, source)
+			Expect(source).To(RenderHTML5(expected))
 		})
 
 		It("section with listing block and subsection", func() {
@@ -242,7 +247,7 @@ Listing block content is commonly used to preserve code input.</pre>
 </div>
 </div>
 </div>`
-			verify("test.adoc", expected, source)
+			Expect(source).To(RenderHTML5(expected))
 		})
 	})
 
@@ -273,7 +278,7 @@ here</p>
 </div>
 </div>
 </div>`
-			verify("test.adoc", expected, source)
+			Expect(source).To(RenderHTML5(expected))
 		})
 
 		It("should not include preamble wrapper", func() {
@@ -296,7 +301,7 @@ here</p>
 </div>
 </div>
 </div>`
-			verify("test.adoc", expected, source)
+			Expect(source).To(RenderHTML5(expected))
 		})
 	})
 })

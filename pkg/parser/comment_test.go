@@ -2,7 +2,10 @@ package parser_test
 
 import (
 	"github.com/bytesparadise/libasciidoc/pkg/types"
+	. "github.com/bytesparadise/libasciidoc/testsupport"
+
 	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/gomega"
 )
 
 var _ = Describe("comments - preflight", func() {
@@ -10,31 +13,31 @@ var _ = Describe("comments - preflight", func() {
 	Context("single line comments", func() {
 
 		It("single line comment alone", func() {
-			doc := `// A single-line comment.`
+			source := `// A single-line comment.`
 			expected := types.SingleLineComment{
 				Content: " A single-line comment.",
 			}
-			verifyDocumentBlock(expected, doc)
+			Expect(source).To(EqualDocumentBlock(expected))
 		})
 
 		It("single line comment with prefixing spaces alone", func() {
-			doc := `  // A single-line comment.`
+			source := `  // A single-line comment.`
 			expected := types.SingleLineComment{
 				Content: " A single-line comment.",
 			}
-			verifyDocumentBlock(expected, doc)
+			Expect(source).To(EqualDocumentBlock(expected))
 		})
 
 		It("single line comment with prefixing tabs alone", func() {
-			doc := "\t\t// A single-line comment."
+			source := "\t\t// A single-line comment."
 			expected := types.SingleLineComment{
 				Content: " A single-line comment.",
 			}
-			verifyDocumentBlock(expected, doc)
+			Expect(source).To(EqualDocumentBlock(expected))
 		})
 
 		It("single line comment at end of line", func() {
-			doc := `foo // A single-line comment.`
+			source := `foo // A single-line comment.`
 			expected := types.Paragraph{
 				Attributes: types.ElementAttributes{},
 				Lines: []types.InlineElements{
@@ -43,11 +46,11 @@ var _ = Describe("comments - preflight", func() {
 					},
 				},
 			}
-			verifyDocumentBlock(expected, doc)
+			Expect(source).To(EqualDocumentBlock(expected))
 		})
 
 		It("single line comment within a paragraph", func() {
-			doc := `a first line
+			source := `a first line
 // A single-line comment.
 another line`
 			expected := types.Paragraph{
@@ -64,11 +67,11 @@ another line`
 					},
 				},
 			}
-			verifyDocumentBlock(expected, doc)
+			Expect(source).To(EqualDocumentBlock(expected))
 		})
 
 		It("single line comment within a paragraph with tab", func() {
-			doc := `a first line
+			source := `a first line
 	// A single-line comment.
 another line`
 			expected := types.Paragraph{
@@ -85,14 +88,14 @@ another line`
 					},
 				},
 			}
-			verifyDocumentBlock(expected, doc)
+			Expect(source).To(EqualDocumentBlock(expected))
 		})
 	})
 
 	Context("comment blocks", func() {
 
 		It("comment block alone", func() {
-			doc := `//// 
+			source := `//// 
 a *comment* block
 with multiple lines
 ////`
@@ -108,11 +111,11 @@ with multiple lines
 					},
 				},
 			}
-			verifyDocumentBlock(expected, doc)
+			Expect(source).To(EqualDocumentBlock(expected))
 		})
 
 		It("comment block with paragraphs around", func() {
-			doc := `a first paragraph
+			source := `a first paragraph
 //// 
 a *comment* block
 with multiple lines
@@ -150,7 +153,7 @@ a second paragraph`
 					},
 				},
 			}
-			verifyPreflight("test.adoc", expected, doc)
+			Expect(source).To(EqualPreflightDocument(expected))
 		})
 	})
 

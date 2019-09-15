@@ -2,6 +2,9 @@ package parser_test
 
 import (
 	"github.com/bytesparadise/libasciidoc/pkg/types"
+	. "github.com/bytesparadise/libasciidoc/testsupport"
+	
+	. "github.com/onsi/gomega"
 	. "github.com/onsi/ginkgo"
 )
 
@@ -33,7 +36,7 @@ on 2 lines`
 				},
 			},
 		}
-		verifyPreflight("test.adoc", expected, source)
+		Expect(source).To(EqualPreflightDocument(expected))
 	})
 
 	It("labeled list with a single term and no description", func() {
@@ -48,7 +51,7 @@ on 2 lines`
 				},
 			},
 		}
-		verifyPreflight("test.adoc", expected, source)
+		Expect(source).To(EqualPreflightDocument(expected))
 	})
 
 	It("labeled list with a horizontal layout attribute", func() {
@@ -75,7 +78,7 @@ Item1:: foo`
 				},
 			},
 		}
-		verifyPreflight("test.adoc", expected, source)
+		Expect(source).To(EqualPreflightDocument(expected))
 	})
 
 	It("labeled list with a single term and a blank line", func() {
@@ -91,7 +94,7 @@ Item1:: foo`
 				},
 			},
 		}
-		verifyPreflight("test.adoc", expected, source)
+		Expect(source).To(EqualPreflightDocument(expected))
 	})
 
 	It("labeled list with multiple sibling items", func() {
@@ -150,7 +153,7 @@ Item 3 description`
 				},
 			},
 		}
-		verifyPreflight("test.adoc", expected, source)
+		Expect(source).To(EqualPreflightDocument(expected))
 	})
 
 	It("labeled list with multiple nested items", func() {
@@ -209,7 +212,7 @@ Item 3 description`
 				},
 			},
 		}
-		verifyPreflight("test.adoc", expected, source)
+		Expect(source).To(EqualPreflightDocument(expected))
 	})
 
 	It("labeled list with nested unordered list - case 1", func() {
@@ -275,7 +278,7 @@ Item with description:: something simple`
 			},
 		}
 
-		verifyPreflight("test.adoc", expected, source)
+		Expect(source).To(EqualPreflightDocument(expected))
 	})
 
 	It("labeled list with a single item and paragraph", func() {
@@ -315,7 +318,7 @@ a normal paragraph.`
 				},
 			},
 		}
-		verifyPreflight("test.adoc", expected, source)
+		Expect(source).To(EqualPreflightDocument(expected))
 	})
 
 	It("labeled list with item continuation", func() {
@@ -394,7 +397,7 @@ another fenced block
 				},
 			},
 		}
-		verifyPreflight("test.adoc", expected, source)
+		Expect(source).To(EqualPreflightDocument(expected))
 	})
 
 	It("labeled list without item continuation", func() {
@@ -463,7 +466,7 @@ another fenced block
 				},
 			},
 		}
-		verifyPreflight("test.adoc", expected, source)
+		Expect(source).To(EqualPreflightDocument(expected))
 	})
 
 	It("labeled list with nested unordered list - case 2", func() {
@@ -495,7 +498,7 @@ another fenced block
 				},
 			},
 		}
-		verifyPreflight("test.adoc", expected, source)
+		Expect(source).To(EqualPreflightDocument(expected))
 	})
 
 	It("labeled list with title", func() {
@@ -542,7 +545,7 @@ second term:: definition of the second term`
 				},
 			},
 		}
-		verifyPreflight("test.adoc", expected, source)
+		Expect(source).To(EqualPreflightDocument(expected))
 	})
 
 	It("max level of labeled items - case 1", func() {
@@ -625,7 +628,7 @@ level 1:: description 1`
 				},
 			},
 		}
-		verifyPreflight("test.adoc", expected, source)
+		Expect(source).To(EqualPreflightDocument(expected))
 	})
 
 	It("max level of labeled items - case 2", func() {
@@ -708,7 +711,7 @@ level 2::: description 2`
 				},
 			},
 		}
-		verifyPreflight("test.adoc", expected, source)
+		Expect(source).To(EqualPreflightDocument(expected))
 	})
 })
 
@@ -749,7 +752,7 @@ on 2 lines`
 				},
 			},
 		}
-		verifyDocument(expected, source)
+		Expect(source).To(EqualDocument(expected))
 	})
 
 	It("labeled list with a single term and no description", func() {
@@ -773,7 +776,7 @@ on 2 lines`
 				},
 			},
 		}
-		verifyDocument(expected, source)
+		Expect(source).To(EqualDocument(expected))
 	})
 
 	It("labeled list with a horizontal layout attribute", func() {
@@ -809,7 +812,7 @@ Item1:: foo`
 				},
 			},
 		}
-		verifyDocument(expected, source)
+		Expect(source).To(EqualDocument(expected))
 	})
 
 	It("labeled list with a single term and a blank line", func() {
@@ -834,7 +837,7 @@ Item1:: foo`
 				},
 			},
 		}
-		verifyDocument(expected, source)
+		Expect(source).To(EqualDocument(expected))
 	})
 
 	It("labeled list with multiple sibling items", func() {
@@ -902,7 +905,7 @@ Item 3 description`
 				},
 			},
 		}
-		verifyDocument(expected, source)
+		Expect(source).To(EqualDocument(expected))
 	})
 
 	It("labeled list with multiple nested items", func() {
@@ -980,7 +983,7 @@ Item 3 description`
 				},
 			},
 		}
-		verifyDocument(expected, source)
+		Expect(source).To(EqualDocument(expected))
 	})
 
 	It("labeled list with nested unordered list - case 1", func() {
@@ -1061,7 +1064,7 @@ Item with description:: something simple`
 			},
 		}
 
-		verifyDocument(expected, source)
+		Expect(source).To(EqualDocument(expected))
 	})
 
 	It("labeled list with a single item and paragraph", func() {
@@ -1109,7 +1112,7 @@ a normal paragraph.`
 				},
 			},
 		}
-		verifyDocument(expected, source)
+		Expect(source).To(EqualDocument(expected))
 	})
 
 	It("labeled list with item continuation", func() {
@@ -1191,7 +1194,7 @@ another fenced block
 			},
 		}
 
-		verifyDocument(expected, source)
+		Expect(source).To(EqualDocument(expected))
 	})
 
 	It("labeled list without item continuation", func() {
@@ -1274,7 +1277,7 @@ another fenced block
 				},
 			},
 		}
-		verifyDocument(expected, source)
+		Expect(source).To(EqualDocument(expected))
 	})
 
 	It("labeled list with nested unordered list - case 2", func() {
@@ -1321,7 +1324,7 @@ another fenced block
 				},
 			},
 		}
-		verifyDocument(expected, source)
+		Expect(source).To(EqualDocument(expected))
 	})
 
 	It("labeled list with title", func() {
@@ -1377,7 +1380,7 @@ second term:: definition of the second term`
 				},
 			},
 		}
-		verifyDocument(expected, source)
+		Expect(source).To(EqualDocument(expected))
 	})
 
 	It("max level of labeled items - case 1", func() {
@@ -1479,7 +1482,7 @@ level 1:: description 1`
 				},
 			},
 		}
-		verifyDocument(expected, source)
+		Expect(source).To(EqualDocument(expected))
 	})
 
 	It("max level of labeled items - case 2", func() {
@@ -1581,6 +1584,6 @@ level 2::: description 2`
 				},
 			},
 		}
-		verifyDocument(expected, source)
+		Expect(source).To(EqualDocument(expected))
 	})
 })

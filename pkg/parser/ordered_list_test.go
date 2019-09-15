@@ -2,6 +2,9 @@ package parser_test
 
 import (
 	"github.com/bytesparadise/libasciidoc/pkg/types"
+	. "github.com/bytesparadise/libasciidoc/testsupport"
+	
+	. "github.com/onsi/gomega"
 	. "github.com/onsi/ginkgo"
 )
 
@@ -33,7 +36,7 @@ var _ = Describe("ordered lists - preflight", func() {
 					},
 				},
 			}
-			verifyPreflight("test.adoc", expected, source)
+			Expect(source).To(EqualPreflightDocument(expected))
 		})
 
 		It("ordered list item with arabic numbering style", func() {
@@ -48,7 +51,7 @@ var _ = Describe("ordered lists - preflight", func() {
 					},
 				},
 			}
-			verifyPreflight("test.adoc", expected, source)
+			Expect(source).To(EqualPreflightDocument(expected))
 		})
 
 		It("ordered list item with lower alpha numbering style", func() {
@@ -63,7 +66,7 @@ var _ = Describe("ordered lists - preflight", func() {
 					},
 				},
 			}
-			verifyPreflight("test.adoc", expected, source)
+			Expect(source).To(EqualPreflightDocument(expected))
 		})
 
 		It("ordered list item with upper alpha numbering style", func() {
@@ -78,7 +81,7 @@ var _ = Describe("ordered lists - preflight", func() {
 					},
 				},
 			}
-			verifyPreflight("test.adoc", expected, source)
+			Expect(source).To(EqualPreflightDocument(expected))
 		})
 
 		It("ordered list item with lower roman numbering style", func() {
@@ -93,7 +96,7 @@ var _ = Describe("ordered lists - preflight", func() {
 					},
 				},
 			}
-			verifyPreflight("test.adoc", expected, source)
+			Expect(source).To(EqualPreflightDocument(expected))
 		})
 
 		It("ordered list item with upper roman numbering style", func() {
@@ -108,7 +111,7 @@ var _ = Describe("ordered lists - preflight", func() {
 					},
 				},
 			}
-			verifyPreflight("test.adoc", expected, source)
+			Expect(source).To(EqualPreflightDocument(expected))
 		})
 
 		It("ordered list item with explicit numbering style", func() {
@@ -133,7 +136,7 @@ var _ = Describe("ordered lists - preflight", func() {
 					},
 				},
 			}
-			verifyPreflight("test.adoc", expected, source)
+			Expect(source).To(EqualPreflightDocument(expected))
 		})
 
 		It("ordered list item with explicit start only", func() {
@@ -151,7 +154,7 @@ var _ = Describe("ordered lists - preflight", func() {
 					},
 				},
 			}
-			verifyPreflight("test.adoc", expected, source)
+			Expect(source).To(EqualPreflightDocument(expected))
 		})
 
 		It("ordered list item with explicit quoted numbering and start", func() {
@@ -170,7 +173,7 @@ var _ = Describe("ordered lists - preflight", func() {
 					},
 				},
 			}
-			verifyPreflight("test.adoc", expected, source)
+			Expect(source).To(EqualPreflightDocument(expected))
 		})
 
 		It("max level of ordered items - case 1", func() {
@@ -289,7 +292,7 @@ var _ = Describe("ordered lists - preflight", func() {
 					},
 				},
 			}
-			verifyPreflight("test.adoc", expected, source)
+			Expect(source).To(EqualPreflightDocument(expected))
 		})
 
 		It("max level of ordered items - case 2", func() {
@@ -408,7 +411,7 @@ var _ = Describe("ordered lists - preflight", func() {
 					},
 				},
 			}
-			verifyPreflight("test.adoc", expected, source)
+			Expect(source).To(EqualPreflightDocument(expected))
 		})
 	})
 
@@ -452,7 +455,7 @@ var _ = Describe("ordered lists - preflight", func() {
 					},
 				},
 			}
-			verifyPreflight("test.adoc", expected, source)
+			Expect(source).To(EqualPreflightDocument(expected))
 		})
 
 		It("ordered list with unnumbered items", func() {
@@ -493,7 +496,7 @@ var _ = Describe("ordered lists - preflight", func() {
 					},
 				},
 			}
-			verifyPreflight("test.adoc", expected, source)
+			Expect(source).To(EqualPreflightDocument(expected))
 		})
 
 		It("ordered list with custom numbering on child items with tabs ", func() {
@@ -618,7 +621,7 @@ var _ = Describe("ordered lists - preflight", func() {
 					},
 				},
 			}
-			verifyPreflight("test.adoc", expected, source)
+			Expect(source).To(EqualPreflightDocument(expected))
 		})
 
 		It("ordered list with all default styles and blank lines", func() {
@@ -723,7 +726,7 @@ var _ = Describe("ordered lists - preflight", func() {
 					types.BlankLine{},
 				},
 			}
-			verifyPreflight("test.adoc", expected, source)
+			Expect(source).To(EqualPreflightDocument(expected))
 		})
 	})
 
@@ -766,7 +769,7 @@ var _ = Describe("ordered lists - preflight", func() {
 					},
 				},
 			}
-			verifyPreflight("test.adoc", expected, source)
+			Expect(source).To(EqualPreflightDocument(expected))
 		})
 
 		It("ordered list with numbered items", func() {
@@ -838,7 +841,7 @@ b. item 2.a`
 					},
 				},
 			}
-			verifyPreflight("test.adoc", expected, source)
+			Expect(source).To(EqualPreflightDocument(expected))
 		})
 	})
 
@@ -928,7 +931,7 @@ another delimited block
 					},
 				},
 			}
-			verifyPreflight("test.adoc", expected, source)
+			Expect(source).To(EqualPreflightDocument(expected))
 		})
 	})
 })
@@ -969,7 +972,7 @@ var _ = Describe("ordered lists - document", func() {
 					},
 				},
 			}
-			verifyDocument(expected, source)
+			Expect(source).To(EqualDocument(expected))
 		})
 
 		It("ordered list item with arabic numbering style", func() {
@@ -993,7 +996,7 @@ var _ = Describe("ordered lists - document", func() {
 					},
 				},
 			}
-			verifyDocument(expected, source)
+			Expect(source).To(EqualDocument(expected))
 		})
 
 		It("ordered list item with lower alpha numbering style", func() {
@@ -1017,7 +1020,7 @@ var _ = Describe("ordered lists - document", func() {
 					},
 				},
 			}
-			verifyDocument(expected, source)
+			Expect(source).To(EqualDocument(expected))
 		})
 
 		It("ordered list item with upper alpha numbering style", func() {
@@ -1042,7 +1045,7 @@ var _ = Describe("ordered lists - document", func() {
 					},
 				},
 			}
-			verifyDocument(expected, source)
+			Expect(source).To(EqualDocument(expected))
 		})
 
 		It("ordered list item with lower roman numbering style", func() {
@@ -1066,7 +1069,7 @@ var _ = Describe("ordered lists - document", func() {
 					},
 				},
 			}
-			verifyDocument(expected, source)
+			Expect(source).To(EqualDocument(expected))
 		})
 
 		It("ordered list item with upper roman numbering style", func() {
@@ -1091,7 +1094,7 @@ var _ = Describe("ordered lists - document", func() {
 					},
 				},
 			}
-			verifyDocument(expected, source)
+			Expect(source).To(EqualDocument(expected))
 		})
 
 		It("ordered list item with explicit numbering style", func() {
@@ -1125,7 +1128,7 @@ var _ = Describe("ordered lists - document", func() {
 					},
 				},
 			}
-			verifyDocument(expected, source)
+			Expect(source).To(EqualDocument(expected))
 		})
 
 		It("ordered list item with explicit start only", func() {
@@ -1152,7 +1155,7 @@ var _ = Describe("ordered lists - document", func() {
 					},
 				},
 			}
-			verifyDocument(expected, source)
+			Expect(source).To(EqualDocument(expected))
 		})
 
 		It("ordered list item with explicit quoted numbering and start", func() {
@@ -1180,7 +1183,7 @@ var _ = Describe("ordered lists - document", func() {
 					},
 				},
 			}
-			verifyDocument(expected, source)
+			Expect(source).To(EqualDocument(expected))
 		})
 
 		It("max level of ordered items - case 1", func() {
@@ -1328,7 +1331,7 @@ var _ = Describe("ordered lists - document", func() {
 					},
 				},
 			}
-			verifyDocument(expected, source)
+			Expect(source).To(EqualDocument(expected))
 		})
 
 		It("max level of ordered items - case 2", func() {
@@ -1476,7 +1479,7 @@ var _ = Describe("ordered lists - document", func() {
 					},
 				},
 			}
-			verifyDocument(expected, source)
+			Expect(source).To(EqualDocument(expected))
 		})
 	})
 
@@ -1529,7 +1532,7 @@ var _ = Describe("ordered lists - document", func() {
 					},
 				},
 			}
-			verifyDocument(expected, source)
+			Expect(source).To(EqualDocument(expected))
 		})
 
 		It("ordered list with unnumbered items", func() {
@@ -1579,7 +1582,7 @@ var _ = Describe("ordered lists - document", func() {
 					},
 				},
 			}
-			verifyDocument(expected, source)
+			Expect(source).To(EqualDocument(expected))
 		})
 
 		It("ordered list with custom numbering on child items with tabs ", func() {
@@ -1728,7 +1731,7 @@ var _ = Describe("ordered lists - document", func() {
 					},
 				},
 			}
-			verifyDocument(expected, source)
+			Expect(source).To(EqualDocument(expected))
 		})
 
 		It("ordered list with all default styles and blank lines", func() {
@@ -1854,7 +1857,7 @@ var _ = Describe("ordered lists - document", func() {
 					},
 				},
 			}
-			verifyDocument(expected, source)
+			Expect(source).To(EqualDocument(expected))
 		})
 	})
 
@@ -1906,7 +1909,7 @@ var _ = Describe("ordered lists - document", func() {
 					},
 				},
 			}
-			verifyDocument(expected, source)
+			Expect(source).To(EqualDocument(expected))
 		})
 
 		It("ordered list with numbered items", func() {
@@ -1997,7 +2000,7 @@ b. item 2.a`
 					},
 				},
 			}
-			verifyDocument(expected, source)
+			Expect(source).To(EqualDocument(expected))
 		})
 	})
 
@@ -2090,7 +2093,7 @@ another delimited block
 					},
 				},
 			}
-			verifyDocument(expected, source)
+			Expect(source).To(EqualDocument(expected))
 		})
 	})
 })

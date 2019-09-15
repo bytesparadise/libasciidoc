@@ -4,7 +4,10 @@ import (
 	"fmt"
 
 	"github.com/bytesparadise/libasciidoc/pkg/types"
+	. "github.com/bytesparadise/libasciidoc/testsupport"
+
 	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/gomega"
 )
 
 var _ = Describe("footnotes - preflight", func() {
@@ -41,7 +44,7 @@ var _ = Describe("footnotes - preflight", func() {
 					},
 				},
 			}
-			verifyPreflight("test.adoc", expected, source) // need to get the whole document here
+			Expect(source).To(EqualPreflightDocument(expected)) // need to get the whole document here
 		})
 
 		It("footnote with single-line rich content", func() {
@@ -94,7 +97,7 @@ var _ = Describe("footnotes - preflight", func() {
 					},
 				},
 			}
-			verifyPreflight("test.adoc", expected, source) // need to get the whole document here
+			Expect(source).To(EqualPreflightDocument(expected)) // need to get the whole document here
 		})
 
 		It("footnote in a paragraph", func() {
@@ -121,7 +124,7 @@ var _ = Describe("footnotes - preflight", func() {
 					},
 				},
 			}
-			verifyPreflight("test.adoc", expected, source) // need to get the whole document here
+			Expect(source).To(EqualPreflightDocument(expected)) // need to get the whole document here
 		})
 
 	})
@@ -168,7 +171,7 @@ var _ = Describe("footnotes - preflight", func() {
 					},
 				},
 			}
-			verifyPreflight("test.adoc", expected, source)
+			Expect(source).To(EqualPreflightDocument(expected))
 		})
 
 		It("footnoteref with unknown reference", func() {
@@ -212,7 +215,7 @@ var _ = Describe("footnotes - preflight", func() {
 					},
 				},
 			}
-			verifyPreflight("test.adoc", expected, source)
+			Expect(source).To(EqualPreflightDocument(expected))
 		})
 	})
 
@@ -313,7 +316,7 @@ a paragraph with another footnote:[baz]`
 				},
 			},
 		}
-		verifyPreflight("test.adoc", expected, source) // need to get the whole document here
+		Expect(source).To(EqualPreflightDocument(expected)) // need to get the whole document here
 	})
 })
 
@@ -357,7 +360,7 @@ var _ = Describe("footnotes - document", func() {
 					},
 				},
 			}
-			verifyDocument(expected, source) // need to get the whole document here
+			Expect(source).To(EqualDocument(expected)) // need to get the whole document here
 		})
 
 		It("footnote with single-line rich content", func() {
@@ -416,7 +419,7 @@ var _ = Describe("footnotes - document", func() {
 					},
 				},
 			}
-			verifyDocument(expected, source) // need to get the whole document here
+			Expect(source).To(EqualDocument(expected)) // need to get the whole document here
 		})
 
 		It("footnote in a paragraph", func() {
@@ -450,7 +453,7 @@ var _ = Describe("footnotes - document", func() {
 					},
 				},
 			}
-			verifyDocument(expected, source) // need to get the whole document here
+			Expect(source).To(EqualDocument(expected)) // need to get the whole document here
 		})
 
 	})
@@ -505,7 +508,7 @@ var _ = Describe("footnotes - document", func() {
 					},
 				},
 			}
-			verifyDocument(expected, source)
+			Expect(source).To(EqualDocument(expected))
 		})
 
 		It("footnoteref with unknown reference", func() {
@@ -557,7 +560,7 @@ var _ = Describe("footnotes - document", func() {
 					},
 				},
 			}
-			verifyDocument(expected, source)
+			Expect(source).To(EqualDocument(expected))
 		})
 	})
 
@@ -667,6 +670,6 @@ a paragraph with another footnote:[baz]`
 				},
 			},
 		}
-		verifyDocument(expected, source) // need to get the whole document here
+		Expect(source).To(EqualDocument(expected)) // need to get the whole document here
 	})
 })

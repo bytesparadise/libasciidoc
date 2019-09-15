@@ -1,7 +1,7 @@
 package html5_test
 
 import (
-	"github.com/bytesparadise/libasciidoc/testsupport"
+	. "github.com/bytesparadise/libasciidoc/testsupport"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
@@ -31,7 +31,7 @@ include::../../../test/includes/chapter-a.adoc[leveloffset=+1]`
 </div>
 </div>
 </div>`
-		verify("test.adoc", expected, source)
+		Expect(source).To(RenderHTML5(expected))
 	})
 
 	It("include non adoc file", func() {
@@ -54,7 +54,7 @@ include::../../../test/includes/hello_world.go.txt[]`
 	fmt.Println(&#34;hello, world!&#34;)
 }</p>
 </div>`
-		verify("test.adoc", expected, source)
+		Expect(source).To(RenderHTML5(expected))
 	})
 
 	It("include 2 files", func() {
@@ -85,7 +85,7 @@ include::../../../test/includes/hello_world.go.txt[]`
 	fmt.Println(&#34;hello, world!&#34;)
 }</p>
 </div>`
-		verify("test.adoc", expected, source)
+		Expect(source).To(RenderHTML5(expected))
 	})
 
 	It("include file and append following elements in included section", func() {
@@ -113,7 +113,7 @@ a third paragraph`
 </div>
 </div>
 </div>`
-		verify("test.adoc", expected, source)
+		Expect(source).To(RenderHTML5(expected))
 	})
 
 	Context("file inclusion in delimited blocks", func() {
@@ -138,7 +138,7 @@ include::../../../test/includes/chapter-a.adoc[]
 content</pre>
 </div>
 </div>`
-				verify("test.adoc", expected, source)
+				Expect(source).To(RenderHTML5(expected))
 			})
 
 			It("should include adoc file within fenced block", func() {
@@ -152,7 +152,7 @@ content</pre>
 content</code></pre>
 </div>
 </div>`
-				verify("test.adoc", expected, source)
+				Expect(source).To(RenderHTML5(expected))
 			})
 
 			It("should include adoc file within example block", func() {
@@ -169,7 +169,7 @@ include::../../../test/includes/chapter-a.adoc[]
 </div>
 </div>
 </div>`
-				verify("test.adoc", expected, source)
+				Expect(source).To(RenderHTML5(expected))
 			})
 
 			It("should include adoc file within quote block", func() {
@@ -186,7 +186,7 @@ ____`
 </div>
 </blockquote>
 </div>`
-				verify("test.adoc", expected, source)
+				Expect(source).To(RenderHTML5(expected))
 			})
 
 			It("should include adoc file within verse block", func() {
@@ -199,7 +199,7 @@ ____`
 
 content</pre>
 </div>`
-				verify("test.adoc", expected, source)
+				Expect(source).To(RenderHTML5(expected))
 			})
 
 			It("should include adoc file within sidebar block", func() {
@@ -216,7 +216,7 @@ include::../../../test/includes/chapter-a.adoc[]
 </div>
 </div>
 </div>`
-				verify("test.adoc", expected, source)
+				Expect(source).To(RenderHTML5(expected))
 			})
 
 			It("should include adoc file within passthrough block", func() {
@@ -225,7 +225,7 @@ include::../../../test/includes/chapter-a.adoc[]
 include::../../../test/includes/chapter-a.adoc[]
 ++++`
 				expected := ``
-				verify("test.adoc", expected, source)
+				Expect(source).To(RenderHTML5(expected))
 			})
 		})
 
@@ -253,7 +253,7 @@ func helloworld() {
 }</pre>
 </div>
 </div>`
-				verify("test.adoc", expected, source)
+				Expect(source).To(RenderHTML5(expected))
 			})
 
 			It("should include go file within fenced block", func() {
@@ -271,7 +271,7 @@ func helloworld() {
 }</code></pre>
 </div>
 </div>`
-				verify("test.adoc", expected, source)
+				Expect(source).To(RenderHTML5(expected))
 			})
 
 			It("should include go file within example block", func() {
@@ -293,7 +293,7 @@ include::../../../test/includes/hello_world.go.txt[]
 </div>
 </div>
 </div>`
-				verify("test.adoc", expected, source)
+				Expect(source).To(RenderHTML5(expected))
 			})
 
 			It("should include go file within quote block", func() {
@@ -315,7 +315,7 @@ ____`
 </div>
 </blockquote>
 </div>`
-				verify("test.adoc", expected, source)
+				Expect(source).To(RenderHTML5(expected))
 			})
 
 			It("should include go file within verse block", func() {
@@ -332,7 +332,7 @@ func helloworld() {
 	fmt.Println(&#34;hello, world!&#34;)
 }</pre>
 </div>`
-				verify("test.adoc", expected, source)
+				Expect(source).To(RenderHTML5(expected))
 			})
 
 			It("should include go file within sidebar block", func() {
@@ -354,7 +354,7 @@ include::../../../test/includes/hello_world.go.txt[]
 </div>
 </div>
 </div>`
-				verify("test.adoc", expected, source)
+				Expect(source).To(RenderHTML5(expected))
 			})
 		})
 	})
@@ -368,7 +368,7 @@ include::../../../test/includes/hello_world.go.txt[]
 				expected := `<div class="paragraph">
 <p>package includes</p>
 </div>`
-				verify("test.adoc", expected, source)
+				Expect(source).To(RenderHTML5(expected))
 			})
 
 			It("should include multiple lines as paragraph", func() {
@@ -378,7 +378,7 @@ include::../../../test/includes/hello_world.go.txt[]
 	fmt.Println(&#34;hello, world!&#34;)
 }</p>
 </div>`
-				verify("test.adoc", expected, source)
+				Expect(source).To(RenderHTML5(expected))
 			})
 
 			It("should include multiple ranges as paragraph", func() {
@@ -391,7 +391,7 @@ include::../../../test/includes/hello_world.go.txt[]
 	fmt.Println(&#34;hello, world!&#34;)
 }</p>
 </div>`
-				verify("test.adoc", expected, source)
+				Expect(source).To(RenderHTML5(expected))
 			})
 		})
 
@@ -406,7 +406,7 @@ include::../../../test/includes/hello_world.go.txt[lines=1]
 <pre>package includes</pre>
 </div>
 </div>`
-				verify("test.adoc", expected, source)
+				Expect(source).To(RenderHTML5(expected))
 			})
 
 			It("should include multiple lines in listing block", func() {
@@ -420,7 +420,7 @@ include::../../../test/includes/hello_world.go.txt[lines=5..7]
 }</pre>
 </div>
 </div>`
-				verify("test.adoc", expected, source)
+				Expect(source).To(RenderHTML5(expected))
 			})
 
 			It("should include multiple ranges in listing block", func() {
@@ -436,7 +436,7 @@ func helloworld() {
 }</pre>
 </div>
 </div>`
-				verify("test.adoc", expected, source)
+				Expect(source).To(RenderHTML5(expected))
 			})
 		})
 	})
@@ -450,7 +450,7 @@ func helloworld() {
 <div class="sectionbody">
 </div>
 </div>`
-			verify("test.adoc", expected, source)
+			Expect(source).To(RenderHTML5(expected))
 		})
 
 		It("file inclusion with surrounding tag", func() {
@@ -463,11 +463,11 @@ func helloworld() {
 </div>
 </div>
 </div>`
-			verify("test.adoc", expected, source)
+			Expect(source).To(RenderHTML5(expected))
 		})
 
 		It("file inclusion with unclosed tag", func() {
-			console, reset := testsupport.ConfigureLogger()
+			console, reset := ConfigureLogger()
 			defer reset()
 			source := `include::../../../test/includes/tag-include.adoc[tag=unclosed]`
 			expected := `<div class="paragraph">
@@ -476,25 +476,25 @@ func helloworld() {
 <div class="paragraph">
 <p>end</p>
 </div>`
-			verify("test.adoc", expected, source)
+			Expect(source).To(RenderHTML5(expected))
 			// verify error in logs
 			Expect(console).To(
-				testsupport.ContainMessageWithLevel(
+				ContainMessageWithLevel(
 					log.ErrorLevel,
 					"detected unclosed tag 'unclosed' starting at line 6 of include file: ../../../test/includes/tag-include.adoc",
 				))
 		})
 
 		It("file inclusion with unknown tag", func() {
-			console, reset := testsupport.ConfigureLogger()
+			console, reset := ConfigureLogger()
 			defer reset()
 			source := `include::../../../test/includes/tag-include.adoc[tag=unknown]`
 			expected := ``
 			// TODO: verify error in logs
-			verify("test.adoc", expected, source)
+			Expect(source).To(RenderHTML5(expected))
 			// verify error in logs
 			Expect(console).To(
-				testsupport.ContainMessageWithLevel(
+				ContainMessageWithLevel(
 					log.ErrorLevel,
 					"tag 'unknown' not found in include file: ../../../test/includes/tag-include.adoc",
 				))
@@ -513,7 +513,7 @@ func helloworld() {
 </div>
 </div>
 </div>`
-			verify("test.adoc", expected, source)
+			Expect(source).To(RenderHTML5(expected))
 		})
 	})
 
@@ -539,7 +539,7 @@ func helloworld() {
 <div class="paragraph">
 <p>last line of parent</p>
 </div>`
-			verify("test.adoc", expected, source)
+			Expect(source).To(RenderHTML5(expected))
 		})
 
 		It("should include child and grandchild content in listing block", func() {
@@ -561,7 +561,7 @@ last line of child
 last line of parent</pre>
 </div>
 </div>`
-			verify("test.adoc", expected, source)
+			Expect(source).To(RenderHTML5(expected))
 		})
 	})
 
@@ -577,7 +577,7 @@ include::{includedir}/grandchild-include.adoc[]`
 <div class="paragraph">
 <p>last line of grandchild</p>
 </div>`
-			verify("test.adoc", expected, source)
+			Expect(source).To(RenderHTML5(expected))
 		})
 
 		It("should resolve path with attribute in delimited block", func() {
@@ -593,7 +593,7 @@ include::{includedir}/grandchild-include.adoc[]
 last line of grandchild</pre>
 </div>
 </div>`
-			verify("test.adoc", expected, source)
+			Expect(source).To(RenderHTML5(expected))
 		})
 	})
 
@@ -603,17 +603,17 @@ last line of grandchild</pre>
 
 			It("should replace with string element if file is missing", func() {
 				// setup logger to write in a buffer so we can check the output
-				console, reset := testsupport.ConfigureLogger()
+				console, reset := ConfigureLogger()
 				defer reset()
 
 				source := `include::../../../test/includes/unknown.adoc[leveloffset=+1]`
 				expected := `<div class="paragraph">
-<p>Unresolved directive in foo.adoc - include::../../../test/includes/unknown.adoc[leveloffset=&#43;1]</p>
+<p>Unresolved directive in test.adoc - include::../../../test/includes/unknown.adoc[leveloffset=&#43;1]</p>
 </div>`
-				verify("foo.adoc", expected, source)
+				Expect(source).To(RenderHTML5(expected))
 				// verify error in logs
 				Expect(console).To(
-					testsupport.ContainMessageWithLevel(
+					ContainMessageWithLevel(
 						log.ErrorLevel,
 						"failed to include '../../../test/includes/unknown.adoc'",
 					))
@@ -621,17 +621,17 @@ last line of grandchild</pre>
 
 			It("should replace with string element if file with attribute in path is not resolved", func() {
 				// setup logger to write in a buffer so we can check the output
-				console, reset := testsupport.ConfigureLogger()
+				console, reset := ConfigureLogger()
 				defer reset()
 
 				source := `include::{includedir}/unknown.adoc[leveloffset=+1]`
 				expected := `<div class="paragraph">
-<p>Unresolved directive in foo.adoc - include::{includedir}/unknown.adoc[leveloffset=&#43;1]</p>
+<p>Unresolved directive in test.adoc - include::{includedir}/unknown.adoc[leveloffset=&#43;1]</p>
 </div>`
-				verify("foo.adoc", expected, source)
+				Expect(source).To(RenderHTML5(expected))
 				// verify error in logs
 				Expect(console).To(
-					testsupport.ContainMessageWithLevel(
+					ContainMessageWithLevel(
 						log.ErrorLevel,
 						"failed to include '{includedir}/unknown.adoc'",
 					))
@@ -642,7 +642,7 @@ last line of grandchild</pre>
 
 			It("should replace with string element if file is missing", func() {
 				// setup logger to write in a buffer so we can check the output
-				console, reset := testsupport.ConfigureLogger()
+				console, reset := ConfigureLogger()
 				defer reset()
 
 				source := `----
@@ -650,13 +650,13 @@ include::../../../test/includes/unknown.adoc[leveloffset=+1]
 ----`
 				expected := `<div class="listingblock">
 <div class="content">
-<pre>Unresolved directive in foo.adoc - include::../../../test/includes/unknown.adoc[leveloffset=+1]</pre>
+<pre>Unresolved directive in test.adoc - include::../../../test/includes/unknown.adoc[leveloffset=+1]</pre>
 </div>
 </div>`
-				verify("foo.adoc", expected, source)
+				Expect(source).To(RenderHTML5(expected))
 				// verify error in logs
 				Expect(console).To(
-					testsupport.ContainMessageWithLevel(
+					ContainMessageWithLevel(
 						log.ErrorLevel,
 						"failed to include '../../../test/includes/unknown.adoc'",
 					))
@@ -664,7 +664,7 @@ include::../../../test/includes/unknown.adoc[leveloffset=+1]
 
 			It("should replace with string element if file with attribute in path is not resolved", func() {
 				// setup logger to write in a buffer so we can check the output
-				console, reset := testsupport.ConfigureLogger()
+				console, reset := ConfigureLogger()
 				defer reset()
 
 				source := `----
@@ -672,13 +672,13 @@ include::{includedir}/unknown.adoc[leveloffset=+1]
 ----`
 				expected := `<div class="listingblock">
 <div class="content">
-<pre>Unresolved directive in foo.adoc - include::{includedir}/unknown.adoc[leveloffset=+1]</pre>
+<pre>Unresolved directive in test.adoc - include::{includedir}/unknown.adoc[leveloffset=+1]</pre>
 </div>
 </div>`
-				verify("foo.adoc", expected, source)
+				Expect(source).To(RenderHTML5(expected))
 				// verify error in logs
 				Expect(console).To(
-					testsupport.ContainMessageWithLevel(
+					ContainMessageWithLevel(
 						log.ErrorLevel,
 						"failed to include '{includedir}/unknown.adoc'",
 					))

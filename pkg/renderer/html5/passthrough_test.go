@@ -1,6 +1,11 @@
 package html5_test
 
-import . "github.com/onsi/ginkgo"
+import (
+	. "github.com/bytesparadise/libasciidoc/testsupport"
+
+	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/gomega"
+)
 
 var _ = Describe("passthroughs", func() {
 
@@ -9,7 +14,7 @@ var _ = Describe("passthroughs", func() {
 		It("an empty standalone tripleplus passthrough", func() {
 			source := `++++++`
 			expected := ``
-			verify("test.adoc", expected, source)
+			Expect(source).To(RenderHTML5(expected))
 		})
 
 		It("an empty tripleplus passthrough in a paragraph", func() {
@@ -17,7 +22,7 @@ var _ = Describe("passthroughs", func() {
 			expected := `<div class="paragraph">
 <p> with more content afterwards&#8230;&#8203;</p>
 </div>`
-			verify("test.adoc", expected, source)
+			Expect(source).To(RenderHTML5(expected))
 		})
 
 		It("a standalone tripleplus passthrough", func() {
@@ -25,7 +30,7 @@ var _ = Describe("passthroughs", func() {
 			expected := `<div class="paragraph">
 <p>*bold content*</p>
 </div>`
-			verify("test.adoc", expected, source)
+			Expect(source).To(RenderHTML5(expected))
 		})
 
 		It("tripleplus passthrough in paragraph", func() {
@@ -33,7 +38,7 @@ var _ = Describe("passthroughs", func() {
 			expected := `<div class="paragraph">
 <p>The text <u>underline & me</u> is underlined.</p>
 </div>`
-			verify("test.adoc", expected, source)
+			Expect(source).To(RenderHTML5(expected))
 		})
 	})
 
@@ -44,7 +49,7 @@ var _ = Describe("passthroughs", func() {
 			expected := `<div class="paragraph">
 <p>&#43;&#43;</p>
 </div>`
-			verify("test.adoc", expected, source)
+			Expect(source).To(RenderHTML5(expected))
 		})
 
 		It("an empty singleplus passthrough in a paragraph", func() {
@@ -52,7 +57,7 @@ var _ = Describe("passthroughs", func() {
 			expected := `<div class="paragraph">
 <p>&#43;&#43; with more content afterwards&#8230;&#8203;</p>
 </div>`
-			verify("test.adoc", expected, source)
+			Expect(source).To(RenderHTML5(expected))
 		})
 
 		It("a singleplus passthrough", func() {
@@ -60,7 +65,7 @@ var _ = Describe("passthroughs", func() {
 			expected := `<div class="paragraph">
 <p>*bold content*</p>
 </div>`
-			verify("test.adoc", expected, source)
+			Expect(source).To(RenderHTML5(expected))
 		})
 
 		It("singleplus passthrough in paragraph", func() {
@@ -68,7 +73,7 @@ var _ = Describe("passthroughs", func() {
 			expected := `<div class="paragraph">
 <p>The text &lt;u&gt;underline me&lt;/u&gt; is not underlined.</p>
 </div>`
-			verify("test.adoc", expected, source)
+			Expect(source).To(RenderHTML5(expected))
 		})
 
 		It("invalid singleplus passthrough in paragraph", func() {
@@ -76,7 +81,7 @@ var _ = Describe("passthroughs", func() {
 			expected := `<div class="paragraph">
 <p>The text &#43; <strong>hello</strong>, world &#43; is not passed through.</p>
 </div>`
-			verify("test.adoc", expected, source)
+			Expect(source).To(RenderHTML5(expected))
 		})
 	})
 
@@ -87,7 +92,7 @@ var _ = Describe("passthroughs", func() {
 			expected := `<div class="paragraph">
 <p>hello</p>
 </div>`
-			verify("test.adoc", expected, source)
+			Expect(source).To(RenderHTML5(expected))
 		})
 
 		It("passthrough macro with words", func() {
@@ -95,13 +100,13 @@ var _ = Describe("passthroughs", func() {
 			expected := `<div class="paragraph">
 <p>hello, world</p>
 </div>`
-			verify("test.adoc", expected, source)
+			Expect(source).To(RenderHTML5(expected))
 		})
 
 		It("empty passthrough macro", func() {
 			source := `pass:[]`
 			expected := ``
-			verify("test.adoc", expected, source)
+			Expect(source).To(RenderHTML5(expected))
 		})
 
 		It("passthrough macro with spaces", func() {
@@ -109,7 +114,7 @@ var _ = Describe("passthroughs", func() {
 			expected := `<div class="paragraph">
 <p> *hello*, world </p>
 </div>`
-			verify("test.adoc", expected, source)
+			Expect(source).To(RenderHTML5(expected))
 		})
 
 		It("passthrough macro with line break", func() {
@@ -118,7 +123,7 @@ var _ = Describe("passthroughs", func() {
 <p>hello,
 world</p>
 </div>`
-			verify("test.adoc", expected, source)
+			Expect(source).To(RenderHTML5(expected))
 		})
 	})
 
@@ -129,7 +134,7 @@ world</p>
 			expected := `<div class="paragraph">
 <p><strong>hello</strong></p>
 </div>`
-			verify("test.adoc", expected, source)
+			Expect(source).To(RenderHTML5(expected))
 		})
 
 		It("passthrough macro with quoted word in sentence and trailing spaces", func() {
@@ -137,7 +142,7 @@ world</p>
 			expected := `<div class="paragraph">
 <p> a <strong>hello</strong>, world </p>
 </div>`
-			verify("test.adoc", expected, source)
+			Expect(source).To(RenderHTML5(expected))
 		})
 
 		It("passthrough macro within paragraph", func() {
@@ -145,7 +150,7 @@ world</p>
 			expected := `<div class="paragraph">
 <p>an  <strong>hello</strong>, world  mention</p>
 </div>`
-			verify("test.adoc", expected, source)
+			Expect(source).To(RenderHTML5(expected))
 		})
 	})
 })

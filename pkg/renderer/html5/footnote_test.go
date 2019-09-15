@@ -2,7 +2,10 @@ package html5_test
 
 import (
 	"github.com/bytesparadise/libasciidoc/pkg/types"
+	. "github.com/bytesparadise/libasciidoc/testsupport"
+
 	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/gomega"
 )
 
 var _ = Describe("footnotes", func() {
@@ -22,7 +25,7 @@ var _ = Describe("footnotes", func() {
 <a href="#_footnoteref_1">1</a>. a note for foo
 </div>
 </div>`
-		verify("test.adoc", expected, source)
+		Expect(source).To(RenderHTML5(expected))
 	})
 
 	It("rich footnote in a paragraph", func() {
@@ -36,7 +39,7 @@ var _ = Describe("footnotes", func() {
 <a href="#_footnoteref_1">1</a>. some <strong>rich</strong> <a href="https://foo.com">content</a>
 </div>
 </div>`
-		verify("test.adoc", expected, source)
+		Expect(source).To(RenderHTML5(expected))
 	})
 
 	It("footnoteref with valid ref in a paragraph", func() {
@@ -50,7 +53,7 @@ var _ = Describe("footnotes", func() {
 <a href="#_footnoteref_1">1</a>. a note for foo
 </div>
 </div>`
-		verify("test.adoc", expected, source)
+		Expect(source).To(RenderHTML5(expected))
 	})
 
 	It("footnoteref with invalid ref in a paragraph", func() {
@@ -64,7 +67,7 @@ var _ = Describe("footnotes", func() {
 <a href="#_footnoteref_1">1</a>. a note for foo
 </div>
 </div>`
-		verify("test.adoc", expected, source)
+		Expect(source).To(RenderHTML5(expected))
 	})
 
 	It("footnotes everywhere", func() {
@@ -105,6 +108,6 @@ a paragraph with another footnote:[baz]`
 <a href="#_footnoteref_3">3</a>. baz
 </div>
 </div>`
-		verify("test.adoc", expected, source)
+		Expect(source).To(RenderHTML5(expected))
 	})
 })

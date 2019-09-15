@@ -1,6 +1,11 @@
 package html5_test
 
-import . "github.com/onsi/ginkgo"
+import (
+	. "github.com/bytesparadise/libasciidoc/testsupport"
+
+	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/gomega"
+)
 
 var _ = Describe("blank lines", func() {
 
@@ -14,7 +19,7 @@ second paragraph`
 <div class="paragraph">
 <p>second paragraph</p>
 </div>`
-		verify("test.adoc", expected, source)
+		Expect(source).To(RenderHTML5(expected))
 	})
 
 	It("blank line with spaces and tabs between 2 paragraphs", func() {
@@ -27,7 +32,7 @@ second paragraph`
 <div class="paragraph">
 <p>second paragraph</p>
 </div>`
-		verify("test.adoc", expected, source)
+		Expect(source).To(RenderHTML5(expected))
 	})
 
 	It("blank lines (tabs) at end of document", func() {
@@ -38,7 +43,7 @@ second paragraph`
 		expected := `<div class="paragraph">
 <p>first paragraph</p>
 </div>`
-		verify("test.adoc", expected, source)
+		Expect(source).To(RenderHTML5(expected))
 	})
 
 	It("blank lines (spaces) at end of document", func() {
@@ -49,6 +54,6 @@ second paragraph`
 		expected := `<div class="paragraph">
 <p>first paragraph</p>
 </div>`
-		verify("test.adoc", expected, source)
+		Expect(source).To(RenderHTML5(expected))
 	})
 })

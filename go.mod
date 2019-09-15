@@ -4,6 +4,7 @@ go 1.11
 
 require (
 	github.com/davecgh/go-spew v1.1.1
+	github.com/golang/protobuf v1.3.1 // indirect
 	github.com/inconshreveable/mousetrap v1.0.0 // indirect
 	github.com/mna/pigeon v1.0.1-0.20190909211542-7ee56e19b15c
 	github.com/modocache/gover v0.0.0-20171022184752-b58185e213c5 // indirect

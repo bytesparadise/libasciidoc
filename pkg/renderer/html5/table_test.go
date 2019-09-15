@@ -1,6 +1,11 @@
 package html5_test
 
-import . "github.com/onsi/ginkgo"
+import (
+	. "github.com/bytesparadise/libasciidoc/testsupport"
+
+	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/gomega"
+)
 
 var _ = Describe("tables", func() {
 
@@ -20,7 +25,7 @@ var _ = Describe("tables", func() {
 </tr>
 </tbody>
 </table>`
-		verify("test.adoc", expected, source)
+		Expect(source).To(RenderHTML5(expected))
 	})
 
 	It("1-line table with 3 cells", func() {
@@ -41,7 +46,7 @@ var _ = Describe("tables", func() {
 </tr>
 </tbody>
 </table>`
-		verify("test.adoc", expected, source)
+		Expect(source).To(RenderHTML5(expected))
 	})
 
 	It("table with title, headers and 1 line per cell", func() {
@@ -78,7 +83,7 @@ var _ = Describe("tables", func() {
 </tr>
 </tbody>
 </table>`
-		verify("test.adoc", expected, source)
+		Expect(source).To(RenderHTML5(expected))
 	})
 
 	It("empty table ", func() {
@@ -86,7 +91,7 @@ var _ = Describe("tables", func() {
 |===`
 		expected := `<table class="tableblock frame-all grid-all stretch">
 </table>`
-		verify("test.adoc", expected, source)
+		Expect(source).To(RenderHTML5(expected))
 	})
 
 	It("2 tables with 1 counter", func() {
@@ -123,7 +128,7 @@ var _ = Describe("tables", func() {
 </tr>
 </tbody>
 </table>`
-		verify("test.adoc", expected, source)
+		Expect(source).To(RenderHTML5(expected))
 	})
 
 	It("2 tables with 2 counters", func() {
@@ -162,7 +167,7 @@ var _ = Describe("tables", func() {
 </tr>
 </tbody>
 </table>`
-		verify("test.adoc", expected, source)
+		Expect(source).To(RenderHTML5(expected))
 	})
 
 })

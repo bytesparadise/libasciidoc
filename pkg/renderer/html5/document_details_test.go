@@ -4,7 +4,10 @@ import (
 	"time"
 
 	"github.com/bytesparadise/libasciidoc/pkg/renderer"
+	. "github.com/bytesparadise/libasciidoc/testsupport"
+
 	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/gomega"
 )
 
 var _ = Describe("document details", func() {
@@ -48,7 +51,7 @@ Last updated {{.LastUpdated}}
 </div>
 </body>
 </html>`
-			verify("test.adoc", expected, source, renderer.IncludeHeaderFooter(true), renderer.LastUpdated(time.Now()))
+			Expect(source).To(RenderHTML5(expected, renderer.IncludeHeaderFooter(true), renderer.LastUpdated(time.Now())))
 		})
 
 		It("header with 2 authors and no revision", func() {
@@ -85,7 +88,7 @@ Last updated {{.LastUpdated}}
 </div>
 </body>
 </html>`
-			verify("test.adoc", expected, source, renderer.IncludeHeaderFooter(true), renderer.LastUpdated(time.Now()))
+			Expect(source).To(RenderHTML5(expected, renderer.IncludeHeaderFooter(true), renderer.LastUpdated(time.Now())))
 
 		})
 	})

@@ -5,7 +5,7 @@ import (
 
 	"github.com/bytesparadise/libasciidoc/pkg/parser"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
-	"github.com/bytesparadise/libasciidoc/testsupport"
+	. "github.com/bytesparadise/libasciidoc/testsupport"
 
 	"github.com/davecgh/go-spew/spew"
 	. "github.com/onsi/ginkgo"
@@ -112,7 +112,7 @@ var _ = Describe("file inclusions - preflight with preprocessing", func() {
 				},
 			},
 		}
-		verifyPreflight("test.adoc", expected, source)
+		Expect(source).To(EqualPreflightDocument(expected))
 	})
 
 	It("should include adoc file with leveloffset", func() {
@@ -145,7 +145,7 @@ var _ = Describe("file inclusions - preflight with preprocessing", func() {
 				},
 			},
 		}
-		verifyPreflight("test.adoc", expected, source)
+		Expect(source).To(EqualPreflightDocument(expected))
 	})
 
 	Context("file inclusions in delimited blocks", func() {
@@ -185,7 +185,7 @@ var _ = Describe("file inclusions - preflight with preprocessing", func() {
 					},
 				},
 			}
-			verifyPreflight("test.adoc", expected, source)
+			Expect(source).To(EqualPreflightDocument(expected))
 		})
 
 		It("should include adoc file within listing block", func() {
@@ -223,7 +223,7 @@ include::../../test/includes/chapter-a.adoc[]
 					},
 				},
 			}
-			verifyPreflight("test.adoc", expected, source)
+			Expect(source).To(EqualPreflightDocument(expected))
 		})
 
 		It("should include adoc file within example block", func() {
@@ -261,7 +261,7 @@ include::../../test/includes/chapter-a.adoc[]
 					},
 				},
 			}
-			verifyPreflight("test.adoc", expected, source)
+			Expect(source).To(EqualPreflightDocument(expected))
 		})
 
 		It("should include adoc file within quote block", func() {
@@ -299,7 +299,7 @@ ____`
 					},
 				},
 			}
-			verifyPreflight("test.adoc", expected, source)
+			Expect(source).To(EqualPreflightDocument(expected))
 		})
 
 		It("should include adoc file within verse block", func() {
@@ -340,7 +340,7 @@ ____`
 					},
 				},
 			}
-			verifyPreflight("test.adoc", expected, source)
+			Expect(source).To(EqualPreflightDocument(expected))
 		})
 
 		It("should include adoc file within sidebar block", func() {
@@ -378,7 +378,7 @@ include::../../test/includes/chapter-a.adoc[]
 					},
 				},
 			}
-			verifyPreflight("test.adoc", expected, source)
+			Expect(source).To(EqualPreflightDocument(expected))
 		})
 
 		It("should include adoc file within passthrough block", func() {
@@ -413,7 +413,7 @@ include::../../test/includes/chapter-a.adoc[]
 					},
 				},
 			}
-			verifyPreflight("test.adoc", expected, source)
+			Expect(source).To(EqualPreflightDocument(expected))
 		})
 	})
 
@@ -440,7 +440,7 @@ include::../../test/includes/chapter-a.adoc[]
 						},
 					},
 				}
-				verifyPreflight("test.adoc", expected, source)
+				Expect(source).To(EqualPreflightDocument(expected))
 			})
 
 			It("file inclusion with multiple unquoted lines", func() {
@@ -463,7 +463,7 @@ include::../../test/includes/chapter-a.adoc[]
 						types.BlankLine{},
 					},
 				}
-				verifyPreflight("test.adoc", expected, source)
+				Expect(source).To(EqualPreflightDocument(expected))
 			})
 
 			It("file inclusion with multiple unquoted ranges", func() {
@@ -490,7 +490,7 @@ include::../../test/includes/chapter-a.adoc[]
 						},
 					},
 				}
-				verifyPreflight("test.adoc", expected, source)
+				Expect(source).To(EqualPreflightDocument(expected))
 			})
 
 			It("file inclusion with invalid unquoted range - case 1", func() {
@@ -523,7 +523,7 @@ include::../../test/includes/chapter-a.adoc[]
 						},
 					},
 				}
-				verifyPreflight("test.adoc", expected, source)
+				Expect(source).To(EqualPreflightDocument(expected))
 			})
 
 			It("file inclusion with invalid unquoted range - case 2", func() {
@@ -545,7 +545,7 @@ include::../../test/includes/chapter-a.adoc[]
 						},
 					},
 				}
-				verifyPreflight("test.adoc", expected, source)
+				Expect(source).To(EqualPreflightDocument(expected))
 			})
 		})
 
@@ -570,7 +570,7 @@ include::../../test/includes/chapter-a.adoc[]
 						},
 					},
 				}
-				verifyPreflight("test.adoc", expected, source)
+				Expect(source).To(EqualPreflightDocument(expected))
 			})
 
 			It("file inclusion with multiple quoted lines", func() {
@@ -593,7 +593,7 @@ include::../../test/includes/chapter-a.adoc[]
 						types.BlankLine{},
 					},
 				}
-				verifyPreflight("test.adoc", expected, source)
+				Expect(source).To(EqualPreflightDocument(expected))
 			})
 
 			It("file inclusion with multiple quoted ranges", func() {
@@ -621,7 +621,7 @@ include::../../test/includes/chapter-a.adoc[]
 						},
 					},
 				}
-				verifyPreflight("test.adoc", expected, source)
+				Expect(source).To(EqualPreflightDocument(expected))
 			})
 
 			It("file inclusion with invalid quoted range - case 1", func() {
@@ -654,7 +654,7 @@ include::../../test/includes/chapter-a.adoc[]
 						},
 					},
 				}
-				verifyPreflight("test.adoc", expected, source)
+				Expect(source).To(EqualPreflightDocument(expected))
 			})
 
 			It("file inclusion with invalid quoted range - case 2", func() {
@@ -687,7 +687,7 @@ include::../../test/includes/chapter-a.adoc[]
 						},
 					},
 				}
-				verifyPreflight("test.adoc", expected, source)
+				Expect(source).To(EqualPreflightDocument(expected))
 			})
 
 			It("file inclusion with ignored tags", func() {
@@ -710,7 +710,7 @@ include::../../test/includes/chapter-a.adoc[]
 						},
 					},
 				}
-				verifyPreflight("test.adoc", expected, source)
+				Expect(source).To(EqualPreflightDocument(expected))
 			})
 		})
 	})
@@ -736,7 +736,7 @@ include::../../test/includes/chapter-a.adoc[]
 					},
 				},
 			}
-			verifyPreflight("test.adoc", expected, source)
+			Expect(source).To(EqualPreflightDocument(expected))
 		})
 
 		It("file inclusion with surrounding tag", func() {
@@ -771,12 +771,12 @@ include::../../test/includes/chapter-a.adoc[]
 					types.BlankLine{},
 				},
 			}
-			verifyPreflight("test.adoc", expected, source)
+			Expect(source).To(EqualPreflightDocument(expected))
 		})
 
 		It("file inclusion with unclosed tag", func() {
 			// setup logger to write in a buffer so we can check the output
-			console, reset := testsupport.ConfigureLogger()
+			console, reset := ConfigureLogger()
 			defer reset()
 			source := `include::../../test/includes/tag-include.adoc[tag=unclosed]`
 			expected := types.PreflightDocument{
@@ -806,10 +806,10 @@ include::../../test/includes/chapter-a.adoc[]
 					},
 				},
 			}
-			verifyPreflight("test.adoc", expected, source)
+			Expect(source).To(EqualPreflightDocument(expected))
 			// verify error in logs
 			Expect(console).To(
-				testsupport.ContainMessageWithLevel(
+				ContainMessageWithLevel(
 					log.ErrorLevel,
 					"detected unclosed tag 'unclosed' starting at line 6 of include file: ../../test/includes/tag-include.adoc",
 				))
@@ -818,17 +818,17 @@ include::../../test/includes/chapter-a.adoc[]
 		It("file inclusion with unknown tag", func() {
 			// given
 			// setup logger to write in a buffer so we can check the output
-			console, reset := testsupport.ConfigureLogger()
+			console, reset := ConfigureLogger()
 			defer reset()
 			source := `include::../../test/includes/tag-include.adoc[tag=unknown]`
 			expected := types.PreflightDocument{
 				Blocks: []interface{}{},
 			}
 			// when/then
-			verifyPreflight("test.adoc", expected, source)
+			Expect(source).To(EqualPreflightDocument(expected))
 			// verify error in logs
 			Expect(console).To(
-				testsupport.ContainMessageWithLevel(
+				ContainMessageWithLevel(
 					log.ErrorLevel,
 					"tag 'unknown' not found in include file: ../../test/includes/tag-include.adoc",
 				))
@@ -877,7 +877,7 @@ include::../../test/includes/chapter-a.adoc[]
 					},
 				},
 			}
-			verifyPreflight("test.adoc", expected, source)
+			Expect(source).To(EqualPreflightDocument(expected))
 		})
 
 	})
@@ -886,7 +886,7 @@ include::../../test/includes/chapter-a.adoc[]
 
 		It("should replace with string element if directory does not exist in standalone block", func() {
 			// setup logger to write in a buffer so we can check the output
-			console, reset := testsupport.ConfigureLogger()
+			console, reset := ConfigureLogger()
 			defer reset()
 			source := `include::{unknown}/unknown.adoc[leveloffset=+1]`
 			expected := types.PreflightDocument{
@@ -896,17 +896,17 @@ include::../../test/includes/chapter-a.adoc[]
 						Lines: []types.InlineElements{
 							{
 								types.StringElement{
-									Content: "Unresolved directive in foo.adoc - include::{unknown}/unknown.adoc[leveloffset=+1]",
+									Content: "Unresolved directive in test.adoc - include::{unknown}/unknown.adoc[leveloffset=+1]",
 								},
 							},
 						},
 					},
 				},
 			}
-			verifyPreflight("foo.adoc", expected, source)
+			Expect(source).To(EqualPreflightDocument(expected))
 			// verify error in logs
 			Expect(console).To(
-				testsupport.ContainMessageWithLevel(
+				ContainMessageWithLevel(
 					log.ErrorLevel,
 					"failed to include '{unknown}/unknown.adoc'",
 				))
@@ -914,7 +914,7 @@ include::../../test/includes/chapter-a.adoc[]
 
 		It("should replace with string element if file is missing in standalone block", func() {
 			// setup logger to write in a buffer so we can check the output
-			console, reset := testsupport.ConfigureLogger()
+			console, reset := ConfigureLogger()
 			defer reset()
 
 			source := `include::../../test/includes/unknown.adoc[leveloffset=+1]`
@@ -925,17 +925,17 @@ include::../../test/includes/chapter-a.adoc[]
 						Lines: []types.InlineElements{
 							{
 								types.StringElement{
-									Content: "Unresolved directive in foo.adoc - include::../../test/includes/unknown.adoc[leveloffset=+1]",
+									Content: "Unresolved directive in test.adoc - include::../../test/includes/unknown.adoc[leveloffset=+1]",
 								},
 							},
 						},
 					},
 				},
 			}
-			verifyPreflight("foo.adoc", expected, source)
+			Expect(source).To(EqualPreflightDocument(expected))
 			// verify error in logs
 			Expect(console).To(
-				testsupport.ContainMessageWithLevel(
+				ContainMessageWithLevel(
 					log.ErrorLevel,
 					"failed to include '../../test/includes/unknown.adoc'",
 				))
@@ -943,7 +943,7 @@ include::../../test/includes/chapter-a.adoc[]
 
 		It("should replace with string element if file is missing in delimited block", func() {
 			// setup logger to write in a buffer so we can check the output
-			console, reset := testsupport.ConfigureLogger()
+			console, reset := ConfigureLogger()
 			defer reset()
 
 			source := `----
@@ -960,7 +960,7 @@ include::../../test/includes/unknown.adoc[leveloffset=+1]
 								Lines: []types.InlineElements{
 									{
 										types.StringElement{
-											Content: "Unresolved directive in foo.adoc - include::../../test/includes/unknown.adoc[leveloffset=+1]",
+											Content: "Unresolved directive in test.adoc - include::../../test/includes/unknown.adoc[leveloffset=+1]",
 										},
 									},
 								},
@@ -969,10 +969,10 @@ include::../../test/includes/unknown.adoc[leveloffset=+1]
 					},
 				},
 			}
-			verifyPreflight("foo.adoc", expected, source)
+			Expect(source).To(EqualPreflightDocument(expected))
 			// verify error in logs
 			Expect(console).To(
-				testsupport.ContainMessageWithLevel(
+				ContainMessageWithLevel(
 					log.ErrorLevel,
 					"failed to include '../../test/includes/unknown.adoc'",
 				))
@@ -1015,7 +1015,7 @@ include::{includedir}/grandchild-include.adoc[]`
 					},
 				},
 			}
-			verifyPreflight("test.adoc", expected, source)
+			Expect(source).To(EqualPreflightDocument(expected))
 		})
 
 		It("should resolve path with attribute in delimited block", func() {
@@ -1060,7 +1060,7 @@ include::{includedir}/grandchild-include.adoc[]
 					},
 				},
 			}
-			verifyPreflight("test.adoc", expected, source)
+			Expect(source).To(EqualPreflightDocument(expected))
 		})
 	})
 
@@ -1151,7 +1151,7 @@ include::../../test/includes/hello_world.go.txt[lines=1]
 					},
 				},
 			}
-			verifyPreflight("test.adoc", expected, source)
+			Expect(source).To(EqualPreflightDocument(expected))
 		})
 	})
 })
@@ -1175,7 +1175,7 @@ var _ = Describe("file inclusions - preflight without preprocessing", func() {
 				},
 			},
 		}
-		verifyPreflightWithoutPreprocessing(expected, source)
+		Expect(source).To(EqualPreflightDocumentWithoutPreprocessing(expected))
 	})
 
 	Context("file inclusions in delimited blocks", func() {
@@ -1203,7 +1203,7 @@ var _ = Describe("file inclusions - preflight without preprocessing", func() {
 					},
 				},
 			}
-			verifyPreflightWithoutPreprocessing(expected, source)
+			Expect(source).To(EqualPreflightDocumentWithoutPreprocessing(expected))
 		})
 
 		It("should include adoc file within listing block", func() {
@@ -1229,7 +1229,7 @@ include::../../test/includes/chapter-a.adoc[]
 					},
 				},
 			}
-			verifyPreflightWithoutPreprocessing(expected, source)
+			Expect(source).To(EqualPreflightDocumentWithoutPreprocessing(expected))
 		})
 
 		It("should include adoc file within example block", func() {
@@ -1255,7 +1255,7 @@ include::../../test/includes/chapter-a.adoc[]
 					},
 				},
 			}
-			verifyPreflightWithoutPreprocessing(expected, source)
+			Expect(source).To(EqualPreflightDocumentWithoutPreprocessing(expected))
 		})
 
 		It("should include adoc file within quote block", func() {
@@ -1281,7 +1281,7 @@ ____`
 					},
 				},
 			}
-			verifyPreflightWithoutPreprocessing(expected, source)
+			Expect(source).To(EqualPreflightDocumentWithoutPreprocessing(expected))
 		})
 
 		It("should include adoc file within verse block", func() {
@@ -1310,7 +1310,7 @@ ____`
 					},
 				},
 			}
-			verifyPreflightWithoutPreprocessing(expected, source)
+			Expect(source).To(EqualPreflightDocumentWithoutPreprocessing(expected))
 		})
 
 		It("should include adoc file within sidebar block", func() {
@@ -1336,7 +1336,7 @@ include::../../test/includes/chapter-a.adoc[]
 					},
 				},
 			}
-			verifyPreflightWithoutPreprocessing(expected, source)
+			Expect(source).To(EqualPreflightDocumentWithoutPreprocessing(expected))
 		})
 
 		It("should include adoc file within passthrough block", func() {
@@ -1363,7 +1363,7 @@ include::../../test/includes/chapter-a.adoc[]
 					},
 				},
 			}
-			verifyPreflightWithoutPreprocessing(expected, source)
+			Expect(source).To(EqualPreflightDocumentWithoutPreprocessing(expected))
 		})
 	})
 
@@ -1390,7 +1390,7 @@ include::../../test/includes/chapter-a.adoc[]
 						},
 					},
 				}
-				verifyPreflightWithoutPreprocessing(expected, source)
+				Expect(source).To(EqualPreflightDocumentWithoutPreprocessing(expected))
 			})
 
 			It("file inclusion with multiple unquoted lines", func() {
@@ -1412,7 +1412,7 @@ include::../../test/includes/chapter-a.adoc[]
 						},
 					},
 				}
-				verifyPreflightWithoutPreprocessing(expected, source)
+				Expect(source).To(EqualPreflightDocumentWithoutPreprocessing(expected))
 			})
 
 			It("file inclusion with multiple unquoted ranges", func() {
@@ -1436,7 +1436,7 @@ include::../../test/includes/chapter-a.adoc[]
 						},
 					},
 				}
-				verifyPreflightWithoutPreprocessing(expected, source)
+				Expect(source).To(EqualPreflightDocumentWithoutPreprocessing(expected))
 			})
 
 			It("file inclusion with invalid unquoted range - case 1", func() {
@@ -1456,7 +1456,7 @@ include::../../test/includes/chapter-a.adoc[]
 						},
 					},
 				}
-				verifyPreflightWithoutPreprocessing(expected, source)
+				Expect(source).To(EqualPreflightDocumentWithoutPreprocessing(expected))
 			})
 
 			It("file inclusion with invalid unquoted range - case 2", func() {
@@ -1480,7 +1480,7 @@ include::../../test/includes/chapter-a.adoc[]
 						},
 					},
 				}
-				verifyPreflightWithoutPreprocessing(expected, source)
+				Expect(source).To(EqualPreflightDocumentWithoutPreprocessing(expected))
 			})
 
 			It("file inclusion with invalid unquoted range - case 3", func() {
@@ -1500,7 +1500,7 @@ include::../../test/includes/chapter-a.adoc[]
 						},
 					},
 				}
-				verifyPreflightWithoutPreprocessing(expected, source)
+				Expect(source).To(EqualPreflightDocumentWithoutPreprocessing(expected))
 			})
 		})
 
@@ -1525,7 +1525,7 @@ include::../../test/includes/chapter-a.adoc[]
 						},
 					},
 				}
-				verifyPreflightWithoutPreprocessing(expected, source)
+				Expect(source).To(EqualPreflightDocumentWithoutPreprocessing(expected))
 			})
 
 			It("file inclusion with multiple quoted lines", func() {
@@ -1547,7 +1547,7 @@ include::../../test/includes/chapter-a.adoc[]
 						},
 					},
 				}
-				verifyPreflightWithoutPreprocessing(expected, source)
+				Expect(source).To(EqualPreflightDocumentWithoutPreprocessing(expected))
 			})
 
 			It("file inclusion with multiple quoted ranges", func() {
@@ -1571,7 +1571,7 @@ include::../../test/includes/chapter-a.adoc[]
 						},
 					},
 				}
-				verifyPreflightWithoutPreprocessing(expected, source)
+				Expect(source).To(EqualPreflightDocumentWithoutPreprocessing(expected))
 			})
 
 			It("file inclusion with invalid quoted range - case 1", func() {
@@ -1593,7 +1593,7 @@ include::../../test/includes/chapter-a.adoc[]
 						},
 					},
 				}
-				verifyPreflightWithoutPreprocessing(expected, source)
+				Expect(source).To(EqualPreflightDocumentWithoutPreprocessing(expected))
 			})
 
 			It("file inclusion with invalid quoted range - case 2", func() {
@@ -1613,7 +1613,7 @@ include::../../test/includes/chapter-a.adoc[]
 						},
 					},
 				}
-				verifyPreflightWithoutPreprocessing(expected, source)
+				Expect(source).To(EqualPreflightDocumentWithoutPreprocessing(expected))
 			})
 		})
 
@@ -1638,7 +1638,7 @@ include::../../test/includes/chapter-a.adoc[]
 						},
 					},
 				}
-				verifyPreflightWithoutPreprocessing(expected, source)
+				Expect(source).To(EqualPreflightDocumentWithoutPreprocessing(expected))
 			})
 
 			It("file inclusion with multiple tags", func() {
@@ -1661,7 +1661,7 @@ include::../../test/includes/chapter-a.adoc[]
 						},
 					},
 				}
-				verifyPreflightWithoutPreprocessing(expected, source)
+				Expect(source).To(EqualPreflightDocumentWithoutPreprocessing(expected))
 			})
 
 		})

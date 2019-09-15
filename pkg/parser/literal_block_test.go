@@ -2,7 +2,10 @@ package parser_test
 
 import (
 	"github.com/bytesparadise/libasciidoc/pkg/types"
+	. "github.com/bytesparadise/libasciidoc/testsupport"
+
 	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/gomega"
 )
 
 var _ = Describe("literal blocks - preflight", func() {
@@ -20,7 +23,7 @@ var _ = Describe("literal blocks - preflight", func() {
 					" some literal content",
 				},
 			}
-			verifyDocumentBlock(expected, source)
+			Expect(source).To(EqualDocumentBlock(expected))
 		})
 
 		It("literal block from paragraph with single space on first line", func() {
@@ -38,7 +41,7 @@ lines.`
 					"lines.",
 				},
 			}
-			verifyDocumentBlock(expected, source)
+			Expect(source).To(EqualDocumentBlock(expected))
 		})
 
 		It("mixing literal block with attributes followed by a paragraph ", func() {
@@ -72,7 +75,7 @@ a normal paragraph.`
 					},
 				},
 			}
-			verifyPreflight("test.adoc", expected, source)
+			Expect(source).To(EqualPreflightDocument(expected))
 		})
 	})
 
@@ -94,7 +97,7 @@ some content
 					"some content",
 				},
 			}
-			verifyDocumentBlock(expected, source)
+			Expect(source).To(EqualDocumentBlock(expected))
 		})
 
 		It("literal block with delimited and attributes followed by 1-line paragraph", func() {
@@ -128,7 +131,7 @@ a normal paragraph.`
 					},
 				},
 			}
-			verifyPreflight("test.adoc", expected, source)
+			Expect(source).To(EqualPreflightDocument(expected))
 		})
 	})
 
@@ -161,7 +164,7 @@ a normal paragraph.`
 					},
 				},
 			}
-			verifyPreflight("test.adoc", expected, source)
+			Expect(source).To(EqualPreflightDocument(expected))
 		})
 
 		It("literal block from 2-lines paragraph with attribute", func() {
@@ -198,7 +201,7 @@ a normal paragraph.`
 					},
 				},
 			}
-			verifyPreflight("test.adoc", expected, source)
+			Expect(source).To(EqualPreflightDocument(expected))
 		})
 	})
 

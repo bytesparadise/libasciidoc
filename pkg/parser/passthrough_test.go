@@ -2,7 +2,10 @@ package parser_test
 
 import (
 	"github.com/bytesparadise/libasciidoc/pkg/types"
+	. "github.com/bytesparadise/libasciidoc/testsupport"
+
 	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/gomega"
 )
 
 var _ = Describe("passthroughs - preflight", func() {
@@ -26,7 +29,7 @@ var _ = Describe("passthroughs - preflight", func() {
 					},
 				},
 			}
-			verifyDocumentBlock(expected, source)
+			Expect(source).To(EqualDocumentBlock(expected))
 		})
 
 		It("tripleplus empty passthrough ", func() {
@@ -42,7 +45,7 @@ var _ = Describe("passthroughs - preflight", func() {
 					},
 				},
 			}
-			verifyDocumentBlock(expected, source)
+			Expect(source).To(EqualDocumentBlock(expected))
 		})
 
 		It("tripleplus passthrough with spaces", func() {
@@ -62,7 +65,7 @@ var _ = Describe("passthroughs - preflight", func() {
 					},
 				},
 			}
-			verifyDocumentBlock(expected, source)
+			Expect(source).To(EqualDocumentBlock(expected))
 		})
 
 		It("tripleplus passthrough with only spaces", func() {
@@ -82,7 +85,7 @@ var _ = Describe("passthroughs - preflight", func() {
 					},
 				},
 			}
-			verifyDocumentBlock(expected, source)
+			Expect(source).To(EqualDocumentBlock(expected))
 		})
 
 		It("tripleplus passthrough with line breaks", func() {
@@ -102,7 +105,7 @@ var _ = Describe("passthroughs - preflight", func() {
 					},
 				},
 			}
-			verifyDocumentBlock(expected, source)
+			Expect(source).To(EqualDocumentBlock(expected))
 		})
 
 		It("tripleplus passthrough in paragraph", func() {
@@ -124,7 +127,7 @@ var _ = Describe("passthroughs - preflight", func() {
 					},
 				},
 			}
-			verifyDocumentBlock(expected, source)
+			Expect(source).To(EqualDocumentBlock(expected))
 		})
 
 		It("tripleplus passthrough with embedded image", func() {
@@ -144,7 +147,7 @@ var _ = Describe("passthroughs - preflight", func() {
 					},
 				},
 			}
-			verifyDocumentBlock(expected, source)
+			Expect(source).To(EqualDocumentBlock(expected))
 		})
 
 	})
@@ -168,7 +171,7 @@ var _ = Describe("passthroughs - preflight", func() {
 					},
 				},
 			}
-			verifyDocumentBlock(expected, source)
+			Expect(source).To(EqualDocumentBlock(expected))
 		})
 
 		It("singleplus empty passthrough", func() {
@@ -183,7 +186,7 @@ var _ = Describe("passthroughs - preflight", func() {
 					},
 				},
 			}
-			verifyDocumentBlock(expected, source)
+			Expect(source).To(EqualDocumentBlock(expected))
 		})
 
 		It("singleplus passthrough with embedded image", func() {
@@ -203,7 +206,7 @@ var _ = Describe("passthroughs - preflight", func() {
 					},
 				},
 			}
-			verifyDocumentBlock(expected, source)
+			Expect(source).To(EqualDocumentBlock(expected))
 		})
 
 		It("invalid singleplus passthrough with spaces - case 1", func() {
@@ -230,7 +233,7 @@ var _ = Describe("passthroughs - preflight", func() {
 					},
 				},
 			}
-			verifyDocumentBlock(expected, source)
+			Expect(source).To(EqualDocumentBlock(expected))
 		})
 
 		It("invalid singleplus passthrough with spaces - case 2", func() {
@@ -256,7 +259,7 @@ var _ = Describe("passthroughs - preflight", func() {
 					},
 				},
 			}
-			verifyDocumentBlock(expected, source)
+			Expect(source).To(EqualDocumentBlock(expected))
 		})
 
 		It("invalid singleplus passthrough with spaces - case 3", func() {
@@ -283,7 +286,7 @@ var _ = Describe("passthroughs - preflight", func() {
 					},
 				},
 			}
-			verifyDocumentBlock(expected, source)
+			Expect(source).To(EqualDocumentBlock(expected))
 		})
 
 		It("invalid singleplus passthrough with line break", func() {
@@ -303,7 +306,7 @@ var _ = Describe("passthroughs - preflight", func() {
 					},
 				},
 			}
-			verifyDocumentBlock(expected, source)
+			Expect(source).To(EqualDocumentBlock(expected))
 		})
 
 	})
@@ -329,7 +332,7 @@ var _ = Describe("passthroughs - preflight", func() {
 						},
 					},
 				}
-				verifyDocumentBlock(expected, source)
+				Expect(source).To(EqualDocumentBlock(expected))
 			})
 
 			It("passthrough macro with words", func() {
@@ -349,7 +352,7 @@ var _ = Describe("passthroughs - preflight", func() {
 						},
 					},
 				}
-				verifyDocumentBlock(expected, source)
+				Expect(source).To(EqualDocumentBlock(expected))
 			})
 
 			It("empty passthrough macro", func() {
@@ -365,7 +368,7 @@ var _ = Describe("passthroughs - preflight", func() {
 						},
 					},
 				}
-				verifyDocumentBlock(expected, source)
+				Expect(source).To(EqualDocumentBlock(expected))
 			})
 
 			It("passthrough macro with spaces", func() {
@@ -385,7 +388,7 @@ var _ = Describe("passthroughs - preflight", func() {
 						},
 					},
 				}
-				verifyDocumentBlock(expected, source)
+				Expect(source).To(EqualDocumentBlock(expected))
 			})
 
 			It("passthrough macro with line break", func() {
@@ -405,7 +408,7 @@ var _ = Describe("passthroughs - preflight", func() {
 						},
 					},
 				}
-				verifyDocumentBlock(expected, source)
+				Expect(source).To(EqualDocumentBlock(expected))
 			})
 		})
 
@@ -433,7 +436,7 @@ var _ = Describe("passthroughs - preflight", func() {
 						},
 					},
 				}
-				verifyDocumentBlock(expected, source)
+				Expect(source).To(EqualDocumentBlock(expected))
 			})
 
 			It("passthrough macro with quoted word in sentence", func() {
@@ -464,7 +467,7 @@ var _ = Describe("passthroughs - preflight", func() {
 						},
 					},
 				}
-				verifyDocumentBlock(expected, source)
+				Expect(source).To(EqualDocumentBlock(expected))
 			})
 		})
 	})

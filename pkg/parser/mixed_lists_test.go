@@ -2,6 +2,9 @@ package parser_test
 
 import (
 	"github.com/bytesparadise/libasciidoc/pkg/types"
+	. "github.com/bytesparadise/libasciidoc/testsupport"
+	
+	. "github.com/onsi/gomega"
 	. "github.com/onsi/ginkgo"
 )
 
@@ -133,7 +136,7 @@ var _ = Describe("mixed lists - document", func() {
 					},
 				},
 			}
-			verifyDocument(expected, source)
+			Expect(source).To(EqualDocument(expected))
 		})
 	})
 
@@ -368,7 +371,7 @@ var _ = Describe("mixed lists - document", func() {
 					},
 				},
 			}
-			verifyDocument(expected, source)
+			Expect(source).To(EqualDocument(expected))
 		})
 
 		It("complex case 2 - mixed lists", func() {
@@ -774,7 +777,7 @@ ii) ordered 1.2.ii
 					},
 				},
 			}
-			verifyDocument(expected, source)
+			Expect(source).To(EqualDocument(expected))
 		})
 
 		It("complex case 4 - mixed lists", func() {
@@ -849,7 +852,7 @@ Operating Systems::
 					},
 				},
 			}
-			verifyDocument(expected, source)
+			Expect(source).To(EqualDocument(expected))
 		})
 
 		It("complex case 5 - mixed lists and a paragraph", func() {
@@ -1173,7 +1176,7 @@ a paragraph
 					},
 				},
 			}
-			verifyDocument(expected, source)
+			Expect(source).To(EqualDocument(expected))
 		})
 	})
 
@@ -1256,7 +1259,7 @@ a paragraph
 					},
 				},
 			}
-			verifyDocument(expected, source)
+			Expect(source).To(EqualDocument(expected))
 		})
 
 		It("same list with custom number style on sublist", func() {
@@ -1358,7 +1361,7 @@ a paragraph
 					},
 				},
 			}
-			verifyDocument(expected, source)
+			Expect(source).To(EqualDocument(expected))
 		})
 
 		It("distinct lists with blankline and item attribute - case 1", func() {
@@ -1447,7 +1450,7 @@ a paragraph
 					},
 				},
 			}
-			verifyDocument(expected, source)
+			Expect(source).To(EqualDocument(expected))
 		})
 
 		It("distinct lists with blankline and item attribute - case 2", func() {
@@ -1553,7 +1556,7 @@ a paragraph
 					},
 				},
 			}
-			verifyDocument(expected, source)
+			Expect(source).To(EqualDocument(expected))
 		})
 
 		It("same list with single comment line inside", func() {
@@ -1610,7 +1613,7 @@ a paragraph
 					},
 				},
 			}
-			verifyDocument(expected, source)
+			Expect(source).To(EqualDocument(expected))
 		})
 
 		It("same list with multiple comment lines inside", func() {
@@ -1675,7 +1678,7 @@ a paragraph
 					},
 				},
 			}
-			verifyDocument(expected, source)
+			Expect(source).To(EqualDocument(expected))
 		})
 
 		It("distinct lists separated by single comment line", func() {
@@ -1738,7 +1741,7 @@ a paragraph
 					},
 				},
 			}
-			verifyDocument(expected, source)
+			Expect(source).To(EqualDocument(expected))
 		})
 
 		It("distinct lists separated by multiple comment lines", func() {
@@ -1809,7 +1812,7 @@ a paragraph
 					},
 				},
 			}
-			verifyDocument(expected, source)
+			Expect(source).To(EqualDocument(expected))
 		})
 	})
 })
