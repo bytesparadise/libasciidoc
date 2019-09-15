@@ -4,39 +4,59 @@ import (
 	"bufio"
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"io"
-	"io/ioutil"
 	"os"
 
-	. "github.com/onsi/ginkgo"
-	. "github.com/onsi/gomega"
+	"github.com/onsi/gomega/types"
+	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
 )
 
-// VerifyConsoleOutput verifies that the readable 'console' contains the exact given msg
-func VerifyConsoleOutput(console io.Reader, expectedLevel log.Level, expectedMsg string) { // TODO also add a param for the log level associated with the msg
-	// fmt.Printf("console: %s\n", console.String())
-	// read each line of the console as a separate document
+// ContainMessageWithLevel a custom Matcher to verify that a message with at a given level was logged
+func ContainMessageWithLevel(level log.Level, msg string) types.GomegaMatcher {
+	return &containMessageMatcher{
+		level: level,
+		msg:   msg,
+	}
+}
+
+type containMessageMatcher struct {
+	level log.Level
+	msg   string
+}
+
+func (m *containMessageMatcher) Match(actual interface{}) (success bool, err error) {
+	console, ok := actual.(io.Reader)
+	if !ok {
+		return false, errors.Errorf("ContainMessageWithLevel matcher expects an io.Reader (actual: %T)", actual)
+	}
 	scanner := bufio.NewScanner(console)
 	for scanner.Scan() {
 		out := make(map[string]interface{})
 		err := json.Unmarshal(scanner.Bytes(), &out)
-		Expect(err).ShouldNot(HaveOccurred())
-		GinkgoT().Logf("out: %v", out)
-		if level, ok := out["level"].(string); !ok || level != expectedLevel.String() {
+		if err != nil {
+			return false, errors.Wrapf(err, "failed to decode console line")
+		}
+		if level, ok := out["level"].(string); !ok || level != m.level.String() {
 			continue
 		}
-		if msg, ok := out["msg"].(string); !ok || msg != expectedMsg {
+		if msg, ok := out["msg"].(string); !ok || msg != m.msg {
 			continue
 		}
 		// match found
-		return
+		return true, nil
 	}
-	c, err := ioutil.ReadAll(console)
-	Expect(err).ShouldNot(HaveOccurred())
-	GinkgoT().Logf("console: %v", string(c))
 	// no match found
-	Fail("no match found in the console")
+	return false, nil
+}
+
+func (m *containMessageMatcher) FailureMessage(actual interface{}) (message string) {
+	return fmt.Sprintf("expected console to contain message '%s' with level '%v'", m.msg, m.level)
+}
+
+func (m *containMessageMatcher) NegatedFailureMessage(actual interface{}) (message string) {
+	return fmt.Sprintf("expected console not to contain message '%s' with level '%v'", m.msg, m.level)
 }
 
 // ConfigureLogger configures the logger to write to a `Readable`.

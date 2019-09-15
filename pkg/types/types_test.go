@@ -16,15 +16,15 @@ var _ = Describe("line ranges", func() {
 		)
 
 		It("should not match line 1", func() {
-			Expect(ranges.Match(1)).Should(BeFalse())
+			Expect(ranges.Match(1)).To(BeFalse())
 		})
 
 		It("should match line 2", func() {
-			Expect(ranges.Match(2)).Should(BeTrue())
+			Expect(ranges.Match(2)).To(BeTrue())
 		})
 
 		It("should not match line 5", func() {
-			Expect(ranges.Match(1)).Should(BeFalse())
+			Expect(ranges.Match(1)).To(BeFalse())
 		})
 	})
 
@@ -37,19 +37,19 @@ var _ = Describe("line ranges", func() {
 		)
 
 		It("should match line 1", func() {
-			Expect(ranges.Match(1)).Should(BeTrue())
+			Expect(ranges.Match(1)).To(BeTrue())
 		})
 
 		It("should not match line 2", func() {
-			Expect(ranges.Match(2)).Should(BeFalse())
+			Expect(ranges.Match(2)).To(BeFalse())
 		})
 
 		It("should match line 6", func() {
-			Expect(ranges.Match(6)).Should(BeTrue())
+			Expect(ranges.Match(6)).To(BeTrue())
 		})
 
 		It("should match line 100", func() {
-			Expect(ranges.Match(100)).Should(BeTrue())
+			Expect(ranges.Match(100)).To(BeTrue())
 		})
 	})
 
@@ -81,7 +81,7 @@ var _ = Describe("file inclusions", func() {
 
 	DescribeTable("check asciidoc file",
 		func(path string, expectation bool) {
-			Expect(types.IsAsciidoc(path)).Should(Equal(expectation))
+			Expect(types.IsAsciidoc(path)).To(Equal(expectation))
 		},
 		Entry("foo.adoc", "foo.adoc", true),
 		Entry("foo.asc", "foo.asc", true),
@@ -104,7 +104,7 @@ var _ = Describe("Location resolution", func() {
 			f := types.FileInclusion{
 				Location: location,
 			}
-			Expect(f.Location.Resolve(attrs)).Should(Equal(expectation))
+			Expect(f.Location.Resolve(attrs)).To(Equal(expectation))
 		},
 		Entry("includes/file.ext", types.Location{
 			types.StringElement{Content: "includes/file.ext"},

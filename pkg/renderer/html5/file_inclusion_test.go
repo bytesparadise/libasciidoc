@@ -4,6 +4,7 @@ import (
 	"github.com/bytesparadise/libasciidoc/testsupport"
 
 	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/gomega"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -477,7 +478,11 @@ func helloworld() {
 </div>`
 			verify("test.adoc", expected, source)
 			// verify error in logs
-			testsupport.VerifyConsoleOutput(console, log.ErrorLevel, "detected unclosed tag 'unclosed' starting at line 6 of include file: ../../../test/includes/tag-include.adoc")
+			Expect(console).To(
+				testsupport.ContainMessageWithLevel(
+					log.ErrorLevel,
+					"detected unclosed tag 'unclosed' starting at line 6 of include file: ../../../test/includes/tag-include.adoc",
+				))
 		})
 
 		It("file inclusion with unknown tag", func() {
@@ -488,7 +493,11 @@ func helloworld() {
 			// TODO: verify error in logs
 			verify("test.adoc", expected, source)
 			// verify error in logs
-			testsupport.VerifyConsoleOutput(console, log.ErrorLevel, "tag 'unknown' not found in include file: ../../../test/includes/tag-include.adoc")
+			Expect(console).To(
+				testsupport.ContainMessageWithLevel(
+					log.ErrorLevel,
+					"tag 'unknown' not found in include file: ../../../test/includes/tag-include.adoc",
+				))
 		})
 
 		It("file inclusion with no tag", func() {
@@ -603,7 +612,11 @@ last line of grandchild</pre>
 </div>`
 				verify("foo.adoc", expected, source)
 				// verify error in logs
-				testsupport.VerifyConsoleOutput(console, log.ErrorLevel, "failed to include '../../../test/includes/unknown.adoc'")
+				Expect(console).To(
+					testsupport.ContainMessageWithLevel(
+						log.ErrorLevel,
+						"failed to include '../../../test/includes/unknown.adoc'",
+					))
 			})
 
 			It("should replace with string element if file with attribute in path is not resolved", func() {
@@ -617,7 +630,11 @@ last line of grandchild</pre>
 </div>`
 				verify("foo.adoc", expected, source)
 				// verify error in logs
-				testsupport.VerifyConsoleOutput(console, log.ErrorLevel, "failed to include '{includedir}/unknown.adoc'")
+				Expect(console).To(
+					testsupport.ContainMessageWithLevel(
+						log.ErrorLevel,
+						"failed to include '{includedir}/unknown.adoc'",
+					))
 			})
 		})
 
@@ -638,7 +655,11 @@ include::../../../test/includes/unknown.adoc[leveloffset=+1]
 </div>`
 				verify("foo.adoc", expected, source)
 				// verify error in logs
-				testsupport.VerifyConsoleOutput(console, log.ErrorLevel, "failed to include '../../../test/includes/unknown.adoc'")
+				Expect(console).To(
+					testsupport.ContainMessageWithLevel(
+						log.ErrorLevel,
+						"failed to include '../../../test/includes/unknown.adoc'",
+					))
 			})
 
 			It("should replace with string element if file with attribute in path is not resolved", func() {
@@ -656,7 +677,11 @@ include::{includedir}/unknown.adoc[leveloffset=+1]
 </div>`
 				verify("foo.adoc", expected, source)
 				// verify error in logs
-				testsupport.VerifyConsoleOutput(console, log.ErrorLevel, "failed to include '{includedir}/unknown.adoc'")
+				Expect(console).To(
+					testsupport.ContainMessageWithLevel(
+						log.ErrorLevel,
+						"failed to include '{includedir}/unknown.adoc'",
+					))
 			})
 		})
 	})
