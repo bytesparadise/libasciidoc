@@ -10,6 +10,7 @@ import (
 	"github.com/davecgh/go-spew/spew"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/ginkgo/extensions/table"
+	log "github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -806,7 +807,7 @@ include::../../test/includes/chapter-a.adoc[]
 			}
 			verifyPreflight("test.adoc", expected, source)
 			// verify error in logs
-			testsupport.VerifyConsoleOutput(console, "detected unclosed tag 'unclosed' starting at line 6 of include file: ../../test/includes/tag-include.adoc")
+			testsupport.VerifyConsoleOutput(console, log.ErrorLevel, "detected unclosed tag 'unclosed' starting at line 6 of include file: ../../test/includes/tag-include.adoc")
 		})
 
 		It("file inclusion with unknown tag", func() {
@@ -821,7 +822,7 @@ include::../../test/includes/chapter-a.adoc[]
 			// when/then
 			verifyPreflight("test.adoc", expected, source)
 			// verify error in logs
-			testsupport.VerifyConsoleOutput(console, "tag 'unknown' not found in include file: ../../test/includes/tag-include.adoc")
+			testsupport.VerifyConsoleOutput(console, log.ErrorLevel, "tag 'unknown' not found in include file: ../../test/includes/tag-include.adoc")
 		})
 
 		It("file inclusion with no tag", func() {
@@ -895,7 +896,7 @@ include::../../test/includes/chapter-a.adoc[]
 			}
 			verifyPreflight("foo.adoc", expected, source)
 			// verify error in logs
-			testsupport.VerifyConsoleOutput(console, "failed to include '{unknown}/unknown.adoc'")
+			testsupport.VerifyConsoleOutput(console, log.ErrorLevel, "failed to include '{unknown}/unknown.adoc'")
 		})
 
 		It("should replace with string element if file is missing in standalone block", func() {
@@ -920,7 +921,7 @@ include::../../test/includes/chapter-a.adoc[]
 			}
 			verifyPreflight("foo.adoc", expected, source)
 			// verify error in logs
-			testsupport.VerifyConsoleOutput(console, "failed to include '../../test/includes/unknown.adoc'")
+			testsupport.VerifyConsoleOutput(console, log.ErrorLevel, "failed to include '../../test/includes/unknown.adoc'")
 		})
 
 		It("should replace with string element if file is missing in delimited block", func() {
@@ -953,7 +954,7 @@ include::../../test/includes/unknown.adoc[leveloffset=+1]
 			}
 			verifyPreflight("foo.adoc", expected, source)
 			// verify error in logs
-			testsupport.VerifyConsoleOutput(console, "failed to include '../../test/includes/unknown.adoc'")
+			testsupport.VerifyConsoleOutput(console, log.ErrorLevel, "failed to include '../../test/includes/unknown.adoc'")
 		})
 	})
 
