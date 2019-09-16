@@ -59,24 +59,6 @@ func newLineRanges(values ...interface{}) types.LineRanges {
 	return types.NewLineRanges(values...)
 }
 
-// var _ = Describe("raw section title offset", func() {
-
-// 	It("should apply relative positive offset", func() {
-// 		actual := types.RawSectionTitlePrefix{
-// 			Level:  []byte("=="),
-// 			Spaces: []byte(" "),
-// 		}
-// 		expected := "=== "
-// 		verifyLevelOffset(expected, actual, "+1")
-// 	})
-// })
-
-// func verifyLevelOffset(expectation string, actual types.RawSectionTitlePrefix, levelOffset string) {
-// 	result, err := actual.Bytes(levelOffset)
-// 	require.NoError(GinkgoT(), err)
-// 	assert.EqualValues(GinkgoT(), expectation, result)
-// }
-
 var _ = Describe("file inclusions", func() {
 
 	DescribeTable("check asciidoc file",

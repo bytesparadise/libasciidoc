@@ -20,7 +20,7 @@ var _ = Describe("delimited blocks", func() {
 here</code></pre>
 </div>
 </div>`
-			Expect(source).To(RenderHTML5(expected))
+			Expect(source).To(RenderHTML5Element(expected))
 		})
 
 		It("fenced block with id and title", func() {
@@ -33,7 +33,7 @@ here</code></pre>
 here</code></pre>
 </div>
 </div>`
-			Expect(source).To(RenderHTML5(expected))
+			Expect(source).To(RenderHTML5Element(expected))
 		})
 
 		It("fenced block with external link inside", func() {
@@ -49,7 +49,7 @@ and more text on the
 next lines</code></pre>
 </div>
 </div>`
-			Expect(source).To(RenderHTML5(expected))
+			Expect(source).To(RenderHTML5Element(expected))
 		})
 	})
 
@@ -68,7 +68,7 @@ here
 here</pre>
 </div>
 </div>`
-			Expect(source).To(RenderHTML5(expected))
+			Expect(source).To(RenderHTML5Element(expected))
 		})
 
 		It("listing block with ID and title", func() {
@@ -83,7 +83,7 @@ some source code
 <pre>some source code</pre>
 </div>
 </div>`
-			Expect(source).To(RenderHTML5(expected))
+			Expect(source).To(RenderHTML5Element(expected))
 		})
 
 	})
@@ -108,7 +108,7 @@ get &#39;/hi&#39; do
 end</code></pre>
 </div>
 </div>`
-			Expect(source).To(RenderHTML5(expected))
+			Expect(source).To(RenderHTML5Element(expected))
 		})
 
 		It("with title, source and languages attributes", func() {
@@ -131,7 +131,7 @@ get &#39;/hi&#39; do
 end</code></pre>
 </div>
 </div>`
-			Expect(source).To(RenderHTML5(expected))
+			Expect(source).To(RenderHTML5Element(expected))
 		})
 
 		It("with id, title, source and languages attributes", func() {
@@ -155,7 +155,7 @@ get &#39;/hi&#39; do
 end</code></pre>
 </div>
 </div>`
-			Expect(source).To(RenderHTML5(expected))
+			Expect(source).To(RenderHTML5Element(expected))
 		})
 
 		It("with html content", func() {
@@ -167,7 +167,7 @@ end</code></pre>
 <pre>&lt;a&gt;link&lt;/a&gt;</pre>
 </div>
 </div>`
-			Expect(source).To(RenderHTML5(expected))
+			Expect(source).To(RenderHTML5Element(expected))
 		})
 
 		It("with other content", func() {
@@ -179,7 +179,7 @@ end</code></pre>
 <pre>  a&lt;&lt;b</pre>
 </div>
 </div>`
-			Expect(source).To(RenderHTML5(expected))
+			Expect(source).To(RenderHTML5Element(expected))
 		})
 	})
 
@@ -207,7 +207,7 @@ with <strong>bold content</strong></p>
 </div>
 </div>
 </div>`
-			Expect(source).To(RenderHTML5(expected))
+			Expect(source).To(RenderHTML5Element(expected))
 		})
 
 		It("example block with multiple elements - case 2", func() {
@@ -226,7 +226,7 @@ and more content
 </div>
 </div>
 </div>`
-			Expect(source).To(RenderHTML5(expected))
+			Expect(source).To(RenderHTML5Element(expected))
 		})
 
 		It("example block with multiple elements - case 3", func() {
@@ -245,7 +245,7 @@ and "more" content
 </div>
 </div>
 </div>`
-			Expect(source).To(RenderHTML5(expected))
+			Expect(source).To(RenderHTML5Element(expected))
 		})
 
 		It("example block with ID and title", func() {
@@ -262,7 +262,7 @@ foo
 </div>
 </div>
 </div>`
-			Expect(source).To(RenderHTML5(expected))
+			Expect(source).To(RenderHTML5Element(expected))
 		})
 	})
 
@@ -298,7 +298,7 @@ with <strong>bold content</strong></p>
 </tr>
 </table>
 </div>`
-			Expect(source).To(RenderHTML5(expected))
+			Expect(source).To(RenderHTML5Element(expected))
 		})
 
 		It("admonition block with ID and title", func() {
@@ -334,7 +334,7 @@ with <strong>bold content</strong></p>
 </tr>
 </table>
 </div>`
-			Expect(source).To(RenderHTML5(expected))
+			Expect(source).To(RenderHTML5Element(expected))
 		})
 		It("admonition block with ID, title and icon", func() {
 			source := `:icons: font
@@ -371,7 +371,7 @@ with <strong>bold content</strong></p>
 </tr>
 </table>
 </div>`
-			Expect(source).To(RenderHTML5(expected))
+			Expect(source).To(RenderHTML5Element(expected))
 		})
 
 		It("admonition paragraph and admonition block with multiple elements", func() {
@@ -416,7 +416,7 @@ this is an admonition paragraph.
 </tr>
 </table>
 </div>`
-			Expect(source).To(RenderHTML5(expected))
+			Expect(source).To(RenderHTML5Element(expected))
 		})
 
 		It("admonition paragraph with an icon", func() {
@@ -437,7 +437,7 @@ an admonition text on
 </tr>
 </table>
 </div>`
-			Expect(source).To(RenderHTML5(expected))
+			Expect(source).To(RenderHTML5Element(expected))
 		})
 
 		It("admonition paragraph with ID, title and icon", func() {
@@ -459,7 +459,7 @@ an admonition text on 1 line.
 </tr>
 </table>
 </div>`
-			Expect(source).To(RenderHTML5(expected))
+			Expect(source).To(RenderHTML5Element(expected))
 		})
 	})
 
@@ -481,7 +481,7 @@ ____`
 <cite>quote title</cite>
 </div>
 </div>`
-			Expect(source).To(RenderHTML5(expected))
+			Expect(source).To(RenderHTML5Element(expected))
 		})
 
 		It("single-line quote with author and title, and ID and title ", func() {
@@ -503,7 +503,7 @@ ____`
 <cite>quote title</cite>
 </div>
 </div>`
-			Expect(source).To(RenderHTML5(expected))
+			Expect(source).To(RenderHTML5Element(expected))
 		})
 
 		It("multi-line quote with author and title", func() {
@@ -534,7 +534,7 @@ ____`
 <cite>quote title</cite>
 </div>
 </div>`
-			Expect(source).To(RenderHTML5(expected))
+			Expect(source).To(RenderHTML5Element(expected))
 		})
 
 		It("multi-line quote with author only and nested listing", func() {
@@ -572,7 +572,7 @@ ____`
 &#8212; john doe
 </div>
 </div>`
-			Expect(source).To(RenderHTML5(expected))
+			Expect(source).To(RenderHTML5Element(expected))
 		})
 
 		It("single-line quote with title only", func() {
@@ -590,7 +590,7 @@ ____`
 &#8212; quote title
 </div>
 </div>`
-			Expect(source).To(RenderHTML5(expected))
+			Expect(source).To(RenderHTML5Element(expected))
 		})
 
 		It("multi-line quote without author and title", func() {
@@ -610,7 +610,7 @@ are preserved, but not trailing spaces</p>
 </div>
 </blockquote>
 </div>`
-			Expect(source).To(RenderHTML5(expected))
+			Expect(source).To(RenderHTML5Element(expected))
 		})
 
 		It("empty quote without author and title", func() {
@@ -623,7 +623,7 @@ ____`
 
 </blockquote>
 </div>`
-			Expect(source).To(RenderHTML5(expected))
+			Expect(source).To(RenderHTML5Element(expected))
 
 		})
 	})
@@ -642,7 +642,7 @@ ____`
 <cite>verse title</cite>
 </div>
 </div>`
-			Expect(source).To(RenderHTML5(expected))
+			Expect(source).To(RenderHTML5Element(expected))
 		})
 
 		It("single-line verse with author, id and title ", func() {
@@ -660,7 +660,7 @@ ____`
 <cite>verse title</cite>
 </div>
 </div>`
-			Expect(source).To(RenderHTML5(expected))
+			Expect(source).To(RenderHTML5Element(expected))
 		})
 
 		It("multi-line verse with author and title", func() {
@@ -683,7 +683,7 @@ and more!</pre>
 <cite>verse title</cite>
 </div>
 </div>`
-			Expect(source).To(RenderHTML5(expected))
+			Expect(source).To(RenderHTML5Element(expected))
 		})
 
 		It("single-line verse with author only", func() {
@@ -697,7 +697,7 @@ ____`
 &#8212; john doe
 </div>
 </div>`
-			Expect(source).To(RenderHTML5(expected))
+			Expect(source).To(RenderHTML5Element(expected))
 		})
 
 		It("single-line verse with title only", func() {
@@ -711,7 +711,7 @@ ____`
 &#8212; verse title
 </div>
 </div>`
-			Expect(source).To(RenderHTML5(expected))
+			Expect(source).To(RenderHTML5Element(expected))
 		})
 
 		It("multi-line verse without author and title", func() {
@@ -727,7 +727,7 @@ ____`
 	and tabs
 are preserved</pre>
 </div>`
-			Expect(source).To(RenderHTML5(expected))
+			Expect(source).To(RenderHTML5Element(expected))
 		})
 
 		It("empty verse without author and title", func() {
@@ -737,7 +737,7 @@ ____`
 			expected := `<div class="verseblock">
 <pre class="content"></pre>
 </div>`
-			Expect(source).To(RenderHTML5(expected))
+			Expect(source).To(RenderHTML5Element(expected))
 
 		})
 	})
@@ -755,7 +755,7 @@ some *verse* content
 </div>
 </div>
 </div>`
-			Expect(source).To(RenderHTML5(expected))
+			Expect(source).To(RenderHTML5Element(expected))
 		})
 
 		It("sidebar block with id, title, paragraph and sourcecode block", func() {
@@ -782,7 +782,7 @@ bar</pre>
 </div>
 </div>
 </div>`
-			Expect(source).To(RenderHTML5(expected))
+			Expect(source).To(RenderHTML5Element(expected))
 		})
 	})
 })

@@ -1,6 +1,8 @@
 package testsupport_test
 
 import (
+	"fmt"
+
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 	"github.com/bytesparadise/libasciidoc/testsupport"
 
@@ -83,6 +85,41 @@ var _ = Describe("preflight document assertions", func() {
 			// then
 			Expect(err).ToNot(HaveOccurred())
 			Expect(result).To(BeFalse())
+		})
+	})
+
+	Context("messages", func() {
+
+		It("failure message", func() {
+			// given
+			matcher := testsupport.EqualPreflightDocumentWithoutPreprocessing("foo")
+			// when
+			msg := matcher.FailureMessage("bar")
+			// then
+			Expect(msg).To(Equal(fmt.Sprintf("expected preflight documents to match:\n\texpected: '%v'\n\tactual'%v'", "foo", "bar")))
+		})
+
+		It("negated failure message", func() {
+			// given
+			matcher := testsupport.EqualPreflightDocumentWithoutPreprocessing("foo")
+			// when
+			msg := matcher.NegatedFailureMessage("bar")
+			// then
+			Expect(msg).To(Equal(fmt.Sprintf("expected preflight documents not to match:\n\texpected: '%v'\n\tactual'%v'", "foo", "bar")))
+
+		})
+	})
+
+	Context("failures", func() {
+
+		It("should return error when invalid type is input", func() {
+			// given
+			matcher := testsupport.EqualPreflightDocumentWithoutPreprocessing("")
+			// when
+			_, err := matcher.Match(1) // not a string
+			// then
+			Expect(err).To(HaveOccurred())
+			Expect(err.Error()).To(Equal("EqualDocumentBlock matcher expects a string (actual: int)"))
 		})
 	})
 

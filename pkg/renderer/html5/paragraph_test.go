@@ -18,7 +18,7 @@ var _ = Describe("paragraphs", func() {
 <p><strong>bold content</strong>
 &amp; more content afterwards</p>
 </div>`
-			Expect(source).To(RenderHTML5(expected))
+			Expect(source).To(RenderHTML5Element(expected))
 		})
 
 		It("a standalone paragraph with trailing spaces", func() {
@@ -28,7 +28,7 @@ var _ = Describe("paragraphs", func() {
 <p><strong>bold content</strong>
    &amp; more content afterwards&#8230;&#8203;</p>
 </div>`
-			Expect(source).To(RenderHTML5(expected))
+			Expect(source).To(RenderHTML5Element(expected))
 		})
 
 		It("a standalone paragraph with an ID and a title", func() {
@@ -39,7 +39,7 @@ var _ = Describe("paragraphs", func() {
 <div class="doctitle">a title</div>
 <p><strong>bold content</strong> with more content afterwards&#8230;&#8203;</p>
 </div>`
-			Expect(source).To(RenderHTML5(expected))
+			Expect(source).To(RenderHTML5Element(expected))
 		})
 
 		It("2 paragraphs and blank line", func() {
@@ -55,7 +55,7 @@ and here another paragraph
 <div class="paragraph">
 <p>and here another paragraph</p>
 </div>`
-			Expect(source).To(RenderHTML5(expected))
+			Expect(source).To(RenderHTML5Element(expected))
 		})
 
 		It("paragraph with single quotes", func() {
@@ -63,7 +63,7 @@ and here another paragraph
 			expected := `<div class="paragraph">
 <p>a &#39;subsection&#39; paragraph.</p>
 </div>`
-			Expect(source).To(RenderHTML5(expected))
+			Expect(source).To(RenderHTML5Element(expected))
 		})
 	})
 
@@ -78,7 +78,7 @@ baz`
 bar
 baz</p>
 </div>`
-			Expect(source).To(RenderHTML5(expected))
+			Expect(source).To(RenderHTML5Element(expected))
 		})
 
 		It("with paragraph attribute", func() {
@@ -92,7 +92,7 @@ baz`
 bar<br>
 baz</p>
 </div>`
-			Expect(source).To(RenderHTML5(expected))
+			Expect(source).To(RenderHTML5Element(expected))
 		})
 
 		It("with document attribute", func() {
@@ -105,7 +105,7 @@ baz`
 bar<br>
 baz</p>
 </div>`
-			Expect(source).To(RenderHTML5(expected))
+			Expect(source).To(RenderHTML5Element(expected))
 		})
 	})
 
@@ -125,7 +125,7 @@ this is a note.
 </tr>
 </table>
 </div>`
-			Expect(source).To(RenderHTML5(expected))
+			Expect(source).To(RenderHTML5Element(expected))
 		})
 
 		It("multiline warning admonition paragraph", func() {
@@ -144,7 +144,7 @@ warning!
 </tr>
 </table>
 </div>`
-			Expect(source).To(RenderHTML5(expected))
+			Expect(source).To(RenderHTML5Element(expected))
 		})
 
 		It("admonition note paragraph with id and title", func() {
@@ -164,7 +164,7 @@ this is a note.
 </tr>
 </table>
 </div>`
-			Expect(source).To(RenderHTML5(expected))
+			Expect(source).To(RenderHTML5Element(expected))
 		})
 	})
 
@@ -185,7 +185,7 @@ this is a caution!
 </tr>
 </table>
 </div>`
-			Expect(source).To(RenderHTML5(expected))
+			Expect(source).To(RenderHTML5Element(expected))
 		})
 
 		It("multiline caution admonition paragraph with title and id", func() {
@@ -208,7 +208,7 @@ this is a
 </tr>
 </table>
 </div>`
-			Expect(source).To(RenderHTML5(expected))
+			Expect(source).To(RenderHTML5Element(expected))
 		})
 	})
 
@@ -224,7 +224,7 @@ I am a verse paragraph.`
 <cite>verse title</cite>
 </div>
 </div>`
-			Expect(source).To(RenderHTML5(expected))
+			Expect(source).To(RenderHTML5Element(expected))
 		})
 
 		It("paragraph as a verse with author, title and other attributes", func() {
@@ -240,7 +240,7 @@ I am a verse paragraph.`
 <cite>verse title</cite>
 </div>
 </div>`
-			Expect(source).To(RenderHTML5(expected))
+			Expect(source).To(RenderHTML5Element(expected))
 		})
 
 		It("paragraph as a verse with empty title", func() {
@@ -252,7 +252,7 @@ I am a verse paragraph.`
 &#8212; john doe
 </div>
 </div>`
-			Expect(source).To(RenderHTML5(expected))
+			Expect(source).To(RenderHTML5Element(expected))
 		})
 
 		It("paragraph as a verse without title", func() {
@@ -264,7 +264,7 @@ I am a verse paragraph.`
 &#8212; john doe
 </div>
 </div>`
-			Expect(source).To(RenderHTML5(expected))
+			Expect(source).To(RenderHTML5Element(expected))
 		})
 
 		It("paragraph as a verse with empty author", func() {
@@ -273,7 +273,7 @@ I am a verse paragraph.`
 			expected := `<div class="verseblock">
 <pre class="content">I am a verse paragraph.</pre>
 </div>`
-			Expect(source).To(RenderHTML5(expected))
+			Expect(source).To(RenderHTML5Element(expected))
 		})
 
 		It("paragraph as a verse without author", func() {
@@ -282,7 +282,7 @@ I am a verse paragraph.`
 			expected := `<div class="verseblock">
 <pre class="content">I am a verse paragraph.</pre>
 </div>`
-			Expect(source).To(RenderHTML5(expected))
+			Expect(source).To(RenderHTML5Element(expected))
 		})
 
 		It("image block as a verse", func() {
@@ -295,7 +295,7 @@ image::foo.png[]`
 <cite>verse title</cite>
 </div>
 </div>`
-			Expect(source).To(RenderHTML5(expected))
+			Expect(source).To(RenderHTML5Element(expected))
 		})
 	})
 
@@ -313,7 +313,7 @@ some <strong>quote</strong> content
 <cite>quote title</cite>
 </div>
 </div>`
-			Expect(source).To(RenderHTML5(expected))
+			Expect(source).To(RenderHTML5Element(expected))
 		})
 
 		It("paragraph as a quote with author, title and other attributes", func() {
@@ -331,7 +331,7 @@ I am a quote paragraph.
 <cite>quote title</cite>
 </div>
 </div>`
-			Expect(source).To(RenderHTML5(expected))
+			Expect(source).To(RenderHTML5Element(expected))
 		})
 
 		It("paragraph as a quote with empty title", func() {
@@ -345,7 +345,7 @@ I am a quote paragraph.
 &#8212; john doe
 </div>
 </div>`
-			Expect(source).To(RenderHTML5(expected))
+			Expect(source).To(RenderHTML5Element(expected))
 		})
 
 		It("paragraph as a quote without title", func() {
@@ -359,7 +359,7 @@ I am a quote paragraph.
 &#8212; john doe
 </div>
 </div>`
-			Expect(source).To(RenderHTML5(expected))
+			Expect(source).To(RenderHTML5Element(expected))
 		})
 
 		It("paragraph as a quote with empty author", func() {
@@ -370,7 +370,7 @@ I am a quote paragraph.`
 I am a quote paragraph.
 </blockquote>
 </div>`
-			Expect(source).To(RenderHTML5(expected))
+			Expect(source).To(RenderHTML5Element(expected))
 		})
 
 		It("paragraph as a quote without author", func() {
@@ -381,7 +381,7 @@ I am a quote paragraph.`
 I am a quote paragraph.
 </blockquote>
 </div>`
-			Expect(source).To(RenderHTML5(expected))
+			Expect(source).To(RenderHTML5Element(expected))
 		})
 
 		It("inline image within a quote", func() {
@@ -396,7 +396,7 @@ a foo <span class="image"><img src="foo.png" alt="foo"></span>
 <cite>quote title</cite>
 </div>
 </div>`
-			Expect(source).To(RenderHTML5(expected))
+			Expect(source).To(RenderHTML5Element(expected))
 		})
 
 		It("image block is NOT a quote", func() {
@@ -407,7 +407,7 @@ image::foo.png[]`
 <img src="foo.png" alt="foo">
 </div>
 </div>`
-			Expect(source).To(RenderHTML5(expected))
+			Expect(source).To(RenderHTML5Element(expected))
 		})
 
 	})

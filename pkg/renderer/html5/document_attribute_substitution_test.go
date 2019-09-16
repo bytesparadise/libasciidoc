@@ -22,7 +22,7 @@ a paragraph`
 			expected := `<div class="paragraph">
 <p>a paragraph</p>
 </div>`
-			Expect(source).To(RenderHTML5(expected))
+			Expect(source).To(RenderHTML5Element(expected))
 		})
 
 		It("a paragraph then some attributes", func() {
@@ -34,7 +34,7 @@ a paragraph`
 			expected := `<div class="paragraph">
 <p>a paragraph</p>
 </div>`
-			Expect(source).To(RenderHTML5(expected))
+			Expect(source).To(RenderHTML5Element(expected))
 		})
 
 		It("a paragraph with substitution", func() {
@@ -44,7 +44,7 @@ a paragraph written by {author}`
 			expected := `<div class="paragraph">
 <p>a paragraph written by Xavier</p>
 </div>`
-			Expect(source).To(RenderHTML5(expected))
+			Expect(source).To(RenderHTML5Element(expected))
 		})
 
 		It("paragraphs with definitions, substitutions and resets", func() {
@@ -70,7 +70,7 @@ author is now {author}.`
 <div class="paragraph">
 <p>author is now {author}.</p>
 </div>`
-			Expect(source).To(RenderHTML5(expected))
+			Expect(source).To(RenderHTML5Element(expected))
 		})
 
 		It("front-matter then paragraph with substitutions", func() {
@@ -82,7 +82,7 @@ author is {author}.`
 			expected := `<div class="paragraph">
 <p>author is Xavier.</p>
 </div>`
-			Expect(source).To(RenderHTML5(expected))
+			Expect(source).To(RenderHTML5Element(expected))
 		})
 	})
 
@@ -94,7 +94,7 @@ author is {author}.`
 			expected := `<div class="paragraph">
 <p><a href="https://foo.com/bar">foo</a></p>
 </div>`
-			Expect(source).To(RenderHTML5(expected))
+			Expect(source).To(RenderHTML5Element(expected))
 		})
 	})
 
@@ -106,7 +106,7 @@ author is {author}.`
 				expected := fmt.Sprintf(`<div class="paragraph">
 <p>the %s symbol</p>
 </div>`, rendered)
-				Expect(source).To(RenderHTML5(expected))
+				Expect(source).To(RenderHTML5Element(expected))
 			},
 			Entry("sp symbol", "sp", " "),
 			Entry("blank symbol", "blank", ""),
@@ -146,7 +146,7 @@ a {blank} here.`
 			expected := `<div class="paragraph">
 <p>a foo here.</p>
 </div>`
-			Expect(source).To(RenderHTML5(expected))
+			Expect(source).To(RenderHTML5Element(expected))
 		})
 	})
 

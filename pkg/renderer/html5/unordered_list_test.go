@@ -26,7 +26,7 @@ var _ = Describe("unordered lists", func() {
 </li>
 </ul>
 </div>`
-		Expect(source).To(RenderHTML5(expected))
+		Expect(source).To(RenderHTML5Element(expected))
 	})
 
 	It("simple unordered list with no title then a paragraph", func() {
@@ -51,7 +51,7 @@ and a standalone paragraph`
 <div class="paragraph">
 <p>and a standalone paragraph</p>
 </div>`
-		Expect(source).To(RenderHTML5(expected))
+		Expect(source).To(RenderHTML5Element(expected))
 	})
 
 	It("simple unordered list with title and role", func() {
@@ -71,7 +71,7 @@ and a standalone paragraph`
 </li>
 </ul>
 </div>`
-		Expect(source).To(RenderHTML5(expected))
+		Expect(source).To(RenderHTML5Element(expected))
 	})
 
 	It("simple unordered list with continuation", func() {
@@ -93,7 +93,7 @@ foo
 </li>
 </ul>
 </div>`
-		Expect(source).To(RenderHTML5(expected))
+		Expect(source).To(RenderHTML5Element(expected))
 	})
 
 	It("nested unordered lists without a title", func() {
@@ -121,7 +121,7 @@ foo
 </li>
 </ul>
 </div>`
-		Expect(source).To(RenderHTML5(expected))
+		Expect(source).To(RenderHTML5Element(expected))
 	})
 
 	It("nested unordered lists with a title", func() {
@@ -150,7 +150,7 @@ foo
 </li>
 </ul>
 </div>`
-		Expect(source).To(RenderHTML5(expected))
+		Expect(source).To(RenderHTML5Element(expected))
 	})
 
 	It("unordered list with item continuation", func() {
@@ -185,7 +185,7 @@ another delimited block
 </li>
 </ul>
 </div>`
-		Expect(source).To(RenderHTML5(expected))
+		Expect(source).To(RenderHTML5Element(expected))
 	})
 
 	It("unordered list without item continuation", func() {
@@ -221,7 +221,7 @@ another delimited block
 <pre>another delimited block</pre>
 </div>
 </div>`
-		Expect(source).To(RenderHTML5(expected))
+		Expect(source).To(RenderHTML5Element(expected))
 	})
 })
 
@@ -250,7 +250,7 @@ var _ = Describe("checklists", func() {
 </li>
 </ul>
 </div>`
-		Expect(source).To(RenderHTML5(expected))
+		Expect(source).To(RenderHTML5Element(expected))
 	})
 
 	It("parent checklist with title and nested checklist", func() {
@@ -284,7 +284,7 @@ var _ = Describe("checklists", func() {
 </li>
 </ul>
 </div>`
-		Expect(source).To(RenderHTML5(expected))
+		Expect(source).To(RenderHTML5Element(expected))
 	})
 
 	It("parent checklist with role and nested normal list", func() {
@@ -313,7 +313,7 @@ var _ = Describe("checklists", func() {
 </li>
 </ul>
 </div>`
-		Expect(source).To(RenderHTML5(expected))
+		Expect(source).To(RenderHTML5Element(expected))
 	})
 
 	Context("attach to unordered list item ancestor", func() {
@@ -350,7 +350,7 @@ paragraph attached to grandparent list item`
 </li>
 </ul>
 </div>`
-			Expect(source).To(RenderHTML5(expected))
+			Expect(source).To(RenderHTML5Element(expected))
 		})
 
 		It("attach to parent unordered list item", func() {
@@ -384,7 +384,7 @@ paragraph attached to parent list item`
 </li>
 </ul>
 </div>`
-			Expect(source).To(RenderHTML5(expected))
+			Expect(source).To(RenderHTML5Element(expected))
 		})
 
 		It("attach to child unordered list item", func() {
@@ -417,7 +417,7 @@ paragraph attached to child list item`
 </li>
 </ul>
 </div>`
-			Expect(source).To(RenderHTML5(expected))
+			Expect(source).To(RenderHTML5Element(expected))
 		})
 	})
 })

@@ -25,7 +25,7 @@ var _ = Describe("footnotes", func() {
 <a href="#_footnoteref_1">1</a>. a note for foo
 </div>
 </div>`
-		Expect(source).To(RenderHTML5(expected))
+		Expect(source).To(RenderHTML5Element(expected))
 	})
 
 	It("rich footnote in a paragraph", func() {
@@ -39,7 +39,7 @@ var _ = Describe("footnotes", func() {
 <a href="#_footnoteref_1">1</a>. some <strong>rich</strong> <a href="https://foo.com">content</a>
 </div>
 </div>`
-		Expect(source).To(RenderHTML5(expected))
+		Expect(source).To(RenderHTML5Element(expected))
 	})
 
 	It("footnoteref with valid ref in a paragraph", func() {
@@ -53,7 +53,7 @@ var _ = Describe("footnotes", func() {
 <a href="#_footnoteref_1">1</a>. a note for foo
 </div>
 </div>`
-		Expect(source).To(RenderHTML5(expected))
+		Expect(source).To(RenderHTML5Element(expected))
 	})
 
 	It("footnoteref with invalid ref in a paragraph", func() {
@@ -67,7 +67,7 @@ var _ = Describe("footnotes", func() {
 <a href="#_footnoteref_1">1</a>. a note for foo
 </div>
 </div>`
-		Expect(source).To(RenderHTML5(expected))
+		Expect(source).To(RenderHTML5Element(expected))
 	})
 
 	It("footnotes everywhere", func() {
@@ -108,6 +108,6 @@ a paragraph with another footnote:[baz]`
 <a href="#_footnoteref_3">3</a>. baz
 </div>
 </div>`
-		Expect(source).To(RenderHTML5(expected))
+		Expect(source).To(RenderHTML5Element(expected))
 	})
 })
