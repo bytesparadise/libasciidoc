@@ -490,7 +490,6 @@ func helloworld() {
 			defer reset()
 			source := `include::../../../test/includes/tag-include.adoc[tag=unknown]`
 			expected := ``
-			// TODO: verify error in logs
 			Expect(source).To(RenderHTML5Element(expected))
 			// verify error in logs
 			Expect(console).To(
