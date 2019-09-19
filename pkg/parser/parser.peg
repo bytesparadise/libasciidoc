@@ -1507,7 +1507,7 @@ Location <- elements:(URL_SCHEME (FILENAME / DocumentAttributeSubstitution / !EO
     return types.NewLocation(elements.([]interface{}))
 }
 
-FILENAME <- (Alphanums / "." / "_" / "/" / "-")+
+FILENAME <- ([ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789~:/?#@!$&;=()*+,_] / "-" / ".")+ // not supported for now: "[" "]"
 
 URL <- (Alphanums / (!NEWLINE !WS !"[" !"]"  .))+ {
     return string(c.text), nil
