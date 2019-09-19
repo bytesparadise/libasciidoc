@@ -1,12 +1,11 @@
 package renderer_test
 
 import (
-	"context"
-
-	"github.com/bytesparadise/libasciidoc/pkg/renderer"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
+	. "github.com/bytesparadise/libasciidoc/testsupport"
+
 	. "github.com/onsi/ginkgo"
-	"github.com/stretchr/testify/assert"
+	. "github.com/onsi/gomega"
 )
 
 var _ = Describe("preambles", func() {
@@ -50,7 +49,7 @@ var _ = Describe("preambles", func() {
 				},
 			},
 		}
-		expectedContent := types.Document{
+		expected := types.Document{
 			Attributes: types.DocumentAttributes{
 				types.AttrTitle: "foo",
 			},
@@ -80,7 +79,7 @@ var _ = Describe("preambles", func() {
 				},
 			},
 		}
-		verifyPreamble(expectedContent, source)
+		Expect(source).To(HavePreamble(expected))
 	})
 
 	It("doc with 1-paragraph preamble", func() {
@@ -125,7 +124,7 @@ var _ = Describe("preambles", func() {
 				},
 			},
 		}
-		expectedContent := types.Document{
+		expected := types.Document{
 			Attributes: types.DocumentAttributes{
 				types.AttrTitle: "foo",
 			},
@@ -170,7 +169,7 @@ var _ = Describe("preambles", func() {
 				},
 			},
 		}
-		verifyPreamble(expectedContent, source)
+		Expect(source).To(HavePreamble(expected))
 	})
 
 	It("doc with 2-paragraph preamble", func() {
@@ -224,7 +223,7 @@ var _ = Describe("preambles", func() {
 				},
 			},
 		}
-		expectedContent := types.Document{
+		expected := types.Document{
 			Attributes: types.DocumentAttributes{
 				types.AttrTitle: "foo",
 			},
@@ -278,13 +277,7 @@ var _ = Describe("preambles", func() {
 				},
 			},
 		}
-		verifyPreamble(expectedContent, source)
+		Expect(source).To(HavePreamble(expected))
 	})
 
 })
-
-func verifyPreamble(expectedContent, source types.Document) {
-	ctx := renderer.Wrap(context.Background(), source)
-	renderer.IncludePreamble(ctx)
-	assert.Equal(GinkgoT(), expectedContent, ctx.Document)
-}

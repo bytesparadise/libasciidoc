@@ -30,7 +30,7 @@ var _ = Describe("html5 rendering assertions", func() {
 
 		It("should not match", func() {
 			// given
-			matcher := testsupport.EqualDocument(expected)
+			matcher := testsupport.RenderHTML5Element(expected)
 			// when
 			result, err := matcher.Match("foo")
 			// then
@@ -48,7 +48,7 @@ var _ = Describe("html5 rendering assertions", func() {
 				// when
 				msg := matcher.FailureMessage(actual)
 				// then
-				Expect(msg).To(Equal(fmt.Sprintf("expected HTML5 elements to match:\n\texpected: '%v'\n\tactual: '%v'", expected, expected)))
+				Expect(msg).To(Equal(fmt.Sprintf("expected HTML5 elements to match:\n\texpected: '%v'\n\tactual:   '%v'", expected, expected)))
 			})
 
 			It("negated failure message", func() {
@@ -59,7 +59,7 @@ var _ = Describe("html5 rendering assertions", func() {
 				// when
 				msg := matcher.NegatedFailureMessage(actual)
 				// then
-				Expect(msg).To(Equal(fmt.Sprintf("expected HTML5 elements not to match:\n\texpected: '%v'\n\tactual: '%v'", expected, expected)))
+				Expect(msg).To(Equal(fmt.Sprintf("expected HTML5 elements not to match:\n\texpected: '%v'\n\tactual:   '%v'", expected, expected)))
 
 			})
 		})
@@ -100,7 +100,7 @@ var _ = Describe("html5 rendering assertions", func() {
 
 		It("should not match", func() {
 			// given
-			matcher := testsupport.EqualDocument(expected)
+			matcher := testsupport.RenderHTML5Body(expected)
 			// when
 			result, err := matcher.Match("foo")
 			// then
@@ -118,7 +118,7 @@ var _ = Describe("html5 rendering assertions", func() {
 				// when
 				msg := matcher.FailureMessage(actual)
 				// then
-				Expect(msg).To(Equal(fmt.Sprintf("expected HTML5 bodies to match:\n\texpected: '%v'\n\tactual: '%v'", expected, expected)))
+				Expect(msg).To(Equal(fmt.Sprintf("expected HTML5 bodies to match:\n\texpected: '%v'\n\tactual:   '%v'", expected, expected)))
 			})
 
 			It("negated failure message", func() {
@@ -129,7 +129,7 @@ var _ = Describe("html5 rendering assertions", func() {
 				// when
 				msg := matcher.NegatedFailureMessage(actual)
 				// then
-				Expect(msg).To(Equal(fmt.Sprintf("expected HTML5 bodies not to match:\n\texpected: '%v'\n\tactual: '%v'", expected, expected)))
+				Expect(msg).To(Equal(fmt.Sprintf("expected HTML5 bodies not to match:\n\texpected: '%v'\n\tactual:   '%v'", expected, expected)))
 
 			})
 		})
@@ -197,7 +197,7 @@ var _ = Describe("html5 rendering assertions", func() {
 				// when
 				msg := matcher.FailureMessage(actual)
 				// then
-				Expect(msg).To(Equal(fmt.Sprintf("expected HTML5 titles to match:\n\texpected: '%v'\n\tactual: '%v'", expected, expected)))
+				Expect(msg).To(Equal(fmt.Sprintf("expected HTML5 titles to match:\n\texpected: '%v'\n\tactual:   '%v'", expected, expected)))
 			})
 
 			It("negated failure message", func() {
@@ -208,7 +208,7 @@ var _ = Describe("html5 rendering assertions", func() {
 				// when
 				msg := matcher.NegatedFailureMessage(actual)
 				// then
-				Expect(msg).To(Equal(fmt.Sprintf("expected HTML5 titles not to match:\n\texpected: '%v'\n\tactual: '%v'", expected, expected)))
+				Expect(msg).To(Equal(fmt.Sprintf("expected HTML5 titles not to match:\n\texpected: '%v'\n\tactual:   '%v'", expected, expected)))
 
 			})
 		})

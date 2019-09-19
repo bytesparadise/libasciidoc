@@ -1,12 +1,11 @@
 package renderer_test
 
 import (
-	"context"
-
-	"github.com/bytesparadise/libasciidoc/pkg/renderer"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
+	. "github.com/bytesparadise/libasciidoc/testsupport"
+
 	. "github.com/onsi/ginkgo"
-	"github.com/stretchr/testify/assert"
+	. "github.com/onsi/gomega"
 )
 
 var _ = Describe("table of contents", func() {
@@ -73,7 +72,7 @@ var _ = Describe("table of contents", func() {
 				section,
 			},
 		}
-		verifyTableOfContents(expected, source)
+		Expect(source).To(HaveTableOfContents(expected))
 	})
 
 	It("table of contents with default placement and a header with content", func() {
@@ -120,7 +119,7 @@ var _ = Describe("table of contents", func() {
 				},
 			},
 		}
-		verifyTableOfContents(expected, source)
+		Expect(source).To(HaveTableOfContents(expected))
 	})
 
 	It("table of contents with default placement and a header without content", func() {
@@ -165,7 +164,7 @@ var _ = Describe("table of contents", func() {
 				},
 			},
 		}
-		verifyTableOfContents(expected, source)
+		Expect(source).To(HaveTableOfContents(expected))
 	})
 
 	It("table of contents with preamble placement and no header with content", func() {
@@ -192,7 +191,7 @@ var _ = Describe("table of contents", func() {
 				section,
 			},
 		}
-		verifyTableOfContents(expected, source)
+		Expect(source).To(HaveTableOfContents(expected))
 	})
 
 	It("table of contents with preamble placement and header with content", func() {
@@ -239,7 +238,7 @@ var _ = Describe("table of contents", func() {
 				},
 			},
 		}
-		verifyTableOfContents(expected, source)
+		Expect(source).To(HaveTableOfContents(expected))
 	})
 
 	It("table of contents with preamble placement and header without content", func() {
@@ -284,13 +283,7 @@ var _ = Describe("table of contents", func() {
 				},
 			},
 		}
-		verifyTableOfContents(expected, source)
+		Expect(source).To(HaveTableOfContents(expected))
 	})
 
 })
-
-func verifyTableOfContents(expectedContent, source types.Document) {
-	ctx := renderer.Wrap(context.Background(), source)
-	renderer.IncludeTableOfContents(ctx)
-	assert.Equal(GinkgoT(), expectedContent, ctx.Document)
-}
