@@ -495,6 +495,33 @@ next lines`
 			verifyDocumentBlock(expected, source)
 		})
 
+		It("relative link with all valid characters", func() {
+			source := `a link to link:ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789~:/?#@!$&;=()*+,-_.[as expected]`
+			expected := types.Paragraph{
+				Attributes: types.ElementAttributes{},
+				Lines: []types.InlineElements{
+					{
+						types.StringElement{Content: "a link to "},
+						types.InlineLink{
+							Location: types.Location{
+								types.StringElement{
+									Content: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789~:/?#@!$&;=()*+,-_.",
+								},
+							},
+							Attributes: types.ElementAttributes{
+								types.AttrInlineLinkText: types.InlineElements{
+									types.StringElement{
+										Content: "as expected",
+									},
+								},
+							},
+						},
+					},
+				},
+			}
+			verifyDocumentBlock(expected, source)
+		})
+
 		Context("text attribute with comma", func() {
 
 			It("relative link only with text having comma", func() {

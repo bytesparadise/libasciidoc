@@ -1125,6 +1125,34 @@ include::../../test/includes/hello_world.go.txt[]
 			}
 			verifyPreflight("test.adoc", expected, source)
 		})
+
+		It("include go file with a simple range", func() {
+
+			source := `----
+include::../../test/includes/hello_world.go.txt[lines=1] 
+----`
+			expected := types.PreflightDocument{
+				Blocks: []interface{}{
+					types.DelimitedBlock{
+						Kind:       types.Listing,
+						Attributes: types.ElementAttributes{},
+						Elements: []interface{}{
+							types.Paragraph{
+								Attributes: types.ElementAttributes{},
+								Lines: []types.InlineElements{
+									{
+										types.StringElement{
+											Content: `package includes`,
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			}
+			verifyPreflight("test.adoc", expected, source)
+		})
 	})
 })
 
