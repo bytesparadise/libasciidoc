@@ -3,9 +3,9 @@ package parser_test
 import (
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 	. "github.com/bytesparadise/libasciidoc/testsupport"
-	
-	. "github.com/onsi/gomega"
+
 	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/gomega"
 )
 
 var _ = Describe("mixed lists - document", func() {

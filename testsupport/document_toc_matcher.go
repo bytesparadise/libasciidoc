@@ -31,7 +31,7 @@ func (m *tocMatcher) Match(actual interface{}) (success bool, err error) {
 	}
 	ctx := renderer.Wrap(context.Background(), doc)
 	renderer.IncludeTableOfContents(ctx)
-	m.actual = ctx.Document 
+	m.actual = ctx.Document
 	return reflect.DeepEqual(m.expected, m.actual), nil
 }
 

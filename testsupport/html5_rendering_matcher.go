@@ -13,7 +13,7 @@ import (
 	"github.com/bytesparadise/libasciidoc/pkg/renderer/html5"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 
-	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/ginkgo" // nolint: golint
 	gomegatypes "github.com/onsi/gomega/types"
 	"github.com/pkg/errors"
 	"github.com/sergi/go-diff/diffmatchpatch"
@@ -23,7 +23,7 @@ import (
 // Render HTML5 Element
 // --------------------
 
-// RenderHTML5Element a custom matcher to verify that a block renderes as the expectation
+// RenderHTML5Element a custom matcher to verify that a block renders as the expectation
 func RenderHTML5Element(expected string, opts ...renderer.Option) gomegatypes.GomegaMatcher {
 	return &html5ElementMatcher{
 		expected: expected,
@@ -80,7 +80,7 @@ func (m *html5ElementMatcher) NegatedFailureMessage(actual interface{}) (message
 // Render HTML5 Body
 // --------------------
 
-// RenderHTML5Body a custom matcher to verify that a block renderes as the expectation
+// RenderHTML5Body a custom matcher to verify that a block renders as the expectation
 func RenderHTML5Body(expected string, opts ...renderer.Option) gomegatypes.GomegaMatcher {
 	return &html5BodyMatcher{
 		expected: expected,
@@ -121,7 +121,7 @@ func (m *html5BodyMatcher) NegatedFailureMessage(actual interface{}) (message st
 // Render HTML5 Title
 // --------------------
 
-// RenderHTML5Title a custom matcher to verify that a block renderes as the expectation
+// RenderHTML5Title a custom matcher to verify that a block renders as the expectation
 func RenderHTML5Title(expected interface{}, opts ...renderer.Option) gomegatypes.GomegaMatcher {
 	return &html5TitleMatcher{
 		expected: expected,
@@ -175,7 +175,7 @@ func (m *html5TitleMatcher) NegatedFailureMessage(actual interface{}) (message s
 // Render HTML5 Document
 // ---------------------
 
-// RenderHTML5Document a custom matcher to verify that a block renderes as the expectation
+// RenderHTML5Document a custom matcher to verify that a block renders as the expectation
 func RenderHTML5Document(expected string, opts ...renderer.Option) gomegatypes.GomegaMatcher {
 	return &html5DocumentMatcher{
 		expected: expected,
