@@ -12,8 +12,6 @@ import (
 	. "github.com/onsi/ginkgo/extensions/table"
 	. "github.com/onsi/gomega"
 	log "github.com/sirupsen/logrus"
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 )
 
 var _ = Describe("file location", func() {
@@ -22,10 +20,10 @@ var _ = Describe("file location", func() {
 		func(filename string, expected interface{}) {
 			reader := strings.NewReader(filename)
 			actual, err := parser.ParseReader(filename, reader, parser.Entrypoint("FileLocation"))
-			require.NoError(GinkgoT(), err)
+			Expect(err).ToNot(HaveOccurred())
 			GinkgoT().Log("actual result: %s", spew.Sdump(actual))
 			GinkgoT().Log("expected result: %s", spew.Sdump(expected))
-			assert.Equal(GinkgoT(), expected, actual)
+			Expect(actual).To(Equal(expected))
 		},
 		Entry("'chapter'", "chapter", types.Location{
 			types.StringElement{
@@ -112,7 +110,7 @@ var _ = Describe("file inclusions - preflight with preprocessing", func() {
 				},
 			},
 		}
-		Expect(source).To(EqualPreflightDocument(expected))
+		Expect(source).To(BecomePreflightDocument(expected))
 	})
 
 	It("should include adoc file with leveloffset", func() {
@@ -145,7 +143,7 @@ var _ = Describe("file inclusions - preflight with preprocessing", func() {
 				},
 			},
 		}
-		Expect(source).To(EqualPreflightDocument(expected))
+		Expect(source).To(BecomePreflightDocument(expected))
 	})
 
 	Context("file inclusions in delimited blocks", func() {
@@ -185,7 +183,7 @@ var _ = Describe("file inclusions - preflight with preprocessing", func() {
 					},
 				},
 			}
-			Expect(source).To(EqualPreflightDocument(expected))
+			Expect(source).To(BecomePreflightDocument(expected))
 		})
 
 		It("should include adoc file within listing block", func() {
@@ -223,7 +221,7 @@ include::../../test/includes/chapter-a.adoc[]
 					},
 				},
 			}
-			Expect(source).To(EqualPreflightDocument(expected))
+			Expect(source).To(BecomePreflightDocument(expected))
 		})
 
 		It("should include adoc file within example block", func() {
@@ -261,7 +259,7 @@ include::../../test/includes/chapter-a.adoc[]
 					},
 				},
 			}
-			Expect(source).To(EqualPreflightDocument(expected))
+			Expect(source).To(BecomePreflightDocument(expected))
 		})
 
 		It("should include adoc file within quote block", func() {
@@ -299,7 +297,7 @@ ____`
 					},
 				},
 			}
-			Expect(source).To(EqualPreflightDocument(expected))
+			Expect(source).To(BecomePreflightDocument(expected))
 		})
 
 		It("should include adoc file within verse block", func() {
@@ -340,7 +338,7 @@ ____`
 					},
 				},
 			}
-			Expect(source).To(EqualPreflightDocument(expected))
+			Expect(source).To(BecomePreflightDocument(expected))
 		})
 
 		It("should include adoc file within sidebar block", func() {
@@ -378,7 +376,7 @@ include::../../test/includes/chapter-a.adoc[]
 					},
 				},
 			}
-			Expect(source).To(EqualPreflightDocument(expected))
+			Expect(source).To(BecomePreflightDocument(expected))
 		})
 
 		It("should include adoc file within passthrough block", func() {
@@ -413,7 +411,7 @@ include::../../test/includes/chapter-a.adoc[]
 					},
 				},
 			}
-			Expect(source).To(EqualPreflightDocument(expected))
+			Expect(source).To(BecomePreflightDocument(expected))
 		})
 	})
 
@@ -440,7 +438,7 @@ include::../../test/includes/chapter-a.adoc[]
 						},
 					},
 				}
-				Expect(source).To(EqualPreflightDocument(expected))
+				Expect(source).To(BecomePreflightDocument(expected))
 			})
 
 			It("file inclusion with multiple unquoted lines", func() {
@@ -463,7 +461,7 @@ include::../../test/includes/chapter-a.adoc[]
 						types.BlankLine{},
 					},
 				}
-				Expect(source).To(EqualPreflightDocument(expected))
+				Expect(source).To(BecomePreflightDocument(expected))
 			})
 
 			It("file inclusion with multiple unquoted ranges", func() {
@@ -490,7 +488,7 @@ include::../../test/includes/chapter-a.adoc[]
 						},
 					},
 				}
-				Expect(source).To(EqualPreflightDocument(expected))
+				Expect(source).To(BecomePreflightDocument(expected))
 			})
 
 			It("file inclusion with invalid unquoted range - case 1", func() {
@@ -523,7 +521,7 @@ include::../../test/includes/chapter-a.adoc[]
 						},
 					},
 				}
-				Expect(source).To(EqualPreflightDocument(expected))
+				Expect(source).To(BecomePreflightDocument(expected))
 			})
 
 			It("file inclusion with invalid unquoted range - case 2", func() {
@@ -545,7 +543,7 @@ include::../../test/includes/chapter-a.adoc[]
 						},
 					},
 				}
-				Expect(source).To(EqualPreflightDocument(expected))
+				Expect(source).To(BecomePreflightDocument(expected))
 			})
 		})
 
@@ -570,7 +568,7 @@ include::../../test/includes/chapter-a.adoc[]
 						},
 					},
 				}
-				Expect(source).To(EqualPreflightDocument(expected))
+				Expect(source).To(BecomePreflightDocument(expected))
 			})
 
 			It("file inclusion with multiple quoted lines", func() {
@@ -593,7 +591,7 @@ include::../../test/includes/chapter-a.adoc[]
 						types.BlankLine{},
 					},
 				}
-				Expect(source).To(EqualPreflightDocument(expected))
+				Expect(source).To(BecomePreflightDocument(expected))
 			})
 
 			It("file inclusion with multiple quoted ranges", func() {
@@ -621,7 +619,7 @@ include::../../test/includes/chapter-a.adoc[]
 						},
 					},
 				}
-				Expect(source).To(EqualPreflightDocument(expected))
+				Expect(source).To(BecomePreflightDocument(expected))
 			})
 
 			It("file inclusion with invalid quoted range - case 1", func() {
@@ -654,7 +652,7 @@ include::../../test/includes/chapter-a.adoc[]
 						},
 					},
 				}
-				Expect(source).To(EqualPreflightDocument(expected))
+				Expect(source).To(BecomePreflightDocument(expected))
 			})
 
 			It("file inclusion with invalid quoted range - case 2", func() {
@@ -687,7 +685,7 @@ include::../../test/includes/chapter-a.adoc[]
 						},
 					},
 				}
-				Expect(source).To(EqualPreflightDocument(expected))
+				Expect(source).To(BecomePreflightDocument(expected))
 			})
 
 			It("file inclusion with ignored tags", func() {
@@ -710,7 +708,7 @@ include::../../test/includes/chapter-a.adoc[]
 						},
 					},
 				}
-				Expect(source).To(EqualPreflightDocument(expected))
+				Expect(source).To(BecomePreflightDocument(expected))
 			})
 		})
 	})
@@ -736,7 +734,7 @@ include::../../test/includes/chapter-a.adoc[]
 					},
 				},
 			}
-			Expect(source).To(EqualPreflightDocument(expected))
+			Expect(source).To(BecomePreflightDocument(expected))
 		})
 
 		It("file inclusion with surrounding tag", func() {
@@ -771,7 +769,7 @@ include::../../test/includes/chapter-a.adoc[]
 					types.BlankLine{},
 				},
 			}
-			Expect(source).To(EqualPreflightDocument(expected))
+			Expect(source).To(BecomePreflightDocument(expected))
 		})
 
 		It("file inclusion with unclosed tag", func() {
@@ -806,7 +804,7 @@ include::../../test/includes/chapter-a.adoc[]
 					},
 				},
 			}
-			Expect(source).To(EqualPreflightDocument(expected))
+			Expect(source).To(BecomePreflightDocument(expected))
 			// verify error in logs
 			Expect(console).To(
 				ContainMessageWithLevel(
@@ -825,7 +823,7 @@ include::../../test/includes/chapter-a.adoc[]
 				Blocks: []interface{}{},
 			}
 			// when/then
-			Expect(source).To(EqualPreflightDocument(expected))
+			Expect(source).To(BecomePreflightDocument(expected))
 			// verify error in logs
 			Expect(console).To(
 				ContainMessageWithLevel(
@@ -877,7 +875,7 @@ include::../../test/includes/chapter-a.adoc[]
 					},
 				},
 			}
-			Expect(source).To(EqualPreflightDocument(expected))
+			Expect(source).To(BecomePreflightDocument(expected))
 		})
 
 	})
@@ -903,7 +901,7 @@ include::../../test/includes/chapter-a.adoc[]
 					},
 				},
 			}
-			Expect(source).To(EqualPreflightDocument(expected))
+			Expect(source).To(BecomePreflightDocument(expected))
 			// verify error in logs
 			Expect(console).To(
 				ContainMessageWithLevel(
@@ -932,7 +930,7 @@ include::../../test/includes/chapter-a.adoc[]
 					},
 				},
 			}
-			Expect(source).To(EqualPreflightDocument(expected))
+			Expect(source).To(BecomePreflightDocument(expected))
 			// verify error in logs
 			Expect(console).To(
 				ContainMessageWithLevel(
@@ -969,7 +967,7 @@ include::../../test/includes/unknown.adoc[leveloffset=+1]
 					},
 				},
 			}
-			Expect(source).To(EqualPreflightDocument(expected))
+			Expect(source).To(BecomePreflightDocument(expected))
 			// verify error in logs
 			Expect(console).To(
 				ContainMessageWithLevel(
@@ -1015,7 +1013,7 @@ include::{includedir}/grandchild-include.adoc[]`
 					},
 				},
 			}
-			Expect(source).To(EqualPreflightDocument(expected))
+			Expect(source).To(BecomePreflightDocument(expected))
 		})
 
 		It("should resolve path with attribute in delimited block", func() {
@@ -1060,7 +1058,7 @@ include::{includedir}/grandchild-include.adoc[]
 					},
 				},
 			}
-			Expect(source).To(EqualPreflightDocument(expected))
+			Expect(source).To(BecomePreflightDocument(expected))
 		})
 	})
 
@@ -1123,7 +1121,7 @@ include::../../test/includes/hello_world.go.txt[]
 					},
 				},
 			}
-			verifyPreflight("test.adoc", expected, source)
+			Expect(source).To(BecomePreflightDocument(expected))
 		})
 
 		It("include go file with a simple range", func() {
@@ -1151,7 +1149,7 @@ include::../../test/includes/hello_world.go.txt[lines=1]
 					},
 				},
 			}
-			Expect(source).To(EqualPreflightDocument(expected))
+			Expect(source).To(BecomePreflightDocument(expected))
 		})
 	})
 })
@@ -1175,7 +1173,7 @@ var _ = Describe("file inclusions - preflight without preprocessing", func() {
 				},
 			},
 		}
-		Expect(source).To(EqualPreflightDocumentWithoutPreprocessing(expected))
+		Expect(source).To(BecomePreflightDocumentWithoutPreprocessing(expected))
 	})
 
 	Context("file inclusions in delimited blocks", func() {
@@ -1203,7 +1201,7 @@ var _ = Describe("file inclusions - preflight without preprocessing", func() {
 					},
 				},
 			}
-			Expect(source).To(EqualPreflightDocumentWithoutPreprocessing(expected))
+			Expect(source).To(BecomePreflightDocumentWithoutPreprocessing(expected))
 		})
 
 		It("should include adoc file within listing block", func() {
@@ -1229,7 +1227,7 @@ include::../../test/includes/chapter-a.adoc[]
 					},
 				},
 			}
-			Expect(source).To(EqualPreflightDocumentWithoutPreprocessing(expected))
+			Expect(source).To(BecomePreflightDocumentWithoutPreprocessing(expected))
 		})
 
 		It("should include adoc file within example block", func() {
@@ -1255,7 +1253,7 @@ include::../../test/includes/chapter-a.adoc[]
 					},
 				},
 			}
-			Expect(source).To(EqualPreflightDocumentWithoutPreprocessing(expected))
+			Expect(source).To(BecomePreflightDocumentWithoutPreprocessing(expected))
 		})
 
 		It("should include adoc file within quote block", func() {
@@ -1281,7 +1279,7 @@ ____`
 					},
 				},
 			}
-			Expect(source).To(EqualPreflightDocumentWithoutPreprocessing(expected))
+			Expect(source).To(BecomePreflightDocumentWithoutPreprocessing(expected))
 		})
 
 		It("should include adoc file within verse block", func() {
@@ -1310,7 +1308,7 @@ ____`
 					},
 				},
 			}
-			Expect(source).To(EqualPreflightDocumentWithoutPreprocessing(expected))
+			Expect(source).To(BecomePreflightDocumentWithoutPreprocessing(expected))
 		})
 
 		It("should include adoc file within sidebar block", func() {
@@ -1336,7 +1334,7 @@ include::../../test/includes/chapter-a.adoc[]
 					},
 				},
 			}
-			Expect(source).To(EqualPreflightDocumentWithoutPreprocessing(expected))
+			Expect(source).To(BecomePreflightDocumentWithoutPreprocessing(expected))
 		})
 
 		It("should include adoc file within passthrough block", func() {
@@ -1363,7 +1361,7 @@ include::../../test/includes/chapter-a.adoc[]
 					},
 				},
 			}
-			Expect(source).To(EqualPreflightDocumentWithoutPreprocessing(expected))
+			Expect(source).To(BecomePreflightDocumentWithoutPreprocessing(expected))
 		})
 	})
 
@@ -1390,7 +1388,7 @@ include::../../test/includes/chapter-a.adoc[]
 						},
 					},
 				}
-				Expect(source).To(EqualPreflightDocumentWithoutPreprocessing(expected))
+				Expect(source).To(BecomePreflightDocumentWithoutPreprocessing(expected))
 			})
 
 			It("file inclusion with multiple unquoted lines", func() {
@@ -1412,7 +1410,7 @@ include::../../test/includes/chapter-a.adoc[]
 						},
 					},
 				}
-				Expect(source).To(EqualPreflightDocumentWithoutPreprocessing(expected))
+				Expect(source).To(BecomePreflightDocumentWithoutPreprocessing(expected))
 			})
 
 			It("file inclusion with multiple unquoted ranges", func() {
@@ -1436,7 +1434,7 @@ include::../../test/includes/chapter-a.adoc[]
 						},
 					},
 				}
-				Expect(source).To(EqualPreflightDocumentWithoutPreprocessing(expected))
+				Expect(source).To(BecomePreflightDocumentWithoutPreprocessing(expected))
 			})
 
 			It("file inclusion with invalid unquoted range - case 1", func() {
@@ -1456,7 +1454,7 @@ include::../../test/includes/chapter-a.adoc[]
 						},
 					},
 				}
-				Expect(source).To(EqualPreflightDocumentWithoutPreprocessing(expected))
+				Expect(source).To(BecomePreflightDocumentWithoutPreprocessing(expected))
 			})
 
 			It("file inclusion with invalid unquoted range - case 2", func() {
@@ -1480,7 +1478,7 @@ include::../../test/includes/chapter-a.adoc[]
 						},
 					},
 				}
-				Expect(source).To(EqualPreflightDocumentWithoutPreprocessing(expected))
+				Expect(source).To(BecomePreflightDocumentWithoutPreprocessing(expected))
 			})
 
 			It("file inclusion with invalid unquoted range - case 3", func() {
@@ -1500,7 +1498,7 @@ include::../../test/includes/chapter-a.adoc[]
 						},
 					},
 				}
-				Expect(source).To(EqualPreflightDocumentWithoutPreprocessing(expected))
+				Expect(source).To(BecomePreflightDocumentWithoutPreprocessing(expected))
 			})
 		})
 
@@ -1525,7 +1523,7 @@ include::../../test/includes/chapter-a.adoc[]
 						},
 					},
 				}
-				Expect(source).To(EqualPreflightDocumentWithoutPreprocessing(expected))
+				Expect(source).To(BecomePreflightDocumentWithoutPreprocessing(expected))
 			})
 
 			It("file inclusion with multiple quoted lines", func() {
@@ -1547,7 +1545,7 @@ include::../../test/includes/chapter-a.adoc[]
 						},
 					},
 				}
-				Expect(source).To(EqualPreflightDocumentWithoutPreprocessing(expected))
+				Expect(source).To(BecomePreflightDocumentWithoutPreprocessing(expected))
 			})
 
 			It("file inclusion with multiple quoted ranges", func() {
@@ -1571,7 +1569,7 @@ include::../../test/includes/chapter-a.adoc[]
 						},
 					},
 				}
-				Expect(source).To(EqualPreflightDocumentWithoutPreprocessing(expected))
+				Expect(source).To(BecomePreflightDocumentWithoutPreprocessing(expected))
 			})
 
 			It("file inclusion with invalid quoted range - case 1", func() {
@@ -1593,7 +1591,7 @@ include::../../test/includes/chapter-a.adoc[]
 						},
 					},
 				}
-				Expect(source).To(EqualPreflightDocumentWithoutPreprocessing(expected))
+				Expect(source).To(BecomePreflightDocumentWithoutPreprocessing(expected))
 			})
 
 			It("file inclusion with invalid quoted range - case 2", func() {
@@ -1613,7 +1611,7 @@ include::../../test/includes/chapter-a.adoc[]
 						},
 					},
 				}
-				Expect(source).To(EqualPreflightDocumentWithoutPreprocessing(expected))
+				Expect(source).To(BecomePreflightDocumentWithoutPreprocessing(expected))
 			})
 		})
 
@@ -1638,7 +1636,7 @@ include::../../test/includes/chapter-a.adoc[]
 						},
 					},
 				}
-				Expect(source).To(EqualPreflightDocumentWithoutPreprocessing(expected))
+				Expect(source).To(BecomePreflightDocumentWithoutPreprocessing(expected))
 			})
 
 			It("file inclusion with multiple tags", func() {
@@ -1661,7 +1659,7 @@ include::../../test/includes/chapter-a.adoc[]
 						},
 					},
 				}
-				Expect(source).To(EqualPreflightDocumentWithoutPreprocessing(expected))
+				Expect(source).To(BecomePreflightDocumentWithoutPreprocessing(expected))
 			})
 
 		})

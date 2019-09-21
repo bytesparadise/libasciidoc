@@ -153,7 +153,7 @@ a second paragraph`
 					},
 				},
 			}
-			Expect(source).To(EqualPreflightDocument(expected))
+			Expect(source).To(BecomePreflightDocument(expected))
 		})
 	})
 

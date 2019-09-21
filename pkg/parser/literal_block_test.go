@@ -75,7 +75,7 @@ a normal paragraph.`
 					},
 				},
 			}
-			Expect(source).To(EqualPreflightDocument(expected))
+			Expect(source).To(BecomePreflightDocument(expected))
 		})
 	})
 
@@ -131,7 +131,7 @@ a normal paragraph.`
 					},
 				},
 			}
-			Expect(source).To(EqualPreflightDocument(expected))
+			Expect(source).To(BecomePreflightDocument(expected))
 		})
 	})
 
@@ -164,7 +164,7 @@ a normal paragraph.`
 					},
 				},
 			}
-			Expect(source).To(EqualPreflightDocument(expected))
+			Expect(source).To(BecomePreflightDocument(expected))
 		})
 
 		It("literal block from 2-lines paragraph with attribute", func() {
@@ -201,7 +201,7 @@ a normal paragraph.`
 					},
 				},
 			}
-			Expect(source).To(EqualPreflightDocument(expected))
+			Expect(source).To(BecomePreflightDocument(expected))
 		})
 	})
 

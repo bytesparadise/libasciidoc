@@ -331,7 +331,7 @@ And no space after [CAUTION] either.`
 					},
 				},
 			}
-			Expect(source).To(EqualPreflightDocument(expected))
+			Expect(source).To(BecomePreflightDocument(expected))
 		})
 	})
 

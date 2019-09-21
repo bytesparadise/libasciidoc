@@ -20,6 +20,7 @@ func EqualDocumentBlock(expected interface{}) types.GomegaMatcher {
 
 type documentBlockMatcher struct {
 	expected interface{}
+	actual   interface{}
 }
 
 func (m *documentBlockMatcher) Match(actual interface{}) (success bool, err error) {
@@ -32,17 +33,17 @@ func (m *documentBlockMatcher) Match(actual interface{}) (success bool, err erro
 	// if os.Getenv("DEBUG") == "true" {
 	// 	opts = append(opts, parser.Debug(true))
 	// }
-	block, err := parser.ParseReader("", r, opts...)
+	m.actual, err = parser.ParseReader("", r, opts...)
 	if err != nil {
 		return false, err
 	}
-	return reflect.DeepEqual(m.expected, block), nil
+	return reflect.DeepEqual(m.expected, m.actual), nil
 }
 
 func (m *documentBlockMatcher) FailureMessage(actual interface{}) (message string) {
-	return fmt.Sprintf("expected document blocks to match:\n\texpected: '%v'\n\tactual'%v'", m.expected, actual)
+	return fmt.Sprintf("expected document blocks to match:\n\texpected: '%v'\n\tactual'%v'", m.expected, m.actual)
 }
 
 func (m *documentBlockMatcher) NegatedFailureMessage(actual interface{}) (message string) {
-	return fmt.Sprintf("expected document blocks not to match:\n\texpected: '%v'\n\tactual'%v'", m.expected, actual)
+	return fmt.Sprintf("expected document blocks not to match:\n\texpected: '%v'\n\tactual'%v'", m.expected, m.actual)
 }

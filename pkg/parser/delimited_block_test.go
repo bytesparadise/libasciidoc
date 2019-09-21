@@ -127,7 +127,7 @@ var _ = Describe("delimited blocks - preflight", func() {
 					},
 				},
 			}
-			Expect(source).To(EqualPreflightDocument(expected))
+			Expect(source).To(BecomePreflightDocument(expected))
 		})
 
 		It("fenced block after a paragraph", func() {
@@ -161,7 +161,7 @@ var _ = Describe("delimited blocks - preflight", func() {
 					},
 				},
 			}
-			Expect(source).To(EqualPreflightDocument(expected))
+			Expect(source).To(BecomePreflightDocument(expected))
 		})
 
 		It("fenced block with unclosed delimiter", func() {
@@ -427,7 +427,7 @@ then a normal paragraph.`
 					},
 				},
 			}
-			Expect(source).To(EqualPreflightDocument(expected))
+			Expect(source).To(BecomePreflightDocument(expected))
 		})
 
 		It("listing block just after a paragraph", func() {
@@ -463,7 +463,7 @@ some listing code
 					},
 				},
 			}
-			Expect(source).To(EqualPreflightDocument(expected))
+			Expect(source).To(BecomePreflightDocument(expected))
 		})
 
 		It("listing block with unclosed delimiter", func() {
@@ -725,7 +725,7 @@ paragraphs
 					},
 				},
 			}
-			Expect(source).To(EqualPreflightDocument(expected))
+			Expect(source).To(BecomePreflightDocument(expected))
 		})
 	})
 

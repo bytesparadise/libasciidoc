@@ -105,7 +105,7 @@ var _ = Describe("document preamble assertions", func() {
 
 	Context("messages", func() {
 
-		It("failure message", func() {
+		It("failure", func() {
 			// given
 			matcher := testsupport.HavePreamble(expected)
 			_, err := matcher.Match(actual)

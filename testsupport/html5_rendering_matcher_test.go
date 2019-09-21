@@ -40,7 +40,7 @@ var _ = Describe("html5 rendering assertions", func() {
 
 		Context("messages", func() {
 
-			It("failure message", func() {
+			It("failure", func() {
 				// given
 				matcher := testsupport.RenderHTML5Element(expected)
 				_, err := matcher.Match(actual)
@@ -110,7 +110,7 @@ var _ = Describe("html5 rendering assertions", func() {
 
 		Context("messages", func() {
 
-			It("failure message", func() {
+			It("failure", func() {
 				// given
 				matcher := testsupport.RenderHTML5Body(expected)
 				_, err := matcher.Match(actual)
@@ -189,7 +189,7 @@ var _ = Describe("html5 rendering assertions", func() {
 
 		Context("messages", func() {
 
-			It("failure message", func() {
+			It("failure", func() {
 				// given
 				matcher := testsupport.RenderHTML5Title(expected)
 				_, err := matcher.Match(actual)

@@ -124,7 +124,7 @@ image::appa.png[]`
 						},
 					},
 				}
-				Expect(source).To(EqualPreflightDocument(expected))
+				Expect(source).To(BecomePreflightDocument(expected))
 			})
 		})
 
@@ -165,7 +165,7 @@ image::appa.png[]`
 							},
 						},
 					}
-					Expect(source).To(EqualPreflightDocument(expected))
+					Expect(source).To(BecomePreflightDocument(expected))
 				})
 			})
 		})

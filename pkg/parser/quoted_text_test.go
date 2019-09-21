@@ -31,7 +31,7 @@ var _ = Describe("quoted texts - preflight", func() {
 					},
 				},
 			}
-			Expect(source).To(EqualPreflightDocument(expected))
+			Expect(source).To(BecomePreflightDocument(expected))
 		})
 
 		It("bold text with 2 words", func() {
@@ -53,7 +53,7 @@ var _ = Describe("quoted texts - preflight", func() {
 					},
 				},
 			}
-			Expect(source).To(EqualPreflightDocument(expected))
+			Expect(source).To(BecomePreflightDocument(expected))
 		})
 
 		It("bold text with 3 words", func() {
@@ -75,7 +75,7 @@ var _ = Describe("quoted texts - preflight", func() {
 					},
 				},
 			}
-			Expect(source).To(EqualPreflightDocument(expected))
+			Expect(source).To(BecomePreflightDocument(expected))
 		})
 
 		It("italic text with 3 words in single quote", func() {
@@ -97,7 +97,7 @@ var _ = Describe("quoted texts - preflight", func() {
 					},
 				},
 			}
-			Expect(source).To(EqualPreflightDocument(expected))
+			Expect(source).To(BecomePreflightDocument(expected))
 		})
 
 		It("monospace text with 3 words", func() {
@@ -119,7 +119,7 @@ var _ = Describe("quoted texts - preflight", func() {
 					},
 				},
 			}
-			Expect(source).To(EqualPreflightDocument(expected))
+			Expect(source).To(BecomePreflightDocument(expected))
 		})
 
 		It("invalid subscript text with 3 words", func() {
@@ -174,7 +174,7 @@ var _ = Describe("quoted texts - preflight", func() {
 					},
 				},
 			}
-			Expect(source).To(EqualPreflightDocument(expected))
+			Expect(source).To(BecomePreflightDocument(expected))
 		})
 
 		It("monospace text within bold text within italic quote", func() {
@@ -208,7 +208,7 @@ var _ = Describe("quoted texts - preflight", func() {
 					},
 				},
 			}
-			Expect(source).To(EqualPreflightDocument(expected))
+			Expect(source).To(BecomePreflightDocument(expected))
 		})
 
 		It("italic text within italic text", func() {
@@ -306,7 +306,7 @@ var _ = Describe("quoted texts - preflight", func() {
 					},
 				},
 			}
-			Expect(source).To(EqualPreflightDocument(expected))
+			Expect(source).To(BecomePreflightDocument(expected))
 		})
 
 		It("italic text with 3 words in double quote", func() {
@@ -328,7 +328,7 @@ var _ = Describe("quoted texts - preflight", func() {
 					},
 				},
 			}
-			Expect(source).To(EqualPreflightDocument(expected))
+			Expect(source).To(BecomePreflightDocument(expected))
 		})
 
 		It("monospace text with 3 words in double quote", func() {
@@ -350,7 +350,7 @@ var _ = Describe("quoted texts - preflight", func() {
 					},
 				},
 			}
-			Expect(source).To(EqualPreflightDocument(expected))
+			Expect(source).To(BecomePreflightDocument(expected))
 		})
 
 		It("superscript text within italic text", func() {
@@ -379,7 +379,7 @@ var _ = Describe("quoted texts - preflight", func() {
 					},
 				},
 			}
-			Expect(source).To(EqualPreflightDocument(expected))
+			Expect(source).To(BecomePreflightDocument(expected))
 		})
 
 		It("superscript text within italic text within bold quote", func() {
@@ -413,7 +413,7 @@ var _ = Describe("quoted texts - preflight", func() {
 					},
 				},
 			}
-			Expect(source).To(EqualPreflightDocument(expected))
+			Expect(source).To(BecomePreflightDocument(expected))
 		})
 	})
 

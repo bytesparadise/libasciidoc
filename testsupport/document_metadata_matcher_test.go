@@ -54,7 +54,7 @@ var _ = Describe("document metadata assertions", func() {
 
 	Context("messages", func() {
 
-		It("failure message", func() {
+		It("failure", func() {
 			// given
 			matcher := testsupport.HaveMetadata(expected)
 			_, err := matcher.Match(actual)

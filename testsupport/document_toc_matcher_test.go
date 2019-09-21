@@ -86,7 +86,7 @@ var _ = Describe("document table of contents assertions", func() {
 
 	Context("messages", func() {
 
-		It("failure message", func() {
+		It("failure", func() {
 			// given
 			matcher := testsupport.HaveTableOfContents(expected)
 			_, err := matcher.Match(actual)

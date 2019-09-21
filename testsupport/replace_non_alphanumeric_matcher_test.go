@@ -10,31 +10,18 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-var _ = Describe("document assertions", func() {
+var _ = Describe("non-alphanumeric replacement assertions", func() {
 
-	actual := "hello, world!"
-	expected := types.Document{
-		Attributes:         types.DocumentAttributes{},
-		ElementReferences:  types.ElementReferences{},
-		Footnotes:          types.Footnotes{},
-		FootnoteReferences: types.FootnoteReferences{},
-		Elements: []interface{}{
-			types.Paragraph{
-				Attributes: types.ElementAttributes{},
-				Lines: []types.InlineElements{
-					{
-						types.StringElement{
-							Content: "hello, world!",
-						},
-					},
-				},
-			},
+	expected := "foo_bar"
+	actual := types.InlineElements{
+		types.StringElement{
+			Content: "foo@bar",
 		},
 	}
 
 	It("should match", func() {
 		// given
-		matcher := testsupport.EqualDocument(expected)
+		matcher := testsupport.EqualWithoutNonAlphanumeric(expected)
 		// when
 		result, err := matcher.Match(actual)
 		// then
@@ -44,9 +31,13 @@ var _ = Describe("document assertions", func() {
 
 	It("should not match", func() {
 		// given
-		matcher := testsupport.EqualDocument(expected)
+		matcher := testsupport.EqualWithoutNonAlphanumeric(expected)
 		// when
-		result, err := matcher.Match("meh")
+		result, err := matcher.Match(types.InlineElements{
+			types.StringElement{
+				Content: "foobar",
+			},
+		})
 		// then
 		Expect(err).ToNot(HaveOccurred())
 		Expect(result).To(BeFalse())
@@ -56,24 +47,24 @@ var _ = Describe("document assertions", func() {
 
 		It("failure", func() {
 			// given
-			matcher := testsupport.EqualDocument(expected)
+			matcher := testsupport.EqualWithoutNonAlphanumeric(expected)
 			_, err := matcher.Match(actual)
 			Expect(err).ToNot(HaveOccurred())
 			// when
 			msg := matcher.FailureMessage(actual)
 			// then
-			Expect(msg).To(Equal(fmt.Sprintf("expected documents to match:\n\texpected: '%v'\n\tactual:   '%v'", expected, expected)))
+			Expect(msg).To(Equal(fmt.Sprintf("expected non alphanumeric values to match:\n\texpected: '%v'\n\tactual:   '%v'", expected, expected)))
 		})
 
 		It("negated failure message", func() {
 			// given
-			matcher := testsupport.EqualDocument(expected)
+			matcher := testsupport.EqualWithoutNonAlphanumeric(expected)
 			_, err := matcher.Match(actual)
 			Expect(err).ToNot(HaveOccurred())
 			// when
 			msg := matcher.NegatedFailureMessage(actual)
 			// then
-			Expect(msg).To(Equal(fmt.Sprintf("expected documents not to match:\n\texpected: '%v'\n\tactual:   '%v'", expected, expected)))
+			Expect(msg).To(Equal(fmt.Sprintf("expected non alphanumeric values not to match:\n\texpected: '%v'\n\tactual:   '%v'", expected, expected)))
 
 		})
 	})
@@ -82,14 +73,14 @@ var _ = Describe("document assertions", func() {
 
 		It("should return error when invalid type is input", func() {
 			// given
-			matcher := testsupport.EqualDocument(types.Document{})
+			matcher := testsupport.EqualWithoutNonAlphanumeric("")
 			_, err := matcher.Match(actual)
 			Expect(err).ToNot(HaveOccurred())
 			// when
 			result, err := matcher.Match(1) // not a string
 			// then
 			Expect(err).To(HaveOccurred())
-			Expect(err.Error()).To(Equal("EqualDocument matcher expects a string (actual: int)"))
+			Expect(err.Error()).To(Equal("EqualWithoutNonAlphanumeric matcher expects an InlineElements (actual: int)"))
 			Expect(result).To(BeFalse())
 		})
 	})

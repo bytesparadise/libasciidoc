@@ -52,7 +52,7 @@ with some content linked to <<thetitle>>!`
 					},
 				},
 			}
-			Expect(source).To(EqualPreflightDocument(expected))
+			Expect(source).To(BecomePreflightDocument(expected))
 		})
 
 		It("cross-reference with custom id and label", func() {
@@ -95,7 +95,7 @@ with some content linked to <<thetitle,a label to the title>>!`
 					},
 				},
 			}
-			Expect(source).To(EqualPreflightDocument(expected))
+			Expect(source).To(BecomePreflightDocument(expected))
 		})
 	})
 })

@@ -17,7 +17,7 @@ func EqualDocument(expected types.Document) gomegatypes.GomegaMatcher {
 	return &documentMatcher{
 		expected: expected,
 	}
-} 
+}
 
 type documentMatcher struct {
 	expected types.Document

@@ -2,8 +2,9 @@ package types_test
 
 import (
 	"github.com/bytesparadise/libasciidoc/pkg/types"
+
 	. "github.com/onsi/ginkgo"
-	"github.com/stretchr/testify/assert"
+	. "github.com/onsi/gomega"
 )
 
 var _ = Describe("document attributes", func() {
@@ -16,7 +17,7 @@ var _ = Describe("document attributes", func() {
 			// when
 			attributes.Add("foo", "bar")
 			// then
-			assert.Equal(GinkgoT(), "bar", attributes["foo"])
+			Expect("bar").To(Equal(attributes["foo"]))
 		})
 
 		It("pointer to value", func() {
@@ -26,7 +27,7 @@ var _ = Describe("document attributes", func() {
 			bar := "bar"
 			attributes.Add("foo", &bar)
 			// then
-			assert.Equal(GinkgoT(), "bar", attributes["foo"])
+			Expect("bar").To(Equal(attributes["foo"]))
 		})
 
 		It("nil value", func() {
@@ -36,7 +37,7 @@ var _ = Describe("document attributes", func() {
 			attributes.Add("foo", nil)
 			// then
 			_, found := attributes["foo"]
-			assert.False(GinkgoT(), found)
+			Expect(found).To(BeFalse())
 		})
 
 	})

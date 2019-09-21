@@ -401,7 +401,7 @@ func NewSection(level int, title InlineElements, ids []interface{}, attributes i
 	attrs[AttrCustomID] = true
 	// make a default id from the sectionTitle's inline content
 	if _, found := attrs[AttrID]; !found {
-		replacement, err := replaceNonAlphanumerics(title, "_")
+		replacement, err := ReplaceNonAlphanumerics(title, "_")
 		if err != nil {
 			return Section{}, errors.Wrapf(err, "unable to generate default ID while instanciating a new Section element")
 		}

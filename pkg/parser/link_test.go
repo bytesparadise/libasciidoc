@@ -495,7 +495,7 @@ next lines`
 					},
 				},
 			}
-			verifyDocumentBlock(expected, source)
+			Expect(source).To(EqualDocumentBlock(expected))
 		})
 
 		It("relative link with all valid characters", func() {

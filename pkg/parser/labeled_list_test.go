@@ -36,7 +36,7 @@ on 2 lines`
 				},
 			},
 		}
-		Expect(source).To(EqualPreflightDocument(expected))
+		Expect(source).To(BecomePreflightDocument(expected))
 	})
 
 	It("labeled list with a single term and no description", func() {
@@ -51,7 +51,7 @@ on 2 lines`
 				},
 			},
 		}
-		Expect(source).To(EqualPreflightDocument(expected))
+		Expect(source).To(BecomePreflightDocument(expected))
 	})
 
 	It("labeled list with a horizontal layout attribute", func() {
@@ -78,7 +78,7 @@ Item1:: foo`
 				},
 			},
 		}
-		Expect(source).To(EqualPreflightDocument(expected))
+		Expect(source).To(BecomePreflightDocument(expected))
 	})
 
 	It("labeled list with a single term and a blank line", func() {
@@ -94,7 +94,7 @@ Item1:: foo`
 				},
 			},
 		}
-		Expect(source).To(EqualPreflightDocument(expected))
+		Expect(source).To(BecomePreflightDocument(expected))
 	})
 
 	It("labeled list with multiple sibling items", func() {
@@ -153,7 +153,7 @@ Item 3 description`
 				},
 			},
 		}
-		Expect(source).To(EqualPreflightDocument(expected))
+		Expect(source).To(BecomePreflightDocument(expected))
 	})
 
 	It("labeled list with multiple nested items", func() {
@@ -212,7 +212,7 @@ Item 3 description`
 				},
 			},
 		}
-		Expect(source).To(EqualPreflightDocument(expected))
+		Expect(source).To(BecomePreflightDocument(expected))
 	})
 
 	It("labeled list with nested unordered list - case 1", func() {
@@ -278,7 +278,7 @@ Item with description:: something simple`
 			},
 		}
 
-		Expect(source).To(EqualPreflightDocument(expected))
+		Expect(source).To(BecomePreflightDocument(expected))
 	})
 
 	It("labeled list with a single item and paragraph", func() {
@@ -318,7 +318,7 @@ a normal paragraph.`
 				},
 			},
 		}
-		Expect(source).To(EqualPreflightDocument(expected))
+		Expect(source).To(BecomePreflightDocument(expected))
 	})
 
 	It("labeled list with item continuation", func() {
@@ -397,7 +397,7 @@ another fenced block
 				},
 			},
 		}
-		Expect(source).To(EqualPreflightDocument(expected))
+		Expect(source).To(BecomePreflightDocument(expected))
 	})
 
 	It("labeled list without item continuation", func() {
@@ -466,7 +466,7 @@ another fenced block
 				},
 			},
 		}
-		Expect(source).To(EqualPreflightDocument(expected))
+		Expect(source).To(BecomePreflightDocument(expected))
 	})
 
 	It("labeled list with nested unordered list - case 2", func() {
@@ -498,7 +498,7 @@ another fenced block
 				},
 			},
 		}
-		Expect(source).To(EqualPreflightDocument(expected))
+		Expect(source).To(BecomePreflightDocument(expected))
 	})
 
 	It("labeled list with title", func() {
@@ -545,7 +545,7 @@ second term:: definition of the second term`
 				},
 			},
 		}
-		Expect(source).To(EqualPreflightDocument(expected))
+		Expect(source).To(BecomePreflightDocument(expected))
 	})
 
 	It("max level of labeled items - case 1", func() {
@@ -628,7 +628,7 @@ level 1:: description 1`
 				},
 			},
 		}
-		Expect(source).To(EqualPreflightDocument(expected))
+		Expect(source).To(BecomePreflightDocument(expected))
 	})
 
 	It("max level of labeled items - case 2", func() {
@@ -711,7 +711,7 @@ level 2::: description 2`
 				},
 			},
 		}
-		Expect(source).To(EqualPreflightDocument(expected))
+		Expect(source).To(BecomePreflightDocument(expected))
 	})
 })
 

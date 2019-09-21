@@ -4,8 +4,9 @@ import (
 	"bytes"
 
 	main "github.com/bytesparadise/libasciidoc/cmd/libasciidoc"
+
 	. "github.com/onsi/ginkgo"
-	"github.com/stretchr/testify/require"
+	. "github.com/onsi/gomega"
 )
 
 var _ = Describe("version cmd", func() {
@@ -19,8 +20,8 @@ var _ = Describe("version cmd", func() {
 		// when
 		err := versionCmd.Execute()
 		// then
-		require.NoError(GinkgoT(), err)
-		require.NotEmpty(GinkgoT(), buf.String())
+		Expect(err).ToNot(HaveOccurred())
+		Expect(buf).ToNot(BeEmpty())
 	})
 
 })
