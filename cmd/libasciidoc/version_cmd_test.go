@@ -21,7 +21,7 @@ var _ = Describe("version cmd", func() {
 		err := versionCmd.Execute()
 		// then
 		Expect(err).ToNot(HaveOccurred())
-		Expect(buf).ToNot(BeEmpty())
+		Expect(buf.String()).ToNot(BeEmpty())
 	})
 
 })

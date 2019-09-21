@@ -23,7 +23,7 @@ var _ = Describe("root cmd", func() {
 		err := root.Execute()
 		// then
 		Expect(err).ToNot(HaveOccurred())
-		Expect(buf).ToNot(BeEmpty())
+		Expect(buf.String()).ToNot(BeEmpty())
 	})
 
 	It("render with file output", func() {
@@ -51,7 +51,7 @@ var _ = Describe("root cmd", func() {
 		err := root.Execute()
 		// then
 		GinkgoT().Logf("command output: %v", buf.String())
-		Expect(err).ToNot(HaveOccurred())
+		Expect(err).To(HaveOccurred())
 	})
 
 	It("render without header/footer", func() {
@@ -64,7 +64,7 @@ var _ = Describe("root cmd", func() {
 		err := root.Execute()
 		// then
 		Expect(err).ToNot(HaveOccurred())
-		Expect(buf).ToNot(BeEmpty())
+		Expect(buf.String()).ToNot(BeEmpty())
 		Expect(buf.String()).ToNot(ContainSubstring(`<div id="footer">`))
 	})
 
@@ -89,7 +89,7 @@ var _ = Describe("root cmd", func() {
 		// when
 		err := root.Execute()
 		// then
-		Expect(err).ToNot(HaveOccurred())
+		Expect(err).To(HaveOccurred())
 	})
 
 	It("show help when executed with no arg", func() {
