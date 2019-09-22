@@ -41,9 +41,9 @@ func (m *documentBlockMatcher) Match(actual interface{}) (success bool, err erro
 }
 
 func (m *documentBlockMatcher) FailureMessage(actual interface{}) (message string) {
-	return fmt.Sprintf("expected document blocks to match:\n\texpected: '%v'\n\tactual'%v'", m.expected, m.actual)
+	return fmt.Sprintf("expected document blocks to match:\n\texpected: '%v'\n\tactual:   '%v'", m.expected, m.actual)
 }
 
 func (m *documentBlockMatcher) NegatedFailureMessage(actual interface{}) (message string) {
-	return fmt.Sprintf("expected document blocks not to match:\n\texpected: '%v'\n\tactual'%v'", m.expected, m.actual)
+	return fmt.Sprintf("expected document blocks not to match:\n\texpected: '%v'\n\tactual:   '%v'", m.expected, m.actual)
 }
