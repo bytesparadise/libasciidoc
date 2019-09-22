@@ -1,19 +1,11 @@
 package libasciidoc_test
 
 import (
-	"bytes"
-	"context"
-	"strings"
-	"time"
-
-	. "github.com/bytesparadise/libasciidoc"
-	"github.com/bytesparadise/libasciidoc/pkg/renderer"
-	"github.com/bytesparadise/libasciidoc/pkg/types"
+	. "github.com/bytesparadise/libasciidoc/testsupport"
 
 	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/gomega"
 	log "github.com/sirupsen/logrus"
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 )
 
 var _ = Describe("documents", func() {
@@ -37,7 +29,8 @@ var _ = Describe("documents", func() {
 			// main title alone is not rendered in the body
 			source := ""
 			expectedContent := ""
-			verifyDocumentBody(GinkgoT(), nil, expectedContent, source)
+			Expect(source).To(RenderHTML5Body(expectedContent))
+			Expect(source).To(RenderHTML5Title(nil))
 		})
 
 		It("document with no section", func() {
@@ -45,7 +38,8 @@ var _ = Describe("documents", func() {
 			source := "= a document title"
 			expectedTitle := "a document title"
 			expectedContent := ""
-			verifyDocumentBody(GinkgoT(), &expectedTitle, expectedContent, source)
+			Expect(source).To(RenderHTML5Body(expectedContent))
+			Expect(source).To(RenderHTML5Title(expectedTitle))
 		})
 
 		It("section levels 0 and 1", func() {
@@ -63,7 +57,8 @@ a paragraph with *bold content*`
 </div>
 </div>
 </div>`
-			verifyDocumentBody(GinkgoT(), &expectedTitle, expectedContent, source)
+			Expect(source).To(RenderHTML5Body(expectedContent))
+			Expect(source).To(RenderHTML5Title(expectedTitle))
 		})
 
 		It("section level 1 with a paragraph", func() {
@@ -78,7 +73,8 @@ a paragraph with *bold content*`
 </div>
 </div>
 </div>`
-			verifyDocumentBody(GinkgoT(), nil, expectedContent, source)
+			Expect(source).To(RenderHTML5Body(expectedContent))
+			Expect(source).To(RenderHTML5Title(nil))
 		})
 
 		It("section levels 0, 1 and 3", func() {
@@ -106,7 +102,8 @@ a paragraph`
 </div>
 </div>
 </div>`
-			verifyDocumentBody(GinkgoT(), &expectedTitle, expectedContent, source)
+			Expect(source).To(RenderHTML5Body(expectedContent))
+			Expect(source).To(RenderHTML5Title(expectedTitle))
 		})
 
 		It("section levels 1, 2, 3 and 2", func() {
@@ -146,7 +143,8 @@ a paragraph with _italic content_`
 </div>
 </div>
 </div>`
-			verifyDocumentBody(GinkgoT(), &expectedTitle, expectedContent, source)
+			Expect(source).To(RenderHTML5Body(expectedContent))
+			Expect(source).To(RenderHTML5Title(expectedTitle))
 		})
 	})
 
@@ -186,47 +184,8 @@ Last updated {{.LastUpdated}}
 </div>
 </body>
 </html>`
-			verifyCompleteDocument(GinkgoT(), expectedContent, source)
+			Expect(source).To(RenderHTML5Document(expectedContent))
 		})
 	})
 
 })
-
-func verifyDocumentBody(t GinkgoTInterface, expectedRenderedTitle *string, expectedContent, source string) {
-	t.Logf("processing '%s'", source)
-	sourceReader := strings.NewReader(source)
-	resultWriter := bytes.NewBuffer(nil)
-	metadata, err := ConvertToHTML(context.Background(), sourceReader, resultWriter, renderer.IncludeHeaderFooter(false))
-	require.Nil(t, err, "Error found while parsing the document")
-	require.NotNil(t, metadata)
-	t.Log("Done processing document")
-	result := resultWriter.String()
-	t.Logf("** Actual output:\n`%s`\n", result)
-	t.Logf("** expectedContent output:\n`%s`\n", expectedContent)
-	assert.Equal(t, expectedContent, result)
-	if expectedRenderedTitle == nil {
-		_, found := metadata[types.AttrTitle]
-		assert.False(t, found)
-	} else {
-		actualTitle := metadata[types.AttrTitle]
-		t.Logf("Actual title: %v", actualTitle)
-		t.Logf("Expected title: %v", *expectedRenderedTitle)
-		assert.Equal(t, *expectedRenderedTitle, actualTitle)
-	}
-}
-
-func verifyCompleteDocument(t GinkgoTInterface, expectedContent, source string) {
-	t.Logf("processing '%s'", source)
-	sourceReader := strings.NewReader(source)
-	resultWriter := bytes.NewBuffer(nil)
-	lastUpdated := time.Now()
-	_, err := ConvertToHTML(context.Background(), sourceReader, resultWriter, renderer.IncludeHeaderFooter(true), renderer.LastUpdated(lastUpdated))
-	require.Nil(t, err, "Error found while parsing the document")
-	t.Log("Done processing document")
-	result := resultWriter.String()
-	t.Logf("** Actual output:\n`%s`\n", result)
-	require.Nil(t, err)
-	expectedContent = strings.Replace(expectedContent, "{{.LastUpdated}}", lastUpdated.Format(renderer.LastUpdatedFormat), 1)
-	t.Logf("** expectedContent output:\n`%s`\n", expectedContent)
-	assert.Equal(t, expectedContent, result)
-}

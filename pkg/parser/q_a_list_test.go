@@ -2,7 +2,10 @@ package parser_test
 
 import (
 	"github.com/bytesparadise/libasciidoc/pkg/types"
+	. "github.com/bytesparadise/libasciidoc/testsupport"
+
 	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/gomega"
 )
 
 var _ = Describe("q and a lists", func() {
@@ -64,6 +67,6 @@ What is the answer to the Ultimate Question?:: 42`
 				},
 			},
 		}
-		verifyDocument(expected, source)
+		Expect(source).To(EqualDocument(expected))
 	})
 })

@@ -1,7 +1,10 @@
 package html5_test
 
 import (
+	. "github.com/bytesparadise/libasciidoc/testsupport"
+
 	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/gomega"
 )
 
 var _ = Describe("labeled lists of items", func() {
@@ -36,7 +39,7 @@ on 2 lines, too.</p>
 </dd>
 </dl>
 </div>`
-			verify("test.adoc", expected, source)
+			Expect(source).To(RenderHTML5Element(expected))
 		})
 
 		It("labeled list with an empty entry", func() {
@@ -51,7 +54,7 @@ item 2:: description 2.`
 </dd>
 </dl>
 </div>`
-			verify("test.adoc", expected, source)
+			Expect(source).To(RenderHTML5Element(expected))
 		})
 
 		It("labeled list with an image", func() {
@@ -69,7 +72,7 @@ item 2:: description 2.`
 </dd>
 </dl>
 </div>`
-			verify("test.adoc", expected, source)
+			Expect(source).To(RenderHTML5Element(expected))
 		})
 
 		It("labeled list with script injection", func() {
@@ -82,7 +85,7 @@ item 2:: description 2.`
 </dd>
 </dl>
 </div>`
-			verify("test.adoc", expected, source)
+			Expect(source).To(RenderHTML5Element(expected))
 		})
 
 		It("labeled list with fenced block", func() {
@@ -109,7 +112,7 @@ item 2:: description 2.`
 </dd>
 </dl>
 </div>`
-			verify("test.adoc", expected, source)
+			Expect(source).To(RenderHTML5Element(expected))
 		})
 
 		It("labeled list with nested lists using regular layout", func() {
@@ -146,7 +149,7 @@ item 2:: something simple`
 </dd>
 </dl>
 </div>`
-			verify("test.adoc", expected, source)
+			Expect(source).To(RenderHTML5Element(expected))
 		})
 
 		It("labeled list with title", func() {
@@ -166,7 +169,7 @@ second term:: definition of the second term`
 </dd>
 </dl>
 </div>`
-			verify("test.adoc", expected, source)
+			Expect(source).To(RenderHTML5Element(expected))
 		})
 
 	})
@@ -206,7 +209,7 @@ on 2 lines, too.</p>
 </tr>
 </table>
 </div>`
-			verify("test.adoc", expected, source)
+			Expect(source).To(RenderHTML5Element(expected))
 		})
 
 		It("labeled list with nested lists using horizontal layout", func() {
@@ -252,7 +255,7 @@ item 2
 </tr>
 </table>
 </div>`
-			verify("test.adoc", expected, source)
+			Expect(source).To(RenderHTML5Element(expected))
 		})
 
 	})
@@ -280,7 +283,7 @@ item 2:: description 2.`
 </dd>
 </dl>
 </div>`
-			verify("test.adoc", expected, source)
+			Expect(source).To(RenderHTML5Element(expected))
 		})
 
 		It("labeled list with blockcontinuation", func() {
@@ -316,7 +319,7 @@ another delimited block
 </dl>
 </div>`
 
-			verify("test.adoc", expected, source)
+			Expect(source).To(RenderHTML5Element(expected))
 		})
 
 		It("labeled list without continuation", func() {
@@ -352,7 +355,7 @@ another delimited block
 </div>
 </div>`
 
-			verify("test.adoc", expected, source)
+			Expect(source).To(RenderHTML5Element(expected))
 		})
 	})
 
@@ -389,7 +392,7 @@ Item 3 description`
 </dd>
 </dl>
 </div>`
-			verify("test.adoc", expected, source)
+			Expect(source).To(RenderHTML5Element(expected))
 		})
 	})
 
@@ -415,7 +418,7 @@ What is the answer to the Ultimate Question?:: 42`
 </li>
 </ol>
 </div>`
-			verify("test.adoc", expected, source)
+			Expect(source).To(RenderHTML5Element(expected))
 		})
 	})
 
@@ -459,7 +462,7 @@ paragraph attached to grandparent list item`
 </dd>
 </dl>
 </div>`
-			verify("test.adoc", expected, source)
+			Expect(source).To(RenderHTML5Element(expected))
 		})
 
 		It("attach to parent labeled list item", func() {
@@ -499,7 +502,7 @@ paragraph attached to parent list item`
 </dd>
 </dl>
 </div>`
-			verify("test.adoc", expected, source)
+			Expect(source).To(RenderHTML5Element(expected))
 		})
 
 		It("attach to child labeled list item", func() {
@@ -538,7 +541,7 @@ paragraph attached to child list item`
 </dd>
 </dl>
 </div>`
-			verify("test.adoc", expected, source)
+			Expect(source).To(RenderHTML5Element(expected))
 		})
 	})
 })

@@ -1,6 +1,7 @@
 package testsupport_test
 
 import (
+	"fmt"
 	"strings"
 
 	"github.com/bytesparadise/libasciidoc/testsupport"
@@ -36,6 +37,8 @@ var _ = Describe("console assertions", func() {
 		// then
 		Expect(err).ToNot(HaveOccurred())
 		Expect(result).To(BeFalse())
+		// also verify the messages
+
 	})
 
 	It("should not find expected level/message with wrong msg", func() {
@@ -45,6 +48,20 @@ var _ = Describe("console assertions", func() {
 		result, err := matcher.Match(strings.NewReader(console))
 		// then
 		Expect(err).ToNot(HaveOccurred())
+		Expect(result).To(BeFalse())
+		// also verify the messages
+		Expect(matcher.FailureMessage(strings.NewReader(console))).To(Equal(fmt.Sprintf("expected console to contain message '%s' with level '%v'", "foo", log.ErrorLevel)))
+		Expect(matcher.NegatedFailureMessage(strings.NewReader(console))).To(Equal(fmt.Sprintf("expected console not to contain message '%s' with level '%v'", "foo", log.ErrorLevel)))
+	})
+
+	It("should return error when invalid type is input", func() {
+		// given
+		matcher := testsupport.ContainMessageWithLevel(log.ErrorLevel, "foo") // unknown message
+		// when
+		result, err := matcher.Match(1) // not a reader
+		// then
+		Expect(err).To(HaveOccurred())
+		Expect(err.Error()).To(Equal("ContainMessageWithLevel matcher expects an io.Reader (actual: int)"))
 		Expect(result).To(BeFalse())
 	})
 

@@ -70,7 +70,7 @@ func rearrangeListItems(blocks []interface{}, withinDelimitedBlock bool) ([]inte
 			}
 			result = append(result, block)
 		case types.OrderedListItem, types.UnorderedListItem, types.LabeledListItem:
-			// there's a special case: if the next list item has attributes and was preceeded by a
+			// there's a special case: if the next list item has attributes and was preceded by a
 			// blank line, then we need to start a new list
 			if blankline && len(block.(types.DocumentElement).GetAttributes()) > 0 {
 				if len(lists) > 0 {

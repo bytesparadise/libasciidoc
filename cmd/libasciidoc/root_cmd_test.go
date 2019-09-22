@@ -5,7 +5,6 @@ import (
 	"io/ioutil"
 
 	main "github.com/bytesparadise/libasciidoc/cmd/libasciidoc"
-	"github.com/stretchr/testify/require"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
@@ -23,8 +22,8 @@ var _ = Describe("root cmd", func() {
 		// when
 		err := root.Execute()
 		// then
-		require.NoError(GinkgoT(), err)
-		require.NotEmpty(GinkgoT(), buf)
+		Expect(err).ToNot(HaveOccurred())
+		Expect(buf.String()).ToNot(BeEmpty())
 	})
 
 	It("render with file output", func() {
@@ -36,10 +35,10 @@ var _ = Describe("root cmd", func() {
 		// when
 		err := root.Execute()
 		// then
-		require.NoError(GinkgoT(), err)
+		Expect(err).ToNot(HaveOccurred())
 		content, err := ioutil.ReadFile("test/test.html")
-		require.NoError(GinkgoT(), err)
-		require.NotEmpty(GinkgoT(), content)
+		Expect(err).ToNot(HaveOccurred())
+		Expect(content).ToNot(BeEmpty())
 	})
 
 	It("fail to parse bad log level", func() {
@@ -52,7 +51,7 @@ var _ = Describe("root cmd", func() {
 		err := root.Execute()
 		// then
 		GinkgoT().Logf("command output: %v", buf.String())
-		require.Error(GinkgoT(), err)
+		Expect(err).To(HaveOccurred())
 	})
 
 	It("render without header/footer", func() {
@@ -64,8 +63,8 @@ var _ = Describe("root cmd", func() {
 		// when
 		err := root.Execute()
 		// then
-		require.NoError(GinkgoT(), err)
-		require.NotEmpty(GinkgoT(), buf)
+		Expect(err).ToNot(HaveOccurred())
+		Expect(buf.String()).ToNot(BeEmpty())
 		Expect(buf.String()).ToNot(ContainSubstring(`<div id="footer">`))
 	})
 
@@ -78,7 +77,7 @@ var _ = Describe("root cmd", func() {
 		// when
 		err := root.Execute()
 		// then
-		require.NoError(GinkgoT(), err)
+		Expect(err).ToNot(HaveOccurred())
 	})
 
 	It("when rendering multiple files, return last error", func() {
@@ -90,7 +89,7 @@ var _ = Describe("root cmd", func() {
 		// when
 		err := root.Execute()
 		// then
-		require.Error(GinkgoT(), err)
+		Expect(err).To(HaveOccurred())
 	})
 
 	It("show help when executed with no arg", func() {
@@ -102,6 +101,6 @@ var _ = Describe("root cmd", func() {
 		// when
 		err := root.Execute()
 		// then
-		require.NoError(GinkgoT(), err)
+		Expect(err).ToNot(HaveOccurred())
 	})
 })

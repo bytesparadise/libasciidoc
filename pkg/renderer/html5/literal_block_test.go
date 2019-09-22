@@ -1,7 +1,10 @@
 package html5_test
 
 import (
+	. "github.com/bytesparadise/libasciidoc/testsupport"
+
 	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/gomega"
 )
 
 var _ = Describe("literal blocks", func() {
@@ -15,7 +18,7 @@ var _ = Describe("literal blocks", func() {
 <pre>some literal content</pre>
 </div>
 </div>`
-			verify("test.adoc", expected, source)
+			Expect(source).To(RenderHTML5Element(expected))
 		})
 
 		It("literal block from paragraph with single space on first line", func() {
@@ -29,7 +32,7 @@ on 3
 lines.</pre>
 </div>
 </div>`
-			verify("test.adoc", expected, source)
+			Expect(source).To(RenderHTML5Element(expected))
 		})
 
 		It("literal block from paragraph with same spaces on each line", func() {
@@ -43,7 +46,7 @@ on 3
 lines.</pre>
 </div>
 </div>`
-			verify("test.adoc", expected, source)
+			Expect(source).To(RenderHTML5Element(expected))
 		})
 
 		It("literal block from paragraph with single spaces on each line", func() {
@@ -57,7 +60,7 @@ lines.</pre>
     has some heading spaces preserved.</pre>
 </div>
 </div>`
-			verify("test.adoc", expected, source)
+			Expect(source).To(RenderHTML5Element(expected))
 		})
 
 		It("mixing literal block with attributes followed by a paragraph ", func() {
@@ -75,7 +78,7 @@ a normal paragraph.`
 <div class="paragraph">
 <p>a normal paragraph.</p>
 </div>`
-			verify("test.adoc", expected, source)
+			Expect(source).To(RenderHTML5Element(expected))
 		})
 	})
 
@@ -97,7 +100,7 @@ a normal paragraph.`
 <div class="paragraph">
 <p>a normal paragraph.</p>
 </div>`
-			verify("test.adoc", expected, source)
+			Expect(source).To(RenderHTML5Element(expected))
 		})
 
 	})
@@ -121,7 +124,7 @@ a normal paragraph.`
 <div class="paragraph">
 <p>a normal paragraph.</p>
 </div>`
-			verify("test.adoc", expected, source)
+			Expect(source).To(RenderHTML5Element(expected))
 		})
 
 		It("literal block from 2-lines paragraph with attribute", func() {
@@ -142,7 +145,7 @@ on two lines.</pre>
 <div class="paragraph">
 <p>a normal paragraph.</p>
 </div>`
-			verify("test.adoc", expected, source)
+			Expect(source).To(RenderHTML5Element(expected))
 		})
 	})
 

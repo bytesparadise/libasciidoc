@@ -2,7 +2,10 @@ package parser_test
 
 import (
 	"github.com/bytesparadise/libasciidoc/pkg/types"
+	. "github.com/bytesparadise/libasciidoc/testsupport"
+
 	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/gomega"
 )
 
 var _ = Describe("tables", func() {
@@ -47,7 +50,7 @@ var _ = Describe("tables", func() {
 				},
 			},
 		}
-		verifyDocumentBlock(expected, source)
+		Expect(source).To(EqualDocumentBlock(expected))
 	})
 
 	It("1-line table with 3 cells", func() {
@@ -94,7 +97,7 @@ var _ = Describe("tables", func() {
 				},
 			},
 		}
-		verifyDocumentBlock(expected, source)
+		Expect(source).To(EqualDocumentBlock(expected))
 	})
 
 	It("table with title, headers and 1 line per cell", func() {
@@ -158,7 +161,7 @@ var _ = Describe("tables", func() {
 				},
 			},
 		}
-		verifyDocumentBlock(expected, source)
+		Expect(source).To(EqualDocumentBlock(expected))
 	})
 
 	It("empty table ", func() {
@@ -168,6 +171,6 @@ var _ = Describe("tables", func() {
 			Attributes: types.ElementAttributes{},
 			Lines:      []types.TableLine{},
 		}
-		verifyDocumentBlock(expected, source)
+		Expect(source).To(EqualDocumentBlock(expected))
 	})
 })

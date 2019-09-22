@@ -1,7 +1,10 @@
 package html5_test
 
 import (
+	. "github.com/bytesparadise/libasciidoc/testsupport"
+
 	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/gomega"
 )
 
 var _ = Describe("document toc", func() {
@@ -79,7 +82,7 @@ A preamble...
 <div class="sectionbody">
 </div>
 </div>`
-			verify("test.adoc", expected, source)
+			Expect(source).To(RenderHTML5Element(expected))
 		})
 
 		It("toc with custom level", func() {
@@ -167,7 +170,7 @@ A preamble...
 <div class="sectionbody">
 </div>
 </div>`
-			verify("test.adoc", expected, source)
+			Expect(source).To(RenderHTML5Element(expected))
 		})
 
 		It("document with no section", func() {
@@ -179,7 +182,7 @@ level 1 sections not exists.`
 			expected := `<div class="paragraph">
 <p>level 1 sections not exists.</p>
 </div>`
-			verify("test.adoc", expected, source)
+			Expect(source).To(RenderHTML5Element(expected))
 
 		})
 	})

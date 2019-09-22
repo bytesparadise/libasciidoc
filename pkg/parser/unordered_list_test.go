@@ -2,7 +2,10 @@ package parser_test
 
 import (
 	"github.com/bytesparadise/libasciidoc/pkg/types"
+	. "github.com/bytesparadise/libasciidoc/testsupport"
+
 	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/gomega"
 )
 
 var _ = Describe("unordered lists - preflight", func() {
@@ -31,7 +34,7 @@ var _ = Describe("unordered lists - preflight", func() {
 					},
 				},
 			}
-			verifyPreflight("test.adoc", expected, source)
+			Expect(source).To(BecomePreflightDocument(expected))
 		})
 
 		It("unordered list with ID, title, role and a single item", func() {
@@ -64,7 +67,7 @@ var _ = Describe("unordered lists - preflight", func() {
 					},
 				},
 			}
-			verifyPreflight("test.adoc", expected, source)
+			Expect(source).To(BecomePreflightDocument(expected))
 		})
 		It("unordered list with a title and a single item", func() {
 			source := `.a title
@@ -91,7 +94,7 @@ var _ = Describe("unordered lists - preflight", func() {
 					},
 				},
 			}
-			verifyPreflight("test.adoc", expected, source)
+			Expect(source).To(BecomePreflightDocument(expected))
 		})
 
 		It("unordered list with 2 items with stars", func() {
@@ -139,7 +142,7 @@ var _ = Describe("unordered lists - preflight", func() {
 					},
 				},
 			}
-			verifyPreflight("test.adoc", expected, source)
+			Expect(source).To(BecomePreflightDocument(expected))
 		})
 
 		It("unordered list based on article.adoc (with heading spaces)", func() {
@@ -286,7 +289,7 @@ var _ = Describe("unordered lists - preflight", func() {
 					},
 				},
 			}
-			verifyPreflight("test.adoc", expected, source)
+			Expect(source).To(BecomePreflightDocument(expected))
 		})
 
 		It("unordered list with 2 items with carets", func() {
@@ -334,7 +337,7 @@ var _ = Describe("unordered lists - preflight", func() {
 					},
 				},
 			}
-			verifyPreflight("test.adoc", expected, source)
+			Expect(source).To(BecomePreflightDocument(expected))
 		})
 
 		It("unordered list with items with mixed styles", func() {
@@ -427,7 +430,7 @@ var _ = Describe("unordered lists - preflight", func() {
 					},
 				},
 			}
-			verifyPreflight("test.adoc", expected, source)
+			Expect(source).To(BecomePreflightDocument(expected))
 		})
 
 		It("unordered list with 2 items with empty line in-between", func() {
@@ -478,7 +481,7 @@ var _ = Describe("unordered lists - preflight", func() {
 					},
 				},
 			}
-			verifyPreflight("test.adoc", expected, source)
+			Expect(source).To(BecomePreflightDocument(expected))
 		})
 		It("unordered list with 2 items on multiple lines", func() {
 			source := `* item 1
@@ -527,7 +530,7 @@ on 2 lines, too.`
 					},
 				},
 			}
-			verifyPreflight("test.adoc", expected, source)
+			Expect(source).To(BecomePreflightDocument(expected))
 		})
 		It("unordered lists with 2 empty lines in-between", func() {
 			source := `* an item in the first list
@@ -572,7 +575,7 @@ on 2 lines, too.`
 					},
 				},
 			}
-			verifyPreflight("test.adoc", expected, source) // parse the whole document to get 2 lists
+			Expect(source).To(BecomePreflightDocument(expected)) // parse the whole document to get 2 lists
 		})
 
 		It("unordered list with items on 3 levels", func() {
@@ -716,7 +719,7 @@ on 2 lines, too.`
 					},
 				},
 			}
-			verifyPreflight("test.adoc", expected, source)
+			Expect(source).To(BecomePreflightDocument(expected))
 		})
 
 		It("max level of unordered items - case 1", func() {
@@ -841,7 +844,7 @@ on 2 lines, too.`
 					},
 				},
 			}
-			verifyPreflight("test.adoc", expected, source)
+			Expect(source).To(BecomePreflightDocument(expected))
 		})
 
 		It("max level of unordered items - case 2", func() {
@@ -965,7 +968,7 @@ on 2 lines, too.`
 					},
 				},
 			}
-			verifyPreflight("test.adoc", expected, source)
+			Expect(source).To(BecomePreflightDocument(expected))
 		})
 	})
 
@@ -1060,7 +1063,7 @@ on 2 lines, too.`
 					},
 				},
 			}
-			verifyPreflight("test.adoc", expected, source)
+			Expect(source).To(BecomePreflightDocument(expected))
 		})
 
 		It("invalid list item", func() {
@@ -1077,7 +1080,7 @@ on 2 lines, too.`
 					},
 				},
 			}
-			verifyPreflight("test.adoc", expected, source)
+			Expect(source).To(BecomePreflightDocument(expected))
 		})
 	})
 
@@ -1169,7 +1172,7 @@ another delimited block
 					},
 				},
 			}
-			verifyPreflight("test.adoc", expected, source)
+			Expect(source).To(BecomePreflightDocument(expected))
 		})
 
 		It("unordered list with item continuation - case 2", func() {
@@ -1325,7 +1328,7 @@ The {plus} symbol is on a new line.
 					},
 				},
 			}
-			verifyPreflight("test.adoc", expected, source)
+			Expect(source).To(BecomePreflightDocument(expected))
 		})
 
 		It("unordered list without item continuation", func() {
@@ -1405,7 +1408,7 @@ another delimited block
 					},
 				},
 			}
-			verifyPreflight("test.adoc", expected, source)
+			Expect(source).To(BecomePreflightDocument(expected))
 		})
 	})
 
@@ -1482,7 +1485,7 @@ paragraph attached to grand parent list item`
 					},
 				},
 			}
-			verifyPreflight("test.adoc", expected, source)
+			Expect(source).To(BecomePreflightDocument(expected))
 		})
 
 		It("attach to parent item", func() {
@@ -1555,7 +1558,7 @@ paragraph attached to parent list item`
 					},
 				},
 			}
-			verifyPreflight("test.adoc", expected, source)
+			Expect(source).To(BecomePreflightDocument(expected))
 		})
 	})
 })
@@ -1595,7 +1598,7 @@ var _ = Describe("unordered lists - document", func() {
 					},
 				},
 			}
-			verifyDocument(expected, source)
+			Expect(source).To(EqualDocument(expected))
 		})
 
 		It("unordered list with ID, title, role and a single item", func() {
@@ -1637,7 +1640,7 @@ var _ = Describe("unordered lists - document", func() {
 					},
 				},
 			}
-			verifyDocument(expected, source)
+			Expect(source).To(EqualDocument(expected))
 		})
 		It("unordered list with a title and a single item", func() {
 			source := `.a title
@@ -1673,7 +1676,7 @@ var _ = Describe("unordered lists - document", func() {
 					},
 				},
 			}
-			verifyDocument(expected, source)
+			Expect(source).To(EqualDocument(expected))
 		})
 
 		It("unordered list with 2 items with stars", func() {
@@ -1730,7 +1733,7 @@ var _ = Describe("unordered lists - document", func() {
 					},
 				},
 			}
-			verifyDocument(expected, source)
+			Expect(source).To(EqualDocument(expected))
 		})
 
 		It("unordered list based on article.adoc (with heading spaces)", func() {
@@ -1901,7 +1904,7 @@ var _ = Describe("unordered lists - document", func() {
 					},
 				},
 			}
-			verifyDocument(expected, source)
+			Expect(source).To(EqualDocument(expected))
 		})
 
 		It("unordered list with 2 items with carets", func() {
@@ -1958,7 +1961,7 @@ var _ = Describe("unordered lists - document", func() {
 					},
 				},
 			}
-			verifyDocument(expected, source)
+			Expect(source).To(EqualDocument(expected))
 		})
 
 		It("unordered list with items with mixed styles", func() {
@@ -2075,7 +2078,7 @@ var _ = Describe("unordered lists - document", func() {
 					},
 				},
 			}
-			verifyDocument(expected, source)
+			Expect(source).To(EqualDocument(expected))
 		})
 
 		It("unordered list with 2 items with empty line in-between", func() {
@@ -2134,7 +2137,7 @@ var _ = Describe("unordered lists - document", func() {
 					},
 				},
 			}
-			verifyDocument(expected, source)
+			Expect(source).To(EqualDocument(expected))
 		})
 		It("unordered list with 2 items on multiple lines", func() {
 			source := `* item 1
@@ -2192,7 +2195,7 @@ on 2 lines, too.`
 					},
 				},
 			}
-			verifyDocument(expected, source)
+			Expect(source).To(EqualDocument(expected))
 		})
 		It("unordered lists with 2 empty lines in-between", func() {
 			// the first blank lines after the first list is swallowed (for the list item)
@@ -2245,7 +2248,7 @@ on 2 lines, too.`
 					},
 				},
 			}
-			verifyDocument(expected, source) // parse the whole document to get 2 lists
+			Expect(source).To(EqualDocument(expected)) // parse the whole document to get 2 lists
 		})
 
 		It("unordered list with items on 3 levels", func() {
@@ -2413,7 +2416,7 @@ on 2 lines, too.`
 					},
 				},
 			}
-			verifyDocument(expected, source)
+			Expect(source).To(EqualDocument(expected))
 		})
 
 		It("max level of unordered items - case 1", func() {
@@ -2567,7 +2570,7 @@ on 2 lines, too.`
 					},
 				},
 			}
-			verifyDocument(expected, source)
+			Expect(source).To(EqualDocument(expected))
 		})
 
 		It("max level of unordered items - case 2", func() {
@@ -2721,7 +2724,7 @@ on 2 lines, too.`
 					},
 				},
 			}
-			verifyDocument(expected, source)
+			Expect(source).To(EqualDocument(expected))
 		})
 	})
 
@@ -2835,7 +2838,7 @@ on 2 lines, too.`
 					},
 				},
 			}
-			verifyDocument(expected, source)
+			Expect(source).To(EqualDocument(expected))
 		})
 
 		It("invalid list item", func() {
@@ -2856,7 +2859,7 @@ on 2 lines, too.`
 					},
 				},
 			}
-			verifyDocument(expected, source)
+			Expect(source).To(EqualDocument(expected))
 		})
 	})
 
@@ -2951,7 +2954,7 @@ another delimited block
 					},
 				},
 			}
-			verifyDocument(expected, source)
+			Expect(source).To(EqualDocument(expected))
 		})
 
 		It("unordered list with item continuation - case 2", func() {
@@ -3133,7 +3136,7 @@ The {plus} symbol is on a new line.
 					},
 				},
 			}
-			verifyDocument(expected, source)
+			Expect(source).To(EqualDocument(expected))
 		})
 
 		It("unordered list without item continuation", func() {
@@ -3227,7 +3230,7 @@ another delimited block
 					},
 				},
 			}
-			verifyDocument(expected, source)
+			Expect(source).To(EqualDocument(expected))
 		})
 	})
 
@@ -3320,7 +3323,7 @@ paragraph attached to grand parent list item`
 					},
 				},
 			}
-			verifyDocument(expected, source)
+			Expect(source).To(EqualDocument(expected))
 		})
 
 		It("attach to parent item", func() {
@@ -3409,7 +3412,7 @@ paragraph attached to parent list item`
 					},
 				},
 			}
-			verifyDocument(expected, source)
+			Expect(source).To(EqualDocument(expected))
 		})
 	})
 })

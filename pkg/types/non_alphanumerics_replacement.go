@@ -8,8 +8,8 @@ import (
 	"github.com/pkg/errors"
 )
 
-// replaceNonAlphanumerics replace all non alpha numeric characters with the given `replacement`
-func replaceNonAlphanumerics(source InlineElements, replacement string) (string, error) {
+// ReplaceNonAlphanumerics replace all non alpha numeric characters with the given `replacement`
+func ReplaceNonAlphanumerics(source InlineElements, replacement string) (string, error) {
 	v := newReplaceNonAlphanumericsVisitor(replacement)
 	err := source.AcceptVisitor(v)
 	if err != nil {
@@ -18,26 +18,26 @@ func replaceNonAlphanumerics(source InlineElements, replacement string) (string,
 	return v.normalizedContent(), nil
 }
 
-//replaceNonAlphanumericsVisitor a visitor that builds a string representation of the visited elements,
+//ReplaceNonAlphanumericsVisitor a visitor that builds a string representation of the visited elements,
 // in which all non-alphanumeric characters have been replaced with a "_"
-type replaceNonAlphanumericsVisitor struct {
+type ReplaceNonAlphanumericsVisitor struct {
 	buf         bytes.Buffer
 	replacement string
 }
 
-var _ Visitor = &replaceNonAlphanumericsVisitor{}
+var _ Visitor = &ReplaceNonAlphanumericsVisitor{}
 
-// newReplaceNonAlphanumericsVisitor returns a new replaceNonAlphanumericsVisitor
-func newReplaceNonAlphanumericsVisitor(replacement string) *replaceNonAlphanumericsVisitor {
+// newReplaceNonAlphanumericsVisitor returns a new ReplaceNonAlphanumericsVisitor
+func newReplaceNonAlphanumericsVisitor(replacement string) *ReplaceNonAlphanumericsVisitor {
 	buf := bytes.NewBuffer(nil)
-	return &replaceNonAlphanumericsVisitor{
+	return &ReplaceNonAlphanumericsVisitor{
 		buf:         *buf,
 		replacement: replacement,
 	}
 }
 
 // Visit method called when an element is visited
-func (v *replaceNonAlphanumericsVisitor) Visit(element Visitable) error {
+func (v *ReplaceNonAlphanumericsVisitor) Visit(element Visitable) error {
 	// log.Debugf("visiting element of type '%T'", element)
 	if element, ok := element.(StringElement); ok {
 		if v.buf.Len() > 0 {
@@ -55,7 +55,7 @@ func (v *replaceNonAlphanumericsVisitor) Visit(element Visitable) error {
 }
 
 // normalize returns the normalized content
-func (v *replaceNonAlphanumericsVisitor) normalize(source string) (string, error) {
+func (v *ReplaceNonAlphanumericsVisitor) normalize(source string) (string, error) {
 	buf := bytes.NewBuffer(nil)
 	lastCharIsSpace := false
 	for _, r := range strings.TrimLeft(source, " ") { // ignore header spaces
@@ -77,6 +77,6 @@ func (v *replaceNonAlphanumericsVisitor) normalize(source string) (string, error
 }
 
 // NormalizedContent returns the normalized content
-func (v *replaceNonAlphanumericsVisitor) normalizedContent() string {
+func (v *ReplaceNonAlphanumericsVisitor) normalizedContent() string {
 	return v.buf.String()
 }

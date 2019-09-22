@@ -3,9 +3,9 @@ package html5
 import (
 	"github.com/bytesparadise/libasciidoc/pkg/renderer"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
-	"github.com/stretchr/testify/assert"
 
 	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/gomega"
 )
 
 var _ = Describe("element ID generation", func() {
@@ -24,7 +24,7 @@ var _ = Describe("element ID generation", func() {
 		// when
 		result := generateID(ctx, attrs)
 		// then
-		assert.Equal(GinkgoT(), "_foo", result)
+		Expect(result).To(Equal("_foo"))
 	})
 
 	It("should generate ID with custom prefix", func() {
@@ -43,7 +43,7 @@ var _ = Describe("element ID generation", func() {
 		// when
 		result := generateID(ctx, attrs)
 		// then
-		assert.Equal(GinkgoT(), "id#foo", result)
+		Expect(result).To(Equal("id#foo"))
 	})
 
 	It("should generate custom ID", func() {
@@ -62,7 +62,7 @@ var _ = Describe("element ID generation", func() {
 		// when
 		result := generateID(ctx, attrs)
 		// then
-		assert.Equal(GinkgoT(), "foo", result)
+		Expect(result).To(Equal("foo"))
 	})
 
 	It("should generate empty ID from empty value", func() {
@@ -81,7 +81,7 @@ var _ = Describe("element ID generation", func() {
 		// when
 		result := generateID(ctx, attrs)
 		// then
-		assert.Equal(GinkgoT(), "", result)
+		Expect(result).To(Equal(""))
 	})
 
 	It("should generate empty ID from missing value", func() {
@@ -99,6 +99,6 @@ var _ = Describe("element ID generation", func() {
 		// when
 		result := generateID(ctx, attrs)
 		// then
-		assert.Equal(GinkgoT(), "", result)
+		Expect(result).To(Equal(""))
 	})
 })

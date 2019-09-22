@@ -2,7 +2,10 @@ package parser_test
 
 import (
 	"github.com/bytesparadise/libasciidoc/pkg/types"
+	. "github.com/bytesparadise/libasciidoc/testsupport"
+
 	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/gomega"
 )
 
 var _ = Describe("front-matters - preflight", func() {
@@ -35,7 +38,7 @@ first paragraph`
 					},
 				},
 			}
-			verifyPreflight("test.adoc", expected, source)
+			Expect(source).To(BecomePreflightDocument(expected))
 		})
 
 		It("empty front-matter", func() {
@@ -59,7 +62,7 @@ first paragraph`
 					},
 				},
 			}
-			verifyPreflight("test.adoc", expected, source)
+			Expect(source).To(BecomePreflightDocument(expected))
 		})
 	})
 
@@ -95,7 +98,7 @@ first paragraph`
 					},
 				},
 			}
-			verifyDocument(expected, source)
+			Expect(source).To(EqualDocument(expected))
 		})
 
 		It("empty front-matter", func() {
@@ -119,7 +122,7 @@ first paragraph`
 					},
 				},
 			}
-			verifyDocument(expected, source)
+			Expect(source).To(EqualDocument(expected))
 		})
 	})
 

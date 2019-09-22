@@ -2,7 +2,10 @@ package parser_test
 
 import (
 	"github.com/bytesparadise/libasciidoc/pkg/types"
+	. "github.com/bytesparadise/libasciidoc/testsupport"
+
 	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/gomega"
 )
 
 var _ = Describe("checked lists - document", func() {
@@ -106,7 +109,7 @@ var _ = Describe("checked lists - document", func() {
 				},
 			},
 		}
-		verifyDocument(expected, source)
+		Expect(source).To(EqualDocument(expected))
 	})
 
 	It("parent checklist with title and nested checklist", func() {
@@ -234,7 +237,7 @@ var _ = Describe("checked lists - document", func() {
 				},
 			},
 		}
-		verifyDocument(expected, source)
+		Expect(source).To(EqualDocument(expected))
 	})
 
 	It("parent checklist with title and nested normal list", func() {
@@ -337,6 +340,6 @@ var _ = Describe("checked lists - document", func() {
 				},
 			},
 		}
-		verifyDocument(expected, source)
+		Expect(source).To(EqualDocument(expected))
 	})
 })

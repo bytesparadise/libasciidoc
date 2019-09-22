@@ -2,7 +2,10 @@ package parser_test
 
 import (
 	"github.com/bytesparadise/libasciidoc/pkg/types"
+	. "github.com/bytesparadise/libasciidoc/testsupport"
+
 	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/gomega"
 )
 
 var _ = Describe("inline elements", func() {
@@ -22,7 +25,7 @@ var _ = Describe("inline elements", func() {
 				},
 			},
 		}
-		verifyDocumentBlock(expected, source)
+		Expect(source).To(EqualDocumentBlock(expected))
 	})
 
 	It("bold text within parenthesis", func() {
@@ -42,7 +45,7 @@ var _ = Describe("inline elements", func() {
 				},
 			},
 		}
-		verifyDocumentBlock(expected, source)
+		Expect(source).To(EqualDocumentBlock(expected))
 	})
 
 	It("bold text within words", func() {
@@ -55,7 +58,7 @@ var _ = Describe("inline elements", func() {
 				},
 			},
 		}
-		verifyDocumentBlock(expected, source)
+		Expect(source).To(EqualDocumentBlock(expected))
 	})
 
 	It("invalid bold portion of text", func() {
@@ -68,7 +71,7 @@ var _ = Describe("inline elements", func() {
 				},
 			},
 		}
-		verifyDocumentBlock(expected, source)
+		Expect(source).To(EqualDocumentBlock(expected))
 	})
 
 	It("valid bold portion of text", func() {
@@ -87,7 +90,7 @@ var _ = Describe("inline elements", func() {
 				},
 			},
 		}
-		verifyDocumentBlock(expected, source)
+		Expect(source).To(EqualDocumentBlock(expected))
 	})
 
 	It("latin characters", func() {
@@ -100,6 +103,6 @@ var _ = Describe("inline elements", func() {
 				},
 			},
 		}
-		verifyDocumentBlock(expected, source)
+		Expect(source).To(EqualDocumentBlock(expected))
 	})
 })

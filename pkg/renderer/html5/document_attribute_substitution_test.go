@@ -3,8 +3,11 @@ package html5_test
 import (
 	"fmt"
 
+	. "github.com/bytesparadise/libasciidoc/testsupport"
+
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/ginkgo/extensions/table"
+	. "github.com/onsi/gomega"
 )
 
 var _ = Describe("document with attributes", func() {
@@ -19,7 +22,7 @@ a paragraph`
 			expected := `<div class="paragraph">
 <p>a paragraph</p>
 </div>`
-			verify("test.adoc", expected, source)
+			Expect(source).To(RenderHTML5Element(expected))
 		})
 
 		It("a paragraph then some attributes", func() {
@@ -31,7 +34,7 @@ a paragraph`
 			expected := `<div class="paragraph">
 <p>a paragraph</p>
 </div>`
-			verify("test.adoc", expected, source)
+			Expect(source).To(RenderHTML5Element(expected))
 		})
 
 		It("a paragraph with substitution", func() {
@@ -41,7 +44,7 @@ a paragraph written by {author}`
 			expected := `<div class="paragraph">
 <p>a paragraph written by Xavier</p>
 </div>`
-			verify("test.adoc", expected, source)
+			Expect(source).To(RenderHTML5Element(expected))
 		})
 
 		It("paragraphs with definitions, substitutions and resets", func() {
@@ -67,7 +70,7 @@ author is now {author}.`
 <div class="paragraph">
 <p>author is now {author}.</p>
 </div>`
-			verify("test.adoc", expected, source)
+			Expect(source).To(RenderHTML5Element(expected))
 		})
 
 		It("front-matter then paragraph with substitutions", func() {
@@ -79,7 +82,7 @@ author is {author}.`
 			expected := `<div class="paragraph">
 <p>author is Xavier.</p>
 </div>`
-			verify("test.adoc", expected, source)
+			Expect(source).To(RenderHTML5Element(expected))
 		})
 	})
 
@@ -91,7 +94,7 @@ author is {author}.`
 			expected := `<div class="paragraph">
 <p><a href="https://foo.com/bar">foo</a></p>
 </div>`
-			verify("test.adoc", expected, source)
+			Expect(source).To(RenderHTML5Element(expected))
 		})
 	})
 
@@ -103,7 +106,7 @@ author is {author}.`
 				expected := fmt.Sprintf(`<div class="paragraph">
 <p>the %s symbol</p>
 </div>`, rendered)
-				verify("test.adoc", expected, source)
+				Expect(source).To(RenderHTML5Element(expected))
 			},
 			Entry("sp symbol", "sp", " "),
 			Entry("blank symbol", "blank", ""),
@@ -143,7 +146,7 @@ a {blank} here.`
 			expected := `<div class="paragraph">
 <p>a foo here.</p>
 </div>`
-			verify("test.adoc", expected, source)
+			Expect(source).To(RenderHTML5Element(expected))
 		})
 	})
 

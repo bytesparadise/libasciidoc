@@ -2,7 +2,10 @@ package parser_test
 
 import (
 	"github.com/bytesparadise/libasciidoc/pkg/types"
+	. "github.com/bytesparadise/libasciidoc/testsupport"
+
 	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/gomega"
 )
 
 var _ = Describe("document attributes", func() {
@@ -45,7 +48,7 @@ This journey begins on a bleary Monday morning.`
 					},
 				},
 			}
-			verifyDocument(expected, source)
+			Expect(source).To(EqualDocument(expected))
 		})
 
 		Context("document authors", func() {
@@ -85,7 +88,7 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>`
 							},
 						},
 					}
-					verifyDocument(expected, source)
+					Expect(source).To(EqualDocument(expected))
 				})
 
 				It("lastname with underscores", func() {
@@ -121,7 +124,7 @@ Lazarus het_Draeke <lazarus@asciidoctor.org>`
 							},
 						},
 					}
-					verifyDocument(expected, source)
+					Expect(source).To(EqualDocument(expected))
 				})
 
 				It("firstname and lastname only", func() {
@@ -157,7 +160,7 @@ Kismet Chameleon`
 							},
 						},
 					}
-					verifyDocument(expected, source)
+					Expect(source).To(EqualDocument(expected))
 				})
 
 				It("firstname only", func() {
@@ -193,7 +196,7 @@ Chameleon`
 							},
 						},
 					}
-					verifyDocument(expected, source)
+					Expect(source).To(EqualDocument(expected))
 				})
 
 				It("alternate author input", func() {
@@ -229,7 +232,7 @@ Chameleon`
 							},
 						},
 					}
-					verifyDocument(expected, source)
+					Expect(source).To(EqualDocument(expected))
 				})
 			})
 
@@ -272,7 +275,7 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 							},
 						},
 					}
-					verifyDocument(expected, source)
+					Expect(source).To(EqualDocument(expected))
 				})
 			})
 		})
@@ -318,7 +321,7 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 						},
 					},
 				}
-				verifyDocument(expected, source)
+				Expect(source).To(EqualDocument(expected))
 			})
 
 			It("revision with revnumber and revdate only", func() {
@@ -360,7 +363,7 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 						},
 					},
 				}
-				verifyDocument(expected, source)
+				Expect(source).To(EqualDocument(expected))
 			})
 
 			It("revision with revnumber and revdate - with colon separator", func() {
@@ -402,7 +405,7 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 						},
 					},
 				}
-				verifyDocument(expected, source)
+				Expect(source).To(EqualDocument(expected))
 			})
 			It("revision with revnumber only - comma suffix", func() {
 				source := `= title
@@ -443,7 +446,7 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 						},
 					},
 				}
-				verifyDocument(expected, source)
+				Expect(source).To(EqualDocument(expected))
 			})
 
 			It("revision with revdate as number - spaces and no prefix no suffix", func() {
@@ -485,7 +488,7 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 						},
 					},
 				}
-				verifyDocument(expected, source)
+				Expect(source).To(EqualDocument(expected))
 			})
 
 			It("revision with revdate as alphanum - spaces and no prefix no suffix", func() {
@@ -527,7 +530,7 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 						},
 					},
 				}
-				verifyDocument(expected, source)
+				Expect(source).To(EqualDocument(expected))
 			})
 
 			It("revision with revnumber only", func() {
@@ -569,7 +572,7 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 						},
 					},
 				}
-				verifyDocument(expected, source)
+				Expect(source).To(EqualDocument(expected))
 			})
 
 			It("revision with spaces and capital revnumber ", func() {
@@ -611,7 +614,7 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 						},
 					},
 				}
-				verifyDocument(expected, source)
+				Expect(source).To(EqualDocument(expected))
 			})
 
 			It("revision only - with comma separator", func() {
@@ -653,7 +656,7 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 						},
 					},
 				}
-				verifyDocument(expected, source)
+				Expect(source).To(EqualDocument(expected))
 			})
 
 			It("revision with revnumber plus comma and colon separators", func() {
@@ -695,7 +698,7 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 						},
 					},
 				}
-				verifyDocument(expected, source)
+				Expect(source).To(EqualDocument(expected))
 			})
 
 			It("revision with revnumber plus colon separator", func() {
@@ -737,7 +740,7 @@ v1.0:`
 						},
 					},
 				}
-				verifyDocument(expected, source)
+				Expect(source).To(EqualDocument(expected))
 			})
 
 		})
@@ -765,7 +768,7 @@ v1.0:`
 						types.DocumentAttributeDeclaration{Name: "Auth0r", Value: "Xavier"},
 					},
 				}
-				verifyDocument(expected, source)
+				Expect(source).To(EqualDocument(expected))
 			})
 
 			It("attributes and paragraph without blank line in-between", func() {
@@ -794,7 +797,7 @@ a paragraph`
 						},
 					},
 				}
-				verifyDocument(expected, source)
+				Expect(source).To(EqualDocument(expected))
 			})
 
 			It("contiguous attributes and paragraph with blank line in-between", func() {
@@ -822,7 +825,7 @@ a paragraph`
 						},
 					},
 				}
-				verifyDocument(expected, source)
+				Expect(source).To(EqualDocument(expected))
 			})
 
 			It("splitted attributes and paragraph with blank line in-between", func() {
@@ -854,7 +857,7 @@ a paragraph`
 						},
 					},
 				}
-				verifyDocument(expected, source)
+				Expect(source).To(EqualDocument(expected))
 			})
 
 			It("no header and attributes in body", func() {
@@ -882,7 +885,7 @@ a paragraph`
 						types.DocumentAttributeDeclaration{Name: "author", Value: "Xavier"},
 					},
 				}
-				verifyDocument(expected, source)
+				Expect(source).To(EqualDocument(expected))
 			})
 		})
 
@@ -911,7 +914,7 @@ a paragraph written by {author}.`
 						},
 					},
 				}
-				verifyDocument(expected, source)
+				Expect(source).To(EqualDocument(expected))
 			})
 
 			It("paragraph with attribute resets", func() {
@@ -941,7 +944,7 @@ a paragraph written by {author}.`
 						},
 					},
 				}
-				verifyDocument(expected, source)
+				Expect(source).To(EqualDocument(expected))
 			})
 		})
 
@@ -1007,7 +1010,7 @@ This journey begins on a bleary Monday morning.`
 					},
 				},
 			}
-			verifyDocument(expected, source)
+			Expect(source).To(EqualDocument(expected))
 		})
 
 		It("header section inline with bold quote", func() {
@@ -1069,7 +1072,7 @@ a paragraph with *bold content*`
 					},
 				},
 			}
-			verifyDocument(expected, source)
+			Expect(source).To(EqualDocument(expected))
 		})
 	})
 
@@ -1105,7 +1108,7 @@ a paragraph with *bold content*`
 					},
 				},
 			}
-			verifyDocument(expected, source)
+			Expect(source).To(EqualDocument(expected))
 		})
 
 		It("invalid attribute names", func() {
@@ -1130,7 +1133,7 @@ a paragraph with *bold content*`
 					},
 				},
 			}
-			verifyDocument(expected, source)
+			Expect(source).To(EqualDocument(expected))
 		})
 	})
 })

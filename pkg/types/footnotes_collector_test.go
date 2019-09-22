@@ -4,8 +4,7 @@ import (
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 
 	. "github.com/onsi/ginkgo"
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
+	. "github.com/onsi/gomega"
 )
 
 var _ = Describe("footnotes collector", func() {
@@ -42,11 +41,11 @@ var _ = Describe("footnotes collector", func() {
 		// when
 		err := content.AcceptVisitor(c)
 		// then
-		require.NoError(GinkgoT(), err)
-		require.Len(GinkgoT(), c.Footnotes, 2)
-		assert.Equal(GinkgoT(), footnote1, c.Footnotes[0])
-		assert.Equal(GinkgoT(), footnote2, c.Footnotes[1])
-		require.Empty(GinkgoT(), c.FootnoteReferences)
+		Expect(err).ToNot(HaveOccurred())
+		Expect(c.Footnotes).To(HaveLen(2))
+		Expect(c.Footnotes[0]).To(Equal(footnote1))
+		Expect(c.Footnotes[1]).To(Equal(footnote2))
+		Expect(c.FootnoteReferences).To(BeEmpty())
 	})
 
 	It("index footnotes with reference", func() {
@@ -80,11 +79,11 @@ var _ = Describe("footnotes collector", func() {
 		// when
 		err := content.AcceptVisitor(c)
 		// then
-		require.NoError(GinkgoT(), err)
-		require.Len(GinkgoT(), c.Footnotes, 1) // a single, yet referenced twice elsewhere
-		assert.Equal(GinkgoT(), footnote1, c.Footnotes[0])
-		require.Len(GinkgoT(), c.FootnoteReferences, 1) // a single, yet referenced twice elsewhere
-		assert.Equal(GinkgoT(), footnote1, c.FootnoteReferences["ref"])
+		Expect(err).ToNot(HaveOccurred())
+		Expect(c.Footnotes).To(HaveLen(1))
+		Expect(c.Footnotes[0]).To(Equal(footnote1))
+		Expect(c.FootnoteReferences).To(HaveLen(1))
+		Expect(c.FootnoteReferences["ref"]).To(Equal(footnote1))
 	})
 
 })

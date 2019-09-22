@@ -4,7 +4,10 @@ import (
 	"time"
 
 	"github.com/bytesparadise/libasciidoc/pkg/renderer"
+	. "github.com/bytesparadise/libasciidoc/testsupport"
+
 	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/gomega"
 )
 
 var _ = Describe("document header", func() {
@@ -36,7 +39,7 @@ Last updated {{.LastUpdated}}
 </div>
 </body>
 </html>`
-			verify("test.adoc", expected, source, renderer.IncludeHeaderFooter(true), renderer.LastUpdated(time.Now()))
+			Expect(source).To(RenderHTML5Element(expected, renderer.IncludeHeaderFooter(true), renderer.LastUpdated(time.Now())))
 		})
 	})
 
