@@ -81,6 +81,8 @@ var _ = Describe("file location", func() {
 var _ = Describe("file inclusions - preflight with preprocessing", func() {
 
 	It("should include adoc file without leveloffset", func() {
+		console, reset := ConfigureLogger()
+		defer reset()
 		source := "include::../../test/includes/chapter-a.adoc[]"
 		expected := types.PreflightDocument{
 			Blocks: []interface{}{
@@ -111,9 +113,14 @@ var _ = Describe("file inclusions - preflight with preprocessing", func() {
 			},
 		}
 		Expect(source).To(BecomePreflightDocument(expected))
+		// verify no error/warning in logs
+		Expect(console).ToNot(ContainAnyMessageWithLevels(log.ErrorLevel, log.WarnLevel))
+
 	})
 
 	It("should include adoc file with leveloffset", func() {
+		console, reset := ConfigureLogger()
+		defer reset()
 		source := "include::../../test/includes/chapter-a.adoc[leveloffset=+1]"
 		expected := types.PreflightDocument{
 			Blocks: []interface{}{
@@ -144,6 +151,8 @@ var _ = Describe("file inclusions - preflight with preprocessing", func() {
 			},
 		}
 		Expect(source).To(BecomePreflightDocument(expected))
+		// verify no error/warning in logs
+		Expect(console).ToNot(ContainAnyMessageWithLevels(log.ErrorLevel, log.WarnLevel))
 	})
 
 	Context("file inclusions in delimited blocks", func() {
@@ -550,6 +559,8 @@ include::../../test/includes/chapter-a.adoc[]
 		Context("file inclusions with quoted line ranges", func() {
 
 			It("file inclusion with single quoted line", func() {
+				console, reset := ConfigureLogger()
+				defer reset()
 				source := `include::../../test/includes/chapter-a.adoc[lines="1"]`
 				expected := types.PreflightDocument{
 					Blocks: []interface{}{
@@ -569,6 +580,8 @@ include::../../test/includes/chapter-a.adoc[]
 					},
 				}
 				Expect(source).To(BecomePreflightDocument(expected))
+				// verify no error/warning in logs
+				Expect(console).ToNot(ContainAnyMessageWithLevels(log.ErrorLevel, log.WarnLevel))
 			})
 
 			It("file inclusion with multiple quoted lines", func() {
@@ -716,6 +729,8 @@ include::../../test/includes/chapter-a.adoc[]
 	Context("file inclusions with tag ranges", func() {
 
 		It("file inclusion with single tag", func() {
+			console, reset := ConfigureLogger()
+			defer reset()
 			source := `include::../../test/includes/tag-include.adoc[tag=section]`
 			expected := types.PreflightDocument{
 				Blocks: []interface{}{
@@ -735,9 +750,13 @@ include::../../test/includes/chapter-a.adoc[]
 				},
 			}
 			Expect(source).To(BecomePreflightDocument(expected))
+			// verify no error/warning in logs
+			Expect(console).ToNot(ContainAnyMessageWithLevels(log.ErrorLevel, log.WarnLevel))
 		})
 
 		It("file inclusion with surrounding tag", func() {
+			console, reset := ConfigureLogger()
+			defer reset()
 			source := `include::../../test/includes/tag-include.adoc[tag=doc]`
 			expected := types.PreflightDocument{
 				Blocks: []interface{}{
@@ -770,6 +789,8 @@ include::../../test/includes/chapter-a.adoc[]
 				},
 			}
 			Expect(source).To(BecomePreflightDocument(expected))
+			// verify no error/warning in logs
+			Expect(console).ToNot(ContainAnyMessageWithLevels(log.ErrorLevel, log.WarnLevel))
 		})
 
 		It("file inclusion with unclosed tag", func() {
