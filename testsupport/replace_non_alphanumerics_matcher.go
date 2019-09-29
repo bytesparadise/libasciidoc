@@ -17,8 +17,9 @@ func EqualWithoutNonAlphanumeric(expected string) gomegatypes.GomegaMatcher {
 }
 
 type nonalphanumericMatcher struct {
-	expected string
-	actual   string
+	expected   string
+	actual     string
+	comparison comparison
 }
 
 func (m *nonalphanumericMatcher) Match(actual interface{}) (success bool, err error) {
@@ -30,13 +31,14 @@ func (m *nonalphanumericMatcher) Match(actual interface{}) (success bool, err er
 	if err != nil {
 		return false, err
 	}
-	return m.expected == m.actual, nil
+	m.comparison = compare(m.actual, m.expected)
+	return m.comparison.diffs == "", nil
 }
 
-func (m *nonalphanumericMatcher) FailureMessage(actual interface{}) (message string) {
-	return fmt.Sprintf("expected non alphanumeric values to match:\n\texpected: '%v'\n\tactual:   '%v'", m.expected, m.actual)
+func (m *nonalphanumericMatcher) FailureMessage(_ interface{}) (message string) {
+	return fmt.Sprintf("expected non-alphanumeric values to match:\n%s", m.comparison.diffs)
 }
 
-func (m *nonalphanumericMatcher) NegatedFailureMessage(actual interface{}) (message string) {
-	return fmt.Sprintf("expected non alphanumeric values not to match:\n\texpected: '%v'\n\tactual:   '%v'", m.expected, m.actual)
+func (m *nonalphanumericMatcher) NegatedFailureMessage(_ interface{}) (message string) {
+	return fmt.Sprintf("expected non-alphanumeric values not to match:\n%s", m.comparison.diffs)
 }

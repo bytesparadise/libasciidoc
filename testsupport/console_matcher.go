@@ -74,11 +74,11 @@ func (m *containMessageMatcher) Match(actual interface{}) (success bool, err err
 	return false, nil
 }
 
-func (m *containMessageMatcher) FailureMessage(actual interface{}) (message string) {
+func (m *containMessageMatcher) FailureMessage(_ interface{}) (message string) {
 	return fmt.Sprintf("expected console to contain message '%s' with level '%v'", m.msg, m.level)
 }
 
-func (m *containMessageMatcher) NegatedFailureMessage(actual interface{}) (message string) {
+func (m *containMessageMatcher) NegatedFailureMessage(_ interface{}) (message string) {
 	return fmt.Sprintf("expected console not to contain message '%s' with level '%v'", m.msg, m.level)
 }
 
@@ -121,10 +121,10 @@ func (m *containAnyMessageMatcher) Match(actual interface{}) (success bool, err 
 	return false, nil
 }
 
-func (m *containAnyMessageMatcher) FailureMessage(actual interface{}) (message string) {
+func (m *containAnyMessageMatcher) FailureMessage(_ interface{}) (message string) {
 	return fmt.Sprintf("expected console to contain a message at level '%v'", m.levels)
 }
 
-func (m *containAnyMessageMatcher) NegatedFailureMessage(actual interface{}) (message string) {
+func (m *containAnyMessageMatcher) NegatedFailureMessage(_ interface{}) (message string) {
 	return fmt.Sprintf("expected console not to contain a message at level '%v'", m.levels)
 }

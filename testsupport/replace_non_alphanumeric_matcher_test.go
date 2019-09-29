@@ -43,8 +43,8 @@ var _ = Describe("non-alphanumeric replacement assertions", func() {
 		Expect(err).ToNot(HaveOccurred())
 		Expect(result).To(BeFalse())
 		// also verify the messages
-		Expect(matcher.FailureMessage(actual)).To(Equal(fmt.Sprintf("expected non alphanumeric values to match:\n\texpected: '%v'\n\tactual:   '%v'", expected, "foobar")))
-		Expect(matcher.NegatedFailureMessage(actual)).To(Equal(fmt.Sprintf("expected non alphanumeric values not to match:\n\texpected: '%v'\n\tactual:   '%v'", expected, "foobar")))
+		Expect(matcher.FailureMessage(actual)).To(Equal(fmt.Sprintf("expected non-alphanumeric values to match:\n%s", compare("foobar", expected))))
+		Expect(matcher.NegatedFailureMessage(actual)).To(Equal(fmt.Sprintf("expected non-alphanumeric values not to match:\n%s", compare("foobar", expected))))
 	})
 
 	It("should return error when invalid type is input", func() {

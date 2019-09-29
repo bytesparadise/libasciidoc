@@ -1,8 +1,10 @@
 package testsupport_test
 
 import (
+	"context"
 	"fmt"
 
+	"github.com/bytesparadise/libasciidoc/pkg/renderer"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 	"github.com/bytesparadise/libasciidoc/testsupport"
 
@@ -52,9 +54,11 @@ var _ = Describe("document metadata assertions", func() {
 		Expect(err).ToNot(HaveOccurred())
 		Expect(result).To(BeFalse())
 		// also verify the messages
-		obtained := types.DocumentAttributes{}
-		Expect(matcher.FailureMessage(actual)).To(Equal(fmt.Sprintf("expected document metadata to match:\n\texpected: '%v'\n\tactual:   '%v'", expected, obtained)))
-		Expect(matcher.NegatedFailureMessage(actual)).To(Equal(fmt.Sprintf("expected document metadata not to match:\n\texpected: '%v'\n\tactual:   '%v'", expected, obtained)))
+		ctx := renderer.Wrap(context.Background(), actual)
+		renderer.ProcessDocumentHeader(ctx)
+		obtained := ctx.Document.Attributes
+		Expect(matcher.FailureMessage(actual)).To(Equal(fmt.Sprintf("expected document metadata to match:\n%s", compare(obtained, expected))))
+		Expect(matcher.NegatedFailureMessage(actual)).To(Equal(fmt.Sprintf("expected document metadata not to match:\n%s", compare(obtained, expected))))
 	})
 
 	It("should return error when invalid type is input", func() {

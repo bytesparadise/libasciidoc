@@ -2,16 +2,12 @@ package testsupport
 
 import (
 	"fmt"
-	"reflect"
 	"strings"
 
 	"github.com/bytesparadise/libasciidoc/pkg/parser"
-	"github.com/davecgh/go-spew/spew"
 
-	. "github.com/onsi/ginkgo"
 	"github.com/onsi/gomega/types"
 	"github.com/pkg/errors"
-	log "github.com/sirupsen/logrus"
 )
 
 // EqualDocumentBlock a custom matcher to verify that a document block matches the expectation
@@ -22,8 +18,9 @@ func EqualDocumentBlock(expected interface{}) types.GomegaMatcher {
 }
 
 type documentBlockMatcher struct {
-	expected interface{}
-	actual   interface{}
+	expected   interface{}
+	actual     interface{}
+	comparison comparison
 }
 
 func (m *documentBlockMatcher) Match(actual interface{}) (success bool, err error) {
@@ -40,17 +37,14 @@ func (m *documentBlockMatcher) Match(actual interface{}) (success bool, err erro
 	if err != nil {
 		return false, err
 	}
-	if log.IsLevelEnabled(log.DebugLevel) {
-		GinkgoT().Logf("actual:\n%v", spew.Sdump(m.actual))
-		GinkgoT().Logf("expected:\n%v", spew.Sdump(m.expected))
-	}
-	return reflect.DeepEqual(m.expected, m.actual), nil
+	m.comparison = compare(m.actual, m.expected)
+	return m.comparison.diffs == "", nil
 }
 
-func (m *documentBlockMatcher) FailureMessage(actual interface{}) (message string) {
-	return fmt.Sprintf("expected document blocks to match:\n\texpected: '%v'\n\tactual:   '%v'", m.expected, m.actual)
+func (m *documentBlockMatcher) FailureMessage(_ interface{}) (message string) {
+	return fmt.Sprintf("expected document blocks to match:\n%s", m.comparison.diffs)
 }
 
-func (m *documentBlockMatcher) NegatedFailureMessage(actual interface{}) (message string) {
-	return fmt.Sprintf("expected document blocks not to match:\n\texpected: '%v'\n\tactual:   '%v'", m.expected, m.actual)
+func (m *documentBlockMatcher) NegatedFailureMessage(_ interface{}) (message string) {
+	return fmt.Sprintf("expected document blocks not to match:\n%s", m.comparison.diffs)
 }

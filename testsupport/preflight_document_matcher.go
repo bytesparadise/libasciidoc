@@ -2,7 +2,6 @@ package testsupport
 
 import (
 	"fmt"
-	"reflect"
 	"strings"
 
 	"github.com/bytesparadise/libasciidoc/pkg/parser"
@@ -28,9 +27,10 @@ func BecomePreflightDocumentWithoutPreprocessing(expected interface{}) types.Gom
 }
 
 type preflightDocumentMatcher struct {
+	preprocessing bool
 	expected      interface{}
 	actual        interface{}
-	preprocessing bool
+	comparison    comparison
 }
 
 func (m *preflightDocumentMatcher) Match(actual interface{}) (success bool, err error) {
@@ -41,20 +41,20 @@ func (m *preflightDocumentMatcher) Match(actual interface{}) (success bool, err 
 	r := strings.NewReader(content)
 	if !m.preprocessing {
 		m.actual, err = parser.ParseReader("", r, parser.Entrypoint("PreflightDocument"))
-
 	} else {
 		m.actual, err = parser.ParsePreflightDocument("test.adoc", r)
 	}
 	if err != nil {
 		return false, err
 	}
-	return reflect.DeepEqual(m.expected, m.actual), nil
+	m.comparison = compare(m.actual, m.expected)
+	return m.comparison.diffs == "", nil
 }
 
-func (m *preflightDocumentMatcher) FailureMessage(actual interface{}) (message string) {
-	return fmt.Sprintf("expected preflight documents to match:\n\texpected: '%v'\n\tactual'%v'", m.expected, m.actual)
+func (m *preflightDocumentMatcher) FailureMessage(_ interface{}) (message string) {
+	return fmt.Sprintf("expected preflight documents to match:\n%s", m.comparison.diffs)
 }
 
-func (m *preflightDocumentMatcher) NegatedFailureMessage(actual interface{}) (message string) {
-	return fmt.Sprintf("expected preflight documents not to match:\n\texpected: '%v'\n\tactual'%v'", m.expected, m.actual)
+func (m *preflightDocumentMatcher) NegatedFailureMessage(_ interface{}) (message string) {
+	return fmt.Sprintf("expected preflight documents not to match:\n%s", m.comparison.diffs)
 }

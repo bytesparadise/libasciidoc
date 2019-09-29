@@ -2,7 +2,6 @@ package testsupport
 
 import (
 	"fmt"
-	"reflect"
 	"strings"
 
 	"github.com/bytesparadise/libasciidoc/pkg/parser"
@@ -20,8 +19,9 @@ func EqualDocument(expected types.Document) gomegatypes.GomegaMatcher {
 }
 
 type documentMatcher struct {
-	expected types.Document
-	actual   types.Document
+	expected   types.Document
+	actual     types.Document
+	comparison comparison
 }
 
 func (m *documentMatcher) Match(actual interface{}) (success bool, err error) {
@@ -34,13 +34,14 @@ func (m *documentMatcher) Match(actual interface{}) (success bool, err error) {
 	if err != nil {
 		return false, err
 	}
-	return reflect.DeepEqual(m.expected, m.actual), nil
+	m.comparison = compare(m.actual, m.expected)
+	return m.comparison.diffs == "", nil
 }
 
-func (m *documentMatcher) FailureMessage(actual interface{}) (message string) {
-	return fmt.Sprintf("expected documents to match:\n\texpected: '%v'\n\tactual:   '%v'", m.expected, m.actual)
+func (m *documentMatcher) FailureMessage(_ interface{}) (message string) {
+	return fmt.Sprintf("expected documents to match:\n%s", m.comparison.diffs)
 }
 
-func (m *documentMatcher) NegatedFailureMessage(actual interface{}) (message string) {
-	return fmt.Sprintf("expected documents not to match:\n\texpected: '%v'\n\tactual:   '%v'", m.expected, m.actual)
+func (m *documentMatcher) NegatedFailureMessage(_ interface{}) (message string) {
+	return fmt.Sprintf("expected documents not to match:\n%s", m.comparison.diffs)
 }

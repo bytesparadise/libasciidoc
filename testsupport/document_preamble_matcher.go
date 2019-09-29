@@ -3,7 +3,6 @@ package testsupport
 import (
 	"context"
 	"fmt"
-	"reflect"
 
 	"github.com/bytesparadise/libasciidoc/pkg/renderer"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
@@ -20,8 +19,9 @@ func HavePreamble(expected types.Document) gomegatypes.GomegaMatcher {
 }
 
 type preambleMatcher struct {
-	expected types.Document
-	actual   types.Document
+	expected   types.Document
+	actual     types.Document
+	comparison comparison
 }
 
 func (m *preambleMatcher) Match(actual interface{}) (success bool, err error) {
@@ -32,13 +32,14 @@ func (m *preambleMatcher) Match(actual interface{}) (success bool, err error) {
 	ctx := renderer.Wrap(context.Background(), doc)
 	renderer.IncludePreamble(ctx)
 	m.actual = ctx.Document
-	return reflect.DeepEqual(m.expected, m.actual), nil
+	m.comparison = compare(m.actual, m.expected)
+	return m.comparison.diffs == "", nil
 }
 
-func (m *preambleMatcher) FailureMessage(actual interface{}) (message string) {
-	return fmt.Sprintf("expected document to match:\n\texpected: '%v'\n\tactual:   '%v'", m.expected, m.actual)
+func (m *preambleMatcher) FailureMessage(_ interface{}) (message string) {
+	return fmt.Sprintf("expected documents to match:\n%s", m.comparison.diffs)
 }
 
-func (m *preambleMatcher) NegatedFailureMessage(actual interface{}) (message string) {
-	return fmt.Sprintf("expected document not to match:\n\texpected: '%v'\n\tactual:   '%v'", m.expected, m.actual)
+func (m *preambleMatcher) NegatedFailureMessage(_ interface{}) (message string) {
+	return fmt.Sprintf("expected documents not to match:\n%s", m.comparison.diffs)
 }
