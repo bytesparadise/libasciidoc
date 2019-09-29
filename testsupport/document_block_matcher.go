@@ -6,9 +6,12 @@ import (
 	"strings"
 
 	"github.com/bytesparadise/libasciidoc/pkg/parser"
+	"github.com/davecgh/go-spew/spew"
 
+	. "github.com/onsi/ginkgo"
 	"github.com/onsi/gomega/types"
 	"github.com/pkg/errors"
+	log "github.com/sirupsen/logrus"
 )
 
 // EqualDocumentBlock a custom matcher to verify that a document block matches the expectation
@@ -36,6 +39,10 @@ func (m *documentBlockMatcher) Match(actual interface{}) (success bool, err erro
 	m.actual, err = parser.ParseReader("", r, opts...)
 	if err != nil {
 		return false, err
+	}
+	if log.IsLevelEnabled(log.DebugLevel) {
+		GinkgoT().Logf("actual:\n%v", spew.Sdump(m.actual))
+		GinkgoT().Logf("expected:\n%v", spew.Sdump(m.expected))
 	}
 	return reflect.DeepEqual(m.expected, m.actual), nil
 }

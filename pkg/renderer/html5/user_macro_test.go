@@ -50,10 +50,10 @@ var _ = Describe("user macros", func() {
 
 		It("user macro block with value", func() {
 
-			source := `hello::John Doe[]`
+			source := `hello::JohnDoe[]`
 			expected := `<div class="helloblock">
 <div class="content">
-<span>hello John Doe</span>
+<span>hello JohnDoe</span>
 </div>
 </div>`
 			Expect(source).To(RenderHTML5Element(expected, renderer.DefineMacro(helloMacroTmpl.Name(), helloMacroTmpl)))
@@ -61,10 +61,10 @@ var _ = Describe("user macros", func() {
 
 		It("user macro block with value and attributes", func() {
 
-			source := `hello::John Doe[prefix="Hi ",suffix="!!"]`
+			source := `hello::JohnDoe[prefix="Hi ",suffix="!!"]`
 			expected := `<div class="helloblock">
 <div class="content">
-<span>Hi John Doe!!</span>
+<span>Hi JohnDoe!!</span>
 </div>
 </div>`
 			Expect(source).To(RenderHTML5Element(expected, renderer.DefineMacro(helloMacroTmpl.Name(), helloMacroTmpl)))
@@ -99,18 +99,18 @@ var _ = Describe("user macros", func() {
 
 		It("inline macro with value", func() {
 
-			source := `AAA hello:John Doe[]`
+			source := `AAA hello:JohnDoe[]`
 			expected := `<div class="paragraph">
-<p>AAA <span>hello John Doe</span></p>
+<p>AAA <span>hello JohnDoe</span></p>
 </div>`
 			Expect(source).To(RenderHTML5Element(expected, renderer.DefineMacro(helloMacroTmpl.Name(), helloMacroTmpl)))
 		})
 
 		It("inline macro with value and attributes", func() {
 
-			source := `AAA hello:John Doe[prefix="Hi ",suffix="!!"]`
+			source := `AAA hello:JohnDoe[prefix="Hi ",suffix="!!"]`
 			expected := `<div class="paragraph">
-<p>AAA <span>Hi John Doe!!</span></p>
+<p>AAA <span>Hi JohnDoe!!</span></p>
 </div>`
 			Expect(source).To(RenderHTML5Element(expected, renderer.DefineMacro(helloMacroTmpl.Name(), helloMacroTmpl)))
 		})

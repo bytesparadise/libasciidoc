@@ -499,7 +499,7 @@ next lines`
 		})
 
 		It("relative link with all valid characters", func() {
-			source := `a link to link:ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789~:/?#@!$&;=()*+,-_.[as expected]`
+			source := `a link to link:ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789~:/?#@!$&;=()*+,-_.%[as expected]`
 			expected := types.Paragraph{
 				Attributes: types.ElementAttributes{},
 				Lines: []types.InlineElements{
@@ -508,13 +508,44 @@ next lines`
 						types.InlineLink{
 							Location: types.Location{
 								types.StringElement{
-									Content: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789~:/?#@!$&;=()*+,-_.",
+									Content: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789~:/?#@!$&;=()*+,-_.%",
 								},
 							},
 							Attributes: types.ElementAttributes{
 								types.AttrInlineLinkText: types.InlineElements{
 									types.StringElement{
 										Content: "as expected",
+									},
+								},
+							},
+						},
+					},
+				},
+			}
+			Expect(source).To(EqualDocumentBlock(expected))
+		})
+
+		It("relative link with encoded space", func() {
+			source := `Test 1: link:/test/a b[with space]
+Test 2: link:/test/a%20b[with encoded space]`
+			expected := types.Paragraph{
+				Attributes: types.ElementAttributes{},
+				Lines: []types.InlineElements{
+					{
+						types.StringElement{Content: "Test 1: link:/test/a b[with space]"},
+					},
+					{
+						types.StringElement{Content: "Test 2: "},
+						types.InlineLink{
+							Location: types.Location{
+								types.StringElement{
+									Content: "/test/a%20b",
+								},
+							},
+							Attributes: types.ElementAttributes{
+								types.AttrInlineLinkText: types.InlineElements{
+									types.StringElement{
+										Content: "with encoded space",
 									},
 								},
 							},

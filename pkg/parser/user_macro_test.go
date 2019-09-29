@@ -59,7 +59,7 @@ var _ = Describe("user macros", func() {
 		})
 
 		It("inline macro with value", func() {
-			source := `AAA hello:John Doe[]`
+			source := `AAA hello:JohnDoe[]`
 			expected := types.Paragraph{
 				Attributes: types.ElementAttributes{},
 				Lines: []types.InlineElements{
@@ -70,9 +70,9 @@ var _ = Describe("user macros", func() {
 						types.UserMacro{
 							Kind:       types.InlineMacro,
 							Name:       "hello",
-							Value:      "John Doe",
+							Value:      "JohnDoe",
 							Attributes: types.ElementAttributes{},
-							RawText:    "hello:John Doe[]",
+							RawText:    "hello:JohnDoe[]",
 						},
 					},
 				},
