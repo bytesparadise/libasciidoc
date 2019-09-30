@@ -3,7 +3,6 @@ package testsupport
 import (
 	"context"
 	"fmt"
-	"reflect"
 
 	"github.com/bytesparadise/libasciidoc/pkg/renderer"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
@@ -20,8 +19,9 @@ func HaveMetadata(expected interface{}) gomegatypes.GomegaMatcher {
 }
 
 type metadataMatcher struct {
-	expected interface{}
-	actual   types.DocumentAttributes
+	expected   interface{}
+	actual     interface{}
+	comparison comparison
 }
 
 func (m *metadataMatcher) Match(actual interface{}) (success bool, err error) {
@@ -32,13 +32,14 @@ func (m *metadataMatcher) Match(actual interface{}) (success bool, err error) {
 	ctx := renderer.Wrap(context.Background(), source)
 	renderer.ProcessDocumentHeader(ctx)
 	m.actual = ctx.Document.Attributes
-	return reflect.DeepEqual(m.expected, m.actual), nil
+	m.comparison = compare(m.actual, m.expected)
+	return m.comparison.diffs == "", nil
 }
 
-func (m *metadataMatcher) FailureMessage(actual interface{}) (message string) {
-	return fmt.Sprintf("expected document metadata to match:\n\texpected: '%v'\n\tactual:   '%v'", m.expected, m.actual)
+func (m *metadataMatcher) FailureMessage(_ interface{}) (message string) {
+	return fmt.Sprintf("expected document metadata to match:\n%s", m.comparison.diffs)
 }
 
-func (m *metadataMatcher) NegatedFailureMessage(actual interface{}) (message string) {
-	return fmt.Sprintf("expected document metadata not to match:\n\texpected: '%v'\n\tactual:   '%v'", m.expected, m.actual)
+func (m *metadataMatcher) NegatedFailureMessage(_ interface{}) (message string) {
+	return fmt.Sprintf("expected document metadata not to match:\n%s", m.comparison.diffs)
 }

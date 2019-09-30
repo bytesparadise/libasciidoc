@@ -1,8 +1,10 @@
 package testsupport_test
 
 import (
+	"context"
 	"fmt"
 
+	"github.com/bytesparadise/libasciidoc/pkg/renderer"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 	"github.com/bytesparadise/libasciidoc/testsupport"
 
@@ -103,15 +105,13 @@ var _ = Describe("document preamble assertions", func() {
 		Expect(err).ToNot(HaveOccurred())
 		Expect(result).To(BeFalse())
 		// also verify messages
-		obtained := types.Document{
-			Attributes:         types.DocumentAttributes{},
-			ElementReferences:  types.ElementReferences{},
-			Footnotes:          types.Footnotes{},
-			FootnoteReferences: types.FootnoteReferences{},
-			Elements:           []interface{}{},
-		}
-		Expect(matcher.FailureMessage(actual)).To(Equal(fmt.Sprintf("expected document to match:\n\texpected: '%v'\n\tactual:   '%v'", expected, obtained)))
-		Expect(matcher.NegatedFailureMessage(actual)).To(Equal(fmt.Sprintf("expected document not to match:\n\texpected: '%v'\n\tactual:   '%v'", expected, obtained)))
+		ctx := renderer.Wrap(context.Background(), actual)
+		renderer.IncludePreamble(ctx)
+		obtained := ctx.Document
+		GinkgoT().Logf(matcher.FailureMessage(actual))
+		GinkgoT().Logf(fmt.Sprintf("expected documents to match:\n%s", compare(obtained, expected)))
+		Expect(matcher.FailureMessage(actual)).To(Equal(fmt.Sprintf("expected documents to match:\n%s", compare(obtained, expected))))
+		Expect(matcher.NegatedFailureMessage(actual)).To(Equal(fmt.Sprintf("expected documents not to match:\n%s", compare(obtained, expected))))
 	})
 
 	It("should return error when invalid type is input", func() {

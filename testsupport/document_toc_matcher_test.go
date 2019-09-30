@@ -82,8 +82,8 @@ var _ = Describe("document table of contents assertions", func() {
 		// then
 		Expect(err).ToNot(HaveOccurred())
 		Expect(result).To(BeFalse())
-		Expect(matcher.FailureMessage(actual)).To(Equal(fmt.Sprintf("expected document to match:\n\texpected: '%v'\n\tactual:   '%v'", expected, types.Document{})))
-		Expect(matcher.NegatedFailureMessage(actual)).To(Equal(fmt.Sprintf("expected document not to match:\n\texpected: '%v'\n\tactual:   '%v'", expected, types.Document{})))
+		Expect(matcher.FailureMessage(actual)).To(Equal(fmt.Sprintf("expected documents to match:\n%s", compare(types.Document{}, expected))))
+		Expect(matcher.NegatedFailureMessage(actual)).To(Equal(fmt.Sprintf("expected documents not to match:\n%s", compare(types.Document{}, expected))))
 	})
 
 	It("should return error when invalid type is input", func() {

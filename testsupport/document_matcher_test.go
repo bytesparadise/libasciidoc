@@ -70,8 +70,8 @@ var _ = Describe("document assertions", func() {
 				},
 			},
 		}
-		Expect(matcher.FailureMessage(actual)).To(Equal(fmt.Sprintf("expected documents to match:\n\texpected: '%v'\n\tactual:   '%v'", expected, obtained)))
-		Expect(matcher.NegatedFailureMessage(actual)).To(Equal(fmt.Sprintf("expected documents not to match:\n\texpected: '%v'\n\tactual:   '%v'", expected, obtained)))
+		Expect(matcher.FailureMessage(actual)).To(Equal(fmt.Sprintf("expected documents to match:\n%s", compare(obtained, expected))))
+		Expect(matcher.NegatedFailureMessage(actual)).To(Equal(fmt.Sprintf("expected documents not to match:\n%s", compare(obtained, expected))))
 	})
 
 	It("should return error when invalid type is input", func() {
