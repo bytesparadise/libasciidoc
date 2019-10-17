@@ -469,7 +469,7 @@ func helloworld() {
 		It("file inclusion with unclosed tag", func() {
 			console, reset := ConfigureLogger()
 			defer reset()
-			source := `include::../../../test/includes/tag-include.adoc[tag=unclosed]`
+			source := `include::../../../test/includes/tag-include-unclosed.adoc[tag=unclosed]`
 			expected := `<div class="paragraph">
 <p>content</p>
 </div>
@@ -481,7 +481,7 @@ func helloworld() {
 			Expect(console).To(
 				ContainMessageWithLevel(
 					log.ErrorLevel,
-					"detected unclosed tag 'unclosed' starting at line 6 of include file: ../../../test/includes/tag-include.adoc",
+					"detected unclosed tag 'unclosed' starting at line 6 of include file: ../../../test/includes/tag-include-unclosed.adoc",
 				))
 		})
 
@@ -513,6 +513,95 @@ func helloworld() {
 </div>
 </div>`
 			Expect(source).To(RenderHTML5Element(expected))
+		})
+
+		Context("permutations", func() {
+
+			It("all lines", func() {
+				source := `include::../../../test/includes/tag-include.adoc[tag=**]` // includes all content except lines with tags
+				expected := `<div class="sect1">
+<h2 id="_section_1">Section 1</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>content</p>
+</div>
+<div class="paragraph">
+<p>end</p>
+</div>
+</div>
+</div>`
+				Expect(source).To(RenderHTML5Element(expected))
+			})
+
+			It("all tagged regions", func() {
+				source := `include::../../../test/includes/tag-include.adoc[tag=*]` // includes all sections
+				expected := `<div class="sect1">
+<h2 id="_section_1">Section 1</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>content</p>
+</div>
+</div>
+</div>`
+				Expect(source).To(RenderHTML5Element(expected))
+			})
+
+			It("all the lines outside and inside of tagged regions", func() {
+				source := `include::../../../test/includes/tag-include.adoc[tag=**;*]` // includes all sections
+				expected := `<div class="sect1">
+<h2 id="_section_1">Section 1</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>content</p>
+</div>
+<div class="paragraph">
+<p>end</p>
+</div>
+</div>
+</div>`
+				Expect(source).To(RenderHTML5Element(expected))
+			})
+
+			It("regions tagged doc, but not nested regions tagged content", func() {
+				source := `include::../../../test/includes/tag-include.adoc[tag=doc;!content]` // includes all sections
+				expected := `<div class="sect1">
+<h2 id="_section_1">Section 1</h2>
+<div class="sectionbody">
+</div>
+</div>`
+				Expect(source).To(RenderHTML5Element(expected))
+			})
+
+			It("all tagged regions, but excludes any regions tagged content", func() {
+				source := `include::../../../test/includes/tag-include.adoc[tag=*;!content]` // includes all sections
+				expected := `<div class="sect1">
+<h2 id="_section_1">Section 1</h2>
+<div class="sectionbody">
+</div>
+</div>`
+				Expect(source).To(RenderHTML5Element(expected))
+			})
+
+			It("all tagged regions, but excludes any regions tagged content", func() {
+				source := `include::../../../test/includes/tag-include.adoc[tag=**;!content]` // includes all sections
+				expected := `<div class="sect1">
+<h2 id="_section_1">Section 1</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>end</p>
+</div>
+</div>
+</div>`
+				Expect(source).To(RenderHTML5Element(expected))
+			})
+
+			It("**;!* — selects only the regions of the document outside of tags", func() {
+				source := `include::../../../test/includes/tag-include.adoc[tag=**;!*]` // includes all sections
+				expected := `<div class="paragraph">
+<p>end</p>
+</div>`
+				Expect(source).To(RenderHTML5Element(expected))
+			})
 		})
 	})
 

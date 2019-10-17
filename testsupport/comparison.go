@@ -4,7 +4,7 @@ import (
 	"reflect"
 
 	"github.com/davecgh/go-spew/spew"
-	. "github.com/onsi/ginkgo" // nolint: go-lint
+	. "github.com/onsi/ginkgo" // nolint: golint
 	"github.com/sergi/go-diff/diffmatchpatch"
 )
 

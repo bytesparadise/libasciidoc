@@ -762,8 +762,8 @@ include::../../test/includes/chapter-a.adoc[]
 				Blocks: []interface{}{
 					types.Section{
 						Attributes: types.ElementAttributes{
-							types.AttrID:       "section_1",
 							types.AttrCustomID: false,
+							types.AttrID:       "section_1",
 						},
 						Level: 1,
 						Title: types.InlineElements{
@@ -773,7 +773,6 @@ include::../../test/includes/chapter-a.adoc[]
 						},
 						Elements: []interface{}{},
 					},
-					types.BlankLine{},
 					types.BlankLine{},
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
@@ -797,7 +796,7 @@ include::../../test/includes/chapter-a.adoc[]
 			// setup logger to write in a buffer so we can check the output
 			console, reset := ConfigureLogger()
 			defer reset()
-			source := `include::../../test/includes/tag-include.adoc[tag=unclosed]`
+			source := `include::../../test/includes/tag-include-unclosed.adoc[tag=unclosed]`
 			expected := types.PreflightDocument{
 				Blocks: []interface{}{
 					types.BlankLine{},
@@ -830,7 +829,7 @@ include::../../test/includes/chapter-a.adoc[]
 			Expect(console).To(
 				ContainMessageWithLevel(
 					log.ErrorLevel,
-					"detected unclosed tag 'unclosed' starting at line 6 of include file: ../../test/includes/tag-include.adoc",
+					"detected unclosed tag 'unclosed' starting at line 6 of include file: ../../test/includes/tag-include-unclosed.adoc",
 				))
 		})
 
@@ -871,7 +870,6 @@ include::../../test/includes/chapter-a.adoc[]
 						Elements: []interface{}{},
 					},
 					types.BlankLine{},
-					types.BlankLine{},
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
@@ -899,6 +897,232 @@ include::../../test/includes/chapter-a.adoc[]
 			Expect(source).To(BecomePreflightDocument(expected))
 		})
 
+		Context("permutations", func() {
+
+			It("all lines", func() {
+				source := `include::../../test/includes/tag-include.adoc[tag=**]` // includes all content except lines with tags
+				expected := types.PreflightDocument{
+					Blocks: []interface{}{
+						types.Section{
+							Attributes: types.ElementAttributes{
+								types.AttrCustomID: false,
+								types.AttrID:       "section_1",
+							},
+							Level: 1,
+							Title: types.InlineElements{
+								types.StringElement{
+									Content: "Section 1",
+								},
+							},
+							Elements: []interface{}{},
+						},
+						types.BlankLine{},
+						types.Paragraph{
+							Attributes: types.ElementAttributes{},
+							Lines: []types.InlineElements{
+								{
+									types.StringElement{
+										Content: "content",
+									},
+								},
+							},
+						},
+						types.BlankLine{},
+						types.BlankLine{},
+						types.Paragraph{
+							Attributes: types.ElementAttributes{},
+							Lines: []types.InlineElements{
+								{
+									types.StringElement{
+										Content: "end",
+									},
+								},
+							},
+						},
+					},
+				}
+				Expect(source).To(BecomePreflightDocument(expected))
+			})
+
+			It("all tagged regions", func() {
+				source := `include::../../test/includes/tag-include.adoc[tag=*]` // includes all sections
+				expected := types.PreflightDocument{
+					Blocks: []interface{}{
+						types.Section{
+							Attributes: types.ElementAttributes{
+								types.AttrID:       "section_1",
+								types.AttrCustomID: false,
+							},
+							Level: 1,
+							Title: types.InlineElements{
+								types.StringElement{
+									Content: "Section 1",
+								},
+							},
+							Elements: []interface{}{},
+						},
+						types.BlankLine{},
+						types.Paragraph{
+							Attributes: types.ElementAttributes{},
+							Lines: []types.InlineElements{
+								{
+									types.StringElement{
+										Content: "content",
+									},
+								},
+							},
+						},
+						types.BlankLine{},
+					},
+				}
+				Expect(source).To(BecomePreflightDocument(expected))
+			})
+
+			It("all the lines outside and inside of tagged regions", func() {
+				source := `include::../../test/includes/tag-include.adoc[tag=**;*]` // includes all sections
+				expected := types.PreflightDocument{
+					Blocks: []interface{}{
+						types.Section{
+							Attributes: types.ElementAttributes{
+								types.AttrCustomID: false,
+								types.AttrID:       "section_1",
+							},
+							Level: 1,
+							Title: types.InlineElements{
+								types.StringElement{
+									Content: "Section 1",
+								},
+							},
+							Elements: []interface{}{},
+						},
+						types.BlankLine{},
+						types.Paragraph{
+							Attributes: types.ElementAttributes{},
+							Lines: []types.InlineElements{
+								{
+									types.StringElement{
+										Content: "content",
+									},
+								},
+							},
+						},
+						types.BlankLine{},
+						types.BlankLine{},
+						types.Paragraph{
+							Attributes: types.ElementAttributes{},
+							Lines: []types.InlineElements{
+								{
+									types.StringElement{
+										Content: "end",
+									},
+								},
+							},
+						},
+					},
+				}
+				Expect(source).To(BecomePreflightDocument(expected))
+			})
+
+			It("regions tagged doc, but not nested regions tagged content", func() {
+				source := `include::../../test/includes/tag-include.adoc[tag=doc;!content]` // includes all sections
+				expected := types.PreflightDocument{
+					Blocks: []interface{}{
+						types.Section{
+							Attributes: types.ElementAttributes{
+								types.AttrCustomID: false,
+								types.AttrID:       "section_1",
+							},
+							Level: 1,
+							Title: types.InlineElements{
+								types.StringElement{
+									Content: "Section 1",
+								},
+							},
+							Elements: []interface{}{},
+						},
+						types.BlankLine{},
+					},
+				}
+				Expect(source).To(BecomePreflightDocument(expected))
+			})
+
+			It("all tagged regions, but excludes any regions tagged content", func() {
+				source := `include::../../test/includes/tag-include.adoc[tag=*;!content]` // includes all sections
+				expected := types.PreflightDocument{
+					Blocks: []interface{}{
+						types.Section{
+							Attributes: types.ElementAttributes{
+								types.AttrCustomID: false,
+								types.AttrID:       "section_1",
+							},
+							Level: 1,
+							Title: types.InlineElements{
+								types.StringElement{
+									Content: "Section 1",
+								},
+							},
+							Elements: []interface{}{},
+						},
+						types.BlankLine{},
+					},
+				}
+				Expect(source).To(BecomePreflightDocument(expected))
+			})
+
+			It("all tagged regions, but excludes any regions tagged content", func() {
+				source := `include::../../test/includes/tag-include.adoc[tag=**;!content]` // includes all sections
+				expected := types.PreflightDocument{
+					Blocks: []interface{}{
+						types.Section{
+							Attributes: types.ElementAttributes{
+								types.AttrCustomID: false,
+								types.AttrID:       "section_1",
+							},
+							Level: 1,
+							Title: types.InlineElements{
+								types.StringElement{
+									Content: "Section 1",
+								},
+							},
+							Elements: []interface{}{},
+						},
+						types.BlankLine{},
+						types.BlankLine{},
+						types.Paragraph{
+							Attributes: types.ElementAttributes{},
+							Lines: []types.InlineElements{
+								{
+									types.StringElement{
+										Content: "end",
+									},
+								},
+							},
+						},
+					},
+				}
+				Expect(source).To(BecomePreflightDocument(expected))
+			})
+
+			It("**;!* — selects only the regions of the document outside of tags", func() {
+				source := `include::../../test/includes/tag-include.adoc[tag=**;!*]` // includes all sections
+				expected := types.PreflightDocument{
+					Blocks: []interface{}{
+						types.BlankLine{},
+						types.Paragraph{
+							Attributes: types.ElementAttributes{},
+							Lines: []types.InlineElements{
+								{
+									types.StringElement{
+										Content: "end",
+									},
+								},
+							},
+						},
+					},
+				}
+				Expect(source).To(BecomePreflightDocument(expected))
+			})
+		})
 	})
 
 	Context("missing file to include", func() {
@@ -1397,7 +1621,7 @@ include::../../test/includes/chapter-a.adoc[]
 						types.FileInclusion{
 							Attributes: types.ElementAttributes{
 								types.AttrLineRanges: types.LineRanges{
-									{Start: 1, End: 1},
+									{StartLine: 1, EndLine: 1},
 								},
 							},
 							Location: types.Location{
@@ -1419,7 +1643,7 @@ include::../../test/includes/chapter-a.adoc[]
 						types.FileInclusion{
 							Attributes: types.ElementAttributes{
 								types.AttrLineRanges: types.LineRanges{
-									{Start: 1, End: 2},
+									{StartLine: 1, EndLine: 2},
 								},
 							},
 							Location: types.Location{
@@ -1441,9 +1665,9 @@ include::../../test/includes/chapter-a.adoc[]
 						types.FileInclusion{
 							Attributes: types.ElementAttributes{
 								types.AttrLineRanges: types.LineRanges{
-									{Start: 1, End: 1},
-									{Start: 3, End: 4},
-									{Start: 6, End: -1},
+									{StartLine: 1, EndLine: 1},
+									{StartLine: 3, EndLine: 4},
+									{StartLine: 6, EndLine: -1},
 								},
 							},
 							Location: types.Location{
@@ -1485,7 +1709,7 @@ include::../../test/includes/chapter-a.adoc[]
 						types.FileInclusion{
 							Attributes: types.ElementAttributes{
 								types.AttrLineRanges: types.LineRanges{
-									{Start: 1, End: 1},
+									{StartLine: 1, EndLine: 1},
 								},
 								"3..4":  nil,
 								"6..-1": nil,
@@ -1532,7 +1756,7 @@ include::../../test/includes/chapter-a.adoc[]
 						types.FileInclusion{
 							Attributes: types.ElementAttributes{
 								types.AttrLineRanges: types.LineRanges{
-									{Start: 1, End: 1},
+									{StartLine: 1, EndLine: 1},
 								},
 							},
 							Location: types.Location{
@@ -1554,7 +1778,7 @@ include::../../test/includes/chapter-a.adoc[]
 						types.FileInclusion{
 							Attributes: types.ElementAttributes{
 								types.AttrLineRanges: types.LineRanges{
-									{Start: 1, End: 2},
+									{StartLine: 1, EndLine: 2},
 								},
 							},
 							Location: types.Location{
@@ -1576,9 +1800,9 @@ include::../../test/includes/chapter-a.adoc[]
 						types.FileInclusion{
 							Attributes: types.ElementAttributes{
 								types.AttrLineRanges: types.LineRanges{
-									{Start: 1, End: 1},
-									{Start: 3, End: 4},
-									{Start: 6, End: -1},
+									{StartLine: 1, EndLine: 1},
+									{StartLine: 3, EndLine: 4},
+									{StartLine: 6, EndLine: -1},
 								},
 							},
 							Location: types.Location{
@@ -1645,7 +1869,10 @@ include::../../test/includes/chapter-a.adoc[]
 						types.FileInclusion{
 							Attributes: types.ElementAttributes{
 								types.AttrTagRanges: types.TagRanges{
-									`section`,
+									{
+										Name:     `section`,
+										Included: true,
+									},
 								},
 							},
 							Location: types.Location{
@@ -1667,8 +1894,14 @@ include::../../test/includes/chapter-a.adoc[]
 						types.FileInclusion{
 							Attributes: types.ElementAttributes{
 								types.AttrTagRanges: types.TagRanges{
-									`section`,
-									"content",
+									{
+										Name:     `section`,
+										Included: true,
+									},
+									{
+										Name:     "content",
+										Included: true,
+									},
 								},
 							},
 							Location: types.Location{
