@@ -3,6 +3,8 @@
 == Section 1
 // end::section[]
 
+// tag::unclosed[]
+
 // tag::content[]
 content
 

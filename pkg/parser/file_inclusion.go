@@ -8,6 +8,7 @@ import (
 	"text/template"
 
 	"github.com/bytesparadise/libasciidoc/pkg/types"
+	"github.com/davecgh/go-spew/spew"
 	"github.com/pkg/errors"
 
 	log "github.com/sirupsen/logrus"
@@ -26,6 +27,7 @@ func init() {
 func parseFileToInclude(filename string, incl types.FileInclusion, attrs types.DocumentAttributes, opts ...Option) (types.PreflightDocument, error) {
 	path := incl.Location.Resolve(attrs)
 	log.Debugf("parsing '%s'...", path)
+	log.Debugf("file inclusion attributes: %s", spew.Sdump(incl.Attributes))
 	f, absPath, done, err := open(path)
 	defer done()
 	if err != nil {
@@ -123,7 +125,7 @@ func readWithinLines(scanner *bufio.Scanner, content *bytes.Buffer, lineRanges t
 
 func readWithinTags(path string, scanner *bufio.Scanner, content *bytes.Buffer, expectedRanges types.TagRanges) error {
 	log.Debugf("limiting to tag ranges: %v", expectedRanges)
-	actualRanges := make(map[string]*types.TagRange, len(expectedRanges)) // ensure capacity
+	currentRanges := make(map[string]*types.CurrentTagRange, len(expectedRanges)) // ensure capacity
 	lineNumber := 0
 	for scanner.Scan() {
 		lineNumber++
@@ -139,15 +141,15 @@ func readWithinTags(path string, scanner *bufio.Scanner, content *bytes.Buffer, 
 		}
 		// check if a start or end tag was found in the line
 		if startTag, ok := fl.GetStartTag(); ok {
-			actualRanges[startTag.Value] = &types.TagRange{
+			currentRanges[startTag.Value] = &types.CurrentTagRange{
 				StartLine: lineNumber,
 				EndLine:   -1,
 			}
 		}
 		if endTag, ok := fl.GetEndTag(); ok {
-			actualRanges[endTag.Value].EndLine = lineNumber
+			currentRanges[endTag.Value].EndLine = lineNumber
 		}
-		if expectedRanges.Match(lineNumber, actualRanges) && !fl.HasTag() {
+		if expectedRanges.Match(lineNumber, currentRanges) && !fl.HasTag() {
 			_, err := content.Write(scanner.Bytes())
 			if err != nil {
 				return err
@@ -160,12 +162,17 @@ func readWithinTags(path string, scanner *bufio.Scanner, content *bytes.Buffer, 
 	}
 	// after the file has been processed, let's check if all tags were "found"
 	for _, tag := range expectedRanges {
-		log.Debugf("checking if tag '%s' was found...", tag)
-		tr, found := actualRanges[tag]
-		if !found {
-			log.Errorf("tag '%s' not found in include file: %s", tag, path)
-		} else if tr.EndLine == -1 {
-			log.Errorf("detected unclosed tag '%s' starting at line %d of include file: %s", tag, tr.StartLine, path)
+		log.Debugf("checking if tag '%s' was found...", tag.Name)
+		switch tag.Name {
+		case "*", "**":
+			continue
+		default:
+			tr, found := currentRanges[tag.Name]
+			if !found {
+				log.Errorf("tag '%s' not found in include file: %s", tag.Name, path)
+			} else if tr.EndLine == -1 {
+				log.Errorf("detected unclosed tag '%s' starting at line %d of include file: %s", tag.Name, tr.StartLine, path)
+			}
 		}
 	}
 	return nil

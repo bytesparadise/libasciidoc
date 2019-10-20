@@ -137,9 +137,9 @@ func NewDocumentAuthors(authors []interface{}) ([]DocumentAuthor, error) {
 	log.Debugf("initializing a new array of document authors from `%+v`", authors)
 	result := make([]DocumentAuthor, len(authors))
 	for i, author := range authors {
-		switch author.(type) {
+		switch author := author.(type) {
 		case DocumentAuthor:
-			result[i] = author.(DocumentAuthor)
+			result[i] = author
 		default:
 			return nil, errors.Errorf("unexpected type of author: %T", author)
 		}
@@ -1747,14 +1747,15 @@ func (f *FileInclusion) LineRanges() (LineRanges, bool) {
 	}
 	return LineRanges{ // default line ranges: include all content
 		{
-			Start: 1,
-			End:   -1,
+			StartLine: 1,
+			EndLine:   -1,
 		},
 	}, false
 }
 
 // TagRanges returns the tag ranges of the file to include.
 func (f *FileInclusion) TagRanges() (TagRanges, bool) {
+	log.Debugf("AttrTagRanges type: %T", f.Attributes[AttrTagRanges])
 	if lr, ok := f.Attributes[AttrTagRanges].(TagRanges); ok {
 		return lr, true
 	}
@@ -1788,16 +1789,16 @@ func NewLineRangesAttribute(ranges interface{}) (ElementAttributes, error) {
 // - if there's a single line to include, then `End = Start`
 // - if there is all remaining content after a given line (included), then `End = -1`
 type LineRange struct {
-	Start int
-	End   int
+	StartLine int
+	EndLine   int
 }
 
 // NewLineRange returns a new line range
 func NewLineRange(start, end int) (LineRange, error) {
 	// log.Debugf("initializing a new multiline range: %d..%d", start, end)
 	return LineRange{
-		Start: start,
-		End:   end,
+		StartLine: start,
+		EndLine:   end,
 	}, nil
 }
 
@@ -1820,10 +1821,10 @@ func NewLineRanges(ranges ...interface{}) LineRanges {
 // Match checks if the given line number matches one of the line ranges
 func (r LineRanges) Match(line int) bool {
 	for _, lr := range r {
-		if lr.Start <= line && (lr.End >= line || lr.End == -1) {
+		if lr.StartLine <= line && (lr.EndLine >= line || lr.EndLine == -1) {
 			return true
 		}
-		if lr.Start > line {
+		if lr.StartLine > line {
 			// no need to carry on with the ranges
 			return false
 		}
@@ -1836,61 +1837,94 @@ var _ sort.Interface = LineRanges{}
 
 func (r LineRanges) Len() int           { return len(r) }
 func (r LineRanges) Swap(i, j int)      { r[i], r[j] = r[j], r[i] }
-func (r LineRanges) Less(i, j int) bool { return r[i].Start < r[j].Start }
+func (r LineRanges) Less(i, j int) bool { return r[i].StartLine < r[j].StartLine }
 
 // -------------------------------------------------------------------------------------
 // TagRanges: one or more ranges of tags to limit the content of a file to include
 // -------------------------------------------------------------------------------------
 
 // NewTagRangesAttribute returns an element attribute with a slice of tag ranges attribute for a file inclusion.
-func NewTagRangesAttribute(ranges interface{}) (ElementAttributes, error) {
-	switch ranges := ranges.(type) {
-	case []interface{}:
-		return ElementAttributes{
-			AttrTagRanges: NewTagRanges(ranges...),
-		}, nil
-	case string:
-		return ElementAttributes{
-			AttrTagRanges: NewTagRanges(ranges),
-		}, nil
-	default:
-		return ElementAttributes{
-			AttrTagRanges: ranges,
-		}, nil
+func NewTagRangesAttribute(ranges []interface{}) (ElementAttributes, error) {
+	r, err := NewTagRanges(ranges...)
+	if err != nil {
+		return nil, err
 	}
+	log.Debugf("initialized a new TagRanges attribute with values: %v", r)
+	return ElementAttributes{
+		AttrTagRanges: r,
+	}, nil
 }
 
 // TagRanges the ranges of tags of the child doc to include in the master doc
-type TagRanges []string
-
-// TagRange a tag range found while processing a document. When the 'start' tag is found,
-// the `EndLine` is still unknown and thus its value is set to `-1`
-type TagRange struct {
-	StartLine int
-	EndLine   int
-}
+type TagRanges []TagRange
 
 // NewTagRanges returns a slice of tag ranges attribute for a file inclusion.
-func NewTagRanges(ranges ...interface{}) TagRanges {
+func NewTagRanges(ranges ...interface{}) (TagRanges, error) {
 	result := TagRanges{}
 	for _, r := range ranges {
-		if tr, ok := r.(string); ok {
+		if tr, ok := r.(TagRange); ok {
 			result = append(result, tr)
 		} else {
-			log.Warnf("unexpected type of tag range: %T", r)
+			return nil, errors.Errorf("unexpected type of tag range: %T", r)
 		}
 	}
-	return result
+	return result, nil
 }
 
 // Match checks if the given tag matches one of the range
-func (r TagRanges) Match(line int, ranges map[string]*TagRange) bool {
-	for _, t := range r {
-		if r, found := ranges[t]; found && r.StartLine <= line && r.EndLine == -1 {
-			return true
+func (tr TagRanges) Match(line int, currentRanges CurrentRanges) bool {
+	match := false
+	log.Debugf("checking line %d", line)
+
+	// compare with expected tag ranges
+	for _, t := range tr {
+		if t.Name == "**" {
+			match = true
+			continue
+		}
+		for n, r := range currentRanges {
+			log.Debugf("checking if range %s (%v) matches one of %v", n, r, tr)
+			if r.EndLine != -1 {
+				// tag range is closed, skip
+				continue
+			} else if t.Name == "*" {
+				match = t.Included
+			} else if t.Name == n { //TODO: all accept '*', '**' snd '!'
+				match = t.Included
+			}
 		}
 	}
-	return false
+
+	return match
+}
+
+// TagRange the range to include or exclude from the file inclusion.
+// The range is excluded if it is prefixed with '!'
+// Also, '*' and '**' have a special meaning:
+// - '*' means that all tag ranges are included (except the lines having the start and end ranges)
+// - '**' means that all content is included, regardless of whether it is in a tag or not (except the lines having the start and end ranges)
+type TagRange struct {
+	Name     string
+	Included bool
+}
+
+// NewTagRange returns a new TagRange
+func NewTagRange(name string, included bool) (TagRange, error) {
+	return TagRange{
+		Name:     name,
+		Included: included,
+	}, nil
+}
+
+// CurrentRanges the current ranges, ie, as they are "discovered"
+// while processing one line at a time in the file to include
+type CurrentRanges map[string]*CurrentTagRange
+
+// CurrentTagRange a tag range found while processing a document. When the 'start' tag is found,
+// the `EndLine` is still unknown and thus its value is set to `-1`.
+type CurrentTagRange struct {
+	StartLine int
+	EndLine   int
 }
 
 // -------------------------------------------------------------------------------------
@@ -1943,6 +1977,7 @@ type IncludedFileStartTag struct {
 	Value string
 }
 
+// NewIncludedFileStartTag returns a new IncludedFileStartTag
 func NewIncludedFileStartTag(tag string) (IncludedFileStartTag, error) {
 	return IncludedFileStartTag{Value: tag}, nil
 }
@@ -1952,6 +1987,7 @@ type IncludedFileEndTag struct {
 	Value string
 }
 
+// NewIncludedFileEndTag returns a new IncludedFileEndTag
 func NewIncludedFileEndTag(tag string) (IncludedFileEndTag, error) {
 	return IncludedFileEndTag{Value: tag}, nil
 }

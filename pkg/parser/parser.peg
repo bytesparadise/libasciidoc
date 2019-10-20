@@ -407,23 +407,35 @@ UndefinedLineRange <- (!"]" !"," !WS .)* {
 }
 
 TagRangesAttribute <- ("tags=" / "tag=") tags:(TagRangesAttributeValue) ","? { //TODO: check if 'tags'/'tag' is allowed for both single and multiple values
-    return types.NewTagRangesAttribute(tags)
+    return types.NewTagRangesAttribute(tags.([]interface{}))
 } 
 
 TagRangesAttributeValue <- value:(MultipleTagRanges) WS* (&"," / &"]") {
     return value, nil
 }
 
-MultipleTagRanges <- first:(Alphanums {
-        return string(c.text), nil
-    })
-    others:(";" other:(Alphanums {
-        return string(c.text), nil
-    }) {
+MultipleTagRanges <- first:(TagRange)
+    others:(";" other:(TagRange) {
         return other, nil
     })* {
         return append([]interface{}{first}, others.([]interface{})...), nil
     }
+
+TagRange <- tag:(Alphanums / TagWildcard) {
+    return types.NewTagRange(tag.(string), true)
+} / "!" tag:(Alphanums / TagWildcard) {
+    return types.NewTagRange(tag.(string), false)
+}
+
+TagWildcard <- stars:(("*")+ {
+        return string(c.text), nil
+    })
+    &{  
+        // use a predicate to make sure that only `*` and `**` are allowed
+        return len(stars.(string)) <= 2, nil 
+    } {
+    return stars, nil
+}
 
 // ------------------------------------------
 // Tag macros in lines of files to include
@@ -1482,7 +1494,9 @@ Alphanum <- [\pL0-9]
 
 Parenthesis <- "(" / ")" / "[" / "]"
 
-Alphanums <- [\pL0-9]+
+Alphanums <- [\pL0-9]+ {
+    return string(c.text), nil
+}
 
 Dot <- "."
 
