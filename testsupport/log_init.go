@@ -12,7 +12,7 @@ func init() {
 	logsupport.Setup()
 	if debugMode() {
 		log.SetLevel(log.DebugLevel)
-		log.Warn("Running test with logs in DEBUG level")
+		log.Info("Running test with logs in DEBUG level")
 	}
 }
 

@@ -1,12 +1,12 @@
 package types_test
 
 import (
-	. "github.com/onsi/ginkgo"
-	. "github.com/onsi/gomega"
-
 	"testing"
 
 	_ "github.com/bytesparadise/libasciidoc/testsupport"
+
+	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/gomega"
 )
 
 func TestTypes(t *testing.T) {

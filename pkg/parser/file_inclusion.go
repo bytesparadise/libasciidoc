@@ -26,9 +26,10 @@ func init() {
 
 func parseFileToInclude(filename string, incl types.FileInclusion, attrs types.DocumentAttributes, opts ...Option) (types.PreflightDocument, error) {
 	path := incl.Location.Resolve(attrs)
-	log.Debugf("parsing '%s'...", path)
+	currentDir := filepath.Dir(filename)
+	log.Debugf("parsing '%s' from '%s' (%s)", path, currentDir, filename)
 	log.Debugf("file inclusion attributes: %s", spew.Sdump(incl.Attributes))
-	f, absPath, done, err := open(path)
+	f, absPath, done, err := open(filepath.Join(currentDir, path))
 	defer done()
 	if err != nil {
 		return invalidFileErrMsg(filename, path, incl.RawText, err)
@@ -211,6 +212,7 @@ func open(path string) (*os.File, string, func(), error) {
 		return nil, "", func() {}, err
 	}
 	absPath, err := filepath.Abs(path)
+	log.Debugf("file path: %s", absPath)
 	if err != nil {
 		return nil, "", func() {
 			log.Debugf("restoring current working dir to: %s", wd)

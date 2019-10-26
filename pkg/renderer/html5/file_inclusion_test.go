@@ -10,6 +10,37 @@ import (
 
 var _ = Describe("file inclusions", func() {
 
+	It("should include adoc file without leveloffset from local file", func() {
+		console, reset := ConfigureLogger()
+		defer reset()
+		source := "include::../../../test/includes/grandchild-include.adoc[]"
+		expected := `<div class="paragraph">
+<p>first line of grandchild</p>
+</div>
+<div class="paragraph">
+<p>last line of grandchild</p>
+</div>`
+		Expect(source).To(RenderHTML5Element(expected, WithFilename("foo.adoc")))
+		// verify no error/warning in logs
+		Expect(console).ToNot(ContainAnyMessageWithLevels(log.ErrorLevel, log.WarnLevel))
+	})
+
+	It("should include adoc file without leveloffset from relative file", func() {
+		console, reset := ConfigureLogger()
+		defer reset()
+		source := "include::../../../../test/includes/grandchild-include.adoc[]"
+		expected := `<div class="paragraph">
+<p>first line of grandchild</p>
+</div>
+<div class="paragraph">
+<p>last line of grandchild</p>
+</div>`
+
+		Expect(source).To(RenderHTML5Element(expected, WithFilename("tmp/foo.adoc")))
+		// verify no error/warning in logs
+		Expect(console).ToNot(ContainAnyMessageWithLevels(log.ErrorLevel, log.WarnLevel))
+	})
+
 	It("include adoc file with leveloffset attribute", func() {
 		source := `= Master Document
 

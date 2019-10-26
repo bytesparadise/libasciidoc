@@ -70,7 +70,7 @@ var _ = Describe("preflight document assertions", func() {
 
 		It("should return error when invalid type is input", func() {
 			// given
-			matcher := testsupport.BecomePreflightDocumentWithoutPreprocessing("")
+			matcher := testsupport.BecomePreflightDocument("", testsupport.WithoutPreprocessing())
 			// when
 			_, err := matcher.Match(1) // not a string
 			// then
@@ -98,7 +98,7 @@ var _ = Describe("preflight document assertions", func() {
 
 		It("should match", func() {
 			// given
-			matcher := testsupport.BecomePreflightDocumentWithoutPreprocessing(expected)
+			matcher := testsupport.BecomePreflightDocument(expected, testsupport.WithoutPreprocessing())
 			// when
 			result, err := matcher.Match("hello, world!")
 			// then
@@ -108,7 +108,7 @@ var _ = Describe("preflight document assertions", func() {
 
 		It("should not match", func() {
 			// given
-			matcher := testsupport.BecomePreflightDocumentWithoutPreprocessing(expected)
+			matcher := testsupport.BecomePreflightDocument(expected, testsupport.WithoutPreprocessing())
 			actual := "foo"
 			// when
 			result, err := matcher.Match(actual)
