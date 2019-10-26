@@ -80,7 +80,7 @@ var _ = Describe("file location", func() {
 
 var _ = Describe("file inclusions - preflight with preprocessing", func() {
 
-	It("should include adoc file without leveloffset", func() {
+	It("should include adoc file without leveloffset from local file", func() {
 		console, reset := ConfigureLogger()
 		defer reset()
 		source := "include::../../test/includes/chapter-a.adoc[]"
@@ -112,10 +112,46 @@ var _ = Describe("file inclusions - preflight with preprocessing", func() {
 				},
 			},
 		}
-		Expect(source).To(BecomePreflightDocument(expected))
+		Expect(source).To(BecomePreflightDocument(expected, WithFilename("foo.adoc")))
 		// verify no error/warning in logs
 		Expect(console).ToNot(ContainAnyMessageWithLevels(log.ErrorLevel, log.WarnLevel))
+	})
 
+	It("should include adoc file without leveloffset from relative file", func() {
+		console, reset := ConfigureLogger()
+		defer reset()
+		source := "include::../../../test/includes/chapter-a.adoc[]"
+		expected := types.PreflightDocument{
+			Blocks: []interface{}{
+				types.Section{
+					Attributes: types.ElementAttributes{
+						types.AttrID:       "chapter_a",
+						types.AttrCustomID: false,
+					},
+					Level: 0,
+					Title: types.InlineElements{
+						types.StringElement{
+							Content: "Chapter A",
+						},
+					},
+					Elements: []interface{}{},
+				},
+				types.BlankLine{},
+				types.Paragraph{
+					Attributes: types.ElementAttributes{},
+					Lines: []types.InlineElements{
+						{
+							types.StringElement{
+								Content: "content",
+							},
+						},
+					},
+				},
+			},
+		}
+		Expect(source).To(BecomePreflightDocument(expected, WithFilename("tmp/foo.adoc")))
+		// verify no error/warning in logs
+		Expect(console).ToNot(ContainAnyMessageWithLevels(log.ErrorLevel, log.WarnLevel))
 	})
 
 	It("should include adoc file with leveloffset", func() {
@@ -1224,7 +1260,7 @@ include::../../test/includes/unknown.adoc[leveloffset=+1]
 
 	Context("inclusion with attribute in path", func() {
 
-		It("should resolve path with attribute in standalone block", func() {
+		It("should resolve path with attribute in standalone block from local file", func() {
 			source := `:includedir: ../../test/includes
 			
 include::{includedir}/grandchild-include.adoc[]`
@@ -1258,7 +1294,44 @@ include::{includedir}/grandchild-include.adoc[]`
 					},
 				},
 			}
-			Expect(source).To(BecomePreflightDocument(expected))
+			Expect(source).To(BecomePreflightDocument(expected, WithFilename("foo.adoc")))
+		})
+
+		It("should resolve path with attribute in standalone block from relative file", func() {
+			source := `:includedir: ../../../test/includes
+			
+include::{includedir}/grandchild-include.adoc[]`
+			expected := types.PreflightDocument{
+				Blocks: []interface{}{
+					types.DocumentAttributeDeclaration{
+						Name:  "includedir",
+						Value: "../../../test/includes",
+					},
+					types.BlankLine{},
+					types.Paragraph{
+						Attributes: types.ElementAttributes{},
+						Lines: []types.InlineElements{
+							{
+								types.StringElement{
+									Content: "first line of grandchild",
+								},
+							},
+						},
+					},
+					types.BlankLine{},
+					types.Paragraph{
+						Attributes: types.ElementAttributes{},
+						Lines: []types.InlineElements{
+							{
+								types.StringElement{
+									Content: "last line of grandchild",
+								},
+							},
+						},
+					},
+				},
+			}
+			Expect(source).To(BecomePreflightDocument(expected, WithFilename("tmp/foo.adoc")))
 		})
 
 		It("should resolve path with attribute in delimited block", func() {
@@ -1401,6 +1474,50 @@ include::../../test/includes/hello_world.go.txt[lines=1]
 
 var _ = Describe("file inclusions - preflight without preprocessing", func() {
 
+	It("should include adoc file without leveloffset in local dir", func() {
+		console, reset := ConfigureLogger()
+		defer reset()
+		source := "include::../../test/includes/chapter-a.adoc[]"
+		expected := types.PreflightDocument{
+			Blocks: []interface{}{
+				types.FileInclusion{
+					Attributes: types.ElementAttributes{},
+					Location: types.Location{
+						types.StringElement{
+							Content: "../../test/includes/chapter-a.adoc",
+						},
+					},
+					RawText: source,
+				},
+			},
+		}
+		Expect(source).To(BecomePreflightDocument(expected, WithoutPreprocessing(), WithFilename("foo.adoc")))
+		// verify no error/warning in logs
+		Expect(console).ToNot(ContainAnyMessageWithLevels(log.ErrorLevel, log.WarnLevel))
+	})
+
+	It("should include adoc file without leveloffset in relative dir", func() {
+		console, reset := ConfigureLogger()
+		defer reset()
+		source := "include::../../../test/includes/chapter-a.adoc[]"
+		expected := types.PreflightDocument{
+			Blocks: []interface{}{
+				types.FileInclusion{
+					Attributes: types.ElementAttributes{},
+					Location: types.Location{
+						types.StringElement{
+							Content: "../../../test/includes/chapter-a.adoc",
+						},
+					},
+					RawText: source,
+				},
+			},
+		}
+		Expect(source).To(BecomePreflightDocument(expected, WithoutPreprocessing(), WithFilename("tmp/foo.adoc")))
+		// verify no error/warning in logs
+		Expect(console).ToNot(ContainAnyMessageWithLevels(log.ErrorLevel, log.WarnLevel))
+	})
+
 	It("should include adoc file with leveloffset attribute", func() {
 		source := "include::../../test/includes/chapter-a.adoc[leveloffset=+1]"
 		expected := types.PreflightDocument{
@@ -1414,11 +1531,11 @@ var _ = Describe("file inclusions - preflight without preprocessing", func() {
 							Content: "../../test/includes/chapter-a.adoc",
 						},
 					},
-					RawText: `include::../../test/includes/chapter-a.adoc[leveloffset=+1]`,
+					RawText: source,
 				},
 			},
 		}
-		Expect(source).To(BecomePreflightDocumentWithoutPreprocessing(expected))
+		Expect(source).To(BecomePreflightDocument(expected, WithoutPreprocessing()))
 	})
 
 	Context("file inclusions in delimited blocks", func() {
@@ -1446,7 +1563,7 @@ var _ = Describe("file inclusions - preflight without preprocessing", func() {
 					},
 				},
 			}
-			Expect(source).To(BecomePreflightDocumentWithoutPreprocessing(expected))
+			Expect(source).To(BecomePreflightDocument(expected, WithoutPreprocessing()))
 		})
 
 		It("should include adoc file within listing block", func() {
@@ -1472,7 +1589,7 @@ include::../../test/includes/chapter-a.adoc[]
 					},
 				},
 			}
-			Expect(source).To(BecomePreflightDocumentWithoutPreprocessing(expected))
+			Expect(source).To(BecomePreflightDocument(expected, WithoutPreprocessing()))
 		})
 
 		It("should include adoc file within example block", func() {
@@ -1498,7 +1615,7 @@ include::../../test/includes/chapter-a.adoc[]
 					},
 				},
 			}
-			Expect(source).To(BecomePreflightDocumentWithoutPreprocessing(expected))
+			Expect(source).To(BecomePreflightDocument(expected, WithoutPreprocessing()))
 		})
 
 		It("should include adoc file within quote block", func() {
@@ -1524,7 +1641,7 @@ ____`
 					},
 				},
 			}
-			Expect(source).To(BecomePreflightDocumentWithoutPreprocessing(expected))
+			Expect(source).To(BecomePreflightDocument(expected, WithoutPreprocessing()))
 		})
 
 		It("should include adoc file within verse block", func() {
@@ -1553,7 +1670,7 @@ ____`
 					},
 				},
 			}
-			Expect(source).To(BecomePreflightDocumentWithoutPreprocessing(expected))
+			Expect(source).To(BecomePreflightDocument(expected, WithoutPreprocessing()))
 		})
 
 		It("should include adoc file within sidebar block", func() {
@@ -1579,7 +1696,7 @@ include::../../test/includes/chapter-a.adoc[]
 					},
 				},
 			}
-			Expect(source).To(BecomePreflightDocumentWithoutPreprocessing(expected))
+			Expect(source).To(BecomePreflightDocument(expected, WithoutPreprocessing()))
 		})
 
 		It("should include adoc file within passthrough block", func() {
@@ -1606,7 +1723,7 @@ include::../../test/includes/chapter-a.adoc[]
 					},
 				},
 			}
-			Expect(source).To(BecomePreflightDocumentWithoutPreprocessing(expected))
+			Expect(source).To(BecomePreflightDocument(expected, WithoutPreprocessing()))
 		})
 	})
 
@@ -1633,7 +1750,7 @@ include::../../test/includes/chapter-a.adoc[]
 						},
 					},
 				}
-				Expect(source).To(BecomePreflightDocumentWithoutPreprocessing(expected))
+				Expect(source).To(BecomePreflightDocument(expected, WithoutPreprocessing()))
 			})
 
 			It("file inclusion with multiple unquoted lines", func() {
@@ -1655,7 +1772,7 @@ include::../../test/includes/chapter-a.adoc[]
 						},
 					},
 				}
-				Expect(source).To(BecomePreflightDocumentWithoutPreprocessing(expected))
+				Expect(source).To(BecomePreflightDocument(expected, WithoutPreprocessing()))
 			})
 
 			It("file inclusion with multiple unquoted ranges", func() {
@@ -1679,7 +1796,7 @@ include::../../test/includes/chapter-a.adoc[]
 						},
 					},
 				}
-				Expect(source).To(BecomePreflightDocumentWithoutPreprocessing(expected))
+				Expect(source).To(BecomePreflightDocument(expected, WithoutPreprocessing()))
 			})
 
 			It("file inclusion with invalid unquoted range - case 1", func() {
@@ -1699,7 +1816,7 @@ include::../../test/includes/chapter-a.adoc[]
 						},
 					},
 				}
-				Expect(source).To(BecomePreflightDocumentWithoutPreprocessing(expected))
+				Expect(source).To(BecomePreflightDocument(expected, WithoutPreprocessing()))
 			})
 
 			It("file inclusion with invalid unquoted range - case 2", func() {
@@ -1723,7 +1840,7 @@ include::../../test/includes/chapter-a.adoc[]
 						},
 					},
 				}
-				Expect(source).To(BecomePreflightDocumentWithoutPreprocessing(expected))
+				Expect(source).To(BecomePreflightDocument(expected, WithoutPreprocessing()))
 			})
 
 			It("file inclusion with invalid unquoted range - case 3", func() {
@@ -1743,7 +1860,7 @@ include::../../test/includes/chapter-a.adoc[]
 						},
 					},
 				}
-				Expect(source).To(BecomePreflightDocumentWithoutPreprocessing(expected))
+				Expect(source).To(BecomePreflightDocument(expected, WithoutPreprocessing()))
 			})
 		})
 
@@ -1768,7 +1885,7 @@ include::../../test/includes/chapter-a.adoc[]
 						},
 					},
 				}
-				Expect(source).To(BecomePreflightDocumentWithoutPreprocessing(expected))
+				Expect(source).To(BecomePreflightDocument(expected, WithoutPreprocessing()))
 			})
 
 			It("file inclusion with multiple quoted lines", func() {
@@ -1790,7 +1907,7 @@ include::../../test/includes/chapter-a.adoc[]
 						},
 					},
 				}
-				Expect(source).To(BecomePreflightDocumentWithoutPreprocessing(expected))
+				Expect(source).To(BecomePreflightDocument(expected, WithoutPreprocessing()))
 			})
 
 			It("file inclusion with multiple quoted ranges", func() {
@@ -1814,7 +1931,7 @@ include::../../test/includes/chapter-a.adoc[]
 						},
 					},
 				}
-				Expect(source).To(BecomePreflightDocumentWithoutPreprocessing(expected))
+				Expect(source).To(BecomePreflightDocument(expected, WithoutPreprocessing()))
 			})
 
 			It("file inclusion with invalid quoted range - case 1", func() {
@@ -1836,7 +1953,7 @@ include::../../test/includes/chapter-a.adoc[]
 						},
 					},
 				}
-				Expect(source).To(BecomePreflightDocumentWithoutPreprocessing(expected))
+				Expect(source).To(BecomePreflightDocument(expected, WithoutPreprocessing()))
 			})
 
 			It("file inclusion with invalid quoted range - case 2", func() {
@@ -1856,7 +1973,7 @@ include::../../test/includes/chapter-a.adoc[]
 						},
 					},
 				}
-				Expect(source).To(BecomePreflightDocumentWithoutPreprocessing(expected))
+				Expect(source).To(BecomePreflightDocument(expected, WithoutPreprocessing()))
 			})
 		})
 
@@ -1884,7 +2001,7 @@ include::../../test/includes/chapter-a.adoc[]
 						},
 					},
 				}
-				Expect(source).To(BecomePreflightDocumentWithoutPreprocessing(expected))
+				Expect(source).To(BecomePreflightDocument(expected, WithoutPreprocessing()))
 			})
 
 			It("file inclusion with multiple tags", func() {
@@ -1913,7 +2030,7 @@ include::../../test/includes/chapter-a.adoc[]
 						},
 					},
 				}
-				Expect(source).To(BecomePreflightDocumentWithoutPreprocessing(expected))
+				Expect(source).To(BecomePreflightDocument(expected, WithoutPreprocessing()))
 			})
 
 		})

@@ -18,18 +18,32 @@ import (
 // end of the test.
 func ConfigureLogger() (io.Reader, func()) {
 	fmtr := log.StandardLogger().Formatter
-	// level := log.StandardLogger().Level
-	buf := bytes.NewBuffer(nil)
-	// log.SetLevel(log.WarnLevel)
-	log.SetOutput(buf)
+	t := tee{
+		buf: bytes.NewBuffer(nil),
+		out: os.Stdout,
+	}
+	log.SetOutput(t)
 	log.SetFormatter(&log.JSONFormatter{
 		DisableTimestamp: true,
 	})
-	return buf, func() {
+	return t, func() {
 		log.SetOutput(os.Stdout)
 		log.SetFormatter(fmtr)
-		// log.SetLevel(level)
 	}
+}
+
+type tee struct {
+	buf io.ReadWriter
+	out io.Writer
+}
+
+func (t tee) Write(p []byte) (n int, err error) {
+	t.out.Write(p)
+	return t.buf.Write(p)
+}
+
+func (t tee) Read(p []byte) (n int, err error) {
+	return t.buf.Read(p)
 }
 
 // ---------------------------

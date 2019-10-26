@@ -22,15 +22,29 @@ import (
 // --------------------
 
 // RenderHTML5Element a custom matcher to verify that a block renders as the expectation
-func RenderHTML5Element(expected string, opts ...renderer.Option) gomegatypes.GomegaMatcher {
-	return &html5ElementMatcher{
+func RenderHTML5Element(expected string, options ...interface{}) gomegatypes.GomegaMatcher {
+	m := &html5ElementMatcher{
 		expected: expected,
-		opts:     opts,
+		filename: "test.adoc",
+		opts:     []renderer.Option{},
 	}
+	for _, o := range options {
+		if configure, ok := o.(FilenameOption); ok {
+			configure(m)
+		} else if opt, ok := o.(renderer.Option); ok {
+			m.opts = append(m.opts, opt)
+		}
+	}
+	return m
+}
+
+func (m *html5ElementMatcher) setFilename(f string) {
+	m.filename = f
 }
 
 type html5ElementMatcher struct {
 	opts       []renderer.Option
+	filename   string
 	expected   string
 	actual     string
 	comparison comparison
@@ -42,7 +56,7 @@ func (m *html5ElementMatcher) Match(actual interface{}) (success bool, err error
 		return false, errors.Errorf("RenderHTML5Element matcher expects a string (actual: %T)", actual)
 	}
 	r := strings.NewReader(content)
-	doc, err := parser.ParseDocument("test.adoc", r)
+	doc, err := parser.ParseDocument(m.filename, r)
 	if err != nil {
 		return false, err
 	}
@@ -78,14 +92,25 @@ func (m *html5ElementMatcher) NegatedFailureMessage(_ interface{}) (message stri
 // --------------------
 
 // RenderHTML5Body a custom matcher to verify that a block renders as the expectation
-func RenderHTML5Body(expected string, opts ...renderer.Option) gomegatypes.GomegaMatcher {
-	return &html5BodyMatcher{
+func RenderHTML5Body(expected string, options ...interface{}) gomegatypes.GomegaMatcher {
+	m := &html5BodyMatcher{
 		expected: expected,
-		opts:     opts,
+		filename: "test.adoc",
 	}
+	for _, o := range options {
+		if configure, ok := o.(FilenameOption); ok {
+			configure(m)
+		}
+	}
+	return m
+}
+
+func (m *html5BodyMatcher) setFilename(f string) {
+	m.filename = f
 }
 
 type html5BodyMatcher struct {
+	filename string
 	expected string
 	actual   string
 	opts     []renderer.Option
@@ -98,7 +123,7 @@ func (m *html5BodyMatcher) Match(actual interface{}) (success bool, err error) {
 	}
 	contentReader := strings.NewReader(content)
 	resultWriter := bytes.NewBuffer(nil)
-	_, err = libasciidoc.ConvertToHTML(context.Background(), contentReader, resultWriter, renderer.IncludeHeaderFooter(false))
+	_, err = libasciidoc.ConvertToHTML(context.Background(), m.filename, contentReader, resultWriter, renderer.IncludeHeaderFooter(false))
 	if err != nil {
 		return false, err
 	}
@@ -119,17 +144,27 @@ func (m *html5BodyMatcher) NegatedFailureMessage(_ interface{}) (message string)
 // --------------------
 
 // RenderHTML5Title a custom matcher to verify that a block renders as the expectation
-func RenderHTML5Title(expected interface{}, opts ...renderer.Option) gomegatypes.GomegaMatcher {
-	return &html5TitleMatcher{
+func RenderHTML5Title(expected interface{}, options ...interface{}) gomegatypes.GomegaMatcher {
+	m := &html5TitleMatcher{
 		expected: expected,
-		opts:     opts,
+		filename: "test.adoc",
 	}
+	for _, o := range options {
+		if configure, ok := o.(FilenameOption); ok {
+			configure(m)
+		}
+	}
+	return m
+}
+
+func (m *html5TitleMatcher) setFilename(f string) {
+	m.filename = f
 }
 
 type html5TitleMatcher struct {
+	filename string
 	expected interface{}
 	actual   interface{}
-	opts     []renderer.Option
 }
 
 func (m *html5TitleMatcher) Match(actual interface{}) (success bool, err error) {
@@ -139,7 +174,7 @@ func (m *html5TitleMatcher) Match(actual interface{}) (success bool, err error) 
 	}
 	contentReader := strings.NewReader(content)
 	resultWriter := bytes.NewBuffer(nil)
-	metadata, err := libasciidoc.ConvertToHTML(context.Background(), contentReader, resultWriter, renderer.IncludeHeaderFooter(false))
+	metadata, err := libasciidoc.ConvertToHTML(context.Background(), m.filename, contentReader, resultWriter, renderer.IncludeHeaderFooter(false))
 	if err != nil {
 		return false, err
 	}
@@ -173,17 +208,27 @@ func (m *html5TitleMatcher) NegatedFailureMessage(_ interface{}) (message string
 // ---------------------
 
 // RenderHTML5Document a custom matcher to verify that a block renders as the expectation
-func RenderHTML5Document(expected string, opts ...renderer.Option) gomegatypes.GomegaMatcher {
-	return &html5DocumentMatcher{
+func RenderHTML5Document(expected string, options ...interface{}) gomegatypes.GomegaMatcher {
+	m := &html5DocumentMatcher{
 		expected: expected,
-		opts:     opts,
+		filename: "test.adoc",
 	}
+	for _, o := range options {
+		if configure, ok := o.(FilenameOption); ok {
+			configure(m)
+		}
+	}
+	return m
+}
+
+func (m *html5DocumentMatcher) setFilename(f string) {
+	m.filename = f
 }
 
 type html5DocumentMatcher struct {
+	filename string
 	expected string
 	actual   string
-	opts     []renderer.Option
 }
 
 func (m *html5DocumentMatcher) Match(actual interface{}) (success bool, err error) {
@@ -194,7 +239,7 @@ func (m *html5DocumentMatcher) Match(actual interface{}) (success bool, err erro
 	contentReader := strings.NewReader(content)
 	resultWriter := bytes.NewBuffer(nil)
 	lastUpdated := time.Now()
-	_, err = libasciidoc.ConvertToHTML(context.Background(), contentReader, resultWriter, renderer.IncludeHeaderFooter(true))
+	_, err = libasciidoc.ConvertToHTML(context.Background(), m.filename, contentReader, resultWriter, renderer.IncludeHeaderFooter(true))
 	if err != nil {
 		return false, err
 	}

@@ -146,6 +146,29 @@ a paragraph with _italic content_`
 			Expect(source).To(RenderHTML5Body(expectedContent))
 			Expect(source).To(RenderHTML5Title(expectedTitle))
 		})
+
+		It("should include adoc file without leveloffset from local file", func() {
+			source := "include::test/includes/grandchild-include.adoc[]"
+			expected := `<div class="paragraph">
+<p>first line of grandchild</p>
+</div>
+<div class="paragraph">
+<p>last line of grandchild</p>
+</div>`
+			Expect(source).To(RenderHTML5Body(expected, WithFilename("foo.adoc")))
+		})
+
+		It("should include adoc file without leveloffset from relative file", func() {
+			source := "include::../test/includes/grandchild-include.adoc[]"
+			expected := `<div class="paragraph">
+<p>first line of grandchild</p>
+</div>
+<div class="paragraph">
+<p>last line of grandchild</p>
+</div>`
+
+			Expect(source).To(RenderHTML5Body(expected, WithFilename("tmp/foo.adoc")))
+		})
 	})
 
 	Context("complete Document ", func() {

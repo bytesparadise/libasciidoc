@@ -27,6 +27,6 @@ func compare(actual interface{}, expected interface{}) comparison {
 	}
 	GinkgoT().Logf("actual:\n%s", c.actual)
 	GinkgoT().Logf("expected:\n%s", c.expected)
-	GinkgoT().Logf("diff:\n%s", c.diffs)
+	// GinkgoT().Logf("diff:\n%s", c.diffs)
 	return c
 }

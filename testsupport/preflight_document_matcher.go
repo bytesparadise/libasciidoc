@@ -11,26 +11,32 @@ import (
 )
 
 // BecomePreflightDocument a custom matcher to verify that a preflight document matches the expectation
-func BecomePreflightDocument(expected interface{}) types.GomegaMatcher {
-	return &preflightDocumentMatcher{
+func BecomePreflightDocument(expected interface{}, options ...interface{}) types.GomegaMatcher {
+	m := &preflightDocumentMatcher{
 		expected:      expected,
 		preprocessing: true,
+		filename:      "test.adoc",
 	}
-}
-
-// BecomePreflightDocumentWithoutPreprocessing a custom matcher to verify that a preflight document matches the expectation
-func BecomePreflightDocumentWithoutPreprocessing(expected interface{}) types.GomegaMatcher {
-	return &preflightDocumentMatcher{
-		expected:      expected,
-		preprocessing: false,
+	for _, o := range options {
+		if configure, ok := o.(BecomePreflightDocumentOption); ok {
+			configure(m)
+		} else if configure, ok := o.(FilenameOption); ok {
+			configure(m)
+		}
 	}
+	return m
 }
 
 type preflightDocumentMatcher struct {
+	filename      string
 	preprocessing bool
 	expected      interface{}
 	actual        interface{}
 	comparison    comparison
+}
+
+func (m *preflightDocumentMatcher) setFilename(f string) {
+	m.filename = f
 }
 
 func (m *preflightDocumentMatcher) Match(actual interface{}) (success bool, err error) {
@@ -40,9 +46,9 @@ func (m *preflightDocumentMatcher) Match(actual interface{}) (success bool, err 
 	}
 	r := strings.NewReader(content)
 	if !m.preprocessing {
-		m.actual, err = parser.ParseReader("", r, parser.Entrypoint("PreflightDocument"))
+		m.actual, err = parser.ParseReader(m.filename, r, parser.Entrypoint("PreflightDocument"))
 	} else {
-		m.actual, err = parser.ParsePreflightDocument("test.adoc", r)
+		m.actual, err = parser.ParsePreflightDocument(m.filename, r)
 	}
 	if err != nil {
 		return false, err

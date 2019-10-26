@@ -35,14 +35,14 @@ func ConvertFileToHTML(ctx context.Context, filename string, output io.Writer, o
 		return nil, errors.Wrapf(err, "error opening %s", filename)
 	}
 	defer file.Close()
-	return ConvertToHTML(ctx, file, output, options...)
+	return ConvertToHTML(ctx, filename, file, output, options...)
 }
 
 // ConvertToHTML converts the content of the given reader `r` into a full HTML document, written in the given writer `output`.
 // Returns an error if a problem occurred
-func ConvertToHTML(ctx context.Context, r io.Reader, output io.Writer, options ...renderer.Option) (map[string]interface{}, error) {
+func ConvertToHTML(ctx context.Context, filename string, r io.Reader, output io.Writer, options ...renderer.Option) (map[string]interface{}, error) {
 	log.Debugf("parsing the asciidoc source...")
-	doc, err := parser.ParseDocument("", r)
+	doc, err := parser.ParseDocument(filename, r)
 	if err != nil {
 		return nil, errors.Wrapf(err, "error while parsing the document")
 	}
