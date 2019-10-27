@@ -353,6 +353,20 @@ type Preamble struct {
 	Elements []interface{}
 }
 
+// HasContent returns `true` if this Preamble has at least one element which is neither a
+// BlankLine nor a DocumentAttributeDeclaration
+func (p Preamble) HasContent() bool {
+	for _, pe := range p.Elements {
+		switch pe.(type) {
+		case DocumentAttributeDeclaration, BlankLine:
+			continue
+		default:
+			return true
+		}
+	}
+	return false
+}
+
 // ------------------------------------------
 // Front Matter
 // ------------------------------------------

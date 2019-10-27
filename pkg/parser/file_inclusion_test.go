@@ -191,6 +191,81 @@ var _ = Describe("file inclusions - preflight with preprocessing", func() {
 		Expect(console).ToNot(ContainAnyMessageWithLevels(log.ErrorLevel, log.WarnLevel))
 	})
 
+	It("should include section 0 by default", func() {
+		source := "include::../../test/includes/chapter-a.adoc[]"
+		// at this level (parsing), it is expected that the Section 0 is part of the Prefligh document
+		expected := types.PreflightDocument{
+			Blocks: []interface{}{
+				types.Section{
+					Attributes: types.ElementAttributes{
+						types.AttrID:       "chapter_a",
+						types.AttrCustomID: false,
+					},
+					Level: 0,
+					Title: types.InlineElements{
+						types.StringElement{
+							Content: "Chapter A",
+						},
+					},
+					Elements: []interface{}{},
+				},
+				types.BlankLine{},
+				types.Paragraph{
+					Attributes: types.ElementAttributes{},
+					Lines: []types.InlineElements{
+						{
+							types.StringElement{
+								Content: "content",
+							},
+						},
+					},
+				},
+			},
+		}
+		Expect(source).To(BecomePreflightDocument(expected))
+	})
+
+	It("should not include section 0 when attribute exists", func() {
+		source := `:includedir: ../../test/includes
+
+include::{includedir}/chapter-a.adoc[]`
+		// at this level (parsing), it is expected that the Section 0 is part of the Prefligh document
+		expected := types.PreflightDocument{
+			Blocks: []interface{}{
+				types.DocumentAttributeDeclaration{
+					Name:  "includedir",
+					Value: "../../test/includes",
+				},
+				types.BlankLine{},
+				types.Section{
+					Attributes: types.ElementAttributes{
+						types.AttrID:       "chapter_a",
+						types.AttrCustomID: false,
+					},
+					Level: 0,
+					Title: types.InlineElements{
+						types.StringElement{
+							Content: "Chapter A",
+						},
+					},
+					Elements: []interface{}{},
+				},
+				types.BlankLine{},
+				types.Paragraph{
+					Attributes: types.ElementAttributes{},
+					Lines: []types.InlineElements{
+						{
+							types.StringElement{
+								Content: "content",
+							},
+						},
+					},
+				},
+			},
+		}
+		Expect(source).To(BecomePreflightDocument(expected))
+	})
+
 	Context("file inclusions in delimited blocks", func() {
 
 		It("should include adoc file within fenced block", func() {

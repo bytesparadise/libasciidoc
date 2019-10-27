@@ -65,6 +65,24 @@ include::../../../test/includes/chapter-a.adoc[leveloffset=+1]`
 		Expect(source).To(RenderHTML5Body(expected))
 	})
 
+	It("should not include section 0 by default", func() {
+		source := `include::../../../test/includes/chapter-a.adoc[]`
+		expected := `<div class="paragraph">
+<p>content</p>
+</div>`
+		Expect(source).To(RenderHTML5Body(expected))
+	})
+
+	It("should not include section 0 when attribute exists", func() {
+		source := `:includedir: ../../../test/includes
+
+include::{includedir}/chapter-a.adoc[]`
+		expected := `<div class="paragraph">
+<p>content</p>
+</div>`
+		Expect(source).To(RenderHTML5Body(expected))
+	})
+
 	It("include non adoc file", func() {
 		source := `= Master Document
 
