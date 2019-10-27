@@ -11,52 +11,6 @@ import (
 
 var _ = Describe("html5 rendering assertions", func() {
 
-	Context("HTML5 element matcher", func() {
-
-		expected := `<div class="paragraph">
-<p>hello, world!</p>
-</div>`
-
-		It("should match", func() {
-			// given
-			matcher := testsupport.RenderHTML5Element(expected)
-			actual := "hello, world!"
-			// when
-			result, err := matcher.Match(actual)
-			// then
-			Expect(err).ToNot(HaveOccurred())
-			Expect(result).To(BeTrue())
-		})
-
-		It("should not match", func() {
-			// given
-			matcher := testsupport.RenderHTML5Element(expected)
-			actual := "foo"
-			// when
-			result, err := matcher.Match(actual)
-			// then
-			Expect(err).ToNot(HaveOccurred())
-			Expect(result).To(BeFalse())
-			// also verify the messages
-			obtained := `<div class="paragraph">
-<p>foo</p>
-</div>`
-			Expect(matcher.FailureMessage(actual)).To(Equal(fmt.Sprintf("expected HTML5 elements to match:\n%s", compare(obtained, expected))))
-			Expect(matcher.NegatedFailureMessage(actual)).To(Equal(fmt.Sprintf("expected HTML5 elements not to match:\n%s", compare(obtained, expected))))
-		})
-
-		It("should return error when invalid type is input", func() {
-			// given
-			matcher := testsupport.RenderHTML5Element("")
-			// when
-			result, err := matcher.Match(1) // not a string
-			// then
-			Expect(err).To(HaveOccurred())
-			Expect(err.Error()).To(Equal("RenderHTML5Element matcher expects a string (actual: int)"))
-			Expect(result).To(BeFalse())
-		})
-	})
-
 	Context("HTML5 body matcher", func() {
 
 		expected := `<div class="paragraph">

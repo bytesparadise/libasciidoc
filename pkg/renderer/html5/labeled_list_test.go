@@ -39,7 +39,7 @@ on 2 lines, too.</p>
 </dd>
 </dl>
 </div>`
-			Expect(source).To(RenderHTML5Element(expected))
+			Expect(source).To(RenderHTML5Body(expected))
 		})
 
 		It("labeled list with an empty entry", func() {
@@ -54,7 +54,7 @@ item 2:: description 2.`
 </dd>
 </dl>
 </div>`
-			Expect(source).To(RenderHTML5Element(expected))
+			Expect(source).To(RenderHTML5Body(expected))
 		})
 
 		It("labeled list with an image", func() {
@@ -72,7 +72,7 @@ item 2:: description 2.`
 </dd>
 </dl>
 </div>`
-			Expect(source).To(RenderHTML5Element(expected))
+			Expect(source).To(RenderHTML5Body(expected))
 		})
 
 		It("labeled list with script injection", func() {
@@ -85,7 +85,7 @@ item 2:: description 2.`
 </dd>
 </dl>
 </div>`
-			Expect(source).To(RenderHTML5Element(expected))
+			Expect(source).To(RenderHTML5Body(expected))
 		})
 
 		It("labeled list with fenced block", func() {
@@ -112,7 +112,7 @@ item 2:: description 2.`
 </dd>
 </dl>
 </div>`
-			Expect(source).To(RenderHTML5Element(expected))
+			Expect(source).To(RenderHTML5Body(expected))
 		})
 
 		It("labeled list with nested lists using regular layout", func() {
@@ -149,7 +149,7 @@ item 2:: something simple`
 </dd>
 </dl>
 </div>`
-			Expect(source).To(RenderHTML5Element(expected))
+			Expect(source).To(RenderHTML5Body(expected))
 		})
 
 		It("labeled list with title", func() {
@@ -169,7 +169,7 @@ second term:: definition of the second term`
 </dd>
 </dl>
 </div>`
-			Expect(source).To(RenderHTML5Element(expected))
+			Expect(source).To(RenderHTML5Body(expected))
 		})
 
 	})
@@ -209,7 +209,7 @@ on 2 lines, too.</p>
 </tr>
 </table>
 </div>`
-			Expect(source).To(RenderHTML5Element(expected))
+			Expect(source).To(RenderHTML5Body(expected))
 		})
 
 		It("labeled list with nested lists using horizontal layout", func() {
@@ -255,7 +255,7 @@ item 2
 </tr>
 </table>
 </div>`
-			Expect(source).To(RenderHTML5Element(expected))
+			Expect(source).To(RenderHTML5Body(expected))
 		})
 
 	})
@@ -283,7 +283,7 @@ item 2:: description 2.`
 </dd>
 </dl>
 </div>`
-			Expect(source).To(RenderHTML5Element(expected))
+			Expect(source).To(RenderHTML5Body(expected))
 		})
 
 		It("labeled list with blockcontinuation", func() {
@@ -319,7 +319,7 @@ another delimited block
 </dl>
 </div>`
 
-			Expect(source).To(RenderHTML5Element(expected))
+			Expect(source).To(RenderHTML5Body(expected))
 		})
 
 		It("labeled list without continuation", func() {
@@ -355,7 +355,7 @@ another delimited block
 </div>
 </div>`
 
-			Expect(source).To(RenderHTML5Element(expected))
+			Expect(source).To(RenderHTML5Body(expected))
 		})
 	})
 
@@ -392,7 +392,7 @@ Item 3 description`
 </dd>
 </dl>
 </div>`
-			Expect(source).To(RenderHTML5Element(expected))
+			Expect(source).To(RenderHTML5Body(expected))
 		})
 	})
 
@@ -418,7 +418,7 @@ What is the answer to the Ultimate Question?:: 42`
 </li>
 </ol>
 </div>`
-			Expect(source).To(RenderHTML5Element(expected))
+			Expect(source).To(RenderHTML5Body(expected))
 		})
 	})
 
@@ -462,7 +462,7 @@ paragraph attached to grandparent list item`
 </dd>
 </dl>
 </div>`
-			Expect(source).To(RenderHTML5Element(expected))
+			Expect(source).To(RenderHTML5Body(expected))
 		})
 
 		It("attach to parent labeled list item", func() {
@@ -502,7 +502,7 @@ paragraph attached to parent list item`
 </dd>
 </dl>
 </div>`
-			Expect(source).To(RenderHTML5Element(expected))
+			Expect(source).To(RenderHTML5Body(expected))
 		})
 
 		It("attach to child labeled list item", func() {
@@ -541,7 +541,7 @@ paragraph attached to child list item`
 </dd>
 </dl>
 </div>`
-			Expect(source).To(RenderHTML5Element(expected))
+			Expect(source).To(RenderHTML5Body(expected))
 		})
 	})
 })

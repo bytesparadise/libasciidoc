@@ -25,7 +25,7 @@ var _ = Describe("tables", func() {
 </tr>
 </tbody>
 </table>`
-		Expect(source).To(RenderHTML5Element(expected))
+		Expect(source).To(RenderHTML5Body(expected))
 	})
 
 	It("1-line table with 3 cells", func() {
@@ -46,7 +46,7 @@ var _ = Describe("tables", func() {
 </tr>
 </tbody>
 </table>`
-		Expect(source).To(RenderHTML5Element(expected))
+		Expect(source).To(RenderHTML5Body(expected))
 	})
 
 	It("table with title, headers and 1 line per cell", func() {
@@ -83,7 +83,7 @@ var _ = Describe("tables", func() {
 </tr>
 </tbody>
 </table>`
-		Expect(source).To(RenderHTML5Element(expected))
+		Expect(source).To(RenderHTML5Body(expected))
 	})
 
 	It("empty table ", func() {
@@ -91,7 +91,7 @@ var _ = Describe("tables", func() {
 |===`
 		expected := `<table class="tableblock frame-all grid-all stretch">
 </table>`
-		Expect(source).To(RenderHTML5Element(expected))
+		Expect(source).To(RenderHTML5Body(expected))
 	})
 
 	It("2 tables with 1 counter", func() {
@@ -128,7 +128,7 @@ var _ = Describe("tables", func() {
 </tr>
 </tbody>
 </table>`
-		Expect(source).To(RenderHTML5Element(expected))
+		Expect(source).To(RenderHTML5Body(expected))
 	})
 
 	It("2 tables with 2 counters", func() {
@@ -167,7 +167,7 @@ var _ = Describe("tables", func() {
 </tr>
 </tbody>
 </table>`
-		Expect(source).To(RenderHTML5Element(expected))
+		Expect(source).To(RenderHTML5Body(expected))
 	})
 
 })

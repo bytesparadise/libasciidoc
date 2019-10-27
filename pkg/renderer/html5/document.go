@@ -107,6 +107,7 @@ func renderDocument(ctx *renderer.Context, output io.Writer) (map[string]interfa
 	if len(renderedTitle) > 0 {
 		metadata[types.AttrTitle] = string(renderedTitle)
 	}
+	metadata["LastUpdated"] = ctx.LastUpdated()
 	return metadata, nil
 }
 
