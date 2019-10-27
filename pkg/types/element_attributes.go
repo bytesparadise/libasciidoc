@@ -57,6 +57,8 @@ const (
 	AttrLineRanges = "lines"
 	// AttrTagRanges the `tag`/`tags` attribute used in file inclusions
 	AttrTagRanges = "tags"
+	// AttrLastUpdated the "last updated" data in the document, i.e., the output/generation time
+	AttrLastUpdated = "LastUpdated"
 )
 
 // ElementWithAttributes an element on which attributes can be added/set

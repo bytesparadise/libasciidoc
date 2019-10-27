@@ -25,7 +25,7 @@ with some content linked to <<thetitle>>!`
 </div>
 </div>
 </div>`
-			Expect(source).To(RenderHTML5Element(expected))
+			Expect(source).To(RenderHTML5Body(expected))
 		})
 
 		It("cross-reference with custom id and label", func() {
@@ -41,7 +41,7 @@ with some content linked to <<thetitle,a label to the title>>!`
 </div>
 </div>
 </div>`
-			Expect(source).To(RenderHTML5Element(expected))
+			Expect(source).To(RenderHTML5Body(expected))
 		})
 
 		It("invalid section reference", func() {
@@ -58,7 +58,7 @@ with some content linked to <<thewrongtitle>>!`
 </div>
 </div>
 </div>`
-			Expect(source).To(RenderHTML5Element(expected))
+			Expect(source).To(RenderHTML5Body(expected))
 		})
 	})
 })

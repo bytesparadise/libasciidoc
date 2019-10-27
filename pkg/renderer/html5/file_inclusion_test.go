@@ -20,7 +20,7 @@ var _ = Describe("file inclusions", func() {
 <div class="paragraph">
 <p>last line of grandchild</p>
 </div>`
-		Expect(source).To(RenderHTML5Element(expected, WithFilename("foo.adoc")))
+		Expect(source).To(RenderHTML5Body(expected, WithFilename("foo.adoc")))
 		// verify no error/warning in logs
 		Expect(console).ToNot(ContainAnyMessageWithLevels(log.ErrorLevel, log.WarnLevel))
 	})
@@ -36,7 +36,7 @@ var _ = Describe("file inclusions", func() {
 <p>last line of grandchild</p>
 </div>`
 
-		Expect(source).To(RenderHTML5Element(expected, WithFilename("tmp/foo.adoc")))
+		Expect(source).To(RenderHTML5Body(expected, WithFilename("tmp/foo.adoc")))
 		// verify no error/warning in logs
 		Expect(console).ToNot(ContainAnyMessageWithLevels(log.ErrorLevel, log.WarnLevel))
 	})
@@ -62,7 +62,7 @@ include::../../../test/includes/chapter-a.adoc[leveloffset=+1]`
 </div>
 </div>
 </div>`
-		Expect(source).To(RenderHTML5Element(expected))
+		Expect(source).To(RenderHTML5Body(expected))
 	})
 
 	It("include non adoc file", func() {
@@ -85,7 +85,7 @@ include::../../../test/includes/hello_world.go.txt[]`
 	fmt.Println(&#34;hello, world!&#34;)
 }</p>
 </div>`
-		Expect(source).To(RenderHTML5Element(expected))
+		Expect(source).To(RenderHTML5Body(expected))
 	})
 
 	It("include 2 files", func() {
@@ -116,7 +116,7 @@ include::../../../test/includes/hello_world.go.txt[]`
 	fmt.Println(&#34;hello, world!&#34;)
 }</p>
 </div>`
-		Expect(source).To(RenderHTML5Element(expected))
+		Expect(source).To(RenderHTML5Body(expected))
 	})
 
 	It("include file and append following elements in included section", func() {
@@ -144,7 +144,7 @@ a third paragraph`
 </div>
 </div>
 </div>`
-		Expect(source).To(RenderHTML5Element(expected))
+		Expect(source).To(RenderHTML5Body(expected))
 	})
 
 	Context("file inclusion in delimited blocks", func() {
@@ -169,7 +169,7 @@ include::../../../test/includes/chapter-a.adoc[]
 content</pre>
 </div>
 </div>`
-				Expect(source).To(RenderHTML5Element(expected))
+				Expect(source).To(RenderHTML5Body(expected))
 			})
 
 			It("should include adoc file within fenced block", func() {
@@ -183,7 +183,7 @@ content</pre>
 content</code></pre>
 </div>
 </div>`
-				Expect(source).To(RenderHTML5Element(expected))
+				Expect(source).To(RenderHTML5Body(expected))
 			})
 
 			It("should include adoc file within example block", func() {
@@ -200,7 +200,7 @@ include::../../../test/includes/chapter-a.adoc[]
 </div>
 </div>
 </div>`
-				Expect(source).To(RenderHTML5Element(expected))
+				Expect(source).To(RenderHTML5Body(expected))
 			})
 
 			It("should include adoc file within quote block", func() {
@@ -217,7 +217,7 @@ ____`
 </div>
 </blockquote>
 </div>`
-				Expect(source).To(RenderHTML5Element(expected))
+				Expect(source).To(RenderHTML5Body(expected))
 			})
 
 			It("should include adoc file within verse block", func() {
@@ -230,7 +230,7 @@ ____`
 
 content</pre>
 </div>`
-				Expect(source).To(RenderHTML5Element(expected))
+				Expect(source).To(RenderHTML5Body(expected))
 			})
 
 			It("should include adoc file within sidebar block", func() {
@@ -247,7 +247,7 @@ include::../../../test/includes/chapter-a.adoc[]
 </div>
 </div>
 </div>`
-				Expect(source).To(RenderHTML5Element(expected))
+				Expect(source).To(RenderHTML5Body(expected))
 			})
 
 			It("should include adoc file within passthrough block", func() {
@@ -256,7 +256,7 @@ include::../../../test/includes/chapter-a.adoc[]
 include::../../../test/includes/chapter-a.adoc[]
 ++++`
 				expected := ``
-				Expect(source).To(RenderHTML5Element(expected))
+				Expect(source).To(RenderHTML5Body(expected))
 			})
 		})
 
@@ -284,7 +284,7 @@ func helloworld() {
 }</pre>
 </div>
 </div>`
-				Expect(source).To(RenderHTML5Element(expected))
+				Expect(source).To(RenderHTML5Body(expected))
 			})
 
 			It("should include go file within fenced block", func() {
@@ -302,7 +302,7 @@ func helloworld() {
 }</code></pre>
 </div>
 </div>`
-				Expect(source).To(RenderHTML5Element(expected))
+				Expect(source).To(RenderHTML5Body(expected))
 			})
 
 			It("should include go file within example block", func() {
@@ -324,7 +324,7 @@ include::../../../test/includes/hello_world.go.txt[]
 </div>
 </div>
 </div>`
-				Expect(source).To(RenderHTML5Element(expected))
+				Expect(source).To(RenderHTML5Body(expected))
 			})
 
 			It("should include go file within quote block", func() {
@@ -346,7 +346,7 @@ ____`
 </div>
 </blockquote>
 </div>`
-				Expect(source).To(RenderHTML5Element(expected))
+				Expect(source).To(RenderHTML5Body(expected))
 			})
 
 			It("should include go file within verse block", func() {
@@ -363,7 +363,7 @@ func helloworld() {
 	fmt.Println(&#34;hello, world!&#34;)
 }</pre>
 </div>`
-				Expect(source).To(RenderHTML5Element(expected))
+				Expect(source).To(RenderHTML5Body(expected))
 			})
 
 			It("should include go file within sidebar block", func() {
@@ -385,7 +385,7 @@ include::../../../test/includes/hello_world.go.txt[]
 </div>
 </div>
 </div>`
-				Expect(source).To(RenderHTML5Element(expected))
+				Expect(source).To(RenderHTML5Body(expected))
 			})
 		})
 	})
@@ -399,7 +399,7 @@ include::../../../test/includes/hello_world.go.txt[]
 				expected := `<div class="paragraph">
 <p>package includes</p>
 </div>`
-				Expect(source).To(RenderHTML5Element(expected))
+				Expect(source).To(RenderHTML5Body(expected))
 			})
 
 			It("should include multiple lines as paragraph", func() {
@@ -409,7 +409,7 @@ include::../../../test/includes/hello_world.go.txt[]
 	fmt.Println(&#34;hello, world!&#34;)
 }</p>
 </div>`
-				Expect(source).To(RenderHTML5Element(expected))
+				Expect(source).To(RenderHTML5Body(expected))
 			})
 
 			It("should include multiple ranges as paragraph", func() {
@@ -422,7 +422,7 @@ include::../../../test/includes/hello_world.go.txt[]
 	fmt.Println(&#34;hello, world!&#34;)
 }</p>
 </div>`
-				Expect(source).To(RenderHTML5Element(expected))
+				Expect(source).To(RenderHTML5Body(expected))
 			})
 		})
 
@@ -437,7 +437,7 @@ include::../../../test/includes/hello_world.go.txt[lines=1]
 <pre>package includes</pre>
 </div>
 </div>`
-				Expect(source).To(RenderHTML5Element(expected))
+				Expect(source).To(RenderHTML5Body(expected))
 			})
 
 			It("should include multiple lines in listing block", func() {
@@ -451,7 +451,7 @@ include::../../../test/includes/hello_world.go.txt[lines=5..7]
 }</pre>
 </div>
 </div>`
-				Expect(source).To(RenderHTML5Element(expected))
+				Expect(source).To(RenderHTML5Body(expected))
 			})
 
 			It("should include multiple ranges in listing block", func() {
@@ -467,7 +467,7 @@ func helloworld() {
 }</pre>
 </div>
 </div>`
-				Expect(source).To(RenderHTML5Element(expected))
+				Expect(source).To(RenderHTML5Body(expected))
 			})
 		})
 	})
@@ -481,7 +481,7 @@ func helloworld() {
 <div class="sectionbody">
 </div>
 </div>`
-			Expect(source).To(RenderHTML5Element(expected))
+			Expect(source).To(RenderHTML5Body(expected))
 		})
 
 		It("file inclusion with surrounding tag", func() {
@@ -494,7 +494,7 @@ func helloworld() {
 </div>
 </div>
 </div>`
-			Expect(source).To(RenderHTML5Element(expected))
+			Expect(source).To(RenderHTML5Body(expected))
 		})
 
 		It("file inclusion with unclosed tag", func() {
@@ -507,7 +507,7 @@ func helloworld() {
 <div class="paragraph">
 <p>end</p>
 </div>`
-			Expect(source).To(RenderHTML5Element(expected))
+			Expect(source).To(RenderHTML5Body(expected))
 			// verify error in logs
 			Expect(console).To(
 				ContainMessageWithLevel(
@@ -521,7 +521,7 @@ func helloworld() {
 			defer reset()
 			source := `include::../../../test/includes/tag-include.adoc[tag=unknown]`
 			expected := ``
-			Expect(source).To(RenderHTML5Element(expected))
+			Expect(source).To(RenderHTML5Body(expected))
 			// verify error in logs
 			Expect(console).To(
 				ContainMessageWithLevel(
@@ -543,7 +543,7 @@ func helloworld() {
 </div>
 </div>
 </div>`
-			Expect(source).To(RenderHTML5Element(expected))
+			Expect(source).To(RenderHTML5Body(expected))
 		})
 
 		Context("permutations", func() {
@@ -561,7 +561,7 @@ func helloworld() {
 </div>
 </div>
 </div>`
-				Expect(source).To(RenderHTML5Element(expected))
+				Expect(source).To(RenderHTML5Body(expected))
 			})
 
 			It("all tagged regions", func() {
@@ -574,7 +574,7 @@ func helloworld() {
 </div>
 </div>
 </div>`
-				Expect(source).To(RenderHTML5Element(expected))
+				Expect(source).To(RenderHTML5Body(expected))
 			})
 
 			It("all the lines outside and inside of tagged regions", func() {
@@ -590,7 +590,7 @@ func helloworld() {
 </div>
 </div>
 </div>`
-				Expect(source).To(RenderHTML5Element(expected))
+				Expect(source).To(RenderHTML5Body(expected))
 			})
 
 			It("regions tagged doc, but not nested regions tagged content", func() {
@@ -600,7 +600,7 @@ func helloworld() {
 <div class="sectionbody">
 </div>
 </div>`
-				Expect(source).To(RenderHTML5Element(expected))
+				Expect(source).To(RenderHTML5Body(expected))
 			})
 
 			It("all tagged regions, but excludes any regions tagged content", func() {
@@ -610,7 +610,7 @@ func helloworld() {
 <div class="sectionbody">
 </div>
 </div>`
-				Expect(source).To(RenderHTML5Element(expected))
+				Expect(source).To(RenderHTML5Body(expected))
 			})
 
 			It("all tagged regions, but excludes any regions tagged content", func() {
@@ -623,7 +623,7 @@ func helloworld() {
 </div>
 </div>
 </div>`
-				Expect(source).To(RenderHTML5Element(expected))
+				Expect(source).To(RenderHTML5Body(expected))
 			})
 
 			It("**;!* — selects only the regions of the document outside of tags", func() {
@@ -631,7 +631,7 @@ func helloworld() {
 				expected := `<div class="paragraph">
 <p>end</p>
 </div>`
-				Expect(source).To(RenderHTML5Element(expected))
+				Expect(source).To(RenderHTML5Body(expected))
 			})
 		})
 	})
@@ -658,7 +658,7 @@ func helloworld() {
 <div class="paragraph">
 <p>last line of parent</p>
 </div>`
-			Expect(source).To(RenderHTML5Element(expected))
+			Expect(source).To(RenderHTML5Body(expected))
 		})
 
 		It("should include child and grandchild content in listing block", func() {
@@ -680,7 +680,7 @@ last line of child
 last line of parent</pre>
 </div>
 </div>`
-			Expect(source).To(RenderHTML5Element(expected))
+			Expect(source).To(RenderHTML5Body(expected))
 		})
 	})
 
@@ -696,7 +696,7 @@ include::{includedir}/grandchild-include.adoc[]`
 <div class="paragraph">
 <p>last line of grandchild</p>
 </div>`
-			Expect(source).To(RenderHTML5Element(expected))
+			Expect(source).To(RenderHTML5Body(expected))
 		})
 
 		It("should resolve path with attribute in delimited block", func() {
@@ -712,7 +712,7 @@ include::{includedir}/grandchild-include.adoc[]
 last line of grandchild</pre>
 </div>
 </div>`
-			Expect(source).To(RenderHTML5Element(expected))
+			Expect(source).To(RenderHTML5Body(expected))
 		})
 	})
 
@@ -729,7 +729,7 @@ last line of grandchild</pre>
 				expected := `<div class="paragraph">
 <p>Unresolved directive in test.adoc - include::../../../test/includes/unknown.adoc[leveloffset=&#43;1]</p>
 </div>`
-				Expect(source).To(RenderHTML5Element(expected))
+				Expect(source).To(RenderHTML5Body(expected))
 				// verify error in logs
 				Expect(console).To(
 					ContainMessageWithLevel(
@@ -747,7 +747,7 @@ last line of grandchild</pre>
 				expected := `<div class="paragraph">
 <p>Unresolved directive in test.adoc - include::{includedir}/unknown.adoc[leveloffset=&#43;1]</p>
 </div>`
-				Expect(source).To(RenderHTML5Element(expected))
+				Expect(source).To(RenderHTML5Body(expected))
 				// verify error in logs
 				Expect(console).To(
 					ContainMessageWithLevel(
@@ -772,7 +772,7 @@ include::../../../test/includes/unknown.adoc[leveloffset=+1]
 <pre>Unresolved directive in test.adoc - include::../../../test/includes/unknown.adoc[leveloffset=+1]</pre>
 </div>
 </div>`
-				Expect(source).To(RenderHTML5Element(expected))
+				Expect(source).To(RenderHTML5Body(expected))
 				// verify error in logs
 				Expect(console).To(
 					ContainMessageWithLevel(
@@ -794,7 +794,7 @@ include::{includedir}/unknown.adoc[leveloffset=+1]
 <pre>Unresolved directive in test.adoc - include::{includedir}/unknown.adoc[leveloffset=+1]</pre>
 </div>
 </div>`
-				Expect(source).To(RenderHTML5Element(expected))
+				Expect(source).To(RenderHTML5Body(expected))
 				// verify error in logs
 				Expect(console).To(
 					ContainMessageWithLevel(

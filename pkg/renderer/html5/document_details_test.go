@@ -51,7 +51,7 @@ Last updated {{.LastUpdated}}
 </div>
 </body>
 </html>`
-			Expect(source).To(RenderHTML5Element(expected, renderer.IncludeHeaderFooter(true), renderer.LastUpdated(time.Now())))
+			Expect(source).To(RenderHTML5Body(expected, renderer.IncludeHeaderFooter(true), renderer.LastUpdated(time.Now())))
 		})
 
 		It("header with 2 authors and no revision", func() {
@@ -88,7 +88,7 @@ Last updated {{.LastUpdated}}
 </div>
 </body>
 </html>`
-			Expect(source).To(RenderHTML5Element(expected, renderer.IncludeHeaderFooter(true), renderer.LastUpdated(time.Now())))
+			Expect(source).To(RenderHTML5Body(expected, renderer.IncludeHeaderFooter(true), renderer.LastUpdated(time.Now())))
 
 		})
 	})

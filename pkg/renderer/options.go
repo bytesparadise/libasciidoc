@@ -2,18 +2,20 @@ package renderer
 
 import (
 	"time"
+
+	"github.com/bytesparadise/libasciidoc/pkg/types"
 )
 
 //Option the options when rendering a document
 type Option func(ctx *Context)
 
 const (
-	//keyLastUpdated the key to specify the last update of the document to render.
+	// keyLastUpdated the key to specify the last update of the document to render.
 	// Can be a string or a time, which will be formatted using the 2006/01/02 15:04:05 MST` pattern
-	keyLastUpdated string = "LastUpdated"
-	//keyIncludeHeaderFooter a bool value to indicate if the header and footer should be rendered
+	keyLastUpdated string = types.AttrLastUpdated
+	// keyIncludeHeaderFooter a bool value to indicate if the header and footer should be rendered
 	keyIncludeHeaderFooter string = "IncludeHeaderFooter"
-	//keyEntrypoint a bool value to indicate if the entrypoint to start with when parsing the document
+	// keyEntrypoint a bool value to indicate if the entrypoint to start with when parsing the document
 	keyEntrypoint string = "Entrypoint"
 	// LastUpdatedFormat the time format for the `last updated` document attribute
 	LastUpdatedFormat string = "2006/01/02 15:04:05 MST"

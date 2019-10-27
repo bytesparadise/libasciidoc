@@ -16,7 +16,7 @@ var _ = Describe("sections", func() {
 			// top-level section is not rendered per-say,
 			// but the section will be used to set the HTML page's <title> element
 			expected := ``
-			Expect(source).To(RenderHTML5Element(expected))
+			Expect(source).To(RenderHTML5Body(expected))
 		})
 
 		It("section level 1 alone", func() {
@@ -28,7 +28,7 @@ var _ = Describe("sections", func() {
 <div class="sectionbody">
 </div>
 </div>`
-			Expect(source).To(RenderHTML5Element(expected))
+			Expect(source).To(RenderHTML5Body(expected))
 		})
 
 		It("section level 2 alone", func() {
@@ -38,7 +38,7 @@ var _ = Describe("sections", func() {
 			expected := `<div class="sect2">
 <h3 id="_a_title">a title</h3>
 </div>`
-			Expect(source).To(RenderHTML5Element(expected))
+			Expect(source).To(RenderHTML5Body(expected))
 		})
 
 		It("section level 1 with just bold content", func() {
@@ -48,7 +48,7 @@ var _ = Describe("sections", func() {
 <div class="sectionbody">
 </div>
 </div>`
-			Expect(source).To(RenderHTML5Element(expected))
+			Expect(source).To(RenderHTML5Body(expected))
 		})
 
 		It("section level 2 with nested bold content", func() {
@@ -56,7 +56,7 @@ var _ = Describe("sections", func() {
 			expected := `<div class="sect2">
 <h3 id="_a_section_title_with_bold_content">a section title, with <strong>bold content</strong></h3>
 </div>`
-			Expect(source).To(RenderHTML5Element(expected))
+			Expect(source).To(RenderHTML5Body(expected))
 		})
 
 		It("section level 1 with custom ID", func() {
@@ -70,7 +70,7 @@ var _ = Describe("sections", func() {
 <div class="sectionbody">
 </div>
 </div>`
-			Expect(source).To(RenderHTML5Element(expected))
+			Expect(source).To(RenderHTML5Body(expected))
 		})
 
 		It("section level 1 with custom prefix id", func() {
@@ -83,7 +83,7 @@ var _ = Describe("sections", func() {
 <div class="sectionbody">
 </div>
 </div>`
-			Expect(source).To(RenderHTML5Element(expected))
+			Expect(source).To(RenderHTML5Body(expected))
 		})
 
 		It("sections with same title", func() {
@@ -100,7 +100,7 @@ var _ = Describe("sections", func() {
 <div class="sectionbody">
 </div>
 </div>`
-			Expect(source).To(RenderHTML5Element(expected))
+			Expect(source).To(RenderHTML5Body(expected))
 		})
 	})
 
@@ -125,7 +125,7 @@ and a second paragraph`
 </div>
 </div>
 </div>`
-			Expect(source).To(RenderHTML5Element(expected))
+			Expect(source).To(RenderHTML5Body(expected))
 		})
 
 		It("section with just a paragraph", func() {
@@ -137,7 +137,7 @@ a paragraph`
 			expected := `<div class="paragraph">
 <p>a paragraph</p>
 </div>`
-			Expect(source).To(RenderHTML5Element(expected))
+			Expect(source).To(RenderHTML5Body(expected))
 		})
 
 		It("header with preamble then section level 1", func() {
@@ -170,7 +170,7 @@ with some text`
 </div>
 </div>
 </div>`
-			Expect(source).To(RenderHTML5Element(expected))
+			Expect(source).To(RenderHTML5Body(expected))
 		})
 
 		It("header with preamble then 2 sections level 1", func() {
@@ -215,7 +215,7 @@ with some text, too`
 </div>
 </div>
 </div>`
-			Expect(source).To(RenderHTML5Element(expected))
+			Expect(source).To(RenderHTML5Body(expected))
 		})
 
 		It("section with listing block and subsection", func() {
@@ -247,7 +247,7 @@ Listing block content is commonly used to preserve code input.</pre>
 </div>
 </div>
 </div>`
-			Expect(source).To(RenderHTML5Element(expected))
+			Expect(source).To(RenderHTML5Body(expected))
 		})
 	})
 
@@ -278,7 +278,7 @@ here</p>
 </div>
 </div>
 </div>`
-			Expect(source).To(RenderHTML5Element(expected))
+			Expect(source).To(RenderHTML5Body(expected))
 		})
 
 		It("should not include preamble wrapper", func() {
@@ -301,7 +301,7 @@ here</p>
 </div>
 </div>
 </div>`
-			Expect(source).To(RenderHTML5Element(expected))
+			Expect(source).To(RenderHTML5Body(expected))
 		})
 	})
 })
