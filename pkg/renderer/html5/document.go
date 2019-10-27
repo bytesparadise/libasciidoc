@@ -9,6 +9,7 @@ import (
 
 	"github.com/bytesparadise/libasciidoc/pkg/renderer"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
+	"github.com/davecgh/go-spew/spew"
 	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
 )
@@ -115,17 +116,58 @@ func renderDocument(ctx *renderer.Context, output io.Writer) (map[string]interfa
 // but not the HEAD and BODY containers
 func renderDocumentElements(ctx *renderer.Context) ([]byte, error) {
 	elements := []interface{}{}
-	if len(ctx.Document.Elements) > 0 {
-		// retrieve elements of the first section 0 (if available), plus remaining elements
-		if s, ok := ctx.Document.Elements[0].(types.Section); ok && s.Level == 0 {
-			elements = append(elements, s.Elements)
-			if len(ctx.Document.Elements) > 1 {
-				elements = append(elements, ctx.Document.Elements[1:]...)
+	for i, e := range ctx.Document.Elements {
+		switch e := e.(type) {
+		case types.Preamble:
+			if !e.HasContent() {
+				// retain the preamble
+				elements = append(elements, e)
+				continue
 			}
-		} else {
+			// retain everything "as-is"
 			elements = ctx.Document.Elements
+			break
+		case types.Section:
+			if e.Level == 0 {
+				// retain the section's elements...
+				elements = append(elements, e.Elements)
+				// ... and add the other elements
+				elements = append(elements, ctx.Document.Elements[i+1:]...)
+				continue
+			}
+			// retain everything "as-is"
+			elements = ctx.Document.Elements
+			break
+		default:
+			// retain everything "as-is"
+			elements = ctx.Document.Elements
+			break
 		}
 	}
+	if log.IsLevelEnabled(log.DebugLevel) {
+		log.Debug("pre-rendered elements:")
+		spew.Dump(elements)
+	}
+	// 	// retrieve elements of the first section 0 (if available), plus remaining elements
+	// 	// any document attribute before the section level 0 can be ignored
+	// 	if s, ok := ctx.Document.Elements[0].(types.Section); ok && s.Level == 0 {
+	// 		elements = append(elements, s.Elements)
+	// 		if len(ctx.Document.Elements) > 1 {
+	// 			elements = append(elements, ctx.Document.Elements[1:]...)
+	// 		}
+	// 	} else if p, ok := ctx.Document.Elements[0].(types.Preamble); ok {
+	// 		if p.HasContent() {
+	// 			// check if preamble has anything else than document attribute declarations and blanklines
+	// 			log.Debug("preamble has content")
+	// 			elements = ctx.Document.Elements
+	// 		} else {
+	// 			elements = append(elements, ctx.Document.Elements[1:]...)
+	// 		}
+	// 	} else {
+	// 		elements = ctx.Document.Elements
+	// 	}
+	// }
+
 	// log.Debugf("rendered document with %d element(s)...", len(elements))
 	buff := bytes.NewBuffer(nil)
 	renderedElements, err := renderElements(ctx, elements)
