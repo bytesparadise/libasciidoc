@@ -11,21 +11,25 @@ import (
 
 }
 
-// ---------------------------------------------------
-// PreflightDocument - fully parsed document, linearly
-// ---------------------------------------------------
-PreflightDocument <- frontmatter:(FrontMatter?) blocks:(DocumentBlocks) EOF {
+// ----------------------------------------------------------------
+// PreflightAsciidocDocument - fully parsed document, line by line
+// ----------------------------------------------------------------
+PreflightAsciidocDocument <- frontmatter:(FrontMatter?) blocks:(AsciidocDocumentBlocks) EOF {
     return types.NewPreflightDocument(frontmatter, blocks.([]interface{}))
 }
 
-PreflightDocumentWithinDelimitedBlock <- frontmatter:(FrontMatter?) blocks:(DocumentBlocksWithinDelimitedBlock) EOF {
+PreflightAsciidocDocumentWithinDelimitedBlock <- frontmatter:(FrontMatter?) blocks:(AsciidocDocumentBlocksWithinDelimitedBlock) EOF {
     return types.NewPreflightDocument(frontmatter, blocks.([]interface{}))
+}
+
+PreflightTextDocument <- blocks:(TextDocumentBlocks) EOF {
+    return types.NewPreflightDocument(nil, blocks.([]interface{}))
 }
 
 // ------------------------------------------
 // Document blocks
 // ------------------------------------------
-DocumentBlocks <- header:(DocumentHeader?) others:(DocumentBlock*) {
+AsciidocDocumentBlocks <- header:(DocumentHeader?) others:(DocumentBlock*) {
     if header != nil && others != nil {
         return append([]interface{}{header}, others.([]interface{})...), nil
     } else if others != nil {
@@ -52,7 +56,7 @@ DocumentBlock <- !EOF
     return block, nil
 }
 
-DocumentBlocksWithinDelimitedBlock <- blocks:(DocumentBlockWithinDelimitedBlock)*
+AsciidocDocumentBlocksWithinDelimitedBlock <- blocks:(DocumentBlockWithinDelimitedBlock)*
 
 DocumentBlockWithinDelimitedBlock <- !EOF 
     block:(DelimitedBlock
@@ -67,6 +71,13 @@ DocumentBlockWithinDelimitedBlock <- !EOF
         / TableOfContentsMacro
         / UserMacroBlock
         / Paragraph) {
+    return block, nil
+}
+
+TextDocumentBlocks <- blocks:(TextDocumentBlock)*
+
+TextDocumentBlock <- !EOF 
+    block:(BlankLine / Paragraph) {
     return block, nil
 }
 
@@ -297,7 +308,6 @@ Section <- attributes:(ElementAttributes)?
     WS+ title:(TitleElements) id:(InlineElementID*) EOL {
     return types.NewSection(level.(int), title.(types.InlineElements), id.([]interface{}), attributes) 
 }
-
 
 TitleElements <- elements:(!NEWLINE !InlineElementID TitleElement)+ { // absorbs heading and trailing spaces
     return types.NewInlineElements(elements.([]interface{}))

@@ -18,7 +18,7 @@ const LevelOffset ContextKey = "leveloffset"
 
 // ParsePreflightDocument parses a document's content and applies the preprocessing directives (file inclusions)
 func ParsePreflightDocument(filename string, r io.Reader, opts ...Option) (types.PreflightDocument, error) {
-	opts = append(opts, Entrypoint("PreflightDocument"))
+	opts = append(opts, Entrypoint("PreflightAsciidocDocument"))
 	return parsePreflightDocument(filename, r, "", opts...)
 }
 
@@ -56,7 +56,7 @@ func parseElements(filename string, elements []interface{}, attrs types.Document
 		case types.DelimitedBlock:
 			elmts, err := parseElements(filename, e.Elements, attrs, levelOffset,
 				// use a new var to avoid overridding the current one which needs to stay as-is for the rest of the doc parsing
-				append(opts, Entrypoint("PreflightDocumentWithinDelimitedBlock"))...)
+				append(opts, Entrypoint("PreflightAsciidocDocumentWithinDelimitedBlock"))...)
 			if err != nil {
 				return nil, err
 			}

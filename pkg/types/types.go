@@ -1748,12 +1748,6 @@ func (f FileInclusion) AddAttributes(attributes ElementAttributes) {
 	f.Attributes.AddAll(attributes)
 }
 
-// IsAsciidoc returns true if the file to include is an asciidoc file (based on the file location extension)
-func IsAsciidoc(path string) bool {
-	ext := filepath.Ext(path)
-	return ext == ".asciidoc" || ext == ".adoc" || ext == ".ad" || ext == ".asc" || ext == ".txt"
-}
-
 // LineRanges returns the line ranges of the file to include.
 func (f *FileInclusion) LineRanges() (LineRanges, bool) {
 	if lr, ok := f.Attributes[AttrLineRanges].(LineRanges); ok {

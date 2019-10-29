@@ -78,6 +78,22 @@ var _ = Describe("file location", func() {
 	)
 })
 
+var _ = Describe("file inclusions", func() {
+
+	DescribeTable("check asciidoc file",
+		func(path string, expectation bool) {
+			Expect(parser.IsAsciidoc(path)).To(Equal(expectation))
+		},
+		Entry("foo.adoc", "foo.adoc", true),
+		Entry("foo.asc", "foo.asc", true),
+		Entry("foo.ad", "foo.ad", true),
+		Entry("foo.asciidoc", "foo.asciidoc", true),
+		Entry("foo.txt", "foo.txt", true),
+		Entry("foo.csv", "foo.csv", false),
+		Entry("foo.go", "foo.go", false),
+	)
+})
+
 var _ = Describe("file inclusions - preflight with preprocessing", func() {
 
 	It("should include adoc file without leveloffset from local file", func() {
@@ -264,6 +280,48 @@ include::{includedir}/chapter-a.adoc[]`
 			},
 		}
 		Expect(source).To(BecomePreflightDocument(expected))
+	})
+
+	It("should not further process with non-asciidoc files", func() {
+		source := `:includedir: ../../test/includes
+
+include::{includedir}/include.foo[]`
+		expected := types.PreflightDocument{
+			Blocks: []interface{}{
+				types.DocumentAttributeDeclaration{
+					Name:  "includedir",
+					Value: "../../test/includes",
+				},
+				types.BlankLine{},
+				types.Paragraph{
+					Attributes: types.ElementAttributes{},
+					Lines: []types.InlineElements{
+						{
+							types.QuotedText{
+								Kind: types.Bold,
+								Elements: types.InlineElements{
+									types.StringElement{
+										Content: "some strong content",
+									},
+								},
+							},
+						},
+					},
+				},
+				types.BlankLine{},
+				types.Paragraph{
+					Attributes: types.ElementAttributes{},
+					Lines: []types.InlineElements{
+						{
+							types.StringElement{
+								Content: "include::hello_world.go.txt[]",
+							},
+						},
+					},
+				},
+			},
+		}
+		Expect(source).To(BecomePreflightDocument(expected, WithFilename("foo.bar"))) // parent doc may not need to be a '.adoc'
 	})
 
 	Context("file inclusions in delimited blocks", func() {
