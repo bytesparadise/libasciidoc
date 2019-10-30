@@ -38,7 +38,6 @@ var _ = Describe("line ranges", func() {
 
 		DescribeTable("match line range",
 			func(line int, expectation bool) {
-				// Expect(types.IsAsciidoc(path)).To(Equal(expectation))
 				Expect(ranges.Match(line)).To(Equal(expectation))
 			},
 			Entry("should match line 1", 1, true),
@@ -467,22 +466,6 @@ var _ = Describe("tag ranges", func() {
 		Expect(err).To(HaveOccurred())
 	})
 
-})
-
-var _ = Describe("file inclusions", func() {
-
-	DescribeTable("check asciidoc file",
-		func(path string, expectation bool) {
-			Expect(types.IsAsciidoc(path)).To(Equal(expectation))
-		},
-		Entry("foo.adoc", "foo.adoc", true),
-		Entry("foo.asc", "foo.asc", true),
-		Entry("foo.ad", "foo.ad", true),
-		Entry("foo.asciidoc", "foo.asciidoc", true),
-		Entry("foo.txt", "foo.txt", true),
-		Entry("foo.csv", "foo.csv", false),
-		Entry("foo.go", "foo.go", false),
-	)
 })
 
 var _ = Describe("Location resolution", func() {

@@ -58,6 +58,10 @@ func parseFileToInclude(filename string, incl types.FileInclusion, attrs types.D
 	}
 	// parse the content, and returns the corresponding elements
 	levelOffset := incl.Attributes.GetAsString(types.AttrLevelOffset)
+	if !IsAsciidoc(absPath) {
+		opts = append(opts, Entrypoint("PreflightTextDocument"))
+	}
+
 	return parsePreflightDocument(absPath, content, levelOffset, opts...)
 }
 
@@ -250,4 +254,10 @@ func open(path string) (*os.File, string, func(), error) {
 			log.WithError(err).Errorf("failed to close file '%s'", absPath)
 		}
 	}, nil
+}
+
+// IsAsciidoc returns true if the file to include is an asciidoc file (based on the file location extension)
+func IsAsciidoc(path string) bool {
+	ext := filepath.Ext(path)
+	return ext == ".asciidoc" || ext == ".adoc" || ext == ".ad" || ext == ".asc" || ext == ".txt"
 }

@@ -106,6 +106,19 @@ include::../../../test/includes/hello_world.go.txt[]`
 		Expect(source).To(RenderHTML5Body(expected))
 	})
 
+	It("should not further process with non-asciidoc files", func() {
+		source := `:includedir: ../../../test/includes
+
+include::{includedir}/include.foo[]`
+		expected := `<div class="paragraph">
+<p><strong>some strong content</strong></p>
+</div>
+<div class="paragraph">
+<p>include::hello_world.go.txt[]</p>
+</div>`
+		Expect(source).To(RenderHTML5Body(expected))
+	})
+
 	It("include 2 files", func() {
 		source := `= Master Document
 
