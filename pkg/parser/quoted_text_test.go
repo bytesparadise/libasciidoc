@@ -8,13 +8,13 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-var _ = Describe("quoted texts - preflight", func() {
+var _ = Describe("quoted texts - draft", func() {
 
 	Context("quoted text with single punctuation", func() {
 
 		It("bold text with 1 word", func() {
 			source := "*hello*"
-			expected := types.PreflightDocument{
+			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
@@ -31,12 +31,12 @@ var _ = Describe("quoted texts - preflight", func() {
 					},
 				},
 			}
-			Expect(source).To(BecomePreflightDocument(expected))
+			Expect(source).To(BecomeDraftDocument(expected))
 		})
 
 		It("bold text with 2 words", func() {
 			source := "*bold    content*"
-			expected := types.PreflightDocument{
+			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
@@ -53,12 +53,12 @@ var _ = Describe("quoted texts - preflight", func() {
 					},
 				},
 			}
-			Expect(source).To(BecomePreflightDocument(expected))
+			Expect(source).To(BecomeDraftDocument(expected))
 		})
 
 		It("bold text with 3 words", func() {
 			source := "*some bold content*"
-			expected := types.PreflightDocument{
+			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
@@ -75,12 +75,12 @@ var _ = Describe("quoted texts - preflight", func() {
 					},
 				},
 			}
-			Expect(source).To(BecomePreflightDocument(expected))
+			Expect(source).To(BecomeDraftDocument(expected))
 		})
 
 		It("italic text with 3 words in single quote", func() {
 			source := "_some italic content_"
-			expected := types.PreflightDocument{
+			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
@@ -97,12 +97,12 @@ var _ = Describe("quoted texts - preflight", func() {
 					},
 				},
 			}
-			Expect(source).To(BecomePreflightDocument(expected))
+			Expect(source).To(BecomeDraftDocument(expected))
 		})
 
 		It("monospace text with 3 words", func() {
 			source := "`some monospace content`"
-			expected := types.PreflightDocument{
+			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
@@ -119,7 +119,7 @@ var _ = Describe("quoted texts - preflight", func() {
 					},
 				},
 			}
-			Expect(source).To(BecomePreflightDocument(expected))
+			Expect(source).To(BecomeDraftDocument(expected))
 		})
 
 		It("invalid subscript text with 3 words", func() {
@@ -150,7 +150,7 @@ var _ = Describe("quoted texts - preflight", func() {
 
 		It("bold text within italic text", func() {
 			source := "_some *bold* content_"
-			expected := types.PreflightDocument{
+			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
@@ -174,12 +174,12 @@ var _ = Describe("quoted texts - preflight", func() {
 					},
 				},
 			}
-			Expect(source).To(BecomePreflightDocument(expected))
+			Expect(source).To(BecomeDraftDocument(expected))
 		})
 
 		It("monospace text within bold text within italic quote", func() {
 			source := "*some _italic and `monospaced content`_*"
-			expected := types.PreflightDocument{
+			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
@@ -208,7 +208,7 @@ var _ = Describe("quoted texts - preflight", func() {
 					},
 				},
 			}
-			Expect(source).To(BecomePreflightDocument(expected))
+			Expect(source).To(BecomeDraftDocument(expected))
 		})
 
 		It("italic text within italic text", func() {
@@ -289,7 +289,7 @@ var _ = Describe("quoted texts - preflight", func() {
 
 		It("bold text of 1 word in double quote", func() {
 			source := "**hello**"
-			expected := types.PreflightDocument{
+			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
@@ -306,12 +306,12 @@ var _ = Describe("quoted texts - preflight", func() {
 					},
 				},
 			}
-			Expect(source).To(BecomePreflightDocument(expected))
+			Expect(source).To(BecomeDraftDocument(expected))
 		})
 
 		It("italic text with 3 words in double quote", func() {
 			source := "__some italic content__"
-			expected := types.PreflightDocument{
+			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
@@ -328,12 +328,12 @@ var _ = Describe("quoted texts - preflight", func() {
 					},
 				},
 			}
-			Expect(source).To(BecomePreflightDocument(expected))
+			Expect(source).To(BecomeDraftDocument(expected))
 		})
 
 		It("monospace text with 3 words in double quote", func() {
 			source := "``some monospace content``"
-			expected := types.PreflightDocument{
+			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
@@ -350,12 +350,12 @@ var _ = Describe("quoted texts - preflight", func() {
 					},
 				},
 			}
-			Expect(source).To(BecomePreflightDocument(expected))
+			Expect(source).To(BecomeDraftDocument(expected))
 		})
 
 		It("superscript text within italic text", func() {
 			source := "__some ^superscript^ content__"
-			expected := types.PreflightDocument{
+			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
@@ -379,12 +379,12 @@ var _ = Describe("quoted texts - preflight", func() {
 					},
 				},
 			}
-			Expect(source).To(BecomePreflightDocument(expected))
+			Expect(source).To(BecomeDraftDocument(expected))
 		})
 
 		It("superscript text within italic text within bold quote", func() {
 			source := "**some _italic and ^superscriptcontent^_**"
-			expected := types.PreflightDocument{
+			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
@@ -413,7 +413,7 @@ var _ = Describe("quoted texts - preflight", func() {
 					},
 				},
 			}
-			Expect(source).To(BecomePreflightDocument(expected))
+			Expect(source).To(BecomeDraftDocument(expected))
 		})
 	})
 

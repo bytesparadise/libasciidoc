@@ -14,16 +14,16 @@ import (
 
 // ParseDocument parses the content of the reader identitied by the filename
 func ParseDocument(filename string, r io.Reader, opts ...Option) (types.Document, error) {
-	preflightDoc, err := ParsePreflightDocument(filename, r, opts...)
+	draftDoc, err := ParseDraftDocument(filename, r, opts...)
 	if err != nil {
 		return types.Document{}, err
 	}
 	if log.IsLevelEnabled(log.DebugLevel) {
-		log.Debug("preflight document")
-		spew.Dump(preflightDoc)
+		log.Debug("draft document")
+		spew.Dump(draftDoc)
 	}
 	// now, merge list items into proper lists
-	blocks, err := rearrangeListItems(preflightDoc.Blocks, false)
+	blocks, err := rearrangeListItems(draftDoc.Blocks, false)
 	if err != nil {
 		return types.Document{}, err
 	}
@@ -33,8 +33,8 @@ func ParseDocument(filename string, r io.Reader, opts ...Option) (types.Document
 		return types.Document{}, err
 	}
 	// now, add front-matter attributes
-	if len(preflightDoc.FrontMatter.Content) > 0 {
-		for k, v := range preflightDoc.FrontMatter.Content {
+	if len(draftDoc.FrontMatter.Content) > 0 {
+		for k, v := range draftDoc.FrontMatter.Content {
 			doc.Attributes[k] = v
 		}
 	}

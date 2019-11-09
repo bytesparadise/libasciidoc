@@ -8,7 +8,7 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-var _ = Describe("cross-references - preflight", func() {
+var _ = Describe("cross-references - draft", func() {
 
 	Context("section reference", func() {
 
@@ -17,7 +17,7 @@ var _ = Describe("cross-references - preflight", func() {
 == a title
 
 with some content linked to <<thetitle>>!`
-			expected := types.PreflightDocument{
+			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.Section{
 						Level: 1,
@@ -52,7 +52,7 @@ with some content linked to <<thetitle>>!`
 					},
 				},
 			}
-			Expect(source).To(BecomePreflightDocument(expected))
+			Expect(source).To(BecomeDraftDocument(expected))
 		})
 
 		It("cross-reference with custom id and label", func() {
@@ -60,7 +60,7 @@ with some content linked to <<thetitle>>!`
 == a title
 
 with some content linked to <<thetitle,a label to the title>>!`
-			expected := types.PreflightDocument{
+			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.Section{
 						Level: 1,
@@ -95,7 +95,7 @@ with some content linked to <<thetitle,a label to the title>>!`
 					},
 				},
 			}
-			Expect(source).To(BecomePreflightDocument(expected))
+			Expect(source).To(BecomeDraftDocument(expected))
 		})
 	})
 })

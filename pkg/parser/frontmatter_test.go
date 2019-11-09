@@ -8,7 +8,7 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-var _ = Describe("front-matters - preflight", func() {
+var _ = Describe("front-matters - draft", func() {
 
 	Context("yaml front-matter", func() {
 
@@ -19,7 +19,7 @@ author: Xavier
 ---
 
 first paragraph`
-			expected := types.PreflightDocument{
+			expected := types.DraftDocument{
 				FrontMatter: types.FrontMatter{
 					Content: map[string]interface{}{
 						"title":  "a title",
@@ -38,7 +38,7 @@ first paragraph`
 					},
 				},
 			}
-			Expect(source).To(BecomePreflightDocument(expected))
+			Expect(source).To(BecomeDraftDocument(expected))
 		})
 
 		It("empty front-matter", func() {
@@ -46,7 +46,7 @@ first paragraph`
 ---
 
 first paragraph`
-			expected := types.PreflightDocument{
+			expected := types.DraftDocument{
 				FrontMatter: types.FrontMatter{
 					Content: map[string]interface{}{},
 				},
@@ -62,7 +62,7 @@ first paragraph`
 					},
 				},
 			}
-			Expect(source).To(BecomePreflightDocument(expected))
+			Expect(source).To(BecomeDraftDocument(expected))
 		})
 	})
 

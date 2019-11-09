@@ -108,7 +108,7 @@ image::images/foo.png[the foo.png image, 600, 400]`
 			It("2 block images", func() {
 				source := `image::app.png[]
 image::appa.png[]`
-				expected := types.PreflightDocument{
+				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.ImageBlock{
 							Attributes: types.ElementAttributes{
@@ -124,7 +124,7 @@ image::appa.png[]`
 						},
 					},
 				}
-				Expect(source).To(BecomePreflightDocument(expected))
+				Expect(source).To(BecomeDraftDocument(expected))
 			})
 		})
 
@@ -153,7 +153,7 @@ image::appa.png[]`
 
 				It("paragraph with block image with alt and dimensions", func() {
 					source := "a foo image::foo.png[foo image, 600, 400] bar"
-					expected := types.PreflightDocument{
+					expected := types.DraftDocument{
 						Blocks: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
@@ -165,7 +165,7 @@ image::appa.png[]`
 							},
 						},
 					}
-					Expect(source).To(BecomePreflightDocument(expected))
+					Expect(source).To(BecomeDraftDocument(expected))
 				})
 			})
 		})

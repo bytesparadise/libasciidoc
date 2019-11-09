@@ -14,7 +14,7 @@ import (
 var _ = Describe("console assertions", func() {
 
 	console := `{"level":"debug","msg":"processing foo.adoc: ----\ninclude::../../test/includes/unknown.adoc[leveloffset=+1]\n----"}
-{"level":"debug","msg":"initializing a new PreflightDocument with 1 block element(s)"}
+{"level":"debug","msg":"initializing a new DraftDocument with 1 block element(s)"}
 {"level":"debug","msg":"parsing '../../test/includes/unknown.adoc'..."}
 {"error":"open unknown.adoc: no such file or directory","level":"error","msg":"failed to include '../../test/includes/unknown.adoc'"}
 {"level":"debug","msg":"restoring current working dir to: github.com/bytesparadise/libasciidoc/pkg/parser"}`

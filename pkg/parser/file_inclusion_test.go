@@ -94,13 +94,13 @@ var _ = Describe("file inclusions", func() {
 	)
 })
 
-var _ = Describe("file inclusions - preflight with preprocessing", func() {
+var _ = Describe("file inclusions - draft with preprocessing", func() {
 
 	It("should include adoc file without leveloffset from local file", func() {
 		console, reset := ConfigureLogger()
 		defer reset()
 		source := "include::../../test/includes/chapter-a.adoc[]"
-		expected := types.PreflightDocument{
+		expected := types.DraftDocument{
 			Blocks: []interface{}{
 				types.Section{
 					Attributes: types.ElementAttributes{
@@ -128,7 +128,7 @@ var _ = Describe("file inclusions - preflight with preprocessing", func() {
 				},
 			},
 		}
-		Expect(source).To(BecomePreflightDocument(expected, WithFilename("foo.adoc")))
+		Expect(source).To(BecomeDraftDocument(expected, WithFilename("foo.adoc")))
 		// verify no error/warning in logs
 		Expect(console).ToNot(ContainAnyMessageWithLevels(log.ErrorLevel, log.WarnLevel))
 	})
@@ -137,7 +137,7 @@ var _ = Describe("file inclusions - preflight with preprocessing", func() {
 		console, reset := ConfigureLogger()
 		defer reset()
 		source := "include::../../../test/includes/chapter-a.adoc[]"
-		expected := types.PreflightDocument{
+		expected := types.DraftDocument{
 			Blocks: []interface{}{
 				types.Section{
 					Attributes: types.ElementAttributes{
@@ -165,7 +165,7 @@ var _ = Describe("file inclusions - preflight with preprocessing", func() {
 				},
 			},
 		}
-		Expect(source).To(BecomePreflightDocument(expected, WithFilename("tmp/foo.adoc")))
+		Expect(source).To(BecomeDraftDocument(expected, WithFilename("tmp/foo.adoc")))
 		// verify no error/warning in logs
 		Expect(console).ToNot(ContainAnyMessageWithLevels(log.ErrorLevel, log.WarnLevel))
 	})
@@ -174,7 +174,7 @@ var _ = Describe("file inclusions - preflight with preprocessing", func() {
 		console, reset := ConfigureLogger()
 		defer reset()
 		source := "include::../../test/includes/chapter-a.adoc[leveloffset=+1]"
-		expected := types.PreflightDocument{
+		expected := types.DraftDocument{
 			Blocks: []interface{}{
 				types.Section{
 					Attributes: types.ElementAttributes{
@@ -202,7 +202,7 @@ var _ = Describe("file inclusions - preflight with preprocessing", func() {
 				},
 			},
 		}
-		Expect(source).To(BecomePreflightDocument(expected))
+		Expect(source).To(BecomeDraftDocument(expected))
 		// verify no error/warning in logs
 		Expect(console).ToNot(ContainAnyMessageWithLevels(log.ErrorLevel, log.WarnLevel))
 	})
@@ -210,7 +210,7 @@ var _ = Describe("file inclusions - preflight with preprocessing", func() {
 	It("should include section 0 by default", func() {
 		source := "include::../../test/includes/chapter-a.adoc[]"
 		// at this level (parsing), it is expected that the Section 0 is part of the Prefligh document
-		expected := types.PreflightDocument{
+		expected := types.DraftDocument{
 			Blocks: []interface{}{
 				types.Section{
 					Attributes: types.ElementAttributes{
@@ -238,7 +238,7 @@ var _ = Describe("file inclusions - preflight with preprocessing", func() {
 				},
 			},
 		}
-		Expect(source).To(BecomePreflightDocument(expected))
+		Expect(source).To(BecomeDraftDocument(expected))
 	})
 
 	It("should not include section 0 when attribute exists", func() {
@@ -246,7 +246,7 @@ var _ = Describe("file inclusions - preflight with preprocessing", func() {
 
 include::{includedir}/chapter-a.adoc[]`
 		// at this level (parsing), it is expected that the Section 0 is part of the Prefligh document
-		expected := types.PreflightDocument{
+		expected := types.DraftDocument{
 			Blocks: []interface{}{
 				types.DocumentAttributeDeclaration{
 					Name:  "includedir",
@@ -279,14 +279,14 @@ include::{includedir}/chapter-a.adoc[]`
 				},
 			},
 		}
-		Expect(source).To(BecomePreflightDocument(expected))
+		Expect(source).To(BecomeDraftDocument(expected))
 	})
 
 	It("should not further process with non-asciidoc files", func() {
 		source := `:includedir: ../../test/includes
 
 include::{includedir}/include.foo[]`
-		expected := types.PreflightDocument{
+		expected := types.DraftDocument{
 			Blocks: []interface{}{
 				types.DocumentAttributeDeclaration{
 					Name:  "includedir",
@@ -321,7 +321,7 @@ include::{includedir}/include.foo[]`
 				},
 			},
 		}
-		Expect(source).To(BecomePreflightDocument(expected, WithFilename("foo.bar"))) // parent doc may not need to be a '.adoc'
+		Expect(source).To(BecomeDraftDocument(expected, WithFilename("foo.bar"))) // parent doc may not need to be a '.adoc'
 	})
 
 	Context("file inclusions in delimited blocks", func() {
@@ -330,7 +330,7 @@ include::{includedir}/include.foo[]`
 			source := "```\n" +
 				"include::../../test/includes/chapter-a.adoc[]\n" +
 				"```"
-			expected := types.PreflightDocument{
+			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{},
@@ -361,14 +361,14 @@ include::{includedir}/include.foo[]`
 					},
 				},
 			}
-			Expect(source).To(BecomePreflightDocument(expected))
+			Expect(source).To(BecomeDraftDocument(expected))
 		})
 
 		It("should include adoc file within listing block", func() {
 			source := `----
 include::../../test/includes/chapter-a.adoc[]
 ----`
-			expected := types.PreflightDocument{
+			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{},
@@ -399,14 +399,14 @@ include::../../test/includes/chapter-a.adoc[]
 					},
 				},
 			}
-			Expect(source).To(BecomePreflightDocument(expected))
+			Expect(source).To(BecomeDraftDocument(expected))
 		})
 
 		It("should include adoc file within example block", func() {
 			source := `====
 include::../../test/includes/chapter-a.adoc[]
 ====`
-			expected := types.PreflightDocument{
+			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{},
@@ -437,14 +437,14 @@ include::../../test/includes/chapter-a.adoc[]
 					},
 				},
 			}
-			Expect(source).To(BecomePreflightDocument(expected))
+			Expect(source).To(BecomeDraftDocument(expected))
 		})
 
 		It("should include adoc file within quote block", func() {
 			source := `____
 include::../../test/includes/chapter-a.adoc[]
 ____`
-			expected := types.PreflightDocument{
+			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{},
@@ -475,7 +475,7 @@ ____`
 					},
 				},
 			}
-			Expect(source).To(BecomePreflightDocument(expected))
+			Expect(source).To(BecomeDraftDocument(expected))
 		})
 
 		It("should include adoc file within verse block", func() {
@@ -483,7 +483,7 @@ ____`
 ____
 include::../../test/includes/chapter-a.adoc[]
 ____`
-			expected := types.PreflightDocument{
+			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{
@@ -516,14 +516,14 @@ ____`
 					},
 				},
 			}
-			Expect(source).To(BecomePreflightDocument(expected))
+			Expect(source).To(BecomeDraftDocument(expected))
 		})
 
 		It("should include adoc file within sidebar block", func() {
 			source := `****
 include::../../test/includes/chapter-a.adoc[]
 ****`
-			expected := types.PreflightDocument{
+			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{},
@@ -554,7 +554,7 @@ include::../../test/includes/chapter-a.adoc[]
 					},
 				},
 			}
-			Expect(source).To(BecomePreflightDocument(expected))
+			Expect(source).To(BecomeDraftDocument(expected))
 		})
 
 		It("should include adoc file within passthrough block", func() {
@@ -589,7 +589,7 @@ include::../../test/includes/chapter-a.adoc[]
 					},
 				},
 			}
-			Expect(source).To(BecomePreflightDocument(expected))
+			Expect(source).To(BecomeDraftDocument(expected))
 		})
 	})
 
@@ -599,7 +599,7 @@ include::../../test/includes/chapter-a.adoc[]
 
 			It("file inclusion with single unquoted line", func() {
 				source := `include::../../test/includes/chapter-a.adoc[lines=1]`
-				expected := types.PreflightDocument{
+				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.Section{
 							Attributes: types.ElementAttributes{
@@ -616,12 +616,12 @@ include::../../test/includes/chapter-a.adoc[]
 						},
 					},
 				}
-				Expect(source).To(BecomePreflightDocument(expected))
+				Expect(source).To(BecomeDraftDocument(expected))
 			})
 
 			It("file inclusion with multiple unquoted lines", func() {
 				source := `include::../../test/includes/chapter-a.adoc[lines=1..2]`
-				expected := types.PreflightDocument{
+				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.Section{
 							Level: 0,
@@ -639,12 +639,12 @@ include::../../test/includes/chapter-a.adoc[]
 						types.BlankLine{},
 					},
 				}
-				Expect(source).To(BecomePreflightDocument(expected))
+				Expect(source).To(BecomeDraftDocument(expected))
 			})
 
 			It("file inclusion with multiple unquoted ranges", func() {
 				source := `include::../../test/includes/chapter-a.adoc[lines=1;3..4;6..-1]` // paragraph becomes the author since the in-between blank line is stripped out
-				expected := types.PreflightDocument{
+				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.Section{
 							Level: 0,
@@ -666,12 +666,12 @@ include::../../test/includes/chapter-a.adoc[]
 						},
 					},
 				}
-				Expect(source).To(BecomePreflightDocument(expected))
+				Expect(source).To(BecomeDraftDocument(expected))
 			})
 
 			It("file inclusion with invalid unquoted range - case 1", func() {
 				source := `include::../../test/includes/chapter-a.adoc[lines=1;3..4;6..foo]` // not a number
-				expected := types.PreflightDocument{
+				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.Section{
 							Level: 0,
@@ -699,12 +699,12 @@ include::../../test/includes/chapter-a.adoc[]
 						},
 					},
 				}
-				Expect(source).To(BecomePreflightDocument(expected))
+				Expect(source).To(BecomeDraftDocument(expected))
 			})
 
 			It("file inclusion with invalid unquoted range - case 2", func() {
 				source := `include::../../test/includes/chapter-a.adoc[lines=1,3..4,6..-1]` // using commas instead of semi-colons
-				expected := types.PreflightDocument{
+				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.Section{
 							Level: 0,
@@ -721,7 +721,7 @@ include::../../test/includes/chapter-a.adoc[]
 						},
 					},
 				}
-				Expect(source).To(BecomePreflightDocument(expected))
+				Expect(source).To(BecomeDraftDocument(expected))
 			})
 		})
 
@@ -731,7 +731,7 @@ include::../../test/includes/chapter-a.adoc[]
 				console, reset := ConfigureLogger()
 				defer reset()
 				source := `include::../../test/includes/chapter-a.adoc[lines="1"]`
-				expected := types.PreflightDocument{
+				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.Section{
 							Level: 0,
@@ -748,14 +748,14 @@ include::../../test/includes/chapter-a.adoc[]
 						},
 					},
 				}
-				Expect(source).To(BecomePreflightDocument(expected))
+				Expect(source).To(BecomeDraftDocument(expected))
 				// verify no error/warning in logs
 				Expect(console).ToNot(ContainAnyMessageWithLevels(log.ErrorLevel, log.WarnLevel))
 			})
 
 			It("file inclusion with multiple quoted lines", func() {
 				source := `include::../../test/includes/chapter-a.adoc[lines="1..2"]`
-				expected := types.PreflightDocument{
+				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.Section{
 							Level: 0,
@@ -773,13 +773,13 @@ include::../../test/includes/chapter-a.adoc[]
 						types.BlankLine{},
 					},
 				}
-				Expect(source).To(BecomePreflightDocument(expected))
+				Expect(source).To(BecomeDraftDocument(expected))
 			})
 
 			It("file inclusion with multiple quoted ranges", func() {
 				// here, the `content` paragraph gets attached to the header and becomes the author
 				source := `include::../../test/includes/chapter-a.adoc[lines="1,3..4,6..-1"]`
-				expected := types.PreflightDocument{
+				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.Section{
 							Level: 0,
@@ -801,12 +801,12 @@ include::../../test/includes/chapter-a.adoc[]
 						},
 					},
 				}
-				Expect(source).To(BecomePreflightDocument(expected))
+				Expect(source).To(BecomeDraftDocument(expected))
 			})
 
 			It("file inclusion with invalid quoted range - case 1", func() {
 				source := `include::../../test/includes/chapter-a.adoc[lines="1,3..4,6..foo"]` // not a number
-				expected := types.PreflightDocument{
+				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.Section{
 							Level: 0,
@@ -834,12 +834,12 @@ include::../../test/includes/chapter-a.adoc[]
 						},
 					},
 				}
-				Expect(source).To(BecomePreflightDocument(expected))
+				Expect(source).To(BecomeDraftDocument(expected))
 			})
 
 			It("file inclusion with invalid quoted range - case 2", func() {
 				source := `include::../../test/includes/chapter-a.adoc[lines="1;3..4;6..10"]` // using semi-colons instead of commas
-				expected := types.PreflightDocument{
+				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.Section{
 							Level: 0,
@@ -867,13 +867,13 @@ include::../../test/includes/chapter-a.adoc[]
 						},
 					},
 				}
-				Expect(source).To(BecomePreflightDocument(expected))
+				Expect(source).To(BecomeDraftDocument(expected))
 			})
 
 			It("file inclusion with ignored tags", func() {
 				// include using a line range a file having tags
 				source := `include::../../test/includes/tag-include.adoc[lines=3]`
-				expected := types.PreflightDocument{
+				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.Section{
 							Attributes: types.ElementAttributes{
@@ -890,7 +890,7 @@ include::../../test/includes/chapter-a.adoc[]
 						},
 					},
 				}
-				Expect(source).To(BecomePreflightDocument(expected))
+				Expect(source).To(BecomeDraftDocument(expected))
 			})
 		})
 	})
@@ -901,7 +901,7 @@ include::../../test/includes/chapter-a.adoc[]
 			console, reset := ConfigureLogger()
 			defer reset()
 			source := `include::../../test/includes/tag-include.adoc[tag=section]`
-			expected := types.PreflightDocument{
+			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.Section{
 						Attributes: types.ElementAttributes{
@@ -918,7 +918,7 @@ include::../../test/includes/chapter-a.adoc[]
 					},
 				},
 			}
-			Expect(source).To(BecomePreflightDocument(expected))
+			Expect(source).To(BecomeDraftDocument(expected))
 			// verify no error/warning in logs
 			Expect(console).ToNot(ContainAnyMessageWithLevels(log.ErrorLevel, log.WarnLevel))
 		})
@@ -927,7 +927,7 @@ include::../../test/includes/chapter-a.adoc[]
 			console, reset := ConfigureLogger()
 			defer reset()
 			source := `include::../../test/includes/tag-include.adoc[tag=doc]`
-			expected := types.PreflightDocument{
+			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.Section{
 						Attributes: types.ElementAttributes{
@@ -956,7 +956,7 @@ include::../../test/includes/chapter-a.adoc[]
 					types.BlankLine{},
 				},
 			}
-			Expect(source).To(BecomePreflightDocument(expected))
+			Expect(source).To(BecomeDraftDocument(expected))
 			// verify no error/warning in logs
 			Expect(console).ToNot(ContainAnyMessageWithLevels(log.ErrorLevel, log.WarnLevel))
 		})
@@ -966,7 +966,7 @@ include::../../test/includes/chapter-a.adoc[]
 			console, reset := ConfigureLogger()
 			defer reset()
 			source := `include::../../test/includes/tag-include-unclosed.adoc[tag=unclosed]`
-			expected := types.PreflightDocument{
+			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.BlankLine{},
 					types.Paragraph{
@@ -993,7 +993,7 @@ include::../../test/includes/chapter-a.adoc[]
 					},
 				},
 			}
-			Expect(source).To(BecomePreflightDocument(expected))
+			Expect(source).To(BecomeDraftDocument(expected))
 			// verify error in logs
 			Expect(console).To(
 				ContainMessageWithLevel(
@@ -1008,11 +1008,11 @@ include::../../test/includes/chapter-a.adoc[]
 			console, reset := ConfigureLogger()
 			defer reset()
 			source := `include::../../test/includes/tag-include.adoc[tag=unknown]`
-			expected := types.PreflightDocument{
+			expected := types.DraftDocument{
 				Blocks: []interface{}{},
 			}
 			// when/then
-			Expect(source).To(BecomePreflightDocument(expected))
+			Expect(source).To(BecomeDraftDocument(expected))
 			// verify error in logs
 			Expect(console).To(
 				ContainMessageWithLevel(
@@ -1023,7 +1023,7 @@ include::../../test/includes/chapter-a.adoc[]
 
 		It("file inclusion with no tag", func() {
 			source := `include::../../test/includes/tag-include.adoc[]`
-			expected := types.PreflightDocument{
+			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.Section{
 						Attributes: types.ElementAttributes{
@@ -1063,14 +1063,14 @@ include::../../test/includes/chapter-a.adoc[]
 					},
 				},
 			}
-			Expect(source).To(BecomePreflightDocument(expected))
+			Expect(source).To(BecomeDraftDocument(expected))
 		})
 
 		Context("permutations", func() {
 
 			It("all lines", func() {
 				source := `include::../../test/includes/tag-include.adoc[tag=**]` // includes all content except lines with tags
-				expected := types.PreflightDocument{
+				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.Section{
 							Attributes: types.ElementAttributes{
@@ -1110,12 +1110,12 @@ include::../../test/includes/chapter-a.adoc[]
 						},
 					},
 				}
-				Expect(source).To(BecomePreflightDocument(expected))
+				Expect(source).To(BecomeDraftDocument(expected))
 			})
 
 			It("all tagged regions", func() {
 				source := `include::../../test/includes/tag-include.adoc[tag=*]` // includes all sections
-				expected := types.PreflightDocument{
+				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.Section{
 							Attributes: types.ElementAttributes{
@@ -1144,12 +1144,12 @@ include::../../test/includes/chapter-a.adoc[]
 						types.BlankLine{},
 					},
 				}
-				Expect(source).To(BecomePreflightDocument(expected))
+				Expect(source).To(BecomeDraftDocument(expected))
 			})
 
 			It("all the lines outside and inside of tagged regions", func() {
 				source := `include::../../test/includes/tag-include.adoc[tag=**;*]` // includes all sections
-				expected := types.PreflightDocument{
+				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.Section{
 							Attributes: types.ElementAttributes{
@@ -1189,12 +1189,12 @@ include::../../test/includes/chapter-a.adoc[]
 						},
 					},
 				}
-				Expect(source).To(BecomePreflightDocument(expected))
+				Expect(source).To(BecomeDraftDocument(expected))
 			})
 
 			It("regions tagged doc, but not nested regions tagged content", func() {
 				source := `include::../../test/includes/tag-include.adoc[tag=doc;!content]` // includes all sections
-				expected := types.PreflightDocument{
+				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.Section{
 							Attributes: types.ElementAttributes{
@@ -1212,12 +1212,12 @@ include::../../test/includes/chapter-a.adoc[]
 						types.BlankLine{},
 					},
 				}
-				Expect(source).To(BecomePreflightDocument(expected))
+				Expect(source).To(BecomeDraftDocument(expected))
 			})
 
 			It("all tagged regions, but excludes any regions tagged content", func() {
 				source := `include::../../test/includes/tag-include.adoc[tag=*;!content]` // includes all sections
-				expected := types.PreflightDocument{
+				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.Section{
 							Attributes: types.ElementAttributes{
@@ -1235,12 +1235,12 @@ include::../../test/includes/chapter-a.adoc[]
 						types.BlankLine{},
 					},
 				}
-				Expect(source).To(BecomePreflightDocument(expected))
+				Expect(source).To(BecomeDraftDocument(expected))
 			})
 
 			It("all tagged regions, but excludes any regions tagged content", func() {
 				source := `include::../../test/includes/tag-include.adoc[tag=**;!content]` // includes all sections
-				expected := types.PreflightDocument{
+				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.Section{
 							Attributes: types.ElementAttributes{
@@ -1269,12 +1269,12 @@ include::../../test/includes/chapter-a.adoc[]
 						},
 					},
 				}
-				Expect(source).To(BecomePreflightDocument(expected))
+				Expect(source).To(BecomeDraftDocument(expected))
 			})
 
 			It("**;!* — selects only the regions of the document outside of tags", func() {
 				source := `include::../../test/includes/tag-include.adoc[tag=**;!*]` // includes all sections
-				expected := types.PreflightDocument{
+				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.BlankLine{},
 						types.Paragraph{
@@ -1289,7 +1289,7 @@ include::../../test/includes/chapter-a.adoc[]
 						},
 					},
 				}
-				Expect(source).To(BecomePreflightDocument(expected))
+				Expect(source).To(BecomeDraftDocument(expected))
 			})
 		})
 	})
@@ -1301,7 +1301,7 @@ include::../../test/includes/chapter-a.adoc[]
 			console, reset := ConfigureLogger()
 			defer reset()
 			source := `include::{unknown}/unknown.adoc[leveloffset=+1]`
-			expected := types.PreflightDocument{
+			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
@@ -1315,7 +1315,7 @@ include::../../test/includes/chapter-a.adoc[]
 					},
 				},
 			}
-			Expect(source).To(BecomePreflightDocument(expected))
+			Expect(source).To(BecomeDraftDocument(expected))
 			// verify error in logs
 			Expect(console).To(
 				ContainMessageWithLevel(
@@ -1330,7 +1330,7 @@ include::../../test/includes/chapter-a.adoc[]
 			defer reset()
 
 			source := `include::../../test/includes/unknown.adoc[leveloffset=+1]`
-			expected := types.PreflightDocument{
+			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
@@ -1344,7 +1344,7 @@ include::../../test/includes/chapter-a.adoc[]
 					},
 				},
 			}
-			Expect(source).To(BecomePreflightDocument(expected))
+			Expect(source).To(BecomeDraftDocument(expected))
 			// verify error in logs
 			Expect(console).To(
 				ContainMessageWithLevel(
@@ -1361,7 +1361,7 @@ include::../../test/includes/chapter-a.adoc[]
 			source := `----
 include::../../test/includes/unknown.adoc[leveloffset=+1]
 ----`
-			expected := types.PreflightDocument{
+			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{},
@@ -1381,7 +1381,7 @@ include::../../test/includes/unknown.adoc[leveloffset=+1]
 					},
 				},
 			}
-			Expect(source).To(BecomePreflightDocument(expected))
+			Expect(source).To(BecomeDraftDocument(expected))
 			// verify error in logs
 			Expect(console).To(
 				ContainMessageWithLevel(
@@ -1397,7 +1397,7 @@ include::../../test/includes/unknown.adoc[leveloffset=+1]
 			source := `:includedir: ../../test/includes
 			
 include::{includedir}/grandchild-include.adoc[]`
-			expected := types.PreflightDocument{
+			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.DocumentAttributeDeclaration{
 						Name:  "includedir",
@@ -1427,14 +1427,14 @@ include::{includedir}/grandchild-include.adoc[]`
 					},
 				},
 			}
-			Expect(source).To(BecomePreflightDocument(expected, WithFilename("foo.adoc")))
+			Expect(source).To(BecomeDraftDocument(expected, WithFilename("foo.adoc")))
 		})
 
 		It("should resolve path with attribute in standalone block from relative file", func() {
 			source := `:includedir: ../../../test/includes
 			
 include::{includedir}/grandchild-include.adoc[]`
-			expected := types.PreflightDocument{
+			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.DocumentAttributeDeclaration{
 						Name:  "includedir",
@@ -1464,7 +1464,7 @@ include::{includedir}/grandchild-include.adoc[]`
 					},
 				},
 			}
-			Expect(source).To(BecomePreflightDocument(expected, WithFilename("tmp/foo.adoc")))
+			Expect(source).To(BecomeDraftDocument(expected, WithFilename("tmp/foo.adoc")))
 		})
 
 		It("should resolve path with attribute in delimited block", func() {
@@ -1473,7 +1473,7 @@ include::{includedir}/grandchild-include.adoc[]`
 ----
 include::{includedir}/grandchild-include.adoc[]
 ----`
-			expected := types.PreflightDocument{
+			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.DocumentAttributeDeclaration{
 						Name:  "includedir",
@@ -1509,7 +1509,7 @@ include::{includedir}/grandchild-include.adoc[]
 					},
 				},
 			}
-			Expect(source).To(BecomePreflightDocument(expected))
+			Expect(source).To(BecomeDraftDocument(expected))
 		})
 	})
 
@@ -1520,7 +1520,7 @@ include::{includedir}/grandchild-include.adoc[]
 			source := `----
 include::../../test/includes/hello_world.go.txt[] 
 ----`
-			expected := types.PreflightDocument{
+			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.DelimitedBlock{
 						Kind:       types.Listing,
@@ -1572,7 +1572,7 @@ include::../../test/includes/hello_world.go.txt[]
 					},
 				},
 			}
-			Expect(source).To(BecomePreflightDocument(expected))
+			Expect(source).To(BecomeDraftDocument(expected))
 		})
 
 		It("include go file with a simple range", func() {
@@ -1580,7 +1580,7 @@ include::../../test/includes/hello_world.go.txt[]
 			source := `----
 include::../../test/includes/hello_world.go.txt[lines=1] 
 ----`
-			expected := types.PreflightDocument{
+			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.DelimitedBlock{
 						Kind:       types.Listing,
@@ -1600,18 +1600,18 @@ include::../../test/includes/hello_world.go.txt[lines=1]
 					},
 				},
 			}
-			Expect(source).To(BecomePreflightDocument(expected))
+			Expect(source).To(BecomeDraftDocument(expected))
 		})
 	})
 })
 
-var _ = Describe("file inclusions - preflight without preprocessing", func() {
+var _ = Describe("file inclusions - draft without preprocessing", func() {
 
 	It("should include adoc file without leveloffset in local dir", func() {
 		console, reset := ConfigureLogger()
 		defer reset()
 		source := "include::../../test/includes/chapter-a.adoc[]"
-		expected := types.PreflightDocument{
+		expected := types.DraftDocument{
 			Blocks: []interface{}{
 				types.FileInclusion{
 					Attributes: types.ElementAttributes{},
@@ -1624,7 +1624,7 @@ var _ = Describe("file inclusions - preflight without preprocessing", func() {
 				},
 			},
 		}
-		Expect(source).To(BecomePreflightDocument(expected, WithoutPreprocessing(), WithFilename("foo.adoc")))
+		Expect(source).To(BecomeDraftDocument(expected, WithoutPreprocessing(), WithFilename("foo.adoc")))
 		// verify no error/warning in logs
 		Expect(console).ToNot(ContainAnyMessageWithLevels(log.ErrorLevel, log.WarnLevel))
 	})
@@ -1633,7 +1633,7 @@ var _ = Describe("file inclusions - preflight without preprocessing", func() {
 		console, reset := ConfigureLogger()
 		defer reset()
 		source := "include::../../../test/includes/chapter-a.adoc[]"
-		expected := types.PreflightDocument{
+		expected := types.DraftDocument{
 			Blocks: []interface{}{
 				types.FileInclusion{
 					Attributes: types.ElementAttributes{},
@@ -1646,14 +1646,14 @@ var _ = Describe("file inclusions - preflight without preprocessing", func() {
 				},
 			},
 		}
-		Expect(source).To(BecomePreflightDocument(expected, WithoutPreprocessing(), WithFilename("tmp/foo.adoc")))
+		Expect(source).To(BecomeDraftDocument(expected, WithoutPreprocessing(), WithFilename("tmp/foo.adoc")))
 		// verify no error/warning in logs
 		Expect(console).ToNot(ContainAnyMessageWithLevels(log.ErrorLevel, log.WarnLevel))
 	})
 
 	It("should include adoc file with leveloffset attribute", func() {
 		source := "include::../../test/includes/chapter-a.adoc[leveloffset=+1]"
-		expected := types.PreflightDocument{
+		expected := types.DraftDocument{
 			Blocks: []interface{}{
 				types.FileInclusion{
 					Attributes: types.ElementAttributes{
@@ -1668,7 +1668,7 @@ var _ = Describe("file inclusions - preflight without preprocessing", func() {
 				},
 			},
 		}
-		Expect(source).To(BecomePreflightDocument(expected, WithoutPreprocessing()))
+		Expect(source).To(BecomeDraftDocument(expected, WithoutPreprocessing()))
 	})
 
 	Context("file inclusions in delimited blocks", func() {
@@ -1677,7 +1677,7 @@ var _ = Describe("file inclusions - preflight without preprocessing", func() {
 			source := "```\n" +
 				"include::../../test/includes/chapter-a.adoc[]\n" +
 				"```"
-			expected := types.PreflightDocument{
+			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{},
@@ -1696,14 +1696,14 @@ var _ = Describe("file inclusions - preflight without preprocessing", func() {
 					},
 				},
 			}
-			Expect(source).To(BecomePreflightDocument(expected, WithoutPreprocessing()))
+			Expect(source).To(BecomeDraftDocument(expected, WithoutPreprocessing()))
 		})
 
 		It("should include adoc file within listing block", func() {
 			source := `----
 include::../../test/includes/chapter-a.adoc[]
 ----`
-			expected := types.PreflightDocument{
+			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{},
@@ -1722,14 +1722,14 @@ include::../../test/includes/chapter-a.adoc[]
 					},
 				},
 			}
-			Expect(source).To(BecomePreflightDocument(expected, WithoutPreprocessing()))
+			Expect(source).To(BecomeDraftDocument(expected, WithoutPreprocessing()))
 		})
 
 		It("should include adoc file within example block", func() {
 			source := `====
 include::../../test/includes/chapter-a.adoc[]
 ====`
-			expected := types.PreflightDocument{
+			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{},
@@ -1748,14 +1748,14 @@ include::../../test/includes/chapter-a.adoc[]
 					},
 				},
 			}
-			Expect(source).To(BecomePreflightDocument(expected, WithoutPreprocessing()))
+			Expect(source).To(BecomeDraftDocument(expected, WithoutPreprocessing()))
 		})
 
 		It("should include adoc file within quote block", func() {
 			source := `____
 include::../../test/includes/chapter-a.adoc[]
 ____`
-			expected := types.PreflightDocument{
+			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{},
@@ -1774,7 +1774,7 @@ ____`
 					},
 				},
 			}
-			Expect(source).To(BecomePreflightDocument(expected, WithoutPreprocessing()))
+			Expect(source).To(BecomeDraftDocument(expected, WithoutPreprocessing()))
 		})
 
 		It("should include adoc file within verse block", func() {
@@ -1782,7 +1782,7 @@ ____`
 ____
 include::../../test/includes/chapter-a.adoc[]
 ____`
-			expected := types.PreflightDocument{
+			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{
@@ -1803,14 +1803,14 @@ ____`
 					},
 				},
 			}
-			Expect(source).To(BecomePreflightDocument(expected, WithoutPreprocessing()))
+			Expect(source).To(BecomeDraftDocument(expected, WithoutPreprocessing()))
 		})
 
 		It("should include adoc file within sidebar block", func() {
 			source := `****
 include::../../test/includes/chapter-a.adoc[]
 ****`
-			expected := types.PreflightDocument{
+			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{},
@@ -1829,7 +1829,7 @@ include::../../test/includes/chapter-a.adoc[]
 					},
 				},
 			}
-			Expect(source).To(BecomePreflightDocument(expected, WithoutPreprocessing()))
+			Expect(source).To(BecomeDraftDocument(expected, WithoutPreprocessing()))
 		})
 
 		It("should include adoc file within passthrough block", func() {
@@ -1837,7 +1837,7 @@ include::../../test/includes/chapter-a.adoc[]
 			source := `++++
 include::../../test/includes/chapter-a.adoc[]
 ++++`
-			expected := types.PreflightDocument{
+			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{},
@@ -1856,7 +1856,7 @@ include::../../test/includes/chapter-a.adoc[]
 					},
 				},
 			}
-			Expect(source).To(BecomePreflightDocument(expected, WithoutPreprocessing()))
+			Expect(source).To(BecomeDraftDocument(expected, WithoutPreprocessing()))
 		})
 	})
 
@@ -1866,7 +1866,7 @@ include::../../test/includes/chapter-a.adoc[]
 
 			It("file inclusion with single unquoted line", func() {
 				source := `include::../../test/includes/chapter-a.adoc[lines=1]`
-				expected := types.PreflightDocument{
+				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.FileInclusion{
 							Attributes: types.ElementAttributes{
@@ -1883,12 +1883,12 @@ include::../../test/includes/chapter-a.adoc[]
 						},
 					},
 				}
-				Expect(source).To(BecomePreflightDocument(expected, WithoutPreprocessing()))
+				Expect(source).To(BecomeDraftDocument(expected, WithoutPreprocessing()))
 			})
 
 			It("file inclusion with multiple unquoted lines", func() {
 				source := `include::../../test/includes/chapter-a.adoc[lines=1..2]`
-				expected := types.PreflightDocument{
+				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.FileInclusion{
 							Attributes: types.ElementAttributes{
@@ -1905,12 +1905,12 @@ include::../../test/includes/chapter-a.adoc[]
 						},
 					},
 				}
-				Expect(source).To(BecomePreflightDocument(expected, WithoutPreprocessing()))
+				Expect(source).To(BecomeDraftDocument(expected, WithoutPreprocessing()))
 			})
 
 			It("file inclusion with multiple unquoted ranges", func() {
 				source := `include::../../test/includes/chapter-a.adoc[lines=1;3..4;6..-1]`
-				expected := types.PreflightDocument{
+				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.FileInclusion{
 							Attributes: types.ElementAttributes{
@@ -1929,12 +1929,12 @@ include::../../test/includes/chapter-a.adoc[]
 						},
 					},
 				}
-				Expect(source).To(BecomePreflightDocument(expected, WithoutPreprocessing()))
+				Expect(source).To(BecomeDraftDocument(expected, WithoutPreprocessing()))
 			})
 
 			It("file inclusion with invalid unquoted range - case 1", func() {
 				source := `include::../../test/includes/chapter-a.adoc[lines=1;3..4;6..foo]` // not a number
-				expected := types.PreflightDocument{
+				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.FileInclusion{
 							Attributes: types.ElementAttributes{
@@ -1949,12 +1949,12 @@ include::../../test/includes/chapter-a.adoc[]
 						},
 					},
 				}
-				Expect(source).To(BecomePreflightDocument(expected, WithoutPreprocessing()))
+				Expect(source).To(BecomeDraftDocument(expected, WithoutPreprocessing()))
 			})
 
 			It("file inclusion with invalid unquoted range - case 2", func() {
 				source := `include::../../test/includes/chapter-a.adoc[lines=1,3..4,6..-1]` // using commas instead of semi-colons
-				expected := types.PreflightDocument{
+				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.FileInclusion{
 							Attributes: types.ElementAttributes{
@@ -1973,12 +1973,12 @@ include::../../test/includes/chapter-a.adoc[]
 						},
 					},
 				}
-				Expect(source).To(BecomePreflightDocument(expected, WithoutPreprocessing()))
+				Expect(source).To(BecomeDraftDocument(expected, WithoutPreprocessing()))
 			})
 
 			It("file inclusion with invalid unquoted range - case 3", func() {
 				source := `include::../../test/includes/chapter-a.adoc[lines=foo]` // using commas instead of semi-colons
-				expected := types.PreflightDocument{
+				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.FileInclusion{
 							Attributes: types.ElementAttributes{
@@ -1993,7 +1993,7 @@ include::../../test/includes/chapter-a.adoc[]
 						},
 					},
 				}
-				Expect(source).To(BecomePreflightDocument(expected, WithoutPreprocessing()))
+				Expect(source).To(BecomeDraftDocument(expected, WithoutPreprocessing()))
 			})
 		})
 
@@ -2001,7 +2001,7 @@ include::../../test/includes/chapter-a.adoc[]
 
 			It("file inclusion with single quoted line", func() {
 				source := `include::../../test/includes/chapter-a.adoc[lines="1"]`
-				expected := types.PreflightDocument{
+				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.FileInclusion{
 							Attributes: types.ElementAttributes{
@@ -2018,12 +2018,12 @@ include::../../test/includes/chapter-a.adoc[]
 						},
 					},
 				}
-				Expect(source).To(BecomePreflightDocument(expected, WithoutPreprocessing()))
+				Expect(source).To(BecomeDraftDocument(expected, WithoutPreprocessing()))
 			})
 
 			It("file inclusion with multiple quoted lines", func() {
 				source := `include::../../test/includes/chapter-a.adoc[lines="1..2"]`
-				expected := types.PreflightDocument{
+				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.FileInclusion{
 							Attributes: types.ElementAttributes{
@@ -2040,12 +2040,12 @@ include::../../test/includes/chapter-a.adoc[]
 						},
 					},
 				}
-				Expect(source).To(BecomePreflightDocument(expected, WithoutPreprocessing()))
+				Expect(source).To(BecomeDraftDocument(expected, WithoutPreprocessing()))
 			})
 
 			It("file inclusion with multiple quoted ranges", func() {
 				source := `include::../../test/includes/chapter-a.adoc[lines="1,3..4,6..-1"]`
-				expected := types.PreflightDocument{
+				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.FileInclusion{
 							Attributes: types.ElementAttributes{
@@ -2064,12 +2064,12 @@ include::../../test/includes/chapter-a.adoc[]
 						},
 					},
 				}
-				Expect(source).To(BecomePreflightDocument(expected, WithoutPreprocessing()))
+				Expect(source).To(BecomeDraftDocument(expected, WithoutPreprocessing()))
 			})
 
 			It("file inclusion with invalid quoted range - case 1", func() {
 				source := `include::../../test/includes/chapter-a.adoc[lines="1,3..4,6..foo"]` // not a number
-				expected := types.PreflightDocument{
+				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.FileInclusion{
 							Attributes: types.ElementAttributes{
@@ -2086,12 +2086,12 @@ include::../../test/includes/chapter-a.adoc[]
 						},
 					},
 				}
-				Expect(source).To(BecomePreflightDocument(expected, WithoutPreprocessing()))
+				Expect(source).To(BecomeDraftDocument(expected, WithoutPreprocessing()))
 			})
 
 			It("file inclusion with invalid quoted range - case 2", func() {
 				source := `include::../../test/includes/chapter-a.adoc[lines="1;3..4;6..10"]` // using semi-colons instead of commas
-				expected := types.PreflightDocument{
+				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.FileInclusion{
 							Attributes: types.ElementAttributes{
@@ -2106,7 +2106,7 @@ include::../../test/includes/chapter-a.adoc[]
 						},
 					},
 				}
-				Expect(source).To(BecomePreflightDocument(expected, WithoutPreprocessing()))
+				Expect(source).To(BecomeDraftDocument(expected, WithoutPreprocessing()))
 			})
 		})
 
@@ -2114,7 +2114,7 @@ include::../../test/includes/chapter-a.adoc[]
 
 			It("file inclusion with single tag", func() {
 				source := `include::../../test/includes/tag-include.adoc[tag=section]`
-				expected := types.PreflightDocument{
+				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.FileInclusion{
 							Attributes: types.ElementAttributes{
@@ -2134,12 +2134,12 @@ include::../../test/includes/chapter-a.adoc[]
 						},
 					},
 				}
-				Expect(source).To(BecomePreflightDocument(expected, WithoutPreprocessing()))
+				Expect(source).To(BecomeDraftDocument(expected, WithoutPreprocessing()))
 			})
 
 			It("file inclusion with multiple tags", func() {
 				source := `include::../../test/includes/tag-include.adoc[tags=section;content]`
-				expected := types.PreflightDocument{
+				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.FileInclusion{
 							Attributes: types.ElementAttributes{
@@ -2163,7 +2163,7 @@ include::../../test/includes/chapter-a.adoc[]
 						},
 					},
 				}
-				Expect(source).To(BecomePreflightDocument(expected, WithoutPreprocessing()))
+				Expect(source).To(BecomeDraftDocument(expected, WithoutPreprocessing()))
 			})
 
 		})

@@ -8,7 +8,7 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-var _ = Describe("literal blocks - preflight", func() {
+var _ = Describe("literal blocks - draft", func() {
 
 	Context("literal blocks with spaces indentation", func() {
 
@@ -50,7 +50,7 @@ lines.`
   some literal content
 
 a normal paragraph.`
-			expected := types.PreflightDocument{
+			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.LiteralBlock{
 						Attributes: types.ElementAttributes{
@@ -75,7 +75,7 @@ a normal paragraph.`
 					},
 				},
 			}
-			Expect(source).To(BecomePreflightDocument(expected))
+			Expect(source).To(BecomeDraftDocument(expected))
 		})
 	})
 
@@ -107,7 +107,7 @@ some content
 some literal content
 ....
 a normal paragraph.`
-			expected := types.PreflightDocument{
+			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.LiteralBlock{
 						Attributes: types.ElementAttributes{
@@ -131,7 +131,7 @@ a normal paragraph.`
 					},
 				},
 			}
-			Expect(source).To(BecomePreflightDocument(expected))
+			Expect(source).To(BecomeDraftDocument(expected))
 		})
 	})
 
@@ -142,7 +142,7 @@ a normal paragraph.`
 some literal content
 
 a normal paragraph.`
-			expected := types.PreflightDocument{
+			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.LiteralBlock{
 						Attributes: types.ElementAttributes{
@@ -164,7 +164,7 @@ a normal paragraph.`
 					},
 				},
 			}
-			Expect(source).To(BecomePreflightDocument(expected))
+			Expect(source).To(BecomeDraftDocument(expected))
 		})
 
 		It("literal block from 2-lines paragraph with attribute", func() {
@@ -175,7 +175,7 @@ some literal content
 on two lines.
 
 a normal paragraph.`
-			expected := types.PreflightDocument{
+			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.LiteralBlock{
 						Attributes: types.ElementAttributes{
@@ -201,7 +201,7 @@ a normal paragraph.`
 					},
 				},
 			}
-			Expect(source).To(BecomePreflightDocument(expected))
+			Expect(source).To(BecomeDraftDocument(expected))
 		})
 	})
 

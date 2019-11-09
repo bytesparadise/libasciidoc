@@ -8,7 +8,7 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-var _ = Describe("element attributes - preflight", func() {
+var _ = Describe("element attributes - draft", func() {
 
 	Context("element link", func() {
 

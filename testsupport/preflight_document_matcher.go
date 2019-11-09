@@ -10,15 +10,15 @@ import (
 	"github.com/pkg/errors"
 )
 
-// BecomePreflightDocument a custom matcher to verify that a preflight document matches the expectation
-func BecomePreflightDocument(expected interface{}, options ...interface{}) types.GomegaMatcher {
-	m := &preflightDocumentMatcher{
+// BecomeDraftDocument a custom matcher to verify that a draft document matches the expectation
+func BecomeDraftDocument(expected interface{}, options ...interface{}) types.GomegaMatcher {
+	m := &draftDocumentMatcher{
 		expected:      expected,
 		preprocessing: true,
 		filename:      "test.adoc",
 	}
 	for _, o := range options {
-		if configure, ok := o.(BecomePreflightDocumentOption); ok {
+		if configure, ok := o.(BecomeDraftDocumentOption); ok {
 			configure(m)
 		} else if configure, ok := o.(FilenameOption); ok {
 			configure(m)
@@ -27,7 +27,7 @@ func BecomePreflightDocument(expected interface{}, options ...interface{}) types
 	return m
 }
 
-type preflightDocumentMatcher struct {
+type draftDocumentMatcher struct {
 	filename      string
 	preprocessing bool
 	expected      interface{}
@@ -35,20 +35,20 @@ type preflightDocumentMatcher struct {
 	comparison    comparison
 }
 
-func (m *preflightDocumentMatcher) setFilename(f string) {
+func (m *draftDocumentMatcher) setFilename(f string) {
 	m.filename = f
 }
 
-func (m *preflightDocumentMatcher) Match(actual interface{}) (success bool, err error) {
+func (m *draftDocumentMatcher) Match(actual interface{}) (success bool, err error) {
 	content, ok := actual.(string)
 	if !ok {
 		return false, errors.Errorf("EqualDocumentBlock matcher expects a string (actual: %T)", actual)
 	}
 	r := strings.NewReader(content)
 	if !m.preprocessing {
-		m.actual, err = parser.ParseReader(m.filename, r, parser.Entrypoint("PreflightAsciidocDocument"))
+		m.actual, err = parser.ParseReader(m.filename, r, parser.Entrypoint("DraftAsciidocDocument"))
 	} else {
-		m.actual, err = parser.ParsePreflightDocument(m.filename, r)
+		m.actual, err = parser.ParseDraftDocument(m.filename, r)
 	}
 	if err != nil {
 		return false, err
@@ -57,10 +57,10 @@ func (m *preflightDocumentMatcher) Match(actual interface{}) (success bool, err 
 	return m.comparison.diffs == "", nil
 }
 
-func (m *preflightDocumentMatcher) FailureMessage(_ interface{}) (message string) {
-	return fmt.Sprintf("expected preflight documents to match:\n%s", m.comparison.diffs)
+func (m *draftDocumentMatcher) FailureMessage(_ interface{}) (message string) {
+	return fmt.Sprintf("expected draft documents to match:\n%s", m.comparison.diffs)
 }
 
-func (m *preflightDocumentMatcher) NegatedFailureMessage(_ interface{}) (message string) {
-	return fmt.Sprintf("expected preflight documents not to match:\n%s", m.comparison.diffs)
+func (m *draftDocumentMatcher) NegatedFailureMessage(_ interface{}) (message string) {
+	return fmt.Sprintf("expected draft documents not to match:\n%s", m.comparison.diffs)
 }

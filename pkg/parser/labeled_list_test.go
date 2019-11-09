@@ -8,13 +8,13 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-var _ = Describe("labeled lists - preflight", func() {
+var _ = Describe("labeled lists - draft", func() {
 
 	It("labeled list with a term and description on 2 lines", func() {
 		source := `Item1::
 Item 1 description
 on 2 lines`
-		expected := types.PreflightDocument{
+		expected := types.DraftDocument{
 			Blocks: []interface{}{
 				types.LabeledListItem{
 					Attributes: types.ElementAttributes{},
@@ -36,12 +36,12 @@ on 2 lines`
 				},
 			},
 		}
-		Expect(source).To(BecomePreflightDocument(expected))
+		Expect(source).To(BecomeDraftDocument(expected))
 	})
 
 	It("labeled list with a single term and no description", func() {
 		source := `Item1::`
-		expected := types.PreflightDocument{
+		expected := types.DraftDocument{
 			Blocks: []interface{}{
 				types.LabeledListItem{
 					Attributes: types.ElementAttributes{},
@@ -51,13 +51,13 @@ on 2 lines`
 				},
 			},
 		}
-		Expect(source).To(BecomePreflightDocument(expected))
+		Expect(source).To(BecomeDraftDocument(expected))
 	})
 
 	It("labeled list with a horizontal layout attribute", func() {
 		source := `[horizontal]
 Item1:: foo`
-		expected := types.PreflightDocument{
+		expected := types.DraftDocument{
 			Blocks: []interface{}{
 				types.LabeledListItem{
 					Attributes: types.ElementAttributes{
@@ -78,13 +78,13 @@ Item1:: foo`
 				},
 			},
 		}
-		Expect(source).To(BecomePreflightDocument(expected))
+		Expect(source).To(BecomeDraftDocument(expected))
 	})
 
 	It("labeled list with a single term and a blank line", func() {
 		source := `Item1::
 			`
-		expected := types.PreflightDocument{
+		expected := types.DraftDocument{
 			Blocks: []interface{}{
 				types.LabeledListItem{
 					Attributes: types.ElementAttributes{},
@@ -94,7 +94,7 @@ Item1:: foo`
 				},
 			},
 		}
-		Expect(source).To(BecomePreflightDocument(expected))
+		Expect(source).To(BecomeDraftDocument(expected))
 	})
 
 	It("labeled list with multiple sibling items", func() {
@@ -104,7 +104,7 @@ Item 2::
 Item 2 description
 Item 3:: 
 Item 3 description`
-		expected := types.PreflightDocument{
+		expected := types.DraftDocument{
 			Blocks: []interface{}{
 				types.LabeledListItem{
 					Attributes: types.ElementAttributes{},
@@ -153,7 +153,7 @@ Item 3 description`
 				},
 			},
 		}
-		Expect(source).To(BecomePreflightDocument(expected))
+		Expect(source).To(BecomeDraftDocument(expected))
 	})
 
 	It("labeled list with multiple nested items", func() {
@@ -163,7 +163,7 @@ Item 2:::
 Item 2 description
 Item 3::::
 Item 3 description`
-		expected := types.PreflightDocument{
+		expected := types.DraftDocument{
 			Blocks: []interface{}{
 				types.LabeledListItem{
 					Attributes: types.ElementAttributes{},
@@ -212,7 +212,7 @@ Item 3 description`
 				},
 			},
 		}
-		Expect(source).To(BecomePreflightDocument(expected))
+		Expect(source).To(BecomeDraftDocument(expected))
 	})
 
 	It("labeled list with nested unordered list - case 1", func() {
@@ -220,7 +220,7 @@ Item 3 description`
 * foo
 * bar
 Item with description:: something simple`
-		expected := types.PreflightDocument{
+		expected := types.DraftDocument{
 			Blocks: []interface{}{
 				types.LabeledListItem{
 					Attributes: types.ElementAttributes{},
@@ -278,7 +278,7 @@ Item with description:: something simple`
 			},
 		}
 
-		Expect(source).To(BecomePreflightDocument(expected))
+		Expect(source).To(BecomeDraftDocument(expected))
 	})
 
 	It("labeled list with a single item and paragraph", func() {
@@ -287,7 +287,7 @@ foo
 bar
 
 a normal paragraph.`
-		expected := types.PreflightDocument{
+		expected := types.DraftDocument{
 			Blocks: []interface{}{
 				types.LabeledListItem{
 					Attributes: types.ElementAttributes{},
@@ -318,7 +318,7 @@ a normal paragraph.`
 				},
 			},
 		}
-		Expect(source).To(BecomePreflightDocument(expected))
+		Expect(source).To(BecomeDraftDocument(expected))
 	})
 
 	It("labeled list with item continuation", func() {
@@ -332,7 +332,7 @@ Item 2:: something simple
 ----
 another fenced block
 ----`
-		expected := types.PreflightDocument{
+		expected := types.DraftDocument{
 			Blocks: []interface{}{
 				types.LabeledListItem{
 					Attributes: types.ElementAttributes{},
@@ -397,7 +397,7 @@ another fenced block
 				},
 			},
 		}
-		Expect(source).To(BecomePreflightDocument(expected))
+		Expect(source).To(BecomeDraftDocument(expected))
 	})
 
 	It("labeled list without item continuation", func() {
@@ -409,7 +409,7 @@ Item 2:: something simple
 ----
 another fenced block
 ----`
-		expected := types.PreflightDocument{
+		expected := types.DraftDocument{
 			Blocks: []interface{}{
 				types.LabeledListItem{
 					Attributes: types.ElementAttributes{},
@@ -466,13 +466,13 @@ another fenced block
 				},
 			},
 		}
-		Expect(source).To(BecomePreflightDocument(expected))
+		Expect(source).To(BecomeDraftDocument(expected))
 	})
 
 	It("labeled list with nested unordered list - case 2", func() {
 		source := `Labeled item::
 - unordered item`
-		expected := types.PreflightDocument{
+		expected := types.DraftDocument{
 			Blocks: []interface{}{
 				types.LabeledListItem{
 					Attributes: types.ElementAttributes{},
@@ -498,14 +498,14 @@ another fenced block
 				},
 			},
 		}
-		Expect(source).To(BecomePreflightDocument(expected))
+		Expect(source).To(BecomeDraftDocument(expected))
 	})
 
 	It("labeled list with title", func() {
 		source := `.Labeled, single-line
 first term:: definition of the first term
 second term:: definition of the second term`
-		expected := types.PreflightDocument{
+		expected := types.DraftDocument{
 			Blocks: []interface{}{
 				types.LabeledListItem{
 					Attributes: types.ElementAttributes{
@@ -545,7 +545,7 @@ second term:: definition of the second term`
 				},
 			},
 		}
-		Expect(source).To(BecomePreflightDocument(expected))
+		Expect(source).To(BecomeDraftDocument(expected))
 	})
 
 	It("max level of labeled items - case 1", func() {
@@ -554,7 +554,7 @@ level 1:: description 1
 level 2::: description 2
 level 3:::: description 3
 level 1:: description 1`
-		expected := types.PreflightDocument{
+		expected := types.DraftDocument{
 			Blocks: []interface{}{
 				types.LabeledListItem{
 					Attributes: types.ElementAttributes{
@@ -628,7 +628,7 @@ level 1:: description 1`
 				},
 			},
 		}
-		Expect(source).To(BecomePreflightDocument(expected))
+		Expect(source).To(BecomeDraftDocument(expected))
 	})
 
 	It("max level of labeled items - case 2", func() {
@@ -637,7 +637,7 @@ level 1:: description 1
 level 2::: description 2
 level 3:::: description 3
 level 2::: description 2`
-		expected := types.PreflightDocument{
+		expected := types.DraftDocument{
 			Blocks: []interface{}{
 				types.LabeledListItem{
 					Attributes: types.ElementAttributes{
@@ -711,7 +711,7 @@ level 2::: description 2`
 				},
 			},
 		}
-		Expect(source).To(BecomePreflightDocument(expected))
+		Expect(source).To(BecomeDraftDocument(expected))
 	})
 })
 

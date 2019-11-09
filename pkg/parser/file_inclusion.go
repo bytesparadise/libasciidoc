@@ -24,7 +24,7 @@ func init() {
 	}
 }
 
-func parseFileToInclude(filename string, incl types.FileInclusion, attrs types.DocumentAttributes, opts ...Option) (types.PreflightDocument, error) {
+func parseFileToInclude(filename string, incl types.FileInclusion, attrs types.DocumentAttributes, opts ...Option) (types.DraftDocument, error) {
 	path := incl.Location.Resolve(attrs)
 	currentDir := filepath.Dir(filename)
 	log.Debugf("parsing '%s' from '%s' (%s)", path, currentDir, filename)
@@ -52,20 +52,20 @@ func parseFileToInclude(filename string, incl types.FileInclusion, attrs types.D
 	if err := scanner.Err(); err != nil {
 		msg, err2 := invalidFileErrMsg(filename, path, incl.RawText, err)
 		if err2 != nil {
-			return types.PreflightDocument{}, err2
+			return types.DraftDocument{}, err2
 		}
 		return msg, errors.Wrap(err, "unable to read file to include")
 	}
 	// parse the content, and returns the corresponding elements
 	levelOffset := incl.Attributes.GetAsString(types.AttrLevelOffset)
 	if !IsAsciidoc(absPath) {
-		opts = append(opts, Entrypoint("PreflightTextDocument"))
+		opts = append(opts, Entrypoint("DraftTextDocument"))
 	}
 
-	return parsePreflightDocument(absPath, content, levelOffset, opts...)
+	return parseDraftDocument(absPath, content, levelOffset, opts...)
 }
 
-func invalidFileErrMsg(filename, path, rawText string, err error) (types.PreflightDocument, error) {
+func invalidFileErrMsg(filename, path, rawText string, err error) (types.DraftDocument, error) {
 	log.WithError(err).Errorf("failed to include '%s'", path)
 	buf := bytes.NewBuffer(nil)
 	err = invalidFileTmpl.Execute(buf, struct {
@@ -76,9 +76,9 @@ func invalidFileErrMsg(filename, path, rawText string, err error) (types.Preflig
 		Error:    rawText,
 	})
 	if err != nil {
-		return types.PreflightDocument{}, err
+		return types.DraftDocument{}, err
 	}
-	return types.PreflightDocument{
+	return types.DraftDocument{
 		Blocks: []interface{}{
 			types.Paragraph{
 				Attributes: types.ElementAttributes{},

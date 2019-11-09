@@ -8,12 +8,12 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-var _ = Describe("blank lines - preflight", func() {
+var _ = Describe("blank lines - draft", func() {
 	It("blank line between 2 paragraphs", func() {
 		source := `first paragraph
  
 second paragraph`
-		expected := types.PreflightDocument{
+		expected := types.DraftDocument{
 			Blocks: []interface{}{
 				types.Paragraph{
 					Attributes: types.ElementAttributes{},
@@ -34,7 +34,7 @@ second paragraph`
 				},
 			},
 		}
-		Expect(source).To(BecomePreflightDocument(expected))
+		Expect(source).To(BecomeDraftDocument(expected))
 	})
 	It("blank line with spaces and tabs between 2 paragraphs and after second paragraph", func() {
 		source := `first paragraph
@@ -43,7 +43,7 @@ second paragraph`
 		
 second paragraph
 `
-		expected := types.PreflightDocument{
+		expected := types.DraftDocument{
 			Blocks: []interface{}{
 				types.Paragraph{
 					Attributes: types.ElementAttributes{},
@@ -66,7 +66,7 @@ second paragraph
 				},
 			},
 		}
-		Expect(source).To(BecomePreflightDocument(expected))
+		Expect(source).To(BecomeDraftDocument(expected))
 	})
 
 })

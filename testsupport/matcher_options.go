@@ -14,12 +14,12 @@ func WithFilename(filename string) FilenameOption {
 	}
 }
 
-// BecomePreflightDocumentOption an option to configure the BecomePreflightDocument matcher
-type BecomePreflightDocumentOption func(m *preflightDocumentMatcher)
+// BecomeDraftDocumentOption an option to configure the BecomeDraftDocument matcher
+type BecomeDraftDocumentOption func(m *draftDocumentMatcher)
 
 // WithoutPreprocessing disables document preprocessing
-func WithoutPreprocessing() BecomePreflightDocumentOption {
-	return func(m *preflightDocumentMatcher) {
+func WithoutPreprocessing() BecomeDraftDocumentOption {
+	return func(m *draftDocumentMatcher) {
 		m.preprocessing = false
 	}
 }
