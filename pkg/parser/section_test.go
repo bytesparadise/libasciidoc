@@ -8,7 +8,7 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-var _ = Describe("sections - preflight", func() {
+var _ = Describe("sections - draft", func() {
 
 	Context("valid sections", func() {
 
@@ -17,7 +17,7 @@ var _ = Describe("sections - preflight", func() {
 			doctitle := types.InlineElements{
 				types.StringElement{Content: "a header"},
 			}
-			expected := types.PreflightDocument{
+			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.Section{
 						Attributes: types.ElementAttributes{
@@ -30,7 +30,7 @@ var _ = Describe("sections - preflight", func() {
 					},
 				},
 			}
-			Expect(source).To(BecomePreflightDocument(expected))
+			Expect(source).To(BecomeDraftDocument(expected))
 		})
 
 		It("header with many spaces around content", func() {
@@ -38,7 +38,7 @@ var _ = Describe("sections - preflight", func() {
 			doctitle := types.InlineElements{
 				types.StringElement{Content: "a header   "},
 			}
-			expected := types.PreflightDocument{
+			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.Section{
 						Attributes: types.ElementAttributes{
@@ -51,7 +51,7 @@ var _ = Describe("sections - preflight", func() {
 					},
 				},
 			}
-			Expect(source).To(BecomePreflightDocument(expected))
+			Expect(source).To(BecomeDraftDocument(expected))
 		})
 
 		It("header and paragraph", func() {
@@ -62,7 +62,7 @@ and a paragraph`
 			doctitle := types.InlineElements{
 				types.StringElement{Content: "a header"},
 			}
-			expected := types.PreflightDocument{
+			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.Section{
 						Attributes: types.ElementAttributes{
@@ -84,7 +84,7 @@ and a paragraph`
 					},
 				},
 			}
-			Expect(source).To(BecomePreflightDocument(expected))
+			Expect(source).To(BecomeDraftDocument(expected))
 		})
 
 		It("two sections with level 0", func() {
@@ -98,7 +98,7 @@ and a paragraph`
 				types.StringElement{Content: "a second header"},
 			}
 
-			expected := types.PreflightDocument{
+			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.Section{
 						Attributes: types.ElementAttributes{
@@ -121,7 +121,7 @@ and a paragraph`
 					},
 				},
 			}
-			Expect(source).To(BecomePreflightDocument(expected))
+			Expect(source).To(BecomeDraftDocument(expected))
 		})
 
 		It("section level 1 alone", func() {
@@ -129,7 +129,7 @@ and a paragraph`
 			section1Title := types.InlineElements{
 				types.StringElement{Content: "section 1"},
 			}
-			expected := types.PreflightDocument{
+			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.Section{
 						Attributes: types.ElementAttributes{
@@ -142,7 +142,7 @@ and a paragraph`
 					},
 				},
 			}
-			Expect(source).To(BecomePreflightDocument(expected))
+			Expect(source).To(BecomeDraftDocument(expected))
 		})
 
 		It("section level 1 with quoted text", func() {
@@ -155,7 +155,7 @@ and a paragraph`
 					},
 				},
 			}
-			expected := types.PreflightDocument{
+			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.Section{
 						Attributes: types.ElementAttributes{
@@ -168,7 +168,7 @@ and a paragraph`
 					},
 				},
 			}
-			Expect(source).To(BecomePreflightDocument(expected))
+			Expect(source).To(BecomeDraftDocument(expected))
 		})
 
 		It("section level 0 with nested section level 1", func() {
@@ -181,7 +181,7 @@ and a paragraph`
 			section1Title := types.InlineElements{
 				types.StringElement{Content: "section 1"},
 			}
-			expected := types.PreflightDocument{
+			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.Section{
 						Attributes: types.ElementAttributes{
@@ -204,7 +204,7 @@ and a paragraph`
 					},
 				},
 			}
-			Expect(source).To(BecomePreflightDocument(expected))
+			Expect(source).To(BecomeDraftDocument(expected))
 		})
 
 		It("section level 0 with nested section level 2", func() {
@@ -217,7 +217,7 @@ and a paragraph`
 			section2Title := types.InlineElements{
 				types.StringElement{Content: "section 2"},
 			}
-			expected := types.PreflightDocument{
+			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.Section{
 						Attributes: types.ElementAttributes{
@@ -240,7 +240,7 @@ and a paragraph`
 					},
 				},
 			}
-			Expect(source).To(BecomePreflightDocument(expected))
+			Expect(source).To(BecomeDraftDocument(expected))
 		})
 
 		It("section level 1 with immediate paragraph", func() {
@@ -249,7 +249,7 @@ and a paragraph`
 			section1Title := types.InlineElements{
 				types.StringElement{Content: "a title"},
 			}
-			expected := types.PreflightDocument{
+			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.Section{
 						Attributes: types.ElementAttributes{
@@ -270,7 +270,7 @@ and a paragraph`
 					},
 				},
 			}
-			Expect(source).To(BecomePreflightDocument(expected))
+			Expect(source).To(BecomeDraftDocument(expected))
 		})
 
 		It("section level 1 with a paragraph separated by empty line", func() {
@@ -280,7 +280,7 @@ and a paragraph`
 			section1Title := types.InlineElements{
 				types.StringElement{Content: "a title"},
 			}
-			expected := types.PreflightDocument{
+			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.Section{
 						Attributes: types.ElementAttributes{
@@ -302,7 +302,7 @@ and a paragraph`
 					},
 				},
 			}
-			Expect(source).To(BecomePreflightDocument(expected))
+			Expect(source).To(BecomeDraftDocument(expected))
 		})
 
 		It("section level 1 with a paragraph separated by non-empty line", func() {
@@ -310,7 +310,7 @@ and a paragraph`
 			section1Title := types.InlineElements{
 				types.StringElement{Content: "a title"},
 			}
-			expected := types.PreflightDocument{
+			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.Section{
 						Attributes: types.ElementAttributes{
@@ -332,7 +332,7 @@ and a paragraph`
 					},
 				},
 			}
-			Expect(source).To(BecomePreflightDocument(expected))
+			Expect(source).To(BecomeDraftDocument(expected))
 		})
 
 		It("section levels 1, 2, 3, 2", func() {
@@ -346,7 +346,7 @@ a paragraph
 
 == Section B
 a paragraph`
-			expected := types.PreflightDocument{
+			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.Section{
 						Attributes: types.ElementAttributes{
@@ -421,7 +421,7 @@ a paragraph`
 					},
 				},
 			}
-			Expect(source).To(BecomePreflightDocument(expected))
+			Expect(source).To(BecomeDraftDocument(expected))
 		})
 
 		It("single section with custom IDs", func() {
@@ -430,7 +430,7 @@ a paragraph`
 			sectionTitle := types.InlineElements{
 				types.StringElement{Content: "a header"},
 			}
-			expected := types.PreflightDocument{
+			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.Section{
 						Attributes: types.ElementAttributes{
@@ -443,7 +443,7 @@ a paragraph`
 					},
 				},
 			}
-			Expect(source).To(BecomePreflightDocument(expected))
+			Expect(source).To(BecomeDraftDocument(expected))
 		})
 
 		It("multiple sections with custom IDs", func() {
@@ -464,7 +464,7 @@ a paragraph`
 			barTitle := types.InlineElements{
 				types.StringElement{Content: "Section B"},
 			}
-			expected := types.PreflightDocument{
+			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.Section{
 						Attributes: types.ElementAttributes{
@@ -505,7 +505,7 @@ a paragraph`
 					},
 				},
 			}
-			Expect(source).To(BecomePreflightDocument(expected))
+			Expect(source).To(BecomeDraftDocument(expected))
 		})
 
 		It("sections with same title", func() {
@@ -518,7 +518,7 @@ a paragraph`
 			section1bTitle := types.InlineElements{
 				types.StringElement{Content: "section 1"},
 			}
-			expected := types.PreflightDocument{
+			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.Section{
 						Attributes: types.ElementAttributes{
@@ -541,14 +541,14 @@ a paragraph`
 					},
 				},
 			}
-			Expect(source).To(BecomePreflightDocument(expected))
+			Expect(source).To(BecomeDraftDocument(expected))
 		})
 	})
 
 	Context("invalid sections", func() {
 		It("header invalid - missing space", func() {
 			source := "=a header"
-			expected := types.PreflightDocument{
+			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
@@ -559,12 +559,12 @@ a paragraph`
 						},
 					},
 				}}
-			Expect(source).To(BecomePreflightDocument(expected))
+			Expect(source).To(BecomeDraftDocument(expected))
 		})
 
 		It("header invalid - header space", func() {
 			source := " = a header with a prefix space"
-			expected := types.PreflightDocument{
+			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.LiteralBlock{
 						Attributes: types.ElementAttributes{
@@ -577,7 +577,7 @@ a paragraph`
 					},
 				},
 			}
-			Expect(source).To(BecomePreflightDocument(expected))
+			Expect(source).To(BecomeDraftDocument(expected))
 		})
 
 		It("header with invalid section1", func() {
@@ -587,7 +587,7 @@ a paragraph`
 			title := types.InlineElements{
 				types.StringElement{Content: "a header"},
 			}
-			expected := types.PreflightDocument{
+			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.Section{
 						Attributes: types.ElementAttributes{
@@ -610,7 +610,7 @@ a paragraph`
 					},
 				},
 			}
-			Expect(source).To(BecomePreflightDocument(expected))
+			Expect(source).To(BecomeDraftDocument(expected))
 		})
 
 	})
@@ -621,7 +621,7 @@ a paragraph`
 			source := `Document Title
 ==============
 Doc Writer <thedoc@asciidoctor.org>`
-			expected := types.PreflightDocument{
+			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
@@ -645,7 +645,7 @@ Doc Writer <thedoc@asciidoctor.org>`
 					},
 				},
 			}
-			Expect(source).To(BecomePreflightDocument(expected))
+			Expect(source).To(BecomeDraftDocument(expected))
 		})
 	})
 })

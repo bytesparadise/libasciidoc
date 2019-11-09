@@ -8,7 +8,7 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-var _ = Describe("paragraphs - preflight", func() {
+var _ = Describe("paragraphs - draft", func() {
 
 	Context("paragraphs", func() {
 
@@ -302,7 +302,7 @@ No space after the [NOTE]!
 
 [CAUTION]
 And no space after [CAUTION] either.`
-			expected := types.PreflightDocument{
+			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.Paragraph{
 						Attributes: types.ElementAttributes{
@@ -331,7 +331,7 @@ And no space after [CAUTION] either.`
 					},
 				},
 			}
-			Expect(source).To(BecomePreflightDocument(expected))
+			Expect(source).To(BecomeDraftDocument(expected))
 		})
 	})
 

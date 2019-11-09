@@ -8,7 +8,7 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-var _ = Describe("passthroughs - preflight", func() {
+var _ = Describe("passthroughs - draft", func() {
 
 	Context("triplePlus Passthrough", func() {
 

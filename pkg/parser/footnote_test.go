@@ -10,7 +10,7 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-var _ = Describe("footnotes - preflight", func() {
+var _ = Describe("footnotes - draft", func() {
 
 	BeforeEach(func() {
 		types.ResetFootnoteSequence()
@@ -29,7 +29,7 @@ var _ = Describe("footnotes - preflight", func() {
 					},
 				},
 			}
-			expected := types.PreflightDocument{
+			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
@@ -44,7 +44,7 @@ var _ = Describe("footnotes - preflight", func() {
 					},
 				},
 			}
-			Expect(source).To(BecomePreflightDocument(expected)) // need to get the whole document here
+			Expect(source).To(BecomeDraftDocument(expected)) // need to get the whole document here
 		})
 
 		It("footnote with single-line rich content", func() {
@@ -82,7 +82,7 @@ var _ = Describe("footnotes - preflight", func() {
 					},
 				},
 			}
-			expected := types.PreflightDocument{
+			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
@@ -97,12 +97,12 @@ var _ = Describe("footnotes - preflight", func() {
 					},
 				},
 			}
-			Expect(source).To(BecomePreflightDocument(expected)) // need to get the whole document here
+			Expect(source).To(BecomeDraftDocument(expected)) // need to get the whole document here
 		})
 
 		It("footnote in a paragraph", func() {
 			source := `This is another paragraph.footnote:[I am footnote text and will be displayed at the bottom of the article.]`
-			expected := types.PreflightDocument{
+			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
@@ -124,7 +124,7 @@ var _ = Describe("footnotes - preflight", func() {
 					},
 				},
 			}
-			Expect(source).To(BecomePreflightDocument(expected)) // need to get the whole document here
+			Expect(source).To(BecomeDraftDocument(expected)) // need to get the whole document here
 		})
 
 	})
@@ -149,7 +149,7 @@ var _ = Describe("footnotes - preflight", func() {
 				Ref:      footnoteRef,
 				Elements: types.InlineElements{},
 			}
-			expected := types.PreflightDocument{
+			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
@@ -171,7 +171,7 @@ var _ = Describe("footnotes - preflight", func() {
 					},
 				},
 			}
-			Expect(source).To(BecomePreflightDocument(expected))
+			Expect(source).To(BecomeDraftDocument(expected))
 		})
 
 		It("footnoteref with unknown reference", func() {
@@ -193,7 +193,7 @@ var _ = Describe("footnotes - preflight", func() {
 				Ref:      footnoteRef2,
 				Elements: types.InlineElements{},
 			}
-			expected := types.PreflightDocument{
+			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
@@ -215,7 +215,7 @@ var _ = Describe("footnotes - preflight", func() {
 					},
 				},
 			}
-			Expect(source).To(BecomePreflightDocument(expected))
+			Expect(source).To(BecomeDraftDocument(expected))
 		})
 	})
 
@@ -264,7 +264,7 @@ a paragraph with another footnote:[baz]`
 			},
 			footnote2,
 		}
-		expected := types.PreflightDocument{
+		expected := types.DraftDocument{
 			Blocks: []interface{}{
 				types.Section{
 					Level: 0,
@@ -316,7 +316,7 @@ a paragraph with another footnote:[baz]`
 				},
 			},
 		}
-		Expect(source).To(BecomePreflightDocument(expected)) // need to get the whole document here
+		Expect(source).To(BecomeDraftDocument(expected)) // need to get the whole document here
 	})
 })
 

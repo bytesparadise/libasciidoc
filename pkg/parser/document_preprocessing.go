@@ -16,22 +16,22 @@ type ContextKey string
 // LevelOffset the key for the level offset of the file to include
 const LevelOffset ContextKey = "leveloffset"
 
-// ParsePreflightDocument parses a document's content and applies the preprocessing directives (file inclusions)
-func ParsePreflightDocument(filename string, r io.Reader, opts ...Option) (types.PreflightDocument, error) {
-	opts = append(opts, Entrypoint("PreflightAsciidocDocument"))
-	return parsePreflightDocument(filename, r, "", opts...)
+// ParseDraftDocument parses a document's content and applies the preprocessing directives (file inclusions)
+func ParseDraftDocument(filename string, r io.Reader, opts ...Option) (types.DraftDocument, error) {
+	opts = append(opts, Entrypoint("DraftAsciidocDocument"))
+	return parseDraftDocument(filename, r, "", opts...)
 }
 
-func parsePreflightDocument(filename string, r io.Reader, levelOffset string, opts ...Option) (types.PreflightDocument, error) {
+func parseDraftDocument(filename string, r io.Reader, levelOffset string, opts ...Option) (types.DraftDocument, error) {
 	d, err := ParseReader(filename, r, opts...)
 	if err != nil {
-		return types.PreflightDocument{}, err
+		return types.DraftDocument{}, err
 	}
-	doc := d.(types.PreflightDocument)
+	doc := d.(types.DraftDocument)
 	attrs := types.DocumentAttributes{}
 	blocks, err := parseElements(filename, doc.Blocks, attrs, levelOffset, opts...)
 	if err != nil {
-		return types.PreflightDocument{}, err
+		return types.DraftDocument{}, err
 	}
 	doc.Blocks = blocks
 	return doc, nil
@@ -56,7 +56,7 @@ func parseElements(filename string, elements []interface{}, attrs types.Document
 		case types.DelimitedBlock:
 			elmts, err := parseElements(filename, e.Elements, attrs, levelOffset,
 				// use a new var to avoid overridding the current one which needs to stay as-is for the rest of the doc parsing
-				append(opts, Entrypoint("PreflightAsciidocDocumentWithinDelimitedBlock"))...)
+				append(opts, Entrypoint("DraftAsciidocDocumentWithinDelimitedBlock"))...)
 			if err != nil {
 				return nil, err
 			}

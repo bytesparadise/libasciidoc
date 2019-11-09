@@ -8,7 +8,7 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-var _ = Describe("ordered lists - preflight", func() {
+var _ = Describe("ordered lists - draft", func() {
 
 	Context("ordered list item alone", func() {
 
@@ -26,7 +26,7 @@ var _ = Describe("ordered lists - preflight", func() {
 
 		It("ordered list item with implicit numbering style", func() {
 			source := `.. item`
-			expected := types.PreflightDocument{
+			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.OrderedListItem{
 						Level:          2,
@@ -36,12 +36,12 @@ var _ = Describe("ordered lists - preflight", func() {
 					},
 				},
 			}
-			Expect(source).To(BecomePreflightDocument(expected))
+			Expect(source).To(BecomeDraftDocument(expected))
 		})
 
 		It("ordered list item with arabic numbering style", func() {
 			source := `1. item`
-			expected := types.PreflightDocument{
+			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.OrderedListItem{
 						Level:          1,
@@ -51,12 +51,12 @@ var _ = Describe("ordered lists - preflight", func() {
 					},
 				},
 			}
-			Expect(source).To(BecomePreflightDocument(expected))
+			Expect(source).To(BecomeDraftDocument(expected))
 		})
 
 		It("ordered list item with lower alpha numbering style", func() {
 			source := `b. item`
-			expected := types.PreflightDocument{
+			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.OrderedListItem{
 						Level:          1,
@@ -66,12 +66,12 @@ var _ = Describe("ordered lists - preflight", func() {
 					},
 				},
 			}
-			Expect(source).To(BecomePreflightDocument(expected))
+			Expect(source).To(BecomeDraftDocument(expected))
 		})
 
 		It("ordered list item with upper alpha numbering style", func() {
 			source := `B. item`
-			expected := types.PreflightDocument{
+			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.OrderedListItem{
 						Level:          1,
@@ -81,12 +81,12 @@ var _ = Describe("ordered lists - preflight", func() {
 					},
 				},
 			}
-			Expect(source).To(BecomePreflightDocument(expected))
+			Expect(source).To(BecomeDraftDocument(expected))
 		})
 
 		It("ordered list item with lower roman numbering style", func() {
 			source := `i) item`
-			expected := types.PreflightDocument{
+			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.OrderedListItem{
 						Level:          1,
@@ -96,12 +96,12 @@ var _ = Describe("ordered lists - preflight", func() {
 					},
 				},
 			}
-			Expect(source).To(BecomePreflightDocument(expected))
+			Expect(source).To(BecomeDraftDocument(expected))
 		})
 
 		It("ordered list item with upper roman numbering style", func() {
 			source := `I) item`
-			expected := types.PreflightDocument{
+			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.OrderedListItem{
 						Level:          1,
@@ -111,14 +111,14 @@ var _ = Describe("ordered lists - preflight", func() {
 					},
 				},
 			}
-			Expect(source).To(BecomePreflightDocument(expected))
+			Expect(source).To(BecomeDraftDocument(expected))
 		})
 
 		It("ordered list item with explicit numbering style", func() {
 			source := `[lowerroman]
 . item
 . item`
-			expected := types.PreflightDocument{
+			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.OrderedListItem{
 						Attributes: types.ElementAttributes{
@@ -136,13 +136,13 @@ var _ = Describe("ordered lists - preflight", func() {
 					},
 				},
 			}
-			Expect(source).To(BecomePreflightDocument(expected))
+			Expect(source).To(BecomeDraftDocument(expected))
 		})
 
 		It("ordered list item with explicit start only", func() {
 			source := `[start=5]
 . item`
-			expected := types.PreflightDocument{
+			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.OrderedListItem{
 						Level:          1,
@@ -154,13 +154,13 @@ var _ = Describe("ordered lists - preflight", func() {
 					},
 				},
 			}
-			Expect(source).To(BecomePreflightDocument(expected))
+			Expect(source).To(BecomeDraftDocument(expected))
 		})
 
 		It("ordered list item with explicit quoted numbering and start", func() {
 			source := `["lowerroman", start="5"]
 . item`
-			expected := types.PreflightDocument{
+			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.OrderedListItem{
 						Level:          1,
@@ -173,7 +173,7 @@ var _ = Describe("ordered lists - preflight", func() {
 					},
 				},
 			}
-			Expect(source).To(BecomePreflightDocument(expected))
+			Expect(source).To(BecomeDraftDocument(expected))
 		})
 
 		It("max level of ordered items - case 1", func() {
@@ -184,7 +184,7 @@ var _ = Describe("ordered lists - preflight", func() {
 .... level 4
 ..... level 5
 . level 1`
-			expected := types.PreflightDocument{
+			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.OrderedListItem{
 						Level:          1,
@@ -292,7 +292,7 @@ var _ = Describe("ordered lists - preflight", func() {
 					},
 				},
 			}
-			Expect(source).To(BecomePreflightDocument(expected))
+			Expect(source).To(BecomeDraftDocument(expected))
 		})
 
 		It("max level of ordered items - case 2", func() {
@@ -303,7 +303,7 @@ var _ = Describe("ordered lists - preflight", func() {
 .... level 4
 ..... level 5
 .. level 2b`
-			expected := types.PreflightDocument{
+			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.OrderedListItem{
 						Level:          1,
@@ -411,7 +411,7 @@ var _ = Describe("ordered lists - preflight", func() {
 					},
 				},
 			}
-			Expect(source).To(BecomePreflightDocument(expected))
+			Expect(source).To(BecomeDraftDocument(expected))
 		})
 	})
 
@@ -421,7 +421,7 @@ var _ = Describe("ordered lists - preflight", func() {
 			source := `. a
 . b`
 
-			expected := types.PreflightDocument{
+			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.OrderedListItem{
 						Level:          1,
@@ -455,14 +455,14 @@ var _ = Describe("ordered lists - preflight", func() {
 					},
 				},
 			}
-			Expect(source).To(BecomePreflightDocument(expected))
+			Expect(source).To(BecomeDraftDocument(expected))
 		})
 
 		It("ordered list with unnumbered items", func() {
 			source := `. item 1
 . item 2`
 
-			expected := types.PreflightDocument{
+			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.OrderedListItem{
 						Level:          1,
@@ -496,7 +496,7 @@ var _ = Describe("ordered lists - preflight", func() {
 					},
 				},
 			}
-			Expect(source).To(BecomePreflightDocument(expected))
+			Expect(source).To(BecomeDraftDocument(expected))
 		})
 
 		It("ordered list with custom numbering on child items with tabs ", func() {
@@ -510,7 +510,7 @@ var _ = Describe("ordered lists - preflight", func() {
 			. item 2
 			.. item 2.1`
 
-			expected := types.PreflightDocument{
+			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.OrderedListItem{
 						Level:          1,
@@ -621,7 +621,7 @@ var _ = Describe("ordered lists - preflight", func() {
 					},
 				},
 			}
-			Expect(source).To(BecomePreflightDocument(expected))
+			Expect(source).To(BecomeDraftDocument(expected))
 		})
 
 		It("ordered list with all default styles and blank lines", func() {
@@ -639,7 +639,7 @@ var _ = Describe("ordered lists - preflight", func() {
 
 
 `
-			expected := types.PreflightDocument{
+			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.OrderedListItem{
 						Level:          1,
@@ -726,7 +726,7 @@ var _ = Describe("ordered lists - preflight", func() {
 					types.BlankLine{},
 				},
 			}
-			Expect(source).To(BecomePreflightDocument(expected))
+			Expect(source).To(BecomeDraftDocument(expected))
 		})
 	})
 
@@ -735,7 +735,7 @@ var _ = Describe("ordered lists - preflight", func() {
 		It("ordered list with simple numbered items", func() {
 			source := `1. a
 2. b`
-			expected := types.PreflightDocument{
+			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.OrderedListItem{
 						Level:          1,
@@ -769,7 +769,7 @@ var _ = Describe("ordered lists - preflight", func() {
 					},
 				},
 			}
-			Expect(source).To(BecomePreflightDocument(expected))
+			Expect(source).To(BecomeDraftDocument(expected))
 		})
 
 		It("ordered list with numbered items", func() {
@@ -777,7 +777,7 @@ var _ = Describe("ordered lists - preflight", func() {
 a. item 1.a
 2. item 2
 b. item 2.a`
-			expected := types.PreflightDocument{
+			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.OrderedListItem{
 						Level:          1,
@@ -841,7 +841,7 @@ b. item 2.a`
 					},
 				},
 			}
-			Expect(source).To(BecomePreflightDocument(expected))
+			Expect(source).To(BecomeDraftDocument(expected))
 		})
 	})
 
@@ -859,7 +859,7 @@ another delimited block
 ----
 . bar
 `
-			expected := types.PreflightDocument{
+			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.OrderedListItem{
 						Attributes:     types.ElementAttributes{},
@@ -931,7 +931,7 @@ another delimited block
 					},
 				},
 			}
-			Expect(source).To(BecomePreflightDocument(expected))
+			Expect(source).To(BecomeDraftDocument(expected))
 		})
 	})
 })

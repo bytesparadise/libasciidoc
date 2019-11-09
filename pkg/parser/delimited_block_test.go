@@ -8,7 +8,7 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-var _ = Describe("delimited blocks - preflight", func() {
+var _ = Describe("delimited blocks - draft", func() {
 
 	Context("fenced blocks", func() {
 
@@ -83,7 +83,7 @@ var _ = Describe("delimited blocks - preflight", func() {
 
 		It("fenced block with multiple lines then a paragraph", func() {
 			source := "```\nsome fenced code\nwith an empty line\n\nin the middle\n```\nthen a normal paragraph."
-			expected := types.PreflightDocument{
+			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{},
@@ -127,13 +127,13 @@ var _ = Describe("delimited blocks - preflight", func() {
 					},
 				},
 			}
-			Expect(source).To(BecomePreflightDocument(expected))
+			Expect(source).To(BecomeDraftDocument(expected))
 		})
 
 		It("fenced block after a paragraph", func() {
 			content := "some fenced code"
 			source := "a paragraph.\n```\n" + content + "\n```\n"
-			expected := types.PreflightDocument{
+			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
@@ -161,7 +161,7 @@ var _ = Describe("delimited blocks - preflight", func() {
 					},
 				},
 			}
-			Expect(source).To(BecomePreflightDocument(expected))
+			Expect(source).To(BecomeDraftDocument(expected))
 		})
 
 		It("fenced block with unclosed delimiter", func() {
@@ -388,7 +388,7 @@ with an empty line
 in the middle
 ----
 then a normal paragraph.`
-			expected := types.PreflightDocument{
+			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{},
@@ -427,7 +427,7 @@ then a normal paragraph.`
 					},
 				},
 			}
-			Expect(source).To(BecomePreflightDocument(expected))
+			Expect(source).To(BecomeDraftDocument(expected))
 		})
 
 		It("listing block just after a paragraph", func() {
@@ -435,7 +435,7 @@ then a normal paragraph.`
 ----
 some listing code
 ----`
-			expected := types.PreflightDocument{
+			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
@@ -463,7 +463,7 @@ some listing code
 					},
 				},
 			}
-			Expect(source).To(BecomePreflightDocument(expected))
+			Expect(source).To(BecomeDraftDocument(expected))
 		})
 
 		It("listing block with unclosed delimiter", func() {
@@ -697,7 +697,7 @@ multiple
 paragraphs
 ----
 `
-			expected := types.PreflightDocument{
+			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{
@@ -725,7 +725,7 @@ paragraphs
 					},
 				},
 			}
-			Expect(source).To(BecomePreflightDocument(expected))
+			Expect(source).To(BecomeDraftDocument(expected))
 		})
 	})
 

@@ -40,20 +40,20 @@ type Substitutor interface {
 }
 
 // ------------------------------------------
-// Preflight Document: document parsed in a linear fashion, and which needs further
+// Draft Document: document parsed in a linear fashion, and which needs further
 // processing before rendering
 // ------------------------------------------
 
-// PreflightDocument the linear-level structure for a document
-type PreflightDocument struct {
+// DraftDocument the linear-level structure for a document
+type DraftDocument struct {
 	FrontMatter FrontMatter
 	Blocks      []interface{}
 }
 
-// NewPreflightDocument initializes a new Preflight`Document` from the given lines
-func NewPreflightDocument(frontMatter interface{}, blocks []interface{}) (PreflightDocument, error) {
-	log.Debugf("initializing a new PreflightDocument with %d block element(s)", len(blocks))
-	result := PreflightDocument{
+// NewDraftDocument initializes a new Draft`Document` from the given lines
+func NewDraftDocument(frontMatter interface{}, blocks []interface{}) (DraftDocument, error) {
+	log.Debugf("initializing a new DraftDocument with %d block element(s)", len(blocks))
+	result := DraftDocument{
 		Blocks: NilSafe(blocks),
 	}
 	if fm, ok := frontMatter.(FrontMatter); ok {

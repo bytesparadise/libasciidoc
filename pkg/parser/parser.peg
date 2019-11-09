@@ -12,18 +12,18 @@ import (
 }
 
 // ----------------------------------------------------------------
-// PreflightAsciidocDocument - fully parsed document, line by line
+// DraftAsciidocDocument - fully parsed document, line by line
 // ----------------------------------------------------------------
-PreflightAsciidocDocument <- frontmatter:(FrontMatter?) blocks:(AsciidocDocumentBlocks) EOF {
-    return types.NewPreflightDocument(frontmatter, blocks.([]interface{}))
+DraftAsciidocDocument <- frontmatter:(FrontMatter?) blocks:(AsciidocDocumentBlocks) EOF {
+    return types.NewDraftDocument(frontmatter, blocks.([]interface{}))
 }
 
-PreflightAsciidocDocumentWithinDelimitedBlock <- frontmatter:(FrontMatter?) blocks:(AsciidocDocumentBlocksWithinDelimitedBlock) EOF {
-    return types.NewPreflightDocument(frontmatter, blocks.([]interface{}))
+DraftAsciidocDocumentWithinDelimitedBlock <- frontmatter:(FrontMatter?) blocks:(AsciidocDocumentBlocksWithinDelimitedBlock) EOF {
+    return types.NewDraftDocument(frontmatter, blocks.([]interface{}))
 }
 
-PreflightTextDocument <- blocks:(TextDocumentBlocks) EOF {
-    return types.NewPreflightDocument(nil, blocks.([]interface{}))
+DraftTextDocument <- blocks:(TextDocumentBlocks) EOF {
+    return types.NewDraftDocument(nil, blocks.([]interface{}))
 }
 
 // ------------------------------------------

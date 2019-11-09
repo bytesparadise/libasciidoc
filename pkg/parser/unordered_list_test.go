@@ -8,13 +8,13 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-var _ = Describe("unordered lists - preflight", func() {
+var _ = Describe("unordered lists - draft", func() {
 
 	Context("valid content", func() {
 
 		It("unordered list with a basic single item", func() {
 			source := `* a list item`
-			expected := types.PreflightDocument{
+			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.UnorderedListItem{
 						Attributes:  types.ElementAttributes{},
@@ -34,7 +34,7 @@ var _ = Describe("unordered lists - preflight", func() {
 					},
 				},
 			}
-			Expect(source).To(BecomePreflightDocument(expected))
+			Expect(source).To(BecomeDraftDocument(expected))
 		})
 
 		It("unordered list with ID, title, role and a single item", func() {
@@ -42,7 +42,7 @@ var _ = Describe("unordered lists - preflight", func() {
 [#listID]
 [.myrole]
 * a list item`
-			expected := types.PreflightDocument{
+			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.UnorderedListItem{
 						Attributes: types.ElementAttributes{
@@ -67,12 +67,12 @@ var _ = Describe("unordered lists - preflight", func() {
 					},
 				},
 			}
-			Expect(source).To(BecomePreflightDocument(expected))
+			Expect(source).To(BecomeDraftDocument(expected))
 		})
 		It("unordered list with a title and a single item", func() {
 			source := `.a title
 	* a list item`
-			expected := types.PreflightDocument{
+			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.UnorderedListItem{
 						Attributes: types.ElementAttributes{
@@ -94,13 +94,13 @@ var _ = Describe("unordered lists - preflight", func() {
 					},
 				},
 			}
-			Expect(source).To(BecomePreflightDocument(expected))
+			Expect(source).To(BecomeDraftDocument(expected))
 		})
 
 		It("unordered list with 2 items with stars", func() {
 			source := `* a first item
 					* a second item with *bold content*`
-			expected := types.PreflightDocument{
+			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.UnorderedListItem{
 						Attributes:  types.ElementAttributes{},
@@ -142,7 +142,7 @@ var _ = Describe("unordered lists - preflight", func() {
 					},
 				},
 			}
-			Expect(source).To(BecomePreflightDocument(expected))
+			Expect(source).To(BecomeDraftDocument(expected))
 		})
 
 		It("unordered list based on article.adoc (with heading spaces)", func() {
@@ -155,7 +155,7 @@ var _ = Describe("unordered lists - preflight", func() {
 		*** nested nested list item B.1
 		*** nested nested list item B.2
 		* list item 2`
-			expected := types.PreflightDocument{
+			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.UnorderedListItem{
 						Attributes: types.ElementAttributes{
@@ -289,13 +289,13 @@ var _ = Describe("unordered lists - preflight", func() {
 					},
 				},
 			}
-			Expect(source).To(BecomePreflightDocument(expected))
+			Expect(source).To(BecomeDraftDocument(expected))
 		})
 
 		It("unordered list with 2 items with carets", func() {
 			source := "- a first item\n" +
 				"- a second item with *bold content*"
-			expected := types.PreflightDocument{
+			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.UnorderedListItem{
 						Attributes:  types.ElementAttributes{},
@@ -337,7 +337,7 @@ var _ = Describe("unordered lists - preflight", func() {
 					},
 				},
 			}
-			Expect(source).To(BecomePreflightDocument(expected))
+			Expect(source).To(BecomeDraftDocument(expected))
 		})
 
 		It("unordered list with items with mixed styles", func() {
@@ -346,7 +346,7 @@ var _ = Describe("unordered lists - preflight", func() {
 					- another parent item
 					* another child item
 					** with a sub child item`
-			expected := types.PreflightDocument{
+			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.UnorderedListItem{
 						Attributes:  types.ElementAttributes{},
@@ -430,7 +430,7 @@ var _ = Describe("unordered lists - preflight", func() {
 					},
 				},
 			}
-			Expect(source).To(BecomePreflightDocument(expected))
+			Expect(source).To(BecomeDraftDocument(expected))
 		})
 
 		It("unordered list with 2 items with empty line in-between", func() {
@@ -438,7 +438,7 @@ var _ = Describe("unordered lists - preflight", func() {
 			source := "* a first item\n" +
 				"\n" +
 				"* a second item with *bold content*"
-			expected := types.PreflightDocument{
+			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.UnorderedListItem{
 						Attributes:  types.ElementAttributes{},
@@ -481,14 +481,14 @@ var _ = Describe("unordered lists - preflight", func() {
 					},
 				},
 			}
-			Expect(source).To(BecomePreflightDocument(expected))
+			Expect(source).To(BecomeDraftDocument(expected))
 		})
 		It("unordered list with 2 items on multiple lines", func() {
 			source := `* item 1
   on 2 lines.
 * item 2
 on 2 lines, too.`
-			expected := types.PreflightDocument{
+			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.UnorderedListItem{
 						Attributes:  types.ElementAttributes{},
@@ -530,14 +530,14 @@ on 2 lines, too.`
 					},
 				},
 			}
-			Expect(source).To(BecomePreflightDocument(expected))
+			Expect(source).To(BecomeDraftDocument(expected))
 		})
 		It("unordered lists with 2 empty lines in-between", func() {
 			source := `* an item in the first list
 			
 
 * an item in the second list`
-			expected := types.PreflightDocument{
+			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.UnorderedListItem{
 						Attributes:  types.ElementAttributes{},
@@ -575,7 +575,7 @@ on 2 lines, too.`
 					},
 				},
 			}
-			Expect(source).To(BecomePreflightDocument(expected)) // parse the whole document to get 2 lists
+			Expect(source).To(BecomeDraftDocument(expected)) // parse the whole document to get 2 lists
 		})
 
 		It("unordered list with items on 3 levels", func() {
@@ -587,7 +587,7 @@ on 2 lines, too.`
 	** item 1.4
 	* item 2
 	** item 2.1`
-			expected := types.PreflightDocument{
+			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.UnorderedListItem{
 						Attributes:  types.ElementAttributes{},
@@ -719,7 +719,7 @@ on 2 lines, too.`
 					},
 				},
 			}
-			Expect(source).To(BecomePreflightDocument(expected))
+			Expect(source).To(BecomeDraftDocument(expected))
 		})
 
 		It("max level of unordered items - case 1", func() {
@@ -730,7 +730,7 @@ on 2 lines, too.`
 **** level 4
 ***** level 5
 * level 1`
-			expected := types.PreflightDocument{
+			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.UnorderedListItem{
 						Level:       1,
@@ -844,7 +844,7 @@ on 2 lines, too.`
 					},
 				},
 			}
-			Expect(source).To(BecomePreflightDocument(expected))
+			Expect(source).To(BecomeDraftDocument(expected))
 		})
 
 		It("max level of unordered items - case 2", func() {
@@ -855,7 +855,7 @@ on 2 lines, too.`
 **** level 4
 ***** level 5
 ** level 2`
-			expected := types.PreflightDocument{
+			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.UnorderedListItem{
 						Attributes: types.ElementAttributes{
@@ -968,7 +968,7 @@ on 2 lines, too.`
 					},
 				},
 			}
-			Expect(source).To(BecomePreflightDocument(expected))
+			Expect(source).To(BecomeDraftDocument(expected))
 		})
 	})
 
@@ -979,7 +979,7 @@ on 2 lines, too.`
 					*** item 1.1.1
 					** item 1.2
 					* item 2`
-			expected := types.PreflightDocument{
+			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.UnorderedListItem{
 						Attributes:  types.ElementAttributes{},
@@ -1063,12 +1063,12 @@ on 2 lines, too.`
 					},
 				},
 			}
-			Expect(source).To(BecomePreflightDocument(expected))
+			Expect(source).To(BecomeDraftDocument(expected))
 		})
 
 		It("invalid list item", func() {
 			source := "*an invalid list item"
-			expected := types.PreflightDocument{
+			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
@@ -1080,7 +1080,7 @@ on 2 lines, too.`
 					},
 				},
 			}
-			Expect(source).To(BecomePreflightDocument(expected))
+			Expect(source).To(BecomeDraftDocument(expected))
 		})
 	})
 
@@ -1098,7 +1098,7 @@ another delimited block
 ----
 * bar
 `
-			expected := types.PreflightDocument{
+			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.UnorderedListItem{
 						Attributes:  types.ElementAttributes{},
@@ -1172,7 +1172,7 @@ another delimited block
 					},
 				},
 			}
-			Expect(source).To(BecomePreflightDocument(expected))
+			Expect(source).To(BecomeDraftDocument(expected))
 		})
 
 		It("unordered list with item continuation - case 2", func() {
@@ -1189,7 +1189,7 @@ The {plus} symbol is on a new line.
 
 ***** level 5
 `
-			expected := types.PreflightDocument{
+			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.UnorderedListItem{
 						Level:       1,
@@ -1328,7 +1328,7 @@ The {plus} symbol is on a new line.
 					},
 				},
 			}
-			Expect(source).To(BecomePreflightDocument(expected))
+			Expect(source).To(BecomeDraftDocument(expected))
 		})
 
 		It("unordered list without item continuation", func() {
@@ -1340,7 +1340,7 @@ a delimited block
 ----
 another delimited block
 ----`
-			expected := types.PreflightDocument{
+			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.UnorderedListItem{
 						Attributes:  types.ElementAttributes{},
@@ -1408,7 +1408,7 @@ another delimited block
 					},
 				},
 			}
-			Expect(source).To(BecomePreflightDocument(expected))
+			Expect(source).To(BecomeDraftDocument(expected))
 		})
 	})
 
@@ -1422,7 +1422,7 @@ another delimited block
 
 +
 paragraph attached to grand parent list item`
-			expected := types.PreflightDocument{
+			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.UnorderedListItem{
 						Attributes:  types.ElementAttributes{},
@@ -1485,7 +1485,7 @@ paragraph attached to grand parent list item`
 					},
 				},
 			}
-			Expect(source).To(BecomePreflightDocument(expected))
+			Expect(source).To(BecomeDraftDocument(expected))
 		})
 
 		It("attach to parent item", func() {
@@ -1495,7 +1495,7 @@ paragraph attached to grand parent list item`
 
 +
 paragraph attached to parent list item`
-			expected := types.PreflightDocument{
+			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.UnorderedListItem{
 						Attributes:  types.ElementAttributes{},
@@ -1558,7 +1558,7 @@ paragraph attached to parent list item`
 					},
 				},
 			}
-			Expect(source).To(BecomePreflightDocument(expected))
+			Expect(source).To(BecomeDraftDocument(expected))
 		})
 	})
 })

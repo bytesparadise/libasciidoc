@@ -8,7 +8,7 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-var _ = Describe("comments - preflight", func() {
+var _ = Describe("comments - draft", func() {
 
 	Context("single line comments", func() {
 
@@ -121,7 +121,7 @@ a *comment* block
 with multiple lines
 ////
 a second paragraph`
-			expected := types.PreflightDocument{
+			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
@@ -153,7 +153,7 @@ a second paragraph`
 					},
 				},
 			}
-			Expect(source).To(BecomePreflightDocument(expected))
+			Expect(source).To(BecomeDraftDocument(expected))
 		})
 	})
 

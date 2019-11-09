@@ -22,35 +22,35 @@ import (
 var g = &grammar{
 	rules: []*rule{
 		{
-			name: "PreflightAsciidocDocument",
-			pos:  position{line: 17, col: 1, offset: 328},
+			name: "DraftAsciidocDocument",
+			pos:  position{line: 17, col: 1, offset: 324},
 			expr: &actionExpr{
-				pos: position{line: 17, col: 30, offset: 357},
-				run: (*parser).callonPreflightAsciidocDocument1,
+				pos: position{line: 17, col: 26, offset: 349},
+				run: (*parser).callonDraftAsciidocDocument1,
 				expr: &seqExpr{
-					pos: position{line: 17, col: 30, offset: 357},
+					pos: position{line: 17, col: 26, offset: 349},
 					exprs: []interface{}{
 						&labeledExpr{
-							pos:   position{line: 17, col: 30, offset: 357},
+							pos:   position{line: 17, col: 26, offset: 349},
 							label: "frontmatter",
 							expr: &zeroOrOneExpr{
-								pos: position{line: 17, col: 43, offset: 370},
+								pos: position{line: 17, col: 39, offset: 362},
 								expr: &ruleRefExpr{
-									pos:  position{line: 17, col: 43, offset: 370},
+									pos:  position{line: 17, col: 39, offset: 362},
 									name: "FrontMatter",
 								},
 							},
 						},
 						&labeledExpr{
-							pos:   position{line: 17, col: 57, offset: 384},
+							pos:   position{line: 17, col: 53, offset: 376},
 							label: "blocks",
 							expr: &ruleRefExpr{
-								pos:  position{line: 17, col: 65, offset: 392},
+								pos:  position{line: 17, col: 61, offset: 384},
 								name: "AsciidocDocumentBlocks",
 							},
 						},
 						&ruleRefExpr{
-							pos:  position{line: 17, col: 89, offset: 416},
+							pos:  position{line: 17, col: 85, offset: 408},
 							name: "EOF",
 						},
 					},
@@ -58,35 +58,35 @@ var g = &grammar{
 			},
 		},
 		{
-			name: "PreflightAsciidocDocumentWithinDelimitedBlock",
-			pos:  position{line: 21, col: 1, offset: 500},
+			name: "DraftAsciidocDocumentWithinDelimitedBlock",
+			pos:  position{line: 21, col: 1, offset: 488},
 			expr: &actionExpr{
-				pos: position{line: 21, col: 50, offset: 549},
-				run: (*parser).callonPreflightAsciidocDocumentWithinDelimitedBlock1,
+				pos: position{line: 21, col: 46, offset: 533},
+				run: (*parser).callonDraftAsciidocDocumentWithinDelimitedBlock1,
 				expr: &seqExpr{
-					pos: position{line: 21, col: 50, offset: 549},
+					pos: position{line: 21, col: 46, offset: 533},
 					exprs: []interface{}{
 						&labeledExpr{
-							pos:   position{line: 21, col: 50, offset: 549},
+							pos:   position{line: 21, col: 46, offset: 533},
 							label: "frontmatter",
 							expr: &zeroOrOneExpr{
-								pos: position{line: 21, col: 63, offset: 562},
+								pos: position{line: 21, col: 59, offset: 546},
 								expr: &ruleRefExpr{
-									pos:  position{line: 21, col: 63, offset: 562},
+									pos:  position{line: 21, col: 59, offset: 546},
 									name: "FrontMatter",
 								},
 							},
 						},
 						&labeledExpr{
-							pos:   position{line: 21, col: 77, offset: 576},
+							pos:   position{line: 21, col: 73, offset: 560},
 							label: "blocks",
 							expr: &ruleRefExpr{
-								pos:  position{line: 21, col: 85, offset: 584},
+								pos:  position{line: 21, col: 81, offset: 568},
 								name: "AsciidocDocumentBlocksWithinDelimitedBlock",
 							},
 						},
 						&ruleRefExpr{
-							pos:  position{line: 21, col: 129, offset: 628},
+							pos:  position{line: 21, col: 125, offset: 612},
 							name: "EOF",
 						},
 					},
@@ -94,24 +94,24 @@ var g = &grammar{
 			},
 		},
 		{
-			name: "PreflightTextDocument",
-			pos:  position{line: 25, col: 1, offset: 712},
+			name: "DraftTextDocument",
+			pos:  position{line: 25, col: 1, offset: 692},
 			expr: &actionExpr{
-				pos: position{line: 25, col: 26, offset: 737},
-				run: (*parser).callonPreflightTextDocument1,
+				pos: position{line: 25, col: 22, offset: 713},
+				run: (*parser).callonDraftTextDocument1,
 				expr: &seqExpr{
-					pos: position{line: 25, col: 26, offset: 737},
+					pos: position{line: 25, col: 22, offset: 713},
 					exprs: []interface{}{
 						&labeledExpr{
-							pos:   position{line: 25, col: 26, offset: 737},
+							pos:   position{line: 25, col: 22, offset: 713},
 							label: "blocks",
 							expr: &ruleRefExpr{
-								pos:  position{line: 25, col: 34, offset: 745},
+								pos:  position{line: 25, col: 30, offset: 721},
 								name: "TextDocumentBlocks",
 							},
 						},
 						&ruleRefExpr{
-							pos:  position{line: 25, col: 54, offset: 765},
+							pos:  position{line: 25, col: 50, offset: 741},
 							name: "EOF",
 						},
 					},
@@ -120,31 +120,31 @@ var g = &grammar{
 		},
 		{
 			name: "AsciidocDocumentBlocks",
-			pos:  position{line: 32, col: 1, offset: 952},
+			pos:  position{line: 32, col: 1, offset: 924},
 			expr: &actionExpr{
-				pos: position{line: 32, col: 27, offset: 978},
+				pos: position{line: 32, col: 27, offset: 950},
 				run: (*parser).callonAsciidocDocumentBlocks1,
 				expr: &seqExpr{
-					pos: position{line: 32, col: 27, offset: 978},
+					pos: position{line: 32, col: 27, offset: 950},
 					exprs: []interface{}{
 						&labeledExpr{
-							pos:   position{line: 32, col: 27, offset: 978},
+							pos:   position{line: 32, col: 27, offset: 950},
 							label: "header",
 							expr: &zeroOrOneExpr{
-								pos: position{line: 32, col: 35, offset: 986},
+								pos: position{line: 32, col: 35, offset: 958},
 								expr: &ruleRefExpr{
-									pos:  position{line: 32, col: 35, offset: 986},
+									pos:  position{line: 32, col: 35, offset: 958},
 									name: "DocumentHeader",
 								},
 							},
 						},
 						&labeledExpr{
-							pos:   position{line: 32, col: 52, offset: 1003},
+							pos:   position{line: 32, col: 52, offset: 975},
 							label: "others",
 							expr: &zeroOrMoreExpr{
-								pos: position{line: 32, col: 60, offset: 1011},
+								pos: position{line: 32, col: 60, offset: 983},
 								expr: &ruleRefExpr{
-									pos:  position{line: 32, col: 60, offset: 1011},
+									pos:  position{line: 32, col: 60, offset: 983},
 									name: "DocumentBlock",
 								},
 							},
@@ -155,80 +155,80 @@ var g = &grammar{
 		},
 		{
 			name: "DocumentBlock",
-			pos:  position{line: 41, col: 1, offset: 1260},
+			pos:  position{line: 41, col: 1, offset: 1232},
 			expr: &actionExpr{
-				pos: position{line: 41, col: 18, offset: 1277},
+				pos: position{line: 41, col: 18, offset: 1249},
 				run: (*parser).callonDocumentBlock1,
 				expr: &seqExpr{
-					pos: position{line: 41, col: 18, offset: 1277},
+					pos: position{line: 41, col: 18, offset: 1249},
 					exprs: []interface{}{
 						&notExpr{
-							pos: position{line: 41, col: 18, offset: 1277},
+							pos: position{line: 41, col: 18, offset: 1249},
 							expr: &ruleRefExpr{
-								pos:  position{line: 41, col: 19, offset: 1278},
+								pos:  position{line: 41, col: 19, offset: 1250},
 								name: "EOF",
 							},
 						},
 						&labeledExpr{
-							pos:   position{line: 42, col: 5, offset: 1287},
+							pos:   position{line: 42, col: 5, offset: 1259},
 							label: "block",
 							expr: &choiceExpr{
-								pos: position{line: 42, col: 12, offset: 1294},
+								pos: position{line: 42, col: 12, offset: 1266},
 								alternatives: []interface{}{
 									&ruleRefExpr{
-										pos:  position{line: 42, col: 12, offset: 1294},
+										pos:  position{line: 42, col: 12, offset: 1266},
 										name: "SimpleParagraph",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 43, col: 11, offset: 1320},
+										pos:  position{line: 43, col: 11, offset: 1292},
 										name: "Section",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 44, col: 11, offset: 1339},
+										pos:  position{line: 44, col: 11, offset: 1311},
 										name: "DelimitedBlock",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 45, col: 11, offset: 1364},
+										pos:  position{line: 45, col: 11, offset: 1336},
 										name: "FileInclusion",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 46, col: 11, offset: 1388},
+										pos:  position{line: 46, col: 11, offset: 1360},
 										name: "VerseParagraph",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 47, col: 11, offset: 1442},
+										pos:  position{line: 47, col: 11, offset: 1414},
 										name: "ImageBlock",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 48, col: 11, offset: 1464},
+										pos:  position{line: 48, col: 11, offset: 1436},
 										name: "ListItem",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 49, col: 11, offset: 1483},
+										pos:  position{line: 49, col: 11, offset: 1455},
 										name: "BlankLine",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 50, col: 11, offset: 1534},
+										pos:  position{line: 50, col: 11, offset: 1506},
 										name: "LiteralBlock",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 51, col: 11, offset: 1558},
+										pos:  position{line: 51, col: 11, offset: 1530},
 										name: "DocumentAttributeDeclaration",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 52, col: 11, offset: 1598},
+										pos:  position{line: 52, col: 11, offset: 1570},
 										name: "DocumentAttributeReset",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 53, col: 11, offset: 1632},
+										pos:  position{line: 53, col: 11, offset: 1604},
 										name: "TableOfContentsMacro",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 54, col: 11, offset: 1663},
+										pos:  position{line: 54, col: 11, offset: 1635},
 										name: "UserMacroBlock",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 55, col: 11, offset: 1688},
+										pos:  position{line: 55, col: 11, offset: 1660},
 										name: "Paragraph",
 									},
 								},
@@ -240,14 +240,14 @@ var g = &grammar{
 		},
 		{
 			name: "AsciidocDocumentBlocksWithinDelimitedBlock",
-			pos:  position{line: 59, col: 1, offset: 1726},
+			pos:  position{line: 59, col: 1, offset: 1698},
 			expr: &labeledExpr{
-				pos:   position{line: 59, col: 47, offset: 1772},
+				pos:   position{line: 59, col: 47, offset: 1744},
 				label: "blocks",
 				expr: &zeroOrMoreExpr{
-					pos: position{line: 59, col: 54, offset: 1779},
+					pos: position{line: 59, col: 54, offset: 1751},
 					expr: &ruleRefExpr{
-						pos:  position{line: 59, col: 55, offset: 1780},
+						pos:  position{line: 59, col: 55, offset: 1752},
 						name: "DocumentBlockWithinDelimitedBlock",
 					},
 				},
@@ -255,72 +255,72 @@ var g = &grammar{
 		},
 		{
 			name: "DocumentBlockWithinDelimitedBlock",
-			pos:  position{line: 61, col: 1, offset: 1817},
+			pos:  position{line: 61, col: 1, offset: 1789},
 			expr: &actionExpr{
-				pos: position{line: 61, col: 38, offset: 1854},
+				pos: position{line: 61, col: 38, offset: 1826},
 				run: (*parser).callonDocumentBlockWithinDelimitedBlock1,
 				expr: &seqExpr{
-					pos: position{line: 61, col: 38, offset: 1854},
+					pos: position{line: 61, col: 38, offset: 1826},
 					exprs: []interface{}{
 						&notExpr{
-							pos: position{line: 61, col: 38, offset: 1854},
+							pos: position{line: 61, col: 38, offset: 1826},
 							expr: &ruleRefExpr{
-								pos:  position{line: 61, col: 39, offset: 1855},
+								pos:  position{line: 61, col: 39, offset: 1827},
 								name: "EOF",
 							},
 						},
 						&labeledExpr{
-							pos:   position{line: 62, col: 5, offset: 1864},
+							pos:   position{line: 62, col: 5, offset: 1836},
 							label: "block",
 							expr: &choiceExpr{
-								pos: position{line: 62, col: 12, offset: 1871},
+								pos: position{line: 62, col: 12, offset: 1843},
 								alternatives: []interface{}{
 									&ruleRefExpr{
-										pos:  position{line: 62, col: 12, offset: 1871},
+										pos:  position{line: 62, col: 12, offset: 1843},
 										name: "DelimitedBlock",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 63, col: 11, offset: 1896},
+										pos:  position{line: 63, col: 11, offset: 1868},
 										name: "FileInclusion",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 64, col: 11, offset: 1920},
+										pos:  position{line: 64, col: 11, offset: 1892},
 										name: "VerseParagraph",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 65, col: 11, offset: 1945},
+										pos:  position{line: 65, col: 11, offset: 1917},
 										name: "ImageBlock",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 66, col: 11, offset: 1967},
+										pos:  position{line: 66, col: 11, offset: 1939},
 										name: "ListItem",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 67, col: 11, offset: 1986},
+										pos:  position{line: 67, col: 11, offset: 1958},
 										name: "BlankLine",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 68, col: 11, offset: 2037},
+										pos:  position{line: 68, col: 11, offset: 2009},
 										name: "LiteralBlock",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 69, col: 11, offset: 2061},
+										pos:  position{line: 69, col: 11, offset: 2033},
 										name: "DocumentAttributeDeclaration",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 70, col: 11, offset: 2101},
+										pos:  position{line: 70, col: 11, offset: 2073},
 										name: "DocumentAttributeReset",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 71, col: 11, offset: 2135},
+										pos:  position{line: 71, col: 11, offset: 2107},
 										name: "TableOfContentsMacro",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 72, col: 11, offset: 2166},
+										pos:  position{line: 72, col: 11, offset: 2138},
 										name: "UserMacroBlock",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 73, col: 11, offset: 2191},
+										pos:  position{line: 73, col: 11, offset: 2163},
 										name: "Paragraph",
 									},
 								},
@@ -332,14 +332,14 @@ var g = &grammar{
 		},
 		{
 			name: "TextDocumentBlocks",
-			pos:  position{line: 77, col: 1, offset: 2229},
+			pos:  position{line: 77, col: 1, offset: 2201},
 			expr: &labeledExpr{
-				pos:   position{line: 77, col: 23, offset: 2251},
+				pos:   position{line: 77, col: 23, offset: 2223},
 				label: "blocks",
 				expr: &zeroOrMoreExpr{
-					pos: position{line: 77, col: 30, offset: 2258},
+					pos: position{line: 77, col: 30, offset: 2230},
 					expr: &ruleRefExpr{
-						pos:  position{line: 77, col: 31, offset: 2259},
+						pos:  position{line: 77, col: 31, offset: 2231},
 						name: "TextDocumentBlock",
 					},
 				},
@@ -347,32 +347,32 @@ var g = &grammar{
 		},
 		{
 			name: "TextDocumentBlock",
-			pos:  position{line: 79, col: 1, offset: 2280},
+			pos:  position{line: 79, col: 1, offset: 2252},
 			expr: &actionExpr{
-				pos: position{line: 79, col: 22, offset: 2301},
+				pos: position{line: 79, col: 22, offset: 2273},
 				run: (*parser).callonTextDocumentBlock1,
 				expr: &seqExpr{
-					pos: position{line: 79, col: 22, offset: 2301},
+					pos: position{line: 79, col: 22, offset: 2273},
 					exprs: []interface{}{
 						&notExpr{
-							pos: position{line: 79, col: 22, offset: 2301},
+							pos: position{line: 79, col: 22, offset: 2273},
 							expr: &ruleRefExpr{
-								pos:  position{line: 79, col: 23, offset: 2302},
+								pos:  position{line: 79, col: 23, offset: 2274},
 								name: "EOF",
 							},
 						},
 						&labeledExpr{
-							pos:   position{line: 80, col: 5, offset: 2311},
+							pos:   position{line: 80, col: 5, offset: 2283},
 							label: "block",
 							expr: &choiceExpr{
-								pos: position{line: 80, col: 12, offset: 2318},
+								pos: position{line: 80, col: 12, offset: 2290},
 								alternatives: []interface{}{
 									&ruleRefExpr{
-										pos:  position{line: 80, col: 12, offset: 2318},
+										pos:  position{line: 80, col: 12, offset: 2290},
 										name: "BlankLine",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 80, col: 24, offset: 2330},
+										pos:  position{line: 80, col: 24, offset: 2302},
 										name: "Paragraph",
 									},
 								},
@@ -384,38 +384,38 @@ var g = &grammar{
 		},
 		{
 			name: "FrontMatter",
-			pos:  position{line: 87, col: 1, offset: 2476},
+			pos:  position{line: 87, col: 1, offset: 2448},
 			expr: &ruleRefExpr{
-				pos:  position{line: 87, col: 16, offset: 2491},
+				pos:  position{line: 87, col: 16, offset: 2463},
 				name: "YamlFrontMatter",
 			},
 		},
 		{
 			name: "YamlFrontMatter",
-			pos:  position{line: 89, col: 1, offset: 2509},
+			pos:  position{line: 89, col: 1, offset: 2481},
 			expr: &actionExpr{
-				pos: position{line: 89, col: 20, offset: 2528},
+				pos: position{line: 89, col: 20, offset: 2500},
 				run: (*parser).callonYamlFrontMatter1,
 				expr: &seqExpr{
-					pos: position{line: 89, col: 20, offset: 2528},
+					pos: position{line: 89, col: 20, offset: 2500},
 					exprs: []interface{}{
 						&ruleRefExpr{
-							pos:  position{line: 89, col: 20, offset: 2528},
+							pos:  position{line: 89, col: 20, offset: 2500},
 							name: "YamlFrontMatterToken",
 						},
 						&labeledExpr{
-							pos:   position{line: 89, col: 41, offset: 2549},
+							pos:   position{line: 89, col: 41, offset: 2521},
 							label: "content",
 							expr: &zeroOrOneExpr{
-								pos: position{line: 89, col: 49, offset: 2557},
+								pos: position{line: 89, col: 49, offset: 2529},
 								expr: &ruleRefExpr{
-									pos:  position{line: 89, col: 50, offset: 2558},
+									pos:  position{line: 89, col: 50, offset: 2530},
 									name: "YamlFrontMatterContent",
 								},
 							},
 						},
 						&ruleRefExpr{
-							pos:  position{line: 89, col: 75, offset: 2583},
+							pos:  position{line: 89, col: 75, offset: 2555},
 							name: "YamlFrontMatterToken",
 						},
 					},
@@ -424,17 +424,17 @@ var g = &grammar{
 		},
 		{
 			name: "YamlFrontMatterToken",
-			pos:  position{line: 93, col: 1, offset: 2663},
+			pos:  position{line: 93, col: 1, offset: 2635},
 			expr: &seqExpr{
-				pos: position{line: 93, col: 26, offset: 2688},
+				pos: position{line: 93, col: 26, offset: 2660},
 				exprs: []interface{}{
 					&litMatcher{
-						pos:        position{line: 93, col: 26, offset: 2688},
+						pos:        position{line: 93, col: 26, offset: 2660},
 						val:        "---",
 						ignoreCase: false,
 					},
 					&ruleRefExpr{
-						pos:  position{line: 93, col: 32, offset: 2694},
+						pos:  position{line: 93, col: 32, offset: 2666},
 						name: "EOLS",
 					},
 				},
@@ -442,26 +442,26 @@ var g = &grammar{
 		},
 		{
 			name: "YamlFrontMatterContent",
-			pos:  position{line: 95, col: 1, offset: 2700},
+			pos:  position{line: 95, col: 1, offset: 2672},
 			expr: &actionExpr{
-				pos: position{line: 95, col: 27, offset: 2726},
+				pos: position{line: 95, col: 27, offset: 2698},
 				run: (*parser).callonYamlFrontMatterContent1,
 				expr: &zeroOrMoreExpr{
-					pos: position{line: 95, col: 27, offset: 2726},
+					pos: position{line: 95, col: 27, offset: 2698},
 					expr: &oneOrMoreExpr{
-						pos: position{line: 95, col: 28, offset: 2727},
+						pos: position{line: 95, col: 28, offset: 2699},
 						expr: &seqExpr{
-							pos: position{line: 95, col: 29, offset: 2728},
+							pos: position{line: 95, col: 29, offset: 2700},
 							exprs: []interface{}{
 								&notExpr{
-									pos: position{line: 95, col: 29, offset: 2728},
+									pos: position{line: 95, col: 29, offset: 2700},
 									expr: &ruleRefExpr{
-										pos:  position{line: 95, col: 30, offset: 2729},
+										pos:  position{line: 95, col: 30, offset: 2701},
 										name: "YamlFrontMatterToken",
 									},
 								},
 								&anyMatcher{
-									line: 95, col: 51, offset: 2750,
+									line: 95, col: 51, offset: 2722,
 								},
 							},
 						},
@@ -471,66 +471,66 @@ var g = &grammar{
 		},
 		{
 			name: "DocumentHeader",
-			pos:  position{line: 102, col: 1, offset: 2916},
+			pos:  position{line: 102, col: 1, offset: 2888},
 			expr: &actionExpr{
-				pos: position{line: 102, col: 19, offset: 2934},
+				pos: position{line: 102, col: 19, offset: 2906},
 				run: (*parser).callonDocumentHeader1,
 				expr: &seqExpr{
-					pos: position{line: 102, col: 19, offset: 2934},
+					pos: position{line: 102, col: 19, offset: 2906},
 					exprs: []interface{}{
 						&litMatcher{
-							pos:        position{line: 102, col: 19, offset: 2934},
+							pos:        position{line: 102, col: 19, offset: 2906},
 							val:        "=",
 							ignoreCase: false,
 						},
 						&oneOrMoreExpr{
-							pos: position{line: 102, col: 23, offset: 2938},
+							pos: position{line: 102, col: 23, offset: 2910},
 							expr: &ruleRefExpr{
-								pos:  position{line: 102, col: 23, offset: 2938},
+								pos:  position{line: 102, col: 23, offset: 2910},
 								name: "WS",
 							},
 						},
 						&labeledExpr{
-							pos:   position{line: 102, col: 27, offset: 2942},
+							pos:   position{line: 102, col: 27, offset: 2914},
 							label: "title",
 							expr: &ruleRefExpr{
-								pos:  position{line: 102, col: 34, offset: 2949},
+								pos:  position{line: 102, col: 34, offset: 2921},
 								name: "TitleElements",
 							},
 						},
 						&labeledExpr{
-							pos:   position{line: 102, col: 49, offset: 2964},
+							pos:   position{line: 102, col: 49, offset: 2936},
 							label: "id",
 							expr: &zeroOrMoreExpr{
-								pos: position{line: 102, col: 53, offset: 2968},
+								pos: position{line: 102, col: 53, offset: 2940},
 								expr: &ruleRefExpr{
-									pos:  position{line: 102, col: 53, offset: 2968},
+									pos:  position{line: 102, col: 53, offset: 2940},
 									name: "InlineElementID",
 								},
 							},
 						},
 						&ruleRefExpr{
-							pos:  position{line: 102, col: 71, offset: 2986},
+							pos:  position{line: 102, col: 71, offset: 2958},
 							name: "EOL",
 						},
 						&labeledExpr{
-							pos:   position{line: 103, col: 9, offset: 2998},
+							pos:   position{line: 103, col: 9, offset: 2970},
 							label: "authors",
 							expr: &zeroOrOneExpr{
-								pos: position{line: 103, col: 18, offset: 3007},
+								pos: position{line: 103, col: 18, offset: 2979},
 								expr: &ruleRefExpr{
-									pos:  position{line: 103, col: 18, offset: 3007},
+									pos:  position{line: 103, col: 18, offset: 2979},
 									name: "DocumentAuthors",
 								},
 							},
 						},
 						&labeledExpr{
-							pos:   position{line: 104, col: 9, offset: 3034},
+							pos:   position{line: 104, col: 9, offset: 3006},
 							label: "revision",
 							expr: &zeroOrOneExpr{
-								pos: position{line: 104, col: 19, offset: 3044},
+								pos: position{line: 104, col: 19, offset: 3016},
 								expr: &ruleRefExpr{
-									pos:  position{line: 104, col: 19, offset: 3044},
+									pos:  position{line: 104, col: 19, offset: 3016},
 									name: "DocumentRevision",
 								},
 							},
@@ -541,16 +541,16 @@ var g = &grammar{
 		},
 		{
 			name: "DocumentAuthors",
-			pos:  position{line: 109, col: 1, offset: 3153},
+			pos:  position{line: 109, col: 1, offset: 3125},
 			expr: &choiceExpr{
-				pos: position{line: 109, col: 20, offset: 3172},
+				pos: position{line: 109, col: 20, offset: 3144},
 				alternatives: []interface{}{
 					&ruleRefExpr{
-						pos:  position{line: 109, col: 20, offset: 3172},
+						pos:  position{line: 109, col: 20, offset: 3144},
 						name: "DocumentAuthorsInlineForm",
 					},
 					&ruleRefExpr{
-						pos:  position{line: 109, col: 48, offset: 3200},
+						pos:  position{line: 109, col: 48, offset: 3172},
 						name: "DocumentAuthorsAttributeForm",
 					},
 				},
@@ -558,41 +558,41 @@ var g = &grammar{
 		},
 		{
 			name: "DocumentAuthorsInlineForm",
-			pos:  position{line: 111, col: 1, offset: 3230},
+			pos:  position{line: 111, col: 1, offset: 3202},
 			expr: &actionExpr{
-				pos: position{line: 111, col: 30, offset: 3259},
+				pos: position{line: 111, col: 30, offset: 3231},
 				run: (*parser).callonDocumentAuthorsInlineForm1,
 				expr: &seqExpr{
-					pos: position{line: 111, col: 30, offset: 3259},
+					pos: position{line: 111, col: 30, offset: 3231},
 					exprs: []interface{}{
 						&zeroOrMoreExpr{
-							pos: position{line: 111, col: 30, offset: 3259},
+							pos: position{line: 111, col: 30, offset: 3231},
 							expr: &ruleRefExpr{
-								pos:  position{line: 111, col: 30, offset: 3259},
+								pos:  position{line: 111, col: 30, offset: 3231},
 								name: "WS",
 							},
 						},
 						&notExpr{
-							pos: position{line: 111, col: 34, offset: 3263},
+							pos: position{line: 111, col: 34, offset: 3235},
 							expr: &litMatcher{
-								pos:        position{line: 111, col: 35, offset: 3264},
+								pos:        position{line: 111, col: 35, offset: 3236},
 								val:        ":",
 								ignoreCase: false,
 							},
 						},
 						&labeledExpr{
-							pos:   position{line: 111, col: 39, offset: 3268},
+							pos:   position{line: 111, col: 39, offset: 3240},
 							label: "authors",
 							expr: &oneOrMoreExpr{
-								pos: position{line: 111, col: 48, offset: 3277},
+								pos: position{line: 111, col: 48, offset: 3249},
 								expr: &ruleRefExpr{
-									pos:  position{line: 111, col: 48, offset: 3277},
+									pos:  position{line: 111, col: 48, offset: 3249},
 									name: "DocumentAuthor",
 								},
 							},
 						},
 						&ruleRefExpr{
-							pos:  position{line: 111, col: 65, offset: 3294},
+							pos:  position{line: 111, col: 65, offset: 3266},
 							name: "EOL",
 						},
 					},
@@ -601,35 +601,35 @@ var g = &grammar{
 		},
 		{
 			name: "DocumentAuthorsAttributeForm",
-			pos:  position{line: 115, col: 1, offset: 3364},
+			pos:  position{line: 115, col: 1, offset: 3336},
 			expr: &actionExpr{
-				pos: position{line: 115, col: 33, offset: 3396},
+				pos: position{line: 115, col: 33, offset: 3368},
 				run: (*parser).callonDocumentAuthorsAttributeForm1,
 				expr: &seqExpr{
-					pos: position{line: 115, col: 33, offset: 3396},
+					pos: position{line: 115, col: 33, offset: 3368},
 					exprs: []interface{}{
 						&zeroOrMoreExpr{
-							pos: position{line: 115, col: 33, offset: 3396},
+							pos: position{line: 115, col: 33, offset: 3368},
 							expr: &ruleRefExpr{
-								pos:  position{line: 115, col: 33, offset: 3396},
+								pos:  position{line: 115, col: 33, offset: 3368},
 								name: "WS",
 							},
 						},
 						&litMatcher{
-							pos:        position{line: 115, col: 37, offset: 3400},
+							pos:        position{line: 115, col: 37, offset: 3372},
 							val:        ":author:",
 							ignoreCase: false,
 						},
 						&labeledExpr{
-							pos:   position{line: 115, col: 48, offset: 3411},
+							pos:   position{line: 115, col: 48, offset: 3383},
 							label: "author",
 							expr: &ruleRefExpr{
-								pos:  position{line: 115, col: 56, offset: 3419},
+								pos:  position{line: 115, col: 56, offset: 3391},
 								name: "DocumentAuthor",
 							},
 						},
 						&ruleRefExpr{
-							pos:  position{line: 115, col: 72, offset: 3435},
+							pos:  position{line: 115, col: 72, offset: 3407},
 							name: "EOL",
 						},
 					},
@@ -638,58 +638,58 @@ var g = &grammar{
 		},
 		{
 			name: "DocumentAuthor",
-			pos:  position{line: 119, col: 1, offset: 3514},
+			pos:  position{line: 119, col: 1, offset: 3486},
 			expr: &actionExpr{
-				pos: position{line: 119, col: 19, offset: 3532},
+				pos: position{line: 119, col: 19, offset: 3504},
 				run: (*parser).callonDocumentAuthor1,
 				expr: &seqExpr{
-					pos: position{line: 119, col: 19, offset: 3532},
+					pos: position{line: 119, col: 19, offset: 3504},
 					exprs: []interface{}{
 						&zeroOrMoreExpr{
-							pos: position{line: 119, col: 19, offset: 3532},
+							pos: position{line: 119, col: 19, offset: 3504},
 							expr: &ruleRefExpr{
-								pos:  position{line: 119, col: 19, offset: 3532},
+								pos:  position{line: 119, col: 19, offset: 3504},
 								name: "WS",
 							},
 						},
 						&labeledExpr{
-							pos:   position{line: 119, col: 23, offset: 3536},
+							pos:   position{line: 119, col: 23, offset: 3508},
 							label: "fullname",
 							expr: &ruleRefExpr{
-								pos:  position{line: 119, col: 33, offset: 3546},
+								pos:  position{line: 119, col: 33, offset: 3518},
 								name: "DocumentAuthorName",
 							},
 						},
 						&labeledExpr{
-							pos:   position{line: 119, col: 53, offset: 3566},
+							pos:   position{line: 119, col: 53, offset: 3538},
 							label: "email",
 							expr: &zeroOrOneExpr{
-								pos: position{line: 119, col: 59, offset: 3572},
+								pos: position{line: 119, col: 59, offset: 3544},
 								expr: &ruleRefExpr{
-									pos:  position{line: 119, col: 60, offset: 3573},
+									pos:  position{line: 119, col: 60, offset: 3545},
 									name: "DocumentAuthorEmail",
 								},
 							},
 						},
 						&zeroOrMoreExpr{
-							pos: position{line: 119, col: 82, offset: 3595},
+							pos: position{line: 119, col: 82, offset: 3567},
 							expr: &ruleRefExpr{
-								pos:  position{line: 119, col: 82, offset: 3595},
+								pos:  position{line: 119, col: 82, offset: 3567},
 								name: "WS",
 							},
 						},
 						&zeroOrOneExpr{
-							pos: position{line: 119, col: 86, offset: 3599},
+							pos: position{line: 119, col: 86, offset: 3571},
 							expr: &litMatcher{
-								pos:        position{line: 119, col: 86, offset: 3599},
+								pos:        position{line: 119, col: 86, offset: 3571},
 								val:        ";",
 								ignoreCase: false,
 							},
 						},
 						&zeroOrMoreExpr{
-							pos: position{line: 119, col: 91, offset: 3604},
+							pos: position{line: 119, col: 91, offset: 3576},
 							expr: &ruleRefExpr{
-								pos:  position{line: 119, col: 91, offset: 3604},
+								pos:  position{line: 119, col: 91, offset: 3576},
 								name: "WS",
 							},
 						},
@@ -699,47 +699,47 @@ var g = &grammar{
 		},
 		{
 			name: "DocumentAuthorName",
-			pos:  position{line: 124, col: 1, offset: 3746},
+			pos:  position{line: 124, col: 1, offset: 3718},
 			expr: &actionExpr{
-				pos: position{line: 124, col: 23, offset: 3768},
+				pos: position{line: 124, col: 23, offset: 3740},
 				run: (*parser).callonDocumentAuthorName1,
 				expr: &oneOrMoreExpr{
-					pos: position{line: 124, col: 23, offset: 3768},
+					pos: position{line: 124, col: 23, offset: 3740},
 					expr: &choiceExpr{
-						pos: position{line: 124, col: 24, offset: 3769},
+						pos: position{line: 124, col: 24, offset: 3741},
 						alternatives: []interface{}{
 							&ruleRefExpr{
-								pos:  position{line: 124, col: 24, offset: 3769},
+								pos:  position{line: 124, col: 24, offset: 3741},
 								name: "Alphanums",
 							},
 							&seqExpr{
-								pos: position{line: 124, col: 37, offset: 3782},
+								pos: position{line: 124, col: 37, offset: 3754},
 								exprs: []interface{}{
 									&notExpr{
-										pos: position{line: 124, col: 37, offset: 3782},
+										pos: position{line: 124, col: 37, offset: 3754},
 										expr: &litMatcher{
-											pos:        position{line: 124, col: 38, offset: 3783},
+											pos:        position{line: 124, col: 38, offset: 3755},
 											val:        "<",
 											ignoreCase: false,
 										},
 									},
 									&notExpr{
-										pos: position{line: 124, col: 42, offset: 3787},
+										pos: position{line: 124, col: 42, offset: 3759},
 										expr: &litMatcher{
-											pos:        position{line: 124, col: 43, offset: 3788},
+											pos:        position{line: 124, col: 43, offset: 3760},
 											val:        ";",
 											ignoreCase: false,
 										},
 									},
 									&notExpr{
-										pos: position{line: 124, col: 47, offset: 3792},
+										pos: position{line: 124, col: 47, offset: 3764},
 										expr: &ruleRefExpr{
-											pos:  position{line: 124, col: 48, offset: 3793},
+											pos:  position{line: 124, col: 48, offset: 3765},
 											name: "NEWLINE",
 										},
 									},
 									&anyMatcher{
-										line: 124, col: 56, offset: 3801,
+										line: 124, col: 56, offset: 3773,
 									},
 								},
 							},
@@ -750,53 +750,53 @@ var g = &grammar{
 		},
 		{
 			name: "DocumentAuthorEmail",
-			pos:  position{line: 128, col: 1, offset: 3842},
+			pos:  position{line: 128, col: 1, offset: 3814},
 			expr: &actionExpr{
-				pos: position{line: 128, col: 24, offset: 3865},
+				pos: position{line: 128, col: 24, offset: 3837},
 				run: (*parser).callonDocumentAuthorEmail1,
 				expr: &seqExpr{
-					pos: position{line: 128, col: 24, offset: 3865},
+					pos: position{line: 128, col: 24, offset: 3837},
 					exprs: []interface{}{
 						&litMatcher{
-							pos:        position{line: 128, col: 24, offset: 3865},
+							pos:        position{line: 128, col: 24, offset: 3837},
 							val:        "<",
 							ignoreCase: false,
 						},
 						&labeledExpr{
-							pos:   position{line: 128, col: 28, offset: 3869},
+							pos:   position{line: 128, col: 28, offset: 3841},
 							label: "email",
 							expr: &actionExpr{
-								pos: position{line: 128, col: 35, offset: 3876},
+								pos: position{line: 128, col: 35, offset: 3848},
 								run: (*parser).callonDocumentAuthorEmail5,
 								expr: &oneOrMoreExpr{
-									pos: position{line: 128, col: 35, offset: 3876},
+									pos: position{line: 128, col: 35, offset: 3848},
 									expr: &choiceExpr{
-										pos: position{line: 128, col: 36, offset: 3877},
+										pos: position{line: 128, col: 36, offset: 3849},
 										alternatives: []interface{}{
 											&ruleRefExpr{
-												pos:  position{line: 128, col: 36, offset: 3877},
+												pos:  position{line: 128, col: 36, offset: 3849},
 												name: "Alphanums",
 											},
 											&seqExpr{
-												pos: position{line: 128, col: 49, offset: 3890},
+												pos: position{line: 128, col: 49, offset: 3862},
 												exprs: []interface{}{
 													&notExpr{
-														pos: position{line: 128, col: 49, offset: 3890},
+														pos: position{line: 128, col: 49, offset: 3862},
 														expr: &litMatcher{
-															pos:        position{line: 128, col: 50, offset: 3891},
+															pos:        position{line: 128, col: 50, offset: 3863},
 															val:        ">",
 															ignoreCase: false,
 														},
 													},
 													&notExpr{
-														pos: position{line: 128, col: 54, offset: 3895},
+														pos: position{line: 128, col: 54, offset: 3867},
 														expr: &ruleRefExpr{
-															pos:  position{line: 128, col: 55, offset: 3896},
+															pos:  position{line: 128, col: 55, offset: 3868},
 															name: "EOL",
 														},
 													},
 													&anyMatcher{
-														line: 128, col: 60, offset: 3901,
+														line: 128, col: 60, offset: 3873,
 													},
 												},
 											},
@@ -806,7 +806,7 @@ var g = &grammar{
 							},
 						},
 						&litMatcher{
-							pos:        position{line: 130, col: 4, offset: 3942},
+							pos:        position{line: 130, col: 4, offset: 3914},
 							val:        ">",
 							ignoreCase: false,
 						},
@@ -816,82 +816,82 @@ var g = &grammar{
 		},
 		{
 			name: "DocumentRevision",
-			pos:  position{line: 136, col: 1, offset: 4103},
+			pos:  position{line: 136, col: 1, offset: 4075},
 			expr: &actionExpr{
-				pos: position{line: 136, col: 21, offset: 4123},
+				pos: position{line: 136, col: 21, offset: 4095},
 				run: (*parser).callonDocumentRevision1,
 				expr: &seqExpr{
-					pos: position{line: 136, col: 21, offset: 4123},
+					pos: position{line: 136, col: 21, offset: 4095},
 					exprs: []interface{}{
 						&zeroOrMoreExpr{
-							pos: position{line: 136, col: 21, offset: 4123},
+							pos: position{line: 136, col: 21, offset: 4095},
 							expr: &ruleRefExpr{
-								pos:  position{line: 136, col: 21, offset: 4123},
+								pos:  position{line: 136, col: 21, offset: 4095},
 								name: "WS",
 							},
 						},
 						&notExpr{
-							pos: position{line: 136, col: 25, offset: 4127},
+							pos: position{line: 136, col: 25, offset: 4099},
 							expr: &litMatcher{
-								pos:        position{line: 136, col: 26, offset: 4128},
+								pos:        position{line: 136, col: 26, offset: 4100},
 								val:        ":",
 								ignoreCase: false,
 							},
 						},
 						&labeledExpr{
-							pos:   position{line: 136, col: 30, offset: 4132},
+							pos:   position{line: 136, col: 30, offset: 4104},
 							label: "revision",
 							expr: &choiceExpr{
-								pos: position{line: 137, col: 9, offset: 4151},
+								pos: position{line: 137, col: 9, offset: 4123},
 								alternatives: []interface{}{
 									&actionExpr{
-										pos: position{line: 137, col: 10, offset: 4152},
+										pos: position{line: 137, col: 10, offset: 4124},
 										run: (*parser).callonDocumentRevision9,
 										expr: &seqExpr{
-											pos: position{line: 137, col: 10, offset: 4152},
+											pos: position{line: 137, col: 10, offset: 4124},
 											exprs: []interface{}{
 												&labeledExpr{
-													pos:   position{line: 137, col: 10, offset: 4152},
+													pos:   position{line: 137, col: 10, offset: 4124},
 													label: "revnumber",
 													expr: &ruleRefExpr{
-														pos:  position{line: 137, col: 21, offset: 4163},
+														pos:  position{line: 137, col: 21, offset: 4135},
 														name: "DocumentRevisionNumber",
 													},
 												},
 												&zeroOrOneExpr{
-													pos: position{line: 137, col: 45, offset: 4187},
+													pos: position{line: 137, col: 45, offset: 4159},
 													expr: &litMatcher{
-														pos:        position{line: 137, col: 45, offset: 4187},
+														pos:        position{line: 137, col: 45, offset: 4159},
 														val:        ",",
 														ignoreCase: false,
 													},
 												},
 												&labeledExpr{
-													pos:   position{line: 137, col: 50, offset: 4192},
+													pos:   position{line: 137, col: 50, offset: 4164},
 													label: "revdate",
 													expr: &zeroOrOneExpr{
-														pos: position{line: 137, col: 58, offset: 4200},
+														pos: position{line: 137, col: 58, offset: 4172},
 														expr: &ruleRefExpr{
-															pos:  position{line: 137, col: 59, offset: 4201},
+															pos:  position{line: 137, col: 59, offset: 4173},
 															name: "DocumentRevisionDate",
 														},
 													},
 												},
 												&zeroOrOneExpr{
-													pos: position{line: 137, col: 82, offset: 4224},
+													pos: position{line: 137, col: 82, offset: 4196},
 													expr: &litMatcher{
-														pos:        position{line: 137, col: 82, offset: 4224},
+														pos:        position{line: 137, col: 82, offset: 4196},
 														val:        ":",
 														ignoreCase: false,
 													},
 												},
 												&labeledExpr{
-													pos:   position{line: 137, col: 87, offset: 4229},
+													pos:   position{line: 137, col: 87, offset: 4201},
 													label: "revremark",
 													expr: &zeroOrOneExpr{
-														pos: position{line: 137, col: 97, offset: 4239},
+														pos: position{line: 137, col: 97, offset: 4211},
 														expr: &ruleRefExpr{
-															pos:  position{line: 137, col: 98, offset: 4240},
+															pos:  position{line: 137, col: 98, offset: 4212},
 															name: "DocumentRevisionRemark",
 														},
 													},
@@ -900,34 +900,34 @@ var g = &grammar{
 										},
 									},
 									&actionExpr{
-										pos: position{line: 139, col: 15, offset: 4357},
+										pos: position{line: 139, col: 15, offset: 4329},
 										run: (*parser).callonDocumentRevision23,
 										expr: &seqExpr{
-											pos: position{line: 139, col: 15, offset: 4357},
+											pos: position{line: 139, col: 15, offset: 4329},
 											exprs: []interface{}{
 												&labeledExpr{
-													pos:   position{line: 139, col: 15, offset: 4357},
+													pos:   position{line: 139, col: 15, offset: 4329},
 													label: "revdate",
 													expr: &ruleRefExpr{
-														pos:  position{line: 139, col: 24, offset: 4366},
+														pos:  position{line: 139, col: 24, offset: 4338},
 														name: "DocumentRevisionDate",
 													},
 												},
 												&zeroOrOneExpr{
-													pos: position{line: 139, col: 46, offset: 4388},
+													pos: position{line: 139, col: 46, offset: 4360},
 													expr: &litMatcher{
-														pos:        position{line: 139, col: 46, offset: 4388},
+														pos:        position{line: 139, col: 46, offset: 4360},
 														val:        ":",
 														ignoreCase: false,
 													},
 												},
 												&labeledExpr{
-													pos:   position{line: 139, col: 51, offset: 4393},
+													pos:   position{line: 139, col: 51, offset: 4365},
 													label: "revremark",
 													expr: &zeroOrOneExpr{
-														pos: position{line: 139, col: 61, offset: 4403},
+														pos: position{line: 139, col: 61, offset: 4375},
 														expr: &ruleRefExpr{
-															pos:  position{line: 139, col: 62, offset: 4404},
+															pos:  position{line: 139, col: 62, offset: 4376},
 															name: "DocumentRevisionRemark",
 														},
 													},
@@ -939,7 +939,7 @@ var g = &grammar{
 							},
 						},
 						&ruleRefExpr{
-							pos:  position{line: 141, col: 13, offset: 4513},
+							pos:  position{line: 141, col: 13, offset: 4485},
 							name: "EOL",
 						},
 					},
@@ -948,66 +948,66 @@ var g = &grammar{
 		},
 		{
 			name: "DocumentRevisionNumber",
-			pos:  position{line: 146, col: 1, offset: 4643},
+			pos:  position{line: 146, col: 1, offset: 4615},
 			expr: &choiceExpr{
-				pos: position{line: 146, col: 27, offset: 4669},
+				pos: position{line: 146, col: 27, offset: 4641},
 				alternatives: []interface{}{
 					&actionExpr{
-						pos: position{line: 146, col: 27, offset: 4669},
+						pos: position{line: 146, col: 27, offset: 4641},
 						run: (*parser).callonDocumentRevisionNumber2,
 						expr: &seqExpr{
-							pos: position{line: 146, col: 27, offset: 4669},
+							pos: position{line: 146, col: 27, offset: 4641},
 							exprs: []interface{}{
 								&litMatcher{
-									pos:        position{line: 146, col: 27, offset: 4669},
+									pos:        position{line: 146, col: 27, offset: 4641},
 									val:        "v",
 									ignoreCase: true,
 								},
 								&ruleRefExpr{
-									pos:  position{line: 146, col: 32, offset: 4674},
+									pos:  position{line: 146, col: 32, offset: 4646},
 									name: "DIGIT",
 								},
 								&oneOrMoreExpr{
-									pos: position{line: 146, col: 39, offset: 4681},
+									pos: position{line: 146, col: 39, offset: 4653},
 									expr: &choiceExpr{
-										pos: position{line: 146, col: 40, offset: 4682},
+										pos: position{line: 146, col: 40, offset: 4654},
 										alternatives: []interface{}{
 											&ruleRefExpr{
-												pos:  position{line: 146, col: 40, offset: 4682},
+												pos:  position{line: 146, col: 40, offset: 4654},
 												name: "Alphanums",
 											},
 											&ruleRefExpr{
-												pos:  position{line: 146, col: 52, offset: 4694},
+												pos:  position{line: 146, col: 52, offset: 4666},
 												name: "Spaces",
 											},
 											&seqExpr{
-												pos: position{line: 146, col: 62, offset: 4704},
+												pos: position{line: 146, col: 62, offset: 4676},
 												exprs: []interface{}{
 													&notExpr{
-														pos: position{line: 146, col: 62, offset: 4704},
+														pos: position{line: 146, col: 62, offset: 4676},
 														expr: &ruleRefExpr{
-															pos:  position{line: 146, col: 63, offset: 4705},
+															pos:  position{line: 146, col: 63, offset: 4677},
 															name: "EOL",
 														},
 													},
 													&notExpr{
-														pos: position{line: 146, col: 67, offset: 4709},
+														pos: position{line: 146, col: 67, offset: 4681},
 														expr: &litMatcher{
-															pos:        position{line: 146, col: 68, offset: 4710},
+															pos:        position{line: 146, col: 68, offset: 4682},
 															val:        ",",
 															ignoreCase: false,
 														},
 													},
 													&notExpr{
-														pos: position{line: 146, col: 72, offset: 4714},
+														pos: position{line: 146, col: 72, offset: 4686},
 														expr: &litMatcher{
-															pos:        position{line: 146, col: 73, offset: 4715},
+															pos:        position{line: 146, col: 73, offset: 4687},
 															val:        ":",
 															ignoreCase: false,
 														},
 													},
 													&anyMatcher{
-														line: 146, col: 78, offset: 4720,
+														line: 146, col: 78, offset: 4692,
 													},
 												},
 											},
@@ -1018,64 +1018,64 @@ var g = &grammar{
 						},
 					},
 					&actionExpr{
-						pos: position{line: 148, col: 5, offset: 4762},
+						pos: position{line: 148, col: 5, offset: 4734},
 						run: (*parser).callonDocumentRevisionNumber18,
 						expr: &seqExpr{
-							pos: position{line: 148, col: 5, offset: 4762},
+							pos: position{line: 148, col: 5, offset: 4734},
 							exprs: []interface{}{
 								&zeroOrOneExpr{
-									pos: position{line: 148, col: 5, offset: 4762},
+									pos: position{line: 148, col: 5, offset: 4734},
 									expr: &litMatcher{
-										pos:        position{line: 148, col: 5, offset: 4762},
+										pos:        position{line: 148, col: 5, offset: 4734},
 										val:        "v",
 										ignoreCase: true,
 									},
 								},
 								&ruleRefExpr{
-									pos:  position{line: 148, col: 11, offset: 4768},
+									pos:  position{line: 148, col: 11, offset: 4740},
 									name: "DIGIT",
 								},
 								&oneOrMoreExpr{
-									pos: position{line: 148, col: 18, offset: 4775},
+									pos: position{line: 148, col: 18, offset: 4747},
 									expr: &choiceExpr{
-										pos: position{line: 148, col: 19, offset: 4776},
+										pos: position{line: 148, col: 19, offset: 4748},
 										alternatives: []interface{}{
 											&ruleRefExpr{
-												pos:  position{line: 148, col: 19, offset: 4776},
+												pos:  position{line: 148, col: 19, offset: 4748},
 												name: "Alphanums",
 											},
 											&ruleRefExpr{
-												pos:  position{line: 148, col: 31, offset: 4788},
+												pos:  position{line: 148, col: 31, offset: 4760},
 												name: "Spaces",
 											},
 											&seqExpr{
-												pos: position{line: 148, col: 41, offset: 4798},
+												pos: position{line: 148, col: 41, offset: 4770},
 												exprs: []interface{}{
 													&notExpr{
-														pos: position{line: 148, col: 41, offset: 4798},
+														pos: position{line: 148, col: 41, offset: 4770},
 														expr: &ruleRefExpr{
-															pos:  position{line: 148, col: 42, offset: 4799},
+															pos:  position{line: 148, col: 42, offset: 4771},
 															name: "EOL",
 														},
 													},
 													&notExpr{
-														pos: position{line: 148, col: 46, offset: 4803},
+														pos: position{line: 148, col: 46, offset: 4775},
 														expr: &litMatcher{
-															pos:        position{line: 148, col: 47, offset: 4804},
+															pos:        position{line: 148, col: 47, offset: 4776},
 															val:        ",",
 															ignoreCase: false,
 														},
 													},
 													&notExpr{
-														pos: position{line: 148, col: 51, offset: 4808},
+														pos: position{line: 148, col: 51, offset: 4780},
 														expr: &litMatcher{
-															pos:        position{line: 148, col: 52, offset: 4809},
+															pos:        position{line: 148, col: 52, offset: 4781},
 															val:        ":",
 															ignoreCase: false,
 														},
 													},
 													&anyMatcher{
-														line: 148, col: 57, offset: 4814,
+														line: 148, col: 57, offset: 4786,
 													},
 												},
 											},
@@ -1083,16 +1083,16 @@ var g = &grammar{
 									},
 								},
 								&zeroOrMoreExpr{
-									pos: position{line: 148, col: 62, offset: 4819},
+									pos: position{line: 148, col: 62, offset: 4791},
 									expr: &ruleRefExpr{
-										pos:  position{line: 148, col: 62, offset: 4819},
+										pos:  position{line: 148, col: 62, offset: 4791},
 										name: "WS",
 									},
 								},
 								&andExpr{
-									pos: position{line: 148, col: 66, offset: 4823},
+									pos: position{line: 148, col: 66, offset: 4795},
 									expr: &litMatcher{
-										pos:        position{line: 148, col: 67, offset: 4824},
+										pos:        position{line: 148, col: 67, offset: 4796},
 										val:        ",",
 										ignoreCase: false,
 									},
@@ -1105,43 +1105,43 @@ var g = &grammar{
 		},
 		{
 			name: "DocumentRevisionDate",
-			pos:  position{line: 152, col: 1, offset: 4864},
+			pos:  position{line: 152, col: 1, offset: 4836},
 			expr: &actionExpr{
-				pos: position{line: 152, col: 25, offset: 4888},
+				pos: position{line: 152, col: 25, offset: 4860},
 				run: (*parser).callonDocumentRevisionDate1,
 				expr: &oneOrMoreExpr{
-					pos: position{line: 152, col: 25, offset: 4888},
+					pos: position{line: 152, col: 25, offset: 4860},
 					expr: &choiceExpr{
-						pos: position{line: 152, col: 26, offset: 4889},
+						pos: position{line: 152, col: 26, offset: 4861},
 						alternatives: []interface{}{
 							&ruleRefExpr{
-								pos:  position{line: 152, col: 26, offset: 4889},
+								pos:  position{line: 152, col: 26, offset: 4861},
 								name: "Alphanums",
 							},
 							&ruleRefExpr{
-								pos:  position{line: 152, col: 38, offset: 4901},
+								pos:  position{line: 152, col: 38, offset: 4873},
 								name: "Spaces",
 							},
 							&seqExpr{
-								pos: position{line: 152, col: 48, offset: 4911},
+								pos: position{line: 152, col: 48, offset: 4883},
 								exprs: []interface{}{
 									&notExpr{
-										pos: position{line: 152, col: 48, offset: 4911},
+										pos: position{line: 152, col: 48, offset: 4883},
 										expr: &ruleRefExpr{
-											pos:  position{line: 152, col: 49, offset: 4912},
+											pos:  position{line: 152, col: 49, offset: 4884},
 											name: "EOL",
 										},
 									},
 									&notExpr{
-										pos: position{line: 152, col: 53, offset: 4916},
+										pos: position{line: 152, col: 53, offset: 4888},
 										expr: &litMatcher{
-											pos:        position{line: 152, col: 54, offset: 4917},
+											pos:        position{line: 152, col: 54, offset: 4889},
 											val:        ":",
 											ignoreCase: false,
 										},
 									},
 									&anyMatcher{
-										line: 152, col: 59, offset: 4922,
+										line: 152, col: 59, offset: 4894,
 									},
 								},
 							},
@@ -1152,35 +1152,35 @@ var g = &grammar{
 		},
 		{
 			name: "DocumentRevisionRemark",
-			pos:  position{line: 156, col: 1, offset: 4963},
+			pos:  position{line: 156, col: 1, offset: 4935},
 			expr: &actionExpr{
-				pos: position{line: 156, col: 27, offset: 4989},
+				pos: position{line: 156, col: 27, offset: 4961},
 				run: (*parser).callonDocumentRevisionRemark1,
 				expr: &oneOrMoreExpr{
-					pos: position{line: 156, col: 27, offset: 4989},
+					pos: position{line: 156, col: 27, offset: 4961},
 					expr: &choiceExpr{
-						pos: position{line: 156, col: 28, offset: 4990},
+						pos: position{line: 156, col: 28, offset: 4962},
 						alternatives: []interface{}{
 							&ruleRefExpr{
-								pos:  position{line: 156, col: 28, offset: 4990},
+								pos:  position{line: 156, col: 28, offset: 4962},
 								name: "Alphanums",
 							},
 							&ruleRefExpr{
-								pos:  position{line: 156, col: 40, offset: 5002},
+								pos:  position{line: 156, col: 40, offset: 4974},
 								name: "Spaces",
 							},
 							&seqExpr{
-								pos: position{line: 156, col: 50, offset: 5012},
+								pos: position{line: 156, col: 50, offset: 4984},
 								exprs: []interface{}{
 									&notExpr{
-										pos: position{line: 156, col: 50, offset: 5012},
+										pos: position{line: 156, col: 50, offset: 4984},
 										expr: &ruleRefExpr{
-											pos:  position{line: 156, col: 51, offset: 5013},
+											pos:  position{line: 156, col: 51, offset: 4985},
 											name: "EOL",
 										},
 									},
 									&anyMatcher{
-										line: 156, col: 56, offset: 5018,
+										line: 156, col: 56, offset: 4990,
 									},
 								},
 							},
@@ -1191,54 +1191,54 @@ var g = &grammar{
 		},
 		{
 			name: "DocumentAttributeDeclaration",
-			pos:  position{line: 163, col: 1, offset: 5174},
+			pos:  position{line: 163, col: 1, offset: 5146},
 			expr: &actionExpr{
-				pos: position{line: 163, col: 33, offset: 5206},
+				pos: position{line: 163, col: 33, offset: 5178},
 				run: (*parser).callonDocumentAttributeDeclaration1,
 				expr: &seqExpr{
-					pos: position{line: 163, col: 33, offset: 5206},
+					pos: position{line: 163, col: 33, offset: 5178},
 					exprs: []interface{}{
 						&litMatcher{
-							pos:        position{line: 163, col: 33, offset: 5206},
+							pos:        position{line: 163, col: 33, offset: 5178},
 							val:        ":",
 							ignoreCase: false,
 						},
 						&labeledExpr{
-							pos:   position{line: 163, col: 37, offset: 5210},
+							pos:   position{line: 163, col: 37, offset: 5182},
 							label: "name",
 							expr: &ruleRefExpr{
-								pos:  position{line: 163, col: 43, offset: 5216},
+								pos:  position{line: 163, col: 43, offset: 5188},
 								name: "DocumentAttributeName",
 							},
 						},
 						&litMatcher{
-							pos:        position{line: 163, col: 66, offset: 5239},
+							pos:        position{line: 163, col: 66, offset: 5211},
 							val:        ":",
 							ignoreCase: false,
 						},
 						&labeledExpr{
-							pos:   position{line: 163, col: 70, offset: 5243},
+							pos:   position{line: 163, col: 70, offset: 5215},
 							label: "value",
 							expr: &zeroOrOneExpr{
-								pos: position{line: 163, col: 76, offset: 5249},
+								pos: position{line: 163, col: 76, offset: 5221},
 								expr: &actionExpr{
-									pos: position{line: 163, col: 77, offset: 5250},
+									pos: position{line: 163, col: 77, offset: 5222},
 									run: (*parser).callonDocumentAttributeDeclaration9,
 									expr: &seqExpr{
-										pos: position{line: 163, col: 78, offset: 5251},
+										pos: position{line: 163, col: 78, offset: 5223},
 										exprs: []interface{}{
 											&oneOrMoreExpr{
-												pos: position{line: 163, col: 78, offset: 5251},
+												pos: position{line: 163, col: 78, offset: 5223},
 												expr: &ruleRefExpr{
-													pos:  position{line: 163, col: 78, offset: 5251},
+													pos:  position{line: 163, col: 78, offset: 5223},
 													name: "WS",
 												},
 											},
 											&labeledExpr{
-												pos:   position{line: 163, col: 82, offset: 5255},
+												pos:   position{line: 163, col: 82, offset: 5227},
 												label: "value",
 												expr: &ruleRefExpr{
-													pos:  position{line: 163, col: 89, offset: 5262},
+													pos:  position{line: 163, col: 89, offset: 5234},
 													name: "DocumentAttributeValue",
 												},
 											},
@@ -1248,7 +1248,7 @@ var g = &grammar{
 							},
 						},
 						&ruleRefExpr{
-							pos:  position{line: 163, col: 138, offset: 5311},
+							pos:  position{line: 163, col: 138, offset: 5283},
 							name: "EOLS",
 						},
 					},
@@ -1257,72 +1257,72 @@ var g = &grammar{
 		},
 		{
 			name: "DocumentAttributeName",
-			pos:  position{line: 170, col: 1, offset: 5560},
+			pos:  position{line: 170, col: 1, offset: 5532},
 			expr: &actionExpr{
-				pos: position{line: 170, col: 26, offset: 5585},
+				pos: position{line: 170, col: 26, offset: 5557},
 				run: (*parser).callonDocumentAttributeName1,
 				expr: &seqExpr{
-					pos: position{line: 170, col: 26, offset: 5585},
+					pos: position{line: 170, col: 26, offset: 5557},
 					exprs: []interface{}{
 						&choiceExpr{
-							pos: position{line: 170, col: 27, offset: 5586},
+							pos: position{line: 170, col: 27, offset: 5558},
 							alternatives: []interface{}{
 								&charClassMatcher{
-									pos:        position{line: 170, col: 27, offset: 5586},
+									pos:        position{line: 170, col: 27, offset: 5558},
 									val:        "[A-Z]",
 									ranges:     []rune{'A', 'Z'},
 									ignoreCase: false,
 									inverted:   false,
 								},
 								&charClassMatcher{
-									pos:        position{line: 170, col: 35, offset: 5594},
+									pos:        position{line: 170, col: 35, offset: 5566},
 									val:        "[a-z]",
 									ranges:     []rune{'a', 'z'},
 									ignoreCase: false,
 									inverted:   false,
 								},
 								&charClassMatcher{
-									pos:        position{line: 170, col: 43, offset: 5602},
+									pos:        position{line: 170, col: 43, offset: 5574},
 									val:        "[0-9]",
 									ranges:     []rune{'0', '9'},
 									ignoreCase: false,
 									inverted:   false,
 								},
 								&litMatcher{
-									pos:        position{line: 170, col: 51, offset: 5610},
+									pos:        position{line: 170, col: 51, offset: 5582},
 									val:        "_",
 									ignoreCase: false,
 								},
 							},
 						},
 						&zeroOrMoreExpr{
-							pos: position{line: 170, col: 56, offset: 5615},
+							pos: position{line: 170, col: 56, offset: 5587},
 							expr: &choiceExpr{
-								pos: position{line: 170, col: 57, offset: 5616},
+								pos: position{line: 170, col: 57, offset: 5588},
 								alternatives: []interface{}{
 									&charClassMatcher{
-										pos:        position{line: 170, col: 57, offset: 5616},
+										pos:        position{line: 170, col: 57, offset: 5588},
 										val:        "[A-Z]",
 										ranges:     []rune{'A', 'Z'},
 										ignoreCase: false,
 										inverted:   false,
 									},
 									&charClassMatcher{
-										pos:        position{line: 170, col: 65, offset: 5624},
+										pos:        position{line: 170, col: 65, offset: 5596},
 										val:        "[a-z]",
 										ranges:     []rune{'a', 'z'},
 										ignoreCase: false,
 										inverted:   false,
 									},
 									&charClassMatcher{
-										pos:        position{line: 170, col: 73, offset: 5632},
+										pos:        position{line: 170, col: 73, offset: 5604},
 										val:        "[0-9]",
 										ranges:     []rune{'0', '9'},
 										ignoreCase: false,
 										inverted:   false,
 									},
 									&litMatcher{
-										pos:        position{line: 170, col: 81, offset: 5640},
+										pos:        position{line: 170, col: 81, offset: 5612},
 										val:        "-",
 										ignoreCase: false,
 									},
@@ -1335,24 +1335,24 @@ var g = &grammar{
 		},
 		{
 			name: "DocumentAttributeValue",
-			pos:  position{line: 174, col: 1, offset: 5682},
+			pos:  position{line: 174, col: 1, offset: 5654},
 			expr: &actionExpr{
-				pos: position{line: 174, col: 27, offset: 5708},
+				pos: position{line: 174, col: 27, offset: 5680},
 				run: (*parser).callonDocumentAttributeValue1,
 				expr: &oneOrMoreExpr{
-					pos: position{line: 174, col: 27, offset: 5708},
+					pos: position{line: 174, col: 27, offset: 5680},
 					expr: &seqExpr{
-						pos: position{line: 174, col: 28, offset: 5709},
+						pos: position{line: 174, col: 28, offset: 5681},
 						exprs: []interface{}{
 							&notExpr{
-								pos: position{line: 174, col: 28, offset: 5709},
+								pos: position{line: 174, col: 28, offset: 5681},
 								expr: &ruleRefExpr{
-									pos:  position{line: 174, col: 29, offset: 5710},
+									pos:  position{line: 174, col: 29, offset: 5682},
 									name: "NEWLINE",
 								},
 							},
 							&anyMatcher{
-								line: 174, col: 37, offset: 5718,
+								line: 174, col: 37, offset: 5690,
 							},
 						},
 					},
@@ -1361,67 +1361,67 @@ var g = &grammar{
 		},
 		{
 			name: "DocumentAttributeReset",
-			pos:  position{line: 178, col: 1, offset: 5758},
+			pos:  position{line: 178, col: 1, offset: 5730},
 			expr: &choiceExpr{
-				pos: position{line: 178, col: 27, offset: 5784},
+				pos: position{line: 178, col: 27, offset: 5756},
 				alternatives: []interface{}{
 					&actionExpr{
-						pos: position{line: 178, col: 27, offset: 5784},
+						pos: position{line: 178, col: 27, offset: 5756},
 						run: (*parser).callonDocumentAttributeReset2,
 						expr: &seqExpr{
-							pos: position{line: 178, col: 27, offset: 5784},
+							pos: position{line: 178, col: 27, offset: 5756},
 							exprs: []interface{}{
 								&litMatcher{
-									pos:        position{line: 178, col: 27, offset: 5784},
+									pos:        position{line: 178, col: 27, offset: 5756},
 									val:        ":!",
 									ignoreCase: false,
 								},
 								&labeledExpr{
-									pos:   position{line: 178, col: 32, offset: 5789},
+									pos:   position{line: 178, col: 32, offset: 5761},
 									label: "name",
 									expr: &ruleRefExpr{
-										pos:  position{line: 178, col: 38, offset: 5795},
+										pos:  position{line: 178, col: 38, offset: 5767},
 										name: "DocumentAttributeName",
 									},
 								},
 								&litMatcher{
-									pos:        position{line: 178, col: 61, offset: 5818},
+									pos:        position{line: 178, col: 61, offset: 5790},
 									val:        ":",
 									ignoreCase: false,
 								},
 								&ruleRefExpr{
-									pos:  position{line: 178, col: 65, offset: 5822},
+									pos:  position{line: 178, col: 65, offset: 5794},
 									name: "EOLS",
 								},
 							},
 						},
 					},
 					&actionExpr{
-						pos: position{line: 180, col: 5, offset: 5891},
+						pos: position{line: 180, col: 5, offset: 5863},
 						run: (*parser).callonDocumentAttributeReset9,
 						expr: &seqExpr{
-							pos: position{line: 180, col: 5, offset: 5891},
+							pos: position{line: 180, col: 5, offset: 5863},
 							exprs: []interface{}{
 								&litMatcher{
-									pos:        position{line: 180, col: 5, offset: 5891},
+									pos:        position{line: 180, col: 5, offset: 5863},
 									val:        ":",
 									ignoreCase: false,
 								},
 								&labeledExpr{
-									pos:   position{line: 180, col: 9, offset: 5895},
+									pos:   position{line: 180, col: 9, offset: 5867},
 									label: "name",
 									expr: &ruleRefExpr{
-										pos:  position{line: 180, col: 15, offset: 5901},
+										pos:  position{line: 180, col: 15, offset: 5873},
 										name: "DocumentAttributeName",
 									},
 								},
 								&litMatcher{
-									pos:        position{line: 180, col: 38, offset: 5924},
+									pos:        position{line: 180, col: 38, offset: 5896},
 									val:        "!:",
 									ignoreCase: false,
 								},
 								&ruleRefExpr{
-									pos:  position{line: 180, col: 43, offset: 5929},
+									pos:  position{line: 180, col: 43, offset: 5901},
 									name: "EOLS",
 								},
 							},
@@ -1432,28 +1432,28 @@ var g = &grammar{
 		},
 		{
 			name: "DocumentAttributeSubstitution",
-			pos:  position{line: 184, col: 1, offset: 5997},
+			pos:  position{line: 184, col: 1, offset: 5969},
 			expr: &actionExpr{
-				pos: position{line: 184, col: 34, offset: 6030},
+				pos: position{line: 184, col: 34, offset: 6002},
 				run: (*parser).callonDocumentAttributeSubstitution1,
 				expr: &seqExpr{
-					pos: position{line: 184, col: 34, offset: 6030},
+					pos: position{line: 184, col: 34, offset: 6002},
 					exprs: []interface{}{
 						&litMatcher{
-							pos:        position{line: 184, col: 34, offset: 6030},
+							pos:        position{line: 184, col: 34, offset: 6002},
 							val:        "{",
 							ignoreCase: false,
 						},
 						&labeledExpr{
-							pos:   position{line: 184, col: 38, offset: 6034},
+							pos:   position{line: 184, col: 38, offset: 6006},
 							label: "name",
 							expr: &ruleRefExpr{
-								pos:  position{line: 184, col: 44, offset: 6040},
+								pos:  position{line: 184, col: 44, offset: 6012},
 								name: "DocumentAttributeName",
 							},
 						},
 						&litMatcher{
-							pos:        position{line: 184, col: 67, offset: 6063},
+							pos:        position{line: 184, col: 67, offset: 6035},
 							val:        "}",
 							ignoreCase: false,
 						},
@@ -1463,17 +1463,17 @@ var g = &grammar{
 		},
 		{
 			name: "ElementAttributes",
-			pos:  position{line: 191, col: 1, offset: 6251},
+			pos:  position{line: 191, col: 1, offset: 6223},
 			expr: &actionExpr{
-				pos: position{line: 191, col: 22, offset: 6272},
+				pos: position{line: 191, col: 22, offset: 6244},
 				run: (*parser).callonElementAttributes1,
 				expr: &labeledExpr{
-					pos:   position{line: 191, col: 22, offset: 6272},
+					pos:   position{line: 191, col: 22, offset: 6244},
 					label: "attrs",
 					expr: &oneOrMoreExpr{
-						pos: position{line: 191, col: 28, offset: 6278},
+						pos: position{line: 191, col: 28, offset: 6250},
 						expr: &ruleRefExpr{
-							pos:  position{line: 191, col: 29, offset: 6279},
+							pos:  position{line: 191, col: 29, offset: 6251},
 							name: "ElementAttribute",
 						},
 					},
@@ -1482,30 +1482,30 @@ var g = &grammar{
 		},
 		{
 			name: "ElementAttribute",
-			pos:  position{line: 195, col: 1, offset: 6369},
+			pos:  position{line: 195, col: 1, offset: 6341},
 			expr: &actionExpr{
-				pos: position{line: 195, col: 21, offset: 6389},
+				pos: position{line: 195, col: 21, offset: 6361},
 				run: (*parser).callonElementAttribute1,
 				expr: &seqExpr{
-					pos: position{line: 195, col: 21, offset: 6389},
+					pos: position{line: 195, col: 21, offset: 6361},
 					exprs: []interface{}{
 						&andExpr{
-							pos: position{line: 195, col: 21, offset: 6389},
+							pos: position{line: 195, col: 21, offset: 6361},
 							expr: &choiceExpr{
-								pos: position{line: 195, col: 23, offset: 6391},
+								pos: position{line: 195, col: 23, offset: 6363},
 								alternatives: []interface{}{
 									&litMatcher{
-										pos:        position{line: 195, col: 23, offset: 6391},
+										pos:        position{line: 195, col: 23, offset: 6363},
 										val:        "[",
 										ignoreCase: false,
 									},
 									&litMatcher{
-										pos:        position{line: 195, col: 29, offset: 6397},
+										pos:        position{line: 195, col: 29, offset: 6369},
 										val:        ".",
 										ignoreCase: false,
 									},
 									&litMatcher{
-										pos:        position{line: 195, col: 35, offset: 6403},
+										pos:        position{line: 195, col: 35, offset: 6375},
 										val:        "#",
 										ignoreCase: false,
 									},
@@ -1513,49 +1513,49 @@ var g = &grammar{
 							},
 						},
 						&labeledExpr{
-							pos:   position{line: 196, col: 5, offset: 6479},
+							pos:   position{line: 196, col: 5, offset: 6451},
 							label: "attr",
 							expr: &choiceExpr{
-								pos: position{line: 196, col: 11, offset: 6485},
+								pos: position{line: 196, col: 11, offset: 6457},
 								alternatives: []interface{}{
 									&ruleRefExpr{
-										pos:  position{line: 196, col: 11, offset: 6485},
+										pos:  position{line: 196, col: 11, offset: 6457},
 										name: "ElementID",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 197, col: 9, offset: 6506},
+										pos:  position{line: 197, col: 9, offset: 6478},
 										name: "ElementTitle",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 198, col: 9, offset: 6530},
+										pos:  position{line: 198, col: 9, offset: 6502},
 										name: "ElementRole",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 199, col: 9, offset: 6553},
+										pos:  position{line: 199, col: 9, offset: 6525},
 										name: "LiteralAttribute",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 200, col: 9, offset: 6581},
+										pos:  position{line: 200, col: 9, offset: 6553},
 										name: "SourceAttributes",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 201, col: 9, offset: 6609},
+										pos:  position{line: 201, col: 9, offset: 6581},
 										name: "QuoteAttributes",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 202, col: 9, offset: 6636},
+										pos:  position{line: 202, col: 9, offset: 6608},
 										name: "VerseAttributes",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 203, col: 9, offset: 6663},
+										pos:  position{line: 203, col: 9, offset: 6635},
 										name: "AdmonitionMarkerAttribute",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 204, col: 9, offset: 6700},
+										pos:  position{line: 204, col: 9, offset: 6672},
 										name: "HorizontalLayout",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 205, col: 9, offset: 6728},
+										pos:  position{line: 205, col: 9, offset: 6700},
 										name: "AttributeGroup",
 									},
 								},
@@ -1567,16 +1567,16 @@ var g = &grammar{
 		},
 		{
 			name: "MasqueradeAttribute",
-			pos:  position{line: 210, col: 1, offset: 6911},
+			pos:  position{line: 210, col: 1, offset: 6883},
 			expr: &choiceExpr{
-				pos: position{line: 210, col: 24, offset: 6934},
+				pos: position{line: 210, col: 24, offset: 6906},
 				alternatives: []interface{}{
 					&ruleRefExpr{
-						pos:  position{line: 210, col: 24, offset: 6934},
+						pos:  position{line: 210, col: 24, offset: 6906},
 						name: "QuoteAttributes",
 					},
 					&ruleRefExpr{
-						pos:  position{line: 210, col: 42, offset: 6952},
+						pos:  position{line: 210, col: 42, offset: 6924},
 						name: "VerseAttributes",
 					},
 				},
@@ -1584,67 +1584,67 @@ var g = &grammar{
 		},
 		{
 			name: "ElementID",
-			pos:  position{line: 212, col: 1, offset: 6969},
+			pos:  position{line: 212, col: 1, offset: 6941},
 			expr: &choiceExpr{
-				pos: position{line: 212, col: 14, offset: 6982},
+				pos: position{line: 212, col: 14, offset: 6954},
 				alternatives: []interface{}{
 					&actionExpr{
-						pos: position{line: 212, col: 14, offset: 6982},
+						pos: position{line: 212, col: 14, offset: 6954},
 						run: (*parser).callonElementID2,
 						expr: &seqExpr{
-							pos: position{line: 212, col: 14, offset: 6982},
+							pos: position{line: 212, col: 14, offset: 6954},
 							exprs: []interface{}{
 								&litMatcher{
-									pos:        position{line: 212, col: 14, offset: 6982},
+									pos:        position{line: 212, col: 14, offset: 6954},
 									val:        "[[",
 									ignoreCase: false,
 								},
 								&labeledExpr{
-									pos:   position{line: 212, col: 19, offset: 6987},
+									pos:   position{line: 212, col: 19, offset: 6959},
 									label: "id",
 									expr: &ruleRefExpr{
-										pos:  position{line: 212, col: 23, offset: 6991},
+										pos:  position{line: 212, col: 23, offset: 6963},
 										name: "ID",
 									},
 								},
 								&litMatcher{
-									pos:        position{line: 212, col: 27, offset: 6995},
+									pos:        position{line: 212, col: 27, offset: 6967},
 									val:        "]]",
 									ignoreCase: false,
 								},
 								&ruleRefExpr{
-									pos:  position{line: 212, col: 32, offset: 7000},
+									pos:  position{line: 212, col: 32, offset: 6972},
 									name: "EOLS",
 								},
 							},
 						},
 					},
 					&actionExpr{
-						pos: position{line: 214, col: 5, offset: 7054},
+						pos: position{line: 214, col: 5, offset: 7026},
 						run: (*parser).callonElementID9,
 						expr: &seqExpr{
-							pos: position{line: 214, col: 5, offset: 7054},
+							pos: position{line: 214, col: 5, offset: 7026},
 							exprs: []interface{}{
 								&litMatcher{
-									pos:        position{line: 214, col: 5, offset: 7054},
+									pos:        position{line: 214, col: 5, offset: 7026},
 									val:        "[#",
 									ignoreCase: false,
 								},
 								&labeledExpr{
-									pos:   position{line: 214, col: 10, offset: 7059},
+									pos:   position{line: 214, col: 10, offset: 7031},
 									label: "id",
 									expr: &ruleRefExpr{
-										pos:  position{line: 214, col: 14, offset: 7063},
+										pos:  position{line: 214, col: 14, offset: 7035},
 										name: "ID",
 									},
 								},
 								&litMatcher{
-									pos:        position{line: 214, col: 18, offset: 7067},
+									pos:        position{line: 214, col: 18, offset: 7039},
 									val:        "]",
 									ignoreCase: false,
 								},
 								&ruleRefExpr{
-									pos:  position{line: 214, col: 23, offset: 7072},
+									pos:  position{line: 214, col: 23, offset: 7044},
 									name: "EOLS",
 								},
 							},
@@ -1655,35 +1655,35 @@ var g = &grammar{
 		},
 		{
 			name: "InlineElementID",
-			pos:  position{line: 218, col: 1, offset: 7125},
+			pos:  position{line: 218, col: 1, offset: 7097},
 			expr: &actionExpr{
-				pos: position{line: 218, col: 20, offset: 7144},
+				pos: position{line: 218, col: 20, offset: 7116},
 				run: (*parser).callonInlineElementID1,
 				expr: &seqExpr{
-					pos: position{line: 218, col: 20, offset: 7144},
+					pos: position{line: 218, col: 20, offset: 7116},
 					exprs: []interface{}{
 						&litMatcher{
-							pos:        position{line: 218, col: 20, offset: 7144},
+							pos:        position{line: 218, col: 20, offset: 7116},
 							val:        "[[",
 							ignoreCase: false,
 						},
 						&labeledExpr{
-							pos:   position{line: 218, col: 25, offset: 7149},
+							pos:   position{line: 218, col: 25, offset: 7121},
 							label: "id",
 							expr: &ruleRefExpr{
-								pos:  position{line: 218, col: 29, offset: 7153},
+								pos:  position{line: 218, col: 29, offset: 7125},
 								name: "ID",
 							},
 						},
 						&litMatcher{
-							pos:        position{line: 218, col: 33, offset: 7157},
+							pos:        position{line: 218, col: 33, offset: 7129},
 							val:        "]]",
 							ignoreCase: false,
 						},
 						&zeroOrMoreExpr{
-							pos: position{line: 218, col: 38, offset: 7162},
+							pos: position{line: 218, col: 38, offset: 7134},
 							expr: &ruleRefExpr{
-								pos:  position{line: 218, col: 38, offset: 7162},
+								pos:  position{line: 218, col: 38, offset: 7134},
 								name: "WS",
 							},
 						},
@@ -1693,56 +1693,56 @@ var g = &grammar{
 		},
 		{
 			name: "ElementTitle",
-			pos:  position{line: 224, col: 1, offset: 7436},
+			pos:  position{line: 224, col: 1, offset: 7408},
 			expr: &actionExpr{
-				pos: position{line: 224, col: 17, offset: 7452},
+				pos: position{line: 224, col: 17, offset: 7424},
 				run: (*parser).callonElementTitle1,
 				expr: &seqExpr{
-					pos: position{line: 224, col: 17, offset: 7452},
+					pos: position{line: 224, col: 17, offset: 7424},
 					exprs: []interface{}{
 						&litMatcher{
-							pos:        position{line: 224, col: 17, offset: 7452},
+							pos:        position{line: 224, col: 17, offset: 7424},
 							val:        ".",
 							ignoreCase: false,
 						},
 						&labeledExpr{
-							pos:   position{line: 224, col: 21, offset: 7456},
+							pos:   position{line: 224, col: 21, offset: 7428},
 							label: "title",
 							expr: &actionExpr{
-								pos: position{line: 224, col: 28, offset: 7463},
+								pos: position{line: 224, col: 28, offset: 7435},
 								run: (*parser).callonElementTitle5,
 								expr: &seqExpr{
-									pos: position{line: 224, col: 28, offset: 7463},
+									pos: position{line: 224, col: 28, offset: 7435},
 									exprs: []interface{}{
 										&ruleRefExpr{
-											pos:  position{line: 224, col: 28, offset: 7463},
+											pos:  position{line: 224, col: 28, offset: 7435},
 											name: "Alphanums",
 										},
 										&zeroOrMoreExpr{
-											pos: position{line: 224, col: 38, offset: 7473},
+											pos: position{line: 224, col: 38, offset: 7445},
 											expr: &choiceExpr{
-												pos: position{line: 224, col: 39, offset: 7474},
+												pos: position{line: 224, col: 39, offset: 7446},
 												alternatives: []interface{}{
 													&ruleRefExpr{
-														pos:  position{line: 224, col: 39, offset: 7474},
+														pos:  position{line: 224, col: 39, offset: 7446},
 														name: "Alphanums",
 													},
 													&ruleRefExpr{
-														pos:  position{line: 224, col: 51, offset: 7486},
+														pos:  position{line: 224, col: 51, offset: 7458},
 														name: "Spaces",
 													},
 													&seqExpr{
-														pos: position{line: 224, col: 61, offset: 7496},
+														pos: position{line: 224, col: 61, offset: 7468},
 														exprs: []interface{}{
 															&notExpr{
-																pos: position{line: 224, col: 61, offset: 7496},
+																pos: position{line: 224, col: 61, offset: 7468},
 																expr: &ruleRefExpr{
-																	pos:  position{line: 224, col: 62, offset: 7497},
+																	pos:  position{line: 224, col: 62, offset: 7469},
 																	name: "NEWLINE",
 																},
 															},
 															&anyMatcher{
-																line: 224, col: 70, offset: 7505,
+																line: 224, col: 70, offset: 7477,
 															},
 														},
 													},
@@ -1754,7 +1754,7 @@ var g = &grammar{
 							},
 						},
 						&ruleRefExpr{
-							pos:  position{line: 226, col: 4, offset: 7546},
+							pos:  position{line: 226, col: 4, offset: 7518},
 							name: "EOL",
 						},
 					},
@@ -1763,64 +1763,64 @@ var g = &grammar{
 		},
 		{
 			name: "ElementRole",
-			pos:  position{line: 232, col: 1, offset: 7698},
+			pos:  position{line: 232, col: 1, offset: 7670},
 			expr: &actionExpr{
-				pos: position{line: 232, col: 16, offset: 7713},
+				pos: position{line: 232, col: 16, offset: 7685},
 				run: (*parser).callonElementRole1,
 				expr: &seqExpr{
-					pos: position{line: 232, col: 16, offset: 7713},
+					pos: position{line: 232, col: 16, offset: 7685},
 					exprs: []interface{}{
 						&litMatcher{
-							pos:        position{line: 232, col: 16, offset: 7713},
+							pos:        position{line: 232, col: 16, offset: 7685},
 							val:        "[.",
 							ignoreCase: false,
 						},
 						&labeledExpr{
-							pos:   position{line: 232, col: 21, offset: 7718},
+							pos:   position{line: 232, col: 21, offset: 7690},
 							label: "role",
 							expr: &actionExpr{
-								pos: position{line: 232, col: 27, offset: 7724},
+								pos: position{line: 232, col: 27, offset: 7696},
 								run: (*parser).callonElementRole5,
 								expr: &seqExpr{
-									pos: position{line: 232, col: 27, offset: 7724},
+									pos: position{line: 232, col: 27, offset: 7696},
 									exprs: []interface{}{
 										&ruleRefExpr{
-											pos:  position{line: 232, col: 27, offset: 7724},
+											pos:  position{line: 232, col: 27, offset: 7696},
 											name: "Alphanums",
 										},
 										&zeroOrMoreExpr{
-											pos: position{line: 232, col: 37, offset: 7734},
+											pos: position{line: 232, col: 37, offset: 7706},
 											expr: &choiceExpr{
-												pos: position{line: 232, col: 38, offset: 7735},
+												pos: position{line: 232, col: 38, offset: 7707},
 												alternatives: []interface{}{
 													&ruleRefExpr{
-														pos:  position{line: 232, col: 38, offset: 7735},
+														pos:  position{line: 232, col: 38, offset: 7707},
 														name: "Alphanums",
 													},
 													&ruleRefExpr{
-														pos:  position{line: 232, col: 50, offset: 7747},
+														pos:  position{line: 232, col: 50, offset: 7719},
 														name: "Spaces",
 													},
 													&seqExpr{
-														pos: position{line: 232, col: 60, offset: 7757},
+														pos: position{line: 232, col: 60, offset: 7729},
 														exprs: []interface{}{
 															&notExpr{
-																pos: position{line: 232, col: 60, offset: 7757},
+																pos: position{line: 232, col: 60, offset: 7729},
 																expr: &ruleRefExpr{
-																	pos:  position{line: 232, col: 61, offset: 7758},
+																	pos:  position{line: 232, col: 61, offset: 7730},
 																	name: "NEWLINE",
 																},
 															},
 															&notExpr{
-																pos: position{line: 232, col: 69, offset: 7766},
+																pos: position{line: 232, col: 69, offset: 7738},
 																expr: &litMatcher{
-																	pos:        position{line: 232, col: 70, offset: 7767},
+																	pos:        position{line: 232, col: 70, offset: 7739},
 																	val:        "]",
 																	ignoreCase: false,
 																},
 															},
 															&anyMatcher{
-																line: 232, col: 74, offset: 7771,
+																line: 232, col: 74, offset: 7743,
 															},
 														},
 													},
@@ -1832,12 +1832,12 @@ var g = &grammar{
 							},
 						},
 						&litMatcher{
-							pos:        position{line: 234, col: 4, offset: 7812},
+							pos:        position{line: 234, col: 4, offset: 7784},
 							val:        "]",
 							ignoreCase: false,
 						},
 						&ruleRefExpr{
-							pos:  position{line: 234, col: 8, offset: 7816},
+							pos:  position{line: 234, col: 8, offset: 7788},
 							name: "EOLS",
 						},
 					},
@@ -1846,27 +1846,27 @@ var g = &grammar{
 		},
 		{
 			name: "LiteralAttribute",
-			pos:  position{line: 238, col: 1, offset: 7873},
+			pos:  position{line: 238, col: 1, offset: 7845},
 			expr: &actionExpr{
-				pos: position{line: 238, col: 21, offset: 7893},
+				pos: position{line: 238, col: 21, offset: 7865},
 				run: (*parser).callonLiteralAttribute1,
 				expr: &seqExpr{
-					pos: position{line: 238, col: 21, offset: 7893},
+					pos: position{line: 238, col: 21, offset: 7865},
 					exprs: []interface{}{
 						&litMatcher{
-							pos:        position{line: 238, col: 21, offset: 7893},
+							pos:        position{line: 238, col: 21, offset: 7865},
 							val:        "[literal]",
 							ignoreCase: false,
 						},
 						&zeroOrMoreExpr{
-							pos: position{line: 238, col: 33, offset: 7905},
+							pos: position{line: 238, col: 33, offset: 7877},
 							expr: &ruleRefExpr{
-								pos:  position{line: 238, col: 33, offset: 7905},
+								pos:  position{line: 238, col: 33, offset: 7877},
 								name: "WS",
 							},
 						},
 						&ruleRefExpr{
-							pos:  position{line: 238, col: 37, offset: 7909},
+							pos:  position{line: 238, col: 37, offset: 7881},
 							name: "NEWLINE",
 						},
 					},
@@ -1875,33 +1875,33 @@ var g = &grammar{
 		},
 		{
 			name: "AdmonitionMarkerAttribute",
-			pos:  position{line: 243, col: 1, offset: 8041},
+			pos:  position{line: 243, col: 1, offset: 8013},
 			expr: &actionExpr{
-				pos: position{line: 243, col: 30, offset: 8070},
+				pos: position{line: 243, col: 30, offset: 8042},
 				run: (*parser).callonAdmonitionMarkerAttribute1,
 				expr: &seqExpr{
-					pos: position{line: 243, col: 30, offset: 8070},
+					pos: position{line: 243, col: 30, offset: 8042},
 					exprs: []interface{}{
 						&litMatcher{
-							pos:        position{line: 243, col: 30, offset: 8070},
+							pos:        position{line: 243, col: 30, offset: 8042},
 							val:        "[",
 							ignoreCase: false,
 						},
 						&labeledExpr{
-							pos:   position{line: 243, col: 34, offset: 8074},
+							pos:   position{line: 243, col: 34, offset: 8046},
 							label: "k",
 							expr: &ruleRefExpr{
-								pos:  position{line: 243, col: 37, offset: 8077},
+								pos:  position{line: 243, col: 37, offset: 8049},
 								name: "AdmonitionKind",
 							},
 						},
 						&litMatcher{
-							pos:        position{line: 243, col: 53, offset: 8093},
+							pos:        position{line: 243, col: 53, offset: 8065},
 							val:        "]",
 							ignoreCase: false,
 						},
 						&ruleRefExpr{
-							pos:  position{line: 243, col: 57, offset: 8097},
+							pos:  position{line: 243, col: 57, offset: 8069},
 							name: "EOLS",
 						},
 					},
@@ -1910,67 +1910,67 @@ var g = &grammar{
 		},
 		{
 			name: "SourceAttributes",
-			pos:  position{line: 248, col: 1, offset: 8253},
+			pos:  position{line: 248, col: 1, offset: 8225},
 			expr: &actionExpr{
-				pos: position{line: 248, col: 21, offset: 8273},
+				pos: position{line: 248, col: 21, offset: 8245},
 				run: (*parser).callonSourceAttributes1,
 				expr: &seqExpr{
-					pos: position{line: 248, col: 21, offset: 8273},
+					pos: position{line: 248, col: 21, offset: 8245},
 					exprs: []interface{}{
 						&litMatcher{
-							pos:        position{line: 248, col: 21, offset: 8273},
+							pos:        position{line: 248, col: 21, offset: 8245},
 							val:        "[source",
 							ignoreCase: false,
 						},
 						&zeroOrOneExpr{
-							pos: position{line: 248, col: 31, offset: 8283},
+							pos: position{line: 248, col: 31, offset: 8255},
 							expr: &litMatcher{
-								pos:        position{line: 248, col: 31, offset: 8283},
+								pos:        position{line: 248, col: 31, offset: 8255},
 								val:        ",",
 								ignoreCase: false,
 							},
 						},
 						&labeledExpr{
-							pos:   position{line: 248, col: 36, offset: 8288},
+							pos:   position{line: 248, col: 36, offset: 8260},
 							label: "language",
 							expr: &zeroOrOneExpr{
-								pos: position{line: 248, col: 45, offset: 8297},
+								pos: position{line: 248, col: 45, offset: 8269},
 								expr: &actionExpr{
-									pos: position{line: 248, col: 46, offset: 8298},
+									pos: position{line: 248, col: 46, offset: 8270},
 									run: (*parser).callonSourceAttributes8,
 									expr: &oneOrMoreExpr{
-										pos: position{line: 248, col: 46, offset: 8298},
+										pos: position{line: 248, col: 46, offset: 8270},
 										expr: &choiceExpr{
-											pos: position{line: 248, col: 47, offset: 8299},
+											pos: position{line: 248, col: 47, offset: 8271},
 											alternatives: []interface{}{
 												&ruleRefExpr{
-													pos:  position{line: 248, col: 47, offset: 8299},
+													pos:  position{line: 248, col: 47, offset: 8271},
 													name: "Alphanums",
 												},
 												&ruleRefExpr{
-													pos:  position{line: 248, col: 59, offset: 8311},
+													pos:  position{line: 248, col: 59, offset: 8283},
 													name: "Spaces",
 												},
 												&seqExpr{
-													pos: position{line: 248, col: 69, offset: 8321},
+													pos: position{line: 248, col: 69, offset: 8293},
 													exprs: []interface{}{
 														&notExpr{
-															pos: position{line: 248, col: 69, offset: 8321},
+															pos: position{line: 248, col: 69, offset: 8293},
 															expr: &ruleRefExpr{
-																pos:  position{line: 248, col: 70, offset: 8322},
+																pos:  position{line: 248, col: 70, offset: 8294},
 																name: "NEWLINE",
 															},
 														},
 														&notExpr{
-															pos: position{line: 248, col: 78, offset: 8330},
+															pos: position{line: 248, col: 78, offset: 8302},
 															expr: &litMatcher{
-																pos:        position{line: 248, col: 79, offset: 8331},
+																pos:        position{line: 248, col: 79, offset: 8303},
 																val:        "]",
 																ignoreCase: false,
 															},
 														},
 														&anyMatcher{
-															line: 248, col: 83, offset: 8335,
+															line: 248, col: 83, offset: 8307,
 														},
 													},
 												},
@@ -1981,12 +1981,12 @@ var g = &grammar{
 							},
 						},
 						&litMatcher{
-							pos:        position{line: 250, col: 9, offset: 8385},
+							pos:        position{line: 250, col: 9, offset: 8357},
 							val:        "]",
 							ignoreCase: false,
 						},
 						&ruleRefExpr{
-							pos:  position{line: 250, col: 13, offset: 8389},
+							pos:  position{line: 250, col: 13, offset: 8361},
 							name: "EOLS",
 						},
 					},
@@ -1995,36 +1995,36 @@ var g = &grammar{
 		},
 		{
 			name: "AttributeGroup",
-			pos:  position{line: 255, col: 1, offset: 8514},
+			pos:  position{line: 255, col: 1, offset: 8486},
 			expr: &actionExpr{
-				pos: position{line: 255, col: 19, offset: 8532},
+				pos: position{line: 255, col: 19, offset: 8504},
 				run: (*parser).callonAttributeGroup1,
 				expr: &seqExpr{
-					pos: position{line: 255, col: 19, offset: 8532},
+					pos: position{line: 255, col: 19, offset: 8504},
 					exprs: []interface{}{
 						&litMatcher{
-							pos:        position{line: 255, col: 19, offset: 8532},
+							pos:        position{line: 255, col: 19, offset: 8504},
 							val:        "[",
 							ignoreCase: false,
 						},
 						&labeledExpr{
-							pos:   position{line: 255, col: 23, offset: 8536},
+							pos:   position{line: 255, col: 23, offset: 8508},
 							label: "attributes",
 							expr: &zeroOrMoreExpr{
-								pos: position{line: 255, col: 34, offset: 8547},
+								pos: position{line: 255, col: 34, offset: 8519},
 								expr: &ruleRefExpr{
-									pos:  position{line: 255, col: 35, offset: 8548},
+									pos:  position{line: 255, col: 35, offset: 8520},
 									name: "GenericAttribute",
 								},
 							},
 						},
 						&litMatcher{
-							pos:        position{line: 255, col: 54, offset: 8567},
+							pos:        position{line: 255, col: 54, offset: 8539},
 							val:        "]",
 							ignoreCase: false,
 						},
 						&ruleRefExpr{
-							pos:  position{line: 255, col: 58, offset: 8571},
+							pos:  position{line: 255, col: 58, offset: 8543},
 							name: "EOLS",
 						},
 					},
@@ -2033,52 +2033,52 @@ var g = &grammar{
 		},
 		{
 			name: "GenericAttribute",
-			pos:  position{line: 259, col: 1, offset: 8644},
+			pos:  position{line: 259, col: 1, offset: 8616},
 			expr: &choiceExpr{
-				pos: position{line: 260, col: 5, offset: 8669},
+				pos: position{line: 260, col: 5, offset: 8641},
 				alternatives: []interface{}{
 					&actionExpr{
-						pos: position{line: 260, col: 5, offset: 8669},
+						pos: position{line: 260, col: 5, offset: 8641},
 						run: (*parser).callonGenericAttribute2,
 						expr: &seqExpr{
-							pos: position{line: 260, col: 5, offset: 8669},
+							pos: position{line: 260, col: 5, offset: 8641},
 							exprs: []interface{}{
 								&labeledExpr{
-									pos:   position{line: 260, col: 5, offset: 8669},
+									pos:   position{line: 260, col: 5, offset: 8641},
 									label: "key",
 									expr: &ruleRefExpr{
-										pos:  position{line: 260, col: 10, offset: 8674},
+										pos:  position{line: 260, col: 10, offset: 8646},
 										name: "AttributeKey",
 									},
 								},
 								&litMatcher{
-									pos:        position{line: 260, col: 24, offset: 8688},
+									pos:        position{line: 260, col: 24, offset: 8660},
 									val:        "=",
 									ignoreCase: false,
 								},
 								&labeledExpr{
-									pos:   position{line: 260, col: 28, offset: 8692},
+									pos:   position{line: 260, col: 28, offset: 8664},
 									label: "value",
 									expr: &zeroOrOneExpr{
-										pos: position{line: 260, col: 34, offset: 8698},
+										pos: position{line: 260, col: 34, offset: 8670},
 										expr: &ruleRefExpr{
-											pos:  position{line: 260, col: 35, offset: 8699},
+											pos:  position{line: 260, col: 35, offset: 8671},
 											name: "AttributeValue",
 										},
 									},
 								},
 								&zeroOrOneExpr{
-									pos: position{line: 260, col: 52, offset: 8716},
+									pos: position{line: 260, col: 52, offset: 8688},
 									expr: &litMatcher{
-										pos:        position{line: 260, col: 52, offset: 8716},
+										pos:        position{line: 260, col: 52, offset: 8688},
 										val:        ",",
 										ignoreCase: false,
 									},
 								},
 								&zeroOrMoreExpr{
-									pos: position{line: 260, col: 57, offset: 8721},
+									pos: position{line: 260, col: 57, offset: 8693},
 									expr: &ruleRefExpr{
-										pos:  position{line: 260, col: 57, offset: 8721},
+										pos:  position{line: 260, col: 57, offset: 8693},
 										name: "WS",
 									},
 								},
@@ -2086,31 +2086,31 @@ var g = &grammar{
 						},
 					},
 					&actionExpr{
-						pos: position{line: 262, col: 9, offset: 8826},
+						pos: position{line: 262, col: 9, offset: 8798},
 						run: (*parser).callonGenericAttribute14,
 						expr: &seqExpr{
-							pos: position{line: 262, col: 9, offset: 8826},
+							pos: position{line: 262, col: 9, offset: 8798},
 							exprs: []interface{}{
 								&labeledExpr{
-									pos:   position{line: 262, col: 9, offset: 8826},
+									pos:   position{line: 262, col: 9, offset: 8798},
 									label: "key",
 									expr: &ruleRefExpr{
-										pos:  position{line: 262, col: 14, offset: 8831},
+										pos:  position{line: 262, col: 14, offset: 8803},
 										name: "AttributeKey",
 									},
 								},
 								&zeroOrOneExpr{
-									pos: position{line: 262, col: 28, offset: 8845},
+									pos: position{line: 262, col: 28, offset: 8817},
 									expr: &litMatcher{
-										pos:        position{line: 262, col: 28, offset: 8845},
+										pos:        position{line: 262, col: 28, offset: 8817},
 										val:        ",",
 										ignoreCase: false,
 									},
 								},
 								&zeroOrMoreExpr{
-									pos: position{line: 262, col: 33, offset: 8850},
+									pos: position{line: 262, col: 33, offset: 8822},
 									expr: &ruleRefExpr{
-										pos:  position{line: 262, col: 33, offset: 8850},
+										pos:  position{line: 262, col: 33, offset: 8822},
 										name: "WS",
 									},
 								},
@@ -2122,58 +2122,58 @@ var g = &grammar{
 		},
 		{
 			name: "AttributeKey",
-			pos:  position{line: 266, col: 1, offset: 8943},
+			pos:  position{line: 266, col: 1, offset: 8915},
 			expr: &actionExpr{
-				pos: position{line: 266, col: 17, offset: 8959},
+				pos: position{line: 266, col: 17, offset: 8931},
 				run: (*parser).callonAttributeKey1,
 				expr: &seqExpr{
-					pos: position{line: 266, col: 17, offset: 8959},
+					pos: position{line: 266, col: 17, offset: 8931},
 					exprs: []interface{}{
 						&notExpr{
-							pos: position{line: 266, col: 17, offset: 8959},
+							pos: position{line: 266, col: 17, offset: 8931},
 							expr: &litMatcher{
-								pos:        position{line: 266, col: 18, offset: 8960},
+								pos:        position{line: 266, col: 18, offset: 8932},
 								val:        "quote",
 								ignoreCase: false,
 							},
 						},
 						&notExpr{
-							pos: position{line: 266, col: 26, offset: 8968},
+							pos: position{line: 266, col: 26, offset: 8940},
 							expr: &litMatcher{
-								pos:        position{line: 266, col: 27, offset: 8969},
+								pos:        position{line: 266, col: 27, offset: 8941},
 								val:        "verse",
 								ignoreCase: false,
 							},
 						},
 						&notExpr{
-							pos: position{line: 266, col: 35, offset: 8977},
+							pos: position{line: 266, col: 35, offset: 8949},
 							expr: &litMatcher{
-								pos:        position{line: 266, col: 36, offset: 8978},
+								pos:        position{line: 266, col: 36, offset: 8950},
 								val:        "literal",
 								ignoreCase: false,
 							},
 						},
 						&notExpr{
-							pos: position{line: 266, col: 46, offset: 8988},
+							pos: position{line: 266, col: 46, offset: 8960},
 							expr: &ruleRefExpr{
-								pos:  position{line: 266, col: 47, offset: 8989},
+								pos:  position{line: 266, col: 47, offset: 8961},
 								name: "Spaces",
 							},
 						},
 						&labeledExpr{
-							pos:   position{line: 266, col: 54, offset: 8996},
+							pos:   position{line: 266, col: 54, offset: 8968},
 							label: "key",
 							expr: &oneOrMoreExpr{
-								pos: position{line: 266, col: 58, offset: 9000},
+								pos: position{line: 266, col: 58, offset: 8972},
 								expr: &choiceExpr{
-									pos: position{line: 266, col: 59, offset: 9001},
+									pos: position{line: 266, col: 59, offset: 8973},
 									alternatives: []interface{}{
 										&ruleRefExpr{
-											pos:  position{line: 266, col: 59, offset: 9001},
+											pos:  position{line: 266, col: 59, offset: 8973},
 											name: "Alphanums",
 										},
 										&ruleRefExpr{
-											pos:  position{line: 266, col: 71, offset: 9013},
+											pos:  position{line: 266, col: 71, offset: 8985},
 											name: "OtherAttributeChar",
 										},
 									},
@@ -2181,9 +2181,9 @@ var g = &grammar{
 							},
 						},
 						&zeroOrMoreExpr{
-							pos: position{line: 266, col: 92, offset: 9034},
+							pos: position{line: 266, col: 92, offset: 9006},
 							expr: &ruleRefExpr{
-								pos:  position{line: 266, col: 92, offset: 9034},
+								pos:  position{line: 266, col: 92, offset: 9006},
 								name: "WS",
 							},
 						},
@@ -2193,31 +2193,31 @@ var g = &grammar{
 		},
 		{
 			name: "AttributeValue",
-			pos:  position{line: 270, col: 1, offset: 9074},
+			pos:  position{line: 270, col: 1, offset: 9046},
 			expr: &actionExpr{
-				pos: position{line: 270, col: 19, offset: 9092},
+				pos: position{line: 270, col: 19, offset: 9064},
 				run: (*parser).callonAttributeValue1,
 				expr: &seqExpr{
-					pos: position{line: 270, col: 19, offset: 9092},
+					pos: position{line: 270, col: 19, offset: 9064},
 					exprs: []interface{}{
 						&labeledExpr{
-							pos:   position{line: 270, col: 19, offset: 9092},
+							pos:   position{line: 270, col: 19, offset: 9064},
 							label: "value",
 							expr: &oneOrMoreExpr{
-								pos: position{line: 270, col: 25, offset: 9098},
+								pos: position{line: 270, col: 25, offset: 9070},
 								expr: &choiceExpr{
-									pos: position{line: 270, col: 26, offset: 9099},
+									pos: position{line: 270, col: 26, offset: 9071},
 									alternatives: []interface{}{
 										&ruleRefExpr{
-											pos:  position{line: 270, col: 26, offset: 9099},
+											pos:  position{line: 270, col: 26, offset: 9071},
 											name: "Alphanums",
 										},
 										&ruleRefExpr{
-											pos:  position{line: 270, col: 38, offset: 9111},
+											pos:  position{line: 270, col: 38, offset: 9083},
 											name: "Spaces",
 										},
 										&ruleRefExpr{
-											pos:  position{line: 270, col: 47, offset: 9120},
+											pos:  position{line: 270, col: 47, offset: 9092},
 											name: "OtherAttributeChar",
 										},
 									},
@@ -2225,9 +2225,9 @@ var g = &grammar{
 							},
 						},
 						&notExpr{
-							pos: position{line: 270, col: 68, offset: 9141},
+							pos: position{line: 270, col: 68, offset: 9113},
 							expr: &litMatcher{
-								pos:        position{line: 270, col: 69, offset: 9142},
+								pos:        position{line: 270, col: 69, offset: 9114},
 								val:        "=",
 								ignoreCase: false,
 							},
@@ -2238,56 +2238,56 @@ var g = &grammar{
 		},
 		{
 			name: "OtherAttributeChar",
-			pos:  position{line: 274, col: 1, offset: 9297},
+			pos:  position{line: 274, col: 1, offset: 9269},
 			expr: &seqExpr{
-				pos: position{line: 274, col: 24, offset: 9320},
+				pos: position{line: 274, col: 24, offset: 9292},
 				exprs: []interface{}{
 					&notExpr{
-						pos: position{line: 274, col: 24, offset: 9320},
+						pos: position{line: 274, col: 24, offset: 9292},
 						expr: &litMatcher{
-							pos:        position{line: 274, col: 25, offset: 9321},
+							pos:        position{line: 274, col: 25, offset: 9293},
 							val:        "=",
 							ignoreCase: false,
 						},
 					},
 					&notExpr{
-						pos: position{line: 274, col: 29, offset: 9325},
+						pos: position{line: 274, col: 29, offset: 9297},
 						expr: &litMatcher{
-							pos:        position{line: 274, col: 30, offset: 9326},
+							pos:        position{line: 274, col: 30, offset: 9298},
 							val:        ",",
 							ignoreCase: false,
 						},
 					},
 					&notExpr{
-						pos: position{line: 274, col: 34, offset: 9330},
+						pos: position{line: 274, col: 34, offset: 9302},
 						expr: &litMatcher{
-							pos:        position{line: 274, col: 35, offset: 9331},
+							pos:        position{line: 274, col: 35, offset: 9303},
 							val:        "]",
 							ignoreCase: false,
 						},
 					},
 					&anyMatcher{
-						line: 274, col: 39, offset: 9335,
+						line: 274, col: 39, offset: 9307,
 					},
 				},
 			},
 		},
 		{
 			name: "HorizontalLayout",
-			pos:  position{line: 276, col: 1, offset: 9339},
+			pos:  position{line: 276, col: 1, offset: 9311},
 			expr: &actionExpr{
-				pos: position{line: 276, col: 21, offset: 9359},
+				pos: position{line: 276, col: 21, offset: 9331},
 				run: (*parser).callonHorizontalLayout1,
 				expr: &seqExpr{
-					pos: position{line: 276, col: 21, offset: 9359},
+					pos: position{line: 276, col: 21, offset: 9331},
 					exprs: []interface{}{
 						&litMatcher{
-							pos:        position{line: 276, col: 21, offset: 9359},
+							pos:        position{line: 276, col: 21, offset: 9331},
 							val:        "[horizontal]",
 							ignoreCase: false,
 						},
 						&ruleRefExpr{
-							pos:  position{line: 276, col: 36, offset: 9374},
+							pos:  position{line: 276, col: 36, offset: 9346},
 							name: "EOLS",
 						},
 					},
@@ -2296,70 +2296,70 @@ var g = &grammar{
 		},
 		{
 			name: "QuoteAttributes",
-			pos:  position{line: 280, col: 1, offset: 9448},
+			pos:  position{line: 280, col: 1, offset: 9420},
 			expr: &actionExpr{
-				pos: position{line: 280, col: 20, offset: 9467},
+				pos: position{line: 280, col: 20, offset: 9439},
 				run: (*parser).callonQuoteAttributes1,
 				expr: &seqExpr{
-					pos: position{line: 280, col: 20, offset: 9467},
+					pos: position{line: 280, col: 20, offset: 9439},
 					exprs: []interface{}{
 						&litMatcher{
-							pos:        position{line: 280, col: 20, offset: 9467},
+							pos:        position{line: 280, col: 20, offset: 9439},
 							val:        "[quote",
 							ignoreCase: false,
 						},
 						&zeroOrMoreExpr{
-							pos: position{line: 280, col: 29, offset: 9476},
+							pos: position{line: 280, col: 29, offset: 9448},
 							expr: &ruleRefExpr{
-								pos:  position{line: 280, col: 29, offset: 9476},
+								pos:  position{line: 280, col: 29, offset: 9448},
 								name: "WS",
 							},
 						},
 						&zeroOrOneExpr{
-							pos: position{line: 280, col: 33, offset: 9480},
+							pos: position{line: 280, col: 33, offset: 9452},
 							expr: &litMatcher{
-								pos:        position{line: 280, col: 33, offset: 9480},
+								pos:        position{line: 280, col: 33, offset: 9452},
 								val:        ",",
 								ignoreCase: false,
 							},
 						},
 						&labeledExpr{
-							pos:   position{line: 280, col: 38, offset: 9485},
+							pos:   position{line: 280, col: 38, offset: 9457},
 							label: "author",
 							expr: &zeroOrOneExpr{
-								pos: position{line: 280, col: 45, offset: 9492},
+								pos: position{line: 280, col: 45, offset: 9464},
 								expr: &ruleRefExpr{
-									pos:  position{line: 280, col: 46, offset: 9493},
+									pos:  position{line: 280, col: 46, offset: 9465},
 									name: "QuoteAttribute",
 								},
 							},
 						},
 						&zeroOrOneExpr{
-							pos: position{line: 280, col: 63, offset: 9510},
+							pos: position{line: 280, col: 63, offset: 9482},
 							expr: &litMatcher{
-								pos:        position{line: 280, col: 63, offset: 9510},
+								pos:        position{line: 280, col: 63, offset: 9482},
 								val:        ",",
 								ignoreCase: false,
 							},
 						},
 						&labeledExpr{
-							pos:   position{line: 280, col: 68, offset: 9515},
+							pos:   position{line: 280, col: 68, offset: 9487},
 							label: "title",
 							expr: &zeroOrOneExpr{
-								pos: position{line: 280, col: 74, offset: 9521},
+								pos: position{line: 280, col: 74, offset: 9493},
 								expr: &ruleRefExpr{
-									pos:  position{line: 280, col: 75, offset: 9522},
+									pos:  position{line: 280, col: 75, offset: 9494},
 									name: "QuoteAttribute",
 								},
 							},
 						},
 						&litMatcher{
-							pos:        position{line: 280, col: 92, offset: 9539},
+							pos:        position{line: 280, col: 92, offset: 9511},
 							val:        "]",
 							ignoreCase: false,
 						},
 						&ruleRefExpr{
-							pos:  position{line: 280, col: 96, offset: 9543},
+							pos:  position{line: 280, col: 96, offset: 9515},
 							name: "EOLS",
 						},
 					},
@@ -2368,70 +2368,70 @@ var g = &grammar{
 		},
 		{
 			name: "VerseAttributes",
-			pos:  position{line: 284, col: 1, offset: 9613},
+			pos:  position{line: 284, col: 1, offset: 9585},
 			expr: &actionExpr{
-				pos: position{line: 284, col: 20, offset: 9632},
+				pos: position{line: 284, col: 20, offset: 9604},
 				run: (*parser).callonVerseAttributes1,
 				expr: &seqExpr{
-					pos: position{line: 284, col: 20, offset: 9632},
+					pos: position{line: 284, col: 20, offset: 9604},
 					exprs: []interface{}{
 						&litMatcher{
-							pos:        position{line: 284, col: 20, offset: 9632},
+							pos:        position{line: 284, col: 20, offset: 9604},
 							val:        "[verse",
 							ignoreCase: false,
 						},
 						&zeroOrMoreExpr{
-							pos: position{line: 284, col: 29, offset: 9641},
+							pos: position{line: 284, col: 29, offset: 9613},
 							expr: &ruleRefExpr{
-								pos:  position{line: 284, col: 29, offset: 9641},
+								pos:  position{line: 284, col: 29, offset: 9613},
 								name: "WS",
 							},
 						},
 						&zeroOrOneExpr{
-							pos: position{line: 284, col: 33, offset: 9645},
+							pos: position{line: 284, col: 33, offset: 9617},
 							expr: &litMatcher{
-								pos:        position{line: 284, col: 33, offset: 9645},
+								pos:        position{line: 284, col: 33, offset: 9617},
 								val:        ",",
 								ignoreCase: false,
 							},
 						},
 						&labeledExpr{
-							pos:   position{line: 284, col: 38, offset: 9650},
+							pos:   position{line: 284, col: 38, offset: 9622},
 							label: "author",
 							expr: &zeroOrOneExpr{
-								pos: position{line: 284, col: 45, offset: 9657},
+								pos: position{line: 284, col: 45, offset: 9629},
 								expr: &ruleRefExpr{
-									pos:  position{line: 284, col: 46, offset: 9658},
+									pos:  position{line: 284, col: 46, offset: 9630},
 									name: "QuoteAttribute",
 								},
 							},
 						},
 						&zeroOrOneExpr{
-							pos: position{line: 284, col: 63, offset: 9675},
+							pos: position{line: 284, col: 63, offset: 9647},
 							expr: &litMatcher{
-								pos:        position{line: 284, col: 63, offset: 9675},
+								pos:        position{line: 284, col: 63, offset: 9647},
 								val:        ",",
 								ignoreCase: false,
 							},
 						},
 						&labeledExpr{
-							pos:   position{line: 284, col: 68, offset: 9680},
+							pos:   position{line: 284, col: 68, offset: 9652},
 							label: "title",
 							expr: &zeroOrOneExpr{
-								pos: position{line: 284, col: 74, offset: 9686},
+								pos: position{line: 284, col: 74, offset: 9658},
 								expr: &ruleRefExpr{
-									pos:  position{line: 284, col: 75, offset: 9687},
+									pos:  position{line: 284, col: 75, offset: 9659},
 									name: "QuoteAttribute",
 								},
 							},
 						},
 						&litMatcher{
-							pos:        position{line: 284, col: 92, offset: 9704},
+							pos:        position{line: 284, col: 92, offset: 9676},
 							val:        "]",
 							ignoreCase: false,
 						},
 						&ruleRefExpr{
-							pos:  position{line: 284, col: 96, offset: 9708},
+							pos:  position{line: 284, col: 96, offset: 9680},
 							name: "EOLS",
 						},
 					},
@@ -2440,51 +2440,51 @@ var g = &grammar{
 		},
 		{
 			name: "QuoteAttribute",
-			pos:  position{line: 288, col: 1, offset: 9796},
+			pos:  position{line: 288, col: 1, offset: 9768},
 			expr: &actionExpr{
-				pos: position{line: 288, col: 19, offset: 9814},
+				pos: position{line: 288, col: 19, offset: 9786},
 				run: (*parser).callonQuoteAttribute1,
 				expr: &zeroOrMoreExpr{
-					pos: position{line: 288, col: 19, offset: 9814},
+					pos: position{line: 288, col: 19, offset: 9786},
 					expr: &choiceExpr{
-						pos: position{line: 288, col: 20, offset: 9815},
+						pos: position{line: 288, col: 20, offset: 9787},
 						alternatives: []interface{}{
 							&ruleRefExpr{
-								pos:  position{line: 288, col: 20, offset: 9815},
+								pos:  position{line: 288, col: 20, offset: 9787},
 								name: "Alphanums",
 							},
 							&ruleRefExpr{
-								pos:  position{line: 288, col: 32, offset: 9827},
+								pos:  position{line: 288, col: 32, offset: 9799},
 								name: "Spaces",
 							},
 							&seqExpr{
-								pos: position{line: 288, col: 42, offset: 9837},
+								pos: position{line: 288, col: 42, offset: 9809},
 								exprs: []interface{}{
 									&notExpr{
-										pos: position{line: 288, col: 42, offset: 9837},
+										pos: position{line: 288, col: 42, offset: 9809},
 										expr: &litMatcher{
-											pos:        position{line: 288, col: 43, offset: 9838},
+											pos:        position{line: 288, col: 43, offset: 9810},
 											val:        ",",
 											ignoreCase: false,
 										},
 									},
 									&notExpr{
-										pos: position{line: 288, col: 47, offset: 9842},
+										pos: position{line: 288, col: 47, offset: 9814},
 										expr: &litMatcher{
-											pos:        position{line: 288, col: 48, offset: 9843},
+											pos:        position{line: 288, col: 48, offset: 9815},
 											val:        "]",
 											ignoreCase: false,
 										},
 									},
 									&notExpr{
-										pos: position{line: 288, col: 52, offset: 9847},
+										pos: position{line: 288, col: 52, offset: 9819},
 										expr: &ruleRefExpr{
-											pos:  position{line: 288, col: 53, offset: 9848},
+											pos:  position{line: 288, col: 53, offset: 9820},
 											name: "EOL",
 										},
 									},
 									&anyMatcher{
-										line: 288, col: 57, offset: 9852,
+										line: 288, col: 57, offset: 9824,
 									},
 								},
 							},
@@ -2495,31 +2495,31 @@ var g = &grammar{
 		},
 		{
 			name: "InlineAttributes",
-			pos:  position{line: 292, col: 1, offset: 9893},
+			pos:  position{line: 292, col: 1, offset: 9865},
 			expr: &actionExpr{
-				pos: position{line: 292, col: 21, offset: 9913},
+				pos: position{line: 292, col: 21, offset: 9885},
 				run: (*parser).callonInlineAttributes1,
 				expr: &seqExpr{
-					pos: position{line: 292, col: 21, offset: 9913},
+					pos: position{line: 292, col: 21, offset: 9885},
 					exprs: []interface{}{
 						&litMatcher{
-							pos:        position{line: 292, col: 21, offset: 9913},
+							pos:        position{line: 292, col: 21, offset: 9885},
 							val:        "[",
 							ignoreCase: false,
 						},
 						&labeledExpr{
-							pos:   position{line: 292, col: 25, offset: 9917},
+							pos:   position{line: 292, col: 25, offset: 9889},
 							label: "attrs",
 							expr: &zeroOrMoreExpr{
-								pos: position{line: 292, col: 31, offset: 9923},
+								pos: position{line: 292, col: 31, offset: 9895},
 								expr: &ruleRefExpr{
-									pos:  position{line: 292, col: 32, offset: 9924},
+									pos:  position{line: 292, col: 32, offset: 9896},
 									name: "GenericAttribute",
 								},
 							},
 						},
 						&litMatcher{
-							pos:        position{line: 292, col: 51, offset: 9943},
+							pos:        position{line: 292, col: 51, offset: 9915},
 							val:        "]",
 							ignoreCase: false,
 						},
@@ -2529,34 +2529,34 @@ var g = &grammar{
 		},
 		{
 			name: "Section",
-			pos:  position{line: 299, col: 1, offset: 10117},
+			pos:  position{line: 299, col: 1, offset: 10089},
 			expr: &actionExpr{
-				pos: position{line: 299, col: 12, offset: 10128},
+				pos: position{line: 299, col: 12, offset: 10100},
 				run: (*parser).callonSection1,
 				expr: &seqExpr{
-					pos: position{line: 299, col: 12, offset: 10128},
+					pos: position{line: 299, col: 12, offset: 10100},
 					exprs: []interface{}{
 						&labeledExpr{
-							pos:   position{line: 299, col: 12, offset: 10128},
+							pos:   position{line: 299, col: 12, offset: 10100},
 							label: "attributes",
 							expr: &zeroOrOneExpr{
-								pos: position{line: 299, col: 23, offset: 10139},
+								pos: position{line: 299, col: 23, offset: 10111},
 								expr: &ruleRefExpr{
-									pos:  position{line: 299, col: 24, offset: 10140},
+									pos:  position{line: 299, col: 24, offset: 10112},
 									name: "ElementAttributes",
 								},
 							},
 						},
 						&labeledExpr{
-							pos:   position{line: 300, col: 5, offset: 10164},
+							pos:   position{line: 300, col: 5, offset: 10136},
 							label: "level",
 							expr: &actionExpr{
-								pos: position{line: 300, col: 12, offset: 10171},
+								pos: position{line: 300, col: 12, offset: 10143},
 								run: (*parser).callonSection7,
 								expr: &oneOrMoreExpr{
-									pos: position{line: 300, col: 12, offset: 10171},
+									pos: position{line: 300, col: 12, offset: 10143},
 									expr: &litMatcher{
-										pos:        position{line: 300, col: 13, offset: 10172},
+										pos:        position{line: 300, col: 13, offset: 10144},
 										val:        "=",
 										ignoreCase: false,
 									},
@@ -2564,37 +2564,37 @@ var g = &grammar{
 							},
 						},
 						&andCodeExpr{
-							pos: position{line: 304, col: 5, offset: 10263},
+							pos: position{line: 304, col: 5, offset: 10235},
 							run: (*parser).callonSection10,
 						},
 						&oneOrMoreExpr{
-							pos: position{line: 308, col: 5, offset: 10415},
+							pos: position{line: 308, col: 5, offset: 10387},
 							expr: &ruleRefExpr{
-								pos:  position{line: 308, col: 5, offset: 10415},
+								pos:  position{line: 308, col: 5, offset: 10387},
 								name: "WS",
 							},
 						},
 						&labeledExpr{
-							pos:   position{line: 308, col: 9, offset: 10419},
+							pos:   position{line: 308, col: 9, offset: 10391},
 							label: "title",
 							expr: &ruleRefExpr{
-								pos:  position{line: 308, col: 16, offset: 10426},
+								pos:  position{line: 308, col: 16, offset: 10398},
 								name: "TitleElements",
 							},
 						},
 						&labeledExpr{
-							pos:   position{line: 308, col: 31, offset: 10441},
+							pos:   position{line: 308, col: 31, offset: 10413},
 							label: "id",
 							expr: &zeroOrMoreExpr{
-								pos: position{line: 308, col: 35, offset: 10445},
+								pos: position{line: 308, col: 35, offset: 10417},
 								expr: &ruleRefExpr{
-									pos:  position{line: 308, col: 35, offset: 10445},
+									pos:  position{line: 308, col: 35, offset: 10417},
 									name: "InlineElementID",
 								},
 							},
 						},
 						&ruleRefExpr{
-							pos:  position{line: 308, col: 53, offset: 10463},
+							pos:  position{line: 308, col: 53, offset: 10435},
 							name: "EOL",
 						},
 					},
@@ -2603,34 +2603,34 @@ var g = &grammar{
 		},
 		{
 			name: "TitleElements",
-			pos:  position{line: 312, col: 1, offset: 10576},
+			pos:  position{line: 312, col: 1, offset: 10548},
 			expr: &actionExpr{
-				pos: position{line: 312, col: 18, offset: 10593},
+				pos: position{line: 312, col: 18, offset: 10565},
 				run: (*parser).callonTitleElements1,
 				expr: &labeledExpr{
-					pos:   position{line: 312, col: 18, offset: 10593},
+					pos:   position{line: 312, col: 18, offset: 10565},
 					label: "elements",
 					expr: &oneOrMoreExpr{
-						pos: position{line: 312, col: 27, offset: 10602},
+						pos: position{line: 312, col: 27, offset: 10574},
 						expr: &seqExpr{
-							pos: position{line: 312, col: 28, offset: 10603},
+							pos: position{line: 312, col: 28, offset: 10575},
 							exprs: []interface{}{
 								&notExpr{
-									pos: position{line: 312, col: 28, offset: 10603},
+									pos: position{line: 312, col: 28, offset: 10575},
 									expr: &ruleRefExpr{
-										pos:  position{line: 312, col: 29, offset: 10604},
+										pos:  position{line: 312, col: 29, offset: 10576},
 										name: "NEWLINE",
 									},
 								},
 								&notExpr{
-									pos: position{line: 312, col: 37, offset: 10612},
+									pos: position{line: 312, col: 37, offset: 10584},
 									expr: &ruleRefExpr{
-										pos:  position{line: 312, col: 38, offset: 10613},
+										pos:  position{line: 312, col: 38, offset: 10585},
 										name: "InlineElementID",
 									},
 								},
 								&ruleRefExpr{
-									pos:  position{line: 312, col: 54, offset: 10629},
+									pos:  position{line: 312, col: 54, offset: 10601},
 									name: "TitleElement",
 								},
 							},
@@ -2641,58 +2641,58 @@ var g = &grammar{
 		},
 		{
 			name: "TitleElement",
-			pos:  position{line: 316, col: 1, offset: 10750},
+			pos:  position{line: 316, col: 1, offset: 10722},
 			expr: &actionExpr{
-				pos: position{line: 316, col: 17, offset: 10766},
+				pos: position{line: 316, col: 17, offset: 10738},
 				run: (*parser).callonTitleElement1,
 				expr: &labeledExpr{
-					pos:   position{line: 316, col: 17, offset: 10766},
+					pos:   position{line: 316, col: 17, offset: 10738},
 					label: "element",
 					expr: &choiceExpr{
-						pos: position{line: 316, col: 26, offset: 10775},
+						pos: position{line: 316, col: 26, offset: 10747},
 						alternatives: []interface{}{
 							&ruleRefExpr{
-								pos:  position{line: 316, col: 26, offset: 10775},
+								pos:  position{line: 316, col: 26, offset: 10747},
 								name: "SimpleWord",
 							},
 							&ruleRefExpr{
-								pos:  position{line: 317, col: 11, offset: 10796},
+								pos:  position{line: 317, col: 11, offset: 10768},
 								name: "Spaces",
 							},
 							&ruleRefExpr{
-								pos:  position{line: 318, col: 11, offset: 10814},
+								pos:  position{line: 318, col: 11, offset: 10786},
 								name: "CrossReference",
 							},
 							&ruleRefExpr{
-								pos:  position{line: 319, col: 11, offset: 10839},
+								pos:  position{line: 319, col: 11, offset: 10811},
 								name: "Passthrough",
 							},
 							&ruleRefExpr{
-								pos:  position{line: 320, col: 11, offset: 10861},
+								pos:  position{line: 320, col: 11, offset: 10833},
 								name: "InlineImage",
 							},
 							&ruleRefExpr{
-								pos:  position{line: 321, col: 11, offset: 10884},
+								pos:  position{line: 321, col: 11, offset: 10856},
 								name: "Link",
 							},
 							&ruleRefExpr{
-								pos:  position{line: 322, col: 11, offset: 10899},
+								pos:  position{line: 322, col: 11, offset: 10871},
 								name: "InlineFootnote",
 							},
 							&ruleRefExpr{
-								pos:  position{line: 323, col: 11, offset: 10924},
+								pos:  position{line: 323, col: 11, offset: 10896},
 								name: "QuotedText",
 							},
 							&ruleRefExpr{
-								pos:  position{line: 324, col: 11, offset: 10945},
+								pos:  position{line: 324, col: 11, offset: 10917},
 								name: "DocumentAttributeSubstitution",
 							},
 							&ruleRefExpr{
-								pos:  position{line: 325, col: 11, offset: 10985},
+								pos:  position{line: 325, col: 11, offset: 10957},
 								name: "LineBreak",
 							},
 							&ruleRefExpr{
-								pos:  position{line: 326, col: 11, offset: 11005},
+								pos:  position{line: 326, col: 11, offset: 10977},
 								name: "OtherWord",
 							},
 						},
@@ -2702,17 +2702,17 @@ var g = &grammar{
 		},
 		{
 			name: "TableOfContentsMacro",
-			pos:  position{line: 333, col: 1, offset: 11158},
+			pos:  position{line: 333, col: 1, offset: 11130},
 			expr: &seqExpr{
-				pos: position{line: 333, col: 25, offset: 11182},
+				pos: position{line: 333, col: 25, offset: 11154},
 				exprs: []interface{}{
 					&litMatcher{
-						pos:        position{line: 333, col: 25, offset: 11182},
+						pos:        position{line: 333, col: 25, offset: 11154},
 						val:        "toc::[]",
 						ignoreCase: false,
 					},
 					&ruleRefExpr{
-						pos:  position{line: 333, col: 35, offset: 11192},
+						pos:  position{line: 333, col: 35, offset: 11164},
 						name: "EOL",
 					},
 				},
@@ -2720,39 +2720,39 @@ var g = &grammar{
 		},
 		{
 			name: "UserMacroBlock",
-			pos:  position{line: 338, col: 1, offset: 11303},
+			pos:  position{line: 338, col: 1, offset: 11275},
 			expr: &actionExpr{
-				pos: position{line: 338, col: 19, offset: 11321},
+				pos: position{line: 338, col: 19, offset: 11293},
 				run: (*parser).callonUserMacroBlock1,
 				expr: &seqExpr{
-					pos: position{line: 338, col: 19, offset: 11321},
+					pos: position{line: 338, col: 19, offset: 11293},
 					exprs: []interface{}{
 						&labeledExpr{
-							pos:   position{line: 338, col: 19, offset: 11321},
+							pos:   position{line: 338, col: 19, offset: 11293},
 							label: "name",
 							expr: &ruleRefExpr{
-								pos:  position{line: 338, col: 25, offset: 11327},
+								pos:  position{line: 338, col: 25, offset: 11299},
 								name: "UserMacroName",
 							},
 						},
 						&litMatcher{
-							pos:        position{line: 338, col: 40, offset: 11342},
+							pos:        position{line: 338, col: 40, offset: 11314},
 							val:        "::",
 							ignoreCase: false,
 						},
 						&labeledExpr{
-							pos:   position{line: 338, col: 45, offset: 11347},
+							pos:   position{line: 338, col: 45, offset: 11319},
 							label: "value",
 							expr: &ruleRefExpr{
-								pos:  position{line: 338, col: 52, offset: 11354},
+								pos:  position{line: 338, col: 52, offset: 11326},
 								name: "UserMacroValue",
 							},
 						},
 						&labeledExpr{
-							pos:   position{line: 338, col: 68, offset: 11370},
+							pos:   position{line: 338, col: 68, offset: 11342},
 							label: "attrs",
 							expr: &ruleRefExpr{
-								pos:  position{line: 338, col: 75, offset: 11377},
+								pos:  position{line: 338, col: 75, offset: 11349},
 								name: "UserMacroAttributes",
 							},
 						},
@@ -2762,39 +2762,39 @@ var g = &grammar{
 		},
 		{
 			name: "InlineUserMacro",
-			pos:  position{line: 342, col: 1, offset: 11518},
+			pos:  position{line: 342, col: 1, offset: 11490},
 			expr: &actionExpr{
-				pos: position{line: 342, col: 20, offset: 11537},
+				pos: position{line: 342, col: 20, offset: 11509},
 				run: (*parser).callonInlineUserMacro1,
 				expr: &seqExpr{
-					pos: position{line: 342, col: 20, offset: 11537},
+					pos: position{line: 342, col: 20, offset: 11509},
 					exprs: []interface{}{
 						&labeledExpr{
-							pos:   position{line: 342, col: 20, offset: 11537},
+							pos:   position{line: 342, col: 20, offset: 11509},
 							label: "name",
 							expr: &ruleRefExpr{
-								pos:  position{line: 342, col: 26, offset: 11543},
+								pos:  position{line: 342, col: 26, offset: 11515},
 								name: "UserMacroName",
 							},
 						},
 						&litMatcher{
-							pos:        position{line: 342, col: 41, offset: 11558},
+							pos:        position{line: 342, col: 41, offset: 11530},
 							val:        ":",
 							ignoreCase: false,
 						},
 						&labeledExpr{
-							pos:   position{line: 342, col: 45, offset: 11562},
+							pos:   position{line: 342, col: 45, offset: 11534},
 							label: "value",
 							expr: &ruleRefExpr{
-								pos:  position{line: 342, col: 52, offset: 11569},
+								pos:  position{line: 342, col: 52, offset: 11541},
 								name: "UserMacroValue",
 							},
 						},
 						&labeledExpr{
-							pos:   position{line: 342, col: 68, offset: 11585},
+							pos:   position{line: 342, col: 68, offset: 11557},
 							label: "attrs",
 							expr: &ruleRefExpr{
-								pos:  position{line: 342, col: 75, offset: 11592},
+								pos:  position{line: 342, col: 75, offset: 11564},
 								name: "UserMacroAttributes",
 							},
 						},
@@ -2804,29 +2804,29 @@ var g = &grammar{
 		},
 		{
 			name: "UserMacroName",
-			pos:  position{line: 346, col: 1, offset: 11734},
+			pos:  position{line: 346, col: 1, offset: 11706},
 			expr: &actionExpr{
-				pos: position{line: 346, col: 18, offset: 11751},
+				pos: position{line: 346, col: 18, offset: 11723},
 				run: (*parser).callonUserMacroName1,
 				expr: &oneOrMoreExpr{
-					pos: position{line: 346, col: 18, offset: 11751},
+					pos: position{line: 346, col: 18, offset: 11723},
 					expr: &choiceExpr{
-						pos: position{line: 346, col: 19, offset: 11752},
+						pos: position{line: 346, col: 19, offset: 11724},
 						alternatives: []interface{}{
 							&charClassMatcher{
-								pos:        position{line: 346, col: 19, offset: 11752},
+								pos:        position{line: 346, col: 19, offset: 11724},
 								val:        "[a-zA-Z0-9]",
 								ranges:     []rune{'a', 'z', 'A', 'Z', '0', '9'},
 								ignoreCase: false,
 								inverted:   false,
 							},
 							&litMatcher{
-								pos:        position{line: 346, col: 33, offset: 11766},
+								pos:        position{line: 346, col: 33, offset: 11738},
 								val:        "_",
 								ignoreCase: false,
 							},
 							&litMatcher{
-								pos:        position{line: 346, col: 39, offset: 11772},
+								pos:        position{line: 346, col: 39, offset: 11744},
 								val:        "-",
 								ignoreCase: false,
 							},
@@ -2837,54 +2837,54 @@ var g = &grammar{
 		},
 		{
 			name: "UserMacroValue",
-			pos:  position{line: 350, col: 1, offset: 11814},
+			pos:  position{line: 350, col: 1, offset: 11786},
 			expr: &actionExpr{
-				pos: position{line: 350, col: 19, offset: 11832},
+				pos: position{line: 350, col: 19, offset: 11804},
 				run: (*parser).callonUserMacroValue1,
 				expr: &zeroOrMoreExpr{
-					pos: position{line: 350, col: 19, offset: 11832},
+					pos: position{line: 350, col: 19, offset: 11804},
 					expr: &choiceExpr{
-						pos: position{line: 350, col: 20, offset: 11833},
+						pos: position{line: 350, col: 20, offset: 11805},
 						alternatives: []interface{}{
 							&ruleRefExpr{
-								pos:  position{line: 350, col: 20, offset: 11833},
+								pos:  position{line: 350, col: 20, offset: 11805},
 								name: "Alphanums",
 							},
 							&seqExpr{
-								pos: position{line: 350, col: 33, offset: 11846},
+								pos: position{line: 350, col: 33, offset: 11818},
 								exprs: []interface{}{
 									&notExpr{
-										pos: position{line: 350, col: 33, offset: 11846},
+										pos: position{line: 350, col: 33, offset: 11818},
 										expr: &ruleRefExpr{
-											pos:  position{line: 350, col: 34, offset: 11847},
+											pos:  position{line: 350, col: 34, offset: 11819},
 											name: "WS",
 										},
 									},
 									&notExpr{
-										pos: position{line: 350, col: 37, offset: 11850},
+										pos: position{line: 350, col: 37, offset: 11822},
 										expr: &litMatcher{
-											pos:        position{line: 350, col: 38, offset: 11851},
+											pos:        position{line: 350, col: 38, offset: 11823},
 											val:        ":",
 											ignoreCase: false,
 										},
 									},
 									&notExpr{
-										pos: position{line: 350, col: 42, offset: 11855},
+										pos: position{line: 350, col: 42, offset: 11827},
 										expr: &litMatcher{
-											pos:        position{line: 350, col: 43, offset: 11856},
+											pos:        position{line: 350, col: 43, offset: 11828},
 											val:        "[",
 											ignoreCase: false,
 										},
 									},
 									&notExpr{
-										pos: position{line: 350, col: 47, offset: 11860},
+										pos: position{line: 350, col: 47, offset: 11832},
 										expr: &ruleRefExpr{
-											pos:  position{line: 350, col: 48, offset: 11861},
+											pos:  position{line: 350, col: 48, offset: 11833},
 											name: "EOL",
 										},
 									},
 									&anyMatcher{
-										line: 350, col: 52, offset: 11865,
+										line: 350, col: 52, offset: 11837,
 									},
 								},
 							},
@@ -2895,31 +2895,31 @@ var g = &grammar{
 		},
 		{
 			name: "UserMacroAttributes",
-			pos:  position{line: 354, col: 1, offset: 11906},
+			pos:  position{line: 354, col: 1, offset: 11878},
 			expr: &actionExpr{
-				pos: position{line: 354, col: 24, offset: 11929},
+				pos: position{line: 354, col: 24, offset: 11901},
 				run: (*parser).callonUserMacroAttributes1,
 				expr: &seqExpr{
-					pos: position{line: 354, col: 24, offset: 11929},
+					pos: position{line: 354, col: 24, offset: 11901},
 					exprs: []interface{}{
 						&litMatcher{
-							pos:        position{line: 354, col: 24, offset: 11929},
+							pos:        position{line: 354, col: 24, offset: 11901},
 							val:        "[",
 							ignoreCase: false,
 						},
 						&labeledExpr{
-							pos:   position{line: 354, col: 28, offset: 11933},
+							pos:   position{line: 354, col: 28, offset: 11905},
 							label: "attrs",
 							expr: &zeroOrMoreExpr{
-								pos: position{line: 354, col: 34, offset: 11939},
+								pos: position{line: 354, col: 34, offset: 11911},
 								expr: &ruleRefExpr{
-									pos:  position{line: 354, col: 35, offset: 11940},
+									pos:  position{line: 354, col: 35, offset: 11912},
 									name: "GenericAttribute",
 								},
 							},
 						},
 						&litMatcher{
-							pos:        position{line: 354, col: 54, offset: 11959},
+							pos:        position{line: 354, col: 54, offset: 11931},
 							val:        "]",
 							ignoreCase: false,
 						},
@@ -2929,40 +2929,40 @@ var g = &grammar{
 		},
 		{
 			name: "FileInclusion",
-			pos:  position{line: 361, col: 1, offset: 12139},
+			pos:  position{line: 361, col: 1, offset: 12111},
 			expr: &actionExpr{
-				pos: position{line: 361, col: 18, offset: 12156},
+				pos: position{line: 361, col: 18, offset: 12128},
 				run: (*parser).callonFileInclusion1,
 				expr: &seqExpr{
-					pos: position{line: 361, col: 18, offset: 12156},
+					pos: position{line: 361, col: 18, offset: 12128},
 					exprs: []interface{}{
 						&labeledExpr{
-							pos:   position{line: 361, col: 18, offset: 12156},
+							pos:   position{line: 361, col: 18, offset: 12128},
 							label: "incl",
 							expr: &actionExpr{
-								pos: position{line: 361, col: 24, offset: 12162},
+								pos: position{line: 361, col: 24, offset: 12134},
 								run: (*parser).callonFileInclusion4,
 								expr: &seqExpr{
-									pos: position{line: 361, col: 24, offset: 12162},
+									pos: position{line: 361, col: 24, offset: 12134},
 									exprs: []interface{}{
 										&litMatcher{
-											pos:        position{line: 361, col: 24, offset: 12162},
+											pos:        position{line: 361, col: 24, offset: 12134},
 											val:        "include::",
 											ignoreCase: false,
 										},
 										&labeledExpr{
-											pos:   position{line: 361, col: 36, offset: 12174},
+											pos:   position{line: 361, col: 36, offset: 12146},
 											label: "path",
 											expr: &ruleRefExpr{
-												pos:  position{line: 361, col: 42, offset: 12180},
+												pos:  position{line: 361, col: 42, offset: 12152},
 												name: "FileLocation",
 											},
 										},
 										&labeledExpr{
-											pos:   position{line: 361, col: 56, offset: 12194},
+											pos:   position{line: 361, col: 56, offset: 12166},
 											label: "inlineAttributes",
 											expr: &ruleRefExpr{
-												pos:  position{line: 361, col: 74, offset: 12212},
+												pos:  position{line: 361, col: 74, offset: 12184},
 												name: "FileIncludeAttributes",
 											},
 										},
@@ -2971,7 +2971,7 @@ var g = &grammar{
 							},
 						},
 						&ruleRefExpr{
-							pos:  position{line: 363, col: 8, offset: 12366},
+							pos:  position{line: 363, col: 8, offset: 12338},
 							name: "EOLS",
 						},
 					},
@@ -2980,36 +2980,36 @@ var g = &grammar{
 		},
 		{
 			name: "FileIncludeAttributes",
-			pos:  position{line: 367, col: 1, offset: 12419},
+			pos:  position{line: 367, col: 1, offset: 12391},
 			expr: &actionExpr{
-				pos: position{line: 367, col: 26, offset: 12444},
+				pos: position{line: 367, col: 26, offset: 12416},
 				run: (*parser).callonFileIncludeAttributes1,
 				expr: &seqExpr{
-					pos: position{line: 367, col: 26, offset: 12444},
+					pos: position{line: 367, col: 26, offset: 12416},
 					exprs: []interface{}{
 						&litMatcher{
-							pos:        position{line: 367, col: 26, offset: 12444},
+							pos:        position{line: 367, col: 26, offset: 12416},
 							val:        "[",
 							ignoreCase: false,
 						},
 						&labeledExpr{
-							pos:   position{line: 367, col: 30, offset: 12448},
+							pos:   position{line: 367, col: 30, offset: 12420},
 							label: "attrs",
 							expr: &zeroOrMoreExpr{
-								pos: position{line: 367, col: 36, offset: 12454},
+								pos: position{line: 367, col: 36, offset: 12426},
 								expr: &choiceExpr{
-									pos: position{line: 367, col: 37, offset: 12455},
+									pos: position{line: 367, col: 37, offset: 12427},
 									alternatives: []interface{}{
 										&ruleRefExpr{
-											pos:  position{line: 367, col: 37, offset: 12455},
+											pos:  position{line: 367, col: 37, offset: 12427},
 											name: "LineRangesAttribute",
 										},
 										&ruleRefExpr{
-											pos:  position{line: 367, col: 59, offset: 12477},
+											pos:  position{line: 367, col: 59, offset: 12449},
 											name: "TagRangesAttribute",
 										},
 										&ruleRefExpr{
-											pos:  position{line: 367, col: 80, offset: 12498},
+											pos:  position{line: 367, col: 80, offset: 12470},
 											name: "GenericAttribute",
 										},
 									},
@@ -3017,7 +3017,7 @@ var g = &grammar{
 							},
 						},
 						&litMatcher{
-							pos:        position{line: 367, col: 99, offset: 12517},
+							pos:        position{line: 367, col: 99, offset: 12489},
 							val:        "]",
 							ignoreCase: false,
 						},
@@ -3027,30 +3027,30 @@ var g = &grammar{
 		},
 		{
 			name: "LineRangesAttribute",
-			pos:  position{line: 371, col: 1, offset: 12587},
+			pos:  position{line: 371, col: 1, offset: 12559},
 			expr: &actionExpr{
-				pos: position{line: 371, col: 24, offset: 12610},
+				pos: position{line: 371, col: 24, offset: 12582},
 				run: (*parser).callonLineRangesAttribute1,
 				expr: &seqExpr{
-					pos: position{line: 371, col: 24, offset: 12610},
+					pos: position{line: 371, col: 24, offset: 12582},
 					exprs: []interface{}{
 						&litMatcher{
-							pos:        position{line: 371, col: 24, offset: 12610},
+							pos:        position{line: 371, col: 24, offset: 12582},
 							val:        "lines=",
 							ignoreCase: false,
 						},
 						&labeledExpr{
-							pos:   position{line: 371, col: 33, offset: 12619},
+							pos:   position{line: 371, col: 33, offset: 12591},
 							label: "lines",
 							expr: &ruleRefExpr{
-								pos:  position{line: 371, col: 40, offset: 12626},
+								pos:  position{line: 371, col: 40, offset: 12598},
 								name: "LineRangesAttributeValue",
 							},
 						},
 						&zeroOrOneExpr{
-							pos: position{line: 371, col: 66, offset: 12652},
+							pos: position{line: 371, col: 66, offset: 12624},
 							expr: &litMatcher{
-								pos:        position{line: 371, col: 66, offset: 12652},
+								pos:        position{line: 371, col: 66, offset: 12624},
 								val:        ",",
 								ignoreCase: false,
 							},
@@ -3061,72 +3061,72 @@ var g = &grammar{
 		},
 		{
 			name: "LineRangesAttributeValue",
-			pos:  position{line: 375, col: 1, offset: 12711},
+			pos:  position{line: 375, col: 1, offset: 12683},
 			expr: &actionExpr{
-				pos: position{line: 375, col: 29, offset: 12739},
+				pos: position{line: 375, col: 29, offset: 12711},
 				run: (*parser).callonLineRangesAttributeValue1,
 				expr: &seqExpr{
-					pos: position{line: 375, col: 29, offset: 12739},
+					pos: position{line: 375, col: 29, offset: 12711},
 					exprs: []interface{}{
 						&labeledExpr{
-							pos:   position{line: 375, col: 29, offset: 12739},
+							pos:   position{line: 375, col: 29, offset: 12711},
 							label: "value",
 							expr: &choiceExpr{
-								pos: position{line: 375, col: 36, offset: 12746},
+								pos: position{line: 375, col: 36, offset: 12718},
 								alternatives: []interface{}{
 									&ruleRefExpr{
-										pos:  position{line: 375, col: 36, offset: 12746},
+										pos:  position{line: 375, col: 36, offset: 12718},
 										name: "MultipleLineRanges",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 376, col: 11, offset: 12863},
+										pos:  position{line: 376, col: 11, offset: 12835},
 										name: "MultipleQuotedLineRanges",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 377, col: 11, offset: 12899},
+										pos:  position{line: 377, col: 11, offset: 12871},
 										name: "MultiLineRange",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 378, col: 11, offset: 12925},
+										pos:  position{line: 378, col: 11, offset: 12897},
 										name: "MultiLineQuotedRange",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 379, col: 11, offset: 12957},
+										pos:  position{line: 379, col: 11, offset: 12929},
 										name: "SingleLineQuotedRange",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 380, col: 11, offset: 12989},
+										pos:  position{line: 380, col: 11, offset: 12961},
 										name: "SingleLineRange",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 381, col: 11, offset: 13016},
+										pos:  position{line: 381, col: 11, offset: 12988},
 										name: "UndefinedLineRange",
 									},
 								},
 							},
 						},
 						&zeroOrMoreExpr{
-							pos: position{line: 381, col: 31, offset: 13036},
+							pos: position{line: 381, col: 31, offset: 13008},
 							expr: &ruleRefExpr{
-								pos:  position{line: 381, col: 31, offset: 13036},
+								pos:  position{line: 381, col: 31, offset: 13008},
 								name: "WS",
 							},
 						},
 						&choiceExpr{
-							pos: position{line: 381, col: 36, offset: 13041},
+							pos: position{line: 381, col: 36, offset: 13013},
 							alternatives: []interface{}{
 								&andExpr{
-									pos: position{line: 381, col: 36, offset: 13041},
+									pos: position{line: 381, col: 36, offset: 13013},
 									expr: &litMatcher{
-										pos:        position{line: 381, col: 37, offset: 13042},
+										pos:        position{line: 381, col: 37, offset: 13014},
 										val:        ",",
 										ignoreCase: false,
 									},
 								},
 								&andExpr{
-									pos: position{line: 381, col: 43, offset: 13048},
+									pos: position{line: 381, col: 43, offset: 13020},
 									expr: &litMatcher{
-										pos:        position{line: 381, col: 44, offset: 13049},
+										pos:        position{line: 381, col: 44, offset: 13021},
 										val:        "]",
 										ignoreCase: false,
 									},
@@ -3139,58 +3139,58 @@ var g = &grammar{
 		},
 		{
 			name: "MultipleLineRanges",
-			pos:  position{line: 385, col: 1, offset: 13081},
+			pos:  position{line: 385, col: 1, offset: 13053},
 			expr: &actionExpr{
-				pos: position{line: 385, col: 23, offset: 13103},
+				pos: position{line: 385, col: 23, offset: 13075},
 				run: (*parser).callonMultipleLineRanges1,
 				expr: &seqExpr{
-					pos: position{line: 385, col: 23, offset: 13103},
+					pos: position{line: 385, col: 23, offset: 13075},
 					exprs: []interface{}{
 						&labeledExpr{
-							pos:   position{line: 385, col: 23, offset: 13103},
+							pos:   position{line: 385, col: 23, offset: 13075},
 							label: "first",
 							expr: &choiceExpr{
-								pos: position{line: 385, col: 30, offset: 13110},
+								pos: position{line: 385, col: 30, offset: 13082},
 								alternatives: []interface{}{
 									&ruleRefExpr{
-										pos:  position{line: 385, col: 30, offset: 13110},
+										pos:  position{line: 385, col: 30, offset: 13082},
 										name: "MultiLineRange",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 385, col: 47, offset: 13127},
+										pos:  position{line: 385, col: 47, offset: 13099},
 										name: "SingleLineRange",
 									},
 								},
 							},
 						},
 						&labeledExpr{
-							pos:   position{line: 386, col: 5, offset: 13149},
+							pos:   position{line: 386, col: 5, offset: 13121},
 							label: "others",
 							expr: &oneOrMoreExpr{
-								pos: position{line: 386, col: 12, offset: 13156},
+								pos: position{line: 386, col: 12, offset: 13128},
 								expr: &actionExpr{
-									pos: position{line: 386, col: 13, offset: 13157},
+									pos: position{line: 386, col: 13, offset: 13129},
 									run: (*parser).callonMultipleLineRanges9,
 									expr: &seqExpr{
-										pos: position{line: 386, col: 13, offset: 13157},
+										pos: position{line: 386, col: 13, offset: 13129},
 										exprs: []interface{}{
 											&litMatcher{
-												pos:        position{line: 386, col: 13, offset: 13157},
+												pos:        position{line: 386, col: 13, offset: 13129},
 												val:        ";",
 												ignoreCase: false,
 											},
 											&labeledExpr{
-												pos:   position{line: 386, col: 17, offset: 13161},
+												pos:   position{line: 386, col: 17, offset: 13133},
 												label: "other",
 												expr: &choiceExpr{
-													pos: position{line: 386, col: 24, offset: 13168},
+													pos: position{line: 386, col: 24, offset: 13140},
 													alternatives: []interface{}{
 														&ruleRefExpr{
-															pos:  position{line: 386, col: 24, offset: 13168},
+															pos:  position{line: 386, col: 24, offset: 13140},
 															name: "MultiLineRange",
 														},
 														&ruleRefExpr{
-															pos:  position{line: 386, col: 41, offset: 13185},
+															pos:  position{line: 386, col: 41, offset: 13157},
 															name: "SingleLineRange",
 														},
 													},
@@ -3207,63 +3207,63 @@ var g = &grammar{
 		},
 		{
 			name: "MultipleQuotedLineRanges",
-			pos:  position{line: 392, col: 1, offset: 13323},
+			pos:  position{line: 392, col: 1, offset: 13295},
 			expr: &actionExpr{
-				pos: position{line: 392, col: 29, offset: 13351},
+				pos: position{line: 392, col: 29, offset: 13323},
 				run: (*parser).callonMultipleQuotedLineRanges1,
 				expr: &seqExpr{
-					pos: position{line: 392, col: 29, offset: 13351},
+					pos: position{line: 392, col: 29, offset: 13323},
 					exprs: []interface{}{
 						&litMatcher{
-							pos:        position{line: 392, col: 29, offset: 13351},
+							pos:        position{line: 392, col: 29, offset: 13323},
 							val:        "\"",
 							ignoreCase: false,
 						},
 						&labeledExpr{
-							pos:   position{line: 392, col: 34, offset: 13356},
+							pos:   position{line: 392, col: 34, offset: 13328},
 							label: "first",
 							expr: &choiceExpr{
-								pos: position{line: 392, col: 41, offset: 13363},
+								pos: position{line: 392, col: 41, offset: 13335},
 								alternatives: []interface{}{
 									&ruleRefExpr{
-										pos:  position{line: 392, col: 41, offset: 13363},
+										pos:  position{line: 392, col: 41, offset: 13335},
 										name: "MultiLineRange",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 392, col: 58, offset: 13380},
+										pos:  position{line: 392, col: 58, offset: 13352},
 										name: "SingleLineRange",
 									},
 								},
 							},
 						},
 						&labeledExpr{
-							pos:   position{line: 393, col: 5, offset: 13402},
+							pos:   position{line: 393, col: 5, offset: 13374},
 							label: "others",
 							expr: &oneOrMoreExpr{
-								pos: position{line: 393, col: 12, offset: 13409},
+								pos: position{line: 393, col: 12, offset: 13381},
 								expr: &actionExpr{
-									pos: position{line: 393, col: 13, offset: 13410},
+									pos: position{line: 393, col: 13, offset: 13382},
 									run: (*parser).callonMultipleQuotedLineRanges10,
 									expr: &seqExpr{
-										pos: position{line: 393, col: 13, offset: 13410},
+										pos: position{line: 393, col: 13, offset: 13382},
 										exprs: []interface{}{
 											&litMatcher{
-												pos:        position{line: 393, col: 13, offset: 13410},
+												pos:        position{line: 393, col: 13, offset: 13382},
 												val:        ",",
 												ignoreCase: false,
 											},
 											&labeledExpr{
-												pos:   position{line: 393, col: 17, offset: 13414},
+												pos:   position{line: 393, col: 17, offset: 13386},
 												label: "other",
 												expr: &choiceExpr{
-													pos: position{line: 393, col: 24, offset: 13421},
+													pos: position{line: 393, col: 24, offset: 13393},
 													alternatives: []interface{}{
 														&ruleRefExpr{
-															pos:  position{line: 393, col: 24, offset: 13421},
+															pos:  position{line: 393, col: 24, offset: 13393},
 															name: "MultiLineRange",
 														},
 														&ruleRefExpr{
-															pos:  position{line: 393, col: 41, offset: 13438},
+															pos:  position{line: 393, col: 41, offset: 13410},
 															name: "SingleLineRange",
 														},
 													},
@@ -3275,7 +3275,7 @@ var g = &grammar{
 							},
 						},
 						&litMatcher{
-							pos:        position{line: 395, col: 9, offset: 13491},
+							pos:        position{line: 395, col: 9, offset: 13463},
 							val:        "\"",
 							ignoreCase: false,
 						},
@@ -3285,31 +3285,31 @@ var g = &grammar{
 		},
 		{
 			name: "MultiLineRange",
-			pos:  position{line: 399, col: 1, offset: 13581},
+			pos:  position{line: 399, col: 1, offset: 13553},
 			expr: &actionExpr{
-				pos: position{line: 399, col: 19, offset: 13599},
+				pos: position{line: 399, col: 19, offset: 13571},
 				run: (*parser).callonMultiLineRange1,
 				expr: &seqExpr{
-					pos: position{line: 399, col: 19, offset: 13599},
+					pos: position{line: 399, col: 19, offset: 13571},
 					exprs: []interface{}{
 						&labeledExpr{
-							pos:   position{line: 399, col: 19, offset: 13599},
+							pos:   position{line: 399, col: 19, offset: 13571},
 							label: "start",
 							expr: &ruleRefExpr{
-								pos:  position{line: 399, col: 26, offset: 13606},
+								pos:  position{line: 399, col: 26, offset: 13578},
 								name: "NUMBER",
 							},
 						},
 						&litMatcher{
-							pos:        position{line: 399, col: 34, offset: 13614},
+							pos:        position{line: 399, col: 34, offset: 13586},
 							val:        "..",
 							ignoreCase: false,
 						},
 						&labeledExpr{
-							pos:   position{line: 399, col: 39, offset: 13619},
+							pos:   position{line: 399, col: 39, offset: 13591},
 							label: "end",
 							expr: &ruleRefExpr{
-								pos:  position{line: 399, col: 44, offset: 13624},
+								pos:  position{line: 399, col: 44, offset: 13596},
 								name: "NUMBER",
 							},
 						},
@@ -3319,41 +3319,41 @@ var g = &grammar{
 		},
 		{
 			name: "MultiLineQuotedRange",
-			pos:  position{line: 403, col: 1, offset: 13712},
+			pos:  position{line: 403, col: 1, offset: 13684},
 			expr: &actionExpr{
-				pos: position{line: 403, col: 25, offset: 13736},
+				pos: position{line: 403, col: 25, offset: 13708},
 				run: (*parser).callonMultiLineQuotedRange1,
 				expr: &seqExpr{
-					pos: position{line: 403, col: 25, offset: 13736},
+					pos: position{line: 403, col: 25, offset: 13708},
 					exprs: []interface{}{
 						&litMatcher{
-							pos:        position{line: 403, col: 25, offset: 13736},
+							pos:        position{line: 403, col: 25, offset: 13708},
 							val:        "\"",
 							ignoreCase: false,
 						},
 						&labeledExpr{
-							pos:   position{line: 403, col: 30, offset: 13741},
+							pos:   position{line: 403, col: 30, offset: 13713},
 							label: "start",
 							expr: &ruleRefExpr{
-								pos:  position{line: 403, col: 37, offset: 13748},
+								pos:  position{line: 403, col: 37, offset: 13720},
 								name: "NUMBER",
 							},
 						},
 						&litMatcher{
-							pos:        position{line: 403, col: 45, offset: 13756},
+							pos:        position{line: 403, col: 45, offset: 13728},
 							val:        "..",
 							ignoreCase: false,
 						},
 						&labeledExpr{
-							pos:   position{line: 403, col: 50, offset: 13761},
+							pos:   position{line: 403, col: 50, offset: 13733},
 							label: "end",
 							expr: &ruleRefExpr{
-								pos:  position{line: 403, col: 55, offset: 13766},
+								pos:  position{line: 403, col: 55, offset: 13738},
 								name: "NUMBER",
 							},
 						},
 						&litMatcher{
-							pos:        position{line: 403, col: 63, offset: 13774},
+							pos:        position{line: 403, col: 63, offset: 13746},
 							val:        "\"",
 							ignoreCase: false,
 						},
@@ -3363,15 +3363,15 @@ var g = &grammar{
 		},
 		{
 			name: "SingleLineRange",
-			pos:  position{line: 407, col: 1, offset: 13859},
+			pos:  position{line: 407, col: 1, offset: 13831},
 			expr: &actionExpr{
-				pos: position{line: 407, col: 20, offset: 13878},
+				pos: position{line: 407, col: 20, offset: 13850},
 				run: (*parser).callonSingleLineRange1,
 				expr: &labeledExpr{
-					pos:   position{line: 407, col: 20, offset: 13878},
+					pos:   position{line: 407, col: 20, offset: 13850},
 					label: "singleline",
 					expr: &ruleRefExpr{
-						pos:  position{line: 407, col: 32, offset: 13890},
+						pos:  position{line: 407, col: 32, offset: 13862},
 						name: "NUMBER",
 					},
 				},
@@ -3379,28 +3379,28 @@ var g = &grammar{
 		},
 		{
 			name: "SingleLineQuotedRange",
-			pos:  position{line: 411, col: 1, offset: 13985},
+			pos:  position{line: 411, col: 1, offset: 13957},
 			expr: &actionExpr{
-				pos: position{line: 411, col: 26, offset: 14010},
+				pos: position{line: 411, col: 26, offset: 13982},
 				run: (*parser).callonSingleLineQuotedRange1,
 				expr: &seqExpr{
-					pos: position{line: 411, col: 26, offset: 14010},
+					pos: position{line: 411, col: 26, offset: 13982},
 					exprs: []interface{}{
 						&litMatcher{
-							pos:        position{line: 411, col: 26, offset: 14010},
+							pos:        position{line: 411, col: 26, offset: 13982},
 							val:        "\"",
 							ignoreCase: false,
 						},
 						&labeledExpr{
-							pos:   position{line: 411, col: 31, offset: 14015},
+							pos:   position{line: 411, col: 31, offset: 13987},
 							label: "singleline",
 							expr: &ruleRefExpr{
-								pos:  position{line: 411, col: 43, offset: 14027},
+								pos:  position{line: 411, col: 43, offset: 13999},
 								name: "NUMBER",
 							},
 						},
 						&litMatcher{
-							pos:        position{line: 411, col: 51, offset: 14035},
+							pos:        position{line: 411, col: 51, offset: 14007},
 							val:        "\"",
 							ignoreCase: false,
 						},
@@ -3410,40 +3410,40 @@ var g = &grammar{
 		},
 		{
 			name: "UndefinedLineRange",
-			pos:  position{line: 415, col: 1, offset: 14127},
+			pos:  position{line: 415, col: 1, offset: 14099},
 			expr: &actionExpr{
-				pos: position{line: 415, col: 23, offset: 14149},
+				pos: position{line: 415, col: 23, offset: 14121},
 				run: (*parser).callonUndefinedLineRange1,
 				expr: &zeroOrMoreExpr{
-					pos: position{line: 415, col: 23, offset: 14149},
+					pos: position{line: 415, col: 23, offset: 14121},
 					expr: &seqExpr{
-						pos: position{line: 415, col: 24, offset: 14150},
+						pos: position{line: 415, col: 24, offset: 14122},
 						exprs: []interface{}{
 							&notExpr{
-								pos: position{line: 415, col: 24, offset: 14150},
+								pos: position{line: 415, col: 24, offset: 14122},
 								expr: &litMatcher{
-									pos:        position{line: 415, col: 25, offset: 14151},
+									pos:        position{line: 415, col: 25, offset: 14123},
 									val:        "]",
 									ignoreCase: false,
 								},
 							},
 							&notExpr{
-								pos: position{line: 415, col: 29, offset: 14155},
+								pos: position{line: 415, col: 29, offset: 14127},
 								expr: &litMatcher{
-									pos:        position{line: 415, col: 30, offset: 14156},
+									pos:        position{line: 415, col: 30, offset: 14128},
 									val:        ",",
 									ignoreCase: false,
 								},
 							},
 							&notExpr{
-								pos: position{line: 415, col: 34, offset: 14160},
+								pos: position{line: 415, col: 34, offset: 14132},
 								expr: &ruleRefExpr{
-									pos:  position{line: 415, col: 35, offset: 14161},
+									pos:  position{line: 415, col: 35, offset: 14133},
 									name: "WS",
 								},
 							},
 							&anyMatcher{
-								line: 415, col: 38, offset: 14164,
+								line: 415, col: 38, offset: 14136,
 							},
 						},
 					},
@@ -3452,40 +3452,40 @@ var g = &grammar{
 		},
 		{
 			name: "TagRangesAttribute",
-			pos:  position{line: 419, col: 1, offset: 14204},
+			pos:  position{line: 419, col: 1, offset: 14176},
 			expr: &actionExpr{
-				pos: position{line: 419, col: 23, offset: 14226},
+				pos: position{line: 419, col: 23, offset: 14198},
 				run: (*parser).callonTagRangesAttribute1,
 				expr: &seqExpr{
-					pos: position{line: 419, col: 23, offset: 14226},
+					pos: position{line: 419, col: 23, offset: 14198},
 					exprs: []interface{}{
 						&choiceExpr{
-							pos: position{line: 419, col: 24, offset: 14227},
+							pos: position{line: 419, col: 24, offset: 14199},
 							alternatives: []interface{}{
 								&litMatcher{
-									pos:        position{line: 419, col: 24, offset: 14227},
+									pos:        position{line: 419, col: 24, offset: 14199},
 									val:        "tags=",
 									ignoreCase: false,
 								},
 								&litMatcher{
-									pos:        position{line: 419, col: 34, offset: 14237},
+									pos:        position{line: 419, col: 34, offset: 14209},
 									val:        "tag=",
 									ignoreCase: false,
 								},
 							},
 						},
 						&labeledExpr{
-							pos:   position{line: 419, col: 42, offset: 14245},
+							pos:   position{line: 419, col: 42, offset: 14217},
 							label: "tags",
 							expr: &ruleRefExpr{
-								pos:  position{line: 419, col: 48, offset: 14251},
+								pos:  position{line: 419, col: 48, offset: 14223},
 								name: "TagRangesAttributeValue",
 							},
 						},
 						&zeroOrOneExpr{
-							pos: position{line: 419, col: 73, offset: 14276},
+							pos: position{line: 419, col: 73, offset: 14248},
 							expr: &litMatcher{
-								pos:        position{line: 419, col: 73, offset: 14276},
+								pos:        position{line: 419, col: 73, offset: 14248},
 								val:        ",",
 								ignoreCase: false,
 							},
@@ -3496,43 +3496,43 @@ var g = &grammar{
 		},
 		{
 			name: "TagRangesAttributeValue",
-			pos:  position{line: 423, col: 1, offset: 14425},
+			pos:  position{line: 423, col: 1, offset: 14397},
 			expr: &actionExpr{
-				pos: position{line: 423, col: 28, offset: 14452},
+				pos: position{line: 423, col: 28, offset: 14424},
 				run: (*parser).callonTagRangesAttributeValue1,
 				expr: &seqExpr{
-					pos: position{line: 423, col: 28, offset: 14452},
+					pos: position{line: 423, col: 28, offset: 14424},
 					exprs: []interface{}{
 						&labeledExpr{
-							pos:   position{line: 423, col: 28, offset: 14452},
+							pos:   position{line: 423, col: 28, offset: 14424},
 							label: "value",
 							expr: &ruleRefExpr{
-								pos:  position{line: 423, col: 35, offset: 14459},
+								pos:  position{line: 423, col: 35, offset: 14431},
 								name: "MultipleTagRanges",
 							},
 						},
 						&zeroOrMoreExpr{
-							pos: position{line: 423, col: 54, offset: 14478},
+							pos: position{line: 423, col: 54, offset: 14450},
 							expr: &ruleRefExpr{
-								pos:  position{line: 423, col: 54, offset: 14478},
+								pos:  position{line: 423, col: 54, offset: 14450},
 								name: "WS",
 							},
 						},
 						&choiceExpr{
-							pos: position{line: 423, col: 59, offset: 14483},
+							pos: position{line: 423, col: 59, offset: 14455},
 							alternatives: []interface{}{
 								&andExpr{
-									pos: position{line: 423, col: 59, offset: 14483},
+									pos: position{line: 423, col: 59, offset: 14455},
 									expr: &litMatcher{
-										pos:        position{line: 423, col: 60, offset: 14484},
+										pos:        position{line: 423, col: 60, offset: 14456},
 										val:        ",",
 										ignoreCase: false,
 									},
 								},
 								&andExpr{
-									pos: position{line: 423, col: 66, offset: 14490},
+									pos: position{line: 423, col: 66, offset: 14462},
 									expr: &litMatcher{
-										pos:        position{line: 423, col: 67, offset: 14491},
+										pos:        position{line: 423, col: 67, offset: 14463},
 										val:        "]",
 										ignoreCase: false,
 									},
@@ -3545,42 +3545,42 @@ var g = &grammar{
 		},
 		{
 			name: "MultipleTagRanges",
-			pos:  position{line: 427, col: 1, offset: 14523},
+			pos:  position{line: 427, col: 1, offset: 14495},
 			expr: &actionExpr{
-				pos: position{line: 427, col: 22, offset: 14544},
+				pos: position{line: 427, col: 22, offset: 14516},
 				run: (*parser).callonMultipleTagRanges1,
 				expr: &seqExpr{
-					pos: position{line: 427, col: 22, offset: 14544},
+					pos: position{line: 427, col: 22, offset: 14516},
 					exprs: []interface{}{
 						&labeledExpr{
-							pos:   position{line: 427, col: 22, offset: 14544},
+							pos:   position{line: 427, col: 22, offset: 14516},
 							label: "first",
 							expr: &ruleRefExpr{
-								pos:  position{line: 427, col: 29, offset: 14551},
+								pos:  position{line: 427, col: 29, offset: 14523},
 								name: "TagRange",
 							},
 						},
 						&labeledExpr{
-							pos:   position{line: 428, col: 5, offset: 14565},
+							pos:   position{line: 428, col: 5, offset: 14537},
 							label: "others",
 							expr: &zeroOrMoreExpr{
-								pos: position{line: 428, col: 12, offset: 14572},
+								pos: position{line: 428, col: 12, offset: 14544},
 								expr: &actionExpr{
-									pos: position{line: 428, col: 13, offset: 14573},
+									pos: position{line: 428, col: 13, offset: 14545},
 									run: (*parser).callonMultipleTagRanges7,
 									expr: &seqExpr{
-										pos: position{line: 428, col: 13, offset: 14573},
+										pos: position{line: 428, col: 13, offset: 14545},
 										exprs: []interface{}{
 											&litMatcher{
-												pos:        position{line: 428, col: 13, offset: 14573},
+												pos:        position{line: 428, col: 13, offset: 14545},
 												val:        ";",
 												ignoreCase: false,
 											},
 											&labeledExpr{
-												pos:   position{line: 428, col: 17, offset: 14577},
+												pos:   position{line: 428, col: 17, offset: 14549},
 												label: "other",
 												expr: &ruleRefExpr{
-													pos:  position{line: 428, col: 24, offset: 14584},
+													pos:  position{line: 428, col: 24, offset: 14556},
 													name: "TagRange",
 												},
 											},
@@ -3595,25 +3595,25 @@ var g = &grammar{
 		},
 		{
 			name: "TagRange",
-			pos:  position{line: 434, col: 1, offset: 14715},
+			pos:  position{line: 434, col: 1, offset: 14687},
 			expr: &choiceExpr{
-				pos: position{line: 434, col: 13, offset: 14727},
+				pos: position{line: 434, col: 13, offset: 14699},
 				alternatives: []interface{}{
 					&actionExpr{
-						pos: position{line: 434, col: 13, offset: 14727},
+						pos: position{line: 434, col: 13, offset: 14699},
 						run: (*parser).callonTagRange2,
 						expr: &labeledExpr{
-							pos:   position{line: 434, col: 13, offset: 14727},
+							pos:   position{line: 434, col: 13, offset: 14699},
 							label: "tag",
 							expr: &choiceExpr{
-								pos: position{line: 434, col: 18, offset: 14732},
+								pos: position{line: 434, col: 18, offset: 14704},
 								alternatives: []interface{}{
 									&ruleRefExpr{
-										pos:  position{line: 434, col: 18, offset: 14732},
+										pos:  position{line: 434, col: 18, offset: 14704},
 										name: "Alphanums",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 434, col: 30, offset: 14744},
+										pos:  position{line: 434, col: 30, offset: 14716},
 										name: "TagWildcard",
 									},
 								},
@@ -3621,28 +3621,28 @@ var g = &grammar{
 						},
 					},
 					&actionExpr{
-						pos: position{line: 436, col: 5, offset: 14812},
+						pos: position{line: 436, col: 5, offset: 14784},
 						run: (*parser).callonTagRange7,
 						expr: &seqExpr{
-							pos: position{line: 436, col: 5, offset: 14812},
+							pos: position{line: 436, col: 5, offset: 14784},
 							exprs: []interface{}{
 								&litMatcher{
-									pos:        position{line: 436, col: 5, offset: 14812},
+									pos:        position{line: 436, col: 5, offset: 14784},
 									val:        "!",
 									ignoreCase: false,
 								},
 								&labeledExpr{
-									pos:   position{line: 436, col: 9, offset: 14816},
+									pos:   position{line: 436, col: 9, offset: 14788},
 									label: "tag",
 									expr: &choiceExpr{
-										pos: position{line: 436, col: 14, offset: 14821},
+										pos: position{line: 436, col: 14, offset: 14793},
 										alternatives: []interface{}{
 											&ruleRefExpr{
-												pos:  position{line: 436, col: 14, offset: 14821},
+												pos:  position{line: 436, col: 14, offset: 14793},
 												name: "Alphanums",
 											},
 											&ruleRefExpr{
-												pos:  position{line: 436, col: 26, offset: 14833},
+												pos:  position{line: 436, col: 26, offset: 14805},
 												name: "TagWildcard",
 											},
 										},
@@ -3656,23 +3656,23 @@ var g = &grammar{
 		},
 		{
 			name: "TagWildcard",
-			pos:  position{line: 440, col: 1, offset: 14901},
+			pos:  position{line: 440, col: 1, offset: 14873},
 			expr: &actionExpr{
-				pos: position{line: 440, col: 16, offset: 14916},
+				pos: position{line: 440, col: 16, offset: 14888},
 				run: (*parser).callonTagWildcard1,
 				expr: &seqExpr{
-					pos: position{line: 440, col: 16, offset: 14916},
+					pos: position{line: 440, col: 16, offset: 14888},
 					exprs: []interface{}{
 						&labeledExpr{
-							pos:   position{line: 440, col: 16, offset: 14916},
+							pos:   position{line: 440, col: 16, offset: 14888},
 							label: "stars",
 							expr: &actionExpr{
-								pos: position{line: 440, col: 23, offset: 14923},
+								pos: position{line: 440, col: 23, offset: 14895},
 								run: (*parser).callonTagWildcard4,
 								expr: &oneOrMoreExpr{
-									pos: position{line: 440, col: 23, offset: 14923},
+									pos: position{line: 440, col: 23, offset: 14895},
 									expr: &litMatcher{
-										pos:        position{line: 440, col: 24, offset: 14924},
+										pos:        position{line: 440, col: 24, offset: 14896},
 										val:        "*",
 										ignoreCase: false,
 									},
@@ -3680,7 +3680,7 @@ var g = &grammar{
 							},
 						},
 						&andCodeExpr{
-							pos: position{line: 443, col: 5, offset: 14978},
+							pos: position{line: 443, col: 5, offset: 14950},
 							run: (*parser).callonTagWildcard7,
 						},
 					},
@@ -3689,34 +3689,34 @@ var g = &grammar{
 		},
 		{
 			name: "IncludedFileLine",
-			pos:  position{line: 453, col: 1, offset: 15272},
+			pos:  position{line: 453, col: 1, offset: 15244},
 			expr: &actionExpr{
-				pos: position{line: 453, col: 21, offset: 15292},
+				pos: position{line: 453, col: 21, offset: 15264},
 				run: (*parser).callonIncludedFileLine1,
 				expr: &seqExpr{
-					pos: position{line: 453, col: 21, offset: 15292},
+					pos: position{line: 453, col: 21, offset: 15264},
 					exprs: []interface{}{
 						&labeledExpr{
-							pos:   position{line: 453, col: 21, offset: 15292},
+							pos:   position{line: 453, col: 21, offset: 15264},
 							label: "content",
 							expr: &zeroOrMoreExpr{
-								pos: position{line: 453, col: 29, offset: 15300},
+								pos: position{line: 453, col: 29, offset: 15272},
 								expr: &choiceExpr{
-									pos: position{line: 453, col: 30, offset: 15301},
+									pos: position{line: 453, col: 30, offset: 15273},
 									alternatives: []interface{}{
 										&ruleRefExpr{
-											pos:  position{line: 453, col: 30, offset: 15301},
+											pos:  position{line: 453, col: 30, offset: 15273},
 											name: "IncludedFileStartTag",
 										},
 										&ruleRefExpr{
-											pos:  position{line: 453, col: 53, offset: 15324},
+											pos:  position{line: 453, col: 53, offset: 15296},
 											name: "IncludedFileEndTag",
 										},
 										&actionExpr{
-											pos: position{line: 453, col: 74, offset: 15345},
+											pos: position{line: 453, col: 74, offset: 15317},
 											run: (*parser).callonIncludedFileLine8,
 											expr: &anyMatcher{
-												line: 453, col: 74, offset: 15345,
+												line: 453, col: 74, offset: 15317,
 											},
 										},
 									},
@@ -3724,7 +3724,7 @@ var g = &grammar{
 							},
 						},
 						&ruleRefExpr{
-							pos:  position{line: 453, col: 107, offset: 15378},
+							pos:  position{line: 453, col: 107, offset: 15350},
 							name: "EOL",
 						},
 					},
@@ -3733,32 +3733,32 @@ var g = &grammar{
 		},
 		{
 			name: "IncludedFileStartTag",
-			pos:  position{line: 457, col: 1, offset: 15449},
+			pos:  position{line: 457, col: 1, offset: 15421},
 			expr: &actionExpr{
-				pos: position{line: 457, col: 25, offset: 15473},
+				pos: position{line: 457, col: 25, offset: 15445},
 				run: (*parser).callonIncludedFileStartTag1,
 				expr: &seqExpr{
-					pos: position{line: 457, col: 25, offset: 15473},
+					pos: position{line: 457, col: 25, offset: 15445},
 					exprs: []interface{}{
 						&litMatcher{
-							pos:        position{line: 457, col: 25, offset: 15473},
+							pos:        position{line: 457, col: 25, offset: 15445},
 							val:        "tag::",
 							ignoreCase: false,
 						},
 						&labeledExpr{
-							pos:   position{line: 457, col: 33, offset: 15481},
+							pos:   position{line: 457, col: 33, offset: 15453},
 							label: "tag",
 							expr: &actionExpr{
-								pos: position{line: 457, col: 38, offset: 15486},
+								pos: position{line: 457, col: 38, offset: 15458},
 								run: (*parser).callonIncludedFileStartTag5,
 								expr: &ruleRefExpr{
-									pos:  position{line: 457, col: 38, offset: 15486},
+									pos:  position{line: 457, col: 38, offset: 15458},
 									name: "Alphanums",
 								},
 							},
 						},
 						&litMatcher{
-							pos:        position{line: 457, col: 78, offset: 15526},
+							pos:        position{line: 457, col: 78, offset: 15498},
 							val:        "[]",
 							ignoreCase: false,
 						},
@@ -3768,32 +3768,32 @@ var g = &grammar{
 		},
 		{
 			name: "IncludedFileEndTag",
-			pos:  position{line: 461, col: 1, offset: 15591},
+			pos:  position{line: 461, col: 1, offset: 15563},
 			expr: &actionExpr{
-				pos: position{line: 461, col: 23, offset: 15613},
+				pos: position{line: 461, col: 23, offset: 15585},
 				run: (*parser).callonIncludedFileEndTag1,
 				expr: &seqExpr{
-					pos: position{line: 461, col: 23, offset: 15613},
+					pos: position{line: 461, col: 23, offset: 15585},
 					exprs: []interface{}{
 						&litMatcher{
-							pos:        position{line: 461, col: 23, offset: 15613},
+							pos:        position{line: 461, col: 23, offset: 15585},
 							val:        "end::",
 							ignoreCase: false,
 						},
 						&labeledExpr{
-							pos:   position{line: 461, col: 31, offset: 15621},
+							pos:   position{line: 461, col: 31, offset: 15593},
 							label: "tag",
 							expr: &actionExpr{
-								pos: position{line: 461, col: 36, offset: 15626},
+								pos: position{line: 461, col: 36, offset: 15598},
 								run: (*parser).callonIncludedFileEndTag5,
 								expr: &ruleRefExpr{
-									pos:  position{line: 461, col: 36, offset: 15626},
+									pos:  position{line: 461, col: 36, offset: 15598},
 									name: "Alphanums",
 								},
 							},
 						},
 						&litMatcher{
-							pos:        position{line: 461, col: 76, offset: 15666},
+							pos:        position{line: 461, col: 76, offset: 15638},
 							val:        "[]",
 							ignoreCase: false,
 						},
@@ -3803,35 +3803,35 @@ var g = &grammar{
 		},
 		{
 			name: "ListItems",
-			pos:  position{line: 468, col: 1, offset: 15830},
+			pos:  position{line: 468, col: 1, offset: 15802},
 			expr: &oneOrMoreExpr{
-				pos: position{line: 468, col: 14, offset: 15843},
+				pos: position{line: 468, col: 14, offset: 15815},
 				expr: &ruleRefExpr{
-					pos:  position{line: 468, col: 14, offset: 15843},
+					pos:  position{line: 468, col: 14, offset: 15815},
 					name: "ListItem",
 				},
 			},
 		},
 		{
 			name: "ListItem",
-			pos:  position{line: 470, col: 1, offset: 15854},
+			pos:  position{line: 470, col: 1, offset: 15826},
 			expr: &choiceExpr{
-				pos: position{line: 470, col: 13, offset: 15866},
+				pos: position{line: 470, col: 13, offset: 15838},
 				alternatives: []interface{}{
 					&ruleRefExpr{
-						pos:  position{line: 470, col: 13, offset: 15866},
+						pos:  position{line: 470, col: 13, offset: 15838},
 						name: "OrderedListItem",
 					},
 					&ruleRefExpr{
-						pos:  position{line: 470, col: 31, offset: 15884},
+						pos:  position{line: 470, col: 31, offset: 15856},
 						name: "UnorderedListItem",
 					},
 					&ruleRefExpr{
-						pos:  position{line: 470, col: 51, offset: 15904},
+						pos:  position{line: 470, col: 51, offset: 15876},
 						name: "LabeledListItem",
 					},
 					&ruleRefExpr{
-						pos:  position{line: 470, col: 69, offset: 15922},
+						pos:  position{line: 470, col: 69, offset: 15894},
 						name: "ContinuedListItemElement",
 					},
 				},
@@ -3839,32 +3839,32 @@ var g = &grammar{
 		},
 		{
 			name: "ListParagraph",
-			pos:  position{line: 472, col: 1, offset: 15948},
+			pos:  position{line: 472, col: 1, offset: 15920},
 			expr: &choiceExpr{
-				pos: position{line: 472, col: 18, offset: 15965},
+				pos: position{line: 472, col: 18, offset: 15937},
 				alternatives: []interface{}{
 					&actionExpr{
-						pos: position{line: 472, col: 18, offset: 15965},
+						pos: position{line: 472, col: 18, offset: 15937},
 						run: (*parser).callonListParagraph2,
 						expr: &labeledExpr{
-							pos:   position{line: 472, col: 18, offset: 15965},
+							pos:   position{line: 472, col: 18, offset: 15937},
 							label: "comment",
 							expr: &ruleRefExpr{
-								pos:  position{line: 472, col: 27, offset: 15974},
+								pos:  position{line: 472, col: 27, offset: 15946},
 								name: "SingleLineComment",
 							},
 						},
 					},
 					&actionExpr{
-						pos: position{line: 474, col: 9, offset: 16031},
+						pos: position{line: 474, col: 9, offset: 16003},
 						run: (*parser).callonListParagraph5,
 						expr: &labeledExpr{
-							pos:   position{line: 474, col: 9, offset: 16031},
+							pos:   position{line: 474, col: 9, offset: 16003},
 							label: "lines",
 							expr: &oneOrMoreExpr{
-								pos: position{line: 474, col: 15, offset: 16037},
+								pos: position{line: 474, col: 15, offset: 16009},
 								expr: &ruleRefExpr{
-									pos:  position{line: 474, col: 16, offset: 16038},
+									pos:  position{line: 474, col: 16, offset: 16010},
 									name: "ListParagraphLine",
 								},
 							},
@@ -3875,112 +3875,112 @@ var g = &grammar{
 		},
 		{
 			name: "ListParagraphLine",
-			pos:  position{line: 478, col: 1, offset: 16130},
+			pos:  position{line: 478, col: 1, offset: 16102},
 			expr: &actionExpr{
-				pos: position{line: 478, col: 22, offset: 16151},
+				pos: position{line: 478, col: 22, offset: 16123},
 				run: (*parser).callonListParagraphLine1,
 				expr: &seqExpr{
-					pos: position{line: 478, col: 22, offset: 16151},
+					pos: position{line: 478, col: 22, offset: 16123},
 					exprs: []interface{}{
 						&notExpr{
-							pos: position{line: 478, col: 22, offset: 16151},
+							pos: position{line: 478, col: 22, offset: 16123},
 							expr: &ruleRefExpr{
-								pos:  position{line: 478, col: 23, offset: 16152},
+								pos:  position{line: 478, col: 23, offset: 16124},
 								name: "EOF",
 							},
 						},
 						&notExpr{
-							pos: position{line: 479, col: 5, offset: 16160},
+							pos: position{line: 479, col: 5, offset: 16132},
 							expr: &ruleRefExpr{
-								pos:  position{line: 479, col: 6, offset: 16161},
+								pos:  position{line: 479, col: 6, offset: 16133},
 								name: "BlankLine",
 							},
 						},
 						&notExpr{
-							pos: position{line: 480, col: 5, offset: 16176},
+							pos: position{line: 480, col: 5, offset: 16148},
 							expr: &ruleRefExpr{
-								pos:  position{line: 480, col: 6, offset: 16177},
+								pos:  position{line: 480, col: 6, offset: 16149},
 								name: "SingleLineComment",
 							},
 						},
 						&notExpr{
-							pos: position{line: 481, col: 5, offset: 16199},
+							pos: position{line: 481, col: 5, offset: 16171},
 							expr: &ruleRefExpr{
-								pos:  position{line: 481, col: 6, offset: 16200},
+								pos:  position{line: 481, col: 6, offset: 16172},
 								name: "OrderedListItemPrefix",
 							},
 						},
 						&notExpr{
-							pos: position{line: 482, col: 5, offset: 16226},
+							pos: position{line: 482, col: 5, offset: 16198},
 							expr: &ruleRefExpr{
-								pos:  position{line: 482, col: 6, offset: 16227},
+								pos:  position{line: 482, col: 6, offset: 16199},
 								name: "UnorderedListItemPrefix",
 							},
 						},
 						&notExpr{
-							pos: position{line: 483, col: 5, offset: 16255},
+							pos: position{line: 483, col: 5, offset: 16227},
 							expr: &seqExpr{
-								pos: position{line: 483, col: 7, offset: 16257},
+								pos: position{line: 483, col: 7, offset: 16229},
 								exprs: []interface{}{
 									&ruleRefExpr{
-										pos:  position{line: 483, col: 7, offset: 16257},
+										pos:  position{line: 483, col: 7, offset: 16229},
 										name: "LabeledListItemTerm",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 483, col: 27, offset: 16277},
+										pos:  position{line: 483, col: 27, offset: 16249},
 										name: "LabeledListItemSeparator",
 									},
 								},
 							},
 						},
 						&notExpr{
-							pos: position{line: 484, col: 5, offset: 16308},
+							pos: position{line: 484, col: 5, offset: 16280},
 							expr: &ruleRefExpr{
-								pos:  position{line: 484, col: 6, offset: 16309},
+								pos:  position{line: 484, col: 6, offset: 16281},
 								name: "ListItemContinuation",
 							},
 						},
 						&notExpr{
-							pos: position{line: 485, col: 5, offset: 16334},
+							pos: position{line: 485, col: 5, offset: 16306},
 							expr: &ruleRefExpr{
-								pos:  position{line: 485, col: 6, offset: 16335},
+								pos:  position{line: 485, col: 6, offset: 16307},
 								name: "ElementAttribute",
 							},
 						},
 						&notExpr{
-							pos: position{line: 486, col: 5, offset: 16356},
+							pos: position{line: 486, col: 5, offset: 16328},
 							expr: &ruleRefExpr{
-								pos:  position{line: 486, col: 6, offset: 16357},
+								pos:  position{line: 486, col: 6, offset: 16329},
 								name: "BlockDelimiter",
 							},
 						},
 						&labeledExpr{
-							pos:   position{line: 487, col: 5, offset: 16376},
+							pos:   position{line: 487, col: 5, offset: 16348},
 							label: "line",
 							expr: &actionExpr{
-								pos: position{line: 488, col: 9, offset: 16391},
+								pos: position{line: 488, col: 9, offset: 16363},
 								run: (*parser).callonListParagraphLine24,
 								expr: &seqExpr{
-									pos: position{line: 488, col: 9, offset: 16391},
+									pos: position{line: 488, col: 9, offset: 16363},
 									exprs: []interface{}{
 										&labeledExpr{
-											pos:   position{line: 488, col: 9, offset: 16391},
+											pos:   position{line: 488, col: 9, offset: 16363},
 											label: "elements",
 											expr: &oneOrMoreExpr{
-												pos: position{line: 488, col: 18, offset: 16400},
+												pos: position{line: 488, col: 18, offset: 16372},
 												expr: &ruleRefExpr{
-													pos:  position{line: 488, col: 19, offset: 16401},
+													pos:  position{line: 488, col: 19, offset: 16373},
 													name: "InlineElement",
 												},
 											},
 										},
 										&labeledExpr{
-											pos:   position{line: 488, col: 35, offset: 16417},
+											pos:   position{line: 488, col: 35, offset: 16389},
 											label: "linebreak",
 											expr: &zeroOrOneExpr{
-												pos: position{line: 488, col: 45, offset: 16427},
+												pos: position{line: 488, col: 45, offset: 16399},
 												expr: &ruleRefExpr{
-													pos:  position{line: 488, col: 46, offset: 16428},
+													pos:  position{line: 488, col: 46, offset: 16400},
 													name: "LineBreak",
 												},
 											},
@@ -3990,7 +3990,7 @@ var g = &grammar{
 							},
 						},
 						&ruleRefExpr{
-							pos:  position{line: 490, col: 12, offset: 16580},
+							pos:  position{line: 490, col: 12, offset: 16552},
 							name: "EOL",
 						},
 					},
@@ -3999,17 +3999,17 @@ var g = &grammar{
 		},
 		{
 			name: "ListItemContinuation",
-			pos:  position{line: 494, col: 1, offset: 16627},
+			pos:  position{line: 494, col: 1, offset: 16599},
 			expr: &seqExpr{
-				pos: position{line: 494, col: 25, offset: 16651},
+				pos: position{line: 494, col: 25, offset: 16623},
 				exprs: []interface{}{
 					&litMatcher{
-						pos:        position{line: 494, col: 25, offset: 16651},
+						pos:        position{line: 494, col: 25, offset: 16623},
 						val:        "+",
 						ignoreCase: false,
 					},
 					&ruleRefExpr{
-						pos:  position{line: 494, col: 29, offset: 16655},
+						pos:  position{line: 494, col: 29, offset: 16627},
 						name: "EOLS",
 					},
 				},
@@ -4017,33 +4017,33 @@ var g = &grammar{
 		},
 		{
 			name: "ContinuedListItemElement",
-			pos:  position{line: 496, col: 1, offset: 16662},
+			pos:  position{line: 496, col: 1, offset: 16634},
 			expr: &actionExpr{
-				pos: position{line: 496, col: 29, offset: 16690},
+				pos: position{line: 496, col: 29, offset: 16662},
 				run: (*parser).callonContinuedListItemElement1,
 				expr: &seqExpr{
-					pos: position{line: 496, col: 29, offset: 16690},
+					pos: position{line: 496, col: 29, offset: 16662},
 					exprs: []interface{}{
 						&labeledExpr{
-							pos:   position{line: 496, col: 29, offset: 16690},
+							pos:   position{line: 496, col: 29, offset: 16662},
 							label: "blanklines",
 							expr: &zeroOrMoreExpr{
-								pos: position{line: 496, col: 41, offset: 16702},
+								pos: position{line: 496, col: 41, offset: 16674},
 								expr: &ruleRefExpr{
-									pos:  position{line: 496, col: 41, offset: 16702},
+									pos:  position{line: 496, col: 41, offset: 16674},
 									name: "BlankLine",
 								},
 							},
 						},
 						&ruleRefExpr{
-							pos:  position{line: 496, col: 53, offset: 16714},
+							pos:  position{line: 496, col: 53, offset: 16686},
 							name: "ListItemContinuation",
 						},
 						&labeledExpr{
-							pos:   position{line: 496, col: 74, offset: 16735},
+							pos:   position{line: 496, col: 74, offset: 16707},
 							label: "element",
 							expr: &ruleRefExpr{
-								pos:  position{line: 496, col: 82, offset: 16743},
+								pos:  position{line: 496, col: 82, offset: 16715},
 								name: "DocumentBlock",
 							},
 						},
@@ -4053,37 +4053,37 @@ var g = &grammar{
 		},
 		{
 			name: "OrderedListItem",
-			pos:  position{line: 503, col: 1, offset: 16985},
+			pos:  position{line: 503, col: 1, offset: 16957},
 			expr: &actionExpr{
-				pos: position{line: 503, col: 20, offset: 17004},
+				pos: position{line: 503, col: 20, offset: 16976},
 				run: (*parser).callonOrderedListItem1,
 				expr: &seqExpr{
-					pos: position{line: 503, col: 20, offset: 17004},
+					pos: position{line: 503, col: 20, offset: 16976},
 					exprs: []interface{}{
 						&labeledExpr{
-							pos:   position{line: 503, col: 20, offset: 17004},
+							pos:   position{line: 503, col: 20, offset: 16976},
 							label: "attributes",
 							expr: &zeroOrOneExpr{
-								pos: position{line: 503, col: 31, offset: 17015},
+								pos: position{line: 503, col: 31, offset: 16987},
 								expr: &ruleRefExpr{
-									pos:  position{line: 503, col: 32, offset: 17016},
+									pos:  position{line: 503, col: 32, offset: 16988},
 									name: "ElementAttributes",
 								},
 							},
 						},
 						&labeledExpr{
-							pos:   position{line: 503, col: 52, offset: 17036},
+							pos:   position{line: 503, col: 52, offset: 17008},
 							label: "prefix",
 							expr: &ruleRefExpr{
-								pos:  position{line: 503, col: 60, offset: 17044},
+								pos:  position{line: 503, col: 60, offset: 17016},
 								name: "OrderedListItemPrefix",
 							},
 						},
 						&labeledExpr{
-							pos:   position{line: 503, col: 83, offset: 17067},
+							pos:   position{line: 503, col: 83, offset: 17039},
 							label: "content",
 							expr: &ruleRefExpr{
-								pos:  position{line: 503, col: 92, offset: 17076},
+								pos:  position{line: 503, col: 92, offset: 17048},
 								name: "OrderedListItemContent",
 							},
 						},
@@ -4093,42 +4093,42 @@ var g = &grammar{
 		},
 		{
 			name: "OrderedListItemPrefix",
-			pos:  position{line: 507, col: 1, offset: 17216},
+			pos:  position{line: 507, col: 1, offset: 17188},
 			expr: &actionExpr{
-				pos: position{line: 508, col: 5, offset: 17246},
+				pos: position{line: 508, col: 5, offset: 17218},
 				run: (*parser).callonOrderedListItemPrefix1,
 				expr: &seqExpr{
-					pos: position{line: 508, col: 5, offset: 17246},
+					pos: position{line: 508, col: 5, offset: 17218},
 					exprs: []interface{}{
 						&zeroOrMoreExpr{
-							pos: position{line: 508, col: 5, offset: 17246},
+							pos: position{line: 508, col: 5, offset: 17218},
 							expr: &ruleRefExpr{
-								pos:  position{line: 508, col: 5, offset: 17246},
+								pos:  position{line: 508, col: 5, offset: 17218},
 								name: "WS",
 							},
 						},
 						&labeledExpr{
-							pos:   position{line: 508, col: 9, offset: 17250},
+							pos:   position{line: 508, col: 9, offset: 17222},
 							label: "prefix",
 							expr: &choiceExpr{
-								pos: position{line: 510, col: 9, offset: 17313},
+								pos: position{line: 510, col: 9, offset: 17285},
 								alternatives: []interface{}{
 									&actionExpr{
-										pos: position{line: 510, col: 9, offset: 17313},
+										pos: position{line: 510, col: 9, offset: 17285},
 										run: (*parser).callonOrderedListItemPrefix7,
 										expr: &seqExpr{
-											pos: position{line: 510, col: 9, offset: 17313},
+											pos: position{line: 510, col: 9, offset: 17285},
 											exprs: []interface{}{
 												&labeledExpr{
-													pos:   position{line: 510, col: 9, offset: 17313},
+													pos:   position{line: 510, col: 9, offset: 17285},
 													label: "depth",
 													expr: &actionExpr{
-														pos: position{line: 510, col: 16, offset: 17320},
+														pos: position{line: 510, col: 16, offset: 17292},
 														run: (*parser).callonOrderedListItemPrefix10,
 														expr: &oneOrMoreExpr{
-															pos: position{line: 510, col: 16, offset: 17320},
+															pos: position{line: 510, col: 16, offset: 17292},
 															expr: &litMatcher{
-																pos:        position{line: 510, col: 17, offset: 17321},
+																pos:        position{line: 510, col: 17, offset: 17293},
 																val:        ".",
 																ignoreCase: false,
 															},
@@ -4136,22 +4136,22 @@ var g = &grammar{
 													},
 												},
 												&andCodeExpr{
-													pos: position{line: 514, col: 9, offset: 17421},
+													pos: position{line: 514, col: 9, offset: 17393},
 													run: (*parser).callonOrderedListItemPrefix13,
 												},
 											},
 										},
 									},
 									&actionExpr{
-										pos: position{line: 533, col: 11, offset: 18138},
+										pos: position{line: 533, col: 11, offset: 18110},
 										run: (*parser).callonOrderedListItemPrefix14,
 										expr: &seqExpr{
-											pos: position{line: 533, col: 11, offset: 18138},
+											pos: position{line: 533, col: 11, offset: 18110},
 											exprs: []interface{}{
 												&oneOrMoreExpr{
-													pos: position{line: 533, col: 11, offset: 18138},
+													pos: position{line: 533, col: 11, offset: 18110},
 													expr: &charClassMatcher{
-														pos:        position{line: 533, col: 12, offset: 18139},
+														pos:        position{line: 533, col: 12, offset: 18111},
 														val:        "[0-9]",
 														ranges:     []rune{'0', '9'},
 														ignoreCase: false,
@@ -4159,7 +4159,7 @@ var g = &grammar{
 													},
 												},
 												&litMatcher{
-													pos:        position{line: 533, col: 20, offset: 18147},
+													pos:        position{line: 533, col: 20, offset: 18119},
 													val:        ".",
 													ignoreCase: false,
 												},
@@ -4167,20 +4167,20 @@ var g = &grammar{
 										},
 									},
 									&actionExpr{
-										pos: position{line: 535, col: 13, offset: 18258},
+										pos: position{line: 535, col: 13, offset: 18230},
 										run: (*parser).callonOrderedListItemPrefix19,
 										expr: &seqExpr{
-											pos: position{line: 535, col: 13, offset: 18258},
+											pos: position{line: 535, col: 13, offset: 18230},
 											exprs: []interface{}{
 												&charClassMatcher{
-													pos:        position{line: 535, col: 14, offset: 18259},
+													pos:        position{line: 535, col: 14, offset: 18231},
 													val:        "[a-z]",
 													ranges:     []rune{'a', 'z'},
 													ignoreCase: false,
 													inverted:   false,
 												},
 												&litMatcher{
-													pos:        position{line: 535, col: 21, offset: 18266},
+													pos:        position{line: 535, col: 21, offset: 18238},
 													val:        ".",
 													ignoreCase: false,
 												},
@@ -4188,20 +4188,20 @@ var g = &grammar{
 										},
 									},
 									&actionExpr{
-										pos: position{line: 537, col: 13, offset: 18380},
+										pos: position{line: 537, col: 13, offset: 18352},
 										run: (*parser).callonOrderedListItemPrefix23,
 										expr: &seqExpr{
-											pos: position{line: 537, col: 13, offset: 18380},
+											pos: position{line: 537, col: 13, offset: 18352},
 											exprs: []interface{}{
 												&charClassMatcher{
-													pos:        position{line: 537, col: 14, offset: 18381},
+													pos:        position{line: 537, col: 14, offset: 18353},
 													val:        "[A-Z]",
 													ranges:     []rune{'A', 'Z'},
 													ignoreCase: false,
 													inverted:   false,
 												},
 												&litMatcher{
-													pos:        position{line: 537, col: 21, offset: 18388},
+													pos:        position{line: 537, col: 21, offset: 18360},
 													val:        ".",
 													ignoreCase: false,
 												},
@@ -4209,15 +4209,15 @@ var g = &grammar{
 										},
 									},
 									&actionExpr{
-										pos: position{line: 539, col: 13, offset: 18502},
+										pos: position{line: 539, col: 13, offset: 18474},
 										run: (*parser).callonOrderedListItemPrefix27,
 										expr: &seqExpr{
-											pos: position{line: 539, col: 13, offset: 18502},
+											pos: position{line: 539, col: 13, offset: 18474},
 											exprs: []interface{}{
 												&oneOrMoreExpr{
-													pos: position{line: 539, col: 13, offset: 18502},
+													pos: position{line: 539, col: 13, offset: 18474},
 													expr: &charClassMatcher{
-														pos:        position{line: 539, col: 14, offset: 18503},
+														pos:        position{line: 539, col: 14, offset: 18475},
 														val:        "[a-z]",
 														ranges:     []rune{'a', 'z'},
 														ignoreCase: false,
@@ -4225,7 +4225,7 @@ var g = &grammar{
 													},
 												},
 												&litMatcher{
-													pos:        position{line: 539, col: 22, offset: 18511},
+													pos:        position{line: 539, col: 22, offset: 18483},
 													val:        ")",
 													ignoreCase: false,
 												},
@@ -4233,15 +4233,15 @@ var g = &grammar{
 										},
 									},
 									&actionExpr{
-										pos: position{line: 541, col: 13, offset: 18625},
+										pos: position{line: 541, col: 13, offset: 18597},
 										run: (*parser).callonOrderedListItemPrefix32,
 										expr: &seqExpr{
-											pos: position{line: 541, col: 13, offset: 18625},
+											pos: position{line: 541, col: 13, offset: 18597},
 											exprs: []interface{}{
 												&oneOrMoreExpr{
-													pos: position{line: 541, col: 13, offset: 18625},
+													pos: position{line: 541, col: 13, offset: 18597},
 													expr: &charClassMatcher{
-														pos:        position{line: 541, col: 14, offset: 18626},
+														pos:        position{line: 541, col: 14, offset: 18598},
 														val:        "[A-Z]",
 														ranges:     []rune{'A', 'Z'},
 														ignoreCase: false,
@@ -4249,7 +4249,7 @@ var g = &grammar{
 													},
 												},
 												&litMatcher{
-													pos:        position{line: 541, col: 22, offset: 18634},
+													pos:        position{line: 541, col: 22, offset: 18606},
 													val:        ")",
 													ignoreCase: false,
 												},
@@ -4260,9 +4260,9 @@ var g = &grammar{
 							},
 						},
 						&oneOrMoreExpr{
-							pos: position{line: 543, col: 12, offset: 18747},
+							pos: position{line: 543, col: 12, offset: 18719},
 							expr: &ruleRefExpr{
-								pos:  position{line: 543, col: 12, offset: 18747},
+								pos:  position{line: 543, col: 12, offset: 18719},
 								name: "WS",
 							},
 						},
@@ -4272,17 +4272,17 @@ var g = &grammar{
 		},
 		{
 			name: "OrderedListItemContent",
-			pos:  position{line: 547, col: 1, offset: 18779},
+			pos:  position{line: 547, col: 1, offset: 18751},
 			expr: &actionExpr{
-				pos: position{line: 547, col: 27, offset: 18805},
+				pos: position{line: 547, col: 27, offset: 18777},
 				run: (*parser).callonOrderedListItemContent1,
 				expr: &labeledExpr{
-					pos:   position{line: 547, col: 27, offset: 18805},
+					pos:   position{line: 547, col: 27, offset: 18777},
 					label: "elements",
 					expr: &oneOrMoreExpr{
-						pos: position{line: 547, col: 37, offset: 18815},
+						pos: position{line: 547, col: 37, offset: 18787},
 						expr: &ruleRefExpr{
-							pos:  position{line: 547, col: 37, offset: 18815},
+							pos:  position{line: 547, col: 37, offset: 18787},
 							name: "ListParagraph",
 						},
 					},
@@ -4291,48 +4291,48 @@ var g = &grammar{
 		},
 		{
 			name: "UnorderedListItem",
-			pos:  position{line: 554, col: 1, offset: 19015},
+			pos:  position{line: 554, col: 1, offset: 18987},
 			expr: &actionExpr{
-				pos: position{line: 554, col: 22, offset: 19036},
+				pos: position{line: 554, col: 22, offset: 19008},
 				run: (*parser).callonUnorderedListItem1,
 				expr: &seqExpr{
-					pos: position{line: 554, col: 22, offset: 19036},
+					pos: position{line: 554, col: 22, offset: 19008},
 					exprs: []interface{}{
 						&labeledExpr{
-							pos:   position{line: 554, col: 22, offset: 19036},
+							pos:   position{line: 554, col: 22, offset: 19008},
 							label: "attributes",
 							expr: &zeroOrOneExpr{
-								pos: position{line: 554, col: 33, offset: 19047},
+								pos: position{line: 554, col: 33, offset: 19019},
 								expr: &ruleRefExpr{
-									pos:  position{line: 554, col: 34, offset: 19048},
+									pos:  position{line: 554, col: 34, offset: 19020},
 									name: "ElementAttributes",
 								},
 							},
 						},
 						&labeledExpr{
-							pos:   position{line: 554, col: 54, offset: 19068},
+							pos:   position{line: 554, col: 54, offset: 19040},
 							label: "prefix",
 							expr: &ruleRefExpr{
-								pos:  position{line: 554, col: 62, offset: 19076},
+								pos:  position{line: 554, col: 62, offset: 19048},
 								name: "UnorderedListItemPrefix",
 							},
 						},
 						&labeledExpr{
-							pos:   position{line: 554, col: 87, offset: 19101},
+							pos:   position{line: 554, col: 87, offset: 19073},
 							label: "checkstyle",
 							expr: &zeroOrOneExpr{
-								pos: position{line: 554, col: 98, offset: 19112},
+								pos: position{line: 554, col: 98, offset: 19084},
 								expr: &ruleRefExpr{
-									pos:  position{line: 554, col: 99, offset: 19113},
+									pos:  position{line: 554, col: 99, offset: 19085},
 									name: "UnorderedListItemCheckStyle",
 								},
 							},
 						},
 						&labeledExpr{
-							pos:   position{line: 554, col: 129, offset: 19143},
+							pos:   position{line: 554, col: 129, offset: 19115},
 							label: "content",
 							expr: &ruleRefExpr{
-								pos:  position{line: 554, col: 138, offset: 19152},
+								pos:  position{line: 554, col: 138, offset: 19124},
 								name: "UnorderedListItemContent",
 							},
 						},
@@ -4342,42 +4342,42 @@ var g = &grammar{
 		},
 		{
 			name: "UnorderedListItemPrefix",
-			pos:  position{line: 558, col: 1, offset: 19310},
+			pos:  position{line: 558, col: 1, offset: 19282},
 			expr: &actionExpr{
-				pos: position{line: 559, col: 5, offset: 19342},
+				pos: position{line: 559, col: 5, offset: 19314},
 				run: (*parser).callonUnorderedListItemPrefix1,
 				expr: &seqExpr{
-					pos: position{line: 559, col: 5, offset: 19342},
+					pos: position{line: 559, col: 5, offset: 19314},
 					exprs: []interface{}{
 						&zeroOrMoreExpr{
-							pos: position{line: 559, col: 5, offset: 19342},
+							pos: position{line: 559, col: 5, offset: 19314},
 							expr: &ruleRefExpr{
-								pos:  position{line: 559, col: 5, offset: 19342},
+								pos:  position{line: 559, col: 5, offset: 19314},
 								name: "WS",
 							},
 						},
 						&labeledExpr{
-							pos:   position{line: 559, col: 9, offset: 19346},
+							pos:   position{line: 559, col: 9, offset: 19318},
 							label: "prefix",
 							expr: &choiceExpr{
-								pos: position{line: 559, col: 17, offset: 19354},
+								pos: position{line: 559, col: 17, offset: 19326},
 								alternatives: []interface{}{
 									&actionExpr{
-										pos: position{line: 561, col: 9, offset: 19411},
+										pos: position{line: 561, col: 9, offset: 19383},
 										run: (*parser).callonUnorderedListItemPrefix7,
 										expr: &seqExpr{
-											pos: position{line: 561, col: 9, offset: 19411},
+											pos: position{line: 561, col: 9, offset: 19383},
 											exprs: []interface{}{
 												&labeledExpr{
-													pos:   position{line: 561, col: 9, offset: 19411},
+													pos:   position{line: 561, col: 9, offset: 19383},
 													label: "depth",
 													expr: &actionExpr{
-														pos: position{line: 561, col: 16, offset: 19418},
+														pos: position{line: 561, col: 16, offset: 19390},
 														run: (*parser).callonUnorderedListItemPrefix10,
 														expr: &oneOrMoreExpr{
-															pos: position{line: 561, col: 16, offset: 19418},
+															pos: position{line: 561, col: 16, offset: 19390},
 															expr: &litMatcher{
-																pos:        position{line: 561, col: 17, offset: 19419},
+																pos:        position{line: 561, col: 17, offset: 19391},
 																val:        "*",
 																ignoreCase: false,
 															},
@@ -4385,20 +4385,20 @@ var g = &grammar{
 													},
 												},
 												&andCodeExpr{
-													pos: position{line: 565, col: 9, offset: 19519},
+													pos: position{line: 565, col: 9, offset: 19491},
 													run: (*parser).callonUnorderedListItemPrefix13,
 												},
 											},
 										},
 									},
 									&labeledExpr{
-										pos:   position{line: 582, col: 14, offset: 20226},
+										pos:   position{line: 582, col: 14, offset: 20198},
 										label: "depth",
 										expr: &actionExpr{
-											pos: position{line: 582, col: 21, offset: 20233},
+											pos: position{line: 582, col: 21, offset: 20205},
 											run: (*parser).callonUnorderedListItemPrefix15,
 											expr: &litMatcher{
-												pos:        position{line: 582, col: 22, offset: 20234},
+												pos:        position{line: 582, col: 22, offset: 20206},
 												val:        "-",
 												ignoreCase: false,
 											},
@@ -4408,9 +4408,9 @@ var g = &grammar{
 							},
 						},
 						&oneOrMoreExpr{
-							pos: position{line: 584, col: 13, offset: 20320},
+							pos: position{line: 584, col: 13, offset: 20292},
 							expr: &ruleRefExpr{
-								pos:  position{line: 584, col: 13, offset: 20320},
+								pos:  position{line: 584, col: 13, offset: 20292},
 								name: "WS",
 							},
 						},
@@ -4420,50 +4420,50 @@ var g = &grammar{
 		},
 		{
 			name: "UnorderedListItemCheckStyle",
-			pos:  position{line: 588, col: 1, offset: 20353},
+			pos:  position{line: 588, col: 1, offset: 20325},
 			expr: &actionExpr{
-				pos: position{line: 588, col: 32, offset: 20384},
+				pos: position{line: 588, col: 32, offset: 20356},
 				run: (*parser).callonUnorderedListItemCheckStyle1,
 				expr: &seqExpr{
-					pos: position{line: 588, col: 32, offset: 20384},
+					pos: position{line: 588, col: 32, offset: 20356},
 					exprs: []interface{}{
 						&andExpr{
-							pos: position{line: 588, col: 32, offset: 20384},
+							pos: position{line: 588, col: 32, offset: 20356},
 							expr: &litMatcher{
-								pos:        position{line: 588, col: 33, offset: 20385},
+								pos:        position{line: 588, col: 33, offset: 20357},
 								val:        "[",
 								ignoreCase: false,
 							},
 						},
 						&labeledExpr{
-							pos:   position{line: 588, col: 37, offset: 20389},
+							pos:   position{line: 588, col: 37, offset: 20361},
 							label: "style",
 							expr: &choiceExpr{
-								pos: position{line: 589, col: 7, offset: 20403},
+								pos: position{line: 589, col: 7, offset: 20375},
 								alternatives: []interface{}{
 									&actionExpr{
-										pos: position{line: 589, col: 7, offset: 20403},
+										pos: position{line: 589, col: 7, offset: 20375},
 										run: (*parser).callonUnorderedListItemCheckStyle7,
 										expr: &litMatcher{
-											pos:        position{line: 589, col: 7, offset: 20403},
+											pos:        position{line: 589, col: 7, offset: 20375},
 											val:        "[ ]",
 											ignoreCase: false,
 										},
 									},
 									&actionExpr{
-										pos: position{line: 590, col: 7, offset: 20448},
+										pos: position{line: 590, col: 7, offset: 20420},
 										run: (*parser).callonUnorderedListItemCheckStyle9,
 										expr: &litMatcher{
-											pos:        position{line: 590, col: 7, offset: 20448},
+											pos:        position{line: 590, col: 7, offset: 20420},
 											val:        "[*]",
 											ignoreCase: false,
 										},
 									},
 									&actionExpr{
-										pos: position{line: 591, col: 7, offset: 20491},
+										pos: position{line: 591, col: 7, offset: 20463},
 										run: (*parser).callonUnorderedListItemCheckStyle11,
 										expr: &litMatcher{
-											pos:        position{line: 591, col: 7, offset: 20491},
+											pos:        position{line: 591, col: 7, offset: 20463},
 											val:        "[x]",
 											ignoreCase: false,
 										},
@@ -4472,9 +4472,9 @@ var g = &grammar{
 							},
 						},
 						&oneOrMoreExpr{
-							pos: position{line: 592, col: 7, offset: 20533},
+							pos: position{line: 592, col: 7, offset: 20505},
 							expr: &ruleRefExpr{
-								pos:  position{line: 592, col: 7, offset: 20533},
+								pos:  position{line: 592, col: 7, offset: 20505},
 								name: "WS",
 							},
 						},
@@ -4484,17 +4484,17 @@ var g = &grammar{
 		},
 		{
 			name: "UnorderedListItemContent",
-			pos:  position{line: 596, col: 1, offset: 20572},
+			pos:  position{line: 596, col: 1, offset: 20544},
 			expr: &actionExpr{
-				pos: position{line: 596, col: 29, offset: 20600},
+				pos: position{line: 596, col: 29, offset: 20572},
 				run: (*parser).callonUnorderedListItemContent1,
 				expr: &labeledExpr{
-					pos:   position{line: 596, col: 29, offset: 20600},
+					pos:   position{line: 596, col: 29, offset: 20572},
 					label: "elements",
 					expr: &oneOrMoreExpr{
-						pos: position{line: 596, col: 39, offset: 20610},
+						pos: position{line: 596, col: 39, offset: 20582},
 						expr: &ruleRefExpr{
-							pos:  position{line: 596, col: 39, offset: 20610},
+							pos:  position{line: 596, col: 39, offset: 20582},
 							name: "ListParagraph",
 						},
 					},
@@ -4503,47 +4503,47 @@ var g = &grammar{
 		},
 		{
 			name: "LabeledListItem",
-			pos:  position{line: 603, col: 1, offset: 20926},
+			pos:  position{line: 603, col: 1, offset: 20898},
 			expr: &actionExpr{
-				pos: position{line: 603, col: 20, offset: 20945},
+				pos: position{line: 603, col: 20, offset: 20917},
 				run: (*parser).callonLabeledListItem1,
 				expr: &seqExpr{
-					pos: position{line: 603, col: 20, offset: 20945},
+					pos: position{line: 603, col: 20, offset: 20917},
 					exprs: []interface{}{
 						&labeledExpr{
-							pos:   position{line: 603, col: 20, offset: 20945},
+							pos:   position{line: 603, col: 20, offset: 20917},
 							label: "attributes",
 							expr: &zeroOrOneExpr{
-								pos: position{line: 603, col: 31, offset: 20956},
+								pos: position{line: 603, col: 31, offset: 20928},
 								expr: &ruleRefExpr{
-									pos:  position{line: 603, col: 32, offset: 20957},
+									pos:  position{line: 603, col: 32, offset: 20929},
 									name: "ElementAttributes",
 								},
 							},
 						},
 						&labeledExpr{
-							pos:   position{line: 603, col: 52, offset: 20977},
+							pos:   position{line: 603, col: 52, offset: 20949},
 							label: "term",
 							expr: &ruleRefExpr{
-								pos:  position{line: 603, col: 58, offset: 20983},
+								pos:  position{line: 603, col: 58, offset: 20955},
 								name: "LabeledListItemTerm",
 							},
 						},
 						&labeledExpr{
-							pos:   position{line: 603, col: 79, offset: 21004},
+							pos:   position{line: 603, col: 79, offset: 20976},
 							label: "separator",
 							expr: &ruleRefExpr{
-								pos:  position{line: 603, col: 90, offset: 21015},
+								pos:  position{line: 603, col: 90, offset: 20987},
 								name: "LabeledListItemSeparator",
 							},
 						},
 						&labeledExpr{
-							pos:   position{line: 603, col: 116, offset: 21041},
+							pos:   position{line: 603, col: 116, offset: 21013},
 							label: "description",
 							expr: &zeroOrOneExpr{
-								pos: position{line: 603, col: 128, offset: 21053},
+								pos: position{line: 603, col: 128, offset: 21025},
 								expr: &ruleRefExpr{
-									pos:  position{line: 603, col: 129, offset: 21054},
+									pos:  position{line: 603, col: 129, offset: 21026},
 									name: "LabeledListItemDescription",
 								},
 							},
@@ -4554,43 +4554,43 @@ var g = &grammar{
 		},
 		{
 			name: "LabeledListItemTerm",
-			pos:  position{line: 607, col: 1, offset: 21193},
+			pos:  position{line: 607, col: 1, offset: 21165},
 			expr: &actionExpr{
-				pos: position{line: 607, col: 24, offset: 21216},
+				pos: position{line: 607, col: 24, offset: 21188},
 				run: (*parser).callonLabeledListItemTerm1,
 				expr: &oneOrMoreExpr{
-					pos: position{line: 607, col: 24, offset: 21216},
+					pos: position{line: 607, col: 24, offset: 21188},
 					expr: &choiceExpr{
-						pos: position{line: 607, col: 25, offset: 21217},
+						pos: position{line: 607, col: 25, offset: 21189},
 						alternatives: []interface{}{
 							&ruleRefExpr{
-								pos:  position{line: 607, col: 25, offset: 21217},
+								pos:  position{line: 607, col: 25, offset: 21189},
 								name: "Alphanums",
 							},
 							&ruleRefExpr{
-								pos:  position{line: 607, col: 37, offset: 21229},
+								pos:  position{line: 607, col: 37, offset: 21201},
 								name: "Spaces",
 							},
 							&seqExpr{
-								pos: position{line: 607, col: 47, offset: 21239},
+								pos: position{line: 607, col: 47, offset: 21211},
 								exprs: []interface{}{
 									&notExpr{
-										pos: position{line: 607, col: 47, offset: 21239},
+										pos: position{line: 607, col: 47, offset: 21211},
 										expr: &ruleRefExpr{
-											pos:  position{line: 607, col: 48, offset: 21240},
+											pos:  position{line: 607, col: 48, offset: 21212},
 											name: "NEWLINE",
 										},
 									},
 									&notExpr{
-										pos: position{line: 607, col: 56, offset: 21248},
+										pos: position{line: 607, col: 56, offset: 21220},
 										expr: &litMatcher{
-											pos:        position{line: 607, col: 57, offset: 21249},
+											pos:        position{line: 607, col: 57, offset: 21221},
 											val:        "::",
 											ignoreCase: false,
 										},
 									},
 									&anyMatcher{
-										line: 607, col: 62, offset: 21254,
+										line: 607, col: 62, offset: 21226,
 									},
 								},
 							},
@@ -4601,23 +4601,23 @@ var g = &grammar{
 		},
 		{
 			name: "LabeledListItemSeparator",
-			pos:  position{line: 611, col: 1, offset: 21296},
+			pos:  position{line: 611, col: 1, offset: 21268},
 			expr: &actionExpr{
-				pos: position{line: 612, col: 5, offset: 21329},
+				pos: position{line: 612, col: 5, offset: 21301},
 				run: (*parser).callonLabeledListItemSeparator1,
 				expr: &seqExpr{
-					pos: position{line: 612, col: 5, offset: 21329},
+					pos: position{line: 612, col: 5, offset: 21301},
 					exprs: []interface{}{
 						&labeledExpr{
-							pos:   position{line: 612, col: 5, offset: 21329},
+							pos:   position{line: 612, col: 5, offset: 21301},
 							label: "separator",
 							expr: &actionExpr{
-								pos: position{line: 612, col: 16, offset: 21340},
+								pos: position{line: 612, col: 16, offset: 21312},
 								run: (*parser).callonLabeledListItemSeparator4,
 								expr: &oneOrMoreExpr{
-									pos: position{line: 612, col: 16, offset: 21340},
+									pos: position{line: 612, col: 16, offset: 21312},
 									expr: &litMatcher{
-										pos:        position{line: 612, col: 17, offset: 21341},
+										pos:        position{line: 612, col: 17, offset: 21313},
 										val:        ":",
 										ignoreCase: false,
 									},
@@ -4625,30 +4625,30 @@ var g = &grammar{
 							},
 						},
 						&andCodeExpr{
-							pos: position{line: 615, col: 5, offset: 21399},
+							pos: position{line: 615, col: 5, offset: 21371},
 							run: (*parser).callonLabeledListItemSeparator7,
 						},
 						&choiceExpr{
-							pos: position{line: 619, col: 6, offset: 21575},
+							pos: position{line: 619, col: 6, offset: 21547},
 							alternatives: []interface{}{
 								&oneOrMoreExpr{
-									pos: position{line: 619, col: 6, offset: 21575},
+									pos: position{line: 619, col: 6, offset: 21547},
 									expr: &choiceExpr{
-										pos: position{line: 619, col: 7, offset: 21576},
+										pos: position{line: 619, col: 7, offset: 21548},
 										alternatives: []interface{}{
 											&ruleRefExpr{
-												pos:  position{line: 619, col: 7, offset: 21576},
+												pos:  position{line: 619, col: 7, offset: 21548},
 												name: "WS",
 											},
 											&ruleRefExpr{
-												pos:  position{line: 619, col: 12, offset: 21581},
+												pos:  position{line: 619, col: 12, offset: 21553},
 												name: "NEWLINE",
 											},
 										},
 									},
 								},
 								&ruleRefExpr{
-									pos:  position{line: 619, col: 24, offset: 21593},
+									pos:  position{line: 619, col: 24, offset: 21565},
 									name: "EOL",
 								},
 							},
@@ -4659,17 +4659,17 @@ var g = &grammar{
 		},
 		{
 			name: "LabeledListItemDescription",
-			pos:  position{line: 623, col: 1, offset: 21633},
+			pos:  position{line: 623, col: 1, offset: 21605},
 			expr: &actionExpr{
-				pos: position{line: 623, col: 31, offset: 21663},
+				pos: position{line: 623, col: 31, offset: 21635},
 				run: (*parser).callonLabeledListItemDescription1,
 				expr: &labeledExpr{
-					pos:   position{line: 623, col: 31, offset: 21663},
+					pos:   position{line: 623, col: 31, offset: 21635},
 					label: "elements",
 					expr: &oneOrMoreExpr{
-						pos: position{line: 623, col: 40, offset: 21672},
+						pos: position{line: 623, col: 40, offset: 21644},
 						expr: &ruleRefExpr{
-							pos:  position{line: 623, col: 41, offset: 21673},
+							pos:  position{line: 623, col: 41, offset: 21645},
 							name: "ListParagraph",
 						},
 					},
@@ -4678,51 +4678,51 @@ var g = &grammar{
 		},
 		{
 			name: "AdmonitionKind",
-			pos:  position{line: 630, col: 1, offset: 21864},
+			pos:  position{line: 630, col: 1, offset: 21836},
 			expr: &choiceExpr{
-				pos: position{line: 630, col: 19, offset: 21882},
+				pos: position{line: 630, col: 19, offset: 21854},
 				alternatives: []interface{}{
 					&actionExpr{
-						pos: position{line: 630, col: 19, offset: 21882},
+						pos: position{line: 630, col: 19, offset: 21854},
 						run: (*parser).callonAdmonitionKind2,
 						expr: &litMatcher{
-							pos:        position{line: 630, col: 19, offset: 21882},
+							pos:        position{line: 630, col: 19, offset: 21854},
 							val:        "TIP",
 							ignoreCase: false,
 						},
 					},
 					&actionExpr{
-						pos: position{line: 632, col: 9, offset: 21928},
+						pos: position{line: 632, col: 9, offset: 21900},
 						run: (*parser).callonAdmonitionKind4,
 						expr: &litMatcher{
-							pos:        position{line: 632, col: 9, offset: 21928},
+							pos:        position{line: 632, col: 9, offset: 21900},
 							val:        "NOTE",
 							ignoreCase: false,
 						},
 					},
 					&actionExpr{
-						pos: position{line: 634, col: 9, offset: 21976},
+						pos: position{line: 634, col: 9, offset: 21948},
 						run: (*parser).callonAdmonitionKind6,
 						expr: &litMatcher{
-							pos:        position{line: 634, col: 9, offset: 21976},
+							pos:        position{line: 634, col: 9, offset: 21948},
 							val:        "IMPORTANT",
 							ignoreCase: false,
 						},
 					},
 					&actionExpr{
-						pos: position{line: 636, col: 9, offset: 22034},
+						pos: position{line: 636, col: 9, offset: 22006},
 						run: (*parser).callonAdmonitionKind8,
 						expr: &litMatcher{
-							pos:        position{line: 636, col: 9, offset: 22034},
+							pos:        position{line: 636, col: 9, offset: 22006},
 							val:        "WARNING",
 							ignoreCase: false,
 						},
 					},
 					&actionExpr{
-						pos: position{line: 638, col: 9, offset: 22088},
+						pos: position{line: 638, col: 9, offset: 22060},
 						run: (*parser).callonAdmonitionKind10,
 						expr: &litMatcher{
-							pos:        position{line: 638, col: 9, offset: 22088},
+							pos:        position{line: 638, col: 9, offset: 22060},
 							val:        "CAUTION",
 							ignoreCase: false,
 						},
@@ -4732,47 +4732,47 @@ var g = &grammar{
 		},
 		{
 			name: "Paragraph",
-			pos:  position{line: 647, col: 1, offset: 22395},
+			pos:  position{line: 647, col: 1, offset: 22367},
 			expr: &choiceExpr{
-				pos: position{line: 649, col: 5, offset: 22442},
+				pos: position{line: 649, col: 5, offset: 22414},
 				alternatives: []interface{}{
 					&actionExpr{
-						pos: position{line: 649, col: 5, offset: 22442},
+						pos: position{line: 649, col: 5, offset: 22414},
 						run: (*parser).callonParagraph2,
 						expr: &seqExpr{
-							pos: position{line: 649, col: 5, offset: 22442},
+							pos: position{line: 649, col: 5, offset: 22414},
 							exprs: []interface{}{
 								&labeledExpr{
-									pos:   position{line: 649, col: 5, offset: 22442},
+									pos:   position{line: 649, col: 5, offset: 22414},
 									label: "attributes",
 									expr: &zeroOrOneExpr{
-										pos: position{line: 649, col: 16, offset: 22453},
+										pos: position{line: 649, col: 16, offset: 22425},
 										expr: &ruleRefExpr{
-											pos:  position{line: 649, col: 17, offset: 22454},
+											pos:  position{line: 649, col: 17, offset: 22426},
 											name: "ElementAttributes",
 										},
 									},
 								},
 								&labeledExpr{
-									pos:   position{line: 649, col: 37, offset: 22474},
+									pos:   position{line: 649, col: 37, offset: 22446},
 									label: "t",
 									expr: &ruleRefExpr{
-										pos:  position{line: 649, col: 40, offset: 22477},
+										pos:  position{line: 649, col: 40, offset: 22449},
 										name: "AdmonitionKind",
 									},
 								},
 								&litMatcher{
-									pos:        position{line: 649, col: 56, offset: 22493},
+									pos:        position{line: 649, col: 56, offset: 22465},
 									val:        ": ",
 									ignoreCase: false,
 								},
 								&labeledExpr{
-									pos:   position{line: 649, col: 61, offset: 22498},
+									pos:   position{line: 649, col: 61, offset: 22470},
 									label: "lines",
 									expr: &oneOrMoreExpr{
-										pos: position{line: 649, col: 67, offset: 22504},
+										pos: position{line: 649, col: 67, offset: 22476},
 										expr: &ruleRefExpr{
-											pos:  position{line: 649, col: 68, offset: 22505},
+											pos:  position{line: 649, col: 68, offset: 22477},
 											name: "InlineElements",
 										},
 									},
@@ -4781,29 +4781,29 @@ var g = &grammar{
 						},
 					},
 					&actionExpr{
-						pos: position{line: 653, col: 5, offset: 22697},
+						pos: position{line: 653, col: 5, offset: 22669},
 						run: (*parser).callonParagraph13,
 						expr: &seqExpr{
-							pos: position{line: 653, col: 5, offset: 22697},
+							pos: position{line: 653, col: 5, offset: 22669},
 							exprs: []interface{}{
 								&labeledExpr{
-									pos:   position{line: 653, col: 5, offset: 22697},
+									pos:   position{line: 653, col: 5, offset: 22669},
 									label: "attributes",
 									expr: &zeroOrOneExpr{
-										pos: position{line: 653, col: 16, offset: 22708},
+										pos: position{line: 653, col: 16, offset: 22680},
 										expr: &ruleRefExpr{
-											pos:  position{line: 653, col: 17, offset: 22709},
+											pos:  position{line: 653, col: 17, offset: 22681},
 											name: "ElementAttributes",
 										},
 									},
 								},
 								&labeledExpr{
-									pos:   position{line: 653, col: 37, offset: 22729},
+									pos:   position{line: 653, col: 37, offset: 22701},
 									label: "lines",
 									expr: &oneOrMoreExpr{
-										pos: position{line: 653, col: 43, offset: 22735},
+										pos: position{line: 653, col: 43, offset: 22707},
 										expr: &ruleRefExpr{
-											pos:  position{line: 653, col: 44, offset: 22736},
+											pos:  position{line: 653, col: 44, offset: 22708},
 											name: "InlineElements",
 										},
 									},
@@ -4816,43 +4816,43 @@ var g = &grammar{
 		},
 		{
 			name: "SimpleParagraph",
-			pos:  position{line: 658, col: 1, offset: 22901},
+			pos:  position{line: 658, col: 1, offset: 22873},
 			expr: &actionExpr{
-				pos: position{line: 658, col: 20, offset: 22920},
+				pos: position{line: 658, col: 20, offset: 22892},
 				run: (*parser).callonSimpleParagraph1,
 				expr: &seqExpr{
-					pos: position{line: 658, col: 20, offset: 22920},
+					pos: position{line: 658, col: 20, offset: 22892},
 					exprs: []interface{}{
 						&labeledExpr{
-							pos:   position{line: 658, col: 20, offset: 22920},
+							pos:   position{line: 658, col: 20, offset: 22892},
 							label: "attributes",
 							expr: &zeroOrOneExpr{
-								pos: position{line: 658, col: 31, offset: 22931},
+								pos: position{line: 658, col: 31, offset: 22903},
 								expr: &ruleRefExpr{
-									pos:  position{line: 658, col: 32, offset: 22932},
+									pos:  position{line: 658, col: 32, offset: 22904},
 									name: "ElementAttributes",
 								},
 							},
 						},
 						&andCodeExpr{
-							pos: position{line: 659, col: 5, offset: 22957},
+							pos: position{line: 659, col: 5, offset: 22929},
 							run: (*parser).callonSimpleParagraph6,
 						},
 						&labeledExpr{
-							pos:   position{line: 667, col: 5, offset: 23248},
+							pos:   position{line: 667, col: 5, offset: 23220},
 							label: "firstLine",
 							expr: &ruleRefExpr{
-								pos:  position{line: 667, col: 16, offset: 23259},
+								pos:  position{line: 667, col: 16, offset: 23231},
 								name: "FirstParagraphLine",
 							},
 						},
 						&labeledExpr{
-							pos:   position{line: 668, col: 5, offset: 23282},
+							pos:   position{line: 668, col: 5, offset: 23254},
 							label: "otherLines",
 							expr: &zeroOrMoreExpr{
-								pos: position{line: 668, col: 16, offset: 23293},
+								pos: position{line: 668, col: 16, offset: 23265},
 								expr: &ruleRefExpr{
-									pos:  position{line: 668, col: 17, offset: 23294},
+									pos:  position{line: 668, col: 17, offset: 23266},
 									name: "OtherParagraphLine",
 								},
 							},
@@ -4863,28 +4863,28 @@ var g = &grammar{
 		},
 		{
 			name: "ParagraphLines",
-			pos:  position{line: 672, col: 1, offset: 23428},
+			pos:  position{line: 672, col: 1, offset: 23400},
 			expr: &actionExpr{
-				pos: position{line: 672, col: 19, offset: 23446},
+				pos: position{line: 672, col: 19, offset: 23418},
 				run: (*parser).callonParagraphLines1,
 				expr: &seqExpr{
-					pos: position{line: 672, col: 19, offset: 23446},
+					pos: position{line: 672, col: 19, offset: 23418},
 					exprs: []interface{}{
 						&labeledExpr{
-							pos:   position{line: 672, col: 19, offset: 23446},
+							pos:   position{line: 672, col: 19, offset: 23418},
 							label: "firstLine",
 							expr: &ruleRefExpr{
-								pos:  position{line: 672, col: 30, offset: 23457},
+								pos:  position{line: 672, col: 30, offset: 23429},
 								name: "FirstParagraphLine",
 							},
 						},
 						&labeledExpr{
-							pos:   position{line: 672, col: 50, offset: 23477},
+							pos:   position{line: 672, col: 50, offset: 23449},
 							label: "otherLines",
 							expr: &zeroOrMoreExpr{
-								pos: position{line: 672, col: 61, offset: 23488},
+								pos: position{line: 672, col: 61, offset: 23460},
 								expr: &ruleRefExpr{
-									pos:  position{line: 672, col: 62, offset: 23489},
+									pos:  position{line: 672, col: 62, offset: 23461},
 									name: "OtherParagraphLine",
 								},
 							},
@@ -4895,43 +4895,43 @@ var g = &grammar{
 		},
 		{
 			name: "FirstParagraphLine",
-			pos:  position{line: 676, col: 1, offset: 23595},
+			pos:  position{line: 676, col: 1, offset: 23567},
 			expr: &actionExpr{
-				pos: position{line: 676, col: 23, offset: 23617},
+				pos: position{line: 676, col: 23, offset: 23589},
 				run: (*parser).callonFirstParagraphLine1,
 				expr: &seqExpr{
-					pos: position{line: 676, col: 23, offset: 23617},
+					pos: position{line: 676, col: 23, offset: 23589},
 					exprs: []interface{}{
 						&notExpr{
-							pos: position{line: 676, col: 23, offset: 23617},
+							pos: position{line: 676, col: 23, offset: 23589},
 							expr: &seqExpr{
-								pos: position{line: 676, col: 25, offset: 23619},
+								pos: position{line: 676, col: 25, offset: 23591},
 								exprs: []interface{}{
 									&ruleRefExpr{
-										pos:  position{line: 676, col: 25, offset: 23619},
+										pos:  position{line: 676, col: 25, offset: 23591},
 										name: "LabeledListItemTerm",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 676, col: 45, offset: 23639},
+										pos:  position{line: 676, col: 45, offset: 23611},
 										name: "LabeledListItemSeparator",
 									},
 								},
 							},
 						},
 						&labeledExpr{
-							pos:   position{line: 677, col: 5, offset: 23669},
+							pos:   position{line: 677, col: 5, offset: 23641},
 							label: "elements",
 							expr: &seqExpr{
-								pos: position{line: 677, col: 15, offset: 23679},
+								pos: position{line: 677, col: 15, offset: 23651},
 								exprs: []interface{}{
 									&ruleRefExpr{
-										pos:  position{line: 677, col: 15, offset: 23679},
+										pos:  position{line: 677, col: 15, offset: 23651},
 										name: "SimpleWord",
 									},
 									&zeroOrMoreExpr{
-										pos: position{line: 677, col: 26, offset: 23690},
+										pos: position{line: 677, col: 26, offset: 23662},
 										expr: &ruleRefExpr{
-											pos:  position{line: 677, col: 26, offset: 23690},
+											pos:  position{line: 677, col: 26, offset: 23662},
 											name: "InlineElement",
 										},
 									},
@@ -4939,18 +4939,18 @@ var g = &grammar{
 							},
 						},
 						&labeledExpr{
-							pos:   position{line: 677, col: 42, offset: 23706},
+							pos:   position{line: 677, col: 42, offset: 23678},
 							label: "linebreak",
 							expr: &zeroOrOneExpr{
-								pos: position{line: 677, col: 52, offset: 23716},
+								pos: position{line: 677, col: 52, offset: 23688},
 								expr: &ruleRefExpr{
-									pos:  position{line: 677, col: 53, offset: 23717},
+									pos:  position{line: 677, col: 53, offset: 23689},
 									name: "LineBreak",
 								},
 							},
 						},
 						&ruleRefExpr{
-							pos:  position{line: 677, col: 65, offset: 23729},
+							pos:  position{line: 677, col: 65, offset: 23701},
 							name: "EOL",
 						},
 					},
@@ -4959,15 +4959,15 @@ var g = &grammar{
 		},
 		{
 			name: "OtherParagraphLine",
-			pos:  position{line: 681, col: 1, offset: 23819},
+			pos:  position{line: 681, col: 1, offset: 23791},
 			expr: &actionExpr{
-				pos: position{line: 681, col: 23, offset: 23841},
+				pos: position{line: 681, col: 23, offset: 23813},
 				run: (*parser).callonOtherParagraphLine1,
 				expr: &labeledExpr{
-					pos:   position{line: 681, col: 23, offset: 23841},
+					pos:   position{line: 681, col: 23, offset: 23813},
 					label: "elements",
 					expr: &ruleRefExpr{
-						pos:  position{line: 681, col: 33, offset: 23851},
+						pos:  position{line: 681, col: 33, offset: 23823},
 						name: "InlineElements",
 					},
 				},
@@ -4975,51 +4975,51 @@ var g = &grammar{
 		},
 		{
 			name: "VerseParagraph",
-			pos:  position{line: 685, col: 1, offset: 23897},
+			pos:  position{line: 685, col: 1, offset: 23869},
 			expr: &choiceExpr{
-				pos: position{line: 687, col: 5, offset: 23949},
+				pos: position{line: 687, col: 5, offset: 23921},
 				alternatives: []interface{}{
 					&actionExpr{
-						pos: position{line: 687, col: 5, offset: 23949},
+						pos: position{line: 687, col: 5, offset: 23921},
 						run: (*parser).callonVerseParagraph2,
 						expr: &seqExpr{
-							pos: position{line: 687, col: 5, offset: 23949},
+							pos: position{line: 687, col: 5, offset: 23921},
 							exprs: []interface{}{
 								&labeledExpr{
-									pos:   position{line: 687, col: 5, offset: 23949},
+									pos:   position{line: 687, col: 5, offset: 23921},
 									label: "attributes",
 									expr: &zeroOrOneExpr{
-										pos: position{line: 687, col: 16, offset: 23960},
+										pos: position{line: 687, col: 16, offset: 23932},
 										expr: &ruleRefExpr{
-											pos:  position{line: 687, col: 17, offset: 23961},
+											pos:  position{line: 687, col: 17, offset: 23933},
 											name: "ElementAttributes",
 										},
 									},
 								},
 								&andCodeExpr{
-									pos: position{line: 688, col: 5, offset: 23985},
+									pos: position{line: 688, col: 5, offset: 23957},
 									run: (*parser).callonVerseParagraph7,
 								},
 								&labeledExpr{
-									pos:   position{line: 695, col: 5, offset: 24197},
+									pos:   position{line: 695, col: 5, offset: 24169},
 									label: "t",
 									expr: &ruleRefExpr{
-										pos:  position{line: 695, col: 8, offset: 24200},
+										pos:  position{line: 695, col: 8, offset: 24172},
 										name: "AdmonitionKind",
 									},
 								},
 								&litMatcher{
-									pos:        position{line: 695, col: 24, offset: 24216},
+									pos:        position{line: 695, col: 24, offset: 24188},
 									val:        ": ",
 									ignoreCase: false,
 								},
 								&labeledExpr{
-									pos:   position{line: 695, col: 29, offset: 24221},
+									pos:   position{line: 695, col: 29, offset: 24193},
 									label: "lines",
 									expr: &oneOrMoreExpr{
-										pos: position{line: 695, col: 35, offset: 24227},
+										pos: position{line: 695, col: 35, offset: 24199},
 										expr: &ruleRefExpr{
-											pos:  position{line: 695, col: 36, offset: 24228},
+											pos:  position{line: 695, col: 36, offset: 24200},
 											name: "InlineElements",
 										},
 									},
@@ -5028,33 +5028,33 @@ var g = &grammar{
 						},
 					},
 					&actionExpr{
-						pos: position{line: 699, col: 5, offset: 24420},
+						pos: position{line: 699, col: 5, offset: 24392},
 						run: (*parser).callonVerseParagraph14,
 						expr: &seqExpr{
-							pos: position{line: 699, col: 5, offset: 24420},
+							pos: position{line: 699, col: 5, offset: 24392},
 							exprs: []interface{}{
 								&labeledExpr{
-									pos:   position{line: 699, col: 5, offset: 24420},
+									pos:   position{line: 699, col: 5, offset: 24392},
 									label: "attributes",
 									expr: &zeroOrOneExpr{
-										pos: position{line: 699, col: 16, offset: 24431},
+										pos: position{line: 699, col: 16, offset: 24403},
 										expr: &ruleRefExpr{
-											pos:  position{line: 699, col: 17, offset: 24432},
+											pos:  position{line: 699, col: 17, offset: 24404},
 											name: "ElementAttributes",
 										},
 									},
 								},
 								&andCodeExpr{
-									pos: position{line: 700, col: 5, offset: 24456},
+									pos: position{line: 700, col: 5, offset: 24428},
 									run: (*parser).callonVerseParagraph19,
 								},
 								&labeledExpr{
-									pos:   position{line: 707, col: 5, offset: 24668},
+									pos:   position{line: 707, col: 5, offset: 24640},
 									label: "lines",
 									expr: &oneOrMoreExpr{
-										pos: position{line: 707, col: 11, offset: 24674},
+										pos: position{line: 707, col: 11, offset: 24646},
 										expr: &ruleRefExpr{
-											pos:  position{line: 707, col: 12, offset: 24675},
+											pos:  position{line: 707, col: 12, offset: 24647},
 											name: "InlineElements",
 										},
 									},
@@ -5067,82 +5067,82 @@ var g = &grammar{
 		},
 		{
 			name: "InlineElements",
-			pos:  position{line: 711, col: 1, offset: 24776},
+			pos:  position{line: 711, col: 1, offset: 24748},
 			expr: &actionExpr{
-				pos: position{line: 711, col: 19, offset: 24794},
+				pos: position{line: 711, col: 19, offset: 24766},
 				run: (*parser).callonInlineElements1,
 				expr: &seqExpr{
-					pos: position{line: 711, col: 19, offset: 24794},
+					pos: position{line: 711, col: 19, offset: 24766},
 					exprs: []interface{}{
 						&notExpr{
-							pos: position{line: 711, col: 19, offset: 24794},
+							pos: position{line: 711, col: 19, offset: 24766},
 							expr: &ruleRefExpr{
-								pos:  position{line: 711, col: 20, offset: 24795},
+								pos:  position{line: 711, col: 20, offset: 24767},
 								name: "EOF",
 							},
 						},
 						&notExpr{
-							pos: position{line: 711, col: 24, offset: 24799},
+							pos: position{line: 711, col: 24, offset: 24771},
 							expr: &ruleRefExpr{
-								pos:  position{line: 711, col: 25, offset: 24800},
+								pos:  position{line: 711, col: 25, offset: 24772},
 								name: "BlankLine",
 							},
 						},
 						&labeledExpr{
-							pos:   position{line: 712, col: 5, offset: 24814},
+							pos:   position{line: 712, col: 5, offset: 24786},
 							label: "elements",
 							expr: &choiceExpr{
-								pos: position{line: 712, col: 15, offset: 24824},
+								pos: position{line: 712, col: 15, offset: 24796},
 								alternatives: []interface{}{
 									&actionExpr{
-										pos: position{line: 712, col: 15, offset: 24824},
+										pos: position{line: 712, col: 15, offset: 24796},
 										run: (*parser).callonInlineElements9,
 										expr: &labeledExpr{
-											pos:   position{line: 712, col: 15, offset: 24824},
+											pos:   position{line: 712, col: 15, offset: 24796},
 											label: "comment",
 											expr: &ruleRefExpr{
-												pos:  position{line: 712, col: 24, offset: 24833},
+												pos:  position{line: 712, col: 24, offset: 24805},
 												name: "SingleLineComment",
 											},
 										},
 									},
 									&actionExpr{
-										pos: position{line: 714, col: 9, offset: 24925},
+										pos: position{line: 714, col: 9, offset: 24897},
 										run: (*parser).callonInlineElements12,
 										expr: &seqExpr{
-											pos: position{line: 714, col: 9, offset: 24925},
+											pos: position{line: 714, col: 9, offset: 24897},
 											exprs: []interface{}{
 												&notExpr{
-													pos: position{line: 714, col: 9, offset: 24925},
+													pos: position{line: 714, col: 9, offset: 24897},
 													expr: &ruleRefExpr{
-														pos:  position{line: 714, col: 10, offset: 24926},
+														pos:  position{line: 714, col: 10, offset: 24898},
 														name: "BlockDelimiter",
 													},
 												},
 												&labeledExpr{
-													pos:   position{line: 714, col: 25, offset: 24941},
+													pos:   position{line: 714, col: 25, offset: 24913},
 													label: "elements",
 													expr: &oneOrMoreExpr{
-														pos: position{line: 714, col: 34, offset: 24950},
+														pos: position{line: 714, col: 34, offset: 24922},
 														expr: &ruleRefExpr{
-															pos:  position{line: 714, col: 35, offset: 24951},
+															pos:  position{line: 714, col: 35, offset: 24923},
 															name: "InlineElement",
 														},
 													},
 												},
 												&labeledExpr{
-													pos:   position{line: 714, col: 51, offset: 24967},
+													pos:   position{line: 714, col: 51, offset: 24939},
 													label: "linebreak",
 													expr: &zeroOrOneExpr{
-														pos: position{line: 714, col: 61, offset: 24977},
+														pos: position{line: 714, col: 61, offset: 24949},
 														expr: &ruleRefExpr{
-															pos:  position{line: 714, col: 62, offset: 24978},
+															pos:  position{line: 714, col: 62, offset: 24950},
 															name: "LineBreak",
 														},
 													},
 												},
 												&ruleRefExpr{
-													pos:  position{line: 714, col: 74, offset: 24990},
+													pos:  position{line: 714, col: 74, offset: 24962},
 													name: "EOL",
 												},
 											},
@@ -5157,79 +5157,79 @@ var g = &grammar{
 		},
 		{
 			name: "InlineElement",
-			pos:  position{line: 720, col: 1, offset: 25126},
+			pos:  position{line: 720, col: 1, offset: 25098},
 			expr: &actionExpr{
-				pos: position{line: 720, col: 18, offset: 25143},
+				pos: position{line: 720, col: 18, offset: 25115},
 				run: (*parser).callonInlineElement1,
 				expr: &seqExpr{
-					pos: position{line: 720, col: 18, offset: 25143},
+					pos: position{line: 720, col: 18, offset: 25115},
 					exprs: []interface{}{
 						&notExpr{
-							pos: position{line: 720, col: 18, offset: 25143},
+							pos: position{line: 720, col: 18, offset: 25115},
 							expr: &ruleRefExpr{
-								pos:  position{line: 720, col: 19, offset: 25144},
+								pos:  position{line: 720, col: 19, offset: 25116},
 								name: "EOL",
 							},
 						},
 						&notExpr{
-							pos: position{line: 720, col: 23, offset: 25148},
+							pos: position{line: 720, col: 23, offset: 25120},
 							expr: &ruleRefExpr{
-								pos:  position{line: 720, col: 24, offset: 25149},
+								pos:  position{line: 720, col: 24, offset: 25121},
 								name: "LineBreak",
 							},
 						},
 						&labeledExpr{
-							pos:   position{line: 721, col: 5, offset: 25164},
+							pos:   position{line: 721, col: 5, offset: 25136},
 							label: "element",
 							expr: &choiceExpr{
-								pos: position{line: 721, col: 14, offset: 25173},
+								pos: position{line: 721, col: 14, offset: 25145},
 								alternatives: []interface{}{
 									&ruleRefExpr{
-										pos:  position{line: 721, col: 14, offset: 25173},
+										pos:  position{line: 721, col: 14, offset: 25145},
 										name: "SimpleWord",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 722, col: 11, offset: 25194},
+										pos:  position{line: 722, col: 11, offset: 25166},
 										name: "Spaces",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 723, col: 11, offset: 25212},
+										pos:  position{line: 723, col: 11, offset: 25184},
 										name: "InlineImage",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 724, col: 11, offset: 25235},
+										pos:  position{line: 724, col: 11, offset: 25207},
 										name: "Link",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 725, col: 11, offset: 25251},
+										pos:  position{line: 725, col: 11, offset: 25223},
 										name: "Passthrough",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 726, col: 11, offset: 25274},
+										pos:  position{line: 726, col: 11, offset: 25246},
 										name: "InlineFootnote",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 727, col: 11, offset: 25300},
+										pos:  position{line: 727, col: 11, offset: 25272},
 										name: "InlineUserMacro",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 728, col: 11, offset: 25327},
+										pos:  position{line: 728, col: 11, offset: 25299},
 										name: "QuotedText",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 729, col: 11, offset: 25349},
+										pos:  position{line: 729, col: 11, offset: 25321},
 										name: "CrossReference",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 730, col: 11, offset: 25375},
+										pos:  position{line: 730, col: 11, offset: 25347},
 										name: "DocumentAttributeSubstitution",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 731, col: 11, offset: 25416},
+										pos:  position{line: 731, col: 11, offset: 25388},
 										name: "InlineElementID",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 732, col: 11, offset: 25443},
+										pos:  position{line: 732, col: 11, offset: 25415},
 										name: "OtherWord",
 									},
 								},
@@ -5241,51 +5241,51 @@ var g = &grammar{
 		},
 		{
 			name: "InlineElementsWithoutSubtitution",
-			pos:  position{line: 739, col: 1, offset: 25703},
+			pos:  position{line: 739, col: 1, offset: 25675},
 			expr: &actionExpr{
-				pos: position{line: 739, col: 37, offset: 25739},
+				pos: position{line: 739, col: 37, offset: 25711},
 				run: (*parser).callonInlineElementsWithoutSubtitution1,
 				expr: &seqExpr{
-					pos: position{line: 739, col: 37, offset: 25739},
+					pos: position{line: 739, col: 37, offset: 25711},
 					exprs: []interface{}{
 						&notExpr{
-							pos: position{line: 739, col: 37, offset: 25739},
+							pos: position{line: 739, col: 37, offset: 25711},
 							expr: &ruleRefExpr{
-								pos:  position{line: 739, col: 38, offset: 25740},
+								pos:  position{line: 739, col: 38, offset: 25712},
 								name: "BlankLine",
 							},
 						},
 						&notExpr{
-							pos: position{line: 739, col: 48, offset: 25750},
+							pos: position{line: 739, col: 48, offset: 25722},
 							expr: &ruleRefExpr{
-								pos:  position{line: 739, col: 49, offset: 25751},
+								pos:  position{line: 739, col: 49, offset: 25723},
 								name: "BlockDelimiter",
 							},
 						},
 						&labeledExpr{
-							pos:   position{line: 739, col: 64, offset: 25766},
+							pos:   position{line: 739, col: 64, offset: 25738},
 							label: "elements",
 							expr: &zeroOrMoreExpr{
-								pos: position{line: 739, col: 73, offset: 25775},
+								pos: position{line: 739, col: 73, offset: 25747},
 								expr: &ruleRefExpr{
-									pos:  position{line: 739, col: 74, offset: 25776},
+									pos:  position{line: 739, col: 74, offset: 25748},
 									name: "InlineElementWithoutSubtitution",
 								},
 							},
 						},
 						&labeledExpr{
-							pos:   position{line: 739, col: 108, offset: 25810},
+							pos:   position{line: 739, col: 108, offset: 25782},
 							label: "linebreak",
 							expr: &zeroOrOneExpr{
-								pos: position{line: 739, col: 118, offset: 25820},
+								pos: position{line: 739, col: 118, offset: 25792},
 								expr: &ruleRefExpr{
-									pos:  position{line: 739, col: 119, offset: 25821},
+									pos:  position{line: 739, col: 119, offset: 25793},
 									name: "LineBreak",
 								},
 							},
 						},
 						&ruleRefExpr{
-							pos:  position{line: 739, col: 131, offset: 25833},
+							pos:  position{line: 739, col: 131, offset: 25805},
 							name: "EOL",
 						},
 					},
@@ -5294,67 +5294,67 @@ var g = &grammar{
 		},
 		{
 			name: "InlineElementWithoutSubtitution",
-			pos:  position{line: 743, col: 1, offset: 25924},
+			pos:  position{line: 743, col: 1, offset: 25896},
 			expr: &actionExpr{
-				pos: position{line: 743, col: 36, offset: 25959},
+				pos: position{line: 743, col: 36, offset: 25931},
 				run: (*parser).callonInlineElementWithoutSubtitution1,
 				expr: &seqExpr{
-					pos: position{line: 743, col: 36, offset: 25959},
+					pos: position{line: 743, col: 36, offset: 25931},
 					exprs: []interface{}{
 						&notExpr{
-							pos: position{line: 743, col: 36, offset: 25959},
+							pos: position{line: 743, col: 36, offset: 25931},
 							expr: &ruleRefExpr{
-								pos:  position{line: 743, col: 37, offset: 25960},
+								pos:  position{line: 743, col: 37, offset: 25932},
 								name: "EOL",
 							},
 						},
 						&notExpr{
-							pos: position{line: 743, col: 41, offset: 25964},
+							pos: position{line: 743, col: 41, offset: 25936},
 							expr: &ruleRefExpr{
-								pos:  position{line: 743, col: 42, offset: 25965},
+								pos:  position{line: 743, col: 42, offset: 25937},
 								name: "LineBreak",
 							},
 						},
 						&labeledExpr{
-							pos:   position{line: 744, col: 5, offset: 25980},
+							pos:   position{line: 744, col: 5, offset: 25952},
 							label: "element",
 							expr: &choiceExpr{
-								pos: position{line: 744, col: 14, offset: 25989},
+								pos: position{line: 744, col: 14, offset: 25961},
 								alternatives: []interface{}{
 									&ruleRefExpr{
-										pos:  position{line: 744, col: 14, offset: 25989},
+										pos:  position{line: 744, col: 14, offset: 25961},
 										name: "SimpleWord",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 745, col: 11, offset: 26010},
+										pos:  position{line: 745, col: 11, offset: 25982},
 										name: "Spaces",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 746, col: 11, offset: 26028},
+										pos:  position{line: 746, col: 11, offset: 26000},
 										name: "InlineImage",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 747, col: 11, offset: 26051},
+										pos:  position{line: 747, col: 11, offset: 26023},
 										name: "Link",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 748, col: 11, offset: 26067},
+										pos:  position{line: 748, col: 11, offset: 26039},
 										name: "Passthrough",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 749, col: 11, offset: 26090},
+										pos:  position{line: 749, col: 11, offset: 26062},
 										name: "QuotedText",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 750, col: 11, offset: 26112},
+										pos:  position{line: 750, col: 11, offset: 26084},
 										name: "CrossReference",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 751, col: 11, offset: 26138},
+										pos:  position{line: 751, col: 11, offset: 26110},
 										name: "InlineElementID",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 752, col: 11, offset: 26164},
+										pos:  position{line: 752, col: 11, offset: 26136},
 										name: "OtherWord",
 									},
 								},
@@ -5366,31 +5366,31 @@ var g = &grammar{
 		},
 		{
 			name: "VerbatimBlock",
-			pos:  position{line: 757, col: 1, offset: 26298},
+			pos:  position{line: 757, col: 1, offset: 26270},
 			expr: &actionExpr{
-				pos: position{line: 757, col: 18, offset: 26315},
+				pos: position{line: 757, col: 18, offset: 26287},
 				run: (*parser).callonVerbatimBlock1,
 				expr: &seqExpr{
-					pos: position{line: 757, col: 18, offset: 26315},
+					pos: position{line: 757, col: 18, offset: 26287},
 					exprs: []interface{}{
 						&labeledExpr{
-							pos:   position{line: 757, col: 18, offset: 26315},
+							pos:   position{line: 757, col: 18, offset: 26287},
 							label: "elements",
 							expr: &zeroOrMoreExpr{
-								pos: position{line: 757, col: 27, offset: 26324},
+								pos: position{line: 757, col: 27, offset: 26296},
 								expr: &choiceExpr{
-									pos: position{line: 757, col: 28, offset: 26325},
+									pos: position{line: 757, col: 28, offset: 26297},
 									alternatives: []interface{}{
 										&ruleRefExpr{
-											pos:  position{line: 757, col: 28, offset: 26325},
+											pos:  position{line: 757, col: 28, offset: 26297},
 											name: "BlankLine",
 										},
 										&ruleRefExpr{
-											pos:  position{line: 757, col: 40, offset: 26337},
+											pos:  position{line: 757, col: 40, offset: 26309},
 											name: "FileInclusion",
 										},
 										&ruleRefExpr{
-											pos:  position{line: 757, col: 56, offset: 26353},
+											pos:  position{line: 757, col: 56, offset: 26325},
 											name: "VerbatimParagraph",
 										},
 									},
@@ -5398,7 +5398,7 @@ var g = &grammar{
 							},
 						},
 						&ruleRefExpr{
-							pos:  position{line: 757, col: 76, offset: 26373},
+							pos:  position{line: 757, col: 76, offset: 26345},
 							name: "EOF",
 						},
 					},
@@ -5407,47 +5407,47 @@ var g = &grammar{
 		},
 		{
 			name: "VerbatimParagraph",
-			pos:  position{line: 761, col: 1, offset: 26407},
+			pos:  position{line: 761, col: 1, offset: 26379},
 			expr: &actionExpr{
-				pos: position{line: 761, col: 22, offset: 26428},
+				pos: position{line: 761, col: 22, offset: 26400},
 				run: (*parser).callonVerbatimParagraph1,
 				expr: &seqExpr{
-					pos: position{line: 761, col: 22, offset: 26428},
+					pos: position{line: 761, col: 22, offset: 26400},
 					exprs: []interface{}{
 						&labeledExpr{
-							pos:   position{line: 761, col: 22, offset: 26428},
+							pos:   position{line: 761, col: 22, offset: 26400},
 							label: "attributes",
 							expr: &zeroOrOneExpr{
-								pos: position{line: 761, col: 33, offset: 26439},
+								pos: position{line: 761, col: 33, offset: 26411},
 								expr: &ruleRefExpr{
-									pos:  position{line: 761, col: 34, offset: 26440},
+									pos:  position{line: 761, col: 34, offset: 26412},
 									name: "ElementAttributes",
 								},
 							},
 						},
 						&labeledExpr{
-							pos:   position{line: 761, col: 54, offset: 26460},
+							pos:   position{line: 761, col: 54, offset: 26432},
 							label: "lines",
 							expr: &oneOrMoreExpr{
-								pos: position{line: 761, col: 60, offset: 26466},
+								pos: position{line: 761, col: 60, offset: 26438},
 								expr: &actionExpr{
-									pos: position{line: 761, col: 61, offset: 26467},
+									pos: position{line: 761, col: 61, offset: 26439},
 									run: (*parser).callonVerbatimParagraph8,
 									expr: &seqExpr{
-										pos: position{line: 761, col: 61, offset: 26467},
+										pos: position{line: 761, col: 61, offset: 26439},
 										exprs: []interface{}{
 											&notExpr{
-												pos: position{line: 761, col: 61, offset: 26467},
+												pos: position{line: 761, col: 61, offset: 26439},
 												expr: &ruleRefExpr{
-													pos:  position{line: 761, col: 62, offset: 26468},
+													pos:  position{line: 761, col: 62, offset: 26440},
 													name: "EOF",
 												},
 											},
 											&labeledExpr{
-												pos:   position{line: 761, col: 66, offset: 26472},
+												pos:   position{line: 761, col: 66, offset: 26444},
 												label: "line",
 												expr: &ruleRefExpr{
-													pos:  position{line: 761, col: 72, offset: 26478},
+													pos:  position{line: 761, col: 72, offset: 26450},
 													name: "VerbatimParagraphLine",
 												},
 											},
@@ -5462,51 +5462,51 @@ var g = &grammar{
 		},
 		{
 			name: "VerbatimParagraphLine",
-			pos:  position{line: 767, col: 1, offset: 26598},
+			pos:  position{line: 767, col: 1, offset: 26570},
 			expr: &actionExpr{
-				pos: position{line: 767, col: 26, offset: 26623},
+				pos: position{line: 767, col: 26, offset: 26595},
 				run: (*parser).callonVerbatimParagraphLine1,
 				expr: &seqExpr{
-					pos: position{line: 767, col: 26, offset: 26623},
+					pos: position{line: 767, col: 26, offset: 26595},
 					exprs: []interface{}{
 						&notExpr{
-							pos: position{line: 767, col: 26, offset: 26623},
+							pos: position{line: 767, col: 26, offset: 26595},
 							expr: &ruleRefExpr{
-								pos:  position{line: 767, col: 27, offset: 26624},
+								pos:  position{line: 767, col: 27, offset: 26596},
 								name: "BlockDelimiter",
 							},
 						},
 						&notExpr{
-							pos: position{line: 767, col: 42, offset: 26639},
+							pos: position{line: 767, col: 42, offset: 26611},
 							expr: &ruleRefExpr{
-								pos:  position{line: 767, col: 43, offset: 26640},
+								pos:  position{line: 767, col: 43, offset: 26612},
 								name: "BlankLine",
 							},
 						},
 						&labeledExpr{
-							pos:   position{line: 767, col: 53, offset: 26650},
+							pos:   position{line: 767, col: 53, offset: 26622},
 							label: "elements",
 							expr: &zeroOrMoreExpr{
-								pos: position{line: 767, col: 62, offset: 26659},
+								pos: position{line: 767, col: 62, offset: 26631},
 								expr: &ruleRefExpr{
-									pos:  position{line: 767, col: 63, offset: 26660},
+									pos:  position{line: 767, col: 63, offset: 26632},
 									name: "VerbatimParagraphLineElement",
 								},
 							},
 						},
 						&labeledExpr{
-							pos:   position{line: 767, col: 94, offset: 26691},
+							pos:   position{line: 767, col: 94, offset: 26663},
 							label: "linebreak",
 							expr: &zeroOrOneExpr{
-								pos: position{line: 767, col: 104, offset: 26701},
+								pos: position{line: 767, col: 104, offset: 26673},
 								expr: &ruleRefExpr{
-									pos:  position{line: 767, col: 105, offset: 26702},
+									pos:  position{line: 767, col: 105, offset: 26674},
 									name: "LineBreak",
 								},
 							},
 						},
 						&ruleRefExpr{
-							pos:  position{line: 767, col: 117, offset: 26714},
+							pos:  position{line: 767, col: 117, offset: 26686},
 							name: "EOL",
 						},
 					},
@@ -5515,31 +5515,31 @@ var g = &grammar{
 		},
 		{
 			name: "VerbatimParagraphLineElement",
-			pos:  position{line: 771, col: 1, offset: 26805},
+			pos:  position{line: 771, col: 1, offset: 26777},
 			expr: &actionExpr{
-				pos: position{line: 771, col: 33, offset: 26837},
+				pos: position{line: 771, col: 33, offset: 26809},
 				run: (*parser).callonVerbatimParagraphLineElement1,
 				expr: &oneOrMoreExpr{
-					pos: position{line: 771, col: 33, offset: 26837},
+					pos: position{line: 771, col: 33, offset: 26809},
 					expr: &seqExpr{
-						pos: position{line: 771, col: 34, offset: 26838},
+						pos: position{line: 771, col: 34, offset: 26810},
 						exprs: []interface{}{
 							&notExpr{
-								pos: position{line: 771, col: 34, offset: 26838},
+								pos: position{line: 771, col: 34, offset: 26810},
 								expr: &ruleRefExpr{
-									pos:  position{line: 771, col: 35, offset: 26839},
+									pos:  position{line: 771, col: 35, offset: 26811},
 									name: "EOL",
 								},
 							},
 							&notExpr{
-								pos: position{line: 771, col: 39, offset: 26843},
+								pos: position{line: 771, col: 39, offset: 26815},
 								expr: &ruleRefExpr{
-									pos:  position{line: 771, col: 40, offset: 26844},
+									pos:  position{line: 771, col: 40, offset: 26816},
 									name: "LineBreak",
 								},
 							},
 							&anyMatcher{
-								line: 771, col: 50, offset: 26854,
+								line: 771, col: 50, offset: 26826,
 							},
 						},
 					},
@@ -5548,33 +5548,33 @@ var g = &grammar{
 		},
 		{
 			name: "LineBreak",
-			pos:  position{line: 778, col: 1, offset: 27078},
+			pos:  position{line: 778, col: 1, offset: 27050},
 			expr: &actionExpr{
-				pos: position{line: 778, col: 14, offset: 27091},
+				pos: position{line: 778, col: 14, offset: 27063},
 				run: (*parser).callonLineBreak1,
 				expr: &seqExpr{
-					pos: position{line: 778, col: 14, offset: 27091},
+					pos: position{line: 778, col: 14, offset: 27063},
 					exprs: []interface{}{
 						&ruleRefExpr{
-							pos:  position{line: 778, col: 14, offset: 27091},
+							pos:  position{line: 778, col: 14, offset: 27063},
 							name: "WS",
 						},
 						&litMatcher{
-							pos:        position{line: 778, col: 17, offset: 27094},
+							pos:        position{line: 778, col: 17, offset: 27066},
 							val:        "+",
 							ignoreCase: false,
 						},
 						&zeroOrMoreExpr{
-							pos: position{line: 778, col: 21, offset: 27098},
+							pos: position{line: 778, col: 21, offset: 27070},
 							expr: &ruleRefExpr{
-								pos:  position{line: 778, col: 21, offset: 27098},
+								pos:  position{line: 778, col: 21, offset: 27070},
 								name: "WS",
 							},
 						},
 						&andExpr{
-							pos: position{line: 778, col: 25, offset: 27102},
+							pos: position{line: 778, col: 25, offset: 27074},
 							expr: &ruleRefExpr{
-								pos:  position{line: 778, col: 26, offset: 27103},
+								pos:  position{line: 778, col: 26, offset: 27075},
 								name: "EOL",
 							},
 						},
@@ -5584,68 +5584,68 @@ var g = &grammar{
 		},
 		{
 			name: "QuotedText",
-			pos:  position{line: 785, col: 1, offset: 27387},
+			pos:  position{line: 785, col: 1, offset: 27359},
 			expr: &actionExpr{
-				pos: position{line: 785, col: 15, offset: 27401},
+				pos: position{line: 785, col: 15, offset: 27373},
 				run: (*parser).callonQuotedText1,
 				expr: &seqExpr{
-					pos: position{line: 785, col: 15, offset: 27401},
+					pos: position{line: 785, col: 15, offset: 27373},
 					exprs: []interface{}{
 						&notExpr{
-							pos: position{line: 785, col: 15, offset: 27401},
+							pos: position{line: 785, col: 15, offset: 27373},
 							expr: &ruleRefExpr{
-								pos:  position{line: 785, col: 16, offset: 27402},
+								pos:  position{line: 785, col: 16, offset: 27374},
 								name: "WS",
 							},
 						},
 						&labeledExpr{
-							pos:   position{line: 785, col: 19, offset: 27405},
+							pos:   position{line: 785, col: 19, offset: 27377},
 							label: "text",
 							expr: &choiceExpr{
-								pos: position{line: 785, col: 25, offset: 27411},
+								pos: position{line: 785, col: 25, offset: 27383},
 								alternatives: []interface{}{
 									&ruleRefExpr{
-										pos:  position{line: 785, col: 25, offset: 27411},
+										pos:  position{line: 785, col: 25, offset: 27383},
 										name: "BoldText",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 786, col: 15, offset: 27435},
+										pos:  position{line: 786, col: 15, offset: 27407},
 										name: "ItalicText",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 787, col: 15, offset: 27461},
+										pos:  position{line: 787, col: 15, offset: 27433},
 										name: "MonospaceText",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 788, col: 15, offset: 27490},
+										pos:  position{line: 788, col: 15, offset: 27462},
 										name: "SubscriptText",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 789, col: 15, offset: 27519},
+										pos:  position{line: 789, col: 15, offset: 27491},
 										name: "SuperscriptText",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 790, col: 15, offset: 27550},
+										pos:  position{line: 790, col: 15, offset: 27522},
 										name: "EscapedBoldText",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 791, col: 15, offset: 27581},
+										pos:  position{line: 791, col: 15, offset: 27553},
 										name: "EscapedItalicText",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 792, col: 15, offset: 27614},
+										pos:  position{line: 792, col: 15, offset: 27586},
 										name: "EscapedMonospaceText",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 793, col: 15, offset: 27650},
+										pos:  position{line: 793, col: 15, offset: 27622},
 										name: "EscapedSubscriptText",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 794, col: 15, offset: 27686},
+										pos:  position{line: 794, col: 15, offset: 27658},
 										name: "EscapedSuperscriptText",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 795, col: 15, offset: 27723},
+										pos:  position{line: 795, col: 15, offset: 27695},
 										name: "SubscriptOrSuperscriptPrefix",
 									},
 								},
@@ -5657,47 +5657,47 @@ var g = &grammar{
 		},
 		{
 			name: "QuotedTextPrefix",
-			pos:  position{line: 799, col: 1, offset: 27877},
+			pos:  position{line: 799, col: 1, offset: 27849},
 			expr: &choiceExpr{
-				pos: position{line: 799, col: 21, offset: 27897},
+				pos: position{line: 799, col: 21, offset: 27869},
 				alternatives: []interface{}{
 					&litMatcher{
-						pos:        position{line: 799, col: 21, offset: 27897},
+						pos:        position{line: 799, col: 21, offset: 27869},
 						val:        "**",
 						ignoreCase: false,
 					},
 					&litMatcher{
-						pos:        position{line: 799, col: 28, offset: 27904},
+						pos:        position{line: 799, col: 28, offset: 27876},
 						val:        "*",
 						ignoreCase: false,
 					},
 					&litMatcher{
-						pos:        position{line: 799, col: 34, offset: 27910},
+						pos:        position{line: 799, col: 34, offset: 27882},
 						val:        "__",
 						ignoreCase: false,
 					},
 					&litMatcher{
-						pos:        position{line: 799, col: 41, offset: 27917},
+						pos:        position{line: 799, col: 41, offset: 27889},
 						val:        "_",
 						ignoreCase: false,
 					},
 					&litMatcher{
-						pos:        position{line: 799, col: 47, offset: 27923},
+						pos:        position{line: 799, col: 47, offset: 27895},
 						val:        "``",
 						ignoreCase: false,
 					},
 					&litMatcher{
-						pos:        position{line: 799, col: 54, offset: 27930},
+						pos:        position{line: 799, col: 54, offset: 27902},
 						val:        "`",
 						ignoreCase: false,
 					},
 					&litMatcher{
-						pos:        position{line: 799, col: 60, offset: 27936},
+						pos:        position{line: 799, col: 60, offset: 27908},
 						val:        "^",
 						ignoreCase: false,
 					},
 					&litMatcher{
-						pos:        position{line: 799, col: 66, offset: 27942},
+						pos:        position{line: 799, col: 66, offset: 27914},
 						val:        "~",
 						ignoreCase: false,
 					},
@@ -5706,20 +5706,20 @@ var g = &grammar{
 		},
 		{
 			name: "SubscriptOrSuperscriptPrefix",
-			pos:  position{line: 801, col: 1, offset: 27947},
+			pos:  position{line: 801, col: 1, offset: 27919},
 			expr: &choiceExpr{
-				pos: position{line: 801, col: 33, offset: 27979},
+				pos: position{line: 801, col: 33, offset: 27951},
 				alternatives: []interface{}{
 					&litMatcher{
-						pos:        position{line: 801, col: 33, offset: 27979},
+						pos:        position{line: 801, col: 33, offset: 27951},
 						val:        "^",
 						ignoreCase: false,
 					},
 					&actionExpr{
-						pos: position{line: 801, col: 39, offset: 27985},
+						pos: position{line: 801, col: 39, offset: 27957},
 						run: (*parser).callonSubscriptOrSuperscriptPrefix3,
 						expr: &litMatcher{
-							pos:        position{line: 801, col: 39, offset: 27985},
+							pos:        position{line: 801, col: 39, offset: 27957},
 							val:        "~",
 							ignoreCase: false,
 						},
@@ -5729,14 +5729,14 @@ var g = &grammar{
 		},
 		{
 			name: "OneOrMoreBackslashes",
-			pos:  position{line: 805, col: 1, offset: 28118},
+			pos:  position{line: 805, col: 1, offset: 28090},
 			expr: &actionExpr{
-				pos: position{line: 805, col: 25, offset: 28142},
+				pos: position{line: 805, col: 25, offset: 28114},
 				run: (*parser).callonOneOrMoreBackslashes1,
 				expr: &oneOrMoreExpr{
-					pos: position{line: 805, col: 25, offset: 28142},
+					pos: position{line: 805, col: 25, offset: 28114},
 					expr: &litMatcher{
-						pos:        position{line: 805, col: 25, offset: 28142},
+						pos:        position{line: 805, col: 25, offset: 28114},
 						val:        "\\",
 						ignoreCase: false,
 					},
@@ -5745,22 +5745,22 @@ var g = &grammar{
 		},
 		{
 			name: "TwoOrMoreBackslashes",
-			pos:  position{line: 809, col: 1, offset: 28183},
+			pos:  position{line: 809, col: 1, offset: 28155},
 			expr: &actionExpr{
-				pos: position{line: 809, col: 25, offset: 28207},
+				pos: position{line: 809, col: 25, offset: 28179},
 				run: (*parser).callonTwoOrMoreBackslashes1,
 				expr: &seqExpr{
-					pos: position{line: 809, col: 25, offset: 28207},
+					pos: position{line: 809, col: 25, offset: 28179},
 					exprs: []interface{}{
 						&litMatcher{
-							pos:        position{line: 809, col: 25, offset: 28207},
+							pos:        position{line: 809, col: 25, offset: 28179},
 							val:        "\\\\",
 							ignoreCase: false,
 						},
 						&zeroOrMoreExpr{
-							pos: position{line: 809, col: 30, offset: 28212},
+							pos: position{line: 809, col: 30, offset: 28184},
 							expr: &litMatcher{
-								pos:        position{line: 809, col: 30, offset: 28212},
+								pos:        position{line: 809, col: 30, offset: 28184},
 								val:        "\\",
 								ignoreCase: false,
 							},
@@ -5771,16 +5771,16 @@ var g = &grammar{
 		},
 		{
 			name: "BoldText",
-			pos:  position{line: 817, col: 1, offset: 28309},
+			pos:  position{line: 817, col: 1, offset: 28281},
 			expr: &choiceExpr{
-				pos: position{line: 817, col: 13, offset: 28321},
+				pos: position{line: 817, col: 13, offset: 28293},
 				alternatives: []interface{}{
 					&ruleRefExpr{
-						pos:  position{line: 817, col: 13, offset: 28321},
+						pos:  position{line: 817, col: 13, offset: 28293},
 						name: "DoubleQuoteBoldText",
 					},
 					&ruleRefExpr{
-						pos:  position{line: 817, col: 35, offset: 28343},
+						pos:  position{line: 817, col: 35, offset: 28315},
 						name: "SingleQuoteBoldText",
 					},
 				},
@@ -5788,36 +5788,36 @@ var g = &grammar{
 		},
 		{
 			name: "DoubleQuoteBoldText",
-			pos:  position{line: 819, col: 1, offset: 28364},
+			pos:  position{line: 819, col: 1, offset: 28336},
 			expr: &actionExpr{
-				pos: position{line: 819, col: 24, offset: 28387},
+				pos: position{line: 819, col: 24, offset: 28359},
 				run: (*parser).callonDoubleQuoteBoldText1,
 				expr: &seqExpr{
-					pos: position{line: 819, col: 24, offset: 28387},
+					pos: position{line: 819, col: 24, offset: 28359},
 					exprs: []interface{}{
 						&notExpr{
-							pos: position{line: 819, col: 24, offset: 28387},
+							pos: position{line: 819, col: 24, offset: 28359},
 							expr: &litMatcher{
-								pos:        position{line: 819, col: 25, offset: 28388},
+								pos:        position{line: 819, col: 25, offset: 28360},
 								val:        "\\\\",
 								ignoreCase: false,
 							},
 						},
 						&litMatcher{
-							pos:        position{line: 819, col: 30, offset: 28393},
+							pos:        position{line: 819, col: 30, offset: 28365},
 							val:        "**",
 							ignoreCase: false,
 						},
 						&labeledExpr{
-							pos:   position{line: 819, col: 35, offset: 28398},
+							pos:   position{line: 819, col: 35, offset: 28370},
 							label: "content",
 							expr: &ruleRefExpr{
-								pos:  position{line: 819, col: 44, offset: 28407},
+								pos:  position{line: 819, col: 44, offset: 28379},
 								name: "DoubleQuoteBoldTextContent",
 							},
 						},
 						&litMatcher{
-							pos:        position{line: 819, col: 72, offset: 28435},
+							pos:        position{line: 819, col: 72, offset: 28407},
 							val:        "**",
 							ignoreCase: false,
 						},
@@ -5827,42 +5827,42 @@ var g = &grammar{
 		},
 		{
 			name: "DoubleQuoteBoldTextContent",
-			pos:  position{line: 823, col: 1, offset: 28560},
+			pos:  position{line: 823, col: 1, offset: 28532},
 			expr: &seqExpr{
-				pos: position{line: 823, col: 31, offset: 28590},
+				pos: position{line: 823, col: 31, offset: 28562},
 				exprs: []interface{}{
 					&ruleRefExpr{
-						pos:  position{line: 823, col: 31, offset: 28590},
+						pos:  position{line: 823, col: 31, offset: 28562},
 						name: "DoubleQuoteBoldTextElement",
 					},
 					&zeroOrMoreExpr{
-						pos: position{line: 823, col: 58, offset: 28617},
+						pos: position{line: 823, col: 58, offset: 28589},
 						expr: &actionExpr{
-							pos: position{line: 823, col: 59, offset: 28618},
+							pos: position{line: 823, col: 59, offset: 28590},
 							run: (*parser).callonDoubleQuoteBoldTextContent4,
 							expr: &seqExpr{
-								pos: position{line: 823, col: 59, offset: 28618},
+								pos: position{line: 823, col: 59, offset: 28590},
 								exprs: []interface{}{
 									&notExpr{
-										pos: position{line: 823, col: 59, offset: 28618},
+										pos: position{line: 823, col: 59, offset: 28590},
 										expr: &litMatcher{
-											pos:        position{line: 823, col: 61, offset: 28620},
+											pos:        position{line: 823, col: 61, offset: 28592},
 											val:        "**",
 											ignoreCase: false,
 										},
 									},
 									&labeledExpr{
-										pos:   position{line: 823, col: 67, offset: 28626},
+										pos:   position{line: 823, col: 67, offset: 28598},
 										label: "element",
 										expr: &choiceExpr{
-											pos: position{line: 823, col: 76, offset: 28635},
+											pos: position{line: 823, col: 76, offset: 28607},
 											alternatives: []interface{}{
 												&ruleRefExpr{
-													pos:  position{line: 823, col: 76, offset: 28635},
+													pos:  position{line: 823, col: 76, offset: 28607},
 													name: "WS",
 												},
 												&ruleRefExpr{
-													pos:  position{line: 823, col: 81, offset: 28640},
+													pos:  position{line: 823, col: 81, offset: 28612},
 													name: "DoubleQuoteBoldTextElement",
 												},
 											},
@@ -5877,60 +5877,60 @@ var g = &grammar{
 		},
 		{
 			name: "DoubleQuoteBoldTextElement",
-			pos:  position{line: 827, col: 1, offset: 28732},
+			pos:  position{line: 827, col: 1, offset: 28704},
 			expr: &actionExpr{
-				pos: position{line: 827, col: 31, offset: 28762},
+				pos: position{line: 827, col: 31, offset: 28734},
 				run: (*parser).callonDoubleQuoteBoldTextElement1,
 				expr: &seqExpr{
-					pos: position{line: 827, col: 31, offset: 28762},
+					pos: position{line: 827, col: 31, offset: 28734},
 					exprs: []interface{}{
 						&notExpr{
-							pos: position{line: 827, col: 31, offset: 28762},
+							pos: position{line: 827, col: 31, offset: 28734},
 							expr: &ruleRefExpr{
-								pos:  position{line: 827, col: 32, offset: 28763},
+								pos:  position{line: 827, col: 32, offset: 28735},
 								name: "NEWLINE",
 							},
 						},
 						&labeledExpr{
-							pos:   position{line: 827, col: 40, offset: 28771},
+							pos:   position{line: 827, col: 40, offset: 28743},
 							label: "element",
 							expr: &choiceExpr{
-								pos: position{line: 827, col: 49, offset: 28780},
+								pos: position{line: 827, col: 49, offset: 28752},
 								alternatives: []interface{}{
 									&ruleRefExpr{
-										pos:  position{line: 827, col: 49, offset: 28780},
+										pos:  position{line: 827, col: 49, offset: 28752},
 										name: "SingleQuoteBoldText",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 828, col: 11, offset: 28811},
+										pos:  position{line: 828, col: 11, offset: 28783},
 										name: "ItalicText",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 829, col: 11, offset: 28833},
+										pos:  position{line: 829, col: 11, offset: 28805},
 										name: "MonospaceText",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 830, col: 11, offset: 28857},
+										pos:  position{line: 830, col: 11, offset: 28829},
 										name: "SubscriptText",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 831, col: 11, offset: 28881},
+										pos:  position{line: 831, col: 11, offset: 28853},
 										name: "SuperscriptText",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 832, col: 11, offset: 28907},
+										pos:  position{line: 832, col: 11, offset: 28879},
 										name: "InlineImage",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 833, col: 11, offset: 28930},
+										pos:  position{line: 833, col: 11, offset: 28902},
 										name: "Link",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 834, col: 11, offset: 28946},
+										pos:  position{line: 834, col: 11, offset: 28918},
 										name: "Passthrough",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 835, col: 11, offset: 28969},
+										pos:  position{line: 835, col: 11, offset: 28941},
 										name: "NonDoubleQuoteBoldText",
 									},
 								},
@@ -5942,61 +5942,61 @@ var g = &grammar{
 		},
 		{
 			name: "NonDoubleQuoteBoldText",
-			pos:  position{line: 839, col: 1, offset: 29125},
+			pos:  position{line: 839, col: 1, offset: 29097},
 			expr: &actionExpr{
-				pos: position{line: 839, col: 27, offset: 29151},
+				pos: position{line: 839, col: 27, offset: 29123},
 				run: (*parser).callonNonDoubleQuoteBoldText1,
 				expr: &seqExpr{
-					pos: position{line: 839, col: 27, offset: 29151},
+					pos: position{line: 839, col: 27, offset: 29123},
 					exprs: []interface{}{
 						&anyMatcher{
-							line: 839, col: 28, offset: 29152,
+							line: 839, col: 28, offset: 29124,
 						},
 						&zeroOrMoreExpr{
-							pos: position{line: 839, col: 31, offset: 29155},
+							pos: position{line: 839, col: 31, offset: 29127},
 							expr: &seqExpr{
-								pos: position{line: 839, col: 32, offset: 29156},
+								pos: position{line: 839, col: 32, offset: 29128},
 								exprs: []interface{}{
 									&notExpr{
-										pos: position{line: 839, col: 32, offset: 29156},
+										pos: position{line: 839, col: 32, offset: 29128},
 										expr: &litMatcher{
-											pos:        position{line: 839, col: 33, offset: 29157},
+											pos:        position{line: 839, col: 33, offset: 29129},
 											val:        "**",
 											ignoreCase: false,
 										},
 									},
 									&notExpr{
-										pos: position{line: 839, col: 38, offset: 29162},
+										pos: position{line: 839, col: 38, offset: 29134},
 										expr: &ruleRefExpr{
-											pos:  position{line: 839, col: 39, offset: 29163},
+											pos:  position{line: 839, col: 39, offset: 29135},
 											name: "WS",
 										},
 									},
 									&notExpr{
-										pos: position{line: 839, col: 42, offset: 29166},
+										pos: position{line: 839, col: 42, offset: 29138},
 										expr: &litMatcher{
-											pos:        position{line: 839, col: 43, offset: 29167},
+											pos:        position{line: 839, col: 43, offset: 29139},
 											val:        "^",
 											ignoreCase: false,
 										},
 									},
 									&notExpr{
-										pos: position{line: 839, col: 47, offset: 29171},
+										pos: position{line: 839, col: 47, offset: 29143},
 										expr: &litMatcher{
-											pos:        position{line: 839, col: 48, offset: 29172},
+											pos:        position{line: 839, col: 48, offset: 29144},
 											val:        "~",
 											ignoreCase: false,
 										},
 									},
 									&notExpr{
-										pos: position{line: 839, col: 52, offset: 29176},
+										pos: position{line: 839, col: 52, offset: 29148},
 										expr: &ruleRefExpr{
-											pos:  position{line: 839, col: 53, offset: 29177},
+											pos:  position{line: 839, col: 53, offset: 29149},
 											name: "NEWLINE",
 										},
 									},
 									&anyMatcher{
-										line: 839, col: 61, offset: 29185,
+										line: 839, col: 61, offset: 29157,
 									},
 								},
 							},
@@ -6007,47 +6007,47 @@ var g = &grammar{
 		},
 		{
 			name: "SingleQuoteBoldText",
-			pos:  position{line: 843, col: 1, offset: 29245},
+			pos:  position{line: 843, col: 1, offset: 29217},
 			expr: &choiceExpr{
-				pos: position{line: 843, col: 24, offset: 29268},
+				pos: position{line: 843, col: 24, offset: 29240},
 				alternatives: []interface{}{
 					&actionExpr{
-						pos: position{line: 843, col: 24, offset: 29268},
+						pos: position{line: 843, col: 24, offset: 29240},
 						run: (*parser).callonSingleQuoteBoldText2,
 						expr: &seqExpr{
-							pos: position{line: 843, col: 24, offset: 29268},
+							pos: position{line: 843, col: 24, offset: 29240},
 							exprs: []interface{}{
 								&notExpr{
-									pos: position{line: 843, col: 24, offset: 29268},
+									pos: position{line: 843, col: 24, offset: 29240},
 									expr: &litMatcher{
-										pos:        position{line: 843, col: 25, offset: 29269},
+										pos:        position{line: 843, col: 25, offset: 29241},
 										val:        "\\",
 										ignoreCase: false,
 									},
 								},
 								&notExpr{
-									pos: position{line: 843, col: 29, offset: 29273},
+									pos: position{line: 843, col: 29, offset: 29245},
 									expr: &litMatcher{
-										pos:        position{line: 843, col: 30, offset: 29274},
+										pos:        position{line: 843, col: 30, offset: 29246},
 										val:        "**",
 										ignoreCase: false,
 									},
 								},
 								&litMatcher{
-									pos:        position{line: 843, col: 35, offset: 29279},
+									pos:        position{line: 843, col: 35, offset: 29251},
 									val:        "*",
 									ignoreCase: false,
 								},
 								&labeledExpr{
-									pos:   position{line: 843, col: 39, offset: 29283},
+									pos:   position{line: 843, col: 39, offset: 29255},
 									label: "content",
 									expr: &ruleRefExpr{
-										pos:  position{line: 843, col: 48, offset: 29292},
+										pos:  position{line: 843, col: 48, offset: 29264},
 										name: "SingleQuoteBoldTextContent",
 									},
 								},
 								&litMatcher{
-									pos:        position{line: 843, col: 76, offset: 29320},
+									pos:        position{line: 843, col: 76, offset: 29292},
 									val:        "*",
 									ignoreCase: false,
 								},
@@ -6055,34 +6055,34 @@ var g = &grammar{
 						},
 					},
 					&actionExpr{
-						pos: position{line: 845, col: 5, offset: 29500},
+						pos: position{line: 845, col: 5, offset: 29472},
 						run: (*parser).callonSingleQuoteBoldText12,
 						expr: &seqExpr{
-							pos: position{line: 845, col: 5, offset: 29500},
+							pos: position{line: 845, col: 5, offset: 29472},
 							exprs: []interface{}{
 								&notExpr{
-									pos: position{line: 845, col: 5, offset: 29500},
+									pos: position{line: 845, col: 5, offset: 29472},
 									expr: &litMatcher{
-										pos:        position{line: 845, col: 6, offset: 29501},
+										pos:        position{line: 845, col: 6, offset: 29473},
 										val:        "\\\\",
 										ignoreCase: false,
 									},
 								},
 								&litMatcher{
-									pos:        position{line: 845, col: 11, offset: 29506},
+									pos:        position{line: 845, col: 11, offset: 29478},
 									val:        "**",
 									ignoreCase: false,
 								},
 								&labeledExpr{
-									pos:   position{line: 845, col: 16, offset: 29511},
+									pos:   position{line: 845, col: 16, offset: 29483},
 									label: "content",
 									expr: &ruleRefExpr{
-										pos:  position{line: 845, col: 25, offset: 29520},
+										pos:  position{line: 845, col: 25, offset: 29492},
 										name: "SingleQuoteBoldTextContent",
 									},
 								},
 								&litMatcher{
-									pos:        position{line: 845, col: 53, offset: 29548},
+									pos:        position{line: 845, col: 53, offset: 29520},
 									val:        "*",
 									ignoreCase: false,
 								},
@@ -6094,43 +6094,43 @@ var g = &grammar{
 		},
 		{
 			name: "SingleQuoteBoldTextContent",
-			pos:  position{line: 849, col: 1, offset: 29806},
+			pos:  position{line: 849, col: 1, offset: 29778},
 			expr: &seqExpr{
-				pos: position{line: 849, col: 31, offset: 29836},
+				pos: position{line: 849, col: 31, offset: 29808},
 				exprs: []interface{}{
 					&notExpr{
-						pos: position{line: 849, col: 31, offset: 29836},
+						pos: position{line: 849, col: 31, offset: 29808},
 						expr: &ruleRefExpr{
-							pos:  position{line: 849, col: 32, offset: 29837},
+							pos:  position{line: 849, col: 32, offset: 29809},
 							name: "WS",
 						},
 					},
 					&ruleRefExpr{
-						pos:  position{line: 849, col: 35, offset: 29840},
+						pos:  position{line: 849, col: 35, offset: 29812},
 						name: "SingleQuoteBoldTextElement",
 					},
 					&zeroOrMoreExpr{
-						pos: position{line: 849, col: 62, offset: 29867},
+						pos: position{line: 849, col: 62, offset: 29839},
 						expr: &actionExpr{
-							pos: position{line: 849, col: 63, offset: 29868},
+							pos: position{line: 849, col: 63, offset: 29840},
 							run: (*parser).callonSingleQuoteBoldTextContent6,
 							expr: &seqExpr{
-								pos: position{line: 849, col: 63, offset: 29868},
+								pos: position{line: 849, col: 63, offset: 29840},
 								exprs: []interface{}{
 									&notExpr{
-										pos: position{line: 849, col: 63, offset: 29868},
+										pos: position{line: 849, col: 63, offset: 29840},
 										expr: &seqExpr{
-											pos: position{line: 849, col: 65, offset: 29870},
+											pos: position{line: 849, col: 65, offset: 29842},
 											exprs: []interface{}{
 												&litMatcher{
-													pos:        position{line: 849, col: 65, offset: 29870},
+													pos:        position{line: 849, col: 65, offset: 29842},
 													val:        "*",
 													ignoreCase: false,
 												},
 												&notExpr{
-													pos: position{line: 849, col: 69, offset: 29874},
+													pos: position{line: 849, col: 69, offset: 29846},
 													expr: &ruleRefExpr{
-														pos:  position{line: 849, col: 70, offset: 29875},
+														pos:  position{line: 849, col: 70, offset: 29847},
 														name: "Alphanum",
 													},
 												},
@@ -6138,21 +6138,21 @@ var g = &grammar{
 										},
 									},
 									&labeledExpr{
-										pos:   position{line: 849, col: 80, offset: 29885},
+										pos:   position{line: 849, col: 80, offset: 29857},
 										label: "spaces",
 										expr: &zeroOrMoreExpr{
-											pos: position{line: 849, col: 88, offset: 29893},
+											pos: position{line: 849, col: 88, offset: 29865},
 											expr: &ruleRefExpr{
-												pos:  position{line: 849, col: 88, offset: 29893},
+												pos:  position{line: 849, col: 88, offset: 29865},
 												name: "WS",
 											},
 										},
 									},
 									&labeledExpr{
-										pos:   position{line: 849, col: 93, offset: 29898},
+										pos:   position{line: 849, col: 93, offset: 29870},
 										label: "element",
 										expr: &ruleRefExpr{
-											pos:  position{line: 849, col: 102, offset: 29907},
+											pos:  position{line: 849, col: 102, offset: 29879},
 											name: "SingleQuoteBoldTextElement",
 										},
 									},
@@ -6165,60 +6165,60 @@ var g = &grammar{
 		},
 		{
 			name: "SingleQuoteBoldTextElement",
-			pos:  position{line: 853, col: 1, offset: 29998},
+			pos:  position{line: 853, col: 1, offset: 29970},
 			expr: &actionExpr{
-				pos: position{line: 853, col: 31, offset: 30028},
+				pos: position{line: 853, col: 31, offset: 30000},
 				run: (*parser).callonSingleQuoteBoldTextElement1,
 				expr: &seqExpr{
-					pos: position{line: 853, col: 31, offset: 30028},
+					pos: position{line: 853, col: 31, offset: 30000},
 					exprs: []interface{}{
 						&notExpr{
-							pos: position{line: 853, col: 31, offset: 30028},
+							pos: position{line: 853, col: 31, offset: 30000},
 							expr: &ruleRefExpr{
-								pos:  position{line: 853, col: 32, offset: 30029},
+								pos:  position{line: 853, col: 32, offset: 30001},
 								name: "NEWLINE",
 							},
 						},
 						&labeledExpr{
-							pos:   position{line: 853, col: 40, offset: 30037},
+							pos:   position{line: 853, col: 40, offset: 30009},
 							label: "element",
 							expr: &choiceExpr{
-								pos: position{line: 853, col: 49, offset: 30046},
+								pos: position{line: 853, col: 49, offset: 30018},
 								alternatives: []interface{}{
 									&ruleRefExpr{
-										pos:  position{line: 853, col: 49, offset: 30046},
+										pos:  position{line: 853, col: 49, offset: 30018},
 										name: "DoubleQuoteBoldText",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 854, col: 11, offset: 30076},
+										pos:  position{line: 854, col: 11, offset: 30048},
 										name: "ItalicText",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 855, col: 11, offset: 30098},
+										pos:  position{line: 855, col: 11, offset: 30070},
 										name: "MonospaceText",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 856, col: 11, offset: 30122},
+										pos:  position{line: 856, col: 11, offset: 30094},
 										name: "SubscriptText",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 857, col: 11, offset: 30146},
+										pos:  position{line: 857, col: 11, offset: 30118},
 										name: "SuperscriptText",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 858, col: 11, offset: 30172},
+										pos:  position{line: 858, col: 11, offset: 30144},
 										name: "InlineImage",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 859, col: 11, offset: 30195},
+										pos:  position{line: 859, col: 11, offset: 30167},
 										name: "Link",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 860, col: 11, offset: 30211},
+										pos:  position{line: 860, col: 11, offset: 30183},
 										name: "Passthrough",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 861, col: 11, offset: 30234},
+										pos:  position{line: 861, col: 11, offset: 30206},
 										name: "NonSingleQuoteBoldText",
 									},
 								},
@@ -6230,61 +6230,61 @@ var g = &grammar{
 		},
 		{
 			name: "NonSingleQuoteBoldText",
-			pos:  position{line: 865, col: 1, offset: 30390},
+			pos:  position{line: 865, col: 1, offset: 30362},
 			expr: &actionExpr{
-				pos: position{line: 865, col: 27, offset: 30416},
+				pos: position{line: 865, col: 27, offset: 30388},
 				run: (*parser).callonNonSingleQuoteBoldText1,
 				expr: &seqExpr{
-					pos: position{line: 865, col: 27, offset: 30416},
+					pos: position{line: 865, col: 27, offset: 30388},
 					exprs: []interface{}{
 						&anyMatcher{
-							line: 865, col: 28, offset: 30417,
+							line: 865, col: 28, offset: 30389,
 						},
 						&zeroOrMoreExpr{
-							pos: position{line: 865, col: 31, offset: 30420},
+							pos: position{line: 865, col: 31, offset: 30392},
 							expr: &seqExpr{
-								pos: position{line: 865, col: 32, offset: 30421},
+								pos: position{line: 865, col: 32, offset: 30393},
 								exprs: []interface{}{
 									&notExpr{
-										pos: position{line: 865, col: 32, offset: 30421},
+										pos: position{line: 865, col: 32, offset: 30393},
 										expr: &litMatcher{
-											pos:        position{line: 865, col: 33, offset: 30422},
+											pos:        position{line: 865, col: 33, offset: 30394},
 											val:        "*",
 											ignoreCase: false,
 										},
 									},
 									&notExpr{
-										pos: position{line: 865, col: 37, offset: 30426},
+										pos: position{line: 865, col: 37, offset: 30398},
 										expr: &ruleRefExpr{
-											pos:  position{line: 865, col: 38, offset: 30427},
+											pos:  position{line: 865, col: 38, offset: 30399},
 											name: "WS",
 										},
 									},
 									&notExpr{
-										pos: position{line: 865, col: 41, offset: 30430},
+										pos: position{line: 865, col: 41, offset: 30402},
 										expr: &litMatcher{
-											pos:        position{line: 865, col: 42, offset: 30431},
+											pos:        position{line: 865, col: 42, offset: 30403},
 											val:        "^",
 											ignoreCase: false,
 										},
 									},
 									&notExpr{
-										pos: position{line: 865, col: 46, offset: 30435},
+										pos: position{line: 865, col: 46, offset: 30407},
 										expr: &litMatcher{
-											pos:        position{line: 865, col: 47, offset: 30436},
+											pos:        position{line: 865, col: 47, offset: 30408},
 											val:        "~",
 											ignoreCase: false,
 										},
 									},
 									&notExpr{
-										pos: position{line: 865, col: 51, offset: 30440},
+										pos: position{line: 865, col: 51, offset: 30412},
 										expr: &ruleRefExpr{
-											pos:  position{line: 865, col: 52, offset: 30441},
+											pos:  position{line: 865, col: 52, offset: 30413},
 											name: "NEWLINE",
 										},
 									},
 									&anyMatcher{
-										line: 865, col: 60, offset: 30449,
+										line: 865, col: 60, offset: 30421,
 									},
 								},
 							},
@@ -6295,39 +6295,39 @@ var g = &grammar{
 		},
 		{
 			name: "EscapedBoldText",
-			pos:  position{line: 869, col: 1, offset: 30509},
+			pos:  position{line: 869, col: 1, offset: 30481},
 			expr: &choiceExpr{
-				pos: position{line: 870, col: 5, offset: 30533},
+				pos: position{line: 870, col: 5, offset: 30505},
 				alternatives: []interface{}{
 					&actionExpr{
-						pos: position{line: 870, col: 5, offset: 30533},
+						pos: position{line: 870, col: 5, offset: 30505},
 						run: (*parser).callonEscapedBoldText2,
 						expr: &seqExpr{
-							pos: position{line: 870, col: 5, offset: 30533},
+							pos: position{line: 870, col: 5, offset: 30505},
 							exprs: []interface{}{
 								&labeledExpr{
-									pos:   position{line: 870, col: 5, offset: 30533},
+									pos:   position{line: 870, col: 5, offset: 30505},
 									label: "backslashes",
 									expr: &ruleRefExpr{
-										pos:  position{line: 870, col: 18, offset: 30546},
+										pos:  position{line: 870, col: 18, offset: 30518},
 										name: "TwoOrMoreBackslashes",
 									},
 								},
 								&litMatcher{
-									pos:        position{line: 870, col: 40, offset: 30568},
+									pos:        position{line: 870, col: 40, offset: 30540},
 									val:        "**",
 									ignoreCase: false,
 								},
 								&labeledExpr{
-									pos:   position{line: 870, col: 45, offset: 30573},
+									pos:   position{line: 870, col: 45, offset: 30545},
 									label: "content",
 									expr: &ruleRefExpr{
-										pos:  position{line: 870, col: 54, offset: 30582},
+										pos:  position{line: 870, col: 54, offset: 30554},
 										name: "DoubleQuoteBoldTextContent",
 									},
 								},
 								&litMatcher{
-									pos:        position{line: 870, col: 82, offset: 30610},
+									pos:        position{line: 870, col: 82, offset: 30582},
 									val:        "**",
 									ignoreCase: false,
 								},
@@ -6335,34 +6335,34 @@ var g = &grammar{
 						},
 					},
 					&actionExpr{
-						pos: position{line: 872, col: 9, offset: 30766},
+						pos: position{line: 872, col: 9, offset: 30738},
 						run: (*parser).callonEscapedBoldText10,
 						expr: &seqExpr{
-							pos: position{line: 872, col: 9, offset: 30766},
+							pos: position{line: 872, col: 9, offset: 30738},
 							exprs: []interface{}{
 								&labeledExpr{
-									pos:   position{line: 872, col: 9, offset: 30766},
+									pos:   position{line: 872, col: 9, offset: 30738},
 									label: "backslashes",
 									expr: &ruleRefExpr{
-										pos:  position{line: 872, col: 22, offset: 30779},
+										pos:  position{line: 872, col: 22, offset: 30751},
 										name: "OneOrMoreBackslashes",
 									},
 								},
 								&litMatcher{
-									pos:        position{line: 872, col: 44, offset: 30801},
+									pos:        position{line: 872, col: 44, offset: 30773},
 									val:        "**",
 									ignoreCase: false,
 								},
 								&labeledExpr{
-									pos:   position{line: 872, col: 49, offset: 30806},
+									pos:   position{line: 872, col: 49, offset: 30778},
 									label: "content",
 									expr: &ruleRefExpr{
-										pos:  position{line: 872, col: 58, offset: 30815},
+										pos:  position{line: 872, col: 58, offset: 30787},
 										name: "SingleQuoteBoldTextContent",
 									},
 								},
 								&litMatcher{
-									pos:        position{line: 872, col: 86, offset: 30843},
+									pos:        position{line: 872, col: 86, offset: 30815},
 									val:        "*",
 									ignoreCase: false,
 								},
@@ -6370,34 +6370,34 @@ var g = &grammar{
 						},
 					},
 					&actionExpr{
-						pos: position{line: 875, col: 9, offset: 31042},
+						pos: position{line: 875, col: 9, offset: 31014},
 						run: (*parser).callonEscapedBoldText18,
 						expr: &seqExpr{
-							pos: position{line: 875, col: 9, offset: 31042},
+							pos: position{line: 875, col: 9, offset: 31014},
 							exprs: []interface{}{
 								&labeledExpr{
-									pos:   position{line: 875, col: 9, offset: 31042},
+									pos:   position{line: 875, col: 9, offset: 31014},
 									label: "backslashes",
 									expr: &ruleRefExpr{
-										pos:  position{line: 875, col: 22, offset: 31055},
+										pos:  position{line: 875, col: 22, offset: 31027},
 										name: "OneOrMoreBackslashes",
 									},
 								},
 								&litMatcher{
-									pos:        position{line: 875, col: 44, offset: 31077},
+									pos:        position{line: 875, col: 44, offset: 31049},
 									val:        "*",
 									ignoreCase: false,
 								},
 								&labeledExpr{
-									pos:   position{line: 875, col: 48, offset: 31081},
+									pos:   position{line: 875, col: 48, offset: 31053},
 									label: "content",
 									expr: &ruleRefExpr{
-										pos:  position{line: 875, col: 57, offset: 31090},
+										pos:  position{line: 875, col: 57, offset: 31062},
 										name: "SingleQuoteBoldTextContent",
 									},
 								},
 								&litMatcher{
-									pos:        position{line: 875, col: 85, offset: 31118},
+									pos:        position{line: 875, col: 85, offset: 31090},
 									val:        "*",
 									ignoreCase: false,
 								},
@@ -6409,16 +6409,16 @@ var g = &grammar{
 		},
 		{
 			name: "ItalicText",
-			pos:  position{line: 883, col: 1, offset: 31325},
+			pos:  position{line: 883, col: 1, offset: 31297},
 			expr: &choiceExpr{
-				pos: position{line: 883, col: 15, offset: 31339},
+				pos: position{line: 883, col: 15, offset: 31311},
 				alternatives: []interface{}{
 					&ruleRefExpr{
-						pos:  position{line: 883, col: 15, offset: 31339},
+						pos:  position{line: 883, col: 15, offset: 31311},
 						name: "DoubleQuoteItalicText",
 					},
 					&ruleRefExpr{
-						pos:  position{line: 883, col: 39, offset: 31363},
+						pos:  position{line: 883, col: 39, offset: 31335},
 						name: "SingleQuoteItalicText",
 					},
 				},
@@ -6426,36 +6426,36 @@ var g = &grammar{
 		},
 		{
 			name: "DoubleQuoteItalicText",
-			pos:  position{line: 885, col: 1, offset: 31386},
+			pos:  position{line: 885, col: 1, offset: 31358},
 			expr: &actionExpr{
-				pos: position{line: 885, col: 26, offset: 31411},
+				pos: position{line: 885, col: 26, offset: 31383},
 				run: (*parser).callonDoubleQuoteItalicText1,
 				expr: &seqExpr{
-					pos: position{line: 885, col: 26, offset: 31411},
+					pos: position{line: 885, col: 26, offset: 31383},
 					exprs: []interface{}{
 						&notExpr{
-							pos: position{line: 885, col: 26, offset: 31411},
+							pos: position{line: 885, col: 26, offset: 31383},
 							expr: &litMatcher{
-								pos:        position{line: 885, col: 27, offset: 31412},
+								pos:        position{line: 885, col: 27, offset: 31384},
 								val:        "\\\\",
 								ignoreCase: false,
 							},
 						},
 						&litMatcher{
-							pos:        position{line: 885, col: 32, offset: 31417},
+							pos:        position{line: 885, col: 32, offset: 31389},
 							val:        "__",
 							ignoreCase: false,
 						},
 						&labeledExpr{
-							pos:   position{line: 885, col: 37, offset: 31422},
+							pos:   position{line: 885, col: 37, offset: 31394},
 							label: "content",
 							expr: &ruleRefExpr{
-								pos:  position{line: 885, col: 46, offset: 31431},
+								pos:  position{line: 885, col: 46, offset: 31403},
 								name: "DoubleQuoteItalicTextContent",
 							},
 						},
 						&litMatcher{
-							pos:        position{line: 885, col: 76, offset: 31461},
+							pos:        position{line: 885, col: 76, offset: 31433},
 							val:        "__",
 							ignoreCase: false,
 						},
@@ -6465,42 +6465,42 @@ var g = &grammar{
 		},
 		{
 			name: "DoubleQuoteItalicTextContent",
-			pos:  position{line: 889, col: 1, offset: 31587},
+			pos:  position{line: 889, col: 1, offset: 31559},
 			expr: &seqExpr{
-				pos: position{line: 889, col: 33, offset: 31619},
+				pos: position{line: 889, col: 33, offset: 31591},
 				exprs: []interface{}{
 					&ruleRefExpr{
-						pos:  position{line: 889, col: 33, offset: 31619},
+						pos:  position{line: 889, col: 33, offset: 31591},
 						name: "DoubleQuoteItalicTextElement",
 					},
 					&zeroOrMoreExpr{
-						pos: position{line: 889, col: 62, offset: 31648},
+						pos: position{line: 889, col: 62, offset: 31620},
 						expr: &actionExpr{
-							pos: position{line: 889, col: 63, offset: 31649},
+							pos: position{line: 889, col: 63, offset: 31621},
 							run: (*parser).callonDoubleQuoteItalicTextContent4,
 							expr: &seqExpr{
-								pos: position{line: 889, col: 63, offset: 31649},
+								pos: position{line: 889, col: 63, offset: 31621},
 								exprs: []interface{}{
 									&notExpr{
-										pos: position{line: 889, col: 63, offset: 31649},
+										pos: position{line: 889, col: 63, offset: 31621},
 										expr: &litMatcher{
-											pos:        position{line: 889, col: 65, offset: 31651},
+											pos:        position{line: 889, col: 65, offset: 31623},
 											val:        "__",
 											ignoreCase: false,
 										},
 									},
 									&labeledExpr{
-										pos:   position{line: 889, col: 71, offset: 31657},
+										pos:   position{line: 889, col: 71, offset: 31629},
 										label: "element",
 										expr: &choiceExpr{
-											pos: position{line: 889, col: 80, offset: 31666},
+											pos: position{line: 889, col: 80, offset: 31638},
 											alternatives: []interface{}{
 												&ruleRefExpr{
-													pos:  position{line: 889, col: 80, offset: 31666},
+													pos:  position{line: 889, col: 80, offset: 31638},
 													name: "WS",
 												},
 												&ruleRefExpr{
-													pos:  position{line: 889, col: 85, offset: 31671},
+													pos:  position{line: 889, col: 85, offset: 31643},
 													name: "DoubleQuoteItalicTextElement",
 												},
 											},
@@ -6515,60 +6515,60 @@ var g = &grammar{
 		},
 		{
 			name: "DoubleQuoteItalicTextElement",
-			pos:  position{line: 893, col: 1, offset: 31765},
+			pos:  position{line: 893, col: 1, offset: 31737},
 			expr: &actionExpr{
-				pos: position{line: 893, col: 33, offset: 31797},
+				pos: position{line: 893, col: 33, offset: 31769},
 				run: (*parser).callonDoubleQuoteItalicTextElement1,
 				expr: &seqExpr{
-					pos: position{line: 893, col: 33, offset: 31797},
+					pos: position{line: 893, col: 33, offset: 31769},
 					exprs: []interface{}{
 						&notExpr{
-							pos: position{line: 893, col: 33, offset: 31797},
+							pos: position{line: 893, col: 33, offset: 31769},
 							expr: &ruleRefExpr{
-								pos:  position{line: 893, col: 34, offset: 31798},
+								pos:  position{line: 893, col: 34, offset: 31770},
 								name: "NEWLINE",
 							},
 						},
 						&labeledExpr{
-							pos:   position{line: 893, col: 42, offset: 31806},
+							pos:   position{line: 893, col: 42, offset: 31778},
 							label: "element",
 							expr: &choiceExpr{
-								pos: position{line: 893, col: 51, offset: 31815},
+								pos: position{line: 893, col: 51, offset: 31787},
 								alternatives: []interface{}{
 									&ruleRefExpr{
-										pos:  position{line: 893, col: 51, offset: 31815},
+										pos:  position{line: 893, col: 51, offset: 31787},
 										name: "SingleQuoteItalicText",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 894, col: 11, offset: 31848},
+										pos:  position{line: 894, col: 11, offset: 31820},
 										name: "BoldText",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 895, col: 11, offset: 31868},
+										pos:  position{line: 895, col: 11, offset: 31840},
 										name: "MonospaceText",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 896, col: 11, offset: 31892},
+										pos:  position{line: 896, col: 11, offset: 31864},
 										name: "SubscriptText",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 897, col: 11, offset: 31916},
+										pos:  position{line: 897, col: 11, offset: 31888},
 										name: "SuperscriptText",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 898, col: 11, offset: 31942},
+										pos:  position{line: 898, col: 11, offset: 31914},
 										name: "InlineImage",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 899, col: 11, offset: 31965},
+										pos:  position{line: 899, col: 11, offset: 31937},
 										name: "Link",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 900, col: 11, offset: 31981},
+										pos:  position{line: 900, col: 11, offset: 31953},
 										name: "Passthrough",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 901, col: 11, offset: 32004},
+										pos:  position{line: 901, col: 11, offset: 31976},
 										name: "NonDoubleQuoteItalicText",
 									},
 								},
@@ -6580,54 +6580,54 @@ var g = &grammar{
 		},
 		{
 			name: "NonDoubleQuoteItalicText",
-			pos:  position{line: 905, col: 1, offset: 32162},
+			pos:  position{line: 905, col: 1, offset: 32134},
 			expr: &actionExpr{
-				pos: position{line: 905, col: 29, offset: 32190},
+				pos: position{line: 905, col: 29, offset: 32162},
 				run: (*parser).callonNonDoubleQuoteItalicText1,
 				expr: &seqExpr{
-					pos: position{line: 905, col: 29, offset: 32190},
+					pos: position{line: 905, col: 29, offset: 32162},
 					exprs: []interface{}{
 						&anyMatcher{
-							line: 905, col: 30, offset: 32191,
+							line: 905, col: 30, offset: 32163,
 						},
 						&zeroOrMoreExpr{
-							pos: position{line: 905, col: 33, offset: 32194},
+							pos: position{line: 905, col: 33, offset: 32166},
 							expr: &seqExpr{
-								pos: position{line: 905, col: 34, offset: 32195},
+								pos: position{line: 905, col: 34, offset: 32167},
 								exprs: []interface{}{
 									&notExpr{
-										pos: position{line: 905, col: 34, offset: 32195},
+										pos: position{line: 905, col: 34, offset: 32167},
 										expr: &litMatcher{
-											pos:        position{line: 905, col: 35, offset: 32196},
+											pos:        position{line: 905, col: 35, offset: 32168},
 											val:        "__",
 											ignoreCase: false,
 										},
 									},
 									&notExpr{
-										pos: position{line: 905, col: 40, offset: 32201},
+										pos: position{line: 905, col: 40, offset: 32173},
 										expr: &litMatcher{
-											pos:        position{line: 905, col: 41, offset: 32202},
+											pos:        position{line: 905, col: 41, offset: 32174},
 											val:        "^",
 											ignoreCase: false,
 										},
 									},
 									&notExpr{
-										pos: position{line: 905, col: 45, offset: 32206},
+										pos: position{line: 905, col: 45, offset: 32178},
 										expr: &litMatcher{
-											pos:        position{line: 905, col: 46, offset: 32207},
+											pos:        position{line: 905, col: 46, offset: 32179},
 											val:        "~",
 											ignoreCase: false,
 										},
 									},
 									&notExpr{
-										pos: position{line: 905, col: 50, offset: 32211},
+										pos: position{line: 905, col: 50, offset: 32183},
 										expr: &ruleRefExpr{
-											pos:  position{line: 905, col: 51, offset: 32212},
+											pos:  position{line: 905, col: 51, offset: 32184},
 											name: "NEWLINE",
 										},
 									},
 									&anyMatcher{
-										line: 905, col: 59, offset: 32220,
+										line: 905, col: 59, offset: 32192,
 									},
 								},
 							},
@@ -6638,47 +6638,47 @@ var g = &grammar{
 		},
 		{
 			name: "SingleQuoteItalicText",
-			pos:  position{line: 909, col: 1, offset: 32280},
+			pos:  position{line: 909, col: 1, offset: 32252},
 			expr: &choiceExpr{
-				pos: position{line: 909, col: 26, offset: 32305},
+				pos: position{line: 909, col: 26, offset: 32277},
 				alternatives: []interface{}{
 					&actionExpr{
-						pos: position{line: 909, col: 26, offset: 32305},
+						pos: position{line: 909, col: 26, offset: 32277},
 						run: (*parser).callonSingleQuoteItalicText2,
 						expr: &seqExpr{
-							pos: position{line: 909, col: 26, offset: 32305},
+							pos: position{line: 909, col: 26, offset: 32277},
 							exprs: []interface{}{
 								&notExpr{
-									pos: position{line: 909, col: 26, offset: 32305},
+									pos: position{line: 909, col: 26, offset: 32277},
 									expr: &litMatcher{
-										pos:        position{line: 909, col: 27, offset: 32306},
+										pos:        position{line: 909, col: 27, offset: 32278},
 										val:        "\\",
 										ignoreCase: false,
 									},
 								},
 								&notExpr{
-									pos: position{line: 909, col: 31, offset: 32310},
+									pos: position{line: 909, col: 31, offset: 32282},
 									expr: &litMatcher{
-										pos:        position{line: 909, col: 32, offset: 32311},
+										pos:        position{line: 909, col: 32, offset: 32283},
 										val:        "__",
 										ignoreCase: false,
 									},
 								},
 								&litMatcher{
-									pos:        position{line: 909, col: 37, offset: 32316},
+									pos:        position{line: 909, col: 37, offset: 32288},
 									val:        "_",
 									ignoreCase: false,
 								},
 								&labeledExpr{
-									pos:   position{line: 909, col: 41, offset: 32320},
+									pos:   position{line: 909, col: 41, offset: 32292},
 									label: "content",
 									expr: &ruleRefExpr{
-										pos:  position{line: 909, col: 50, offset: 32329},
+										pos:  position{line: 909, col: 50, offset: 32301},
 										name: "SingleQuoteItalicTextContent",
 									},
 								},
 								&litMatcher{
-									pos:        position{line: 909, col: 80, offset: 32359},
+									pos:        position{line: 909, col: 80, offset: 32331},
 									val:        "_",
 									ignoreCase: false,
 								},
@@ -6686,34 +6686,34 @@ var g = &grammar{
 						},
 					},
 					&actionExpr{
-						pos: position{line: 911, col: 5, offset: 32541},
+						pos: position{line: 911, col: 5, offset: 32513},
 						run: (*parser).callonSingleQuoteItalicText12,
 						expr: &seqExpr{
-							pos: position{line: 911, col: 5, offset: 32541},
+							pos: position{line: 911, col: 5, offset: 32513},
 							exprs: []interface{}{
 								&notExpr{
-									pos: position{line: 911, col: 5, offset: 32541},
+									pos: position{line: 911, col: 5, offset: 32513},
 									expr: &litMatcher{
-										pos:        position{line: 911, col: 6, offset: 32542},
+										pos:        position{line: 911, col: 6, offset: 32514},
 										val:        "\\\\",
 										ignoreCase: false,
 									},
 								},
 								&litMatcher{
-									pos:        position{line: 911, col: 11, offset: 32547},
+									pos:        position{line: 911, col: 11, offset: 32519},
 									val:        "__",
 									ignoreCase: false,
 								},
 								&labeledExpr{
-									pos:   position{line: 911, col: 16, offset: 32552},
+									pos:   position{line: 911, col: 16, offset: 32524},
 									label: "content",
 									expr: &ruleRefExpr{
-										pos:  position{line: 911, col: 25, offset: 32561},
+										pos:  position{line: 911, col: 25, offset: 32533},
 										name: "SingleQuoteItalicTextContent",
 									},
 								},
 								&litMatcher{
-									pos:        position{line: 911, col: 55, offset: 32591},
+									pos:        position{line: 911, col: 55, offset: 32563},
 									val:        "_",
 									ignoreCase: false,
 								},
@@ -6725,43 +6725,43 @@ var g = &grammar{
 		},
 		{
 			name: "SingleQuoteItalicTextContent",
-			pos:  position{line: 915, col: 1, offset: 32853},
+			pos:  position{line: 915, col: 1, offset: 32825},
 			expr: &seqExpr{
-				pos: position{line: 915, col: 33, offset: 32885},
+				pos: position{line: 915, col: 33, offset: 32857},
 				exprs: []interface{}{
 					&notExpr{
-						pos: position{line: 915, col: 33, offset: 32885},
+						pos: position{line: 915, col: 33, offset: 32857},
 						expr: &ruleRefExpr{
-							pos:  position{line: 915, col: 34, offset: 32886},
+							pos:  position{line: 915, col: 34, offset: 32858},
 							name: "WS",
 						},
 					},
 					&ruleRefExpr{
-						pos:  position{line: 915, col: 37, offset: 32889},
+						pos:  position{line: 915, col: 37, offset: 32861},
 						name: "SingleQuoteItalicTextElement",
 					},
 					&zeroOrMoreExpr{
-						pos: position{line: 915, col: 66, offset: 32918},
+						pos: position{line: 915, col: 66, offset: 32890},
 						expr: &actionExpr{
-							pos: position{line: 915, col: 67, offset: 32919},
+							pos: position{line: 915, col: 67, offset: 32891},
 							run: (*parser).callonSingleQuoteItalicTextContent6,
 							expr: &seqExpr{
-								pos: position{line: 915, col: 67, offset: 32919},
+								pos: position{line: 915, col: 67, offset: 32891},
 								exprs: []interface{}{
 									&notExpr{
-										pos: position{line: 915, col: 67, offset: 32919},
+										pos: position{line: 915, col: 67, offset: 32891},
 										expr: &seqExpr{
-											pos: position{line: 915, col: 69, offset: 32921},
+											pos: position{line: 915, col: 69, offset: 32893},
 											exprs: []interface{}{
 												&litMatcher{
-													pos:        position{line: 915, col: 69, offset: 32921},
+													pos:        position{line: 915, col: 69, offset: 32893},
 													val:        "_",
 													ignoreCase: false,
 												},
 												&notExpr{
-													pos: position{line: 915, col: 73, offset: 32925},
+													pos: position{line: 915, col: 73, offset: 32897},
 													expr: &ruleRefExpr{
-														pos:  position{line: 915, col: 74, offset: 32926},
+														pos:  position{line: 915, col: 74, offset: 32898},
 														name: "Alphanum",
 													},
 												},
@@ -6769,21 +6769,21 @@ var g = &grammar{
 										},
 									},
 									&labeledExpr{
-										pos:   position{line: 915, col: 84, offset: 32936},
+										pos:   position{line: 915, col: 84, offset: 32908},
 										label: "spaces",
 										expr: &zeroOrMoreExpr{
-											pos: position{line: 915, col: 92, offset: 32944},
+											pos: position{line: 915, col: 92, offset: 32916},
 											expr: &ruleRefExpr{
-												pos:  position{line: 915, col: 92, offset: 32944},
+												pos:  position{line: 915, col: 92, offset: 32916},
 												name: "WS",
 											},
 										},
 									},
 									&labeledExpr{
-										pos:   position{line: 915, col: 97, offset: 32949},
+										pos:   position{line: 915, col: 97, offset: 32921},
 										label: "element",
 										expr: &ruleRefExpr{
-											pos:  position{line: 915, col: 106, offset: 32958},
+											pos:  position{line: 915, col: 106, offset: 32930},
 											name: "SingleQuoteItalicTextElement",
 										},
 									},
@@ -6796,60 +6796,60 @@ var g = &grammar{
 		},
 		{
 			name: "SingleQuoteItalicTextElement",
-			pos:  position{line: 919, col: 1, offset: 33051},
+			pos:  position{line: 919, col: 1, offset: 33023},
 			expr: &actionExpr{
-				pos: position{line: 919, col: 33, offset: 33083},
+				pos: position{line: 919, col: 33, offset: 33055},
 				run: (*parser).callonSingleQuoteItalicTextElement1,
 				expr: &seqExpr{
-					pos: position{line: 919, col: 33, offset: 33083},
+					pos: position{line: 919, col: 33, offset: 33055},
 					exprs: []interface{}{
 						&notExpr{
-							pos: position{line: 919, col: 33, offset: 33083},
+							pos: position{line: 919, col: 33, offset: 33055},
 							expr: &ruleRefExpr{
-								pos:  position{line: 919, col: 34, offset: 33084},
+								pos:  position{line: 919, col: 34, offset: 33056},
 								name: "NEWLINE",
 							},
 						},
 						&labeledExpr{
-							pos:   position{line: 919, col: 42, offset: 33092},
+							pos:   position{line: 919, col: 42, offset: 33064},
 							label: "element",
 							expr: &choiceExpr{
-								pos: position{line: 919, col: 51, offset: 33101},
+								pos: position{line: 919, col: 51, offset: 33073},
 								alternatives: []interface{}{
 									&ruleRefExpr{
-										pos:  position{line: 919, col: 51, offset: 33101},
+										pos:  position{line: 919, col: 51, offset: 33073},
 										name: "DoubleQuoteItalicText",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 920, col: 11, offset: 33133},
+										pos:  position{line: 920, col: 11, offset: 33105},
 										name: "BoldText",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 921, col: 11, offset: 33153},
+										pos:  position{line: 921, col: 11, offset: 33125},
 										name: "MonospaceText",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 922, col: 11, offset: 33177},
+										pos:  position{line: 922, col: 11, offset: 33149},
 										name: "SubscriptText",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 923, col: 11, offset: 33201},
+										pos:  position{line: 923, col: 11, offset: 33173},
 										name: "SuperscriptText",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 924, col: 11, offset: 33227},
+										pos:  position{line: 924, col: 11, offset: 33199},
 										name: "InlineImage",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 925, col: 11, offset: 33250},
+										pos:  position{line: 925, col: 11, offset: 33222},
 										name: "Link",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 926, col: 11, offset: 33266},
+										pos:  position{line: 926, col: 11, offset: 33238},
 										name: "Passthrough",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 927, col: 11, offset: 33289},
+										pos:  position{line: 927, col: 11, offset: 33261},
 										name: "NonSingleQuoteItalicText",
 									},
 								},
@@ -6861,61 +6861,61 @@ var g = &grammar{
 		},
 		{
 			name: "NonSingleQuoteItalicText",
-			pos:  position{line: 931, col: 1, offset: 33447},
+			pos:  position{line: 931, col: 1, offset: 33419},
 			expr: &actionExpr{
-				pos: position{line: 931, col: 29, offset: 33475},
+				pos: position{line: 931, col: 29, offset: 33447},
 				run: (*parser).callonNonSingleQuoteItalicText1,
 				expr: &seqExpr{
-					pos: position{line: 931, col: 29, offset: 33475},
+					pos: position{line: 931, col: 29, offset: 33447},
 					exprs: []interface{}{
 						&anyMatcher{
-							line: 931, col: 30, offset: 33476,
+							line: 931, col: 30, offset: 33448,
 						},
 						&zeroOrMoreExpr{
-							pos: position{line: 931, col: 33, offset: 33479},
+							pos: position{line: 931, col: 33, offset: 33451},
 							expr: &seqExpr{
-								pos: position{line: 931, col: 34, offset: 33480},
+								pos: position{line: 931, col: 34, offset: 33452},
 								exprs: []interface{}{
 									&notExpr{
-										pos: position{line: 931, col: 34, offset: 33480},
+										pos: position{line: 931, col: 34, offset: 33452},
 										expr: &litMatcher{
-											pos:        position{line: 931, col: 35, offset: 33481},
+											pos:        position{line: 931, col: 35, offset: 33453},
 											val:        "_",
 											ignoreCase: false,
 										},
 									},
 									&notExpr{
-										pos: position{line: 931, col: 39, offset: 33485},
+										pos: position{line: 931, col: 39, offset: 33457},
 										expr: &ruleRefExpr{
-											pos:  position{line: 931, col: 40, offset: 33486},
+											pos:  position{line: 931, col: 40, offset: 33458},
 											name: "WS",
 										},
 									},
 									&notExpr{
-										pos: position{line: 931, col: 43, offset: 33489},
+										pos: position{line: 931, col: 43, offset: 33461},
 										expr: &litMatcher{
-											pos:        position{line: 931, col: 44, offset: 33490},
+											pos:        position{line: 931, col: 44, offset: 33462},
 											val:        "^",
 											ignoreCase: false,
 										},
 									},
 									&notExpr{
-										pos: position{line: 931, col: 48, offset: 33494},
+										pos: position{line: 931, col: 48, offset: 33466},
 										expr: &litMatcher{
-											pos:        position{line: 931, col: 49, offset: 33495},
+											pos:        position{line: 931, col: 49, offset: 33467},
 											val:        "~",
 											ignoreCase: false,
 										},
 									},
 									&notExpr{
-										pos: position{line: 931, col: 53, offset: 33499},
+										pos: position{line: 931, col: 53, offset: 33471},
 										expr: &ruleRefExpr{
-											pos:  position{line: 931, col: 54, offset: 33500},
+											pos:  position{line: 931, col: 54, offset: 33472},
 											name: "NEWLINE",
 										},
 									},
 									&anyMatcher{
-										line: 931, col: 62, offset: 33508,
+										line: 931, col: 62, offset: 33480,
 									},
 								},
 							},
@@ -6926,39 +6926,39 @@ var g = &grammar{
 		},
 		{
 			name: "EscapedItalicText",
-			pos:  position{line: 935, col: 1, offset: 33568},
+			pos:  position{line: 935, col: 1, offset: 33540},
 			expr: &choiceExpr{
-				pos: position{line: 936, col: 5, offset: 33594},
+				pos: position{line: 936, col: 5, offset: 33566},
 				alternatives: []interface{}{
 					&actionExpr{
-						pos: position{line: 936, col: 5, offset: 33594},
+						pos: position{line: 936, col: 5, offset: 33566},
 						run: (*parser).callonEscapedItalicText2,
 						expr: &seqExpr{
-							pos: position{line: 936, col: 5, offset: 33594},
+							pos: position{line: 936, col: 5, offset: 33566},
 							exprs: []interface{}{
 								&labeledExpr{
-									pos:   position{line: 936, col: 5, offset: 33594},
+									pos:   position{line: 936, col: 5, offset: 33566},
 									label: "backslashes",
 									expr: &ruleRefExpr{
-										pos:  position{line: 936, col: 18, offset: 33607},
+										pos:  position{line: 936, col: 18, offset: 33579},
 										name: "TwoOrMoreBackslashes",
 									},
 								},
 								&litMatcher{
-									pos:        position{line: 936, col: 40, offset: 33629},
+									pos:        position{line: 936, col: 40, offset: 33601},
 									val:        "__",
 									ignoreCase: false,
 								},
 								&labeledExpr{
-									pos:   position{line: 936, col: 45, offset: 33634},
+									pos:   position{line: 936, col: 45, offset: 33606},
 									label: "content",
 									expr: &ruleRefExpr{
-										pos:  position{line: 936, col: 54, offset: 33643},
+										pos:  position{line: 936, col: 54, offset: 33615},
 										name: "DoubleQuoteItalicTextContent",
 									},
 								},
 								&litMatcher{
-									pos:        position{line: 936, col: 84, offset: 33673},
+									pos:        position{line: 936, col: 84, offset: 33645},
 									val:        "__",
 									ignoreCase: false,
 								},
@@ -6966,34 +6966,34 @@ var g = &grammar{
 						},
 					},
 					&actionExpr{
-						pos: position{line: 938, col: 9, offset: 33829},
+						pos: position{line: 938, col: 9, offset: 33801},
 						run: (*parser).callonEscapedItalicText10,
 						expr: &seqExpr{
-							pos: position{line: 938, col: 9, offset: 33829},
+							pos: position{line: 938, col: 9, offset: 33801},
 							exprs: []interface{}{
 								&labeledExpr{
-									pos:   position{line: 938, col: 9, offset: 33829},
+									pos:   position{line: 938, col: 9, offset: 33801},
 									label: "backslashes",
 									expr: &ruleRefExpr{
-										pos:  position{line: 938, col: 22, offset: 33842},
+										pos:  position{line: 938, col: 22, offset: 33814},
 										name: "OneOrMoreBackslashes",
 									},
 								},
 								&litMatcher{
-									pos:        position{line: 938, col: 44, offset: 33864},
+									pos:        position{line: 938, col: 44, offset: 33836},
 									val:        "__",
 									ignoreCase: false,
 								},
 								&labeledExpr{
-									pos:   position{line: 938, col: 49, offset: 33869},
+									pos:   position{line: 938, col: 49, offset: 33841},
 									label: "content",
 									expr: &ruleRefExpr{
-										pos:  position{line: 938, col: 58, offset: 33878},
+										pos:  position{line: 938, col: 58, offset: 33850},
 										name: "SingleQuoteItalicTextContent",
 									},
 								},
 								&litMatcher{
-									pos:        position{line: 938, col: 88, offset: 33908},
+									pos:        position{line: 938, col: 88, offset: 33880},
 									val:        "_",
 									ignoreCase: false,
 								},
@@ -7001,34 +7001,34 @@ var g = &grammar{
 						},
 					},
 					&actionExpr{
-						pos: position{line: 941, col: 9, offset: 34107},
+						pos: position{line: 941, col: 9, offset: 34079},
 						run: (*parser).callonEscapedItalicText18,
 						expr: &seqExpr{
-							pos: position{line: 941, col: 9, offset: 34107},
+							pos: position{line: 941, col: 9, offset: 34079},
 							exprs: []interface{}{
 								&labeledExpr{
-									pos:   position{line: 941, col: 9, offset: 34107},
+									pos:   position{line: 941, col: 9, offset: 34079},
 									label: "backslashes",
 									expr: &ruleRefExpr{
-										pos:  position{line: 941, col: 22, offset: 34120},
+										pos:  position{line: 941, col: 22, offset: 34092},
 										name: "OneOrMoreBackslashes",
 									},
 								},
 								&litMatcher{
-									pos:        position{line: 941, col: 44, offset: 34142},
+									pos:        position{line: 941, col: 44, offset: 34114},
 									val:        "_",
 									ignoreCase: false,
 								},
 								&labeledExpr{
-									pos:   position{line: 941, col: 48, offset: 34146},
+									pos:   position{line: 941, col: 48, offset: 34118},
 									label: "content",
 									expr: &ruleRefExpr{
-										pos:  position{line: 941, col: 57, offset: 34155},
+										pos:  position{line: 941, col: 57, offset: 34127},
 										name: "SingleQuoteItalicTextContent",
 									},
 								},
 								&litMatcher{
-									pos:        position{line: 941, col: 87, offset: 34185},
+									pos:        position{line: 941, col: 87, offset: 34157},
 									val:        "_",
 									ignoreCase: false,
 								},
@@ -7040,16 +7040,16 @@ var g = &grammar{
 		},
 		{
 			name: "MonospaceText",
-			pos:  position{line: 948, col: 1, offset: 34394},
+			pos:  position{line: 948, col: 1, offset: 34366},
 			expr: &choiceExpr{
-				pos: position{line: 948, col: 18, offset: 34411},
+				pos: position{line: 948, col: 18, offset: 34383},
 				alternatives: []interface{}{
 					&ruleRefExpr{
-						pos:  position{line: 948, col: 18, offset: 34411},
+						pos:  position{line: 948, col: 18, offset: 34383},
 						name: "DoubleQuoteMonospaceText",
 					},
 					&ruleRefExpr{
-						pos:  position{line: 948, col: 45, offset: 34438},
+						pos:  position{line: 948, col: 45, offset: 34410},
 						name: "SingleQuoteMonospaceText",
 					},
 				},
@@ -7057,36 +7057,36 @@ var g = &grammar{
 		},
 		{
 			name: "DoubleQuoteMonospaceText",
-			pos:  position{line: 950, col: 1, offset: 34464},
+			pos:  position{line: 950, col: 1, offset: 34436},
 			expr: &actionExpr{
-				pos: position{line: 950, col: 29, offset: 34492},
+				pos: position{line: 950, col: 29, offset: 34464},
 				run: (*parser).callonDoubleQuoteMonospaceText1,
 				expr: &seqExpr{
-					pos: position{line: 950, col: 29, offset: 34492},
+					pos: position{line: 950, col: 29, offset: 34464},
 					exprs: []interface{}{
 						&notExpr{
-							pos: position{line: 950, col: 29, offset: 34492},
+							pos: position{line: 950, col: 29, offset: 34464},
 							expr: &litMatcher{
-								pos:        position{line: 950, col: 30, offset: 34493},
+								pos:        position{line: 950, col: 30, offset: 34465},
 								val:        "\\\\",
 								ignoreCase: false,
 							},
 						},
 						&litMatcher{
-							pos:        position{line: 950, col: 35, offset: 34498},
+							pos:        position{line: 950, col: 35, offset: 34470},
 							val:        "``",
 							ignoreCase: false,
 						},
 						&labeledExpr{
-							pos:   position{line: 950, col: 40, offset: 34503},
+							pos:   position{line: 950, col: 40, offset: 34475},
 							label: "content",
 							expr: &ruleRefExpr{
-								pos:  position{line: 950, col: 49, offset: 34512},
+								pos:  position{line: 950, col: 49, offset: 34484},
 								name: "DoubleQuoteMonospaceTextContent",
 							},
 						},
 						&litMatcher{
-							pos:        position{line: 950, col: 82, offset: 34545},
+							pos:        position{line: 950, col: 82, offset: 34517},
 							val:        "``",
 							ignoreCase: false,
 						},
@@ -7096,42 +7096,42 @@ var g = &grammar{
 		},
 		{
 			name: "DoubleQuoteMonospaceTextContent",
-			pos:  position{line: 954, col: 1, offset: 34674},
+			pos:  position{line: 954, col: 1, offset: 34646},
 			expr: &seqExpr{
-				pos: position{line: 954, col: 36, offset: 34709},
+				pos: position{line: 954, col: 36, offset: 34681},
 				exprs: []interface{}{
 					&ruleRefExpr{
-						pos:  position{line: 954, col: 36, offset: 34709},
+						pos:  position{line: 954, col: 36, offset: 34681},
 						name: "DoubleQuoteMonospaceTextElement",
 					},
 					&zeroOrMoreExpr{
-						pos: position{line: 954, col: 68, offset: 34741},
+						pos: position{line: 954, col: 68, offset: 34713},
 						expr: &actionExpr{
-							pos: position{line: 954, col: 69, offset: 34742},
+							pos: position{line: 954, col: 69, offset: 34714},
 							run: (*parser).callonDoubleQuoteMonospaceTextContent4,
 							expr: &seqExpr{
-								pos: position{line: 954, col: 69, offset: 34742},
+								pos: position{line: 954, col: 69, offset: 34714},
 								exprs: []interface{}{
 									&notExpr{
-										pos: position{line: 954, col: 69, offset: 34742},
+										pos: position{line: 954, col: 69, offset: 34714},
 										expr: &litMatcher{
-											pos:        position{line: 954, col: 71, offset: 34744},
+											pos:        position{line: 954, col: 71, offset: 34716},
 											val:        "``",
 											ignoreCase: false,
 										},
 									},
 									&labeledExpr{
-										pos:   position{line: 954, col: 77, offset: 34750},
+										pos:   position{line: 954, col: 77, offset: 34722},
 										label: "element",
 										expr: &choiceExpr{
-											pos: position{line: 954, col: 86, offset: 34759},
+											pos: position{line: 954, col: 86, offset: 34731},
 											alternatives: []interface{}{
 												&ruleRefExpr{
-													pos:  position{line: 954, col: 86, offset: 34759},
+													pos:  position{line: 954, col: 86, offset: 34731},
 													name: "WS",
 												},
 												&ruleRefExpr{
-													pos:  position{line: 954, col: 91, offset: 34764},
+													pos:  position{line: 954, col: 91, offset: 34736},
 													name: "DoubleQuoteMonospaceTextElement",
 												},
 											},
@@ -7146,60 +7146,60 @@ var g = &grammar{
 		},
 		{
 			name: "DoubleQuoteMonospaceTextElement",
-			pos:  position{line: 958, col: 1, offset: 34861},
+			pos:  position{line: 958, col: 1, offset: 34833},
 			expr: &actionExpr{
-				pos: position{line: 958, col: 36, offset: 34896},
+				pos: position{line: 958, col: 36, offset: 34868},
 				run: (*parser).callonDoubleQuoteMonospaceTextElement1,
 				expr: &seqExpr{
-					pos: position{line: 958, col: 36, offset: 34896},
+					pos: position{line: 958, col: 36, offset: 34868},
 					exprs: []interface{}{
 						&notExpr{
-							pos: position{line: 958, col: 36, offset: 34896},
+							pos: position{line: 958, col: 36, offset: 34868},
 							expr: &ruleRefExpr{
-								pos:  position{line: 958, col: 37, offset: 34897},
+								pos:  position{line: 958, col: 37, offset: 34869},
 								name: "NEWLINE",
 							},
 						},
 						&labeledExpr{
-							pos:   position{line: 958, col: 45, offset: 34905},
+							pos:   position{line: 958, col: 45, offset: 34877},
 							label: "element",
 							expr: &choiceExpr{
-								pos: position{line: 958, col: 54, offset: 34914},
+								pos: position{line: 958, col: 54, offset: 34886},
 								alternatives: []interface{}{
 									&ruleRefExpr{
-										pos:  position{line: 958, col: 54, offset: 34914},
+										pos:  position{line: 958, col: 54, offset: 34886},
 										name: "SingleQuoteMonospaceText",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 959, col: 11, offset: 34950},
+										pos:  position{line: 959, col: 11, offset: 34922},
 										name: "BoldText",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 960, col: 11, offset: 34969},
+										pos:  position{line: 960, col: 11, offset: 34941},
 										name: "ItalicText",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 961, col: 11, offset: 34991},
+										pos:  position{line: 961, col: 11, offset: 34963},
 										name: "SubscriptText",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 962, col: 11, offset: 35015},
+										pos:  position{line: 962, col: 11, offset: 34987},
 										name: "SuperscriptText",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 963, col: 11, offset: 35041},
+										pos:  position{line: 963, col: 11, offset: 35013},
 										name: "InlineImage",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 964, col: 11, offset: 35064},
+										pos:  position{line: 964, col: 11, offset: 35036},
 										name: "Link",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 965, col: 11, offset: 35080},
+										pos:  position{line: 965, col: 11, offset: 35052},
 										name: "Passthrough",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 966, col: 11, offset: 35103},
+										pos:  position{line: 966, col: 11, offset: 35075},
 										name: "NonDoubleQuoteMonospaceText",
 									},
 								},
@@ -7211,61 +7211,61 @@ var g = &grammar{
 		},
 		{
 			name: "NonDoubleQuoteMonospaceText",
-			pos:  position{line: 970, col: 1, offset: 35264},
+			pos:  position{line: 970, col: 1, offset: 35236},
 			expr: &actionExpr{
-				pos: position{line: 970, col: 32, offset: 35295},
+				pos: position{line: 970, col: 32, offset: 35267},
 				run: (*parser).callonNonDoubleQuoteMonospaceText1,
 				expr: &seqExpr{
-					pos: position{line: 970, col: 32, offset: 35295},
+					pos: position{line: 970, col: 32, offset: 35267},
 					exprs: []interface{}{
 						&anyMatcher{
-							line: 970, col: 33, offset: 35296,
+							line: 970, col: 33, offset: 35268,
 						},
 						&zeroOrMoreExpr{
-							pos: position{line: 970, col: 36, offset: 35299},
+							pos: position{line: 970, col: 36, offset: 35271},
 							expr: &seqExpr{
-								pos: position{line: 970, col: 37, offset: 35300},
+								pos: position{line: 970, col: 37, offset: 35272},
 								exprs: []interface{}{
 									&notExpr{
-										pos: position{line: 970, col: 37, offset: 35300},
+										pos: position{line: 970, col: 37, offset: 35272},
 										expr: &litMatcher{
-											pos:        position{line: 970, col: 38, offset: 35301},
+											pos:        position{line: 970, col: 38, offset: 35273},
 											val:        "``",
 											ignoreCase: false,
 										},
 									},
 									&notExpr{
-										pos: position{line: 970, col: 43, offset: 35306},
+										pos: position{line: 970, col: 43, offset: 35278},
 										expr: &ruleRefExpr{
-											pos:  position{line: 970, col: 44, offset: 35307},
+											pos:  position{line: 970, col: 44, offset: 35279},
 											name: "WS",
 										},
 									},
 									&notExpr{
-										pos: position{line: 970, col: 47, offset: 35310},
+										pos: position{line: 970, col: 47, offset: 35282},
 										expr: &litMatcher{
-											pos:        position{line: 970, col: 48, offset: 35311},
+											pos:        position{line: 970, col: 48, offset: 35283},
 											val:        "^",
 											ignoreCase: false,
 										},
 									},
 									&notExpr{
-										pos: position{line: 970, col: 52, offset: 35315},
+										pos: position{line: 970, col: 52, offset: 35287},
 										expr: &litMatcher{
-											pos:        position{line: 970, col: 53, offset: 35316},
+											pos:        position{line: 970, col: 53, offset: 35288},
 											val:        "~",
 											ignoreCase: false,
 										},
 									},
 									&notExpr{
-										pos: position{line: 970, col: 57, offset: 35320},
+										pos: position{line: 970, col: 57, offset: 35292},
 										expr: &ruleRefExpr{
-											pos:  position{line: 970, col: 58, offset: 35321},
+											pos:  position{line: 970, col: 58, offset: 35293},
 											name: "NEWLINE",
 										},
 									},
 									&anyMatcher{
-										line: 970, col: 66, offset: 35329,
+										line: 970, col: 66, offset: 35301,
 									},
 								},
 							},
@@ -7276,47 +7276,47 @@ var g = &grammar{
 		},
 		{
 			name: "SingleQuoteMonospaceText",
-			pos:  position{line: 974, col: 1, offset: 35389},
+			pos:  position{line: 974, col: 1, offset: 35361},
 			expr: &choiceExpr{
-				pos: position{line: 974, col: 29, offset: 35417},
+				pos: position{line: 974, col: 29, offset: 35389},
 				alternatives: []interface{}{
 					&actionExpr{
-						pos: position{line: 974, col: 29, offset: 35417},
+						pos: position{line: 974, col: 29, offset: 35389},
 						run: (*parser).callonSingleQuoteMonospaceText2,
 						expr: &seqExpr{
-							pos: position{line: 974, col: 29, offset: 35417},
+							pos: position{line: 974, col: 29, offset: 35389},
 							exprs: []interface{}{
 								&notExpr{
-									pos: position{line: 974, col: 29, offset: 35417},
+									pos: position{line: 974, col: 29, offset: 35389},
 									expr: &litMatcher{
-										pos:        position{line: 974, col: 30, offset: 35418},
+										pos:        position{line: 974, col: 30, offset: 35390},
 										val:        "\\",
 										ignoreCase: false,
 									},
 								},
 								&notExpr{
-									pos: position{line: 974, col: 34, offset: 35422},
+									pos: position{line: 974, col: 34, offset: 35394},
 									expr: &litMatcher{
-										pos:        position{line: 974, col: 35, offset: 35423},
+										pos:        position{line: 974, col: 35, offset: 35395},
 										val:        "``",
 										ignoreCase: false,
 									},
 								},
 								&litMatcher{
-									pos:        position{line: 974, col: 40, offset: 35428},
+									pos:        position{line: 974, col: 40, offset: 35400},
 									val:        "`",
 									ignoreCase: false,
 								},
 								&labeledExpr{
-									pos:   position{line: 974, col: 44, offset: 35432},
+									pos:   position{line: 974, col: 44, offset: 35404},
 									label: "content",
 									expr: &ruleRefExpr{
-										pos:  position{line: 974, col: 53, offset: 35441},
+										pos:  position{line: 974, col: 53, offset: 35413},
 										name: "SingleQuoteMonospaceTextContent",
 									},
 								},
 								&litMatcher{
-									pos:        position{line: 974, col: 86, offset: 35474},
+									pos:        position{line: 974, col: 86, offset: 35446},
 									val:        "`",
 									ignoreCase: false,
 								},
@@ -7324,34 +7324,34 @@ var g = &grammar{
 						},
 					},
 					&actionExpr{
-						pos: position{line: 976, col: 5, offset: 35659},
+						pos: position{line: 976, col: 5, offset: 35631},
 						run: (*parser).callonSingleQuoteMonospaceText12,
 						expr: &seqExpr{
-							pos: position{line: 976, col: 5, offset: 35659},
+							pos: position{line: 976, col: 5, offset: 35631},
 							exprs: []interface{}{
 								&notExpr{
-									pos: position{line: 976, col: 5, offset: 35659},
+									pos: position{line: 976, col: 5, offset: 35631},
 									expr: &litMatcher{
-										pos:        position{line: 976, col: 6, offset: 35660},
+										pos:        position{line: 976, col: 6, offset: 35632},
 										val:        "\\\\",
 										ignoreCase: false,
 									},
 								},
 								&litMatcher{
-									pos:        position{line: 976, col: 11, offset: 35665},
+									pos:        position{line: 976, col: 11, offset: 35637},
 									val:        "``",
 									ignoreCase: false,
 								},
 								&labeledExpr{
-									pos:   position{line: 976, col: 16, offset: 35670},
+									pos:   position{line: 976, col: 16, offset: 35642},
 									label: "content",
 									expr: &ruleRefExpr{
-										pos:  position{line: 976, col: 25, offset: 35679},
+										pos:  position{line: 976, col: 25, offset: 35651},
 										name: "SingleQuoteMonospaceTextContent",
 									},
 								},
 								&litMatcher{
-									pos:        position{line: 976, col: 58, offset: 35712},
+									pos:        position{line: 976, col: 58, offset: 35684},
 									val:        "`",
 									ignoreCase: false,
 								},
@@ -7363,43 +7363,43 @@ var g = &grammar{
 		},
 		{
 			name: "SingleQuoteMonospaceTextContent",
-			pos:  position{line: 980, col: 1, offset: 35980},
+			pos:  position{line: 980, col: 1, offset: 35952},
 			expr: &seqExpr{
-				pos: position{line: 980, col: 36, offset: 36015},
+				pos: position{line: 980, col: 36, offset: 35987},
 				exprs: []interface{}{
 					&notExpr{
-						pos: position{line: 980, col: 36, offset: 36015},
+						pos: position{line: 980, col: 36, offset: 35987},
 						expr: &ruleRefExpr{
-							pos:  position{line: 980, col: 37, offset: 36016},
+							pos:  position{line: 980, col: 37, offset: 35988},
 							name: "WS",
 						},
 					},
 					&ruleRefExpr{
-						pos:  position{line: 980, col: 40, offset: 36019},
+						pos:  position{line: 980, col: 40, offset: 35991},
 						name: "SingleQuoteMonospaceTextElement",
 					},
 					&zeroOrMoreExpr{
-						pos: position{line: 980, col: 72, offset: 36051},
+						pos: position{line: 980, col: 72, offset: 36023},
 						expr: &actionExpr{
-							pos: position{line: 980, col: 73, offset: 36052},
+							pos: position{line: 980, col: 73, offset: 36024},
 							run: (*parser).callonSingleQuoteMonospaceTextContent6,
 							expr: &seqExpr{
-								pos: position{line: 980, col: 73, offset: 36052},
+								pos: position{line: 980, col: 73, offset: 36024},
 								exprs: []interface{}{
 									&notExpr{
-										pos: position{line: 980, col: 73, offset: 36052},
+										pos: position{line: 980, col: 73, offset: 36024},
 										expr: &seqExpr{
-											pos: position{line: 980, col: 75, offset: 36054},
+											pos: position{line: 980, col: 75, offset: 36026},
 											exprs: []interface{}{
 												&litMatcher{
-													pos:        position{line: 980, col: 75, offset: 36054},
+													pos:        position{line: 980, col: 75, offset: 36026},
 													val:        "`",
 													ignoreCase: false,
 												},
 												&notExpr{
-													pos: position{line: 980, col: 79, offset: 36058},
+													pos: position{line: 980, col: 79, offset: 36030},
 													expr: &ruleRefExpr{
-														pos:  position{line: 980, col: 80, offset: 36059},
+														pos:  position{line: 980, col: 80, offset: 36031},
 														name: "Alphanum",
 													},
 												},
@@ -7407,21 +7407,21 @@ var g = &grammar{
 										},
 									},
 									&labeledExpr{
-										pos:   position{line: 980, col: 90, offset: 36069},
+										pos:   position{line: 980, col: 90, offset: 36041},
 										label: "spaces",
 										expr: &zeroOrMoreExpr{
-											pos: position{line: 980, col: 98, offset: 36077},
+											pos: position{line: 980, col: 98, offset: 36049},
 											expr: &ruleRefExpr{
-												pos:  position{line: 980, col: 98, offset: 36077},
+												pos:  position{line: 980, col: 98, offset: 36049},
 												name: "WS",
 											},
 										},
 									},
 									&labeledExpr{
-										pos:   position{line: 980, col: 103, offset: 36082},
+										pos:   position{line: 980, col: 103, offset: 36054},
 										label: "element",
 										expr: &ruleRefExpr{
-											pos:  position{line: 980, col: 112, offset: 36091},
+											pos:  position{line: 980, col: 112, offset: 36063},
 											name: "SingleQuoteMonospaceTextElement",
 										},
 									},
@@ -7434,54 +7434,54 @@ var g = &grammar{
 		},
 		{
 			name: "SingleQuoteMonospaceTextElement",
-			pos:  position{line: 984, col: 1, offset: 36187},
+			pos:  position{line: 984, col: 1, offset: 36159},
 			expr: &actionExpr{
-				pos: position{line: 984, col: 37, offset: 36223},
+				pos: position{line: 984, col: 37, offset: 36195},
 				run: (*parser).callonSingleQuoteMonospaceTextElement1,
 				expr: &labeledExpr{
-					pos:   position{line: 984, col: 37, offset: 36223},
+					pos:   position{line: 984, col: 37, offset: 36195},
 					label: "element",
 					expr: &choiceExpr{
-						pos: position{line: 984, col: 46, offset: 36232},
+						pos: position{line: 984, col: 46, offset: 36204},
 						alternatives: []interface{}{
 							&ruleRefExpr{
-								pos:  position{line: 984, col: 46, offset: 36232},
+								pos:  position{line: 984, col: 46, offset: 36204},
 								name: "NEWLINE",
 							},
 							&ruleRefExpr{
-								pos:  position{line: 985, col: 11, offset: 36270},
+								pos:  position{line: 985, col: 11, offset: 36242},
 								name: "DoubleQuoteMonospaceText",
 							},
 							&ruleRefExpr{
-								pos:  position{line: 986, col: 11, offset: 36306},
+								pos:  position{line: 986, col: 11, offset: 36278},
 								name: "BoldText",
 							},
 							&ruleRefExpr{
-								pos:  position{line: 987, col: 11, offset: 36326},
+								pos:  position{line: 987, col: 11, offset: 36298},
 								name: "ItalicText",
 							},
 							&ruleRefExpr{
-								pos:  position{line: 988, col: 11, offset: 36347},
+								pos:  position{line: 988, col: 11, offset: 36319},
 								name: "SubscriptText",
 							},
 							&ruleRefExpr{
-								pos:  position{line: 989, col: 11, offset: 36371},
+								pos:  position{line: 989, col: 11, offset: 36343},
 								name: "SuperscriptText",
 							},
 							&ruleRefExpr{
-								pos:  position{line: 990, col: 11, offset: 36397},
+								pos:  position{line: 990, col: 11, offset: 36369},
 								name: "InlineImage",
 							},
 							&ruleRefExpr{
-								pos:  position{line: 991, col: 11, offset: 36420},
+								pos:  position{line: 991, col: 11, offset: 36392},
 								name: "Link",
 							},
 							&ruleRefExpr{
-								pos:  position{line: 992, col: 11, offset: 36436},
+								pos:  position{line: 992, col: 11, offset: 36408},
 								name: "Passthrough",
 							},
 							&ruleRefExpr{
-								pos:  position{line: 993, col: 11, offset: 36459},
+								pos:  position{line: 993, col: 11, offset: 36431},
 								name: "NonSingleQuoteMonospaceText",
 							},
 						},
@@ -7491,61 +7491,61 @@ var g = &grammar{
 		},
 		{
 			name: "NonSingleQuoteMonospaceText",
-			pos:  position{line: 997, col: 1, offset: 36620},
+			pos:  position{line: 997, col: 1, offset: 36592},
 			expr: &actionExpr{
-				pos: position{line: 997, col: 32, offset: 36651},
+				pos: position{line: 997, col: 32, offset: 36623},
 				run: (*parser).callonNonSingleQuoteMonospaceText1,
 				expr: &seqExpr{
-					pos: position{line: 997, col: 32, offset: 36651},
+					pos: position{line: 997, col: 32, offset: 36623},
 					exprs: []interface{}{
 						&anyMatcher{
-							line: 997, col: 33, offset: 36652,
+							line: 997, col: 33, offset: 36624,
 						},
 						&zeroOrMoreExpr{
-							pos: position{line: 997, col: 36, offset: 36655},
+							pos: position{line: 997, col: 36, offset: 36627},
 							expr: &seqExpr{
-								pos: position{line: 997, col: 37, offset: 36656},
+								pos: position{line: 997, col: 37, offset: 36628},
 								exprs: []interface{}{
 									&notExpr{
-										pos: position{line: 997, col: 37, offset: 36656},
+										pos: position{line: 997, col: 37, offset: 36628},
 										expr: &ruleRefExpr{
-											pos:  position{line: 997, col: 38, offset: 36657},
+											pos:  position{line: 997, col: 38, offset: 36629},
 											name: "WS",
 										},
 									},
 									&notExpr{
-										pos: position{line: 997, col: 41, offset: 36660},
+										pos: position{line: 997, col: 41, offset: 36632},
 										expr: &litMatcher{
-											pos:        position{line: 997, col: 42, offset: 36661},
+											pos:        position{line: 997, col: 42, offset: 36633},
 											val:        "`",
 											ignoreCase: false,
 										},
 									},
 									&notExpr{
-										pos: position{line: 997, col: 46, offset: 36665},
+										pos: position{line: 997, col: 46, offset: 36637},
 										expr: &litMatcher{
-											pos:        position{line: 997, col: 47, offset: 36666},
+											pos:        position{line: 997, col: 47, offset: 36638},
 											val:        "^",
 											ignoreCase: false,
 										},
 									},
 									&notExpr{
-										pos: position{line: 997, col: 51, offset: 36670},
+										pos: position{line: 997, col: 51, offset: 36642},
 										expr: &litMatcher{
-											pos:        position{line: 997, col: 52, offset: 36671},
+											pos:        position{line: 997, col: 52, offset: 36643},
 											val:        "~",
 											ignoreCase: false,
 										},
 									},
 									&notExpr{
-										pos: position{line: 997, col: 56, offset: 36675},
+										pos: position{line: 997, col: 56, offset: 36647},
 										expr: &ruleRefExpr{
-											pos:  position{line: 997, col: 57, offset: 36676},
+											pos:  position{line: 997, col: 57, offset: 36648},
 											name: "NEWLINE",
 										},
 									},
 									&anyMatcher{
-										line: 997, col: 65, offset: 36684,
+										line: 997, col: 65, offset: 36656,
 									},
 								},
 							},
@@ -7556,39 +7556,39 @@ var g = &grammar{
 		},
 		{
 			name: "EscapedMonospaceText",
-			pos:  position{line: 1001, col: 1, offset: 36765},
+			pos:  position{line: 1001, col: 1, offset: 36737},
 			expr: &choiceExpr{
-				pos: position{line: 1002, col: 5, offset: 36794},
+				pos: position{line: 1002, col: 5, offset: 36766},
 				alternatives: []interface{}{
 					&actionExpr{
-						pos: position{line: 1002, col: 5, offset: 36794},
+						pos: position{line: 1002, col: 5, offset: 36766},
 						run: (*parser).callonEscapedMonospaceText2,
 						expr: &seqExpr{
-							pos: position{line: 1002, col: 5, offset: 36794},
+							pos: position{line: 1002, col: 5, offset: 36766},
 							exprs: []interface{}{
 								&labeledExpr{
-									pos:   position{line: 1002, col: 5, offset: 36794},
+									pos:   position{line: 1002, col: 5, offset: 36766},
 									label: "backslashes",
 									expr: &ruleRefExpr{
-										pos:  position{line: 1002, col: 18, offset: 36807},
+										pos:  position{line: 1002, col: 18, offset: 36779},
 										name: "TwoOrMoreBackslashes",
 									},
 								},
 								&litMatcher{
-									pos:        position{line: 1002, col: 40, offset: 36829},
+									pos:        position{line: 1002, col: 40, offset: 36801},
 									val:        "``",
 									ignoreCase: false,
 								},
 								&labeledExpr{
-									pos:   position{line: 1002, col: 45, offset: 36834},
+									pos:   position{line: 1002, col: 45, offset: 36806},
 									label: "content",
 									expr: &ruleRefExpr{
-										pos:  position{line: 1002, col: 54, offset: 36843},
+										pos:  position{line: 1002, col: 54, offset: 36815},
 										name: "DoubleQuoteMonospaceTextContent",
 									},
 								},
 								&litMatcher{
-									pos:        position{line: 1002, col: 87, offset: 36876},
+									pos:        position{line: 1002, col: 87, offset: 36848},
 									val:        "``",
 									ignoreCase: false,
 								},
@@ -7596,34 +7596,34 @@ var g = &grammar{
 						},
 					},
 					&actionExpr{
-						pos: position{line: 1004, col: 9, offset: 37032},
+						pos: position{line: 1004, col: 9, offset: 37004},
 						run: (*parser).callonEscapedMonospaceText10,
 						expr: &seqExpr{
-							pos: position{line: 1004, col: 9, offset: 37032},
+							pos: position{line: 1004, col: 9, offset: 37004},
 							exprs: []interface{}{
 								&labeledExpr{
-									pos:   position{line: 1004, col: 9, offset: 37032},
+									pos:   position{line: 1004, col: 9, offset: 37004},
 									label: "backslashes",
 									expr: &ruleRefExpr{
-										pos:  position{line: 1004, col: 22, offset: 37045},
+										pos:  position{line: 1004, col: 22, offset: 37017},
 										name: "OneOrMoreBackslashes",
 									},
 								},
 								&litMatcher{
-									pos:        position{line: 1004, col: 44, offset: 37067},
+									pos:        position{line: 1004, col: 44, offset: 37039},
 									val:        "``",
 									ignoreCase: false,
 								},
 								&labeledExpr{
-									pos:   position{line: 1004, col: 49, offset: 37072},
+									pos:   position{line: 1004, col: 49, offset: 37044},
 									label: "content",
 									expr: &ruleRefExpr{
-										pos:  position{line: 1004, col: 58, offset: 37081},
+										pos:  position{line: 1004, col: 58, offset: 37053},
 										name: "SingleQuoteMonospaceTextContent",
 									},
 								},
 								&litMatcher{
-									pos:        position{line: 1004, col: 91, offset: 37114},
+									pos:        position{line: 1004, col: 91, offset: 37086},
 									val:        "`",
 									ignoreCase: false,
 								},
@@ -7631,34 +7631,34 @@ var g = &grammar{
 						},
 					},
 					&actionExpr{
-						pos: position{line: 1007, col: 9, offset: 37313},
+						pos: position{line: 1007, col: 9, offset: 37285},
 						run: (*parser).callonEscapedMonospaceText18,
 						expr: &seqExpr{
-							pos: position{line: 1007, col: 9, offset: 37313},
+							pos: position{line: 1007, col: 9, offset: 37285},
 							exprs: []interface{}{
 								&labeledExpr{
-									pos:   position{line: 1007, col: 9, offset: 37313},
+									pos:   position{line: 1007, col: 9, offset: 37285},
 									label: "backslashes",
 									expr: &ruleRefExpr{
-										pos:  position{line: 1007, col: 22, offset: 37326},
+										pos:  position{line: 1007, col: 22, offset: 37298},
 										name: "OneOrMoreBackslashes",
 									},
 								},
 								&litMatcher{
-									pos:        position{line: 1007, col: 44, offset: 37348},
+									pos:        position{line: 1007, col: 44, offset: 37320},
 									val:        "`",
 									ignoreCase: false,
 								},
 								&labeledExpr{
-									pos:   position{line: 1007, col: 48, offset: 37352},
+									pos:   position{line: 1007, col: 48, offset: 37324},
 									label: "content",
 									expr: &ruleRefExpr{
-										pos:  position{line: 1007, col: 57, offset: 37361},
+										pos:  position{line: 1007, col: 57, offset: 37333},
 										name: "SingleQuoteMonospaceTextContent",
 									},
 								},
 								&litMatcher{
-									pos:        position{line: 1007, col: 90, offset: 37394},
+									pos:        position{line: 1007, col: 90, offset: 37366},
 									val:        "`",
 									ignoreCase: false,
 								},
@@ -7670,36 +7670,36 @@ var g = &grammar{
 		},
 		{
 			name: "SubscriptText",
-			pos:  position{line: 1011, col: 1, offset: 37543},
+			pos:  position{line: 1011, col: 1, offset: 37515},
 			expr: &actionExpr{
-				pos: position{line: 1011, col: 18, offset: 37560},
+				pos: position{line: 1011, col: 18, offset: 37532},
 				run: (*parser).callonSubscriptText1,
 				expr: &seqExpr{
-					pos: position{line: 1011, col: 18, offset: 37560},
+					pos: position{line: 1011, col: 18, offset: 37532},
 					exprs: []interface{}{
 						&notExpr{
-							pos: position{line: 1011, col: 18, offset: 37560},
+							pos: position{line: 1011, col: 18, offset: 37532},
 							expr: &litMatcher{
-								pos:        position{line: 1011, col: 19, offset: 37561},
+								pos:        position{line: 1011, col: 19, offset: 37533},
 								val:        "\\",
 								ignoreCase: false,
 							},
 						},
 						&litMatcher{
-							pos:        position{line: 1011, col: 23, offset: 37565},
+							pos:        position{line: 1011, col: 23, offset: 37537},
 							val:        "~",
 							ignoreCase: false,
 						},
 						&labeledExpr{
-							pos:   position{line: 1011, col: 27, offset: 37569},
+							pos:   position{line: 1011, col: 27, offset: 37541},
 							label: "content",
 							expr: &ruleRefExpr{
-								pos:  position{line: 1011, col: 36, offset: 37578},
+								pos:  position{line: 1011, col: 36, offset: 37550},
 								name: "SubscriptTextElement",
 							},
 						},
 						&litMatcher{
-							pos:        position{line: 1011, col: 58, offset: 37600},
+							pos:        position{line: 1011, col: 58, offset: 37572},
 							val:        "~",
 							ignoreCase: false,
 						},
@@ -7709,16 +7709,16 @@ var g = &grammar{
 		},
 		{
 			name: "SubscriptTextElement",
-			pos:  position{line: 1015, col: 1, offset: 37689},
+			pos:  position{line: 1015, col: 1, offset: 37661},
 			expr: &choiceExpr{
-				pos: position{line: 1015, col: 25, offset: 37713},
+				pos: position{line: 1015, col: 25, offset: 37685},
 				alternatives: []interface{}{
 					&ruleRefExpr{
-						pos:  position{line: 1015, col: 25, offset: 37713},
+						pos:  position{line: 1015, col: 25, offset: 37685},
 						name: "QuotedText",
 					},
 					&ruleRefExpr{
-						pos:  position{line: 1015, col: 38, offset: 37726},
+						pos:  position{line: 1015, col: 38, offset: 37698},
 						name: "NonSubscriptText",
 					},
 				},
@@ -7726,39 +7726,39 @@ var g = &grammar{
 		},
 		{
 			name: "NonSubscriptText",
-			pos:  position{line: 1017, col: 1, offset: 37745},
+			pos:  position{line: 1017, col: 1, offset: 37717},
 			expr: &actionExpr{
-				pos: position{line: 1017, col: 21, offset: 37765},
+				pos: position{line: 1017, col: 21, offset: 37737},
 				run: (*parser).callonNonSubscriptText1,
 				expr: &oneOrMoreExpr{
-					pos: position{line: 1017, col: 21, offset: 37765},
+					pos: position{line: 1017, col: 21, offset: 37737},
 					expr: &seqExpr{
-						pos: position{line: 1017, col: 22, offset: 37766},
+						pos: position{line: 1017, col: 22, offset: 37738},
 						exprs: []interface{}{
 							&notExpr{
-								pos: position{line: 1017, col: 22, offset: 37766},
+								pos: position{line: 1017, col: 22, offset: 37738},
 								expr: &ruleRefExpr{
-									pos:  position{line: 1017, col: 23, offset: 37767},
+									pos:  position{line: 1017, col: 23, offset: 37739},
 									name: "NEWLINE",
 								},
 							},
 							&notExpr{
-								pos: position{line: 1017, col: 31, offset: 37775},
+								pos: position{line: 1017, col: 31, offset: 37747},
 								expr: &ruleRefExpr{
-									pos:  position{line: 1017, col: 32, offset: 37776},
+									pos:  position{line: 1017, col: 32, offset: 37748},
 									name: "WS",
 								},
 							},
 							&notExpr{
-								pos: position{line: 1017, col: 35, offset: 37779},
+								pos: position{line: 1017, col: 35, offset: 37751},
 								expr: &litMatcher{
-									pos:        position{line: 1017, col: 36, offset: 37780},
+									pos:        position{line: 1017, col: 36, offset: 37752},
 									val:        "~",
 									ignoreCase: false,
 								},
 							},
 							&anyMatcher{
-								line: 1017, col: 40, offset: 37784,
+								line: 1017, col: 40, offset: 37756,
 							},
 						},
 					},
@@ -7767,36 +7767,36 @@ var g = &grammar{
 		},
 		{
 			name: "EscapedSubscriptText",
-			pos:  position{line: 1021, col: 1, offset: 37817},
+			pos:  position{line: 1021, col: 1, offset: 37789},
 			expr: &actionExpr{
-				pos: position{line: 1021, col: 25, offset: 37841},
+				pos: position{line: 1021, col: 25, offset: 37813},
 				run: (*parser).callonEscapedSubscriptText1,
 				expr: &seqExpr{
-					pos: position{line: 1021, col: 25, offset: 37841},
+					pos: position{line: 1021, col: 25, offset: 37813},
 					exprs: []interface{}{
 						&labeledExpr{
-							pos:   position{line: 1021, col: 25, offset: 37841},
+							pos:   position{line: 1021, col: 25, offset: 37813},
 							label: "backslashes",
 							expr: &ruleRefExpr{
-								pos:  position{line: 1021, col: 38, offset: 37854},
+								pos:  position{line: 1021, col: 38, offset: 37826},
 								name: "OneOrMoreBackslashes",
 							},
 						},
 						&litMatcher{
-							pos:        position{line: 1021, col: 60, offset: 37876},
+							pos:        position{line: 1021, col: 60, offset: 37848},
 							val:        "~",
 							ignoreCase: false,
 						},
 						&labeledExpr{
-							pos:   position{line: 1021, col: 64, offset: 37880},
+							pos:   position{line: 1021, col: 64, offset: 37852},
 							label: "content",
 							expr: &ruleRefExpr{
-								pos:  position{line: 1021, col: 73, offset: 37889},
+								pos:  position{line: 1021, col: 73, offset: 37861},
 								name: "SubscriptTextElement",
 							},
 						},
 						&litMatcher{
-							pos:        position{line: 1021, col: 95, offset: 37911},
+							pos:        position{line: 1021, col: 95, offset: 37883},
 							val:        "~",
 							ignoreCase: false,
 						},
@@ -7806,36 +7806,36 @@ var g = &grammar{
 		},
 		{
 			name: "SuperscriptText",
-			pos:  position{line: 1025, col: 1, offset: 38040},
+			pos:  position{line: 1025, col: 1, offset: 38012},
 			expr: &actionExpr{
-				pos: position{line: 1025, col: 20, offset: 38059},
+				pos: position{line: 1025, col: 20, offset: 38031},
 				run: (*parser).callonSuperscriptText1,
 				expr: &seqExpr{
-					pos: position{line: 1025, col: 20, offset: 38059},
+					pos: position{line: 1025, col: 20, offset: 38031},
 					exprs: []interface{}{
 						&notExpr{
-							pos: position{line: 1025, col: 20, offset: 38059},
+							pos: position{line: 1025, col: 20, offset: 38031},
 							expr: &litMatcher{
-								pos:        position{line: 1025, col: 21, offset: 38060},
+								pos:        position{line: 1025, col: 21, offset: 38032},
 								val:        "\\",
 								ignoreCase: false,
 							},
 						},
 						&litMatcher{
-							pos:        position{line: 1025, col: 25, offset: 38064},
+							pos:        position{line: 1025, col: 25, offset: 38036},
 							val:        "^",
 							ignoreCase: false,
 						},
 						&labeledExpr{
-							pos:   position{line: 1025, col: 29, offset: 38068},
+							pos:   position{line: 1025, col: 29, offset: 38040},
 							label: "content",
 							expr: &ruleRefExpr{
-								pos:  position{line: 1025, col: 38, offset: 38077},
+								pos:  position{line: 1025, col: 38, offset: 38049},
 								name: "SuperscriptTextElement",
 							},
 						},
 						&litMatcher{
-							pos:        position{line: 1025, col: 62, offset: 38101},
+							pos:        position{line: 1025, col: 62, offset: 38073},
 							val:        "^",
 							ignoreCase: false,
 						},
@@ -7845,16 +7845,16 @@ var g = &grammar{
 		},
 		{
 			name: "SuperscriptTextElement",
-			pos:  position{line: 1029, col: 1, offset: 38192},
+			pos:  position{line: 1029, col: 1, offset: 38164},
 			expr: &choiceExpr{
-				pos: position{line: 1029, col: 27, offset: 38218},
+				pos: position{line: 1029, col: 27, offset: 38190},
 				alternatives: []interface{}{
 					&ruleRefExpr{
-						pos:  position{line: 1029, col: 27, offset: 38218},
+						pos:  position{line: 1029, col: 27, offset: 38190},
 						name: "QuotedText",
 					},
 					&ruleRefExpr{
-						pos:  position{line: 1029, col: 40, offset: 38231},
+						pos:  position{line: 1029, col: 40, offset: 38203},
 						name: "NonSuperscriptText",
 					},
 				},
@@ -7862,39 +7862,39 @@ var g = &grammar{
 		},
 		{
 			name: "NonSuperscriptText",
-			pos:  position{line: 1031, col: 1, offset: 38252},
+			pos:  position{line: 1031, col: 1, offset: 38224},
 			expr: &actionExpr{
-				pos: position{line: 1031, col: 23, offset: 38274},
+				pos: position{line: 1031, col: 23, offset: 38246},
 				run: (*parser).callonNonSuperscriptText1,
 				expr: &oneOrMoreExpr{
-					pos: position{line: 1031, col: 23, offset: 38274},
+					pos: position{line: 1031, col: 23, offset: 38246},
 					expr: &seqExpr{
-						pos: position{line: 1031, col: 24, offset: 38275},
+						pos: position{line: 1031, col: 24, offset: 38247},
 						exprs: []interface{}{
 							&notExpr{
-								pos: position{line: 1031, col: 24, offset: 38275},
+								pos: position{line: 1031, col: 24, offset: 38247},
 								expr: &ruleRefExpr{
-									pos:  position{line: 1031, col: 25, offset: 38276},
+									pos:  position{line: 1031, col: 25, offset: 38248},
 									name: "NEWLINE",
 								},
 							},
 							&notExpr{
-								pos: position{line: 1031, col: 33, offset: 38284},
+								pos: position{line: 1031, col: 33, offset: 38256},
 								expr: &ruleRefExpr{
-									pos:  position{line: 1031, col: 34, offset: 38285},
+									pos:  position{line: 1031, col: 34, offset: 38257},
 									name: "WS",
 								},
 							},
 							&notExpr{
-								pos: position{line: 1031, col: 37, offset: 38288},
+								pos: position{line: 1031, col: 37, offset: 38260},
 								expr: &litMatcher{
-									pos:        position{line: 1031, col: 38, offset: 38289},
+									pos:        position{line: 1031, col: 38, offset: 38261},
 									val:        "^",
 									ignoreCase: false,
 								},
 							},
 							&anyMatcher{
-								line: 1031, col: 42, offset: 38293,
+								line: 1031, col: 42, offset: 38265,
 							},
 						},
 					},
@@ -7903,36 +7903,36 @@ var g = &grammar{
 		},
 		{
 			name: "EscapedSuperscriptText",
-			pos:  position{line: 1035, col: 1, offset: 38326},
+			pos:  position{line: 1035, col: 1, offset: 38298},
 			expr: &actionExpr{
-				pos: position{line: 1035, col: 27, offset: 38352},
+				pos: position{line: 1035, col: 27, offset: 38324},
 				run: (*parser).callonEscapedSuperscriptText1,
 				expr: &seqExpr{
-					pos: position{line: 1035, col: 27, offset: 38352},
+					pos: position{line: 1035, col: 27, offset: 38324},
 					exprs: []interface{}{
 						&labeledExpr{
-							pos:   position{line: 1035, col: 27, offset: 38352},
+							pos:   position{line: 1035, col: 27, offset: 38324},
 							label: "backslashes",
 							expr: &ruleRefExpr{
-								pos:  position{line: 1035, col: 40, offset: 38365},
+								pos:  position{line: 1035, col: 40, offset: 38337},
 								name: "OneOrMoreBackslashes",
 							},
 						},
 						&litMatcher{
-							pos:        position{line: 1035, col: 62, offset: 38387},
+							pos:        position{line: 1035, col: 62, offset: 38359},
 							val:        "^",
 							ignoreCase: false,
 						},
 						&labeledExpr{
-							pos:   position{line: 1035, col: 66, offset: 38391},
+							pos:   position{line: 1035, col: 66, offset: 38363},
 							label: "content",
 							expr: &ruleRefExpr{
-								pos:  position{line: 1035, col: 75, offset: 38400},
+								pos:  position{line: 1035, col: 75, offset: 38372},
 								name: "SuperscriptTextElement",
 							},
 						},
 						&litMatcher{
-							pos:        position{line: 1035, col: 99, offset: 38424},
+							pos:        position{line: 1035, col: 99, offset: 38396},
 							val:        "^",
 							ignoreCase: false,
 						},
@@ -7942,20 +7942,20 @@ var g = &grammar{
 		},
 		{
 			name: "Passthrough",
-			pos:  position{line: 1042, col: 1, offset: 38660},
+			pos:  position{line: 1042, col: 1, offset: 38632},
 			expr: &choiceExpr{
-				pos: position{line: 1042, col: 16, offset: 38675},
+				pos: position{line: 1042, col: 16, offset: 38647},
 				alternatives: []interface{}{
 					&ruleRefExpr{
-						pos:  position{line: 1042, col: 16, offset: 38675},
+						pos:  position{line: 1042, col: 16, offset: 38647},
 						name: "TriplePlusPassthrough",
 					},
 					&ruleRefExpr{
-						pos:  position{line: 1042, col: 40, offset: 38699},
+						pos:  position{line: 1042, col: 40, offset: 38671},
 						name: "SinglePlusPassthrough",
 					},
 					&ruleRefExpr{
-						pos:  position{line: 1042, col: 64, offset: 38723},
+						pos:  position{line: 1042, col: 64, offset: 38695},
 						name: "PassthroughMacro",
 					},
 				},
@@ -7963,42 +7963,42 @@ var g = &grammar{
 		},
 		{
 			name: "SinglePlusPassthroughPrefix",
-			pos:  position{line: 1044, col: 1, offset: 38741},
+			pos:  position{line: 1044, col: 1, offset: 38713},
 			expr: &litMatcher{
-				pos:        position{line: 1044, col: 32, offset: 38772},
+				pos:        position{line: 1044, col: 32, offset: 38744},
 				val:        "+",
 				ignoreCase: false,
 			},
 		},
 		{
 			name: "SinglePlusPassthrough",
-			pos:  position{line: 1046, col: 1, offset: 38777},
+			pos:  position{line: 1046, col: 1, offset: 38749},
 			expr: &actionExpr{
-				pos: position{line: 1046, col: 26, offset: 38802},
+				pos: position{line: 1046, col: 26, offset: 38774},
 				run: (*parser).callonSinglePlusPassthrough1,
 				expr: &seqExpr{
-					pos: position{line: 1046, col: 26, offset: 38802},
+					pos: position{line: 1046, col: 26, offset: 38774},
 					exprs: []interface{}{
 						&ruleRefExpr{
-							pos:  position{line: 1046, col: 26, offset: 38802},
+							pos:  position{line: 1046, col: 26, offset: 38774},
 							name: "SinglePlusPassthroughPrefix",
 						},
 						&labeledExpr{
-							pos:   position{line: 1046, col: 54, offset: 38830},
+							pos:   position{line: 1046, col: 54, offset: 38802},
 							label: "content",
 							expr: &ruleRefExpr{
-								pos:  position{line: 1046, col: 63, offset: 38839},
+								pos:  position{line: 1046, col: 63, offset: 38811},
 								name: "SinglePlusPassthroughContent",
 							},
 						},
 						&ruleRefExpr{
-							pos:  position{line: 1046, col: 93, offset: 38869},
+							pos:  position{line: 1046, col: 93, offset: 38841},
 							name: "SinglePlusPassthroughPrefix",
 						},
 						&notExpr{
-							pos: position{line: 1046, col: 121, offset: 38897},
+							pos: position{line: 1046, col: 121, offset: 38869},
 							expr: &ruleRefExpr{
-								pos:  position{line: 1046, col: 122, offset: 38898},
+								pos:  position{line: 1046, col: 122, offset: 38870},
 								name: "Alphanum",
 							},
 						},
@@ -8008,85 +8008,85 @@ var g = &grammar{
 		},
 		{
 			name: "SinglePlusPassthroughContent",
-			pos:  position{line: 1050, col: 1, offset: 38997},
+			pos:  position{line: 1050, col: 1, offset: 38969},
 			expr: &choiceExpr{
-				pos: position{line: 1050, col: 33, offset: 39029},
+				pos: position{line: 1050, col: 33, offset: 39001},
 				alternatives: []interface{}{
 					&actionExpr{
-						pos: position{line: 1050, col: 34, offset: 39030},
+						pos: position{line: 1050, col: 34, offset: 39002},
 						run: (*parser).callonSinglePlusPassthroughContent2,
 						expr: &seqExpr{
-							pos: position{line: 1050, col: 34, offset: 39030},
+							pos: position{line: 1050, col: 34, offset: 39002},
 							exprs: []interface{}{
 								&seqExpr{
-									pos: position{line: 1050, col: 35, offset: 39031},
+									pos: position{line: 1050, col: 35, offset: 39003},
 									exprs: []interface{}{
 										&notExpr{
-											pos: position{line: 1050, col: 35, offset: 39031},
+											pos: position{line: 1050, col: 35, offset: 39003},
 											expr: &ruleRefExpr{
-												pos:  position{line: 1050, col: 36, offset: 39032},
+												pos:  position{line: 1050, col: 36, offset: 39004},
 												name: "SinglePlusPassthroughPrefix",
 											},
 										},
 										&notExpr{
-											pos: position{line: 1050, col: 64, offset: 39060},
+											pos: position{line: 1050, col: 64, offset: 39032},
 											expr: &ruleRefExpr{
-												pos:  position{line: 1050, col: 65, offset: 39061},
+												pos:  position{line: 1050, col: 65, offset: 39033},
 												name: "WS",
 											},
 										},
 										&notExpr{
-											pos: position{line: 1050, col: 68, offset: 39064},
+											pos: position{line: 1050, col: 68, offset: 39036},
 											expr: &ruleRefExpr{
-												pos:  position{line: 1050, col: 69, offset: 39065},
+												pos:  position{line: 1050, col: 69, offset: 39037},
 												name: "NEWLINE",
 											},
 										},
 										&anyMatcher{
-											line: 1050, col: 77, offset: 39073,
+											line: 1050, col: 77, offset: 39045,
 										},
 									},
 								},
 								&zeroOrMoreExpr{
-									pos: position{line: 1050, col: 80, offset: 39076},
+									pos: position{line: 1050, col: 80, offset: 39048},
 									expr: &seqExpr{
-										pos: position{line: 1050, col: 81, offset: 39077},
+										pos: position{line: 1050, col: 81, offset: 39049},
 										exprs: []interface{}{
 											&notExpr{
-												pos: position{line: 1050, col: 81, offset: 39077},
+												pos: position{line: 1050, col: 81, offset: 39049},
 												expr: &seqExpr{
-													pos: position{line: 1050, col: 83, offset: 39079},
+													pos: position{line: 1050, col: 83, offset: 39051},
 													exprs: []interface{}{
 														&oneOrMoreExpr{
-															pos: position{line: 1050, col: 83, offset: 39079},
+															pos: position{line: 1050, col: 83, offset: 39051},
 															expr: &ruleRefExpr{
-																pos:  position{line: 1050, col: 83, offset: 39079},
+																pos:  position{line: 1050, col: 83, offset: 39051},
 																name: "WS",
 															},
 														},
 														&ruleRefExpr{
-															pos:  position{line: 1050, col: 87, offset: 39083},
+															pos:  position{line: 1050, col: 87, offset: 39055},
 															name: "SinglePlusPassthroughPrefix",
 														},
 													},
 												},
 											},
 											&notExpr{
-												pos: position{line: 1050, col: 116, offset: 39112},
+												pos: position{line: 1050, col: 116, offset: 39084},
 												expr: &ruleRefExpr{
-													pos:  position{line: 1050, col: 117, offset: 39113},
+													pos:  position{line: 1050, col: 117, offset: 39085},
 													name: "SinglePlusPassthroughPrefix",
 												},
 											},
 											&notExpr{
-												pos: position{line: 1050, col: 145, offset: 39141},
+												pos: position{line: 1050, col: 145, offset: 39113},
 												expr: &ruleRefExpr{
-													pos:  position{line: 1050, col: 146, offset: 39142},
+													pos:  position{line: 1050, col: 146, offset: 39114},
 													name: "NEWLINE",
 												},
 											},
 											&anyMatcher{
-												line: 1050, col: 154, offset: 39150,
+												line: 1050, col: 154, offset: 39122,
 											},
 										},
 									},
@@ -8095,34 +8095,34 @@ var g = &grammar{
 						},
 					},
 					&actionExpr{
-						pos: position{line: 1052, col: 7, offset: 39292},
+						pos: position{line: 1052, col: 7, offset: 39264},
 						run: (*parser).callonSinglePlusPassthroughContent24,
 						expr: &seqExpr{
-							pos: position{line: 1052, col: 8, offset: 39293},
+							pos: position{line: 1052, col: 8, offset: 39265},
 							exprs: []interface{}{
 								&notExpr{
-									pos: position{line: 1052, col: 8, offset: 39293},
+									pos: position{line: 1052, col: 8, offset: 39265},
 									expr: &ruleRefExpr{
-										pos:  position{line: 1052, col: 9, offset: 39294},
+										pos:  position{line: 1052, col: 9, offset: 39266},
 										name: "WS",
 									},
 								},
 								&notExpr{
-									pos: position{line: 1052, col: 12, offset: 39297},
+									pos: position{line: 1052, col: 12, offset: 39269},
 									expr: &ruleRefExpr{
-										pos:  position{line: 1052, col: 13, offset: 39298},
+										pos:  position{line: 1052, col: 13, offset: 39270},
 										name: "NEWLINE",
 									},
 								},
 								&notExpr{
-									pos: position{line: 1052, col: 21, offset: 39306},
+									pos: position{line: 1052, col: 21, offset: 39278},
 									expr: &ruleRefExpr{
-										pos:  position{line: 1052, col: 22, offset: 39307},
+										pos:  position{line: 1052, col: 22, offset: 39279},
 										name: "SinglePlusPassthroughPrefix",
 									},
 								},
 								&anyMatcher{
-									line: 1052, col: 50, offset: 39335,
+									line: 1052, col: 50, offset: 39307,
 								},
 							},
 						},
@@ -8132,42 +8132,42 @@ var g = &grammar{
 		},
 		{
 			name: "TriplePlusPassthroughPrefix",
-			pos:  position{line: 1056, col: 1, offset: 39417},
+			pos:  position{line: 1056, col: 1, offset: 39389},
 			expr: &litMatcher{
-				pos:        position{line: 1056, col: 32, offset: 39448},
+				pos:        position{line: 1056, col: 32, offset: 39420},
 				val:        "+++",
 				ignoreCase: false,
 			},
 		},
 		{
 			name: "TriplePlusPassthrough",
-			pos:  position{line: 1058, col: 1, offset: 39455},
+			pos:  position{line: 1058, col: 1, offset: 39427},
 			expr: &actionExpr{
-				pos: position{line: 1058, col: 26, offset: 39480},
+				pos: position{line: 1058, col: 26, offset: 39452},
 				run: (*parser).callonTriplePlusPassthrough1,
 				expr: &seqExpr{
-					pos: position{line: 1058, col: 26, offset: 39480},
+					pos: position{line: 1058, col: 26, offset: 39452},
 					exprs: []interface{}{
 						&ruleRefExpr{
-							pos:  position{line: 1058, col: 26, offset: 39480},
+							pos:  position{line: 1058, col: 26, offset: 39452},
 							name: "TriplePlusPassthroughPrefix",
 						},
 						&labeledExpr{
-							pos:   position{line: 1058, col: 54, offset: 39508},
+							pos:   position{line: 1058, col: 54, offset: 39480},
 							label: "content",
 							expr: &ruleRefExpr{
-								pos:  position{line: 1058, col: 63, offset: 39517},
+								pos:  position{line: 1058, col: 63, offset: 39489},
 								name: "TriplePlusPassthroughContent",
 							},
 						},
 						&ruleRefExpr{
-							pos:  position{line: 1058, col: 93, offset: 39547},
+							pos:  position{line: 1058, col: 93, offset: 39519},
 							name: "TriplePlusPassthroughPrefix",
 						},
 						&notExpr{
-							pos: position{line: 1058, col: 121, offset: 39575},
+							pos: position{line: 1058, col: 121, offset: 39547},
 							expr: &ruleRefExpr{
-								pos:  position{line: 1058, col: 122, offset: 39576},
+								pos:  position{line: 1058, col: 122, offset: 39548},
 								name: "Alphanum",
 							},
 						},
@@ -8177,63 +8177,63 @@ var g = &grammar{
 		},
 		{
 			name: "TriplePlusPassthroughContent",
-			pos:  position{line: 1062, col: 1, offset: 39675},
+			pos:  position{line: 1062, col: 1, offset: 39647},
 			expr: &choiceExpr{
-				pos: position{line: 1062, col: 33, offset: 39707},
+				pos: position{line: 1062, col: 33, offset: 39679},
 				alternatives: []interface{}{
 					&actionExpr{
-						pos: position{line: 1062, col: 34, offset: 39708},
+						pos: position{line: 1062, col: 34, offset: 39680},
 						run: (*parser).callonTriplePlusPassthroughContent2,
 						expr: &zeroOrMoreExpr{
-							pos: position{line: 1062, col: 34, offset: 39708},
+							pos: position{line: 1062, col: 34, offset: 39680},
 							expr: &seqExpr{
-								pos: position{line: 1062, col: 35, offset: 39709},
+								pos: position{line: 1062, col: 35, offset: 39681},
 								exprs: []interface{}{
 									&notExpr{
-										pos: position{line: 1062, col: 35, offset: 39709},
+										pos: position{line: 1062, col: 35, offset: 39681},
 										expr: &ruleRefExpr{
-											pos:  position{line: 1062, col: 36, offset: 39710},
+											pos:  position{line: 1062, col: 36, offset: 39682},
 											name: "TriplePlusPassthroughPrefix",
 										},
 									},
 									&anyMatcher{
-										line: 1062, col: 64, offset: 39738,
+										line: 1062, col: 64, offset: 39710,
 									},
 								},
 							},
 						},
 					},
 					&actionExpr{
-						pos: position{line: 1064, col: 7, offset: 39903},
+						pos: position{line: 1064, col: 7, offset: 39875},
 						run: (*parser).callonTriplePlusPassthroughContent8,
 						expr: &zeroOrOneExpr{
-							pos: position{line: 1064, col: 7, offset: 39903},
+							pos: position{line: 1064, col: 7, offset: 39875},
 							expr: &seqExpr{
-								pos: position{line: 1064, col: 8, offset: 39904},
+								pos: position{line: 1064, col: 8, offset: 39876},
 								exprs: []interface{}{
 									&notExpr{
-										pos: position{line: 1064, col: 8, offset: 39904},
+										pos: position{line: 1064, col: 8, offset: 39876},
 										expr: &ruleRefExpr{
-											pos:  position{line: 1064, col: 9, offset: 39905},
+											pos:  position{line: 1064, col: 9, offset: 39877},
 											name: "WS",
 										},
 									},
 									&notExpr{
-										pos: position{line: 1064, col: 12, offset: 39908},
+										pos: position{line: 1064, col: 12, offset: 39880},
 										expr: &ruleRefExpr{
-											pos:  position{line: 1064, col: 13, offset: 39909},
+											pos:  position{line: 1064, col: 13, offset: 39881},
 											name: "NEWLINE",
 										},
 									},
 									&notExpr{
-										pos: position{line: 1064, col: 21, offset: 39917},
+										pos: position{line: 1064, col: 21, offset: 39889},
 										expr: &ruleRefExpr{
-											pos:  position{line: 1064, col: 22, offset: 39918},
+											pos:  position{line: 1064, col: 22, offset: 39890},
 											name: "TriplePlusPassthroughPrefix",
 										},
 									},
 									&anyMatcher{
-										line: 1064, col: 50, offset: 39946,
+										line: 1064, col: 50, offset: 39918,
 									},
 								},
 							},
@@ -8244,34 +8244,34 @@ var g = &grammar{
 		},
 		{
 			name: "PassthroughMacro",
-			pos:  position{line: 1068, col: 1, offset: 40029},
+			pos:  position{line: 1068, col: 1, offset: 40001},
 			expr: &choiceExpr{
-				pos: position{line: 1068, col: 21, offset: 40049},
+				pos: position{line: 1068, col: 21, offset: 40021},
 				alternatives: []interface{}{
 					&actionExpr{
-						pos: position{line: 1068, col: 21, offset: 40049},
+						pos: position{line: 1068, col: 21, offset: 40021},
 						run: (*parser).callonPassthroughMacro2,
 						expr: &seqExpr{
-							pos: position{line: 1068, col: 21, offset: 40049},
+							pos: position{line: 1068, col: 21, offset: 40021},
 							exprs: []interface{}{
 								&litMatcher{
-									pos:        position{line: 1068, col: 21, offset: 40049},
+									pos:        position{line: 1068, col: 21, offset: 40021},
 									val:        "pass:[",
 									ignoreCase: false,
 								},
 								&labeledExpr{
-									pos:   position{line: 1068, col: 30, offset: 40058},
+									pos:   position{line: 1068, col: 30, offset: 40030},
 									label: "content",
 									expr: &zeroOrMoreExpr{
-										pos: position{line: 1068, col: 38, offset: 40066},
+										pos: position{line: 1068, col: 38, offset: 40038},
 										expr: &ruleRefExpr{
-											pos:  position{line: 1068, col: 39, offset: 40067},
+											pos:  position{line: 1068, col: 39, offset: 40039},
 											name: "PassthroughMacroCharacter",
 										},
 									},
 								},
 								&litMatcher{
-									pos:        position{line: 1068, col: 67, offset: 40095},
+									pos:        position{line: 1068, col: 67, offset: 40067},
 									val:        "]",
 									ignoreCase: false,
 								},
@@ -8279,30 +8279,30 @@ var g = &grammar{
 						},
 					},
 					&actionExpr{
-						pos: position{line: 1070, col: 5, offset: 40185},
+						pos: position{line: 1070, col: 5, offset: 40157},
 						run: (*parser).callonPassthroughMacro9,
 						expr: &seqExpr{
-							pos: position{line: 1070, col: 5, offset: 40185},
+							pos: position{line: 1070, col: 5, offset: 40157},
 							exprs: []interface{}{
 								&litMatcher{
-									pos:        position{line: 1070, col: 5, offset: 40185},
+									pos:        position{line: 1070, col: 5, offset: 40157},
 									val:        "pass:q[",
 									ignoreCase: false,
 								},
 								&labeledExpr{
-									pos:   position{line: 1070, col: 15, offset: 40195},
+									pos:   position{line: 1070, col: 15, offset: 40167},
 									label: "content",
 									expr: &zeroOrMoreExpr{
-										pos: position{line: 1070, col: 23, offset: 40203},
+										pos: position{line: 1070, col: 23, offset: 40175},
 										expr: &choiceExpr{
-											pos: position{line: 1070, col: 24, offset: 40204},
+											pos: position{line: 1070, col: 24, offset: 40176},
 											alternatives: []interface{}{
 												&ruleRefExpr{
-													pos:  position{line: 1070, col: 24, offset: 40204},
+													pos:  position{line: 1070, col: 24, offset: 40176},
 													name: "QuotedText",
 												},
 												&ruleRefExpr{
-													pos:  position{line: 1070, col: 37, offset: 40217},
+													pos:  position{line: 1070, col: 37, offset: 40189},
 													name: "PassthroughMacroCharacter",
 												},
 											},
@@ -8310,7 +8310,7 @@ var g = &grammar{
 									},
 								},
 								&litMatcher{
-									pos:        position{line: 1070, col: 65, offset: 40245},
+									pos:        position{line: 1070, col: 65, offset: 40217},
 									val:        "]",
 									ignoreCase: false,
 								},
@@ -8322,34 +8322,34 @@ var g = &grammar{
 		},
 		{
 			name: "PassthroughMacroCharacter",
-			pos:  position{line: 1074, col: 1, offset: 40335},
+			pos:  position{line: 1074, col: 1, offset: 40307},
 			expr: &choiceExpr{
-				pos: position{line: 1074, col: 31, offset: 40365},
+				pos: position{line: 1074, col: 31, offset: 40337},
 				alternatives: []interface{}{
 					&ruleRefExpr{
-						pos:  position{line: 1074, col: 31, offset: 40365},
+						pos:  position{line: 1074, col: 31, offset: 40337},
 						name: "Alphanums",
 					},
 					&ruleRefExpr{
-						pos:  position{line: 1074, col: 43, offset: 40377},
+						pos:  position{line: 1074, col: 43, offset: 40349},
 						name: "Spaces",
 					},
 					&actionExpr{
-						pos: position{line: 1074, col: 52, offset: 40386},
+						pos: position{line: 1074, col: 52, offset: 40358},
 						run: (*parser).callonPassthroughMacroCharacter4,
 						expr: &seqExpr{
-							pos: position{line: 1074, col: 53, offset: 40387},
+							pos: position{line: 1074, col: 53, offset: 40359},
 							exprs: []interface{}{
 								&notExpr{
-									pos: position{line: 1074, col: 53, offset: 40387},
+									pos: position{line: 1074, col: 53, offset: 40359},
 									expr: &litMatcher{
-										pos:        position{line: 1074, col: 54, offset: 40388},
+										pos:        position{line: 1074, col: 54, offset: 40360},
 										val:        "]",
 										ignoreCase: false,
 									},
 								},
 								&anyMatcher{
-									line: 1074, col: 58, offset: 40392,
+									line: 1074, col: 58, offset: 40364,
 								},
 							},
 						},
@@ -8359,51 +8359,51 @@ var g = &grammar{
 		},
 		{
 			name: "CrossReference",
-			pos:  position{line: 1081, col: 1, offset: 40562},
+			pos:  position{line: 1081, col: 1, offset: 40534},
 			expr: &choiceExpr{
-				pos: position{line: 1081, col: 19, offset: 40580},
+				pos: position{line: 1081, col: 19, offset: 40552},
 				alternatives: []interface{}{
 					&actionExpr{
-						pos: position{line: 1081, col: 19, offset: 40580},
+						pos: position{line: 1081, col: 19, offset: 40552},
 						run: (*parser).callonCrossReference2,
 						expr: &seqExpr{
-							pos: position{line: 1081, col: 19, offset: 40580},
+							pos: position{line: 1081, col: 19, offset: 40552},
 							exprs: []interface{}{
 								&litMatcher{
-									pos:        position{line: 1081, col: 19, offset: 40580},
+									pos:        position{line: 1081, col: 19, offset: 40552},
 									val:        "<<",
 									ignoreCase: false,
 								},
 								&labeledExpr{
-									pos:   position{line: 1081, col: 24, offset: 40585},
+									pos:   position{line: 1081, col: 24, offset: 40557},
 									label: "id",
 									expr: &ruleRefExpr{
-										pos:  position{line: 1081, col: 28, offset: 40589},
+										pos:  position{line: 1081, col: 28, offset: 40561},
 										name: "ID",
 									},
 								},
 								&zeroOrMoreExpr{
-									pos: position{line: 1081, col: 32, offset: 40593},
+									pos: position{line: 1081, col: 32, offset: 40565},
 									expr: &ruleRefExpr{
-										pos:  position{line: 1081, col: 32, offset: 40593},
+										pos:  position{line: 1081, col: 32, offset: 40565},
 										name: "WS",
 									},
 								},
 								&litMatcher{
-									pos:        position{line: 1081, col: 36, offset: 40597},
+									pos:        position{line: 1081, col: 36, offset: 40569},
 									val:        ",",
 									ignoreCase: false,
 								},
 								&labeledExpr{
-									pos:   position{line: 1081, col: 40, offset: 40601},
+									pos:   position{line: 1081, col: 40, offset: 40573},
 									label: "label",
 									expr: &ruleRefExpr{
-										pos:  position{line: 1081, col: 47, offset: 40608},
+										pos:  position{line: 1081, col: 47, offset: 40580},
 										name: "CrossReferenceLabel",
 									},
 								},
 								&litMatcher{
-									pos:        position{line: 1081, col: 68, offset: 40629},
+									pos:        position{line: 1081, col: 68, offset: 40601},
 									val:        ">>",
 									ignoreCase: false,
 								},
@@ -8411,26 +8411,26 @@ var g = &grammar{
 						},
 					},
 					&actionExpr{
-						pos: position{line: 1083, col: 5, offset: 40704},
+						pos: position{line: 1083, col: 5, offset: 40676},
 						run: (*parser).callonCrossReference13,
 						expr: &seqExpr{
-							pos: position{line: 1083, col: 5, offset: 40704},
+							pos: position{line: 1083, col: 5, offset: 40676},
 							exprs: []interface{}{
 								&litMatcher{
-									pos:        position{line: 1083, col: 5, offset: 40704},
+									pos:        position{line: 1083, col: 5, offset: 40676},
 									val:        "<<",
 									ignoreCase: false,
 								},
 								&labeledExpr{
-									pos:   position{line: 1083, col: 10, offset: 40709},
+									pos:   position{line: 1083, col: 10, offset: 40681},
 									label: "id",
 									expr: &ruleRefExpr{
-										pos:  position{line: 1083, col: 14, offset: 40713},
+										pos:  position{line: 1083, col: 14, offset: 40685},
 										name: "ID",
 									},
 								},
 								&litMatcher{
-									pos:        position{line: 1083, col: 18, offset: 40717},
+									pos:        position{line: 1083, col: 18, offset: 40689},
 									val:        ">>",
 									ignoreCase: false,
 								},
@@ -8442,36 +8442,36 @@ var g = &grammar{
 		},
 		{
 			name: "CrossReferenceLabel",
-			pos:  position{line: 1087, col: 1, offset: 40780},
+			pos:  position{line: 1087, col: 1, offset: 40752},
 			expr: &actionExpr{
-				pos: position{line: 1087, col: 24, offset: 40803},
+				pos: position{line: 1087, col: 24, offset: 40775},
 				run: (*parser).callonCrossReferenceLabel1,
 				expr: &oneOrMoreExpr{
-					pos: position{line: 1087, col: 24, offset: 40803},
+					pos: position{line: 1087, col: 24, offset: 40775},
 					expr: &choiceExpr{
-						pos: position{line: 1087, col: 25, offset: 40804},
+						pos: position{line: 1087, col: 25, offset: 40776},
 						alternatives: []interface{}{
 							&ruleRefExpr{
-								pos:  position{line: 1087, col: 25, offset: 40804},
+								pos:  position{line: 1087, col: 25, offset: 40776},
 								name: "Alphanums",
 							},
 							&ruleRefExpr{
-								pos:  position{line: 1087, col: 37, offset: 40816},
+								pos:  position{line: 1087, col: 37, offset: 40788},
 								name: "Spaces",
 							},
 							&seqExpr{
-								pos: position{line: 1087, col: 47, offset: 40826},
+								pos: position{line: 1087, col: 47, offset: 40798},
 								exprs: []interface{}{
 									&notExpr{
-										pos: position{line: 1087, col: 47, offset: 40826},
+										pos: position{line: 1087, col: 47, offset: 40798},
 										expr: &litMatcher{
-											pos:        position{line: 1087, col: 48, offset: 40827},
+											pos:        position{line: 1087, col: 48, offset: 40799},
 											val:        ">>",
 											ignoreCase: false,
 										},
 									},
 									&anyMatcher{
-										line: 1087, col: 54, offset: 40833,
+										line: 1087, col: 54, offset: 40805,
 									},
 								},
 							},
@@ -8482,22 +8482,22 @@ var g = &grammar{
 		},
 		{
 			name: "Link",
-			pos:  position{line: 1094, col: 1, offset: 40975},
+			pos:  position{line: 1094, col: 1, offset: 40947},
 			expr: &actionExpr{
-				pos: position{line: 1094, col: 9, offset: 40983},
+				pos: position{line: 1094, col: 9, offset: 40955},
 				run: (*parser).callonLink1,
 				expr: &labeledExpr{
-					pos:   position{line: 1094, col: 9, offset: 40983},
+					pos:   position{line: 1094, col: 9, offset: 40955},
 					label: "link",
 					expr: &choiceExpr{
-						pos: position{line: 1094, col: 15, offset: 40989},
+						pos: position{line: 1094, col: 15, offset: 40961},
 						alternatives: []interface{}{
 							&ruleRefExpr{
-								pos:  position{line: 1094, col: 15, offset: 40989},
+								pos:  position{line: 1094, col: 15, offset: 40961},
 								name: "RelativeLink",
 							},
 							&ruleRefExpr{
-								pos:  position{line: 1094, col: 30, offset: 41004},
+								pos:  position{line: 1094, col: 30, offset: 40976},
 								name: "ExternalLink",
 							},
 						},
@@ -8507,40 +8507,40 @@ var g = &grammar{
 		},
 		{
 			name: "RelativeLink",
-			pos:  position{line: 1099, col: 1, offset: 41111},
+			pos:  position{line: 1099, col: 1, offset: 41083},
 			expr: &actionExpr{
-				pos: position{line: 1099, col: 17, offset: 41127},
+				pos: position{line: 1099, col: 17, offset: 41099},
 				run: (*parser).callonRelativeLink1,
 				expr: &seqExpr{
-					pos: position{line: 1099, col: 17, offset: 41127},
+					pos: position{line: 1099, col: 17, offset: 41099},
 					exprs: []interface{}{
 						&litMatcher{
-							pos:        position{line: 1099, col: 17, offset: 41127},
+							pos:        position{line: 1099, col: 17, offset: 41099},
 							val:        "link:",
 							ignoreCase: false,
 						},
 						&labeledExpr{
-							pos:   position{line: 1099, col: 25, offset: 41135},
+							pos:   position{line: 1099, col: 25, offset: 41107},
 							label: "url",
 							expr: &choiceExpr{
-								pos: position{line: 1099, col: 30, offset: 41140},
+								pos: position{line: 1099, col: 30, offset: 41112},
 								alternatives: []interface{}{
 									&ruleRefExpr{
-										pos:  position{line: 1099, col: 30, offset: 41140},
+										pos:  position{line: 1099, col: 30, offset: 41112},
 										name: "Location",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 1099, col: 41, offset: 41151},
+										pos:  position{line: 1099, col: 41, offset: 41123},
 										name: "FileLocation",
 									},
 								},
 							},
 						},
 						&labeledExpr{
-							pos:   position{line: 1099, col: 55, offset: 41165},
+							pos:   position{line: 1099, col: 55, offset: 41137},
 							label: "inlineAttributes",
 							expr: &ruleRefExpr{
-								pos:  position{line: 1099, col: 73, offset: 41183},
+								pos:  position{line: 1099, col: 73, offset: 41155},
 								name: "LinkAttributes",
 							},
 						},
@@ -8550,28 +8550,28 @@ var g = &grammar{
 		},
 		{
 			name: "ExternalLink",
-			pos:  position{line: 1103, col: 1, offset: 41301},
+			pos:  position{line: 1103, col: 1, offset: 41273},
 			expr: &actionExpr{
-				pos: position{line: 1103, col: 17, offset: 41317},
+				pos: position{line: 1103, col: 17, offset: 41289},
 				run: (*parser).callonExternalLink1,
 				expr: &seqExpr{
-					pos: position{line: 1103, col: 17, offset: 41317},
+					pos: position{line: 1103, col: 17, offset: 41289},
 					exprs: []interface{}{
 						&labeledExpr{
-							pos:   position{line: 1103, col: 17, offset: 41317},
+							pos:   position{line: 1103, col: 17, offset: 41289},
 							label: "url",
 							expr: &ruleRefExpr{
-								pos:  position{line: 1103, col: 22, offset: 41322},
+								pos:  position{line: 1103, col: 22, offset: 41294},
 								name: "Location",
 							},
 						},
 						&labeledExpr{
-							pos:   position{line: 1103, col: 32, offset: 41332},
+							pos:   position{line: 1103, col: 32, offset: 41304},
 							label: "inlineAttributes",
 							expr: &zeroOrOneExpr{
-								pos: position{line: 1103, col: 49, offset: 41349},
+								pos: position{line: 1103, col: 49, offset: 41321},
 								expr: &ruleRefExpr{
-									pos:  position{line: 1103, col: 50, offset: 41350},
+									pos:  position{line: 1103, col: 50, offset: 41322},
 									name: "LinkAttributes",
 								},
 							},
@@ -8582,16 +8582,16 @@ var g = &grammar{
 		},
 		{
 			name: "LinkAttributes",
-			pos:  position{line: 1107, col: 1, offset: 41443},
+			pos:  position{line: 1107, col: 1, offset: 41415},
 			expr: &choiceExpr{
-				pos: position{line: 1107, col: 19, offset: 41461},
+				pos: position{line: 1107, col: 19, offset: 41433},
 				alternatives: []interface{}{
 					&ruleRefExpr{
-						pos:  position{line: 1107, col: 19, offset: 41461},
+						pos:  position{line: 1107, col: 19, offset: 41433},
 						name: "TextOnlyLinkAttributes",
 					},
 					&ruleRefExpr{
-						pos:  position{line: 1107, col: 44, offset: 41486},
+						pos:  position{line: 1107, col: 44, offset: 41458},
 						name: "TextAndMoreLinkAttributes",
 					},
 				},
@@ -8599,31 +8599,31 @@ var g = &grammar{
 		},
 		{
 			name: "TextOnlyLinkAttributes",
-			pos:  position{line: 1109, col: 1, offset: 41513},
+			pos:  position{line: 1109, col: 1, offset: 41485},
 			expr: &actionExpr{
-				pos: position{line: 1109, col: 27, offset: 41539},
+				pos: position{line: 1109, col: 27, offset: 41511},
 				run: (*parser).callonTextOnlyLinkAttributes1,
 				expr: &seqExpr{
-					pos: position{line: 1109, col: 27, offset: 41539},
+					pos: position{line: 1109, col: 27, offset: 41511},
 					exprs: []interface{}{
 						&litMatcher{
-							pos:        position{line: 1109, col: 27, offset: 41539},
+							pos:        position{line: 1109, col: 27, offset: 41511},
 							val:        "[",
 							ignoreCase: false,
 						},
 						&labeledExpr{
-							pos:   position{line: 1109, col: 31, offset: 41543},
+							pos:   position{line: 1109, col: 31, offset: 41515},
 							label: "text",
 							expr: &zeroOrOneExpr{
-								pos: position{line: 1109, col: 36, offset: 41548},
+								pos: position{line: 1109, col: 36, offset: 41520},
 								expr: &ruleRefExpr{
-									pos:  position{line: 1109, col: 37, offset: 41549},
+									pos:  position{line: 1109, col: 37, offset: 41521},
 									name: "LinkTextWithCommaAttribute",
 								},
 							},
 						},
 						&litMatcher{
-							pos:        position{line: 1109, col: 66, offset: 41578},
+							pos:        position{line: 1109, col: 66, offset: 41550},
 							val:        "]",
 							ignoreCase: false,
 						},
@@ -8633,83 +8633,83 @@ var g = &grammar{
 		},
 		{
 			name: "LinkTextWithCommaAttribute",
-			pos:  position{line: 1113, col: 1, offset: 41640},
+			pos:  position{line: 1113, col: 1, offset: 41612},
 			expr: &choiceExpr{
-				pos: position{line: 1115, col: 5, offset: 41712},
+				pos: position{line: 1115, col: 5, offset: 41684},
 				alternatives: []interface{}{
 					&actionExpr{
-						pos: position{line: 1115, col: 5, offset: 41712},
+						pos: position{line: 1115, col: 5, offset: 41684},
 						run: (*parser).callonLinkTextWithCommaAttribute2,
 						expr: &seqExpr{
-							pos: position{line: 1115, col: 5, offset: 41712},
+							pos: position{line: 1115, col: 5, offset: 41684},
 							exprs: []interface{}{
 								&litMatcher{
-									pos:        position{line: 1115, col: 5, offset: 41712},
+									pos:        position{line: 1115, col: 5, offset: 41684},
 									val:        "\"",
 									ignoreCase: false,
 								},
 								&labeledExpr{
-									pos:   position{line: 1115, col: 10, offset: 41717},
+									pos:   position{line: 1115, col: 10, offset: 41689},
 									label: "elements",
 									expr: &oneOrMoreExpr{
-										pos: position{line: 1115, col: 19, offset: 41726},
+										pos: position{line: 1115, col: 19, offset: 41698},
 										expr: &seqExpr{
-											pos: position{line: 1115, col: 20, offset: 41727},
+											pos: position{line: 1115, col: 20, offset: 41699},
 											exprs: []interface{}{
 												&notExpr{
-													pos: position{line: 1115, col: 20, offset: 41727},
+													pos: position{line: 1115, col: 20, offset: 41699},
 													expr: &litMatcher{
-														pos:        position{line: 1115, col: 21, offset: 41728},
+														pos:        position{line: 1115, col: 21, offset: 41700},
 														val:        "=",
 														ignoreCase: false,
 													},
 												},
 												&notExpr{
-													pos: position{line: 1115, col: 25, offset: 41732},
+													pos: position{line: 1115, col: 25, offset: 41704},
 													expr: &litMatcher{
-														pos:        position{line: 1115, col: 26, offset: 41733},
+														pos:        position{line: 1115, col: 26, offset: 41705},
 														val:        "]",
 														ignoreCase: false,
 													},
 												},
 												&notExpr{
-													pos: position{line: 1115, col: 30, offset: 41737},
+													pos: position{line: 1115, col: 30, offset: 41709},
 													expr: &litMatcher{
-														pos:        position{line: 1115, col: 31, offset: 41738},
+														pos:        position{line: 1115, col: 31, offset: 41710},
 														val:        "\"",
 														ignoreCase: false,
 													},
 												},
 												&choiceExpr{
-													pos: position{line: 1115, col: 37, offset: 41744},
+													pos: position{line: 1115, col: 37, offset: 41716},
 													alternatives: []interface{}{
 														&ruleRefExpr{
-															pos:  position{line: 1115, col: 37, offset: 41744},
+															pos:  position{line: 1115, col: 37, offset: 41716},
 															name: "QuotedText",
 														},
 														&ruleRefExpr{
-															pos:  position{line: 1115, col: 50, offset: 41757},
+															pos:  position{line: 1115, col: 50, offset: 41729},
 															name: "SimpleWord",
 														},
 														&ruleRefExpr{
-															pos:  position{line: 1115, col: 63, offset: 41770},
+															pos:  position{line: 1115, col: 63, offset: 41742},
 															name: "Spaces",
 														},
 														&actionExpr{
-															pos: position{line: 1115, col: 73, offset: 41780},
+															pos: position{line: 1115, col: 73, offset: 41752},
 															run: (*parser).callonLinkTextWithCommaAttribute18,
 															expr: &seqExpr{
-																pos: position{line: 1115, col: 74, offset: 41781},
+																pos: position{line: 1115, col: 74, offset: 41753},
 																exprs: []interface{}{
 																	&notExpr{
-																		pos: position{line: 1115, col: 74, offset: 41781},
+																		pos: position{line: 1115, col: 74, offset: 41753},
 																		expr: &ruleRefExpr{
-																			pos:  position{line: 1115, col: 75, offset: 41782},
+																			pos:  position{line: 1115, col: 75, offset: 41754},
 																			name: "QuotedTextPrefix",
 																		},
 																	},
 																	&anyMatcher{
-																		line: 1115, col: 92, offset: 41799,
+																		line: 1115, col: 92, offset: 41771,
 																	},
 																},
 															},
@@ -8721,23 +8721,23 @@ var g = &grammar{
 									},
 								},
 								&litMatcher{
-									pos:        position{line: 1117, col: 11, offset: 41868},
+									pos:        position{line: 1117, col: 11, offset: 41840},
 									val:        "\"",
 									ignoreCase: false,
 								},
 								&zeroOrMoreExpr{
-									pos: position{line: 1117, col: 16, offset: 41873},
+									pos: position{line: 1117, col: 16, offset: 41845},
 									expr: &ruleRefExpr{
-										pos:  position{line: 1117, col: 16, offset: 41873},
+										pos:  position{line: 1117, col: 16, offset: 41845},
 										name: "Spaces",
 									},
 								},
 								&andExpr{
-									pos: position{line: 1117, col: 24, offset: 41881},
+									pos: position{line: 1117, col: 24, offset: 41853},
 									expr: &notExpr{
-										pos: position{line: 1117, col: 26, offset: 41883},
+										pos: position{line: 1117, col: 26, offset: 41855},
 										expr: &litMatcher{
-											pos:        position{line: 1117, col: 27, offset: 41884},
+											pos:        position{line: 1117, col: 27, offset: 41856},
 											val:        "=",
 											ignoreCase: false,
 										},
@@ -8747,65 +8747,65 @@ var g = &grammar{
 						},
 					},
 					&actionExpr{
-						pos: position{line: 1121, col: 5, offset: 42009},
+						pos: position{line: 1121, col: 5, offset: 41981},
 						run: (*parser).callonLinkTextWithCommaAttribute29,
 						expr: &seqExpr{
-							pos: position{line: 1121, col: 5, offset: 42009},
+							pos: position{line: 1121, col: 5, offset: 41981},
 							exprs: []interface{}{
 								&labeledExpr{
-									pos:   position{line: 1121, col: 5, offset: 42009},
+									pos:   position{line: 1121, col: 5, offset: 41981},
 									label: "elements",
 									expr: &oneOrMoreExpr{
-										pos: position{line: 1121, col: 14, offset: 42018},
+										pos: position{line: 1121, col: 14, offset: 41990},
 										expr: &seqExpr{
-											pos: position{line: 1121, col: 15, offset: 42019},
+											pos: position{line: 1121, col: 15, offset: 41991},
 											exprs: []interface{}{
 												&notExpr{
-													pos: position{line: 1121, col: 15, offset: 42019},
+													pos: position{line: 1121, col: 15, offset: 41991},
 													expr: &litMatcher{
-														pos:        position{line: 1121, col: 16, offset: 42020},
+														pos:        position{line: 1121, col: 16, offset: 41992},
 														val:        "=",
 														ignoreCase: false,
 													},
 												},
 												&notExpr{
-													pos: position{line: 1121, col: 20, offset: 42024},
+													pos: position{line: 1121, col: 20, offset: 41996},
 													expr: &litMatcher{
-														pos:        position{line: 1121, col: 21, offset: 42025},
+														pos:        position{line: 1121, col: 21, offset: 41997},
 														val:        "]",
 														ignoreCase: false,
 													},
 												},
 												&choiceExpr{
-													pos: position{line: 1121, col: 26, offset: 42030},
+													pos: position{line: 1121, col: 26, offset: 42002},
 													alternatives: []interface{}{
 														&ruleRefExpr{
-															pos:  position{line: 1121, col: 26, offset: 42030},
+															pos:  position{line: 1121, col: 26, offset: 42002},
 															name: "QuotedText",
 														},
 														&ruleRefExpr{
-															pos:  position{line: 1121, col: 39, offset: 42043},
+															pos:  position{line: 1121, col: 39, offset: 42015},
 															name: "SimpleWord",
 														},
 														&ruleRefExpr{
-															pos:  position{line: 1121, col: 52, offset: 42056},
+															pos:  position{line: 1121, col: 52, offset: 42028},
 															name: "Spaces",
 														},
 														&actionExpr{
-															pos: position{line: 1121, col: 62, offset: 42066},
+															pos: position{line: 1121, col: 62, offset: 42038},
 															run: (*parser).callonLinkTextWithCommaAttribute42,
 															expr: &seqExpr{
-																pos: position{line: 1121, col: 63, offset: 42067},
+																pos: position{line: 1121, col: 63, offset: 42039},
 																exprs: []interface{}{
 																	&notExpr{
-																		pos: position{line: 1121, col: 63, offset: 42067},
+																		pos: position{line: 1121, col: 63, offset: 42039},
 																		expr: &ruleRefExpr{
-																			pos:  position{line: 1121, col: 64, offset: 42068},
+																			pos:  position{line: 1121, col: 64, offset: 42040},
 																			name: "QuotedTextPrefix",
 																		},
 																	},
 																	&anyMatcher{
-																		line: 1121, col: 81, offset: 42085,
+																		line: 1121, col: 81, offset: 42057,
 																	},
 																},
 															},
@@ -8817,11 +8817,11 @@ var g = &grammar{
 									},
 								},
 								&andExpr{
-									pos: position{line: 1123, col: 11, offset: 42154},
+									pos: position{line: 1123, col: 11, offset: 42126},
 									expr: &notExpr{
-										pos: position{line: 1123, col: 13, offset: 42156},
+										pos: position{line: 1123, col: 13, offset: 42128},
 										expr: &litMatcher{
-											pos:        position{line: 1123, col: 14, offset: 42157},
+											pos:        position{line: 1123, col: 14, offset: 42129},
 											val:        "=",
 											ignoreCase: false,
 										},
@@ -8835,57 +8835,57 @@ var g = &grammar{
 		},
 		{
 			name: "TextAndMoreLinkAttributes",
-			pos:  position{line: 1128, col: 1, offset: 42237},
+			pos:  position{line: 1128, col: 1, offset: 42209},
 			expr: &actionExpr{
-				pos: position{line: 1128, col: 30, offset: 42266},
+				pos: position{line: 1128, col: 30, offset: 42238},
 				run: (*parser).callonTextAndMoreLinkAttributes1,
 				expr: &seqExpr{
-					pos: position{line: 1128, col: 30, offset: 42266},
+					pos: position{line: 1128, col: 30, offset: 42238},
 					exprs: []interface{}{
 						&litMatcher{
-							pos:        position{line: 1128, col: 30, offset: 42266},
+							pos:        position{line: 1128, col: 30, offset: 42238},
 							val:        "[",
 							ignoreCase: false,
 						},
 						&labeledExpr{
-							pos:   position{line: 1128, col: 34, offset: 42270},
+							pos:   position{line: 1128, col: 34, offset: 42242},
 							label: "text",
 							expr: &zeroOrOneExpr{
-								pos: position{line: 1128, col: 39, offset: 42275},
+								pos: position{line: 1128, col: 39, offset: 42247},
 								expr: &ruleRefExpr{
-									pos:  position{line: 1128, col: 40, offset: 42276},
+									pos:  position{line: 1128, col: 40, offset: 42248},
 									name: "LinkTextAttribute",
 								},
 							},
 						},
 						&zeroOrOneExpr{
-							pos: position{line: 1128, col: 60, offset: 42296},
+							pos: position{line: 1128, col: 60, offset: 42268},
 							expr: &litMatcher{
-								pos:        position{line: 1128, col: 60, offset: 42296},
+								pos:        position{line: 1128, col: 60, offset: 42268},
 								val:        ",",
 								ignoreCase: false,
 							},
 						},
 						&zeroOrMoreExpr{
-							pos: position{line: 1128, col: 65, offset: 42301},
+							pos: position{line: 1128, col: 65, offset: 42273},
 							expr: &ruleRefExpr{
-								pos:  position{line: 1128, col: 65, offset: 42301},
+								pos:  position{line: 1128, col: 65, offset: 42273},
 								name: "WS",
 							},
 						},
 						&labeledExpr{
-							pos:   position{line: 1128, col: 69, offset: 42305},
+							pos:   position{line: 1128, col: 69, offset: 42277},
 							label: "otherattrs",
 							expr: &zeroOrMoreExpr{
-								pos: position{line: 1128, col: 80, offset: 42316},
+								pos: position{line: 1128, col: 80, offset: 42288},
 								expr: &ruleRefExpr{
-									pos:  position{line: 1128, col: 81, offset: 42317},
+									pos:  position{line: 1128, col: 81, offset: 42289},
 									name: "GenericAttribute",
 								},
 							},
 						},
 						&litMatcher{
-							pos:        position{line: 1128, col: 100, offset: 42336},
+							pos:        position{line: 1128, col: 100, offset: 42308},
 							val:        "]",
 							ignoreCase: false,
 						},
@@ -8895,83 +8895,83 @@ var g = &grammar{
 		},
 		{
 			name: "LinkTextAttribute",
-			pos:  position{line: 1132, col: 1, offset: 42421},
+			pos:  position{line: 1132, col: 1, offset: 42393},
 			expr: &choiceExpr{
-				pos: position{line: 1134, col: 5, offset: 42484},
+				pos: position{line: 1134, col: 5, offset: 42456},
 				alternatives: []interface{}{
 					&actionExpr{
-						pos: position{line: 1134, col: 5, offset: 42484},
+						pos: position{line: 1134, col: 5, offset: 42456},
 						run: (*parser).callonLinkTextAttribute2,
 						expr: &seqExpr{
-							pos: position{line: 1134, col: 5, offset: 42484},
+							pos: position{line: 1134, col: 5, offset: 42456},
 							exprs: []interface{}{
 								&litMatcher{
-									pos:        position{line: 1134, col: 5, offset: 42484},
+									pos:        position{line: 1134, col: 5, offset: 42456},
 									val:        "\"",
 									ignoreCase: false,
 								},
 								&labeledExpr{
-									pos:   position{line: 1134, col: 10, offset: 42489},
+									pos:   position{line: 1134, col: 10, offset: 42461},
 									label: "elements",
 									expr: &oneOrMoreExpr{
-										pos: position{line: 1134, col: 19, offset: 42498},
+										pos: position{line: 1134, col: 19, offset: 42470},
 										expr: &seqExpr{
-											pos: position{line: 1134, col: 20, offset: 42499},
+											pos: position{line: 1134, col: 20, offset: 42471},
 											exprs: []interface{}{
 												&notExpr{
-													pos: position{line: 1134, col: 20, offset: 42499},
+													pos: position{line: 1134, col: 20, offset: 42471},
 													expr: &litMatcher{
-														pos:        position{line: 1134, col: 21, offset: 42500},
+														pos:        position{line: 1134, col: 21, offset: 42472},
 														val:        "=",
 														ignoreCase: false,
 													},
 												},
 												&notExpr{
-													pos: position{line: 1134, col: 25, offset: 42504},
+													pos: position{line: 1134, col: 25, offset: 42476},
 													expr: &litMatcher{
-														pos:        position{line: 1134, col: 26, offset: 42505},
+														pos:        position{line: 1134, col: 26, offset: 42477},
 														val:        "]",
 														ignoreCase: false,
 													},
 												},
 												&notExpr{
-													pos: position{line: 1134, col: 30, offset: 42509},
+													pos: position{line: 1134, col: 30, offset: 42481},
 													expr: &litMatcher{
-														pos:        position{line: 1134, col: 31, offset: 42510},
+														pos:        position{line: 1134, col: 31, offset: 42482},
 														val:        "\"",
 														ignoreCase: false,
 													},
 												},
 												&choiceExpr{
-													pos: position{line: 1134, col: 37, offset: 42516},
+													pos: position{line: 1134, col: 37, offset: 42488},
 													alternatives: []interface{}{
 														&ruleRefExpr{
-															pos:  position{line: 1134, col: 37, offset: 42516},
+															pos:  position{line: 1134, col: 37, offset: 42488},
 															name: "QuotedText",
 														},
 														&ruleRefExpr{
-															pos:  position{line: 1134, col: 50, offset: 42529},
+															pos:  position{line: 1134, col: 50, offset: 42501},
 															name: "SimpleWord",
 														},
 														&ruleRefExpr{
-															pos:  position{line: 1134, col: 63, offset: 42542},
+															pos:  position{line: 1134, col: 63, offset: 42514},
 															name: "Spaces",
 														},
 														&actionExpr{
-															pos: position{line: 1134, col: 73, offset: 42552},
+															pos: position{line: 1134, col: 73, offset: 42524},
 															run: (*parser).callonLinkTextAttribute18,
 															expr: &seqExpr{
-																pos: position{line: 1134, col: 74, offset: 42553},
+																pos: position{line: 1134, col: 74, offset: 42525},
 																exprs: []interface{}{
 																	&notExpr{
-																		pos: position{line: 1134, col: 74, offset: 42553},
+																		pos: position{line: 1134, col: 74, offset: 42525},
 																		expr: &ruleRefExpr{
-																			pos:  position{line: 1134, col: 75, offset: 42554},
+																			pos:  position{line: 1134, col: 75, offset: 42526},
 																			name: "QuotedTextPrefix",
 																		},
 																	},
 																	&anyMatcher{
-																		line: 1134, col: 92, offset: 42571,
+																		line: 1134, col: 92, offset: 42543,
 																	},
 																},
 															},
@@ -8983,23 +8983,23 @@ var g = &grammar{
 									},
 								},
 								&litMatcher{
-									pos:        position{line: 1136, col: 11, offset: 42640},
+									pos:        position{line: 1136, col: 11, offset: 42612},
 									val:        "\"",
 									ignoreCase: false,
 								},
 								&zeroOrMoreExpr{
-									pos: position{line: 1136, col: 16, offset: 42645},
+									pos: position{line: 1136, col: 16, offset: 42617},
 									expr: &ruleRefExpr{
-										pos:  position{line: 1136, col: 16, offset: 42645},
+										pos:  position{line: 1136, col: 16, offset: 42617},
 										name: "Spaces",
 									},
 								},
 								&andExpr{
-									pos: position{line: 1136, col: 24, offset: 42653},
+									pos: position{line: 1136, col: 24, offset: 42625},
 									expr: &notExpr{
-										pos: position{line: 1136, col: 26, offset: 42655},
+										pos: position{line: 1136, col: 26, offset: 42627},
 										expr: &litMatcher{
-											pos:        position{line: 1136, col: 27, offset: 42656},
+											pos:        position{line: 1136, col: 27, offset: 42628},
 											val:        "=",
 											ignoreCase: false,
 										},
@@ -9009,73 +9009,73 @@ var g = &grammar{
 						},
 					},
 					&actionExpr{
-						pos: position{line: 1140, col: 5, offset: 42781},
+						pos: position{line: 1140, col: 5, offset: 42753},
 						run: (*parser).callonLinkTextAttribute29,
 						expr: &seqExpr{
-							pos: position{line: 1140, col: 5, offset: 42781},
+							pos: position{line: 1140, col: 5, offset: 42753},
 							exprs: []interface{}{
 								&labeledExpr{
-									pos:   position{line: 1140, col: 5, offset: 42781},
+									pos:   position{line: 1140, col: 5, offset: 42753},
 									label: "elements",
 									expr: &oneOrMoreExpr{
-										pos: position{line: 1140, col: 14, offset: 42790},
+										pos: position{line: 1140, col: 14, offset: 42762},
 										expr: &seqExpr{
-											pos: position{line: 1140, col: 15, offset: 42791},
+											pos: position{line: 1140, col: 15, offset: 42763},
 											exprs: []interface{}{
 												&notExpr{
-													pos: position{line: 1140, col: 15, offset: 42791},
+													pos: position{line: 1140, col: 15, offset: 42763},
 													expr: &litMatcher{
-														pos:        position{line: 1140, col: 16, offset: 42792},
+														pos:        position{line: 1140, col: 16, offset: 42764},
 														val:        "=",
 														ignoreCase: false,
 													},
 												},
 												&notExpr{
-													pos: position{line: 1140, col: 20, offset: 42796},
+													pos: position{line: 1140, col: 20, offset: 42768},
 													expr: &litMatcher{
-														pos:        position{line: 1140, col: 21, offset: 42797},
+														pos:        position{line: 1140, col: 21, offset: 42769},
 														val:        ",",
 														ignoreCase: false,
 													},
 												},
 												&notExpr{
-													pos: position{line: 1140, col: 25, offset: 42801},
+													pos: position{line: 1140, col: 25, offset: 42773},
 													expr: &litMatcher{
-														pos:        position{line: 1140, col: 26, offset: 42802},
+														pos:        position{line: 1140, col: 26, offset: 42774},
 														val:        "]",
 														ignoreCase: false,
 													},
 												},
 												&choiceExpr{
-													pos: position{line: 1140, col: 31, offset: 42807},
+													pos: position{line: 1140, col: 31, offset: 42779},
 													alternatives: []interface{}{
 														&ruleRefExpr{
-															pos:  position{line: 1140, col: 31, offset: 42807},
+															pos:  position{line: 1140, col: 31, offset: 42779},
 															name: "QuotedText",
 														},
 														&ruleRefExpr{
-															pos:  position{line: 1140, col: 44, offset: 42820},
+															pos:  position{line: 1140, col: 44, offset: 42792},
 															name: "SimpleWord",
 														},
 														&ruleRefExpr{
-															pos:  position{line: 1140, col: 57, offset: 42833},
+															pos:  position{line: 1140, col: 57, offset: 42805},
 															name: "Spaces",
 														},
 														&actionExpr{
-															pos: position{line: 1140, col: 67, offset: 42843},
+															pos: position{line: 1140, col: 67, offset: 42815},
 															run: (*parser).callonLinkTextAttribute44,
 															expr: &seqExpr{
-																pos: position{line: 1140, col: 68, offset: 42844},
+																pos: position{line: 1140, col: 68, offset: 42816},
 																exprs: []interface{}{
 																	&notExpr{
-																		pos: position{line: 1140, col: 68, offset: 42844},
+																		pos: position{line: 1140, col: 68, offset: 42816},
 																		expr: &ruleRefExpr{
-																			pos:  position{line: 1140, col: 69, offset: 42845},
+																			pos:  position{line: 1140, col: 69, offset: 42817},
 																			name: "QuotedTextPrefix",
 																		},
 																	},
 																	&anyMatcher{
-																		line: 1140, col: 86, offset: 42862,
+																		line: 1140, col: 86, offset: 42834,
 																	},
 																},
 															},
@@ -9087,11 +9087,11 @@ var g = &grammar{
 									},
 								},
 								&andExpr{
-									pos: position{line: 1142, col: 11, offset: 42931},
+									pos: position{line: 1142, col: 11, offset: 42903},
 									expr: &notExpr{
-										pos: position{line: 1142, col: 13, offset: 42933},
+										pos: position{line: 1142, col: 13, offset: 42905},
 										expr: &litMatcher{
-											pos:        position{line: 1142, col: 14, offset: 42934},
+											pos:        position{line: 1142, col: 14, offset: 42906},
 											val:        "=",
 											ignoreCase: false,
 										},
@@ -9105,47 +9105,47 @@ var g = &grammar{
 		},
 		{
 			name: "ImageBlock",
-			pos:  position{line: 1149, col: 1, offset: 43115},
+			pos:  position{line: 1149, col: 1, offset: 43087},
 			expr: &actionExpr{
-				pos: position{line: 1149, col: 15, offset: 43129},
+				pos: position{line: 1149, col: 15, offset: 43101},
 				run: (*parser).callonImageBlock1,
 				expr: &seqExpr{
-					pos: position{line: 1149, col: 15, offset: 43129},
+					pos: position{line: 1149, col: 15, offset: 43101},
 					exprs: []interface{}{
 						&labeledExpr{
-							pos:   position{line: 1149, col: 15, offset: 43129},
+							pos:   position{line: 1149, col: 15, offset: 43101},
 							label: "attributes",
 							expr: &zeroOrOneExpr{
-								pos: position{line: 1149, col: 26, offset: 43140},
+								pos: position{line: 1149, col: 26, offset: 43112},
 								expr: &ruleRefExpr{
-									pos:  position{line: 1149, col: 27, offset: 43141},
+									pos:  position{line: 1149, col: 27, offset: 43113},
 									name: "ElementAttributes",
 								},
 							},
 						},
 						&litMatcher{
-							pos:        position{line: 1149, col: 47, offset: 43161},
+							pos:        position{line: 1149, col: 47, offset: 43133},
 							val:        "image::",
 							ignoreCase: false,
 						},
 						&labeledExpr{
-							pos:   position{line: 1149, col: 57, offset: 43171},
+							pos:   position{line: 1149, col: 57, offset: 43143},
 							label: "path",
 							expr: &ruleRefExpr{
-								pos:  position{line: 1149, col: 63, offset: 43177},
+								pos:  position{line: 1149, col: 63, offset: 43149},
 								name: "URL",
 							},
 						},
 						&labeledExpr{
-							pos:   position{line: 1149, col: 68, offset: 43182},
+							pos:   position{line: 1149, col: 68, offset: 43154},
 							label: "inlineAttributes",
 							expr: &ruleRefExpr{
-								pos:  position{line: 1149, col: 86, offset: 43200},
+								pos:  position{line: 1149, col: 86, offset: 43172},
 								name: "ImageAttributes",
 							},
 						},
 						&ruleRefExpr{
-							pos:  position{line: 1149, col: 103, offset: 43217},
+							pos:  position{line: 1149, col: 103, offset: 43189},
 							name: "EOLS",
 						},
 					},
@@ -9154,39 +9154,39 @@ var g = &grammar{
 		},
 		{
 			name: "InlineImage",
-			pos:  position{line: 1153, col: 1, offset: 43329},
+			pos:  position{line: 1153, col: 1, offset: 43301},
 			expr: &actionExpr{
-				pos: position{line: 1153, col: 16, offset: 43344},
+				pos: position{line: 1153, col: 16, offset: 43316},
 				run: (*parser).callonInlineImage1,
 				expr: &seqExpr{
-					pos: position{line: 1153, col: 16, offset: 43344},
+					pos: position{line: 1153, col: 16, offset: 43316},
 					exprs: []interface{}{
 						&litMatcher{
-							pos:        position{line: 1153, col: 16, offset: 43344},
+							pos:        position{line: 1153, col: 16, offset: 43316},
 							val:        "image:",
 							ignoreCase: false,
 						},
 						&notExpr{
-							pos: position{line: 1153, col: 25, offset: 43353},
+							pos: position{line: 1153, col: 25, offset: 43325},
 							expr: &litMatcher{
-								pos:        position{line: 1153, col: 26, offset: 43354},
+								pos:        position{line: 1153, col: 26, offset: 43326},
 								val:        ":",
 								ignoreCase: false,
 							},
 						},
 						&labeledExpr{
-							pos:   position{line: 1153, col: 30, offset: 43358},
+							pos:   position{line: 1153, col: 30, offset: 43330},
 							label: "path",
 							expr: &ruleRefExpr{
-								pos:  position{line: 1153, col: 36, offset: 43364},
+								pos:  position{line: 1153, col: 36, offset: 43336},
 								name: "URL",
 							},
 						},
 						&labeledExpr{
-							pos:   position{line: 1153, col: 41, offset: 43369},
+							pos:   position{line: 1153, col: 41, offset: 43341},
 							label: "inlineAttributes",
 							expr: &ruleRefExpr{
-								pos:  position{line: 1153, col: 59, offset: 43387},
+								pos:  position{line: 1153, col: 59, offset: 43359},
 								name: "ImageAttributes",
 							},
 						},
@@ -9196,95 +9196,95 @@ var g = &grammar{
 		},
 		{
 			name: "ImageAttributes",
-			pos:  position{line: 1157, col: 1, offset: 43500},
+			pos:  position{line: 1157, col: 1, offset: 43472},
 			expr: &actionExpr{
-				pos: position{line: 1157, col: 20, offset: 43519},
+				pos: position{line: 1157, col: 20, offset: 43491},
 				run: (*parser).callonImageAttributes1,
 				expr: &seqExpr{
-					pos: position{line: 1157, col: 20, offset: 43519},
+					pos: position{line: 1157, col: 20, offset: 43491},
 					exprs: []interface{}{
 						&litMatcher{
-							pos:        position{line: 1157, col: 20, offset: 43519},
+							pos:        position{line: 1157, col: 20, offset: 43491},
 							val:        "[",
 							ignoreCase: false,
 						},
 						&labeledExpr{
-							pos:   position{line: 1157, col: 24, offset: 43523},
+							pos:   position{line: 1157, col: 24, offset: 43495},
 							label: "alt",
 							expr: &zeroOrOneExpr{
-								pos: position{line: 1157, col: 28, offset: 43527},
+								pos: position{line: 1157, col: 28, offset: 43499},
 								expr: &ruleRefExpr{
-									pos:  position{line: 1157, col: 29, offset: 43528},
+									pos:  position{line: 1157, col: 29, offset: 43500},
 									name: "AttributeValue",
 								},
 							},
 						},
 						&zeroOrOneExpr{
-							pos: position{line: 1157, col: 46, offset: 43545},
+							pos: position{line: 1157, col: 46, offset: 43517},
 							expr: &litMatcher{
-								pos:        position{line: 1157, col: 46, offset: 43545},
+								pos:        position{line: 1157, col: 46, offset: 43517},
 								val:        ",",
 								ignoreCase: false,
 							},
 						},
 						&labeledExpr{
-							pos:   position{line: 1157, col: 51, offset: 43550},
+							pos:   position{line: 1157, col: 51, offset: 43522},
 							label: "width",
 							expr: &zeroOrOneExpr{
-								pos: position{line: 1157, col: 57, offset: 43556},
+								pos: position{line: 1157, col: 57, offset: 43528},
 								expr: &ruleRefExpr{
-									pos:  position{line: 1157, col: 58, offset: 43557},
+									pos:  position{line: 1157, col: 58, offset: 43529},
 									name: "AttributeValue",
 								},
 							},
 						},
 						&zeroOrOneExpr{
-							pos: position{line: 1157, col: 75, offset: 43574},
+							pos: position{line: 1157, col: 75, offset: 43546},
 							expr: &litMatcher{
-								pos:        position{line: 1157, col: 75, offset: 43574},
+								pos:        position{line: 1157, col: 75, offset: 43546},
 								val:        ",",
 								ignoreCase: false,
 							},
 						},
 						&labeledExpr{
-							pos:   position{line: 1157, col: 80, offset: 43579},
+							pos:   position{line: 1157, col: 80, offset: 43551},
 							label: "height",
 							expr: &zeroOrOneExpr{
-								pos: position{line: 1157, col: 87, offset: 43586},
+								pos: position{line: 1157, col: 87, offset: 43558},
 								expr: &ruleRefExpr{
-									pos:  position{line: 1157, col: 88, offset: 43587},
+									pos:  position{line: 1157, col: 88, offset: 43559},
 									name: "AttributeValue",
 								},
 							},
 						},
 						&zeroOrOneExpr{
-							pos: position{line: 1157, col: 105, offset: 43604},
+							pos: position{line: 1157, col: 105, offset: 43576},
 							expr: &litMatcher{
-								pos:        position{line: 1157, col: 105, offset: 43604},
+								pos:        position{line: 1157, col: 105, offset: 43576},
 								val:        ",",
 								ignoreCase: false,
 							},
 						},
 						&zeroOrMoreExpr{
-							pos: position{line: 1157, col: 110, offset: 43609},
+							pos: position{line: 1157, col: 110, offset: 43581},
 							expr: &ruleRefExpr{
-								pos:  position{line: 1157, col: 110, offset: 43609},
+								pos:  position{line: 1157, col: 110, offset: 43581},
 								name: "WS",
 							},
 						},
 						&labeledExpr{
-							pos:   position{line: 1157, col: 114, offset: 43613},
+							pos:   position{line: 1157, col: 114, offset: 43585},
 							label: "otherattrs",
 							expr: &zeroOrMoreExpr{
-								pos: position{line: 1157, col: 125, offset: 43624},
+								pos: position{line: 1157, col: 125, offset: 43596},
 								expr: &ruleRefExpr{
-									pos:  position{line: 1157, col: 126, offset: 43625},
+									pos:  position{line: 1157, col: 126, offset: 43597},
 									name: "GenericAttribute",
 								},
 							},
 						},
 						&litMatcher{
-							pos:        position{line: 1157, col: 145, offset: 43644},
+							pos:        position{line: 1157, col: 145, offset: 43616},
 							val:        "]",
 							ignoreCase: false,
 						},
@@ -9294,31 +9294,31 @@ var g = &grammar{
 		},
 		{
 			name: "InlineFootnote",
-			pos:  position{line: 1164, col: 1, offset: 43934},
+			pos:  position{line: 1164, col: 1, offset: 43906},
 			expr: &choiceExpr{
-				pos: position{line: 1164, col: 19, offset: 43952},
+				pos: position{line: 1164, col: 19, offset: 43924},
 				alternatives: []interface{}{
 					&actionExpr{
-						pos: position{line: 1164, col: 19, offset: 43952},
+						pos: position{line: 1164, col: 19, offset: 43924},
 						run: (*parser).callonInlineFootnote2,
 						expr: &seqExpr{
-							pos: position{line: 1164, col: 19, offset: 43952},
+							pos: position{line: 1164, col: 19, offset: 43924},
 							exprs: []interface{}{
 								&litMatcher{
-									pos:        position{line: 1164, col: 19, offset: 43952},
+									pos:        position{line: 1164, col: 19, offset: 43924},
 									val:        "footnote:[",
 									ignoreCase: false,
 								},
 								&labeledExpr{
-									pos:   position{line: 1164, col: 32, offset: 43965},
+									pos:   position{line: 1164, col: 32, offset: 43937},
 									label: "content",
 									expr: &ruleRefExpr{
-										pos:  position{line: 1164, col: 41, offset: 43974},
+										pos:  position{line: 1164, col: 41, offset: 43946},
 										name: "FootnoteContent",
 									},
 								},
 								&litMatcher{
-									pos:        position{line: 1164, col: 58, offset: 43991},
+									pos:        position{line: 1164, col: 58, offset: 43963},
 									val:        "]",
 									ignoreCase: false,
 								},
@@ -9326,39 +9326,39 @@ var g = &grammar{
 						},
 					},
 					&actionExpr{
-						pos: position{line: 1166, col: 5, offset: 44066},
+						pos: position{line: 1166, col: 5, offset: 44038},
 						run: (*parser).callonInlineFootnote8,
 						expr: &seqExpr{
-							pos: position{line: 1166, col: 5, offset: 44066},
+							pos: position{line: 1166, col: 5, offset: 44038},
 							exprs: []interface{}{
 								&litMatcher{
-									pos:        position{line: 1166, col: 5, offset: 44066},
+									pos:        position{line: 1166, col: 5, offset: 44038},
 									val:        "footnoteref:[",
 									ignoreCase: false,
 								},
 								&labeledExpr{
-									pos:   position{line: 1166, col: 21, offset: 44082},
+									pos:   position{line: 1166, col: 21, offset: 44054},
 									label: "ref",
 									expr: &ruleRefExpr{
-										pos:  position{line: 1166, col: 26, offset: 44087},
+										pos:  position{line: 1166, col: 26, offset: 44059},
 										name: "FootnoteRef",
 									},
 								},
 								&litMatcher{
-									pos:        position{line: 1166, col: 39, offset: 44100},
+									pos:        position{line: 1166, col: 39, offset: 44072},
 									val:        ",",
 									ignoreCase: false,
 								},
 								&labeledExpr{
-									pos:   position{line: 1166, col: 43, offset: 44104},
+									pos:   position{line: 1166, col: 43, offset: 44076},
 									label: "content",
 									expr: &ruleRefExpr{
-										pos:  position{line: 1166, col: 52, offset: 44113},
+										pos:  position{line: 1166, col: 52, offset: 44085},
 										name: "FootnoteContent",
 									},
 								},
 								&litMatcher{
-									pos:        position{line: 1166, col: 69, offset: 44130},
+									pos:        position{line: 1166, col: 69, offset: 44102},
 									val:        "]",
 									ignoreCase: false,
 								},
@@ -9366,26 +9366,26 @@ var g = &grammar{
 						},
 					},
 					&actionExpr{
-						pos: position{line: 1168, col: 5, offset: 44215},
+						pos: position{line: 1168, col: 5, offset: 44187},
 						run: (*parser).callonInlineFootnote17,
 						expr: &seqExpr{
-							pos: position{line: 1168, col: 5, offset: 44215},
+							pos: position{line: 1168, col: 5, offset: 44187},
 							exprs: []interface{}{
 								&litMatcher{
-									pos:        position{line: 1168, col: 5, offset: 44215},
+									pos:        position{line: 1168, col: 5, offset: 44187},
 									val:        "footnoteref:[",
 									ignoreCase: false,
 								},
 								&labeledExpr{
-									pos:   position{line: 1168, col: 21, offset: 44231},
+									pos:   position{line: 1168, col: 21, offset: 44203},
 									label: "ref",
 									expr: &ruleRefExpr{
-										pos:  position{line: 1168, col: 26, offset: 44236},
+										pos:  position{line: 1168, col: 26, offset: 44208},
 										name: "FootnoteRef",
 									},
 								},
 								&litMatcher{
-									pos:        position{line: 1168, col: 39, offset: 44249},
+									pos:        position{line: 1168, col: 39, offset: 44221},
 									val:        "]",
 									ignoreCase: false,
 								},
@@ -9397,51 +9397,51 @@ var g = &grammar{
 		},
 		{
 			name: "FootnoteRef",
-			pos:  position{line: 1172, col: 1, offset: 44364},
+			pos:  position{line: 1172, col: 1, offset: 44336},
 			expr: &actionExpr{
-				pos: position{line: 1172, col: 16, offset: 44379},
+				pos: position{line: 1172, col: 16, offset: 44351},
 				run: (*parser).callonFootnoteRef1,
 				expr: &zeroOrMoreExpr{
-					pos: position{line: 1172, col: 16, offset: 44379},
+					pos: position{line: 1172, col: 16, offset: 44351},
 					expr: &choiceExpr{
-						pos: position{line: 1172, col: 17, offset: 44380},
+						pos: position{line: 1172, col: 17, offset: 44352},
 						alternatives: []interface{}{
 							&ruleRefExpr{
-								pos:  position{line: 1172, col: 17, offset: 44380},
+								pos:  position{line: 1172, col: 17, offset: 44352},
 								name: "Alphanums",
 							},
 							&ruleRefExpr{
-								pos:  position{line: 1172, col: 29, offset: 44392},
+								pos:  position{line: 1172, col: 29, offset: 44364},
 								name: "Spaces",
 							},
 							&seqExpr{
-								pos: position{line: 1172, col: 39, offset: 44402},
+								pos: position{line: 1172, col: 39, offset: 44374},
 								exprs: []interface{}{
 									&notExpr{
-										pos: position{line: 1172, col: 39, offset: 44402},
+										pos: position{line: 1172, col: 39, offset: 44374},
 										expr: &litMatcher{
-											pos:        position{line: 1172, col: 40, offset: 44403},
+											pos:        position{line: 1172, col: 40, offset: 44375},
 											val:        ",",
 											ignoreCase: false,
 										},
 									},
 									&notExpr{
-										pos: position{line: 1172, col: 44, offset: 44407},
+										pos: position{line: 1172, col: 44, offset: 44379},
 										expr: &litMatcher{
-											pos:        position{line: 1172, col: 45, offset: 44408},
+											pos:        position{line: 1172, col: 45, offset: 44380},
 											val:        "]",
 											ignoreCase: false,
 										},
 									},
 									&notExpr{
-										pos: position{line: 1172, col: 49, offset: 44412},
+										pos: position{line: 1172, col: 49, offset: 44384},
 										expr: &ruleRefExpr{
-											pos:  position{line: 1172, col: 50, offset: 44413},
+											pos:  position{line: 1172, col: 50, offset: 44385},
 											name: "EOL",
 										},
 									},
 									&anyMatcher{
-										line: 1172, col: 55, offset: 44418,
+										line: 1172, col: 55, offset: 44390,
 									},
 								},
 							},
@@ -9452,55 +9452,55 @@ var g = &grammar{
 		},
 		{
 			name: "FootnoteContent",
-			pos:  position{line: 1176, col: 1, offset: 44503},
+			pos:  position{line: 1176, col: 1, offset: 44475},
 			expr: &actionExpr{
-				pos: position{line: 1176, col: 20, offset: 44522},
+				pos: position{line: 1176, col: 20, offset: 44494},
 				run: (*parser).callonFootnoteContent1,
 				expr: &labeledExpr{
-					pos:   position{line: 1176, col: 20, offset: 44522},
+					pos:   position{line: 1176, col: 20, offset: 44494},
 					label: "elements",
 					expr: &oneOrMoreExpr{
-						pos: position{line: 1176, col: 29, offset: 44531},
+						pos: position{line: 1176, col: 29, offset: 44503},
 						expr: &seqExpr{
-							pos: position{line: 1176, col: 30, offset: 44532},
+							pos: position{line: 1176, col: 30, offset: 44504},
 							exprs: []interface{}{
 								&notExpr{
-									pos: position{line: 1176, col: 30, offset: 44532},
+									pos: position{line: 1176, col: 30, offset: 44504},
 									expr: &litMatcher{
-										pos:        position{line: 1176, col: 31, offset: 44533},
+										pos:        position{line: 1176, col: 31, offset: 44505},
 										val:        "]",
 										ignoreCase: false,
 									},
 								},
 								&notExpr{
-									pos: position{line: 1176, col: 35, offset: 44537},
+									pos: position{line: 1176, col: 35, offset: 44509},
 									expr: &ruleRefExpr{
-										pos:  position{line: 1176, col: 36, offset: 44538},
+										pos:  position{line: 1176, col: 36, offset: 44510},
 										name: "EOL",
 									},
 								},
 								&zeroOrMoreExpr{
-									pos: position{line: 1176, col: 40, offset: 44542},
+									pos: position{line: 1176, col: 40, offset: 44514},
 									expr: &ruleRefExpr{
-										pos:  position{line: 1176, col: 40, offset: 44542},
+										pos:  position{line: 1176, col: 40, offset: 44514},
 										name: "WS",
 									},
 								},
 								&notExpr{
-									pos: position{line: 1176, col: 44, offset: 44546},
+									pos: position{line: 1176, col: 44, offset: 44518},
 									expr: &ruleRefExpr{
-										pos:  position{line: 1176, col: 45, offset: 44547},
+										pos:  position{line: 1176, col: 45, offset: 44519},
 										name: "InlineElementID",
 									},
 								},
 								&ruleRefExpr{
-									pos:  position{line: 1176, col: 61, offset: 44563},
+									pos:  position{line: 1176, col: 61, offset: 44535},
 									name: "InlineElement",
 								},
 								&zeroOrMoreExpr{
-									pos: position{line: 1176, col: 75, offset: 44577},
+									pos: position{line: 1176, col: 75, offset: 44549},
 									expr: &ruleRefExpr{
-										pos:  position{line: 1176, col: 75, offset: 44577},
+										pos:  position{line: 1176, col: 75, offset: 44549},
 										name: "WS",
 									},
 								},
@@ -9512,60 +9512,60 @@ var g = &grammar{
 		},
 		{
 			name: "DelimitedBlock",
-			pos:  position{line: 1183, col: 1, offset: 44891},
+			pos:  position{line: 1183, col: 1, offset: 44863},
 			expr: &actionExpr{
-				pos: position{line: 1183, col: 19, offset: 44909},
+				pos: position{line: 1183, col: 19, offset: 44881},
 				run: (*parser).callonDelimitedBlock1,
 				expr: &seqExpr{
-					pos: position{line: 1183, col: 19, offset: 44909},
+					pos: position{line: 1183, col: 19, offset: 44881},
 					exprs: []interface{}{
 						&notExpr{
-							pos: position{line: 1183, col: 19, offset: 44909},
+							pos: position{line: 1183, col: 19, offset: 44881},
 							expr: &ruleRefExpr{
-								pos:  position{line: 1183, col: 20, offset: 44910},
+								pos:  position{line: 1183, col: 20, offset: 44882},
 								name: "Alphanum",
 							},
 						},
 						&labeledExpr{
-							pos:   position{line: 1184, col: 5, offset: 44939},
+							pos:   position{line: 1184, col: 5, offset: 44911},
 							label: "block",
 							expr: &choiceExpr{
-								pos: position{line: 1184, col: 12, offset: 44946},
+								pos: position{line: 1184, col: 12, offset: 44918},
 								alternatives: []interface{}{
 									&ruleRefExpr{
-										pos:  position{line: 1184, col: 12, offset: 44946},
+										pos:  position{line: 1184, col: 12, offset: 44918},
 										name: "FencedBlock",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 1185, col: 11, offset: 44969},
+										pos:  position{line: 1185, col: 11, offset: 44941},
 										name: "ListingBlock",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 1186, col: 11, offset: 44993},
+										pos:  position{line: 1186, col: 11, offset: 44965},
 										name: "ExampleBlock",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 1187, col: 11, offset: 45017},
+										pos:  position{line: 1187, col: 11, offset: 44989},
 										name: "VerseBlock",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 1188, col: 11, offset: 45039},
+										pos:  position{line: 1188, col: 11, offset: 45011},
 										name: "QuoteBlock",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 1189, col: 11, offset: 45061},
+										pos:  position{line: 1189, col: 11, offset: 45033},
 										name: "SidebarBlock",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 1190, col: 11, offset: 45084},
+										pos:  position{line: 1190, col: 11, offset: 45056},
 										name: "SingleLineComment",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 1191, col: 11, offset: 45112},
+										pos:  position{line: 1191, col: 11, offset: 45084},
 										name: "Table",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 1192, col: 11, offset: 45128},
+										pos:  position{line: 1192, col: 11, offset: 45100},
 										name: "CommentBlock",
 									},
 								},
@@ -9577,36 +9577,36 @@ var g = &grammar{
 		},
 		{
 			name: "BlockDelimiter",
-			pos:  position{line: 1196, col: 1, offset: 45169},
+			pos:  position{line: 1196, col: 1, offset: 45141},
 			expr: &choiceExpr{
-				pos: position{line: 1196, col: 19, offset: 45187},
+				pos: position{line: 1196, col: 19, offset: 45159},
 				alternatives: []interface{}{
 					&ruleRefExpr{
-						pos:  position{line: 1196, col: 19, offset: 45187},
+						pos:  position{line: 1196, col: 19, offset: 45159},
 						name: "LiteralBlockDelimiter",
 					},
 					&ruleRefExpr{
-						pos:  position{line: 1197, col: 19, offset: 45228},
+						pos:  position{line: 1197, col: 19, offset: 45200},
 						name: "FencedBlockDelimiter",
 					},
 					&ruleRefExpr{
-						pos:  position{line: 1198, col: 19, offset: 45268},
+						pos:  position{line: 1198, col: 19, offset: 45240},
 						name: "ListingBlockDelimiter",
 					},
 					&ruleRefExpr{
-						pos:  position{line: 1199, col: 19, offset: 45309},
+						pos:  position{line: 1199, col: 19, offset: 45281},
 						name: "ExampleBlockDelimiter",
 					},
 					&ruleRefExpr{
-						pos:  position{line: 1200, col: 19, offset: 45350},
+						pos:  position{line: 1200, col: 19, offset: 45322},
 						name: "CommentBlockDelimiter",
 					},
 					&ruleRefExpr{
-						pos:  position{line: 1201, col: 19, offset: 45391},
+						pos:  position{line: 1201, col: 19, offset: 45363},
 						name: "QuoteBlockDelimiter",
 					},
 					&ruleRefExpr{
-						pos:  position{line: 1202, col: 19, offset: 45429},
+						pos:  position{line: 1202, col: 19, offset: 45401},
 						name: "SidebarBlockDelimiter",
 					},
 				},
@@ -9614,17 +9614,17 @@ var g = &grammar{
 		},
 		{
 			name: "FencedBlockDelimiter",
-			pos:  position{line: 1208, col: 1, offset: 45648},
+			pos:  position{line: 1208, col: 1, offset: 45620},
 			expr: &seqExpr{
-				pos: position{line: 1208, col: 25, offset: 45672},
+				pos: position{line: 1208, col: 25, offset: 45644},
 				exprs: []interface{}{
 					&litMatcher{
-						pos:        position{line: 1208, col: 25, offset: 45672},
+						pos:        position{line: 1208, col: 25, offset: 45644},
 						val:        "```",
 						ignoreCase: false,
 					},
 					&ruleRefExpr{
-						pos:  position{line: 1208, col: 31, offset: 45678},
+						pos:  position{line: 1208, col: 31, offset: 45650},
 						name: "EOLS",
 					},
 				},
@@ -9632,48 +9632,48 @@ var g = &grammar{
 		},
 		{
 			name: "FencedBlock",
-			pos:  position{line: 1210, col: 1, offset: 45684},
+			pos:  position{line: 1210, col: 1, offset: 45656},
 			expr: &actionExpr{
-				pos: position{line: 1210, col: 16, offset: 45699},
+				pos: position{line: 1210, col: 16, offset: 45671},
 				run: (*parser).callonFencedBlock1,
 				expr: &seqExpr{
-					pos: position{line: 1210, col: 16, offset: 45699},
+					pos: position{line: 1210, col: 16, offset: 45671},
 					exprs: []interface{}{
 						&labeledExpr{
-							pos:   position{line: 1210, col: 16, offset: 45699},
+							pos:   position{line: 1210, col: 16, offset: 45671},
 							label: "attributes",
 							expr: &zeroOrOneExpr{
-								pos: position{line: 1210, col: 27, offset: 45710},
+								pos: position{line: 1210, col: 27, offset: 45682},
 								expr: &ruleRefExpr{
-									pos:  position{line: 1210, col: 28, offset: 45711},
+									pos:  position{line: 1210, col: 28, offset: 45683},
 									name: "ElementAttributes",
 								},
 							},
 						},
 						&ruleRefExpr{
-							pos:  position{line: 1210, col: 48, offset: 45731},
+							pos:  position{line: 1210, col: 48, offset: 45703},
 							name: "FencedBlockDelimiter",
 						},
 						&labeledExpr{
-							pos:   position{line: 1210, col: 69, offset: 45752},
+							pos:   position{line: 1210, col: 69, offset: 45724},
 							label: "content",
 							expr: &zeroOrMoreExpr{
-								pos: position{line: 1210, col: 77, offset: 45760},
+								pos: position{line: 1210, col: 77, offset: 45732},
 								expr: &ruleRefExpr{
-									pos:  position{line: 1210, col: 78, offset: 45761},
+									pos:  position{line: 1210, col: 78, offset: 45733},
 									name: "FencedBlockContent",
 								},
 							},
 						},
 						&choiceExpr{
-							pos: position{line: 1210, col: 100, offset: 45783},
+							pos: position{line: 1210, col: 100, offset: 45755},
 							alternatives: []interface{}{
 								&ruleRefExpr{
-									pos:  position{line: 1210, col: 100, offset: 45783},
+									pos:  position{line: 1210, col: 100, offset: 45755},
 									name: "FencedBlockDelimiter",
 								},
 								&ruleRefExpr{
-									pos:  position{line: 1210, col: 123, offset: 45806},
+									pos:  position{line: 1210, col: 123, offset: 45778},
 									name: "EOF",
 								},
 							},
@@ -9684,24 +9684,24 @@ var g = &grammar{
 		},
 		{
 			name: "FencedBlockContent",
-			pos:  position{line: 1214, col: 1, offset: 45914},
+			pos:  position{line: 1214, col: 1, offset: 45886},
 			expr: &choiceExpr{
-				pos: position{line: 1214, col: 23, offset: 45936},
+				pos: position{line: 1214, col: 23, offset: 45908},
 				alternatives: []interface{}{
 					&ruleRefExpr{
-						pos:  position{line: 1214, col: 23, offset: 45936},
+						pos:  position{line: 1214, col: 23, offset: 45908},
 						name: "BlankLine",
 					},
 					&ruleRefExpr{
-						pos:  position{line: 1214, col: 35, offset: 45948},
+						pos:  position{line: 1214, col: 35, offset: 45920},
 						name: "FileInclusion",
 					},
 					&ruleRefExpr{
-						pos:  position{line: 1214, col: 51, offset: 45964},
+						pos:  position{line: 1214, col: 51, offset: 45936},
 						name: "ListItem",
 					},
 					&ruleRefExpr{
-						pos:  position{line: 1214, col: 62, offset: 45975},
+						pos:  position{line: 1214, col: 62, offset: 45947},
 						name: "FencedBlockParagraph",
 					},
 				},
@@ -9709,17 +9709,17 @@ var g = &grammar{
 		},
 		{
 			name: "FencedBlockParagraph",
-			pos:  position{line: 1217, col: 1, offset: 46015},
+			pos:  position{line: 1217, col: 1, offset: 45987},
 			expr: &actionExpr{
-				pos: position{line: 1217, col: 25, offset: 46039},
+				pos: position{line: 1217, col: 25, offset: 46011},
 				run: (*parser).callonFencedBlockParagraph1,
 				expr: &labeledExpr{
-					pos:   position{line: 1217, col: 25, offset: 46039},
+					pos:   position{line: 1217, col: 25, offset: 46011},
 					label: "lines",
 					expr: &oneOrMoreExpr{
-						pos: position{line: 1217, col: 31, offset: 46045},
+						pos: position{line: 1217, col: 31, offset: 46017},
 						expr: &ruleRefExpr{
-							pos:  position{line: 1217, col: 32, offset: 46046},
+							pos:  position{line: 1217, col: 32, offset: 46018},
 							name: "FencedBlockParagraphLine",
 						},
 					},
@@ -9728,32 +9728,32 @@ var g = &grammar{
 		},
 		{
 			name: "FencedBlockParagraphLine",
-			pos:  position{line: 1221, col: 1, offset: 46159},
+			pos:  position{line: 1221, col: 1, offset: 46131},
 			expr: &actionExpr{
-				pos: position{line: 1221, col: 29, offset: 46187},
+				pos: position{line: 1221, col: 29, offset: 46159},
 				run: (*parser).callonFencedBlockParagraphLine1,
 				expr: &seqExpr{
-					pos: position{line: 1221, col: 29, offset: 46187},
+					pos: position{line: 1221, col: 29, offset: 46159},
 					exprs: []interface{}{
 						&notExpr{
-							pos: position{line: 1221, col: 29, offset: 46187},
+							pos: position{line: 1221, col: 29, offset: 46159},
 							expr: &ruleRefExpr{
-								pos:  position{line: 1221, col: 30, offset: 46188},
+								pos:  position{line: 1221, col: 30, offset: 46160},
 								name: "FencedBlockDelimiter",
 							},
 						},
 						&notExpr{
-							pos: position{line: 1221, col: 51, offset: 46209},
+							pos: position{line: 1221, col: 51, offset: 46181},
 							expr: &ruleRefExpr{
-								pos:  position{line: 1221, col: 52, offset: 46210},
+								pos:  position{line: 1221, col: 52, offset: 46182},
 								name: "BlankLine",
 							},
 						},
 						&labeledExpr{
-							pos:   position{line: 1221, col: 62, offset: 46220},
+							pos:   position{line: 1221, col: 62, offset: 46192},
 							label: "line",
 							expr: &ruleRefExpr{
-								pos:  position{line: 1221, col: 68, offset: 46226},
+								pos:  position{line: 1221, col: 68, offset: 46198},
 								name: "InlineElements",
 							},
 						},
@@ -9763,17 +9763,17 @@ var g = &grammar{
 		},
 		{
 			name: "ListingBlockDelimiter",
-			pos:  position{line: 1228, col: 1, offset: 46464},
+			pos:  position{line: 1228, col: 1, offset: 46436},
 			expr: &seqExpr{
-				pos: position{line: 1228, col: 26, offset: 46489},
+				pos: position{line: 1228, col: 26, offset: 46461},
 				exprs: []interface{}{
 					&litMatcher{
-						pos:        position{line: 1228, col: 26, offset: 46489},
+						pos:        position{line: 1228, col: 26, offset: 46461},
 						val:        "----",
 						ignoreCase: false,
 					},
 					&ruleRefExpr{
-						pos:  position{line: 1228, col: 33, offset: 46496},
+						pos:  position{line: 1228, col: 33, offset: 46468},
 						name: "EOLS",
 					},
 				},
@@ -9781,48 +9781,48 @@ var g = &grammar{
 		},
 		{
 			name: "ListingBlock",
-			pos:  position{line: 1231, col: 1, offset: 46537},
+			pos:  position{line: 1231, col: 1, offset: 46509},
 			expr: &actionExpr{
-				pos: position{line: 1231, col: 17, offset: 46553},
+				pos: position{line: 1231, col: 17, offset: 46525},
 				run: (*parser).callonListingBlock1,
 				expr: &seqExpr{
-					pos: position{line: 1231, col: 17, offset: 46553},
+					pos: position{line: 1231, col: 17, offset: 46525},
 					exprs: []interface{}{
 						&labeledExpr{
-							pos:   position{line: 1231, col: 17, offset: 46553},
+							pos:   position{line: 1231, col: 17, offset: 46525},
 							label: "attributes",
 							expr: &zeroOrOneExpr{
-								pos: position{line: 1231, col: 28, offset: 46564},
+								pos: position{line: 1231, col: 28, offset: 46536},
 								expr: &ruleRefExpr{
-									pos:  position{line: 1231, col: 29, offset: 46565},
+									pos:  position{line: 1231, col: 29, offset: 46537},
 									name: "ElementAttributes",
 								},
 							},
 						},
 						&ruleRefExpr{
-							pos:  position{line: 1231, col: 49, offset: 46585},
+							pos:  position{line: 1231, col: 49, offset: 46557},
 							name: "ListingBlockDelimiter",
 						},
 						&labeledExpr{
-							pos:   position{line: 1231, col: 71, offset: 46607},
+							pos:   position{line: 1231, col: 71, offset: 46579},
 							label: "content",
 							expr: &zeroOrMoreExpr{
-								pos: position{line: 1231, col: 79, offset: 46615},
+								pos: position{line: 1231, col: 79, offset: 46587},
 								expr: &ruleRefExpr{
-									pos:  position{line: 1231, col: 80, offset: 46616},
+									pos:  position{line: 1231, col: 80, offset: 46588},
 									name: "ListingBlockElement",
 								},
 							},
 						},
 						&choiceExpr{
-							pos: position{line: 1231, col: 103, offset: 46639},
+							pos: position{line: 1231, col: 103, offset: 46611},
 							alternatives: []interface{}{
 								&ruleRefExpr{
-									pos:  position{line: 1231, col: 103, offset: 46639},
+									pos:  position{line: 1231, col: 103, offset: 46611},
 									name: "ListingBlockDelimiter",
 								},
 								&ruleRefExpr{
-									pos:  position{line: 1231, col: 127, offset: 46663},
+									pos:  position{line: 1231, col: 127, offset: 46635},
 									name: "EOF",
 								},
 							},
@@ -9833,16 +9833,16 @@ var g = &grammar{
 		},
 		{
 			name: "ListingBlockElement",
-			pos:  position{line: 1235, col: 1, offset: 46772},
+			pos:  position{line: 1235, col: 1, offset: 46744},
 			expr: &choiceExpr{
-				pos: position{line: 1235, col: 24, offset: 46795},
+				pos: position{line: 1235, col: 24, offset: 46767},
 				alternatives: []interface{}{
 					&ruleRefExpr{
-						pos:  position{line: 1235, col: 24, offset: 46795},
+						pos:  position{line: 1235, col: 24, offset: 46767},
 						name: "FileInclusion",
 					},
 					&ruleRefExpr{
-						pos:  position{line: 1235, col: 40, offset: 46811},
+						pos:  position{line: 1235, col: 40, offset: 46783},
 						name: "ListingBlockParagraph",
 					},
 				},
@@ -9850,17 +9850,17 @@ var g = &grammar{
 		},
 		{
 			name: "ListingBlockParagraph",
-			pos:  position{line: 1237, col: 1, offset: 46834},
+			pos:  position{line: 1237, col: 1, offset: 46806},
 			expr: &actionExpr{
-				pos: position{line: 1237, col: 26, offset: 46859},
+				pos: position{line: 1237, col: 26, offset: 46831},
 				run: (*parser).callonListingBlockParagraph1,
 				expr: &labeledExpr{
-					pos:   position{line: 1237, col: 26, offset: 46859},
+					pos:   position{line: 1237, col: 26, offset: 46831},
 					label: "lines",
 					expr: &oneOrMoreExpr{
-						pos: position{line: 1237, col: 32, offset: 46865},
+						pos: position{line: 1237, col: 32, offset: 46837},
 						expr: &ruleRefExpr{
-							pos:  position{line: 1237, col: 33, offset: 46866},
+							pos:  position{line: 1237, col: 33, offset: 46838},
 							name: "ListingBlockParagraphLine",
 						},
 					},
@@ -9869,61 +9869,61 @@ var g = &grammar{
 		},
 		{
 			name: "ListingBlockParagraphLine",
-			pos:  position{line: 1241, col: 1, offset: 46985},
+			pos:  position{line: 1241, col: 1, offset: 46957},
 			expr: &actionExpr{
-				pos: position{line: 1241, col: 30, offset: 47014},
+				pos: position{line: 1241, col: 30, offset: 46986},
 				run: (*parser).callonListingBlockParagraphLine1,
 				expr: &seqExpr{
-					pos: position{line: 1241, col: 30, offset: 47014},
+					pos: position{line: 1241, col: 30, offset: 46986},
 					exprs: []interface{}{
 						&notExpr{
-							pos: position{line: 1241, col: 30, offset: 47014},
+							pos: position{line: 1241, col: 30, offset: 46986},
 							expr: &ruleRefExpr{
-								pos:  position{line: 1241, col: 31, offset: 47015},
+								pos:  position{line: 1241, col: 31, offset: 46987},
 								name: "ListingBlockDelimiter",
 							},
 						},
 						&labeledExpr{
-							pos:   position{line: 1241, col: 53, offset: 47037},
+							pos:   position{line: 1241, col: 53, offset: 47009},
 							label: "line",
 							expr: &actionExpr{
-								pos: position{line: 1241, col: 59, offset: 47043},
+								pos: position{line: 1241, col: 59, offset: 47015},
 								run: (*parser).callonListingBlockParagraphLine6,
 								expr: &seqExpr{
-									pos: position{line: 1241, col: 59, offset: 47043},
+									pos: position{line: 1241, col: 59, offset: 47015},
 									exprs: []interface{}{
 										&notExpr{
-											pos: position{line: 1241, col: 59, offset: 47043},
+											pos: position{line: 1241, col: 59, offset: 47015},
 											expr: &ruleRefExpr{
-												pos:  position{line: 1241, col: 60, offset: 47044},
+												pos:  position{line: 1241, col: 60, offset: 47016},
 												name: "EOF",
 											},
 										},
 										&zeroOrMoreExpr{
-											pos: position{line: 1241, col: 64, offset: 47048},
+											pos: position{line: 1241, col: 64, offset: 47020},
 											expr: &choiceExpr{
-												pos: position{line: 1241, col: 65, offset: 47049},
+												pos: position{line: 1241, col: 65, offset: 47021},
 												alternatives: []interface{}{
 													&ruleRefExpr{
-														pos:  position{line: 1241, col: 65, offset: 47049},
+														pos:  position{line: 1241, col: 65, offset: 47021},
 														name: "Alphanums",
 													},
 													&ruleRefExpr{
-														pos:  position{line: 1241, col: 77, offset: 47061},
+														pos:  position{line: 1241, col: 77, offset: 47033},
 														name: "Spaces",
 													},
 													&seqExpr{
-														pos: position{line: 1241, col: 87, offset: 47071},
+														pos: position{line: 1241, col: 87, offset: 47043},
 														exprs: []interface{}{
 															&notExpr{
-																pos: position{line: 1241, col: 87, offset: 47071},
+																pos: position{line: 1241, col: 87, offset: 47043},
 																expr: &ruleRefExpr{
-																	pos:  position{line: 1241, col: 88, offset: 47072},
+																	pos:  position{line: 1241, col: 88, offset: 47044},
 																	name: "EOL",
 																},
 															},
 															&anyMatcher{
-																line: 1241, col: 92, offset: 47076,
+																line: 1241, col: 92, offset: 47048,
 															},
 														},
 													},
@@ -9935,7 +9935,7 @@ var g = &grammar{
 							},
 						},
 						&ruleRefExpr{
-							pos:  position{line: 1241, col: 128, offset: 47112},
+							pos:  position{line: 1241, col: 128, offset: 47084},
 							name: "EOL",
 						},
 					},
@@ -9944,17 +9944,17 @@ var g = &grammar{
 		},
 		{
 			name: "ExampleBlockDelimiter",
-			pos:  position{line: 1248, col: 1, offset: 47438},
+			pos:  position{line: 1248, col: 1, offset: 47410},
 			expr: &seqExpr{
-				pos: position{line: 1248, col: 26, offset: 47463},
+				pos: position{line: 1248, col: 26, offset: 47435},
 				exprs: []interface{}{
 					&litMatcher{
-						pos:        position{line: 1248, col: 26, offset: 47463},
+						pos:        position{line: 1248, col: 26, offset: 47435},
 						val:        "====",
 						ignoreCase: false,
 					},
 					&ruleRefExpr{
-						pos:  position{line: 1248, col: 33, offset: 47470},
+						pos:  position{line: 1248, col: 33, offset: 47442},
 						name: "EOLS",
 					},
 				},
@@ -9962,50 +9962,50 @@ var g = &grammar{
 		},
 		{
 			name: "ExampleBlock",
-			pos:  position{line: 1250, col: 1, offset: 47476},
+			pos:  position{line: 1250, col: 1, offset: 47448},
 			expr: &actionExpr{
-				pos: position{line: 1250, col: 17, offset: 47492},
+				pos: position{line: 1250, col: 17, offset: 47464},
 				run: (*parser).callonExampleBlock1,
 				expr: &seqExpr{
-					pos: position{line: 1250, col: 17, offset: 47492},
+					pos: position{line: 1250, col: 17, offset: 47464},
 					exprs: []interface{}{
 						&labeledExpr{
-							pos:   position{line: 1250, col: 17, offset: 47492},
+							pos:   position{line: 1250, col: 17, offset: 47464},
 							label: "attributes",
 							expr: &zeroOrOneExpr{
-								pos: position{line: 1250, col: 28, offset: 47503},
+								pos: position{line: 1250, col: 28, offset: 47475},
 								expr: &ruleRefExpr{
-									pos:  position{line: 1250, col: 29, offset: 47504},
+									pos:  position{line: 1250, col: 29, offset: 47476},
 									name: "ElementAttributes",
 								},
 							},
 						},
 						&ruleRefExpr{
-							pos:  position{line: 1250, col: 49, offset: 47524},
+							pos:  position{line: 1250, col: 49, offset: 47496},
 							name: "ExampleBlockDelimiter",
 						},
 						&labeledExpr{
-							pos:   position{line: 1250, col: 71, offset: 47546},
+							pos:   position{line: 1250, col: 71, offset: 47518},
 							label: "content",
 							expr: &zeroOrMoreExpr{
-								pos: position{line: 1250, col: 79, offset: 47554},
+								pos: position{line: 1250, col: 79, offset: 47526},
 								expr: &choiceExpr{
-									pos: position{line: 1250, col: 80, offset: 47555},
+									pos: position{line: 1250, col: 80, offset: 47527},
 									alternatives: []interface{}{
 										&ruleRefExpr{
-											pos:  position{line: 1250, col: 80, offset: 47555},
+											pos:  position{line: 1250, col: 80, offset: 47527},
 											name: "BlankLine",
 										},
 										&ruleRefExpr{
-											pos:  position{line: 1250, col: 92, offset: 47567},
+											pos:  position{line: 1250, col: 92, offset: 47539},
 											name: "FileInclusion",
 										},
 										&ruleRefExpr{
-											pos:  position{line: 1250, col: 108, offset: 47583},
+											pos:  position{line: 1250, col: 108, offset: 47555},
 											name: "ListItem",
 										},
 										&ruleRefExpr{
-											pos:  position{line: 1250, col: 119, offset: 47594},
+											pos:  position{line: 1250, col: 119, offset: 47566},
 											name: "ExampleBlockParagraph",
 										},
 									},
@@ -10013,14 +10013,14 @@ var g = &grammar{
 							},
 						},
 						&choiceExpr{
-							pos: position{line: 1250, col: 145, offset: 47620},
+							pos: position{line: 1250, col: 145, offset: 47592},
 							alternatives: []interface{}{
 								&ruleRefExpr{
-									pos:  position{line: 1250, col: 145, offset: 47620},
+									pos:  position{line: 1250, col: 145, offset: 47592},
 									name: "ExampleBlockDelimiter",
 								},
 								&ruleRefExpr{
-									pos:  position{line: 1250, col: 169, offset: 47644},
+									pos:  position{line: 1250, col: 169, offset: 47616},
 									name: "EOF",
 								},
 							},
@@ -10031,17 +10031,17 @@ var g = &grammar{
 		},
 		{
 			name: "ExampleBlockParagraph",
-			pos:  position{line: 1255, col: 1, offset: 47771},
+			pos:  position{line: 1255, col: 1, offset: 47743},
 			expr: &actionExpr{
-				pos: position{line: 1255, col: 26, offset: 47796},
+				pos: position{line: 1255, col: 26, offset: 47768},
 				run: (*parser).callonExampleBlockParagraph1,
 				expr: &labeledExpr{
-					pos:   position{line: 1255, col: 26, offset: 47796},
+					pos:   position{line: 1255, col: 26, offset: 47768},
 					label: "lines",
 					expr: &oneOrMoreExpr{
-						pos: position{line: 1255, col: 32, offset: 47802},
+						pos: position{line: 1255, col: 32, offset: 47774},
 						expr: &ruleRefExpr{
-							pos:  position{line: 1255, col: 33, offset: 47803},
+							pos:  position{line: 1255, col: 33, offset: 47775},
 							name: "ExampleBlockParagraphLine",
 						},
 					},
@@ -10050,32 +10050,32 @@ var g = &grammar{
 		},
 		{
 			name: "ExampleBlockParagraphLine",
-			pos:  position{line: 1259, col: 1, offset: 47917},
+			pos:  position{line: 1259, col: 1, offset: 47889},
 			expr: &actionExpr{
-				pos: position{line: 1259, col: 30, offset: 47946},
+				pos: position{line: 1259, col: 30, offset: 47918},
 				run: (*parser).callonExampleBlockParagraphLine1,
 				expr: &seqExpr{
-					pos: position{line: 1259, col: 30, offset: 47946},
+					pos: position{line: 1259, col: 30, offset: 47918},
 					exprs: []interface{}{
 						&notExpr{
-							pos: position{line: 1259, col: 30, offset: 47946},
+							pos: position{line: 1259, col: 30, offset: 47918},
 							expr: &ruleRefExpr{
-								pos:  position{line: 1259, col: 31, offset: 47947},
+								pos:  position{line: 1259, col: 31, offset: 47919},
 								name: "ExampleBlockDelimiter",
 							},
 						},
 						&notExpr{
-							pos: position{line: 1259, col: 53, offset: 47969},
+							pos: position{line: 1259, col: 53, offset: 47941},
 							expr: &ruleRefExpr{
-								pos:  position{line: 1259, col: 54, offset: 47970},
+								pos:  position{line: 1259, col: 54, offset: 47942},
 								name: "BlankLine",
 							},
 						},
 						&labeledExpr{
-							pos:   position{line: 1259, col: 64, offset: 47980},
+							pos:   position{line: 1259, col: 64, offset: 47952},
 							label: "line",
 							expr: &ruleRefExpr{
-								pos:  position{line: 1259, col: 70, offset: 47986},
+								pos:  position{line: 1259, col: 70, offset: 47958},
 								name: "InlineElements",
 							},
 						},
@@ -10085,17 +10085,17 @@ var g = &grammar{
 		},
 		{
 			name: "QuoteBlockDelimiter",
-			pos:  position{line: 1266, col: 1, offset: 48222},
+			pos:  position{line: 1266, col: 1, offset: 48194},
 			expr: &seqExpr{
-				pos: position{line: 1266, col: 24, offset: 48245},
+				pos: position{line: 1266, col: 24, offset: 48217},
 				exprs: []interface{}{
 					&litMatcher{
-						pos:        position{line: 1266, col: 24, offset: 48245},
+						pos:        position{line: 1266, col: 24, offset: 48217},
 						val:        "____",
 						ignoreCase: false,
 					},
 					&ruleRefExpr{
-						pos:  position{line: 1266, col: 31, offset: 48252},
+						pos:  position{line: 1266, col: 31, offset: 48224},
 						name: "EOLS",
 					},
 				},
@@ -10103,48 +10103,48 @@ var g = &grammar{
 		},
 		{
 			name: "QuoteBlock",
-			pos:  position{line: 1268, col: 1, offset: 48283},
+			pos:  position{line: 1268, col: 1, offset: 48255},
 			expr: &actionExpr{
-				pos: position{line: 1268, col: 15, offset: 48297},
+				pos: position{line: 1268, col: 15, offset: 48269},
 				run: (*parser).callonQuoteBlock1,
 				expr: &seqExpr{
-					pos: position{line: 1268, col: 15, offset: 48297},
+					pos: position{line: 1268, col: 15, offset: 48269},
 					exprs: []interface{}{
 						&labeledExpr{
-							pos:   position{line: 1268, col: 15, offset: 48297},
+							pos:   position{line: 1268, col: 15, offset: 48269},
 							label: "attributes",
 							expr: &zeroOrOneExpr{
-								pos: position{line: 1268, col: 26, offset: 48308},
+								pos: position{line: 1268, col: 26, offset: 48280},
 								expr: &ruleRefExpr{
-									pos:  position{line: 1268, col: 27, offset: 48309},
+									pos:  position{line: 1268, col: 27, offset: 48281},
 									name: "ElementAttributes",
 								},
 							},
 						},
 						&ruleRefExpr{
-							pos:  position{line: 1268, col: 47, offset: 48329},
+							pos:  position{line: 1268, col: 47, offset: 48301},
 							name: "QuoteBlockDelimiter",
 						},
 						&labeledExpr{
-							pos:   position{line: 1268, col: 67, offset: 48349},
+							pos:   position{line: 1268, col: 67, offset: 48321},
 							label: "content",
 							expr: &zeroOrMoreExpr{
-								pos: position{line: 1268, col: 75, offset: 48357},
+								pos: position{line: 1268, col: 75, offset: 48329},
 								expr: &ruleRefExpr{
-									pos:  position{line: 1268, col: 76, offset: 48358},
+									pos:  position{line: 1268, col: 76, offset: 48330},
 									name: "QuoteBlockElement",
 								},
 							},
 						},
 						&choiceExpr{
-							pos: position{line: 1268, col: 97, offset: 48379},
+							pos: position{line: 1268, col: 97, offset: 48351},
 							alternatives: []interface{}{
 								&ruleRefExpr{
-									pos:  position{line: 1268, col: 97, offset: 48379},
+									pos:  position{line: 1268, col: 97, offset: 48351},
 									name: "QuoteBlockDelimiter",
 								},
 								&ruleRefExpr{
-									pos:  position{line: 1268, col: 119, offset: 48401},
+									pos:  position{line: 1268, col: 119, offset: 48373},
 									name: "EOF",
 								},
 							},
@@ -10155,99 +10155,99 @@ var g = &grammar{
 		},
 		{
 			name: "QuoteBlockElement",
-			pos:  position{line: 1272, col: 1, offset: 48508},
+			pos:  position{line: 1272, col: 1, offset: 48480},
 			expr: &actionExpr{
-				pos: position{line: 1273, col: 5, offset: 48534},
+				pos: position{line: 1273, col: 5, offset: 48506},
 				run: (*parser).callonQuoteBlockElement1,
 				expr: &seqExpr{
-					pos: position{line: 1273, col: 5, offset: 48534},
+					pos: position{line: 1273, col: 5, offset: 48506},
 					exprs: []interface{}{
 						&notExpr{
-							pos: position{line: 1273, col: 5, offset: 48534},
+							pos: position{line: 1273, col: 5, offset: 48506},
 							expr: &ruleRefExpr{
-								pos:  position{line: 1273, col: 6, offset: 48535},
+								pos:  position{line: 1273, col: 6, offset: 48507},
 								name: "QuoteBlockDelimiter",
 							},
 						},
 						&notExpr{
-							pos: position{line: 1273, col: 26, offset: 48555},
+							pos: position{line: 1273, col: 26, offset: 48527},
 							expr: &ruleRefExpr{
-								pos:  position{line: 1273, col: 27, offset: 48556},
+								pos:  position{line: 1273, col: 27, offset: 48528},
 								name: "EOF",
 							},
 						},
 						&labeledExpr{
-							pos:   position{line: 1273, col: 31, offset: 48560},
+							pos:   position{line: 1273, col: 31, offset: 48532},
 							label: "element",
 							expr: &choiceExpr{
-								pos: position{line: 1273, col: 40, offset: 48569},
+								pos: position{line: 1273, col: 40, offset: 48541},
 								alternatives: []interface{}{
 									&ruleRefExpr{
-										pos:  position{line: 1273, col: 40, offset: 48569},
+										pos:  position{line: 1273, col: 40, offset: 48541},
 										name: "BlankLine",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 1274, col: 15, offset: 48594},
+										pos:  position{line: 1274, col: 15, offset: 48566},
 										name: "FileInclusion",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 1275, col: 15, offset: 48622},
+										pos:  position{line: 1275, col: 15, offset: 48594},
 										name: "ImageBlock",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 1276, col: 15, offset: 48648},
+										pos:  position{line: 1276, col: 15, offset: 48620},
 										name: "ListItem",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 1277, col: 15, offset: 48671},
+										pos:  position{line: 1277, col: 15, offset: 48643},
 										name: "FencedBlock",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 1278, col: 15, offset: 48697},
+										pos:  position{line: 1278, col: 15, offset: 48669},
 										name: "ListingBlock",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 1279, col: 15, offset: 48724},
+										pos:  position{line: 1279, col: 15, offset: 48696},
 										name: "ExampleBlock",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 1280, col: 15, offset: 48751},
+										pos:  position{line: 1280, col: 15, offset: 48723},
 										name: "CommentBlock",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 1281, col: 15, offset: 48778},
+										pos:  position{line: 1281, col: 15, offset: 48750},
 										name: "SingleLineComment",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 1282, col: 15, offset: 48810},
+										pos:  position{line: 1282, col: 15, offset: 48782},
 										name: "QuoteBlock",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 1283, col: 15, offset: 48836},
+										pos:  position{line: 1283, col: 15, offset: 48808},
 										name: "SidebarBlock",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 1284, col: 15, offset: 48863},
+										pos:  position{line: 1284, col: 15, offset: 48835},
 										name: "Table",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 1285, col: 15, offset: 48884},
+										pos:  position{line: 1285, col: 15, offset: 48856},
 										name: "LiteralBlock",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 1286, col: 15, offset: 48912},
+										pos:  position{line: 1286, col: 15, offset: 48884},
 										name: "DocumentAttributeDeclaration",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 1287, col: 15, offset: 48956},
+										pos:  position{line: 1287, col: 15, offset: 48928},
 										name: "DocumentAttributeReset",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 1288, col: 15, offset: 48994},
+										pos:  position{line: 1288, col: 15, offset: 48966},
 										name: "TableOfContentsMacro",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 1289, col: 15, offset: 49029},
+										pos:  position{line: 1289, col: 15, offset: 49001},
 										name: "QuoteBlockParagraph",
 									},
 								},
@@ -10259,17 +10259,17 @@ var g = &grammar{
 		},
 		{
 			name: "QuoteBlockParagraph",
-			pos:  position{line: 1293, col: 1, offset: 49088},
+			pos:  position{line: 1293, col: 1, offset: 49060},
 			expr: &actionExpr{
-				pos: position{line: 1293, col: 24, offset: 49111},
+				pos: position{line: 1293, col: 24, offset: 49083},
 				run: (*parser).callonQuoteBlockParagraph1,
 				expr: &labeledExpr{
-					pos:   position{line: 1293, col: 24, offset: 49111},
+					pos:   position{line: 1293, col: 24, offset: 49083},
 					label: "lines",
 					expr: &oneOrMoreExpr{
-						pos: position{line: 1293, col: 30, offset: 49117},
+						pos: position{line: 1293, col: 30, offset: 49089},
 						expr: &ruleRefExpr{
-							pos:  position{line: 1293, col: 31, offset: 49118},
+							pos:  position{line: 1293, col: 31, offset: 49090},
 							name: "InlineElements",
 						},
 					},
@@ -10278,49 +10278,49 @@ var g = &grammar{
 		},
 		{
 			name: "VerseBlock",
-			pos:  position{line: 1302, col: 1, offset: 49464},
+			pos:  position{line: 1302, col: 1, offset: 49436},
 			expr: &actionExpr{
-				pos: position{line: 1302, col: 15, offset: 49478},
+				pos: position{line: 1302, col: 15, offset: 49450},
 				run: (*parser).callonVerseBlock1,
 				expr: &seqExpr{
-					pos: position{line: 1302, col: 15, offset: 49478},
+					pos: position{line: 1302, col: 15, offset: 49450},
 					exprs: []interface{}{
 						&labeledExpr{
-							pos:   position{line: 1302, col: 15, offset: 49478},
+							pos:   position{line: 1302, col: 15, offset: 49450},
 							label: "attributes",
 							expr: &ruleRefExpr{
-								pos:  position{line: 1302, col: 27, offset: 49490},
+								pos:  position{line: 1302, col: 27, offset: 49462},
 								name: "ElementAttributes",
 							},
 						},
 						&andCodeExpr{
-							pos: position{line: 1303, col: 5, offset: 49514},
+							pos: position{line: 1303, col: 5, offset: 49486},
 							run: (*parser).callonVerseBlock5,
 						},
 						&ruleRefExpr{
-							pos:  position{line: 1307, col: 5, offset: 49700},
+							pos:  position{line: 1307, col: 5, offset: 49672},
 							name: "QuoteBlockDelimiter",
 						},
 						&labeledExpr{
-							pos:   position{line: 1307, col: 25, offset: 49720},
+							pos:   position{line: 1307, col: 25, offset: 49692},
 							label: "content",
 							expr: &zeroOrMoreExpr{
-								pos: position{line: 1307, col: 33, offset: 49728},
+								pos: position{line: 1307, col: 33, offset: 49700},
 								expr: &ruleRefExpr{
-									pos:  position{line: 1307, col: 34, offset: 49729},
+									pos:  position{line: 1307, col: 34, offset: 49701},
 									name: "VerseBlockElement",
 								},
 							},
 						},
 						&choiceExpr{
-							pos: position{line: 1307, col: 55, offset: 49750},
+							pos: position{line: 1307, col: 55, offset: 49722},
 							alternatives: []interface{}{
 								&ruleRefExpr{
-									pos:  position{line: 1307, col: 55, offset: 49750},
+									pos:  position{line: 1307, col: 55, offset: 49722},
 									name: "QuoteBlockDelimiter",
 								},
 								&ruleRefExpr{
-									pos:  position{line: 1307, col: 77, offset: 49772},
+									pos:  position{line: 1307, col: 77, offset: 49744},
 									name: "EOF",
 								},
 							},
@@ -10331,20 +10331,20 @@ var g = &grammar{
 		},
 		{
 			name: "VerseBlockElement",
-			pos:  position{line: 1311, col: 1, offset: 49887},
+			pos:  position{line: 1311, col: 1, offset: 49859},
 			expr: &choiceExpr{
-				pos: position{line: 1311, col: 22, offset: 49908},
+				pos: position{line: 1311, col: 22, offset: 49880},
 				alternatives: []interface{}{
 					&ruleRefExpr{
-						pos:  position{line: 1311, col: 22, offset: 49908},
+						pos:  position{line: 1311, col: 22, offset: 49880},
 						name: "VerseFileInclude",
 					},
 					&ruleRefExpr{
-						pos:  position{line: 1311, col: 41, offset: 49927},
+						pos:  position{line: 1311, col: 41, offset: 49899},
 						name: "BlankLine",
 					},
 					&ruleRefExpr{
-						pos:  position{line: 1311, col: 53, offset: 49939},
+						pos:  position{line: 1311, col: 53, offset: 49911},
 						name: "VerseBlockParagraph",
 					},
 				},
@@ -10352,25 +10352,25 @@ var g = &grammar{
 		},
 		{
 			name: "VerseFileInclude",
-			pos:  position{line: 1313, col: 1, offset: 49960},
+			pos:  position{line: 1313, col: 1, offset: 49932},
 			expr: &actionExpr{
-				pos: position{line: 1313, col: 21, offset: 49980},
+				pos: position{line: 1313, col: 21, offset: 49952},
 				run: (*parser).callonVerseFileInclude1,
 				expr: &seqExpr{
-					pos: position{line: 1313, col: 21, offset: 49980},
+					pos: position{line: 1313, col: 21, offset: 49952},
 					exprs: []interface{}{
 						&notExpr{
-							pos: position{line: 1313, col: 21, offset: 49980},
+							pos: position{line: 1313, col: 21, offset: 49952},
 							expr: &ruleRefExpr{
-								pos:  position{line: 1313, col: 22, offset: 49981},
+								pos:  position{line: 1313, col: 22, offset: 49953},
 								name: "QuoteBlockDelimiter",
 							},
 						},
 						&labeledExpr{
-							pos:   position{line: 1313, col: 42, offset: 50001},
+							pos:   position{line: 1313, col: 42, offset: 49973},
 							label: "include",
 							expr: &ruleRefExpr{
-								pos:  position{line: 1313, col: 51, offset: 50010},
+								pos:  position{line: 1313, col: 51, offset: 49982},
 								name: "FileInclusion",
 							},
 						},
@@ -10380,17 +10380,17 @@ var g = &grammar{
 		},
 		{
 			name: "VerseBlockParagraph",
-			pos:  position{line: 1318, col: 1, offset: 50072},
+			pos:  position{line: 1318, col: 1, offset: 50044},
 			expr: &actionExpr{
-				pos: position{line: 1318, col: 24, offset: 50095},
+				pos: position{line: 1318, col: 24, offset: 50067},
 				run: (*parser).callonVerseBlockParagraph1,
 				expr: &labeledExpr{
-					pos:   position{line: 1318, col: 24, offset: 50095},
+					pos:   position{line: 1318, col: 24, offset: 50067},
 					label: "lines",
 					expr: &oneOrMoreExpr{
-						pos: position{line: 1318, col: 30, offset: 50101},
+						pos: position{line: 1318, col: 30, offset: 50073},
 						expr: &ruleRefExpr{
-							pos:  position{line: 1318, col: 31, offset: 50102},
+							pos:  position{line: 1318, col: 31, offset: 50074},
 							name: "VerseBlockParagraphLine",
 						},
 					},
@@ -10399,49 +10399,49 @@ var g = &grammar{
 		},
 		{
 			name: "VerseBlockParagraphLine",
-			pos:  position{line: 1322, col: 1, offset: 50192},
+			pos:  position{line: 1322, col: 1, offset: 50164},
 			expr: &actionExpr{
-				pos: position{line: 1322, col: 28, offset: 50219},
+				pos: position{line: 1322, col: 28, offset: 50191},
 				run: (*parser).callonVerseBlockParagraphLine1,
 				expr: &seqExpr{
-					pos: position{line: 1322, col: 28, offset: 50219},
+					pos: position{line: 1322, col: 28, offset: 50191},
 					exprs: []interface{}{
 						&notExpr{
-							pos: position{line: 1322, col: 28, offset: 50219},
+							pos: position{line: 1322, col: 28, offset: 50191},
 							expr: &ruleRefExpr{
-								pos:  position{line: 1322, col: 29, offset: 50220},
+								pos:  position{line: 1322, col: 29, offset: 50192},
 								name: "QuoteBlockDelimiter",
 							},
 						},
 						&notExpr{
-							pos: position{line: 1322, col: 49, offset: 50240},
+							pos: position{line: 1322, col: 49, offset: 50212},
 							expr: &ruleRefExpr{
-								pos:  position{line: 1322, col: 50, offset: 50241},
+								pos:  position{line: 1322, col: 50, offset: 50213},
 								name: "BlankLine",
 							},
 						},
 						&labeledExpr{
-							pos:   position{line: 1322, col: 60, offset: 50251},
+							pos:   position{line: 1322, col: 60, offset: 50223},
 							label: "line",
 							expr: &actionExpr{
-								pos: position{line: 1322, col: 66, offset: 50257},
+								pos: position{line: 1322, col: 66, offset: 50229},
 								run: (*parser).callonVerseBlockParagraphLine8,
 								expr: &seqExpr{
-									pos: position{line: 1322, col: 66, offset: 50257},
+									pos: position{line: 1322, col: 66, offset: 50229},
 									exprs: []interface{}{
 										&labeledExpr{
-											pos:   position{line: 1322, col: 66, offset: 50257},
+											pos:   position{line: 1322, col: 66, offset: 50229},
 											label: "elements",
 											expr: &oneOrMoreExpr{
-												pos: position{line: 1322, col: 75, offset: 50266},
+												pos: position{line: 1322, col: 75, offset: 50238},
 												expr: &ruleRefExpr{
-													pos:  position{line: 1322, col: 76, offset: 50267},
+													pos:  position{line: 1322, col: 76, offset: 50239},
 													name: "VerseBlockParagraphLineElement",
 												},
 											},
 										},
 										&ruleRefExpr{
-											pos:  position{line: 1322, col: 109, offset: 50300},
+											pos:  position{line: 1322, col: 109, offset: 50272},
 											name: "EOL",
 										},
 									},
@@ -10454,75 +10454,75 @@ var g = &grammar{
 		},
 		{
 			name: "VerseBlockParagraphLineElement",
-			pos:  position{line: 1328, col: 1, offset: 50396},
+			pos:  position{line: 1328, col: 1, offset: 50368},
 			expr: &actionExpr{
-				pos: position{line: 1328, col: 35, offset: 50430},
+				pos: position{line: 1328, col: 35, offset: 50402},
 				run: (*parser).callonVerseBlockParagraphLineElement1,
 				expr: &seqExpr{
-					pos: position{line: 1328, col: 35, offset: 50430},
+					pos: position{line: 1328, col: 35, offset: 50402},
 					exprs: []interface{}{
 						&notExpr{
-							pos: position{line: 1328, col: 35, offset: 50430},
+							pos: position{line: 1328, col: 35, offset: 50402},
 							expr: &ruleRefExpr{
-								pos:  position{line: 1328, col: 36, offset: 50431},
+								pos:  position{line: 1328, col: 36, offset: 50403},
 								name: "EOL",
 							},
 						},
 						&notExpr{
-							pos: position{line: 1328, col: 40, offset: 50435},
+							pos: position{line: 1328, col: 40, offset: 50407},
 							expr: &ruleRefExpr{
-								pos:  position{line: 1328, col: 41, offset: 50436},
+								pos:  position{line: 1328, col: 41, offset: 50408},
 								name: "LineBreak",
 							},
 						},
 						&labeledExpr{
-							pos:   position{line: 1329, col: 5, offset: 50451},
+							pos:   position{line: 1329, col: 5, offset: 50423},
 							label: "element",
 							expr: &choiceExpr{
-								pos: position{line: 1329, col: 14, offset: 50460},
+								pos: position{line: 1329, col: 14, offset: 50432},
 								alternatives: []interface{}{
 									&ruleRefExpr{
-										pos:  position{line: 1329, col: 14, offset: 50460},
+										pos:  position{line: 1329, col: 14, offset: 50432},
 										name: "Spaces",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 1330, col: 11, offset: 50478},
+										pos:  position{line: 1330, col: 11, offset: 50450},
 										name: "InlineImage",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 1331, col: 11, offset: 50501},
+										pos:  position{line: 1331, col: 11, offset: 50473},
 										name: "Link",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 1332, col: 11, offset: 50517},
+										pos:  position{line: 1332, col: 11, offset: 50489},
 										name: "Passthrough",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 1333, col: 11, offset: 50540},
+										pos:  position{line: 1333, col: 11, offset: 50512},
 										name: "InlineFootnote",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 1334, col: 11, offset: 50566},
+										pos:  position{line: 1334, col: 11, offset: 50538},
 										name: "InlineUserMacro",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 1335, col: 11, offset: 50593},
+										pos:  position{line: 1335, col: 11, offset: 50565},
 										name: "QuotedText",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 1336, col: 11, offset: 50615},
+										pos:  position{line: 1336, col: 11, offset: 50587},
 										name: "CrossReference",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 1337, col: 11, offset: 50641},
+										pos:  position{line: 1337, col: 11, offset: 50613},
 										name: "DocumentAttributeSubstitution",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 1338, col: 11, offset: 50682},
+										pos:  position{line: 1338, col: 11, offset: 50654},
 										name: "InlineElementID",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 1339, col: 11, offset: 50709},
+										pos:  position{line: 1339, col: 11, offset: 50681},
 										name: "OtherWord",
 									},
 								},
@@ -10534,17 +10534,17 @@ var g = &grammar{
 		},
 		{
 			name: "SidebarBlockDelimiter",
-			pos:  position{line: 1346, col: 1, offset: 50939},
+			pos:  position{line: 1346, col: 1, offset: 50911},
 			expr: &seqExpr{
-				pos: position{line: 1346, col: 26, offset: 50964},
+				pos: position{line: 1346, col: 26, offset: 50936},
 				exprs: []interface{}{
 					&litMatcher{
-						pos:        position{line: 1346, col: 26, offset: 50964},
+						pos:        position{line: 1346, col: 26, offset: 50936},
 						val:        "****",
 						ignoreCase: false,
 					},
 					&ruleRefExpr{
-						pos:  position{line: 1346, col: 33, offset: 50971},
+						pos:  position{line: 1346, col: 33, offset: 50943},
 						name: "EOLS",
 					},
 				},
@@ -10552,48 +10552,48 @@ var g = &grammar{
 		},
 		{
 			name: "SidebarBlock",
-			pos:  position{line: 1348, col: 1, offset: 50977},
+			pos:  position{line: 1348, col: 1, offset: 50949},
 			expr: &actionExpr{
-				pos: position{line: 1348, col: 17, offset: 50993},
+				pos: position{line: 1348, col: 17, offset: 50965},
 				run: (*parser).callonSidebarBlock1,
 				expr: &seqExpr{
-					pos: position{line: 1348, col: 17, offset: 50993},
+					pos: position{line: 1348, col: 17, offset: 50965},
 					exprs: []interface{}{
 						&labeledExpr{
-							pos:   position{line: 1348, col: 17, offset: 50993},
+							pos:   position{line: 1348, col: 17, offset: 50965},
 							label: "attributes",
 							expr: &zeroOrOneExpr{
-								pos: position{line: 1348, col: 28, offset: 51004},
+								pos: position{line: 1348, col: 28, offset: 50976},
 								expr: &ruleRefExpr{
-									pos:  position{line: 1348, col: 29, offset: 51005},
+									pos:  position{line: 1348, col: 29, offset: 50977},
 									name: "ElementAttributes",
 								},
 							},
 						},
 						&ruleRefExpr{
-							pos:  position{line: 1348, col: 49, offset: 51025},
+							pos:  position{line: 1348, col: 49, offset: 50997},
 							name: "SidebarBlockDelimiter",
 						},
 						&labeledExpr{
-							pos:   position{line: 1348, col: 71, offset: 51047},
+							pos:   position{line: 1348, col: 71, offset: 51019},
 							label: "content",
 							expr: &zeroOrMoreExpr{
-								pos: position{line: 1348, col: 79, offset: 51055},
+								pos: position{line: 1348, col: 79, offset: 51027},
 								expr: &ruleRefExpr{
-									pos:  position{line: 1348, col: 80, offset: 51056},
+									pos:  position{line: 1348, col: 80, offset: 51028},
 									name: "SidebarBlockContent",
 								},
 							},
 						},
 						&choiceExpr{
-							pos: position{line: 1348, col: 104, offset: 51080},
+							pos: position{line: 1348, col: 104, offset: 51052},
 							alternatives: []interface{}{
 								&ruleRefExpr{
-									pos:  position{line: 1348, col: 104, offset: 51080},
+									pos:  position{line: 1348, col: 104, offset: 51052},
 									name: "SidebarBlockDelimiter",
 								},
 								&ruleRefExpr{
-									pos:  position{line: 1348, col: 128, offset: 51104},
+									pos:  position{line: 1348, col: 128, offset: 51076},
 									name: "EOF",
 								},
 							},
@@ -10604,28 +10604,28 @@ var g = &grammar{
 		},
 		{
 			name: "SidebarBlockContent",
-			pos:  position{line: 1352, col: 1, offset: 51213},
+			pos:  position{line: 1352, col: 1, offset: 51185},
 			expr: &choiceExpr{
-				pos: position{line: 1352, col: 24, offset: 51236},
+				pos: position{line: 1352, col: 24, offset: 51208},
 				alternatives: []interface{}{
 					&ruleRefExpr{
-						pos:  position{line: 1352, col: 24, offset: 51236},
+						pos:  position{line: 1352, col: 24, offset: 51208},
 						name: "BlankLine",
 					},
 					&ruleRefExpr{
-						pos:  position{line: 1352, col: 36, offset: 51248},
+						pos:  position{line: 1352, col: 36, offset: 51220},
 						name: "FileInclusion",
 					},
 					&ruleRefExpr{
-						pos:  position{line: 1352, col: 52, offset: 51264},
+						pos:  position{line: 1352, col: 52, offset: 51236},
 						name: "ListItem",
 					},
 					&ruleRefExpr{
-						pos:  position{line: 1352, col: 63, offset: 51275},
+						pos:  position{line: 1352, col: 63, offset: 51247},
 						name: "NonSidebarBlock",
 					},
 					&ruleRefExpr{
-						pos:  position{line: 1352, col: 81, offset: 51293},
+						pos:  position{line: 1352, col: 81, offset: 51265},
 						name: "SidebarBlockParagraph",
 					},
 				},
@@ -10633,25 +10633,25 @@ var g = &grammar{
 		},
 		{
 			name: "NonSidebarBlock",
-			pos:  position{line: 1354, col: 1, offset: 51316},
+			pos:  position{line: 1354, col: 1, offset: 51288},
 			expr: &actionExpr{
-				pos: position{line: 1354, col: 20, offset: 51335},
+				pos: position{line: 1354, col: 20, offset: 51307},
 				run: (*parser).callonNonSidebarBlock1,
 				expr: &seqExpr{
-					pos: position{line: 1354, col: 20, offset: 51335},
+					pos: position{line: 1354, col: 20, offset: 51307},
 					exprs: []interface{}{
 						&notExpr{
-							pos: position{line: 1354, col: 20, offset: 51335},
+							pos: position{line: 1354, col: 20, offset: 51307},
 							expr: &ruleRefExpr{
-								pos:  position{line: 1354, col: 21, offset: 51336},
+								pos:  position{line: 1354, col: 21, offset: 51308},
 								name: "SidebarBlock",
 							},
 						},
 						&labeledExpr{
-							pos:   position{line: 1354, col: 34, offset: 51349},
+							pos:   position{line: 1354, col: 34, offset: 51321},
 							label: "content",
 							expr: &ruleRefExpr{
-								pos:  position{line: 1354, col: 43, offset: 51358},
+								pos:  position{line: 1354, col: 43, offset: 51330},
 								name: "DelimitedBlock",
 							},
 						},
@@ -10661,17 +10661,17 @@ var g = &grammar{
 		},
 		{
 			name: "SidebarBlockParagraph",
-			pos:  position{line: 1359, col: 1, offset: 51421},
+			pos:  position{line: 1359, col: 1, offset: 51393},
 			expr: &actionExpr{
-				pos: position{line: 1359, col: 26, offset: 51446},
+				pos: position{line: 1359, col: 26, offset: 51418},
 				run: (*parser).callonSidebarBlockParagraph1,
 				expr: &labeledExpr{
-					pos:   position{line: 1359, col: 26, offset: 51446},
+					pos:   position{line: 1359, col: 26, offset: 51418},
 					label: "lines",
 					expr: &oneOrMoreExpr{
-						pos: position{line: 1359, col: 32, offset: 51452},
+						pos: position{line: 1359, col: 32, offset: 51424},
 						expr: &ruleRefExpr{
-							pos:  position{line: 1359, col: 33, offset: 51453},
+							pos:  position{line: 1359, col: 33, offset: 51425},
 							name: "SidebarBlockParagraphLine",
 						},
 					},
@@ -10680,32 +10680,32 @@ var g = &grammar{
 		},
 		{
 			name: "SidebarBlockParagraphLine",
-			pos:  position{line: 1363, col: 1, offset: 51567},
+			pos:  position{line: 1363, col: 1, offset: 51539},
 			expr: &actionExpr{
-				pos: position{line: 1363, col: 30, offset: 51596},
+				pos: position{line: 1363, col: 30, offset: 51568},
 				run: (*parser).callonSidebarBlockParagraphLine1,
 				expr: &seqExpr{
-					pos: position{line: 1363, col: 30, offset: 51596},
+					pos: position{line: 1363, col: 30, offset: 51568},
 					exprs: []interface{}{
 						&notExpr{
-							pos: position{line: 1363, col: 30, offset: 51596},
+							pos: position{line: 1363, col: 30, offset: 51568},
 							expr: &ruleRefExpr{
-								pos:  position{line: 1363, col: 31, offset: 51597},
+								pos:  position{line: 1363, col: 31, offset: 51569},
 								name: "SidebarBlockDelimiter",
 							},
 						},
 						&notExpr{
-							pos: position{line: 1363, col: 53, offset: 51619},
+							pos: position{line: 1363, col: 53, offset: 51591},
 							expr: &ruleRefExpr{
-								pos:  position{line: 1363, col: 54, offset: 51620},
+								pos:  position{line: 1363, col: 54, offset: 51592},
 								name: "BlankLine",
 							},
 						},
 						&labeledExpr{
-							pos:   position{line: 1363, col: 64, offset: 51630},
+							pos:   position{line: 1363, col: 64, offset: 51602},
 							label: "line",
 							expr: &ruleRefExpr{
-								pos:  position{line: 1363, col: 70, offset: 51636},
+								pos:  position{line: 1363, col: 70, offset: 51608},
 								name: "InlineElements",
 							},
 						},
@@ -10715,59 +10715,59 @@ var g = &grammar{
 		},
 		{
 			name: "Table",
-			pos:  position{line: 1371, col: 1, offset: 51867},
+			pos:  position{line: 1371, col: 1, offset: 51839},
 			expr: &actionExpr{
-				pos: position{line: 1371, col: 10, offset: 51876},
+				pos: position{line: 1371, col: 10, offset: 51848},
 				run: (*parser).callonTable1,
 				expr: &seqExpr{
-					pos: position{line: 1371, col: 10, offset: 51876},
+					pos: position{line: 1371, col: 10, offset: 51848},
 					exprs: []interface{}{
 						&labeledExpr{
-							pos:   position{line: 1371, col: 10, offset: 51876},
+							pos:   position{line: 1371, col: 10, offset: 51848},
 							label: "attributes",
 							expr: &zeroOrOneExpr{
-								pos: position{line: 1371, col: 21, offset: 51887},
+								pos: position{line: 1371, col: 21, offset: 51859},
 								expr: &ruleRefExpr{
-									pos:  position{line: 1371, col: 22, offset: 51888},
+									pos:  position{line: 1371, col: 22, offset: 51860},
 									name: "ElementAttributes",
 								},
 							},
 						},
 						&ruleRefExpr{
-							pos:  position{line: 1371, col: 42, offset: 51908},
+							pos:  position{line: 1371, col: 42, offset: 51880},
 							name: "TableDelimiter",
 						},
 						&labeledExpr{
-							pos:   position{line: 1372, col: 5, offset: 51927},
+							pos:   position{line: 1372, col: 5, offset: 51899},
 							label: "header",
 							expr: &zeroOrOneExpr{
-								pos: position{line: 1372, col: 12, offset: 51934},
+								pos: position{line: 1372, col: 12, offset: 51906},
 								expr: &ruleRefExpr{
-									pos:  position{line: 1372, col: 13, offset: 51935},
+									pos:  position{line: 1372, col: 13, offset: 51907},
 									name: "TableLineHeader",
 								},
 							},
 						},
 						&labeledExpr{
-							pos:   position{line: 1373, col: 5, offset: 51957},
+							pos:   position{line: 1373, col: 5, offset: 51929},
 							label: "lines",
 							expr: &zeroOrMoreExpr{
-								pos: position{line: 1373, col: 11, offset: 51963},
+								pos: position{line: 1373, col: 11, offset: 51935},
 								expr: &ruleRefExpr{
-									pos:  position{line: 1373, col: 12, offset: 51964},
+									pos:  position{line: 1373, col: 12, offset: 51936},
 									name: "TableLine",
 								},
 							},
 						},
 						&choiceExpr{
-							pos: position{line: 1374, col: 6, offset: 51981},
+							pos: position{line: 1374, col: 6, offset: 51953},
 							alternatives: []interface{}{
 								&ruleRefExpr{
-									pos:  position{line: 1374, col: 6, offset: 51981},
+									pos:  position{line: 1374, col: 6, offset: 51953},
 									name: "TableDelimiter",
 								},
 								&ruleRefExpr{
-									pos:  position{line: 1374, col: 23, offset: 51998},
+									pos:  position{line: 1374, col: 23, offset: 51970},
 									name: "EOF",
 								},
 							},
@@ -10778,19 +10778,19 @@ var g = &grammar{
 		},
 		{
 			name: "TableCellSeparator",
-			pos:  position{line: 1378, col: 1, offset: 52113},
+			pos:  position{line: 1378, col: 1, offset: 52085},
 			expr: &seqExpr{
-				pos: position{line: 1378, col: 23, offset: 52135},
+				pos: position{line: 1378, col: 23, offset: 52107},
 				exprs: []interface{}{
 					&litMatcher{
-						pos:        position{line: 1378, col: 23, offset: 52135},
+						pos:        position{line: 1378, col: 23, offset: 52107},
 						val:        "|",
 						ignoreCase: false,
 					},
 					&zeroOrMoreExpr{
-						pos: position{line: 1378, col: 27, offset: 52139},
+						pos: position{line: 1378, col: 27, offset: 52111},
 						expr: &ruleRefExpr{
-							pos:  position{line: 1378, col: 27, offset: 52139},
+							pos:  position{line: 1378, col: 27, offset: 52111},
 							name: "WS",
 						},
 					},
@@ -10799,17 +10799,17 @@ var g = &grammar{
 		},
 		{
 			name: "TableDelimiter",
-			pos:  position{line: 1380, col: 1, offset: 52144},
+			pos:  position{line: 1380, col: 1, offset: 52116},
 			expr: &seqExpr{
-				pos: position{line: 1380, col: 19, offset: 52162},
+				pos: position{line: 1380, col: 19, offset: 52134},
 				exprs: []interface{}{
 					&litMatcher{
-						pos:        position{line: 1380, col: 19, offset: 52162},
+						pos:        position{line: 1380, col: 19, offset: 52134},
 						val:        "|===",
 						ignoreCase: false,
 					},
 					&ruleRefExpr{
-						pos:  position{line: 1380, col: 26, offset: 52169},
+						pos:  position{line: 1380, col: 26, offset: 52141},
 						name: "EOLS",
 					},
 				},
@@ -10817,37 +10817,37 @@ var g = &grammar{
 		},
 		{
 			name: "TableLineHeader",
-			pos:  position{line: 1383, col: 1, offset: 52238},
+			pos:  position{line: 1383, col: 1, offset: 52210},
 			expr: &actionExpr{
-				pos: position{line: 1383, col: 20, offset: 52257},
+				pos: position{line: 1383, col: 20, offset: 52229},
 				run: (*parser).callonTableLineHeader1,
 				expr: &seqExpr{
-					pos: position{line: 1383, col: 20, offset: 52257},
+					pos: position{line: 1383, col: 20, offset: 52229},
 					exprs: []interface{}{
 						&notExpr{
-							pos: position{line: 1383, col: 20, offset: 52257},
+							pos: position{line: 1383, col: 20, offset: 52229},
 							expr: &ruleRefExpr{
-								pos:  position{line: 1383, col: 21, offset: 52258},
+								pos:  position{line: 1383, col: 21, offset: 52230},
 								name: "TableDelimiter",
 							},
 						},
 						&labeledExpr{
-							pos:   position{line: 1383, col: 36, offset: 52273},
+							pos:   position{line: 1383, col: 36, offset: 52245},
 							label: "cells",
 							expr: &oneOrMoreExpr{
-								pos: position{line: 1383, col: 42, offset: 52279},
+								pos: position{line: 1383, col: 42, offset: 52251},
 								expr: &ruleRefExpr{
-									pos:  position{line: 1383, col: 43, offset: 52280},
+									pos:  position{line: 1383, col: 43, offset: 52252},
 									name: "TableCell",
 								},
 							},
 						},
 						&ruleRefExpr{
-							pos:  position{line: 1383, col: 55, offset: 52292},
+							pos:  position{line: 1383, col: 55, offset: 52264},
 							name: "EOL",
 						},
 						&ruleRefExpr{
-							pos:  position{line: 1383, col: 59, offset: 52296},
+							pos:  position{line: 1383, col: 59, offset: 52268},
 							name: "BlankLine",
 						},
 					},
@@ -10856,39 +10856,39 @@ var g = &grammar{
 		},
 		{
 			name: "TableLine",
-			pos:  position{line: 1387, col: 1, offset: 52364},
+			pos:  position{line: 1387, col: 1, offset: 52336},
 			expr: &actionExpr{
-				pos: position{line: 1387, col: 14, offset: 52377},
+				pos: position{line: 1387, col: 14, offset: 52349},
 				run: (*parser).callonTableLine1,
 				expr: &seqExpr{
-					pos: position{line: 1387, col: 14, offset: 52377},
+					pos: position{line: 1387, col: 14, offset: 52349},
 					exprs: []interface{}{
 						&notExpr{
-							pos: position{line: 1387, col: 14, offset: 52377},
+							pos: position{line: 1387, col: 14, offset: 52349},
 							expr: &ruleRefExpr{
-								pos:  position{line: 1387, col: 15, offset: 52378},
+								pos:  position{line: 1387, col: 15, offset: 52350},
 								name: "TableDelimiter",
 							},
 						},
 						&labeledExpr{
-							pos:   position{line: 1387, col: 30, offset: 52393},
+							pos:   position{line: 1387, col: 30, offset: 52365},
 							label: "cells",
 							expr: &oneOrMoreExpr{
-								pos: position{line: 1387, col: 36, offset: 52399},
+								pos: position{line: 1387, col: 36, offset: 52371},
 								expr: &ruleRefExpr{
-									pos:  position{line: 1387, col: 37, offset: 52400},
+									pos:  position{line: 1387, col: 37, offset: 52372},
 									name: "TableCell",
 								},
 							},
 						},
 						&ruleRefExpr{
-							pos:  position{line: 1387, col: 49, offset: 52412},
+							pos:  position{line: 1387, col: 49, offset: 52384},
 							name: "EOL",
 						},
 						&zeroOrMoreExpr{
-							pos: position{line: 1387, col: 53, offset: 52416},
+							pos: position{line: 1387, col: 53, offset: 52388},
 							expr: &ruleRefExpr{
-								pos:  position{line: 1387, col: 53, offset: 52416},
+								pos:  position{line: 1387, col: 53, offset: 52388},
 								name: "BlankLine",
 							},
 						},
@@ -10898,54 +10898,54 @@ var g = &grammar{
 		},
 		{
 			name: "TableCell",
-			pos:  position{line: 1391, col: 1, offset: 52485},
+			pos:  position{line: 1391, col: 1, offset: 52457},
 			expr: &actionExpr{
-				pos: position{line: 1391, col: 14, offset: 52498},
+				pos: position{line: 1391, col: 14, offset: 52470},
 				run: (*parser).callonTableCell1,
 				expr: &seqExpr{
-					pos: position{line: 1391, col: 14, offset: 52498},
+					pos: position{line: 1391, col: 14, offset: 52470},
 					exprs: []interface{}{
 						&ruleRefExpr{
-							pos:  position{line: 1391, col: 14, offset: 52498},
+							pos:  position{line: 1391, col: 14, offset: 52470},
 							name: "TableCellSeparator",
 						},
 						&labeledExpr{
-							pos:   position{line: 1391, col: 33, offset: 52517},
+							pos:   position{line: 1391, col: 33, offset: 52489},
 							label: "elements",
 							expr: &oneOrMoreExpr{
-								pos: position{line: 1391, col: 42, offset: 52526},
+								pos: position{line: 1391, col: 42, offset: 52498},
 								expr: &seqExpr{
-									pos: position{line: 1391, col: 43, offset: 52527},
+									pos: position{line: 1391, col: 43, offset: 52499},
 									exprs: []interface{}{
 										&notExpr{
-											pos: position{line: 1391, col: 43, offset: 52527},
+											pos: position{line: 1391, col: 43, offset: 52499},
 											expr: &ruleRefExpr{
-												pos:  position{line: 1391, col: 44, offset: 52528},
+												pos:  position{line: 1391, col: 44, offset: 52500},
 												name: "TableCellSeparator",
 											},
 										},
 										&notExpr{
-											pos: position{line: 1391, col: 63, offset: 52547},
+											pos: position{line: 1391, col: 63, offset: 52519},
 											expr: &ruleRefExpr{
-												pos:  position{line: 1391, col: 64, offset: 52548},
+												pos:  position{line: 1391, col: 64, offset: 52520},
 												name: "EOL",
 											},
 										},
 										&zeroOrMoreExpr{
-											pos: position{line: 1391, col: 68, offset: 52552},
+											pos: position{line: 1391, col: 68, offset: 52524},
 											expr: &ruleRefExpr{
-												pos:  position{line: 1391, col: 68, offset: 52552},
+												pos:  position{line: 1391, col: 68, offset: 52524},
 												name: "WS",
 											},
 										},
 										&ruleRefExpr{
-											pos:  position{line: 1391, col: 72, offset: 52556},
+											pos:  position{line: 1391, col: 72, offset: 52528},
 											name: "InlineElement",
 										},
 										&zeroOrMoreExpr{
-											pos: position{line: 1391, col: 86, offset: 52570},
+											pos: position{line: 1391, col: 86, offset: 52542},
 											expr: &ruleRefExpr{
-												pos:  position{line: 1391, col: 86, offset: 52570},
+												pos:  position{line: 1391, col: 86, offset: 52542},
 												name: "WS",
 											},
 										},
@@ -10959,66 +10959,66 @@ var g = &grammar{
 		},
 		{
 			name: "CommentBlockDelimiter",
-			pos:  position{line: 1398, col: 1, offset: 52816},
+			pos:  position{line: 1398, col: 1, offset: 52788},
 			expr: &litMatcher{
-				pos:        position{line: 1398, col: 26, offset: 52841},
+				pos:        position{line: 1398, col: 26, offset: 52813},
 				val:        "////",
 				ignoreCase: false,
 			},
 		},
 		{
 			name: "CommentBlock",
-			pos:  position{line: 1400, col: 1, offset: 52849},
+			pos:  position{line: 1400, col: 1, offset: 52821},
 			expr: &actionExpr{
-				pos: position{line: 1400, col: 17, offset: 52865},
+				pos: position{line: 1400, col: 17, offset: 52837},
 				run: (*parser).callonCommentBlock1,
 				expr: &seqExpr{
-					pos: position{line: 1400, col: 17, offset: 52865},
+					pos: position{line: 1400, col: 17, offset: 52837},
 					exprs: []interface{}{
 						&ruleRefExpr{
-							pos:  position{line: 1400, col: 17, offset: 52865},
+							pos:  position{line: 1400, col: 17, offset: 52837},
 							name: "CommentBlockDelimiter",
 						},
 						&zeroOrMoreExpr{
-							pos: position{line: 1400, col: 39, offset: 52887},
+							pos: position{line: 1400, col: 39, offset: 52859},
 							expr: &ruleRefExpr{
-								pos:  position{line: 1400, col: 39, offset: 52887},
+								pos:  position{line: 1400, col: 39, offset: 52859},
 								name: "WS",
 							},
 						},
 						&ruleRefExpr{
-							pos:  position{line: 1400, col: 43, offset: 52891},
+							pos:  position{line: 1400, col: 43, offset: 52863},
 							name: "NEWLINE",
 						},
 						&labeledExpr{
-							pos:   position{line: 1400, col: 51, offset: 52899},
+							pos:   position{line: 1400, col: 51, offset: 52871},
 							label: "content",
 							expr: &zeroOrMoreExpr{
-								pos: position{line: 1400, col: 59, offset: 52907},
+								pos: position{line: 1400, col: 59, offset: 52879},
 								expr: &ruleRefExpr{
-									pos:  position{line: 1400, col: 60, offset: 52908},
+									pos:  position{line: 1400, col: 60, offset: 52880},
 									name: "CommentBlockLine",
 								},
 							},
 						},
 						&choiceExpr{
-							pos: position{line: 1400, col: 81, offset: 52929},
+							pos: position{line: 1400, col: 81, offset: 52901},
 							alternatives: []interface{}{
 								&seqExpr{
-									pos: position{line: 1400, col: 82, offset: 52930},
+									pos: position{line: 1400, col: 82, offset: 52902},
 									exprs: []interface{}{
 										&ruleRefExpr{
-											pos:  position{line: 1400, col: 82, offset: 52930},
+											pos:  position{line: 1400, col: 82, offset: 52902},
 											name: "CommentBlockDelimiter",
 										},
 										&ruleRefExpr{
-											pos:  position{line: 1400, col: 104, offset: 52952},
+											pos:  position{line: 1400, col: 104, offset: 52924},
 											name: "EOLS",
 										},
 									},
 								},
 								&ruleRefExpr{
-									pos:  position{line: 1400, col: 112, offset: 52960},
+									pos:  position{line: 1400, col: 112, offset: 52932},
 									name: "EOF",
 								},
 							},
@@ -11029,45 +11029,45 @@ var g = &grammar{
 		},
 		{
 			name: "CommentBlockLine",
-			pos:  position{line: 1404, col: 1, offset: 53066},
+			pos:  position{line: 1404, col: 1, offset: 53038},
 			expr: &actionExpr{
-				pos: position{line: 1404, col: 21, offset: 53086},
+				pos: position{line: 1404, col: 21, offset: 53058},
 				run: (*parser).callonCommentBlockLine1,
 				expr: &seqExpr{
-					pos: position{line: 1404, col: 21, offset: 53086},
+					pos: position{line: 1404, col: 21, offset: 53058},
 					exprs: []interface{}{
 						&zeroOrMoreExpr{
-							pos: position{line: 1404, col: 21, offset: 53086},
+							pos: position{line: 1404, col: 21, offset: 53058},
 							expr: &choiceExpr{
-								pos: position{line: 1404, col: 22, offset: 53087},
+								pos: position{line: 1404, col: 22, offset: 53059},
 								alternatives: []interface{}{
 									&ruleRefExpr{
-										pos:  position{line: 1404, col: 22, offset: 53087},
+										pos:  position{line: 1404, col: 22, offset: 53059},
 										name: "Alphanums",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 1404, col: 34, offset: 53099},
+										pos:  position{line: 1404, col: 34, offset: 53071},
 										name: "Spaces",
 									},
 									&seqExpr{
-										pos: position{line: 1404, col: 44, offset: 53109},
+										pos: position{line: 1404, col: 44, offset: 53081},
 										exprs: []interface{}{
 											&notExpr{
-												pos: position{line: 1404, col: 44, offset: 53109},
+												pos: position{line: 1404, col: 44, offset: 53081},
 												expr: &ruleRefExpr{
-													pos:  position{line: 1404, col: 45, offset: 53110},
+													pos:  position{line: 1404, col: 45, offset: 53082},
 													name: "CommentBlockDelimiter",
 												},
 											},
 											&notExpr{
-												pos: position{line: 1404, col: 67, offset: 53132},
+												pos: position{line: 1404, col: 67, offset: 53104},
 												expr: &ruleRefExpr{
-													pos:  position{line: 1404, col: 68, offset: 53133},
+													pos:  position{line: 1404, col: 68, offset: 53105},
 													name: "EOL",
 												},
 											},
 											&anyMatcher{
-												line: 1404, col: 73, offset: 53138,
+												line: 1404, col: 73, offset: 53110,
 											},
 										},
 									},
@@ -11075,7 +11075,7 @@ var g = &grammar{
 							},
 						},
 						&ruleRefExpr{
-							pos:  position{line: 1404, col: 78, offset: 53143},
+							pos:  position{line: 1404, col: 78, offset: 53115},
 							name: "EOL",
 						},
 					},
@@ -11084,42 +11084,42 @@ var g = &grammar{
 		},
 		{
 			name: "SingleLineComment",
-			pos:  position{line: 1408, col: 1, offset: 53183},
+			pos:  position{line: 1408, col: 1, offset: 53155},
 			expr: &actionExpr{
-				pos: position{line: 1408, col: 22, offset: 53204},
+				pos: position{line: 1408, col: 22, offset: 53176},
 				run: (*parser).callonSingleLineComment1,
 				expr: &seqExpr{
-					pos: position{line: 1408, col: 22, offset: 53204},
+					pos: position{line: 1408, col: 22, offset: 53176},
 					exprs: []interface{}{
 						&notExpr{
-							pos: position{line: 1408, col: 22, offset: 53204},
+							pos: position{line: 1408, col: 22, offset: 53176},
 							expr: &ruleRefExpr{
-								pos:  position{line: 1408, col: 23, offset: 53205},
+								pos:  position{line: 1408, col: 23, offset: 53177},
 								name: "CommentBlockDelimiter",
 							},
 						},
 						&zeroOrMoreExpr{
-							pos: position{line: 1408, col: 45, offset: 53227},
+							pos: position{line: 1408, col: 45, offset: 53199},
 							expr: &ruleRefExpr{
-								pos:  position{line: 1408, col: 45, offset: 53227},
+								pos:  position{line: 1408, col: 45, offset: 53199},
 								name: "WS",
 							},
 						},
 						&litMatcher{
-							pos:        position{line: 1408, col: 49, offset: 53231},
+							pos:        position{line: 1408, col: 49, offset: 53203},
 							val:        "//",
 							ignoreCase: false,
 						},
 						&labeledExpr{
-							pos:   position{line: 1408, col: 54, offset: 53236},
+							pos:   position{line: 1408, col: 54, offset: 53208},
 							label: "content",
 							expr: &ruleRefExpr{
-								pos:  position{line: 1408, col: 63, offset: 53245},
+								pos:  position{line: 1408, col: 63, offset: 53217},
 								name: "SingleLineCommentContent",
 							},
 						},
 						&ruleRefExpr{
-							pos:  position{line: 1408, col: 89, offset: 53271},
+							pos:  position{line: 1408, col: 89, offset: 53243},
 							name: "EOL",
 						},
 					},
@@ -11128,35 +11128,35 @@ var g = &grammar{
 		},
 		{
 			name: "SingleLineCommentContent",
-			pos:  position{line: 1412, col: 1, offset: 53336},
+			pos:  position{line: 1412, col: 1, offset: 53308},
 			expr: &actionExpr{
-				pos: position{line: 1412, col: 29, offset: 53364},
+				pos: position{line: 1412, col: 29, offset: 53336},
 				run: (*parser).callonSingleLineCommentContent1,
 				expr: &zeroOrMoreExpr{
-					pos: position{line: 1412, col: 29, offset: 53364},
+					pos: position{line: 1412, col: 29, offset: 53336},
 					expr: &choiceExpr{
-						pos: position{line: 1412, col: 30, offset: 53365},
+						pos: position{line: 1412, col: 30, offset: 53337},
 						alternatives: []interface{}{
 							&ruleRefExpr{
-								pos:  position{line: 1412, col: 30, offset: 53365},
+								pos:  position{line: 1412, col: 30, offset: 53337},
 								name: "Alphanums",
 							},
 							&ruleRefExpr{
-								pos:  position{line: 1412, col: 42, offset: 53377},
+								pos:  position{line: 1412, col: 42, offset: 53349},
 								name: "Spaces",
 							},
 							&seqExpr{
-								pos: position{line: 1412, col: 52, offset: 53387},
+								pos: position{line: 1412, col: 52, offset: 53359},
 								exprs: []interface{}{
 									&notExpr{
-										pos: position{line: 1412, col: 52, offset: 53387},
+										pos: position{line: 1412, col: 52, offset: 53359},
 										expr: &ruleRefExpr{
-											pos:  position{line: 1412, col: 53, offset: 53388},
+											pos:  position{line: 1412, col: 53, offset: 53360},
 											name: "EOL",
 										},
 									},
 									&anyMatcher{
-										line: 1412, col: 58, offset: 53393,
+										line: 1412, col: 58, offset: 53365,
 									},
 								},
 							},
@@ -11167,20 +11167,20 @@ var g = &grammar{
 		},
 		{
 			name: "LiteralBlock",
-			pos:  position{line: 1420, col: 1, offset: 53702},
+			pos:  position{line: 1420, col: 1, offset: 53674},
 			expr: &choiceExpr{
-				pos: position{line: 1420, col: 17, offset: 53718},
+				pos: position{line: 1420, col: 17, offset: 53690},
 				alternatives: []interface{}{
 					&ruleRefExpr{
-						pos:  position{line: 1420, col: 17, offset: 53718},
+						pos:  position{line: 1420, col: 17, offset: 53690},
 						name: "ParagraphWithLiteralAttribute",
 					},
 					&ruleRefExpr{
-						pos:  position{line: 1420, col: 49, offset: 53750},
+						pos:  position{line: 1420, col: 49, offset: 53722},
 						name: "ParagraphWithHeadingSpaces",
 					},
 					&ruleRefExpr{
-						pos:  position{line: 1420, col: 78, offset: 53779},
+						pos:  position{line: 1420, col: 78, offset: 53751},
 						name: "ParagraphWithLiteralBlockDelimiter",
 					},
 				},
@@ -11188,38 +11188,38 @@ var g = &grammar{
 		},
 		{
 			name: "LiteralBlockDelimiter",
-			pos:  position{line: 1422, col: 1, offset: 53815},
+			pos:  position{line: 1422, col: 1, offset: 53787},
 			expr: &litMatcher{
-				pos:        position{line: 1422, col: 26, offset: 53840},
+				pos:        position{line: 1422, col: 26, offset: 53812},
 				val:        "....",
 				ignoreCase: false,
 			},
 		},
 		{
 			name: "ParagraphWithHeadingSpaces",
-			pos:  position{line: 1425, col: 1, offset: 53912},
+			pos:  position{line: 1425, col: 1, offset: 53884},
 			expr: &actionExpr{
-				pos: position{line: 1425, col: 31, offset: 53942},
+				pos: position{line: 1425, col: 31, offset: 53914},
 				run: (*parser).callonParagraphWithHeadingSpaces1,
 				expr: &seqExpr{
-					pos: position{line: 1425, col: 31, offset: 53942},
+					pos: position{line: 1425, col: 31, offset: 53914},
 					exprs: []interface{}{
 						&labeledExpr{
-							pos:   position{line: 1425, col: 31, offset: 53942},
+							pos:   position{line: 1425, col: 31, offset: 53914},
 							label: "attributes",
 							expr: &zeroOrOneExpr{
-								pos: position{line: 1425, col: 42, offset: 53953},
+								pos: position{line: 1425, col: 42, offset: 53925},
 								expr: &ruleRefExpr{
-									pos:  position{line: 1425, col: 43, offset: 53954},
+									pos:  position{line: 1425, col: 43, offset: 53926},
 									name: "ElementAttributes",
 								},
 							},
 						},
 						&labeledExpr{
-							pos:   position{line: 1425, col: 63, offset: 53974},
+							pos:   position{line: 1425, col: 63, offset: 53946},
 							label: "lines",
 							expr: &ruleRefExpr{
-								pos:  position{line: 1425, col: 70, offset: 53981},
+								pos:  position{line: 1425, col: 70, offset: 53953},
 								name: "ParagraphWithHeadingSpacesLines",
 							},
 						},
@@ -11229,54 +11229,54 @@ var g = &grammar{
 		},
 		{
 			name: "ParagraphWithHeadingSpacesLines",
-			pos:  position{line: 1430, col: 1, offset: 54211},
+			pos:  position{line: 1430, col: 1, offset: 54183},
 			expr: &actionExpr{
-				pos: position{line: 1431, col: 5, offset: 54251},
+				pos: position{line: 1431, col: 5, offset: 54223},
 				run: (*parser).callonParagraphWithHeadingSpacesLines1,
 				expr: &seqExpr{
-					pos: position{line: 1431, col: 5, offset: 54251},
+					pos: position{line: 1431, col: 5, offset: 54223},
 					exprs: []interface{}{
 						&labeledExpr{
-							pos:   position{line: 1431, col: 5, offset: 54251},
+							pos:   position{line: 1431, col: 5, offset: 54223},
 							label: "firstLine",
 							expr: &actionExpr{
-								pos: position{line: 1431, col: 16, offset: 54262},
+								pos: position{line: 1431, col: 16, offset: 54234},
 								run: (*parser).callonParagraphWithHeadingSpacesLines4,
 								expr: &seqExpr{
-									pos: position{line: 1431, col: 16, offset: 54262},
+									pos: position{line: 1431, col: 16, offset: 54234},
 									exprs: []interface{}{
 										&ruleRefExpr{
-											pos:  position{line: 1431, col: 16, offset: 54262},
+											pos:  position{line: 1431, col: 16, offset: 54234},
 											name: "WS",
 										},
 										&oneOrMoreExpr{
-											pos: position{line: 1431, col: 19, offset: 54265},
+											pos: position{line: 1431, col: 19, offset: 54237},
 											expr: &choiceExpr{
-												pos: position{line: 1431, col: 20, offset: 54266},
+												pos: position{line: 1431, col: 20, offset: 54238},
 												alternatives: []interface{}{
 													&ruleRefExpr{
-														pos:  position{line: 1431, col: 20, offset: 54266},
+														pos:  position{line: 1431, col: 20, offset: 54238},
 														name: "Alphanums",
 													},
 													&ruleRefExpr{
-														pos:  position{line: 1431, col: 32, offset: 54278},
+														pos:  position{line: 1431, col: 32, offset: 54250},
 														name: "Spaces",
 													},
 													&actionExpr{
-														pos: position{line: 1431, col: 41, offset: 54287},
+														pos: position{line: 1431, col: 41, offset: 54259},
 														run: (*parser).callonParagraphWithHeadingSpacesLines11,
 														expr: &seqExpr{
-															pos: position{line: 1431, col: 42, offset: 54288},
+															pos: position{line: 1431, col: 42, offset: 54260},
 															exprs: []interface{}{
 																&notExpr{
-																	pos: position{line: 1431, col: 42, offset: 54288},
+																	pos: position{line: 1431, col: 42, offset: 54260},
 																	expr: &ruleRefExpr{
-																		pos:  position{line: 1431, col: 43, offset: 54289},
+																		pos:  position{line: 1431, col: 43, offset: 54261},
 																		name: "EOL",
 																	},
 																},
 																&anyMatcher{
-																	line: 1431, col: 48, offset: 54294,
+																	line: 1431, col: 48, offset: 54266,
 																},
 															},
 														},
@@ -11289,58 +11289,58 @@ var g = &grammar{
 							},
 						},
 						&ruleRefExpr{
-							pos:  position{line: 1435, col: 8, offset: 54385},
+							pos:  position{line: 1435, col: 8, offset: 54357},
 							name: "EOL",
 						},
 						&labeledExpr{
-							pos:   position{line: 1436, col: 5, offset: 54448},
+							pos:   position{line: 1436, col: 5, offset: 54420},
 							label: "otherLines",
 							expr: &zeroOrMoreExpr{
-								pos: position{line: 1436, col: 16, offset: 54459},
+								pos: position{line: 1436, col: 16, offset: 54431},
 								expr: &actionExpr{
-									pos: position{line: 1437, col: 9, offset: 54469},
+									pos: position{line: 1437, col: 9, offset: 54441},
 									run: (*parser).callonParagraphWithHeadingSpacesLines19,
 									expr: &seqExpr{
-										pos: position{line: 1437, col: 9, offset: 54469},
+										pos: position{line: 1437, col: 9, offset: 54441},
 										exprs: []interface{}{
 											&notExpr{
-												pos: position{line: 1437, col: 9, offset: 54469},
+												pos: position{line: 1437, col: 9, offset: 54441},
 												expr: &ruleRefExpr{
-													pos:  position{line: 1437, col: 10, offset: 54470},
+													pos:  position{line: 1437, col: 10, offset: 54442},
 													name: "BlankLine",
 												},
 											},
 											&labeledExpr{
-												pos:   position{line: 1438, col: 9, offset: 54489},
+												pos:   position{line: 1438, col: 9, offset: 54461},
 												label: "otherLine",
 												expr: &actionExpr{
-													pos: position{line: 1438, col: 20, offset: 54500},
+													pos: position{line: 1438, col: 20, offset: 54472},
 													run: (*parser).callonParagraphWithHeadingSpacesLines24,
 													expr: &oneOrMoreExpr{
-														pos: position{line: 1438, col: 20, offset: 54500},
+														pos: position{line: 1438, col: 20, offset: 54472},
 														expr: &choiceExpr{
-															pos: position{line: 1438, col: 21, offset: 54501},
+															pos: position{line: 1438, col: 21, offset: 54473},
 															alternatives: []interface{}{
 																&ruleRefExpr{
-																	pos:  position{line: 1438, col: 21, offset: 54501},
+																	pos:  position{line: 1438, col: 21, offset: 54473},
 																	name: "Alphanums",
 																},
 																&ruleRefExpr{
-																	pos:  position{line: 1438, col: 33, offset: 54513},
+																	pos:  position{line: 1438, col: 33, offset: 54485},
 																	name: "Spaces",
 																},
 																&seqExpr{
-																	pos: position{line: 1438, col: 43, offset: 54523},
+																	pos: position{line: 1438, col: 43, offset: 54495},
 																	exprs: []interface{}{
 																		&notExpr{
-																			pos: position{line: 1438, col: 43, offset: 54523},
+																			pos: position{line: 1438, col: 43, offset: 54495},
 																			expr: &ruleRefExpr{
-																				pos:  position{line: 1438, col: 44, offset: 54524},
+																				pos:  position{line: 1438, col: 44, offset: 54496},
 																				name: "EOL",
 																			},
 																		},
 																		&anyMatcher{
-																			line: 1438, col: 49, offset: 54529,
+																			line: 1438, col: 49, offset: 54501,
 																		},
 																	},
 																},
@@ -11350,7 +11350,7 @@ var g = &grammar{
 												},
 											},
 											&ruleRefExpr{
-												pos:  position{line: 1440, col: 12, offset: 54586},
+												pos:  position{line: 1440, col: 12, offset: 54558},
 												name: "EOL",
 											},
 										},
@@ -11364,65 +11364,65 @@ var g = &grammar{
 		},
 		{
 			name: "ParagraphWithLiteralBlockDelimiter",
-			pos:  position{line: 1447, col: 1, offset: 54816},
+			pos:  position{line: 1447, col: 1, offset: 54788},
 			expr: &actionExpr{
-				pos: position{line: 1447, col: 39, offset: 54854},
+				pos: position{line: 1447, col: 39, offset: 54826},
 				run: (*parser).callonParagraphWithLiteralBlockDelimiter1,
 				expr: &seqExpr{
-					pos: position{line: 1447, col: 39, offset: 54854},
+					pos: position{line: 1447, col: 39, offset: 54826},
 					exprs: []interface{}{
 						&labeledExpr{
-							pos:   position{line: 1447, col: 39, offset: 54854},
+							pos:   position{line: 1447, col: 39, offset: 54826},
 							label: "attributes",
 							expr: &zeroOrOneExpr{
-								pos: position{line: 1447, col: 50, offset: 54865},
+								pos: position{line: 1447, col: 50, offset: 54837},
 								expr: &ruleRefExpr{
-									pos:  position{line: 1447, col: 51, offset: 54866},
+									pos:  position{line: 1447, col: 51, offset: 54838},
 									name: "ElementAttributes",
 								},
 							},
 						},
 						&ruleRefExpr{
-							pos:  position{line: 1448, col: 9, offset: 54894},
+							pos:  position{line: 1448, col: 9, offset: 54866},
 							name: "LiteralBlockDelimiter",
 						},
 						&zeroOrMoreExpr{
-							pos: position{line: 1448, col: 31, offset: 54916},
+							pos: position{line: 1448, col: 31, offset: 54888},
 							expr: &ruleRefExpr{
-								pos:  position{line: 1448, col: 31, offset: 54916},
+								pos:  position{line: 1448, col: 31, offset: 54888},
 								name: "WS",
 							},
 						},
 						&ruleRefExpr{
-							pos:  position{line: 1448, col: 35, offset: 54920},
+							pos:  position{line: 1448, col: 35, offset: 54892},
 							name: "NEWLINE",
 						},
 						&labeledExpr{
-							pos:   position{line: 1448, col: 43, offset: 54928},
+							pos:   position{line: 1448, col: 43, offset: 54900},
 							label: "lines",
 							expr: &ruleRefExpr{
-								pos:  position{line: 1448, col: 50, offset: 54935},
+								pos:  position{line: 1448, col: 50, offset: 54907},
 								name: "ParagraphWithLiteralBlockDelimiterLines",
 							},
 						},
 						&choiceExpr{
-							pos: position{line: 1448, col: 92, offset: 54977},
+							pos: position{line: 1448, col: 92, offset: 54949},
 							alternatives: []interface{}{
 								&seqExpr{
-									pos: position{line: 1448, col: 93, offset: 54978},
+									pos: position{line: 1448, col: 93, offset: 54950},
 									exprs: []interface{}{
 										&ruleRefExpr{
-											pos:  position{line: 1448, col: 93, offset: 54978},
+											pos:  position{line: 1448, col: 93, offset: 54950},
 											name: "LiteralBlockDelimiter",
 										},
 										&ruleRefExpr{
-											pos:  position{line: 1448, col: 115, offset: 55000},
+											pos:  position{line: 1448, col: 115, offset: 54972},
 											name: "EOLS",
 										},
 									},
 								},
 								&ruleRefExpr{
-									pos:  position{line: 1448, col: 123, offset: 55008},
+									pos:  position{line: 1448, col: 123, offset: 54980},
 									name: "EOF",
 								},
 							},
@@ -11433,17 +11433,17 @@ var g = &grammar{
 		},
 		{
 			name: "ParagraphWithLiteralBlockDelimiterLines",
-			pos:  position{line: 1453, col: 1, offset: 55167},
+			pos:  position{line: 1453, col: 1, offset: 55139},
 			expr: &actionExpr{
-				pos: position{line: 1453, col: 44, offset: 55210},
+				pos: position{line: 1453, col: 44, offset: 55182},
 				run: (*parser).callonParagraphWithLiteralBlockDelimiterLines1,
 				expr: &labeledExpr{
-					pos:   position{line: 1453, col: 44, offset: 55210},
+					pos:   position{line: 1453, col: 44, offset: 55182},
 					label: "lines",
 					expr: &zeroOrMoreExpr{
-						pos: position{line: 1453, col: 50, offset: 55216},
+						pos: position{line: 1453, col: 50, offset: 55188},
 						expr: &ruleRefExpr{
-							pos:  position{line: 1453, col: 51, offset: 55217},
+							pos:  position{line: 1453, col: 51, offset: 55189},
 							name: "ParagraphWithLiteralBlockDelimiterLine",
 						},
 					},
@@ -11452,51 +11452,51 @@ var g = &grammar{
 		},
 		{
 			name: "ParagraphWithLiteralBlockDelimiterLine",
-			pos:  position{line: 1457, col: 1, offset: 55301},
+			pos:  position{line: 1457, col: 1, offset: 55273},
 			expr: &actionExpr{
-				pos: position{line: 1458, col: 5, offset: 55356},
+				pos: position{line: 1458, col: 5, offset: 55328},
 				run: (*parser).callonParagraphWithLiteralBlockDelimiterLine1,
 				expr: &seqExpr{
-					pos: position{line: 1458, col: 5, offset: 55356},
+					pos: position{line: 1458, col: 5, offset: 55328},
 					exprs: []interface{}{
 						&labeledExpr{
-							pos:   position{line: 1458, col: 5, offset: 55356},
+							pos:   position{line: 1458, col: 5, offset: 55328},
 							label: "line",
 							expr: &actionExpr{
-								pos: position{line: 1458, col: 11, offset: 55362},
+								pos: position{line: 1458, col: 11, offset: 55334},
 								run: (*parser).callonParagraphWithLiteralBlockDelimiterLine4,
 								expr: &zeroOrMoreExpr{
-									pos: position{line: 1458, col: 11, offset: 55362},
+									pos: position{line: 1458, col: 11, offset: 55334},
 									expr: &choiceExpr{
-										pos: position{line: 1458, col: 12, offset: 55363},
+										pos: position{line: 1458, col: 12, offset: 55335},
 										alternatives: []interface{}{
 											&ruleRefExpr{
-												pos:  position{line: 1458, col: 12, offset: 55363},
+												pos:  position{line: 1458, col: 12, offset: 55335},
 												name: "Alphanums",
 											},
 											&ruleRefExpr{
-												pos:  position{line: 1458, col: 24, offset: 55375},
+												pos:  position{line: 1458, col: 24, offset: 55347},
 												name: "Spaces",
 											},
 											&seqExpr{
-												pos: position{line: 1458, col: 34, offset: 55385},
+												pos: position{line: 1458, col: 34, offset: 55357},
 												exprs: []interface{}{
 													&notExpr{
-														pos: position{line: 1458, col: 34, offset: 55385},
+														pos: position{line: 1458, col: 34, offset: 55357},
 														expr: &ruleRefExpr{
-															pos:  position{line: 1458, col: 35, offset: 55386},
+															pos:  position{line: 1458, col: 35, offset: 55358},
 															name: "LiteralBlockDelimiter",
 														},
 													},
 													&notExpr{
-														pos: position{line: 1458, col: 57, offset: 55408},
+														pos: position{line: 1458, col: 57, offset: 55380},
 														expr: &ruleRefExpr{
-															pos:  position{line: 1458, col: 58, offset: 55409},
+															pos:  position{line: 1458, col: 58, offset: 55381},
 															name: "EOL",
 														},
 													},
 													&anyMatcher{
-														line: 1458, col: 62, offset: 55413,
+														line: 1458, col: 62, offset: 55385,
 													},
 												},
 											},
@@ -11506,7 +11506,7 @@ var g = &grammar{
 							},
 						},
 						&ruleRefExpr{
-							pos:  position{line: 1460, col: 8, offset: 55462},
+							pos:  position{line: 1460, col: 8, offset: 55434},
 							name: "EOL",
 						},
 					},
@@ -11515,33 +11515,33 @@ var g = &grammar{
 		},
 		{
 			name: "ParagraphWithLiteralAttribute",
-			pos:  position{line: 1465, col: 1, offset: 55588},
+			pos:  position{line: 1465, col: 1, offset: 55560},
 			expr: &actionExpr{
-				pos: position{line: 1466, col: 5, offset: 55626},
+				pos: position{line: 1466, col: 5, offset: 55598},
 				run: (*parser).callonParagraphWithLiteralAttribute1,
 				expr: &seqExpr{
-					pos: position{line: 1466, col: 5, offset: 55626},
+					pos: position{line: 1466, col: 5, offset: 55598},
 					exprs: []interface{}{
 						&labeledExpr{
-							pos:   position{line: 1466, col: 5, offset: 55626},
+							pos:   position{line: 1466, col: 5, offset: 55598},
 							label: "attributes",
 							expr: &zeroOrOneExpr{
-								pos: position{line: 1466, col: 16, offset: 55637},
+								pos: position{line: 1466, col: 16, offset: 55609},
 								expr: &ruleRefExpr{
-									pos:  position{line: 1466, col: 17, offset: 55638},
+									pos:  position{line: 1466, col: 17, offset: 55610},
 									name: "ElementAttributes",
 								},
 							},
 						},
 						&andCodeExpr{
-							pos: position{line: 1467, col: 5, offset: 55662},
+							pos: position{line: 1467, col: 5, offset: 55634},
 							run: (*parser).callonParagraphWithLiteralAttribute6,
 						},
 						&labeledExpr{
-							pos:   position{line: 1474, col: 5, offset: 55876},
+							pos:   position{line: 1474, col: 5, offset: 55848},
 							label: "lines",
 							expr: &ruleRefExpr{
-								pos:  position{line: 1474, col: 12, offset: 55883},
+								pos:  position{line: 1474, col: 12, offset: 55855},
 								name: "ParagraphWithLiteralAttributeLines",
 							},
 						},
@@ -11551,12 +11551,12 @@ var g = &grammar{
 		},
 		{
 			name: "LiteralKind",
-			pos:  position{line: 1478, col: 1, offset: 56033},
+			pos:  position{line: 1478, col: 1, offset: 56005},
 			expr: &actionExpr{
-				pos: position{line: 1478, col: 16, offset: 56048},
+				pos: position{line: 1478, col: 16, offset: 56020},
 				run: (*parser).callonLiteralKind1,
 				expr: &litMatcher{
-					pos:        position{line: 1478, col: 16, offset: 56048},
+					pos:        position{line: 1478, col: 16, offset: 56020},
 					val:        "literal",
 					ignoreCase: false,
 				},
@@ -11564,17 +11564,17 @@ var g = &grammar{
 		},
 		{
 			name: "ParagraphWithLiteralAttributeLines",
-			pos:  position{line: 1483, col: 1, offset: 56131},
+			pos:  position{line: 1483, col: 1, offset: 56103},
 			expr: &actionExpr{
-				pos: position{line: 1483, col: 39, offset: 56169},
+				pos: position{line: 1483, col: 39, offset: 56141},
 				run: (*parser).callonParagraphWithLiteralAttributeLines1,
 				expr: &labeledExpr{
-					pos:   position{line: 1483, col: 39, offset: 56169},
+					pos:   position{line: 1483, col: 39, offset: 56141},
 					label: "lines",
 					expr: &oneOrMoreExpr{
-						pos: position{line: 1483, col: 45, offset: 56175},
+						pos: position{line: 1483, col: 45, offset: 56147},
 						expr: &ruleRefExpr{
-							pos:  position{line: 1483, col: 46, offset: 56176},
+							pos:  position{line: 1483, col: 46, offset: 56148},
 							name: "ParagraphWithLiteralAttributeLine",
 						},
 					},
@@ -11583,54 +11583,54 @@ var g = &grammar{
 		},
 		{
 			name: "ParagraphWithLiteralAttributeLine",
-			pos:  position{line: 1487, col: 1, offset: 56256},
+			pos:  position{line: 1487, col: 1, offset: 56228},
 			expr: &actionExpr{
-				pos: position{line: 1487, col: 38, offset: 56293},
+				pos: position{line: 1487, col: 38, offset: 56265},
 				run: (*parser).callonParagraphWithLiteralAttributeLine1,
 				expr: &seqExpr{
-					pos: position{line: 1487, col: 38, offset: 56293},
+					pos: position{line: 1487, col: 38, offset: 56265},
 					exprs: []interface{}{
 						&labeledExpr{
-							pos:   position{line: 1487, col: 38, offset: 56293},
+							pos:   position{line: 1487, col: 38, offset: 56265},
 							label: "line",
 							expr: &actionExpr{
-								pos: position{line: 1487, col: 44, offset: 56299},
+								pos: position{line: 1487, col: 44, offset: 56271},
 								run: (*parser).callonParagraphWithLiteralAttributeLine4,
 								expr: &seqExpr{
-									pos: position{line: 1487, col: 44, offset: 56299},
+									pos: position{line: 1487, col: 44, offset: 56271},
 									exprs: []interface{}{
 										&notExpr{
-											pos: position{line: 1487, col: 44, offset: 56299},
+											pos: position{line: 1487, col: 44, offset: 56271},
 											expr: &ruleRefExpr{
-												pos:  position{line: 1487, col: 46, offset: 56301},
+												pos:  position{line: 1487, col: 46, offset: 56273},
 												name: "BlankLine",
 											},
 										},
 										&oneOrMoreExpr{
-											pos: position{line: 1487, col: 57, offset: 56312},
+											pos: position{line: 1487, col: 57, offset: 56284},
 											expr: &choiceExpr{
-												pos: position{line: 1487, col: 58, offset: 56313},
+												pos: position{line: 1487, col: 58, offset: 56285},
 												alternatives: []interface{}{
 													&ruleRefExpr{
-														pos:  position{line: 1487, col: 58, offset: 56313},
+														pos:  position{line: 1487, col: 58, offset: 56285},
 														name: "Alphanums",
 													},
 													&ruleRefExpr{
-														pos:  position{line: 1487, col: 70, offset: 56325},
+														pos:  position{line: 1487, col: 70, offset: 56297},
 														name: "Spaces",
 													},
 													&seqExpr{
-														pos: position{line: 1487, col: 80, offset: 56335},
+														pos: position{line: 1487, col: 80, offset: 56307},
 														exprs: []interface{}{
 															&notExpr{
-																pos: position{line: 1487, col: 80, offset: 56335},
+																pos: position{line: 1487, col: 80, offset: 56307},
 																expr: &ruleRefExpr{
-																	pos:  position{line: 1487, col: 81, offset: 56336},
+																	pos:  position{line: 1487, col: 81, offset: 56308},
 																	name: "EOL",
 																},
 															},
 															&anyMatcher{
-																line: 1487, col: 86, offset: 56341,
+																line: 1487, col: 86, offset: 56313,
 															},
 														},
 													},
@@ -11642,7 +11642,7 @@ var g = &grammar{
 							},
 						},
 						&ruleRefExpr{
-							pos:  position{line: 1489, col: 4, offset: 56382},
+							pos:  position{line: 1489, col: 4, offset: 56354},
 							name: "EOL",
 						},
 					},
@@ -11651,22 +11651,22 @@ var g = &grammar{
 		},
 		{
 			name: "BlankLine",
-			pos:  position{line: 1496, col: 1, offset: 56554},
+			pos:  position{line: 1496, col: 1, offset: 56526},
 			expr: &actionExpr{
-				pos: position{line: 1496, col: 14, offset: 56567},
+				pos: position{line: 1496, col: 14, offset: 56539},
 				run: (*parser).callonBlankLine1,
 				expr: &seqExpr{
-					pos: position{line: 1496, col: 14, offset: 56567},
+					pos: position{line: 1496, col: 14, offset: 56539},
 					exprs: []interface{}{
 						&notExpr{
-							pos: position{line: 1496, col: 14, offset: 56567},
+							pos: position{line: 1496, col: 14, offset: 56539},
 							expr: &ruleRefExpr{
-								pos:  position{line: 1496, col: 15, offset: 56568},
+								pos:  position{line: 1496, col: 15, offset: 56540},
 								name: "EOF",
 							},
 						},
 						&ruleRefExpr{
-							pos:  position{line: 1496, col: 19, offset: 56572},
+							pos:  position{line: 1496, col: 19, offset: 56544},
 							name: "EOLS",
 						},
 					},
@@ -11675,9 +11675,9 @@ var g = &grammar{
 		},
 		{
 			name: "Alphanum",
-			pos:  position{line: 1503, col: 1, offset: 56720},
+			pos:  position{line: 1503, col: 1, offset: 56692},
 			expr: &charClassMatcher{
-				pos:        position{line: 1503, col: 13, offset: 56732},
+				pos:        position{line: 1503, col: 13, offset: 56704},
 				val:        "[\\pL0-9]",
 				ranges:     []rune{'0', '9'},
 				classes:    []*unicode.RangeTable{rangeTable("L")},
@@ -11687,27 +11687,27 @@ var g = &grammar{
 		},
 		{
 			name: "Parenthesis",
-			pos:  position{line: 1505, col: 1, offset: 56742},
+			pos:  position{line: 1505, col: 1, offset: 56714},
 			expr: &choiceExpr{
-				pos: position{line: 1505, col: 16, offset: 56757},
+				pos: position{line: 1505, col: 16, offset: 56729},
 				alternatives: []interface{}{
 					&litMatcher{
-						pos:        position{line: 1505, col: 16, offset: 56757},
+						pos:        position{line: 1505, col: 16, offset: 56729},
 						val:        "(",
 						ignoreCase: false,
 					},
 					&litMatcher{
-						pos:        position{line: 1505, col: 22, offset: 56763},
+						pos:        position{line: 1505, col: 22, offset: 56735},
 						val:        ")",
 						ignoreCase: false,
 					},
 					&litMatcher{
-						pos:        position{line: 1505, col: 28, offset: 56769},
+						pos:        position{line: 1505, col: 28, offset: 56741},
 						val:        "[",
 						ignoreCase: false,
 					},
 					&litMatcher{
-						pos:        position{line: 1505, col: 34, offset: 56775},
+						pos:        position{line: 1505, col: 34, offset: 56747},
 						val:        "]",
 						ignoreCase: false,
 					},
@@ -11716,14 +11716,14 @@ var g = &grammar{
 		},
 		{
 			name: "Alphanums",
-			pos:  position{line: 1507, col: 1, offset: 56780},
+			pos:  position{line: 1507, col: 1, offset: 56752},
 			expr: &actionExpr{
-				pos: position{line: 1507, col: 14, offset: 56793},
+				pos: position{line: 1507, col: 14, offset: 56765},
 				run: (*parser).callonAlphanums1,
 				expr: &oneOrMoreExpr{
-					pos: position{line: 1507, col: 14, offset: 56793},
+					pos: position{line: 1507, col: 14, offset: 56765},
 					expr: &charClassMatcher{
-						pos:        position{line: 1507, col: 14, offset: 56793},
+						pos:        position{line: 1507, col: 14, offset: 56765},
 						val:        "[\\pL0-9]",
 						ranges:     []rune{'0', '9'},
 						classes:    []*unicode.RangeTable{rangeTable("L")},
@@ -11735,37 +11735,37 @@ var g = &grammar{
 		},
 		{
 			name: "Dot",
-			pos:  position{line: 1511, col: 1, offset: 56839},
+			pos:  position{line: 1511, col: 1, offset: 56811},
 			expr: &litMatcher{
-				pos:        position{line: 1511, col: 8, offset: 56846},
+				pos:        position{line: 1511, col: 8, offset: 56818},
 				val:        ".",
 				ignoreCase: false,
 			},
 		},
 		{
 			name: "SimpleWord",
-			pos:  position{line: 1513, col: 1, offset: 56851},
+			pos:  position{line: 1513, col: 1, offset: 56823},
 			expr: &actionExpr{
-				pos: position{line: 1513, col: 15, offset: 56865},
+				pos: position{line: 1513, col: 15, offset: 56837},
 				run: (*parser).callonSimpleWord1,
 				expr: &seqExpr{
-					pos: position{line: 1513, col: 15, offset: 56865},
+					pos: position{line: 1513, col: 15, offset: 56837},
 					exprs: []interface{}{
 						&ruleRefExpr{
-							pos:  position{line: 1513, col: 15, offset: 56865},
+							pos:  position{line: 1513, col: 15, offset: 56837},
 							name: "Alphanums",
 						},
 						&andExpr{
-							pos: position{line: 1513, col: 25, offset: 56875},
+							pos: position{line: 1513, col: 25, offset: 56847},
 							expr: &choiceExpr{
-								pos: position{line: 1513, col: 27, offset: 56877},
+								pos: position{line: 1513, col: 27, offset: 56849},
 								alternatives: []interface{}{
 									&ruleRefExpr{
-										pos:  position{line: 1513, col: 27, offset: 56877},
+										pos:  position{line: 1513, col: 27, offset: 56849},
 										name: "WS",
 									},
 									&ruleRefExpr{
-										pos:  position{line: 1513, col: 32, offset: 56882},
+										pos:  position{line: 1513, col: 32, offset: 56854},
 										name: "EOL",
 									},
 								},
@@ -11777,73 +11777,73 @@ var g = &grammar{
 		},
 		{
 			name: "OtherWord",
-			pos:  position{line: 1518, col: 1, offset: 57147},
+			pos:  position{line: 1518, col: 1, offset: 57119},
 			expr: &actionExpr{
-				pos: position{line: 1518, col: 14, offset: 57160},
+				pos: position{line: 1518, col: 14, offset: 57132},
 				run: (*parser).callonOtherWord1,
 				expr: &choiceExpr{
-					pos: position{line: 1518, col: 15, offset: 57161},
+					pos: position{line: 1518, col: 15, offset: 57133},
 					alternatives: []interface{}{
 						&ruleRefExpr{
-							pos:  position{line: 1518, col: 15, offset: 57161},
+							pos:  position{line: 1518, col: 15, offset: 57133},
 							name: "Alphanums",
 						},
 						&ruleRefExpr{
-							pos:  position{line: 1518, col: 27, offset: 57173},
+							pos:  position{line: 1518, col: 27, offset: 57145},
 							name: "QuotedTextPrefix",
 						},
 						&ruleRefExpr{
-							pos:  position{line: 1518, col: 46, offset: 57192},
+							pos:  position{line: 1518, col: 46, offset: 57164},
 							name: "Parenthesis",
 						},
 						&oneOrMoreExpr{
-							pos: position{line: 1518, col: 60, offset: 57206},
+							pos: position{line: 1518, col: 60, offset: 57178},
 							expr: &actionExpr{
-								pos: position{line: 1518, col: 61, offset: 57207},
+								pos: position{line: 1518, col: 61, offset: 57179},
 								run: (*parser).callonOtherWord7,
 								expr: &seqExpr{
-									pos: position{line: 1518, col: 61, offset: 57207},
+									pos: position{line: 1518, col: 61, offset: 57179},
 									exprs: []interface{}{
 										&seqExpr{
-											pos: position{line: 1518, col: 62, offset: 57208},
+											pos: position{line: 1518, col: 62, offset: 57180},
 											exprs: []interface{}{
 												&notExpr{
-													pos: position{line: 1518, col: 62, offset: 57208},
+													pos: position{line: 1518, col: 62, offset: 57180},
 													expr: &ruleRefExpr{
-														pos:  position{line: 1518, col: 63, offset: 57209},
+														pos:  position{line: 1518, col: 63, offset: 57181},
 														name: "NEWLINE",
 													},
 												},
 												&notExpr{
-													pos: position{line: 1518, col: 71, offset: 57217},
+													pos: position{line: 1518, col: 71, offset: 57189},
 													expr: &ruleRefExpr{
-														pos:  position{line: 1518, col: 72, offset: 57218},
+														pos:  position{line: 1518, col: 72, offset: 57190},
 														name: "WS",
 													},
 												},
 												&notExpr{
-													pos: position{line: 1518, col: 75, offset: 57221},
+													pos: position{line: 1518, col: 75, offset: 57193},
 													expr: &ruleRefExpr{
-														pos:  position{line: 1518, col: 76, offset: 57222},
+														pos:  position{line: 1518, col: 76, offset: 57194},
 														name: "Dot",
 													},
 												},
 												&notExpr{
-													pos: position{line: 1518, col: 80, offset: 57226},
+													pos: position{line: 1518, col: 80, offset: 57198},
 													expr: &ruleRefExpr{
-														pos:  position{line: 1518, col: 81, offset: 57227},
+														pos:  position{line: 1518, col: 81, offset: 57199},
 														name: "QuotedTextPrefix",
 													},
 												},
 												&anyMatcher{
-													line: 1518, col: 98, offset: 57244,
+													line: 1518, col: 98, offset: 57216,
 												},
 											},
 										},
 										&zeroOrOneExpr{
-											pos: position{line: 1518, col: 101, offset: 57247},
+											pos: position{line: 1518, col: 101, offset: 57219},
 											expr: &ruleRefExpr{
-												pos:  position{line: 1518, col: 101, offset: 57247},
+												pos:  position{line: 1518, col: 101, offset: 57219},
 												name: "Dot",
 											},
 										},
@@ -11852,9 +11852,9 @@ var g = &grammar{
 							},
 						},
 						&oneOrMoreExpr{
-							pos: position{line: 1520, col: 7, offset: 57356},
+							pos: position{line: 1520, col: 7, offset: 57328},
 							expr: &litMatcher{
-								pos:        position{line: 1520, col: 7, offset: 57356},
+								pos:        position{line: 1520, col: 7, offset: 57328},
 								val:        ".",
 								ignoreCase: false,
 							},
@@ -11865,35 +11865,35 @@ var g = &grammar{
 		},
 		{
 			name: "Spaces",
-			pos:  position{line: 1524, col: 1, offset: 57537},
+			pos:  position{line: 1524, col: 1, offset: 57509},
 			expr: &oneOrMoreExpr{
-				pos: position{line: 1524, col: 11, offset: 57547},
+				pos: position{line: 1524, col: 11, offset: 57519},
 				expr: &ruleRefExpr{
-					pos:  position{line: 1524, col: 11, offset: 57547},
+					pos:  position{line: 1524, col: 11, offset: 57519},
 					name: "WS",
 				},
 			},
 		},
 		{
 			name: "FileLocation",
-			pos:  position{line: 1526, col: 1, offset: 57553},
+			pos:  position{line: 1526, col: 1, offset: 57525},
 			expr: &actionExpr{
-				pos: position{line: 1526, col: 17, offset: 57569},
+				pos: position{line: 1526, col: 17, offset: 57541},
 				run: (*parser).callonFileLocation1,
 				expr: &labeledExpr{
-					pos:   position{line: 1526, col: 17, offset: 57569},
+					pos:   position{line: 1526, col: 17, offset: 57541},
 					label: "elements",
 					expr: &oneOrMoreExpr{
-						pos: position{line: 1526, col: 26, offset: 57578},
+						pos: position{line: 1526, col: 26, offset: 57550},
 						expr: &choiceExpr{
-							pos: position{line: 1526, col: 27, offset: 57579},
+							pos: position{line: 1526, col: 27, offset: 57551},
 							alternatives: []interface{}{
 								&ruleRefExpr{
-									pos:  position{line: 1526, col: 27, offset: 57579},
+									pos:  position{line: 1526, col: 27, offset: 57551},
 									name: "FILENAME",
 								},
 								&ruleRefExpr{
-									pos:  position{line: 1526, col: 38, offset: 57590},
+									pos:  position{line: 1526, col: 38, offset: 57562},
 									name: "DocumentAttributeSubstitution",
 								},
 							},
@@ -11904,53 +11904,53 @@ var g = &grammar{
 		},
 		{
 			name: "Location",
-			pos:  position{line: 1530, col: 1, offset: 57682},
+			pos:  position{line: 1530, col: 1, offset: 57654},
 			expr: &actionExpr{
-				pos: position{line: 1530, col: 13, offset: 57694},
+				pos: position{line: 1530, col: 13, offset: 57666},
 				run: (*parser).callonLocation1,
 				expr: &labeledExpr{
-					pos:   position{line: 1530, col: 13, offset: 57694},
+					pos:   position{line: 1530, col: 13, offset: 57666},
 					label: "elements",
 					expr: &seqExpr{
-						pos: position{line: 1530, col: 23, offset: 57704},
+						pos: position{line: 1530, col: 23, offset: 57676},
 						exprs: []interface{}{
 							&ruleRefExpr{
-								pos:  position{line: 1530, col: 23, offset: 57704},
+								pos:  position{line: 1530, col: 23, offset: 57676},
 								name: "URL_SCHEME",
 							},
 							&oneOrMoreExpr{
-								pos: position{line: 1530, col: 34, offset: 57715},
+								pos: position{line: 1530, col: 34, offset: 57687},
 								expr: &choiceExpr{
-									pos: position{line: 1530, col: 35, offset: 57716},
+									pos: position{line: 1530, col: 35, offset: 57688},
 									alternatives: []interface{}{
 										&ruleRefExpr{
-											pos:  position{line: 1530, col: 35, offset: 57716},
+											pos:  position{line: 1530, col: 35, offset: 57688},
 											name: "FILENAME",
 										},
 										&ruleRefExpr{
-											pos:  position{line: 1530, col: 46, offset: 57727},
+											pos:  position{line: 1530, col: 46, offset: 57699},
 											name: "DocumentAttributeSubstitution",
 										},
 										&seqExpr{
-											pos: position{line: 1530, col: 78, offset: 57759},
+											pos: position{line: 1530, col: 78, offset: 57731},
 											exprs: []interface{}{
 												&notExpr{
-													pos: position{line: 1530, col: 78, offset: 57759},
+													pos: position{line: 1530, col: 78, offset: 57731},
 													expr: &ruleRefExpr{
-														pos:  position{line: 1530, col: 79, offset: 57760},
+														pos:  position{line: 1530, col: 79, offset: 57732},
 														name: "EOL",
 													},
 												},
 												&notExpr{
-													pos: position{line: 1530, col: 83, offset: 57764},
+													pos: position{line: 1530, col: 83, offset: 57736},
 													expr: &litMatcher{
-														pos:        position{line: 1530, col: 84, offset: 57765},
+														pos:        position{line: 1530, col: 84, offset: 57737},
 														val:        "[",
 														ignoreCase: false,
 													},
 												},
 												&anyMatcher{
-													line: 1530, col: 88, offset: 57769,
+													line: 1530, col: 88, offset: 57741,
 												},
 											},
 										},
@@ -11964,26 +11964,26 @@ var g = &grammar{
 		},
 		{
 			name: "FILENAME",
-			pos:  position{line: 1534, col: 1, offset: 57834},
+			pos:  position{line: 1534, col: 1, offset: 57806},
 			expr: &oneOrMoreExpr{
-				pos: position{line: 1534, col: 13, offset: 57846},
+				pos: position{line: 1534, col: 13, offset: 57818},
 				expr: &choiceExpr{
-					pos: position{line: 1534, col: 14, offset: 57847},
+					pos: position{line: 1534, col: 14, offset: 57819},
 					alternatives: []interface{}{
 						&charClassMatcher{
-							pos:        position{line: 1534, col: 14, offset: 57847},
+							pos:        position{line: 1534, col: 14, offset: 57819},
 							val:        "[ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789~:/?#@!$&;=()*+,_%]",
 							chars:      []rune{'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '~', ':', '/', '?', '#', '@', '!', '$', '&', ';', '=', '(', ')', '*', '+', ',', '_', '%'},
 							ignoreCase: false,
 							inverted:   false,
 						},
 						&litMatcher{
-							pos:        position{line: 1534, col: 99, offset: 57932},
+							pos:        position{line: 1534, col: 99, offset: 57904},
 							val:        "-",
 							ignoreCase: false,
 						},
 						&litMatcher{
-							pos:        position{line: 1534, col: 105, offset: 57938},
+							pos:        position{line: 1534, col: 105, offset: 57910},
 							val:        ".",
 							ignoreCase: false,
 						},
@@ -11993,54 +11993,54 @@ var g = &grammar{
 		},
 		{
 			name: "URL",
-			pos:  position{line: 1536, col: 1, offset: 57979},
+			pos:  position{line: 1536, col: 1, offset: 57951},
 			expr: &actionExpr{
-				pos: position{line: 1536, col: 8, offset: 57986},
+				pos: position{line: 1536, col: 8, offset: 57958},
 				run: (*parser).callonURL1,
 				expr: &oneOrMoreExpr{
-					pos: position{line: 1536, col: 8, offset: 57986},
+					pos: position{line: 1536, col: 8, offset: 57958},
 					expr: &choiceExpr{
-						pos: position{line: 1536, col: 9, offset: 57987},
+						pos: position{line: 1536, col: 9, offset: 57959},
 						alternatives: []interface{}{
 							&ruleRefExpr{
-								pos:  position{line: 1536, col: 9, offset: 57987},
+								pos:  position{line: 1536, col: 9, offset: 57959},
 								name: "Alphanums",
 							},
 							&seqExpr{
-								pos: position{line: 1536, col: 22, offset: 58000},
+								pos: position{line: 1536, col: 22, offset: 57972},
 								exprs: []interface{}{
 									&notExpr{
-										pos: position{line: 1536, col: 22, offset: 58000},
+										pos: position{line: 1536, col: 22, offset: 57972},
 										expr: &ruleRefExpr{
-											pos:  position{line: 1536, col: 23, offset: 58001},
+											pos:  position{line: 1536, col: 23, offset: 57973},
 											name: "NEWLINE",
 										},
 									},
 									&notExpr{
-										pos: position{line: 1536, col: 31, offset: 58009},
+										pos: position{line: 1536, col: 31, offset: 57981},
 										expr: &ruleRefExpr{
-											pos:  position{line: 1536, col: 32, offset: 58010},
+											pos:  position{line: 1536, col: 32, offset: 57982},
 											name: "WS",
 										},
 									},
 									&notExpr{
-										pos: position{line: 1536, col: 35, offset: 58013},
+										pos: position{line: 1536, col: 35, offset: 57985},
 										expr: &litMatcher{
-											pos:        position{line: 1536, col: 36, offset: 58014},
+											pos:        position{line: 1536, col: 36, offset: 57986},
 											val:        "[",
 											ignoreCase: false,
 										},
 									},
 									&notExpr{
-										pos: position{line: 1536, col: 40, offset: 58018},
+										pos: position{line: 1536, col: 40, offset: 57990},
 										expr: &litMatcher{
-											pos:        position{line: 1536, col: 41, offset: 58019},
+											pos:        position{line: 1536, col: 41, offset: 57991},
 											val:        "]",
 											ignoreCase: false,
 										},
 									},
 									&anyMatcher{
-										line: 1536, col: 46, offset: 58024,
+										line: 1536, col: 46, offset: 57996,
 									},
 								},
 							},
@@ -12051,32 +12051,32 @@ var g = &grammar{
 		},
 		{
 			name: "URL_SCHEME",
-			pos:  position{line: 1540, col: 1, offset: 58065},
+			pos:  position{line: 1540, col: 1, offset: 58037},
 			expr: &choiceExpr{
-				pos: position{line: 1540, col: 15, offset: 58079},
+				pos: position{line: 1540, col: 15, offset: 58051},
 				alternatives: []interface{}{
 					&litMatcher{
-						pos:        position{line: 1540, col: 15, offset: 58079},
+						pos:        position{line: 1540, col: 15, offset: 58051},
 						val:        "http://",
 						ignoreCase: false,
 					},
 					&litMatcher{
-						pos:        position{line: 1540, col: 27, offset: 58091},
+						pos:        position{line: 1540, col: 27, offset: 58063},
 						val:        "https://",
 						ignoreCase: false,
 					},
 					&litMatcher{
-						pos:        position{line: 1540, col: 40, offset: 58104},
+						pos:        position{line: 1540, col: 40, offset: 58076},
 						val:        "ftp://",
 						ignoreCase: false,
 					},
 					&litMatcher{
-						pos:        position{line: 1540, col: 51, offset: 58115},
+						pos:        position{line: 1540, col: 51, offset: 58087},
 						val:        "irc://",
 						ignoreCase: false,
 					},
 					&litMatcher{
-						pos:        position{line: 1540, col: 62, offset: 58126},
+						pos:        position{line: 1540, col: 62, offset: 58098},
 						val:        "mailto:",
 						ignoreCase: false,
 					},
@@ -12085,78 +12085,78 @@ var g = &grammar{
 		},
 		{
 			name: "ID",
-			pos:  position{line: 1542, col: 1, offset: 58137},
+			pos:  position{line: 1542, col: 1, offset: 58109},
 			expr: &actionExpr{
-				pos: position{line: 1542, col: 7, offset: 58143},
+				pos: position{line: 1542, col: 7, offset: 58115},
 				run: (*parser).callonID1,
 				expr: &oneOrMoreExpr{
-					pos: position{line: 1542, col: 7, offset: 58143},
+					pos: position{line: 1542, col: 7, offset: 58115},
 					expr: &choiceExpr{
-						pos: position{line: 1542, col: 8, offset: 58144},
+						pos: position{line: 1542, col: 8, offset: 58116},
 						alternatives: []interface{}{
 							&ruleRefExpr{
-								pos:  position{line: 1542, col: 8, offset: 58144},
+								pos:  position{line: 1542, col: 8, offset: 58116},
 								name: "Alphanums",
 							},
 							&seqExpr{
-								pos: position{line: 1542, col: 21, offset: 58157},
+								pos: position{line: 1542, col: 21, offset: 58129},
 								exprs: []interface{}{
 									&notExpr{
-										pos: position{line: 1542, col: 21, offset: 58157},
+										pos: position{line: 1542, col: 21, offset: 58129},
 										expr: &ruleRefExpr{
-											pos:  position{line: 1542, col: 22, offset: 58158},
+											pos:  position{line: 1542, col: 22, offset: 58130},
 											name: "NEWLINE",
 										},
 									},
 									&notExpr{
-										pos: position{line: 1542, col: 30, offset: 58166},
+										pos: position{line: 1542, col: 30, offset: 58138},
 										expr: &ruleRefExpr{
-											pos:  position{line: 1542, col: 31, offset: 58167},
+											pos:  position{line: 1542, col: 31, offset: 58139},
 											name: "WS",
 										},
 									},
 									&notExpr{
-										pos: position{line: 1542, col: 34, offset: 58170},
+										pos: position{line: 1542, col: 34, offset: 58142},
 										expr: &litMatcher{
-											pos:        position{line: 1542, col: 35, offset: 58171},
+											pos:        position{line: 1542, col: 35, offset: 58143},
 											val:        "[",
 											ignoreCase: false,
 										},
 									},
 									&notExpr{
-										pos: position{line: 1542, col: 39, offset: 58175},
+										pos: position{line: 1542, col: 39, offset: 58147},
 										expr: &litMatcher{
-											pos:        position{line: 1542, col: 40, offset: 58176},
+											pos:        position{line: 1542, col: 40, offset: 58148},
 											val:        "]",
 											ignoreCase: false,
 										},
 									},
 									&notExpr{
-										pos: position{line: 1542, col: 44, offset: 58180},
+										pos: position{line: 1542, col: 44, offset: 58152},
 										expr: &litMatcher{
-											pos:        position{line: 1542, col: 45, offset: 58181},
+											pos:        position{line: 1542, col: 45, offset: 58153},
 											val:        "<<",
 											ignoreCase: false,
 										},
 									},
 									&notExpr{
-										pos: position{line: 1542, col: 50, offset: 58186},
+										pos: position{line: 1542, col: 50, offset: 58158},
 										expr: &litMatcher{
-											pos:        position{line: 1542, col: 51, offset: 58187},
+											pos:        position{line: 1542, col: 51, offset: 58159},
 											val:        ">>",
 											ignoreCase: false,
 										},
 									},
 									&notExpr{
-										pos: position{line: 1542, col: 56, offset: 58192},
+										pos: position{line: 1542, col: 56, offset: 58164},
 										expr: &litMatcher{
-											pos:        position{line: 1542, col: 57, offset: 58193},
+											pos:        position{line: 1542, col: 57, offset: 58165},
 											val:        ",",
 											ignoreCase: false,
 										},
 									},
 									&anyMatcher{
-										line: 1542, col: 62, offset: 58198,
+										line: 1542, col: 62, offset: 58170,
 									},
 								},
 							},
@@ -12167,12 +12167,12 @@ var g = &grammar{
 		},
 		{
 			name: "DIGIT",
-			pos:  position{line: 1546, col: 1, offset: 58239},
+			pos:  position{line: 1546, col: 1, offset: 58211},
 			expr: &actionExpr{
-				pos: position{line: 1546, col: 10, offset: 58248},
+				pos: position{line: 1546, col: 10, offset: 58220},
 				run: (*parser).callonDIGIT1,
 				expr: &charClassMatcher{
-					pos:        position{line: 1546, col: 10, offset: 58248},
+					pos:        position{line: 1546, col: 10, offset: 58220},
 					val:        "[0-9]",
 					ranges:     []rune{'0', '9'},
 					ignoreCase: false,
@@ -12182,25 +12182,25 @@ var g = &grammar{
 		},
 		{
 			name: "NUMBER",
-			pos:  position{line: 1550, col: 1, offset: 58290},
+			pos:  position{line: 1550, col: 1, offset: 58262},
 			expr: &actionExpr{
-				pos: position{line: 1550, col: 11, offset: 58300},
+				pos: position{line: 1550, col: 11, offset: 58272},
 				run: (*parser).callonNUMBER1,
 				expr: &seqExpr{
-					pos: position{line: 1550, col: 11, offset: 58300},
+					pos: position{line: 1550, col: 11, offset: 58272},
 					exprs: []interface{}{
 						&zeroOrOneExpr{
-							pos: position{line: 1550, col: 11, offset: 58300},
+							pos: position{line: 1550, col: 11, offset: 58272},
 							expr: &litMatcher{
-								pos:        position{line: 1550, col: 11, offset: 58300},
+								pos:        position{line: 1550, col: 11, offset: 58272},
 								val:        "-",
 								ignoreCase: false,
 							},
 						},
 						&oneOrMoreExpr{
-							pos: position{line: 1550, col: 16, offset: 58305},
+							pos: position{line: 1550, col: 16, offset: 58277},
 							expr: &ruleRefExpr{
-								pos:  position{line: 1550, col: 16, offset: 58305},
+								pos:  position{line: 1550, col: 16, offset: 58277},
 								name: "DIGIT",
 							},
 						},
@@ -12210,20 +12210,20 @@ var g = &grammar{
 		},
 		{
 			name: "WS",
-			pos:  position{line: 1554, col: 1, offset: 58357},
+			pos:  position{line: 1554, col: 1, offset: 58329},
 			expr: &choiceExpr{
-				pos: position{line: 1554, col: 7, offset: 58363},
+				pos: position{line: 1554, col: 7, offset: 58335},
 				alternatives: []interface{}{
 					&litMatcher{
-						pos:        position{line: 1554, col: 7, offset: 58363},
+						pos:        position{line: 1554, col: 7, offset: 58335},
 						val:        " ",
 						ignoreCase: false,
 					},
 					&actionExpr{
-						pos: position{line: 1554, col: 13, offset: 58369},
+						pos: position{line: 1554, col: 13, offset: 58341},
 						run: (*parser).callonWS3,
 						expr: &litMatcher{
-							pos:        position{line: 1554, col: 13, offset: 58369},
+							pos:        position{line: 1554, col: 13, offset: 58341},
 							val:        "\t",
 							ignoreCase: false,
 						},
@@ -12233,22 +12233,22 @@ var g = &grammar{
 		},
 		{
 			name: "NEWLINE",
-			pos:  position{line: 1558, col: 1, offset: 58410},
+			pos:  position{line: 1558, col: 1, offset: 58382},
 			expr: &choiceExpr{
-				pos: position{line: 1558, col: 12, offset: 58421},
+				pos: position{line: 1558, col: 12, offset: 58393},
 				alternatives: []interface{}{
 					&litMatcher{
-						pos:        position{line: 1558, col: 12, offset: 58421},
+						pos:        position{line: 1558, col: 12, offset: 58393},
 						val:        "\r\n",
 						ignoreCase: false,
 					},
 					&litMatcher{
-						pos:        position{line: 1558, col: 21, offset: 58430},
+						pos:        position{line: 1558, col: 21, offset: 58402},
 						val:        "\r",
 						ignoreCase: false,
 					},
 					&litMatcher{
-						pos:        position{line: 1558, col: 28, offset: 58437},
+						pos:        position{line: 1558, col: 28, offset: 58409},
 						val:        "\n",
 						ignoreCase: false,
 					},
@@ -12257,26 +12257,26 @@ var g = &grammar{
 		},
 		{
 			name: "EOF",
-			pos:  position{line: 1560, col: 1, offset: 58443},
+			pos:  position{line: 1560, col: 1, offset: 58415},
 			expr: &notExpr{
-				pos: position{line: 1560, col: 8, offset: 58450},
+				pos: position{line: 1560, col: 8, offset: 58422},
 				expr: &anyMatcher{
-					line: 1560, col: 9, offset: 58451,
+					line: 1560, col: 9, offset: 58423,
 				},
 			},
 		},
 		{
 			name: "EOL",
-			pos:  position{line: 1562, col: 1, offset: 58454},
+			pos:  position{line: 1562, col: 1, offset: 58426},
 			expr: &choiceExpr{
-				pos: position{line: 1562, col: 8, offset: 58461},
+				pos: position{line: 1562, col: 8, offset: 58433},
 				alternatives: []interface{}{
 					&ruleRefExpr{
-						pos:  position{line: 1562, col: 8, offset: 58461},
+						pos:  position{line: 1562, col: 8, offset: 58433},
 						name: "NEWLINE",
 					},
 					&ruleRefExpr{
-						pos:  position{line: 1562, col: 18, offset: 58471},
+						pos:  position{line: 1562, col: 18, offset: 58443},
 						name: "EOF",
 					},
 				},
@@ -12284,19 +12284,19 @@ var g = &grammar{
 		},
 		{
 			name: "EOLS",
-			pos:  position{line: 1564, col: 1, offset: 58476},
+			pos:  position{line: 1564, col: 1, offset: 58448},
 			expr: &seqExpr{
-				pos: position{line: 1564, col: 9, offset: 58484},
+				pos: position{line: 1564, col: 9, offset: 58456},
 				exprs: []interface{}{
 					&zeroOrMoreExpr{
-						pos: position{line: 1564, col: 9, offset: 58484},
+						pos: position{line: 1564, col: 9, offset: 58456},
 						expr: &ruleRefExpr{
-							pos:  position{line: 1564, col: 9, offset: 58484},
+							pos:  position{line: 1564, col: 9, offset: 58456},
 							name: "WS",
 						},
 					},
 					&ruleRefExpr{
-						pos:  position{line: 1564, col: 13, offset: 58488},
+						pos:  position{line: 1564, col: 13, offset: 58460},
 						name: "EOL",
 					},
 				},
@@ -12305,34 +12305,34 @@ var g = &grammar{
 	},
 }
 
-func (c *current) onPreflightAsciidocDocument1(frontmatter, blocks interface{}) (interface{}, error) {
-	return types.NewPreflightDocument(frontmatter, blocks.([]interface{}))
+func (c *current) onDraftAsciidocDocument1(frontmatter, blocks interface{}) (interface{}, error) {
+	return types.NewDraftDocument(frontmatter, blocks.([]interface{}))
 }
 
-func (p *parser) callonPreflightAsciidocDocument1() (interface{}, error) {
+func (p *parser) callonDraftAsciidocDocument1() (interface{}, error) {
 	stack := p.vstack[len(p.vstack)-1]
 	_ = stack
-	return p.cur.onPreflightAsciidocDocument1(stack["frontmatter"], stack["blocks"])
+	return p.cur.onDraftAsciidocDocument1(stack["frontmatter"], stack["blocks"])
 }
 
-func (c *current) onPreflightAsciidocDocumentWithinDelimitedBlock1(frontmatter, blocks interface{}) (interface{}, error) {
-	return types.NewPreflightDocument(frontmatter, blocks.([]interface{}))
+func (c *current) onDraftAsciidocDocumentWithinDelimitedBlock1(frontmatter, blocks interface{}) (interface{}, error) {
+	return types.NewDraftDocument(frontmatter, blocks.([]interface{}))
 }
 
-func (p *parser) callonPreflightAsciidocDocumentWithinDelimitedBlock1() (interface{}, error) {
+func (p *parser) callonDraftAsciidocDocumentWithinDelimitedBlock1() (interface{}, error) {
 	stack := p.vstack[len(p.vstack)-1]
 	_ = stack
-	return p.cur.onPreflightAsciidocDocumentWithinDelimitedBlock1(stack["frontmatter"], stack["blocks"])
+	return p.cur.onDraftAsciidocDocumentWithinDelimitedBlock1(stack["frontmatter"], stack["blocks"])
 }
 
-func (c *current) onPreflightTextDocument1(blocks interface{}) (interface{}, error) {
-	return types.NewPreflightDocument(nil, blocks.([]interface{}))
+func (c *current) onDraftTextDocument1(blocks interface{}) (interface{}, error) {
+	return types.NewDraftDocument(nil, blocks.([]interface{}))
 }
 
-func (p *parser) callonPreflightTextDocument1() (interface{}, error) {
+func (p *parser) callonDraftTextDocument1() (interface{}, error) {
 	stack := p.vstack[len(p.vstack)-1]
 	_ = stack
-	return p.cur.onPreflightTextDocument1(stack["blocks"])
+	return p.cur.onDraftTextDocument1(stack["blocks"])
 }
 
 func (c *current) onAsciidocDocumentBlocks1(header, others interface{}) (interface{}, error) {

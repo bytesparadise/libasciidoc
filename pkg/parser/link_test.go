@@ -8,7 +8,7 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-var _ = Describe("links - preflight", func() {
+var _ = Describe("links - draft", func() {
 
 	Context("external links", func() {
 
