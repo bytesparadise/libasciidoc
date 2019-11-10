@@ -2,6 +2,6 @@
 
 first line of parent
 
-include::child-include.adoc[]
+include::child-include.adoc[leveloffset=+1]
 
 last line of parent

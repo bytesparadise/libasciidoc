@@ -444,7 +444,7 @@ func (s Section) Footnotes() (Footnotes, FootnoteReferences, error) {
 
 // NewDocumentHeader initializes a new Section with level 0 which can have authors and a revision, among other attributes
 func NewDocumentHeader(title InlineElements, authors interface{}, revision interface{}) (Section, error) {
-	log.Debugf("initializing a new Section0 with authors '%v' and revision '%v'", authors, revision)
+	log.Debugf("initializing a new Section level 0 with authors '%v' and revision '%v'", authors, revision)
 	section, err := NewSection(0, title, nil, nil)
 	if err != nil {
 		return Section{}, err
