@@ -1,3 +1,5 @@
+= child title
+
 first line of child
 
 include::grandchild-include.adoc[]

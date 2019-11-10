@@ -324,6 +324,166 @@ include::{includedir}/include.foo[]`
 		Expect(source).To(BecomeDraftDocument(expected, WithFilename("foo.bar"))) // parent doc may not need to be a '.adoc'
 	})
 
+	It("should include grandchild content", func() {
+		source := `include::../../test/includes/grandchild-include.adoc[]`
+		expected := types.DraftDocument{
+			Blocks: []interface{}{
+				types.Section{
+					Attributes: types.ElementAttributes{
+						types.AttrCustomID: false,
+						types.AttrID:       "grandchild_title",
+					},
+					Level: 1,
+					Title: types.InlineElements{
+						types.StringElement{
+							Content: "grandchild title",
+						},
+					},
+					Elements: []interface{}{},
+				},
+				types.BlankLine{},
+				types.Paragraph{
+					Attributes: types.ElementAttributes{},
+					Lines: []types.InlineElements{
+						{
+							types.StringElement{
+								Content: "first line of grandchild",
+							},
+						},
+					},
+				},
+				types.BlankLine{},
+				types.Paragraph{
+					Attributes: types.ElementAttributes{},
+					Lines: []types.InlineElements{
+						{
+							types.StringElement{
+								Content: "last line of grandchild",
+							},
+						},
+					},
+				},
+			},
+		}
+		Expect(source).To(BecomeDraftDocument(expected, WithFilename("test.adoc")))
+	})
+
+	It("should include child and grandchild content with level offset", func() {
+		source := `include::../../test/includes/parent-include-offset.adoc[leveloffset=+1]`
+		expected := types.DraftDocument{
+			Blocks: []interface{}{
+				types.Section{
+					Attributes: types.ElementAttributes{
+						types.AttrCustomID: false,
+						types.AttrID:       "parent_title",
+					},
+					Level: 1,
+					Title: types.InlineElements{
+						types.StringElement{
+							Content: "parent title",
+						},
+					},
+					Elements: []interface{}{},
+				},
+				types.BlankLine{},
+				types.Paragraph{
+					Attributes: types.ElementAttributes{},
+					Lines: []types.InlineElements{
+						{
+							types.StringElement{
+								Content: "first line of parent",
+							},
+						},
+					},
+				},
+				types.BlankLine{},
+				types.Section{
+					Attributes: types.ElementAttributes{
+						types.AttrCustomID: false,
+						types.AttrID:       "child_title",
+					},
+					Level: 2,
+					Title: types.InlineElements{
+						types.StringElement{
+							Content: "child title",
+						},
+					},
+					Elements: []interface{}{},
+				},
+				types.BlankLine{},
+				types.Paragraph{
+					Attributes: types.ElementAttributes{},
+					Lines: []types.InlineElements{
+						{
+							types.StringElement{
+								Content: "first line of child",
+							},
+						},
+					},
+				},
+				types.BlankLine{},
+				types.Section{
+					Attributes: types.ElementAttributes{
+						types.AttrCustomID: false,
+						types.AttrID:       "grandchild_title",
+					},
+					Level: 3,
+					Title: types.InlineElements{
+						types.StringElement{
+							Content: "grandchild title",
+						},
+					},
+					Elements: []interface{}{},
+				},
+				types.BlankLine{},
+				types.Paragraph{
+					Attributes: types.ElementAttributes{},
+					Lines: []types.InlineElements{
+						{
+							types.StringElement{
+								Content: "first line of grandchild",
+							},
+						},
+					},
+				},
+				types.BlankLine{},
+				types.Paragraph{
+					Attributes: types.ElementAttributes{},
+					Lines: []types.InlineElements{
+						{
+							types.StringElement{
+								Content: "last line of grandchild",
+							},
+						},
+					},
+				},
+				types.BlankLine{},
+				types.Paragraph{
+					Attributes: types.ElementAttributes{},
+					Lines: []types.InlineElements{
+						{
+							types.StringElement{
+								Content: "last line of child",
+							},
+						},
+					},
+				},
+				types.BlankLine{},
+				types.Paragraph{
+					Attributes: types.ElementAttributes{},
+					Lines: []types.InlineElements{
+						{
+							types.StringElement{
+								Content: "last line of parent",
+							},
+						},
+					},
+				},
+			},
+		}
+		Expect(source).To(BecomeDraftDocument(expected, WithFilename("test.adoc")))
+	})
+
 	Context("file inclusions in delimited blocks", func() {
 
 		It("should include adoc file within fenced block", func() {
@@ -1404,6 +1564,20 @@ include::{includedir}/grandchild-include.adoc[]`
 						Value: "../../test/includes",
 					},
 					types.BlankLine{},
+					types.Section{
+						Attributes: types.ElementAttributes{
+							types.AttrID:       "grandchild_title",
+							types.AttrCustomID: false,
+						},
+						Level: 1,
+						Title: types.InlineElements{
+							types.StringElement{
+								Content: "grandchild title",
+							},
+						},
+						Elements: []interface{}{},
+					},
+					types.BlankLine{},
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
 						Lines: []types.InlineElements{
@@ -1439,6 +1613,20 @@ include::{includedir}/grandchild-include.adoc[]`
 					types.DocumentAttributeDeclaration{
 						Name:  "includedir",
 						Value: "../../../test/includes",
+					},
+					types.BlankLine{},
+					types.Section{
+						Attributes: types.ElementAttributes{
+							types.AttrID:       "grandchild_title",
+							types.AttrCustomID: false,
+						},
+						Level: 1,
+						Title: types.InlineElements{
+							types.StringElement{
+								Content: "grandchild title",
+							},
+						},
+						Elements: []interface{}{},
 					},
 					types.BlankLine{},
 					types.Paragraph{
@@ -1484,6 +1672,17 @@ include::{includedir}/grandchild-include.adoc[]
 						Attributes: types.ElementAttributes{},
 						Kind:       types.Listing,
 						Elements: []interface{}{
+							types.Paragraph{
+								Attributes: types.ElementAttributes{},
+								Lines: []types.InlineElements{
+									{
+										types.StringElement{
+											Content: "== grandchild title",
+										},
+									},
+								},
+							},
+							types.BlankLine{},
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
 								Lines: []types.InlineElements{

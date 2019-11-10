@@ -14,11 +14,16 @@ var _ = Describe("file inclusions", func() {
 		console, reset := ConfigureLogger()
 		defer reset()
 		source := "include::../../../test/includes/grandchild-include.adoc[]"
-		expected := `<div class="paragraph">
+		expected := `<div class="sect1">
+<h2 id="_grandchild_title">grandchild title</h2>
+<div class="sectionbody">
+<div class="paragraph">
 <p>first line of grandchild</p>
 </div>
 <div class="paragraph">
 <p>last line of grandchild</p>
+</div>
+</div>
 </div>`
 		Expect(source).To(RenderHTML5Body(expected, WithFilename("foo.adoc")))
 		// verify no error/warning in logs
@@ -29,13 +34,17 @@ var _ = Describe("file inclusions", func() {
 		console, reset := ConfigureLogger()
 		defer reset()
 		source := "include::../../../../test/includes/grandchild-include.adoc[]"
-		expected := `<div class="paragraph">
+		expected := `<div class="sect1">
+<h2 id="_grandchild_title">grandchild title</h2>
+<div class="sectionbody">
+<div class="paragraph">
 <p>first line of grandchild</p>
 </div>
 <div class="paragraph">
 <p>last line of grandchild</p>
+</div>
+</div>
 </div>`
-
 		Expect(source).To(RenderHTML5Body(expected, WithFilename("tmp/foo.adoc")))
 		// verify no error/warning in logs
 		Expect(console).ToNot(ContainAnyMessageWithLevels(log.ErrorLevel, log.WarnLevel))
@@ -127,9 +136,16 @@ preamble
 include::../../../test/includes/grandchild-include.adoc[]
 
 include::../../../test/includes/hello_world.go.txt[]`
-		expected := `<div class="paragraph">
+		expected := `<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
 <p>preamble</p>
 </div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_grandchild_title">grandchild title</h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>first line of grandchild</p>
 </div>
@@ -146,6 +162,8 @@ include::../../../test/includes/hello_world.go.txt[]`
 <p>func helloworld() {
 	fmt.Println(&#34;hello, world!&#34;)
 }</p>
+</div>
+</div>
 </div>`
 		Expect(source).To(RenderHTML5Body(expected))
 	})
@@ -670,13 +688,23 @@ func helloworld() {
 	Context("recursive file inclusions", func() {
 
 		It("should include child and grandchild content in paragraphs", func() {
-			source := `include::../../../test/includes/parent-include.adoc[]`
-			expected := `<div class="paragraph">
+			source := `include::../../../test/includes/parent-include.adoc[leveloffset=+1]`
+			expected := `<div class="sect1">
+<h2 id="_parent_title">parent title</h2>
+<div class="sectionbody">
+<div class="paragraph">
 <p>first line of parent</p>
 </div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_child_title">child title</h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>first line of child</p>
 </div>
+<div class="sect2">
+<h3 id="_grandchild_title">grandchild title</h3>
 <div class="paragraph">
 <p>first line of grandchild</p>
 </div>
@@ -688,19 +716,28 @@ func helloworld() {
 </div>
 <div class="paragraph">
 <p>last line of parent</p>
+</div>
+</div>
+</div>
 </div>`
 			Expect(source).To(RenderHTML5Body(expected))
 		})
 
 		It("should include child and grandchild content in listing block", func() {
 			source := `----
-include::../../../test/includes/parent-include.adoc[]
+include::../../../test/includes/parent-include.adoc[leveloffset=+1]
 ----`
 			expected := `<div class="listingblock">
 <div class="content">
-<pre>first line of parent
+<pre>= parent title
+
+first line of parent
+
+= child title
 
 first line of child
+
+== grandchild title
 
 first line of grandchild
 
@@ -721,11 +758,16 @@ last line of parent</pre>
 			source := `:includedir: ../../../test/includes
 			
 include::{includedir}/grandchild-include.adoc[]`
-			expected := `<div class="paragraph">
+			expected := `<div class="sect1">
+<h2 id="_grandchild_title">grandchild title</h2>
+<div class="sectionbody">
+<div class="paragraph">
 <p>first line of grandchild</p>
 </div>
 <div class="paragraph">
 <p>last line of grandchild</p>
+</div>
+</div>
 </div>`
 			Expect(source).To(RenderHTML5Body(expected))
 		})
@@ -738,7 +780,9 @@ include::{includedir}/grandchild-include.adoc[]
 ----`
 			expected := `<div class="listingblock">
 <div class="content">
-<pre>first line of grandchild
+<pre>== grandchild title
+
+first line of grandchild
 
 last line of grandchild</pre>
 </div>
