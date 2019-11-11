@@ -1149,6 +1149,212 @@ a paragraph`
 			Expect(source).To(EqualDocument(expected))
 		})
 
+		It("section levels 1, 2, 3, 3", func() {
+			source := `= a header
+
+== Section A
+a paragraph
+
+=== Section A.a
+a paragraph
+
+=== Section A.b
+a paragraph`
+			doctitle := types.InlineElements{
+				types.StringElement{Content: "a header"},
+			}
+			sectionATitle := types.InlineElements{
+				types.StringElement{Content: "Section A"},
+			}
+			sectionAaTitle := types.InlineElements{
+				types.StringElement{Content: "Section A.a"},
+			}
+			sectionBTitle := types.InlineElements{
+				types.StringElement{Content: "Section A.b"},
+			}
+			expected := types.Document{
+				Attributes: types.DocumentAttributes{},
+				ElementReferences: types.ElementReferences{
+					"a_header":    doctitle,
+					"section_a":   sectionATitle,
+					"section_a_a": sectionAaTitle,
+					"section_a_b": sectionBTitle,
+				},
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
+				Elements: []interface{}{
+					types.Section{
+						Attributes: types.ElementAttributes{
+							types.AttrID:       "a_header",
+							types.AttrCustomID: false,
+						},
+						Level: 0,
+						Title: doctitle,
+						Elements: []interface{}{
+							types.Section{
+								Attributes: types.ElementAttributes{
+									types.AttrID:       "section_a",
+									types.AttrCustomID: false,
+								},
+								Level: 1,
+								Title: sectionATitle,
+								Elements: []interface{}{
+									types.Paragraph{
+										Attributes: types.ElementAttributes{},
+										Lines: []types.InlineElements{
+											{
+												types.StringElement{Content: "a paragraph"},
+											},
+										},
+									},
+									types.Section{
+										Attributes: types.ElementAttributes{
+											types.AttrID:       "section_a_a",
+											types.AttrCustomID: false,
+										},
+										Level: 2,
+										Title: sectionAaTitle,
+										Elements: []interface{}{
+											types.Paragraph{
+												Attributes: types.ElementAttributes{},
+												Lines: []types.InlineElements{
+													{
+														types.StringElement{Content: "a paragraph"},
+													},
+												},
+											},
+										},
+									},
+									types.Section{
+										Attributes: types.ElementAttributes{
+											types.AttrID:       "section_a_b",
+											types.AttrCustomID: false,
+										},
+										Level: 2,
+										Title: sectionBTitle,
+										Elements: []interface{}{
+											types.Paragraph{
+												Attributes: types.ElementAttributes{},
+												Lines: []types.InlineElements{
+													{
+														types.StringElement{Content: "a paragraph"},
+													},
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			}
+			Expect(source).To(EqualDocument(expected))
+		})
+
+		It("section levels 1, 3, 4, 4", func() {
+			source := `= a header
+
+=== Section A
+a paragraph
+
+==== Section A.a
+a paragraph
+
+==== Section A.b
+a paragraph`
+			doctitle := types.InlineElements{
+				types.StringElement{Content: "a header"},
+			}
+			sectionATitle := types.InlineElements{
+				types.StringElement{Content: "Section A"},
+			}
+			sectionAaTitle := types.InlineElements{
+				types.StringElement{Content: "Section A.a"},
+			}
+			sectionBTitle := types.InlineElements{
+				types.StringElement{Content: "Section A.b"},
+			}
+			expected := types.Document{
+				Attributes: types.DocumentAttributes{},
+				ElementReferences: types.ElementReferences{
+					"a_header":    doctitle,
+					"section_a":   sectionATitle,
+					"section_a_a": sectionAaTitle,
+					"section_a_b": sectionBTitle,
+				},
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
+				Elements: []interface{}{
+					types.Section{
+						Attributes: types.ElementAttributes{
+							types.AttrID:       "a_header",
+							types.AttrCustomID: false,
+						},
+						Level: 0,
+						Title: doctitle,
+						Elements: []interface{}{
+							types.Section{
+								Attributes: types.ElementAttributes{
+									types.AttrID:       "section_a",
+									types.AttrCustomID: false,
+								},
+								Level: 2,
+								Title: sectionATitle,
+								Elements: []interface{}{
+									types.Paragraph{
+										Attributes: types.ElementAttributes{},
+										Lines: []types.InlineElements{
+											{
+												types.StringElement{Content: "a paragraph"},
+											},
+										},
+									},
+									types.Section{
+										Attributes: types.ElementAttributes{
+											types.AttrID:       "section_a_a",
+											types.AttrCustomID: false,
+										},
+										Level: 3,
+										Title: sectionAaTitle,
+										Elements: []interface{}{
+											types.Paragraph{
+												Attributes: types.ElementAttributes{},
+												Lines: []types.InlineElements{
+													{
+														types.StringElement{Content: "a paragraph"},
+													},
+												},
+											},
+										},
+									},
+									types.Section{
+										Attributes: types.ElementAttributes{
+											types.AttrID:       "section_a_b",
+											types.AttrCustomID: false,
+										},
+										Level: 3,
+										Title: sectionBTitle,
+										Elements: []interface{}{
+											types.Paragraph{
+												Attributes: types.ElementAttributes{},
+												Lines: []types.InlineElements{
+													{
+														types.StringElement{Content: "a paragraph"},
+													},
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			}
+			Expect(source).To(EqualDocument(expected))
+		})
+
 		It("single section with custom IDs", func() {
 			source := `[[custom_header]]
 == a header`

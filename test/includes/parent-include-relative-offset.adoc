@@ -1,0 +1,7 @@
+= parent title
+
+first line of parent
+
+include::child-include-preamble.adoc[leveloffset=+1]
+
+last line of parent

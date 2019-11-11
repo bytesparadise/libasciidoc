@@ -324,7 +324,7 @@ include::{includedir}/include.foo[]`
 		Expect(source).To(BecomeDraftDocument(expected, WithFilename("foo.bar"))) // parent doc may not need to be a '.adoc'
 	})
 
-	It("should include grandchild content", func() {
+	It("should include grandchild content without offset", func() {
 		source := `include::../../test/includes/grandchild-include.adoc[]`
 		expected := types.DraftDocument{
 			Blocks: []interface{}{
@@ -368,66 +368,16 @@ include::{includedir}/include.foo[]`
 		Expect(source).To(BecomeDraftDocument(expected, WithFilename("test.adoc")))
 	})
 
-	It("should include child and grandchild content with level offset", func() {
-		source := `include::../../test/includes/parent-include-offset.adoc[leveloffset=+1]`
+	It("should include grandchild content with relative offset", func() {
+		source := `include::../../test/includes/grandchild-include.adoc[leveloffset=+1]`
 		expected := types.DraftDocument{
 			Blocks: []interface{}{
 				types.Section{
 					Attributes: types.ElementAttributes{
 						types.AttrCustomID: false,
-						types.AttrID:       "parent_title",
-					},
-					Level: 1,
-					Title: types.InlineElements{
-						types.StringElement{
-							Content: "parent title",
-						},
-					},
-					Elements: []interface{}{},
-				},
-				types.BlankLine{},
-				types.Paragraph{
-					Attributes: types.ElementAttributes{},
-					Lines: []types.InlineElements{
-						{
-							types.StringElement{
-								Content: "first line of parent",
-							},
-						},
-					},
-				},
-				types.BlankLine{},
-				types.Section{
-					Attributes: types.ElementAttributes{
-						types.AttrCustomID: false,
-						types.AttrID:       "child_title",
-					},
-					Level: 2,
-					Title: types.InlineElements{
-						types.StringElement{
-							Content: "child title",
-						},
-					},
-					Elements: []interface{}{},
-				},
-				types.BlankLine{},
-				types.Paragraph{
-					Attributes: types.ElementAttributes{},
-					Lines: []types.InlineElements{
-						{
-							types.StringElement{
-								Content: "first line of child",
-							},
-						},
-					},
-				},
-				types.BlankLine{},
-				types.Section{
-					Attributes: types.ElementAttributes{
-						types.AttrCustomID: false,
 						types.AttrID:       "grandchild_title",
 					},
-					Level: 3,
+					Level: 2,
 					Title: types.InlineElements{
 						types.StringElement{
 							Content: "grandchild title",
@@ -456,6 +406,310 @@ include::{includedir}/include.foo[]`
 							},
 						},
 					},
+				},
+			},
+		}
+		Expect(source).To(BecomeDraftDocument(expected, WithFilename("test.adoc")))
+	})
+
+	It("should include grandchild content with absolute offset", func() {
+		source := `include::../../test/includes/grandchild-include.adoc[leveloffset=0]`
+		expected := types.DraftDocument{
+			Blocks: []interface{}{
+				types.Section{
+					Attributes: types.ElementAttributes{
+						types.AttrCustomID: false,
+						types.AttrID:       "grandchild_title",
+					},
+					Level: 0,
+					Title: types.InlineElements{
+						types.StringElement{
+							Content: "grandchild title",
+						},
+					},
+					Elements: []interface{}{},
+				},
+				types.BlankLine{},
+				types.Paragraph{
+					Attributes: types.ElementAttributes{},
+					Lines: []types.InlineElements{
+						{
+							types.StringElement{
+								Content: "first line of grandchild",
+							},
+						},
+					},
+				},
+				types.BlankLine{},
+				types.Paragraph{
+					Attributes: types.ElementAttributes{},
+					Lines: []types.InlineElements{
+						{
+							types.StringElement{
+								Content: "last line of grandchild",
+							},
+						},
+					},
+				},
+			},
+		}
+		Expect(source).To(BecomeDraftDocument(expected, WithFilename("test.adoc")))
+	})
+
+	It("should include child and grandchild content with relative level offset", func() {
+		source := `include::../../test/includes/parent-include-relative-offset.adoc[leveloffset=+1]`
+		expected := types.DraftDocument{
+			Blocks: []interface{}{
+				types.Section{
+					Attributes: types.ElementAttributes{
+						types.AttrCustomID: false,
+						types.AttrID:       "parent_title",
+					},
+					Level: 1, // here the level is changed from `0` to `1` since `root` doc has a `leveloffset=+1` during its inclusion
+					Title: types.InlineElements{
+						types.StringElement{
+							Content: "parent title",
+						},
+					},
+					Elements: []interface{}{},
+				},
+				types.BlankLine{},
+				types.Paragraph{
+					Attributes: types.ElementAttributes{},
+					Lines: []types.InlineElements{
+						{
+							types.StringElement{
+								Content: "first line of parent",
+							},
+						},
+					},
+				},
+				types.BlankLine{},
+				types.Paragraph{
+					Attributes: types.ElementAttributes{},
+					Lines: []types.InlineElements{
+						{
+							types.StringElement{
+								Content: "child preamble",
+							},
+						},
+					},
+				},
+				types.BlankLine{},
+				types.Section{
+					Attributes: types.ElementAttributes{
+						types.AttrCustomID: false,
+						types.AttrID:       "child_section_1",
+					},
+					Level: 3, // here the level is changed from `1` to `3` since both `root` and `parent` docs have a `leveloffset=+1` during their inclusion
+					Title: types.InlineElements{
+						types.StringElement{
+							Content: "child section 1",
+						},
+					},
+					Elements: []interface{}{},
+				},
+				types.BlankLine{},
+				types.Paragraph{
+					Attributes: types.ElementAttributes{},
+					Lines: []types.InlineElements{
+						{
+							types.StringElement{
+								Content: "first line of child",
+							},
+						},
+					},
+				},
+				types.BlankLine{},
+				types.Section{
+					Attributes: types.ElementAttributes{
+						types.AttrCustomID: false,
+						types.AttrID:       "grandchild_title",
+					},
+					Level: 4, // here the level is changed from `1` to `4` since both `root`, `parent` and `child` docs have a `leveloffset=+1` during their inclusion
+					Title: types.InlineElements{
+						types.StringElement{
+							Content: "grandchild title",
+						},
+					},
+					Elements: []interface{}{},
+				},
+				types.BlankLine{},
+				types.Paragraph{
+					Attributes: types.ElementAttributes{},
+					Lines: []types.InlineElements{
+						{
+							types.StringElement{
+								Content: "first line of grandchild",
+							},
+						},
+					},
+				},
+				types.BlankLine{},
+				types.Paragraph{
+					Attributes: types.ElementAttributes{},
+					Lines: []types.InlineElements{
+						{
+							types.StringElement{
+								Content: "last line of grandchild",
+							},
+						},
+					},
+				},
+				types.BlankLine{},
+				types.Section{
+					Attributes: types.ElementAttributes{
+						types.AttrCustomID: false,
+						types.AttrID:       "child_section_2",
+					},
+					Level: 4, // here the level is changed from `2` to `4` since both `root` and `parent` docs have a `leveloffset=+1` during their inclusion
+					Title: types.InlineElements{
+						types.StringElement{
+							Content: "child section 2",
+						},
+					},
+					Elements: []interface{}{},
+				},
+				types.BlankLine{},
+				types.Paragraph{
+					Attributes: types.ElementAttributes{},
+					Lines: []types.InlineElements{
+						{
+							types.StringElement{
+								Content: "last line of child",
+							},
+						},
+					},
+				},
+				types.BlankLine{},
+				types.Paragraph{
+					Attributes: types.ElementAttributes{},
+					Lines: []types.InlineElements{
+						{
+							types.StringElement{
+								Content: "last line of parent",
+							},
+						},
+					},
+				},
+			},
+		}
+		Expect(source).To(BecomeDraftDocument(expected, WithFilename("test.adoc")))
+	})
+
+	It("should include child and grandchild content with relative then absolute level offset", func() {
+		source := `include::../../test/includes/parent-include-absolute-offset.adoc[leveloffset=+1]`
+		expected := types.DraftDocument{
+			Blocks: []interface{}{
+				types.Section{
+					Attributes: types.ElementAttributes{
+						types.AttrCustomID: false,
+						types.AttrID:       "parent_title",
+					},
+					Level: 1, // here the level is offset by `+1` as per root doc attribute in the `include` macro
+					Title: types.InlineElements{
+						types.StringElement{
+							Content: "parent title",
+						},
+					},
+					Elements: []interface{}{},
+				},
+				types.BlankLine{},
+				types.Paragraph{
+					Attributes: types.ElementAttributes{},
+					Lines: []types.InlineElements{
+						{
+							types.StringElement{
+								Content: "first line of parent",
+							},
+						},
+					},
+				},
+				types.BlankLine{},
+				types.Paragraph{
+					Attributes: types.ElementAttributes{},
+					Lines: []types.InlineElements{
+						{
+							types.StringElement{
+								Content: "child preamble",
+							},
+						},
+					},
+				},
+				types.BlankLine{},
+				types.Section{
+					Attributes: types.ElementAttributes{
+						types.AttrCustomID: false,
+						types.AttrID:       "child_section_1",
+					},
+					Level: 3, // here level is forced to "absolute 3"
+					Title: types.InlineElements{
+						types.StringElement{
+							Content: "child section 1",
+						},
+					},
+					Elements: []interface{}{},
+				},
+				types.BlankLine{},
+				types.Paragraph{
+					Attributes: types.ElementAttributes{},
+					Lines: []types.InlineElements{
+						{
+							types.StringElement{
+								Content: "first line of child",
+							},
+						},
+					},
+				},
+				types.BlankLine{},
+				types.Section{
+					Attributes: types.ElementAttributes{
+						types.AttrCustomID: false,
+						types.AttrID:       "grandchild_title",
+					},
+					Level: 4, // here the level is set to `4` because it was its parent was offset by 3...
+					Title: types.InlineElements{
+						types.StringElement{
+							Content: "grandchild title",
+						},
+					},
+					Elements: []interface{}{},
+				},
+				types.BlankLine{},
+				types.Paragraph{
+					Attributes: types.ElementAttributes{},
+					Lines: []types.InlineElements{
+						{
+							types.StringElement{
+								Content: "first line of grandchild",
+							},
+						},
+					},
+				},
+				types.BlankLine{},
+				types.Paragraph{
+					Attributes: types.ElementAttributes{},
+					Lines: []types.InlineElements{
+						{
+							types.StringElement{
+								Content: "last line of grandchild",
+							},
+						},
+					},
+				},
+				types.BlankLine{},
+				types.Section{
+					Attributes: types.ElementAttributes{
+						types.AttrCustomID: false,
+						types.AttrID:       "child_section_2",
+					},
+					Level: 4, // here the level is set to `4` because it the first section was moved from `1` to `3` so we use the same offset here
+					Title: types.InlineElements{
+						types.StringElement{
+							Content: "child section 2",
+						},
+					},
+					Elements: []interface{}{},
 				},
 				types.BlankLine{},
 				types.Paragraph{
@@ -1804,6 +2058,330 @@ include::../../test/includes/hello_world.go.txt[lines=1]
 	})
 })
 
+var _ = Describe("file inclusions - final document", func() {
+
+	It("should include child and grandchild content with relative level offset", func() {
+		source := `include::../../test/includes/parent-include-relative-offset.adoc[leveloffset=+1]`
+		expected := types.Document{
+			Attributes: types.DocumentAttributes{},
+			ElementReferences: types.ElementReferences{
+				"parent_title": types.InlineElements{
+					types.StringElement{
+						Content: "parent title",
+					},
+				},
+				"child_section_1": types.InlineElements{
+					types.StringElement{
+						Content: "child section 1",
+					},
+				},
+				"child_section_2": types.InlineElements{
+					types.StringElement{
+						Content: "child section 2",
+					},
+				},
+				"grandchild_title": types.InlineElements{
+					types.StringElement{
+						Content: "grandchild title",
+					},
+				},
+			},
+			Footnotes:          types.Footnotes{},
+			FootnoteReferences: types.FootnoteReferences{},
+			Elements: []interface{}{
+				types.Section{
+					Attributes: types.ElementAttributes{
+						types.AttrCustomID: false,
+						types.AttrID:       "parent_title",
+					},
+					Level: 1, // here the level is changed from `0` to `1` since `root` doc has a `leveloffset=+1` during its inclusion
+					Title: types.InlineElements{
+						types.StringElement{
+							Content: "parent title",
+						},
+					},
+					Elements: []interface{}{
+						types.Paragraph{
+							Attributes: types.ElementAttributes{},
+							Lines: []types.InlineElements{
+								{
+									types.StringElement{
+										Content: "first line of parent",
+									},
+								},
+							},
+						},
+						types.Paragraph{
+							Attributes: types.ElementAttributes{},
+							Lines: []types.InlineElements{
+								{
+									types.StringElement{
+										Content: "child preamble",
+									},
+								},
+							},
+						},
+						types.Section{
+							Attributes: types.ElementAttributes{
+								types.AttrCustomID: false,
+								types.AttrID:       "child_section_1",
+							},
+							Level: 3, // here the level is changed from `1` to `3` since both `root` and `parent` docs have a `leveloffset=+1` during their inclusion
+							Title: types.InlineElements{
+								types.StringElement{
+									Content: "child section 1",
+								},
+							},
+							Elements: []interface{}{
+								types.Paragraph{
+									Attributes: types.ElementAttributes{},
+									Lines: []types.InlineElements{
+										{
+											types.StringElement{
+												Content: "first line of child",
+											},
+										},
+									},
+								},
+								types.Section{
+									Attributes: types.ElementAttributes{
+										types.AttrCustomID: false,
+										types.AttrID:       "grandchild_title",
+									},
+									Level: 4, // here the level is changed from `1` to `4` since both `root`, `parent` and `child` docs have a `leveloffset=+1` during their inclusion
+									Title: types.InlineElements{
+										types.StringElement{
+											Content: "grandchild title",
+										},
+									},
+									Elements: []interface{}{
+										types.Paragraph{
+											Attributes: types.ElementAttributes{},
+											Lines: []types.InlineElements{
+												{
+													types.StringElement{
+														Content: "first line of grandchild",
+													},
+												},
+											},
+										},
+										types.Paragraph{
+											Attributes: types.ElementAttributes{},
+											Lines: []types.InlineElements{
+												{
+													types.StringElement{
+														Content: "last line of grandchild",
+													},
+												},
+											},
+										},
+									},
+								},
+								types.Section{
+									Attributes: types.ElementAttributes{
+										types.AttrCustomID: false,
+										types.AttrID:       "child_section_2",
+									},
+									Level: 4, // here the level is changed from `2` to `4` since both `root` and `parent` docs have a `leveloffset=+1` during their inclusion
+									Title: types.InlineElements{
+										types.StringElement{
+											Content: "child section 2",
+										},
+									},
+									Elements: []interface{}{
+										types.Paragraph{
+											Attributes: types.ElementAttributes{},
+											Lines: []types.InlineElements{
+												{
+													types.StringElement{
+														Content: "last line of child",
+													},
+												},
+											},
+										},
+										types.Paragraph{
+											Attributes: types.ElementAttributes{},
+											Lines: []types.InlineElements{
+												{
+													types.StringElement{
+														Content: "last line of parent",
+													},
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		}
+		Expect(source).To(EqualDocument(expected))
+	})
+
+	It("should include child and grandchild content with relative then absolute level offset", func() {
+		source := `include::../../test/includes/parent-include-absolute-offset.adoc[leveloffset=+1]`
+		expected := types.Document{
+			Attributes: types.DocumentAttributes{},
+			ElementReferences: types.ElementReferences{
+				"parent_title": types.InlineElements{
+					types.StringElement{
+						Content: "parent title",
+					},
+				},
+				"child_section_1": types.InlineElements{
+					types.StringElement{
+						Content: "child section 1",
+					},
+				},
+				"child_section_2": types.InlineElements{
+					types.StringElement{
+						Content: "child section 2",
+					},
+				},
+				"grandchild_title": types.InlineElements{
+					types.StringElement{
+						Content: "grandchild title",
+					},
+				},
+			},
+			Footnotes:          types.Footnotes{},
+			FootnoteReferences: types.FootnoteReferences{},
+			Elements: []interface{}{
+				types.Section{
+					Attributes: types.ElementAttributes{
+						types.AttrCustomID: false,
+						types.AttrID:       "parent_title",
+					},
+					Level: 1, // here the level is offset by `+1` as per root doc attribute in the `include` macro
+					Title: types.InlineElements{
+						types.StringElement{
+							Content: "parent title",
+						},
+					},
+					Elements: []interface{}{
+						types.Paragraph{
+							Attributes: types.ElementAttributes{},
+							Lines: []types.InlineElements{
+								{
+									types.StringElement{
+										Content: "first line of parent",
+									},
+								},
+							},
+						},
+						types.Paragraph{
+							Attributes: types.ElementAttributes{},
+							Lines: []types.InlineElements{
+								{
+									types.StringElement{
+										Content: "child preamble",
+									},
+								},
+							},
+						},
+						types.Section{
+							Attributes: types.ElementAttributes{
+								types.AttrCustomID: false,
+								types.AttrID:       "child_section_1",
+							},
+							Level: 3, // here level is forced to "absolute 3"
+							Title: types.InlineElements{
+								types.StringElement{
+									Content: "child section 1",
+								},
+							},
+							Elements: []interface{}{
+								types.Paragraph{
+									Attributes: types.ElementAttributes{},
+									Lines: []types.InlineElements{
+										{
+											types.StringElement{
+												Content: "first line of child",
+											},
+										},
+									},
+								},
+								types.Section{
+									Attributes: types.ElementAttributes{
+										types.AttrCustomID: false,
+										types.AttrID:       "grandchild_title",
+									},
+									Level: 4, // here the level is set to `4` because it was its parent was offset by 3...
+									Title: types.InlineElements{
+										types.StringElement{
+											Content: "grandchild title",
+										},
+									},
+									Elements: []interface{}{
+										types.Paragraph{
+											Attributes: types.ElementAttributes{},
+											Lines: []types.InlineElements{
+												{
+													types.StringElement{
+														Content: "first line of grandchild",
+													},
+												},
+											},
+										},
+										types.Paragraph{
+											Attributes: types.ElementAttributes{},
+											Lines: []types.InlineElements{
+												{
+													types.StringElement{
+														Content: "last line of grandchild",
+													},
+												},
+											},
+										},
+									},
+								},
+								types.Section{
+									Attributes: types.ElementAttributes{
+										types.AttrCustomID: false,
+										types.AttrID:       "child_section_2",
+									},
+									Level: 4, // here the level is set to `4` because it the first section was moved from `1` to `3` so we use the same offset here
+									Title: types.InlineElements{
+										types.StringElement{
+											Content: "child section 2",
+										},
+									},
+									Elements: []interface{}{
+										types.Paragraph{
+											Attributes: types.ElementAttributes{},
+											Lines: []types.InlineElements{
+												{
+													types.StringElement{
+														Content: "last line of child",
+													},
+												},
+											},
+										},
+										types.Paragraph{
+											Attributes: types.ElementAttributes{},
+											Lines: []types.InlineElements{
+												{
+													types.StringElement{
+														Content: "last line of parent",
+													},
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		}
+		Expect(source).To(EqualDocument(expected))
+	})
+
+})
+
 var _ = Describe("file inclusions - draft without preprocessing", func() {
 
 	It("should include adoc file without leveloffset in local dir", func() {
@@ -2367,4 +2945,5 @@ include::../../test/includes/chapter-a.adoc[]
 
 		})
 	})
+
 })

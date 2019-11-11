@@ -27,11 +27,31 @@ func init() {
 }
 
 // levelOffset a func that applies a given offset to the sections of a child document to include in a parent doc (the caller)
-type levelOffset func(*types.Section)
+type levelOffset struct {
+	absolute bool
+	value    int
+	apply    func(*types.Section)
+}
 
 func relativeOffset(offset int) levelOffset {
-	return func(s *types.Section) {
-		s.Level += offset
+	return levelOffset{
+		absolute: false,
+		value:    offset,
+		apply: func(s *types.Section) {
+			log.Debugf("applying relative offset: %d + %d on %+v", s.Level, offset, s.Title)
+			s.Level += offset
+		},
+	}
+}
+
+func absoluteOffset(offset int) levelOffset {
+	return levelOffset{
+		absolute: true,
+		value:    offset,
+		apply: func(s *types.Section) {
+			log.Debugf("applying absolute offset: %d -> %d on %+v", s.Level, offset, s.Title)
+			s.Level = offset
+		},
 	}
 }
 
@@ -68,14 +88,17 @@ func parseFileToInclude(filename string, incl types.FileInclusion, attrs types.D
 		return msg, errors.Wrap(err, "unable to read file to include")
 	}
 	// parse the content, and returns the corresponding elements
-	levelOffset := incl.Attributes.GetAsString(types.AttrLevelOffset)
-	if levelOffset != "" {
-		offset, err := strconv.Atoi(levelOffset)
+	l := incl.Attributes.GetAsString(types.AttrLevelOffset)
+	if l != "" {
+		offset, err := strconv.Atoi(l)
 		if err != nil {
 			return types.DraftDocument{}, errors.Wrap(err, "unable to read file to include")
 		}
-		if strings.HasPrefix(levelOffset, "+") || strings.HasPrefix(levelOffset, "-") {
+		if strings.HasPrefix(l, "+") || strings.HasPrefix(l, "-") {
 			levelOffsets = append(levelOffsets, relativeOffset(offset))
+		} else {
+			levelOffsets = []levelOffset{absoluteOffset(offset)}
+
 		}
 	}
 	// use a simpler/different grammar for non-asciidoc files.

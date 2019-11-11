@@ -1,0 +1,11 @@
+child preamble
+
+== child section 1
+
+first line of child
+
+include::grandchild-include.adoc[leveloffset=+1]
+
+=== child section 2
+
+last line of child

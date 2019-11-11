@@ -65,7 +65,15 @@ func parseElements(filename string, elements []interface{}, attrs types.Document
 			})
 		case types.Section:
 			for _, offset := range levelOffsets {
-				offset(&e)
+				oldLevel := e.Level
+				offset.apply(&e)
+				// replace the absolute when the first section is processed with a relative offset
+				// which is based on the actual level offset that resulted in the application of the absolute offset
+				if offset.absolute { 
+					levelOffsets = []levelOffset{
+						relativeOffset(e.Level - oldLevel),
+					}
+				}
 			}
 			result = append(result, e)
 		default:

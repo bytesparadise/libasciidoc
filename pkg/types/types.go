@@ -405,7 +405,7 @@ func NewSection(level int, title InlineElements, ids []interface{}, attributes i
 	if attributes, ok := attributes.(ElementAttributes); ok {
 		attrs.AddAll(attributes)
 	}
-	log.Debugf("initialized a new Section level %d", level)
+	// log.Debugf("initialized a new Section level %d", level)
 	// multiple IDs can be defined (by mistake), and the last one is used
 	for _, id := range ids {
 		if id, ok := id.(ElementAttributes); ok {
@@ -444,7 +444,7 @@ func (s Section) Footnotes() (Footnotes, FootnoteReferences, error) {
 
 // NewDocumentHeader initializes a new Section with level 0 which can have authors and a revision, among other attributes
 func NewDocumentHeader(title InlineElements, authors interface{}, revision interface{}) (Section, error) {
-	log.Debugf("initializing a new Section level 0 with authors '%v' and revision '%v'", authors, revision)
+	// log.Debugf("initializing a new Section level 0 with authors '%v' and revision '%v'", authors, revision)
 	section, err := NewSection(0, title, nil, nil)
 	if err != nil {
 		return Section{}, err
@@ -998,11 +998,11 @@ func NewParagraph(lines []interface{}, attributes interface{}) (Paragraph, error
 	if attributes, ok := attributes.(ElementAttributes); ok {
 		attrs.AddAll(attributes)
 	}
-	log.Debugf("initializing a new paragraph with %d line(s) and %d attribute(s)", len(lines), len(attrs))
+	// log.Debugf("initializing a new paragraph with %d line(s) and %d attribute(s)", len(lines), len(attrs))
 	elements := make([]InlineElements, 0)
 	for _, line := range lines {
 		if l, ok := line.(InlineElements); ok {
-			log.Debugf("processing paragraph line of type %T", line)
+			// log.Debugf("processing paragraph line of type %T", line)
 			// if len(l) > 0 {
 			elements = append(elements, l)
 			// }
@@ -1011,7 +1011,7 @@ func NewParagraph(lines []interface{}, attributes interface{}) (Paragraph, error
 		}
 
 	}
-	log.Debugf("generated a paragraph with %d line(s): %v", len(elements), elements)
+	// log.Debugf("generated a paragraph with %d line(s): %v", len(elements), elements)
 	return Paragraph{
 		Attributes: attrs,
 		Lines:      elements,
@@ -1763,7 +1763,6 @@ func (f *FileInclusion) LineRanges() (LineRanges, bool) {
 
 // TagRanges returns the tag ranges of the file to include.
 func (f *FileInclusion) TagRanges() (TagRanges, bool) {
-	log.Debugf("AttrTagRanges type: %T", f.Attributes[AttrTagRanges])
 	if lr, ok := f.Attributes[AttrTagRanges].(TagRanges); ok {
 		return lr, true
 	}

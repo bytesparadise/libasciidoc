@@ -2,6 +2,6 @@
 
 first line of parent
 
-include::child-include.adoc[leveloffset=+1]
+include::child-include-preamble.adoc[leveloffset=3]
 
 last line of parent

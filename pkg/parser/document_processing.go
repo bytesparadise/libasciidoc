@@ -352,7 +352,7 @@ func rearrangeSections(blocks []interface{}) (types.Document, error) {
 		}
 		// also collect footnotes
 		if e, ok := element.(types.FootnotesContainer); ok {
-			log.Debugf("collecting footnotes on element of type %T", element)
+			// log.Debugf("collecting footnotes on element of type %T", element)
 			f, fr, err := e.Footnotes()
 			if err != nil {
 				return types.Document{}, errors.Wrap(err, "unable to collect footnotes in document")
@@ -364,6 +364,11 @@ func rearrangeSections(blocks []interface{}) (types.Document, error) {
 		}
 	}
 	// process the remaining sections
+	if log.IsLevelEnabled(log.DebugLevel) {
+		log.Debugf("processing the remaining sections...")
+		spew.Dump(sections)
+	}
+
 	sections = pruneSections(sections, 1)
 	if len(sections) > 0 {
 		tle = append(tle, sections[0])
@@ -398,18 +403,20 @@ func referenceSection(e types.Section, elementRefs types.ElementReferences) {
 }
 
 func pruneSections(sections []types.Section, level int) []types.Section {
-	if level > 0 && level < len(sections) {
-		log.Debugf("pruning the section path from %d to %d level(s) deep", len(sections), level)
+	if len(sections) > 0 && level > 0 { // && level < len(sections) {
+		log.Debugf("pruning the section path with %d level(s) of deep", len(sections))
 		// add the last list(s) as children of their parent, in reverse order,
 		// because we copy the value, not the pointers
-		for i := len(sections) - 1; i > level-1; i-- {
+		cut := len(sections)
+		for i := len(sections) - 1; i > 0 && sections[i].Level >= level; i-- {
 			parentSection := &(sections[i-1])
-			log.Debugf("appending section at level %d (%v) to the last element of the parent section (%v)", i, sections[i].Title, parentSection.Title)
+			log.Debugf("appending section at depth %d (%v) to the last element of the parent section (%v)", i, sections[i].Title, parentSection.Title)
 			(*parentSection).AddElement(sections[i])
+			cut = i
 		}
 		// also, prune the pointers to the remaining sublists
-		sections := sections[0:level]
-		log.Debugf("sections list is has now %d level(s) of depth", len(sections))
+		sections := sections[0:cut]
+		log.Debugf("sections list has now %d top-level elements", len(sections))
 		return sections
 	}
 	return sections
