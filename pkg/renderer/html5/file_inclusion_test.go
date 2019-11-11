@@ -50,6 +50,116 @@ var _ = Describe("file inclusions", func() {
 		Expect(console).ToNot(ContainAnyMessageWithLevels(log.ErrorLevel, log.WarnLevel))
 	})
 
+	It("should include grandchild content with relative offset", func() {
+		source := `include::../../../test/includes/grandchild-include.adoc[leveloffset=+1]`
+		expected := `<div class="sect2">
+<h3 id="_grandchild_title">grandchild title</h3>
+<div class="paragraph">
+<p>first line of grandchild</p>
+</div>
+<div class="paragraph">
+<p>last line of grandchild</p>
+</div>
+</div>`
+		Expect(source).To(RenderHTML5Body(expected, WithFilename("test.adoc")))
+	})
+
+	It("should include grandchild content with absolute offset", func() {
+		source := `include::../../../test/includes/grandchild-include.adoc[leveloffset=1]`
+		expected := `<div class="sect1">
+<h2 id="_grandchild_title">grandchild title</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>first line of grandchild</p>
+</div>
+<div class="paragraph">
+<p>last line of grandchild</p>
+</div>
+</div>
+</div>`
+		Expect(source).To(RenderHTML5Body(expected, WithFilename("test.adoc")))
+	})
+
+	It("should include child and grandchild content with relative level offset", func() {
+		source := `include::../../../test/includes/parent-include-relative-offset.adoc[leveloffset=+1]`
+		expected := `<div class="sect1">
+<h2 id="_parent_title">parent title</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>first line of parent</p>
+</div>
+<div class="paragraph">
+<p>child preamble</p>
+</div>
+<div class="sect3">
+<h4 id="_child_section_1">child section 1</h4>
+<div class="paragraph">
+<p>first line of child</p>
+</div>
+<div class="sect4">
+<h5 id="_grandchild_title">grandchild title</h5>
+<div class="paragraph">
+<p>first line of grandchild</p>
+</div>
+<div class="paragraph">
+<p>last line of grandchild</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_child_section_2">child section 2</h5>
+<div class="paragraph">
+<p>last line of child</p>
+</div>
+<div class="paragraph">
+<p>last line of parent</p>
+</div>
+</div>
+</div>
+</div>
+</div>`
+		Expect(source).To(RenderHTML5Body(expected, WithFilename("test.adoc")))
+	})
+
+	It("should include child and grandchild content with relative then absolute level offset", func() {
+		source := `include::../../../test/includes/parent-include-absolute-offset.adoc[leveloffset=+1]`
+		expected := `<div class="sect1">
+<h2 id="_parent_title">parent title</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>first line of parent</p>
+</div>
+<div class="paragraph">
+<p>child preamble</p>
+</div>
+<div class="sect3">
+<h4 id="_child_section_1">child section 1</h4>
+<div class="paragraph">
+<p>first line of child</p>
+</div>
+<div class="sect4">
+<h5 id="_grandchild_title">grandchild title</h5>
+<div class="paragraph">
+<p>first line of grandchild</p>
+</div>
+<div class="paragraph">
+<p>last line of grandchild</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_child_section_2">child section 2</h5>
+<div class="paragraph">
+<p>last line of child</p>
+</div>
+<div class="paragraph">
+<p>last line of parent</p>
+</div>
+</div>
+</div>
+</div>
+</div>`
+		Expect(source).To(RenderHTML5Body(expected, WithFilename("test.adoc")))
+	})
+
 	It("include adoc file with leveloffset attribute", func() {
 		source := `= Master Document
 
