@@ -22,7 +22,7 @@ var _ = Describe("images", func() {
 					},
 					Path: "images/foo.png",
 				}
-				Expect(source).To(EqualDocumentBlock(expected))
+				Expect(source).To(BecomeDocumentBlock(expected))
 			})
 
 			It("block image with empty alt and trailing spaces", func() {
@@ -33,7 +33,7 @@ var _ = Describe("images", func() {
 					},
 					Path: "images/foo.png",
 				}
-				Expect(source).To(EqualDocumentBlock(expected))
+				Expect(source).To(BecomeDocumentBlock(expected))
 			})
 
 			It("block image with line return", func() {
@@ -46,7 +46,7 @@ var _ = Describe("images", func() {
 					},
 					Path: "images/foo.png",
 				}
-				Expect(source).To(EqualDocumentBlock(expected))
+				Expect(source).To(BecomeDocumentBlock(expected))
 			})
 
 			It("block image with 1 empty blank line", func() {
@@ -59,7 +59,7 @@ var _ = Describe("images", func() {
 					},
 					Path: "images/foo.png",
 				}
-				Expect(source).To(EqualDocumentBlock(expected))
+				Expect(source).To(BecomeDocumentBlock(expected))
 			})
 
 			It("block image with 2 blank lines with spaces and tabs", func() {
@@ -71,7 +71,7 @@ var _ = Describe("images", func() {
 					},
 					Path: "images/foo.png",
 				}
-				Expect(source).To(EqualDocumentBlock(expected))
+				Expect(source).To(BecomeDocumentBlock(expected))
 			})
 
 			It("block image with alt", func() {
@@ -82,7 +82,7 @@ var _ = Describe("images", func() {
 					},
 					Path: "images/foo.png",
 				}
-				Expect(source).To(EqualDocumentBlock(expected))
+				Expect(source).To(BecomeDocumentBlock(expected))
 			})
 
 			It("block image with dimensions and id link title meta", func() {
@@ -102,7 +102,7 @@ image::images/foo.png[the foo.png image, 600, 400]`
 					},
 					Path: "images/foo.png",
 				}
-				Expect(source).To(EqualDocumentBlock(expected))
+				Expect(source).To(BecomeDocumentBlock(expected))
 			})
 
 			It("2 block images", func() {
@@ -145,7 +145,7 @@ image::appa.png[]`
 							},
 						},
 					}
-					Expect(source).To(EqualDocumentBlock(expected))
+					Expect(source).To(BecomeDocumentBlock(expected))
 				})
 			})
 
@@ -190,7 +190,7 @@ image::appa.png[]`
 						},
 					},
 				}
-				Expect(source).To(EqualDocumentBlock(expected))
+				Expect(source).To(BecomeDocumentBlock(expected))
 			})
 
 			It("inline image with empty alt and trailing spaces", func() {
@@ -211,7 +211,7 @@ image::appa.png[]`
 						},
 					},
 				}
-				Expect(source).To(EqualDocumentBlock(expected))
+				Expect(source).To(BecomeDocumentBlock(expected))
 			})
 
 			It("inline image surrounded with test", func() {
@@ -235,7 +235,7 @@ image::appa.png[]`
 						},
 					},
 				}
-				Expect(source).To(EqualDocumentBlock(expected))
+				Expect(source).To(BecomeDocumentBlock(expected))
 			})
 
 			It("inline image with alt alone", func() {
@@ -253,7 +253,7 @@ image::appa.png[]`
 						},
 					},
 				}
-				Expect(source).To(EqualDocumentBlock(expected))
+				Expect(source).To(BecomeDocumentBlock(expected))
 			})
 
 			It("inline image with alt and width", func() {
@@ -272,7 +272,7 @@ image::appa.png[]`
 						},
 					},
 				}
-				Expect(source).To(EqualDocumentBlock(expected))
+				Expect(source).To(BecomeDocumentBlock(expected))
 			})
 
 			It("inline image with alt, width and height", func() {
@@ -292,7 +292,7 @@ image::appa.png[]`
 						},
 					},
 				}
-				Expect(source).To(EqualDocumentBlock(expected))
+				Expect(source).To(BecomeDocumentBlock(expected))
 			})
 
 			It("inline image with alt, but empty width and height", func() {
@@ -310,7 +310,7 @@ image::appa.png[]`
 						},
 					},
 				}
-				Expect(source).To(EqualDocumentBlock(expected))
+				Expect(source).To(BecomeDocumentBlock(expected))
 			})
 
 			It("inline image with single other attribute only", func() {
@@ -330,7 +330,7 @@ image::appa.png[]`
 						},
 					},
 				}
-				Expect(source).To(EqualDocumentBlock(expected))
+				Expect(source).To(BecomeDocumentBlock(expected))
 			})
 
 			It("inline image with multiple other attributes only", func() {
@@ -352,7 +352,7 @@ image::appa.png[]`
 						},
 					},
 				}
-				Expect(source).To(EqualDocumentBlock(expected))
+				Expect(source).To(BecomeDocumentBlock(expected))
 			})
 
 			It("inline image with alt, width, height and other attributes", func() {
@@ -376,7 +376,7 @@ image::appa.png[]`
 						},
 					},
 				}
-				Expect(source).To(EqualDocumentBlock(expected))
+				Expect(source).To(BecomeDocumentBlock(expected))
 			})
 
 			It("inline image in a paragraph with space after colon", func() {
@@ -397,7 +397,7 @@ image::appa.png[]`
 						},
 					},
 				}
-				Expect(source).To(EqualDocumentBlock(expected))
+				Expect(source).To(BecomeDocumentBlock(expected))
 			})
 
 			It("inline image in a paragraph without space keyword", func() {
@@ -419,7 +419,7 @@ image::appa.png[]`
 					},
 				}
 
-				Expect(source).To(EqualDocumentBlock(expected))
+				Expect(source).To(BecomeDocumentBlock(expected))
 			})
 		})
 		Context("errors", func() {
@@ -436,7 +436,7 @@ image::appa.png[]`
 						},
 					},
 				}
-				Expect(source).To(EqualDocumentBlock(expected))
+				Expect(source).To(BecomeDocumentBlock(expected))
 			})
 		})
 	})

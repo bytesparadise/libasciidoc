@@ -109,7 +109,7 @@ var _ = Describe("checked lists - document", func() {
 				},
 			},
 		}
-		Expect(source).To(EqualDocument(expected))
+		Expect(source).To(BecomeDocument(expected))
 	})
 
 	It("parent checklist with title and nested checklist", func() {
@@ -237,7 +237,7 @@ var _ = Describe("checked lists - document", func() {
 				},
 			},
 		}
-		Expect(source).To(EqualDocument(expected))
+		Expect(source).To(BecomeDocument(expected))
 	})
 
 	It("parent checklist with title and nested normal list", func() {
@@ -340,6 +340,6 @@ var _ = Describe("checked lists - document", func() {
 				},
 			},
 		}
-		Expect(source).To(EqualDocument(expected))
+		Expect(source).To(BecomeDocument(expected))
 	})
 })

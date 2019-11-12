@@ -17,7 +17,7 @@ var _ = Describe("comments - draft", func() {
 			expected := types.SingleLineComment{
 				Content: " A single-line comment.",
 			}
-			Expect(source).To(EqualDocumentBlock(expected))
+			Expect(source).To(BecomeDocumentBlock(expected))
 		})
 
 		It("single line comment with prefixing spaces alone", func() {
@@ -25,7 +25,7 @@ var _ = Describe("comments - draft", func() {
 			expected := types.SingleLineComment{
 				Content: " A single-line comment.",
 			}
-			Expect(source).To(EqualDocumentBlock(expected))
+			Expect(source).To(BecomeDocumentBlock(expected))
 		})
 
 		It("single line comment with prefixing tabs alone", func() {
@@ -33,7 +33,7 @@ var _ = Describe("comments - draft", func() {
 			expected := types.SingleLineComment{
 				Content: " A single-line comment.",
 			}
-			Expect(source).To(EqualDocumentBlock(expected))
+			Expect(source).To(BecomeDocumentBlock(expected))
 		})
 
 		It("single line comment at end of line", func() {
@@ -46,7 +46,7 @@ var _ = Describe("comments - draft", func() {
 					},
 				},
 			}
-			Expect(source).To(EqualDocumentBlock(expected))
+			Expect(source).To(BecomeDocumentBlock(expected))
 		})
 
 		It("single line comment within a paragraph", func() {
@@ -67,7 +67,7 @@ another line`
 					},
 				},
 			}
-			Expect(source).To(EqualDocumentBlock(expected))
+			Expect(source).To(BecomeDocumentBlock(expected))
 		})
 
 		It("single line comment within a paragraph with tab", func() {
@@ -88,7 +88,7 @@ another line`
 					},
 				},
 			}
-			Expect(source).To(EqualDocumentBlock(expected))
+			Expect(source).To(BecomeDocumentBlock(expected))
 		})
 	})
 
@@ -111,7 +111,7 @@ with multiple lines
 					},
 				},
 			}
-			Expect(source).To(EqualDocumentBlock(expected))
+			Expect(source).To(BecomeDocumentBlock(expected))
 		})
 
 		It("comment block with paragraphs around", func() {

@@ -10,8 +10,8 @@ import (
 	"github.com/pkg/errors"
 )
 
-// EqualDocumentBlock a custom matcher to verify that a document block matches the expectation
-func EqualDocumentBlock(expected interface{}) types.GomegaMatcher {
+// BecomeDocumentBlock a custom matcher to verify that a document block matches the expectation
+func BecomeDocumentBlock(expected interface{}) types.GomegaMatcher {
 	return &documentBlockMatcher{
 		expected: expected,
 	}
@@ -26,7 +26,7 @@ type documentBlockMatcher struct {
 func (m *documentBlockMatcher) Match(actual interface{}) (success bool, err error) {
 	content, ok := actual.(string)
 	if !ok {
-		return false, errors.Errorf("EqualDocumentBlock matcher expects a string (actual: %T)", actual)
+		return false, errors.Errorf("BecomeDocumentBlock matcher expects a string (actual: %T)", actual)
 	}
 	r := strings.NewReader(content)
 	opts := []parser.Option{parser.Entrypoint("DocumentBlock")}

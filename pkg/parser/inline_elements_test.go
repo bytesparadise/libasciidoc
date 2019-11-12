@@ -25,7 +25,7 @@ var _ = Describe("inline elements", func() {
 				},
 			},
 		}
-		Expect(source).To(EqualDocumentBlock(expected))
+		Expect(source).To(BecomeDocumentBlock(expected))
 	})
 
 	It("bold text within parenthesis", func() {
@@ -45,7 +45,7 @@ var _ = Describe("inline elements", func() {
 				},
 			},
 		}
-		Expect(source).To(EqualDocumentBlock(expected))
+		Expect(source).To(BecomeDocumentBlock(expected))
 	})
 
 	It("bold text within words", func() {
@@ -58,7 +58,7 @@ var _ = Describe("inline elements", func() {
 				},
 			},
 		}
-		Expect(source).To(EqualDocumentBlock(expected))
+		Expect(source).To(BecomeDocumentBlock(expected))
 	})
 
 	It("invalid bold portion of text", func() {
@@ -71,7 +71,7 @@ var _ = Describe("inline elements", func() {
 				},
 			},
 		}
-		Expect(source).To(EqualDocumentBlock(expected))
+		Expect(source).To(BecomeDocumentBlock(expected))
 	})
 
 	It("valid bold portion of text", func() {
@@ -90,7 +90,7 @@ var _ = Describe("inline elements", func() {
 				},
 			},
 		}
-		Expect(source).To(EqualDocumentBlock(expected))
+		Expect(source).To(BecomeDocumentBlock(expected))
 	})
 
 	It("latin characters", func() {
@@ -103,6 +103,6 @@ var _ = Describe("inline elements", func() {
 				},
 			},
 		}
-		Expect(source).To(EqualDocumentBlock(expected))
+		Expect(source).To(BecomeDocumentBlock(expected))
 	})
 })

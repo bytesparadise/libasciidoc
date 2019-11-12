@@ -360,7 +360,7 @@ var _ = Describe("footnotes - document", func() {
 					},
 				},
 			}
-			Expect(source).To(EqualDocument(expected)) // need to get the whole document here
+			Expect(source).To(BecomeDocument(expected)) // need to get the whole document here
 		})
 
 		It("footnote with single-line rich content", func() {
@@ -419,7 +419,7 @@ var _ = Describe("footnotes - document", func() {
 					},
 				},
 			}
-			Expect(source).To(EqualDocument(expected)) // need to get the whole document here
+			Expect(source).To(BecomeDocument(expected)) // need to get the whole document here
 		})
 
 		It("footnote in a paragraph", func() {
@@ -453,7 +453,7 @@ var _ = Describe("footnotes - document", func() {
 					},
 				},
 			}
-			Expect(source).To(EqualDocument(expected)) // need to get the whole document here
+			Expect(source).To(BecomeDocument(expected)) // need to get the whole document here
 		})
 
 	})
@@ -508,7 +508,7 @@ var _ = Describe("footnotes - document", func() {
 					},
 				},
 			}
-			Expect(source).To(EqualDocument(expected))
+			Expect(source).To(BecomeDocument(expected))
 		})
 
 		It("footnoteref with unknown reference", func() {
@@ -560,7 +560,7 @@ var _ = Describe("footnotes - document", func() {
 					},
 				},
 			}
-			Expect(source).To(EqualDocument(expected))
+			Expect(source).To(BecomeDocument(expected))
 		})
 	})
 
@@ -670,6 +670,6 @@ a paragraph with another footnote:[baz]`
 				},
 			},
 		}
-		Expect(source).To(EqualDocument(expected)) // need to get the whole document here
+		Expect(source).To(BecomeDocument(expected)) // need to get the whole document here
 	})
 })

@@ -34,7 +34,7 @@ var _ = Describe("document assertions", func() {
 	It("should match", func() {
 		// given
 		actual := "hello, world!"
-		matcher := testsupport.EqualDocument(expected)
+		matcher := testsupport.BecomeDocument(expected)
 		// when
 		result, err := matcher.Match(actual)
 		// then
@@ -45,7 +45,7 @@ var _ = Describe("document assertions", func() {
 	It("should not match", func() {
 		// given
 		actual := "foo"
-		matcher := testsupport.EqualDocument(expected)
+		matcher := testsupport.BecomeDocument(expected)
 		// when
 		result, err := matcher.Match(actual)
 		// then
@@ -77,14 +77,14 @@ var _ = Describe("document assertions", func() {
 	It("should return error when invalid type is input", func() {
 		// given
 		actual := "foo"
-		matcher := testsupport.EqualDocument(types.Document{})
+		matcher := testsupport.BecomeDocument(types.Document{})
 		_, err := matcher.Match(actual)
 		Expect(err).ToNot(HaveOccurred())
 		// when
 		result, err := matcher.Match(1) // not a string
 		// then
 		Expect(err).To(HaveOccurred())
-		Expect(err.Error()).To(Equal("EqualDocument matcher expects a string (actual: int)"))
+		Expect(err.Error()).To(Equal("BecomeDocument matcher expects a string (actual: int)"))
 		Expect(result).To(BeFalse())
 	})
 })

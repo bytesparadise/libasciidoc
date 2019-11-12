@@ -23,7 +23,7 @@ var _ = Describe("literal blocks - draft", func() {
 					" some literal content",
 				},
 			}
-			Expect(source).To(EqualDocumentBlock(expected))
+			Expect(source).To(BecomeDocumentBlock(expected))
 		})
 
 		It("literal block from paragraph with single space on first line", func() {
@@ -41,7 +41,7 @@ lines.`
 					"lines.",
 				},
 			}
-			Expect(source).To(EqualDocumentBlock(expected))
+			Expect(source).To(BecomeDocumentBlock(expected))
 		})
 
 		It("mixing literal block with attributes followed by a paragraph ", func() {
@@ -97,7 +97,7 @@ some content
 					"some content",
 				},
 			}
-			Expect(source).To(EqualDocumentBlock(expected))
+			Expect(source).To(BecomeDocumentBlock(expected))
 		})
 
 		It("literal block with delimited and attributes followed by 1-line paragraph", func() {

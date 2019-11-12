@@ -136,7 +136,7 @@ var _ = Describe("mixed lists - document", func() {
 					},
 				},
 			}
-			Expect(source).To(EqualDocument(expected))
+			Expect(source).To(BecomeDocument(expected))
 		})
 	})
 
@@ -371,7 +371,7 @@ var _ = Describe("mixed lists - document", func() {
 					},
 				},
 			}
-			Expect(source).To(EqualDocument(expected))
+			Expect(source).To(BecomeDocument(expected))
 		})
 
 		It("complex case 2 - mixed lists", func() {
@@ -777,7 +777,7 @@ ii) ordered 1.2.ii
 					},
 				},
 			}
-			Expect(source).To(EqualDocument(expected))
+			Expect(source).To(BecomeDocument(expected))
 		})
 
 		It("complex case 4 - mixed lists", func() {
@@ -852,7 +852,7 @@ Operating Systems::
 					},
 				},
 			}
-			Expect(source).To(EqualDocument(expected))
+			Expect(source).To(BecomeDocument(expected))
 		})
 
 		It("complex case 5 - mixed lists and a paragraph", func() {
@@ -1176,7 +1176,7 @@ a paragraph
 					},
 				},
 			}
-			Expect(source).To(EqualDocument(expected))
+			Expect(source).To(BecomeDocument(expected))
 		})
 	})
 
@@ -1259,7 +1259,7 @@ a paragraph
 					},
 				},
 			}
-			Expect(source).To(EqualDocument(expected))
+			Expect(source).To(BecomeDocument(expected))
 		})
 
 		It("same list with custom number style on sublist", func() {
@@ -1361,7 +1361,7 @@ a paragraph
 					},
 				},
 			}
-			Expect(source).To(EqualDocument(expected))
+			Expect(source).To(BecomeDocument(expected))
 		})
 
 		It("distinct lists with blankline and item attribute - case 1", func() {
@@ -1450,7 +1450,7 @@ a paragraph
 					},
 				},
 			}
-			Expect(source).To(EqualDocument(expected))
+			Expect(source).To(BecomeDocument(expected))
 		})
 
 		It("distinct lists with blankline and item attribute - case 2", func() {
@@ -1556,7 +1556,7 @@ a paragraph
 					},
 				},
 			}
-			Expect(source).To(EqualDocument(expected))
+			Expect(source).To(BecomeDocument(expected))
 		})
 
 		It("same list with single comment line inside", func() {
@@ -1613,7 +1613,7 @@ a paragraph
 					},
 				},
 			}
-			Expect(source).To(EqualDocument(expected))
+			Expect(source).To(BecomeDocument(expected))
 		})
 
 		It("same list with multiple comment lines inside", func() {
@@ -1678,7 +1678,7 @@ a paragraph
 					},
 				},
 			}
-			Expect(source).To(EqualDocument(expected))
+			Expect(source).To(BecomeDocument(expected))
 		})
 
 		It("distinct lists separated by single comment line", func() {
@@ -1741,7 +1741,7 @@ a paragraph
 					},
 				},
 			}
-			Expect(source).To(EqualDocument(expected))
+			Expect(source).To(BecomeDocument(expected))
 		})
 
 		It("distinct lists separated by multiple comment lines", func() {
@@ -1812,7 +1812,7 @@ a paragraph
 					},
 				},
 			}
-			Expect(source).To(EqualDocument(expected))
+			Expect(source).To(BecomeDocument(expected))
 		})
 	})
 })

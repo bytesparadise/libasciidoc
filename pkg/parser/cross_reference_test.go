@@ -154,7 +154,7 @@ with some content linked to <<thetitle>>!`
 					},
 				},
 			}
-			Expect(source).To(EqualDocument(expected))
+			Expect(source).To(BecomeDocument(expected))
 		})
 
 		It("cross-reference with custom id and label", func() {
@@ -207,7 +207,7 @@ with some content linked to <<thetitle,a label to the title>>!`
 					},
 				},
 			}
-			Expect(source).To(EqualDocument(expected))
+			Expect(source).To(BecomeDocument(expected))
 		})
 	})
 })

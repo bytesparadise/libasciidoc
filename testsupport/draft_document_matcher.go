@@ -42,7 +42,7 @@ func (m *draftDocumentMatcher) setFilename(f string) {
 func (m *draftDocumentMatcher) Match(actual interface{}) (success bool, err error) {
 	content, ok := actual.(string)
 	if !ok {
-		return false, errors.Errorf("EqualDocumentBlock matcher expects a string (actual: %T)", actual)
+		return false, errors.Errorf("BecomeDocumentBlock matcher expects a string (actual: %T)", actual)
 	}
 	r := strings.NewReader(content)
 	if !m.preprocessing {

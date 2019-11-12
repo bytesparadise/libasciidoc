@@ -11,8 +11,8 @@ import (
 	"github.com/pkg/errors"
 )
 
-// EqualDocument a custom matcher to verify that a document matches the expectation
-func EqualDocument(expected types.Document) gomegatypes.GomegaMatcher {
+// BecomeDocument a custom matcher to verify that a document matches the expectation
+func BecomeDocument(expected types.Document) gomegatypes.GomegaMatcher {
 	return &documentMatcher{
 		expected: expected,
 	}
@@ -27,7 +27,7 @@ type documentMatcher struct {
 func (m *documentMatcher) Match(actual interface{}) (success bool, err error) {
 	content, ok := actual.(string)
 	if !ok {
-		return false, errors.Errorf("EqualDocument matcher expects a string (actual: %T)", actual)
+		return false, errors.Errorf("BecomeDocument matcher expects a string (actual: %T)", actual)
 	}
 	r := strings.NewReader(content)
 	m.actual, err = parser.ParseDocument("", r)

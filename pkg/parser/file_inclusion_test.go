@@ -2217,7 +2217,7 @@ var _ = Describe("file inclusions - final document", func() {
 				},
 			},
 		}
-		Expect(source).To(EqualDocument(expected))
+		Expect(source).To(BecomeDocument(expected))
 	})
 
 	It("should include child and grandchild content with relative then absolute level offset", func() {
@@ -2377,7 +2377,7 @@ var _ = Describe("file inclusions - final document", func() {
 				},
 			},
 		}
-		Expect(source).To(EqualDocument(expected))
+		Expect(source).To(BecomeDocument(expected))
 	})
 
 })
