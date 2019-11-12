@@ -75,7 +75,7 @@ var _ = Describe("draft document assertions", func() {
 			_, err := matcher.Match(1) // not a string
 			// then
 			Expect(err).To(HaveOccurred())
-			Expect(err.Error()).To(Equal("EqualDocumentBlock matcher expects a string (actual: int)"))
+			Expect(err.Error()).To(Equal("BecomeDocumentBlock matcher expects a string (actual: int)"))
 		})
 	})
 

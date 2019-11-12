@@ -678,7 +678,7 @@ var _ = Describe("sections - document", func() {
 					},
 				},
 			}
-			Expect(source).To(EqualDocument(expected))
+			Expect(source).To(BecomeDocument(expected))
 		})
 
 		It("header with many spaces around content", func() {
@@ -705,7 +705,7 @@ var _ = Describe("sections - document", func() {
 					},
 				},
 			}
-			Expect(source).To(EqualDocument(expected))
+			Expect(source).To(BecomeDocument(expected))
 		})
 
 		It("header and paragraph", func() {
@@ -744,7 +744,7 @@ and a paragraph`
 					},
 				},
 			}
-			Expect(source).To(EqualDocument(expected))
+			Expect(source).To(BecomeDocument(expected))
 		})
 
 		It("two sections with level 0", func() {
@@ -787,7 +787,7 @@ and a paragraph`
 					},
 				},
 			}
-			Expect(source).To(EqualDocument(expected))
+			Expect(source).To(BecomeDocument(expected))
 		})
 
 		It("section level 1 alone", func() {
@@ -814,7 +814,7 @@ and a paragraph`
 					},
 				},
 			}
-			Expect(source).To(EqualDocument(expected))
+			Expect(source).To(BecomeDocument(expected))
 		})
 
 		It("section level 1 with quoted text", func() {
@@ -846,7 +846,7 @@ and a paragraph`
 					},
 				},
 			}
-			Expect(source).To(EqualDocument(expected))
+			Expect(source).To(BecomeDocument(expected))
 		})
 
 		It("section level 0 with nested section level 1", func() {
@@ -889,7 +889,7 @@ and a paragraph`
 					},
 				},
 			}
-			Expect(source).To(EqualDocument(expected))
+			Expect(source).To(BecomeDocument(expected))
 		})
 
 		It("section level 0 with nested section level 2", func() {
@@ -932,7 +932,7 @@ and a paragraph`
 					},
 				},
 			}
-			Expect(source).To(EqualDocument(expected))
+			Expect(source).To(BecomeDocument(expected))
 		})
 
 		It("section level 1 with immediate paragraph", func() {
@@ -969,7 +969,7 @@ and a paragraph`
 					},
 				},
 			}
-			Expect(source).To(EqualDocument(expected))
+			Expect(source).To(BecomeDocument(expected))
 		})
 
 		It("section level 1 with a paragraph separated by empty line", func() {
@@ -1007,7 +1007,7 @@ and a paragraph`
 					},
 				},
 			}
-			Expect(source).To(EqualDocument(expected))
+			Expect(source).To(BecomeDocument(expected))
 		})
 
 		It("section level 1 with a paragraph separated by non-empty line", func() {
@@ -1043,7 +1043,7 @@ and a paragraph`
 					},
 				},
 			}
-			Expect(source).To(EqualDocument(expected))
+			Expect(source).To(BecomeDocument(expected))
 		})
 
 		It("section levels 1, 2, 3, 2", func() {
@@ -1146,7 +1146,7 @@ a paragraph`
 					},
 				},
 			}
-			Expect(source).To(EqualDocument(expected))
+			Expect(source).To(BecomeDocument(expected))
 		})
 
 		It("section levels 1, 2, 3, 3", func() {
@@ -1249,7 +1249,7 @@ a paragraph`
 					},
 				},
 			}
-			Expect(source).To(EqualDocument(expected))
+			Expect(source).To(BecomeDocument(expected))
 		})
 
 		It("section levels 1, 3, 4, 4", func() {
@@ -1352,7 +1352,7 @@ a paragraph`
 					},
 				},
 			}
-			Expect(source).To(EqualDocument(expected))
+			Expect(source).To(BecomeDocument(expected))
 		})
 
 		It("single section with custom IDs", func() {
@@ -1380,7 +1380,7 @@ a paragraph`
 					},
 				},
 			}
-			Expect(source).To(EqualDocument(expected))
+			Expect(source).To(BecomeDocument(expected))
 		})
 
 		It("multiple sections with custom IDs", func() {
@@ -1450,7 +1450,7 @@ a paragraph`
 					},
 				},
 			}
-			Expect(source).To(EqualDocument(expected))
+			Expect(source).To(BecomeDocument(expected))
 		})
 
 		It("sections with same title", func() {
@@ -1493,7 +1493,7 @@ a paragraph`
 					},
 				},
 			}
-			Expect(source).To(EqualDocument(expected))
+			Expect(source).To(BecomeDocument(expected))
 		})
 	})
 
@@ -1516,7 +1516,7 @@ a paragraph`
 						},
 					},
 				}}
-			Expect(source).To(EqualDocument(expected))
+			Expect(source).To(BecomeDocument(expected))
 		})
 
 		It("header invalid - missing space", func() {
@@ -1536,7 +1536,7 @@ a paragraph`
 						},
 					},
 				}}
-			Expect(source).To(EqualDocument(expected))
+			Expect(source).To(BecomeDocument(expected))
 		})
 
 		It("header invalid - header space", func() {
@@ -1558,7 +1558,7 @@ a paragraph`
 					},
 				},
 			}
-			Expect(source).To(EqualDocument(expected))
+			Expect(source).To(BecomeDocument(expected))
 		})
 
 		It("header with invalid section1", func() {
@@ -1596,7 +1596,7 @@ a paragraph`
 					},
 				},
 			}
-			Expect(source).To(EqualDocument(expected))
+			Expect(source).To(BecomeDocument(expected))
 		})
 
 	})
@@ -1635,7 +1635,7 @@ Doc Writer <thedoc@asciidoctor.org>`
 					},
 				},
 			}
-			Expect(source).To(EqualDocument(expected))
+			Expect(source).To(BecomeDocument(expected))
 		})
 	})
 })

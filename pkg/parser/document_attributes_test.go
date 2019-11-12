@@ -48,7 +48,7 @@ This journey begins on a bleary Monday morning.`
 					},
 				},
 			}
-			Expect(source).To(EqualDocument(expected))
+			Expect(source).To(BecomeDocument(expected))
 		})
 
 		Context("document authors", func() {
@@ -88,7 +88,7 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>`
 							},
 						},
 					}
-					Expect(source).To(EqualDocument(expected))
+					Expect(source).To(BecomeDocument(expected))
 				})
 
 				It("lastname with underscores", func() {
@@ -124,7 +124,7 @@ Lazarus het_Draeke <lazarus@asciidoctor.org>`
 							},
 						},
 					}
-					Expect(source).To(EqualDocument(expected))
+					Expect(source).To(BecomeDocument(expected))
 				})
 
 				It("firstname and lastname only", func() {
@@ -160,7 +160,7 @@ Kismet Chameleon`
 							},
 						},
 					}
-					Expect(source).To(EqualDocument(expected))
+					Expect(source).To(BecomeDocument(expected))
 				})
 
 				It("firstname only", func() {
@@ -196,7 +196,7 @@ Chameleon`
 							},
 						},
 					}
-					Expect(source).To(EqualDocument(expected))
+					Expect(source).To(BecomeDocument(expected))
 				})
 
 				It("alternate author input", func() {
@@ -232,7 +232,7 @@ Chameleon`
 							},
 						},
 					}
-					Expect(source).To(EqualDocument(expected))
+					Expect(source).To(BecomeDocument(expected))
 				})
 			})
 
@@ -275,7 +275,7 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 							},
 						},
 					}
-					Expect(source).To(EqualDocument(expected))
+					Expect(source).To(BecomeDocument(expected))
 				})
 			})
 		})
@@ -321,7 +321,7 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 						},
 					},
 				}
-				Expect(source).To(EqualDocument(expected))
+				Expect(source).To(BecomeDocument(expected))
 			})
 
 			It("revision with revnumber and revdate only", func() {
@@ -363,7 +363,7 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 						},
 					},
 				}
-				Expect(source).To(EqualDocument(expected))
+				Expect(source).To(BecomeDocument(expected))
 			})
 
 			It("revision with revnumber and revdate - with colon separator", func() {
@@ -405,7 +405,7 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 						},
 					},
 				}
-				Expect(source).To(EqualDocument(expected))
+				Expect(source).To(BecomeDocument(expected))
 			})
 			It("revision with revnumber only - comma suffix", func() {
 				source := `= title
@@ -446,7 +446,7 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 						},
 					},
 				}
-				Expect(source).To(EqualDocument(expected))
+				Expect(source).To(BecomeDocument(expected))
 			})
 
 			It("revision with revdate as number - spaces and no prefix no suffix", func() {
@@ -488,7 +488,7 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 						},
 					},
 				}
-				Expect(source).To(EqualDocument(expected))
+				Expect(source).To(BecomeDocument(expected))
 			})
 
 			It("revision with revdate as alphanum - spaces and no prefix no suffix", func() {
@@ -530,7 +530,7 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 						},
 					},
 				}
-				Expect(source).To(EqualDocument(expected))
+				Expect(source).To(BecomeDocument(expected))
 			})
 
 			It("revision with revnumber only", func() {
@@ -572,7 +572,7 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 						},
 					},
 				}
-				Expect(source).To(EqualDocument(expected))
+				Expect(source).To(BecomeDocument(expected))
 			})
 
 			It("revision with spaces and capital revnumber ", func() {
@@ -614,7 +614,7 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 						},
 					},
 				}
-				Expect(source).To(EqualDocument(expected))
+				Expect(source).To(BecomeDocument(expected))
 			})
 
 			It("revision only - with comma separator", func() {
@@ -656,7 +656,7 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 						},
 					},
 				}
-				Expect(source).To(EqualDocument(expected))
+				Expect(source).To(BecomeDocument(expected))
 			})
 
 			It("revision with revnumber plus comma and colon separators", func() {
@@ -698,7 +698,7 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 						},
 					},
 				}
-				Expect(source).To(EqualDocument(expected))
+				Expect(source).To(BecomeDocument(expected))
 			})
 
 			It("revision with revnumber plus colon separator", func() {
@@ -740,7 +740,7 @@ v1.0:`
 						},
 					},
 				}
-				Expect(source).To(EqualDocument(expected))
+				Expect(source).To(BecomeDocument(expected))
 			})
 
 		})
@@ -768,7 +768,7 @@ v1.0:`
 						types.DocumentAttributeDeclaration{Name: "Auth0r", Value: "Xavier"},
 					},
 				}
-				Expect(source).To(EqualDocument(expected))
+				Expect(source).To(BecomeDocument(expected))
 			})
 
 			It("attributes and paragraph without blank line in-between", func() {
@@ -797,7 +797,7 @@ a paragraph`
 						},
 					},
 				}
-				Expect(source).To(EqualDocument(expected))
+				Expect(source).To(BecomeDocument(expected))
 			})
 
 			It("contiguous attributes and paragraph with blank line in-between", func() {
@@ -825,7 +825,7 @@ a paragraph`
 						},
 					},
 				}
-				Expect(source).To(EqualDocument(expected))
+				Expect(source).To(BecomeDocument(expected))
 			})
 
 			It("splitted attributes and paragraph with blank line in-between", func() {
@@ -857,7 +857,7 @@ a paragraph`
 						},
 					},
 				}
-				Expect(source).To(EqualDocument(expected))
+				Expect(source).To(BecomeDocument(expected))
 			})
 
 			It("no header and attributes in body", func() {
@@ -885,7 +885,7 @@ a paragraph`
 						types.DocumentAttributeDeclaration{Name: "author", Value: "Xavier"},
 					},
 				}
-				Expect(source).To(EqualDocument(expected))
+				Expect(source).To(BecomeDocument(expected))
 			})
 		})
 
@@ -914,7 +914,7 @@ a paragraph written by {author}.`
 						},
 					},
 				}
-				Expect(source).To(EqualDocument(expected))
+				Expect(source).To(BecomeDocument(expected))
 			})
 
 			It("paragraph with attribute resets", func() {
@@ -944,7 +944,7 @@ a paragraph written by {author}.`
 						},
 					},
 				}
-				Expect(source).To(EqualDocument(expected))
+				Expect(source).To(BecomeDocument(expected))
 			})
 		})
 
@@ -1010,7 +1010,7 @@ This journey begins on a bleary Monday morning.`
 					},
 				},
 			}
-			Expect(source).To(EqualDocument(expected))
+			Expect(source).To(BecomeDocument(expected))
 		})
 
 		It("header section inline with bold quote", func() {
@@ -1072,7 +1072,7 @@ a paragraph with *bold content*`
 					},
 				},
 			}
-			Expect(source).To(EqualDocument(expected))
+			Expect(source).To(BecomeDocument(expected))
 		})
 	})
 
@@ -1108,7 +1108,7 @@ a paragraph with *bold content*`
 					},
 				},
 			}
-			Expect(source).To(EqualDocument(expected))
+			Expect(source).To(BecomeDocument(expected))
 		})
 
 		It("invalid attribute names", func() {
@@ -1133,7 +1133,7 @@ a paragraph with *bold content*`
 					},
 				},
 			}
-			Expect(source).To(EqualDocument(expected))
+			Expect(source).To(BecomeDocument(expected))
 		})
 	})
 })

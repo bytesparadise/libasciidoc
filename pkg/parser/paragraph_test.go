@@ -22,7 +22,7 @@ var _ = Describe("paragraphs - draft", func() {
 					},
 				},
 			}
-			Expect(source).To(EqualDocumentBlock(expected))
+			Expect(source).To(BecomeDocumentBlock(expected))
 		})
 
 		It("paragraph with few words and ending with spaces", func() {
@@ -35,7 +35,7 @@ var _ = Describe("paragraphs - draft", func() {
 					},
 				},
 			}
-			Expect(source).To(EqualDocumentBlock(expected))
+			Expect(source).To(BecomeDocumentBlock(expected))
 		})
 
 		It("paragraph with bold content and spaces", func() {
@@ -55,7 +55,7 @@ var _ = Describe("paragraphs - draft", func() {
 					},
 				},
 			}
-			Expect(source).To(EqualDocumentBlock(expected))
+			Expect(source).To(BecomeDocumentBlock(expected))
 		})
 
 		It("paragraph with non-alphnum character before bold text", func() {
@@ -74,7 +74,7 @@ var _ = Describe("paragraphs - draft", func() {
 					},
 				},
 			}
-			Expect(source).To(EqualDocumentBlock(expected))
+			Expect(source).To(BecomeDocumentBlock(expected))
 		})
 
 		It("paragraph with id and title", func() {
@@ -93,7 +93,7 @@ a paragraph`
 					},
 				},
 			}
-			Expect(source).To(EqualDocumentBlock(expected))
+			Expect(source).To(BecomeDocumentBlock(expected))
 		})
 
 		It("paragraph with words and dots on same line", func() {
@@ -107,7 +107,7 @@ a paragraph`
 				},
 			}
 
-			Expect(source).To(EqualDocumentBlock(expected))
+			Expect(source).To(BecomeDocumentBlock(expected))
 		})
 		It("paragraph with words and dots on two lines", func() {
 			source := `foo. 
@@ -123,7 +123,7 @@ bar.`
 					},
 				},
 			}
-			Expect(source).To(EqualDocumentBlock(expected))
+			Expect(source).To(BecomeDocumentBlock(expected))
 		})
 	})
 
@@ -148,7 +148,7 @@ baz`
 					},
 				},
 			}
-			Expect(source).To(EqualDocumentBlock(expected))
+			Expect(source).To(BecomeDocumentBlock(expected))
 		})
 
 		It("with paragraph attribute", func() {
@@ -172,7 +172,7 @@ baz`
 					},
 				},
 			}
-			Expect(source).To(EqualDocumentBlock(expected))
+			Expect(source).To(BecomeDocumentBlock(expected))
 		})
 
 	})
@@ -193,7 +193,7 @@ baz`
 					},
 				},
 			}
-			Expect(source).To(EqualDocumentBlock(expected))
+			Expect(source).To(BecomeDocumentBlock(expected))
 		})
 
 		It("warning admonition paragraph", func() {
@@ -216,7 +216,7 @@ warning!`
 					},
 				},
 			}
-			Expect(source).To(EqualDocumentBlock(expected))
+			Expect(source).To(BecomeDocumentBlock(expected))
 		})
 
 		It("admonition note paragraph with id and title", func() {
@@ -238,7 +238,7 @@ NOTE: this is a note.`
 					},
 				},
 			}
-			Expect(source).To(EqualDocumentBlock(expected))
+			Expect(source).To(BecomeDocumentBlock(expected))
 		})
 
 		It("caution admonition paragraph with single line", func() {
@@ -256,7 +256,7 @@ this is a caution!`
 					},
 				},
 			}
-			Expect(source).To(EqualDocumentBlock(expected))
+			Expect(source).To(BecomeDocumentBlock(expected))
 		})
 
 		It("multiline caution admonition paragraph with title and id", func() {
@@ -293,7 +293,7 @@ this is a
 					},
 				},
 			}
-			Expect(source).To(EqualDocumentBlock(expected))
+			Expect(source).To(BecomeDocumentBlock(expected))
 		})
 
 		It("multiple admonition paragraphs", func() {
@@ -354,7 +354,7 @@ I am a verse paragraph.`
 					},
 				},
 			}
-			Expect(source).To(EqualDocumentBlock(expected))
+			Expect(source).To(BecomeDocumentBlock(expected))
 		})
 
 		It("paragraph as a verse with author, title and other attributes", func() {
@@ -379,7 +379,7 @@ I am a verse paragraph.`
 					},
 				},
 			}
-			Expect(source).To(EqualDocumentBlock(expected))
+			Expect(source).To(BecomeDocumentBlock(expected))
 		})
 
 		It("paragraph as a verse with empty title", func() {
@@ -398,7 +398,7 @@ I am a verse paragraph.`
 					},
 				},
 			}
-			Expect(source).To(EqualDocumentBlock(expected))
+			Expect(source).To(BecomeDocumentBlock(expected))
 		})
 
 		It("paragraph as a verse without title", func() {
@@ -417,7 +417,7 @@ I am a verse paragraph.`
 					},
 				},
 			}
-			Expect(source).To(EqualDocumentBlock(expected))
+			Expect(source).To(BecomeDocumentBlock(expected))
 		})
 
 		It("paragraph as a verse with empty author", func() {
@@ -435,7 +435,7 @@ I am a verse paragraph.`
 					},
 				},
 			}
-			Expect(source).To(EqualDocumentBlock(expected))
+			Expect(source).To(BecomeDocumentBlock(expected))
 		})
 
 		It("paragraph as a verse without author", func() {
@@ -453,7 +453,7 @@ I am a verse paragraph.`
 					},
 				},
 			}
-			Expect(source).To(EqualDocumentBlock(expected))
+			Expect(source).To(BecomeDocumentBlock(expected))
 		})
 
 		It("image block as a verse", func() {
@@ -473,7 +473,7 @@ image::foo.png[]`
 					},
 				},
 			}
-			Expect(source).To(EqualDocumentBlock(expected))
+			Expect(source).To(BecomeDocumentBlock(expected))
 		})
 	})
 
@@ -496,7 +496,7 @@ I am a quote paragraph.`
 					},
 				},
 			}
-			Expect(source).To(EqualDocumentBlock(expected))
+			Expect(source).To(BecomeDocumentBlock(expected))
 		})
 
 		It("paragraph as a quote with author, title and other attributes", func() {
@@ -521,7 +521,7 @@ I am a quote paragraph.`
 					},
 				},
 			}
-			Expect(source).To(EqualDocumentBlock(expected))
+			Expect(source).To(BecomeDocumentBlock(expected))
 		})
 
 		It("paragraph as a quote with empty title", func() {
@@ -540,7 +540,7 @@ I am a quote paragraph.`
 					},
 				},
 			}
-			Expect(source).To(EqualDocumentBlock(expected))
+			Expect(source).To(BecomeDocumentBlock(expected))
 		})
 
 		It("paragraph as a quote without title", func() {
@@ -559,7 +559,7 @@ I am a quote paragraph.`
 					},
 				},
 			}
-			Expect(source).To(EqualDocumentBlock(expected))
+			Expect(source).To(BecomeDocumentBlock(expected))
 		})
 
 		It("paragraph as a quote with empty author", func() {
@@ -577,7 +577,7 @@ I am a quote paragraph.`
 					},
 				},
 			}
-			Expect(source).To(EqualDocumentBlock(expected))
+			Expect(source).To(BecomeDocumentBlock(expected))
 		})
 
 		It("paragraph as a quote without author", func() {
@@ -595,7 +595,7 @@ I am a quote paragraph.`
 					},
 				},
 			}
-			Expect(source).To(EqualDocumentBlock(expected))
+			Expect(source).To(BecomeDocumentBlock(expected))
 		})
 
 		It("inline image within a quote", func() {
@@ -621,7 +621,7 @@ a foo image:foo.png[]`
 					},
 				},
 			}
-			Expect(source).To(EqualDocumentBlock(expected))
+			Expect(source).To(BecomeDocumentBlock(expected))
 		})
 
 		It("image block is NOT a quote", func() {
@@ -637,7 +637,7 @@ image::foo.png[]`
 				},
 				Path: "foo.png",
 			}
-			Expect(source).To(EqualDocumentBlock(expected)) //, parser.Debug(true))
+			Expect(source).To(BecomeDocumentBlock(expected)) //, parser.Debug(true))
 		})
 	})
 })

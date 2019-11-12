@@ -972,7 +972,7 @@ var _ = Describe("ordered lists - document", func() {
 					},
 				},
 			}
-			Expect(source).To(EqualDocument(expected))
+			Expect(source).To(BecomeDocument(expected))
 		})
 
 		It("ordered list item with arabic numbering style", func() {
@@ -996,7 +996,7 @@ var _ = Describe("ordered lists - document", func() {
 					},
 				},
 			}
-			Expect(source).To(EqualDocument(expected))
+			Expect(source).To(BecomeDocument(expected))
 		})
 
 		It("ordered list item with lower alpha numbering style", func() {
@@ -1020,7 +1020,7 @@ var _ = Describe("ordered lists - document", func() {
 					},
 				},
 			}
-			Expect(source).To(EqualDocument(expected))
+			Expect(source).To(BecomeDocument(expected))
 		})
 
 		It("ordered list item with upper alpha numbering style", func() {
@@ -1045,7 +1045,7 @@ var _ = Describe("ordered lists - document", func() {
 					},
 				},
 			}
-			Expect(source).To(EqualDocument(expected))
+			Expect(source).To(BecomeDocument(expected))
 		})
 
 		It("ordered list item with lower roman numbering style", func() {
@@ -1069,7 +1069,7 @@ var _ = Describe("ordered lists - document", func() {
 					},
 				},
 			}
-			Expect(source).To(EqualDocument(expected))
+			Expect(source).To(BecomeDocument(expected))
 		})
 
 		It("ordered list item with upper roman numbering style", func() {
@@ -1094,7 +1094,7 @@ var _ = Describe("ordered lists - document", func() {
 					},
 				},
 			}
-			Expect(source).To(EqualDocument(expected))
+			Expect(source).To(BecomeDocument(expected))
 		})
 
 		It("ordered list item with explicit numbering style", func() {
@@ -1128,7 +1128,7 @@ var _ = Describe("ordered lists - document", func() {
 					},
 				},
 			}
-			Expect(source).To(EqualDocument(expected))
+			Expect(source).To(BecomeDocument(expected))
 		})
 
 		It("ordered list item with explicit start only", func() {
@@ -1155,7 +1155,7 @@ var _ = Describe("ordered lists - document", func() {
 					},
 				},
 			}
-			Expect(source).To(EqualDocument(expected))
+			Expect(source).To(BecomeDocument(expected))
 		})
 
 		It("ordered list item with explicit quoted numbering and start", func() {
@@ -1183,7 +1183,7 @@ var _ = Describe("ordered lists - document", func() {
 					},
 				},
 			}
-			Expect(source).To(EqualDocument(expected))
+			Expect(source).To(BecomeDocument(expected))
 		})
 
 		It("max level of ordered items - case 1", func() {
@@ -1331,7 +1331,7 @@ var _ = Describe("ordered lists - document", func() {
 					},
 				},
 			}
-			Expect(source).To(EqualDocument(expected))
+			Expect(source).To(BecomeDocument(expected))
 		})
 
 		It("max level of ordered items - case 2", func() {
@@ -1479,7 +1479,7 @@ var _ = Describe("ordered lists - document", func() {
 					},
 				},
 			}
-			Expect(source).To(EqualDocument(expected))
+			Expect(source).To(BecomeDocument(expected))
 		})
 	})
 
@@ -1532,7 +1532,7 @@ var _ = Describe("ordered lists - document", func() {
 					},
 				},
 			}
-			Expect(source).To(EqualDocument(expected))
+			Expect(source).To(BecomeDocument(expected))
 		})
 
 		It("ordered list with unnumbered items", func() {
@@ -1582,7 +1582,7 @@ var _ = Describe("ordered lists - document", func() {
 					},
 				},
 			}
-			Expect(source).To(EqualDocument(expected))
+			Expect(source).To(BecomeDocument(expected))
 		})
 
 		It("ordered list with custom numbering on child items with tabs ", func() {
@@ -1731,7 +1731,7 @@ var _ = Describe("ordered lists - document", func() {
 					},
 				},
 			}
-			Expect(source).To(EqualDocument(expected))
+			Expect(source).To(BecomeDocument(expected))
 		})
 
 		It("ordered list with all default styles and blank lines", func() {
@@ -1857,7 +1857,7 @@ var _ = Describe("ordered lists - document", func() {
 					},
 				},
 			}
-			Expect(source).To(EqualDocument(expected))
+			Expect(source).To(BecomeDocument(expected))
 		})
 	})
 
@@ -1909,7 +1909,7 @@ var _ = Describe("ordered lists - document", func() {
 					},
 				},
 			}
-			Expect(source).To(EqualDocument(expected))
+			Expect(source).To(BecomeDocument(expected))
 		})
 
 		It("ordered list with numbered items", func() {
@@ -2000,7 +2000,7 @@ b. item 2.a`
 					},
 				},
 			}
-			Expect(source).To(EqualDocument(expected))
+			Expect(source).To(BecomeDocument(expected))
 		})
 	})
 
@@ -2093,7 +2093,7 @@ another delimited block
 					},
 				},
 			}
-			Expect(source).To(EqualDocument(expected))
+			Expect(source).To(BecomeDocument(expected))
 		})
 	})
 })
