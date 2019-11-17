@@ -46,7 +46,7 @@ func (m *draftDocumentMatcher) Match(actual interface{}) (success bool, err erro
 	}
 	r := strings.NewReader(content)
 	if !m.preprocessing {
-		m.actual, err = parser.ParseReader(m.filename, r, parser.Entrypoint("DraftAsciidocDocument"))
+		m.actual, err = parser.ParseReader(m.filename, r, parser.Entrypoint("AsciidocDocument"))
 	} else {
 		m.actual, err = parser.ParseDraftDocument(m.filename, r)
 	}

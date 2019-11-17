@@ -101,4 +101,46 @@ next lines</p>
 		})
 	})
 
+	Context("with document attribute substitutions", func() {
+
+		It("external link with a document attribute substitution for the whole URL", func() {
+			source := `:url: https://foo.bar
+
+:url: https://foo2.bar
+
+a link to {url}`
+
+			expected := `<div class="paragraph">
+<p>a link to <a href="https://foo2.bar" class="bare">https://foo2.bar</a></p>
+</div>`
+			Expect(source).To(RenderHTML5Body(expected))
+		})
+
+		It("external link with two document attribute substitutions only", func() {
+			source := `:scheme: https
+:path: foo.bar
+
+a link to {scheme}://{path}`
+
+			expected := `<div class="paragraph">
+<p>a link to <a href="https://foo.bar" class="bare">https://foo.bar</a></p>
+</div>`
+			Expect(source).To(RenderHTML5Body(expected))
+		})
+
+		It("external link with two document attribute substitutions and a reset", func() {
+			source := `:scheme: https
+:path: foo.bar
+
+:!path:
+
+a link to {scheme}://{path}`
+
+			expected := `<div class="paragraph">
+<p>a link to <a href="https://{path}" class="bare">https://{path}</a></p>
+</div>`
+
+			Expect(source).To(RenderHTML5Body(expected))
+		})
+	})
 })

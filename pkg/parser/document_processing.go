@@ -4,6 +4,7 @@ import (
 	"io"
 	"reflect"
 	"strconv"
+	"strings"
 
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 
@@ -22,8 +23,13 @@ func ParseDocument(filename string, r io.Reader, opts ...Option) (types.Document
 		log.Debug("draft document")
 		spew.Dump(draftDoc)
 	}
+	// apply document attribute substitutions and re-parse paragraphs that were affected
+	blocks, err := applyDocumentAttributeSubstitutions(draftDoc.Blocks)
+	if err != nil {
+		return types.Document{}, err
+	}
 	// now, merge list items into proper lists
-	blocks, err := rearrangeListItems(draftDoc.Blocks, false)
+	blocks, err = rearrangeListItems(blocks, false)
 	if err != nil {
 		return types.Document{}, err
 	}
@@ -39,6 +45,55 @@ func ParseDocument(filename string, r io.Reader, opts ...Option) (types.Document
 		}
 	}
 	return doc, nil
+}
+
+// applyAttributeSubstitutions applies the document attribute substitutions
+// and re-parse the paragraphs that were affected
+func applyDocumentAttributeSubstitutions(blocks []interface{}) ([]interface{}, error) {
+	// the document attributes, as they are resolved while processing the blocks
+	attrs := make(map[string]string)
+	result := make([]interface{}, 0, len(blocks)) // maximum capacity cannot exceed initial input
+	for _, b := range blocks {
+		switch b := b.(type) {
+		case types.DocumentAttributeDeclaration:
+			attrs[b.Name] = b.Value
+		case types.DocumentAttributeReset:
+			delete(attrs, b.Name)
+		case types.Paragraph:
+			for i, line := range b.Lines {
+				if line, found := line.ApplyDocumentAttributeSubstitutions(attrs); found {
+					// reparse the string elements, looking for links
+					elements := make(types.InlineElements, 0, 2*len(line))
+					for _, element := range line {
+						switch element := element.(type) {
+						case types.StringElement:
+							r, err := parseInlineLinks(element)
+							if err != nil {
+								return []interface{}{}, errors.Wrap(err, "unable to process attribute substitutions")
+							}
+							elements = append(elements, r...)
+						default:
+							elements = append(elements, element)
+						}
+					}
+					b.Lines[i] = elements
+				} else {
+					b.Lines[i] = line
+				}
+			}
+		}
+		result = append(result, b)
+	}
+
+	return result, nil
+}
+
+func parseInlineLinks(element types.StringElement) (types.InlineElements, error) {
+	elements, err := ParseReader("", strings.NewReader(element.Content), Entrypoint("InlineLinks"))
+	if err != nil {
+		return types.InlineElements{}, errors.Wrap(err, "error while parsing content for inline links")
+	}
+	return elements.(types.InlineElements), nil
 }
 
 // rearrangeListItems moves the list items into lists, and nested lists if needed
@@ -116,26 +171,9 @@ func rearrangeListItems(blocks []interface{}, withinDelimitedBlock bool) ([]inte
 	}
 	// also when all is done, process the remaining pending list items
 	if len(lists) > 0 {
-		// if log.IsLevelEnabled(log.DebugLevel) {
-		// 	log.Debugf("processing the remaining %d lists", len(lists))
-		// 	spew.Dump(lists)
-		// }
-		// // add the top-level list *value* (not the pointer)
-		// if reflect.ValueOf(l[0]).Kind() == reflect.Ptr { // TODO: factorize duplicate code
-		// 	tl := reflect.Indirect(reflect.ValueOf(l[0])).Interface()
-		// 	result = append(result, tl) // just add the top-level list
-		// }
 		log.Debugf("processing the remaining %d lists...", len(lists))
 		for _, list := range pruneLists(lists, 0) {
 			result = append(result, unPtr(list))
-			// switch list := list.(type) {
-			// case *types.OrderedList:
-			// 	result = append(result, *list)
-			// case *types.UnorderedList:
-			// 	result = append(result, *list)
-			// case *types.LabeledList:
-			// 	result = append(result, *list)
-			// }
 		}
 	}
 	if log.IsLevelEnabled(log.DebugLevel) {

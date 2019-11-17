@@ -103,7 +103,7 @@ func parseFileToInclude(filename string, incl types.FileInclusion, attrs types.D
 	}
 	// use a simpler/different grammar for non-asciidoc files.
 	if !IsAsciidoc(absPath) {
-		opts = append(opts, Entrypoint("DraftTextDocument"))
+		opts = append(opts, Entrypoint("TextDocument"))
 	}
 	return parseDraftDocument(absPath, content, levelOffsets, opts...)
 }

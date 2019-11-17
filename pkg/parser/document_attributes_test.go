@@ -906,9 +906,7 @@ a paragraph written by {author}.`
 							Attributes: types.ElementAttributes{},
 							Lines: []types.InlineElements{
 								{
-									types.StringElement{Content: "a paragraph written by "},
-									types.DocumentAttributeSubstitution{Name: "author"},
-									types.StringElement{Content: "."},
+									types.StringElement{Content: "a paragraph written by Xavier."},
 								},
 							},
 						},
@@ -936,9 +934,7 @@ a paragraph written by {author}.`
 							Attributes: types.ElementAttributes{},
 							Lines: []types.InlineElements{
 								{
-									types.StringElement{Content: "a paragraph written by "},
-									types.DocumentAttributeSubstitution{Name: "author"},
-									types.StringElement{Content: "."},
+									types.StringElement{Content: "a paragraph written by Xavier."},
 								},
 							},
 						},
@@ -1127,7 +1123,9 @@ a paragraph with *bold content*`
 								types.StringElement{Content: ":@date: 2017-01-01"},
 							},
 							{
-								types.StringElement{Content: ":{author}: Xavier"},
+								types.StringElement{Content: ":"},
+								types.DocumentAttributeSubstitution{Name: "author"},
+								types.StringElement{Content: ": Xavier"},
 							},
 						},
 					},

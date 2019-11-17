@@ -126,7 +126,6 @@ func renderDocumentElements(ctx *renderer.Context) ([]byte, error) {
 			}
 			// retain everything "as-is"
 			elements = ctx.Document.Elements
-			break
 		case types.Section:
 			if e.Level == 0 {
 				// retain the section's elements...
@@ -137,11 +136,9 @@ func renderDocumentElements(ctx *renderer.Context) ([]byte, error) {
 			}
 			// retain everything "as-is"
 			elements = ctx.Document.Elements
-			break
 		default:
 			// retain everything "as-is"
 			elements = ctx.Document.Elements
-			break
 		}
 	}
 	if log.IsLevelEnabled(log.DebugLevel) {
