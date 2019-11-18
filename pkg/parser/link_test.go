@@ -823,7 +823,7 @@ a link to {url}`
 				source := `:scheme: https
 :path: foo.bar
 
-a link to {scheme}://{path}`
+a link to {scheme}://{path} and https://foo.baz`
 
 				expected := types.Document{
 					Attributes:         types.DocumentAttributes{},
@@ -852,6 +852,15 @@ a link to {scheme}://{path}`
 										},
 										Attributes: types.ElementAttributes{},
 									},
+									types.StringElement{Content: " and "},
+									types.InlineLink{
+										Attributes: types.ElementAttributes{},
+										Location: types.Location{
+											types.StringElement{
+												Content: "https://foo.baz",
+											},
+										},
+									},
 								},
 							},
 						},
@@ -866,7 +875,7 @@ a link to {scheme}://{path}`
 
 :!path:
 
-a link to {scheme}://{path}`
+a link to {scheme}://{path} and https://foo.baz`
 
 				expected := types.Document{
 					Attributes:         types.DocumentAttributes{},
@@ -891,6 +900,7 @@ a link to {scheme}://{path}`
 								{
 									types.StringElement{Content: "a link to "},
 									types.InlineLink{
+										Attributes: types.ElementAttributes{},
 										Location: types.Location{
 											types.StringElement{
 												Content: "https://",
@@ -899,7 +909,15 @@ a link to {scheme}://{path}`
 												Name: "path", // no match while applying document attribute substitutions, so parsing gave a new document attribute substitution...
 											},
 										},
+									},
+									types.StringElement{Content: " and "},
+									types.InlineLink{
 										Attributes: types.ElementAttributes{},
+										Location: types.Location{
+											types.StringElement{
+												Content: "https://foo.baz",
+											},
+										},
 									},
 								},
 							},

@@ -44,6 +44,10 @@ func ParseDocument(filename string, r io.Reader, opts ...Option) (types.Document
 			doc.Attributes[k] = v
 		}
 	}
+	if log.IsLevelEnabled(log.DebugLevel) {
+		log.Debug("final document")
+		spew.Dump(doc)
+	}
 	return doc, nil
 }
 
@@ -89,10 +93,13 @@ func applyDocumentAttributeSubstitutions(blocks []interface{}) ([]interface{}, e
 }
 
 func parseInlineLinks(element types.StringElement) (types.InlineElements, error) {
+	log.Debugf("parsing '%+v'", element.Content)
 	elements, err := ParseReader("", strings.NewReader(element.Content), Entrypoint("InlineLinks"))
 	if err != nil {
 		return types.InlineElements{}, errors.Wrap(err, "error while parsing content for inline links")
 	}
+
+	log.Debugf("  giving '%+v'", elements)
 	return elements.(types.InlineElements), nil
 }
 
@@ -176,11 +183,6 @@ func rearrangeListItems(blocks []interface{}, withinDelimitedBlock bool) ([]inte
 			result = append(result, unPtr(list))
 		}
 	}
-	if log.IsLevelEnabled(log.DebugLevel) {
-		log.Debugf("rearranged list items in %d blocks", len(blocks))
-		spew.Dump(result)
-	}
-
 	return result, nil
 }
 
@@ -380,11 +382,11 @@ func rearrangeSections(blocks []interface{}) (types.Document, error) {
 			previous = &e // pointer to new current parent
 		} else {
 			if previous == nil {
-				log.Debugf("adding element of type %T as a top-level element", element)
+				// log.Debugf("adding element of type %T as a top-level element", element)
 				tle = append(tle, element)
 			} else {
 				parentSection := &(sections[len(sections)-1])
-				log.Debugf("adding element of type %T as a child of section with level %d", element, parentSection.Level)
+				// log.Debugf("adding element of type %T as a child of section with level %d", element, parentSection.Level)
 				(*parentSection).AddElement(element)
 			}
 		}
@@ -402,11 +404,6 @@ func rearrangeSections(blocks []interface{}) (types.Document, error) {
 		}
 	}
 	// process the remaining sections
-	if log.IsLevelEnabled(log.DebugLevel) {
-		log.Debugf("processing the remaining sections...")
-		spew.Dump(sections)
-	}
-
 	sections = pruneSections(sections, 1)
 	if len(sections) > 0 {
 		tle = append(tle, sections[0])
