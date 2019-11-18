@@ -1527,7 +1527,7 @@ FileLocation <- elements:(FILENAME / DocumentAttributeSubstitution)+ {
     return types.NewLocation(elements.([]interface{}))
 }
 
-Location <- elements:(URL_SCHEME (FILENAME / DocumentAttributeSubstitution / !EOL !"[" .)+) {
+Location <- elements:(URL_SCHEME (FILENAME / DocumentAttributeSubstitution / !EOL !WS !"[" .)+) {
     return types.NewLocation(elements.([]interface{}))
 }
 
