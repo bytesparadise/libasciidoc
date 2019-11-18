@@ -1117,6 +1117,33 @@ func (e InlineElements) AcceptVisitor(v Visitor) error {
 	return nil
 }
 
+// ApplyDocumentAttributeSubstitutions checks if there's at least one substitution before doing the whole process
+func (e InlineElements) ApplyDocumentAttributeSubstitutions(attrs map[string]string) (InlineElements, bool) {
+	has := false
+	result := make([]interface{}, 0, len(e))
+	for _, element := range e {
+		switch element := element.(type) {
+		case DocumentAttributeSubstitution:
+			has = true // found even if there's no attribute declared
+			if value, ok := attrs[element.Name]; ok {
+				result = append(result, StringElement{
+					Content: value,
+				})
+			} else {
+				result = append(result, StringElement{
+					Content: "{" + element.Name + "}",
+				})
+			}
+		default:
+			result = append(result, element)
+		}
+	}
+	if has {
+		return mergeElements(result...), true
+	}
+	return result, false // no need to merge elements here, nothing was changed
+}
+
 // ------------------------------------------
 // Cross References
 // ------------------------------------------
@@ -2014,6 +2041,7 @@ func NewLocation(elements []interface{}) (Location, error) {
 // Resolve resolves the Location by replacing all document attribute substitutions
 // with their associated values, or their corresponding raw text if
 // no attribute matched
+// TODO: obsolete: DocumentAttributeSubstitution are processed during the Draft -> Final document transformation
 func (u Location) Resolve(attrs DocumentAttributes) string {
 	result := bytes.NewBuffer(nil)
 	for _, e := range u {

@@ -39,7 +39,10 @@ type tee struct {
 
 func (t tee) Write(p []byte) (n int, err error) {
 	if log.IsLevelEnabled(log.DebugLevel) {
-		t.out.Write(p)
+		n, err = t.out.Write(p)
+		if err != nil {
+			return n, err
+		}
 	}
 	return t.buf.Write(p)
 }

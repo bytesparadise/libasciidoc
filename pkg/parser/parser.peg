@@ -12,17 +12,17 @@ import (
 }
 
 // ----------------------------------------------------------------
-// DraftAsciidocDocument - fully parsed document, line by line
+// AsciidocDocument - fully parsed document, line by line
 // ----------------------------------------------------------------
-DraftAsciidocDocument <- frontmatter:(FrontMatter?) blocks:(AsciidocDocumentBlocks) EOF {
+AsciidocDocument <- frontmatter:(FrontMatter?) blocks:(AsciidocDocumentBlocks) EOF {
     return types.NewDraftDocument(frontmatter, blocks.([]interface{}))
 }
 
-DraftAsciidocDocumentWithinDelimitedBlock <- frontmatter:(FrontMatter?) blocks:(AsciidocDocumentBlocksWithinDelimitedBlock) EOF {
+AsciidocDocumentWithinDelimitedBlock <- frontmatter:(FrontMatter?) blocks:(AsciidocDocumentBlocksWithinDelimitedBlock) EOF {
     return types.NewDraftDocument(frontmatter, blocks.([]interface{}))
 }
 
-DraftTextDocument <- blocks:(TextDocumentBlocks) EOF {
+TextDocument <- blocks:(TextDocumentBlocks) EOF {
     return types.NewDraftDocument(nil, blocks.([]interface{}))
 }
 
@@ -104,7 +104,6 @@ DocumentHeader <- "=" WS+ title:(TitleElements) id:(InlineElementID*) EOL
         revision:(DocumentRevision?) {
     return types.NewDocumentHeader(title.(types.InlineElements), authors, revision)
 }
-
 
 DocumentAuthors <- DocumentAuthorsInlineForm / DocumentAuthorsAttributeForm
 
@@ -323,7 +322,8 @@ TitleElement <- element:(SimpleWord
         / QuotedText
         / DocumentAttributeSubstitution
         / LineBreak
-        / OtherWord) {
+        / OtherWord
+        / Parenthesis) {
     return element, nil
 }
 
@@ -729,9 +729,11 @@ InlineElement <- !EOL !LineBreak
         / CrossReference 
         / DocumentAttributeSubstitution 
         / InlineElementID 
-        / OtherWord) {
+        / OtherWord
+        / Parenthesis) {
     return element, nil
 }
+
 
 // special case for re-parsing a group of elements after a document substitution:
 // we should treat substitution that did not happen (eg: missing attribute) as regular
@@ -749,7 +751,8 @@ InlineElementWithoutSubtitution <- !EOL !LineBreak
         / QuotedText 
         / CrossReference 
         / InlineElementID
-        / OtherWord) {
+        / OtherWord
+        / Parenthesis) {
     return element, nil
 }
 
@@ -1143,6 +1146,18 @@ LinkTextAttribute <-
         return types.NewInlineElements(elements.([]interface{}))
     }
 
+// rule used after document attribute substitution, to discover links 
+InlineLinks <- 
+    elements:(SimpleWord
+        / Spaces 
+        / Link 
+        / DocumentAttributeSubstitution 
+        / OtherWord
+        / Parenthesis)+ {
+    return types.NewInlineElements(elements.([]interface{}))
+}
+
+
 // ------------------------------------------
 // Images
 // ------------------------------------------
@@ -1336,7 +1351,8 @@ VerseBlockParagraphLineElement <- !EOL !LineBreak
         / CrossReference 
         / DocumentAttributeSubstitution 
         / InlineElementID 
-        / OtherWord) {
+        / OtherWord
+        / Parenthesis) {
     return element, nil
 }
 
@@ -1502,7 +1518,7 @@ BlankLine <- !EOF EOLS {
 // ------------------------------------------
 Alphanum <- [\pL0-9]
 
-Parenthesis <- "(" / ")" / "[" / "]"
+Parenthesis <- "(" / ")" / "[" / "]" / "{" / "}" 
 
 Alphanums <- [\pL0-9]+ {
     return string(c.text), nil
@@ -1515,7 +1531,7 @@ SimpleWord <- Alphanums &(WS / EOL) { // very straightforward content: alphanums
 }
 
 // a word may end with a dot, but cannot have dots within
-OtherWord <- (Alphanums / QuotedTextPrefix / Parenthesis / ((!NEWLINE !WS !Dot !QuotedTextPrefix .) Dot? { // TODO: remove check on parenthesis and dot?
+OtherWord <- (Alphanums / QuotedTextPrefix / ((!NEWLINE !WS !Dot !QuotedTextPrefix !Parenthesis .) Dot? { // TODO: remove check on parenthesis and dot?
     return types.NewStringElement(string(c.text))
 })+ / "."+){ // word cannot contain parenthesis. Dots and ellipsis are treated as independent words (but will be combined afterwards)
     return types.NewStringElement(string(c.text))

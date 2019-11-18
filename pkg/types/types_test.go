@@ -496,3 +496,113 @@ var _ = Describe("Location resolution", func() {
 		}, "./{unknown}/file.ext"),
 	)
 })
+
+var _ = Describe("InlineElements", func() {
+
+	Context("attribute subsititutions", func() {
+
+		It("should replace with new StringElement on first position", func() {
+			// given
+			e := types.InlineElements{
+				types.DocumentAttributeSubstitution{
+					Name: "foo",
+				},
+				types.StringElement{
+					Content: " and more content.",
+				},
+			}
+			// when
+			result, found := e.ApplyDocumentAttributeSubstitutions(map[string]string{
+				"foo": "bar",
+			})
+			// then
+			Expect(result).To(Equal(types.InlineElements{
+				types.StringElement{
+					Content: "bar and more content.",
+				},
+			}))
+			Expect(found).To(BeTrue())
+		})
+
+		It("should replace with new StringElement on middle position", func() {
+			// given
+			e := types.InlineElements{
+				types.StringElement{
+					Content: "baz, ",
+				},
+				types.DocumentAttributeSubstitution{
+					Name: "foo",
+				},
+				types.StringElement{
+					Content: " and more content.",
+				},
+			}
+			// when
+			result, found := e.ApplyDocumentAttributeSubstitutions(map[string]string{
+				"foo": "bar",
+			})
+			// then
+			Expect(result).To(Equal(types.InlineElements{
+				types.StringElement{
+					Content: "baz, bar and more content.",
+				},
+			}))
+			Expect(found).To(BeTrue())
+		})
+
+		It("should replace with undefined attribute", func() {
+			// given
+			e := types.InlineElements{
+				types.StringElement{
+					Content: "baz, ",
+				},
+				types.DocumentAttributeSubstitution{
+					Name: "foo",
+				},
+				types.StringElement{
+					Content: " and more content.",
+				},
+			}
+			// when
+			result, found := e.ApplyDocumentAttributeSubstitutions(map[string]string{})
+			// then
+			Expect(result).To(Equal(types.InlineElements{
+				types.StringElement{
+					Content: "baz, {foo} and more content.",
+				},
+			}))
+			Expect(found).To(BeTrue())
+		})
+
+		It("should remain unchanged without substitution", func() {
+			// given
+			e := types.InlineElements{
+				types.StringElement{
+					Content: "baz, ",
+				},
+				types.StringElement{
+					Content: "foo",
+				},
+				types.StringElement{
+					Content: " and more content.",
+				},
+			}
+			// when
+			result, found := e.ApplyDocumentAttributeSubstitutions(map[string]string{})
+			// then
+			Expect(result).To(Equal(types.InlineElements{
+				types.StringElement{
+					Content: "baz, ",
+				},
+				types.StringElement{
+					Content: "foo",
+				},
+				types.StringElement{
+					Content: " and more content.",
+				},
+			}))
+			Expect(found).To(BeFalse())
+		})
+
+	})
+})

@@ -16,7 +16,7 @@ const LevelOffset ContextKey = "leveloffset"
 
 // ParseDraftDocument parses a document's content and applies the preprocessing directives (file inclusions)
 func ParseDraftDocument(filename string, r io.Reader, opts ...Option) (types.DraftDocument, error) {
-	opts = append(opts, Entrypoint("DraftAsciidocDocument"))
+	opts = append(opts, Entrypoint("AsciidocDocument"))
 	return parseDraftDocument(filename, r, []levelOffset{}, opts...)
 }
 
@@ -54,7 +54,7 @@ func parseElements(filename string, elements []interface{}, attrs types.Document
 		case types.DelimitedBlock:
 			elmts, err := parseElements(filename, e.Elements, attrs, levelOffsets,
 				// use a new var to avoid overridding the current one which needs to stay as-is for the rest of the doc parsing
-				append(opts, Entrypoint("DraftAsciidocDocumentWithinDelimitedBlock"))...)
+				append(opts, Entrypoint("AsciidocDocumentWithinDelimitedBlock"))...)
 			if err != nil {
 				return nil, err
 			}
@@ -69,7 +69,7 @@ func parseElements(filename string, elements []interface{}, attrs types.Document
 				offset.apply(&e)
 				// replace the absolute when the first section is processed with a relative offset
 				// which is based on the actual level offset that resulted in the application of the absolute offset
-				if offset.absolute { 
+				if offset.absolute {
 					levelOffsets = []levelOffset{
 						relativeOffset(e.Level - oldLevel),
 					}
