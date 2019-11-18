@@ -182,9 +182,31 @@ next lines`
 			Expect(source).To(BecomeDocumentBlock(expected))
 		})
 
+		It("external link with more text afterwards", func() {
+			source := `a link to https://foo.bar and more text`
+			expected := types.Paragraph{
+				Attributes: types.ElementAttributes{},
+				Lines: []types.InlineElements{
+					{
+						types.StringElement{Content: "a link to "},
+						types.InlineLink{
+							Location: types.Location{
+								types.StringElement{
+									Content: "https://foo.bar",
+								},
+							},
+							Attributes: types.ElementAttributes{},
+						},
+						types.StringElement{Content: " and more text"},
+					},
+				},
+			}
+			Expect(source).To(BecomeDocumentBlock(expected))
+		})
+
 		Context("text attribute with comma", func() {
 
-			It("relative link only with text having comma", func() {
+			It("external link only with text having comma", func() {
 				source := `a link to http://website.com[A, B, and C]`
 				expected := types.Paragraph{
 					Attributes: types.ElementAttributes{},
@@ -211,7 +233,7 @@ next lines`
 				Expect(source).To(BecomeDocumentBlock(expected))
 			})
 
-			It("relative link only with doublequoted text having comma", func() {
+			It("external link only with doublequoted text having comma", func() {
 				source := `a link to http://website.com["A, B, and C"]`
 				expected := types.Paragraph{
 					Attributes: types.ElementAttributes{},
@@ -238,7 +260,7 @@ next lines`
 				Expect(source).To(BecomeDocumentBlock(expected))
 			})
 
-			It("relative link with doublequoted text having comma and other attrs", func() {
+			It("external link with doublequoted text having comma and other attrs", func() {
 				source := `a link to http://website.com["A, B, and C", role=foo]`
 				expected := types.Paragraph{
 					Attributes: types.ElementAttributes{},
@@ -266,7 +288,7 @@ next lines`
 				Expect(source).To(BecomeDocumentBlock(expected))
 			})
 
-			It("relative link with text having comma and other attributes", func() {
+			It("external link with text having comma and other attributes", func() {
 				source := `a link to http://website.com[A, B, and C, role=foo]`
 				expected := types.Paragraph{
 					Attributes: types.ElementAttributes{},
@@ -669,6 +691,7 @@ Test 2: link:/test/a%20b[with encoded space]`
 				}
 				Expect(source).To(BecomeDocumentBlock(expected))
 			})
+
 		})
 
 	})
