@@ -2,7 +2,6 @@ package html5
 
 import (
 	"bytes"
-	"html"
 	htmltemplate "html/template"
 	"io"
 	texttemplate "text/template"
@@ -44,7 +43,7 @@ Last updated {{ .LastUpdated }}
 </body>
 </html>`,
 		texttemplate.FuncMap{
-			"escape": html.EscapeString,
+			"escape": EscapeString,
 		})
 
 }

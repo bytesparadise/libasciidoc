@@ -543,6 +543,99 @@ a paragraph`
 			}
 			Expect(source).To(BecomeDraftDocument(expected))
 		})
+
+		It("section with link in title", func() {
+			source := `== link to https://foo.bar
+`
+			section1aTitle := types.InlineElements{
+				types.StringElement{Content: "link to "},
+				types.InlineLink{
+					Attributes: types.ElementAttributes{},
+					Location: types.Location{
+						Elements: []interface{}{
+							types.StringElement{Content: "https://foo.bar"},
+						},
+					},
+				},
+			}
+			expected := types.DraftDocument{
+				Blocks: []interface{}{
+					types.Section{
+						Attributes: types.ElementAttributes{
+							types.AttrID:       "link_to_https_foo_bar",
+							types.AttrCustomID: false,
+						},
+						Level:    1,
+						Title:    section1aTitle,
+						Elements: []interface{}{},
+					},
+				},
+			}
+			Expect(source).To(BecomeDraftDocument(expected))
+		})
+
+		It("section 0, 1 and paragraph with bold quote", func() {
+
+			source := `= a header
+				
+== section 1
+
+a paragraph with *bold content*`
+
+			title := types.InlineElements{
+				types.StringElement{Content: "a header"},
+			}
+			section1Title := types.InlineElements{
+				types.StringElement{Content: "section 1"},
+			}
+			expected := types.Document{
+				Attributes: types.DocumentAttributes{},
+				ElementReferences: types.ElementReferences{
+					"a_header":  title,
+					"section_1": section1Title,
+				},
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
+				Elements: []interface{}{
+					types.Section{
+						Level: 0,
+						Attributes: types.ElementAttributes{
+							types.AttrID:       "a_header",
+							types.AttrCustomID: false,
+						},
+						Title: title,
+						Elements: []interface{}{
+							types.Section{
+								Level: 1,
+								Title: section1Title,
+								Attributes: types.ElementAttributes{
+									types.AttrID:       "section_1",
+									types.AttrCustomID: false,
+								},
+								Elements: []interface{}{
+									types.Paragraph{
+										Attributes: types.ElementAttributes{},
+										Lines: []types.InlineElements{
+											{
+												types.StringElement{Content: "a paragraph with "},
+												types.QuotedText{
+													Kind: types.Bold,
+													Elements: types.InlineElements{
+														types.StringElement{Content: "bold content"},
+													},
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			}
+			Expect(source).To(BecomeDocument(expected))
+		})
+
 	})
 
 	Context("invalid sections", func() {

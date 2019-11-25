@@ -2,7 +2,6 @@ package html5
 
 import (
 	"bytes"
-	"html"
 	texttemplate "text/template"
 
 	"github.com/bytesparadise/libasciidoc/pkg/renderer"
@@ -26,7 +25,7 @@ func init() {
 		texttemplate.FuncMap{
 			"renderElements": renderListElements,
 			"style":          numberingType,
-			"escape":         html.EscapeString,
+			"escape":         EscapeString,
 		})
 
 }

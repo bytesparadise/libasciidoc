@@ -75,8 +75,10 @@ var _ = Describe("footnotes - draft", func() {
 							},
 						},
 						Location: types.Location{
-							types.StringElement{
-								Content: "https://foo.com",
+							Elements: []interface{}{
+								types.StringElement{
+									Content: "https://foo.com",
+								},
 							},
 						},
 					},
@@ -391,8 +393,10 @@ var _ = Describe("footnotes - document", func() {
 							},
 						},
 						Location: types.Location{
-							types.StringElement{
-								Content: "https://foo.com",
+							Elements: []interface{}{
+								types.StringElement{
+									Content: "https://foo.com",
+								},
 							},
 						},
 					},

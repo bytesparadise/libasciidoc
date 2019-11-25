@@ -1145,8 +1145,10 @@ var _ = Describe("quoted texts - draft", func() {
 										},
 									},
 									Location: types.Location{
-										types.StringElement{
-											Content: "/",
+										Elements: []interface{}{
+											types.StringElement{
+												Content: "/",
+											},
 										},
 									},
 								},
@@ -1169,10 +1171,14 @@ var _ = Describe("quoted texts - draft", func() {
 							Elements: types.InlineElements{
 								types.StringElement{Content: "a "},
 								types.InlineImage{
-									Attributes: types.ElementAttributes{
-										types.AttrImageAlt: "foo",
+									Attributes: types.ElementAttributes{},
+									Location: types.Location{
+										Elements: []interface{}{
+											types.StringElement{
+												Content: "foo.png",
+											},
+										},
 									},
-									Path: "foo.png",
 								},
 							},
 						},
@@ -1249,8 +1255,10 @@ var _ = Describe("quoted texts - draft", func() {
 										},
 									},
 									Location: types.Location{
-										types.StringElement{
-											Content: "/",
+										Elements: []interface{}{
+											types.StringElement{
+												Content: "/",
+											},
 										},
 									},
 								},
@@ -1273,10 +1281,14 @@ var _ = Describe("quoted texts - draft", func() {
 							Elements: types.InlineElements{
 								types.StringElement{Content: "a "},
 								types.InlineImage{
-									Attributes: types.ElementAttributes{
-										types.AttrImageAlt: "foo",
+									Attributes: types.ElementAttributes{},
+									Location: types.Location{
+										Elements: []interface{}{
+											types.StringElement{
+												Content: "foo.png",
+											},
+										},
 									},
-									Path: "foo.png",
 								},
 							},
 						},
@@ -1353,8 +1365,10 @@ var _ = Describe("quoted texts - draft", func() {
 										},
 									},
 									Location: types.Location{
-										types.StringElement{
-											Content: "/",
+										Elements: []interface{}{
+											types.StringElement{
+												Content: "/",
+											},
 										},
 									},
 								},
@@ -1377,10 +1391,14 @@ var _ = Describe("quoted texts - draft", func() {
 							Elements: types.InlineElements{
 								types.StringElement{Content: "a "},
 								types.InlineImage{
-									Attributes: types.ElementAttributes{
-										types.AttrImageAlt: "foo",
+									Attributes: types.ElementAttributes{},
+									Location: types.Location{
+										Elements: []interface{}{
+											types.StringElement{
+												Content: "foo.png",
+											},
+										},
 									},
-									Path: "foo.png",
 								},
 							},
 						},
@@ -2198,5 +2216,122 @@ var _ = Describe("quoted texts - draft", func() {
 				})
 			})
 		})
+	})
+})
+
+var _ = Describe("quoted texts - final document", func() {
+
+	It("image in bold", func() {
+		source := "*a image:foo.png[]*"
+		expected := types.Document{
+			Attributes:         types.DocumentAttributes{},
+			ElementReferences:  types.ElementReferences{},
+			Footnotes:          types.Footnotes{},
+			FootnoteReferences: types.FootnoteReferences{},
+			Elements: []interface{}{
+				types.Paragraph{
+					Attributes: types.ElementAttributes{},
+					Lines: []types.InlineElements{
+						{
+							types.QuotedText{
+								Kind: types.Bold,
+								Elements: types.InlineElements{
+									types.StringElement{Content: "a "},
+									types.InlineImage{
+										Attributes: types.ElementAttributes{
+											types.AttrImageAlt: "foo",
+										},
+										Location: types.Location{
+											Elements: []interface{}{
+												types.StringElement{
+													Content: "foo.png",
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		}
+		Expect(source).To(BecomeDocument(expected))
+	})
+
+	It("image in italic", func() {
+		source := "_a image:foo.png[]_"
+		expected := types.Document{
+			Attributes:         types.DocumentAttributes{},
+			ElementReferences:  types.ElementReferences{},
+			Footnotes:          types.Footnotes{},
+			FootnoteReferences: types.FootnoteReferences{},
+			Elements: []interface{}{
+				types.Paragraph{
+					Attributes: types.ElementAttributes{},
+					Lines: []types.InlineElements{
+						{
+							types.QuotedText{
+								Kind: types.Italic,
+								Elements: types.InlineElements{
+									types.StringElement{Content: "a "},
+									types.InlineImage{
+										Attributes: types.ElementAttributes{
+											types.AttrImageAlt: "foo",
+										},
+										Location: types.Location{
+											Elements: []interface{}{
+												types.StringElement{
+													Content: "foo.png",
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		}
+		Expect(source).To(BecomeDocument(expected))
+	})
+
+	It("image in monospace", func() {
+		source := "`a image:foo.png[]`"
+		expected := types.Document{
+			Attributes:         types.DocumentAttributes{},
+			ElementReferences:  types.ElementReferences{},
+			Footnotes:          types.Footnotes{},
+			FootnoteReferences: types.FootnoteReferences{},
+			Elements: []interface{}{
+				types.Paragraph{
+					Attributes: types.ElementAttributes{},
+					Lines: []types.InlineElements{
+						{
+							types.QuotedText{
+								Kind: types.Monospace,
+								Elements: types.InlineElements{
+									types.StringElement{Content: "a "},
+									types.InlineImage{
+										Attributes: types.ElementAttributes{
+											types.AttrImageAlt: "foo",
+										},
+										Location: types.Location{
+											Elements: []interface{}{
+												types.StringElement{
+													Content: "foo.png",
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		}
+		Expect(source).To(BecomeDocument(expected))
 	})
 })

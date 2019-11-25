@@ -23,18 +23,32 @@ func ParseDocument(filename string, r io.Reader, opts ...Option) (types.Document
 		log.Debug("draft document")
 		spew.Dump(draftDoc)
 	}
+	attrs := make(map[string]string)
+	// add all predefined attributes
+	for k, v := range Predefined {
+		if v, ok := v.(string); ok {
+			attrs[k] = v
+		}
+	}
+
+	// also, add all front-matter values
+	for k, v := range draftDoc.FrontMatter.Content {
+		if v, ok := v.(string); ok {
+			attrs[k] = v
+		}
+	}
 	// apply document attribute substitutions and re-parse paragraphs that were affected
-	blocks, err := applyDocumentAttributeSubstitutions(draftDoc.Blocks)
+	blocks, err := ApplyDocumentAttributeSubstitutions(draftDoc.Blocks, attrs)
 	if err != nil {
 		return types.Document{}, err
 	}
 	// now, merge list items into proper lists
-	blocks, err = rearrangeListItems(blocks, false)
+	blocks, err = rearrangeListItems(blocks.([]interface{}), false)
 	if err != nil {
 		return types.Document{}, err
 	}
 	// now, rearrange elements in a hierarchical manner
-	doc, err := rearrangeSections(blocks)
+	doc, err := rearrangeSections(blocks.([]interface{}))
 	if err != nil {
 		return types.Document{}, err
 	}
@@ -53,54 +67,133 @@ func ParseDocument(filename string, r io.Reader, opts ...Option) (types.Document
 
 // applyAttributeSubstitutions applies the document attribute substitutions
 // and re-parse the paragraphs that were affected
-func applyDocumentAttributeSubstitutions(blocks []interface{}) ([]interface{}, error) {
+func ApplyDocumentAttributeSubstitutions(element interface{}, attrs map[string]string) (interface{}, error) {
 	// the document attributes, as they are resolved while processing the blocks
-	attrs := make(map[string]string)
-	result := make([]interface{}, 0, len(blocks)) // maximum capacity cannot exceed initial input
-	for _, b := range blocks {
-		switch b := b.(type) {
-		case types.DocumentAttributeDeclaration:
-			attrs[b.Name] = b.Value
-		case types.DocumentAttributeReset:
-			delete(attrs, b.Name)
-		case types.Paragraph:
-			for i, line := range b.Lines {
-				if line, found := line.ApplyDocumentAttributeSubstitutions(attrs); found {
-					// reparse the string elements, looking for links
-					elements := make(types.InlineElements, 0, 2*len(line))
-					for _, element := range line {
-						switch element := element.(type) {
-						case types.StringElement:
-							r, err := parseInlineLinks(element)
-							if err != nil {
-								return []interface{}{}, errors.Wrap(err, "unable to process attribute substitutions")
-							}
-							elements = append(elements, r...)
-						default:
-							elements = append(elements, element)
-						}
-					}
-					b.Lines[i] = elements
-				} else {
-					b.Lines[i] = line
-				}
-			}
+	log.Debugf("applying document substitutions on block of type %T", element)
+	switch e := element.(type) {
+	case types.DocumentAttributeDeclaration:
+		attrs[e.Name] = e.Value
+		return e, nil
+	case types.DocumentAttributeReset:
+		delete(attrs, e.Name)
+		return e, nil
+	case types.DocumentAttributeSubstitution:
+		if value, ok := attrs[e.Name]; ok {
+			return types.StringElement{
+				Content: value,
+			}, nil
 		}
-		result = append(result, b)
+		return types.StringElement{
+			Content: "{" + e.Name + "}",
+		}, nil
+	case types.LocationHolder:
+		r, _ := e.ResolveLocation(attrs)
+		return r, nil
+	case types.Section:
+		r, err := ApplyDocumentAttributeSubstitutions(e.Title, attrs)
+		if err != nil {
+			return types.Section{}, err
+		}
+		e.Title = r.(types.InlineElements)
+		err = e.UpdateAttrID()
+		return e, err
+	case types.OrderedListItem:
+		for j, element := range e.Elements {
+			r, err := ApplyDocumentAttributeSubstitutions(element, attrs)
+			if err != nil {
+				return types.OrderedListItem{}, err
+			}
+			e.Elements[j] = r
+		}
+		return e, nil
+	case types.UnorderedListItem:
+		for j, element := range e.Elements {
+			r, err := ApplyDocumentAttributeSubstitutions(element, attrs)
+			if err != nil {
+				return types.UnorderedListItem{}, err
+			}
+			e.Elements[j] = r
+		}
+		return e, nil
+	case types.LabeledListItem:
+		for j, element := range e.Elements {
+			r, err := ApplyDocumentAttributeSubstitutions(element, attrs)
+			if err != nil {
+				return types.LabeledListItem{}, err
+			}
+			e.Elements[j] = r
+		}
+		return e, nil
+	case types.QuotedText:
+		for j, element := range e.Elements {
+			r, err := ApplyDocumentAttributeSubstitutions(element, attrs)
+			if err != nil {
+				return types.QuotedText{}, err
+			}
+			e.Elements[j] = r
+		}
+		return e, nil
+	case types.ContinuedListItemElement:
+		r, err := ApplyDocumentAttributeSubstitutions(e.Element, attrs)
+		if err != nil {
+			return types.QuotedText{}, err
+		}
+		e.Element = r
+		return e, nil
+	case types.Paragraph:
+		for i, line := range e.Lines {
+			line, err := ApplyDocumentAttributeSubstitutions(line, attrs)
+			if err != nil {
+				return types.Paragraph{}, err
+			}
+			e.Lines[i] = line.(types.InlineElements)
+		}
+		return e, nil
+	case types.InlineElements:
+		result := make([]interface{}, len(e)) // maximum capacity cannot exceed initial input
+		for _, element := range e {
+			r, err := ApplyDocumentAttributeSubstitutions(element, attrs)
+			if err != nil {
+				return types.InlineElements{}, err
+			}
+			result = append(result, r)
+		}
+		result = types.MergeStringElements(result)
+		return parseInlineLinks(result, attrs)
+	case []interface{}:
+		log.Debugf("applying document substitutions on %d elements(s)", len(e))
+		result := make([]interface{}, 0, len(e)) // maximum capacity cannot exceed initial input
+		for _, element := range e {
+			r, err := ApplyDocumentAttributeSubstitutions(element, attrs)
+			if err != nil {
+				return []interface{}{}, err
+			}
+			result = append(result, r)
+		}
+		return result, nil
+	default:
+		return e, nil
 	}
-
-	return result, nil
 }
 
-func parseInlineLinks(element types.StringElement) (types.InlineElements, error) {
-	log.Debugf("parsing '%+v'", element.Content)
-	elements, err := ParseReader("", strings.NewReader(element.Content), Entrypoint("InlineLinks"))
-	if err != nil {
-		return types.InlineElements{}, errors.Wrap(err, "error while parsing content for inline links")
+// if a document attribute substitution happened, we need to parse the string element in search
+// for a potentially new link. Eg `{url}` giving `https://foo.com`
+func parseInlineLinks(elements types.InlineElements, attrs map[string]string) (types.InlineElements, error) {
+	result := types.InlineElements{}
+	for _, element := range elements {
+		log.Debugf("looking for links in line element of type %[1]T (%[1]v)", element)
+		switch element := element.(type) {
+		case types.StringElement:
+			elements, err := ParseReader("", strings.NewReader(element.Content), Entrypoint("InlineLinks"))
+			if err != nil {
+				return types.InlineElements{}, errors.Wrap(err, "error while parsing content for inline links")
+			}
+			result = append(result, elements.(types.InlineElements)...)
+		default:
+			result = append(result, element)
+		}
 	}
-
-	log.Debugf("  giving '%+v'", elements)
-	return elements.(types.InlineElements), nil
+	return result, nil
 }
 
 // rearrangeListItems moves the list items into lists, and nested lists if needed

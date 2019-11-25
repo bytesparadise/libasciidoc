@@ -951,6 +951,7 @@ var _ = Describe("ordered lists - document", func() {
 				},
 			},
 		}
+
 		It("ordered list item with implicit numbering style", func() {
 			source := `.. item`
 			expected := types.Document{
@@ -1084,11 +1085,43 @@ var _ = Describe("ordered lists - document", func() {
 						Attributes: types.ElementAttributes{},
 						Items: []types.OrderedListItem{
 							{
-
 								Level:          1,
 								NumberingStyle: types.UpperRoman,
 								Attributes:     map[string]interface{}{},
 								Elements:       elements,
+							},
+						},
+					},
+				},
+			}
+			Expect(source).To(BecomeDocument(expected))
+		})
+
+		It("ordered list item with predefined attribute", func() {
+			source := `. {amp}`
+			expected := types.Document{
+				Attributes:         types.DocumentAttributes{},
+				ElementReferences:  types.ElementReferences{},
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
+				Elements: []interface{}{
+					types.OrderedList{
+						Attributes: types.ElementAttributes{},
+						Items: []types.OrderedListItem{
+							{
+								Level:          1,
+								NumberingStyle: types.Arabic,
+								Attributes:     map[string]interface{}{},
+								Elements: []interface{}{
+									types.Paragraph{
+										Attributes: types.ElementAttributes{},
+										Lines: []types.InlineElements{
+											{
+												types.StringElement{Content: "&amp;"},
+											},
+										},
+									},
+								},
 							},
 						},
 					},

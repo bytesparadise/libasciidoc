@@ -58,4 +58,22 @@ var _ = Describe("normalizing string", func() {
 		}
 		Expect(source).To(EqualWithoutNonAlphanumeric("a_section_title_with_bold_content"))
 	})
+
+	It("content with link", func() {
+		// == a section title, with *bold content*
+		source := types.InlineElements{
+			types.StringElement{Content: "link to "},
+			types.InlineLink{
+				Attributes: types.ElementAttributes{},
+				Location: types.Location{
+					Elements: []interface{}{
+						types.StringElement{
+							Content: "https://foo.bar",
+						},
+					},
+				},
+			},
+		}
+		Expect(source).To(EqualWithoutNonAlphanumeric("link_to_https_foo_bar")) // asciidoctor will return `_link_to_https_foo_bar`
+	})
 })

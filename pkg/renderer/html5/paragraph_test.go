@@ -107,6 +107,18 @@ baz</p>
 </div>`
 			Expect(source).To(RenderHTML5Body(expected))
 		})
+
+		It("paragraph with document attribute resets", func() {
+			source := `:author: Xavier
+						
+:!author1:
+:author2!:
+a paragraph written by {author}.`
+			expected := `<div class="paragraph">
+<p>a paragraph written by Xavier.</p>
+</div>`
+			Expect(source).To(RenderHTML5Body(expected))
+		})
 	})
 
 	Context("admonition paragraphs", func() {

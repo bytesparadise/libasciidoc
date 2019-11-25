@@ -1,10 +1,10 @@
 package html5_test
 
 import (
-	"html"
 	texttemplate "text/template"
 
 	"github.com/bytesparadise/libasciidoc/pkg/renderer"
+	"github.com/bytesparadise/libasciidoc/pkg/renderer/html5"
 	. "github.com/bytesparadise/libasciidoc/testsupport"
 
 	. "github.com/onsi/ginkgo"
@@ -121,7 +121,7 @@ var _ = Describe("user macros", func() {
 func init() {
 	t := texttemplate.New("hello")
 	t.Funcs(texttemplate.FuncMap{
-		"escape": html.EscapeString,
+		"escape": html5.EscapeString,
 	})
 	helloMacroTmpl = texttemplate.Must(t.Parse(`{{- if eq .Kind "block" -}}
 <div class="helloblock">

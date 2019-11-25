@@ -5,13 +5,14 @@ import (
 	"strings"
 
 	"github.com/bytesparadise/libasciidoc/pkg/parser"
+	"github.com/bytesparadise/libasciidoc/pkg/types"
 
-	"github.com/onsi/gomega/types"
+	gomegatypes "github.com/onsi/gomega/types"
 	"github.com/pkg/errors"
 )
 
 // BecomeDraftDocument a custom matcher to verify that a draft document matches the expectation
-func BecomeDraftDocument(expected interface{}, options ...interface{}) types.GomegaMatcher {
+func BecomeDraftDocument(expected types.DraftDocument, options ...interface{}) gomegatypes.GomegaMatcher {
 	m := &draftDocumentMatcher{
 		expected:      expected,
 		preprocessing: true,

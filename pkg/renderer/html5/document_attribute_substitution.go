@@ -21,8 +21,6 @@ func renderAttributeSubstitution(ctx *renderer.Context, attr types.DocumentAttri
 	result := bytes.NewBuffer(nil)
 	if value, found := ctx.Document.Attributes.GetAsString(attr.Name); found {
 		result.WriteString(value)
-	} else if value, found := predefined.GetAsString(attr.Name); found {
-		result.WriteString(value)
 	} else {
 		result.WriteString("{" + attr.Name + "}")
 	}

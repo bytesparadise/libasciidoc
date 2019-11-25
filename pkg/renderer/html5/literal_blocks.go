@@ -2,7 +2,6 @@ package html5
 
 import (
 	"bytes"
-	"html"
 	"math"
 	"strings"
 	texttemplate "text/template"
@@ -24,7 +23,7 @@ func init() {
 </div>
 </div>{{ end }}`, texttemplate.FuncMap{
 		"includeNewline": includeNewline,
-		"escape":         html.EscapeString,
+		"escape":         EscapeString,
 	})
 }
 

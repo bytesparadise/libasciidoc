@@ -2,7 +2,6 @@ package html5
 
 import (
 	"bytes"
-	"html"
 	"strconv"
 	texttemplate "text/template"
 
@@ -31,7 +30,7 @@ func init() {
 </div>{{ end }}`,
 		texttemplate.FuncMap{
 			"renderPlainString": renderPlainString,
-			"escape":            html.EscapeString,
+			"escape":            EscapeString,
 		})
 
 	listingBlockTmpl = newTextTemplate("listing block", `{{ $ctx := .Context }}{{ with .Data }}<div {{ if .ID }}id="{{ .ID }}" {{ end }}class="listingblock">{{ if .Title }}
@@ -42,7 +41,7 @@ func init() {
 </div>{{ end }}`,
 		texttemplate.FuncMap{
 			"renderPlainString": renderPlainString,
-			"escape":            html.EscapeString,
+			"escape":            EscapeString,
 		})
 
 	sourceBlockTmpl = newTextTemplate("source block",
@@ -54,7 +53,7 @@ func init() {
 </div>{{ end }}`,
 		texttemplate.FuncMap{
 			"renderPlainString": renderPlainString,
-			"escape":            html.EscapeString,
+			"escape":            EscapeString,
 		})
 
 	exampleBlockTmpl = newTextTemplate("example block", `{{ $ctx := .Context }}{{ with .Data }}<div {{ if .ID }}id="{{ .ID }}" {{ end }}class="exampleblock">{{ if .Title }}
@@ -65,7 +64,7 @@ func init() {
 </div>{{ end }}`,
 		texttemplate.FuncMap{
 			"renderElements": renderElements,
-			"escape":         html.EscapeString,
+			"escape":         EscapeString,
 		})
 
 	quoteBlockTmpl = newTextTemplate("quote block", `{{ $ctx := .Context }}{{ with .Data }}<div {{ if .ID }}id="{{ .ID }}" {{ end }}class="quoteblock">{{ if .Title }}
@@ -80,7 +79,7 @@ func init() {
 </div>{{ end }}`,
 		texttemplate.FuncMap{
 			"renderElements": renderElements,
-			"escape":         html.EscapeString,
+			"escape":         EscapeString,
 		})
 
 	verseBlockTmpl = newTextTemplate("verse block", `{{ $ctx := .Context }}{{ with .Data }}<div {{ if .ID }}id="{{ .ID }}" {{ end }}class="verseblock">{{ if .Title }}
@@ -93,7 +92,7 @@ func init() {
 </div>{{ end }}`,
 		texttemplate.FuncMap{
 			"renderElements": renderElements,
-			"escape":         html.EscapeString,
+			"escape":         EscapeString,
 		})
 
 	admonitionBlockTmpl = newTextTemplate("admonition block", `{{ $ctx := .Context }}{{ with .Data }}<div {{ if .ID }}id="{{ .ID}}" {{ end }}class="admonitionblock {{ .Class }}">
@@ -111,7 +110,7 @@ func init() {
 </div>{{ end }}`,
 		texttemplate.FuncMap{
 			"renderElements": renderElements,
-			"escape":         html.EscapeString,
+			"escape":         EscapeString,
 		})
 
 	sidebarBlockTmpl = newTextTemplate("sidebar block", `{{ $ctx := .Context }}{{ with .Data }}<div {{ if .ID }}id="{{ .ID }}" {{ end }}class="sidebarblock">
@@ -122,7 +121,7 @@ func init() {
 </div>{{ end }}`,
 		texttemplate.FuncMap{
 			"renderElements": renderElements,
-			"escape":         html.EscapeString,
+			"escape":         EscapeString,
 		})
 }
 

@@ -1,0 +1,13 @@
+= Libasciidoc Design
+
+This document brifley explains how the library works, from parsing to rendering in HTML.
+
+== Parsing the document
+
+The first step is to parse a document. The parser (generated after the link:../pkg/parser/parser.peg[grammar] returns a "draft document" in which the sections are not embedded in a hierarchical manner, other blocks are also not attached to their parent section, blanklines are present, but in which the file inclusions have been processed. 
+
+This so-called "draft document" is then processed to return a "final document" in which the sections are in a hierarchical organization, with their blocks (paragraphs, delimited blocks, etc.) attached to them. Also, all document attribute substitutions have been processed (sometimes resulting in new elements such as links). Blank line elements have been stripped off, too.
+
+== HTMl5 Rendering
+
+The HTML5 renderer takes the final document and applies templates for each element. Having the sections in a hierarchical manner makes life easier in term of surrounding `<div>` tags.

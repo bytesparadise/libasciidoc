@@ -3,7 +3,6 @@ package html5
 import (
 	"bytes"
 	"fmt"
-	"html"
 	"net/url"
 	"path/filepath"
 	texttemplate "text/template"
@@ -26,11 +25,11 @@ func init() {
 {{ else }}
 {{ end }}</div>`,
 		texttemplate.FuncMap{
-			"escape": html.EscapeString,
+			"escape": EscapeString,
 		})
 	inlineImageTmpl = newTextTemplate("inline image", `<span class="image{{ if .Role }} {{ .Role }}{{ end }}"><img src="{{ .Path }}" alt="{{ .Alt }}"{{ if .Width }} width="{{ .Width }}"{{ end }}{{ if .Height }} height="{{ .Height }}"{{ end }}{{ if .Title }} title="{{ escape .Title }}"{{ end }}></span>`,
 		texttemplate.FuncMap{
-			"escape": html.EscapeString,
+			"escape": EscapeString,
 		})
 }
 
@@ -38,7 +37,7 @@ func renderImageBlock(ctx *renderer.Context, img types.ImageBlock) ([]byte, erro
 	result := bytes.NewBuffer(nil)
 	title := ""
 	if t := img.Attributes.GetAsString(types.AttrTitle); t != "" {
-		title = fmt.Sprintf("Figure %d. %s", ctx.GetAndIncrementImageCounter(), html.EscapeString(t))
+		title = fmt.Sprintf("Figure %d. %s", ctx.GetAndIncrementImageCounter(), EscapeString(t))
 	}
 	err := blockImageTmpl.Execute(result, struct {
 		ID     string
@@ -57,7 +56,7 @@ func renderImageBlock(ctx *renderer.Context, img types.ImageBlock) ([]byte, erro
 		Alt:    img.Attributes.GetAsString(types.AttrImageAlt),
 		Width:  img.Attributes.GetAsString(types.AttrImageWidth),
 		Height: img.Attributes.GetAsString(types.AttrImageHeight),
-		Path:   getImageHref(ctx, img.Path),
+		Path:   getImageHref(ctx, img.Location.String()),
 	})
 
 	if err != nil {
@@ -83,7 +82,7 @@ func renderInlineImage(ctx *renderer.Context, img types.InlineImage) ([]byte, er
 		Alt:    img.Attributes.GetAsString(types.AttrImageAlt),
 		Width:  img.Attributes.GetAsString(types.AttrImageWidth),
 		Height: img.Attributes.GetAsString(types.AttrImageHeight),
-		Path:   getImageHref(ctx, img.Path),
+		Path:   getImageHref(ctx, img.Location.String()),
 	})
 
 	if err != nil {

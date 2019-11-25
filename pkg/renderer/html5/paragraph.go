@@ -2,7 +2,6 @@ package html5
 
 import (
 	"bytes"
-	"html"
 	"strings"
 	texttemplate "text/template"
 
@@ -28,7 +27,7 @@ func init() {
 </div>{{ end }}{{ end }}`,
 		texttemplate.FuncMap{
 			"renderLines": renderLinesAsString,
-			"escape":      html.EscapeString,
+			"escape":      EscapeString,
 		})
 
 	admonitionParagraphTmpl = newTextTemplate("admonition paragraph",
@@ -47,7 +46,7 @@ func init() {
 </div>{{ end }}{{ end }}`,
 		texttemplate.FuncMap{
 			"renderLines": renderLinesAsString,
-			"escape":      html.EscapeString,
+			"escape":      EscapeString,
 		})
 
 	listParagraphTmpl = newTextTemplate("list paragraph",
@@ -64,7 +63,7 @@ func init() {
 </div>{{ end }}`,
 		texttemplate.FuncMap{
 			"renderLines": renderPlainString,
-			"escape":      html.EscapeString,
+			"escape":      EscapeString,
 		})
 
 	verseParagraphTmpl = newTextTemplate("verse block", `{{ $ctx := .Context }}{{ with .Data }}<div {{ if .ID }}id="{{ .ID }}" {{ end }}class="verseblock">{{ if .Title }}
@@ -77,7 +76,7 @@ func init() {
 </div>{{ end }}`,
 		texttemplate.FuncMap{
 			"renderElements": renderPlainString,
-			"escape":         html.EscapeString,
+			"escape":         EscapeString,
 		})
 	quoteParagraphTmpl = newTextTemplate("quote paragraph", `{{ $ctx := .Context }}{{ with .Data }}<div {{ if .ID }}id="{{ .ID }}" {{ end }}class="quoteblock">{{ if .Title }}
 <div class="title">{{ escape .Title }}</div>{{ end }}
@@ -91,7 +90,7 @@ func init() {
 </div>{{ end }}`,
 		texttemplate.FuncMap{
 			"renderElements": renderLinesAsString,
-			"escape":         html.EscapeString,
+			"escape":         EscapeString,
 		})
 }
 

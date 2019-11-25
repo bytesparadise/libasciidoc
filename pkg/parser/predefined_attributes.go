@@ -1,13 +1,14 @@
-package html5
+package parser
 
 import (
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 )
 
-var predefined types.DocumentAttributes
+// Predefined the predefined document attributes, mainly for special characters
+var Predefined types.DocumentAttributes
 
 func init() {
-	predefined = types.DocumentAttributes{
+	Predefined = types.DocumentAttributes{
 		"sp":             " ",
 		"blank":          "",
 		"empty":          "",
