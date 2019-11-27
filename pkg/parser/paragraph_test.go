@@ -613,10 +613,14 @@ a foo image:foo.png[]`
 							Content: "a foo ",
 						},
 						types.InlineImage{
-							Attributes: types.ElementAttributes{
-								types.AttrImageAlt: "foo",
+							Attributes: types.ElementAttributes{},
+							Location: types.Location{
+								Elements: []interface{}{
+									types.StringElement{
+										Content: "foo.png",
+									},
+								},
 							},
-							Path: "foo.png",
 						},
 					},
 				},
@@ -629,15 +633,45 @@ a foo image:foo.png[]`
 image::foo.png[]`
 			expected := types.ImageBlock{
 				Attributes: types.ElementAttributes{
-					types.AttrImageAlt: "foo",
+
 					// quote attributes
 					types.AttrKind:        types.Quote,
 					types.AttrQuoteAuthor: "john doe",
 					types.AttrQuoteTitle:  "quote title",
 				},
-				Path: "foo.png",
+				Location: types.Location{
+					Elements: []interface{}{
+						types.StringElement{
+							Content: "foo.png",
+						},
+					},
+				},
 			}
 			Expect(source).To(BecomeDocumentBlock(expected)) //, parser.Debug(true))
 		})
+	})
+})
+
+var _ = Describe("paragraphs - final document", func() {
+
+	It("paragraph with predefined attribute", func() {
+		source := "hello {plus} world"
+		expected := types.Document{
+			Attributes:         types.DocumentAttributes{},
+			ElementReferences:  types.ElementReferences{},
+			Footnotes:          types.Footnotes{},
+			FootnoteReferences: types.FootnoteReferences{},
+			Elements: []interface{}{
+				types.Paragraph{
+					Attributes: types.ElementAttributes{},
+					Lines: []types.InlineElements{
+						{
+							types.StringElement{Content: "hello &#43; world"},
+						},
+					},
+				},
+			},
+		}
+		Expect(source).To(BecomeDocument(expected))
 	})
 })

@@ -3,13 +3,17 @@ package html5
 import (
 	"bytes"
 	"strings"
+	texttemplate "text/template"
 
 	"github.com/bytesparadise/libasciidoc/pkg/renderer"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 	"github.com/pkg/errors"
 )
 
-var stringTmpl = newHTMLTemplate("string element", "{{ . }}")
+var stringTmpl = newTextTemplate("string element", "{{ escape . }}",
+	texttemplate.FuncMap{
+		"escape": EscapeString,
+	})
 
 func renderStringElement(ctx *renderer.Context, str types.StringElement) ([]byte, error) { //nolint: unparam
 	buf := bytes.NewBuffer(nil)

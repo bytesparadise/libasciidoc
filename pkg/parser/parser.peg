@@ -1151,7 +1151,6 @@ InlineLinks <-
     elements:(SimpleWord
         / Spaces 
         / Link 
-        / DocumentAttributeSubstitution 
         / OtherWord
         / Parenthesis)+ {
     return types.NewInlineElements(elements.([]interface{}))
@@ -1161,12 +1160,12 @@ InlineLinks <-
 // ------------------------------------------
 // Images
 // ------------------------------------------
-ImageBlock <- attributes:(ElementAttributes)? "image::" path:(URL) inlineAttributes:(ImageAttributes) EOLS {
-    return types.NewImageBlock(path.(string), inlineAttributes.(types.ElementAttributes), attributes)
+ImageBlock <- attributes:(ElementAttributes)? "image::" path:(Location / FileLocation) inlineAttributes:(ImageAttributes) EOLS {
+    return types.NewImageBlock(path.(types.Location), inlineAttributes.(types.ElementAttributes), attributes)
 }
 
-InlineImage <- "image:" !":" path:(URL) inlineAttributes:(ImageAttributes) {
-    return types.NewInlineImage(path.(string), inlineAttributes.(types.ElementAttributes))
+InlineImage <- "image:" !":" path:(Location / FileLocation) inlineAttributes:(ImageAttributes) {
+    return types.NewInlineImage(path.(types.Location), inlineAttributes.(types.ElementAttributes))
 }
 
 ImageAttributes <- "[" alt:(AttributeValue)? ","? width:(AttributeValue)? ","? height:(AttributeValue)? ","? WS* otherattrs:(GenericAttribute)* "]" {

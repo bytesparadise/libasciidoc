@@ -2,7 +2,6 @@ package html5
 
 import (
 	"bytes"
-	"html"
 	texttemplate "text/template"
 
 	"github.com/bytesparadise/libasciidoc/pkg/renderer"
@@ -28,7 +27,7 @@ func init() {
 </div>{{ end }}`,
 		texttemplate.FuncMap{
 			"renderElements": renderListElements,
-			"escape":         html.EscapeString,
+			"escape":         EscapeString,
 		})
 
 	horizontalLabeledListTmpl = newTextTemplate("labeled list with horizontal layout",
@@ -51,7 +50,7 @@ func init() {
 		texttemplate.FuncMap{
 			"renderElements": renderListElements,
 			"includeNewline": includeNewline,
-			"escape":         html.EscapeString,
+			"escape":         EscapeString,
 		})
 
 	qandaLabeledListTmpl = newTextTemplate("qanda labeled list",
@@ -66,7 +65,7 @@ func init() {
 </div>{{ end }}`,
 		texttemplate.FuncMap{
 			"renderElements": renderListElements,
-			"escape":         html.EscapeString,
+			"escape":         EscapeString,
 		})
 
 }

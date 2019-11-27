@@ -23,8 +23,10 @@ var _ = Describe("links", func() {
 							types.StringElement{Content: "a link to "},
 							types.InlineLink{
 								Location: types.Location{
-									types.StringElement{
-										Content: "https://foo.bar",
+									Elements: []interface{}{
+										types.StringElement{
+											Content: "https://foo.bar",
+										},
 									},
 								},
 								Attributes: types.ElementAttributes{},
@@ -44,8 +46,10 @@ var _ = Describe("links", func() {
 							types.StringElement{Content: "a link to "},
 							types.InlineLink{
 								Location: types.Location{
-									types.StringElement{
-										Content: "https://foo.bar",
+									Elements: []interface{}{
+										types.StringElement{
+											Content: "https://foo.bar",
+										},
 									},
 								},
 								Attributes: types.ElementAttributes{},
@@ -65,8 +69,10 @@ var _ = Describe("links", func() {
 							types.StringElement{Content: "a link to "},
 							types.InlineLink{
 								Location: types.Location{
-									types.StringElement{
-										Content: "mailto:foo@bar",
+									Elements: []interface{}{
+										types.StringElement{
+											Content: "mailto:foo@bar",
+										},
 									},
 								},
 								Attributes: types.ElementAttributes{
@@ -93,8 +99,10 @@ var _ = Describe("links", func() {
 							types.StringElement{Content: "a link to "},
 							types.InlineLink{
 								Location: types.Location{
-									types.StringElement{
-										Content: "mailto:foo@bar",
+									Elements: []interface{}{
+										types.StringElement{
+											Content: "mailto:foo@bar",
+										},
 									},
 								},
 								Attributes: types.ElementAttributes{
@@ -127,8 +135,10 @@ next lines`
 							types.InlineLink{
 								Attributes: types.ElementAttributes{},
 								Location: types.Location{
-									types.StringElement{
-										Content: "http://website.com",
+									Elements: []interface{}{
+										types.StringElement{
+											Content: "http://website.com",
+										},
 									},
 								},
 							},
@@ -163,8 +173,10 @@ next lines`
 							types.InlineLink{
 								Attributes: types.ElementAttributes{},
 								Location: types.Location{
-									types.StringElement{
-										Content: "http://website.com",
+									Elements: []interface{}{
+										types.StringElement{
+											Content: "http://website.com",
+										},
 									},
 								},
 							},
@@ -193,8 +205,10 @@ next lines`
 							types.StringElement{Content: "a link to "},
 							types.InlineLink{
 								Location: types.Location{
-									types.StringElement{
-										Content: "https://foo.bar",
+									Elements: []interface{}{
+										types.StringElement{
+											Content: "https://foo.bar",
+										},
 									},
 								},
 								Attributes: types.ElementAttributes{},
@@ -217,8 +231,10 @@ next lines`
 								types.StringElement{Content: "a link to "},
 								types.InlineLink{
 									Location: types.Location{
-										types.StringElement{
-											Content: "http://website.com",
+										Elements: []interface{}{
+											types.StringElement{
+												Content: "http://website.com",
+											},
 										},
 									},
 									Attributes: types.ElementAttributes{
@@ -244,8 +260,10 @@ next lines`
 								types.StringElement{Content: "a link to "},
 								types.InlineLink{
 									Location: types.Location{
-										types.StringElement{
-											Content: "http://website.com",
+										Elements: []interface{}{
+											types.StringElement{
+												Content: "http://website.com",
+											},
 										},
 									},
 									Attributes: types.ElementAttributes{
@@ -271,8 +289,10 @@ next lines`
 								types.StringElement{Content: "a link to "},
 								types.InlineLink{
 									Location: types.Location{
-										types.StringElement{
-											Content: "http://website.com",
+										Elements: []interface{}{
+											types.StringElement{
+												Content: "http://website.com",
+											},
 										},
 									},
 									Attributes: types.ElementAttributes{
@@ -299,8 +319,10 @@ next lines`
 								types.StringElement{Content: "a link to "},
 								types.InlineLink{
 									Location: types.Location{
-										types.StringElement{
-											Content: "http://website.com",
+										Elements: []interface{}{
+											types.StringElement{
+												Content: "http://website.com",
+											},
 										},
 									},
 									Attributes: types.ElementAttributes{
@@ -334,8 +356,10 @@ next lines`
 							types.StringElement{Content: "a link to "},
 							types.InlineLink{
 								Location: types.Location{
-									types.StringElement{
-										Content: "foo.adoc",
+									Elements: []interface{}{
+										types.StringElement{
+											Content: "foo.adoc",
+										},
 									},
 								},
 								Attributes: types.ElementAttributes{},
@@ -355,8 +379,10 @@ next lines`
 							types.StringElement{Content: "a link to "},
 							types.InlineLink{
 								Location: types.Location{
-									types.StringElement{
-										Content: "foo.adoc",
+									Elements: []interface{}{
+										types.StringElement{
+											Content: "foo.adoc",
+										},
 									},
 								},
 								Attributes: types.ElementAttributes{
@@ -382,8 +408,10 @@ next lines`
 							types.StringElement{Content: "a link to "},
 							types.InlineLink{
 								Location: types.Location{
-									types.StringElement{
-										Content: "https://foo.bar",
+									Elements: []interface{}{
+										types.StringElement{
+											Content: "https://foo.bar",
+										},
 									},
 								},
 								Attributes: types.ElementAttributes{
@@ -409,8 +437,10 @@ next lines`
 							types.StringElement{Content: "a link to "},
 							types.InlineLink{
 								Location: types.Location{
-									types.StringElement{
-										Content: "https://foo.bar",
+									Elements: []interface{}{
+										types.StringElement{
+											Content: "https://foo.bar",
+										},
 									},
 								},
 								Attributes: types.ElementAttributes{
@@ -437,8 +467,10 @@ next lines`
 							types.StringElement{Content: "a link to "},
 							types.InlineLink{
 								Location: types.Location{
-									types.StringElement{
-										Content: "https://foo.bar",
+									Elements: []interface{}{
+										types.StringElement{
+											Content: "https://foo.bar",
+										},
 									},
 								},
 								Attributes: types.ElementAttributes{
@@ -466,7 +498,7 @@ next lines`
 				Expect(source).To(BecomeDocumentBlock(expected))
 			})
 
-			It("relative link with quoted text", func() {
+			It("relative link with quoted text attribute", func() {
 				source := "link:/[a _a_ b *b* c `c`]"
 				expected := types.Paragraph{
 					Attributes: types.ElementAttributes{},
@@ -474,8 +506,10 @@ next lines`
 						{
 							types.InlineLink{
 								Location: types.Location{
-									types.StringElement{
-										Content: "/",
+									Elements: []interface{}{
+										types.StringElement{
+											Content: "/",
+										},
 									},
 								},
 								Attributes: types.ElementAttributes{
@@ -522,6 +556,33 @@ next lines`
 				Expect(source).To(BecomeDocumentBlock(expected))
 			})
 
+			It("relative link within quoted text", func() {
+				source := "*link:foo[]*"
+				expected := types.Paragraph{
+					Attributes: types.ElementAttributes{},
+					Lines: []types.InlineElements{
+						{
+							types.QuotedText{
+								Kind: types.Bold,
+								Elements: types.InlineElements{
+									types.InlineLink{
+										Location: types.Location{
+											Elements: []interface{}{
+												types.StringElement{
+													Content: "foo",
+												},
+											},
+										},
+										Attributes: types.ElementAttributes{},
+									},
+								},
+							},
+						},
+					},
+				}
+				Expect(source).To(BecomeDocumentBlock(expected))
+			})
+
 			It("relative link with all valid characters", func() {
 				source := `a link to link:ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789~:/?#@!$&;=()*+,-_.%[as expected]`
 				expected := types.Paragraph{
@@ -531,8 +592,10 @@ next lines`
 							types.StringElement{Content: "a link to "},
 							types.InlineLink{
 								Location: types.Location{
-									types.StringElement{
-										Content: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789~:/?#@!$&;=()*+,-_.%",
+									Elements: []interface{}{
+										types.StringElement{
+											Content: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789~:/?#@!$&;=()*+,-_.%",
+										},
 									},
 								},
 								Attributes: types.ElementAttributes{
@@ -562,8 +625,10 @@ Test 2: link:/test/a%20b[with encoded space]`
 							types.StringElement{Content: "Test 2: "},
 							types.InlineLink{
 								Location: types.Location{
-									types.StringElement{
-										Content: "/test/a%20b",
+									Elements: []interface{}{
+										types.StringElement{
+											Content: "/test/a%20b",
+										},
 									},
 								},
 								Attributes: types.ElementAttributes{
@@ -591,8 +656,10 @@ Test 2: link:/test/a%20b[with encoded space]`
 								types.StringElement{Content: "a link to "},
 								types.InlineLink{
 									Location: types.Location{
-										types.StringElement{
-											Content: "https://foo.bar",
+										Elements: []interface{}{
+											types.StringElement{
+												Content: "https://foo.bar",
+											},
 										},
 									},
 									Attributes: types.ElementAttributes{
@@ -618,8 +685,10 @@ Test 2: link:/test/a%20b[with encoded space]`
 								types.StringElement{Content: "a link to "},
 								types.InlineLink{
 									Location: types.Location{
-										types.StringElement{
-											Content: "https://foo.bar",
+										Elements: []interface{}{
+											types.StringElement{
+												Content: "https://foo.bar",
+											},
 										},
 									},
 									Attributes: types.ElementAttributes{
@@ -645,8 +714,10 @@ Test 2: link:/test/a%20b[with encoded space]`
 								types.StringElement{Content: "a link to "},
 								types.InlineLink{
 									Location: types.Location{
-										types.StringElement{
-											Content: "https://foo.bar",
+										Elements: []interface{}{
+											types.StringElement{
+												Content: "https://foo.bar",
+											},
 										},
 									},
 									Attributes: types.ElementAttributes{
@@ -673,8 +744,10 @@ Test 2: link:/test/a%20b[with encoded space]`
 								types.StringElement{Content: "a link to "},
 								types.InlineLink{
 									Location: types.Location{
-										types.StringElement{
-											Content: "https://foo.bar",
+										Elements: []interface{}{
+											types.StringElement{
+												Content: "https://foo.bar",
+											},
 										},
 									},
 									Attributes: types.ElementAttributes{
@@ -799,6 +872,42 @@ a link to {scheme}://{path}`
 
 	Context("final document", func() {
 
+		It("relative link within quoted text", func() {
+			source := "*link:foo[]*"
+			expected := types.Document{
+				Attributes:         types.DocumentAttributes{},
+				ElementReferences:  types.ElementReferences{},
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
+				Elements: []interface{}{
+					types.Paragraph{
+						Attributes: types.ElementAttributes{},
+						Lines: []types.InlineElements{
+							{
+								types.QuotedText{
+									Kind: types.Bold,
+									Elements: types.InlineElements{
+										types.InlineLink{
+											Location: types.Location{
+												Elements: []interface{}{
+													types.StringElement{
+														Content: "foo",
+													},
+												},
+												// Resolved: "foo",
+											},
+											Attributes: types.ElementAttributes{},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			}
+			Expect(source).To(BecomeDocument(expected))
+		})
+
 		Context("with document attribute substitutions", func() {
 
 			It("external link with a document attribute substitution for the whole URL", func() {
@@ -829,9 +938,12 @@ a link to {url}`
 									types.StringElement{Content: "a link to "},
 									types.InlineLink{
 										Location: types.Location{
-											types.StringElement{
-												Content: "https://foo2.bar",
+											Elements: []interface{}{
+												types.StringElement{
+													Content: "https://foo2.bar",
+												},
 											},
+											// Resolved: "https://foo2.bar",
 										},
 										Attributes: types.ElementAttributes{},
 									},
@@ -870,9 +982,12 @@ a link to {scheme}://{path} and https://foo.baz`
 									types.StringElement{Content: "a link to "},
 									types.InlineLink{
 										Location: types.Location{
-											types.StringElement{
-												Content: "https://foo.bar",
+											Elements: []interface{}{
+												types.StringElement{
+													Content: "https://foo.bar",
+												},
 											},
+											// Resolved: "https://foo.bar",
 										},
 										Attributes: types.ElementAttributes{},
 									},
@@ -880,9 +995,12 @@ a link to {scheme}://{path} and https://foo.baz`
 									types.InlineLink{
 										Attributes: types.ElementAttributes{},
 										Location: types.Location{
-											types.StringElement{
-												Content: "https://foo.baz",
+											Elements: []interface{}{
+												types.StringElement{
+													Content: "https://foo.baz",
+												},
 											},
+											// Resolved: "https://foo.baz",
 										},
 									},
 								},
@@ -926,25 +1044,147 @@ a link to {scheme}://{path} and https://foo.baz`
 									types.InlineLink{
 										Attributes: types.ElementAttributes{},
 										Location: types.Location{
-											types.StringElement{
-												Content: "https://",
+											Elements: []interface{}{
+												types.StringElement{
+													Content: "https://",
+												},
+												types.DocumentAttributeSubstitution{
+													Name: "path", // no match while applying document attribute substitutions, so parsing gave a new document attribute substitution...
+												},
 											},
-											types.DocumentAttributeSubstitution{
-												Name: "path", // no match while applying document attribute substitutions, so parsing gave a new document attribute substitution...
-											},
+											// Resolved: "https://{path}",
 										},
 									},
 									types.StringElement{Content: " and "},
 									types.InlineLink{
 										Attributes: types.ElementAttributes{},
 										Location: types.Location{
-											types.StringElement{
-												Content: "https://foo.baz",
+											Elements: []interface{}{
+												types.StringElement{
+													Content: "https://foo.baz",
+												},
 											},
+											// Resolved: "https://foo.baz",
 										},
 									},
 								},
 							},
+						},
+					},
+				}
+				Expect(source).To(BecomeDocument(expected))
+			})
+
+			// see https://github.com/bytesparadise/libasciidoc/issues/447
+			// 			It("external link with document attribute in section 0 title", func() {
+			// 				source := `= a title to {scheme}://{path} and https://foo.baz
+			// :scheme: https
+			// :path: foo.bar`
+
+			// 				title := types.InlineElements{
+			// 					types.StringElement{Content: "a title to "},
+			// 					types.InlineLink{
+			// 						Attributes: types.ElementAttributes{},
+			// 						Location: types.Location{
+			// 							Elements: []interface{}{
+			// 								types.StringElement{
+			// 									Content: "https://foo.bar",
+			// 								},
+			// 							},
+			// 							// Resolved: "https://foo.bar",
+			// 						},
+			// 					},
+			// 					types.StringElement{Content: " and "},
+			// 					types.InlineLink{
+			// 						Attributes: types.ElementAttributes{},
+			// 						Location: types.Location{
+			// 							Elements: []interface{}{
+			// 								types.StringElement{
+			// 									Content: "https://foo.baz",
+			// 								},
+			// 							},
+			// 							// Resolved: "https://foo.baz",
+			// 						},
+			// 					},
+			// 				}
+			// 				expected := types.Document{
+			// 					Attributes: types.DocumentAttributes{
+
+			// 					},
+			// 					ElementReferences: types.ElementReferences{
+			// 						"a_title_to_https_foo_bar_and_https_foo_baz": title,
+			// 					},
+			// 					Footnotes:          types.Footnotes{},
+			// 					FootnoteReferences: types.FootnoteReferences{},
+			// 					Elements: []interface{}{
+			// 						types.Section{
+			// 							Level: 0,
+			// 							Attributes: types.ElementAttributes{
+			// 								types.AttrID:       "a_title_to_https_foo_bar_and_https_foo_baz",
+			// 								types.AttrCustomID: false,
+			// 							},
+			// 							Title:    title,
+			// 							Elements: []interface{}{},
+			// 						},
+			// 					},
+			// 				}
+			// 				Expect(source).To(BecomeDocument(expected))
+			// 			})
+
+			It("external link with document attribute in section 1 title", func() {
+				source := `:scheme: https
+:path: foo.bar
+
+== a title to {scheme}://{path} and https://foo.baz`
+
+				title := types.InlineElements{
+					types.StringElement{Content: "a title to "},
+					types.InlineLink{
+						Attributes: types.ElementAttributes{},
+						Location: types.Location{
+							Elements: []interface{}{
+								types.StringElement{
+									Content: "https://foo.bar",
+								},
+							},
+						},
+					},
+					types.StringElement{Content: " and "},
+					types.InlineLink{
+						Attributes: types.ElementAttributes{},
+						Location: types.Location{
+							Elements: []interface{}{
+								types.StringElement{
+									Content: "https://foo.baz",
+								},
+							},
+						},
+					},
+				}
+				expected := types.Document{
+					Attributes: types.DocumentAttributes{},
+					ElementReferences: types.ElementReferences{
+						"a_title_to_https_foo_bar_and_https_foo_baz": title,
+					},
+					Footnotes:          types.Footnotes{},
+					FootnoteReferences: types.FootnoteReferences{},
+					Elements: []interface{}{
+						types.DocumentAttributeDeclaration{
+							Name:  "scheme",
+							Value: "https",
+						},
+						types.DocumentAttributeDeclaration{
+							Name:  "path",
+							Value: "foo.bar",
+						},
+						types.Section{
+							Level: 1,
+							Attributes: types.ElementAttributes{
+								types.AttrID:       "a_title_to_https_foo_bar_and_https_foo_baz",
+								types.AttrCustomID: false,
+							},
+							Title:    title,
+							Elements: []interface{}{},
 						},
 					},
 				}

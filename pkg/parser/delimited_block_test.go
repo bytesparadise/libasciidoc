@@ -205,8 +205,10 @@ var _ = Describe("delimited blocks - draft", func() {
 								types.InlineLink{
 									Attributes: types.ElementAttributes{},
 									Location: types.Location{
-										types.StringElement{
-											Content: "http://website.com",
+										Elements: []interface{}{
+											types.StringElement{
+												Content: "http://website.com",
+											},
 										},
 									},
 								},
@@ -248,8 +250,10 @@ var _ = Describe("delimited blocks - draft", func() {
 								types.InlineLink{
 									Attributes: types.ElementAttributes{},
 									Location: types.Location{
-										types.StringElement{
-											Content: "http://website.com",
+										Elements: []interface{}{
+											types.StringElement{
+												Content: "http://website.com",
+											},
 										},
 									},
 								},
@@ -1556,7 +1560,7 @@ bar
 	})
 })
 
-var _ = Describe("delimited blocks - document", func() {
+var _ = Describe("delimited blocks - final document", func() {
 
 	Context("fenced blocks", func() {
 
@@ -1800,8 +1804,10 @@ var _ = Describe("delimited blocks - document", func() {
 										types.InlineLink{
 											Attributes: types.ElementAttributes{},
 											Location: types.Location{
-												types.StringElement{
-													Content: "http://website.com",
+												Elements: []interface{}{
+													types.StringElement{
+														Content: "http://website.com",
+													},
 												},
 											},
 										},

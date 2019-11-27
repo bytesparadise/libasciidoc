@@ -68,10 +68,8 @@ func NilSafe(elements []interface{}) []interface{} {
 	return make([]interface{}, 0)
 }
 
-// removeEmptyTrailingStringElement removes the last
-// func removeEmptyTrailingStringElement([]interface{}) []interface{}
-
-func mergeElements(elements ...interface{}) InlineElements {
+// MergeStringElements merge string elements together
+func MergeStringElements(elements ...interface{}) InlineElements {
 	result := make([]interface{}, 0)
 	buff := bytes.NewBuffer(nil)
 	for _, element := range elements {
@@ -93,9 +91,9 @@ func mergeElements(elements ...interface{}) InlineElements {
 			buff.WriteString(content)
 		case []interface{}:
 			if len(element) > 0 {
-				f := mergeElements(element...)
+				f := MergeStringElements(element...)
 				result, buff = appendBuffer(result, buff)
-				result = mergeElements(append(result, f...)...)
+				result = MergeStringElements(append(result, f...)...)
 			}
 		default:
 			// log.Debugf("Merging with 'default' case an element of type %[1]T", element)

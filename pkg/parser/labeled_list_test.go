@@ -1586,4 +1586,37 @@ level 2::: description 2`
 		}
 		Expect(source).To(BecomeDocument(expected))
 	})
+
+	It("labeled list item with predefined attribute", func() {
+		source := `level 1:: {amp}`
+		expected := types.Document{
+			Attributes:         types.DocumentAttributes{},
+			ElementReferences:  types.ElementReferences{},
+			Footnotes:          types.Footnotes{},
+			FootnoteReferences: types.FootnoteReferences{},
+			Elements: []interface{}{
+				types.LabeledList{
+					Attributes: types.ElementAttributes{},
+					Items: []types.LabeledListItem{
+						{
+							Level:      1,
+							Term:       "level 1",
+							Attributes: types.ElementAttributes{},
+							Elements: []interface{}{
+								types.Paragraph{
+									Attributes: types.ElementAttributes{},
+									Lines: []types.InlineElements{
+										{
+											types.StringElement{Content: "&amp;"},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		}
+		Expect(source).To(BecomeDocument(expected))
+	})
 })

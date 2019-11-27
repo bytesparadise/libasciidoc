@@ -3,7 +3,6 @@ package html5
 import (
 	"bytes"
 	"fmt"
-	"html"
 	"math"
 	"strconv"
 	texttemplate "text/template"
@@ -36,7 +35,7 @@ func init() {
 		texttemplate.FuncMap{
 			"renderElement":  renderElement,
 			"includeNewline": includeNewline,
-			"escape":         html.EscapeString,
+			"escape":         EscapeString,
 		})
 }
 
@@ -62,7 +61,7 @@ func renderTable(ctx *renderer.Context, t types.Table) ([]byte, error) {
 	}
 	var title string
 	if titleAttr, ok := t.Attributes[types.AttrTitle].(string); ok {
-		title = fmt.Sprintf("Table %d. %s", ctx.GetAndIncrementTableCounter(), html.EscapeString(titleAttr))
+		title = fmt.Sprintf("Table %d. %s", ctx.GetAndIncrementTableCounter(), EscapeString(titleAttr))
 	}
 	err := tableTmpl.Execute(result, ContextualPipeline{
 		Context: ctx,

@@ -430,6 +430,18 @@ func NewSection(level int, title InlineElements, ids []interface{}, attributes i
 	}, nil
 }
 
+// UpdateAttrID updates the "ID" attribute in the section (in case the title changed after some document attr substitution)
+func (s Section) UpdateAttrID() error {
+	if !s.Attributes.GetAsBool(AttrCustomID) {
+		replacement, err := ReplaceNonAlphanumerics(s.Title, "_")
+		if err != nil {
+			return errors.Wrapf(err, "unable to generate default ID while instanciating a new Section element")
+		}
+		s.Attributes[AttrID] = replacement
+	}
+	return nil
+}
+
 // AddElement adds the given child element to this section
 func (s *Section) AddElement(e interface{}) {
 	s.Elements = append(s.Elements, e)
@@ -1094,7 +1106,7 @@ type InlineElements []interface{}
 
 // NewInlineElements initializes a new `InlineElements` from the given values
 func NewInlineElements(elements ...interface{}) (InlineElements, error) {
-	result := mergeElements(elements...)
+	result := MergeStringElements(elements...)
 	return result, nil
 }
 
@@ -1115,33 +1127,6 @@ func (e InlineElements) AcceptVisitor(v Visitor) error {
 		}
 	}
 	return nil
-}
-
-// ApplyDocumentAttributeSubstitutions checks if there's at least one substitution before doing the whole process
-func (e InlineElements) ApplyDocumentAttributeSubstitutions(attrs map[string]string) (InlineElements, bool) {
-	has := false
-	result := make([]interface{}, 0, len(e))
-	for _, element := range e {
-		switch element := element.(type) {
-		case DocumentAttributeSubstitution:
-			has = true // found even if there's no attribute declared
-			if value, ok := attrs[element.Name]; ok {
-				result = append(result, StringElement{
-					Content: value,
-				})
-			} else {
-				result = append(result, StringElement{
-					Content: "{" + element.Name + "}",
-				})
-			}
-		default:
-			result = append(result, element)
-		}
-	}
-	if has {
-		return mergeElements(result...), true
-	}
-	return result, false // no need to merge elements here, nothing was changed
 }
 
 // ------------------------------------------
@@ -1184,82 +1169,108 @@ const (
 
 // ImageBlock the structure for the block images
 type ImageBlock struct {
-	Path       string
+	Location   Location
 	Attributes ElementAttributes
 }
 
 // NewImageBlock initializes a new `ImageBlock`
-func NewImageBlock(path string, inlineAttributes ElementAttributes, attributes interface{}) (ImageBlock, error) {
+func NewImageBlock(path Location, inlineAttributes ElementAttributes, attributes interface{}) (ImageBlock, error) {
 	attrs := ElementAttributes{}
 	if attributes, ok := attributes.(ElementAttributes); ok {
 		attrs.AddAll(attributes)
 	}
 	attrs.AddAll(inlineAttributes)
-	if alt, found := attrs[AttrImageAlt]; !found || alt == "" {
-		_, filename := filepath.Split(path)
-		ext := filepath.Ext(filename)
-		log.Debugf("adding alt based on filename '%s' (ext=%s)", filename, ext)
-		if ext != "" {
-			attrs[AttrImageAlt] = strings.TrimSuffix(filename, ext)
-		} else {
-			attrs[AttrImageAlt] = filename
-		}
-	}
 	return ImageBlock{
-		Path:       path,
+		Location:   path,
 		Attributes: attrs,
 	}, nil
 }
 
+// ResolveLocation resolves the image path using the given document attributes
+// also, updates the `alt` attribute based on the resolved path of the image
+func (b ImageBlock) ResolveLocation(attrs map[string]string) (interface{}, bool) {
+	b.Location = b.Location.Resolve(attrs)
+	if _, found := b.Attributes[AttrImageAlt]; !found {
+		b.Attributes[AttrImageAlt] = resolveAlt(b.Location)
+	}
+	return b, true
+}
+
+func resolveAlt(path Location) string {
+	_, filename := filepath.Split(path.String())
+	ext := filepath.Ext(filename)
+	if ext != "" {
+		return strings.TrimSuffix(filename, ext)
+	}
+	return filename
+}
+
 // AddAttributes adds all given attributes to the current set of attribute of the element
-func (i ImageBlock) AddAttributes(attributes ElementAttributes) {
-	i.Attributes.AddAll(attributes)
+func (b ImageBlock) AddAttributes(attributes ElementAttributes) {
+	b.Attributes.AddAll(attributes)
 }
 
 // InlineImage the structure for the inline image macros
 type InlineImage struct {
-	Path       string
+	Location   Location
 	Attributes ElementAttributes
 }
 
 // NewInlineImage initializes a new `InlineImage` (similar to ImageBlock, but without attributes)
-func NewInlineImage(path string, attributes ElementAttributes) (InlineImage, error) {
-	if alt, found := attributes[AttrImageAlt]; !found || alt == "" {
-		_, filename := filepath.Split(path)
-		log.Debugf("adding alt based on filename '%s'", filename)
-		ext := filepath.Ext(filename)
-		if ext != "" {
-			attributes[AttrImageAlt] = strings.TrimSuffix(filename, ext)
-		} else {
-			attributes[AttrImageAlt] = filename
-		}
-	}
+func NewInlineImage(path Location, attributes ElementAttributes) (InlineImage, error) {
+	log.Debugf("new inline image with attrs: %+v", attributes)
 	return InlineImage{
-		Path:       path,
+		Location:   path,
 		Attributes: attributes,
 	}, nil
 }
+
+// ResolveLocation resolves the image path using the given document attributes
+// also, updates the `alt` attribute based on the resolved path of the image
+func (i InlineImage) ResolveLocation(attrs map[string]string) (interface{}, bool) {
+	i.Location = i.Location.Resolve(attrs)
+	if _, found := i.Attributes[AttrImageAlt]; !found {
+		i.Attributes[AttrImageAlt] = resolveAlt(i.Location)
+	}
+	return i, true
+}
+
+// // ResolveLocation resolves the image path using the given document attributes
+// // also, updates the `alt` attribute based on the resolved path of the image
+// func (b InlineImage) ResolveLocation(attrs map[string]string) interface{} {
+// 	path := b.Path.Resolve(attrs)
+// 	if _, found := attrs[AttrImageAlt]; !found {
+// 		_, filename := filepath.Split(path)
+// 		ext := filepath.Ext(filename)
+// 		log.Debugf("adding alt based on filename '%s' (ext=%s)", filename, ext)
+// 		if ext != "" {
+// 			b.Attributes[AttrImageAlt] = strings.TrimSuffix(filename, ext)
+// 		} else {
+// 			b.Attributes[AttrImageAlt] = filename
+// 		}
+// 	}
+// 	return b
+// }
 
 // NewImageAttributes returns a map of image attributes, some of which have implicit keys (`alt`, `width` and `height`)
 func NewImageAttributes(alt, width, height interface{}, otherattrs []interface{}) (ElementAttributes, error) {
 	result := ElementAttributes{}
 	var altStr, widthStr, heightStr string
 	if alt, ok := alt.(string); ok {
-		altStr = Apply(alt, strings.TrimSpace)
+		if altStr = Apply(alt, strings.TrimSpace); altStr != "" {
+			result[AttrImageAlt] = altStr
+		}
 	}
 	if width, ok := width.(string); ok {
-		widthStr = Apply(width, strings.TrimSpace)
-		if widthStr != "" {
+		if widthStr = Apply(width, strings.TrimSpace); widthStr != "" {
 			result[AttrImageWidth] = widthStr
 		}
 	}
 	if height, ok := height.(string); ok {
-		heightStr = Apply(height, strings.TrimSpace)
-		if heightStr != "" {
+		if heightStr = Apply(height, strings.TrimSpace); heightStr != "" {
 			result[AttrImageHeight] = heightStr
 		}
 	}
-	result[AttrImageAlt] = altStr
 	for _, otherAttr := range otherattrs {
 		if otherAttr, ok := otherAttr.(ElementAttributes); ok {
 			for k, v := range otherAttr {
@@ -1617,7 +1628,7 @@ const (
 
 // NewQuotedText initializes a new `QuotedText` from the given kind and content
 func NewQuotedText(kind QuotedTextKind, content ...interface{}) (QuotedText, error) {
-	elements := mergeElements(content...)
+	elements := MergeStringElements(content...)
 	return QuotedText{
 		Kind:     kind,
 		Elements: elements,
@@ -1696,7 +1707,7 @@ const (
 func NewPassthrough(kind PassthroughKind, elements []interface{}) (Passthrough, error) {
 	return Passthrough{
 		Kind:     kind,
-		Elements: mergeElements(elements...),
+		Elements: MergeStringElements(elements...),
 	}, nil
 
 }
@@ -1722,6 +1733,21 @@ func NewInlineLink(url Location, attrs interface{}) (InlineLink, error) {
 		result.Attributes = ElementAttributes{}
 	}
 	return result, nil
+}
+
+// // ResolveLocation resolves the link path using the given document attributes
+// func (b InlineLink) ResolveLocation() interface{} {
+// 	b.Path.Resolve(attrs)
+// 	return b
+// }
+
+// AcceptVisitor implements Visitable#AcceptVisitor(Visitor)
+func (l InlineLink) AcceptVisitor(v Visitor) error {
+	err := v.Visit(l)
+	if err != nil {
+		return errors.Wrapf(err, "error while visiting inline link")
+	}
+	return nil
 }
 
 // AttrInlineLinkText the link `text` attribute
@@ -1970,7 +1996,7 @@ type IncludedFileLine []interface{}
 
 // NewIncludedFileLine returns a new IncludedFileLine
 func NewIncludedFileLine(content []interface{}) (IncludedFileLine, error) {
-	return IncludedFileLine(mergeElements(content)), nil
+	return IncludedFileLine(MergeStringElements(content)), nil
 }
 
 // HasTag returns true if the line has at least one inclusion tag (start or end), false otherwise
@@ -2031,42 +2057,60 @@ func NewIncludedFileEndTag(tag string) (IncludedFileEndTag, error) {
 // -------------------------------------------------------------------------------------
 
 // Location a Location contains characters and optionaly, document attributes
-type Location []interface{}
+type Location struct {
+	Elements []interface{}
+}
 
 // NewLocation return a new location with the given elements
 func NewLocation(elements []interface{}) (Location, error) {
-	return Location(mergeElements(elements)), nil
+	return Location{
+		Elements: MergeStringElements(elements),
+	}, nil
 }
 
 // Resolve resolves the Location by replacing all document attribute substitutions
 // with their associated values, or their corresponding raw text if
 // no attribute matched
-// TODO: obsolete: DocumentAttributeSubstitution are processed during the Draft -> Final document transformation
-func (u Location) Resolve(attrs DocumentAttributes) string {
+// returns the resolved attribute
+func (l Location) String() string { // (attrs map[string]string) string {
 	result := bytes.NewBuffer(nil)
-	for _, e := range u {
-		switch s := e.(type) {
+	for _, e := range l.Elements {
+		result.WriteString(fmt.Sprintf("%s", e))
+	}
+	// l.Resolved = result.String()
+	return result.String()
+}
+
+// Resolve resolves the Location by replacing all document attribute substitutions
+// with their associated values, or their corresponding raw text if
+// no attribute matched
+// returns `true` if some document attribute substitution occurred
+func (l *Location) Resolve(attrs map[string]string) Location {
+	result := bytes.NewBuffer(nil)
+	for _, e := range l.Elements {
+		switch e := e.(type) {
 		case DocumentAttributeSubstitution:
-			if value, found := attrs[s.Name].(string); found {
+			if value, found := attrs[e.Name]; found {
 				result.WriteString(value)
 			} else {
 				result.WriteRune('{')
-				result.WriteString(s.Name)
+				result.WriteString(e.Name)
 				result.WriteRune('}')
 			}
 		default:
 			result.WriteString(fmt.Sprintf("%s", e))
 		}
 	}
-	return result.String()
+	return Location{
+		Elements: []interface{}{
+			StringElement{
+				Content: result.String(),
+			},
+		},
+	}
 }
 
-// Ext return the extension of the file of this location.
-// Eg:
-// - `https://foo.com/bar.png` -> `png`
-// - `images/bar.png` -> `png`
-// return empty string if the resolved path has no extension
-// func (u Location) Ext(attrs map[string]string) string {
-// 	resolved := u.Resolve(attrs)
-// 	return ""
-// }
+// LocationHolder interface for the types that embed and can resolve a location
+type LocationHolder interface {
+	ResolveLocation(attrs map[string]string) (interface{}, bool)
+}

@@ -468,141 +468,87 @@ var _ = Describe("tag ranges", func() {
 
 })
 
-var _ = Describe("Location resolution", func() {
+var _ = Describe("location resolution", func() {
 
-	attrs := types.DocumentAttributes{
+	attrs := map[string]string{
 		"includedir": "includes",
 		"foo":        "bar",
 	}
 	DescribeTable("resolve URL",
-		func(location types.Location, expectation string) {
-			f := types.FileInclusion{
-				Location: location,
-			}
-			Expect(f.Location.Resolve(attrs)).To(Equal(expectation))
+		func(actual types.Location, expectation types.Location) {
+			actual.Resolve(attrs)
+			Expect(actual).To(Equal(expectation))
 		},
-		Entry("includes/file.ext", types.Location{
-			types.StringElement{Content: "includes/file.ext"},
-		}, "includes/file.ext"),
-		Entry("./{includedir}/file.ext", types.Location{
-			types.StringElement{Content: "./"},
-			types.DocumentAttributeSubstitution{Name: "includedir"},
-			types.StringElement{Content: "/file.ext"},
-		}, "./includes/file.ext"),
-		Entry("./{unknown}/file.ext", types.Location{
-			types.StringElement{Content: "./"},
-			types.DocumentAttributeSubstitution{Name: "unknown"},
-			types.StringElement{Content: "/file.ext"},
-		}, "./{unknown}/file.ext"),
+		Entry("includes/file.ext",
+			types.Location{
+				Elements: []interface{}{
+					types.StringElement{
+						Content: "includes/file.ext",
+					},
+				},
+			},
+			types.Location{
+				Elements: []interface{}{
+					types.StringElement{
+						Content: "includes/file.ext",
+					},
+				},
+			}),
+		Entry("./{includedir}/file.ext",
+			types.Location{
+				Elements: []interface{}{
+					types.StringElement{
+						Content: "./",
+					},
+					types.DocumentAttributeSubstitution{
+						Name: "includedir",
+					},
+					types.StringElement{
+						Content: "/file.ext",
+					},
+				},
+			},
+			types.Location{
+				Elements: []interface{}{
+					types.StringElement{
+						Content: "./",
+					},
+					types.DocumentAttributeSubstitution{
+						Name: "includedir",
+					},
+					types.StringElement{
+						Content: "/file.ext",
+					},
+				},
+			},
+		),
+		Entry("./{unknown}/file.ext",
+			types.Location{
+				Elements: []interface{}{
+					types.StringElement{
+						Content: "./",
+					},
+					types.DocumentAttributeSubstitution{
+						Name: "unknown",
+					},
+					types.StringElement{
+						Content: "/file.ext",
+					},
+				},
+			},
+			types.Location{
+				Elements: []interface{}{
+					types.StringElement{
+						Content: "./",
+					},
+					types.DocumentAttributeSubstitution{
+						Name: "unknown",
+					},
+					types.StringElement{
+						Content: "/file.ext",
+					},
+				},
+			},
+		),
 	)
-})
-
-var _ = Describe("InlineElements", func() {
-
-	Context("attribute subsititutions", func() {
-
-		It("should replace with new StringElement on first position", func() {
-			// given
-			e := types.InlineElements{
-				types.DocumentAttributeSubstitution{
-					Name: "foo",
-				},
-				types.StringElement{
-					Content: " and more content.",
-				},
-			}
-			// when
-			result, found := e.ApplyDocumentAttributeSubstitutions(map[string]string{
-				"foo": "bar",
-			})
-			// then
-			Expect(result).To(Equal(types.InlineElements{
-				types.StringElement{
-					Content: "bar and more content.",
-				},
-			}))
-			Expect(found).To(BeTrue())
-		})
-
-		It("should replace with new StringElement on middle position", func() {
-			// given
-			e := types.InlineElements{
-				types.StringElement{
-					Content: "baz, ",
-				},
-				types.DocumentAttributeSubstitution{
-					Name: "foo",
-				},
-				types.StringElement{
-					Content: " and more content.",
-				},
-			}
-			// when
-			result, found := e.ApplyDocumentAttributeSubstitutions(map[string]string{
-				"foo": "bar",
-			})
-			// then
-			Expect(result).To(Equal(types.InlineElements{
-				types.StringElement{
-					Content: "baz, bar and more content.",
-				},
-			}))
-			Expect(found).To(BeTrue())
-		})
-
-		It("should replace with undefined attribute", func() {
-			// given
-			e := types.InlineElements{
-				types.StringElement{
-					Content: "baz, ",
-				},
-				types.DocumentAttributeSubstitution{
-					Name: "foo",
-				},
-				types.StringElement{
-					Content: " and more content.",
-				},
-			}
-			// when
-			result, found := e.ApplyDocumentAttributeSubstitutions(map[string]string{})
-			// then
-			Expect(result).To(Equal(types.InlineElements{
-				types.StringElement{
-					Content: "baz, {foo} and more content.",
-				},
-			}))
-			Expect(found).To(BeTrue())
-		})
-
-		It("should remain unchanged without substitution", func() {
-			// given
-			e := types.InlineElements{
-				types.StringElement{
-					Content: "baz, ",
-				},
-				types.StringElement{
-					Content: "foo",
-				},
-				types.StringElement{
-					Content: " and more content.",
-				},
-			}
-			// when
-			result, found := e.ApplyDocumentAttributeSubstitutions(map[string]string{})
-			// then
-			Expect(result).To(Equal(types.InlineElements{
-				types.StringElement{
-					Content: "baz, ",
-				},
-				types.StringElement{
-					Content: "foo",
-				},
-				types.StringElement{
-					Content: " and more content.",
-				},
-			}))
-			Expect(found).To(BeFalse())
-		})
-
-	})
 })

@@ -912,7 +912,7 @@ last line of grandchild</pre>
 
 				source := `include::../../../test/includes/unknown.adoc[leveloffset=+1]`
 				expected := `<div class="paragraph">
-<p>Unresolved directive in test.adoc - include::../../../test/includes/unknown.adoc[leveloffset=&#43;1]</p>
+<p>Unresolved directive in test.adoc - include::../../../test/includes/unknown.adoc[leveloffset=+1]</p>
 </div>`
 				Expect(source).To(RenderHTML5Body(expected))
 				// verify error in logs
@@ -930,7 +930,7 @@ last line of grandchild</pre>
 
 				source := `include::{includedir}/unknown.adoc[leveloffset=+1]`
 				expected := `<div class="paragraph">
-<p>Unresolved directive in test.adoc - include::{includedir}/unknown.adoc[leveloffset=&#43;1]</p>
+<p>Unresolved directive in test.adoc - include::{includedir}/unknown.adoc[leveloffset=+1]</p>
 </div>`
 				Expect(source).To(RenderHTML5Body(expected))
 				// verify error in logs

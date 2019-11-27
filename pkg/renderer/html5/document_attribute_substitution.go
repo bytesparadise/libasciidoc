@@ -1,8 +1,6 @@
 package html5
 
 import (
-	"bytes"
-
 	"github.com/bytesparadise/libasciidoc/pkg/renderer"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 )
@@ -15,16 +13,4 @@ func processAttributeDeclaration(ctx *renderer.Context, attr types.DocumentAttri
 func processAttributeReset(ctx *renderer.Context, attr types.DocumentAttributeReset) []byte {
 	ctx.Document.Attributes.Reset(attr)
 	return []byte{}
-}
-
-func renderAttributeSubstitution(ctx *renderer.Context, attr types.DocumentAttributeSubstitution) []byte {
-	result := bytes.NewBuffer(nil)
-	if value, found := ctx.Document.Attributes.GetAsString(attr.Name); found {
-		result.WriteString(value)
-	} else if value, found := predefined.GetAsString(attr.Name); found {
-		result.WriteString(value)
-	} else {
-		result.WriteString("{" + attr.Name + "}")
-	}
-	return result.Bytes()
 }

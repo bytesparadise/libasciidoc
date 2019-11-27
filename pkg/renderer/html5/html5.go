@@ -131,8 +131,6 @@ func renderElement(ctx *renderer.Context, element interface{}) ([]byte, error) {
 		return processAttributeDeclaration(ctx, e), nil
 	case types.DocumentAttributeReset:
 		return processAttributeReset(ctx, e), nil
-	case types.DocumentAttributeSubstitution:
-		return renderAttributeSubstitution(ctx, e), nil
 	case types.LineBreak:
 		return renderLineBreak()
 	case types.UserMacro:
@@ -156,7 +154,7 @@ func renderPlainString(ctx *renderer.Context, element interface{}) ([]byte, erro
 		if alt, ok := element.Attributes[types.AttrInlineLinkText].(types.InlineElements); ok {
 			return renderPlainString(ctx, alt)
 		}
-		return []byte(element.Location.Resolve(ctx.Document.Attributes)), nil
+		return []byte(element.Location.String()), nil
 	case types.BlankLine:
 		return []byte("\n\n"), nil
 	case types.StringElement:

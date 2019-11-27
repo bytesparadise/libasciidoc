@@ -4,8 +4,6 @@ import (
 	"bytes"
 	"strings"
 
-	"github.com/bytesparadise/libasciidoc/pkg/parser"
-
 	"github.com/bytesparadise/libasciidoc/pkg/renderer"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 	"github.com/pkg/errors"
@@ -74,50 +72,5 @@ func renderLine(ctx *renderer.Context, elements types.InlineElements, renderElem
 		}
 	}
 
-	// log.Debugf("rendered line elements after 1st pass: '%s'", buff.String())
-
-	// check if the line has some substitution
-	if !hasSubstitutions(elements) {
-		return buff.Bytes(), nil
-	}
-	// otherwise, parse the rendered line, in case some new elements (links, etc.) "appeared" after document attribute substitutions
-	r, err := parser.Parse("", buff.Bytes(),
-		parser.Entrypoint("InlineElementsWithoutSubtitution")) // parse a single InlineElements
-	if err != nil {
-		return []byte{}, errors.Wrap(err, "failed process elements after substitution")
-	}
-	elements, ok := r.(types.InlineElements)
-	if !ok {
-		return []byte{}, errors.Errorf("failed process elements after substitution")
-	}
-	buff = bytes.NewBuffer(nil)
-	// render all elements of the line, but StringElement must be rendered plain-text now, to avoid double HTML escape
-	for i, element := range elements {
-		switch element := element.(type) {
-		case types.StringElement:
-			if i == len(elements)-1 {
-				buff.WriteString(strings.TrimRight(element.Content, " "))
-			} else {
-				buff.WriteString(element.Content)
-			}
-		default:
-			renderedElement, err := renderElement(ctx, element)
-			if err != nil {
-				return nil, errors.Wrapf(err, "unable to render line")
-			}
-			buff.Write(renderedElement)
-		}
-	}
-	// log.Debugf("rendered line elements: '%s'", buff.String())
 	return buff.Bytes(), nil
-}
-
-// check if there's at least on substitution before doing the whole process
-func hasSubstitutions(e types.InlineElements) bool {
-	for _, element := range e {
-		if _, ok := element.(types.DocumentAttributeSubstitution); ok {
-			return true
-		}
-	}
-	return false
 }

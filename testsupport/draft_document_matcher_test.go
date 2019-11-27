@@ -68,15 +68,6 @@ var _ = Describe("draft document assertions", func() {
 			Expect(matcher.NegatedFailureMessage(actual)).To(Equal(fmt.Sprintf("expected draft documents not to match:\n%s", compare(obtained, expected))))
 		})
 
-		It("should return error when invalid type is input", func() {
-			// given
-			matcher := testsupport.BecomeDraftDocument("", testsupport.WithoutPreprocessing())
-			// when
-			_, err := matcher.Match(1) // not a string
-			// then
-			Expect(err).To(HaveOccurred())
-			Expect(err.Error()).To(Equal("BecomeDocumentBlock matcher expects a string (actual: int)"))
-		})
 	})
 
 	Context("without preprocessing", func() {

@@ -55,8 +55,8 @@ func absoluteOffset(offset int) levelOffset {
 	}
 }
 
-func parseFileToInclude(filename string, incl types.FileInclusion, attrs types.DocumentAttributes, levelOffsets []levelOffset, opts ...Option) (types.DraftDocument, error) {
-	path := incl.Location.Resolve(attrs)
+func parseFileToInclude(filename string, incl types.FileInclusion, attrs map[string]string, levelOffsets []levelOffset, opts ...Option) (types.DraftDocument, error) {
+	path := incl.Location.Resolve(attrs).String()
 	currentDir := filepath.Dir(filename)
 	log.Debugf("parsing '%s' from '%s' (%s)", path, currentDir, filename)
 	log.Debugf("file inclusion attributes: %s", spew.Sdump(incl.Attributes))

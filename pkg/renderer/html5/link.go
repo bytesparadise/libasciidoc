@@ -19,7 +19,7 @@ func init() {
 
 func renderLink(ctx *renderer.Context, l types.InlineLink) ([]byte, error) { //nolint: unparam
 	result := bytes.NewBuffer(nil)
-	location := l.Location.Resolve(ctx.Document.Attributes)
+	location := l.Location.String()
 	var text []byte
 	class := ""
 	var err error

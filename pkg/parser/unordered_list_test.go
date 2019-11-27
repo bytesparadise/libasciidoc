@@ -2726,6 +2726,40 @@ on 2 lines, too.`
 			}
 			Expect(source).To(BecomeDocument(expected))
 		})
+
+		It("unordered list item with predefined attribute", func() {
+			source := `* {amp}`
+			expected := types.Document{
+				Attributes:         types.DocumentAttributes{},
+				ElementReferences:  types.ElementReferences{},
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
+				Elements: []interface{}{
+					types.UnorderedList{
+						Attributes: types.ElementAttributes{},
+						Items: []types.UnorderedListItem{
+							{
+								Level:       1,
+								BulletStyle: types.OneAsterisk,
+								CheckStyle:  types.NoCheck,
+								Attributes:  map[string]interface{}{},
+								Elements: []interface{}{
+									types.Paragraph{
+										Attributes: types.ElementAttributes{},
+										Lines: []types.InlineElements{
+											{
+												types.StringElement{Content: "&amp;"},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			}
+			Expect(source).To(BecomeDocument(expected))
+		})
 	})
 
 	Context("invalid content", func() {
@@ -3036,13 +3070,7 @@ The {plus} symbol is on a new line.
 																			},
 																			{
 																				types.StringElement{
-																					Content: "This is a new line inside an unordered list using ",
-																				},
-																				types.DocumentAttributeSubstitution{
-																					Name: "plus",
-																				},
-																				types.StringElement{
-																					Content: " symbol.",
+																					Content: "This is a new line inside an unordered list using &#43; symbol.",
 																				},
 																			},
 																			{
@@ -3083,13 +3111,7 @@ The {plus} symbol is on a new line.
 																						Lines: []types.InlineElements{
 																							{
 																								types.StringElement{
-																									Content: "The ",
-																								},
-																								types.DocumentAttributeSubstitution{
-																									Name: "plus",
-																								},
-																								types.StringElement{
-																									Content: " symbol is on a new line.",
+																									Content: "The &#43; symbol is on a new line.",
 																								},
 																							},
 																						},

@@ -26,53 +26,67 @@ var _ = Describe("file location", func() {
 			Expect(actual).To(Equal(expected))
 		},
 		Entry("'chapter'", "chapter", types.Location{
-			types.StringElement{
-				Content: "chapter",
+			Elements: []interface{}{
+				types.StringElement{
+					Content: "chapter",
+				},
 			},
 		}),
 		Entry("'chapter.adoc'", "chapter.adoc", types.Location{
-			types.StringElement{
-				Content: "chapter.adoc",
+			Elements: []interface{}{
+				types.StringElement{
+					Content: "chapter.adoc",
+				},
 			},
 		}),
 		Entry("'chapter-a.adoc'", "chapter-a.adoc", types.Location{
-			types.StringElement{
-				Content: "chapter-a.adoc",
+			Elements: []interface{}{
+				types.StringElement{
+					Content: "chapter-a.adoc",
+				},
 			},
 		}),
 		Entry("'chapter_a.adoc'", "chapter_a.adoc", types.Location{
-			types.StringElement{
-				Content: "chapter_a.adoc",
+			Elements: []interface{}{
+				types.StringElement{
+					Content: "chapter_a.adoc",
+				},
 			},
 		}),
 		Entry("'../../test/includes/chapter_a.adoc'", "../../test/includes/chapter_a.adoc", types.Location{
-			types.StringElement{
-				Content: "../../test/includes/chapter_a.adoc",
+			Elements: []interface{}{
+				types.StringElement{
+					Content: "../../test/includes/chapter_a.adoc",
+				},
 			},
 		}),
 		Entry("'chapter-{foo}.adoc'", "chapter-{foo}.adoc", types.Location{
-			types.StringElement{
-				Content: "chapter-",
-			},
-			types.DocumentAttributeSubstitution{
-				Name: "foo",
-			},
-			types.StringElement{
-				Content: ".adoc",
+			Elements: []interface{}{
+				types.StringElement{
+					Content: "chapter-",
+				},
+				types.DocumentAttributeSubstitution{
+					Name: "foo",
+				},
+				types.StringElement{
+					Content: ".adoc",
+				},
 			},
 		}),
 		Entry("'{includedir}/chapter-{foo}.adoc'", "{includedir}/chapter-{foo}.adoc", types.Location{
-			types.DocumentAttributeSubstitution{
-				Name: "includedir",
-			},
-			types.StringElement{
-				Content: "/chapter-",
-			},
-			types.DocumentAttributeSubstitution{
-				Name: "foo",
-			},
-			types.StringElement{
-				Content: ".adoc",
+			Elements: []interface{}{
+				types.DocumentAttributeSubstitution{
+					Name: "includedir",
+				},
+				types.StringElement{
+					Content: "/chapter-",
+				},
+				types.DocumentAttributeSubstitution{
+					Name: "foo",
+				},
+				types.StringElement{
+					Content: ".adoc",
+				},
 			},
 		}),
 	)
@@ -976,27 +990,31 @@ include::../../test/includes/chapter-a.adoc[]
 			source := `++++
 include::../../test/includes/chapter-a.adoc[]
 ++++`
-			expected := types.DelimitedBlock{
-				Attributes: types.ElementAttributes{},
-				// Kind:       types.Passthrough,
-				Elements: []interface{}{
-					types.Paragraph{
+			expected := types.DraftDocument{
+				Blocks: []interface{}{
+					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{},
-						Lines: []types.InlineElements{
-							{
-								types.StringElement{
-									Content: "= Chapter A",
+						// Kind:       types.Passthrough,
+						Elements: []interface{}{
+							types.Paragraph{
+								Attributes: types.ElementAttributes{},
+								Lines: []types.InlineElements{
+									{
+										types.StringElement{
+											Content: "= Chapter A",
+										},
+									},
 								},
 							},
-						},
-					},
-					types.BlankLine{},
-					types.Paragraph{
-						Attributes: types.ElementAttributes{},
-						Lines: []types.InlineElements{
-							{
-								types.StringElement{
-									Content: "content",
+							types.BlankLine{},
+							types.Paragraph{
+								Attributes: types.ElementAttributes{},
+								Lines: []types.InlineElements{
+									{
+										types.StringElement{
+											Content: "content",
+										},
+									},
 								},
 							},
 						},
@@ -2393,8 +2411,10 @@ var _ = Describe("file inclusions - draft without preprocessing", func() {
 				types.FileInclusion{
 					Attributes: types.ElementAttributes{},
 					Location: types.Location{
-						types.StringElement{
-							Content: "../../test/includes/chapter-a.adoc",
+						Elements: []interface{}{
+							types.StringElement{
+								Content: "../../test/includes/chapter-a.adoc",
+							},
 						},
 					},
 					RawText: source,
@@ -2415,8 +2435,10 @@ var _ = Describe("file inclusions - draft without preprocessing", func() {
 				types.FileInclusion{
 					Attributes: types.ElementAttributes{},
 					Location: types.Location{
-						types.StringElement{
-							Content: "../../../test/includes/chapter-a.adoc",
+						Elements: []interface{}{
+							types.StringElement{
+								Content: "../../../test/includes/chapter-a.adoc",
+							},
 						},
 					},
 					RawText: source,
@@ -2437,8 +2459,10 @@ var _ = Describe("file inclusions - draft without preprocessing", func() {
 						types.AttrLevelOffset: "+1",
 					},
 					Location: types.Location{
-						types.StringElement{
-							Content: "../../test/includes/chapter-a.adoc",
+						Elements: []interface{}{
+							types.StringElement{
+								Content: "../../test/includes/chapter-a.adoc",
+							},
 						},
 					},
 					RawText: source,
@@ -2463,8 +2487,10 @@ var _ = Describe("file inclusions - draft without preprocessing", func() {
 							types.FileInclusion{
 								Attributes: types.ElementAttributes{},
 								Location: types.Location{
-									types.StringElement{
-										Content: "../../test/includes/chapter-a.adoc",
+									Elements: []interface{}{
+										types.StringElement{
+											Content: "../../test/includes/chapter-a.adoc",
+										},
 									},
 								},
 								RawText: `include::../../test/includes/chapter-a.adoc[]`,
@@ -2489,8 +2515,10 @@ include::../../test/includes/chapter-a.adoc[]
 							types.FileInclusion{
 								Attributes: types.ElementAttributes{},
 								Location: types.Location{
-									types.StringElement{
-										Content: "../../test/includes/chapter-a.adoc",
+									Elements: []interface{}{
+										types.StringElement{
+											Content: "../../test/includes/chapter-a.adoc",
+										},
 									},
 								},
 								RawText: `include::../../test/includes/chapter-a.adoc[]`,
@@ -2515,8 +2543,10 @@ include::../../test/includes/chapter-a.adoc[]
 							types.FileInclusion{
 								Attributes: types.ElementAttributes{},
 								Location: types.Location{
-									types.StringElement{
-										Content: "../../test/includes/chapter-a.adoc",
+									Elements: []interface{}{
+										types.StringElement{
+											Content: "../../test/includes/chapter-a.adoc",
+										},
 									},
 								},
 								RawText: `include::../../test/includes/chapter-a.adoc[]`,
@@ -2541,8 +2571,10 @@ ____`
 							types.FileInclusion{
 								Attributes: types.ElementAttributes{},
 								Location: types.Location{
-									types.StringElement{
-										Content: "../../test/includes/chapter-a.adoc",
+									Elements: []interface{}{
+										types.StringElement{
+											Content: "../../test/includes/chapter-a.adoc",
+										},
 									},
 								},
 								RawText: `include::../../test/includes/chapter-a.adoc[]`,
@@ -2570,8 +2602,10 @@ ____`
 							types.FileInclusion{
 								Attributes: types.ElementAttributes{},
 								Location: types.Location{
-									types.StringElement{
-										Content: "../../test/includes/chapter-a.adoc",
+									Elements: []interface{}{
+										types.StringElement{
+											Content: "../../test/includes/chapter-a.adoc",
+										},
 									},
 								},
 								RawText: `include::../../test/includes/chapter-a.adoc[]`,
@@ -2596,8 +2630,10 @@ include::../../test/includes/chapter-a.adoc[]
 							types.FileInclusion{
 								Attributes: types.ElementAttributes{},
 								Location: types.Location{
-									types.StringElement{
-										Content: "../../test/includes/chapter-a.adoc",
+									Elements: []interface{}{
+										types.StringElement{
+											Content: "../../test/includes/chapter-a.adoc",
+										},
 									},
 								},
 								RawText: `include::../../test/includes/chapter-a.adoc[]`,
@@ -2623,8 +2659,10 @@ include::../../test/includes/chapter-a.adoc[]
 							types.FileInclusion{
 								Attributes: types.ElementAttributes{},
 								Location: types.Location{
-									types.StringElement{
-										Content: "../../test/includes/chapter-a.adoc",
+									Elements: []interface{}{
+										types.StringElement{
+											Content: "../../test/includes/chapter-a.adoc",
+										},
 									},
 								},
 								RawText: `include::../../test/includes/chapter-a.adoc[]`,
@@ -2652,8 +2690,10 @@ include::../../test/includes/chapter-a.adoc[]
 								},
 							},
 							Location: types.Location{
-								types.StringElement{
-									Content: "../../test/includes/chapter-a.adoc",
+								Elements: []interface{}{
+									types.StringElement{
+										Content: "../../test/includes/chapter-a.adoc",
+									},
 								},
 							},
 							RawText: `include::../../test/includes/chapter-a.adoc[lines=1]`,
@@ -2674,8 +2714,10 @@ include::../../test/includes/chapter-a.adoc[]
 								},
 							},
 							Location: types.Location{
-								types.StringElement{
-									Content: "../../test/includes/chapter-a.adoc",
+								Elements: []interface{}{
+									types.StringElement{
+										Content: "../../test/includes/chapter-a.adoc",
+									},
 								},
 							},
 							RawText: `include::../../test/includes/chapter-a.adoc[lines=1..2]`,
@@ -2698,8 +2740,10 @@ include::../../test/includes/chapter-a.adoc[]
 								},
 							},
 							Location: types.Location{
-								types.StringElement{
-									Content: "../../test/includes/chapter-a.adoc",
+								Elements: []interface{}{
+									types.StringElement{
+										Content: "../../test/includes/chapter-a.adoc",
+									},
 								},
 							},
 							RawText: `include::../../test/includes/chapter-a.adoc[lines=1;3..4;6..-1]`,
@@ -2718,8 +2762,10 @@ include::../../test/includes/chapter-a.adoc[]
 								types.AttrLineRanges: `1;3..4;6..foo`,
 							},
 							Location: types.Location{
-								types.StringElement{
-									Content: "../../test/includes/chapter-a.adoc",
+								Elements: []interface{}{
+									types.StringElement{
+										Content: "../../test/includes/chapter-a.adoc",
+									},
 								},
 							},
 							RawText: `include::../../test/includes/chapter-a.adoc[lines=1;3..4;6..foo]`,
@@ -2742,8 +2788,10 @@ include::../../test/includes/chapter-a.adoc[]
 								"6..-1": nil,
 							},
 							Location: types.Location{
-								types.StringElement{
-									Content: "../../test/includes/chapter-a.adoc",
+								Elements: []interface{}{
+									types.StringElement{
+										Content: "../../test/includes/chapter-a.adoc",
+									},
 								},
 							},
 							RawText: `include::../../test/includes/chapter-a.adoc[lines=1,3..4,6..-1]`,
@@ -2762,8 +2810,10 @@ include::../../test/includes/chapter-a.adoc[]
 								types.AttrLineRanges: "foo",
 							},
 							Location: types.Location{
-								types.StringElement{
-									Content: "../../test/includes/chapter-a.adoc",
+								Elements: []interface{}{
+									types.StringElement{
+										Content: "../../test/includes/chapter-a.adoc",
+									},
 								},
 							},
 							RawText: `include::../../test/includes/chapter-a.adoc[lines=foo]`,
@@ -2787,8 +2837,10 @@ include::../../test/includes/chapter-a.adoc[]
 								},
 							},
 							Location: types.Location{
-								types.StringElement{
-									Content: "../../test/includes/chapter-a.adoc",
+								Elements: []interface{}{
+									types.StringElement{
+										Content: "../../test/includes/chapter-a.adoc",
+									},
 								},
 							},
 							RawText: `include::../../test/includes/chapter-a.adoc[lines="1"]`,
@@ -2809,8 +2861,10 @@ include::../../test/includes/chapter-a.adoc[]
 								},
 							},
 							Location: types.Location{
-								types.StringElement{
-									Content: "../../test/includes/chapter-a.adoc",
+								Elements: []interface{}{
+									types.StringElement{
+										Content: "../../test/includes/chapter-a.adoc",
+									},
 								},
 							},
 							RawText: `include::../../test/includes/chapter-a.adoc[lines="1..2"]`,
@@ -2833,8 +2887,10 @@ include::../../test/includes/chapter-a.adoc[]
 								},
 							},
 							Location: types.Location{
-								types.StringElement{
-									Content: "../../test/includes/chapter-a.adoc",
+								Elements: []interface{}{
+									types.StringElement{
+										Content: "../../test/includes/chapter-a.adoc",
+									},
 								},
 							},
 							RawText: `include::../../test/includes/chapter-a.adoc[lines="1,3..4,6..-1"]`,
@@ -2855,8 +2911,10 @@ include::../../test/includes/chapter-a.adoc[]
 								"6..foo":             nil,
 							},
 							Location: types.Location{
-								types.StringElement{
-									Content: "../../test/includes/chapter-a.adoc",
+								Elements: []interface{}{
+									types.StringElement{
+										Content: "../../test/includes/chapter-a.adoc",
+									},
 								},
 							},
 							RawText: `include::../../test/includes/chapter-a.adoc[lines="1,3..4,6..foo"]`,
@@ -2875,8 +2933,10 @@ include::../../test/includes/chapter-a.adoc[]
 								types.AttrLineRanges: `"1;3..4;6..10"`,
 							},
 							Location: types.Location{
-								types.StringElement{
-									Content: "../../test/includes/chapter-a.adoc",
+								Elements: []interface{}{
+									types.StringElement{
+										Content: "../../test/includes/chapter-a.adoc",
+									},
 								},
 							},
 							RawText: source,
@@ -2903,8 +2963,10 @@ include::../../test/includes/chapter-a.adoc[]
 								},
 							},
 							Location: types.Location{
-								types.StringElement{
-									Content: "../../test/includes/tag-include.adoc",
+								Elements: []interface{}{
+									types.StringElement{
+										Content: "../../test/includes/tag-include.adoc",
+									},
 								},
 							},
 							RawText: source,
@@ -2932,8 +2994,10 @@ include::../../test/includes/chapter-a.adoc[]
 								},
 							},
 							Location: types.Location{
-								types.StringElement{
-									Content: "../../test/includes/tag-include.adoc",
+								Elements: []interface{}{
+									types.StringElement{
+										Content: "../../test/includes/tag-include.adoc",
+									},
 								},
 							},
 							RawText: source,
@@ -2942,8 +3006,6 @@ include::../../test/includes/chapter-a.adoc[]
 				}
 				Expect(source).To(BecomeDraftDocument(expected, WithoutPreprocessing()))
 			})
-
 		})
 	})
-
 })

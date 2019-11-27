@@ -1,6 +1,8 @@
-package html5
+package parser_test
 
 import (
+	"github.com/bytesparadise/libasciidoc/pkg/parser"
+
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/ginkgo/extensions/table"
 	. "github.com/onsi/gomega"
@@ -10,7 +12,7 @@ var _ = Describe("document with attributes", func() {
 
 	DescribeTable("predefined attributes",
 		func(code, rendered string) {
-			Expect(predefined[code]).To(Equal(rendered))
+			Expect(parser.Predefined[code]).To(Equal(rendered))
 		},
 		Entry("sp", "sp", " "),
 		Entry("blank", "blank", ""),

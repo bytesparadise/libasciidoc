@@ -745,7 +745,7 @@ v1.0:`
 
 		})
 
-		Context("document Header Attributes", func() {
+		Context("document header Attributes", func() {
 
 			It("valid attribute names", func() {
 				source := `:a:
@@ -942,134 +942,100 @@ a paragraph written by {author}.`
 				}
 				Expect(source).To(BecomeDocument(expected))
 			})
-		})
 
-		It("header with 2 authors, revision and attributes", func() {
-			source := `= The Dangerous and Thrilling Documentation Chronicles
+			It("header with 2 authors, revision and attributes", func() {
+				source := `= The Dangerous and Thrilling Documentation Chronicles
 Kismet Rainbow Chameleon <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus@asciidoctor.org>
 v1.0, June 19, 2017: First incarnation
 :toc:
 :keywords: documentation, team, obstacles, journey, victory
 
 This journey begins on a bleary Monday morning.`
-			title := types.InlineElements{
-				types.StringElement{Content: "The Dangerous and Thrilling Documentation Chronicles"},
-			}
-			expected := types.Document{
-				Attributes: types.DocumentAttributes{},
-				ElementReferences: types.ElementReferences{
-					"the_dangerous_and_thrilling_documentation_chronicles": title,
-				},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
-				Elements: []interface{}{
-					types.Section{
-						Level: 0,
-						Attributes: types.ElementAttributes{
-							types.AttrID:       "the_dangerous_and_thrilling_documentation_chronicles",
-							types.AttrCustomID: false,
-							types.AttrAuthors: []types.DocumentAuthor{
-								{
-									FullName: "Kismet Rainbow Chameleon ",
-									Email:    "kismet@asciidoctor.org",
-								},
-								{
-									FullName: "Lazarus het_Draeke ",
-									Email:    "lazarus@asciidoctor.org",
-								},
-							},
-							types.AttrRevision: types.DocumentRevision{
-								Revnumber: "1.0",
-								Revdate:   "June 19, 2017",
-								Revremark: "First incarnation",
-							},
-						},
-						Title: title,
-						Elements: []interface{}{
-							types.DocumentAttributeDeclaration{
-								Name:  "toc",
-								Value: "",
-							},
-							types.DocumentAttributeDeclaration{
-								Name:  "keywords",
-								Value: "documentation, team, obstacles, journey, victory",
-							},
-							types.Paragraph{
-								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+				title := types.InlineElements{
+					types.StringElement{Content: "The Dangerous and Thrilling Documentation Chronicles"},
+				}
+				expected := types.Document{
+					Attributes: types.DocumentAttributes{},
+					ElementReferences: types.ElementReferences{
+						"the_dangerous_and_thrilling_documentation_chronicles": title,
+					},
+					Footnotes:          types.Footnotes{},
+					FootnoteReferences: types.FootnoteReferences{},
+					Elements: []interface{}{
+						types.Section{
+							Level: 0,
+							Attributes: types.ElementAttributes{
+								types.AttrID:       "the_dangerous_and_thrilling_documentation_chronicles",
+								types.AttrCustomID: false,
+								types.AttrAuthors: []types.DocumentAuthor{
 									{
-										types.StringElement{Content: "This journey begins on a bleary Monday morning."},
+										FullName: "Kismet Rainbow Chameleon ",
+										Email:    "kismet@asciidoctor.org",
+									},
+									{
+										FullName: "Lazarus het_Draeke ",
+										Email:    "lazarus@asciidoctor.org",
 									},
 								},
-							},
-						},
-					},
-				},
-			}
-			Expect(source).To(BecomeDocument(expected))
-		})
-
-		It("header section inline with bold quote", func() {
-
-			source := `= a header
-				
-== section 1
-
-a paragraph with *bold content*`
-
-			title := types.InlineElements{
-				types.StringElement{Content: "a header"},
-			}
-			section1Title := types.InlineElements{
-				types.StringElement{Content: "section 1"},
-			}
-			expected := types.Document{
-				Attributes: types.DocumentAttributes{},
-				ElementReferences: types.ElementReferences{
-					"a_header":  title,
-					"section_1": section1Title,
-				},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
-				Elements: []interface{}{
-					types.Section{
-						Level: 0,
-						Attributes: types.ElementAttributes{
-							types.AttrID:       "a_header",
-							types.AttrCustomID: false,
-						},
-						Title: title,
-						Elements: []interface{}{
-							types.Section{
-								Level: 1,
-								Title: section1Title,
-								Attributes: types.ElementAttributes{
-									types.AttrID:       "section_1",
-									types.AttrCustomID: false,
+								types.AttrRevision: types.DocumentRevision{
+									Revnumber: "1.0",
+									Revdate:   "June 19, 2017",
+									Revremark: "First incarnation",
 								},
-								Elements: []interface{}{
-									types.Paragraph{
-										Attributes: types.ElementAttributes{},
-										Lines: []types.InlineElements{
-											{
-												types.StringElement{Content: "a paragraph with "},
-												types.QuotedText{
-													Kind: types.Bold,
-													Elements: types.InlineElements{
-														types.StringElement{Content: "bold content"},
-													},
-												},
-											},
+							},
+							Title: title,
+							Elements: []interface{}{
+								types.DocumentAttributeDeclaration{
+									Name:  "toc",
+									Value: "",
+								},
+								types.DocumentAttributeDeclaration{
+									Name:  "keywords",
+									Value: "documentation, team, obstacles, journey, victory",
+								},
+								types.Paragraph{
+									Attributes: types.ElementAttributes{},
+									Lines: []types.InlineElements{
+										{
+											types.StringElement{Content: "This journey begins on a bleary Monday morning."},
 										},
 									},
 								},
 							},
 						},
 					},
-				},
-			}
-			Expect(source).To(BecomeDocument(expected))
+				}
+				Expect(source).To(BecomeDocument(expected))
+			})
+
+			It("paragraph with attribute substitution from front-matter", func() {
+				source := `---
+author: Xavier
+---
+			
+a paragraph written by {author}.`
+				expected := types.Document{
+					Attributes: types.DocumentAttributes{
+						"author": "Xavier",
+					},
+					ElementReferences:  types.ElementReferences{},
+					Footnotes:          types.Footnotes{},
+					FootnoteReferences: types.FootnoteReferences{},
+					Elements: []interface{}{
+						types.Paragraph{
+							Attributes: types.ElementAttributes{},
+							Lines: []types.InlineElements{
+								{
+									types.StringElement{Content: "a paragraph written by Xavier."},
+								},
+							},
+						},
+					},
+				}
+				Expect(source).To(BecomeDocument(expected))
+			})
 		})
+
 	})
 
 	Context("invalid document attributes", func() {
@@ -1123,9 +1089,7 @@ a paragraph with *bold content*`
 								types.StringElement{Content: ":@date: 2017-01-01"},
 							},
 							{
-								types.StringElement{Content: ":"},
-								types.DocumentAttributeSubstitution{Name: "author"},
-								types.StringElement{Content: ": Xavier"},
+								types.StringElement{Content: ":{author}: Xavier"},
 							},
 						},
 					},

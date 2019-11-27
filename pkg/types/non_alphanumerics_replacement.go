@@ -6,6 +6,7 @@ import (
 	"unicode"
 
 	"github.com/pkg/errors"
+	log "github.com/sirupsen/logrus"
 )
 
 // ReplaceNonAlphanumerics replace all non alpha numeric characters with the given `replacement`
@@ -38,24 +39,32 @@ func newReplaceNonAlphanumericsVisitor(replacement string) *ReplaceNonAlphanumer
 
 // Visit method called when an element is visited
 func (v *ReplaceNonAlphanumericsVisitor) Visit(element Visitable) error {
-	// log.Debugf("visiting element of type '%T'", element)
-	if element, ok := element.(StringElement); ok {
-		if v.buf.Len() > 0 {
-			v.buf.WriteString("_")
-		}
-		normalized, err := v.normalize(element.Content)
-		if err != nil {
-			return errors.Wrapf(err, "error while normalizing String Element")
-		}
-		v.buf.WriteString(normalized)
+	switch element := element.(type) {
+	case StringElement:
+		return v.process(element.Content)
+	case InlineLink:
+		return v.process(element.Location.String())
+	default:
+		// other types are ignored
 		return nil
 	}
-	// other types are ignored
+}
+
+func (v *ReplaceNonAlphanumericsVisitor) process(content string) error {
+	if v.buf.Len() > 0 {
+		v.buf.WriteString("_")
+	}
+	normalized, err := v.normalize(content)
+	if err != nil {
+		return errors.Wrapf(err, "error while normalizing String Element")
+	}
+	v.buf.WriteString(normalized)
 	return nil
 }
 
 // normalize returns the normalized content
 func (v *ReplaceNonAlphanumericsVisitor) normalize(source string) (string, error) {
+	log.Debugf("normalizing '%s'", source)
 	buf := bytes.NewBuffer(nil)
 	lastCharIsSpace := false
 	for _, r := range strings.TrimLeft(source, " ") { // ignore header spaces
