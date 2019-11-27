@@ -8,7 +8,6 @@ import (
 
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 
-	"github.com/davecgh/go-spew/spew"
 	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
 )
@@ -18,10 +17,6 @@ func ParseDocument(filename string, r io.Reader, opts ...Option) (types.Document
 	draftDoc, err := ParseDraftDocument(filename, r, opts...)
 	if err != nil {
 		return types.Document{}, err
-	}
-	if log.IsLevelEnabled(log.DebugLevel) {
-		log.Debug("draft document")
-		spew.Dump(draftDoc)
 	}
 	attrs := make(map[string]string)
 	// add all predefined attributes
@@ -58,18 +53,14 @@ func ParseDocument(filename string, r io.Reader, opts ...Option) (types.Document
 			doc.Attributes[k] = v
 		}
 	}
-	if log.IsLevelEnabled(log.DebugLevel) {
-		log.Debug("final document")
-		spew.Dump(doc)
-	}
 	return doc, nil
 }
 
-// applyAttributeSubstitutions applies the document attribute substitutions
+// ApplyDocumentAttributeSubstitutions applies the document attribute substitutions
 // and re-parse the paragraphs that were affected
 func ApplyDocumentAttributeSubstitutions(element interface{}, attrs map[string]string) (interface{}, error) {
 	// the document attributes, as they are resolved while processing the blocks
-	log.Debugf("applying document substitutions on block of type %T", element)
+	// log.Debugf("applying document substitutions on block of type %T", element)
 	switch e := element.(type) {
 	case types.DocumentAttributeDeclaration:
 		attrs[e.Name] = e.Value

@@ -131,8 +131,6 @@ func renderElement(ctx *renderer.Context, element interface{}) ([]byte, error) {
 		return processAttributeDeclaration(ctx, e), nil
 	case types.DocumentAttributeReset:
 		return processAttributeReset(ctx, e), nil
-	case types.DocumentAttributeSubstitution:
-		return renderAttributeSubstitution(ctx, e), nil
 	case types.LineBreak:
 		return renderLineBreak()
 	case types.UserMacro:
