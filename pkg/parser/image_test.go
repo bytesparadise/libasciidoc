@@ -198,7 +198,6 @@ image::images/bar.png[]`
 								Elements: []interface{}{
 									types.StringElement{Content: "images/foo.png"},
 								},
-								// Resolved: "images/foo.png",
 							},
 						},
 					},
@@ -228,7 +227,6 @@ image::{imagesdir}/foo.png[]`
 								Elements: []interface{}{
 									types.StringElement{Content: "./path/to/images/foo.png"},
 								},
-								// Resolved: "./path/to/images/foo.png",
 							},
 						},
 					},
@@ -668,7 +666,6 @@ image::{imagesdir}/foo.png[]`
 											Elements: []interface{}{
 												types.StringElement{Content: "images/foo.png"},
 											},
-											// Resolved: "images/foo.png",
 										},
 									},
 								},
@@ -706,7 +703,6 @@ an image:{imagesdir}/foo.png[].`
 											Elements: []interface{}{
 												types.StringElement{Content: "./path/to/images/foo.png"},
 											},
-											// Resolved: "./path/to/images/foo.png",
 										},
 									},
 									types.StringElement{Content: "."},

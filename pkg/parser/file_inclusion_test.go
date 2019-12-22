@@ -14,99 +14,93 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-var _ = Describe("file location", func() {
-
-	DescribeTable("'FileLocation' pattern",
-		func(filename string, expected interface{}) {
-			reader := strings.NewReader(filename)
-			actual, err := parser.ParseReader(filename, reader, parser.Entrypoint("FileLocation"))
-			Expect(err).ToNot(HaveOccurred())
-			GinkgoT().Log("actual result: %s", spew.Sdump(actual))
-			GinkgoT().Log("expected result: %s", spew.Sdump(expected))
-			Expect(actual).To(Equal(expected))
+var _ = DescribeTable("'FileLocation' pattern",
+	func(filename string, expected interface{}) {
+		reader := strings.NewReader(filename)
+		actual, err := parser.ParseReader(filename, reader, parser.Entrypoint("FileLocation"))
+		Expect(err).ToNot(HaveOccurred())
+		GinkgoT().Log("actual result: %s", spew.Sdump(actual))
+		GinkgoT().Log("expected result: %s", spew.Sdump(expected))
+		Expect(actual).To(Equal(expected))
+	},
+	Entry("'chapter'", "chapter", types.Location{
+		Elements: []interface{}{
+			types.StringElement{
+				Content: "chapter",
+			},
 		},
-		Entry("'chapter'", "chapter", types.Location{
-			Elements: []interface{}{
-				types.StringElement{
-					Content: "chapter",
-				},
+	}),
+	Entry("'chapter.adoc'", "chapter.adoc", types.Location{
+		Elements: []interface{}{
+			types.StringElement{
+				Content: "chapter.adoc",
 			},
-		}),
-		Entry("'chapter.adoc'", "chapter.adoc", types.Location{
-			Elements: []interface{}{
-				types.StringElement{
-					Content: "chapter.adoc",
-				},
-			},
-		}),
-		Entry("'chapter-a.adoc'", "chapter-a.adoc", types.Location{
-			Elements: []interface{}{
-				types.StringElement{
-					Content: "chapter-a.adoc",
-				},
-			},
-		}),
-		Entry("'chapter_a.adoc'", "chapter_a.adoc", types.Location{
-			Elements: []interface{}{
-				types.StringElement{
-					Content: "chapter_a.adoc",
-				},
-			},
-		}),
-		Entry("'../../test/includes/chapter_a.adoc'", "../../test/includes/chapter_a.adoc", types.Location{
-			Elements: []interface{}{
-				types.StringElement{
-					Content: "../../test/includes/chapter_a.adoc",
-				},
-			},
-		}),
-		Entry("'chapter-{foo}.adoc'", "chapter-{foo}.adoc", types.Location{
-			Elements: []interface{}{
-				types.StringElement{
-					Content: "chapter-",
-				},
-				types.DocumentAttributeSubstitution{
-					Name: "foo",
-				},
-				types.StringElement{
-					Content: ".adoc",
-				},
-			},
-		}),
-		Entry("'{includedir}/chapter-{foo}.adoc'", "{includedir}/chapter-{foo}.adoc", types.Location{
-			Elements: []interface{}{
-				types.DocumentAttributeSubstitution{
-					Name: "includedir",
-				},
-				types.StringElement{
-					Content: "/chapter-",
-				},
-				types.DocumentAttributeSubstitution{
-					Name: "foo",
-				},
-				types.StringElement{
-					Content: ".adoc",
-				},
-			},
-		}),
-	)
-})
-
-var _ = Describe("file inclusions", func() {
-
-	DescribeTable("check asciidoc file",
-		func(path string, expectation bool) {
-			Expect(parser.IsAsciidoc(path)).To(Equal(expectation))
 		},
-		Entry("foo.adoc", "foo.adoc", true),
-		Entry("foo.asc", "foo.asc", true),
-		Entry("foo.ad", "foo.ad", true),
-		Entry("foo.asciidoc", "foo.asciidoc", true),
-		Entry("foo.txt", "foo.txt", true),
-		Entry("foo.csv", "foo.csv", false),
-		Entry("foo.go", "foo.go", false),
-	)
-})
+	}),
+	Entry("'chapter-a.adoc'", "chapter-a.adoc", types.Location{
+		Elements: []interface{}{
+			types.StringElement{
+				Content: "chapter-a.adoc",
+			},
+		},
+	}),
+	Entry("'chapter_a.adoc'", "chapter_a.adoc", types.Location{
+		Elements: []interface{}{
+			types.StringElement{
+				Content: "chapter_a.adoc",
+			},
+		},
+	}),
+	Entry("'../../test/includes/chapter_a.adoc'", "../../test/includes/chapter_a.adoc", types.Location{
+		Elements: []interface{}{
+			types.StringElement{
+				Content: "../../test/includes/chapter_a.adoc",
+			},
+		},
+	}),
+	Entry("'chapter-{foo}.adoc'", "chapter-{foo}.adoc", types.Location{
+		Elements: []interface{}{
+			types.StringElement{
+				Content: "chapter-",
+			},
+			types.DocumentAttributeSubstitution{
+				Name: "foo",
+			},
+			types.StringElement{
+				Content: ".adoc",
+			},
+		},
+	}),
+	Entry("'{includedir}/chapter-{foo}.adoc'", "{includedir}/chapter-{foo}.adoc", types.Location{
+		Elements: []interface{}{
+			types.DocumentAttributeSubstitution{
+				Name: "includedir",
+			},
+			types.StringElement{
+				Content: "/chapter-",
+			},
+			types.DocumentAttributeSubstitution{
+				Name: "foo",
+			},
+			types.StringElement{
+				Content: ".adoc",
+			},
+		},
+	}),
+)
+
+var _ = DescribeTable("check asciidoc file",
+	func(path string, expectation bool) {
+		Expect(parser.IsAsciidoc(path)).To(Equal(expectation))
+	},
+	Entry("foo.adoc", "foo.adoc", true),
+	Entry("foo.asc", "foo.asc", true),
+	Entry("foo.ad", "foo.ad", true),
+	Entry("foo.asciidoc", "foo.asciidoc", true),
+	Entry("foo.txt", "foo.txt", true),
+	Entry("foo.csv", "foo.csv", false),
+	Entry("foo.go", "foo.go", false),
+)
 
 var _ = Describe("file inclusions - draft with preprocessing", func() {
 

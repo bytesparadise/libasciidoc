@@ -40,7 +40,6 @@ var _ = Describe("links", func() {
 			source := `a http://website.com
 and more text on the
 next lines`
-
 			expected := `<div class="paragraph">
 <p>a <a href="http://website.com" class="bare">http://website.com</a>
 and more text on the
@@ -109,7 +108,6 @@ next lines</p>
 :url: https://foo2.bar
 
 a link to {url}`
-
 			expected := `<div class="paragraph">
 <p>a link to <a href="https://foo2.bar" class="bare">https://foo2.bar</a></p>
 </div>`
@@ -121,7 +119,6 @@ a link to {url}`
 :path: foo.bar
 
 a link to {scheme}://{path}`
-
 			expected := `<div class="paragraph">
 <p>a link to <a href="https://foo.bar" class="bare">https://foo.bar</a></p>
 </div>`
@@ -135,11 +132,30 @@ a link to {scheme}://{path}`
 :!path:
 
 a link to {scheme}://{path}`
-
 			expected := `<div class="paragraph">
 <p>a link to <a href="https://{path}" class="bare">https://{path}</a></p>
 </div>`
+			Expect(source).To(RenderHTML5Body(expected))
+		})
 
+		It("external link with document attribute in section 0 title", func() {
+			source := `= a title to {scheme}://{path} and https://foo.baz
+:scheme: https
+:path: foo.bar`
+			expected := `a title to https://foo.bar and https://foo.baz`
+			Expect(source).To(RenderHTML5Title(expected))
+		})
+
+		It("external link with document attribute in section 1 title", func() {
+			source := `:scheme: https
+:path: foo.bar
+
+== a title to {scheme}://{path} and https://foo.baz`
+			expected := `<div class="sect1">
+<h2 id="_a_title_to_https_foo_bar_and_https_foo_baz">a title to <a href="https://foo.bar" class="bare">https://foo.bar</a> and <a href="https://foo.baz" class="bare">https://foo.baz</a></h2>
+<div class="sectionbody">
+</div>
+</div>`
 			Expect(source).To(RenderHTML5Body(expected))
 		})
 	})

@@ -894,7 +894,6 @@ a link to {scheme}://{path}`
 														Content: "foo",
 													},
 												},
-												// Resolved: "foo",
 											},
 											Attributes: types.ElementAttributes{},
 										},
@@ -943,7 +942,6 @@ a link to {url}`
 													Content: "https://foo2.bar",
 												},
 											},
-											// Resolved: "https://foo2.bar",
 										},
 										Attributes: types.ElementAttributes{},
 									},
@@ -987,7 +985,6 @@ a link to {scheme}://{path} and https://foo.baz`
 													Content: "https://foo.bar",
 												},
 											},
-											// Resolved: "https://foo.bar",
 										},
 										Attributes: types.ElementAttributes{},
 									},
@@ -1000,7 +997,6 @@ a link to {scheme}://{path} and https://foo.baz`
 													Content: "https://foo.baz",
 												},
 											},
-											// Resolved: "https://foo.baz",
 										},
 									},
 								},
@@ -1052,7 +1048,6 @@ a link to {scheme}://{path} and https://foo.baz`
 													Name: "path", // no match while applying document attribute substitutions, so parsing gave a new document attribute substitution...
 												},
 											},
-											// Resolved: "https://{path}",
 										},
 									},
 									types.StringElement{Content: " and "},
@@ -1064,7 +1059,6 @@ a link to {scheme}://{path} and https://foo.baz`
 													Content: "https://foo.baz",
 												},
 											},
-											// Resolved: "https://foo.baz",
 										},
 									},
 								},
@@ -1075,61 +1069,65 @@ a link to {scheme}://{path} and https://foo.baz`
 				Expect(source).To(BecomeDocument(expected))
 			})
 
-			// see https://github.com/bytesparadise/libasciidoc/issues/447
-			// 			It("external link with document attribute in section 0 title", func() {
-			// 				source := `= a title to {scheme}://{path} and https://foo.baz
-			// :scheme: https
-			// :path: foo.bar`
+			It("external link with document attribute in section 0 title", func() {
+				source := `= a title to {scheme}://{path} and https://foo.baz
+:scheme: https
+:path: foo.bar`
 
-			// 				title := types.InlineElements{
-			// 					types.StringElement{Content: "a title to "},
-			// 					types.InlineLink{
-			// 						Attributes: types.ElementAttributes{},
-			// 						Location: types.Location{
-			// 							Elements: []interface{}{
-			// 								types.StringElement{
-			// 									Content: "https://foo.bar",
-			// 								},
-			// 							},
-			// 							// Resolved: "https://foo.bar",
-			// 						},
-			// 					},
-			// 					types.StringElement{Content: " and "},
-			// 					types.InlineLink{
-			// 						Attributes: types.ElementAttributes{},
-			// 						Location: types.Location{
-			// 							Elements: []interface{}{
-			// 								types.StringElement{
-			// 									Content: "https://foo.baz",
-			// 								},
-			// 							},
-			// 							// Resolved: "https://foo.baz",
-			// 						},
-			// 					},
-			// 				}
-			// 				expected := types.Document{
-			// 					Attributes: types.DocumentAttributes{
-
-			// 					},
-			// 					ElementReferences: types.ElementReferences{
-			// 						"a_title_to_https_foo_bar_and_https_foo_baz": title,
-			// 					},
-			// 					Footnotes:          types.Footnotes{},
-			// 					FootnoteReferences: types.FootnoteReferences{},
-			// 					Elements: []interface{}{
-			// 						types.Section{
-			// 							Level: 0,
-			// 							Attributes: types.ElementAttributes{
-			// 								types.AttrID:       "a_title_to_https_foo_bar_and_https_foo_baz",
-			// 								types.AttrCustomID: false,
-			// 							},
-			// 							Title:    title,
-			// 							Elements: []interface{}{},
-			// 						},
-			// 					},
-			// 				}
-			// 				Expect(source).To(BecomeDocument(expected))
-			// 			})
+				title := types.InlineElements{
+					types.StringElement{Content: "a title to "},
+					types.InlineLink{
+						Attributes: types.ElementAttributes{},
+						Location: types.Location{
+							Elements: []interface{}{
+								types.StringElement{
+									Content: "https://foo.bar",
+								},
+							},
+						},
+					},
+					types.StringElement{Content: " and "},
+					types.InlineLink{
+						Attributes: types.ElementAttributes{},
+						Location: types.Location{
+							Elements: []interface{}{
+								types.StringElement{
+									Content: "https://foo.baz",
+								},
+							},
+						},
+					},
+				}
+				expected := types.Document{
+					Attributes: types.DocumentAttributes{},
+					ElementReferences: types.ElementReferences{
+						"a_title_to_https_foo_bar_and_https_foo_baz": title,
+					},
+					Footnotes:          types.Footnotes{},
+					FootnoteReferences: types.FootnoteReferences{},
+					Elements: []interface{}{
+						types.Section{
+							Level: 0,
+							Attributes: types.ElementAttributes{
+								types.AttrID:       "a_title_to_https_foo_bar_and_https_foo_baz",
+								types.AttrCustomID: false,
+							},
+							Title: title,
+							Elements: []interface{}{
+								types.DocumentAttributeDeclaration{
+									Name:  "scheme",
+									Value: "https",
+								},
+								types.DocumentAttributeDeclaration{
+									Name:  "path",
+									Value: "foo.bar",
+								},
+							},
+						},
+					},
+				}
+				Expect(source).To(BecomeDocument(expected))
+			})
 
 			It("external link with document attribute in section 1 title", func() {
 				source := `:scheme: https

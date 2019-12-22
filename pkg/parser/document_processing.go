@@ -26,12 +26,21 @@ func ParseDocument(filename string, r io.Reader, opts ...Option) (types.Document
 		}
 	}
 
-	// also, add all front-matter values
+	// also, add all front-matter key/values
 	for k, v := range draftDoc.FrontMatter.Content {
 		if v, ok := v.(string); ok {
 			attrs[k] = v
 		}
 	}
+
+	// also, add all DocumentAttributeDeclaration at the top of the document
+	documentAttributes := draftDoc.DocumentAttributes()
+	for k, v := range documentAttributes {
+		if v, ok := v.(string); ok {
+			attrs[k] = v
+		}
+	}
+
 	// apply document attribute substitutions and re-parse paragraphs that were affected
 	blocks, err := ApplyDocumentAttributeSubstitutions(draftDoc.Blocks, attrs)
 	if err != nil {
