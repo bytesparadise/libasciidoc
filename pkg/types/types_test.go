@@ -470,7 +470,8 @@ var _ = Describe("tag ranges", func() {
 
 var _ = Describe("location resolution", func() {
 
-	attrs := map[string]string{
+	attrs := types.DocumentAttributes{
+		"imagesdir":  "./images",
 		"includedir": "includes",
 		"foo":        "bar",
 	}
@@ -491,11 +492,11 @@ var _ = Describe("location resolution", func() {
 			types.Location{
 				Elements: []interface{}{
 					types.StringElement{
-						Content: "includes/file.ext",
+						Content: "./images/includes/file.ext",
 					},
 				},
 			},
-			"includes/file.ext",
+			"./images/includes/file.ext",
 		),
 		Entry("./{includedir}/file.ext",
 			types.Location{
@@ -514,11 +515,11 @@ var _ = Describe("location resolution", func() {
 			types.Location{
 				Elements: []interface{}{
 					types.StringElement{
-						Content: "./includes/file.ext",
+						Content: "./images/./includes/file.ext",
 					},
 				},
 			},
-			"./includes/file.ext",
+			"./images/./includes/file.ext",
 		),
 		Entry("./{unknown}/file.ext",
 			types.Location{
@@ -537,11 +538,45 @@ var _ = Describe("location resolution", func() {
 			types.Location{
 				Elements: []interface{}{
 					types.StringElement{
-						Content: "./{unknown}/file.ext",
+						Content: "./images/./{unknown}/file.ext",
 					},
 				},
 			},
-			"./{unknown}/file.ext",
+			"./images/./{unknown}/file.ext",
+		),
+		Entry("https://foo.bar",
+			types.Location{
+				Elements: []interface{}{
+					types.StringElement{
+						Content: "https://foo.bar",
+					},
+				},
+			},
+			types.Location{
+				Elements: []interface{}{
+					types.StringElement{
+						Content: "https://foo.bar",
+					},
+				},
+			},
+			"https://foo.bar",
+		),
+		Entry("/foo/bar",
+			types.Location{
+				Elements: []interface{}{
+					types.StringElement{
+						Content: "/foo/bar",
+					},
+				},
+			},
+			types.Location{
+				Elements: []interface{}{
+					types.StringElement{
+						Content: "/foo/bar",
+					},
+				},
+			},
+			"/foo/bar",
 		),
 	)
 })
@@ -624,3 +659,173 @@ var _ = DescribeTable("draft document attributes",
 		types.DocumentAttributes{},
 	),
 )
+
+var _ = Describe("element id resolution", func() {
+
+	Context("sections", func() {
+
+		Context("default it", func() {
+
+			It("simple title", func() {
+				// given
+				section := types.Section{
+					Level:      0,
+					Attributes: types.ElementAttributes{},
+					Title: []interface{}{
+						types.StringElement{
+							Content: "foo",
+						},
+					},
+					Elements: []interface{}{},
+				}
+				// when
+				section, err := section.ResolveID(types.DocumentAttributes{})
+				// then
+				Expect(err).NotTo(HaveOccurred())
+				Expect(section.Attributes[types.AttrID]).To(Equal("_foo"))
+			})
+
+			It("title with link", func() {
+				// given
+				section := types.Section{
+					Level:      0,
+					Attributes: types.ElementAttributes{},
+					Title: []interface{}{
+						types.StringElement{
+							Content: "a link to ",
+						},
+						types.InlineLink{
+							Location: types.Location{
+								Elements: []interface{}{
+									types.StringElement{
+										Content: "https://foo.com",
+									},
+								},
+							},
+						},
+					},
+					Elements: []interface{}{},
+				}
+				// when
+				section, err := section.ResolveID(types.DocumentAttributes{})
+				// then
+				Expect(err).NotTo(HaveOccurred())
+				Expect(section.Attributes[types.AttrID]).To(Equal("_a_link_to_https_foo_com")) // TODO: should be `httpsfoo`
+			})
+		})
+
+		Context("custom id prefix", func() {
+
+			It("simple title", func() {
+				// given
+				section := types.Section{
+					Level:      0,
+					Attributes: types.ElementAttributes{},
+					Title: []interface{}{
+						types.StringElement{
+							Content: "foo",
+						},
+					},
+					Elements: []interface{}{},
+				}
+				// when
+				section, err := section.ResolveID(types.DocumentAttributes{
+					types.AttrIDPrefix: "custom_",
+				})
+				// then
+				Expect(err).NotTo(HaveOccurred())
+				Expect(section.Attributes[types.AttrID]).To(Equal("custom_foo"))
+			})
+
+			It("title with link", func() {
+				// given
+				section := types.Section{
+					Level:      0,
+					Attributes: types.ElementAttributes{},
+					Title: []interface{}{
+						types.StringElement{
+							Content: "a link to ",
+						},
+						types.InlineLink{
+							Location: types.Location{
+								Elements: []interface{}{
+									types.StringElement{
+										Content: "https://foo.com",
+									},
+								},
+							},
+						},
+					},
+					Elements: []interface{}{},
+				}
+				// when
+				section, err := section.ResolveID(types.DocumentAttributes{
+					types.AttrIDPrefix: "custom_",
+				})
+				// then
+				Expect(err).NotTo(HaveOccurred())
+				Expect(section.Attributes[types.AttrID]).To(Equal("custom_a_link_to_https_foo_com")) // TODO: should be `httpsfoo`
+			})
+		})
+
+		Context("custom id", func() {
+
+			It("simple title", func() {
+				// given
+				section := types.Section{
+					Level: 0,
+					Attributes: types.ElementAttributes{
+						types.AttrCustomID: true,
+						types.AttrID:       "bar",
+					},
+					Title: []interface{}{
+						types.StringElement{
+							Content: "foo",
+						},
+					},
+					Elements: []interface{}{},
+				}
+				// when
+				section, err := section.ResolveID(types.DocumentAttributes{
+					types.AttrIDPrefix: "custom_",
+				})
+				// then
+				Expect(err).NotTo(HaveOccurred())
+				Expect(section.Attributes[types.AttrID]).To(Equal("bar"))
+			})
+
+			It("title with link", func() {
+				// given
+				section := types.Section{
+					Level: 0,
+					Attributes: types.ElementAttributes{
+						types.AttrCustomID: true,
+						types.AttrID:       "bar",
+					},
+					Title: []interface{}{
+						types.StringElement{
+							Content: "a link to ",
+						},
+						types.InlineLink{
+							Location: types.Location{
+								Elements: []interface{}{
+									types.StringElement{
+										Content: "https://foo.com",
+									},
+								},
+							},
+						},
+					},
+					Elements: []interface{}{},
+				}
+				// when
+				section, err := section.ResolveID(types.DocumentAttributes{
+					types.AttrIDPrefix: "custom_",
+				})
+				// then
+				Expect(err).NotTo(HaveOccurred())
+				Expect(section.Attributes[types.AttrID]).To(Equal("bar"))
+			})
+		})
+	})
+})

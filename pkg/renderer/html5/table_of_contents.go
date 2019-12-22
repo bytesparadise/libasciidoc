@@ -93,7 +93,7 @@ func renderTableOfContentsSections(ctx *renderer.Context, elements []interface{}
 					return template.HTML(""), errors.Wrapf(err, "error while rendering table of content section")
 				}
 			}
-			id := generateID(ctx, section.Attributes)
+			id := renderElementID(section.Attributes)
 			renderedTitleStr := strings.TrimSpace(string(renderedTitle))
 			sections = append(sections, TableOfContentsSection{
 				Level:    section.Level,
@@ -119,8 +119,8 @@ func renderTableOfContentsSections(ctx *renderer.Context, elements []interface{}
 }
 
 func getTocLevels(doc types.Document) (int, error) {
-	if d, found := types.SearchAttributeDeclaration(doc.Elements, types.AttrTableOfContentsLevels); found {
-		return strconv.Atoi(d.Value)
+	if l, found := doc.Attributes.GetAsString(types.AttrTableOfContentsLevels); found {
+		return strconv.Atoi(l)
 	}
 	return 2, nil
 }

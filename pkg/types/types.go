@@ -3,6 +3,7 @@ package types
 import (
 	"bytes"
 	"fmt"
+	"net/url"
 	"path/filepath"
 	"sort"
 	"strings"
@@ -404,18 +405,18 @@ func NewSection(level int, title []interface{}, ids []interface{}, attributes in
 	for _, id := range ids {
 		if id, ok := id.(ElementAttributes); ok {
 			attrs.AddAll(id)
+			attrs[AttrCustomID] = true
 		}
 	}
-	attrs[AttrCustomID] = true
-	// make a default id from the sectionTitle's inline content
-	if _, found := attrs[AttrID]; !found {
-		replacement, err := ReplaceNonAlphanumerics(title, "_")
-		if err != nil {
-			return Section{}, errors.Wrapf(err, "unable to generate default ID while instanciating a new Section element")
-		}
-		attrs[AttrID] = replacement
-		attrs[AttrCustomID] = false
-	}
+	// // make a default id from the sectionTitle's inline content
+	// if _, found := attrs[AttrID]; !found {
+	// 	replacement, err := ReplaceNonAlphanumerics(title, "_")
+	// 	if err != nil {
+	// 		return Section{}, errors.Wrapf(err, "unable to generate default ID on Section element")
+	// 	}
+	// 	attrs[AttrID] = replacement
+	// 	attrs[AttrCustomID] = false
+	// }
 	return Section{
 		Level:      level,
 		Attributes: attrs,
@@ -424,16 +425,18 @@ func NewSection(level int, title []interface{}, ids []interface{}, attributes in
 	}, nil
 }
 
-// UpdateAttrID updates the "ID" attribute in the section (in case the title changed after some document attr substitution)
-func (s Section) UpdateAttrID() error {
+// ResolveID resolves/updates the "ID" attribute in the section (in case the title changed after some document attr substitution)
+func (s Section) ResolveID(docAttributes DocumentAttributes) (Section, error) {
 	if !s.Attributes.GetAsBool(AttrCustomID) {
 		replacement, err := ReplaceNonAlphanumerics(s.Title, "_")
 		if err != nil {
-			return errors.Wrapf(err, "unable to generate default ID while instanciating a new Section element")
+			return s, errors.Wrapf(err, "unable to generate default ID on Section element")
 		}
-		s.Attributes[AttrID] = replacement
+		idPrefix := docAttributes.GetAsStringWithDefault(AttrIDPrefix, DefaultIDPrefix)
+		s.Attributes[AttrID] = idPrefix + replacement
+		log.Debugf("updated section id to '%s'", s.Attributes[AttrID])
 	}
-	return nil
+	return s, nil
 }
 
 // AddElement adds the given child element to this section
@@ -1112,21 +1115,12 @@ func NewImageBlock(path Location, inlineAttributes ElementAttributes, attributes
 
 // ResolveLocation resolves the image path using the given document attributes
 // also, updates the `alt` attribute based on the resolved path of the image
-func (b ImageBlock) ResolveLocation(attrs map[string]string) (interface{}, bool) {
+func (b ImageBlock) ResolveLocation(attrs DocumentAttributes) ImageBlock {
 	b.Location = b.Location.Resolve(attrs)
 	if _, found := b.Attributes[AttrImageAlt]; !found {
 		b.Attributes[AttrImageAlt] = resolveAlt(b.Location)
 	}
-	return b, true
-}
-
-func resolveAlt(path Location) string {
-	_, filename := filepath.Split(path.String())
-	ext := filepath.Ext(filename)
-	if ext != "" {
-		return strings.TrimSuffix(filename, ext)
-	}
-	return filename
+	return b
 }
 
 // AddAttributes adds all given attributes to the current set of attribute of the element
@@ -1151,12 +1145,12 @@ func NewInlineImage(path Location, attributes ElementAttributes) (InlineImage, e
 
 // ResolveLocation resolves the image path using the given document attributes
 // also, updates the `alt` attribute based on the resolved path of the image
-func (i InlineImage) ResolveLocation(attrs map[string]string) (interface{}, bool) {
+func (i InlineImage) ResolveLocation(attrs DocumentAttributes) InlineImage {
 	i.Location = i.Location.Resolve(attrs)
 	if _, found := i.Attributes[AttrImageAlt]; !found {
 		i.Attributes[AttrImageAlt] = resolveAlt(i.Location)
 	}
-	return i, true
+	return i
 }
 
 // NewImageAttributes returns a map of image attributes, some of which have implicit keys (`alt`, `width` and `height`)
@@ -1938,16 +1932,18 @@ func (l Location) String() string { // (attrs map[string]string) string {
 	return result.String()
 }
 
+const imagesdir = "imagesdir"
+
 // Resolve resolves the Location by replacing all document attribute substitutions
 // with their associated values, or their corresponding raw text if
 // no attribute matched
 // returns `true` if some document attribute substitution occurred
-func (l *Location) Resolve(attrs map[string]string) Location {
+func (l *Location) Resolve(attrs DocumentAttributes) Location {
 	content := bytes.NewBuffer(nil)
 	for _, e := range l.Elements {
 		switch e := e.(type) {
 		case DocumentAttributeSubstitution:
-			if value, found := attrs[e.Name]; found {
+			if value, found := attrs[e.Name].(string); found {
 				content.WriteString(value)
 			} else {
 				content.WriteRune('{')
@@ -1958,16 +1954,21 @@ func (l *Location) Resolve(attrs map[string]string) Location {
 			content.WriteString(fmt.Sprintf("%s", e))
 		}
 	}
+	location := content.String()
+	if !filepath.IsAbs(location) {
+		if u, err := url.Parse(location); err == nil {
+			if !u.IsAbs() {
+				if imagesdir, ok := attrs.GetAsString(imagesdir); ok {
+					location = imagesdir + "/" + location
+				}
+			}
+		}
+	}
 	return Location{
 		Elements: []interface{}{
 			StringElement{
-				Content: content.String(),
+				Content: location,
 			},
 		},
 	}
-}
-
-// LocationHolder interface for the types that embed and can resolve a location
-type LocationHolder interface {
-	ResolveLocation(attrs map[string]string) (interface{}, bool)
 }

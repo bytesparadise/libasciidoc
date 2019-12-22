@@ -79,3 +79,15 @@ func (a DocumentAttributes) GetAsString(key string) (string, bool) {
 	}
 	return "", false
 }
+
+// GetAsStringWithDefault gets the string value for the given key,
+// or returns the given default value
+func (a DocumentAttributes) GetAsStringWithDefault(key, defaultValue string) string {
+	// TODO: raise a warning if there was no entry found
+	if value, found := a[key]; found {
+		if value, ok := value.(string); ok {
+			return value
+		}
+	}
+	return defaultValue
+}

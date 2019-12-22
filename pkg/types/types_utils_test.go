@@ -60,7 +60,7 @@ var _ = Describe("filter elements", func() {
 			},
 		}
 		// when
-		result := filterEmptyElements(source, filterBlankLine(), filterEmptyPreamble())
+		result := FilterOut(source, BlankLineMatcher, EmptyPreambleMatcher)
 		// then
 		expected := []interface{}{
 			StringElement{

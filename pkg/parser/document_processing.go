@@ -18,7 +18,7 @@ func ParseDocument(filename string, r io.Reader, opts ...Option) (types.Document
 	if err != nil {
 		return types.Document{}, err
 	}
-	attrs := make(map[string]string)
+	attrs := types.DocumentAttributes{}
 	// add all predefined attributes
 	for k, v := range Predefined {
 		if v, ok := v.(string); ok {
@@ -36,9 +36,7 @@ func ParseDocument(filename string, r io.Reader, opts ...Option) (types.Document
 	// also, add all DocumentAttributeDeclaration at the top of the document
 	documentAttributes := draftDoc.DocumentAttributes()
 	for k, v := range documentAttributes {
-		if v, ok := v.(string); ok {
-			attrs[k] = v
-		}
+		attrs[k] = v
 	}
 
 	// apply document attribute substitutions and re-parse paragraphs that were affected
@@ -57,20 +55,33 @@ func ParseDocument(filename string, r io.Reader, opts ...Option) (types.Document
 		return types.Document{}, err
 	}
 	// now, add front-matter attributes
-	if len(draftDoc.FrontMatter.Content) > 0 {
-		for k, v := range draftDoc.FrontMatter.Content {
-			doc.Attributes[k] = v
-		}
+	for k, v := range draftDoc.FrontMatter.Content {
+		doc.Attributes[k] = v
+	}
+	// and add all remaining attributes, too
+	for k, v := range documentAttributes {
+		doc.Attributes[k] = v
 	}
 	return doc, nil
 }
 
 // ApplyDocumentAttributeSubstitutions applies the document attribute substitutions
 // and re-parse the paragraphs that were affected
-func ApplyDocumentAttributeSubstitutions(element interface{}, attrs map[string]string) (interface{}, error) {
+func ApplyDocumentAttributeSubstitutions(element interface{}, attrs types.DocumentAttributes) (interface{}, error) {
 	// the document attributes, as they are resolved while processing the blocks
 	// log.Debugf("applying document substitutions on block of type %T", element)
 	switch e := element.(type) {
+	case []interface{}:
+		elements := make([]interface{}, 0, len(e)) // maximum capacity cannot exceed initial input
+		for _, element := range e {
+			r, err := ApplyDocumentAttributeSubstitutions(element, attrs)
+			if err != nil {
+				return []interface{}{}, err
+			}
+			elements = append(elements, r)
+		}
+		elements = types.FilterOut(elements, types.DocumentAttributeMatcher)
+		return parseInlineLinks(types.MergeStringElements(elements))
 	case types.DocumentAttributeDeclaration:
 		attrs[e.Name] = e.Value
 		return e, nil
@@ -78,7 +89,7 @@ func ApplyDocumentAttributeSubstitutions(element interface{}, attrs map[string]s
 		delete(attrs, e.Name)
 		return e, nil
 	case types.DocumentAttributeSubstitution:
-		if value, ok := attrs[e.Name]; ok {
+		if value, ok := attrs[e.Name].(string); ok {
 			return types.StringElement{
 				Content: value,
 			}, nil
@@ -86,93 +97,89 @@ func ApplyDocumentAttributeSubstitutions(element interface{}, attrs map[string]s
 		return types.StringElement{
 			Content: "{" + e.Name + "}",
 		}, nil
-	case types.LocationHolder:
-		r, _ := e.ResolveLocation(attrs)
-		return r, nil
+	case types.ImageBlock:
+		return e.ResolveLocation(attrs), nil
+	case types.InlineImage:
+		return e.ResolveLocation(attrs), nil
 	case types.Section:
-		r, err := ApplyDocumentAttributeSubstitutions(e.Title, attrs)
+		title, err := ApplyDocumentAttributeSubstitutions(e.Title, attrs)
 		if err != nil {
-			return types.Section{}, err
+			return struct{}{}, err
 		}
-		e.Title = r.([]interface{})
-		err = e.UpdateAttrID()
-		return e, err
+		if title, ok := title.([]interface{}); ok {
+			e.Title = types.FilterOut(title, types.DocumentAttributeMatcher)
+		}
+		return e.ResolveID(attrs)
 	case types.OrderedListItem:
-		for j, element := range e.Elements {
-			r, err := ApplyDocumentAttributeSubstitutions(element, attrs)
-			if err != nil {
-				return types.OrderedListItem{}, err
-			}
-			e.Elements[j] = r
+		elements, err := applyDocumentAttributeSubstitutions(e.Elements, attrs)
+		if err != nil {
+			return struct{}{}, err
 		}
+		e.Elements = types.FilterOut(elements, types.DocumentAttributeMatcher)
 		return e, nil
 	case types.UnorderedListItem:
-		for j, element := range e.Elements {
-			r, err := ApplyDocumentAttributeSubstitutions(element, attrs)
-			if err != nil {
-				return types.UnorderedListItem{}, err
-			}
-			e.Elements[j] = r
+		elements, err := applyDocumentAttributeSubstitutions(e.Elements, attrs)
+		if err != nil {
+			return struct{}{}, err
 		}
+		e.Elements = types.FilterOut(elements, types.DocumentAttributeMatcher)
 		return e, nil
 	case types.LabeledListItem:
-		for j, element := range e.Elements {
-			r, err := ApplyDocumentAttributeSubstitutions(element, attrs)
-			if err != nil {
-				return types.LabeledListItem{}, err
-			}
-			e.Elements[j] = r
+		elements, err := applyDocumentAttributeSubstitutions(e.Elements, attrs)
+		if err != nil {
+			return struct{}{}, err
 		}
+		e.Elements = types.FilterOut(elements, types.DocumentAttributeMatcher)
 		return e, nil
 	case types.QuotedText:
-		for j, element := range e.Elements {
-			r, err := ApplyDocumentAttributeSubstitutions(element, attrs)
-			if err != nil {
-				return types.QuotedText{}, err
-			}
-			e.Elements[j] = r
+		elements, err := applyDocumentAttributeSubstitutions(e.Elements, attrs)
+		if err != nil {
+			return struct{}{}, err
 		}
+		e.Elements = elements
 		return e, nil
 	case types.ContinuedListItemElement:
-		r, err := ApplyDocumentAttributeSubstitutions(e.Element, attrs)
+		element, err := ApplyDocumentAttributeSubstitutions(e.Element, attrs)
 		if err != nil {
-			return types.QuotedText{}, err
+			return struct{}{}, err
 		}
-		e.Element = r
+		e.Element = element
 		return e, nil
 	case types.Paragraph:
 		for i, line := range e.Lines {
 			line, err := ApplyDocumentAttributeSubstitutions(line, attrs)
 			if err != nil {
-				return types.Paragraph{}, err
+				return struct{}{}, err
 			}
 			e.Lines[i] = line.([]interface{})
 		}
 		return e, nil
-	case []interface{}:
-		result := make([]interface{}, 0, len(e)) // maximum capacity cannot exceed initial input
-		for _, element := range e {
-			r, err := ApplyDocumentAttributeSubstitutions(element, attrs)
-			if err != nil {
-				return []interface{}{}, err
-			}
-			result = append(result, r)
-		}
-		result = types.MergeStringElements(result)
-		return parseInlineLinks(result, attrs)
 	default:
 		return e, nil
 	}
 }
 
+// applyDocumentAttributeSubstitutions applies the DocumentAttributeSubstitutions found in the given elements
+func applyDocumentAttributeSubstitutions(elements []interface{}, attrs types.DocumentAttributes) ([]interface{}, error) {
+	result := make([]interface{}, len(elements))
+	for j, element := range elements {
+		r, err := ApplyDocumentAttributeSubstitutions(element, attrs)
+		if err != nil {
+			return []interface{}{}, err
+		}
+		result[j] = r
+	}
+	return result, nil
+}
+
 // if a document attribute substitution happened, we need to parse the string element in search
 // for a potentially new link. Eg `{url}` giving `https://foo.com`
-func parseInlineLinks(elements []interface{}, attrs map[string]string) ([]interface{}, error) {
+func parseInlineLinks(elements []interface{}) ([]interface{}, error) {
 	result := []interface{}{}
 	for _, element := range elements {
-		log.Debugf("looking for links in line element of type %[1]T (%[1]v)", element)
 		switch element := element.(type) {
 		case types.StringElement:
+			log.Debugf("looking for links in line element of type %[1]T (%[1]v)", element)
 			elements, err := ParseReader("", strings.NewReader(element.Content), Entrypoint("InlineLinks"))
 			if err != nil {
 				return []interface{}{}, errors.Wrap(err, "error while parsing content for inline links")

@@ -8,8 +8,8 @@ import (
 // IncludeTableOfContents includes a Table Of Contents in the document
 // if the `toc` attribute is present
 func IncludeTableOfContents(ctx *Context) {
-	if d, found := types.SearchAttributeDeclaration(ctx.Document.Elements, types.AttrTableOfContents); found {
-		ctx.Document = insertTableOfContents(ctx.Document, d.Value)
+	if t, found := ctx.Document.Attributes.GetAsString(types.AttrTableOfContents); found {
+		ctx.Document = insertTableOfContents(ctx.Document, t)
 	}
 }
 

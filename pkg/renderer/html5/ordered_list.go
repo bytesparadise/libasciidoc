@@ -42,7 +42,7 @@ func renderOrderedList(ctx *renderer.Context, l types.OrderedList) ([]byte, erro
 			Start          string
 			Items          []types.OrderedListItem
 		}{
-			generateID(ctx, l.Attributes),
+			renderElementID(l.Attributes),
 			l.Attributes.GetAsString(types.AttrTitle),
 			l.Attributes.GetAsString(types.AttrRole),
 			getNumberingStyle(l),

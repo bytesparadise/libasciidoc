@@ -14,13 +14,6 @@ var _ = Describe("table of contents", func() {
 	doctitle := []interface{}{
 		types.StringElement{Content: "A Title"},
 	}
-	toc := types.DocumentAttributeDeclaration{
-		Name: "toc",
-	}
-	preambletoc := types.DocumentAttributeDeclaration{
-		Name:  "toc",
-		Value: "preamble",
-	}
 	preamble := types.Preamble{
 		Elements: []interface{}{
 			types.BlankLine{},
@@ -38,8 +31,7 @@ var _ = Describe("table of contents", func() {
 	section := types.Section{
 		Level: 1,
 		Attributes: types.ElementAttributes{
-			types.AttrID:       "section_1",
-			types.AttrCustomID: false,
+			types.AttrID: "_section_1",
 		},
 		Title: []interface{}{
 			types.StringElement{Content: "section 1"},
@@ -50,24 +42,26 @@ var _ = Describe("table of contents", func() {
 
 	It("table of contents with default placement and no header with content", func() {
 		source := types.Document{
-			Attributes:         types.DocumentAttributes{},
+			Attributes: types.DocumentAttributes{
+				types.AttrTableOfContents: "",
+			},
 			ElementReferences:  types.ElementReferences{}, // can leave empty for this test
 			Footnotes:          types.Footnotes{},
 			FootnoteReferences: types.FootnoteReferences{},
 			Elements: []interface{}{
-				toc,
 				preamble,
 				section,
 			},
 		}
 		expected := types.Document{
-			Attributes:         types.DocumentAttributes{},
+			Attributes: types.DocumentAttributes{
+				types.AttrTableOfContents: "",
+			},
 			ElementReferences:  types.ElementReferences{},
 			Footnotes:          types.Footnotes{},
 			FootnoteReferences: types.FootnoteReferences{},
 			Elements: []interface{}{
 				tableOfContents,
-				toc,
 				preamble,
 				section,
 			},
@@ -77,7 +71,9 @@ var _ = Describe("table of contents", func() {
 
 	It("table of contents with default placement and a header with content", func() {
 		source := types.Document{
-			Attributes:         types.DocumentAttributes{},
+			Attributes: types.DocumentAttributes{
+				types.AttrTableOfContents: "",
+			},
 			ElementReferences:  types.ElementReferences{}, // can leave empty for this test
 			Footnotes:          types.Footnotes{},
 			FootnoteReferences: types.FootnoteReferences{},
@@ -86,11 +82,9 @@ var _ = Describe("table of contents", func() {
 					Level: 0,
 					Title: doctitle,
 					Attributes: types.ElementAttributes{
-						types.AttrID:       "a_title",
-						types.AttrCustomID: false,
+						types.AttrID: "_a_title",
 					},
 					Elements: []interface{}{
-						toc,
 						preamble,
 						section,
 					},
@@ -98,7 +92,9 @@ var _ = Describe("table of contents", func() {
 			},
 		}
 		expected := types.Document{
-			Attributes:         types.DocumentAttributes{},
+			Attributes: types.DocumentAttributes{
+				types.AttrTableOfContents: "",
+			},
 			ElementReferences:  types.ElementReferences{}, // can leave empty for this test
 			Footnotes:          types.Footnotes{},
 			FootnoteReferences: types.FootnoteReferences{},
@@ -107,12 +103,10 @@ var _ = Describe("table of contents", func() {
 					Level: 0,
 					Title: doctitle,
 					Attributes: types.ElementAttributes{
-						types.AttrID:       "a_title",
-						types.AttrCustomID: false,
+						types.AttrID: "_a_title",
 					},
 					Elements: []interface{}{
 						tableOfContents,
-						toc,
 						preamble,
 						section,
 					},
@@ -124,7 +118,9 @@ var _ = Describe("table of contents", func() {
 
 	It("table of contents with default placement and a header without content", func() {
 		source := types.Document{
-			Attributes:         types.DocumentAttributes{},
+			Attributes: types.DocumentAttributes{
+				types.AttrTableOfContents: "",
+			},
 			ElementReferences:  types.ElementReferences{}, // can leave empty for this test
 			Footnotes:          types.Footnotes{},
 			FootnoteReferences: types.FootnoteReferences{},
@@ -133,18 +129,18 @@ var _ = Describe("table of contents", func() {
 					Level: 0,
 					Title: doctitle,
 					Attributes: types.ElementAttributes{
-						types.AttrID:       "a_title",
-						types.AttrCustomID: false,
+						types.AttrID: "_a_title",
 					},
 					Elements: []interface{}{
-						toc,
 						preamble,
 					},
 				},
 			},
 		}
 		expected := types.Document{
-			Attributes:         types.DocumentAttributes{},
+			Attributes: types.DocumentAttributes{
+				types.AttrTableOfContents: "",
+			},
 			ElementReferences:  types.ElementReferences{}, // can leave empty for this test
 			Footnotes:          types.Footnotes{},
 			FootnoteReferences: types.FootnoteReferences{},
@@ -153,12 +149,10 @@ var _ = Describe("table of contents", func() {
 					Level: 0,
 					Title: doctitle,
 					Attributes: types.ElementAttributes{
-						types.AttrID:       "a_title",
-						types.AttrCustomID: false,
+						types.AttrID: "_a_title",
 					},
 					Elements: []interface{}{
 						tableOfContents,
-						toc,
 						preamble,
 					},
 				},
@@ -169,23 +163,25 @@ var _ = Describe("table of contents", func() {
 
 	It("table of contents with preamble placement and no header with content", func() {
 		source := types.Document{
-			Attributes:         types.DocumentAttributes{},
+			Attributes: types.DocumentAttributes{
+				types.AttrTableOfContents: "preamble",
+			},
 			ElementReferences:  types.ElementReferences{},
 			Footnotes:          types.Footnotes{},
 			FootnoteReferences: types.FootnoteReferences{},
 			Elements: []interface{}{
-				preambletoc,
 				preamble,
 				section,
 			},
 		}
 		expected := types.Document{
-			Attributes:         types.DocumentAttributes{},
+			Attributes: types.DocumentAttributes{
+				types.AttrTableOfContents: "preamble",
+			},
 			ElementReferences:  types.ElementReferences{},
 			Footnotes:          types.Footnotes{},
 			FootnoteReferences: types.FootnoteReferences{},
 			Elements: []interface{}{
-				preambletoc,
 				preamble,
 				tableOfContents,
 				section,
@@ -196,7 +192,9 @@ var _ = Describe("table of contents", func() {
 
 	It("table of contents with preamble placement and header with content", func() {
 		source := types.Document{
-			Attributes:         types.DocumentAttributes{},
+			Attributes: types.DocumentAttributes{
+				types.AttrTableOfContents: "preamble",
+			},
 			ElementReferences:  types.ElementReferences{},
 			Footnotes:          types.Footnotes{},
 			FootnoteReferences: types.FootnoteReferences{},
@@ -205,11 +203,9 @@ var _ = Describe("table of contents", func() {
 					Level: 0,
 					Title: doctitle,
 					Attributes: types.ElementAttributes{
-						types.AttrID:       "a_title",
-						types.AttrCustomID: false,
+						types.AttrID: "_a_title",
 					},
 					Elements: []interface{}{
-						preambletoc,
 						preamble,
 						section,
 					},
@@ -217,7 +213,9 @@ var _ = Describe("table of contents", func() {
 			},
 		}
 		expected := types.Document{
-			Attributes:         types.DocumentAttributes{},
+			Attributes: types.DocumentAttributes{
+				types.AttrTableOfContents: "preamble",
+			},
 			ElementReferences:  types.ElementReferences{},
 			Footnotes:          types.Footnotes{},
 			FootnoteReferences: types.FootnoteReferences{},
@@ -226,11 +224,9 @@ var _ = Describe("table of contents", func() {
 					Level: 0,
 					Title: doctitle,
 					Attributes: types.ElementAttributes{
-						types.AttrID:       "a_title",
-						types.AttrCustomID: false,
+						types.AttrID: "_a_title",
 					},
 					Elements: []interface{}{
-						preambletoc,
 						preamble,
 						tableOfContents,
 						section,
@@ -243,7 +239,9 @@ var _ = Describe("table of contents", func() {
 
 	It("table of contents with preamble placement and header without content", func() {
 		source := types.Document{
-			Attributes:         types.DocumentAttributes{},
+			Attributes: types.DocumentAttributes{
+				types.AttrTableOfContents: "preamble",
+			},
 			ElementReferences:  types.ElementReferences{},
 			Footnotes:          types.Footnotes{},
 			FootnoteReferences: types.FootnoteReferences{},
@@ -252,18 +250,18 @@ var _ = Describe("table of contents", func() {
 					Level: 0,
 					Title: doctitle,
 					Attributes: types.ElementAttributes{
-						types.AttrID:       "a_title",
-						types.AttrCustomID: false,
+						types.AttrID: "_a_title",
 					},
 					Elements: []interface{}{
-						preambletoc,
 						preamble,
 					},
 				},
 			},
 		}
 		expected := types.Document{
-			Attributes:         types.DocumentAttributes{},
+			Attributes: types.DocumentAttributes{
+				types.AttrTableOfContents: "preamble",
+			},
 			ElementReferences:  types.ElementReferences{},
 			Footnotes:          types.Footnotes{},
 			FootnoteReferences: types.FootnoteReferences{},
@@ -272,11 +270,9 @@ var _ = Describe("table of contents", func() {
 					Level: 0,
 					Title: doctitle,
 					Attributes: types.ElementAttributes{
-						types.AttrID:       "a_title",
-						types.AttrCustomID: false,
+						types.AttrID: "_a_title",
 					},
 					Elements: []interface{}{
-						preambletoc,
 						preamble,
 						tableOfContents,
 					},

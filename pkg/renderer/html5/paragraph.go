@@ -102,7 +102,7 @@ func renderParagraph(ctx *renderer.Context, p types.Paragraph) ([]byte, error) {
 		return make([]byte, 0), nil
 	}
 	result := bytes.NewBuffer(nil)
-	id := generateID(ctx, p.Attributes)
+	id := renderElementID(p.Attributes)
 	var err error
 	if _, ok := p.Attributes[types.AttrAdmonitionKind]; ok {
 		return renderAdmonitionParagraph(ctx, p)
@@ -155,7 +155,7 @@ func renderAdmonitionParagraph(ctx *renderer.Context, p types.Paragraph) ([]byte
 			IconClass string
 			Lines     [][]interface{}
 		}{
-			ID:        generateID(ctx, p.Attributes),
+			ID:        renderElementID(p.Attributes),
 			Title:     renderTitle(p.Attributes),
 			Class:     renderClass(k),
 			IconTitle: renderIconTitle(k),
@@ -177,7 +177,7 @@ func renderSourceParagraph(ctx *renderer.Context, p types.Paragraph) ([]byte, er
 			Language string
 			Lines    [][]interface{}
 		}{
-			ID:       generateID(ctx, p.Attributes),
+			ID:       renderElementID(p.Attributes),
 			Title:    renderTitle(p.Attributes),
 			Language: p.Attributes.GetAsString(types.AttrLanguage),
 			Lines:    p.Lines,
@@ -197,7 +197,7 @@ func renderVerseParagraph(ctx *renderer.Context, p types.Paragraph) ([]byte, err
 			Attribution Attribution
 			Lines       [][]interface{}
 		}{
-			ID:          generateID(ctx, p.Attributes),
+			ID:          renderElementID(p.Attributes),
 			Title:       renderTitle(p.Attributes),
 			Attribution: NewParagraphAttribution(p),
 			Lines:       p.Lines,
@@ -217,7 +217,7 @@ func renderQuoteParagraph(ctx *renderer.Context, p types.Paragraph) ([]byte, err
 			Attribution Attribution
 			Lines       [][]interface{}
 		}{
-			ID:          generateID(ctx, p.Attributes),
+			ID:          renderElementID(p.Attributes),
 			Title:       renderTitle(p.Attributes),
 			Attribution: NewParagraphAttribution(p),
 			Lines:       p.Lines,
@@ -237,7 +237,7 @@ func renderDelimitedBlockParagraph(ctx *renderer.Context, p types.Paragraph) ([]
 			CheckStyle string
 			Lines      [][]interface{}
 		}{
-			ID:         generateID(ctx, p.Attributes),
+			ID:         renderElementID(p.Attributes),
 			Title:      renderTitle(p.Attributes),
 			CheckStyle: renderCheckStyle(p.Attributes[types.AttrCheckStyle]),
 			Lines:      p.Lines,

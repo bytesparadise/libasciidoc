@@ -2,6 +2,7 @@ package types
 
 import (
 	"fmt"
+	"path/filepath"
 	"strings"
 
 	"github.com/pkg/errors"
@@ -19,6 +20,8 @@ const (
 	AttrCustomID string = "customID"
 	// AttrIDPrefix the key to retrieve the ID Prefix in the element attributes
 	AttrIDPrefix string = "idprefix"
+	// DefaultIDPrefix the default ID Prefix in the element attributes
+	DefaultIDPrefix string = "_"
 	// AttrTitle the key to retrieve the title in the element attributes
 	AttrTitle string = "title"
 	// AttrAuthors the key to the authors declared after the section level 0 (at the beginning of the doc)
@@ -195,6 +198,13 @@ func (a ElementAttributes) Has(key string) bool {
 	return ok
 }
 
+// NilSafeSet sets the key/value pair unless the value is nil or empty
+func (a ElementAttributes) NilSafeSet(key string, value interface{}) {
+	if value != nil && value != "" {
+		a[key] = value
+	}
+}
+
 // GetAsString returns the value of the key as a string, or empty string if the key did not exist
 func (a ElementAttributes) GetAsString(key string) string {
 	if v, ok := a[key]; ok {
@@ -268,4 +278,13 @@ func NewInlineAttributes(attrs []interface{}) (ElementAttributes, error) {
 		}
 	}
 	return result, nil
+}
+
+func resolveAlt(path Location) string {
+	_, filename := filepath.Split(path.String())
+	ext := filepath.Ext(filename)
+	if ext != "" {
+		return strings.TrimSuffix(filename, ext)
+	}
+	return filename
 }

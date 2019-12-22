@@ -3,8 +3,6 @@ package html5
 import (
 	"bytes"
 	"fmt"
-	"net/url"
-	"path/filepath"
 	texttemplate "text/template"
 
 	"github.com/bytesparadise/libasciidoc/pkg/renderer"
@@ -56,7 +54,7 @@ func renderImageBlock(ctx *renderer.Context, img types.ImageBlock) ([]byte, erro
 		Alt:    img.Attributes.GetAsString(types.AttrImageAlt),
 		Width:  img.Attributes.GetAsString(types.AttrImageWidth),
 		Height: img.Attributes.GetAsString(types.AttrImageHeight),
-		Path:   getImageHref(ctx, img.Location.String()),
+		Path:   img.Location.String(),
 	})
 
 	if err != nil {
@@ -82,7 +80,7 @@ func renderInlineImage(ctx *renderer.Context, img types.InlineImage) ([]byte, er
 		Alt:    img.Attributes.GetAsString(types.AttrImageAlt),
 		Width:  img.Attributes.GetAsString(types.AttrImageWidth),
 		Height: img.Attributes.GetAsString(types.AttrImageHeight),
-		Path:   getImageHref(ctx, img.Location.String()),
+		Path:   img.Location.String(),
 	})
 
 	if err != nil {
@@ -90,25 +88,4 @@ func renderInlineImage(ctx *renderer.Context, img types.InlineImage) ([]byte, er
 	}
 	// log.Debugf("rendered inline image: %s", result.Bytes())
 	return result.Bytes(), nil
-}
-
-// getImageLink returns the `href` value for the image. If the given location `l` is relative,
-// then the context's `imagesdir` attribute is used (if it is set). If the location `l` is
-// absolute, then it is returned as-is
-//
-func getImageHref(ctx *renderer.Context, l string) string {
-	if _, err := url.ParseRequestURI(l); err == nil {
-		// location is a valid URL, so return it as-is
-		return l
-	}
-	if filepath.IsAbs(l) {
-		return l
-	}
-	// use `imagesdir` attribute if it is set
-	if imagesdir := ctx.GetImagesDir(); imagesdir != "" {
-		return imagesdir + "/" + l
-	}
-	// default
-	return l
-
 }

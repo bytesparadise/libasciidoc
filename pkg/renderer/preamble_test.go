@@ -24,8 +24,8 @@ var _ = Describe("preambles", func() {
 				types.AttrTitle: "foo",
 			},
 			ElementReferences: types.ElementReferences{
-				"section_a": sectionATitle,
-				"section_b": sectionBTitle,
+				"_section_a": sectionATitle,
+				"_section_b": sectionBTitle,
 			},
 			Footnotes:          types.Footnotes{},
 			FootnoteReferences: types.FootnoteReferences{},
@@ -54,8 +54,8 @@ var _ = Describe("preambles", func() {
 				types.AttrTitle: "foo",
 			},
 			ElementReferences: types.ElementReferences{
-				"section_a": sectionATitle,
-				"section_b": sectionBTitle,
+				"_section_a": sectionATitle,
+				"_section_b": sectionBTitle,
 			},
 			Footnotes:          types.Footnotes{},
 			FootnoteReferences: types.FootnoteReferences{},
@@ -88,8 +88,8 @@ var _ = Describe("preambles", func() {
 				types.AttrTitle: "foo",
 			},
 			ElementReferences: types.ElementReferences{
-				"section_a": sectionATitle,
-				"section_b": sectionBTitle,
+				"_section_a": sectionATitle,
+				"_section_b": sectionBTitle,
 			},
 			Footnotes:          types.Footnotes{},
 			FootnoteReferences: types.FootnoteReferences{},
@@ -107,8 +107,7 @@ var _ = Describe("preambles", func() {
 					Level: 1,
 					Title: sectionATitle,
 					Attributes: types.ElementAttributes{
-						types.AttrID:       "section_a",
-						types.AttrCustomID: false,
+						types.AttrID: "_section_a",
 					},
 
 					Elements: []interface{}{},
@@ -117,8 +116,7 @@ var _ = Describe("preambles", func() {
 					Level: 1,
 					Title: sectionBTitle,
 					Attributes: types.ElementAttributes{
-						types.AttrID:       "section_b",
-						types.AttrCustomID: false,
+						types.AttrID: "_section_b",
 					},
 					Elements: []interface{}{},
 				},
@@ -129,8 +127,8 @@ var _ = Describe("preambles", func() {
 				types.AttrTitle: "foo",
 			},
 			ElementReferences: types.ElementReferences{
-				"section_a": sectionATitle,
-				"section_b": sectionBTitle,
+				"_section_a": sectionATitle,
+				"_section_b": sectionBTitle,
 			},
 			Footnotes:          types.Footnotes{},
 			FootnoteReferences: types.FootnoteReferences{},
@@ -152,8 +150,7 @@ var _ = Describe("preambles", func() {
 					Level: 1,
 					Title: sectionATitle,
 					Attributes: types.ElementAttributes{
-						types.AttrID:       "section_a",
-						types.AttrCustomID: false,
+						types.AttrID: "_section_a",
 					},
 
 					Elements: []interface{}{},
@@ -162,8 +159,7 @@ var _ = Describe("preambles", func() {
 					Level: 1,
 					Title: sectionBTitle,
 					Attributes: types.ElementAttributes{
-						types.AttrID:       "section_b",
-						types.AttrCustomID: false,
+						types.AttrID: "_section_b",
 					},
 					Elements: []interface{}{},
 				},
@@ -178,8 +174,8 @@ var _ = Describe("preambles", func() {
 				types.AttrTitle: "foo",
 			},
 			ElementReferences: types.ElementReferences{
-				"section_a": sectionATitle,
-				"section_b": sectionBTitle,
+				"_section_a": sectionATitle,
+				"_section_b": sectionBTitle,
 			},
 			Footnotes:          types.Footnotes{},
 			FootnoteReferences: types.FootnoteReferences{},
@@ -206,8 +202,7 @@ var _ = Describe("preambles", func() {
 					Level: 1,
 					Title: sectionATitle,
 					Attributes: types.ElementAttributes{
-						types.AttrID:       "section_a",
-						types.AttrCustomID: false,
+						types.AttrID: "_section_a",
 					},
 
 					Elements: []interface{}{},
@@ -216,8 +211,7 @@ var _ = Describe("preambles", func() {
 					Level: 1,
 					Title: sectionBTitle,
 					Attributes: types.ElementAttributes{
-						types.AttrID:       "section_b",
-						types.AttrCustomID: false,
+						types.AttrID: "_section_b",
 					},
 					Elements: []interface{}{},
 				},
@@ -228,8 +222,8 @@ var _ = Describe("preambles", func() {
 				types.AttrTitle: "foo",
 			},
 			ElementReferences: types.ElementReferences{
-				"section_a": sectionATitle,
-				"section_b": sectionBTitle,
+				"_section_a": sectionATitle,
+				"_section_b": sectionBTitle,
 			},
 			Footnotes:          types.Footnotes{},
 			FootnoteReferences: types.FootnoteReferences{},
@@ -260,8 +254,7 @@ var _ = Describe("preambles", func() {
 					Level: 1,
 					Title: sectionATitle,
 					Attributes: types.ElementAttributes{
-						types.AttrID:       "section_a",
-						types.AttrCustomID: false,
+						types.AttrID: "_section_a",
 					},
 
 					Elements: []interface{}{},
@@ -270,8 +263,7 @@ var _ = Describe("preambles", func() {
 					Level: 1,
 					Title: sectionBTitle,
 					Attributes: types.ElementAttributes{
-						types.AttrID:       "section_b",
-						types.AttrCustomID: false,
+						types.AttrID: "_section_b",
 					},
 					Elements: []interface{}{},
 				},
