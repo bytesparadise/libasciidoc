@@ -552,3 +552,82 @@ var _ = Describe("location resolution", func() {
 		),
 	)
 })
+
+var _ = DescribeTable("draft document attributes",
+	func(draftDoc types.DraftDocument, expectation types.DocumentAttributes) {
+		Expect(draftDoc.DocumentAttributes()).To(Equal(expectation))
+	},
+
+	Entry("should use attribute declarations at top of document only",
+		types.DraftDocument{
+			Blocks: []interface{}{
+				types.DocumentAttributeDeclaration{
+					Name:  "foo1",
+					Value: "bar1",
+				},
+				types.DocumentAttributeDeclaration{
+					Name:  "foo2",
+					Value: "bar2",
+				},
+				types.BlankLine{},
+				types.DocumentAttributeDeclaration{
+					Name:  "foo3",
+					Value: "bar3",
+				},
+			},
+		},
+		types.DocumentAttributes{
+			"foo1": "bar1",
+			"foo2": "bar2",
+		},
+	),
+	Entry("should use attribute declarations right after section 0 only",
+		types.DraftDocument{
+			Blocks: []interface{}{
+				types.Section{
+					Level: 0,
+				},
+				types.DocumentAttributeDeclaration{
+					Name:  "foo1",
+					Value: "bar1",
+				},
+				types.DocumentAttributeDeclaration{
+					Name:  "foo2",
+					Value: "bar2",
+				},
+				types.BlankLine{},
+				types.DocumentAttributeDeclaration{
+					Name:  "foo3",
+					Value: "bar3",
+				},
+			},
+		},
+		types.DocumentAttributes{
+			"foo1": "bar1",
+			"foo2": "bar2",
+		},
+	),
+	Entry("should ignore attribute declarations elsewhere",
+		types.DraftDocument{
+			Blocks: []interface{}{
+				types.Section{
+					Level: 1,
+				},
+				types.DocumentAttributeDeclaration{
+					Name:  "foo1",
+					Value: "bar1",
+				},
+				types.DocumentAttributeDeclaration{
+					Name:  "foo2",
+					Value: "bar2",
+				},
+				types.BlankLine{},
+				types.DocumentAttributeDeclaration{
+					Name:  "foo3",
+					Value: "bar3",
+				},
+			},
+		},
+		types.DocumentAttributes{},
+	),
+)

@@ -62,6 +62,26 @@ func NewDraftDocument(frontMatter interface{}, blocks []interface{}) (DraftDocum
 	return result, nil
 }
 
+// DocumentAttributes returns
+func (d DraftDocument) DocumentAttributes() DocumentAttributes {
+	result := DocumentAttributes{}
+blocks:
+	for _, b := range d.Blocks {
+		switch b := b.(type) {
+		case Section:
+			if b.Level == 0 {
+				continue // allow to continue if the section is level 0
+			}
+			break blocks // otherwise, just stop
+		case DocumentAttributeDeclaration:
+			result[b.Name] = b.Value
+		default:
+			break blocks
+		}
+	}
+	return result
+}
+
 // ------------------------------------------
 // Document
 // ------------------------------------------
@@ -2077,7 +2097,6 @@ func (l Location) String() string { // (attrs map[string]string) string {
 	for _, e := range l.Elements {
 		result.WriteString(fmt.Sprintf("%s", e))
 	}
-	// l.Resolved = result.String()
 	return result.String()
 }
 

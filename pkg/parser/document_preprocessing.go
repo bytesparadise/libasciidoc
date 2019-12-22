@@ -4,6 +4,7 @@ import (
 	"io"
 
 	"github.com/bytesparadise/libasciidoc/pkg/types"
+	"github.com/davecgh/go-spew/spew"
 
 	log "github.com/sirupsen/logrus"
 )
@@ -32,6 +33,10 @@ func parseDraftDocument(filename string, r io.Reader, levelOffsets []levelOffset
 		return types.DraftDocument{}, err
 	}
 	doc.Blocks = blocks
+	if log.IsLevelEnabled(log.DebugLevel) {
+		log.Debug("draf document:")
+		spew.Dump(doc)
+	}
 	return doc, nil
 }
 
