@@ -37,7 +37,7 @@ var _ = Describe("checked lists - document", func() {
 									Attributes: types.ElementAttributes{
 										types.AttrCheckStyle: types.Checked,
 									},
-									Lines: []types.InlineElements{
+									Lines: [][]interface{}{
 										{
 											types.StringElement{
 												Content: "checked",
@@ -57,7 +57,7 @@ var _ = Describe("checked lists - document", func() {
 									Attributes: types.ElementAttributes{
 										types.AttrCheckStyle: types.Checked,
 									},
-									Lines: []types.InlineElements{
+									Lines: [][]interface{}{
 										{
 											types.StringElement{
 												Content: "also checked",
@@ -77,7 +77,7 @@ var _ = Describe("checked lists - document", func() {
 									Attributes: types.ElementAttributes{
 										types.AttrCheckStyle: types.Unchecked,
 									},
-									Lines: []types.InlineElements{
+									Lines: [][]interface{}{
 										{
 											types.StringElement{
 												Content: "not checked",
@@ -95,7 +95,7 @@ var _ = Describe("checked lists - document", func() {
 							Elements: []interface{}{
 								types.Paragraph{
 									Attributes: types.ElementAttributes{},
-									Lines: []types.InlineElements{
+									Lines: [][]interface{}{
 										{
 											types.StringElement{
 												Content: "normal list item",
@@ -140,7 +140,7 @@ var _ = Describe("checked lists - document", func() {
 									Attributes: types.ElementAttributes{
 										types.AttrCheckStyle: types.Unchecked,
 									},
-									Lines: []types.InlineElements{
+									Lines: [][]interface{}{
 										{
 											types.StringElement{
 												Content: "parent not checked",
@@ -161,7 +161,7 @@ var _ = Describe("checked lists - document", func() {
 													Attributes: types.ElementAttributes{
 														types.AttrCheckStyle: types.Checked,
 													},
-													Lines: []types.InlineElements{
+													Lines: [][]interface{}{
 														{
 															types.StringElement{
 																Content: "checked",
@@ -181,7 +181,7 @@ var _ = Describe("checked lists - document", func() {
 													Attributes: types.ElementAttributes{
 														types.AttrCheckStyle: types.Checked,
 													},
-													Lines: []types.InlineElements{
+													Lines: [][]interface{}{
 														{
 															types.StringElement{
 																Content: "also checked",
@@ -201,7 +201,7 @@ var _ = Describe("checked lists - document", func() {
 													Attributes: types.ElementAttributes{
 														types.AttrCheckStyle: types.Unchecked,
 													},
-													Lines: []types.InlineElements{
+													Lines: [][]interface{}{
 														{
 															types.StringElement{
 																Content: "not checked",
@@ -223,7 +223,7 @@ var _ = Describe("checked lists - document", func() {
 							Elements: []interface{}{
 								types.Paragraph{
 									Attributes: types.ElementAttributes{},
-									Lines: []types.InlineElements{
+									Lines: [][]interface{}{
 										{
 											types.StringElement{
 												Content: "normal list item",
@@ -267,7 +267,7 @@ var _ = Describe("checked lists - document", func() {
 									Attributes: types.ElementAttributes{
 										types.AttrCheckStyle: types.Unchecked,
 									},
-									Lines: []types.InlineElements{
+									Lines: [][]interface{}{
 										{
 											types.StringElement{
 												Content: "parent not checked",
@@ -286,7 +286,7 @@ var _ = Describe("checked lists - document", func() {
 											Elements: []interface{}{
 												types.Paragraph{
 													Attributes: types.ElementAttributes{},
-													Lines: []types.InlineElements{
+													Lines: [][]interface{}{
 														{
 															types.StringElement{
 																Content: "a normal list item",
@@ -304,7 +304,7 @@ var _ = Describe("checked lists - document", func() {
 											Elements: []interface{}{
 												types.Paragraph{
 													Attributes: types.ElementAttributes{},
-													Lines: []types.InlineElements{
+													Lines: [][]interface{}{
 														{
 															types.StringElement{
 																Content: "another normal list item",
@@ -326,7 +326,7 @@ var _ = Describe("checked lists - document", func() {
 							Elements: []interface{}{
 								types.Paragraph{
 									Attributes: types.ElementAttributes{},
-									Lines: []types.InlineElements{
+									Lines: [][]interface{}{
 										{
 											types.StringElement{
 												Content: "normal list item",

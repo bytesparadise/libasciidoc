@@ -11,7 +11,7 @@ import (
 var _ = Describe("table of contents", func() {
 
 	// reusable elements
-	doctitle := types.InlineElements{
+	doctitle := []interface{}{
 		types.StringElement{Content: "A Title"},
 	}
 	toc := types.DocumentAttributeDeclaration{
@@ -26,7 +26,7 @@ var _ = Describe("table of contents", func() {
 			types.BlankLine{},
 			types.Paragraph{
 				Attributes: types.ElementAttributes{},
-				Lines: []types.InlineElements{
+				Lines: [][]interface{}{
 					{
 						types.StringElement{Content: "A short preamble"},
 					},
@@ -41,7 +41,7 @@ var _ = Describe("table of contents", func() {
 			types.AttrID:       "section_1",
 			types.AttrCustomID: false,
 		},
-		Title: types.InlineElements{
+		Title: []interface{}{
 			types.StringElement{Content: "section 1"},
 		},
 		Elements: []interface{}{},

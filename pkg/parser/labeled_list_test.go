@@ -23,7 +23,7 @@ on 2 lines`
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
-							Lines: []types.InlineElements{
+							Lines: [][]interface{}{
 								{
 									types.StringElement{Content: "Item 1 description"},
 								},
@@ -68,7 +68,7 @@ Item1:: foo`
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
-							Lines: []types.InlineElements{
+							Lines: [][]interface{}{
 								{
 									types.StringElement{Content: "foo"},
 								},
@@ -113,7 +113,7 @@ Item 3 description`
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
-							Lines: []types.InlineElements{
+							Lines: [][]interface{}{
 								{
 									types.StringElement{Content: "Item 1 description"},
 								},
@@ -128,7 +128,7 @@ Item 3 description`
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
-							Lines: []types.InlineElements{
+							Lines: [][]interface{}{
 								{
 									types.StringElement{Content: "Item 2 description"},
 								},
@@ -143,7 +143,7 @@ Item 3 description`
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
-							Lines: []types.InlineElements{
+							Lines: [][]interface{}{
 								{
 									types.StringElement{Content: "Item 3 description"},
 								},
@@ -172,7 +172,7 @@ Item 3 description`
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
-							Lines: []types.InlineElements{
+							Lines: [][]interface{}{
 								{
 									types.StringElement{Content: "Item 1 description"},
 								},
@@ -187,7 +187,7 @@ Item 3 description`
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
-							Lines: []types.InlineElements{
+							Lines: [][]interface{}{
 								{
 									types.StringElement{Content: "Item 2 description"},
 								},
@@ -202,7 +202,7 @@ Item 3 description`
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
-							Lines: []types.InlineElements{
+							Lines: [][]interface{}{
 								{
 									types.StringElement{Content: "Item 3 description"},
 								},
@@ -236,7 +236,7 @@ Item with description:: something simple`
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
-							Lines: []types.InlineElements{
+							Lines: [][]interface{}{
 								{
 									types.StringElement{Content: "foo"},
 								},
@@ -252,7 +252,7 @@ Item with description:: something simple`
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
-							Lines: []types.InlineElements{
+							Lines: [][]interface{}{
 								{
 									types.StringElement{Content: "bar"},
 								},
@@ -267,7 +267,7 @@ Item with description:: something simple`
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
-							Lines: []types.InlineElements{
+							Lines: [][]interface{}{
 								{
 									types.StringElement{Content: "something simple"},
 								},
@@ -296,7 +296,7 @@ a normal paragraph.`
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
-							Lines: []types.InlineElements{
+							Lines: [][]interface{}{
 								{
 									types.StringElement{Content: "foo"},
 								},
@@ -310,7 +310,7 @@ a normal paragraph.`
 				types.BlankLine{},
 				types.Paragraph{
 					Attributes: types.ElementAttributes{},
-					Lines: []types.InlineElements{
+					Lines: [][]interface{}{
 						{
 							types.StringElement{Content: "a normal paragraph."},
 						},
@@ -349,7 +349,7 @@ another fenced block
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{
 											Content: "a fenced block",
@@ -367,7 +367,7 @@ another fenced block
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
-							Lines: []types.InlineElements{
+							Lines: [][]interface{}{
 								{
 									types.StringElement{Content: "something simple"},
 								},
@@ -384,7 +384,7 @@ another fenced block
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{
 											Content: "another fenced block",
@@ -423,7 +423,7 @@ another fenced block
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
-							Lines: []types.InlineElements{
+							Lines: [][]interface{}{
 								{
 									types.StringElement{
 										Content: "a fenced block",
@@ -440,7 +440,7 @@ another fenced block
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
-							Lines: []types.InlineElements{
+							Lines: [][]interface{}{
 								{
 									types.StringElement{Content: "something simple"},
 								},
@@ -454,7 +454,7 @@ another fenced block
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
-							Lines: []types.InlineElements{
+							Lines: [][]interface{}{
 								{
 									types.StringElement{
 										Content: "another fenced block",
@@ -488,7 +488,7 @@ another fenced block
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
-							Lines: []types.InlineElements{
+							Lines: [][]interface{}{
 								{
 									types.StringElement{Content: "unordered item"},
 								},
@@ -516,7 +516,7 @@ second term:: definition of the second term`
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
-							Lines: []types.InlineElements{
+							Lines: [][]interface{}{
 								{
 									types.StringElement{
 										Content: "definition of the first term",
@@ -533,7 +533,7 @@ second term:: definition of the second term`
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
-							Lines: []types.InlineElements{
+							Lines: [][]interface{}{
 								{
 									types.StringElement{
 										Content: "definition of the second term",
@@ -565,7 +565,7 @@ level 1:: description 1`
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
-							Lines: []types.InlineElements{
+							Lines: [][]interface{}{
 								{
 									types.StringElement{
 										Content: "description 1",
@@ -582,7 +582,7 @@ level 1:: description 1`
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
-							Lines: []types.InlineElements{
+							Lines: [][]interface{}{
 								{
 									types.StringElement{
 										Content: "description 2",
@@ -599,7 +599,7 @@ level 1:: description 1`
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
-							Lines: []types.InlineElements{
+							Lines: [][]interface{}{
 								{
 									types.StringElement{
 										Content: "description 3",
@@ -616,7 +616,7 @@ level 1:: description 1`
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
-							Lines: []types.InlineElements{
+							Lines: [][]interface{}{
 								{
 									types.StringElement{
 										Content: "description 1",
@@ -648,7 +648,7 @@ level 2::: description 2`
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
-							Lines: []types.InlineElements{
+							Lines: [][]interface{}{
 								{
 									types.StringElement{
 										Content: "description 1",
@@ -665,7 +665,7 @@ level 2::: description 2`
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
-							Lines: []types.InlineElements{
+							Lines: [][]interface{}{
 								{
 									types.StringElement{
 										Content: "description 2",
@@ -682,7 +682,7 @@ level 2::: description 2`
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
-							Lines: []types.InlineElements{
+							Lines: [][]interface{}{
 								{
 									types.StringElement{
 										Content: "description 3",
@@ -699,7 +699,7 @@ level 2::: description 2`
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
-							Lines: []types.InlineElements{
+							Lines: [][]interface{}{
 								{
 									types.StringElement{
 										Content: "description 2",
@@ -737,7 +737,7 @@ on 2 lines`
 							Elements: []interface{}{
 								types.Paragraph{
 									Attributes: types.ElementAttributes{},
-									Lines: []types.InlineElements{
+									Lines: [][]interface{}{
 										{
 											types.StringElement{Content: "Item 1 description"},
 										},
@@ -800,7 +800,7 @@ Item1:: foo`
 							Elements: []interface{}{
 								types.Paragraph{
 									Attributes: types.ElementAttributes{},
-									Lines: []types.InlineElements{
+									Lines: [][]interface{}{
 										{
 											types.StringElement{Content: "foo"},
 										},
@@ -863,7 +863,7 @@ Item 3 description`
 							Elements: []interface{}{
 								types.Paragraph{
 									Attributes: types.ElementAttributes{},
-									Lines: []types.InlineElements{
+									Lines: [][]interface{}{
 										{
 											types.StringElement{Content: "Item 1 description"},
 										},
@@ -878,7 +878,7 @@ Item 3 description`
 							Elements: []interface{}{
 								types.Paragraph{
 									Attributes: types.ElementAttributes{},
-									Lines: []types.InlineElements{
+									Lines: [][]interface{}{
 										{
 											types.StringElement{Content: "Item 2 description"},
 										},
@@ -893,7 +893,7 @@ Item 3 description`
 							Elements: []interface{}{
 								types.Paragraph{
 									Attributes: types.ElementAttributes{},
-									Lines: []types.InlineElements{
+									Lines: [][]interface{}{
 										{
 											types.StringElement{Content: "Item 3 description"},
 										},
@@ -931,7 +931,7 @@ Item 3 description`
 							Elements: []interface{}{
 								types.Paragraph{
 									Attributes: types.ElementAttributes{},
-									Lines: []types.InlineElements{
+									Lines: [][]interface{}{
 										{
 											types.StringElement{Content: "Item 1 description"},
 										},
@@ -947,7 +947,7 @@ Item 3 description`
 											Elements: []interface{}{
 												types.Paragraph{
 													Attributes: types.ElementAttributes{},
-													Lines: []types.InlineElements{
+													Lines: [][]interface{}{
 														{
 															types.StringElement{Content: "Item 2 description"},
 														},
@@ -963,7 +963,7 @@ Item 3 description`
 															Elements: []interface{}{
 																types.Paragraph{
 																	Attributes: types.ElementAttributes{},
-																	Lines: []types.InlineElements{
+																	Lines: [][]interface{}{
 																		{
 																			types.StringElement{Content: "Item 3 description"},
 																		},
@@ -1016,7 +1016,7 @@ Item with description:: something simple`
 											Elements: []interface{}{
 												types.Paragraph{
 													Attributes: types.ElementAttributes{},
-													Lines: []types.InlineElements{
+													Lines: [][]interface{}{
 														{
 															types.StringElement{Content: "foo"},
 														},
@@ -1032,7 +1032,7 @@ Item with description:: something simple`
 											Elements: []interface{}{
 												types.Paragraph{
 													Attributes: types.ElementAttributes{},
-													Lines: []types.InlineElements{
+													Lines: [][]interface{}{
 														{
 															types.StringElement{Content: "bar"},
 														},
@@ -1051,7 +1051,7 @@ Item with description:: something simple`
 							Elements: []interface{}{
 								types.Paragraph{
 									Attributes: types.ElementAttributes{},
-									Lines: []types.InlineElements{
+									Lines: [][]interface{}{
 										{
 											types.StringElement{Content: "something simple"},
 										},
@@ -1089,7 +1089,7 @@ a normal paragraph.`
 							Elements: []interface{}{
 								types.Paragraph{
 									Attributes: types.ElementAttributes{},
-									Lines: []types.InlineElements{
+									Lines: [][]interface{}{
 										{
 											types.StringElement{Content: "foo"},
 										},
@@ -1104,7 +1104,7 @@ a normal paragraph.`
 				},
 				types.Paragraph{
 					Attributes: types.ElementAttributes{},
-					Lines: []types.InlineElements{
+					Lines: [][]interface{}{
 						{
 							types.StringElement{Content: "a normal paragraph."},
 						},
@@ -1146,7 +1146,7 @@ another fenced block
 									Elements: []interface{}{
 										types.Paragraph{
 											Attributes: types.ElementAttributes{},
-											Lines: []types.InlineElements{
+											Lines: [][]interface{}{
 												{
 													types.StringElement{
 														Content: "a fenced block",
@@ -1165,7 +1165,7 @@ another fenced block
 							Elements: []interface{}{
 								types.Paragraph{
 									Attributes: types.ElementAttributes{},
-									Lines: []types.InlineElements{
+									Lines: [][]interface{}{
 										{
 											types.StringElement{Content: "something simple"},
 										},
@@ -1177,7 +1177,7 @@ another fenced block
 									Elements: []interface{}{
 										types.Paragraph{
 											Attributes: types.ElementAttributes{},
-											Lines: []types.InlineElements{
+											Lines: [][]interface{}{
 												{
 													types.StringElement{
 														Content: "another fenced block",
@@ -1229,7 +1229,7 @@ another fenced block
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
-							Lines: []types.InlineElements{
+							Lines: [][]interface{}{
 								{
 									types.StringElement{
 										Content: "a fenced block",
@@ -1249,7 +1249,7 @@ another fenced block
 							Elements: []interface{}{
 								types.Paragraph{
 									Attributes: types.ElementAttributes{},
-									Lines: []types.InlineElements{
+									Lines: [][]interface{}{
 										{
 											types.StringElement{Content: "something simple"},
 										},
@@ -1265,7 +1265,7 @@ another fenced block
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
-							Lines: []types.InlineElements{
+							Lines: [][]interface{}{
 								{
 									types.StringElement{
 										Content: "another fenced block",
@@ -1308,7 +1308,7 @@ another fenced block
 											Elements: []interface{}{
 												types.Paragraph{
 													Attributes: types.ElementAttributes{},
-													Lines: []types.InlineElements{
+													Lines: [][]interface{}{
 														{
 															types.StringElement{Content: "unordered item"},
 														},
@@ -1349,7 +1349,7 @@ second term:: definition of the second term`
 							Elements: []interface{}{
 								types.Paragraph{
 									Attributes: types.ElementAttributes{},
-									Lines: []types.InlineElements{
+									Lines: [][]interface{}{
 										{
 											types.StringElement{
 												Content: "definition of the first term",
@@ -1366,7 +1366,7 @@ second term:: definition of the second term`
 							Elements: []interface{}{
 								types.Paragraph{
 									Attributes: types.ElementAttributes{},
-									Lines: []types.InlineElements{
+									Lines: [][]interface{}{
 										{
 											types.StringElement{
 												Content: "definition of the second term",
@@ -1407,7 +1407,7 @@ level 1:: description 1`
 							Elements: []interface{}{
 								types.Paragraph{
 									Attributes: types.ElementAttributes{},
-									Lines: []types.InlineElements{
+									Lines: [][]interface{}{
 										{
 											types.StringElement{
 												Content: "description 1",
@@ -1425,7 +1425,7 @@ level 1:: description 1`
 											Elements: []interface{}{
 												types.Paragraph{
 													Attributes: types.ElementAttributes{},
-													Lines: []types.InlineElements{
+													Lines: [][]interface{}{
 														{
 															types.StringElement{
 																Content: "description 2",
@@ -1443,7 +1443,7 @@ level 1:: description 1`
 															Elements: []interface{}{
 																types.Paragraph{
 																	Attributes: types.ElementAttributes{},
-																	Lines: []types.InlineElements{
+																	Lines: [][]interface{}{
 																		{
 																			types.StringElement{
 																				Content: "description 3",
@@ -1468,7 +1468,7 @@ level 1:: description 1`
 							Elements: []interface{}{
 								types.Paragraph{
 									Attributes: types.ElementAttributes{},
-									Lines: []types.InlineElements{
+									Lines: [][]interface{}{
 										{
 											types.StringElement{
 												Content: "description 1",
@@ -1509,7 +1509,7 @@ level 2::: description 2`
 							Elements: []interface{}{
 								types.Paragraph{
 									Attributes: types.ElementAttributes{},
-									Lines: []types.InlineElements{
+									Lines: [][]interface{}{
 										{
 											types.StringElement{
 												Content: "description 1",
@@ -1527,7 +1527,7 @@ level 2::: description 2`
 											Elements: []interface{}{
 												types.Paragraph{
 													Attributes: types.ElementAttributes{},
-													Lines: []types.InlineElements{
+													Lines: [][]interface{}{
 														{
 															types.StringElement{
 																Content: "description 2",
@@ -1545,7 +1545,7 @@ level 2::: description 2`
 															Elements: []interface{}{
 																types.Paragraph{
 																	Attributes: types.ElementAttributes{},
-																	Lines: []types.InlineElements{
+																	Lines: [][]interface{}{
 																		{
 																			types.StringElement{
 																				Content: "description 3",
@@ -1566,7 +1566,7 @@ level 2::: description 2`
 											Elements: []interface{}{
 												types.Paragraph{
 													Attributes: types.ElementAttributes{},
-													Lines: []types.InlineElements{
+													Lines: [][]interface{}{
 														{
 															types.StringElement{
 																Content: "description 2",
@@ -1605,7 +1605,7 @@ level 2::: description 2`
 							Elements: []interface{}{
 								types.Paragraph{
 									Attributes: types.ElementAttributes{},
-									Lines: []types.InlineElements{
+									Lines: [][]interface{}{
 										{
 											types.StringElement{Content: "&amp;"},
 										},

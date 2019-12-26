@@ -16,7 +16,7 @@ var _ = Describe("non-alphanumeric replacement assertions", func() {
 
 	It("should match", func() {
 		// given
-		actual := types.InlineElements{
+		actual := []interface{}{
 			types.StringElement{
 				Content: "foo@bar",
 			},
@@ -31,7 +31,7 @@ var _ = Describe("non-alphanumeric replacement assertions", func() {
 
 	It("should not match", func() {
 		// given
-		actual := types.InlineElements{
+		actual := []interface{}{
 			types.StringElement{
 				Content: "foobar",
 			},

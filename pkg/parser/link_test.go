@@ -18,7 +18,7 @@ var _ = Describe("links", func() {
 				source := "a link to https://foo.bar"
 				expected := types.Paragraph{
 					Attributes: types.ElementAttributes{},
-					Lines: []types.InlineElements{
+					Lines: [][]interface{}{
 						{
 							types.StringElement{Content: "a link to "},
 							types.InlineLink{
@@ -41,7 +41,7 @@ var _ = Describe("links", func() {
 				source := "a link to https://foo.bar[]"
 				expected := types.Paragraph{
 					Attributes: types.ElementAttributes{},
-					Lines: []types.InlineElements{
+					Lines: [][]interface{}{
 						{
 							types.StringElement{Content: "a link to "},
 							types.InlineLink{
@@ -64,7 +64,7 @@ var _ = Describe("links", func() {
 				source := "a link to mailto:foo@bar[the foo@bar email]."
 				expected := types.Paragraph{
 					Attributes: types.ElementAttributes{},
-					Lines: []types.InlineElements{
+					Lines: [][]interface{}{
 						{
 							types.StringElement{Content: "a link to "},
 							types.InlineLink{
@@ -76,7 +76,7 @@ var _ = Describe("links", func() {
 									},
 								},
 								Attributes: types.ElementAttributes{
-									types.AttrInlineLinkText: types.InlineElements{
+									types.AttrInlineLinkText: []interface{}{
 										types.StringElement{
 											Content: "the foo@bar email",
 										},
@@ -94,7 +94,7 @@ var _ = Describe("links", func() {
 				source := "a link to mailto:foo@bar[the foo@bar email, foo=bar]"
 				expected := types.Paragraph{
 					Attributes: types.ElementAttributes{},
-					Lines: []types.InlineElements{
+					Lines: [][]interface{}{
 						{
 							types.StringElement{Content: "a link to "},
 							types.InlineLink{
@@ -106,7 +106,7 @@ var _ = Describe("links", func() {
 									},
 								},
 								Attributes: types.ElementAttributes{
-									types.AttrInlineLinkText: types.InlineElements{
+									types.AttrInlineLinkText: []interface{}{
 										types.StringElement{
 											Content: "the foo@bar email",
 										},
@@ -127,7 +127,7 @@ next lines`
 
 				expected := types.Paragraph{
 					Attributes: types.ElementAttributes{},
-					Lines: []types.InlineElements{
+					Lines: [][]interface{}{
 						{
 							types.StringElement{
 								Content: "a ",
@@ -165,7 +165,7 @@ next lines`
 
 				expected := types.Paragraph{
 					Attributes: types.ElementAttributes{},
-					Lines: []types.InlineElements{
+					Lines: [][]interface{}{
 						{
 							types.StringElement{
 								Content: "a ",
@@ -200,7 +200,7 @@ next lines`
 				source := `a link to https://foo.bar and more text`
 				expected := types.Paragraph{
 					Attributes: types.ElementAttributes{},
-					Lines: []types.InlineElements{
+					Lines: [][]interface{}{
 						{
 							types.StringElement{Content: "a link to "},
 							types.InlineLink{
@@ -226,7 +226,7 @@ next lines`
 					source := `a link to http://website.com[A, B, and C]`
 					expected := types.Paragraph{
 						Attributes: types.ElementAttributes{},
-						Lines: []types.InlineElements{
+						Lines: [][]interface{}{
 							{
 								types.StringElement{Content: "a link to "},
 								types.InlineLink{
@@ -238,7 +238,7 @@ next lines`
 										},
 									},
 									Attributes: types.ElementAttributes{
-										types.AttrInlineLinkText: types.InlineElements{
+										types.AttrInlineLinkText: []interface{}{
 											types.StringElement{
 												Content: "A, B, and C",
 											},
@@ -255,7 +255,7 @@ next lines`
 					source := `a link to http://website.com["A, B, and C"]`
 					expected := types.Paragraph{
 						Attributes: types.ElementAttributes{},
-						Lines: []types.InlineElements{
+						Lines: [][]interface{}{
 							{
 								types.StringElement{Content: "a link to "},
 								types.InlineLink{
@@ -267,7 +267,7 @@ next lines`
 										},
 									},
 									Attributes: types.ElementAttributes{
-										types.AttrInlineLinkText: types.InlineElements{
+										types.AttrInlineLinkText: []interface{}{
 											types.StringElement{
 												Content: "A, B, and C",
 											},
@@ -284,7 +284,7 @@ next lines`
 					source := `a link to http://website.com["A, B, and C", role=foo]`
 					expected := types.Paragraph{
 						Attributes: types.ElementAttributes{},
-						Lines: []types.InlineElements{
+						Lines: [][]interface{}{
 							{
 								types.StringElement{Content: "a link to "},
 								types.InlineLink{
@@ -296,7 +296,7 @@ next lines`
 										},
 									},
 									Attributes: types.ElementAttributes{
-										types.AttrInlineLinkText: types.InlineElements{
+										types.AttrInlineLinkText: []interface{}{
 											types.StringElement{
 												Content: "A, B, and C",
 											},
@@ -314,7 +314,7 @@ next lines`
 					source := `a link to http://website.com[A, B, and C, role=foo]`
 					expected := types.Paragraph{
 						Attributes: types.ElementAttributes{},
-						Lines: []types.InlineElements{
+						Lines: [][]interface{}{
 							{
 								types.StringElement{Content: "a link to "},
 								types.InlineLink{
@@ -326,7 +326,7 @@ next lines`
 										},
 									},
 									Attributes: types.ElementAttributes{
-										types.AttrInlineLinkText: types.InlineElements{
+										types.AttrInlineLinkText: []interface{}{
 											types.StringElement{
 												Content: "A",
 											},
@@ -351,7 +351,7 @@ next lines`
 				source := "a link to link:foo.adoc[]"
 				expected := types.Paragraph{
 					Attributes: types.ElementAttributes{},
-					Lines: []types.InlineElements{
+					Lines: [][]interface{}{
 						{
 							types.StringElement{Content: "a link to "},
 							types.InlineLink{
@@ -374,7 +374,7 @@ next lines`
 				source := "a link to link:foo.adoc[foo doc]"
 				expected := types.Paragraph{
 					Attributes: types.ElementAttributes{},
-					Lines: []types.InlineElements{
+					Lines: [][]interface{}{
 						{
 							types.StringElement{Content: "a link to "},
 							types.InlineLink{
@@ -386,7 +386,7 @@ next lines`
 									},
 								},
 								Attributes: types.ElementAttributes{
-									types.AttrInlineLinkText: types.InlineElements{
+									types.AttrInlineLinkText: []interface{}{
 										types.StringElement{
 											Content: "foo doc",
 										},
@@ -403,7 +403,7 @@ next lines`
 				source := "a link to link:https://foo.bar[foo doc]"
 				expected := types.Paragraph{
 					Attributes: types.ElementAttributes{},
-					Lines: []types.InlineElements{
+					Lines: [][]interface{}{
 						{
 							types.StringElement{Content: "a link to "},
 							types.InlineLink{
@@ -415,7 +415,7 @@ next lines`
 									},
 								},
 								Attributes: types.ElementAttributes{
-									types.AttrInlineLinkText: types.InlineElements{
+									types.AttrInlineLinkText: []interface{}{
 										types.StringElement{
 											Content: "foo doc",
 										},
@@ -432,7 +432,7 @@ next lines`
 				source := "a link to link:https://foo.bar[foo doc, foo=bar]"
 				expected := types.Paragraph{
 					Attributes: types.ElementAttributes{},
-					Lines: []types.InlineElements{
+					Lines: [][]interface{}{
 						{
 							types.StringElement{Content: "a link to "},
 							types.InlineLink{
@@ -444,7 +444,7 @@ next lines`
 									},
 								},
 								Attributes: types.ElementAttributes{
-									types.AttrInlineLinkText: types.InlineElements{
+									types.AttrInlineLinkText: []interface{}{
 										types.StringElement{
 											Content: "foo doc",
 										},
@@ -462,7 +462,7 @@ next lines`
 				source := "a link to link:https://foo.bar[foo=bar]"
 				expected := types.Paragraph{
 					Attributes: types.ElementAttributes{},
-					Lines: []types.InlineElements{
+					Lines: [][]interface{}{
 						{
 							types.StringElement{Content: "a link to "},
 							types.InlineLink{
@@ -487,7 +487,7 @@ next lines`
 				source := "a link to link:foo.adoc"
 				expected := types.Paragraph{
 					Attributes: types.ElementAttributes{},
-					Lines: []types.InlineElements{
+					Lines: [][]interface{}{
 						{
 							types.StringElement{
 								Content: "a link to link:foo.adoc",
@@ -502,7 +502,7 @@ next lines`
 				source := "link:/[a _a_ b *b* c `c`]"
 				expected := types.Paragraph{
 					Attributes: types.ElementAttributes{},
-					Lines: []types.InlineElements{
+					Lines: [][]interface{}{
 						{
 							types.InlineLink{
 								Location: types.Location{
@@ -513,13 +513,13 @@ next lines`
 									},
 								},
 								Attributes: types.ElementAttributes{
-									types.AttrInlineLinkText: types.InlineElements{
+									types.AttrInlineLinkText: []interface{}{
 										types.StringElement{
 											Content: "a ",
 										},
 										types.QuotedText{
 											Kind: types.Italic,
-											Elements: types.InlineElements{
+											Elements: []interface{}{
 												types.StringElement{
 													Content: "a",
 												},
@@ -530,7 +530,7 @@ next lines`
 										},
 										types.QuotedText{
 											Kind: types.Bold,
-											Elements: types.InlineElements{
+											Elements: []interface{}{
 												types.StringElement{
 													Content: "b",
 												},
@@ -541,7 +541,7 @@ next lines`
 										},
 										types.QuotedText{
 											Kind: types.Monospace,
-											Elements: types.InlineElements{
+											Elements: []interface{}{
 												types.StringElement{
 													Content: "c",
 												},
@@ -560,11 +560,11 @@ next lines`
 				source := "*link:foo[]*"
 				expected := types.Paragraph{
 					Attributes: types.ElementAttributes{},
-					Lines: []types.InlineElements{
+					Lines: [][]interface{}{
 						{
 							types.QuotedText{
 								Kind: types.Bold,
-								Elements: types.InlineElements{
+								Elements: []interface{}{
 									types.InlineLink{
 										Location: types.Location{
 											Elements: []interface{}{
@@ -587,7 +587,7 @@ next lines`
 				source := `a link to link:ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789~:/?#@!$&;=()*+,-_.%[as expected]`
 				expected := types.Paragraph{
 					Attributes: types.ElementAttributes{},
-					Lines: []types.InlineElements{
+					Lines: [][]interface{}{
 						{
 							types.StringElement{Content: "a link to "},
 							types.InlineLink{
@@ -599,7 +599,7 @@ next lines`
 									},
 								},
 								Attributes: types.ElementAttributes{
-									types.AttrInlineLinkText: types.InlineElements{
+									types.AttrInlineLinkText: []interface{}{
 										types.StringElement{
 											Content: "as expected",
 										},
@@ -617,7 +617,7 @@ next lines`
 Test 2: link:/test/a%20b[with encoded space]`
 				expected := types.Paragraph{
 					Attributes: types.ElementAttributes{},
-					Lines: []types.InlineElements{
+					Lines: [][]interface{}{
 						{
 							types.StringElement{Content: "Test 1: link:/test/a b[with space]"},
 						},
@@ -632,7 +632,7 @@ Test 2: link:/test/a%20b[with encoded space]`
 									},
 								},
 								Attributes: types.ElementAttributes{
-									types.AttrInlineLinkText: types.InlineElements{
+									types.AttrInlineLinkText: []interface{}{
 										types.StringElement{
 											Content: "with encoded space",
 										},
@@ -651,7 +651,7 @@ Test 2: link:/test/a%20b[with encoded space]`
 					source := `a link to link:https://foo.bar[A, B, and C]`
 					expected := types.Paragraph{
 						Attributes: types.ElementAttributes{},
-						Lines: []types.InlineElements{
+						Lines: [][]interface{}{
 							{
 								types.StringElement{Content: "a link to "},
 								types.InlineLink{
@@ -663,7 +663,7 @@ Test 2: link:/test/a%20b[with encoded space]`
 										},
 									},
 									Attributes: types.ElementAttributes{
-										types.AttrInlineLinkText: types.InlineElements{
+										types.AttrInlineLinkText: []interface{}{
 											types.StringElement{
 												Content: "A, B, and C",
 											},
@@ -680,7 +680,7 @@ Test 2: link:/test/a%20b[with encoded space]`
 					source := `a link to link:https://foo.bar["A, B, and C"]`
 					expected := types.Paragraph{
 						Attributes: types.ElementAttributes{},
-						Lines: []types.InlineElements{
+						Lines: [][]interface{}{
 							{
 								types.StringElement{Content: "a link to "},
 								types.InlineLink{
@@ -692,7 +692,7 @@ Test 2: link:/test/a%20b[with encoded space]`
 										},
 									},
 									Attributes: types.ElementAttributes{
-										types.AttrInlineLinkText: types.InlineElements{
+										types.AttrInlineLinkText: []interface{}{
 											types.StringElement{
 												Content: "A, B, and C",
 											},
@@ -709,7 +709,7 @@ Test 2: link:/test/a%20b[with encoded space]`
 					source := `a link to link:https://foo.bar["A, B, and C", role=foo]`
 					expected := types.Paragraph{
 						Attributes: types.ElementAttributes{},
-						Lines: []types.InlineElements{
+						Lines: [][]interface{}{
 							{
 								types.StringElement{Content: "a link to "},
 								types.InlineLink{
@@ -721,7 +721,7 @@ Test 2: link:/test/a%20b[with encoded space]`
 										},
 									},
 									Attributes: types.ElementAttributes{
-										types.AttrInlineLinkText: types.InlineElements{
+										types.AttrInlineLinkText: []interface{}{
 											types.StringElement{
 												Content: "A, B, and C",
 											},
@@ -739,7 +739,7 @@ Test 2: link:/test/a%20b[with encoded space]`
 					source := `a link to link:https://foo.bar[A, B, and C, role=foo]`
 					expected := types.Paragraph{
 						Attributes: types.ElementAttributes{},
-						Lines: []types.InlineElements{
+						Lines: [][]interface{}{
 							{
 								types.StringElement{Content: "a link to "},
 								types.InlineLink{
@@ -751,7 +751,7 @@ Test 2: link:/test/a%20b[with encoded space]`
 										},
 									},
 									Attributes: types.ElementAttributes{
-										types.AttrInlineLinkText: types.InlineElements{
+										types.AttrInlineLinkText: []interface{}{
 											types.StringElement{
 												Content: "A",
 											},
@@ -786,7 +786,7 @@ a link to {url}`
 						types.BlankLine{},
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
-							Lines: []types.InlineElements{
+							Lines: [][]interface{}{
 								{
 									types.StringElement{Content: "a link to "},
 									types.DocumentAttributeSubstitution{
@@ -813,7 +813,7 @@ a link to {url}`
 						types.BlankLine{},
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
-							Lines: []types.InlineElements{
+							Lines: [][]interface{}{
 								{
 									types.StringElement{Content: "a link to "},
 									types.DocumentAttributeSubstitution{
@@ -846,7 +846,7 @@ a link to {scheme}://{path}`
 						types.BlankLine{},
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
-							Lines: []types.InlineElements{
+							Lines: [][]interface{}{
 								{
 									types.StringElement{
 										Content: "a link to ",
@@ -882,11 +882,11 @@ a link to {scheme}://{path}`
 				Elements: []interface{}{
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
-						Lines: []types.InlineElements{
+						Lines: [][]interface{}{
 							{
 								types.QuotedText{
 									Kind: types.Bold,
-									Elements: types.InlineElements{
+									Elements: []interface{}{
 										types.InlineLink{
 											Location: types.Location{
 												Elements: []interface{}{
@@ -932,7 +932,7 @@ a link to {url}`
 						},
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
-							Lines: []types.InlineElements{
+							Lines: [][]interface{}{
 								{
 									types.StringElement{Content: "a link to "},
 									types.InlineLink{
@@ -975,7 +975,7 @@ a link to {scheme}://{path} and https://foo.baz`
 						},
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
-							Lines: []types.InlineElements{
+							Lines: [][]interface{}{
 								{
 									types.StringElement{Content: "a link to "},
 									types.InlineLink{
@@ -1034,7 +1034,7 @@ a link to {scheme}://{path} and https://foo.baz`
 						},
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
-							Lines: []types.InlineElements{
+							Lines: [][]interface{}{
 								{
 									types.StringElement{Content: "a link to "},
 									types.InlineLink{
@@ -1074,7 +1074,7 @@ a link to {scheme}://{path} and https://foo.baz`
 :scheme: https
 :path: foo.bar`
 
-				title := types.InlineElements{
+				title := []interface{}{
 					types.StringElement{Content: "a title to "},
 					types.InlineLink{
 						Attributes: types.ElementAttributes{},
@@ -1135,7 +1135,7 @@ a link to {scheme}://{path} and https://foo.baz`
 
 == a title to {scheme}://{path} and https://foo.baz`
 
-				title := types.InlineElements{
+				title := []interface{}{
 					types.StringElement{Content: "a title to "},
 					types.InlineLink{
 						Attributes: types.ElementAttributes{},

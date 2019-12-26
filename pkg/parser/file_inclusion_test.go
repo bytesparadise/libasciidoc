@@ -116,7 +116,7 @@ var _ = Describe("file inclusions - draft with preprocessing", func() {
 						types.AttrCustomID: false,
 					},
 					Level: 0,
-					Title: types.InlineElements{
+					Title: []interface{}{
 						types.StringElement{
 							Content: "Chapter A",
 						},
@@ -126,7 +126,7 @@ var _ = Describe("file inclusions - draft with preprocessing", func() {
 				types.BlankLine{},
 				types.Paragraph{
 					Attributes: types.ElementAttributes{},
-					Lines: []types.InlineElements{
+					Lines: [][]interface{}{
 						{
 							types.StringElement{
 								Content: "content",
@@ -153,7 +153,7 @@ var _ = Describe("file inclusions - draft with preprocessing", func() {
 						types.AttrCustomID: false,
 					},
 					Level: 0,
-					Title: types.InlineElements{
+					Title: []interface{}{
 						types.StringElement{
 							Content: "Chapter A",
 						},
@@ -163,7 +163,7 @@ var _ = Describe("file inclusions - draft with preprocessing", func() {
 				types.BlankLine{},
 				types.Paragraph{
 					Attributes: types.ElementAttributes{},
-					Lines: []types.InlineElements{
+					Lines: [][]interface{}{
 						{
 							types.StringElement{
 								Content: "content",
@@ -190,7 +190,7 @@ var _ = Describe("file inclusions - draft with preprocessing", func() {
 						types.AttrCustomID: false,
 					},
 					Level: 1,
-					Title: types.InlineElements{
+					Title: []interface{}{
 						types.StringElement{
 							Content: "Chapter A",
 						},
@@ -200,7 +200,7 @@ var _ = Describe("file inclusions - draft with preprocessing", func() {
 				types.BlankLine{},
 				types.Paragraph{
 					Attributes: types.ElementAttributes{},
-					Lines: []types.InlineElements{
+					Lines: [][]interface{}{
 						{
 							types.StringElement{
 								Content: "content",
@@ -226,7 +226,7 @@ var _ = Describe("file inclusions - draft with preprocessing", func() {
 						types.AttrCustomID: false,
 					},
 					Level: 0,
-					Title: types.InlineElements{
+					Title: []interface{}{
 						types.StringElement{
 							Content: "Chapter A",
 						},
@@ -236,7 +236,7 @@ var _ = Describe("file inclusions - draft with preprocessing", func() {
 				types.BlankLine{},
 				types.Paragraph{
 					Attributes: types.ElementAttributes{},
-					Lines: []types.InlineElements{
+					Lines: [][]interface{}{
 						{
 							types.StringElement{
 								Content: "content",
@@ -267,7 +267,7 @@ include::{includedir}/chapter-a.adoc[]`
 						types.AttrCustomID: false,
 					},
 					Level: 0,
-					Title: types.InlineElements{
+					Title: []interface{}{
 						types.StringElement{
 							Content: "Chapter A",
 						},
@@ -277,7 +277,7 @@ include::{includedir}/chapter-a.adoc[]`
 				types.BlankLine{},
 				types.Paragraph{
 					Attributes: types.ElementAttributes{},
-					Lines: []types.InlineElements{
+					Lines: [][]interface{}{
 						{
 							types.StringElement{
 								Content: "content",
@@ -303,11 +303,11 @@ include::{includedir}/include.foo[]`
 				types.BlankLine{},
 				types.Paragraph{
 					Attributes: types.ElementAttributes{},
-					Lines: []types.InlineElements{
+					Lines: [][]interface{}{
 						{
 							types.QuotedText{
 								Kind: types.Bold,
-								Elements: types.InlineElements{
+								Elements: []interface{}{
 									types.StringElement{
 										Content: "some strong content",
 									},
@@ -319,7 +319,7 @@ include::{includedir}/include.foo[]`
 				types.BlankLine{},
 				types.Paragraph{
 					Attributes: types.ElementAttributes{},
-					Lines: []types.InlineElements{
+					Lines: [][]interface{}{
 						{
 							types.StringElement{
 								Content: "include::hello_world.go.txt[]",
@@ -342,7 +342,7 @@ include::{includedir}/include.foo[]`
 						types.AttrID:       "grandchild_title",
 					},
 					Level: 1,
-					Title: types.InlineElements{
+					Title: []interface{}{
 						types.StringElement{
 							Content: "grandchild title",
 						},
@@ -352,7 +352,7 @@ include::{includedir}/include.foo[]`
 				types.BlankLine{},
 				types.Paragraph{
 					Attributes: types.ElementAttributes{},
-					Lines: []types.InlineElements{
+					Lines: [][]interface{}{
 						{
 							types.StringElement{
 								Content: "first line of grandchild",
@@ -363,7 +363,7 @@ include::{includedir}/include.foo[]`
 				types.BlankLine{},
 				types.Paragraph{
 					Attributes: types.ElementAttributes{},
-					Lines: []types.InlineElements{
+					Lines: [][]interface{}{
 						{
 							types.StringElement{
 								Content: "last line of grandchild",
@@ -386,7 +386,7 @@ include::{includedir}/include.foo[]`
 						types.AttrID:       "grandchild_title",
 					},
 					Level: 2,
-					Title: types.InlineElements{
+					Title: []interface{}{
 						types.StringElement{
 							Content: "grandchild title",
 						},
@@ -396,7 +396,7 @@ include::{includedir}/include.foo[]`
 				types.BlankLine{},
 				types.Paragraph{
 					Attributes: types.ElementAttributes{},
-					Lines: []types.InlineElements{
+					Lines: [][]interface{}{
 						{
 							types.StringElement{
 								Content: "first line of grandchild",
@@ -407,7 +407,7 @@ include::{includedir}/include.foo[]`
 				types.BlankLine{},
 				types.Paragraph{
 					Attributes: types.ElementAttributes{},
-					Lines: []types.InlineElements{
+					Lines: [][]interface{}{
 						{
 							types.StringElement{
 								Content: "last line of grandchild",
@@ -430,7 +430,7 @@ include::{includedir}/include.foo[]`
 						types.AttrID:       "grandchild_title",
 					},
 					Level: 0,
-					Title: types.InlineElements{
+					Title: []interface{}{
 						types.StringElement{
 							Content: "grandchild title",
 						},
@@ -440,7 +440,7 @@ include::{includedir}/include.foo[]`
 				types.BlankLine{},
 				types.Paragraph{
 					Attributes: types.ElementAttributes{},
-					Lines: []types.InlineElements{
+					Lines: [][]interface{}{
 						{
 							types.StringElement{
 								Content: "first line of grandchild",
@@ -451,7 +451,7 @@ include::{includedir}/include.foo[]`
 				types.BlankLine{},
 				types.Paragraph{
 					Attributes: types.ElementAttributes{},
-					Lines: []types.InlineElements{
+					Lines: [][]interface{}{
 						{
 							types.StringElement{
 								Content: "last line of grandchild",
@@ -474,7 +474,7 @@ include::{includedir}/include.foo[]`
 						types.AttrID:       "parent_title",
 					},
 					Level: 1, // here the level is changed from `0` to `1` since `root` doc has a `leveloffset=+1` during its inclusion
-					Title: types.InlineElements{
+					Title: []interface{}{
 						types.StringElement{
 							Content: "parent title",
 						},
@@ -484,7 +484,7 @@ include::{includedir}/include.foo[]`
 				types.BlankLine{},
 				types.Paragraph{
 					Attributes: types.ElementAttributes{},
-					Lines: []types.InlineElements{
+					Lines: [][]interface{}{
 						{
 							types.StringElement{
 								Content: "first line of parent",
@@ -495,7 +495,7 @@ include::{includedir}/include.foo[]`
 				types.BlankLine{},
 				types.Paragraph{
 					Attributes: types.ElementAttributes{},
-					Lines: []types.InlineElements{
+					Lines: [][]interface{}{
 						{
 							types.StringElement{
 								Content: "child preamble",
@@ -510,7 +510,7 @@ include::{includedir}/include.foo[]`
 						types.AttrID:       "child_section_1",
 					},
 					Level: 3, // here the level is changed from `1` to `3` since both `root` and `parent` docs have a `leveloffset=+1` during their inclusion
-					Title: types.InlineElements{
+					Title: []interface{}{
 						types.StringElement{
 							Content: "child section 1",
 						},
@@ -520,7 +520,7 @@ include::{includedir}/include.foo[]`
 				types.BlankLine{},
 				types.Paragraph{
 					Attributes: types.ElementAttributes{},
-					Lines: []types.InlineElements{
+					Lines: [][]interface{}{
 						{
 							types.StringElement{
 								Content: "first line of child",
@@ -535,7 +535,7 @@ include::{includedir}/include.foo[]`
 						types.AttrID:       "grandchild_title",
 					},
 					Level: 4, // here the level is changed from `1` to `4` since both `root`, `parent` and `child` docs have a `leveloffset=+1` during their inclusion
-					Title: types.InlineElements{
+					Title: []interface{}{
 						types.StringElement{
 							Content: "grandchild title",
 						},
@@ -545,7 +545,7 @@ include::{includedir}/include.foo[]`
 				types.BlankLine{},
 				types.Paragraph{
 					Attributes: types.ElementAttributes{},
-					Lines: []types.InlineElements{
+					Lines: [][]interface{}{
 						{
 							types.StringElement{
 								Content: "first line of grandchild",
@@ -556,7 +556,7 @@ include::{includedir}/include.foo[]`
 				types.BlankLine{},
 				types.Paragraph{
 					Attributes: types.ElementAttributes{},
-					Lines: []types.InlineElements{
+					Lines: [][]interface{}{
 						{
 							types.StringElement{
 								Content: "last line of grandchild",
@@ -571,7 +571,7 @@ include::{includedir}/include.foo[]`
 						types.AttrID:       "child_section_2",
 					},
 					Level: 4, // here the level is changed from `2` to `4` since both `root` and `parent` docs have a `leveloffset=+1` during their inclusion
-					Title: types.InlineElements{
+					Title: []interface{}{
 						types.StringElement{
 							Content: "child section 2",
 						},
@@ -581,7 +581,7 @@ include::{includedir}/include.foo[]`
 				types.BlankLine{},
 				types.Paragraph{
 					Attributes: types.ElementAttributes{},
-					Lines: []types.InlineElements{
+					Lines: [][]interface{}{
 						{
 							types.StringElement{
 								Content: "last line of child",
@@ -592,7 +592,7 @@ include::{includedir}/include.foo[]`
 				types.BlankLine{},
 				types.Paragraph{
 					Attributes: types.ElementAttributes{},
-					Lines: []types.InlineElements{
+					Lines: [][]interface{}{
 						{
 							types.StringElement{
 								Content: "last line of parent",
@@ -615,7 +615,7 @@ include::{includedir}/include.foo[]`
 						types.AttrID:       "parent_title",
 					},
 					Level: 1, // here the level is offset by `+1` as per root doc attribute in the `include` macro
-					Title: types.InlineElements{
+					Title: []interface{}{
 						types.StringElement{
 							Content: "parent title",
 						},
@@ -625,7 +625,7 @@ include::{includedir}/include.foo[]`
 				types.BlankLine{},
 				types.Paragraph{
 					Attributes: types.ElementAttributes{},
-					Lines: []types.InlineElements{
+					Lines: [][]interface{}{
 						{
 							types.StringElement{
 								Content: "first line of parent",
@@ -636,7 +636,7 @@ include::{includedir}/include.foo[]`
 				types.BlankLine{},
 				types.Paragraph{
 					Attributes: types.ElementAttributes{},
-					Lines: []types.InlineElements{
+					Lines: [][]interface{}{
 						{
 							types.StringElement{
 								Content: "child preamble",
@@ -651,7 +651,7 @@ include::{includedir}/include.foo[]`
 						types.AttrID:       "child_section_1",
 					},
 					Level: 3, // here level is forced to "absolute 3"
-					Title: types.InlineElements{
+					Title: []interface{}{
 						types.StringElement{
 							Content: "child section 1",
 						},
@@ -661,7 +661,7 @@ include::{includedir}/include.foo[]`
 				types.BlankLine{},
 				types.Paragraph{
 					Attributes: types.ElementAttributes{},
-					Lines: []types.InlineElements{
+					Lines: [][]interface{}{
 						{
 							types.StringElement{
 								Content: "first line of child",
@@ -676,7 +676,7 @@ include::{includedir}/include.foo[]`
 						types.AttrID:       "grandchild_title",
 					},
 					Level: 4, // here the level is set to `4` because it was its parent was offset by 3...
-					Title: types.InlineElements{
+					Title: []interface{}{
 						types.StringElement{
 							Content: "grandchild title",
 						},
@@ -686,7 +686,7 @@ include::{includedir}/include.foo[]`
 				types.BlankLine{},
 				types.Paragraph{
 					Attributes: types.ElementAttributes{},
-					Lines: []types.InlineElements{
+					Lines: [][]interface{}{
 						{
 							types.StringElement{
 								Content: "first line of grandchild",
@@ -697,7 +697,7 @@ include::{includedir}/include.foo[]`
 				types.BlankLine{},
 				types.Paragraph{
 					Attributes: types.ElementAttributes{},
-					Lines: []types.InlineElements{
+					Lines: [][]interface{}{
 						{
 							types.StringElement{
 								Content: "last line of grandchild",
@@ -712,7 +712,7 @@ include::{includedir}/include.foo[]`
 						types.AttrID:       "child_section_2",
 					},
 					Level: 4, // here the level is set to `4` because it the first section was moved from `1` to `3` so we use the same offset here
-					Title: types.InlineElements{
+					Title: []interface{}{
 						types.StringElement{
 							Content: "child section 2",
 						},
@@ -722,7 +722,7 @@ include::{includedir}/include.foo[]`
 				types.BlankLine{},
 				types.Paragraph{
 					Attributes: types.ElementAttributes{},
-					Lines: []types.InlineElements{
+					Lines: [][]interface{}{
 						{
 							types.StringElement{
 								Content: "last line of child",
@@ -733,7 +733,7 @@ include::{includedir}/include.foo[]`
 				types.BlankLine{},
 				types.Paragraph{
 					Attributes: types.ElementAttributes{},
-					Lines: []types.InlineElements{
+					Lines: [][]interface{}{
 						{
 							types.StringElement{
 								Content: "last line of parent",
@@ -760,7 +760,7 @@ include::{includedir}/include.foo[]`
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{
 											Content: "= Chapter A",
@@ -771,7 +771,7 @@ include::{includedir}/include.foo[]`
 							types.BlankLine{},
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{
 											Content: "content",
@@ -798,7 +798,7 @@ include::../../test/includes/chapter-a.adoc[]
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{
 											Content: "= Chapter A",
@@ -809,7 +809,7 @@ include::../../test/includes/chapter-a.adoc[]
 							types.BlankLine{},
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{
 											Content: "content",
@@ -836,7 +836,7 @@ include::../../test/includes/chapter-a.adoc[]
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{
 											Content: "= Chapter A",
@@ -847,7 +847,7 @@ include::../../test/includes/chapter-a.adoc[]
 							types.BlankLine{},
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{
 											Content: "content",
@@ -874,7 +874,7 @@ ____`
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{
 											Content: "= Chapter A",
@@ -885,7 +885,7 @@ ____`
 							types.BlankLine{},
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{
 											Content: "content",
@@ -915,7 +915,7 @@ ____`
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{
 											Content: "= Chapter A",
@@ -926,7 +926,7 @@ ____`
 							types.BlankLine{},
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{
 											Content: "content",
@@ -953,7 +953,7 @@ include::../../test/includes/chapter-a.adoc[]
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{
 											Content: "= Chapter A",
@@ -964,7 +964,7 @@ include::../../test/includes/chapter-a.adoc[]
 							types.BlankLine{},
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{
 											Content: "content",
@@ -992,7 +992,7 @@ include::../../test/includes/chapter-a.adoc[]
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{
 											Content: "= Chapter A",
@@ -1003,7 +1003,7 @@ include::../../test/includes/chapter-a.adoc[]
 							types.BlankLine{},
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{
 											Content: "content",
@@ -1033,7 +1033,7 @@ include::../../test/includes/chapter-a.adoc[]
 								types.AttrCustomID: false,
 							},
 							Level: 0,
-							Title: types.InlineElements{
+							Title: []interface{}{
 								types.StringElement{
 									Content: "Chapter A",
 								},
@@ -1055,7 +1055,7 @@ include::../../test/includes/chapter-a.adoc[]
 								types.AttrID:       "chapter_a",
 								types.AttrCustomID: false,
 							},
-							Title: types.InlineElements{
+							Title: []interface{}{
 								types.StringElement{
 									Content: "Chapter A",
 								},
@@ -1083,7 +1083,7 @@ include::../../test/includes/chapter-a.adoc[]
 									},
 								},
 							},
-							Title: types.InlineElements{
+							Title: []interface{}{
 								types.StringElement{
 									Content: "Chapter A",
 								},
@@ -1105,7 +1105,7 @@ include::../../test/includes/chapter-a.adoc[]
 								types.AttrID:       "chapter_a",
 								types.AttrCustomID: false,
 							},
-							Title: types.InlineElements{
+							Title: []interface{}{
 								types.StringElement{
 									Content: "Chapter A",
 								},
@@ -1115,7 +1115,7 @@ include::../../test/includes/chapter-a.adoc[]
 						types.BlankLine{},
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
-							Lines: []types.InlineElements{
+							Lines: [][]interface{}{
 								{
 									types.StringElement{
 										Content: "content",
@@ -1138,7 +1138,7 @@ include::../../test/includes/chapter-a.adoc[]
 								types.AttrID:       "chapter_a",
 								types.AttrCustomID: false,
 							},
-							Title: types.InlineElements{
+							Title: []interface{}{
 								types.StringElement{
 									Content: "Chapter A",
 								},
@@ -1165,7 +1165,7 @@ include::../../test/includes/chapter-a.adoc[]
 								types.AttrID:       "chapter_a",
 								types.AttrCustomID: false,
 							},
-							Title: types.InlineElements{
+							Title: []interface{}{
 								types.StringElement{
 									Content: "Chapter A",
 								},
@@ -1189,7 +1189,7 @@ include::../../test/includes/chapter-a.adoc[]
 								types.AttrID:       "chapter_a",
 								types.AttrCustomID: false,
 							},
-							Title: types.InlineElements{
+							Title: []interface{}{
 								types.StringElement{
 									Content: "Chapter A",
 								},
@@ -1218,7 +1218,7 @@ include::../../test/includes/chapter-a.adoc[]
 									},
 								},
 							},
-							Title: types.InlineElements{
+							Title: []interface{}{
 								types.StringElement{
 									Content: "Chapter A",
 								},
@@ -1240,7 +1240,7 @@ include::../../test/includes/chapter-a.adoc[]
 								types.AttrID:       "chapter_a",
 								types.AttrCustomID: false,
 							},
-							Title: types.InlineElements{
+							Title: []interface{}{
 								types.StringElement{
 									Content: "Chapter A",
 								},
@@ -1250,7 +1250,7 @@ include::../../test/includes/chapter-a.adoc[]
 						types.BlankLine{},
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
-							Lines: []types.InlineElements{
+							Lines: [][]interface{}{
 								{
 									types.StringElement{
 										Content: "content",
@@ -1273,7 +1273,7 @@ include::../../test/includes/chapter-a.adoc[]
 								types.AttrID:       "chapter_a",
 								types.AttrCustomID: false,
 							},
-							Title: types.InlineElements{
+							Title: []interface{}{
 								types.StringElement{
 									Content: "Chapter A",
 								},
@@ -1283,7 +1283,7 @@ include::../../test/includes/chapter-a.adoc[]
 						types.BlankLine{},
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
-							Lines: []types.InlineElements{
+							Lines: [][]interface{}{
 								{
 									types.StringElement{
 										Content: "content",
@@ -1307,7 +1307,7 @@ include::../../test/includes/chapter-a.adoc[]
 								types.AttrCustomID: false,
 							},
 							Level: 1,
-							Title: types.InlineElements{
+							Title: []interface{}{
 								types.StringElement{
 									Content: "Section 1",
 								},
@@ -1335,7 +1335,7 @@ include::../../test/includes/chapter-a.adoc[]
 							types.AttrCustomID: false,
 						},
 						Level: 1,
-						Title: types.InlineElements{
+						Title: []interface{}{
 							types.StringElement{
 								Content: "Section 1",
 							},
@@ -1361,7 +1361,7 @@ include::../../test/includes/chapter-a.adoc[]
 							types.AttrID:       "section_1",
 						},
 						Level: 1,
-						Title: types.InlineElements{
+						Title: []interface{}{
 							types.StringElement{
 								Content: "Section 1",
 							},
@@ -1371,7 +1371,7 @@ include::../../test/includes/chapter-a.adoc[]
 					types.BlankLine{},
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
-						Lines: []types.InlineElements{
+						Lines: [][]interface{}{
 							{
 								types.StringElement{
 									Content: "content",
@@ -1397,7 +1397,7 @@ include::../../test/includes/chapter-a.adoc[]
 					types.BlankLine{},
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
-						Lines: []types.InlineElements{
+						Lines: [][]interface{}{
 							{
 								types.StringElement{
 									Content: "content",
@@ -1409,7 +1409,7 @@ include::../../test/includes/chapter-a.adoc[]
 					types.BlankLine{},
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
-						Lines: []types.InlineElements{
+						Lines: [][]interface{}{
 							{
 								types.StringElement{
 									Content: "end",
@@ -1457,7 +1457,7 @@ include::../../test/includes/chapter-a.adoc[]
 							types.AttrCustomID: false,
 						},
 						Level: 1,
-						Title: types.InlineElements{
+						Title: []interface{}{
 							types.StringElement{
 								Content: "Section 1",
 							},
@@ -1467,7 +1467,7 @@ include::../../test/includes/chapter-a.adoc[]
 					types.BlankLine{},
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
-						Lines: []types.InlineElements{
+						Lines: [][]interface{}{
 							{
 								types.StringElement{
 									Content: "content",
@@ -1479,7 +1479,7 @@ include::../../test/includes/chapter-a.adoc[]
 					types.BlankLine{},
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
-						Lines: []types.InlineElements{
+						Lines: [][]interface{}{
 							{
 								types.StringElement{
 									Content: "end",
@@ -1504,7 +1504,7 @@ include::../../test/includes/chapter-a.adoc[]
 								types.AttrID:       "section_1",
 							},
 							Level: 1,
-							Title: types.InlineElements{
+							Title: []interface{}{
 								types.StringElement{
 									Content: "Section 1",
 								},
@@ -1514,7 +1514,7 @@ include::../../test/includes/chapter-a.adoc[]
 						types.BlankLine{},
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
-							Lines: []types.InlineElements{
+							Lines: [][]interface{}{
 								{
 									types.StringElement{
 										Content: "content",
@@ -1526,7 +1526,7 @@ include::../../test/includes/chapter-a.adoc[]
 						types.BlankLine{},
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
-							Lines: []types.InlineElements{
+							Lines: [][]interface{}{
 								{
 									types.StringElement{
 										Content: "end",
@@ -1549,7 +1549,7 @@ include::../../test/includes/chapter-a.adoc[]
 								types.AttrCustomID: false,
 							},
 							Level: 1,
-							Title: types.InlineElements{
+							Title: []interface{}{
 								types.StringElement{
 									Content: "Section 1",
 								},
@@ -1559,7 +1559,7 @@ include::../../test/includes/chapter-a.adoc[]
 						types.BlankLine{},
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
-							Lines: []types.InlineElements{
+							Lines: [][]interface{}{
 								{
 									types.StringElement{
 										Content: "content",
@@ -1583,7 +1583,7 @@ include::../../test/includes/chapter-a.adoc[]
 								types.AttrID:       "section_1",
 							},
 							Level: 1,
-							Title: types.InlineElements{
+							Title: []interface{}{
 								types.StringElement{
 									Content: "Section 1",
 								},
@@ -1593,7 +1593,7 @@ include::../../test/includes/chapter-a.adoc[]
 						types.BlankLine{},
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
-							Lines: []types.InlineElements{
+							Lines: [][]interface{}{
 								{
 									types.StringElement{
 										Content: "content",
@@ -1605,7 +1605,7 @@ include::../../test/includes/chapter-a.adoc[]
 						types.BlankLine{},
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
-							Lines: []types.InlineElements{
+							Lines: [][]interface{}{
 								{
 									types.StringElement{
 										Content: "end",
@@ -1628,7 +1628,7 @@ include::../../test/includes/chapter-a.adoc[]
 								types.AttrID:       "section_1",
 							},
 							Level: 1,
-							Title: types.InlineElements{
+							Title: []interface{}{
 								types.StringElement{
 									Content: "Section 1",
 								},
@@ -1651,7 +1651,7 @@ include::../../test/includes/chapter-a.adoc[]
 								types.AttrID:       "section_1",
 							},
 							Level: 1,
-							Title: types.InlineElements{
+							Title: []interface{}{
 								types.StringElement{
 									Content: "Section 1",
 								},
@@ -1674,7 +1674,7 @@ include::../../test/includes/chapter-a.adoc[]
 								types.AttrID:       "section_1",
 							},
 							Level: 1,
-							Title: types.InlineElements{
+							Title: []interface{}{
 								types.StringElement{
 									Content: "Section 1",
 								},
@@ -1685,7 +1685,7 @@ include::../../test/includes/chapter-a.adoc[]
 						types.BlankLine{},
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
-							Lines: []types.InlineElements{
+							Lines: [][]interface{}{
 								{
 									types.StringElement{
 										Content: "end",
@@ -1705,7 +1705,7 @@ include::../../test/includes/chapter-a.adoc[]
 						types.BlankLine{},
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
-							Lines: []types.InlineElements{
+							Lines: [][]interface{}{
 								{
 									types.StringElement{
 										Content: "end",
@@ -1731,7 +1731,7 @@ include::../../test/includes/chapter-a.adoc[]
 				Blocks: []interface{}{
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
-						Lines: []types.InlineElements{
+						Lines: [][]interface{}{
 							{
 								types.StringElement{
 									Content: "Unresolved directive in test.adoc - include::{unknown}/unknown.adoc[leveloffset=+1]",
@@ -1760,7 +1760,7 @@ include::../../test/includes/chapter-a.adoc[]
 				Blocks: []interface{}{
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
-						Lines: []types.InlineElements{
+						Lines: [][]interface{}{
 							{
 								types.StringElement{
 									Content: "Unresolved directive in test.adoc - include::../../test/includes/unknown.adoc[leveloffset=+1]",
@@ -1795,7 +1795,7 @@ include::../../test/includes/unknown.adoc[leveloffset=+1]
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{
 											Content: "Unresolved directive in test.adoc - include::../../test/includes/unknown.adoc[leveloffset=+1]",
@@ -1836,7 +1836,7 @@ include::{includedir}/grandchild-include.adoc[]`
 							types.AttrCustomID: false,
 						},
 						Level: 1,
-						Title: types.InlineElements{
+						Title: []interface{}{
 							types.StringElement{
 								Content: "grandchild title",
 							},
@@ -1846,7 +1846,7 @@ include::{includedir}/grandchild-include.adoc[]`
 					types.BlankLine{},
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
-						Lines: []types.InlineElements{
+						Lines: [][]interface{}{
 							{
 								types.StringElement{
 									Content: "first line of grandchild",
@@ -1857,7 +1857,7 @@ include::{includedir}/grandchild-include.adoc[]`
 					types.BlankLine{},
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
-						Lines: []types.InlineElements{
+						Lines: [][]interface{}{
 							{
 								types.StringElement{
 									Content: "last line of grandchild",
@@ -1887,7 +1887,7 @@ include::{includedir}/grandchild-include.adoc[]`
 							types.AttrCustomID: false,
 						},
 						Level: 1,
-						Title: types.InlineElements{
+						Title: []interface{}{
 							types.StringElement{
 								Content: "grandchild title",
 							},
@@ -1897,7 +1897,7 @@ include::{includedir}/grandchild-include.adoc[]`
 					types.BlankLine{},
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
-						Lines: []types.InlineElements{
+						Lines: [][]interface{}{
 							{
 								types.StringElement{
 									Content: "first line of grandchild",
@@ -1908,7 +1908,7 @@ include::{includedir}/grandchild-include.adoc[]`
 					types.BlankLine{},
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
-						Lines: []types.InlineElements{
+						Lines: [][]interface{}{
 							{
 								types.StringElement{
 									Content: "last line of grandchild",
@@ -1940,7 +1940,7 @@ include::{includedir}/grandchild-include.adoc[]
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{
 											Content: "== grandchild title",
@@ -1951,7 +1951,7 @@ include::{includedir}/grandchild-include.adoc[]
 							types.BlankLine{},
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{
 											Content: "first line of grandchild",
@@ -1962,7 +1962,7 @@ include::{includedir}/grandchild-include.adoc[]
 							types.BlankLine{},
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{
 											Content: "last line of grandchild",
@@ -1993,7 +1993,7 @@ include::../../test/includes/hello_world.go.txt[]
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{
 											Content: `package includes`,
@@ -2004,7 +2004,7 @@ include::../../test/includes/hello_world.go.txt[]
 							types.BlankLine{},
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{
 											Content: `import "fmt"`,
@@ -2015,7 +2015,7 @@ include::../../test/includes/hello_world.go.txt[]
 							types.BlankLine{},
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{
 											Content: `func helloworld() {`,
@@ -2053,7 +2053,7 @@ include::../../test/includes/hello_world.go.txt[lines=1]
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{
 											Content: `package includes`,
@@ -2077,22 +2077,22 @@ var _ = Describe("file inclusions - final document", func() {
 		expected := types.Document{
 			Attributes: types.DocumentAttributes{},
 			ElementReferences: types.ElementReferences{
-				"parent_title": types.InlineElements{
+				"parent_title": []interface{}{
 					types.StringElement{
 						Content: "parent title",
 					},
 				},
-				"child_section_1": types.InlineElements{
+				"child_section_1": []interface{}{
 					types.StringElement{
 						Content: "child section 1",
 					},
 				},
-				"child_section_2": types.InlineElements{
+				"child_section_2": []interface{}{
 					types.StringElement{
 						Content: "child section 2",
 					},
 				},
-				"grandchild_title": types.InlineElements{
+				"grandchild_title": []interface{}{
 					types.StringElement{
 						Content: "grandchild title",
 					},
@@ -2107,7 +2107,7 @@ var _ = Describe("file inclusions - final document", func() {
 						types.AttrID:       "parent_title",
 					},
 					Level: 1, // here the level is changed from `0` to `1` since `root` doc has a `leveloffset=+1` during its inclusion
-					Title: types.InlineElements{
+					Title: []interface{}{
 						types.StringElement{
 							Content: "parent title",
 						},
@@ -2115,7 +2115,7 @@ var _ = Describe("file inclusions - final document", func() {
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
-							Lines: []types.InlineElements{
+							Lines: [][]interface{}{
 								{
 									types.StringElement{
 										Content: "first line of parent",
@@ -2125,7 +2125,7 @@ var _ = Describe("file inclusions - final document", func() {
 						},
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
-							Lines: []types.InlineElements{
+							Lines: [][]interface{}{
 								{
 									types.StringElement{
 										Content: "child preamble",
@@ -2139,7 +2139,7 @@ var _ = Describe("file inclusions - final document", func() {
 								types.AttrID:       "child_section_1",
 							},
 							Level: 3, // here the level is changed from `1` to `3` since both `root` and `parent` docs have a `leveloffset=+1` during their inclusion
-							Title: types.InlineElements{
+							Title: []interface{}{
 								types.StringElement{
 									Content: "child section 1",
 								},
@@ -2147,7 +2147,7 @@ var _ = Describe("file inclusions - final document", func() {
 							Elements: []interface{}{
 								types.Paragraph{
 									Attributes: types.ElementAttributes{},
-									Lines: []types.InlineElements{
+									Lines: [][]interface{}{
 										{
 											types.StringElement{
 												Content: "first line of child",
@@ -2161,7 +2161,7 @@ var _ = Describe("file inclusions - final document", func() {
 										types.AttrID:       "grandchild_title",
 									},
 									Level: 4, // here the level is changed from `1` to `4` since both `root`, `parent` and `child` docs have a `leveloffset=+1` during their inclusion
-									Title: types.InlineElements{
+									Title: []interface{}{
 										types.StringElement{
 											Content: "grandchild title",
 										},
@@ -2169,7 +2169,7 @@ var _ = Describe("file inclusions - final document", func() {
 									Elements: []interface{}{
 										types.Paragraph{
 											Attributes: types.ElementAttributes{},
-											Lines: []types.InlineElements{
+											Lines: [][]interface{}{
 												{
 													types.StringElement{
 														Content: "first line of grandchild",
@@ -2179,7 +2179,7 @@ var _ = Describe("file inclusions - final document", func() {
 										},
 										types.Paragraph{
 											Attributes: types.ElementAttributes{},
-											Lines: []types.InlineElements{
+											Lines: [][]interface{}{
 												{
 													types.StringElement{
 														Content: "last line of grandchild",
@@ -2195,7 +2195,7 @@ var _ = Describe("file inclusions - final document", func() {
 										types.AttrID:       "child_section_2",
 									},
 									Level: 4, // here the level is changed from `2` to `4` since both `root` and `parent` docs have a `leveloffset=+1` during their inclusion
-									Title: types.InlineElements{
+									Title: []interface{}{
 										types.StringElement{
 											Content: "child section 2",
 										},
@@ -2203,7 +2203,7 @@ var _ = Describe("file inclusions - final document", func() {
 									Elements: []interface{}{
 										types.Paragraph{
 											Attributes: types.ElementAttributes{},
-											Lines: []types.InlineElements{
+											Lines: [][]interface{}{
 												{
 													types.StringElement{
 														Content: "last line of child",
@@ -2213,7 +2213,7 @@ var _ = Describe("file inclusions - final document", func() {
 										},
 										types.Paragraph{
 											Attributes: types.ElementAttributes{},
-											Lines: []types.InlineElements{
+											Lines: [][]interface{}{
 												{
 													types.StringElement{
 														Content: "last line of parent",
@@ -2237,22 +2237,22 @@ var _ = Describe("file inclusions - final document", func() {
 		expected := types.Document{
 			Attributes: types.DocumentAttributes{},
 			ElementReferences: types.ElementReferences{
-				"parent_title": types.InlineElements{
+				"parent_title": []interface{}{
 					types.StringElement{
 						Content: "parent title",
 					},
 				},
-				"child_section_1": types.InlineElements{
+				"child_section_1": []interface{}{
 					types.StringElement{
 						Content: "child section 1",
 					},
 				},
-				"child_section_2": types.InlineElements{
+				"child_section_2": []interface{}{
 					types.StringElement{
 						Content: "child section 2",
 					},
 				},
-				"grandchild_title": types.InlineElements{
+				"grandchild_title": []interface{}{
 					types.StringElement{
 						Content: "grandchild title",
 					},
@@ -2267,7 +2267,7 @@ var _ = Describe("file inclusions - final document", func() {
 						types.AttrID:       "parent_title",
 					},
 					Level: 1, // here the level is offset by `+1` as per root doc attribute in the `include` macro
-					Title: types.InlineElements{
+					Title: []interface{}{
 						types.StringElement{
 							Content: "parent title",
 						},
@@ -2275,7 +2275,7 @@ var _ = Describe("file inclusions - final document", func() {
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
-							Lines: []types.InlineElements{
+							Lines: [][]interface{}{
 								{
 									types.StringElement{
 										Content: "first line of parent",
@@ -2285,7 +2285,7 @@ var _ = Describe("file inclusions - final document", func() {
 						},
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
-							Lines: []types.InlineElements{
+							Lines: [][]interface{}{
 								{
 									types.StringElement{
 										Content: "child preamble",
@@ -2299,7 +2299,7 @@ var _ = Describe("file inclusions - final document", func() {
 								types.AttrID:       "child_section_1",
 							},
 							Level: 3, // here level is forced to "absolute 3"
-							Title: types.InlineElements{
+							Title: []interface{}{
 								types.StringElement{
 									Content: "child section 1",
 								},
@@ -2307,7 +2307,7 @@ var _ = Describe("file inclusions - final document", func() {
 							Elements: []interface{}{
 								types.Paragraph{
 									Attributes: types.ElementAttributes{},
-									Lines: []types.InlineElements{
+									Lines: [][]interface{}{
 										{
 											types.StringElement{
 												Content: "first line of child",
@@ -2321,7 +2321,7 @@ var _ = Describe("file inclusions - final document", func() {
 										types.AttrID:       "grandchild_title",
 									},
 									Level: 4, // here the level is set to `4` because it was its parent was offset by 3...
-									Title: types.InlineElements{
+									Title: []interface{}{
 										types.StringElement{
 											Content: "grandchild title",
 										},
@@ -2329,7 +2329,7 @@ var _ = Describe("file inclusions - final document", func() {
 									Elements: []interface{}{
 										types.Paragraph{
 											Attributes: types.ElementAttributes{},
-											Lines: []types.InlineElements{
+											Lines: [][]interface{}{
 												{
 													types.StringElement{
 														Content: "first line of grandchild",
@@ -2339,7 +2339,7 @@ var _ = Describe("file inclusions - final document", func() {
 										},
 										types.Paragraph{
 											Attributes: types.ElementAttributes{},
-											Lines: []types.InlineElements{
+											Lines: [][]interface{}{
 												{
 													types.StringElement{
 														Content: "last line of grandchild",
@@ -2355,7 +2355,7 @@ var _ = Describe("file inclusions - final document", func() {
 										types.AttrID:       "child_section_2",
 									},
 									Level: 4, // here the level is set to `4` because it the first section was moved from `1` to `3` so we use the same offset here
-									Title: types.InlineElements{
+									Title: []interface{}{
 										types.StringElement{
 											Content: "child section 2",
 										},
@@ -2363,7 +2363,7 @@ var _ = Describe("file inclusions - final document", func() {
 									Elements: []interface{}{
 										types.Paragraph{
 											Attributes: types.ElementAttributes{},
-											Lines: []types.InlineElements{
+											Lines: [][]interface{}{
 												{
 													types.StringElement{
 														Content: "last line of child",
@@ -2373,7 +2373,7 @@ var _ = Describe("file inclusions - final document", func() {
 										},
 										types.Paragraph{
 											Attributes: types.ElementAttributes{},
-											Lines: []types.InlineElements{
+											Lines: [][]interface{}{
 												{
 													types.StringElement{
 														Content: "last line of parent",

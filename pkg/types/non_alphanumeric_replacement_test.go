@@ -11,35 +11,35 @@ import (
 var _ = Describe("normalizing string", func() {
 
 	It("hello", func() {
-		source := types.InlineElements{
+		source := []interface{}{
 			types.StringElement{Content: "hello"},
 		}
 		Expect(source).To(EqualWithoutNonAlphanumeric("hello"))
 	})
 
 	It("héllo with an accent", func() {
-		source := types.InlineElements{
+		source := []interface{}{
 			types.StringElement{Content: "  héllo 1.2   and 3 Spaces"},
 		}
 		Expect(source).To(EqualWithoutNonAlphanumeric("héllo_1_2_and_3_spaces"))
 	})
 
 	It("a an accent and a swedish character", func() {
-		source := types.InlineElements{
+		source := []interface{}{
 			types.StringElement{Content: `A à ⌘`},
 		}
 		Expect(source).To(EqualWithoutNonAlphanumeric("a_à"))
 	})
 
 	It("AŁA", func() {
-		source := types.InlineElements{
+		source := []interface{}{
 			types.StringElement{Content: `AŁA 0.1 ?`},
 		}
 		Expect(source).To(EqualWithoutNonAlphanumeric("ała_0_1"))
 	})
 
 	It("it's  2 spaces, here !", func() {
-		source := types.InlineElements{
+		source := []interface{}{
 			types.StringElement{Content: `it's  2 spaces, here !`},
 		}
 		Expect(source).To(EqualWithoutNonAlphanumeric("it_s_2_spaces_here"))
@@ -47,7 +47,7 @@ var _ = Describe("normalizing string", func() {
 
 	It("content with <strong> markup", func() {
 		// == a section title, with *bold content*
-		source := types.InlineElements{
+		source := []interface{}{
 			types.StringElement{Content: "a section title, with"},
 			types.QuotedText{
 				Kind: types.Bold,
@@ -61,7 +61,7 @@ var _ = Describe("normalizing string", func() {
 
 	It("content with link", func() {
 		// == a section title, with *bold content*
-		source := types.InlineElements{
+		source := []interface{}{
 			types.StringElement{Content: "link to "},
 			types.InlineLink{
 				Attributes: types.ElementAttributes{},

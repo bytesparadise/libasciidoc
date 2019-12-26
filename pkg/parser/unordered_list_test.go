@@ -24,7 +24,7 @@ var _ = Describe("unordered lists - draft", func() {
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{Content: "a list item"},
 									},
@@ -57,7 +57,7 @@ var _ = Describe("unordered lists - draft", func() {
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{Content: "a list item"},
 									},
@@ -84,7 +84,7 @@ var _ = Describe("unordered lists - draft", func() {
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{Content: "a list item"},
 									},
@@ -110,7 +110,7 @@ var _ = Describe("unordered lists - draft", func() {
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{Content: "a first item"},
 									},
@@ -126,12 +126,12 @@ var _ = Describe("unordered lists - draft", func() {
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{Content: "a second item with "},
 										types.QuotedText{
 											Kind: types.Bold,
-											Elements: types.InlineElements{
+											Elements: []interface{}{
 												types.StringElement{Content: "bold content"},
 											},
 										},
@@ -167,7 +167,7 @@ var _ = Describe("unordered lists - draft", func() {
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{Content: "list item 1"},
 									},
@@ -183,7 +183,7 @@ var _ = Describe("unordered lists - draft", func() {
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{Content: "nested list item A"},
 									},
@@ -199,7 +199,7 @@ var _ = Describe("unordered lists - draft", func() {
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{Content: "nested nested list item A.1"},
 									},
@@ -215,7 +215,7 @@ var _ = Describe("unordered lists - draft", func() {
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{Content: "nested nested list item A.2"},
 									},
@@ -231,7 +231,7 @@ var _ = Describe("unordered lists - draft", func() {
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{Content: "nested list item B"},
 									},
@@ -247,7 +247,7 @@ var _ = Describe("unordered lists - draft", func() {
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{Content: "nested nested list item B.1"},
 									},
@@ -263,7 +263,7 @@ var _ = Describe("unordered lists - draft", func() {
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{Content: "nested nested list item B.2"},
 									},
@@ -279,7 +279,7 @@ var _ = Describe("unordered lists - draft", func() {
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{Content: "list item 2"},
 									},
@@ -305,7 +305,7 @@ var _ = Describe("unordered lists - draft", func() {
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{Content: "a first item"},
 									},
@@ -321,12 +321,12 @@ var _ = Describe("unordered lists - draft", func() {
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{Content: "a second item with "},
 										types.QuotedText{
 											Kind: types.Bold,
-											Elements: types.InlineElements{
+											Elements: []interface{}{
 												types.StringElement{Content: "bold content"},
 											},
 										},
@@ -356,7 +356,7 @@ var _ = Describe("unordered lists - draft", func() {
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{Content: "a parent item"},
 									},
@@ -372,7 +372,7 @@ var _ = Describe("unordered lists - draft", func() {
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{Content: "a child item"},
 									},
@@ -388,7 +388,7 @@ var _ = Describe("unordered lists - draft", func() {
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{Content: "another parent item"},
 									},
@@ -404,7 +404,7 @@ var _ = Describe("unordered lists - draft", func() {
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{Content: "another child item"},
 									},
@@ -420,7 +420,7 @@ var _ = Describe("unordered lists - draft", func() {
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{Content: "with a sub child item"},
 									},
@@ -448,7 +448,7 @@ var _ = Describe("unordered lists - draft", func() {
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{Content: "a first item"},
 									},
@@ -465,12 +465,12 @@ var _ = Describe("unordered lists - draft", func() {
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{Content: "a second item with "},
 										types.QuotedText{
 											Kind: types.Bold,
-											Elements: types.InlineElements{
+											Elements: []interface{}{
 												types.StringElement{Content: "bold content"},
 											},
 										},
@@ -498,7 +498,7 @@ on 2 lines, too.`
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{Content: "item 1"},
 									},
@@ -517,7 +517,7 @@ on 2 lines, too.`
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{Content: "item 2"},
 									},
@@ -547,7 +547,7 @@ on 2 lines, too.`
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{Content: "an item in the first list"},
 									},
@@ -565,7 +565,7 @@ on 2 lines, too.`
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{Content: "an item in the second list"},
 									},
@@ -597,7 +597,7 @@ on 2 lines, too.`
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{Content: "item 1"},
 									},
@@ -613,7 +613,7 @@ on 2 lines, too.`
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{Content: "item 1.1"},
 									},
@@ -629,7 +629,7 @@ on 2 lines, too.`
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{Content: "item 1.2"},
 									},
@@ -645,7 +645,7 @@ on 2 lines, too.`
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{Content: "item 1.2.1"},
 									},
@@ -661,7 +661,7 @@ on 2 lines, too.`
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{Content: "item 1.3"},
 									},
@@ -677,7 +677,7 @@ on 2 lines, too.`
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{Content: "item 1.4"},
 									},
@@ -693,7 +693,7 @@ on 2 lines, too.`
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{Content: "item 2"},
 									},
@@ -709,7 +709,7 @@ on 2 lines, too.`
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{Content: "item 2.1"},
 									},
@@ -742,7 +742,7 @@ on 2 lines, too.`
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{
 											Content: "level 1",
@@ -760,7 +760,7 @@ on 2 lines, too.`
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{
 											Content: "level 2",
@@ -778,7 +778,7 @@ on 2 lines, too.`
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{
 											Content: "level 3",
@@ -796,7 +796,7 @@ on 2 lines, too.`
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{
 											Content: "level 4",
@@ -814,7 +814,7 @@ on 2 lines, too.`
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{
 											Content: "level 5",
@@ -832,7 +832,7 @@ on 2 lines, too.`
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{
 											Content: "level 1",
@@ -867,7 +867,7 @@ on 2 lines, too.`
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{
 											Content: "level 1",
@@ -885,7 +885,7 @@ on 2 lines, too.`
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{
 											Content: "level 2",
@@ -903,7 +903,7 @@ on 2 lines, too.`
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{
 											Content: "level 3",
@@ -920,7 +920,7 @@ on 2 lines, too.`
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{
 											Content: "level 4",
@@ -938,7 +938,7 @@ on 2 lines, too.`
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{
 											Content: "level 5",
@@ -956,7 +956,7 @@ on 2 lines, too.`
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{
 											Content: "level 2",
@@ -989,7 +989,7 @@ on 2 lines, too.`
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{Content: "item 1"},
 									},
@@ -1005,7 +1005,7 @@ on 2 lines, too.`
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{Content: "item 1.1"},
 									},
@@ -1021,7 +1021,7 @@ on 2 lines, too.`
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{Content: "item 1.1.1"},
 									},
@@ -1037,7 +1037,7 @@ on 2 lines, too.`
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{Content: "item 1.2"},
 									},
@@ -1053,7 +1053,7 @@ on 2 lines, too.`
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{Content: "item 2"},
 									},
@@ -1072,7 +1072,7 @@ on 2 lines, too.`
 				Blocks: []interface{}{
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
-						Lines: []types.InlineElements{
+						Lines: [][]interface{}{
 							{
 								types.StringElement{Content: "*an invalid list item"},
 							},
@@ -1108,7 +1108,7 @@ another delimited block
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{Content: "foo"},
 									},
@@ -1124,7 +1124,7 @@ another delimited block
 							Elements: []interface{}{
 								types.Paragraph{
 									Attributes: types.ElementAttributes{},
-									Lines: []types.InlineElements{
+									Lines: [][]interface{}{
 										{
 											types.StringElement{
 												Content: "a delimited block",
@@ -1143,7 +1143,7 @@ another delimited block
 							Elements: []interface{}{
 								types.Paragraph{
 									Attributes: types.ElementAttributes{},
-									Lines: []types.InlineElements{
+									Lines: [][]interface{}{
 										{
 											types.StringElement{
 												Content: "another delimited block",
@@ -1162,7 +1162,7 @@ another delimited block
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{Content: "bar"},
 									},
@@ -1201,7 +1201,7 @@ The {plus} symbol is on a new line.
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{
 											Content: "level 1",
@@ -1219,7 +1219,7 @@ The {plus} symbol is on a new line.
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{
 											Content: "level 2",
@@ -1237,7 +1237,7 @@ The {plus} symbol is on a new line.
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{
 											Content: "level 3",
@@ -1277,7 +1277,7 @@ The {plus} symbol is on a new line.
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{
 											Content: "level 4",
@@ -1292,7 +1292,7 @@ The {plus} symbol is on a new line.
 						Offset: 0,
 						Element: types.Paragraph{
 							Attributes: types.ElementAttributes{},
-							Lines: []types.InlineElements{
+							Lines: [][]interface{}{
 								{
 									types.StringElement{
 										Content: "The ",
@@ -1316,7 +1316,7 @@ The {plus} symbol is on a new line.
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{
 											Content: "level 5",
@@ -1350,7 +1350,7 @@ another delimited block
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{Content: "foo"},
 									},
@@ -1364,7 +1364,7 @@ another delimited block
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{
 											Content: "a delimited block",
@@ -1382,7 +1382,7 @@ another delimited block
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{Content: "bar"},
 									},
@@ -1396,7 +1396,7 @@ another delimited block
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{
 											Content: "another delimited block",
@@ -1432,7 +1432,7 @@ paragraph attached to grand parent list item`
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{Content: "grand parent list item"},
 									},
@@ -1448,7 +1448,7 @@ paragraph attached to grand parent list item`
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{Content: "parent list item"},
 									},
@@ -1464,7 +1464,7 @@ paragraph attached to grand parent list item`
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{Content: "child list item"},
 									},
@@ -1476,7 +1476,7 @@ paragraph attached to grand parent list item`
 						Offset: -2,
 						Element: types.Paragraph{
 							Attributes: types.ElementAttributes{},
-							Lines: []types.InlineElements{
+							Lines: [][]interface{}{
 								{
 									types.StringElement{Content: "paragraph attached to grand parent list item"},
 								},
@@ -1505,7 +1505,7 @@ paragraph attached to parent list item`
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{Content: "grandparent list item"},
 									},
@@ -1521,7 +1521,7 @@ paragraph attached to parent list item`
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{Content: "parent list item"},
 									},
@@ -1537,7 +1537,7 @@ paragraph attached to parent list item`
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{Content: "child list item"},
 									},
@@ -1549,7 +1549,7 @@ paragraph attached to parent list item`
 						Offset: -1,
 						Element: types.Paragraph{
 							Attributes: types.ElementAttributes{},
-							Lines: []types.InlineElements{
+							Lines: [][]interface{}{
 								{
 									types.StringElement{Content: "paragraph attached to parent list item"},
 								},
@@ -1586,7 +1586,7 @@ var _ = Describe("unordered lists - document", func() {
 								Elements: []interface{}{
 									types.Paragraph{
 										Attributes: types.ElementAttributes{},
-										Lines: []types.InlineElements{
+										Lines: [][]interface{}{
 											{
 												types.StringElement{Content: "a list item"},
 											},
@@ -1628,7 +1628,7 @@ var _ = Describe("unordered lists - document", func() {
 								Elements: []interface{}{
 									types.Paragraph{
 										Attributes: types.ElementAttributes{},
-										Lines: []types.InlineElements{
+										Lines: [][]interface{}{
 											{
 												types.StringElement{Content: "a list item"},
 											},
@@ -1664,7 +1664,7 @@ var _ = Describe("unordered lists - document", func() {
 								Elements: []interface{}{
 									types.Paragraph{
 										Attributes: types.ElementAttributes{},
-										Lines: []types.InlineElements{
+										Lines: [][]interface{}{
 											{
 												types.StringElement{Content: "a list item"},
 											},
@@ -1699,7 +1699,7 @@ var _ = Describe("unordered lists - document", func() {
 								Elements: []interface{}{
 									types.Paragraph{
 										Attributes: types.ElementAttributes{},
-										Lines: []types.InlineElements{
+										Lines: [][]interface{}{
 											{
 												types.StringElement{Content: "a first item"},
 											},
@@ -1715,12 +1715,12 @@ var _ = Describe("unordered lists - document", func() {
 								Elements: []interface{}{
 									types.Paragraph{
 										Attributes: types.ElementAttributes{},
-										Lines: []types.InlineElements{
+										Lines: [][]interface{}{
 											{
 												types.StringElement{Content: "a second item with "},
 												types.QuotedText{
 													Kind: types.Bold,
-													Elements: types.InlineElements{
+													Elements: []interface{}{
 														types.StringElement{Content: "bold content"},
 													},
 												},
@@ -1765,7 +1765,7 @@ var _ = Describe("unordered lists - document", func() {
 								Elements: []interface{}{
 									types.Paragraph{
 										Attributes: types.ElementAttributes{},
-										Lines: []types.InlineElements{
+										Lines: [][]interface{}{
 											{
 												types.StringElement{Content: "list item 1"},
 											},
@@ -1782,7 +1782,7 @@ var _ = Describe("unordered lists - document", func() {
 												Elements: []interface{}{
 													types.Paragraph{
 														Attributes: types.ElementAttributes{},
-														Lines: []types.InlineElements{
+														Lines: [][]interface{}{
 															{
 																types.StringElement{Content: "nested list item A"},
 															},
@@ -1799,7 +1799,7 @@ var _ = Describe("unordered lists - document", func() {
 																Elements: []interface{}{
 																	types.Paragraph{
 																		Attributes: types.ElementAttributes{},
-																		Lines: []types.InlineElements{
+																		Lines: [][]interface{}{
 																			{
 																				types.StringElement{Content: "nested nested list item A.1"},
 																			},
@@ -1815,7 +1815,7 @@ var _ = Describe("unordered lists - document", func() {
 																Elements: []interface{}{
 																	types.Paragraph{
 																		Attributes: types.ElementAttributes{},
-																		Lines: []types.InlineElements{
+																		Lines: [][]interface{}{
 																			{
 																				types.StringElement{Content: "nested nested list item A.2"},
 																			},
@@ -1835,7 +1835,7 @@ var _ = Describe("unordered lists - document", func() {
 												Elements: []interface{}{
 													types.Paragraph{
 														Attributes: types.ElementAttributes{},
-														Lines: []types.InlineElements{
+														Lines: [][]interface{}{
 															{
 																types.StringElement{Content: "nested list item B"},
 															},
@@ -1852,7 +1852,7 @@ var _ = Describe("unordered lists - document", func() {
 																Elements: []interface{}{
 																	types.Paragraph{
 																		Attributes: types.ElementAttributes{},
-																		Lines: []types.InlineElements{
+																		Lines: [][]interface{}{
 																			{
 																				types.StringElement{Content: "nested nested list item B.1"},
 																			},
@@ -1868,7 +1868,7 @@ var _ = Describe("unordered lists - document", func() {
 																Elements: []interface{}{
 																	types.Paragraph{
 																		Attributes: types.ElementAttributes{},
-																		Lines: []types.InlineElements{
+																		Lines: [][]interface{}{
 																			{
 																				types.StringElement{Content: "nested nested list item B.2"},
 																			},
@@ -1892,7 +1892,7 @@ var _ = Describe("unordered lists - document", func() {
 								Elements: []interface{}{
 									types.Paragraph{
 										Attributes: types.ElementAttributes{},
-										Lines: []types.InlineElements{
+										Lines: [][]interface{}{
 											{
 												types.StringElement{Content: "list item 2"},
 											},
@@ -1927,7 +1927,7 @@ var _ = Describe("unordered lists - document", func() {
 								Elements: []interface{}{
 									types.Paragraph{
 										Attributes: types.ElementAttributes{},
-										Lines: []types.InlineElements{
+										Lines: [][]interface{}{
 											{
 												types.StringElement{Content: "a first item"},
 											},
@@ -1943,12 +1943,12 @@ var _ = Describe("unordered lists - document", func() {
 								Elements: []interface{}{
 									types.Paragraph{
 										Attributes: types.ElementAttributes{},
-										Lines: []types.InlineElements{
+										Lines: [][]interface{}{
 											{
 												types.StringElement{Content: "a second item with "},
 												types.QuotedText{
 													Kind: types.Bold,
-													Elements: types.InlineElements{
+													Elements: []interface{}{
 														types.StringElement{Content: "bold content"},
 													},
 												},
@@ -1987,7 +1987,7 @@ var _ = Describe("unordered lists - document", func() {
 								Elements: []interface{}{
 									types.Paragraph{
 										Attributes: types.ElementAttributes{},
-										Lines: []types.InlineElements{
+										Lines: [][]interface{}{
 											{
 												types.StringElement{Content: "a parent item"},
 											},
@@ -2004,7 +2004,7 @@ var _ = Describe("unordered lists - document", func() {
 												Elements: []interface{}{
 													types.Paragraph{
 														Attributes: types.ElementAttributes{},
-														Lines: []types.InlineElements{
+														Lines: [][]interface{}{
 															{
 																types.StringElement{Content: "a child item"},
 															},
@@ -2024,7 +2024,7 @@ var _ = Describe("unordered lists - document", func() {
 								Elements: []interface{}{
 									types.Paragraph{
 										Attributes: types.ElementAttributes{},
-										Lines: []types.InlineElements{
+										Lines: [][]interface{}{
 											{
 												types.StringElement{Content: "another parent item"},
 											},
@@ -2041,7 +2041,7 @@ var _ = Describe("unordered lists - document", func() {
 												Elements: []interface{}{
 													types.Paragraph{
 														Attributes: types.ElementAttributes{},
-														Lines: []types.InlineElements{
+														Lines: [][]interface{}{
 															{
 																types.StringElement{Content: "another child item"},
 															},
@@ -2058,7 +2058,7 @@ var _ = Describe("unordered lists - document", func() {
 																Elements: []interface{}{
 																	types.Paragraph{
 																		Attributes: types.ElementAttributes{},
-																		Lines: []types.InlineElements{
+																		Lines: [][]interface{}{
 																			{
 																				types.StringElement{Content: "with a sub child item"},
 																			},
@@ -2103,7 +2103,7 @@ var _ = Describe("unordered lists - document", func() {
 								Elements: []interface{}{
 									types.Paragraph{
 										Attributes: types.ElementAttributes{},
-										Lines: []types.InlineElements{
+										Lines: [][]interface{}{
 											{
 												types.StringElement{Content: "a first item"},
 											},
@@ -2119,12 +2119,12 @@ var _ = Describe("unordered lists - document", func() {
 								Elements: []interface{}{
 									types.Paragraph{
 										Attributes: types.ElementAttributes{},
-										Lines: []types.InlineElements{
+										Lines: [][]interface{}{
 											{
 												types.StringElement{Content: "a second item with "},
 												types.QuotedText{
 													Kind: types.Bold,
-													Elements: types.InlineElements{
+													Elements: []interface{}{
 														types.StringElement{Content: "bold content"},
 													},
 												},
@@ -2161,7 +2161,7 @@ on 2 lines, too.`
 								Elements: []interface{}{
 									types.Paragraph{
 										Attributes: types.ElementAttributes{},
-										Lines: []types.InlineElements{
+										Lines: [][]interface{}{
 											{
 												types.StringElement{Content: "item 1"},
 											},
@@ -2180,7 +2180,7 @@ on 2 lines, too.`
 								Elements: []interface{}{
 									types.Paragraph{
 										Attributes: types.ElementAttributes{},
-										Lines: []types.InlineElements{
+										Lines: [][]interface{}{
 											{
 												types.StringElement{Content: "item 2"},
 											},
@@ -2220,7 +2220,7 @@ on 2 lines, too.`
 								Elements: []interface{}{
 									types.Paragraph{
 										Attributes: types.ElementAttributes{},
-										Lines: []types.InlineElements{
+										Lines: [][]interface{}{
 											{
 												types.StringElement{Content: "an item in the first list"},
 											},
@@ -2236,7 +2236,7 @@ on 2 lines, too.`
 								Elements: []interface{}{
 									types.Paragraph{
 										Attributes: types.ElementAttributes{},
-										Lines: []types.InlineElements{
+										Lines: [][]interface{}{
 											{
 												types.StringElement{Content: "an item in the second list"},
 											},
@@ -2277,7 +2277,7 @@ on 2 lines, too.`
 								Elements: []interface{}{
 									types.Paragraph{
 										Attributes: types.ElementAttributes{},
-										Lines: []types.InlineElements{
+										Lines: [][]interface{}{
 											{
 												types.StringElement{Content: "item 1"},
 											},
@@ -2294,7 +2294,7 @@ on 2 lines, too.`
 												Elements: []interface{}{
 													types.Paragraph{
 														Attributes: types.ElementAttributes{},
-														Lines: []types.InlineElements{
+														Lines: [][]interface{}{
 															{
 																types.StringElement{Content: "item 1.1"},
 															},
@@ -2310,7 +2310,7 @@ on 2 lines, too.`
 												Elements: []interface{}{
 													types.Paragraph{
 														Attributes: types.ElementAttributes{},
-														Lines: []types.InlineElements{
+														Lines: [][]interface{}{
 															{
 																types.StringElement{Content: "item 1.2"},
 															},
@@ -2327,7 +2327,7 @@ on 2 lines, too.`
 																Elements: []interface{}{
 																	types.Paragraph{
 																		Attributes: types.ElementAttributes{},
-																		Lines: []types.InlineElements{
+																		Lines: [][]interface{}{
 																			{
 																				types.StringElement{Content: "item 1.2.1"},
 																			},
@@ -2347,7 +2347,7 @@ on 2 lines, too.`
 												Elements: []interface{}{
 													types.Paragraph{
 														Attributes: types.ElementAttributes{},
-														Lines: []types.InlineElements{
+														Lines: [][]interface{}{
 															{
 																types.StringElement{Content: "item 1.3"},
 															},
@@ -2363,7 +2363,7 @@ on 2 lines, too.`
 												Elements: []interface{}{
 													types.Paragraph{
 														Attributes: types.ElementAttributes{},
-														Lines: []types.InlineElements{
+														Lines: [][]interface{}{
 															{
 																types.StringElement{Content: "item 1.4"},
 															},
@@ -2383,7 +2383,7 @@ on 2 lines, too.`
 								Elements: []interface{}{
 									types.Paragraph{
 										Attributes: types.ElementAttributes{},
-										Lines: []types.InlineElements{
+										Lines: [][]interface{}{
 											{
 												types.StringElement{Content: "item 2"},
 											},
@@ -2400,7 +2400,7 @@ on 2 lines, too.`
 												Elements: []interface{}{
 													types.Paragraph{
 														Attributes: types.ElementAttributes{},
-														Lines: []types.InlineElements{
+														Lines: [][]interface{}{
 															{
 																types.StringElement{Content: "item 2.1"},
 															},
@@ -2446,7 +2446,7 @@ on 2 lines, too.`
 								Elements: []interface{}{
 									types.Paragraph{
 										Attributes: types.ElementAttributes{},
-										Lines: []types.InlineElements{
+										Lines: [][]interface{}{
 											{
 												types.StringElement{
 													Content: "level 1",
@@ -2465,7 +2465,7 @@ on 2 lines, too.`
 												Elements: []interface{}{
 													types.Paragraph{
 														Attributes: types.ElementAttributes{},
-														Lines: []types.InlineElements{
+														Lines: [][]interface{}{
 															{
 																types.StringElement{
 																	Content: "level 2",
@@ -2484,7 +2484,7 @@ on 2 lines, too.`
 																Elements: []interface{}{
 																	types.Paragraph{
 																		Attributes: types.ElementAttributes{},
-																		Lines: []types.InlineElements{
+																		Lines: [][]interface{}{
 																			{
 																				types.StringElement{
 																					Content: "level 3",
@@ -2503,7 +2503,7 @@ on 2 lines, too.`
 																				Elements: []interface{}{
 																					types.Paragraph{
 																						Attributes: types.ElementAttributes{},
-																						Lines: []types.InlineElements{
+																						Lines: [][]interface{}{
 																							{
 																								types.StringElement{
 																									Content: "level 4",
@@ -2522,7 +2522,7 @@ on 2 lines, too.`
 																								Elements: []interface{}{
 																									types.Paragraph{
 																										Attributes: types.ElementAttributes{},
-																										Lines: []types.InlineElements{
+																										Lines: [][]interface{}{
 																											{
 																												types.StringElement{
 																													Content: "level 5",
@@ -2556,7 +2556,7 @@ on 2 lines, too.`
 								Elements: []interface{}{
 									types.Paragraph{
 										Attributes: types.ElementAttributes{},
-										Lines: []types.InlineElements{
+										Lines: [][]interface{}{
 											{
 												types.StringElement{
 													Content: "level 1",
@@ -2600,7 +2600,7 @@ on 2 lines, too.`
 								Elements: []interface{}{
 									types.Paragraph{
 										Attributes: types.ElementAttributes{},
-										Lines: []types.InlineElements{
+										Lines: [][]interface{}{
 											{
 												types.StringElement{
 													Content: "level 1",
@@ -2619,7 +2619,7 @@ on 2 lines, too.`
 												Elements: []interface{}{
 													types.Paragraph{
 														Attributes: types.ElementAttributes{},
-														Lines: []types.InlineElements{
+														Lines: [][]interface{}{
 															{
 																types.StringElement{
 																	Content: "level 2",
@@ -2638,7 +2638,7 @@ on 2 lines, too.`
 																Elements: []interface{}{
 																	types.Paragraph{
 																		Attributes: types.ElementAttributes{},
-																		Lines: []types.InlineElements{
+																		Lines: [][]interface{}{
 																			{
 																				types.StringElement{
 																					Content: "level 3",
@@ -2657,7 +2657,7 @@ on 2 lines, too.`
 																				Elements: []interface{}{
 																					types.Paragraph{
 																						Attributes: types.ElementAttributes{},
-																						Lines: []types.InlineElements{
+																						Lines: [][]interface{}{
 																							{
 																								types.StringElement{
 																									Content: "level 4",
@@ -2676,7 +2676,7 @@ on 2 lines, too.`
 																								Elements: []interface{}{
 																									types.Paragraph{
 																										Attributes: types.ElementAttributes{},
-																										Lines: []types.InlineElements{
+																										Lines: [][]interface{}{
 																											{
 																												types.StringElement{
 																													Content: "level 5",
@@ -2706,7 +2706,7 @@ on 2 lines, too.`
 												Elements: []interface{}{
 													types.Paragraph{
 														Attributes: types.ElementAttributes{},
-														Lines: []types.InlineElements{
+														Lines: [][]interface{}{
 															{
 																types.StringElement{
 																	Content: "level 2",
@@ -2746,7 +2746,7 @@ on 2 lines, too.`
 								Elements: []interface{}{
 									types.Paragraph{
 										Attributes: types.ElementAttributes{},
-										Lines: []types.InlineElements{
+										Lines: [][]interface{}{
 											{
 												types.StringElement{Content: "&amp;"},
 											},
@@ -2786,7 +2786,7 @@ on 2 lines, too.`
 								Elements: []interface{}{
 									types.Paragraph{
 										Attributes: types.ElementAttributes{},
-										Lines: []types.InlineElements{
+										Lines: [][]interface{}{
 											{
 												types.StringElement{Content: "item 1"},
 											},
@@ -2803,7 +2803,7 @@ on 2 lines, too.`
 												Elements: []interface{}{
 													types.Paragraph{
 														Attributes: types.ElementAttributes{},
-														Lines: []types.InlineElements{
+														Lines: [][]interface{}{
 															{
 																types.StringElement{Content: "item 1.1"},
 															},
@@ -2820,7 +2820,7 @@ on 2 lines, too.`
 																Elements: []interface{}{
 																	types.Paragraph{
 																		Attributes: types.ElementAttributes{},
-																		Lines: []types.InlineElements{
+																		Lines: [][]interface{}{
 																			{
 																				types.StringElement{Content: "item 1.1.1"},
 																			},
@@ -2840,7 +2840,7 @@ on 2 lines, too.`
 												Elements: []interface{}{
 													types.Paragraph{
 														Attributes: types.ElementAttributes{},
-														Lines: []types.InlineElements{
+														Lines: [][]interface{}{
 															{
 																types.StringElement{Content: "item 1.2"},
 															},
@@ -2860,7 +2860,7 @@ on 2 lines, too.`
 								Elements: []interface{}{
 									types.Paragraph{
 										Attributes: types.ElementAttributes{},
-										Lines: []types.InlineElements{
+										Lines: [][]interface{}{
 											{
 												types.StringElement{Content: "item 2"},
 											},
@@ -2885,7 +2885,7 @@ on 2 lines, too.`
 				Elements: []interface{}{
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
-						Lines: []types.InlineElements{
+						Lines: [][]interface{}{
 							{
 								types.StringElement{Content: "*an invalid list item"},
 							},
@@ -2928,7 +2928,7 @@ another delimited block
 								Elements: []interface{}{
 									types.Paragraph{
 										Attributes: types.ElementAttributes{},
-										Lines: []types.InlineElements{
+										Lines: [][]interface{}{
 											{
 												types.StringElement{Content: "foo"},
 											},
@@ -2940,7 +2940,7 @@ another delimited block
 										Elements: []interface{}{
 											types.Paragraph{
 												Attributes: types.ElementAttributes{},
-												Lines: []types.InlineElements{
+												Lines: [][]interface{}{
 													{
 														types.StringElement{
 															Content: "a delimited block",
@@ -2956,7 +2956,7 @@ another delimited block
 										Elements: []interface{}{
 											types.Paragraph{
 												Attributes: types.ElementAttributes{},
-												Lines: []types.InlineElements{
+												Lines: [][]interface{}{
 													{
 														types.StringElement{
 															Content: "another delimited block",
@@ -2976,7 +2976,7 @@ another delimited block
 								Elements: []interface{}{
 									types.Paragraph{
 										Attributes: types.ElementAttributes{},
-										Lines: []types.InlineElements{
+										Lines: [][]interface{}{
 											{
 												types.StringElement{Content: "bar"},
 											},
@@ -3024,7 +3024,7 @@ The {plus} symbol is on a new line.
 								Elements: []interface{}{
 									types.Paragraph{
 										Attributes: types.ElementAttributes{},
-										Lines: []types.InlineElements{
+										Lines: [][]interface{}{
 											{
 												types.StringElement{
 													Content: "level 1",
@@ -3043,7 +3043,7 @@ The {plus} symbol is on a new line.
 												Elements: []interface{}{
 													types.Paragraph{
 														Attributes: types.ElementAttributes{},
-														Lines: []types.InlineElements{
+														Lines: [][]interface{}{
 															{
 																types.StringElement{
 																	Content: "level 2",
@@ -3062,7 +3062,7 @@ The {plus} symbol is on a new line.
 																Elements: []interface{}{
 																	types.Paragraph{
 																		Attributes: types.ElementAttributes{},
-																		Lines: []types.InlineElements{
+																		Lines: [][]interface{}{
 																			{
 																				types.StringElement{
 																					Content: "level 3",
@@ -3097,7 +3097,7 @@ The {plus} symbol is on a new line.
 																				Elements: []interface{}{
 																					types.Paragraph{
 																						Attributes: types.ElementAttributes{},
-																						Lines: []types.InlineElements{
+																						Lines: [][]interface{}{
 																							{
 																								types.StringElement{
 																									Content: "level 4",
@@ -3108,7 +3108,7 @@ The {plus} symbol is on a new line.
 																					// the `+` continuation produces the second paragrap below
 																					types.Paragraph{
 																						Attributes: types.ElementAttributes{},
-																						Lines: []types.InlineElements{
+																						Lines: [][]interface{}{
 																							{
 																								types.StringElement{
 																									Content: "The &#43; symbol is on a new line.",
@@ -3128,7 +3128,7 @@ The {plus} symbol is on a new line.
 																								Elements: []interface{}{
 																									types.Paragraph{
 																										Attributes: types.ElementAttributes{},
-																										Lines: []types.InlineElements{
+																										Lines: [][]interface{}{
 																											{
 																												types.StringElement{
 																													Content: "level 5",
@@ -3187,7 +3187,7 @@ another delimited block
 								Elements: []interface{}{
 									types.Paragraph{
 										Attributes: types.ElementAttributes{},
-										Lines: []types.InlineElements{
+										Lines: [][]interface{}{
 											{
 												types.StringElement{Content: "foo"},
 											},
@@ -3203,7 +3203,7 @@ another delimited block
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{
 											Content: "a delimited block",
@@ -3224,7 +3224,7 @@ another delimited block
 								Elements: []interface{}{
 									types.Paragraph{
 										Attributes: types.ElementAttributes{},
-										Lines: []types.InlineElements{
+										Lines: [][]interface{}{
 											{
 												types.StringElement{Content: "bar"},
 											},
@@ -3240,7 +3240,7 @@ another delimited block
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{
 											Content: "another delimited block",
@@ -3283,7 +3283,7 @@ paragraph attached to grand parent list item`
 								Elements: []interface{}{
 									types.Paragraph{
 										Attributes: types.ElementAttributes{},
-										Lines: []types.InlineElements{
+										Lines: [][]interface{}{
 											{
 												types.StringElement{Content: "grand parent list item"},
 											},
@@ -3300,7 +3300,7 @@ paragraph attached to grand parent list item`
 												Elements: []interface{}{
 													types.Paragraph{
 														Attributes: types.ElementAttributes{},
-														Lines: []types.InlineElements{
+														Lines: [][]interface{}{
 															{
 																types.StringElement{Content: "parent list item"},
 															},
@@ -3317,7 +3317,7 @@ paragraph attached to grand parent list item`
 																Elements: []interface{}{
 																	types.Paragraph{
 																		Attributes: types.ElementAttributes{},
-																		Lines: []types.InlineElements{
+																		Lines: [][]interface{}{
 																			{
 																				types.StringElement{Content: "child list item"},
 																			},
@@ -3333,7 +3333,7 @@ paragraph attached to grand parent list item`
 									},
 									types.Paragraph{
 										Attributes: types.ElementAttributes{},
-										Lines: []types.InlineElements{
+										Lines: [][]interface{}{
 											{
 												types.StringElement{Content: "paragraph attached to grand parent list item"},
 											},
@@ -3372,7 +3372,7 @@ paragraph attached to parent list item`
 								Elements: []interface{}{
 									types.Paragraph{
 										Attributes: types.ElementAttributes{},
-										Lines: []types.InlineElements{
+										Lines: [][]interface{}{
 											{
 												types.StringElement{Content: "grandparent list item"},
 											},
@@ -3389,7 +3389,7 @@ paragraph attached to parent list item`
 												Elements: []interface{}{
 													types.Paragraph{
 														Attributes: types.ElementAttributes{},
-														Lines: []types.InlineElements{
+														Lines: [][]interface{}{
 															{
 																types.StringElement{Content: "parent list item"},
 															},
@@ -3406,7 +3406,7 @@ paragraph attached to parent list item`
 																Elements: []interface{}{
 																	types.Paragraph{
 																		Attributes: types.ElementAttributes{},
-																		Lines: []types.InlineElements{
+																		Lines: [][]interface{}{
 																			{
 																				types.StringElement{Content: "child list item"},
 																			},
@@ -3418,7 +3418,7 @@ paragraph attached to parent list item`
 													},
 													types.Paragraph{
 														Attributes: types.ElementAttributes{},
-														Lines: []types.InlineElements{
+														Lines: [][]interface{}{
 															{
 																types.StringElement{Content: "paragraph attached to parent list item"},
 															},

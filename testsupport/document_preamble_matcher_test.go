@@ -24,7 +24,7 @@ var _ = Describe("document preamble assertions", func() {
 				Elements: []interface{}{
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
-						Lines: []types.InlineElements{
+						Lines: [][]interface{}{
 							{
 								types.StringElement{Content: "a short paragraph"},
 							},
@@ -35,7 +35,7 @@ var _ = Describe("document preamble assertions", func() {
 			},
 			types.Section{
 				Level: 1,
-				Title: types.InlineElements{
+				Title: []interface{}{
 					types.StringElement{Content: "Section A"},
 				},
 				Attributes: types.ElementAttributes{},
@@ -43,7 +43,7 @@ var _ = Describe("document preamble assertions", func() {
 			},
 			types.Section{
 				Level: 1,
-				Title: types.InlineElements{
+				Title: []interface{}{
 					types.StringElement{Content: "Section B"},
 				},
 				Attributes: types.ElementAttributes{},
@@ -63,7 +63,7 @@ var _ = Describe("document preamble assertions", func() {
 			Elements: []interface{}{
 				types.Paragraph{
 					Attributes: types.ElementAttributes{},
-					Lines: []types.InlineElements{
+					Lines: [][]interface{}{
 						{
 							types.StringElement{Content: "a short paragraph"},
 						},
@@ -72,7 +72,7 @@ var _ = Describe("document preamble assertions", func() {
 				types.BlankLine{},
 				types.Section{
 					Level: 1,
-					Title: types.InlineElements{
+					Title: []interface{}{
 						types.StringElement{Content: "Section A"},
 					},
 					Attributes: types.ElementAttributes{},
@@ -80,7 +80,7 @@ var _ = Describe("document preamble assertions", func() {
 				},
 				types.Section{
 					Level: 1,
-					Title: types.InlineElements{
+					Title: []interface{}{
 						types.StringElement{Content: "Section B"},
 					},
 					Attributes: types.ElementAttributes{},

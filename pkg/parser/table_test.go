@@ -19,11 +19,11 @@ var _ = Describe("tables", func() {
 			Attributes: types.ElementAttributes{},
 			Lines: []types.TableLine{
 				{
-					Cells: []types.InlineElements{
+					Cells: [][]interface{}{
 						{
 							types.QuotedText{
 								Kind: types.Bold,
-								Elements: types.InlineElements{
+								Elements: []interface{}{
 									types.StringElement{
 										Content: "foo",
 									},
@@ -36,7 +36,7 @@ var _ = Describe("tables", func() {
 						{
 							types.QuotedText{
 								Kind: types.Italic,
-								Elements: types.InlineElements{
+								Elements: []interface{}{
 									types.StringElement{
 										Content: "bar",
 									},
@@ -61,11 +61,11 @@ var _ = Describe("tables", func() {
 			Attributes: types.ElementAttributes{},
 			Lines: []types.TableLine{
 				{
-					Cells: []types.InlineElements{
+					Cells: [][]interface{}{
 						{
 							types.QuotedText{
 								Kind: types.Bold,
-								Elements: types.InlineElements{
+								Elements: []interface{}{
 									types.StringElement{
 										Content: "foo",
 									},
@@ -78,7 +78,7 @@ var _ = Describe("tables", func() {
 						{
 							types.QuotedText{
 								Kind: types.Italic,
-								Elements: types.InlineElements{
+								Elements: []interface{}{
 									types.StringElement{
 										Content: "bar",
 									},
@@ -116,7 +116,7 @@ var _ = Describe("tables", func() {
 				types.AttrTitle: "table title",
 			},
 			Header: types.TableLine{
-				Cells: []types.InlineElements{
+				Cells: [][]interface{}{
 					{
 						types.StringElement{
 							Content: "heading 1 ",
@@ -132,7 +132,7 @@ var _ = Describe("tables", func() {
 
 			Lines: []types.TableLine{
 				{
-					Cells: []types.InlineElements{
+					Cells: [][]interface{}{
 						{
 							types.StringElement{
 								Content: "row 1, column 1",
@@ -146,7 +146,7 @@ var _ = Describe("tables", func() {
 					},
 				},
 				{
-					Cells: []types.InlineElements{
+					Cells: [][]interface{}{
 						{
 							types.StringElement{
 								Content: "row 2, column 1",

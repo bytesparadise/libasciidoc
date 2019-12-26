@@ -23,8 +23,8 @@ func renderLink(ctx *renderer.Context, l types.InlineLink) ([]byte, error) { //n
 	var text []byte
 	class := ""
 	var err error
-	if t, ok := l.Attributes[types.AttrInlineLinkText].(types.InlineElements); ok {
-		text, err = renderElement(ctx, t)
+	if t, ok := l.Attributes[types.AttrInlineLinkText].([]interface{}); ok {
+		text, err = renderInlineElements(ctx, t)
 		if err != nil {
 			return nil, errors.Wrapf(err, "unable to render external link")
 		}
@@ -44,6 +44,6 @@ func renderLink(ctx *renderer.Context, l types.InlineLink) ([]byte, error) { //n
 	if err != nil {
 		return nil, errors.Wrapf(err, "unable to render external link")
 	}
-	log.Debugf("/rendered external link: %s", result.Bytes())
+	log.Debugf("rendered external link: %s", result.Bytes())
 	return result.Bytes(), nil
 }

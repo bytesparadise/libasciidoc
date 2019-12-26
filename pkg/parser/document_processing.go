@@ -94,7 +94,7 @@ func ApplyDocumentAttributeSubstitutions(element interface{}, attrs map[string]s
 		if err != nil {
 			return types.Section{}, err
 		}
-		e.Title = r.(types.InlineElements)
+		e.Title = r.([]interface{})
 		err = e.UpdateAttrID()
 		return e, err
 	case types.OrderedListItem:
@@ -146,22 +146,10 @@ func ApplyDocumentAttributeSubstitutions(element interface{}, attrs map[string]s
 			if err != nil {
 				return types.Paragraph{}, err
 			}
-			e.Lines[i] = line.(types.InlineElements)
+			e.Lines[i] = line.([]interface{})
 		}
 		return e, nil
-	case types.InlineElements:
-		result := make([]interface{}, len(e)) // maximum capacity cannot exceed initial input
-		for _, element := range e {
-			r, err := ApplyDocumentAttributeSubstitutions(element, attrs)
-			if err != nil {
-				return types.InlineElements{}, err
-			}
-			result = append(result, r)
-		}
-		result = types.MergeStringElements(result)
-		return parseInlineLinks(result, attrs)
 	case []interface{}:
-		log.Debugf("applying document substitutions on %d elements(s)", len(e))
 		result := make([]interface{}, 0, len(e)) // maximum capacity cannot exceed initial input
 		for _, element := range e {
 			r, err := ApplyDocumentAttributeSubstitutions(element, attrs)
@@ -170,7 +158,8 @@ func ApplyDocumentAttributeSubstitutions(element interface{}, attrs map[string]s
 			}
 			result = append(result, r)
 		}
-		return result, nil
+		result = types.MergeStringElements(result)
+		return parseInlineLinks(result, attrs)
 	default:
 		return e, nil
 	}
@@ -178,17 +167,17 @@ func ApplyDocumentAttributeSubstitutions(element interface{}, attrs map[string]s
 
 // if a document attribute substitution happened, we need to parse the string element in search
 // for a potentially new link. Eg `{url}` giving `https://foo.com`
-func parseInlineLinks(elements types.InlineElements, attrs map[string]string) (types.InlineElements, error) {
-	result := types.InlineElements{}
+func parseInlineLinks(elements []interface{}, attrs map[string]string) ([]interface{}, error) {
+	result := []interface{}{}
 	for _, element := range elements {
 		log.Debugf("looking for links in line element of type %[1]T (%[1]v)", element)
 		switch element := element.(type) {
 		case types.StringElement:
 			elements, err := ParseReader("", strings.NewReader(element.Content), Entrypoint("InlineLinks"))
 			if err != nil {
-				return types.InlineElements{}, errors.Wrap(err, "error while parsing content for inline links")
+				return []interface{}{}, errors.Wrap(err, "error while parsing content for inline links")
 			}
-			result = append(result, elements.(types.InlineElements)...)
+			result = append(result, elements.([]interface{})...)
 		default:
 			result = append(result, element)
 		}

@@ -14,7 +14,7 @@ var _ = Describe("document block assertions", func() {
 
 	expected := types.Paragraph{
 		Attributes: types.ElementAttributes{},
-		Lines: []types.InlineElements{
+		Lines: [][]interface{}{
 			{
 				types.StringElement{
 					Content: "hello, world!",
@@ -46,7 +46,7 @@ var _ = Describe("document block assertions", func() {
 		// also verify the messages
 		obtained := types.Paragraph{
 			Attributes: types.ElementAttributes{},
-			Lines: []types.InlineElements{
+			Lines: [][]interface{}{
 				{
 					types.StringElement{
 						Content: "foo",

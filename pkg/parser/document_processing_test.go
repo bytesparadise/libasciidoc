@@ -12,7 +12,7 @@ var _ = Describe("attribute subsititutions", func() {
 
 	It("should replace with new StringElement on first position", func() {
 		// given
-		e := types.InlineElements{
+		e := []interface{}{
 			types.DocumentAttributeSubstitution{
 				Name: "foo",
 			},
@@ -25,7 +25,7 @@ var _ = Describe("attribute subsititutions", func() {
 			"foo": "bar",
 		})
 		// then
-		Expect(result).To(Equal(types.InlineElements{
+		Expect(result).To(Equal([]interface{}{
 			types.StringElement{
 				Content: "bar and more content.",
 			},
@@ -35,7 +35,7 @@ var _ = Describe("attribute subsititutions", func() {
 
 	It("should replace with new StringElement on middle position", func() {
 		// given
-		e := types.InlineElements{
+		e := []interface{}{
 			types.StringElement{
 				Content: "baz, ",
 			},
@@ -51,7 +51,7 @@ var _ = Describe("attribute subsititutions", func() {
 			"foo": "bar",
 		})
 		// then
-		Expect(result).To(Equal(types.InlineElements{
+		Expect(result).To(Equal([]interface{}{
 			types.StringElement{
 				Content: "baz, bar and more content.",
 			},
@@ -61,7 +61,7 @@ var _ = Describe("attribute subsititutions", func() {
 
 	It("should replace with undefined attribute", func() {
 		// given
-		e := types.InlineElements{
+		e := []interface{}{
 			types.StringElement{
 				Content: "baz, ",
 			},
@@ -75,7 +75,7 @@ var _ = Describe("attribute subsititutions", func() {
 		// when
 		result, err := parser.ApplyDocumentAttributeSubstitutions(e, map[string]string{})
 		// then
-		Expect(result).To(Equal(types.InlineElements{
+		Expect(result).To(Equal([]interface{}{
 			types.StringElement{
 				Content: "baz, {foo} and more content.",
 			},
@@ -85,7 +85,7 @@ var _ = Describe("attribute subsititutions", func() {
 
 	It("should merge without substitution", func() {
 		// given
-		e := types.InlineElements{
+		e := []interface{}{
 			types.StringElement{
 				Content: "baz, ",
 			},
@@ -99,7 +99,7 @@ var _ = Describe("attribute subsititutions", func() {
 		// when
 		result, err := parser.ApplyDocumentAttributeSubstitutions(e, map[string]string{})
 		// then
-		Expect(result).To(Equal(types.InlineElements{
+		Expect(result).To(Equal([]interface{}{
 			types.StringElement{
 				Content: "baz, foo and more content.",
 			},

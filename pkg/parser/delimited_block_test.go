@@ -21,7 +21,7 @@ var _ = Describe("delimited blocks - draft", func() {
 				Elements: []interface{}{
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
-						Lines: []types.InlineElements{
+						Lines: [][]interface{}{
 							{
 								types.StringElement{
 									Content: content,
@@ -52,7 +52,7 @@ var _ = Describe("delimited blocks - draft", func() {
 				Elements: []interface{}{
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
-						Lines: []types.InlineElements{
+						Lines: [][]interface{}{
 							{
 								types.StringElement{
 									Content: "some fenced code",
@@ -68,7 +68,7 @@ var _ = Describe("delimited blocks - draft", func() {
 					types.BlankLine{},
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
-						Lines: []types.InlineElements{
+						Lines: [][]interface{}{
 							{
 								types.StringElement{
 									Content: "in the middle",
@@ -91,7 +91,7 @@ var _ = Describe("delimited blocks - draft", func() {
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{
 											Content: "some fenced code",
@@ -107,7 +107,7 @@ var _ = Describe("delimited blocks - draft", func() {
 							types.BlankLine{},
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{
 											Content: "in the middle",
@@ -119,7 +119,7 @@ var _ = Describe("delimited blocks - draft", func() {
 					},
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
-						Lines: []types.InlineElements{
+						Lines: [][]interface{}{
 							{
 								types.StringElement{Content: "then a normal paragraph."},
 							},
@@ -137,7 +137,7 @@ var _ = Describe("delimited blocks - draft", func() {
 				Blocks: []interface{}{
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
-						Lines: []types.InlineElements{
+						Lines: [][]interface{}{
 							{
 								types.StringElement{Content: "a paragraph."},
 							},
@@ -149,7 +149,7 @@ var _ = Describe("delimited blocks - draft", func() {
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{
 											Content: content,
@@ -172,7 +172,7 @@ var _ = Describe("delimited blocks - draft", func() {
 				Elements: []interface{}{
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
-						Lines: []types.InlineElements{
+						Lines: [][]interface{}{
 							{
 								types.StringElement{
 									Content: "End of file here",
@@ -197,7 +197,7 @@ var _ = Describe("delimited blocks - draft", func() {
 				Elements: []interface{}{
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
-						Lines: []types.InlineElements{
+						Lines: [][]interface{}{
 							{
 								types.StringElement{
 									Content: "a ",
@@ -242,7 +242,7 @@ var _ = Describe("delimited blocks - draft", func() {
 				Elements: []interface{}{
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
-						Lines: []types.InlineElements{
+						Lines: [][]interface{}{
 							{
 								types.StringElement{
 									Content: "a ",
@@ -288,7 +288,7 @@ some listing code
 				Elements: []interface{}{
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
-						Lines: []types.InlineElements{
+						Lines: [][]interface{}{
 							{
 								types.StringElement{
 									Content: "some listing code",
@@ -325,7 +325,7 @@ in the middle
 				Elements: []interface{}{
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
-						Lines: []types.InlineElements{
+						Lines: [][]interface{}{
 							{
 								types.StringElement{
 									Content: "some listing code",
@@ -361,7 +361,7 @@ in the middle
 				Elements: []interface{}{
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
-						Lines: []types.InlineElements{
+						Lines: [][]interface{}{
 							{
 								types.StringElement{
 									Content: "* some ",
@@ -400,7 +400,7 @@ then a normal paragraph.`
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{
 											Content: "some listing code",
@@ -423,7 +423,7 @@ then a normal paragraph.`
 					},
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
-						Lines: []types.InlineElements{
+						Lines: [][]interface{}{
 							{
 								types.StringElement{Content: "then a normal paragraph."},
 							},
@@ -443,7 +443,7 @@ some listing code
 				Blocks: []interface{}{
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
-						Lines: []types.InlineElements{
+						Lines: [][]interface{}{
 							{
 								types.StringElement{Content: "a paragraph."},
 							},
@@ -455,7 +455,7 @@ some listing code
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{
 											Content: "some listing code",
@@ -479,7 +479,7 @@ End of file here.`
 				Elements: []interface{}{
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
-						Lines: []types.InlineElements{
+						Lines: [][]interface{}{
 							{
 								types.StringElement{
 									Content: "End of file here.",
@@ -505,7 +505,7 @@ some listing code
 				Elements: []interface{}{
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
-						Lines: []types.InlineElements{
+						Lines: [][]interface{}{
 							{
 								types.StringElement{
 									Content: "some listing code",
@@ -528,7 +528,7 @@ some listing code
 				Elements: []interface{}{
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
-						Lines: []types.InlineElements{
+						Lines: [][]interface{}{
 							{
 								types.StringElement{
 									Content: ".foo",
@@ -555,7 +555,7 @@ with *bold content*
 				Elements: []interface{}{
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
-						Lines: []types.InlineElements{
+						Lines: [][]interface{}{
 							{
 								types.StringElement{
 									Content: ".foo",
@@ -572,7 +572,7 @@ with *bold content*
 								},
 								types.QuotedText{
 									Kind: types.Bold,
-									Elements: types.InlineElements{
+									Elements: []interface{}{
 										types.StringElement{
 											Content: "bold content",
 										},
@@ -590,7 +590,7 @@ with *bold content*
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{
 											Content: "and a list item",
@@ -614,7 +614,7 @@ End of file here`
 				Elements: []interface{}{
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
-						Lines: []types.InlineElements{
+						Lines: [][]interface{}{
 							{
 								types.StringElement{
 									Content: "End of file here",
@@ -640,7 +640,7 @@ foo
 				Elements: []interface{}{
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
-						Lines: []types.InlineElements{
+						Lines: [][]interface{}{
 							{
 								types.StringElement{
 									Content: "foo",
@@ -679,7 +679,7 @@ foo
 				Elements: []interface{}{
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
-						Lines: []types.InlineElements{
+						Lines: [][]interface{}{
 							{
 								types.StringElement{
 									Content: "foo",
@@ -711,7 +711,7 @@ paragraphs
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{
 											Content: "multiple",
@@ -750,14 +750,14 @@ ____`
 				Elements: []interface{}{
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
-						Lines: []types.InlineElements{
+						Lines: [][]interface{}{
 							{
 								types.StringElement{
 									Content: "some ",
 								},
 								types.QuotedText{
 									Kind: types.Bold,
-									Elements: types.InlineElements{
+									Elements: []interface{}{
 										types.StringElement{
 											Content: "quote",
 										},
@@ -797,7 +797,7 @@ ____
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{
 											Content: "some ",
@@ -815,7 +815,7 @@ ____
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{
 											Content: "quote ",
@@ -833,7 +833,7 @@ ____
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{
 											Content: "content ",
@@ -863,7 +863,7 @@ ____
 				Elements: []interface{}{
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
-						Lines: []types.InlineElements{
+						Lines: [][]interface{}{
 							{
 								types.StringElement{
 									Content: "some quote content ",
@@ -899,7 +899,7 @@ ____`
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{
 											Content: "some",
@@ -915,7 +915,7 @@ ____`
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{
 											Content: "* quote ",
@@ -933,7 +933,7 @@ ____`
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{
 											Content: "content",
@@ -973,7 +973,7 @@ ____`
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{
 											Content: "some",
@@ -993,7 +993,7 @@ ____`
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{
 											Content: "quote ",
@@ -1013,7 +1013,7 @@ ____`
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{
 											Content: "content",
@@ -1055,7 +1055,7 @@ foo
 				Elements: []interface{}{
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
-						Lines: []types.InlineElements{
+						Lines: [][]interface{}{
 							{
 								types.StringElement{
 									Content: "foo",
@@ -1086,14 +1086,14 @@ ____`
 				Elements: []interface{}{
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
-						Lines: []types.InlineElements{
+						Lines: [][]interface{}{
 							{
 								types.StringElement{
 									Content: "some ",
 								},
 								types.QuotedText{
 									Kind: types.Bold,
-									Elements: types.InlineElements{
+									Elements: []interface{}{
 										types.StringElement{
 											Content: "verse",
 										},
@@ -1127,7 +1127,7 @@ ____
 				Elements: []interface{}{
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
-						Lines: []types.InlineElements{
+						Lines: [][]interface{}{
 							{
 								types.StringElement{
 									Content: "- some ",
@@ -1165,7 +1165,7 @@ ____
 				Elements: []interface{}{
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
-						Lines: []types.InlineElements{
+						Lines: [][]interface{}{
 							{
 								types.StringElement{
 									Content: "some verse content ",
@@ -1195,7 +1195,7 @@ ____`
 				Elements: []interface{}{
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
-						Lines: []types.InlineElements{
+						Lines: [][]interface{}{
 							{
 								types.StringElement{
 									Content: "* some",
@@ -1244,7 +1244,7 @@ ____`
 				Elements: []interface{}{
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
-						Lines: []types.InlineElements{
+						Lines: [][]interface{}{
 							{
 								types.StringElement{
 									Content: "* foo",
@@ -1256,7 +1256,7 @@ ____`
 					types.BlankLine{},
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
-						Lines: []types.InlineElements{
+						Lines: [][]interface{}{
 							{
 								types.StringElement{
 									Content: "\t* bar",
@@ -1296,7 +1296,7 @@ foo
 				Elements: []interface{}{
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
-						Lines: []types.InlineElements{
+						Lines: [][]interface{}{
 							{
 								types.StringElement{
 									Content: "foo",
@@ -1329,7 +1329,7 @@ end
 				Elements: []interface{}{
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
-						Lines: []types.InlineElements{
+						Lines: [][]interface{}{
 							{
 								types.StringElement{
 									Content: "require 'sinatra'",
@@ -1378,7 +1378,7 @@ end
 				Elements: []interface{}{
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
-						Lines: []types.InlineElements{
+						Lines: [][]interface{}{
 							{
 								types.StringElement{
 									Content: "require 'sinatra'",
@@ -1430,7 +1430,7 @@ end
 				Elements: []interface{}{
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
-						Lines: []types.InlineElements{
+						Lines: [][]interface{}{
 							{
 								types.StringElement{
 									Content: "require 'sinatra'",
@@ -1472,14 +1472,14 @@ some *verse* content
 				Elements: []interface{}{
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
-						Lines: []types.InlineElements{
+						Lines: [][]interface{}{
 							{
 								types.StringElement{
 									Content: "some ",
 								},
 								types.QuotedText{
 									Kind: types.Bold,
-									Elements: types.InlineElements{
+									Elements: []interface{}{
 										types.StringElement{
 											Content: "verse",
 										},
@@ -1513,14 +1513,14 @@ bar
 				Elements: []interface{}{
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
-						Lines: []types.InlineElements{
+						Lines: [][]interface{}{
 							{
 								types.StringElement{
 									Content: "some ",
 								},
 								types.QuotedText{
 									Kind: types.Bold,
-									Elements: types.InlineElements{
+									Elements: []interface{}{
 										types.StringElement{
 											Content: "verse",
 										},
@@ -1538,7 +1538,7 @@ bar
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{
 											Content: "foo",
@@ -1579,7 +1579,7 @@ var _ = Describe("delimited blocks - final document", func() {
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{
 											Content: content,
@@ -1626,7 +1626,7 @@ var _ = Describe("delimited blocks - final document", func() {
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{
 											Content: "some fenced code",
@@ -1642,7 +1642,7 @@ var _ = Describe("delimited blocks - final document", func() {
 							types.BlankLine{},
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{
 											Content: "in the middle",
@@ -1671,7 +1671,7 @@ var _ = Describe("delimited blocks - final document", func() {
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{
 											Content: "some fenced code",
@@ -1687,7 +1687,7 @@ var _ = Describe("delimited blocks - final document", func() {
 							types.BlankLine{},
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{
 											Content: "in the middle",
@@ -1699,7 +1699,7 @@ var _ = Describe("delimited blocks - final document", func() {
 					},
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
-						Lines: []types.InlineElements{
+						Lines: [][]interface{}{
 							{
 								types.StringElement{Content: "then a normal paragraph."},
 							},
@@ -1721,7 +1721,7 @@ var _ = Describe("delimited blocks - final document", func() {
 				Elements: []interface{}{
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
-						Lines: []types.InlineElements{
+						Lines: [][]interface{}{
 							{
 								types.StringElement{Content: "a paragraph."},
 							},
@@ -1733,7 +1733,7 @@ var _ = Describe("delimited blocks - final document", func() {
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{
 											Content: content,
@@ -1762,7 +1762,7 @@ var _ = Describe("delimited blocks - final document", func() {
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{
 											Content: "End of file here",
@@ -1796,7 +1796,7 @@ var _ = Describe("delimited blocks - final document", func() {
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{
 											Content: "a ",
@@ -1850,7 +1850,7 @@ some listing code
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{
 											Content: "some listing code",
@@ -1903,7 +1903,7 @@ in the middle
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{
 											Content: "some listing code",
@@ -1947,7 +1947,7 @@ in the middle
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{
 											Content: "* some ",
@@ -1992,7 +1992,7 @@ then a normal paragraph.`
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{
 											Content: "some listing code",
@@ -2015,7 +2015,7 @@ then a normal paragraph.`
 					},
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
-						Lines: []types.InlineElements{
+						Lines: [][]interface{}{
 							{
 								types.StringElement{Content: "then a normal paragraph."},
 							},
@@ -2039,7 +2039,7 @@ some listing code
 				Elements: []interface{}{
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
-						Lines: []types.InlineElements{
+						Lines: [][]interface{}{
 							{
 								types.StringElement{Content: "a paragraph."},
 							},
@@ -2051,7 +2051,7 @@ some listing code
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{
 											Content: "some listing code",
@@ -2081,7 +2081,7 @@ End of file here.`
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{
 											Content: "End of file here.",
@@ -2115,7 +2115,7 @@ some listing code
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{
 											Content: "some listing code",
@@ -2146,7 +2146,7 @@ some listing code
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{
 											Content: ".foo",
@@ -2181,7 +2181,7 @@ with *bold content*
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{
 											Content: ".foo",
@@ -2198,7 +2198,7 @@ with *bold content*
 										},
 										types.QuotedText{
 											Kind: types.Bold,
-											Elements: types.InlineElements{
+											Elements: []interface{}{
 												types.StringElement{
 													Content: "bold content",
 												},
@@ -2219,7 +2219,7 @@ with *bold content*
 										Elements: []interface{}{
 											types.Paragraph{
 												Attributes: types.ElementAttributes{},
-												Lines: []types.InlineElements{
+												Lines: [][]interface{}{
 													{
 														types.StringElement{
 															Content: "and a list item",
@@ -2253,7 +2253,7 @@ End of file here`
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{
 											Content: "End of file here",
@@ -2287,7 +2287,7 @@ foo
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{
 											Content: "foo",
@@ -2342,7 +2342,7 @@ foo
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{
 											Content: "foo",
@@ -2380,7 +2380,7 @@ paragraphs
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{
 											Content: "multiple",
@@ -2425,14 +2425,14 @@ ____`
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{
 											Content: "some ",
 										},
 										types.QuotedText{
 											Kind: types.Bold,
-											Elements: types.InlineElements{
+											Elements: []interface{}{
 												types.StringElement{
 													Content: "quote",
 												},
@@ -2483,7 +2483,7 @@ ____
 										Elements: []interface{}{
 											types.Paragraph{
 												Attributes: types.ElementAttributes{},
-												Lines: []types.InlineElements{
+												Lines: [][]interface{}{
 													{
 														types.StringElement{
 															Content: "some ",
@@ -2501,7 +2501,7 @@ ____
 										Elements: []interface{}{
 											types.Paragraph{
 												Attributes: types.ElementAttributes{},
-												Lines: []types.InlineElements{
+												Lines: [][]interface{}{
 													{
 														types.StringElement{
 															Content: "quote ",
@@ -2519,7 +2519,7 @@ ____
 										Elements: []interface{}{
 											types.Paragraph{
 												Attributes: types.ElementAttributes{},
-												Lines: []types.InlineElements{
+												Lines: [][]interface{}{
 													{
 														types.StringElement{
 															Content: "content ",
@@ -2559,7 +2559,7 @@ ____
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{
 											Content: "some quote content ",
@@ -2606,7 +2606,7 @@ ____`
 										Elements: []interface{}{
 											types.Paragraph{
 												Attributes: types.ElementAttributes{},
-												Lines: []types.InlineElements{
+												Lines: [][]interface{}{
 													{
 														types.StringElement{
 															Content: "some",
@@ -2624,7 +2624,7 @@ ____`
 								Elements: []interface{}{
 									types.Paragraph{
 										Attributes: types.ElementAttributes{},
-										Lines: []types.InlineElements{
+										Lines: [][]interface{}{
 											{
 												types.StringElement{
 													Content: "* quote ",
@@ -2645,7 +2645,7 @@ ____`
 										Elements: []interface{}{
 											types.Paragraph{
 												Attributes: types.ElementAttributes{},
-												Lines: []types.InlineElements{
+												Lines: [][]interface{}{
 													{
 														types.StringElement{
 															Content: "content",
@@ -2698,7 +2698,7 @@ ____`
 										Elements: []interface{}{
 											types.Paragraph{
 												Attributes: types.ElementAttributes{},
-												Lines: []types.InlineElements{
+												Lines: [][]interface{}{
 													{
 														types.StringElement{
 															Content: "some",
@@ -2716,7 +2716,7 @@ ____`
 										Elements: []interface{}{
 											types.Paragraph{
 												Attributes: types.ElementAttributes{},
-												Lines: []types.InlineElements{
+												Lines: [][]interface{}{
 													{
 														types.StringElement{
 															Content: "quote ",
@@ -2734,7 +2734,7 @@ ____`
 										Elements: []interface{}{
 											types.Paragraph{
 												Attributes: types.ElementAttributes{},
-												Lines: []types.InlineElements{
+												Lines: [][]interface{}{
 													{
 														types.StringElement{
 															Content: "content",
@@ -2794,7 +2794,7 @@ foo
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{
 											Content: "foo",
@@ -2833,14 +2833,14 @@ ____`
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{
 											Content: "some ",
 										},
 										types.QuotedText{
 											Kind: types.Bold,
-											Elements: types.InlineElements{
+											Elements: []interface{}{
 												types.StringElement{
 													Content: "verse",
 												},
@@ -2882,7 +2882,7 @@ ____
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{
 											Content: "- some ",
@@ -2928,7 +2928,7 @@ ____
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{
 											Content: "some verse content ",
@@ -2966,7 +2966,7 @@ ____`
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{
 											Content: "* some",
@@ -3023,7 +3023,7 @@ ____`
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{
 											Content: "* foo",
@@ -3035,7 +3035,7 @@ ____`
 							types.BlankLine{},
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{
 											Content: "\t* bar",
@@ -3091,7 +3091,7 @@ foo
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{
 											Content: "foo",
@@ -3132,7 +3132,7 @@ end
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{
 											Content: "require 'sinatra'",
@@ -3189,7 +3189,7 @@ end
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{
 											Content: "require 'sinatra'",
@@ -3249,7 +3249,7 @@ end
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{
 											Content: "require 'sinatra'",
@@ -3299,14 +3299,14 @@ some *verse* content
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{
 											Content: "some ",
 										},
 										types.QuotedText{
 											Kind: types.Bold,
-											Elements: types.InlineElements{
+											Elements: []interface{}{
 												types.StringElement{
 													Content: "verse",
 												},
@@ -3348,14 +3348,14 @@ bar
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{
 											Content: "some ",
 										},
 										types.QuotedText{
 											Kind: types.Bold,
-											Elements: types.InlineElements{
+											Elements: []interface{}{
 												types.StringElement{
 													Content: "verse",
 												},
@@ -3373,7 +3373,7 @@ bar
 								Elements: []interface{}{
 									types.Paragraph{
 										Attributes: types.ElementAttributes{},
-										Lines: []types.InlineElements{
+										Lines: [][]interface{}{
 											{
 												types.StringElement{
 													Content: "foo",

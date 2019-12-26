@@ -20,7 +20,7 @@ var _ = Describe("document table of contents assertions", func() {
 			types.BlankLine{},
 			types.Paragraph{
 				Attributes: types.ElementAttributes{},
-				Lines: []types.InlineElements{
+				Lines: [][]interface{}{
 					{
 						types.StringElement{Content: "A short preamble"},
 					},
@@ -32,7 +32,7 @@ var _ = Describe("document table of contents assertions", func() {
 	section := types.Section{
 		Level:      1,
 		Attributes: types.ElementAttributes{},
-		Title: types.InlineElements{
+		Title: []interface{}{
 			types.StringElement{Content: "section 1"},
 		},
 		Elements: []interface{}{},

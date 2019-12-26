@@ -475,9 +475,10 @@ var _ = Describe("location resolution", func() {
 		"foo":        "bar",
 	}
 	DescribeTable("resolve URL",
-		func(actual types.Location, expectation types.Location) {
-			actual.Resolve(attrs)
-			Expect(actual).To(Equal(expectation))
+		func(actual types.Location, expected types.Location, expectedStr string) {
+			actual = actual.Resolve(attrs)
+			Expect(actual).To(Equal(expected))
+			Expect(actual.String()).To(Equal(expectedStr))
 		},
 		Entry("includes/file.ext",
 			types.Location{
@@ -493,7 +494,9 @@ var _ = Describe("location resolution", func() {
 						Content: "includes/file.ext",
 					},
 				},
-			}),
+			},
+			"includes/file.ext",
+		),
 		Entry("./{includedir}/file.ext",
 			types.Location{
 				Elements: []interface{}{
@@ -511,16 +514,11 @@ var _ = Describe("location resolution", func() {
 			types.Location{
 				Elements: []interface{}{
 					types.StringElement{
-						Content: "./",
-					},
-					types.DocumentAttributeSubstitution{
-						Name: "includedir",
-					},
-					types.StringElement{
-						Content: "/file.ext",
+						Content: "./includes/file.ext",
 					},
 				},
 			},
+			"./includes/file.ext",
 		),
 		Entry("./{unknown}/file.ext",
 			types.Location{
@@ -539,16 +537,11 @@ var _ = Describe("location resolution", func() {
 			types.Location{
 				Elements: []interface{}{
 					types.StringElement{
-						Content: "./",
-					},
-					types.DocumentAttributeSubstitution{
-						Name: "unknown",
-					},
-					types.StringElement{
-						Content: "/file.ext",
+						Content: "./{unknown}/file.ext",
 					},
 				},
 			},
+			"./{unknown}/file.ext",
 		),
 	)
 })

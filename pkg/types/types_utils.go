@@ -69,51 +69,51 @@ func NilSafe(elements []interface{}) []interface{} {
 }
 
 // MergeStringElements merge string elements together
-func MergeStringElements(elements ...interface{}) InlineElements {
+func MergeStringElements(elements ...interface{}) []interface{} {
 	result := make([]interface{}, 0)
-	buff := bytes.NewBuffer(nil)
+	buf := bytes.NewBuffer(nil)
 	for _, element := range elements {
 		if element == nil {
 			continue
 		}
 		switch element := element.(type) {
 		case string:
-			buff.WriteString(element)
+			buf.WriteString(element)
 		case []byte:
 			for _, b := range element {
-				buff.WriteByte(b)
+				buf.WriteByte(b)
 			}
 		case StringElement:
 			content := element.Content
-			buff.WriteString(content)
+			buf.WriteString(content)
 		case *StringElement:
 			content := element.Content
-			buff.WriteString(content)
+			buf.WriteString(content)
 		case []interface{}:
 			if len(element) > 0 {
 				f := MergeStringElements(element...)
-				result, buff = appendBuffer(result, buff)
+				result, buf = appendBuffer(result, buf)
 				result = MergeStringElements(append(result, f...)...)
 			}
 		default:
 			// log.Debugf("Merging with 'default' case an element of type %[1]T", element)
-			result, buff = appendBuffer(result, buff)
+			result, buf = appendBuffer(result, buf)
 			result = append(result, element)
 		}
 	}
-	// if buff was filled because some text was found
-	result, _ = appendBuffer(result, buff)
+	// if buf was filled because some text was found
+	result, _ = appendBuffer(result, buf)
 	return result
 }
 
 // appendBuffer appends the content of the given buffer to the given array of elements,
 // and returns a new buffer, or returns the given arguments if the buffer was empty
-func appendBuffer(elements []interface{}, buff *bytes.Buffer) ([]interface{}, *bytes.Buffer) {
-	if buff.Len() > 0 {
-		s, _ := NewStringElement(buff.String())
+func appendBuffer(elements []interface{}, buf *bytes.Buffer) ([]interface{}, *bytes.Buffer) {
+	if buf.Len() > 0 {
+		s, _ := NewStringElement(buf.String())
 		return append(elements, s), bytes.NewBuffer(nil)
 	}
-	return elements, buff
+	return elements, buf
 }
 
 // applyFunc a function to apply on the result of the `apply` function below, before returning

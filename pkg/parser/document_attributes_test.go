@@ -17,7 +17,7 @@ var _ = Describe("document attributes", func() {
 			
 This journey begins on a bleary Monday morning.`
 
-			title := types.InlineElements{
+			title := []interface{}{
 				types.StringElement{Content: "The Dangerous and Thrilling Documentation Chronicles"},
 			}
 			expected := types.Document{
@@ -38,7 +38,7 @@ This journey begins on a bleary Monday morning.`
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{Content: "This journey begins on a bleary Monday morning."},
 									},
@@ -58,7 +58,7 @@ This journey begins on a bleary Monday morning.`
 				It("all author data", func() {
 					source := `= title
 Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>`
-					title := types.InlineElements{
+					title := []interface{}{
 						types.StringElement{
 							Content: "title",
 						},
@@ -94,7 +94,7 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>`
 				It("lastname with underscores", func() {
 					source := `= title
 Lazarus het_Draeke <lazarus@asciidoctor.org>`
-					title := types.InlineElements{
+					title := []interface{}{
 						types.StringElement{
 							Content: "title",
 						},
@@ -130,7 +130,7 @@ Lazarus het_Draeke <lazarus@asciidoctor.org>`
 				It("firstname and lastname only", func() {
 					source := `= title
 Kismet Chameleon`
-					title := types.InlineElements{
+					title := []interface{}{
 						types.StringElement{
 							Content: "title",
 						},
@@ -166,7 +166,7 @@ Kismet Chameleon`
 				It("firstname only", func() {
 					source := `= title
 Chameleon`
-					title := types.InlineElements{
+					title := []interface{}{
 						types.StringElement{
 							Content: "title",
 						},
@@ -202,7 +202,7 @@ Chameleon`
 				It("alternate author input", func() {
 					source := `= title
 :author: Kismet Rainbow Chameleon` // `:"email":` is processed as a regular attribute
-					title := types.InlineElements{
+					title := []interface{}{
 						types.StringElement{
 							Content: "title",
 						},
@@ -241,7 +241,7 @@ Chameleon`
 				It("2 authors only", func() {
 					source := `= title
 Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus@asciidoctor.org>`
-					title := types.InlineElements{
+					title := []interface{}{
 						types.StringElement{
 							Content: "title",
 						},
@@ -286,7 +286,7 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 				source := `= title
 				john doe
 				v1.0, June 19, 2017: First incarnation`
-				title := types.InlineElements{
+				title := []interface{}{
 					types.StringElement{
 						Content: "title",
 					},
@@ -328,7 +328,7 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 				source := `= title
 				john doe
 				v1.0, June 19, 2017`
-				title := types.InlineElements{
+				title := []interface{}{
 					types.StringElement{
 						Content: "title",
 					},
@@ -370,7 +370,7 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 				source := `= title
 				john doe
 				1.0, June 19, 2017:`
-				title := types.InlineElements{
+				title := []interface{}{
 					types.StringElement{
 						Content: "title",
 					},
@@ -411,7 +411,7 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 				source := `= title
 				john doe
 				1.0,`
-				title := types.InlineElements{
+				title := []interface{}{
 					types.StringElement{
 						Content: "title",
 					},
@@ -453,7 +453,7 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 				source := `= title
 				john doe
 				1.0`
-				title := types.InlineElements{
+				title := []interface{}{
 					types.StringElement{
 						Content: "title",
 					},
@@ -495,7 +495,7 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 				source := `= title
 				john doe
 				1.0a`
-				title := types.InlineElements{
+				title := []interface{}{
 					types.StringElement{
 						Content: "title",
 					},
@@ -537,7 +537,7 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 				source := `= title
 				john doe
 				v1.0:`
-				title := types.InlineElements{
+				title := []interface{}{
 					types.StringElement{
 						Content: "title",
 					},
@@ -579,7 +579,7 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 				source := `= title
 				john doe
 				V1.0:`
-				title := types.InlineElements{
+				title := []interface{}{
 					types.StringElement{
 						Content: "title",
 					},
@@ -621,7 +621,7 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 				source := `= title
 				john doe
 				v1.0,`
-				title := types.InlineElements{
+				title := []interface{}{
 					types.StringElement{
 						Content: "title",
 					},
@@ -663,7 +663,7 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 				source := `= title
 				john doe
 				v1.0,:`
-				title := types.InlineElements{
+				title := []interface{}{
 					types.StringElement{
 						Content: "title",
 					},
@@ -705,7 +705,7 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 				source := `= title
 john doe
 v1.0:`
-				title := types.InlineElements{
+				title := []interface{}{
 					types.StringElement{
 						Content: "title",
 					},
@@ -789,7 +789,7 @@ a paragraph`
 						types.DocumentAttributeDeclaration{Name: types.DocumentAttrHardBreaks},
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
-							Lines: []types.InlineElements{
+							Lines: [][]interface{}{
 								{
 									types.StringElement{Content: "a paragraph"},
 								},
@@ -817,7 +817,7 @@ a paragraph`
 						types.DocumentAttributeDeclaration{Name: "author", Value: "Xavier"},
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
-							Lines: []types.InlineElements{
+							Lines: [][]interface{}{
 								{
 									types.StringElement{Content: "a paragraph"},
 								},
@@ -849,7 +849,7 @@ a paragraph`
 						types.DocumentAttributeDeclaration{Name: "hardbreaks"},
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
-							Lines: []types.InlineElements{
+							Lines: [][]interface{}{
 								{
 									types.StringElement{Content: "a paragraph"},
 								},
@@ -874,7 +874,7 @@ a paragraph`
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
-							Lines: []types.InlineElements{
+							Lines: [][]interface{}{
 								{
 									types.StringElement{Content: "a paragraph"},
 								},
@@ -904,7 +904,7 @@ a paragraph written by {author}.`
 						types.DocumentAttributeDeclaration{Name: "author", Value: "Xavier"},
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
-							Lines: []types.InlineElements{
+							Lines: [][]interface{}{
 								{
 									types.StringElement{Content: "a paragraph written by Xavier."},
 								},
@@ -932,7 +932,7 @@ a paragraph written by {author}.`
 						types.DocumentAttributeReset{Name: "author2"},
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
-							Lines: []types.InlineElements{
+							Lines: [][]interface{}{
 								{
 									types.StringElement{Content: "a paragraph written by Xavier."},
 								},
@@ -951,7 +951,7 @@ v1.0, June 19, 2017: First incarnation
 :keywords: documentation, team, obstacles, journey, victory
 
 This journey begins on a bleary Monday morning.`
-				title := types.InlineElements{
+				title := []interface{}{
 					types.StringElement{Content: "The Dangerous and Thrilling Documentation Chronicles"},
 				}
 				expected := types.Document{
@@ -995,7 +995,7 @@ This journey begins on a bleary Monday morning.`
 								},
 								types.Paragraph{
 									Attributes: types.ElementAttributes{},
-									Lines: []types.InlineElements{
+									Lines: [][]interface{}{
 										{
 											types.StringElement{Content: "This journey begins on a bleary Monday morning."},
 										},
@@ -1024,7 +1024,7 @@ a paragraph written by {author}.`
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
-							Lines: []types.InlineElements{
+							Lines: [][]interface{}{
 								{
 									types.StringElement{Content: "a paragraph written by Xavier."},
 								},
@@ -1053,7 +1053,7 @@ a paragraph written by {author}.`
 				Elements: []interface{}{
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
-						Lines: []types.InlineElements{
+						Lines: [][]interface{}{
 							{
 								types.StringElement{Content: "a paragraph"},
 							},
@@ -1084,7 +1084,7 @@ a paragraph written by {author}.`
 				Elements: []interface{}{
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
-						Lines: []types.InlineElements{
+						Lines: [][]interface{}{
 							{
 								types.StringElement{Content: ":@date: 2017-01-01"},
 							},

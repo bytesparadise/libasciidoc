@@ -14,11 +14,11 @@ var _ = Describe("inline elements", func() {
 		source := "*some bold content*"
 		expected := types.Paragraph{
 			Attributes: types.ElementAttributes{},
-			Lines: []types.InlineElements{
+			Lines: [][]interface{}{
 				{
 					types.QuotedText{
 						Kind: types.Bold,
-						Elements: types.InlineElements{
+						Elements: []interface{}{
 							types.StringElement{Content: "some bold content"},
 						},
 					},
@@ -32,12 +32,12 @@ var _ = Describe("inline elements", func() {
 		source := "(*some bold content*)"
 		expected := types.Paragraph{
 			Attributes: types.ElementAttributes{},
-			Lines: []types.InlineElements{
+			Lines: [][]interface{}{
 				{
 					types.StringElement{Content: "("},
 					types.QuotedText{
 						Kind: types.Bold,
-						Elements: types.InlineElements{
+						Elements: []interface{}{
 							types.StringElement{Content: "some bold content"},
 						},
 					},
@@ -52,7 +52,7 @@ var _ = Describe("inline elements", func() {
 		source := "some*bold*content"
 		expected := types.Paragraph{
 			Attributes: types.ElementAttributes{},
-			Lines: []types.InlineElements{
+			Lines: [][]interface{}{
 				{
 					types.StringElement{Content: "some*bold*content"},
 				},
@@ -65,7 +65,7 @@ var _ = Describe("inline elements", func() {
 		source := "*foo*bar"
 		expected := types.Paragraph{
 			Attributes: types.ElementAttributes{},
-			Lines: []types.InlineElements{
+			Lines: [][]interface{}{
 				{
 					types.StringElement{Content: "*foo*bar"},
 				},
@@ -78,11 +78,11 @@ var _ = Describe("inline elements", func() {
 		source := "**foo**bar"
 		expected := types.Paragraph{
 			Attributes: types.ElementAttributes{},
-			Lines: []types.InlineElements{
+			Lines: [][]interface{}{
 				{
 					types.QuotedText{
 						Kind: types.Bold,
-						Elements: types.InlineElements{
+						Elements: []interface{}{
 							types.StringElement{Content: "foo"},
 						},
 					},
@@ -97,7 +97,7 @@ var _ = Describe("inline elements", func() {
 		source := "à bientôt"
 		expected := types.Paragraph{
 			Attributes: types.ElementAttributes{},
-			Lines: []types.InlineElements{
+			Lines: [][]interface{}{
 				{
 					types.StringElement{Content: "à bientôt"},
 				},

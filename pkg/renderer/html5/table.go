@@ -33,7 +33,7 @@ func init() {
 {{ end }}</tbody>{{ end }}
 </table>{{ end }}`,
 		texttemplate.FuncMap{
-			"renderElement":  renderElement,
+			"renderElement":  renderInlineElements,
 			"includeNewline": includeNewline,
 			"escape":         EscapeString,
 		})

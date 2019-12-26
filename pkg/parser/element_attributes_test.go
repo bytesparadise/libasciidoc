@@ -20,7 +20,7 @@ a paragraph`
 					Attributes: types.ElementAttributes{
 						"link": "http://foo.bar",
 					},
-					Lines: []types.InlineElements{
+					Lines: [][]interface{}{
 						{
 							types.StringElement{
 								Content: "a paragraph",
@@ -37,7 +37,7 @@ a paragraph`
 					Attributes: types.ElementAttributes{
 						"link": "http://foo.bar",
 					},
-					Lines: []types.InlineElements{
+					Lines: [][]interface{}{
 						{
 							types.StringElement{
 								Content: "a paragraph",
@@ -55,7 +55,7 @@ a paragraph`
 a paragraph`
 				expected := types.Paragraph{
 					Attributes: types.ElementAttributes{},
-					Lines: []types.InlineElements{
+					Lines: [][]interface{}{
 						{
 							types.StringElement{
 								Content: "[ link=http://foo.bar]",
@@ -76,7 +76,7 @@ a paragraph`
 a paragraph`
 				expected := types.Paragraph{
 					Attributes: types.ElementAttributes{},
-					Lines: []types.InlineElements{
+					Lines: [][]interface{}{
 						{
 							types.StringElement{
 								Content: "[link=http://foo.bar",
@@ -106,7 +106,7 @@ a paragraph`
 						types.AttrID:       "img-foobar",
 						types.AttrCustomID: true,
 					},
-					Lines: []types.InlineElements{
+					Lines: [][]interface{}{
 						{
 							types.StringElement{
 								Content: "a paragraph",
@@ -125,7 +125,7 @@ a paragraph`
 						types.AttrID:       "img-foobar",
 						types.AttrCustomID: true,
 					},
-					Lines: []types.InlineElements{
+					Lines: [][]interface{}{
 						{
 							types.StringElement{
 								Content: "a paragraph",
@@ -144,7 +144,7 @@ a paragraph`
 a paragraph`
 				expected := types.Paragraph{
 					Attributes: types.ElementAttributes{},
-					Lines: []types.InlineElements{
+					Lines: [][]interface{}{
 						{
 							types.StringElement{
 								Content: "[ #img-foobar ]",
@@ -165,7 +165,7 @@ a paragraph`
 a paragraph`
 				expected := types.Paragraph{
 					Attributes: types.ElementAttributes{},
-					Lines: []types.InlineElements{
+					Lines: [][]interface{}{
 						{
 							types.StringElement{
 								Content: "[#img-foobar",
@@ -194,7 +194,7 @@ a paragraph`
 					Attributes: types.ElementAttributes{
 						types.AttrTitle: "a title",
 					},
-					Lines: []types.InlineElements{
+					Lines: [][]interface{}{
 						{
 							types.StringElement{
 								Content: "a paragraph",
@@ -218,7 +218,7 @@ a list item!`
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
-							Lines: []types.InlineElements{
+							Lines: [][]interface{}{
 								{
 									types.StringElement{
 										Content: "a title",
@@ -242,7 +242,7 @@ a paragraph`
 
 				expected := types.Paragraph{
 					Attributes: types.ElementAttributes{},
-					Lines: []types.InlineElements{
+					Lines: [][]interface{}{
 						{
 							types.StringElement{
 								Content: "!a title",
@@ -271,7 +271,7 @@ a paragraph`
 					Attributes: types.ElementAttributes{
 						types.AttrRole: "a role",
 					},
-					Lines: []types.InlineElements{
+					Lines: [][]interface{}{
 						{
 							types.StringElement{
 								Content: "a paragraph",
@@ -289,7 +289,7 @@ a paragraph`
 					Attributes: types.ElementAttributes{
 						types.AttrRole: "a role",
 					},
-					Lines: []types.InlineElements{
+					Lines: [][]interface{}{
 						{
 							types.StringElement{
 								Content: "a paragraph",

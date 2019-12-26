@@ -16,11 +16,11 @@ var _ = Describe("passthroughs - draft", func() {
 			source := `+++hello, world+++`
 			expected := types.Paragraph{
 				Attributes: types.ElementAttributes{},
-				Lines: []types.InlineElements{
+				Lines: [][]interface{}{
 					{
 						types.Passthrough{
 							Kind: types.TriplePlusPassthrough,
-							Elements: types.InlineElements{
+							Elements: []interface{}{
 								types.StringElement{
 									Content: "hello, world",
 								},
@@ -36,11 +36,11 @@ var _ = Describe("passthroughs - draft", func() {
 			source := `++++++`
 			expected := types.Paragraph{
 				Attributes: types.ElementAttributes{},
-				Lines: []types.InlineElements{
+				Lines: [][]interface{}{
 					{
 						types.Passthrough{
 							Kind:     types.TriplePlusPassthrough,
-							Elements: types.InlineElements{},
+							Elements: []interface{}{},
 						},
 					},
 				},
@@ -52,11 +52,11 @@ var _ = Describe("passthroughs - draft", func() {
 			source := `+++ *hello*, world +++`
 			expected := types.Paragraph{
 				Attributes: types.ElementAttributes{},
-				Lines: []types.InlineElements{
+				Lines: [][]interface{}{
 					{
 						types.Passthrough{
 							Kind: types.TriplePlusPassthrough,
-							Elements: types.InlineElements{
+							Elements: []interface{}{
 								types.StringElement{
 									Content: " *hello*, world ",
 								},
@@ -72,11 +72,11 @@ var _ = Describe("passthroughs - draft", func() {
 			source := `+++ +++`
 			expected := types.Paragraph{
 				Attributes: types.ElementAttributes{},
-				Lines: []types.InlineElements{
+				Lines: [][]interface{}{
 					{
 						types.Passthrough{
 							Kind: types.TriplePlusPassthrough,
-							Elements: types.InlineElements{
+							Elements: []interface{}{
 								types.StringElement{
 									Content: " ",
 								},
@@ -92,11 +92,11 @@ var _ = Describe("passthroughs - draft", func() {
 			source := "+++\nhello,\nworld\n+++"
 			expected := types.Paragraph{
 				Attributes: types.ElementAttributes{},
-				Lines: []types.InlineElements{
+				Lines: [][]interface{}{
 					{
 						types.Passthrough{
 							Kind: types.TriplePlusPassthrough,
-							Elements: types.InlineElements{
+							Elements: []interface{}{
 								types.StringElement{
 									Content: "\nhello,\nworld\n",
 								},
@@ -112,12 +112,12 @@ var _ = Describe("passthroughs - draft", func() {
 			source := `The text +++<u>underline & me</u>+++ is underlined.`
 			expected := types.Paragraph{
 				Attributes: types.ElementAttributes{},
-				Lines: []types.InlineElements{
+				Lines: [][]interface{}{
 					{
 						types.StringElement{Content: "The text "},
 						types.Passthrough{
 							Kind: types.TriplePlusPassthrough,
-							Elements: types.InlineElements{
+							Elements: []interface{}{
 								types.StringElement{
 									Content: "<u>underline & me</u>",
 								},
@@ -134,11 +134,11 @@ var _ = Describe("passthroughs - draft", func() {
 			source := `+++image:foo.png[]+++`
 			expected := types.Paragraph{
 				Attributes: types.ElementAttributes{},
-				Lines: []types.InlineElements{
+				Lines: [][]interface{}{
 					{
 						types.Passthrough{
 							Kind: types.TriplePlusPassthrough,
-							Elements: types.InlineElements{
+							Elements: []interface{}{
 								types.StringElement{
 									Content: "image:foo.png[]",
 								},
@@ -158,11 +158,11 @@ var _ = Describe("passthroughs - draft", func() {
 			source := `+hello, world+`
 			expected := types.Paragraph{
 				Attributes: types.ElementAttributes{},
-				Lines: []types.InlineElements{
+				Lines: [][]interface{}{
 					{
 						types.Passthrough{
 							Kind: types.SinglePlusPassthrough,
-							Elements: types.InlineElements{
+							Elements: []interface{}{
 								types.StringElement{
 									Content: "hello, world",
 								},
@@ -178,7 +178,7 @@ var _ = Describe("passthroughs - draft", func() {
 			source := `++`
 			expected := types.Paragraph{
 				Attributes: types.ElementAttributes{},
-				Lines: []types.InlineElements{
+				Lines: [][]interface{}{
 					{
 						types.StringElement{
 							Content: "++",
@@ -193,11 +193,11 @@ var _ = Describe("passthroughs - draft", func() {
 			source := `+image:foo.png[]+`
 			expected := types.Paragraph{
 				Attributes: types.ElementAttributes{},
-				Lines: []types.InlineElements{
+				Lines: [][]interface{}{
 					{
 						types.Passthrough{
 							Kind: types.SinglePlusPassthrough,
-							Elements: types.InlineElements{
+							Elements: []interface{}{
 								types.StringElement{
 									Content: "image:foo.png[]",
 								},
@@ -213,14 +213,14 @@ var _ = Describe("passthroughs - draft", func() {
 			source := `+*hello*, world +` // invalid: space before last `+`
 			expected := types.Paragraph{
 				Attributes: types.ElementAttributes{},
-				Lines: []types.InlineElements{
+				Lines: [][]interface{}{
 					{
 						types.StringElement{
 							Content: "+",
 						},
 						types.QuotedText{
 							Kind: types.Bold,
-							Elements: types.InlineElements{
+							Elements: []interface{}{
 								types.StringElement{
 									Content: "hello",
 								},
@@ -240,14 +240,14 @@ var _ = Describe("passthroughs - draft", func() {
 			source := `+ *hello*, world+` // invalid: space after first `+`
 			expected := types.Paragraph{
 				Attributes: types.ElementAttributes{},
-				Lines: []types.InlineElements{
+				Lines: [][]interface{}{
 					{
 						types.StringElement{
 							Content: "+ ",
 						},
 						types.QuotedText{
 							Kind: types.Bold,
-							Elements: types.InlineElements{
+							Elements: []interface{}{
 								types.StringElement{
 									Content: "hello",
 								},
@@ -266,14 +266,14 @@ var _ = Describe("passthroughs - draft", func() {
 			source := `+ *hello*, world +` // invalid: spaces within
 			expected := types.Paragraph{
 				Attributes: types.ElementAttributes{},
-				Lines: []types.InlineElements{
+				Lines: [][]interface{}{
 					{
 						types.StringElement{
 							Content: "+ ",
 						},
 						types.QuotedText{
 							Kind: types.Bold,
-							Elements: types.InlineElements{
+							Elements: []interface{}{
 								types.StringElement{
 									Content: "hello",
 								},
@@ -293,7 +293,7 @@ var _ = Describe("passthroughs - draft", func() {
 			source := "+hello,\nworld+"
 			expected := types.Paragraph{
 				Attributes: types.ElementAttributes{},
-				Lines: []types.InlineElements{
+				Lines: [][]interface{}{
 					{
 						types.StringElement{
 							Content: "+hello,",
@@ -319,11 +319,11 @@ var _ = Describe("passthroughs - draft", func() {
 				source := `pass:[hello]`
 				expected := types.Paragraph{
 					Attributes: types.ElementAttributes{},
-					Lines: []types.InlineElements{
+					Lines: [][]interface{}{
 						{
 							types.Passthrough{
 								Kind: types.PassthroughMacro,
-								Elements: types.InlineElements{
+								Elements: []interface{}{
 									types.StringElement{
 										Content: "hello",
 									},
@@ -339,11 +339,11 @@ var _ = Describe("passthroughs - draft", func() {
 				source := `pass:[hello, world]`
 				expected := types.Paragraph{
 					Attributes: types.ElementAttributes{},
-					Lines: []types.InlineElements{
+					Lines: [][]interface{}{
 						{
 							types.Passthrough{
 								Kind: types.PassthroughMacro,
-								Elements: types.InlineElements{
+								Elements: []interface{}{
 									types.StringElement{
 										Content: "hello, world",
 									},
@@ -359,11 +359,11 @@ var _ = Describe("passthroughs - draft", func() {
 				source := `pass:[]`
 				expected := types.Paragraph{
 					Attributes: types.ElementAttributes{},
-					Lines: []types.InlineElements{
+					Lines: [][]interface{}{
 						{
 							types.Passthrough{
 								Kind:     types.PassthroughMacro,
-								Elements: types.InlineElements{},
+								Elements: []interface{}{},
 							},
 						},
 					},
@@ -375,11 +375,11 @@ var _ = Describe("passthroughs - draft", func() {
 				source := `pass:[ *hello*, world ]`
 				expected := types.Paragraph{
 					Attributes: types.ElementAttributes{},
-					Lines: []types.InlineElements{
+					Lines: [][]interface{}{
 						{
 							types.Passthrough{
 								Kind: types.PassthroughMacro,
-								Elements: types.InlineElements{
+								Elements: []interface{}{
 									types.StringElement{
 										Content: " *hello*, world ",
 									},
@@ -395,11 +395,11 @@ var _ = Describe("passthroughs - draft", func() {
 				source := "pass:[hello,\nworld]"
 				expected := types.Paragraph{
 					Attributes: types.ElementAttributes{},
-					Lines: []types.InlineElements{
+					Lines: [][]interface{}{
 						{
 							types.Passthrough{
 								Kind: types.PassthroughMacro,
-								Elements: types.InlineElements{
+								Elements: []interface{}{
 									types.StringElement{
 										Content: "hello,\nworld",
 									},
@@ -418,14 +418,14 @@ var _ = Describe("passthroughs - draft", func() {
 				source := `pass:q[*hello*]`
 				expected := types.Paragraph{
 					Attributes: types.ElementAttributes{},
-					Lines: []types.InlineElements{
+					Lines: [][]interface{}{
 						{
 							types.Passthrough{
 								Kind: types.PassthroughMacro,
-								Elements: types.InlineElements{
+								Elements: []interface{}{
 									types.QuotedText{
 										Kind: types.Bold,
-										Elements: types.InlineElements{
+										Elements: []interface{}{
 											types.StringElement{
 												Content: "hello",
 											},
@@ -443,17 +443,17 @@ var _ = Describe("passthroughs - draft", func() {
 				source := `pass:q[ a *hello*, world ]`
 				expected := types.Paragraph{
 					Attributes: types.ElementAttributes{},
-					Lines: []types.InlineElements{
+					Lines: [][]interface{}{
 						{
 							types.Passthrough{
 								Kind: types.PassthroughMacro,
-								Elements: types.InlineElements{
+								Elements: []interface{}{
 									types.StringElement{
 										Content: " a ",
 									},
 									types.QuotedText{
 										Kind: types.Bold,
-										Elements: types.InlineElements{
+										Elements: []interface{}{
 											types.StringElement{
 												Content: "hello",
 											},

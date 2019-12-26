@@ -144,26 +144,6 @@ func renderDocumentElements(ctx *renderer.Context) ([]byte, error) {
 		log.Debug("pre-rendered elements:")
 		spew.Dump(elements)
 	}
-	// 	// retrieve elements of the first section 0 (if available), plus remaining elements
-	// 	// any document attribute before the section level 0 can be ignored
-	// 	if s, ok := ctx.Document.Elements[0].(types.Section); ok && s.Level == 0 {
-	// 		elements = append(elements, s.Elements)
-	// 		if len(ctx.Document.Elements) > 1 {
-	// 			elements = append(elements, ctx.Document.Elements[1:]...)
-	// 		}
-	// 	} else if p, ok := ctx.Document.Elements[0].(types.Preamble); ok {
-	// 		if p.HasContent() {
-	// 			// check if preamble has anything else than document attribute declarations and blanklines
-	// 			log.Debug("preamble has content")
-	// 			elements = ctx.Document.Elements
-	// 		} else {
-	// 			elements = append(elements, ctx.Document.Elements[1:]...)
-	// 		}
-	// 	} else {
-	// 		elements = ctx.Document.Elements
-	// 	}
-	// }
-
 	// log.Debugf("rendered document with %d element(s)...", len(elements))
 	buff := bytes.NewBuffer(nil)
 	renderedElements, err := renderElements(ctx, elements)
@@ -182,7 +162,7 @@ func renderDocumentElements(ctx *renderer.Context) ([]byte, error) {
 
 func renderDocumentTitle(ctx *renderer.Context) ([]byte, error) {
 	if documentTitle, hasTitle := ctx.Document.Title(); hasTitle {
-		title, err := renderPlainString(ctx, documentTitle)
+		title, err := renderPlainText(ctx, documentTitle)
 		if err != nil {
 			return nil, errors.Wrapf(err, "unable to render document title")
 		}
@@ -193,7 +173,7 @@ func renderDocumentTitle(ctx *renderer.Context) ([]byte, error) {
 
 func renderDocumentHeader(ctx *renderer.Context) ([]byte, error) {
 	if documentTitle, hasTitle := ctx.Document.Title(); hasTitle {
-		title, err := renderElement(ctx, documentTitle)
+		title, err := renderInlineElements(ctx, documentTitle)
 		if err != nil {
 			return nil, errors.Wrapf(err, "unable to render document header")
 		}

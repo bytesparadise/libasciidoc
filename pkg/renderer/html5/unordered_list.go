@@ -48,7 +48,7 @@ func renderUnorderedList(ctx *renderer.Context, l types.UnorderedList) ([]byte, 
 			Items     []types.UnorderedListItem
 		}{
 			ID:        generateID(ctx, l.Attributes),
-			Title:     getTitle(l.Attributes),
+			Title:     renderTitle(l.Attributes),
 			Role:      l.Attributes.GetAsString(types.AttrRole),
 			Checklist: checkList,
 			Items:     l.Items,

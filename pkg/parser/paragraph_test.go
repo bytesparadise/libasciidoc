@@ -16,7 +16,7 @@ var _ = Describe("paragraphs - draft", func() {
 			source := "hello"
 			expected := types.Paragraph{
 				Attributes: types.ElementAttributes{},
-				Lines: []types.InlineElements{
+				Lines: [][]interface{}{
 					{
 						types.StringElement{Content: "hello"},
 					},
@@ -29,7 +29,7 @@ var _ = Describe("paragraphs - draft", func() {
 			source := "a paragraph with some content  "
 			expected := types.Paragraph{
 				Attributes: types.ElementAttributes{},
-				Lines: []types.InlineElements{
+				Lines: [][]interface{}{
 					{
 						types.StringElement{Content: "a paragraph with some content  "},
 					},
@@ -42,12 +42,12 @@ var _ = Describe("paragraphs - draft", func() {
 			source := "a paragraph with *some bold content*  "
 			expected := types.Paragraph{
 				Attributes: types.ElementAttributes{},
-				Lines: []types.InlineElements{
+				Lines: [][]interface{}{
 					{
 						types.StringElement{Content: "a paragraph with "},
 						types.QuotedText{
 							Kind: types.Bold,
-							Elements: types.InlineElements{
+							Elements: []interface{}{
 								types.StringElement{Content: "some bold content"},
 							},
 						},
@@ -62,12 +62,12 @@ var _ = Describe("paragraphs - draft", func() {
 			source := "+*some bold content*"
 			expected := types.Paragraph{
 				Attributes: types.ElementAttributes{},
-				Lines: []types.InlineElements{
+				Lines: [][]interface{}{
 					{
 						types.StringElement{Content: "+"},
 						types.QuotedText{
 							Kind: types.Bold,
-							Elements: types.InlineElements{
+							Elements: []interface{}{
 								types.StringElement{Content: "some bold content"},
 							},
 						},
@@ -87,7 +87,7 @@ a paragraph`
 					types.AttrCustomID: true,
 					types.AttrTitle:    "a title",
 				},
-				Lines: []types.InlineElements{
+				Lines: [][]interface{}{
 					{
 						types.StringElement{Content: "a paragraph"},
 					},
@@ -100,7 +100,7 @@ a paragraph`
 			source := `foo. bar.`
 			expected := types.Paragraph{
 				Attributes: types.ElementAttributes{},
-				Lines: []types.InlineElements{
+				Lines: [][]interface{}{
 					{
 						types.StringElement{Content: "foo. bar."},
 					},
@@ -114,7 +114,7 @@ a paragraph`
 bar.`
 			expected := types.Paragraph{
 				Attributes: types.ElementAttributes{},
-				Lines: []types.InlineElements{
+				Lines: [][]interface{}{
 					{
 						types.StringElement{Content: "foo. "},
 					},
@@ -135,7 +135,7 @@ bar
 baz`
 			expected := types.Paragraph{
 				Attributes: types.ElementAttributes{},
-				Lines: []types.InlineElements{
+				Lines: [][]interface{}{
 					{
 						types.StringElement{Content: "foo"},
 						types.LineBreak{},
@@ -160,7 +160,7 @@ baz`
 				Attributes: types.ElementAttributes{
 					types.AttrHardBreaks: nil,
 				},
-				Lines: []types.InlineElements{
+				Lines: [][]interface{}{
 					{
 						types.StringElement{Content: "foo"},
 					},
@@ -185,7 +185,7 @@ baz`
 				Attributes: types.ElementAttributes{
 					types.AttrAdmonitionKind: types.Note,
 				},
-				Lines: []types.InlineElements{
+				Lines: [][]interface{}{
 					{
 						types.StringElement{
 							Content: "this is a note.",
@@ -203,7 +203,7 @@ warning!`
 				Attributes: types.ElementAttributes{
 					types.AttrAdmonitionKind: types.Warning,
 				},
-				Lines: []types.InlineElements{
+				Lines: [][]interface{}{
 					{
 						types.StringElement{
 							Content: "this is a multiline",
@@ -230,7 +230,7 @@ NOTE: this is a note.`
 					types.AttrCustomID:       true,
 					types.AttrTitle:          "bar",
 				},
-				Lines: []types.InlineElements{
+				Lines: [][]interface{}{
 					{
 						types.StringElement{
 							Content: "this is a note.",
@@ -248,7 +248,7 @@ this is a caution!`
 				Attributes: types.ElementAttributes{
 					types.AttrAdmonitionKind: types.Caution,
 				},
-				Lines: []types.InlineElements{
+				Lines: [][]interface{}{
 					{
 						types.StringElement{
 							Content: "this is a caution!",
@@ -272,7 +272,7 @@ this is a
 					types.AttrCustomID:       true,
 					types.AttrTitle:          "bar",
 				},
-				Lines: []types.InlineElements{
+				Lines: [][]interface{}{
 					{
 						types.StringElement{
 							Content: "this is a ",
@@ -281,7 +281,7 @@ this is a
 					{
 						types.QuotedText{
 							Kind: types.Bold,
-							Elements: types.InlineElements{
+							Elements: []interface{}{
 								types.StringElement{
 									Content: "caution",
 								},
@@ -308,7 +308,7 @@ And no space after [CAUTION] either.`
 						Attributes: types.ElementAttributes{
 							types.AttrAdmonitionKind: types.Note,
 						},
-						Lines: []types.InlineElements{
+						Lines: [][]interface{}{
 							{
 								types.StringElement{
 									Content: "No space after the [NOTE]!",
@@ -321,7 +321,7 @@ And no space after [CAUTION] either.`
 						Attributes: types.ElementAttributes{
 							types.AttrAdmonitionKind: types.Caution,
 						},
-						Lines: []types.InlineElements{
+						Lines: [][]interface{}{
 							{
 								types.StringElement{
 									Content: "And no space after [CAUTION] either.",
@@ -346,7 +346,7 @@ I am a verse paragraph.`
 					types.AttrQuoteAuthor: "john doe",
 					types.AttrQuoteTitle:  "verse title",
 				},
-				Lines: []types.InlineElements{
+				Lines: [][]interface{}{
 					{
 						types.StringElement{
 							Content: "I am a verse paragraph.",
@@ -371,7 +371,7 @@ I am a verse paragraph.`
 					types.AttrCustomID:    true,
 					types.AttrTitle:       "universe",
 				},
-				Lines: []types.InlineElements{
+				Lines: [][]interface{}{
 					{
 						types.StringElement{
 							Content: "I am a verse paragraph.",
@@ -390,7 +390,7 @@ I am a verse paragraph.`
 					types.AttrKind:        types.Verse,
 					types.AttrQuoteAuthor: "john doe",
 				},
-				Lines: []types.InlineElements{
+				Lines: [][]interface{}{
 					{
 						types.StringElement{
 							Content: "I am a verse paragraph.",
@@ -409,7 +409,7 @@ I am a verse paragraph.`
 					types.AttrKind:        types.Verse,
 					types.AttrQuoteAuthor: "john doe",
 				},
-				Lines: []types.InlineElements{
+				Lines: [][]interface{}{
 					{
 						types.StringElement{
 							Content: "I am a verse paragraph.",
@@ -427,7 +427,7 @@ I am a verse paragraph.`
 				Attributes: types.ElementAttributes{
 					types.AttrKind: types.Verse,
 				},
-				Lines: []types.InlineElements{
+				Lines: [][]interface{}{
 					{
 						types.StringElement{
 							Content: "I am a verse paragraph.",
@@ -445,7 +445,7 @@ I am a verse paragraph.`
 				Attributes: types.ElementAttributes{
 					types.AttrKind: types.Verse,
 				},
-				Lines: []types.InlineElements{
+				Lines: [][]interface{}{
 					{
 						types.StringElement{
 							Content: "I am a verse paragraph.",
@@ -465,7 +465,7 @@ image::foo.png[]`
 					types.AttrQuoteAuthor: "john doe",
 					types.AttrQuoteTitle:  "verse title",
 				},
-				Lines: []types.InlineElements{
+				Lines: [][]interface{}{
 					{
 						types.StringElement{
 							Content: "image::foo.png[]",
@@ -488,7 +488,7 @@ I am a quote paragraph.`
 					types.AttrQuoteAuthor: "john doe",
 					types.AttrQuoteTitle:  "quote title",
 				},
-				Lines: []types.InlineElements{
+				Lines: [][]interface{}{
 					{
 						types.StringElement{
 							Content: "I am a quote paragraph.",
@@ -513,7 +513,7 @@ I am a quote paragraph.`
 					types.AttrCustomID:    true,
 					types.AttrTitle:       "universe",
 				},
-				Lines: []types.InlineElements{
+				Lines: [][]interface{}{
 					{
 						types.StringElement{
 							Content: "I am a quote paragraph.",
@@ -532,7 +532,7 @@ I am a quote paragraph.`
 					types.AttrKind:        types.Quote,
 					types.AttrQuoteAuthor: "john doe",
 				},
-				Lines: []types.InlineElements{
+				Lines: [][]interface{}{
 					{
 						types.StringElement{
 							Content: "I am a quote paragraph.",
@@ -551,7 +551,7 @@ I am a quote paragraph.`
 					types.AttrKind:        types.Quote,
 					types.AttrQuoteAuthor: "john doe",
 				},
-				Lines: []types.InlineElements{
+				Lines: [][]interface{}{
 					{
 						types.StringElement{
 							Content: "I am a quote paragraph.",
@@ -569,7 +569,7 @@ I am a quote paragraph.`
 				Attributes: types.ElementAttributes{
 					types.AttrKind: types.Quote,
 				},
-				Lines: []types.InlineElements{
+				Lines: [][]interface{}{
 					{
 						types.StringElement{
 							Content: "I am a quote paragraph.",
@@ -587,7 +587,7 @@ I am a quote paragraph.`
 				Attributes: types.ElementAttributes{
 					types.AttrKind: types.Quote,
 				},
-				Lines: []types.InlineElements{
+				Lines: [][]interface{}{
 					{
 						types.StringElement{
 							Content: "I am a quote paragraph.",
@@ -607,7 +607,7 @@ a foo image:foo.png[]`
 					types.AttrQuoteAuthor: "john doe",
 					types.AttrQuoteTitle:  "quote title",
 				},
-				Lines: []types.InlineElements{
+				Lines: [][]interface{}{
 					{
 						types.StringElement{
 							Content: "a foo ",
@@ -664,7 +664,7 @@ var _ = Describe("paragraphs - final document", func() {
 			Elements: []interface{}{
 				types.Paragraph{
 					Attributes: types.ElementAttributes{},
-					Lines: []types.InlineElements{
+					Lines: [][]interface{}{
 						{
 							types.StringElement{Content: "hello &#43; world"},
 						},

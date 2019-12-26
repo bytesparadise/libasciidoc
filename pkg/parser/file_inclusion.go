@@ -125,7 +125,7 @@ func invalidFileErrMsg(filename, path, rawText string, err error) (types.DraftDo
 		Blocks: []interface{}{
 			types.Paragraph{
 				Attributes: types.ElementAttributes{},
-				Lines: []types.InlineElements{
+				Lines: [][]interface{}{
 					{
 						types.StringElement{
 							Content: buf.String(),

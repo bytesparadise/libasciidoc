@@ -36,8 +36,8 @@ func init() {
 </div>{{ end }}{{ end }}
 </div>`,
 		texttemplate.FuncMap{
-			"renderFootnoteContent": func(ctx *renderer.Context, element interface{}) (string, error) {
-				result, err := renderElement(ctx, element)
+			"renderFootnoteContent": func(ctx *renderer.Context, elements []interface{}) (string, error) {
+				result, err := renderInlineElements(ctx, elements)
 				if err != nil {
 					return "", errors.Wrapf(err, "unable to render foot note content")
 				}

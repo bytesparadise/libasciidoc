@@ -36,7 +36,7 @@ What is the answer to the Ultimate Question?:: 42`
 							Elements: []interface{}{
 								types.Paragraph{
 									Attributes: types.ElementAttributes{},
-									Lines: []types.InlineElements{
+									Lines: [][]interface{}{
 										{
 											types.StringElement{
 												Content: "An implementation of the AsciiDoc processor in Golang.",
@@ -53,7 +53,7 @@ What is the answer to the Ultimate Question?:: 42`
 							Elements: []interface{}{
 								types.Paragraph{
 									Attributes: types.ElementAttributes{},
-									Lines: []types.InlineElements{
+									Lines: [][]interface{}{
 										{
 											types.StringElement{
 												Content: "42",
