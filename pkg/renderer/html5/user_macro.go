@@ -14,7 +14,7 @@ func renderUserMacro(ctx *renderer.Context, um types.UserMacro) ([]byte, error) 
 		if um.Kind == types.BlockMacro {
 			// fallback to paragraph
 			p, _ := types.NewParagraph([]interface{}{
-				types.InlineElements{
+				[]interface{}{
 					types.StringElement{Content: um.RawText},
 				},
 			}, nil)

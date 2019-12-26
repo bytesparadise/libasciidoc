@@ -77,7 +77,7 @@ func renderInlineImage(ctx *renderer.Context, img types.InlineImage) ([]byte, er
 		Height string
 		Path   string
 	}{
-		Title:  getTitle(img.Attributes),
+		Title:  renderTitle(img.Attributes),
 		Role:   img.Attributes.GetAsString(types.AttrRole),
 		Alt:    img.Attributes.GetAsString(types.AttrImageAlt),
 		Width:  img.Attributes.GetAsString(types.AttrImageWidth),

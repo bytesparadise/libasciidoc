@@ -40,7 +40,7 @@ var _ = Describe("comments - draft", func() {
 			source := `foo // A single-line comment.`
 			expected := types.Paragraph{
 				Attributes: types.ElementAttributes{},
-				Lines: []types.InlineElements{
+				Lines: [][]interface{}{
 					{
 						types.StringElement{Content: "foo // A single-line comment."},
 					},
@@ -55,7 +55,7 @@ var _ = Describe("comments - draft", func() {
 another line`
 			expected := types.Paragraph{
 				Attributes: types.ElementAttributes{},
-				Lines: []types.InlineElements{
+				Lines: [][]interface{}{
 					{
 						types.StringElement{Content: "a first line"},
 					},
@@ -76,7 +76,7 @@ another line`
 another line`
 			expected := types.Paragraph{
 				Attributes: types.ElementAttributes{},
-				Lines: []types.InlineElements{
+				Lines: [][]interface{}{
 					{
 						types.StringElement{Content: "a first line"},
 					},
@@ -125,7 +125,7 @@ a second paragraph`
 				Blocks: []interface{}{
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
-						Lines: []types.InlineElements{
+						Lines: [][]interface{}{
 							{
 								types.StringElement{Content: "a first paragraph"},
 							},
@@ -145,7 +145,7 @@ a second paragraph`
 					},
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
-						Lines: []types.InlineElements{
+						Lines: [][]interface{}{
 							{
 								types.StringElement{Content: "a second paragraph"},
 							},

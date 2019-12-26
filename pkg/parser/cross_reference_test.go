@@ -25,7 +25,7 @@ with some content linked to <<thetitle>>!`
 							types.AttrID:       "thetitle",
 							types.AttrCustomID: true,
 						},
-						Title: types.InlineElements{
+						Title: []interface{}{
 							types.StringElement{
 								Content: "a title",
 							},
@@ -35,7 +35,7 @@ with some content linked to <<thetitle>>!`
 					types.BlankLine{},
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
-						Lines: []types.InlineElements{
+						Lines: [][]interface{}{
 							{
 								types.StringElement{
 									Content: "with some content linked to ",
@@ -68,7 +68,7 @@ with some content linked to <<thetitle,a label to the title>>!`
 							types.AttrID:       "thetitle",
 							types.AttrCustomID: true,
 						},
-						Title: types.InlineElements{
+						Title: []interface{}{
 							types.StringElement{
 								Content: "a title",
 							},
@@ -78,7 +78,7 @@ with some content linked to <<thetitle,a label to the title>>!`
 					types.BlankLine{},
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
-						Lines: []types.InlineElements{
+						Lines: [][]interface{}{
 							{
 								types.StringElement{
 									Content: "with some content linked to ",
@@ -112,7 +112,7 @@ with some content linked to <<thetitle>>!`
 			expected := types.Document{
 				Attributes: types.DocumentAttributes{},
 				ElementReferences: types.ElementReferences{
-					"thetitle": types.InlineElements{
+					"thetitle": []interface{}{
 						types.StringElement{
 							Content: "a title",
 						},
@@ -127,7 +127,7 @@ with some content linked to <<thetitle>>!`
 							types.AttrID:       "thetitle",
 							types.AttrCustomID: true,
 						},
-						Title: types.InlineElements{
+						Title: []interface{}{
 							types.StringElement{
 								Content: "a title",
 							},
@@ -135,7 +135,7 @@ with some content linked to <<thetitle>>!`
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{
 											Content: "with some content linked to ",
@@ -165,7 +165,7 @@ with some content linked to <<thetitle,a label to the title>>!`
 			expected := types.Document{
 				Attributes: types.DocumentAttributes{},
 				ElementReferences: types.ElementReferences{
-					"thetitle": types.InlineElements{
+					"thetitle": []interface{}{
 						types.StringElement{
 							Content: "a title",
 						},
@@ -180,7 +180,7 @@ with some content linked to <<thetitle,a label to the title>>!`
 							types.AttrID:       "thetitle",
 							types.AttrCustomID: true,
 						},
-						Title: types.InlineElements{
+						Title: []interface{}{
 							types.StringElement{
 								Content: "a title",
 							},
@@ -188,7 +188,7 @@ with some content linked to <<thetitle,a label to the title>>!`
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{
 											Content: "with some content linked to ",

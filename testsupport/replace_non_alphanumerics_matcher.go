@@ -23,7 +23,7 @@ type nonalphanumericMatcher struct {
 }
 
 func (m *nonalphanumericMatcher) Match(actual interface{}) (success bool, err error) {
-	content, ok := actual.(types.InlineElements)
+	content, ok := actual.([]interface{})
 	if !ok {
 		return false, errors.Errorf("EqualWithoutNonAlphanumeric matcher expects an InlineElements (actual: %T)", actual)
 	}

@@ -13,7 +13,7 @@ import (
 
 var paragraphTmpl texttemplate.Template
 var admonitionParagraphTmpl texttemplate.Template
-var listParagraphTmpl texttemplate.Template
+var delimitedBlockParagraphTmpl texttemplate.Template
 var sourceParagraphTmpl texttemplate.Template
 var verseParagraphTmpl texttemplate.Template
 var quoteParagraphTmpl texttemplate.Template
@@ -21,17 +21,17 @@ var quoteParagraphTmpl texttemplate.Template
 // initializes the templates
 func init() {
 	paragraphTmpl = newTextTemplate("paragraph",
-		`{{ $ctx := .Context }}{{ with .Data }}{{ $renderedLines := renderLines $ctx .Lines .HardBreak }}{{ if ne $renderedLines "" }}<div {{ if ne .ID "" }}id="{{ .ID }}" {{ end }}class="paragraph">{{ if ne .Title "" }}
+		`{{ $ctx := .Context }}{{ with .Data }}{{ $renderedLines := renderLines $ctx .Lines .HardBreaks | printf "%s" }}{{ if ne $renderedLines "" }}<div {{ if ne .ID "" }}id="{{ .ID }}" {{ end }}class="paragraph">{{ if ne .Title "" }}
 <div class="doctitle">{{ escape .Title }}</div>{{ end }}
 <p>{{ $renderedLines }}</p>
 </div>{{ end }}{{ end }}`,
 		texttemplate.FuncMap{
-			"renderLines": renderLinesAsString,
+			"renderLines": renderLines,
 			"escape":      EscapeString,
 		})
 
 	admonitionParagraphTmpl = newTextTemplate("admonition paragraph",
-		`{{ $ctx := .Context }}{{ with .Data }}{{ $renderedLines := renderLines $ctx .Lines false }}{{ if ne $renderedLines "" }}<div {{ if .ID }}id="{{ .ID }}" {{ end }}class="admonitionblock {{ .Class }}">
+		`{{ $ctx := .Context }}{{ with .Data }}{{ $renderedLines := renderLines $ctx .Lines | printf "%s" }}{{ if ne $renderedLines "" }}<div {{ if .ID }}id="{{ .ID }}" {{ end }}class="admonitionblock {{ .Class }}">
 <table>
 <tr>
 <td class="icon">
@@ -45,14 +45,15 @@ func init() {
 </table>
 </div>{{ end }}{{ end }}`,
 		texttemplate.FuncMap{
-			"renderLines": renderLinesAsString,
+			"renderLines": renderLines,
+			"plainText":   PlainText,
 			"escape":      EscapeString,
 		})
 
-	listParagraphTmpl = newTextTemplate("list paragraph",
-		`{{ $ctx := .Context }}{{ with .Data }}<p>{{ .CheckStyle }}{{ renderLines $ctx .Lines false }}</p>{{ end }}`,
+	delimitedBlockParagraphTmpl = newTextTemplate("delimited block paragraph",
+		`{{ $ctx := .Context }}{{ with .Data }}<p>{{ .CheckStyle }}{{ renderLines $ctx .Lines | printf "%s" }}</p>{{ end }}`,
 		texttemplate.FuncMap{
-			"renderLines": renderLinesAsString,
+			"renderLines": renderLines,
 		})
 
 	sourceParagraphTmpl = newTextTemplate("source paragraph",
@@ -62,26 +63,27 @@ func init() {
 </div>
 </div>{{ end }}`,
 		texttemplate.FuncMap{
-			"renderLines": renderPlainString,
+			"renderLines": renderPlainText,
 			"escape":      EscapeString,
 		})
 
-	verseParagraphTmpl = newTextTemplate("verse block", `{{ $ctx := .Context }}{{ with .Data }}<div {{ if .ID }}id="{{ .ID }}" {{ end }}class="verseblock">{{ if .Title }}
+	verseParagraphTmpl = newTextTemplate("verse paragraph", `{{ $ctx := .Context }}{{ with .Data }}<div {{ if .ID }}id="{{ .ID }}" {{ end }}class="verseblock">{{ if .Title }}
 <div class="title">{{ escape .Title }}</div>{{ end }}
-<pre class="content">{{ renderElements $ctx .Lines | printf "%s" }}</pre>{{ if .Attribution.First }}
+<pre class="content">{{ renderLines $ctx .Lines plainText | printf "%s" }}</pre>{{ if .Attribution.First }}
 <div class="attribution">
 &#8212; {{ .Attribution.First }}{{ if .Attribution.Second }}<br>
 <cite>{{ .Attribution.Second }}</cite>{{ end }}
 </div>{{ end }}
 </div>{{ end }}`,
 		texttemplate.FuncMap{
-			"renderElements": renderPlainString,
-			"escape":         EscapeString,
+			"renderLines": renderLines,
+			"plainText":   PlainText,
+			"escape":      EscapeString,
 		})
 	quoteParagraphTmpl = newTextTemplate("quote paragraph", `{{ $ctx := .Context }}{{ with .Data }}<div {{ if .ID }}id="{{ .ID }}" {{ end }}class="quoteblock">{{ if .Title }}
 <div class="title">{{ escape .Title }}</div>{{ end }}
 <blockquote>
-{{ renderElements $ctx .Lines false | printf "%s" }}
+{{ renderLines $ctx .Lines | printf "%s" }}
 </blockquote>{{ if .Attribution.First }}
 <div class="attribution">
 &#8212; {{ .Attribution.First }}{{ if .Attribution.Second }}<br>
@@ -89,8 +91,9 @@ func init() {
 </div>{{ end }}
 </div>{{ end }}`,
 		texttemplate.FuncMap{
-			"renderElements": renderLinesAsString,
-			"escape":         EscapeString,
+			"renderLines": renderLines,
+			"plainText":   PlainText,
+			"escape":      EscapeString,
 		})
 }
 
@@ -116,15 +119,15 @@ func renderParagraph(ctx *renderer.Context, p types.Paragraph) ([]byte, error) {
 		err = paragraphTmpl.Execute(result, ContextualPipeline{
 			Context: ctx,
 			Data: struct {
-				ID        string
-				Title     string
-				Lines     []types.InlineElements
-				HardBreak bool
+				ID         string
+				Title      string
+				Lines      [][]interface{}
+				HardBreaks RenderLinesOption
 			}{
-				ID:        id,
-				Title:     getTitle(p.Attributes),
-				Lines:     p.Lines,
-				HardBreak: p.Attributes.Has(types.AttrHardBreaks) || ctx.Document.Attributes.Has(types.DocumentAttrHardBreaks),
+				ID:         id,
+				Title:      renderTitle(p.Attributes),
+				Lines:      p.Lines,
+				HardBreaks: WithHardBreaks(p.Attributes.Has(types.AttrHardBreaks) || ctx.Document.Attributes.Has(types.DocumentAttrHardBreaks)),
 			},
 		})
 	}
@@ -150,13 +153,13 @@ func renderAdmonitionParagraph(ctx *renderer.Context, p types.Paragraph) ([]byte
 			Class     string
 			IconTitle string
 			IconClass string
-			Lines     []types.InlineElements
+			Lines     [][]interface{}
 		}{
 			ID:        generateID(ctx, p.Attributes),
-			Title:     getTitle(p.Attributes),
-			Class:     getClass(k),
-			IconTitle: getIconTitle(k),
-			IconClass: getIconClass(ctx, k),
+			Title:     renderTitle(p.Attributes),
+			Class:     renderClass(k),
+			IconTitle: renderIconTitle(k),
+			IconClass: renderIconClass(ctx, k),
 			Lines:     p.Lines,
 		},
 	})
@@ -172,10 +175,10 @@ func renderSourceParagraph(ctx *renderer.Context, p types.Paragraph) ([]byte, er
 			ID       string
 			Title    string
 			Language string
-			Lines    []types.InlineElements
+			Lines    [][]interface{}
 		}{
 			ID:       generateID(ctx, p.Attributes),
-			Title:    getTitle(p.Attributes),
+			Title:    renderTitle(p.Attributes),
 			Language: p.Attributes.GetAsString(types.AttrLanguage),
 			Lines:    p.Lines,
 		},
@@ -192,10 +195,10 @@ func renderVerseParagraph(ctx *renderer.Context, p types.Paragraph) ([]byte, err
 			ID          string
 			Title       string
 			Attribution Attribution
-			Lines       []types.InlineElements
+			Lines       [][]interface{}
 		}{
 			ID:          generateID(ctx, p.Attributes),
-			Title:       getTitle(p.Attributes),
+			Title:       renderTitle(p.Attributes),
 			Attribution: NewParagraphAttribution(p),
 			Lines:       p.Lines,
 		},
@@ -212,10 +215,10 @@ func renderQuoteParagraph(ctx *renderer.Context, p types.Paragraph) ([]byte, err
 			ID          string
 			Title       string
 			Attribution Attribution
-			Lines       []types.InlineElements
+			Lines       [][]interface{}
 		}{
 			ID:          generateID(ctx, p.Attributes),
-			Title:       getTitle(p.Attributes),
+			Title:       renderTitle(p.Attributes),
 			Attribution: NewParagraphAttribution(p),
 			Lines:       p.Lines,
 		},
@@ -224,18 +227,18 @@ func renderQuoteParagraph(ctx *renderer.Context, p types.Paragraph) ([]byte, err
 }
 
 func renderDelimitedBlockParagraph(ctx *renderer.Context, p types.Paragraph) ([]byte, error) {
-	log.Debugf("rendering paragraph with %d lines within a delimited block or a list", len(p.Lines))
+	log.Debugf("rendering paragraph with %d line(s) within a delimited block or a list", len(p.Lines))
 	result := bytes.NewBuffer(nil)
-	err := listParagraphTmpl.Execute(result, ContextualPipeline{
+	err := delimitedBlockParagraphTmpl.Execute(result, ContextualPipeline{
 		Context: ctx,
 		Data: struct {
 			ID         string
 			Title      string
 			CheckStyle string
-			Lines      []types.InlineElements
+			Lines      [][]interface{}
 		}{
 			ID:         generateID(ctx, p.Attributes),
-			Title:      getTitle(p.Attributes),
+			Title:      renderTitle(p.Attributes),
 			CheckStyle: renderCheckStyle(p.Attributes[types.AttrCheckStyle]),
 			Lines:      p.Lines,
 		},
@@ -254,11 +257,14 @@ func renderCheckStyle(style interface{}) string {
 	}
 }
 
-func renderLineBreak() ([]byte, error) {
-	return []byte("<br>"), nil
+func renderIconClass(ctx *renderer.Context, kind types.AdmonitionKind) string {
+	if icons, _ := ctx.Document.Attributes.GetAsString("icons"); icons == "font" {
+		return renderClass(kind)
+	}
+	return ""
 }
 
-func getClass(kind types.AdmonitionKind) string {
+func renderClass(kind types.AdmonitionKind) string {
 	switch kind {
 	case types.Tip:
 		return "tip"
@@ -276,14 +282,7 @@ func getClass(kind types.AdmonitionKind) string {
 	}
 }
 
-func getIconClass(ctx *renderer.Context, kind types.AdmonitionKind) string {
-	if icons, _ := ctx.Document.Attributes.GetAsString("icons"); icons == "font" {
-		return getClass(kind)
-	}
-	return ""
-}
-
-func getIconTitle(kind types.AdmonitionKind) string {
+func renderIconTitle(kind types.AdmonitionKind) string {
 	switch kind {
 	case types.Tip:
 		return "Tip"
@@ -301,9 +300,81 @@ func getIconTitle(kind types.AdmonitionKind) string {
 	}
 }
 
-func getTitle(attrs types.ElementAttributes) string {
+func renderTitle(attrs types.ElementAttributes) string {
 	if attrs.Has(types.AttrTitle) {
 		return strings.TrimSpace(attrs.GetAsString(types.AttrTitle))
 	}
 	return ""
+}
+
+// RenderLinesConfig the config to use when rendering paragraph lines
+type RenderLinesConfig struct {
+	render     renderFunc
+	hardbreaks bool
+}
+
+// RenderLinesOption an option to configure the rendering
+type RenderLinesOption func(c *RenderLinesConfig)
+
+// WithHardBreaks sets the hard break option
+func WithHardBreaks(hardbreaks bool) RenderLinesOption {
+	return func(c *RenderLinesConfig) {
+		c.hardbreaks = hardbreaks
+	}
+}
+
+// PlainText sets the render func to PlainText instead of HTML
+func PlainText() RenderLinesOption {
+	return func(c *RenderLinesConfig) {
+		c.render = renderPlainText
+	}
+}
+
+// renderLines renders all lines (i.e, all `InlineElements`` - each `InlineElements` being a slice of elements to generate a line)
+// and includes an `\n` character in-between, until the last one.
+// Trailing spaces are removed for each line.
+func renderLines(ctx *renderer.Context, lines [][]interface{}, options ...RenderLinesOption) ([]byte, error) { // renderLineFunc renderFunc, hardbreak bool
+	config := RenderLinesConfig{
+		render:     renderLine,
+		hardbreaks: false,
+	}
+	for _, apply := range options {
+		apply(&config)
+	}
+	buf := bytes.NewBuffer(nil)
+	for i, e := range lines {
+		renderedElement, err := config.render(ctx, e)
+		if err != nil {
+			return nil, errors.Wrap(err, "unable to render lines")
+		}
+		if len(renderedElement) > 0 {
+			_, err := buf.Write(renderedElement)
+			if err != nil {
+				return nil, errors.Wrap(err, "unable to render lines")
+			}
+		}
+
+		if i < len(lines)-1 && (len(renderedElement) > 0 || ctx.WithinDelimitedBlock()) {
+			// log.Debugf("rendered line is not the last one in the slice")
+			var err error
+			if config.hardbreaks {
+				_, err = buf.WriteString("<br>\n")
+			} else {
+				_, err = buf.WriteString("\n")
+			}
+			if err != nil {
+				return nil, errors.Wrap(err, "unable to render lines")
+			}
+		}
+	}
+	// log.Debugf("rendered lines: '%s'", buf.String())
+	return buf.Bytes(), nil
+}
+
+func renderLine(ctx *renderer.Context, element interface{}) ([]byte, error) {
+	if elements, ok := element.([]interface{}); ok {
+		return renderInlineElements(ctx, elements)
+	}
+
+	return nil, errors.Errorf("invalid type of element for a line: %T", element)
 }

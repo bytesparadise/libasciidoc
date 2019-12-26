@@ -10,82 +10,65 @@ import (
 )
 
 // ReplaceNonAlphanumerics replace all non alpha numeric characters with the given `replacement`
-func ReplaceNonAlphanumerics(source InlineElements, replacement string) (string, error) {
-	v := newReplaceNonAlphanumericsVisitor(replacement)
-	err := source.AcceptVisitor(v)
-	if err != nil {
-		return "", err
-	}
-	return v.normalizedContent(), nil
-}
-
-//ReplaceNonAlphanumericsVisitor a visitor that builds a string representation of the visited elements,
-// in which all non-alphanumeric characters have been replaced with a "_"
-type ReplaceNonAlphanumericsVisitor struct {
-	buf         bytes.Buffer
-	replacement string
-}
-
-var _ Visitor = &ReplaceNonAlphanumericsVisitor{}
-
-// newReplaceNonAlphanumericsVisitor returns a new ReplaceNonAlphanumericsVisitor
-func newReplaceNonAlphanumericsVisitor(replacement string) *ReplaceNonAlphanumericsVisitor {
+func ReplaceNonAlphanumerics(elements []interface{}, replacement string) (string, error) {
 	buf := bytes.NewBuffer(nil)
-	return &ReplaceNonAlphanumericsVisitor{
-		buf:         *buf,
-		replacement: replacement,
+	for _, element := range elements {
+		switch element := element.(type) {
+		case QuotedText:
+			r, err := ReplaceNonAlphanumerics(element.Elements, replacement)
+			if err != nil {
+				return "", err
+			}
+			if buf.Len() > 0 {
+				buf.WriteString(replacement)
+			}
+			buf.WriteString(r)
+		case StringElement:
+			r, err := replaceNonAlphanumerics(element.Content, replacement)
+			if err != nil {
+				return "", err
+			}
+			if buf.Len() > 0 {
+				buf.WriteString(replacement)
+			}
+			buf.WriteString(r)
+		case InlineLink:
+			r, err := replaceNonAlphanumerics(element.Location.String(), replacement)
+			if err != nil {
+				return "", err
+			}
+			if buf.Len() > 0 {
+				buf.WriteString(replacement)
+			}
+			buf.WriteString(r)
+		default:
+			// other types are ignored
+		}
 	}
+
+	return buf.String(), nil
 }
 
-// Visit method called when an element is visited
-func (v *ReplaceNonAlphanumericsVisitor) Visit(element Visitable) error {
-	switch element := element.(type) {
-	case StringElement:
-		return v.process(element.Content)
-	case InlineLink:
-		return v.process(element.Location.String())
-	default:
-		// other types are ignored
-		return nil
-	}
-}
-
-func (v *ReplaceNonAlphanumericsVisitor) process(content string) error {
-	if v.buf.Len() > 0 {
-		v.buf.WriteString("_")
-	}
-	normalized, err := v.normalize(content)
-	if err != nil {
-		return errors.Wrapf(err, "error while normalizing String Element")
-	}
-	v.buf.WriteString(normalized)
-	return nil
-}
-
-// normalize returns the normalized content
-func (v *ReplaceNonAlphanumericsVisitor) normalize(source string) (string, error) {
-	log.Debugf("normalizing '%s'", source)
+func replaceNonAlphanumerics(content, replacement string) (string, error) {
 	buf := bytes.NewBuffer(nil)
+	log.Debugf("normalizing '%s'", content)
 	lastCharIsSpace := false
-	for _, r := range strings.TrimLeft(source, " ") { // ignore header spaces
+	for _, r := range strings.TrimLeft(content, " ") { // ignore header spaces
 		if unicode.Is(unicode.Letter, r) || unicode.Is(unicode.Number, r) {
 			_, err := buf.WriteString(strings.ToLower(string(r)))
 			if err != nil {
-				return "", errors.Wrapf(err, "unable to normalize value")
+				return "", errors.Wrapf(err, "error while normalizing String Element")
 			}
 			lastCharIsSpace = false
 		} else if !lastCharIsSpace && (unicode.Is(unicode.Space, r) || unicode.Is(unicode.Punct, r)) {
-			_, err := buf.WriteString(v.replacement)
+			_, err := buf.WriteString(replacement)
 			if err != nil {
-				return "", errors.Wrapf(err, "unable to normalize value")
+				return "", errors.Wrapf(err, "error while normalizing String Element")
 			}
 			lastCharIsSpace = true
 		}
 	}
-	return strings.TrimSuffix(buf.String(), v.replacement), nil
-}
-
-// NormalizedContent returns the normalized content
-func (v *ReplaceNonAlphanumericsVisitor) normalizedContent() string {
-	return v.buf.String()
+	result := strings.TrimSuffix(buf.String(), replacement)
+	log.Debugf("normalized '%s' to '%s'", content, result)
+	return result, nil
 }

@@ -30,7 +30,7 @@ first paragraph`
 					types.BlankLine{},
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
-						Lines: []types.InlineElements{
+						Lines: [][]interface{}{
 							{
 								types.StringElement{Content: "first paragraph"},
 							},
@@ -54,7 +54,7 @@ first paragraph`
 					types.BlankLine{},
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
-						Lines: []types.InlineElements{
+						Lines: [][]interface{}{
 							{
 								types.StringElement{Content: "first paragraph"},
 							},
@@ -90,7 +90,7 @@ first paragraph`
 				Elements: []interface{}{
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
-						Lines: []types.InlineElements{
+						Lines: [][]interface{}{
 							{
 								types.StringElement{Content: "first paragraph"},
 							},
@@ -114,7 +114,7 @@ first paragraph`
 				Elements: []interface{}{
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
-						Lines: []types.InlineElements{
+						Lines: [][]interface{}{
 							{
 								types.StringElement{Content: "first paragraph"},
 							},

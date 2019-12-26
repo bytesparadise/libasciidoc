@@ -245,7 +245,7 @@ image::{imagesdir}/foo.png[]`
 						Blocks: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{Content: "a paragraph"},
 									},
@@ -268,7 +268,7 @@ image::{imagesdir}/foo.png[]`
 						Blocks: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{Content: "a foo image::foo.png[foo image, 600, 400] bar"},
 									},
@@ -292,7 +292,7 @@ image::{imagesdir}/foo.png[]`
 					Blocks: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
-							Lines: []types.InlineElements{
+							Lines: [][]interface{}{
 								{
 									types.InlineImage{
 										Attributes: types.ElementAttributes{},
@@ -316,7 +316,7 @@ image::{imagesdir}/foo.png[]`
 					Blocks: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
-							Lines: []types.InlineElements{
+							Lines: [][]interface{}{
 								{
 									types.InlineImage{
 										Attributes: types.ElementAttributes{},
@@ -343,7 +343,7 @@ image::{imagesdir}/foo.png[]`
 					Blocks: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
-							Lines: []types.InlineElements{
+							Lines: [][]interface{}{
 								{
 									types.StringElement{
 										Content: "a foo ",
@@ -373,7 +373,7 @@ image::{imagesdir}/foo.png[]`
 					Blocks: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
-							Lines: []types.InlineElements{
+							Lines: [][]interface{}{
 								{
 									types.InlineImage{
 										Attributes: types.ElementAttributes{
@@ -399,7 +399,7 @@ image::{imagesdir}/foo.png[]`
 					Blocks: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
-							Lines: []types.InlineElements{
+							Lines: [][]interface{}{
 								{
 									types.InlineImage{
 										Attributes: types.ElementAttributes{
@@ -426,7 +426,7 @@ image::{imagesdir}/foo.png[]`
 					Blocks: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
-							Lines: []types.InlineElements{
+							Lines: [][]interface{}{
 								{
 									types.InlineImage{
 										Attributes: types.ElementAttributes{
@@ -454,7 +454,7 @@ image::{imagesdir}/foo.png[]`
 					Blocks: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
-							Lines: []types.InlineElements{
+							Lines: [][]interface{}{
 								{
 									types.InlineImage{
 										Attributes: types.ElementAttributes{
@@ -480,7 +480,7 @@ image::{imagesdir}/foo.png[]`
 					Blocks: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
-							Lines: []types.InlineElements{
+							Lines: [][]interface{}{
 								{
 									types.InlineImage{
 										Attributes: types.ElementAttributes{
@@ -507,7 +507,7 @@ image::{imagesdir}/foo.png[]`
 					Blocks: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
-							Lines: []types.InlineElements{
+							Lines: [][]interface{}{
 								{
 									types.InlineImage{
 										Attributes: types.ElementAttributes{
@@ -536,7 +536,7 @@ image::{imagesdir}/foo.png[]`
 					Blocks: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
-							Lines: []types.InlineElements{
+							Lines: [][]interface{}{
 								{
 									types.InlineImage{
 										Attributes: types.ElementAttributes{
@@ -568,7 +568,7 @@ image::{imagesdir}/foo.png[]`
 					Blocks: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
-							Lines: []types.InlineElements{
+							Lines: [][]interface{}{
 								{
 									types.StringElement{
 										Content: "this is an image: ",
@@ -595,7 +595,7 @@ image::{imagesdir}/foo.png[]`
 					Blocks: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
-							Lines: []types.InlineElements{
+							Lines: [][]interface{}{
 								{
 									types.StringElement{
 										Content: "this is an inline.",
@@ -656,7 +656,7 @@ image::{imagesdir}/foo.png[]`
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
-							Lines: []types.InlineElements{
+							Lines: [][]interface{}{
 								{
 									types.InlineImage{
 										Attributes: types.ElementAttributes{
@@ -692,7 +692,7 @@ an image:{imagesdir}/foo.png[].`
 						},
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
-							Lines: []types.InlineElements{
+							Lines: [][]interface{}{
 								{
 									types.StringElement{Content: "an "},
 									types.InlineImage{
@@ -722,7 +722,7 @@ an image:{imagesdir}/foo.png[].`
 					Blocks: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
-							Lines: []types.InlineElements{
+							Lines: [][]interface{}{
 								{
 									types.StringElement{Content: "a paragraph"},
 								},

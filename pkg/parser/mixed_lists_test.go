@@ -35,7 +35,7 @@ var _ = Describe("mixed lists - document", func() {
 								Elements: []interface{}{
 									types.Paragraph{
 										Attributes: types.ElementAttributes{},
-										Lines: []types.InlineElements{
+										Lines: [][]interface{}{
 											{
 												types.StringElement{Content: "Item 1"},
 											},
@@ -52,7 +52,7 @@ var _ = Describe("mixed lists - document", func() {
 												Elements: []interface{}{
 													types.Paragraph{
 														Attributes: types.ElementAttributes{},
-														Lines: []types.InlineElements{
+														Lines: [][]interface{}{
 															{
 																types.StringElement{Content: "Item A"},
 															},
@@ -68,7 +68,7 @@ var _ = Describe("mixed lists - document", func() {
 												Elements: []interface{}{
 													types.Paragraph{
 														Attributes: types.ElementAttributes{},
-														Lines: []types.InlineElements{
+														Lines: [][]interface{}{
 															{
 																types.StringElement{Content: "Item B"},
 															},
@@ -87,7 +87,7 @@ var _ = Describe("mixed lists - document", func() {
 								Elements: []interface{}{
 									types.Paragraph{
 										Attributes: types.ElementAttributes{},
-										Lines: []types.InlineElements{
+										Lines: [][]interface{}{
 											{
 												types.StringElement{Content: "Item 2"},
 											},
@@ -104,7 +104,7 @@ var _ = Describe("mixed lists - document", func() {
 												Elements: []interface{}{
 													types.Paragraph{
 														Attributes: types.ElementAttributes{},
-														Lines: []types.InlineElements{
+														Lines: [][]interface{}{
 															{
 																types.StringElement{Content: "Item C"},
 															},
@@ -120,7 +120,7 @@ var _ = Describe("mixed lists - document", func() {
 												Elements: []interface{}{
 													types.Paragraph{
 														Attributes: types.ElementAttributes{},
-														Lines: []types.InlineElements{
+														Lines: [][]interface{}{
 															{
 																types.StringElement{Content: "Item D"},
 															},
@@ -172,7 +172,7 @@ var _ = Describe("mixed lists - document", func() {
 								Elements: []interface{}{
 									types.Paragraph{
 										Attributes: types.ElementAttributes{},
-										Lines: []types.InlineElements{
+										Lines: [][]interface{}{
 											{
 												types.StringElement{Content: "unordered 1"},
 											},
@@ -188,7 +188,7 @@ var _ = Describe("mixed lists - document", func() {
 												Elements: []interface{}{
 													types.Paragraph{
 														Attributes: types.ElementAttributes{},
-														Lines: []types.InlineElements{
+														Lines: [][]interface{}{
 															{
 																types.StringElement{Content: "ordered 1.1"},
 															},
@@ -204,7 +204,7 @@ var _ = Describe("mixed lists - document", func() {
 																Elements: []interface{}{
 																	types.Paragraph{
 																		Attributes: types.ElementAttributes{},
-																		Lines: []types.InlineElements{
+																		Lines: [][]interface{}{
 																			{
 																				types.StringElement{Content: "ordered 1.1.a"},
 																			},
@@ -219,7 +219,7 @@ var _ = Describe("mixed lists - document", func() {
 																Elements: []interface{}{
 																	types.Paragraph{
 																		Attributes: types.ElementAttributes{},
-																		Lines: []types.InlineElements{
+																		Lines: [][]interface{}{
 																			{
 																				types.StringElement{Content: "ordered 1.1.b"},
 																			},
@@ -234,7 +234,7 @@ var _ = Describe("mixed lists - document", func() {
 																Elements: []interface{}{
 																	types.Paragraph{
 																		Attributes: types.ElementAttributes{},
-																		Lines: []types.InlineElements{
+																		Lines: [][]interface{}{
 																			{
 																				types.StringElement{Content: "ordered 1.1.c"},
 																			},
@@ -253,7 +253,7 @@ var _ = Describe("mixed lists - document", func() {
 												Elements: []interface{}{
 													types.Paragraph{
 														Attributes: types.ElementAttributes{},
-														Lines: []types.InlineElements{
+														Lines: [][]interface{}{
 															{
 																types.StringElement{Content: "ordered 1.2"},
 															},
@@ -269,7 +269,7 @@ var _ = Describe("mixed lists - document", func() {
 																Elements: []interface{}{
 																	types.Paragraph{
 																		Attributes: types.ElementAttributes{},
-																		Lines: []types.InlineElements{
+																		Lines: [][]interface{}{
 																			{
 																				types.StringElement{Content: "ordered 1.2.i"},
 																			},
@@ -284,7 +284,7 @@ var _ = Describe("mixed lists - document", func() {
 																Elements: []interface{}{
 																	types.Paragraph{
 																		Attributes: types.ElementAttributes{},
-																		Lines: []types.InlineElements{
+																		Lines: [][]interface{}{
 																			{
 																				types.StringElement{Content: "ordered 1.2.ii"},
 																			},
@@ -303,7 +303,7 @@ var _ = Describe("mixed lists - document", func() {
 												Elements: []interface{}{
 													types.Paragraph{
 														Attributes: types.ElementAttributes{},
-														Lines: []types.InlineElements{
+														Lines: [][]interface{}{
 															{
 																types.StringElement{Content: "ordered 1.3"},
 															},
@@ -318,7 +318,7 @@ var _ = Describe("mixed lists - document", func() {
 												Elements: []interface{}{
 													types.Paragraph{
 														Attributes: types.ElementAttributes{},
-														Lines: []types.InlineElements{
+														Lines: [][]interface{}{
 															{
 																types.StringElement{Content: "ordered 1.4"},
 															},
@@ -338,7 +338,7 @@ var _ = Describe("mixed lists - document", func() {
 								Elements: []interface{}{
 									types.Paragraph{
 										Attributes: types.ElementAttributes{},
-										Lines: []types.InlineElements{
+										Lines: [][]interface{}{
 											{
 												types.StringElement{Content: "unordered 2"},
 											},
@@ -355,7 +355,7 @@ var _ = Describe("mixed lists - document", func() {
 												Elements: []interface{}{
 													types.Paragraph{
 														Attributes: types.ElementAttributes{},
-														Lines: []types.InlineElements{
+														Lines: [][]interface{}{
 															{
 																types.StringElement{Content: "unordered 2.1"},
 															},
@@ -416,7 +416,7 @@ ii) ordered 1.2.ii
 								Elements: []interface{}{
 									types.Paragraph{
 										Attributes: types.ElementAttributes{},
-										Lines: []types.InlineElements{
+										Lines: [][]interface{}{
 											{
 												types.StringElement{Content: "unordered 1"},
 											},
@@ -432,7 +432,7 @@ ii) ordered 1.2.ii
 												Elements: []interface{}{
 													types.Paragraph{
 														Attributes: types.ElementAttributes{},
-														Lines: []types.InlineElements{
+														Lines: [][]interface{}{
 															{
 																types.StringElement{Content: "ordered 1.1"},
 															},
@@ -448,7 +448,7 @@ ii) ordered 1.2.ii
 																Elements: []interface{}{
 																	types.Paragraph{
 																		Attributes: types.ElementAttributes{},
-																		Lines: []types.InlineElements{
+																		Lines: [][]interface{}{
 																			{
 																				types.StringElement{Content: "ordered 1.1.a"},
 																			},
@@ -463,7 +463,7 @@ ii) ordered 1.2.ii
 																Elements: []interface{}{
 																	types.Paragraph{
 																		Attributes: types.ElementAttributes{},
-																		Lines: []types.InlineElements{
+																		Lines: [][]interface{}{
 																			{
 																				types.StringElement{Content: "ordered 1.1.b"},
 																			},
@@ -478,7 +478,7 @@ ii) ordered 1.2.ii
 																Elements: []interface{}{
 																	types.Paragraph{
 																		Attributes: types.ElementAttributes{},
-																		Lines: []types.InlineElements{
+																		Lines: [][]interface{}{
 																			{
 																				types.StringElement{Content: "ordered 1.1.c"},
 																			},
@@ -497,7 +497,7 @@ ii) ordered 1.2.ii
 												Elements: []interface{}{
 													types.Paragraph{
 														Attributes: types.ElementAttributes{},
-														Lines: []types.InlineElements{
+														Lines: [][]interface{}{
 															{
 																types.StringElement{Content: "ordered 1.2"},
 															},
@@ -513,7 +513,7 @@ ii) ordered 1.2.ii
 																Elements: []interface{}{
 																	types.Paragraph{
 																		Attributes: types.ElementAttributes{},
-																		Lines: []types.InlineElements{
+																		Lines: [][]interface{}{
 																			{
 																				types.StringElement{Content: "ordered 1.2.i"},
 																			},
@@ -528,7 +528,7 @@ ii) ordered 1.2.ii
 																Elements: []interface{}{
 																	types.Paragraph{
 																		Attributes: types.ElementAttributes{},
-																		Lines: []types.InlineElements{
+																		Lines: [][]interface{}{
 																			{
 																				types.StringElement{Content: "ordered 1.2.ii"},
 																			},
@@ -547,7 +547,7 @@ ii) ordered 1.2.ii
 												Elements: []interface{}{
 													types.Paragraph{
 														Attributes: types.ElementAttributes{},
-														Lines: []types.InlineElements{
+														Lines: [][]interface{}{
 															{
 																types.StringElement{Content: "ordered 1.3"},
 															},
@@ -562,7 +562,7 @@ ii) ordered 1.2.ii
 												Elements: []interface{}{
 													types.Paragraph{
 														Attributes: types.ElementAttributes{},
-														Lines: []types.InlineElements{
+														Lines: [][]interface{}{
 															{
 																types.StringElement{Content: "ordered 1.4"},
 															},
@@ -582,7 +582,7 @@ ii) ordered 1.2.ii
 								Elements: []interface{}{
 									types.Paragraph{
 										Attributes: types.ElementAttributes{},
-										Lines: []types.InlineElements{
+										Lines: [][]interface{}{
 											{
 												types.StringElement{Content: "unordered 2"},
 											},
@@ -599,7 +599,7 @@ ii) ordered 1.2.ii
 												Elements: []interface{}{
 													types.Paragraph{
 														Attributes: types.ElementAttributes{},
-														Lines: []types.InlineElements{
+														Lines: [][]interface{}{
 															{
 																types.StringElement{Content: "unordered 2.1"},
 															},
@@ -616,7 +616,7 @@ ii) ordered 1.2.ii
 																Elements: []interface{}{
 																	types.Paragraph{
 																		Attributes: types.ElementAttributes{},
-																		Lines: []types.InlineElements{
+																		Lines: [][]interface{}{
 																			{
 																				types.StringElement{Content: "unordered 2.1.1"},
 																			},
@@ -638,7 +638,7 @@ ii) ordered 1.2.ii
 																Elements: []interface{}{
 																	types.Paragraph{
 																		Attributes: types.ElementAttributes{},
-																		Lines: []types.InlineElements{
+																		Lines: [][]interface{}{
 																			{
 																				types.StringElement{Content: "unordered 2.1.2"},
 																			},
@@ -658,7 +658,7 @@ ii) ordered 1.2.ii
 												Elements: []interface{}{
 													types.Paragraph{
 														Attributes: types.ElementAttributes{},
-														Lines: []types.InlineElements{
+														Lines: [][]interface{}{
 															{
 																types.StringElement{Content: "unordered 2.2"},
 															},
@@ -678,7 +678,7 @@ ii) ordered 1.2.ii
 								Elements: []interface{}{
 									types.Paragraph{
 										Attributes: types.ElementAttributes{},
-										Lines: []types.InlineElements{
+										Lines: [][]interface{}{
 											{
 												types.StringElement{Content: "unordered 3"},
 											},
@@ -694,7 +694,7 @@ ii) ordered 1.2.ii
 												Elements: []interface{}{
 													types.Paragraph{
 														Attributes: types.ElementAttributes{},
-														Lines: []types.InlineElements{
+														Lines: [][]interface{}{
 															{
 																types.StringElement{Content: "ordered 3.1"},
 															},
@@ -709,7 +709,7 @@ ii) ordered 1.2.ii
 												Elements: []interface{}{
 													types.Paragraph{
 														Attributes: types.ElementAttributes{},
-														Lines: []types.InlineElements{
+														Lines: [][]interface{}{
 															{
 																types.StringElement{Content: "ordered 3.2"},
 															},
@@ -727,7 +727,7 @@ ii) ordered 1.2.ii
 																Elements: []interface{}{
 																	types.Paragraph{
 																		Attributes: types.ElementAttributes{},
-																		Lines: []types.InlineElements{
+																		Lines: [][]interface{}{
 																			{
 																				types.StringElement{Content: "ordered 3.2.I"},
 																			},
@@ -742,7 +742,7 @@ ii) ordered 1.2.ii
 																Elements: []interface{}{
 																	types.Paragraph{
 																		Attributes: types.ElementAttributes{},
-																		Lines: []types.InlineElements{
+																		Lines: [][]interface{}{
 																			{
 																				types.StringElement{Content: "ordered 3.2.II"},
 																			},
@@ -761,7 +761,7 @@ ii) ordered 1.2.ii
 												Elements: []interface{}{
 													types.Paragraph{
 														Attributes: types.ElementAttributes{},
-														Lines: []types.InlineElements{
+														Lines: [][]interface{}{
 															{
 																types.StringElement{Content: "ordered 3.3"},
 															},
@@ -811,7 +811,7 @@ Operating Systems::
 												Elements: []interface{}{
 													types.Paragraph{
 														Attributes: types.ElementAttributes{},
-														Lines: []types.InlineElements{
+														Lines: [][]interface{}{
 															{
 																types.StringElement{
 																	Content: "Fedora",
@@ -830,7 +830,7 @@ Operating Systems::
 																Elements: []interface{}{
 																	types.Paragraph{
 																		Attributes: types.ElementAttributes{},
-																		Lines: []types.InlineElements{
+																		Lines: [][]interface{}{
 																			{
 																				types.StringElement{
 																					Content: "Desktop",
@@ -912,7 +912,7 @@ a paragraph
 																Elements: []interface{}{
 																	types.Paragraph{
 																		Attributes: types.ElementAttributes{},
-																		Lines: []types.InlineElements{
+																		Lines: [][]interface{}{
 																			{
 																				types.StringElement{
 																					Content: "Fedora",
@@ -931,7 +931,7 @@ a paragraph
 																				Elements: []interface{}{
 																					types.Paragraph{
 																						Attributes: types.ElementAttributes{},
-																						Lines: []types.InlineElements{
+																						Lines: [][]interface{}{
 																							{
 																								types.StringElement{
 																									Content: "Desktop",
@@ -952,7 +952,7 @@ a paragraph
 																Elements: []interface{}{
 																	types.Paragraph{
 																		Attributes: types.ElementAttributes{},
-																		Lines: []types.InlineElements{
+																		Lines: [][]interface{}{
 																			{
 																				types.StringElement{
 																					Content: "Ubuntu",
@@ -971,7 +971,7 @@ a paragraph
 																				Elements: []interface{}{
 																					types.Paragraph{
 																						Attributes: types.ElementAttributes{},
-																						Lines: []types.InlineElements{
+																						Lines: [][]interface{}{
 																							{
 																								types.StringElement{
 																									Content: "Desktop",
@@ -989,7 +989,7 @@ a paragraph
 																				Elements: []interface{}{
 																					types.Paragraph{
 																						Attributes: types.ElementAttributes{},
-																						Lines: []types.InlineElements{
+																						Lines: [][]interface{}{
 																							{
 																								types.StringElement{
 																									Content: "Server",
@@ -1022,7 +1022,7 @@ a paragraph
 																Elements: []interface{}{
 																	types.Paragraph{
 																		Attributes: types.ElementAttributes{},
-																		Lines: []types.InlineElements{
+																		Lines: [][]interface{}{
 																			{
 																				types.StringElement{
 																					Content: "FreeBSD",
@@ -1039,7 +1039,7 @@ a paragraph
 																Elements: []interface{}{
 																	types.Paragraph{
 																		Attributes: types.ElementAttributes{},
-																		Lines: []types.InlineElements{
+																		Lines: [][]interface{}{
 																			{
 																				types.StringElement{
 																					Content: "NetBSD",
@@ -1080,7 +1080,7 @@ a paragraph
 																Elements: []interface{}{
 																	types.Paragraph{
 																		Attributes: types.ElementAttributes{},
-																		Lines: []types.InlineElements{
+																		Lines: [][]interface{}{
 																			{
 																				types.StringElement{
 																					Content: "OpenShift",
@@ -1097,7 +1097,7 @@ a paragraph
 																Elements: []interface{}{
 																	types.Paragraph{
 																		Attributes: types.ElementAttributes{},
-																		Lines: []types.InlineElements{
+																		Lines: [][]interface{}{
 																			{
 																				types.StringElement{
 																					Content: "CloudBees",
@@ -1126,7 +1126,7 @@ a paragraph
 																Elements: []interface{}{
 																	types.Paragraph{
 																		Attributes: types.ElementAttributes{},
-																		Lines: []types.InlineElements{
+																		Lines: [][]interface{}{
 																			{
 																				types.StringElement{
 																					Content: "Amazon EC2",
@@ -1143,7 +1143,7 @@ a paragraph
 																Elements: []interface{}{
 																	types.Paragraph{
 																		Attributes: types.ElementAttributes{},
-																		Lines: []types.InlineElements{
+																		Lines: [][]interface{}{
 																			{
 																				types.StringElement{
 																					Content: "Rackspace",
@@ -1166,7 +1166,7 @@ a paragraph
 					// types.BlankLine{},
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
-						Lines: []types.InlineElements{
+						Lines: [][]interface{}{
 							{
 								types.StringElement{
 									Content: "a paragraph",
@@ -1206,7 +1206,7 @@ a paragraph
 								Elements: []interface{}{
 									types.Paragraph{
 										Attributes: types.ElementAttributes{},
-										Lines: []types.InlineElements{
+										Lines: [][]interface{}{
 											{
 												types.StringElement{
 													Content: "Five",
@@ -1224,7 +1224,7 @@ a paragraph
 												Elements: []interface{}{
 													types.Paragraph{
 														Attributes: types.ElementAttributes{},
-														Lines: []types.InlineElements{
+														Lines: [][]interface{}{
 															{
 																types.StringElement{
 																	Content: "a",
@@ -1245,7 +1245,7 @@ a paragraph
 								Elements: []interface{}{
 									types.Paragraph{
 										Attributes: types.ElementAttributes{},
-										Lines: []types.InlineElements{
+										Lines: [][]interface{}{
 											{
 												types.StringElement{
 													Content: "Six",
@@ -1289,7 +1289,7 @@ a paragraph
 								Elements: []interface{}{
 									types.Paragraph{
 										Attributes: types.ElementAttributes{},
-										Lines: []types.InlineElements{
+										Lines: [][]interface{}{
 											{
 												types.StringElement{
 													Content: "Five",
@@ -1309,7 +1309,7 @@ a paragraph
 												Elements: []interface{}{
 													types.Paragraph{
 														Attributes: types.ElementAttributes{},
-														Lines: []types.InlineElements{
+														Lines: [][]interface{}{
 															{
 																types.StringElement{
 																	Content: "a",
@@ -1326,7 +1326,7 @@ a paragraph
 												Elements: []interface{}{
 													types.Paragraph{
 														Attributes: types.ElementAttributes{},
-														Lines: []types.InlineElements{
+														Lines: [][]interface{}{
 															{
 																types.StringElement{
 																	Content: "b",
@@ -1347,7 +1347,7 @@ a paragraph
 								Elements: []interface{}{
 									types.Paragraph{
 										Attributes: types.ElementAttributes{},
-										Lines: []types.InlineElements{
+										Lines: [][]interface{}{
 											{
 												types.StringElement{
 													Content: "Six",
@@ -1390,7 +1390,7 @@ a paragraph
 								Elements: []interface{}{
 									types.Paragraph{
 										Attributes: types.ElementAttributes{},
-										Lines: []types.InlineElements{
+										Lines: [][]interface{}{
 											{
 												types.StringElement{
 													Content: "Five",
@@ -1414,7 +1414,7 @@ a paragraph
 								Elements: []interface{}{
 									types.Paragraph{
 										Attributes: types.ElementAttributes{},
-										Lines: []types.InlineElements{
+										Lines: [][]interface{}{
 											{
 												types.StringElement{
 													Content: "a",
@@ -1432,7 +1432,7 @@ a paragraph
 												Elements: []interface{}{
 													types.Paragraph{
 														Attributes: types.ElementAttributes{},
-														Lines: []types.InlineElements{
+														Lines: [][]interface{}{
 															{
 																types.StringElement{
 																	Content: "Six",
@@ -1483,7 +1483,7 @@ a paragraph
 										Attributes: types.ElementAttributes{
 											types.AttrCheckStyle: types.Checked,
 										},
-										Lines: []types.InlineElements{
+										Lines: [][]interface{}{
 											{
 												types.StringElement{
 													Content: "checked",
@@ -1501,7 +1501,7 @@ a paragraph
 								Elements: []interface{}{
 									types.Paragraph{
 										Attributes: types.ElementAttributes{},
-										Lines: []types.InlineElements{
+										Lines: [][]interface{}{
 											{
 												types.StringElement{
 													Content: "normal list item",
@@ -1525,7 +1525,7 @@ a paragraph
 								Elements: []interface{}{
 									types.Paragraph{
 										Attributes: types.ElementAttributes{},
-										Lines: []types.InlineElements{
+										Lines: [][]interface{}{
 											{
 												types.StringElement{
 													Content: "Step 1",
@@ -1542,7 +1542,7 @@ a paragraph
 								Elements: []interface{}{
 									types.Paragraph{
 										Attributes: types.ElementAttributes{},
-										Lines: []types.InlineElements{
+										Lines: [][]interface{}{
 											{
 												types.StringElement{
 													Content: "Step 2",
@@ -1579,7 +1579,7 @@ a paragraph
 								Elements: []interface{}{
 									types.Paragraph{
 										Attributes: types.ElementAttributes{},
-										Lines: []types.InlineElements{
+										Lines: [][]interface{}{
 											{
 												types.StringElement{
 													Content: "a",
@@ -1599,7 +1599,7 @@ a paragraph
 								Elements: []interface{}{
 									types.Paragraph{
 										Attributes: types.ElementAttributes{},
-										Lines: []types.InlineElements{
+										Lines: [][]interface{}{
 											{
 												types.StringElement{
 													Content: "b",
@@ -1638,7 +1638,7 @@ a paragraph
 								Elements: []interface{}{
 									types.Paragraph{
 										Attributes: types.ElementAttributes{},
-										Lines: []types.InlineElements{
+										Lines: [][]interface{}{
 											{
 												types.StringElement{
 													Content: "a",
@@ -1664,7 +1664,7 @@ a paragraph
 								Elements: []interface{}{
 									types.Paragraph{
 										Attributes: types.ElementAttributes{},
-										Lines: []types.InlineElements{
+										Lines: [][]interface{}{
 											{
 												types.StringElement{
 													Content: "b",
@@ -1702,7 +1702,7 @@ a paragraph
 								Elements: []interface{}{
 									types.Paragraph{
 										Attributes: types.ElementAttributes{},
-										Lines: []types.InlineElements{
+										Lines: [][]interface{}{
 											{
 												types.StringElement{
 													Content: "a",
@@ -1727,7 +1727,7 @@ a paragraph
 								Elements: []interface{}{
 									types.Paragraph{
 										Attributes: types.ElementAttributes{},
-										Lines: []types.InlineElements{
+										Lines: [][]interface{}{
 											{
 												types.StringElement{
 													Content: "b",
@@ -1767,7 +1767,7 @@ a paragraph
 								Elements: []interface{}{
 									types.Paragraph{
 										Attributes: types.ElementAttributes{},
-										Lines: []types.InlineElements{
+										Lines: [][]interface{}{
 											{
 												types.StringElement{
 													Content: "a",
@@ -1798,7 +1798,7 @@ a paragraph
 								Elements: []interface{}{
 									types.Paragraph{
 										Attributes: types.ElementAttributes{},
-										Lines: []types.InlineElements{
+										Lines: [][]interface{}{
 											{
 												types.StringElement{
 													Content: "b",

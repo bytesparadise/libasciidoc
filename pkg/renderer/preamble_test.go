@@ -10,11 +10,11 @@ import (
 
 var _ = Describe("preambles", func() {
 
-	sectionATitle := types.InlineElements{
+	sectionATitle := []interface{}{
 		types.StringElement{Content: "Section A"},
 	}
 
-	sectionBTitle := types.InlineElements{
+	sectionBTitle := []interface{}{
 		types.StringElement{Content: "Section B"},
 	}
 
@@ -32,7 +32,7 @@ var _ = Describe("preambles", func() {
 			Elements: []interface{}{
 				types.Paragraph{
 					Attributes: types.ElementAttributes{},
-					Lines: []types.InlineElements{
+					Lines: [][]interface{}{
 						{
 							types.StringElement{Content: "a short paragraph"},
 						},
@@ -41,7 +41,7 @@ var _ = Describe("preambles", func() {
 				types.BlankLine{},
 				types.Paragraph{
 					Attributes: types.ElementAttributes{},
-					Lines: []types.InlineElements{
+					Lines: [][]interface{}{
 						{
 							types.StringElement{Content: "another short paragraph"},
 						},
@@ -62,7 +62,7 @@ var _ = Describe("preambles", func() {
 			Elements: []interface{}{
 				types.Paragraph{
 					Attributes: types.ElementAttributes{},
-					Lines: []types.InlineElements{
+					Lines: [][]interface{}{
 						{
 							types.StringElement{Content: "a short paragraph"},
 						},
@@ -71,7 +71,7 @@ var _ = Describe("preambles", func() {
 				types.BlankLine{},
 				types.Paragraph{
 					Attributes: types.ElementAttributes{},
-					Lines: []types.InlineElements{
+					Lines: [][]interface{}{
 						{
 							types.StringElement{Content: "another short paragraph"},
 						},
@@ -96,7 +96,7 @@ var _ = Describe("preambles", func() {
 			Elements: []interface{}{
 				types.Paragraph{
 					Attributes: types.ElementAttributes{},
-					Lines: []types.InlineElements{
+					Lines: [][]interface{}{
 						{
 							types.StringElement{Content: "a short paragraph"},
 						},
@@ -139,7 +139,7 @@ var _ = Describe("preambles", func() {
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
-							Lines: []types.InlineElements{
+							Lines: [][]interface{}{
 								{
 									types.StringElement{Content: "a short paragraph"},
 								},
@@ -186,7 +186,7 @@ var _ = Describe("preambles", func() {
 			Elements: []interface{}{
 				types.Paragraph{
 					Attributes: types.ElementAttributes{},
-					Lines: []types.InlineElements{
+					Lines: [][]interface{}{
 						{
 							types.StringElement{Content: "a short paragraph"},
 						},
@@ -195,7 +195,7 @@ var _ = Describe("preambles", func() {
 				types.BlankLine{},
 				types.Paragraph{
 					Attributes: types.ElementAttributes{},
-					Lines: []types.InlineElements{
+					Lines: [][]interface{}{
 						{
 							types.StringElement{Content: "another short paragraph"},
 						},
@@ -238,7 +238,7 @@ var _ = Describe("preambles", func() {
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
-							Lines: []types.InlineElements{
+							Lines: [][]interface{}{
 								{
 									types.StringElement{Content: "a short paragraph"},
 								},
@@ -247,7 +247,7 @@ var _ = Describe("preambles", func() {
 						types.BlankLine{},
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
-							Lines: []types.InlineElements{
+							Lines: [][]interface{}{
 								{
 									types.StringElement{Content: "another short paragraph"},
 								},

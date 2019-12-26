@@ -17,7 +17,7 @@ second paragraph`
 			Blocks: []interface{}{
 				types.Paragraph{
 					Attributes: types.ElementAttributes{},
-					Lines: []types.InlineElements{
+					Lines: [][]interface{}{
 						{
 							types.StringElement{Content: "first paragraph"},
 						},
@@ -26,7 +26,7 @@ second paragraph`
 				types.BlankLine{},
 				types.Paragraph{
 					Attributes: types.ElementAttributes{},
-					Lines: []types.InlineElements{
+					Lines: [][]interface{}{
 						{
 							types.StringElement{Content: "second paragraph"},
 						},
@@ -47,7 +47,7 @@ second paragraph
 			Blocks: []interface{}{
 				types.Paragraph{
 					Attributes: types.ElementAttributes{},
-					Lines: []types.InlineElements{
+					Lines: [][]interface{}{
 						{
 							types.StringElement{Content: "first paragraph"},
 						},
@@ -58,7 +58,7 @@ second paragraph
 				types.BlankLine{},
 				types.Paragraph{
 					Attributes: types.ElementAttributes{},
-					Lines: []types.InlineElements{
+					Lines: [][]interface{}{
 						{
 							types.StringElement{Content: "second paragraph"},
 						},

@@ -14,32 +14,6 @@ import (
 )
 
 // ------------------------------------------
-// interface{} (and other interfaces)
-// ------------------------------------------
-
-// Visitable the interface for visitable elements
-type Visitable interface {
-	AcceptVisitor(Visitor) error
-}
-
-// Substituable the interface for substituable elements, ie, which can
-// be replaced by another element, for example if they include a FileInclusion
-type Substituable interface {
-	AcceptSubstitutor(Substitutor) (interface{}, error)
-}
-
-// Visitor a visitor that can visit/traverse the interface{} and its children (if applicable)
-type Visitor interface {
-	Visit(Visitable) error
-}
-
-// Substitutor a substitutor that can visit/traverse the interface{} and its children (if applicable)
-// and return a new element (or slice of elements) in replacement of the visited element
-type Substitutor interface {
-	Visit(Substituable) (interface{}, error)
-}
-
-// ------------------------------------------
 // Draft Document: document parsed in a linear fashion, and which needs further
 // processing before rendering
 // ------------------------------------------
@@ -89,18 +63,18 @@ blocks:
 // Document the top-level structure for a document
 type Document struct {
 	Attributes         DocumentAttributes
-	Elements           []interface{} // TODO: rename to Blocks?
+	Elements           []interface{} // TODO: rename to `Blocks`?
 	ElementReferences  ElementReferences
 	Footnotes          Footnotes
 	FootnoteReferences FootnoteReferences
 }
 
 // Title retrieves the document title in its metadata, or empty section title if the title was not specified
-func (d Document) Title() (InlineElements, bool) {
+func (d Document) Title() ([]interface{}, bool) {
 	if header, ok := d.Header(); ok {
 		return header.Title, true
 	}
-	return InlineElements{}, false
+	return []interface{}{}, false
 }
 
 // Authors retrieves the document authors from the document header, or empty array if no author was found
@@ -415,12 +389,12 @@ func NewYamlFrontMatter(content string) (FrontMatter, error) {
 type Section struct {
 	Level      int
 	Attributes ElementAttributes
-	Title      InlineElements
+	Title      []interface{}
 	Elements   []interface{}
 }
 
 // NewSection initializes a new `Section` from the given section title and elements
-func NewSection(level int, title InlineElements, ids []interface{}, attributes interface{}) (Section, error) {
+func NewSection(level int, title []interface{}, ids []interface{}, attributes interface{}) (Section, error) {
 	attrs := ElementAttributes{}
 	if attributes, ok := attributes.(ElementAttributes); ok {
 		attrs.AddAll(attributes)
@@ -469,13 +443,11 @@ func (s *Section) AddElement(e interface{}) {
 
 // Footnotes returns the footnotes found in all the lines of this paragraph
 func (s Section) Footnotes() (Footnotes, FootnoteReferences, error) {
-	v := NewFootnotesCollector()
-	err := s.Title.AcceptVisitor(v)
-	return v.Footnotes, v.FootnoteReferences, err
+	return FindFootnotes(s.Title)
 }
 
 // NewDocumentHeader initializes a new Section with level 0 which can have authors and a revision, among other attributes
-func NewDocumentHeader(title InlineElements, authors interface{}, revision interface{}) (Section, error) {
+func NewDocumentHeader(title []interface{}, authors interface{}, revision interface{}) (Section, error) {
 	// log.Debugf("initializing a new Section level 0 with authors '%v' and revision '%v'", authors, revision)
 	section, err := NewSection(0, title, nil, nil)
 	if err != nil {
@@ -494,28 +466,6 @@ func NewDocumentHeader(title InlineElements, authors interface{}, revision inter
 func (s *Section) AddAttributes(attributes ElementAttributes) {
 	// log.Debugf("adding attributes to section: %v", attributes)
 	s.Attributes.AddAll(attributes)
-}
-
-// AcceptSubstitutor implements Substituable#AcceptSubstitutor(Substitutor)
-// in a section, the substitutor only cares about the elements for now.
-func (s *Section) AcceptSubstitutor(v Substitutor) (interface{}, error) {
-	substitute := Section{
-		Level: s.Level,
-		Title: s.Title,
-	}
-	elements := []interface{}{}
-	for _, element := range s.Elements {
-		if e, ok := element.(Substituable); ok {
-			e, err := e.AcceptSubstitutor(v)
-			if err != nil {
-				return nil, errors.Wrapf(err, "error while visiting section element for substitution")
-			}
-			elements = append(elements, e)
-		}
-	}
-
-	substitute.Elements = elements
-	return substitute, nil
 }
 
 // ------------------------------------------
@@ -660,7 +610,7 @@ type OrderedListItem struct {
 	Attributes     ElementAttributes
 	Level          int
 	NumberingStyle NumberingStyle
-	Elements       []interface{}
+	Elements       []interface{} // TODO: rename to `Blocks`?
 }
 
 // making sure that the `ListItem` interface is implemented by `OrderedListItem`
@@ -757,7 +707,7 @@ type UnorderedListItem struct {
 	BulletStyle BulletStyle
 	CheckStyle  UnorderedListItemCheckStyle
 	Attributes  ElementAttributes
-	Elements    []interface{}
+	Elements    []interface{} // TODO: rename to `Blocks`?
 }
 
 // NewUnorderedListItem initializes a new `UnorderedListItem` from the given content
@@ -961,7 +911,7 @@ type LabeledListItem struct {
 	Term       string
 	Level      int
 	Attributes ElementAttributes
-	Elements   []interface{}
+	Elements   []interface{} // TODO: rename to `Blocks`?
 }
 
 // making sure that the `ListItem` interface is implemented by `LabeledListItem`
@@ -1015,7 +965,7 @@ func (i LabeledListItem) AddAttributes(attributes ElementAttributes) {
 // Paragraph the structure for the paragraphs
 type Paragraph struct {
 	Attributes ElementAttributes
-	Lines      []InlineElements
+	Lines      [][]interface{}
 }
 
 // AttrHardBreaks the attribute to set on a paragraph to render with hard breaks on each line
@@ -1031,9 +981,9 @@ func NewParagraph(lines []interface{}, attributes interface{}) (Paragraph, error
 		attrs.AddAll(attributes)
 	}
 	// log.Debugf("initializing a new paragraph with %d line(s) and %d attribute(s)", len(lines), len(attrs))
-	elements := make([]InlineElements, 0)
+	elements := make([][]interface{}, 0)
 	for _, line := range lines {
-		if l, ok := line.(InlineElements); ok {
+		if l, ok := line.([]interface{}); ok {
 			// log.Debugf("processing paragraph line of type %T", line)
 			// if len(l) > 0 {
 			elements = append(elements, l)
@@ -1052,12 +1002,7 @@ func NewParagraph(lines []interface{}, attributes interface{}) (Paragraph, error
 
 // Footnotes returns the footnotes found in all the lines of this paragraph
 func (p Paragraph) Footnotes() (Footnotes, FootnoteReferences, error) {
-	v := NewFootnotesCollector()
-	err := p.AcceptVisitor(v)
-	if err != nil {
-		return nil, nil, err
-	}
-	return v.Footnotes, v.FootnoteReferences, nil
+	return FindFootnotes(p.Lines)
 }
 
 // NewAdmonitionParagraph returns a new Paragraph with an extra admonition attribute
@@ -1078,21 +1023,6 @@ func NewAdmonitionParagraph(lines []interface{}, admonitionKind AdmonitionKind, 
 // AddAttributes adds all given attributes to the current set of attribute of the element
 func (p Paragraph) AddAttributes(attributes ElementAttributes) {
 	p.Attributes.AddAll(attributes)
-}
-
-// AcceptVisitor implements Visitable#AcceptVisitor(Visitor)
-func (p *Paragraph) AcceptVisitor(v Visitor) error {
-	err := v.Visit(p)
-	if err != nil {
-		return errors.Wrapf(err, "error while visiting paragraph")
-	}
-	for _, line := range p.Lines {
-		err = line.AcceptVisitor(v)
-		if err != nil {
-			return errors.Wrapf(err, "error while visiting paragraph line")
-		}
-	}
-	return nil
 }
 
 // ------------------------------------------
@@ -1117,36 +1047,10 @@ const (
 	Unknown AdmonitionKind = ""
 )
 
-// ------------------------------------------
-// InlineElements
-// ------------------------------------------
-
-// InlineElements the structure for the lines in paragraphs
-type InlineElements []interface{}
-
 // NewInlineElements initializes a new `InlineElements` from the given values
-func NewInlineElements(elements ...interface{}) (InlineElements, error) {
+func NewInlineElements(elements ...interface{}) ([]interface{}, error) {
 	result := MergeStringElements(elements...)
 	return result, nil
-}
-
-var _ Visitable = InlineElements{}
-
-// AcceptVisitor implements Visitable#AcceptVisitor(Visitor)
-func (e InlineElements) AcceptVisitor(v Visitor) error {
-	err := v.Visit(e)
-	if err != nil {
-		return errors.Wrapf(err, "error while visiting inline content")
-	}
-	for _, element := range e {
-		if visitable, ok := element.(Visitable); ok {
-			err = visitable.AcceptVisitor(v)
-			if err != nil {
-				return errors.Wrapf(err, "error while visiting inline content element")
-			}
-		}
-	}
-	return nil
 }
 
 // ------------------------------------------
@@ -1255,23 +1159,6 @@ func (i InlineImage) ResolveLocation(attrs map[string]string) (interface{}, bool
 	return i, true
 }
 
-// // ResolveLocation resolves the image path using the given document attributes
-// // also, updates the `alt` attribute based on the resolved path of the image
-// func (b InlineImage) ResolveLocation(attrs map[string]string) interface{} {
-// 	path := b.Path.Resolve(attrs)
-// 	if _, found := attrs[AttrImageAlt]; !found {
-// 		_, filename := filepath.Split(path)
-// 		ext := filepath.Ext(filename)
-// 		log.Debugf("adding alt based on filename '%s' (ext=%s)", filename, ext)
-// 		if ext != "" {
-// 			b.Attributes[AttrImageAlt] = strings.TrimSuffix(filename, ext)
-// 		} else {
-// 			b.Attributes[AttrImageAlt] = filename
-// 		}
-// 	}
-// 	return b
-// }
-
 // NewImageAttributes returns a map of image attributes, some of which have implicit keys (`alt`, `width` and `height`)
 func NewImageAttributes(alt, width, height interface{}, otherattrs []interface{}) (ElementAttributes, error) {
 	result := ElementAttributes{}
@@ -1323,11 +1210,11 @@ type Footnote struct {
 	// Ref the optional reference
 	Ref string
 	// the footnote content (can be "rich")
-	Elements InlineElements
+	Elements []interface{}
 }
 
 // NewFootnote returns a new Footnote with the given content
-func NewFootnote(ref string, elements InlineElements) (Footnote, error) {
+func NewFootnote(ref string, elements []interface{}) (Footnote, error) {
 	defer func() {
 		footnoteSequence++
 	}()
@@ -1339,15 +1226,6 @@ func NewFootnote(ref string, elements InlineElements) (Footnote, error) {
 	return footnote, nil
 }
 
-// AcceptVisitor implements Visitable#AcceptVisitor(Visitor)
-func (f Footnote) AcceptVisitor(v Visitor) error {
-	err := v.Visit(f)
-	if err != nil {
-		return errors.Wrapf(err, "error while visiting section")
-	}
-	return nil
-}
-
 // ------------------------------------------
 // Delimited blocks
 // ------------------------------------------
@@ -1356,7 +1234,7 @@ func (f Footnote) AcceptVisitor(v Visitor) error {
 type DelimitedBlock struct {
 	Kind       BlockKind
 	Attributes ElementAttributes
-	Elements   []interface{}
+	Elements   []interface{} // TODO: rename to `Blocks`?
 }
 
 // Substitution the substitution group to apply when initializing a delimited block
@@ -1438,7 +1316,7 @@ func NewTable(header interface{}, lines []interface{}, attributes interface{}) (
 		columnsPerLine = len(header.Cells)
 	}
 	// need to regroup columns of all lines, they dispatch on lines
-	cells := make([]InlineElements, 0)
+	cells := make([][]interface{}, 0)
 	for _, l := range lines {
 		if l, ok := l.(TableLine); ok {
 			// if no header line was set, inspect the first line to determine the number of columns per line
@@ -1452,7 +1330,7 @@ func NewTable(header interface{}, lines []interface{}, attributes interface{}) (
 	if len(lines) > 0 {
 		log.Debugf("buffered %d columns for the table", len(cells))
 		l := TableLine{
-			Cells: make([]InlineElements, columnsPerLine),
+			Cells: make([][]interface{}, columnsPerLine),
 		}
 		for i, c := range cells {
 			log.Debugf("adding cell with content '%v' in table line at offset %d", c, (i % columnsPerLine))
@@ -1461,7 +1339,7 @@ func NewTable(header interface{}, lines []interface{}, attributes interface{}) (
 				log.Debugf("adding line with content '%v' in table", l)
 				t.Lines = append(t.Lines, l)
 				l = TableLine{
-					Cells: make([]InlineElements, columnsPerLine),
+					Cells: make([][]interface{}, columnsPerLine),
 				}
 			}
 		}
@@ -1475,16 +1353,16 @@ func (t Table) AddAttributes(attributes ElementAttributes) {
 	t.Attributes.AddAll(attributes)
 }
 
-// TableLine a table line is made of columns, each column being a group of InlineElements (to support quoted text, etc.)
+// TableLine a table line is made of columns, each column being a group of []interface{} (to support quoted text, etc.)
 type TableLine struct {
-	Cells []InlineElements
+	Cells [][]interface{}
 }
 
 // NewTableLine initializes a new TableLine with the given columns
 func NewTableLine(columns []interface{}) (TableLine, error) {
-	c := make([]InlineElements, 0)
+	c := make([][]interface{}, 0)
 	for _, column := range columns {
-		if e, ok := column.(InlineElements); ok {
+		if e, ok := column.([]interface{}); ok {
 			c = append(c, e)
 		} else {
 			return TableLine{}, errors.Errorf("unsupported element of type %T", column)
@@ -1595,15 +1473,7 @@ func NewStringElement(content string) (StringElement, error) {
 	return StringElement{Content: content}, nil
 }
 
-// AcceptVisitor implements Visitable#AcceptVisitor(Visitor)
-func (s StringElement) AcceptVisitor(v Visitor) error {
-	err := v.Visit(s)
-	if err != nil {
-		return errors.Wrapf(err, "error while visiting string element")
-	}
-	return nil
-}
-
+// String return the content of this StringElement
 func (s StringElement) String() string {
 	return s.Content
 }
@@ -1627,7 +1497,7 @@ func NewLineBreak() (LineBreak, error) {
 // QuotedText the structure for quoted text
 type QuotedText struct {
 	Kind     QuotedTextKind
-	Elements InlineElements
+	Elements []interface{}
 }
 
 // QuotedTextKind the type for
@@ -1655,28 +1525,11 @@ func NewQuotedText(kind QuotedTextKind, content ...interface{}) (QuotedText, err
 	}, nil
 }
 
-// AcceptVisitor implements Visitable#AcceptVisitor(Visitor)
-func (t QuotedText) AcceptVisitor(v Visitor) error {
-	err := v.Visit(t)
-	if err != nil {
-		return errors.Wrapf(err, "error while visiting quoted text")
-	}
-	for _, element := range t.Elements {
-		if visitable, ok := element.(Visitable); ok {
-			err := visitable.AcceptVisitor(v)
-			if err != nil {
-				return errors.Wrapf(err, "error while visiting quoted text element")
-			}
-		}
-	}
-	return nil
-}
-
 // -------------------------------------------------------
 // Escaped Quoted Text (i.e., with substitution preserved)
 // -------------------------------------------------------
 
-// NewEscapedQuotedText returns a new InlineElements where the nested elements are preserved (ie, substituted as expected)
+// NewEscapedQuotedText returns a new []interface{} where the nested elements are preserved (ie, substituted as expected)
 func NewEscapedQuotedText(backslashes string, punctuation string, content interface{}) ([]interface{}, error) {
 	// log.Debugf("new escaped quoted text: %s %s %v", backslashes, punctuation, content)
 	backslashesStr := Apply(backslashes,
@@ -1708,7 +1561,7 @@ func NewEscapedQuotedText(backslashes string, punctuation string, content interf
 // Passthrough the structure for Passthroughs
 type Passthrough struct {
 	Kind     PassthroughKind
-	Elements InlineElements
+	Elements []interface{}
 }
 
 // PassthroughKind the kind of passthrough
@@ -1755,28 +1608,13 @@ func NewInlineLink(url Location, attrs interface{}) (InlineLink, error) {
 	return result, nil
 }
 
-// // ResolveLocation resolves the link path using the given document attributes
-// func (b InlineLink) ResolveLocation() interface{} {
-// 	b.Path.Resolve(attrs)
-// 	return b
-// }
-
-// AcceptVisitor implements Visitable#AcceptVisitor(Visitor)
-func (l InlineLink) AcceptVisitor(v Visitor) error {
-	err := v.Visit(l)
-	if err != nil {
-		return errors.Wrapf(err, "error while visiting inline link")
-	}
-	return nil
-}
-
 // AttrInlineLinkText the link `text` attribute
 const AttrInlineLinkText string = "text"
 
 // NewInlineLinkAttributes returns a map of link attributes, some of which have implicit keys (`text`)
 func NewInlineLinkAttributes(text interface{}, otherattrs []interface{}) (ElementAttributes, error) {
 	result := ElementAttributes{}
-	if text, ok := text.(InlineElements); ok {
+	if text, ok := text.([]interface{}); ok {
 		result[AttrInlineLinkText] = text
 	}
 	for _, otherAttr := range otherattrs {
@@ -2105,25 +1943,25 @@ func (l Location) String() string { // (attrs map[string]string) string {
 // no attribute matched
 // returns `true` if some document attribute substitution occurred
 func (l *Location) Resolve(attrs map[string]string) Location {
-	result := bytes.NewBuffer(nil)
+	content := bytes.NewBuffer(nil)
 	for _, e := range l.Elements {
 		switch e := e.(type) {
 		case DocumentAttributeSubstitution:
 			if value, found := attrs[e.Name]; found {
-				result.WriteString(value)
+				content.WriteString(value)
 			} else {
-				result.WriteRune('{')
-				result.WriteString(e.Name)
-				result.WriteRune('}')
+				content.WriteRune('{')
+				content.WriteString(e.Name)
+				content.WriteRune('}')
 			}
 		default:
-			result.WriteString(fmt.Sprintf("%s", e))
+			content.WriteString(fmt.Sprintf("%s", e))
 		}
 	}
 	return Location{
 		Elements: []interface{}{
 			StringElement{
-				Content: result.String(),
+				Content: content.String(),
 			},
 		},
 	}

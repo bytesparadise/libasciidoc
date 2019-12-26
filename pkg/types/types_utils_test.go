@@ -12,7 +12,7 @@ var _ = Describe("convert to inline elements", func() {
 			StringElement{Content: "hello"},
 			StringElement{Content: "world"},
 		}
-		expected := InlineElements{
+		expected := []interface{}{
 			StringElement{Content: "helloworld"},
 		}
 		// when
@@ -25,7 +25,7 @@ var _ = Describe("convert to inline elements", func() {
 			StringElement{Content: "hello, "},
 			StringElement{Content: "world   "},
 		}
-		expected := InlineElements{
+		expected := []interface{}{
 			StringElement{Content: "hello, world   "},
 		}
 		// when

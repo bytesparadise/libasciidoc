@@ -31,7 +31,7 @@ var _ = Describe("document metadata assertions", func() {
 				types.Section{
 					Level:      0,
 					Attributes: types.ElementAttributes{},
-					Title:      types.InlineElements{},
+					Title:      []interface{}{},
 					Elements:   []interface{}{},
 				},
 			},

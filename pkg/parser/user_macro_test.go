@@ -16,7 +16,7 @@ var _ = Describe("user macros", func() {
 			source := "AAA hello:[]"
 			expected := types.Paragraph{
 				Attributes: types.ElementAttributes{},
-				Lines: []types.InlineElements{
+				Lines: [][]interface{}{
 					{
 						types.StringElement{
 							Content: "AAA ",
@@ -38,7 +38,7 @@ var _ = Describe("user macros", func() {
 			source := `AAA hello:[suffix="!!!!!"]`
 			expected := types.Paragraph{
 				Attributes: types.ElementAttributes{},
-				Lines: []types.InlineElements{
+				Lines: [][]interface{}{
 					{
 						types.StringElement{
 							Content: "AAA ",
@@ -62,7 +62,7 @@ var _ = Describe("user macros", func() {
 			source := `AAA hello:JohnDoe[]`
 			expected := types.Paragraph{
 				Attributes: types.ElementAttributes{},
-				Lines: []types.InlineElements{
+				Lines: [][]interface{}{
 					{
 						types.StringElement{
 							Content: "AAA ",
@@ -84,7 +84,7 @@ var _ = Describe("user macros", func() {
 			source := "repository: git:some/url.git[key1=value1,key2=value2]"
 			expected := types.Paragraph{
 				Attributes: types.ElementAttributes{},
-				Lines: []types.InlineElements{
+				Lines: [][]interface{}{
 					{
 						types.StringElement{
 							Content: "repository: ",

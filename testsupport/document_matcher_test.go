@@ -20,7 +20,7 @@ var _ = Describe("document assertions", func() {
 		Elements: []interface{}{
 			types.Paragraph{
 				Attributes: types.ElementAttributes{},
-				Lines: []types.InlineElements{
+				Lines: [][]interface{}{
 					{
 						types.StringElement{
 							Content: "hello, world!",
@@ -60,7 +60,7 @@ var _ = Describe("document assertions", func() {
 			Elements: []interface{}{
 				types.Paragraph{
 					Attributes: types.ElementAttributes{},
-					Lines: []types.InlineElements{
+					Lines: [][]interface{}{
 						{
 							types.StringElement{
 								Content: "foo",

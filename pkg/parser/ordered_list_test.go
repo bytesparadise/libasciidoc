@@ -16,7 +16,7 @@ var _ = Describe("ordered lists - draft", func() {
 		elements := []interface{}{
 			types.Paragraph{
 				Attributes: types.ElementAttributes{},
-				Lines: []types.InlineElements{
+				Lines: [][]interface{}{
 					{
 						types.StringElement{Content: "item"},
 					},
@@ -195,7 +195,7 @@ var _ = Describe("ordered lists - draft", func() {
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{
 											Content: "level 1",
@@ -212,7 +212,7 @@ var _ = Describe("ordered lists - draft", func() {
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{
 											Content: "level 2",
@@ -229,7 +229,7 @@ var _ = Describe("ordered lists - draft", func() {
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{
 											Content: "level 3",
@@ -246,7 +246,7 @@ var _ = Describe("ordered lists - draft", func() {
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{
 											Content: "level 4",
@@ -263,7 +263,7 @@ var _ = Describe("ordered lists - draft", func() {
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{
 											Content: "level 5",
@@ -280,7 +280,7 @@ var _ = Describe("ordered lists - draft", func() {
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{
 											Content: "level 1",
@@ -314,7 +314,7 @@ var _ = Describe("ordered lists - draft", func() {
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{
 											Content: "level 1",
@@ -331,7 +331,7 @@ var _ = Describe("ordered lists - draft", func() {
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{
 											Content: "level 2",
@@ -348,7 +348,7 @@ var _ = Describe("ordered lists - draft", func() {
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{
 											Content: "level 3",
@@ -365,7 +365,7 @@ var _ = Describe("ordered lists - draft", func() {
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{
 											Content: "level 4",
@@ -382,7 +382,7 @@ var _ = Describe("ordered lists - draft", func() {
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{
 											Content: "level 5",
@@ -399,7 +399,7 @@ var _ = Describe("ordered lists - draft", func() {
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{
 											Content: "level 2b",
@@ -430,7 +430,7 @@ var _ = Describe("ordered lists - draft", func() {
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{Content: "a"},
 									},
@@ -445,7 +445,7 @@ var _ = Describe("ordered lists - draft", func() {
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{Content: "b"},
 									},
@@ -471,7 +471,7 @@ var _ = Describe("ordered lists - draft", func() {
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{Content: "item 1"},
 									},
@@ -486,7 +486,7 @@ var _ = Describe("ordered lists - draft", func() {
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{Content: "item 2"},
 									},
@@ -519,7 +519,7 @@ var _ = Describe("ordered lists - draft", func() {
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{Content: "item 1"},
 									},
@@ -534,7 +534,7 @@ var _ = Describe("ordered lists - draft", func() {
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{Content: "item 1.1"},
 									},
@@ -551,7 +551,7 @@ var _ = Describe("ordered lists - draft", func() {
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{Content: "item 1.1.1"},
 									},
@@ -566,7 +566,7 @@ var _ = Describe("ordered lists - draft", func() {
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{Content: "item 1.1.2"},
 									},
@@ -581,7 +581,7 @@ var _ = Describe("ordered lists - draft", func() {
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{Content: "item 1.2"},
 									},
@@ -596,7 +596,7 @@ var _ = Describe("ordered lists - draft", func() {
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{Content: "item 2"},
 									},
@@ -611,7 +611,7 @@ var _ = Describe("ordered lists - draft", func() {
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{Content: "item 2.1"},
 									},
@@ -648,7 +648,7 @@ var _ = Describe("ordered lists - draft", func() {
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{Content: "level 1"},
 									},
@@ -664,7 +664,7 @@ var _ = Describe("ordered lists - draft", func() {
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{Content: "level 2"},
 									},
@@ -681,7 +681,7 @@ var _ = Describe("ordered lists - draft", func() {
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{Content: "level 3"},
 									},
@@ -699,7 +699,7 @@ var _ = Describe("ordered lists - draft", func() {
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{Content: "level 4"},
 									},
@@ -714,7 +714,7 @@ var _ = Describe("ordered lists - draft", func() {
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{Content: "level 5."},
 									},
@@ -744,7 +744,7 @@ var _ = Describe("ordered lists - draft", func() {
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{Content: "a"},
 									},
@@ -759,7 +759,7 @@ var _ = Describe("ordered lists - draft", func() {
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{Content: "b"},
 									},
@@ -786,7 +786,7 @@ b. item 2.a`
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{Content: "item 1"},
 									},
@@ -801,7 +801,7 @@ b. item 2.a`
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{Content: "item 1.a"},
 									},
@@ -816,7 +816,7 @@ b. item 2.a`
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{Content: "item 2"},
 									},
@@ -831,7 +831,7 @@ b. item 2.a`
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{Content: "item 2.a"},
 									},
@@ -868,7 +868,7 @@ another delimited block
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{Content: "foo"},
 									},
@@ -884,7 +884,7 @@ another delimited block
 							Elements: []interface{}{
 								types.Paragraph{
 									Attributes: types.ElementAttributes{},
-									Lines: []types.InlineElements{
+									Lines: [][]interface{}{
 										{
 											types.StringElement{
 												Content: "a delimited block",
@@ -903,7 +903,7 @@ another delimited block
 							Elements: []interface{}{
 								types.Paragraph{
 									Attributes: types.ElementAttributes{},
-									Lines: []types.InlineElements{
+									Lines: [][]interface{}{
 										{
 											types.StringElement{
 												Content: "another delimited block",
@@ -921,7 +921,7 @@ another delimited block
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
-								Lines: []types.InlineElements{
+								Lines: [][]interface{}{
 									{
 										types.StringElement{Content: "bar"},
 									},
@@ -944,7 +944,7 @@ var _ = Describe("ordered lists - document", func() {
 		elements := []interface{}{
 			types.Paragraph{
 				Attributes: types.ElementAttributes{},
-				Lines: []types.InlineElements{
+				Lines: [][]interface{}{
 					{
 						types.StringElement{Content: "item"},
 					},
@@ -1115,7 +1115,7 @@ var _ = Describe("ordered lists - document", func() {
 								Elements: []interface{}{
 									types.Paragraph{
 										Attributes: types.ElementAttributes{},
-										Lines: []types.InlineElements{
+										Lines: [][]interface{}{
 											{
 												types.StringElement{Content: "&amp;"},
 											},
@@ -1245,7 +1245,7 @@ var _ = Describe("ordered lists - document", func() {
 								Elements: []interface{}{
 									types.Paragraph{
 										Attributes: types.ElementAttributes{},
-										Lines: []types.InlineElements{
+										Lines: [][]interface{}{
 											{
 												types.StringElement{
 													Content: "level 1",
@@ -1263,7 +1263,7 @@ var _ = Describe("ordered lists - document", func() {
 												Elements: []interface{}{
 													types.Paragraph{
 														Attributes: types.ElementAttributes{},
-														Lines: []types.InlineElements{
+														Lines: [][]interface{}{
 															{
 																types.StringElement{
 																	Content: "level 2",
@@ -1281,7 +1281,7 @@ var _ = Describe("ordered lists - document", func() {
 																Elements: []interface{}{
 																	types.Paragraph{
 																		Attributes: types.ElementAttributes{},
-																		Lines: []types.InlineElements{
+																		Lines: [][]interface{}{
 																			{
 																				types.StringElement{
 																					Content: "level 3",
@@ -1299,7 +1299,7 @@ var _ = Describe("ordered lists - document", func() {
 																				Elements: []interface{}{
 																					types.Paragraph{
 																						Attributes: types.ElementAttributes{},
-																						Lines: []types.InlineElements{
+																						Lines: [][]interface{}{
 																							{
 																								types.StringElement{
 																									Content: "level 4",
@@ -1317,7 +1317,7 @@ var _ = Describe("ordered lists - document", func() {
 																								Elements: []interface{}{
 																									types.Paragraph{
 																										Attributes: types.ElementAttributes{},
-																										Lines: []types.InlineElements{
+																										Lines: [][]interface{}{
 																											{
 																												types.StringElement{
 																													Content: "level 5",
@@ -1350,7 +1350,7 @@ var _ = Describe("ordered lists - document", func() {
 								Elements: []interface{}{
 									types.Paragraph{
 										Attributes: types.ElementAttributes{},
-										Lines: []types.InlineElements{
+										Lines: [][]interface{}{
 											{
 												types.StringElement{
 													Content: "level 1",
@@ -1393,7 +1393,7 @@ var _ = Describe("ordered lists - document", func() {
 								Elements: []interface{}{
 									types.Paragraph{
 										Attributes: types.ElementAttributes{},
-										Lines: []types.InlineElements{
+										Lines: [][]interface{}{
 											{
 												types.StringElement{
 													Content: "level 1",
@@ -1411,7 +1411,7 @@ var _ = Describe("ordered lists - document", func() {
 												Elements: []interface{}{
 													types.Paragraph{
 														Attributes: types.ElementAttributes{},
-														Lines: []types.InlineElements{
+														Lines: [][]interface{}{
 															{
 																types.StringElement{
 																	Content: "level 2",
@@ -1429,7 +1429,7 @@ var _ = Describe("ordered lists - document", func() {
 																Elements: []interface{}{
 																	types.Paragraph{
 																		Attributes: types.ElementAttributes{},
-																		Lines: []types.InlineElements{
+																		Lines: [][]interface{}{
 																			{
 																				types.StringElement{
 																					Content: "level 3",
@@ -1447,7 +1447,7 @@ var _ = Describe("ordered lists - document", func() {
 																				Elements: []interface{}{
 																					types.Paragraph{
 																						Attributes: types.ElementAttributes{},
-																						Lines: []types.InlineElements{
+																						Lines: [][]interface{}{
 																							{
 																								types.StringElement{
 																									Content: "level 4",
@@ -1465,7 +1465,7 @@ var _ = Describe("ordered lists - document", func() {
 																								Elements: []interface{}{
 																									types.Paragraph{
 																										Attributes: types.ElementAttributes{},
-																										Lines: []types.InlineElements{
+																										Lines: [][]interface{}{
 																											{
 																												types.StringElement{
 																													Content: "level 5",
@@ -1494,7 +1494,7 @@ var _ = Describe("ordered lists - document", func() {
 												Elements: []interface{}{
 													types.Paragraph{
 														Attributes: types.ElementAttributes{},
-														Lines: []types.InlineElements{
+														Lines: [][]interface{}{
 															{
 																types.StringElement{
 																	Content: "level 2b",
@@ -1538,7 +1538,7 @@ var _ = Describe("ordered lists - document", func() {
 								Elements: []interface{}{
 									types.Paragraph{
 										Attributes: types.ElementAttributes{},
-										Lines: []types.InlineElements{
+										Lines: [][]interface{}{
 											{
 												types.StringElement{Content: "a"},
 											},
@@ -1553,7 +1553,7 @@ var _ = Describe("ordered lists - document", func() {
 								Elements: []interface{}{
 									types.Paragraph{
 										Attributes: types.ElementAttributes{},
-										Lines: []types.InlineElements{
+										Lines: [][]interface{}{
 											{
 												types.StringElement{Content: "b"},
 											},
@@ -1588,7 +1588,7 @@ var _ = Describe("ordered lists - document", func() {
 								Elements: []interface{}{
 									types.Paragraph{
 										Attributes: types.ElementAttributes{},
-										Lines: []types.InlineElements{
+										Lines: [][]interface{}{
 											{
 												types.StringElement{Content: "item 1"},
 											},
@@ -1603,7 +1603,7 @@ var _ = Describe("ordered lists - document", func() {
 								Elements: []interface{}{
 									types.Paragraph{
 										Attributes: types.ElementAttributes{},
-										Lines: []types.InlineElements{
+										Lines: [][]interface{}{
 											{
 												types.StringElement{Content: "item 2"},
 											},
@@ -1645,7 +1645,7 @@ var _ = Describe("ordered lists - document", func() {
 								Elements: []interface{}{
 									types.Paragraph{
 										Attributes: types.ElementAttributes{},
-										Lines: []types.InlineElements{
+										Lines: [][]interface{}{
 											{
 												types.StringElement{Content: "item 1"},
 											},
@@ -1661,7 +1661,7 @@ var _ = Describe("ordered lists - document", func() {
 												Elements: []interface{}{
 													types.Paragraph{
 														Attributes: types.ElementAttributes{},
-														Lines: []types.InlineElements{
+														Lines: [][]interface{}{
 															{
 																types.StringElement{Content: "item 1.1"},
 															},
@@ -1679,7 +1679,7 @@ var _ = Describe("ordered lists - document", func() {
 																Elements: []interface{}{
 																	types.Paragraph{
 																		Attributes: types.ElementAttributes{},
-																		Lines: []types.InlineElements{
+																		Lines: [][]interface{}{
 																			{
 																				types.StringElement{Content: "item 1.1.1"},
 																			},
@@ -1694,7 +1694,7 @@ var _ = Describe("ordered lists - document", func() {
 																Elements: []interface{}{
 																	types.Paragraph{
 																		Attributes: types.ElementAttributes{},
-																		Lines: []types.InlineElements{
+																		Lines: [][]interface{}{
 																			{
 																				types.StringElement{Content: "item 1.1.2"},
 																			},
@@ -1713,7 +1713,7 @@ var _ = Describe("ordered lists - document", func() {
 												Elements: []interface{}{
 													types.Paragraph{
 														Attributes: types.ElementAttributes{},
-														Lines: []types.InlineElements{
+														Lines: [][]interface{}{
 															{
 																types.StringElement{Content: "item 1.2"},
 															},
@@ -1732,7 +1732,7 @@ var _ = Describe("ordered lists - document", func() {
 								Elements: []interface{}{
 									types.Paragraph{
 										Attributes: types.ElementAttributes{},
-										Lines: []types.InlineElements{
+										Lines: [][]interface{}{
 											{
 												types.StringElement{Content: "item 2"},
 											},
@@ -1748,7 +1748,7 @@ var _ = Describe("ordered lists - document", func() {
 												Elements: []interface{}{
 													types.Paragraph{
 														Attributes: types.ElementAttributes{},
-														Lines: []types.InlineElements{
+														Lines: [][]interface{}{
 															{
 																types.StringElement{Content: "item 2.1"},
 															},
@@ -1798,7 +1798,7 @@ var _ = Describe("ordered lists - document", func() {
 								Elements: []interface{}{
 									types.Paragraph{
 										Attributes: types.ElementAttributes{},
-										Lines: []types.InlineElements{
+										Lines: [][]interface{}{
 											{
 												types.StringElement{Content: "level 1"},
 											},
@@ -1814,7 +1814,7 @@ var _ = Describe("ordered lists - document", func() {
 												Elements: []interface{}{
 													types.Paragraph{
 														Attributes: types.ElementAttributes{},
-														Lines: []types.InlineElements{
+														Lines: [][]interface{}{
 															{
 																types.StringElement{Content: "level 2"},
 															},
@@ -1830,7 +1830,7 @@ var _ = Describe("ordered lists - document", func() {
 																Elements: []interface{}{
 																	types.Paragraph{
 																		Attributes: types.ElementAttributes{},
-																		Lines: []types.InlineElements{
+																		Lines: [][]interface{}{
 																			{
 																				types.StringElement{Content: "level 3"},
 																			},
@@ -1846,7 +1846,7 @@ var _ = Describe("ordered lists - document", func() {
 																				Elements: []interface{}{
 																					types.Paragraph{
 																						Attributes: types.ElementAttributes{},
-																						Lines: []types.InlineElements{
+																						Lines: [][]interface{}{
 																							{
 																								types.StringElement{Content: "level 4"},
 																							},
@@ -1862,7 +1862,7 @@ var _ = Describe("ordered lists - document", func() {
 																								Elements: []interface{}{
 																									types.Paragraph{
 																										Attributes: types.ElementAttributes{},
-																										Lines: []types.InlineElements{
+																										Lines: [][]interface{}{
 																											{
 																												types.StringElement{Content: "level 5."},
 																											},
@@ -1915,7 +1915,7 @@ var _ = Describe("ordered lists - document", func() {
 								Elements: []interface{}{
 									types.Paragraph{
 										Attributes: types.ElementAttributes{},
-										Lines: []types.InlineElements{
+										Lines: [][]interface{}{
 											{
 												types.StringElement{Content: "a"},
 											},
@@ -1930,7 +1930,7 @@ var _ = Describe("ordered lists - document", func() {
 								Elements: []interface{}{
 									types.Paragraph{
 										Attributes: types.ElementAttributes{},
-										Lines: []types.InlineElements{
+										Lines: [][]interface{}{
 											{
 												types.StringElement{Content: "b"},
 											},
@@ -1966,7 +1966,7 @@ b. item 2.a`
 								Elements: []interface{}{
 									types.Paragraph{
 										Attributes: types.ElementAttributes{},
-										Lines: []types.InlineElements{
+										Lines: [][]interface{}{
 											{
 												types.StringElement{Content: "item 1"},
 											},
@@ -1982,7 +1982,7 @@ b. item 2.a`
 												Elements: []interface{}{
 													types.Paragraph{
 														Attributes: types.ElementAttributes{},
-														Lines: []types.InlineElements{
+														Lines: [][]interface{}{
 															{
 																types.StringElement{Content: "item 1.a"},
 															},
@@ -2001,7 +2001,7 @@ b. item 2.a`
 								Elements: []interface{}{
 									types.Paragraph{
 										Attributes: types.ElementAttributes{},
-										Lines: []types.InlineElements{
+										Lines: [][]interface{}{
 											{
 												types.StringElement{Content: "item 2"},
 											},
@@ -2017,7 +2017,7 @@ b. item 2.a`
 												Elements: []interface{}{
 													types.Paragraph{
 														Attributes: types.ElementAttributes{},
-														Lines: []types.InlineElements{
+														Lines: [][]interface{}{
 															{
 																types.StringElement{Content: "item 2.a"},
 															},
@@ -2067,7 +2067,7 @@ another delimited block
 								Elements: []interface{}{
 									types.Paragraph{
 										Attributes: types.ElementAttributes{},
-										Lines: []types.InlineElements{
+										Lines: [][]interface{}{
 											{
 												types.StringElement{Content: "foo"},
 											},
@@ -2079,7 +2079,7 @@ another delimited block
 										Elements: []interface{}{
 											types.Paragraph{
 												Attributes: types.ElementAttributes{},
-												Lines: []types.InlineElements{
+												Lines: [][]interface{}{
 													{
 														types.StringElement{
 															Content: "a delimited block",
@@ -2095,7 +2095,7 @@ another delimited block
 										Elements: []interface{}{
 											types.Paragraph{
 												Attributes: types.ElementAttributes{},
-												Lines: []types.InlineElements{
+												Lines: [][]interface{}{
 													{
 														types.StringElement{
 															Content: "another delimited block",
@@ -2114,7 +2114,7 @@ another delimited block
 								Elements: []interface{}{
 									types.Paragraph{
 										Attributes: types.ElementAttributes{},
-										Lines: []types.InlineElements{
+										Lines: [][]interface{}{
 											{
 												types.StringElement{Content: "bar"},
 											},

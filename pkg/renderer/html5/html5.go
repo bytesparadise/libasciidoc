@@ -16,10 +16,8 @@ func Render(ctx *renderer.Context, output io.Writer) (map[string]interface{}, er
 	return renderDocument(ctx, output)
 }
 
-type rendererFunc func(*renderer.Context, interface{}) ([]byte, error)
-
 func renderElements(ctx *renderer.Context, elements []interface{}) ([]byte, error) {
-	log.Debugf("rendering %d element(s)...", len(elements))
+	log.Debugf("rendering %d elements(s)...", len(elements))
 	buff := bytes.NewBuffer(nil)
 	hasContent := false
 	if !ctx.IncludeHeaderFooter() && len(elements) > 0 {
@@ -54,7 +52,7 @@ func renderElements(ctx *renderer.Context, elements []interface{}) ([]byte, erro
 // renderListElements is similar to the `renderElements` func above,
 // but it sets the `withinList` context flag to true for the first element only
 func renderListElements(ctx *renderer.Context, elements []interface{}) ([]byte, error) {
-	log.Debugf("rendering list %d element(s)...", len(elements))
+	log.Debugf("rendering list with %d element(s)...", len(elements))
 	buff := bytes.NewBuffer(nil)
 	hasContent := false
 	for i, element := range elements {
@@ -66,7 +64,7 @@ func renderListElements(ctx *renderer.Context, elements []interface{}) ([]byte, 
 			ctx.SetWithinList(false)
 		}
 		if err != nil {
-			return nil, errors.Wrapf(err, "unable to render an element")
+			return nil, errors.Wrapf(err, "unable to render a list block")
 		}
 		// insert new line if there's already some content
 		if hasContent && len(renderedElement) > 0 {
@@ -119,8 +117,6 @@ func renderElement(ctx *renderer.Context, element interface{}) ([]byte, error) {
 		return renderTable(ctx, e)
 	case types.LiteralBlock:
 		return renderLiteralBlock(ctx, e)
-	case types.InlineElements:
-		return renderLine(ctx, e, renderElement)
 	case types.InlineLink:
 		return renderLink(ctx, e)
 	case types.StringElement:
@@ -143,16 +139,20 @@ func renderElement(ctx *renderer.Context, element interface{}) ([]byte, error) {
 }
 
 // nolint: gocyclo
-func renderPlainString(ctx *renderer.Context, element interface{}) ([]byte, error) {
+func renderPlainText(ctx *renderer.Context, element interface{}) ([]byte, error) {
 	log.Debugf("rendering plain string for element of type %T", element)
 	switch element := element.(type) {
+	case []interface{}:
+		return renderInlineElements(ctx, element, verbatim())
+	case [][]interface{}:
+		return renderLines(ctx, element, PlainText())
 	case types.QuotedText:
-		return renderPlainString(ctx, element.Elements)
+		return renderPlainText(ctx, element.Elements)
 	case types.InlineImage:
 		return []byte(element.Attributes.GetAsString(types.AttrImageAlt)), nil
 	case types.InlineLink:
-		if alt, ok := element.Attributes[types.AttrInlineLinkText].(types.InlineElements); ok {
-			return renderPlainString(ctx, alt)
+		if alt, ok := element.Attributes[types.AttrInlineLinkText].([]interface{}); ok {
+			return renderPlainText(ctx, alt)
 		}
 		return []byte(element.Location.String()), nil
 	case types.BlankLine:
@@ -160,11 +160,7 @@ func renderPlainString(ctx *renderer.Context, element interface{}) ([]byte, erro
 	case types.StringElement:
 		return []byte(element.Content), nil
 	case types.Paragraph:
-		return renderLines(ctx, element.Lines, renderPlainString, false)
-	case types.InlineElements:
-		return renderLine(ctx, element, renderPlainString)
-	case []types.InlineElements:
-		return renderLines(ctx, element, renderPlainString, false)
+		return renderLines(ctx, element.Lines, PlainText())
 	default:
 		return nil, errors.Errorf("unable to render plain string for element of type '%T'", element)
 	}

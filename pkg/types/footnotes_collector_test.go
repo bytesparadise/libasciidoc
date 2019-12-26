@@ -13,7 +13,7 @@ var _ = Describe("footnotes collector", func() {
 		// given
 		footnote1 := types.Footnote{
 			ID: 0,
-			Elements: types.InlineElements{
+			Elements: []interface{}{
 				types.StringElement{
 					Content: "a note",
 				},
@@ -21,13 +21,13 @@ var _ = Describe("footnotes collector", func() {
 		}
 		footnote2 := types.Footnote{
 			ID: 1,
-			Elements: types.InlineElements{
+			Elements: []interface{}{
 				types.StringElement{
 					Content: "another note",
 				},
 			},
 		}
-		content := types.InlineElements{
+		content := []interface{}{
 			types.StringElement{
 				Content: "foo",
 			},
@@ -37,22 +37,21 @@ var _ = Describe("footnotes collector", func() {
 			},
 			footnote2,
 		}
-		c := types.NewFootnotesCollector()
 		// when
-		err := content.AcceptVisitor(c)
+		notes, refs, err := types.FindFootnotes(content)
 		// then
 		Expect(err).ToNot(HaveOccurred())
-		Expect(c.Footnotes).To(HaveLen(2))
-		Expect(c.Footnotes[0]).To(Equal(footnote1))
-		Expect(c.Footnotes[1]).To(Equal(footnote2))
-		Expect(c.FootnoteReferences).To(BeEmpty())
+		Expect(notes).To(HaveLen(2))
+		Expect(notes[0]).To(Equal(footnote1))
+		Expect(notes[1]).To(Equal(footnote2))
+		Expect(refs).To(BeEmpty())
 	})
 
 	It("index footnotes with reference", func() {
 		// given
 		footnote1 := types.Footnote{
 			Ref: "ref",
-			Elements: types.InlineElements{
+			Elements: []interface{}{
 				types.StringElement{
 					Content: "a note",
 				},
@@ -64,7 +63,7 @@ var _ = Describe("footnotes collector", func() {
 		footnote3 := types.Footnote{
 			Ref: "ref",
 		}
-		content := types.InlineElements{
+		content := []interface{}{
 			types.StringElement{
 				Content: "foo",
 			},
@@ -75,15 +74,15 @@ var _ = Describe("footnotes collector", func() {
 			footnote2,
 			footnote3,
 		}
-		c := types.NewFootnotesCollector()
 		// when
-		err := content.AcceptVisitor(c)
+		notes, refs, err := types.FindFootnotes(content)
+		// then
 		// then
 		Expect(err).ToNot(HaveOccurred())
-		Expect(c.Footnotes).To(HaveLen(1))
-		Expect(c.Footnotes[0]).To(Equal(footnote1))
-		Expect(c.FootnoteReferences).To(HaveLen(1))
-		Expect(c.FootnoteReferences["ref"]).To(Equal(footnote1))
+		Expect(notes).To(HaveLen(1))
+		Expect(notes[0]).To(Equal(footnote1))
+		Expect(refs).To(HaveLen(1))
+		Expect(refs["ref"]).To(Equal(footnote1))
 	})
 
 })
