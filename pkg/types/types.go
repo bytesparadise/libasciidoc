@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"fmt"
 	"net/url"
-	"path/filepath"
 	"sort"
 	"strings"
 
@@ -1955,7 +1954,7 @@ func (l *Location) Resolve(attrs DocumentAttributes) Location {
 		}
 	}
 	location := content.String()
-	if !filepath.IsAbs(location) {
+	if !strings.HasPrefix(location, "/") {
 		if u, err := url.Parse(location); err == nil {
 			if !u.IsAbs() {
 				if imagesdir, ok := attrs.GetAsString(imagesdir); ok {
