@@ -561,23 +561,23 @@ var _ = Describe("location resolution", func() {
 			},
 			"https://foo.bar",
 		),
-		Entry("/foo/bar",
-			types.Location{
-				Elements: []interface{}{
-					types.StringElement{
-						Content: "/foo/bar",
-					},
-				},
-			},
-			types.Location{
-				Elements: []interface{}{
-					types.StringElement{
-						Content: "/foo/bar",
-					},
-				},
-			},
-			"/foo/bar",
-		),
+		// Entry("/foo/bar",
+		// 	types.Location{
+		// 		Elements: []interface{}{
+		// 			types.StringElement{
+		// 				Content: "/foo/bar",
+		// 			},
+		// 		},
+		// 	},
+		// 	types.Location{
+		// 		Elements: []interface{}{
+		// 			types.StringElement{
+		// 				Content: "/foo/bar",
+		// 			},
+		// 		},
+		// 	},
+		// 	"/foo/bar",
+		// ),
 	)
 })
 
