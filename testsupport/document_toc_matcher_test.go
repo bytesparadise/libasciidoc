@@ -12,9 +12,6 @@ import (
 
 var _ = Describe("document table of contents assertions", func() {
 
-	toc := types.DocumentAttributeDeclaration{
-		Name: "toc",
-	}
 	preamble := types.Preamble{
 		Elements: []interface{}{
 			types.BlankLine{},
@@ -40,24 +37,26 @@ var _ = Describe("document table of contents assertions", func() {
 	tableOfContents := types.TableOfContentsMacro{}
 
 	actual := types.Document{
-		Attributes:         types.DocumentAttributes{},
+		Attributes: types.DocumentAttributes{
+			types.AttrTableOfContents: "",
+		},
 		ElementReferences:  types.ElementReferences{}, // can leave empty for this test
 		Footnotes:          types.Footnotes{},
 		FootnoteReferences: types.FootnoteReferences{},
 		Elements: []interface{}{
-			toc,
 			preamble,
 			section,
 		},
 	}
 	expected := types.Document{
-		Attributes:         types.DocumentAttributes{},
+		Attributes: types.DocumentAttributes{
+			types.AttrTableOfContents: "",
+		},
 		ElementReferences:  types.ElementReferences{},
 		Footnotes:          types.Footnotes{},
 		FootnoteReferences: types.FootnoteReferences{},
 		Elements: []interface{}{
 			tableOfContents,
-			toc,
 			preamble,
 			section,
 		},

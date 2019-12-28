@@ -205,8 +205,87 @@ image::images/bar.png[]`
 				Expect(source).To(BecomeDocument(expected))
 			})
 
+			It("image block with implicit imagesdir document attribute", func() {
+				source := `
+:imagesdir: ./path/to/images
+
+image::foo.png[]`
+				expected := types.Document{
+					Attributes:         types.DocumentAttributes{},
+					ElementReferences:  types.ElementReferences{},
+					Footnotes:          types.Footnotes{},
+					FootnoteReferences: types.FootnoteReferences{},
+					Elements: []interface{}{
+						types.ImageBlock{
+							Attributes: types.ElementAttributes{
+								types.AttrImageAlt: "foo",
+							},
+							Location: types.Location{
+								Elements: []interface{}{
+									types.StringElement{Content: "./path/to/images/foo.png"},
+								},
+							},
+						},
+					},
+				}
+				Expect(source).To(BecomeDocument(expected))
+			})
+
 			It("image block with document attribute in URL", func() {
-				source := `:imagesdir: ./path/to/images
+				source := `
+:dir: ./path/to/images
+
+image::{dir}/foo.png[]`
+				expected := types.Document{
+					Attributes:         types.DocumentAttributes{},
+					ElementReferences:  types.ElementReferences{},
+					Footnotes:          types.Footnotes{},
+					FootnoteReferences: types.FootnoteReferences{},
+					Elements: []interface{}{
+						types.ImageBlock{
+							Attributes: types.ElementAttributes{
+								types.AttrImageAlt: "foo",
+							},
+							Location: types.Location{
+								Elements: []interface{}{
+									types.StringElement{Content: "./path/to/images/foo.png"},
+								},
+							},
+						},
+					},
+				}
+				Expect(source).To(BecomeDocument(expected))
+			})
+
+			It("image block with implicit imagesdir", func() {
+				source := `
+:imagesdir: ./path/to/images
+
+image::foo.png[]`
+				expected := types.Document{
+					Attributes:         types.DocumentAttributes{},
+					ElementReferences:  types.ElementReferences{},
+					Footnotes:          types.Footnotes{},
+					FootnoteReferences: types.FootnoteReferences{},
+					Elements: []interface{}{
+						types.ImageBlock{
+							Attributes: types.ElementAttributes{
+								types.AttrImageAlt: "foo",
+							},
+							Location: types.Location{
+								Elements: []interface{}{
+									types.StringElement{Content: "./path/to/images/foo.png"},
+								},
+							},
+						},
+					},
+				}
+				Expect(source).To(BecomeDocument(expected))
+			})
+
+			It("image block with explicit duplicate imagesdir document attribute", func() {
+				source := `
+:imagesdir: ./path/to/images
 
 image::{imagesdir}/foo.png[]`
 				expected := types.Document{
@@ -215,17 +294,13 @@ image::{imagesdir}/foo.png[]`
 					Footnotes:          types.Footnotes{},
 					FootnoteReferences: types.FootnoteReferences{},
 					Elements: []interface{}{
-						types.DocumentAttributeDeclaration{
-							Name:  "imagesdir",
-							Value: "./path/to/images",
-						},
 						types.ImageBlock{
 							Attributes: types.ElementAttributes{
 								types.AttrImageAlt: "foo",
 							},
 							Location: types.Location{
 								Elements: []interface{}{
-									types.StringElement{Content: "./path/to/images/foo.png"},
+									types.StringElement{Content: "./path/to/images/./path/to/images/foo.png"},
 								},
 							},
 						},
@@ -677,19 +752,16 @@ image::{imagesdir}/foo.png[]`
 			})
 
 			It("inline image with document attribute in URL", func() {
-				source := `:imagesdir: ./path/to/images
+				source := `
+:dir: ./path/to/images
 
-an image:{imagesdir}/foo.png[].`
+an image:{dir}/foo.png[].`
 				expected := types.Document{
 					Attributes:         types.DocumentAttributes{},
 					ElementReferences:  types.ElementReferences{},
 					Footnotes:          types.Footnotes{},
 					FootnoteReferences: types.FootnoteReferences{},
 					Elements: []interface{}{
-						types.DocumentAttributeDeclaration{
-							Name:  "imagesdir",
-							Value: "./path/to/images",
-						},
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
 							Lines: [][]interface{}{
@@ -702,6 +774,76 @@ an image:{imagesdir}/foo.png[].`
 										Location: types.Location{
 											Elements: []interface{}{
 												types.StringElement{Content: "./path/to/images/foo.png"},
+											},
+										},
+									},
+									types.StringElement{Content: "."},
+								},
+							},
+						},
+					},
+				}
+				Expect(source).To(BecomeDocument(expected))
+			})
+
+			It("inline image with implicit imagesdir document attribute", func() {
+				source := `
+:imagesdir: ./path/to/images
+
+an image:foo.png[].`
+				expected := types.Document{
+					Attributes:         types.DocumentAttributes{},
+					ElementReferences:  types.ElementReferences{},
+					Footnotes:          types.Footnotes{},
+					FootnoteReferences: types.FootnoteReferences{},
+					Elements: []interface{}{
+						types.Paragraph{
+							Attributes: types.ElementAttributes{},
+							Lines: [][]interface{}{
+								{
+									types.StringElement{Content: "an "},
+									types.InlineImage{
+										Attributes: types.ElementAttributes{
+											types.AttrImageAlt: "foo",
+										},
+										Location: types.Location{
+											Elements: []interface{}{
+												types.StringElement{Content: "./path/to/images/foo.png"},
+											},
+										},
+									},
+									types.StringElement{Content: "."},
+								},
+							},
+						},
+					},
+				}
+				Expect(source).To(BecomeDocument(expected))
+			})
+
+			It("inline image with explicit duplicate imagesdir document attribute", func() {
+				source := `
+:imagesdir: ./path/to/images
+
+an image:{imagesdir}/foo.png[].`
+				expected := types.Document{
+					Attributes:         types.DocumentAttributes{},
+					ElementReferences:  types.ElementReferences{},
+					Footnotes:          types.Footnotes{},
+					FootnoteReferences: types.FootnoteReferences{},
+					Elements: []interface{}{
+						types.Paragraph{
+							Attributes: types.ElementAttributes{},
+							Lines: [][]interface{}{
+								{
+									types.StringElement{Content: "an "},
+									types.InlineImage{
+										Attributes: types.ElementAttributes{
+											types.AttrImageAlt: "foo",
+										},
+										Location: types.Location{
+											Elements: []interface{}{
+												types.StringElement{Content: "./path/to/images/./path/to/images/foo.png"},
 											},
 										},
 									},

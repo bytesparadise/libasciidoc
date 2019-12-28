@@ -269,14 +269,10 @@ a paragraph with another footnote:[baz]`
 		expected := types.DraftDocument{
 			Blocks: []interface{}{
 				types.Section{
-					Level: 0,
-					Title: docTitle,
-					Attributes: types.ElementAttributes{
-						types.AttrID:       "title",
-						types.AttrCustomID: false,
-					},
-
-					Elements: []interface{}{},
+					Level:      0,
+					Title:      docTitle,
+					Attributes: types.ElementAttributes{},
+					Elements:   []interface{}{},
 				},
 				types.DocumentAttributeDeclaration{
 					Name:  "idprefix",
@@ -296,13 +292,10 @@ a paragraph with another footnote:[baz]`
 				},
 				types.BlankLine{},
 				types.Section{
-					Attributes: types.ElementAttributes{
-						types.AttrID:       "section_1",
-						types.AttrCustomID: false,
-					},
-					Level:    1,
-					Title:    section1Title,
-					Elements: []interface{}{},
+					Attributes: types.ElementAttributes{},
+					Level:      1,
+					Title:      section1Title,
+					Elements:   []interface{}{},
 				},
 				types.BlankLine{},
 				types.Paragraph{
@@ -614,10 +607,12 @@ a paragraph with another footnote:[baz]`
 			footnote2,
 		}
 		expected := types.Document{
-			Attributes: types.DocumentAttributes{},
+			Attributes: types.DocumentAttributes{
+				"idprefix": "id_",
+			},
 			ElementReferences: types.ElementReferences{
-				"title":     docTitle,
-				"section_1": section1Title,
+				"id_title":     docTitle,
+				"id_section_1": section1Title,
 			},
 			Footnotes: types.Footnotes{
 				footnote1,
@@ -630,14 +625,9 @@ a paragraph with another footnote:[baz]`
 					Level: 0,
 					Title: docTitle,
 					Attributes: types.ElementAttributes{
-						types.AttrID:       "title",
-						types.AttrCustomID: false,
+						types.AttrID: "id_title",
 					},
 					Elements: []interface{}{
-						types.DocumentAttributeDeclaration{
-							Name:  "idprefix",
-							Value: "id_",
-						},
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
 							Lines: [][]interface{}{
@@ -651,8 +641,7 @@ a paragraph with another footnote:[baz]`
 						},
 						types.Section{
 							Attributes: types.ElementAttributes{
-								types.AttrID:       "section_1",
-								types.AttrCustomID: false,
+								types.AttrID: "id_section_1",
 							},
 							Level: 1,
 							Title: section1Title,

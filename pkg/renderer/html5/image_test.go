@@ -172,7 +172,7 @@ image::foo.png[]`
 			Expect(source).To(RenderHTML5Body(expected))
 		})
 
-		It("2 block images with relative locations and imagedir changed in-between", func() {
+		It("2 block images with relative locations and imagesdir changed in-between", func() {
 
 			source := `:imagesdir: ./assets1
 image::foo.png[]

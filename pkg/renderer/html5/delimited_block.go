@@ -173,7 +173,7 @@ func renderFencedBlock(ctx *renderer.Context, b types.DelimitedBlock) ([]byte, e
 			Title    string
 			Elements []interface{}
 		}{
-			ID:       generateID(ctx, b.Attributes),
+			ID:       renderElementID(b.Attributes),
 			Title:    renderTitle(b.Attributes),
 			Elements: discardTrailingBlankLines(b.Elements),
 		},
@@ -196,7 +196,7 @@ func renderListingBlock(ctx *renderer.Context, b types.DelimitedBlock) ([]byte, 
 			Title    string
 			Elements []interface{}
 		}{
-			ID:       generateID(ctx, b.Attributes),
+			ID:       renderElementID(b.Attributes),
 			Title:    renderTitle(b.Attributes),
 			Elements: discardTrailingBlankLines(b.Elements),
 		},
@@ -221,7 +221,7 @@ func renderSourceBlock(ctx *renderer.Context, b types.DelimitedBlock) ([]byte, e
 			Language string
 			Elements []interface{}
 		}{
-			ID:       generateID(ctx, b.Attributes),
+			ID:       renderElementID(b.Attributes),
 			Title:    renderTitle(b.Attributes),
 			Language: language,
 			Elements: discardTrailingBlankLines(b.Elements),
@@ -243,7 +243,7 @@ func renderExampleBlock(ctx *renderer.Context, b types.DelimitedBlock) ([]byte, 
 				Title     string
 				Elements  []interface{}
 			}{
-				ID:        generateID(ctx, b.Attributes),
+				ID:        renderElementID(b.Attributes),
 				Class:     renderClass(k),
 				IconClass: renderIconClass(ctx, k),
 				IconTitle: renderIconTitle(k),
@@ -265,7 +265,7 @@ func renderExampleBlock(ctx *renderer.Context, b types.DelimitedBlock) ([]byte, 
 			Title    string
 			Elements []interface{}
 		}{
-			ID:       generateID(ctx, b.Attributes),
+			ID:       renderElementID(b.Attributes),
 			Title:    title,
 			Elements: discardTrailingBlankLines(b.Elements),
 		},
@@ -283,7 +283,7 @@ func renderQuoteBlock(ctx *renderer.Context, b types.DelimitedBlock) ([]byte, er
 			Attribution Attribution
 			Elements    []interface{}
 		}{
-			ID:          generateID(ctx, b.Attributes),
+			ID:          renderElementID(b.Attributes),
 			Title:       renderTitle(b.Attributes),
 			Attribution: NewDelimitedBlockAttribution(b),
 			Elements:    b.Elements,
@@ -302,7 +302,7 @@ func renderVerseBlock(ctx *renderer.Context, b types.DelimitedBlock) ([]byte, er
 			Attribution Attribution
 			Elements    []interface{}
 		}{
-			ID:          generateID(ctx, b.Attributes),
+			ID:          renderElementID(b.Attributes),
 			Title:       renderTitle(b.Attributes),
 			Attribution: NewDelimitedBlockAttribution(b),
 			Elements:    b.Elements,
@@ -352,7 +352,7 @@ func renderSidebarBlock(ctx *renderer.Context, b types.DelimitedBlock) ([]byte, 
 			Title    string
 			Elements []interface{}
 		}{
-			ID:       generateID(ctx, b.Attributes),
+			ID:       renderElementID(b.Attributes),
 			Title:    renderTitle(b.Attributes),
 			Elements: discardTrailingBlankLines(b.Elements),
 		},

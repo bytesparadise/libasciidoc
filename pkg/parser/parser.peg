@@ -1089,9 +1089,7 @@ CrossReferenceLabel <- (Alphanums / Spaces / (!">>"  .))+ {
 // ------------------------------------------
 // Links
 // ------------------------------------------
-Link <- link:(RelativeLink / ExternalLink) {
-    return link, nil
-}
+Link <- RelativeLink / ExternalLink
 
 // url preceeding with `link:` MUST be followed by square brackets
 RelativeLink <- "link:" url:(Location / FileLocation) inlineAttributes:(LinkAttributes) {
@@ -1145,11 +1143,23 @@ LinkTextAttribute <-
 InlineLinks <- 
     elements:(SimpleWord
         / Spaces 
-        / Link 
+        / ResolvedLink 
         / OtherWord
         / Parenthesis)+ {
     return types.NewInlineElements(elements.([]interface{}))
 }
+
+ResolvedLink <- ResolvedRelativeLink / ResolvedExternalLink // links without DocumentAttributeSubstitution
+
+// url preceeding with `link:` MUST be followed by square brackets
+ResolvedRelativeLink <- "link:" url:(ResolvedLocation / ResolvedFileLocation) inlineAttributes:(LinkAttributes) {
+    return types.NewInlineLink(url.(types.Location), inlineAttributes.(types.ElementAttributes))
+}
+
+ResolvedExternalLink <- url:(ResolvedLocation) inlineAttributes:(LinkAttributes)? {
+    return types.NewInlineLink(url.(types.Location), inlineAttributes)
+}
+
 
 
 // ------------------------------------------
@@ -1536,11 +1546,20 @@ FileLocation <- elements:(FILENAME / DocumentAttributeSubstitution)+ {
     return types.NewLocation(elements.([]interface{}))
 }
 
+ResolvedFileLocation <- elements:(!EOL !WS !"[" .)+ {
+    return types.NewLocation(elements.([]interface{}))
+}
+
 Location <- elements:(URL_SCHEME (FILENAME / DocumentAttributeSubstitution / !EOL !WS !"[" .)+) {
     return types.NewLocation(elements.([]interface{}))
 }
 
-FILENAME <- ([ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789~:/?#@!$&;=()*+,_%] / "-" / ".")+ // not supported for now: "[" "]"
+FILENAME <- ([ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789~:/?#@!$&;=()*+,_%] / "-" / ".")+ // not supported for now: "[" "]". Excluded: "{" and "}" as they may be used for document attribute substitutions
+
+ResolvedLocation <- elements:(URL_SCHEME (!EOL !WS !"[" .)+) {
+    return types.NewLocation(elements.([]interface{}))
+}
+
 
 URL <- (Alphanums / (!NEWLINE !WS !"[" !"]"  .))+ {
     return string(c.text), nil

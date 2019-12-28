@@ -20,13 +20,13 @@ func compare(actual interface{}, expected interface{}) comparison {
 		actual:   spew.Sdump(actual),
 		expected: spew.Sdump(expected),
 	}
+	GinkgoT().Logf("actual:\n%s", c.actual)
+	GinkgoT().Logf("expected:\n%s", c.expected)
 	if !reflect.DeepEqual(actual, expected) {
 		dmp := diffmatchpatch.New()
 		diffs := dmp.DiffMain(c.actual, c.expected, true)
 		c.diffs = dmp.DiffPrettyText(diffs)
 	}
-	GinkgoT().Logf("actual:\n%s", c.actual)
-	GinkgoT().Logf("expected:\n%s", c.expected)
 	// GinkgoT().Logf("diff:\n%s", c.diffs)
 	return c
 }

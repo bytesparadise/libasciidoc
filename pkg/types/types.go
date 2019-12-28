@@ -3,7 +3,7 @@ package types
 import (
 	"bytes"
 	"fmt"
-	"path/filepath"
+	"net/url"
 	"sort"
 	"strings"
 
@@ -327,12 +327,6 @@ func NewUserMacroBlock(name string, value string, attrs ElementAttributes, raw s
 	}, nil
 }
 
-// AddAttributes adds all given attributes to the current set of attribute of the element
-func (d UserMacro) AddAttributes(attributes ElementAttributes) {
-	d.Attributes.AddAll(attributes)
-
-}
-
 // NewInlineUserMacro returns an UserMacro
 func NewInlineUserMacro(name, value string, attrs ElementAttributes, raw string) (UserMacro, error) {
 	return UserMacro{Name: name, Kind: InlineMacro, Value: value, Attributes: attrs, RawText: raw}, nil
@@ -352,7 +346,7 @@ type Preamble struct {
 func (p Preamble) HasContent() bool {
 	for _, pe := range p.Elements {
 		switch pe.(type) {
-		case DocumentAttributeDeclaration, BlankLine:
+		case BlankLine:
 			continue
 		default:
 			return true
@@ -404,18 +398,18 @@ func NewSection(level int, title []interface{}, ids []interface{}, attributes in
 	for _, id := range ids {
 		if id, ok := id.(ElementAttributes); ok {
 			attrs.AddAll(id)
+			attrs[AttrCustomID] = true
 		}
 	}
-	attrs[AttrCustomID] = true
-	// make a default id from the sectionTitle's inline content
-	if _, found := attrs[AttrID]; !found {
-		replacement, err := ReplaceNonAlphanumerics(title, "_")
-		if err != nil {
-			return Section{}, errors.Wrapf(err, "unable to generate default ID while instanciating a new Section element")
-		}
-		attrs[AttrID] = replacement
-		attrs[AttrCustomID] = false
-	}
+	// // make a default id from the sectionTitle's inline content
+	// if _, found := attrs[AttrID]; !found {
+	// 	replacement, err := ReplaceNonAlphanumerics(title, "_")
+	// 	if err != nil {
+	// 		return Section{}, errors.Wrapf(err, "unable to generate default ID on Section element")
+	// 	}
+	// 	attrs[AttrID] = replacement
+	// 	attrs[AttrCustomID] = false
+	// }
 	return Section{
 		Level:      level,
 		Attributes: attrs,
@@ -424,16 +418,18 @@ func NewSection(level int, title []interface{}, ids []interface{}, attributes in
 	}, nil
 }
 
-// UpdateAttrID updates the "ID" attribute in the section (in case the title changed after some document attr substitution)
-func (s Section) UpdateAttrID() error {
+// ResolveID resolves/updates the "ID" attribute in the section (in case the title changed after some document attr substitution)
+func (s Section) ResolveID(docAttributes DocumentAttributes) (Section, error) {
 	if !s.Attributes.GetAsBool(AttrCustomID) {
 		replacement, err := ReplaceNonAlphanumerics(s.Title, "_")
 		if err != nil {
-			return errors.Wrapf(err, "unable to generate default ID while instanciating a new Section element")
+			return s, errors.Wrapf(err, "unable to generate default ID on Section element")
 		}
-		s.Attributes[AttrID] = replacement
+		idPrefix := docAttributes.GetAsStringWithDefault(AttrIDPrefix, DefaultIDPrefix)
+		s.Attributes[AttrID] = idPrefix + replacement
+		log.Debugf("updated section id to '%s'", s.Attributes[AttrID])
 	}
-	return nil
+	return s, nil
 }
 
 // AddElement adds the given child element to this section
@@ -460,12 +456,6 @@ func NewDocumentHeader(title []interface{}, authors interface{}, revision interf
 		section.Attributes[AttrRevision] = revision
 	}
 	return section, nil
-}
-
-// AddAttributes adds all given attributes to the current set of attribute of the element
-func (s *Section) AddAttributes(attributes ElementAttributes) {
-	// log.Debugf("adding attributes to section: %v", attributes)
-	s.Attributes.AddAll(attributes)
 }
 
 // ------------------------------------------
@@ -495,19 +485,6 @@ func NewContinuedListItemElement(offset int, element interface{}) (ContinuedList
 		Offset:  offset,
 		Element: element,
 	}, nil
-}
-
-// ------------------------------------------
-// List Item Continuation
-// ------------------------------------------
-
-// ListItemContinuation the special "+" character to specify that an element belongs to a list item
-type ListItemContinuation struct {
-}
-
-// NewListItemContinuation returns a new ListItemContinuation
-func NewListItemContinuation() (ListItemContinuation, error) {
-	return ListItemContinuation{}, nil
 }
 
 // ------------------------------------------
@@ -584,20 +561,9 @@ func rearrangeListAttributes(attributes ElementAttributes) ElementAttributes {
 	return attributes
 }
 
-// AddAttributes adds all given attributes to the current set of attribute of the element
-func (l *OrderedList) AddAttributes(attributes ElementAttributes) {
-	l.Attributes.AddAll(attributes)
-}
-
 // AddItem adds the given item
 func (l *OrderedList) AddItem(item OrderedListItem) {
 	l.Items = append(l.Items, item)
-}
-
-// FirstItem returns the first item in this list
-func (l *OrderedList) FirstItem() ListItem {
-	i := l.Items[0]
-	return &i
 }
 
 // LastItem returns the last item in this list
@@ -641,11 +607,6 @@ func (i *OrderedListItem) AddElement(element interface{}) {
 	i.Elements = append(i.Elements, element)
 }
 
-// AddAttributes adds all given attributes to the current set of attribute of the element
-func (i *OrderedListItem) AddAttributes(attributes ElementAttributes) {
-	i.Attributes.AddAll(attributes)
-}
-
 // OrderedListItemPrefix the prefix used to construct an OrderedListItem
 type OrderedListItemPrefix struct {
 	NumberingStyle NumberingStyle
@@ -684,11 +645,6 @@ func NewUnorderedList(item *UnorderedListItem) *UnorderedList {
 		},
 	}
 	return list
-}
-
-// AddAttributes adds all given attributes to the current set of attribute of the element
-func (l *UnorderedList) AddAttributes(attributes ElementAttributes) {
-	l.Attributes.AddAll(attributes)
 }
 
 // AddItem adds the given item
@@ -743,16 +699,6 @@ func (i UnorderedListItem) GetAttributes() ElementAttributes {
 // AddElement add an element to this UnorderedListItem
 func (i *UnorderedListItem) AddElement(element interface{}) {
 	i.Elements = append(i.Elements, element)
-}
-
-// LastElement returns the last element of this OrderedListItem
-func (i *UnorderedListItem) LastElement() interface{} {
-	return i.Elements[len(i.Elements)-1]
-}
-
-// AddAttributes adds all given attributes to the current set of attribute of the element
-func (i *UnorderedListItem) AddAttributes(attributes ElementAttributes) {
-	i.Attributes.AddAll(attributes)
 }
 
 // UnorderedListItemCheckStyle the check style that applies on an unordered list item
@@ -855,15 +801,6 @@ func NewListItemContent(content []interface{}) ([]interface{}, error) {
 	return elements, nil
 }
 
-// // ListItemContinuation a list item continuation
-// type ListItemContinuation struct {
-// }
-
-// // NewListItemContinuation returns a new ListItemContinuation
-// func NewListItemContinuation() (ListItemContinuation, error) {
-// 	return ListItemContinuation{}, nil
-// }
-
 // ------------------------------------------
 // Labeled List
 // ------------------------------------------
@@ -889,11 +826,6 @@ func NewLabeledList(item LabeledListItem) *LabeledList {
 	}
 	item.Attributes = ElementAttributes{}
 	return &result
-}
-
-// AddAttributes adds all given attributes to the current set of attribute of the element
-func (l *LabeledList) AddAttributes(attributes ElementAttributes) {
-	l.Attributes.AddAll(attributes)
 }
 
 // AddItem adds the given item
@@ -946,16 +878,6 @@ func (i LabeledListItem) GetAttributes() ElementAttributes {
 // AddElement add an element to this LabeledListItem
 func (i *LabeledListItem) AddElement(element interface{}) {
 	i.Elements = append(i.Elements, element)
-}
-
-// LastElement returns the last element of this OrderedListItem
-func (i LabeledListItem) LastElement() interface{} {
-	return i.Elements[len(i.Elements)-1]
-}
-
-// AddAttributes adds all given attributes to the current set of attribute of the element
-func (i LabeledListItem) AddAttributes(attributes ElementAttributes) {
-	i.Attributes.AddAll(attributes)
 }
 
 // ------------------------------------------
@@ -1112,26 +1034,12 @@ func NewImageBlock(path Location, inlineAttributes ElementAttributes, attributes
 
 // ResolveLocation resolves the image path using the given document attributes
 // also, updates the `alt` attribute based on the resolved path of the image
-func (b ImageBlock) ResolveLocation(attrs map[string]string) (interface{}, bool) {
+func (b ImageBlock) ResolveLocation(attrs DocumentAttributes) ImageBlock {
 	b.Location = b.Location.Resolve(attrs)
 	if _, found := b.Attributes[AttrImageAlt]; !found {
 		b.Attributes[AttrImageAlt] = resolveAlt(b.Location)
 	}
-	return b, true
-}
-
-func resolveAlt(path Location) string {
-	_, filename := filepath.Split(path.String())
-	ext := filepath.Ext(filename)
-	if ext != "" {
-		return strings.TrimSuffix(filename, ext)
-	}
-	return filename
-}
-
-// AddAttributes adds all given attributes to the current set of attribute of the element
-func (b ImageBlock) AddAttributes(attributes ElementAttributes) {
-	b.Attributes.AddAll(attributes)
+	return b
 }
 
 // InlineImage the structure for the inline image macros
@@ -1151,12 +1059,12 @@ func NewInlineImage(path Location, attributes ElementAttributes) (InlineImage, e
 
 // ResolveLocation resolves the image path using the given document attributes
 // also, updates the `alt` attribute based on the resolved path of the image
-func (i InlineImage) ResolveLocation(attrs map[string]string) (interface{}, bool) {
+func (i InlineImage) ResolveLocation(attrs DocumentAttributes) InlineImage {
 	i.Location = i.Location.Resolve(attrs)
 	if _, found := i.Attributes[AttrImageAlt]; !found {
 		i.Attributes[AttrImageAlt] = resolveAlt(i.Location)
 	}
-	return i, true
+	return i
 }
 
 // NewImageAttributes returns a map of image attributes, some of which have implicit keys (`alt`, `width` and `height`)
@@ -1281,15 +1189,6 @@ func NewDelimitedBlock(kind BlockKind, content []interface{}, substitution Subst
 	}, nil
 }
 
-// AddAttributes adds all given attributes to the current set of attribute of the element
-func (b *DelimitedBlock) AddAttributes(attributes ElementAttributes) {
-	b.Attributes.AddAll(attributes)
-	if _, found := attributes[AttrKind]; found { // override default kind
-		log.Debugf("overriding kind '%s' to '%s'", b.Kind, attributes[AttrKind])
-		b.Kind = BlockKind(attributes.GetAsString(AttrKind))
-	}
-}
-
 // ------------------------------------------
 // Tables
 // ------------------------------------------
@@ -1346,11 +1245,6 @@ func NewTable(header interface{}, lines []interface{}, attributes interface{}) (
 	}
 	// log.Debugf("initialized a new table with %d line(s)", len(lines))
 	return t, nil
-}
-
-// AddAttributes adds all given attributes to the current set of attribute of the element
-func (t Table) AddAttributes(attributes ElementAttributes) {
-	t.Attributes.AddAll(attributes)
 }
 
 // TableLine a table line is made of columns, each column being a group of []interface{} (to support quoted text, etc.)
@@ -1417,11 +1311,6 @@ func NewLiteralBlock(origin string, lines []interface{}, attributes interface{})
 	}, nil
 }
 
-// AddAttributes adds all given attributes to the current set of attribute of the element
-func (b LiteralBlock) AddAttributes(attributes ElementAttributes) {
-	b.Attributes.AddAll(attributes)
-}
-
 // ------------------------------------------
 // BlankLine
 // ------------------------------------------
@@ -1434,12 +1323,6 @@ type BlankLine struct {
 func NewBlankLine() (BlankLine, error) {
 	// log.Debug("initializing a new BlankLine")
 	return BlankLine{}, nil
-}
-
-// AddAttributes adds all given attributes to the current set of attribute of the element
-func (l BlankLine) AddAttributes(attributes ElementAttributes) {
-	// nothing to do
-	// TODO: raise a warning?
 }
 
 // ------------------------------------------
@@ -1638,8 +1521,6 @@ type FileInclusion struct {
 	RawText    string
 }
 
-var _ ElementWithAttributes = FileInclusion{}
-
 // NewFileInclusion initializes a new inline `InlineLink`
 func NewFileInclusion(location Location, attributes interface{}, rawtext string) (FileInclusion, error) {
 	attrs, ok := attributes.(ElementAttributes)
@@ -1652,11 +1533,6 @@ func NewFileInclusion(location Location, attributes interface{}, rawtext string)
 		Location:   location,
 		RawText:    rawtext,
 	}, nil
-}
-
-// AddAttributes adds all given attributes to the current set of attribute of the element
-func (f FileInclusion) AddAttributes(attributes ElementAttributes) {
-	f.Attributes.AddAll(attributes)
 }
 
 // LineRanges returns the line ranges of the file to include.
@@ -1938,16 +1814,18 @@ func (l Location) String() string { // (attrs map[string]string) string {
 	return result.String()
 }
 
+const imagesdir = "imagesdir"
+
 // Resolve resolves the Location by replacing all document attribute substitutions
 // with their associated values, or their corresponding raw text if
 // no attribute matched
 // returns `true` if some document attribute substitution occurred
-func (l *Location) Resolve(attrs map[string]string) Location {
+func (l *Location) Resolve(attrs DocumentAttributes) Location {
 	content := bytes.NewBuffer(nil)
 	for _, e := range l.Elements {
 		switch e := e.(type) {
 		case DocumentAttributeSubstitution:
-			if value, found := attrs[e.Name]; found {
+			if value, found := attrs[e.Name].(string); found {
 				content.WriteString(value)
 			} else {
 				content.WriteRune('{')
@@ -1958,16 +1836,21 @@ func (l *Location) Resolve(attrs map[string]string) Location {
 			content.WriteString(fmt.Sprintf("%s", e))
 		}
 	}
+	location := content.String()
+	if !strings.HasPrefix(location, "/") {
+		if u, err := url.Parse(location); err == nil {
+			if !u.IsAbs() {
+				if imagesdir, ok := attrs.GetAsString(imagesdir); ok {
+					location = imagesdir + "/" + location
+				}
+			}
+		}
+	}
 	return Location{
 		Elements: []interface{}{
 			StringElement{
-				Content: content.String(),
+				Content: location,
 			},
 		},
 	}
-}
-
-// LocationHolder interface for the types that embed and can resolve a location
-type LocationHolder interface {
-	ResolveLocation(attrs map[string]string) (interface{}, bool)
 }

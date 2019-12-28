@@ -46,12 +46,12 @@ func ReplaceNonAlphanumerics(elements []interface{}, replacement string) (string
 		}
 	}
 
+	log.Debugf("normalized '%+v' to '%s'", elements, buf.String())
 	return buf.String(), nil
 }
 
 func replaceNonAlphanumerics(content, replacement string) (string, error) {
 	buf := bytes.NewBuffer(nil)
-	log.Debugf("normalizing '%s'", content)
 	lastCharIsSpace := false
 	for _, r := range strings.TrimLeft(content, " ") { // ignore header spaces
 		if unicode.Is(unicode.Letter, r) || unicode.Is(unicode.Number, r) {

@@ -7,57 +7,58 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-// filterOption allows for filtering elements by type
-type filterOption func(element interface{}) bool
+// FilterCriterion returns true if the given element is to be filtered out
+type FilterCriterion func(element interface{}) bool
 
-// filterEmptyPreamble filters the element if it is an empty preamble
-func filterEmptyPreamble() filterOption {
-	return func(element interface{}) bool {
-		result := false
-		if p, match := element.(Preamble); match {
-			result = p.Elements == nil || len(p.Elements) == 0
-		}
-		log.Debugf(" element of type '%T' is an empty preamble: %t", element, result)
-		return result
+// EmptyPreambleMatcher filters the element if it is an empty preamble
+var EmptyPreambleMatcher FilterCriterion = func(element interface{}) bool {
+	result := false
+	if p, match := element.(Preamble); match {
+		result = p.Elements == nil || len(p.Elements) == 0
+	}
+	log.Debugf(" element of type '%T' is an empty preamble: %t", element, result)
+	return result
+}
+
+// BlankLineMatcher filters the element if it is a blank line
+var BlankLineMatcher FilterCriterion = func(element interface{}) bool {
+	_, result := element.(BlankLine)
+	return result
+}
+
+// DocumentAttributeMatcher filters the element if it is a blank line
+var DocumentAttributeMatcher FilterCriterion = func(element interface{}) bool {
+	switch element.(type) {
+	case DocumentAttributeDeclaration, DocumentAttributeSubstitution, DocumentAttributeReset:
+		return true
+	default:
+		return false
 	}
 }
 
-// filterBlankLine filters the element if it is a blank line
-func filterBlankLine() filterOption {
-	return func(element interface{}) bool {
-		_, result := element.(BlankLine)
-		// defer log.Debugf(" element of type '%T' is a blankline: %t", element, result)
-		return result
-	}
-}
-
-// filterEmptyElements excludes the unrelevant (empty) blocks
-func filterEmptyElements(blocks []interface{}, filters ...filterOption) []interface{} {
-	log.Debugf("Filtering %d blocks...", len(blocks))
-	elements := make([]interface{}, 0)
+// FilterOut excludes the unrelevant (empty) elements
+func FilterOut(elements []interface{}, filters ...FilterCriterion) []interface{} {
+	log.Debugf("filtering %d blocks...", len(elements))
+	result := make([]interface{}, 0)
 blocks:
-	for _, block := range blocks {
+	for _, element := range elements {
 		// check if filter option applies to the element
-		switch block := block.(type) {
+		switch element := element.(type) {
 		case []interface{}:
-			result := filterEmptyElements(block, filters...)
-			elements = append(elements, result...)
+			result = append(result, FilterOut(element, filters...)...)
 		default:
-			if block != nil {
-				// log.Debugf(" converting block of type '%T' into a interface{}...", block)
-				for _, filter := range filters {
-					if filter(block) {
-						log.Debugf(" discarding block of type '%T'.", block)
-						continue blocks
-					}
+			for _, filter := range filters {
+				if filter(element) {
+					log.Debugf("discarding block of type '%T'", element)
+					continue blocks
 				}
-				log.Debugf(" keeping block of type '%T'.", block)
-				elements = append(elements, block)
-				continue
 			}
+			log.Debugf("keeping block of type '%T'", element)
+			result = append(result, element)
+			continue
 		}
 	}
-	return elements
+	return result
 }
 
 // NilSafe returns a new slice if the given elements is nil, otherwise it returns the given elements
@@ -139,25 +140,4 @@ func toString(lines []interface{}) ([]string, error) {
 		result[i] = l
 	}
 	return result, nil
-}
-
-// SearchAttributeDeclaration returns the value of the DocumentAttributeDeclaration whose name is given
-func SearchAttributeDeclaration(elements []interface{}, name string) (DocumentAttributeDeclaration, bool) {
-	for _, e := range elements {
-		switch e := e.(type) {
-		case Section:
-			if result, found := SearchAttributeDeclaration(e.Elements, name); found {
-				return result, found
-			}
-		case Preamble:
-			if result, found := SearchAttributeDeclaration(e.Elements, name); found {
-				return result, found
-			}
-		case DocumentAttributeDeclaration:
-			if e.Name == name {
-				return e, true
-			}
-		}
-	}
-	return DocumentAttributeDeclaration{}, false
 }

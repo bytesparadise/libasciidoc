@@ -23,7 +23,7 @@ This journey begins on a bleary Monday morning.`
 			expected := types.Document{
 				Attributes: types.DocumentAttributes{},
 				ElementReferences: types.ElementReferences{
-					"the_dangerous_and_thrilling_documentation_chronicles": title,
+					"_the_dangerous_and_thrilling_documentation_chronicles": title,
 				},
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
@@ -31,8 +31,7 @@ This journey begins on a bleary Monday morning.`
 					types.Section{
 						Level: 0,
 						Attributes: types.ElementAttributes{
-							types.AttrID:       "the_dangerous_and_thrilling_documentation_chronicles",
-							types.AttrCustomID: false,
+							types.AttrID: "_the_dangerous_and_thrilling_documentation_chronicles",
 						},
 						Title: title,
 						Elements: []interface{}{
@@ -66,7 +65,7 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>`
 					expected := types.Document{
 						Attributes: types.DocumentAttributes{},
 						ElementReferences: types.ElementReferences{
-							"title": title,
+							"_title": title,
 						},
 						Footnotes:          types.Footnotes{},
 						FootnoteReferences: types.FootnoteReferences{},
@@ -74,8 +73,7 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>`
 							types.Section{
 								Level: 0,
 								Attributes: types.ElementAttributes{
-									types.AttrID:       "title",
-									types.AttrCustomID: false,
+									types.AttrID: "_title",
 									types.AttrAuthors: []types.DocumentAuthor{
 										{
 											FullName: "Kismet  Rainbow Chameleon  ",
@@ -102,7 +100,7 @@ Lazarus het_Draeke <lazarus@asciidoctor.org>`
 					expected := types.Document{
 						Attributes: types.DocumentAttributes{},
 						ElementReferences: types.ElementReferences{
-							"title": title,
+							"_title": title,
 						},
 						Footnotes:          types.Footnotes{},
 						FootnoteReferences: types.FootnoteReferences{},
@@ -110,8 +108,7 @@ Lazarus het_Draeke <lazarus@asciidoctor.org>`
 							types.Section{
 								Level: 0,
 								Attributes: types.ElementAttributes{
-									types.AttrID:       "title",
-									types.AttrCustomID: false,
+									types.AttrID: "_title",
 									types.AttrAuthors: []types.DocumentAuthor{
 										{
 											FullName: "Lazarus het_Draeke ",
@@ -138,7 +135,7 @@ Kismet Chameleon`
 					expected := types.Document{
 						Attributes: types.DocumentAttributes{},
 						ElementReferences: types.ElementReferences{
-							"title": title,
+							"_title": title,
 						},
 						Footnotes:          types.Footnotes{},
 						FootnoteReferences: types.FootnoteReferences{},
@@ -146,8 +143,7 @@ Kismet Chameleon`
 							types.Section{
 								Level: 0,
 								Attributes: types.ElementAttributes{
-									types.AttrID:       "title",
-									types.AttrCustomID: false,
+									types.AttrID: "_title",
 									types.AttrAuthors: []types.DocumentAuthor{
 										{
 											FullName: "Kismet Chameleon",
@@ -174,7 +170,7 @@ Chameleon`
 					expected := types.Document{
 						Attributes: types.DocumentAttributes{},
 						ElementReferences: types.ElementReferences{
-							"title": title,
+							"_title": title,
 						},
 						Footnotes:          types.Footnotes{},
 						FootnoteReferences: types.FootnoteReferences{},
@@ -182,8 +178,7 @@ Chameleon`
 							types.Section{
 								Level: 0,
 								Attributes: types.ElementAttributes{
-									types.AttrID:       "title",
-									types.AttrCustomID: false,
+									types.AttrID: "_title",
 									types.AttrAuthors: []types.DocumentAuthor{
 										{
 											FullName: "Chameleon",
@@ -210,7 +205,7 @@ Chameleon`
 					expected := types.Document{
 						Attributes: types.DocumentAttributes{},
 						ElementReferences: types.ElementReferences{
-							"title": title,
+							"_title": title,
 						},
 						Footnotes:          types.Footnotes{},
 						FootnoteReferences: types.FootnoteReferences{},
@@ -218,8 +213,7 @@ Chameleon`
 							types.Section{
 								Level: 0,
 								Attributes: types.ElementAttributes{
-									types.AttrID:       "title",
-									types.AttrCustomID: false,
+									types.AttrID: "_title",
 									types.AttrAuthors: []types.DocumentAuthor{
 										{
 											FullName: "Kismet Rainbow Chameleon",
@@ -249,7 +243,7 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 					expected := types.Document{
 						Attributes: types.DocumentAttributes{},
 						ElementReferences: types.ElementReferences{
-							"title": title,
+							"_title": title,
 						},
 						Footnotes:          types.Footnotes{},
 						FootnoteReferences: types.FootnoteReferences{},
@@ -257,8 +251,7 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 							types.Section{
 								Level: 0,
 								Attributes: types.ElementAttributes{
-									types.AttrID:       "title",
-									types.AttrCustomID: false,
+									types.AttrID: "_title",
 									types.AttrAuthors: []types.DocumentAuthor{
 										{
 											FullName: "Kismet  Rainbow Chameleon  ",
@@ -294,7 +287,7 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 				expected := types.Document{
 					Attributes: types.DocumentAttributes{},
 					ElementReferences: types.ElementReferences{
-						"title": title,
+						"_title": title,
 					},
 					Footnotes:          types.Footnotes{},
 					FootnoteReferences: types.FootnoteReferences{},
@@ -302,8 +295,7 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 						types.Section{
 							Level: 0,
 							Attributes: types.ElementAttributes{
-								types.AttrID:       "title",
-								types.AttrCustomID: false,
+								types.AttrID: "_title",
 								types.AttrAuthors: []types.DocumentAuthor{
 									{
 										FullName: "john doe",
@@ -336,7 +328,7 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 				expected := types.Document{
 					Attributes: types.DocumentAttributes{},
 					ElementReferences: types.ElementReferences{
-						"title": title,
+						"_title": title,
 					},
 					Footnotes:          types.Footnotes{},
 					FootnoteReferences: types.FootnoteReferences{},
@@ -344,8 +336,7 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 						types.Section{
 							Level: 0,
 							Attributes: types.ElementAttributes{
-								types.AttrID:       "title",
-								types.AttrCustomID: false,
+								types.AttrID: "_title",
 								types.AttrAuthors: []types.DocumentAuthor{
 									{
 										FullName: "john doe",
@@ -378,7 +369,7 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 				expected := types.Document{
 					Attributes: types.DocumentAttributes{},
 					ElementReferences: types.ElementReferences{
-						"title": title,
+						"_title": title,
 					},
 					Footnotes:          types.Footnotes{},
 					FootnoteReferences: types.FootnoteReferences{},
@@ -386,8 +377,7 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 						types.Section{
 							Level: 0,
 							Attributes: types.ElementAttributes{
-								types.AttrID:       "title",
-								types.AttrCustomID: false,
+								types.AttrID: "_title",
 								types.AttrAuthors: []types.DocumentAuthor{
 									{
 										FullName: "john doe",
@@ -419,7 +409,7 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 				expected := types.Document{
 					Attributes: types.DocumentAttributes{},
 					ElementReferences: types.ElementReferences{
-						"title": title,
+						"_title": title,
 					},
 					Footnotes:          types.Footnotes{},
 					FootnoteReferences: types.FootnoteReferences{},
@@ -427,8 +417,7 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 						types.Section{
 							Level: 0,
 							Attributes: types.ElementAttributes{
-								types.AttrID:       "title",
-								types.AttrCustomID: false,
+								types.AttrID: "_title",
 								types.AttrAuthors: []types.DocumentAuthor{
 									{
 										FullName: "john doe",
@@ -461,7 +450,7 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 				expected := types.Document{
 					Attributes: types.DocumentAttributes{},
 					ElementReferences: types.ElementReferences{
-						"title": title,
+						"_title": title,
 					},
 					Footnotes:          types.Footnotes{},
 					FootnoteReferences: types.FootnoteReferences{},
@@ -469,8 +458,7 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 						types.Section{
 							Level: 0,
 							Attributes: types.ElementAttributes{
-								types.AttrID:       "title",
-								types.AttrCustomID: false,
+								types.AttrID: "_title",
 								types.AttrAuthors: []types.DocumentAuthor{
 									{
 										FullName: "john doe",
@@ -503,7 +491,7 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 				expected := types.Document{
 					Attributes: types.DocumentAttributes{},
 					ElementReferences: types.ElementReferences{
-						"title": title,
+						"_title": title,
 					},
 					Footnotes:          types.Footnotes{},
 					FootnoteReferences: types.FootnoteReferences{},
@@ -511,8 +499,7 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 						types.Section{
 							Level: 0,
 							Attributes: types.ElementAttributes{
-								types.AttrID:       "title",
-								types.AttrCustomID: false,
+								types.AttrID: "_title",
 								types.AttrAuthors: []types.DocumentAuthor{
 									{
 										FullName: "john doe",
@@ -545,7 +532,7 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 				expected := types.Document{
 					Attributes: types.DocumentAttributes{},
 					ElementReferences: types.ElementReferences{
-						"title": title,
+						"_title": title,
 					},
 					Footnotes:          types.Footnotes{},
 					FootnoteReferences: types.FootnoteReferences{},
@@ -553,8 +540,7 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 						types.Section{
 							Level: 0,
 							Attributes: types.ElementAttributes{
-								types.AttrID:       "title",
-								types.AttrCustomID: false,
+								types.AttrID: "_title",
 								types.AttrAuthors: []types.DocumentAuthor{
 									{
 										FullName: "john doe",
@@ -587,7 +573,7 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 				expected := types.Document{
 					Attributes: types.DocumentAttributes{},
 					ElementReferences: types.ElementReferences{
-						"title": title,
+						"_title": title,
 					},
 					Footnotes:          types.Footnotes{},
 					FootnoteReferences: types.FootnoteReferences{},
@@ -595,8 +581,7 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 						types.Section{
 							Level: 0,
 							Attributes: types.ElementAttributes{
-								types.AttrID:       "title",
-								types.AttrCustomID: false,
+								types.AttrID: "_title",
 								types.AttrAuthors: []types.DocumentAuthor{
 									{
 										FullName: "john doe",
@@ -629,7 +614,7 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 				expected := types.Document{
 					Attributes: types.DocumentAttributes{},
 					ElementReferences: types.ElementReferences{
-						"title": title,
+						"_title": title,
 					},
 					Footnotes:          types.Footnotes{},
 					FootnoteReferences: types.FootnoteReferences{},
@@ -637,8 +622,7 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 						types.Section{
 							Level: 0,
 							Attributes: types.ElementAttributes{
-								types.AttrID:       "title",
-								types.AttrCustomID: false,
+								types.AttrID: "_title",
 								types.AttrAuthors: []types.DocumentAuthor{
 									{
 										FullName: "john doe",
@@ -671,7 +655,7 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 				expected := types.Document{
 					Attributes: types.DocumentAttributes{},
 					ElementReferences: types.ElementReferences{
-						"title": title,
+						"_title": title,
 					},
 					Footnotes:          types.Footnotes{},
 					FootnoteReferences: types.FootnoteReferences{},
@@ -679,8 +663,7 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 						types.Section{
 							Level: 0,
 							Attributes: types.ElementAttributes{
-								types.AttrID:       "title",
-								types.AttrCustomID: false,
+								types.AttrID: "_title",
 								types.AttrAuthors: []types.DocumentAuthor{
 									{
 										FullName: "john doe",
@@ -713,7 +696,7 @@ v1.0:`
 				expected := types.Document{
 					Attributes: types.DocumentAttributes{},
 					ElementReferences: types.ElementReferences{
-						"title": title,
+						"_title": title,
 					},
 					Footnotes:          types.Footnotes{},
 					FootnoteReferences: types.FootnoteReferences{},
@@ -721,8 +704,7 @@ v1.0:`
 						types.Section{
 							Level: 0,
 							Attributes: types.ElementAttributes{
-								types.AttrID:       "title",
-								types.AttrCustomID: false,
+								types.AttrID: "_title",
 								types.AttrAuthors: []types.DocumentAuthor{
 									{
 										FullName: "john doe",
@@ -755,18 +737,18 @@ v1.0:`
 :0Author: Xavier
 :Auth0r: Xavier`
 				expected := types.Document{
-					Attributes:         types.DocumentAttributes{},
+					Attributes: types.DocumentAttributes{
+						"a":       "",
+						"author":  "Xavier",
+						"_author": "Xavier",
+						"Author":  "Xavier",
+						"0Author": "Xavier",
+						"Auth0r":  "Xavier",
+					},
 					ElementReferences:  types.ElementReferences{},
 					Footnotes:          types.Footnotes{},
 					FootnoteReferences: types.FootnoteReferences{},
-					Elements: []interface{}{
-						types.DocumentAttributeDeclaration{Name: "a"},
-						types.DocumentAttributeDeclaration{Name: "author", Value: "Xavier"},
-						types.DocumentAttributeDeclaration{Name: "_author", Value: "Xavier"},
-						types.DocumentAttributeDeclaration{Name: "Author", Value: "Xavier"},
-						types.DocumentAttributeDeclaration{Name: "0Author", Value: "Xavier"},
-						types.DocumentAttributeDeclaration{Name: "Auth0r", Value: "Xavier"},
-					},
+					Elements:           []interface{}{},
 				}
 				Expect(source).To(BecomeDocument(expected))
 			})
@@ -778,15 +760,16 @@ v1.0:`
 :hardbreaks:
 a paragraph`
 				expected := types.Document{
-					Attributes:         types.DocumentAttributes{},
+					Attributes: types.DocumentAttributes{
+						"toc":                        "",
+						"date":                       "2017-01-01",
+						"author":                     "Xavier",
+						types.DocumentAttrHardBreaks: "",
+					},
 					ElementReferences:  types.ElementReferences{},
 					Footnotes:          types.Footnotes{},
 					FootnoteReferences: types.FootnoteReferences{},
 					Elements: []interface{}{
-						types.DocumentAttributeDeclaration{Name: "toc"},
-						types.DocumentAttributeDeclaration{Name: "date", Value: "2017-01-01"},
-						types.DocumentAttributeDeclaration{Name: "author", Value: "Xavier"},
-						types.DocumentAttributeDeclaration{Name: types.DocumentAttrHardBreaks},
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
 							Lines: [][]interface{}{
@@ -807,14 +790,15 @@ a paragraph`
 
 a paragraph`
 				expected := types.Document{
-					Attributes:         types.DocumentAttributes{},
+					Attributes: types.DocumentAttributes{
+						"toc":    "",
+						"date":   "2017-01-01",
+						"author": "Xavier",
+					},
 					ElementReferences:  types.ElementReferences{},
 					Footnotes:          types.Footnotes{},
 					FootnoteReferences: types.FootnoteReferences{},
 					Elements: []interface{}{
-						types.DocumentAttributeDeclaration{Name: "toc"},
-						types.DocumentAttributeDeclaration{Name: "date", Value: "2017-01-01"},
-						types.DocumentAttributeDeclaration{Name: "author", Value: "Xavier"},
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
 							Lines: [][]interface{}{
@@ -838,15 +822,16 @@ a paragraph`
 
 a paragraph`
 				expected := types.Document{
-					Attributes:         types.DocumentAttributes{},
+					Attributes: types.DocumentAttributes{
+						"toc":  "",
+						"date": "2017-01-01",
+						// "author":     "Xavier",
+						// "hardbreaks": "",
+					},
 					ElementReferences:  types.ElementReferences{},
 					Footnotes:          types.Footnotes{},
 					FootnoteReferences: types.FootnoteReferences{},
 					Elements: []interface{}{
-						types.DocumentAttributeDeclaration{Name: "toc"},
-						types.DocumentAttributeDeclaration{Name: "date", Value: "2017-01-01"},
-						types.DocumentAttributeDeclaration{Name: "author", Value: "Xavier"},
-						types.DocumentAttributeDeclaration{Name: "hardbreaks"},
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
 							Lines: [][]interface{}{
@@ -880,9 +865,6 @@ a paragraph`
 								},
 							},
 						},
-						types.DocumentAttributeDeclaration{Name: "toc"},
-						types.DocumentAttributeDeclaration{Name: "date", Value: "2017-01-01"},
-						types.DocumentAttributeDeclaration{Name: "author", Value: "Xavier"},
 					},
 				}
 				Expect(source).To(BecomeDocument(expected))
@@ -896,12 +878,13 @@ a paragraph`
 			
 a paragraph written by {author}.`
 				expected := types.Document{
-					Attributes:         types.DocumentAttributes{},
+					Attributes: types.DocumentAttributes{
+						"author": "Xavier",
+					},
 					ElementReferences:  types.ElementReferences{},
 					Footnotes:          types.Footnotes{},
 					FootnoteReferences: types.FootnoteReferences{},
 					Elements: []interface{}{
-						types.DocumentAttributeDeclaration{Name: "author", Value: "Xavier"},
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
 							Lines: [][]interface{}{
@@ -922,14 +905,13 @@ a paragraph written by {author}.`
 :author2!:
 a paragraph written by {author}.`
 				expected := types.Document{
-					Attributes:         types.DocumentAttributes{},
+					Attributes: types.DocumentAttributes{
+						"author": "Xavier",
+					},
 					ElementReferences:  types.ElementReferences{},
 					Footnotes:          types.Footnotes{},
 					FootnoteReferences: types.FootnoteReferences{},
 					Elements: []interface{}{
-						types.DocumentAttributeDeclaration{Name: "author", Value: "Xavier"},
-						types.DocumentAttributeReset{Name: "author1"},
-						types.DocumentAttributeReset{Name: "author2"},
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
 							Lines: [][]interface{}{
@@ -955,9 +937,12 @@ This journey begins on a bleary Monday morning.`
 					types.StringElement{Content: "The Dangerous and Thrilling Documentation Chronicles"},
 				}
 				expected := types.Document{
-					Attributes: types.DocumentAttributes{},
+					Attributes: types.DocumentAttributes{
+						"toc":      "",
+						"keywords": "documentation, team, obstacles, journey, victory",
+					},
 					ElementReferences: types.ElementReferences{
-						"the_dangerous_and_thrilling_documentation_chronicles": title,
+						"_the_dangerous_and_thrilling_documentation_chronicles": title,
 					},
 					Footnotes:          types.Footnotes{},
 					FootnoteReferences: types.FootnoteReferences{},
@@ -965,8 +950,7 @@ This journey begins on a bleary Monday morning.`
 						types.Section{
 							Level: 0,
 							Attributes: types.ElementAttributes{
-								types.AttrID:       "the_dangerous_and_thrilling_documentation_chronicles",
-								types.AttrCustomID: false,
+								types.AttrID: "_the_dangerous_and_thrilling_documentation_chronicles",
 								types.AttrAuthors: []types.DocumentAuthor{
 									{
 										FullName: "Kismet Rainbow Chameleon ",
@@ -985,14 +969,6 @@ This journey begins on a bleary Monday morning.`
 							},
 							Title: title,
 							Elements: []interface{}{
-								types.DocumentAttributeDeclaration{
-									Name:  "toc",
-									Value: "",
-								},
-								types.DocumentAttributeDeclaration{
-									Name:  "keywords",
-									Value: "documentation, team, obstacles, journey, victory",
-								},
 								types.Paragraph{
 									Attributes: types.ElementAttributes{},
 									Lines: [][]interface{}{

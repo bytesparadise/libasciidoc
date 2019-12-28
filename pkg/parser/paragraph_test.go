@@ -125,6 +125,34 @@ bar.`
 			}
 			Expect(source).To(BecomeDocumentBlock(expected))
 		})
+
+		It("paragraph with custom id prefix and title", func() {
+			source := `:idprefix: bar_
+			
+.a title
+a paragraph`
+			expected := types.Document{
+				Attributes: types.DocumentAttributes{
+					types.AttrIDPrefix: "bar_",
+				},
+				ElementReferences:  types.ElementReferences{},
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
+				Elements: []interface{}{
+					types.Paragraph{
+						Attributes: types.ElementAttributes{
+							types.AttrTitle: "a title", // there is no default ID. Only custom IDs
+						},
+						Lines: [][]interface{}{
+							{
+								types.StringElement{Content: "a paragraph"},
+							},
+						},
+					},
+				},
+			}
+			Expect(source).To(BecomeDocument(expected))
+		})
 	})
 
 	Context("paragraphs with line break", func() {

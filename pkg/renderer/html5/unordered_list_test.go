@@ -54,7 +54,27 @@ and a standalone paragraph`
 		Expect(source).To(RenderHTML5Body(expected))
 	})
 
-	It("simple unordered list with title and role", func() {
+	It("simple unordered list with id, title and role", func() {
+		source := `.mytitle
+[#foo]
+[.myrole]
+* item 1
+* item 2`
+		expected := `<div id="foo" class="ulist myrole">
+<div class="title">mytitle</div>
+<ul>
+<li>
+<p>item 1</p>
+</li>
+<li>
+<p>item 2</p>
+</li>
+</ul>
+</div>`
+		Expect(source).To(RenderHTML5Body(expected))
+	})
+
+	It("simple unordered list with id, title and role", func() {
 		source := `.mytitle
 [#foo]
 [.myrole]

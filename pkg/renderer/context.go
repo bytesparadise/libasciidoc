@@ -154,16 +154,6 @@ func (ctx *Context) getAndIncrementCounter(counter string) int {
 	return 1
 }
 
-const imagesdir = "imagesdir"
-
-// GetImagesDir returns the value of the `imagesdir` attribute if it was set (as a string), empty string otherwise
-func (ctx *Context) GetImagesDir() string {
-	if imagesdir, found := ctx.Document.Attributes.GetAsString(imagesdir); found {
-		return imagesdir
-	}
-	return ""
-}
-
 // MacroTemplate finds and returns a user macro function by specified name.
 func (ctx *Context) MacroTemplate(name string) (MacroTemplate, error) {
 	macro, ok := ctx.macros[name]

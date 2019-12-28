@@ -123,10 +123,6 @@ func renderElement(ctx *renderer.Context, element interface{}) ([]byte, error) {
 		return renderStringElement(ctx, e)
 	case types.Footnote:
 		return renderFootnote(ctx, e)
-	case types.DocumentAttributeDeclaration:
-		return processAttributeDeclaration(ctx, e), nil
-	case types.DocumentAttributeReset:
-		return processAttributeReset(ctx, e), nil
 	case types.LineBreak:
 		return renderLineBreak()
 	case types.UserMacro:

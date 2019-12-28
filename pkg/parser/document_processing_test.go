@@ -21,7 +21,7 @@ var _ = Describe("attribute subsititutions", func() {
 			},
 		}
 		// when
-		result, err := parser.ApplyDocumentAttributeSubstitutions(e, map[string]string{
+		result, err := parser.ApplyDocumentAttributeSubstitutions(e, types.DocumentAttributes{
 			"foo": "bar",
 		})
 		// then
@@ -47,7 +47,7 @@ var _ = Describe("attribute subsititutions", func() {
 			},
 		}
 		// when
-		result, err := parser.ApplyDocumentAttributeSubstitutions(e, map[string]string{
+		result, err := parser.ApplyDocumentAttributeSubstitutions(e, types.DocumentAttributes{
 			"foo": "bar",
 		})
 		// then
@@ -73,7 +73,7 @@ var _ = Describe("attribute subsititutions", func() {
 			},
 		}
 		// when
-		result, err := parser.ApplyDocumentAttributeSubstitutions(e, map[string]string{})
+		result, err := parser.ApplyDocumentAttributeSubstitutions(e, types.DocumentAttributes{})
 		// then
 		Expect(result).To(Equal([]interface{}{
 			types.StringElement{
@@ -97,7 +97,7 @@ var _ = Describe("attribute subsititutions", func() {
 			},
 		}
 		// when
-		result, err := parser.ApplyDocumentAttributeSubstitutions(e, map[string]string{})
+		result, err := parser.ApplyDocumentAttributeSubstitutions(e, types.DocumentAttributes{})
 		// then
 		Expect(result).To(Equal([]interface{}{
 			types.StringElement{

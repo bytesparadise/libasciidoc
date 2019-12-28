@@ -111,11 +111,8 @@ var _ = Describe("file inclusions - draft with preprocessing", func() {
 		expected := types.DraftDocument{
 			Blocks: []interface{}{
 				types.Section{
-					Attributes: types.ElementAttributes{
-						types.AttrID:       "chapter_a",
-						types.AttrCustomID: false,
-					},
-					Level: 0,
+					Attributes: types.ElementAttributes{},
+					Level:      0,
 					Title: []interface{}{
 						types.StringElement{
 							Content: "Chapter A",
@@ -148,11 +145,8 @@ var _ = Describe("file inclusions - draft with preprocessing", func() {
 		expected := types.DraftDocument{
 			Blocks: []interface{}{
 				types.Section{
-					Attributes: types.ElementAttributes{
-						types.AttrID:       "chapter_a",
-						types.AttrCustomID: false,
-					},
-					Level: 0,
+					Attributes: types.ElementAttributes{},
+					Level:      0,
 					Title: []interface{}{
 						types.StringElement{
 							Content: "Chapter A",
@@ -185,11 +179,8 @@ var _ = Describe("file inclusions - draft with preprocessing", func() {
 		expected := types.DraftDocument{
 			Blocks: []interface{}{
 				types.Section{
-					Attributes: types.ElementAttributes{
-						types.AttrID:       "chapter_a",
-						types.AttrCustomID: false,
-					},
-					Level: 1,
+					Attributes: types.ElementAttributes{},
+					Level:      1,
 					Title: []interface{}{
 						types.StringElement{
 							Content: "Chapter A",
@@ -221,11 +212,8 @@ var _ = Describe("file inclusions - draft with preprocessing", func() {
 		expected := types.DraftDocument{
 			Blocks: []interface{}{
 				types.Section{
-					Attributes: types.ElementAttributes{
-						types.AttrID:       "chapter_a",
-						types.AttrCustomID: false,
-					},
-					Level: 0,
+					Attributes: types.ElementAttributes{},
+					Level:      0,
 					Title: []interface{}{
 						types.StringElement{
 							Content: "Chapter A",
@@ -262,11 +250,8 @@ include::{includedir}/chapter-a.adoc[]`
 				},
 				types.BlankLine{},
 				types.Section{
-					Attributes: types.ElementAttributes{
-						types.AttrID:       "chapter_a",
-						types.AttrCustomID: false,
-					},
-					Level: 0,
+					Attributes: types.ElementAttributes{},
+					Level:      0,
 					Title: []interface{}{
 						types.StringElement{
 							Content: "Chapter A",
@@ -337,11 +322,8 @@ include::{includedir}/include.foo[]`
 		expected := types.DraftDocument{
 			Blocks: []interface{}{
 				types.Section{
-					Attributes: types.ElementAttributes{
-						types.AttrCustomID: false,
-						types.AttrID:       "grandchild_title",
-					},
-					Level: 1,
+					Attributes: types.ElementAttributes{},
+					Level:      1,
 					Title: []interface{}{
 						types.StringElement{
 							Content: "grandchild title",
@@ -381,11 +363,8 @@ include::{includedir}/include.foo[]`
 		expected := types.DraftDocument{
 			Blocks: []interface{}{
 				types.Section{
-					Attributes: types.ElementAttributes{
-						types.AttrCustomID: false,
-						types.AttrID:       "grandchild_title",
-					},
-					Level: 2,
+					Attributes: types.ElementAttributes{},
+					Level:      2,
 					Title: []interface{}{
 						types.StringElement{
 							Content: "grandchild title",
@@ -425,11 +404,8 @@ include::{includedir}/include.foo[]`
 		expected := types.DraftDocument{
 			Blocks: []interface{}{
 				types.Section{
-					Attributes: types.ElementAttributes{
-						types.AttrCustomID: false,
-						types.AttrID:       "grandchild_title",
-					},
-					Level: 0,
+					Attributes: types.ElementAttributes{},
+					Level:      0,
 					Title: []interface{}{
 						types.StringElement{
 							Content: "grandchild title",
@@ -469,11 +445,8 @@ include::{includedir}/include.foo[]`
 		expected := types.DraftDocument{
 			Blocks: []interface{}{
 				types.Section{
-					Attributes: types.ElementAttributes{
-						types.AttrCustomID: false,
-						types.AttrID:       "parent_title",
-					},
-					Level: 1, // here the level is changed from `0` to `1` since `root` doc has a `leveloffset=+1` during its inclusion
+					Attributes: types.ElementAttributes{},
+					Level:      1, // here the level is changed from `0` to `1` since `root` doc has a `leveloffset=+1` during its inclusion
 					Title: []interface{}{
 						types.StringElement{
 							Content: "parent title",
@@ -505,11 +478,8 @@ include::{includedir}/include.foo[]`
 				},
 				types.BlankLine{},
 				types.Section{
-					Attributes: types.ElementAttributes{
-						types.AttrCustomID: false,
-						types.AttrID:       "child_section_1",
-					},
-					Level: 3, // here the level is changed from `1` to `3` since both `root` and `parent` docs have a `leveloffset=+1` during their inclusion
+					Attributes: types.ElementAttributes{},
+					Level:      3, // here the level is changed from `1` to `3` since both `root` and `parent` docs have a `leveloffset=+1` during their inclusion
 					Title: []interface{}{
 						types.StringElement{
 							Content: "child section 1",
@@ -530,11 +500,8 @@ include::{includedir}/include.foo[]`
 				},
 				types.BlankLine{},
 				types.Section{
-					Attributes: types.ElementAttributes{
-						types.AttrCustomID: false,
-						types.AttrID:       "grandchild_title",
-					},
-					Level: 4, // here the level is changed from `1` to `4` since both `root`, `parent` and `child` docs have a `leveloffset=+1` during their inclusion
+					Attributes: types.ElementAttributes{},
+					Level:      4, // here the level is changed from `1` to `4` since both `root`, `parent` and `child` docs have a `leveloffset=+1` during their inclusion
 					Title: []interface{}{
 						types.StringElement{
 							Content: "grandchild title",
@@ -566,11 +533,8 @@ include::{includedir}/include.foo[]`
 				},
 				types.BlankLine{},
 				types.Section{
-					Attributes: types.ElementAttributes{
-						types.AttrCustomID: false,
-						types.AttrID:       "child_section_2",
-					},
-					Level: 4, // here the level is changed from `2` to `4` since both `root` and `parent` docs have a `leveloffset=+1` during their inclusion
+					Attributes: types.ElementAttributes{},
+					Level:      4, // here the level is changed from `2` to `4` since both `root` and `parent` docs have a `leveloffset=+1` during their inclusion
 					Title: []interface{}{
 						types.StringElement{
 							Content: "child section 2",
@@ -610,11 +574,8 @@ include::{includedir}/include.foo[]`
 		expected := types.DraftDocument{
 			Blocks: []interface{}{
 				types.Section{
-					Attributes: types.ElementAttributes{
-						types.AttrCustomID: false,
-						types.AttrID:       "parent_title",
-					},
-					Level: 1, // here the level is offset by `+1` as per root doc attribute in the `include` macro
+					Attributes: types.ElementAttributes{},
+					Level:      1, // here the level is offset by `+1` as per root doc attribute in the `include` macro
 					Title: []interface{}{
 						types.StringElement{
 							Content: "parent title",
@@ -646,11 +607,8 @@ include::{includedir}/include.foo[]`
 				},
 				types.BlankLine{},
 				types.Section{
-					Attributes: types.ElementAttributes{
-						types.AttrCustomID: false,
-						types.AttrID:       "child_section_1",
-					},
-					Level: 3, // here level is forced to "absolute 3"
+					Attributes: types.ElementAttributes{},
+					Level:      3, // here level is forced to "absolute 3"
 					Title: []interface{}{
 						types.StringElement{
 							Content: "child section 1",
@@ -671,11 +629,8 @@ include::{includedir}/include.foo[]`
 				},
 				types.BlankLine{},
 				types.Section{
-					Attributes: types.ElementAttributes{
-						types.AttrCustomID: false,
-						types.AttrID:       "grandchild_title",
-					},
-					Level: 4, // here the level is set to `4` because it was its parent was offset by 3...
+					Attributes: types.ElementAttributes{},
+					Level:      4, // here the level is set to `4` because it was its parent was offset by 3...
 					Title: []interface{}{
 						types.StringElement{
 							Content: "grandchild title",
@@ -707,11 +662,8 @@ include::{includedir}/include.foo[]`
 				},
 				types.BlankLine{},
 				types.Section{
-					Attributes: types.ElementAttributes{
-						types.AttrCustomID: false,
-						types.AttrID:       "child_section_2",
-					},
-					Level: 4, // here the level is set to `4` because it the first section was moved from `1` to `3` so we use the same offset here
+					Attributes: types.ElementAttributes{},
+					Level:      4, // here the level is set to `4` because it the first section was moved from `1` to `3` so we use the same offset here
 					Title: []interface{}{
 						types.StringElement{
 							Content: "child section 2",
@@ -1028,11 +980,8 @@ include::../../test/includes/chapter-a.adoc[]
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.Section{
-							Attributes: types.ElementAttributes{
-								types.AttrID:       "chapter_a",
-								types.AttrCustomID: false,
-							},
-							Level: 0,
+							Attributes: types.ElementAttributes{},
+							Level:      0,
 							Title: []interface{}{
 								types.StringElement{
 									Content: "Chapter A",
@@ -1050,11 +999,8 @@ include::../../test/includes/chapter-a.adoc[]
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.Section{
-							Level: 0,
-							Attributes: types.ElementAttributes{
-								types.AttrID:       "chapter_a",
-								types.AttrCustomID: false,
-							},
+							Level:      0,
+							Attributes: types.ElementAttributes{},
 							Title: []interface{}{
 								types.StringElement{
 									Content: "Chapter A",
@@ -1075,8 +1021,6 @@ include::../../test/includes/chapter-a.adoc[]
 						types.Section{
 							Level: 0,
 							Attributes: types.ElementAttributes{
-								types.AttrID:       "chapter_a",
-								types.AttrCustomID: false,
 								types.AttrAuthors: []types.DocumentAuthor{
 									{
 										FullName: "content",
@@ -1100,11 +1044,8 @@ include::../../test/includes/chapter-a.adoc[]
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.Section{
-							Level: 0,
-							Attributes: types.ElementAttributes{
-								types.AttrID:       "chapter_a",
-								types.AttrCustomID: false,
-							},
+							Level:      0,
+							Attributes: types.ElementAttributes{},
 							Title: []interface{}{
 								types.StringElement{
 									Content: "Chapter A",
@@ -1133,11 +1074,8 @@ include::../../test/includes/chapter-a.adoc[]
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.Section{
-							Level: 0,
-							Attributes: types.ElementAttributes{
-								types.AttrID:       "chapter_a",
-								types.AttrCustomID: false,
-							},
+							Level:      0,
+							Attributes: types.ElementAttributes{},
 							Title: []interface{}{
 								types.StringElement{
 									Content: "Chapter A",
@@ -1160,11 +1098,8 @@ include::../../test/includes/chapter-a.adoc[]
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.Section{
-							Level: 0,
-							Attributes: types.ElementAttributes{
-								types.AttrID:       "chapter_a",
-								types.AttrCustomID: false,
-							},
+							Level:      0,
+							Attributes: types.ElementAttributes{},
 							Title: []interface{}{
 								types.StringElement{
 									Content: "Chapter A",
@@ -1184,11 +1119,8 @@ include::../../test/includes/chapter-a.adoc[]
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.Section{
-							Level: 0,
-							Attributes: types.ElementAttributes{
-								types.AttrID:       "chapter_a",
-								types.AttrCustomID: false,
-							},
+							Level:      0,
+							Attributes: types.ElementAttributes{},
 							Title: []interface{}{
 								types.StringElement{
 									Content: "Chapter A",
@@ -1210,8 +1142,6 @@ include::../../test/includes/chapter-a.adoc[]
 						types.Section{
 							Level: 0,
 							Attributes: types.ElementAttributes{
-								types.AttrID:       "chapter_a",
-								types.AttrCustomID: false,
 								types.AttrAuthors: []types.DocumentAuthor{
 									{
 										FullName: "content",
@@ -1235,11 +1165,8 @@ include::../../test/includes/chapter-a.adoc[]
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.Section{
-							Level: 0,
-							Attributes: types.ElementAttributes{
-								types.AttrID:       "chapter_a",
-								types.AttrCustomID: false,
-							},
+							Level:      0,
+							Attributes: types.ElementAttributes{},
 							Title: []interface{}{
 								types.StringElement{
 									Content: "Chapter A",
@@ -1268,11 +1195,8 @@ include::../../test/includes/chapter-a.adoc[]
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.Section{
-							Level: 0,
-							Attributes: types.ElementAttributes{
-								types.AttrID:       "chapter_a",
-								types.AttrCustomID: false,
-							},
+							Level:      0,
+							Attributes: types.ElementAttributes{},
 							Title: []interface{}{
 								types.StringElement{
 									Content: "Chapter A",
@@ -1302,11 +1226,8 @@ include::../../test/includes/chapter-a.adoc[]
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.Section{
-							Attributes: types.ElementAttributes{
-								types.AttrID:       "section_1",
-								types.AttrCustomID: false,
-							},
-							Level: 1,
+							Attributes: types.ElementAttributes{},
+							Level:      1,
 							Title: []interface{}{
 								types.StringElement{
 									Content: "Section 1",
@@ -1330,11 +1251,8 @@ include::../../test/includes/chapter-a.adoc[]
 			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.Section{
-						Attributes: types.ElementAttributes{
-							types.AttrID:       "section_1",
-							types.AttrCustomID: false,
-						},
-						Level: 1,
+						Attributes: types.ElementAttributes{},
+						Level:      1,
 						Title: []interface{}{
 							types.StringElement{
 								Content: "Section 1",
@@ -1356,11 +1274,8 @@ include::../../test/includes/chapter-a.adoc[]
 			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.Section{
-						Attributes: types.ElementAttributes{
-							types.AttrCustomID: false,
-							types.AttrID:       "section_1",
-						},
-						Level: 1,
+						Attributes: types.ElementAttributes{},
+						Level:      1,
 						Title: []interface{}{
 							types.StringElement{
 								Content: "Section 1",
@@ -1452,11 +1367,8 @@ include::../../test/includes/chapter-a.adoc[]
 			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.Section{
-						Attributes: types.ElementAttributes{
-							types.AttrID:       "section_1",
-							types.AttrCustomID: false,
-						},
-						Level: 1,
+						Attributes: types.ElementAttributes{},
+						Level:      1,
 						Title: []interface{}{
 							types.StringElement{
 								Content: "Section 1",
@@ -1499,11 +1411,8 @@ include::../../test/includes/chapter-a.adoc[]
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.Section{
-							Attributes: types.ElementAttributes{
-								types.AttrCustomID: false,
-								types.AttrID:       "section_1",
-							},
-							Level: 1,
+							Attributes: types.ElementAttributes{},
+							Level:      1,
 							Title: []interface{}{
 								types.StringElement{
 									Content: "Section 1",
@@ -1544,11 +1453,8 @@ include::../../test/includes/chapter-a.adoc[]
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.Section{
-							Attributes: types.ElementAttributes{
-								types.AttrID:       "section_1",
-								types.AttrCustomID: false,
-							},
-							Level: 1,
+							Attributes: types.ElementAttributes{},
+							Level:      1,
 							Title: []interface{}{
 								types.StringElement{
 									Content: "Section 1",
@@ -1578,11 +1484,8 @@ include::../../test/includes/chapter-a.adoc[]
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.Section{
-							Attributes: types.ElementAttributes{
-								types.AttrCustomID: false,
-								types.AttrID:       "section_1",
-							},
-							Level: 1,
+							Attributes: types.ElementAttributes{},
+							Level:      1,
 							Title: []interface{}{
 								types.StringElement{
 									Content: "Section 1",
@@ -1623,11 +1526,8 @@ include::../../test/includes/chapter-a.adoc[]
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.Section{
-							Attributes: types.ElementAttributes{
-								types.AttrCustomID: false,
-								types.AttrID:       "section_1",
-							},
-							Level: 1,
+							Attributes: types.ElementAttributes{},
+							Level:      1,
 							Title: []interface{}{
 								types.StringElement{
 									Content: "Section 1",
@@ -1646,11 +1546,8 @@ include::../../test/includes/chapter-a.adoc[]
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.Section{
-							Attributes: types.ElementAttributes{
-								types.AttrCustomID: false,
-								types.AttrID:       "section_1",
-							},
-							Level: 1,
+							Attributes: types.ElementAttributes{},
+							Level:      1,
 							Title: []interface{}{
 								types.StringElement{
 									Content: "Section 1",
@@ -1669,11 +1566,8 @@ include::../../test/includes/chapter-a.adoc[]
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.Section{
-							Attributes: types.ElementAttributes{
-								types.AttrCustomID: false,
-								types.AttrID:       "section_1",
-							},
-							Level: 1,
+							Attributes: types.ElementAttributes{},
+							Level:      1,
 							Title: []interface{}{
 								types.StringElement{
 									Content: "Section 1",
@@ -1831,11 +1725,8 @@ include::{includedir}/grandchild-include.adoc[]`
 					},
 					types.BlankLine{},
 					types.Section{
-						Attributes: types.ElementAttributes{
-							types.AttrID:       "grandchild_title",
-							types.AttrCustomID: false,
-						},
-						Level: 1,
+						Attributes: types.ElementAttributes{},
+						Level:      1,
 						Title: []interface{}{
 							types.StringElement{
 								Content: "grandchild title",
@@ -1882,11 +1773,8 @@ include::{includedir}/grandchild-include.adoc[]`
 					},
 					types.BlankLine{},
 					types.Section{
-						Attributes: types.ElementAttributes{
-							types.AttrID:       "grandchild_title",
-							types.AttrCustomID: false,
-						},
-						Level: 1,
+						Attributes: types.ElementAttributes{},
+						Level:      1,
 						Title: []interface{}{
 							types.StringElement{
 								Content: "grandchild title",
@@ -2077,22 +1965,22 @@ var _ = Describe("file inclusions - final document", func() {
 		expected := types.Document{
 			Attributes: types.DocumentAttributes{},
 			ElementReferences: types.ElementReferences{
-				"parent_title": []interface{}{
+				"_parent_title": []interface{}{
 					types.StringElement{
 						Content: "parent title",
 					},
 				},
-				"child_section_1": []interface{}{
+				"_child_section_1": []interface{}{
 					types.StringElement{
 						Content: "child section 1",
 					},
 				},
-				"child_section_2": []interface{}{
+				"_child_section_2": []interface{}{
 					types.StringElement{
 						Content: "child section 2",
 					},
 				},
-				"grandchild_title": []interface{}{
+				"_grandchild_title": []interface{}{
 					types.StringElement{
 						Content: "grandchild title",
 					},
@@ -2103,8 +1991,7 @@ var _ = Describe("file inclusions - final document", func() {
 			Elements: []interface{}{
 				types.Section{
 					Attributes: types.ElementAttributes{
-						types.AttrCustomID: false,
-						types.AttrID:       "parent_title",
+						types.AttrID: "_parent_title",
 					},
 					Level: 1, // here the level is changed from `0` to `1` since `root` doc has a `leveloffset=+1` during its inclusion
 					Title: []interface{}{
@@ -2135,8 +2022,7 @@ var _ = Describe("file inclusions - final document", func() {
 						},
 						types.Section{
 							Attributes: types.ElementAttributes{
-								types.AttrCustomID: false,
-								types.AttrID:       "child_section_1",
+								types.AttrID: "_child_section_1",
 							},
 							Level: 3, // here the level is changed from `1` to `3` since both `root` and `parent` docs have a `leveloffset=+1` during their inclusion
 							Title: []interface{}{
@@ -2157,8 +2043,7 @@ var _ = Describe("file inclusions - final document", func() {
 								},
 								types.Section{
 									Attributes: types.ElementAttributes{
-										types.AttrCustomID: false,
-										types.AttrID:       "grandchild_title",
+										types.AttrID: "_grandchild_title",
 									},
 									Level: 4, // here the level is changed from `1` to `4` since both `root`, `parent` and `child` docs have a `leveloffset=+1` during their inclusion
 									Title: []interface{}{
@@ -2191,8 +2076,7 @@ var _ = Describe("file inclusions - final document", func() {
 								},
 								types.Section{
 									Attributes: types.ElementAttributes{
-										types.AttrCustomID: false,
-										types.AttrID:       "child_section_2",
+										types.AttrID: "_child_section_2",
 									},
 									Level: 4, // here the level is changed from `2` to `4` since both `root` and `parent` docs have a `leveloffset=+1` during their inclusion
 									Title: []interface{}{
@@ -2237,22 +2121,22 @@ var _ = Describe("file inclusions - final document", func() {
 		expected := types.Document{
 			Attributes: types.DocumentAttributes{},
 			ElementReferences: types.ElementReferences{
-				"parent_title": []interface{}{
+				"_parent_title": []interface{}{
 					types.StringElement{
 						Content: "parent title",
 					},
 				},
-				"child_section_1": []interface{}{
+				"_child_section_1": []interface{}{
 					types.StringElement{
 						Content: "child section 1",
 					},
 				},
-				"child_section_2": []interface{}{
+				"_child_section_2": []interface{}{
 					types.StringElement{
 						Content: "child section 2",
 					},
 				},
-				"grandchild_title": []interface{}{
+				"_grandchild_title": []interface{}{
 					types.StringElement{
 						Content: "grandchild title",
 					},
@@ -2263,8 +2147,7 @@ var _ = Describe("file inclusions - final document", func() {
 			Elements: []interface{}{
 				types.Section{
 					Attributes: types.ElementAttributes{
-						types.AttrCustomID: false,
-						types.AttrID:       "parent_title",
+						types.AttrID: "_parent_title",
 					},
 					Level: 1, // here the level is offset by `+1` as per root doc attribute in the `include` macro
 					Title: []interface{}{
@@ -2295,8 +2178,7 @@ var _ = Describe("file inclusions - final document", func() {
 						},
 						types.Section{
 							Attributes: types.ElementAttributes{
-								types.AttrCustomID: false,
-								types.AttrID:       "child_section_1",
+								types.AttrID: "_child_section_1",
 							},
 							Level: 3, // here level is forced to "absolute 3"
 							Title: []interface{}{
@@ -2317,8 +2199,7 @@ var _ = Describe("file inclusions - final document", func() {
 								},
 								types.Section{
 									Attributes: types.ElementAttributes{
-										types.AttrCustomID: false,
-										types.AttrID:       "grandchild_title",
+										types.AttrID: "_grandchild_title",
 									},
 									Level: 4, // here the level is set to `4` because it was its parent was offset by 3...
 									Title: []interface{}{
@@ -2351,8 +2232,7 @@ var _ = Describe("file inclusions - final document", func() {
 								},
 								types.Section{
 									Attributes: types.ElementAttributes{
-										types.AttrCustomID: false,
-										types.AttrID:       "child_section_2",
+										types.AttrID: "_child_section_2",
 									},
 									Level: 4, // here the level is set to `4` because it the first section was moved from `1` to `3` so we use the same offset here
 									Title: []interface{}{

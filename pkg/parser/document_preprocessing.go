@@ -27,21 +27,21 @@ func parseDraftDocument(filename string, r io.Reader, levelOffsets []levelOffset
 		return types.DraftDocument{}, err
 	}
 	doc := d.(types.DraftDocument)
-	attrs := map[string]string{}
+	attrs := types.DocumentAttributes{}
 	blocks, err := parseElements(filename, doc.Blocks, attrs, levelOffsets, opts...)
 	if err != nil {
 		return types.DraftDocument{}, err
 	}
 	doc.Blocks = blocks
 	if log.IsLevelEnabled(log.DebugLevel) {
-		log.Debug("draf document:")
+		log.Debug("draft document:")
 		spew.Dump(doc)
 	}
 	return doc, nil
 }
 
 // parseElements resolves the file inclusions if any is found in the given elements
-func parseElements(filename string, elements []interface{}, attrs map[string]string, levelOffsets []levelOffset, opts ...Option) ([]interface{}, error) {
+func parseElements(filename string, elements []interface{}, attrs types.DocumentAttributes, levelOffsets []levelOffset, opts ...Option) ([]interface{}, error) {
 	result := []interface{}{}
 	for _, e := range elements {
 		switch e := e.(type) {
