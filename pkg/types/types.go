@@ -468,7 +468,7 @@ type List interface {
 }
 
 // ListItem a list item
-type ListItem interface {
+type ListItem interface { // TODO: convert to struct and use as composant in OrderedListItem, etc.
 	AddElement(interface{})
 }
 
@@ -973,6 +973,7 @@ const (
 func NewInlineElements(elements ...interface{}) ([]interface{}, error) {
 	result := MergeStringElements(elements...)
 	return result, nil
+
 }
 
 // ------------------------------------------
@@ -1001,17 +1002,6 @@ func NewCrossReference(id string, label interface{}) (CrossReference, error) {
 // ------------------------------------------
 // Images
 // ------------------------------------------
-
-const (
-	// AttrImageAlt the image `alt` attribute
-	AttrImageAlt string = "alt"
-	// AttrImageWidth the image `width` attribute
-	AttrImageWidth string = "width"
-	// AttrImageHeight the image `height` attribute
-	AttrImageHeight string = "height"
-	// AttrImageTitle the image `title` attribute
-	AttrImageTitle string = "title"
-)
 
 // ImageBlock the structure for the block images
 type ImageBlock struct {
@@ -1336,7 +1326,7 @@ type SingleLineComment struct {
 
 // NewSingleLineComment initializes a new single line content
 func NewSingleLineComment(content string) (SingleLineComment, error) {
-	// log.Debugf("initializing a single line comment with content: '%s'", content)
+	log.Debugf("initializing a single line comment with content: '%s'", content)
 	return SingleLineComment{
 		Content: content,
 	}, nil

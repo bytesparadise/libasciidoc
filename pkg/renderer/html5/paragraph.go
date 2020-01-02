@@ -21,10 +21,10 @@ var quoteParagraphTmpl texttemplate.Template
 // initializes the templates
 func init() {
 	paragraphTmpl = newTextTemplate("paragraph",
-		`{{ $ctx := .Context }}{{ with .Data }}{{ $renderedLines := renderLines $ctx .Lines .HardBreaks | printf "%s" }}{{ if ne $renderedLines "" }}<div {{ if ne .ID "" }}id="{{ .ID }}" {{ end }}class="paragraph">{{ if ne .Title "" }}
+		`{{ $ctx := .Context }}{{ with .Data }}{{ $renderedLines := renderLines $ctx .Lines .HardBreaks | printf "%s" }}<div {{ if ne .ID "" }}id="{{ .ID }}" {{ end }}class="paragraph">{{ if ne .Title "" }}
 <div class="doctitle">{{ escape .Title }}</div>{{ end }}
 <p>{{ $renderedLines }}</p>
-</div>{{ end }}{{ end }}`,
+</div>{{ end }}`,
 		texttemplate.FuncMap{
 			"renderLines": renderLines,
 			"escape":      EscapeString,
@@ -98,9 +98,9 @@ func init() {
 }
 
 func renderParagraph(ctx *renderer.Context, p types.Paragraph) ([]byte, error) {
-	if len(p.Lines) == 0 {
-		return make([]byte, 0), nil
-	}
+	// if len(p.Lines) == 0 {
+	// 	return make([]byte, 0), nil
+	// }
 	result := bytes.NewBuffer(nil)
 	id := renderElementID(p.Attributes)
 	var err error

@@ -933,6 +933,92 @@ another delimited block
 			}
 			Expect(source).To(BecomeDraftDocument(expected))
 		})
+
+		It("ordered list with item continuation - case 2", func() {
+			source := `. {blank}
++
+----
+print("one")
+----
+. {blank}
++
+----
+print("one")
+----`
+			expected := types.DraftDocument{
+				Blocks: []interface{}{
+					types.OrderedListItem{
+						Attributes:     types.ElementAttributes{},
+						Level:          1,
+						NumberingStyle: types.Arabic,
+						Elements: []interface{}{
+							types.Paragraph{
+								Attributes: types.ElementAttributes{},
+								Lines: [][]interface{}{
+									{
+										types.DocumentAttributeSubstitution{
+											Name: "blank",
+										},
+									},
+								},
+							},
+						},
+					},
+					types.ContinuedListItemElement{
+						Offset: 0,
+						Element: types.DelimitedBlock{
+							Kind:       types.Listing,
+							Attributes: types.ElementAttributes{},
+							Elements: []interface{}{
+								types.Paragraph{
+									Attributes: types.ElementAttributes{},
+									Lines: [][]interface{}{
+										{
+											types.StringElement{Content: "print(\"one\")"},
+										},
+									},
+								},
+							},
+						},
+					},
+					types.OrderedListItem{
+						Attributes:     types.ElementAttributes{},
+						Level:          1,
+						NumberingStyle: types.Arabic,
+						Elements: []interface{}{
+							types.Paragraph{
+								Attributes: types.ElementAttributes{},
+								Lines: [][]interface{}{
+									{
+										types.DocumentAttributeSubstitution{
+											Name: "blank",
+										},
+									},
+								},
+							},
+						},
+					},
+					types.ContinuedListItemElement{
+						Offset: 0,
+						Element: types.DelimitedBlock{
+							Kind:       types.Listing,
+							Attributes: types.ElementAttributes{},
+							Elements: []interface{}{
+								types.Paragraph{
+									Attributes: types.ElementAttributes{},
+									Lines: [][]interface{}{
+										{
+											types.StringElement{Content: "print(\"one\")"},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			}
+			Expect(source).To(BecomeDraftDocument(expected))
+		})
 	})
 })
 
@@ -2117,6 +2203,83 @@ another delimited block
 										Lines: [][]interface{}{
 											{
 												types.StringElement{Content: "bar"},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			}
+			Expect(source).To(BecomeDocument(expected))
+		})
+
+		It("ordered list with item continuation - case 2", func() {
+			source := `. {blank}
++
+----
+print("one")
+----
+. {blank}
++
+----
+print("one")
+----`
+			expected := types.Document{
+				Attributes:         types.DocumentAttributes{},
+				ElementReferences:  types.ElementReferences{},
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
+				Elements: []interface{}{
+					types.OrderedList{
+						Attributes: types.ElementAttributes{},
+						Items: []types.OrderedListItem{
+							{
+								Attributes:     types.ElementAttributes{},
+								Level:          1,
+								NumberingStyle: types.Arabic,
+								Elements: []interface{}{
+									types.Paragraph{
+										Attributes: types.ElementAttributes{},
+										Lines:      [][]interface{}{},
+									},
+									types.DelimitedBlock{
+										Kind:       types.Listing,
+										Attributes: types.ElementAttributes{},
+										Elements: []interface{}{
+											types.Paragraph{
+												Attributes: types.ElementAttributes{},
+												Lines: [][]interface{}{
+													{
+														types.StringElement{Content: "print(\"one\")"},
+													},
+												},
+											},
+										},
+									},
+								},
+							},
+							types.OrderedListItem{
+								Attributes:     types.ElementAttributes{},
+								Level:          1,
+								NumberingStyle: types.Arabic,
+								Elements: []interface{}{
+									types.Paragraph{
+										Attributes: types.ElementAttributes{},
+										Lines:      [][]interface{}{},
+									},
+									types.DelimitedBlock{
+										Kind:       types.Listing,
+										Attributes: types.ElementAttributes{},
+										Elements: []interface{}{
+											types.Paragraph{
+												Attributes: types.ElementAttributes{},
+												Lines: [][]interface{}{
+													{
+														types.StringElement{Content: "print(\"one\")"},
+													},
+												},
 											},
 										},
 									},

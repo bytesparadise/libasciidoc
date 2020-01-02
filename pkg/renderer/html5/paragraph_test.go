@@ -65,6 +65,15 @@ and here another paragraph
 </div>`
 			Expect(source).To(RenderHTML5Body(expected))
 		})
+
+		It("empty paragraph", func() {
+			source := `{blank}`
+			expected := `<div class="paragraph">
+<p></p>
+</div>`
+			Expect(source).To(RenderHTML5Body(expected))
+
+		})
 	})
 
 	Context("paragraphs with line break", func() {

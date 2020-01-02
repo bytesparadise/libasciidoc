@@ -12,8 +12,11 @@ var _ = Describe("passthroughs", func() {
 	Context("tripleplus passthrough", func() {
 
 		It("an empty standalone tripleplus passthrough", func() {
+			// here it differs from Asciidoctor which returns no content but reports an error ("unterminated pass block")
 			source := `++++++`
-			expected := ``
+			expected := `<div class="paragraph">
+<p></p>
+</div>`
 			Expect(source).To(RenderHTML5Body(expected))
 		})
 
@@ -105,7 +108,9 @@ var _ = Describe("passthroughs", func() {
 
 		It("empty passthrough macro", func() {
 			source := `pass:[]`
-			expected := ``
+			expected := `<div class="paragraph">
+<p></p>
+</div>`
 			Expect(source).To(RenderHTML5Body(expected))
 		})
 
