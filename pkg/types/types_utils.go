@@ -4,62 +4,7 @@ import (
 	"bytes"
 
 	"github.com/pkg/errors"
-	log "github.com/sirupsen/logrus"
 )
-
-// FilterCriterion returns true if the given element is to be filtered out
-type FilterCriterion func(element interface{}) bool
-
-// EmptyPreambleMatcher filters the element if it is an empty preamble
-var EmptyPreambleMatcher FilterCriterion = func(element interface{}) bool {
-	result := false
-	if p, match := element.(Preamble); match {
-		result = p.Elements == nil || len(p.Elements) == 0
-	}
-	log.Debugf(" element of type '%T' is an empty preamble: %t", element, result)
-	return result
-}
-
-// BlankLineMatcher filters the element if it is a blank line
-var BlankLineMatcher FilterCriterion = func(element interface{}) bool {
-	_, result := element.(BlankLine)
-	return result
-}
-
-// DocumentAttributeMatcher filters the element if it is a blank line
-var DocumentAttributeMatcher FilterCriterion = func(element interface{}) bool {
-	switch element.(type) {
-	case DocumentAttributeDeclaration, DocumentAttributeSubstitution, DocumentAttributeReset:
-		return true
-	default:
-		return false
-	}
-}
-
-// FilterOut excludes the unrelevant (empty) elements
-func FilterOut(elements []interface{}, filters ...FilterCriterion) []interface{} {
-	log.Debugf("filtering %d blocks...", len(elements))
-	result := make([]interface{}, 0)
-blocks:
-	for _, element := range elements {
-		// check if filter option applies to the element
-		switch element := element.(type) {
-		case []interface{}:
-			result = append(result, FilterOut(element, filters...)...)
-		default:
-			for _, filter := range filters {
-				if filter(element) {
-					log.Debugf("discarding block of type '%T'", element)
-					continue blocks
-				}
-			}
-			log.Debugf("keeping block of type '%T'", element)
-			result = append(result, element)
-			continue
-		}
-	}
-	return result
-}
 
 // NilSafe returns a new slice if the given elements is nil, otherwise it returns the given elements
 func NilSafe(elements []interface{}) []interface{} {

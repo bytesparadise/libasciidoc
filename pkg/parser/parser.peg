@@ -1145,7 +1145,8 @@ InlineLinks <-
         / Spaces 
         / ResolvedLink 
         / OtherWord
-        / Parenthesis)+ {
+        / Parenthesis
+        / NEWLINE)+ {
     return types.NewInlineElements(elements.([]interface{}))
 }
 

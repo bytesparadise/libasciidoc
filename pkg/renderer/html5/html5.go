@@ -127,8 +127,6 @@ func renderElement(ctx *renderer.Context, element interface{}) ([]byte, error) {
 		return renderLineBreak()
 	case types.UserMacro:
 		return renderUserMacro(ctx, e)
-	case types.SingleLineComment:
-		return nil, nil // nothing to do
 	default:
 		return nil, errors.Errorf("unsupported type of element: %T", element)
 	}

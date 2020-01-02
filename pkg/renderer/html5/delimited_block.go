@@ -151,8 +151,6 @@ func renderDelimitedBlock(ctx *renderer.Context, b types.DelimitedBlock) ([]byte
 		return renderVerseBlock(ctx, b)
 	case types.Sidebar:
 		return renderSidebarBlock(ctx, b)
-	case types.Comment:
-		return renderCommentBlock(ctx, b)
 	default:
 		return nil, errors.Wrapf(err, "unable to render delimited block")
 	}
@@ -336,11 +334,6 @@ func renderVerseBlockParagraph(ctx *renderer.Context, p types.Paragraph) ([]byte
 		},
 	})
 	return result.Bytes(), err
-}
-
-func renderCommentBlock(ctx *renderer.Context, b types.DelimitedBlock) ([]byte, error) { //nolint: unparam
-	// comments block are not preserved during rendering
-	return []byte{}, nil
 }
 
 func renderSidebarBlock(ctx *renderer.Context, b types.DelimitedBlock) ([]byte, error) {

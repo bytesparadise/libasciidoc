@@ -1561,8 +1561,8 @@ a paragraph
 
 		It("same list with single comment line inside", func() {
 			source := `. a
-	// -
-	. b`
+// -
+. b`
 			expected := types.Document{
 				Attributes:         types.DocumentAttributes{},
 				ElementReferences:  types.ElementReferences{},
@@ -1586,9 +1586,6 @@ a paragraph
 												},
 											},
 										},
-									},
-									types.SingleLineComment{
-										Content: " -",
 									},
 								},
 							},
@@ -1618,10 +1615,10 @@ a paragraph
 
 		It("same list with multiple comment lines inside", func() {
 			source := `. a
-	// -
-	// -
-	// -
-	. b`
+// -
+// -
+// -
+. b`
 			expected := types.Document{
 				Attributes:         types.DocumentAttributes{},
 				ElementReferences:  types.ElementReferences{},
@@ -1645,15 +1642,6 @@ a paragraph
 												},
 											},
 										},
-									},
-									types.SingleLineComment{
-										Content: " -",
-									},
-									types.SingleLineComment{
-										Content: " -",
-									},
-									types.SingleLineComment{
-										Content: " -",
 									},
 								},
 							},
@@ -1684,8 +1672,8 @@ a paragraph
 		It("distinct lists separated by single comment line", func() {
 			source := `. a
 	
-	// -
-	. b`
+// -
+. b`
 			expected := types.Document{
 				Attributes:         types.DocumentAttributes{},
 				ElementReferences:  types.ElementReferences{},
@@ -1713,9 +1701,6 @@ a paragraph
 								},
 							},
 						},
-					},
-					types.SingleLineComment{
-						Content: " -",
 					},
 					types.OrderedList{
 						Attributes: types.ElementAttributes{},
@@ -1778,15 +1763,6 @@ a paragraph
 								},
 							},
 						},
-					},
-					types.SingleLineComment{
-						Content: " -",
-					},
-					types.SingleLineComment{
-						Content: " -",
-					},
-					types.SingleLineComment{
-						Content: " -",
 					},
 					types.OrderedList{
 						Attributes: types.ElementAttributes{},

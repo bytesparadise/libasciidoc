@@ -29,9 +29,9 @@ const (
 	// AttrRevision the key to the revision declared after the section level 0 (at the beginning of the doc)
 	AttrRevision string = "revision"
 	// AttrTableOfContents the `toc` attribute at document level
-	AttrTableOfContents = "toc"
+	AttrTableOfContents string = "toc"
 	// AttrTableOfContentsLevels the document attribute which specifies the number of levels to display in the ToC
-	AttrTableOfContentsLevels = "toclevels"
+	AttrTableOfContentsLevels string = "toclevels"
 	// AttrRole the key to retrieve the role in the element attributes
 	AttrRole string = "role"
 	// AttrInlineLink the key to retrieve the link in the element attributes
@@ -51,17 +51,25 @@ const (
 	// AttrStart the `start` attribute in an ordered list
 	AttrStart string = "start"
 	// AttrNumberingStyle the numbering style of items in a list
-	AttrNumberingStyle = "numberingStyle"
+	AttrNumberingStyle string = "numberingStyle"
 	// AttrQandA the `qanda` attribute for Q&A labeled lists
 	AttrQandA string = "qanda"
 	// AttrLevelOffset the `leveloffset` attribute used in file inclusions
-	AttrLevelOffset = "leveloffset"
+	AttrLevelOffset string = "leveloffset"
 	// AttrLineRanges the `lines` attribute used in file inclusions
-	AttrLineRanges = "lines"
+	AttrLineRanges string = "lines"
 	// AttrTagRanges the `tag`/`tags` attribute used in file inclusions
-	AttrTagRanges = "tags"
+	AttrTagRanges string = "tags"
 	// AttrLastUpdated the "last updated" data in the document, i.e., the output/generation time
-	AttrLastUpdated = "LastUpdated"
+	AttrLastUpdated string = "LastUpdated"
+	// AttrImageAlt the image `alt` attribute
+	AttrImageAlt string = "alt"
+	// AttrImageWidth the image `width` attribute
+	AttrImageWidth string = "width"
+	// AttrImageHeight the image `height` attribute
+	AttrImageHeight string = "height"
+	// AttrImageTitle the image `title` attribute
+	AttrImageTitle string = "title"
 )
 
 // ElementWithAttributes an element on which attributes can be added/set

@@ -8,9 +8,9 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-var _ = Describe("paragraphs - draft", func() {
+var _ = Describe("paragraphs", func() {
 
-	Context("paragraphs", func() {
+	Context("default paragraphs", func() {
 
 		It("paragraph with 1 word", func() {
 			source := "hello"
@@ -148,6 +148,23 @@ a paragraph`
 								types.StringElement{Content: "a paragraph"},
 							},
 						},
+					},
+				},
+			}
+			Expect(source).To(BecomeDocument(expected))
+		})
+
+		It("empty paragraph", func() {
+			source := `{blank}`
+			expected := types.Document{
+				Attributes:         types.DocumentAttributes{},
+				ElementReferences:  types.ElementReferences{},
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
+				Elements: []interface{}{
+					types.Paragraph{
+						Attributes: types.ElementAttributes{},
+						Lines:      [][]interface{}{},
 					},
 				},
 			}
@@ -678,9 +695,6 @@ image::foo.png[]`
 			Expect(source).To(BecomeDocumentBlock(expected)) //, parser.Debug(true))
 		})
 	})
-})
-
-var _ = Describe("paragraphs - final document", func() {
 
 	It("paragraph with predefined attribute", func() {
 		source := "hello {plus} world"
@@ -702,4 +716,5 @@ var _ = Describe("paragraphs - final document", func() {
 		}
 		Expect(source).To(BecomeDocument(expected))
 	})
+
 })
