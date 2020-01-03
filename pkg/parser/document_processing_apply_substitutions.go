@@ -10,6 +10,7 @@ import (
 
 // applyDocumentAttributeSubstitutions(elements applies the document attribute substitutions
 // and re-parse the paragraphs that were affected
+// nolint: gocyclo
 func applyDocumentAttributeSubstitutions(element interface{}, attrs types.DocumentAttributes) (interface{}, bool, error) {
 	// the document attributes, as they are resolved while processing the blocks
 	log.Debugf("applying document substitutions on block of type %T", element)
