@@ -27,11 +27,12 @@ var _ = Describe("document attribute subsititutions", func() {
 			},
 		}
 		// when
-		result, err := applyDocumentAttributeSubstitutions(elements, types.DocumentAttributes{
+		result, applied, err := applyDocumentAttributeSubstitutions(elements, types.DocumentAttributes{
 			"foo": "bar",
 		})
 		// then
 		Expect(err).To(Not(HaveOccurred()))
+		Expect(applied).To(BeTrue())
 		Expect(result).To(Equal([]interface{}{
 			types.Paragraph{
 				Attributes: types.ElementAttributes{},
@@ -64,11 +65,12 @@ var _ = Describe("document attribute subsititutions", func() {
 			},
 		}
 		// when
-		result, err := applyDocumentAttributeSubstitutions(elements, types.DocumentAttributes{
+		result, applied, err := applyDocumentAttributeSubstitutions(elements, types.DocumentAttributes{
 			"foo": "bar",
 		})
 		// then
 		Expect(err).To(Not(HaveOccurred()))
+		Expect(applied).To(BeTrue())
 		Expect(result).To(Equal([]interface{}{
 			types.Paragraph{
 				Attributes: types.ElementAttributes{},
@@ -104,11 +106,12 @@ var _ = Describe("document attribute subsititutions", func() {
 			},
 		}
 		// when
-		result, err := applyDocumentAttributeSubstitutions(elements, types.DocumentAttributes{
+		result, applied, err := applyDocumentAttributeSubstitutions(elements, types.DocumentAttributes{
 			"foo": "bar",
 		})
 		// then
 		Expect(err).To(Not(HaveOccurred()))
+		Expect(applied).To(BeTrue())
 		Expect(result).To(Equal([]interface{}{
 			types.Paragraph{
 				Attributes: types.ElementAttributes{},
@@ -144,9 +147,10 @@ var _ = Describe("document attribute subsititutions", func() {
 			},
 		}
 		// when
-		result, err := applyDocumentAttributeSubstitutions(elements, types.DocumentAttributes{})
+		result, applied, err := applyDocumentAttributeSubstitutions(elements, types.DocumentAttributes{})
 		// then
 		Expect(err).To(Not(HaveOccurred()))
+		Expect(applied).To(BeFalse())
 		Expect(result).To(Equal([]interface{}{
 			types.Paragraph{
 				Attributes: types.ElementAttributes{},
@@ -182,9 +186,10 @@ var _ = Describe("document attribute subsititutions", func() {
 			},
 		}
 		// when
-		result, err := applyDocumentAttributeSubstitutions(elements, types.DocumentAttributes{})
+		result, applied, err := applyDocumentAttributeSubstitutions(elements, types.DocumentAttributes{})
 		// then
 		Expect(err).To(Not(HaveOccurred()))
+		Expect(applied).To(BeFalse())
 		Expect(result).To(Equal([]interface{}{
 			types.Paragraph{
 				Attributes: types.ElementAttributes{},
@@ -226,12 +231,13 @@ var _ = Describe("document attribute subsititutions", func() {
 			},
 		}
 		// when
-		result, err := applyDocumentAttributeSubstitutions(elements, types.DocumentAttributes{
+		result, applied, err := applyDocumentAttributeSubstitutions(elements, types.DocumentAttributes{
 			"scheme": "https",
 			"host":   "foo.bar",
 		})
 		// then
 		Expect(err).To(Not(HaveOccurred()))
+		Expect(applied).To(BeTrue())
 		Expect(result).To(Equal([]interface{}{
 			types.Paragraph{
 				Attributes: types.ElementAttributes{},
@@ -283,11 +289,12 @@ var _ = Describe("document attribute subsititutions", func() {
 				},
 			}
 			// when
-			result, err := applyDocumentAttributeSubstitutions(elements, types.DocumentAttributes{
+			result, applied, err := applyDocumentAttributeSubstitutions(elements, types.DocumentAttributes{
 				"foo": "bar",
 			})
 			// then
 			Expect(err).To(Not(HaveOccurred()))
+			Expect(applied).To(BeTrue())
 			Expect(result).To(Equal([]interface{}{
 				types.OrderedListItem{
 					Elements: []interface{}{
@@ -328,11 +335,12 @@ var _ = Describe("document attribute subsititutions", func() {
 				},
 			}
 			// when
-			result, err := applyDocumentAttributeSubstitutions(elements, types.DocumentAttributes{
+			result, applied, err := applyDocumentAttributeSubstitutions(elements, types.DocumentAttributes{
 				"foo": "bar",
 			})
 			// then
 			Expect(err).To(Not(HaveOccurred()))
+			Expect(applied).To(BeTrue())
 			Expect(result).To(Equal([]interface{}{
 				types.UnorderedListItem{
 					Elements: []interface{}{
@@ -373,11 +381,12 @@ var _ = Describe("document attribute subsititutions", func() {
 				},
 			}
 			// when
-			result, err := applyDocumentAttributeSubstitutions(elements, types.DocumentAttributes{
+			result, applied, err := applyDocumentAttributeSubstitutions(elements, types.DocumentAttributes{
 				"foo": "bar",
 			})
 			// then
 			Expect(err).To(Not(HaveOccurred()))
+			Expect(applied).To(BeTrue())
 			Expect(result).To(Equal([]interface{}{
 				types.LabeledListItem{
 					Elements: []interface{}{
@@ -421,11 +430,12 @@ var _ = Describe("document attribute subsititutions", func() {
 				},
 			}
 			// when
-			result, err := applyDocumentAttributeSubstitutions(elements, types.DocumentAttributes{
+			result, applied, err := applyDocumentAttributeSubstitutions(elements, types.DocumentAttributes{
 				"foo": "bar",
 			})
 			// then
 			Expect(err).To(Not(HaveOccurred()))
+			Expect(applied).To(BeTrue())
 			Expect(result).To(Equal([]interface{}{
 				types.DelimitedBlock{
 					Elements: []interface{}{
@@ -476,11 +486,12 @@ var _ = Describe("document attribute subsititutions", func() {
 				},
 			}
 			// when
-			result, err := applyDocumentAttributeSubstitutions(elements, types.DocumentAttributes{
+			result, applied, err := applyDocumentAttributeSubstitutions(elements, types.DocumentAttributes{
 				"foo": "bar",
 			})
 			// then
 			Expect(err).To(Not(HaveOccurred()))
+			Expect(applied).To(BeTrue())
 			Expect(result).To(Equal([]interface{}{
 				types.Paragraph{
 					Lines: [][]interface{}{
@@ -524,11 +535,12 @@ var _ = Describe("document attribute subsititutions", func() {
 				},
 			}
 			// when
-			result, err := applyDocumentAttributeSubstitutions(elements, types.DocumentAttributes{
+			result, applied, err := applyDocumentAttributeSubstitutions(elements, types.DocumentAttributes{
 				"foo": "bar",
 			})
 			// then
 			Expect(err).To(Not(HaveOccurred()))
+			Expect(applied).To(BeTrue())
 			Expect(result).To(Equal([]interface{}{
 				types.DelimitedBlock{
 					Elements: []interface{}{

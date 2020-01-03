@@ -34,7 +34,7 @@ func ParseDocument(filename string, r io.Reader, opts ...Option) (types.Document
 	}
 
 	// apply document attribute substitutions and re-parse paragraphs that were affected
-	blocks, err := applyDocumentAttributeSubstitutions(draftDoc.Blocks, attrs)
+	blocks, _, err := applyDocumentAttributeSubstitutions(draftDoc.Blocks, attrs)
 	if err != nil {
 		return types.Document{}, err
 	}

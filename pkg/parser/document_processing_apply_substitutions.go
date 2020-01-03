@@ -10,102 +10,112 @@ import (
 
 // applyDocumentAttributeSubstitutions(elements applies the document attribute substitutions
 // and re-parse the paragraphs that were affected
-func applyDocumentAttributeSubstitutions(element interface{}, attrs types.DocumentAttributes) (interface{}, error) {
+// nolint: gocyclo
+func applyDocumentAttributeSubstitutions(element interface{}, attrs types.DocumentAttributes) (interface{}, bool, error) {
 	// the document attributes, as they are resolved while processing the blocks
 	log.Debugf("applying document substitutions on block of type %T", element)
 	switch e := element.(type) {
 	case []interface{}:
 		elements := make([]interface{}, 0, len(e)) // maximum capacity cannot exceed initial input
+		applied := false
 		for _, element := range e {
-			r, err := applyDocumentAttributeSubstitutions(element, attrs)
+			r, a, err := applyDocumentAttributeSubstitutions(element, attrs)
 			if err != nil {
-				return []interface{}{}, err
+				return []interface{}{}, false, err
 			}
 			elements = append(elements, r)
+			applied = applied || a
 		}
-		// elements = filter(elements, DocumentAttributeMatcher)
-		return parseInlineLinks(types.MergeStringElements(elements))
+		elements = types.MergeStringElements(elements)
+		if applied {
+			elements, err := parseInlineLinks(elements)
+			return elements, true, err
+		}
+		return elements, false, nil
 	case types.DocumentAttributeDeclaration:
 		attrs[e.Name] = e.Value
-		return e, nil
+		return e, false, nil
 	case types.DocumentAttributeReset:
 		delete(attrs, e.Name)
-		return e, nil
+		return e, false, nil
 	case types.DocumentAttributeSubstitution:
 		if value, ok := attrs[e.Name].(string); ok {
 			return types.StringElement{
 				Content: value,
-			}, nil
+			}, true, nil
 		}
 		return types.StringElement{
 			Content: "{" + e.Name + "}",
-		}, nil
+		}, false, nil
 	case types.ImageBlock:
-		return e.ResolveLocation(attrs), nil
+		return e.ResolveLocation(attrs), false, nil
 	case types.InlineImage:
-		return e.ResolveLocation(attrs), nil
+		return e.ResolveLocation(attrs), false, nil
 	case types.Section:
-		title, err := applyDocumentAttributeSubstitutions(e.Title, attrs)
+		title, applied, err := applyDocumentAttributeSubstitutions(e.Title, attrs)
 		if err != nil {
-			return struct{}{}, err
+			return struct{}{}, false, err
 		}
 		if title, ok := title.([]interface{}); ok {
 			e.Title = title
 		}
-		return e.ResolveID(attrs)
+		e, err = e.ResolveID(attrs)
+		return e, applied, err
 	case types.OrderedListItem:
-		elements, err := applyDocumentAttributeSubstitutions(e.Elements, attrs)
+		elements, applied, err := applyDocumentAttributeSubstitutions(e.Elements, attrs)
 		if err != nil {
-			return struct{}{}, err
+			return struct{}{}, false, err
 		}
 		e.Elements = elements.([]interface{})
-		return e, nil
+		return e, applied, nil
 	case types.UnorderedListItem:
-		elements, err := applyDocumentAttributeSubstitutions(e.Elements, attrs)
+		elements, applied, err := applyDocumentAttributeSubstitutions(e.Elements, attrs)
 		if err != nil {
-			return struct{}{}, err
+			return struct{}{}, false, err
 		}
 		e.Elements = elements.([]interface{})
-		return e, nil
+		return e, applied, nil
 	case types.LabeledListItem:
-		elements, err := applyDocumentAttributeSubstitutions(e.Elements, attrs)
+		elements, applied, err := applyDocumentAttributeSubstitutions(e.Elements, attrs)
 		if err != nil {
-			return struct{}{}, err
+			return struct{}{}, false, err
 		}
 		e.Elements = elements.([]interface{})
-		return e, nil
+		return e, applied, nil
 	case types.QuotedText:
-		elements, err := applyDocumentAttributeSubstitutions(e.Elements, attrs)
+		elements, applied, err := applyDocumentAttributeSubstitutions(e.Elements, attrs)
 		if err != nil {
-			return struct{}{}, err
+			return struct{}{}, false, err
 		}
 		e.Elements = elements.([]interface{})
-		return e, nil
+		return e, applied, nil
 	case types.ContinuedListItemElement:
-		element, err := applyDocumentAttributeSubstitutions(e.Element, attrs)
+		element, applied, err := applyDocumentAttributeSubstitutions(e.Element, attrs)
 		if err != nil {
-			return struct{}{}, err
+			return struct{}{}, false, err
 		}
 		e.Element = element
-		return e, nil
+		return e, applied, nil
 	case types.DelimitedBlock:
-		elements, err := applyDocumentAttributeSubstitutions(e.Elements, attrs)
+		elements, applied, err := applyDocumentAttributeSubstitutions(e.Elements, attrs)
 		if err != nil {
-			return struct{}{}, err
+			return struct{}{}, false, err
 		}
 		e.Elements = elements.([]interface{})
-		return e, nil
+		return e, applied, nil
 	case types.Paragraph:
+		applied := false
 		for i, line := range e.Lines {
-			line, err := applyDocumentAttributeSubstitutions(line, attrs)
+			line, a, err := applyDocumentAttributeSubstitutions(line, attrs)
 			if err != nil {
-				return struct{}{}, err
+				return struct{}{}, false, err
 			}
 			e.Lines[i] = line.([]interface{})
+			applied = applied || a
 		}
-		return e, nil
+		return e, applied, nil
 	default:
-		return e, nil
+		return e, false, nil
 	}
 }
 
