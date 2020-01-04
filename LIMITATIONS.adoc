@@ -61,3 +61,7 @@ will produce no HTML element at all, whereas Asciidoc/Asciidoctor will produce :
 File inclusions are performed before the full parsing takes place. During this phase, the main file is parsed to look for `include::` directives and then replace them with the content of the file to include. 
 If the file to include has an empty last line, it will be ignored, so it's always a good practice to include a blank line after the `include::` directive in the main document, to avoid side-effects during
 the "full" parsing.
+
+== Links
+
+When using the `*` and `_` characters at the end of URLs of external links in a quoted text, the attributes markers need to be explicitly set. Eg: `+++a link to *https://foo.com/_[]*+++`.

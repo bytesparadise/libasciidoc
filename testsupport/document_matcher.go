@@ -30,7 +30,7 @@ func (m *documentMatcher) Match(actual interface{}) (success bool, err error) {
 		return false, errors.Errorf("BecomeDocument matcher expects a string (actual: %T)", actual)
 	}
 	r := strings.NewReader(content)
-	m.actual, err = parser.ParseDocument("", r)
+	m.actual, err = parser.ParseDocument("", r) //, parser.Debug(true))
 	if err != nil {
 		return false, err
 	}

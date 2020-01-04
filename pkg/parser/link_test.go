@@ -343,6 +343,67 @@ next lines`
 				})
 			})
 
+			It("external link with special characters", func() {
+				source := "a link to https://foo*_.com"
+
+				expected := types.DraftDocument{
+					Blocks: []interface{}{
+						types.Paragraph{
+							Attributes: types.ElementAttributes{},
+							Lines: [][]interface{}{
+								{
+									types.StringElement{Content: "a link to "},
+									types.InlineLink{
+										Attributes: types.ElementAttributes{},
+										Location: types.Location{
+											Elements: []interface{}{
+												types.StringElement{
+													Content: "https://foo*_.com",
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				}
+				Expect(source).To(BecomeDraftDocument(expected))
+			})
+
+			It("external link in bold text", func() {
+				source := `a link to *https://foo.com[]*`
+
+				expected := types.DraftDocument{
+					Blocks: []interface{}{
+						types.Paragraph{
+							Attributes: types.ElementAttributes{},
+							Lines: [][]interface{}{
+								{
+									types.StringElement{Content: "a link to "},
+									types.QuotedText{
+										Kind: types.Bold,
+										Elements: []interface{}{
+											types.InlineLink{
+												Attributes: types.ElementAttributes{},
+												Location: types.Location{
+													Elements: []interface{}{
+														types.StringElement{
+															Content: "https://foo.com",
+														},
+													},
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				}
+				Expect(source).To(BecomeDraftDocument(expected))
+			})
+
 		})
 
 		Context("relative links", func() {
@@ -916,6 +977,63 @@ a link to {scheme}://{path}`
 				}
 				Expect(source).To(BecomeDraftDocument(expected))
 			})
+
+			It("external link with two document attribute substitutions in bold text", func() {
+				source := `
+:scheme: https
+:path: foo.bar
+
+a link to *{scheme}://{path}[] and https://foo.baz[]*`
+
+				expected := types.DraftDocument{
+					Blocks: []interface{}{
+						types.BlankLine{},
+						types.DocumentAttributeDeclaration{
+							Name:  "scheme",
+							Value: "https",
+						},
+						types.DocumentAttributeDeclaration{
+							Name:  "path",
+							Value: "foo.bar",
+						},
+						types.BlankLine{},
+						types.Paragraph{
+							Attributes: types.ElementAttributes{},
+							Lines: [][]interface{}{
+								{
+									types.StringElement{Content: "a link to "},
+									types.QuotedText{
+										Kind: types.Bold,
+										Elements: []interface{}{
+											types.DocumentAttributeSubstitution{
+												Name: "scheme",
+											},
+											types.StringElement{
+												Content: "://",
+											},
+											types.DocumentAttributeSubstitution{
+												Name: "path",
+											},
+											types.StringElement{Content: "[] and "},
+											types.InlineLink{
+												Attributes: types.ElementAttributes{},
+												Location: types.Location{
+													Elements: []interface{}{
+														types.StringElement{
+															Content: "https://foo.baz",
+														},
+													},
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				}
+				Expect(source).To(BecomeDraftDocument(expected))
+			})
 		})
 	})
 
@@ -945,6 +1063,111 @@ a link to {scheme}://{path}`
 												},
 											},
 											Attributes: types.ElementAttributes{},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			}
+			Expect(source).To(BecomeDocument(expected))
+		})
+
+		It("external link with special characters", func() {
+			source := "a link to https://foo*_.com"
+			expected := types.Document{
+				Attributes:         types.DocumentAttributes{},
+				ElementReferences:  types.ElementReferences{},
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
+				Elements: []interface{}{
+					types.Paragraph{
+						Attributes: types.ElementAttributes{},
+						Lines: [][]interface{}{
+							{
+								types.StringElement{Content: "a link to "},
+								types.InlineLink{
+									Attributes: types.ElementAttributes{},
+									Location: types.Location{
+										Elements: []interface{}{
+											types.StringElement{
+												Content: "https://foo*_.com",
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			}
+			Expect(source).To(BecomeDocument(expected))
+		})
+
+		It("external link in bold text", func() {
+			source := `a link to *https://foo.com[]*`
+
+			expected := types.Document{
+				Attributes:         types.DocumentAttributes{},
+				ElementReferences:  types.ElementReferences{},
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
+				Elements: []interface{}{
+					types.Paragraph{
+						Attributes: types.ElementAttributes{},
+						Lines: [][]interface{}{
+							{
+								types.StringElement{Content: "a link to "},
+								types.QuotedText{
+									Kind: types.Bold,
+									Elements: []interface{}{
+										types.InlineLink{
+											Attributes: types.ElementAttributes{},
+											Location: types.Location{
+												Elements: []interface{}{
+													types.StringElement{
+														Content: "https://foo.com",
+													},
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			}
+			Expect(source).To(BecomeDocument(expected))
+		})
+
+		It("external link in italic text", func() {
+			source := `a link to _https://foo.com[]_`
+
+			expected := types.Document{
+				Attributes:         types.DocumentAttributes{},
+				ElementReferences:  types.ElementReferences{},
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
+				Elements: []interface{}{
+					types.Paragraph{
+						Attributes: types.ElementAttributes{},
+						Lines: [][]interface{}{
+							{
+								types.StringElement{Content: "a link to "},
+								types.QuotedText{
+									Kind: types.Italic,
+									Elements: []interface{}{
+										types.InlineLink{
+											Attributes: types.ElementAttributes{},
+											Location: types.Location{
+												Elements: []interface{}{
+													types.StringElement{
+														Content: "https://foo.com",
+													},
+												},
+											},
 										},
 									},
 								},
@@ -1041,95 +1264,57 @@ a link to {scheme}://{path} and https://foo.baz`
 				Expect(source).To(BecomeDocument(expected))
 			})
 
-			// see https://github.com/bytesparadise/libasciidoc/issues/456
-			// It("external link in quoted text", func() {
-			// 	source := `a link to *https://foo.com*`
+			It("external link with two document attribute substitutions in bold text", func() {
+				source := `
+:scheme: https
+:path: foo.bar
 
-			// 	expected := types.Document{
-			// 		Attributes:         types.DocumentAttributes{},
-			// 		ElementReferences:  types.ElementReferences{},
-			// 		Footnotes:          types.Footnotes{},
-			// 		FootnoteReferences: types.FootnoteReferences{},
-			// 		Elements: []interface{}{
-			// 			types.Paragraph{
-			// 				Attributes: types.ElementAttributes{},
-			// 				Lines: [][]interface{}{
-			// 					{
-			// 						types.StringElement{Content: "a link to "},
-			// 						types.QuotedText{
-			// 							Kind: types.Bold,
-			// 							Elements: []interface{}{
-			// 								types.InlineLink{
-			// 									Attributes: types.ElementAttributes{},
-			// 									Location: types.Location{
-			// 										Elements: []interface{}{
-			// 											types.StringElement{
-			// 												Content: "https://foo.com",
-			// 											},
-			// 										},
-			// 									},
-			// 								},
-			// 							},
-			// 						},
-			// 					},
-			// 				},
-			// 			},
-			// 		},
-			// 	}
-			// 	Expect(source).To(BecomeDocument(expected))
-			// })
+a link to *{scheme}://{path}[] and https://foo.baz[]*`
 
-			// 			It("external link with two document attribute substitutions in quoted text", func() {
-			// 				source := `
-			// :scheme: https
-			// :path: foo.bar
-
-			// a link to *{scheme}://{path} and https://foo.baz*`
-
-			// 				expected := types.Document{
-			// 					Attributes:         types.DocumentAttributes{},
-			// 					ElementReferences:  types.ElementReferences{},
-			// 					Footnotes:          types.Footnotes{},
-			// 					FootnoteReferences: types.FootnoteReferences{},
-			// 					Elements: []interface{}{
-			// 						types.Paragraph{
-			// 							Attributes: types.ElementAttributes{},
-			// 							Lines: [][]interface{}{
-			// 								{
-			// 									types.StringElement{Content: "a link to "},
-			// 									types.QuotedText{
-			// 										Kind: types.Bold,
-			// 										Elements: []interface{}{
-			// 											types.InlineLink{
-			// 												Location: types.Location{
-			// 													Elements: []interface{}{
-			// 														types.StringElement{
-			// 															Content: "https://foo.bar",
-			// 														},
-			// 													},
-			// 												},
-			// 												Attributes: types.ElementAttributes{},
-			// 											},
-			// 											types.StringElement{Content: " and "},
-			// 											types.InlineLink{
-			// 												Attributes: types.ElementAttributes{},
-			// 												Location: types.Location{
-			// 													Elements: []interface{}{
-			// 														types.StringElement{
-			// 															Content: "https://foo.baz",
-			// 														},
-			// 													},
-			// 												},
-			// 											},
-			// 										},
-			// 									},
-			// 								},
-			// 							},
-			// 						},
-			// 					},
-			// 				}
-			// 				Expect(source).To(BecomeDocument(expected))
-			// 			})
+				expected := types.Document{
+					Attributes:         types.DocumentAttributes{},
+					ElementReferences:  types.ElementReferences{},
+					Footnotes:          types.Footnotes{},
+					FootnoteReferences: types.FootnoteReferences{},
+					Elements: []interface{}{
+						types.Paragraph{
+							Attributes: types.ElementAttributes{},
+							Lines: [][]interface{}{
+								{
+									types.StringElement{Content: "a link to "},
+									types.QuotedText{
+										Kind: types.Bold,
+										Elements: []interface{}{
+											types.InlineLink{
+												Location: types.Location{
+													Elements: []interface{}{
+														types.StringElement{
+															Content: "https://foo.bar",
+														},
+													},
+												},
+												Attributes: types.ElementAttributes{},
+											},
+											types.StringElement{Content: " and "},
+											types.InlineLink{
+												Attributes: types.ElementAttributes{},
+												Location: types.Location{
+													Elements: []interface{}{
+														types.StringElement{
+															Content: "https://foo.baz",
+														},
+													},
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				}
+				Expect(source).To(BecomeDocument(expected))
+			})
 
 			It("external link with two document attribute substitutions and a reset", func() {
 				source := `
