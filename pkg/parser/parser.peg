@@ -724,8 +724,8 @@ InlineElement <- !EOL !LineBreak
         / Link 
         / Passthrough 
         / InlineFootnote 
-        / InlineUserMacro 
         / QuotedText 
+        / InlineUserMacro 
         / CrossReference 
         / DocumentAttributeSubstitution 
         / InlineElementID 
@@ -828,13 +828,15 @@ DoubleQuoteBoldTextElement <- !NEWLINE element:(SingleQuoteBoldText
         / SubscriptText
         / SuperscriptText
         / InlineImage 
-        / Link 
+        / QuotedLink 
         / Passthrough 
-        / NonDoubleQuoteBoldText) { // word with quote punctuation is only accepted if nothing matched before, so we have a chance to stop
+        / DocumentAttributeSubstitution
+        / NonDoubleQuoteBoldText
+        / Parenthesis) { // word with quote punctuation is only accepted if nothing matched before, so we have a chance to stop
     return element, nil
 }
 
-NonDoubleQuoteBoldText <- (.) (!"**" !WS !"^" !"~" !NEWLINE .)* { 
+NonDoubleQuoteBoldText <- (.) (!"**" !WS !"^" !"~" !NEWLINE !Parenthesis .)* { 
     return types.NewStringElement(string(c.text))
 }
 
@@ -854,13 +856,15 @@ SingleQuoteBoldTextElement <- !NEWLINE element:(DoubleQuoteBoldText
         / SubscriptText
         / SuperscriptText
         / InlineImage 
-        / Link 
+        / QuotedLink 
         / Passthrough 
-        / NonSingleQuoteBoldText) { // word with quote punctuation is only accepted if nothing matched before, so we have a chance to stop
+        / DocumentAttributeSubstitution
+        / NonSingleQuoteBoldText
+        / Parenthesis) { // word with quote punctuation is only accepted if nothing matched before, so we have a chance to stop
     return element, nil
 }
 
-NonSingleQuoteBoldText <- (.) (!"*" !WS !"^" !"~" !NEWLINE .)* { 
+NonSingleQuoteBoldText <- (.) (!"*" !WS !"^" !"~" !NEWLINE !Parenthesis .)* { 
     return types.NewStringElement(string(c.text))
 }
 
@@ -894,13 +898,14 @@ DoubleQuoteItalicTextElement <- !NEWLINE element:(SingleQuoteItalicText
         / SubscriptText
         / SuperscriptText
         / InlineImage 
-        / Link 
+        / QuotedLink 
         / Passthrough 
-        / NonDoubleQuoteItalicText) { // word with quote punctuation is only accepted if nothing matched before, so we have a chance to stop
+        / NonDoubleQuoteItalicText
+        / Parenthesis) { // word with quote punctuation is only accepted if nothing matched before, so we have a chance to stop
     return element, nil
 }
 
-NonDoubleQuoteItalicText <- (.) (!"__" !"^" !"~" !NEWLINE .)* { 
+NonDoubleQuoteItalicText <- (.) (!"__" !"^" !"~" !NEWLINE !Parenthesis .)* { 
     return types.NewStringElement(string(c.text))
 }
 
@@ -920,13 +925,14 @@ SingleQuoteItalicTextElement <- !NEWLINE element:(DoubleQuoteItalicText
         / SubscriptText
         / SuperscriptText
         / InlineImage 
-        / Link 
+        / QuotedLink 
         / Passthrough 
-        / NonSingleQuoteItalicText) { // word with quote punctuation is only accepted if nothing matched before, so we have a chance to stop
+        / NonSingleQuoteItalicText
+        / Parenthesis) { // word with quote punctuation is only accepted if nothing matched before, so we have a chance to stop
     return element, nil
 }
 
-NonSingleQuoteItalicText <- (.) (!"_" !WS !"^" !"~" !NEWLINE .)* { 
+NonSingleQuoteItalicText <- (.) (!"_" !WS !"^" !"~" !NEWLINE !Parenthesis .)* { 
     return types.NewStringElement(string(c.text))
 }
 
@@ -959,13 +965,14 @@ DoubleQuoteMonospaceTextElement <- !NEWLINE element:(SingleQuoteMonospaceText
         / SubscriptText
         / SuperscriptText
         / InlineImage 
-        / Link 
+        / QuotedLink 
         / Passthrough 
-        / NonDoubleQuoteMonospaceText) { // word with quote punctuation is only accepted if nothing matched before, so we have a chance to stop
+        / NonDoubleQuoteMonospaceText
+        / Parenthesis) { // word with quote punctuation is only accepted if nothing matched before, so we have a chance to stop
     return element, nil
 }
 
-NonDoubleQuoteMonospaceText <- (.) (!"``" !WS !"^" !"~" !NEWLINE .)* { 
+NonDoubleQuoteMonospaceText <- (.) (!"``" !WS !"^" !"~" !NEWLINE !Parenthesis .)* { 
     return types.NewStringElement(string(c.text))
 }
 
@@ -986,13 +993,14 @@ SingleQuoteMonospaceTextElement <-  element:(NEWLINE // allows multiline
         / SubscriptText
         / SuperscriptText
         / InlineImage 
-        / Link 
+        / QuotedLink 
         / Passthrough 
-        / NonSingleQuoteMonospaceText) { // word with quote punctuation is only accepted if nothing matched before, so we have a chance to stop
+        / NonSingleQuoteMonospaceText
+        / Parenthesis) { // word with quote punctuation is only accepted if nothing matched before, so we have a chance to stop
     return element, nil
 }
 
-NonSingleQuoteMonospaceText <- (.) (!WS !"`" !"^" !"~" !NEWLINE .)* { // break at multiline
+NonSingleQuoteMonospaceText <- (.) (!WS !"`" !"^" !"~" !NEWLINE !Parenthesis .)* { // break at multiline
     return types.NewStringElement(string(c.text))
 }
 
@@ -1161,7 +1169,11 @@ ResolvedExternalLink <- url:(ResolvedLocation) inlineAttributes:(LinkAttributes)
     return types.NewInlineLink(url.(types.Location), inlineAttributes)
 }
 
+QuotedLink <- RelativeLink / ExternalQuotedLink
 
+ExternalQuotedLink <- url:(Location) inlineAttributes:(LinkAttributes) { // here attributes are required, so we can safely use the `_` and `*` characters in the URL without messing with the bold or italic markers.
+    return types.NewInlineLink(url.(types.Location), inlineAttributes)
+}
 
 // ------------------------------------------
 // Images
@@ -1350,8 +1362,8 @@ VerseBlockParagraphLineElement <- !EOL !LineBreak
         / Link 
         / Passthrough 
         / InlineFootnote 
-        / InlineUserMacro 
         / QuotedText 
+        / InlineUserMacro 
         / CrossReference 
         / DocumentAttributeSubstitution 
         / InlineElementID 
@@ -1551,16 +1563,17 @@ ResolvedFileLocation <- elements:(!EOL !WS !"[" .)+ {
     return types.NewLocation(elements.([]interface{}))
 }
 
-Location <- elements:(URL_SCHEME (FILENAME / DocumentAttributeSubstitution / !EOL !WS !"[" .)+) {
+Location <- elements:(URL_SCHEME (FILENAME / DocumentAttributeSubstitution)+) {
     return types.NewLocation(elements.([]interface{}))
 }
 
 FILENAME <- ([ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789~:/?#@!$&;=()*+,_%] / "-" / ".")+ // not supported for now: "[" "]". Excluded: "{" and "}" as they may be used for document attribute substitutions
 
-ResolvedLocation <- elements:(URL_SCHEME (!EOL !WS !"[" .)+) {
+ResolvedLocation <- elements:(URL_SCHEME RESOLVED_FILENAME) {
     return types.NewLocation(elements.([]interface{}))
 }
 
+RESOLVED_FILENAME <- ([ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789~:/?#@!$&;=()*+_,%{}] / "-" / ".")+ // here, `{` and `}` are valid characters
 
 URL <- (Alphanums / (!NEWLINE !WS !"[" !"]"  .))+ {
     return string(c.text), nil

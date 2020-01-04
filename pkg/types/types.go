@@ -1787,8 +1787,10 @@ type Location struct {
 
 // NewLocation return a new location with the given elements
 func NewLocation(elements []interface{}) (Location, error) {
+	elements = MergeStringElements(elements)
+	log.Debugf("new location: %+v", elements)
 	return Location{
-		Elements: MergeStringElements(elements),
+		Elements: elements,
 	}, nil
 }
 
