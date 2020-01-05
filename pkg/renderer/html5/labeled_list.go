@@ -19,15 +19,16 @@ func init() {
 		`{{ $ctx := .Context }}{{ with .Data }}<div{{ if .ID }} id="{{ .ID }}"{{ end }} class="dlist{{ if .Role }} {{ .Role }}{{ end }}">
 {{ if .Title }}<div class="title">{{ escape .Title }}</div>
 {{ end }}<dl>
-{{ $items := .Items }}{{ range $itemIndex, $item := $items }}<dt class="hdlist1">{{ escape $item.Term }}</dt>{{ if $item.Elements }}
+{{ $items := .Items }}{{ range $itemIndex, $item := $items }}<dt class="hdlist1">{{ renderInlineElements $ctx $item.Term | printf "%s" }}</dt>{{ if $item.Elements }}
 <dd>
 {{ renderElements $ctx $item.Elements | printf "%s" }}
 </dd>{{ end }}
 {{ end }}</dl>
 </div>{{ end }}`,
 		texttemplate.FuncMap{
-			"renderElements": renderListElements,
-			"escape":         EscapeString,
+			"renderInlineElements": renderInlineElements,
+			"renderElements":       renderListElements,
+			"escape":               EscapeString,
 		})
 
 	horizontalLabeledListTmpl = newTextTemplate("labeled list with horizontal layout",
@@ -36,7 +37,7 @@ func init() {
 {{ end }}<table>
 <tr>
 <td class="hdlist1">{{ $items := .Items }}{{ range $itemIndex, $item := $items }}
-{{ escape $item.Term }}
+{{ renderInlineElements $ctx $item.Term | printf "%s" }}
 {{ if $item.Elements }}</td>
 <td class="hdlist2">
 {{ renderElements $ctx $item.Elements | printf "%s" }}
@@ -48,9 +49,10 @@ func init() {
 </table>
 </div>{{ end }}`,
 		texttemplate.FuncMap{
-			"renderElements": renderListElements,
-			"includeNewline": includeNewline,
-			"escape":         EscapeString,
+			"renderInlineElements": renderInlineElements,
+			"renderElements":       renderListElements,
+			"includeNewline":       includeNewline,
+			"escape":               EscapeString,
 		})
 
 	qandaLabeledListTmpl = newTextTemplate("qanda labeled list",
@@ -58,14 +60,15 @@ func init() {
 {{ if .Title }}<div class="title">{{ escape .Title }}</div>
 {{ end }}<ol>
 {{ $items := .Items }}{{ range $itemIndex, $item := $items }}<li>
-<p><em>{{ escape $item.Term }}</em></p>
+<p><em>{{ renderInlineElements $ctx $item.Term | printf "%s" }}</em></p>
 {{ if $item.Elements }}{{ renderElements $ctx $item.Elements | printf "%s" }}{{ end }}
 </li>
 {{ end }}</ol>
 </div>{{ end }}`,
 		texttemplate.FuncMap{
-			"renderElements": renderListElements,
-			"escape":         EscapeString,
+			"renderInlineElements": renderInlineElements,
+			"renderElements":       renderListElements,
+			"escape":               EscapeString,
 		})
 
 }

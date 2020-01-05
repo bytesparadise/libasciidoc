@@ -401,15 +401,6 @@ func NewSection(level int, title []interface{}, ids []interface{}, attributes in
 			attrs[AttrCustomID] = true
 		}
 	}
-	// // make a default id from the sectionTitle's inline content
-	// if _, found := attrs[AttrID]; !found {
-	// 	replacement, err := ReplaceNonAlphanumerics(title, "_")
-	// 	if err != nil {
-	// 		return Section{}, errors.Wrapf(err, "unable to generate default ID on Section element")
-	// 	}
-	// 	attrs[AttrID] = replacement
-	// 	attrs[AttrCustomID] = false
-	// }
 	return Section{
 		Level:      level,
 		Attributes: attrs,
@@ -840,7 +831,7 @@ func (l *LabeledList) LastItem() ListItem {
 
 // LabeledListItem an item in a labeled
 type LabeledListItem struct {
-	Term       string
+	Term       []interface{}
 	Level      int
 	Attributes ElementAttributes
 	Elements   []interface{} // TODO: rename to `Blocks`?
@@ -850,7 +841,7 @@ type LabeledListItem struct {
 var _ ListItem = &LabeledListItem{}
 
 // NewLabeledListItem initializes a new LabeledListItem
-func NewLabeledListItem(level int, term string, description interface{}, attributes interface{}) (LabeledListItem, error) {
+func NewLabeledListItem(level int, term []interface{}, description interface{}, attributes interface{}) (LabeledListItem, error) {
 	log.Debugf("initializing a new LabeledListItem")
 	attrs := ElementAttributes{}
 	if attributes, ok := attributes.(ElementAttributes); ok {
@@ -864,7 +855,7 @@ func NewLabeledListItem(level int, term string, description interface{}, attribu
 	}
 	return LabeledListItem{
 		Attributes: attrs,
-		Term:       strings.TrimSpace(term),
+		Term:       term,
 		Level:      level,
 		Elements:   elements,
 	}, nil
@@ -1121,6 +1112,7 @@ func NewFootnote(ref string, elements []interface{}) (Footnote, error) {
 		Ref:      ref,
 		Elements: elements,
 	}
+	log.Debugf("new footnote: %v", footnote)
 	return footnote, nil
 }
 

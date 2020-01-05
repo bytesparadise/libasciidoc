@@ -480,7 +480,7 @@ ListParagraphLine <- !EOF
     !SingleLineComment
     !OrderedListItemPrefix
     !UnorderedListItemPrefix
-    !(LabeledListItemTerm LabeledListItemSeparator) 
+    !(SimpleLabeledListItemTerm LabeledListItemSeparator) 
     !ListItemContinuation
     !ElementAttribute
     !BlockDelimiter
@@ -600,12 +600,33 @@ UnorderedListItemContent <- elements:(ListParagraph+) { // Another list or a lit
 // ------------------------------------------
 // Labeled List Items
 // ------------------------------------------
-LabeledListItem <- attributes:(ElementAttributes)? term:(LabeledListItemTerm) separator:(LabeledListItemSeparator) description:(LabeledListItemDescription)? {
-    return types.NewLabeledListItem(len(separator.(string)) - 1, term.(string), description, attributes)
+LabeledListItem <- attributes:(ElementAttributes)? term:(SimpleLabeledListItemTerm) separator:(LabeledListItemSeparator) description:(LabeledListItemDescription)? {
+    return types.NewLabeledListItem(len(separator.(string)) - 1, term.([]interface{}), description, attributes)
 }
 
-LabeledListItemTerm <- (Alphanums / Spaces / (!NEWLINE !"::" .))+  {
-    return string(c.text), nil
+SimpleLabeledListItemTerm <- content:((Alphanums / Spaces / (!NEWLINE !LabeledListItemSeparator .))+ {
+    return types.NewStringElement(strings.TrimSpace(string(c.text)))
+})  {
+    return types.NewInlineElements(content)
+}
+
+LabeledListItemTerm <- elements:(!NEWLINE !LabeledListItemSeparator LabeledListItemTermElement)+ { // absorbs heading and trailing spaces
+    return types.NewInlineElements(elements.([]interface{}))
+} 
+
+LabeledListItemTermElement <- element:(SimpleWord
+        / Spaces 
+        / CrossReference
+        / Passthrough
+        / InlineImage 
+        / Link
+        / InlineFootnote
+        / QuotedText
+        / DocumentAttributeSubstitution
+        / LineBreak
+        / OtherWord
+        / Parenthesis) {
+    return element, nil
 }
 
 LabeledListItemSeparator <- 
@@ -673,7 +694,7 @@ ParagraphLines <- firstLine:(FirstParagraphLine) otherLines:(OtherParagraphLine)
     return append([]interface{}{firstLine}, otherLines.([]interface{})...), nil
 }
 
-FirstParagraphLine <- !(LabeledListItemTerm LabeledListItemSeparator)
+FirstParagraphLine <- !(SimpleLabeledListItemTerm LabeledListItemSeparator)
     elements:(SimpleWord InlineElement*) linebreak:(LineBreak)? EOL { 
     return types.NewInlineElements(append(elements.([]interface{}), linebreak))
 }
@@ -1547,7 +1568,7 @@ SimpleWord <- Alphanums &(WS / EOL) { // very straightforward content: alphanums
 }
 
 // a word may end with a dot, but cannot have dots within
-OtherWord <- (Alphanums / QuotedTextPrefix / ((!NEWLINE !WS !Dot !QuotedTextPrefix !Parenthesis .) Dot? { // TODO: remove check on parenthesis and dot?
+OtherWord <- (Alphanums / QuotedTextPrefix / ((!NEWLINE !WS !Dot !QuotedTextPrefix !LabeledListItemSeparator !Parenthesis .) Dot? { // TODO: remove check on parenthesis and dot?
     return types.NewStringElement(string(c.text))
 })+ / "."+){ // word cannot contain parenthesis. Dots and ellipsis are treated as independent words (but will be combined afterwards)
     return types.NewStringElement(string(c.text))

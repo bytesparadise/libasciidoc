@@ -32,7 +32,11 @@ What is the answer to the Ultimate Question?:: 42`
 						{
 							Attributes: types.ElementAttributes{},
 							Level:      1,
-							Term:       "What is libsciidoc?",
+							Term: []interface{}{
+								types.StringElement{
+									Content: "What is libsciidoc?",
+								},
+							},
 							Elements: []interface{}{
 								types.Paragraph{
 									Attributes: types.ElementAttributes{},
@@ -49,7 +53,11 @@ What is the answer to the Ultimate Question?:: 42`
 						{
 							Attributes: types.ElementAttributes{},
 							Level:      1,
-							Term:       "What is the answer to the Ultimate Question?",
+							Term: []interface{}{
+								types.StringElement{
+									Content: "What is the answer to the Ultimate Question?",
+								},
+							},
 							Elements: []interface{}{
 								types.Paragraph{
 									Attributes: types.ElementAttributes{},
