@@ -101,8 +101,10 @@ func renderElement(ctx *renderer.Context, element interface{}) ([]byte, error) {
 		return renderUnorderedList(ctx, e)
 	case types.Paragraph:
 		return renderParagraph(ctx, e)
-	case types.CrossReference:
-		return renderCrossReference(ctx, e)
+	case types.InternalCrossReference:
+		return renderInternalCrossReference(ctx, e)
+	case types.ExternalCrossReference:
+		return renderExternalCrossReference(ctx, e)
 	case types.QuotedText:
 		return renderQuotedText(ctx, e)
 	case types.Passthrough:

@@ -7,11 +7,11 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-var _ = Describe("cross-references", func() {
+var _ = Describe("cross references", func() {
 
-	Context("section reference", func() {
+	Context("internal references", func() {
 
-		It("cross-reference with custom id", func() {
+		It("cross reference with custom id", func() {
 
 			source := `[[thetitle]]
 == a title
@@ -28,7 +28,7 @@ with some content linked to <<thetitle>>!`
 			Expect(source).To(RenderHTML5Body(expected))
 		})
 
-		It("cross-reference with custom id and label", func() {
+		It("cross reference with custom id and label", func() {
 			source := `[[thetitle]]
 == a title
 
@@ -57,6 +57,26 @@ with some content linked to <<thewrongtitle>>!`
 <p>with some content linked to <a href="#thewrongtitle">[thewrongtitle]</a>!</p>
 </div>
 </div>
+</div>`
+			Expect(source).To(RenderHTML5Body(expected))
+		})
+	})
+
+	Context("external references", func() {
+
+		It("external cross reference to other doc with plain text location and rich label", func() {
+			source := `some content linked to xref:another-doc.adoc[*another doc*]!`
+			expected := `<div class="paragraph">
+<p>some content linked to <a href="another-doc.html"><strong>another doc</strong></a>!</p>
+</div>`
+			Expect(source).To(RenderHTML5Body(expected))
+		})
+
+		It("external cross reference to other doc with document attribute in location", func() {
+			source := `:foo: foo-doc
+some content linked to xref:{foo}.adoc[another doc]!`
+			expected := `<div class="paragraph">
+<p>some content linked to <a href="foo-doc.html">another doc</a>!</p>
 </div>`
 			Expect(source).To(RenderHTML5Body(expected))
 		})

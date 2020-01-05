@@ -51,6 +51,8 @@ func applyDocumentAttributeSubstitutions(element interface{}, attrs types.Docume
 		return e.ResolveLocation(attrs), false, nil
 	case types.InlineImage:
 		return e.ResolveLocation(attrs), false, nil
+	case types.ExternalCrossReference:
+		return e.ResolveLocation(attrs), false, nil
 	case types.Section:
 		title, applied, err := applyDocumentAttributeSubstitutions(e.Title, attrs)
 		if err != nil {
