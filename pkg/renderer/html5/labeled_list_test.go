@@ -42,6 +42,20 @@ on 2 lines, too.</p>
 			Expect(source).To(RenderHTML5Body(expected))
 		})
 
+		It("labeled list with a quoted text in term and in description", func() {
+			source := "`foo()`::\n" +
+				`This function is _untyped_.`
+			expected := `<div class="dlist">
+<dl>
+<dt class="hdlist1"><code>foo()</code></dt>
+<dd>
+<p>This function is <em>untyped</em>.</p>
+</dd>
+</dl>
+</div>`
+			Expect(source).To(RenderHTML5Body(expected))
+		})
+
 		It("labeled list with an empty entry", func() {
 			source := `item 1::
 item 2:: description 2.`

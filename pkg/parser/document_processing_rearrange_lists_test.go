@@ -420,4 +420,116 @@ var _ = Describe("rearrange lists", func() {
 		Expect(err).NotTo(HaveOccurred())
 		Expect(result).To(Equal(expected))
 	})
+
+	It("labeled list with rich terms", func() {
+		actual := []interface{}{
+			types.LabeledListItem{
+				Attributes: types.ElementAttributes{},
+				Level:      1,
+				Term: []interface{}{
+					types.StringElement{
+						Content: "`foo` term",
+					},
+				},
+				Elements: []interface{}{
+					types.Paragraph{
+						Attributes: types.ElementAttributes{},
+						Lines: [][]interface{}{
+							{
+								types.StringElement{Content: "description 1"},
+							},
+						},
+					},
+				},
+			},
+			types.LabeledListItem{
+				Attributes: types.ElementAttributes{},
+				Level:      2,
+				Term: []interface{}{
+					types.StringElement{
+						Content: "`bar` term",
+					},
+				},
+				Elements: []interface{}{
+					types.Paragraph{
+						Attributes: types.ElementAttributes{},
+						Lines: [][]interface{}{
+							{
+								types.StringElement{Content: "description 2"},
+							},
+						},
+					},
+				},
+			},
+		}
+		expected := []interface{}{
+			types.LabeledList{
+				Attributes: types.ElementAttributes{},
+				Items: []types.LabeledListItem{
+					types.LabeledListItem{
+						Attributes: types.ElementAttributes{},
+						Level:      1,
+						Term: []interface{}{
+							types.QuotedText{
+								Kind: types.Monospace,
+								Elements: []interface{}{
+									types.StringElement{
+										Content: "foo",
+									},
+								},
+							},
+							types.StringElement{
+								Content: " term",
+							},
+						},
+						Elements: []interface{}{
+							types.Paragraph{
+								Attributes: types.ElementAttributes{},
+								Lines: [][]interface{}{
+									{
+										types.StringElement{Content: "description 1"},
+									},
+								},
+							},
+							types.LabeledList{
+								Attributes: types.ElementAttributes{},
+								Items: []types.LabeledListItem{
+									types.LabeledListItem{
+										Attributes: types.ElementAttributes{},
+										Level:      2,
+										Term: []interface{}{
+											types.QuotedText{
+												Kind: types.Monospace,
+												Elements: []interface{}{
+													types.StringElement{
+														Content: "bar",
+													},
+												},
+											},
+											types.StringElement{
+												Content: " term",
+											},
+										},
+										Elements: []interface{}{
+											types.Paragraph{
+												Attributes: types.ElementAttributes{},
+												Lines: [][]interface{}{
+													{
+														types.StringElement{Content: "description 2"},
+													},
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		}
+		result, err := rearrangeListItems(actual, false)
+		Expect(err).NotTo(HaveOccurred())
+		Expect(result).To(Equal(expected))
+	})
 })

@@ -799,7 +799,11 @@ Operating Systems::
 							{
 								Attributes: types.ElementAttributes{},
 								Level:      1,
-								Term:       "Operating Systems",
+								Term: []interface{}{
+									types.StringElement{
+										Content: "Operating Systems",
+									},
+								},
 								Elements: []interface{}{
 									types.OrderedList{
 										Attributes: types.ElementAttributes{},
@@ -892,7 +896,11 @@ a paragraph
 							{
 								Attributes: types.ElementAttributes{},
 								Level:      1,
-								Term:       "Operating Systems",
+								Term: []interface{}{
+									types.StringElement{
+										Content: "Operating Systems",
+									},
+								},
 								Elements: []interface{}{
 									types.LabeledList{
 										Attributes: types.ElementAttributes{},
@@ -900,7 +908,11 @@ a paragraph
 											{
 												Attributes: types.ElementAttributes{},
 												Level:      2,
-												Term:       "Linux",
+												Term: []interface{}{
+													types.StringElement{
+														Content: "Linux",
+													},
+												},
 												Elements: []interface{}{
 													types.OrderedList{
 														Attributes: types.ElementAttributes{},
@@ -1010,7 +1022,11 @@ a paragraph
 											{
 												Attributes: types.ElementAttributes{},
 												Level:      2,
-												Term:       "BSD",
+												Term: []interface{}{
+													types.StringElement{
+														Content: "BSD",
+													},
+												},
 												Elements: []interface{}{
 													types.OrderedList{
 														Attributes: types.ElementAttributes{},
@@ -1060,7 +1076,11 @@ a paragraph
 							{
 								Attributes: types.ElementAttributes{},
 								Level:      1,
-								Term:       "Cloud Providers",
+								Term: []interface{}{
+									types.StringElement{
+										Content: "Cloud Providers",
+									},
+								},
 								Elements: []interface{}{
 									types.LabeledList{
 										Attributes: types.ElementAttributes{},
@@ -1068,7 +1088,11 @@ a paragraph
 											{
 												Attributes: types.ElementAttributes{},
 												Level:      2,
-												Term:       "PaaS",
+												Term: []interface{}{
+													types.StringElement{
+														Content: "PaaS",
+													},
+												},
 												Elements: []interface{}{
 													types.OrderedList{
 														Attributes: types.ElementAttributes{},
@@ -1114,7 +1138,11 @@ a paragraph
 											{
 												Attributes: types.ElementAttributes{},
 												Level:      2,
-												Term:       "IaaS",
+												Term: []interface{}{
+													types.StringElement{
+														Content: "IaaS",
+													},
+												},
 												Elements: []interface{}{
 													types.OrderedList{
 														Attributes: types.ElementAttributes{},

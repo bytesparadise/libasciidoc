@@ -19,7 +19,11 @@ on 2 lines`
 				types.LabeledListItem{
 					Attributes: types.ElementAttributes{},
 					Level:      1,
-					Term:       "Item1",
+					Term: []interface{}{
+						types.StringElement{
+							Content: "Item1",
+						},
+					},
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
@@ -45,9 +49,55 @@ on 2 lines`
 			Blocks: []interface{}{
 				types.LabeledListItem{
 					Attributes: types.ElementAttributes{},
-					Term:       "Item1",
-					Level:      1,
-					Elements:   []interface{}{},
+					Term: []interface{}{
+						types.StringElement{
+							Content: "Item1",
+						},
+					},
+					Level:    1,
+					Elements: []interface{}{},
+				},
+			},
+		}
+		Expect(source).To(BecomeDraftDocument(expected))
+	})
+
+	It("labeled list with a quoted text in term and in description", func() {
+		source := "`foo()`::\n" +
+			`This function is _untyped_.`
+		expected := types.DraftDocument{
+			Blocks: []interface{}{
+				types.LabeledListItem{
+					Attributes: types.ElementAttributes{},
+					Term: []interface{}{
+						types.StringElement{
+							Content: "`foo()`", // the term is a raw string in the DraftDocument
+						},
+					},
+					Level: 1,
+					Elements: []interface{}{
+						types.Paragraph{
+							Attributes: types.ElementAttributes{},
+							Lines: [][]interface{}{
+								{
+									types.StringElement{
+										Content: "This function is ",
+									},
+									types.QuotedText{
+										Kind: types.Italic,
+										Elements: []interface{}{
+											types.StringElement{
+												Content: "untyped",
+											},
+										},
+									},
+									types.StringElement{
+										Content: ".",
+									},
+								},
+							},
+						},
+					},
 				},
 			},
 		}
@@ -64,7 +114,11 @@ Item1:: foo`
 						"layout": "horizontal",
 					},
 					Level: 1,
-					Term:  "Item1",
+					Term: []interface{}{
+						types.StringElement{
+							Content: "Item1",
+						},
+					},
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
@@ -89,8 +143,12 @@ Item1:: foo`
 				types.LabeledListItem{
 					Attributes: types.ElementAttributes{},
 					Level:      1,
-					Term:       "Item1",
-					Elements:   []interface{}{},
+					Term: []interface{}{
+						types.StringElement{
+							Content: "Item1",
+						},
+					},
+					Elements: []interface{}{},
 				},
 			},
 		}
@@ -109,7 +167,11 @@ Item 3 description`
 				types.LabeledListItem{
 					Attributes: types.ElementAttributes{},
 					Level:      1,
-					Term:       "Item 1",
+					Term: []interface{}{
+						types.StringElement{
+							Content: "Item 1",
+						},
+					},
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
@@ -124,7 +186,11 @@ Item 3 description`
 				types.LabeledListItem{
 					Attributes: types.ElementAttributes{},
 					Level:      1,
-					Term:       "Item 2",
+					Term: []interface{}{
+						types.StringElement{
+							Content: "Item 2",
+						},
+					},
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
@@ -139,7 +205,11 @@ Item 3 description`
 				types.LabeledListItem{
 					Attributes: types.ElementAttributes{},
 					Level:      1,
-					Term:       "Item 3",
+					Term: []interface{}{
+						types.StringElement{
+							Content: "Item 3",
+						},
+					},
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
@@ -168,7 +238,11 @@ Item 3 description`
 				types.LabeledListItem{
 					Attributes: types.ElementAttributes{},
 					Level:      1,
-					Term:       "Item 1",
+					Term: []interface{}{
+						types.StringElement{
+							Content: "Item 1",
+						},
+					},
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
@@ -183,7 +257,11 @@ Item 3 description`
 				types.LabeledListItem{
 					Attributes: types.ElementAttributes{},
 					Level:      2,
-					Term:       "Item 2",
+					Term: []interface{}{
+						types.StringElement{
+							Content: "Item 2",
+						},
+					},
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
@@ -198,7 +276,11 @@ Item 3 description`
 				types.LabeledListItem{
 					Attributes: types.ElementAttributes{},
 					Level:      3,
-					Term:       "Item 3",
+					Term: []interface{}{
+						types.StringElement{
+							Content: "Item 3",
+						},
+					},
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
@@ -225,8 +307,12 @@ Item with description:: something simple`
 				types.LabeledListItem{
 					Attributes: types.ElementAttributes{},
 					Level:      1,
-					Term:       "Empty item",
-					Elements:   []interface{}{},
+					Term: []interface{}{
+						types.StringElement{
+							Content: "Empty item",
+						},
+					},
+					Elements: []interface{}{},
 				},
 				types.UnorderedListItem{
 					Attributes:  types.ElementAttributes{},
@@ -263,7 +349,11 @@ Item with description:: something simple`
 				types.LabeledListItem{
 					Attributes: types.ElementAttributes{},
 					Level:      1,
-					Term:       "Item with description",
+					Term: []interface{}{
+						types.StringElement{
+							Content: "Item with description",
+						},
+					},
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
@@ -292,7 +382,11 @@ a normal paragraph.`
 				types.LabeledListItem{
 					Attributes: types.ElementAttributes{},
 					Level:      1,
-					Term:       "Item 1",
+					Term: []interface{}{
+						types.StringElement{
+							Content: "Item 1",
+						},
+					},
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
@@ -337,8 +431,12 @@ another fenced block
 				types.LabeledListItem{
 					Attributes: types.ElementAttributes{},
 					Level:      1,
-					Term:       "Item 1",
-					Elements:   []interface{}{},
+					Term: []interface{}{
+						types.StringElement{
+							Content: "Item 1",
+						},
+					},
+					Elements: []interface{}{},
 				},
 				// the `+` continuation produces the element below
 				types.ContinuedListItemElement{
@@ -363,7 +461,11 @@ another fenced block
 				types.LabeledListItem{
 					Attributes: types.ElementAttributes{},
 					Level:      1,
-					Term:       "Item 2",
+					Term: []interface{}{
+						types.StringElement{
+							Content: "Item 2",
+						},
+					},
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
@@ -414,8 +516,12 @@ another fenced block
 				types.LabeledListItem{
 					Attributes: types.ElementAttributes{},
 					Level:      1,
-					Term:       "Item 1",
-					Elements:   []interface{}{},
+					Term: []interface{}{
+						types.StringElement{
+							Content: "Item 1",
+						},
+					},
+					Elements: []interface{}{},
 				},
 				types.DelimitedBlock{
 					Attributes: types.ElementAttributes{},
@@ -436,7 +542,11 @@ another fenced block
 				types.LabeledListItem{
 					Attributes: types.ElementAttributes{},
 					Level:      1,
-					Term:       "Item 2",
+					Term: []interface{}{
+						types.StringElement{
+							Content: "Item 2",
+						},
+					},
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
@@ -477,8 +587,12 @@ another fenced block
 				types.LabeledListItem{
 					Attributes: types.ElementAttributes{},
 					Level:      1,
-					Term:       "Labeled item",
-					Elements:   []interface{}{},
+					Term: []interface{}{
+						types.StringElement{
+							Content: "Labeled item",
+						},
+					},
+					Elements: []interface{}{},
 				},
 				types.UnorderedListItem{
 					Attributes:  types.ElementAttributes{},
@@ -512,7 +626,11 @@ second term:: definition of the second term`
 						types.AttrTitle: "Labeled, single-line",
 					},
 					Level: 1,
-					Term:  "first term",
+					Term: []interface{}{
+						types.StringElement{
+							Content: "first term",
+						},
+					},
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
@@ -529,7 +647,11 @@ second term:: definition of the second term`
 				types.LabeledListItem{
 					Attributes: types.ElementAttributes{},
 					Level:      1,
-					Term:       "second term",
+					Term: []interface{}{
+						types.StringElement{
+							Content: "second term",
+						},
+					},
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
@@ -561,7 +683,11 @@ level 1:: description 1`
 						types.AttrTitle: "Labeled, max nesting",
 					},
 					Level: 1,
-					Term:  "level 1",
+					Term: []interface{}{
+						types.StringElement{
+							Content: "level 1",
+						},
+					},
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
@@ -576,8 +702,12 @@ level 1:: description 1`
 					},
 				},
 				types.LabeledListItem{
-					Level:      2,
-					Term:       "level 2",
+					Level: 2,
+					Term: []interface{}{
+						types.StringElement{
+							Content: "level 2",
+						},
+					},
 					Attributes: types.ElementAttributes{},
 					Elements: []interface{}{
 						types.Paragraph{
@@ -593,8 +723,12 @@ level 1:: description 1`
 					},
 				},
 				types.LabeledListItem{
-					Level:      3,
-					Term:       "level 3",
+					Level: 3,
+					Term: []interface{}{
+						types.StringElement{
+							Content: "level 3",
+						},
+					},
 					Attributes: types.ElementAttributes{},
 					Elements: []interface{}{
 						types.Paragraph{
@@ -610,8 +744,12 @@ level 1:: description 1`
 					},
 				},
 				types.LabeledListItem{
-					Level:      1,
-					Term:       "level 1",
+					Level: 1,
+					Term: []interface{}{
+						types.StringElement{
+							Content: "level 1",
+						},
+					},
 					Attributes: types.ElementAttributes{},
 					Elements: []interface{}{
 						types.Paragraph{
@@ -644,7 +782,11 @@ level 2::: description 2`
 						types.AttrTitle: "Labeled, max nesting",
 					},
 					Level: 1,
-					Term:  "level 1",
+					Term: []interface{}{
+						types.StringElement{
+							Content: "level 1",
+						},
+					},
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
@@ -659,8 +801,12 @@ level 2::: description 2`
 					},
 				},
 				types.LabeledListItem{
-					Level:      2,
-					Term:       "level 2",
+					Level: 2,
+					Term: []interface{}{
+						types.StringElement{
+							Content: "level 2",
+						},
+					},
 					Attributes: types.ElementAttributes{},
 					Elements: []interface{}{
 						types.Paragraph{
@@ -676,8 +822,12 @@ level 2::: description 2`
 					},
 				},
 				types.LabeledListItem{
-					Level:      3,
-					Term:       "level 3",
+					Level: 3,
+					Term: []interface{}{
+						types.StringElement{
+							Content: "level 3",
+						},
+					},
 					Attributes: types.ElementAttributes{},
 					Elements: []interface{}{
 						types.Paragraph{
@@ -693,8 +843,12 @@ level 2::: description 2`
 					},
 				},
 				types.LabeledListItem{
-					Level:      2,
-					Term:       "level 2",
+					Level: 2,
+					Term: []interface{}{
+						types.StringElement{
+							Content: "level 2",
+						},
+					},
 					Attributes: types.ElementAttributes{},
 					Elements: []interface{}{
 						types.Paragraph{
@@ -733,7 +887,12 @@ on 2 lines`
 						{
 							Attributes: types.ElementAttributes{},
 							Level:      1,
-							Term:       "Item1",
+							Term: []interface{}{
+								types.StringElement{
+									Content: "Item1",
+								},
+							},
+
 							Elements: []interface{}{
 								types.Paragraph{
 									Attributes: types.ElementAttributes{},
@@ -768,9 +927,70 @@ on 2 lines`
 					Items: []types.LabeledListItem{
 						{
 							Attributes: types.ElementAttributes{},
-							Term:       "Item1",
-							Level:      1,
-							Elements:   []interface{}{},
+							Term: []interface{}{
+								types.StringElement{
+									Content: "Item1",
+								},
+							},
+
+							Level:    1,
+							Elements: []interface{}{},
+						},
+					},
+				},
+			},
+		}
+		Expect(source).To(BecomeDocument(expected))
+	})
+
+	It("labeled list with a quoted text in term and in description", func() {
+		source := "`foo()`::\n" +
+			`This function is _untyped_.`
+		expected := types.Document{
+			Attributes:         types.DocumentAttributes{},
+			ElementReferences:  types.ElementReferences{},
+			Footnotes:          types.Footnotes{},
+			FootnoteReferences: types.FootnoteReferences{},
+			Elements: []interface{}{
+				types.LabeledList{
+					Attributes: types.ElementAttributes{},
+					Items: []types.LabeledListItem{
+						{
+							Attributes: types.ElementAttributes{},
+							Term: []interface{}{
+								types.QuotedText{
+									Kind: types.Monospace,
+									Elements: []interface{}{
+										types.StringElement{
+											Content: "foo()",
+										},
+									},
+								},
+							},
+							Level: 1,
+							Elements: []interface{}{
+								types.Paragraph{
+									Attributes: types.ElementAttributes{},
+									Lines: [][]interface{}{
+										{
+											types.StringElement{
+												Content: "This function is ",
+											},
+											types.QuotedText{
+												Kind: types.Italic,
+												Elements: []interface{}{
+													types.StringElement{
+														Content: "untyped",
+													},
+												},
+											},
+											types.StringElement{
+												Content: ".",
+											},
+										},
+									},
+								},
+							},
 						},
 					},
 				},
@@ -796,7 +1016,12 @@ Item1:: foo`
 						{
 							Attributes: types.ElementAttributes{},
 							Level:      1,
-							Term:       "Item1",
+							Term: []interface{}{
+								types.StringElement{
+									Content: "Item1",
+								},
+							},
+
 							Elements: []interface{}{
 								types.Paragraph{
 									Attributes: types.ElementAttributes{},
@@ -830,8 +1055,13 @@ Item1:: foo`
 						{
 							Attributes: types.ElementAttributes{},
 							Level:      1,
-							Term:       "Item1",
-							Elements:   []interface{}{},
+							Term: []interface{}{
+								types.StringElement{
+									Content: "Item1",
+								},
+							},
+
+							Elements: []interface{}{},
 						},
 					},
 				},
@@ -859,7 +1089,12 @@ Item 3 description`
 						{
 							Attributes: types.ElementAttributes{},
 							Level:      1,
-							Term:       "Item 1",
+							Term: []interface{}{
+								types.StringElement{
+									Content: "Item 1",
+								},
+							},
+
 							Elements: []interface{}{
 								types.Paragraph{
 									Attributes: types.ElementAttributes{},
@@ -874,7 +1109,12 @@ Item 3 description`
 						{
 							Attributes: types.ElementAttributes{},
 							Level:      1,
-							Term:       "Item 2",
+							Term: []interface{}{
+								types.StringElement{
+									Content: "Item 2",
+								},
+							},
+
 							Elements: []interface{}{
 								types.Paragraph{
 									Attributes: types.ElementAttributes{},
@@ -889,7 +1129,12 @@ Item 3 description`
 						{
 							Attributes: types.ElementAttributes{},
 							Level:      1,
-							Term:       "Item 3",
+							Term: []interface{}{
+								types.StringElement{
+									Content: "Item 3",
+								},
+							},
+
 							Elements: []interface{}{
 								types.Paragraph{
 									Attributes: types.ElementAttributes{},
@@ -927,7 +1172,12 @@ Item 3 description`
 						{
 							Attributes: types.ElementAttributes{},
 							Level:      1,
-							Term:       "Item 1",
+							Term: []interface{}{
+								types.StringElement{
+									Content: "Item 1",
+								},
+							},
+
 							Elements: []interface{}{
 								types.Paragraph{
 									Attributes: types.ElementAttributes{},
@@ -943,7 +1193,12 @@ Item 3 description`
 										{
 											Attributes: types.ElementAttributes{},
 											Level:      2,
-											Term:       "Item 2",
+											Term: []interface{}{
+												types.StringElement{
+													Content: "Item 2",
+												},
+											},
+
 											Elements: []interface{}{
 												types.Paragraph{
 													Attributes: types.ElementAttributes{},
@@ -959,7 +1214,12 @@ Item 3 description`
 														{
 															Attributes: types.ElementAttributes{},
 															Level:      3,
-															Term:       "Item 3",
+															Term: []interface{}{
+																types.StringElement{
+																	Content: "Item 3",
+																},
+															},
+
 															Elements: []interface{}{
 																types.Paragraph{
 																	Attributes: types.ElementAttributes{},
@@ -1003,7 +1263,12 @@ Item with description:: something simple`
 						{
 							Attributes: types.ElementAttributes{},
 							Level:      1,
-							Term:       "Empty item",
+							Term: []interface{}{
+								types.StringElement{
+									Content: "Empty item",
+								},
+							},
+
 							Elements: []interface{}{
 								types.UnorderedList{
 									Attributes: types.ElementAttributes{},
@@ -1047,7 +1312,11 @@ Item with description:: something simple`
 						{
 							Attributes: types.ElementAttributes{},
 							Level:      1,
-							Term:       "Item with description",
+							Term: []interface{}{
+								types.StringElement{
+									Content: "Item with description",
+								},
+							},
 							Elements: []interface{}{
 								types.Paragraph{
 									Attributes: types.ElementAttributes{},
@@ -1085,7 +1354,12 @@ a normal paragraph.`
 						{
 							Attributes: types.ElementAttributes{},
 							Level:      1,
-							Term:       "Item 1",
+							Term: []interface{}{
+								types.StringElement{
+									Content: "Item 1",
+								},
+							},
+
 							Elements: []interface{}{
 								types.Paragraph{
 									Attributes: types.ElementAttributes{},
@@ -1138,7 +1412,12 @@ another fenced block
 						{
 							Attributes: types.ElementAttributes{},
 							Level:      1,
-							Term:       "Item 1",
+							Term: []interface{}{
+								types.StringElement{
+									Content: "Item 1",
+								},
+							},
+
 							Elements: []interface{}{
 								types.DelimitedBlock{
 									Attributes: types.ElementAttributes{},
@@ -1161,7 +1440,12 @@ another fenced block
 						{
 							Attributes: types.ElementAttributes{},
 							Level:      1,
-							Term:       "Item 2",
+							Term: []interface{}{
+								types.StringElement{
+									Content: "Item 2",
+								},
+							},
+
 							Elements: []interface{}{
 								types.Paragraph{
 									Attributes: types.ElementAttributes{},
@@ -1218,8 +1502,13 @@ another fenced block
 						{
 							Attributes: types.ElementAttributes{},
 							Level:      1,
-							Term:       "Item 1",
-							Elements:   []interface{}{},
+							Term: []interface{}{
+								types.StringElement{
+									Content: "Item 1",
+								},
+							},
+
+							Elements: []interface{}{},
 						},
 					},
 				},
@@ -1245,7 +1534,12 @@ another fenced block
 						{
 							Attributes: types.ElementAttributes{},
 							Level:      1,
-							Term:       "Item 2",
+							Term: []interface{}{
+								types.StringElement{
+									Content: "Item 2",
+								},
+							},
+
 							Elements: []interface{}{
 								types.Paragraph{
 									Attributes: types.ElementAttributes{},
@@ -1295,7 +1589,11 @@ another fenced block
 						{
 							Attributes: types.ElementAttributes{},
 							Level:      1,
-							Term:       "Labeled item",
+							Term: []interface{}{
+								types.StringElement{
+									Content: "Labeled item",
+								},
+							},
 							Elements: []interface{}{
 								types.UnorderedList{
 									Attributes: types.ElementAttributes{},
@@ -1345,7 +1643,11 @@ second term:: definition of the second term`
 						{
 							Attributes: types.ElementAttributes{},
 							Level:      1,
-							Term:       "first term",
+							Term: []interface{}{
+								types.StringElement{
+									Content: "first term",
+								},
+							},
 							Elements: []interface{}{
 								types.Paragraph{
 									Attributes: types.ElementAttributes{},
@@ -1362,7 +1664,11 @@ second term:: definition of the second term`
 						{
 							Attributes: types.ElementAttributes{},
 							Level:      1,
-							Term:       "second term",
+							Term: []interface{}{
+								types.StringElement{
+									Content: "second term",
+								},
+							},
 							Elements: []interface{}{
 								types.Paragraph{
 									Attributes: types.ElementAttributes{},
@@ -1401,8 +1707,12 @@ level 1:: description 1`
 					},
 					Items: []types.LabeledListItem{
 						{
-							Level:      1,
-							Term:       "level 1",
+							Level: 1,
+							Term: []interface{}{
+								types.StringElement{
+									Content: "level 1",
+								},
+							},
 							Attributes: types.ElementAttributes{},
 							Elements: []interface{}{
 								types.Paragraph{
@@ -1419,8 +1729,12 @@ level 1:: description 1`
 									Attributes: types.ElementAttributes{},
 									Items: []types.LabeledListItem{
 										{
-											Level:      2,
-											Term:       "level 2",
+											Level: 2,
+											Term: []interface{}{
+												types.StringElement{
+													Content: "level 2",
+												},
+											},
 											Attributes: types.ElementAttributes{},
 											Elements: []interface{}{
 												types.Paragraph{
@@ -1437,8 +1751,12 @@ level 1:: description 1`
 													Attributes: types.ElementAttributes{},
 													Items: []types.LabeledListItem{
 														{
-															Level:      3,
-															Term:       "level 3",
+															Level: 3,
+															Term: []interface{}{
+																types.StringElement{
+																	Content: "level 3",
+																},
+															},
 															Attributes: types.ElementAttributes{},
 															Elements: []interface{}{
 																types.Paragraph{
@@ -1462,8 +1780,12 @@ level 1:: description 1`
 							},
 						},
 						{
-							Level:      1,
-							Term:       "level 1",
+							Level: 1,
+							Term: []interface{}{
+								types.StringElement{
+									Content: "level 1",
+								},
+							},
 							Attributes: types.ElementAttributes{},
 							Elements: []interface{}{
 								types.Paragraph{
@@ -1503,8 +1825,12 @@ level 2::: description 2`
 					},
 					Items: []types.LabeledListItem{
 						{
-							Level:      1,
-							Term:       "level 1",
+							Level: 1,
+							Term: []interface{}{
+								types.StringElement{
+									Content: "level 1",
+								},
+							},
 							Attributes: types.ElementAttributes{},
 							Elements: []interface{}{
 								types.Paragraph{
@@ -1521,8 +1847,12 @@ level 2::: description 2`
 									Attributes: types.ElementAttributes{},
 									Items: []types.LabeledListItem{
 										{
-											Level:      2,
-											Term:       "level 2",
+											Level: 2,
+											Term: []interface{}{
+												types.StringElement{
+													Content: "level 2",
+												},
+											},
 											Attributes: types.ElementAttributes{},
 											Elements: []interface{}{
 												types.Paragraph{
@@ -1539,8 +1869,12 @@ level 2::: description 2`
 													Attributes: types.ElementAttributes{},
 													Items: []types.LabeledListItem{
 														{
-															Level:      3,
-															Term:       "level 3",
+															Level: 3,
+															Term: []interface{}{
+																types.StringElement{
+																	Content: "level 3",
+																},
+															},
 															Attributes: types.ElementAttributes{},
 															Elements: []interface{}{
 																types.Paragraph{
@@ -1560,8 +1894,12 @@ level 2::: description 2`
 											},
 										},
 										{
-											Level:      2,
-											Term:       "level 2",
+											Level: 2,
+											Term: []interface{}{
+												types.StringElement{
+													Content: "level 2",
+												},
+											},
 											Attributes: types.ElementAttributes{},
 											Elements: []interface{}{
 												types.Paragraph{
@@ -1599,8 +1937,12 @@ level 2::: description 2`
 					Attributes: types.ElementAttributes{},
 					Items: []types.LabeledListItem{
 						{
-							Level:      1,
-							Term:       "level 1",
+							Level: 1,
+							Term: []interface{}{
+								types.StringElement{
+									Content: "level 1",
+								},
+							},
 							Attributes: types.ElementAttributes{},
 							Elements: []interface{}{
 								types.Paragraph{

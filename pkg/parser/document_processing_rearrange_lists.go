@@ -2,6 +2,7 @@ package parser
 
 import (
 	"reflect"
+	"strings"
 
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 
@@ -139,13 +140,6 @@ func appendOrderedListItem(lists []types.List, item *types.OrderedListItem) ([]t
 	list := types.NewOrderedList(item)
 	// also, force the current item level to (last seen level + 1)
 	item.Level = maxLevel + 1
-	// also, attach this list to the one above, if it exists ;)
-	// if len(lists) > 0 {
-	// 	parentList := &(lists[len(lists)-1])
-	// 	parentItem := (*parentList).LastItem()
-	// 	parentItem.AddElement(list)
-	// 	return append(lists, list), nil
-	// }
 	return append(lists, list), nil
 }
 
@@ -185,6 +179,16 @@ func appendUnorderedListItem(lists []types.List, item *types.UnorderedListItem) 
 }
 
 func appendLabeledListItem(lists []types.List, item types.LabeledListItem) ([]types.List, error) {
+	// first, let's parse the labeled list item term for more complex content
+	if len(item.Term) == 1 {
+		if term, ok := item.Term[0].(types.StringElement); ok {
+			var err error
+			item.Term, err = parseLabeledListItemTerm(term.Content)
+			if err != nil {
+				return nil, err
+			}
+		}
+	}
 	maxLevel := 0
 	log.Debugf("looking-up list for labeled list item with level=%d and term=%s", item.Level, item.Term)
 	for i, list := range lists {
@@ -208,6 +212,18 @@ func appendLabeledListItem(lists []types.List, item types.LabeledListItem) ([]ty
 	item.Level = maxLevel + 1
 	list := types.NewLabeledList(item)
 	return append(lists, list), nil
+}
+
+// a labeled list item term may contain links, images, quoted text, footnotes, etc.
+func parseLabeledListItemTerm(term string) ([]interface{}, error) {
+	result := []interface{}{}
+	elements, err := ParseReader("", strings.NewReader(term), Entrypoint("LabeledListItemTerm"))
+	if err != nil {
+		return []interface{}{}, errors.Wrap(err, "error while parsing content for inline links")
+	}
+	log.Debugf("parsed labeled list item term: '%+v'", elements)
+	result = append(result, elements.([]interface{})...)
+	return result, nil
 }
 
 func appendContinuedListItemElement(lists []types.List, item types.ContinuedListItemElement) []types.List {
