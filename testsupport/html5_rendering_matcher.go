@@ -4,8 +4,8 @@ import (
 	"bytes"
 	"context"
 	"fmt"
+	"os"
 	"strings"
-	"time"
 
 	"github.com/bytesparadise/libasciidoc"
 	"github.com/bytesparadise/libasciidoc/pkg/renderer"
@@ -149,39 +149,30 @@ func (m *html5TitleMatcher) NegatedFailureMessage(_ interface{}) (message string
 func RenderHTML5Document(expected string, options ...interface{}) gomegatypes.GomegaMatcher {
 	m := &html5DocumentMatcher{
 		expected: expected,
-		filename: "test.adoc",
-	}
-	for _, o := range options {
-		if configure, ok := o.(FilenameOption); ok {
-			configure(m)
-		}
 	}
 	return m
 }
 
-func (m *html5DocumentMatcher) setFilename(f string) {
-	m.filename = f
-}
-
 type html5DocumentMatcher struct {
-	filename string
 	expected string
 	actual   string
 }
 
 func (m *html5DocumentMatcher) Match(actual interface{}) (success bool, err error) {
-	content, ok := actual.(string)
+	filename, ok := actual.(string)
 	if !ok {
 		return false, errors.Errorf("RenderHTML5Body matcher expects a string (actual: %T)", actual)
 	}
-	contentReader := strings.NewReader(content)
 	resultWriter := bytes.NewBuffer(nil)
-	lastUpdated := time.Now()
-	_, err = libasciidoc.ConvertToHTML(context.Background(), m.filename, contentReader, resultWriter, renderer.IncludeHeaderFooter(true))
+	_, err = libasciidoc.ConvertFileToHTML(context.Background(), filename, resultWriter, renderer.IncludeHeaderFooter(true))
 	if err != nil {
 		return false, err
 	}
-	m.expected = strings.Replace(m.expected, "{{.LastUpdated}}", lastUpdated.Format(renderer.LastUpdatedFormat), 1)
+	stat, err := os.Stat(filename)
+	if err != nil {
+		return false, errors.Wrapf(err, "unable to get stats for file '%s'", filename)
+	}
+	m.expected = strings.Replace(m.expected, "{{.LastUpdated}}", stat.ModTime().Format("2006-01-02 15:04:05 -0700"), 1)
 	m.actual = resultWriter.String()
 	return m.expected == m.actual, nil
 }

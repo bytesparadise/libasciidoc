@@ -18,7 +18,7 @@ const (
 	// keyEntrypoint a bool value to indicate if the entrypoint to start with when parsing the document
 	keyEntrypoint string = "Entrypoint"
 	// LastUpdatedFormat the time format for the `last updated` document attribute
-	LastUpdatedFormat string = "2006/01/02 15:04:05 MST"
+	LastUpdatedFormat string = "2006-01-02 15:04:05 -0700"
 )
 
 // LastUpdated function to set the `last updated` option in the renderer context (default is `time.Now()`)
