@@ -21,7 +21,7 @@ var quoteParagraphTmpl texttemplate.Template
 // initializes the templates
 func init() {
 	paragraphTmpl = newTextTemplate("paragraph",
-		`{{ $ctx := .Context }}{{ with .Data }}{{ $renderedLines := renderLines $ctx .Lines .HardBreaks | printf "%s" }}<div {{ if ne .ID "" }}id="{{ .ID }}" {{ end }}class="paragraph">{{ if ne .Title "" }}
+		`{{ $ctx := .Context }}{{ with .Data }}{{ $renderedLines := renderLines $ctx .Lines .HardBreaks | printf "%s" }}<div {{ if ne .ID "" }}id="{{ .ID }}" {{ end }}class="{{ .Class }}">{{ if ne .Title "" }}
 <div class="doctitle">{{ escape .Title }}</div>{{ end }}
 <p>{{ $renderedLines }}</p>
 </div>{{ end }}`,
@@ -120,11 +120,13 @@ func renderParagraph(ctx *renderer.Context, p types.Paragraph) ([]byte, error) {
 			Context: ctx,
 			Data: struct {
 				ID         string
+				Class      string
 				Title      string
 				Lines      [][]interface{}
 				HardBreaks RenderLinesOption
 			}{
 				ID:         id,
+				Class:      getParagraphClass(p),
 				Title:      renderTitle(p.Attributes),
 				Lines:      p.Lines,
 				HardBreaks: WithHardBreaks(p.Attributes.Has(types.AttrHardBreaks) || ctx.Document.Attributes.Has(types.DocumentAttrHardBreaks)),
@@ -298,6 +300,14 @@ func renderIconTitle(kind types.AdmonitionKind) string {
 		log.Errorf("unexpected kind of admonition: %v", kind)
 		return ""
 	}
+}
+
+func getParagraphClass(p types.Paragraph) string {
+	result := "paragraph"
+	if role := p.Attributes.GetAsString(types.AttrRole); role != "" {
+		result = result + " " + role
+	}
+	return result
 }
 
 func renderTitle(attrs types.ElementAttributes) string {

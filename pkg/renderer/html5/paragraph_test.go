@@ -74,6 +74,16 @@ and here another paragraph
 			Expect(source).To(RenderHTML5Body(expected))
 
 		})
+
+		It("paragraph with role", func() {
+			source := `[.text-left]
+some content`
+			expected := `<div class="paragraph text-left">
+<p>some content</p>
+</div>`
+			Expect(source).To(RenderHTML5Body(expected))
+
+		})
 	})
 
 	Context("paragraphs with line break", func() {
