@@ -971,23 +971,49 @@ func NewInlineElements(elements ...interface{}) ([]interface{}, error) {
 // Cross References
 // ------------------------------------------
 
-// CrossReference the struct for Cross References
-type CrossReference struct {
+// InternalCrossReference the struct for Cross References
+type InternalCrossReference struct {
 	ID    string
 	Label string
 }
 
-// NewCrossReference initializes a new `CrossReference` from the given ID
-func NewCrossReference(id string, label interface{}) (CrossReference, error) {
-	log.Debugf("initializing a new CrossReference with ID=%s", id)
+// NewInternalCrossReference initializes a new `InternalCrossReference` from the given ID
+func NewInternalCrossReference(id string, label interface{}) (InternalCrossReference, error) {
+	log.Debugf("initializing a new InternalCrossReference with ID=%s", id)
 	var l string
 	if label, ok := label.(string); ok {
 		l = Apply(label, strings.TrimSpace)
 	}
-	return CrossReference{
+	return InternalCrossReference{
 		ID:    id,
 		Label: l,
 	}, nil
+}
+
+// ExternalCrossReference the struct for Cross References
+type ExternalCrossReference struct {
+	Location Location
+	Label    []interface{}
+}
+
+// NewExternalCrossReference initializes a new `InternalCrossReference` from the given ID
+func NewExternalCrossReference(location Location, attributes ElementAttributes) (ExternalCrossReference, error) {
+	var label []interface{}
+	if l, ok := attributes[AttrInlineLinkText].([]interface{}); ok {
+		label = l
+	}
+	log.Debugf("initializing a new ExternalCrossReference with Location=%v and label='%s' (attrs=%v / %T)", location, label, attributes, attributes[AttrInlineLinkText])
+	return ExternalCrossReference{
+		Location: location,
+		Label:    label,
+	}, nil
+}
+
+// ResolveLocation resolves the image path using the given document attributes
+// also, updates the `alt` attribute based on the resolved path of the image
+func (r ExternalCrossReference) ResolveLocation(attrs DocumentAttributes) ExternalCrossReference {
+	r.Location = r.Location.Resolve(attrs)
+	return r
 }
 
 // ------------------------------------------

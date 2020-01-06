@@ -49,7 +49,7 @@ func NewRootCmd() *cobra.Command {
 					defer close()
 					path, _ := filepath.Abs(source)
 					log.Debugf("Starting to process file %v", path)
-					_, err := libasciidoc.ConvertFileToHTML(context.Background(), source, out, renderer.IncludeHeaderFooter(!noHeaderFooter)) //renderer.IncludeHeaderFooter(true)
+					_, err := libasciidoc.ConvertFileToHTML(context.Background(), source, out, renderer.IncludeHeaderFooter(!noHeaderFooter))
 					if err != nil {
 						return err
 					}

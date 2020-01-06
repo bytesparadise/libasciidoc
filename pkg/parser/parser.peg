@@ -746,8 +746,8 @@ InlineElement <- !EOL !LineBreak
         / Passthrough 
         / InlineFootnote 
         / QuotedText 
-        / InlineUserMacro 
         / CrossReference 
+        / InlineUserMacro 
         / DocumentAttributeSubstitution 
         / InlineElementID 
         / OtherWord
@@ -1105,10 +1105,16 @@ PassthroughMacroCharacter <- (Alphanums / Spaces / (!"]" .){
 // ------------------------------------------
 // Cross References
 // ------------------------------------------
-CrossReference <- "<<" id:(ID) WS* "," label:(CrossReferenceLabel) ">>" {
-    return types.NewCrossReference(id.(string), label.(string))
+CrossReference <- InternalCrossReference / ExternalCrossReference 
+
+InternalCrossReference <- "<<" id:(ID) WS* "," label:(CrossReferenceLabel) ">>" {
+    return types.NewInternalCrossReference(id.(string), label.(string))
 } / "<<" id:(ID) ">>" {
-    return types.NewCrossReference(id.(string), nil)
+    return types.NewInternalCrossReference(id.(string), nil)
+} 
+
+ExternalCrossReference <- "xref:" url:(FileLocation) inlineAttributes:(LinkAttributes) {
+    return types.NewExternalCrossReference(url.(types.Location), inlineAttributes.(types.ElementAttributes))
 }
 
 CrossReferenceLabel <- (Alphanums / Spaces / (!">>"  .))+ {
@@ -1137,13 +1143,13 @@ TextOnlyLinkAttributes <- "[" text:(LinkTextWithCommaAttribute)? "]" {
 
 LinkTextWithCommaAttribute <- 
     // surrounded with double quotes
-    "\"" elements:(!"=" !"]" !"\"" (QuotedText / SimpleWord / Spaces / ((!QuotedTextPrefix .) {
+    "\"" elements:(!"=" !"]" !"\"" (QuotedText / SimpleWord / Spaces / ((!WS .) {
         return types.NewStringElement(string(c.text))
     })))+ "\"" Spaces* &(!"=") {
         return types.NewInlineElements(elements.([]interface{}))
     } /
     // not surrounded with double quotes
-    elements:(!"=" !"]" (QuotedText / SimpleWord / Spaces / ((!QuotedTextPrefix .) {
+    elements:(!"=" !"]" (QuotedText / SimpleWord / Spaces / ((!WS .) {
         return types.NewStringElement(string(c.text))
     })))+ &(!"=") {
         return types.NewInlineElements(elements.([]interface{}))
@@ -1384,8 +1390,8 @@ VerseBlockParagraphLineElement <- !EOL !LineBreak
         / Passthrough 
         / InlineFootnote 
         / QuotedText 
-        / InlineUserMacro 
         / CrossReference 
+        / InlineUserMacro 
         / DocumentAttributeSubstitution 
         / InlineElementID 
         / OtherWord

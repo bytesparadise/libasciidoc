@@ -11,7 +11,6 @@ import (
 	"github.com/bytesparadise/libasciidoc/pkg/parser"
 	"github.com/bytesparadise/libasciidoc/pkg/renderer"
 	htmlrenderer "github.com/bytesparadise/libasciidoc/pkg/renderer/html5"
-	"github.com/bytesparadise/libasciidoc/pkg/types"
 
 	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
@@ -47,23 +46,19 @@ func ConvertFileToHTML(ctx context.Context, filename string, output io.Writer, o
 // ConvertToHTML converts the content of the given reader `r` into a full HTML document, written in the given writer `output`.
 // Returns an error if a problem occurred
 func ConvertToHTML(ctx context.Context, filename string, r io.Reader, output io.Writer, options ...renderer.Option) (map[string]interface{}, error) {
-	log.Debugf("parsing the asciidoc source...")
-	doc, err := parser.ParseDocument(filename, r)
-	if err != nil {
-		return nil, errors.Wrapf(err, "error while parsing the document")
-	}
-	return convertToHTML(ctx, doc, output, options...)
-}
-
-func convertToHTML(ctx context.Context, doc types.Document, output io.Writer, options ...renderer.Option) (map[string]interface{}, error) {
 	start := time.Now()
 	defer func() {
 		duration := time.Since(start)
 		log.Debugf("rendered the HTML output in %v", duration)
 	}()
+	log.Debugf("parsing the asciidoc source...")
+	doc, err := parser.ParseDocument(filename, r) //, parser.Debug(true))
+	if err != nil {
+		return nil, errors.Wrapf(err, "error while parsing the document")
+	}
 	rendererCtx := renderer.Wrap(ctx, doc, options...)
 	// insert tables of contents, preamble and process file inclusions
-	err := renderer.Prerender(rendererCtx)
+	err = renderer.Prerender(rendererCtx)
 	if err != nil {
 		return nil, errors.Wrapf(err, "error while rendering the document")
 	}
