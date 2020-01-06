@@ -34,6 +34,12 @@ func ConvertFileToHTML(ctx context.Context, filename string, output io.Writer, o
 		return nil, errors.Wrapf(err, "error opening %s", filename)
 	}
 	defer file.Close()
+	// use the file mtime as the `last updated` value
+	stat, err := os.Stat(filename)
+	if err != nil {
+		return nil, errors.Wrapf(err, "error opening %s", filename)
+	}
+	options = append(options, renderer.LastUpdated(stat.ModTime()))
 	return ConvertToHTML(ctx, filename, file, output, options...)
 }
 
@@ -41,6 +47,10 @@ func ConvertFileToHTML(ctx context.Context, filename string, output io.Writer, o
 // Returns an error if a problem occurred
 func ConvertToHTML(ctx context.Context, filename string, r io.Reader, output io.Writer, options ...renderer.Option) (map[string]interface{}, error) {
 	start := time.Now()
+	defer func() {
+		duration := time.Since(start)
+		log.Debugf("rendered the HTML output in %v", duration)
+	}()
 	log.Debugf("parsing the asciidoc source...")
 	doc, err := parser.ParseDocument(filename, r) //, parser.Debug(true))
 	if err != nil {
@@ -57,7 +67,5 @@ func ConvertToHTML(ctx context.Context, filename string, r io.Reader, output io.
 		return nil, errors.Wrapf(err, "error while rendering the document")
 	}
 	log.Debugf("Done processing document")
-	duration := time.Since(start)
-	log.Debugf("rendered the HTML output in %v", duration)
 	return metadata, nil
 }

@@ -183,12 +183,7 @@ a paragraph with _italic content_`
 
 	Context("complete Document ", func() {
 
-		It("section levels 0 and 5", func() {
-			source := `= a document title
-
-====== Section A
-
-a paragraph with *bold content*`
+		It("using existing file", func() {
 			expectedContent := `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -196,18 +191,15 @@ a paragraph with *bold content*`
 <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="libasciidoc">
-<title>a document title</title>
+<title>Chapter A</title>
 </head>
 <body class="article">
 <div id="header">
-<h1>a document title</h1>
+<h1>Chapter A</h1>
 </div>
 <div id="content">
-<div class="sect5">
-<h6 id="_section_a">Section A</h6>
 <div class="paragraph">
-<p>a paragraph with <strong>bold content</strong></p>
-</div>
+<p>content</p>
 </div>
 </div>
 <div id="footer">
@@ -217,8 +209,9 @@ Last updated {{.LastUpdated}}
 </div>
 </body>
 </html>`
-			Expect(source).To(RenderHTML5Document(expectedContent))
+			Expect("test/includes/chapter-a.adoc").To(RenderHTML5Document(expectedContent))
 		})
+
 	})
 
 })
