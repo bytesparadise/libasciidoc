@@ -93,7 +93,7 @@ func BenchmarkParser(b *testing.B) {
 // 		content := usecase.content
 // 		t.Run(name, func(t *testing.T) {
 // 			stats := parser.Stats{}
-// 			_, err := parser.Parse(name, content, parser.Statistics(&stats, "no match"))
+// 			_, err := parser.Parse(name, content, parser.Statistics(&stats, "no match"), parser.Debug(true), parser.AllowInvalidUTF8(true))
 // 			if err != nil {
 // 				t.Error(err)
 // 			}

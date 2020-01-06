@@ -72,11 +72,11 @@ with some content linked to <<thewrongtitle>>!`
 			Expect(source).To(RenderHTML5Body(expected))
 		})
 
-		It("external cross reference to other doc with document attribute in location", func() {
+		It("external cross reference to other doc with document attribute in location and label with special chars", func() {
 			source := `:foo: foo-doc
-some content linked to xref:{foo}.adoc[another doc]!`
+some content linked to xref:{foo}.adoc[another_doc()]!`
 			expected := `<div class="paragraph">
-<p>some content linked to <a href="foo-doc.html">another doc</a>!</p>
+<p>some content linked to <a href="foo-doc.html">another_doc()</a>!</p>
 </div>`
 			Expect(source).To(RenderHTML5Body(expected))
 		})

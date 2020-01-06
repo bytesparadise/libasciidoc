@@ -1143,13 +1143,13 @@ TextOnlyLinkAttributes <- "[" text:(LinkTextWithCommaAttribute)? "]" {
 
 LinkTextWithCommaAttribute <- 
     // surrounded with double quotes
-    "\"" elements:(!"=" !"]" !"\"" (QuotedText / SimpleWord / Spaces / ((!QuotedTextPrefix .) {
+    "\"" elements:(!"=" !"]" !"\"" (QuotedText / SimpleWord / Spaces / ((!WS .) {
         return types.NewStringElement(string(c.text))
     })))+ "\"" Spaces* &(!"=") {
         return types.NewInlineElements(elements.([]interface{}))
     } /
     // not surrounded with double quotes
-    elements:(!"=" !"]" (QuotedText / SimpleWord / Spaces / ((!QuotedTextPrefix .) {
+    elements:(!"=" !"]" (QuotedText / SimpleWord / Spaces / ((!WS .) {
         return types.NewStringElement(string(c.text))
     })))+ &(!"=") {
         return types.NewInlineElements(elements.([]interface{}))

@@ -341,11 +341,11 @@ with some content linked to <<thetitle,a label to the title>>!`
 			Expect(source).To(BecomeDocument(expected))
 		})
 
-		It("external cross reference to other doc with document attribute in location", func() {
+		It("external cross reference to other doc with document attribute in location and label with special chars", func() {
 			source := `
 :foo: another-doc.adoc
 
-some content linked to xref:{foo}[another doc]!`
+some content linked to xref:{foo}[another_doc()]!`
 			expected := types.Document{
 				Attributes:         types.DocumentAttributes{},
 				ElementReferences:  types.ElementReferences{},
@@ -369,7 +369,7 @@ some content linked to xref:{foo}[another doc]!`
 									},
 									Label: []interface{}{
 										types.StringElement{
-											Content: "another doc",
+											Content: "another_doc()",
 										},
 									},
 								},
