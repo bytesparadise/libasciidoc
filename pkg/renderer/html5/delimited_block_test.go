@@ -40,7 +40,7 @@ here</code></pre>
 			source := "```" + "\n" +
 				"a http://website.com" + "\n" +
 				"and more text on the" + "\n" +
-				"next lines" + "\n" +
+				"next lines" + "\n\n" +
 				"```"
 			expected := `<div class="listingblock">
 <div class="content">
@@ -60,6 +60,7 @@ next lines</code></pre>
 some source code
 
 here
+
 ----`
 			expected := `<div class="listingblock">
 <div class="content">
@@ -76,6 +77,22 @@ here</pre>
 .listing block title
 ----
 some source code
+----`
+			expected := `<div id="id-for-listing-block" class="listingblock">
+<div class="title">listing block title</div>
+<div class="content">
+<pre>some source code</pre>
+</div>
+</div>`
+			Expect(source).To(RenderHTML5Body(expected))
+		})
+
+		It("listing block with ID and title and empty trailing line", func() {
+			source := `[#id-for-listing-block]
+.listing block title
+----
+some source code
+
 ----`
 			expected := `<div id="id-for-listing-block" class="listingblock">
 <div class="title">listing block title</div>
@@ -120,6 +137,31 @@ require 'sinatra'
 get '/hi' do
   "Hello World!"
 end
+
+----`
+			expected := `<div class="listingblock">
+<div class="title">Source block title</div>
+<div class="content">
+<pre class="highlight"><code class="language-ruby" data-lang="ruby">require &#39;sinatra&#39;
+
+get &#39;/hi&#39; do
+  &#34;Hello World!&#34;
+end</code></pre>
+</div>
+</div>`
+			Expect(source).To(RenderHTML5Body(expected))
+		})
+
+		It("with title, source and languages attributes and empty trailing line", func() {
+			source := `[source,ruby]
+.Source block title
+----
+require 'sinatra'
+
+get '/hi' do
+  "Hello World!"
+end
+
 ----`
 			expected := `<div class="listingblock">
 <div class="title">Source block title</div>
@@ -191,6 +233,7 @@ some listing code
 with *bold content*
 
 * and a list item
+
 ====`
 			expected := `<div class="exampleblock">
 <div class="content">
@@ -253,6 +296,7 @@ and "more" content
 .example block title
 ====
 foo
+
 ====`
 			expected := `<div id="id-for-example-block" class="exampleblock">
 <div class="title">Example 1. example block title</div>
@@ -275,6 +319,7 @@ some listing code
 with *bold content*
 
 * and a list item
+
 ====`
 			expected := `<div class="admonitionblock note">
 <table>
@@ -347,6 +392,7 @@ some listing code
 with *bold content*
 
 * and a list item
+
 ====`
 			expected := `<div id="id-for-admonition-block" class="admonitionblock note">
 <table>
@@ -445,7 +491,8 @@ an admonition text on
 
 [#id-for-admonition-block]
 .title for the admonition block
-TIP: an admonition text on 1 line.`
+TIP: an admonition text on 1 line.
+`
 			expected := `<div id="id-for-admonition-block" class="admonitionblock tip">
 <table>
 <tr>
@@ -469,6 +516,7 @@ an admonition text on 1 line.
 			source := `[quote, john doe, quote title]
 ____
 some *quote* content
+
 ____`
 			expected := `<div class="quoteblock">
 <blockquote>
@@ -509,9 +557,11 @@ ____`
 		It("multi-line quote with author and title", func() {
 			source := `[quote, john doe, quote title]
 ____
+
 - some 
 - quote 
 - content
+
 ____`
 			expected := `<div class="quoteblock">
 <blockquote>
@@ -599,6 +649,7 @@ ____
 lines 
 	and tabs 
 are preserved, but not trailing spaces   
+
 ____`
 
 			expected := `<div class="quoteblock">
@@ -634,6 +685,7 @@ ____`
 			source := `[verse, john doe, verse title]
 ____
 some *verse* content
+
 ____`
 			expected := `<div class="verseblock">
 <pre class="content">some <strong>verse</strong> content</pre>
@@ -671,6 +723,7 @@ ____
 - content
 
 and more!
+
 ____`
 			expected := `<div class="verseblock">
 <pre class="content">- some
@@ -720,6 +773,7 @@ ____
 lines 
 	and tabs 
 are preserved
+
 ____`
 
 			expected := `<div class="verseblock">
@@ -747,6 +801,7 @@ ____`
 		It("sidebar block with paragraph", func() {
 			source := `****
 some *verse* content
+
 ****`
 			expected := `<div class="sidebarblock">
 <div class="content">

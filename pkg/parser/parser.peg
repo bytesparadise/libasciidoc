@@ -1290,13 +1290,13 @@ ListingBlock <- attributes:(ElementAttributes)? ListingBlockDelimiter content:(L
     return types.NewDelimitedBlock(types.Listing, content.([]interface{}), types.None, attributes)
 }
 
-ListingBlockElement <- FileInclusion / ListingBlockParagraph
+ListingBlockElement <- FileInclusion / ListingBlockParagraph / BlankLine
 
 ListingBlockParagraph <- lines:(ListingBlockParagraphLine)+ { 
     return types.NewParagraph(lines.([]interface{}), nil) // no attributes supported
 }
 
-ListingBlockParagraphLine <- !ListingBlockDelimiter line:(!EOF (Alphanums / Spaces / (!EOL .))* {return string(c.text), nil }) EOL { // skip EOL in line content, and stop when quote block delimiter is encountered
+ListingBlockParagraphLine <- !ListingBlockDelimiter line:(!EOF (Alphanums / Spaces / (!EOL .))+ {return string(c.text), nil }) EOL { // skip EOL in line content, and stop when quote block delimiter is encountered
     return types.NewInlineElements(line)
 }
 
