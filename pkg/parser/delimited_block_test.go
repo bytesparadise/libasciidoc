@@ -336,7 +336,13 @@ in the middle
 									Content: "with an empty line",
 								},
 							},
-							{},
+						},
+					},
+					types.BlankLine{},
+					types.Paragraph{
+						Attributes: types.ElementAttributes{},
+						Lines: [][]interface{}{
+
 							{
 								types.StringElement{
 									Content: "in the middle",
@@ -411,7 +417,13 @@ then a normal paragraph.`
 											Content: "with an empty line",
 										},
 									},
-									{},
+								},
+							},
+							types.BlankLine{},
+							types.Paragraph{
+								Attributes: types.ElementAttributes{},
+								Lines: [][]interface{}{
+
 									{
 										types.StringElement{
 											Content: "in the middle",
@@ -717,7 +729,13 @@ paragraphs
 											Content: "multiple",
 										},
 									},
-									{},
+								},
+							},
+							types.BlankLine{},
+							types.Paragraph{
+								Attributes: types.ElementAttributes{},
+								Lines: [][]interface{}{
+
 									{
 										types.StringElement{
 											Content: "paragraphs",
@@ -1335,7 +1353,13 @@ end
 									Content: "require 'sinatra'",
 								},
 							},
-							{},
+						},
+					},
+					types.BlankLine{},
+					types.Paragraph{
+						Attributes: types.ElementAttributes{},
+						Lines: [][]interface{}{
+
 							{
 								types.StringElement{
 									Content: "get '/hi' do",
@@ -1384,7 +1408,13 @@ end
 									Content: "require 'sinatra'",
 								},
 							},
-							{},
+						},
+					},
+					types.BlankLine{},
+					types.Paragraph{
+						Attributes: types.ElementAttributes{},
+						Lines: [][]interface{}{
+
 							{
 								types.StringElement{
 									Content: "get '/hi' do",
@@ -1436,7 +1466,12 @@ end
 									Content: "require 'sinatra'",
 								},
 							},
-							{},
+						},
+					},
+					types.BlankLine{},
+					types.Paragraph{
+						Attributes: types.ElementAttributes{},
+						Lines: [][]interface{}{
 							{
 								types.StringElement{
 									Content: "get '/hi' do",
@@ -1914,7 +1949,12 @@ in the middle
 											Content: "with an empty line",
 										},
 									},
-									{},
+								},
+							},
+							types.BlankLine{},
+							types.Paragraph{
+								Attributes: types.ElementAttributes{},
+								Lines: [][]interface{}{
 									{
 										types.StringElement{
 											Content: "in the middle",
@@ -2003,7 +2043,13 @@ then a normal paragraph.`
 											Content: "with an empty line",
 										},
 									},
-									{},
+								},
+							},
+							types.BlankLine{},
+							types.Paragraph{
+								Attributes: types.ElementAttributes{},
+								Lines: [][]interface{}{
+
 									{
 										types.StringElement{
 											Content: "in the middle",
@@ -2386,7 +2432,13 @@ paragraphs
 											Content: "multiple",
 										},
 									},
-									{},
+								},
+							},
+							types.BlankLine{},
+							types.Paragraph{
+								Attributes: types.ElementAttributes{},
+								Lines: [][]interface{}{
+
 									{
 										types.StringElement{
 											Content: "paragraphs",
@@ -3138,7 +3190,13 @@ end
 											Content: "require 'sinatra'",
 										},
 									},
-									{},
+								},
+							},
+							types.BlankLine{},
+							types.Paragraph{
+								Attributes: types.ElementAttributes{},
+								Lines: [][]interface{}{
+
 									{
 										types.StringElement{
 											Content: "get '/hi' do",
@@ -3195,7 +3253,13 @@ end
 											Content: "require 'sinatra'",
 										},
 									},
-									{},
+								},
+							},
+							types.BlankLine{},
+							types.Paragraph{
+								Attributes: types.ElementAttributes{},
+								Lines: [][]interface{}{
+
 									{
 										types.StringElement{
 											Content: "get '/hi' do",
@@ -3255,7 +3319,13 @@ end
 											Content: "require 'sinatra'",
 										},
 									},
-									{},
+								},
+							},
+							types.BlankLine{},
+							types.Paragraph{
+								Attributes: types.ElementAttributes{},
+								Lines: [][]interface{}{
+
 									{
 										types.StringElement{
 											Content: "get '/hi' do",

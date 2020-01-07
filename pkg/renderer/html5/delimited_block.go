@@ -303,7 +303,7 @@ func renderVerseBlock(ctx *renderer.Context, b types.DelimitedBlock) ([]byte, er
 			ID:          renderElementID(b.Attributes),
 			Title:       renderTitle(b.Attributes),
 			Attribution: NewDelimitedBlockAttribution(b),
-			Elements:    b.Elements,
+			Elements:    discardTrailingBlankLines(b.Elements),
 		},
 	})
 	return result.Bytes(), err
@@ -354,7 +354,8 @@ func renderSidebarBlock(ctx *renderer.Context, b types.DelimitedBlock) ([]byte, 
 }
 
 func discardTrailingBlankLines(elements []interface{}) []interface{} {
-	// discard blank lines at the end
+	// discard blank elements at the end
+	log.Debugf("discarding trailing blank lines on %d elements...", len(elements))
 	filteredElements := make([]interface{}, len(elements))
 	copy(filteredElements, elements)
 	for {
@@ -369,5 +370,6 @@ func discardTrailingBlankLines(elements []interface{}) []interface{} {
 			break
 		}
 	}
+	log.Debugf("returning %d elements", len(filteredElements))
 	return filteredElements
 }
