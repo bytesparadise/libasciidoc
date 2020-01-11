@@ -13,7 +13,7 @@ var _ = Describe("concealed index terms", func() {
 	Context("draft document", func() {
 
 		It("index term in existing paragraph line", func() {
-			source := `a paragaph with an index term (((index, term, here))).`
+			source := `a paragraph with an index term (((index, term, here))).`
 			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.Paragraph{
@@ -21,7 +21,7 @@ var _ = Describe("concealed index terms", func() {
 						Lines: [][]interface{}{
 							{
 								types.StringElement{
-									Content: "a paragaph with an index term ",
+									Content: "a paragraph with an index term ",
 								},
 								types.ConceleadIndexTerm{
 									Term1: "index",
@@ -41,7 +41,7 @@ var _ = Describe("concealed index terms", func() {
 
 		It("index term in single paragraph line", func() {
 			source := `(((index, term)))
-a paragaph with an index term.`
+a paragraph with an index term.`
 			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.Paragraph{
@@ -55,7 +55,7 @@ a paragaph with an index term.`
 							},
 							{
 								types.StringElement{
-									Content: "a paragaph with an index term.",
+									Content: "a paragraph with an index term.",
 								},
 							},
 						},
@@ -69,7 +69,7 @@ a paragaph with an index term.`
 	Context("final document", func() {
 
 		It("index term in existing paragraph line", func() {
-			source := `a paragaph with an index term (((index, term, here))).`
+			source := `a paragraph with an index term (((index, term, here))).`
 			expected := types.Document{
 				Attributes:         types.DocumentAttributes{},
 				ElementReferences:  types.ElementReferences{},
@@ -81,7 +81,7 @@ a paragaph with an index term.`
 						Lines: [][]interface{}{
 							{
 								types.StringElement{
-									Content: "a paragaph with an index term ",
+									Content: "a paragraph with an index term ",
 								},
 								types.StringElement{
 									Content: ".",
@@ -96,7 +96,7 @@ a paragaph with an index term.`
 
 		It("index term in single paragraph line", func() {
 			source := `(((index, term)))
-a paragaph with an index term.`
+a paragraph with an index term.`
 			expected := types.Document{
 				Attributes:         types.DocumentAttributes{},
 				ElementReferences:  types.ElementReferences{},
@@ -108,7 +108,7 @@ a paragaph with an index term.`
 						Lines: [][]interface{}{
 							{
 								types.StringElement{
-									Content: "a paragaph with an index term.",
+									Content: "a paragraph with an index term.",
 								},
 							},
 						},
