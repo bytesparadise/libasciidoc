@@ -70,7 +70,7 @@ elements:
 }
 
 // AllMatchers all the matchers needed to remove the unneeded blocks/elements from the final document
-var allMatchers = []filterMatcher{blankLineMatcher, emptyPreambleMatcher, documentAttributeMatcher, singleLineCommentMatcher, commentBlockMatcher}
+var allMatchers = []filterMatcher{blankLineMatcher, emptyPreambleMatcher, documentAttributeMatcher, singleLineCommentMatcher, commentBlockMatcher, concealedIndexTermMatcher}
 
 // filterMatcher returns true if the given element is to be filtered out
 type filterMatcher func(element interface{}) bool
@@ -87,8 +87,8 @@ var emptyPreambleMatcher filterMatcher = func(element interface{}) bool {
 
 // blankLineMatcher filters the element if it is a blank line
 var blankLineMatcher filterMatcher = func(element interface{}) bool {
-	_, result := element.(types.BlankLine)
-	return result
+	_, ok := element.(types.BlankLine)
+	return ok
 }
 
 // documentAttributeMatcher filters the element if it is a DocumentAttributeDeclaration,
@@ -104,12 +104,8 @@ var documentAttributeMatcher filterMatcher = func(element interface{}) bool {
 
 // singleLineCommentMatcher filters the element if it is a SingleLineComment
 var singleLineCommentMatcher filterMatcher = func(element interface{}) bool {
-	switch element.(type) {
-	case types.SingleLineComment:
-		return true
-	default:
-		return false
-	}
+	_, ok := element.(types.SingleLineComment)
+	return ok
 }
 
 // commentBlockMatcher filters the element if it is a DelimitedBlock of kind 'Comment'
@@ -120,4 +116,10 @@ var commentBlockMatcher filterMatcher = func(element interface{}) bool {
 	default:
 		return false
 	}
+}
+
+// concealedIndexTermMatcher filters the element if it is a ConcealedIndexTerm
+var concealedIndexTermMatcher filterMatcher = func(element interface{}) bool {
+	_, ok := element.(types.ConceleadIndexTerm)
+	return ok
 }

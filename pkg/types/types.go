@@ -1864,3 +1864,23 @@ func (l *Location) Resolve(attrs DocumentAttributes) Location {
 		},
 	}
 }
+
+// -------------------------------------------------------------------------------------
+// Location: a Location (ie, with a scheme) or a path to a file (can be absolute or relative)
+// -------------------------------------------------------------------------------------
+
+// ConceleadIndexTerm a concealed index term, with 1 required and 2 optional terms
+type ConceleadIndexTerm struct {
+	Term1 interface{}
+	Term2 interface{}
+	Term3 interface{}
+}
+
+// NewConceleadIndexTerm returns a new ConceleadIndexTerm
+func NewConceleadIndexTerm(term1 interface{}, term2 interface{}, term3 interface{}) (ConceleadIndexTerm, error) {
+	return ConceleadIndexTerm{
+		Term1: term1,
+		Term2: term2,
+		Term3: term3,
+	}, nil
+}
