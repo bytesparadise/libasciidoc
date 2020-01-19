@@ -26,7 +26,7 @@ func applyDocumentAttributeSubstitutions(element interface{}, attrs types.Docume
 			elements = append(elements, r)
 			applied = applied || a
 		}
-		elements = types.MergeStringElements(elements)
+		elements = types.Merge(elements)
 		if applied {
 			elements, err := parseInlineLinks(elements)
 			return elements, true, err

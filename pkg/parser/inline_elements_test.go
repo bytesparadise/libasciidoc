@@ -48,13 +48,38 @@ var _ = Describe("inline elements", func() {
 		Expect(source).To(BecomeDocumentBlock(expected))
 	})
 
-	It("bold text within words", func() {
+	It("non-bold text within words", func() {
 		source := "some*bold*content"
 		expected := types.Paragraph{
 			Attributes: types.ElementAttributes{},
 			Lines: [][]interface{}{
 				{
 					types.StringElement{Content: "some*bold*content"},
+				},
+			},
+		}
+		Expect(source).To(BecomeDocumentBlock(expected))
+	})
+
+	It("non-italic text within words", func() {
+		source := "some_italic_content"
+		expected := types.Paragraph{
+			Attributes: types.ElementAttributes{},
+			Lines: [][]interface{}{
+				{
+					types.StringElement{Content: "some_italic_content"},
+				},
+			},
+		}
+		Expect(source).To(BecomeDocumentBlock(expected))
+	})
+	It("non-monospace text within words", func() {
+		source := "some`monospace`content"
+		expected := types.Paragraph{
+			Attributes: types.ElementAttributes{},
+			Lines: [][]interface{}{
+				{
+					types.StringElement{Content: "some`monospace`content"},
 				},
 			},
 		}

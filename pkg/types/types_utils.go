@@ -14,8 +14,8 @@ func NilSafe(elements []interface{}) []interface{} {
 	return make([]interface{}, 0)
 }
 
-// MergeStringElements merge string elements together
-func MergeStringElements(elements ...interface{}) []interface{} {
+// Merge merge string elements together
+func Merge(elements ...interface{}) []interface{} {
 	result := make([]interface{}, 0)
 	buf := bytes.NewBuffer(nil)
 	for _, element := range elements {
@@ -26,20 +26,15 @@ func MergeStringElements(elements ...interface{}) []interface{} {
 		case string:
 			buf.WriteString(element)
 		case []byte:
-			for _, b := range element {
-				buf.WriteByte(b)
-			}
+			buf.Write(element)
 		case StringElement:
-			content := element.Content
-			buf.WriteString(content)
-		case *StringElement:
 			content := element.Content
 			buf.WriteString(content)
 		case []interface{}:
 			if len(element) > 0 {
-				f := MergeStringElements(element...)
+				f := Merge(element...)
 				result, buf = appendBuffer(result, buf)
-				result = MergeStringElements(append(result, f...)...)
+				result = Merge(append(result, f...)...)
 			}
 		default:
 			// log.Debugf("Merging with 'default' case an element of type %[1]T", element)

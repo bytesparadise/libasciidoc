@@ -16,7 +16,7 @@ var _ = Describe("convert to inline elements", func() {
 			StringElement{Content: "helloworld"},
 		}
 		// when
-		result := MergeStringElements(source...)
+		result := Merge(source...)
 		// then
 		Expect(result).To(Equal(expected))
 	})
@@ -29,7 +29,7 @@ var _ = Describe("convert to inline elements", func() {
 			StringElement{Content: "hello, world   "},
 		}
 		// when
-		result := MergeStringElements(source...)
+		result := Merge(source...)
 		// then
 		Expect(result).To(Equal(expected))
 	})
