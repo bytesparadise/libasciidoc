@@ -1,7 +1,6 @@
 package testsupport
 
 import (
-	"context"
 	"fmt"
 
 	"github.com/bytesparadise/libasciidoc/pkg/renderer"
@@ -29,7 +28,7 @@ func (m *metadataMatcher) Match(actual interface{}) (success bool, err error) {
 	if !ok {
 		return false, errors.Errorf("HaveMetadata matcher expects a Document (actual: %T)", actual)
 	}
-	ctx := renderer.Wrap(context.Background(), source)
+	ctx := renderer.NewContext(source)
 	renderer.ProcessDocumentHeader(ctx)
 	m.actual = ctx.Document.Attributes
 	m.comparison = compare(m.actual, m.expected)

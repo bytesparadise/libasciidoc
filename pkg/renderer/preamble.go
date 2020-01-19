@@ -7,13 +7,14 @@ import (
 
 // IncludePreamble wraps all document elements before the first section in a `Preamble`,
 // unless the document has no section. Returns a new document with the changes.
-func IncludePreamble(ctx *Context) {
+func IncludePreamble(ctx Context) Context {
 	if header, ok := ctx.Document.Header(); ok {
 		header.Elements = insertPreamble(header.Elements)
 		ctx.Document.Elements[0] = header // need to update the header in the parent doc as we don't use pointers here.
-		return
+	} else {
+		ctx.Document.Elements = insertPreamble(ctx.Document.Elements)
 	}
-	ctx.Document.Elements = insertPreamble(ctx.Document.Elements)
+	return ctx
 }
 
 func insertPreamble(blocks []interface{}) []interface{} {

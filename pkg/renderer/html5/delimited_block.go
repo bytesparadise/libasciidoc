@@ -132,7 +132,7 @@ func init() {
 		})
 }
 
-func renderDelimitedBlock(ctx *renderer.Context, b types.DelimitedBlock) ([]byte, error) {
+func renderDelimitedBlock(ctx renderer.Context, b types.DelimitedBlock) ([]byte, error) {
 	log.Debugf("rendering delimited block of kind '%v'", b.Attributes[types.AttrKind])
 	var err error
 	kind := b.Kind
@@ -156,7 +156,7 @@ func renderDelimitedBlock(ctx *renderer.Context, b types.DelimitedBlock) ([]byte
 	}
 }
 
-func renderFencedBlock(ctx *renderer.Context, b types.DelimitedBlock) ([]byte, error) {
+func renderFencedBlock(ctx renderer.Context, b types.DelimitedBlock) ([]byte, error) {
 	previouslyWithin := ctx.SetWithinDelimitedBlock(true)
 	previouslyInclude := ctx.SetIncludeBlankLine(true)
 	defer func() {
@@ -179,7 +179,7 @@ func renderFencedBlock(ctx *renderer.Context, b types.DelimitedBlock) ([]byte, e
 	return result.Bytes(), err
 }
 
-func renderListingBlock(ctx *renderer.Context, b types.DelimitedBlock) ([]byte, error) {
+func renderListingBlock(ctx renderer.Context, b types.DelimitedBlock) ([]byte, error) {
 	previouslyWithin := ctx.SetWithinDelimitedBlock(true)
 	previouslyInclude := ctx.SetIncludeBlankLine(true)
 	defer func() {
@@ -202,7 +202,7 @@ func renderListingBlock(ctx *renderer.Context, b types.DelimitedBlock) ([]byte, 
 	return result.Bytes(), err
 }
 
-func renderSourceBlock(ctx *renderer.Context, b types.DelimitedBlock) ([]byte, error) {
+func renderSourceBlock(ctx renderer.Context, b types.DelimitedBlock) ([]byte, error) {
 	previouslyWithin := ctx.SetWithinDelimitedBlock(true)
 	previouslyInclude := ctx.SetIncludeBlankLine(true)
 	defer func() {
@@ -228,7 +228,7 @@ func renderSourceBlock(ctx *renderer.Context, b types.DelimitedBlock) ([]byte, e
 	return result.Bytes(), err
 }
 
-func renderExampleBlock(ctx *renderer.Context, b types.DelimitedBlock) ([]byte, error) {
+func renderExampleBlock(ctx renderer.Context, b types.DelimitedBlock) ([]byte, error) {
 	result := bytes.NewBuffer(nil)
 	if k, ok := b.Attributes[types.AttrAdmonitionKind].(types.AdmonitionKind); ok {
 		err := admonitionBlockTmpl.Execute(result, ContextualPipeline{
@@ -271,7 +271,7 @@ func renderExampleBlock(ctx *renderer.Context, b types.DelimitedBlock) ([]byte, 
 	return result.Bytes(), err
 }
 
-func renderQuoteBlock(ctx *renderer.Context, b types.DelimitedBlock) ([]byte, error) {
+func renderQuoteBlock(ctx renderer.Context, b types.DelimitedBlock) ([]byte, error) {
 	result := bytes.NewBuffer(nil)
 	err := quoteBlockTmpl.Execute(result, ContextualPipeline{
 		Context: ctx,
@@ -290,7 +290,7 @@ func renderQuoteBlock(ctx *renderer.Context, b types.DelimitedBlock) ([]byte, er
 	return result.Bytes(), err
 }
 
-func renderVerseBlock(ctx *renderer.Context, b types.DelimitedBlock) ([]byte, error) {
+func renderVerseBlock(ctx renderer.Context, b types.DelimitedBlock) ([]byte, error) {
 	result := bytes.NewBuffer(nil)
 	err := verseBlockTmpl.Execute(result, ContextualPipeline{
 		Context: ctx,
@@ -309,7 +309,7 @@ func renderVerseBlock(ctx *renderer.Context, b types.DelimitedBlock) ([]byte, er
 	return result.Bytes(), err
 }
 
-func renderVerseBlockElement(ctx *renderer.Context, element interface{}) ([]byte, error) {
+func renderVerseBlockElement(ctx renderer.Context, element interface{}) ([]byte, error) {
 	before := ctx.SetIncludeBlankLine(true)
 	defer ctx.SetIncludeBlankLine(before)
 	switch e := element.(type) {
@@ -322,7 +322,7 @@ func renderVerseBlockElement(ctx *renderer.Context, element interface{}) ([]byte
 	}
 }
 
-func renderVerseBlockParagraph(ctx *renderer.Context, p types.Paragraph) ([]byte, error) {
+func renderVerseBlockParagraph(ctx renderer.Context, p types.Paragraph) ([]byte, error) {
 	log.Debugf("rendering paragraph with %d line(s) within a delimited block or a list", len(p.Lines))
 	result := bytes.NewBuffer(nil)
 	err := verseBlockParagraphTmpl.Execute(result, ContextualPipeline{
@@ -336,7 +336,7 @@ func renderVerseBlockParagraph(ctx *renderer.Context, p types.Paragraph) ([]byte
 	return result.Bytes(), err
 }
 
-func renderSidebarBlock(ctx *renderer.Context, b types.DelimitedBlock) ([]byte, error) {
+func renderSidebarBlock(ctx renderer.Context, b types.DelimitedBlock) ([]byte, error) {
 	result := bytes.NewBuffer(nil)
 	err := sidebarBlockTmpl.Execute(result, ContextualPipeline{
 		Context: ctx,

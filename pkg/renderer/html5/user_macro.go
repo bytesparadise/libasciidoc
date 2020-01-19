@@ -7,7 +7,7 @@ import (
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 )
 
-func renderUserMacro(ctx *renderer.Context, um types.UserMacro) ([]byte, error) {
+func renderUserMacro(ctx renderer.Context, um types.UserMacro) ([]byte, error) {
 	buf := bytes.NewBuffer([]byte{})
 	macro, err := ctx.MacroTemplate(um.Name)
 	if err != nil {

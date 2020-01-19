@@ -3,7 +3,6 @@ package html5_test
 import (
 	"bufio"
 	"bytes"
-	"context"
 	"os"
 
 	"github.com/bytesparadise/libasciidoc/pkg/parser"
@@ -25,8 +24,8 @@ var _ = Describe("article.adoc", func() {
 		Expect(err).ToNot(HaveOccurred())
 		GinkgoT().Logf("actual document: `%s`", spew.Sdump(doc))
 		buff := bytes.NewBuffer(nil)
-		rendererCtx := renderer.Wrap(context.Background(), doc)
-		_, err = html5.Render(rendererCtx, buff)
+		ctx := renderer.NewContext(doc)
+		_, err = html5.Render(ctx, buff)
 		Expect(err).ToNot(HaveOccurred())
 	})
 })

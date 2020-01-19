@@ -30,7 +30,7 @@ func init() {
 
 }
 
-func renderOrderedList(ctx *renderer.Context, l types.OrderedList) ([]byte, error) {
+func renderOrderedList(ctx renderer.Context, l types.OrderedList) ([]byte, error) {
 	result := bytes.NewBuffer(nil)
 	err := orderedListTmpl.Execute(result, ContextualPipeline{
 		Context: ctx,

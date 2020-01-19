@@ -12,11 +12,11 @@ import (
 )
 
 // Render renders the given document in HTML and writes the result in the given `writer`
-func Render(ctx *renderer.Context, output io.Writer) (map[string]interface{}, error) {
+func Render(ctx renderer.Context, output io.Writer) (map[string]interface{}, error) {
 	return renderDocument(ctx, output)
 }
 
-func renderElements(ctx *renderer.Context, elements []interface{}) ([]byte, error) {
+func renderElements(ctx renderer.Context, elements []interface{}) ([]byte, error) {
 	log.Debugf("rendering %d elements(s)...", len(elements))
 	buff := bytes.NewBuffer(nil)
 	hasContent := false
@@ -51,7 +51,7 @@ func renderElements(ctx *renderer.Context, elements []interface{}) ([]byte, erro
 
 // renderListElements is similar to the `renderElements` func above,
 // but it sets the `withinList` context flag to true for the first element only
-func renderListElements(ctx *renderer.Context, elements []interface{}) ([]byte, error) {
+func renderListElements(ctx renderer.Context, elements []interface{}) ([]byte, error) {
 	log.Debugf("rendering list with %d element(s)...", len(elements))
 	buff := bytes.NewBuffer(nil)
 	hasContent := false
@@ -80,7 +80,7 @@ func renderListElements(ctx *renderer.Context, elements []interface{}) ([]byte, 
 }
 
 // nolint: gocyclo
-func renderElement(ctx *renderer.Context, element interface{}) ([]byte, error) {
+func renderElement(ctx renderer.Context, element interface{}) ([]byte, error) {
 	// log.Debugf("rendering element of type `%T`", element)
 	switch e := element.(type) {
 	case []interface{}:
@@ -135,7 +135,7 @@ func renderElement(ctx *renderer.Context, element interface{}) ([]byte, error) {
 }
 
 // nolint: gocyclo
-func renderPlainText(ctx *renderer.Context, element interface{}) ([]byte, error) {
+func renderPlainText(ctx renderer.Context, element interface{}) ([]byte, error) {
 	log.Debugf("rendering plain string for element of type %T", element)
 	switch element := element.(type) {
 	case []interface{}:

@@ -20,7 +20,7 @@ func init() {
 	externalCrossReferenceTmpl = newTextTemplate("external cross reference", `<a href="{{ .Href }}">{{ .Label }}</a>`)
 }
 
-func renderInternalCrossReference(ctx *renderer.Context, xref types.InternalCrossReference) ([]byte, error) {
+func renderInternalCrossReference(ctx renderer.Context, xref types.InternalCrossReference) ([]byte, error) {
 	log.Debugf("rendering cross reference with ID: %s", xref.ID)
 	result := bytes.NewBuffer(nil)
 	var label string
@@ -52,7 +52,7 @@ func renderInternalCrossReference(ctx *renderer.Context, xref types.InternalCros
 	return result.Bytes(), nil
 }
 
-func renderExternalCrossReference(ctx *renderer.Context, xref types.ExternalCrossReference) ([]byte, error) {
+func renderExternalCrossReference(ctx renderer.Context, xref types.ExternalCrossReference) ([]byte, error) {
 	log.Debugf("rendering cross reference with ID: %s", xref.Location)
 	result := bytes.NewBuffer(nil)
 	label, err := renderInlineElements(ctx, xref.Label)

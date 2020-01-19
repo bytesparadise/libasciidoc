@@ -8,7 +8,7 @@ import (
 )
 
 // ProcessDocumentHeader includes the authors and revision in the document attributes
-func ProcessDocumentHeader(ctx *Context) {
+func ProcessDocumentHeader(ctx Context) Context {
 	if authors, ok := ctx.Document.Authors(); ok {
 		for i, author := range authors {
 			var part1, part2, part3, email string
@@ -70,6 +70,7 @@ func ProcessDocumentHeader(ctx *Context) {
 		ctx.Document.Attributes.AddNonEmpty("revdate", revision.Revdate)
 		ctx.Document.Attributes.AddNonEmpty("revremark", revision.Revremark)
 	}
+	return ctx
 }
 
 func key(k string, i int) string {

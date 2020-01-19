@@ -47,7 +47,7 @@ type TableOfContentsSection struct {
 	Elements template.HTML
 }
 
-func renderTableOfContents(ctx *renderer.Context, m types.TableOfContentsMacro) ([]byte, error) { //nolint:unparam
+func renderTableOfContents(ctx renderer.Context, m types.TableOfContentsMacro) ([]byte, error) { //nolint:unparam
 	log.Debug("rendering table of contents...")
 	renderedSections, err := renderTableOfContentsSections(ctx, ctx.Document.Elements, 1)
 	if err != nil {
@@ -68,7 +68,7 @@ func renderTableOfContents(ctx *renderer.Context, m types.TableOfContentsMacro) 
 	return result.Bytes(), nil
 }
 
-func renderTableOfContentsSections(ctx *renderer.Context, elements []interface{}, currentLevel int) (template.HTML, error) {
+func renderTableOfContentsSections(ctx renderer.Context, elements []interface{}, currentLevel int) (template.HTML, error) {
 	sections := make([]TableOfContentsSection, 0)
 	for _, element := range elements {
 		log.Debugf("traversing document element of type %T", element)

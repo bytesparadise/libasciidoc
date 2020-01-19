@@ -1,7 +1,6 @@
 package testsupport_test
 
 import (
-	"context"
 	"fmt"
 
 	"github.com/bytesparadise/libasciidoc/pkg/renderer"
@@ -105,8 +104,8 @@ var _ = Describe("document preamble assertions", func() {
 		Expect(err).ToNot(HaveOccurred())
 		Expect(result).To(BeFalse())
 		// also verify messages
-		ctx := renderer.Wrap(context.Background(), actual)
-		renderer.IncludePreamble(ctx)
+		ctx := renderer.NewContext(actual)
+		ctx = renderer.IncludePreamble(ctx)
 		obtained := ctx.Document
 		GinkgoT().Logf(matcher.FailureMessage(actual))
 		GinkgoT().Logf(fmt.Sprintf("expected documents to match:\n%s", compare(obtained, expected)))

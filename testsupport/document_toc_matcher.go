@@ -1,7 +1,6 @@
 package testsupport
 
 import (
-	"context"
 	"fmt"
 
 	"github.com/bytesparadise/libasciidoc/pkg/renderer"
@@ -29,8 +28,8 @@ func (m *tocMatcher) Match(actual interface{}) (success bool, err error) {
 	if !ok {
 		return false, errors.Errorf("HaveTableOfContents matcher expects a Document (actual: %T)", actual)
 	}
-	ctx := renderer.Wrap(context.Background(), doc)
-	renderer.IncludeTableOfContents(ctx)
+	ctx := renderer.NewContext(doc)
+	ctx = renderer.IncludeTableOfContents(ctx)
 	m.actual = ctx.Document
 	m.comparison = compare(m.actual, m.expected)
 	return m.comparison.diffs == "", nil

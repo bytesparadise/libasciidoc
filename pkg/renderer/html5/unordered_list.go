@@ -28,7 +28,7 @@ func init() {
 		})
 }
 
-func renderUnorderedList(ctx *renderer.Context, l types.UnorderedList) ([]byte, error) {
+func renderUnorderedList(ctx renderer.Context, l types.UnorderedList) ([]byte, error) {
 	// make sure nested elements are aware of that their rendering occurs within a list
 	checkList := false
 	if len(l.Items) > 0 {

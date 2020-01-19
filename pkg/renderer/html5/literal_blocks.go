@@ -27,7 +27,7 @@ func init() {
 	})
 }
 
-func renderLiteralBlock(ctx *renderer.Context, b types.LiteralBlock) ([]byte, error) {
+func renderLiteralBlock(ctx renderer.Context, b types.LiteralBlock) ([]byte, error) {
 	log.Debugf("rendering delimited block with content: %s", b.Lines)
 	var lines []string
 	switch b.Attributes.GetAsString(types.AttrLiteralBlockType) {

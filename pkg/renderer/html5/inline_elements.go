@@ -22,7 +22,7 @@ func verbatim() renderLinesOption {
 	}
 }
 
-func renderInlineElements(ctx *renderer.Context, elements []interface{}, options ...renderLinesOption) ([]byte, error) {
+func renderInlineElements(ctx renderer.Context, elements []interface{}, options ...renderLinesOption) ([]byte, error) {
 	log.Debugf("rendering line with %d element(s)...", len(elements))
 	config := renderLinesConfig{
 		render: renderElement,
@@ -55,4 +55,4 @@ func renderInlineElements(ctx *renderer.Context, elements []interface{}, options
 	return buf.Bytes(), nil
 }
 
-type renderFunc func(*renderer.Context, interface{}) ([]byte, error)
+type renderFunc func(renderer.Context, interface{}) ([]byte, error)

@@ -51,7 +51,7 @@ func init() {
 		`<h{{ .Level }} id="{{ .ID }}">{{ .Content }}</h{{ .Level }}>`)
 }
 
-func renderPreamble(ctx *renderer.Context, p types.Preamble) ([]byte, error) {
+func renderPreamble(ctx renderer.Context, p types.Preamble) ([]byte, error) {
 	log.Debugf("rendering preamble...")
 	result := bytes.NewBuffer(nil)
 	// the <div id="preamble"> wrapper is only necessary
@@ -77,7 +77,7 @@ func renderPreamble(ctx *renderer.Context, p types.Preamble) ([]byte, error) {
 	return result.Bytes(), nil
 }
 
-func renderSection(ctx *renderer.Context, s types.Section) ([]byte, error) {
+func renderSection(ctx renderer.Context, s types.Section) ([]byte, error) {
 	log.Debugf("rendering section level %d", s.Level)
 	renderedSectionTitle, err := renderSectionTitle(ctx, s)
 	if err != nil {
@@ -109,7 +109,7 @@ func renderSection(ctx *renderer.Context, s types.Section) ([]byte, error) {
 	return result.Bytes(), nil
 }
 
-func renderSectionTitle(ctx *renderer.Context, s types.Section) (string, error) {
+func renderSectionTitle(ctx renderer.Context, s types.Section) (string, error) {
 	result := bytes.NewBuffer(nil)
 	renderedContent, err := renderInlineElements(ctx, s.Title)
 	if err != nil {

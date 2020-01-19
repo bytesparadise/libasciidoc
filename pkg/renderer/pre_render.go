@@ -9,10 +9,10 @@ import (
 // - wraps elements in a preamble
 // - generates the ToC
 // - processes the document headers (added in the document attributes)
-func Prerender(ctx *Context) error {
-	IncludePreamble(ctx)
-	IncludeTableOfContents(ctx)
-	ProcessDocumentHeader(ctx)
+func Prerender(ctx Context) error {
+	ctx = IncludePreamble(ctx)
+	ctx = IncludeTableOfContents(ctx)
+	ctx = ProcessDocumentHeader(ctx)
 	if log.IsLevelEnabled(log.DebugLevel) {
 		log.Debug("pre-rendered document:")
 		spew.Dump(ctx.Document)
