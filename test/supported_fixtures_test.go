@@ -2,7 +2,6 @@ package test_test
 
 import (
 	"bytes"
-	"context"
 	"io/ioutil"
 	"os/exec"
 	"path/filepath"
@@ -79,7 +78,7 @@ func entries(pattern string) []TableEntry {
 func convert(sourcePath string) (string, error) {
 	// generate the HTML output
 	buff := bytes.NewBuffer(nil)
-	_, err := libasciidoc.ConvertFileToHTML(context.Background(), sourcePath, buff)
+	_, err := libasciidoc.ConvertFileToHTML(sourcePath, buff)
 	if err != nil {
 		return "", err
 	}

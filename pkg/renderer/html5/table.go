@@ -39,7 +39,7 @@ func init() {
 		})
 }
 
-func renderTable(ctx *renderer.Context, t types.Table) ([]byte, error) {
+func renderTable(ctx renderer.Context, t types.Table) ([]byte, error) {
 	result := bytes.NewBuffer(nil)
 	// inspect first line to obtain cell width ratio
 	widths := []string{}

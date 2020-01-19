@@ -15,7 +15,7 @@ var stringTmpl = newTextTemplate("string element", "{{ escape . }}",
 		"escape": EscapeString,
 	})
 
-func renderStringElement(ctx *renderer.Context, str types.StringElement) ([]byte, error) { //nolint: unparam
+func renderStringElement(ctx renderer.Context, str types.StringElement) ([]byte, error) { //nolint: unparam
 	buf := bytes.NewBuffer(nil)
 	err := stringTmpl.Execute(buf, str.Content)
 	if err != nil {

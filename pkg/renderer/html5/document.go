@@ -49,7 +49,7 @@ Last updated {{ .LastUpdated }}
 }
 
 // renderDocument renders the whole document, including the HEAD and BODY containers if needed
-func renderDocument(ctx *renderer.Context, output io.Writer) (map[string]interface{}, error) {
+func renderDocument(ctx renderer.Context, output io.Writer) (map[string]interface{}, error) {
 	renderedTitle, err := renderDocumentTitle(ctx)
 	if err != nil {
 		return nil, errors.Wrapf(err, "unable to render full document")
@@ -113,7 +113,7 @@ func renderDocument(ctx *renderer.Context, output io.Writer) (map[string]interfa
 
 // renderDocumentElements renders all document elements, including the footnotes,
 // but not the HEAD and BODY containers
-func renderDocumentElements(ctx *renderer.Context) ([]byte, error) {
+func renderDocumentElements(ctx renderer.Context) ([]byte, error) {
 	elements := []interface{}{}
 	for i, e := range ctx.Document.Elements {
 		switch e := e.(type) {
@@ -160,7 +160,7 @@ func renderDocumentElements(ctx *renderer.Context) ([]byte, error) {
 	return buff.Bytes(), nil
 }
 
-func renderDocumentTitle(ctx *renderer.Context) ([]byte, error) {
+func renderDocumentTitle(ctx renderer.Context) ([]byte, error) {
 	if documentTitle, hasTitle := ctx.Document.Title(); hasTitle {
 		title, err := renderPlainText(ctx, documentTitle)
 		if err != nil {
@@ -171,7 +171,7 @@ func renderDocumentTitle(ctx *renderer.Context) ([]byte, error) {
 	return nil, nil
 }
 
-func renderDocumentHeader(ctx *renderer.Context) ([]byte, error) {
+func renderDocumentHeader(ctx renderer.Context) ([]byte, error) {
 	if documentTitle, hasTitle := ctx.Document.Title(); hasTitle {
 		title, err := renderInlineElements(ctx, documentTitle)
 		if err != nil {

@@ -26,7 +26,7 @@ func init() {
 <span id="email{{ .Index }}" class="email"><a href="mailto:{{ .Email }}">{{ .Email }}</a></span><br>{{ end }}`)
 }
 
-func renderDocumentDetails(ctx *renderer.Context) (*htmltemplate.HTML, error) {
+func renderDocumentDetails(ctx renderer.Context) (*htmltemplate.HTML, error) {
 	if ctx.Document.Attributes.HasAuthors() {
 		authors, err := renderDocumentAuthorsDetails(ctx)
 		if err != nil {
@@ -56,7 +56,7 @@ func renderDocumentDetails(ctx *renderer.Context) (*htmltemplate.HTML, error) {
 	return nil, nil
 }
 
-func renderDocumentAuthorsDetails(ctx *renderer.Context) (*htmltemplate.HTML, error) {
+func renderDocumentAuthorsDetails(ctx renderer.Context) (*htmltemplate.HTML, error) {
 	authorsDetailsBuff := bytes.NewBuffer(nil)
 	i := 1
 	for {

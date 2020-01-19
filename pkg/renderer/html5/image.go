@@ -31,7 +31,7 @@ func init() {
 		})
 }
 
-func renderImageBlock(ctx *renderer.Context, img types.ImageBlock) ([]byte, error) {
+func renderImageBlock(ctx renderer.Context, img types.ImageBlock) ([]byte, error) {
 	result := bytes.NewBuffer(nil)
 	title := ""
 	if t := img.Attributes.GetAsString(types.AttrTitle); t != "" {
@@ -64,7 +64,7 @@ func renderImageBlock(ctx *renderer.Context, img types.ImageBlock) ([]byte, erro
 	return result.Bytes(), nil
 }
 
-func renderInlineImage(ctx *renderer.Context, img types.InlineImage) ([]byte, error) {
+func renderInlineImage(ctx renderer.Context, img types.InlineImage) ([]byte, error) {
 	result := bytes.NewBuffer(nil)
 	err := inlineImageTmpl.Execute(result, struct {
 		Role   string

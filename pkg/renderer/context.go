@@ -1,10 +1,8 @@
 package renderer
 
 import (
-	"context"
 	"errors"
 	"io"
-	"time"
 
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 	log "github.com/sirupsen/logrus"
@@ -18,22 +16,20 @@ type MacroTemplate interface {
 // Context is a custom implementation of the standard golang context.Context interface,
 // which carries the types.Document which is being processed
 type Context struct {
-	context  context.Context
 	Document types.Document
 	options  map[string]interface{}
 	macros   map[string]MacroTemplate
 }
 
-// Wrap wraps the given `ctx` context into a new context which will contain the given `document` document.
-func Wrap(ctx context.Context, document types.Document, options ...Option) *Context {
-	result := &Context{
-		context:  ctx,
+// NewContext returns a new rendering context for the given document.
+func NewContext(document types.Document, options ...Option) Context {
+	result := Context{
 		Document: document,
 		options:  make(map[string]interface{}),
 		macros:   make(map[string]MacroTemplate),
 	}
 	for _, option := range options {
-		option(result)
+		option(&result)
 	}
 	return result
 }
@@ -161,28 +157,4 @@ func (ctx *Context) MacroTemplate(name string) (MacroTemplate, error) {
 		return macro, nil
 	}
 	return nil, errors.New("unknown user macro: " + name)
-}
-
-// -----------------------
-// context.Context methods
-// -----------------------
-
-// Deadline wrapper implementation of context.Context.Deadline()
-func (ctx *Context) Deadline() (deadline time.Time, ok bool) {
-	return ctx.context.Deadline()
-}
-
-// Done wrapper implementation of context.Context.Done()
-func (ctx *Context) Done() <-chan struct{} {
-	return ctx.context.Done()
-}
-
-// Err wrapper implementation of context.Context.Err()
-func (ctx *Context) Err() error {
-	return ctx.context.Err()
-}
-
-// Value wrapper implementation of context.Context.Value(interface{})
-func (ctx *Context) Value(key interface{}) interface{} {
-	return ctx.context.Value(key)
 }

@@ -3,7 +3,6 @@
 package libasciidoc
 
 import (
-	"context"
 	"io"
 	"os"
 	"time"
@@ -28,7 +27,7 @@ var (
 // ConvertFileToHTML converts the content of the given filename into an HTML document.
 // The conversion result is written in the given writer `output`, whereas the document metadata (title, etc.) (or an error if a problem occurred) is returned
 // as the result of the function call.
-func ConvertFileToHTML(ctx context.Context, filename string, output io.Writer, options ...renderer.Option) (map[string]interface{}, error) {
+func ConvertFileToHTML(filename string, output io.Writer, options ...renderer.Option) (map[string]interface{}, error) {
 	file, err := os.Open(filename)
 	if err != nil {
 		return nil, errors.Wrapf(err, "error opening %s", filename)
@@ -40,12 +39,12 @@ func ConvertFileToHTML(ctx context.Context, filename string, output io.Writer, o
 		return nil, errors.Wrapf(err, "error opening %s", filename)
 	}
 	options = append(options, renderer.LastUpdated(stat.ModTime()))
-	return ConvertToHTML(ctx, filename, file, output, options...)
+	return ConvertToHTML(filename, file, output, options...)
 }
 
 // ConvertToHTML converts the content of the given reader `r` into a full HTML document, written in the given writer `output`.
 // Returns an error if a problem occurred
-func ConvertToHTML(ctx context.Context, filename string, r io.Reader, output io.Writer, options ...renderer.Option) (map[string]interface{}, error) {
+func ConvertToHTML(filename string, r io.Reader, output io.Writer, options ...renderer.Option) (map[string]interface{}, error) {
 	start := time.Now()
 	defer func() {
 		duration := time.Since(start)
@@ -56,7 +55,7 @@ func ConvertToHTML(ctx context.Context, filename string, r io.Reader, output io.
 	if err != nil {
 		return nil, errors.Wrapf(err, "error while parsing the document")
 	}
-	rendererCtx := renderer.Wrap(ctx, doc, options...)
+	rendererCtx := renderer.NewContext(doc, options...)
 	// insert tables of contents, preamble and process file inclusions
 	err = renderer.Prerender(rendererCtx)
 	if err != nil {

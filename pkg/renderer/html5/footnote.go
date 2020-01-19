@@ -36,7 +36,7 @@ func init() {
 </div>{{ end }}{{ end }}
 </div>`,
 		texttemplate.FuncMap{
-			"renderFootnoteContent": func(ctx *renderer.Context, elements []interface{}) (string, error) {
+			"renderFootnoteContent": func(ctx renderer.Context, elements []interface{}) (string, error) {
 				result, err := renderInlineElements(ctx, elements)
 				if err != nil {
 					return "", errors.Wrapf(err, "unable to render foot note content")
@@ -51,7 +51,7 @@ func renderFootnoteIndex(idx int) string {
 	return strconv.Itoa(idx + 1)
 }
 
-func renderFootnote(ctx *renderer.Context, note types.Footnote) ([]byte, error) {
+func renderFootnote(ctx renderer.Context, note types.Footnote) ([]byte, error) {
 	result := bytes.NewBuffer(nil)
 	ref := ""
 	noteRef, hasRef := ctx.Document.FootnoteReferences[note.Ref]
@@ -102,7 +102,7 @@ func renderFootnote(ctx *renderer.Context, note types.Footnote) ([]byte, error) 
 	return result.Bytes(), nil
 }
 
-func renderFootnotes(ctx *renderer.Context, notes types.Footnotes) ([]byte, error) {
+func renderFootnotes(ctx renderer.Context, notes types.Footnotes) ([]byte, error) {
 	// skip if there's no foot note in the doc
 	if len(notes) == 0 {
 		return []byte{}, nil

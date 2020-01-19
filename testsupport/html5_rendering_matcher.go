@@ -2,7 +2,6 @@ package testsupport
 
 import (
 	"bytes"
-	"context"
 	"fmt"
 	"os"
 	"strings"
@@ -55,7 +54,7 @@ func (m *html5BodyMatcher) Match(actual interface{}) (success bool, err error) {
 	}
 	contentReader := strings.NewReader(content)
 	resultWriter := bytes.NewBuffer(nil)
-	metadata, err := libasciidoc.ConvertToHTML(context.Background(), m.filename, contentReader, resultWriter, m.opts...)
+	metadata, err := libasciidoc.ConvertToHTML(m.filename, contentReader, resultWriter, m.opts...)
 	if err != nil {
 		return false, err
 	}
@@ -112,7 +111,7 @@ func (m *html5TitleMatcher) Match(actual interface{}) (success bool, err error) 
 	}
 	contentReader := strings.NewReader(content)
 	resultWriter := bytes.NewBuffer(nil)
-	metadata, err := libasciidoc.ConvertToHTML(context.Background(), m.filename, contentReader, resultWriter, renderer.IncludeHeaderFooter(false))
+	metadata, err := libasciidoc.ConvertToHTML(m.filename, contentReader, resultWriter, renderer.IncludeHeaderFooter(false))
 	if err != nil {
 		return false, err
 	}
@@ -164,7 +163,7 @@ func (m *html5DocumentMatcher) Match(actual interface{}) (success bool, err erro
 		return false, errors.Errorf("RenderHTML5Body matcher expects a string (actual: %T)", actual)
 	}
 	resultWriter := bytes.NewBuffer(nil)
-	_, err = libasciidoc.ConvertFileToHTML(context.Background(), filename, resultWriter, renderer.IncludeHeaderFooter(true))
+	_, err = libasciidoc.ConvertFileToHTML(filename, resultWriter, renderer.IncludeHeaderFooter(true))
 	if err != nil {
 		return false, err
 	}

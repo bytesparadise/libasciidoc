@@ -1,7 +1,6 @@
 package testsupport_test
 
 import (
-	"context"
 	"fmt"
 
 	"github.com/bytesparadise/libasciidoc/pkg/renderer"
@@ -54,7 +53,7 @@ var _ = Describe("document metadata assertions", func() {
 		Expect(err).ToNot(HaveOccurred())
 		Expect(result).To(BeFalse())
 		// also verify the messages
-		ctx := renderer.Wrap(context.Background(), actual)
+		ctx := renderer.NewContext(actual)
 		renderer.ProcessDocumentHeader(ctx)
 		obtained := ctx.Document.Attributes
 		Expect(matcher.FailureMessage(actual)).To(Equal(fmt.Sprintf("expected document metadata to match:\n%s", compare(obtained, expected))))

@@ -73,7 +73,7 @@ func init() {
 
 }
 
-func renderLabeledList(ctx *renderer.Context, l types.LabeledList) ([]byte, error) {
+func renderLabeledList(ctx renderer.Context, l types.LabeledList) ([]byte, error) {
 	var tmpl texttemplate.Template
 	tmpl, err := getLabeledListTmpl(l)
 	if err != nil {
