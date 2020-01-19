@@ -962,7 +962,7 @@ const (
 
 // NewInlineElements initializes a new `InlineElements` from the given values
 func NewInlineElements(elements ...interface{}) ([]interface{}, error) {
-	result := MergeStringElements(elements...)
+	result := Merge(elements...)
 	return result, nil
 
 }
@@ -1408,11 +1408,10 @@ const (
 )
 
 // NewQuotedText initializes a new `QuotedText` from the given kind and content
-func NewQuotedText(kind QuotedTextKind, content ...interface{}) (QuotedText, error) {
-	elements := MergeStringElements(content...)
+func NewQuotedText(kind QuotedTextKind, elements ...interface{}) (QuotedText, error) {
 	return QuotedText{
 		Kind:     kind,
-		Elements: elements,
+		Elements: Merge(elements),
 	}, nil
 }
 
@@ -1471,7 +1470,7 @@ const (
 func NewPassthrough(kind PassthroughKind, elements []interface{}) (Passthrough, error) {
 	return Passthrough{
 		Kind:     kind,
-		Elements: MergeStringElements(elements...),
+		Elements: Merge(elements...),
 	}, nil
 
 }
@@ -1738,7 +1737,7 @@ type IncludedFileLine []interface{}
 
 // NewIncludedFileLine returns a new IncludedFileLine
 func NewIncludedFileLine(content []interface{}) (IncludedFileLine, error) {
-	return IncludedFileLine(MergeStringElements(content)), nil
+	return IncludedFileLine(Merge(content)), nil
 }
 
 // HasTag returns true if the line has at least one inclusion tag (start or end), false otherwise
@@ -1805,7 +1804,7 @@ type Location struct {
 
 // NewLocation return a new location with the given elements
 func NewLocation(elements []interface{}) (Location, error) {
-	elements = MergeStringElements(elements)
+	elements = Merge(elements)
 	log.Debugf("new location: %+v", elements)
 	return Location{
 		Elements: elements,
