@@ -1,6 +1,7 @@
 package libasciidoc_test
 
 import (
+	"github.com/bytesparadise/libasciidoc/pkg/renderer"
 	. "github.com/bytesparadise/libasciidoc/testsupport"
 
 	. "github.com/onsi/ginkgo"
@@ -191,6 +192,7 @@ a paragraph with _italic content_`
 <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="libasciidoc">
+<link type="text/css" rel="stylesheet" href="path/to/style.css">
 <title>Chapter A</title>
 </head>
 <body class="article">
@@ -209,7 +211,7 @@ Last updated {{.LastUpdated}}
 </div>
 </body>
 </html>`
-			Expect("test/includes/chapter-a.adoc").To(RenderHTML5Document(expectedContent))
+			Expect("test/includes/chapter-a.adoc").To(RenderHTML5Document(expectedContent, renderer.IncludeCSS("path/to/style.css")))
 		})
 
 	})

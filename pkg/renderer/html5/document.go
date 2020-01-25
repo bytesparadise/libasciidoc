@@ -23,7 +23,8 @@ func init() {
 <meta charset="UTF-8">
 <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">{{ if .Generator }}
-<meta name="generator" content="{{ .Generator }}">{{ end }}
+<meta name="generator" content="{{ .Generator }}">{{ end }}{{ if .CSS}}
+<link type="text/css" rel="stylesheet" href="{{ .CSS }}">{{ end }}
 <title>{{ escape .Title }}</title>
 </head>
 <body class="article">
@@ -78,6 +79,7 @@ func renderDocument(ctx renderer.Context, output io.Writer) (map[string]interfac
 			Content     htmltemplate.HTML
 			RevNumber   string
 			LastUpdated string
+			CSS         string
 			Details     *htmltemplate.HTML
 		}{
 			Generator:   "libasciidoc", // TODO: externalize this value and include the lib version ?
@@ -86,6 +88,7 @@ func renderDocument(ctx renderer.Context, output io.Writer) (map[string]interfac
 			Content:     htmltemplate.HTML(string(renderedElements)), //nolint: gosec
 			RevNumber:   revNumber,
 			LastUpdated: ctx.LastUpdated(),
+			CSS:         ctx.CSS(),
 			Details:     documentDetails,
 		})
 		if err != nil {

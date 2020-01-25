@@ -22,6 +22,7 @@ func NewRootCmd() *cobra.Command {
 	var noHeaderFooter bool
 	var outputName string
 	var logLevel string
+	var css string
 
 	rootCmd := &cobra.Command{
 		Use:   "libasciidoc [flags] FILE",
@@ -48,7 +49,7 @@ func NewRootCmd() *cobra.Command {
 					defer close()
 					path, _ := filepath.Abs(source)
 					log.Debugf("Starting to process file %v", path)
-					_, err := libasciidoc.ConvertFileToHTML(source, out, renderer.IncludeHeaderFooter(!noHeaderFooter))
+					_, err := libasciidoc.ConvertFileToHTML(source, out, renderer.IncludeHeaderFooter(!noHeaderFooter), renderer.IncludeCSS(css))
 					if err != nil {
 						return err
 					}
@@ -60,7 +61,8 @@ func NewRootCmd() *cobra.Command {
 	flags := rootCmd.Flags()
 	flags.BoolVarP(&noHeaderFooter, "no-header-footer", "s", false, "do not render header/footer (default: false)")
 	flags.StringVarP(&outputName, "out-file", "o", "", "output file (default: based on path of input file); use - to output to STDOUT")
-	rootCmd.PersistentFlags().StringVar(&logLevel, "log", "warning", "log level to set [debug|info|warning|error|fatal|panic]")
+	flags.StringVar(&logLevel, "log", "warning", "log level to set [debug|info|warning|error|fatal|panic]")
+	flags.StringVar(&css, "css", "", "the path to the CSS file to link to the document")
 	return rootCmd
 }
 
