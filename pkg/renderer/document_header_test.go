@@ -28,7 +28,7 @@ var _ = Describe("document metadata", func() {
 				},
 			}
 			expected := types.DocumentAttributes{}
-			Expect(source).To(HaveMetadata(expected))
+			Expect(source).To(HaveAttributes(expected))
 		})
 
 		It("should include single author without middlename", func() {
@@ -60,7 +60,7 @@ var _ = Describe("document metadata", func() {
 				"authorinitials": "KC",
 				"email":          "kismet@asciidoctor.org",
 			}
-			Expect(source).To(HaveMetadata(expected))
+			Expect(source).To(HaveAttributes(expected))
 		})
 
 		It("should include single author without middlename, last name and email", func() {
@@ -89,7 +89,7 @@ var _ = Describe("document metadata", func() {
 				"firstname":      "Kismet",
 				"authorinitials": "K",
 			}
-			Expect(source).To(HaveMetadata(expected))
+			Expect(source).To(HaveAttributes(expected))
 		})
 
 		It("should include multiple authors", func() {
@@ -131,7 +131,7 @@ var _ = Describe("document metadata", func() {
 				"authorinitials_2": "Lh",
 				"email_2":          "lazarus@asciidoctor.org",
 			}
-			Expect(source).To(HaveMetadata(expected))
+			Expect(source).To(HaveAttributes(expected))
 		})
 	})
 
@@ -171,7 +171,7 @@ var _ = Describe("document metadata", func() {
 				"revdate":        "June 19, 2017",
 				"revremark":      "First incarnation",
 			}
-			Expect(source).To(HaveMetadata(expected))
+			Expect(source).To(HaveAttributes(expected))
 		})
 	})
 

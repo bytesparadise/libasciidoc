@@ -17,8 +17,11 @@ type MacroTemplate interface {
 // which carries the types.Document which is being processed
 type Context struct {
 	Document types.Document
-	options  map[string]interface{}
-	macros   map[string]MacroTemplate
+	// TableOfContents exists even if the document did not specify the `:toc:` attribute.
+	// It will take into account the configured `:toclevels:` attribute value.
+	TableOfContents types.TableOfContents
+	options         map[string]interface{}
+	macros          map[string]MacroTemplate
 }
 
 // NewContext returns a new rendering context for the given document.

@@ -108,6 +108,30 @@ func (d Document) Header() (Section, bool) {
 }
 
 // ------------------------------------------
+// Document Metadata
+// ------------------------------------------
+
+// Metadata the document metadata returned after the rendering
+type Metadata struct {
+	Title           string
+	LastUpdated     string
+	TableOfContents TableOfContents
+}
+
+// TableOfContents the table of contents
+type TableOfContents struct {
+	Sections []ToCSection
+}
+
+// ToCSection a section in the table of contents
+type ToCSection struct {
+	ID       string
+	Level    int
+	Title    string // the title as it was rendered in HTML
+	Children []ToCSection
+}
+
+// ------------------------------------------
 // Document Element
 // ------------------------------------------
 
@@ -289,8 +313,9 @@ const (
 // Table of Contents
 // ------------------------------------------
 
-// TableOfContentsMacro the structure for Table of Contents
-type TableOfContentsMacro struct {
+// TableOfContentsPlaceHolder a place holder for Table of Contents, so
+// the renderer knows when to render it.
+type TableOfContentsPlaceHolder struct {
 }
 
 // ------------------------------------------

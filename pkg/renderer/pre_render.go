@@ -11,7 +11,7 @@ import (
 // - processes the document headers (added in the document attributes)
 func Prerender(ctx Context) error {
 	ctx = IncludePreamble(ctx)
-	ctx = IncludeTableOfContents(ctx)
+	ctx = IncludeTableOfContentsPlaceHolder(ctx)
 	ctx = ProcessDocumentHeader(ctx)
 	if log.IsLevelEnabled(log.DebugLevel) {
 		log.Debug("pre-rendered document:")

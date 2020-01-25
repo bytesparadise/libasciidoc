@@ -1,6 +1,10 @@
 package libasciidoc_test
 
 import (
+	"time"
+
+	"github.com/bytesparadise/libasciidoc/pkg/renderer"
+	"github.com/bytesparadise/libasciidoc/pkg/types"
 	. "github.com/bytesparadise/libasciidoc/testsupport"
 
 	. "github.com/onsi/ginkgo"
@@ -24,6 +28,8 @@ var _ = Describe("documents", func() {
 	})
 
 	Context("document Body", func() {
+
+		lastUpdated := time.Now()
 
 		It("empty document", func() {
 			// main title alone is not rendered in the body
@@ -104,6 +110,27 @@ a paragraph`
 </div>`
 			Expect(source).To(RenderHTML5Body(expectedContent))
 			Expect(source).To(RenderHTML5Title(expectedTitle))
+			Expect(source).To(HaveMetadata(types.Metadata{
+				Title:       "a document title",
+				LastUpdated: lastUpdated.Format(renderer.LastUpdatedFormat),
+				TableOfContents: types.TableOfContents{
+					Sections: []types.ToCSection{
+						{
+							ID:    "_section_a",
+							Level: 1,
+							Title: "Section A",
+							Children: []types.ToCSection{
+								{
+									ID:       "_section_a_a_a",
+									Level:    3,
+									Title:    "Section A.a.a",
+									Children: []types.ToCSection{},
+								},
+							},
+						},
+					},
+				},
+			}, lastUpdated))
 		})
 
 		It("section levels 1, 2, 3 and 2", func() {
@@ -145,6 +172,33 @@ a paragraph with _italic content_`
 </div>`
 			Expect(source).To(RenderHTML5Body(expectedContent))
 			Expect(source).To(RenderHTML5Title(expectedTitle))
+			Expect(source).To(HaveMetadata(types.Metadata{
+				Title:       "a document title",
+				LastUpdated: lastUpdated.Format(renderer.LastUpdatedFormat),
+				TableOfContents: types.TableOfContents{
+					Sections: []types.ToCSection{
+						{
+							ID:    "_section_a",
+							Level: 1,
+							Title: "Section A",
+							Children: []types.ToCSection{
+								{
+									ID:       "_section_a_a",
+									Level:    2,
+									Title:    "Section A.a",
+									Children: []types.ToCSection{},
+								},
+							},
+						},
+						{
+							ID:       "_section_b",
+							Level:    1,
+							Title:    "Section B",
+							Children: []types.ToCSection{},
+						},
+					},
+				},
+			}, lastUpdated))
 		})
 
 		It("should include adoc file without leveloffset from local file", func() {
@@ -161,6 +215,20 @@ a paragraph with _italic content_`
 </div>
 </div>`
 			Expect(source).To(RenderHTML5Body(expected, WithFilename("foo.adoc")))
+			Expect(source).To(HaveMetadata(types.Metadata{
+				Title:       "",
+				LastUpdated: lastUpdated.Format(renderer.LastUpdatedFormat),
+				TableOfContents: types.TableOfContents{
+					Sections: []types.ToCSection{
+						{
+							ID:       "_grandchild_title",
+							Level:    1,
+							Title:    "grandchild title",
+							Children: []types.ToCSection{},
+						},
+					},
+				},
+			}, lastUpdated))
 		})
 
 		It("should include adoc file without leveloffset from relative file", func() {

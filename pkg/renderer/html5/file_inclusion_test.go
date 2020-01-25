@@ -1,6 +1,10 @@
 package html5_test
 
 import (
+	"time"
+
+	"github.com/bytesparadise/libasciidoc/pkg/renderer"
+	"github.com/bytesparadise/libasciidoc/pkg/types"
 	. "github.com/bytesparadise/libasciidoc/testsupport"
 
 	. "github.com/onsi/ginkgo"
@@ -13,6 +17,7 @@ var _ = Describe("file inclusions", func() {
 	It("should include adoc file without leveloffset from local file", func() {
 		console, reset := ConfigureLogger()
 		defer reset()
+		lastUpdated := time.Now()
 		source := "include::../../../test/includes/grandchild-include.adoc[]"
 		expected := `<div class="sect1">
 <h2 id="_grandchild_title">grandchild title</h2>
@@ -25,7 +30,21 @@ var _ = Describe("file inclusions", func() {
 </div>
 </div>
 </div>`
-		Expect(source).To(RenderHTML5Body(expected, WithFilename("foo.adoc")))
+		Expect(source).To(RenderHTML5Body(expected, WithFilename("foo.adoc"), renderer.LastUpdated(lastUpdated)))
+		Expect(source).To(HaveMetadata(types.Metadata{
+			Title:       "",
+			LastUpdated: lastUpdated.Format(renderer.LastUpdatedFormat),
+			TableOfContents: types.TableOfContents{
+				Sections: []types.ToCSection{
+					{
+						ID:       "_grandchild_title",
+						Level:    1,
+						Title:    "grandchild title",
+						Children: []types.ToCSection{},
+					},
+				},
+			},
+		}, lastUpdated))
 		// verify no error/warning in logs
 		Expect(console).ToNot(ContainAnyMessageWithLevels(log.ErrorLevel, log.WarnLevel))
 	})

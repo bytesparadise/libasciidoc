@@ -8,7 +8,6 @@ import (
 
 	"github.com/bytesparadise/libasciidoc"
 	"github.com/bytesparadise/libasciidoc/pkg/renderer"
-	"github.com/bytesparadise/libasciidoc/pkg/types"
 
 	gomegatypes "github.com/onsi/gomega/types"
 	"github.com/pkg/errors"
@@ -59,9 +58,7 @@ func (m *html5BodyMatcher) Match(actual interface{}) (success bool, err error) {
 		return false, err
 	}
 	if strings.Contains(m.expected, "{{.LastUpdated}}") {
-		if lastUpdated, ok := metadata[types.AttrLastUpdated].(string); ok {
-			m.expected = strings.Replace(m.expected, "{{.LastUpdated}}", lastUpdated, 1)
-		}
+		m.expected = strings.Replace(m.expected, "{{.LastUpdated}}", metadata.LastUpdated, 1)
 	}
 	m.actual = resultWriter.String()
 	m.comparison = compare(m.actual, m.expected)
@@ -115,20 +112,10 @@ func (m *html5TitleMatcher) Match(actual interface{}) (success bool, err error) 
 	if err != nil {
 		return false, err
 	}
-	if metadata == nil {
-		return false, errors.New("no metadata returned")
-	}
 	if m.expected == nil {
-		actualTitle, found := metadata[types.AttrTitle]
-		m.actual = actualTitle
-		return !found, nil
+		return metadata.Title == "", nil
 	}
-
-	actualTitle, ok := metadata[types.AttrTitle].(string)
-	if !ok {
-		return false, errors.Errorf("invalid type of title (%T)", metadata[types.AttrTitle])
-	}
-	m.actual = actualTitle
+	m.actual = metadata.Title
 	return m.expected == m.actual, nil
 }
 
@@ -160,7 +147,7 @@ type html5DocumentMatcher struct {
 func (m *html5DocumentMatcher) Match(actual interface{}) (success bool, err error) {
 	filename, ok := actual.(string)
 	if !ok {
-		return false, errors.Errorf("RenderHTML5Body matcher expects a string (actual: %T)", actual)
+		return false, errors.Errorf("RenderHTML5Document matcher expects a string (actual: %T)", actual)
 	}
 	resultWriter := bytes.NewBuffer(nil)
 	_, err = libasciidoc.ConvertFileToHTML(filename, resultWriter, renderer.IncludeHeaderFooter(true))
@@ -177,9 +164,9 @@ func (m *html5DocumentMatcher) Match(actual interface{}) (success bool, err erro
 }
 
 func (m *html5DocumentMatcher) FailureMessage(_ interface{}) (message string) {
-	return fmt.Sprintf("expected HTML5 bodies to match:\n\texpected: '%v'\n\tactual:   '%v'", m.expected, m.actual)
+	return fmt.Sprintf("expected HTML5 documents to match:\n\texpected: '%v'\n\tactual:   '%v'", m.expected, m.actual)
 }
 
 func (m *html5DocumentMatcher) NegatedFailureMessage(_ interface{}) (message string) {
-	return fmt.Sprintf("expected HTML5 bodies not to match:\n\texpected: '%v'\n\tactual:   '%v'", m.expected, m.actual)
+	return fmt.Sprintf("expected HTML5 documents not to match:\n\texpected: '%v'\n\tactual:   '%v'", m.expected, m.actual)
 }
