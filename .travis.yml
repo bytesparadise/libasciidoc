@@ -24,7 +24,7 @@ matrix:
 
 install:
   - if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then git config --global core.autocrlf true ; fi
-  - if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then choco install make --version 4.3; fi
+  - if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then choco install make; fi
   - make install-devtools
 
 script:
