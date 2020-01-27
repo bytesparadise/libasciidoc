@@ -100,7 +100,9 @@ YamlFrontMatterContent <- ((!YamlFrontMatterToken .)+)* {
 // Document Header and Metadata
 // ------------------------------------------
 DocumentHeader <- "=" WS+ title:(TitleElements) id:(InlineElementID*) EOL
+        (SingleLineComment / CommentBlock)*
         authors:(DocumentAuthors?) 
+        (SingleLineComment / CommentBlock)*
         revision:(DocumentRevision?) {
     return types.NewDocumentHeader(title.([]interface{}), authors, revision)
 }

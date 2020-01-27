@@ -1,14 +1,13 @@
 package html5
 
 import (
-	"bytes"
 	htmltemplate "html/template"
 	"io"
 	texttemplate "text/template"
 
 	"github.com/bytesparadise/libasciidoc/pkg/renderer"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
-	"github.com/davecgh/go-spew/spew"
+
 	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
 )
@@ -23,7 +22,8 @@ func init() {
 <meta charset="UTF-8">
 <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">{{ if .Generator }}
-<meta name="generator" content="{{ .Generator }}">{{ end }}
+<meta name="generator" content="{{ .Generator }}">{{ end }}{{ if .CSS}}
+<link type="text/css" rel="stylesheet" href="{{ .CSS }}">{{ end }}
 <title>{{ escape .Title }}</title>
 </head>
 <body class="article">
@@ -45,7 +45,6 @@ Last updated {{ .LastUpdated }}
 		texttemplate.FuncMap{
 			"escape": EscapeString,
 		})
-
 }
 
 // Render renders the given document in HTML and writes the result in the given `writer`
@@ -82,6 +81,7 @@ func Render(ctx renderer.Context, output io.Writer) (types.Metadata, error) {
 			Content     htmltemplate.HTML
 			RevNumber   string
 			LastUpdated string
+			CSS         string
 			Details     *htmltemplate.HTML
 		}{
 			Generator:   "libasciidoc", // TODO: externalize this value and include the lib version ?
@@ -90,6 +90,7 @@ func Render(ctx renderer.Context, output io.Writer) (types.Metadata, error) {
 			Content:     htmltemplate.HTML(string(renderedElements)), //nolint: gosec
 			RevNumber:   revNumber,
 			LastUpdated: ctx.LastUpdated(),
+			CSS:         ctx.CSS(),
 			Details:     documentDetails,
 		})
 		if err != nil {
@@ -113,75 +114,4 @@ func Render(ctx renderer.Context, output io.Writer) (types.Metadata, error) {
 	// include a version of the table of contents
 	metadata.TableOfContents = ctx.TableOfContents
 	return metadata, err
-}
-
-// renderDocumentElements renders all document elements, including the footnotes,
-// but not the HEAD and BODY containers
-func renderDocumentElements(ctx renderer.Context) ([]byte, error) {
-	elements := []interface{}{}
-	for i, e := range ctx.Document.Elements {
-		switch e := e.(type) {
-		case types.Preamble:
-			if !e.HasContent() {
-				// retain the preamble
-				elements = append(elements, e)
-				continue
-			}
-			// retain everything "as-is"
-			elements = ctx.Document.Elements
-		case types.Section:
-			if e.Level == 0 {
-				// retain the section's elements...
-				elements = append(elements, e.Elements)
-				// ... and add the other elements
-				elements = append(elements, ctx.Document.Elements[i+1:]...)
-				continue
-			}
-			// retain everything "as-is"
-			elements = ctx.Document.Elements
-		default:
-			// retain everything "as-is"
-			elements = ctx.Document.Elements
-		}
-	}
-	if log.IsLevelEnabled(log.DebugLevel) {
-		log.Debug("pre-rendered elements:")
-		spew.Dump(elements)
-	}
-	// log.Debugf("rendered document with %d element(s)...", len(elements))
-	buff := bytes.NewBuffer(nil)
-	renderedElements, err := renderElements(ctx, elements)
-	if err != nil {
-		return []byte{}, errors.Wrapf(err, "failed to render document elements")
-	}
-	buff.Write(renderedElements)
-	renderedFootnotes, err := renderFootnotes(ctx, ctx.Document.Footnotes)
-	if err != nil {
-		return []byte{}, errors.Wrapf(err, "failed to render document elements")
-	}
-	buff.Write(renderedFootnotes)
-
-	return buff.Bytes(), nil
-}
-
-func renderDocumentTitle(ctx renderer.Context) ([]byte, error) {
-	if documentTitle, hasTitle := ctx.Document.Title(); hasTitle {
-		title, err := renderPlainText(ctx, documentTitle)
-		if err != nil {
-			return nil, errors.Wrapf(err, "unable to render document title")
-		}
-		return title, nil
-	}
-	return nil, nil
-}
-
-func renderDocumentHeader(ctx renderer.Context) ([]byte, error) {
-	if documentTitle, hasTitle := ctx.Document.Title(); hasTitle {
-		title, err := renderInlineElements(ctx, documentTitle)
-		if err != nil {
-			return nil, errors.Wrapf(err, "unable to render document header")
-		}
-		return title, nil
-	}
-	return nil, nil
 }

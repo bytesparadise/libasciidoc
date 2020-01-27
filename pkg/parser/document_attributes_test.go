@@ -271,6 +271,120 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 					Expect(source).To(BecomeDocument(expected))
 				})
 			})
+
+			Context("authors and comments", func() {
+
+				It("authors commented out", func() {
+					source := `= title
+					// Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus@asciidoctor.org>`
+					title := []interface{}{
+						types.StringElement{
+							Content: "title",
+						},
+					}
+					expected := types.Document{
+						Attributes: types.DocumentAttributes{},
+						ElementReferences: types.ElementReferences{
+							"_title": title,
+						},
+						Footnotes:          types.Footnotes{},
+						FootnoteReferences: types.FootnoteReferences{},
+						Elements: []interface{}{
+							types.Section{
+								Level: 0,
+								Attributes: types.ElementAttributes{
+									types.AttrID: "_title",
+								},
+								Title:    title,
+								Elements: []interface{}{},
+							},
+						},
+					}
+					Expect(source).To(BecomeDocument(expected))
+				})
+
+				It("authors after a single comment line", func() {
+					source := `= title
+					// a comment
+					Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus@asciidoctor.org>`
+					title := []interface{}{
+						types.StringElement{
+							Content: "title",
+						},
+					}
+					expected := types.Document{
+						Attributes: types.DocumentAttributes{},
+						ElementReferences: types.ElementReferences{
+							"_title": title,
+						},
+						Footnotes:          types.Footnotes{},
+						FootnoteReferences: types.FootnoteReferences{},
+						Elements: []interface{}{
+							types.Section{
+								Level: 0,
+								Attributes: types.ElementAttributes{
+									types.AttrID: "_title",
+									types.AttrAuthors: []types.DocumentAuthor{
+										{
+											FullName: "Kismet  Rainbow Chameleon  ",
+											Email:    "kismet@asciidoctor.org",
+										},
+										{
+											FullName: "Lazarus het_Draeke ",
+											Email:    "lazarus@asciidoctor.org",
+										},
+									},
+								},
+								Title:    title,
+								Elements: []interface{}{},
+							},
+						},
+					}
+					Expect(source).To(BecomeDocument(expected))
+				})
+
+				It("authors after a comment block", func() {
+					source := `= title
+//// 
+a comment
+////
+Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus@asciidoctor.org>`
+					title := []interface{}{
+						types.StringElement{
+							Content: "title",
+						},
+					}
+					expected := types.Document{
+						Attributes: types.DocumentAttributes{},
+						ElementReferences: types.ElementReferences{
+							"_title": title,
+						},
+						Footnotes:          types.Footnotes{},
+						FootnoteReferences: types.FootnoteReferences{},
+						Elements: []interface{}{
+							types.Section{
+								Level: 0,
+								Attributes: types.ElementAttributes{
+									types.AttrID: "_title",
+									types.AttrAuthors: []types.DocumentAuthor{
+										{
+											FullName: "Kismet  Rainbow Chameleon  ",
+											Email:    "kismet@asciidoctor.org",
+										},
+										{
+											FullName: "Lazarus het_Draeke ",
+											Email:    "lazarus@asciidoctor.org",
+										},
+									},
+								},
+								Title:    title,
+								Elements: []interface{}{},
+							},
+						},
+					}
+					Expect(source).To(BecomeDocument(expected))
+				})
+			})
 		})
 
 		Context("document revision", func() {
@@ -278,6 +392,90 @@ Kismet  Rainbow Chameleon  <kismet@asciidoctor.org>; Lazarus het_Draeke <lazarus
 			It("full document revision", func() {
 				source := `= title
 				john doe
+				v1.0, June 19, 2017: First incarnation`
+				title := []interface{}{
+					types.StringElement{
+						Content: "title",
+					},
+				}
+				expected := types.Document{
+					Attributes: types.DocumentAttributes{},
+					ElementReferences: types.ElementReferences{
+						"_title": title,
+					},
+					Footnotes:          types.Footnotes{},
+					FootnoteReferences: types.FootnoteReferences{},
+					Elements: []interface{}{
+						types.Section{
+							Level: 0,
+							Attributes: types.ElementAttributes{
+								types.AttrID: "_title",
+								types.AttrAuthors: []types.DocumentAuthor{
+									{
+										FullName: "john doe",
+										Email:    "",
+									},
+								},
+								types.AttrRevision: types.DocumentRevision{
+									Revnumber: "1.0",
+									Revdate:   "June 19, 2017",
+									Revremark: "First incarnation",
+								},
+							},
+							Title:    title,
+							Elements: []interface{}{},
+						},
+					},
+				}
+				Expect(source).To(BecomeDocument(expected))
+			})
+
+			It("full document revision with a comment before author", func() {
+				source := `= title
+				// a comment
+				john doe
+				v1.0, June 19, 2017: First incarnation`
+				title := []interface{}{
+					types.StringElement{
+						Content: "title",
+					},
+				}
+				expected := types.Document{
+					Attributes: types.DocumentAttributes{},
+					ElementReferences: types.ElementReferences{
+						"_title": title,
+					},
+					Footnotes:          types.Footnotes{},
+					FootnoteReferences: types.FootnoteReferences{},
+					Elements: []interface{}{
+						types.Section{
+							Level: 0,
+							Attributes: types.ElementAttributes{
+								types.AttrID: "_title",
+								types.AttrAuthors: []types.DocumentAuthor{
+									{
+										FullName: "john doe",
+										Email:    "",
+									},
+								},
+								types.AttrRevision: types.DocumentRevision{
+									Revnumber: "1.0",
+									Revdate:   "June 19, 2017",
+									Revremark: "First incarnation",
+								},
+							},
+							Title:    title,
+							Elements: []interface{}{},
+						},
+					},
+				}
+				Expect(source).To(BecomeDocument(expected))
+			})
+
+			It("full document revision with a comment before revision", func() {
+				source := `= title
+				john doe
+				// a comment
 				v1.0, June 19, 2017: First incarnation`
 				title := []interface{}{
 					types.StringElement{
