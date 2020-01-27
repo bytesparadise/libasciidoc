@@ -145,14 +145,16 @@ func (m *html5TitleMatcher) NegatedFailureMessage(_ interface{}) (message string
 // ---------------------
 
 // RenderHTML5Document a custom matcher to verify that a block renders as the expectation
-func RenderHTML5Document(expected string, options ...interface{}) gomegatypes.GomegaMatcher {
+func RenderHTML5Document(expected string, options ...renderer.Option) gomegatypes.GomegaMatcher {
 	m := &html5DocumentMatcher{
 		expected: expected,
+		options:  options,
 	}
 	return m
 }
 
 type html5DocumentMatcher struct {
+	options  []renderer.Option
 	expected string
 	actual   string
 }
@@ -163,7 +165,8 @@ func (m *html5DocumentMatcher) Match(actual interface{}) (success bool, err erro
 		return false, errors.Errorf("RenderHTML5Body matcher expects a string (actual: %T)", actual)
 	}
 	resultWriter := bytes.NewBuffer(nil)
-	_, err = libasciidoc.ConvertFileToHTML(filename, resultWriter, renderer.IncludeHeaderFooter(true))
+	m.options = append(m.options, renderer.IncludeHeaderFooter(true))
+	_, err = libasciidoc.ConvertFileToHTML(filename, resultWriter, m.options...)
 	if err != nil {
 		return false, err
 	}

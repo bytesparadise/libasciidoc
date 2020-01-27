@@ -23,6 +23,7 @@ var _ = Describe("document header", func() {
 <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="libasciidoc">
+<link type="text/css" rel="stylesheet" href="/path/to/style.css">
 <title>The Dangerous and Thrilling Documentation Chronicles</title>
 </head>
 <body class="article">
@@ -39,7 +40,7 @@ Last updated {{.LastUpdated}}
 </div>
 </body>
 </html>`
-			Expect(source).To(RenderHTML5Body(expected, renderer.IncludeHeaderFooter(true), renderer.LastUpdated(time.Now())))
+			Expect(source).To(RenderHTML5Body(expected, renderer.IncludeHeaderFooter(true), renderer.IncludeCSS("/path/to/style.css"), renderer.LastUpdated(time.Now())))
 		})
 	})
 

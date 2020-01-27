@@ -13,11 +13,13 @@ const (
 	// keyLastUpdated the key to specify the last update of the document to render.
 	// Can be a string or a time, which will be formatted using the 2006/01/02 15:04:05 MST` pattern
 	keyLastUpdated string = types.AttrLastUpdated
-	// keyIncludeHeaderFooter a bool value to indicate if the header and footer should be rendered
+	// keyIncludeHeaderFooter key to a bool value to indicate if the header and footer should be rendered
 	keyIncludeHeaderFooter string = "IncludeHeaderFooter"
-	// keyEntrypoint a bool value to indicate if the entrypoint to start with when parsing the document
+	// keyCSS key to the options CSS to add in the document head. Default is empty ("")
+	keyCSS string = "CSS"
+	// keyEntrypoint key to the entrypoint to start with when parsing the document
 	keyEntrypoint string = "Entrypoint"
-	// LastUpdatedFormat the time format for the `last updated` document attribute
+	// LastUpdatedFormat key to the time format for the `last updated` document attribute
 	LastUpdatedFormat string = "2006-01-02 15:04:05 -0700"
 )
 
@@ -32,6 +34,13 @@ func LastUpdated(value time.Time) Option {
 func IncludeHeaderFooter(value bool) Option {
 	return func(ctx *Context) {
 		ctx.options[keyIncludeHeaderFooter] = value
+	}
+}
+
+// IncludeCSS function to set the `css` option in the renderer context
+func IncludeCSS(href string) Option {
+	return func(ctx *Context) {
+		ctx.options[keyCSS] = href
 	}
 }
 
@@ -52,10 +61,8 @@ func DefineMacro(name string, t MacroTemplate) Option {
 // LastUpdated returns the value of the 'LastUpdated' Option if it was present,
 // otherwise it returns the current time using the `2006/01/02 15:04:05 MST` format
 func (ctx *Context) LastUpdated() string {
-	if lastUpdated, found := ctx.options[keyLastUpdated]; found {
-		if lastUpdated, typeMatch := lastUpdated.(time.Time); typeMatch {
-			return lastUpdated.Format(LastUpdatedFormat)
-		}
+	if lastUpdated, ok := ctx.options[keyLastUpdated].(time.Time); ok {
+		return lastUpdated.Format(LastUpdatedFormat)
 	}
 	return time.Now().Format(LastUpdatedFormat)
 }
@@ -63,10 +70,17 @@ func (ctx *Context) LastUpdated() string {
 // IncludeHeaderFooter returns the value of the 'IncludeHeaderFooter' Option if it was present,
 // otherwise it returns `false`
 func (ctx *Context) IncludeHeaderFooter() bool {
-	if includeHeaderFooter, found := ctx.options[keyIncludeHeaderFooter]; found {
-		if includeHeaderFooter, typeMatch := includeHeaderFooter.(bool); typeMatch {
-			return includeHeaderFooter
-		}
+	if includeHeaderFooter, ok := ctx.options[keyIncludeHeaderFooter].(bool); ok {
+		return includeHeaderFooter
 	}
 	return false
+}
+
+// CSS returns the value of the 'CSS' Option if it was present,
+// otherwise it returns an empty string
+func (ctx *Context) CSS() string {
+	if css, ok := ctx.options[keyCSS].(string); ok {
+		return css
+	}
+	return ""
 }
