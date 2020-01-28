@@ -53,7 +53,7 @@ var _ = Describe("document metadata assertions", func() {
 		Expect(err).ToNot(HaveOccurred())
 		Expect(result).To(BeFalse())
 		// also verify messages
-		obtained, err := libasciidoc.ConvertToHTML("", strings.NewReader(actual), bytes.NewBuffer(nil), renderer.IncludeHeaderFooter(false))
+		obtained, err := libasciidoc.ConvertToHTML("", strings.NewReader(actual), bytes.NewBuffer(nil), renderer.IncludeHeaderFooter(false), renderer.LastUpdated(lastUpdated))
 		Expect(err).ToNot(HaveOccurred())
 		GinkgoT().Logf(matcher.FailureMessage(result))
 		GinkgoT().Logf(fmt.Sprintf("expected metadata to match:\n%s", compare(obtained, expected)))
