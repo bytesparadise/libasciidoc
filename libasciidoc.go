@@ -10,6 +10,7 @@ import (
 	"github.com/bytesparadise/libasciidoc/pkg/parser"
 	"github.com/bytesparadise/libasciidoc/pkg/renderer"
 	htmlrenderer "github.com/bytesparadise/libasciidoc/pkg/renderer/html5"
+	"github.com/bytesparadise/libasciidoc/pkg/types"
 
 	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
@@ -27,16 +28,16 @@ var (
 // ConvertFileToHTML converts the content of the given filename into an HTML document.
 // The conversion result is written in the given writer `output`, whereas the document metadata (title, etc.) (or an error if a problem occurred) is returned
 // as the result of the function call.
-func ConvertFileToHTML(filename string, output io.Writer, options ...renderer.Option) (map[string]interface{}, error) {
+func ConvertFileToHTML(filename string, output io.Writer, options ...renderer.Option) (types.Metadata, error) {
 	file, err := os.Open(filename)
 	if err != nil {
-		return nil, errors.Wrapf(err, "error opening %s", filename)
+		return types.Metadata{}, errors.Wrapf(err, "error opening %s", filename)
 	}
 	defer file.Close()
 	// use the file mtime as the `last updated` value
 	stat, err := os.Stat(filename)
 	if err != nil {
-		return nil, errors.Wrapf(err, "error opening %s", filename)
+		return types.Metadata{}, errors.Wrapf(err, "error opening %s", filename)
 	}
 	options = append(options, renderer.LastUpdated(stat.ModTime()))
 	return ConvertToHTML(filename, file, output, options...)
@@ -44,7 +45,7 @@ func ConvertFileToHTML(filename string, output io.Writer, options ...renderer.Op
 
 // ConvertToHTML converts the content of the given reader `r` into a full HTML document, written in the given writer `output`.
 // Returns an error if a problem occurred
-func ConvertToHTML(filename string, r io.Reader, output io.Writer, options ...renderer.Option) (map[string]interface{}, error) {
+func ConvertToHTML(filename string, r io.Reader, output io.Writer, options ...renderer.Option) (types.Metadata, error) {
 	start := time.Now()
 	defer func() {
 		duration := time.Since(start)
@@ -53,17 +54,17 @@ func ConvertToHTML(filename string, r io.Reader, output io.Writer, options ...re
 	log.Debugf("parsing the asciidoc source...")
 	doc, err := parser.ParseDocument(filename, r) //, parser.Debug(true))
 	if err != nil {
-		return nil, errors.Wrapf(err, "error while parsing the document")
+		return types.Metadata{}, err
 	}
 	rendererCtx := renderer.NewContext(doc, options...)
 	// insert tables of contents, preamble and process file inclusions
 	err = renderer.Prerender(rendererCtx)
 	if err != nil {
-		return nil, errors.Wrapf(err, "error while rendering the document")
+		return types.Metadata{}, err
 	}
 	metadata, err := htmlrenderer.Render(rendererCtx, output)
 	if err != nil {
-		return nil, errors.Wrapf(err, "error while rendering the document")
+		return types.Metadata{}, err
 	}
 	log.Debugf("Done processing document")
 	return metadata, nil

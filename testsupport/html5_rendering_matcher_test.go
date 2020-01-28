@@ -90,11 +90,10 @@ var _ = Describe("html5 rendering assertions", func() {
 			// when
 			result, err := matcher.Match(actual)
 			// then
-			Expect(err).To(HaveOccurred())
-			Expect(err.Error()).To(Equal("invalid type of title (<nil>)"))
+			Expect(err).ToNot(HaveOccurred())
 			Expect(result).To(BeFalse())
 			// also verify error message
-			var obtained *string
+			obtained := ""
 			Expect(matcher.FailureMessage(actual)).To(Equal(fmt.Sprintf("expected HTML5 titles to match:\n\texpected: '%v'\n\tactual:   '%v'", expected, obtained)))
 			Expect(matcher.NegatedFailureMessage(actual)).To(Equal(fmt.Sprintf("expected HTML5 titles not to match:\n\texpected: '%v'\n\tactual:   '%v'", expected, obtained)))
 		})

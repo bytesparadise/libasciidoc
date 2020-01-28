@@ -2,6 +2,7 @@ package html5
 
 import (
 	"bytes"
+	"fmt"
 	"strconv"
 	"strings"
 	texttemplate "text/template"
@@ -13,6 +14,7 @@ import (
 
 var footnoteTmpl texttemplate.Template
 var footnoterefTmpl texttemplate.Template
+var footnoterefPlainTextTmpl texttemplate.Template
 var invalidFootnoteTmpl texttemplate.Template
 var footnotesTmpl texttemplate.Template
 
@@ -23,6 +25,10 @@ func init() {
 			"renderIndex": renderFootnoteIndex,
 		})
 	footnoterefTmpl = newTextTemplate("footnote ref", `<sup class="{{ .Class }}">[<a class="footnote" href="#_footnotedef_{{ renderIndex .ID }}" title="View footnote.">{{ renderIndex .ID }}</a>]</sup>`,
+		texttemplate.FuncMap{
+			"renderIndex": renderFootnoteIndex,
+		})
+	footnoterefPlainTextTmpl = newTextTemplate("footnote ref", `<sup class="{{ .Class }}">[{{ renderIndex .ID }}]</sup>`,
 		texttemplate.FuncMap{
 			"renderIndex": renderFootnoteIndex,
 		})
@@ -98,7 +104,26 @@ func renderFootnote(ctx renderer.Context, note types.Footnote) ([]byte, error) {
 			return nil, errors.Wrapf(err, "unable to render missing footnote")
 		}
 	}
+	return result.Bytes(), nil
+}
 
+func renderFootnoteRefPlainText(ctx renderer.Context, note types.Footnote) ([]byte, error) {
+	result := bytes.NewBuffer(nil)
+	if id, ok := ctx.Document.Footnotes.IndexOf(note); ok {
+		// valid case for a footnte with content, with our without an explicit reference
+		err := footnoterefPlainTextTmpl.Execute(result, struct {
+			ID    int
+			Class string
+		}{
+			ID:    id,
+			Class: "footnote",
+		})
+		if err != nil {
+			return nil, errors.Wrapf(err, "unable to render footnote")
+		}
+	} else {
+		return nil, fmt.Errorf("unable to render missing footnote")
+	}
 	return result.Bytes(), nil
 }
 

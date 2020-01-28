@@ -50,7 +50,7 @@ DocumentBlock <- !EOF
         / LiteralBlock 
         / DocumentAttributeDeclaration 
         / DocumentAttributeReset 
-        / TableOfContentsMacro
+        / TableOfContentsPlaceHolder
         / UserMacroBlock
         / Paragraph) {
     return block, nil
@@ -68,7 +68,7 @@ DocumentBlockWithinDelimitedBlock <- !EOF
         / LiteralBlock 
         / DocumentAttributeDeclaration 
         / DocumentAttributeReset 
-        / TableOfContentsMacro
+        / TableOfContentsPlaceHolder
         / UserMacroBlock
         / Paragraph) {
     return block, nil
@@ -332,7 +332,7 @@ TitleElement <- element:(SimpleWord
 // ------------------------------------------
 // Table of Contents
 // ------------------------------------------
-TableOfContentsMacro <- "toc::[]" EOL
+TableOfContentsPlaceHolder <- "toc::[]" EOL
 
 // ------------------------------------------
 // User Macro
@@ -1334,7 +1334,7 @@ QuoteBlockElement <-
             / LiteralBlock 
             / DocumentAttributeDeclaration 
             / DocumentAttributeReset 
-            / TableOfContentsMacro
+            / TableOfContentsPlaceHolder
             / QuoteBlockParagraph) {
         return element, nil
     } 

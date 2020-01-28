@@ -2,9 +2,6 @@ package html5
 
 import (
 	"bytes"
-	htmltemplate "html/template"
-	"io"
-	texttemplate "text/template"
 
 	"github.com/bytesparadise/libasciidoc/pkg/renderer"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
@@ -12,107 +9,6 @@ import (
 	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
 )
-
-var documentTmpl texttemplate.Template
-
-func init() {
-	documentTmpl = newTextTemplate("root document",
-		`<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
-<meta name="viewport" content="width=device-width, initial-scale=1.0">{{ if .Generator }}
-<meta name="generator" content="{{ .Generator }}">{{ end }}{{ if .CSS}}
-<link type="text/css" rel="stylesheet" href="{{ .CSS }}">{{ end }}
-<title>{{ escape .Title }}</title>
-</head>
-<body class="article">
-<div id="header">
-<h1>{{ .Header }}</h1>{{ if .Details }}
-{{ .Details }}{{ end }}
-</div>
-<div id="content">
-{{ .Content }}
-</div>
-<div id="footer">
-<div id="footer-text">{{ if .RevNumber }}
-Version {{ .RevNumber }}<br>{{ end }}
-Last updated {{ .LastUpdated }}
-</div>
-</div>
-</body>
-</html>`,
-		texttemplate.FuncMap{
-			"escape": EscapeString,
-		})
-
-}
-
-// renderDocument renders the whole document, including the HEAD and BODY containers if needed
-func renderDocument(ctx renderer.Context, output io.Writer) (map[string]interface{}, error) {
-	renderedTitle, err := renderDocumentTitle(ctx)
-	if err != nil {
-		return nil, errors.Wrapf(err, "unable to render full document")
-	}
-	// log.Debugf("rendered title: '%s'\n", string(renderedTitle))
-	renderedHeader, err := renderDocumentHeader(ctx)
-	if err != nil {
-		return nil, errors.Wrapf(err, "unable to render full document")
-	}
-	if ctx.IncludeHeaderFooter() {
-		log.Debugf("Rendering full document...")
-		// use a temporary writer for the document's content
-		renderedElements, err := renderDocumentElements(ctx)
-		if err != nil {
-			return nil, errors.Wrapf(err, "unable to render full document")
-		}
-		documentDetails, err := renderDocumentDetails(ctx)
-		if err != nil {
-			return nil, errors.Wrapf(err, "unable to render full document")
-		}
-		revNumber, _ := ctx.Document.Attributes.GetAsString("revnumber")
-		err = documentTmpl.Execute(output, struct {
-			Generator   string
-			Title       string
-			Header      string
-			Content     htmltemplate.HTML
-			RevNumber   string
-			LastUpdated string
-			CSS         string
-			Details     *htmltemplate.HTML
-		}{
-			Generator:   "libasciidoc", // TODO: externalize this value and include the lib version ?
-			Title:       string(renderedTitle),
-			Header:      string(renderedHeader),
-			Content:     htmltemplate.HTML(string(renderedElements)), //nolint: gosec
-			RevNumber:   revNumber,
-			LastUpdated: ctx.LastUpdated(),
-			CSS:         ctx.CSS(),
-			Details:     documentDetails,
-		})
-		if err != nil {
-			return nil, errors.Wrapf(err, "unable to render full document")
-		}
-	} else {
-		renderedElements, err := renderDocumentElements(ctx)
-		if err != nil {
-			return nil, errors.Wrapf(err, "unable to render full document")
-		}
-		_, err = output.Write(renderedElements)
-		if err != nil {
-			return nil, errors.Wrapf(err, "unable to render full document")
-		}
-	}
-
-	// copy all document attributes, and override the title with its rendered value instead of the `types.Section` struct
-	metadata := ctx.Document.Attributes
-	if len(renderedTitle) > 0 {
-		metadata[types.AttrTitle] = string(renderedTitle)
-	}
-	metadata["LastUpdated"] = ctx.LastUpdated()
-	return metadata, nil
-}
 
 // renderDocumentElements renders all document elements, including the footnotes,
 // but not the HEAD and BODY containers

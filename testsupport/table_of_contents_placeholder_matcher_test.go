@@ -34,7 +34,7 @@ var _ = Describe("document table of contents assertions", func() {
 		},
 		Elements: []interface{}{},
 	}
-	tableOfContents := types.TableOfContentsMacro{}
+	tableOfContents := types.TableOfContentsPlaceHolder{}
 
 	actual := types.Document{
 		Attributes: types.DocumentAttributes{
@@ -64,7 +64,7 @@ var _ = Describe("document table of contents assertions", func() {
 
 	It("should match", func() {
 		// given
-		matcher := testsupport.HaveTableOfContents(expected)
+		matcher := testsupport.HaveTableOfContentsPlaceHolder(expected)
 		// when
 		result, err := matcher.Match(actual)
 		// then
@@ -75,7 +75,7 @@ var _ = Describe("document table of contents assertions", func() {
 
 	It("should not match", func() {
 		// given
-		matcher := testsupport.HaveTableOfContents(expected)
+		matcher := testsupport.HaveTableOfContentsPlaceHolder(expected)
 		// when
 		result, err := matcher.Match(types.Document{})
 		// then
@@ -87,7 +87,7 @@ var _ = Describe("document table of contents assertions", func() {
 
 	It("should return error when invalid type is input", func() {
 		// given
-		matcher := testsupport.HaveTableOfContents(types.Document{})
+		matcher := testsupport.HaveTableOfContentsPlaceHolder(types.Document{})
 		// when
 		result, err := matcher.Match(1) // not a doc
 		// then

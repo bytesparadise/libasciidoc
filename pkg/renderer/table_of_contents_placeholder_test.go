@@ -38,7 +38,7 @@ var _ = Describe("table of contents", func() {
 		},
 		Elements: []interface{}{},
 	}
-	tableOfContents := types.TableOfContentsMacro{}
+	tocPlaceHolder := types.TableOfContentsPlaceHolder{}
 
 	It("table of contents with default placement and no header with content", func() {
 		source := types.Document{
@@ -61,12 +61,12 @@ var _ = Describe("table of contents", func() {
 			Footnotes:          types.Footnotes{},
 			FootnoteReferences: types.FootnoteReferences{},
 			Elements: []interface{}{
-				tableOfContents,
+				tocPlaceHolder,
 				preamble,
 				section,
 			},
 		}
-		Expect(source).To(HaveTableOfContents(expected))
+		Expect(source).To(HaveTableOfContentsPlaceHolder(expected))
 	})
 
 	It("table of contents with default placement and a header with content", func() {
@@ -106,14 +106,14 @@ var _ = Describe("table of contents", func() {
 						types.AttrID: "_a_title",
 					},
 					Elements: []interface{}{
-						tableOfContents,
+						tocPlaceHolder,
 						preamble,
 						section,
 					},
 				},
 			},
 		}
-		Expect(source).To(HaveTableOfContents(expected))
+		Expect(source).To(HaveTableOfContentsPlaceHolder(expected))
 	})
 
 	It("table of contents with default placement and a header without content", func() {
@@ -152,13 +152,13 @@ var _ = Describe("table of contents", func() {
 						types.AttrID: "_a_title",
 					},
 					Elements: []interface{}{
-						tableOfContents,
+						tocPlaceHolder,
 						preamble,
 					},
 				},
 			},
 		}
-		Expect(source).To(HaveTableOfContents(expected))
+		Expect(source).To(HaveTableOfContentsPlaceHolder(expected))
 	})
 
 	It("table of contents with preamble placement and no header with content", func() {
@@ -183,11 +183,11 @@ var _ = Describe("table of contents", func() {
 			FootnoteReferences: types.FootnoteReferences{},
 			Elements: []interface{}{
 				preamble,
-				tableOfContents,
+				tocPlaceHolder,
 				section,
 			},
 		}
-		Expect(source).To(HaveTableOfContents(expected))
+		Expect(source).To(HaveTableOfContentsPlaceHolder(expected))
 	})
 
 	It("table of contents with preamble placement and header with content", func() {
@@ -228,13 +228,13 @@ var _ = Describe("table of contents", func() {
 					},
 					Elements: []interface{}{
 						preamble,
-						tableOfContents,
+						tocPlaceHolder,
 						section,
 					},
 				},
 			},
 		}
-		Expect(source).To(HaveTableOfContents(expected))
+		Expect(source).To(HaveTableOfContentsPlaceHolder(expected))
 	})
 
 	It("table of contents with preamble placement and header without content", func() {
@@ -274,12 +274,12 @@ var _ = Describe("table of contents", func() {
 					},
 					Elements: []interface{}{
 						preamble,
-						tableOfContents,
+						tocPlaceHolder,
 					},
 				},
 			},
 		}
-		Expect(source).To(HaveTableOfContents(expected))
+		Expect(source).To(HaveTableOfContentsPlaceHolder(expected))
 	})
 
 })

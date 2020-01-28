@@ -1,6 +1,7 @@
 package html5_test
 
 import (
+	"github.com/bytesparadise/libasciidoc/pkg/types"
 	. "github.com/bytesparadise/libasciidoc/testsupport"
 
 	. "github.com/onsi/ginkgo"
@@ -23,7 +24,7 @@ A preamble...
 
 === Section A.b
 
-==== Section that shall not be in TOC
+==== Section that shall not be in ToC
 
 == Section B
 
@@ -64,7 +65,7 @@ A preamble...
 <div class="sect2">
 <h3 id="_section_a_b">Section A.b</h3>
 <div class="sect3">
-<h4 id="_section_that_shall_not_be_in_toc">Section that shall not be in TOC</h4>
+<h4 id="_section_that_shall_not_be_in_toc">Section that shall not be in ToC</h4>
 </div>
 </div>
 </div>
@@ -184,6 +185,233 @@ level 1 sections not exists.`
 </div>`
 			Expect(source).To(RenderHTML5Body(expected))
 
+		})
+	})
+})
+
+var _ = Describe("table of contents initialization", func() {
+
+	Context("document without section", func() {
+
+		It("should return empty table of contents when doc has no section", func() {
+			actual := types.Document{
+				Attributes:         types.DocumentAttributes{},
+				ElementReferences:  types.ElementReferences{},
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
+				Elements: []interface{}{
+					types.Paragraph{
+						Attributes: types.ElementAttributes{},
+						Lines: [][]interface{}{
+							{
+								types.StringElement{Content: "a paragraph"},
+							},
+						},
+					},
+				},
+			}
+			expected := types.TableOfContents{
+				Sections: []types.ToCSection{},
+			}
+			Expect(actual).To(HaveTableOfContents(expected))
+		})
+	})
+
+	Context("document with sections", func() {
+
+		doctitle := []interface{}{
+			types.StringElement{Content: "a header"},
+		}
+		sectionATitle := []interface{}{
+			types.StringElement{Content: "Section A with link to "},
+			types.InlineLink{
+				Location: types.Location{
+					Elements: []interface{}{
+						types.StringElement{
+							Content: "https://redhat.com",
+						},
+					},
+				},
+			},
+		}
+		sectionAaTitle := []interface{}{
+			types.StringElement{Content: "Section A.a "},
+			types.Footnote{
+				ID:  1,
+				Ref: "foo",
+			},
+		}
+		sectionAa1Title := []interface{}{
+			types.StringElement{Content: "Section A.a.1"},
+		}
+		sectionBTitle := []interface{}{
+			types.StringElement{Content: "Section B"},
+		}
+		document := types.Document{
+			Attributes: types.DocumentAttributes{},
+			ElementReferences: types.ElementReferences{
+				"_a_header":    doctitle,
+				"_section_a":   sectionATitle,
+				"_section_a_a": sectionAaTitle,
+				"_section_b":   sectionBTitle,
+			},
+			Footnotes: types.Footnotes{
+				types.Footnote{
+					ID:  1,
+					Ref: "foo",
+				},
+			},
+			FootnoteReferences: types.FootnoteReferences{
+				"foo": types.Footnote{
+					ID:  1,
+					Ref: "foo",
+				},
+			},
+			Elements: []interface{}{
+				types.Section{
+					Attributes: types.ElementAttributes{
+						types.AttrID: "_a_header",
+					},
+					Level: 0,
+					Title: doctitle,
+					Elements: []interface{}{
+						types.Section{
+							Attributes: types.ElementAttributes{
+								types.AttrID: "_section_a",
+							},
+							Level: 1,
+							Title: sectionATitle,
+							Elements: []interface{}{
+								types.Paragraph{
+									Attributes: types.ElementAttributes{},
+									Lines: [][]interface{}{
+										{
+											types.StringElement{Content: "a paragraph"},
+										},
+									},
+								},
+								types.Section{
+									Attributes: types.ElementAttributes{
+										types.AttrID: "_section_a_a",
+									},
+									Level: 2,
+									Title: sectionAaTitle,
+									Elements: []interface{}{
+										types.Paragraph{
+											Attributes: types.ElementAttributes{},
+											Lines: [][]interface{}{
+												{
+													types.StringElement{Content: "a paragraph"},
+												},
+											},
+										},
+										types.Section{
+											Attributes: types.ElementAttributes{
+												types.AttrID: "_section_a_a_1",
+											},
+											Level: 3,
+											Title: sectionAa1Title,
+											Elements: []interface{}{
+												types.Paragraph{
+													Attributes: types.ElementAttributes{},
+													Lines: [][]interface{}{
+														{
+															types.StringElement{Content: "a paragraph"},
+														},
+													},
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+						types.Section{
+							Attributes: types.ElementAttributes{
+								types.AttrID: "_section_b",
+							},
+							Level: 1,
+							Title: sectionBTitle,
+							Elements: []interface{}{
+								types.Paragraph{
+									Attributes: types.ElementAttributes{},
+									Lines: [][]interface{}{
+										{
+											types.StringElement{Content: "a paragraph"},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		}
+
+		It("should return table of contents with section level 1,2,3,2 with default level", func() {
+			delete(document.Attributes, types.AttrTableOfContentsLevels)
+			expected := types.TableOfContents{
+				Sections: []types.ToCSection{
+					{
+						ID:    "_section_a",
+						Level: 1,
+						Title: "Section A with link to https://redhat.com",
+						Children: []types.ToCSection{
+							{
+
+								ID:       "_section_a_a",
+								Level:    2,
+								Title:    "Section A.a <sup class=\"footnote\">[1]</sup>",
+								Children: []types.ToCSection{},
+							},
+						},
+					},
+					{
+						ID:       "_section_b",
+						Level:    1,
+						Title:    "Section B",
+						Children: []types.ToCSection{},
+					},
+				},
+			}
+			Expect(document).To(HaveTableOfContents(expected))
+		})
+
+		It("should return table of contents with section level 1,2,3,2 with custom level", func() {
+			document.Attributes[types.AttrTableOfContentsLevels] = "4" // must be a string
+			expected := types.TableOfContents{
+				Sections: []types.ToCSection{
+					{
+						ID:    "_section_a",
+						Level: 1,
+						Title: "Section A with link to https://redhat.com",
+						Children: []types.ToCSection{
+							{
+
+								ID:    "_section_a_a",
+								Level: 2,
+								Title: "Section A.a <sup class=\"footnote\">[1]</sup>",
+								Children: []types.ToCSection{
+									{
+
+										ID:       "_section_a_a_1",
+										Level:    3,
+										Title:    "Section A.a.1",
+										Children: []types.ToCSection{},
+									},
+								},
+							},
+						},
+					},
+					{
+						ID:       "_section_b",
+						Level:    1,
+						Title:    "Section B",
+						Children: []types.ToCSection{},
+					},
+				},
+			}
+			Expect(document).To(HaveTableOfContents(expected))
 		})
 	})
 
