@@ -44,8 +44,10 @@ const (
 	AttrQuoteTitle string = "quoteTitle"
 	// AttrSource the `source` attribute for a source block or a source paragraph (this is a placeholder, ie, it does not expect any value for this attribute)
 	AttrSource string = "source"
-	// AttrLanguage the associated `language` attribute for a source block or a source paragraph
+	// AttrLanguage the `language` attribute for a source block or a source paragraph
 	AttrLanguage string = "language"
+	// AttrLineNums the `linenums` attribute for a source block or a source paragraph
+	AttrLineNums string = "linenums"
 	// AttrCheckStyle the attribute to mark the first element of an unordered list itemd as a checked or not
 	AttrCheckStyle string = "checkstyle"
 	// AttrStart the `start` attribute in an ordered list
@@ -187,12 +189,17 @@ func NewLiteralAttribute() (ElementAttributes, error) {
 }
 
 // NewSourceAttributes initializes a new attribute map with two entries, one for the kind of element ("source") and another optional one for the language of the source code
-func NewSourceAttributes(language interface{}) (ElementAttributes, error) {
+func NewSourceAttributes(language interface{}, others ...interface{}) (ElementAttributes, error) {
 	result := ElementAttributes{
 		AttrKind: Source,
 	}
 	if language, ok := language.(string); ok {
 		result[AttrLanguage] = strings.TrimSpace(language)
+	}
+	for _, other := range others {
+		if other, ok := other.(ElementAttributes); ok {
+			result.AddAll(other)
+		}
 	}
 	return result, nil
 }

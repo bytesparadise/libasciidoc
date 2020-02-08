@@ -3,6 +3,7 @@ module github.com/bytesparadise/libasciidoc
 go 1.11
 
 require (
+	github.com/alecthomas/chroma v0.7.1
 	github.com/davecgh/go-spew v1.1.1
 	github.com/golang/protobuf v1.3.1 // indirect
 	github.com/inconshreveable/mousetrap v1.0.0 // indirect
@@ -10,7 +11,7 @@ require (
 	github.com/modocache/gover v0.0.0-20171022184752-b58185e213c5 // indirect
 	github.com/onsi/ginkgo v1.10.1
 	github.com/onsi/gomega v1.5.0
-	github.com/pkg/errors v0.8.0
+	github.com/pkg/errors v0.8.1
 	github.com/sergi/go-diff v1.0.0
 	github.com/sirupsen/logrus v1.2.0
 	github.com/sozorogami/gover v0.0.0-20171022184752-b58185e213c5

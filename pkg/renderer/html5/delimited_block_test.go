@@ -840,4 +840,89 @@ bar</pre>
 			Expect(source).To(RenderHTML5Body(expected))
 		})
 	})
+
+	Context("syntax highlighting with pygments", func() {
+
+		It("should render source block with go syntax only", func() {
+			source := `:source-highlighter: pygments
+	
+[source,go]
+----
+type Foo struct{
+	Field string
+}
+----`
+			expected := `<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="go"><span class="tok-kd">type</span> <span class="tok-nx">Foo</span> <span class="tok-kd">struct</span><span class="tok-p">{</span>
+	<span class="tok-nx">Field</span> <span class="tok-kt">string</span>
+<span class="tok-p">}</span></code></pre>
+</div>
+</div>`
+			Expect(source).To(RenderHTML5Body(expected))
+		})
+
+		It("should render source block with go syntax and custom style", func() {
+			source := `:source-highlighter: pygments
+:pygments-style: manni
+
+[source,go]
+----
+type Foo struct{
+	Field string
+}
+----`
+			expected := `<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="go"><span class="tok-kd">type</span> <span class="tok-nx">Foo</span> <span class="tok-kd">struct</span><span class="tok-p">{</span>
+	<span class="tok-nx">Field</span> <span class="tok-kt">string</span>
+<span class="tok-p">}</span></code></pre>
+</div>
+</div>`
+			Expect(source).To(RenderHTML5Body(expected))
+		})
+
+		It("should render source block with go syntax, custom style and line numbers", func() {
+			source := `:source-highlighter: pygments
+:pygments-style: manni
+:pygments-linenums-mode: inline
+
+[source,go,linenums]
+----
+type Foo struct{
+    Field string
+}
+----`
+			expected := `<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="go"><span class="tok-ln">1</span><span class="tok-kd">type</span> <span class="tok-nx">Foo</span> <span class="tok-kd">struct</span><span class="tok-p">{</span>
+<span class="tok-ln">2</span>    <span class="tok-nx">Field</span> <span class="tok-kt">string</span>
+<span class="tok-ln">3</span><span class="tok-p">}</span></code></pre>
+</div>
+</div>` // the pygment.py sets the line number class to `tok-ln` but here we expect `tok-ln`
+			Expect(source).To(RenderHTML5Body(expected))
+		})
+
+		It("should render source block with go syntax, custom style, inline css and line numbers", func() {
+			source := `:source-highlighter: pygments
+:pygments-style: manni
+:pygments-css: style
+:pygments-linenums-mode: inline
+
+[source,go,linenums]
+----
+type Foo struct{
+    Field string
+}
+----`
+			expected := `<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="go"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span style="color:#069;font-weight:bold">type</span> Foo <span style="color:#069;font-weight:bold">struct</span>{
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2</span>    Field <span style="color:#078;font-weight:bold">string</span>
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3</span>}</code></pre>
+</div>
+</div>` // the pygment.py sets the line number class to `tok-ln` but here we expect `tok-ln`
+			Expect(source).To(RenderHTML5Body(expected))
+		})
+	})
 })

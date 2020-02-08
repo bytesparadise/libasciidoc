@@ -5,6 +5,10 @@ import (
 	"strconv"
 	texttemplate "text/template"
 
+	"github.com/alecthomas/chroma"
+	"github.com/alecthomas/chroma/formatters/html"
+	"github.com/alecthomas/chroma/lexers"
+	"github.com/alecthomas/chroma/styles"
 	"github.com/bytesparadise/libasciidoc/pkg/renderer"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 	"github.com/pkg/errors"
@@ -14,6 +18,7 @@ import (
 var fencedBlockTmpl texttemplate.Template
 var listingBlockTmpl texttemplate.Template
 var sourceBlockTmpl texttemplate.Template
+var sourceBlockContentTmpl texttemplate.Template
 var exampleBlockTmpl texttemplate.Template
 var admonitionBlockTmpl texttemplate.Template
 var quoteBlockTmpl texttemplate.Template
@@ -46,12 +51,18 @@ func init() {
 		})
 
 	sourceBlockTmpl = newTextTemplate("source block",
-		`{{ $ctx := .Context }}{{ with .Data }}<div {{ if .ID }}id="{{ .ID }}" {{ end }}class="listingblock">{{ if .Title }}
+		`<div {{ if .ID }}id="{{ .ID }}" {{ end }}class="listingblock">{{ if .Title }}
 <div class="title">{{ escape .Title }}</div>{{ end }}
 <div class="content">
-<pre class="highlight"><code{{ if .Language}} class="language-{{ .Language}}" data-lang="{{ .Language}}"{{ end }}>{{ range $index, $element := .Elements }}{{ renderPlainText $ctx $element | printf "%s" | escape }}{{ end }}</code></pre>
+<pre class="{{ if .SyntaxHighlighter }}{{ .SyntaxHighlighter }} {{ end }}highlight"><code{{ if .Language }}{{ if not .SyntaxHighlighter }} class="language-{{ .Language}}"{{ end }} data-lang="{{ .Language}}"{{ end }}>{{ .Content }}</code></pre>
 </div>
-</div>{{ end }}`,
+</div>`,
+		texttemplate.FuncMap{
+			"escape": EscapeString,
+		})
+
+	sourceBlockContentTmpl = newTextTemplate("source bock content",
+		`{{ $ctx := .Context }}{{ with .Data }}{{ range $index, $element := .Elements }}{{ renderPlainText $ctx $element | printf "%s" | escape }}{{ end }}{{ end }}`,
 		texttemplate.FuncMap{
 			"renderPlainText": renderPlainText,
 			"escape":          EscapeString,
@@ -209,21 +220,69 @@ func renderSourceBlock(ctx renderer.Context, b types.DelimitedBlock) ([]byte, er
 		ctx.SetWithinDelimitedBlock(previouslyWithin)
 		ctx.SetIncludeBlankLine(previouslyInclude)
 	}()
-	language := b.Attributes.GetAsString(types.AttrLanguage)
-	result := bytes.NewBuffer(nil)
-	err := sourceBlockTmpl.Execute(result, ContextualPipeline{
+	// first, render the content
+	contentBuf := bytes.NewBuffer(nil)
+	err := sourceBlockContentTmpl.Execute(contentBuf, ContextualPipeline{
 		Context: ctx,
 		Data: struct {
-			ID       string
-			Title    string
-			Language string
 			Elements []interface{}
 		}{
-			ID:       renderElementID(b.Attributes),
-			Title:    renderTitle(b.Attributes),
-			Language: language,
 			Elements: discardTrailingBlankLines(b.Elements),
-		},
+		}})
+	if err != nil {
+		return []byte{}, err
+	}
+	content := contentBuf.String()
+	language := b.Attributes.GetAsString(types.AttrLanguage)
+
+	hightligher, _ := ctx.Document.Attributes.GetAsString("source-highlighter")
+	if hightligher == "pygments" {
+		// using github.com/alecthomas/chroma to highlight the content
+		contentBuf = bytes.NewBuffer(nil)
+		lexer := lexers.Get(language)
+		lexer = chroma.Coalesce(lexer)
+		style := styles.Fallback
+		if s, exists := ctx.Document.Attributes.GetAsString("pygments-style"); exists {
+			style = styles.Get(s)
+		}
+		iterator, err := lexer.Tokenise(nil, content)
+		if err != nil {
+			return []byte{}, err
+		}
+		options := []html.Option{
+			html.ClassPrefix("tok-"),
+			html.PreventSurroundingPre(true),
+		}
+		// extra option: inline CSS instead of classes
+		if ctx.Document.Attributes.GetAsStringWithDefault("pygments-css", "classes") == "style" {
+			options = append(options, html.WithClasses(false))
+		} else {
+			options = append(options, html.WithClasses(true))
+		}
+		// extra option: line numbers
+		if b.Attributes.Has(types.AttrLineNums) {
+			options = append(options, html.WithLineNumbers(true))
+		}
+		err = html.New(options...).Format(contentBuf, style, iterator)
+		if err != nil {
+			return []byte{}, err
+		}
+		content = contentBuf.String()
+	}
+
+	result := bytes.NewBuffer(nil)
+	err = sourceBlockTmpl.Execute(result, struct {
+		ID                string
+		Title             string
+		Language          string
+		SyntaxHighlighter string
+		Content           string
+	}{
+		ID:                renderElementID(b.Attributes),
+		Title:             renderTitle(b.Attributes),
+		SyntaxHighlighter: hightligher,
+		Language:          language,
+		Content:           content,
 	})
 	return result.Bytes(), err
 }
