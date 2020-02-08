@@ -1330,166 +1330,131 @@ foo
 
 	Context("source blocks", func() {
 
+		sourceCode := []interface{}{
+			types.Paragraph{
+				Attributes: types.ElementAttributes{},
+				Lines: [][]interface{}{
+					{
+						types.StringElement{
+							Content: "package foo",
+						},
+					},
+				},
+			},
+			types.BlankLine{},
+			types.Paragraph{
+				Attributes: types.ElementAttributes{},
+				Lines: [][]interface{}{
+					{
+						types.StringElement{
+							Content: "// Foo",
+						},
+					},
+					{
+						types.StringElement{
+							Content: "type Foo struct{",
+						},
+					},
+					{
+						types.StringElement{
+							Content: "    Bar string",
+						},
+					},
+					{
+						types.StringElement{
+							Content: "}",
+						},
+					},
+				},
+			},
+		}
+
 		It("with source attribute only", func() {
 			source := `[source]
 ----
-require 'sinatra'
+package foo
 
-get '/hi' do
-  "Hello World!"
-end
+// Foo
+type Foo struct{
+    Bar string
+}
 ----`
 			expected := types.DelimitedBlock{
 				Attributes: types.ElementAttributes{
 					types.AttrKind: types.Source,
 				},
-				Kind: types.Source,
-				Elements: []interface{}{
-					types.Paragraph{
-						Attributes: types.ElementAttributes{},
-						Lines: [][]interface{}{
-							{
-								types.StringElement{
-									Content: "require 'sinatra'",
-								},
-							},
-						},
-					},
-					types.BlankLine{},
-					types.Paragraph{
-						Attributes: types.ElementAttributes{},
-						Lines: [][]interface{}{
-
-							{
-								types.StringElement{
-									Content: "get '/hi' do",
-								},
-							},
-							{
-								types.StringElement{
-									Content: "  \"Hello World!\"",
-								},
-							},
-							{
-								types.StringElement{
-									Content: "end",
-								},
-							},
-						},
-					},
-				},
+				Kind:     types.Source,
+				Elements: sourceCode,
 			}
 			Expect(source).To(BecomeDocumentBlock(expected))
 		})
 
-		It("with title, source and languages attributes", func() {
-			source := `[source,ruby]
-.Source block title
+		It("with source attribute and comma", func() {
+			source := `[source,]
 ----
-require 'sinatra'
+package foo
 
-get '/hi' do
-  "Hello World!"
-end
+// Foo
+type Foo struct{
+    Bar string
+}
+----`
+			expected := types.DelimitedBlock{
+				Attributes: types.ElementAttributes{
+					types.AttrKind: types.Source,
+				},
+				Kind:     types.Source,
+				Elements: sourceCode,
+			}
+			Expect(source).To(BecomeDocumentBlock(expected))
+		})
+
+		It("with title, source and language attributes", func() {
+			source := `[source,go]
+.foo.go
+----
+package foo
+
+// Foo
+type Foo struct{
+    Bar string
+}
 ----`
 			expected := types.DelimitedBlock{
 				Attributes: types.ElementAttributes{
 					types.AttrKind:     types.Source,
-					types.AttrLanguage: "ruby",
-					types.AttrTitle:    "Source block title",
+					types.AttrLanguage: "go",
+					types.AttrTitle:    "foo.go",
 				},
-				Kind: types.Source,
-				Elements: []interface{}{
-					types.Paragraph{
-						Attributes: types.ElementAttributes{},
-						Lines: [][]interface{}{
-							{
-								types.StringElement{
-									Content: "require 'sinatra'",
-								},
-							},
-						},
-					},
-					types.BlankLine{},
-					types.Paragraph{
-						Attributes: types.ElementAttributes{},
-						Lines: [][]interface{}{
-
-							{
-								types.StringElement{
-									Content: "get '/hi' do",
-								},
-							},
-							{
-								types.StringElement{
-									Content: "  \"Hello World!\"",
-								},
-							},
-							{
-								types.StringElement{
-									Content: "end",
-								},
-							},
-						},
-					},
-				},
+				Kind:     types.Source,
+				Elements: sourceCode,
 			}
 			Expect(source).To(BecomeDocumentBlock(expected))
 		})
 
-		It("with id, title, source and languages attributes", func() {
+		It("with id, title, source and language and other attributes", func() {
 			source := `[#id-for-source-block]
-[source,ruby]
-.app.rb
+[source,go,linenums]
+.foo.go
 ----
-require 'sinatra'
+package foo
 
-get '/hi' do
-  "Hello World!"
-end
+// Foo
+type Foo struct{
+    Bar string
+}
 ----`
 			expected := types.DelimitedBlock{
 				Attributes: types.ElementAttributes{
 					types.AttrKind:     types.Source,
-					types.AttrLanguage: "ruby",
+					types.AttrLanguage: "go",
 					types.AttrID:       "id-for-source-block",
 					types.AttrCustomID: true,
-					types.AttrTitle:    "app.rb",
+					types.AttrTitle:    "foo.go",
+					types.AttrLineNums: nil,
 				},
-				Kind: types.Source,
-				Elements: []interface{}{
-					types.Paragraph{
-						Attributes: types.ElementAttributes{},
-						Lines: [][]interface{}{
-							{
-								types.StringElement{
-									Content: "require 'sinatra'",
-								},
-							},
-						},
-					},
-					types.BlankLine{},
-					types.Paragraph{
-						Attributes: types.ElementAttributes{},
-						Lines: [][]interface{}{
-							{
-								types.StringElement{
-									Content: "get '/hi' do",
-								},
-							},
-							{
-								types.StringElement{
-									Content: "  \"Hello World!\"",
-								},
-							},
-							{
-								types.StringElement{
-									Content: "end",
-								},
-							},
-						},
-					},
-				},
+				Kind:     types.Source,
+				Elements: sourceCode,
 			}
 			Expect(source).To(BecomeDocumentBlock(expected))
 		})
