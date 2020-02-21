@@ -2,7 +2,6 @@ package types_test
 
 import (
 	"github.com/bytesparadise/libasciidoc/pkg/types"
-	. "github.com/bytesparadise/libasciidoc/testsupport"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
@@ -14,35 +13,35 @@ var _ = Describe("normalizing string", func() {
 		source := []interface{}{
 			types.StringElement{Content: "hello"},
 		}
-		Expect(source).To(EqualWithoutNonAlphanumeric("hello"))
+		Expect(types.ReplaceNonAlphanumerics(source, "_")).To(Equal("hello"))
 	})
 
 	It("héllo with an accent", func() {
 		source := []interface{}{
 			types.StringElement{Content: "  héllo 1.2   and 3 Spaces"},
 		}
-		Expect(source).To(EqualWithoutNonAlphanumeric("héllo_1_2_and_3_spaces"))
+		Expect(types.ReplaceNonAlphanumerics(source, "_")).To(Equal("héllo_1_2_and_3_spaces"))
 	})
 
 	It("a an accent and a swedish character", func() {
 		source := []interface{}{
 			types.StringElement{Content: `A à ⌘`},
 		}
-		Expect(source).To(EqualWithoutNonAlphanumeric("a_à"))
+		Expect(types.ReplaceNonAlphanumerics(source, "_")).To(Equal("a_à"))
 	})
 
 	It("AŁA", func() {
 		source := []interface{}{
 			types.StringElement{Content: `AŁA 0.1 ?`},
 		}
-		Expect(source).To(EqualWithoutNonAlphanumeric("ała_0_1"))
+		Expect(types.ReplaceNonAlphanumerics(source, "_")).To(Equal("ała_0_1"))
 	})
 
 	It("it's  2 spaces, here !", func() {
 		source := []interface{}{
 			types.StringElement{Content: `it's  2 spaces, here !`},
 		}
-		Expect(source).To(EqualWithoutNonAlphanumeric("it_s_2_spaces_here"))
+		Expect(types.ReplaceNonAlphanumerics(source, "_")).To(Equal("it_s_2_spaces_here"))
 	})
 
 	It("content with <strong> markup", func() {
@@ -56,7 +55,7 @@ var _ = Describe("normalizing string", func() {
 				},
 			},
 		}
-		Expect(source).To(EqualWithoutNonAlphanumeric("a_section_title_with_bold_content"))
+		Expect(types.ReplaceNonAlphanumerics(source, "_")).To(Equal("a_section_title_with_bold_content"))
 	})
 
 	It("content with link", func() {
@@ -74,6 +73,6 @@ var _ = Describe("normalizing string", func() {
 				},
 			},
 		}
-		Expect(source).To(EqualWithoutNonAlphanumeric("link_to_https_foo_bar")) // asciidoctor will return `_link_to_https_foo_bar`
+		Expect(types.ReplaceNonAlphanumerics(source, "_")).To(Equal("link_to_https_foo_bar")) // asciidoctor will return `_link_to_https_foo_bar`
 	})
 })

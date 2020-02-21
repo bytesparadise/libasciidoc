@@ -17,7 +17,7 @@ var _ = Describe("links", func() {
 			expected := `<div class="paragraph">
 <p>a link to <a href="https://foo.com" class="bare">https://foo.com</a>.</p>
 </div>`
-			Expect(source).To(RenderHTML5Body(expected))
+			Expect(RenderHTML5Body(source)).To(Equal(expected))
 		})
 
 		It("external link with quoted text", func() {
@@ -25,7 +25,7 @@ var _ = Describe("links", func() {
 			expected := `<div class="paragraph">
 <p><a href="https://foo.com"><em>a</em> <strong>b</strong> <code>c</code></a></p>
 </div>`
-			Expect(source).To(RenderHTML5Body(expected))
+			Expect(RenderHTML5Body(source)).To(Equal(expected))
 		})
 
 		It("external link with text having comma", func() {
@@ -33,7 +33,7 @@ var _ = Describe("links", func() {
 			expected := `<div class="paragraph">
 <p><a href="https://foo.com">A, B, and C</a></p>
 </div>`
-			Expect(source).To(RenderHTML5Body(expected))
+			Expect(RenderHTML5Body(source)).To(Equal(expected))
 		})
 
 		It("external link inside a multiline paragraph", func() {
@@ -45,7 +45,7 @@ next lines`
 and more text on the
 next lines</p>
 </div>`
-			Expect(source).To(RenderHTML5Body(expected))
+			Expect(RenderHTML5Body(source)).To(Equal(expected))
 		})
 
 		Context("with document attribute substitutions", func() {
@@ -59,7 +59,7 @@ a link to {url}`
 				expected := `<div class="paragraph">
 <p>a link to <a href="https://foo2.bar" class="bare">https://foo2.bar</a></p>
 </div>`
-				Expect(source).To(RenderHTML5Body(expected))
+				Expect(RenderHTML5Body(source)).To(Equal(expected))
 			})
 
 			It("external link with two document attribute substitutions only", func() {
@@ -70,7 +70,7 @@ a link to {scheme}://{path}`
 				expected := `<div class="paragraph">
 <p>a link to <a href="https://foo.bar" class="bare">https://foo.bar</a></p>
 </div>`
-				Expect(source).To(RenderHTML5Body(expected))
+				Expect(RenderHTML5Body(source)).To(Equal(expected))
 			})
 
 			It("external link with two document attribute substitutions and a reset", func() {
@@ -83,7 +83,7 @@ a link to {scheme}://{path}`
 				expected := `<div class="paragraph">
 <p>a link to <a href="https://{path}" class="bare">https://{path}</a></p>
 </div>`
-				Expect(source).To(RenderHTML5Body(expected))
+				Expect(RenderHTML5Body(source)).To(Equal(expected))
 			})
 
 			It("external link with document attribute in section 0 title", func() {
@@ -91,7 +91,7 @@ a link to {scheme}://{path}`
 :scheme: https
 :path: foo.bar`
 				expected := `a title to https://foo.bar and https://foo.baz`
-				Expect(source).To(RenderHTML5Title(expected))
+				Expect(RenderHTML5Title(source)).To(Equal(expected))
 			})
 
 			It("external link with document attribute in section 1 title", func() {
@@ -104,7 +104,7 @@ a link to {scheme}://{path}`
 <div class="sectionbody">
 </div>
 </div>`
-				Expect(source).To(RenderHTML5Body(expected))
+				Expect(RenderHTML5Body(source)).To(Equal(expected))
 			})
 
 			It("external link with two document attribute substitutions and a reset", func() {
@@ -117,7 +117,7 @@ a link to {scheme}://{path} and https://foo.baz`
 				expected := `<div class="paragraph">
 <p>a link to <a href="https://{path}" class="bare">https://{path}</a> and <a href="https://foo.baz" class="bare">https://foo.baz</a></p>
 </div>`
-				Expect(source).To(RenderHTML5Body(expected))
+				Expect(RenderHTML5Body(source)).To(Equal(expected))
 			})
 		})
 	})
@@ -129,7 +129,7 @@ a link to {scheme}://{path} and https://foo.baz`
 			expected := `<div class="paragraph">
 <p>a link to <a href="foo.adoc" class="bare">foo.adoc</a>.</p>
 </div>`
-			Expect(source).To(RenderHTML5Body(expected))
+			Expect(RenderHTML5Body(source)).To(Equal(expected))
 		})
 
 		It("relative link to doc with text", func() {
@@ -137,7 +137,7 @@ a link to {scheme}://{path} and https://foo.baz`
 			expected := `<div class="paragraph">
 <p>a link to <a href="foo.adoc">foo doc</a>.</p>
 </div>`
-			Expect(source).To(RenderHTML5Body(expected))
+			Expect(RenderHTML5Body(source)).To(Equal(expected))
 		})
 
 		It("relative link with text having comma", func() {
@@ -145,7 +145,7 @@ a link to {scheme}://{path} and https://foo.baz`
 			expected := `<div class="paragraph">
 <p>a link to <a href="foo.adoc">A, B, and C</a></p>
 </div>`
-			Expect(source).To(RenderHTML5Body(expected))
+			Expect(RenderHTML5Body(source)).To(Equal(expected))
 		})
 
 		It("relative link to external URL with text", func() {
@@ -153,7 +153,7 @@ a link to {scheme}://{path} and https://foo.baz`
 			expected := `<div class="paragraph">
 <p>a link to <a href="https://foo.bar">foo doc</a>.</p>
 </div>`
-			Expect(source).To(RenderHTML5Body(expected))
+			Expect(RenderHTML5Body(source)).To(Equal(expected))
 		})
 
 		It("invalid relative link to doc", func() {
@@ -161,7 +161,7 @@ a link to {scheme}://{path} and https://foo.baz`
 			expected := `<div class="paragraph">
 <p>a link to link:foo.adoc.</p>
 </div>`
-			Expect(source).To(RenderHTML5Body(expected))
+			Expect(RenderHTML5Body(source)).To(Equal(expected))
 		})
 
 		It("relative link with quoted text", func() {
@@ -169,7 +169,7 @@ a link to {scheme}://{path} and https://foo.baz`
 			expected := `<div class="paragraph">
 <p><a href="/"><em>a</em> <strong>b</strong> <code>c</code></a></p>
 </div>`
-			Expect(source).To(RenderHTML5Body(expected))
+			Expect(RenderHTML5Body(source)).To(Equal(expected))
 		})
 
 		Context("with document attribute substitutions", func() {
@@ -184,7 +184,7 @@ a link to {scheme}:{path}[] and https://foo.baz`
 				expected := `<div class="paragraph">
 <p>a link to <a href="{path}" class="bare">{path}</a> and <a href="https://foo.baz" class="bare">https://foo.baz</a></p>
 </div>`
-				Expect(source).To(RenderHTML5Body(expected))
+				Expect(RenderHTML5Body(source)).To(Equal(expected))
 			})
 		})
 	})

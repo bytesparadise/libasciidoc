@@ -34,7 +34,7 @@ second paragraph`
 				},
 			},
 		}
-		Expect(source).To(BecomeDraftDocument(expected))
+		Expect(ParseDraftDocument(source)).To(Equal(expected))
 	})
 	It("blank line with spaces and tabs between 2 paragraphs and after second paragraph", func() {
 		source := `first paragraph
@@ -66,7 +66,7 @@ second paragraph
 				},
 			},
 		}
-		Expect(source).To(BecomeDraftDocument(expected))
+		Expect(ParseDraftDocument(source)).To(Equal(expected))
 	})
 
 })

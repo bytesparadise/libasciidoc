@@ -1,6 +1,7 @@
 package libasciidoc_test
 
 import (
+	"os"
 	"time"
 
 	"github.com/bytesparadise/libasciidoc/pkg/renderer"
@@ -35,8 +36,8 @@ var _ = Describe("documents", func() {
 			// main title alone is not rendered in the body
 			source := ""
 			expectedContent := ""
-			Expect(source).To(RenderHTML5Body(expectedContent))
-			Expect(source).To(RenderHTML5Title(nil))
+			Expect(RenderHTML5Body(source)).To(Equal(expectedContent))
+			Expect(RenderHTML5Title(source)).To(Equal(""))
 		})
 
 		It("document with no section", func() {
@@ -44,8 +45,8 @@ var _ = Describe("documents", func() {
 			source := "= a document title"
 			expectedTitle := "a document title"
 			expectedContent := ""
-			Expect(source).To(RenderHTML5Body(expectedContent))
-			Expect(source).To(RenderHTML5Title(expectedTitle))
+			Expect(RenderHTML5Body(source)).To(Equal(expectedContent))
+			Expect(RenderHTML5Title(source)).To(Equal(expectedTitle))
 		})
 
 		It("section levels 0 and 1", func() {
@@ -63,8 +64,8 @@ a paragraph with *bold content*`
 </div>
 </div>
 </div>`
-			Expect(source).To(RenderHTML5Body(expectedContent))
-			Expect(source).To(RenderHTML5Title(expectedTitle))
+			Expect(RenderHTML5Body(source)).To(Equal(expectedContent))
+			Expect(RenderHTML5Title(source)).To(Equal(expectedTitle))
 		})
 
 		It("section level 1 with a paragraph", func() {
@@ -79,8 +80,8 @@ a paragraph with *bold content*`
 </div>
 </div>
 </div>`
-			Expect(source).To(RenderHTML5Body(expectedContent))
-			Expect(source).To(RenderHTML5Title(nil))
+			Expect(RenderHTML5Body(source)).To(Equal(expectedContent))
+			Expect(RenderHTML5Title(source)).To(Equal(""))
 		})
 
 		It("section levels 0, 1 and 3", func() {
@@ -108,9 +109,9 @@ a paragraph`
 </div>
 </div>
 </div>`
-			Expect(source).To(RenderHTML5Body(expectedContent))
-			Expect(source).To(RenderHTML5Title(expectedTitle))
-			Expect(source).To(HaveMetadata(types.Metadata{
+			Expect(RenderHTML5Body(source)).To(Equal(expectedContent))
+			Expect(RenderHTML5Title(source)).To(Equal(expectedTitle))
+			Expect(DocumentMetadata(source, lastUpdated)).To(Equal(types.Metadata{
 				Title:       "a document title",
 				LastUpdated: lastUpdated.Format(renderer.LastUpdatedFormat),
 				TableOfContents: types.TableOfContents{
@@ -130,7 +131,7 @@ a paragraph`
 						},
 					},
 				},
-			}, lastUpdated))
+			}))
 		})
 
 		It("section levels 1, 2, 3 and 2", func() {
@@ -170,9 +171,9 @@ a paragraph with _italic content_`
 </div>
 </div>
 </div>`
-			Expect(source).To(RenderHTML5Body(expectedContent))
-			Expect(source).To(RenderHTML5Title(expectedTitle))
-			Expect(source).To(HaveMetadata(types.Metadata{
+			Expect(RenderHTML5Body(source)).To(Equal(expectedContent))
+			Expect(RenderHTML5Title(source)).To(Equal(expectedTitle))
+			Expect(DocumentMetadata(source, lastUpdated)).To(Equal(types.Metadata{
 				Title:       "a document title",
 				LastUpdated: lastUpdated.Format(renderer.LastUpdatedFormat),
 				TableOfContents: types.TableOfContents{
@@ -198,7 +199,7 @@ a paragraph with _italic content_`
 						},
 					},
 				},
-			}, lastUpdated))
+			}))
 		})
 
 		It("should include adoc file without leveloffset from local file", func() {
@@ -214,8 +215,8 @@ a paragraph with _italic content_`
 </div>
 </div>
 </div>`
-			Expect(source).To(RenderHTML5Body(expected, WithFilename("foo.adoc")))
-			Expect(source).To(HaveMetadata(types.Metadata{
+			Expect(RenderHTML5Body(source, WithFilename("test.adoc"), renderer.LastUpdated(lastUpdated))).To(Equal(expected))
+			Expect(DocumentMetadata(source, lastUpdated)).To(Equal(types.Metadata{
 				Title:       "",
 				LastUpdated: lastUpdated.Format(renderer.LastUpdatedFormat),
 				TableOfContents: types.TableOfContents{
@@ -228,12 +229,12 @@ a paragraph with _italic content_`
 						},
 					},
 				},
-			}, lastUpdated))
+			}))
 		})
 
 		It("should include adoc file without leveloffset from relative file", func() {
 			source := "include::../test/includes/grandchild-include.adoc[]"
-			expected := `<div class="sect1">
+			expectedContent := `<div class="sect1">
 <h2 id="_grandchild_title">grandchild title</h2>
 <div class="sectionbody">
 <div class="paragraph">
@@ -244,8 +245,7 @@ a paragraph with _italic content_`
 </div>
 </div>
 </div>`
-
-			Expect(source).To(RenderHTML5Body(expected, WithFilename("tmp/foo.adoc")))
+			Expect(RenderHTML5Body(source, WithFilename("tmp/foo.adoc"))).To(Equal(expectedContent))
 		})
 	})
 
@@ -278,7 +278,10 @@ Last updated {{.LastUpdated}}
 </div>
 </body>
 </html>`
-			Expect("test/includes/chapter-a.adoc").To(RenderHTML5Document(expectedContent, renderer.IncludeCSS("path/to/style.css")))
+			filename := "test/includes/chapter-a.adoc"
+			stat, err := os.Stat(filename)
+			Expect(err).NotTo(HaveOccurred())
+			Expect(RenderHTML5Document(filename, renderer.IncludeCSS("path/to/style.css"))).To(MatchHTML5Template(expectedContent, stat.ModTime()))
 		})
 
 	})

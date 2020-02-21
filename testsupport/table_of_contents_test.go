@@ -1,8 +1,6 @@
 package testsupport_test
 
 import (
-	"fmt"
-
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 	"github.com/bytesparadise/libasciidoc/testsupport"
 
@@ -10,7 +8,7 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-var _ = Describe("metadata table of contents matcher", func() {
+var _ = Describe("table of contents", func() {
 
 	expected := types.TableOfContents{
 		Sections: []types.ToCSection{
@@ -45,12 +43,11 @@ var _ = Describe("metadata table of contents matcher", func() {
 				},
 			},
 		}
-		matcher := testsupport.HaveTableOfContents(expected)
 		// when
-		result, err := matcher.Match(actual)
+		result, err := testsupport.TableOfContents(actual)
 		// then
 		Expect(err).ToNot(HaveOccurred())
-		Expect(result).To(BeTrue())
+		Expect(result).To(Equal(expected))
 	})
 
 	It("should not match", func() {
@@ -58,25 +55,11 @@ var _ = Describe("metadata table of contents matcher", func() {
 		actual := types.Document{
 			Elements: []interface{}{},
 		}
-		matcher := testsupport.HaveTableOfContents(expected)
 		// when
-		result, err := matcher.Match(actual)
+		result, err := testsupport.TableOfContents(actual)
 		// then
 		Expect(err).ToNot(HaveOccurred())
-		Expect(result).To(BeFalse())
-		// also verify the messages
-		Expect(matcher.FailureMessage(actual)).To(Equal(fmt.Sprintf("expected table of contents to match:\n%s", compare(types.TableOfContents{Sections: []types.ToCSection{}}, expected))))
-		Expect(matcher.NegatedFailureMessage(actual)).To(Equal(fmt.Sprintf("expected table of contents not to match:\n%s", compare(types.TableOfContents{Sections: []types.ToCSection{}}, expected))))
+		Expect(result).NotTo(Equal(expected))
 	})
 
-	It("should return error when invalid type is input", func() {
-		// given
-		matcher := testsupport.HaveTableOfContents(types.TableOfContents{})
-		// when
-		result, err := matcher.Match(1) // not a string
-		// then
-		Expect(err).To(HaveOccurred())
-		Expect(err.Error()).To(Equal("HaveTableOfContents matcher expects a Document (actual: int)"))
-		Expect(result).To(BeFalse())
-	})
 })

@@ -28,7 +28,7 @@ a paragraph`
 						},
 					},
 				}
-				Expect(source).To(BecomeDocumentBlock(expected))
+				Expect(ParseDocumentBlock(source)).To(Equal(expected))
 			})
 			It("spaces in link", func() {
 				source := `[link= http://foo.bar  ]
@@ -45,7 +45,7 @@ a paragraph`
 						},
 					},
 				}
-				Expect(source).To(BecomeDocumentBlock(expected))
+				Expect(ParseDocumentBlock(source)).To(Equal(expected))
 			})
 		})
 
@@ -68,7 +68,7 @@ a paragraph`
 						},
 					},
 				}
-				Expect(source).To(BecomeDocumentBlock(expected))
+				Expect(ParseDocumentBlock(source)).To(Equal(expected))
 			})
 
 			It("unbalanced brackets", func() {
@@ -89,7 +89,7 @@ a paragraph`
 						},
 					},
 				}
-				Expect(source).To(BecomeDocumentBlock(expected))
+				Expect(ParseDocumentBlock(source)).To(Equal(expected))
 			})
 		})
 	})
@@ -114,7 +114,7 @@ a paragraph`
 						},
 					},
 				}
-				Expect(source).To(BecomeDocumentBlock(expected))
+				Expect(ParseDocumentBlock(source)).To(Equal(expected))
 			})
 
 			It("short-hand syntax", func() {
@@ -133,7 +133,7 @@ a paragraph`
 						},
 					},
 				}
-				Expect(source).To(BecomeDocumentBlock(expected))
+				Expect(ParseDocumentBlock(source)).To(Equal(expected))
 			})
 		})
 
@@ -157,7 +157,7 @@ a paragraph`
 						},
 					},
 				}
-				Expect(source).To(BecomeDocumentBlock(expected))
+				Expect(ParseDocumentBlock(source)).To(Equal(expected))
 			})
 
 			It("unbalanced brackets", func() {
@@ -178,7 +178,7 @@ a paragraph`
 						},
 					},
 				}
-				Expect(source).To(BecomeDocumentBlock(expected))
+				Expect(ParseDocumentBlock(source)).To(Equal(expected))
 			})
 		})
 	})
@@ -202,7 +202,7 @@ a paragraph`
 						},
 					},
 				}
-				Expect(source).To(BecomeDocumentBlock(expected))
+				Expect(ParseDocumentBlock(source)).To(Equal(expected))
 			})
 		})
 
@@ -233,7 +233,7 @@ a list item!`
 						},
 					},
 				}
-				Expect(source).To(BecomeDocumentBlock(expected))
+				Expect(ParseDocumentBlock(source)).To(Equal(expected))
 			})
 
 			It("not a dot", func() {
@@ -255,7 +255,7 @@ a paragraph`
 						},
 					},
 				}
-				Expect(source).To(BecomeDocumentBlock(expected))
+				Expect(ParseDocumentBlock(source)).To(Equal(expected))
 			})
 		})
 	})
@@ -279,7 +279,7 @@ a paragraph`
 						},
 					},
 				}
-				Expect(source).To(BecomeDocumentBlock(expected))
+				Expect(ParseDocumentBlock(source)).To(Equal(expected))
 			})
 
 			It("full role syntax", func() {
@@ -297,7 +297,7 @@ a paragraph`
 						},
 					},
 				}
-				Expect(source).To(BecomeDocumentBlock(expected))
+				Expect(ParseDocumentBlock(source)).To(Equal(expected))
 			})
 		})
 	})

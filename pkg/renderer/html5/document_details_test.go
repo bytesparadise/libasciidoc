@@ -51,7 +51,9 @@ Last updated {{.LastUpdated}}
 </div>
 </body>
 </html>`
-			Expect(source).To(RenderHTML5Body(expected, renderer.IncludeHeaderFooter(true), renderer.LastUpdated(time.Now())))
+			now := time.Now()
+			Expect(RenderHTML5Body(source, renderer.IncludeHeaderFooter(true), renderer.LastUpdated(time.Now()))).
+				To(MatchHTML5Template(expected, now))
 		})
 
 		It("header with 2 authors and no revision", func() {
@@ -88,7 +90,9 @@ Last updated {{.LastUpdated}}
 </div>
 </body>
 </html>`
-			Expect(source).To(RenderHTML5Body(expected, renderer.IncludeHeaderFooter(true), renderer.LastUpdated(time.Now())))
+			now := time.Now()
+			Expect(RenderHTML5Body(source, renderer.IncludeHeaderFooter(true), renderer.LastUpdated(now))).
+				To(MatchHTML5Template(expected, now))
 
 		})
 	})

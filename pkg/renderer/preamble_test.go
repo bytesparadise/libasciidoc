@@ -79,7 +79,7 @@ var _ = Describe("preambles", func() {
 				},
 			},
 		}
-		Expect(source).To(HavePreamble(expected))
+		Expect(IncludePreamble(source)).To(Equal(expected))
 	})
 
 	It("doc with 1-paragraph preamble", func() {
@@ -165,7 +165,7 @@ var _ = Describe("preambles", func() {
 				},
 			},
 		}
-		Expect(source).To(HavePreamble(expected))
+		Expect(IncludePreamble(source)).To(Equal(expected))
 	})
 
 	It("doc with 2-paragraph preamble", func() {
@@ -269,7 +269,7 @@ var _ = Describe("preambles", func() {
 				},
 			},
 		}
-		Expect(source).To(HavePreamble(expected))
+		Expect(IncludePreamble(source)).To(Equal(expected))
 	})
 
 })

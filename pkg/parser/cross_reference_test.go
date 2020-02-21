@@ -52,7 +52,7 @@ with some content linked to <<thetitle>>!`
 					},
 				},
 			}
-			Expect(source).To(BecomeDraftDocument(expected))
+			Expect(ParseDraftDocument(source)).To(Equal(expected))
 		})
 
 		It("cross reference with custom id and label", func() {
@@ -95,7 +95,7 @@ with some content linked to <<thetitle,a label to the title>>!`
 					},
 				},
 			}
-			Expect(source).To(BecomeDraftDocument(expected))
+			Expect(ParseDraftDocument(source)).To(Equal(expected))
 		})
 	})
 
@@ -139,7 +139,7 @@ with some content linked to <<thetitle,a label to the title>>!`
 					},
 				},
 			}
-			Expect(source).To(BecomeDraftDocument(expected))
+			Expect(ParseDraftDocument(source)).To(Equal(expected))
 		})
 
 		It("external cross reference to other doc with document attribute in location", func() {
@@ -178,7 +178,7 @@ with some content linked to <<thetitle,a label to the title>>!`
 					},
 				},
 			}
-			Expect(source).To(BecomeDraftDocument(expected))
+			Expect(ParseDraftDocument(source)).To(Equal(expected))
 		})
 	})
 })
@@ -237,7 +237,7 @@ with some content linked to <<thetitle>>!`
 					},
 				},
 			}
-			Expect(source).To(BecomeDocument(expected))
+			Expect(ParseDocument(source)).To(Equal(expected))
 		})
 
 		It("cross reference with custom id and label", func() {
@@ -290,7 +290,7 @@ with some content linked to <<thetitle,a label to the title>>!`
 					},
 				},
 			}
-			Expect(source).To(BecomeDocument(expected))
+			Expect(ParseDocument(source)).To(Equal(expected))
 		})
 	})
 
@@ -338,7 +338,7 @@ with some content linked to <<thetitle,a label to the title>>!`
 					},
 				},
 			}
-			Expect(source).To(BecomeDocument(expected))
+			Expect(ParseDocument(source)).To(Equal(expected))
 		})
 
 		It("external cross reference to other doc with document attribute in location and label with special chars", func() {
@@ -381,7 +381,7 @@ some content linked to xref:{foo}[another_doc()]!`
 					},
 				},
 			}
-			Expect(source).To(BecomeDocument(expected))
+			Expect(ParseDocument(source)).To(Equal(expected))
 		})
 	})
 })
