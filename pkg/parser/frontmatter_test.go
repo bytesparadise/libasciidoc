@@ -38,7 +38,7 @@ first paragraph`
 					},
 				},
 			}
-			Expect(source).To(BecomeDraftDocument(expected))
+			Expect(ParseDraftDocument(source)).To(Equal(expected))
 		})
 
 		It("empty front-matter", func() {
@@ -62,7 +62,7 @@ first paragraph`
 					},
 				},
 			}
-			Expect(source).To(BecomeDraftDocument(expected))
+			Expect(ParseDraftDocument(source)).To(Equal(expected))
 		})
 	})
 
@@ -98,7 +98,7 @@ first paragraph`
 					},
 				},
 			}
-			Expect(source).To(BecomeDocument(expected))
+			Expect(ParseDocument(source)).To(Equal(expected))
 		})
 
 		It("empty front-matter", func() {
@@ -122,7 +122,7 @@ first paragraph`
 					},
 				},
 			}
-			Expect(source).To(BecomeDocument(expected))
+			Expect(ParseDocument(source)).To(Equal(expected))
 		})
 	})
 

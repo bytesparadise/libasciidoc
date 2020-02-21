@@ -40,9 +40,11 @@ Last updated {{.LastUpdated}}
 </div>
 </body>
 </html>`
-			Expect(source).To(RenderHTML5Body(expected, renderer.IncludeHeaderFooter(true),
+			now := time.Now()
+			Expect(RenderHTML5Body(source, renderer.IncludeHeaderFooter(true),
 				renderer.IncludeCSS("/path/to/style.css"),
-				renderer.LastUpdated(time.Now())))
+				renderer.LastUpdated(now))).
+				To(MatchHTML5Template(expected, now))
 		})
 	})
 

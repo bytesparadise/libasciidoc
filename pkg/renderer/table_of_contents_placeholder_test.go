@@ -66,7 +66,7 @@ var _ = Describe("table of contents", func() {
 				section,
 			},
 		}
-		Expect(source).To(HaveTableOfContentsPlaceHolder(expected))
+		Expect(IncludeTableOfContentsPlaceHolder(source)).To(Equal(expected))
 	})
 
 	It("table of contents with default placement and a header with content", func() {
@@ -113,7 +113,7 @@ var _ = Describe("table of contents", func() {
 				},
 			},
 		}
-		Expect(source).To(HaveTableOfContentsPlaceHolder(expected))
+		Expect(IncludeTableOfContentsPlaceHolder(source)).To(Equal(expected))
 	})
 
 	It("table of contents with default placement and a header without content", func() {
@@ -158,7 +158,7 @@ var _ = Describe("table of contents", func() {
 				},
 			},
 		}
-		Expect(source).To(HaveTableOfContentsPlaceHolder(expected))
+		Expect(IncludeTableOfContentsPlaceHolder(source)).To(Equal(expected))
 	})
 
 	It("table of contents with preamble placement and no header with content", func() {
@@ -187,7 +187,7 @@ var _ = Describe("table of contents", func() {
 				section,
 			},
 		}
-		Expect(source).To(HaveTableOfContentsPlaceHolder(expected))
+		Expect(IncludeTableOfContentsPlaceHolder(source)).To(Equal(expected))
 	})
 
 	It("table of contents with preamble placement and header with content", func() {
@@ -234,7 +234,7 @@ var _ = Describe("table of contents", func() {
 				},
 			},
 		}
-		Expect(source).To(HaveTableOfContentsPlaceHolder(expected))
+		Expect(IncludeTableOfContentsPlaceHolder(source)).To(Equal(expected))
 	})
 
 	It("table of contents with preamble placement and header without content", func() {
@@ -279,7 +279,7 @@ var _ = Describe("table of contents", func() {
 				},
 			},
 		}
-		Expect(source).To(HaveTableOfContentsPlaceHolder(expected))
+		Expect(IncludeTableOfContentsPlaceHolder(source)).To(Equal(expected))
 	})
 
 })

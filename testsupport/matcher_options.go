@@ -15,11 +15,11 @@ func WithFilename(filename string) FilenameOption {
 }
 
 // BecomeDraftDocumentOption an option to configure the BecomeDraftDocument matcher
-type BecomeDraftDocumentOption func(m *draftDocumentMatcher)
+type BecomeDraftDocumentOption func(c *drafDocumentParserConfig)
 
 // WithoutPreprocessing disables document preprocessing
 func WithoutPreprocessing() BecomeDraftDocumentOption {
-	return func(m *draftDocumentMatcher) {
-		m.preprocessing = false
+	return func(c *drafDocumentParserConfig) {
+		c.preprocessing = false
 	}
 }

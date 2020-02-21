@@ -34,7 +34,7 @@ var _ = Describe("links", func() {
 						},
 					},
 				}
-				Expect(source).To(BecomeDocumentBlock(expected))
+				Expect(ParseDocumentBlock(source)).To(Equal(expected))
 			})
 
 			It("external link with empty text", func() {
@@ -57,7 +57,7 @@ var _ = Describe("links", func() {
 						},
 					},
 				}
-				Expect(source).To(BecomeDocumentBlock(expected))
+				Expect(ParseDocumentBlock(source)).To(Equal(expected))
 			})
 
 			It("external link with text only", func() {
@@ -87,7 +87,7 @@ var _ = Describe("links", func() {
 						},
 					},
 				}
-				Expect(source).To(BecomeDocumentBlock(expected))
+				Expect(ParseDocumentBlock(source)).To(Equal(expected))
 			})
 
 			It("external link with text and extra attributes", func() {
@@ -117,7 +117,7 @@ var _ = Describe("links", func() {
 						},
 					},
 				}
-				Expect(source).To(BecomeDocumentBlock(expected))
+				Expect(ParseDocumentBlock(source)).To(Equal(expected))
 			})
 
 			It("external link inside a multiline paragraph -  without attributes", func() {
@@ -155,7 +155,7 @@ next lines`
 						},
 					},
 				}
-				Expect(source).To(BecomeDocumentBlock(expected))
+				Expect(ParseDocumentBlock(source)).To(Equal(expected))
 			})
 
 			It("external link inside a multiline paragraph -  with attributes", func() {
@@ -193,7 +193,7 @@ next lines`
 						},
 					},
 				}
-				Expect(source).To(BecomeDocumentBlock(expected))
+				Expect(ParseDocumentBlock(source)).To(Equal(expected))
 			})
 
 			It("external link with more text afterwards", func() {
@@ -217,7 +217,7 @@ next lines`
 						},
 					},
 				}
-				Expect(source).To(BecomeDocumentBlock(expected))
+				Expect(ParseDocumentBlock(source)).To(Equal(expected))
 			})
 
 			Context("text attribute with comma", func() {
@@ -248,7 +248,7 @@ next lines`
 							},
 						},
 					}
-					Expect(source).To(BecomeDocumentBlock(expected))
+					Expect(ParseDocumentBlock(source)).To(Equal(expected))
 				})
 
 				It("external link only with doublequoted text having comma", func() {
@@ -277,7 +277,7 @@ next lines`
 							},
 						},
 					}
-					Expect(source).To(BecomeDocumentBlock(expected))
+					Expect(ParseDocumentBlock(source)).To(Equal(expected))
 				})
 
 				It("external link with doublequoted text having comma and other attrs", func() {
@@ -307,7 +307,7 @@ next lines`
 							},
 						},
 					}
-					Expect(source).To(BecomeDocumentBlock(expected))
+					Expect(ParseDocumentBlock(source)).To(Equal(expected))
 				})
 
 				It("external link with text having comma and other attributes", func() {
@@ -339,7 +339,7 @@ next lines`
 							},
 						},
 					}
-					Expect(source).To(BecomeDocumentBlock(expected))
+					Expect(ParseDocumentBlock(source)).To(Equal(expected))
 				})
 			})
 
@@ -368,7 +368,7 @@ next lines`
 						},
 					},
 				}
-				Expect(source).To(BecomeDraftDocument(expected))
+				Expect(ParseDraftDocument(source)).To(Equal(expected))
 			})
 
 			It("external link in bold text", func() {
@@ -401,7 +401,7 @@ next lines`
 						},
 					},
 				}
-				Expect(source).To(BecomeDraftDocument(expected))
+				Expect(ParseDraftDocument(source)).To(Equal(expected))
 			})
 
 		})
@@ -428,7 +428,7 @@ next lines`
 						},
 					},
 				}
-				Expect(source).To(BecomeDocumentBlock(expected))
+				Expect(ParseDocumentBlock(source)).To(Equal(expected))
 			})
 
 			It("relative link to doc with text", func() {
@@ -457,7 +457,7 @@ next lines`
 						},
 					},
 				}
-				Expect(source).To(BecomeDocumentBlock(expected))
+				Expect(ParseDocumentBlock(source)).To(Equal(expected))
 			})
 
 			It("relative link to external URL with text only", func() {
@@ -486,7 +486,7 @@ next lines`
 						},
 					},
 				}
-				Expect(source).To(BecomeDocumentBlock(expected))
+				Expect(ParseDocumentBlock(source)).To(Equal(expected))
 			})
 
 			It("relative link to external URL with text and extra attributes", func() {
@@ -516,7 +516,7 @@ next lines`
 						},
 					},
 				}
-				Expect(source).To(BecomeDocumentBlock(expected))
+				Expect(ParseDocumentBlock(source)).To(Equal(expected))
 			})
 
 			It("relative link to external URL with extra attributes only", func() {
@@ -541,7 +541,7 @@ next lines`
 						},
 					},
 				}
-				Expect(source).To(BecomeDocumentBlock(expected))
+				Expect(ParseDocumentBlock(source)).To(Equal(expected))
 			})
 
 			It("invalid relative link to doc", func() {
@@ -556,7 +556,7 @@ next lines`
 						},
 					},
 				}
-				Expect(source).To(BecomeDocumentBlock(expected))
+				Expect(ParseDocumentBlock(source)).To(Equal(expected))
 			})
 
 			It("relative link with quoted text attribute", func() {
@@ -614,7 +614,7 @@ next lines`
 						},
 					},
 				}
-				Expect(source).To(BecomeDocumentBlock(expected))
+				Expect(ParseDocumentBlock(source)).To(Equal(expected))
 			})
 
 			It("relative link within quoted text", func() {
@@ -641,7 +641,7 @@ next lines`
 						},
 					},
 				}
-				Expect(source).To(BecomeDocumentBlock(expected))
+				Expect(ParseDocumentBlock(source)).To(Equal(expected))
 			})
 
 			It("relative link with all valid characters", func() {
@@ -670,7 +670,7 @@ next lines`
 						},
 					},
 				}
-				Expect(source).To(BecomeDocumentBlock(expected))
+				Expect(ParseDocumentBlock(source)).To(Equal(expected))
 			})
 
 			It("relative link with encoded space", func() {
@@ -703,7 +703,7 @@ Test 2: link:/test/a%20b[with encoded space]`
 						},
 					},
 				}
-				Expect(source).To(BecomeDocumentBlock(expected))
+				Expect(ParseDocumentBlock(source)).To(Equal(expected))
 			})
 
 			It("relative link with two document attribute substitutions and a reset", func() {
@@ -752,7 +752,7 @@ a link to {scheme}:{path}[] and https://foo.baz`
 						},
 					},
 				}
-				Expect(source).To(BecomeDocument(expected))
+				Expect(ParseDocument(source)).To(Equal(expected))
 			})
 
 			Context("text attribute with comma", func() {
@@ -783,7 +783,7 @@ a link to {scheme}:{path}[] and https://foo.baz`
 							},
 						},
 					}
-					Expect(source).To(BecomeDocumentBlock(expected))
+					Expect(ParseDocumentBlock(source)).To(Equal(expected))
 				})
 
 				It("relative link only with doublequoted text having comma", func() {
@@ -812,7 +812,7 @@ a link to {scheme}:{path}[] and https://foo.baz`
 							},
 						},
 					}
-					Expect(source).To(BecomeDocumentBlock(expected))
+					Expect(ParseDocumentBlock(source)).To(Equal(expected))
 				})
 
 				It("relative link with doublequoted text having comma and other attrs", func() {
@@ -842,7 +842,7 @@ a link to {scheme}:{path}[] and https://foo.baz`
 							},
 						},
 					}
-					Expect(source).To(BecomeDocumentBlock(expected))
+					Expect(ParseDocumentBlock(source)).To(Equal(expected))
 				})
 
 				It("relative link with text having comma and other attributes", func() {
@@ -874,7 +874,7 @@ a link to {scheme}:{path}[] and https://foo.baz`
 							},
 						},
 					}
-					Expect(source).To(BecomeDocumentBlock(expected))
+					Expect(ParseDocumentBlock(source)).To(Equal(expected))
 				})
 
 			})
@@ -907,7 +907,7 @@ a link to {url}`
 						},
 					},
 				}
-				Expect(source).To(BecomeDraftDocument(expected))
+				Expect(ParseDraftDocument(source)).To(Equal(expected))
 			})
 
 			It("external link with a document attribute substitution for the whole URL", func() {
@@ -934,7 +934,7 @@ a link to {url}`
 						},
 					},
 				}
-				Expect(source).To(BecomeDraftDocument(expected))
+				Expect(ParseDraftDocument(source)).To(Equal(expected))
 			})
 
 			It("external link with two document attribute substitutions", func() {
@@ -975,7 +975,7 @@ a link to {scheme}://{path}`
 						},
 					},
 				}
-				Expect(source).To(BecomeDraftDocument(expected))
+				Expect(ParseDraftDocument(source)).To(Equal(expected))
 			})
 
 			It("external link with two document attribute substitutions in bold text", func() {
@@ -1032,7 +1032,7 @@ a link to *{scheme}://{path}[] and https://foo.baz[]*`
 						},
 					},
 				}
-				Expect(source).To(BecomeDraftDocument(expected))
+				Expect(ParseDraftDocument(source)).To(Equal(expected))
 			})
 		})
 	})
@@ -1071,7 +1071,7 @@ a link to *{scheme}://{path}[] and https://foo.baz[]*`
 					},
 				},
 			}
-			Expect(source).To(BecomeDocument(expected))
+			Expect(ParseDocument(source)).To(Equal(expected))
 		})
 
 		It("external link with special characters", func() {
@@ -1102,7 +1102,7 @@ a link to *{scheme}://{path}[] and https://foo.baz[]*`
 					},
 				},
 			}
-			Expect(source).To(BecomeDocument(expected))
+			Expect(ParseDocument(source)).To(Equal(expected))
 		})
 
 		It("external link in bold text", func() {
@@ -1139,7 +1139,7 @@ a link to *{scheme}://{path}[] and https://foo.baz[]*`
 					},
 				},
 			}
-			Expect(source).To(BecomeDocument(expected))
+			Expect(ParseDocument(source)).To(Equal(expected))
 		})
 
 		It("external link in italic text", func() {
@@ -1176,7 +1176,7 @@ a link to *{scheme}://{path}[] and https://foo.baz[]*`
 					},
 				},
 			}
-			Expect(source).To(BecomeDocument(expected))
+			Expect(ParseDocument(source)).To(Equal(expected))
 		})
 
 		Context("with document attribute substitutions", func() {
@@ -1214,7 +1214,7 @@ a link to {url}`
 						},
 					},
 				}
-				Expect(source).To(BecomeDocument(expected))
+				Expect(ParseDocument(source)).To(Equal(expected))
 			})
 
 			It("external link with two document attribute substitutions only", func() {
@@ -1261,7 +1261,7 @@ a link to {scheme}://{path} and https://foo.baz`
 						},
 					},
 				}
-				Expect(source).To(BecomeDocument(expected))
+				Expect(ParseDocument(source)).To(Equal(expected))
 			})
 
 			It("external link with two document attribute substitutions in bold text", func() {
@@ -1313,7 +1313,7 @@ a link to *{scheme}://{path}[] and https://foo.baz[]*`
 						},
 					},
 				}
-				Expect(source).To(BecomeDocument(expected))
+				Expect(ParseDocument(source)).To(Equal(expected))
 			})
 
 			It("external link with two document attribute substitutions and a reset", func() {
@@ -1362,7 +1362,7 @@ a link to {scheme}://{path} and https://foo.baz`
 						},
 					},
 				}
-				Expect(source).To(BecomeDocument(expected))
+				Expect(ParseDocument(source)).To(Equal(expected))
 			})
 
 			It("external link with document attribute in section 0 title", func() {
@@ -1415,7 +1415,7 @@ a link to {scheme}://{path} and https://foo.baz`
 						},
 					},
 				}
-				Expect(source).To(BecomeDocument(expected))
+				Expect(ParseDocument(source)).To(Equal(expected))
 			})
 
 			It("external link with document attribute in section 1 title", func() {
@@ -1469,7 +1469,7 @@ a link to {scheme}://{path} and https://foo.baz`
 						},
 					},
 				}
-				Expect(source).To(BecomeDocument(expected))
+				Expect(ParseDocument(source)).To(Equal(expected))
 			})
 		})
 

@@ -50,7 +50,7 @@ var _ = Describe("tables", func() {
 				},
 			},
 		}
-		Expect(source).To(BecomeDocumentBlock(expected))
+		Expect(ParseDocumentBlock(source)).To(Equal(expected))
 	})
 
 	It("1-line table with 3 cells", func() {
@@ -97,7 +97,7 @@ var _ = Describe("tables", func() {
 				},
 			},
 		}
-		Expect(source).To(BecomeDocumentBlock(expected))
+		Expect(ParseDocumentBlock(source)).To(Equal(expected))
 	})
 
 	It("table with title, headers and 1 line per cell", func() {
@@ -161,7 +161,7 @@ var _ = Describe("tables", func() {
 				},
 			},
 		}
-		Expect(source).To(BecomeDocumentBlock(expected))
+		Expect(ParseDocumentBlock(source)).To(Equal(expected))
 	})
 
 	It("empty table ", func() {
@@ -171,6 +171,6 @@ var _ = Describe("tables", func() {
 			Attributes: types.ElementAttributes{},
 			Lines:      []types.TableLine{},
 		}
-		Expect(source).To(BecomeDocumentBlock(expected))
+		Expect(ParseDocumentBlock(source)).To(Equal(expected))
 	})
 })

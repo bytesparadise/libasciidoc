@@ -29,7 +29,7 @@ var _ = Describe("passthroughs - draft", func() {
 					},
 				},
 			}
-			Expect(source).To(BecomeDocumentBlock(expected))
+			Expect(ParseDocumentBlock(source)).To(Equal(expected))
 		})
 
 		It("tripleplus empty passthrough ", func() {
@@ -45,7 +45,7 @@ var _ = Describe("passthroughs - draft", func() {
 					},
 				},
 			}
-			Expect(source).To(BecomeDocumentBlock(expected))
+			Expect(ParseDocumentBlock(source)).To(Equal(expected))
 		})
 
 		It("tripleplus passthrough with spaces", func() {
@@ -65,7 +65,7 @@ var _ = Describe("passthroughs - draft", func() {
 					},
 				},
 			}
-			Expect(source).To(BecomeDocumentBlock(expected))
+			Expect(ParseDocumentBlock(source)).To(Equal(expected))
 		})
 
 		It("tripleplus passthrough with only spaces", func() {
@@ -85,7 +85,7 @@ var _ = Describe("passthroughs - draft", func() {
 					},
 				},
 			}
-			Expect(source).To(BecomeDocumentBlock(expected))
+			Expect(ParseDocumentBlock(source)).To(Equal(expected))
 		})
 
 		It("tripleplus passthrough with line breaks", func() {
@@ -105,7 +105,7 @@ var _ = Describe("passthroughs - draft", func() {
 					},
 				},
 			}
-			Expect(source).To(BecomeDocumentBlock(expected))
+			Expect(ParseDocumentBlock(source)).To(Equal(expected))
 		})
 
 		It("tripleplus passthrough in paragraph", func() {
@@ -127,7 +127,7 @@ var _ = Describe("passthroughs - draft", func() {
 					},
 				},
 			}
-			Expect(source).To(BecomeDocumentBlock(expected))
+			Expect(ParseDocumentBlock(source)).To(Equal(expected))
 		})
 
 		It("tripleplus passthrough with embedded image", func() {
@@ -147,7 +147,7 @@ var _ = Describe("passthroughs - draft", func() {
 					},
 				},
 			}
-			Expect(source).To(BecomeDocumentBlock(expected))
+			Expect(ParseDocumentBlock(source)).To(Equal(expected))
 		})
 
 	})
@@ -171,7 +171,7 @@ var _ = Describe("passthroughs - draft", func() {
 					},
 				},
 			}
-			Expect(source).To(BecomeDocumentBlock(expected))
+			Expect(ParseDocumentBlock(source)).To(Equal(expected))
 		})
 
 		It("singleplus empty passthrough", func() {
@@ -186,7 +186,7 @@ var _ = Describe("passthroughs - draft", func() {
 					},
 				},
 			}
-			Expect(source).To(BecomeDocumentBlock(expected))
+			Expect(ParseDocumentBlock(source)).To(Equal(expected))
 		})
 
 		It("singleplus passthrough with embedded image", func() {
@@ -206,7 +206,7 @@ var _ = Describe("passthroughs - draft", func() {
 					},
 				},
 			}
-			Expect(source).To(BecomeDocumentBlock(expected))
+			Expect(ParseDocumentBlock(source)).To(Equal(expected))
 		})
 
 		It("invalid singleplus passthrough with spaces - case 1", func() {
@@ -233,7 +233,7 @@ var _ = Describe("passthroughs - draft", func() {
 					},
 				},
 			}
-			Expect(source).To(BecomeDocumentBlock(expected))
+			Expect(ParseDocumentBlock(source)).To(Equal(expected))
 		})
 
 		It("invalid singleplus passthrough with spaces - case 2", func() {
@@ -259,7 +259,7 @@ var _ = Describe("passthroughs - draft", func() {
 					},
 				},
 			}
-			Expect(source).To(BecomeDocumentBlock(expected))
+			Expect(ParseDocumentBlock(source)).To(Equal(expected))
 		})
 
 		It("invalid singleplus passthrough with spaces - case 3", func() {
@@ -286,7 +286,7 @@ var _ = Describe("passthroughs - draft", func() {
 					},
 				},
 			}
-			Expect(source).To(BecomeDocumentBlock(expected))
+			Expect(ParseDocumentBlock(source)).To(Equal(expected))
 		})
 
 		It("invalid singleplus passthrough with line break", func() {
@@ -306,7 +306,7 @@ var _ = Describe("passthroughs - draft", func() {
 					},
 				},
 			}
-			Expect(source).To(BecomeDocumentBlock(expected))
+			Expect(ParseDocumentBlock(source)).To(Equal(expected))
 		})
 
 	})
@@ -332,7 +332,7 @@ var _ = Describe("passthroughs - draft", func() {
 						},
 					},
 				}
-				Expect(source).To(BecomeDocumentBlock(expected))
+				Expect(ParseDocumentBlock(source)).To(Equal(expected))
 			})
 
 			It("passthrough macro with words", func() {
@@ -352,7 +352,7 @@ var _ = Describe("passthroughs - draft", func() {
 						},
 					},
 				}
-				Expect(source).To(BecomeDocumentBlock(expected))
+				Expect(ParseDocumentBlock(source)).To(Equal(expected))
 			})
 
 			It("empty passthrough macro", func() {
@@ -368,7 +368,7 @@ var _ = Describe("passthroughs - draft", func() {
 						},
 					},
 				}
-				Expect(source).To(BecomeDocumentBlock(expected))
+				Expect(ParseDocumentBlock(source)).To(Equal(expected))
 			})
 
 			It("passthrough macro with spaces", func() {
@@ -388,7 +388,7 @@ var _ = Describe("passthroughs - draft", func() {
 						},
 					},
 				}
-				Expect(source).To(BecomeDocumentBlock(expected))
+				Expect(ParseDocumentBlock(source)).To(Equal(expected))
 			})
 
 			It("passthrough macro with line break", func() {
@@ -408,7 +408,7 @@ var _ = Describe("passthroughs - draft", func() {
 						},
 					},
 				}
-				Expect(source).To(BecomeDocumentBlock(expected))
+				Expect(ParseDocumentBlock(source)).To(Equal(expected))
 			})
 		})
 
@@ -436,7 +436,7 @@ var _ = Describe("passthroughs - draft", func() {
 						},
 					},
 				}
-				Expect(source).To(BecomeDocumentBlock(expected))
+				Expect(ParseDocumentBlock(source)).To(Equal(expected))
 			})
 
 			It("passthrough macro with quoted word in sentence", func() {
@@ -467,7 +467,7 @@ var _ = Describe("passthroughs - draft", func() {
 						},
 					},
 				}
-				Expect(source).To(BecomeDocumentBlock(expected))
+				Expect(ParseDocumentBlock(source)).To(Equal(expected))
 			})
 		})
 	})

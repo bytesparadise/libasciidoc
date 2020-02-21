@@ -83,7 +83,7 @@ A preamble...
 <div class="sectionbody">
 </div>
 </div>`
-			Expect(source).To(RenderHTML5Body(expected))
+			Expect(RenderHTML5Body(source)).To(Equal(expected))
 		})
 
 		It("toc with custom level", func() {
@@ -171,7 +171,7 @@ A preamble...
 <div class="sectionbody">
 </div>
 </div>`
-			Expect(source).To(RenderHTML5Body(expected))
+			Expect(RenderHTML5Body(source)).To(Equal(expected))
 		})
 
 		It("document with no section", func() {
@@ -183,7 +183,7 @@ level 1 sections not exists.`
 			expected := `<div class="paragraph">
 <p>level 1 sections not exists.</p>
 </div>`
-			Expect(source).To(RenderHTML5Body(expected))
+			Expect(RenderHTML5Body(source)).To(Equal(expected))
 
 		})
 	})
@@ -213,7 +213,7 @@ var _ = Describe("table of contents initialization", func() {
 			expected := types.TableOfContents{
 				Sections: []types.ToCSection{},
 			}
-			Expect(actual).To(HaveTableOfContents(expected))
+			Expect(TableOfContents(actual)).To(Equal(expected))
 		})
 	})
 
@@ -374,7 +374,7 @@ var _ = Describe("table of contents initialization", func() {
 					},
 				},
 			}
-			Expect(document).To(HaveTableOfContents(expected))
+			Expect(TableOfContents(document)).To(Equal(expected))
 		})
 
 		It("should return table of contents with section level 1,2,3,2 with custom level", func() {
@@ -411,7 +411,7 @@ var _ = Describe("table of contents initialization", func() {
 					},
 				},
 			}
-			Expect(document).To(HaveTableOfContents(expected))
+			Expect(TableOfContents(document)).To(Equal(expected))
 		})
 	})
 

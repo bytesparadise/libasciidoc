@@ -23,7 +23,7 @@ var _ = Describe("comments", func() {
 						},
 					},
 				}
-				Expect(source).To(BecomeDraftDocument(expected))
+				Expect(ParseDraftDocument(source)).To(Equal(expected))
 			})
 
 			It("single line comment with prefixing spaces alone", func() {
@@ -35,7 +35,7 @@ var _ = Describe("comments", func() {
 						},
 					},
 				}
-				Expect(source).To(BecomeDraftDocument(expected))
+				Expect(ParseDraftDocument(source)).To(Equal(expected))
 			})
 
 			It("single line comment with prefixing tabs alone", func() {
@@ -47,7 +47,7 @@ var _ = Describe("comments", func() {
 						},
 					},
 				}
-				Expect(source).To(BecomeDraftDocument(expected))
+				Expect(ParseDraftDocument(source)).To(Equal(expected))
 			})
 
 			It("single line comment at end of line", func() {
@@ -64,7 +64,7 @@ var _ = Describe("comments", func() {
 						},
 					},
 				}
-				Expect(source).To(BecomeDraftDocument(expected))
+				Expect(ParseDraftDocument(source)).To(Equal(expected))
 			})
 
 			It("single line comment within a paragraph", func() {
@@ -89,7 +89,7 @@ another line`
 						},
 					},
 				}
-				Expect(source).To(BecomeDraftDocument(expected))
+				Expect(ParseDraftDocument(source)).To(Equal(expected))
 			})
 
 			It("single line comment within a paragraph with tab", func() {
@@ -114,7 +114,7 @@ another line`
 						},
 					},
 				}
-				Expect(source).To(BecomeDraftDocument(expected))
+				Expect(ParseDraftDocument(source)).To(Equal(expected))
 			})
 		})
 
@@ -141,7 +141,7 @@ with multiple lines
 						},
 					},
 				}
-				Expect(source).To(BecomeDraftDocument(expected))
+				Expect(ParseDraftDocument(source)).To(Equal(expected))
 			})
 
 			It("comment block with paragraphs around", func() {
@@ -183,7 +183,7 @@ a second paragraph`
 						},
 					},
 				}
-				Expect(source).To(BecomeDraftDocument(expected))
+				Expect(ParseDraftDocument(source)).To(Equal(expected))
 			})
 		})
 	})
@@ -201,7 +201,7 @@ a second paragraph`
 					FootnoteReferences: types.FootnoteReferences{},
 					Elements:           []interface{}{},
 				}
-				Expect(source).To(BecomeDocument(expected))
+				Expect(ParseDocument(source)).To(Equal(expected))
 			})
 
 			It("single line comment with prefixing spaces alone", func() {
@@ -213,7 +213,7 @@ a second paragraph`
 					FootnoteReferences: types.FootnoteReferences{},
 					Elements:           []interface{}{},
 				}
-				Expect(source).To(BecomeDocument(expected))
+				Expect(ParseDocument(source)).To(Equal(expected))
 			})
 
 			It("single line comment with prefixing tabs alone", func() {
@@ -225,7 +225,7 @@ a second paragraph`
 					FootnoteReferences: types.FootnoteReferences{},
 					Elements:           []interface{}{},
 				}
-				Expect(source).To(BecomeDocument(expected))
+				Expect(ParseDocument(source)).To(Equal(expected))
 			})
 
 			It("single line comment at end of line", func() {
@@ -246,7 +246,7 @@ a second paragraph`
 						},
 					},
 				}
-				Expect(source).To(BecomeDocument(expected))
+				Expect(ParseDocument(source)).To(Equal(expected))
 			})
 
 			It("single line comment within a paragraph", func() {
@@ -272,7 +272,7 @@ another line`
 						},
 					},
 				}
-				Expect(source).To(BecomeDocument(expected))
+				Expect(ParseDocument(source)).To(Equal(expected))
 			})
 
 			It("single line comment within a paragraph with tab", func() {
@@ -298,7 +298,7 @@ another line`
 						},
 					},
 				}
-				Expect(source).To(BecomeDocument(expected))
+				Expect(ParseDocument(source)).To(Equal(expected))
 			})
 		})
 
@@ -316,7 +316,7 @@ with multiple lines
 					FootnoteReferences: types.FootnoteReferences{},
 					Elements:           []interface{}{},
 				}
-				Expect(source).To(BecomeDocument(expected))
+				Expect(ParseDocument(source)).To(Equal(expected))
 			})
 
 			It("comment block with paragraphs around", func() {
@@ -350,7 +350,7 @@ a second paragraph`
 						},
 					},
 				}
-				Expect(source).To(BecomeDocument(expected))
+				Expect(ParseDocument(source)).To(Equal(expected))
 			})
 		})
 
@@ -403,7 +403,7 @@ a second paragraph`
 					},
 				},
 			}
-			Expect(source).To(BecomeDocument(expected))
+			Expect(ParseDocument(source)).To(Equal(expected))
 		})
 
 		It("comment in preamble", func() {
@@ -474,7 +474,7 @@ a second paragraph`
 					},
 				},
 			}
-			Expect(source).To(BecomeDocument(expected))
+			Expect(ParseDocument(source)).To(Equal(expected))
 		})
 	})
 

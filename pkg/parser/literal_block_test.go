@@ -23,7 +23,7 @@ var _ = Describe("literal blocks - draft", func() {
 					" some literal content",
 				},
 			}
-			Expect(source).To(BecomeDocumentBlock(expected))
+			Expect(ParseDocumentBlock(source)).To(Equal(expected))
 		})
 
 		It("literal block from paragraph with single space on first line", func() {
@@ -41,7 +41,7 @@ lines.`
 					"lines.",
 				},
 			}
-			Expect(source).To(BecomeDocumentBlock(expected))
+			Expect(ParseDocumentBlock(source)).To(Equal(expected))
 		})
 
 		It("mixing literal block with attributes followed by a paragraph ", func() {
@@ -75,7 +75,7 @@ a normal paragraph.`
 					},
 				},
 			}
-			Expect(source).To(BecomeDraftDocument(expected))
+			Expect(ParseDraftDocument(source)).To(Equal(expected))
 		})
 	})
 
@@ -97,7 +97,7 @@ some content
 					"some content",
 				},
 			}
-			Expect(source).To(BecomeDocumentBlock(expected))
+			Expect(ParseDocumentBlock(source)).To(Equal(expected))
 		})
 
 		It("literal block with delimited and attributes followed by 1-line paragraph", func() {
@@ -131,7 +131,7 @@ a normal paragraph.`
 					},
 				},
 			}
-			Expect(source).To(BecomeDraftDocument(expected))
+			Expect(ParseDraftDocument(source)).To(Equal(expected))
 		})
 	})
 
@@ -164,7 +164,7 @@ a normal paragraph.`
 					},
 				},
 			}
-			Expect(source).To(BecomeDraftDocument(expected))
+			Expect(ParseDraftDocument(source)).To(Equal(expected))
 		})
 
 		It("literal block from 2-lines paragraph with attribute", func() {
@@ -201,7 +201,7 @@ a normal paragraph.`
 					},
 				},
 			}
-			Expect(source).To(BecomeDraftDocument(expected))
+			Expect(ParseDraftDocument(source)).To(Equal(expected))
 		})
 	})
 

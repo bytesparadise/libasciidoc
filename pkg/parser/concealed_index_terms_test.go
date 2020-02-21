@@ -36,7 +36,7 @@ var _ = Describe("concealed index terms", func() {
 					},
 				},
 			}
-			Expect(source).To(BecomeDraftDocument(expected))
+			Expect(ParseDraftDocument(source)).To(Equal(expected))
 		})
 
 		It("index term in single paragraph line", func() {
@@ -62,7 +62,7 @@ a paragraph with an index term.`
 					},
 				},
 			}
-			Expect(source).To(BecomeDraftDocument(expected))
+			Expect(ParseDraftDocument(source)).To(Equal(expected))
 		})
 	})
 
@@ -91,7 +91,7 @@ a paragraph with an index term.`
 					},
 				},
 			}
-			Expect(source).To(BecomeDocument(expected))
+			Expect(ParseDocument(source)).To(Equal(expected))
 		})
 
 		It("index term in single paragraph line", func() {
@@ -115,7 +115,7 @@ a paragraph with an index term.`
 					},
 				},
 			}
-			Expect(source).To(BecomeDocument(expected))
+			Expect(ParseDocument(source)).To(Equal(expected))
 		})
 	})
 })

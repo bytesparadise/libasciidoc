@@ -16,7 +16,7 @@ var _ = Describe("concealed index terms", func() {
 			expected := `<div class="paragraph">
 <p>a paragraph with an index term .</p>
 </div>`
-			Expect(source).To(RenderHTML5Body(expected))
+			Expect(RenderHTML5Body(source)).To(Equal(expected))
 		})
 
 		It("index term in single paragraph line", func() {
@@ -25,7 +25,7 @@ a paragraph with an index term.`
 			expected := `<div class="paragraph">
 <p>a paragraph with an index term.</p>
 </div>`
-			Expect(source).To(RenderHTML5Body(expected))
+			Expect(RenderHTML5Body(source)).To(Equal(expected))
 		})
 	})
 })

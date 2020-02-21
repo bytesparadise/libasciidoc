@@ -31,7 +31,7 @@ var _ = Describe("user macros", func() {
 					},
 				},
 			}
-			Expect(source).To(BecomeDocumentBlock(expected))
+			Expect(ParseDocumentBlock(source)).To(Equal(expected))
 		})
 
 		It("inline macro with attribute", func() {
@@ -55,7 +55,7 @@ var _ = Describe("user macros", func() {
 					},
 				},
 			}
-			Expect(source).To(BecomeDocumentBlock(expected))
+			Expect(ParseDocumentBlock(source)).To(Equal(expected))
 		})
 
 		It("inline macro with value", func() {
@@ -77,7 +77,7 @@ var _ = Describe("user macros", func() {
 					},
 				},
 			}
-			Expect(source).To(BecomeDocumentBlock(expected))
+			Expect(ParseDocumentBlock(source)).To(Equal(expected))
 		})
 
 		It("inline user macro with value and attributes", func() {
@@ -102,7 +102,7 @@ var _ = Describe("user macros", func() {
 					},
 				},
 			}
-			Expect(source).To(BecomeDocumentBlock(expected))
+			Expect(ParseDocumentBlock(source)).To(Equal(expected))
 		})
 	})
 
@@ -118,7 +118,7 @@ var _ = Describe("user macros", func() {
 				Attributes: types.ElementAttributes{},
 				RawText:    "git::[]",
 			}
-			Expect(source).To(BecomeDocumentBlock(expected))
+			Expect(ParseDocumentBlock(source)).To(Equal(expected))
 		})
 
 		It("user block macro with value and attributes", func() {
@@ -133,7 +133,7 @@ var _ = Describe("user macros", func() {
 				},
 				RawText: "git::some/url.git[key1=value1,key2=value2]",
 			}
-			Expect(source).To(BecomeDocumentBlock(expected))
+			Expect(ParseDocumentBlock(source)).To(Equal(expected))
 		})
 
 		It("user macro block with attribute", func() {
@@ -147,7 +147,7 @@ var _ = Describe("user macros", func() {
 				},
 				RawText: `git::[key1="value1"]`,
 			}
-			Expect(source).To(BecomeDocumentBlock(expected))
+			Expect(ParseDocumentBlock(source)).To(Equal(expected))
 		})
 
 		It("user macro block with value", func() {
@@ -159,7 +159,7 @@ var _ = Describe("user macros", func() {
 				Attributes: types.ElementAttributes{},
 				RawText:    "git::some/url.git[]",
 			}
-			Expect(source).To(BecomeDocumentBlock(expected))
+			Expect(ParseDocumentBlock(source)).To(Equal(expected))
 		})
 
 	})
