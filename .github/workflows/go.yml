@@ -16,6 +16,9 @@ jobs:
     - name: Check out code into the Go module directory
       uses: actions/checkout@v2
 
+    - name: Install Tools
+      run: make install-devtools
+      
     - name: Build
       run: make build
       
