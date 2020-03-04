@@ -20,7 +20,11 @@ jobs:
       run: make install-devtools
       
     - name: Build
-      run: make build
+      run: |
+        export PATH=$PATH:$(go env GOPATH)/bin
+        make build
       
     - name: Tests
-      run: make test-with-coverage
+      run: |
+        export PATH=$PATH:$(go env GOPATH)/bin
+        make test-with-coverage
