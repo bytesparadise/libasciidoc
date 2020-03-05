@@ -1,4 +1,4 @@
-name: Go
+name: Test
 on: [push]
 jobs:
   
@@ -7,7 +7,7 @@ jobs:
     strategy:
       matrix:
         go: [ '1.13', '1.12' ]
-    name: Build Linux Go ${{ matrix.go }}
+    name: Linux with Go ${{ matrix.go }}
 
     steps:
 
