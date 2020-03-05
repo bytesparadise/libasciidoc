@@ -3,11 +3,11 @@ on: [push]
 jobs:
   
   build:
-    runs-on: [ubuntu-latest, macos-latest]
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         go: [ '1.13', '1.12' ]
-    name: Go ${{ matrix.go }}
+    name: Linux with Go ${{ matrix.go }}
 
     steps:
 
