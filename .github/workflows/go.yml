@@ -7,7 +7,7 @@ jobs:
     strategy:
       matrix:
         go: [ '1.13', '1.12' ]
-    name: ${{ runs-on }} with Go ${{ matrix.go }}
+    name: ${{ runner.os }} with Go ${{ matrix.go }}
 
     steps:
 
