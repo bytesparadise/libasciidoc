@@ -702,7 +702,7 @@ include::{includedir}/include.foo[]`
 
 		It("should include adoc file within fenced block", func() {
 			source := "```\n" +
-				"include::../../test/includes/chapter-a.adoc[]\n" +
+				"include::../../test/includes/parent-include.adoc[]\n" +
 				"```"
 			expected := types.DraftDocument{
 				Blocks: []interface{}{
@@ -715,7 +715,7 @@ include::{includedir}/include.foo[]`
 								Lines: [][]interface{}{
 									{
 										types.StringElement{
-											Content: "= Chapter A",
+											Content: "= parent title",
 										},
 									},
 								},
@@ -726,7 +726,84 @@ include::{includedir}/include.foo[]`
 								Lines: [][]interface{}{
 									{
 										types.StringElement{
-											Content: "content",
+											Content: "first line of parent",
+										},
+									},
+								},
+							},
+							types.BlankLine{},
+							types.Paragraph{
+								Attributes: types.ElementAttributes{},
+								Lines: [][]interface{}{
+									{
+										types.StringElement{
+											Content: "= child title",
+										},
+									},
+								},
+							},
+							types.BlankLine{},
+							types.Paragraph{
+								Attributes: types.ElementAttributes{},
+								Lines: [][]interface{}{
+									{
+										types.StringElement{
+											Content: "first line of child",
+										},
+									},
+								},
+							},
+							types.BlankLine{},
+							types.Paragraph{
+								Attributes: types.ElementAttributes{},
+								Lines: [][]interface{}{
+									{
+										types.StringElement{
+											Content: "== grandchild title",
+										},
+									},
+								},
+							},
+							types.BlankLine{},
+							types.Paragraph{
+								Attributes: types.ElementAttributes{},
+								Lines: [][]interface{}{
+									{
+										types.StringElement{
+											Content: "first line of grandchild",
+										},
+									},
+								},
+							},
+							types.BlankLine{},
+							types.Paragraph{
+								Attributes: types.ElementAttributes{},
+								Lines: [][]interface{}{
+									{
+										types.StringElement{
+											Content: "last line of grandchild",
+										},
+									},
+								},
+							},
+							types.BlankLine{},
+							types.Paragraph{
+								Attributes: types.ElementAttributes{},
+								Lines: [][]interface{}{
+									{
+										types.StringElement{
+											Content: "last line of child",
+										},
+									},
+								},
+							},
+							types.BlankLine{},
+							types.Paragraph{
+								Attributes: types.ElementAttributes{},
+								Lines: [][]interface{}{
+									{
+										types.StringElement{
+											Content: "last line of parent",
 										},
 									},
 								},

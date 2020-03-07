@@ -7,6 +7,7 @@ import (
 	texttemplate "text/template"
 
 	"github.com/bytesparadise/libasciidoc/pkg/renderer"
+	"github.com/bytesparadise/libasciidoc/pkg/types"
 	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
 )
@@ -27,7 +28,7 @@ func init() {
 }
 
 func renderDocumentDetails(ctx renderer.Context) (*htmltemplate.HTML, error) {
-	if ctx.Document.Attributes.HasAuthors() {
+	if ctx.Document.Attributes.Has(types.AttrAuthor) {
 		authors, err := renderDocumentAuthorsDetails(ctx)
 		if err != nil {
 			return nil, errors.Wrap(err, "error while rendering the document details")

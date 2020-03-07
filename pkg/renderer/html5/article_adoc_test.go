@@ -5,6 +5,7 @@ import (
 	"bytes"
 	"os"
 
+	"github.com/bytesparadise/libasciidoc/pkg/configuration"
 	"github.com/bytesparadise/libasciidoc/pkg/parser"
 	"github.com/bytesparadise/libasciidoc/pkg/renderer"
 	"github.com/bytesparadise/libasciidoc/pkg/renderer/html5"
@@ -20,11 +21,12 @@ var _ = Describe("article.adoc", func() {
 		f, err := os.Open("article.adoc")
 		Expect(err).ToNot(HaveOccurred())
 		reader := bufio.NewReader(f)
-		doc, err := parser.ParseDocument("", reader)
+		config := configuration.NewConfiguration()
+		doc, err := parser.ParseDocument(reader, config)
 		Expect(err).ToNot(HaveOccurred())
 		GinkgoT().Logf("actual document: `%s`", spew.Sdump(doc))
 		buff := bytes.NewBuffer(nil)
-		ctx := renderer.NewContext(doc)
+		ctx := renderer.NewContext(doc, config)
 		_, err = html5.Render(ctx, buff)
 		Expect(err).ToNot(HaveOccurred())
 	})

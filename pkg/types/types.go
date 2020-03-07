@@ -435,7 +435,7 @@ func NewSection(level int, title []interface{}, ids []interface{}, attributes in
 }
 
 // ResolveID resolves/updates the "ID" attribute in the section (in case the title changed after some document attr substitution)
-func (s Section) ResolveID(docAttributes DocumentAttributes) (Section, error) {
+func (s Section) ResolveID(docAttributes DocumentAttributesWithOverrides) (Section, error) {
 	if !s.Attributes.GetAsBool(AttrCustomID) {
 		replacement, err := ReplaceNonAlphanumerics(s.Title, "_")
 		if err != nil {
@@ -1036,7 +1036,7 @@ func NewExternalCrossReference(location Location, attributes ElementAttributes) 
 
 // ResolveLocation resolves the image path using the given document attributes
 // also, updates the `alt` attribute based on the resolved path of the image
-func (r ExternalCrossReference) ResolveLocation(attrs DocumentAttributes) ExternalCrossReference {
+func (r ExternalCrossReference) ResolveLocation(attrs DocumentAttributesWithOverrides) ExternalCrossReference {
 	r.Location = r.Location.Resolve(attrs)
 	return r
 }
@@ -1066,7 +1066,7 @@ func NewImageBlock(path Location, inlineAttributes ElementAttributes, attributes
 
 // ResolveLocation resolves the image path using the given document attributes
 // also, updates the `alt` attribute based on the resolved path of the image
-func (b ImageBlock) ResolveLocation(attrs DocumentAttributes) ImageBlock {
+func (b ImageBlock) ResolveLocation(attrs DocumentAttributesWithOverrides) ImageBlock {
 	b.Location = b.Location.Resolve(attrs)
 	if _, found := b.Attributes[AttrImageAlt]; !found {
 		b.Attributes[AttrImageAlt] = resolveAlt(b.Location)
@@ -1091,7 +1091,7 @@ func NewInlineImage(path Location, attributes ElementAttributes) (InlineImage, e
 
 // ResolveLocation resolves the image path using the given document attributes
 // also, updates the `alt` attribute based on the resolved path of the image
-func (i InlineImage) ResolveLocation(attrs DocumentAttributes) InlineImage {
+func (i InlineImage) ResolveLocation(attrs DocumentAttributesWithOverrides) InlineImage {
 	i.Location = i.Location.Resolve(attrs)
 	if _, found := i.Attributes[AttrImageAlt]; !found {
 		i.Attributes[AttrImageAlt] = resolveAlt(i.Location)
@@ -1854,12 +1854,12 @@ const imagesdir = "imagesdir"
 // with their associated values, or their corresponding raw text if
 // no attribute matched
 // returns `true` if some document attribute substitution occurred
-func (l *Location) Resolve(attrs DocumentAttributes) Location {
+func (l *Location) Resolve(attrs DocumentAttributesWithOverrides) Location {
 	content := bytes.NewBuffer(nil)
 	for _, e := range l.Elements {
 		switch e := e.(type) {
 		case DocumentAttributeSubstitution:
-			if value, found := attrs[e.Name].(string); found {
+			if value, found := attrs.GetAsString(e.Name); found {
 				content.WriteString(value)
 			} else {
 				content.WriteRune('{')

@@ -9,7 +9,7 @@ import (
 
 func renderUserMacro(ctx renderer.Context, um types.UserMacro) ([]byte, error) {
 	buf := bytes.NewBuffer([]byte{})
-	macro, err := ctx.MacroTemplate(um.Name)
+	macro, err := ctx.Config.MacroTemplate(um.Name)
 	if err != nil {
 		if um.Kind == types.BlockMacro {
 			// fallback to paragraph

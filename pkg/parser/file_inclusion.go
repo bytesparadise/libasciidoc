@@ -9,6 +9,7 @@ import (
 	"strings"
 	"text/template"
 
+	"github.com/bytesparadise/libasciidoc/pkg/configuration"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 	"github.com/davecgh/go-spew/spew"
 	"github.com/pkg/errors"
@@ -55,33 +56,35 @@ func absoluteOffset(offset int) levelOffset {
 	}
 }
 
-func parseFileToInclude(filename string, incl types.FileInclusion, attrs types.DocumentAttributes, levelOffsets []levelOffset, opts ...Option) (types.DraftDocument, error) {
+func parseFileToInclude(incl types.FileInclusion, attrs types.DocumentAttributesWithOverrides, levelOffsets []levelOffset, config configuration.Configuration, options ...Option) (types.DraftDocument, error) {
 	path := incl.Location.Resolve(attrs).String()
-	currentDir := filepath.Dir(filename)
-	log.Debugf("parsing '%s' from '%s' (%s)", path, currentDir, filename)
-	log.Debugf("file inclusion attributes: %s", spew.Sdump(incl.Attributes))
+	currentDir := filepath.Dir(config.Filename)
+	if log.IsLevelEnabled(log.DebugLevel) {
+		log.Debugf("parsing '%s' from '%s' (%s)", path, currentDir, config.Filename)
+		log.Debugf("file inclusion attributes: %s", spew.Sdump(incl.Attributes))
+	}
 	f, absPath, done, err := open(filepath.Join(currentDir, path))
 	defer done()
 	if err != nil {
-		return invalidFileErrMsg(filename, path, incl.RawText, err)
+		return invalidFileErrMsg(config.Filename, path, incl.RawText, err)
 	}
 	content := bytes.NewBuffer(nil)
 	scanner := bufio.NewScanner(bufio.NewReader(f))
 	if lineRanges, ok := incl.LineRanges(); ok {
 		if err := readWithinLines(scanner, content, lineRanges); err != nil {
-			return invalidFileErrMsg(filename, path, incl.RawText, err)
+			return invalidFileErrMsg(config.Filename, path, incl.RawText, err)
 		}
 	} else if tagRanges, ok := incl.TagRanges(); ok {
 		if err := readWithinTags(path, scanner, content, tagRanges); err != nil {
-			return invalidFileErrMsg(filename, path, incl.RawText, err)
+			return invalidFileErrMsg(config.Filename, path, incl.RawText, err)
 		}
 	} else {
 		if err := readAll(scanner, content); err != nil {
-			return invalidFileErrMsg(filename, path, incl.RawText, err)
+			return invalidFileErrMsg(config.Filename, path, incl.RawText, err)
 		}
 	}
 	if err := scanner.Err(); err != nil {
-		msg, err2 := invalidFileErrMsg(filename, path, incl.RawText, err)
+		msg, err2 := invalidFileErrMsg(config.Filename, path, incl.RawText, err)
 		if err2 != nil {
 			return types.DraftDocument{}, err2
 		}
@@ -103,9 +106,11 @@ func parseFileToInclude(filename string, incl types.FileInclusion, attrs types.D
 	}
 	// use a simpler/different grammar for non-asciidoc files.
 	if !IsAsciidoc(absPath) {
-		opts = append(opts, Entrypoint("TextDocument"))
+		options = append(options, Entrypoint("TextDocument"))
 	}
-	return parseDraftDocument(absPath, content, levelOffsets, opts...)
+	inclConfig := config.Clone()
+	inclConfig.Filename = absPath
+	return parseDraftDocument(content, levelOffsets, config, options...)
 }
 
 func invalidFileErrMsg(filename, path, rawText string, err error) (types.DraftDocument, error) {

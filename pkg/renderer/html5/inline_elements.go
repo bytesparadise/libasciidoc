@@ -24,16 +24,16 @@ func verbatim() renderLinesOption {
 
 func renderInlineElements(ctx renderer.Context, elements []interface{}, options ...renderLinesOption) ([]byte, error) {
 	log.Debugf("rendering line with %d element(s)...", len(elements))
-	config := renderLinesConfig{
+	linesRenderer := renderLinesConfig{
 		render: renderElement,
 	}
 	for _, apply := range options {
-		apply(&config)
+		apply(&linesRenderer)
 	}
 	// first pass or rendering, using the provided `renderElementFunc`:
 	buf := bytes.NewBuffer(nil)
 	for i, element := range elements {
-		renderedElement, err := config.render(ctx, element)
+		renderedElement, err := linesRenderer.render(ctx, element)
 		if err != nil {
 			return nil, errors.Wrapf(err, "unable to render line")
 		}

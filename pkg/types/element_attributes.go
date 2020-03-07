@@ -14,15 +14,17 @@ import (
 // ------------------------------------------
 
 const (
-	// AttrID the key to retrieve the ID in the element attributes
+	// AttrID the key to retrieve the ID
 	AttrID string = "id"
+	// AttrAuthor the key to retrieve the author in the attributes
+	AttrAuthor string = "author"
 	// AttrCustomID the key to retrieve the flag that indicates if the element ID is custom or generated
 	AttrCustomID string = "customID"
-	// AttrIDPrefix the key to retrieve the ID Prefix in the element attributes
+	// AttrIDPrefix the key to retrieve the ID Prefix
 	AttrIDPrefix string = "idprefix"
-	// DefaultIDPrefix the default ID Prefix in the element attributes
+	// DefaultIDPrefix the default ID Prefix
 	DefaultIDPrefix string = "_"
-	// AttrTitle the key to retrieve the title in the element attributes
+	// AttrTitle the key to retrieve the title
 	AttrTitle string = "title"
 	// AttrAuthors the key to the authors declared after the section level 0 (at the beginning of the doc)
 	AttrAuthors string = "authors"
@@ -32,11 +34,11 @@ const (
 	AttrTableOfContents string = "toc"
 	// AttrTableOfContentsLevels the document attribute which specifies the number of levels to display in the ToC
 	AttrTableOfContentsLevels string = "toclevels"
-	// AttrRole the key to retrieve the role in the element attributes
+	// AttrRole the key to retrieve the role
 	AttrRole string = "role"
-	// AttrInlineLink the key to retrieve the link in the element attributes
+	// AttrInlineLink the key to retrieve the link
 	AttrInlineLink string = "link"
-	// AttrAdmonitionKind the key to retrieve the kind of admonition in the element attributes, if a "masquerade" is used
+	// AttrAdmonitionKind the key to retrieve the kind of admonition , if a "masquerade" is used
 	AttrAdmonitionKind string = "admonitionKind"
 	// AttrQuoteAuthor attribute for the author of a verse
 	AttrQuoteAuthor string = "quoteAuthor"
