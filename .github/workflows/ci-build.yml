@@ -1,0 +1,64 @@
+name: ci-build
+on:
+  push:
+    branches:
+      - master
+    tags-ignore:
+      - '*.*'
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  
+  testing:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        go: [ '1.13', '1.12' ]
+    name: ${{ matrix.os }} with Go ${{ matrix.go }}
+    
+    steps:
+
+    - name: Check out code into the Go module directory
+      uses: actions/checkout@v2
+  
+    - name: Setup Go
+      uses: actions/setup-go@v1
+      with:
+        go-version: ${{ matrix.go }}
+  
+    - name: Extra setup for Windows
+      if: runner.os == 'Windows'
+      run: |
+        git config --global core.autocrlf true
+        choco install make
+    
+    - name: Install Tools
+      run: 
+        make install-devtools
+      
+    - name: Build on Linux/macOS
+      if: runner.os != 'Windows'
+      run: |
+        export PATH=$PATH:$(go env GOPATH)/bin
+        make build
+      
+    - name: Test on Linux and macOS
+      if: runner.os != 'Windows'
+      run: |
+        export PATH=$PATH:$(go env GOPATH)/bin
+        make test-with-coverage
+
+    - name: Build on Windows
+      if: runner.os == 'Windows'
+      run: |
+        set PATH=%PATH%;$(go env GOPATH)/bin
+        make build
+
+    - name: Test on Windows
+      if: runner.os == 'Windows'
+      run: |
+        set PATH=%PATH%;$(go env GOPATH)/bin
+        make test
