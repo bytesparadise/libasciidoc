@@ -1,0 +1,5 @@
+:foo1: FOO1
+
+:!foo1:
+
+{foo1} and {foo2}

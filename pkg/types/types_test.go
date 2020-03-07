@@ -470,10 +470,13 @@ var _ = Describe("tag ranges", func() {
 
 var _ = Describe("location resolution", func() {
 
-	attrs := types.DocumentAttributes{
-		"imagesdir":  "./images",
-		"includedir": "includes",
-		"foo":        "bar",
+	attrs := types.DocumentAttributesWithOverrides{
+		Content: map[string]interface{}{
+			"imagesdir":  "./images",
+			"includedir": "includes",
+			"foo":        "bar",
+		},
+		Overrides: map[string]string{},
 	}
 	DescribeTable("resolve URL",
 		func(actual types.Location, expected types.Location, expectedStr string) {
@@ -679,7 +682,10 @@ var _ = Describe("element id resolution", func() {
 					Elements: []interface{}{},
 				}
 				// when
-				section, err := section.ResolveID(types.DocumentAttributes{})
+				section, err := section.ResolveID(types.DocumentAttributesWithOverrides{
+					Content:   map[string]interface{}{},
+					Overrides: map[string]string{},
+				})
 				// then
 				Expect(err).NotTo(HaveOccurred())
 				Expect(section.Attributes[types.AttrID]).To(Equal("_foo"))
@@ -707,7 +713,10 @@ var _ = Describe("element id resolution", func() {
 					Elements: []interface{}{},
 				}
 				// when
-				section, err := section.ResolveID(types.DocumentAttributes{})
+				section, err := section.ResolveID(types.DocumentAttributesWithOverrides{
+					Content:   map[string]interface{}{},
+					Overrides: map[string]string{},
+				})
 				// then
 				Expect(err).NotTo(HaveOccurred())
 				Expect(section.Attributes[types.AttrID]).To(Equal("_a_link_to_https_foo_com")) // TODO: should be `httpsfoo`
@@ -729,8 +738,11 @@ var _ = Describe("element id resolution", func() {
 					Elements: []interface{}{},
 				}
 				// when
-				section, err := section.ResolveID(types.DocumentAttributes{
-					types.AttrIDPrefix: "custom_",
+				section, err := section.ResolveID(types.DocumentAttributesWithOverrides{
+					Content: map[string]interface{}{
+						types.AttrIDPrefix: "custom_",
+					},
+					Overrides: map[string]string{},
 				})
 				// then
 				Expect(err).NotTo(HaveOccurred())
@@ -759,8 +771,11 @@ var _ = Describe("element id resolution", func() {
 					Elements: []interface{}{},
 				}
 				// when
-				section, err := section.ResolveID(types.DocumentAttributes{
-					types.AttrIDPrefix: "custom_",
+				section, err := section.ResolveID(types.DocumentAttributesWithOverrides{
+					Content: map[string]interface{}{
+						types.AttrIDPrefix: "custom_",
+					},
+					Overrides: map[string]string{},
 				})
 				// then
 				Expect(err).NotTo(HaveOccurred())
@@ -786,8 +801,11 @@ var _ = Describe("element id resolution", func() {
 					Elements: []interface{}{},
 				}
 				// when
-				section, err := section.ResolveID(types.DocumentAttributes{
-					types.AttrIDPrefix: "custom_",
+				section, err := section.ResolveID(types.DocumentAttributesWithOverrides{
+					Content: map[string]interface{}{
+						types.AttrIDPrefix: "custom_",
+					},
+					Overrides: map[string]string{},
 				})
 				// then
 				Expect(err).NotTo(HaveOccurred())
@@ -819,8 +837,11 @@ var _ = Describe("element id resolution", func() {
 					Elements: []interface{}{},
 				}
 				// when
-				section, err := section.ResolveID(types.DocumentAttributes{
-					types.AttrIDPrefix: "custom_",
+				section, err := section.ResolveID(types.DocumentAttributesWithOverrides{
+					Content: map[string]interface{}{
+						types.AttrIDPrefix: "custom_",
+					},
+					Overrides: map[string]string{},
 				})
 				// then
 				Expect(err).NotTo(HaveOccurred())

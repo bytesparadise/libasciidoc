@@ -344,16 +344,16 @@ func PlainText() RenderLinesOption {
 // and includes an `\n` character in-between, until the last one.
 // Trailing spaces are removed for each line.
 func renderLines(ctx renderer.Context, lines [][]interface{}, options ...RenderLinesOption) ([]byte, error) { // renderLineFunc renderFunc, hardbreak bool
-	config := RenderLinesConfig{
+	linesRenderer := RenderLinesConfig{
 		render:     renderLine,
 		hardbreaks: false,
 	}
 	for _, apply := range options {
-		apply(&config)
+		apply(&linesRenderer)
 	}
 	buf := bytes.NewBuffer(nil)
 	for i, e := range lines {
-		renderedElement, err := config.render(ctx, e)
+		renderedElement, err := linesRenderer.render(ctx, e)
 		if err != nil {
 			return nil, errors.Wrap(err, "unable to render lines")
 		}
@@ -367,7 +367,7 @@ func renderLines(ctx renderer.Context, lines [][]interface{}, options ...RenderL
 		if i < len(lines)-1 && (len(renderedElement) > 0 || ctx.WithinDelimitedBlock()) {
 			// log.Debugf("rendered line is not the last one in the slice")
 			var err error
-			if config.hardbreaks {
+			if linesRenderer.hardbreaks {
 				_, err = buf.WriteString("<br>\n")
 			} else {
 				_, err = buf.WriteString("\n")

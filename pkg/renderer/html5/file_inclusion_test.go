@@ -3,7 +3,7 @@ package html5_test
 import (
 	"time"
 
-	"github.com/bytesparadise/libasciidoc/pkg/renderer"
+	"github.com/bytesparadise/libasciidoc/pkg/configuration"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 	. "github.com/bytesparadise/libasciidoc/testsupport"
 
@@ -30,10 +30,10 @@ var _ = Describe("file inclusions", func() {
 </div>
 </div>
 </div>`
-		Expect(RenderHTML5Body(source, WithFilename("test.adoc"), renderer.LastUpdated(lastUpdated))).To(Equal(expected))
+		Expect(RenderHTML5Body(source, configuration.WithFilename("test.adoc"), configuration.WithLastUpdated(lastUpdated))).To(Equal(expected))
 		Expect(DocumentMetadata(source, lastUpdated)).To(Equal(types.Metadata{
 			Title:       "",
-			LastUpdated: lastUpdated.Format(renderer.LastUpdatedFormat),
+			LastUpdated: lastUpdated.Format(configuration.LastUpdatedFormat),
 			TableOfContents: types.TableOfContents{
 				Sections: []types.ToCSection{
 					{
@@ -64,7 +64,7 @@ var _ = Describe("file inclusions", func() {
 </div>
 </div>
 </div>`
-		Expect(RenderHTML5Body(source, WithFilename("tmp/foo.adoc"))).To(Equal(expected))
+		Expect(RenderHTML5Body(source, configuration.WithFilename("tmp/foo.adoc"))).To(Equal(expected))
 		// verify no error/warning in logs
 		Expect(console).ToNot(ContainAnyMessageWithLevels(log.ErrorLevel, log.WarnLevel))
 	})
@@ -80,7 +80,7 @@ var _ = Describe("file inclusions", func() {
 <p>last line of grandchild</p>
 </div>
 </div>`
-		Expect(RenderHTML5Body(source, WithFilename("test.adoc"))).To(Equal(expected))
+		Expect(RenderHTML5Body(source, configuration.WithFilename("test.adoc"))).To(Equal(expected))
 	})
 
 	It("should include grandchild content with absolute offset", func() {
@@ -96,7 +96,7 @@ var _ = Describe("file inclusions", func() {
 </div>
 </div>
 </div>`
-		Expect(RenderHTML5Body(source, WithFilename("test.adoc"))).To(Equal(expected))
+		Expect(RenderHTML5Body(source, configuration.WithFilename("test.adoc"))).To(Equal(expected))
 	})
 
 	It("should include child and grandchild content with relative level offset", func() {
@@ -136,7 +136,7 @@ var _ = Describe("file inclusions", func() {
 </div>
 </div>
 </div>`
-		Expect(RenderHTML5Body(source, WithFilename("test.adoc"))).To(Equal(expected))
+		Expect(RenderHTML5Body(source, configuration.WithFilename("test.adoc"))).To(Equal(expected))
 	})
 
 	It("should include child and grandchild content with relative then absolute level offset", func() {
@@ -176,7 +176,7 @@ var _ = Describe("file inclusions", func() {
 </div>
 </div>
 </div>`
-		Expect(RenderHTML5Body(source, WithFilename("test.adoc"))).To(Equal(expected))
+		Expect(RenderHTML5Body(source, configuration.WithFilename("test.adoc"))).To(Equal(expected))
 	})
 
 	It("include adoc file with leveloffset attribute", func() {
@@ -933,7 +933,7 @@ last line of grandchild</pre>
 				expected := `<div class="paragraph">
 <p>Unresolved directive in test.adoc - include::../../../test/includes/unknown.adoc[leveloffset=+1]</p>
 </div>`
-				Expect(RenderHTML5Body(source)).To(Equal(expected))
+				Expect(RenderHTML5Body(source, configuration.WithFilename("test.adoc"))).To(Equal(expected))
 				// verify error in logs
 				Expect(console).To(
 					ContainMessageWithLevel(
@@ -951,7 +951,7 @@ last line of grandchild</pre>
 				expected := `<div class="paragraph">
 <p>Unresolved directive in test.adoc - include::{includedir}/unknown.adoc[leveloffset=+1]</p>
 </div>`
-				Expect(RenderHTML5Body(source)).To(Equal(expected))
+				Expect(RenderHTML5Body(source, configuration.WithFilename("test.adoc"))).To(Equal(expected))
 				// verify error in logs
 				Expect(console).To(
 					ContainMessageWithLevel(
@@ -976,7 +976,7 @@ include::../../../test/includes/unknown.adoc[leveloffset=+1]
 <pre>Unresolved directive in test.adoc - include::../../../test/includes/unknown.adoc[leveloffset=+1]</pre>
 </div>
 </div>`
-				Expect(RenderHTML5Body(source)).To(Equal(expected))
+				Expect(RenderHTML5Body(source, configuration.WithFilename("test.adoc"))).To(Equal(expected))
 				// verify error in logs
 				Expect(console).To(
 					ContainMessageWithLevel(
@@ -998,7 +998,7 @@ include::{includedir}/unknown.adoc[leveloffset=+1]
 <pre>Unresolved directive in test.adoc - include::{includedir}/unknown.adoc[leveloffset=+1]</pre>
 </div>
 </div>`
-				Expect(RenderHTML5Body(source)).To(Equal(expected))
+				Expect(RenderHTML5Body(source, configuration.WithFilename("test.adoc"))).To(Equal(expected))
 				// verify error in logs
 				Expect(console).To(
 					ContainMessageWithLevel(

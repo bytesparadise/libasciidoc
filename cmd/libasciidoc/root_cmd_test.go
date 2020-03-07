@@ -11,7 +11,6 @@ import (
 )
 
 var _ = Describe("root cmd", func() {
-	RegisterFailHandler(Fail)
 
 	It("render with STDOUT output", func() {
 		// given
@@ -68,6 +67,38 @@ var _ = Describe("root cmd", func() {
 		Expect(buf.String()).ToNot(ContainSubstring(`<div id="footer">`))
 	})
 
+	It("render with attribute set", func() {
+		// given
+		root := main.NewRootCmd()
+		buf := new(bytes.Buffer)
+		root.SetOutput(buf)
+		root.SetArgs([]string{"-s", "-o", "-", "-afoo1=bar1", "-afoo2=bar2", "test/doc_with_attributes.adoc"})
+		// when
+		err := root.Execute()
+		// then
+		Expect(err).ToNot(HaveOccurred())
+		Expect(buf.String()).ToNot(BeEmpty())
+		Expect(buf.String()).To(Equal(`<div class="paragraph">
+<p>bar1 and bar2</p>
+</div>`))
+	})
+
+	It("render with attribute reset", func() {
+		// given
+		root := main.NewRootCmd()
+		buf := new(bytes.Buffer)
+		root.SetOutput(buf)
+		root.SetArgs([]string{"-s", "-o", "-", "-afoo1=bar1", "-a!foo2", "test/doc_with_attributes.adoc"})
+		// when
+		err := root.Execute()
+		// then
+		Expect(err).ToNot(HaveOccurred())
+		Expect(buf.String()).ToNot(BeEmpty())
+		Expect(buf.String()).To(Equal(`<div class="paragraph">
+<p>bar1 and {foo2}</p>
+</div>`))
+	})
+
 	It("render multiple files", func() {
 		// given
 		root := main.NewRootCmd()
@@ -103,4 +134,5 @@ var _ = Describe("root cmd", func() {
 		// then
 		Expect(err).ToNot(HaveOccurred())
 	})
+
 })

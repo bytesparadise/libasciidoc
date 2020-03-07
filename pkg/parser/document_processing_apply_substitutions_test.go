@@ -27,8 +27,11 @@ var _ = Describe("document attribute subsititutions", func() {
 			},
 		}
 		// when
-		result, applied, err := applyDocumentAttributeSubstitutions(elements, types.DocumentAttributes{
-			"foo": "bar",
+		result, applied, err := applyDocumentAttributeSubstitutions(elements, types.DocumentAttributesWithOverrides{
+			Content: map[string]interface{}{
+				"foo": "bar",
+			},
+			Overrides: map[string]string{},
 		})
 		// then
 		Expect(err).To(Not(HaveOccurred()))
@@ -65,8 +68,11 @@ var _ = Describe("document attribute subsititutions", func() {
 			},
 		}
 		// when
-		result, applied, err := applyDocumentAttributeSubstitutions(elements, types.DocumentAttributes{
-			"foo": "bar",
+		result, applied, err := applyDocumentAttributeSubstitutions(elements, types.DocumentAttributesWithOverrides{
+			Content: map[string]interface{}{
+				"foo": "bar",
+			},
+			Overrides: map[string]string{},
 		})
 		// then
 		Expect(err).To(Not(HaveOccurred()))
@@ -106,8 +112,11 @@ var _ = Describe("document attribute subsititutions", func() {
 			},
 		}
 		// when
-		result, applied, err := applyDocumentAttributeSubstitutions(elements, types.DocumentAttributes{
-			"foo": "bar",
+		result, applied, err := applyDocumentAttributeSubstitutions(elements, types.DocumentAttributesWithOverrides{
+			Content: map[string]interface{}{
+				"foo": "bar",
+			},
+			Overrides: map[string]string{},
 		})
 		// then
 		Expect(err).To(Not(HaveOccurred()))
@@ -147,7 +156,11 @@ var _ = Describe("document attribute subsititutions", func() {
 			},
 		}
 		// when
-		result, applied, err := applyDocumentAttributeSubstitutions(elements, types.DocumentAttributes{})
+		result, applied, err := applyDocumentAttributeSubstitutions(elements, types.DocumentAttributesWithOverrides{
+			Content:   map[string]interface{}{},
+			Overrides: map[string]string{},
+		})
+
 		// then
 		Expect(err).To(Not(HaveOccurred()))
 		Expect(applied).To(BeFalse())
@@ -186,7 +199,11 @@ var _ = Describe("document attribute subsititutions", func() {
 			},
 		}
 		// when
-		result, applied, err := applyDocumentAttributeSubstitutions(elements, types.DocumentAttributes{})
+		result, applied, err := applyDocumentAttributeSubstitutions(elements, types.DocumentAttributesWithOverrides{
+			Content:   map[string]interface{}{},
+			Overrides: map[string]string{},
+		})
+
 		// then
 		Expect(err).To(Not(HaveOccurred()))
 		Expect(applied).To(BeFalse())
@@ -231,10 +248,15 @@ var _ = Describe("document attribute subsititutions", func() {
 			},
 		}
 		// when
-		result, applied, err := applyDocumentAttributeSubstitutions(elements, types.DocumentAttributes{
-			"scheme": "https",
-			"host":   "foo.bar",
+		result, applied, err := applyDocumentAttributeSubstitutions(elements, types.DocumentAttributesWithOverrides{
+			Content: map[string]interface{}{
+				"foo":    "bar",
+				"scheme": "https",
+				"host":   "foo.bar",
+			},
+			Overrides: map[string]string{},
 		})
+
 		// then
 		Expect(err).To(Not(HaveOccurred()))
 		Expect(applied).To(BeTrue())
@@ -289,8 +311,11 @@ var _ = Describe("document attribute subsititutions", func() {
 				},
 			}
 			// when
-			result, applied, err := applyDocumentAttributeSubstitutions(elements, types.DocumentAttributes{
-				"foo": "bar",
+			result, applied, err := applyDocumentAttributeSubstitutions(elements, types.DocumentAttributesWithOverrides{
+				Content: map[string]interface{}{
+					"foo": "bar",
+				},
+				Overrides: map[string]string{},
 			})
 			// then
 			Expect(err).To(Not(HaveOccurred()))
@@ -335,8 +360,11 @@ var _ = Describe("document attribute subsititutions", func() {
 				},
 			}
 			// when
-			result, applied, err := applyDocumentAttributeSubstitutions(elements, types.DocumentAttributes{
-				"foo": "bar",
+			result, applied, err := applyDocumentAttributeSubstitutions(elements, types.DocumentAttributesWithOverrides{
+				Content: map[string]interface{}{
+					"foo": "bar",
+				},
+				Overrides: map[string]string{},
 			})
 			// then
 			Expect(err).To(Not(HaveOccurred()))
@@ -381,8 +409,11 @@ var _ = Describe("document attribute subsititutions", func() {
 				},
 			}
 			// when
-			result, applied, err := applyDocumentAttributeSubstitutions(elements, types.DocumentAttributes{
-				"foo": "bar",
+			result, applied, err := applyDocumentAttributeSubstitutions(elements, types.DocumentAttributesWithOverrides{
+				Content: map[string]interface{}{
+					"foo": "bar",
+				},
+				Overrides: map[string]string{},
 			})
 			// then
 			Expect(err).To(Not(HaveOccurred()))
@@ -430,8 +461,11 @@ var _ = Describe("document attribute subsititutions", func() {
 				},
 			}
 			// when
-			result, applied, err := applyDocumentAttributeSubstitutions(elements, types.DocumentAttributes{
-				"foo": "bar",
+			result, applied, err := applyDocumentAttributeSubstitutions(elements, types.DocumentAttributesWithOverrides{
+				Content: map[string]interface{}{
+					"foo": "bar",
+				},
+				Overrides: map[string]string{},
 			})
 			// then
 			Expect(err).To(Not(HaveOccurred()))
@@ -486,8 +520,11 @@ var _ = Describe("document attribute subsititutions", func() {
 				},
 			}
 			// when
-			result, applied, err := applyDocumentAttributeSubstitutions(elements, types.DocumentAttributes{
-				"foo": "bar",
+			result, applied, err := applyDocumentAttributeSubstitutions(elements, types.DocumentAttributesWithOverrides{
+				Content: map[string]interface{}{
+					"foo": "bar",
+				},
+				Overrides: map[string]string{},
 			})
 			// then
 			Expect(err).To(Not(HaveOccurred()))
@@ -535,8 +572,11 @@ var _ = Describe("document attribute subsititutions", func() {
 				},
 			}
 			// when
-			result, applied, err := applyDocumentAttributeSubstitutions(elements, types.DocumentAttributes{
-				"foo": "bar",
+			result, applied, err := applyDocumentAttributeSubstitutions(elements, types.DocumentAttributesWithOverrides{
+				Content: map[string]interface{}{
+					"foo": "bar",
+				},
+				Overrides: map[string]string{},
 			})
 			// then
 			Expect(err).To(Not(HaveOccurred()))
@@ -552,4 +592,65 @@ var _ = Describe("document attribute subsititutions", func() {
 			}))
 		})
 	})
+
+	Context("attribute overrides", func() {
+
+		It("should replace with new StringElement on first position", func() {
+			// given
+			elements := []interface{}{
+				types.DocumentAttributeDeclaration{
+					Name:  "foo",
+					Value: "foo",
+				},
+				types.DocumentAttributeReset{
+					Name: "foo",
+				},
+				types.Paragraph{
+					Attributes: types.ElementAttributes{},
+					Lines: [][]interface{}{
+						{
+							types.DocumentAttributeSubstitution{
+								Name: "foo",
+							},
+							types.StringElement{
+								Content: " and more content.",
+							},
+						},
+					},
+				},
+			}
+			// when
+			result, applied, err := applyDocumentAttributeSubstitutions(elements, types.DocumentAttributesWithOverrides{
+				Content: map[string]interface{}{
+					"foo": "bar",
+				},
+				Overrides: map[string]string{
+					"foo": "BAR",
+				},
+			})
+			// then
+			Expect(err).To(Not(HaveOccurred()))
+			Expect(applied).To(BeTrue())
+			Expect(result).To(Equal([]interface{}{ // at this stage, DocumentAttributeDeclaration and DocumentAttributeReset are still present
+				types.DocumentAttributeDeclaration{
+					Name:  "foo",
+					Value: "foo",
+				},
+				types.DocumentAttributeReset{
+					Name: "foo",
+				},
+				types.Paragraph{
+					Attributes: types.ElementAttributes{},
+					Lines: [][]interface{}{
+						{
+							types.StringElement{
+								Content: "BAR and more content.",
+							},
+						},
+					},
+				},
+			}))
+		})
+	})
+
 })

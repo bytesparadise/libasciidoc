@@ -5,7 +5,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/bytesparadise/libasciidoc/pkg/renderer"
+	"github.com/bytesparadise/libasciidoc/pkg/configuration"
 	gomegatypes "github.com/onsi/gomega/types"
 	"github.com/pkg/errors"
 )
@@ -35,7 +35,7 @@ func (m *html5TemplateMatcher) Match(actual interface{}) (success bool, err erro
 	} else {
 		return false, errors.Errorf("MatchHTML5Template matcher expects a string (actual: %T)", actual)
 	}
-	m.expected = strings.Replace(m.expected, "{{.LastUpdated}}", m.lastUpdated.Format(renderer.LastUpdatedFormat), 1)
+	m.expected = strings.Replace(m.expected, "{{.LastUpdated}}", m.lastUpdated.Format(configuration.LastUpdatedFormat), 1)
 	return m.expected == m.actual, nil
 }
 

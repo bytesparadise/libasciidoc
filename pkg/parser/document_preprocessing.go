@@ -3,6 +3,7 @@ package parser
 import (
 	"io"
 
+	"github.com/bytesparadise/libasciidoc/pkg/configuration"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 	"github.com/davecgh/go-spew/spew"
 
@@ -16,19 +17,22 @@ type ContextKey string
 const LevelOffset ContextKey = "leveloffset"
 
 // ParseDraftDocument parses a document's content and applies the preprocessing directives (file inclusions)
-func ParseDraftDocument(filename string, r io.Reader, opts ...Option) (types.DraftDocument, error) {
-	opts = append(opts, Entrypoint("AsciidocDocument"))
-	return parseDraftDocument(filename, r, []levelOffset{}, opts...)
+func ParseDraftDocument(r io.Reader, config configuration.Configuration, options ...Option) (types.DraftDocument, error) {
+	options = append(options, Entrypoint("AsciidocDocument"))
+	return parseDraftDocument(r, []levelOffset{}, config, options...)
 }
 
-func parseDraftDocument(filename string, r io.Reader, levelOffsets []levelOffset, opts ...Option) (types.DraftDocument, error) {
-	d, err := ParseReader(filename, r, opts...)
+func parseDraftDocument(r io.Reader, levelOffsets []levelOffset, config configuration.Configuration, options ...Option) (types.DraftDocument, error) {
+	d, err := ParseReader(config.Filename, r, options...)
 	if err != nil {
 		return types.DraftDocument{}, err
 	}
 	doc := d.(types.DraftDocument)
-	attrs := types.DocumentAttributes{}
-	blocks, err := parseElements(filename, doc.Blocks, attrs, levelOffsets, opts...)
+	attrs := types.DocumentAttributesWithOverrides{
+		Content:   map[string]interface{}{},
+		Overrides: map[string]string{},
+	}
+	blocks, err := parseElements(doc.Blocks, attrs, levelOffsets, config, options...)
 	if err != nil {
 		return types.DraftDocument{}, err
 	}
@@ -41,25 +45,25 @@ func parseDraftDocument(filename string, r io.Reader, levelOffsets []levelOffset
 }
 
 // parseElements resolves the file inclusions if any is found in the given elements
-func parseElements(filename string, elements []interface{}, attrs types.DocumentAttributes, levelOffsets []levelOffset, opts ...Option) ([]interface{}, error) {
+func parseElements(elements []interface{}, attrs types.DocumentAttributesWithOverrides, levelOffsets []levelOffset, config configuration.Configuration, options ...Option) ([]interface{}, error) {
 	result := []interface{}{}
 	for _, e := range elements {
 		switch e := e.(type) {
 		case types.DocumentAttributeDeclaration:
-			attrs[e.Name] = e.Value
+			attrs.Add(e.Name, e.Value)
 			result = append(result, e)
 		case types.FileInclusion:
 			// read the file and include its content
-			embedded, err := parseFileToInclude(filename, e, attrs, levelOffsets, opts...)
+			embedded, err := parseFileToInclude(e, attrs, levelOffsets, config, options...)
 			if err != nil {
 				// do not fail, but instead report the error in the console
 				log.Errorf("failed to include file '%s': %v", e.Location, err)
 			}
 			result = append(result, embedded.Blocks...)
 		case types.DelimitedBlock:
-			elmts, err := parseElements(filename, e.Elements, attrs, levelOffsets,
+			elmts, err := parseElements(e.Elements, attrs, levelOffsets, config,
 				// use a new var to avoid overridding the current one which needs to stay as-is for the rest of the doc parsing
-				append(opts, Entrypoint("AsciidocDocumentWithinDelimitedBlock"))...)
+				append(options, Entrypoint("AsciidocDocumentWithinDelimitedBlock"))...)
 			if err != nil {
 				return nil, err
 			}

@@ -9,8 +9,8 @@ import (
 	"path/filepath"
 
 	"github.com/bytesparadise/libasciidoc"
+	"github.com/bytesparadise/libasciidoc/pkg/configuration"
 	logsupport "github.com/bytesparadise/libasciidoc/pkg/log"
-	"github.com/bytesparadise/libasciidoc/pkg/renderer"
 
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
@@ -23,6 +23,7 @@ func NewRootCmd() *cobra.Command {
 	var outputName string
 	var logLevel string
 	var css string
+	var attributes []string
 
 	rootCmd := &cobra.Command{
 		Use:   "libasciidoc [flags] FILE",
@@ -43,13 +44,19 @@ func NewRootCmd() *cobra.Command {
 			if len(args) == 0 {
 				return helpCommand.RunE(cmd, args)
 			}
-			for _, source := range args {
-				out, close := getOut(cmd, source, outputName)
+			attrs := parseAttributes(attributes)
+			for _, sourcePath := range args {
+				out, close := getOut(cmd, sourcePath, outputName)
 				if out != nil {
 					defer close()
-					path, _ := filepath.Abs(source)
+					path, _ := filepath.Abs(sourcePath)
 					log.Debugf("Starting to process file %v", path)
-					_, err := libasciidoc.ConvertFileToHTML(source, out, renderer.IncludeHeaderFooter(!noHeaderFooter), renderer.IncludeCSS(css))
+					config := configuration.NewConfiguration(
+						configuration.WithFilename(sourcePath),
+						configuration.WithAttributes(attrs),
+						configuration.WithCSS(css),
+						configuration.WithHeaderFooter(!noHeaderFooter))
+					_, err := libasciidoc.ConvertFileToHTML(out, config)
 					if err != nil {
 						return err
 					}
@@ -63,6 +70,7 @@ func NewRootCmd() *cobra.Command {
 	flags.StringVarP(&outputName, "out-file", "o", "", "output file (default: based on path of input file); use - to output to STDOUT")
 	flags.StringVar(&logLevel, "log", "warning", "log level to set [debug|info|warning|error|fatal|panic]")
 	flags.StringVar(&css, "css", "", "the path to the CSS file to link to the document")
+	flags.StringArrayVarP(&attributes, "attribute", "a", []string{}, "a document attribute to set in the form of name, name!, or name=value pair")
 	return rootCmd
 }
 
@@ -78,7 +86,7 @@ func newCloseFileFunc(c io.Closer) closeFunc {
 	}
 }
 
-func getOut(cmd *cobra.Command, source, outputName string) (io.Writer, closeFunc) {
+func getOut(cmd *cobra.Command, sourcePath, outputName string) (io.Writer, closeFunc) {
 	if outputName == "-" {
 		// outfile is STDOUT
 		return cmd.OutOrStdout(), defaultCloseFunc()
@@ -89,9 +97,9 @@ func getOut(cmd *cobra.Command, source, outputName string) (io.Writer, closeFunc
 			log.Warnf("Cannot create output file - %v, skipping", outputName)
 		}
 		return outfile, newCloseFileFunc(outfile)
-	} else if source != "" {
-		// outfile is based on source
-		path, _ := filepath.Abs(source)
+	} else if sourcePath != "" {
+		// outfile is based on sourcePath
+		path, _ := filepath.Abs(sourcePath)
 		outname := strings.TrimSuffix(path, filepath.Ext(path)) + ".html"
 		outfile, err := os.Create(outname)
 		if err != nil {
@@ -101,4 +109,18 @@ func getOut(cmd *cobra.Command, source, outputName string) (io.Writer, closeFunc
 		return outfile, newCloseFileFunc(outfile)
 	}
 	return cmd.OutOrStdout(), defaultCloseFunc()
+}
+
+// converts the `name`, `!name` and `name=value` into a map
+func parseAttributes(attributes []string) map[string]string {
+	result := make(map[string]string, len(attributes))
+	for _, attr := range attributes {
+		data := strings.Split(attr, "=")
+		if len(data) > 1 {
+			result[data[0]] = data[1]
+		} else {
+			result[data[0]] = ""
+		}
+	}
+	return result
 }

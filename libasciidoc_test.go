@@ -4,7 +4,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/bytesparadise/libasciidoc/pkg/renderer"
+	"github.com/bytesparadise/libasciidoc/pkg/configuration"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 	. "github.com/bytesparadise/libasciidoc/testsupport"
 
@@ -113,7 +113,7 @@ a paragraph`
 			Expect(RenderHTML5Title(source)).To(Equal(expectedTitle))
 			Expect(DocumentMetadata(source, lastUpdated)).To(Equal(types.Metadata{
 				Title:       "a document title",
-				LastUpdated: lastUpdated.Format(renderer.LastUpdatedFormat),
+				LastUpdated: lastUpdated.Format(configuration.LastUpdatedFormat),
 				TableOfContents: types.TableOfContents{
 					Sections: []types.ToCSection{
 						{
@@ -175,7 +175,7 @@ a paragraph with _italic content_`
 			Expect(RenderHTML5Title(source)).To(Equal(expectedTitle))
 			Expect(DocumentMetadata(source, lastUpdated)).To(Equal(types.Metadata{
 				Title:       "a document title",
-				LastUpdated: lastUpdated.Format(renderer.LastUpdatedFormat),
+				LastUpdated: lastUpdated.Format(configuration.LastUpdatedFormat),
 				TableOfContents: types.TableOfContents{
 					Sections: []types.ToCSection{
 						{
@@ -215,10 +215,10 @@ a paragraph with _italic content_`
 </div>
 </div>
 </div>`
-			Expect(RenderHTML5Body(source, WithFilename("test.adoc"), renderer.LastUpdated(lastUpdated))).To(Equal(expected))
+			Expect(RenderHTML5Body(source, configuration.WithFilename("test.adoc"), configuration.WithLastUpdated(lastUpdated))).To(Equal(expected))
 			Expect(DocumentMetadata(source, lastUpdated)).To(Equal(types.Metadata{
 				Title:       "",
-				LastUpdated: lastUpdated.Format(renderer.LastUpdatedFormat),
+				LastUpdated: lastUpdated.Format(configuration.LastUpdatedFormat),
 				TableOfContents: types.TableOfContents{
 					Sections: []types.ToCSection{
 						{
@@ -245,7 +245,7 @@ a paragraph with _italic content_`
 </div>
 </div>
 </div>`
-			Expect(RenderHTML5Body(source, WithFilename("tmp/foo.adoc"))).To(Equal(expectedContent))
+			Expect(RenderHTML5Body(source, configuration.WithFilename("tmp/foo.adoc"))).To(Equal(expectedContent))
 		})
 	})
 
@@ -281,7 +281,7 @@ Last updated {{.LastUpdated}}
 			filename := "test/includes/chapter-a.adoc"
 			stat, err := os.Stat(filename)
 			Expect(err).NotTo(HaveOccurred())
-			Expect(RenderHTML5Document(filename, renderer.IncludeCSS("path/to/style.css"))).To(MatchHTML5Template(expectedContent, stat.ModTime()))
+			Expect(RenderHTML5Document(filename, configuration.WithCSS("path/to/style.css"), configuration.WithHeaderFooter(true))).To(MatchHTML5Template(expectedContent, stat.ModTime()))
 		})
 
 	})
