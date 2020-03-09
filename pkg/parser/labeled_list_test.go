@@ -998,6 +998,117 @@ on 2 lines`
 		}
 		Expect(ParseDocument(source)).To(Equal(expected))
 	})
+	It("labeled list with a index term", func() {
+		source := "((`foo`))::\n" +
+			`This function is _untyped_.`
+		expected := types.Document{
+			Attributes:         types.DocumentAttributes{},
+			ElementReferences:  types.ElementReferences{},
+			Footnotes:          types.Footnotes{},
+			FootnoteReferences: types.FootnoteReferences{},
+			Elements: []interface{}{
+				types.LabeledList{
+					Attributes: types.ElementAttributes{},
+					Items: []types.LabeledListItem{
+						{
+							Attributes: types.ElementAttributes{},
+							Term: []interface{}{
+								types.IndexTerm{
+									Term: []interface{}{
+										types.QuotedText{
+											Kind: types.Monospace,
+											Elements: []interface{}{
+												types.StringElement{
+													Content: "foo",
+												},
+											},
+										},
+									},
+								},
+							},
+							Level: 1,
+							Elements: []interface{}{
+								types.Paragraph{
+									Attributes: types.ElementAttributes{},
+									Lines: [][]interface{}{
+										{
+											types.StringElement{
+												Content: "This function is ",
+											},
+											types.QuotedText{
+												Kind: types.Italic,
+												Elements: []interface{}{
+													types.StringElement{
+														Content: "untyped",
+													},
+												},
+											},
+											types.StringElement{
+												Content: ".",
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		}
+		Expect(ParseDocument(source)).To(Equal(expected))
+	})
+
+	It("labeled list with a concealed index term in term", func() {
+		source := "(((foo,bar)))::\n" +
+			`This function is _untyped_.`
+		expected := types.Document{
+			Attributes:         types.DocumentAttributes{},
+			ElementReferences:  types.ElementReferences{},
+			Footnotes:          types.Footnotes{},
+			FootnoteReferences: types.FootnoteReferences{},
+			Elements: []interface{}{
+				types.LabeledList{
+					Attributes: types.ElementAttributes{},
+					Items: []types.LabeledListItem{
+						{
+							Attributes: types.ElementAttributes{},
+							Term: []interface{}{
+								types.ConcealedIndexTerm{
+									Term1: "foo",
+									Term2: "bar",
+								},
+							},
+							Level: 1,
+							Elements: []interface{}{
+								types.Paragraph{
+									Attributes: types.ElementAttributes{},
+									Lines: [][]interface{}{
+										{
+											types.StringElement{
+												Content: "This function is ",
+											},
+											types.QuotedText{
+												Kind: types.Italic,
+												Elements: []interface{}{
+													types.StringElement{
+														Content: "untyped",
+													},
+												},
+											},
+											types.StringElement{
+												Content: ".",
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		}
+		Expect(ParseDocument(source)).To(Equal(expected))
+	})
 
 	It("labeled list with a horizontal layout attribute", func() {
 		source := `[horizontal]
