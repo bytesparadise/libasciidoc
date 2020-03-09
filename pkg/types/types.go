@@ -1890,19 +1890,31 @@ func (l *Location) Resolve(attrs DocumentAttributesWithOverrides) Location {
 }
 
 // -------------------------------------------------------------------------------------
-// Location: a Location (ie, with a scheme) or a path to a file (can be absolute or relative)
+// Index terms
 // -------------------------------------------------------------------------------------
 
-// ConceleadIndexTerm a concealed index term, with 1 required and 2 optional terms
-type ConceleadIndexTerm struct {
+// IndexTerm a index term, with a single term
+type IndexTerm struct {
+	Term []interface{}
+}
+
+// NewIndexTerm returns a new IndexTerm
+func NewIndexTerm(term []interface{}) (IndexTerm, error) {
+	return IndexTerm{
+		Term: term,
+	}, nil
+}
+
+// ConcealedIndexTerm a concealed index term, with 1 required and 2 optional terms
+type ConcealedIndexTerm struct {
 	Term1 interface{}
 	Term2 interface{}
 	Term3 interface{}
 }
 
-// NewConceleadIndexTerm returns a new ConceleadIndexTerm
-func NewConceleadIndexTerm(term1 interface{}, term2 interface{}, term3 interface{}) (ConceleadIndexTerm, error) {
-	return ConceleadIndexTerm{
+// NewConcealedIndexTerm returns a new ConcealedIndexTerm
+func NewConcealedIndexTerm(term1, term2, term3 interface{}) (ConcealedIndexTerm, error) {
+	return ConcealedIndexTerm{
 		Term1: term1,
 		Term2: term2,
 		Term3: term3,

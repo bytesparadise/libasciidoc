@@ -624,6 +624,8 @@ LabeledListItemTerm <- elements:(!Newline !LabeledListItemSeparator LabeledListI
 LabeledListItemTermElement <- element:(SimpleWord
         / Spaces 
         / CrossReference
+        / ConcealedIndexTerm
+        / IndexTerm
         / Passthrough
         / InlineImage 
         / Link
@@ -758,7 +760,8 @@ InlineElement <- !EOL !LineBreak
         / DocumentAttributeSubstitution 
         / InlineElementID 
         / OtherWord
-        / ConceleadIndexTerm
+        / ConcealedIndexTerm
+        / IndexTerm
         / Parenthesis) {
     return element, nil
 }
@@ -1548,14 +1551,24 @@ ParagraphWithLiteralAttributeLine <- line:(!(BlankLine) (Alphanums / Spaces / (!
 // ------------------------------------------
 // Index Terms
 // ------------------------------------------
-ConceleadIndexTerm <- "(((" term1:Alphanums term2:(WS* "," WS* content:Alphanums {
-        return content, nil
-    })? term3:(WS* "," WS* content:Alphanums {
-        return content, nil
-    })? ")))" {
-        return types.NewConceleadIndexTerm(term1, term2, term3)
+IndexTerm <- "((" term:(IndexTermContent) "))" {
+       return types.NewIndexTerm(term.([]interface{}))
+}
+
+IndexTermContent <- elements:(QuotedText / WS / Alphanum)+ {
+    return types.NewInlineElements(elements.([]interface{}))
+}
+
+ConcealedIndexTerm <- "(((" term1:(ConcealedIndexTermContent) 
+    term2:(WS* "," WS* content:(ConcealedIndexTermContent) { return content, nil })? 
+    term3:(WS* "," WS* content:(ConcealedIndexTermContent) { return content, nil })? 
+    ")))" {
+        return types.NewConcealedIndexTerm(term1, term2, term3)
     }
 
+ConcealedIndexTermContent <- (Alphanum / WS)+ {
+    return string(c.text), nil
+}
 // ------------------------------------------
 // BlankLine
 // ------------------------------------------
