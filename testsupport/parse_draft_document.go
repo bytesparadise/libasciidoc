@@ -3,6 +3,7 @@ package testsupport
 import (
 	"strings"
 
+	"github.com/bytesparadise/libasciidoc/pkg/configuration"
 	"github.com/bytesparadise/libasciidoc/pkg/parser"
 )
 
@@ -23,7 +24,8 @@ func ParseDraftDocument(actual string, options ...interface{}) (interface{}, err
 	if !c.preprocessing {
 		return parser.ParseReader(c.filename, r, parser.Entrypoint("AsciidocDocument"))
 	}
-	return parser.ParseDraftDocument(c.filename, r)
+	config := configuration.NewConfiguration(configuration.WithFilename(c.filename))
+	return parser.ParseDraftDocument(r, config)
 }
 
 type drafDocumentParserConfig struct {

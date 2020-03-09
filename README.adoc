@@ -58,21 +58,21 @@ Libasciidoc provides 2 functions to convert an Asciidoc content into HTML:
 
 1. Converting an `io.Reader` into an HTML document:
 
-    func ConvertToHTML(ctx context.Context, source io.Reader, output io.Writer, options renderer.Option...) (map[string]interface{}, error)
+    ConvertToHTML(r io.Reader, output io.Writer, config configuration.Configuration) (types.Metadata, error) 
 
 2. Converting a file (given its name) into an HTML document:
 
-    func ConvertFileToHTML(ctx context.Context, filename string, output io.Writer, options renderer.Option...) (map[string]interface{}, error)
+   ConvertFileToHTML(output io.Writer, config configuration.Configuration) (types.Metadata, error)
 
-where the returned `map[string]interface{}` object contains the document's title which is not part of the generated HTML `<body>` part, as well as the other attributes of the source document.
+where the returned `types.Metadata` object contains the document's title which is not part of the generated HTML `<body>` part, as well as the other attributes of the source document.
 
-For now, the sole option to pass as a last argument is `renderer.IncludeHeaderFooter` to include the `<header>` and `<footer>` elements in the generated HTML document or not. Default is `false`, which means that only the `<body>` part of the HTML document is generated.
+All options/settings are passed via the `config` parameter.
 
 === Macro definition
 
-The user can define a macro by calling `renderer.DefineMacro()` and passing return value to conversion functions.
+The user can define a macro by calling `renderer.WithMacroTemplate()` and passing return value to conversion functions.
 
-`renderer.DefineMacro()` defines a macro by the given name and associates the given template. The template is an implementation of `renderer.MacroTemplate` interface (ex. `text.Template`)
+`renderer.WithMacroTemplate()` defines a macro by the given name and associates the given template. The template is an implementation of `renderer.MacroTemplate` interface (ex. `text.Template`)
 
 Libasciidoc calls `Execute()` method and passes `types.UserMacro` object to template when rendering.
 
@@ -85,7 +85,7 @@ var tmpl = template.Must(t.Parse(tmplStr))
 
 output := &strings.Builder{}
 content := strings.NewReader(`example::hello world[suffix=!!!!!]`)
-libasciidoc.ConvertToHTML(context.Background(), content, output, renderer.DefineMacro(tmpl.Name(), tmpl))
+libasciidoc.ConvertToHTML(context.Background(), content, output, renderer.WithMacroTemplate(tmpl.Name(), tmpl))
 ```
 
 == How to contribute

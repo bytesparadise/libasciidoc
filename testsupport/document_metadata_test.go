@@ -3,7 +3,7 @@ package testsupport_test
 import (
 	"time"
 
-	"github.com/bytesparadise/libasciidoc/pkg/renderer"
+	"github.com/bytesparadise/libasciidoc/pkg/configuration"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 	"github.com/bytesparadise/libasciidoc/testsupport"
 
@@ -15,7 +15,7 @@ var _ = Describe("document metadata", func() {
 
 	lastUpdated := time.Now()
 	expected := types.Metadata{
-		LastUpdated: lastUpdated.Format(renderer.LastUpdatedFormat),
+		LastUpdated: lastUpdated.Format(configuration.LastUpdatedFormat),
 		TableOfContents: types.TableOfContents{
 			Sections: []types.ToCSection{
 				{

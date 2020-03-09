@@ -3,35 +3,26 @@ package parser
 import (
 	"io"
 
+	"github.com/bytesparadise/libasciidoc/pkg/configuration"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 )
 
 // ParseDocument parses the content of the reader identitied by the filename
-func ParseDocument(filename string, r io.Reader, opts ...Option) (types.Document, error) {
-	draftDoc, err := ParseDraftDocument(filename, r, opts...)
+func ParseDocument(r io.Reader, config configuration.Configuration) (types.Document, error) {
+	draftDoc, err := ParseDraftDocument(r, config)
 	if err != nil {
 		return types.Document{}, err
 	}
-	attrs := types.DocumentAttributes{}
+	attrs := types.DocumentAttributesWithOverrides{
+		Content:   types.DocumentAttributes{},
+		Overrides: config.AttributeOverrides,
+	}
 	// add all predefined attributes
-	for k, v := range Predefined {
-		if v, ok := v.(string); ok {
-			attrs[k] = v
-		}
-	}
-
+	attrs.AddAll(Predefined)
 	// also, add all front-matter key/values
-	for k, v := range draftDoc.FrontMatter.Content {
-		if v, ok := v.(string); ok {
-			attrs[k] = v
-		}
-	}
-
+	attrs.AddAll(draftDoc.FrontMatter.Content)
 	// also, add all DocumentAttributeDeclaration at the top of the document
-	documentAttributes := draftDoc.DocumentAttributes()
-	for k, v := range documentAttributes {
-		attrs[k] = v
-	}
+	attrs.AddAll(draftDoc.DocumentAttributes())
 
 	// apply document attribute substitutions and re-parse paragraphs that were affected
 	blocks, _, err := applyDocumentAttributeSubstitutions(draftDoc.Blocks, attrs)
@@ -44,7 +35,7 @@ func ParseDocument(filename string, r io.Reader, opts ...Option) (types.Document
 	if err != nil {
 		return types.Document{}, err
 	}
-	// apply document attribute substitutions and re-parse paragraphs that were affected
+	// filter out blocks not needed in the final doc
 	blocks = filter(blocks.([]interface{}), allMatchers...)
 
 	// now, rearrange elements in a hierarchical manner
@@ -57,8 +48,6 @@ func ParseDocument(filename string, r io.Reader, opts ...Option) (types.Document
 		doc.Attributes[k] = v
 	}
 	// and add all remaining attributes, too
-	for k, v := range documentAttributes {
-		doc.Attributes[k] = v
-	}
+	doc.Attributes.AddAll(draftDoc.DocumentAttributes())
 	return doc, nil
 }
