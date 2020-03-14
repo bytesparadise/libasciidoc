@@ -16,7 +16,7 @@ jobs:
     runs-on: ${{ matrix.platform }}
     strategy:
       matrix:
-        go-version: [1.13.x, 1.14.x]
+        go-version: [1.14.x]
         platform: [ubuntu-latest, macos-latest, windows-latest]
     name: Building on ${{ matrix.platform }} with Go ${{ matrix.go-version }}
     
@@ -74,9 +74,8 @@ jobs:
       
     - name: Test on Linux and macOS
       if: runner.os == 'Linux' || runner.os == 'macOS'
-      env:
-        PATH: $PATH:$(go env GOPATH)/bin
       run: |
+        export PATH=$PATH:$(go env GOPATH)/bin
         make test-with-coverage
 
     - name: Test on Windows
