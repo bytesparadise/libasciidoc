@@ -336,6 +336,75 @@ another delimited block
 			Expect(RenderHTML5Body(source)).To(Equal(expected))
 		})
 
+		It("labeled list with multiple item continuations", func() {
+			source := `Item 1::
+content 1
++
+NOTE: note
+
+Item 2::
+content 2
++
+addition
++
+IMPORTANT: important
++
+TIP: tip`
+			expected := `<div class="dlist">
+<dl>
+<dt class="hdlist1">Item 1</dt>
+<dd>
+<p>content 1</p>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+note
+</td>
+</tr>
+</table>
+</div>
+</dd>
+<dt class="hdlist1">Item 2</dt>
+<dd>
+<p>content 2</p>
+<div class="paragraph">
+<p>addition</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Important</div>
+</td>
+<td class="content">
+important
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Tip</div>
+</td>
+<td class="content">
+tip
+</td>
+</tr>
+</table>
+</div>
+</dd>
+</dl>
+</div>`
+
+			Expect(RenderHTML5Body(source)).To(Equal(expected))
+		})
+
 		It("labeled list without continuation", func() {
 			source := `Item 1::
 ----
