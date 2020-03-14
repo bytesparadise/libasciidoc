@@ -54,11 +54,11 @@ jobs:
     - name: Build on Windows
       if: runner.os == 'Windows'
       run: |
-        set PATH=%PATH%;$(go env GOPATH)/bin
+        set PATH=%PATH%;$(go env GOPATH)\bin
         make build
 
     - name: Test on Windows
       if: runner.os == 'Windows'
       run: |
-        set PATH=%PATH%;$(go env GOPATH)/bin
+        set PATH=%PATH%;$(go env GOPATH)\bin
         make test
