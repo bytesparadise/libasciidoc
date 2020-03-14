@@ -18,7 +18,7 @@ jobs:
       matrix:
         go-version: [1.13.x, 1.14.x]
         platform: [ubuntu-latest, macos-latest, windows-latest]
-    name: Building on ${{ matrix.platform }} with Go ${{ matrix.go-version }}
+    name: Building on ${{ runner.os }} with Go ${{ matrix.go-version }}
     
     steps:
     - name: Install Go
@@ -34,7 +34,7 @@ jobs:
         make install-devtools
       
     - name: Build on Linux/macOS
-      if: runner.os == 'Linux' || runner.os == 'Windows'
+      if: runner.os == 'Linux' || runner.os == 'macOS'
       run: |
         export PATH=$PATH:$(go env GOPATH)/bin
         make build
@@ -73,7 +73,7 @@ jobs:
         make install-devtools
       
     - name: Test on Linux and macOS
-      if: runner.os != 'Windows'
+      if: runner.os == 'Linux' || runner.os == 'macOS'
       env:
         PATH: $PATH:$(go env GOPATH)/bin
       run: |
