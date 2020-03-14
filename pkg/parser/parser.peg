@@ -487,10 +487,10 @@ ListParagraphLine <- !EOF
     !SingleLineComment
     !OrderedListItemPrefix
     !UnorderedListItemPrefix
-    !(SimpleLabeledListItemTerm LabeledListItemSeparator) 
     !ListItemContinuation
     !ElementAttribute
     !BlockDelimiter
+    !(SimpleLabeledListItemTerm LabeledListItemSeparator) 
     line:(
         elements:(InlineElement)+ linebreak:(LineBreak)? { // absorbs heading and trailing spaces
             return types.NewInlineElements(append(elements.([]interface{}), linebreak))
@@ -500,8 +500,24 @@ ListParagraphLine <- !EOF
 
 ListItemContinuation <- "+" WS* EOL 
 
-ContinuedListItemElement <- blanklines:(BlankLine*) ListItemContinuation element:DocumentBlock{
+ContinuedListItemElement <- blanklines:(BlankLine*) ListItemContinuation element:ContinuedListItemBlock {
     return types.NewContinuedListItemElement(-len(blanklines.([]interface{})), element) // offset is negative
+}
+
+ContinuedListItemBlock <- !EOF 
+    block:(DelimitedBlock
+        / FileInclusion
+        / VerseParagraph // must be before ImageBlock
+        / ImageBlock 
+        / ListItem
+        / BlankLine // must be before LiteralBlock
+        / LiteralBlock 
+        / DocumentAttributeDeclaration 
+        / DocumentAttributeReset 
+        / TableOfContentsPlaceHolder
+        / UserMacroBlock
+        / ContinuedParagraph) {
+    return block, nil
 }
 
 // ------------------------------------------
@@ -699,7 +715,18 @@ SimpleParagraph <- attributes:(ElementAttributes)?
     return types.NewParagraph(append([]interface{}{firstLine}, otherLines.([]interface{})...), attributes)
 }
 
-ParagraphLines <- firstLine:(FirstParagraphLine) otherLines:(OtherParagraphLine)* {
+// same as Paragraph, but without allowing for ListItemContinuation (`+`)
+ContinuedParagraph <- 
+    // admonition paragraph 
+    attributes:(ElementAttributes)? t:(AdmonitionKind) ": " lines:(ContinuedParagraphLines) { 
+        return types.NewAdmonitionParagraph(lines.([]interface{}), t.(types.AdmonitionKind), attributes)
+    } / 
+    // other kind of paragraph (verse, regular, etc.)
+    attributes:(ElementAttributes)? lines:(ContinuedParagraphLines) { 
+        return types.NewParagraph(lines.([]interface{}), attributes)
+} 
+
+ContinuedParagraphLines <- firstLine:(FirstParagraphLine) otherLines:(!ListItemContinuation OtherParagraphLine)* {
     return append([]interface{}{firstLine}, otherLines.([]interface{})...), nil
 }
 
