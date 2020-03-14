@@ -9,25 +9,58 @@ on:
     branches:
       - master
 
+
 jobs:
   
-  testing:
-    runs-on: ${{ matrix.os }}
+  build:
+    runs-on: ${{ matrix.platform }}
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
-        go: [ '1.13', '1.12' ]
-    name: ${{ matrix.os }} with Go ${{ matrix.go }}
+        go-version: [1.13.x, 1.14.x]
+        platform: [ubuntu-latest, macos-latest, windows-latest]
+    name: Building on ${{ matrix.platform }} with Go ${{ matrix.go }}
     
     steps:
-
-    - name: Check out code into the Go module directory
-      uses: actions/checkout@v2
-  
-    - name: Setup Go
+    - name: Install Go
       uses: actions/setup-go@v1
       with:
-        go-version: ${{ matrix.go }}
+        go-version: ${{ matrix.go-version }}
+    
+    - name: Checkout code
+      uses: actions/checkout@v2
+  
+    - name: Install Tools
+      run: 
+        make install-devtools
+      
+    - name: Build on Linux/macOS
+      if: runner.os == 'Linux' || runner.os == 'Windows'
+      run: |
+        export PATH=$PATH:$(go env GOPATH)/bin
+        make build
+      
+    - name: Build on Windows
+      if: runner.os == 'Windows'
+      run: |
+        set PATH=%PATH%;$(go env GOPATH)\bin
+        make build
+
+  test:
+    runs-on: ${{ matrix.platform }}
+    strategy:
+      matrix:
+        go-version: [1.13.x, 1.14.x]
+        platform: [ubuntu-latest, macos-latest, windows-latest]
+    name: Testing on ${{ matrix.platform }} with Go ${{ matrix.go }}
+    
+    steps:
+    - name: Install Go
+      uses: actions/setup-go@v1
+      with:
+        go-version: ${{ matrix.go-version }}
+    
+    - name: Checkout code
+      uses: actions/checkout@v2
   
     - name: Extra setup for Windows
       if: runner.os == 'Windows'
@@ -39,23 +72,12 @@ jobs:
       run: 
         make install-devtools
       
-    - name: Build on Linux/macOS
-      if: runner.os != 'Windows'
-      run: |
-        export PATH=$PATH:$(go env GOPATH)/bin
-        make build
-      
     - name: Test on Linux and macOS
       if: runner.os != 'Windows'
+      env:
+        PATH: $PATH:$(go env GOPATH)/bin
       run: |
-        export PATH=$PATH:$(go env GOPATH)/bin
         make test-with-coverage
-
-    - name: Build on Windows
-      if: runner.os == 'Windows'
-      run: |
-        set PATH=%PATH%;$(go env GOPATH)\bin
-        make build
 
     - name: Test on Windows
       if: runner.os == 'Windows'
