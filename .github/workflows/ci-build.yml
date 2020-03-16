@@ -12,33 +12,6 @@ on:
 
 jobs:
   
-  build:
-    runs-on: ${{ matrix.platform }}
-    strategy:
-      matrix:
-        go-version: [1.14.x]
-        platform: [ubuntu-latest, macos-latest]
-    name: Building on ${{ matrix.platform }} with Go ${{ matrix.go-version }}
-    
-    steps:
-    - name: Install Go
-      uses: actions/setup-go@v1
-      with:
-        go-version: ${{ matrix.go-version }}
-    
-    - name: Checkout code
-      uses: actions/checkout@v2
-  
-    - name: Install Tools
-      run: 
-        make install-devtools
-      
-    - name: Build on Linux/macOS
-      if: runner.os == 'Linux' || runner.os == 'macOS'
-      run: |
-        export PATH=$PATH:$(go env GOPATH)/bin
-        make build
-      
   test:
     runs-on: ${{ matrix.platform }}
     strategy:
@@ -65,3 +38,11 @@ jobs:
       run: |
         export PATH=$PATH:$(go env GOPATH)/bin
         make test-with-coverage
+    
+    - name: Build on Linux/macOS
+      if: (runner.os == 'Linux' || runner.os == 'macOS') && matrix.go-version == '1.14.x'
+      run: |
+        export PATH=$PATH:$(go env GOPATH)/bin
+        make build
+      
+  
