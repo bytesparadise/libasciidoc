@@ -579,6 +579,122 @@ another fenced block
 		Expect(ParseDraftDocument(source)).To(Equal(expected))
 	})
 
+	It("labeled list with multiple item continuations", func() {
+		source := `Item 1::
+content 1
++
+NOTE: note
+
+Item 2::
+content 2
++
+addition
++
+IMPORTANT: important
++
+TIP: tip`
+		expected := types.DraftDocument{
+			Blocks: []interface{}{
+				types.LabeledListItem{
+					Attributes: types.ElementAttributes{},
+					Level:      1,
+					Term: []interface{}{
+						types.StringElement{
+							Content: "Item 1",
+						},
+					},
+					Elements: []interface{}{
+						types.Paragraph{
+							Attributes: types.ElementAttributes{},
+							Lines: [][]interface{}{
+								{
+									types.StringElement{Content: "content 1"},
+								},
+							},
+						},
+					},
+				},
+				// the `+` continuation produces the element below
+				types.ContinuedListItemElement{
+					Offset: 0,
+					Element: types.Paragraph{
+						Attributes: types.ElementAttributes{
+							types.AttrAdmonitionKind: types.Note,
+						},
+						Lines: [][]interface{}{
+							{
+								types.StringElement{Content: "note"},
+							},
+						},
+					},
+				},
+				types.BlankLine{},
+				types.LabeledListItem{
+					Attributes: types.ElementAttributes{},
+					Level:      1,
+					Term: []interface{}{
+						types.StringElement{
+							Content: "Item 2",
+						},
+					},
+					Elements: []interface{}{
+						types.Paragraph{
+							Attributes: types.ElementAttributes{},
+							Lines: [][]interface{}{
+								{
+									types.StringElement{Content: "content 2"},
+								},
+							},
+						},
+					},
+				},
+				// the `+` continuation produces the element below
+				types.ContinuedListItemElement{
+					Offset: 0,
+					Element: types.Paragraph{
+						Attributes: types.ElementAttributes{},
+						Lines: [][]interface{}{
+							{
+								types.StringElement{
+									Content: "addition",
+								},
+							},
+						},
+					},
+				},
+				// the `+` continuation produces the element below
+				types.ContinuedListItemElement{
+					Offset: 0,
+					Element: types.Paragraph{
+						Attributes: types.ElementAttributes{
+							types.AttrAdmonitionKind: types.Important,
+						},
+						Lines: [][]interface{}{
+							{
+								types.StringElement{Content: "important"},
+							},
+						},
+					},
+				},
+				// the `+` continuation produces the element below
+				types.ContinuedListItemElement{
+					Offset: 0,
+					Element: types.Paragraph{
+						Attributes: types.ElementAttributes{
+							types.AttrAdmonitionKind: types.Tip,
+						},
+						Lines: [][]interface{}{
+							{
+								types.StringElement{Content: "tip"},
+							},
+						},
+					},
+				},
+			},
+		}
+		Expect(ParseDraftDocument(source)).To(Equal(expected))
+	})
+
 	It("labeled list with nested unordered list - case 2", func() {
 		source := `Labeled item::
 - unordered item`
@@ -965,6 +1081,117 @@ on 2 lines`
 											Content: "foo()",
 										},
 									},
+								},
+							},
+							Level: 1,
+							Elements: []interface{}{
+								types.Paragraph{
+									Attributes: types.ElementAttributes{},
+									Lines: [][]interface{}{
+										{
+											types.StringElement{
+												Content: "This function is ",
+											},
+											types.QuotedText{
+												Kind: types.Italic,
+												Elements: []interface{}{
+													types.StringElement{
+														Content: "untyped",
+													},
+												},
+											},
+											types.StringElement{
+												Content: ".",
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		}
+		Expect(ParseDocument(source)).To(Equal(expected))
+	})
+	It("labeled list with a index term", func() {
+		source := "((`foo`))::\n" +
+			`This function is _untyped_.`
+		expected := types.Document{
+			Attributes:         types.DocumentAttributes{},
+			ElementReferences:  types.ElementReferences{},
+			Footnotes:          types.Footnotes{},
+			FootnoteReferences: types.FootnoteReferences{},
+			Elements: []interface{}{
+				types.LabeledList{
+					Attributes: types.ElementAttributes{},
+					Items: []types.LabeledListItem{
+						{
+							Attributes: types.ElementAttributes{},
+							Term: []interface{}{
+								types.IndexTerm{
+									Term: []interface{}{
+										types.QuotedText{
+											Kind: types.Monospace,
+											Elements: []interface{}{
+												types.StringElement{
+													Content: "foo",
+												},
+											},
+										},
+									},
+								},
+							},
+							Level: 1,
+							Elements: []interface{}{
+								types.Paragraph{
+									Attributes: types.ElementAttributes{},
+									Lines: [][]interface{}{
+										{
+											types.StringElement{
+												Content: "This function is ",
+											},
+											types.QuotedText{
+												Kind: types.Italic,
+												Elements: []interface{}{
+													types.StringElement{
+														Content: "untyped",
+													},
+												},
+											},
+											types.StringElement{
+												Content: ".",
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		}
+		Expect(ParseDocument(source)).To(Equal(expected))
+	})
+
+	It("labeled list with a concealed index term in term", func() {
+		source := "(((foo,bar)))::\n" +
+			`This function is _untyped_.`
+		expected := types.Document{
+			Attributes:         types.DocumentAttributes{},
+			ElementReferences:  types.ElementReferences{},
+			Footnotes:          types.Footnotes{},
+			FootnoteReferences: types.FootnoteReferences{},
+			Elements: []interface{}{
+				types.LabeledList{
+					Attributes: types.ElementAttributes{},
+					Items: []types.LabeledListItem{
+						{
+							Attributes: types.ElementAttributes{},
+							Term: []interface{}{
+								types.ConcealedIndexTerm{
+									Term1: "foo",
+									Term2: "bar",
 								},
 							},
 							Level: 1,

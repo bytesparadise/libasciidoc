@@ -3,7 +3,7 @@ package html5_test
 import (
 	"time"
 
-	"github.com/bytesparadise/libasciidoc/pkg/renderer"
+	"github.com/bytesparadise/libasciidoc/pkg/configuration"
 	. "github.com/bytesparadise/libasciidoc/testsupport"
 
 	. "github.com/onsi/ginkgo"
@@ -41,9 +41,9 @@ Last updated {{.LastUpdated}}
 </body>
 </html>`
 			now := time.Now()
-			Expect(RenderHTML5Body(source, renderer.IncludeHeaderFooter(true),
-				renderer.IncludeCSS("/path/to/style.css"),
-				renderer.LastUpdated(now))).
+			Expect(RenderHTML5Body(source, configuration.WithHeaderFooter(true),
+				configuration.WithCSS("/path/to/style.css"),
+				configuration.WithLastUpdated(now))).
 				To(MatchHTML5Template(expected, now))
 		})
 	})

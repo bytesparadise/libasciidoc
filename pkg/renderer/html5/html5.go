@@ -5,6 +5,7 @@ import (
 	"io"
 	texttemplate "text/template"
 
+	"github.com/bytesparadise/libasciidoc/pkg/configuration"
 	"github.com/bytesparadise/libasciidoc/pkg/renderer"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 
@@ -62,7 +63,7 @@ func Render(ctx renderer.Context, output io.Writer) (types.Metadata, error) {
 	if err != nil {
 		return types.Metadata{}, errors.Wrapf(err, "unable to render full document")
 	}
-	if ctx.IncludeHeaderFooter() {
+	if ctx.Config.IncludeHeaderFooter {
 		log.Debugf("Rendering full document...")
 		// use a temporary writer for the document's content
 		renderedElements, err := renderDocumentElements(ctx)
@@ -89,8 +90,8 @@ func Render(ctx renderer.Context, output io.Writer) (types.Metadata, error) {
 			Header:      string(renderedHeader),
 			Content:     htmltemplate.HTML(string(renderedElements)), //nolint: gosec
 			RevNumber:   revNumber,
-			LastUpdated: ctx.LastUpdated(),
-			CSS:         ctx.CSS(),
+			LastUpdated: ctx.Config.LastUpdated.Format(configuration.LastUpdatedFormat),
+			CSS:         ctx.Config.CSS,
 			Details:     documentDetails,
 		})
 		if err != nil {
@@ -110,7 +111,7 @@ func Render(ctx renderer.Context, output io.Writer) (types.Metadata, error) {
 	// generate the metadata to be returned to the caller
 	metadata := types.Metadata{}
 	metadata.Title = string(renderedTitle)
-	metadata.LastUpdated = ctx.LastUpdated()
+	metadata.LastUpdated = ctx.Config.LastUpdated.Format(configuration.LastUpdatedFormat)
 	// include a version of the table of contents
 	metadata.TableOfContents = ctx.TableOfContents
 	return metadata, err

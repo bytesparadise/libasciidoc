@@ -15,7 +15,7 @@ func renderElements(ctx renderer.Context, elements []interface{}) ([]byte, error
 	log.Debugf("rendering %d elements(s)...", len(elements))
 	buff := bytes.NewBuffer(nil)
 	hasContent := false
-	if !ctx.IncludeHeaderFooter() && len(elements) > 0 {
+	if !ctx.Config.IncludeHeaderFooter && len(elements) > 0 {
 		if s, ok := elements[0].(types.Section); ok && s.Level == 0 {
 			// don't render the top-level section, but only its elements (plus the rest if there's anything)
 			if len(elements) > 1 {
@@ -124,6 +124,8 @@ func renderElement(ctx renderer.Context, element interface{}) ([]byte, error) {
 		return renderLineBreak()
 	case types.UserMacro:
 		return renderUserMacro(ctx, e)
+	case types.IndexTerm:
+		return renderIndexTerm(ctx, e)
 	default:
 		return nil, errors.Errorf("unsupported type of element: %T", element)
 	}

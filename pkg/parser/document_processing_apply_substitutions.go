@@ -11,7 +11,7 @@ import (
 // applyDocumentAttributeSubstitutions(elements applies the document attribute substitutions
 // and re-parse the paragraphs that were affected
 // nolint: gocyclo
-func applyDocumentAttributeSubstitutions(element interface{}, attrs types.DocumentAttributes) (interface{}, bool, error) {
+func applyDocumentAttributeSubstitutions(element interface{}, attrs types.DocumentAttributesWithOverrides) (interface{}, bool, error) {
 	// the document attributes, as they are resolved while processing the blocks
 	log.Debugf("applying document substitutions on block of type %T", element)
 	switch e := element.(type) {
@@ -33,13 +33,13 @@ func applyDocumentAttributeSubstitutions(element interface{}, attrs types.Docume
 		}
 		return elements, false, nil
 	case types.DocumentAttributeDeclaration:
-		attrs[e.Name] = e.Value
+		attrs.Add(e.Name, e.Value)
 		return e, false, nil
 	case types.DocumentAttributeReset:
-		delete(attrs, e.Name)
+		attrs.Delete(e.Name)
 		return e, false, nil
 	case types.DocumentAttributeSubstitution:
-		if value, ok := attrs[e.Name].(string); ok {
+		if value, ok := attrs.GetAsString(e.Name); ok {
 			return types.StringElement{
 				Content: value,
 			}, true, nil

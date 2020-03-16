@@ -120,6 +120,6 @@ var commentBlockMatcher filterMatcher = func(element interface{}) bool {
 
 // concealedIndexTermMatcher filters the element if it is a ConcealedIndexTerm
 var concealedIndexTermMatcher filterMatcher = func(element interface{}) bool {
-	_, ok := element.(types.ConceleadIndexTerm)
+	_, ok := element.(types.ConcealedIndexTerm)
 	return ok
 }

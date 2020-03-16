@@ -300,6 +300,57 @@ a paragraph`
 				Expect(ParseDocumentBlock(source)).To(Equal(expected))
 			})
 		})
-	})
 
+		It("blank line after role attribute", func() {
+			source := `[.a role]
+
+a paragraph`
+			expected := types.DraftDocument{
+				Blocks: []interface{}{
+					types.Paragraph{
+						Attributes: types.ElementAttributes{
+							types.AttrRole: "a role",
+						},
+						Lines: [][]interface{}{
+							{
+								types.StringElement{
+									Content: "a paragraph",
+								},
+							},
+						},
+					},
+				},
+			}
+			Expect(ParseDraftDocument(source)).To(Equal(expected))
+		})
+
+		It("blank lines after id, role and title attributes", func() {
+			source := `[.a role]
+[[ID]]
+.title
+
+
+a paragraph`
+			expected := types.DraftDocument{
+				Blocks: []interface{}{
+					types.Paragraph{
+						Attributes: types.ElementAttributes{
+							types.AttrRole:     "a role",
+							types.AttrTitle:    "title",
+							types.AttrID:       "ID",
+							types.AttrCustomID: true,
+						},
+						Lines: [][]interface{}{
+							{
+								types.StringElement{
+									Content: "a paragraph",
+								},
+							},
+						},
+					},
+				},
+			}
+			Expect(ParseDraftDocument(source)).To(Equal(expected))
+		})
+	})
 })

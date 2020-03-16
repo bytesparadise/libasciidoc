@@ -3,7 +3,7 @@ package html5_test
 import (
 	"time"
 
-	"github.com/bytesparadise/libasciidoc/pkg/renderer"
+	"github.com/bytesparadise/libasciidoc/pkg/configuration"
 	. "github.com/bytesparadise/libasciidoc/testsupport"
 
 	. "github.com/onsi/ginkgo"
@@ -52,8 +52,7 @@ Last updated {{.LastUpdated}}
 </body>
 </html>`
 			now := time.Now()
-			Expect(RenderHTML5Body(source, renderer.IncludeHeaderFooter(true), renderer.LastUpdated(time.Now()))).
-				To(MatchHTML5Template(expected, now))
+			Expect(RenderHTML5Body(source, configuration.WithHeaderFooter(true), configuration.WithLastUpdated(time.Now()))).To(MatchHTML5Template(expected, now))
 		})
 
 		It("header with 2 authors and no revision", func() {
@@ -91,9 +90,8 @@ Last updated {{.LastUpdated}}
 </body>
 </html>`
 			now := time.Now()
-			Expect(RenderHTML5Body(source, renderer.IncludeHeaderFooter(true), renderer.LastUpdated(now))).
+			Expect(RenderHTML5Body(source, configuration.WithHeaderFooter(true), configuration.WithLastUpdated(time.Now()))).
 				To(MatchHTML5Template(expected, now))
-
 		})
 	})
 })

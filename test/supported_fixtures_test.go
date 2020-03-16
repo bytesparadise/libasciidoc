@@ -9,6 +9,7 @@ import (
 	"strings"
 
 	"github.com/bytesparadise/libasciidoc"
+	"github.com/bytesparadise/libasciidoc/pkg/configuration"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/ginkgo/extensions/table"
@@ -78,7 +79,8 @@ func entries(pattern string) []TableEntry {
 func convert(sourcePath string) (string, error) {
 	// generate the HTML output
 	buff := bytes.NewBuffer(nil)
-	_, err := libasciidoc.ConvertFileToHTML(sourcePath, buff)
+	config := configuration.NewConfiguration(configuration.WithFilename(sourcePath))
+	_, err := libasciidoc.ConvertFileToHTML(buff, config)
 	if err != nil {
 		return "", err
 	}
