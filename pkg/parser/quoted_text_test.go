@@ -243,6 +243,80 @@ var _ = Describe("quoted texts", func() {
 				Expect(ParseDraftDocument(source)).To(Equal(expected))
 			})
 
+			It("non-bold text then bold text", func() {
+				source := "non*bold*content *bold content*"
+				expected := types.DraftDocument{
+					Blocks: []interface{}{
+						types.Paragraph{
+							Attributes: types.ElementAttributes{},
+							Lines: [][]interface{}{
+								{
+									types.StringElement{
+										Content: "non*bold*content ",
+									},
+									types.QuotedText{
+										Kind: types.Bold,
+										Elements: []interface{}{
+											types.StringElement{Content: "bold content"},
+										},
+									},
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDraftDocument(source)).To(Equal(expected))
+			})
+			It("non-italic text then italic text", func() {
+				source := "non_italic_content _italic content_"
+				expected := types.DraftDocument{
+					Blocks: []interface{}{
+						types.Paragraph{
+							Attributes: types.ElementAttributes{},
+							Lines: [][]interface{}{
+								{
+									types.StringElement{
+										Content: "non_italic_content ",
+									},
+									types.QuotedText{
+										Kind: types.Italic,
+										Elements: []interface{}{
+											types.StringElement{Content: "italic content"},
+										},
+									},
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDraftDocument(source)).To(Equal(expected))
+			})
+
+			It("non-monospace text then monospace text", func() {
+				source := "non`monospace`content `monospace content`"
+				expected := types.DraftDocument{
+					Blocks: []interface{}{
+						types.Paragraph{
+							Attributes: types.ElementAttributes{},
+							Lines: [][]interface{}{
+								{
+									types.StringElement{
+										Content: "non`monospace`content ",
+									},
+									types.QuotedText{
+										Kind: types.Monospace,
+										Elements: []interface{}{
+											types.StringElement{Content: "monospace content"},
+										},
+									},
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDraftDocument(source)).To(Equal(expected))
+			})
+
 			It("subscript text attached", func() {
 				source := "O~2~ is a molecule"
 				expected := types.DraftDocument{
@@ -307,7 +381,6 @@ var _ = Describe("quoted texts", func() {
 				}
 				Expect(ParseDraftDocument(source)).To(Equal(expected))
 			})
-
 		})
 
 		Context("Quoted text with double punctuation", func() {
