@@ -8,6 +8,7 @@ import (
 	"github.com/bytesparadise/libasciidoc"
 	"github.com/bytesparadise/libasciidoc/pkg/configuration"
 	"github.com/pkg/errors"
+	log "github.com/sirupsen/logrus"
 )
 
 // RenderHTML5Body renders the HTML body using the given source
@@ -22,9 +23,9 @@ func RenderHTML5Body(actual string, options ...configuration.Setting) (string, e
 	if err != nil {
 		return "", err
 	}
-	// if strings.Contains(m.expected, "{{.LastUpdated}}") {
-	// 	m.expected = strings.Replace(m.expected, "{{.LastUpdated}}", metadata.LastUpdated, 1)
-	// }
+	if log.IsLevelEnabled(log.DebugLevel) {
+		log.Debug(resultWriter.String())
+	}
 	return resultWriter.String(), nil
 }
 

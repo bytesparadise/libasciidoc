@@ -17,11 +17,11 @@ var _ = Describe("index terms", func() {
 		Expect(RenderHTML5Body(source)).To(Equal(expected))
 	})
 
-	It("index term in single paragraph line", func() {
-		source := `((_italic_))
+	It("index term in separate paragraph line", func() {
+		source := `((foo_bar_baz _italic_))
 a paragraph with an index term.`
 		expected := `<div class="paragraph">
-<p><em>italic</em>
+<p>foo_bar_baz <em>italic</em>
 a paragraph with an index term.</p>
 </div>`
 		Expect(RenderHTML5Body(source)).To(Equal(expected))
