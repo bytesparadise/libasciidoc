@@ -14,18 +14,23 @@ func ParseDraftDocument(actual string, options ...interface{}) (interface{}, err
 		preprocessing: true,
 		filename:      "test.adoc",
 	}
+	parserOptions := []parser.Option{}
 	for _, o := range options {
-		if configure, ok := o.(BecomeDraftDocumentOption); ok {
-			configure(c)
-		} else if configure, ok := o.(FilenameOption); ok {
-			configure(c)
+		switch set := o.(type) {
+		case BecomeDraftDocumentOption:
+			set(c)
+		case FilenameOption:
+			set(c)
+		case parser.Option:
+			parserOptions = append(parserOptions, set)
 		}
 	}
+
 	if !c.preprocessing {
-		return parser.ParseReader(c.filename, r, parser.Entrypoint("AsciidocDocument"))
+		return parser.ParseReader(c.filename, r, append(parserOptions, parser.Entrypoint("AsciidocDocument"))...)
 	}
 	config := configuration.NewConfiguration(configuration.WithFilename(c.filename))
-	return parser.ParseDraftDocument(r, config)
+	return parser.ParseDraftDocument(r, config, parserOptions...)
 }
 
 type drafDocumentParserConfig struct {
