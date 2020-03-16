@@ -58,7 +58,7 @@ var _ = Describe("paragraphs", func() {
 			Expect(ParseDocumentBlock(source)).To(Equal(expected))
 		})
 
-		It("paragraph with non-alphnum character before bold text", func() {
+		It("paragraph with non-alphanum character before bold text", func() {
 			source := "+*some bold content*"
 			expected := types.Paragraph{
 				Attributes: types.ElementAttributes{},
@@ -692,7 +692,7 @@ image::foo.png[]`
 					},
 				},
 			}
-			Expect(ParseDocumentBlock(source)).To(Equal(expected)) //, parser.Debug(true))
+			Expect(ParseDocumentBlock(source)).To(Equal(expected))
 		})
 	})
 

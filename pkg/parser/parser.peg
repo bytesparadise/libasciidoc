@@ -258,12 +258,15 @@ AttributeGroup <- "[" attributes:(GenericAttribute)* "]" WS* EOL {
     return types.NewAttributeGroup(attributes.([]interface{}))
 }
 
-GenericAttribute <- 
-    key:(AttributeKey) "=" value:(AttributeValue)? ","? WS* { // value is (optionally) set
-        return types.NewGenericAttribute(key.(string), value)
-    } / key:(AttributeKey) ","? WS* { // value is not set
-        return types.NewGenericAttribute(key.(string), nil)
-    }
+GenericAttribute <- GenericAttributeWithValue / GenericAttributeWithoutValue
+
+GenericAttributeWithValue <- key:(AttributeKey) "=" value:(AttributeValue)? ","? WS* { // value is (optionally) set
+    return types.NewGenericAttribute(key.(string), value)
+}
+
+GenericAttributeWithoutValue <- key:(AttributeKey) ","? WS* { // value is not set
+    return types.NewGenericAttribute(key.(string), nil)
+}
 
 AttributeKey <- !"quote" !"verse" !"literal" !Spaces key:(Alphanums / OtherAttributeChar)+ WS* {
     return string(c.text), nil
@@ -329,8 +332,9 @@ TitleElement <- element:(SimpleWord
         / QuotedText
         / DocumentAttributeSubstitution
         / LineBreak
-        / OtherWord
-        / Parenthesis) {
+        / Parenthesis
+        / AnyChars
+        / AnyChar ) {
     return element, nil
 }
 
@@ -649,8 +653,9 @@ LabeledListItemTermElement <- element:(SimpleWord
         / QuotedText
         / DocumentAttributeSubstitution
         / LineBreak
-        / OtherWord
-        / Parenthesis) {
+        / Parenthesis
+        / AnyChars
+        / AnyChar ) {
     return element, nil
 }
 
@@ -776,20 +781,21 @@ InlineElements <- !EOF !BlankLine
 
 InlineElement <- !EOL !LineBreak 
     element:(SimpleWord
+        / QuotedText 
         / Spaces 
         / InlineImage 
         / Link 
         / Passthrough 
         / InlineFootnote 
-        / QuotedText 
         / CrossReference 
         / InlineUserMacro 
         / DocumentAttributeSubstitution 
         / InlineElementID 
-        / OtherWord
         / ConcealedIndexTerm
         / IndexTerm
-        / Parenthesis) {
+        / Parenthesis
+        / AnyChars
+        / AnyChar ) {
     return element, nil
 }
 
@@ -803,15 +809,16 @@ InlineElementsWithoutSubtitution <- !BlankLine !BlockDelimiter elements:(InlineE
 
 InlineElementWithoutSubtitution <- !EOL !LineBreak 
     element:(SimpleWord
+        / QuotedText 
         / Spaces 
         / InlineImage 
         / Link 
         / Passthrough 
-        / QuotedText 
         / CrossReference 
         / InlineElementID
-        / OtherWord
-        / Parenthesis) {
+        / Parenthesis
+        / AnyChars
+        / AnyChar ) {
     return element, nil
 }
 
@@ -839,21 +846,30 @@ LineBreak <- WS "+" WS* &EOL {
 // ----------------------------------------------------------------------------
 // Quoted Texts (bold, italic and monospace) including substitution prevention
 // ----------------------------------------------------------------------------
-QuotedText <- !WS text:(BoldText 
-            / ItalicText 
-            / MonospaceText 
+QuotedText <- UnconstrainedQuotedText / ConstrainedQuotedText / EscapedQuotedText
+
+ConstrainedQuotedTextPrefix <- "*" !"*" / "_" !"_" / "`" !"`" 
+
+UnconstrainedQuotedTextPrefix <- "**" / "__" / "``" / "^" / "~"
+
+ConstrainedQuotedText <- !WS text:(SingleQuoteBoldText 
+            / SingleQuoteItalicText 
+            / SingleQuoteMonospaceText 
             / SubscriptText 
             / SuperscriptText 
-            / EscapedBoldText 
-            / EscapedItalicText 
-            / EscapedMonospaceText 
-            / EscapedSubscriptText 
-            / EscapedSuperscriptText
             / SubscriptOrSuperscriptPrefix) { // if a '^' or '~' is alone (ie, badly formatted superscript or subscript, then accept it as-is) 
     return text, nil
 }
 
-QuotedTextPrefix <- "**" / "*" / "__" / "_" / "``" / "`" / "^" / "~"
+UnconstrainedQuotedText <- DoubleQuoteBoldText
+            / DoubleQuoteItalicText
+            / DoubleQuoteMonospaceText
+
+EscapedQuotedText <- EscapedBoldText 
+            / EscapedItalicText 
+            / EscapedMonospaceText 
+            / EscapedSubscriptText 
+            / EscapedSuperscriptText
 
 SubscriptOrSuperscriptPrefix <- "^" / "~" { // rule used withn `words` to detect superscript or subscript portions, eg in math formulae.
     return string(c.text), nil
@@ -871,15 +887,16 @@ TwoOrMoreBackslashes <- `\\` `\`* {
 // Bold text
 // -----------------
 
-BoldText <- DoubleQuoteBoldText / SingleQuoteBoldText
+BoldText <- DoubleQuoteBoldText / SingleQuoteBoldText // double punctuation must be evaluated first
 
-DoubleQuoteBoldText <- !`\\` "**" elements:(DoubleQuoteBoldTextElements) "**" { // double punctuation must be evaluated first
+DoubleQuoteBoldText <- !`\\` "**" elements:(DoubleQuoteBoldTextElements) "**" { 
     return types.NewQuotedText(types.Bold, elements.([]interface{}))
 } 
 
 DoubleQuoteBoldTextElements <- DoubleQuoteBoldTextElement (!("**") (WS / DoubleQuoteBoldTextElement))*  // may start and end with spaces
 
-DoubleQuoteBoldTextElement <- !Newline element:(SingleQuoteBoldText 
+DoubleQuoteBoldTextElement <- !Newline element:(SimpleWord 
+        / SingleQuoteBoldText 
         / ItalicText 
         / MonospaceText
         / SubscriptText
@@ -889,7 +906,9 @@ DoubleQuoteBoldTextElement <- !Newline element:(SingleQuoteBoldText
         / Passthrough 
         / DocumentAttributeSubstitution
         / NonDoubleQuoteBoldText
-        / Parenthesis) { // word with quote punctuation is only accepted if nothing matched before, so we have a chance to stop
+        / Parenthesis
+        / AnyChars
+        / AnyChar ) { // word with quote punctuation is only accepted if nothing matched before, so we have a chance to stop
     return element, nil
 }
 
@@ -905,7 +924,8 @@ SingleQuoteBoldText <- !`\` "*" !"*" elements:(SingleQuoteBoldTextElements) "*" 
 
 SingleQuoteBoldTextElements <- !WS SingleQuoteBoldTextElement (!("*" !Alphanum) WS* SingleQuoteBoldTextElement)* 
 
-SingleQuoteBoldTextElement <- !Newline element:(DoubleQuoteBoldText
+SingleQuoteBoldTextElement <- !Newline element:(SimpleWord 
+        / DoubleQuoteBoldText
         / ItalicText 
         / MonospaceText
         / SubscriptText
@@ -915,7 +935,9 @@ SingleQuoteBoldTextElement <- !Newline element:(DoubleQuoteBoldText
         / Passthrough 
         / DocumentAttributeSubstitution
         / NonSingleQuoteBoldText
-        / Parenthesis) { // word with quote punctuation is only accepted if nothing matched before, so we have a chance to stop
+        / Parenthesis
+        / AnyChars
+        / AnyChar ) { // word with quote punctuation is only accepted if nothing matched before, so we have a chance to stop
     return element, nil
 }
 
@@ -945,7 +967,8 @@ DoubleQuoteItalicText <- !`\\` "__" elements:(DoubleQuoteItalicTextElements) "__
 
 DoubleQuoteItalicTextElements <- DoubleQuoteItalicTextElement (!("__") (WS / DoubleQuoteItalicTextElement))*  // may start and end with spaces
 
-DoubleQuoteItalicTextElement <- !Newline element:(SingleQuoteItalicText 
+DoubleQuoteItalicTextElement <- !Newline element:(SimpleWord 
+        / SingleQuoteItalicText 
         / BoldText 
         / MonospaceText
         / SubscriptText
@@ -954,7 +977,9 @@ DoubleQuoteItalicTextElement <- !Newline element:(SingleQuoteItalicText
         / QuotedLink 
         / Passthrough 
         / NonDoubleQuoteItalicText
-        / Parenthesis) { // word with quote punctuation is only accepted if nothing matched before, so we have a chance to stop
+        / Parenthesis
+        / AnyChars
+        / AnyChar ) { // word with quote punctuation is only accepted if nothing matched before, so we have a chance to stop
     return element, nil
 }
 
@@ -970,7 +995,8 @@ SingleQuoteItalicText <- !`\` "_" !"_" elements:(SingleQuoteItalicTextElements) 
 
 SingleQuoteItalicTextElements <- !WS SingleQuoteItalicTextElement (!("_" !Alphanum) WS* SingleQuoteItalicTextElement)*
 
-SingleQuoteItalicTextElement <- !Newline element:(DoubleQuoteItalicText
+SingleQuoteItalicTextElement <- !Newline element:(SimpleWord 
+        / DoubleQuoteItalicText
         / BoldText 
         / MonospaceText
         / SubscriptText
@@ -979,7 +1005,9 @@ SingleQuoteItalicTextElement <- !Newline element:(DoubleQuoteItalicText
         / QuotedLink 
         / Passthrough 
         / NonSingleQuoteItalicText
-        / Parenthesis) { // word with quote punctuation is only accepted if nothing matched before, so we have a chance to stop
+        / Parenthesis
+        / AnyChars
+        / AnyChar ) { // word with quote punctuation is only accepted if nothing matched before, so we have a chance to stop
     return element, nil
 }
 
@@ -1008,7 +1036,8 @@ DoubleQuoteMonospaceText <- !`\\` "``" elements:(DoubleQuoteMonospaceTextElement
 
 DoubleQuoteMonospaceTextElements <- DoubleQuoteMonospaceTextElement (!("``") (WS / DoubleQuoteMonospaceTextElement))* // may start and end with spaces
 
-DoubleQuoteMonospaceTextElement <- !Newline element:(SingleQuoteMonospaceText 
+DoubleQuoteMonospaceTextElement <- !Newline element:(SimpleWord 
+        / SingleQuoteMonospaceText 
         / BoldText
         / ItalicText 
         / SubscriptText
@@ -1017,7 +1046,9 @@ DoubleQuoteMonospaceTextElement <- !Newline element:(SingleQuoteMonospaceText
         / QuotedLink 
         / Passthrough 
         / NonDoubleQuoteMonospaceText
-        / Parenthesis) { // word with quote punctuation is only accepted if nothing matched before, so we have a chance to stop
+        / Parenthesis
+        / AnyChars
+        / AnyChar ) { // word with quote punctuation is only accepted if nothing matched before, so we have a chance to stop
     return element, nil
 }
 
@@ -1033,9 +1064,10 @@ SingleQuoteMonospaceText <- !`\` !"``" "`" elements:(SingleQuoteMonospaceTextEle
 
 SingleQuoteMonospaceTextElements <- !WS SingleQuoteMonospaceTextElement (!("`" !Alphanum) WS* SingleQuoteMonospaceTextElement)*
 
-SingleQuoteMonospaceTextElement <-  element:(Newline // allows multiline
+SingleQuoteMonospaceTextElement <-  element:(SimpleWord 
+        / Newline // allows multiline
         / DoubleQuoteMonospaceText 
-        / BoldText 
+        / BoldText
         / ItalicText
         / SubscriptText
         / SuperscriptText
@@ -1043,7 +1075,9 @@ SingleQuoteMonospaceTextElement <-  element:(Newline // allows multiline
         / QuotedLink 
         / Passthrough 
         / NonSingleQuoteMonospaceText
-        / Parenthesis) { // word with quote punctuation is only accepted if nothing matched before, so we have a chance to stop
+        / Parenthesis
+        / AnyChars
+        / AnyChar ) { // word with quote punctuation is only accepted if nothing matched before, so we have a chance to stop
     return element, nil
 }
 
@@ -1163,50 +1197,38 @@ ExternalLink <- url:(Location) inlineAttributes:(LinkAttributes)? {
 
 LinkAttributes <- TextOnlyLinkAttributes / TextAndMoreLinkAttributes
 
-TextOnlyLinkAttributes <- "[" text:(LinkTextWithCommaAttribute)? "]" {
-    return types.NewInlineLinkAttributes(text, nil)
-} 
-
-LinkTextWithCommaAttribute <- 
+TextOnlyLinkAttributes <- "[" text:(
     // surrounded with double quotes
-    "\"" elements:(!"=" !"]" !"\"" (QuotedText / SimpleWord / Spaces / ((!WS .) {
-        return types.NewStringElement(string(c.text))
-    })))+ "\"" Spaces* &(!"=") {
+    "\"" elements:(!"\"" !"]" (SimpleWord / Spaces / QuotedText / AnyChar))+ "\"" Spaces* &(!"=") {
         return types.NewInlineElements(elements.([]interface{}))
     } /
     // not surrounded with double quotes
-    elements:(!"=" !"]" (QuotedText / SimpleWord / Spaces / ((!WS .) {
-        return types.NewStringElement(string(c.text))
-    })))+ &(!"=") {
+    elements:(!"=" !"]" (SimpleWord / Spaces / QuotedText / AnyChar))+ &(!"=") {
         return types.NewInlineElements(elements.([]interface{}))
-    }
+    })? "]" {
+        return types.NewInlineLinkAttributes(text, nil)
+} 
 
-
-TextAndMoreLinkAttributes <- "[" text:(LinkTextAttribute)? ","? WS* otherattrs:(GenericAttribute)* "]" {
+TextAndMoreLinkAttributes <- "[" text:(
+    // surrounded with double quotes
+    "\"" elements:(!"\"" !"]" (SimpleWord / Spaces / QuotedText / AnyChar))+ "\"" &(!"=") {
+        return types.NewInlineElements(elements.([]interface{}))
+    } /
+    // not surrounded with double quotes
+    elements:(!"," !"=" !"]" !"\"" (SimpleWord / Spaces / QuotedText / AnyChar))+ &(!"=") {
+        return types.NewInlineElements(elements.([]interface{}))
+    })? ","? WS* otherattrs:(GenericAttribute)* "]" {
     return types.NewInlineLinkAttributes(text, otherattrs.([]interface{}))
 } 
-
-LinkTextAttribute <- 
-    // surrounded with double quotes
-    "\"" elements:(!"=" !"]" !"\"" (QuotedText / SimpleWord / Spaces / ((!QuotedTextPrefix .) {
-        return types.NewStringElement(string(c.text))
-    })))+ "\"" Spaces* &(!"=") {
-        return types.NewInlineElements(elements.([]interface{}))
-    } /
-    // not surrounded with double quotes
-    elements:(!"=" !"," !"]" (QuotedText / SimpleWord / Spaces / ((!QuotedTextPrefix .) {
-        return types.NewStringElement(string(c.text))
-    })))+ &(!"=") {
-        return types.NewInlineElements(elements.([]interface{}))
-    }
 
 // rule used after document attribute substitution, to discover links 
 InlineLinks <- 
     elements:(SimpleWord
         / Spaces 
         / ResolvedLink 
-        / OtherWord
         / Parenthesis
+        / AnyChars
+        / AnyChar
         / Newline)+ EOF {
     return types.NewInlineElements(elements.([]interface{}))
 }
@@ -1420,8 +1442,9 @@ VerseBlockParagraphLineElement <- !EOL !LineBreak
         / InlineUserMacro 
         / DocumentAttributeSubstitution 
         / InlineElementID 
-        / OtherWord
-        / Parenthesis) {
+        / Parenthesis
+        / AnyChars
+        / AnyChar ) {
     return element, nil
 }
 
@@ -1616,16 +1639,35 @@ Alphanums <- [\pL0-9]+ {
 
 Dot <- "."
 
-SimpleWord <- Alphanums &(WS / EOL) { // very straightforward content: alphanums followed by spaces but not the "+" signs because it needs a heading space to become a LineBreak element
+SimpleWord <- Alphanums &(WS / "," / "]" / EOL) { // very straightforward content: alphanums followed by spaces but not the "+" signs because it needs a heading space to become a LineBreak element
     return types.NewStringElement(string(c.text))
 }
 
-// a word may end with a dot, but cannot have dots within
-OtherWord <- (Alphanums / QuotedTextPrefix / ((!Newline !WS !Dot !QuotedTextPrefix !LabeledListItemSeparator !Parenthesis .) Dot? { // TODO: remove check on parenthesis and dot?
+// a word may end with a dot, but cannot have dots within // TODO: remove check on parenthesis and dot?
+OtherWord <- (Alphanums / !Newline !WS !Dot !UnconstrainedQuotedTextPrefix !LabeledListItemSeparator !Parenthesis .)+ Dot? { 
     return types.NewStringElement(string(c.text))
-})+ / "."+){ // word cannot contain parenthesis. Dots and ellipsis are treated as independent words (but will be combined afterwards)
+} / "."+ { // word cannot contain parenthesis. Dots and ellipsis are treated as independent words (but will be combined afterwards)
     return types.NewStringElement(string(c.text))
 }
+
+AnyChars <- (
+    // prevent cases where a letter, number, colon, semi-colon or closing curly bracket directly before the prefix the formatting marks
+    (!(Alphanum / "," / ";" / "}") ConstrainedQuotedTextPrefix) {
+        return string(c.text), nil
+    }
+    // allow alphanums directly followed by a non excluded character
+    / ((Alphanums (!Newline !WS !Parenthesis !UnconstrainedQuotedTextPrefix !LabeledListItemSeparator !Dot !":" .)?) {
+        return string(c.text), nil
+    })
+    )+ / Dot { 
+      
+    return types.NewStringElement(string(c.text))
+}
+
+// this is a fall-back rule in case all preceeding rules failed to match the current content.
+AnyChar <- !EOF . { // this is a fall-back rule in case all preceeding rules failed to match the current content.
+    return types.NewStringElement(string(c.text))
+} 
 
 Spaces <- WS+ 
 
