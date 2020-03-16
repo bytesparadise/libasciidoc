@@ -17,7 +17,7 @@ jobs:
     strategy:
       matrix:
         go-version: [1.14.x]
-        platform: [ubuntu-latest, macos-latest, windows-latest]
+        platform: [ubuntu-latest, macos-latest]
     name: Building on ${{ matrix.platform }} with Go ${{ matrix.go-version }}
     
     steps:
@@ -39,18 +39,12 @@ jobs:
         export PATH=$PATH:$(go env GOPATH)/bin
         make build
       
-    - name: Build on Windows
-      if: runner.os == 'Windows'
-      run: |
-        set PATH=%PATH%;$(go env GOPATH)\bin
-        make build
-
   test:
     runs-on: ${{ matrix.platform }}
     strategy:
       matrix:
         go-version: [1.13.x, 1.14.x]
-        platform: [ubuntu-latest, macos-latest, windows-latest]
+        platform: [ubuntu-latest, macos-latest]
     name: Testing on ${{ matrix.platform }} with Go ${{ matrix.go-version }}
     
     steps:
@@ -61,13 +55,7 @@ jobs:
     
     - name: Checkout code
       uses: actions/checkout@v2
-  
-    - name: Extra setup for Windows
-      if: runner.os == 'Windows'
-      run: |
-        git config --global core.autocrlf true
-        choco install make
-    
+      
     - name: Install Tools
       run: 
         make install-devtools
@@ -77,9 +65,3 @@ jobs:
       run: |
         export PATH=$PATH:$(go env GOPATH)/bin
         make test-with-coverage
-
-    - name: Test on Windows
-      if: runner.os == 'Windows'
-      run: |
-        set PATH=%PATH%;$(go env GOPATH)\bin
-        make test
