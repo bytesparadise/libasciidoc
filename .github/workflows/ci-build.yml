@@ -18,7 +18,7 @@ jobs:
       matrix:
         go-version: [1.13.x, 1.14.x]
         platform: [ubuntu-latest, macos-latest]
-    name: Testing on ${{ matrix.platform }} with Go ${{ matrix.go-version }}
+    name: ${{ matrix.platform }} with Go ${{ matrix.go-version }}
     
     steps:
     - name: Install Go
