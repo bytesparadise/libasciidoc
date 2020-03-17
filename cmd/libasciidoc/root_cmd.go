@@ -65,6 +65,7 @@ func NewRootCmd() *cobra.Command {
 			return nil
 		},
 	}
+	rootCmd.SilenceUsage = true
 	flags := rootCmd.Flags()
 	flags.BoolVarP(&noHeaderFooter, "no-header-footer", "s", false, "do not render header/footer (default: false)")
 	flags.StringVarP(&outputName, "out-file", "o", "", "output file (default: based on path of input file); use - to output to STDOUT")

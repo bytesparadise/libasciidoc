@@ -70,7 +70,7 @@ elements:
 }
 
 // AllMatchers all the matchers needed to remove the unneeded blocks/elements from the final document
-var allMatchers = []filterMatcher{blankLineMatcher, emptyPreambleMatcher, documentAttributeMatcher, singleLineCommentMatcher, commentBlockMatcher, concealedIndexTermMatcher}
+var allMatchers = []filterMatcher{emptyPreambleMatcher, documentAttributeMatcher, singleLineCommentMatcher, commentBlockMatcher}
 
 // filterMatcher returns true if the given element is to be filtered out
 type filterMatcher func(element interface{}) bool
@@ -83,12 +83,6 @@ var emptyPreambleMatcher filterMatcher = func(element interface{}) bool {
 	}
 	// log.Debugf(" element of type '%T' is an empty preamble: %t", element, result)
 	return result
-}
-
-// blankLineMatcher filters the element if it is a blank line
-var blankLineMatcher filterMatcher = func(element interface{}) bool {
-	_, ok := element.(types.BlankLine)
-	return ok
 }
 
 // documentAttributeMatcher filters the element if it is a DocumentAttributeDeclaration,
@@ -116,10 +110,4 @@ var commentBlockMatcher filterMatcher = func(element interface{}) bool {
 	default:
 		return false
 	}
-}
-
-// concealedIndexTermMatcher filters the element if it is a ConcealedIndexTerm
-var concealedIndexTermMatcher filterMatcher = func(element interface{}) bool {
-	_, ok := element.(types.ConcealedIndexTerm)
-	return ok
 }
