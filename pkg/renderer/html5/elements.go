@@ -126,6 +126,8 @@ func renderElement(ctx renderer.Context, element interface{}) ([]byte, error) {
 		return renderUserMacro(ctx, e)
 	case types.IndexTerm:
 		return renderIndexTerm(ctx, e)
+	case types.ConcealedIndexTerm:
+		return renderConcealedIndexTerm(ctx, e)
 	default:
 		return nil, errors.Errorf("unsupported type of element: %T", element)
 	}

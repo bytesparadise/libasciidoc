@@ -227,6 +227,11 @@ a paragraph with an index term.`
 								types.StringElement{
 									Content: "a paragraph with an index term ",
 								},
+								types.ConcealedIndexTerm{
+									Term1: "index",
+									Term2: "term",
+									Term3: "here",
+								},
 								types.StringElement{
 									Content: ".",
 								},
@@ -250,6 +255,12 @@ a paragraph with an index term.`
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
 						Lines: [][]interface{}{
+							{
+								types.ConcealedIndexTerm{
+									Term1: "index",
+									Term2: "term",
+								},
+							},
 							{
 								types.StringElement{
 									Content: "a paragraph with an index term.",

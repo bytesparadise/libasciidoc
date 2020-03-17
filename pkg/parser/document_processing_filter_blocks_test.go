@@ -9,29 +9,6 @@ import (
 
 var _ = Describe("block filters", func() {
 
-	It("should remove blank line", func() {
-		actual := []interface{}{
-			types.BlankLine{},
-			types.Paragraph{
-				Lines: [][]interface{}{
-					{
-						types.StringElement{},
-					},
-				},
-			},
-		}
-		expected := []interface{}{
-			types.Paragraph{
-				Lines: [][]interface{}{
-					{
-						types.StringElement{},
-					},
-				},
-			},
-		}
-		Expect(filter(actual, allMatchers...)).To(Equal(expected))
-	})
-
 	It("should retain blank line in a delimited block", func() {
 		actual := []interface{}{
 			types.DelimitedBlock{
