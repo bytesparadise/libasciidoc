@@ -77,5 +77,3 @@ var _ = DescribeTable("document attribute overrides with default",
 	Entry("!bar", "bar", "default"), // entry is reset, default is returned
 	Entry("baz", "baz", ""),         // entry exists but its value is empty
 )
-
-//

@@ -247,6 +247,67 @@ a paragraph with _italic content_`
 </div>`
 			Expect(RenderHTML5Body(source, configuration.WithFilename("tmp/foo.adoc"))).To(Equal(expectedContent))
 		})
+
+		It("document with custom icon attributes", func() {
+			// given
+			attrs := map[string]string{
+				"icons":              "font",
+				"source-highlighter": "pygments",
+			}
+			source := `[source]
+----
+foo
+----
+
+NOTE: a note`
+			expected := `<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code>foo</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+a note
+</td>
+</tr>
+</table>
+</div>`
+			Expect(RenderHTML5Body(source, configuration.WithAttributes(attrs))).To(Equal(expected))
+		})
+
+		It("document without custom icon attributes", func() {
+			// given
+			attrs := map[string]string{}
+			source := `[source]
+----
+foo
+----
+
+NOTE: a note`
+			expected := `<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>foo</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+a note
+</td>
+</tr>
+</table>
+</div>`
+			Expect(RenderHTML5Body(source, configuration.WithAttributes(attrs))).To(Equal(expected))
+		})
 	})
 
 	Context("complete Document ", func() {

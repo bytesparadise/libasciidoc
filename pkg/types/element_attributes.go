@@ -16,24 +16,14 @@ import (
 const (
 	// AttrID the key to retrieve the ID
 	AttrID string = "id"
-	// AttrAuthor the key to retrieve the author in the attributes
-	AttrAuthor string = "author"
 	// AttrCustomID the key to retrieve the flag that indicates if the element ID is custom or generated
 	AttrCustomID string = "customID"
-	// AttrIDPrefix the key to retrieve the ID Prefix
-	AttrIDPrefix string = "idprefix"
-	// DefaultIDPrefix the default ID Prefix
-	DefaultIDPrefix string = "_"
 	// AttrTitle the key to retrieve the title
 	AttrTitle string = "title"
 	// AttrAuthors the key to the authors declared after the section level 0 (at the beginning of the doc)
 	AttrAuthors string = "authors"
 	// AttrRevision the key to the revision declared after the section level 0 (at the beginning of the doc)
 	AttrRevision string = "revision"
-	// AttrTableOfContents the `toc` attribute at document level
-	AttrTableOfContents string = "toc"
-	// AttrTableOfContentsLevels the document attribute which specifies the number of levels to display in the ToC
-	AttrTableOfContentsLevels string = "toclevels"
 	// AttrRole the key to retrieve the role
 	AttrRole string = "role"
 	// AttrInlineLink the key to retrieve the link

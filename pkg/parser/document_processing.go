@@ -17,8 +17,6 @@ func ParseDocument(r io.Reader, config configuration.Configuration) (types.Docum
 		Content:   types.DocumentAttributes{},
 		Overrides: config.AttributeOverrides,
 	}
-	// add all predefined attributes
-	attrs.AddAll(Predefined)
 	// also, add all front-matter key/values
 	attrs.AddAll(draftDoc.FrontMatter.Content)
 	// also, add all DocumentAttributeDeclaration at the top of the document
@@ -48,6 +46,6 @@ func ParseDocument(r io.Reader, config configuration.Configuration) (types.Docum
 		doc.Attributes[k] = v
 	}
 	// and add all remaining attributes, too
-	doc.Attributes.AddAll(draftDoc.DocumentAttributes())
+	doc.Attributes.AddAll(attrs.All())
 	return doc, nil
 }
