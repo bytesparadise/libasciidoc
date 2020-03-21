@@ -1,15 +1,14 @@
-package parser_test
+package types_test
 
 import (
-	"github.com/bytesparadise/libasciidoc/pkg/parser"
-
+	"github.com/bytesparadise/libasciidoc/pkg/types"
 	. "github.com/onsi/ginkgo/extensions/table"
 	. "github.com/onsi/gomega"
 )
 
 var _ = DescribeTable("predefined attributes",
 	func(code, rendered string) {
-		Expect(parser.Predefined[code]).To(Equal(rendered))
+		Expect(types.Predefined[code]).To(Equal(rendered))
 	},
 	Entry("sp", "sp", " "),
 	Entry("blank", "blank", ""),

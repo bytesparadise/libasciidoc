@@ -12,11 +12,8 @@ import (
 )
 
 // RenderHTML5Body renders the HTML body using the given source
-func RenderHTML5Body(actual string, options ...configuration.Setting) (string, error) {
-	config := configuration.NewConfiguration()
-	for _, set := range options {
-		set(&config)
-	}
+func RenderHTML5Body(actual string, settings ...configuration.Setting) (string, error) {
+	config := configuration.NewConfiguration(settings...)
 	contentReader := strings.NewReader(actual)
 	resultWriter := bytes.NewBuffer(nil)
 	_, err := libasciidoc.ConvertToHTML(contentReader, resultWriter, config)

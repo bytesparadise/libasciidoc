@@ -9,7 +9,7 @@ import (
 )
 
 // ParseDocument parses the actual value into a Document
-func ParseDocument(actual string) (types.Document, error) {
+func ParseDocument(actual string, settings ...configuration.Setting) (types.Document, error) {
 	r := strings.NewReader(actual)
-	return parser.ParseDocument(r, configuration.NewConfiguration()) //, parser.Debug(true))
+	return parser.ParseDocument(r, configuration.NewConfiguration(settings...))
 }

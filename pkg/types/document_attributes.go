@@ -3,6 +3,25 @@ package types
 // DocumentAttributes the document attributes
 type DocumentAttributes map[string]interface{}
 
+const (
+	// AttrSyntaxHighlighter the attribute to define the syntax highlighter on code source blocks
+	AttrSyntaxHighlighter string = "source-highlighter"
+	// AttrAuthor the key to retrieve the author in the attributes
+	AttrAuthor string = "author"
+	// AttrIDPrefix the key to retrieve the ID Prefix
+	AttrIDPrefix string = "idprefix"
+	// DefaultIDPrefix the default ID Prefix
+	DefaultIDPrefix string = "_"
+	// AttrTableOfContents the `toc` attribute at document level
+	AttrTableOfContents string = "toc"
+	// AttrTableOfContentsLevels the document attribute which specifies the number of levels to display in the ToC
+	AttrTableOfContentsLevels string = "toclevels"
+	// AttrNoHeader attribute to disable the rendering of document footer
+	AttrNoHeader string = "noheader"
+	// AttrNoFooter attribute to disable the rendering of document footer
+	AttrNoFooter string = "nofooter"
+)
+
 // Has returns the true if an entry with the given key exists
 func (a DocumentAttributes) Has(key string) bool {
 	_, ok := a[key]
@@ -45,8 +64,13 @@ func (a DocumentAttributes) Delete(attr DocumentAttributeReset) {
 
 // GetAsString gets the string value for the given key (+ `true`),
 // or empty string (+ `false`) if none was found
+// TODO: raise a warning if there was no entry found
 func (a DocumentAttributes) GetAsString(key string) (string, bool) {
-	// TODO: raise a warning if there was no entry found
+	// check in predefined attributes
+	if value, found := Predefined[key]; found {
+		return value, true
+	}
+
 	if value, found := a[key]; found {
 		if value, ok := value.(string); ok {
 			return value, true
@@ -57,8 +81,12 @@ func (a DocumentAttributes) GetAsString(key string) (string, bool) {
 
 // GetAsStringWithDefault gets the string value for the given key,
 // or returns the given default value
+// TODO: raise a warning if there was no entry found
 func (a DocumentAttributes) GetAsStringWithDefault(key, defaultValue string) string {
-	// TODO: raise a warning if there was no entry found
+	// check in predefined attributes
+	if value, found := Predefined[key]; found {
+		return value
+	}
 	if value, found := a[key]; found {
 		if value, ok := value.(string); ok {
 			return value
@@ -71,6 +99,18 @@ func (a DocumentAttributes) GetAsStringWithDefault(key, defaultValue string) str
 type DocumentAttributesWithOverrides struct {
 	Content   map[string]interface{}
 	Overrides map[string]string
+}
+
+// All returns all attributes
+func (a DocumentAttributesWithOverrides) All() DocumentAttributes {
+	result := DocumentAttributes{}
+	for k, v := range a.Content {
+		result[k] = v
+	}
+	for k, v := range a.Overrides {
+		result[k] = v
+	}
+	return result
 }
 
 // Add add the given attribute
@@ -97,6 +137,10 @@ func (a DocumentAttributesWithOverrides) GetAsString(key string) (string, bool) 
 	if value, found := a.Overrides[key]; found {
 		return value, true
 	}
+	// check in predefined attributes
+	if value, found := Predefined[key]; found {
+		return value, true
+	}
 	// if value is reset
 	if _, found := a.Overrides["!"+key]; found {
 		return "", false
@@ -112,6 +156,10 @@ func (a DocumentAttributesWithOverrides) GetAsString(key string) (string, bool) 
 // or returns the given default value
 func (a DocumentAttributesWithOverrides) GetAsStringWithDefault(key, defaultValue string) string {
 	if value, found := a.Overrides[key]; found {
+		return value
+	}
+	// check in predefined attributes
+	if value, found := Predefined[key]; found {
 		return value
 	}
 	if value, found := a.Content[key].(string); found {

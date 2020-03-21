@@ -347,7 +347,9 @@ with some content linked to <<thetitle,a label to the title>>!`
 
 some content linked to xref:{foo}[another_doc()]!`
 			expected := types.Document{
-				Attributes:         types.DocumentAttributes{},
+				Attributes: types.DocumentAttributes{
+					"foo": "another-doc.adoc",
+				},
 				ElementReferences:  types.ElementReferences{},
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
