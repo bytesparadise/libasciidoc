@@ -236,7 +236,7 @@ func renderSourceBlock(ctx renderer.Context, b types.DelimitedBlock) ([]byte, er
 	language := b.Attributes.GetAsString(types.AttrLanguage)
 
 	hightligher, _ := ctx.Document.Attributes.GetAsString("source-highlighter")
-	if hightligher == "pygments" {
+	if language != "" && hightligher == "pygments" {
 		// using github.com/alecthomas/chroma to highlight the content
 		contentBuf = bytes.NewBuffer(nil)
 		lexer := lexers.Get(language)
