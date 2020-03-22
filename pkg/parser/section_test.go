@@ -1557,7 +1557,7 @@ a paragraph`
 			}
 			expected := types.Document{
 				Attributes: types.DocumentAttributes{
-					types.AttrIDPrefix: "custom1a_",
+					types.AttrIDPrefix: "custom1b_", // overriden by second occurrence of attribute declaration
 				},
 				ElementReferences: types.ElementReferences{
 					"custom1a_a_header":   doctitle,
@@ -1617,7 +1617,9 @@ a paragraph`
 				types.StringElement{Content: "section 1b"},
 			}
 			expected := types.Document{
-				Attributes: types.DocumentAttributes{},
+				Attributes: types.DocumentAttributes{
+					"idprefix": "custom1b_", // overridden by second attribute declaration
+				},
 				ElementReferences: types.ElementReferences{
 					"_a_header":           doctitle,
 					"custom1a_section_1a": section1aTitle,

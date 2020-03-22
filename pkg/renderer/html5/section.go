@@ -39,7 +39,7 @@ func init() {
 		texttemplate.FuncMap{
 			"renderElements": renderElements,
 		})
-	otherSectionContentTmpl = newTextTemplate("other section",
+	otherSectionContentTmpl = newTextTemplate("section 2-6",
 		`{{ $ctx := .Context }}{{ with .Data }}<div class="{{ .Class }}">
 {{ .SectionTitle }}{{ $elements := renderElements $ctx .Elements | printf "%s" }}{{ if $elements }}
 {{ $elements }}{{ end }}
@@ -47,7 +47,7 @@ func init() {
 		texttemplate.FuncMap{
 			"renderElements": renderElements,
 		})
-	sectionHeaderTmpl = newTextTemplate("other sectionTitle",
+	sectionHeaderTmpl = newTextTemplate("section 2-6 title",
 		`<h{{ .Level }} id="{{ .ID }}">{{ .Content }}</h{{ .Level }}>`)
 }
 

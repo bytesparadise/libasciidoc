@@ -716,7 +716,9 @@ Test 2: link:/test/a%20b[with encoded space]`
 a link to {scheme}:{path}[] and https://foo.baz`
 
 				expected := types.Document{
-					Attributes:         types.DocumentAttributes{},
+					Attributes: types.DocumentAttributes{
+						"scheme": "link",
+					},
 					ElementReferences:  types.ElementReferences{},
 					Footnotes:          types.Footnotes{},
 					FootnoteReferences: types.FootnoteReferences{},
@@ -1189,7 +1191,9 @@ a link to *{scheme}://{path}[] and https://foo.baz[]*`
 a link to {url}`
 
 				expected := types.Document{
-					Attributes:         types.DocumentAttributes{},
+					Attributes: types.DocumentAttributes{
+						"url": "https://foo2.bar", // overriden by second declaration
+					},
 					ElementReferences:  types.ElementReferences{},
 					Footnotes:          types.Footnotes{},
 					FootnoteReferences: types.FootnoteReferences{},
@@ -1225,7 +1229,10 @@ a link to {url}`
 a link to {scheme}://{path} and https://foo.baz`
 
 				expected := types.Document{
-					Attributes:         types.DocumentAttributes{},
+					Attributes: types.DocumentAttributes{
+						"scheme": "https",
+						"path":   "foo.bar",
+					},
 					ElementReferences:  types.ElementReferences{},
 					Footnotes:          types.Footnotes{},
 					FootnoteReferences: types.FootnoteReferences{},
@@ -1272,7 +1279,10 @@ a link to {scheme}://{path} and https://foo.baz`
 a link to *{scheme}://{path}[] and https://foo.baz[]*`
 
 				expected := types.Document{
-					Attributes:         types.DocumentAttributes{},
+					Attributes: types.DocumentAttributes{
+						"scheme": "https",
+						"path":   "foo.bar",
+					},
 					ElementReferences:  types.ElementReferences{},
 					Footnotes:          types.Footnotes{},
 					FootnoteReferences: types.FootnoteReferences{},
@@ -1326,7 +1336,9 @@ a link to *{scheme}://{path}[] and https://foo.baz[]*`
 a link to {scheme}://{path} and https://foo.baz`
 
 				expected := types.Document{
-					Attributes:         types.DocumentAttributes{},
+					Attributes: types.DocumentAttributes{
+						"scheme": "https",
+					},
 					ElementReferences:  types.ElementReferences{},
 					Footnotes:          types.Footnotes{},
 					FootnoteReferences: types.FootnoteReferences{},

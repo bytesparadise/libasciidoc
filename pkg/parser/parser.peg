@@ -1605,7 +1605,9 @@ IndexTerm <- "((" term:(IndexTermContent) "))" {
        return types.NewIndexTerm(term.([]interface{}))
 }
 
-IndexTermContent <- elements:(QuotedText / WS / Alphanum)+ {
+IndexTermContent <- elements:(SimpleWord / QuotedText / WS / AnyChars / (!"))" .)+ {
+    return string(c.text), nil
+})+ {
     return types.NewInlineElements(elements.([]interface{}))
 }
 

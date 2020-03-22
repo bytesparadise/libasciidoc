@@ -10,30 +10,30 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-type renderLinesConfig struct {
+type linesRenderer struct {
 	render renderFunc
 }
 
-type renderLinesOption func(config *renderLinesConfig)
+type renderLinesOption func(config *linesRenderer)
 
 func verbatim() renderLinesOption {
-	return func(config *renderLinesConfig) {
+	return func(config *linesRenderer) {
 		config.render = renderPlainText
 	}
 }
 
 func renderInlineElements(ctx renderer.Context, elements []interface{}, options ...renderLinesOption) ([]byte, error) {
 	log.Debugf("rendering line with %d element(s)...", len(elements))
-	linesRenderer := renderLinesConfig{
+	r := linesRenderer{
 		render: renderElement,
 	}
 	for _, apply := range options {
-		apply(&linesRenderer)
+		apply(&r)
 	}
 	// first pass or rendering, using the provided `renderElementFunc`:
 	buf := bytes.NewBuffer(nil)
 	for i, element := range elements {
-		renderedElement, err := linesRenderer.render(ctx, element)
+		renderedElement, err := r.render(ctx, element)
 		if err != nil {
 			return nil, errors.Wrapf(err, "unable to render line")
 		}

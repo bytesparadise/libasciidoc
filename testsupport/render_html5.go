@@ -8,23 +8,21 @@ import (
 	"github.com/bytesparadise/libasciidoc"
 	"github.com/bytesparadise/libasciidoc/pkg/configuration"
 	"github.com/pkg/errors"
+	log "github.com/sirupsen/logrus"
 )
 
 // RenderHTML5Body renders the HTML body using the given source
-func RenderHTML5Body(actual string, options ...configuration.Setting) (string, error) {
-	config := configuration.NewConfiguration()
-	for _, set := range options {
-		set(&config)
-	}
+func RenderHTML5Body(actual string, settings ...configuration.Setting) (string, error) {
+	config := configuration.NewConfiguration(settings...)
 	contentReader := strings.NewReader(actual)
 	resultWriter := bytes.NewBuffer(nil)
 	_, err := libasciidoc.ConvertToHTML(contentReader, resultWriter, config)
 	if err != nil {
 		return "", err
 	}
-	// if strings.Contains(m.expected, "{{.LastUpdated}}") {
-	// 	m.expected = strings.Replace(m.expected, "{{.LastUpdated}}", metadata.LastUpdated, 1)
-	// }
+	if log.IsLevelEnabled(log.DebugLevel) {
+		log.Debug(resultWriter.String())
+	}
 	return resultWriter.String(), nil
 }
 

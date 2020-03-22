@@ -13,7 +13,7 @@ var _ = Describe("index terms", func() {
 	Context("draft document", func() {
 
 		It("index term in existing paragraph line", func() {
-			source := `a paragraph with an ((index term)).`
+			source := `a paragraph with an ((index_term_here)).`
 			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.Paragraph{
@@ -26,7 +26,7 @@ var _ = Describe("index terms", func() {
 								types.IndexTerm{
 									Term: []interface{}{
 										types.StringElement{
-											Content: "index term",
+											Content: "index_term_here",
 										},
 									},
 								},
@@ -41,7 +41,7 @@ var _ = Describe("index terms", func() {
 			Expect(ParseDraftDocument(source)).To(Equal(expected))
 		})
 
-		It("index term in single paragraph line", func() {
+		It("index term in separate paragraph line", func() {
 			source := `((_italic term_))
 a paragraph with an index term.`
 			expected := types.DraftDocument{
@@ -111,7 +111,7 @@ a paragraph with an index term.`
 		})
 
 		It("index term in single paragraph line", func() {
-			source := `((_italic_))
+			source := `((foo_bar_baz _italic_))
 a paragraph with an index term.`
 			expected := types.Document{
 				Attributes:         types.DocumentAttributes{},
@@ -125,6 +125,9 @@ a paragraph with an index term.`
 							{
 								types.IndexTerm{
 									Term: []interface{}{
+										types.StringElement{
+											Content: "foo_bar_baz ",
+										},
 										types.QuotedText{
 											Kind: types.Italic,
 											Elements: []interface{}{
@@ -180,7 +183,7 @@ var _ = Describe("concealed index terms", func() {
 			Expect(ParseDraftDocument(source)).To(Equal(expected))
 		})
 
-		It("concealed index term in single paragraph line", func() {
+		It("concealed index term in separate paragraph line", func() {
 			source := `(((index, term)))
 a paragraph with an index term.`
 			expected := types.DraftDocument{
@@ -224,6 +227,11 @@ a paragraph with an index term.`
 								types.StringElement{
 									Content: "a paragraph with an index term ",
 								},
+								types.ConcealedIndexTerm{
+									Term1: "index",
+									Term2: "term",
+									Term3: "here",
+								},
 								types.StringElement{
 									Content: ".",
 								},
@@ -247,6 +255,12 @@ a paragraph with an index term.`
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
 						Lines: [][]interface{}{
+							{
+								types.ConcealedIndexTerm{
+									Term1: "index",
+									Term2: "term",
+								},
+							},
 							{
 								types.StringElement{
 									Content: "a paragraph with an index term.",

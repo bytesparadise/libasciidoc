@@ -6,8 +6,10 @@ import (
 	"time"
 
 	"github.com/bytesparadise/libasciidoc/pkg/configuration"
+	. "github.com/onsi/ginkgo"
 	gomegatypes "github.com/onsi/gomega/types"
 	"github.com/pkg/errors"
+	"github.com/sergi/go-diff/diffmatchpatch"
 )
 
 // --------------------
@@ -36,7 +38,13 @@ func (m *html5TemplateMatcher) Match(actual interface{}) (success bool, err erro
 		return false, errors.Errorf("MatchHTML5Template matcher expects a string (actual: %T)", actual)
 	}
 	m.expected = strings.Replace(m.expected, "{{.LastUpdated}}", m.lastUpdated.Format(configuration.LastUpdatedFormat), 1)
-	return m.expected == m.actual, nil
+	if m.expected != m.actual {
+		dmp := diffmatchpatch.New()
+		diffs := dmp.DiffMain(m.actual, m.expected, true)
+		GinkgoT().Logf("diff:\n%s", dmp.DiffPrettyText(diffs))
+		return false, nil
+	}
+	return true, nil
 }
 
 func (m *html5TemplateMatcher) FailureMessage(_ interface{}) (message string) {

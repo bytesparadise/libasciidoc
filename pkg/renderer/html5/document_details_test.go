@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/bytesparadise/libasciidoc/pkg/configuration"
+	"github.com/bytesparadise/libasciidoc/pkg/types"
 	. "github.com/bytesparadise/libasciidoc/testsupport"
 
 	. "github.com/onsi/ginkgo"
@@ -52,7 +53,7 @@ Last updated {{.LastUpdated}}
 </body>
 </html>`
 			now := time.Now()
-			Expect(RenderHTML5Body(source, configuration.WithHeaderFooter(true), configuration.WithLastUpdated(time.Now()))).To(MatchHTML5Template(expected, now))
+			Expect(RenderHTML5Body(source, configuration.WithHeaderFooter(true), configuration.WithLastUpdated(now))).To(MatchHTML5Template(expected, now))
 		})
 
 		It("header with 2 authors and no revision", func() {
@@ -90,8 +91,149 @@ Last updated {{.LastUpdated}}
 </body>
 </html>`
 			now := time.Now()
-			Expect(RenderHTML5Body(source, configuration.WithHeaderFooter(true), configuration.WithLastUpdated(time.Now()))).
+			Expect(RenderHTML5Body(source, configuration.WithHeaderFooter(true), configuration.WithLastUpdated(now))).
 				To(MatchHTML5Template(expected, now))
 		})
+	})
+
+	Context("custom header and footer", func() {
+
+		now := time.Now()
+
+		It("with header and footer", func() {
+			source := `= Document Title
+
+a paragraph`
+			expected := `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="libasciidoc">
+<title>Document Title</title>
+</head>
+<body class="article">
+<div id="header">
+<h1>Document Title</h1>
+</div>
+<div id="content">
+<div class="paragraph">
+<p>a paragraph</p>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated {{.LastUpdated}}
+</div>
+</div>
+</body>
+</html>`
+			Expect(RenderHTML5Body(source,
+				configuration.WithHeaderFooter(true),
+				configuration.WithLastUpdated(now),
+				configuration.WithAttributes(map[string]string{}),
+			)).To(MatchHTML5Template(expected, now))
+		})
+
+		It("with header and without footer", func() {
+			source := `= Document Title
+
+a paragraph`
+			expected := `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="libasciidoc">
+<title>Document Title</title>
+</head>
+<body class="article">
+<div id="header">
+<h1>Document Title</h1>
+</div>
+<div id="content">
+<div class="paragraph">
+<p>a paragraph</p>
+</div>
+</div>
+</body>
+</html>`
+			Expect(RenderHTML5Body(source,
+				configuration.WithHeaderFooter(true),
+				configuration.WithLastUpdated(now),
+				configuration.WithAttributes(map[string]string{
+					types.AttrNoFooter: "",
+				}),
+			)).To(MatchHTML5Template(expected, now))
+		})
+
+		It("without header and with footer", func() {
+			source := `= Document Title
+
+a paragraph`
+			expected := `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="libasciidoc">
+<title>Document Title</title>
+</head>
+<body class="article">
+<div id="content">
+<div class="paragraph">
+<p>a paragraph</p>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated {{.LastUpdated}}
+</div>
+</div>
+</body>
+</html>`
+			Expect(RenderHTML5Body(source,
+				configuration.WithHeaderFooter(true),
+				configuration.WithLastUpdated(now),
+				configuration.WithAttributes(map[string]string{
+					types.AttrNoHeader: "",
+				}),
+			)).To(MatchHTML5Template(expected, now))
+		})
+
+		It("without header and without footer", func() {
+			source := `= Document Title
+
+a paragraph`
+			expected := `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="libasciidoc">
+<title>Document Title</title>
+</head>
+<body class="article">
+<div id="content">
+<div class="paragraph">
+<p>a paragraph</p>
+</div>
+</div>
+</body>
+</html>`
+			Expect(RenderHTML5Body(source,
+				configuration.WithHeaderFooter(true),
+				configuration.WithLastUpdated(now),
+				configuration.WithAttributes(map[string]string{
+					types.AttrNoHeader: "",
+					types.AttrNoFooter: "",
+				}),
+			)).To(MatchHTML5Template(expected, now))
+		})
+
 	})
 })

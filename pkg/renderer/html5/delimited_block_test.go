@@ -862,6 +862,44 @@ type Foo struct{
 			Expect(RenderHTML5Body(source)).To(Equal(expected))
 		})
 
+		It("should render source block without highlighter when language is not set", func() {
+			source := `:source-highlighter: pygments
+	
+[source]
+----
+type Foo struct{
+	Field string
+}
+----`
+			expected := `<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code>type Foo struct{
+	Field string
+}</code></pre>
+</div>
+</div>`
+			Expect(RenderHTML5Body(source)).To(Equal(expected))
+		})
+
+		It("should render source block without highlighter when language is not set", func() {
+			source := `:source-highlighter: pygments
+	
+[source]
+----
+type Foo struct{
+	Field string
+}
+----`
+			expected := `<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code>type Foo struct{
+	Field string
+}</code></pre>
+</div>
+</div>`
+			Expect(RenderHTML5Body(source)).To(Equal(expected))
+		})
+
 		It("should render source block with go syntax and custom style", func() {
 			source := `:source-highlighter: pygments
 :pygments-style: manni

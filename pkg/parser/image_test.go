@@ -211,7 +211,9 @@ image::images/bar.png[]`
 
 image::foo.png[]`
 				expected := types.Document{
-					Attributes:         types.DocumentAttributes{},
+					Attributes: types.DocumentAttributes{
+						"imagesdir": "./path/to/images",
+					},
 					ElementReferences:  types.ElementReferences{},
 					Footnotes:          types.Footnotes{},
 					FootnoteReferences: types.FootnoteReferences{},
@@ -237,7 +239,9 @@ image::foo.png[]`
 
 image::{dir}/foo.png[]`
 				expected := types.Document{
-					Attributes:         types.DocumentAttributes{},
+					Attributes: types.DocumentAttributes{
+						"dir": "./path/to/images",
+					},
 					ElementReferences:  types.ElementReferences{},
 					Footnotes:          types.Footnotes{},
 					FootnoteReferences: types.FootnoteReferences{},
@@ -263,7 +267,9 @@ image::{dir}/foo.png[]`
 
 image::foo.png[]`
 				expected := types.Document{
-					Attributes:         types.DocumentAttributes{},
+					Attributes: types.DocumentAttributes{
+						"imagesdir": "./path/to/images",
+					},
 					ElementReferences:  types.ElementReferences{},
 					Footnotes:          types.Footnotes{},
 					FootnoteReferences: types.FootnoteReferences{},
@@ -289,7 +295,9 @@ image::foo.png[]`
 
 image::{imagesdir}/foo.png[]`
 				expected := types.Document{
-					Attributes:         types.DocumentAttributes{},
+					Attributes: types.DocumentAttributes{
+						"imagesdir": "./path/to/images",
+					},
 					ElementReferences:  types.ElementReferences{},
 					Footnotes:          types.Footnotes{},
 					FootnoteReferences: types.FootnoteReferences{},
@@ -757,7 +765,9 @@ image::{imagesdir}/foo.png[]`
 
 an image:{dir}/foo.png[].`
 				expected := types.Document{
-					Attributes:         types.DocumentAttributes{},
+					Attributes: types.DocumentAttributes{
+						"dir": "./path/to/images",
+					},
 					ElementReferences:  types.ElementReferences{},
 					Footnotes:          types.Footnotes{},
 					FootnoteReferences: types.FootnoteReferences{},
@@ -792,7 +802,9 @@ an image:{dir}/foo.png[].`
 
 an image:foo.png[].`
 				expected := types.Document{
-					Attributes:         types.DocumentAttributes{},
+					Attributes: types.DocumentAttributes{
+						"imagesdir": "./path/to/images",
+					},
 					ElementReferences:  types.ElementReferences{},
 					Footnotes:          types.Footnotes{},
 					FootnoteReferences: types.FootnoteReferences{},
@@ -827,7 +839,9 @@ an image:foo.png[].`
 
 an image:{imagesdir}/foo.png[].`
 				expected := types.Document{
-					Attributes:         types.DocumentAttributes{},
+					Attributes: types.DocumentAttributes{
+						"imagesdir": "./path/to/images",
+					},
 					ElementReferences:  types.ElementReferences{},
 					Footnotes:          types.Footnotes{},
 					FootnoteReferences: types.FootnoteReferences{},

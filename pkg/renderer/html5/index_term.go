@@ -6,5 +6,9 @@ import (
 )
 
 func renderIndexTerm(ctx renderer.Context, t types.IndexTerm) ([]byte, error) {
-	return renderElements(ctx, t.Term)
+	return renderInlineElements(ctx, t.Term)
+}
+
+func renderConcealedIndexTerm(ctx renderer.Context, t types.ConcealedIndexTerm) ([]byte, error) {
+	return []byte{}, nil // do not render
 }

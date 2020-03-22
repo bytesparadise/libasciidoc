@@ -27,20 +27,20 @@ func init() {
 <link type="text/css" rel="stylesheet" href="{{ .CSS }}">{{ end }}
 <title>{{ escape .Title }}</title>
 </head>
-<body class="article">
+<body class="article">{{ if .IncludeHeader }}
 <div id="header">
 <h1>{{ .Header }}</h1>{{ if .Details }}
 {{ .Details }}{{ end }}
-</div>
+</div>{{ end }}
 <div id="content">
 {{ .Content }}
-</div>
+</div>{{ if .IncludeFooter }}
 <div id="footer">
 <div id="footer-text">{{ if .RevNumber }}
 Version {{ .RevNumber }}<br>{{ end }}
 Last updated {{ .LastUpdated }}
 </div>
-</div>
+</div>{{ end }}
 </body>
 </html>`,
 		texttemplate.FuncMap{
@@ -76,23 +76,27 @@ func Render(ctx renderer.Context, output io.Writer) (types.Metadata, error) {
 		}
 		revNumber, _ := ctx.Document.Attributes.GetAsString("revnumber")
 		err = documentTmpl.Execute(output, struct {
-			Generator   string
-			Title       string
-			Header      string
-			Content     htmltemplate.HTML
-			RevNumber   string
-			LastUpdated string
-			CSS         string
-			Details     *htmltemplate.HTML
+			Generator     string
+			Title         string
+			Header        string
+			Content       htmltemplate.HTML
+			RevNumber     string
+			LastUpdated   string
+			CSS           string
+			Details       *htmltemplate.HTML
+			IncludeHeader bool
+			IncludeFooter bool
 		}{
-			Generator:   "libasciidoc", // TODO: externalize this value and include the lib version ?
-			Title:       string(renderedTitle),
-			Header:      string(renderedHeader),
-			Content:     htmltemplate.HTML(string(renderedElements)), //nolint: gosec
-			RevNumber:   revNumber,
-			LastUpdated: ctx.Config.LastUpdated.Format(configuration.LastUpdatedFormat),
-			CSS:         ctx.Config.CSS,
-			Details:     documentDetails,
+			Generator:     "libasciidoc", // TODO: externalize this value and include the lib version ?
+			Title:         string(renderedTitle),
+			Header:        string(renderedHeader),
+			Content:       htmltemplate.HTML(string(renderedElements)), //nolint: gosec
+			RevNumber:     revNumber,
+			LastUpdated:   ctx.Config.LastUpdated.Format(configuration.LastUpdatedFormat),
+			CSS:           ctx.Config.CSS,
+			Details:       documentDetails,
+			IncludeHeader: !ctx.Document.Attributes.Has(types.AttrNoHeader),
+			IncludeFooter: !ctx.Document.Attributes.Has(types.AttrNoFooter),
 		})
 		if err != nil {
 			return types.Metadata{}, errors.Wrapf(err, "unable to render full document")

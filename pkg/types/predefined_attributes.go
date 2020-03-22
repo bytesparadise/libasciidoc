@@ -1,14 +1,10 @@
-package parser
-
-import (
-	"github.com/bytesparadise/libasciidoc/pkg/types"
-)
+package types
 
 // Predefined the predefined document attributes, mainly for special characters
-var Predefined types.DocumentAttributes
+var Predefined map[string]string
 
 func init() {
-	Predefined = types.DocumentAttributes{
+	Predefined = map[string]string{
 		"sp":             " ",
 		"blank":          "",
 		"empty":          "",

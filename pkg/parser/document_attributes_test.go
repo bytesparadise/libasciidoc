@@ -1,6 +1,7 @@
 package parser_test
 
 import (
+	"github.com/bytesparadise/libasciidoc/pkg/configuration"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 	. "github.com/bytesparadise/libasciidoc/testsupport"
 
@@ -1021,10 +1022,10 @@ a paragraph`
 a paragraph`
 				expected := types.Document{
 					Attributes: types.DocumentAttributes{
-						"toc":  "",
-						"date": "2017-01-01",
-						// "author":     "Xavier",
-						// "hardbreaks": "",
+						"toc":        "",
+						"date":       "2017-01-01",
+						"author":     "Xavier",
+						"hardbreaks": "",
 					},
 					ElementReferences:  types.ElementReferences{},
 					Footnotes:          types.Footnotes{},
@@ -1050,7 +1051,11 @@ a paragraph`
 :date: 2017-01-01
 :author: Xavier`
 				expected := types.Document{
-					Attributes:         types.DocumentAttributes{},
+					Attributes: types.DocumentAttributes{
+						"toc":    "",
+						"date":   "2017-01-01",
+						"author": "Xavier",
+					},
 					ElementReferences:  types.ElementReferences{},
 					Footnotes:          types.Footnotes{},
 					FootnoteReferences: types.FootnoteReferences{},
@@ -1270,6 +1275,38 @@ a paragraph written by {author}.`
 				},
 			}
 			Expect(ParseDocument(source)).To(Equal(expected))
+		})
+	})
+
+	Context("document with attribute overrides", func() {
+
+		It("custom icon attribute", func() {
+			// given
+			attrs := map[string]string{
+				"icons":              "font",
+				"source-highlighter": "pygments",
+			}
+			source := `{icons}`
+			expected := types.Document{
+				Attributes: types.DocumentAttributes{
+					"icons":              "font",
+					"source-highlighter": "pygments",
+				},
+				ElementReferences:  types.ElementReferences{},
+				Footnotes:          types.Footnotes{},
+				FootnoteReferences: types.FootnoteReferences{},
+				Elements: []interface{}{
+					types.Paragraph{
+						Attributes: types.ElementAttributes{},
+						Lines: [][]interface{}{
+							{
+								types.StringElement{Content: "font"},
+							},
+						},
+					},
+				},
+			}
+			Expect(ParseDocument(source, configuration.WithAttributes(attrs))).To(Equal(expected))
 		})
 	})
 })
