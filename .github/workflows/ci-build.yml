@@ -1,0 +1,48 @@
+name: ci-build
+on:
+  push:
+    branches:
+      - master
+    tags-ignore:
+      - '*.*'
+  pull_request:
+    branches:
+      - master
+
+
+jobs:
+  
+  test:
+    runs-on: ${{ matrix.platform }}
+    strategy:
+      matrix:
+        go-version: [1.13.x, 1.14.x]
+        platform: [ubuntu-latest, macos-latest]
+    name: ${{ matrix.platform }} with Go ${{ matrix.go-version }}
+    
+    steps:
+    - name: Install Go
+      uses: actions/setup-go@v1
+      with:
+        go-version: ${{ matrix.go-version }}
+    
+    - name: Checkout code
+      uses: actions/checkout@v2
+      
+    - name: Install Tools
+      run: 
+        make install-devtools
+      
+    - name: Test on Linux and macOS
+      if: runner.os == 'Linux' || runner.os == 'macOS'
+      run: |
+        export PATH=$PATH:$(go env GOPATH)/bin
+        make test-with-coverage
+    
+    - name: Build on Linux/macOS
+      if: runner.os == 'Linux' || runner.os == 'macOS'
+      run: |
+        export PATH=$PATH:$(go env GOPATH)/bin
+        make build
+      
+  
