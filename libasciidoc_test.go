@@ -36,7 +36,7 @@ var _ = Describe("documents", func() {
 			// main title alone is not rendered in the body
 			source := ""
 			expectedContent := ""
-			Expect(RenderHTML5Body(source)).To(Equal(expectedContent))
+			Expect(RenderHTML(source)).To(Equal(expectedContent))
 			Expect(RenderHTML5Title(source)).To(Equal(""))
 		})
 
@@ -45,7 +45,7 @@ var _ = Describe("documents", func() {
 			source := "= a document title"
 			expectedTitle := "a document title"
 			expectedContent := ""
-			Expect(RenderHTML5Body(source)).To(Equal(expectedContent))
+			Expect(RenderHTML(source)).To(Equal(expectedContent))
 			Expect(RenderHTML5Title(source)).To(Equal(expectedTitle))
 		})
 
@@ -64,7 +64,7 @@ a paragraph with *bold content*`
 </div>
 </div>
 </div>`
-			Expect(RenderHTML5Body(source)).To(Equal(expectedContent))
+			Expect(RenderHTML(source)).To(Equal(expectedContent))
 			Expect(RenderHTML5Title(source)).To(Equal(expectedTitle))
 		})
 
@@ -80,7 +80,7 @@ a paragraph with *bold content*`
 </div>
 </div>
 </div>`
-			Expect(RenderHTML5Body(source)).To(Equal(expectedContent))
+			Expect(RenderHTML(source)).To(Equal(expectedContent))
 			Expect(RenderHTML5Title(source)).To(Equal(""))
 		})
 
@@ -109,7 +109,7 @@ a paragraph`
 </div>
 </div>
 </div>`
-			Expect(RenderHTML5Body(source)).To(Equal(expectedContent))
+			Expect(RenderHTML(source)).To(Equal(expectedContent))
 			Expect(RenderHTML5Title(source)).To(Equal(expectedTitle))
 			Expect(DocumentMetadata(source, lastUpdated)).To(Equal(types.Metadata{
 				Title:       "a document title",
@@ -171,7 +171,7 @@ a paragraph with _italic content_`
 </div>
 </div>
 </div>`
-			Expect(RenderHTML5Body(source)).To(Equal(expectedContent))
+			Expect(RenderHTML(source)).To(Equal(expectedContent))
 			Expect(RenderHTML5Title(source)).To(Equal(expectedTitle))
 			Expect(DocumentMetadata(source, lastUpdated)).To(Equal(types.Metadata{
 				Title:       "a document title",
@@ -215,7 +215,7 @@ a paragraph with _italic content_`
 </div>
 </div>
 </div>`
-			Expect(RenderHTML5Body(source, configuration.WithFilename("test.adoc"), configuration.WithLastUpdated(lastUpdated))).To(Equal(expected))
+			Expect(RenderHTML(source, configuration.WithFilename("test.adoc"), configuration.WithLastUpdated(lastUpdated))).To(Equal(expected))
 			Expect(DocumentMetadata(source, lastUpdated)).To(Equal(types.Metadata{
 				Title:       "",
 				LastUpdated: lastUpdated.Format(configuration.LastUpdatedFormat),
@@ -245,7 +245,7 @@ a paragraph with _italic content_`
 </div>
 </div>
 </div>`
-			Expect(RenderHTML5Body(source, configuration.WithFilename("tmp/foo.adoc"))).To(Equal(expectedContent))
+			Expect(RenderHTML(source, configuration.WithFilename("tmp/foo.adoc"))).To(Equal(expectedContent))
 		})
 
 		It("document with custom icon attributes", func() {
@@ -277,7 +277,7 @@ a note
 </tr>
 </table>
 </div>`
-			Expect(RenderHTML5Body(source, configuration.WithAttributes(attrs))).To(Equal(expected))
+			Expect(RenderHTML(source, configuration.WithAttributes(attrs))).To(Equal(expected))
 		})
 
 		It("document without custom icon attributes", func() {
@@ -306,7 +306,7 @@ a note
 </tr>
 </table>
 </div>`
-			Expect(RenderHTML5Body(source, configuration.WithAttributes(attrs))).To(Equal(expected))
+			Expect(RenderHTML(source, configuration.WithAttributes(attrs))).To(Equal(expected))
 		})
 	})
 

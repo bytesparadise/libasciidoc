@@ -18,7 +18,7 @@ var _ = Describe("literal blocks", func() {
 <pre>some literal content</pre>
 </div>
 </div>`
-			Expect(RenderHTML5Body(source)).To(Equal(expected))
+			Expect(RenderHTML(source)).To(Equal(expected))
 		})
 
 		It("literal block from paragraph with single space on first line", func() {
@@ -32,7 +32,7 @@ on 3
 lines.</pre>
 </div>
 </div>`
-			Expect(RenderHTML5Body(source)).To(Equal(expected))
+			Expect(RenderHTML(source)).To(Equal(expected))
 		})
 
 		It("literal block from paragraph with same spaces on each line", func() {
@@ -46,7 +46,7 @@ on 3
 lines.</pre>
 </div>
 </div>`
-			Expect(RenderHTML5Body(source)).To(Equal(expected))
+			Expect(RenderHTML(source)).To(Equal(expected))
 		})
 
 		It("literal block from paragraph with single spaces on each line", func() {
@@ -60,7 +60,7 @@ lines.</pre>
     has some heading spaces preserved.</pre>
 </div>
 </div>`
-			Expect(RenderHTML5Body(source)).To(Equal(expected))
+			Expect(RenderHTML(source)).To(Equal(expected))
 		})
 
 		It("mixing literal block with attributes followed by a paragraph ", func() {
@@ -78,7 +78,7 @@ a normal paragraph.`
 <div class="paragraph">
 <p>a normal paragraph.</p>
 </div>`
-			Expect(RenderHTML5Body(source)).To(Equal(expected))
+			Expect(RenderHTML(source)).To(Equal(expected))
 		})
 	})
 
@@ -100,7 +100,7 @@ a normal paragraph.`
 <div class="paragraph">
 <p>a normal paragraph.</p>
 </div>`
-			Expect(RenderHTML5Body(source)).To(Equal(expected))
+			Expect(RenderHTML(source)).To(Equal(expected))
 		})
 
 	})
@@ -124,7 +124,7 @@ a normal paragraph.`
 <div class="paragraph">
 <p>a normal paragraph.</p>
 </div>`
-			Expect(RenderHTML5Body(source)).To(Equal(expected))
+			Expect(RenderHTML(source)).To(Equal(expected))
 		})
 
 		It("literal block from 2-lines paragraph with attribute", func() {
@@ -145,7 +145,7 @@ on two lines.</pre>
 <div class="paragraph">
 <p>a normal paragraph.</p>
 </div>`
-			Expect(RenderHTML5Body(source)).To(Equal(expected))
+			Expect(RenderHTML(source)).To(Equal(expected))
 		})
 	})
 

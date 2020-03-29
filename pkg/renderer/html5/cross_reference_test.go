@@ -25,7 +25,7 @@ with some content linked to <<thetitle>>!`
 </div>
 </div>
 </div>`
-			Expect(RenderHTML5Body(source)).To(Equal(expected))
+			Expect(RenderHTML(source)).To(Equal(expected))
 		})
 
 		It("cross reference with custom id and label", func() {
@@ -41,7 +41,7 @@ with some content linked to <<thetitle,a label to the title>>!`
 </div>
 </div>
 </div>`
-			Expect(RenderHTML5Body(source)).To(Equal(expected))
+			Expect(RenderHTML(source)).To(Equal(expected))
 		})
 
 		It("invalid section reference", func() {
@@ -58,7 +58,7 @@ with some content linked to <<thewrongtitle>>!`
 </div>
 </div>
 </div>`
-			Expect(RenderHTML5Body(source)).To(Equal(expected))
+			Expect(RenderHTML(source)).To(Equal(expected))
 		})
 	})
 
@@ -69,7 +69,7 @@ with some content linked to <<thewrongtitle>>!`
 			expected := `<div class="paragraph">
 <p>some content linked to <a href="another-doc.html"><strong>another doc</strong></a>!</p>
 </div>`
-			Expect(RenderHTML5Body(source)).To(Equal(expected))
+			Expect(RenderHTML(source)).To(Equal(expected))
 		})
 
 		It("external cross reference to other doc with document attribute in location and label with special chars", func() {
@@ -78,7 +78,7 @@ some content linked to xref:{foo}.adoc[another_doc()]!`
 			expected := `<div class="paragraph">
 <p>some content linked to <a href="foo-doc.html">another_doc()</a>!</p>
 </div>`
-			Expect(RenderHTML5Body(source)).To(Equal(expected))
+			Expect(RenderHTML(source)).To(Equal(expected))
 		})
 	})
 })

@@ -41,7 +41,7 @@ Last updated {{.LastUpdated}}
 </body>
 </html>`
 			now := time.Now()
-			Expect(RenderHTML5Body(source, configuration.WithHeaderFooter(true),
+			Expect(RenderHTML(source, configuration.WithHeaderFooter(true),
 				configuration.WithCSS("/path/to/style.css"),
 				configuration.WithLastUpdated(now))).
 				To(MatchHTML5Template(expected, now))

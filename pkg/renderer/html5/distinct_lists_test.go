@@ -33,7 +33,7 @@ var _ = Describe("lists of items", func() {
 </li>
 </ol>
 </div>`
-			Expect(RenderHTML5Body(source)).To(Equal(expected))
+			Expect(RenderHTML(source)).To(Equal(expected))
 		})
 
 		It("same list with attribute on middle item", func() {
@@ -59,7 +59,7 @@ var _ = Describe("lists of items", func() {
 </li>
 </ol>
 </div>`
-			Expect(RenderHTML5Body(source)).To(Equal(expected))
+			Expect(RenderHTML(source)).To(Equal(expected))
 		})
 
 		It("distinct lists separated by blankline and item attribute - case 1", func() {
@@ -90,7 +90,7 @@ var _ = Describe("lists of items", func() {
 </li>
 </ol>
 </div>`
-			Expect(RenderHTML5Body(source)).To(Equal(expected))
+			Expect(RenderHTML(source)).To(Equal(expected))
 		})
 
 		It("distinct lists separated by blankline and item attribute - case 2", func() {
@@ -124,7 +124,7 @@ var _ = Describe("lists of items", func() {
 </li>
 </ol>
 </div>`
-			Expect(RenderHTML5Body(source)).To(Equal(expected))
+			Expect(RenderHTML(source)).To(Equal(expected))
 		})
 	})
 
@@ -142,7 +142,7 @@ var _ = Describe("lists of items", func() {
 </li>
 </ol>
 </div>`
-		Expect(RenderHTML5Body(source)).To(Equal(expected))
+		Expect(RenderHTML(source)).To(Equal(expected))
 	})
 
 	It("same list with multiple comment lines inside", func() {
@@ -161,7 +161,7 @@ var _ = Describe("lists of items", func() {
 </li>
 </ol>
 </div>`
-		Expect(RenderHTML5Body(source)).To(Equal(expected))
+		Expect(RenderHTML(source)).To(Equal(expected))
 	})
 
 	It("distinct lists separated by single comment line", func() {
@@ -183,7 +183,7 @@ var _ = Describe("lists of items", func() {
 </li>
 </ol>
 </div>`
-		Expect(RenderHTML5Body(source)).To(Equal(expected))
+		Expect(RenderHTML(source)).To(Equal(expected))
 	})
 
 	It("distinct lists separated by multiple comment lines", func() {
@@ -207,6 +207,6 @@ var _ = Describe("lists of items", func() {
 </li>
 </ol>
 </div>`
-		Expect(RenderHTML5Body(source)).To(Equal(expected))
+		Expect(RenderHTML(source)).To(Equal(expected))
 	})
 })

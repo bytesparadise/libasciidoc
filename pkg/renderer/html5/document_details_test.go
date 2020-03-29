@@ -56,7 +56,7 @@ Last updated {{.LastUpdated}}
 </body>
 </html>`
 			now := time.Now()
-			Expect(RenderHTML5Body(source, configuration.WithHeaderFooter(true), configuration.WithLastUpdated(now))).To(MatchHTML5Template(expected, now))
+			Expect(RenderHTML(source, configuration.WithHeaderFooter(true), configuration.WithLastUpdated(now))).To(MatchHTML5Template(expected, now))
 		})
 
 		It("header with 2 authors and no revision", func() {
@@ -94,7 +94,7 @@ Last updated {{.LastUpdated}}
 </body>
 </html>`
 			now := time.Now()
-			Expect(RenderHTML5Body(source, configuration.WithHeaderFooter(true), configuration.WithLastUpdated(now))).
+			Expect(RenderHTML(source, configuration.WithHeaderFooter(true), configuration.WithLastUpdated(now))).
 				To(MatchHTML5Template(expected, now))
 		})
 	})
@@ -132,7 +132,7 @@ Last updated {{.LastUpdated}}
 </div>
 </body>
 </html>`
-			Expect(RenderHTML5Body(source,
+			Expect(RenderHTML(source,
 				configuration.WithHeaderFooter(true),
 				configuration.WithLastUpdated(now),
 				configuration.WithAttributes(map[string]string{}),
@@ -163,7 +163,7 @@ a paragraph`
 </div>
 </body>
 </html>`
-			Expect(RenderHTML5Body(source,
+			Expect(RenderHTML(source,
 				configuration.WithHeaderFooter(true),
 				configuration.WithLastUpdated(now),
 				configuration.WithAttributes(map[string]string{
@@ -198,7 +198,7 @@ Last updated {{.LastUpdated}}
 </div>
 </body>
 </html>`
-			Expect(RenderHTML5Body(source,
+			Expect(RenderHTML(source,
 				configuration.WithHeaderFooter(true),
 				configuration.WithLastUpdated(now),
 				configuration.WithAttributes(map[string]string{
@@ -228,7 +228,7 @@ a paragraph`
 </div>
 </body>
 </html>`
-			Expect(RenderHTML5Body(source,
+			Expect(RenderHTML(source,
 				configuration.WithHeaderFooter(true),
 				configuration.WithLastUpdated(now),
 				configuration.WithAttributes(map[string]string{

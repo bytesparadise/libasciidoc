@@ -83,7 +83,7 @@ A preamble...
 <div class="sectionbody">
 </div>
 </div>`
-			Expect(RenderHTML5Body(source)).To(Equal(expected))
+			Expect(RenderHTML(source)).To(Equal(expected))
 		})
 
 		It("toc with custom level", func() {
@@ -171,7 +171,7 @@ A preamble...
 <div class="sectionbody">
 </div>
 </div>`
-			Expect(RenderHTML5Body(source)).To(Equal(expected))
+			Expect(RenderHTML(source)).To(Equal(expected))
 		})
 
 		It("document with no section", func() {
@@ -183,7 +183,7 @@ level 1 sections not exists.`
 			expected := `<div class="paragraph">
 <p>level 1 sections not exists.</p>
 </div>`
-			Expect(RenderHTML5Body(source)).To(Equal(expected))
+			Expect(RenderHTML(source)).To(Equal(expected))
 
 		})
 	})

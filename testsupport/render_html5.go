@@ -11,8 +11,8 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-// RenderHTML5Body renders the HTML body using the given source
-func RenderHTML5Body(actual string, settings ...configuration.Setting) (string, error) {
+// RenderHTML renders the HTML body using the given source
+func RenderHTML(actual string, settings ...configuration.Setting) (string, error) {
 	config := configuration.NewConfiguration(settings...)
 	contentReader := strings.NewReader(actual)
 	resultWriter := bytes.NewBuffer(nil)
