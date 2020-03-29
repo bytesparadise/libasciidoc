@@ -19,7 +19,7 @@ second paragraph`
 <div class="paragraph">
 <p>second paragraph</p>
 </div>`
-		Expect(RenderHTML5Body(source)).To(Equal(expected))
+		Expect(RenderHTML(source)).To(Equal(expected))
 	})
 
 	It("blank line with spaces and tabs between 2 paragraphs", func() {
@@ -32,7 +32,7 @@ second paragraph`
 <div class="paragraph">
 <p>second paragraph</p>
 </div>`
-		Expect(RenderHTML5Body(source)).To(Equal(expected))
+		Expect(RenderHTML(source)).To(Equal(expected))
 	})
 
 	It("blank lines (tabs) at end of document", func() {
@@ -43,7 +43,7 @@ second paragraph`
 		expected := `<div class="paragraph">
 <p>first paragraph</p>
 </div>`
-		Expect(RenderHTML5Body(source)).To(Equal(expected))
+		Expect(RenderHTML(source)).To(Equal(expected))
 	})
 
 	It("blank lines (spaces) at end of document", func() {
@@ -54,6 +54,6 @@ second paragraph`
 		expected := `<div class="paragraph">
 <p>first paragraph</p>
 </div>`
-		Expect(RenderHTML5Body(source)).To(Equal(expected))
+		Expect(RenderHTML(source)).To(Equal(expected))
 	})
 })

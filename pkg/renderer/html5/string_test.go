@@ -18,7 +18,7 @@ var _ = Describe("strings", func() {
 			expected := `<div class="paragraph">
 <p>some text&#8230;&#8203;</p>
 </div>`
-			Expect(RenderHTML5Body(source)).To(Equal(expected))
+			Expect(RenderHTML(source)).To(Equal(expected))
 		})
 	})
 })

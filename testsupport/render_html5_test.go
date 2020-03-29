@@ -13,7 +13,7 @@ var _ = Describe("html5 body renderer", func() {
 		// given
 		actual := "hello, world!"
 		// when
-		result, err := testsupport.RenderHTML5Body(actual)
+		result, err := testsupport.RenderHTML(actual)
 		// then
 		expected := `<div class="paragraph">
 <p>hello, world!</p>

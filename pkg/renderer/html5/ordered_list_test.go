@@ -22,7 +22,7 @@ var _ = Describe("ordered lists", func() {
 </li>
 </ol>
 </div>`
-		Expect(RenderHTML5Body(source)).To(Equal(expected))
+		Expect(RenderHTML(source)).To(Equal(expected))
 	})
 
 	It("ordered list item with explicit start only", func() {
@@ -35,7 +35,7 @@ var _ = Describe("ordered lists", func() {
 </li>
 </ol>
 </div>`
-		Expect(RenderHTML5Body(source)).To(Equal(expected))
+		Expect(RenderHTML(source)).To(Equal(expected))
 	})
 
 	It("ordered list item with explicit quoted numbering and start", func() {
@@ -48,7 +48,7 @@ var _ = Describe("ordered lists", func() {
 </li>
 </ol>
 </div>`
-		Expect(RenderHTML5Body(source)).To(Equal(expected))
+		Expect(RenderHTML(source)).To(Equal(expected))
 	})
 
 	It("ordered list with paragraph continuation", func() {
@@ -65,7 +65,7 @@ foo`
 </li>
 </ol>
 </div>`
-		Expect(RenderHTML5Body(source)).To(Equal(expected))
+		Expect(RenderHTML(source)).To(Equal(expected))
 	})
 
 	It("ordered list with delimited block continuation", func() {
@@ -86,7 +86,7 @@ foo
 </li>
 </ol>
 </div>`
-		Expect(RenderHTML5Body(source)).To(Equal(expected))
+		Expect(RenderHTML(source)).To(Equal(expected))
 	})
 
 	It("ordered list with unnumbered items", func() {
@@ -134,7 +134,7 @@ foo
 </li>
 </ol>
 </div>`
-		Expect(RenderHTML5Body(source)).To(Equal(expected))
+		Expect(RenderHTML(source)).To(Equal(expected))
 	})
 
 	It("ordered list mixed with unordered list - simple case", func() {
@@ -178,7 +178,7 @@ foo
 </li>
 </ol>
 </div>`
-		Expect(RenderHTML5Body(source)).To(Equal(expected))
+		Expect(RenderHTML(source)).To(Equal(expected))
 	})
 
 	It("ordered list mixed with unordered list - complex case", func() {
@@ -303,7 +303,7 @@ extra lines.</p>
 </li>
 </ul>
 </div>`
-		Expect(RenderHTML5Body(source)).To(Equal(expected))
+		Expect(RenderHTML(source)).To(Equal(expected))
 	})
 
 	It("all kinds of lists - complex case 3", func() {
@@ -347,7 +347,7 @@ a. foo
 </li>
 </ul>
 </div>`
-		Expect(RenderHTML5Body(source)).To(Equal(expected))
+		Expect(RenderHTML(source)).To(Equal(expected))
 	})
 
 	It("drop principal text in list item", func() {
@@ -381,7 +381,7 @@ print("one")
 </li>
 </ol>
 </div>`
-		Expect(RenderHTML5Body(source)).To(Equal(expected))
+		Expect(RenderHTML(source)).To(Equal(expected))
 	})
 
 	Context("attach to ordered list item ancestor", func() {
@@ -418,7 +418,7 @@ paragraph attached to grandparent list item`
 </li>
 </ol>
 </div>`
-			Expect(RenderHTML5Body(source)).To(Equal(expected))
+			Expect(RenderHTML(source)).To(Equal(expected))
 		})
 
 		It("attach to parent ordered list item", func() {
@@ -452,7 +452,7 @@ paragraph attached to parent list item`
 </li>
 </ol>
 </div>`
-			Expect(RenderHTML5Body(source)).To(Equal(expected))
+			Expect(RenderHTML(source)).To(Equal(expected))
 		})
 
 		It("attach to child ordered list item", func() {
@@ -485,7 +485,7 @@ paragraph attached to child list item`
 </li>
 </ol>
 </div>`
-			Expect(RenderHTML5Body(source)).To(Equal(expected))
+			Expect(RenderHTML(source)).To(Equal(expected))
 		})
 	})
 })

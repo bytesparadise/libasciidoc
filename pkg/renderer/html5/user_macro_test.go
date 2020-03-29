@@ -23,7 +23,7 @@ var _ = Describe("user macros", func() {
 			expected := `<div class="paragraph">
 <p>hello::[]</p>
 </div>`
-			Expect(RenderHTML5Body(source)).To(Equal(expected))
+			Expect(RenderHTML(source)).To(Equal(expected))
 		})
 
 		It("user macro block", func() {
@@ -34,7 +34,7 @@ var _ = Describe("user macros", func() {
 <span>hello world</span>
 </div>
 </div>`
-			Expect(RenderHTML5Body(source, configuration.WithMacroTemplate(helloMacroTmpl.Name(), helloMacroTmpl))).To(Equal(expected))
+			Expect(RenderHTML(source, configuration.WithMacroTemplate(helloMacroTmpl.Name(), helloMacroTmpl))).To(Equal(expected))
 		})
 
 		It("user macro block with attribute", func() {
@@ -45,7 +45,7 @@ var _ = Describe("user macros", func() {
 <span>hello world!!!!</span>
 </div>
 </div>`
-			Expect(RenderHTML5Body(source, configuration.WithMacroTemplate(helloMacroTmpl.Name(), helloMacroTmpl))).To(Equal(expected))
+			Expect(RenderHTML(source, configuration.WithMacroTemplate(helloMacroTmpl.Name(), helloMacroTmpl))).To(Equal(expected))
 		})
 
 		It("user macro block with value", func() {
@@ -56,7 +56,7 @@ var _ = Describe("user macros", func() {
 <span>hello JohnDoe</span>
 </div>
 </div>`
-			Expect(RenderHTML5Body(source, configuration.WithMacroTemplate(helloMacroTmpl.Name(), helloMacroTmpl))).To(Equal(expected))
+			Expect(RenderHTML(source, configuration.WithMacroTemplate(helloMacroTmpl.Name(), helloMacroTmpl))).To(Equal(expected))
 		})
 
 		It("user macro block with value and attributes", func() {
@@ -67,7 +67,7 @@ var _ = Describe("user macros", func() {
 <span>Hi JohnDoe!!</span>
 </div>
 </div>`
-			Expect(RenderHTML5Body(source, configuration.WithMacroTemplate(helloMacroTmpl.Name(), helloMacroTmpl))).To(Equal(expected))
+			Expect(RenderHTML(source, configuration.WithMacroTemplate(helloMacroTmpl.Name(), helloMacroTmpl))).To(Equal(expected))
 		})
 
 		It("undefined inline macro", func() {
@@ -76,7 +76,7 @@ var _ = Describe("user macros", func() {
 			expected := `<div class="paragraph">
 <p>hello:[]</p>
 </div>`
-			Expect(RenderHTML5Body(source)).To(Equal(expected))
+			Expect(RenderHTML(source)).To(Equal(expected))
 		})
 
 		It("inline macro", func() {
@@ -85,7 +85,7 @@ var _ = Describe("user macros", func() {
 			expected := `<div class="paragraph">
 <p>AAA <span>hello world</span></p>
 </div>`
-			Expect(RenderHTML5Body(source, configuration.WithMacroTemplate(helloMacroTmpl.Name(), helloMacroTmpl))).To(Equal(expected))
+			Expect(RenderHTML(source, configuration.WithMacroTemplate(helloMacroTmpl.Name(), helloMacroTmpl))).To(Equal(expected))
 		})
 
 		It("inline macro with attribute", func() {
@@ -94,7 +94,7 @@ var _ = Describe("user macros", func() {
 			expected := `<div class="paragraph">
 <p>AAA <span>hello world!!!!!</span></p>
 </div>`
-			Expect(RenderHTML5Body(source, configuration.WithMacroTemplate(helloMacroTmpl.Name(), helloMacroTmpl))).To(Equal(expected))
+			Expect(RenderHTML(source, configuration.WithMacroTemplate(helloMacroTmpl.Name(), helloMacroTmpl))).To(Equal(expected))
 		})
 
 		It("inline macro with value", func() {
@@ -103,7 +103,7 @@ var _ = Describe("user macros", func() {
 			expected := `<div class="paragraph">
 <p>AAA <span>hello JohnDoe</span></p>
 </div>`
-			Expect(RenderHTML5Body(source, configuration.WithMacroTemplate(helloMacroTmpl.Name(), helloMacroTmpl))).To(Equal(expected))
+			Expect(RenderHTML(source, configuration.WithMacroTemplate(helloMacroTmpl.Name(), helloMacroTmpl))).To(Equal(expected))
 		})
 
 		It("inline macro with value and attributes", func() {
@@ -112,7 +112,7 @@ var _ = Describe("user macros", func() {
 			expected := `<div class="paragraph">
 <p>AAA <span>Hi JohnDoe!!</span></p>
 </div>`
-			Expect(RenderHTML5Body(source, configuration.WithMacroTemplate(helloMacroTmpl.Name(), helloMacroTmpl))).To(Equal(expected))
+			Expect(RenderHTML(source, configuration.WithMacroTemplate(helloMacroTmpl.Name(), helloMacroTmpl))).To(Equal(expected))
 		})
 
 	})
