@@ -12,7 +12,6 @@ import (
 func Prerender(ctx Context) error {
 	ctx = IncludePreamble(ctx)
 	ctx = IncludeTableOfContentsPlaceHolder(ctx)
-	ctx = ProcessDocumentHeader(ctx)
 	if log.IsLevelEnabled(log.DebugLevel) {
 		log.Debug("pre-rendered document:")
 		spew.Dump(ctx.Document)

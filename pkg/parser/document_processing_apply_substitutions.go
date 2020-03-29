@@ -13,7 +13,7 @@ import (
 // nolint: gocyclo
 func applyDocumentAttributeSubstitutions(element interface{}, attrs types.DocumentAttributesWithOverrides) (interface{}, bool, error) {
 	// the document attributes, as they are resolved while processing the blocks
-	log.Debugf("applying document substitutions on block of type %T", element)
+	// log.Debugf("applying document substitutions on block of type %T", element)
 	switch e := element.(type) {
 	case []interface{}:
 		elements := make([]interface{}, 0, len(e)) // maximum capacity cannot exceed initial input
@@ -44,6 +44,7 @@ func applyDocumentAttributeSubstitutions(element interface{}, attrs types.Docume
 				Content: value,
 			}, true, nil
 		}
+		log.Warnf("unable to find attribute '%s'", e.Name)
 		return types.StringElement{
 			Content: "{" + e.Name + "}",
 		}, false, nil

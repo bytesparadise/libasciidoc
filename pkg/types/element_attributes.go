@@ -241,6 +241,16 @@ func (a ElementAttributes) AddAll(attributes ElementAttributes) {
 	}
 }
 
+// AddNonEmpty adds the given attribute if its value is non-nil and non-empty
+// TODO: raise a warning if there was already a name/value
+func (a ElementAttributes) AddNonEmpty(key string, value interface{}) {
+	// do not add nil or empty values
+	if value == "" {
+		return
+	}
+	a[key] = value
+}
+
 // NewElementAttributes retrieves the ElementID, ElementTitle and ElementInlineLink from the given slice of attributes
 func NewElementAttributes(attributes []interface{}) ElementAttributes {
 	attrs := ElementAttributes{}
