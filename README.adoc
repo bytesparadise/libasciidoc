@@ -2,7 +2,8 @@
 
 image:https://godoc.org/github.com/bytesparadise/libasciidoc?status.svg["GoDoc", link="https://godoc.org/github.com/bytesparadise/libasciidoc"]
 image:https://goreportcard.com/badge/github.com/bytesparadise/libasciidoc["Go Report Card", link="https://goreportcard.com/report/github.com/bytesparadise/libasciidoc"]
-image:https://travis-ci.org/bytesparadise/libasciidoc.svg?branch=master["Build Status", link="https://travis-ci.org/bytesparadise/libasciidoc"]
+image:https://github.com/bytesparadise/libasciidoc/workflows/ci-build/badge.svg["GitHub Action Build Status", link="https://github.com/bytesparadise/libasciidoc/actions?query=workflow%3Aci-build"]
+image:https://ci.appveyor.com/api/projects/status/23v48tqfvr8sdb3g/branch/master?svg=true["AppVeyor Build Status", link="https://ci.appveyor.com/project/xcoulon/libasciidoc"]
 image:https://codecov.io/gh/bytesparadise/libasciidoc/branch/master/graph/badge.svg["Codecov", link="https://codecov.io/gh/bytesparadise/libasciidoc"]
 image:https://img.shields.io/badge/License-Apache%202.0-blue.svg["License", link="https://opensource.org/licenses/Apache-2.0"]
 
