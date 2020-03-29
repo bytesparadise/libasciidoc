@@ -92,9 +92,12 @@ var _ = Describe("root cmd", func() {
 		// when
 		err := root.Execute()
 		// then
+		GinkgoT().Logf("out: %v", buf.String())
 		Expect(err).ToNot(HaveOccurred())
 		Expect(buf.String()).ToNot(BeEmpty())
-		Expect(buf.String()).To(Equal(`<div class="paragraph">
+		// console output also includes a warning message
+		Expect(buf.String()).To(Equal(`level=warning msg="unable to find attribute 'foo2'"
+<div class="paragraph">
 <p>bar1 and {foo2}</p>
 </div>`))
 	})

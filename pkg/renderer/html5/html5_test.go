@@ -15,7 +15,7 @@ var _ = Describe("document header", func() {
 	Context("header with inline elements in title", func() {
 
 		It("header with quoted text", func() {
-			source := `= The _Dangerous_ and *Thrilling* Documentation Chronicles`
+			source := `= The _Document_ *Title*`
 			expected := `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -24,11 +24,11 @@ var _ = Describe("document header", func() {
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="libasciidoc">
 <link type="text/css" rel="stylesheet" href="/path/to/style.css">
-<title>The Dangerous and Thrilling Documentation Chronicles</title>
+<title>The Document Title</title>
 </head>
 <body class="article">
 <div id="header">
-<h1>The <em>Dangerous</em> and <strong>Thrilling</strong> Documentation Chronicles</h1>
+<h1>The <em>Document</em> <strong>Title</strong></h1>
 </div>
 <div id="content">
 

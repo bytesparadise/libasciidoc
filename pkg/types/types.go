@@ -5,12 +5,12 @@ import (
 	"fmt"
 	"net/url"
 	"sort"
+	"strconv"
 	"strings"
-
-	yaml "gopkg.in/yaml.v2"
 
 	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
+	yaml "gopkg.in/yaml.v2"
 )
 
 // ------------------------------------------
@@ -36,7 +36,8 @@ func NewDraftDocument(frontMatter interface{}, blocks []interface{}) (DraftDocum
 	return result, nil
 }
 
-// DocumentAttributes returns
+// DocumentAttributes returns the document attributes on the top-level section
+// and all the document attribute declarations at the top of the document only.
 func (d DraftDocument) DocumentAttributes() DocumentAttributes {
 	result := DocumentAttributes{}
 blocks:
@@ -44,15 +45,32 @@ blocks:
 		switch b := b.(type) {
 		case Section:
 			if b.Level == 0 {
+				// include all attributes of this section
+				// for k, v := range b.Attributes {
+				// 	result.Add(k, v)
+				// }
+				// also, expand document authors and revision
+				if authors, ok := b.Attributes[AttrAuthors].([]DocumentAuthor); ok {
+					// move to the Document attributes
+					result.AddAll(expandAuthors(authors))
+					delete(b.Attributes, AttrAuthors)
+				}
+				// also, expand document authors and revision
+				if revision, ok := b.Attributes[AttrRevision].(DocumentRevision); ok {
+					// move to the Document attributes
+					result.AddAll(expandRevision(revision))
+					delete(b.Attributes, AttrRevision)
+				}
 				continue // allow to continue if the section is level 0
 			}
 			break blocks // otherwise, just stop
 		case DocumentAttributeDeclaration:
-			result[b.Name] = b.Value
+			result.Add(b.Name, b.Value)
 		default:
 			break blocks
 		}
 	}
+	log.Debugf("document attributes: %+v", result)
 	return result
 }
 
@@ -116,6 +134,8 @@ type Metadata struct {
 	Title           string
 	LastUpdated     string
 	TableOfContents TableOfContents
+	Authors         []DocumentAuthor
+	Revision        DocumentRevision
 }
 
 // TableOfContents the table of contents
@@ -465,13 +485,110 @@ func NewDocumentHeader(title []interface{}, authors interface{}, revision interf
 	if err != nil {
 		return Section{}, err
 	}
-	if _, ok := authors.([]DocumentAuthor); ok {
+	if authors, ok := authors.([]DocumentAuthor); ok {
 		section.Attributes[AttrAuthors] = authors
 	}
-	if _, ok := revision.(DocumentRevision); ok {
+	if revision, ok := revision.(DocumentRevision); ok {
 		section.Attributes[AttrRevision] = revision
 	}
 	return section, nil
+}
+
+// expandAuthors returns a map of attributes for the given authors.
+// those attributes can be used in attribute substitutions in the document
+func expandAuthors(authors []DocumentAuthor) map[string]interface{} {
+	result := make(map[string]interface{}, 1+6*len(authors)) // each author may add up to 6 fields in the result map
+	sanitized := make([]DocumentAuthor, 0, len(authors))
+	for i, author := range authors {
+		var part1, part2, part3, email string
+		author.FullName = strings.ReplaceAll(author.FullName, "  ", " ")
+		parts := strings.Split(author.FullName, " ")
+		if len(parts) > 0 {
+			part1 = Apply(parts[0],
+				func(s string) string {
+					return strings.TrimSpace(s)
+				},
+				func(s string) string {
+					return strings.Replace(s, "_", " ", -1)
+				},
+			)
+		}
+		if len(parts) > 1 {
+			part2 = Apply(parts[1],
+				func(s string) string {
+					return strings.TrimSpace(s)
+				},
+				func(s string) string {
+					return strings.Replace(s, "_", " ", -1)
+				},
+			)
+		}
+		if len(parts) > 2 {
+			part3 = Apply(strings.Join(parts[2:], " "),
+				func(s string) string {
+					return strings.TrimSpace(s)
+				},
+				func(s string) string {
+					return strings.Replace(s, "_", " ", -1)
+				},
+			)
+		}
+		if author.Email != "" {
+			email = strings.TrimSpace(author.Email)
+		}
+		if part2 != "" && part3 != "" {
+			result[key("firstname", i)] = strings.TrimSpace(part1)
+			result[key("middlename", i)] = strings.TrimSpace(part2)
+			result[key("lastname", i)] = strings.TrimSpace(part3)
+			result[key("author", i)] = strings.Join([]string{part1, part2, part3}, " ")
+			result[key("authorinitials", i)] = strings.Join([]string{initial(part1), initial(part2), initial(part3)}, "")
+		} else if part2 != "" {
+			result[key("firstname", i)] = strings.TrimSpace(part1)
+			result[key("lastname", i)] = strings.TrimSpace(part2)
+			result[key("author", i)] = strings.Join([]string{part1, part2}, " ")
+			result[key("authorinitials", i)] = strings.Join([]string{initial(part1), initial(part2)}, "")
+		} else {
+			result[key("firstname", i)] = strings.TrimSpace(part1)
+			result[key("author", i)] = strings.TrimSpace(part1)
+			result[key("authorinitials", i)] = initial(part1)
+		}
+		if email != "" {
+			result[key("email", i)] = email
+		}
+		// also include a "sanitized" version of the given author
+		sanitized = append(sanitized, DocumentAuthor{
+			FullName: result[key("author", i)].(string),
+			Email:    email,
+		})
+	}
+	result[AttrAuthors] = sanitized
+	return result
+}
+
+func key(k string, i int) string {
+	if i == 0 {
+		return k
+	}
+	return k + "_" + strconv.Itoa(i+1)
+}
+
+func initial(s string) string {
+	if len(s) > 0 {
+		return s[0:1]
+	}
+	return ""
+}
+
+// expandRevision returns a map of attributes for the given revision.
+// those attributes can be used in attribute substitutions in the document
+func expandRevision(revision DocumentRevision) map[string]interface{} {
+	result := make(ElementAttributes, 3)
+	result.AddNonEmpty("revnumber", revision.Revnumber)
+	result.AddNonEmpty("revdate", revision.Revdate)
+	result.AddNonEmpty("revremark", revision.Revremark)
+	// also add the revision itself
+	result.AddNonEmpty(AttrRevision, revision)
+	return result
 }
 
 // ------------------------------------------

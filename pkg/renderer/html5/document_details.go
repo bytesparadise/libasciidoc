@@ -28,7 +28,7 @@ func init() {
 }
 
 func renderDocumentDetails(ctx renderer.Context) (*htmltemplate.HTML, error) {
-	if ctx.Document.Attributes.Has(types.AttrAuthor) {
+	if ctx.Document.Attributes.Has(types.AttrAuthors) {
 		authors, err := renderDocumentAuthorsDetails(ctx)
 		if err != nil {
 			return nil, errors.Wrap(err, "error while rendering the document details")
