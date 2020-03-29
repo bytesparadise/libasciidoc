@@ -638,6 +638,54 @@ var _ = DescribeTable("draft document attributes",
 			"foo2": "bar2",
 		},
 	),
+	Entry("should include attributes of section 0 only",
+		types.DraftDocument{
+			Blocks: []interface{}{
+				types.Section{
+					Level: 0,
+					Attributes: types.ElementAttributes{
+						types.AttrAuthors: []types.DocumentAuthor{
+							{
+								FullName: "foo",
+							},
+						},
+						types.AttrRevision: types.DocumentRevision{
+							Revnumber: "1.0",
+						},
+						"other": "unused",
+					},
+				},
+				types.BlankLine{},
+				types.Section{
+					Level: 1,
+					Attributes: types.ElementAttributes{
+						"foo1": "bar1",
+						"foo2": "bar2",
+					},
+				},
+				types.DocumentAttributeDeclaration{
+					Name:  "foo3",
+					Value: "bar3",
+				},
+			},
+		},
+		types.DocumentAttributes{
+			types.AttrAuthors: []types.DocumentAuthor{
+				{
+					FullName: "foo",
+				},
+			},
+			// "authors" attribute gets "expanded" when being moved to the document attributes level
+			"author":         "foo",
+			"firstname":      "foo",
+			"authorinitials": "f",
+			// "revision" attribute is also "expanded"
+			types.AttrRevision: types.DocumentRevision{
+				Revnumber: "1.0",
+			},
+			"revnumber": "1.0",
+		},
+	),
 	Entry("should ignore attribute declarations elsewhere",
 		types.DraftDocument{
 			Blocks: []interface{}{

@@ -58,7 +58,7 @@ func ConvertToHTML(r io.Reader, output io.Writer, config configuration.Configura
 		return types.Metadata{}, err
 	}
 	rendererCtx := renderer.NewContext(doc, config)
-	// insert tables of contents, preamble and process file inclusions
+	// insert tables of contents and preamble
 	err = renderer.Prerender(rendererCtx)
 	if err != nil {
 		return types.Metadata{}, err

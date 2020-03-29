@@ -6,8 +6,6 @@ type DocumentAttributes map[string]interface{}
 const (
 	// AttrSyntaxHighlighter the attribute to define the syntax highlighter on code source blocks
 	AttrSyntaxHighlighter string = "source-highlighter"
-	// AttrAuthor the key to retrieve the author in the attributes
-	AttrAuthor string = "author"
 	// AttrIDPrefix the key to retrieve the ID Prefix
 	AttrIDPrefix string = "idprefix"
 	// DefaultIDPrefix the default ID Prefix
