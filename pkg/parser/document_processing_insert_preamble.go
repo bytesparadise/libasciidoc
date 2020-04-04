@@ -1,23 +1,24 @@
-package renderer
+package parser
 
 import (
 	"github.com/bytesparadise/libasciidoc/pkg/types"
+
 	log "github.com/sirupsen/logrus"
 )
 
-// IncludePreamble wraps all document elements before the first section in a `Preamble`,
+// includePreamble wraps all document elements before the first section in a `Preamble`,
 // unless the document has no section. Returns a new document with the changes.
-func IncludePreamble(ctx Context) Context {
-	if header, ok := ctx.Document.Header(); ok {
-		header.Elements = insertPreamble(header.Elements)
-		ctx.Document.Elements[0] = header // need to update the header in the parent doc as we don't use pointers here.
+func includePreamble(doc types.Document) types.Document {
+	if header, ok := doc.Header(); ok {
+		header.Elements = doInsertPreamble(header.Elements)
+		doc.Elements[0] = header // need to update the header in the parent doc as we don't use pointers here.
 	} else {
-		ctx.Document.Elements = insertPreamble(ctx.Document.Elements)
+		doc.Elements = doInsertPreamble(doc.Elements)
 	}
-	return ctx
+	return doc
 }
 
-func insertPreamble(blocks []interface{}) []interface{} {
+func doInsertPreamble(blocks []interface{}) []interface{} {
 	log.Debugf("generating preamble from %d blocks", len(blocks))
 	preamble := types.Preamble{
 		Elements: make([]interface{}, 0),
