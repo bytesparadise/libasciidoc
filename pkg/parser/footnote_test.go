@@ -628,14 +628,18 @@ a paragraph with another footnote:[baz]`
 						types.AttrID: "id_title",
 					},
 					Elements: []interface{}{
-						types.Paragraph{
-							Attributes: types.ElementAttributes{},
-							Lines: [][]interface{}{
-								{
-									types.StringElement{
-										Content: "a premable with a ",
+						types.Preamble{ // preamble is inserted
+							Elements: []interface{}{
+								types.Paragraph{
+									Attributes: types.ElementAttributes{},
+									Lines: [][]interface{}{
+										{
+											types.StringElement{
+												Content: "a premable with a ",
+											},
+											footnote1,
+										},
 									},
-									footnote1,
 								},
 							},
 						},

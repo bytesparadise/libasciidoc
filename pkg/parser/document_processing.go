@@ -5,6 +5,8 @@ import (
 
 	"github.com/bytesparadise/libasciidoc/pkg/configuration"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
+	"github.com/davecgh/go-spew/spew"
+	log "github.com/sirupsen/logrus"
 )
 
 // ParseDocument parses the content of the reader identitied by the filename
@@ -45,7 +47,16 @@ func ParseDocument(r io.Reader, config configuration.Configuration) (types.Docum
 	for k, v := range draftDoc.FrontMatter.Content {
 		doc.Attributes[k] = v
 	}
+	// insert the preamble at the right location
+	doc = includePreamble(doc)
 	// and add all remaining attributes, too
 	doc.Attributes.AddAll(attrs.All())
+	// also insert the table of contents
+	doc = includeTableOfContentsPlaceHolder(doc)
+	if log.IsLevelEnabled(log.DebugLevel) {
+		log.Debug("final document:")
+		spew.Dump(doc)
+	}
+
 	return doc, nil
 }

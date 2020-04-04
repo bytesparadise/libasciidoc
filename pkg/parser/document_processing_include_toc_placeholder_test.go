@@ -1,8 +1,7 @@
-package renderer_test
+package parser
 
 import (
 	"github.com/bytesparadise/libasciidoc/pkg/types"
-	. "github.com/bytesparadise/libasciidoc/testsupport"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
@@ -66,7 +65,7 @@ var _ = Describe("table of contents", func() {
 				section,
 			},
 		}
-		Expect(IncludeTableOfContentsPlaceHolder(source)).To(Equal(expected))
+		Expect(includeTableOfContentsPlaceHolder(source)).To(Equal(expected))
 	})
 
 	It("table of contents with default placement and a header with content", func() {
@@ -113,7 +112,7 @@ var _ = Describe("table of contents", func() {
 				},
 			},
 		}
-		Expect(IncludeTableOfContentsPlaceHolder(source)).To(Equal(expected))
+		Expect(includeTableOfContentsPlaceHolder(source)).To(Equal(expected))
 	})
 
 	It("table of contents with default placement and a header without content", func() {
@@ -158,7 +157,7 @@ var _ = Describe("table of contents", func() {
 				},
 			},
 		}
-		Expect(IncludeTableOfContentsPlaceHolder(source)).To(Equal(expected))
+		Expect(includeTableOfContentsPlaceHolder(source)).To(Equal(expected))
 	})
 
 	It("table of contents with preamble placement and no header with content", func() {
@@ -187,7 +186,7 @@ var _ = Describe("table of contents", func() {
 				section,
 			},
 		}
-		Expect(IncludeTableOfContentsPlaceHolder(source)).To(Equal(expected))
+		Expect(includeTableOfContentsPlaceHolder(source)).To(Equal(expected))
 	})
 
 	It("table of contents with preamble placement and header with content", func() {
@@ -234,7 +233,7 @@ var _ = Describe("table of contents", func() {
 				},
 			},
 		}
-		Expect(IncludeTableOfContentsPlaceHolder(source)).To(Equal(expected))
+		Expect(includeTableOfContentsPlaceHolder(source)).To(Equal(expected))
 	})
 
 	It("table of contents with preamble placement and header without content", func() {
@@ -279,7 +278,7 @@ var _ = Describe("table of contents", func() {
 				},
 			},
 		}
-		Expect(IncludeTableOfContentsPlaceHolder(source)).To(Equal(expected))
+		Expect(includeTableOfContentsPlaceHolder(source)).To(Equal(expected))
 	})
 
 })

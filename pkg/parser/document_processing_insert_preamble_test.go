@@ -1,8 +1,7 @@
-package renderer_test
+package parser
 
 import (
 	"github.com/bytesparadise/libasciidoc/pkg/types"
-	. "github.com/bytesparadise/libasciidoc/testsupport"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
@@ -79,7 +78,7 @@ var _ = Describe("preambles", func() {
 				},
 			},
 		}
-		Expect(IncludePreamble(source)).To(Equal(expected))
+		Expect(includePreamble(source)).To(Equal(expected))
 	})
 
 	It("doc with 1-paragraph preamble", func() {
@@ -165,7 +164,7 @@ var _ = Describe("preambles", func() {
 				},
 			},
 		}
-		Expect(IncludePreamble(source)).To(Equal(expected))
+		Expect(includePreamble(source)).To(Equal(expected))
 	})
 
 	It("doc with 2-paragraph preamble", func() {
@@ -269,7 +268,7 @@ var _ = Describe("preambles", func() {
 				},
 			},
 		}
-		Expect(IncludePreamble(source)).To(Equal(expected))
+		Expect(includePreamble(source)).To(Equal(expected))
 	})
 
 })

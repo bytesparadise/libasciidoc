@@ -1128,6 +1128,7 @@ a paragraph`
 					Footnotes:          types.Footnotes{},
 					FootnoteReferences: types.FootnoteReferences{},
 					Elements: []interface{}{
+						types.TableOfContentsPlaceHolder{},
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
 							Lines: [][]interface{}{
@@ -1157,6 +1158,7 @@ a paragraph`
 					Footnotes:          types.Footnotes{},
 					FootnoteReferences: types.FootnoteReferences{},
 					Elements: []interface{}{
+						types.TableOfContentsPlaceHolder{},
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
 							Lines: [][]interface{}{
@@ -1190,6 +1192,7 @@ a paragraph`
 					Footnotes:          types.Footnotes{},
 					FootnoteReferences: types.FootnoteReferences{},
 					Elements: []interface{}{
+						types.TableOfContentsPlaceHolder{},
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
 							Lines: [][]interface{}{
@@ -1219,6 +1222,7 @@ a paragraph`
 					Footnotes:          types.Footnotes{},
 					FootnoteReferences: types.FootnoteReferences{},
 					Elements: []interface{}{
+						types.TableOfContentsPlaceHolder{},
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
 							Lines: [][]interface{}{
@@ -1345,6 +1349,7 @@ This journey continues`
 							},
 							Title: title,
 							Elements: []interface{}{
+								types.TableOfContentsPlaceHolder{},
 								types.Paragraph{
 									Attributes: types.ElementAttributes{},
 									Lines: [][]interface{}{

@@ -1,4 +1,4 @@
-package renderer
+package parser
 
 import (
 	"github.com/bytesparadise/libasciidoc/pkg/types"
@@ -7,14 +7,14 @@ import (
 
 // IncludeTableOfContentsPlaceHolder includes a `TableOfContentsPlaceHolder` block in the document
 // if the `toc` attribute is present
-func IncludeTableOfContentsPlaceHolder(ctx Context) Context {
-	if t, found := ctx.Document.Attributes.GetAsString(types.AttrTableOfContents); found {
-		ctx.Document = insertTableOfContentsPlaceHolder(ctx.Document, t)
+func includeTableOfContentsPlaceHolder(doc types.Document) types.Document {
+	if t, found := doc.Attributes.GetAsString(types.AttrTableOfContents); found {
+		doc = doInsertTableOfContentsPlaceHolder(doc, t)
 	}
-	return ctx
+	return doc
 }
 
-func insertTableOfContentsPlaceHolder(doc types.Document, location string) types.Document {
+func doInsertTableOfContentsPlaceHolder(doc types.Document, location string) types.Document {
 	log.Debugf("inserting a table of contents at location `%s`", location)
 	// insert a TableOfContentsPlaceHolder element if `toc` value is:
 	// - "auto" (or empty)
