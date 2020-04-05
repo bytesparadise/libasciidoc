@@ -17,6 +17,7 @@ var delimitedBlockParagraphTmpl texttemplate.Template
 var sourceParagraphTmpl texttemplate.Template
 var verseParagraphTmpl texttemplate.Template
 var quoteParagraphTmpl texttemplate.Template
+var manpageNameParagraphTmpl texttemplate.Template
 
 // initializes the templates
 func init() {
@@ -95,6 +96,13 @@ func init() {
 			"plainText":   PlainText,
 			"escape":      EscapeString,
 		})
+
+	manpageNameParagraphTmpl = newTextTemplate("manpage name paragraph",
+		`{{ $ctx := .Context }}{{ with .Data }}{{ $renderedLines := renderLines $ctx .Lines | printf "%s" }}<p>{{ $renderedLines }}</p>{{ end }}`,
+		texttemplate.FuncMap{
+			"renderLines": renderLines,
+			"escape":      EscapeString,
+		})
 }
 
 func renderParagraph(ctx renderer.Context, p types.Paragraph) ([]byte, error) {
@@ -112,6 +120,8 @@ func renderParagraph(ctx renderer.Context, p types.Paragraph) ([]byte, error) {
 		return renderVerseParagraph(ctx, p)
 	} else if kind, ok := p.Attributes[types.AttrKind]; ok && kind == types.Quote {
 		return renderQuoteParagraph(ctx, p)
+	} else if kind, ok := p.Attributes[types.AttrKind]; ok && kind == "manpage" {
+		return renderManpageNameParagraph(ctx, p)
 	} else if ctx.WithinDelimitedBlock() || ctx.WithinList() {
 		return renderDelimitedBlockParagraph(ctx, p)
 	} else {
@@ -127,7 +137,7 @@ func renderParagraph(ctx renderer.Context, p types.Paragraph) ([]byte, error) {
 			}{
 				ID:         id,
 				Class:      getParagraphClass(p),
-				Title:      renderTitle(p.Attributes),
+				Title:      renderElementTitle(p.Attributes),
 				Lines:      p.Lines,
 				HardBreaks: WithHardBreaks(p.Attributes.Has(types.AttrHardBreaks) || ctx.Document.Attributes.Has(types.DocumentAttrHardBreaks)),
 			},
@@ -158,7 +168,7 @@ func renderAdmonitionParagraph(ctx renderer.Context, p types.Paragraph) ([]byte,
 			Lines     [][]interface{}
 		}{
 			ID:        renderElementID(p.Attributes),
-			Title:     renderTitle(p.Attributes),
+			Title:     renderElementTitle(p.Attributes),
 			Class:     renderClass(k),
 			IconTitle: renderIconTitle(k),
 			IconClass: renderIconClass(ctx, k),
@@ -180,7 +190,7 @@ func renderSourceParagraph(ctx renderer.Context, p types.Paragraph) ([]byte, err
 			Lines    [][]interface{}
 		}{
 			ID:       renderElementID(p.Attributes),
-			Title:    renderTitle(p.Attributes),
+			Title:    renderElementTitle(p.Attributes),
 			Language: p.Attributes.GetAsString(types.AttrLanguage),
 			Lines:    p.Lines,
 		},
@@ -200,7 +210,7 @@ func renderVerseParagraph(ctx renderer.Context, p types.Paragraph) ([]byte, erro
 			Lines       [][]interface{}
 		}{
 			ID:          renderElementID(p.Attributes),
-			Title:       renderTitle(p.Attributes),
+			Title:       renderElementTitle(p.Attributes),
 			Attribution: NewParagraphAttribution(p),
 			Lines:       p.Lines,
 		},
@@ -220,9 +230,23 @@ func renderQuoteParagraph(ctx renderer.Context, p types.Paragraph) ([]byte, erro
 			Lines       [][]interface{}
 		}{
 			ID:          renderElementID(p.Attributes),
-			Title:       renderTitle(p.Attributes),
+			Title:       renderElementTitle(p.Attributes),
 			Attribution: NewParagraphAttribution(p),
 			Lines:       p.Lines,
+		},
+	})
+	return result.Bytes(), err
+}
+
+func renderManpageNameParagraph(ctx renderer.Context, p types.Paragraph) ([]byte, error) {
+	log.Debug("rendering name section paragraph in manpage...")
+	result := bytes.NewBuffer(nil)
+	err := manpageNameParagraphTmpl.Execute(result, ContextualPipeline{
+		Context: ctx,
+		Data: struct {
+			Lines [][]interface{}
+		}{
+			Lines: p.Lines,
 		},
 	})
 	return result.Bytes(), err
@@ -240,7 +264,7 @@ func renderDelimitedBlockParagraph(ctx renderer.Context, p types.Paragraph) ([]b
 			Lines      [][]interface{}
 		}{
 			ID:         renderElementID(p.Attributes),
-			Title:      renderTitle(p.Attributes),
+			Title:      renderElementTitle(p.Attributes),
 			CheckStyle: renderCheckStyle(p.Attributes[types.AttrCheckStyle]),
 			Lines:      p.Lines,
 		},
@@ -310,7 +334,7 @@ func getParagraphClass(p types.Paragraph) string {
 	return result
 }
 
-func renderTitle(attrs types.ElementAttributes) string {
+func renderElementTitle(attrs types.ElementAttributes) string {
 	if attrs.Has(types.AttrTitle) {
 		return strings.TrimSpace(attrs.GetAsString(types.AttrTitle))
 	}

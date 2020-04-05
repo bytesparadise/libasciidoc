@@ -66,7 +66,7 @@ func renderLiteralBlock(ctx renderer.Context, b types.LiteralBlock) ([]byte, err
 			Lines []string
 		}{
 			ID:    renderElementID(b.Attributes),
-			Title: renderTitle(b.Attributes),
+			Title: renderElementTitle(b.Attributes),
 			Lines: lines,
 		}})
 	if err != nil {
