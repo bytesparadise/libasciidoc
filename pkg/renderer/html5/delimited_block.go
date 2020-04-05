@@ -183,7 +183,7 @@ func renderFencedBlock(ctx renderer.Context, b types.DelimitedBlock) ([]byte, er
 			Elements []interface{}
 		}{
 			ID:       renderElementID(b.Attributes),
-			Title:    renderTitle(b.Attributes),
+			Title:    renderElementTitle(b.Attributes),
 			Elements: discardTrailingBlankLines(b.Elements),
 		},
 	})
@@ -206,7 +206,7 @@ func renderListingBlock(ctx renderer.Context, b types.DelimitedBlock) ([]byte, e
 			Elements []interface{}
 		}{
 			ID:       renderElementID(b.Attributes),
-			Title:    renderTitle(b.Attributes),
+			Title:    renderElementTitle(b.Attributes),
 			Elements: discardTrailingBlankLines(b.Elements),
 		},
 	})
@@ -279,7 +279,7 @@ func renderSourceBlock(ctx renderer.Context, b types.DelimitedBlock) ([]byte, er
 		Content           string
 	}{
 		ID:                renderElementID(b.Attributes),
-		Title:             renderTitle(b.Attributes),
+		Title:             renderElementTitle(b.Attributes),
 		SyntaxHighlighter: hightligher,
 		Language:          language,
 		Content:           content,
@@ -304,7 +304,7 @@ func renderExampleBlock(ctx renderer.Context, b types.DelimitedBlock) ([]byte, e
 				Class:     renderClass(k),
 				IconClass: renderIconClass(ctx, k),
 				IconTitle: renderIconTitle(k),
-				Title:     renderTitle(b.Attributes),
+				Title:     renderElementTitle(b.Attributes),
 				Elements:  discardTrailingBlankLines(b.Elements),
 			},
 		})
@@ -313,7 +313,7 @@ func renderExampleBlock(ctx renderer.Context, b types.DelimitedBlock) ([]byte, e
 	// default, example block
 	var title string
 	if b.Attributes.Has(types.AttrTitle) {
-		title = "Example " + strconv.Itoa(ctx.GetAndIncrementExampleBlockCounter()) + ". " + renderTitle(b.Attributes)
+		title = "Example " + strconv.Itoa(ctx.GetAndIncrementExampleBlockCounter()) + ". " + renderElementTitle(b.Attributes)
 	}
 	err := exampleBlockTmpl.Execute(result, ContextualPipeline{
 		Context: ctx,
@@ -341,7 +341,7 @@ func renderQuoteBlock(ctx renderer.Context, b types.DelimitedBlock) ([]byte, err
 			Elements    []interface{}
 		}{
 			ID:          renderElementID(b.Attributes),
-			Title:       renderTitle(b.Attributes),
+			Title:       renderElementTitle(b.Attributes),
 			Attribution: NewDelimitedBlockAttribution(b),
 			Elements:    b.Elements,
 		},
@@ -360,7 +360,7 @@ func renderVerseBlock(ctx renderer.Context, b types.DelimitedBlock) ([]byte, err
 			Elements    []interface{}
 		}{
 			ID:          renderElementID(b.Attributes),
-			Title:       renderTitle(b.Attributes),
+			Title:       renderElementTitle(b.Attributes),
 			Attribution: NewDelimitedBlockAttribution(b),
 			Elements:    discardTrailingBlankLines(b.Elements),
 		},
@@ -405,7 +405,7 @@ func renderSidebarBlock(ctx renderer.Context, b types.DelimitedBlock) ([]byte, e
 			Elements []interface{}
 		}{
 			ID:       renderElementID(b.Attributes),
-			Title:    renderTitle(b.Attributes),
+			Title:    renderElementTitle(b.Attributes),
 			Elements: discardTrailingBlankLines(b.Elements),
 		},
 	})

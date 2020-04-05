@@ -23,6 +23,9 @@ func verbatim() renderLinesOption {
 }
 
 func renderInlineElements(ctx renderer.Context, elements []interface{}, options ...renderLinesOption) ([]byte, error) {
+	if len(elements) == 0 {
+		return []byte{}, nil
+	}
 	log.Debugf("rendering line with %d element(s)...", len(elements))
 	r := linesRenderer{
 		render: renderElement,

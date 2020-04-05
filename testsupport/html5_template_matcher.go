@@ -6,7 +6,6 @@ import (
 	"time"
 
 	"github.com/bytesparadise/libasciidoc/pkg/configuration"
-	. "github.com/onsi/ginkgo"
 	gomegatypes "github.com/onsi/gomega/types"
 	"github.com/pkg/errors"
 	"github.com/sergi/go-diff/diffmatchpatch"
@@ -29,28 +28,27 @@ type html5TemplateMatcher struct {
 	actual      string
 	expected    string
 	lastUpdated time.Time
+	diffs       string
 }
 
 func (m *html5TemplateMatcher) Match(actual interface{}) (success bool, err error) {
-	if a, ok := actual.(string); ok {
-		m.actual = a
-	} else {
+	if _, ok := actual.(string); !ok {
 		return false, errors.Errorf("MatchHTML5Template matcher expects a string (actual: %T)", actual)
 	}
 	m.expected = strings.Replace(m.expected, "{{.LastUpdated}}", m.lastUpdated.Format(configuration.LastUpdatedFormat), 1)
-	if m.expected != m.actual {
+	if m.expected != actual {
 		dmp := diffmatchpatch.New()
-		diffs := dmp.DiffMain(m.actual, m.expected, true)
-		GinkgoT().Logf("diff:\n%s", dmp.DiffPrettyText(diffs))
+		diffs := dmp.DiffMain(actual.(string), m.expected, true)
+		m.diffs = dmp.DiffPrettyText(diffs)
 		return false, nil
 	}
 	return true, nil
 }
 
 func (m *html5TemplateMatcher) FailureMessage(_ interface{}) (message string) {
-	return fmt.Sprintf("expected HTML5 documents to match:\n\texpected: '%v'\n\tactual:   '%v'", m.expected, m.actual)
+	return fmt.Sprintf("expected HTML5 documents to match:\n%s", m.diffs)
 }
 
 func (m *html5TemplateMatcher) NegatedFailureMessage(_ interface{}) (message string) {
-	return fmt.Sprintf("expected HTML5 documents not to match:\n\texpected: '%v'\n\tactual:   '%v'", m.expected, m.actual)
+	return fmt.Sprintf("expected HTML5 documents not to match:\n%s", m.diffs)
 }

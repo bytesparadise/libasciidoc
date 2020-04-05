@@ -87,14 +87,6 @@ type Document struct {
 	FootnoteReferences FootnoteReferences
 }
 
-// Title retrieves the document title in its metadata, or empty section title if the title was not specified
-func (d Document) Title() ([]interface{}, bool) {
-	if header, ok := d.Header(); ok {
-		return header.Title, true
-	}
-	return []interface{}{}, false
-}
-
 // Authors retrieves the document authors from the document header, or empty array if no author was found
 func (d Document) Authors() ([]DocumentAuthor, bool) {
 	if header, ok := d.Header(); ok {
@@ -116,11 +108,13 @@ func (d Document) Revision() (DocumentRevision, bool) {
 }
 
 // Header returns the header, i.e., the section with level 0 if it exists as the first element of the document
+// For manpage documents, this also includes the first section (`Name` along with its first paragraph)
 func (d Document) Header() (Section, bool) {
-	if len(d.Elements) > 0 {
-		if section, ok := d.Elements[0].(Section); ok && section.Level == 0 {
-			return section, true
-		}
+	if len(d.Elements) == 0 {
+		return Section{}, false
+	}
+	if section, ok := d.Elements[0].(Section); ok && section.Level == 0 {
+		return section, true
 	}
 	return Section{}, false
 }

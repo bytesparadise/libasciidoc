@@ -91,16 +91,6 @@ func renderTableOfContentsSections(ctx renderer.Context, sections []types.ToCSec
 	return template.HTML(resultBuf.String()), nil
 }
 
-func getTableOfContentsLevels(doc types.Document) (int, error) {
-	log.Debugf("doc attributes: %v", doc.Attributes)
-	if l, found := doc.Attributes.GetAsString(types.AttrTableOfContentsLevels); found {
-		log.Debugf("ToC levels: '%s'", l)
-		return strconv.Atoi(l)
-	}
-	log.Debug("ToC levels: '2' (default)")
-	return 2, nil
-}
-
 // NewTableOfContents initializes a TableOfContents from the sections
 // of the given document
 func NewTableOfContents(ctx renderer.Context) (types.TableOfContents, error) {
@@ -155,4 +145,14 @@ func visitSection(ctx renderer.Context, section types.Section, currentLevel int)
 		},
 	}, nil
 
+}
+
+func getTableOfContentsLevels(doc types.Document) (int, error) {
+	log.Debugf("doc attributes: %v", doc.Attributes)
+	if l, found := doc.Attributes.GetAsString(types.AttrTableOfContentsLevels); found {
+		log.Debugf("ToC levels: '%s'", l)
+		return strconv.Atoi(l)
+	}
+	log.Debug("ToC levels: '2' (default)")
+	return 2, nil
 }

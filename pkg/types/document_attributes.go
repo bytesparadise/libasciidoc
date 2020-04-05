@@ -4,6 +4,8 @@ package types
 type DocumentAttributes map[string]interface{}
 
 const (
+	// AttrDocType the "doctype" attribute
+	AttrDocType string = "doctype"
 	// AttrSyntaxHighlighter the attribute to define the syntax highlighter on code source blocks
 	AttrSyntaxHighlighter string = "source-highlighter"
 	// AttrIDPrefix the key to retrieve the ID Prefix

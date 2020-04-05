@@ -9,7 +9,6 @@ import (
 	"github.com/bytesparadise/libasciidoc/pkg/renderer"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 	"github.com/pkg/errors"
-	log "github.com/sirupsen/logrus"
 )
 
 var documentDetailsTmpl texttemplate.Template
@@ -96,7 +95,6 @@ func renderDocumentAuthorsDetails(ctx renderer.Context) (*htmltemplate.HTML, err
 			authorsDetailsBuff.Write(authorDetailsBuff.Bytes())
 			i++
 		} else {
-			log.Debugf("No match found for '%s'", authorKey)
 			break
 		}
 	}

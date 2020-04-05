@@ -2,9 +2,12 @@ package testsupport_test
 
 import (
 	"fmt"
+	"strings"
 	"time"
 
+	"github.com/bytesparadise/libasciidoc/pkg/configuration"
 	"github.com/bytesparadise/libasciidoc/testsupport"
+	"github.com/sergi/go-diff/diffmatchpatch"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
@@ -35,8 +38,11 @@ var _ = Describe("html5 template matcher", func() {
 		// then
 		Expect(err).ToNot(HaveOccurred())
 		Expect(result).To(BeFalse())
-		Expect(matcher.FailureMessage(actual)).To(Equal(fmt.Sprintf("expected HTML5 documents to match:\n\texpected: '%v'\n\tactual:   '%v'", `<p>`+now.Format("2006-01-02 15:04:05 -0700")+`</p>`, actual)))
-		Expect(matcher.NegatedFailureMessage(actual)).To(Equal(fmt.Sprintf("expected HTML5 documents not to match:\n\texpected: '%v'\n\tactual:   '%v'", `<p>`+now.Format("2006-01-02 15:04:05 -0700")+`</p>`, actual)))
+		expected := strings.Replace(tmpl, "{{.LastUpdated}}", now.Format(configuration.LastUpdatedFormat), 1)
+		dmp := diffmatchpatch.New()
+		diffs := dmp.DiffMain(actual, expected, true)
+		Expect(matcher.FailureMessage(actual)).To(Equal(fmt.Sprintf("expected HTML5 documents to match:\n%s", dmp.DiffPrettyText(diffs))))
+		Expect(matcher.NegatedFailureMessage(actual)).To(Equal(fmt.Sprintf("expected HTML5 documents not to match:\n%s", dmp.DiffPrettyText(diffs))))
 	})
 
 	It("should return error when invalid type is input", func() {
