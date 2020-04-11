@@ -93,9 +93,9 @@ func renderTableOfContentsSections(ctx renderer.Context, sections []types.ToCSec
 
 // NewTableOfContents initializes a TableOfContents from the sections
 // of the given document
-func NewTableOfContents(ctx renderer.Context) (types.TableOfContents, error) {
-	sections := make([]types.ToCSection, 0, len(ctx.Document.Elements))
-	for _, e := range ctx.Document.Elements {
+func NewTableOfContents(ctx renderer.Context, doc types.Document) (types.TableOfContents, error) {
+	sections := make([]types.ToCSection, 0, len(doc.Elements))
+	for _, e := range doc.Elements {
 		if s, ok := e.(types.Section); ok {
 			tocs, err := visitSection(ctx, s, 1)
 			if err != nil {
@@ -110,7 +110,7 @@ func NewTableOfContents(ctx renderer.Context) (types.TableOfContents, error) {
 }
 
 func visitSection(ctx renderer.Context, section types.Section, currentLevel int) ([]types.ToCSection, error) {
-	tocLevels, err := getTableOfContentsLevels(ctx.Document)
+	tocLevels, err := getTableOfContentsLevels(ctx)
 	if err != nil {
 		return []types.ToCSection{}, err
 	}
@@ -147,9 +147,9 @@ func visitSection(ctx renderer.Context, section types.Section, currentLevel int)
 
 }
 
-func getTableOfContentsLevels(doc types.Document) (int, error) {
-	log.Debugf("doc attributes: %v", doc.Attributes)
-	if l, found := doc.Attributes.GetAsString(types.AttrTableOfContentsLevels); found {
+func getTableOfContentsLevels(ctx renderer.Context) (int, error) {
+	log.Debugf("doc attributes: %v", ctx.Attributes)
+	if l, found := ctx.Attributes.GetAsString(types.AttrTableOfContentsLevels); found {
 		log.Debugf("ToC levels: '%s'", l)
 		return strconv.Atoi(l)
 	}

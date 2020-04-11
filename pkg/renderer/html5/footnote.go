@@ -60,11 +60,11 @@ func renderFootnoteIndex(idx int) string {
 func renderFootnote(ctx renderer.Context, note types.Footnote) ([]byte, error) {
 	result := bytes.NewBuffer(nil)
 	ref := ""
-	noteRef, hasRef := ctx.Document.FootnoteReferences[note.Ref]
+	noteRef, hasRef := ctx.FootnoteReferences[note.Ref]
 	if hasRef {
 		ref = note.Ref
 	}
-	if id, ok := ctx.Document.Footnotes.IndexOf(note); ok {
+	if id, ok := ctx.Footnotes.IndexOf(note); ok {
 		// valid case for a footnte with content, with our without an explicit reference
 		err := footnoteTmpl.Execute(result, struct {
 			ID    int
@@ -109,7 +109,7 @@ func renderFootnote(ctx renderer.Context, note types.Footnote) ([]byte, error) {
 
 func renderFootnoteRefPlainText(ctx renderer.Context, note types.Footnote) ([]byte, error) {
 	result := bytes.NewBuffer(nil)
-	if id, ok := ctx.Document.Footnotes.IndexOf(note); ok {
+	if id, ok := ctx.Footnotes.IndexOf(note); ok {
 		// valid case for a footnte with content, with our without an explicit reference
 		err := footnoterefPlainTextTmpl.Execute(result, struct {
 			ID    int

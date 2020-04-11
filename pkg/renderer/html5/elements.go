@@ -52,11 +52,11 @@ func renderListElements(ctx renderer.Context, elements []interface{}) ([]byte, e
 	hasContent := false
 	for i, element := range elements {
 		if i == 0 {
-			ctx.SetWithinList(true)
+			ctx.WithinList++
 		}
 		renderedElement, err := renderElement(ctx, element)
 		if i == 0 {
-			ctx.SetWithinList(false)
+			ctx.WithinList--
 		}
 		if err != nil {
 			return nil, errors.Wrapf(err, "unable to render a list block")
@@ -171,7 +171,7 @@ func includeNewline(ctx renderer.Context, index int, content interface{}) string
 	case reflect.Slice, reflect.Array:
 		s := reflect.ValueOf(content)
 		if _, match := s.Index(index).Interface().(types.BlankLine); match {
-			if ctx.IncludeBlankLine() {
+			if ctx.IncludeBlankLine {
 				return "\n"
 			}
 			return ""

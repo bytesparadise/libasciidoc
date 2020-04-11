@@ -56,17 +56,13 @@ func renderPreamble(ctx renderer.Context, p types.Preamble) ([]byte, error) {
 	result := bytes.NewBuffer(nil)
 	// the <div id="preamble"> wrapper is only necessary
 	// if the document has a section 0
-	wrapper := false
-	if _, ok := ctx.Document.Header(); ok {
-		wrapper = true
-	}
 	err := preambleTmpl.Execute(result, ContextualPipeline{
 		Context: ctx,
 		Data: struct {
 			Wrapper  bool
 			Elements []interface{}
 		}{
-			Wrapper:  wrapper,
+			Wrapper:  ctx.HasHeader,
 			Elements: p.Elements,
 		},
 	})

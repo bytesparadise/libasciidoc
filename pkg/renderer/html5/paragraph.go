@@ -81,6 +81,7 @@ func init() {
 			"plainText":   PlainText,
 			"escape":      EscapeString,
 		})
+		
 	quoteParagraphTmpl = newTextTemplate("quote paragraph", `{{ $ctx := .Context }}{{ with .Data }}<div {{ if .ID }}id="{{ .ID }}" {{ end }}class="quoteblock">{{ if .Title }}
 <div class="title">{{ escape .Title }}</div>{{ end }}
 <blockquote>
@@ -122,7 +123,7 @@ func renderParagraph(ctx renderer.Context, p types.Paragraph) ([]byte, error) {
 		return renderQuoteParagraph(ctx, p)
 	} else if kind, ok := p.Attributes[types.AttrKind]; ok && kind == "manpage" {
 		return renderManpageNameParagraph(ctx, p)
-	} else if ctx.WithinDelimitedBlock() || ctx.WithinList() {
+	} else if ctx.WithinDelimitedBlock || ctx.WithinList > 0 {
 		return renderDelimitedBlockParagraph(ctx, p)
 	} else {
 		log.Debug("rendering a standalone paragraph")
@@ -139,7 +140,7 @@ func renderParagraph(ctx renderer.Context, p types.Paragraph) ([]byte, error) {
 				Class:      getParagraphClass(p),
 				Title:      renderElementTitle(p.Attributes),
 				Lines:      p.Lines,
-				HardBreaks: WithHardBreaks(p.Attributes.Has(types.AttrHardBreaks) || ctx.Document.Attributes.Has(types.DocumentAttrHardBreaks)),
+				HardBreaks: WithHardBreaks(p.Attributes.Has(types.AttrHardBreaks) || ctx.Attributes.Has(types.DocumentAttrHardBreaks)),
 			},
 		})
 	}
@@ -284,7 +285,7 @@ func renderCheckStyle(style interface{}) string {
 }
 
 func renderIconClass(ctx renderer.Context, kind types.AdmonitionKind) string {
-	if icons, _ := ctx.Document.Attributes.GetAsString("icons"); icons == "font" {
+	if icons, _ := ctx.Attributes.GetAsString("icons"); icons == "font" {
 		return renderClass(kind)
 	}
 	return ""
@@ -388,7 +389,7 @@ func renderLines(ctx renderer.Context, lines [][]interface{}, options ...RenderL
 			}
 		}
 
-		if i < len(lines)-1 && (len(renderedElement) > 0 || ctx.WithinDelimitedBlock()) {
+		if i < len(lines)-1 && (len(renderedElement) > 0 || ctx.WithinDelimitedBlock) {
 			// log.Debugf("rendered line is not the last one in the slice")
 			var err error
 			if linesRenderer.hardbreaks {

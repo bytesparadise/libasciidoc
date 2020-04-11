@@ -27,7 +27,7 @@ var _ = Describe("article.adoc", func() {
 		GinkgoT().Logf("actual document: `%s`", spew.Sdump(doc))
 		buff := bytes.NewBuffer(nil)
 		ctx := renderer.NewContext(doc, config)
-		_, err = html5.Render(ctx, buff)
+		_, err = html5.Render(ctx, doc, buff)
 		Expect(err).ToNot(HaveOccurred())
 	})
 })

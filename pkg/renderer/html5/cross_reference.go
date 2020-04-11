@@ -26,7 +26,7 @@ func renderInternalCrossReference(ctx renderer.Context, xref types.InternalCross
 	var label string
 	if xref.Label != "" {
 		label = xref.Label
-	} else if target, found := ctx.Document.ElementReferences[xref.ID]; found {
+	} else if target, found := ctx.ElementReferences[xref.ID]; found {
 		if t, ok := target.([]interface{}); ok {
 			renderedContent, err := renderElement(ctx, t)
 			if err != nil {
