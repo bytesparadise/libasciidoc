@@ -58,7 +58,7 @@ func ConvertToHTML(r io.Reader, output io.Writer, config configuration.Configura
 		return types.Metadata{}, err
 	}
 	rendererCtx := renderer.NewContext(doc, config)
-	metadata, err := htmlrenderer.Render(rendererCtx, output)
+	metadata, err := htmlrenderer.Render(rendererCtx, doc, output)
 	if err != nil {
 		return types.Metadata{}, err
 	}

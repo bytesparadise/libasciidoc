@@ -62,24 +62,24 @@ Last updated {{ .LastUpdated }}
 }
 
 // Render renders the given document in HTML and writes the result in the given `writer`
-func Render(ctx renderer.Context, output io.Writer) (types.Metadata, error) {
-	renderedTitle, err := renderDocumentTitle(ctx)
+func Render(ctx renderer.Context, doc types.Document, output io.Writer) (types.Metadata, error) {
+	renderedTitle, err := renderDocumentTitle(ctx, doc)
 	if err != nil {
 		return types.Metadata{}, errors.Wrapf(err, "unable to render full document")
 	}
 	// needs to be set before rendering the content elements
-	ctx.TableOfContents, err = NewTableOfContents(ctx)
+	ctx.TableOfContents, err = NewTableOfContents(ctx, doc)
 	if err != nil {
 		return types.Metadata{}, errors.Wrapf(err, "unable to render full document")
 	}
-	renderedHeader, renderedContent, err := splitAndRender(ctx, ctx.Document)
+	renderedHeader, renderedContent, err := splitAndRender(ctx, doc)
 	if err != nil {
 		return types.Metadata{}, errors.Wrapf(err, "unable to render full document")
 	}
 
 	if ctx.Config.IncludeHeaderFooter {
 		log.Debugf("Rendering full document...")
-		revNumber, _ := ctx.Document.Attributes.GetAsString("revnumber")
+		revNumber, _ := doc.Attributes.GetAsString("revnumber")
 		err = articleTmpl.Execute(output, struct {
 			Generator     string
 			Doctype       string
@@ -93,15 +93,15 @@ func Render(ctx renderer.Context, output io.Writer) (types.Metadata, error) {
 			IncludeFooter bool
 		}{
 			Generator:     "libasciidoc", // TODO: externalize this value and include the lib version ?
-			Doctype:       ctx.Document.Attributes.GetAsStringWithDefault(types.AttrDocType, "article"),
+			Doctype:       doc.Attributes.GetAsStringWithDefault(types.AttrDocType, "article"),
 			Title:         string(renderedTitle),
 			Header:        string(renderedHeader),
 			Content:       htmltemplate.HTML(string(renderedContent)), //nolint: gosec
 			RevNumber:     revNumber,
 			LastUpdated:   ctx.Config.LastUpdated.Format(configuration.LastUpdatedFormat),
 			CSS:           ctx.Config.CSS,
-			IncludeHeader: !ctx.Document.Attributes.Has(types.AttrNoHeader),
-			IncludeFooter: !ctx.Document.Attributes.Has(types.AttrNoFooter),
+			IncludeHeader: !doc.Attributes.Has(types.AttrNoHeader),
+			IncludeFooter: !doc.Attributes.Has(types.AttrNoFooter),
 		})
 		if err != nil {
 			return types.Metadata{}, errors.Wrapf(err, "unable to render full document")
@@ -142,14 +142,14 @@ func splitAndRenderForArticle(ctx renderer.Context, doc types.Document) ([]byte,
 			if err != nil {
 				return nil, nil, err
 			}
-			renderedContent, err := renderDocumentElements(ctx, header.Elements)
+			renderedContent, err := renderDocumentElements(ctx, header.Elements, doc.Footnotes)
 			if err != nil {
 				return nil, nil, err
 			}
 			return renderedHeader, renderedContent, nil
 		}
 	}
-	renderedContent, err := renderDocumentElements(ctx, doc.Elements)
+	renderedContent, err := renderDocumentElements(ctx, doc.Elements, doc.Footnotes)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -167,7 +167,7 @@ func splitAndRenderForManpage(ctx renderer.Context, doc types.Document) ([]byte,
 		if err != nil {
 			return nil, nil, err
 		}
-		renderedContent, err := renderDocumentElements(ctx, header.Elements[1:])
+		renderedContent, err := renderDocumentElements(ctx, header.Elements[1:], doc.Footnotes)
 		if err != nil {
 			return nil, nil, err
 		}
@@ -178,7 +178,7 @@ func splitAndRenderForManpage(ctx renderer.Context, doc types.Document) ([]byte,
 	if err != nil {
 		return nil, nil, err
 	}
-	renderedContent, err := renderDocumentElements(ctx, header.Elements[1:])
+	renderedContent, err := renderDocumentElements(ctx, header.Elements[1:], doc.Footnotes)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -189,8 +189,8 @@ func splitAndRenderForManpage(ctx renderer.Context, doc types.Document) ([]byte,
 	return []byte{}, result.Bytes(), nil
 }
 
-func renderDocumentTitle(ctx renderer.Context) ([]byte, error) {
-	if header, exists := ctx.Document.Header(); exists {
+func renderDocumentTitle(ctx renderer.Context, doc types.Document) ([]byte, error) {
+	if header, exists := doc.Header(); exists {
 		title, err := renderPlainText(ctx, header.Title)
 		if err != nil {
 			return nil, errors.Wrapf(err, "unable to render document title")
@@ -259,7 +259,7 @@ func renderManpageHeader(ctx renderer.Context, header types.Section, nameSection
 
 // renderDocumentElements renders all document elements, including the footnotes,
 // but not the HEAD and BODY containers
-func renderDocumentElements(ctx renderer.Context, source []interface{}) ([]byte, error) {
+func renderDocumentElements(ctx renderer.Context, source []interface{}, footnotes types.Footnotes) ([]byte, error) {
 	elements := []interface{}{}
 	for i, e := range source {
 		switch e := e.(type) {
@@ -292,7 +292,7 @@ func renderDocumentElements(ctx renderer.Context, source []interface{}) ([]byte,
 		return []byte{}, errors.Wrapf(err, "failed to render document elements")
 	}
 	buff.Write(renderedElements)
-	renderedFootnotes, err := renderFootnotes(ctx, ctx.Document.Footnotes)
+	renderedFootnotes, err := renderFootnotes(ctx, footnotes)
 	if err != nil {
 		return []byte{}, errors.Wrapf(err, "failed to render document elements")
 	}

@@ -168,12 +168,14 @@ func renderDelimitedBlock(ctx renderer.Context, b types.DelimitedBlock) ([]byte,
 }
 
 func renderFencedBlock(ctx renderer.Context, b types.DelimitedBlock) ([]byte, error) {
-	previouslyWithin := ctx.SetWithinDelimitedBlock(true)
-	previouslyInclude := ctx.SetIncludeBlankLine(true)
+	previousWithinDelimitedBlock := ctx.WithinDelimitedBlock
+	previousIncludeBlankline := ctx.IncludeBlankLine
 	defer func() {
-		ctx.SetWithinDelimitedBlock(previouslyWithin)
-		ctx.SetIncludeBlankLine(previouslyInclude)
+		ctx.WithinDelimitedBlock = previousWithinDelimitedBlock
+		ctx.IncludeBlankLine = previousIncludeBlankline
 	}()
+	ctx.WithinDelimitedBlock = true
+	ctx.IncludeBlankLine = true
 	result := bytes.NewBuffer(nil)
 	err := fencedBlockTmpl.Execute(result, ContextualPipeline{
 		Context: ctx,
@@ -191,12 +193,14 @@ func renderFencedBlock(ctx renderer.Context, b types.DelimitedBlock) ([]byte, er
 }
 
 func renderListingBlock(ctx renderer.Context, b types.DelimitedBlock) ([]byte, error) {
-	previouslyWithin := ctx.SetWithinDelimitedBlock(true)
-	previouslyInclude := ctx.SetIncludeBlankLine(true)
+	previousWithinDelimitedBlock := ctx.WithinDelimitedBlock
+	previousIncludeBlankline := ctx.IncludeBlankLine
 	defer func() {
-		ctx.SetWithinDelimitedBlock(previouslyWithin)
-		ctx.SetIncludeBlankLine(previouslyInclude)
+		ctx.WithinDelimitedBlock = previousWithinDelimitedBlock
+		ctx.IncludeBlankLine = previousIncludeBlankline
 	}()
+	ctx.WithinDelimitedBlock = true
+	ctx.IncludeBlankLine = true
 	result := bytes.NewBuffer(nil)
 	err := listingBlockTmpl.Execute(result, ContextualPipeline{
 		Context: ctx,
@@ -214,12 +218,14 @@ func renderListingBlock(ctx renderer.Context, b types.DelimitedBlock) ([]byte, e
 }
 
 func renderSourceBlock(ctx renderer.Context, b types.DelimitedBlock) ([]byte, error) {
-	previouslyWithin := ctx.SetWithinDelimitedBlock(true)
-	previouslyInclude := ctx.SetIncludeBlankLine(true)
+	previousWithinDelimitedBlock := ctx.WithinDelimitedBlock
+	previousIncludeBlankline := ctx.IncludeBlankLine
 	defer func() {
-		ctx.SetWithinDelimitedBlock(previouslyWithin)
-		ctx.SetIncludeBlankLine(previouslyInclude)
+		ctx.WithinDelimitedBlock = previousWithinDelimitedBlock
+		ctx.IncludeBlankLine = previousIncludeBlankline
 	}()
+	ctx.WithinDelimitedBlock = true
+	ctx.IncludeBlankLine = true
 	// first, render the content
 	contentBuf := bytes.NewBuffer(nil)
 	err := sourceBlockContentTmpl.Execute(contentBuf, ContextualPipeline{
@@ -235,14 +241,14 @@ func renderSourceBlock(ctx renderer.Context, b types.DelimitedBlock) ([]byte, er
 	content := contentBuf.String()
 	language := b.Attributes.GetAsString(types.AttrLanguage)
 
-	hightligher, _ := ctx.Document.Attributes.GetAsString(types.AttrSyntaxHighlighter)
+	hightligher, _ := ctx.Attributes.GetAsString(types.AttrSyntaxHighlighter)
 	if language != "" && hightligher == "pygments" {
 		// using github.com/alecthomas/chroma to highlight the content
 		contentBuf = bytes.NewBuffer(nil)
 		lexer := lexers.Get(language)
 		lexer = chroma.Coalesce(lexer)
 		style := styles.Fallback
-		if s, exists := ctx.Document.Attributes.GetAsString("pygments-style"); exists {
+		if s, exists := ctx.Attributes.GetAsString("pygments-style"); exists {
 			style = styles.Get(s)
 		}
 		iterator, err := lexer.Tokenise(nil, content)
@@ -254,7 +260,7 @@ func renderSourceBlock(ctx renderer.Context, b types.DelimitedBlock) ([]byte, er
 			html.PreventSurroundingPre(true),
 		}
 		// extra option: inline CSS instead of classes
-		if ctx.Document.Attributes.GetAsStringWithDefault("pygments-css", "classes") == "style" {
+		if ctx.Attributes.GetAsStringWithDefault("pygments-css", "classes") == "style" {
 			options = append(options, html.WithClasses(false))
 		} else {
 			options = append(options, html.WithClasses(true))
@@ -369,8 +375,11 @@ func renderVerseBlock(ctx renderer.Context, b types.DelimitedBlock) ([]byte, err
 }
 
 func renderVerseBlockElement(ctx renderer.Context, element interface{}) ([]byte, error) {
-	before := ctx.SetIncludeBlankLine(true)
-	defer ctx.SetIncludeBlankLine(before)
+	previousIncludeBlankline := ctx.IncludeBlankLine
+	defer func() {
+		ctx.IncludeBlankLine = previousIncludeBlankline
+	}()
+	ctx.IncludeBlankLine = true
 	switch e := element.(type) {
 	case types.Paragraph:
 		return renderVerseBlockParagraph(ctx, e)

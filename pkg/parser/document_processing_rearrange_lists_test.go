@@ -466,7 +466,7 @@ var _ = Describe("rearrange lists", func() {
 			types.LabeledList{
 				Attributes: types.ElementAttributes{},
 				Items: []types.LabeledListItem{
-					types.LabeledListItem{
+					{
 						Attributes: types.ElementAttributes{},
 						Level:      1,
 						Term: []interface{}{
@@ -494,7 +494,7 @@ var _ = Describe("rearrange lists", func() {
 							types.LabeledList{
 								Attributes: types.ElementAttributes{},
 								Items: []types.LabeledListItem{
-									types.LabeledListItem{
+									{
 										Attributes: types.ElementAttributes{},
 										Level:      2,
 										Term: []interface{}{

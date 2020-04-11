@@ -8,7 +8,7 @@ import (
 )
 
 // TableOfContents returns the Table of Contents for the given document
-func TableOfContents(actual types.Document) (types.TableOfContents, error) {
-	ctx := renderer.NewContext(actual, configuration.NewConfiguration())
-	return html5.NewTableOfContents(ctx)
+func TableOfContents(doc types.Document) (types.TableOfContents, error) {
+	ctx := renderer.NewContext(doc, configuration.NewConfiguration())
+	return html5.NewTableOfContents(ctx, doc)
 }
