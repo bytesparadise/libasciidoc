@@ -138,7 +138,7 @@ func splitAndRender(ctx renderer.Context, doc types.Document) ([]byte, []byte, e
 func splitAndRenderForArticle(ctx renderer.Context, doc types.Document) ([]byte, []byte, error) {
 	if ctx.Config.IncludeHeaderFooter {
 		if header, exists := doc.Header(); exists {
-			renderedHeader, err := renderArticleHeader(ctx, doc, header)
+			renderedHeader, err := renderArticleHeader(ctx, header)
 			if err != nil {
 				return nil, nil, err
 			}
@@ -200,7 +200,7 @@ func renderDocumentTitle(ctx renderer.Context, doc types.Document) ([]byte, erro
 	return nil, nil
 }
 
-func renderArticleHeader(ctx renderer.Context, doc types.Document, header types.Section) ([]byte, error) {
+func renderArticleHeader(ctx renderer.Context, header types.Section) ([]byte, error) {
 	renderedHeader, err := renderInlineElements(ctx, header.Title)
 	if err != nil {
 		return nil, err
