@@ -42,29 +42,25 @@ var _ = Describe("footnotes", func() {
 		Expect(RenderHTML(source)).To(Equal(expected))
 	})
 
-	It("footnoteref with valid ref in a paragraph", func() {
-		source := `a note here footnoteref:[foo, a note for foo] and an there footnoteref:[foo] too`
-		expected := `<div class="paragraph">
-<p>a note here <sup class="footnote" id="_footnote_foo">[<a id="_footnoteref_1" class="footnote" href="#_footnotedef_1" title="View footnote.">1</a>]</sup> and an there <sup class="footnoteref">[<a class="footnote" href="#_footnotedef_1" title="View footnote.">1</a>]</sup> too</p>
-</div>
-<div id="footnotes">
-<hr>
-<div class="footnote" id="_footnotedef_1">
-<a href="#_footnoteref_1">1</a>. a note for foo
-</div>
-</div>`
-		Expect(RenderHTML(source)).To(Equal(expected))
-	})
+	It("multiple footnotes including a reference", func() {
+		source := `A statement.footnote:[a regular footnote.]   
+A bold statement!footnote:disclaimer[Opinions are my own.] 
 
-	It("footnoteref with invalid ref in a paragraph", func() {
-		source := `a note here footnoteref:[foo, a note for foo] and an unknown there footnoteref:[bar]`
+Another outrageous statement.footnote:disclaimer[]`
 		expected := `<div class="paragraph">
-<p>a note here <sup class="footnote" id="_footnote_foo">[<a id="_footnoteref_1" class="footnote" href="#_footnotedef_1" title="View footnote.">1</a>]</sup> and an unknown there <sup class="footnoteref red" title="Unresolved footnote reference.">[bar]</sup></p>
+<p>A statement.<sup class="footnote">[<a id="_footnoteref_1" class="footnote" href="#_footnotedef_1" title="View footnote.">1</a>]</sup>
+A bold statement!<sup class="footnote" id="_footnote_disclaimer">[<a id="_footnoteref_2" class="footnote" href="#_footnotedef_2" title="View footnote.">2</a>]</sup></p>
+</div>
+<div class="paragraph">
+<p>Another outrageous statement.<sup class="footnoteref">[<a class="footnote" href="#_footnotedef_2" title="View footnote.">2</a>]</sup></p>
 </div>
 <div id="footnotes">
 <hr>
 <div class="footnote" id="_footnotedef_1">
-<a href="#_footnoteref_1">1</a>. a note for foo
+<a href="#_footnoteref_1">1</a>. a regular footnote.
+</div>
+<div class="footnote" id="_footnotedef_2">
+<a href="#_footnoteref_2">2</a>. Opinions are my own.
 </div>
 </div>`
 		Expect(RenderHTML(source)).To(Equal(expected))

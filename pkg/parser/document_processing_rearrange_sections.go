@@ -41,13 +41,6 @@ func rearrangeSections(blocks []interface{}) (types.Document, error) {
 				}
 				log.Debugf("adding section with title %v as another section at level %d", e.Title, e.Level)
 				sections = append(sections, e)
-				// if len(sections) == 1 { // we have new top-level element
-				// 	log.Debugf("setting section with title %v as secondary top-level", e.Title)
-				// 	tle = append(tle, &e)
-				// } else {
-				// 	log.Debugf("adding section with title %v as child of section at level %d", e.Title, (len(sections) - 2))
-				// 	sections[len(sections)-2].AddElement(e) // attach to parent
-				// }
 			}
 			previous = &e // pointer to new current parent
 		} else {
