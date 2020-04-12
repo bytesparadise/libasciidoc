@@ -848,7 +848,7 @@ LineBreak <- WS "+" WS* &EOL {
 // ----------------------------------------------------------------------------
 QuotedText <- UnconstrainedQuotedText / ConstrainedQuotedText / EscapedQuotedText
 
-ConstrainedQuotedTextPrefix <- "*" !"*" / "_" !"_" / "`" !"`" 
+ConstrainedQuotedTextMarker <- "*" !"*" / "_" !"_" / "`" !"`" 
 
 UnconstrainedQuotedTextPrefix <- "**" / "__" / "``" / "^" / "~"
 
@@ -1270,13 +1270,11 @@ ImageAttributes <- "[" alt:(StandaloneAttributeValue)? ","? width:(StandaloneAtt
 // ------------------------------------------------------------------------------------
 InlineFootnote <- "footnote:[" content:(FootnoteContent) "]" {
     return types.NewFootnote("", content.([]interface{}))
-} / "footnoteref:[" ref:(FootnoteRef) "," content:(FootnoteContent) "]" {
-    return types.NewFootnote(ref.(string), content.([]interface{}))
-} / "footnoteref:[" ref:(FootnoteRef) "]" {
-    return types.NewFootnote(ref.(string), []interface{}{}) // foot note referring to another note
+} / "footnote:" ref:(FootnoteRef) "[" content:(FootnoteContent)? "]" {
+    return types.NewFootnote(ref.(string), content)
 }
 
-FootnoteRef <- (Alphanums / Spaces / (!"," !"]" !EOL  .))*  { // footnote ID not may span multiple lines
+FootnoteRef <- Alphanums { 
     return string(c.text), nil
 }
 
@@ -1639,31 +1637,23 @@ Alphanums <- [\pL0-9]+ {
     return string(c.text), nil
 }
 
-Dot <- "."
+PunctuationMark <- "." / "?" / "!" / "," / ";" / ":"
 
 SimpleWord <- Alphanums &(WS / "," / "]" / EOL) { // very straightforward content: alphanums followed by spaces but not the "+" signs because it needs a heading space to become a LineBreak element
     return types.NewStringElement(string(c.text))
 }
 
-// a word may end with a dot, but cannot have dots within // TODO: remove check on parenthesis and dot?
-OtherWord <- (Alphanums / !Newline !WS !Dot !UnconstrainedQuotedTextPrefix !LabeledListItemSeparator !Parenthesis .)+ Dot? { 
-    return types.NewStringElement(string(c.text))
-} / "."+ { // word cannot contain parenthesis. Dots and ellipsis are treated as independent words (but will be combined afterwards)
-    return types.NewStringElement(string(c.text))
-}
-
 AnyChars <- (
-    // prevent cases where a letter, number, colon, semi-colon or closing curly bracket directly before the prefix the formatting marks
-    (!(Alphanum / "," / ";" / "}") ConstrainedQuotedTextPrefix) {
+    // allow cases where something else than a letter, number, colon, semi-colon or closing curly bracket appears directly before a quoted text marker
+    (!(Alphanum / "," / ";" / "}") ConstrainedQuotedTextMarker) {
         return string(c.text), nil
     }
     // allow alphanums directly followed by a non excluded character
-    / ((Alphanums (!Newline !WS !Parenthesis !UnconstrainedQuotedTextPrefix !LabeledListItemSeparator !Dot !":" .)?) {
+    / ((Alphanums (!Newline !WS !Parenthesis !UnconstrainedQuotedTextPrefix !LabeledListItemSeparator !PunctuationMark .)?) {
         return string(c.text), nil
-    })
-    )+ / Dot { 
-      
-    return types.NewStringElement(string(c.text))
+    }))+ 
+    / PunctuationMark { // punctuation marks are treated separately, so any following macro (image, footnote, etc.) is not included in this rule
+        return types.NewStringElement(string(c.text))
 }
 
 // this is a fall-back rule in case all preceeding rules failed to match the current content.

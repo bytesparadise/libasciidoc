@@ -1265,17 +1265,24 @@ type Footnote struct {
 }
 
 // NewFootnote returns a new Footnote with the given content
-func NewFootnote(ref string, elements []interface{}) (Footnote, error) {
+func NewFootnote(ref string, elements interface{}) (Footnote, error) {
 	defer func() {
 		footnoteSequence++
 	}()
-	footnote := Footnote{
-		ID:       footnoteSequence,
+	// footnote with content get an ID
+	if elements, ok := elements.([]interface{}); ok {
+		return Footnote{
+			ID:       footnoteSequence,
+			Ref:      ref,
+			Elements: elements,
+		}, nil
+	} // footnote which are just references don't get an ID, so we don't increment the sequence
+	return Footnote{
+		ID:       -1,
 		Ref:      ref,
-		Elements: elements,
-	}
-	log.Debugf("new footnote: %v", footnote)
-	return footnote, nil
+		Elements: []interface{}{},
+	}, nil
+
 }
 
 // ------------------------------------------
