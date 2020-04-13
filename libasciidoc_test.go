@@ -265,7 +265,7 @@ Last updated {{.LastUpdated}}
 			filename := "test/includes/chapter-a.adoc"
 			stat, err := os.Stat(filename)
 			Expect(err).NotTo(HaveOccurred())
-			Expect(RenderHTML5Document(filename, configuration.WithCSS("path/to/style.css"), configuration.WithHeaderFooter(true))).To(MatchHTML5Template(expectedContent, stat.ModTime()))
+			Expect(RenderHTML5Document(filename, configuration.WithCSS("path/to/style.css"), configuration.WithHeaderFooter(true))).To(MatchHTMLTemplate(expectedContent, stat.ModTime()))
 		})
 
 	})

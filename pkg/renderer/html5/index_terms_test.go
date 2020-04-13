@@ -14,7 +14,7 @@ var _ = Describe("index terms", func() {
 		expected := `<div class="paragraph">
 <p>a paragraph with an index term.</p>
 </div>`
-		Expect(RenderHTML(source)).To(Equal(expected))
+		Expect(RenderHTML(source)).To(MatchHTML(expected))
 	})
 
 	It("index term in separate paragraph line", func() {
@@ -24,7 +24,7 @@ a paragraph with an index term.`
 <p>foo_bar_baz <em>italic</em>
 a paragraph with an index term.</p>
 </div>`
-		Expect(RenderHTML(source)).To(Equal(expected))
+		Expect(RenderHTML(source)).To(MatchHTML(expected))
 	})
 })
 
@@ -35,7 +35,7 @@ var _ = Describe("concealed index terms", func() {
 		expected := `<div class="paragraph">
 <p>a paragraph with an index term .</p>
 </div>`
-		Expect(RenderHTML(source)).To(Equal(expected))
+		Expect(RenderHTML(source)).To(MatchHTML(expected))
 	})
 
 	It("concealed index term in single paragraph line", func() {
@@ -44,7 +44,7 @@ a paragraph with an index term.`
 		expected := `<div class="paragraph">
 <p>a paragraph with an index term.</p>
 </div>`
-		Expect(RenderHTML(source)).To(Equal(expected))
+		Expect(RenderHTML(source)).To(MatchHTML(expected))
 	})
 
 	It("concealed index term in single paragraph line", func() {
@@ -53,7 +53,7 @@ a paragraph with an index term.`
 		expected := `<div class="paragraph">
 <p>a paragraph with an index term.</p>
 </div>`
-		Expect(RenderHTML(source)).To(Equal(expected))
+		Expect(RenderHTML(source)).To(MatchHTML(expected))
 	})
 
 	It("concealed index term in labeled list term", func() {
@@ -79,6 +79,6 @@ discarded.</p>
 </dd>
 </dl>
 </div>`
-		Expect(RenderHTML(source)).To(Equal(expected))
+		Expect(RenderHTML(source)).To(MatchHTML(expected))
 	})
 })

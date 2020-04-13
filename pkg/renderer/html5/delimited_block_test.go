@@ -20,7 +20,7 @@ var _ = Describe("delimited blocks", func() {
 here</code></pre>
 </div>
 </div>`
-			Expect(RenderHTML(source)).To(Equal(expected))
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
 		It("fenced block with id and title", func() {
@@ -33,7 +33,7 @@ here</code></pre>
 here</code></pre>
 </div>
 </div>`
-			Expect(RenderHTML(source)).To(Equal(expected))
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
 		It("fenced block with external link inside", func() {
@@ -49,7 +49,7 @@ and more text on the
 next lines</code></pre>
 </div>
 </div>`
-			Expect(RenderHTML(source)).To(Equal(expected))
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 	})
 
@@ -69,7 +69,7 @@ here
 here</pre>
 </div>
 </div>`
-			Expect(RenderHTML(source)).To(Equal(expected))
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
 		It("listing block with ID and title", func() {
@@ -84,7 +84,7 @@ some source code
 <pre>some source code</pre>
 </div>
 </div>`
-			Expect(RenderHTML(source)).To(Equal(expected))
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
 		It("listing block with ID and title and empty trailing line", func() {
@@ -100,7 +100,7 @@ some source code
 <pre>some source code</pre>
 </div>
 </div>`
-			Expect(RenderHTML(source)).To(Equal(expected))
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
 	})
@@ -125,7 +125,7 @@ get &#39;/hi&#39; do
 end</code></pre>
 </div>
 </div>`
-			Expect(RenderHTML(source)).To(Equal(expected))
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
 		It("with title, source and languages attributes", func() {
@@ -149,7 +149,7 @@ get &#39;/hi&#39; do
 end</code></pre>
 </div>
 </div>`
-			Expect(RenderHTML(source)).To(Equal(expected))
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
 		It("with title, source and languages attributes and empty trailing line", func() {
@@ -173,7 +173,7 @@ get &#39;/hi&#39; do
 end</code></pre>
 </div>
 </div>`
-			Expect(RenderHTML(source)).To(Equal(expected))
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
 		It("with id, title, source and languages attributes", func() {
@@ -197,7 +197,7 @@ get &#39;/hi&#39; do
 end</code></pre>
 </div>
 </div>`
-			Expect(RenderHTML(source)).To(Equal(expected))
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
 		It("with html content", func() {
@@ -209,7 +209,7 @@ end</code></pre>
 <pre>&lt;a&gt;link&lt;/a&gt;</pre>
 </div>
 </div>`
-			Expect(RenderHTML(source)).To(Equal(expected))
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
 		It("with other content", func() {
@@ -221,7 +221,7 @@ end</code></pre>
 <pre>  a&lt;&lt;b</pre>
 </div>
 </div>`
-			Expect(RenderHTML(source)).To(Equal(expected))
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 	})
 
@@ -250,7 +250,7 @@ with <strong>bold content</strong></p>
 </div>
 </div>
 </div>`
-			Expect(RenderHTML(source)).To(Equal(expected))
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
 		It("example block with multiple elements - case 2", func() {
@@ -269,7 +269,7 @@ and more content
 </div>
 </div>
 </div>`
-			Expect(RenderHTML(source)).To(Equal(expected))
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
 		It("example block with multiple elements - case 3", func() {
@@ -288,7 +288,7 @@ and "more" content
 </div>
 </div>
 </div>`
-			Expect(RenderHTML(source)).To(Equal(expected))
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
 		It("example block with ID and title", func() {
@@ -306,7 +306,7 @@ foo
 </div>
 </div>
 </div>`
-			Expect(RenderHTML(source)).To(Equal(expected))
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 	})
 
@@ -343,7 +343,7 @@ with <strong>bold content</strong></p>
 </tr>
 </table>
 </div>`
-			Expect(RenderHTML(source)).To(Equal(expected))
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
 		It("admonition block with ID and title", func() {
@@ -379,7 +379,7 @@ with <strong>bold content</strong></p>
 </tr>
 </table>
 </div>`
-			Expect(RenderHTML(source)).To(Equal(expected))
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 		It("admonition block with ID, title and icon", func() {
 			source := `:icons: font
@@ -417,7 +417,7 @@ with <strong>bold content</strong></p>
 </tr>
 </table>
 </div>`
-			Expect(RenderHTML(source)).To(Equal(expected))
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
 		It("admonition paragraph and admonition block with multiple elements", func() {
@@ -462,7 +462,7 @@ this is an admonition paragraph.
 </tr>
 </table>
 </div>`
-			Expect(RenderHTML(source)).To(Equal(expected))
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
 		It("admonition paragraph with an icon", func() {
@@ -483,7 +483,7 @@ an admonition text on
 </tr>
 </table>
 </div>`
-			Expect(RenderHTML(source)).To(Equal(expected))
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
 		It("admonition paragraph with ID, title and icon", func() {
@@ -506,7 +506,7 @@ an admonition text on 1 line.
 </tr>
 </table>
 </div>`
-			Expect(RenderHTML(source)).To(Equal(expected))
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 	})
 
@@ -529,7 +529,7 @@ ____`
 <cite>quote title</cite>
 </div>
 </div>`
-			Expect(RenderHTML(source)).To(Equal(expected))
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
 		It("single-line quote with author and title, and ID and title ", func() {
@@ -551,7 +551,7 @@ ____`
 <cite>quote title</cite>
 </div>
 </div>`
-			Expect(RenderHTML(source)).To(Equal(expected))
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
 		It("multi-line quote with author and title", func() {
@@ -584,7 +584,7 @@ ____`
 <cite>quote title</cite>
 </div>
 </div>`
-			Expect(RenderHTML(source)).To(Equal(expected))
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
 		It("multi-line quote with author only and nested listing", func() {
@@ -622,7 +622,7 @@ ____`
 &#8212; john doe
 </div>
 </div>`
-			Expect(RenderHTML(source)).To(Equal(expected))
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
 		It("single-line quote with title only", func() {
@@ -640,7 +640,7 @@ ____`
 &#8212; quote title
 </div>
 </div>`
-			Expect(RenderHTML(source)).To(Equal(expected))
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
 		It("multi-line quote without author and title", func() {
@@ -661,7 +661,7 @@ are preserved, but not trailing spaces</p>
 </div>
 </blockquote>
 </div>`
-			Expect(RenderHTML(source)).To(Equal(expected))
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
 		It("empty quote without author and title", func() {
@@ -674,7 +674,7 @@ ____`
 
 </blockquote>
 </div>`
-			Expect(RenderHTML(source)).To(Equal(expected))
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
 
 		})
 	})
@@ -694,7 +694,7 @@ ____`
 <cite>verse title</cite>
 </div>
 </div>`
-			Expect(RenderHTML(source)).To(Equal(expected))
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
 		It("single-line verse with author, id and title ", func() {
@@ -712,7 +712,7 @@ ____`
 <cite>verse title</cite>
 </div>
 </div>`
-			Expect(RenderHTML(source)).To(Equal(expected))
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
 		It("multi-line verse with author and title", func() {
@@ -736,7 +736,7 @@ and more!</pre>
 <cite>verse title</cite>
 </div>
 </div>`
-			Expect(RenderHTML(source)).To(Equal(expected))
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
 		It("single-line verse with author only", func() {
@@ -750,7 +750,7 @@ ____`
 &#8212; john doe
 </div>
 </div>`
-			Expect(RenderHTML(source)).To(Equal(expected))
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
 		It("single-line verse with title only", func() {
@@ -764,7 +764,7 @@ ____`
 &#8212; verse title
 </div>
 </div>`
-			Expect(RenderHTML(source)).To(Equal(expected))
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
 		It("multi-line verse without author and title", func() {
@@ -781,7 +781,7 @@ ____`
 	and tabs
 are preserved</pre>
 </div>`
-			Expect(RenderHTML(source)).To(Equal(expected))
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
 		It("empty verse without author and title", func() {
@@ -791,7 +791,7 @@ ____`
 			expected := `<div class="verseblock">
 <pre class="content"></pre>
 </div>`
-			Expect(RenderHTML(source)).To(Equal(expected))
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
 
 		})
 	})
@@ -810,7 +810,7 @@ some *verse* content
 </div>
 </div>
 </div>`
-			Expect(RenderHTML(source)).To(Equal(expected))
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
 		It("sidebar block with id, title, paragraph and sourcecode block", func() {
@@ -837,7 +837,7 @@ bar</pre>
 </div>
 </div>
 </div>`
-			Expect(RenderHTML(source)).To(Equal(expected))
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 	})
 
@@ -859,7 +859,7 @@ type Foo struct{
 <span class="tok-p">}</span></code></pre>
 </div>
 </div>`
-			Expect(RenderHTML(source)).To(Equal(expected))
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
 		It("should render source block without highlighter when language is not set", func() {
@@ -878,7 +878,7 @@ type Foo struct{
 }</code></pre>
 </div>
 </div>`
-			Expect(RenderHTML(source)).To(Equal(expected))
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
 		It("should render source block without highlighter when language is not set", func() {
@@ -897,7 +897,7 @@ type Foo struct{
 }</code></pre>
 </div>
 </div>`
-			Expect(RenderHTML(source)).To(Equal(expected))
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
 		It("should render source block with go syntax and custom style", func() {
@@ -917,7 +917,7 @@ type Foo struct{
 <span class="tok-p">}</span></code></pre>
 </div>
 </div>`
-			Expect(RenderHTML(source)).To(Equal(expected))
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
 		It("should render source block with go syntax, custom style and line numbers", func() {
@@ -938,7 +938,7 @@ type Foo struct{
 <span class="tok-ln">3</span><span class="tok-p">}</span></code></pre>
 </div>
 </div>` // the pygment.py sets the line number class to `tok-ln` but here we expect `tok-ln`
-			Expect(RenderHTML(source)).To(Equal(expected))
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
 		It("should render source block with go syntax, custom style, inline css and line numbers", func() {
@@ -960,7 +960,7 @@ type Foo struct{
 <span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3</span>}</code></pre>
 </div>
 </div>` // the pygment.py sets the line number class to `tok-ln` but here we expect `tok-ln`
-			Expect(RenderHTML(source)).To(Equal(expected))
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 	})
 })

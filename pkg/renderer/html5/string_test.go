@@ -16,7 +16,7 @@ var _ = Describe("strings", func() {
 		expected := `<div class="paragraph">
 <p>some text&#8230;&#8203;</p>
 </div>`
-		Expect(RenderHTML(source)).To(Equal(expected))
+		Expect(RenderHTML(source)).To(MatchHTML(expected))
 	})
 
 	It("text with copyright", func() {
@@ -26,6 +26,6 @@ var _ = Describe("strings", func() {
 		expected := `<div class="paragraph">
 <p>Copyright &#169;</p>
 </div>`
-		Expect(RenderHTML(source)).To(Equal(expected))
+		Expect(RenderHTML(source)).To(MatchHTML(expected))
 	})
 })

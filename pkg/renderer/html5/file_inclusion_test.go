@@ -200,7 +200,7 @@ include::../../../test/includes/chapter-a.adoc[leveloffset=+1]`
 </div>
 </div>
 </div>`
-		Expect(RenderHTML(source)).To(Equal(expected))
+		Expect(RenderHTML(source)).To(MatchHTML(expected))
 	})
 
 	It("should not include section 0 by default", func() {
@@ -208,7 +208,7 @@ include::../../../test/includes/chapter-a.adoc[leveloffset=+1]`
 		expected := `<div class="paragraph">
 <p>content</p>
 </div>`
-		Expect(RenderHTML(source)).To(Equal(expected))
+		Expect(RenderHTML(source)).To(MatchHTML(expected))
 	})
 
 	It("should not include section 0 when attribute exists", func() {
@@ -218,7 +218,7 @@ include::{includedir}/chapter-a.adoc[]`
 		expected := `<div class="paragraph">
 <p>content</p>
 </div>`
-		Expect(RenderHTML(source)).To(Equal(expected))
+		Expect(RenderHTML(source)).To(MatchHTML(expected))
 	})
 
 	It("include non adoc file", func() {
@@ -241,7 +241,7 @@ include::../../../test/includes/hello_world.go.txt[]`
 	fmt.Println(&#34;hello, world!&#34;)
 }</p>
 </div>`
-		Expect(RenderHTML(source)).To(Equal(expected))
+		Expect(RenderHTML(source)).To(MatchHTML(expected))
 	})
 
 	It("should not further process with non-asciidoc files", func() {
@@ -254,7 +254,7 @@ include::{includedir}/include.foo[]`
 <div class="paragraph">
 <p>include::hello_world.go.txt[]</p>
 </div>`
-		Expect(RenderHTML(source)).To(Equal(expected))
+		Expect(RenderHTML(source)).To(MatchHTML(expected))
 	})
 
 	It("include 2 files", func() {
@@ -294,7 +294,7 @@ include::../../../test/includes/hello_world.go.txt[]`
 </div>
 </div>
 </div>`
-		Expect(RenderHTML(source)).To(Equal(expected))
+		Expect(RenderHTML(source)).To(MatchHTML(expected))
 	})
 
 	It("include file and append following elements in included section", func() {
@@ -322,7 +322,7 @@ a third paragraph`
 </div>
 </div>
 </div>`
-		Expect(RenderHTML(source)).To(Equal(expected))
+		Expect(RenderHTML(source)).To(MatchHTML(expected))
 	})
 
 	Context("file inclusion in delimited blocks", func() {
@@ -347,7 +347,7 @@ include::../../../test/includes/chapter-a.adoc[]
 content</pre>
 </div>
 </div>`
-				Expect(RenderHTML(source)).To(Equal(expected))
+				Expect(RenderHTML(source)).To(MatchHTML(expected))
 			})
 
 			It("should include adoc file within fenced block", func() {
@@ -361,7 +361,7 @@ content</pre>
 content</code></pre>
 </div>
 </div>`
-				Expect(RenderHTML(source)).To(Equal(expected))
+				Expect(RenderHTML(source)).To(MatchHTML(expected))
 			})
 
 			It("should include adoc file within example block", func() {
@@ -378,7 +378,7 @@ include::../../../test/includes/chapter-a.adoc[]
 </div>
 </div>
 </div>`
-				Expect(RenderHTML(source)).To(Equal(expected))
+				Expect(RenderHTML(source)).To(MatchHTML(expected))
 			})
 
 			It("should include adoc file within quote block", func() {
@@ -395,7 +395,7 @@ ____`
 </div>
 </blockquote>
 </div>`
-				Expect(RenderHTML(source)).To(Equal(expected))
+				Expect(RenderHTML(source)).To(MatchHTML(expected))
 			})
 
 			It("should include adoc file within verse block", func() {
@@ -408,7 +408,7 @@ ____`
 
 content</pre>
 </div>`
-				Expect(RenderHTML(source)).To(Equal(expected))
+				Expect(RenderHTML(source)).To(MatchHTML(expected))
 			})
 
 			It("should include adoc file within sidebar block", func() {
@@ -425,7 +425,7 @@ include::../../../test/includes/chapter-a.adoc[]
 </div>
 </div>
 </div>`
-				Expect(RenderHTML(source)).To(Equal(expected))
+				Expect(RenderHTML(source)).To(MatchHTML(expected))
 			})
 
 			It("should include adoc file within passthrough block", func() {
@@ -434,7 +434,7 @@ include::../../../test/includes/chapter-a.adoc[]
 include::../../../test/includes/chapter-a.adoc[]
 ++++`
 				expected := ``
-				Expect(RenderHTML(source)).To(Equal(expected))
+				Expect(RenderHTML(source)).To(MatchHTML(expected))
 			})
 		})
 
@@ -462,7 +462,7 @@ func helloworld() {
 }</pre>
 </div>
 </div>`
-				Expect(RenderHTML(source)).To(Equal(expected))
+				Expect(RenderHTML(source)).To(MatchHTML(expected))
 			})
 
 			It("should include go file within fenced block", func() {
@@ -480,7 +480,7 @@ func helloworld() {
 }</code></pre>
 </div>
 </div>`
-				Expect(RenderHTML(source)).To(Equal(expected))
+				Expect(RenderHTML(source)).To(MatchHTML(expected))
 			})
 
 			It("should include go file within example block", func() {
@@ -502,7 +502,7 @@ include::../../../test/includes/hello_world.go.txt[]
 </div>
 </div>
 </div>`
-				Expect(RenderHTML(source)).To(Equal(expected))
+				Expect(RenderHTML(source)).To(MatchHTML(expected))
 			})
 
 			It("should include go file within quote block", func() {
@@ -524,7 +524,7 @@ ____`
 </div>
 </blockquote>
 </div>`
-				Expect(RenderHTML(source)).To(Equal(expected))
+				Expect(RenderHTML(source)).To(MatchHTML(expected))
 			})
 
 			It("should include go file within verse block", func() {
@@ -541,7 +541,7 @@ func helloworld() {
 	fmt.Println(&#34;hello, world!&#34;)
 }</pre>
 </div>`
-				Expect(RenderHTML(source)).To(Equal(expected))
+				Expect(RenderHTML(source)).To(MatchHTML(expected))
 			})
 
 			It("should include go file within sidebar block", func() {
@@ -563,7 +563,7 @@ include::../../../test/includes/hello_world.go.txt[]
 </div>
 </div>
 </div>`
-				Expect(RenderHTML(source)).To(Equal(expected))
+				Expect(RenderHTML(source)).To(MatchHTML(expected))
 			})
 		})
 	})
@@ -577,7 +577,7 @@ include::../../../test/includes/hello_world.go.txt[]
 				expected := `<div class="paragraph">
 <p>package includes</p>
 </div>`
-				Expect(RenderHTML(source)).To(Equal(expected))
+				Expect(RenderHTML(source)).To(MatchHTML(expected))
 			})
 
 			It("should include multiple lines as paragraph", func() {
@@ -587,7 +587,7 @@ include::../../../test/includes/hello_world.go.txt[]
 	fmt.Println(&#34;hello, world!&#34;)
 }</p>
 </div>`
-				Expect(RenderHTML(source)).To(Equal(expected))
+				Expect(RenderHTML(source)).To(MatchHTML(expected))
 			})
 
 			It("should include multiple ranges as paragraph", func() {
@@ -600,7 +600,7 @@ include::../../../test/includes/hello_world.go.txt[]
 	fmt.Println(&#34;hello, world!&#34;)
 }</p>
 </div>`
-				Expect(RenderHTML(source)).To(Equal(expected))
+				Expect(RenderHTML(source)).To(MatchHTML(expected))
 			})
 		})
 
@@ -615,7 +615,7 @@ include::../../../test/includes/hello_world.go.txt[lines=1]
 <pre>package includes</pre>
 </div>
 </div>`
-				Expect(RenderHTML(source)).To(Equal(expected))
+				Expect(RenderHTML(source)).To(MatchHTML(expected))
 			})
 
 			It("should include multiple lines in listing block", func() {
@@ -629,7 +629,7 @@ include::../../../test/includes/hello_world.go.txt[lines=5..7]
 }</pre>
 </div>
 </div>`
-				Expect(RenderHTML(source)).To(Equal(expected))
+				Expect(RenderHTML(source)).To(MatchHTML(expected))
 			})
 
 			It("should include multiple ranges in listing block", func() {
@@ -645,7 +645,7 @@ func helloworld() {
 }</pre>
 </div>
 </div>`
-				Expect(RenderHTML(source)).To(Equal(expected))
+				Expect(RenderHTML(source)).To(MatchHTML(expected))
 			})
 		})
 	})
@@ -659,7 +659,7 @@ func helloworld() {
 <div class="sectionbody">
 </div>
 </div>`
-			Expect(RenderHTML(source)).To(Equal(expected))
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
 		It("file inclusion with surrounding tag", func() {
@@ -672,7 +672,7 @@ func helloworld() {
 </div>
 </div>
 </div>`
-			Expect(RenderHTML(source)).To(Equal(expected))
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
 		It("file inclusion with unclosed tag", func() {
@@ -685,7 +685,7 @@ func helloworld() {
 <div class="paragraph">
 <p>end</p>
 </div>`
-			Expect(RenderHTML(source)).To(Equal(expected))
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
 			// verify error in logs
 			Expect(console).To(
 				ContainMessageWithLevel(
@@ -699,7 +699,7 @@ func helloworld() {
 			defer reset()
 			source := `include::../../../test/includes/tag-include.adoc[tag=unknown]`
 			expected := ``
-			Expect(RenderHTML(source)).To(Equal(expected))
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
 			// verify error in logs
 			Expect(console).To(
 				ContainMessageWithLevel(
@@ -721,7 +721,7 @@ func helloworld() {
 </div>
 </div>
 </div>`
-			Expect(RenderHTML(source)).To(Equal(expected))
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
 		Context("permutations", func() {
@@ -739,7 +739,7 @@ func helloworld() {
 </div>
 </div>
 </div>`
-				Expect(RenderHTML(source)).To(Equal(expected))
+				Expect(RenderHTML(source)).To(MatchHTML(expected))
 			})
 
 			It("all tagged regions", func() {
@@ -752,7 +752,7 @@ func helloworld() {
 </div>
 </div>
 </div>`
-				Expect(RenderHTML(source)).To(Equal(expected))
+				Expect(RenderHTML(source)).To(MatchHTML(expected))
 			})
 
 			It("all the lines outside and inside of tagged regions", func() {
@@ -768,7 +768,7 @@ func helloworld() {
 </div>
 </div>
 </div>`
-				Expect(RenderHTML(source)).To(Equal(expected))
+				Expect(RenderHTML(source)).To(MatchHTML(expected))
 			})
 
 			It("regions tagged doc, but not nested regions tagged content", func() {
@@ -778,7 +778,7 @@ func helloworld() {
 <div class="sectionbody">
 </div>
 </div>`
-				Expect(RenderHTML(source)).To(Equal(expected))
+				Expect(RenderHTML(source)).To(MatchHTML(expected))
 			})
 
 			It("all tagged regions, but excludes any regions tagged content", func() {
@@ -788,7 +788,7 @@ func helloworld() {
 <div class="sectionbody">
 </div>
 </div>`
-				Expect(RenderHTML(source)).To(Equal(expected))
+				Expect(RenderHTML(source)).To(MatchHTML(expected))
 			})
 
 			It("all tagged regions, but excludes any regions tagged content", func() {
@@ -801,7 +801,7 @@ func helloworld() {
 </div>
 </div>
 </div>`
-				Expect(RenderHTML(source)).To(Equal(expected))
+				Expect(RenderHTML(source)).To(MatchHTML(expected))
 			})
 
 			It("**;!* — selects only the regions of the document outside of tags", func() {
@@ -809,7 +809,7 @@ func helloworld() {
 				expected := `<div class="paragraph">
 <p>end</p>
 </div>`
-				Expect(RenderHTML(source)).To(Equal(expected))
+				Expect(RenderHTML(source)).To(MatchHTML(expected))
 			})
 		})
 	})
@@ -849,7 +849,7 @@ func helloworld() {
 </div>
 </div>
 </div>`
-			Expect(RenderHTML(source)).To(Equal(expected))
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
 		It("should include child and grandchild content in listing block", func() {
@@ -877,7 +877,7 @@ last line of child
 last line of parent</pre>
 </div>
 </div>`
-			Expect(RenderHTML(source)).To(Equal(expected))
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 	})
 
@@ -898,7 +898,7 @@ include::{includedir}/grandchild-include.adoc[]`
 </div>
 </div>
 </div>`
-			Expect(RenderHTML(source)).To(Equal(expected))
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
 		It("should resolve path with attribute in delimited block", func() {
@@ -916,7 +916,7 @@ first line of grandchild
 last line of grandchild</pre>
 </div>
 </div>`
-			Expect(RenderHTML(source)).To(Equal(expected))
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 	})
 

@@ -23,7 +23,7 @@ var _ = Describe("user macros", func() {
 			expected := `<div class="paragraph">
 <p>hello::[]</p>
 </div>`
-			Expect(RenderHTML(source)).To(Equal(expected))
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
 		It("user macro block", func() {
@@ -76,7 +76,7 @@ var _ = Describe("user macros", func() {
 			expected := `<div class="paragraph">
 <p>hello:[]</p>
 </div>`
-			Expect(RenderHTML(source)).To(Equal(expected))
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
 		It("inline macro", func() {

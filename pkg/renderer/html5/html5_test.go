@@ -43,7 +43,7 @@ Last updated {{.LastUpdated}}
 		Expect(RenderHTML(source, configuration.WithHeaderFooter(true),
 			configuration.WithCSS("/path/to/style.css"),
 			configuration.WithLastUpdated(now))).
-			To(MatchHTML5Template(expected, now))
+			To(MatchHTMLTemplate(expected, now))
 	})
 
 	It("should include adoc file without leveloffset from relative file", func() {
@@ -261,7 +261,7 @@ Last updated {{.LastUpdated}}
 			configuration.WithCSS("/path/to/style.css"),
 			configuration.WithLastUpdated(now),
 			configuration.WithHeaderFooter(true))).
-			To(MatchHTML5Template(expected, now))
+			To(MatchHTMLTemplate(expected, now))
 	})
 
 	It("render manpage document without header and footer", func() {
@@ -378,6 +378,6 @@ Free use of this software is granted under the terms of the MIT License.</p>
 			configuration.WithCSS("/path/to/style.css"),
 			configuration.WithLastUpdated(now),
 			configuration.WithHeaderFooter(false))).
-			To(MatchHTML5Template(expected, now))
+			To(MatchHTMLTemplate(expected, now))
 	})
 })
