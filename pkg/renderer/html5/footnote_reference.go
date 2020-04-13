@@ -97,7 +97,7 @@ func renderFootnoteReference(ctx renderer.Context, note types.FootnoteReference)
 	return result.Bytes(), nil
 }
 
-func renderFootnoteReferencePlainText(ctx renderer.Context, note types.FootnoteReference) ([]byte, error) {
+func renderFootnoteReferencePlainText(_ renderer.Context, note types.FootnoteReference) ([]byte, error) {
 	result := bytes.NewBuffer(nil)
 	if note.ID != types.InvalidFootnoteReference {
 		// valid case for a footnte with content, with our without an explicit reference
