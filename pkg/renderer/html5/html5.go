@@ -259,7 +259,7 @@ func renderManpageHeader(ctx renderer.Context, header types.Section, nameSection
 
 // renderDocumentElements renders all document elements, including the footnotes,
 // but not the HEAD and BODY containers
-func renderDocumentElements(ctx renderer.Context, source []interface{}, footnotes types.Footnotes) ([]byte, error) {
+func renderDocumentElements(ctx renderer.Context, source []interface{}, footnotes []types.Footnote) ([]byte, error) {
 	elements := []interface{}{}
 	for i, e := range source {
 		switch e := e.(type) {

@@ -81,10 +81,9 @@ a paragraph with an index term.`
 		It("index term in existing paragraph line", func() {
 			source := `a paragraph with an ((index)) term.`
 			expected := types.Document{
-				Attributes:         types.DocumentAttributes{},
-				ElementReferences:  types.ElementReferences{},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
+				Attributes:        types.DocumentAttributes{},
+				ElementReferences: types.ElementReferences{},
+				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
@@ -114,10 +113,9 @@ a paragraph with an index term.`
 			source := `((foo_bar_baz _italic_))
 a paragraph with an index term.`
 			expected := types.Document{
-				Attributes:         types.DocumentAttributes{},
-				ElementReferences:  types.ElementReferences{},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
+				Attributes:        types.DocumentAttributes{},
+				ElementReferences: types.ElementReferences{},
+				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
@@ -215,10 +213,9 @@ a paragraph with an index term.`
 		It("concealed index term in existing paragraph line", func() {
 			source := `a paragraph with an index term (((index, term, here))).`
 			expected := types.Document{
-				Attributes:         types.DocumentAttributes{},
-				ElementReferences:  types.ElementReferences{},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
+				Attributes:        types.DocumentAttributes{},
+				ElementReferences: types.ElementReferences{},
+				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
@@ -247,10 +244,9 @@ a paragraph with an index term.`
 			source := `(((index, term)))
 a paragraph with an index term.`
 			expected := types.Document{
-				Attributes:         types.DocumentAttributes{},
-				ElementReferences:  types.ElementReferences{},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
+				Attributes:        types.DocumentAttributes{},
+				ElementReferences: types.ElementReferences{},
+				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},

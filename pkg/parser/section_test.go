@@ -531,8 +531,7 @@ a paragraph with *bold content*`
 					"_a_header":  title,
 					"_section_1": section1Title,
 				},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
+				Footnotes: []types.Footnote{},
 				Elements: []interface{}{
 					types.Section{
 						Level: 0,
@@ -689,8 +688,7 @@ var _ = Describe("sections - document", func() {
 				ElementReferences: types.ElementReferences{
 					"_a_header": doctitle,
 				},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
+				Footnotes: []types.Footnote{},
 				Elements: []interface{}{
 					types.Section{
 						Attributes: types.ElementAttributes{
@@ -715,8 +713,7 @@ var _ = Describe("sections - document", func() {
 				ElementReferences: types.ElementReferences{
 					"_a_header": doctitle,
 				},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
+				Footnotes: []types.Footnote{},
 				Elements: []interface{}{
 					types.Section{
 						Attributes: types.ElementAttributes{
@@ -744,8 +741,7 @@ and a paragraph`
 				ElementReferences: types.ElementReferences{
 					"_a_header": doctitle,
 				},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
+				Footnotes: []types.Footnote{},
 				Elements: []interface{}{
 					types.Section{
 						Attributes: types.ElementAttributes{
@@ -786,8 +782,7 @@ and a paragraph`
 					"_a_first_header":  doctitle,
 					"_a_second_header": otherDoctitle,
 				},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
+				Footnotes: []types.Footnote{},
 				Elements: []interface{}{
 					types.Section{
 						Attributes: types.ElementAttributes{
@@ -820,8 +815,7 @@ and a paragraph`
 				ElementReferences: types.ElementReferences{
 					"_section_1": section1Title,
 				},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
+				Footnotes: []types.Footnote{},
 				Elements: []interface{}{
 					types.Section{
 						Attributes: types.ElementAttributes{
@@ -851,8 +845,7 @@ and a paragraph`
 				ElementReferences: types.ElementReferences{
 					"_2_spaces_and_bold_content": sectionTitle,
 				},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
+				Footnotes: []types.Footnote{},
 				Elements: []interface{}{
 					types.Section{
 						Attributes: types.ElementAttributes{
@@ -883,8 +876,7 @@ and a paragraph`
 					"_a_header":  doctitle,
 					"_section_1": section1Title,
 				},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
+				Footnotes: []types.Footnote{},
 				Elements: []interface{}{
 					types.Section{
 						Attributes: types.ElementAttributes{
@@ -924,8 +916,7 @@ and a paragraph`
 					"_a_header":  doctitle,
 					"_section_2": section2Title,
 				},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
+				Footnotes: []types.Footnote{},
 				Elements: []interface{}{
 					types.Section{
 						Attributes: types.ElementAttributes{
@@ -960,8 +951,7 @@ and a paragraph`
 				ElementReferences: types.ElementReferences{
 					"_a_title": section1Title,
 				},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
+				Footnotes: []types.Footnote{},
 				Elements: []interface{}{
 					types.Section{
 						Attributes: types.ElementAttributes{
@@ -997,8 +987,7 @@ and a paragraph`
 				ElementReferences: types.ElementReferences{
 					"_a_title": section1Title,
 				},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
+				Footnotes: []types.Footnote{},
 				Elements: []interface{}{
 					types.Section{
 						Attributes: types.ElementAttributes{
@@ -1032,8 +1021,7 @@ and a paragraph`
 				ElementReferences: types.ElementReferences{
 					"_a_title": section1Title,
 				},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
+				Footnotes: []types.Footnote{},
 				Elements: []interface{}{
 					types.Section{
 						Attributes: types.ElementAttributes{
@@ -1088,8 +1076,7 @@ a paragraph`
 					"_section_a_a": sectionAaTitle,
 					"_section_b":   sectionBTitle,
 				},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
+				Footnotes: []types.Footnote{},
 				Elements: []interface{}{
 					types.Section{
 						Attributes: types.ElementAttributes{
@@ -1187,8 +1174,7 @@ a paragraph`
 					"_section_a_a": sectionAaTitle,
 					"_section_a_b": sectionBTitle,
 				},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
+				Footnotes: []types.Footnote{},
 				Elements: []interface{}{
 					types.Section{
 						Attributes: types.ElementAttributes{
@@ -1286,8 +1272,7 @@ a paragraph`
 					"_section_a_a": sectionAaTitle,
 					"_section_a_b": sectionBTitle,
 				},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
+				Footnotes: []types.Footnote{},
 				Elements: []interface{}{
 					types.Section{
 						Attributes: types.ElementAttributes{
@@ -1365,8 +1350,7 @@ a paragraph`
 				ElementReferences: types.ElementReferences{
 					"custom_header": sectionTitle,
 				},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
+				Footnotes: []types.Footnote{},
 				Elements: []interface{}{
 					types.Section{
 						Attributes: types.ElementAttributes{
@@ -1407,8 +1391,7 @@ a paragraph`
 					"foo":           fooTitle,
 					"bar":           barTitle,
 				},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
+				Footnotes: []types.Footnote{},
 				Elements: []interface{}{
 					types.Section{
 						Attributes: types.ElementAttributes{
@@ -1469,8 +1452,7 @@ a paragraph`
 					"_section_1":   section1aTitle,
 					"_section_1_2": section1bTitle,
 				},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
+				Footnotes: []types.Footnote{},
 				Elements: []interface{}{
 					types.Section{
 						Attributes: types.ElementAttributes{
@@ -1512,8 +1494,7 @@ a paragraph`
 					"custom_a_header":  doctitle,
 					"custom_section_1": section1Title,
 				},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
+				Footnotes: []types.Footnote{},
 				Elements: []interface{}{
 					types.Section{
 						Attributes: types.ElementAttributes{
@@ -1564,8 +1545,7 @@ a paragraph`
 					"custom1a_section_1a": section1aTitle,
 					"custom1b_section_1b": section1bTitle,
 				},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
+				Footnotes: []types.Footnote{},
 				Elements: []interface{}{
 					types.Section{
 						Attributes: types.ElementAttributes{
@@ -1625,8 +1605,7 @@ a paragraph`
 					"custom1a_section_1a": section1aTitle,
 					"custom1b_section_1b": section1bTitle,
 				},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
+				Footnotes: []types.Footnote{},
 				Elements: []interface{}{
 					types.Section{
 						Attributes: types.ElementAttributes{
@@ -1664,10 +1643,9 @@ a paragraph`
 		It("header invalid - too many spaces", func() {
 			source := "======= a header"
 			expected := types.Document{
-				Attributes:         types.DocumentAttributes{},
-				ElementReferences:  types.ElementReferences{},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
+				Attributes:        types.DocumentAttributes{},
+				ElementReferences: types.ElementReferences{},
+				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
@@ -1684,10 +1662,9 @@ a paragraph`
 		It("header invalid - missing space", func() {
 			source := "=a header"
 			expected := types.Document{
-				Attributes:         types.DocumentAttributes{},
-				ElementReferences:  types.ElementReferences{},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
+				Attributes:        types.DocumentAttributes{},
+				ElementReferences: types.ElementReferences{},
+				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
@@ -1704,10 +1681,9 @@ a paragraph`
 		It("header invalid - header space", func() {
 			source := " = a header with a prefix space"
 			expected := types.Document{
-				Attributes:         types.DocumentAttributes{},
-				ElementReferences:  types.ElementReferences{},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
+				Attributes:        types.DocumentAttributes{},
+				ElementReferences: types.ElementReferences{},
+				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{
 					types.LiteralBlock{
 						Attributes: types.ElementAttributes{
@@ -1734,8 +1710,8 @@ a paragraph`
 				Attributes: types.DocumentAttributes{},
 				ElementReferences: types.ElementReferences{
 					"_a_header": title,
-				}, Footnotes: types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
+				},
+				Footnotes: []types.Footnote{},
 				Elements: []interface{}{
 					types.Section{
 						Attributes: types.ElementAttributes{
@@ -1769,10 +1745,9 @@ a paragraph`
 ==============
 Doc Writer <thedoc@asciidoctor.org>`
 			expected := types.Document{
-				Attributes:         types.DocumentAttributes{},
-				ElementReferences:  types.ElementReferences{},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
+				Attributes:        types.DocumentAttributes{},
+				ElementReferences: types.ElementReferences{},
+				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},

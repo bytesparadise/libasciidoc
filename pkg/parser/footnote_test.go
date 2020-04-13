@@ -12,15 +12,10 @@ import (
 
 var _ = Describe("footnotes - draft", func() {
 
-	BeforeEach(func() {
-		types.ResetFootnoteSequence()
-	})
-
 	It("footnote with single-line content", func() {
 		footnoteContent := "some content"
 		source := fmt.Sprintf(`foo footnote:[%s]`, footnoteContent)
 		footnote1 := types.Footnote{
-			ID: 0,
 			Elements: []interface{}{
 				types.StringElement{
 					Content: footnoteContent,
@@ -48,7 +43,6 @@ var _ = Describe("footnotes - draft", func() {
 	It("footnote with single-line rich content", func() {
 		source := `foo footnote:[some *rich* https://foo.com[content]]`
 		footnote1 := types.Footnote{
-			ID: 0,
 			Elements: []interface{}{
 				types.StringElement{
 					Content: "some ",
@@ -112,7 +106,6 @@ var _ = Describe("footnotes - draft", func() {
 								Content: "This is another paragraph.",
 							},
 							types.Footnote{
-								ID: 0,
 								Elements: []interface{}{
 									types.StringElement{
 										Content: "I am footnote text and will be displayed at the bottom of the article.",
@@ -142,7 +135,6 @@ Another outrageous statement.footnote:disclaimer[]`
 								Content: "A statement.",
 							},
 							types.Footnote{
-								ID: 0,
 								Elements: []interface{}{
 									types.StringElement{
 										Content: "a regular footnote.",
@@ -155,7 +147,7 @@ Another outrageous statement.footnote:disclaimer[]`
 								Content: "A bold statement!",
 							},
 							types.Footnote{
-								ID:  1,
+								ID:  0,
 								Ref: "disclaimer",
 								Elements: []interface{}{
 									types.StringElement{
@@ -175,7 +167,6 @@ Another outrageous statement.footnote:disclaimer[]`
 								Content: "Another outrageous statement.",
 							},
 							types.Footnote{
-								ID:       -1,
 								Ref:      "disclaimer",
 								Elements: []interface{}{},
 							},
@@ -187,7 +178,7 @@ Another outrageous statement.footnote:disclaimer[]`
 		Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 	})
 
-	It("footnotes in document", func() {
+	It("footnotes in draft document", func() {
 
 		source := `= title
 :idprefix: id_
@@ -198,7 +189,6 @@ a premable with a footnote:[foo]
 
 a paragraph with another footnote:[baz]`
 		footnote1 := types.Footnote{
-			ID: 0,
 			Elements: []interface{}{
 				types.StringElement{
 					Content: "foo",
@@ -206,7 +196,6 @@ a paragraph with another footnote:[baz]`
 			},
 		}
 		footnote2 := types.Footnote{
-			ID: 1,
 			Elements: []interface{}{
 				types.StringElement{
 					Content: "bar",
@@ -214,7 +203,6 @@ a paragraph with another footnote:[baz]`
 			},
 		}
 		footnote3 := types.Footnote{
-			ID: 2,
 			Elements: []interface{}{
 				types.StringElement{
 					Content: "baz",
@@ -283,28 +271,22 @@ a paragraph with another footnote:[baz]`
 
 var _ = Describe("footnotes - document", func() {
 
-	BeforeEach(func() {
-		types.ResetFootnoteSequence()
-	})
-
 	It("footnote with single-line content", func() {
 		footnoteContent := "some content"
 		source := fmt.Sprintf(`foo footnote:[%s]`, footnoteContent)
-		footnote1 := types.Footnote{
-			ID: 0,
-			Elements: []interface{}{
-				types.StringElement{
-					Content: footnoteContent,
-				},
-			},
-		}
 		expected := types.Document{
 			Attributes:        types.DocumentAttributes{},
 			ElementReferences: types.ElementReferences{},
 			Footnotes: []types.Footnote{
-				footnote1,
+				{
+					ID: 1,
+					Elements: []interface{}{
+						types.StringElement{
+							Content: footnoteContent,
+						},
+					},
+				},
 			},
-			FootnoteReferences: types.FootnoteReferences{},
 			Elements: []interface{}{
 				types.Paragraph{
 					Attributes: types.ElementAttributes{},
@@ -313,7 +295,9 @@ var _ = Describe("footnotes - document", func() {
 							types.StringElement{
 								Content: "foo ",
 							},
-							footnote1,
+							types.FootnoteReference{
+								ID: 1,
+							},
 						},
 					},
 				},
@@ -325,7 +309,6 @@ var _ = Describe("footnotes - document", func() {
 	It("footnote with single-line rich content", func() {
 		source := `foo footnote:[some *rich* https://foo.com[content]]`
 		footnote1 := types.Footnote{
-			ID: 0,
 			Elements: []interface{}{
 				types.StringElement{
 					Content: "some ",
@@ -363,9 +346,11 @@ var _ = Describe("footnotes - document", func() {
 			Attributes:        types.DocumentAttributes{},
 			ElementReferences: types.ElementReferences{},
 			Footnotes: []types.Footnote{
-				footnote1,
+				{
+					ID:       1,
+					Elements: footnote1.Elements,
+				},
 			},
-			FootnoteReferences: types.FootnoteReferences{},
 			Elements: []interface{}{
 				types.Paragraph{
 					Attributes: types.ElementAttributes{},
@@ -374,7 +359,9 @@ var _ = Describe("footnotes - document", func() {
 							types.StringElement{
 								Content: "foo ",
 							},
-							footnote1,
+							types.FootnoteReference{
+								ID: 1,
+							},
 						},
 					},
 				},
@@ -385,21 +372,19 @@ var _ = Describe("footnotes - document", func() {
 
 	It("footnote in a paragraph", func() {
 		source := `This is another paragraph.footnote:[I am footnote text and will be displayed at the bottom of the article.]`
-		footnote1 := types.Footnote{
-			ID: 0,
-			Elements: []interface{}{
-				types.StringElement{
-					Content: "I am footnote text and will be displayed at the bottom of the article.",
-				},
-			},
-		}
 		expected := types.Document{
 			Attributes:        types.DocumentAttributes{},
 			ElementReferences: types.ElementReferences{},
 			Footnotes: []types.Footnote{
-				footnote1,
+				{
+					ID: 1,
+					Elements: []interface{}{
+						types.StringElement{
+							Content: "I am footnote text and will be displayed at the bottom of the article.",
+						},
+					},
+				},
 			},
-			FootnoteReferences: types.FootnoteReferences{},
 			Elements: []interface{}{
 				types.Paragraph{
 					Attributes: types.ElementAttributes{},
@@ -408,7 +393,9 @@ var _ = Describe("footnotes - document", func() {
 							types.StringElement{
 								Content: "This is another paragraph.",
 							},
-							footnote1,
+							types.FootnoteReference{
+								ID: 1,
+							},
 						},
 					},
 				},
@@ -423,38 +410,27 @@ A bold statement!footnote:disclaimer[Opinions are my own.]
 
 Another outrageous statement.footnote:disclaimer[]`
 
-		footnote1 := types.Footnote{
-			ID: 0,
-			Elements: []interface{}{
-				types.StringElement{
-					Content: "a regular footnote.",
-				},
-			},
-		}
-		footnote2 := types.Footnote{
-			ID:  1,
-			Ref: "disclaimer",
-			Elements: []interface{}{
-				types.StringElement{
-					Content: "Opinions are my own.",
-				},
-			},
-		}
-		footnote3 := types.Footnote{
-			ID:       -1,
-			Ref:      "disclaimer",
-			Elements: []interface{}{},
-		}
 		expected := types.Document{
 			Attributes:        types.DocumentAttributes{},
 			ElementReferences: types.ElementReferences{},
-			Footnotes: types.Footnotes{
-				footnote1,
-				footnote2,
-				// footnote3, // not included since it has no element.
-			},
-			FootnoteReferences: types.FootnoteReferences{
-				"disclaimer": footnote2,
+			Footnotes: []types.Footnote{
+				{
+					ID: 1,
+					Elements: []interface{}{
+						types.StringElement{
+							Content: "a regular footnote.",
+						},
+					},
+				},
+				{
+					ID:  2,
+					Ref: "disclaimer",
+					Elements: []interface{}{
+						types.StringElement{
+							Content: "Opinions are my own.",
+						},
+					},
+				},
 			},
 			Elements: []interface{}{
 				types.Paragraph{
@@ -464,13 +440,18 @@ Another outrageous statement.footnote:disclaimer[]`
 							types.StringElement{
 								Content: "A statement.",
 							},
-							footnote1,
+							types.FootnoteReference{
+								ID: 1,
+							},
 						},
 						{
 							types.StringElement{
 								Content: "A bold statement!",
 							},
-							footnote2,
+							types.FootnoteReference{
+								ID:  2,
+								Ref: "disclaimer",
+							},
 						},
 					},
 				},
@@ -481,7 +462,11 @@ Another outrageous statement.footnote:disclaimer[]`
 							types.StringElement{
 								Content: "Another outrageous statement.",
 							},
-							footnote3,
+							types.FootnoteReference{
+								ID:        2,
+								Ref:       "disclaimer",
+								Duplicate: true, // this FootnoteReference targets an already-existing footnote
+							},
 						},
 					},
 				},
@@ -499,31 +484,8 @@ a premable with a footnote:[foo]
 
 == section 1 footnote:[bar]
 
-a paragraph with another footnote:[baz]`
-		footnote1 := types.Footnote{
-			ID: 0,
-			Elements: []interface{}{
-				types.StringElement{
-					Content: "foo",
-				},
-			},
-		}
-		footnote2 := types.Footnote{
-			ID: 1,
-			Elements: []interface{}{
-				types.StringElement{
-					Content: "bar",
-				},
-			},
-		}
-		footnote3 := types.Footnote{
-			ID: 2,
-			Elements: []interface{}{
-				types.StringElement{
-					Content: "baz",
-				},
-			},
-		}
+a paragraph with another footnote.footnote:[baz]`
+
 		docTitle := []interface{}{
 			types.StringElement{
 				Content: "title",
@@ -533,7 +495,9 @@ a paragraph with another footnote:[baz]`
 			types.StringElement{
 				Content: "section 1 ",
 			},
-			footnote2,
+			types.FootnoteReference{
+				ID: 2,
+			},
 		}
 		expected := types.Document{
 			Attributes: types.DocumentAttributes{
@@ -543,12 +507,32 @@ a paragraph with another footnote:[baz]`
 				"id_title":     docTitle,
 				"id_section_1": section1Title,
 			},
-			Footnotes: types.Footnotes{
-				footnote1,
-				footnote2,
-				footnote3,
+			Footnotes: []types.Footnote{
+				{
+					ID: 1,
+					Elements: []interface{}{
+						types.StringElement{
+							Content: "foo",
+						},
+					},
+				},
+				{
+					ID: 2,
+					Elements: []interface{}{
+						types.StringElement{
+							Content: "bar",
+						},
+					},
+				},
+				{
+					ID: 3,
+					Elements: []interface{}{
+						types.StringElement{
+							Content: "baz",
+						},
+					},
+				},
 			},
-			FootnoteReferences: types.FootnoteReferences{},
 			Elements: []interface{}{
 				types.Section{
 					Level: 0,
@@ -566,7 +550,9 @@ a paragraph with another footnote:[baz]`
 											types.StringElement{
 												Content: "a premable with a ",
 											},
-											footnote1,
+											types.FootnoteReference{
+												ID: 1,
+											},
 										},
 									},
 								},
@@ -584,9 +570,11 @@ a paragraph with another footnote:[baz]`
 									Lines: [][]interface{}{
 										{
 											types.StringElement{
-												Content: "a paragraph with another ",
+												Content: "a paragraph with another footnote.",
 											},
-											footnote3,
+											types.FootnoteReference{
+												ID: 3,
+											},
 										},
 									},
 								},

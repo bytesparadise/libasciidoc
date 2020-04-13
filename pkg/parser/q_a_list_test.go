@@ -18,10 +18,9 @@ What is libsciidoc?::
 What is the answer to the Ultimate Question?:: 42`
 
 		expected := types.Document{
-			Attributes:         types.DocumentAttributes{},
-			ElementReferences:  types.ElementReferences{},
-			Footnotes:          types.Footnotes{},
-			FootnoteReferences: types.FootnoteReferences{},
+			Attributes:        types.DocumentAttributes{},
+			ElementReferences: types.ElementReferences{},
+			Footnotes:         []types.Footnote{},
 			Elements: []interface{}{
 				types.LabeledList{
 					Attributes: types.ElementAttributes{

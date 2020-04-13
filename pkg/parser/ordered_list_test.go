@@ -1041,10 +1041,9 @@ var _ = Describe("ordered lists - document", func() {
 		It("ordered list item with implicit numbering style", func() {
 			source := `.. item`
 			expected := types.Document{
-				Attributes:         types.DocumentAttributes{},
-				ElementReferences:  types.ElementReferences{},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
+				Attributes:        types.DocumentAttributes{},
+				ElementReferences: types.ElementReferences{},
+				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{
 					types.OrderedList{
 						Attributes: types.ElementAttributes{},
@@ -1065,10 +1064,9 @@ var _ = Describe("ordered lists - document", func() {
 		It("ordered list item with arabic numbering style", func() {
 			source := `1. item`
 			expected := types.Document{
-				Attributes:         types.DocumentAttributes{},
-				ElementReferences:  types.ElementReferences{},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
+				Attributes:        types.DocumentAttributes{},
+				ElementReferences: types.ElementReferences{},
+				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{
 					types.OrderedList{
 						Attributes: types.ElementAttributes{},
@@ -1089,10 +1087,9 @@ var _ = Describe("ordered lists - document", func() {
 		It("ordered list item with lower alpha numbering style", func() {
 			source := `b. item`
 			expected := types.Document{
-				Attributes:         types.DocumentAttributes{},
-				ElementReferences:  types.ElementReferences{},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
+				Attributes:        types.DocumentAttributes{},
+				ElementReferences: types.ElementReferences{},
+				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{
 					types.OrderedList{
 						Attributes: types.ElementAttributes{},
@@ -1113,10 +1110,9 @@ var _ = Describe("ordered lists - document", func() {
 		It("ordered list item with upper alpha numbering style", func() {
 			source := `B. item`
 			expected := types.Document{
-				Attributes:         types.DocumentAttributes{},
-				ElementReferences:  types.ElementReferences{},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
+				Attributes:        types.DocumentAttributes{},
+				ElementReferences: types.ElementReferences{},
+				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{
 					types.OrderedList{
 						Attributes: types.ElementAttributes{},
@@ -1138,10 +1134,9 @@ var _ = Describe("ordered lists - document", func() {
 		It("ordered list item with lower roman numbering style", func() {
 			source := `i) item`
 			expected := types.Document{
-				Attributes:         types.DocumentAttributes{},
-				ElementReferences:  types.ElementReferences{},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
+				Attributes:        types.DocumentAttributes{},
+				ElementReferences: types.ElementReferences{},
+				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{
 					types.OrderedList{
 						Attributes: types.ElementAttributes{},
@@ -1162,10 +1157,9 @@ var _ = Describe("ordered lists - document", func() {
 		It("ordered list item with upper roman numbering style", func() {
 			source := `I) item`
 			expected := types.Document{
-				Attributes:         types.DocumentAttributes{},
-				ElementReferences:  types.ElementReferences{},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
+				Attributes:        types.DocumentAttributes{},
+				ElementReferences: types.ElementReferences{},
+				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{
 					types.OrderedList{
 						Attributes: types.ElementAttributes{},
@@ -1186,10 +1180,9 @@ var _ = Describe("ordered lists - document", func() {
 		It("ordered list item with predefined attribute", func() {
 			source := `. {amp}`
 			expected := types.Document{
-				Attributes:         types.DocumentAttributes{},
-				ElementReferences:  types.ElementReferences{},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
+				Attributes:        types.DocumentAttributes{},
+				ElementReferences: types.ElementReferences{},
+				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{
 					types.OrderedList{
 						Attributes: types.ElementAttributes{},
@@ -1221,10 +1214,9 @@ var _ = Describe("ordered lists - document", func() {
 . item
 . item`
 			expected := types.Document{
-				Attributes:         types.DocumentAttributes{},
-				ElementReferences:  types.ElementReferences{},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
+				Attributes:        types.DocumentAttributes{},
+				ElementReferences: types.ElementReferences{},
+				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{
 					types.OrderedList{
 						Attributes: types.ElementAttributes{
@@ -1254,10 +1246,9 @@ var _ = Describe("ordered lists - document", func() {
 			source := `[start=5]
 . item`
 			expected := types.Document{
-				Attributes:         types.DocumentAttributes{},
-				ElementReferences:  types.ElementReferences{},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
+				Attributes:        types.DocumentAttributes{},
+				ElementReferences: types.ElementReferences{},
+				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{
 					types.OrderedList{
 						Attributes: types.ElementAttributes{
@@ -1281,10 +1272,9 @@ var _ = Describe("ordered lists - document", func() {
 			source := `["lowerroman", start="5"]
 . item`
 			expected := types.Document{
-				Attributes:         types.DocumentAttributes{},
-				ElementReferences:  types.ElementReferences{},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
+				Attributes:        types.DocumentAttributes{},
+				ElementReferences: types.ElementReferences{},
+				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{
 					types.OrderedList{
 						Attributes: types.ElementAttributes{
@@ -1314,10 +1304,9 @@ var _ = Describe("ordered lists - document", func() {
 ..... level 5
 . level 1`
 			expected := types.Document{
-				Attributes:         types.DocumentAttributes{},
-				ElementReferences:  types.ElementReferences{},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
+				Attributes:        types.DocumentAttributes{},
+				ElementReferences: types.ElementReferences{},
+				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{
 					types.OrderedList{
 						Attributes: types.ElementAttributes{
@@ -1462,10 +1451,9 @@ var _ = Describe("ordered lists - document", func() {
 ..... level 5
 .. level 2b`
 			expected := types.Document{
-				Attributes:         types.DocumentAttributes{},
-				ElementReferences:  types.ElementReferences{},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
+				Attributes:        types.DocumentAttributes{},
+				ElementReferences: types.ElementReferences{},
+				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{
 					types.OrderedList{
 						Attributes: types.ElementAttributes{
@@ -1609,10 +1597,9 @@ var _ = Describe("ordered lists - document", func() {
 . b`
 
 			expected := types.Document{
-				Attributes:         types.DocumentAttributes{},
-				ElementReferences:  types.ElementReferences{},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
+				Attributes:        types.DocumentAttributes{},
+				ElementReferences: types.ElementReferences{},
+				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{
 					types.OrderedList{
 						Attributes: types.ElementAttributes{},
@@ -1659,10 +1646,9 @@ var _ = Describe("ordered lists - document", func() {
 . item 2`
 
 			expected := types.Document{
-				Attributes:         types.DocumentAttributes{},
-				ElementReferences:  types.ElementReferences{},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
+				Attributes:        types.DocumentAttributes{},
+				ElementReferences: types.ElementReferences{},
+				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{
 					types.OrderedList{
 						Attributes: types.ElementAttributes{},
@@ -1716,10 +1702,9 @@ var _ = Describe("ordered lists - document", func() {
 			.. item 2.1`
 
 			expected := types.Document{
-				Attributes:         types.DocumentAttributes{},
-				ElementReferences:  types.ElementReferences{},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
+				Attributes:        types.DocumentAttributes{},
+				ElementReferences: types.ElementReferences{},
+				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{
 					types.OrderedList{
 						Attributes: types.ElementAttributes{},
@@ -1869,10 +1854,9 @@ var _ = Describe("ordered lists - document", func() {
 
 `
 			expected := types.Document{
-				Attributes:         types.DocumentAttributes{},
-				ElementReferences:  types.ElementReferences{},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
+				Attributes:        types.DocumentAttributes{},
+				ElementReferences: types.ElementReferences{},
+				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{
 					types.OrderedList{
 						Attributes: types.ElementAttributes{},
@@ -1986,10 +1970,9 @@ var _ = Describe("ordered lists - document", func() {
 			source := `1. a
 2. b`
 			expected := types.Document{
-				Attributes:         types.DocumentAttributes{},
-				ElementReferences:  types.ElementReferences{},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
+				Attributes:        types.DocumentAttributes{},
+				ElementReferences: types.ElementReferences{},
+				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{
 					types.OrderedList{
 						Attributes: types.ElementAttributes{},
@@ -2037,10 +2020,9 @@ a. item 1.a
 2. item 2
 b. item 2.a`
 			expected := types.Document{
-				Attributes:         types.DocumentAttributes{},
-				ElementReferences:  types.ElementReferences{},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
+				Attributes:        types.DocumentAttributes{},
+				ElementReferences: types.ElementReferences{},
+				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{
 					types.OrderedList{
 						Attributes: types.ElementAttributes{},
@@ -2138,10 +2120,9 @@ another delimited block
 . bar
 `
 			expected := types.Document{
-				Attributes:         types.DocumentAttributes{},
-				ElementReferences:  types.ElementReferences{},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
+				Attributes:        types.DocumentAttributes{},
+				ElementReferences: types.ElementReferences{},
+				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{
 					types.OrderedList{
 						Attributes: types.ElementAttributes{},
@@ -2227,10 +2208,9 @@ print("one")
 print("one")
 ----`
 			expected := types.Document{
-				Attributes:         types.DocumentAttributes{},
-				ElementReferences:  types.ElementReferences{},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
+				Attributes:        types.DocumentAttributes{},
+				ElementReferences: types.ElementReferences{},
+				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{
 					types.OrderedList{
 						Attributes: types.ElementAttributes{},
@@ -2260,7 +2240,7 @@ print("one")
 									},
 								},
 							},
-							types.OrderedListItem{
+							{
 								Attributes:     types.ElementAttributes{},
 								Level:          1,
 								NumberingStyle: types.Arabic,

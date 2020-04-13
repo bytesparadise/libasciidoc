@@ -17,8 +17,7 @@ type Context struct {
 	WithinList           int
 	counters             map[string]int
 	Attributes           types.DocumentAttributes
-	Footnotes            types.Footnotes
-	FootnoteReferences   types.FootnoteReferences
+	Footnotes            []types.Footnote
 	ElementReferences    types.ElementReferences
 	HasHeader            bool
 }
@@ -27,13 +26,12 @@ type Context struct {
 func NewContext(doc types.Document, config configuration.Configuration) Context {
 	_, hasHeader := doc.Header()
 	return Context{
-		Config:             config,
-		counters:           make(map[string]int),
-		Attributes:         doc.Attributes,
-		ElementReferences:  doc.ElementReferences,
-		Footnotes:          doc.Footnotes,
-		FootnoteReferences: doc.FootnoteReferences,
-		HasHeader:          hasHeader,
+		Config:            config,
+		counters:          make(map[string]int),
+		Attributes:        doc.Attributes,
+		ElementReferences: doc.ElementReferences,
+		Footnotes:         doc.Footnotes,
+		HasHeader:         hasHeader,
 	}
 }
 

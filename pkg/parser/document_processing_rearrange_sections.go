@@ -4,7 +4,6 @@ import (
 	"strconv"
 
 	"github.com/bytesparadise/libasciidoc/pkg/types"
-	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -19,8 +18,6 @@ func rearrangeSections(blocks []interface{}) (types.Document, error) {
 	tle := make([]interface{}, 0, len(blocks)) // top-level elements
 	sections := make([]types.Section, 0, 6)    // the path to the current section (eg: []{section-level0, section-level1, etc.})
 	elementRefs := types.ElementReferences{}
-	footnotes := types.Footnotes{}
-	footnoteRefs := types.FootnoteReferences{}
 	var previous *types.Section // the current "parent" section
 	for _, element := range blocks {
 		if e, ok := element.(types.Section); ok {
@@ -53,18 +50,6 @@ func rearrangeSections(blocks []interface{}) (types.Document, error) {
 				(*parentSection).AddElement(element)
 			}
 		}
-		// also collect footnotes
-		if e, ok := element.(types.FootnotesContainer); ok {
-			// log.Debugf("collecting footnotes on element of type %T", element)
-			f, fr, err := e.Footnotes()
-			if err != nil {
-				return types.Document{}, errors.Wrap(err, "unable to collect footnotes in document")
-			}
-			footnotes = append(footnotes, f...)
-			for k, v := range fr {
-				footnoteRefs[k] = v
-			}
-		}
 	}
 	// process the remaining sections
 	sections = pruneSections(sections, 1)
@@ -73,11 +58,9 @@ func rearrangeSections(blocks []interface{}) (types.Document, error) {
 	}
 
 	return types.Document{
-		Attributes:         types.DocumentAttributes{},
-		Elements:           tle,
-		ElementReferences:  elementRefs,
-		Footnotes:          footnotes,
-		FootnoteReferences: footnoteRefs,
+		Attributes:        types.DocumentAttributes{},
+		Elements:          tle,
+		ElementReferences: elementRefs,
 	}, nil
 }
 

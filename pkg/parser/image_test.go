@@ -185,10 +185,9 @@ image::images/bar.png[]`
 			It("block image with empty alt", func() {
 				source := "image::images/foo.png[]"
 				expected := types.Document{
-					Attributes:         types.DocumentAttributes{},
-					ElementReferences:  types.ElementReferences{},
-					Footnotes:          types.Footnotes{},
-					FootnoteReferences: types.FootnoteReferences{},
+					Attributes:        types.DocumentAttributes{},
+					ElementReferences: types.ElementReferences{},
+					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.ImageBlock{
 							Attributes: types.ElementAttributes{
@@ -214,9 +213,8 @@ image::foo.png[]`
 					Attributes: types.DocumentAttributes{
 						"imagesdir": "./path/to/images",
 					},
-					ElementReferences:  types.ElementReferences{},
-					Footnotes:          types.Footnotes{},
-					FootnoteReferences: types.FootnoteReferences{},
+					ElementReferences: types.ElementReferences{},
+					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.ImageBlock{
 							Attributes: types.ElementAttributes{
@@ -242,9 +240,8 @@ image::{dir}/foo.png[]`
 					Attributes: types.DocumentAttributes{
 						"dir": "./path/to/images",
 					},
-					ElementReferences:  types.ElementReferences{},
-					Footnotes:          types.Footnotes{},
-					FootnoteReferences: types.FootnoteReferences{},
+					ElementReferences: types.ElementReferences{},
+					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.ImageBlock{
 							Attributes: types.ElementAttributes{
@@ -270,9 +267,8 @@ image::foo.png[]`
 					Attributes: types.DocumentAttributes{
 						"imagesdir": "./path/to/images",
 					},
-					ElementReferences:  types.ElementReferences{},
-					Footnotes:          types.Footnotes{},
-					FootnoteReferences: types.FootnoteReferences{},
+					ElementReferences: types.ElementReferences{},
+					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.ImageBlock{
 							Attributes: types.ElementAttributes{
@@ -298,9 +294,8 @@ image::{imagesdir}/foo.png[]`
 					Attributes: types.DocumentAttributes{
 						"imagesdir": "./path/to/images",
 					},
-					ElementReferences:  types.ElementReferences{},
-					Footnotes:          types.Footnotes{},
-					FootnoteReferences: types.FootnoteReferences{},
+					ElementReferences: types.ElementReferences{},
+					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.ImageBlock{
 							Attributes: types.ElementAttributes{
@@ -732,10 +727,9 @@ image::{imagesdir}/foo.png[]`
 			It("inline image with empty alt only", func() {
 				source := "image:images/foo.png[]"
 				expected := types.Document{
-					Attributes:         types.DocumentAttributes{},
-					ElementReferences:  types.ElementReferences{},
-					Footnotes:          types.Footnotes{},
-					FootnoteReferences: types.FootnoteReferences{},
+					Attributes:        types.DocumentAttributes{},
+					ElementReferences: types.ElementReferences{},
+					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
@@ -768,9 +762,8 @@ an image:{dir}/foo.png[].`
 					Attributes: types.DocumentAttributes{
 						"dir": "./path/to/images",
 					},
-					ElementReferences:  types.ElementReferences{},
-					Footnotes:          types.Footnotes{},
-					FootnoteReferences: types.FootnoteReferences{},
+					ElementReferences: types.ElementReferences{},
+					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
@@ -805,9 +798,8 @@ an image:foo.png[].`
 					Attributes: types.DocumentAttributes{
 						"imagesdir": "./path/to/images",
 					},
-					ElementReferences:  types.ElementReferences{},
-					Footnotes:          types.Footnotes{},
-					FootnoteReferences: types.FootnoteReferences{},
+					ElementReferences: types.ElementReferences{},
+					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
@@ -842,9 +834,8 @@ an image:{imagesdir}/foo.png[].`
 					Attributes: types.DocumentAttributes{
 						"imagesdir": "./path/to/images",
 					},
-					ElementReferences:  types.ElementReferences{},
-					Footnotes:          types.Footnotes{},
-					FootnoteReferences: types.FootnoteReferences{},
+					ElementReferences: types.ElementReferences{},
+					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},

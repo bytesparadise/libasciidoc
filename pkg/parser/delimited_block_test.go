@@ -1568,10 +1568,9 @@ var _ = Describe("delimited blocks - final document", func() {
 			content := "some fenced code"
 			source := "```\n" + content + "\n```"
 			expected := types.Document{
-				Attributes:         types.DocumentAttributes{},
-				ElementReferences:  types.ElementReferences{},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
+				Attributes:        types.DocumentAttributes{},
+				ElementReferences: types.ElementReferences{},
+				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{
 					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{},
@@ -1597,10 +1596,9 @@ var _ = Describe("delimited blocks - final document", func() {
 		It("fenced block with no line", func() {
 			source := "```\n```"
 			expected := types.Document{
-				Attributes:         types.DocumentAttributes{},
-				ElementReferences:  types.ElementReferences{},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
+				Attributes:        types.DocumentAttributes{},
+				ElementReferences: types.ElementReferences{},
+				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{
 					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{},
@@ -1615,10 +1613,9 @@ var _ = Describe("delimited blocks - final document", func() {
 		It("fenced block with multiple lines alone", func() {
 			source := "```\nsome fenced code\nwith an empty line\n\nin the middle\n```"
 			expected := types.Document{
-				Attributes:         types.DocumentAttributes{},
-				ElementReferences:  types.ElementReferences{},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
+				Attributes:        types.DocumentAttributes{},
+				ElementReferences: types.ElementReferences{},
+				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{
 					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{},
@@ -1660,10 +1657,9 @@ var _ = Describe("delimited blocks - final document", func() {
 		It("fenced block with multiple lines then a paragraph", func() {
 			source := "```\nsome fenced code\nwith an empty line\n\nin the middle\n```\nthen a normal paragraph."
 			expected := types.Document{
-				Attributes:         types.DocumentAttributes{},
-				ElementReferences:  types.ElementReferences{},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
+				Attributes:        types.DocumentAttributes{},
+				ElementReferences: types.ElementReferences{},
+				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{
 					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{},
@@ -1714,10 +1710,9 @@ var _ = Describe("delimited blocks - final document", func() {
 			content := "some fenced code"
 			source := "a paragraph.\n```\n" + content + "\n```\n"
 			expected := types.Document{
-				Attributes:         types.DocumentAttributes{},
-				ElementReferences:  types.ElementReferences{},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
+				Attributes:        types.DocumentAttributes{},
+				ElementReferences: types.ElementReferences{},
+				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
@@ -1751,10 +1746,9 @@ var _ = Describe("delimited blocks - final document", func() {
 		It("fenced block with unclosed delimiter", func() {
 			source := "```\nEnd of file here"
 			expected := types.Document{
-				Attributes:         types.DocumentAttributes{},
-				ElementReferences:  types.ElementReferences{},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
+				Attributes:        types.DocumentAttributes{},
+				ElementReferences: types.ElementReferences{},
+				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{
 					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{},
@@ -1785,10 +1779,9 @@ var _ = Describe("delimited blocks - final document", func() {
 				"```"
 
 			expected := types.Document{
-				Attributes:         types.DocumentAttributes{},
-				ElementReferences:  types.ElementReferences{},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
+				Attributes:        types.DocumentAttributes{},
+				ElementReferences: types.ElementReferences{},
+				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{
 					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{},
@@ -1839,10 +1832,9 @@ var _ = Describe("delimited blocks - final document", func() {
 some listing code
 ----`
 			expected := types.Document{
-				Attributes:         types.DocumentAttributes{},
-				ElementReferences:  types.ElementReferences{},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
+				Attributes:        types.DocumentAttributes{},
+				ElementReferences: types.ElementReferences{},
+				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{
 					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{},
@@ -1869,10 +1861,9 @@ some listing code
 			source := `----
 ----`
 			expected := types.Document{
-				Attributes:         types.DocumentAttributes{},
-				ElementReferences:  types.ElementReferences{},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
+				Attributes:        types.DocumentAttributes{},
+				ElementReferences: types.ElementReferences{},
+				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{
 					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{},
@@ -1892,10 +1883,9 @@ with an empty line
 in the middle
 ----`
 			expected := types.Document{
-				Attributes:         types.DocumentAttributes{},
-				ElementReferences:  types.ElementReferences{},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
+				Attributes:        types.DocumentAttributes{},
+				ElementReferences: types.ElementReferences{},
+				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{
 					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{},
@@ -1941,10 +1931,9 @@ in the middle
 * content
 ----`
 			expected := types.Document{
-				Attributes:         types.DocumentAttributes{},
-				ElementReferences:  types.ElementReferences{},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
+				Attributes:        types.DocumentAttributes{},
+				ElementReferences: types.ElementReferences{},
+				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{
 					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{},
@@ -1986,10 +1975,9 @@ in the middle
 ----
 then a normal paragraph.`
 			expected := types.Document{
-				Attributes:         types.DocumentAttributes{},
-				ElementReferences:  types.ElementReferences{},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
+				Attributes:        types.DocumentAttributes{},
+				ElementReferences: types.ElementReferences{},
+				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{
 					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{},
@@ -2043,10 +2031,9 @@ then a normal paragraph.`
 some listing code
 ----`
 			expected := types.Document{
-				Attributes:         types.DocumentAttributes{},
-				ElementReferences:  types.ElementReferences{},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
+				Attributes:        types.DocumentAttributes{},
+				ElementReferences: types.ElementReferences{},
+				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
@@ -2081,10 +2068,9 @@ some listing code
 			source := `----
 End of file here.`
 			expected := types.Document{
-				Attributes:         types.DocumentAttributes{},
-				ElementReferences:  types.ElementReferences{},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
+				Attributes:        types.DocumentAttributes{},
+				ElementReferences: types.ElementReferences{},
+				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{
 					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{},
@@ -2115,10 +2101,9 @@ End of file here.`
 some listing code
 ====`
 			expected := types.Document{
-				Attributes:         types.DocumentAttributes{},
-				ElementReferences:  types.ElementReferences{},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
+				Attributes:        types.DocumentAttributes{},
+				ElementReferences: types.ElementReferences{},
+				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{
 					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{},
@@ -2146,10 +2131,9 @@ some listing code
 .foo
 ====`
 			expected := types.Document{
-				Attributes:         types.DocumentAttributes{},
-				ElementReferences:  types.ElementReferences{},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
+				Attributes:        types.DocumentAttributes{},
+				ElementReferences: types.ElementReferences{},
+				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{
 					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{},
@@ -2181,10 +2165,9 @@ with *bold content*
 * and a list item
 ====`
 			expected := types.Document{
-				Attributes:         types.DocumentAttributes{},
-				ElementReferences:  types.ElementReferences{},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
+				Attributes:        types.DocumentAttributes{},
+				ElementReferences: types.ElementReferences{},
+				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{
 					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{},
@@ -2253,10 +2236,9 @@ with *bold content*
 			source := `====
 End of file here`
 			expected := types.Document{
-				Attributes:         types.DocumentAttributes{},
-				ElementReferences:  types.ElementReferences{},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
+				Attributes:        types.DocumentAttributes{},
+				ElementReferences: types.ElementReferences{},
+				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{
 					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{},
@@ -2285,10 +2267,9 @@ End of file here`
 foo
 ====`
 			expected := types.Document{
-				Attributes:         types.DocumentAttributes{},
-				ElementReferences:  types.ElementReferences{},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
+				Attributes:        types.DocumentAttributes{},
+				ElementReferences: types.ElementReferences{},
+				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{
 					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{
@@ -2316,10 +2297,9 @@ foo
 		It("example block starting delimiter only", func() {
 			source := `====`
 			expected := types.Document{
-				Attributes:         types.DocumentAttributes{},
-				ElementReferences:  types.ElementReferences{},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
+				Attributes:        types.DocumentAttributes{},
+				ElementReferences: types.ElementReferences{},
+				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{
 					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{},
@@ -2340,10 +2320,9 @@ foo
 foo
 ====`
 			expected := types.Document{
-				Attributes:         types.DocumentAttributes{},
-				ElementReferences:  types.ElementReferences{},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
+				Attributes:        types.DocumentAttributes{},
+				ElementReferences: types.ElementReferences{},
+				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{
 					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{
@@ -2378,10 +2357,9 @@ paragraphs
 ----
 `
 			expected := types.Document{
-				Attributes:         types.DocumentAttributes{},
-				ElementReferences:  types.ElementReferences{},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
+				Attributes:        types.DocumentAttributes{},
+				ElementReferences: types.ElementReferences{},
+				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{
 					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{
@@ -2427,10 +2405,9 @@ ____
 some *quote* content
 ____`
 			expected := types.Document{
-				Attributes:         types.DocumentAttributes{},
-				ElementReferences:  types.ElementReferences{},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
+				Attributes:        types.DocumentAttributes{},
+				ElementReferences: types.ElementReferences{},
+				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{
 					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{
@@ -2477,10 +2454,9 @@ ____
 ____
 `
 			expected := types.Document{
-				Attributes:         types.DocumentAttributes{},
-				ElementReferences:  types.ElementReferences{},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
+				Attributes:        types.DocumentAttributes{},
+				ElementReferences: types.ElementReferences{},
+				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{
 					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{
@@ -2562,10 +2538,9 @@ some quote content
 ____
 `
 			expected := types.Document{
-				Attributes:         types.DocumentAttributes{},
-				ElementReferences:  types.ElementReferences{},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
+				Attributes:        types.DocumentAttributes{},
+				ElementReferences: types.ElementReferences{},
+				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{
 					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{
@@ -2601,10 +2576,9 @@ ____
 * content
 ____`
 			expected := types.Document{
-				Attributes:         types.DocumentAttributes{},
-				ElementReferences:  types.ElementReferences{},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
+				Attributes:        types.DocumentAttributes{},
+				ElementReferences: types.ElementReferences{},
+				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{
 					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{
@@ -2693,10 +2667,9 @@ ____
 * content
 ____`
 			expected := types.Document{
-				Attributes:         types.DocumentAttributes{},
-				ElementReferences:  types.ElementReferences{},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
+				Attributes:        types.DocumentAttributes{},
+				ElementReferences: types.ElementReferences{},
+				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{
 					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{
@@ -2775,10 +2748,9 @@ ____`
 ____
 ____`
 			expected := types.Document{
-				Attributes:         types.DocumentAttributes{},
-				ElementReferences:  types.ElementReferences{},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
+				Attributes:        types.DocumentAttributes{},
+				ElementReferences: types.ElementReferences{},
+				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{
 					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{
@@ -2798,10 +2770,9 @@ ____
 foo
 `
 			expected := types.Document{
-				Attributes:         types.DocumentAttributes{},
-				ElementReferences:  types.ElementReferences{},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
+				Attributes:        types.DocumentAttributes{},
+				ElementReferences: types.ElementReferences{},
+				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{
 					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{
@@ -2835,10 +2806,9 @@ ____
 some *verse* content
 ____`
 			expected := types.Document{
-				Attributes:         types.DocumentAttributes{},
-				ElementReferences:  types.ElementReferences{},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
+				Attributes:        types.DocumentAttributes{},
+				ElementReferences: types.ElementReferences{},
+				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{
 					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{
@@ -2885,10 +2855,9 @@ ____
 ____
 `
 			expected := types.Document{
-				Attributes:         types.DocumentAttributes{},
-				ElementReferences:  types.ElementReferences{},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
+				Attributes:        types.DocumentAttributes{},
+				ElementReferences: types.ElementReferences{},
+				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{
 					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{
@@ -2931,10 +2900,9 @@ some verse content
 ____
 `
 			expected := types.Document{
-				Attributes:         types.DocumentAttributes{},
-				ElementReferences:  types.ElementReferences{},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
+				Attributes:        types.DocumentAttributes{},
+				ElementReferences: types.ElementReferences{},
+				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{
 					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{
@@ -2970,10 +2938,9 @@ ____
 * content
 ____`
 			expected := types.Document{
-				Attributes:         types.DocumentAttributes{},
-				ElementReferences:  types.ElementReferences{},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
+				Attributes:        types.DocumentAttributes{},
+				ElementReferences: types.ElementReferences{},
+				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{
 					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{
@@ -3027,10 +2994,9 @@ ____
 	* bar
 ____`
 			expected := types.Document{
-				Attributes:         types.DocumentAttributes{},
-				ElementReferences:  types.ElementReferences{},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
+				Attributes:        types.DocumentAttributes{},
+				ElementReferences: types.ElementReferences{},
+				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{
 					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{
@@ -3072,10 +3038,9 @@ ____`
 ____
 ____`
 			expected := types.Document{
-				Attributes:         types.DocumentAttributes{},
-				ElementReferences:  types.ElementReferences{},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
+				Attributes:        types.DocumentAttributes{},
+				ElementReferences: types.ElementReferences{},
+				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{
 					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{
@@ -3095,10 +3060,9 @@ ____
 foo
 `
 			expected := types.Document{
-				Attributes:         types.DocumentAttributes{},
-				ElementReferences:  types.ElementReferences{},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
+				Attributes:        types.DocumentAttributes{},
+				ElementReferences: types.ElementReferences{},
+				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{
 					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{
@@ -3136,10 +3100,9 @@ get '/hi' do
 end
 ----`
 			expected := types.Document{
-				Attributes:         types.DocumentAttributes{},
-				ElementReferences:  types.ElementReferences{},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
+				Attributes:        types.DocumentAttributes{},
+				ElementReferences: types.ElementReferences{},
+				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{
 					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{
@@ -3197,10 +3160,9 @@ get '/hi' do
 end
 ----`
 			expected := types.Document{
-				Attributes:         types.DocumentAttributes{},
-				ElementReferences:  types.ElementReferences{},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
+				Attributes:        types.DocumentAttributes{},
+				ElementReferences: types.ElementReferences{},
+				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{
 					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{
@@ -3261,10 +3223,9 @@ get '/hi' do
 end
 ----`
 			expected := types.Document{
-				Attributes:         types.DocumentAttributes{},
-				ElementReferences:  types.ElementReferences{},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
+				Attributes:        types.DocumentAttributes{},
+				ElementReferences: types.ElementReferences{},
+				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{
 					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{
@@ -3323,10 +3284,9 @@ end
 some *verse* content
 ****`
 			expected := types.Document{
-				Attributes:         types.DocumentAttributes{},
-				ElementReferences:  types.ElementReferences{},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
+				Attributes:        types.DocumentAttributes{},
+				ElementReferences: types.ElementReferences{},
+				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{
 					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{},
@@ -3370,10 +3330,9 @@ bar
 ----
 ****`
 			expected := types.Document{
-				Attributes:         types.DocumentAttributes{},
-				ElementReferences:  types.ElementReferences{},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
+				Attributes:        types.DocumentAttributes{},
+				ElementReferences: types.ElementReferences{},
+				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{
 					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{

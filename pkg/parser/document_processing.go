@@ -38,11 +38,14 @@ func ParseDocument(r io.Reader, config configuration.Configuration) (types.Docum
 	// filter out blocks not needed in the final doc
 	blocks = filter(blocks.([]interface{}), allMatchers...)
 
+	blocks, footnotes := processFootnotes(blocks.([]interface{}))
 	// now, rearrange elements in a hierarchical manner
 	doc, err := rearrangeSections(blocks.([]interface{}))
 	if err != nil {
 		return types.Document{}, err
 	}
+	// also, set the footnotes
+	doc.Footnotes = footnotes
 	// now, add front-matter attributes
 	for k, v := range draftDoc.FrontMatter.Content {
 		doc.Attributes[k] = v
@@ -57,6 +60,5 @@ func ParseDocument(r io.Reader, config configuration.Configuration) (types.Docum
 		log.Debug("final document:")
 		spew.Dump(doc)
 	}
-
 	return doc, nil
 }

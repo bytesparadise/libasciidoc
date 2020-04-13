@@ -1570,10 +1570,9 @@ var _ = Describe("unordered lists - document", func() {
 		It("unordered list with a basic single item", func() {
 			source := `* a list item`
 			expected := types.Document{
-				Attributes:         types.DocumentAttributes{},
-				ElementReferences:  types.ElementReferences{},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
+				Attributes:        types.DocumentAttributes{},
+				ElementReferences: types.ElementReferences{},
+				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{
 					types.UnorderedList{
 						Attributes: types.ElementAttributes{},
@@ -1607,10 +1606,9 @@ var _ = Describe("unordered lists - document", func() {
 [.myrole]
 * a list item`
 			expected := types.Document{
-				Attributes:         types.DocumentAttributes{},
-				ElementReferences:  types.ElementReferences{},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
+				Attributes:        types.DocumentAttributes{},
+				ElementReferences: types.ElementReferences{},
+				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{
 					types.UnorderedList{
 						Attributes: types.ElementAttributes{
@@ -1646,10 +1644,9 @@ var _ = Describe("unordered lists - document", func() {
 			source := `.a title
 	* a list item`
 			expected := types.Document{
-				Attributes:         types.DocumentAttributes{},
-				ElementReferences:  types.ElementReferences{},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
+				Attributes:        types.DocumentAttributes{},
+				ElementReferences: types.ElementReferences{},
+				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{
 					types.UnorderedList{
 						Attributes: types.ElementAttributes{
@@ -1683,10 +1680,9 @@ var _ = Describe("unordered lists - document", func() {
 			source := `* a first item
 					* a second item with *bold content*`
 			expected := types.Document{
-				Attributes:         types.DocumentAttributes{},
-				ElementReferences:  types.ElementReferences{},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
+				Attributes:        types.DocumentAttributes{},
+				ElementReferences: types.ElementReferences{},
+				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{
 					types.UnorderedList{
 						Attributes: types.ElementAttributes{},
@@ -1747,10 +1743,9 @@ var _ = Describe("unordered lists - document", func() {
 		*** nested nested list item B.2
 		* list item 2`
 			expected := types.Document{
-				Attributes:         types.DocumentAttributes{},
-				ElementReferences:  types.ElementReferences{},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
+				Attributes:        types.DocumentAttributes{},
+				ElementReferences: types.ElementReferences{},
+				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{
 					types.UnorderedList{
 						Attributes: types.ElementAttributes{
@@ -1911,10 +1906,9 @@ var _ = Describe("unordered lists - document", func() {
 			source := "- a first item\n" +
 				"- a second item with *bold content*"
 			expected := types.Document{
-				Attributes:         types.DocumentAttributes{},
-				ElementReferences:  types.ElementReferences{},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
+				Attributes:        types.DocumentAttributes{},
+				ElementReferences: types.ElementReferences{},
+				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{
 					types.UnorderedList{
 						Attributes: types.ElementAttributes{},
@@ -1971,10 +1965,9 @@ var _ = Describe("unordered lists - document", func() {
 					* another child item
 					** with a sub child item`
 			expected := types.Document{
-				Attributes:         types.DocumentAttributes{},
-				ElementReferences:  types.ElementReferences{},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
+				Attributes:        types.DocumentAttributes{},
+				ElementReferences: types.ElementReferences{},
+				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{
 					types.UnorderedList{
 						Attributes: types.ElementAttributes{},
@@ -2087,10 +2080,9 @@ var _ = Describe("unordered lists - document", func() {
 				"\n" +
 				"* a second item with *bold content*"
 			expected := types.Document{
-				Attributes:         types.DocumentAttributes{},
-				ElementReferences:  types.ElementReferences{},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
+				Attributes:        types.DocumentAttributes{},
+				ElementReferences: types.ElementReferences{},
+				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{
 					types.UnorderedList{
 						Attributes: types.ElementAttributes{},
@@ -2145,10 +2137,9 @@ var _ = Describe("unordered lists - document", func() {
 * item 2
 on 2 lines, too.`
 			expected := types.Document{
-				Attributes:         types.DocumentAttributes{},
-				ElementReferences:  types.ElementReferences{},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
+				Attributes:        types.DocumentAttributes{},
+				ElementReferences: types.ElementReferences{},
+				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{
 					types.UnorderedList{
 						Attributes: types.ElementAttributes{},
@@ -2204,10 +2195,9 @@ on 2 lines, too.`
 				"\n" +
 				"* an item in the second list"
 			expected := types.Document{
-				Attributes:         types.DocumentAttributes{},
-				ElementReferences:  types.ElementReferences{},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
+				Attributes:        types.DocumentAttributes{},
+				ElementReferences: types.ElementReferences{},
+				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{
 					types.UnorderedList{
 						Attributes: types.ElementAttributes{},
@@ -2261,10 +2251,9 @@ on 2 lines, too.`
 	* item 2
 	** item 2.1`
 			expected := types.Document{
-				Attributes:         types.DocumentAttributes{},
-				ElementReferences:  types.ElementReferences{},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
+				Attributes:        types.DocumentAttributes{},
+				ElementReferences: types.ElementReferences{},
+				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{
 					types.UnorderedList{
 						Attributes: types.ElementAttributes{},
@@ -2428,10 +2417,9 @@ on 2 lines, too.`
 ***** level 5
 * level 1`
 			expected := types.Document{
-				Attributes:         types.DocumentAttributes{},
-				ElementReferences:  types.ElementReferences{},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
+				Attributes:        types.DocumentAttributes{},
+				ElementReferences: types.ElementReferences{},
+				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{
 					types.UnorderedList{
 						Attributes: types.ElementAttributes{
@@ -2582,10 +2570,9 @@ on 2 lines, too.`
 ***** level 5
 ** level 2`
 			expected := types.Document{
-				Attributes:         types.DocumentAttributes{},
-				ElementReferences:  types.ElementReferences{},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
+				Attributes:        types.DocumentAttributes{},
+				ElementReferences: types.ElementReferences{},
+				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{
 					types.UnorderedList{
 						Attributes: types.ElementAttributes{
@@ -2730,10 +2717,9 @@ on 2 lines, too.`
 		It("unordered list item with predefined attribute", func() {
 			source := `* {amp}`
 			expected := types.Document{
-				Attributes:         types.DocumentAttributes{},
-				ElementReferences:  types.ElementReferences{},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
+				Attributes:        types.DocumentAttributes{},
+				ElementReferences: types.ElementReferences{},
+				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{
 					types.UnorderedList{
 						Attributes: types.ElementAttributes{},
@@ -2770,10 +2756,9 @@ on 2 lines, too.`
 					** item 1.2
 					* item 2`
 			expected := types.Document{
-				Attributes:         types.DocumentAttributes{},
-				ElementReferences:  types.ElementReferences{},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
+				Attributes:        types.DocumentAttributes{},
+				ElementReferences: types.ElementReferences{},
+				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{
 					types.UnorderedList{
 						Attributes: types.ElementAttributes{},
@@ -2878,10 +2863,9 @@ on 2 lines, too.`
 		It("invalid list item", func() {
 			source := "*an invalid list item"
 			expected := types.Document{
-				Attributes:         types.DocumentAttributes{},
-				ElementReferences:  types.ElementReferences{},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
+				Attributes:        types.DocumentAttributes{},
+				ElementReferences: types.ElementReferences{},
+				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
@@ -2912,10 +2896,9 @@ another delimited block
 * bar
 `
 			expected := types.Document{
-				Attributes:         types.DocumentAttributes{},
-				ElementReferences:  types.ElementReferences{},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
+				Attributes:        types.DocumentAttributes{},
+				ElementReferences: types.ElementReferences{},
+				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{
 					types.UnorderedList{
 						Attributes: types.ElementAttributes{},
@@ -3006,10 +2989,9 @@ The {plus} symbol is on a new line.
 ***** level 5
 `
 			expected := types.Document{
-				Attributes:         types.DocumentAttributes{},
-				ElementReferences:  types.ElementReferences{},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
+				Attributes:        types.DocumentAttributes{},
+				ElementReferences: types.ElementReferences{},
+				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{
 					types.UnorderedList{
 						Attributes: types.ElementAttributes{
@@ -3171,10 +3153,9 @@ a delimited block
 another delimited block
 ----`
 			expected := types.Document{
-				Attributes:         types.DocumentAttributes{},
-				ElementReferences:  types.ElementReferences{},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
+				Attributes:        types.DocumentAttributes{},
+				ElementReferences: types.ElementReferences{},
+				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{
 					types.UnorderedList{
 						Attributes: types.ElementAttributes{},
@@ -3267,10 +3248,9 @@ another delimited block
 +
 paragraph attached to grand parent list item`
 			expected := types.Document{
-				Attributes:         types.DocumentAttributes{},
-				ElementReferences:  types.ElementReferences{},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
+				Attributes:        types.DocumentAttributes{},
+				ElementReferences: types.ElementReferences{},
+				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{
 					types.UnorderedList{
 						Attributes: types.ElementAttributes{},
@@ -3356,10 +3336,9 @@ paragraph attached to grand parent list item`
 +
 paragraph attached to parent list item`
 			expected := types.Document{
-				Attributes:         types.DocumentAttributes{},
-				ElementReferences:  types.ElementReferences{},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
+				Attributes:        types.DocumentAttributes{},
+				ElementReferences: types.ElementReferences{},
+				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{
 					types.UnorderedList{
 						Attributes: types.ElementAttributes{},

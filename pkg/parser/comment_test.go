@@ -195,11 +195,10 @@ a second paragraph`
 			It("single line comment alone", func() {
 				source := `// A single-line comment.`
 				expected := types.Document{
-					Attributes:         types.DocumentAttributes{},
-					ElementReferences:  types.ElementReferences{},
-					Footnotes:          types.Footnotes{},
-					FootnoteReferences: types.FootnoteReferences{},
-					Elements:           []interface{}{},
+					Attributes:        types.DocumentAttributes{},
+					ElementReferences: types.ElementReferences{},
+					Footnotes:         []types.Footnote{},
+					Elements:          []interface{}{},
 				}
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
@@ -207,11 +206,10 @@ a second paragraph`
 			It("single line comment with prefixing spaces alone", func() {
 				source := `  // A single-line comment.`
 				expected := types.Document{
-					Attributes:         types.DocumentAttributes{},
-					ElementReferences:  types.ElementReferences{},
-					Footnotes:          types.Footnotes{},
-					FootnoteReferences: types.FootnoteReferences{},
-					Elements:           []interface{}{},
+					Attributes:        types.DocumentAttributes{},
+					ElementReferences: types.ElementReferences{},
+					Footnotes:         []types.Footnote{},
+					Elements:          []interface{}{},
 				}
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
@@ -219,11 +217,10 @@ a second paragraph`
 			It("single line comment with prefixing tabs alone", func() {
 				source := "\t\t// A single-line comment."
 				expected := types.Document{
-					Attributes:         types.DocumentAttributes{},
-					ElementReferences:  types.ElementReferences{},
-					Footnotes:          types.Footnotes{},
-					FootnoteReferences: types.FootnoteReferences{},
-					Elements:           []interface{}{},
+					Attributes:        types.DocumentAttributes{},
+					ElementReferences: types.ElementReferences{},
+					Footnotes:         []types.Footnote{},
+					Elements:          []interface{}{},
 				}
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
@@ -231,10 +228,9 @@ a second paragraph`
 			It("single line comment at end of line", func() {
 				source := `foo // A single-line comment.`
 				expected := types.Document{
-					Attributes:         types.DocumentAttributes{},
-					ElementReferences:  types.ElementReferences{},
-					Footnotes:          types.Footnotes{},
-					FootnoteReferences: types.FootnoteReferences{},
+					Attributes:        types.DocumentAttributes{},
+					ElementReferences: types.ElementReferences{},
+					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
@@ -254,10 +250,9 @@ a second paragraph`
 // A single-line comment.
 another line`
 				expected := types.Document{
-					Attributes:         types.DocumentAttributes{},
-					ElementReferences:  types.ElementReferences{},
-					Footnotes:          types.Footnotes{},
-					FootnoteReferences: types.FootnoteReferences{},
+					Attributes:        types.DocumentAttributes{},
+					ElementReferences: types.ElementReferences{},
+					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
@@ -280,10 +275,9 @@ another line`
 	// A single-line comment.
 another line`
 				expected := types.Document{
-					Attributes:         types.DocumentAttributes{},
-					ElementReferences:  types.ElementReferences{},
-					Footnotes:          types.Footnotes{},
-					FootnoteReferences: types.FootnoteReferences{},
+					Attributes:        types.DocumentAttributes{},
+					ElementReferences: types.ElementReferences{},
+					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
@@ -310,11 +304,10 @@ a *comment* block
 with multiple lines
 ////`
 				expected := types.Document{
-					Attributes:         types.DocumentAttributes{},
-					ElementReferences:  types.ElementReferences{},
-					Footnotes:          types.Footnotes{},
-					FootnoteReferences: types.FootnoteReferences{},
-					Elements:           []interface{}{},
+					Attributes:        types.DocumentAttributes{},
+					ElementReferences: types.ElementReferences{},
+					Footnotes:         []types.Footnote{},
+					Elements:          []interface{}{},
 				}
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
@@ -327,10 +320,9 @@ with multiple lines
 ////
 a second paragraph`
 				expected := types.Document{
-					Attributes:         types.DocumentAttributes{},
-					ElementReferences:  types.ElementReferences{},
-					Footnotes:          types.Footnotes{},
-					FootnoteReferences: types.FootnoteReferences{},
+					Attributes:        types.DocumentAttributes{},
+					ElementReferences: types.ElementReferences{},
+					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
@@ -373,8 +365,7 @@ a second paragraph`
 				ElementReferences: types.ElementReferences{
 					"_section_1": section1Title,
 				},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
+				Footnotes: []types.Footnote{},
 				Elements: []interface{}{
 					types.Section{
 						Attributes: types.ElementAttributes{
@@ -435,8 +426,7 @@ a second paragraph`
 					"_section_0": section0Title,
 					"_section_1": section1Title,
 				},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
+				Footnotes: []types.Footnote{},
 				Elements: []interface{}{
 					types.Section{
 						Attributes: types.ElementAttributes{

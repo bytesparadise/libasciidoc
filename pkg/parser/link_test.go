@@ -719,9 +719,8 @@ a link to {scheme}:{path}[] and https://foo.baz`
 					Attributes: types.DocumentAttributes{
 						"scheme": "link",
 					},
-					ElementReferences:  types.ElementReferences{},
-					Footnotes:          types.Footnotes{},
-					FootnoteReferences: types.FootnoteReferences{},
+					ElementReferences: types.ElementReferences{},
+					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
@@ -1044,10 +1043,9 @@ a link to *{scheme}://{path}[] and https://foo.baz[]*`
 		It("relative link within quoted text", func() {
 			source := "*link:foo[]*"
 			expected := types.Document{
-				Attributes:         types.DocumentAttributes{},
-				ElementReferences:  types.ElementReferences{},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
+				Attributes:        types.DocumentAttributes{},
+				ElementReferences: types.ElementReferences{},
+				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
@@ -1079,10 +1077,9 @@ a link to *{scheme}://{path}[] and https://foo.baz[]*`
 		It("external link with special characters", func() {
 			source := "a link to https://foo*_.com"
 			expected := types.Document{
-				Attributes:         types.DocumentAttributes{},
-				ElementReferences:  types.ElementReferences{},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
+				Attributes:        types.DocumentAttributes{},
+				ElementReferences: types.ElementReferences{},
+				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
@@ -1111,10 +1108,9 @@ a link to *{scheme}://{path}[] and https://foo.baz[]*`
 			source := `a link to *https://foo.com[]*`
 
 			expected := types.Document{
-				Attributes:         types.DocumentAttributes{},
-				ElementReferences:  types.ElementReferences{},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
+				Attributes:        types.DocumentAttributes{},
+				ElementReferences: types.ElementReferences{},
+				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
@@ -1148,10 +1144,9 @@ a link to *{scheme}://{path}[] and https://foo.baz[]*`
 			source := `a link to _https://foo.com[]_`
 
 			expected := types.Document{
-				Attributes:         types.DocumentAttributes{},
-				ElementReferences:  types.ElementReferences{},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
+				Attributes:        types.DocumentAttributes{},
+				ElementReferences: types.ElementReferences{},
+				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
@@ -1194,9 +1189,8 @@ a link to {url}`
 					Attributes: types.DocumentAttributes{
 						"url": "https://foo2.bar", // overriden by second declaration
 					},
-					ElementReferences:  types.ElementReferences{},
-					Footnotes:          types.Footnotes{},
-					FootnoteReferences: types.FootnoteReferences{},
+					ElementReferences: types.ElementReferences{},
+					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
@@ -1233,9 +1227,8 @@ a link to {scheme}://{path} and https://foo.baz`
 						"scheme": "https",
 						"path":   "foo.bar",
 					},
-					ElementReferences:  types.ElementReferences{},
-					Footnotes:          types.Footnotes{},
-					FootnoteReferences: types.FootnoteReferences{},
+					ElementReferences: types.ElementReferences{},
+					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
@@ -1283,9 +1276,8 @@ a link to *{scheme}://{path}[] and https://foo.baz[]*`
 						"scheme": "https",
 						"path":   "foo.bar",
 					},
-					ElementReferences:  types.ElementReferences{},
-					Footnotes:          types.Footnotes{},
-					FootnoteReferences: types.FootnoteReferences{},
+					ElementReferences: types.ElementReferences{},
+					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
@@ -1339,9 +1331,8 @@ a link to {scheme}://{path} and https://foo.baz`
 					Attributes: types.DocumentAttributes{
 						"scheme": "https",
 					},
-					ElementReferences:  types.ElementReferences{},
-					Footnotes:          types.Footnotes{},
-					FootnoteReferences: types.FootnoteReferences{},
+					ElementReferences: types.ElementReferences{},
+					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
@@ -1414,8 +1405,7 @@ a link to {scheme}://{path} and https://foo.baz`
 					ElementReferences: types.ElementReferences{
 						"_a_title_to_https_foo_bar_and_https_foo_baz": title,
 					},
-					Footnotes:          types.Footnotes{},
-					FootnoteReferences: types.FootnoteReferences{},
+					Footnotes: []types.Footnote{},
 					Elements: []interface{}{
 						types.Section{
 							Level: 0,
@@ -1468,8 +1458,7 @@ a link to {scheme}://{path} and https://foo.baz`
 					ElementReferences: types.ElementReferences{
 						"_a_title_to_https_foo_bar_and_https_foo_baz": title,
 					},
-					Footnotes:          types.Footnotes{},
-					FootnoteReferences: types.FootnoteReferences{},
+					Footnotes: []types.Footnote{},
 					Elements: []interface{}{
 						types.Section{
 							Level: 1,

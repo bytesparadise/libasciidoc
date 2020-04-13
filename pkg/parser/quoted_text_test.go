@@ -2682,10 +2682,9 @@ var _ = Describe("quoted texts", func() {
 			It("bold text with 1 word", func() {
 				source := "*hello*"
 				expected := types.Document{
-					Attributes:         types.DocumentAttributes{},
-					ElementReferences:  types.ElementReferences{},
-					Footnotes:          types.Footnotes{},
-					FootnoteReferences: types.FootnoteReferences{},
+					Attributes:        types.DocumentAttributes{},
+					ElementReferences: types.ElementReferences{},
+					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
@@ -2708,10 +2707,9 @@ var _ = Describe("quoted texts", func() {
 			It("bold text with 2 words", func() {
 				source := "*bold    content*"
 				expected := types.Document{
-					Attributes:         types.DocumentAttributes{},
-					ElementReferences:  types.ElementReferences{},
-					Footnotes:          types.Footnotes{},
-					FootnoteReferences: types.FootnoteReferences{},
+					Attributes:        types.DocumentAttributes{},
+					ElementReferences: types.ElementReferences{},
+					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
@@ -2734,10 +2732,9 @@ var _ = Describe("quoted texts", func() {
 			It("bold text with 3 words", func() {
 				source := "*some bold content*"
 				expected := types.Document{
-					Attributes:         types.DocumentAttributes{},
-					ElementReferences:  types.ElementReferences{},
-					Footnotes:          types.Footnotes{},
-					FootnoteReferences: types.FootnoteReferences{},
+					Attributes:        types.DocumentAttributes{},
+					ElementReferences: types.ElementReferences{},
+					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
@@ -2760,10 +2757,9 @@ var _ = Describe("quoted texts", func() {
 			It("italic text with 3 words in single quote", func() {
 				source := "_some italic content_"
 				expected := types.Document{
-					Attributes:         types.DocumentAttributes{},
-					ElementReferences:  types.ElementReferences{},
-					Footnotes:          types.Footnotes{},
-					FootnoteReferences: types.FootnoteReferences{},
+					Attributes:        types.DocumentAttributes{},
+					ElementReferences: types.ElementReferences{},
+					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
@@ -2786,10 +2782,9 @@ var _ = Describe("quoted texts", func() {
 			It("monospace text with 3 words", func() {
 				source := "`some monospace content`"
 				expected := types.Document{
-					Attributes:         types.DocumentAttributes{},
-					ElementReferences:  types.ElementReferences{},
-					Footnotes:          types.Footnotes{},
-					FootnoteReferences: types.FootnoteReferences{},
+					Attributes:        types.DocumentAttributes{},
+					ElementReferences: types.ElementReferences{},
+					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
@@ -2812,10 +2807,9 @@ var _ = Describe("quoted texts", func() {
 			It("invalid subscript text with 3 words", func() {
 				source := "~some subscript content~"
 				expected := types.Document{
-					Attributes:         types.DocumentAttributes{},
-					ElementReferences:  types.ElementReferences{},
-					Footnotes:          types.Footnotes{},
-					FootnoteReferences: types.FootnoteReferences{},
+					Attributes:        types.DocumentAttributes{},
+					ElementReferences: types.ElementReferences{},
+					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
@@ -2833,10 +2827,9 @@ var _ = Describe("quoted texts", func() {
 			It("invalid superscript text with 3 words", func() {
 				source := "^some superscript content^"
 				expected := types.Document{
-					Attributes:         types.DocumentAttributes{},
-					ElementReferences:  types.ElementReferences{},
-					Footnotes:          types.Footnotes{},
-					FootnoteReferences: types.FootnoteReferences{},
+					Attributes:        types.DocumentAttributes{},
+					ElementReferences: types.ElementReferences{},
+					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
@@ -2854,10 +2847,9 @@ var _ = Describe("quoted texts", func() {
 			It("bold text within italic text", func() {
 				source := "_some *bold* content_"
 				expected := types.Document{
-					Attributes:         types.DocumentAttributes{},
-					ElementReferences:  types.ElementReferences{},
-					Footnotes:          types.Footnotes{},
-					FootnoteReferences: types.FootnoteReferences{},
+					Attributes:        types.DocumentAttributes{},
+					ElementReferences: types.ElementReferences{},
+					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
@@ -2887,10 +2879,9 @@ var _ = Describe("quoted texts", func() {
 			It("monospace text within bold text within italic quote", func() {
 				source := "*some _italic and `monospaced content`_*"
 				expected := types.Document{
-					Attributes:         types.DocumentAttributes{},
-					ElementReferences:  types.ElementReferences{},
-					Footnotes:          types.Footnotes{},
-					FootnoteReferences: types.FootnoteReferences{},
+					Attributes:        types.DocumentAttributes{},
+					ElementReferences: types.ElementReferences{},
+					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
@@ -2925,10 +2916,9 @@ var _ = Describe("quoted texts", func() {
 			It("italic text within italic text", func() {
 				source := "_some _very italic_ content_"
 				expected := types.Document{
-					Attributes:         types.DocumentAttributes{},
-					ElementReferences:  types.ElementReferences{},
-					Footnotes:          types.Footnotes{},
-					FootnoteReferences: types.FootnoteReferences{},
+					Attributes:        types.DocumentAttributes{},
+					ElementReferences: types.ElementReferences{},
+					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
@@ -2952,10 +2942,9 @@ var _ = Describe("quoted texts", func() {
 			It("subscript text attached", func() {
 				source := "O~2~ is a molecule"
 				expected := types.Document{
-					Attributes:         types.DocumentAttributes{},
-					ElementReferences:  types.ElementReferences{},
-					Footnotes:          types.Footnotes{},
-					FootnoteReferences: types.FootnoteReferences{},
+					Attributes:        types.DocumentAttributes{},
+					ElementReferences: types.ElementReferences{},
+					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
@@ -2980,10 +2969,9 @@ var _ = Describe("quoted texts", func() {
 			It("superscript text attached", func() {
 				source := "M^me^ White"
 				expected := types.Document{
-					Attributes:         types.DocumentAttributes{},
-					ElementReferences:  types.ElementReferences{},
-					Footnotes:          types.Footnotes{},
-					FootnoteReferences: types.FootnoteReferences{},
+					Attributes:        types.DocumentAttributes{},
+					ElementReferences: types.ElementReferences{},
+					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
@@ -3008,10 +2996,9 @@ var _ = Describe("quoted texts", func() {
 			It("invalid subscript text with 3 words", func() {
 				source := "~some subscript content~"
 				expected := types.Document{
-					Attributes:         types.DocumentAttributes{},
-					ElementReferences:  types.ElementReferences{},
-					Footnotes:          types.Footnotes{},
-					FootnoteReferences: types.FootnoteReferences{},
+					Attributes:        types.DocumentAttributes{},
+					ElementReferences: types.ElementReferences{},
+					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
@@ -3033,10 +3020,9 @@ var _ = Describe("quoted texts", func() {
 			It("bold text of 1 word in double quote", func() {
 				source := "**hello**"
 				expected := types.Document{
-					Attributes:         types.DocumentAttributes{},
-					ElementReferences:  types.ElementReferences{},
-					Footnotes:          types.Footnotes{},
-					FootnoteReferences: types.FootnoteReferences{},
+					Attributes:        types.DocumentAttributes{},
+					ElementReferences: types.ElementReferences{},
+					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
@@ -3059,10 +3045,9 @@ var _ = Describe("quoted texts", func() {
 			It("italic text with 3 words in double quote", func() {
 				source := "__some italic content__"
 				expected := types.Document{
-					Attributes:         types.DocumentAttributes{},
-					ElementReferences:  types.ElementReferences{},
-					Footnotes:          types.Footnotes{},
-					FootnoteReferences: types.FootnoteReferences{},
+					Attributes:        types.DocumentAttributes{},
+					ElementReferences: types.ElementReferences{},
+					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
@@ -3085,10 +3070,9 @@ var _ = Describe("quoted texts", func() {
 			It("monospace text with 3 words in double quote", func() {
 				source := "``some monospace content``"
 				expected := types.Document{
-					Attributes:         types.DocumentAttributes{},
-					ElementReferences:  types.ElementReferences{},
-					Footnotes:          types.Footnotes{},
-					FootnoteReferences: types.FootnoteReferences{},
+					Attributes:        types.DocumentAttributes{},
+					ElementReferences: types.ElementReferences{},
+					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
@@ -3111,10 +3095,9 @@ var _ = Describe("quoted texts", func() {
 			It("superscript text within italic text", func() {
 				source := "__some ^superscript^ content__"
 				expected := types.Document{
-					Attributes:         types.DocumentAttributes{},
-					ElementReferences:  types.ElementReferences{},
-					Footnotes:          types.Footnotes{},
-					FootnoteReferences: types.FootnoteReferences{},
+					Attributes:        types.DocumentAttributes{},
+					ElementReferences: types.ElementReferences{},
+					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
@@ -3144,10 +3127,9 @@ var _ = Describe("quoted texts", func() {
 			It("superscript text within italic text within bold quote", func() {
 				source := "**some _italic and ^superscriptcontent^_**"
 				expected := types.Document{
-					Attributes:         types.DocumentAttributes{},
-					ElementReferences:  types.ElementReferences{},
-					Footnotes:          types.Footnotes{},
-					FootnoteReferences: types.FootnoteReferences{},
+					Attributes:        types.DocumentAttributes{},
+					ElementReferences: types.ElementReferences{},
+					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
@@ -3185,10 +3167,9 @@ var _ = Describe("quoted texts", func() {
 			It("inline content with bold text", func() {
 				source := "a paragraph with *some bold content*"
 				expected := types.Document{
-					Attributes:         types.DocumentAttributes{},
-					ElementReferences:  types.ElementReferences{},
-					Footnotes:          types.Footnotes{},
-					FootnoteReferences: types.FootnoteReferences{},
+					Attributes:        types.DocumentAttributes{},
+					ElementReferences: types.ElementReferences{},
+					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
@@ -3212,10 +3193,9 @@ var _ = Describe("quoted texts", func() {
 			It("inline content with invalid bold text - use case 1", func() {
 				source := "a paragraph with *some bold content"
 				expected := types.Document{
-					Attributes:         types.DocumentAttributes{},
-					ElementReferences:  types.ElementReferences{},
-					Footnotes:          types.Footnotes{},
-					FootnoteReferences: types.FootnoteReferences{},
+					Attributes:        types.DocumentAttributes{},
+					ElementReferences: types.ElementReferences{},
+					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
@@ -3233,10 +3213,9 @@ var _ = Describe("quoted texts", func() {
 			It("inline content with invalid bold text - use case 2", func() {
 				source := "a paragraph with *some bold content *"
 				expected := types.Document{
-					Attributes:         types.DocumentAttributes{},
-					ElementReferences:  types.ElementReferences{},
-					Footnotes:          types.Footnotes{},
-					FootnoteReferences: types.FootnoteReferences{},
+					Attributes:        types.DocumentAttributes{},
+					ElementReferences: types.ElementReferences{},
+					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
@@ -3254,10 +3233,9 @@ var _ = Describe("quoted texts", func() {
 			It("inline content with invalid bold text - use case 3", func() {
 				source := "a paragraph with * some bold content*"
 				expected := types.Document{
-					Attributes:         types.DocumentAttributes{},
-					ElementReferences:  types.ElementReferences{},
-					Footnotes:          types.Footnotes{},
-					FootnoteReferences: types.FootnoteReferences{},
+					Attributes:        types.DocumentAttributes{},
+					ElementReferences: types.ElementReferences{},
+					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
@@ -3275,10 +3253,9 @@ var _ = Describe("quoted texts", func() {
 			It("invalid italic text within bold text", func() {
 				source := "some *bold and _italic content _ together*."
 				expected := types.Document{
-					Attributes:         types.DocumentAttributes{},
-					ElementReferences:  types.ElementReferences{},
-					Footnotes:          types.Footnotes{},
-					FootnoteReferences: types.FootnoteReferences{},
+					Attributes:        types.DocumentAttributes{},
+					ElementReferences: types.ElementReferences{},
+					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
@@ -3304,10 +3281,9 @@ var _ = Describe("quoted texts", func() {
 			It("italic text within invalid bold text", func() {
 				source := "some *bold and _italic content_ together *."
 				expected := types.Document{
-					Attributes:         types.DocumentAttributes{},
-					ElementReferences:  types.ElementReferences{},
-					Footnotes:          types.Footnotes{},
-					FootnoteReferences: types.FootnoteReferences{},
+					Attributes:        types.DocumentAttributes{},
+					ElementReferences: types.ElementReferences{},
+					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
@@ -3332,10 +3308,9 @@ var _ = Describe("quoted texts", func() {
 			It("inline content with invalid subscript text - use case 1", func() {
 				source := "a paragraph with ~some subscript content"
 				expected := types.Document{
-					Attributes:         types.DocumentAttributes{},
-					ElementReferences:  types.ElementReferences{},
-					Footnotes:          types.Footnotes{},
-					FootnoteReferences: types.FootnoteReferences{},
+					Attributes:        types.DocumentAttributes{},
+					ElementReferences: types.ElementReferences{},
+					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
@@ -3353,10 +3328,9 @@ var _ = Describe("quoted texts", func() {
 			It("inline content with invalid subscript text - use case 2", func() {
 				source := "a paragraph with ~some subscript content ~"
 				expected := types.Document{
-					Attributes:         types.DocumentAttributes{},
-					ElementReferences:  types.ElementReferences{},
-					Footnotes:          types.Footnotes{},
-					FootnoteReferences: types.FootnoteReferences{},
+					Attributes:        types.DocumentAttributes{},
+					ElementReferences: types.ElementReferences{},
+					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
@@ -3374,10 +3348,9 @@ var _ = Describe("quoted texts", func() {
 			It("inline content with invalid subscript text - use case 3", func() {
 				source := "a paragraph with ~ some subscript content~"
 				expected := types.Document{
-					Attributes:         types.DocumentAttributes{},
-					ElementReferences:  types.ElementReferences{},
-					Footnotes:          types.Footnotes{},
-					FootnoteReferences: types.FootnoteReferences{},
+					Attributes:        types.DocumentAttributes{},
+					ElementReferences: types.ElementReferences{},
+					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
@@ -3395,10 +3368,9 @@ var _ = Describe("quoted texts", func() {
 			It("inline content with invalid superscript text - use case 1", func() {
 				source := "a paragraph with ^some superscript content"
 				expected := types.Document{
-					Attributes:         types.DocumentAttributes{},
-					ElementReferences:  types.ElementReferences{},
-					Footnotes:          types.Footnotes{},
-					FootnoteReferences: types.FootnoteReferences{},
+					Attributes:        types.DocumentAttributes{},
+					ElementReferences: types.ElementReferences{},
+					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
@@ -3417,10 +3389,9 @@ var _ = Describe("quoted texts", func() {
 			It("inline content with invalid superscript text - use case 2", func() {
 				source := "a paragraph with ^some superscript content ^"
 				expected := types.Document{
-					Attributes:         types.DocumentAttributes{},
-					ElementReferences:  types.ElementReferences{},
-					Footnotes:          types.Footnotes{},
-					FootnoteReferences: types.FootnoteReferences{},
+					Attributes:        types.DocumentAttributes{},
+					ElementReferences: types.ElementReferences{},
+					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
@@ -3439,10 +3410,9 @@ var _ = Describe("quoted texts", func() {
 			It("inline content with invalid superscript text - use case 3", func() {
 				source := "a paragraph with ^ some superscript content^"
 				expected := types.Document{
-					Attributes:         types.DocumentAttributes{},
-					ElementReferences:  types.ElementReferences{},
-					Footnotes:          types.Footnotes{},
-					FootnoteReferences: types.FootnoteReferences{},
+					Attributes:        types.DocumentAttributes{},
+					ElementReferences: types.ElementReferences{},
+					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
@@ -3464,10 +3434,9 @@ var _ = Describe("quoted texts", func() {
 			It("italic text within bold text", func() {
 				source := "some *bold and _italic content_ together*."
 				expected := types.Document{
-					Attributes:         types.DocumentAttributes{},
-					ElementReferences:  types.ElementReferences{},
-					Footnotes:          types.Footnotes{},
-					FootnoteReferences: types.FootnoteReferences{},
+					Attributes:        types.DocumentAttributes{},
+					ElementReferences: types.ElementReferences{},
+					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
@@ -3500,10 +3469,9 @@ var _ = Describe("quoted texts", func() {
 				// here we don't allow for bold text within bold text, to comply with the existing implementations (asciidoc and asciidoctor)
 				source := "*some *nested bold* content*"
 				expected := types.Document{
-					Attributes:         types.DocumentAttributes{},
-					ElementReferences:  types.ElementReferences{},
-					Footnotes:          types.Footnotes{},
-					FootnoteReferences: types.FootnoteReferences{},
+					Attributes:        types.DocumentAttributes{},
+					ElementReferences: types.ElementReferences{},
+					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
@@ -3528,10 +3496,9 @@ var _ = Describe("quoted texts", func() {
 				// here we don't allow for bold text within bold text, to comply with the existing implementations (asciidoc and asciidoctor)
 				source := "**some **nested bold** content**"
 				expected := types.Document{
-					Attributes:         types.DocumentAttributes{},
-					ElementReferences:  types.ElementReferences{},
-					Footnotes:          types.Footnotes{},
-					FootnoteReferences: types.FootnoteReferences{},
+					Attributes:        types.DocumentAttributes{},
+					ElementReferences: types.ElementReferences{},
+					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
@@ -3562,10 +3529,9 @@ var _ = Describe("quoted texts", func() {
 				// here we don't allow for bold text within bold text, to comply with the existing implementations (asciidoc and asciidoctor)
 				source := "**some *nested bold* content**"
 				expected := types.Document{
-					Attributes:         types.DocumentAttributes{},
-					ElementReferences:  types.ElementReferences{},
-					Footnotes:          types.Footnotes{},
-					FootnoteReferences: types.FootnoteReferences{},
+					Attributes:        types.DocumentAttributes{},
+					ElementReferences: types.ElementReferences{},
+					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
@@ -3596,10 +3562,9 @@ var _ = Describe("quoted texts", func() {
 				// here we don't allow for bold text within bold text, to comply with the existing implementations (asciidoc and asciidoctor)
 				source := "*some **nested bold** content*"
 				expected := types.Document{
-					Attributes:         types.DocumentAttributes{},
-					ElementReferences:  types.ElementReferences{},
-					Footnotes:          types.Footnotes{},
-					FootnoteReferences: types.FootnoteReferences{},
+					Attributes:        types.DocumentAttributes{},
+					ElementReferences: types.ElementReferences{},
+					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
@@ -3630,10 +3595,9 @@ var _ = Describe("quoted texts", func() {
 				// here we don't allow for italic text within italic text, to comply with the existing implementations (asciidoc and asciidoctor)
 				source := "_some _nested italic_ content_"
 				expected := types.Document{
-					Attributes:         types.DocumentAttributes{},
-					ElementReferences:  types.ElementReferences{},
-					Footnotes:          types.Footnotes{},
-					FootnoteReferences: types.FootnoteReferences{},
+					Attributes:        types.DocumentAttributes{},
+					ElementReferences: types.ElementReferences{},
+					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
@@ -3658,10 +3622,9 @@ var _ = Describe("quoted texts", func() {
 				// here we don't allow for italic text within italic text, to comply with the existing implementations (asciidoc and asciidoctor)
 				source := "__some __nested italic__ content__"
 				expected := types.Document{
-					Attributes:         types.DocumentAttributes{},
-					ElementReferences:  types.ElementReferences{},
-					Footnotes:          types.Footnotes{},
-					FootnoteReferences: types.FootnoteReferences{},
+					Attributes:        types.DocumentAttributes{},
+					ElementReferences: types.ElementReferences{},
+					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
@@ -3692,10 +3655,9 @@ var _ = Describe("quoted texts", func() {
 				// here we allow for italic text within italic text, to comply with the existing implementations (asciidoc and asciidoctor)
 				source := "_some __nested italic__ content_"
 				expected := types.Document{
-					Attributes:         types.DocumentAttributes{},
-					ElementReferences:  types.ElementReferences{},
-					Footnotes:          types.Footnotes{},
-					FootnoteReferences: types.FootnoteReferences{},
+					Attributes:        types.DocumentAttributes{},
+					ElementReferences: types.ElementReferences{},
+					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
@@ -3726,10 +3688,9 @@ var _ = Describe("quoted texts", func() {
 				// here we allow for italic text within italic text, to comply with the existing implementations (asciidoc and asciidoctor)
 				source := "_some __nested italic__ content_"
 				expected := types.Document{
-					Attributes:         types.DocumentAttributes{},
-					ElementReferences:  types.ElementReferences{},
-					Footnotes:          types.Footnotes{},
-					FootnoteReferences: types.FootnoteReferences{},
+					Attributes:        types.DocumentAttributes{},
+					ElementReferences: types.ElementReferences{},
+					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
@@ -3760,10 +3721,9 @@ var _ = Describe("quoted texts", func() {
 				// here we don't allow for monospace text within monospace text, to comply with the existing implementations (asciidoc and asciidoctor)
 				source := "`some `nested monospace` content`"
 				expected := types.Document{
-					Attributes:         types.DocumentAttributes{},
-					ElementReferences:  types.ElementReferences{},
-					Footnotes:          types.Footnotes{},
-					FootnoteReferences: types.FootnoteReferences{},
+					Attributes:        types.DocumentAttributes{},
+					ElementReferences: types.ElementReferences{},
+					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
@@ -3788,10 +3748,9 @@ var _ = Describe("quoted texts", func() {
 				// here we don't allow for monospace text within monospace text, to comply with the existing implementations (asciidoc and asciidoctor)
 				source := "``some ``nested monospace`` content``"
 				expected := types.Document{
-					Attributes:         types.DocumentAttributes{},
-					ElementReferences:  types.ElementReferences{},
-					Footnotes:          types.Footnotes{},
-					FootnoteReferences: types.FootnoteReferences{},
+					Attributes:        types.DocumentAttributes{},
+					ElementReferences: types.ElementReferences{},
+					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
@@ -3822,10 +3781,9 @@ var _ = Describe("quoted texts", func() {
 				// here we allow for monospace text within monospace text, to comply with the existing implementations (asciidoc and asciidoctor)
 				source := "`some ``nested monospace`` content`"
 				expected := types.Document{
-					Attributes:         types.DocumentAttributes{},
-					ElementReferences:  types.ElementReferences{},
-					Footnotes:          types.Footnotes{},
-					FootnoteReferences: types.FootnoteReferences{},
+					Attributes:        types.DocumentAttributes{},
+					ElementReferences: types.ElementReferences{},
+					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
@@ -3856,10 +3814,9 @@ var _ = Describe("quoted texts", func() {
 				// here we allow for monospace text within monospace text, to comply with the existing implementations (asciidoc and asciidoctor)
 				source := "`some ``nested monospace`` content`"
 				expected := types.Document{
-					Attributes:         types.DocumentAttributes{},
-					ElementReferences:  types.ElementReferences{},
-					Footnotes:          types.Footnotes{},
-					FootnoteReferences: types.FootnoteReferences{},
+					Attributes:        types.DocumentAttributes{},
+					ElementReferences: types.ElementReferences{},
+					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
@@ -3889,10 +3846,9 @@ var _ = Describe("quoted texts", func() {
 			It("unbalanced bold in monospace - case 1", func() {
 				source := "`*a`"
 				expected := types.Document{
-					Attributes:         types.DocumentAttributes{},
-					ElementReferences:  types.ElementReferences{},
-					Footnotes:          types.Footnotes{},
-					FootnoteReferences: types.FootnoteReferences{},
+					Attributes:        types.DocumentAttributes{},
+					ElementReferences: types.ElementReferences{},
+					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
@@ -3915,10 +3871,9 @@ var _ = Describe("quoted texts", func() {
 			It("unbalanced bold in monospace - case 2", func() {
 				source := "`a*b`"
 				expected := types.Document{
-					Attributes:         types.DocumentAttributes{},
-					ElementReferences:  types.ElementReferences{},
-					Footnotes:          types.Footnotes{},
-					FootnoteReferences: types.FootnoteReferences{},
+					Attributes:        types.DocumentAttributes{},
+					ElementReferences: types.ElementReferences{},
+					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
@@ -3941,10 +3896,9 @@ var _ = Describe("quoted texts", func() {
 			It("italic in monospace", func() {
 				source := "`_a_`"
 				expected := types.Document{
-					Attributes:         types.DocumentAttributes{},
-					ElementReferences:  types.ElementReferences{},
-					Footnotes:          types.Footnotes{},
-					FootnoteReferences: types.FootnoteReferences{},
+					Attributes:        types.DocumentAttributes{},
+					ElementReferences: types.ElementReferences{},
+					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
@@ -3972,10 +3926,9 @@ var _ = Describe("quoted texts", func() {
 			It("unbalanced italic in monospace", func() {
 				source := "`a_b`"
 				expected := types.Document{
-					Attributes:         types.DocumentAttributes{},
-					ElementReferences:  types.ElementReferences{},
-					Footnotes:          types.Footnotes{},
-					FootnoteReferences: types.FootnoteReferences{},
+					Attributes:        types.DocumentAttributes{},
+					ElementReferences: types.ElementReferences{},
+					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
@@ -3998,10 +3951,9 @@ var _ = Describe("quoted texts", func() {
 			It("unparsed bold in monospace", func() {
 				source := "`a*b*`"
 				expected := types.Document{
-					Attributes:         types.DocumentAttributes{},
-					ElementReferences:  types.ElementReferences{},
-					Footnotes:          types.Footnotes{},
-					FootnoteReferences: types.FootnoteReferences{},
+					Attributes:        types.DocumentAttributes{},
+					ElementReferences: types.ElementReferences{},
+					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
@@ -4024,10 +3976,9 @@ var _ = Describe("quoted texts", func() {
 			It("parsed subscript in monospace", func() {
 				source := "`a~b~`"
 				expected := types.Document{
-					Attributes:         types.DocumentAttributes{},
-					ElementReferences:  types.ElementReferences{},
-					Footnotes:          types.Footnotes{},
-					FootnoteReferences: types.FootnoteReferences{},
+					Attributes:        types.DocumentAttributes{},
+					ElementReferences: types.ElementReferences{},
+					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
@@ -4056,10 +4007,9 @@ var _ = Describe("quoted texts", func() {
 			It("multiline in single quoted monospace - case 1", func() {
 				source := "`a\nb`"
 				expected := types.Document{
-					Attributes:         types.DocumentAttributes{},
-					ElementReferences:  types.ElementReferences{},
-					Footnotes:          types.Footnotes{},
-					FootnoteReferences: types.FootnoteReferences{},
+					Attributes:        types.DocumentAttributes{},
+					ElementReferences: types.ElementReferences{},
+					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
@@ -4082,10 +4032,9 @@ var _ = Describe("quoted texts", func() {
 			It("multiline in double quoted monospace - case 1", func() {
 				source := "`a\nb`"
 				expected := types.Document{
-					Attributes:         types.DocumentAttributes{},
-					ElementReferences:  types.ElementReferences{},
-					Footnotes:          types.Footnotes{},
-					FootnoteReferences: types.FootnoteReferences{},
+					Attributes:        types.DocumentAttributes{},
+					ElementReferences: types.ElementReferences{},
+					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
@@ -4108,10 +4057,9 @@ var _ = Describe("quoted texts", func() {
 			It("multiline in single quoted  monospace - case 2", func() {
 				source := "`a\n*b*`"
 				expected := types.Document{
-					Attributes:         types.DocumentAttributes{},
-					ElementReferences:  types.ElementReferences{},
-					Footnotes:          types.Footnotes{},
-					FootnoteReferences: types.FootnoteReferences{},
+					Attributes:        types.DocumentAttributes{},
+					ElementReferences: types.ElementReferences{},
+					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
@@ -4140,10 +4088,9 @@ var _ = Describe("quoted texts", func() {
 			It("multiline in double quoted  monospace - case 2", func() {
 				source := "`a\n*b*`"
 				expected := types.Document{
-					Attributes:         types.DocumentAttributes{},
-					ElementReferences:  types.ElementReferences{},
-					Footnotes:          types.Footnotes{},
-					FootnoteReferences: types.FootnoteReferences{},
+					Attributes:        types.DocumentAttributes{},
+					ElementReferences: types.ElementReferences{},
+					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
@@ -4172,10 +4119,9 @@ var _ = Describe("quoted texts", func() {
 			It("link in bold", func() {
 				source := "*a link:/[b]*"
 				expected := types.Document{
-					Attributes:         types.DocumentAttributes{},
-					ElementReferences:  types.ElementReferences{},
-					Footnotes:          types.Footnotes{},
-					FootnoteReferences: types.FootnoteReferences{},
+					Attributes:        types.DocumentAttributes{},
+					ElementReferences: types.ElementReferences{},
+					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
@@ -4214,10 +4160,9 @@ var _ = Describe("quoted texts", func() {
 			It("image in bold", func() {
 				source := "*a image:foo.png[]*"
 				expected := types.Document{
-					Attributes:         types.DocumentAttributes{},
-					ElementReferences:  types.ElementReferences{},
-					Footnotes:          types.Footnotes{},
-					FootnoteReferences: types.FootnoteReferences{},
+					Attributes:        types.DocumentAttributes{},
+					ElementReferences: types.ElementReferences{},
+					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
@@ -4252,10 +4197,9 @@ var _ = Describe("quoted texts", func() {
 			It("singleplus passthrough in bold", func() {
 				source := "*a +image:foo.png[]+*"
 				expected := types.Document{
-					Attributes:         types.DocumentAttributes{},
-					ElementReferences:  types.ElementReferences{},
-					Footnotes:          types.Footnotes{},
-					FootnoteReferences: types.FootnoteReferences{},
+					Attributes:        types.DocumentAttributes{},
+					ElementReferences: types.ElementReferences{},
+					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
@@ -4284,10 +4228,9 @@ var _ = Describe("quoted texts", func() {
 			It("tripleplus passthrough in bold", func() {
 				source := "*a +++image:foo.png[]+++*"
 				expected := types.Document{
-					Attributes:         types.DocumentAttributes{},
-					ElementReferences:  types.ElementReferences{},
-					Footnotes:          types.Footnotes{},
-					FootnoteReferences: types.FootnoteReferences{},
+					Attributes:        types.DocumentAttributes{},
+					ElementReferences: types.ElementReferences{},
+					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
@@ -4316,10 +4259,9 @@ var _ = Describe("quoted texts", func() {
 			It("link in italic", func() {
 				source := "_a link:/[b]_"
 				expected := types.Document{
-					Attributes:         types.DocumentAttributes{},
-					ElementReferences:  types.ElementReferences{},
-					Footnotes:          types.Footnotes{},
-					FootnoteReferences: types.FootnoteReferences{},
+					Attributes:        types.DocumentAttributes{},
+					ElementReferences: types.ElementReferences{},
+					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
@@ -4358,10 +4300,9 @@ var _ = Describe("quoted texts", func() {
 			It("image in italic", func() {
 				source := "_a image:foo.png[]_"
 				expected := types.Document{
-					Attributes:         types.DocumentAttributes{},
-					ElementReferences:  types.ElementReferences{},
-					Footnotes:          types.Footnotes{},
-					FootnoteReferences: types.FootnoteReferences{},
+					Attributes:        types.DocumentAttributes{},
+					ElementReferences: types.ElementReferences{},
+					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
@@ -4396,10 +4337,9 @@ var _ = Describe("quoted texts", func() {
 			It("singleplus passthrough in italic", func() {
 				source := "_a +image:foo.png[]+_"
 				expected := types.Document{
-					Attributes:         types.DocumentAttributes{},
-					ElementReferences:  types.ElementReferences{},
-					Footnotes:          types.Footnotes{},
-					FootnoteReferences: types.FootnoteReferences{},
+					Attributes:        types.DocumentAttributes{},
+					ElementReferences: types.ElementReferences{},
+					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
@@ -4428,10 +4368,9 @@ var _ = Describe("quoted texts", func() {
 			It("tripleplus passthrough in italic", func() {
 				source := "_a +++image:foo.png[]+++_"
 				expected := types.Document{
-					Attributes:         types.DocumentAttributes{},
-					ElementReferences:  types.ElementReferences{},
-					Footnotes:          types.Footnotes{},
-					FootnoteReferences: types.FootnoteReferences{},
+					Attributes:        types.DocumentAttributes{},
+					ElementReferences: types.ElementReferences{},
+					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
@@ -4460,10 +4399,9 @@ var _ = Describe("quoted texts", func() {
 			It("link in monospace", func() {
 				source := "`a link:/[b]`"
 				expected := types.Document{
-					Attributes:         types.DocumentAttributes{},
-					ElementReferences:  types.ElementReferences{},
-					Footnotes:          types.Footnotes{},
-					FootnoteReferences: types.FootnoteReferences{},
+					Attributes:        types.DocumentAttributes{},
+					ElementReferences: types.ElementReferences{},
+					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
@@ -4502,10 +4440,9 @@ var _ = Describe("quoted texts", func() {
 			It("image in monospace", func() {
 				source := "`a image:foo.png[]`"
 				expected := types.Document{
-					Attributes:         types.DocumentAttributes{},
-					ElementReferences:  types.ElementReferences{},
-					Footnotes:          types.Footnotes{},
-					FootnoteReferences: types.FootnoteReferences{},
+					Attributes:        types.DocumentAttributes{},
+					ElementReferences: types.ElementReferences{},
+					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
@@ -4540,10 +4477,9 @@ var _ = Describe("quoted texts", func() {
 			It("singleplus passthrough in monospace", func() {
 				source := "`a +image:foo.png[]+`"
 				expected := types.Document{
-					Attributes:         types.DocumentAttributes{},
-					ElementReferences:  types.ElementReferences{},
-					Footnotes:          types.Footnotes{},
-					FootnoteReferences: types.FootnoteReferences{},
+					Attributes:        types.DocumentAttributes{},
+					ElementReferences: types.ElementReferences{},
+					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
@@ -4573,10 +4509,9 @@ var _ = Describe("quoted texts", func() {
 			It("tripleplus passthrough in monospace", func() {
 				source := "`a +++image:foo.png[]+++`"
 				expected := types.Document{
-					Attributes:         types.DocumentAttributes{},
-					ElementReferences:  types.ElementReferences{},
-					Footnotes:          types.Footnotes{},
-					FootnoteReferences: types.FootnoteReferences{},
+					Attributes:        types.DocumentAttributes{},
+					ElementReferences: types.ElementReferences{},
+					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
@@ -4612,10 +4547,9 @@ var _ = Describe("quoted texts", func() {
 				It("unbalanced bold text - extra on left", func() {
 					source := "**some bold content*"
 					expected := types.Document{
-						Attributes:         types.DocumentAttributes{},
-						ElementReferences:  types.ElementReferences{},
-						Footnotes:          types.Footnotes{},
-						FootnoteReferences: types.FootnoteReferences{},
+						Attributes:        types.DocumentAttributes{},
+						ElementReferences: types.ElementReferences{},
+						Footnotes:         []types.Footnote{},
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
@@ -4638,10 +4572,9 @@ var _ = Describe("quoted texts", func() {
 				It("unbalanced bold text - extra on right", func() {
 					source := "*some bold content**"
 					expected := types.Document{
-						Attributes:         types.DocumentAttributes{},
-						ElementReferences:  types.ElementReferences{},
-						Footnotes:          types.Footnotes{},
-						FootnoteReferences: types.FootnoteReferences{},
+						Attributes:        types.DocumentAttributes{},
+						ElementReferences: types.ElementReferences{},
+						Footnotes:         []types.Footnote{},
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
@@ -4669,10 +4602,9 @@ var _ = Describe("quoted texts", func() {
 				It("unbalanced italic text - extra on left", func() {
 					source := "__some italic content_"
 					expected := types.Document{
-						Attributes:         types.DocumentAttributes{},
-						ElementReferences:  types.ElementReferences{},
-						Footnotes:          types.Footnotes{},
-						FootnoteReferences: types.FootnoteReferences{},
+						Attributes:        types.DocumentAttributes{},
+						ElementReferences: types.ElementReferences{},
+						Footnotes:         []types.Footnote{},
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
@@ -4696,10 +4628,9 @@ var _ = Describe("quoted texts", func() {
 				It("unbalanced italic text - extra on right", func() {
 					source := "_some italic content__"
 					expected := types.Document{
-						Attributes:         types.DocumentAttributes{},
-						ElementReferences:  types.ElementReferences{},
-						Footnotes:          types.Footnotes{},
-						FootnoteReferences: types.FootnoteReferences{},
+						Attributes:        types.DocumentAttributes{},
+						ElementReferences: types.ElementReferences{},
+						Footnotes:         []types.Footnote{},
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
@@ -4726,10 +4657,9 @@ var _ = Describe("quoted texts", func() {
 				It("unbalanced monospace text - extra on left", func() {
 					source := "``some monospace content`"
 					expected := types.Document{
-						Attributes:         types.DocumentAttributes{},
-						ElementReferences:  types.ElementReferences{},
-						Footnotes:          types.Footnotes{},
-						FootnoteReferences: types.FootnoteReferences{},
+						Attributes:        types.DocumentAttributes{},
+						ElementReferences: types.ElementReferences{},
+						Footnotes:         []types.Footnote{},
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
@@ -4753,10 +4683,9 @@ var _ = Describe("quoted texts", func() {
 				It("unbalanced monospace text - extra on right", func() {
 					source := "`some monospace content``"
 					expected := types.Document{
-						Attributes:         types.DocumentAttributes{},
-						ElementReferences:  types.ElementReferences{},
-						Footnotes:          types.Footnotes{},
-						FootnoteReferences: types.FootnoteReferences{},
+						Attributes:        types.DocumentAttributes{},
+						ElementReferences: types.ElementReferences{},
+						Footnotes:         []types.Footnote{},
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.ElementAttributes{},
@@ -4781,10 +4710,9 @@ var _ = Describe("quoted texts", func() {
 			It("inline content with unbalanced bold text", func() {
 				source := "a paragraph with *some bold content"
 				expected := types.Document{
-					Attributes:         types.DocumentAttributes{},
-					ElementReferences:  types.ElementReferences{},
-					Footnotes:          types.Footnotes{},
-					FootnoteReferences: types.FootnoteReferences{},
+					Attributes:        types.DocumentAttributes{},
+					ElementReferences: types.ElementReferences{},
+					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{},
@@ -4810,10 +4738,9 @@ var _ = Describe("quoted texts", func() {
 					It("escaped bold text with single backslash", func() {
 						source := `\*bold content*`
 						expected := types.Document{
-							Attributes:         types.DocumentAttributes{},
-							ElementReferences:  types.ElementReferences{},
-							Footnotes:          types.Footnotes{},
-							FootnoteReferences: types.FootnoteReferences{},
+							Attributes:        types.DocumentAttributes{},
+							ElementReferences: types.ElementReferences{},
+							Footnotes:         []types.Footnote{},
 							Elements: []interface{}{
 								types.Paragraph{
 									Attributes: types.ElementAttributes{},
@@ -4831,10 +4758,9 @@ var _ = Describe("quoted texts", func() {
 					It("escaped bold text with multiple backslashes", func() {
 						source := `\\*bold content*`
 						expected := types.Document{
-							Attributes:         types.DocumentAttributes{},
-							ElementReferences:  types.ElementReferences{},
-							Footnotes:          types.Footnotes{},
-							FootnoteReferences: types.FootnoteReferences{},
+							Attributes:        types.DocumentAttributes{},
+							ElementReferences: types.ElementReferences{},
+							Footnotes:         []types.Footnote{},
 							Elements: []interface{}{
 								types.Paragraph{
 									Attributes: types.ElementAttributes{},
@@ -4852,10 +4778,9 @@ var _ = Describe("quoted texts", func() {
 					It("escaped bold text with double quote", func() {
 						source := `\\**bold content**`
 						expected := types.Document{
-							Attributes:         types.DocumentAttributes{},
-							ElementReferences:  types.ElementReferences{},
-							Footnotes:          types.Footnotes{},
-							FootnoteReferences: types.FootnoteReferences{},
+							Attributes:        types.DocumentAttributes{},
+							ElementReferences: types.ElementReferences{},
+							Footnotes:         []types.Footnote{},
 							Elements: []interface{}{
 								types.Paragraph{
 									Attributes: types.ElementAttributes{},
@@ -4873,10 +4798,9 @@ var _ = Describe("quoted texts", func() {
 					It("escaped bold text with double quote and more backslashes", func() {
 						source := `\\\**bold content**`
 						expected := types.Document{
-							Attributes:         types.DocumentAttributes{},
-							ElementReferences:  types.ElementReferences{},
-							Footnotes:          types.Footnotes{},
-							FootnoteReferences: types.FootnoteReferences{},
+							Attributes:        types.DocumentAttributes{},
+							ElementReferences: types.ElementReferences{},
+							Footnotes:         []types.Footnote{},
 							Elements: []interface{}{
 								types.Paragraph{
 									Attributes: types.ElementAttributes{},
@@ -4894,10 +4818,9 @@ var _ = Describe("quoted texts", func() {
 					It("escaped bold text with unbalanced double quote", func() {
 						source := `\**bold content*`
 						expected := types.Document{
-							Attributes:         types.DocumentAttributes{},
-							ElementReferences:  types.ElementReferences{},
-							Footnotes:          types.Footnotes{},
-							FootnoteReferences: types.FootnoteReferences{},
+							Attributes:        types.DocumentAttributes{},
+							ElementReferences: types.ElementReferences{},
+							Footnotes:         []types.Footnote{},
 							Elements: []interface{}{
 								types.Paragraph{
 									Attributes: types.ElementAttributes{},
@@ -4915,10 +4838,9 @@ var _ = Describe("quoted texts", func() {
 					It("escaped bold text with unbalanced double quote and more backslashes", func() {
 						source := `\\\**bold content*`
 						expected := types.Document{
-							Attributes:         types.DocumentAttributes{},
-							ElementReferences:  types.ElementReferences{},
-							Footnotes:          types.Footnotes{},
-							FootnoteReferences: types.FootnoteReferences{},
+							Attributes:        types.DocumentAttributes{},
+							ElementReferences: types.ElementReferences{},
+							Footnotes:         []types.Footnote{},
 							Elements: []interface{}{
 								types.Paragraph{
 									Attributes: types.ElementAttributes{},
@@ -4939,10 +4861,9 @@ var _ = Describe("quoted texts", func() {
 					It("escaped bold text with nested italic text", func() {
 						source := `\*_italic content_*`
 						expected := types.Document{
-							Attributes:         types.DocumentAttributes{},
-							ElementReferences:  types.ElementReferences{},
-							Footnotes:          types.Footnotes{},
-							FootnoteReferences: types.FootnoteReferences{},
+							Attributes:        types.DocumentAttributes{},
+							ElementReferences: types.ElementReferences{},
+							Footnotes:         []types.Footnote{},
 							Elements: []interface{}{
 								types.Paragraph{
 									Attributes: types.ElementAttributes{},
@@ -4967,10 +4888,9 @@ var _ = Describe("quoted texts", func() {
 					It("escaped bold text with unbalanced double quote and nested italic test", func() {
 						source := `\**_italic content_*`
 						expected := types.Document{
-							Attributes:         types.DocumentAttributes{},
-							ElementReferences:  types.ElementReferences{},
-							Footnotes:          types.Footnotes{},
-							FootnoteReferences: types.FootnoteReferences{},
+							Attributes:        types.DocumentAttributes{},
+							ElementReferences: types.ElementReferences{},
+							Footnotes:         []types.Footnote{},
 							Elements: []interface{}{
 								types.Paragraph{
 									Attributes: types.ElementAttributes{},
@@ -4995,10 +4915,9 @@ var _ = Describe("quoted texts", func() {
 					It("escaped bold text with nested italic", func() {
 						source := `\*bold _and italic_ content*`
 						expected := types.Document{
-							Attributes:         types.DocumentAttributes{},
-							ElementReferences:  types.ElementReferences{},
-							Footnotes:          types.Footnotes{},
-							FootnoteReferences: types.FootnoteReferences{},
+							Attributes:        types.DocumentAttributes{},
+							ElementReferences: types.ElementReferences{},
+							Footnotes:         []types.Footnote{},
 							Elements: []interface{}{
 								types.Paragraph{
 									Attributes: types.ElementAttributes{},
@@ -5030,10 +4949,9 @@ var _ = Describe("quoted texts", func() {
 					It("escaped italic text with single quote", func() {
 						source := `\_italic content_`
 						expected := types.Document{
-							Attributes:         types.DocumentAttributes{},
-							ElementReferences:  types.ElementReferences{},
-							Footnotes:          types.Footnotes{},
-							FootnoteReferences: types.FootnoteReferences{},
+							Attributes:        types.DocumentAttributes{},
+							ElementReferences: types.ElementReferences{},
+							Footnotes:         []types.Footnote{},
 							Elements: []interface{}{
 								types.Paragraph{
 									Attributes: types.ElementAttributes{},
@@ -5051,10 +4969,9 @@ var _ = Describe("quoted texts", func() {
 					It("escaped italic text with single quote and more backslashes", func() {
 						source := `\\_italic content_`
 						expected := types.Document{
-							Attributes:         types.DocumentAttributes{},
-							ElementReferences:  types.ElementReferences{},
-							Footnotes:          types.Footnotes{},
-							FootnoteReferences: types.FootnoteReferences{},
+							Attributes:        types.DocumentAttributes{},
+							ElementReferences: types.ElementReferences{},
+							Footnotes:         []types.Footnote{},
 							Elements: []interface{}{
 								types.Paragraph{
 									Attributes: types.ElementAttributes{},
@@ -5072,10 +4989,9 @@ var _ = Describe("quoted texts", func() {
 					It("escaped italic text with double quote with 2 backslashes", func() {
 						source := `\\__italic content__`
 						expected := types.Document{
-							Attributes:         types.DocumentAttributes{},
-							ElementReferences:  types.ElementReferences{},
-							Footnotes:          types.Footnotes{},
-							FootnoteReferences: types.FootnoteReferences{},
+							Attributes:        types.DocumentAttributes{},
+							ElementReferences: types.ElementReferences{},
+							Footnotes:         []types.Footnote{},
 							Elements: []interface{}{
 								types.Paragraph{
 									Attributes: types.ElementAttributes{},
@@ -5093,10 +5009,9 @@ var _ = Describe("quoted texts", func() {
 					It("escaped italic text with double quote with 3 backslashes", func() {
 						source := `\\\__italic content__`
 						expected := types.Document{
-							Attributes:         types.DocumentAttributes{},
-							ElementReferences:  types.ElementReferences{},
-							Footnotes:          types.Footnotes{},
-							FootnoteReferences: types.FootnoteReferences{},
+							Attributes:        types.DocumentAttributes{},
+							ElementReferences: types.ElementReferences{},
+							Footnotes:         []types.Footnote{},
 							Elements: []interface{}{
 								types.Paragraph{
 									Attributes: types.ElementAttributes{},
@@ -5114,10 +5029,9 @@ var _ = Describe("quoted texts", func() {
 					It("escaped italic text with unbalanced double quote", func() {
 						source := `\__italic content_`
 						expected := types.Document{
-							Attributes:         types.DocumentAttributes{},
-							ElementReferences:  types.ElementReferences{},
-							Footnotes:          types.Footnotes{},
-							FootnoteReferences: types.FootnoteReferences{},
+							Attributes:        types.DocumentAttributes{},
+							ElementReferences: types.ElementReferences{},
+							Footnotes:         []types.Footnote{},
 							Elements: []interface{}{
 								types.Paragraph{
 									Attributes: types.ElementAttributes{},
@@ -5135,10 +5049,9 @@ var _ = Describe("quoted texts", func() {
 					It("escaped italic text with unbalanced double quote and more backslashes", func() {
 						source := `\\\__italic content_`
 						expected := types.Document{
-							Attributes:         types.DocumentAttributes{},
-							ElementReferences:  types.ElementReferences{},
-							Footnotes:          types.Footnotes{},
-							FootnoteReferences: types.FootnoteReferences{},
+							Attributes:        types.DocumentAttributes{},
+							ElementReferences: types.ElementReferences{},
+							Footnotes:         []types.Footnote{},
 							Elements: []interface{}{
 								types.Paragraph{
 									Attributes: types.ElementAttributes{},
@@ -5159,10 +5072,9 @@ var _ = Describe("quoted texts", func() {
 					It("escaped italic text with nested monospace text", func() {
 						source := `\` + "_`monospace content`_" // gives: \_`monospace content`_
 						expected := types.Document{
-							Attributes:         types.DocumentAttributes{},
-							ElementReferences:  types.ElementReferences{},
-							Footnotes:          types.Footnotes{},
-							FootnoteReferences: types.FootnoteReferences{},
+							Attributes:        types.DocumentAttributes{},
+							ElementReferences: types.ElementReferences{},
+							Footnotes:         []types.Footnote{},
 							Elements: []interface{}{
 								types.Paragraph{
 									Attributes: types.ElementAttributes{},
@@ -5187,10 +5099,9 @@ var _ = Describe("quoted texts", func() {
 					It("escaped italic text with unbalanced double quote and nested bold test", func() {
 						source := `\__*bold content*_`
 						expected := types.Document{
-							Attributes:         types.DocumentAttributes{},
-							ElementReferences:  types.ElementReferences{},
-							Footnotes:          types.Footnotes{},
-							FootnoteReferences: types.FootnoteReferences{},
+							Attributes:        types.DocumentAttributes{},
+							ElementReferences: types.ElementReferences{},
+							Footnotes:         []types.Footnote{},
 							Elements: []interface{}{
 								types.Paragraph{
 									Attributes: types.ElementAttributes{},
@@ -5215,10 +5126,9 @@ var _ = Describe("quoted texts", func() {
 					It("escaped italic text with nested bold text", func() {
 						source := `\_italic *and bold* content_`
 						expected := types.Document{
-							Attributes:         types.DocumentAttributes{},
-							ElementReferences:  types.ElementReferences{},
-							Footnotes:          types.Footnotes{},
-							FootnoteReferences: types.FootnoteReferences{},
+							Attributes:        types.DocumentAttributes{},
+							ElementReferences: types.ElementReferences{},
+							Footnotes:         []types.Footnote{},
 							Elements: []interface{}{
 								types.Paragraph{
 									Attributes: types.ElementAttributes{},
@@ -5249,10 +5159,9 @@ var _ = Describe("quoted texts", func() {
 					It("escaped monospace text with single quote", func() {
 						source := `\` + "`monospace content`"
 						expected := types.Document{
-							Attributes:         types.DocumentAttributes{},
-							ElementReferences:  types.ElementReferences{},
-							Footnotes:          types.Footnotes{},
-							FootnoteReferences: types.FootnoteReferences{},
+							Attributes:        types.DocumentAttributes{},
+							ElementReferences: types.ElementReferences{},
+							Footnotes:         []types.Footnote{},
 							Elements: []interface{}{
 								types.Paragraph{
 									Attributes: types.ElementAttributes{},
@@ -5270,10 +5179,9 @@ var _ = Describe("quoted texts", func() {
 					It("escaped monospace text with single quote and more backslashes", func() {
 						source := `\\` + "`monospace content`"
 						expected := types.Document{
-							Attributes:         types.DocumentAttributes{},
-							ElementReferences:  types.ElementReferences{},
-							Footnotes:          types.Footnotes{},
-							FootnoteReferences: types.FootnoteReferences{},
+							Attributes:        types.DocumentAttributes{},
+							ElementReferences: types.ElementReferences{},
+							Footnotes:         []types.Footnote{},
 							Elements: []interface{}{
 								types.Paragraph{
 									Attributes: types.ElementAttributes{},
@@ -5291,10 +5199,9 @@ var _ = Describe("quoted texts", func() {
 					It("escaped monospace text with double quote", func() {
 						source := `\\` + "`monospace content``"
 						expected := types.Document{
-							Attributes:         types.DocumentAttributes{},
-							ElementReferences:  types.ElementReferences{},
-							Footnotes:          types.Footnotes{},
-							FootnoteReferences: types.FootnoteReferences{},
+							Attributes:        types.DocumentAttributes{},
+							ElementReferences: types.ElementReferences{},
+							Footnotes:         []types.Footnote{},
 							Elements: []interface{}{
 								types.Paragraph{
 									Attributes: types.ElementAttributes{},
@@ -5312,10 +5219,9 @@ var _ = Describe("quoted texts", func() {
 					It("escaped monospace text with double quote and more backslashes", func() {
 						source := `\\\` + "``monospace content``" // 3 backslashes
 						expected := types.Document{
-							Attributes:         types.DocumentAttributes{},
-							ElementReferences:  types.ElementReferences{},
-							Footnotes:          types.Footnotes{},
-							FootnoteReferences: types.FootnoteReferences{},
+							Attributes:        types.DocumentAttributes{},
+							ElementReferences: types.ElementReferences{},
+							Footnotes:         []types.Footnote{},
 							Elements: []interface{}{
 								types.Paragraph{
 									Attributes: types.ElementAttributes{},
@@ -5333,10 +5239,9 @@ var _ = Describe("quoted texts", func() {
 					It("escaped monospace text with unbalanced double quote", func() {
 						source := `\` + "``monospace content`"
 						expected := types.Document{
-							Attributes:         types.DocumentAttributes{},
-							ElementReferences:  types.ElementReferences{},
-							Footnotes:          types.Footnotes{},
-							FootnoteReferences: types.FootnoteReferences{},
+							Attributes:        types.DocumentAttributes{},
+							ElementReferences: types.ElementReferences{},
+							Footnotes:         []types.Footnote{},
 							Elements: []interface{}{
 								types.Paragraph{
 									Attributes: types.ElementAttributes{},
@@ -5354,10 +5259,9 @@ var _ = Describe("quoted texts", func() {
 					It("escaped monospace text with unbalanced double quote and more backslashes", func() {
 						source := `\\\` + "``monospace content`" // 3 backslashes
 						expected := types.Document{
-							Attributes:         types.DocumentAttributes{},
-							ElementReferences:  types.ElementReferences{},
-							Footnotes:          types.Footnotes{},
-							FootnoteReferences: types.FootnoteReferences{},
+							Attributes:        types.DocumentAttributes{},
+							ElementReferences: types.ElementReferences{},
+							Footnotes:         []types.Footnote{},
 							Elements: []interface{}{
 								types.Paragraph{
 									Attributes: types.ElementAttributes{},
@@ -5378,10 +5282,9 @@ var _ = Describe("quoted texts", func() {
 					It("escaped monospace text with nested bold text", func() {
 						source := `\` + "`*bold content*`" // gives: \`*bold content*`
 						expected := types.Document{
-							Attributes:         types.DocumentAttributes{},
-							ElementReferences:  types.ElementReferences{},
-							Footnotes:          types.Footnotes{},
-							FootnoteReferences: types.FootnoteReferences{},
+							Attributes:        types.DocumentAttributes{},
+							ElementReferences: types.ElementReferences{},
+							Footnotes:         []types.Footnote{},
 							Elements: []interface{}{
 								types.Paragraph{
 									Attributes: types.ElementAttributes{},
@@ -5406,10 +5309,9 @@ var _ = Describe("quoted texts", func() {
 					It("escaped monospace text with unbalanced double backquote and nested bold test", func() {
 						source := `\` + "``*bold content*`"
 						expected := types.Document{
-							Attributes:         types.DocumentAttributes{},
-							ElementReferences:  types.ElementReferences{},
-							Footnotes:          types.Footnotes{},
-							FootnoteReferences: types.FootnoteReferences{},
+							Attributes:        types.DocumentAttributes{},
+							ElementReferences: types.ElementReferences{},
+							Footnotes:         []types.Footnote{},
 							Elements: []interface{}{
 								types.Paragraph{
 									Attributes: types.ElementAttributes{},
@@ -5434,10 +5336,9 @@ var _ = Describe("quoted texts", func() {
 					It("escaped monospace text with nested bold text", func() {
 						source := `\` + "`monospace *and bold* content`"
 						expected := types.Document{
-							Attributes:         types.DocumentAttributes{},
-							ElementReferences:  types.ElementReferences{},
-							Footnotes:          types.Footnotes{},
-							FootnoteReferences: types.FootnoteReferences{},
+							Attributes:        types.DocumentAttributes{},
+							ElementReferences: types.ElementReferences{},
+							Footnotes:         []types.Footnote{},
 							Elements: []interface{}{
 								types.Paragraph{
 									Attributes: types.ElementAttributes{},
@@ -5468,10 +5369,9 @@ var _ = Describe("quoted texts", func() {
 					It("escaped subscript text with single quote", func() {
 						source := `\~subscriptcontent~`
 						expected := types.Document{
-							Attributes:         types.DocumentAttributes{},
-							ElementReferences:  types.ElementReferences{},
-							Footnotes:          types.Footnotes{},
-							FootnoteReferences: types.FootnoteReferences{},
+							Attributes:        types.DocumentAttributes{},
+							ElementReferences: types.ElementReferences{},
+							Footnotes:         []types.Footnote{},
 							Elements: []interface{}{
 								types.Paragraph{
 									Attributes: types.ElementAttributes{},
@@ -5489,10 +5389,9 @@ var _ = Describe("quoted texts", func() {
 					It("escaped subscript text with single quote and more backslashes", func() {
 						source := `\\~subscriptcontent~`
 						expected := types.Document{
-							Attributes:         types.DocumentAttributes{},
-							ElementReferences:  types.ElementReferences{},
-							Footnotes:          types.Footnotes{},
-							FootnoteReferences: types.FootnoteReferences{},
+							Attributes:        types.DocumentAttributes{},
+							ElementReferences: types.ElementReferences{},
+							Footnotes:         []types.Footnote{},
 							Elements: []interface{}{
 								types.Paragraph{
 									Attributes: types.ElementAttributes{},
@@ -5514,10 +5413,9 @@ var _ = Describe("quoted texts", func() {
 					It("escaped subscript text with nested bold text", func() {
 						source := `\~*boldcontent*~`
 						expected := types.Document{
-							Attributes:         types.DocumentAttributes{},
-							ElementReferences:  types.ElementReferences{},
-							Footnotes:          types.Footnotes{},
-							FootnoteReferences: types.FootnoteReferences{},
+							Attributes:        types.DocumentAttributes{},
+							ElementReferences: types.ElementReferences{},
+							Footnotes:         []types.Footnote{},
 							Elements: []interface{}{
 								types.Paragraph{
 									Attributes: types.ElementAttributes{},
@@ -5542,10 +5440,9 @@ var _ = Describe("quoted texts", func() {
 					It("escaped subscript text with nested bold text", func() {
 						source := `\~subscript *and bold* content~`
 						expected := types.Document{
-							Attributes:         types.DocumentAttributes{},
-							ElementReferences:  types.ElementReferences{},
-							Footnotes:          types.Footnotes{},
-							FootnoteReferences: types.FootnoteReferences{},
+							Attributes:        types.DocumentAttributes{},
+							ElementReferences: types.ElementReferences{},
+							Footnotes:         []types.Footnote{},
 							Elements: []interface{}{
 								types.Paragraph{
 									Attributes: types.ElementAttributes{},
@@ -5576,10 +5473,9 @@ var _ = Describe("quoted texts", func() {
 					It("escaped superscript text with single quote", func() {
 						source := `\^superscriptcontent^`
 						expected := types.Document{
-							Attributes:         types.DocumentAttributes{},
-							ElementReferences:  types.ElementReferences{},
-							Footnotes:          types.Footnotes{},
-							FootnoteReferences: types.FootnoteReferences{},
+							Attributes:        types.DocumentAttributes{},
+							ElementReferences: types.ElementReferences{},
+							Footnotes:         []types.Footnote{},
 							Elements: []interface{}{
 								types.Paragraph{
 									Attributes: types.ElementAttributes{},
@@ -5597,10 +5493,9 @@ var _ = Describe("quoted texts", func() {
 					It("escaped superscript text with single quote and more backslashes", func() {
 						source := `\\^superscriptcontent^`
 						expected := types.Document{
-							Attributes:         types.DocumentAttributes{},
-							ElementReferences:  types.ElementReferences{},
-							Footnotes:          types.Footnotes{},
-							FootnoteReferences: types.FootnoteReferences{},
+							Attributes:        types.DocumentAttributes{},
+							ElementReferences: types.ElementReferences{},
+							Footnotes:         []types.Footnote{},
 							Elements: []interface{}{
 								types.Paragraph{
 									Attributes: types.ElementAttributes{},
@@ -5622,10 +5517,9 @@ var _ = Describe("quoted texts", func() {
 					It("escaped superscript text with nested bold text - case 1", func() {
 						source := `\^*bold content*^` // valid escaped superscript since it has no space within
 						expected := types.Document{
-							Attributes:         types.DocumentAttributes{},
-							ElementReferences:  types.ElementReferences{},
-							Footnotes:          types.Footnotes{},
-							FootnoteReferences: types.FootnoteReferences{},
+							Attributes:        types.DocumentAttributes{},
+							ElementReferences: types.ElementReferences{},
+							Footnotes:         []types.Footnote{},
 							Elements: []interface{}{
 								types.Paragraph{
 									Attributes: types.ElementAttributes{},
@@ -5650,10 +5544,9 @@ var _ = Describe("quoted texts", func() {
 					It("escaped superscript text with unbalanced double backquote and nested bold test", func() {
 						source := `\^*bold content*^`
 						expected := types.Document{
-							Attributes:         types.DocumentAttributes{},
-							ElementReferences:  types.ElementReferences{},
-							Footnotes:          types.Footnotes{},
-							FootnoteReferences: types.FootnoteReferences{},
+							Attributes:        types.DocumentAttributes{},
+							ElementReferences: types.ElementReferences{},
+							Footnotes:         []types.Footnote{},
 							Elements: []interface{}{
 								types.Paragraph{
 									Attributes: types.ElementAttributes{},
@@ -5678,10 +5571,9 @@ var _ = Describe("quoted texts", func() {
 					It("escaped superscript text with nested bold text - case 2", func() {
 						source := `\^superscript *and bold* content^` // invalid superscript text since it has spaces within
 						expected := types.Document{
-							Attributes:         types.DocumentAttributes{},
-							ElementReferences:  types.ElementReferences{},
-							Footnotes:          types.Footnotes{},
-							FootnoteReferences: types.FootnoteReferences{},
+							Attributes:        types.DocumentAttributes{},
+							ElementReferences: types.ElementReferences{},
+							Footnotes:         []types.Footnote{},
 							Elements: []interface{}{
 								types.Paragraph{
 									Attributes: types.ElementAttributes{},
@@ -5713,10 +5605,9 @@ var _ = Describe("quoted texts - final document", func() {
 	It("image in bold", func() {
 		source := "*a image:foo.png[]*"
 		expected := types.Document{
-			Attributes:         types.DocumentAttributes{},
-			ElementReferences:  types.ElementReferences{},
-			Footnotes:          types.Footnotes{},
-			FootnoteReferences: types.FootnoteReferences{},
+			Attributes:        types.DocumentAttributes{},
+			ElementReferences: types.ElementReferences{},
+			Footnotes:         []types.Footnote{},
 			Elements: []interface{}{
 				types.Paragraph{
 					Attributes: types.ElementAttributes{},
@@ -5751,10 +5642,9 @@ var _ = Describe("quoted texts - final document", func() {
 	It("image in italic", func() {
 		source := "_a image:foo.png[]_"
 		expected := types.Document{
-			Attributes:         types.DocumentAttributes{},
-			ElementReferences:  types.ElementReferences{},
-			Footnotes:          types.Footnotes{},
-			FootnoteReferences: types.FootnoteReferences{},
+			Attributes:        types.DocumentAttributes{},
+			ElementReferences: types.ElementReferences{},
+			Footnotes:         []types.Footnote{},
 			Elements: []interface{}{
 				types.Paragraph{
 					Attributes: types.ElementAttributes{},
@@ -5789,10 +5679,9 @@ var _ = Describe("quoted texts - final document", func() {
 	It("image in monospace", func() {
 		source := "`a image:foo.png[]`"
 		expected := types.Document{
-			Attributes:         types.DocumentAttributes{},
-			ElementReferences:  types.ElementReferences{},
-			Footnotes:          types.Footnotes{},
-			FootnoteReferences: types.FootnoteReferences{},
+			Attributes:        types.DocumentAttributes{},
+			ElementReferences: types.ElementReferences{},
+			Footnotes:         []types.Footnote{},
 			Elements: []interface{}{
 				types.Paragraph{
 					Attributes: types.ElementAttributes{},

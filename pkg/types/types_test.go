@@ -898,3 +898,302 @@ var _ = Describe("element id resolution", func() {
 		})
 	})
 })
+
+var _ = Describe("footnote replacements", func() {
+
+	Context("sections", func() {
+
+		It("title with footnote without ref", func() {
+			// given
+			section := types.Section{
+				Level:      0,
+				Attributes: types.ElementAttributes{},
+				Title: []interface{}{
+					types.StringElement{
+						Content: "foo",
+					},
+					types.Footnote{
+						Elements: []interface{}{
+							types.StringElement{
+								Content: "a regular footnote.",
+							},
+						},
+					},
+				},
+				Elements: []interface{}{},
+			}
+			footnotes := types.NewFootnotes()
+			// when
+			section.ReplaceFootnotes(footnotes)
+			// then
+			Expect(section).To(Equal(types.Section{
+				Level:      0,
+				Attributes: types.ElementAttributes{},
+				Title: []interface{}{
+					types.StringElement{
+						Content: "foo",
+					},
+					types.FootnoteReference{
+						ID: 1,
+					},
+				},
+				Elements: []interface{}{},
+			}))
+			Expect(footnotes.Notes()).To(Equal([]types.Footnote{
+				{
+					ID: 1,
+					Elements: []interface{}{
+						types.StringElement{
+							Content: "a regular footnote.",
+						},
+					},
+				},
+			}))
+		})
+
+		It("title with footnote with ref", func() {
+			// given
+			section := types.Section{
+				Level:      0,
+				Attributes: types.ElementAttributes{},
+				Title: []interface{}{
+					types.StringElement{
+						Content: "foo",
+					},
+					types.Footnote{
+						Ref: "disclaimer",
+						Elements: []interface{}{
+							types.StringElement{
+								Content: "a regular footnote.",
+							},
+						},
+					},
+				},
+				Elements: []interface{}{},
+			}
+			footnotes := types.NewFootnotes()
+			// when
+			section.ReplaceFootnotes(footnotes)
+			// then
+			Expect(section).To(Equal(types.Section{
+				Level:      0,
+				Attributes: types.ElementAttributes{},
+				Title: []interface{}{
+					types.StringElement{
+						Content: "foo",
+					},
+					types.FootnoteReference{
+						ID:  1,
+						Ref: "disclaimer",
+					},
+				},
+				Elements: []interface{}{},
+			}))
+			Expect(footnotes.Notes()).To(Equal([]types.Footnote{
+				{
+					ID:  1,
+					Ref: "disclaimer",
+					Elements: []interface{}{
+						types.StringElement{
+							Content: "a regular footnote.",
+						},
+					},
+				},
+			}))
+		})
+	})
+
+	Context("paragraphs", func() {
+
+		It("paragraph with multiple footnotes", func() {
+			// given
+			paragraph := types.Paragraph{
+				Lines: [][]interface{}{
+					{
+						types.StringElement{
+							Content: "first line",
+						},
+						types.Footnote{
+							Ref: "disclaimer",
+							Elements: []interface{}{
+								types.StringElement{
+									Content: "a disclaimer.",
+								},
+							},
+						},
+					},
+					{
+						types.StringElement{
+							Content: "second line",
+						},
+						types.Footnote{
+							Elements: []interface{}{
+								types.StringElement{
+									Content: "a regular footnote.",
+								},
+							},
+						},
+					},
+					{
+						types.StringElement{
+							Content: "third line",
+						},
+						types.Footnote{
+							Ref:      "disclaimer",
+							Elements: []interface{}{},
+						},
+					},
+				},
+			}
+			footnotes := types.NewFootnotes()
+			// when
+			paragraph.ReplaceFootnotes(footnotes)
+			// then
+			Expect(paragraph).To(Equal(types.Paragraph{
+				Lines: [][]interface{}{
+					{
+						types.StringElement{
+							Content: "first line",
+						},
+						types.FootnoteReference{
+							ID:  1,
+							Ref: "disclaimer",
+						},
+					},
+					{
+						types.StringElement{
+							Content: "second line",
+						},
+						types.FootnoteReference{
+							ID: 2,
+						},
+					},
+					{
+						types.StringElement{
+							Content: "third line",
+						},
+						types.FootnoteReference{
+							ID:        1,
+							Ref:       "disclaimer",
+							Duplicate: true,
+						},
+					},
+				},
+			}))
+			Expect(footnotes.Notes()).To(Equal([]types.Footnote{
+				{
+					ID:  1,
+					Ref: "disclaimer",
+					Elements: []interface{}{
+						types.StringElement{
+							Content: "a disclaimer.",
+						},
+					},
+				},
+				{
+					ID: 2,
+					Elements: []interface{}{
+						types.StringElement{
+							Content: "a regular footnote.",
+						},
+					},
+				},
+			}))
+		})
+
+		It("paragraph with invalid footnote reference", func() {
+			// given
+			paragraph := types.Paragraph{
+				Lines: [][]interface{}{
+					{
+						types.StringElement{
+							Content: "first line",
+						},
+						types.Footnote{
+							Ref: "disclaimer",
+							Elements: []interface{}{
+								types.StringElement{
+									Content: "a disclaimer.",
+								},
+							},
+						},
+					},
+					{
+						types.StringElement{
+							Content: "second line",
+						},
+						types.Footnote{
+							Elements: []interface{}{
+								types.StringElement{
+									Content: "a regular footnote.",
+								},
+							},
+						},
+					},
+					{
+						types.StringElement{
+							Content: "third line",
+						},
+						types.Footnote{
+							Ref:      "disclaimer_",
+							Elements: []interface{}{},
+						},
+					},
+				},
+			}
+			footnotes := types.NewFootnotes()
+			// when
+			paragraph.ReplaceFootnotes(footnotes)
+			// then
+			Expect(paragraph).To(Equal(types.Paragraph{
+				Lines: [][]interface{}{
+					{
+						types.StringElement{
+							Content: "first line",
+						},
+						types.FootnoteReference{
+							ID:  1,
+							Ref: "disclaimer",
+						},
+					},
+					{
+						types.StringElement{
+							Content: "second line",
+						},
+						types.FootnoteReference{
+							ID: 2,
+						},
+					},
+					{
+						types.StringElement{
+							Content: "third line",
+						},
+						types.FootnoteReference{
+							ID:  types.InvalidFootnoteReference, // marks as an invalid reference
+							Ref: "disclaimer_",
+						},
+					},
+				},
+			}))
+			Expect(footnotes.Notes()).To(Equal([]types.Footnote{
+				{
+					ID:  1,
+					Ref: "disclaimer",
+					Elements: []interface{}{
+						types.StringElement{
+							Content: "a disclaimer.",
+						},
+					},
+				},
+				{
+					ID: 2,
+					Elements: []interface{}{
+						types.StringElement{
+							Content: "a regular footnote.",
+						},
+					},
+				},
+			}))
+		})
+	})
+})
