@@ -11,25 +11,24 @@ import (
 	"github.com/sergi/go-diff/diffmatchpatch"
 )
 
-// MatchHTMLTemplate a custom matcher to verify that a document renders as the given template
+// MatchHTML a custom matcher to verify that a document renders as the given template
 // which will be processed with the given args
-func MatchHTMLTemplate(expected string, lastUpdated time.Time) gomegatypes.GomegaMatcher {
-	return &htmlTemplateMatcher{
-		expected:    expected,
-		lastUpdated: lastUpdated,
+func MatchHTML(expected string) gomegatypes.GomegaMatcher {
+	return &htmlMatcher{
+		expected: expected,
 	}
 }
 
-type htmlTemplateMatcher struct {
+type htmlMatcher struct {
 	actual      string
 	expected    string
 	lastUpdated time.Time
 	diffs       string
 }
 
-func (m *htmlTemplateMatcher) Match(actual interface{}) (success bool, err error) {
+func (m *htmlMatcher) Match(actual interface{}) (success bool, err error) {
 	if _, ok := actual.(string); !ok {
-		return false, errors.Errorf("MatchHTMLTemplate matcher expects a string (actual: %T)", actual)
+		return false, errors.Errorf("MatchHTML matcher expects a string (actual: %T)", actual)
 	}
 	m.expected = strings.Replace(m.expected, "{{.LastUpdated}}", m.lastUpdated.Format(configuration.LastUpdatedFormat), 1)
 	if m.expected != actual {
@@ -41,10 +40,10 @@ func (m *htmlTemplateMatcher) Match(actual interface{}) (success bool, err error
 	return true, nil
 }
 
-func (m *htmlTemplateMatcher) FailureMessage(_ interface{}) (message string) {
+func (m *htmlMatcher) FailureMessage(_ interface{}) (message string) {
 	return fmt.Sprintf("expected HTML5 documents to match:\n%s", m.diffs)
 }
 
-func (m *htmlTemplateMatcher) NegatedFailureMessage(_ interface{}) (message string) {
+func (m *htmlMatcher) NegatedFailureMessage(_ interface{}) (message string) {
 	return fmt.Sprintf("expected HTML5 documents not to match:\n%s", m.diffs)
 }

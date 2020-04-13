@@ -25,7 +25,7 @@ var _ = Describe("footnotes", func() {
 <a href="#_footnoteref_1">1</a>. a note for foo
 </div>
 </div>`
-		Expect(RenderHTML(source)).To(Equal(expected))
+		Expect(RenderHTML(source)).To(MatchHTML(expected))
 	})
 
 	It("rich footnote in a paragraph", func() {
@@ -39,7 +39,7 @@ var _ = Describe("footnotes", func() {
 <a href="#_footnoteref_1">1</a>. some <strong>rich</strong> <a href="https://foo.com">content</a>
 </div>
 </div>`
-		Expect(RenderHTML(source)).To(Equal(expected))
+		Expect(RenderHTML(source)).To(MatchHTML(expected))
 	})
 
 	It("multiple footnotes including a reference", func() {
@@ -63,7 +63,7 @@ A bold statement!<sup class="footnote" id="_footnote_disclaimer">[<a id="_footno
 <a href="#_footnoteref_2">2</a>. Opinions are my own.
 </div>
 </div>`
-		Expect(RenderHTML(source)).To(Equal(expected))
+		Expect(RenderHTML(source)).To(MatchHTML(expected))
 	})
 
 	It("footnotes everywhere", func() {
@@ -104,6 +104,6 @@ a paragraph with another footnote:[baz]`
 <a href="#_footnoteref_3">3</a>. baz
 </div>
 </div>`
-		Expect(RenderHTML(source)).To(Equal(expected))
+		Expect(RenderHTML(source)).To(MatchHTML(expected))
 	})
 })

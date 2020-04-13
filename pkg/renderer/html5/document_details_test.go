@@ -56,7 +56,7 @@ Last updated {{.LastUpdated}}
 </body>
 </html>`
 			now := time.Now()
-			Expect(RenderHTML(source, configuration.WithHeaderFooter(true), configuration.WithLastUpdated(now))).To(MatchHTML5Template(expected, now))
+			Expect(RenderHTML(source, configuration.WithHeaderFooter(true), configuration.WithLastUpdated(now))).To(MatchHTMLTemplate(expected, now))
 		})
 
 		It("header with 2 authors and no revision", func() {
@@ -95,7 +95,7 @@ Last updated {{.LastUpdated}}
 </html>`
 			now := time.Now()
 			Expect(RenderHTML(source, configuration.WithHeaderFooter(true), configuration.WithLastUpdated(now))).
-				To(MatchHTML5Template(expected, now))
+				To(MatchHTMLTemplate(expected, now))
 		})
 	})
 
@@ -136,7 +136,7 @@ Last updated {{.LastUpdated}}
 				configuration.WithHeaderFooter(true),
 				configuration.WithLastUpdated(now),
 				configuration.WithAttributes(map[string]string{}),
-			)).To(MatchHTML5Template(expected, now))
+			)).To(MatchHTMLTemplate(expected, now))
 		})
 
 		It("with header and without footer", func() {
@@ -169,7 +169,7 @@ a paragraph`
 				configuration.WithAttributes(map[string]string{
 					types.AttrNoFooter: "",
 				}),
-			)).To(MatchHTML5Template(expected, now))
+			)).To(MatchHTMLTemplate(expected, now))
 		})
 
 		It("without header and with footer", func() {
@@ -204,7 +204,7 @@ Last updated {{.LastUpdated}}
 				configuration.WithAttributes(map[string]string{
 					types.AttrNoHeader: "",
 				}),
-			)).To(MatchHTML5Template(expected, now))
+			)).To(MatchHTMLTemplate(expected, now))
 		})
 
 		It("without header and without footer", func() {
@@ -235,7 +235,7 @@ a paragraph`
 					types.AttrNoHeader: "",
 					types.AttrNoFooter: "",
 				}),
-			)).To(MatchHTML5Template(expected, now))
+			)).To(MatchHTMLTemplate(expected, now))
 		})
 
 	})
