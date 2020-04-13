@@ -2,10 +2,7 @@ package testsupport
 
 import (
 	"fmt"
-	"strings"
-	"time"
 
-	"github.com/bytesparadise/libasciidoc/pkg/configuration"
 	gomegatypes "github.com/onsi/gomega/types"
 	"github.com/pkg/errors"
 	"github.com/sergi/go-diff/diffmatchpatch"
@@ -20,17 +17,14 @@ func MatchHTML(expected string) gomegatypes.GomegaMatcher {
 }
 
 type htmlMatcher struct {
-	actual      string
-	expected    string
-	lastUpdated time.Time
-	diffs       string
+	expected string
+	diffs    string
 }
 
 func (m *htmlMatcher) Match(actual interface{}) (success bool, err error) {
 	if _, ok := actual.(string); !ok {
 		return false, errors.Errorf("MatchHTML matcher expects a string (actual: %T)", actual)
 	}
-	m.expected = strings.Replace(m.expected, "{{.LastUpdated}}", m.lastUpdated.Format(configuration.LastUpdatedFormat), 1)
 	if m.expected != actual {
 		dmp := diffmatchpatch.New()
 		diffs := dmp.DiffMain(actual.(string), m.expected, true)

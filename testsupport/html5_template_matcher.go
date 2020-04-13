@@ -21,7 +21,6 @@ func MatchHTMLTemplate(expected string, lastUpdated time.Time) gomegatypes.Gomeg
 }
 
 type htmlTemplateMatcher struct {
-	actual      string
 	expected    string
 	lastUpdated time.Time
 	diffs       string
