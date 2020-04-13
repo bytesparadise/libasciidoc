@@ -8,7 +8,7 @@ import (
 )
 
 // rearrangeSections moves elements into section to obtain a hierarchical document instead of a flat thing
-func rearrangeSections(blocks []interface{}) (types.Document, error) {
+func rearrangeSections(blocks []interface{}) types.Document {
 
 	// use same logic as with list items:
 	// only append a child section to her parent section when
@@ -61,7 +61,7 @@ func rearrangeSections(blocks []interface{}) (types.Document, error) {
 		Attributes:        types.DocumentAttributes{},
 		Elements:          tle,
 		ElementReferences: elementRefs,
-	}, nil
+	}
 }
 
 func referenceSection(e types.Section, elementRefs types.ElementReferences) {

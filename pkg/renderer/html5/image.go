@@ -64,7 +64,7 @@ func renderImageBlock(ctx renderer.Context, img types.ImageBlock) ([]byte, error
 	return result.Bytes(), nil
 }
 
-func renderInlineImage(ctx renderer.Context, img types.InlineImage) ([]byte, error) {
+func renderInlineImage(img types.InlineImage) ([]byte, error) {
 	result := bytes.NewBuffer(nil)
 	err := inlineImageTmpl.Execute(result, struct {
 		Role   string

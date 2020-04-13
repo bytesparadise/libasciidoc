@@ -40,10 +40,7 @@ func ParseDocument(r io.Reader, config configuration.Configuration) (types.Docum
 
 	blocks, footnotes := processFootnotes(blocks.([]interface{}))
 	// now, rearrange elements in a hierarchical manner
-	doc, err := rearrangeSections(blocks.([]interface{}))
-	if err != nil {
-		return types.Document{}, err
-	}
+	doc := rearrangeSections(blocks.([]interface{}))
 	// also, set the footnotes
 	doc.Footnotes = footnotes
 	// now, add front-matter attributes

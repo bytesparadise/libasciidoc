@@ -57,7 +57,7 @@ func renderFootnoteIndex(idx int) string {
 	return strconv.Itoa(idx + 1)
 }
 
-func renderFootnoteReference(_ renderer.Context, note types.FootnoteReference) ([]byte, error) {
+func renderFootnoteReference(note types.FootnoteReference) ([]byte, error) {
 	result := bytes.NewBuffer(nil)
 	if note.ID != types.InvalidFootnoteReference && !note.Duplicate {
 		// valid case for a footnote with content, with our without an explicit reference
@@ -97,7 +97,7 @@ func renderFootnoteReference(_ renderer.Context, note types.FootnoteReference) (
 	return result.Bytes(), nil
 }
 
-func renderFootnoteReferencePlainText(_ renderer.Context, note types.FootnoteReference) ([]byte, error) {
+func renderFootnoteReferencePlainText(note types.FootnoteReference) ([]byte, error) {
 	result := bytes.NewBuffer(nil)
 	if note.ID != types.InvalidFootnoteReference {
 		// valid case for a footnte with content, with our without an explicit reference
