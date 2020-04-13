@@ -42,7 +42,7 @@ var _ = Describe("footnotes - draft", func() {
 				},
 			},
 		}
-		Expect(ParseDraftDocument(source)).To(Equal(expected)) // need to get the whole document here
+		Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected)) // need to get the whole document here
 	})
 
 	It("footnote with single-line rich content", func() {
@@ -97,7 +97,7 @@ var _ = Describe("footnotes - draft", func() {
 				},
 			},
 		}
-		Expect(ParseDraftDocument(source)).To(Equal(expected)) // need to get the whole document here
+		Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected)) // need to get the whole document here
 	})
 
 	It("footnote in a paragraph", func() {
@@ -124,7 +124,7 @@ var _ = Describe("footnotes - draft", func() {
 				},
 			},
 		}
-		Expect(ParseDraftDocument(source)).To(Equal(expected)) // need to get the whole document here
+		Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected)) // need to get the whole document here
 	})
 
 	It("multiple footnotes including a reference", func() {
@@ -184,7 +184,7 @@ Another outrageous statement.footnote:disclaimer[]`
 				},
 			},
 		}
-		Expect(ParseDraftDocument(source)).To(Equal(expected))
+		Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 	})
 
 	It("footnotes in document", func() {
@@ -277,7 +277,7 @@ a paragraph with another footnote:[baz]`
 				},
 			},
 		}
-		Expect(ParseDraftDocument(source)).To(Equal(expected)) // need to get the whole document here
+		Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected)) // need to get the whole document here
 	})
 })
 
@@ -319,7 +319,7 @@ var _ = Describe("footnotes - document", func() {
 				},
 			},
 		}
-		Expect(ParseDocument(source)).To(Equal(expected)) // need to get the whole document here
+		Expect(ParseDocument(source)).To(MatchDocument(expected)) // need to get the whole document here
 	})
 
 	It("footnote with single-line rich content", func() {
@@ -380,7 +380,7 @@ var _ = Describe("footnotes - document", func() {
 				},
 			},
 		}
-		Expect(ParseDocument(source)).To(Equal(expected)) // need to get the whole document here
+		Expect(ParseDocument(source)).To(MatchDocument(expected)) // need to get the whole document here
 	})
 
 	It("footnote in a paragraph", func() {
@@ -414,7 +414,7 @@ var _ = Describe("footnotes - document", func() {
 				},
 			},
 		}
-		Expect(ParseDocument(source)).To(Equal(expected)) // need to get the whole document here
+		Expect(ParseDocument(source)).To(MatchDocument(expected)) // need to get the whole document here
 	})
 
 	It("multiple footnotes including a reference", func() {
@@ -487,7 +487,7 @@ Another outrageous statement.footnote:disclaimer[]`
 				},
 			},
 		}
-		Expect(ParseDocument(source)).To(Equal(expected))
+		Expect(ParseDocument(source)).To(MatchDocument(expected))
 	})
 
 	It("footnotes in document", func() {
@@ -596,6 +596,6 @@ a paragraph with another footnote:[baz]`
 				},
 			},
 		}
-		Expect(ParseDocument(source)).To(Equal(expected)) // need to get the whole document here
+		Expect(ParseDocument(source)).To(MatchDocument(expected)) // need to get the whole document here
 	})
 })

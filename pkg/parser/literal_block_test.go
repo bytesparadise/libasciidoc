@@ -75,7 +75,7 @@ a normal paragraph.`
 					},
 				},
 			}
-			Expect(ParseDraftDocument(source)).To(Equal(expected))
+			Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 		})
 	})
 
@@ -131,7 +131,7 @@ a normal paragraph.`
 					},
 				},
 			}
-			Expect(ParseDraftDocument(source)).To(Equal(expected))
+			Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 		})
 	})
 
@@ -164,7 +164,7 @@ a normal paragraph.`
 					},
 				},
 			}
-			Expect(ParseDraftDocument(source)).To(Equal(expected))
+			Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 		})
 
 		It("literal block from 2-lines paragraph with attribute", func() {
@@ -201,7 +201,7 @@ a normal paragraph.`
 					},
 				},
 			}
-			Expect(ParseDraftDocument(source)).To(Equal(expected))
+			Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 		})
 	})
 

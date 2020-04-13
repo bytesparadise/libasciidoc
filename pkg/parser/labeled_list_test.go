@@ -40,7 +40,7 @@ on 2 lines`
 				},
 			},
 		}
-		Expect(ParseDraftDocument(source)).To(Equal(expected))
+		Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 	})
 
 	It("labeled list with a single term and no description", func() {
@@ -59,7 +59,7 @@ on 2 lines`
 				},
 			},
 		}
-		Expect(ParseDraftDocument(source)).To(Equal(expected))
+		Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 	})
 
 	It("labeled list with a quoted text in term and in description", func() {
@@ -101,7 +101,7 @@ on 2 lines`
 				},
 			},
 		}
-		Expect(ParseDraftDocument(source)).To(Equal(expected))
+		Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 	})
 
 	It("labeled list with a horizontal layout attribute", func() {
@@ -132,7 +132,7 @@ Item1:: foo`
 				},
 			},
 		}
-		Expect(ParseDraftDocument(source)).To(Equal(expected))
+		Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 	})
 
 	It("labeled list with a single term and a blank line", func() {
@@ -152,7 +152,7 @@ Item1:: foo`
 				},
 			},
 		}
-		Expect(ParseDraftDocument(source)).To(Equal(expected))
+		Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 	})
 
 	It("labeled list with multiple sibling items", func() {
@@ -223,7 +223,7 @@ Item 3 description`
 				},
 			},
 		}
-		Expect(ParseDraftDocument(source)).To(Equal(expected))
+		Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 	})
 
 	It("labeled list with multiple nested items", func() {
@@ -294,7 +294,7 @@ Item 3 description`
 				},
 			},
 		}
-		Expect(ParseDraftDocument(source)).To(Equal(expected))
+		Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 	})
 
 	It("labeled list with nested unordered list - case 1", func() {
@@ -368,7 +368,7 @@ Item with description:: something simple`
 			},
 		}
 
-		Expect(ParseDraftDocument(source)).To(Equal(expected))
+		Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 	})
 
 	It("labeled list with a single item and paragraph", func() {
@@ -412,7 +412,7 @@ a normal paragraph.`
 				},
 			},
 		}
-		Expect(ParseDraftDocument(source)).To(Equal(expected))
+		Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 	})
 
 	It("labeled list with item continuation", func() {
@@ -499,7 +499,7 @@ another fenced block
 				},
 			},
 		}
-		Expect(ParseDraftDocument(source)).To(Equal(expected))
+		Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 	})
 
 	It("labeled list without item continuation", func() {
@@ -576,7 +576,7 @@ another fenced block
 				},
 			},
 		}
-		Expect(ParseDraftDocument(source)).To(Equal(expected))
+		Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 	})
 
 	It("labeled list with multiple item continuations", func() {
@@ -692,7 +692,7 @@ TIP: tip`
 				},
 			},
 		}
-		Expect(ParseDraftDocument(source)).To(Equal(expected))
+		Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 	})
 
 	It("labeled list with nested unordered list - case 2", func() {
@@ -728,7 +728,7 @@ TIP: tip`
 				},
 			},
 		}
-		Expect(ParseDraftDocument(source)).To(Equal(expected))
+		Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 	})
 
 	It("labeled list with title", func() {
@@ -783,7 +783,7 @@ second term:: definition of the second term`
 				},
 			},
 		}
-		Expect(ParseDraftDocument(source)).To(Equal(expected))
+		Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 	})
 
 	It("max level of labeled items - case 1", func() {
@@ -882,7 +882,7 @@ level 1:: description 1`
 				},
 			},
 		}
-		Expect(ParseDraftDocument(source)).To(Equal(expected))
+		Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 	})
 
 	It("max level of labeled items - case 2", func() {
@@ -981,7 +981,7 @@ level 2::: description 2`
 				},
 			},
 		}
-		Expect(ParseDraftDocument(source)).To(Equal(expected))
+		Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 	})
 })
 
@@ -1027,7 +1027,7 @@ on 2 lines`
 				},
 			},
 		}
-		Expect(ParseDocument(source)).To(Equal(expected))
+		Expect(ParseDocument(source)).To(MatchDocument(expected))
 	})
 
 	It("labeled list with a single term and no description", func() {
@@ -1056,7 +1056,7 @@ on 2 lines`
 				},
 			},
 		}
-		Expect(ParseDocument(source)).To(Equal(expected))
+		Expect(ParseDocument(source)).To(MatchDocument(expected))
 	})
 
 	It("labeled list with a quoted text in term and in description", func() {
@@ -1112,7 +1112,7 @@ on 2 lines`
 				},
 			},
 		}
-		Expect(ParseDocument(source)).To(Equal(expected))
+		Expect(ParseDocument(source)).To(MatchDocument(expected))
 	})
 	It("labeled list with a index term", func() {
 		source := "((`foo`))::\n" +
@@ -1171,7 +1171,7 @@ on 2 lines`
 				},
 			},
 		}
-		Expect(ParseDocument(source)).To(Equal(expected))
+		Expect(ParseDocument(source)).To(MatchDocument(expected))
 	})
 
 	It("labeled list with a concealed index term in term", func() {
@@ -1223,7 +1223,7 @@ on 2 lines`
 				},
 			},
 		}
-		Expect(ParseDocument(source)).To(Equal(expected))
+		Expect(ParseDocument(source)).To(MatchDocument(expected))
 	})
 
 	It("labeled list with a horizontal layout attribute", func() {
@@ -1264,7 +1264,7 @@ Item1:: foo`
 				},
 			},
 		}
-		Expect(ParseDocument(source)).To(Equal(expected))
+		Expect(ParseDocument(source)).To(MatchDocument(expected))
 	})
 
 	It("labeled list with a single term and a blank line", func() {
@@ -1294,7 +1294,7 @@ Item1:: foo`
 				},
 			},
 		}
-		Expect(ParseDocument(source)).To(Equal(expected))
+		Expect(ParseDocument(source)).To(MatchDocument(expected))
 	})
 
 	It("labeled list with multiple sibling items", func() {
@@ -1377,7 +1377,7 @@ Item 3 description`
 				},
 			},
 		}
-		Expect(ParseDocument(source)).To(Equal(expected))
+		Expect(ParseDocument(source)).To(MatchDocument(expected))
 	})
 
 	It("labeled list with multiple nested items", func() {
@@ -1470,7 +1470,7 @@ Item 3 description`
 				},
 			},
 		}
-		Expect(ParseDocument(source)).To(Equal(expected))
+		Expect(ParseDocument(source)).To(MatchDocument(expected))
 	})
 
 	It("labeled list with nested unordered list - case 1", func() {
@@ -1560,7 +1560,7 @@ Item with description:: something simple`
 			},
 		}
 
-		Expect(ParseDocument(source)).To(Equal(expected))
+		Expect(ParseDocument(source)).To(MatchDocument(expected))
 	})
 
 	It("labeled list with a single item and paragraph", func() {
@@ -1613,7 +1613,7 @@ a normal paragraph.`
 				},
 			},
 		}
-		Expect(ParseDocument(source)).To(Equal(expected))
+		Expect(ParseDocument(source)).To(MatchDocument(expected))
 	})
 
 	It("labeled list with item continuation", func() {
@@ -1705,7 +1705,7 @@ another fenced block
 			},
 		}
 
-		Expect(ParseDocument(source)).To(Equal(expected))
+		Expect(ParseDocument(source)).To(MatchDocument(expected))
 	})
 
 	It("labeled list without item continuation", func() {
@@ -1798,7 +1798,7 @@ another fenced block
 				},
 			},
 		}
-		Expect(ParseDocument(source)).To(Equal(expected))
+		Expect(ParseDocument(source)).To(MatchDocument(expected))
 	})
 
 	It("labeled list with nested unordered list - case 2", func() {
@@ -1849,7 +1849,7 @@ another fenced block
 				},
 			},
 		}
-		Expect(ParseDocument(source)).To(Equal(expected))
+		Expect(ParseDocument(source)).To(MatchDocument(expected))
 	})
 
 	It("labeled list with title", func() {
@@ -1913,7 +1913,7 @@ second term:: definition of the second term`
 				},
 			},
 		}
-		Expect(ParseDocument(source)).To(Equal(expected))
+		Expect(ParseDocument(source)).To(MatchDocument(expected))
 	})
 
 	It("max level of labeled items - case 1", func() {
@@ -2031,7 +2031,7 @@ level 1:: description 1`
 				},
 			},
 		}
-		Expect(ParseDocument(source)).To(Equal(expected))
+		Expect(ParseDocument(source)).To(MatchDocument(expected))
 	})
 
 	It("max level of labeled items - case 2", func() {
@@ -2149,7 +2149,7 @@ level 2::: description 2`
 				},
 			},
 		}
-		Expect(ParseDocument(source)).To(Equal(expected))
+		Expect(ParseDocument(source)).To(MatchDocument(expected))
 	})
 
 	It("labeled list item with predefined attribute", func() {
@@ -2186,6 +2186,6 @@ level 2::: description 2`
 				},
 			},
 		}
-		Expect(ParseDocument(source)).To(Equal(expected))
+		Expect(ParseDocument(source)).To(MatchDocument(expected))
 	})
 })

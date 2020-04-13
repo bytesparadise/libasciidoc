@@ -32,7 +32,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("bold text with 2 words", func() {
@@ -54,7 +54,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("bold text with 3 words", func() {
@@ -76,7 +76,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("italic text with 3 words in single quote", func() {
@@ -98,7 +98,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("monospace text with 3 words", func() {
@@ -120,7 +120,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("invalid subscript text with 3 words", func() {
@@ -137,7 +137,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("invalid superscript text with 3 words", func() {
@@ -154,7 +154,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("bold text within italic text", func() {
@@ -183,7 +183,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("monospace text within bold text within italic quote", func() {
@@ -217,7 +217,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("italic text within italic text", func() {
@@ -240,7 +240,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("non-bold text then bold text", func() {
@@ -265,7 +265,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 			It("non-italic text then italic text", func() {
 				source := "non_italic_content _italic content_"
@@ -289,7 +289,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("non-monospace text then monospace text", func() {
@@ -314,7 +314,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("subscript text attached", func() {
@@ -338,7 +338,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("superscript text attached", func() {
@@ -362,7 +362,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("invalid subscript text with 3 words", func() {
@@ -379,7 +379,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 		})
 
@@ -404,7 +404,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("italic text with 3 words in double quote", func() {
@@ -426,7 +426,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("monospace text with 3 words in double quote", func() {
@@ -448,7 +448,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("superscript text within italic text", func() {
@@ -477,7 +477,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("superscript text within italic text within bold quote", func() {
@@ -511,7 +511,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 		})
 
@@ -537,7 +537,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("inline content with invalid bold text - use case 1", func() {
@@ -554,7 +554,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("inline content with invalid bold text - use case 2", func() {
@@ -571,7 +571,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("inline content with invalid bold text - use case 3", func() {
@@ -588,7 +588,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("invalid italic text within bold text", func() {
@@ -613,7 +613,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("italic text within invalid bold text", func() {
@@ -637,7 +637,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("inline content with invalid subscript text - use case 1", func() {
@@ -654,7 +654,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("inline content with invalid subscript text - use case 2", func() {
@@ -671,7 +671,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("inline content with invalid subscript text - use case 3", func() {
@@ -688,7 +688,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("inline content with invalid superscript text - use case 1", func() {
@@ -706,7 +706,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("inline content with invalid superscript text - use case 2", func() {
@@ -724,7 +724,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("inline content with invalid superscript text - use case 3", func() {
@@ -742,7 +742,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 		})
 
@@ -776,7 +776,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("single-quote bold within single-quote bold text", func() {
@@ -800,7 +800,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("double-quote bold within double-quote bold text", func() {
@@ -830,7 +830,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("single-quote bold within double-quote bold text", func() {
@@ -860,7 +860,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("double-quote bold within single-quote bold text", func() {
@@ -890,7 +890,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("single-quote italic within single-quote italic text", func() {
@@ -914,7 +914,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("double-quote italic within double-quote italic text", func() {
@@ -944,7 +944,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("single-quote italic within double-quote italic text", func() {
@@ -974,7 +974,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("double-quote italic within single-quote italic text", func() {
@@ -1004,7 +1004,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("single-quote monospace within single-quote monospace text", func() {
@@ -1028,7 +1028,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("double-quote monospace within double-quote monospace text", func() {
@@ -1058,7 +1058,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("single-quote monospace within double-quote monospace text", func() {
@@ -1088,7 +1088,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("double-quote monospace within single-quote monospace text", func() {
@@ -1118,7 +1118,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("unbalanced bold in monospace - case 1", func() {
@@ -1140,7 +1140,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("unbalanced bold in monospace - case 2", func() {
@@ -1162,7 +1162,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("italic in monospace", func() {
@@ -1189,7 +1189,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("unbalanced italic in monospace", func() {
@@ -1211,7 +1211,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("unparsed bold in monospace", func() {
@@ -1233,7 +1233,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("parsed subscript in monospace", func() {
@@ -1261,7 +1261,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("multiline in single quoted monospace - case 1", func() {
@@ -1283,7 +1283,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("multiline in double quoted monospace - case 1", func() {
@@ -1305,7 +1305,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("multiline in single quoted  monospace - case 2", func() {
@@ -1333,7 +1333,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("multiline in double quoted  monospace - case 2", func() {
@@ -1361,7 +1361,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("link in bold", func() {
@@ -1399,7 +1399,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("image in bold", func() {
@@ -1431,7 +1431,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("singleplus passthrough in bold", func() {
@@ -1459,7 +1459,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("tripleplus passthrough in bold", func() {
@@ -1487,7 +1487,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("link in italic", func() {
@@ -1525,7 +1525,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("image in italic", func() {
@@ -1557,7 +1557,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("singleplus passthrough in italic", func() {
@@ -1585,7 +1585,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("tripleplus passthrough in italic", func() {
@@ -1613,7 +1613,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("link in monospace", func() {
@@ -1651,7 +1651,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("image in monospace", func() {
@@ -1683,7 +1683,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("singleplus passthrough in monospace", func() {
@@ -1712,7 +1712,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("tripleplus passthrough in monospace", func() {
@@ -1741,7 +1741,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 		})
@@ -1769,7 +1769,7 @@ var _ = Describe("quoted texts", func() {
 							},
 						},
 					}
-					Expect(ParseDraftDocument(source)).To(Equal(expected))
+					Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 				})
 
 				It("unbalanced bold text - extra on right", func() {
@@ -1793,7 +1793,7 @@ var _ = Describe("quoted texts", func() {
 							},
 						},
 					}
-					Expect(ParseDraftDocument(source)).To(Equal(expected))
+					Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 				})
 			})
 
@@ -1819,7 +1819,7 @@ var _ = Describe("quoted texts", func() {
 							},
 						},
 					}
-					Expect(ParseDraftDocument(source)).To(Equal(expected))
+					Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 				})
 
 				It("unbalanced italic text - extra on right", func() {
@@ -1842,7 +1842,7 @@ var _ = Describe("quoted texts", func() {
 							},
 						},
 					}
-					Expect(ParseDraftDocument(source)).To(Equal(expected))
+					Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 				})
 			})
 
@@ -1868,7 +1868,7 @@ var _ = Describe("quoted texts", func() {
 							},
 						},
 					}
-					Expect(ParseDraftDocument(source)).To(Equal(expected))
+					Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 				})
 
 				It("unbalanced monospace text - extra on right", func() {
@@ -1891,7 +1891,7 @@ var _ = Describe("quoted texts", func() {
 							},
 						},
 					}
-					Expect(ParseDraftDocument(source)).To(Equal(expected))
+					Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 				})
 			})
 
@@ -1909,7 +1909,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 		})
@@ -1934,7 +1934,7 @@ var _ = Describe("quoted texts", func() {
 								},
 							},
 						}
-						Expect(ParseDraftDocument(source)).To(Equal(expected))
+						Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 					})
 
 					It("escaped bold text with multiple backslashes", func() {
@@ -1951,7 +1951,7 @@ var _ = Describe("quoted texts", func() {
 								},
 							},
 						}
-						Expect(ParseDraftDocument(source)).To(Equal(expected))
+						Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 					})
 
 					It("escaped bold text with double quote", func() {
@@ -1968,7 +1968,7 @@ var _ = Describe("quoted texts", func() {
 								},
 							},
 						}
-						Expect(ParseDraftDocument(source)).To(Equal(expected))
+						Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 					})
 
 					It("escaped bold text with double quote and more backslashes", func() {
@@ -1985,7 +1985,7 @@ var _ = Describe("quoted texts", func() {
 								},
 							},
 						}
-						Expect(ParseDraftDocument(source)).To(Equal(expected))
+						Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 					})
 
 					It("escaped bold text with unbalanced double quote", func() {
@@ -2002,7 +2002,7 @@ var _ = Describe("quoted texts", func() {
 								},
 							},
 						}
-						Expect(ParseDraftDocument(source)).To(Equal(expected))
+						Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 					})
 
 					It("escaped bold text with unbalanced double quote and more backslashes", func() {
@@ -2019,7 +2019,7 @@ var _ = Describe("quoted texts", func() {
 								},
 							},
 						}
-						Expect(ParseDraftDocument(source)).To(Equal(expected))
+						Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 					})
 				})
 
@@ -2046,7 +2046,7 @@ var _ = Describe("quoted texts", func() {
 								},
 							},
 						}
-						Expect(ParseDraftDocument(source)).To(Equal(expected))
+						Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 					})
 
 					It("escaped bold text with unbalanced double quote and nested italic test", func() {
@@ -2070,7 +2070,7 @@ var _ = Describe("quoted texts", func() {
 								},
 							},
 						}
-						Expect(ParseDraftDocument(source)).To(Equal(expected))
+						Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 					})
 
 					It("escaped bold text with nested italic", func() {
@@ -2094,7 +2094,7 @@ var _ = Describe("quoted texts", func() {
 								},
 							},
 						}
-						Expect(ParseDraftDocument(source)).To(Equal(expected))
+						Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 					})
 				})
 
@@ -2118,7 +2118,7 @@ var _ = Describe("quoted texts", func() {
 								},
 							},
 						}
-						Expect(ParseDraftDocument(source)).To(Equal(expected))
+						Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 					})
 
 					It("escaped italic text with single quote and more backslashes", func() {
@@ -2135,7 +2135,7 @@ var _ = Describe("quoted texts", func() {
 								},
 							},
 						}
-						Expect(ParseDraftDocument(source)).To(Equal(expected))
+						Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 					})
 
 					It("escaped italic text with double quote with 2 backslashes", func() {
@@ -2152,7 +2152,7 @@ var _ = Describe("quoted texts", func() {
 								},
 							},
 						}
-						Expect(ParseDraftDocument(source)).To(Equal(expected))
+						Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 					})
 
 					It("escaped italic text with double quote with 3 backslashes", func() {
@@ -2169,7 +2169,7 @@ var _ = Describe("quoted texts", func() {
 								},
 							},
 						}
-						Expect(ParseDraftDocument(source)).To(Equal(expected))
+						Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 					})
 
 					It("escaped italic text with unbalanced double quote", func() {
@@ -2186,7 +2186,7 @@ var _ = Describe("quoted texts", func() {
 								},
 							},
 						}
-						Expect(ParseDraftDocument(source)).To(Equal(expected))
+						Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 					})
 
 					It("escaped italic text with unbalanced double quote and more backslashes", func() {
@@ -2203,7 +2203,7 @@ var _ = Describe("quoted texts", func() {
 								},
 							},
 						}
-						Expect(ParseDraftDocument(source)).To(Equal(expected))
+						Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 					})
 				})
 
@@ -2230,7 +2230,7 @@ var _ = Describe("quoted texts", func() {
 								},
 							},
 						}
-						Expect(ParseDraftDocument(source)).To(Equal(expected))
+						Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 					})
 
 					It("escaped italic text with unbalanced double quote and nested bold test", func() {
@@ -2254,7 +2254,7 @@ var _ = Describe("quoted texts", func() {
 								},
 							},
 						}
-						Expect(ParseDraftDocument(source)).To(Equal(expected))
+						Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 					})
 
 					It("escaped italic text with nested bold text", func() {
@@ -2278,7 +2278,7 @@ var _ = Describe("quoted texts", func() {
 								},
 							},
 						}
-						Expect(ParseDraftDocument(source)).To(Equal(expected))
+						Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 					})
 				})
 			})
@@ -2301,7 +2301,7 @@ var _ = Describe("quoted texts", func() {
 								},
 							},
 						}
-						Expect(ParseDraftDocument(source)).To(Equal(expected))
+						Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 					})
 
 					It("escaped monospace text with single quote and more backslashes", func() {
@@ -2318,7 +2318,7 @@ var _ = Describe("quoted texts", func() {
 								},
 							},
 						}
-						Expect(ParseDraftDocument(source)).To(Equal(expected))
+						Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 					})
 
 					It("escaped monospace text with double quote", func() {
@@ -2335,7 +2335,7 @@ var _ = Describe("quoted texts", func() {
 								},
 							},
 						}
-						Expect(ParseDraftDocument(source)).To(Equal(expected))
+						Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 					})
 
 					It("escaped monospace text with double quote and more backslashes", func() {
@@ -2352,7 +2352,7 @@ var _ = Describe("quoted texts", func() {
 								},
 							},
 						}
-						Expect(ParseDraftDocument(source)).To(Equal(expected))
+						Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 					})
 
 					It("escaped monospace text with unbalanced double quote", func() {
@@ -2369,7 +2369,7 @@ var _ = Describe("quoted texts", func() {
 								},
 							},
 						}
-						Expect(ParseDraftDocument(source)).To(Equal(expected))
+						Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 					})
 
 					It("escaped monospace text with unbalanced double quote and more backslashes", func() {
@@ -2386,7 +2386,7 @@ var _ = Describe("quoted texts", func() {
 								},
 							},
 						}
-						Expect(ParseDraftDocument(source)).To(Equal(expected))
+						Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 					})
 				})
 
@@ -2413,7 +2413,7 @@ var _ = Describe("quoted texts", func() {
 								},
 							},
 						}
-						Expect(ParseDraftDocument(source)).To(Equal(expected))
+						Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 					})
 
 					It("escaped monospace text with unbalanced double backquote and nested bold test", func() {
@@ -2437,7 +2437,7 @@ var _ = Describe("quoted texts", func() {
 								},
 							},
 						}
-						Expect(ParseDraftDocument(source)).To(Equal(expected))
+						Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 					})
 
 					It("escaped monospace text with nested bold text", func() {
@@ -2461,7 +2461,7 @@ var _ = Describe("quoted texts", func() {
 								},
 							},
 						}
-						Expect(ParseDraftDocument(source)).To(Equal(expected))
+						Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 					})
 				})
 			})
@@ -2484,7 +2484,7 @@ var _ = Describe("quoted texts", func() {
 								},
 							},
 						}
-						Expect(ParseDraftDocument(source)).To(Equal(expected))
+						Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 					})
 
 					It("escaped subscript text with single quote and more backslashes", func() {
@@ -2501,7 +2501,7 @@ var _ = Describe("quoted texts", func() {
 								},
 							},
 						}
-						Expect(ParseDraftDocument(source)).To(Equal(expected))
+						Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 					})
 
 				})
@@ -2529,7 +2529,7 @@ var _ = Describe("quoted texts", func() {
 								},
 							},
 						}
-						Expect(ParseDraftDocument(source)).To(Equal(expected))
+						Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 					})
 
 					It("escaped subscript text with nested bold text", func() {
@@ -2553,7 +2553,7 @@ var _ = Describe("quoted texts", func() {
 								},
 							},
 						}
-						Expect(ParseDraftDocument(source)).To(Equal(expected))
+						Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 					})
 				})
 			})
@@ -2576,7 +2576,7 @@ var _ = Describe("quoted texts", func() {
 								},
 							},
 						}
-						Expect(ParseDraftDocument(source)).To(Equal(expected))
+						Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 					})
 
 					It("escaped superscript text with single quote and more backslashes", func() {
@@ -2593,7 +2593,7 @@ var _ = Describe("quoted texts", func() {
 								},
 							},
 						}
-						Expect(ParseDraftDocument(source)).To(Equal(expected))
+						Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 					})
 
 				})
@@ -2621,7 +2621,7 @@ var _ = Describe("quoted texts", func() {
 								},
 							},
 						}
-						Expect(ParseDraftDocument(source)).To(Equal(expected))
+						Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 					})
 
 					It("escaped superscript text with unbalanced double backquote and nested bold test", func() {
@@ -2645,7 +2645,7 @@ var _ = Describe("quoted texts", func() {
 								},
 							},
 						}
-						Expect(ParseDraftDocument(source)).To(Equal(expected))
+						Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 					})
 
 					It("escaped superscript text with nested bold text - case 2", func() {
@@ -2669,7 +2669,7 @@ var _ = Describe("quoted texts", func() {
 								},
 							},
 						}
-						Expect(ParseDraftDocument(source)).To(Equal(expected))
+						Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 					})
 				})
 			})
@@ -2702,7 +2702,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDocument(source)).To(Equal(expected))
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
 			It("bold text with 2 words", func() {
@@ -2728,7 +2728,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDocument(source)).To(Equal(expected))
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
 			It("bold text with 3 words", func() {
@@ -2754,7 +2754,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDocument(source)).To(Equal(expected))
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
 			It("italic text with 3 words in single quote", func() {
@@ -2780,7 +2780,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDocument(source)).To(Equal(expected))
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
 			It("monospace text with 3 words", func() {
@@ -2806,7 +2806,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDocument(source)).To(Equal(expected))
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
 			It("invalid subscript text with 3 words", func() {
@@ -2827,7 +2827,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDocument(source)).To(Equal(expected))
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
 			It("invalid superscript text with 3 words", func() {
@@ -2848,7 +2848,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDocument(source)).To(Equal(expected))
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
 			It("bold text within italic text", func() {
@@ -2881,7 +2881,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDocument(source)).To(Equal(expected))
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
 			It("monospace text within bold text within italic quote", func() {
@@ -2919,7 +2919,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDocument(source)).To(Equal(expected))
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
 			It("italic text within italic text", func() {
@@ -2946,7 +2946,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDocument(source)).To(Equal(expected))
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
 			It("subscript text attached", func() {
@@ -2974,7 +2974,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDocument(source)).To(Equal(expected))
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
 			It("superscript text attached", func() {
@@ -3002,7 +3002,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDocument(source)).To(Equal(expected))
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
 			It("invalid subscript text with 3 words", func() {
@@ -3023,7 +3023,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDocument(source)).To(Equal(expected))
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
 		})
@@ -3053,7 +3053,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDocument(source)).To(Equal(expected))
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
 			It("italic text with 3 words in double quote", func() {
@@ -3079,7 +3079,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDocument(source)).To(Equal(expected))
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
 			It("monospace text with 3 words in double quote", func() {
@@ -3105,7 +3105,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDocument(source)).To(Equal(expected))
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
 			It("superscript text within italic text", func() {
@@ -3138,7 +3138,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDocument(source)).To(Equal(expected))
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
 			It("superscript text within italic text within bold quote", func() {
@@ -3176,7 +3176,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDocument(source)).To(Equal(expected))
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 		})
 
@@ -3206,7 +3206,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDocument(source)).To(Equal(expected))
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
 			It("inline content with invalid bold text - use case 1", func() {
@@ -3227,7 +3227,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDocument(source)).To(Equal(expected))
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
 			It("inline content with invalid bold text - use case 2", func() {
@@ -3248,7 +3248,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDocument(source)).To(Equal(expected))
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
 			It("inline content with invalid bold text - use case 3", func() {
@@ -3269,7 +3269,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDocument(source)).To(Equal(expected))
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
 			It("invalid italic text within bold text", func() {
@@ -3298,7 +3298,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDocument(source)).To(Equal(expected))
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
 			It("italic text within invalid bold text", func() {
@@ -3326,7 +3326,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDocument(source)).To(Equal(expected))
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
 			It("inline content with invalid subscript text - use case 1", func() {
@@ -3347,7 +3347,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDocument(source)).To(Equal(expected))
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
 			It("inline content with invalid subscript text - use case 2", func() {
@@ -3368,7 +3368,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDocument(source)).To(Equal(expected))
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
 			It("inline content with invalid subscript text - use case 3", func() {
@@ -3389,7 +3389,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDocument(source)).To(Equal(expected))
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
 			It("inline content with invalid superscript text - use case 1", func() {
@@ -3411,7 +3411,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDocument(source)).To(Equal(expected))
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
 			It("inline content with invalid superscript text - use case 2", func() {
@@ -3433,7 +3433,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDocument(source)).To(Equal(expected))
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
 			It("inline content with invalid superscript text - use case 3", func() {
@@ -3455,7 +3455,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDocument(source)).To(Equal(expected))
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 		})
 
@@ -3493,7 +3493,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDocument(source)).To(Equal(expected))
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
 			It("single-quote bold within single-quote bold text", func() {
@@ -3521,7 +3521,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDocument(source)).To(Equal(expected))
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
 			It("double-quote bold within double-quote bold text", func() {
@@ -3555,7 +3555,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDocument(source)).To(Equal(expected))
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
 			It("single-quote bold within double-quote bold text", func() {
@@ -3589,7 +3589,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDocument(source)).To(Equal(expected))
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
 			It("double-quote bold within single-quote bold text", func() {
@@ -3623,7 +3623,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDocument(source)).To(Equal(expected))
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
 			It("single-quote italic within single-quote italic text", func() {
@@ -3651,7 +3651,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDocument(source)).To(Equal(expected))
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
 			It("double-quote italic within double-quote italic text", func() {
@@ -3685,7 +3685,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDocument(source)).To(Equal(expected))
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
 			It("single-quote italic within double-quote italic text", func() {
@@ -3719,7 +3719,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDocument(source)).To(Equal(expected))
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
 			It("double-quote italic within single-quote italic text", func() {
@@ -3753,7 +3753,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDocument(source)).To(Equal(expected))
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
 			It("single-quote monospace within single-quote monospace text", func() {
@@ -3781,7 +3781,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDocument(source)).To(Equal(expected))
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
 			It("double-quote monospace within double-quote monospace text", func() {
@@ -3815,7 +3815,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDocument(source)).To(Equal(expected))
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
 			It("single-quote monospace within double-quote monospace text", func() {
@@ -3849,7 +3849,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDocument(source)).To(Equal(expected))
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
 			It("double-quote monospace within single-quote monospace text", func() {
@@ -3883,7 +3883,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDocument(source)).To(Equal(expected))
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
 			It("unbalanced bold in monospace - case 1", func() {
@@ -3909,7 +3909,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDocument(source)).To(Equal(expected))
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
 			It("unbalanced bold in monospace - case 2", func() {
@@ -3935,7 +3935,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDocument(source)).To(Equal(expected))
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
 			It("italic in monospace", func() {
@@ -3966,7 +3966,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDocument(source)).To(Equal(expected))
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
 			It("unbalanced italic in monospace", func() {
@@ -3992,7 +3992,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDocument(source)).To(Equal(expected))
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
 			It("unparsed bold in monospace", func() {
@@ -4018,7 +4018,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDocument(source)).To(Equal(expected))
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
 			It("parsed subscript in monospace", func() {
@@ -4050,7 +4050,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDocument(source)).To(Equal(expected))
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
 			It("multiline in single quoted monospace - case 1", func() {
@@ -4076,7 +4076,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDocument(source)).To(Equal(expected))
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
 			It("multiline in double quoted monospace - case 1", func() {
@@ -4102,7 +4102,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDocument(source)).To(Equal(expected))
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
 			It("multiline in single quoted  monospace - case 2", func() {
@@ -4134,7 +4134,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDocument(source)).To(Equal(expected))
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
 			It("multiline in double quoted  monospace - case 2", func() {
@@ -4166,7 +4166,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDocument(source)).To(Equal(expected))
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
 			It("link in bold", func() {
@@ -4208,7 +4208,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDocument(source)).To(Equal(expected))
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
 			It("image in bold", func() {
@@ -4246,7 +4246,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDocument(source)).To(Equal(expected))
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
 			It("singleplus passthrough in bold", func() {
@@ -4278,7 +4278,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDocument(source)).To(Equal(expected))
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
 			It("tripleplus passthrough in bold", func() {
@@ -4310,7 +4310,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDocument(source)).To(Equal(expected))
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
 			It("link in italic", func() {
@@ -4352,7 +4352,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDocument(source)).To(Equal(expected))
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
 			It("image in italic", func() {
@@ -4390,7 +4390,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDocument(source)).To(Equal(expected))
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
 			It("singleplus passthrough in italic", func() {
@@ -4422,7 +4422,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDocument(source)).To(Equal(expected))
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
 			It("tripleplus passthrough in italic", func() {
@@ -4454,7 +4454,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDocument(source)).To(Equal(expected))
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
 			It("link in monospace", func() {
@@ -4496,7 +4496,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDocument(source)).To(Equal(expected))
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
 			It("image in monospace", func() {
@@ -4534,7 +4534,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDocument(source)).To(Equal(expected))
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
 			It("singleplus passthrough in monospace", func() {
@@ -4567,7 +4567,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDocument(source)).To(Equal(expected))
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
 			It("tripleplus passthrough in monospace", func() {
@@ -4600,7 +4600,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDocument(source)).To(Equal(expected))
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
 		})
@@ -4632,7 +4632,7 @@ var _ = Describe("quoted texts", func() {
 							},
 						},
 					}
-					Expect(ParseDocument(source)).To(Equal(expected))
+					Expect(ParseDocument(source)).To(MatchDocument(expected))
 				})
 
 				It("unbalanced bold text - extra on right", func() {
@@ -4660,7 +4660,7 @@ var _ = Describe("quoted texts", func() {
 							},
 						},
 					}
-					Expect(ParseDocument(source)).To(Equal(expected))
+					Expect(ParseDocument(source)).To(MatchDocument(expected))
 				})
 			})
 
@@ -4690,7 +4690,7 @@ var _ = Describe("quoted texts", func() {
 							},
 						},
 					}
-					Expect(ParseDocument(source)).To(Equal(expected))
+					Expect(ParseDocument(source)).To(MatchDocument(expected))
 				})
 
 				It("unbalanced italic text - extra on right", func() {
@@ -4717,7 +4717,7 @@ var _ = Describe("quoted texts", func() {
 							},
 						},
 					}
-					Expect(ParseDocument(source)).To(Equal(expected))
+					Expect(ParseDocument(source)).To(MatchDocument(expected))
 				})
 			})
 
@@ -4747,7 +4747,7 @@ var _ = Describe("quoted texts", func() {
 							},
 						},
 					}
-					Expect(ParseDocument(source)).To(Equal(expected))
+					Expect(ParseDocument(source)).To(MatchDocument(expected))
 				})
 
 				It("unbalanced monospace text - extra on right", func() {
@@ -4774,7 +4774,7 @@ var _ = Describe("quoted texts", func() {
 							},
 						},
 					}
-					Expect(ParseDocument(source)).To(Equal(expected))
+					Expect(ParseDocument(source)).To(MatchDocument(expected))
 				})
 			})
 
@@ -4796,7 +4796,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDocument(source)).To(Equal(expected))
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
 		})
@@ -4825,7 +4825,7 @@ var _ = Describe("quoted texts", func() {
 								},
 							},
 						}
-						Expect(ParseDocument(source)).To(Equal(expected))
+						Expect(ParseDocument(source)).To(MatchDocument(expected))
 					})
 
 					It("escaped bold text with multiple backslashes", func() {
@@ -4846,7 +4846,7 @@ var _ = Describe("quoted texts", func() {
 								},
 							},
 						}
-						Expect(ParseDocument(source)).To(Equal(expected))
+						Expect(ParseDocument(source)).To(MatchDocument(expected))
 					})
 
 					It("escaped bold text with double quote", func() {
@@ -4867,7 +4867,7 @@ var _ = Describe("quoted texts", func() {
 								},
 							},
 						}
-						Expect(ParseDocument(source)).To(Equal(expected))
+						Expect(ParseDocument(source)).To(MatchDocument(expected))
 					})
 
 					It("escaped bold text with double quote and more backslashes", func() {
@@ -4888,7 +4888,7 @@ var _ = Describe("quoted texts", func() {
 								},
 							},
 						}
-						Expect(ParseDocument(source)).To(Equal(expected))
+						Expect(ParseDocument(source)).To(MatchDocument(expected))
 					})
 
 					It("escaped bold text with unbalanced double quote", func() {
@@ -4909,7 +4909,7 @@ var _ = Describe("quoted texts", func() {
 								},
 							},
 						}
-						Expect(ParseDocument(source)).To(Equal(expected))
+						Expect(ParseDocument(source)).To(MatchDocument(expected))
 					})
 
 					It("escaped bold text with unbalanced double quote and more backslashes", func() {
@@ -4930,7 +4930,7 @@ var _ = Describe("quoted texts", func() {
 								},
 							},
 						}
-						Expect(ParseDocument(source)).To(Equal(expected))
+						Expect(ParseDocument(source)).To(MatchDocument(expected))
 					})
 				})
 
@@ -4961,7 +4961,7 @@ var _ = Describe("quoted texts", func() {
 								},
 							},
 						}
-						Expect(ParseDocument(source)).To(Equal(expected))
+						Expect(ParseDocument(source)).To(MatchDocument(expected))
 					})
 
 					It("escaped bold text with unbalanced double quote and nested italic test", func() {
@@ -4989,7 +4989,7 @@ var _ = Describe("quoted texts", func() {
 								},
 							},
 						}
-						Expect(ParseDocument(source)).To(Equal(expected))
+						Expect(ParseDocument(source)).To(MatchDocument(expected))
 					})
 
 					It("escaped bold text with nested italic", func() {
@@ -5017,7 +5017,7 @@ var _ = Describe("quoted texts", func() {
 								},
 							},
 						}
-						Expect(ParseDocument(source)).To(Equal(expected))
+						Expect(ParseDocument(source)).To(MatchDocument(expected))
 					})
 				})
 
@@ -5045,7 +5045,7 @@ var _ = Describe("quoted texts", func() {
 								},
 							},
 						}
-						Expect(ParseDocument(source)).To(Equal(expected))
+						Expect(ParseDocument(source)).To(MatchDocument(expected))
 					})
 
 					It("escaped italic text with single quote and more backslashes", func() {
@@ -5066,7 +5066,7 @@ var _ = Describe("quoted texts", func() {
 								},
 							},
 						}
-						Expect(ParseDocument(source)).To(Equal(expected))
+						Expect(ParseDocument(source)).To(MatchDocument(expected))
 					})
 
 					It("escaped italic text with double quote with 2 backslashes", func() {
@@ -5087,7 +5087,7 @@ var _ = Describe("quoted texts", func() {
 								},
 							},
 						}
-						Expect(ParseDocument(source)).To(Equal(expected))
+						Expect(ParseDocument(source)).To(MatchDocument(expected))
 					})
 
 					It("escaped italic text with double quote with 3 backslashes", func() {
@@ -5108,7 +5108,7 @@ var _ = Describe("quoted texts", func() {
 								},
 							},
 						}
-						Expect(ParseDocument(source)).To(Equal(expected))
+						Expect(ParseDocument(source)).To(MatchDocument(expected))
 					})
 
 					It("escaped italic text with unbalanced double quote", func() {
@@ -5129,7 +5129,7 @@ var _ = Describe("quoted texts", func() {
 								},
 							},
 						}
-						Expect(ParseDocument(source)).To(Equal(expected))
+						Expect(ParseDocument(source)).To(MatchDocument(expected))
 					})
 
 					It("escaped italic text with unbalanced double quote and more backslashes", func() {
@@ -5150,7 +5150,7 @@ var _ = Describe("quoted texts", func() {
 								},
 							},
 						}
-						Expect(ParseDocument(source)).To(Equal(expected))
+						Expect(ParseDocument(source)).To(MatchDocument(expected))
 					})
 				})
 
@@ -5181,7 +5181,7 @@ var _ = Describe("quoted texts", func() {
 								},
 							},
 						}
-						Expect(ParseDocument(source)).To(Equal(expected))
+						Expect(ParseDocument(source)).To(MatchDocument(expected))
 					})
 
 					It("escaped italic text with unbalanced double quote and nested bold test", func() {
@@ -5209,7 +5209,7 @@ var _ = Describe("quoted texts", func() {
 								},
 							},
 						}
-						Expect(ParseDocument(source)).To(Equal(expected))
+						Expect(ParseDocument(source)).To(MatchDocument(expected))
 					})
 
 					It("escaped italic text with nested bold text", func() {
@@ -5237,7 +5237,7 @@ var _ = Describe("quoted texts", func() {
 								},
 							},
 						}
-						Expect(ParseDocument(source)).To(Equal(expected))
+						Expect(ParseDocument(source)).To(MatchDocument(expected))
 					})
 				})
 			})
@@ -5264,7 +5264,7 @@ var _ = Describe("quoted texts", func() {
 								},
 							},
 						}
-						Expect(ParseDocument(source)).To(Equal(expected))
+						Expect(ParseDocument(source)).To(MatchDocument(expected))
 					})
 
 					It("escaped monospace text with single quote and more backslashes", func() {
@@ -5285,7 +5285,7 @@ var _ = Describe("quoted texts", func() {
 								},
 							},
 						}
-						Expect(ParseDocument(source)).To(Equal(expected))
+						Expect(ParseDocument(source)).To(MatchDocument(expected))
 					})
 
 					It("escaped monospace text with double quote", func() {
@@ -5306,7 +5306,7 @@ var _ = Describe("quoted texts", func() {
 								},
 							},
 						}
-						Expect(ParseDocument(source)).To(Equal(expected))
+						Expect(ParseDocument(source)).To(MatchDocument(expected))
 					})
 
 					It("escaped monospace text with double quote and more backslashes", func() {
@@ -5327,7 +5327,7 @@ var _ = Describe("quoted texts", func() {
 								},
 							},
 						}
-						Expect(ParseDocument(source)).To(Equal(expected))
+						Expect(ParseDocument(source)).To(MatchDocument(expected))
 					})
 
 					It("escaped monospace text with unbalanced double quote", func() {
@@ -5348,7 +5348,7 @@ var _ = Describe("quoted texts", func() {
 								},
 							},
 						}
-						Expect(ParseDocument(source)).To(Equal(expected))
+						Expect(ParseDocument(source)).To(MatchDocument(expected))
 					})
 
 					It("escaped monospace text with unbalanced double quote and more backslashes", func() {
@@ -5369,7 +5369,7 @@ var _ = Describe("quoted texts", func() {
 								},
 							},
 						}
-						Expect(ParseDocument(source)).To(Equal(expected))
+						Expect(ParseDocument(source)).To(MatchDocument(expected))
 					})
 				})
 
@@ -5400,7 +5400,7 @@ var _ = Describe("quoted texts", func() {
 								},
 							},
 						}
-						Expect(ParseDocument(source)).To(Equal(expected))
+						Expect(ParseDocument(source)).To(MatchDocument(expected))
 					})
 
 					It("escaped monospace text with unbalanced double backquote and nested bold test", func() {
@@ -5428,7 +5428,7 @@ var _ = Describe("quoted texts", func() {
 								},
 							},
 						}
-						Expect(ParseDocument(source)).To(Equal(expected))
+						Expect(ParseDocument(source)).To(MatchDocument(expected))
 					})
 
 					It("escaped monospace text with nested bold text", func() {
@@ -5456,7 +5456,7 @@ var _ = Describe("quoted texts", func() {
 								},
 							},
 						}
-						Expect(ParseDocument(source)).To(Equal(expected))
+						Expect(ParseDocument(source)).To(MatchDocument(expected))
 					})
 				})
 			})
@@ -5483,7 +5483,7 @@ var _ = Describe("quoted texts", func() {
 								},
 							},
 						}
-						Expect(ParseDocument(source)).To(Equal(expected))
+						Expect(ParseDocument(source)).To(MatchDocument(expected))
 					})
 
 					It("escaped subscript text with single quote and more backslashes", func() {
@@ -5504,7 +5504,7 @@ var _ = Describe("quoted texts", func() {
 								},
 							},
 						}
-						Expect(ParseDocument(source)).To(Equal(expected))
+						Expect(ParseDocument(source)).To(MatchDocument(expected))
 					})
 
 				})
@@ -5536,7 +5536,7 @@ var _ = Describe("quoted texts", func() {
 								},
 							},
 						}
-						Expect(ParseDocument(source)).To(Equal(expected))
+						Expect(ParseDocument(source)).To(MatchDocument(expected))
 					})
 
 					It("escaped subscript text with nested bold text", func() {
@@ -5564,7 +5564,7 @@ var _ = Describe("quoted texts", func() {
 								},
 							},
 						}
-						Expect(ParseDocument(source)).To(Equal(expected))
+						Expect(ParseDocument(source)).To(MatchDocument(expected))
 					})
 				})
 			})
@@ -5591,7 +5591,7 @@ var _ = Describe("quoted texts", func() {
 								},
 							},
 						}
-						Expect(ParseDocument(source)).To(Equal(expected))
+						Expect(ParseDocument(source)).To(MatchDocument(expected))
 					})
 
 					It("escaped superscript text with single quote and more backslashes", func() {
@@ -5612,7 +5612,7 @@ var _ = Describe("quoted texts", func() {
 								},
 							},
 						}
-						Expect(ParseDocument(source)).To(Equal(expected))
+						Expect(ParseDocument(source)).To(MatchDocument(expected))
 					})
 
 				})
@@ -5644,7 +5644,7 @@ var _ = Describe("quoted texts", func() {
 								},
 							},
 						}
-						Expect(ParseDocument(source)).To(Equal(expected))
+						Expect(ParseDocument(source)).To(MatchDocument(expected))
 					})
 
 					It("escaped superscript text with unbalanced double backquote and nested bold test", func() {
@@ -5672,7 +5672,7 @@ var _ = Describe("quoted texts", func() {
 								},
 							},
 						}
-						Expect(ParseDocument(source)).To(Equal(expected))
+						Expect(ParseDocument(source)).To(MatchDocument(expected))
 					})
 
 					It("escaped superscript text with nested bold text - case 2", func() {
@@ -5700,7 +5700,7 @@ var _ = Describe("quoted texts", func() {
 								},
 							},
 						}
-						Expect(ParseDocument(source)).To(Equal(expected))
+						Expect(ParseDocument(source)).To(MatchDocument(expected))
 					})
 				})
 			})
@@ -5745,7 +5745,7 @@ var _ = Describe("quoted texts - final document", func() {
 				},
 			},
 		}
-		Expect(ParseDocument(source)).To(Equal(expected))
+		Expect(ParseDocument(source)).To(MatchDocument(expected))
 	})
 
 	It("image in italic", func() {
@@ -5783,7 +5783,7 @@ var _ = Describe("quoted texts - final document", func() {
 				},
 			},
 		}
-		Expect(ParseDocument(source)).To(Equal(expected))
+		Expect(ParseDocument(source)).To(MatchDocument(expected))
 	})
 
 	It("image in monospace", func() {
@@ -5821,6 +5821,6 @@ var _ = Describe("quoted texts - final document", func() {
 				},
 			},
 		}
-		Expect(ParseDocument(source)).To(Equal(expected))
+		Expect(ParseDocument(source)).To(MatchDocument(expected))
 	})
 })

@@ -201,7 +201,7 @@ var _ = Describe("file inclusions - draft with preprocessing", func() {
 				},
 			},
 		}
-		Expect(ParseDraftDocument(source)).To(Equal(expected))
+		Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 		// verify no error/warning in logs
 		Expect(console).ToNot(ContainAnyMessageWithLevels(log.ErrorLevel, log.WarnLevel))
 	})
@@ -234,7 +234,7 @@ var _ = Describe("file inclusions - draft with preprocessing", func() {
 				},
 			},
 		}
-		Expect(ParseDraftDocument(source)).To(Equal(expected))
+		Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 	})
 
 	It("should not include section 0 when attribute exists", func() {
@@ -272,7 +272,7 @@ include::{includedir}/chapter-a.adoc[]`
 				},
 			},
 		}
-		Expect(ParseDraftDocument(source)).To(Equal(expected))
+		Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 	})
 
 	It("should not further process with non-asciidoc files", func() {
@@ -812,7 +812,7 @@ include::{includedir}/include.foo[]`
 					},
 				},
 			}
-			Expect(ParseDraftDocument(source)).To(Equal(expected))
+			Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 		})
 
 		It("should include adoc file within listing block", func() {
@@ -850,7 +850,7 @@ include::../../test/includes/chapter-a.adoc[]
 					},
 				},
 			}
-			Expect(ParseDraftDocument(source)).To(Equal(expected))
+			Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 		})
 
 		It("should include adoc file within example block", func() {
@@ -888,7 +888,7 @@ include::../../test/includes/chapter-a.adoc[]
 					},
 				},
 			}
-			Expect(ParseDraftDocument(source)).To(Equal(expected))
+			Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 		})
 
 		It("should include adoc file within quote block", func() {
@@ -926,7 +926,7 @@ ____`
 					},
 				},
 			}
-			Expect(ParseDraftDocument(source)).To(Equal(expected))
+			Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 		})
 
 		It("should include adoc file within verse block", func() {
@@ -967,7 +967,7 @@ ____`
 					},
 				},
 			}
-			Expect(ParseDraftDocument(source)).To(Equal(expected))
+			Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 		})
 
 		It("should include adoc file within sidebar block", func() {
@@ -1005,7 +1005,7 @@ include::../../test/includes/chapter-a.adoc[]
 					},
 				},
 			}
-			Expect(ParseDraftDocument(source)).To(Equal(expected))
+			Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 		})
 
 		It("should include adoc file within passthrough block", func() {
@@ -1044,7 +1044,7 @@ include::../../test/includes/chapter-a.adoc[]
 					},
 				},
 			}
-			Expect(ParseDraftDocument(source)).To(Equal(expected))
+			Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 		})
 	})
 
@@ -1068,7 +1068,7 @@ include::../../test/includes/chapter-a.adoc[]
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("file inclusion with multiple unquoted lines", func() {
@@ -1088,7 +1088,7 @@ include::../../test/includes/chapter-a.adoc[]
 						types.BlankLine{},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("file inclusion with multiple unquoted ranges", func() {
@@ -1113,7 +1113,7 @@ include::../../test/includes/chapter-a.adoc[]
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("file inclusion with invalid unquoted range - case 1", func() {
@@ -1143,7 +1143,7 @@ include::../../test/includes/chapter-a.adoc[]
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("file inclusion with invalid unquoted range - case 2", func() {
@@ -1162,7 +1162,7 @@ include::../../test/includes/chapter-a.adoc[]
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 		})
 
@@ -1186,7 +1186,7 @@ include::../../test/includes/chapter-a.adoc[]
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 				// verify no error/warning in logs
 				Expect(console).ToNot(ContainAnyMessageWithLevels(log.ErrorLevel, log.WarnLevel))
 			})
@@ -1208,7 +1208,7 @@ include::../../test/includes/chapter-a.adoc[]
 						types.BlankLine{},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("file inclusion with multiple quoted ranges", func() {
@@ -1234,7 +1234,7 @@ include::../../test/includes/chapter-a.adoc[]
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("file inclusion with invalid quoted range - case 1", func() {
@@ -1264,7 +1264,7 @@ include::../../test/includes/chapter-a.adoc[]
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("file inclusion with invalid quoted range - case 2", func() {
@@ -1294,7 +1294,7 @@ include::../../test/includes/chapter-a.adoc[]
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("file inclusion with ignored tags", func() {
@@ -1314,7 +1314,7 @@ include::../../test/includes/chapter-a.adoc[]
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 		})
 	})
@@ -1339,7 +1339,7 @@ include::../../test/includes/chapter-a.adoc[]
 					},
 				},
 			}
-			Expect(ParseDraftDocument(source)).To(Equal(expected))
+			Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			// verify no error/warning in logs
 			Expect(console).ToNot(ContainAnyMessageWithLevels(log.ErrorLevel, log.WarnLevel))
 		})
@@ -1374,7 +1374,7 @@ include::../../test/includes/chapter-a.adoc[]
 					types.BlankLine{},
 				},
 			}
-			Expect(ParseDraftDocument(source)).To(Equal(expected))
+			Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			// verify no error/warning in logs
 			Expect(console).ToNot(ContainAnyMessageWithLevels(log.ErrorLevel, log.WarnLevel))
 		})
@@ -1411,7 +1411,7 @@ include::../../test/includes/chapter-a.adoc[]
 					},
 				},
 			}
-			Expect(ParseDraftDocument(source)).To(Equal(expected))
+			Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			// verify error in logs
 			Expect(console).To(
 				ContainMessageWithLevel(
@@ -1430,7 +1430,7 @@ include::../../test/includes/chapter-a.adoc[]
 				Blocks: []interface{}{},
 			}
 			// when/then
-			Expect(ParseDraftDocument(source)).To(Equal(expected))
+			Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			// verify error in logs
 			Expect(console).To(
 				ContainMessageWithLevel(
@@ -1478,7 +1478,7 @@ include::../../test/includes/chapter-a.adoc[]
 					},
 				},
 			}
-			Expect(ParseDraftDocument(source)).To(Equal(expected))
+			Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 		})
 
 		Context("permutations", func() {
@@ -1522,7 +1522,7 @@ include::../../test/includes/chapter-a.adoc[]
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("all tagged regions", func() {
@@ -1553,7 +1553,7 @@ include::../../test/includes/chapter-a.adoc[]
 						types.BlankLine{},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("all the lines outside and inside of tagged regions", func() {
@@ -1595,7 +1595,7 @@ include::../../test/includes/chapter-a.adoc[]
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("regions tagged doc, but not nested regions tagged content", func() {
@@ -1615,7 +1615,7 @@ include::../../test/includes/chapter-a.adoc[]
 						types.BlankLine{},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("all tagged regions, but excludes any regions tagged content", func() {
@@ -1635,7 +1635,7 @@ include::../../test/includes/chapter-a.adoc[]
 						types.BlankLine{},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("all tagged regions, but excludes any regions tagged content", func() {
@@ -1666,7 +1666,7 @@ include::../../test/includes/chapter-a.adoc[]
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("**;!* — selects only the regions of the document outside of tags", func() {
@@ -1686,7 +1686,7 @@ include::../../test/includes/chapter-a.adoc[]
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 		})
 	})
@@ -1712,7 +1712,7 @@ include::../../test/includes/chapter-a.adoc[]
 					},
 				},
 			}
-			Expect(ParseDraftDocument(source)).To(Equal(expected))
+			Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			// verify error in logs
 			Expect(console).To(
 				ContainMessageWithLevel(
@@ -1741,7 +1741,7 @@ include::../../test/includes/chapter-a.adoc[]
 					},
 				},
 			}
-			Expect(ParseDraftDocument(source)).To(Equal(expected))
+			Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			// verify error in logs
 			Expect(console).To(
 				ContainMessageWithLevel(
@@ -1778,7 +1778,7 @@ include::../../test/includes/unknown.adoc[leveloffset=+1]
 					},
 				},
 			}
-			Expect(ParseDraftDocument(source)).To(Equal(expected))
+			Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			// verify error in logs
 			Expect(console).To(
 				ContainMessageWithLevel(
@@ -1940,7 +1940,7 @@ include::{includedir}/grandchild-include.adoc[]
 					},
 				},
 			}
-			Expect(ParseDraftDocument(source)).To(Equal(expected))
+			Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 		})
 	})
 
@@ -2003,7 +2003,7 @@ include::../../test/includes/hello_world.go.txt[]
 					},
 				},
 			}
-			Expect(ParseDraftDocument(source)).To(Equal(expected))
+			Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 		})
 
 		It("include go file with a simple range", func() {
@@ -2031,7 +2031,7 @@ include::../../test/includes/hello_world.go.txt[lines=1]
 					},
 				},
 			}
-			Expect(ParseDraftDocument(source)).To(Equal(expected))
+			Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 		})
 	})
 })
@@ -2191,7 +2191,7 @@ var _ = Describe("file inclusions - final document", func() {
 				},
 			},
 		}
-		Expect(ParseDocument(source)).To(Equal(expected))
+		Expect(ParseDocument(source)).To(MatchDocument(expected))
 	})
 
 	It("should include child and grandchild content with relative then absolute level offset", func() {
@@ -2347,7 +2347,7 @@ var _ = Describe("file inclusions - final document", func() {
 				},
 			},
 		}
-		Expect(ParseDocument(source)).To(Equal(expected))
+		Expect(ParseDocument(source)).To(MatchDocument(expected))
 	})
 
 })

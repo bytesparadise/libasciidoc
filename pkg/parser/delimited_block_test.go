@@ -127,7 +127,7 @@ var _ = Describe("delimited blocks - draft", func() {
 					},
 				},
 			}
-			Expect(ParseDraftDocument(source)).To(Equal(expected))
+			Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 		})
 
 		It("fenced block after a paragraph", func() {
@@ -161,7 +161,7 @@ var _ = Describe("delimited blocks - draft", func() {
 					},
 				},
 			}
-			Expect(ParseDraftDocument(source)).To(Equal(expected))
+			Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 		})
 
 		It("fenced block with unclosed delimiter", func() {
@@ -443,7 +443,7 @@ then a normal paragraph.`
 					},
 				},
 			}
-			Expect(ParseDraftDocument(source)).To(Equal(expected))
+			Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 		})
 
 		It("listing block just after a paragraph", func() {
@@ -479,7 +479,7 @@ some listing code
 					},
 				},
 			}
-			Expect(ParseDraftDocument(source)).To(Equal(expected))
+			Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 		})
 
 		It("listing block with unclosed delimiter", func() {
@@ -747,7 +747,7 @@ paragraphs
 					},
 				},
 			}
-			Expect(ParseDraftDocument(source)).To(Equal(expected))
+			Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 		})
 	})
 
@@ -1591,7 +1591,7 @@ var _ = Describe("delimited blocks - final document", func() {
 					},
 				},
 			}
-			Expect(ParseDocument(source)).To(Equal(expected))
+			Expect(ParseDocument(source)).To(MatchDocument(expected))
 		})
 
 		It("fenced block with no line", func() {
@@ -1609,7 +1609,7 @@ var _ = Describe("delimited blocks - final document", func() {
 					},
 				},
 			}
-			Expect(ParseDocument(source)).To(Equal(expected))
+			Expect(ParseDocument(source)).To(MatchDocument(expected))
 		})
 
 		It("fenced block with multiple lines alone", func() {
@@ -1654,7 +1654,7 @@ var _ = Describe("delimited blocks - final document", func() {
 					},
 				},
 			}
-			Expect(ParseDocument(source)).To(Equal(expected))
+			Expect(ParseDocument(source)).To(MatchDocument(expected))
 		})
 
 		It("fenced block with multiple lines then a paragraph", func() {
@@ -1707,7 +1707,7 @@ var _ = Describe("delimited blocks - final document", func() {
 					},
 				},
 			}
-			Expect(ParseDocument(source)).To(Equal(expected))
+			Expect(ParseDocument(source)).To(MatchDocument(expected))
 		})
 
 		It("fenced block after a paragraph", func() {
@@ -1745,7 +1745,7 @@ var _ = Describe("delimited blocks - final document", func() {
 					},
 				},
 			}
-			Expect(ParseDocument(source)).To(Equal(expected))
+			Expect(ParseDocument(source)).To(MatchDocument(expected))
 		})
 
 		It("fenced block with unclosed delimiter", func() {
@@ -1774,7 +1774,7 @@ var _ = Describe("delimited blocks - final document", func() {
 					},
 				},
 			}
-			Expect(ParseDocument(source)).To(Equal(expected))
+			Expect(ParseDocument(source)).To(MatchDocument(expected))
 		})
 
 		It("fenced block with external link inside", func() {
@@ -1828,7 +1828,7 @@ var _ = Describe("delimited blocks - final document", func() {
 					},
 				},
 			}
-			Expect(ParseDocument(source)).To(Equal(expected))
+			Expect(ParseDocument(source)).To(MatchDocument(expected))
 		})
 	})
 
@@ -1862,7 +1862,7 @@ some listing code
 					},
 				},
 			}
-			Expect(ParseDocument(source)).To(Equal(expected))
+			Expect(ParseDocument(source)).To(MatchDocument(expected))
 		})
 
 		It("listing block with no line", func() {
@@ -1881,7 +1881,7 @@ some listing code
 					},
 				},
 			}
-			Expect(ParseDocument(source)).To(Equal(expected))
+			Expect(ParseDocument(source)).To(MatchDocument(expected))
 		})
 
 		It("listing block with multiple lines alone", func() {
@@ -1931,7 +1931,7 @@ in the middle
 					},
 				},
 			}
-			Expect(ParseDocument(source)).To(Equal(expected))
+			Expect(ParseDocument(source)).To(MatchDocument(expected))
 		})
 
 		It("listing block with unrendered list", func() {
@@ -1974,7 +1974,7 @@ in the middle
 					},
 				},
 			}
-			Expect(ParseDocument(source)).To(Equal(expected))
+			Expect(ParseDocument(source)).To(MatchDocument(expected))
 		})
 
 		It("listing block with multiple lines then a paragraph", func() {
@@ -2034,7 +2034,7 @@ then a normal paragraph.`
 					},
 				},
 			}
-			Expect(ParseDocument(source)).To(Equal(expected))
+			Expect(ParseDocument(source)).To(MatchDocument(expected))
 		})
 
 		It("listing block just after a paragraph", func() {
@@ -2074,7 +2074,7 @@ some listing code
 					},
 				},
 			}
-			Expect(ParseDocument(source)).To(Equal(expected))
+			Expect(ParseDocument(source)).To(MatchDocument(expected))
 		})
 
 		It("listing block with unclosed delimiter", func() {
@@ -2104,7 +2104,7 @@ End of file here.`
 					},
 				},
 			}
-			Expect(ParseDocument(source)).To(Equal(expected))
+			Expect(ParseDocument(source)).To(MatchDocument(expected))
 		})
 	})
 
@@ -2138,7 +2138,7 @@ some listing code
 					},
 				},
 			}
-			Expect(ParseDocument(source)).To(Equal(expected))
+			Expect(ParseDocument(source)).To(MatchDocument(expected))
 		})
 
 		It("example block with single line starting with a dot", func() {
@@ -2169,7 +2169,7 @@ some listing code
 					},
 				},
 			}
-			Expect(ParseDocument(source)).To(Equal(expected))
+			Expect(ParseDocument(source)).To(MatchDocument(expected))
 		})
 
 		It("example block with multiple lines", func() {
@@ -2246,7 +2246,7 @@ with *bold content*
 					},
 				},
 			}
-			Expect(ParseDocument(source)).To(Equal(expected))
+			Expect(ParseDocument(source)).To(MatchDocument(expected))
 		})
 
 		It("example block with unclosed delimiter", func() {
@@ -2276,7 +2276,7 @@ End of file here`
 					},
 				},
 			}
-			Expect(ParseDocument(source)).To(Equal(expected))
+			Expect(ParseDocument(source)).To(MatchDocument(expected))
 		})
 
 		It("example block with title", func() {
@@ -2310,7 +2310,7 @@ foo
 					},
 				},
 			}
-			Expect(ParseDocument(source)).To(Equal(expected))
+			Expect(ParseDocument(source)).To(MatchDocument(expected))
 		})
 
 		It("example block starting delimiter only", func() {
@@ -2328,7 +2328,7 @@ foo
 					},
 				},
 			}
-			Expect(ParseDocument(source)).To(Equal(expected))
+			Expect(ParseDocument(source)).To(MatchDocument(expected))
 		})
 	})
 
@@ -2365,7 +2365,7 @@ foo
 					},
 				},
 			}
-			Expect(ParseDocument(source)).To(Equal(expected))
+			Expect(ParseDocument(source)).To(MatchDocument(expected))
 
 		})
 
@@ -2415,7 +2415,7 @@ paragraphs
 					},
 				},
 			}
-			Expect(ParseDocument(source)).To(Equal(expected))
+			Expect(ParseDocument(source)).To(MatchDocument(expected))
 		})
 	})
 
@@ -2465,7 +2465,7 @@ ____`
 					},
 				},
 			}
-			Expect(ParseDocument(source)).To(Equal(expected))
+			Expect(ParseDocument(source)).To(MatchDocument(expected))
 		})
 
 		It("multi-line quote with author only", func() {
@@ -2552,7 +2552,7 @@ ____
 					},
 				},
 			}
-			Expect(ParseDocument(source)).To(Equal(expected))
+			Expect(ParseDocument(source)).To(MatchDocument(expected))
 		})
 
 		It("single-line quote with title only", func() {
@@ -2588,7 +2588,7 @@ ____
 					},
 				},
 			}
-			Expect(ParseDocument(source)).To(Equal(expected))
+			Expect(ParseDocument(source)).To(MatchDocument(expected))
 		})
 
 		It("multi-line quote with rendered lists and block and without author and title", func() {
@@ -2678,7 +2678,7 @@ ____`
 					},
 				},
 			}
-			Expect(ParseDocument(source)).To(Equal(expected))
+			Expect(ParseDocument(source)).To(MatchDocument(expected))
 		})
 
 		It("multi-line quote with rendered list and without author and title", func() {
@@ -2767,7 +2767,7 @@ ____`
 					},
 				},
 			}
-			Expect(ParseDocument(source)).To(Equal(expected))
+			Expect(ParseDocument(source)).To(MatchDocument(expected))
 		})
 
 		It("empty quote without author and title", func() {
@@ -2789,7 +2789,7 @@ ____`
 					},
 				},
 			}
-			Expect(ParseDocument(source)).To(Equal(expected))
+			Expect(ParseDocument(source)).To(MatchDocument(expected))
 		})
 
 		It("unclosed quote without author and title", func() {
@@ -2823,7 +2823,7 @@ foo
 					},
 				},
 			}
-			Expect(ParseDocument(source)).To(Equal(expected))
+			Expect(ParseDocument(source)).To(MatchDocument(expected))
 		})
 	})
 
@@ -2873,7 +2873,7 @@ ____`
 					},
 				},
 			}
-			Expect(ParseDocument(source)).To(Equal(expected))
+			Expect(ParseDocument(source)).To(MatchDocument(expected))
 		})
 
 		It("multi-line verse with unrendered list and author only", func() {
@@ -2921,7 +2921,7 @@ ____
 					},
 				},
 			}
-			Expect(ParseDocument(source)).To(Equal(expected))
+			Expect(ParseDocument(source)).To(MatchDocument(expected))
 		})
 
 		It("multi-line verse with title only", func() {
@@ -2957,7 +2957,7 @@ ____
 					},
 				},
 			}
-			Expect(ParseDocument(source)).To(Equal(expected))
+			Expect(ParseDocument(source)).To(MatchDocument(expected))
 		})
 
 		It("multi-line verse with unrendered lists and block without author and title", func() {
@@ -3015,7 +3015,7 @@ ____`
 					},
 				},
 			}
-			Expect(ParseDocument(source)).To(Equal(expected))
+			Expect(ParseDocument(source)).To(MatchDocument(expected))
 		})
 
 		It("multi-line verse with unrendered list without author and title", func() {
@@ -3064,7 +3064,7 @@ ____`
 					},
 				},
 			}
-			Expect(ParseDocument(source)).To(Equal(expected))
+			Expect(ParseDocument(source)).To(MatchDocument(expected))
 		})
 
 		It("empty verse without author and title", func() {
@@ -3086,7 +3086,7 @@ ____`
 					},
 				},
 			}
-			Expect(ParseDocument(source)).To(Equal(expected))
+			Expect(ParseDocument(source)).To(MatchDocument(expected))
 		})
 
 		It("unclosed verse without author and title", func() {
@@ -3120,7 +3120,7 @@ foo
 					},
 				},
 			}
-			Expect(ParseDocument(source)).To(Equal(expected))
+			Expect(ParseDocument(source)).To(MatchDocument(expected))
 		})
 	})
 
@@ -3183,7 +3183,7 @@ end
 					},
 				},
 			}
-			Expect(ParseDocument(source)).To(Equal(expected))
+			Expect(ParseDocument(source)).To(MatchDocument(expected))
 		})
 
 		It("with title, source and languages attributes", func() {
@@ -3246,7 +3246,7 @@ end
 					},
 				},
 			}
-			Expect(ParseDocument(source)).To(Equal(expected))
+			Expect(ParseDocument(source)).To(MatchDocument(expected))
 		})
 
 		It("with id, title, source and languages attributes", func() {
@@ -3312,7 +3312,7 @@ end
 					},
 				},
 			}
-			Expect(ParseDocument(source)).To(Equal(expected))
+			Expect(ParseDocument(source)).To(MatchDocument(expected))
 		})
 	})
 
@@ -3357,7 +3357,7 @@ some *verse* content
 					},
 				},
 			}
-			Expect(ParseDocument(source)).To(Equal(expected))
+			Expect(ParseDocument(source)).To(MatchDocument(expected))
 		})
 
 		It("sidebar block with title, paragraph and sourcecode block", func() {
@@ -3427,7 +3427,7 @@ bar
 					},
 				},
 			}
-			Expect(ParseDocument(source)).To(Equal(expected))
+			Expect(ParseDocument(source)).To(MatchDocument(expected))
 		})
 	})
 })
