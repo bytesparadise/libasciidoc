@@ -107,7 +107,7 @@ func renderElement(ctx renderer.Context, element interface{}) ([]byte, error) {
 	case types.ImageBlock:
 		return renderImageBlock(ctx, e)
 	case types.InlineImage:
-		return renderInlineImage(ctx, e)
+		return renderInlineImage(e)
 	case types.DelimitedBlock:
 		return renderDelimitedBlock(ctx, e)
 	case types.Table:
@@ -119,7 +119,7 @@ func renderElement(ctx renderer.Context, element interface{}) ([]byte, error) {
 	case types.StringElement:
 		return renderStringElement(ctx, e)
 	case types.FootnoteReference:
-		return renderFootnoteReference(ctx, e)
+		return renderFootnoteReference(e)
 	case types.LineBreak:
 		return renderLineBreak()
 	case types.UserMacro:
@@ -127,7 +127,7 @@ func renderElement(ctx renderer.Context, element interface{}) ([]byte, error) {
 	case types.IndexTerm:
 		return renderIndexTerm(ctx, e)
 	case types.ConcealedIndexTerm:
-		return renderConcealedIndexTerm(ctx, e)
+		return renderConcealedIndexTerm(e)
 	default:
 		return nil, errors.Errorf("unsupported type of element: %T", element)
 	}
@@ -158,7 +158,7 @@ func renderPlainText(ctx renderer.Context, element interface{}) ([]byte, error) 
 		return renderLines(ctx, element.Lines, PlainText())
 	case types.FootnoteReference:
 		// footnotes are rendered in HTML so they can appear as such in the table of contents
-		return renderFootnoteReferencePlainText(ctx, element)
+		return renderFootnoteReferencePlainText(element)
 	default:
 		return nil, errors.Errorf("unable to render plain string for element of type '%T'", element)
 	}

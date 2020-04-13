@@ -88,7 +88,7 @@ func renderTableOfContentsSections(ctx renderer.Context, sections []types.ToCSec
 		return template.HTML(""), errors.Wrap(err, "failed to render document ToC")
 	}
 	log.Debugf("retrieved sections for ToC: %+v", sections)
-	return template.HTML(resultBuf.String()), nil
+	return template.HTML(resultBuf.String()), nil //nolint: gosec
 }
 
 // NewTableOfContents initializes a TableOfContents from the sections

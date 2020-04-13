@@ -163,8 +163,7 @@ var _ = Describe("rearrange sections", func() {
 				},
 			},
 		}
-		result, err := rearrangeSections(actual)
-		Expect(err).ToNot(HaveOccurred())
+		result := rearrangeSections(actual)
 		Expect(result).To(Equal(expected))
 	})
 
@@ -323,8 +322,7 @@ var _ = Describe("rearrange sections", func() {
 				},
 			},
 		}
-		result, err := rearrangeSections(actual)
-		Expect(err).ToNot(HaveOccurred())
+		result := rearrangeSections(actual)
 		Expect(result).To(Equal(expected))
 	})
 
@@ -483,8 +481,7 @@ var _ = Describe("rearrange sections", func() {
 				},
 			},
 		}
-		result, err := rearrangeSections(actual)
-		Expect(err).ToNot(HaveOccurred())
+		result := rearrangeSections(actual)
 		Expect(result).To(Equal(expected))
 	})
 
