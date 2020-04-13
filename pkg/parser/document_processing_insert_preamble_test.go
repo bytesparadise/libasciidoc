@@ -26,8 +26,7 @@ var _ = Describe("preambles", func() {
 				"_section_a": sectionATitle,
 				"_section_b": sectionBTitle,
 			},
-			Footnotes:          types.Footnotes{},
-			FootnoteReferences: types.FootnoteReferences{},
+			Footnotes: []types.Footnote{},
 			Elements: []interface{}{
 				types.Paragraph{
 					Attributes: types.ElementAttributes{},
@@ -56,8 +55,7 @@ var _ = Describe("preambles", func() {
 				"_section_a": sectionATitle,
 				"_section_b": sectionBTitle,
 			},
-			Footnotes:          types.Footnotes{},
-			FootnoteReferences: types.FootnoteReferences{},
+			Footnotes: []types.Footnote{},
 			Elements: []interface{}{
 				types.Paragraph{
 					Attributes: types.ElementAttributes{},
@@ -90,8 +88,7 @@ var _ = Describe("preambles", func() {
 				"_section_a": sectionATitle,
 				"_section_b": sectionBTitle,
 			},
-			Footnotes:          types.Footnotes{},
-			FootnoteReferences: types.FootnoteReferences{},
+			Footnotes: []types.Footnote{},
 			Elements: []interface{}{
 				types.Paragraph{
 					Attributes: types.ElementAttributes{},
@@ -129,8 +126,7 @@ var _ = Describe("preambles", func() {
 				"_section_a": sectionATitle,
 				"_section_b": sectionBTitle,
 			},
-			Footnotes:          types.Footnotes{},
-			FootnoteReferences: types.FootnoteReferences{},
+			Footnotes: []types.Footnote{},
 			Elements: []interface{}{
 				types.Preamble{
 					Elements: []interface{}{
@@ -176,8 +172,7 @@ var _ = Describe("preambles", func() {
 				"_section_a": sectionATitle,
 				"_section_b": sectionBTitle,
 			},
-			Footnotes:          types.Footnotes{},
-			FootnoteReferences: types.FootnoteReferences{},
+			Footnotes: []types.Footnote{},
 			Elements: []interface{}{
 				types.Paragraph{
 					Attributes: types.ElementAttributes{},
@@ -224,8 +219,7 @@ var _ = Describe("preambles", func() {
 				"_section_a": sectionATitle,
 				"_section_b": sectionBTitle,
 			},
-			Footnotes:          types.Footnotes{},
-			FootnoteReferences: types.FootnoteReferences{},
+			Footnotes: []types.Footnote{},
 			Elements: []interface{}{
 				types.Preamble{
 					Elements: []interface{}{

@@ -992,10 +992,9 @@ var _ = Describe("labeled lists - document", func() {
 Item 1 description
 on 2 lines`
 		expected := types.Document{
-			Attributes:         types.DocumentAttributes{},
-			ElementReferences:  types.ElementReferences{},
-			Footnotes:          types.Footnotes{},
-			FootnoteReferences: types.FootnoteReferences{},
+			Attributes:        types.DocumentAttributes{},
+			ElementReferences: types.ElementReferences{},
+			Footnotes:         []types.Footnote{},
 			Elements: []interface{}{
 				types.LabeledList{
 					Attributes: types.ElementAttributes{},
@@ -1033,10 +1032,9 @@ on 2 lines`
 	It("labeled list with a single term and no description", func() {
 		source := `Item1::`
 		expected := types.Document{
-			Attributes:         types.DocumentAttributes{},
-			ElementReferences:  types.ElementReferences{},
-			Footnotes:          types.Footnotes{},
-			FootnoteReferences: types.FootnoteReferences{},
+			Attributes:        types.DocumentAttributes{},
+			ElementReferences: types.ElementReferences{},
+			Footnotes:         []types.Footnote{},
 			Elements: []interface{}{
 				types.LabeledList{
 					Attributes: types.ElementAttributes{},
@@ -1063,10 +1061,9 @@ on 2 lines`
 		source := "`foo()`::\n" +
 			`This function is _untyped_.`
 		expected := types.Document{
-			Attributes:         types.DocumentAttributes{},
-			ElementReferences:  types.ElementReferences{},
-			Footnotes:          types.Footnotes{},
-			FootnoteReferences: types.FootnoteReferences{},
+			Attributes:        types.DocumentAttributes{},
+			ElementReferences: types.ElementReferences{},
+			Footnotes:         []types.Footnote{},
 			Elements: []interface{}{
 				types.LabeledList{
 					Attributes: types.ElementAttributes{},
@@ -1118,10 +1115,9 @@ on 2 lines`
 		source := "((`foo`))::\n" +
 			`This function is _untyped_.`
 		expected := types.Document{
-			Attributes:         types.DocumentAttributes{},
-			ElementReferences:  types.ElementReferences{},
-			Footnotes:          types.Footnotes{},
-			FootnoteReferences: types.FootnoteReferences{},
+			Attributes:        types.DocumentAttributes{},
+			ElementReferences: types.ElementReferences{},
+			Footnotes:         []types.Footnote{},
 			Elements: []interface{}{
 				types.LabeledList{
 					Attributes: types.ElementAttributes{},
@@ -1178,10 +1174,9 @@ on 2 lines`
 		source := "(((foo,bar)))::\n" +
 			`This function is _untyped_.`
 		expected := types.Document{
-			Attributes:         types.DocumentAttributes{},
-			ElementReferences:  types.ElementReferences{},
-			Footnotes:          types.Footnotes{},
-			FootnoteReferences: types.FootnoteReferences{},
+			Attributes:        types.DocumentAttributes{},
+			ElementReferences: types.ElementReferences{},
+			Footnotes:         []types.Footnote{},
 			Elements: []interface{}{
 				types.LabeledList{
 					Attributes: types.ElementAttributes{},
@@ -1230,10 +1225,9 @@ on 2 lines`
 		source := `[horizontal]
 Item1:: foo`
 		expected := types.Document{
-			Attributes:         types.DocumentAttributes{},
-			ElementReferences:  types.ElementReferences{},
-			Footnotes:          types.Footnotes{},
-			FootnoteReferences: types.FootnoteReferences{},
+			Attributes:        types.DocumentAttributes{},
+			ElementReferences: types.ElementReferences{},
+			Footnotes:         []types.Footnote{},
 			Elements: []interface{}{
 				types.LabeledList{
 					Attributes: types.ElementAttributes{
@@ -1271,10 +1265,9 @@ Item1:: foo`
 		source := `Item1::
 			`
 		expected := types.Document{
-			Attributes:         types.DocumentAttributes{},
-			ElementReferences:  types.ElementReferences{},
-			Footnotes:          types.Footnotes{},
-			FootnoteReferences: types.FootnoteReferences{},
+			Attributes:        types.DocumentAttributes{},
+			ElementReferences: types.ElementReferences{},
+			Footnotes:         []types.Footnote{},
 			Elements: []interface{}{
 				types.LabeledList{
 					Attributes: types.ElementAttributes{},
@@ -1305,10 +1298,9 @@ Item 2 description
 Item 3:: 
 Item 3 description`
 		expected := types.Document{
-			Attributes:         types.DocumentAttributes{},
-			ElementReferences:  types.ElementReferences{},
-			Footnotes:          types.Footnotes{},
-			FootnoteReferences: types.FootnoteReferences{},
+			Attributes:        types.DocumentAttributes{},
+			ElementReferences: types.ElementReferences{},
+			Footnotes:         []types.Footnote{},
 			Elements: []interface{}{
 				types.LabeledList{
 					Attributes: types.ElementAttributes{},
@@ -1388,10 +1380,9 @@ Item 2 description
 Item 3::::
 Item 3 description`
 		expected := types.Document{
-			Attributes:         types.DocumentAttributes{},
-			ElementReferences:  types.ElementReferences{},
-			Footnotes:          types.Footnotes{},
-			FootnoteReferences: types.FootnoteReferences{},
+			Attributes:        types.DocumentAttributes{},
+			ElementReferences: types.ElementReferences{},
+			Footnotes:         []types.Footnote{},
 			Elements: []interface{}{
 				types.LabeledList{
 					Attributes: types.ElementAttributes{},
@@ -1479,10 +1470,9 @@ Item 3 description`
 * bar
 Item with description:: something simple`
 		expected := types.Document{
-			Attributes:         types.DocumentAttributes{},
-			ElementReferences:  types.ElementReferences{},
-			Footnotes:          types.Footnotes{},
-			FootnoteReferences: types.FootnoteReferences{},
+			Attributes:        types.DocumentAttributes{},
+			ElementReferences: types.ElementReferences{},
+			Footnotes:         []types.Footnote{},
 			Elements: []interface{}{
 				types.LabeledList{
 					Attributes: types.ElementAttributes{},
@@ -1570,10 +1560,9 @@ bar
 
 a normal paragraph.`
 		expected := types.Document{
-			Attributes:         types.DocumentAttributes{},
-			ElementReferences:  types.ElementReferences{},
-			Footnotes:          types.Footnotes{},
-			FootnoteReferences: types.FootnoteReferences{},
+			Attributes:        types.DocumentAttributes{},
+			ElementReferences: types.ElementReferences{},
+			Footnotes:         []types.Footnote{},
 			Elements: []interface{}{
 				types.LabeledList{
 					Attributes: types.ElementAttributes{},
@@ -1628,10 +1617,9 @@ Item 2:: something simple
 another fenced block
 ----`
 		expected := types.Document{
-			Attributes:         types.DocumentAttributes{},
-			ElementReferences:  types.ElementReferences{},
-			Footnotes:          types.Footnotes{},
-			FootnoteReferences: types.FootnoteReferences{},
+			Attributes:        types.DocumentAttributes{},
+			ElementReferences: types.ElementReferences{},
+			Footnotes:         []types.Footnote{},
 			Elements: []interface{}{
 				types.LabeledList{
 					Attributes: types.ElementAttributes{},
@@ -1718,10 +1706,9 @@ Item 2:: something simple
 another fenced block
 ----`
 		expected := types.Document{
-			Attributes:         types.DocumentAttributes{},
-			ElementReferences:  types.ElementReferences{},
-			Footnotes:          types.Footnotes{},
-			FootnoteReferences: types.FootnoteReferences{},
+			Attributes:        types.DocumentAttributes{},
+			ElementReferences: types.ElementReferences{},
+			Footnotes:         []types.Footnote{},
 			Elements: []interface{}{
 				types.LabeledList{
 					Attributes: types.ElementAttributes{},
@@ -1805,10 +1792,9 @@ another fenced block
 		source := `Labeled item::
 - unordered item`
 		expected := types.Document{
-			Attributes:         types.DocumentAttributes{},
-			ElementReferences:  types.ElementReferences{},
-			Footnotes:          types.Footnotes{},
-			FootnoteReferences: types.FootnoteReferences{},
+			Attributes:        types.DocumentAttributes{},
+			ElementReferences: types.ElementReferences{},
+			Footnotes:         []types.Footnote{},
 			Elements: []interface{}{
 				types.LabeledList{
 					Attributes: types.ElementAttributes{},
@@ -1857,10 +1843,9 @@ another fenced block
 first term:: definition of the first term
 second term:: definition of the second term`
 		expected := types.Document{
-			Attributes:         types.DocumentAttributes{},
-			ElementReferences:  types.ElementReferences{},
-			Footnotes:          types.Footnotes{},
-			FootnoteReferences: types.FootnoteReferences{},
+			Attributes:        types.DocumentAttributes{},
+			ElementReferences: types.ElementReferences{},
+			Footnotes:         []types.Footnote{},
 			Elements: []interface{}{
 				types.LabeledList{
 					Attributes: types.ElementAttributes{
@@ -1923,10 +1908,9 @@ level 2::: description 2
 level 3:::: description 3
 level 1:: description 1`
 		expected := types.Document{
-			Attributes:         types.DocumentAttributes{},
-			ElementReferences:  types.ElementReferences{},
-			Footnotes:          types.Footnotes{},
-			FootnoteReferences: types.FootnoteReferences{},
+			Attributes:        types.DocumentAttributes{},
+			ElementReferences: types.ElementReferences{},
+			Footnotes:         []types.Footnote{},
 			Elements: []interface{}{
 				types.LabeledList{
 					Attributes: types.ElementAttributes{
@@ -2041,10 +2025,9 @@ level 2::: description 2
 level 3:::: description 3
 level 2::: description 2`
 		expected := types.Document{
-			Attributes:         types.DocumentAttributes{},
-			ElementReferences:  types.ElementReferences{},
-			Footnotes:          types.Footnotes{},
-			FootnoteReferences: types.FootnoteReferences{},
+			Attributes:        types.DocumentAttributes{},
+			ElementReferences: types.ElementReferences{},
+			Footnotes:         []types.Footnote{},
 			Elements: []interface{}{
 				types.LabeledList{
 					Attributes: types.ElementAttributes{
@@ -2155,10 +2138,9 @@ level 2::: description 2`
 	It("labeled list item with predefined attribute", func() {
 		source := `level 1:: {amp}`
 		expected := types.Document{
-			Attributes:         types.DocumentAttributes{},
-			ElementReferences:  types.ElementReferences{},
-			Footnotes:          types.Footnotes{},
-			FootnoteReferences: types.FootnoteReferences{},
+			Attributes:        types.DocumentAttributes{},
+			ElementReferences: types.ElementReferences{},
+			Footnotes:         []types.Footnote{},
 			Elements: []interface{}{
 				types.LabeledList{
 					Attributes: types.ElementAttributes{},

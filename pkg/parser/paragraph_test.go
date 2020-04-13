@@ -135,9 +135,8 @@ a paragraph`
 				Attributes: types.DocumentAttributes{
 					types.AttrIDPrefix: "bar_",
 				},
-				ElementReferences:  types.ElementReferences{},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
+				ElementReferences: types.ElementReferences{},
+				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{
 					types.Paragraph{
 						Attributes: types.ElementAttributes{
@@ -157,10 +156,9 @@ a paragraph`
 		It("empty paragraph", func() {
 			source := `{blank}`
 			expected := types.Document{
-				Attributes:         types.DocumentAttributes{},
-				ElementReferences:  types.ElementReferences{},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
+				Attributes:        types.DocumentAttributes{},
+				ElementReferences: types.ElementReferences{},
+				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
@@ -699,10 +697,9 @@ image::foo.png[]`
 	It("paragraph with predefined attribute", func() {
 		source := "hello {plus} world"
 		expected := types.Document{
-			Attributes:         types.DocumentAttributes{},
-			ElementReferences:  types.ElementReferences{},
-			Footnotes:          types.Footnotes{},
-			FootnoteReferences: types.FootnoteReferences{},
+			Attributes:        types.DocumentAttributes{},
+			ElementReferences: types.ElementReferences{},
+			Footnotes:         []types.Footnote{},
 			Elements: []interface{}{
 				types.Paragraph{
 					Attributes: types.ElementAttributes{},

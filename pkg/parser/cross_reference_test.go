@@ -201,8 +201,7 @@ with some content linked to <<thetitle>>!`
 						},
 					},
 				},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
+				Footnotes: []types.Footnote{},
 				Elements: []interface{}{
 					types.Section{
 						Level: 1,
@@ -254,8 +253,7 @@ with some content linked to <<thetitle,a label to the title>>!`
 						},
 					},
 				},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
+				Footnotes: []types.Footnote{},
 				Elements: []interface{}{
 					types.Section{
 						Level: 1,
@@ -299,10 +297,9 @@ with some content linked to <<thetitle,a label to the title>>!`
 		It("external cross reference to other doc with plain text location and rich label", func() {
 			source := `some content linked to xref:another-doc.adoc[*another doc*]!`
 			expected := types.Document{
-				Attributes:         types.DocumentAttributes{},
-				ElementReferences:  types.ElementReferences{},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
+				Attributes:        types.DocumentAttributes{},
+				ElementReferences: types.ElementReferences{},
+				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
@@ -350,9 +347,8 @@ some content linked to xref:{foo}[another_doc()]!`
 				Attributes: types.DocumentAttributes{
 					"foo": "another-doc.adoc",
 				},
-				ElementReferences:  types.ElementReferences{},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
+				ElementReferences: types.ElementReferences{},
+				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},

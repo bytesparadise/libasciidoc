@@ -24,10 +24,9 @@ var _ = Describe("table of contents", func() {
 	It("should match", func() {
 		// given
 		actual := types.Document{
-			Attributes:         types.DocumentAttributes{},
-			ElementReferences:  types.ElementReferences{},
-			Footnotes:          types.Footnotes{},
-			FootnoteReferences: types.FootnoteReferences{},
+			Attributes:        types.DocumentAttributes{},
+			ElementReferences: types.ElementReferences{},
+			Footnotes:         []types.Footnote{},
 			Elements: []interface{}{
 				types.Section{
 					Attributes: types.ElementAttributes{

@@ -118,8 +118,8 @@ func renderElement(ctx renderer.Context, element interface{}) ([]byte, error) {
 		return renderLink(ctx, e)
 	case types.StringElement:
 		return renderStringElement(ctx, e)
-	case types.Footnote:
-		return renderFootnote(ctx, e)
+	case types.FootnoteReference:
+		return renderFootnoteReference(ctx, e)
 	case types.LineBreak:
 		return renderLineBreak()
 	case types.UserMacro:
@@ -156,9 +156,9 @@ func renderPlainText(ctx renderer.Context, element interface{}) ([]byte, error) 
 		return []byte(element.Content), nil
 	case types.Paragraph:
 		return renderLines(ctx, element.Lines, PlainText())
-	case types.Footnote:
+	case types.FootnoteReference:
 		// footnotes are rendered in HTML so they can appear as such in the table of contents
-		return renderFootnoteRefPlainText(ctx, element)
+		return renderFootnoteReferencePlainText(ctx, element)
 	default:
 		return nil, errors.Errorf("unable to render plain string for element of type '%T'", element)
 	}

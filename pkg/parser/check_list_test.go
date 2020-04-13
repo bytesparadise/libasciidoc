@@ -17,10 +17,9 @@ var _ = Describe("checked lists - document", func() {
 - [ ] not checked
 -     normal list item`
 		expected := types.Document{
-			Attributes:         types.DocumentAttributes{},
-			ElementReferences:  types.ElementReferences{},
-			Footnotes:          types.Footnotes{},
-			FootnoteReferences: types.FootnoteReferences{},
+			Attributes:        types.DocumentAttributes{},
+			ElementReferences: types.ElementReferences{},
+			Footnotes:         []types.Footnote{},
 			Elements: []interface{}{
 				types.UnorderedList{
 					Attributes: types.ElementAttributes{
@@ -120,10 +119,9 @@ var _ = Describe("checked lists - document", func() {
 ** [ ] not checked
 *     normal list item`
 		expected := types.Document{
-			Attributes:         types.DocumentAttributes{},
-			ElementReferences:  types.ElementReferences{},
-			Footnotes:          types.Footnotes{},
-			FootnoteReferences: types.FootnoteReferences{},
+			Attributes:        types.DocumentAttributes{},
+			ElementReferences: types.ElementReferences{},
+			Footnotes:         []types.Footnote{},
 			Elements: []interface{}{
 				types.UnorderedList{
 					Attributes: types.ElementAttributes{
@@ -247,10 +245,9 @@ var _ = Describe("checked lists - document", func() {
 ** another normal list item
 *     normal list item`
 		expected := types.Document{
-			Attributes:         types.DocumentAttributes{},
-			ElementReferences:  types.ElementReferences{},
-			Footnotes:          types.Footnotes{},
-			FootnoteReferences: types.FootnoteReferences{},
+			Attributes:        types.DocumentAttributes{},
+			ElementReferences: types.ElementReferences{},
+			Footnotes:         []types.Footnote{},
 			Elements: []interface{}{
 				types.UnorderedList{
 					Attributes: types.ElementAttributes{

@@ -20,20 +20,20 @@ var footnotesTmpl texttemplate.Template
 
 // initializes the templates
 func init() {
-	footnoteTmpl = newTextTemplate("footnote", `<sup class="{{ .Class }}"{{ if .Ref }} id="_footnote_{{ .Ref }}"{{ end }}>[<a id="_footnoteref_{{ renderIndex .ID }}" class="footnote" href="#_footnotedef_{{ renderIndex .ID }}" title="View footnote.">{{ renderIndex .ID }}</a>]</sup>`,
+	footnoteTmpl = newTextTemplate("footnote", `<sup class="footnote"{{ if .Ref }} id="_footnote_{{ .Ref }}"{{ end }}>[<a id="_footnoteref_{{ .ID }}" class="footnote" href="#_footnotedef_{{ .ID }}" title="View footnote.">{{ .ID }}</a>]</sup>`,
 		texttemplate.FuncMap{
 			"renderIndex": renderFootnoteIndex,
 		})
-	footnoterefTmpl = newTextTemplate("footnote ref", `<sup class="{{ .Class }}">[<a class="footnote" href="#_footnotedef_{{ renderIndex .ID }}" title="View footnote.">{{ renderIndex .ID }}</a>]</sup>`,
+	footnoterefTmpl = newTextTemplate("footnote ref", `<sup class="footnoteref">[<a class="footnote" href="#_footnotedef_{{ .ID }}" title="View footnote.">{{ .ID }}</a>]</sup>`,
 		texttemplate.FuncMap{
 			"renderIndex": renderFootnoteIndex,
 		})
-	footnoterefPlainTextTmpl = newTextTemplate("footnote ref", `<sup class="{{ .Class }}">[{{ renderIndex .ID }}]</sup>`,
+	footnoterefPlainTextTmpl = newTextTemplate("footnote ref", `<sup class="{{ .Class }}">[{{ .ID }}]</sup>`,
 		texttemplate.FuncMap{
 			"renderIndex": renderFootnoteIndex,
 		})
 
-	invalidFootnoteTmpl = newTextTemplate("invalid footnote", `<sup class="{{ .Class }} red" title="Unresolved footnote reference.">[{{ .Ref }}]</sup>`)
+	invalidFootnoteTmpl = newTextTemplate("invalid footnote", `<sup class="footnoteref red" title="Unresolved footnote reference.">[{{ .Ref }}]</sup>`)
 	footnotesTmpl = newTextTemplate("footnotes", `
 <div id="footnotes">
 <hr>{{ $ctx := .Context }}{{ with .Data }}{{ $footnotes := .Footnotes }}{{ range $index, $footnote := $footnotes }}
@@ -57,36 +57,28 @@ func renderFootnoteIndex(idx int) string {
 	return strconv.Itoa(idx + 1)
 }
 
-func renderFootnote(ctx renderer.Context, note types.Footnote) ([]byte, error) {
+func renderFootnoteReference(_ renderer.Context, note types.FootnoteReference) ([]byte, error) {
 	result := bytes.NewBuffer(nil)
-	ref := ""
-	noteRef, hasRef := ctx.FootnoteReferences[note.Ref]
-	if hasRef {
-		ref = note.Ref
-	}
-	if id, ok := ctx.Footnotes.IndexOf(note); ok {
-		// valid case for a footnte with content, with our without an explicit reference
+	if note.ID != types.InvalidFootnoteReference && !note.Duplicate {
+		// valid case for a footnote with content, with our without an explicit reference
 		err := footnoteTmpl.Execute(result, struct {
-			ID    int
-			Ref   string
-			Class string
+			ID  int
+			Ref string
 		}{
-			ID:    id,
-			Ref:   ref,
-			Class: "footnote",
+			ID:  note.ID,
+			Ref: note.Ref,
 		})
 		if err != nil {
 			return nil, errors.Wrapf(err, "unable to render footnote")
 		}
-	} else if hasRef {
+	} else if note.Duplicate {
+		// valid case for a footnote with content, with our without an explicit reference
 		err := footnoterefTmpl.Execute(result, struct {
-			ID    int
-			Ref   string
-			Class string
+			ID  int
+			Ref string
 		}{
-			ID:    noteRef.ID,
-			Ref:   ref,
-			Class: "footnoteref",
+			ID:  note.ID,
+			Ref: note.Ref,
 		})
 		if err != nil {
 			return nil, errors.Wrapf(err, "unable to render footnote")
@@ -94,11 +86,9 @@ func renderFootnote(ctx renderer.Context, note types.Footnote) ([]byte, error) {
 	} else {
 		// invalid footnote
 		err := invalidFootnoteTmpl.Execute(result, struct {
-			Ref   string
-			Class string
+			Ref string
 		}{
-			Ref:   note.Ref,
-			Class: "footnoteref",
+			Ref: note.Ref,
 		})
 		if err != nil {
 			return nil, errors.Wrapf(err, "unable to render missing footnote")
@@ -107,15 +97,15 @@ func renderFootnote(ctx renderer.Context, note types.Footnote) ([]byte, error) {
 	return result.Bytes(), nil
 }
 
-func renderFootnoteRefPlainText(ctx renderer.Context, note types.Footnote) ([]byte, error) {
+func renderFootnoteReferencePlainText(_ renderer.Context, note types.FootnoteReference) ([]byte, error) {
 	result := bytes.NewBuffer(nil)
-	if id, ok := ctx.Footnotes.IndexOf(note); ok {
+	if note.ID != types.InvalidFootnoteReference {
 		// valid case for a footnte with content, with our without an explicit reference
 		err := footnoterefPlainTextTmpl.Execute(result, struct {
 			ID    int
 			Class string
 		}{
-			ID:    id,
+			ID:    note.ID,
 			Class: "footnote",
 		})
 		if err != nil {
@@ -127,7 +117,7 @@ func renderFootnoteRefPlainText(ctx renderer.Context, note types.Footnote) ([]by
 	return result.Bytes(), nil
 }
 
-func renderFootnotes(ctx renderer.Context, notes types.Footnotes) ([]byte, error) {
+func renderFootnotes(ctx renderer.Context, notes []types.Footnote) ([]byte, error) {
 	// skip if there's no foot note in the doc
 	if len(notes) == 0 {
 		return []byte{}, nil
@@ -137,7 +127,7 @@ func renderFootnotes(ctx renderer.Context, notes types.Footnotes) ([]byte, error
 		ContextualPipeline{
 			Context: ctx,
 			Data: struct {
-				Footnotes types.Footnotes
+				Footnotes []types.Footnote
 			}{
 				Footnotes: notes,
 			},

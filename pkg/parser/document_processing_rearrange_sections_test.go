@@ -100,8 +100,6 @@ var _ = Describe("rearrange sections", func() {
 				"_section_a_a": sectionAaTitle,
 				"_section_b":   sectionBTitle,
 			},
-			Footnotes:          types.Footnotes{},
-			FootnoteReferences: types.FootnoteReferences{},
 			Elements: []interface{}{
 				types.Section{
 					Attributes: types.ElementAttributes{
@@ -262,8 +260,6 @@ var _ = Describe("rearrange sections", func() {
 				"_section_a_a": sectionAaTitle,
 				"_section_a_b": sectionBTitle,
 			},
-			Footnotes:          types.Footnotes{},
-			FootnoteReferences: types.FootnoteReferences{},
 			Elements: []interface{}{
 				types.Section{
 					Attributes: types.ElementAttributes{
@@ -424,8 +420,6 @@ var _ = Describe("rearrange sections", func() {
 				"_section_a_a": sectionAaTitle,
 				"_section_a_b": sectionBTitle,
 			},
-			Footnotes:          types.Footnotes{},
-			FootnoteReferences: types.FootnoteReferences{},
 			Elements: []interface{}{
 				types.Section{
 					Attributes: types.ElementAttributes{

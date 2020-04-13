@@ -22,9 +22,8 @@ foo
 				Attributes: types.DocumentAttributes{
 					types.AttrSyntaxHighlighter: "pygments",
 				},
-				ElementReferences:  types.ElementReferences{},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
+				ElementReferences: types.ElementReferences{},
+				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{
 					types.DelimitedBlock{
 						Attributes: types.ElementAttributes{
@@ -159,8 +158,7 @@ Preamble comes here
 					"_section_b":   titleSectionB,
 					"_section_c":   titleSectionC,
 				},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
+				Footnotes: []types.Footnote{},
 			}
 			Expect(ParseDocument(source)).To(MatchDocument(expected))
 		})
@@ -255,8 +253,7 @@ eve - analyzes an image to determine if it's a picture of a life form
 					"_name":     nameSectionTitle,
 					"_synopsis": synopisSectionTitle,
 				},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
+				Footnotes: []types.Footnote{},
 			}
 			Expect(
 				ParseDocument(source,

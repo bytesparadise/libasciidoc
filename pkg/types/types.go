@@ -9,6 +9,7 @@ import (
 	"strings"
 
 	"github.com/pkg/errors"
+	"github.com/sirupsen/logrus"
 	log "github.com/sirupsen/logrus"
 	yaml "gopkg.in/yaml.v2"
 )
@@ -80,11 +81,10 @@ blocks:
 
 // Document the top-level structure for a document
 type Document struct {
-	Attributes         DocumentAttributes
-	Elements           []interface{} // TODO: rename to `Blocks`?
-	ElementReferences  ElementReferences
-	Footnotes          Footnotes
-	FootnoteReferences FootnoteReferences
+	Attributes        DocumentAttributes
+	Elements          []interface{} // TODO: rename to `Blocks`?
+	ElementReferences ElementReferences
+	Footnotes         []Footnote
 }
 
 // Authors retrieves the document authors from the document header, or empty array if no author was found
@@ -467,9 +467,17 @@ func (s *Section) AddElement(e interface{}) {
 	s.Elements = append(s.Elements, e)
 }
 
-// Footnotes returns the footnotes found in all the lines of this paragraph
-func (s Section) Footnotes() (Footnotes, FootnoteReferences, error) {
-	return FindFootnotes(s.Title)
+var _ FootnotesContainer = Section{}
+
+// ReplaceFootnotes replaces the footnotes in the section title
+// with footnote references. The footnotes are stored in the given 'notes' param
+func (s Section) ReplaceFootnotes(notes *Footnotes) interface{} {
+	for i, element := range s.Title {
+		if note, ok := element.(Footnote); ok {
+			s.Title[i] = notes.Reference(note)
+		}
+	}
+	return s
 }
 
 // NewDocumentHeader initializes a new Section with level 0 which can have authors and a revision, among other attributes
@@ -1049,9 +1057,19 @@ func NewParagraph(lines []interface{}, attributes interface{}) (Paragraph, error
 	}, nil
 }
 
-// Footnotes returns the footnotes found in all the lines of this paragraph
-func (p Paragraph) Footnotes() (Footnotes, FootnoteReferences, error) {
-	return FindFootnotes(p.Lines)
+var _ FootnotesContainer = Paragraph{}
+
+// ReplaceFootnotes replaces the footnotes in the paragraph lines
+// with footnote references. The footnotes are stored in the given 'notes' param
+func (p Paragraph) ReplaceFootnotes(notes *Footnotes) interface{} {
+	for i, line := range p.Lines {
+		for j, element := range line {
+			if note, ok := element.(Footnote); ok {
+				p.Lines[i][j] = notes.Reference(note)
+			}
+		}
+	}
+	return p
 }
 
 // NewAdmonitionParagraph returns a new Paragraph with an extra admonition attribute
@@ -1247,16 +1265,10 @@ func NewImageAttributes(alt, width, height interface{}, otherattrs []interface{}
 // Footnotes
 // ------------------------------------------
 
-var footnoteSequence int
-
-// ResetFootnoteSequence resets the footnote sequence (for test purpose only)
-func ResetFootnoteSequence() {
-	footnoteSequence = 0
-}
-
 // Footnote a foot note, without or without explicit reference (an explicit reference is used to refer
 // multiple times to the same footnote across the document)
 type Footnote struct {
+	// ID is only set during document processing
 	ID int
 	// Ref the optional reference
 	Ref string
@@ -1266,23 +1278,94 @@ type Footnote struct {
 
 // NewFootnote returns a new Footnote with the given content
 func NewFootnote(ref string, elements interface{}) (Footnote, error) {
-	defer func() {
-		footnoteSequence++
-	}()
 	// footnote with content get an ID
 	if elements, ok := elements.([]interface{}); ok {
 		return Footnote{
-			ID:       footnoteSequence,
+			// ID is only set during document processing
 			Ref:      ref,
 			Elements: elements,
 		}, nil
 	} // footnote which are just references don't get an ID, so we don't increment the sequence
 	return Footnote{
-		ID:       -1,
 		Ref:      ref,
 		Elements: []interface{}{},
 	}, nil
+}
 
+// FootnoteReference a footnote reference. Replaces the actual footnote in the document,
+// and only contains a generated, sequential ID (which will be displayed)
+type FootnoteReference struct {
+	ID        int
+	Ref       string // the user-specified reference (optional)
+	Duplicate bool   // indicates if this reference targets an already-existing footnote // TODO: find a better name?
+}
+
+// FootnotesContainer interface for all types which may contain footnotes
+type FootnotesContainer interface {
+	ReplaceFootnotes(existing *Footnotes) interface{}
+}
+
+// Footnotes the footnotes of a document. Footnotes are "collected"
+// during the parsing phase and displayed at the bottom of the document
+// during the rendering.
+type Footnotes struct {
+	sequence *sequence
+	notes    []Footnote
+}
+
+// NewFootnotes initializes a new Footnotes
+func NewFootnotes() *Footnotes {
+	return &Footnotes{
+		sequence: &sequence{},
+		notes:    []Footnote{},
+	}
+}
+
+// IndexOf returns the index of the given note in the footnotes.
+func (f *Footnotes) indexOf(actual Footnote) (int, bool) {
+	for _, note := range f.notes {
+		if note.Ref == actual.Ref {
+			return note.ID, true
+		}
+	}
+	return -1, false
+}
+
+const (
+	// InvalidFootnoteReference a constant to mark the footnote reference as invalid
+	InvalidFootnoteReference int = -1
+)
+
+// Reference adds the given footnote and returns a FootnoteReference in replacement
+func (f *Footnotes) Reference(note Footnote) FootnoteReference {
+	ref := FootnoteReference{}
+	if len(note.Elements) > 0 {
+		note.ID = f.sequence.nextVal()
+		f.notes = append(f.notes, note)
+		ref.ID = note.ID
+	} else if id, found := f.indexOf(note); found {
+		ref.ID = id
+		ref.Duplicate = true
+	} else {
+		ref.ID = InvalidFootnoteReference
+		logrus.Errorf("no footnote with reference '%s'", note.Ref)
+	}
+	ref.Ref = note.Ref
+	return ref
+}
+
+// Notes returns all footnotes
+func (f *Footnotes) Notes() []Footnote {
+	return f.notes
+}
+
+type sequence struct {
+	counter int
+}
+
+func (s *sequence) nextVal() int {
+	s.counter++
+	return s.counter
 }
 
 // ------------------------------------------

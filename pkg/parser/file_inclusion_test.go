@@ -2064,8 +2064,7 @@ var _ = Describe("file inclusions - final document", func() {
 					},
 				},
 			},
-			Footnotes:          types.Footnotes{},
-			FootnoteReferences: types.FootnoteReferences{},
+			Footnotes: []types.Footnote{},
 			Elements: []interface{}{
 				types.Section{
 					Attributes: types.ElementAttributes{
@@ -2220,8 +2219,7 @@ var _ = Describe("file inclusions - final document", func() {
 					},
 				},
 			},
-			Footnotes:          types.Footnotes{},
-			FootnoteReferences: types.FootnoteReferences{},
+			Footnotes: []types.Footnote{},
 			Elements: []interface{}{
 				types.Section{
 					Attributes: types.ElementAttributes{

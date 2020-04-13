@@ -195,10 +195,9 @@ var _ = Describe("table of contents initialization", func() {
 
 		It("should return empty table of contents when doc has no section", func() {
 			actual := types.Document{
-				Attributes:         types.DocumentAttributes{},
-				ElementReferences:  types.ElementReferences{},
-				Footnotes:          types.Footnotes{},
-				FootnoteReferences: types.FootnoteReferences{},
+				Attributes:        types.DocumentAttributes{},
+				ElementReferences: types.ElementReferences{},
+				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{
 					types.Paragraph{
 						Attributes: types.ElementAttributes{},
@@ -236,7 +235,7 @@ var _ = Describe("table of contents initialization", func() {
 		}
 		sectionAaTitle := []interface{}{
 			types.StringElement{Content: "Section A.a "},
-			types.Footnote{
+			types.FootnoteReference{
 				ID:  1,
 				Ref: "foo",
 			},
@@ -255,14 +254,8 @@ var _ = Describe("table of contents initialization", func() {
 				"_section_a_a": sectionAaTitle,
 				"_section_b":   sectionBTitle,
 			},
-			Footnotes: types.Footnotes{
-				types.Footnote{
-					ID:  1,
-					Ref: "foo",
-				},
-			},
-			FootnoteReferences: types.FootnoteReferences{
-				"foo": types.Footnote{
+			Footnotes: []types.Footnote{
+				{
 					ID:  1,
 					Ref: "foo",
 				},

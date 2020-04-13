@@ -1,7 +1,6 @@
 package html5_test
 
 import (
-	"github.com/bytesparadise/libasciidoc/pkg/types"
 	. "github.com/bytesparadise/libasciidoc/testsupport"
 
 	. "github.com/onsi/ginkgo"
@@ -9,10 +8,6 @@ import (
 )
 
 var _ = Describe("footnotes", func() {
-
-	BeforeEach(func() {
-		types.ResetFootnoteSequence()
-	})
 
 	It("basic footnote in a paragraph", func() {
 		source := `foo footnote:[a note for foo]`
@@ -70,17 +65,17 @@ A bold statement!<sup class="footnote" id="_footnote_disclaimer">[<a id="_footno
 
 		source := `= title
 	
-a premable with a footnote:[foo]
+a preamble with a footnote:[foo]
 
 == section 1 footnote:[bar]
 
 a paragraph with another footnote:[baz]`
 
-		// differs from asciidoc in the footnotes at the end of the doc, and the section id (numbering)
+		// WARNING: differs from asciidoc in the order of footnotes in the doc and at the end of the doc, and the section id (numbering)
 		expected := `<div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>a premable with a <sup class="footnote">[<a id="_footnoteref_1" class="footnote" href="#_footnotedef_1" title="View footnote.">1</a>]</sup></p>
+<p>a preamble with a <sup class="footnote">[<a id="_footnoteref_1" class="footnote" href="#_footnotedef_1" title="View footnote.">1</a>]</sup></p>
 </div>
 </div>
 </div>
