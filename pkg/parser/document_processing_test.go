@@ -162,7 +162,7 @@ Preamble comes here
 				Footnotes:          types.Footnotes{},
 				FootnoteReferences: types.FootnoteReferences{},
 			}
-			Expect(ParseDocument(source)).To(Equal(expected))
+			Expect(ParseDocument(source)).To(MatchDocument(expected))
 		})
 	})
 

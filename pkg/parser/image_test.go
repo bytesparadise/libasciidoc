@@ -28,7 +28,7 @@ var _ = Describe("images", func() {
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("block image with empty alt and trailing spaces", func() {
@@ -45,7 +45,7 @@ var _ = Describe("images", func() {
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("block image with line return", func() {
@@ -64,7 +64,7 @@ var _ = Describe("images", func() {
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("block image with 1 empty blank line", func() {
@@ -84,7 +84,7 @@ var _ = Describe("images", func() {
 						types.BlankLine{},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("block image with 2 blank lines with spaces and tabs", func() {
@@ -103,7 +103,7 @@ var _ = Describe("images", func() {
 						types.BlankLine{},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("block image with alt", func() {
@@ -122,7 +122,7 @@ var _ = Describe("images", func() {
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("block image with dimensions and id link title meta", func() {
@@ -150,7 +150,7 @@ image::images/foo.png[the foo.png image, 600, 400]`
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("2 block images", func() {
@@ -176,7 +176,7 @@ image::images/bar.png[]`
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 		})
 
@@ -202,7 +202,7 @@ image::images/bar.png[]`
 						},
 					},
 				}
-				Expect(ParseDocument(source)).To(Equal(expected))
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
 			It("image block with implicit imagesdir document attribute", func() {
@@ -230,7 +230,7 @@ image::foo.png[]`
 						},
 					},
 				}
-				Expect(ParseDocument(source)).To(Equal(expected))
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
 			It("image block with document attribute in URL", func() {
@@ -258,7 +258,7 @@ image::{dir}/foo.png[]`
 						},
 					},
 				}
-				Expect(ParseDocument(source)).To(Equal(expected))
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
 			It("image block with implicit imagesdir", func() {
@@ -286,7 +286,7 @@ image::foo.png[]`
 						},
 					},
 				}
-				Expect(ParseDocument(source)).To(Equal(expected))
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
 			It("image block with explicit duplicate imagesdir document attribute", func() {
@@ -314,7 +314,7 @@ image::{imagesdir}/foo.png[]`
 						},
 					},
 				}
-				Expect(ParseDocument(source)).To(Equal(expected))
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 		})
 
@@ -339,7 +339,7 @@ image::{imagesdir}/foo.png[]`
 							},
 						},
 					}
-					Expect(ParseDraftDocument(source)).To(Equal(expected))
+					Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 				})
 			})
 
@@ -359,7 +359,7 @@ image::{imagesdir}/foo.png[]`
 							},
 						},
 					}
-					Expect(ParseDraftDocument(source)).To(Equal(expected))
+					Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 				})
 			})
 		})
@@ -390,7 +390,7 @@ image::{imagesdir}/foo.png[]`
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("inline image with empty alt and trailing spaces", func() {
@@ -417,7 +417,7 @@ image::{imagesdir}/foo.png[]`
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("inline image surrounded with test", func() {
@@ -447,7 +447,7 @@ image::{imagesdir}/foo.png[]`
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("inline image with alt alone", func() {
@@ -473,7 +473,7 @@ image::{imagesdir}/foo.png[]`
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("inline image with alt and width", func() {
@@ -500,7 +500,7 @@ image::{imagesdir}/foo.png[]`
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("inline image with alt, width and height", func() {
@@ -528,7 +528,7 @@ image::{imagesdir}/foo.png[]`
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("inline image with alt, but empty width and height", func() {
@@ -554,7 +554,7 @@ image::{imagesdir}/foo.png[]`
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("inline image with single other attribute only", func() {
@@ -581,7 +581,7 @@ image::{imagesdir}/foo.png[]`
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("inline image with multiple other attributes only", func() {
@@ -610,7 +610,7 @@ image::{imagesdir}/foo.png[]`
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("inline image with alt, width, height and other attributes", func() {
@@ -642,7 +642,7 @@ image::{imagesdir}/foo.png[]`
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("inline image in a paragraph with space after colon", func() {
@@ -669,7 +669,7 @@ image::{imagesdir}/foo.png[]`
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("inline image in a paragraph without space separator", func() {
@@ -696,7 +696,7 @@ image::{imagesdir}/foo.png[]`
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("image block with document attribute in URL", func() {
@@ -723,7 +723,7 @@ image::{imagesdir}/foo.png[]`
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 		})
 
@@ -756,7 +756,7 @@ image::{imagesdir}/foo.png[]`
 						},
 					},
 				}
-				Expect(ParseDocument(source)).To(Equal(expected))
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
 			It("inline image with document attribute in URL", func() {
@@ -793,7 +793,7 @@ an image:{dir}/foo.png[].`
 						},
 					},
 				}
-				Expect(ParseDocument(source)).To(Equal(expected))
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
 			It("inline image with implicit imagesdir document attribute", func() {
@@ -830,7 +830,7 @@ an image:foo.png[].`
 						},
 					},
 				}
-				Expect(ParseDocument(source)).To(Equal(expected))
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
 			It("inline image with explicit duplicate imagesdir document attribute", func() {
@@ -867,7 +867,7 @@ an image:{imagesdir}/foo.png[].`
 						},
 					},
 				}
-				Expect(ParseDocument(source)).To(Equal(expected))
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 		})
 
@@ -889,7 +889,7 @@ an image:{imagesdir}/foo.png[].`
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 		})
 	})

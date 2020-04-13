@@ -75,6 +75,6 @@ What is the answer to the Ultimate Question?:: 42`
 				},
 			},
 		}
-		Expect(ParseDocument(source)).To(Equal(expected))
+		Expect(ParseDocument(source)).To(MatchDocument(expected))
 	})
 })

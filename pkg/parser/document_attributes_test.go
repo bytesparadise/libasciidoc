@@ -48,7 +48,7 @@ This journey continues.`
 					},
 				},
 			}
-			Expect(ParseDocument(source)).To(Equal(expected))
+			Expect(ParseDocument(source)).To(MatchDocument(expected))
 		})
 
 		Context("document authors", func() {
@@ -94,7 +94,7 @@ John  Foo    Doe  <johndoe@example.com>`
 							},
 						},
 					}
-					Expect(ParseDocument(source)).To(Equal(expected))
+					Expect(ParseDocument(source)).To(MatchDocument(expected))
 				})
 
 				It("lastname with underscores", func() {
@@ -135,7 +135,7 @@ Jane the_Doe <jane@example.com>`
 							},
 						},
 					}
-					Expect(ParseDocument(source)).To(Equal(expected))
+					Expect(ParseDocument(source)).To(MatchDocument(expected))
 				})
 
 				It("with middlename and composed lastname", func() {
@@ -177,7 +177,7 @@ Jane Foo the Doe <jane@example.com>`
 							},
 						},
 					}
-					Expect(ParseDocument(source)).To(Equal(expected))
+					Expect(ParseDocument(source)).To(MatchDocument(expected))
 				})
 
 				It("firstname and lastname only", func() {
@@ -216,7 +216,7 @@ John Doe`
 							},
 						},
 					}
-					Expect(ParseDocument(source)).To(Equal(expected))
+					Expect(ParseDocument(source)).To(MatchDocument(expected))
 				})
 
 				It("firstname only", func() {
@@ -254,7 +254,7 @@ Doe`
 							},
 						},
 					}
-					Expect(ParseDocument(source)).To(Equal(expected))
+					Expect(ParseDocument(source)).To(MatchDocument(expected))
 				})
 
 				It("alternate author input", func() {
@@ -294,7 +294,7 @@ Doe`
 							},
 						},
 					}
-					Expect(ParseDocument(source)).To(Equal(expected))
+					Expect(ParseDocument(source)).To(MatchDocument(expected))
 				})
 			})
 
@@ -348,7 +348,7 @@ John  Foo Doe  <johndoe@example.com>; Jane the_Doe <jane@example.com>`
 							},
 						},
 					}
-					Expect(ParseDocument(source)).To(Equal(expected))
+					Expect(ParseDocument(source)).To(MatchDocument(expected))
 				})
 			})
 
@@ -380,7 +380,7 @@ John  Foo Doe  <johndoe@example.com>; Jane the_Doe <jane@example.com>`
 							},
 						},
 					}
-					Expect(ParseDocument(source)).To(Equal(expected))
+					Expect(ParseDocument(source)).To(MatchDocument(expected))
 				})
 
 				It("authors after a single comment line", func() {
@@ -432,7 +432,7 @@ John  Foo Doe  <johndoe@example.com>; Jane the_Doe <jane@example.com>`
 							},
 						},
 					}
-					Expect(ParseDocument(source)).To(Equal(expected))
+					Expect(ParseDocument(source)).To(MatchDocument(expected))
 				})
 
 				It("authors after a comment block", func() {
@@ -486,7 +486,7 @@ John  Foo Doe  <johndoe@example.com>; Jane the_Doe <jane@example.com>`
 							},
 						},
 					}
-					Expect(ParseDocument(source)).To(Equal(expected))
+					Expect(ParseDocument(source)).To(MatchDocument(expected))
 				})
 			})
 		})
@@ -538,7 +538,7 @@ John  Foo Doe  <johndoe@example.com>; Jane the_Doe <jane@example.com>`
 						},
 					},
 				}
-				Expect(ParseDocument(source)).To(Equal(expected))
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
 			It("full document revision with a comment before author", func() {
@@ -587,7 +587,7 @@ John  Foo Doe  <johndoe@example.com>; Jane the_Doe <jane@example.com>`
 						},
 					},
 				}
-				Expect(ParseDocument(source)).To(Equal(expected))
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
 			It("full document revision with a comment before revision", func() {
@@ -636,7 +636,7 @@ John  Foo Doe  <johndoe@example.com>; Jane the_Doe <jane@example.com>`
 						},
 					},
 				}
-				Expect(ParseDocument(source)).To(Equal(expected))
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
 			It("revision with revnumber and revdate only", func() {
@@ -682,7 +682,7 @@ John  Foo Doe  <johndoe@example.com>; Jane the_Doe <jane@example.com>`
 						},
 					},
 				}
-				Expect(ParseDocument(source)).To(Equal(expected))
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
 			It("revision with revnumber and revdate - with colon separator", func() {
@@ -728,7 +728,7 @@ John  Foo Doe  <johndoe@example.com>; Jane the_Doe <jane@example.com>`
 						},
 					},
 				}
-				Expect(ParseDocument(source)).To(Equal(expected))
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 			It("revision with revnumber only - comma suffix", func() {
 				source := `= title
@@ -771,7 +771,7 @@ John  Foo Doe  <johndoe@example.com>; Jane the_Doe <jane@example.com>`
 						},
 					},
 				}
-				Expect(ParseDocument(source)).To(Equal(expected))
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
 			It("revision with revdate as number - spaces and no prefix no suffix", func() {
@@ -815,7 +815,7 @@ John  Foo Doe  <johndoe@example.com>; Jane the_Doe <jane@example.com>`
 						},
 					},
 				}
-				Expect(ParseDocument(source)).To(Equal(expected))
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
 			It("revision with revdate as alphanum - spaces and no prefix no suffix", func() {
@@ -859,7 +859,7 @@ John  Foo Doe  <johndoe@example.com>; Jane the_Doe <jane@example.com>`
 						},
 					},
 				}
-				Expect(ParseDocument(source)).To(Equal(expected))
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
 			It("revision with revnumber only", func() {
@@ -903,7 +903,7 @@ John  Foo Doe  <johndoe@example.com>; Jane the_Doe <jane@example.com>`
 						},
 					},
 				}
-				Expect(ParseDocument(source)).To(Equal(expected))
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
 			It("revision with spaces and capital revnumber ", func() {
@@ -947,7 +947,7 @@ John  Foo Doe  <johndoe@example.com>; Jane the_Doe <jane@example.com>`
 						},
 					},
 				}
-				Expect(ParseDocument(source)).To(Equal(expected))
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
 			It("revision only - with comma separator", func() {
@@ -991,7 +991,7 @@ John  Foo Doe  <johndoe@example.com>; Jane the_Doe <jane@example.com>`
 						},
 					},
 				}
-				Expect(ParseDocument(source)).To(Equal(expected))
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
 			It("revision with revnumber plus comma and colon separators", func() {
@@ -1035,7 +1035,7 @@ John  Foo Doe  <johndoe@example.com>; Jane the_Doe <jane@example.com>`
 						},
 					},
 				}
-				Expect(ParseDocument(source)).To(Equal(expected))
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
 			It("revision with revnumber and empty revremark", func() {
@@ -1080,7 +1080,7 @@ v1.0:`
 						},
 					},
 				}
-				Expect(ParseDocument(source)).To(Equal(expected))
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
 		})
@@ -1108,7 +1108,7 @@ v1.0:`
 					FootnoteReferences: types.FootnoteReferences{},
 					Elements:           []interface{}{},
 				}
-				Expect(ParseDocument(source)).To(Equal(expected))
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
 			It("attributes and paragraph without blank line in-between", func() {
@@ -1139,7 +1139,7 @@ a paragraph`
 						},
 					},
 				}
-				Expect(ParseDocument(source)).To(Equal(expected))
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
 			It("contiguous attributes and paragraph with blank line in-between", func() {
@@ -1169,7 +1169,7 @@ a paragraph`
 						},
 					},
 				}
-				Expect(ParseDocument(source)).To(Equal(expected))
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
 			It("splitted attributes and paragraph with blank line in-between", func() {
@@ -1203,7 +1203,7 @@ a paragraph`
 						},
 					},
 				}
-				Expect(ParseDocument(source)).To(Equal(expected))
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
 			It("no header and attributes in body", func() {
@@ -1233,7 +1233,7 @@ a paragraph`
 						},
 					},
 				}
-				Expect(ParseDocument(source)).To(Equal(expected))
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 		})
 
@@ -1261,7 +1261,7 @@ a paragraph written by {author}.`
 						},
 					},
 				}
-				Expect(ParseDocument(source)).To(Equal(expected))
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
 			It("paragraph with attribute resets", func() {
@@ -1288,7 +1288,7 @@ a paragraph written by {author}.`
 						},
 					},
 				}
-				Expect(ParseDocument(source)).To(Equal(expected))
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
 			It("header with 2 authors, revision and attributes", func() {
@@ -1362,7 +1362,7 @@ This journey continues`
 						},
 					},
 				}
-				Expect(ParseDocument(source)).To(Equal(expected))
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
 			It("paragraph with attribute substitution from front-matter", func() {
@@ -1389,7 +1389,7 @@ a paragraph written by {author}.`
 						},
 					},
 				}
-				Expect(ParseDocument(source)).To(Equal(expected))
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 		})
 
@@ -1427,7 +1427,7 @@ a paragraph written by {author}.`
 					},
 				},
 			}
-			Expect(ParseDocument(source)).To(Equal(expected))
+			Expect(ParseDocument(source)).To(MatchDocument(expected))
 		})
 
 		It("invalid attribute names", func() {
@@ -1452,7 +1452,7 @@ a paragraph written by {author}.`
 					},
 				},
 			}
-			Expect(ParseDocument(source)).To(Equal(expected))
+			Expect(ParseDocument(source)).To(MatchDocument(expected))
 		})
 	})
 

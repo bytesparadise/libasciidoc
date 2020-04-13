@@ -151,7 +151,7 @@ a paragraph`
 					},
 				},
 			}
-			Expect(ParseDocument(source)).To(Equal(expected))
+			Expect(ParseDocument(source)).To(MatchDocument(expected))
 		})
 
 		It("empty paragraph", func() {
@@ -168,7 +168,7 @@ a paragraph`
 					},
 				},
 			}
-			Expect(ParseDocument(source)).To(Equal(expected))
+			Expect(ParseDocument(source)).To(MatchDocument(expected))
 		})
 	})
 
@@ -376,7 +376,7 @@ And no space after [CAUTION] either.`
 					},
 				},
 			}
-			Expect(ParseDraftDocument(source)).To(Equal(expected))
+			Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 		})
 	})
 
@@ -714,7 +714,7 @@ image::foo.png[]`
 				},
 			},
 		}
-		Expect(ParseDocument(source)).To(Equal(expected))
+		Expect(ParseDocument(source)).To(MatchDocument(expected))
 	})
 
 })
