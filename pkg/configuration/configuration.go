@@ -69,6 +69,13 @@ func WithAttributes(attrs map[string]string) Setting {
 	}
 }
 
+// WithAttribute function to set an attribute as if it was passed as an argument in the CLI
+func WithAttribute(key, value string) Setting {
+	return func(config *Configuration) {
+		config.AttributeOverrides[key] = value
+	}
+}
+
 // WithHeaderFooter function to set the `include header/footer` setting in the config
 func WithHeaderFooter(value bool) Setting {
 	return func(config *Configuration) {
@@ -90,7 +97,7 @@ func WithFilename(filename string) Setting {
 	}
 }
 
-// WithMacro defines the given template to a user macro with the given name
+// WithMacroTemplate defines the given template to a user macro with the given name
 func WithMacroTemplate(name string, t MacroTemplate) Setting {
 	return func(config *Configuration) {
 		config.macros[name] = t

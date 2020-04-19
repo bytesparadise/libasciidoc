@@ -1,7 +1,6 @@
 run:
   skip-dirs:
-    - pkg/parser/includes
-    - pkg/renderer/html5/includes
+    - test/includes
   skip-files:
     - pkg/parser/parser.go # generated
 
@@ -10,6 +9,7 @@ linters:
     - megacheck
     - govet
     - gocyclo
+    - unused
   enable-all: false
   disable:
     - maligned

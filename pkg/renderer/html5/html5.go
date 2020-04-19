@@ -27,9 +27,9 @@ func init() {
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">{{ if .Generator }}
-<meta name="generator" content="{{ .Generator }}">{{ end }}{{ if .CSS}}
-<link type="text/css" rel="stylesheet" href="{{ .CSS }}">{{ end }}{{ if .Authors }}
-<meta name="author" content="{{ .Authors }}">{{ end }}
+<meta name="generator" content="{{ .Generator }}">{{ end }}{{ if .Authors }}
+<meta name="author" content="{{ .Authors }}">{{ end }}{{ if .CSS}}
+<link type="text/css" rel="stylesheet" href="{{ .CSS }}">{{ end }}
 <title>{{ escape .Title }}</title>
 </head>
 <body class="{{ .Doctype }}">{{ if .IncludeHeader }}
@@ -81,7 +81,6 @@ func Render(ctx renderer.Context, doc types.Document, output io.Writer) (types.M
 
 	if ctx.Config.IncludeHeaderFooter {
 		log.Debugf("Rendering full document...")
-		revNumber, _ := doc.Attributes.GetAsString("revnumber")
 		err = articleTmpl.Execute(output, struct {
 			Generator     string
 			Doctype       string
@@ -101,7 +100,7 @@ func Render(ctx renderer.Context, doc types.Document, output io.Writer) (types.M
 			Authors:       renderAuthors(doc.Attributes.GetAuthors()),
 			Header:        string(renderedHeader),
 			Content:       htmltemplate.HTML(string(renderedContent)), //nolint: gosec
-			RevNumber:     revNumber,
+			RevNumber:     doc.Attributes.GetAsStringWithDefault("revnumber", ""),
 			LastUpdated:   ctx.Config.LastUpdated.Format(configuration.LastUpdatedFormat),
 			CSS:           ctx.Config.CSS,
 			IncludeHeader: !doc.Attributes.Has(types.AttrNoHeader),
