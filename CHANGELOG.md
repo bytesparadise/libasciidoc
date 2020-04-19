@@ -1,3 +1,35 @@
+# [](https://github.com/bytesparadise/libasciidoc/compare/v0.3.0...v) (2020-04-19)
+
+Focus of v0.4.0 was around support for manpage document, plus a bit of refactoring and some bug fixes.
+
+Thanks to [gdamore](https://github.com/gdamore) for reporting issues and helping the project 🙌
+
+### Bug Fixes
+
+* **parser:** expose authors and revision in the document attributes ([#521](https://github.com/bytesparadise/libasciidoc/issues/521)) ([9335817](https://github.com/bytesparadise/libasciidoc/commit/933581710d196b02dddbad4fd8ce9bece5788d47)), closes [#517](https://github.com/bytesparadise/libasciidoc/issues/517)
+* **parser:** fix footnotes grammar ([#535](https://github.com/bytesparadise/libasciidoc/issues/535)) ([03587bb](https://github.com/bytesparadise/libasciidoc/commit/03587bbc469fb5fedf5c6d1d601eaf156de45429)), closes [#532](https://github.com/bytesparadise/libasciidoc/issues/532)
+* **parser:** fix quoted text delimitation ([#505](https://github.com/bytesparadise/libasciidoc/issues/505)) ([c394f70](https://github.com/bytesparadise/libasciidoc/commit/c394f70c3ccca98ef291be6a7c0e58cd2cf05b29)), closes [#504](https://github.com/bytesparadise/libasciidoc/issues/504)
+* **parser:** verify configuration attributes ([#513](https://github.com/bytesparadise/libasciidoc/issues/513)) ([a9da628](https://github.com/bytesparadise/libasciidoc/commit/a9da62801e237f7a3af43f673691a2e9fc5c877c)), closes [#509](https://github.com/bytesparadise/libasciidoc/issues/509)
+* **parser/renderer:** support concelead index terms in labeled lists ([#507](https://github.com/bytesparadise/libasciidoc/issues/507)) ([1b574d6](https://github.com/bytesparadise/libasciidoc/commit/1b574d6df47a3385b35e387ec7bcdb8914a7d16a)), closes [#502](https://github.com/bytesparadise/libasciidoc/issues/502)
+* **parser/renderer:** support non-alphanum characters in index terms ([#506](https://github.com/bytesparadise/libasciidoc/issues/506)) ([c94b470](https://github.com/bytesparadise/libasciidoc/commit/c94b470f87718276c89476e098b9442ff57d76a1)), closes [#503](https://github.com/bytesparadise/libasciidoc/issues/503)
+* **renderer:** do not highlight syntax when language is not set ([#515](https://github.com/bytesparadise/libasciidoc/issues/515)) ([c3439bd](https://github.com/bytesparadise/libasciidoc/commit/c3439bd0e201af844e56093a636fa3341cb3bb6f)), closes [#514](https://github.com/bytesparadise/libasciidoc/issues/514)
+
+
+### Features
+
+* **renderer:** attribute to disable header and footer ([#516](https://github.com/bytesparadise/libasciidoc/issues/516)) ([3867576](https://github.com/bytesparadise/libasciidoc/commit/386757605b23cbea31587e29f32ada513a41f203)), closes [#510](https://github.com/bytesparadise/libasciidoc/issues/510)
+* **renderer:** include authors in 'meta' tag ([#544](https://github.com/bytesparadise/libasciidoc/issues/544)) ([6bdca28](https://github.com/bytesparadise/libasciidoc/commit/6bdca281406c4a79ebab22f726dd8673127a5e25)), closes [#543](https://github.com/bytesparadise/libasciidoc/issues/543)
+* **renderer:** support Copyright character replacement ([#526](https://github.com/bytesparadise/libasciidoc/issues/526)) ([c0f5b5c](https://github.com/bytesparadise/libasciidoc/commit/c0f5b5c06d122bc406240ec216d133f5c96fb688)), closes [#169](https://github.com/bytesparadise/libasciidoc/issues/169) [#524](https://github.com/bytesparadise/libasciidoc/issues/524)
+* **renderer:** support manpage doctype ([#531](https://github.com/bytesparadise/libasciidoc/issues/531)) ([9538b1a](https://github.com/bytesparadise/libasciidoc/commit/9538b1a5ae1e6f63f5db18dc390cfa845b17e61a)), closes [#511](https://github.com/bytesparadise/libasciidoc/issues/511)
+* **test:** add HTML matcher ([#539](https://github.com/bytesparadise/libasciidoc/issues/539)) ([125d163](https://github.com/bytesparadise/libasciidoc/commit/125d1632f5d990a0a4e11b4d1ff9c75246e1d9c4)), closes [#538](https://github.com/bytesparadise/libasciidoc/issues/538)
+* **validator:** validate manpage document ([#545](https://github.com/bytesparadise/libasciidoc/issues/545)) ([65b298d](https://github.com/bytesparadise/libasciidoc/commit/65b298ddf604585ab4e07d7adcd978f4ccb4fc94)), closes [#529](https://github.com/bytesparadise/libasciidoc/issues/529)
+
+
+
+# [](https://github.com/bytesparadise/libasciidoc/compare/v0.4.0...v) (2020-04-19)
+
+
+
 # [](https://github.com/bytesparadise/libasciidoc/compare/v0.2.0...v) (2020-03-14)
 
 Focus of v0.3.0 was around performances, support for file inclusions, syntax highlighting in source blocks, configuration via the CLI and, refactoring and bug fixes.
