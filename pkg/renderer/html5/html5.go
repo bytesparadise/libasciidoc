@@ -4,6 +4,7 @@ import (
 	"bytes"
 	htmltemplate "html/template"
 	"io"
+	"strings"
 	texttemplate "text/template"
 
 	"github.com/bytesparadise/libasciidoc/pkg/configuration"
@@ -24,10 +25,11 @@ func init() {
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">{{ if .Generator }}
 <meta name="generator" content="{{ .Generator }}">{{ end }}{{ if .CSS}}
-<link type="text/css" rel="stylesheet" href="{{ .CSS }}">{{ end }}
+<link type="text/css" rel="stylesheet" href="{{ .CSS }}">{{ end }}{{ if .Authors }}
+<meta name="author" content="{{ .Authors }}">{{ end }}
 <title>{{ escape .Title }}</title>
 </head>
 <body class="{{ .Doctype }}">{{ if .IncludeHeader }}
@@ -84,6 +86,7 @@ func Render(ctx renderer.Context, doc types.Document, output io.Writer) (types.M
 			Generator     string
 			Doctype       string
 			Title         string
+			Authors       string
 			Header        string
 			Content       htmltemplate.HTML
 			RevNumber     string
@@ -95,6 +98,7 @@ func Render(ctx renderer.Context, doc types.Document, output io.Writer) (types.M
 			Generator:     "libasciidoc", // TODO: externalize this value and include the lib version ?
 			Doctype:       doc.Attributes.GetAsStringWithDefault(types.AttrDocType, "article"),
 			Title:         string(renderedTitle),
+			Authors:       renderAuthors(doc.Attributes.GetAuthors()),
 			Header:        string(renderedHeader),
 			Content:       htmltemplate.HTML(string(renderedContent)), //nolint: gosec
 			RevNumber:     revNumber,
@@ -187,6 +191,14 @@ func splitAndRenderForManpage(ctx renderer.Context, doc types.Document) ([]byte,
 	result.WriteString("\n")
 	result.Write(renderedContent)
 	return []byte{}, result.Bytes(), nil
+}
+
+func renderAuthors(authors []types.DocumentAuthor) string {
+	authorStrs := make([]string, len(authors))
+	for i, author := range authors {
+		authorStrs[i] = author.FullName
+	}
+	return strings.Join(authorStrs, "; ")
 }
 
 func renderDocumentTitle(ctx renderer.Context, doc types.Document) ([]byte, error) {
