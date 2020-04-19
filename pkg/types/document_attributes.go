@@ -95,6 +95,14 @@ func (a DocumentAttributes) GetAsStringWithDefault(key, defaultValue string) str
 	return defaultValue
 }
 
+// GetAuthors returns the authors or empty slice if none was set in the document
+func (a DocumentAttributes) GetAuthors() []DocumentAuthor {
+	if authors, ok := a[AttrAuthors].([]DocumentAuthor); ok {
+		return authors
+	}
+	return []DocumentAuthor{}
+}
+
 // DocumentAttributesWithOverrides the document attributes with some overrides provided by the CLI (for example)
 type DocumentAttributesWithOverrides struct {
 	Content   map[string]interface{}

@@ -26,9 +26,10 @@ v1.0, March 22, 2020: Containment
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="libasciidoc">
+<meta name="author" content="Xavier">
 <title>Document Title</title>
 </head>
 <body class="article">
@@ -61,16 +62,17 @@ Last updated {{.LastUpdated}}
 
 		It("header with 2 authors and no revision", func() {
 			source := `= Document Title
-John Foo Doe <johndoe@example.com>; Lazarus het_Draeke <lazarus@asciidoctor.org>`
+John Foo Doe <johndoe@example.com>; Jane Doe <janedoe@example.com>`
 			// top-level section is not rendered per-say,
 			// but the section will be used to set the HTML page's <title> element
 			expected := `<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="libasciidoc">
+<meta name="author" content="John Foo Doe; Jane Doe">
 <title>Document Title</title>
 </head>
 <body class="article">
@@ -79,8 +81,8 @@ John Foo Doe <johndoe@example.com>; Lazarus het_Draeke <lazarus@asciidoctor.org>
 <div class="details">
 <span id="author" class="author">John Foo Doe</span><br>
 <span id="email" class="email"><a href="mailto:johndoe@example.com">johndoe@example.com</a></span><br>
-<span id="author2" class="author">Lazarus het Draeke</span><br>
-<span id="email2" class="email"><a href="mailto:lazarus@asciidoctor.org">lazarus@asciidoctor.org</a></span><br>
+<span id="author2" class="author">Jane Doe</span><br>
+<span id="email2" class="email"><a href="mailto:janedoe@example.com">janedoe@example.com</a></span><br>
 </div>
 </div>
 <div id="content">
@@ -111,7 +113,7 @@ a paragraph`
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="libasciidoc">
 <title>Document Title</title>
@@ -147,7 +149,7 @@ a paragraph`
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="libasciidoc">
 <title>Document Title</title>
@@ -180,7 +182,7 @@ a paragraph`
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="libasciidoc">
 <title>Document Title</title>
@@ -215,7 +217,7 @@ a paragraph`
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="libasciidoc">
 <title>Document Title</title>
