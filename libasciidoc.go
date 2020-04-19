@@ -12,6 +12,7 @@ import (
 	"github.com/bytesparadise/libasciidoc/pkg/renderer"
 	htmlrenderer "github.com/bytesparadise/libasciidoc/pkg/renderer/html5"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
+	"github.com/bytesparadise/libasciidoc/pkg/validator"
 	"github.com/pkg/errors"
 
 	log "github.com/sirupsen/logrus"
@@ -57,8 +58,19 @@ func ConvertToHTML(r io.Reader, output io.Writer, config configuration.Configura
 	if err != nil {
 		return types.Metadata{}, err
 	}
-	rendererCtx := renderer.NewContext(doc, config)
-	metadata, err := htmlrenderer.Render(rendererCtx, doc, output)
+	// validate the document
+	problems := validator.Validate(&doc)
+	for _, problem := range problems {
+		switch problem.Severity {
+		case validator.Error:
+			log.Error(problem.Message)
+		case validator.Warning:
+			log.Warn(problem.Message)
+		}
+	}
+	// render
+	ctx := renderer.NewContext(doc, config)
+	metadata, err := htmlrenderer.Render(ctx, doc, output)
 	if err != nil {
 		return types.Metadata{}, err
 	}

@@ -28,35 +28,37 @@ var _ = Describe("documents", func() {
 		log.SetLevel(level)
 	})
 
-	Context("document Body", func() {
+	lastUpdated := time.Now()
 
-		lastUpdated := time.Now()
+	Context("article", func() {
 
-		It("empty document", func() {
-			// main title alone is not rendered in the body
-			source := ""
-			expectedContent := ""
-			Expect(RenderHTML(source)).To(Equal(expectedContent))
-			Expect(RenderHTML5Title(source)).To(Equal(""))
-		})
+		Context("document body", func() {
 
-		It("document with no section", func() {
-			// main title alone is not rendered in the body
-			source := "= a document title"
-			expectedTitle := "a document title"
-			expectedContent := ""
-			Expect(RenderHTML(source)).To(Equal(expectedContent))
-			Expect(RenderHTML5Title(source)).To(Equal(expectedTitle))
-		})
+			It("empty document", func() {
+				// main title alone is not rendered in the body
+				source := ""
+				expectedContent := ""
+				Expect(RenderHTML(source)).To(Equal(expectedContent))
+				Expect(RenderHTML5Title(source)).To(Equal(""))
+			})
 
-		It("section levels 0 and 1", func() {
-			source := `= a document title
+			It("document with no section", func() {
+				// main title alone is not rendered in the body
+				source := "= a document title"
+				expectedTitle := "a document title"
+				expectedContent := ""
+				Expect(RenderHTML(source)).To(Equal(expectedContent))
+				Expect(RenderHTML5Title(source)).To(Equal(expectedTitle))
+			})
+
+			It("section levels 0 and 1", func() {
+				source := `= a document title
 
 == Section A
 
 a paragraph with *bold content*`
-			expectedTitle := "a document title"
-			expectedContent := `<div class="sect1">
+				expectedTitle := "a document title"
+				expectedContent := `<div class="sect1">
 <h2 id="_section_a">Section A</h2>
 <div class="sectionbody">
 <div class="paragraph">
@@ -64,15 +66,15 @@ a paragraph with *bold content*`
 </div>
 </div>
 </div>`
-			Expect(RenderHTML(source)).To(Equal(expectedContent))
-			Expect(RenderHTML5Title(source)).To(Equal(expectedTitle))
-		})
+				Expect(RenderHTML(source)).To(Equal(expectedContent))
+				Expect(RenderHTML5Title(source)).To(Equal(expectedTitle))
+			})
 
-		It("section level 1 with a paragraph", func() {
-			source := `== Section A
+			It("section level 1 with a paragraph", func() {
+				source := `== Section A
 
 a paragraph with *bold content*`
-			expectedContent := `<div class="sect1">
+				expectedContent := `<div class="sect1">
 <h2 id="_section_a">Section A</h2>
 <div class="sectionbody">
 <div class="paragraph">
@@ -80,12 +82,12 @@ a paragraph with *bold content*`
 </div>
 </div>
 </div>`
-			Expect(RenderHTML(source)).To(Equal(expectedContent))
-			Expect(RenderHTML5Title(source)).To(Equal(""))
-		})
+				Expect(RenderHTML(source)).To(Equal(expectedContent))
+				Expect(RenderHTML5Title(source)).To(Equal(""))
+			})
 
-		It("section levels 0, 1 and 3", func() {
-			source := `= a document title
+			It("section levels 0, 1 and 3", func() {
+				source := `= a document title
 
 == Section A
 
@@ -94,8 +96,8 @@ a paragraph with *bold content*
 ==== Section A.a.a
 
 a paragraph`
-			expectedTitle := "a document title"
-			expectedContent := `<div class="sect1">
+				expectedTitle := "a document title"
+				expectedContent := `<div class="sect1">
 <h2 id="_section_a">Section A</h2>
 <div class="sectionbody">
 <div class="paragraph">
@@ -109,33 +111,33 @@ a paragraph`
 </div>
 </div>
 </div>`
-			Expect(RenderHTML(source)).To(Equal(expectedContent))
-			Expect(RenderHTML5Title(source)).To(Equal(expectedTitle))
-			Expect(DocumentMetadata(source, lastUpdated)).To(Equal(types.Metadata{
-				Title:       "a document title",
-				LastUpdated: lastUpdated.Format(configuration.LastUpdatedFormat),
-				TableOfContents: types.TableOfContents{
-					Sections: []types.ToCSection{
-						{
-							ID:    "_section_a",
-							Level: 1,
-							Title: "Section A",
-							Children: []types.ToCSection{
-								{
-									ID:       "_section_a_a_a",
-									Level:    3,
-									Title:    "Section A.a.a",
-									Children: []types.ToCSection{},
+				Expect(RenderHTML(source)).To(Equal(expectedContent))
+				Expect(RenderHTML5Title(source)).To(Equal(expectedTitle))
+				Expect(DocumentMetadata(source, lastUpdated)).To(Equal(types.Metadata{
+					Title:       "a document title",
+					LastUpdated: lastUpdated.Format(configuration.LastUpdatedFormat),
+					TableOfContents: types.TableOfContents{
+						Sections: []types.ToCSection{
+							{
+								ID:    "_section_a",
+								Level: 1,
+								Title: "Section A",
+								Children: []types.ToCSection{
+									{
+										ID:       "_section_a_a_a",
+										Level:    3,
+										Title:    "Section A.a.a",
+										Children: []types.ToCSection{},
+									},
 								},
 							},
 						},
 					},
-				},
-			}))
-		})
+				}))
+			})
 
-		It("section levels 1, 2, 3 and 2", func() {
-			source := `= a document title
+			It("section levels 1, 2, 3 and 2", func() {
+				source := `= a document title
 
 == Section A
 
@@ -148,8 +150,8 @@ a paragraph
 == Section B
 
 a paragraph with _italic content_`
-			expectedTitle := "a document title"
-			expectedContent := `<div class="sect1">
+				expectedTitle := "a document title"
+				expectedContent := `<div class="sect1">
 <h2 id="_section_a">Section A</h2>
 <div class="sectionbody">
 <div class="paragraph">
@@ -171,40 +173,40 @@ a paragraph with _italic content_`
 </div>
 </div>
 </div>`
-			Expect(RenderHTML(source)).To(Equal(expectedContent))
-			Expect(RenderHTML5Title(source)).To(Equal(expectedTitle))
-			Expect(DocumentMetadata(source, lastUpdated)).To(Equal(types.Metadata{
-				Title:       "a document title",
-				LastUpdated: lastUpdated.Format(configuration.LastUpdatedFormat),
-				TableOfContents: types.TableOfContents{
-					Sections: []types.ToCSection{
-						{
-							ID:    "_section_a",
-							Level: 1,
-							Title: "Section A",
-							Children: []types.ToCSection{
-								{
-									ID:       "_section_a_a",
-									Level:    2,
-									Title:    "Section A.a",
-									Children: []types.ToCSection{},
+				Expect(RenderHTML(source)).To(Equal(expectedContent))
+				Expect(RenderHTML5Title(source)).To(Equal(expectedTitle))
+				Expect(DocumentMetadata(source, lastUpdated)).To(Equal(types.Metadata{
+					Title:       "a document title",
+					LastUpdated: lastUpdated.Format(configuration.LastUpdatedFormat),
+					TableOfContents: types.TableOfContents{
+						Sections: []types.ToCSection{
+							{
+								ID:    "_section_a",
+								Level: 1,
+								Title: "Section A",
+								Children: []types.ToCSection{
+									{
+										ID:       "_section_a_a",
+										Level:    2,
+										Title:    "Section A.a",
+										Children: []types.ToCSection{},
+									},
 								},
 							},
-						},
-						{
-							ID:       "_section_b",
-							Level:    1,
-							Title:    "Section B",
-							Children: []types.ToCSection{},
+							{
+								ID:       "_section_b",
+								Level:    1,
+								Title:    "Section B",
+								Children: []types.ToCSection{},
+							},
 						},
 					},
-				},
-			}))
-		})
+				}))
+			})
 
-		It("should include adoc file without leveloffset from local file", func() {
-			source := "include::test/includes/grandchild-include.adoc[]"
-			expected := `<div class="sect1">
+			It("should include adoc file without leveloffset from local file", func() {
+				source := "include::test/includes/grandchild-include.adoc[]"
+				expected := `<div class="sect1">
 <h2 id="_grandchild_title">grandchild title</h2>
 <div class="sectionbody">
 <div class="paragraph">
@@ -215,28 +217,28 @@ a paragraph with _italic content_`
 </div>
 </div>
 </div>`
-			Expect(RenderHTML(source, configuration.WithFilename("test.adoc"), configuration.WithLastUpdated(lastUpdated))).To(Equal(expected))
-			Expect(DocumentMetadata(source, lastUpdated)).To(Equal(types.Metadata{
-				Title:       "",
-				LastUpdated: lastUpdated.Format(configuration.LastUpdatedFormat),
-				TableOfContents: types.TableOfContents{
-					Sections: []types.ToCSection{
-						{
-							ID:       "_grandchild_title",
-							Level:    1,
-							Title:    "grandchild title",
-							Children: []types.ToCSection{},
+				Expect(RenderHTML(source, configuration.WithFilename("test.adoc"))).To(Equal(expected))
+				Expect(DocumentMetadata(source, lastUpdated)).To(Equal(types.Metadata{
+					Title:       "",
+					LastUpdated: lastUpdated.Format(configuration.LastUpdatedFormat),
+					TableOfContents: types.TableOfContents{
+						Sections: []types.ToCSection{
+							{
+								ID:       "_grandchild_title",
+								Level:    1,
+								Title:    "grandchild title",
+								Children: []types.ToCSection{},
+							},
 						},
 					},
-				},
-			}))
+				}))
+			})
 		})
-	})
 
-	Context("complete Document ", func() {
+		Context("complete Document ", func() {
 
-		It("using existing file", func() {
-			expectedContent := `<!DOCTYPE html>
+			It("using existing file", func() {
+				expectedContent := `<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -262,10 +264,212 @@ Last updated {{.LastUpdated}}
 </div>
 </body>
 </html>`
-			filename := "test/includes/chapter-a.adoc"
-			stat, err := os.Stat(filename)
-			Expect(err).NotTo(HaveOccurred())
-			Expect(RenderHTML5Document(filename, configuration.WithCSS("path/to/style.css"), configuration.WithHeaderFooter(true))).To(MatchHTMLTemplate(expectedContent, stat.ModTime()))
+				filename := "test/includes/chapter-a.adoc"
+				stat, err := os.Stat(filename)
+				Expect(err).NotTo(HaveOccurred())
+				Expect(RenderHTML5Document(filename, configuration.WithCSS("path/to/style.css"), configuration.WithHeaderFooter(true))).To(MatchHTMLTemplate(expectedContent, stat.ModTime()))
+			})
+		})
+	})
+
+	Context("manpage", func() {
+
+		Context("document body", func() {
+
+			It("should render valid manpage", func() {
+				source := `= eve(1)
+Andrew Stanton
+v1.0.0
+
+== Name
+
+eve - analyzes an image to determine if it's a picture of a life form
+
+== Synopsis
+
+*eve* [_OPTION_]... _FILE_...
+
+== Copying
+
+Copyright (C) 2008 {author}. +
+Free use of this software is granted under the terms of the MIT License.`
+
+				expectedContent := `<h2 id="_name">Name</h2>
+<div class="sectionbody">
+<p>eve - analyzes an image to determine if it&#39;s a picture of a life form</p>
+</div>
+<div class="sect1">
+<h2 id="_synopsis">Synopsis</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><strong>eve</strong> [<em>OPTION</em>]&#8230;&#8203; <em>FILE</em>&#8230;&#8203;</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_copying">Copying</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Copyright &#169; 2008 Andrew Stanton.<br>
+Free use of this software is granted under the terms of the MIT License.</p>
+</div>
+</div>
+</div>`
+				Expect(RenderHTML(source, configuration.WithAttribute(types.AttrDocType, "manpage"))).To(Equal(expectedContent))
+			})
+		})
+
+		Context("full document", func() {
+
+			It("should render valid manpage", func() {
+				source := `= eve(1)
+Andrew Stanton
+v1.0.0
+
+== Name
+
+eve - analyzes an image to determine if it's a picture of a life form
+
+== Synopsis
+
+*eve* [_OPTION_]... _FILE_...
+
+== Copying
+
+Copyright (C) 2008 {author}. +
+Free use of this software is granted under the terms of the MIT License.`
+
+				expectedContent := `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="libasciidoc">
+<meta name="author" content="Andrew Stanton">
+<link type="text/css" rel="stylesheet" href="path/to/style.css">
+<title>eve(1)</title>
+</head>
+<body class="manpage">
+<div id="header">
+<h1>eve(1) Manual Page</h1>
+<h2 id="_name">Name</h2>
+<div class="sectionbody">
+<p>eve - analyzes an image to determine if it&#39;s a picture of a life form</p>
+</div>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="_synopsis">Synopsis</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><strong>eve</strong> [<em>OPTION</em>]&#8230;&#8203; <em>FILE</em>&#8230;&#8203;</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_copying">Copying</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Copyright &#169; 2008 Andrew Stanton.<br>
+Free use of this software is granted under the terms of the MIT License.</p>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Version 1.0.0<br>
+Last updated {{.LastUpdated}}
+</div>
+</div>
+</body>
+</html>`
+				Expect(RenderHTML(source,
+					configuration.WithAttribute(types.AttrDocType, "manpage"),
+					configuration.WithLastUpdated(lastUpdated),
+					configuration.WithCSS("path/to/style.css"),
+					configuration.WithHeaderFooter(true))).To(MatchHTMLTemplate(expectedContent, lastUpdated))
+			})
+
+			It("should render invalid manpage as article", func() {
+				source := `= eve(1)
+Andrew Stanton
+v1.0.0
+
+== Foo
+
+eve - analyzes an image to determine if it's a picture of a life form
+
+== Synopsis
+
+*eve* [_OPTION_]... _FILE_...
+
+== Copying
+
+Copyright (C) 2008 {author}. +
+Free use of this software is granted under the terms of the MIT License.`
+
+				expectedContent := `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="libasciidoc">
+<meta name="author" content="Andrew Stanton">
+<link type="text/css" rel="stylesheet" href="path/to/style.css">
+<title>eve(1)</title>
+</head>
+<body class="article">
+<div id="header">
+<h1>eve(1)</h1>
+<div class="details">
+<span id="author" class="author">Andrew Stanton</span><br>
+<span id="revnumber">version 1.0.0</span>
+</div>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="_foo">Foo</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>eve - analyzes an image to determine if it&#39;s a picture of a life form</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_synopsis">Synopsis</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><strong>eve</strong> [<em>OPTION</em>]&#8230;&#8203; <em>FILE</em>&#8230;&#8203;</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_copying">Copying</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Copyright &#169; 2008 Andrew Stanton.<br>
+Free use of this software is granted under the terms of the MIT License.</p>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Version 1.0.0<br>
+Last updated {{.LastUpdated}}
+</div>
+</div>
+</body>
+</html>`
+				Expect(RenderHTML(source,
+					configuration.WithAttribute(types.AttrDocType, "manpage"),
+					configuration.WithLastUpdated(lastUpdated),
+					configuration.WithCSS("path/to/style.css"),
+					configuration.WithHeaderFooter(true))).To(MatchHTMLTemplate(expectedContent, lastUpdated))
+			})
 		})
 
 	})

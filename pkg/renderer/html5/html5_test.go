@@ -171,8 +171,8 @@ Free use of this software is granted under the terms of the MIT License.`
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="libasciidoc">
-<link type="text/css" rel="stylesheet" href="/path/to/style.css">
 <meta name="author" content="Andrew Stanton">
+<link type="text/css" rel="stylesheet" href="/path/to/style.css">
 <title>eve(1)</title>
 </head>
 <body class="manpage">

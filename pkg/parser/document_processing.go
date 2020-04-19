@@ -53,6 +53,7 @@ func ParseDocument(r io.Reader, config configuration.Configuration) (types.Docum
 	doc.Attributes.AddAll(attrs.All())
 	// also insert the table of contents
 	doc = includeTableOfContentsPlaceHolder(doc)
+	// finally
 	if log.IsLevelEnabled(log.DebugLevel) {
 		log.Debug("final document:")
 		spew.Dump(doc)
