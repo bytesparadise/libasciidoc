@@ -13,12 +13,12 @@ on:
 jobs:
   
   test:
-    runs-on: ${{ matrix.platform }}
+    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         go-version: [1.13.x, 1.14.x]
-        platform: [ubuntu-latest, macos-latest, windows-latest]
-    name: ${{ matrix.platform }} with Go ${{ matrix.go-version }}
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    name: ${{ matrix.os }} with Go ${{ matrix.go-version }}
     
     steps:
     - name: Install Go
@@ -40,5 +40,11 @@ jobs:
     - name: Test
       run: |
         make test-with-coverage
+
+    - name: Codecov
+      uses: codecov/codecov-action@v1.0.6
+      with:
+        # Path to coverage file to upload
+        file: coverage.txt
     
   

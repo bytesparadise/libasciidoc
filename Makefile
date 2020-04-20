@@ -90,6 +90,7 @@ test: generate-optimized
 test-with-coverage: generate-optimized
 	@echo $(COVERPKGS)
 	@ginkgo -r --randomizeAllSpecs --randomizeSuites --failOnPending --trace --race --compilers=0  --cover -coverpkg $(COVERPKGS)
+	@gover . coverage.txt
 
 .PHONY: test-fixtures
 ## run all fixtures tests
