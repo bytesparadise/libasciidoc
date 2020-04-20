@@ -570,6 +570,87 @@ a paragraph with *bold content*`
 			Expect(ParseDocument(source)).To(MatchDocument(expected))
 		})
 
+		It("header with preamble then section level 1", func() {
+			source := `= a title
+		
+a short preamble
+
+== section 1`
+			expected := types.DraftDocument{
+				Blocks: []interface{}{
+					types.Section{
+						Attributes: types.ElementAttributes{},
+						Level:      0,
+						Title: []interface{}{
+							types.StringElement{Content: "a title"},
+						},
+						Elements: []interface{}{},
+					},
+					types.BlankLine{},
+					types.Paragraph{
+						Attributes: types.ElementAttributes{},
+						Lines: [][]interface{}{
+							{
+								types.StringElement{Content: "a short preamble"},
+							},
+						},
+					},
+					types.BlankLine{},
+					types.Section{
+						Attributes: types.ElementAttributes{},
+						Level:      1,
+						Title: []interface{}{
+							types.StringElement{Content: "section 1"},
+						},
+						Elements: []interface{}{},
+					},
+				},
+			}
+			Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+		})
+
+		It("header with doc attributes and preamble then section level 1", func() {
+			source := `= a title
+:toc:
+		
+a short preamble
+
+== section 1`
+			expected := types.DraftDocument{
+				Blocks: []interface{}{
+					types.Section{
+						Attributes: types.ElementAttributes{},
+						Level:      0,
+						Title: []interface{}{
+							types.StringElement{Content: "a title"},
+						},
+						Elements: []interface{}{},
+					},
+					types.DocumentAttributeDeclaration{
+						Name: "toc",
+					},
+					types.BlankLine{},
+					types.Paragraph{
+						Attributes: types.ElementAttributes{},
+						Lines: [][]interface{}{
+							{
+								types.StringElement{Content: "a short preamble"},
+							},
+						},
+					},
+					types.BlankLine{},
+					types.Section{
+						Attributes: types.ElementAttributes{},
+						Level:      1,
+						Title: []interface{}{
+							types.StringElement{Content: "section 1"},
+						},
+						Elements: []interface{}{},
+					},
+				},
+			}
+			Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+		})
 	})
 
 	Context("invalid sections", func() {
@@ -1628,6 +1709,122 @@ a paragraph`
 								},
 								Level:    1,
 								Title:    section1bTitle,
+								Elements: []interface{}{},
+							},
+						},
+					},
+				},
+			}
+			Expect(ParseDocument(source)).To(MatchDocument(expected))
+		})
+
+		It("header with preamble then section level 1", func() {
+			source := `= A Title
+
+a short preamble
+
+== Section 1`
+			expected := types.Document{
+				Attributes: types.DocumentAttributes{},
+				ElementReferences: types.ElementReferences{
+					"_a_title": []interface{}{
+						types.StringElement{Content: "A Title"},
+					},
+					"_section_1": []interface{}{
+						types.StringElement{Content: "Section 1"},
+					},
+				},
+				Footnotes: []types.Footnote{},
+				Elements: []interface{}{
+					types.Section{
+						Attributes: types.ElementAttributes{
+							types.AttrID: "_a_title",
+						},
+						Level: 0,
+						Title: []interface{}{
+							types.StringElement{Content: "A Title"},
+						},
+						Elements: []interface{}{
+							types.Preamble{
+								Elements: []interface{}{
+									types.Paragraph{
+										Attributes: types.ElementAttributes{},
+										Lines: [][]interface{}{
+											{
+												types.StringElement{Content: "a short preamble"},
+											},
+										},
+									},
+								},
+							},
+							types.Section{
+								Attributes: types.ElementAttributes{
+									types.AttrID: "_section_1",
+								},
+								Level: 1,
+								Title: []interface{}{
+									types.StringElement{Content: "Section 1"},
+								},
+								Elements: []interface{}{},
+							},
+						},
+					},
+				},
+			}
+			Expect(ParseDocument(source)).To(MatchDocument(expected))
+		})
+
+		It("header with doc attributes and preamble then section level 1", func() {
+			source := `= A Title
+:toc:
+		
+a short preamble
+
+== Section 1`
+			expected := types.Document{
+				Attributes: types.DocumentAttributes{
+					"toc": "",
+				},
+				ElementReferences: types.ElementReferences{
+					"_a_title": []interface{}{
+						types.StringElement{Content: "A Title"},
+					},
+					"_section_1": []interface{}{
+						types.StringElement{Content: "Section 1"},
+					},
+				},
+				Footnotes: []types.Footnote{},
+				Elements: []interface{}{
+					types.Section{
+						Attributes: types.ElementAttributes{
+							types.AttrID: "_a_title",
+						},
+						Level: 0,
+						Title: []interface{}{
+							types.StringElement{Content: "A Title"},
+						},
+						Elements: []interface{}{
+							types.TableOfContentsPlaceHolder{},
+							types.Preamble{
+								Elements: []interface{}{
+									types.Paragraph{
+										Attributes: types.ElementAttributes{},
+										Lines: [][]interface{}{
+											{
+												types.StringElement{Content: "a short preamble"},
+											},
+										},
+									},
+								},
+							},
+							types.Section{
+								Attributes: types.ElementAttributes{
+									types.AttrID: "_section_1",
+								},
+								Level: 1,
+								Title: []interface{}{
+									types.StringElement{Content: "Section 1"},
+								},
 								Elements: []interface{}{},
 							},
 						},
