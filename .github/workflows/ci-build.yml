@@ -42,6 +42,7 @@ jobs:
         make test-with-coverage
 
     - name: Codecov
+      if: runner.os == 'Linux' 
       uses: codecov/codecov-action@v1.0.6
       with:
         # Path to coverage file to upload
