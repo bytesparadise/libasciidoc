@@ -101,7 +101,7 @@ func NewTableOfContents(ctx renderer.Context, doc types.Document) (types.TableOf
 			if err != nil {
 				return types.TableOfContents{}, err
 			}
-			sections = append(sections, tocs...) // cqn be 1 or more (for the root section, we immediatly get its children)
+			sections = append(sections, tocs...) // cqn be 1 or more (for the root section, we immediately get its children)
 		}
 	}
 	return types.TableOfContents{
@@ -128,7 +128,7 @@ func visitSection(ctx renderer.Context, section types.Section, currentLevel int)
 		}
 	}
 	if section.Level == 0 {
-		return children, nil // for the root section, immediatly return its children)
+		return children, nil // for the root section, immediately return its children)
 	}
 
 	renderedTitle, err := renderPlainText(ctx, section.Title)
