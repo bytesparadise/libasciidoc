@@ -29,14 +29,15 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
       
-    - name: Install Tools
-      run: 
-        make install-devtools
-      
     - name: Build 
       run: |
         make build
       
+    - name: Lint
+      if: runner.os == 'Linux' 
+      run: |
+        make lint
+
     - name: Test
       run: |
         make test-with-coverage

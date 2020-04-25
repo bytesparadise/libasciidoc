@@ -26,15 +26,20 @@ $(INSTALL_PREFIX):
 ## Check that all tools where found
 prebuild-checks: $(INSTALL_PREFIX)
 
+.PHONY: install-pigeon
+## Install development tools.
+install-pigeon:
+	@go install -v github.com/mna/pigeon
+
 .PHONY: generate
 ## generate the .go file based on the asciidoc grammar
-generate: prebuild-checks
+generate: install-pigeon
 	@echo "generating the parser..."
 	@pigeon ./pkg/parser/parser.peg > ./pkg/parser/parser.go
 
 .PHONY: generate-optimized
 ## generate the .go file based on the asciidoc grammar
-generate-optimized:
+generate-optimized: install-pigeon
 	@echo "generating the parser (optimized)..."
 	@pigeon -optimize-parser \
 		-alternate-entrypoints AsciidocDocument,AsciidocDocumentWithinDelimitedBlock,TextDocument,DocumentBlock,InlineElementsWithoutSubtitution,FileLocation,IncludedFileLine,InlineLinks,LabeledListItemTerm \
@@ -42,7 +47,7 @@ generate-optimized:
 
 .PHONY: build
 ## build the binary executable from CLI
-build: $(INSTALL_PREFIX) generate-optimized
+build: prebuild-checks generate-optimized
 	$(eval BUILD_COMMIT:=$(shell git rev-parse --short HEAD))
 	$(eval BUILD_TAG:=$(shell git tag --contains $(BUILD_COMMIT)))
 	$(eval BUILD_TIME:=$(shell date -u '+%Y-%m-%dT%H:%M:%SZ'))
@@ -67,7 +72,7 @@ endif
 
 .PHONY: install
 ## installs the binary executable in the $GOPATH/bin directory
-install: install-devtools build
+install: build
 	@cp $(BINARY_PATH) $(GOPATH)/bin
 
 .PHONY: quick-install

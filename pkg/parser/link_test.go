@@ -1187,7 +1187,7 @@ a link to {url}`
 
 				expected := types.Document{
 					Attributes: types.DocumentAttributes{
-						"url": "https://foo2.bar", // overriden by second declaration
+						"url": "https://foo2.bar", // overridden by second declaration
 					},
 					ElementReferences: types.ElementReferences{},
 					Footnotes:         []types.Footnote{},

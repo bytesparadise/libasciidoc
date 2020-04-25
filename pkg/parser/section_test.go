@@ -1619,7 +1619,7 @@ a paragraph`
 			}
 			expected := types.Document{
 				Attributes: types.DocumentAttributes{
-					types.AttrIDPrefix: "custom1b_", // overriden by second occurrence of attribute declaration
+					types.AttrIDPrefix: "custom1b_", // overridden by second occurrence of attribute declaration
 				},
 				ElementReferences: types.ElementReferences{
 					"custom1a_a_header":   doctitle,

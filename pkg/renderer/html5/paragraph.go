@@ -81,7 +81,7 @@ func init() {
 			"plainText":   PlainText,
 			"escape":      EscapeString,
 		})
-		
+
 	quoteParagraphTmpl = newTextTemplate("quote paragraph", `{{ $ctx := .Context }}{{ with .Data }}<div {{ if .ID }}id="{{ .ID }}" {{ end }}class="quoteblock">{{ if .Title }}
 <div class="title">{{ escape .Title }}</div>{{ end }}
 <blockquote>
