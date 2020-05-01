@@ -42,7 +42,7 @@ generate: install-pigeon
 generate-optimized: install-pigeon
 	@echo "generating the parser (optimized)..."
 	@pigeon -optimize-parser \
-		-alternate-entrypoints AsciidocDocument,VerbatimDocument,TextDocument,DocumentBlock,InlineElementsWithoutSubtitution,FileLocation,IncludedFileLine,InlineLinks,LabeledListItemTerm,VerbatimContent,NormalBlockContent,VerseBlockElement \
+		-alternate-entrypoints AsciidocDocument,VerbatimDocument,TextDocument,DocumentBlock,FileLocation,IncludedFileLine,InlineLinks,LabeledListItemTerm,VerbatimContent,NormalBlockContent \
 		-o ./pkg/parser/parser.go ./pkg/parser/parser.peg
 
 .PHONY: build
