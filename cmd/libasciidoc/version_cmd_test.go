@@ -5,8 +5,8 @@ import (
 
 	main "github.com/bytesparadise/libasciidoc/cmd/libasciidoc"
 
-	. "github.com/onsi/ginkgo"
-	. "github.com/onsi/gomega"
+	. "github.com/onsi/ginkgo" //nolint golint
+	. "github.com/onsi/gomega" //nolint golint
 )
 
 var _ = Describe("version cmd", func() {

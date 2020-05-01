@@ -3,8 +3,8 @@ package types_test
 import (
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 
-	. "github.com/onsi/ginkgo"
-	. "github.com/onsi/gomega"
+	. "github.com/onsi/ginkgo" //nolint golint
+	. "github.com/onsi/gomega" //nolint golint
 )
 
 var _ = Describe("normalizing string", func() {

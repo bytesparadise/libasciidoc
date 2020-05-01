@@ -7,8 +7,8 @@ import (
 	"github.com/bytesparadise/libasciidoc/testsupport"
 
 	"github.com/davecgh/go-spew/spew"
-	. "github.com/onsi/ginkgo"
-	. "github.com/onsi/gomega"
+	. "github.com/onsi/ginkgo" //nolint golint
+	. "github.com/onsi/gomega" //nolint golint
 	"github.com/sergi/go-diff/diffmatchpatch"
 )
 

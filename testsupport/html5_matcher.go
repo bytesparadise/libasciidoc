@@ -3,6 +3,7 @@ package testsupport
 import (
 	"fmt"
 
+	. "github.com/onsi/ginkgo" //nolint golint
 	gomegatypes "github.com/onsi/gomega/types"
 	"github.com/pkg/errors"
 	"github.com/sergi/go-diff/diffmatchpatch"
@@ -26,6 +27,7 @@ func (m *htmlMatcher) Match(actual interface{}) (success bool, err error) {
 		return false, errors.Errorf("MatchHTML matcher expects a string (actual: %T)", actual)
 	}
 	if m.expected != actual {
+		GinkgoT().Logf("actual HTML:\n%s", actual)
 		dmp := diffmatchpatch.New()
 		diffs := dmp.DiffMain(actual.(string), m.expected, true)
 		m.diffs = dmp.DiffPrettyText(diffs)

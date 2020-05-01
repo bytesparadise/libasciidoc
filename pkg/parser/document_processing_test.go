@@ -5,8 +5,8 @@ import (
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 	. "github.com/bytesparadise/libasciidoc/testsupport"
 
-	. "github.com/onsi/ginkgo"
-	. "github.com/onsi/gomega"
+	. "github.com/onsi/ginkgo" //nolint golint
+	. "github.com/onsi/gomega" //nolint golint
 )
 
 var _ = Describe("document processing", func() {
@@ -31,15 +31,8 @@ foo
 						},
 						Kind: types.Source,
 						Elements: []interface{}{
-							types.Paragraph{
-								Attributes: types.ElementAttributes{},
-								Lines: [][]interface{}{
-									{
-										types.StringElement{
-											Content: "foo",
-										},
-									},
-								},
+							types.VerbatimLine{
+								Content: "foo",
 							},
 						},
 					},

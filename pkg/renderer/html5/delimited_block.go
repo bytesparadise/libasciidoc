@@ -31,23 +31,23 @@ func init() {
 	fencedBlockTmpl = newTextTemplate("listing block", `{{ $ctx := .Context }}{{ with .Data }}<div {{ if .ID }}id="{{ .ID }}" {{ end }}class="listingblock">{{ if .Title }}
 <div class="title">{{ escape .Title }}</div>{{ end }}
 <div class="content">
-<pre class="highlight"><code>{{ range $index, $element := .Elements }}{{ renderPlainText $ctx $element | printf "%s" }}{{ end }}</code></pre>
+<pre class="highlight"><code>{{ render $ctx .Elements | printf "%s" }}</code></pre>
 </div>
 </div>{{ end }}`,
 		texttemplate.FuncMap{
-			"renderPlainText": renderPlainText,
-			"escape":          EscapeString,
+			"render": renderElements,
+			"escape": EscapeString,
 		})
 
 	listingBlockTmpl = newTextTemplate("listing block", `{{ $ctx := .Context }}{{ with .Data }}<div {{ if .ID }}id="{{ .ID }}" {{ end }}class="listingblock">{{ if .Title }}
 <div class="title">{{ escape .Title }}</div>{{ end }}
 <div class="content">
-<pre>{{ range $index, $element := .Elements }}{{ renderPlainText $ctx $element | printf "%s" | escape }}{{ end }}</pre>
+<pre>{{ render $ctx .Elements | printf "%s" | escape }}</pre>
 </div>
 </div>{{ end }}`,
 		texttemplate.FuncMap{
-			"renderPlainText": renderPlainText,
-			"escape":          EscapeString,
+			"render": renderElements,
+			"escape": EscapeString,
 		})
 
 	sourceBlockTmpl = newTextTemplate("source block",
@@ -61,11 +61,11 @@ func init() {
 			"escape": EscapeString,
 		})
 
-	sourceBlockContentTmpl = newTextTemplate("source bock content",
-		`{{ $ctx := .Context }}{{ with .Data }}{{ range $index, $element := .Elements }}{{ renderPlainText $ctx $element | printf "%s" | escape }}{{ end }}{{ end }}`,
+	sourceBlockContentTmpl = newTextTemplate("source block content",
+		`{{ $ctx := .Context }}{{ with .Data }}{{ render $ctx .Elements | printf "%s" | escape }}{{ end }}`,
 		texttemplate.FuncMap{
-			"renderPlainText": renderPlainText,
-			"escape":          EscapeString,
+			"render": renderElements,
+			"escape": EscapeString,
 		})
 
 	exampleBlockTmpl = newTextTemplate("example block", `{{ $ctx := .Context }}{{ with .Data }}<div {{ if .ID }}id="{{ .ID }}" {{ end }}class="exampleblock">{{ if .Title }}
@@ -426,11 +426,16 @@ func discardTrailingBlankLines(elements []interface{}) []interface{} {
 	log.Debugf("discarding trailing blank lines on %d elements...", len(elements))
 	filteredElements := make([]interface{}, len(elements))
 	copy(filteredElements, elements)
+
 	for {
 		if len(filteredElements) == 0 {
 			break
 		}
-		if _, ok := filteredElements[len(filteredElements)-1].(types.BlankLine); ok {
+		if l, ok := filteredElements[len(filteredElements)-1].(types.VerbatimLine); ok && l.IsEmpty() {
+			log.Debugf("element of type '%T' at position %d is a blank line, discarding it", filteredElements[len(filteredElements)-1], len(filteredElements)-1)
+			// remove last element of the slice since it's a blankline
+			filteredElements = filteredElements[:len(filteredElements)-1]
+		} else if _, ok := filteredElements[len(filteredElements)-1].(types.BlankLine); ok {
 			log.Debugf("element of type '%T' at position %d is a blank line, discarding it", filteredElements[len(filteredElements)-1], len(filteredElements)-1)
 			// remove last element of the slice since it's a blankline
 			filteredElements = filteredElements[:len(filteredElements)-1]

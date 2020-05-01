@@ -32,7 +32,8 @@ func renderElements(ctx renderer.Context, elements []interface{}) ([]byte, error
 		}
 		// insert new line if there's already some content (except for BlankLine)
 		_, isBlankline := element.(types.BlankLine)
-		if !isBlankline && hasContent && len(renderedElement) > 0 {
+		_, isVerbatimLine := element.(types.VerbatimLine)
+		if hasContent && (isVerbatimLine || (!isBlankline && len(renderedElement) > 0)) {
 			buff.WriteString("\n")
 		}
 		buff.Write(renderedElement)
@@ -76,7 +77,7 @@ func renderListElements(ctx renderer.Context, elements []interface{}) ([]byte, e
 
 // nolint: gocyclo
 func renderElement(ctx renderer.Context, element interface{}) ([]byte, error) {
-	// log.Debugf("rendering element of type `%T`", element)
+	log.Debugf("rendering element of type `%T`", element)
 	switch e := element.(type) {
 	case []interface{}:
 		return renderElements(ctx, e)
@@ -128,6 +129,8 @@ func renderElement(ctx renderer.Context, element interface{}) ([]byte, error) {
 		return renderIndexTerm(ctx, e)
 	case types.ConcealedIndexTerm:
 		return renderConcealedIndexTerm(e)
+	case types.VerbatimLine:
+		return renderVerbatimLine(e)
 	default:
 		return nil, errors.Errorf("unsupported type of element: %T", element)
 	}

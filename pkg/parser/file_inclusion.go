@@ -3,29 +3,18 @@ package parser
 import (
 	"bufio"
 	"bytes"
+	"fmt"
 	"os"
 	"path/filepath"
 	"strconv"
 	"strings"
-	"text/template"
 
 	"github.com/bytesparadise/libasciidoc/pkg/configuration"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
-	"github.com/davecgh/go-spew/spew"
 	"github.com/pkg/errors"
 
 	log "github.com/sirupsen/logrus"
 )
-
-var invalidFileTmpl *template.Template
-
-func init() {
-	var err error
-	invalidFileTmpl, err = template.New("invalid file to include").Parse(`Unresolved directive in {{ .Filename }} - {{ .Error }}`)
-	if err != nil {
-		log.Fatalf("failed to initialize template: %v", err)
-	}
-}
 
 // levelOffset a func that applies a given offset to the sections of a child document to include in a parent doc (the caller)
 type levelOffset struct {
@@ -59,36 +48,44 @@ func absoluteOffset(offset int) levelOffset {
 func parseFileToInclude(incl types.FileInclusion, attrs types.DocumentAttributesWithOverrides, levelOffsets []levelOffset, config configuration.Configuration, options ...Option) (types.DraftDocument, error) {
 	path := incl.Location.Resolve(attrs).String()
 	currentDir := filepath.Dir(config.Filename)
-	if log.IsLevelEnabled(log.DebugLevel) {
-		log.Debugf("parsing '%s' from '%s' (%s)", path, currentDir, config.Filename)
-		log.Debugf("file inclusion attributes: %s", spew.Sdump(incl.Attributes))
-	}
+	log.Debugf("parsing '%s' from current dir '%s' (%s)", path, currentDir, config.Filename)
 	f, absPath, done, err := open(filepath.Join(currentDir, path))
 	defer done()
 	if err != nil {
-		return invalidFileErrMsg(config.Filename, path, incl.RawText, err)
+		return types.DraftDocument{}, FileInclusionError{
+			Filename: config.Filename,
+			rawText:  incl.RawText,
+		}
 	}
 	content := bytes.NewBuffer(nil)
 	scanner := bufio.NewScanner(bufio.NewReader(f))
 	if lineRanges, ok := incl.LineRanges(); ok {
 		if err := readWithinLines(scanner, content, lineRanges); err != nil {
-			return invalidFileErrMsg(config.Filename, path, incl.RawText, err)
+			return types.DraftDocument{}, FileInclusionError{
+				Filename: config.Filename,
+				rawText:  incl.RawText,
+			}
 		}
 	} else if tagRanges, ok := incl.TagRanges(); ok {
 		if err := readWithinTags(path, scanner, content, tagRanges); err != nil {
-			return invalidFileErrMsg(config.Filename, path, incl.RawText, err)
+			return types.DraftDocument{}, FileInclusionError{
+				Filename: config.Filename,
+				rawText:  incl.RawText,
+			}
 		}
 	} else {
 		if err := readAll(scanner, content); err != nil {
-			return invalidFileErrMsg(config.Filename, path, incl.RawText, err)
+			return types.DraftDocument{}, FileInclusionError{
+				Filename: config.Filename,
+				rawText:  incl.RawText,
+			}
 		}
 	}
 	if err := scanner.Err(); err != nil {
-		msg, err2 := invalidFileErrMsg(config.Filename, path, incl.RawText, err)
-		if err2 != nil {
-			return types.DraftDocument{}, err2
+		return types.DraftDocument{}, FileInclusionError{
+			Filename: config.Filename,
+			rawText:  incl.RawText,
 		}
-		return msg, errors.Wrap(err, "unable to read file to include")
 	}
 	// parse the content, and returns the corresponding elements
 	l := incl.Attributes.GetAsString(types.AttrLevelOffset)
@@ -106,41 +103,24 @@ func parseFileToInclude(incl types.FileInclusion, attrs types.DocumentAttributes
 	}
 	// use a simpler/different grammar for non-asciidoc files.
 	if !IsAsciidoc(absPath) {
-		options = append(options, Entrypoint("TextDocument"))
+		options = append(options, Entrypoint("TextDocument")) // TODO: delete rule and use VerbatimDocument?
 	}
 	inclConfig := config.Clone()
 	inclConfig.Filename = absPath
-	return parseDraftDocument(content, levelOffsets, config, options...)
+	return parseDraftDocument(content, levelOffsets, inclConfig, options...)
 }
 
-func invalidFileErrMsg(filename, path, rawText string, err error) (types.DraftDocument, error) {
-	log.WithError(err).Errorf("failed to include '%s'", path)
-	buf := bytes.NewBuffer(nil)
-	err = invalidFileTmpl.Execute(buf, struct {
-		Filename string
-		Error    string
-	}{
-		Filename: filename,
-		Error:    rawText,
-	})
-	if err != nil {
-		return types.DraftDocument{}, err
-	}
-	return types.DraftDocument{
-		Blocks: []interface{}{
-			types.Paragraph{
-				Attributes: types.ElementAttributes{},
-				Lines: [][]interface{}{
-					{
-						types.StringElement{
-							Content: buf.String(),
-						},
-					},
-				},
-			},
-		},
-	}, nil
+// FileInclusionError an error which may happen during a file inclusion
+type FileInclusionError struct {
+	Filename string
+	rawText  string
 }
+
+func (e FileInclusionError) Error() string {
+	return fmt.Sprintf("Unresolved directive in %s - %s", e.Filename, e.rawText)
+}
+
+var _ error = FileInclusionError{}
 
 func readWithinLines(scanner *bufio.Scanner, content *bytes.Buffer, lineRanges types.LineRanges) error {
 	log.Debugf("limiting to line ranges: %v", lineRanges)
@@ -264,7 +244,6 @@ func open(path string) (*os.File, string, func(), error) {
 		return nil, "", func() {}, err
 	}
 	absPath, err := filepath.Abs(path)
-	log.Debugf("file path: %s", absPath)
 	if err != nil {
 		return nil, "", func() {
 			log.Debugf("restoring current working dir to: %s", wd)
@@ -284,6 +263,7 @@ func open(path string) (*os.File, string, func(), error) {
 		}, err
 	}
 	// read the file per-se
+	log.Debugf("opening '%s'", absPath)
 	f, err := os.Open(absPath)
 	if err != nil {
 		return nil, absPath, func() {

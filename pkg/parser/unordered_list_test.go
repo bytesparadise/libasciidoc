@@ -4,8 +4,8 @@ import (
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 	. "github.com/bytesparadise/libasciidoc/testsupport"
 
-	. "github.com/onsi/ginkgo"
-	. "github.com/onsi/gomega"
+	. "github.com/onsi/ginkgo" //nolint golint
+	. "github.com/onsi/gomega" //nolint golint
 )
 
 var _ = Describe("unordered lists - draft", func() {
@@ -1122,15 +1122,8 @@ another delimited block
 							Attributes: types.ElementAttributes{},
 							Kind:       types.Listing,
 							Elements: []interface{}{
-								types.Paragraph{
-									Attributes: types.ElementAttributes{},
-									Lines: [][]interface{}{
-										{
-											types.StringElement{
-												Content: "a delimited block",
-											},
-										},
-									},
+								types.VerbatimLine{
+									Content: "a delimited block",
 								},
 							},
 						},
@@ -1141,15 +1134,8 @@ another delimited block
 							Attributes: types.ElementAttributes{},
 							Kind:       types.Listing,
 							Elements: []interface{}{
-								types.Paragraph{
-									Attributes: types.ElementAttributes{},
-									Lines: [][]interface{}{
-										{
-											types.StringElement{
-												Content: "another delimited block",
-											},
-										},
-									},
+								types.VerbatimLine{
+									Content: "another delimited block",
 								},
 							},
 						},
@@ -1362,15 +1348,8 @@ another delimited block
 						Attributes: types.ElementAttributes{},
 						Kind:       types.Listing,
 						Elements: []interface{}{
-							types.Paragraph{
-								Attributes: types.ElementAttributes{},
-								Lines: [][]interface{}{
-									{
-										types.StringElement{
-											Content: "a delimited block",
-										},
-									},
-								},
+							types.VerbatimLine{
+								Content: "a delimited block",
 							},
 						},
 					},
@@ -1394,15 +1373,8 @@ another delimited block
 						Attributes: types.ElementAttributes{},
 						Kind:       types.Listing,
 						Elements: []interface{}{
-							types.Paragraph{
-								Attributes: types.ElementAttributes{},
-								Lines: [][]interface{}{
-									{
-										types.StringElement{
-											Content: "another delimited block",
-										},
-									},
-								},
+							types.VerbatimLine{
+								Content: "another delimited block",
 							},
 						},
 					},
@@ -2921,15 +2893,8 @@ another delimited block
 										Attributes: types.ElementAttributes{},
 										Kind:       types.Listing,
 										Elements: []interface{}{
-											types.Paragraph{
-												Attributes: types.ElementAttributes{},
-												Lines: [][]interface{}{
-													{
-														types.StringElement{
-															Content: "a delimited block",
-														},
-													},
-												},
+											types.VerbatimLine{
+												Content: "a delimited block",
 											},
 										},
 									},
@@ -2937,15 +2902,8 @@ another delimited block
 										Attributes: types.ElementAttributes{},
 										Kind:       types.Listing,
 										Elements: []interface{}{
-											types.Paragraph{
-												Attributes: types.ElementAttributes{},
-												Lines: [][]interface{}{
-													{
-														types.StringElement{
-															Content: "another delimited block",
-														},
-													},
-												},
+											types.VerbatimLine{
+												Content: "another delimited block",
 											},
 										},
 									},
@@ -3182,15 +3140,8 @@ another delimited block
 						Attributes: types.ElementAttributes{},
 						Kind:       types.Listing,
 						Elements: []interface{}{
-							types.Paragraph{
-								Attributes: types.ElementAttributes{},
-								Lines: [][]interface{}{
-									{
-										types.StringElement{
-											Content: "a delimited block",
-										},
-									},
-								},
+							types.VerbatimLine{
+								Content: "a delimited block",
 							},
 						},
 					},
@@ -3219,15 +3170,8 @@ another delimited block
 						Attributes: types.ElementAttributes{},
 						Kind:       types.Listing,
 						Elements: []interface{}{
-							types.Paragraph{
-								Attributes: types.ElementAttributes{},
-								Lines: [][]interface{}{
-									{
-										types.StringElement{
-											Content: "another delimited block",
-										},
-									},
-								},
+							types.VerbatimLine{
+								Content: "another delimited block",
 							},
 						},
 					},

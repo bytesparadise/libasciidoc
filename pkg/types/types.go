@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"net/url"
+	"regexp"
 	"sort"
 	"strconv"
 	"strings"
@@ -1379,38 +1380,12 @@ type DelimitedBlock struct {
 	Elements   []interface{} // TODO: rename to `Blocks`?
 }
 
-// Substitution the substitution group to apply when initializing a delimited block
-type Substitution func([]interface{}) ([]interface{}, error)
-
-// None returns the content as-is, but nil-safe
-func None(content []interface{}) ([]interface{}, error) {
-	return NilSafe(content), nil
-}
-
-// Verbatim the verbatim substitution: the given content is converted into an array of strings.
-func Verbatim(content []interface{}) ([]interface{}, error) {
-	result := make([]interface{}, len(content))
-	for i, c := range content {
-		if c, ok := c.(string); ok {
-			c = Apply(c, func(s string) string {
-				return strings.TrimRight(c, "\n\r")
-			})
-			result[i], _ = NewStringElement(c)
-		}
-	}
-	return result, nil
-}
-
-// NewDelimitedBlock initializes a new `DelimitedBlock` of the given kind with the given content
-func NewDelimitedBlock(kind BlockKind, content []interface{}, substitution Substitution, attributes interface{}) (DelimitedBlock, error) {
-	// log.Debugf("initializing a new DelimitedBlock of kind '%v' with %d elements", kind, len(content))
+// NewDelimitedBlock initializes a new `DelimitedBlock` of the given kind with the given elements
+func NewDelimitedBlock(kind BlockKind, elements []interface{}, attributes interface{}) (DelimitedBlock, error) {
+	log.Debugf("initializing a new DelimitedBlock of kind '%v' with %d elements", kind, len(elements))
 	attrs := ElementAttributes{}
 	if attributes, ok := attributes.(ElementAttributes); ok {
 		attrs.AddAll(attributes)
-	}
-	elements, err := substitution(content)
-	if err != nil {
-		return DelimitedBlock{}, errors.Wrapf(err, "failed to initialize a new delimited block")
 	}
 	if k := attrs.GetAsString(AttrKind); k != "" { // override default kind
 		// log.Debugf("overriding kind '%s' to '%s'", b.Kind, attributes[AttrKind])
@@ -1419,7 +1394,7 @@ func NewDelimitedBlock(kind BlockKind, content []interface{}, substitution Subst
 	return DelimitedBlock{
 		Attributes: attrs,
 		Kind:       kind,
-		Elements:   elements,
+		Elements:   NilSafe(elements),
 	}, nil
 }
 
@@ -1592,6 +1567,32 @@ func NewStringElement(content string) (StringElement, error) {
 
 // String return the content of this StringElement
 func (s StringElement) String() string {
+	return s.Content
+}
+
+// ------------------------------------------
+// VerbatimLine
+// ------------------------------------------
+
+// VerbatimLine the structure for verbatim line, ie, read "as-is" from a given text document.
+type VerbatimLine struct {
+	Content string
+}
+
+// NewVerbatimLine initializes a new `VerbatimLine` from the given content
+func NewVerbatimLine(content string) (VerbatimLine, error) {
+	return VerbatimLine{Content: content}, nil
+}
+
+var emptyStringRE = regexp.MustCompile(` \t`)
+
+// IsEmpty return `true` if the line contains only whitespaces and tabs
+func (s VerbatimLine) IsEmpty() bool {
+	return len(s.Content) == 0 || emptyStringRE.MatchString(s.Content)
+}
+
+// String return the content of this VerbatimLine
+func (s VerbatimLine) String() string {
 	return s.Content
 }
 
@@ -2031,7 +2032,7 @@ type Location struct {
 // NewLocation return a new location with the given elements
 func NewLocation(elements []interface{}) (Location, error) {
 	elements = Merge(elements)
-	log.Debugf("new location: %+v", elements)
+	// log.Debugf("new location: %+v", elements)
 	return Location{
 		Elements: elements,
 	}, nil

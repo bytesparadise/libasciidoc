@@ -11,8 +11,8 @@ import (
 	"github.com/bytesparadise/libasciidoc/pkg/renderer/html5"
 
 	"github.com/davecgh/go-spew/spew"
-	. "github.com/onsi/ginkgo"
-	. "github.com/onsi/gomega"
+	. "github.com/onsi/ginkgo" //nolint golint
+	. "github.com/onsi/gomega" //nolint golint
 )
 
 var _ = Describe("article.adoc", func() {
