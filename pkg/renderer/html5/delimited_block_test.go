@@ -3,8 +3,8 @@ package html5_test
 import (
 	. "github.com/bytesparadise/libasciidoc/testsupport"
 
-	. "github.com/onsi/ginkgo"
-	. "github.com/onsi/gomega"
+	. "github.com/onsi/ginkgo" //nolint golint
+	. "github.com/onsi/gomega" //nolint golint
 )
 
 var _ = Describe("delimited blocks", func() {
@@ -12,7 +12,7 @@ var _ = Describe("delimited blocks", func() {
 	Context("fenced blocks", func() {
 
 		It("fenced block with multiple lines", func() {
-			source := "```\nsome source code\n\nhere\n\n\n\n```"
+			source := "```\n\nsome source code \n\nhere  \n\n\n\n```"
 			expected := `<div class="listingblock">
 <div class="content">
 <pre class="highlight"><code>some source code
@@ -55,7 +55,7 @@ next lines</code></pre>
 
 	Context("listing blocks", func() {
 
-		It("listing block with multiple lines", func() {
+		It("with multiple lines", func() {
 			source := `----
 some source code
 
@@ -72,7 +72,7 @@ here</pre>
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
-		It("listing block with ID and title", func() {
+		It("with ID and title", func() {
 			source := `[#id-for-listing-block]
 .listing block title
 ----
@@ -87,7 +87,7 @@ some source code
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
-		It("listing block with ID and title and empty trailing line", func() {
+		It("with ID and title and empty trailing line", func() {
 			source := `[#id-for-listing-block]
 .listing block title
 ----
@@ -98,6 +98,18 @@ some source code
 <div class="title">listing block title</div>
 <div class="content">
 <pre>some source code</pre>
+</div>
+</div>`
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
+		})
+
+		It("with html content", func() {
+			source := `----
+<a>link</a>
+----`
+			expected := `<div class="listingblock">
+<div class="content">
+<pre>&lt;a&gt;link&lt;/a&gt;</pre>
 </div>
 </div>`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
@@ -201,12 +213,13 @@ end</code></pre>
 		})
 
 		It("with html content", func() {
-			source := `----
+			source := `[source]
+----
 <a>link</a>
 ----`
 			expected := `<div class="listingblock">
 <div class="content">
-<pre>&lt;a&gt;link&lt;/a&gt;</pre>
+<pre class="highlight"><code>&lt;a&gt;link&lt;/a&gt;</code></pre>
 </div>
 </div>`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))

@@ -7,8 +7,8 @@ import (
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 	. "github.com/bytesparadise/libasciidoc/testsupport"
 
-	. "github.com/onsi/ginkgo"
-	. "github.com/onsi/gomega"
+	. "github.com/onsi/ginkgo" //nolint golint
+	. "github.com/onsi/gomega" //nolint golint
 	log "github.com/sirupsen/logrus"
 )
 
@@ -325,7 +325,7 @@ a third paragraph`
 		Expect(RenderHTML(source)).To(MatchHTML(expected))
 	})
 
-	Context("file inclusion in delimited blocks", func() {
+	Context("in delimited blocks", func() {
 
 		Context("adoc file inclusion in delimited blocks", func() {
 
@@ -924,7 +924,7 @@ last line of grandchild</pre>
 
 		Context("in standalone block", func() {
 
-			It("should replace with string element if file is missing", func() {
+			It("should replace with error message if file is missing", func() {
 				// setup logger to write in a buffer so we can check the output
 				console, reset := ConfigureLogger()
 				defer reset()
@@ -935,14 +935,10 @@ last line of grandchild</pre>
 </div>`
 				Expect(RenderHTML(source, configuration.WithFilename("test.adoc"))).To(Equal(expected))
 				// verify error in logs
-				Expect(console).To(
-					ContainMessageWithLevel(
-						log.ErrorLevel,
-						"failed to include '../../../test/includes/unknown.adoc'",
-					))
+				Expect(console).To(ContainMessageWithLevel(log.ErrorLevel, "failed to include content of '../../../test/includes/unknown.adoc' in 'test.adoc'"))
 			})
 
-			It("should replace with string element if file with attribute in path is not resolved", func() {
+			It("should replace with error message if file with attribute in path is not resolved", func() {
 				// setup logger to write in a buffer so we can check the output
 				console, reset := ConfigureLogger()
 				defer reset()
@@ -953,17 +949,13 @@ last line of grandchild</pre>
 </div>`
 				Expect(RenderHTML(source, configuration.WithFilename("test.adoc"))).To(Equal(expected))
 				// verify error in logs
-				Expect(console).To(
-					ContainMessageWithLevel(
-						log.ErrorLevel,
-						"failed to include '{includedir}/unknown.adoc'",
-					))
+				Expect(console).To(ContainMessageWithLevel(log.ErrorLevel, "failed to include content of '{includedir}/unknown.adoc' in 'test.adoc'"))
 			})
 		})
 
 		Context("in listing block", func() {
 
-			It("should replace with string element if file is missing", func() {
+			It("should replace with error message if file is missing", func() {
 				// setup logger to write in a buffer so we can check the output
 				console, reset := ConfigureLogger()
 				defer reset()
@@ -976,16 +968,12 @@ include::../../../test/includes/unknown.adoc[leveloffset=+1]
 <pre>Unresolved directive in test.adoc - include::../../../test/includes/unknown.adoc[leveloffset=+1]</pre>
 </div>
 </div>`
-				Expect(RenderHTML(source, configuration.WithFilename("test.adoc"))).To(Equal(expected))
+				Expect(RenderHTML(source, configuration.WithFilename("test.adoc"))).To(MatchHTML(expected))
 				// verify error in logs
-				Expect(console).To(
-					ContainMessageWithLevel(
-						log.ErrorLevel,
-						"failed to include '../../../test/includes/unknown.adoc'",
-					))
+				Expect(console).To(ContainMessageWithLevel(log.ErrorLevel, "failed to include content of '../../../test/includes/unknown.adoc' in 'test.adoc'"))
 			})
 
-			It("should replace with string element if file with attribute in path is not resolved", func() {
+			It("should replace with error message if file with attribute in path is not resolved", func() {
 				// setup logger to write in a buffer so we can check the output
 				console, reset := ConfigureLogger()
 				defer reset()
@@ -1000,11 +988,7 @@ include::{includedir}/unknown.adoc[leveloffset=+1]
 </div>`
 				Expect(RenderHTML(source, configuration.WithFilename("test.adoc"))).To(Equal(expected))
 				// verify error in logs
-				Expect(console).To(
-					ContainMessageWithLevel(
-						log.ErrorLevel,
-						"failed to include '{includedir}/unknown.adoc'",
-					))
+				Expect(console).To(ContainMessageWithLevel(log.ErrorLevel, "failed to include content of '{includedir}/unknown.adoc' in 'test.adoc'"))
 			})
 		})
 	})

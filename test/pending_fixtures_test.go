@@ -3,7 +3,7 @@
 package test_test
 
 import (
-	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/ginkgo" //nolint golint
 	. "github.com/onsi/ginkgo/extensions/table"
 )
 

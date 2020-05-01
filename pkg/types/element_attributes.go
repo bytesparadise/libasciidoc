@@ -88,7 +88,7 @@ func NewInlineElementID(id string) (ElementAttributes, error) {
 
 // NewElementTitle initializes a new attribute map with a single entry for the title using the given value
 func NewElementTitle(title string) (ElementAttributes, error) {
-	log.Debugf("initializing a new ElementTitle with content=%s", title)
+	// log.Debugf("initializing a new ElementTitle with content=%s", title)
 	return ElementAttributes{
 		AttrTitle: title,
 	}, nil

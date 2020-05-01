@@ -9,8 +9,8 @@ import (
 	"github.com/bytesparadise/libasciidoc/testsupport"
 	"github.com/sergi/go-diff/diffmatchpatch"
 
-	. "github.com/onsi/ginkgo"
-	. "github.com/onsi/gomega"
+	. "github.com/onsi/ginkgo" //nolint golint
+	. "github.com/onsi/gomega" //nolint golint
 )
 
 var _ = Describe("html5 template matcher", func() {
