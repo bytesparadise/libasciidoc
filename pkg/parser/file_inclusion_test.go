@@ -24,42 +24,42 @@ var _ = DescribeTable("'FileLocation' pattern",
 		Expect(actual).To(Equal(expected))
 	},
 	Entry("'chapter'", "chapter", types.Location{
-		Elements: []interface{}{
+		Path: []interface{}{
 			types.StringElement{
 				Content: "chapter",
 			},
 		},
 	}),
 	Entry("'chapter.adoc'", "chapter.adoc", types.Location{
-		Elements: []interface{}{
+		Path: []interface{}{
 			types.StringElement{
 				Content: "chapter.adoc",
 			},
 		},
 	}),
 	Entry("'chapter-a.adoc'", "chapter-a.adoc", types.Location{
-		Elements: []interface{}{
+		Path: []interface{}{
 			types.StringElement{
 				Content: "chapter-a.adoc",
 			},
 		},
 	}),
 	Entry("'chapter_a.adoc'", "chapter_a.adoc", types.Location{
-		Elements: []interface{}{
+		Path: []interface{}{
 			types.StringElement{
 				Content: "chapter_a.adoc",
 			},
 		},
 	}),
 	Entry("'../../test/includes/chapter_a.adoc'", "../../test/includes/chapter_a.adoc", types.Location{
-		Elements: []interface{}{
+		Path: []interface{}{
 			types.StringElement{
 				Content: "../../test/includes/chapter_a.adoc",
 			},
 		},
 	}),
 	Entry("'chapter-{foo}.adoc'", "chapter-{foo}.adoc", types.Location{
-		Elements: []interface{}{
+		Path: []interface{}{
 			types.StringElement{
 				Content: "chapter-",
 			},
@@ -72,7 +72,7 @@ var _ = DescribeTable("'FileLocation' pattern",
 		},
 	}),
 	Entry("'{includedir}/chapter-{foo}.adoc'", "{includedir}/chapter-{foo}.adoc", types.Location{
-		Elements: []interface{}{
+		Path: []interface{}{
 			types.DocumentAttributeSubstitution{
 				Name: "includedir",
 			},
@@ -84,6 +84,19 @@ var _ = DescribeTable("'FileLocation' pattern",
 			},
 			types.StringElement{
 				Content: ".adoc",
+			},
+		},
+	}),
+	Entry("'{scheme}://{path}'", "{scheme}://{path}", types.Location{
+		Path: []interface{}{
+			types.DocumentAttributeSubstitution{
+				Name: "scheme",
+			},
+			types.StringElement{
+				Content: "://",
+			},
+			types.DocumentAttributeSubstitution{
+				Name: "path",
 			},
 		},
 	}),
@@ -117,7 +130,7 @@ var _ = Describe("file inclusions", func() {
 						types.FileInclusion{
 							Attributes: types.ElementAttributes{},
 							Location: types.Location{
-								Elements: []interface{}{
+								Path: []interface{}{
 									types.StringElement{
 										Content: "../../test/includes/chapter-a.adoc",
 									},
@@ -142,7 +155,7 @@ var _ = Describe("file inclusions", func() {
 						types.FileInclusion{
 							Attributes: types.ElementAttributes{},
 							Location: types.Location{
-								Elements: []interface{}{
+								Path: []interface{}{
 									types.StringElement{
 										Content: "../../../test/includes/chapter-a.adoc",
 									},
@@ -167,7 +180,7 @@ var _ = Describe("file inclusions", func() {
 								types.AttrLevelOffset: "+1",
 							},
 							Location: types.Location{
-								Elements: []interface{}{
+								Path: []interface{}{
 									types.StringElement{
 										Content: "../../test/includes/chapter-a.adoc",
 									},
@@ -196,7 +209,7 @@ var _ = Describe("file inclusions", func() {
 									types.FileInclusion{
 										Attributes: types.ElementAttributes{},
 										Location: types.Location{
-											Elements: []interface{}{
+											Path: []interface{}{
 												types.StringElement{
 													Content: "../../test/includes/chapter-a.adoc",
 												},
@@ -224,7 +237,7 @@ var _ = Describe("file inclusions", func() {
 									types.FileInclusion{
 										Attributes: types.ElementAttributes{},
 										Location: types.Location{
-											Elements: []interface{}{
+											Path: []interface{}{
 												types.StringElement{
 													Content: "../../test/includes/chapter-a.adoc",
 												},
@@ -252,7 +265,7 @@ var _ = Describe("file inclusions", func() {
 									types.FileInclusion{
 										Attributes: types.ElementAttributes{},
 										Location: types.Location{
-											Elements: []interface{}{
+											Path: []interface{}{
 												types.StringElement{
 													Content: "../../test/includes/chapter-a.adoc",
 												},
@@ -280,7 +293,7 @@ var _ = Describe("file inclusions", func() {
 									types.FileInclusion{
 										Attributes: types.ElementAttributes{},
 										Location: types.Location{
-											Elements: []interface{}{
+											Path: []interface{}{
 												types.StringElement{
 													Content: "../../test/includes/chapter-a.adoc",
 												},
@@ -311,7 +324,7 @@ var _ = Describe("file inclusions", func() {
 									types.FileInclusion{
 										Attributes: types.ElementAttributes{},
 										Location: types.Location{
-											Elements: []interface{}{
+											Path: []interface{}{
 												types.StringElement{
 													Content: "../../test/includes/chapter-a.adoc",
 												},
@@ -339,7 +352,7 @@ var _ = Describe("file inclusions", func() {
 									types.FileInclusion{
 										Attributes: types.ElementAttributes{},
 										Location: types.Location{
-											Elements: []interface{}{
+											Path: []interface{}{
 												types.StringElement{
 													Content: "../../test/includes/chapter-a.adoc",
 												},
@@ -368,7 +381,7 @@ var _ = Describe("file inclusions", func() {
 									types.FileInclusion{
 										Attributes: types.ElementAttributes{},
 										Location: types.Location{
-											Elements: []interface{}{
+											Path: []interface{}{
 												types.StringElement{
 													Content: "../../test/includes/chapter-a.adoc",
 												},
@@ -399,7 +412,7 @@ var _ = Describe("file inclusions", func() {
 										},
 									},
 									Location: types.Location{
-										Elements: []interface{}{
+										Path: []interface{}{
 											types.StringElement{
 												Content: "../../test/includes/chapter-a.adoc",
 											},
@@ -424,7 +437,7 @@ var _ = Describe("file inclusions", func() {
 										},
 									},
 									Location: types.Location{
-										Elements: []interface{}{
+										Path: []interface{}{
 											types.StringElement{
 												Content: "../../test/includes/chapter-a.adoc",
 											},
@@ -451,7 +464,7 @@ var _ = Describe("file inclusions", func() {
 										},
 									},
 									Location: types.Location{
-										Elements: []interface{}{
+										Path: []interface{}{
 											types.StringElement{
 												Content: "../../test/includes/chapter-a.adoc",
 											},
@@ -474,7 +487,7 @@ var _ = Describe("file inclusions", func() {
 										types.AttrLineRanges: `1;3..4;6..foo`,
 									},
 									Location: types.Location{
-										Elements: []interface{}{
+										Path: []interface{}{
 											types.StringElement{
 												Content: "../../test/includes/chapter-a.adoc",
 											},
@@ -501,7 +514,7 @@ var _ = Describe("file inclusions", func() {
 										"6..-1": nil,
 									},
 									Location: types.Location{
-										Elements: []interface{}{
+										Path: []interface{}{
 											types.StringElement{
 												Content: "../../test/includes/chapter-a.adoc",
 											},
@@ -524,7 +537,7 @@ var _ = Describe("file inclusions", func() {
 										types.AttrLineRanges: "foo",
 									},
 									Location: types.Location{
-										Elements: []interface{}{
+										Path: []interface{}{
 											types.StringElement{
 												Content: "../../test/includes/chapter-a.adoc",
 											},
@@ -552,7 +565,7 @@ var _ = Describe("file inclusions", func() {
 										},
 									},
 									Location: types.Location{
-										Elements: []interface{}{
+										Path: []interface{}{
 											types.StringElement{
 												Content: "../../test/includes/chapter-a.adoc",
 											},
@@ -577,7 +590,7 @@ var _ = Describe("file inclusions", func() {
 										},
 									},
 									Location: types.Location{
-										Elements: []interface{}{
+										Path: []interface{}{
 											types.StringElement{
 												Content: "../../test/includes/chapter-a.adoc",
 											},
@@ -604,7 +617,7 @@ var _ = Describe("file inclusions", func() {
 										},
 									},
 									Location: types.Location{
-										Elements: []interface{}{
+										Path: []interface{}{
 											types.StringElement{
 												Content: "../../test/includes/chapter-a.adoc",
 											},
@@ -629,7 +642,7 @@ var _ = Describe("file inclusions", func() {
 										"6..foo":             nil,
 									},
 									Location: types.Location{
-										Elements: []interface{}{
+										Path: []interface{}{
 											types.StringElement{
 												Content: "../../test/includes/chapter-a.adoc",
 											},
@@ -652,7 +665,7 @@ var _ = Describe("file inclusions", func() {
 										types.AttrLineRanges: `"1;3..4;6..10"`,
 									},
 									Location: types.Location{
-										Elements: []interface{}{
+										Path: []interface{}{
 											types.StringElement{
 												Content: "../../test/includes/chapter-a.adoc",
 											},
@@ -683,7 +696,7 @@ var _ = Describe("file inclusions", func() {
 										},
 									},
 									Location: types.Location{
-										Elements: []interface{}{
+										Path: []interface{}{
 											types.StringElement{
 												Content: "../../test/includes/tag-include.adoc",
 											},
@@ -715,7 +728,7 @@ var _ = Describe("file inclusions", func() {
 										},
 									},
 									Location: types.Location{
-										Elements: []interface{}{
+										Path: []interface{}{
 											types.StringElement{
 												Content: "../../test/includes/tag-include.adoc",
 											},

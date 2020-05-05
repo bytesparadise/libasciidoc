@@ -13,7 +13,7 @@ var _ = Describe("q and a lists", func() {
 	It("q and a with title", func() {
 		source := `.Q&A
 [qanda]
-What is libsciidoc?::
+What is libasciidoc?::
 	An implementation of the AsciiDoc processor in Golang.
 What is the answer to the Ultimate Question?:: 42`
 
@@ -33,7 +33,7 @@ What is the answer to the Ultimate Question?:: 42`
 							Level:      1,
 							Term: []interface{}{
 								types.StringElement{
-									Content: "What is libsciidoc?",
+									Content: "What is libasciidoc?",
 								},
 							},
 							Elements: []interface{}{

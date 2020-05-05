@@ -615,10 +615,10 @@ type ContinuedListItemElement struct {
 }
 
 // NewContinuedListItemElement returns a wrapper for an element which should be attached to a list item (same level or an ancestor)
-func NewContinuedListItemElement(offset int, element interface{}) (ContinuedListItemElement, error) {
+func NewContinuedListItemElement(element interface{}) (ContinuedListItemElement, error) {
 	// log.Debugf("initializing a new continued list element for element of type %T", element)
 	return ContinuedListItemElement{
-		Offset:  offset,
+		Offset:  0,
 		Element: element,
 	}, nil
 }
@@ -1117,9 +1117,7 @@ const (
 
 // NewInlineElements initializes a new `InlineElements` from the given values
 func NewInlineElements(elements ...interface{}) ([]interface{}, error) {
-	result := Merge(elements...)
-	return result, nil
-
+	return Merge(elements...), nil
 }
 
 // ------------------------------------------
@@ -1154,7 +1152,7 @@ type ExternalCrossReference struct {
 // NewExternalCrossReference initializes a new `InternalCrossReference` from the given ID
 func NewExternalCrossReference(location Location, attributes ElementAttributes) (ExternalCrossReference, error) {
 	var label []interface{}
-	if l, ok := attributes[AttrInlineLinkText].([]interface{}); ok {
+	if l, ok := attributes["positional-1"].([]interface{}); ok {
 		label = l
 	}
 	log.Debugf("initializing a new ExternalCrossReference with Location=%v and label='%s' (attrs=%v / %T)", location, label, attributes, attributes[AttrInlineLinkText])
@@ -1387,9 +1385,10 @@ func NewDelimitedBlock(kind BlockKind, elements []interface{}, attributes interf
 	if attributes, ok := attributes.(ElementAttributes); ok {
 		attrs.AddAll(attributes)
 	}
-	if k := attrs.GetAsString(AttrKind); k != "" { // override default kind
-		// log.Debugf("overriding kind '%s' to '%s'", b.Kind, attributes[AttrKind])
-		kind = BlockKind(k)
+	log.Debugf("attributes: %v -> '%s'", attrs, attrs.GetAsString(AttrKind))
+	if k, found := attrs[AttrKind].(BlockKind); found { // override default kind
+		log.Debugf("overriding kind '%s' to '%s'", kind, k)
+		kind = k
 	}
 	return DelimitedBlock{
 		Attributes: attrs,
@@ -1726,21 +1725,24 @@ func NewInlineLink(url Location, attrs interface{}) (InlineLink, error) {
 }
 
 // AttrInlineLinkText the link `text` attribute
-const AttrInlineLinkText string = "text"
+const AttrInlineLinkText string = "positional-1"
 
-// NewInlineLinkAttributes returns a map of link attributes, some of which have implicit keys (`text`)
-func NewInlineLinkAttributes(text interface{}, otherattrs []interface{}) (ElementAttributes, error) {
+// NewInlineLinkAttributes returns a map of link attributes
+func NewInlineLinkAttributes(attributes []interface{}) (ElementAttributes, error) {
+	log.Debugf("new inline link attributes: %v", attributes)
 	result := ElementAttributes{}
-	if text, ok := text.([]interface{}); ok {
-		result[AttrInlineLinkText] = text
-	}
-	for _, otherAttr := range otherattrs {
-		if otherAttr, ok := otherAttr.(ElementAttributes); ok {
-			for k, v := range otherAttr {
+	for i, attr := range attributes {
+		log.Debugf("new inline link attribute: '%[1]v' (%[1]T)", attr)
+		switch attr := attr.(type) {
+		case ElementAttributes:
+			for k, v := range attr {
 				result[k] = v
 			}
+		case []interface{}:
+			result["positional-"+strconv.Itoa(i+1)] = attr
 		}
 	}
+	log.Debugf("new inline link attributes: %v", result)
 	return result, nil
 }
 
@@ -2026,15 +2028,21 @@ func NewIncludedFileEndTag(tag string) (IncludedFileEndTag, error) {
 
 // Location a Location contains characters and optionaly, document attributes
 type Location struct {
-	Elements []interface{}
+	Scheme string
+	Path   []interface{}
 }
 
 // NewLocation return a new location with the given elements
-func NewLocation(elements []interface{}) (Location, error) {
-	elements = Merge(elements)
-	// log.Debugf("new location: %+v", elements)
+func NewLocation(scheme interface{}, path []interface{}) (Location, error) {
+	path = Merge(path)
+	// log.Debugf("new location: '%[1]s' (%[1]T) '%+[2]v", scheme, path)
+	s := ""
+	if scheme, ok := scheme.([]byte); ok {
+		s = string(scheme)
+	}
 	return Location{
-		Elements: elements,
+		Scheme: s,
+		Path:   path,
 	}, nil
 }
 
@@ -2044,8 +2052,13 @@ func NewLocation(elements []interface{}) (Location, error) {
 // returns the resolved attribute
 func (l Location) String() string { // (attrs map[string]string) string {
 	result := bytes.NewBuffer(nil)
-	for _, e := range l.Elements {
-		result.WriteString(fmt.Sprintf("%s", e))
+	result.WriteString(l.Scheme)
+	for _, e := range l.Path {
+		if s, ok := e.(string); ok {
+			result.WriteString(s) // no need to use `fmt.Sprintf` for elements of type 'string'
+		} else {
+			result.WriteString(fmt.Sprintf("%s", e))
+		}
 	}
 	return result.String()
 }
@@ -2058,7 +2071,7 @@ const imagesdir = "imagesdir"
 // returns `true` if some document attribute substitution occurred
 func (l *Location) Resolve(attrs DocumentAttributesWithOverrides) Location {
 	content := bytes.NewBuffer(nil)
-	for _, e := range l.Elements {
+	for _, e := range l.Path {
 		switch e := e.(type) {
 		case DocumentAttributeSubstitution:
 			if value, found := attrs.GetAsString(e.Name); found {
@@ -2069,11 +2082,15 @@ func (l *Location) Resolve(attrs DocumentAttributesWithOverrides) Location {
 				content.WriteRune('}')
 			}
 		default:
-			content.WriteString(fmt.Sprintf("%s", e))
+			if s, ok := e.(string); ok {
+				content.WriteString(s) // no need to use `fmt.Sprintf` for elements of type 'string'
+			} else {
+				content.WriteString(fmt.Sprintf("%s", e))
+			}
 		}
 	}
 	location := content.String()
-	if !strings.HasPrefix(location, "/") {
+	if l.Scheme == "" && !strings.HasPrefix(location, "/") {
 		if u, err := url.Parse(location); err == nil {
 			if !u.IsAbs() {
 				if imagesdir, ok := attrs.GetAsString(imagesdir); ok {
@@ -2083,7 +2100,8 @@ func (l *Location) Resolve(attrs DocumentAttributesWithOverrides) Location {
 		}
 	}
 	return Location{
-		Elements: []interface{}{
+		Scheme: l.Scheme,
+		Path: []interface{}{
 			StringElement{
 				Content: location,
 			},

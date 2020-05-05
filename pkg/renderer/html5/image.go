@@ -2,7 +2,7 @@ package html5
 
 import (
 	"bytes"
-	"fmt"
+	"strconv"
 	texttemplate "text/template"
 
 	"github.com/bytesparadise/libasciidoc/pkg/renderer"
@@ -35,7 +35,8 @@ func renderImageBlock(ctx renderer.Context, img types.ImageBlock) ([]byte, error
 	result := bytes.NewBuffer(nil)
 	title := ""
 	if t := img.Attributes.GetAsString(types.AttrTitle); t != "" {
-		title = fmt.Sprintf("Figure %d. %s", ctx.GetAndIncrementImageCounter(), EscapeString(t))
+		// title = fmt.Sprintf("Figure %d. %s", ctx.GetAndIncrementImageCounter(), EscapeString(t))
+		title = "Figure " + strconv.Itoa(ctx.GetAndIncrementImageCounter()) + ". " + EscapeString(t)
 	}
 	err := blockImageTmpl.Execute(result, struct {
 		ID     string

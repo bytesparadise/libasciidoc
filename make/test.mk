@@ -29,8 +29,6 @@ test-fixtures: generate-optimized
 
 .PHONY: bench-parser
 ## run the benchmarks on the parser
-bench-parser: generate-optimized
-	$(eval GIT_BRANCH:=$(shell git rev-parse --abbrev-ref HEAD))
-	go test -run="XXX" -bench=. -benchmem -count=10 \
-		github.com/bytesparadise/libasciidoc/pkg/parser | \
-		tee ./tmp/bench-$(GIT_BRANCH).txt
+bench-parser: generate
+	@ginkgo -tags bench -focus "real-world doc-based benchmarks" pkg/parser
+	@ginkgo -tags bench -focus "basic stats" pkg/parser

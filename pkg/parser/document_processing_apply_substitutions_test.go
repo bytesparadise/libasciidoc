@@ -271,9 +271,10 @@ var _ = Describe("document attribute subsititutions", func() {
 						types.InlineLink{
 							Attributes: types.ElementAttributes{},
 							Location: types.Location{
-								Elements: []interface{}{
+								Scheme: "https://",
+								Path: []interface{}{
 									types.StringElement{
-										Content: "https://foo.bar",
+										Content: "foo.bar",
 									},
 								},
 							},

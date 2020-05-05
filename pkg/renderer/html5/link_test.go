@@ -28,10 +28,26 @@ var _ = Describe("links", func() {
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
-		It("external link with text having comma", func() {
+		It("external link with unquoted text having comma", func() {
 			source := "https://foo.com[A, B, and C]"
 			expected := `<div class="paragraph">
 <p><a href="https://foo.com">A, B, and C</a></p>
+</div>`
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
+		})
+
+		// 		It("email link with unquoted text having comma", func() {
+		// 			source := "mailto:foo@example.com[A, B, and C]"
+		// 			expected := `<div class="paragraph">
+		// <p><a href="mailto:foo@example.com?subject=B&amp;body=and+C">A</a></p>
+		// </div>`
+		// 			Expect(RenderHTML(source)).To(MatchHTML(expected))
+		// 		})
+
+		It("email link with quoted text having comma", func() {
+			source := `mailto:foo@example.com["A, B, and C"]`
+			expected := `<div class="paragraph">
+<p><a href="mailto:foo@example.com">A, B, and C</a></p>
 </div>`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})

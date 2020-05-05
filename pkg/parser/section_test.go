@@ -492,8 +492,9 @@ a paragraph`
 				types.InlineLink{
 					Attributes: types.ElementAttributes{},
 					Location: types.Location{
-						Elements: []interface{}{
-							types.StringElement{Content: "https://foo.bar"},
+						Scheme: "https://",
+						Path: []interface{}{
+							types.StringElement{Content: "foo.bar"},
 						},
 					},
 				},

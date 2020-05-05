@@ -831,6 +831,7 @@ some *verse* content
 .title for sidebar
 ****
 some *verse* content
+
 ----
 foo
 bar

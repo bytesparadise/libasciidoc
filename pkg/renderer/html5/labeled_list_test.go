@@ -484,7 +484,7 @@ Item 3 description`
 		It("q and a with title", func() {
 			source := `.Q&A
 [qanda]
-What is libsciidoc?::
+What is libasciidoc?::
 	An implementation of the AsciiDoc processor in Golang.
 What is the answer to the Ultimate Question?:: 42`
 
@@ -492,7 +492,7 @@ What is the answer to the Ultimate Question?:: 42`
 <div class="title">Q&amp;A</div>
 <ol>
 <li>
-<p><em>What is libsciidoc?</em></p>
+<p><em>What is libasciidoc?</em></p>
 <p>An implementation of the AsciiDoc processor in Golang.</p>
 </li>
 <li>

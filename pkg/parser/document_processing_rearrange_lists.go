@@ -15,7 +15,9 @@ func rearrangeListItems(blocks []interface{}, withinDelimitedBlock bool) ([]inte
 	// log.Debugf("rearranging list items in %d blocks...", len(blocks))
 	result := make([]interface{}, 0, len(blocks)) // maximum capacity cannot exceed initial input
 	lists := []types.List{}                       // at each level (or depth), we have a list, whatever its type.
-	blankline := false                            // track if the previous block was a blank line
+	// track if the previous block was a blank line.
+	// also, count the blanklines to determine the level of parent attachment when reaching a `ContinuedListItemElement`
+	blanklineCount := 0
 	for _, block := range blocks {
 		switch block := block.(type) {
 		case types.DelimitedBlock:
@@ -41,7 +43,7 @@ func rearrangeListItems(blocks []interface{}, withinDelimitedBlock bool) ([]inte
 		case types.OrderedListItem, types.UnorderedListItem, types.LabeledListItem:
 			// there's a special case: if the next list item has attributes and was preceded by a
 			// blank line, then we need to start a new list
-			if blankline && len(block.(types.DocumentElement).GetAttributes()) > 0 {
+			if blanklineCount > 0 && len(block.(types.DocumentElement).GetAttributes()) > 0 {
 				if len(lists) > 0 {
 					for _, list := range pruneLists(lists, 0) {
 						result = append(result, unPtr(list))
@@ -55,10 +57,11 @@ func rearrangeListItems(blocks []interface{}, withinDelimitedBlock bool) ([]inte
 			if err != nil {
 				return nil, errors.Wrapf(err, "unable to rearrange list items in delimited block")
 			}
-			blankline = false
+			blanklineCount = 0
 		case types.ContinuedListItemElement:
+			block.Offset = blanklineCount
 			lists = appendContinuedListItemElement(lists, block)
-			blankline = false
+			blanklineCount = 0
 		case types.BlankLine:
 			// blank lines are not part of the resulting Document sections (or top-level), but they are part of the delimited blocks
 			// in some cases, they can also be used to split lists apart (when the next item has some attributes,
@@ -66,9 +69,9 @@ func rearrangeListItems(blocks []interface{}, withinDelimitedBlock bool) ([]inte
 			if withinDelimitedBlock && len(lists) == 0 { // only retain blank lines if within a delimited block, but not currently dealing with a list (or a set of nested lists)
 				result = append(result, block)
 			}
-			blankline = true
+			blanklineCount++
 		default:
-			blankline = false
+			blanklineCount = 0
 			// an block which is not a list item was found.
 			// the first thing to do is to process the pending list items,
 			// then only append this block to the result
@@ -227,7 +230,7 @@ func parseLabeledListItemTerm(term string) ([]interface{}, error) {
 }
 
 func appendContinuedListItemElement(lists []types.List, item types.ContinuedListItemElement) []types.List {
-	lists = pruneLists(lists, len(lists)-1+item.Offset)
+	lists = pruneLists(lists, len(lists)-1-item.Offset)
 	log.Debugf("appending continued list item element with offset=%d (depth=%d)", item.Offset, len(lists))
 	// lookup the list at which the item should be attached
 	parentList := &(lists[len(lists)-1])

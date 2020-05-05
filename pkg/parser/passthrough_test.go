@@ -186,7 +186,9 @@ var _ = Describe("passthroughs - draft", func() {
 					},
 				},
 			}
-			Expect(ParseDocumentBlock(source)).To(Equal(expected))
+			result, err := ParseDocumentBlock(source)
+			Expect(err).NotTo(HaveOccurred())
+			Expect(result).To(Equal(expected))
 		})
 
 		It("singleplus passthrough with embedded image", func() {

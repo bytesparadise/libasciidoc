@@ -111,7 +111,7 @@ var _ = Describe("delimited blocks", func() {
 
 			It("fenced block after a paragraph", func() {
 				content := "some fenced code"
-				source := "a paragraph.\n```\n" + content + "\n" + "```\n"
+				source := "a paragraph.\n\n```\n" + content + "\n" + "```\n"
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.Paragraph{
@@ -122,6 +122,7 @@ var _ = Describe("delimited blocks", func() {
 								},
 							},
 						},
+						types.BlankLine{},
 						types.DelimitedBlock{
 							Attributes: types.ElementAttributes{},
 							Kind:       types.Fenced,
@@ -376,8 +377,9 @@ then a normal paragraph.`
 				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
-			It("listing block just after a paragraph", func() {
+			It("listing block after a paragraph", func() {
 				source := `a paragraph.
+
 ----
 some listing code
 ----`
@@ -391,6 +393,7 @@ some listing code
 								},
 							},
 						},
+						types.BlankLine{}, // blankline is required between paragraph and the next block
 						types.DelimitedBlock{
 							Attributes: types.ElementAttributes{},
 							Kind:       types.Listing,
@@ -1472,6 +1475,7 @@ some *verse* content
 				source := `.a title
 ****
 some *verse* content
+
 ----
 foo
 bar
@@ -1506,6 +1510,7 @@ bar
 										},
 									},
 								},
+								types.BlankLine{}, // blankline is required between paragraph and the next block
 								types.DelimitedBlock{
 									Attributes: types.ElementAttributes{},
 									Kind:       types.Listing,
@@ -1642,7 +1647,7 @@ bar
 
 			It("fenced block after a paragraph", func() {
 				content := "some fenced code"
-				source := "a paragraph.\n```\n" + content + "\n" + "```\n"
+				source := "a paragraph.\n\n```\n" + content + "\n" + "```\n"
 				expected := types.Document{
 					Attributes:        types.DocumentAttributes{},
 					ElementReferences: types.ElementReferences{},
@@ -1938,8 +1943,9 @@ then a normal paragraph.`
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
-			It("listing block just after a paragraph", func() {
+			It("listing block after a paragraph", func() {
 				source := `a paragraph.
+
 ----
 some listing code
 ----`
@@ -3145,6 +3151,7 @@ some *verse* content
 				source := `.a title
 ****
 some *verse* content
+
 ----
 foo
 bar
@@ -3182,6 +3189,7 @@ bar
 										},
 									},
 								},
+								types.BlankLine{}, // blankline is required between paragraph and the next block
 								types.DelimitedBlock{
 									Attributes: types.ElementAttributes{},
 									Kind:       types.Listing,

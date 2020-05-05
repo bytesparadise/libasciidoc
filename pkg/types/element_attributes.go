@@ -3,6 +3,7 @@ package types
 import (
 	"fmt"
 	"path/filepath"
+	"strconv"
 	"strings"
 
 	"github.com/pkg/errors"
@@ -214,7 +215,9 @@ func (a ElementAttributes) NilSafeSet(key string, value interface{}) {
 
 // GetAsString returns the value of the key as a string, or empty string if the key did not exist
 func (a ElementAttributes) GetAsString(key string) string {
-	if v, ok := a[key]; ok {
+	if v, ok := a[key].(string); ok {
+		return v
+	} else if v, ok := a[key]; ok {
 		return fmt.Sprintf("%v", v)
 	}
 	return ""
@@ -249,6 +252,21 @@ func (a ElementAttributes) AddNonEmpty(key string, value interface{}) {
 		return
 	}
 	a[key] = value
+}
+
+// Positionals returns all positional attributes, ie, the values for the keys in the form of `positional-<int>`
+func (a ElementAttributes) Positionals() [][]interface{} {
+	result := make([][]interface{}, 0, len(a))
+	i := 0
+	for {
+		i++
+		if arg, ok := a["positional-"+strconv.Itoa(i)].([]interface{}); ok {
+			result = append(result, arg)
+			continue
+		}
+		break
+	}
+	return result
 }
 
 // NewElementAttributes retrieves the ElementID, ElementTitle and ElementInlineLink from the given slice of attributes

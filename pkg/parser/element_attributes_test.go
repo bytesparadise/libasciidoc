@@ -50,6 +50,7 @@ a paragraph`
 		})
 
 		Context("invalid syntax", func() {
+
 			It("spaces before keyword", func() {
 				source := `[ link=http://foo.bar]
 a paragraph`
