@@ -225,9 +225,10 @@ var _ = Describe("table of contents initialization", func() {
 			types.StringElement{Content: "Section A with link to "},
 			types.InlineLink{
 				Location: types.Location{
-					Elements: []interface{}{
+					Scheme: "https://",
+					Path: []interface{}{
 						types.StringElement{
-							Content: "https://redhat.com",
+							Content: "redhat.com",
 						},
 					},
 				},

@@ -492,8 +492,9 @@ a paragraph`
 				types.InlineLink{
 					Attributes: types.ElementAttributes{},
 					Location: types.Location{
-						Elements: []interface{}{
-							types.StringElement{Content: "https://foo.bar"},
+						Scheme: "https://",
+						Path: []interface{}{
+							types.StringElement{Content: "foo.bar"},
 						},
 					},
 				},
@@ -651,6 +652,42 @@ a short preamble
 			}
 			Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 		})
+
+		It("header with 2 paragraphs and CRLFs", func() {
+			source := "= a title\r\n\r\na first paragraph\r\n\r\na second paragraph"
+			expected := types.DraftDocument{
+				Blocks: []interface{}{
+					types.Section{
+						Attributes: types.ElementAttributes{},
+						Level:      0,
+						Title: []interface{}{
+							types.StringElement{Content: "a title"},
+						},
+						Elements: []interface{}{},
+					},
+					types.BlankLine{},
+					types.Paragraph{
+						Attributes: types.ElementAttributes{},
+						Lines: [][]interface{}{
+							{
+								types.StringElement{Content: "a first paragraph"},
+							},
+						},
+					},
+					types.BlankLine{},
+					types.Paragraph{
+						Attributes: types.ElementAttributes{},
+						Lines: [][]interface{}{
+							{
+								types.StringElement{Content: "a second paragraph"},
+							},
+						},
+					},
+				},
+			}
+			Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+		})
+
 	})
 
 	Context("invalid sections", func() {

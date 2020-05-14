@@ -11,6 +11,7 @@ import (
 var _ = Describe("quoted texts", func() {
 
 	Context("draft document", func() {
+
 		Context("quoted text with single punctuation", func() {
 
 			It("bold text with 1 word", func() {
@@ -243,6 +244,72 @@ var _ = Describe("quoted texts", func() {
 				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
+			It("bold delimiter text within bold text", func() {
+				source := "*bold*content*"
+				expected := types.DraftDocument{
+					Blocks: []interface{}{
+						types.Paragraph{
+							Attributes: types.ElementAttributes{},
+							Lines: [][]interface{}{
+								{
+									types.QuotedText{
+										Kind: types.Bold,
+										Elements: []interface{}{
+											types.StringElement{Content: "bold*content"},
+										},
+									},
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+			})
+
+			It("italic delimiter text within italic text", func() {
+				source := "_italic_content_"
+				expected := types.DraftDocument{
+					Blocks: []interface{}{
+						types.Paragraph{
+							Attributes: types.ElementAttributes{},
+							Lines: [][]interface{}{
+								{
+									types.QuotedText{
+										Kind: types.Italic,
+										Elements: []interface{}{
+											types.StringElement{Content: "italic_content"},
+										},
+									},
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+			})
+
+			It("monospace delimiter text within monospace text", func() {
+				source := "`monospace`content`"
+				expected := types.DraftDocument{
+					Blocks: []interface{}{
+						types.Paragraph{
+							Attributes: types.ElementAttributes{},
+							Lines: [][]interface{}{
+								{
+									types.QuotedText{
+										Kind: types.Monospace,
+										Elements: []interface{}{
+											types.StringElement{Content: "monospace`content"},
+										},
+									},
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+			})
+
 			It("non-bold text then bold text", func() {
 				source := "non*bold*content *bold content*"
 				expected := types.DraftDocument{
@@ -404,7 +471,9 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				result, err := ParseDraftDocument(source)
+				Expect(err).NotTo(HaveOccurred())
+				Expect(result).To(MatchDraftDocument(expected))
 			})
 
 			It("italic text with 3 words in double quote", func() {
@@ -1378,14 +1447,14 @@ var _ = Describe("quoted texts", func() {
 											types.StringElement{Content: "a "},
 											types.InlineLink{
 												Attributes: types.ElementAttributes{
-													types.AttrInlineLinkText: []interface{}{
+													"positional-1": []interface{}{
 														types.StringElement{
 															Content: "b",
 														},
 													},
 												},
 												Location: types.Location{
-													Elements: []interface{}{
+													Path: []interface{}{
 														types.StringElement{
 															Content: "/",
 														},
@@ -1399,7 +1468,9 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				result, err := ParseDraftDocument(source)
+				Expect(err).NotTo(HaveOccurred())
+				Expect(result).To(MatchDraftDocument(expected))
 			})
 
 			It("image in bold", func() {
@@ -1417,7 +1488,7 @@ var _ = Describe("quoted texts", func() {
 											types.InlineImage{
 												Attributes: types.ElementAttributes{},
 												Location: types.Location{
-													Elements: []interface{}{
+													Path: []interface{}{
 														types.StringElement{
 															Content: "foo.png",
 														},
@@ -1504,14 +1575,14 @@ var _ = Describe("quoted texts", func() {
 											types.StringElement{Content: "a "},
 											types.InlineLink{
 												Attributes: types.ElementAttributes{
-													types.AttrInlineLinkText: []interface{}{
+													"positional-1": []interface{}{
 														types.StringElement{
 															Content: "b",
 														},
 													},
 												},
 												Location: types.Location{
-													Elements: []interface{}{
+													Path: []interface{}{
 														types.StringElement{
 															Content: "/",
 														},
@@ -1543,7 +1614,7 @@ var _ = Describe("quoted texts", func() {
 											types.InlineImage{
 												Attributes: types.ElementAttributes{},
 												Location: types.Location{
-													Elements: []interface{}{
+													Path: []interface{}{
 														types.StringElement{
 															Content: "foo.png",
 														},
@@ -1630,14 +1701,14 @@ var _ = Describe("quoted texts", func() {
 											types.StringElement{Content: "a "},
 											types.InlineLink{
 												Attributes: types.ElementAttributes{
-													types.AttrInlineLinkText: []interface{}{
+													"positional-1": []interface{}{
 														types.StringElement{
 															Content: "b",
 														},
 													},
 												},
 												Location: types.Location{
-													Elements: []interface{}{
+													Path: []interface{}{
 														types.StringElement{
 															Content: "/",
 														},
@@ -1669,7 +1740,7 @@ var _ = Describe("quoted texts", func() {
 											types.InlineImage{
 												Attributes: types.ElementAttributes{},
 												Location: types.Location{
-													Elements: []interface{}{
+													Path: []interface{}{
 														types.StringElement{
 															Content: "foo.png",
 														},
@@ -4133,14 +4204,14 @@ var _ = Describe("quoted texts", func() {
 											types.StringElement{Content: "a "},
 											types.InlineLink{
 												Attributes: types.ElementAttributes{
-													types.AttrInlineLinkText: []interface{}{
+													"positional-1": []interface{}{
 														types.StringElement{
 															Content: "b",
 														},
 													},
 												},
 												Location: types.Location{
-													Elements: []interface{}{
+													Path: []interface{}{
 														types.StringElement{
 															Content: "/",
 														},
@@ -4177,7 +4248,7 @@ var _ = Describe("quoted texts", func() {
 													types.AttrImageAlt: "foo",
 												},
 												Location: types.Location{
-													Elements: []interface{}{
+													Path: []interface{}{
 														types.StringElement{
 															Content: "foo.png",
 														},
@@ -4273,14 +4344,14 @@ var _ = Describe("quoted texts", func() {
 											types.StringElement{Content: "a "},
 											types.InlineLink{
 												Attributes: types.ElementAttributes{
-													types.AttrInlineLinkText: []interface{}{
+													"positional-1": []interface{}{
 														types.StringElement{
 															Content: "b",
 														},
 													},
 												},
 												Location: types.Location{
-													Elements: []interface{}{
+													Path: []interface{}{
 														types.StringElement{
 															Content: "/",
 														},
@@ -4317,7 +4388,7 @@ var _ = Describe("quoted texts", func() {
 													types.AttrImageAlt: "foo",
 												},
 												Location: types.Location{
-													Elements: []interface{}{
+													Path: []interface{}{
 														types.StringElement{
 															Content: "foo.png",
 														},
@@ -4413,14 +4484,14 @@ var _ = Describe("quoted texts", func() {
 											types.StringElement{Content: "a "},
 											types.InlineLink{
 												Attributes: types.ElementAttributes{
-													types.AttrInlineLinkText: []interface{}{
+													"positional-1": []interface{}{
 														types.StringElement{
 															Content: "b",
 														},
 													},
 												},
 												Location: types.Location{
-													Elements: []interface{}{
+													Path: []interface{}{
 														types.StringElement{
 															Content: "/",
 														},
@@ -4457,7 +4528,7 @@ var _ = Describe("quoted texts", func() {
 													types.AttrImageAlt: "foo",
 												},
 												Location: types.Location{
-													Elements: []interface{}{
+													Path: []interface{}{
 														types.StringElement{
 															Content: "foo.png",
 														},
@@ -5622,7 +5693,7 @@ var _ = Describe("quoted texts - final document", func() {
 											types.AttrImageAlt: "foo",
 										},
 										Location: types.Location{
-											Elements: []interface{}{
+											Path: []interface{}{
 												types.StringElement{
 													Content: "foo.png",
 												},
@@ -5659,7 +5730,7 @@ var _ = Describe("quoted texts - final document", func() {
 											types.AttrImageAlt: "foo",
 										},
 										Location: types.Location{
-											Elements: []interface{}{
+											Path: []interface{}{
 												types.StringElement{
 													Content: "foo.png",
 												},
@@ -5696,7 +5767,7 @@ var _ = Describe("quoted texts - final document", func() {
 											types.AttrImageAlt: "foo",
 										},
 										Location: types.Location{
-											Elements: []interface{}{
+											Path: []interface{}{
 												types.StringElement{
 													Content: "foo.png",
 												},

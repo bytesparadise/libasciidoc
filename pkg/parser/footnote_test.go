@@ -60,16 +60,17 @@ var _ = Describe("footnotes - draft", func() {
 				},
 				types.InlineLink{
 					Attributes: types.ElementAttributes{
-						types.AttrInlineLinkText: []interface{}{
+						"positional-1": []interface{}{
 							types.StringElement{
 								Content: "content",
 							},
 						},
 					},
 					Location: types.Location{
-						Elements: []interface{}{
+						Scheme: "https://",
+						Path: []interface{}{
 							types.StringElement{
-								Content: "https://foo.com",
+								Content: "foo.com",
 							},
 						},
 					},
@@ -326,16 +327,17 @@ var _ = Describe("footnotes - document", func() {
 				},
 				types.InlineLink{
 					Attributes: types.ElementAttributes{
-						types.AttrInlineLinkText: []interface{}{
+						"positional-1": []interface{}{
 							types.StringElement{
 								Content: "content",
 							},
 						},
 					},
 					Location: types.Location{
-						Elements: []interface{}{
+						Scheme: "https://",
+						Path: []interface{}{
 							types.StringElement{
-								Content: "https://foo.com",
+								Content: "foo.com",
 							},
 						},
 					},

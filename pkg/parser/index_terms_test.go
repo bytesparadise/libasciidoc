@@ -110,7 +110,7 @@ a paragraph with an index term.`
 		})
 
 		It("index term in single paragraph line", func() {
-			source := `((foo_bar_baz _italic_))
+			source := `((foo_bar_baz _italic_ normal))
 a paragraph with an index term.`
 			expected := types.Document{
 				Attributes:        types.DocumentAttributes{},
@@ -133,6 +133,9 @@ a paragraph with an index term.`
 													Content: "italic",
 												},
 											},
+										},
+										types.StringElement{
+											Content: " normal",
 										},
 									},
 								},

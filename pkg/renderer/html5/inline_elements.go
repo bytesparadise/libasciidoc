@@ -16,6 +16,7 @@ type linesRenderer struct {
 
 type renderLinesOption func(config *linesRenderer)
 
+// TODO: is it used?
 func verbatim() renderLinesOption {
 	return func(config *linesRenderer) {
 		config.render = renderPlainText

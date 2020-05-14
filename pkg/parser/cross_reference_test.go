@@ -114,7 +114,7 @@ with some content linked to <<thetitle,a label to the title>>!`
 								},
 								types.ExternalCrossReference{
 									Location: types.Location{
-										Elements: []interface{}{
+										Path: []interface{}{
 											types.StringElement{
 												Content: "another-doc.adoc",
 											},
@@ -155,7 +155,7 @@ with some content linked to <<thetitle,a label to the title>>!`
 								},
 								types.ExternalCrossReference{
 									Location: types.Location{
-										Elements: []interface{}{
+										Path: []interface{}{
 											types.DocumentAttributeSubstitution{
 												Name: "foo",
 											},
@@ -310,7 +310,7 @@ with some content linked to <<thetitle,a label to the title>>!`
 								},
 								types.ExternalCrossReference{
 									Location: types.Location{
-										Elements: []interface{}{
+										Path: []interface{}{
 											types.StringElement{
 												Content: "another-doc.adoc",
 											},
@@ -359,7 +359,7 @@ some content linked to xref:{foo}[another_doc()]!`
 								},
 								types.ExternalCrossReference{
 									Location: types.Location{
-										Elements: []interface{}{
+										Path: []interface{}{
 											types.StringElement{
 												Content: "another-doc.adoc",
 											},

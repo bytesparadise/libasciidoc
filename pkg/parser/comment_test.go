@@ -146,6 +146,7 @@ with multiple lines
 
 			It("comment block with paragraphs around", func() {
 				source := `a first paragraph
+
 //// 
 a *comment* block
 with multiple lines
@@ -161,6 +162,7 @@ a second paragraph`
 								},
 							},
 						},
+						types.BlankLine{}, // blankline is required between a paragraph and the next block
 						types.DelimitedBlock{
 							Attributes: types.ElementAttributes{},
 							Kind:       types.Comment,
@@ -314,6 +316,7 @@ with multiple lines
 
 			It("comment block with paragraphs around", func() {
 				source := `a first paragraph
+			
 //// 
 a *comment* block
 with multiple lines
@@ -350,6 +353,7 @@ a second paragraph`
 			source := `== section 1
 
 a first paragraph
+
 //// 
 a *comment* block
 with multiple lines

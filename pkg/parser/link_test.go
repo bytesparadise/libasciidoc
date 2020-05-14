@@ -23,9 +23,10 @@ var _ = Describe("links", func() {
 							types.StringElement{Content: "a link to "},
 							types.InlineLink{
 								Location: types.Location{
-									Elements: []interface{}{
+									Scheme: "https://",
+									Path: []interface{}{
 										types.StringElement{
-											Content: "https://foo.bar",
+											Content: "foo.bar",
 										},
 									},
 								},
@@ -46,9 +47,10 @@ var _ = Describe("links", func() {
 							types.StringElement{Content: "a link to "},
 							types.InlineLink{
 								Location: types.Location{
-									Elements: []interface{}{
+									Scheme: "https://",
+									Path: []interface{}{
 										types.StringElement{
-											Content: "https://foo.bar",
+											Content: "foo.bar",
 										},
 									},
 								},
@@ -69,14 +71,15 @@ var _ = Describe("links", func() {
 							types.StringElement{Content: "a link to "},
 							types.InlineLink{
 								Location: types.Location{
-									Elements: []interface{}{
+									Scheme: "mailto:",
+									Path: []interface{}{
 										types.StringElement{
-											Content: "mailto:foo@bar",
+											Content: "foo@bar",
 										},
 									},
 								},
 								Attributes: types.ElementAttributes{
-									types.AttrInlineLinkText: []interface{}{
+									"positional-1": []interface{}{
 										types.StringElement{
 											Content: "the foo@bar email",
 										},
@@ -99,14 +102,15 @@ var _ = Describe("links", func() {
 							types.StringElement{Content: "a link to "},
 							types.InlineLink{
 								Location: types.Location{
-									Elements: []interface{}{
+									Scheme: "mailto:",
+									Path: []interface{}{
 										types.StringElement{
-											Content: "mailto:foo@bar",
+											Content: "foo@bar",
 										},
 									},
 								},
 								Attributes: types.ElementAttributes{
-									types.AttrInlineLinkText: []interface{}{
+									"positional-1": []interface{}{
 										types.StringElement{
 											Content: "the foo@bar email",
 										},
@@ -135,9 +139,10 @@ next lines`
 							types.InlineLink{
 								Attributes: types.ElementAttributes{},
 								Location: types.Location{
-									Elements: []interface{}{
+									Scheme: "http://",
+									Path: []interface{}{
 										types.StringElement{
-											Content: "http://website.com",
+											Content: "website.com",
 										},
 									},
 								},
@@ -173,9 +178,10 @@ next lines`
 							types.InlineLink{
 								Attributes: types.ElementAttributes{},
 								Location: types.Location{
-									Elements: []interface{}{
+									Scheme: "http://",
+									Path: []interface{}{
 										types.StringElement{
-											Content: "http://website.com",
+											Content: "website.com",
 										},
 									},
 								},
@@ -205,9 +211,10 @@ next lines`
 							types.StringElement{Content: "a link to "},
 							types.InlineLink{
 								Location: types.Location{
-									Elements: []interface{}{
+									Scheme: "https://",
+									Path: []interface{}{
 										types.StringElement{
-											Content: "https://foo.bar",
+											Content: "foo.bar",
 										},
 									},
 								},
@@ -231,16 +238,27 @@ next lines`
 								types.StringElement{Content: "a link to "},
 								types.InlineLink{
 									Location: types.Location{
-										Elements: []interface{}{
+										Scheme: "http://",
+										Path: []interface{}{
 											types.StringElement{
-												Content: "http://website.com",
+												Content: "website.com",
 											},
 										},
 									},
 									Attributes: types.ElementAttributes{
-										types.AttrInlineLinkText: []interface{}{
+										"positional-1": []interface{}{
 											types.StringElement{
-												Content: "A, B, and C",
+												Content: "A",
+											},
+										},
+										"positional-2": []interface{}{
+											types.StringElement{
+												Content: " B",
+											},
+										},
+										"positional-3": []interface{}{
+											types.StringElement{
+												Content: " and C",
 											},
 										},
 									},
@@ -260,14 +278,15 @@ next lines`
 								types.StringElement{Content: "a link to "},
 								types.InlineLink{
 									Location: types.Location{
-										Elements: []interface{}{
+										Scheme: "http://",
+										Path: []interface{}{
 											types.StringElement{
-												Content: "http://website.com",
+												Content: "website.com",
 											},
 										},
 									},
 									Attributes: types.ElementAttributes{
-										types.AttrInlineLinkText: []interface{}{
+										"positional-1": []interface{}{
 											types.StringElement{
 												Content: "A, B, and C",
 											},
@@ -289,14 +308,15 @@ next lines`
 								types.StringElement{Content: "a link to "},
 								types.InlineLink{
 									Location: types.Location{
-										Elements: []interface{}{
+										Scheme: "http://",
+										Path: []interface{}{
 											types.StringElement{
-												Content: "http://website.com",
+												Content: "website.com",
 											},
 										},
 									},
 									Attributes: types.ElementAttributes{
-										types.AttrInlineLinkText: []interface{}{
+										"positional-1": []interface{}{
 											types.StringElement{
 												Content: "A, B, and C",
 											},
@@ -319,21 +339,30 @@ next lines`
 								types.StringElement{Content: "a link to "},
 								types.InlineLink{
 									Location: types.Location{
-										Elements: []interface{}{
+										Scheme: "http://",
+										Path: []interface{}{
 											types.StringElement{
-												Content: "http://website.com",
+												Content: "website.com",
 											},
 										},
 									},
 									Attributes: types.ElementAttributes{
-										types.AttrInlineLinkText: []interface{}{
+										"positional-1": []interface{}{
 											types.StringElement{
 												Content: "A",
 											},
 										},
-										"B":     nil,
-										"and C": nil,
-										"role":  "foo",
+										"positional-2": []interface{}{
+											types.StringElement{
+												Content: " B",
+											},
+										},
+										"positional-3": []interface{}{
+											types.StringElement{
+												Content: " and C",
+											},
+										},
+										"role": "foo",
 									},
 								},
 							},
@@ -345,7 +374,6 @@ next lines`
 
 			It("external link with special characters", func() {
 				source := "a link to https://foo*_.com"
-
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.Paragraph{
@@ -356,9 +384,71 @@ next lines`
 									types.InlineLink{
 										Attributes: types.ElementAttributes{},
 										Location: types.Location{
-											Elements: []interface{}{
+											Scheme: "https://",
+											Path: []interface{}{
 												types.StringElement{
-													Content: "https://foo*_.com",
+													Content: "foo*_.com",
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+			})
+
+			It("external link with quoted text", func() {
+				source := "a link to https://foo.com[_a_ *b* `c`]"
+				expected := types.DraftDocument{
+					Blocks: []interface{}{
+						types.Paragraph{
+							Attributes: types.ElementAttributes{},
+							Lines: [][]interface{}{
+								{
+									types.StringElement{Content: "a link to "},
+									types.InlineLink{
+										Attributes: types.ElementAttributes{
+											"positional-1": []interface{}{
+												types.QuotedText{
+													Kind: types.Italic,
+													Elements: []interface{}{
+														types.StringElement{
+															Content: "a",
+														},
+													},
+												},
+												types.StringElement{
+													Content: " ",
+												},
+												types.QuotedText{
+													Kind: types.Bold,
+													Elements: []interface{}{
+														types.StringElement{
+															Content: "b",
+														},
+													},
+												},
+												types.StringElement{
+													Content: " ",
+												},
+												types.QuotedText{
+													Kind: types.Monospace,
+													Elements: []interface{}{
+														types.StringElement{
+															Content: "c",
+														},
+													},
+												},
+											},
+										},
+										Location: types.Location{
+											Scheme: "https://",
+											Path: []interface{}{
+												types.StringElement{
+													Content: "foo.com",
 												},
 											},
 										},
@@ -387,9 +477,10 @@ next lines`
 											types.InlineLink{
 												Attributes: types.ElementAttributes{},
 												Location: types.Location{
-													Elements: []interface{}{
+													Scheme: "https://",
+													Path: []interface{}{
 														types.StringElement{
-															Content: "https://foo.com",
+															Content: "foo.com",
 														},
 													},
 												},
@@ -417,7 +508,8 @@ next lines`
 							types.StringElement{Content: "a link to "},
 							types.InlineLink{
 								Location: types.Location{
-									Elements: []interface{}{
+									Scheme: "",
+									Path: []interface{}{
 										types.StringElement{
 											Content: "foo.adoc",
 										},
@@ -440,14 +532,15 @@ next lines`
 							types.StringElement{Content: "a link to "},
 							types.InlineLink{
 								Location: types.Location{
-									Elements: []interface{}{
+									Scheme: "",
+									Path: []interface{}{
 										types.StringElement{
 											Content: "foo.adoc",
 										},
 									},
 								},
 								Attributes: types.ElementAttributes{
-									types.AttrInlineLinkText: []interface{}{
+									"positional-1": []interface{}{
 										types.StringElement{
 											Content: "foo doc",
 										},
@@ -469,14 +562,15 @@ next lines`
 							types.StringElement{Content: "a link to "},
 							types.InlineLink{
 								Location: types.Location{
-									Elements: []interface{}{
+									Scheme: "https://",
+									Path: []interface{}{
 										types.StringElement{
-											Content: "https://foo.bar",
+											Content: "foo.bar",
 										},
 									},
 								},
 								Attributes: types.ElementAttributes{
-									types.AttrInlineLinkText: []interface{}{
+									"positional-1": []interface{}{
 										types.StringElement{
 											Content: "foo doc",
 										},
@@ -498,14 +592,15 @@ next lines`
 							types.StringElement{Content: "a link to "},
 							types.InlineLink{
 								Location: types.Location{
-									Elements: []interface{}{
+									Scheme: "https://",
+									Path: []interface{}{
 										types.StringElement{
-											Content: "https://foo.bar",
+											Content: "foo.bar",
 										},
 									},
 								},
 								Attributes: types.ElementAttributes{
-									types.AttrInlineLinkText: []interface{}{
+									"positional-1": []interface{}{
 										types.StringElement{
 											Content: "foo doc",
 										},
@@ -528,9 +623,10 @@ next lines`
 							types.StringElement{Content: "a link to "},
 							types.InlineLink{
 								Location: types.Location{
-									Elements: []interface{}{
+									Scheme: "https://",
+									Path: []interface{}{
 										types.StringElement{
-											Content: "https://foo.bar",
+											Content: "foo.bar",
 										},
 									},
 								},
@@ -567,14 +663,15 @@ next lines`
 						{
 							types.InlineLink{
 								Location: types.Location{
-									Elements: []interface{}{
+									Scheme: "",
+									Path: []interface{}{
 										types.StringElement{
 											Content: "/",
 										},
 									},
 								},
 								Attributes: types.ElementAttributes{
-									types.AttrInlineLinkText: []interface{}{
+									"positional-1": []interface{}{
 										types.StringElement{
 											Content: "a ",
 										},
@@ -628,7 +725,8 @@ next lines`
 								Elements: []interface{}{
 									types.InlineLink{
 										Location: types.Location{
-											Elements: []interface{}{
+											Scheme: "",
+											Path: []interface{}{
 												types.StringElement{
 													Content: "foo",
 												},
@@ -653,14 +751,15 @@ next lines`
 							types.StringElement{Content: "a link to "},
 							types.InlineLink{
 								Location: types.Location{
-									Elements: []interface{}{
+									Scheme: "",
+									Path: []interface{}{
 										types.StringElement{
 											Content: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789~:/?#@!$&;=()*+,-_.%",
 										},
 									},
 								},
 								Attributes: types.ElementAttributes{
-									types.AttrInlineLinkText: []interface{}{
+									"positional-1": []interface{}{
 										types.StringElement{
 											Content: "as expected",
 										},
@@ -686,14 +785,15 @@ Test 2: link:/test/a%20b[with encoded space]`
 							types.StringElement{Content: "Test 2: "},
 							types.InlineLink{
 								Location: types.Location{
-									Elements: []interface{}{
+									Scheme: "",
+									Path: []interface{}{
 										types.StringElement{
 											Content: "/test/a%20b",
 										},
 									},
 								},
 								Attributes: types.ElementAttributes{
-									types.AttrInlineLinkText: []interface{}{
+									"positional-1": []interface{}{
 										types.StringElement{
 											Content: "with encoded space",
 										},
@@ -730,7 +830,8 @@ a link to {scheme}:{path}[] and https://foo.baz`
 									types.InlineLink{
 										Attributes: types.ElementAttributes{},
 										Location: types.Location{
-											Elements: []interface{}{
+											Scheme: "",
+											Path: []interface{}{
 												types.StringElement{
 													Content: "{path}",
 												},
@@ -741,9 +842,10 @@ a link to {scheme}:{path}[] and https://foo.baz`
 									types.InlineLink{
 										Attributes: types.ElementAttributes{},
 										Location: types.Location{
-											Elements: []interface{}{
+											Scheme: "https://",
+											Path: []interface{}{
 												types.StringElement{
-													Content: "https://foo.baz",
+													Content: "foo.baz",
 												},
 											},
 										},
@@ -767,16 +869,27 @@ a link to {scheme}:{path}[] and https://foo.baz`
 								types.StringElement{Content: "a link to "},
 								types.InlineLink{
 									Location: types.Location{
-										Elements: []interface{}{
+										Scheme: "https://",
+										Path: []interface{}{
 											types.StringElement{
-												Content: "https://foo.bar",
+												Content: "foo.bar",
 											},
 										},
 									},
 									Attributes: types.ElementAttributes{
-										types.AttrInlineLinkText: []interface{}{
+										"positional-1": []interface{}{
 											types.StringElement{
-												Content: "A, B, and C",
+												Content: "A",
+											},
+										},
+										"positional-2": []interface{}{
+											types.StringElement{
+												Content: " B",
+											},
+										},
+										"positional-3": []interface{}{
+											types.StringElement{
+												Content: " and C",
 											},
 										},
 									},
@@ -796,14 +909,15 @@ a link to {scheme}:{path}[] and https://foo.baz`
 								types.StringElement{Content: "a link to "},
 								types.InlineLink{
 									Location: types.Location{
-										Elements: []interface{}{
+										Scheme: "https://",
+										Path: []interface{}{
 											types.StringElement{
-												Content: "https://foo.bar",
+												Content: "foo.bar",
 											},
 										},
 									},
 									Attributes: types.ElementAttributes{
-										types.AttrInlineLinkText: []interface{}{
+										"positional-1": []interface{}{
 											types.StringElement{
 												Content: "A, B, and C",
 											},
@@ -825,14 +939,15 @@ a link to {scheme}:{path}[] and https://foo.baz`
 								types.StringElement{Content: "a link to "},
 								types.InlineLink{
 									Location: types.Location{
-										Elements: []interface{}{
+										Scheme: "https://",
+										Path: []interface{}{
 											types.StringElement{
-												Content: "https://foo.bar",
+												Content: "foo.bar",
 											},
 										},
 									},
 									Attributes: types.ElementAttributes{
-										types.AttrInlineLinkText: []interface{}{
+										"positional-1": []interface{}{
 											types.StringElement{
 												Content: "A, B, and C",
 											},
@@ -855,21 +970,30 @@ a link to {scheme}:{path}[] and https://foo.baz`
 								types.StringElement{Content: "a link to "},
 								types.InlineLink{
 									Location: types.Location{
-										Elements: []interface{}{
+										Scheme: "https://",
+										Path: []interface{}{
 											types.StringElement{
-												Content: "https://foo.bar",
+												Content: "foo.bar",
 											},
 										},
 									},
 									Attributes: types.ElementAttributes{
-										types.AttrInlineLinkText: []interface{}{
+										"positional-1": []interface{}{
 											types.StringElement{
 												Content: "A",
 											},
 										},
-										"B":     nil,
-										"and C": nil,
-										"role":  "foo",
+										"positional-2": []interface{}{
+											types.StringElement{
+												Content: " B",
+											},
+										},
+										"positional-3": []interface{}{
+											types.StringElement{
+												Content: " and C",
+											},
+										},
+										"role": "foo",
 									},
 								},
 							},
@@ -1019,9 +1143,126 @@ a link to *{scheme}://{path}[] and https://foo.baz[]*`
 											types.InlineLink{
 												Attributes: types.ElementAttributes{},
 												Location: types.Location{
-													Elements: []interface{}{
+													Scheme: "https://",
+													Path: []interface{}{
 														types.StringElement{
-															Content: "https://foo.baz",
+															Content: "foo.baz",
+														},
+													},
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+			})
+
+			It("external link with two document attribute substitutions in italic text", func() {
+				source := `
+:scheme: https
+:path: foo.bar
+
+a link to _{scheme}://{path}[] and https://foo.baz[]_`
+
+				expected := types.DraftDocument{
+					Blocks: []interface{}{
+						types.BlankLine{},
+						types.DocumentAttributeDeclaration{
+							Name:  "scheme",
+							Value: "https",
+						},
+						types.DocumentAttributeDeclaration{
+							Name:  "path",
+							Value: "foo.bar",
+						},
+						types.BlankLine{},
+						types.Paragraph{
+							Attributes: types.ElementAttributes{},
+							Lines: [][]interface{}{
+								{
+									types.StringElement{Content: "a link to "},
+									types.QuotedText{
+										Kind: types.Italic,
+										Elements: []interface{}{
+											types.DocumentAttributeSubstitution{
+												Name: "scheme",
+											},
+											types.StringElement{
+												Content: "://",
+											},
+											types.DocumentAttributeSubstitution{
+												Name: "path",
+											},
+											types.StringElement{Content: "[] and "},
+											types.InlineLink{
+												Attributes: types.ElementAttributes{},
+												Location: types.Location{
+													Scheme: "https://",
+													Path: []interface{}{
+														types.StringElement{
+															Content: "foo.baz",
+														},
+													},
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+			})
+
+			It("external link with two document attribute substitutions in monospace text", func() {
+				source := `
+:scheme: https
+:path: foo.bar` + "\n\n" +
+
+					"a link to `{scheme}://{path}[] and https://foo.baz[]`"
+
+				expected := types.DraftDocument{
+					Blocks: []interface{}{
+						types.BlankLine{},
+						types.DocumentAttributeDeclaration{
+							Name:  "scheme",
+							Value: "https",
+						},
+						types.DocumentAttributeDeclaration{
+							Name:  "path",
+							Value: "foo.bar",
+						},
+						types.BlankLine{},
+						types.Paragraph{
+							Attributes: types.ElementAttributes{},
+							Lines: [][]interface{}{
+								{
+									types.StringElement{Content: "a link to "},
+									types.QuotedText{
+										Kind: types.Monospace,
+										Elements: []interface{}{
+											types.DocumentAttributeSubstitution{
+												Name: "scheme",
+											},
+											types.StringElement{
+												Content: "://",
+											},
+											types.DocumentAttributeSubstitution{
+												Name: "path",
+											},
+											types.StringElement{Content: "[] and "},
+											types.InlineLink{
+												Attributes: types.ElementAttributes{},
+												Location: types.Location{
+													Scheme: "https://",
+													Path: []interface{}{
+														types.StringElement{
+															Content: "foo.baz",
 														},
 													},
 												},
@@ -1056,7 +1297,7 @@ a link to *{scheme}://{path}[] and https://foo.baz[]*`
 									Elements: []interface{}{
 										types.InlineLink{
 											Location: types.Location{
-												Elements: []interface{}{
+												Path: []interface{}{
 													types.StringElement{
 														Content: "foo",
 													},
@@ -1089,9 +1330,10 @@ a link to *{scheme}://{path}[] and https://foo.baz[]*`
 								types.InlineLink{
 									Attributes: types.ElementAttributes{},
 									Location: types.Location{
-										Elements: []interface{}{
+										Scheme: "https://",
+										Path: []interface{}{
 											types.StringElement{
-												Content: "https://foo*_.com",
+												Content: "foo*_.com",
 											},
 										},
 									},
@@ -1123,9 +1365,10 @@ a link to *{scheme}://{path}[] and https://foo.baz[]*`
 										types.InlineLink{
 											Attributes: types.ElementAttributes{},
 											Location: types.Location{
-												Elements: []interface{}{
+												Scheme: "https://",
+												Path: []interface{}{
 													types.StringElement{
-														Content: "https://foo.com",
+														Content: "foo.com",
 													},
 												},
 											},
@@ -1159,9 +1402,10 @@ a link to *{scheme}://{path}[] and https://foo.baz[]*`
 										types.InlineLink{
 											Attributes: types.ElementAttributes{},
 											Location: types.Location{
-												Elements: []interface{}{
+												Scheme: "https://",
+												Path: []interface{}{
 													types.StringElement{
-														Content: "https://foo.com",
+														Content: "foo.com",
 													},
 												},
 											},
@@ -1199,9 +1443,10 @@ a link to {url}`
 									types.StringElement{Content: "a link to "},
 									types.InlineLink{
 										Location: types.Location{
-											Elements: []interface{}{
+											Scheme: "https://",
+											Path: []interface{}{
 												types.StringElement{
-													Content: "https://foo2.bar",
+													Content: "foo2.bar",
 												},
 											},
 										},
@@ -1237,9 +1482,10 @@ a link to {scheme}://{path} and https://foo.baz`
 									types.StringElement{Content: "a link to "},
 									types.InlineLink{
 										Location: types.Location{
-											Elements: []interface{}{
+											Scheme: "https://",
+											Path: []interface{}{
 												types.StringElement{
-													Content: "https://foo.bar",
+													Content: "foo.bar",
 												},
 											},
 										},
@@ -1249,9 +1495,10 @@ a link to {scheme}://{path} and https://foo.baz`
 									types.InlineLink{
 										Attributes: types.ElementAttributes{},
 										Location: types.Location{
-											Elements: []interface{}{
+											Scheme: "https://",
+											Path: []interface{}{
 												types.StringElement{
-													Content: "https://foo.baz",
+													Content: "foo.baz",
 												},
 											},
 										},
@@ -1289,9 +1536,10 @@ a link to *{scheme}://{path}[] and https://foo.baz[]*`
 										Elements: []interface{}{
 											types.InlineLink{
 												Location: types.Location{
-													Elements: []interface{}{
+													Scheme: "https://",
+													Path: []interface{}{
 														types.StringElement{
-															Content: "https://foo.bar",
+															Content: "foo.bar",
 														},
 													},
 												},
@@ -1301,9 +1549,10 @@ a link to *{scheme}://{path}[] and https://foo.baz[]*`
 											types.InlineLink{
 												Attributes: types.ElementAttributes{},
 												Location: types.Location{
-													Elements: []interface{}{
+													Scheme: "https://",
+													Path: []interface{}{
 														types.StringElement{
-															Content: "https://foo.baz",
+															Content: "foo.baz",
 														},
 													},
 												},
@@ -1342,9 +1591,10 @@ a link to {scheme}://{path} and https://foo.baz`
 									types.InlineLink{
 										Attributes: types.ElementAttributes{},
 										Location: types.Location{
-											Elements: []interface{}{
+											Scheme: "https://",
+											Path: []interface{}{
 												types.StringElement{
-													Content: "https://{path}",
+													Content: "{path}",
 												},
 											},
 										},
@@ -1353,9 +1603,10 @@ a link to {scheme}://{path} and https://foo.baz`
 									types.InlineLink{
 										Attributes: types.ElementAttributes{},
 										Location: types.Location{
-											Elements: []interface{}{
+											Scheme: "https://",
+											Path: []interface{}{
 												types.StringElement{
-													Content: "https://foo.baz",
+													Content: "foo.baz",
 												},
 											},
 										},
@@ -1378,9 +1629,10 @@ a link to {scheme}://{path} and https://foo.baz`
 					types.InlineLink{
 						Attributes: types.ElementAttributes{},
 						Location: types.Location{
-							Elements: []interface{}{
+							Scheme: "https://",
+							Path: []interface{}{
 								types.StringElement{
-									Content: "https://foo.bar",
+									Content: "foo.bar",
 								},
 							},
 						},
@@ -1389,9 +1641,10 @@ a link to {scheme}://{path} and https://foo.baz`
 					types.InlineLink{
 						Attributes: types.ElementAttributes{},
 						Location: types.Location{
-							Elements: []interface{}{
+							Scheme: "https://",
+							Path: []interface{}{
 								types.StringElement{
-									Content: "https://foo.baz",
+									Content: "foo.baz",
 								},
 							},
 						},
@@ -1431,9 +1684,10 @@ a link to {scheme}://{path} and https://foo.baz`
 					types.InlineLink{
 						Attributes: types.ElementAttributes{},
 						Location: types.Location{
-							Elements: []interface{}{
+							Scheme: "https://",
+							Path: []interface{}{
 								types.StringElement{
-									Content: "https://foo.bar",
+									Content: "foo.bar",
 								},
 							},
 						},
@@ -1442,9 +1696,10 @@ a link to {scheme}://{path} and https://foo.baz`
 					types.InlineLink{
 						Attributes: types.ElementAttributes{},
 						Location: types.Location{
-							Elements: []interface{}{
+							Scheme: "https://",
+							Path: []interface{}{
 								types.StringElement{
-									Content: "https://foo.baz",
+									Content: "foo.baz",
 								},
 							},
 						},

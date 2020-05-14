@@ -486,14 +486,14 @@ var _ = Describe("location resolution", func() {
 		},
 		Entry("includes/file.ext",
 			types.Location{
-				Elements: []interface{}{
+				Path: []interface{}{
 					types.StringElement{
 						Content: "includes/file.ext",
 					},
 				},
 			},
 			types.Location{
-				Elements: []interface{}{
+				Path: []interface{}{
 					types.StringElement{
 						Content: "./images/includes/file.ext",
 					},
@@ -503,7 +503,7 @@ var _ = Describe("location resolution", func() {
 		),
 		Entry("./{includedir}/file.ext",
 			types.Location{
-				Elements: []interface{}{
+				Path: []interface{}{
 					types.StringElement{
 						Content: "./",
 					},
@@ -516,7 +516,7 @@ var _ = Describe("location resolution", func() {
 				},
 			},
 			types.Location{
-				Elements: []interface{}{
+				Path: []interface{}{
 					types.StringElement{
 						Content: "./images/./includes/file.ext",
 					},
@@ -526,7 +526,7 @@ var _ = Describe("location resolution", func() {
 		),
 		Entry("./{unknown}/file.ext",
 			types.Location{
-				Elements: []interface{}{
+				Path: []interface{}{
 					types.StringElement{
 						Content: "./",
 					},
@@ -539,7 +539,7 @@ var _ = Describe("location resolution", func() {
 				},
 			},
 			types.Location{
-				Elements: []interface{}{
+				Path: []interface{}{
 					types.StringElement{
 						Content: "./images/./{unknown}/file.ext",
 					},
@@ -549,16 +549,18 @@ var _ = Describe("location resolution", func() {
 		),
 		Entry("https://foo.bar",
 			types.Location{
-				Elements: []interface{}{
+				Scheme: "https://",
+				Path: []interface{}{
 					types.StringElement{
-						Content: "https://foo.bar",
+						Content: "foo.bar",
 					},
 				},
 			},
 			types.Location{
-				Elements: []interface{}{
+				Scheme: "https://",
+				Path: []interface{}{
 					types.StringElement{
-						Content: "https://foo.bar",
+						Content: "foo.bar",
 					},
 				},
 			},
@@ -566,14 +568,14 @@ var _ = Describe("location resolution", func() {
 		),
 		Entry("/foo/bar",
 			types.Location{
-				Elements: []interface{}{
+				Path: []interface{}{
 					types.StringElement{
 						Content: "/foo/bar",
 					},
 				},
 			},
 			types.Location{
-				Elements: []interface{}{
+				Path: []interface{}{
 					types.StringElement{
 						Content: "/foo/bar",
 					},
@@ -750,9 +752,10 @@ var _ = Describe("element id resolution", func() {
 						},
 						types.InlineLink{
 							Location: types.Location{
-								Elements: []interface{}{
+								Scheme: "https://",
+								Path: []interface{}{
 									types.StringElement{
-										Content: "https://foo.com",
+										Content: "foo.com",
 									},
 								},
 							},
@@ -808,9 +811,10 @@ var _ = Describe("element id resolution", func() {
 						},
 						types.InlineLink{
 							Location: types.Location{
-								Elements: []interface{}{
+								Scheme: "https://",
+								Path: []interface{}{
 									types.StringElement{
-										Content: "https://foo.com",
+										Content: "foo.com",
 									},
 								},
 							},
@@ -874,9 +878,10 @@ var _ = Describe("element id resolution", func() {
 						},
 						types.InlineLink{
 							Location: types.Location{
-								Elements: []interface{}{
+								Scheme: "https://",
+								Path: []interface{}{
 									types.StringElement{
-										Content: "https://foo.com",
+										Content: "foo.com",
 									},
 								},
 							},

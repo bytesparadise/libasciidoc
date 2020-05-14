@@ -21,7 +21,7 @@ var _ = Describe("images", func() {
 						types.ImageBlock{
 							Attributes: types.ElementAttributes{},
 							Location: types.Location{
-								Elements: []interface{}{
+								Path: []interface{}{
 									types.StringElement{Content: "images/foo.png"},
 								},
 							},
@@ -38,7 +38,7 @@ var _ = Describe("images", func() {
 						types.ImageBlock{
 							Attributes: types.ElementAttributes{},
 							Location: types.Location{
-								Elements: []interface{}{
+								Path: []interface{}{
 									types.StringElement{Content: "images/foo.png"},
 								},
 							},
@@ -57,7 +57,7 @@ var _ = Describe("images", func() {
 						types.ImageBlock{
 							Attributes: types.ElementAttributes{},
 							Location: types.Location{
-								Elements: []interface{}{
+								Path: []interface{}{
 									types.StringElement{Content: "images/foo.png"},
 								},
 							},
@@ -76,7 +76,7 @@ var _ = Describe("images", func() {
 						types.ImageBlock{
 							Attributes: types.ElementAttributes{},
 							Location: types.Location{
-								Elements: []interface{}{
+								Path: []interface{}{
 									types.StringElement{Content: "images/foo.png"},
 								},
 							},
@@ -95,7 +95,7 @@ var _ = Describe("images", func() {
 						types.ImageBlock{
 							Attributes: types.ElementAttributes{},
 							Location: types.Location{
-								Elements: []interface{}{
+								Path: []interface{}{
 									types.StringElement{Content: "images/foo.png"},
 								},
 							},
@@ -115,7 +115,7 @@ var _ = Describe("images", func() {
 								types.AttrImageAlt: "the foo.png image",
 							},
 							Location: types.Location{
-								Elements: []interface{}{
+								Path: []interface{}{
 									types.StringElement{Content: "images/foo.png"},
 								},
 							},
@@ -143,7 +143,7 @@ image::images/foo.png[the foo.png image, 600, 400]`
 								types.AttrImageHeight: "400",
 							},
 							Location: types.Location{
-								Elements: []interface{}{
+								Path: []interface{}{
 									types.StringElement{Content: "images/foo.png"},
 								},
 							},
@@ -161,7 +161,7 @@ image::images/bar.png[]`
 						types.ImageBlock{
 							Attributes: types.ElementAttributes{},
 							Location: types.Location{
-								Elements: []interface{}{
+								Path: []interface{}{
 									types.StringElement{Content: "images/foo.png"},
 								},
 							},
@@ -169,7 +169,7 @@ image::images/bar.png[]`
 						types.ImageBlock{
 							Attributes: types.ElementAttributes{},
 							Location: types.Location{
-								Elements: []interface{}{
+								Path: []interface{}{
 									types.StringElement{Content: "images/bar.png"},
 								},
 							},
@@ -194,7 +194,7 @@ image::images/bar.png[]`
 								types.AttrImageAlt: "foo",
 							},
 							Location: types.Location{
-								Elements: []interface{}{
+								Path: []interface{}{
 									types.StringElement{Content: "images/foo.png"},
 								},
 							},
@@ -221,7 +221,7 @@ image::foo.png[]`
 								types.AttrImageAlt: "foo",
 							},
 							Location: types.Location{
-								Elements: []interface{}{
+								Path: []interface{}{
 									types.StringElement{Content: "./path/to/images/foo.png"},
 								},
 							},
@@ -248,7 +248,7 @@ image::{dir}/foo.png[]`
 								types.AttrImageAlt: "foo",
 							},
 							Location: types.Location{
-								Elements: []interface{}{
+								Path: []interface{}{
 									types.StringElement{Content: "./path/to/images/foo.png"},
 								},
 							},
@@ -275,7 +275,7 @@ image::foo.png[]`
 								types.AttrImageAlt: "foo",
 							},
 							Location: types.Location{
-								Elements: []interface{}{
+								Path: []interface{}{
 									types.StringElement{Content: "./path/to/images/foo.png"},
 								},
 							},
@@ -302,7 +302,7 @@ image::{imagesdir}/foo.png[]`
 								types.AttrImageAlt: "foo",
 							},
 							Location: types.Location{
-								Elements: []interface{}{
+								Path: []interface{}{
 									types.StringElement{Content: "./path/to/images/./path/to/images/foo.png"},
 								},
 							},
@@ -375,7 +375,7 @@ image::{imagesdir}/foo.png[]`
 									types.InlineImage{
 										Attributes: types.ElementAttributes{},
 										Location: types.Location{
-											Elements: []interface{}{
+											Path: []interface{}{
 												types.StringElement{Content: "images/foo.png"},
 											},
 										},
@@ -399,7 +399,7 @@ image::{imagesdir}/foo.png[]`
 									types.InlineImage{
 										Attributes: types.ElementAttributes{},
 										Location: types.Location{
-											Elements: []interface{}{
+											Path: []interface{}{
 												types.StringElement{Content: "images/foo.png"},
 											},
 										},
@@ -429,7 +429,7 @@ image::{imagesdir}/foo.png[]`
 									types.InlineImage{
 										Attributes: types.ElementAttributes{},
 										Location: types.Location{
-											Elements: []interface{}{
+											Path: []interface{}{
 												types.StringElement{Content: "images/foo.png"},
 											},
 										},
@@ -458,7 +458,7 @@ image::{imagesdir}/foo.png[]`
 											types.AttrImageAlt: "the foo.png image",
 										},
 										Location: types.Location{
-											Elements: []interface{}{
+											Path: []interface{}{
 												types.StringElement{Content: "images/foo.png"},
 											},
 										},
@@ -485,7 +485,7 @@ image::{imagesdir}/foo.png[]`
 											types.AttrImageWidth: "600",
 										},
 										Location: types.Location{
-											Elements: []interface{}{
+											Path: []interface{}{
 												types.StringElement{Content: "images/foo.png"},
 											},
 										},
@@ -513,7 +513,7 @@ image::{imagesdir}/foo.png[]`
 											types.AttrImageHeight: "400",
 										},
 										Location: types.Location{
-											Elements: []interface{}{
+											Path: []interface{}{
 												types.StringElement{Content: "images/foo.png"},
 											},
 										},
@@ -539,7 +539,7 @@ image::{imagesdir}/foo.png[]`
 											types.AttrImageAlt: "the foo.png image",
 										},
 										Location: types.Location{
-											Elements: []interface{}{
+											Path: []interface{}{
 												types.StringElement{Content: "images/foo.png"},
 											},
 										},
@@ -566,7 +566,7 @@ image::{imagesdir}/foo.png[]`
 											types.AttrCustomID: true,
 										},
 										Location: types.Location{
-											Elements: []interface{}{
+											Path: []interface{}{
 												types.StringElement{Content: "images/foo.png"},
 											},
 										},
@@ -595,7 +595,7 @@ image::{imagesdir}/foo.png[]`
 											types.AttrRole:     "myrole",
 										},
 										Location: types.Location{
-											Elements: []interface{}{
+											Path: []interface{}{
 												types.StringElement{Content: "images/foo.png"},
 											},
 										},
@@ -627,7 +627,7 @@ image::{imagesdir}/foo.png[]`
 											types.AttrRole:        "myrole",
 										},
 										Location: types.Location{
-											Elements: []interface{}{
+											Path: []interface{}{
 												types.StringElement{Content: "images/foo.png"},
 											},
 										},
@@ -654,7 +654,7 @@ image::{imagesdir}/foo.png[]`
 									types.InlineImage{
 										Attributes: types.ElementAttributes{},
 										Location: types.Location{
-											Elements: []interface{}{
+											Path: []interface{}{
 												types.StringElement{Content: "images/foo.png"},
 											},
 										},
@@ -681,7 +681,7 @@ image::{imagesdir}/foo.png[]`
 									types.InlineImage{
 										Attributes: types.ElementAttributes{},
 										Location: types.Location{
-											Elements: []interface{}{
+											Path: []interface{}{
 												types.StringElement{Content: "images/foo.png"},
 											},
 										},
@@ -708,7 +708,7 @@ image::{imagesdir}/foo.png[]`
 						types.ImageBlock{
 							Attributes: types.ElementAttributes{},
 							Location: types.Location{
-								Elements: []interface{}{
+								Path: []interface{}{
 									types.DocumentAttributeSubstitution{
 										Name: "imagesdir",
 									},
@@ -740,7 +740,7 @@ image::{imagesdir}/foo.png[]`
 											types.AttrImageAlt: "foo",
 										},
 										Location: types.Location{
-											Elements: []interface{}{
+											Path: []interface{}{
 												types.StringElement{Content: "images/foo.png"},
 											},
 										},
@@ -775,7 +775,7 @@ an image:{dir}/foo.png[].`
 											types.AttrImageAlt: "foo",
 										},
 										Location: types.Location{
-											Elements: []interface{}{
+											Path: []interface{}{
 												types.StringElement{Content: "./path/to/images/foo.png"},
 											},
 										},
@@ -811,7 +811,7 @@ an image:foo.png[].`
 											types.AttrImageAlt: "foo",
 										},
 										Location: types.Location{
-											Elements: []interface{}{
+											Path: []interface{}{
 												types.StringElement{Content: "./path/to/images/foo.png"},
 											},
 										},
@@ -847,7 +847,7 @@ an image:{imagesdir}/foo.png[].`
 											types.AttrImageAlt: "foo",
 										},
 										Location: types.Location{
-											Elements: []interface{}{
+											Path: []interface{}{
 												types.StringElement{Content: "./path/to/images/./path/to/images/foo.png"},
 											},
 										},

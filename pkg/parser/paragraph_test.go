@@ -218,6 +218,24 @@ baz`
 			Expect(ParseDocumentBlock(source)).To(Equal(expected))
 		})
 
+		It("not treat plusplus as line break", func() {
+			source := `C++
+foo`
+			expected := types.Paragraph{
+				Attributes: types.ElementAttributes{},
+				Lines: [][]interface{}{
+					{
+						types.StringElement{Content: "C++"},
+					},
+					{
+						types.StringElement{Content: "foo"},
+					},
+				},
+			}
+			result, err := ParseDocumentBlock(source)
+			Expect(err).NotTo(HaveOccurred())
+			Expect(result).To(Equal(expected))
+		})
 	})
 
 	Context("admonition paragraphs", func() {
@@ -658,7 +676,7 @@ a foo image:foo.png[]`
 						types.InlineImage{
 							Attributes: types.ElementAttributes{},
 							Location: types.Location{
-								Elements: []interface{}{
+								Path: []interface{}{
 									types.StringElement{
 										Content: "foo.png",
 									},
@@ -683,7 +701,7 @@ image::foo.png[]`
 					types.AttrQuoteTitle:  "quote title",
 				},
 				Location: types.Location{
-					Elements: []interface{}{
+					Path: []interface{}{
 						types.StringElement{
 							Content: "foo.png",
 						},

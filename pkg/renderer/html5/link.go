@@ -23,11 +23,21 @@ func renderLink(ctx renderer.Context, l types.InlineLink) ([]byte, error) { //no
 	var text []byte
 	class := ""
 	var err error
-	if t, ok := l.Attributes[types.AttrInlineLinkText].([]interface{}); ok {
-		text, err = renderInlineElements(ctx, t)
-		if err != nil {
-			return nil, errors.Wrapf(err, "unable to render external link")
+	// TODO; support `mailto:` positional attributes
+	positionals := l.Attributes.Positionals()
+	if len(positionals) > 0 {
+		buf := bytes.NewBuffer(nil)
+		for i, arg := range positionals {
+			t, err := renderInlineElements(ctx, arg)
+			if err != nil {
+				return nil, errors.Wrapf(err, "unable to render external link")
+			}
+			buf.Write(t)
+			if i < len(positionals)-1 {
+				buf.WriteString(",")
+			}
 		}
+		text = buf.Bytes()
 	} else {
 		class = "bare"
 		text = []byte(location)

@@ -50,10 +50,12 @@ with multiple lines
 
 		It("comment block with paragraphs around", func() {
 			source := `a first paragraph
+
 //// 
 a *comment* block
 with multiple lines
 ////
+
 a second paragraph`
 			expected := `<div class="paragraph">
 <p>a first paragraph</p>
