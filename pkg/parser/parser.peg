@@ -127,11 +127,11 @@ DocumentAuthor <- Space* fullname:(DocumentAuthorName) email:(DocumentAuthorEmai
 }
 
 // "<" marks the beginning of the author email, and ";" is the authors separator
-DocumentAuthorName <- [^<;\n]+ {
+DocumentAuthorName <- [^<;\r\n]+ {
     return string(c.text), nil
 }
 
-DocumentAuthorEmail <- "<" email:(([^>\n]+) {
+DocumentAuthorEmail <- "<" email:(([^>\r\n]+) {
     return string(c.text), nil
 }) ">" {
     return email, nil
@@ -149,17 +149,17 @@ DocumentRevision <- Space* !":" revision:(
 }
 
 // DocumentRevisionNumber MUST start with a `v` or MAY start with a `v` but MUST end with a `,`
-DocumentRevisionNumber <- "v"i DIGIT  [^:,\n]+ {
+DocumentRevisionNumber <- "v"i DIGIT  [^:,\r\n]+ {
     return string(c.text), nil
-} / "v"i? DIGIT  [^:,\n]+ Space* &"," {
-    return string(c.text), nil
-}
-
-DocumentRevisionDate <- [^:\n]+ {
+} / "v"i? DIGIT  [^:,\r\n]+ Space* &"," {
     return string(c.text), nil
 }
 
-DocumentRevisionRemark <- [^\r\n]+ {
+DocumentRevisionDate <- [^:\r\n]+ {
+    return string(c.text), nil
+}
+
+DocumentRevisionRemark <- [^\r\r\n]+ {
     return string(c.text), nil
 }
 
@@ -240,7 +240,7 @@ ElementTitleContent <- [\pL0-9][^\r\n<>]* { // "<" and ">" characters are not al
 
 // a role attached to an element, such as a ImageBlock
 // a role starts is wrapped in "[. ]" 
-ElementRole <- "[." role:([\pL0-9] [^\]\n]* {
+ElementRole <- "[." role:([\pL0-9] [^\]\r\n]* {
     return string(c.text), nil
 }) "]" Space* EOL {
     return types.NewElementRole(role.(string))
@@ -364,7 +364,7 @@ UserMacroName <- ([\pL0-9_-]+) {
     return string(c.text), nil
 }
 
-UserMacroValue <- [^:[ \n]* {
+UserMacroValue <- [^:[ \r\n]* {
     return string(c.text), nil
 }
 
@@ -646,7 +646,7 @@ LabeledListItem <- attributes:(ElementAttributes)? term:(VerbatimLabeledListItem
 
 LabeledListItemPrefix <- VerbatimLabeledListItemTerm LabeledListItemSeparator
 
-VerbatimLabeledListItemTerm <- content:([^:\n\r]+ {
+VerbatimLabeledListItemTerm <- content:([^:\r\n]+ {
     return types.NewStringElement(strings.TrimSpace(string(c.text)))
 })  {
     return types.NewInlineElements(content)
@@ -1619,7 +1619,7 @@ InlineWord <- // same as word, but may also contain some punctuation markers
     } / Word
 
 // this is a fall-back rule in case all preceeding rules failed to match the current content.
-AnyChar <- [^\r\n] { // this is a fall-back rule in case all preceeding rules failed to match the current content.
+AnyChar <- [^\r\n] { 
     return types.NewStringElement(string(c.text))
 } 
 
