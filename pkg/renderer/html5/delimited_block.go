@@ -156,7 +156,7 @@ func renderDelimitedBlock(ctx renderer.Context, b types.DelimitedBlock) ([]byte,
 		return renderSourceBlock(ctx, b)
 	case types.Example:
 		return renderExampleBlock(ctx, b)
-	case types.Quote:
+	case types.Quote, types.MarkdownQuote:
 		return renderQuoteBlock(ctx, b)
 	case types.Verse:
 		return renderVerseBlock(ctx, b)

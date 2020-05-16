@@ -92,10 +92,11 @@ func processFileInclusions(elements []interface{}, attrs types.DocumentAttribute
 				}
 			}
 			// next, parse the elements with the grammar rule that corresponds to the delimited block substitutions (based on its type)
-			elmts, err = parseDelimitedBlockContent(config.Filename, e.Kind, elmts, options...)
+			extraAttrs, elmts, err := parseDelimitedBlockContent(config.Filename, e.Kind, elmts, options...)
 			if err != nil {
 				return nil, err
 			}
+			e.Attributes.AddAll(extraAttrs)
 			result = append(result, types.DelimitedBlock{
 				Attributes: e.Attributes,
 				Kind:       e.Kind,
@@ -123,37 +124,65 @@ func processFileInclusions(elements []interface{}, attrs types.DocumentAttribute
 
 // parseDelimitedBlockContent parses the given verbatim elements, depending on the given delimited block kind.
 // May return the elements unchanged, or convert the elements to a source doc and parse with a custom entrypoint
-func parseDelimitedBlockContent(filename string, kind types.BlockKind, elements []interface{}, options ...Option) ([]interface{}, error) {
+func parseDelimitedBlockContent(filename string, kind types.BlockKind, elements []interface{}, options ...Option) (types.ElementAttributes, []interface{}, error) {
 	switch kind {
 	case types.Fenced, types.Listing, types.Literal, types.Source, types.Comment:
 		// return the verbatim elements
-		return elements, nil
+		return types.ElementAttributes{}, elements, nil
 	case types.Example, types.Quote, types.Sidebar:
 		return parseDelimitedBlockElements(filename, elements, append(options, Entrypoint("NormalBlockContent"))...)
+	case types.MarkdownQuote:
+		return parseMarkdownQuoteBlockElements(filename, elements, append(options, Entrypoint("NormalBlockContent"))...)
 	case types.Verse:
 		return parseDelimitedBlockElements(filename, elements, append(options, Entrypoint("VerseBlockContent"))...)
 	default:
-		return nil, fmt.Errorf("unexpected kind of delimited block: '%s'", kind)
+		return nil, nil, fmt.Errorf("unexpected kind of delimited block: '%s'", kind)
 	}
 }
 
-func parseDelimitedBlockElements(filename string, elements []interface{}, options ...Option) ([]interface{}, error) {
-	verbatim, err := marshal(elements)
+func parseDelimitedBlockElements(filename string, elements []interface{}, options ...Option) (types.ElementAttributes, []interface{}, error) {
+	verbatim, err := serialize(elements)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	e, err := ParseReader(filename, verbatim, options...)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	if result, ok := e.([]interface{}); ok {
-		return result, nil
+		return types.ElementAttributes{}, result, nil
 	}
-	return nil, fmt.Errorf("unexpected type of element after parsing the content of a delimited block: '%T'", e)
-
+	return nil, nil, fmt.Errorf("unexpected type of element after parsing the content of a delimited block: '%T'", e)
 }
 
-func marshal(elements []interface{}) (io.Reader, error) {
+func parseMarkdownQuoteBlockElements(filename string, elements []interface{}, options ...Option) (types.ElementAttributes, []interface{}, error) {
+	author := parseMarkdownQuoteBlockAttribution(filename, elements)
+	if author != "" {
+		elements = elements[:len(elements)-1]
+	}
+	attrs, lines, err := parseDelimitedBlockElements(filename, elements, options...)
+	attrs.AddNonEmpty(types.AttrQuoteAuthor, author)
+	return attrs, lines, err
+}
+
+func parseMarkdownQuoteBlockAttribution(filename string, elements []interface{}) string {
+	// first, check if last line is an attribution (author)
+	if lastLine, ok := elements[len(elements)-1].(types.VerbatimLine); ok {
+		buf := bytes.NewBuffer(nil)
+		buf.WriteString(lastLine.Content)
+		a, err := ParseReader(filename, buf, Entrypoint("MarkdownQuoteBlockAttribution"))
+		// assume that the last line is not an author attribution if an error occurred
+		if err != nil {
+			return ""
+		}
+		if a, ok := a.(string); ok {
+			return a
+		}
+	}
+	return ""
+}
+
+func serialize(elements []interface{}) (io.Reader, error) {
 	buf := bytes.NewBuffer(nil)
 	for _, e := range elements {
 		if r, ok := e.(types.VerbatimLine); ok {
