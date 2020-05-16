@@ -713,11 +713,24 @@ Paragraph <-
     attributes:(ElementAttributes)? t:(AdmonitionKind) ": " lines:(InlineElements)+ { 
         return types.NewAdmonitionParagraph(lines.([]interface{}), t.(types.AdmonitionKind), attributes)
     } / 
+    // markdown-style blockquote paragraph
+    attributes:(ElementAttributes)? "> " content:(MarkdownQuoteBlockVerbatimContent) {
+        return types.NewDelimitedBlock(types.MarkdownQuote, content.([]interface{}), attributes)
+    } /
     // other kind of paragraph (verse, regular, etc.)
     attributes:(ElementAttributes)? !BlockDelimiter lines:(InlineElements)+ { 
         return types.NewParagraph(lines.([]interface{}), attributes)
-} 
+    }
 
+MarkdownQuoteBlockVerbatimContent <- (!BlankLine "> "? content:(VerbatimContent) { // at this stage, content is a mix of FileInclusions and lines of text (i.e., StringElement)
+    return content, nil
+})+
+
+MarkdownQuoteBlockAttribution <- "-- " author:(([^\r\n]+) {
+    return string(c.text), nil
+    }) EOL {
+    return author, nil
+}
 // a paragraph whose first line begins with a word surrounded by spaces
 SimpleParagraph <- attributes:(ElementAttributes)? 
     &{

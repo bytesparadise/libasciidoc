@@ -314,6 +314,8 @@ const (
 	Comment BlockKind = "comment"
 	// Quote a quote block
 	Quote BlockKind = "quote"
+	// MarkdownQuote a quote block in the Markdown style
+	MarkdownQuote BlockKind = "markdown-quote"
 	// Verse a verse block
 	Verse BlockKind = "verse"
 	// Sidebar a sidebar block
