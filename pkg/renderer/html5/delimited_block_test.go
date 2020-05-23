@@ -336,6 +336,63 @@ end</code></pre>
 </div>`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
+		It("with callouts and syntax highlighting", func() {
+			source := `[source,java]
+----
+@QuarkusTest
+public class GreetingResourceTest {
+
+    @InjectMock
+    @RestClient // <1>
+    GreetingService greetingService;
+
+    @Test
+    public void testHelloEndpoint() {
+        Mockito.when(greetingService.hello()).thenReturn("hello from mockito");
+
+        given()
+          .when().get("/hello")
+          .then()
+             .statusCode(200)
+             .body(is("hello from mockito"));
+    }
+
+}
+----
+<1> We need to use the @RestClient CDI qualifier, since Quarkus creates the GreetingService bean with this qualifier.
+`
+			expected := `<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@QuarkusTest
+public class GreetingResourceTest {
+
+    @InjectMock
+    @RestClient // <b class="conum">(1)</b>
+    GreetingService greetingService;
+
+    @Test
+    public void testHelloEndpoint() {
+        Mockito.when(greetingService.hello()).thenReturn("hello from mockito");
+
+        given()
+          .when().get("/hello")
+          .then()
+             .statusCode(200)
+             .body(is("hello from mockito"));
+    }
+
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>We need to use the @RestClient CDI qualifier, since Quarkus creates the GreetingService bean with this qualifier.</p>
+</li>
+</ol>
+</div>`
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
+		})
 	})
 
 	Context("example blocks", func() {
