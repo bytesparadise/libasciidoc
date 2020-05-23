@@ -17,8 +17,8 @@ var htmlEscaper = strings.NewReplacer(
 	`&#`, "&#", // assume this is for an character entity and this keep as-is
 	// standard escape combinations
 	`&`, "&amp;",
-	`'`, "&#39;", // "&#39;" is shorter than "&apos;" and apos was not in HTML until HTML5.
 	`<`, "&lt;",
 	`>`, "&gt;",
-	`"`, "&#34;", // "&#34;" is shorter than "&quot;".
+	// `'`, "&#39;", // "&#39;" is shorter than "&apos;" and apos was not in HTML until HTML5.
+	// `"`, "&#34;", // "&#34;" is shorter than "&quot;".
 )

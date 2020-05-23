@@ -130,10 +130,10 @@ end
 ----`
 			expected := `<div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>require &#39;sinatra&#39;
+<pre class="highlight"><code>require 'sinatra'
 
-get &#39;/hi&#39; do
-  &#34;Hello World!&#34;
+get '/hi' do
+  "Hello World!"
 end</code></pre>
 </div>
 </div>`
@@ -154,10 +154,10 @@ end
 			expected := `<div class="listingblock">
 <div class="title">Source block title</div>
 <div class="content">
-<pre class="highlight"><code class="language-ruby" data-lang="ruby">require &#39;sinatra&#39;
+<pre class="highlight"><code class="language-ruby" data-lang="ruby">require 'sinatra'
 
-get &#39;/hi&#39; do
-  &#34;Hello World!&#34;
+get '/hi' do
+  "Hello World!"
 end</code></pre>
 </div>
 </div>`
@@ -178,10 +178,10 @@ end
 			expected := `<div class="listingblock">
 <div class="title">Source block title</div>
 <div class="content">
-<pre class="highlight"><code class="language-ruby" data-lang="ruby">require &#39;sinatra&#39;
+<pre class="highlight"><code class="language-ruby" data-lang="ruby">require 'sinatra'
 
-get &#39;/hi&#39; do
-  &#34;Hello World!&#34;
+get '/hi' do
+  "Hello World!"
 end</code></pre>
 </div>
 </div>`
@@ -202,10 +202,10 @@ end
 			expected := `<div id="id-for-source-block" class="listingblock">
 <div class="title">app.rb</div>
 <div class="content">
-<pre class="highlight"><code class="language-ruby" data-lang="ruby">require &#39;sinatra&#39;
+<pre class="highlight"><code class="language-ruby" data-lang="ruby">require 'sinatra'
 
-get &#39;/hi&#39; do
-  &#34;Hello World!&#34;
+get '/hi' do
+  "Hello World!"
 end</code></pre>
 </div>
 </div>`
@@ -297,7 +297,7 @@ and "more" content
 <p><strong>bold content</strong></p>
 </div>
 <div class="paragraph">
-<p>and &#34;more&#34; content</p>
+<p>and "more" content</p>
 </div>
 </div>
 </div>`
