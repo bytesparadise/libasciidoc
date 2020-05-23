@@ -62,10 +62,9 @@ func init() {
 		})
 
 	sourceBlockContentTmpl = newTextTemplate("source block content",
-		`{{ $ctx := .Context }}{{ with .Data }}{{ render $ctx .Elements | printf "%s" | escape }}{{ end }}`,
+		`{{ $ctx := .Context }}{{ with .Data }}{{ render $ctx .Elements | printf "%s" }}{{ end }}`,
 		texttemplate.FuncMap{
 			"render": renderElements,
-			"escape": EscapeString,
 		})
 
 	exampleBlockTmpl = newTextTemplate("example block", `{{ $ctx := .Context }}{{ with .Data }}<div {{ if .ID }}id="{{ .ID }}" {{ end }}class="exampleblock">{{ if .Title }}
