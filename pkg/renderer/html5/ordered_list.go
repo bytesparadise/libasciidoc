@@ -42,12 +42,12 @@ func renderOrderedList(ctx renderer.Context, l types.OrderedList) ([]byte, error
 			Start          string
 			Items          []types.OrderedListItem
 		}{
-			renderElementID(l.Attributes),
-			l.Attributes.GetAsString(types.AttrTitle),
-			l.Attributes.GetAsString(types.AttrRole),
-			getNumberingStyle(l),
-			l.Attributes.GetAsString(types.AttrStart),
-			l.Items,
+			ID:             renderElementID(l.Attributes),
+			Title:          l.Attributes.GetAsString(types.AttrTitle),
+			Role:           l.Attributes.GetAsString(types.AttrRole),
+			NumberingStyle: getNumberingStyle(l),
+			Start:          l.Attributes.GetAsString(types.AttrStart),
+			Items:          l.Items,
 		},
 	})
 	if err != nil {

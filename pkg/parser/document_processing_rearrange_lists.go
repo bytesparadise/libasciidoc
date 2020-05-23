@@ -35,12 +35,14 @@ func rearrangeListItems(blocks []interface{}, withinDelimitedBlock bool) ([]inte
 					result = append(result, *list)
 				case *types.LabeledList:
 					result = append(result, *list)
+				case *types.CalloutList:
+					result = append(result, *list)
 				}
 				// reset the list for further usage while processing the rest of the document
 				lists = []types.List{}
 			}
 			result = append(result, block)
-		case types.OrderedListItem, types.UnorderedListItem, types.LabeledListItem:
+		case types.OrderedListItem, types.UnorderedListItem, types.LabeledListItem, types.CalloutListItem:
 			// there's a special case: if the next list item has attributes and was preceded by a
 			// blank line, then we need to start a new list
 			if blanklineCount > 0 && len(block.(types.DocumentElement).GetAttributes()) > 0 {
@@ -113,6 +115,8 @@ func appendListItem(lists []types.List, item interface{}) ([]types.List, error) 
 		return appendUnorderedListItem(lists, &item)
 	case types.LabeledListItem:
 		return appendLabeledListItem(lists, item)
+	case types.CalloutListItem:
+		return appendCalloutListItem(lists, item)
 	}
 	return lists, nil
 }
@@ -143,6 +147,26 @@ func appendOrderedListItem(lists []types.List, item *types.OrderedListItem) ([]t
 	list := types.NewOrderedList(item)
 	// also, force the current item level to (last seen level + 1)
 	item.Level = maxLevel + 1
+	return append(lists, list), nil
+}
+
+func appendCalloutListItem(lists []types.List, item types.CalloutListItem) ([]types.List, error) {
+	for i, list := range lists {
+		if list, ok := list.(*types.CalloutList); ok {
+			// assume we can't have empty lists
+			log.Debugf("found a matching callout list")
+			// prune items of "deeper/lower" level
+			lists = pruneLists(lists, i)
+			// apply the same level
+			list.AddItem(item)
+			// also, prune the pointers to the remaining sublists (in case there is any...)
+			return lists, nil
+		}
+	}
+	// no match found: create a new list and if needed, adjust the level of the item
+	log.Debugf("adding a new callout list")
+	list := types.NewCalloutList(item)
+	// also, force the current item level to (last seen level + 1)
 	return append(lists, list), nil
 }
 

@@ -664,9 +664,7 @@ TIP: tip`
 				},
 			},
 		}
-		result, err := ParseDraftDocument(source)
-		Expect(err).NotTo(HaveOccurred())
-		Expect(result).To(MatchDraftDocument(expected))
+		Expect(ParseDraftDocument(source)).To(Equal(expected))
 	})
 
 	It("labeled list with nested unordered list - case 2", func() {

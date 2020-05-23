@@ -5,7 +5,7 @@ import (
 )
 
 // EscapeString uses the stdlib html5.Escape func except but bypasses
-// a few replacements which
+// a few replacements
 func EscapeString(s string) string {
 	return htmlEscaper.Replace(s)
 }
