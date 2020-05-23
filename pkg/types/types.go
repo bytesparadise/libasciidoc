@@ -734,7 +734,7 @@ func NewOrderedListItem(prefix OrderedListItemPrefix, elements []interface{}, at
 	}, nil
 }
 
-// GetAttributes returns the elements of this UnorderedListItem
+// GetAttributes returns the elements of this OrderedListItem
 func (i OrderedListItem) GetAttributes() ElementAttributes {
 	return i.Attributes
 }
@@ -1007,7 +1007,7 @@ func NewLabeledListItem(level int, term []interface{}, description interface{}, 
 	}, nil
 }
 
-// GetAttributes returns the elements of this UnorderedListItem
+// GetAttributes returns the elements of this LabeledListItem
 func (i LabeledListItem) GetAttributes() ElementAttributes {
 	return i.Attributes
 }
@@ -1419,6 +1419,15 @@ type CalloutListItem struct {
 	Attributes ElementAttributes
 	Ref        int
 	Elements   []interface{}
+}
+
+var _ ListItem = &CalloutListItem{}
+
+var _ DocumentElement = &CalloutListItem{}
+
+// GetAttributes returns the elements of this CalloutListItem
+func (i CalloutListItem) GetAttributes() ElementAttributes {
+	return i.Attributes
 }
 
 // AddElement add an element to this CalloutListItem
