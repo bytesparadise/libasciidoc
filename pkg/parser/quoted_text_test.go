@@ -471,9 +471,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				result, err := ParseDraftDocument(source)
-				Expect(err).NotTo(HaveOccurred())
-				Expect(result).To(MatchDraftDocument(expected))
+				Expect(ParseDraftDocument(source)).To(Equal(expected))
 			})
 
 			It("italic text with 3 words in double quote", func() {
@@ -1468,9 +1466,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				result, err := ParseDraftDocument(source)
-				Expect(err).NotTo(HaveOccurred())
-				Expect(result).To(MatchDraftDocument(expected))
+				Expect(ParseDraftDocument(source)).To(Equal(expected))
 			})
 
 			It("image in bold", func() {

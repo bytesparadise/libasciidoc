@@ -115,6 +115,105 @@ some source code
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
+		It("with single callout", func() {
+			source := `----
+import <1>
+----
+<1> an import`
+			expected := `<div class="listingblock">
+<div class="content">
+<pre>import <b class="conum">(1)</b></pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>an import</p>
+</li>
+</ol>
+</div>`
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
+		})
+
+		It("with multiple callouts on different lines", func() {
+			source := `----
+import <1>
+
+func foo() {} <2>
+----
+<1> an import
+<2> a func`
+			expected := `<div class="listingblock">
+<div class="content">
+<pre>import <b class="conum">(1)</b>
+
+func foo() {} <b class="conum">(2)</b></pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>an import</p>
+</li>
+<li>
+<p>a func</p>
+</li>
+</ol>
+</div>`
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
+		})
+
+		It("with multiple callouts on same line", func() {
+			source := `----
+import <1> <2><3>
+
+func foo() {} <4>
+----
+<1> an import
+<2> a single import
+<3> a single basic import
+<4> a func`
+			expected := `<div class="listingblock">
+<div class="content">
+<pre>import <b class="conum">(1)</b><b class="conum">(2)</b><b class="conum">(3)</b>
+
+func foo() {} <b class="conum">(4)</b></pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>an import</p>
+</li>
+<li>
+<p>a single import</p>
+</li>
+<li>
+<p>a single basic import</p>
+</li>
+<li>
+<p>a func</p>
+</li>
+</ol>
+</div>`
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
+		})
+
+		It("with invalid callout", func() {
+			source := `----
+import <a>
+----
+<a> an import`
+			expected := `<div class="listingblock">
+<div class="content">
+<pre>import &lt;a&gt;</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>&lt;a&gt; an import</p>
+</div>`
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
+		})
 	})
 
 	Context("source blocks", func() {

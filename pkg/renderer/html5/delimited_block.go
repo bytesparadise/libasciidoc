@@ -42,7 +42,7 @@ func init() {
 	listingBlockTmpl = newTextTemplate("listing block", `{{ $ctx := .Context }}{{ with .Data }}<div {{ if .ID }}id="{{ .ID }}" {{ end }}class="listingblock">{{ if .Title }}
 <div class="title">{{ escape .Title }}</div>{{ end }}
 <div class="content">
-<pre>{{ render $ctx .Elements | printf "%s" | escape }}</pre>
+<pre>{{ render $ctx .Elements | printf "%s" }}</pre>
 </div>
 </div>{{ end }}`,
 		texttemplate.FuncMap{
@@ -71,7 +71,7 @@ func init() {
 	exampleBlockTmpl = newTextTemplate("example block", `{{ $ctx := .Context }}{{ with .Data }}<div {{ if .ID }}id="{{ .ID }}" {{ end }}class="exampleblock">{{ if .Title }}
 <div class="title">{{ escape .Title }}</div>{{ end }}
 <div class="content">
-{{ $elements := .Elements }}{{ renderElements $ctx $elements | printf "%s" }}
+{{ renderElements $ctx .Elements | printf "%s" }}
 </div>
 </div>{{ end }}`,
 		texttemplate.FuncMap{

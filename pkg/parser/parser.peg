@@ -50,6 +50,7 @@ DocumentBlock <-
         / ImageBlock 
         / OrderedListItem 
         / UnorderedListItem 
+        / CalloutListItem
         / ContinuedListItemElement
         / LiteralBlock 
         / DocumentAttributeDeclaration 
@@ -465,12 +466,12 @@ TagWildcard <- stars:(("*")+ {
 }
 
 // Entrypoint to parse a file to include. May contain nested file inclusion macros
-VerbatimFileContent <- (FileInclusion / VerbatimLine)*
+VerbatimFileContent <- (FileInclusion / VerbatimFileLine)*
 
-VerbatimLine <- !EOF content:([^\r\n]* { 
+VerbatimFileLine <- !EOF content:([^\r\n]* { 
             return string(c.text), nil
         }) EOL {
-    return types.NewVerbatimLine(content.(string))
+    return types.NewVerbatimFileLine(content.(string))
 }
 
 // ------------------------------------------
@@ -502,6 +503,7 @@ ListParagraphLine <- !EOF
     !SingleLineComment
     !OrderedListItemPrefix
     !UnorderedListItemPrefix
+    !CalloutListItemPrefix
     !ListItemContinuation
     !ElementAttribute
     !BlockDelimiter
@@ -1306,6 +1308,28 @@ BlockDelimiter <- !(Alphanum) LiteralBlockDelimiter //TODO: use "start" delimite
                 / SidebarBlockDelimiter
 
 VerbatimContent <- FileInclusion / VerbatimLine
+
+VerbatimLine <- !EOF content:(VerbatimLineContent) callouts:(Callouts)? EOL {
+    return types.NewVerbatimLine(content.(string), callouts)
+}
+
+VerbatimLineContent <- (!Callouts (Space+ / [^ \r\n]+))* { 
+    return string(c.text), nil
+}
+
+Callouts <- Callout+
+
+Callout <- "<" ref:([0-9]+ { return strconv.Atoi(string(c.text)) }) ">" Space* &(EOL / Callout) {
+    return types.NewCallout(ref.(int))
+}
+
+CalloutListItem <- ref:(CalloutListItemPrefix) description:(ListParagraph+) {
+    return types.NewCalloutListItem(ref.(int), description.([]interface{}))
+}
+
+CalloutListItemPrefix <- "<" ref:([0-9]+ { return strconv.Atoi(string(c.text)) }) ">" Space+ {
+    return ref, nil
+}
 
 // -------------------------------------------------------------------------------------
 // Fenced Blocks

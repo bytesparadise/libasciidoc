@@ -241,7 +241,7 @@ var _ = Describe("delimited blocks", func() {
 
 		Context("listing blocks", func() {
 
-			It("listing block with single line", func() {
+			It("with single line", func() {
 				source := `----
 some listing code
 ----`
@@ -261,7 +261,7 @@ some listing code
 				Expect(ParseDraftDocument(source)).To(Equal(expected))
 			})
 
-			It("listing block with no line", func() {
+			It("with no line", func() {
 				source := `----
 ----`
 				expected := types.DraftDocument{
@@ -276,7 +276,7 @@ some listing code
 				Expect(ParseDraftDocument(source)).To(Equal(expected))
 			})
 
-			It("listing block with multiple lines alone", func() {
+			It("with multiple lines alone", func() {
 				source := `----
 some listing code
 with an empty line
@@ -308,7 +308,7 @@ in the middle
 				Expect(ParseDraftDocument(source)).To(Equal(expected))
 			})
 
-			It("listing block with unrendered list", func() {
+			It("with unrendered list", func() {
 				source := `----
 * some 
 * listing 
@@ -336,7 +336,7 @@ in the middle
 				Expect(ParseDraftDocument(source)).To(Equal(expected))
 			})
 
-			It("listing block with multiple lines then a paragraph", func() {
+			It("with multiple lines then a paragraph", func() {
 				source := `---- 
 some listing code
 with an empty line
@@ -377,7 +377,7 @@ then a normal paragraph.`
 				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
-			It("listing block after a paragraph", func() {
+			It("after a paragraph", func() {
 				source := `a paragraph.
 
 ----
@@ -408,7 +408,7 @@ some listing code
 				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
-			It("listing block with unclosed delimiter", func() {
+			It("with unclosed delimiter", func() {
 				source := `----
 End of file here.`
 				expected := types.DraftDocument{
@@ -419,6 +419,263 @@ End of file here.`
 							Elements: []interface{}{
 								types.VerbatimLine{
 									Content: "End of file here.",
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDraftDocument(source)).To(Equal(expected))
+			})
+
+			It("with single callout", func() {
+				source := `----
+import <1>
+----
+<1> an import`
+				expected := types.DraftDocument{
+					Blocks: []interface{}{
+						types.DelimitedBlock{
+							Attributes: types.ElementAttributes{},
+							Kind:       types.Listing,
+							Elements: []interface{}{
+								types.VerbatimLine{
+									Content: "import ",
+									Callouts: []types.Callout{
+										{
+											Ref: 1,
+										},
+									},
+								},
+							},
+						},
+						types.CalloutListItem{
+							Attributes: types.ElementAttributes{},
+							Ref:        1,
+							Elements: []interface{}{
+								types.Paragraph{
+									Attributes: types.ElementAttributes{},
+									Lines: [][]interface{}{
+										{
+											types.StringElement{
+												Content: "an import",
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDraftDocument(source)).To(Equal(expected))
+			})
+
+			It("with multiple callouts on different lines", func() {
+				source := `----
+import <1>
+
+func foo() {} <2>
+----
+<1> an import
+<2> a func`
+				expected := types.DraftDocument{
+					Blocks: []interface{}{
+						types.DelimitedBlock{
+							Attributes: types.ElementAttributes{},
+							Kind:       types.Listing,
+							Elements: []interface{}{
+								types.VerbatimLine{
+									Content: "import ",
+									Callouts: []types.Callout{
+										{
+											Ref: 1,
+										},
+									},
+								},
+								types.VerbatimLine{
+									Content: "",
+								},
+								types.VerbatimLine{
+									Content: "func foo() {} ",
+									Callouts: []types.Callout{
+										{
+											Ref: 2,
+										},
+									},
+								},
+							},
+						},
+						types.CalloutListItem{
+							Attributes: types.ElementAttributes{},
+							Ref:        1,
+							Elements: []interface{}{
+								types.Paragraph{
+									Attributes: types.ElementAttributes{},
+									Lines: [][]interface{}{
+										{
+											types.StringElement{
+												Content: "an import",
+											},
+										},
+									},
+								},
+							},
+						},
+						types.CalloutListItem{
+							Attributes: types.ElementAttributes{},
+							Ref:        2,
+							Elements: []interface{}{
+								types.Paragraph{
+									Attributes: types.ElementAttributes{},
+									Lines: [][]interface{}{
+										{
+											types.StringElement{
+												Content: "a func",
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDraftDocument(source)).To(Equal(expected))
+			})
+
+			It("with multiple callouts on same line", func() {
+				source := `----
+import <1> <2><3>
+
+func foo() {} <4>
+----
+<1> an import
+<2> a single import
+<3> a single basic import
+<4> a func`
+				expected := types.DraftDocument{
+					Blocks: []interface{}{
+						types.DelimitedBlock{
+							Attributes: types.ElementAttributes{},
+							Kind:       types.Listing,
+							Elements: []interface{}{
+								types.VerbatimLine{
+									Content: "import ",
+									Callouts: []types.Callout{
+										{
+											Ref: 1,
+										},
+										{
+											Ref: 2,
+										},
+										{
+											Ref: 3,
+										},
+									},
+								},
+								types.VerbatimLine{
+									Content: "",
+								},
+								types.VerbatimLine{
+									Content: "func foo() {} ",
+									Callouts: []types.Callout{
+										{
+											Ref: 4,
+										},
+									},
+								},
+							},
+						},
+						types.CalloutListItem{
+							Attributes: types.ElementAttributes{},
+							Ref:        1,
+							Elements: []interface{}{
+								types.Paragraph{
+									Attributes: types.ElementAttributes{},
+									Lines: [][]interface{}{
+										{
+											types.StringElement{
+												Content: "an import",
+											},
+										},
+									},
+								},
+							},
+						},
+						types.CalloutListItem{
+							Attributes: types.ElementAttributes{},
+							Ref:        2,
+							Elements: []interface{}{
+								types.Paragraph{
+									Attributes: types.ElementAttributes{},
+									Lines: [][]interface{}{
+										{
+											types.StringElement{
+												Content: "a single import",
+											},
+										},
+									},
+								},
+							},
+						},
+						types.CalloutListItem{
+							Attributes: types.ElementAttributes{},
+							Ref:        3,
+							Elements: []interface{}{
+								types.Paragraph{
+									Attributes: types.ElementAttributes{},
+									Lines: [][]interface{}{
+										{
+											types.StringElement{
+												Content: "a single basic import",
+											},
+										},
+									},
+								},
+							},
+						},
+						types.CalloutListItem{
+							Attributes: types.ElementAttributes{},
+							Ref:        4,
+							Elements: []interface{}{
+								types.Paragraph{
+									Attributes: types.ElementAttributes{},
+									Lines: [][]interface{}{
+										{
+											types.StringElement{
+												Content: "a func",
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDraftDocument(source)).To(Equal(expected))
+			})
+
+			It("with invalid callout", func() {
+				source := `----
+import <a>
+----
+<a> an import`
+				expected := types.DraftDocument{
+					Blocks: []interface{}{
+						types.DelimitedBlock{
+							Attributes: types.ElementAttributes{},
+							Kind:       types.Listing,
+							Elements: []interface{}{
+								types.VerbatimLine{
+									Content: "import <a>",
+								},
+							},
+						},
+						types.Paragraph{
+							Attributes: types.ElementAttributes{},
+							Lines: [][]interface{}{
+								{
+									types.StringElement{
+										Content: "<a> an import",
+									},
 								},
 							},
 						},
@@ -454,9 +711,7 @@ some listing code
 						},
 					},
 				}
-				result, err := ParseDraftDocument(source)
-				Expect(err).ToNot(HaveOccurred())
-				Expect(result).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(Equal(expected))
 			})
 
 			It("with single line starting with a dot", func() {
@@ -472,9 +727,7 @@ some listing code
 						},
 					},
 				}
-				result, err := ParseDraftDocument(source)
-				Expect(err).ToNot(HaveOccurred())
-				Expect(result).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(Equal(expected))
 			})
 
 			It("with multiple lines", func() {
@@ -646,7 +899,7 @@ foo
 
 			})
 
-			It("listing block as admonition", func() {
+			It("as admonition", func() {
 				source := `[NOTE]
 ----
 multiple
@@ -1977,7 +2230,7 @@ bar
 
 		Context("listing blocks", func() {
 
-			It("listing block with single line", func() {
+			It("with single line", func() {
 				source := `----
 some listing code
 ----`
@@ -2000,7 +2253,7 @@ some listing code
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
-			It("listing block with no line", func() {
+			It("with no line", func() {
 				source := `----
 ----`
 				expected := types.Document{
@@ -2018,7 +2271,7 @@ some listing code
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
-			It("listing block with multiple lines alone", func() {
+			It("with multiple lines alone", func() {
 				source := `----
 some listing code
 with an empty line
@@ -2053,7 +2306,7 @@ in the middle
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
-			It("listing block with unrendered list", func() {
+			It("with unrendered list", func() {
 				source := `----
 * some 
 * listing 
@@ -2084,7 +2337,7 @@ in the middle
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
-			It("listing block with multiple lines then a paragraph", func() {
+			It("with multiple lines then a paragraph", func() {
 				source := `---- 
 some listing code
 with an empty line
@@ -2128,7 +2381,7 @@ then a normal paragraph.`
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
-			It("listing block after a paragraph", func() {
+			It("after a paragraph", func() {
 				source := `a paragraph.
 
 ----
@@ -2161,7 +2414,7 @@ some listing code
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
-			It("listing block with unclosed delimiter", func() {
+			It("with unclosed delimiter", func() {
 				source := `----
 End of file here.`
 				expected := types.Document{
@@ -2181,6 +2434,290 @@ End of file here.`
 					},
 				}
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
+			})
+
+			It("with single callout", func() {
+				source := `----
+import <1>
+----
+<1> an import`
+				expected := types.Document{
+					Attributes:        types.DocumentAttributes{},
+					ElementReferences: types.ElementReferences{},
+					Footnotes:         []types.Footnote{},
+					Elements: []interface{}{
+						types.DelimitedBlock{
+							Attributes: types.ElementAttributes{},
+							Kind:       types.Listing,
+							Elements: []interface{}{
+								types.VerbatimLine{
+									Content: "import ",
+									Callouts: []types.Callout{
+										{
+											Ref: 1,
+										},
+									},
+								},
+							},
+						},
+						types.CalloutList{
+							Attributes: types.ElementAttributes{},
+							Items: []types.CalloutListItem{
+								{
+									Attributes: types.ElementAttributes{},
+									Ref:        1,
+									Elements: []interface{}{
+										types.Paragraph{
+											Attributes: types.ElementAttributes{},
+											Lines: [][]interface{}{
+												{
+													types.StringElement{
+														Content: "an import",
+													},
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDocument(source)).To(Equal(expected))
+			})
+
+			It("with multiple callouts on different lines", func() {
+				source := `----
+import <1>
+
+func foo() {} <2>
+----
+<1> an import
+<2> a func`
+				expected := types.Document{
+					Attributes:        types.DocumentAttributes{},
+					ElementReferences: types.ElementReferences{},
+					Footnotes:         []types.Footnote{},
+					Elements: []interface{}{
+						types.DelimitedBlock{
+							Attributes: types.ElementAttributes{},
+							Kind:       types.Listing,
+							Elements: []interface{}{
+								types.VerbatimLine{
+									Content: "import ",
+									Callouts: []types.Callout{
+										{
+											Ref: 1,
+										},
+									},
+								},
+								types.VerbatimLine{
+									Content: "",
+								},
+								types.VerbatimLine{
+									Content: "func foo() {} ",
+									Callouts: []types.Callout{
+										{
+											Ref: 2,
+										},
+									},
+								},
+							},
+						},
+						types.CalloutList{
+							Attributes: types.ElementAttributes{},
+							Items: []types.CalloutListItem{
+								{
+									Attributes: types.ElementAttributes{},
+									Ref:        1,
+									Elements: []interface{}{
+										types.Paragraph{
+											Attributes: types.ElementAttributes{},
+											Lines: [][]interface{}{
+												{
+													types.StringElement{
+														Content: "an import",
+													},
+												},
+											},
+										},
+									},
+								},
+								{
+									Attributes: types.ElementAttributes{},
+									Ref:        2,
+									Elements: []interface{}{
+										types.Paragraph{
+											Attributes: types.ElementAttributes{},
+											Lines: [][]interface{}{
+												{
+													types.StringElement{
+														Content: "a func",
+													},
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDocument(source)).To(Equal(expected))
+			})
+
+			It("with multiple callouts on same line", func() {
+				source := `----
+import <1> <2><3>
+
+func foo() {} <4>
+----
+<1> an import
+<2> a single import
+<3> a single basic import
+<4> a func`
+				expected := types.Document{
+					Attributes:        types.DocumentAttributes{},
+					ElementReferences: types.ElementReferences{},
+					Footnotes:         []types.Footnote{},
+					Elements: []interface{}{
+						types.DelimitedBlock{
+							Attributes: types.ElementAttributes{},
+							Kind:       types.Listing,
+							Elements: []interface{}{
+								types.VerbatimLine{
+									Content: "import ",
+									Callouts: []types.Callout{
+										{
+											Ref: 1,
+										},
+										{
+											Ref: 2,
+										},
+										{
+											Ref: 3,
+										},
+									},
+								},
+								types.VerbatimLine{
+									Content: "",
+								},
+								types.VerbatimLine{
+									Content: "func foo() {} ",
+									Callouts: []types.Callout{
+										{
+											Ref: 4,
+										},
+									},
+								},
+							},
+						},
+						types.CalloutList{
+							Attributes: types.ElementAttributes{},
+							Items: []types.CalloutListItem{
+								{
+									Attributes: types.ElementAttributes{},
+									Ref:        1,
+									Elements: []interface{}{
+										types.Paragraph{
+											Attributes: types.ElementAttributes{},
+											Lines: [][]interface{}{
+												{
+													types.StringElement{
+														Content: "an import",
+													},
+												},
+											},
+										},
+									},
+								},
+								{
+									Attributes: types.ElementAttributes{},
+									Ref:        2,
+									Elements: []interface{}{
+										types.Paragraph{
+											Attributes: types.ElementAttributes{},
+											Lines: [][]interface{}{
+												{
+													types.StringElement{
+														Content: "a single import",
+													},
+												},
+											},
+										},
+									},
+								},
+								{
+									Attributes: types.ElementAttributes{},
+									Ref:        3,
+									Elements: []interface{}{
+										types.Paragraph{
+											Attributes: types.ElementAttributes{},
+											Lines: [][]interface{}{
+												{
+													types.StringElement{
+														Content: "a single basic import",
+													},
+												},
+											},
+										},
+									},
+								},
+								{
+									Attributes: types.ElementAttributes{},
+									Ref:        4,
+									Elements: []interface{}{
+										types.Paragraph{
+											Attributes: types.ElementAttributes{},
+											Lines: [][]interface{}{
+												{
+													types.StringElement{
+														Content: "a func",
+													},
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDocument(source)).To(Equal(expected))
+			})
+
+			It("with invalid callout", func() {
+				source := `----
+import <a>
+----
+<a> an import`
+				expected := types.Document{
+					Attributes:        types.DocumentAttributes{},
+					ElementReferences: types.ElementReferences{},
+					Footnotes:         []types.Footnote{},
+					Elements: []interface{}{
+						types.DelimitedBlock{
+							Attributes: types.ElementAttributes{},
+							Kind:       types.Listing,
+							Elements: []interface{}{
+								types.VerbatimLine{
+									Content: "import <a>",
+								},
+							},
+						},
+						types.Paragraph{
+							Attributes: types.ElementAttributes{},
+							Lines: [][]interface{}{
+								{
+									types.StringElement{
+										Content: "<a> an import",
+									},
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDocument(source)).To(Equal(expected))
 			})
 		})
 

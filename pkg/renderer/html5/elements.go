@@ -95,6 +95,8 @@ func renderElement(ctx renderer.Context, element interface{}) ([]byte, error) {
 		return renderOrderedList(ctx, e)
 	case types.UnorderedList:
 		return renderUnorderedList(ctx, e)
+	case types.CalloutList:
+		return renderCalloutList(ctx, e)
 	case types.Paragraph:
 		return renderParagraph(ctx, e)
 	case types.InternalCrossReference:

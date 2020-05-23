@@ -532,4 +532,76 @@ var _ = Describe("rearrange lists", func() {
 		Expect(err).NotTo(HaveOccurred())
 		Expect(result).To(Equal(expected))
 	})
+
+	It("callout list with rich terms", func() {
+		actual := []interface{}{
+			types.CalloutListItem{
+				Attributes: types.ElementAttributes{
+					types.AttrTitle: "callout title",
+				},
+				Elements: []interface{}{
+					types.Paragraph{
+						Attributes: types.ElementAttributes{},
+						Lines: [][]interface{}{
+							{
+								types.StringElement{Content: "description 1"},
+							},
+						},
+					},
+				},
+			},
+			types.CalloutListItem{
+				Attributes: types.ElementAttributes{},
+				Elements: []interface{}{
+					types.Paragraph{
+						Attributes: types.ElementAttributes{},
+						Lines: [][]interface{}{
+							{
+								types.StringElement{Content: "description 2"},
+							},
+						},
+					},
+				},
+			},
+		}
+		expected := []interface{}{
+			types.CalloutList{
+				Attributes: types.ElementAttributes{
+					types.AttrTitle: "callout title",
+				},
+				Items: []types.CalloutListItem{
+					{
+						Attributes: types.ElementAttributes{},
+						Elements: []interface{}{
+							types.Paragraph{
+								Attributes: types.ElementAttributes{},
+								Lines: [][]interface{}{
+									{
+										types.StringElement{Content: "description 1"},
+									},
+								},
+							},
+						},
+					},
+					{
+						Attributes: types.ElementAttributes{},
+						Elements: []interface{}{
+							types.Paragraph{
+								Attributes: types.ElementAttributes{},
+								Lines: [][]interface{}{
+									{
+										types.StringElement{Content: "description 2"},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		}
+		result, err := rearrangeListItems(actual, false)
+		Expect(err).NotTo(HaveOccurred())
+		Expect(result).To(Equal(expected))
+	})
+
 })

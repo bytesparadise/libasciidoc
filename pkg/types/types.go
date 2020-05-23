@@ -665,13 +665,12 @@ const (
 func NewOrderedList(item *OrderedListItem) *OrderedList {
 	attrs := rearrangeListAttributes(item.Attributes)
 	item.Attributes = ElementAttributes{}
-	list := &OrderedList{
+	return &OrderedList{
 		Attributes: attrs, // move the item's attributes to the list level
 		Items: []OrderedListItem{
 			*item,
 		},
 	}
-	return list
 }
 
 // moves the "upperroman", etc. attributes as values of the `AttrNumberingStyle` key
@@ -1400,6 +1399,73 @@ func NewDelimitedBlock(kind BlockKind, elements []interface{}, attributes interf
 }
 
 // ------------------------------------------
+// Callouts
+// ------------------------------------------
+
+// Callout a reference at the end of a line in a delimited block with verbatim content (eg: listing, source code)
+type Callout struct {
+	Ref int
+}
+
+// NewCallout returns a new Callout with the given reference
+func NewCallout(ref int) (Callout, error) {
+	return Callout{
+		Ref: ref,
+	}, nil
+}
+
+// CalloutListItem the description of a call out which will appear as an ordered list item after the delimited block
+type CalloutListItem struct {
+	Attributes ElementAttributes
+	Ref        int
+	Elements   []interface{}
+}
+
+// AddElement add an element to this CalloutListItem
+func (i *CalloutListItem) AddElement(element interface{}) {
+	i.Elements = append(i.Elements, element)
+}
+
+// NewCalloutListItem returns a new CalloutListItem
+func NewCalloutListItem(ref int, description []interface{}) (CalloutListItem, error) {
+	return CalloutListItem{
+		Attributes: ElementAttributes{},
+		Ref:        ref,
+		Elements:   description,
+	}, nil
+}
+
+// CalloutList the structure for the Callout Lists
+type CalloutList struct {
+	Attributes ElementAttributes
+	Items      []CalloutListItem
+}
+
+var _ List = &CalloutList{}
+
+// NewCalloutList initializes a new CalloutList and uses the given item's attributes as the list attributes
+func NewCalloutList(item CalloutListItem) *CalloutList {
+	attrs := item.Attributes
+	item.Attributes = ElementAttributes{}
+	return &CalloutList{
+		Attributes: attrs, // move the item's attributes to the list level
+		Items: []CalloutListItem{
+			item,
+		},
+	}
+}
+
+// AddItem adds the given item to the list
+func (l *CalloutList) AddItem(item CalloutListItem) {
+	l.Items = append(l.Items, item)
+}
+
+// LastItem returns the last item in the list
+func (l *CalloutList) LastItem() ListItem {
+	return &(l.Items[len(l.Items)-1])
+}
+
+// ------------------------------------------
 // Tables
 // ------------------------------------------
 
@@ -1577,12 +1643,29 @@ func (s StringElement) String() string {
 
 // VerbatimLine the structure for verbatim line, ie, read "as-is" from a given text document.
 type VerbatimLine struct {
-	Content string
+	Content  string
+	Callouts []Callout
 }
 
 // NewVerbatimLine initializes a new `VerbatimLine` from the given content
-func NewVerbatimLine(content string) (VerbatimLine, error) {
-	return VerbatimLine{Content: content}, nil
+func NewVerbatimLine(content string, callouts interface{}) (VerbatimLine, error) {
+	var cos []Callout
+	if callouts, ok := callouts.([]interface{}); ok {
+		for _, c := range callouts {
+			cos = append(cos, c.(Callout))
+		}
+	}
+	return VerbatimLine{
+		Content:  content,
+		Callouts: cos,
+	}, nil
+}
+
+// NewVerbatimFileLine initializes a new `VerbatimLine` from the given content in a file
+func NewVerbatimFileLine(content string) (VerbatimLine, error) {
+	return VerbatimLine{
+		Content: content,
+	}, nil
 }
 
 var emptyStringRE = regexp.MustCompile(` \t`)

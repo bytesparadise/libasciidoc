@@ -201,9 +201,7 @@ a normal paragraph.`
 					},
 				},
 			}
-			result, err := ParseDraftDocument(source)
-			Expect(err).NotTo(HaveOccurred())
-			Expect(result).To(MatchDraftDocument(expected))
+			Expect(ParseDraftDocument(source)).To(Equal(expected))
 		})
 	})
 
