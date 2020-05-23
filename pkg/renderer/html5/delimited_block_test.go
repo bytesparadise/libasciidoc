@@ -135,13 +135,14 @@ import <1>
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
-		It("with multiple callouts on different lines", func() {
+		It("with multiple callouts and blankline between calloutitems", func() {
 			source := `----
 import <1>
 
 func foo() {} <2>
 ----
 <1> an import
+
 <2> a func`
 			expected := `<div class="listingblock">
 <div class="content">
