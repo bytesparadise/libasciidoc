@@ -1218,4 +1218,38 @@ type Foo struct{
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 	})
+
+	Context("passthrough blocks", func() {
+
+		It("with title", func() {
+			source := `.a title
+++++
+_foo_
+
+*bar*
+++++`
+			expected := `_foo_
+
+*bar*`
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
+		})
+
+	})
+
+	Context("passthrough open block", func() {
+
+		It("2-line paragraph followed by another paragraph", func() {
+			source := `[pass]
+_foo_
+*bar*
+
+another paragraph`
+			expected := `_foo_
+*bar*
+<div class="paragraph">
+<p>another paragraph</p>
+</div>`
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
+		})
+	})
 })

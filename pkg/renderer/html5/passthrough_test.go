@@ -45,7 +45,7 @@ var _ = Describe("passthroughs", func() {
 		})
 	})
 
-	Context("singleplus Passthrough", func() {
+	Context("singleplus InlinePassthrough", func() {
 
 		It("an empty standalone singleplus passthrough", func() {
 			source := `++`

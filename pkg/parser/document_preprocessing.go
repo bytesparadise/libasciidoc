@@ -126,7 +126,7 @@ func processFileInclusions(elements []interface{}, attrs types.DocumentAttribute
 // May return the elements unchanged, or convert the elements to a source doc and parse with a custom entrypoint
 func parseDelimitedBlockContent(filename string, kind types.BlockKind, elements []interface{}, options ...Option) (types.ElementAttributes, []interface{}, error) {
 	switch kind {
-	case types.Fenced, types.Listing, types.Literal, types.Source, types.Comment:
+	case types.Fenced, types.Listing, types.Literal, types.Source, types.Comment, types.Passthrough:
 		// return the verbatim elements
 		return types.ElementAttributes{}, elements, nil
 	case types.Example, types.Quote, types.Sidebar:

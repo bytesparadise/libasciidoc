@@ -1513,7 +1513,7 @@ var _ = Describe("quoted texts", func() {
 										Kind: types.Bold,
 										Elements: []interface{}{
 											types.StringElement{Content: "a "},
-											types.Passthrough{
+											types.InlinePassthrough{
 												Kind: types.SinglePlusPassthrough,
 												Elements: []interface{}{
 													types.StringElement{Content: "image:foo.png[]"},
@@ -1541,7 +1541,7 @@ var _ = Describe("quoted texts", func() {
 										Kind: types.Bold,
 										Elements: []interface{}{
 											types.StringElement{Content: "a "},
-											types.Passthrough{
+											types.InlinePassthrough{
 												Kind: types.TriplePlusPassthrough,
 												Elements: []interface{}{
 													types.StringElement{Content: "image:foo.png[]"},
@@ -1639,7 +1639,7 @@ var _ = Describe("quoted texts", func() {
 										Kind: types.Italic,
 										Elements: []interface{}{
 											types.StringElement{Content: "a "},
-											types.Passthrough{
+											types.InlinePassthrough{
 												Kind: types.SinglePlusPassthrough,
 												Elements: []interface{}{
 													types.StringElement{Content: "image:foo.png[]"},
@@ -1667,7 +1667,7 @@ var _ = Describe("quoted texts", func() {
 										Kind: types.Italic,
 										Elements: []interface{}{
 											types.StringElement{Content: "a "},
-											types.Passthrough{
+											types.InlinePassthrough{
 												Kind: types.TriplePlusPassthrough,
 												Elements: []interface{}{
 													types.StringElement{Content: "image:foo.png[]"},
@@ -1766,7 +1766,7 @@ var _ = Describe("quoted texts", func() {
 										Kind: types.Monospace,
 										Elements: []interface{}{
 											types.StringElement{Content: "a "},
-											types.Passthrough{
+											types.InlinePassthrough{
 												Kind: types.SinglePlusPassthrough,
 												Elements: []interface{}{
 													types.StringElement{Content: "image:foo.png[]"},
@@ -1795,7 +1795,7 @@ var _ = Describe("quoted texts", func() {
 										Kind: types.Monospace,
 										Elements: []interface{}{
 											types.StringElement{Content: "a "},
-											types.Passthrough{
+											types.InlinePassthrough{
 												Kind: types.TriplePlusPassthrough,
 												Elements: []interface{}{
 													types.StringElement{Content: "image:foo.png[]"},
@@ -4276,7 +4276,7 @@ var _ = Describe("quoted texts", func() {
 										Kind: types.Bold,
 										Elements: []interface{}{
 											types.StringElement{Content: "a "},
-											types.Passthrough{
+											types.InlinePassthrough{
 												Kind: types.SinglePlusPassthrough,
 												Elements: []interface{}{
 													types.StringElement{Content: "image:foo.png[]"},
@@ -4307,7 +4307,7 @@ var _ = Describe("quoted texts", func() {
 										Kind: types.Bold,
 										Elements: []interface{}{
 											types.StringElement{Content: "a "},
-											types.Passthrough{
+											types.InlinePassthrough{
 												Kind: types.TriplePlusPassthrough,
 												Elements: []interface{}{
 													types.StringElement{Content: "image:foo.png[]"},
@@ -4416,7 +4416,7 @@ var _ = Describe("quoted texts", func() {
 										Kind: types.Italic,
 										Elements: []interface{}{
 											types.StringElement{Content: "a "},
-											types.Passthrough{
+											types.InlinePassthrough{
 												Kind: types.SinglePlusPassthrough,
 												Elements: []interface{}{
 													types.StringElement{Content: "image:foo.png[]"},
@@ -4447,7 +4447,7 @@ var _ = Describe("quoted texts", func() {
 										Kind: types.Italic,
 										Elements: []interface{}{
 											types.StringElement{Content: "a "},
-											types.Passthrough{
+											types.InlinePassthrough{
 												Kind: types.TriplePlusPassthrough,
 												Elements: []interface{}{
 													types.StringElement{Content: "image:foo.png[]"},
@@ -4557,7 +4557,7 @@ var _ = Describe("quoted texts", func() {
 										Kind: types.Monospace,
 										Elements: []interface{}{
 											types.StringElement{Content: "a "},
-											types.Passthrough{
+											types.InlinePassthrough{
 												Kind: types.SinglePlusPassthrough,
 												Elements: []interface{}{
 													types.StringElement{Content: "image:foo.png[]"},
@@ -4589,7 +4589,7 @@ var _ = Describe("quoted texts", func() {
 										Kind: types.Monospace,
 										Elements: []interface{}{
 											types.StringElement{Content: "a "},
-											types.Passthrough{
+											types.InlinePassthrough{
 												Kind: types.TriplePlusPassthrough,
 												Elements: []interface{}{
 													types.StringElement{Content: "image:foo.png[]"},

@@ -25,6 +25,7 @@ var quoteBlockTmpl texttemplate.Template
 var verseBlockTmpl texttemplate.Template
 var verseBlockParagraphTmpl texttemplate.Template
 var sidebarBlockTmpl texttemplate.Template
+var passthroughBlockTmpl texttemplate.Template
 
 // initializes the templates
 func init() {
@@ -140,6 +141,11 @@ func init() {
 			"renderElements": renderElements,
 			"escape":         EscapeString,
 		})
+
+	passthroughBlockTmpl = newTextTemplate("passthrough block", `{{ $ctx := .Context }}{{ with .Data }}{{ render $ctx .Elements | printf "%s" }}{{ end }}`,
+		texttemplate.FuncMap{
+			"render": renderElements,
+		})
 }
 
 func renderDelimitedBlock(ctx renderer.Context, b types.DelimitedBlock) ([]byte, error) {
@@ -161,6 +167,8 @@ func renderDelimitedBlock(ctx renderer.Context, b types.DelimitedBlock) ([]byte,
 		return renderVerseBlock(ctx, b)
 	case types.Sidebar:
 		return renderSidebarBlock(ctx, b)
+	case types.Passthrough:
+		return renderPassthrough(ctx, b)
 	default:
 		return nil, errors.Wrapf(err, "unable to render delimited block")
 	}
@@ -414,6 +422,21 @@ func renderSidebarBlock(ctx renderer.Context, b types.DelimitedBlock) ([]byte, e
 		}{
 			ID:       renderElementID(b.Attributes),
 			Title:    renderElementTitle(b.Attributes),
+			Elements: discardTrailingBlankLines(b.Elements),
+		},
+	})
+	return result.Bytes(), err
+}
+
+func renderPassthrough(ctx renderer.Context, b types.DelimitedBlock) ([]byte, error) {
+	result := bytes.NewBuffer(nil)
+	err := passthroughBlockTmpl.Execute(result, ContextualPipeline{
+		Context: ctx,
+		Data: struct {
+			ID       string
+			Elements []interface{}
+		}{
+			ID:       renderElementID(b.Attributes),
 			Elements: discardTrailingBlankLines(b.Elements),
 		},
 	})
