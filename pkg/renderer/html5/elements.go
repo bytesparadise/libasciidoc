@@ -105,8 +105,8 @@ func renderElement(ctx renderer.Context, element interface{}) ([]byte, error) {
 		return renderExternalCrossReference(ctx, e)
 	case types.QuotedText:
 		return renderQuotedText(ctx, e)
-	case types.Passthrough:
-		return renderPassthrough(ctx, e)
+	case types.InlinePassthrough:
+		return renderInlinePassthrough(ctx, e)
 	case types.ImageBlock:
 		return renderImageBlock(ctx, e)
 	case types.InlineImage:

@@ -10,15 +10,15 @@ import (
 
 var _ = Describe("passthroughs - draft", func() {
 
-	Context("triplePlus Passthrough", func() {
+	Context("tripleplus inline passthrough", func() {
 
-		It("tripleplus passthrough with words", func() {
+		It("tripleplus inline passthrough with words", func() {
 			source := `+++hello, world+++`
 			expected := types.Paragraph{
 				Attributes: types.ElementAttributes{},
 				Lines: [][]interface{}{
 					{
-						types.Passthrough{
+						types.InlinePassthrough{
 							Kind: types.TriplePlusPassthrough,
 							Elements: []interface{}{
 								types.StringElement{
@@ -38,7 +38,7 @@ var _ = Describe("passthroughs - draft", func() {
 				Attributes: types.ElementAttributes{},
 				Lines: [][]interface{}{
 					{
-						types.Passthrough{
+						types.InlinePassthrough{
 							Kind:     types.TriplePlusPassthrough,
 							Elements: []interface{}{},
 						},
@@ -48,13 +48,13 @@ var _ = Describe("passthroughs - draft", func() {
 			Expect(ParseDocumentBlock(source)).To(Equal(expected))
 		})
 
-		It("tripleplus passthrough with spaces", func() {
+		It("tripleplus inline passthrough with spaces", func() {
 			source := `+++ *hello*, world +++`
 			expected := types.Paragraph{
 				Attributes: types.ElementAttributes{},
 				Lines: [][]interface{}{
 					{
-						types.Passthrough{
+						types.InlinePassthrough{
 							Kind: types.TriplePlusPassthrough,
 							Elements: []interface{}{
 								types.StringElement{
@@ -68,13 +68,13 @@ var _ = Describe("passthroughs - draft", func() {
 			Expect(ParseDocumentBlock(source)).To(Equal(expected))
 		})
 
-		It("tripleplus passthrough with only spaces", func() {
+		It("tripleplus inline passthrough with only spaces", func() {
 			source := `+++ +++`
 			expected := types.Paragraph{
 				Attributes: types.ElementAttributes{},
 				Lines: [][]interface{}{
 					{
-						types.Passthrough{
+						types.InlinePassthrough{
 							Kind: types.TriplePlusPassthrough,
 							Elements: []interface{}{
 								types.StringElement{
@@ -88,13 +88,13 @@ var _ = Describe("passthroughs - draft", func() {
 			Expect(ParseDocumentBlock(source)).To(Equal(expected))
 		})
 
-		It("tripleplus passthrough with line breaks", func() {
+		It("tripleplus inline passthrough with line breaks", func() {
 			source := "+++\nhello,\nworld\n+++"
 			expected := types.Paragraph{
 				Attributes: types.ElementAttributes{},
 				Lines: [][]interface{}{
 					{
-						types.Passthrough{
+						types.InlinePassthrough{
 							Kind: types.TriplePlusPassthrough,
 							Elements: []interface{}{
 								types.StringElement{
@@ -108,14 +108,14 @@ var _ = Describe("passthroughs - draft", func() {
 			Expect(ParseDocumentBlock(source)).To(Equal(expected))
 		})
 
-		It("tripleplus passthrough in paragraph", func() {
+		It("tripleplus inline passthrough in paragraph", func() {
 			source := `The text +++<u>underline & me</u>+++ is underlined.`
 			expected := types.Paragraph{
 				Attributes: types.ElementAttributes{},
 				Lines: [][]interface{}{
 					{
 						types.StringElement{Content: "The text "},
-						types.Passthrough{
+						types.InlinePassthrough{
 							Kind: types.TriplePlusPassthrough,
 							Elements: []interface{}{
 								types.StringElement{
@@ -130,13 +130,13 @@ var _ = Describe("passthroughs - draft", func() {
 			Expect(ParseDocumentBlock(source)).To(Equal(expected))
 		})
 
-		It("tripleplus passthrough with embedded image", func() {
+		It("tripleplus inline passthrough with embedded image", func() {
 			source := `+++image:foo.png[]+++`
 			expected := types.Paragraph{
 				Attributes: types.ElementAttributes{},
 				Lines: [][]interface{}{
 					{
-						types.Passthrough{
+						types.InlinePassthrough{
 							Kind: types.TriplePlusPassthrough,
 							Elements: []interface{}{
 								types.StringElement{
@@ -160,7 +160,7 @@ var _ = Describe("passthroughs - draft", func() {
 				Attributes: types.ElementAttributes{},
 				Lines: [][]interface{}{
 					{
-						types.Passthrough{
+						types.InlinePassthrough{
 							Kind: types.SinglePlusPassthrough,
 							Elements: []interface{}{
 								types.StringElement{
@@ -197,7 +197,7 @@ var _ = Describe("passthroughs - draft", func() {
 				Attributes: types.ElementAttributes{},
 				Lines: [][]interface{}{
 					{
-						types.Passthrough{
+						types.InlinePassthrough{
 							Kind: types.SinglePlusPassthrough,
 							Elements: []interface{}{
 								types.StringElement{
@@ -323,7 +323,7 @@ var _ = Describe("passthroughs - draft", func() {
 					Attributes: types.ElementAttributes{},
 					Lines: [][]interface{}{
 						{
-							types.Passthrough{
+							types.InlinePassthrough{
 								Kind: types.PassthroughMacro,
 								Elements: []interface{}{
 									types.StringElement{
@@ -343,7 +343,7 @@ var _ = Describe("passthroughs - draft", func() {
 					Attributes: types.ElementAttributes{},
 					Lines: [][]interface{}{
 						{
-							types.Passthrough{
+							types.InlinePassthrough{
 								Kind: types.PassthroughMacro,
 								Elements: []interface{}{
 									types.StringElement{
@@ -363,7 +363,7 @@ var _ = Describe("passthroughs - draft", func() {
 					Attributes: types.ElementAttributes{},
 					Lines: [][]interface{}{
 						{
-							types.Passthrough{
+							types.InlinePassthrough{
 								Kind:     types.PassthroughMacro,
 								Elements: []interface{}{},
 							},
@@ -379,7 +379,7 @@ var _ = Describe("passthroughs - draft", func() {
 					Attributes: types.ElementAttributes{},
 					Lines: [][]interface{}{
 						{
-							types.Passthrough{
+							types.InlinePassthrough{
 								Kind: types.PassthroughMacro,
 								Elements: []interface{}{
 									types.StringElement{
@@ -399,7 +399,7 @@ var _ = Describe("passthroughs - draft", func() {
 					Attributes: types.ElementAttributes{},
 					Lines: [][]interface{}{
 						{
-							types.Passthrough{
+							types.InlinePassthrough{
 								Kind: types.PassthroughMacro,
 								Elements: []interface{}{
 									types.StringElement{
@@ -422,7 +422,7 @@ var _ = Describe("passthroughs - draft", func() {
 					Attributes: types.ElementAttributes{},
 					Lines: [][]interface{}{
 						{
-							types.Passthrough{
+							types.InlinePassthrough{
 								Kind: types.PassthroughMacro,
 								Elements: []interface{}{
 									types.QuotedText{
@@ -447,7 +447,7 @@ var _ = Describe("passthroughs - draft", func() {
 					Attributes: types.ElementAttributes{},
 					Lines: [][]interface{}{
 						{
-							types.Passthrough{
+							types.InlinePassthrough{
 								Kind: types.PassthroughMacro,
 								Elements: []interface{}{
 									types.StringElement{

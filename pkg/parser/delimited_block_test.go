@@ -1968,6 +1968,81 @@ bar
 				Expect(ParseDraftDocument(source)).To(Equal(expected))
 			})
 		})
+
+		Context("passthrough blocks", func() {
+
+			It("with title", func() {
+				source := `.a title
+++++
+_foo_
+
+*bar*
+++++`
+				expected := types.DraftDocument{
+					Blocks: []interface{}{
+						types.DelimitedBlock{
+							Attributes: types.ElementAttributes{
+								types.AttrTitle: "a title",
+							},
+							Kind: types.Passthrough,
+							Elements: []interface{}{
+								types.VerbatimLine{
+									Content: "_foo_",
+								},
+								types.VerbatimLine{
+									Content: "",
+								},
+								types.VerbatimLine{
+									Content: "*bar*",
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDraftDocument(source)).To(Equal(expected))
+			})
+		})
+
+		Context("passthrough open block", func() {
+
+			It("2-line paragraph followed by another paragraph", func() {
+				source := `[pass]
+_foo_
+*bar*
+
+another paragraph`
+				expected := types.DraftDocument{
+					Blocks: []interface{}{
+						types.DelimitedBlock{
+							Attributes: types.ElementAttributes{
+								types.AttrKind: types.Passthrough,
+							},
+							Kind: types.Passthrough,
+							Elements: []interface{}{
+								types.VerbatimLine{
+									Content: "_foo_",
+								},
+								types.VerbatimLine{
+									Content: "*bar*",
+								},
+							},
+						},
+						types.BlankLine{},
+						types.Paragraph{
+							Attributes: types.ElementAttributes{},
+							Lines: [][]interface{}{
+								{
+									types.StringElement{
+										Content: "another paragraph",
+									},
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDraftDocument(source)).To(Equal(expected))
+			})
+		})
 	})
 
 	Context("final document", func() {
@@ -3922,6 +3997,86 @@ bar
 										types.VerbatimLine{
 											Content: "bar",
 										},
+									},
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
+			})
+		})
+
+		Context("passthrough blocks", func() {
+
+			It("with title", func() {
+				source := `.a title
+++++
+_foo_
+
+*bar*
+++++`
+				expected := types.Document{
+					Attributes:        types.DocumentAttributes{},
+					ElementReferences: types.ElementReferences{},
+					Footnotes:         []types.Footnote{},
+					Elements: []interface{}{
+						types.DelimitedBlock{
+							Attributes: types.ElementAttributes{
+								types.AttrTitle: "a title",
+							},
+							Kind: types.Passthrough,
+							Elements: []interface{}{
+								types.VerbatimLine{
+									Content: "_foo_",
+								},
+								types.VerbatimLine{
+									Content: "",
+								},
+								types.VerbatimLine{
+									Content: "*bar*",
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
+			})
+		})
+
+		Context("passthrough open block", func() {
+
+			It("2-line paragraph followed by another paragraph", func() {
+				source := `[pass]
+_foo_
+*bar*
+
+another paragraph`
+				expected := types.Document{
+					Attributes:        types.DocumentAttributes{},
+					ElementReferences: types.ElementReferences{},
+					Footnotes:         []types.Footnote{},
+					Elements: []interface{}{
+						types.DelimitedBlock{
+							Attributes: types.ElementAttributes{
+								types.AttrKind: types.Passthrough,
+							},
+							Kind: types.Passthrough,
+							Elements: []interface{}{
+								types.VerbatimLine{
+									Content: "_foo_",
+								},
+								types.VerbatimLine{
+									Content: "*bar*",
+								},
+							},
+						},
+						types.Paragraph{
+							Attributes: types.ElementAttributes{},
+							Lines: [][]interface{}{
+								{
+									types.StringElement{
+										Content: "another paragraph",
 									},
 								},
 							},

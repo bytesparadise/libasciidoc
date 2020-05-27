@@ -324,6 +324,8 @@ const (
 	Literal BlockKind = "literal"
 	// Source a source block
 	Source BlockKind = "source"
+	// Passthrough a passthrough block
+	Passthrough BlockKind = "passthrough"
 )
 
 // ------------------------------------------
@@ -1765,11 +1767,11 @@ func NewEscapedQuotedText(backslashes string, punctuation string, content interf
 }
 
 // ------------------------------------------
-// Passthrough
+// InlinePassthrough
 // ------------------------------------------
 
-// Passthrough the structure for Passthroughs
-type Passthrough struct {
+// InlinePassthrough the structure for Passthroughs
+type InlinePassthrough struct {
 	Kind     PassthroughKind
 	Elements []interface{}
 }
@@ -1786,9 +1788,9 @@ const (
 	PassthroughMacro
 )
 
-// NewPassthrough returns a new passthrough
-func NewPassthrough(kind PassthroughKind, elements []interface{}) (Passthrough, error) {
-	return Passthrough{
+// NewInlinePassthrough returns a new passthrough
+func NewInlinePassthrough(kind PassthroughKind, elements []interface{}) (InlinePassthrough, error) {
+	return InlinePassthrough{
 		Kind:     kind,
 		Elements: Merge(elements...),
 	}, nil

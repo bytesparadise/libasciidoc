@@ -212,6 +212,7 @@ ElementAttribute <- &("[" / "." / "#") // skip if the content does not start wit
         VerseAttributes / 
         AdmonitionMarkerAttribute / 
         HorizontalLayout / 
+        PassthroughBlockAttribute / 
         AttributeGroup) {
     return attr, nil // avoid returning something like `[]interface{}{attr, EOL}`
 }
@@ -249,6 +250,10 @@ ElementRole <- "[." role:([\pL0-9] [^\]\r\n]* {
 
 LiteralAttribute <- "[literal]" Space* Newline {
     return types.NewLiteralAttribute()
+}
+
+PassthroughBlockAttribute <- "[pass]" Space* Newline {
+    return types.NewPassthroughBlockAttribute()
 }
 
 // expression for the whole admonition marker, but only retains the actual kind
@@ -335,7 +340,7 @@ TitleElement <- element:(Word
         / LineBreak // must be before spaces
         / Space+ 
         / CrossReference
-        / Passthrough
+        / InlinePassthrough
         / InlineImage 
         / Link
         / InlineFootnote
@@ -664,7 +669,7 @@ LabeledListItemTermElement <- element:(Word
         / CrossReference
         / ConcealedIndexTerm
         / IndexTerm
-        / Passthrough
+        / InlinePassthrough
         / InlineImage 
         / Link
         / InlineFootnote
@@ -719,6 +724,17 @@ Paragraph <-
     attributes:(ElementAttributes)? "> " content:(MarkdownQuoteBlockVerbatimContent) {
         return types.NewDelimitedBlock(types.MarkdownQuote, content.([]interface{}), attributes)
     } /
+    // passthrough open block: requires `[pass]`
+    attributes:(ElementAttributes)? &{  
+        // verify that one of the attributes is `passthrough`
+        if attrs, ok := attributes.(types.ElementAttributes); ok {
+            kind, found := attrs[types.AttrKind]
+            return found && kind == types.Passthrough, nil
+        }
+        return false, nil
+    } !BlockDelimiter content:(OpenPassthroughParagraphContent) { 
+        return types.NewDelimitedBlock(types.Passthrough, content.([]interface{}), attributes)
+    } /
     // other kind of paragraph (verse, regular, etc.)
     attributes:(ElementAttributes)? !BlockDelimiter lines:(InlineElements)+ { 
         return types.NewParagraph(lines.([]interface{}), attributes)
@@ -733,6 +749,11 @@ MarkdownQuoteBlockAttribution <- "-- " author:(([^\r\n]+) {
     }) EOL {
     return author, nil
 }
+
+OpenPassthroughParagraphContent <- (!BlankLine content:(VerbatimContent) { // at this stage, content is a mix of FileInclusions and lines of text (i.e., StringElement)
+    return content, nil
+})+
+
 // a paragraph whose first line begins with a word surrounded by spaces
 SimpleParagraph <- attributes:(ElementAttributes)? 
     &{
@@ -815,7 +836,7 @@ InlineElement <-
             QuotedText 
             / InlineImage 
             / Link 
-            / Passthrough 
+            / InlinePassthrough 
             / InlineFootnote 
             / CrossReference 
             / InlineUserMacro 
@@ -894,7 +915,7 @@ DoubleQuoteBoldTextElement <- Word
         / SuperscriptText
         / InlineImage 
         / Link 
-        / Passthrough 
+        / InlinePassthrough 
         / DocumentAttributeSubstitution
         / DoubleQuoteBoldTextStringElement
         / DoubleQuoteBoldTextFallbackCharacter
@@ -927,7 +948,7 @@ SingleQuoteBoldTextElement <- Word
         / SuperscriptText
         / InlineImage 
         / Link  
-        / Passthrough 
+        / InlinePassthrough 
         / DocumentAttributeSubstitution
         / SingleQuoteBoldTextStringElement
         / SingleQuoteBoldTextFallbackCharacter
@@ -972,7 +993,7 @@ DoubleQuoteItalicTextElement <- Word
         / SuperscriptText
         / InlineImage 
         / Link 
-        / Passthrough 
+        / InlinePassthrough 
         / DoubleQuoteItalicTextStringElement
         / DoubleQuoteItalicTextFallbackCharacter
 
@@ -1003,7 +1024,7 @@ SingleQuoteItalicTextElement <- Word
         / SuperscriptText
         / InlineImage 
         / Link  
-        / Passthrough 
+        / InlinePassthrough 
         / DocumentAttributeSubstitution
         / SingleQuoteItalicTextStringElement
         / SingleQuoteItalicTextFallbackCharacter
@@ -1047,7 +1068,7 @@ DoubleQuoteMonospaceTextElement <- Word
         / SuperscriptText
         / InlineImage 
         / Link 
-        / Passthrough 
+        / InlinePassthrough 
         / DoubleQuoteMonospaceTextStringElement
         / DoubleQuoteMonospaceTextFallbackCharacter
 
@@ -1079,7 +1100,7 @@ SingleQuoteMonospaceTextElement <-  Word
         / SuperscriptText
         / InlineImage 
         / Link 
-        / Passthrough 
+        / InlinePassthrough 
         / DocumentAttributeSubstitution
         / SingleQuoteMonospaceTextStringElement
         / SingleQuoteMonospaceTextFallbackCharacter
@@ -1133,14 +1154,14 @@ EscapedSuperscriptText <- backslashes:(OneOrMoreBackslashes) "^" element:(Supers
 } 
 
 // ------------------------------------------
-// Passthrough
+// InlinePassthrough
 // ------------------------------------------
-Passthrough <- TriplePlusPassthrough / SinglePlusPassthrough / PassthroughMacro
+InlinePassthrough <- TriplePlusPassthrough / SinglePlusPassthrough / PassthroughMacro
 
 SinglePlusPassthroughPrefix <- "+"
 
 SinglePlusPassthrough <- SinglePlusPassthroughPrefix content:(SinglePlusPassthroughContent) SinglePlusPassthroughPrefix !Alphanum {
-    return types.NewPassthrough(types.SinglePlusPassthrough, []interface{}{content})
+    return types.NewInlinePassthrough(types.SinglePlusPassthrough, []interface{}{content})
 }
 
 SinglePlusPassthroughContent <- ((!SinglePlusPassthroughPrefix !Space !Newline .) (!(Space+ SinglePlusPassthroughPrefix) !SinglePlusPassthroughPrefix !Newline .)* { // no space in the first or last position of the content, but allowed elsewhere
@@ -1152,7 +1173,7 @@ SinglePlusPassthroughContent <- ((!SinglePlusPassthroughPrefix !Space !Newline .
 TriplePlusPassthroughPrefix <- "+++"
 
 TriplePlusPassthrough <- TriplePlusPassthroughPrefix content:(TriplePlusPassthroughContent) TriplePlusPassthroughPrefix !Alphanum {
-    return types.NewPassthrough(types.TriplePlusPassthrough, []interface{}{content})
+    return types.NewInlinePassthrough(types.TriplePlusPassthrough, []interface{}{content})
 }
 
 TriplePlusPassthroughContent <- ((!TriplePlusPassthroughPrefix .)* { // spaces and newlines are also allowed in the first or last position of the content and elsewhere too
@@ -1162,9 +1183,9 @@ TriplePlusPassthroughContent <- ((!TriplePlusPassthroughPrefix .)* { // spaces a
 })
 
 PassthroughMacro <- "pass:[" content:(PassthroughMacroCharacter)* "]" {
-    return types.NewPassthrough(types.PassthroughMacro, []interface{}{content})
+    return types.NewInlinePassthrough(types.PassthroughMacro, []interface{}{content})
 } / "pass:q[" content:(QuotedText / PassthroughMacroCharacter)* "]" {
-    return types.NewPassthrough(types.PassthroughMacro, content.([]interface{}))
+    return types.NewInlinePassthrough(types.PassthroughMacro, content.([]interface{}))
 }
 
 PassthroughMacroCharacter <- [^\]] {
@@ -1294,6 +1315,7 @@ DelimitedBlock <- !Alphanum // delimited blocks, even without attributes, never 
         / QuoteBlock 
         / SidebarBlock
         / SingleLineComment
+        / PassthroughBlock
         / Table
         / CommentBlock) {
     return block, nil
@@ -1306,6 +1328,7 @@ BlockDelimiter <- !(Alphanum) LiteralBlockDelimiter //TODO: use "start" delimite
                 / CommentBlockDelimiter 
                 / QuoteBlockDelimiter
                 / SidebarBlockDelimiter
+                / PassthroughBlockDelimiter
 
 VerbatimContent <- FileInclusion / VerbatimLine
 
@@ -1431,6 +1454,23 @@ SidebarBlock <- attributes:(ElementAttributes)? SidebarBlockStartDelimiter conte
 }
 
 SidebarBlockVerbatimContent <- (!SidebarBlockEndDelimiter content:(VerbatimContent) { // at this stage, content is a mix of FileInclusions and lines of text (i.e., StringElement)
+    return content, nil
+})*
+
+// -------------------------------------------------------------------------------------
+// Passthrough blocks
+// -------------------------------------------------------------------------------------
+PassthroughBlockDelimiter <- "++++" Space* EOL
+
+PassthroughBlockStartDelimiter <- "++++" Space* EOL
+
+PassthroughBlockEndDelimiter <- ("++++" Space* EOL) / EOF
+
+PassthroughBlock <- attributes:(ElementAttributes)? PassthroughBlockStartDelimiter content:(PassthroughBlockVerbatimContent) PassthroughBlockEndDelimiter {
+    return types.NewDelimitedBlock(types.Passthrough, content.([]interface{}), attributes)
+}
+
+PassthroughBlockVerbatimContent <- (!PassthroughBlockEndDelimiter content:(VerbatimContent) { // at this stage, content is a mix of FileInclusions and lines of text (i.e., StringElement)
     return content, nil
 })*
 

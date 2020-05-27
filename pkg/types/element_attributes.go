@@ -181,6 +181,11 @@ func NewLiteralAttribute() (ElementAttributes, error) {
 	return ElementAttributes{AttrKind: Literal}, nil
 }
 
+// NewPassthroughBlockAttribute initializes a new attribute map with a single entry for the passthrough kind of block
+func NewPassthroughBlockAttribute() (ElementAttributes, error) {
+	return ElementAttributes{AttrKind: Passthrough}, nil
+}
+
 // NewSourceAttributes initializes a new attribute map with two entries, one for the kind of element ("source") and another optional one for the language of the source code
 func NewSourceAttributes(language interface{}, others ...interface{}) (ElementAttributes, error) {
 	result := ElementAttributes{

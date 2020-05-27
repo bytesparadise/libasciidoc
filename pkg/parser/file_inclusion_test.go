@@ -376,7 +376,7 @@ var _ = Describe("file inclusions", func() {
 						Blocks: []interface{}{
 							types.DelimitedBlock{
 								Attributes: types.ElementAttributes{},
-								// Kind:       types.Passthrough,
+								// Kind:       types.InlinePassthrough,
 								Elements: []interface{}{
 									types.FileInclusion{
 										Attributes: types.ElementAttributes{},
@@ -1601,7 +1601,7 @@ include::../../test/includes/chapter-a.adoc[]
 						Blocks: []interface{}{
 							types.DelimitedBlock{
 								Attributes: types.ElementAttributes{},
-								// Kind:       types.Passthrough,
+								// Kind:       types.InlinePassthrough,
 								Elements: []interface{}{
 									types.Paragraph{
 										Attributes: types.ElementAttributes{},
