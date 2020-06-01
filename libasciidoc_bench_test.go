@@ -9,6 +9,8 @@ import (
 
 func BenchmarkLibasciidoc(b *testing.B) {
 	filename := "./test/bench/mocking.adoc"
-	_, err := testsupport.RenderHTML5Document(filename)
-	require.NoError(b, err)
+	for i := 0; i < b.N; i++ {
+		_, err := testsupport.RenderHTML5Document(filename)
+		require.NoError(b, err)
+	}
 }
