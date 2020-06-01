@@ -64,3 +64,4 @@ coverage.txt
 !pkg/**/*.html
 *libasciidoc.html
 profile*.*
+!make/*.mk
