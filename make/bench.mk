@@ -10,13 +10,17 @@ bench: generate-optimized
 	@echo "generate CPU reports..."
 	@go tool pprof -text -output=tmp/bench/reports/$(GIT_BRANCH_NAME)-$(GIT_COMMIT_ID_SHORT).cpu.txt \
 		tmp/bench/reports/$(GIT_BRANCH_NAME)-$(GIT_COMMIT_ID_SHORT).cpu.prof
+ifndef $CI
 	@go tool pprof -svg -output=tmp/bench/reports/$(GIT_BRANCH_NAME)-$(GIT_COMMIT_ID_SHORT).cpu.svg \
 		tmp/bench/reports/$(GIT_BRANCH_NAME)-$(GIT_COMMIT_ID_SHORT).cpu.prof
+endif
 	@echo "generate memory reports"
 	@go tool pprof -text -output=tmp/bench/reports/$(GIT_BRANCH_NAME)-$(GIT_COMMIT_ID_SHORT).mem.txt \
 		tmp/bench/reports/$(GIT_BRANCH_NAME)-$(GIT_COMMIT_ID_SHORT).mem.prof
+ifndef $CI
 	@go tool pprof -svg -output=tmp/bench/reports/$(GIT_BRANCH_NAME)-$(GIT_COMMIT_ID_SHORT).mem.svg \
-		tmp/bench/reports/$(GIT_BRANCH_NAME)-$(GIT_COMMIT_ID_SHORT).mem.prof
+		tmp/bench/reports/$(GIT_BRANCH_NAME)-$(GIT_COMMIT_ID_SHORT).mem.pro
+endif
 
 
 
