@@ -48,5 +48,10 @@ jobs:
       with:
         # Path to coverage file to upload
         file: coverage.txt
-    
+
+    - name: bench
+      if: runner.os == 'Linux' 
+      run: |
+        make bench
+  
   

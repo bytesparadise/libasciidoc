@@ -26,9 +26,3 @@ test-with-coverage: generate-optimized install-ginkgo install-gover
 ## run all fixtures tests
 test-fixtures: generate-optimized
 	@ginkgo -r --randomizeAllSpecs --randomizeSuites --failOnPending --trace --race --compilers=2 -tags=fixtures --focus=fixtures
-
-.PHONY: bench-parser
-## run the benchmarks on the parser
-bench-parser: generate
-	@ginkgo -tags bench -focus "real-world doc-based benchmarks" pkg/parser
-	@ginkgo -tags bench -focus "basic stats" pkg/parser
