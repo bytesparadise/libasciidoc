@@ -8,18 +8,18 @@ bench: generate-optimized
 		github.com/bytesparadise/libasciidoc \
 		-run=XXX
 	@echo "generate CPU reports..."
-ifndef $CI
 	@go tool pprof -text -output=tmp/bench/reports/$(GIT_BRANCH_NAME)-$(GIT_COMMIT_ID_SHORT).cpu.txt \
 		tmp/bench/reports/$(GIT_BRANCH_NAME)-$(GIT_COMMIT_ID_SHORT).cpu.prof
+ifndef CI
 	@go tool pprof -svg -output=tmp/bench/reports/$(GIT_BRANCH_NAME)-$(GIT_COMMIT_ID_SHORT).cpu.svg \
 		tmp/bench/reports/$(GIT_BRANCH_NAME)-$(GIT_COMMIT_ID_SHORT).cpu.prof
 endif
 	@echo "generate memory reports"
-ifndef $CI
 	@go tool pprof -text -output=tmp/bench/reports/$(GIT_BRANCH_NAME)-$(GIT_COMMIT_ID_SHORT).mem.txt \
 		tmp/bench/reports/$(GIT_BRANCH_NAME)-$(GIT_COMMIT_ID_SHORT).mem.prof
+ifndef CI
 	@go tool pprof -svg -output=tmp/bench/reports/$(GIT_BRANCH_NAME)-$(GIT_COMMIT_ID_SHORT).mem.svg \
-		tmp/bench/reports/$(GIT_BRANCH_NAME)-$(GIT_COMMIT_ID_SHORT).mem.pro
+		tmp/bench/reports/$(GIT_BRANCH_NAME)-$(GIT_COMMIT_ID_SHORT).mem.prof
 endif
 
 
