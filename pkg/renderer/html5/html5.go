@@ -32,7 +32,7 @@ func init() {
 <link type="text/css" rel="stylesheet" href="{{ .CSS }}">{{ end }}
 <title>{{ escape .Title }}</title>
 </head>
-<body class="{{ .Doctype }}">{{ if .IncludeHeader }}
+<body class="{{ .Doctype }}{{ if .Role }} {{ .Role }}{{ end }}">{{ if .IncludeHeader }}
 {{ .Header }}{{ end }}
 <div id="content">
 {{ .Content }}
@@ -87,6 +87,7 @@ func Render(ctx renderer.Context, doc types.Document, output io.Writer) (types.M
 			Title         string
 			Authors       string
 			Header        string
+			Role          string
 			Content       htmltemplate.HTML
 			RevNumber     string
 			LastUpdated   string
@@ -99,6 +100,7 @@ func Render(ctx renderer.Context, doc types.Document, output io.Writer) (types.M
 			Title:         string(renderedTitle),
 			Authors:       renderAuthors(doc.Attributes.GetAuthors()),
 			Header:        string(renderedHeader),
+			Role:          documentRole(doc),
 			Content:       htmltemplate.HTML(string(renderedContent)), //nolint: gosec
 			RevNumber:     doc.Attributes.GetAsStringWithDefault("revnumber", ""),
 			LastUpdated:   ctx.Config.LastUpdated.Format(configuration.LastUpdatedFormat),
@@ -190,6 +192,13 @@ func splitAndRenderForManpage(ctx renderer.Context, doc types.Document) ([]byte,
 	result.WriteString("\n")
 	result.Write(renderedContent)
 	return []byte{}, result.Bytes(), nil
+}
+
+func documentRole(doc types.Document) string {
+	if header, exists := doc.Header(); exists {
+		return header.Attributes.GetAsString(types.AttrRole)
+	}
+	return ""
 }
 
 func renderAuthors(authors []types.DocumentAuthor) string {
