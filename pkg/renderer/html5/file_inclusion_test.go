@@ -211,7 +211,7 @@ include::../../../test/includes/chapter-a.adoc[leveloffset=+1]`
 		Expect(RenderHTML(source)).To(MatchHTML(expected))
 	})
 
-	It("should not include section 0 when attribute exists", func() {
+	It("should not include section 0 when attribute found", func() {
 		source := `:includedir: ../../../test/includes
 
 include::{includedir}/chapter-a.adoc[]`

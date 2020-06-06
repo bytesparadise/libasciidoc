@@ -31,7 +31,7 @@ func parseDraftDocument(r io.Reader, levelOffsets []levelOffset, config configur
 		return types.DraftDocument{}, err
 	}
 	doc := d.(types.DraftDocument)
-	attrs := types.DocumentAttributesWithOverrides{
+	attrs := types.AttributesWithOverrides{
 		Content:   map[string]interface{}{},
 		Overrides: map[string]string{},
 	}
@@ -60,13 +60,13 @@ func parseDraftDocument(r io.Reader, levelOffsets []levelOffset, config configur
 
 // processFileInclusions resolves the file inclusions if any is found in the given elements
 // and applies level offset on sections when needed
-func processFileInclusions(elements []interface{}, attrs types.DocumentAttributesWithOverrides, levelOffsets []levelOffset, config configuration.Configuration, options ...Option) ([]interface{}, error) {
+func processFileInclusions(elements []interface{}, attrs types.AttributesWithOverrides, levelOffsets []levelOffset, config configuration.Configuration, options ...Option) ([]interface{}, error) {
 	result := []interface{}{}
 	log.Debugf("processing file inclusions found in %d element(s)", len(elements))
 	for _, e := range elements {
 		switch e := e.(type) {
-		case types.DocumentAttributeDeclaration: // may be needed if there's an attribute substitution in the path of the file to include
-			attrs.Add(e.Name, e.Value)
+		case types.AttributeDeclaration: // may be needed if there's an attribute substitution in the path of the file to include
+			attrs.Set(e.Name, e.Value)
 			result = append(result, e)
 		case types.FileInclusion:
 			// read the file and include its content
@@ -96,7 +96,7 @@ func processFileInclusions(elements []interface{}, attrs types.DocumentAttribute
 				return nil, err
 			}
 			if e.Attributes == nil && len(extraAttrs) > 0 {
-				e.Attributes = types.ElementAttributes{}
+				e.Attributes = types.Attributes{}
 			}
 			e.Attributes.Add(extraAttrs)
 			result = append(result, types.DelimitedBlock{
@@ -126,11 +126,11 @@ func processFileInclusions(elements []interface{}, attrs types.DocumentAttribute
 
 // parseDelimitedBlockContent parses the given verbatim elements, depending on the given delimited block kind.
 // May return the elements unchanged, or convert the elements to a source doc and parse with a custom entrypoint
-func parseDelimitedBlockContent(filename string, kind types.BlockKind, elements []interface{}, options ...Option) (types.ElementAttributes, []interface{}, error) {
+func parseDelimitedBlockContent(filename string, kind types.BlockKind, elements []interface{}, options ...Option) (types.Attributes, []interface{}, error) {
 	switch kind {
 	case types.Fenced, types.Listing, types.Literal, types.Source, types.Comment, types.Passthrough:
 		// return the verbatim elements
-		return types.ElementAttributes{}, elements, nil
+		return types.Attributes{}, elements, nil
 	case types.Example, types.Quote, types.Sidebar:
 		return parseDelimitedBlockElements(filename, elements, append(options, Entrypoint("NormalBlockContent"))...)
 	case types.MarkdownQuote:
@@ -142,7 +142,7 @@ func parseDelimitedBlockContent(filename string, kind types.BlockKind, elements 
 	}
 }
 
-func parseDelimitedBlockElements(filename string, elements []interface{}, options ...Option) (types.ElementAttributes, []interface{}, error) {
+func parseDelimitedBlockElements(filename string, elements []interface{}, options ...Option) (types.Attributes, []interface{}, error) {
 	verbatim, err := serialize(elements)
 	if err != nil {
 		return nil, nil, err
@@ -152,12 +152,12 @@ func parseDelimitedBlockElements(filename string, elements []interface{}, option
 		return nil, nil, err
 	}
 	if result, ok := e.([]interface{}); ok {
-		return types.ElementAttributes{}, result, nil
+		return types.Attributes{}, result, nil
 	}
 	return nil, nil, fmt.Errorf("unexpected type of element after parsing the content of a delimited block: '%T'", e)
 }
 
-func parseMarkdownQuoteBlockElements(filename string, elements []interface{}, options ...Option) (types.ElementAttributes, []interface{}, error) {
+func parseMarkdownQuoteBlockElements(filename string, elements []interface{}, options ...Option) (types.Attributes, []interface{}, error) {
 	author := parseMarkdownQuoteBlockAttribution(filename, elements)
 	if author != "" {
 		elements = elements[:len(elements)-1]

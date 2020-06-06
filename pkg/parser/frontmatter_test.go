@@ -78,7 +78,7 @@ author: Xavier
 
 first paragraph`
 			expected := types.Document{
-				Attributes: types.DocumentAttributes{
+				Attributes: types.Attributes{
 					"title":  "a title", // TODO: convert `title` attribute from front-matter into `doctitle` here ?
 					"author": "Xavier",
 				},

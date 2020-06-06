@@ -16,7 +16,7 @@ type Context struct {
 	WithinDelimitedBlock bool
 	WithinList           int
 	counters             map[string]int
-	Attributes           types.DocumentAttributes
+	Attributes           types.Attributes
 	Footnotes            []types.Footnote
 	ElementReferences    types.ElementReferences
 	HasHeader            bool

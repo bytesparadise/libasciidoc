@@ -20,7 +20,7 @@ What is the answer to the Ultimate Question?:: 42`
 		expected := types.Document{
 			Elements: []interface{}{
 				types.LabeledList{
-					Attributes: types.ElementAttributes{
+					Attributes: types.Attributes{
 						types.AttrTitle: "Q&A",
 						types.AttrQandA: nil,
 					},

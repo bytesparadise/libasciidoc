@@ -14,12 +14,12 @@ var _ = Describe("document validator", func() {
 		It("should not report problems", func() {
 			// given
 			doc := types.Document{
-				Attributes:        types.DocumentAttributes{},
+				Attributes:        types.Attributes{},
 				ElementReferences: types.ElementReferences{},
 				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{
 					types.Section{
-						Attributes: types.ElementAttributes{},
+						Attributes: types.Attributes{},
 						Level:      0,
 						Title: []interface{}{
 							types.StringElement{
@@ -43,14 +43,14 @@ var _ = Describe("document validator", func() {
 		It("should not report problems", func() {
 			// given
 			doc := types.Document{
-				Attributes: types.DocumentAttributes{
+				Attributes: types.Attributes{
 					types.AttrDocType: "manpage",
 				},
 				ElementReferences: types.ElementReferences{},
 				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{
 					types.Section{
-						Attributes: types.ElementAttributes{},
+						Attributes: types.Attributes{},
 						Level:      0,
 						Title: []interface{}{
 							types.StringElement{
@@ -59,7 +59,7 @@ var _ = Describe("document validator", func() {
 						},
 						Elements: []interface{}{
 							types.Section{
-								Attributes: types.ElementAttributes{},
+								Attributes: types.Attributes{},
 								Level:      1,
 								Title: []interface{}{
 									types.StringElement{
@@ -68,7 +68,7 @@ var _ = Describe("document validator", func() {
 								},
 								Elements: []interface{}{
 									types.Paragraph{
-										Attributes: types.ElementAttributes{},
+										Attributes: types.Attributes{},
 										Lines: [][]interface{}{
 											{
 												types.StringElement{
@@ -80,7 +80,7 @@ var _ = Describe("document validator", func() {
 								},
 							},
 							types.Section{
-								Attributes: types.ElementAttributes{},
+								Attributes: types.Attributes{},
 								Level:      1,
 								Title: []interface{}{
 									types.StringElement{
@@ -107,14 +107,14 @@ var _ = Describe("document validator", func() {
 			It("missing header - invalid level", func() {
 				// given
 				doc := types.Document{
-					Attributes: types.DocumentAttributes{
+					Attributes: types.Attributes{
 						types.AttrDocType: "manpage",
 					},
 					ElementReferences: types.ElementReferences{},
 					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.Section{
-							Attributes: types.ElementAttributes{},
+							Attributes: types.Attributes{},
 							Level:      1, // invalid level
 							Title: []interface{}{
 								types.StringElement{
@@ -123,7 +123,7 @@ var _ = Describe("document validator", func() {
 							},
 							Elements: []interface{}{
 								types.Section{
-									Attributes: types.ElementAttributes{},
+									Attributes: types.Attributes{},
 									Level:      1,
 									Title: []interface{}{
 										types.StringElement{
@@ -132,7 +132,7 @@ var _ = Describe("document validator", func() {
 									},
 									Elements: []interface{}{
 										types.Paragraph{
-											Attributes: types.ElementAttributes{},
+											Attributes: types.Attributes{},
 											Lines: [][]interface{}{
 												{
 													types.StringElement{
@@ -144,7 +144,7 @@ var _ = Describe("document validator", func() {
 									},
 								},
 								types.Section{
-									Attributes: types.ElementAttributes{},
+									Attributes: types.Attributes{},
 									Level:      1,
 									Title: []interface{}{
 										types.StringElement{
@@ -172,14 +172,14 @@ var _ = Describe("document validator", func() {
 			It("missing name section - invalid level", func() {
 				// given
 				doc := types.Document{
-					Attributes: types.DocumentAttributes{
+					Attributes: types.Attributes{
 						types.AttrDocType: "manpage",
 					},
 					ElementReferences: types.ElementReferences{},
 					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.Section{
-							Attributes: types.ElementAttributes{},
+							Attributes: types.Attributes{},
 							Level:      0,
 							Title: []interface{}{
 								types.StringElement{
@@ -188,7 +188,7 @@ var _ = Describe("document validator", func() {
 							},
 							Elements: []interface{}{
 								types.Section{
-									Attributes: types.ElementAttributes{},
+									Attributes: types.Attributes{},
 									Level:      2, // invalid level
 									Title: []interface{}{
 										types.StringElement{
@@ -197,7 +197,7 @@ var _ = Describe("document validator", func() {
 									},
 									Elements: []interface{}{
 										types.Paragraph{
-											Attributes: types.ElementAttributes{},
+											Attributes: types.Attributes{},
 											Lines: [][]interface{}{
 												{
 													types.StringElement{
@@ -209,7 +209,7 @@ var _ = Describe("document validator", func() {
 									},
 								},
 								types.Section{
-									Attributes: types.ElementAttributes{},
+									Attributes: types.Attributes{},
 									Level:      1,
 									Title: []interface{}{
 										types.StringElement{
@@ -237,14 +237,14 @@ var _ = Describe("document validator", func() {
 			It("missing name section - invalid title", func() {
 				// given
 				doc := types.Document{
-					Attributes: types.DocumentAttributes{
+					Attributes: types.Attributes{
 						types.AttrDocType: "manpage",
 					},
 					ElementReferences: types.ElementReferences{},
 					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.Section{
-							Attributes: types.ElementAttributes{},
+							Attributes: types.Attributes{},
 							Level:      0,
 							Title: []interface{}{
 								types.StringElement{
@@ -253,7 +253,7 @@ var _ = Describe("document validator", func() {
 							},
 							Elements: []interface{}{
 								types.Section{
-									Attributes: types.ElementAttributes{},
+									Attributes: types.Attributes{},
 									Level:      1,
 									Title: []interface{}{
 										types.StringElement{
@@ -262,7 +262,7 @@ var _ = Describe("document validator", func() {
 									},
 									Elements: []interface{}{
 										types.Paragraph{
-											Attributes: types.ElementAttributes{},
+											Attributes: types.Attributes{},
 											Lines: [][]interface{}{
 												{
 													types.StringElement{
@@ -274,7 +274,7 @@ var _ = Describe("document validator", func() {
 									},
 								},
 								types.Section{
-									Attributes: types.ElementAttributes{},
+									Attributes: types.Attributes{},
 									Level:      1,
 									Title: []interface{}{
 										types.StringElement{
@@ -302,14 +302,14 @@ var _ = Describe("document validator", func() {
 			It("missing name section - invalid elements", func() {
 				// given
 				doc := types.Document{
-					Attributes: types.DocumentAttributes{
+					Attributes: types.Attributes{
 						types.AttrDocType: "manpage",
 					},
 					ElementReferences: types.ElementReferences{},
 					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.Section{
-							Attributes: types.ElementAttributes{},
+							Attributes: types.Attributes{},
 							Level:      0,
 							Title: []interface{}{
 								types.StringElement{
@@ -318,7 +318,7 @@ var _ = Describe("document validator", func() {
 							},
 							Elements: []interface{}{
 								types.Section{
-									Attributes: types.ElementAttributes{},
+									Attributes: types.Attributes{},
 									Level:      1,
 									Title: []interface{}{
 										types.StringElement{
@@ -328,7 +328,7 @@ var _ = Describe("document validator", func() {
 									Elements: []interface{}{}, // invalid length
 								},
 								types.Section{
-									Attributes: types.ElementAttributes{},
+									Attributes: types.Attributes{},
 									Level:      1,
 									Title: []interface{}{
 										types.StringElement{
@@ -356,14 +356,14 @@ var _ = Describe("document validator", func() {
 			It("missing synopsis section - invalid level", func() {
 				// given
 				doc := types.Document{
-					Attributes: types.DocumentAttributes{
+					Attributes: types.Attributes{
 						types.AttrDocType: "manpage",
 					},
 					ElementReferences: types.ElementReferences{},
 					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.Section{
-							Attributes: types.ElementAttributes{},
+							Attributes: types.Attributes{},
 							Level:      0,
 							Title: []interface{}{
 								types.StringElement{
@@ -372,7 +372,7 @@ var _ = Describe("document validator", func() {
 							},
 							Elements: []interface{}{
 								types.Section{
-									Attributes: types.ElementAttributes{},
+									Attributes: types.Attributes{},
 									Level:      1,
 									Title: []interface{}{
 										types.StringElement{
@@ -381,7 +381,7 @@ var _ = Describe("document validator", func() {
 									},
 									Elements: []interface{}{
 										types.Paragraph{
-											Attributes: types.ElementAttributes{},
+											Attributes: types.Attributes{},
 											Lines: [][]interface{}{
 												{
 													types.StringElement{
@@ -393,7 +393,7 @@ var _ = Describe("document validator", func() {
 									},
 								},
 								types.Section{
-									Attributes: types.ElementAttributes{},
+									Attributes: types.Attributes{},
 									Level:      2, // invalid level
 									Title: []interface{}{
 										types.StringElement{
@@ -421,14 +421,14 @@ var _ = Describe("document validator", func() {
 			It("missing synopsis section - invalid title", func() {
 				// given
 				doc := types.Document{
-					Attributes: types.DocumentAttributes{
+					Attributes: types.Attributes{
 						types.AttrDocType: "manpage",
 					},
 					ElementReferences: types.ElementReferences{},
 					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.Section{
-							Attributes: types.ElementAttributes{},
+							Attributes: types.Attributes{},
 							Level:      0,
 							Title: []interface{}{
 								types.StringElement{
@@ -437,7 +437,7 @@ var _ = Describe("document validator", func() {
 							},
 							Elements: []interface{}{
 								types.Section{
-									Attributes: types.ElementAttributes{},
+									Attributes: types.Attributes{},
 									Level:      1,
 									Title: []interface{}{
 										types.StringElement{
@@ -446,7 +446,7 @@ var _ = Describe("document validator", func() {
 									},
 									Elements: []interface{}{
 										types.Paragraph{
-											Attributes: types.ElementAttributes{},
+											Attributes: types.Attributes{},
 											Lines: [][]interface{}{
 												{
 													types.StringElement{
@@ -458,7 +458,7 @@ var _ = Describe("document validator", func() {
 									},
 								},
 								types.Section{
-									Attributes: types.ElementAttributes{},
+									Attributes: types.Attributes{},
 									Level:      1,
 									Title: []interface{}{
 										types.StringElement{

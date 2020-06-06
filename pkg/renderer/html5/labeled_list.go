@@ -92,7 +92,7 @@ func renderLabeledList(ctx renderer.Context, l types.LabeledList) ([]byte, error
 		}{
 			ID:    renderElementID(l.Attributes),
 			Title: renderElementTitle(l.Attributes),
-			Role:  l.Attributes.GetAsString(types.AttrRole),
+			Role:  l.Attributes.GetAsStringWithDefault(types.AttrRole, ""),
 			Items: l.Items,
 		},
 	})

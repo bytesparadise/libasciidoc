@@ -107,7 +107,7 @@ Item1:: foo`
 			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.LabeledListItem{
-						Attributes: types.ElementAttributes{
+						Attributes: types.Attributes{
 							"layout": "horizontal",
 						},
 						Level: 1,
@@ -551,7 +551,7 @@ TIP: tip`
 					types.ContinuedListItemElement{
 						Offset: 0,
 						Element: types.Paragraph{
-							Attributes: types.ElementAttributes{
+							Attributes: types.Attributes{
 								types.AttrAdmonitionKind: types.Note,
 							},
 							Lines: [][]interface{}{
@@ -596,7 +596,7 @@ TIP: tip`
 					types.ContinuedListItemElement{
 						Offset: 0,
 						Element: types.Paragraph{
-							Attributes: types.ElementAttributes{
+							Attributes: types.Attributes{
 								types.AttrAdmonitionKind: types.Important,
 							},
 							Lines: [][]interface{}{
@@ -610,7 +610,7 @@ TIP: tip`
 					types.ContinuedListItemElement{
 						Offset: 0,
 						Element: types.Paragraph{
-							Attributes: types.ElementAttributes{
+							Attributes: types.Attributes{
 								types.AttrAdmonitionKind: types.Tip,
 							},
 							Lines: [][]interface{}{
@@ -665,7 +665,7 @@ second term:: definition of the second term`
 			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.LabeledListItem{
-						Attributes: types.ElementAttributes{
+						Attributes: types.Attributes{
 							types.AttrTitle: "Labeled, single-line",
 						},
 						Level: 1,
@@ -719,7 +719,7 @@ level 1:: description 1`
 			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.LabeledListItem{
-						Attributes: types.ElementAttributes{
+						Attributes: types.Attributes{
 							types.AttrTitle: "Labeled, max nesting",
 						},
 						Level: 1,
@@ -811,7 +811,7 @@ level 2::: description 2`
 			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.LabeledListItem{
-						Attributes: types.ElementAttributes{
+						Attributes: types.Attributes{
 							types.AttrTitle: "Labeled, max nesting",
 						},
 						Level: 1,
@@ -1108,7 +1108,7 @@ Item1:: foo`
 			expected := types.Document{
 				Elements: []interface{}{
 					types.LabeledList{
-						Attributes: types.ElementAttributes{
+						Attributes: types.Attributes{
 							"layout": "horizontal",
 						},
 						Items: []types.LabeledListItem{
@@ -1620,7 +1620,7 @@ second term:: definition of the second term`
 			expected := types.Document{
 				Elements: []interface{}{
 					types.LabeledList{
-						Attributes: types.ElementAttributes{
+						Attributes: types.Attributes{
 							types.AttrTitle: "Labeled, single-line",
 						},
 						Items: []types.LabeledListItem{
@@ -1678,7 +1678,7 @@ level 1:: description 1`
 			expected := types.Document{
 				Elements: []interface{}{
 					types.LabeledList{
-						Attributes: types.ElementAttributes{
+						Attributes: types.Attributes{
 							types.AttrTitle: "Labeled, max nesting",
 						},
 						Items: []types.LabeledListItem{
@@ -1782,7 +1782,7 @@ level 2::: description 2`
 			expected := types.Document{
 				Elements: []interface{}{
 					types.LabeledList{
-						Attributes: types.ElementAttributes{
+						Attributes: types.Attributes{
 							types.AttrTitle: "Labeled, max nesting",
 						},
 						Items: []types.LabeledListItem{

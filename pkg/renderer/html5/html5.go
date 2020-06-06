@@ -98,7 +98,7 @@ func Render(ctx renderer.Context, doc types.Document, output io.Writer) (types.M
 			Generator:     "libasciidoc", // TODO: externalize this value and include the lib version ?
 			Doctype:       doc.Attributes.GetAsStringWithDefault(types.AttrDocType, "article"),
 			Title:         string(renderedTitle),
-			Authors:       renderAuthors(doc.Attributes.GetAuthors()),
+			Authors:       renderAuthors(doc),
 			Header:        string(renderedHeader),
 			Role:          documentRole(doc),
 			Content:       htmltemplate.HTML(string(renderedContent)), //nolint: gosec
@@ -142,7 +142,7 @@ func splitAndRender(ctx renderer.Context, doc types.Document) ([]byte, []byte, e
 // and all other elements (table of contents, with preamble, content) on the other side
 func splitAndRenderForArticle(ctx renderer.Context, doc types.Document) ([]byte, []byte, error) {
 	if ctx.Config.IncludeHeaderFooter {
-		if header, exists := doc.Header(); exists {
+		if header, found := doc.Header(); found {
 			renderedHeader, err := renderArticleHeader(ctx, header)
 			if err != nil {
 				return nil, nil, err
@@ -195,13 +195,17 @@ func splitAndRenderForManpage(ctx renderer.Context, doc types.Document) ([]byte,
 }
 
 func documentRole(doc types.Document) string {
-	if header, exists := doc.Header(); exists {
-		return header.Attributes.GetAsString(types.AttrRole)
+	if header, found := doc.Header(); found {
+		return header.Attributes.GetAsStringWithDefault(types.AttrRole, "")
 	}
 	return ""
 }
 
-func renderAuthors(authors []types.DocumentAuthor) string {
+func renderAuthors(doc types.Document) string {
+	authors, found := doc.Authors()
+	if !found {
+		return ""
+	}
 	authorStrs := make([]string, len(authors))
 	for i, author := range authors {
 		authorStrs[i] = author.FullName
@@ -210,7 +214,7 @@ func renderAuthors(authors []types.DocumentAuthor) string {
 }
 
 func renderDocumentTitle(ctx renderer.Context, doc types.Document) ([]byte, error) {
-	if header, exists := doc.Header(); exists {
+	if header, found := doc.Header(); found {
 		title, err := renderPlainText(ctx, header.Title)
 		if err != nil {
 			return nil, errors.Wrapf(err, "unable to render document title")
@@ -255,7 +259,7 @@ func renderManpageHeader(ctx renderer.Context, header types.Section, nameSection
 	}
 	description := nameSection.Elements[0].(types.Paragraph) // TODO: type check
 	if description.Attributes == nil {
-		description.Attributes = types.ElementAttributes{}
+		description.Attributes = types.Attributes{}
 	}
 	description.Attributes.AddNonEmpty(types.AttrKind, "manpage")
 	renderedContent, err := renderParagraph(ctx, description)

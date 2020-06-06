@@ -149,7 +149,7 @@ func renderPlainText(ctx renderer.Context, element interface{}) ([]byte, error) 
 	case types.QuotedText:
 		return renderPlainText(ctx, element.Elements)
 	case types.InlineImage:
-		return []byte(element.Attributes.GetAsString(types.AttrImageAlt)), nil
+		return []byte(element.Attributes.GetAsStringWithDefault(types.AttrImageAlt, "")), nil
 	case types.InlineLink:
 		if alt, ok := element.Attributes[types.AttrInlineLinkText].([]interface{}); ok {
 			return renderPlainText(ctx, alt)

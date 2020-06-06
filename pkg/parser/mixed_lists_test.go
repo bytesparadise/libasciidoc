@@ -617,7 +617,7 @@ ii) ordered 1.2.ii
 														},
 													},
 													types.OrderedList{
-														Attributes: types.ElementAttributes{
+														Attributes: types.Attributes{
 															types.AttrNumberingStyle: "upperroman",
 														},
 														Items: []types.OrderedListItem{
@@ -683,7 +683,7 @@ Operating Systems::
 			expected := types.Document{
 				Elements: []interface{}{
 					types.LabeledList{
-						Attributes: types.ElementAttributes{
+						Attributes: types.Attributes{
 							types.AttrTitle: "Mixed",
 						},
 						Items: []types.LabeledListItem{
@@ -769,7 +769,7 @@ a paragraph
 			expected := types.Document{
 				Elements: []interface{}{
 					types.LabeledList{
-						Attributes: types.ElementAttributes{
+						Attributes: types.Attributes{
 							types.AttrTitle: "Mixed",
 						},
 						Items: []types.LabeledListItem{
@@ -1061,7 +1061,7 @@ a paragraph
 			expected := types.Document{
 				Elements: []interface{}{ // a single ordered list
 					types.OrderedList{
-						Attributes: types.ElementAttributes{
+						Attributes: types.Attributes{
 							types.AttrNumberingStyle: "lowerroman",
 							types.AttrStart:          "5",
 						},
@@ -1133,7 +1133,7 @@ a paragraph
 			expected := types.Document{
 				Elements: []interface{}{ // a single ordered list
 					types.OrderedList{
-						Attributes: types.ElementAttributes{
+						Attributes: types.Attributes{
 							types.AttrNumberingStyle: "lowerroman",
 							types.AttrStart:          "5",
 						},
@@ -1152,7 +1152,7 @@ a paragraph
 										},
 									},
 									types.OrderedList{
-										Attributes: types.ElementAttributes{
+										Attributes: types.Attributes{
 											types.AttrNumberingStyle: "upperalpha",
 										},
 										Items: []types.OrderedListItem{
@@ -1222,7 +1222,7 @@ a paragraph
 			expected := types.Document{
 				Elements: []interface{}{ // a single ordered list
 					types.OrderedList{
-						Attributes: types.ElementAttributes{
+						Attributes: types.Attributes{
 							types.AttrNumberingStyle: "lowerroman",
 							types.AttrStart:          "5",
 						},
@@ -1245,7 +1245,7 @@ a paragraph
 						},
 					},
 					types.OrderedList{
-						Attributes: types.ElementAttributes{
+						Attributes: types.Attributes{
 							types.AttrNumberingStyle: "upperalpha",
 						},
 						Items: []types.OrderedListItem{
@@ -1302,7 +1302,7 @@ a paragraph
 			expected := types.Document{
 				Elements: []interface{}{
 					types.UnorderedList{
-						Attributes: types.ElementAttributes{
+						Attributes: types.Attributes{
 							types.AttrTitle: "Checklist",
 						},
 						Items: []types.UnorderedListItem{
@@ -1312,7 +1312,7 @@ a paragraph
 								CheckStyle:  types.Checked,
 								Elements: []interface{}{
 									types.Paragraph{
-										Attributes: types.ElementAttributes{
+										Attributes: types.Attributes{
 											types.AttrCheckStyle: types.Checked,
 										},
 										Lines: [][]interface{}{
@@ -1344,7 +1344,7 @@ a paragraph
 						},
 					},
 					types.OrderedList{
-						Attributes: types.ElementAttributes{
+						Attributes: types.Attributes{
 							types.AttrTitle: "Ordered, basic",
 						},
 						Items: []types.OrderedListItem{

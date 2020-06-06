@@ -38,10 +38,10 @@ func NewDraftDocument(frontMatter interface{}, blocks []interface{}) (DraftDocum
 	return result, nil
 }
 
-// DocumentAttributes returns the document attributes on the top-level section
+// Attributes returns the document attributes on the top-level section
 // and all the document attribute declarations at the top of the document only.
-func (d DraftDocument) DocumentAttributes() DocumentAttributes {
-	result := DocumentAttributes{}
+func (d DraftDocument) Attributes() Attributes {
+	result := Attributes{}
 blocks:
 	for _, b := range d.Blocks {
 		switch b := b.(type) {
@@ -50,20 +50,20 @@ blocks:
 				// also, expand document authors and revision
 				if authors, ok := b.Attributes[AttrAuthors].([]DocumentAuthor); ok {
 					// move to the Document attributes
-					result.AddAll(expandAuthors(authors))
+					result.Add(expandAuthors(authors))
 					delete(b.Attributes, AttrAuthors)
 				}
 				// also, expand document authors and revision
 				if revision, ok := b.Attributes[AttrRevision].(DocumentRevision); ok {
 					// move to the Document attributes
-					result.AddAll(expandRevision(revision))
+					result.Add(expandRevision(revision))
 					delete(b.Attributes, AttrRevision)
 				}
 				continue // allow to continue if the section is level 0
 			}
 			break blocks // otherwise, just stop
-		case DocumentAttributeDeclaration:
-			result.Add(b.Name, b.Value)
+		case AttributeDeclaration:
+			result.Set(b.Name, b.Value)
 		default:
 			break blocks
 		}
@@ -78,7 +78,7 @@ blocks:
 
 // Document the top-level structure for a document
 type Document struct {
-	Attributes        DocumentAttributes
+	Attributes        Attributes
 	Elements          []interface{} // TODO: rename to `Blocks`?
 	ElementReferences ElementReferences
 	Footnotes         []Footnote
@@ -86,25 +86,21 @@ type Document struct {
 
 // Authors retrieves the document authors from the document header, or empty array if no author was found
 func (d Document) Authors() ([]DocumentAuthor, bool) {
-	if header, ok := d.Header(); ok {
-		if authors, ok := header.Attributes[AttrAuthors].([]DocumentAuthor); ok {
-			return authors, true
-		}
+	if authors, ok := d.Attributes[AttrAuthors].([]DocumentAuthor); ok {
+		return authors, true
 	}
 	return []DocumentAuthor{}, false
 }
 
 // Revision retrieves the document revision from the document header, or empty array if no revision was found
 func (d Document) Revision() (DocumentRevision, bool) {
-	if header, ok := d.Header(); ok {
-		if rev, ok := header.Attributes[AttrRevision].(DocumentRevision); ok {
-			return rev, true
-		}
+	if rev, ok := d.Attributes[AttrRevision].(DocumentRevision); ok {
+		return rev, true
 	}
 	return DocumentRevision{}, false
 }
 
-// Header returns the header, i.e., the section with level 0 if it exists as the first element of the document
+// Header returns the header, i.e., the section with level 0 if it found as the first element of the document
 // For manpage documents, this also includes the first section (`Name` along with its first paragraph)
 func (d Document) Header() (Section, bool) {
 	if len(d.Elements) == 0 {
@@ -148,7 +144,7 @@ type ToCSection struct {
 
 // DocumentElement a document element can have attributes
 type DocumentElement interface {
-	GetAttributes() ElementAttributes
+	GetAttributes() Attributes
 }
 
 // ------------------------------------------
@@ -242,14 +238,14 @@ func NewDocumentRevision(revnumber, revdate, revremark interface{}) (DocumentRev
 // Document Attributes
 // ------------------------------------------
 
-// DocumentAttributeDeclaration the type for Document Attribute Declarations
-type DocumentAttributeDeclaration struct {
+// AttributeDeclaration the type for Document Attribute Declarations
+type AttributeDeclaration struct {
 	Name  string
 	Value string
 }
 
-// NewDocumentAttributeDeclaration initializes a new DocumentAttributeDeclaration with the given name and optional value
-func NewDocumentAttributeDeclaration(name string, value interface{}) (DocumentAttributeDeclaration, error) {
+// NewAttributeDeclaration initializes a new AttributeDeclaration with the given name and optional value
+func NewAttributeDeclaration(name string, value interface{}) (AttributeDeclaration, error) {
 	var attrName, attrValue string
 	attrName = Apply(name,
 		func(s string) string {
@@ -261,33 +257,33 @@ func NewDocumentAttributeDeclaration(name string, value interface{}) (DocumentAt
 				return strings.TrimSpace(s)
 			})
 	}
-	log.Debugf("initialized a new DocumentAttributeDeclaration: '%s' -> '%s'", attrName, attrValue)
-	return DocumentAttributeDeclaration{
+	log.Debugf("initialized a new AttributeDeclaration: '%s' -> '%s'", attrName, attrValue)
+	return AttributeDeclaration{
 		Name:  attrName,
 		Value: attrValue,
 	}, nil
 }
 
-// DocumentAttributeReset the type for DocumentAttributeReset
-type DocumentAttributeReset struct {
+// AttributeReset the type for AttributeReset
+type AttributeReset struct {
 	Name string
 }
 
-// NewDocumentAttributeReset initializes a new Document Attribute Resets.
-func NewDocumentAttributeReset(attrName string) (DocumentAttributeReset, error) {
-	log.Debugf("initialized a new DocumentAttributeReset: '%s'", attrName)
-	return DocumentAttributeReset{Name: attrName}, nil
+// NewAttributeReset initializes a new Document Attribute Resets.
+func NewAttributeReset(attrName string) (AttributeReset, error) {
+	log.Debugf("initialized a new AttributeReset: '%s'", attrName)
+	return AttributeReset{Name: attrName}, nil
 }
 
-// DocumentAttributeSubstitution the type for DocumentAttributeSubstitution
-type DocumentAttributeSubstitution struct {
+// AttributeSubstitution the type for AttributeSubstitution
+type AttributeSubstitution struct {
 	Name string
 }
 
-// NewDocumentAttributeSubstitution initializes a new Document Attribute Substitutions
-func NewDocumentAttributeSubstitution(attrName string) (DocumentAttributeSubstitution, error) {
-	log.Debugf("initialized a new DocumentAttributeSubstitution: '%s'", attrName)
-	return DocumentAttributeSubstitution{Name: attrName}, nil
+// NewAttributeSubstitution initializes a new Document Attribute Substitutions
+func NewAttributeSubstitution(attrName string) (AttributeSubstitution, error) {
+	log.Debugf("initialized a new AttributeSubstitution: '%s'", attrName)
+	return AttributeSubstitution{Name: attrName}, nil
 }
 
 // ------------------------------------------
@@ -352,13 +348,13 @@ type UserMacro struct {
 	Kind       MacroKind
 	Name       string
 	Value      string
-	Attributes ElementAttributes
+	Attributes Attributes
 	RawText    string
 }
 
 // NewUserMacroBlock returns an UserMacro
 func NewUserMacroBlock(name string, value string, attributes interface{}, raw string) (UserMacro, error) {
-	attrs, err := NewElementAttributes(attributes)
+	attrs, err := NewAttributes(attributes)
 	if err != nil {
 		return UserMacro{}, errors.Wrap(err, "failed to initialize a UserMacro element")
 	}
@@ -373,7 +369,7 @@ func NewUserMacroBlock(name string, value string, attributes interface{}, raw st
 
 // NewInlineUserMacro returns an UserMacro
 func NewInlineUserMacro(name, value string, attributes interface{}, raw string) (UserMacro, error) {
-	attrs, err := NewElementAttributes(attributes)
+	attrs, err := NewAttributes(attributes)
 	if err != nil {
 		return UserMacro{}, errors.Wrap(err, "failed to initialize a UserMacro element")
 	}
@@ -396,7 +392,7 @@ type Preamble struct {
 }
 
 // HasContent returns `true` if this Preamble has at least one element which is neither a
-// BlankLine nor a DocumentAttributeDeclaration
+// BlankLine nor a AttributeDeclaration
 func (p Preamble) HasContent() bool {
 	for _, pe := range p.Elements {
 		switch pe.(type) {
@@ -436,14 +432,14 @@ func NewYamlFrontMatter(content string) (FrontMatter, error) {
 // Section the structure for a section
 type Section struct {
 	Level      int
-	Attributes ElementAttributes
+	Attributes Attributes
 	Title      []interface{}
 	Elements   []interface{}
 }
 
 // NewSection initializes a new `Section` from the given section title and elements
 func NewSection(level int, title []interface{}, ids []interface{}, attributes interface{}) (Section, error) {
-	attrs, err := NewElementAttributes(attributes)
+	attrs, err := NewAttributes(attributes)
 	if err != nil {
 		return Section{}, errors.Wrapf(err, "failed to initialize a Section element")
 	}
@@ -461,7 +457,7 @@ func NewSection(level int, title []interface{}, ids []interface{}, attributes in
 }
 
 // ResolveID resolves/updates the "ID" attribute in the section (in case the title changed after some document attr substitution)
-func (s Section) ResolveID(docAttributes DocumentAttributesWithOverrides) (Section, error) {
+func (s Section) ResolveID(docAttributes AttributesWithOverrides) (Section, error) {
 	if !s.Attributes.GetAsBool(AttrCustomID) {
 		replacement, err := ReplaceNonAlphanumerics(s.Title, "_")
 		if err != nil {
@@ -510,7 +506,7 @@ func NewDocumentHeader(title []interface{}, authors interface{}, revision interf
 
 // expandAuthors returns a map of attributes for the given authors.
 // those attributes can be used in attribute substitutions in the document
-func expandAuthors(authors []DocumentAuthor) map[string]interface{} {
+func expandAuthors(authors []DocumentAuthor) Attributes {
 	result := make(map[string]interface{}, 1+6*len(authors)) // each author may add up to 6 fields in the result map
 	sanitized := make([]DocumentAuthor, 0, len(authors))
 	for i, author := range authors {
@@ -576,6 +572,7 @@ func expandAuthors(authors []DocumentAuthor) map[string]interface{} {
 		})
 	}
 	result[AttrAuthors] = sanitized
+	log.Debugf("authors: %v", result)
 	return result
 }
 
@@ -595,13 +592,14 @@ func initial(s string) string {
 
 // expandRevision returns a map of attributes for the given revision.
 // those attributes can be used in attribute substitutions in the document
-func expandRevision(revision DocumentRevision) map[string]interface{} {
-	result := make(ElementAttributes, 3)
+func expandRevision(revision DocumentRevision) Attributes {
+	result := make(Attributes, 3)
 	result.AddNonEmpty("revnumber", revision.Revnumber)
 	result.AddNonEmpty("revdate", revision.Revdate)
 	result.AddNonEmpty("revremark", revision.Revremark)
 	// also add the revision itself
 	result.AddNonEmpty(AttrRevision, revision)
+	log.Debugf("revision: %v", result)
 	return result
 }
 
@@ -640,7 +638,7 @@ func NewContinuedListItemElement(element interface{}) (ContinuedListItemElement,
 
 // OrderedList the structure for the Ordered Lists
 type OrderedList struct {
-	Attributes ElementAttributes
+	Attributes Attributes
 	Items      []OrderedListItem
 }
 
@@ -683,7 +681,7 @@ func NewOrderedList(item *OrderedListItem) *OrderedList {
 }
 
 // moves the "upperroman", etc. attributes as values of the `AttrNumberingStyle` key
-func rearrangeListAttributes(attributes ElementAttributes) ElementAttributes {
+func rearrangeListAttributes(attributes Attributes) Attributes {
 	for k := range attributes {
 		switch k {
 		case "upperalpha":
@@ -719,7 +717,7 @@ func (l *OrderedList) LastItem() ListItem {
 
 // OrderedListItem the structure for the ordered list items
 type OrderedListItem struct {
-	Attributes     ElementAttributes
+	Attributes     Attributes
 	Level          int
 	NumberingStyle NumberingStyle
 	Elements       []interface{} // TODO: rename to `Blocks`?
@@ -731,7 +729,7 @@ var _ ListItem = &OrderedListItem{}
 // NewOrderedListItem initializes a new `orderedListItem` from the given content
 func NewOrderedListItem(prefix OrderedListItemPrefix, elements []interface{}, attributes interface{}) (OrderedListItem, error) {
 	log.Debugf("initializing a new OrderedListItem")
-	attrs, err := NewElementAttributes(attributes)
+	attrs, err := NewAttributes(attributes)
 	if err != nil {
 		return OrderedListItem{}, errors.Wrapf(err, "failed to initialize an OrderedListItem element")
 	}
@@ -744,7 +742,7 @@ func NewOrderedListItem(prefix OrderedListItemPrefix, elements []interface{}, at
 }
 
 // GetAttributes returns the elements of this OrderedListItem
-func (i OrderedListItem) GetAttributes() ElementAttributes {
+func (i OrderedListItem) GetAttributes() Attributes {
 	return i.Attributes
 }
 
@@ -773,7 +771,7 @@ func NewOrderedListItemPrefix(s NumberingStyle, l int) (OrderedListItemPrefix, e
 
 // UnorderedList the structure for the Unordered Lists
 type UnorderedList struct {
-	Attributes ElementAttributes
+	Attributes Attributes
 	Items      []UnorderedListItem
 }
 
@@ -808,7 +806,7 @@ type UnorderedListItem struct {
 	Level       int
 	BulletStyle BulletStyle
 	CheckStyle  UnorderedListItemCheckStyle
-	Attributes  ElementAttributes
+	Attributes  Attributes
 	Elements    []interface{} // TODO: rename to `Blocks`?
 }
 
@@ -816,7 +814,7 @@ type UnorderedListItem struct {
 func NewUnorderedListItem(prefix UnorderedListItemPrefix, checkstyle interface{}, elements []interface{}, attributes interface{}) (UnorderedListItem, error) {
 	log.Debugf("initializing a new UnorderedListItem with %d elements", len(elements))
 	// log.Debugf("initializing a new UnorderedListItem with '%d' lines (%T) and input level '%d'", len(elements), elements, lvl.Len())
-	attrs, err := NewElementAttributes(attributes)
+	attrs, err := NewAttributes(attributes)
 	if err != nil {
 		return UnorderedListItem{}, errors.Wrapf(err, "failed to initialize an UnorderedListItem element")
 	}
@@ -824,7 +822,7 @@ func NewUnorderedListItem(prefix UnorderedListItemPrefix, checkstyle interface{}
 	if cs != NoCheck && len(elements) > 0 {
 		if p, ok := elements[0].(Paragraph); ok {
 			if p.Attributes == nil {
-				p.Attributes = ElementAttributes{}
+				p.Attributes = Attributes{}
 				elements[0] = p // need to update the element in the slice
 			}
 			p.Attributes[AttrCheckStyle] = cs
@@ -840,7 +838,7 @@ func NewUnorderedListItem(prefix UnorderedListItemPrefix, checkstyle interface{}
 }
 
 // GetAttributes returns the elements of this UnorderedListItem
-func (i UnorderedListItem) GetAttributes() ElementAttributes {
+func (i UnorderedListItem) GetAttributes() Attributes {
 	return i.Attributes
 }
 
@@ -955,7 +953,7 @@ func NewListItemContent(content []interface{}) ([]interface{}, error) {
 
 // LabeledList the structure for the Labeled Lists
 type LabeledList struct {
-	Attributes ElementAttributes
+	Attributes Attributes
 	Items      []LabeledListItem
 }
 
@@ -989,7 +987,7 @@ func (l *LabeledList) LastItem() ListItem {
 type LabeledListItem struct {
 	Term       []interface{}
 	Level      int
-	Attributes ElementAttributes
+	Attributes Attributes
 	Elements   []interface{} // TODO: rename to `Blocks`?
 }
 
@@ -999,7 +997,7 @@ var _ ListItem = &LabeledListItem{}
 // NewLabeledListItem initializes a new LabeledListItem
 func NewLabeledListItem(level int, term []interface{}, description interface{}, attributes interface{}) (LabeledListItem, error) {
 	log.Debugf("initializing a new LabeledListItem")
-	attrs, err := NewElementAttributes(attributes)
+	attrs, err := NewAttributes(attributes)
 	if err != nil {
 		return LabeledListItem{}, errors.Wrapf(err, "failed to initialize a LabeledListItem element")
 	}
@@ -1018,7 +1016,7 @@ func NewLabeledListItem(level int, term []interface{}, description interface{}, 
 }
 
 // GetAttributes returns the elements of this LabeledListItem
-func (i LabeledListItem) GetAttributes() ElementAttributes {
+func (i LabeledListItem) GetAttributes() Attributes {
 	return i.Attributes
 }
 
@@ -1033,7 +1031,7 @@ func (i *LabeledListItem) AddElement(element interface{}) {
 
 // Paragraph the structure for the paragraphs
 type Paragraph struct {
-	Attributes ElementAttributes
+	Attributes Attributes
 	Lines      [][]interface{}
 }
 
@@ -1045,7 +1043,7 @@ const DocumentAttrHardBreaks = "hardbreaks"
 
 // NewParagraph initializes a new `Paragraph`
 func NewParagraph(lines []interface{}, attributes interface{}) (Paragraph, error) {
-	attrs, err := NewElementAttributes(attributes)
+	attrs, err := NewAttributes(attributes)
 	if err != nil {
 		return Paragraph{}, errors.Wrapf(err, "failed to initialize a Paragraph element")
 	}
@@ -1087,7 +1085,7 @@ func (p Paragraph) ReplaceFootnotes(notes *Footnotes) interface{} {
 // NewAdmonitionParagraph returns a new Paragraph with an extra admonition attribute
 func NewAdmonitionParagraph(lines []interface{}, admonitionKind AdmonitionKind, attributes interface{}) (Paragraph, error) {
 	log.Debugf("new admonition paragraph")
-	attrs, err := NewElementAttributes(attributes)
+	attrs, err := NewAttributes(attributes)
 	if err != nil {
 		return Paragraph{}, errors.Wrapf(err, "failed to initialize an Admonition Paragraph element")
 	}
@@ -1156,7 +1154,7 @@ type ExternalCrossReference struct {
 }
 
 // NewExternalCrossReference initializes a new `InternalCrossReference` from the given ID
-func NewExternalCrossReference(location Location, attributes ElementAttributes) (ExternalCrossReference, error) {
+func NewExternalCrossReference(location Location, attributes Attributes) (ExternalCrossReference, error) {
 	var label []interface{}
 	if l, ok := attributes["positional-1"].([]interface{}); ok {
 		label = l
@@ -1170,7 +1168,7 @@ func NewExternalCrossReference(location Location, attributes ElementAttributes) 
 
 // ResolveLocation resolves the image path using the given document attributes
 // also, updates the `alt` attribute based on the resolved path of the image
-func (r ExternalCrossReference) ResolveLocation(attrs DocumentAttributesWithOverrides) ExternalCrossReference {
+func (r ExternalCrossReference) ResolveLocation(attrs AttributesWithOverrides) ExternalCrossReference {
 	r.Location = r.Location.Resolve(attrs)
 	return r
 }
@@ -1182,12 +1180,12 @@ func (r ExternalCrossReference) ResolveLocation(attrs DocumentAttributesWithOver
 // ImageBlock the structure for the block images
 type ImageBlock struct {
 	Location   Location
-	Attributes ElementAttributes
+	Attributes Attributes
 }
 
 // NewImageBlock initializes a new `ImageBlock`
-func NewImageBlock(path Location, inlineAttributes ElementAttributes, attributes interface{}) (ImageBlock, error) {
-	attrs, err := NewElementAttributes(attributes)
+func NewImageBlock(path Location, inlineAttributes Attributes, attributes interface{}) (ImageBlock, error) {
+	attrs, err := NewAttributes(attributes)
 	if err != nil {
 		return ImageBlock{}, errors.Wrapf(err, "failed to initialize an ImageBlock element")
 	}
@@ -1204,7 +1202,7 @@ func NewImageBlock(path Location, inlineAttributes ElementAttributes, attributes
 
 // ResolveLocation resolves the image path using the given document attributes
 // also, updates the `alt` attribute based on the resolved path of the image
-func (b ImageBlock) ResolveLocation(attrs DocumentAttributesWithOverrides) ImageBlock {
+func (b ImageBlock) ResolveLocation(attrs AttributesWithOverrides) ImageBlock {
 	b.Location = b.Location.Resolve(attrs)
 	if _, found := b.Attributes[AttrImageAlt]; !found {
 		b.Attributes = b.Attributes.Set(AttrImageAlt, resolveAlt(b.Location))
@@ -1215,11 +1213,11 @@ func (b ImageBlock) ResolveLocation(attrs DocumentAttributesWithOverrides) Image
 // InlineImage the structure for the inline image macros
 type InlineImage struct {
 	Location   Location
-	Attributes ElementAttributes
+	Attributes Attributes
 }
 
 // NewInlineImage initializes a new `InlineImage` (similar to ImageBlock, but without attributes)
-func NewInlineImage(path Location, attributes ElementAttributes) (InlineImage, error) {
+func NewInlineImage(path Location, attributes Attributes) (InlineImage, error) {
 	return InlineImage{
 		Location:   path,
 		Attributes: attributes,
@@ -1228,7 +1226,7 @@ func NewInlineImage(path Location, attributes ElementAttributes) (InlineImage, e
 
 // ResolveLocation resolves the image path using the given document attributes
 // also, updates the `alt` attribute based on the resolved path of the image
-func (i InlineImage) ResolveLocation(attrs DocumentAttributesWithOverrides) InlineImage {
+func (i InlineImage) ResolveLocation(attrs AttributesWithOverrides) InlineImage {
 	i.Location = i.Location.Resolve(attrs)
 	if _, found := i.Attributes[AttrImageAlt]; !found {
 		i.Attributes = i.Attributes.Set(AttrImageAlt, resolveAlt(i.Location))
@@ -1237,8 +1235,8 @@ func (i InlineImage) ResolveLocation(attrs DocumentAttributesWithOverrides) Inli
 }
 
 // NewImageAttributes returns a map of image attributes, some of which have implicit keys (`alt`, `width` and `height`)
-func NewImageAttributes(alt, width, height interface{}, otherattrs []interface{}) (ElementAttributes, error) {
-	var result ElementAttributes
+func NewImageAttributes(alt, width, height interface{}, otherattrs []interface{}) (Attributes, error) {
+	var result Attributes
 	if alt, ok := alt.(string); ok {
 		if altStr := Apply(alt, strings.TrimSpace); altStr != "" {
 			result = result.Set(AttrImageAlt, altStr)
@@ -1255,7 +1253,7 @@ func NewImageAttributes(alt, width, height interface{}, otherattrs []interface{}
 		}
 	}
 	for _, otherAttr := range otherattrs {
-		if otherAttr, ok := otherAttr.(ElementAttributes); ok {
+		if otherAttr, ok := otherAttr.(Attributes); ok {
 			for k, v := range otherAttr {
 				result = result.Set(k, v)
 				if k == AttrID {
@@ -1385,14 +1383,14 @@ func (s *sequence) nextVal() int {
 // DelimitedBlock the structure for the delimited blocks
 type DelimitedBlock struct {
 	Kind       BlockKind
-	Attributes ElementAttributes
+	Attributes Attributes
 	Elements   []interface{} // TODO: rename to `Blocks`?
 }
 
 // NewDelimitedBlock initializes a new `DelimitedBlock` of the given kind with the given elements
 func NewDelimitedBlock(kind BlockKind, elements []interface{}, attributes interface{}) (DelimitedBlock, error) {
 	log.Debugf("initializing a new DelimitedBlock of kind '%v' with %d elements", kind, len(elements))
-	attrs, err := NewElementAttributes(attributes)
+	attrs, err := NewAttributes(attributes)
 	if err != nil {
 		return DelimitedBlock{}, errors.Wrap(err, "failed to initialize a delimited block")
 	}
@@ -1425,7 +1423,7 @@ func NewCallout(ref int) (Callout, error) {
 
 // CalloutListItem the description of a call out which will appear as an ordered list item after the delimited block
 type CalloutListItem struct {
-	Attributes ElementAttributes
+	Attributes Attributes
 	Ref        int
 	Elements   []interface{}
 }
@@ -1435,7 +1433,7 @@ var _ ListItem = &CalloutListItem{}
 var _ DocumentElement = &CalloutListItem{}
 
 // GetAttributes returns the elements of this CalloutListItem
-func (i CalloutListItem) GetAttributes() ElementAttributes {
+func (i CalloutListItem) GetAttributes() Attributes {
 	return i.Attributes
 }
 
@@ -1455,7 +1453,7 @@ func NewCalloutListItem(ref int, description []interface{}) (CalloutListItem, er
 
 // CalloutList the structure for the Callout Lists
 type CalloutList struct {
-	Attributes ElementAttributes
+	Attributes Attributes
 	Items      []CalloutListItem
 }
 
@@ -1489,14 +1487,14 @@ func (l *CalloutList) LastItem() ListItem {
 
 // Table the structure for the tables
 type Table struct {
-	Attributes ElementAttributes
+	Attributes Attributes
 	Header     TableLine
 	Lines      []TableLine
 }
 
 // NewTable initializes a new table with the given lines and attributes
 func NewTable(header interface{}, lines []interface{}, attributes interface{}) (Table, error) {
-	attrs, err := NewElementAttributes(attributes)
+	attrs, err := NewAttributes(attributes)
 	if err != nil {
 		return Table{}, errors.Wrapf(err, "failed to initialize a Table element")
 	}
@@ -1568,7 +1566,7 @@ func NewTableLine(columns []interface{}) (TableLine, error) {
 
 // LiteralBlock the structure for the literal blocks
 type LiteralBlock struct {
-	Attributes ElementAttributes
+	Attributes Attributes
 	Lines      []string
 }
 
@@ -1591,7 +1589,7 @@ func NewLiteralBlock(origin string, lines []interface{}, attributes interface{})
 		return LiteralBlock{}, errors.Wrapf(err, "failed to initialize a new LiteralBlock")
 	}
 	// log.Debugf("initialized a new LiteralBlock with %d lines", len(lines))
-	attrs, err := NewElementAttributes(ElementAttributes{
+	attrs, err := NewAttributes(Attributes{
 		AttrKind:             Literal,
 		AttrLiteralBlockType: origin,
 	})
@@ -1811,7 +1809,7 @@ func NewInlinePassthrough(kind PassthroughKind, elements []interface{}) (InlineP
 // InlineLink the structure for the external links
 type InlineLink struct {
 	Location   Location
-	Attributes ElementAttributes
+	Attributes Attributes
 }
 
 // NewInlineLink initializes a new inline `InlineLink`
@@ -1819,7 +1817,7 @@ func NewInlineLink(url Location, attrs interface{}) (InlineLink, error) {
 	result := InlineLink{
 		Location: url,
 	}
-	if attrs, ok := attrs.(ElementAttributes); ok && len(attrs) > 0 {
+	if attrs, ok := attrs.(Attributes); ok && len(attrs) > 0 {
 		result.Attributes = attrs
 	}
 	return result, nil
@@ -1829,16 +1827,16 @@ func NewInlineLink(url Location, attrs interface{}) (InlineLink, error) {
 const AttrInlineLinkText string = "positional-1"
 
 // NewInlineLinkAttributes returns a map of link attributes
-func NewInlineLinkAttributes(attributes []interface{}) (ElementAttributes, error) {
+func NewInlineLinkAttributes(attributes []interface{}) (Attributes, error) {
 	log.Debugf("new inline link attributes: %v", attributes)
 	if len(attributes) == 0 {
 		return nil, nil
 	}
-	result := ElementAttributes{}
+	result := Attributes{}
 	for i, attr := range attributes {
 		log.Debugf("new inline link attribute: '%[1]v' (%[1]T)", attr)
 		switch attr := attr.(type) {
-		case ElementAttributes:
+		case Attributes:
 			for k, v := range attr {
 				result[k] = v
 			}
@@ -1856,14 +1854,14 @@ func NewInlineLinkAttributes(attributes []interface{}) (ElementAttributes, error
 
 // FileInclusion the structure for the file inclusions
 type FileInclusion struct {
-	Attributes ElementAttributes
+	Attributes Attributes
 	Location   Location
 	RawText    string
 }
 
 // NewFileInclusion initializes a new inline `InlineLink`
 func NewFileInclusion(location Location, attributes interface{}, rawtext string) (FileInclusion, error) {
-	attrs, err := NewElementAttributes(attributes)
+	attrs, err := NewAttributes(attributes)
 	if err != nil {
 		return FileInclusion{}, errors.Wrap(err, "failed to initialize a FileInclusion element")
 	}
@@ -1900,18 +1898,18 @@ func (f *FileInclusion) TagRanges() (TagRanges, bool) {
 // -------------------------------------------------------------------------------------
 
 // NewLineRangesAttribute returns an element attribute with a slice of line ranges attribute for a file inclusion.
-func NewLineRangesAttribute(ranges interface{}) (ElementAttributes, error) {
+func NewLineRangesAttribute(ranges interface{}) (Attributes, error) {
 	switch ranges := ranges.(type) {
 	case []interface{}:
-		return ElementAttributes{
+		return Attributes{
 			AttrLineRanges: NewLineRanges(ranges...),
 		}, nil
 	case LineRange:
-		return ElementAttributes{
+		return Attributes{
 			AttrLineRanges: NewLineRanges(ranges),
 		}, nil
 	default:
-		return ElementAttributes{
+		return Attributes{
 			AttrLineRanges: ranges,
 		}, nil
 	}
@@ -1977,13 +1975,13 @@ func (r LineRanges) Less(i, j int) bool { return r[i].StartLine < r[j].StartLine
 // -------------------------------------------------------------------------------------
 
 // NewTagRangesAttribute returns an element attribute with a slice of tag ranges attribute for a file inclusion.
-func NewTagRangesAttribute(ranges []interface{}) (ElementAttributes, error) {
+func NewTagRangesAttribute(ranges []interface{}) (Attributes, error) {
 	r, err := NewTagRanges(ranges...)
 	if err != nil {
 		return nil, err
 	}
 	log.Debugf("initialized a new TagRanges attribute with values: %v", r)
-	return ElementAttributes{
+	return Attributes{
 		AttrTagRanges: r,
 	}, nil
 }
@@ -2172,11 +2170,11 @@ const imagesdir = "imagesdir"
 // with their associated values, or their corresponding raw text if
 // no attribute matched
 // returns `true` if some document attribute substitution occurred
-func (l *Location) Resolve(attrs DocumentAttributesWithOverrides) Location {
+func (l *Location) Resolve(attrs AttributesWithOverrides) Location {
 	content := bytes.NewBuffer(nil)
 	for _, e := range l.Path {
 		switch e := e.(type) {
-		case DocumentAttributeSubstitution:
+		case AttributeSubstitution:
 			if value, found := attrs.GetAsString(e.Name); found {
 				content.WriteString(value)
 			} else {

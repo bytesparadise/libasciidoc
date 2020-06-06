@@ -66,7 +66,10 @@ func rearrangeSections(blocks []interface{}) types.Document {
 }
 
 func referenceSection(e *types.Section, elementRefs types.ElementReferences) {
-	attrID := e.Attributes.GetAsString(types.AttrID)
+	attrID, found := e.Attributes.GetAsString(types.AttrID)
+	if !found {
+		return
+	}
 	for i := 1; ; i++ {
 		var id string
 		if i == 1 {
@@ -81,7 +84,7 @@ func referenceSection(e *types.Section, elementRefs types.ElementReferences) {
 			break
 		}
 	}
-	elementRefs[e.Attributes.GetAsString(types.AttrID)] = e.Title
+	elementRefs[attrID] = e.Title
 }
 
 func pruneSections(sections []types.Section, level int) []types.Section {

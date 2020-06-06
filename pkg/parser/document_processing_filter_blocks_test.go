@@ -45,7 +45,7 @@ var _ = Describe("block filters", func() {
 
 	It("should remove document attribute declaration", func() {
 		actual := []interface{}{
-			types.DocumentAttributeDeclaration{},
+			types.AttributeDeclaration{},
 			types.Paragraph{
 				Lines: [][]interface{}{
 					{
@@ -68,7 +68,7 @@ var _ = Describe("block filters", func() {
 
 	It("should remove document attribute substitution", func() {
 		actual := []interface{}{
-			types.DocumentAttributeSubstitution{},
+			types.AttributeSubstitution{},
 			types.Paragraph{
 				Lines: [][]interface{}{
 					{
@@ -91,7 +91,7 @@ var _ = Describe("block filters", func() {
 
 	It("should remove document attribute reset", func() {
 		actual := []interface{}{
-			types.DocumentAttributeReset{},
+			types.AttributeReset{},
 			types.Paragraph{
 				Lines: [][]interface{}{
 					{

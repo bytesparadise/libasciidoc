@@ -334,7 +334,7 @@ a second paragraph`
 				},
 				Elements: []interface{}{
 					types.Section{
-						Attributes: types.ElementAttributes{
+						Attributes: types.Attributes{
 							types.AttrID: "_section_1",
 						},
 						Level: 1,
@@ -391,14 +391,14 @@ a second paragraph`
 				},
 				Elements: []interface{}{
 					types.Section{
-						Attributes: types.ElementAttributes{
+						Attributes: types.Attributes{
 							types.AttrID: "_section_0",
 						},
 						Level: 0,
 						Title: section0Title,
 						Elements: []interface{}{
 							types.Section{
-								Attributes: types.ElementAttributes{
+								Attributes: types.Attributes{
 									types.AttrID: "_section_1",
 								},
 								Level: 1,

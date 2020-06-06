@@ -195,12 +195,12 @@ var _ = Describe("table of contents initialization", func() {
 
 		It("should return empty table of contents when doc has no section", func() {
 			actual := types.Document{
-				Attributes:        types.DocumentAttributes{},
+				Attributes:        types.Attributes{},
 				ElementReferences: types.ElementReferences{},
 				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{
 					types.Paragraph{
-						Attributes: types.ElementAttributes{},
+						Attributes: types.Attributes{},
 						Lines: [][]interface{}{
 							{
 								types.StringElement{Content: "a paragraph"},
@@ -248,7 +248,7 @@ var _ = Describe("table of contents initialization", func() {
 			types.StringElement{Content: "Section B"},
 		}
 		document := types.Document{
-			Attributes: types.DocumentAttributes{},
+			Attributes: types.Attributes{},
 			ElementReferences: types.ElementReferences{
 				"_a_header":    doctitle,
 				"_section_a":   sectionATitle,
@@ -263,21 +263,21 @@ var _ = Describe("table of contents initialization", func() {
 			},
 			Elements: []interface{}{
 				types.Section{
-					Attributes: types.ElementAttributes{
+					Attributes: types.Attributes{
 						types.AttrID: "_a_header",
 					},
 					Level: 0,
 					Title: doctitle,
 					Elements: []interface{}{
 						types.Section{
-							Attributes: types.ElementAttributes{
+							Attributes: types.Attributes{
 								types.AttrID: "_section_a",
 							},
 							Level: 1,
 							Title: sectionATitle,
 							Elements: []interface{}{
 								types.Paragraph{
-									Attributes: types.ElementAttributes{},
+									Attributes: types.Attributes{},
 									Lines: [][]interface{}{
 										{
 											types.StringElement{Content: "a paragraph"},
@@ -285,14 +285,14 @@ var _ = Describe("table of contents initialization", func() {
 									},
 								},
 								types.Section{
-									Attributes: types.ElementAttributes{
+									Attributes: types.Attributes{
 										types.AttrID: "_section_a_a",
 									},
 									Level: 2,
 									Title: sectionAaTitle,
 									Elements: []interface{}{
 										types.Paragraph{
-											Attributes: types.ElementAttributes{},
+											Attributes: types.Attributes{},
 											Lines: [][]interface{}{
 												{
 													types.StringElement{Content: "a paragraph"},
@@ -300,14 +300,14 @@ var _ = Describe("table of contents initialization", func() {
 											},
 										},
 										types.Section{
-											Attributes: types.ElementAttributes{
+											Attributes: types.Attributes{
 												types.AttrID: "_section_a_a_1",
 											},
 											Level: 3,
 											Title: sectionAa1Title,
 											Elements: []interface{}{
 												types.Paragraph{
-													Attributes: types.ElementAttributes{},
+													Attributes: types.Attributes{},
 													Lines: [][]interface{}{
 														{
 															types.StringElement{Content: "a paragraph"},
@@ -321,14 +321,14 @@ var _ = Describe("table of contents initialization", func() {
 							},
 						},
 						types.Section{
-							Attributes: types.ElementAttributes{
+							Attributes: types.Attributes{
 								types.AttrID: "_section_b",
 							},
 							Level: 1,
 							Title: sectionBTitle,
 							Elements: []interface{}{
 								types.Paragraph{
-									Attributes: types.ElementAttributes{},
+									Attributes: types.Attributes{},
 									Lines: [][]interface{}{
 										{
 											types.StringElement{Content: "a paragraph"},

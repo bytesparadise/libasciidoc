@@ -58,7 +58,7 @@ var _ = Describe("footnotes - draft", func() {
 					Content: " ",
 				},
 				types.InlineLink{
-					Attributes: types.ElementAttributes{
+					Attributes: types.Attributes{
 						"positional-1": []interface{}{
 							types.StringElement{
 								Content: "content",
@@ -223,7 +223,7 @@ a paragraph with another footnote:[baz]`
 					Title:    docTitle,
 					Elements: []interface{}{},
 				},
-				types.DocumentAttributeDeclaration{
+				types.AttributeDeclaration{
 					Name:  "idprefix",
 					Value: "id_",
 				},
@@ -314,7 +314,7 @@ var _ = Describe("footnotes - document", func() {
 					Content: " ",
 				},
 				types.InlineLink{
-					Attributes: types.ElementAttributes{
+					Attributes: types.Attributes{
 						"positional-1": []interface{}{
 							types.StringElement{
 								Content: "content",
@@ -480,7 +480,7 @@ a paragraph with another footnote.footnote:[baz]`
 			},
 		}
 		expected := types.Document{
-			Attributes: types.DocumentAttributes{
+			Attributes: types.Attributes{
 				"idprefix": "id_",
 			},
 			ElementReferences: types.ElementReferences{
@@ -517,7 +517,7 @@ a paragraph with another footnote.footnote:[baz]`
 				types.Section{
 					Level: 0,
 					Title: docTitle,
-					Attributes: types.ElementAttributes{
+					Attributes: types.Attributes{
 						types.AttrID: "id_title",
 					},
 					Elements: []interface{}{
@@ -538,7 +538,7 @@ a paragraph with another footnote.footnote:[baz]`
 							},
 						},
 						types.Section{
-							Attributes: types.ElementAttributes{
+							Attributes: types.Attributes{
 								types.AttrID: "id_section_1",
 							},
 							Level: 1,

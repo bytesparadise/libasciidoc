@@ -34,8 +34,7 @@ func init() {
 func renderImageBlock(ctx renderer.Context, img types.ImageBlock) ([]byte, error) {
 	result := bytes.NewBuffer(nil)
 	title := ""
-	if t := img.Attributes.GetAsString(types.AttrTitle); t != "" {
-		// title = fmt.Sprintf("Figure %d. %s", ctx.GetAndIncrementImageCounter(), EscapeString(t))
+	if t, found := img.Attributes.GetAsString(types.AttrTitle); found {
 		title = "Figure " + strconv.Itoa(ctx.GetAndIncrementImageCounter()) + ". " + EscapeString(t)
 	}
 	err := blockImageTmpl.Execute(result, struct {
@@ -48,13 +47,13 @@ func renderImageBlock(ctx renderer.Context, img types.ImageBlock) ([]byte, error
 		Height string
 		Path   string
 	}{
-		ID:     img.Attributes.GetAsString(types.AttrID),
+		ID:     img.Attributes.GetAsStringWithDefault(types.AttrID, ""),
 		Title:  title,
-		Role:   img.Attributes.GetAsString(types.AttrRole),
-		Href:   img.Attributes.GetAsString(types.AttrInlineLink),
-		Alt:    img.Attributes.GetAsString(types.AttrImageAlt),
-		Width:  img.Attributes.GetAsString(types.AttrImageWidth),
-		Height: img.Attributes.GetAsString(types.AttrImageHeight),
+		Role:   img.Attributes.GetAsStringWithDefault(types.AttrRole, ""),
+		Href:   img.Attributes.GetAsStringWithDefault(types.AttrInlineLink, ""),
+		Alt:    img.Attributes.GetAsStringWithDefault(types.AttrImageAlt, ""),
+		Width:  img.Attributes.GetAsStringWithDefault(types.AttrImageWidth, ""),
+		Height: img.Attributes.GetAsStringWithDefault(types.AttrImageHeight, ""),
 		Path:   img.Location.String(),
 	})
 
@@ -77,10 +76,10 @@ func renderInlineImage(img types.InlineImage) ([]byte, error) {
 		Path   string
 	}{
 		Title:  renderElementTitle(img.Attributes),
-		Role:   img.Attributes.GetAsString(types.AttrRole),
-		Alt:    img.Attributes.GetAsString(types.AttrImageAlt),
-		Width:  img.Attributes.GetAsString(types.AttrImageWidth),
-		Height: img.Attributes.GetAsString(types.AttrImageHeight),
+		Role:   img.Attributes.GetAsStringWithDefault(types.AttrRole, ""),
+		Alt:    img.Attributes.GetAsStringWithDefault(types.AttrImageAlt, ""),
+		Width:  img.Attributes.GetAsStringWithDefault(types.AttrImageWidth, ""),
+		Height: img.Attributes.GetAsStringWithDefault(types.AttrImageHeight, ""),
 		Path:   img.Location.String(),
 	})
 

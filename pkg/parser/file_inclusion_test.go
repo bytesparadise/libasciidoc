@@ -63,7 +63,7 @@ var _ = DescribeTable("'FileLocation' pattern",
 			types.StringElement{
 				Content: "chapter-",
 			},
-			types.DocumentAttributeSubstitution{
+			types.AttributeSubstitution{
 				Name: "foo",
 			},
 			types.StringElement{
@@ -73,13 +73,13 @@ var _ = DescribeTable("'FileLocation' pattern",
 	}),
 	Entry("'{includedir}/chapter-{foo}.adoc'", "{includedir}/chapter-{foo}.adoc", types.Location{
 		Path: []interface{}{
-			types.DocumentAttributeSubstitution{
+			types.AttributeSubstitution{
 				Name: "includedir",
 			},
 			types.StringElement{
 				Content: "/chapter-",
 			},
-			types.DocumentAttributeSubstitution{
+			types.AttributeSubstitution{
 				Name: "foo",
 			},
 			types.StringElement{
@@ -89,13 +89,13 @@ var _ = DescribeTable("'FileLocation' pattern",
 	}),
 	Entry("'{scheme}://{path}'", "{scheme}://{path}", types.Location{
 		Path: []interface{}{
-			types.DocumentAttributeSubstitution{
+			types.AttributeSubstitution{
 				Name: "scheme",
 			},
 			types.StringElement{
 				Content: "://",
 			},
-			types.DocumentAttributeSubstitution{
+			types.AttributeSubstitution{
 				Name: "path",
 			},
 		},
@@ -174,7 +174,7 @@ var _ = Describe("file inclusions", func() {
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.FileInclusion{
-							Attributes: types.ElementAttributes{
+							Attributes: types.Attributes{
 								types.AttrLevelOffset: "+1",
 							},
 							Location: types.Location{
@@ -306,7 +306,7 @@ var _ = Describe("file inclusions", func() {
 					expected := types.DraftDocument{
 						Blocks: []interface{}{
 							types.DelimitedBlock{
-								Attributes: types.ElementAttributes{
+								Attributes: types.Attributes{
 									types.AttrKind: types.Verse,
 								},
 								Kind: types.Verse,
@@ -391,7 +391,7 @@ var _ = Describe("file inclusions", func() {
 						expected := types.DraftDocument{
 							Blocks: []interface{}{
 								types.FileInclusion{
-									Attributes: types.ElementAttributes{
+									Attributes: types.Attributes{
 										types.AttrLineRanges: types.LineRanges{
 											{StartLine: 1, EndLine: 1},
 										},
@@ -416,7 +416,7 @@ var _ = Describe("file inclusions", func() {
 						expected := types.DraftDocument{
 							Blocks: []interface{}{
 								types.FileInclusion{
-									Attributes: types.ElementAttributes{
+									Attributes: types.Attributes{
 										types.AttrLineRanges: types.LineRanges{
 											{StartLine: 1, EndLine: 2},
 										},
@@ -441,7 +441,7 @@ var _ = Describe("file inclusions", func() {
 						expected := types.DraftDocument{
 							Blocks: []interface{}{
 								types.FileInclusion{
-									Attributes: types.ElementAttributes{
+									Attributes: types.Attributes{
 										types.AttrLineRanges: types.LineRanges{
 											{StartLine: 1, EndLine: 1},
 											{StartLine: 3, EndLine: 4},
@@ -468,7 +468,7 @@ var _ = Describe("file inclusions", func() {
 						expected := types.DraftDocument{
 							Blocks: []interface{}{
 								types.FileInclusion{
-									Attributes: types.ElementAttributes{
+									Attributes: types.Attributes{
 										types.AttrLineRanges: `1;3..4;6..foo`,
 									},
 									Location: types.Location{
@@ -491,7 +491,7 @@ var _ = Describe("file inclusions", func() {
 						expected := types.DraftDocument{
 							Blocks: []interface{}{
 								types.FileInclusion{
-									Attributes: types.ElementAttributes{
+									Attributes: types.Attributes{
 										types.AttrLineRanges: types.LineRanges{
 											{StartLine: 1, EndLine: 1},
 										},
@@ -518,7 +518,7 @@ var _ = Describe("file inclusions", func() {
 						expected := types.DraftDocument{
 							Blocks: []interface{}{
 								types.FileInclusion{
-									Attributes: types.ElementAttributes{
+									Attributes: types.Attributes{
 										types.AttrLineRanges: "foo",
 									},
 									Location: types.Location{
@@ -544,7 +544,7 @@ var _ = Describe("file inclusions", func() {
 						expected := types.DraftDocument{
 							Blocks: []interface{}{
 								types.FileInclusion{
-									Attributes: types.ElementAttributes{
+									Attributes: types.Attributes{
 										types.AttrLineRanges: types.LineRanges{
 											{StartLine: 1, EndLine: 1},
 										},
@@ -569,7 +569,7 @@ var _ = Describe("file inclusions", func() {
 						expected := types.DraftDocument{
 							Blocks: []interface{}{
 								types.FileInclusion{
-									Attributes: types.ElementAttributes{
+									Attributes: types.Attributes{
 										types.AttrLineRanges: types.LineRanges{
 											{StartLine: 1, EndLine: 2},
 										},
@@ -594,7 +594,7 @@ var _ = Describe("file inclusions", func() {
 						expected := types.DraftDocument{
 							Blocks: []interface{}{
 								types.FileInclusion{
-									Attributes: types.ElementAttributes{
+									Attributes: types.Attributes{
 										types.AttrLineRanges: types.LineRanges{
 											{StartLine: 1, EndLine: 1},
 											{StartLine: 3, EndLine: 4},
@@ -621,7 +621,7 @@ var _ = Describe("file inclusions", func() {
 						expected := types.DraftDocument{
 							Blocks: []interface{}{
 								types.FileInclusion{
-									Attributes: types.ElementAttributes{
+									Attributes: types.Attributes{
 										types.AttrLineRanges: `"1`, // viewed as a string
 										"3..4":               nil,
 										"6..foo":             nil,
@@ -646,7 +646,7 @@ var _ = Describe("file inclusions", func() {
 						expected := types.DraftDocument{
 							Blocks: []interface{}{
 								types.FileInclusion{
-									Attributes: types.ElementAttributes{
+									Attributes: types.Attributes{
 										types.AttrLineRanges: `"1;3..4;6..10"`,
 									},
 									Location: types.Location{
@@ -672,7 +672,7 @@ var _ = Describe("file inclusions", func() {
 						expected := types.DraftDocument{
 							Blocks: []interface{}{
 								types.FileInclusion{
-									Attributes: types.ElementAttributes{
+									Attributes: types.Attributes{
 										types.AttrTagRanges: types.TagRanges{
 											{
 												Name:     `section`,
@@ -700,7 +700,7 @@ var _ = Describe("file inclusions", func() {
 						expected := types.DraftDocument{
 							Blocks: []interface{}{
 								types.FileInclusion{
-									Attributes: types.ElementAttributes{
+									Attributes: types.Attributes{
 										types.AttrTagRanges: types.TagRanges{
 											{
 												Name:     `section`,
@@ -857,14 +857,14 @@ var _ = Describe("file inclusions", func() {
 				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
-			It("should not include section 0 when attribute exists", func() {
+			It("should not include section 0 when attribute found", func() {
 				source := `:includedir: ../../test/includes
 
 include::{includedir}/chapter-a.adoc[]`
 				// at this level (parsing), it is expected that the Section 0 is part of the Prefligh document
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
-						types.DocumentAttributeDeclaration{
+						types.AttributeDeclaration{
 							Name:  "includedir",
 							Value: "../../test/includes",
 						},
@@ -899,7 +899,7 @@ include::{includedir}/chapter-a.adoc[]`
 include::{includedir}/include.foo[]`
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
-						types.DocumentAttributeDeclaration{
+						types.AttributeDeclaration{
 							Name:  "includedir",
 							Value: "../../test/includes",
 						},
@@ -1455,7 +1455,7 @@ ____`
 					expected := types.DraftDocument{
 						Blocks: []interface{}{
 							types.DelimitedBlock{
-								Attributes: types.ElementAttributes{
+								Attributes: types.Attributes{
 									types.AttrKind: types.Verse,
 								},
 								Kind: types.Verse,
@@ -1605,7 +1605,7 @@ include::../../test/includes/chapter-a.adoc[]
 							Blocks: []interface{}{
 								types.Section{
 									Level: 0,
-									Attributes: types.ElementAttributes{
+									Attributes: types.Attributes{
 										types.AttrAuthors: []types.DocumentAuthor{
 											{
 												FullName: "content",
@@ -1721,7 +1721,7 @@ include::../../test/includes/chapter-a.adoc[]
 							Blocks: []interface{}{
 								types.Section{
 									Level: 0,
-									Attributes: types.ElementAttributes{
+									Attributes: types.Attributes{
 										types.AttrAuthors: []types.DocumentAuthor{
 											{
 												FullName: "content",
@@ -2296,7 +2296,7 @@ include::{includedir}/unknown.adoc[leveloffset=+1]
 include::{includedir}/grandchild-include.adoc[]`
 					expected := types.DraftDocument{
 						Blocks: []interface{}{
-							types.DocumentAttributeDeclaration{
+							types.AttributeDeclaration{
 								Name:  "includedir",
 								Value: "../../test/includes",
 							},
@@ -2341,7 +2341,7 @@ include::{includedir}/grandchild-include.adoc[]`
 include::{includedir}/grandchild-include.adoc[]`
 					expected := types.DraftDocument{
 						Blocks: []interface{}{
-							types.DocumentAttributeDeclaration{
+							types.AttributeDeclaration{
 								Name:  "includedir",
 								Value: "../../../test/includes",
 							},
@@ -2389,7 +2389,7 @@ include::{includedir}/grandchild-include.adoc[]
 ----`
 					expected := types.DraftDocument{
 						Blocks: []interface{}{
-							types.DocumentAttributeDeclaration{
+							types.AttributeDeclaration{
 								Name:  "includedir",
 								Value: "../../test/includes",
 							},
@@ -2509,7 +2509,7 @@ include::../../test/includes/hello_world.go.txt[lines=1]
 				},
 				Elements: []interface{}{
 					types.Section{
-						Attributes: types.ElementAttributes{
+						Attributes: types.Attributes{
 							types.AttrID: "_parent_title",
 						},
 						Level: 1, // here the level is changed from `0` to `1` since `root` doc has a `leveloffset=+1` during its inclusion
@@ -2538,7 +2538,7 @@ include::../../test/includes/hello_world.go.txt[lines=1]
 								},
 							},
 							types.Section{
-								Attributes: types.ElementAttributes{
+								Attributes: types.Attributes{
 									types.AttrID: "_child_section_1",
 								},
 								Level: 3, // here the level is changed from `1` to `3` since both `root` and `parent` docs have a `leveloffset=+1` during their inclusion
@@ -2558,7 +2558,7 @@ include::../../test/includes/hello_world.go.txt[lines=1]
 										},
 									},
 									types.Section{
-										Attributes: types.ElementAttributes{
+										Attributes: types.Attributes{
 											types.AttrID: "_grandchild_title",
 										},
 										Level: 4, // here the level is changed from `1` to `4` since both `root`, `parent` and `child` docs have a `leveloffset=+1` during their inclusion
@@ -2589,7 +2589,7 @@ include::../../test/includes/hello_world.go.txt[lines=1]
 										},
 									},
 									types.Section{
-										Attributes: types.ElementAttributes{
+										Attributes: types.Attributes{
 											types.AttrID: "_child_section_2",
 										},
 										Level: 4, // here the level is changed from `2` to `4` since both `root` and `parent` docs have a `leveloffset=+1` during their inclusion
@@ -2655,7 +2655,7 @@ include::../../test/includes/hello_world.go.txt[lines=1]
 				},
 				Elements: []interface{}{
 					types.Section{
-						Attributes: types.ElementAttributes{
+						Attributes: types.Attributes{
 							types.AttrID: "_parent_title",
 						},
 						Level: 1, // here the level is offset by `+1` as per root doc attribute in the `include` macro
@@ -2684,7 +2684,7 @@ include::../../test/includes/hello_world.go.txt[lines=1]
 								},
 							},
 							types.Section{
-								Attributes: types.ElementAttributes{
+								Attributes: types.Attributes{
 									types.AttrID: "_child_section_1",
 								},
 								Level: 3, // here level is forced to "absolute 3"
@@ -2704,7 +2704,7 @@ include::../../test/includes/hello_world.go.txt[lines=1]
 										},
 									},
 									types.Section{
-										Attributes: types.ElementAttributes{
+										Attributes: types.Attributes{
 											types.AttrID: "_grandchild_title",
 										},
 										Level: 4, // here the level is set to `4` because it was its parent was offset by 3...
@@ -2735,7 +2735,7 @@ include::../../test/includes/hello_world.go.txt[lines=1]
 										},
 									},
 									types.Section{
-										Attributes: types.ElementAttributes{
+										Attributes: types.Attributes{
 											types.AttrID: "_child_section_2",
 										},
 										Level: 4, // here the level is set to `4` because it the first section was moved from `1` to `3` so we use the same offset here

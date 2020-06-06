@@ -44,7 +44,7 @@ var _ = Describe("user macros", func() {
 							Kind:  types.InlineMacro,
 							Name:  "hello",
 							Value: "",
-							Attributes: types.ElementAttributes{
+							Attributes: types.Attributes{
 								"suffix": "!!!!!",
 							},
 							RawText: `hello:[suffix="!!!!!"]`,
@@ -87,7 +87,7 @@ var _ = Describe("user macros", func() {
 							Kind:  types.InlineMacro,
 							Name:  "git",
 							Value: "some/url.git",
-							Attributes: types.ElementAttributes{
+							Attributes: types.Attributes{
 								"key1": "value1",
 								"key2": "value2",
 							},
@@ -120,7 +120,7 @@ var _ = Describe("user macros", func() {
 				Kind:  types.BlockMacro,
 				Name:  "git",
 				Value: "some/url.git",
-				Attributes: types.ElementAttributes{
+				Attributes: types.Attributes{
 					"key1": "value1",
 					"key2": "value2",
 				},
@@ -135,7 +135,7 @@ var _ = Describe("user macros", func() {
 				Kind:  types.BlockMacro,
 				Name:  "git",
 				Value: "",
-				Attributes: types.ElementAttributes{
+				Attributes: types.Attributes{
 					"key1": "value1",
 				},
 				RawText: `git::[key1="value1"]`,

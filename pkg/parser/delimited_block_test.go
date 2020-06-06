@@ -701,7 +701,7 @@ with *bold content*
 							Kind: types.Example,
 							Elements: []interface{}{
 								types.Paragraph{
-									Attributes: types.ElementAttributes{
+									Attributes: types.Attributes{
 										types.AttrTitle: "foo",
 									},
 									Lines: [][]interface{}{
@@ -781,7 +781,7 @@ foo
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.DelimitedBlock{
-							Attributes: types.ElementAttributes{
+							Attributes: types.Attributes{
 								types.AttrTitle: "example block title",
 							},
 							Kind: types.Example,
@@ -825,7 +825,7 @@ foo
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.DelimitedBlock{
-							Attributes: types.ElementAttributes{
+							Attributes: types.Attributes{
 								types.AttrAdmonitionKind: types.Note,
 							},
 							Kind: types.Example,
@@ -858,7 +858,7 @@ paragraphs
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.DelimitedBlock{
-							Attributes: types.ElementAttributes{
+							Attributes: types.Attributes{
 								types.AttrAdmonitionKind: types.Note,
 							},
 							Kind: types.Listing,
@@ -888,7 +888,7 @@ ____`
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.DelimitedBlock{
-							Attributes: types.ElementAttributes{
+							Attributes: types.Attributes{
 								types.AttrKind:        types.Quote,
 								types.AttrQuoteAuthor: "john doe",
 								types.AttrQuoteTitle:  "quote title",
@@ -933,7 +933,7 @@ ____
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.DelimitedBlock{
-							Attributes: types.ElementAttributes{
+							Attributes: types.Attributes{
 								types.AttrKind:        types.Quote,
 								types.AttrQuoteAuthor: "john doe",
 							},
@@ -1003,7 +1003,7 @@ ____
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.DelimitedBlock{
-							Attributes: types.ElementAttributes{
+							Attributes: types.Attributes{
 								types.AttrKind:       types.Quote,
 								types.AttrQuoteTitle: "quote title",
 							},
@@ -1037,7 +1037,7 @@ ____`
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.DelimitedBlock{
-							Attributes: types.ElementAttributes{
+							Attributes: types.Attributes{
 								types.AttrKind: types.Quote,
 							},
 							Kind: types.Quote,
@@ -1103,7 +1103,7 @@ ____`
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.DelimitedBlock{
-							Attributes: types.ElementAttributes{
+							Attributes: types.Attributes{
 								types.AttrKind: types.Quote,
 							},
 							Kind: types.Quote,
@@ -1174,7 +1174,7 @@ ____`
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.DelimitedBlock{
-							Attributes: types.ElementAttributes{
+							Attributes: types.Attributes{
 								types.AttrKind: types.Quote,
 							},
 							Kind: types.Quote,
@@ -1192,7 +1192,7 @@ foo
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.DelimitedBlock{
-							Attributes: types.ElementAttributes{
+							Attributes: types.Attributes{
 								types.AttrKind: types.Quote,
 							},
 							Kind: types.Quote,
@@ -1299,7 +1299,7 @@ on *multiple lines*`
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.DelimitedBlock{
-							Attributes: types.ElementAttributes{
+							Attributes: types.Attributes{
 								types.AttrQuoteAuthor: "John Doe",
 							},
 							Kind: types.MarkdownQuote,
@@ -1341,7 +1341,7 @@ on *multiple lines*`
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.DelimitedBlock{
-							Attributes: types.ElementAttributes{
+							Attributes: types.Attributes{
 								types.AttrTitle:       "title",
 								types.AttrQuoteAuthor: "John Doe",
 							},
@@ -1381,7 +1381,7 @@ on *multiple lines*`
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.DelimitedBlock{
-							Attributes: types.ElementAttributes{
+							Attributes: types.Attributes{
 								types.AttrQuoteAuthor: "John Doe",
 							},
 							Kind: types.MarkdownQuote,
@@ -1402,7 +1402,7 @@ ____`
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.DelimitedBlock{
-							Attributes: types.ElementAttributes{
+							Attributes: types.Attributes{
 								types.AttrKind:        types.Verse,
 								types.AttrQuoteAuthor: "john doe",
 								types.AttrQuoteTitle:  "verse title",
@@ -1447,7 +1447,7 @@ ____
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.DelimitedBlock{
-							Attributes: types.ElementAttributes{
+							Attributes: types.Attributes{
 								types.AttrKind:        types.Verse,
 								types.AttrQuoteAuthor: "john doe",
 							},
@@ -1488,7 +1488,7 @@ ____
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.DelimitedBlock{
-							Attributes: types.ElementAttributes{
+							Attributes: types.Attributes{
 								types.AttrKind:       types.Verse,
 								types.AttrQuoteTitle: "verse title",
 							},
@@ -1522,7 +1522,7 @@ ____`
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.DelimitedBlock{
-							Attributes: types.ElementAttributes{
+							Attributes: types.Attributes{
 								types.AttrKind: types.Verse,
 							},
 							Kind: types.Verse,
@@ -1574,7 +1574,7 @@ ____`
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.DelimitedBlock{
-							Attributes: types.ElementAttributes{
+							Attributes: types.Attributes{
 								types.AttrKind: types.Verse,
 							},
 							Kind: types.Verse,
@@ -1613,7 +1613,7 @@ ____`
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.DelimitedBlock{
-							Attributes: types.ElementAttributes{
+							Attributes: types.Attributes{
 								types.AttrKind: types.Verse,
 							},
 							Kind: types.Verse,
@@ -1631,7 +1631,7 @@ foo
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.DelimitedBlock{
-							Attributes: types.ElementAttributes{
+							Attributes: types.Attributes{
 								types.AttrKind: types.Verse,
 							},
 							Kind: types.Verse,
@@ -1687,7 +1687,7 @@ type Foo struct{
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.DelimitedBlock{
-							Attributes: types.ElementAttributes{
+							Attributes: types.Attributes{
 								types.AttrKind: types.Source,
 							},
 							Kind:     types.Source,
@@ -1711,7 +1711,7 @@ type Foo struct{
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.DelimitedBlock{
-							Attributes: types.ElementAttributes{
+							Attributes: types.Attributes{
 								types.AttrKind: types.Source,
 							},
 							Kind:     types.Source,
@@ -1736,7 +1736,7 @@ type Foo struct{
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.DelimitedBlock{
-							Attributes: types.ElementAttributes{
+							Attributes: types.Attributes{
 								types.AttrKind:     types.Source,
 								types.AttrLanguage: "go",
 								types.AttrTitle:    "foo.go",
@@ -1764,7 +1764,7 @@ type Foo struct{
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.DelimitedBlock{
-							Attributes: types.ElementAttributes{
+							Attributes: types.Attributes{
 								types.AttrKind:     types.Source,
 								types.AttrLanguage: "go",
 								types.AttrID:       "id-for-source-block",
@@ -1832,7 +1832,7 @@ bar
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.DelimitedBlock{
-							Attributes: types.ElementAttributes{
+							Attributes: types.Attributes{
 								types.AttrTitle: "a title",
 							},
 							Kind: types.Sidebar,
@@ -1889,7 +1889,7 @@ _foo_
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.DelimitedBlock{
-							Attributes: types.ElementAttributes{
+							Attributes: types.Attributes{
 								types.AttrTitle: "a title",
 							},
 							Kind: types.Passthrough,
@@ -1922,7 +1922,7 @@ another paragraph`
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.DelimitedBlock{
-							Attributes: types.ElementAttributes{
+							Attributes: types.Attributes{
 								types.AttrKind: types.Passthrough,
 							},
 							Kind: types.Passthrough,
@@ -2655,7 +2655,7 @@ with *bold content*
 							Kind: types.Example,
 							Elements: []interface{}{
 								types.Paragraph{
-									Attributes: types.ElementAttributes{
+									Attributes: types.Attributes{
 										types.AttrTitle: "foo",
 									},
 									Lines: [][]interface{}{
@@ -2739,7 +2739,7 @@ foo
 				expected := types.Document{
 					Elements: []interface{}{
 						types.DelimitedBlock{
-							Attributes: types.ElementAttributes{
+							Attributes: types.Attributes{
 								types.AttrTitle: "example block title",
 							},
 							Kind: types.Example,
@@ -2784,7 +2784,7 @@ foo
 				expected := types.Document{
 					Elements: []interface{}{
 						types.DelimitedBlock{
-							Attributes: types.ElementAttributes{
+							Attributes: types.Attributes{
 								types.AttrAdmonitionKind: types.Note,
 							},
 							Kind: types.Example,
@@ -2817,7 +2817,7 @@ paragraphs
 				expected := types.Document{
 					Elements: []interface{}{
 						types.DelimitedBlock{
-							Attributes: types.ElementAttributes{
+							Attributes: types.Attributes{
 								types.AttrAdmonitionKind: types.Note,
 							},
 							Kind: types.Example,
@@ -2860,7 +2860,7 @@ ____`
 				expected := types.Document{
 					Elements: []interface{}{
 						types.DelimitedBlock{
-							Attributes: types.ElementAttributes{
+							Attributes: types.Attributes{
 								types.AttrKind:        types.Quote,
 								types.AttrQuoteAuthor: "john doe",
 								types.AttrQuoteTitle:  "quote title",
@@ -2905,7 +2905,7 @@ ____
 				expected := types.Document{
 					Elements: []interface{}{
 						types.DelimitedBlock{
-							Attributes: types.ElementAttributes{
+							Attributes: types.Attributes{
 								types.AttrKind:        types.Quote,
 								types.AttrQuoteAuthor: "john doe",
 							},
@@ -2979,7 +2979,7 @@ ____
 				expected := types.Document{
 					Elements: []interface{}{
 						types.DelimitedBlock{
-							Attributes: types.ElementAttributes{
+							Attributes: types.Attributes{
 								types.AttrKind:       types.Quote,
 								types.AttrQuoteTitle: "quote title",
 							},
@@ -3013,7 +3013,7 @@ ____`
 				expected := types.Document{
 					Elements: []interface{}{
 						types.DelimitedBlock{
-							Attributes: types.ElementAttributes{
+							Attributes: types.Attributes{
 								types.AttrKind: types.Quote,
 							},
 							Kind: types.Quote,
@@ -3087,7 +3087,7 @@ ____`
 				expected := types.Document{
 					Elements: []interface{}{
 						types.DelimitedBlock{
-							Attributes: types.ElementAttributes{
+							Attributes: types.Attributes{
 								types.AttrKind: types.Quote,
 							},
 							Kind: types.Quote,
@@ -3158,7 +3158,7 @@ ____`
 				expected := types.Document{
 					Elements: []interface{}{
 						types.DelimitedBlock{
-							Attributes: types.ElementAttributes{
+							Attributes: types.Attributes{
 								types.AttrKind: types.Quote,
 							},
 							Kind:     types.Quote,
@@ -3177,7 +3177,7 @@ foo
 				expected := types.Document{
 					Elements: []interface{}{
 						types.DelimitedBlock{
-							Attributes: types.ElementAttributes{
+							Attributes: types.Attributes{
 								types.AttrKind: types.Quote,
 							},
 							Kind: types.Quote,
@@ -3209,7 +3209,7 @@ ____`
 				expected := types.Document{
 					Elements: []interface{}{
 						types.DelimitedBlock{
-							Attributes: types.ElementAttributes{
+							Attributes: types.Attributes{
 								types.AttrKind:        types.Verse,
 								types.AttrQuoteAuthor: "john doe",
 								types.AttrQuoteTitle:  "verse title",
@@ -3254,7 +3254,7 @@ ____
 				expected := types.Document{
 					Elements: []interface{}{
 						types.DelimitedBlock{
-							Attributes: types.ElementAttributes{
+							Attributes: types.Attributes{
 								types.AttrKind:        types.Verse,
 								types.AttrQuoteAuthor: "john doe",
 							},
@@ -3295,7 +3295,7 @@ ____
 				expected := types.Document{
 					Elements: []interface{}{
 						types.DelimitedBlock{
-							Attributes: types.ElementAttributes{
+							Attributes: types.Attributes{
 								types.AttrKind:       types.Verse,
 								types.AttrQuoteTitle: "verse title",
 							},
@@ -3329,7 +3329,7 @@ ____`
 				expected := types.Document{
 					Elements: []interface{}{
 						types.DelimitedBlock{
-							Attributes: types.ElementAttributes{
+							Attributes: types.Attributes{
 								types.AttrKind: types.Verse,
 							},
 							Kind: types.Verse,
@@ -3381,7 +3381,7 @@ ____`
 				expected := types.Document{
 					Elements: []interface{}{
 						types.DelimitedBlock{
-							Attributes: types.ElementAttributes{
+							Attributes: types.Attributes{
 								types.AttrKind: types.Verse,
 							},
 							Kind: types.Verse,
@@ -3420,7 +3420,7 @@ ____`
 				expected := types.Document{
 					Elements: []interface{}{
 						types.DelimitedBlock{
-							Attributes: types.ElementAttributes{
+							Attributes: types.Attributes{
 								types.AttrKind: types.Verse,
 							},
 							Kind:     types.Verse,
@@ -3439,7 +3439,7 @@ foo
 				expected := types.Document{
 					Elements: []interface{}{
 						types.DelimitedBlock{
-							Attributes: types.ElementAttributes{
+							Attributes: types.Attributes{
 								types.AttrKind: types.Verse,
 							},
 							Kind: types.Verse,
@@ -3475,7 +3475,7 @@ end
 				expected := types.Document{
 					Elements: []interface{}{
 						types.DelimitedBlock{
-							Attributes: types.ElementAttributes{
+							Attributes: types.Attributes{
 								types.AttrKind: types.Source,
 							},
 							Kind: types.Source,
@@ -3513,7 +3513,7 @@ end
 				expected := types.Document{
 					Elements: []interface{}{
 						types.DelimitedBlock{
-							Attributes: types.ElementAttributes{
+							Attributes: types.Attributes{
 								types.AttrKind:     types.Source,
 								types.AttrLanguage: "ruby",
 								types.AttrTitle:    "Source block title",
@@ -3554,7 +3554,7 @@ end
 				expected := types.Document{
 					Elements: []interface{}{
 						types.DelimitedBlock{
-							Attributes: types.ElementAttributes{
+							Attributes: types.Attributes{
 								types.AttrKind:     types.Source,
 								types.AttrLanguage: "ruby",
 								types.AttrID:       "id-for-source-block",
@@ -3635,7 +3635,7 @@ bar
 				expected := types.Document{
 					Elements: []interface{}{
 						types.DelimitedBlock{
-							Attributes: types.ElementAttributes{
+							Attributes: types.Attributes{
 								types.AttrTitle: "a title",
 							},
 							Kind: types.Sidebar,
@@ -3692,7 +3692,7 @@ _foo_
 				expected := types.Document{
 					Elements: []interface{}{
 						types.DelimitedBlock{
-							Attributes: types.ElementAttributes{
+							Attributes: types.Attributes{
 								types.AttrTitle: "a title",
 							},
 							Kind: types.Passthrough,
@@ -3725,7 +3725,7 @@ another paragraph`
 				expected := types.Document{
 					Elements: []interface{}{
 						types.DelimitedBlock{
-							Attributes: types.ElementAttributes{
+							Attributes: types.Attributes{
 								types.AttrKind: types.Passthrough,
 							},
 							Kind: types.Passthrough,

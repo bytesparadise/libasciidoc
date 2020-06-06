@@ -470,7 +470,7 @@ var _ = Describe("tag ranges", func() {
 
 var _ = Describe("location resolution", func() {
 
-	attrs := types.DocumentAttributesWithOverrides{
+	attrs := types.AttributesWithOverrides{
 		Content: map[string]interface{}{
 			"imagesdir":  "./images",
 			"includedir": "includes",
@@ -507,7 +507,7 @@ var _ = Describe("location resolution", func() {
 					types.StringElement{
 						Content: "./",
 					},
-					types.DocumentAttributeSubstitution{
+					types.AttributeSubstitution{
 						Name: "includedir",
 					},
 					types.StringElement{
@@ -530,7 +530,7 @@ var _ = Describe("location resolution", func() {
 					types.StringElement{
 						Content: "./",
 					},
-					types.DocumentAttributeSubstitution{
+					types.AttributeSubstitution{
 						Name: "unknown",
 					},
 					types.StringElement{
@@ -587,29 +587,29 @@ var _ = Describe("location resolution", func() {
 })
 
 var _ = DescribeTable("draft document attributes",
-	func(draftDoc types.DraftDocument, expectation types.DocumentAttributes) {
-		Expect(draftDoc.DocumentAttributes()).To(Equal(expectation))
+	func(draftDoc types.DraftDocument, expectation types.Attributes) {
+		Expect(draftDoc.Attributes()).To(Equal(expectation))
 	},
 
 	Entry("should use attribute declarations at top of document only",
 		types.DraftDocument{
 			Blocks: []interface{}{
-				types.DocumentAttributeDeclaration{
+				types.AttributeDeclaration{
 					Name:  "foo1",
 					Value: "bar1",
 				},
-				types.DocumentAttributeDeclaration{
+				types.AttributeDeclaration{
 					Name:  "foo2",
 					Value: "bar2",
 				},
 				types.BlankLine{},
-				types.DocumentAttributeDeclaration{
+				types.AttributeDeclaration{
 					Name:  "foo3",
 					Value: "bar3",
 				},
 			},
 		},
-		types.DocumentAttributes{
+		types.Attributes{
 			"foo1": "bar1",
 			"foo2": "bar2",
 		},
@@ -620,22 +620,22 @@ var _ = DescribeTable("draft document attributes",
 				types.Section{
 					Level: 0,
 				},
-				types.DocumentAttributeDeclaration{
+				types.AttributeDeclaration{
 					Name:  "foo1",
 					Value: "bar1",
 				},
-				types.DocumentAttributeDeclaration{
+				types.AttributeDeclaration{
 					Name:  "foo2",
 					Value: "bar2",
 				},
 				types.BlankLine{},
-				types.DocumentAttributeDeclaration{
+				types.AttributeDeclaration{
 					Name:  "foo3",
 					Value: "bar3",
 				},
 			},
 		},
-		types.DocumentAttributes{
+		types.Attributes{
 			"foo1": "bar1",
 			"foo2": "bar2",
 		},
@@ -645,7 +645,7 @@ var _ = DescribeTable("draft document attributes",
 			Blocks: []interface{}{
 				types.Section{
 					Level: 0,
-					Attributes: types.ElementAttributes{
+					Attributes: types.Attributes{
 						types.AttrAuthors: []types.DocumentAuthor{
 							{
 								FullName: "foo",
@@ -660,18 +660,18 @@ var _ = DescribeTable("draft document attributes",
 				types.BlankLine{},
 				types.Section{
 					Level: 1,
-					Attributes: types.ElementAttributes{
+					Attributes: types.Attributes{
 						"foo1": "bar1",
 						"foo2": "bar2",
 					},
 				},
-				types.DocumentAttributeDeclaration{
+				types.AttributeDeclaration{
 					Name:  "foo3",
 					Value: "bar3",
 				},
 			},
 		},
-		types.DocumentAttributes{
+		types.Attributes{
 			types.AttrAuthors: []types.DocumentAuthor{
 				{
 					FullName: "foo",
@@ -694,22 +694,22 @@ var _ = DescribeTable("draft document attributes",
 				types.Section{
 					Level: 1,
 				},
-				types.DocumentAttributeDeclaration{
+				types.AttributeDeclaration{
 					Name:  "foo1",
 					Value: "bar1",
 				},
-				types.DocumentAttributeDeclaration{
+				types.AttributeDeclaration{
 					Name:  "foo2",
 					Value: "bar2",
 				},
 				types.BlankLine{},
-				types.DocumentAttributeDeclaration{
+				types.AttributeDeclaration{
 					Name:  "foo3",
 					Value: "bar3",
 				},
 			},
 		},
-		types.DocumentAttributes{},
+		types.Attributes{},
 	),
 )
 
@@ -723,7 +723,7 @@ var _ = Describe("element id resolution", func() {
 				// given
 				section := types.Section{
 					Level:      0,
-					Attributes: types.ElementAttributes{},
+					Attributes: types.Attributes{},
 					Title: []interface{}{
 						types.StringElement{
 							Content: "foo",
@@ -732,7 +732,7 @@ var _ = Describe("element id resolution", func() {
 					Elements: []interface{}{},
 				}
 				// when
-				section, err := section.ResolveID(types.DocumentAttributesWithOverrides{
+				section, err := section.ResolveID(types.AttributesWithOverrides{
 					Content:   map[string]interface{}{},
 					Overrides: map[string]string{},
 				})
@@ -745,7 +745,7 @@ var _ = Describe("element id resolution", func() {
 				// given
 				section := types.Section{
 					Level:      0,
-					Attributes: types.ElementAttributes{},
+					Attributes: types.Attributes{},
 					Title: []interface{}{
 						types.StringElement{
 							Content: "a link to ",
@@ -764,7 +764,7 @@ var _ = Describe("element id resolution", func() {
 					Elements: []interface{}{},
 				}
 				// when
-				section, err := section.ResolveID(types.DocumentAttributesWithOverrides{
+				section, err := section.ResolveID(types.AttributesWithOverrides{
 					Content:   map[string]interface{}{},
 					Overrides: map[string]string{},
 				})
@@ -780,7 +780,7 @@ var _ = Describe("element id resolution", func() {
 				// given
 				section := types.Section{
 					Level:      0,
-					Attributes: types.ElementAttributes{},
+					Attributes: types.Attributes{},
 					Title: []interface{}{
 						types.StringElement{
 							Content: "foo",
@@ -789,7 +789,7 @@ var _ = Describe("element id resolution", func() {
 					Elements: []interface{}{},
 				}
 				// when
-				section, err := section.ResolveID(types.DocumentAttributesWithOverrides{
+				section, err := section.ResolveID(types.AttributesWithOverrides{
 					Content: map[string]interface{}{
 						types.AttrIDPrefix: "custom_",
 					},
@@ -804,7 +804,7 @@ var _ = Describe("element id resolution", func() {
 				// given
 				section := types.Section{
 					Level:      0,
-					Attributes: types.ElementAttributes{},
+					Attributes: types.Attributes{},
 					Title: []interface{}{
 						types.StringElement{
 							Content: "a link to ",
@@ -823,7 +823,7 @@ var _ = Describe("element id resolution", func() {
 					Elements: []interface{}{},
 				}
 				// when
-				section, err := section.ResolveID(types.DocumentAttributesWithOverrides{
+				section, err := section.ResolveID(types.AttributesWithOverrides{
 					Content: map[string]interface{}{
 						types.AttrIDPrefix: "custom_",
 					},
@@ -841,7 +841,7 @@ var _ = Describe("element id resolution", func() {
 				// given
 				section := types.Section{
 					Level: 0,
-					Attributes: types.ElementAttributes{
+					Attributes: types.Attributes{
 						types.AttrCustomID: true,
 						types.AttrID:       "bar",
 					},
@@ -853,7 +853,7 @@ var _ = Describe("element id resolution", func() {
 					Elements: []interface{}{},
 				}
 				// when
-				section, err := section.ResolveID(types.DocumentAttributesWithOverrides{
+				section, err := section.ResolveID(types.AttributesWithOverrides{
 					Content: map[string]interface{}{
 						types.AttrIDPrefix: "custom_",
 					},
@@ -868,7 +868,7 @@ var _ = Describe("element id resolution", func() {
 				// given
 				section := types.Section{
 					Level: 0,
-					Attributes: types.ElementAttributes{
+					Attributes: types.Attributes{
 						types.AttrCustomID: true,
 						types.AttrID:       "bar",
 					},
@@ -890,7 +890,7 @@ var _ = Describe("element id resolution", func() {
 					Elements: []interface{}{},
 				}
 				// when
-				section, err := section.ResolveID(types.DocumentAttributesWithOverrides{
+				section, err := section.ResolveID(types.AttributesWithOverrides{
 					Content: map[string]interface{}{
 						types.AttrIDPrefix: "custom_",
 					},
@@ -912,7 +912,7 @@ var _ = Describe("footnote replacements", func() {
 			// given
 			section := types.Section{
 				Level:      0,
-				Attributes: types.ElementAttributes{},
+				Attributes: types.Attributes{},
 				Title: []interface{}{
 					types.StringElement{
 						Content: "foo",
@@ -933,7 +933,7 @@ var _ = Describe("footnote replacements", func() {
 			// then
 			Expect(section).To(Equal(types.Section{
 				Level:      0,
-				Attributes: types.ElementAttributes{},
+				Attributes: types.Attributes{},
 				Title: []interface{}{
 					types.StringElement{
 						Content: "foo",
@@ -960,7 +960,7 @@ var _ = Describe("footnote replacements", func() {
 			// given
 			section := types.Section{
 				Level:      0,
-				Attributes: types.ElementAttributes{},
+				Attributes: types.Attributes{},
 				Title: []interface{}{
 					types.StringElement{
 						Content: "foo",
@@ -982,7 +982,7 @@ var _ = Describe("footnote replacements", func() {
 			// then
 			Expect(section).To(Equal(types.Section{
 				Level:      0,
-				Attributes: types.ElementAttributes{},
+				Attributes: types.Attributes{},
 				Title: []interface{}{
 					types.StringElement{
 						Content: "foo",
