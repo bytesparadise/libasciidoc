@@ -11,8 +11,6 @@ var _ = Describe("strings", func() {
 
 	It("text with ellipsis", func() {
 		source := `some text...`
-		// top-level section is not rendered per-say,
-		// but the section will be used to set the HTML page's <title> element
 		expected := `<div class="paragraph">
 <p>some text&#8230;&#8203;</p>
 </div>`
@@ -21,10 +19,35 @@ var _ = Describe("strings", func() {
 
 	It("text with copyright", func() {
 		source := `Copyright (C)`
-		// top-level section is not rendered per-say,
-		// but the section will be used to set the HTML page's <title> element
 		expected := `<div class="paragraph">
 <p>Copyright &#169;</p>
+</div>`
+		Expect(RenderHTML(source)).To(MatchHTML(expected))
+	})
+
+	It("text with trademark", func() {
+		source := `TheRightThing(TM)`
+		expected := `<div class="paragraph">
+<p>TheRightThing&#153;</p>
+</div>`
+		Expect(RenderHTML(source)).To(MatchHTML(expected))
+	})
+
+	It("text with registered", func() {
+		source := `TheRightThing(R)`
+		expected := `<div class="paragraph">
+<p>TheRightThing&#174;</p>
+</div>`
+		Expect(RenderHTML(source)).To(MatchHTML(expected))
+	})
+
+	It("title with registered", func() {
+		// We will often want to use these symbols in headers.
+		source := `== Registered(R)`
+		expected := `<div class="sect1">
+<h2 id="_registered_r">Registered&#174;</h2>
+<div class="sectionbody">
+</div>
 </div>`
 		Expect(RenderHTML(source)).To(MatchHTML(expected))
 	})

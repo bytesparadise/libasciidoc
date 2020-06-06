@@ -21,7 +21,7 @@ func renderStringElement(ctx renderer.Context, str types.StringElement) ([]byte,
 	if err != nil {
 		return []byte{}, errors.Wrapf(err, "unable to render string")
 	}
-	result := convert(buf.String(), ellipsis, copyright)
+	result := convert(buf.String(), ellipsis, copyright, trademark, registered)
 	return []byte(result), nil
 }
 
@@ -31,6 +31,14 @@ func ellipsis(source string) string {
 
 func copyright(source string) string {
 	return strings.Replace(source, "(C)", "&#169;", -1)
+}
+
+func trademark(source string) string {
+	return strings.Replace(source, "(TM)", "&#153;", -1)
+}
+
+func registered(source string) string {
+	return strings.Replace(source, "(R)", "&#174;", -1)
 }
 
 type converter func(string) string
