@@ -308,8 +308,6 @@ var _ = Describe("checked lists - document", func() {
 				},
 			},
 		}
-		result, err := ParseDocument(source)
-		Expect(err).NotTo(HaveOccurred())
-		Expect(result).To(MatchDocument(expected))
+		Expect(ParseDocument(source)).To(MatchDocument(expected))
 	})
 })

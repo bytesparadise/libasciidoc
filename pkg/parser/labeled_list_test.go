@@ -622,9 +622,7 @@ TIP: tip`
 					},
 				},
 			}
-			result, err := ParseDraftDocument(source)
-			Expect(err).NotTo(HaveOccurred())
-			Expect(result).To(Equal(expected))
+			Expect(ParseDraftDocument(source)).To(Equal(expected))
 		})
 
 		It("with nested unordered list - case 2", func() {

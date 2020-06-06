@@ -29,9 +29,7 @@ var _ = Describe("delimited blocks", func() {
 						},
 					},
 				}
-				result, err := ParseDraftDocument(source)
-				Expect(err).NotTo(HaveOccurred())
-				Expect(result).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(Equal(expected))
 			})
 
 			It("fenced block with no line", func() {
@@ -1973,9 +1971,7 @@ another paragraph`
 						},
 					},
 				}
-				result, err := ParseDocument(source)
-				Expect(err).ToNot(HaveOccurred())
-				Expect(result).To(MatchDocument(expected))
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
 			It("fenced block with no line", func() {

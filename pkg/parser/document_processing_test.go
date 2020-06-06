@@ -242,13 +242,11 @@ eve - analyzes an image to determine if it's a picture of a life form
 					"_synopsis": synopisSectionTitle,
 				},
 			}
-			result, err := ParseDocument(source,
+			Expect(ParseDocument(source,
 				configuration.WithAttributes(map[string]string{
 					types.AttrDocType: "manpage",
 				},
-				))
-			Expect(err).NotTo(HaveOccurred())
-			Expect(result).To(Equal(expected))
+				))).To(Equal(expected))
 		})
 
 	})

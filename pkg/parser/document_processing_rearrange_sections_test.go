@@ -156,8 +156,7 @@ var _ = Describe("rearrange sections", func() {
 				},
 			},
 		}
-		result := rearrangeSections(actual)
-		Expect(result).To(Equal(expected))
+		Expect(rearrangeSections(actual)).To(Equal(expected))
 	})
 
 	It("section levels 1, 2, 3, 3", func() {
@@ -308,8 +307,7 @@ var _ = Describe("rearrange sections", func() {
 				},
 			},
 		}
-		result := rearrangeSections(actual)
-		Expect(result).To(Equal(expected))
+		Expect(rearrangeSections(actual)).To(Equal(expected))
 	})
 
 	It("section levels 1, 3, 4, 4", func() {
@@ -460,8 +458,7 @@ var _ = Describe("rearrange sections", func() {
 				},
 			},
 		}
-		result := rearrangeSections(actual)
-		Expect(result).To(Equal(expected))
+		Expect(rearrangeSections(actual)).To(Equal(expected))
 	})
 
 })

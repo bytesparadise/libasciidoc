@@ -363,9 +363,7 @@ var _ = Describe("rearrange lists", func() {
 				},
 			},
 		}
-		result, err := rearrangeListItems(actual, false)
-		Expect(err).NotTo(HaveOccurred())
-		Expect(result).To(Equal(expected))
+		Expect(rearrangeListItems(actual, false)).To(Equal(expected))
 	})
 
 	It("labeled list with rich terms", func() {
@@ -465,9 +463,7 @@ var _ = Describe("rearrange lists", func() {
 				},
 			},
 		}
-		result, err := rearrangeListItems(actual, false)
-		Expect(err).NotTo(HaveOccurred())
-		Expect(result).To(Equal(expected))
+		Expect(rearrangeListItems(actual, false)).To(Equal(expected))
 	})
 
 	It("callout list with rich terms", func() {
@@ -529,9 +525,7 @@ var _ = Describe("rearrange lists", func() {
 				},
 			},
 		}
-		result, err := rearrangeListItems(actual, false)
-		Expect(err).NotTo(HaveOccurred())
-		Expect(result).To(Equal(expected))
+		Expect(rearrangeListItems(actual, false)).To(Equal(expected))
 	})
 
 })

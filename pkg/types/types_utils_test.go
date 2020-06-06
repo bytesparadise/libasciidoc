@@ -15,10 +15,7 @@ var _ = Describe("convert to inline elements", func() {
 		expected := []interface{}{
 			StringElement{Content: "helloworld"},
 		}
-		// when
-		result := Merge(source...)
-		// then
-		Expect(result).To(Equal(expected))
+		Expect(Merge(source...)).To(Equal(expected))
 	})
 	It("inline content with trailing spaces", func() {
 		source := []interface{}{
@@ -28,9 +25,6 @@ var _ = Describe("convert to inline elements", func() {
 		expected := []interface{}{
 			StringElement{Content: "hello, world   "},
 		}
-		// when
-		result := Merge(source...)
-		// then
-		Expect(result).To(Equal(expected))
+		Expect(Merge(source...)).To(Equal(expected))
 	})
 })
