@@ -43,14 +43,14 @@ func ParseDocument(r io.Reader, config configuration.Configuration) (types.Docum
 	doc := rearrangeSections(blocks.([]interface{}))
 	// also, set the footnotes
 	doc.Footnotes = footnotes
-	// now, add front-matter attributes
-	for k, v := range draftDoc.FrontMatter.Content {
-		doc.Attributes[k] = v
-	}
 	// insert the preamble at the right location
 	doc = includePreamble(doc)
 	// and add all remaining attributes, too
-	doc.Attributes.AddAll(attrs.All())
+	extraAttrs := attrs.All()
+	if doc.Attributes == nil && len(extraAttrs) > 0 {
+		doc.Attributes = types.DocumentAttributes{}
+	}
+	doc.Attributes.AddAll(extraAttrs)
 	// also insert the table of contents
 	doc = includeTableOfContentsPlaceHolder(doc)
 	// finally

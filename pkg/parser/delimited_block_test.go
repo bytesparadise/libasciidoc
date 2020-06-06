@@ -20,8 +20,7 @@ var _ = Describe("delimited blocks", func() {
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.DelimitedBlock{
-							Attributes: types.ElementAttributes{},
-							Kind:       types.Fenced,
+							Kind: types.Fenced,
 							Elements: []interface{}{
 								types.VerbatimLine{
 									Content: content,
@@ -38,9 +37,8 @@ var _ = Describe("delimited blocks", func() {
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.DelimitedBlock{
-							Attributes: types.ElementAttributes{},
-							Kind:       types.Fenced,
-							Elements:   []interface{}{},
+							Kind:     types.Fenced,
+							Elements: []interface{}{},
 						},
 					},
 				}
@@ -52,8 +50,7 @@ var _ = Describe("delimited blocks", func() {
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.DelimitedBlock{
-							Attributes: types.ElementAttributes{},
-							Kind:       types.Fenced,
+							Kind: types.Fenced,
 							Elements: []interface{}{
 								types.VerbatimLine{
 									Content: "some fenced code",
@@ -79,8 +76,7 @@ var _ = Describe("delimited blocks", func() {
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.DelimitedBlock{
-							Attributes: types.ElementAttributes{},
-							Kind:       types.Fenced,
+							Kind: types.Fenced,
 							Elements: []interface{}{
 								types.VerbatimLine{
 									Content: "some fenced code",
@@ -97,7 +93,6 @@ var _ = Describe("delimited blocks", func() {
 							},
 						},
 						types.Paragraph{
-							Attributes: types.ElementAttributes{},
 							Lines: [][]interface{}{
 								{
 									types.StringElement{Content: "then a normal paragraph."},
@@ -115,7 +110,6 @@ var _ = Describe("delimited blocks", func() {
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.Paragraph{
-							Attributes: types.ElementAttributes{},
 							Lines: [][]interface{}{
 								{
 									types.StringElement{Content: "a paragraph."},
@@ -124,8 +118,7 @@ var _ = Describe("delimited blocks", func() {
 						},
 						types.BlankLine{},
 						types.DelimitedBlock{
-							Attributes: types.ElementAttributes{},
-							Kind:       types.Fenced,
+							Kind: types.Fenced,
 							Elements: []interface{}{
 								types.VerbatimLine{
 									Content: content,
@@ -142,8 +135,7 @@ var _ = Describe("delimited blocks", func() {
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.DelimitedBlock{
-							Attributes: types.ElementAttributes{},
-							Kind:       types.Fenced,
+							Kind: types.Fenced,
 							Elements: []interface{}{
 								types.VerbatimLine{
 									Content: "End of file here",
@@ -164,8 +156,7 @@ var _ = Describe("delimited blocks", func() {
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.DelimitedBlock{
-							Attributes: types.ElementAttributes{},
-							Kind:       types.Fenced,
+							Kind: types.Fenced,
 							Elements: []interface{}{
 								types.VerbatimLine{
 									Content: "a http://website.com",
@@ -192,8 +183,7 @@ var _ = Describe("delimited blocks", func() {
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.DelimitedBlock{
-							Attributes: types.ElementAttributes{},
-							Kind:       types.Fenced,
+							Kind: types.Fenced,
 							Elements: []interface{}{
 								types.VerbatimLine{
 									Content: "a http://website.com[]",
@@ -219,8 +209,7 @@ var _ = Describe("delimited blocks", func() {
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.DelimitedBlock{
-							Attributes: types.ElementAttributes{},
-							Kind:       types.Fenced,
+							Kind: types.Fenced,
 							Elements: []interface{}{
 								types.VerbatimLine{
 									Content: "* some ",
@@ -248,8 +237,7 @@ some listing code
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.DelimitedBlock{
-							Attributes: types.ElementAttributes{},
-							Kind:       types.Listing,
+							Kind: types.Listing,
 							Elements: []interface{}{
 								types.VerbatimLine{
 									Content: "some listing code",
@@ -267,9 +255,8 @@ some listing code
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.DelimitedBlock{
-							Attributes: types.ElementAttributes{},
-							Kind:       types.Listing,
-							Elements:   []interface{}{},
+							Kind:     types.Listing,
+							Elements: []interface{}{},
 						},
 					},
 				}
@@ -286,8 +273,7 @@ in the middle
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.DelimitedBlock{
-							Attributes: types.ElementAttributes{},
-							Kind:       types.Listing,
+							Kind: types.Listing,
 							Elements: []interface{}{
 								types.VerbatimLine{
 									Content: "some listing code",
@@ -317,8 +303,7 @@ in the middle
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.DelimitedBlock{
-							Attributes: types.ElementAttributes{},
-							Kind:       types.Listing,
+							Kind: types.Listing,
 							Elements: []interface{}{
 								types.VerbatimLine{
 									Content: "* some ",
@@ -347,8 +332,7 @@ then a normal paragraph.`
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.DelimitedBlock{
-							Attributes: types.ElementAttributes{},
-							Kind:       types.Listing,
+							Kind: types.Listing,
 							Elements: []interface{}{
 								types.VerbatimLine{
 									Content: "some listing code",
@@ -365,7 +349,6 @@ then a normal paragraph.`
 							},
 						},
 						types.Paragraph{
-							Attributes: types.ElementAttributes{},
 							Lines: [][]interface{}{
 								{
 									types.StringElement{Content: "then a normal paragraph."},
@@ -386,7 +369,6 @@ some listing code
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.Paragraph{
-							Attributes: types.ElementAttributes{},
 							Lines: [][]interface{}{
 								{
 									types.StringElement{Content: "a paragraph."},
@@ -395,8 +377,7 @@ some listing code
 						},
 						types.BlankLine{}, // blankline is required between paragraph and the next block
 						types.DelimitedBlock{
-							Attributes: types.ElementAttributes{},
-							Kind:       types.Listing,
+							Kind: types.Listing,
 							Elements: []interface{}{
 								types.VerbatimLine{
 									Content: "some listing code",
@@ -414,8 +395,7 @@ End of file here.`
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.DelimitedBlock{
-							Attributes: types.ElementAttributes{},
-							Kind:       types.Listing,
+							Kind: types.Listing,
 							Elements: []interface{}{
 								types.VerbatimLine{
 									Content: "End of file here.",
@@ -435,8 +415,7 @@ import <1>
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.DelimitedBlock{
-							Attributes: types.ElementAttributes{},
-							Kind:       types.Listing,
+							Kind: types.Listing,
 							Elements: []interface{}{
 								types.VerbatimLine{
 									Content: "import ",
@@ -449,11 +428,9 @@ import <1>
 							},
 						},
 						types.CalloutListItem{
-							Attributes: types.ElementAttributes{},
-							Ref:        1,
+							Ref: 1,
 							Elements: []interface{}{
 								types.Paragraph{
-									Attributes: types.ElementAttributes{},
 									Lines: [][]interface{}{
 										{
 											types.StringElement{
@@ -480,8 +457,7 @@ func foo() {} <2>
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.DelimitedBlock{
-							Attributes: types.ElementAttributes{},
-							Kind:       types.Listing,
+							Kind: types.Listing,
 							Elements: []interface{}{
 								types.VerbatimLine{
 									Content: "import ",
@@ -505,11 +481,9 @@ func foo() {} <2>
 							},
 						},
 						types.CalloutListItem{
-							Attributes: types.ElementAttributes{},
-							Ref:        1,
+							Ref: 1,
 							Elements: []interface{}{
 								types.Paragraph{
-									Attributes: types.ElementAttributes{},
 									Lines: [][]interface{}{
 										{
 											types.StringElement{
@@ -521,11 +495,9 @@ func foo() {} <2>
 							},
 						},
 						types.CalloutListItem{
-							Attributes: types.ElementAttributes{},
-							Ref:        2,
+							Ref: 2,
 							Elements: []interface{}{
 								types.Paragraph{
-									Attributes: types.ElementAttributes{},
 									Lines: [][]interface{}{
 										{
 											types.StringElement{
@@ -554,8 +526,7 @@ func foo() {} <4>
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.DelimitedBlock{
-							Attributes: types.ElementAttributes{},
-							Kind:       types.Listing,
+							Kind: types.Listing,
 							Elements: []interface{}{
 								types.VerbatimLine{
 									Content: "import ",
@@ -585,11 +556,9 @@ func foo() {} <4>
 							},
 						},
 						types.CalloutListItem{
-							Attributes: types.ElementAttributes{},
-							Ref:        1,
+							Ref: 1,
 							Elements: []interface{}{
 								types.Paragraph{
-									Attributes: types.ElementAttributes{},
 									Lines: [][]interface{}{
 										{
 											types.StringElement{
@@ -601,11 +570,9 @@ func foo() {} <4>
 							},
 						},
 						types.CalloutListItem{
-							Attributes: types.ElementAttributes{},
-							Ref:        2,
+							Ref: 2,
 							Elements: []interface{}{
 								types.Paragraph{
-									Attributes: types.ElementAttributes{},
 									Lines: [][]interface{}{
 										{
 											types.StringElement{
@@ -617,11 +584,9 @@ func foo() {} <4>
 							},
 						},
 						types.CalloutListItem{
-							Attributes: types.ElementAttributes{},
-							Ref:        3,
+							Ref: 3,
 							Elements: []interface{}{
 								types.Paragraph{
-									Attributes: types.ElementAttributes{},
 									Lines: [][]interface{}{
 										{
 											types.StringElement{
@@ -633,11 +598,9 @@ func foo() {} <4>
 							},
 						},
 						types.CalloutListItem{
-							Attributes: types.ElementAttributes{},
-							Ref:        4,
+							Ref: 4,
 							Elements: []interface{}{
 								types.Paragraph{
-									Attributes: types.ElementAttributes{},
 									Lines: [][]interface{}{
 										{
 											types.StringElement{
@@ -661,8 +624,7 @@ import <a>
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.DelimitedBlock{
-							Attributes: types.ElementAttributes{},
-							Kind:       types.Listing,
+							Kind: types.Listing,
 							Elements: []interface{}{
 								types.VerbatimLine{
 									Content: "import <a>",
@@ -670,7 +632,6 @@ import <a>
 							},
 						},
 						types.Paragraph{
-							Attributes: types.ElementAttributes{},
 							Lines: [][]interface{}{
 								{
 									types.StringElement{
@@ -694,11 +655,9 @@ some listing code
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.DelimitedBlock{
-							Attributes: types.ElementAttributes{},
-							Kind:       types.Example,
+							Kind: types.Example,
 							Elements: []interface{}{
 								types.Paragraph{
-									Attributes: types.ElementAttributes{},
 									Lines: [][]interface{}{
 										{
 											types.StringElement{
@@ -721,9 +680,7 @@ some listing code
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.DelimitedBlock{
-							Attributes: types.ElementAttributes{},
-							Kind:       types.Example,
-							Elements:   []interface{}{},
+							Kind: types.Example,
 						},
 					},
 				}
@@ -741,8 +698,7 @@ with *bold content*
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.DelimitedBlock{
-							Attributes: types.ElementAttributes{},
-							Kind:       types.Example,
+							Kind: types.Example,
 							Elements: []interface{}{
 								types.Paragraph{
 									Attributes: types.ElementAttributes{
@@ -771,13 +727,11 @@ with *bold content*
 								},
 								types.BlankLine{},
 								types.UnorderedListItem{
-									Attributes:  types.ElementAttributes{},
 									Level:       1,
 									BulletStyle: types.OneAsterisk,
 									CheckStyle:  types.NoCheck,
 									Elements: []interface{}{
 										types.Paragraph{
-											Attributes: types.ElementAttributes{},
 											Lines: [][]interface{}{
 												{
 													types.StringElement{
@@ -801,11 +755,9 @@ End of file here`
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.DelimitedBlock{
-							Attributes: types.ElementAttributes{},
-							Kind:       types.Example,
+							Kind: types.Example,
 							Elements: []interface{}{
 								types.Paragraph{
-									Attributes: types.ElementAttributes{},
 									Lines: [][]interface{}{
 										{
 											types.StringElement{
@@ -835,7 +787,6 @@ foo
 							Kind: types.Example,
 							Elements: []interface{}{
 								types.Paragraph{
-									Attributes: types.ElementAttributes{},
 									Lines: [][]interface{}{
 										{
 											types.StringElement{
@@ -856,9 +807,7 @@ foo
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.DelimitedBlock{
-							Attributes: types.ElementAttributes{},
-							Kind:       types.Example,
-							Elements:   []interface{}{},
+							Kind: types.Example,
 						},
 					},
 				}
@@ -882,7 +831,6 @@ foo
 							Kind: types.Example,
 							Elements: []interface{}{
 								types.Paragraph{
-									Attributes: types.ElementAttributes{},
 									Lines: [][]interface{}{
 										{
 											types.StringElement{
@@ -948,7 +896,6 @@ ____`
 							Kind: types.Quote,
 							Elements: []interface{}{
 								types.Paragraph{
-									Attributes: types.ElementAttributes{},
 									Lines: [][]interface{}{
 										{
 											types.StringElement{
@@ -993,13 +940,11 @@ ____
 							Kind: types.Quote,
 							Elements: []interface{}{
 								types.UnorderedListItem{
-									Attributes:  types.ElementAttributes{},
 									Level:       1,
 									BulletStyle: types.Dash,
 									CheckStyle:  types.NoCheck,
 									Elements: []interface{}{
 										types.Paragraph{
-											Attributes: types.ElementAttributes{},
 											Lines: [][]interface{}{
 												{
 													types.StringElement{
@@ -1011,13 +956,11 @@ ____
 									},
 								},
 								types.UnorderedListItem{
-									Attributes:  types.ElementAttributes{},
 									Level:       1,
 									BulletStyle: types.Dash,
 									CheckStyle:  types.NoCheck,
 									Elements: []interface{}{
 										types.Paragraph{
-											Attributes: types.ElementAttributes{},
 											Lines: [][]interface{}{
 												{
 													types.StringElement{
@@ -1029,13 +972,11 @@ ____
 									},
 								},
 								types.UnorderedListItem{
-									Attributes:  types.ElementAttributes{},
 									Level:       1,
 									BulletStyle: types.Dash,
 									CheckStyle:  types.NoCheck,
 									Elements: []interface{}{
 										types.Paragraph{
-											Attributes: types.ElementAttributes{},
 											Lines: [][]interface{}{
 												{
 													types.StringElement{
@@ -1069,7 +1010,6 @@ ____
 							Kind: types.Quote,
 							Elements: []interface{}{
 								types.Paragraph{
-									Attributes: types.ElementAttributes{},
 									Lines: [][]interface{}{
 										{
 											types.StringElement{
@@ -1103,13 +1043,11 @@ ____`
 							Kind: types.Quote,
 							Elements: []interface{}{
 								types.UnorderedListItem{
-									Attributes:  types.ElementAttributes{},
 									Level:       1,
 									BulletStyle: types.OneAsterisk,
 									CheckStyle:  types.NoCheck,
 									Elements: []interface{}{
 										types.Paragraph{
-											Attributes: types.ElementAttributes{},
 											Lines: [][]interface{}{
 												{
 													types.StringElement{
@@ -1121,8 +1059,7 @@ ____`
 									},
 								},
 								types.DelimitedBlock{
-									Attributes: types.ElementAttributes{},
-									Kind:       types.Listing,
+									Kind: types.Listing,
 									Elements: []interface{}{
 										types.VerbatimLine{
 											Content: "* quote ",
@@ -1130,13 +1067,11 @@ ____`
 									},
 								},
 								types.UnorderedListItem{
-									Attributes:  types.ElementAttributes{},
 									Level:       1,
 									BulletStyle: types.OneAsterisk,
 									CheckStyle:  types.NoCheck,
 									Elements: []interface{}{
 										types.Paragraph{
-											Attributes: types.ElementAttributes{},
 											Lines: [][]interface{}{
 												{
 													types.StringElement{
@@ -1174,13 +1109,11 @@ ____`
 							Kind: types.Quote,
 							Elements: []interface{}{
 								types.UnorderedListItem{
-									Attributes:  types.ElementAttributes{},
 									Level:       1,
 									BulletStyle: types.OneAsterisk,
 									CheckStyle:  types.NoCheck,
 									Elements: []interface{}{
 										types.Paragraph{
-											Attributes: types.ElementAttributes{},
 											Lines: [][]interface{}{
 												{
 													types.StringElement{
@@ -1194,13 +1127,11 @@ ____`
 								types.BlankLine{},
 								types.BlankLine{},
 								types.UnorderedListItem{
-									Attributes:  types.ElementAttributes{},
 									Level:       1,
 									BulletStyle: types.OneAsterisk,
 									CheckStyle:  types.NoCheck,
 									Elements: []interface{}{
 										types.Paragraph{
-											Attributes: types.ElementAttributes{},
 											Lines: [][]interface{}{
 												{
 													types.StringElement{
@@ -1214,13 +1145,11 @@ ____`
 								types.BlankLine{},
 								types.BlankLine{},
 								types.UnorderedListItem{
-									Attributes:  types.ElementAttributes{},
 									Level:       1,
 									BulletStyle: types.OneAsterisk,
 									CheckStyle:  types.NoCheck,
 									Elements: []interface{}{
 										types.Paragraph{
-											Attributes: types.ElementAttributes{},
 											Lines: [][]interface{}{
 												{
 													types.StringElement{
@@ -1248,8 +1177,7 @@ ____`
 							Attributes: types.ElementAttributes{
 								types.AttrKind: types.Quote,
 							},
-							Kind:     types.Quote,
-							Elements: []interface{}{},
+							Kind: types.Quote,
 						},
 					},
 				}
@@ -1270,7 +1198,6 @@ foo
 							Kind: types.Quote,
 							Elements: []interface{}{
 								types.Paragraph{
-									Attributes: types.ElementAttributes{},
 									Lines: [][]interface{}{
 										{
 											types.StringElement{
@@ -1296,11 +1223,9 @@ on *multiple lines*`
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.DelimitedBlock{
-							Attributes: types.ElementAttributes{},
-							Kind:       types.MarkdownQuote,
+							Kind: types.MarkdownQuote,
 							Elements: []interface{}{
 								types.Paragraph{
-									Attributes: types.ElementAttributes{},
 									Lines: [][]interface{}{
 										{
 											types.StringElement{
@@ -1336,11 +1261,9 @@ on *multiple lines*`
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.DelimitedBlock{
-							Attributes: types.ElementAttributes{},
-							Kind:       types.MarkdownQuote,
+							Kind: types.MarkdownQuote,
 							Elements: []interface{}{
 								types.Paragraph{
-									Attributes: types.ElementAttributes{},
 									Lines: [][]interface{}{
 										{
 											types.StringElement{
@@ -1382,7 +1305,6 @@ on *multiple lines*`
 							Kind: types.MarkdownQuote,
 							Elements: []interface{}{
 								types.Paragraph{
-									Attributes: types.ElementAttributes{},
 									Lines: [][]interface{}{
 										{
 											types.StringElement{
@@ -1426,7 +1348,6 @@ on *multiple lines*`
 							Kind: types.MarkdownQuote,
 							Elements: []interface{}{
 								types.Paragraph{
-									Attributes: types.ElementAttributes{},
 									Lines: [][]interface{}{
 										{
 											types.StringElement{
@@ -1463,8 +1384,7 @@ on *multiple lines*`
 							Attributes: types.ElementAttributes{
 								types.AttrQuoteAuthor: "John Doe",
 							},
-							Kind:     types.MarkdownQuote,
-							Elements: []interface{}{},
+							Kind: types.MarkdownQuote,
 						},
 					},
 				}
@@ -1490,7 +1410,6 @@ ____`
 							Kind: types.Verse,
 							Elements: []interface{}{
 								types.Paragraph{
-									Attributes: types.ElementAttributes{},
 									Lines: [][]interface{}{
 										{
 											types.StringElement{
@@ -1535,7 +1454,6 @@ ____
 							Kind: types.Verse,
 							Elements: []interface{}{
 								types.Paragraph{
-									Attributes: types.ElementAttributes{},
 									Lines: [][]interface{}{
 										{
 											types.StringElement{
@@ -1577,7 +1495,6 @@ ____
 							Kind: types.Verse,
 							Elements: []interface{}{
 								types.Paragraph{
-									Attributes: types.ElementAttributes{},
 									Lines: [][]interface{}{
 										{
 											types.StringElement{
@@ -1611,7 +1528,6 @@ ____`
 							Kind: types.Verse,
 							Elements: []interface{}{
 								types.Paragraph{
-									Attributes: types.ElementAttributes{},
 									Lines: [][]interface{}{
 										{
 											types.StringElement{
@@ -1664,7 +1580,6 @@ ____`
 							Kind: types.Verse,
 							Elements: []interface{}{
 								types.Paragraph{
-									Attributes: types.ElementAttributes{},
 									Lines: [][]interface{}{
 										{
 											types.StringElement{
@@ -1676,7 +1591,6 @@ ____`
 								types.BlankLine{},
 								types.BlankLine{},
 								types.Paragraph{
-									Attributes: types.ElementAttributes{},
 									Lines: [][]interface{}{
 										{
 											types.StringElement{
@@ -1702,8 +1616,7 @@ ____`
 							Attributes: types.ElementAttributes{
 								types.AttrKind: types.Verse,
 							},
-							Kind:     types.Verse,
-							Elements: []interface{}{},
+							Kind: types.Verse,
 						},
 					},
 				}
@@ -1724,7 +1637,6 @@ foo
 							Kind: types.Verse,
 							Elements: []interface{}{
 								types.Paragraph{
-									Attributes: types.ElementAttributes{},
 									Lines: [][]interface{}{
 										{
 											types.StringElement{
@@ -1878,11 +1790,9 @@ some *verse* content
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.DelimitedBlock{
-							Attributes: types.ElementAttributes{},
-							Kind:       types.Sidebar,
+							Kind: types.Sidebar,
 							Elements: []interface{}{
 								types.Paragraph{
-									Attributes: types.ElementAttributes{},
 									Lines: [][]interface{}{
 										{
 											types.StringElement{
@@ -1928,7 +1838,6 @@ bar
 							Kind: types.Sidebar,
 							Elements: []interface{}{
 								types.Paragraph{
-									Attributes: types.ElementAttributes{},
 									Lines: [][]interface{}{
 										{
 											types.StringElement{
@@ -1950,8 +1859,7 @@ bar
 								},
 								types.BlankLine{}, // blankline is required between paragraph and the next block
 								types.DelimitedBlock{
-									Attributes: types.ElementAttributes{},
-									Kind:       types.Listing,
+									Kind: types.Listing,
 									Elements: []interface{}{
 										types.VerbatimLine{
 											Content: "foo",
@@ -2029,7 +1937,6 @@ another paragraph`
 						},
 						types.BlankLine{},
 						types.Paragraph{
-							Attributes: types.ElementAttributes{},
 							Lines: [][]interface{}{
 								{
 									types.StringElement{
@@ -2053,13 +1960,9 @@ another paragraph`
 				content := "some fenced code"
 				source := "```\n" + content + "\n" + "```"
 				expected := types.Document{
-					Attributes:        types.DocumentAttributes{},
-					ElementReferences: types.ElementReferences{},
-					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.DelimitedBlock{
-							Attributes: types.ElementAttributes{},
-							Kind:       types.Fenced,
+							Kind: types.Fenced,
 							Elements: []interface{}{
 								types.VerbatimLine{
 									Content: content,
@@ -2068,22 +1971,16 @@ another paragraph`
 						},
 					},
 				}
-				result, err := ParseDocument(source)
-				Expect(err).ToNot(HaveOccurred())
-				Expect(result).To(MatchDocument(expected))
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
 			It("fenced block with no line", func() {
 				source := "```\n```"
 				expected := types.Document{
-					Attributes:        types.DocumentAttributes{},
-					ElementReferences: types.ElementReferences{},
-					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.DelimitedBlock{
-							Attributes: types.ElementAttributes{},
-							Kind:       types.Fenced,
-							Elements:   []interface{}{},
+							Kind:     types.Fenced,
+							Elements: []interface{}{},
 						},
 					},
 				}
@@ -2093,13 +1990,9 @@ another paragraph`
 			It("fenced block with multiple lines alone", func() {
 				source := "```\nsome fenced code\nwith an empty line\n\nin the middle\n```"
 				expected := types.Document{
-					Attributes:        types.DocumentAttributes{},
-					ElementReferences: types.ElementReferences{},
-					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.DelimitedBlock{
-							Attributes: types.ElementAttributes{},
-							Kind:       types.Fenced,
+							Kind: types.Fenced,
 							Elements: []interface{}{
 								types.VerbatimLine{
 									Content: "some fenced code",
@@ -2123,13 +2016,9 @@ another paragraph`
 			It("fenced block with multiple lines then a paragraph", func() {
 				source := "```\nsome fenced code\nwith an empty line\n\nin the middle\n```\nthen a normal paragraph."
 				expected := types.Document{
-					Attributes:        types.DocumentAttributes{},
-					ElementReferences: types.ElementReferences{},
-					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.DelimitedBlock{
-							Attributes: types.ElementAttributes{},
-							Kind:       types.Fenced,
+							Kind: types.Fenced,
 							Elements: []interface{}{
 								types.VerbatimLine{
 									Content: "some fenced code",
@@ -2146,7 +2035,6 @@ another paragraph`
 							},
 						},
 						types.Paragraph{
-							Attributes: types.ElementAttributes{},
 							Lines: [][]interface{}{
 								{
 									types.StringElement{Content: "then a normal paragraph."},
@@ -2162,12 +2050,8 @@ another paragraph`
 				content := "some fenced code"
 				source := "a paragraph.\n\n```\n" + content + "\n" + "```\n"
 				expected := types.Document{
-					Attributes:        types.DocumentAttributes{},
-					ElementReferences: types.ElementReferences{},
-					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.Paragraph{
-							Attributes: types.ElementAttributes{},
 							Lines: [][]interface{}{
 								{
 									types.StringElement{Content: "a paragraph."},
@@ -2175,8 +2059,7 @@ another paragraph`
 							},
 						},
 						types.DelimitedBlock{
-							Attributes: types.ElementAttributes{},
-							Kind:       types.Fenced,
+							Kind: types.Fenced,
 							Elements: []interface{}{
 								types.VerbatimLine{
 									Content: content,
@@ -2191,13 +2074,9 @@ another paragraph`
 			It("fenced block with unclosed delimiter", func() {
 				source := "```\nEnd of file here"
 				expected := types.Document{
-					Attributes:        types.DocumentAttributes{},
-					ElementReferences: types.ElementReferences{},
-					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.DelimitedBlock{
-							Attributes: types.ElementAttributes{},
-							Kind:       types.Fenced,
+							Kind: types.Fenced,
 							Elements: []interface{}{
 								types.VerbatimLine{
 									Content: "End of file here",
@@ -2216,13 +2095,9 @@ another paragraph`
 					"next lines\n" +
 					"```"
 				expected := types.Document{
-					Attributes:        types.DocumentAttributes{},
-					ElementReferences: types.ElementReferences{},
-					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.DelimitedBlock{
-							Attributes: types.ElementAttributes{},
-							Kind:       types.Fenced,
+							Kind: types.Fenced,
 							Elements: []interface{}{
 								types.VerbatimLine{
 									Content: "a http://website.com",
@@ -2247,13 +2122,9 @@ another paragraph`
 					"next lines" + "\n" +
 					"```"
 				expected := types.Document{
-					Attributes:        types.DocumentAttributes{},
-					ElementReferences: types.ElementReferences{},
-					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.DelimitedBlock{
-							Attributes: types.ElementAttributes{},
-							Kind:       types.Fenced,
+							Kind: types.Fenced,
 							Elements: []interface{}{
 								types.VerbatimLine{
 									Content: "a http://website.com[]",
@@ -2277,13 +2148,9 @@ another paragraph`
 					"* listing \n" +
 					"* content \n```"
 				expected := types.Document{
-					Attributes:        types.DocumentAttributes{},
-					ElementReferences: types.ElementReferences{},
-					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.DelimitedBlock{
-							Attributes: types.ElementAttributes{},
-							Kind:       types.Fenced,
+							Kind: types.Fenced,
 							Elements: []interface{}{
 								types.VerbatimLine{
 									Content: "* some ",
@@ -2310,13 +2177,9 @@ another paragraph`
 some listing code
 ----`
 				expected := types.Document{
-					Attributes:        types.DocumentAttributes{},
-					ElementReferences: types.ElementReferences{},
-					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.DelimitedBlock{
-							Attributes: types.ElementAttributes{},
-							Kind:       types.Listing,
+							Kind: types.Listing,
 							Elements: []interface{}{
 								types.VerbatimLine{
 									Content: "some listing code",
@@ -2332,14 +2195,10 @@ some listing code
 				source := `----
 ----`
 				expected := types.Document{
-					Attributes:        types.DocumentAttributes{},
-					ElementReferences: types.ElementReferences{},
-					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.DelimitedBlock{
-							Attributes: types.ElementAttributes{},
-							Kind:       types.Listing,
-							Elements:   []interface{}{},
+							Kind:     types.Listing,
+							Elements: []interface{}{},
 						},
 					},
 				}
@@ -2354,13 +2213,9 @@ with an empty line
 in the middle
 ----`
 				expected := types.Document{
-					Attributes:        types.DocumentAttributes{},
-					ElementReferences: types.ElementReferences{},
-					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.DelimitedBlock{
-							Attributes: types.ElementAttributes{},
-							Kind:       types.Listing,
+							Kind: types.Listing,
 							Elements: []interface{}{
 								types.VerbatimLine{
 									Content: "some listing code",
@@ -2388,13 +2243,9 @@ in the middle
 * content
 ----`
 				expected := types.Document{
-					Attributes:        types.DocumentAttributes{},
-					ElementReferences: types.ElementReferences{},
-					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.DelimitedBlock{
-							Attributes: types.ElementAttributes{},
-							Kind:       types.Listing,
+							Kind: types.Listing,
 							Elements: []interface{}{
 								types.VerbatimLine{
 									Content: "* some ",
@@ -2421,13 +2272,9 @@ in the middle
 ----
 then a normal paragraph.`
 				expected := types.Document{
-					Attributes:        types.DocumentAttributes{},
-					ElementReferences: types.ElementReferences{},
-					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.DelimitedBlock{
-							Attributes: types.ElementAttributes{},
-							Kind:       types.Listing,
+							Kind: types.Listing,
 							Elements: []interface{}{
 								types.VerbatimLine{
 									Content: "some listing code",
@@ -2444,7 +2291,6 @@ then a normal paragraph.`
 							},
 						},
 						types.Paragraph{
-							Attributes: types.ElementAttributes{},
 							Lines: [][]interface{}{
 								{
 									types.StringElement{Content: "then a normal paragraph."},
@@ -2463,12 +2309,8 @@ then a normal paragraph.`
 some listing code
 ----`
 				expected := types.Document{
-					Attributes:        types.DocumentAttributes{},
-					ElementReferences: types.ElementReferences{},
-					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.Paragraph{
-							Attributes: types.ElementAttributes{},
 							Lines: [][]interface{}{
 								{
 									types.StringElement{Content: "a paragraph."},
@@ -2476,8 +2318,7 @@ some listing code
 							},
 						},
 						types.DelimitedBlock{
-							Attributes: types.ElementAttributes{},
-							Kind:       types.Listing,
+							Kind: types.Listing,
 							Elements: []interface{}{
 								types.VerbatimLine{
 									Content: "some listing code",
@@ -2493,13 +2334,9 @@ some listing code
 				source := `----
 End of file here.`
 				expected := types.Document{
-					Attributes:        types.DocumentAttributes{},
-					ElementReferences: types.ElementReferences{},
-					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.DelimitedBlock{
-							Attributes: types.ElementAttributes{},
-							Kind:       types.Listing,
+							Kind: types.Listing,
 							Elements: []interface{}{
 								types.VerbatimLine{
 									Content: "End of file here.",
@@ -2517,13 +2354,9 @@ import <1>
 ----
 <1> an import`
 				expected := types.Document{
-					Attributes:        types.DocumentAttributes{},
-					ElementReferences: types.ElementReferences{},
-					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.DelimitedBlock{
-							Attributes: types.ElementAttributes{},
-							Kind:       types.Listing,
+							Kind: types.Listing,
 							Elements: []interface{}{
 								types.VerbatimLine{
 									Content: "import ",
@@ -2536,14 +2369,11 @@ import <1>
 							},
 						},
 						types.CalloutList{
-							Attributes: types.ElementAttributes{},
 							Items: []types.CalloutListItem{
 								{
-									Attributes: types.ElementAttributes{},
-									Ref:        1,
+									Ref: 1,
 									Elements: []interface{}{
 										types.Paragraph{
-											Attributes: types.ElementAttributes{},
 											Lines: [][]interface{}{
 												{
 													types.StringElement{
@@ -2570,13 +2400,9 @@ func foo() {} <2>
 <1> an import
 <2> a func`
 				expected := types.Document{
-					Attributes:        types.DocumentAttributes{},
-					ElementReferences: types.ElementReferences{},
-					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.DelimitedBlock{
-							Attributes: types.ElementAttributes{},
-							Kind:       types.Listing,
+							Kind: types.Listing,
 							Elements: []interface{}{
 								types.VerbatimLine{
 									Content: "import ",
@@ -2600,14 +2426,11 @@ func foo() {} <2>
 							},
 						},
 						types.CalloutList{
-							Attributes: types.ElementAttributes{},
 							Items: []types.CalloutListItem{
 								{
-									Attributes: types.ElementAttributes{},
-									Ref:        1,
+									Ref: 1,
 									Elements: []interface{}{
 										types.Paragraph{
-											Attributes: types.ElementAttributes{},
 											Lines: [][]interface{}{
 												{
 													types.StringElement{
@@ -2619,11 +2442,9 @@ func foo() {} <2>
 									},
 								},
 								{
-									Attributes: types.ElementAttributes{},
-									Ref:        2,
+									Ref: 2,
 									Elements: []interface{}{
 										types.Paragraph{
-											Attributes: types.ElementAttributes{},
 											Lines: [][]interface{}{
 												{
 													types.StringElement{
@@ -2652,13 +2473,9 @@ func foo() {} <4>
 <3> a single basic import
 <4> a func`
 				expected := types.Document{
-					Attributes:        types.DocumentAttributes{},
-					ElementReferences: types.ElementReferences{},
-					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.DelimitedBlock{
-							Attributes: types.ElementAttributes{},
-							Kind:       types.Listing,
+							Kind: types.Listing,
 							Elements: []interface{}{
 								types.VerbatimLine{
 									Content: "import ",
@@ -2688,14 +2505,11 @@ func foo() {} <4>
 							},
 						},
 						types.CalloutList{
-							Attributes: types.ElementAttributes{},
 							Items: []types.CalloutListItem{
 								{
-									Attributes: types.ElementAttributes{},
-									Ref:        1,
+									Ref: 1,
 									Elements: []interface{}{
 										types.Paragraph{
-											Attributes: types.ElementAttributes{},
 											Lines: [][]interface{}{
 												{
 													types.StringElement{
@@ -2707,11 +2521,9 @@ func foo() {} <4>
 									},
 								},
 								{
-									Attributes: types.ElementAttributes{},
-									Ref:        2,
+									Ref: 2,
 									Elements: []interface{}{
 										types.Paragraph{
-											Attributes: types.ElementAttributes{},
 											Lines: [][]interface{}{
 												{
 													types.StringElement{
@@ -2723,11 +2535,9 @@ func foo() {} <4>
 									},
 								},
 								{
-									Attributes: types.ElementAttributes{},
-									Ref:        3,
+									Ref: 3,
 									Elements: []interface{}{
 										types.Paragraph{
-											Attributes: types.ElementAttributes{},
 											Lines: [][]interface{}{
 												{
 													types.StringElement{
@@ -2739,11 +2549,9 @@ func foo() {} <4>
 									},
 								},
 								{
-									Attributes: types.ElementAttributes{},
-									Ref:        4,
+									Ref: 4,
 									Elements: []interface{}{
 										types.Paragraph{
-											Attributes: types.ElementAttributes{},
 											Lines: [][]interface{}{
 												{
 													types.StringElement{
@@ -2758,7 +2566,7 @@ func foo() {} <4>
 						},
 					},
 				}
-				Expect(ParseDocument(source)).To(Equal(expected))
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
 			It("with invalid callout", func() {
@@ -2767,13 +2575,9 @@ import <a>
 ----
 <a> an import`
 				expected := types.Document{
-					Attributes:        types.DocumentAttributes{},
-					ElementReferences: types.ElementReferences{},
-					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.DelimitedBlock{
-							Attributes: types.ElementAttributes{},
-							Kind:       types.Listing,
+							Kind: types.Listing,
 							Elements: []interface{}{
 								types.VerbatimLine{
 									Content: "import <a>",
@@ -2781,7 +2585,6 @@ import <a>
 							},
 						},
 						types.Paragraph{
-							Attributes: types.ElementAttributes{},
 							Lines: [][]interface{}{
 								{
 									types.StringElement{
@@ -2803,16 +2606,11 @@ import <a>
 some listing code
 ====`
 				expected := types.Document{
-					Attributes:        types.DocumentAttributes{},
-					ElementReferences: types.ElementReferences{},
-					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.DelimitedBlock{
-							Attributes: types.ElementAttributes{},
-							Kind:       types.Example,
+							Kind: types.Example,
 							Elements: []interface{}{
 								types.Paragraph{
-									Attributes: types.ElementAttributes{},
 									Lines: [][]interface{}{
 										{
 											types.StringElement{
@@ -2833,14 +2631,10 @@ some listing code
 .foo
 ====`
 				expected := types.Document{
-					Attributes:        types.DocumentAttributes{},
-					ElementReferences: types.ElementReferences{},
-					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.DelimitedBlock{
-							Attributes: types.ElementAttributes{},
-							Kind:       types.Example,
-							Elements:   []interface{}{},
+							Kind:     types.Example,
+							Elements: []interface{}{},
 						},
 					},
 				}
@@ -2856,13 +2650,9 @@ with *bold content*
 * and a list item
 ====`
 				expected := types.Document{
-					Attributes:        types.DocumentAttributes{},
-					ElementReferences: types.ElementReferences{},
-					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.DelimitedBlock{
-							Attributes: types.ElementAttributes{},
-							Kind:       types.Example,
+							Kind: types.Example,
 							Elements: []interface{}{
 								types.Paragraph{
 									Attributes: types.ElementAttributes{
@@ -2891,16 +2681,13 @@ with *bold content*
 								},
 								types.BlankLine{},
 								types.UnorderedList{
-									Attributes: types.ElementAttributes{},
 									Items: []types.UnorderedListItem{
 										{
-											Attributes:  types.ElementAttributes{},
 											Level:       1,
 											BulletStyle: types.OneAsterisk,
 											CheckStyle:  types.NoCheck,
 											Elements: []interface{}{
 												types.Paragraph{
-													Attributes: types.ElementAttributes{},
 													Lines: [][]interface{}{
 														{
 															types.StringElement{
@@ -2924,16 +2711,11 @@ with *bold content*
 				source := `====
 End of file here`
 				expected := types.Document{
-					Attributes:        types.DocumentAttributes{},
-					ElementReferences: types.ElementReferences{},
-					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.DelimitedBlock{
-							Attributes: types.ElementAttributes{},
-							Kind:       types.Example,
+							Kind: types.Example,
 							Elements: []interface{}{
 								types.Paragraph{
-									Attributes: types.ElementAttributes{},
 									Lines: [][]interface{}{
 										{
 											types.StringElement{
@@ -2955,9 +2737,6 @@ End of file here`
 foo
 ====`
 				expected := types.Document{
-					Attributes:        types.DocumentAttributes{},
-					ElementReferences: types.ElementReferences{},
-					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.DelimitedBlock{
 							Attributes: types.ElementAttributes{
@@ -2966,7 +2745,6 @@ foo
 							Kind: types.Example,
 							Elements: []interface{}{
 								types.Paragraph{
-									Attributes: types.ElementAttributes{},
 									Lines: [][]interface{}{
 										{
 											types.StringElement{
@@ -2985,14 +2763,10 @@ foo
 			It("example block starting delimiter only", func() {
 				source := `====`
 				expected := types.Document{
-					Attributes:        types.DocumentAttributes{},
-					ElementReferences: types.ElementReferences{},
-					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.DelimitedBlock{
-							Attributes: types.ElementAttributes{},
-							Kind:       types.Example,
-							Elements:   []interface{}{},
+							Kind:     types.Example,
+							Elements: []interface{}{},
 						},
 					},
 				}
@@ -3008,9 +2782,6 @@ foo
 foo
 ====`
 				expected := types.Document{
-					Attributes:        types.DocumentAttributes{},
-					ElementReferences: types.ElementReferences{},
-					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.DelimitedBlock{
 							Attributes: types.ElementAttributes{
@@ -3019,7 +2790,6 @@ foo
 							Kind: types.Example,
 							Elements: []interface{}{
 								types.Paragraph{
-									Attributes: types.ElementAttributes{},
 									Lines: [][]interface{}{
 										{
 											types.StringElement{
@@ -3045,9 +2815,6 @@ paragraphs
 ====
 `
 				expected := types.Document{
-					Attributes:        types.DocumentAttributes{},
-					ElementReferences: types.ElementReferences{},
-					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.DelimitedBlock{
 							Attributes: types.ElementAttributes{
@@ -3056,7 +2823,6 @@ paragraphs
 							Kind: types.Example,
 							Elements: []interface{}{
 								types.Paragraph{
-									Attributes: types.ElementAttributes{},
 									Lines: [][]interface{}{
 										{
 											types.StringElement{
@@ -3067,7 +2833,6 @@ paragraphs
 								},
 								types.BlankLine{},
 								types.Paragraph{
-									Attributes: types.ElementAttributes{},
 									Lines: [][]interface{}{
 
 										{
@@ -3093,9 +2858,6 @@ ____
 some *quote* content
 ____`
 				expected := types.Document{
-					Attributes:        types.DocumentAttributes{},
-					ElementReferences: types.ElementReferences{},
-					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.DelimitedBlock{
 							Attributes: types.ElementAttributes{
@@ -3106,7 +2868,6 @@ ____`
 							Kind: types.Quote,
 							Elements: []interface{}{
 								types.Paragraph{
-									Attributes: types.ElementAttributes{},
 									Lines: [][]interface{}{
 										{
 											types.StringElement{
@@ -3142,9 +2903,6 @@ ____
 ____
 `
 				expected := types.Document{
-					Attributes:        types.DocumentAttributes{},
-					ElementReferences: types.ElementReferences{},
-					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.DelimitedBlock{
 							Attributes: types.ElementAttributes{
@@ -3154,16 +2912,13 @@ ____
 							Kind: types.Quote,
 							Elements: []interface{}{
 								types.UnorderedList{
-									Attributes: types.ElementAttributes{},
 									Items: []types.UnorderedListItem{
 										{
-											Attributes:  types.ElementAttributes{},
 											Level:       1,
 											BulletStyle: types.Dash,
 											CheckStyle:  types.NoCheck,
 											Elements: []interface{}{
 												types.Paragraph{
-													Attributes: types.ElementAttributes{},
 													Lines: [][]interface{}{
 														{
 															types.StringElement{
@@ -3175,13 +2930,11 @@ ____
 											},
 										},
 										{
-											Attributes:  types.ElementAttributes{},
 											Level:       1,
 											BulletStyle: types.Dash,
 											CheckStyle:  types.NoCheck,
 											Elements: []interface{}{
 												types.Paragraph{
-													Attributes: types.ElementAttributes{},
 													Lines: [][]interface{}{
 														{
 															types.StringElement{
@@ -3193,13 +2946,11 @@ ____
 											},
 										},
 										{
-											Attributes:  types.ElementAttributes{},
 											Level:       1,
 											BulletStyle: types.Dash,
 											CheckStyle:  types.NoCheck,
 											Elements: []interface{}{
 												types.Paragraph{
-													Attributes: types.ElementAttributes{},
 													Lines: [][]interface{}{
 														{
 															types.StringElement{
@@ -3226,9 +2977,6 @@ some quote content
 ____
 `
 				expected := types.Document{
-					Attributes:        types.DocumentAttributes{},
-					ElementReferences: types.ElementReferences{},
-					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.DelimitedBlock{
 							Attributes: types.ElementAttributes{
@@ -3238,7 +2986,6 @@ ____
 							Kind: types.Quote,
 							Elements: []interface{}{
 								types.Paragraph{
-									Attributes: types.ElementAttributes{},
 									Lines: [][]interface{}{
 										{
 											types.StringElement{
@@ -3264,9 +3011,6 @@ ____
 * content
 ____`
 				expected := types.Document{
-					Attributes:        types.DocumentAttributes{},
-					ElementReferences: types.ElementReferences{},
-					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.DelimitedBlock{
 							Attributes: types.ElementAttributes{
@@ -3275,16 +3019,13 @@ ____`
 							Kind: types.Quote,
 							Elements: []interface{}{
 								types.UnorderedList{
-									Attributes: types.ElementAttributes{},
 									Items: []types.UnorderedListItem{
 										{
-											Attributes:  types.ElementAttributes{},
 											Level:       1,
 											BulletStyle: types.OneAsterisk,
 											CheckStyle:  types.NoCheck,
 											Elements: []interface{}{
 												types.Paragraph{
-													Attributes: types.ElementAttributes{},
 													Lines: [][]interface{}{
 														{
 															types.StringElement{
@@ -3298,8 +3039,7 @@ ____`
 									},
 								},
 								types.DelimitedBlock{
-									Attributes: types.ElementAttributes{},
-									Kind:       types.Listing,
+									Kind: types.Listing,
 									Elements: []interface{}{
 										types.VerbatimLine{
 											Content: "* quote ",
@@ -3307,16 +3047,13 @@ ____`
 									},
 								},
 								types.UnorderedList{
-									Attributes: types.ElementAttributes{},
 									Items: []types.UnorderedListItem{
 										{
-											Attributes:  types.ElementAttributes{},
 											Level:       1,
 											BulletStyle: types.OneAsterisk,
 											CheckStyle:  types.NoCheck,
 											Elements: []interface{}{
 												types.Paragraph{
-													Attributes: types.ElementAttributes{},
 													Lines: [][]interface{}{
 														{
 															types.StringElement{
@@ -3348,9 +3085,6 @@ ____
 * content
 ____`
 				expected := types.Document{
-					Attributes:        types.DocumentAttributes{},
-					ElementReferences: types.ElementReferences{},
-					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.DelimitedBlock{
 							Attributes: types.ElementAttributes{
@@ -3359,16 +3093,13 @@ ____`
 							Kind: types.Quote,
 							Elements: []interface{}{
 								types.UnorderedList{
-									Attributes: types.ElementAttributes{},
 									Items: []types.UnorderedListItem{
 										{
-											Attributes:  types.ElementAttributes{},
 											Level:       1,
 											BulletStyle: types.OneAsterisk,
 											CheckStyle:  types.NoCheck,
 											Elements: []interface{}{
 												types.Paragraph{
-													Attributes: types.ElementAttributes{},
 													Lines: [][]interface{}{
 														{
 															types.StringElement{
@@ -3380,13 +3111,11 @@ ____`
 											},
 										},
 										{
-											Attributes:  types.ElementAttributes{},
 											Level:       1,
 											BulletStyle: types.OneAsterisk,
 											CheckStyle:  types.NoCheck,
 											Elements: []interface{}{
 												types.Paragraph{
-													Attributes: types.ElementAttributes{},
 													Lines: [][]interface{}{
 														{
 															types.StringElement{
@@ -3398,13 +3127,11 @@ ____`
 											},
 										},
 										{
-											Attributes:  types.ElementAttributes{},
 											Level:       1,
 											BulletStyle: types.OneAsterisk,
 											CheckStyle:  types.NoCheck,
 											Elements: []interface{}{
 												types.Paragraph{
-													Attributes: types.ElementAttributes{},
 													Lines: [][]interface{}{
 														{
 															types.StringElement{
@@ -3429,9 +3156,6 @@ ____`
 ____
 ____`
 				expected := types.Document{
-					Attributes:        types.DocumentAttributes{},
-					ElementReferences: types.ElementReferences{},
-					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.DelimitedBlock{
 							Attributes: types.ElementAttributes{
@@ -3451,9 +3175,6 @@ ____
 foo
 `
 				expected := types.Document{
-					Attributes:        types.DocumentAttributes{},
-					ElementReferences: types.ElementReferences{},
-					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.DelimitedBlock{
 							Attributes: types.ElementAttributes{
@@ -3462,7 +3183,6 @@ foo
 							Kind: types.Quote,
 							Elements: []interface{}{
 								types.Paragraph{
-									Attributes: types.ElementAttributes{},
 									Lines: [][]interface{}{
 										{
 											types.StringElement{
@@ -3487,9 +3207,6 @@ ____
 some *verse* content
 ____`
 				expected := types.Document{
-					Attributes:        types.DocumentAttributes{},
-					ElementReferences: types.ElementReferences{},
-					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.DelimitedBlock{
 							Attributes: types.ElementAttributes{
@@ -3500,7 +3217,6 @@ ____`
 							Kind: types.Verse,
 							Elements: []interface{}{
 								types.Paragraph{
-									Attributes: types.ElementAttributes{},
 									Lines: [][]interface{}{
 										{
 											types.StringElement{
@@ -3536,9 +3252,6 @@ ____
 ____
 `
 				expected := types.Document{
-					Attributes:        types.DocumentAttributes{},
-					ElementReferences: types.ElementReferences{},
-					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.DelimitedBlock{
 							Attributes: types.ElementAttributes{
@@ -3548,7 +3261,6 @@ ____
 							Kind: types.Verse,
 							Elements: []interface{}{
 								types.Paragraph{
-									Attributes: types.ElementAttributes{},
 									Lines: [][]interface{}{
 										{
 											types.StringElement{
@@ -3581,9 +3293,6 @@ some verse content
 ____
 `
 				expected := types.Document{
-					Attributes:        types.DocumentAttributes{},
-					ElementReferences: types.ElementReferences{},
-					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.DelimitedBlock{
 							Attributes: types.ElementAttributes{
@@ -3593,7 +3302,6 @@ ____
 							Kind: types.Verse,
 							Elements: []interface{}{
 								types.Paragraph{
-									Attributes: types.ElementAttributes{},
 									Lines: [][]interface{}{
 										{
 											types.StringElement{
@@ -3619,9 +3327,6 @@ ____
 * content
 ____`
 				expected := types.Document{
-					Attributes:        types.DocumentAttributes{},
-					ElementReferences: types.ElementReferences{},
-					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.DelimitedBlock{
 							Attributes: types.ElementAttributes{
@@ -3630,7 +3335,6 @@ ____`
 							Kind: types.Verse,
 							Elements: []interface{}{
 								types.Paragraph{
-									Attributes: types.ElementAttributes{},
 									Lines: [][]interface{}{
 										{
 											types.StringElement{
@@ -3675,9 +3379,6 @@ ____
 	* bar
 ____`
 				expected := types.Document{
-					Attributes:        types.DocumentAttributes{},
-					ElementReferences: types.ElementReferences{},
-					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.DelimitedBlock{
 							Attributes: types.ElementAttributes{
@@ -3686,7 +3387,6 @@ ____`
 							Kind: types.Verse,
 							Elements: []interface{}{
 								types.Paragraph{
-									Attributes: types.ElementAttributes{},
 									Lines: [][]interface{}{
 										{
 											types.StringElement{
@@ -3698,7 +3398,6 @@ ____`
 								types.BlankLine{},
 								types.BlankLine{},
 								types.Paragraph{
-									Attributes: types.ElementAttributes{},
 									Lines: [][]interface{}{
 										{
 											types.StringElement{
@@ -3719,9 +3418,6 @@ ____`
 ____
 ____`
 				expected := types.Document{
-					Attributes:        types.DocumentAttributes{},
-					ElementReferences: types.ElementReferences{},
-					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.DelimitedBlock{
 							Attributes: types.ElementAttributes{
@@ -3741,9 +3437,6 @@ ____
 foo
 `
 				expected := types.Document{
-					Attributes:        types.DocumentAttributes{},
-					ElementReferences: types.ElementReferences{},
-					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.DelimitedBlock{
 							Attributes: types.ElementAttributes{
@@ -3752,7 +3445,6 @@ foo
 							Kind: types.Verse,
 							Elements: []interface{}{
 								types.Paragraph{
-									Attributes: types.ElementAttributes{},
 									Lines: [][]interface{}{
 										{
 											types.StringElement{
@@ -3781,9 +3473,6 @@ get '/hi' do
 end
 ----`
 				expected := types.Document{
-					Attributes:        types.DocumentAttributes{},
-					ElementReferences: types.ElementReferences{},
-					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.DelimitedBlock{
 							Attributes: types.ElementAttributes{
@@ -3822,9 +3511,6 @@ get '/hi' do
 end
 ----`
 				expected := types.Document{
-					Attributes:        types.DocumentAttributes{},
-					ElementReferences: types.ElementReferences{},
-					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.DelimitedBlock{
 							Attributes: types.ElementAttributes{
@@ -3866,9 +3552,6 @@ get '/hi' do
 end
 ----`
 				expected := types.Document{
-					Attributes:        types.DocumentAttributes{},
-					ElementReferences: types.ElementReferences{},
-					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.DelimitedBlock{
 							Attributes: types.ElementAttributes{
@@ -3908,16 +3591,11 @@ end
 some *verse* content
 ****`
 				expected := types.Document{
-					Attributes:        types.DocumentAttributes{},
-					ElementReferences: types.ElementReferences{},
-					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.DelimitedBlock{
-							Attributes: types.ElementAttributes{},
-							Kind:       types.Sidebar,
+							Kind: types.Sidebar,
 							Elements: []interface{}{
 								types.Paragraph{
-									Attributes: types.ElementAttributes{},
 									Lines: [][]interface{}{
 										{
 											types.StringElement{
@@ -3955,9 +3633,6 @@ bar
 ----
 ****`
 				expected := types.Document{
-					Attributes:        types.DocumentAttributes{},
-					ElementReferences: types.ElementReferences{},
-					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.DelimitedBlock{
 							Attributes: types.ElementAttributes{
@@ -3966,7 +3641,6 @@ bar
 							Kind: types.Sidebar,
 							Elements: []interface{}{
 								types.Paragraph{
-									Attributes: types.ElementAttributes{},
 									Lines: [][]interface{}{
 										{
 											types.StringElement{
@@ -3988,8 +3662,7 @@ bar
 								},
 								types.BlankLine{}, // blankline is required between paragraph and the next block
 								types.DelimitedBlock{
-									Attributes: types.ElementAttributes{},
-									Kind:       types.Listing,
+									Kind: types.Listing,
 									Elements: []interface{}{
 										types.VerbatimLine{
 											Content: "foo",
@@ -4017,9 +3690,6 @@ _foo_
 *bar*
 ++++`
 				expected := types.Document{
-					Attributes:        types.DocumentAttributes{},
-					ElementReferences: types.ElementReferences{},
-					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.DelimitedBlock{
 							Attributes: types.ElementAttributes{
@@ -4053,9 +3723,6 @@ _foo_
 
 another paragraph`
 				expected := types.Document{
-					Attributes:        types.DocumentAttributes{},
-					ElementReferences: types.ElementReferences{},
-					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.DelimitedBlock{
 							Attributes: types.ElementAttributes{
@@ -4072,7 +3739,6 @@ another paragraph`
 							},
 						},
 						types.Paragraph{
-							Attributes: types.ElementAttributes{},
 							Lines: [][]interface{}{
 								{
 									types.StringElement{

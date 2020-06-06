@@ -11,12 +11,8 @@ import (
 var _ = Describe("parse document", func() {
 
 	expected := types.Document{
-		Attributes:        types.DocumentAttributes{},
-		ElementReferences: types.ElementReferences{},
-		Footnotes:         []types.Footnote{},
 		Elements: []interface{}{
 			types.Paragraph{
-				Attributes: types.ElementAttributes{},
 				Lines: [][]interface{}{
 					{
 						types.StringElement{

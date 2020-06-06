@@ -11,7 +11,6 @@ import (
 var _ = Describe("parse document block", func() {
 
 	expected := types.Paragraph{
-		Attributes: types.ElementAttributes{},
 		Lines: [][]interface{}{
 			{
 				types.StringElement{

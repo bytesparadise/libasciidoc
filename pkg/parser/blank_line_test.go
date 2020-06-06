@@ -16,7 +16,6 @@ second paragraph`
 		expected := types.DraftDocument{
 			Blocks: []interface{}{
 				types.Paragraph{
-					Attributes: types.ElementAttributes{},
 					Lines: [][]interface{}{
 						{
 							types.StringElement{Content: "first paragraph"},
@@ -25,7 +24,6 @@ second paragraph`
 				},
 				types.BlankLine{},
 				types.Paragraph{
-					Attributes: types.ElementAttributes{},
 					Lines: [][]interface{}{
 						{
 							types.StringElement{Content: "second paragraph"},
@@ -46,7 +44,6 @@ second paragraph
 		expected := types.DraftDocument{
 			Blocks: []interface{}{
 				types.Paragraph{
-					Attributes: types.ElementAttributes{},
 					Lines: [][]interface{}{
 						{
 							types.StringElement{Content: "first paragraph"},
@@ -57,7 +54,6 @@ second paragraph
 				types.BlankLine{},
 				types.BlankLine{},
 				types.Paragraph{
-					Attributes: types.ElementAttributes{},
 					Lines: [][]interface{}{
 						{
 							types.StringElement{Content: "second paragraph"},

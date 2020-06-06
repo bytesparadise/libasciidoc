@@ -22,11 +22,9 @@ This journey continues.`
 				types.StringElement{Content: "Document Title"},
 			}
 			expected := types.Document{
-				Attributes: types.DocumentAttributes{},
 				ElementReferences: types.ElementReferences{
 					"_document_title": title,
 				},
-				Footnotes: []types.Footnote{},
 				Elements: []interface{}{
 					types.Section{
 						Level: 0,
@@ -36,7 +34,6 @@ This journey continues.`
 						Title: title,
 						Elements: []interface{}{
 							types.Paragraph{
-								Attributes: types.ElementAttributes{},
 								Lines: [][]interface{}{
 									{
 										types.StringElement{Content: "This journey continues."},
@@ -80,7 +77,6 @@ John  Foo    Doe  <johndoe@example.com>`
 						ElementReferences: types.ElementReferences{
 							"_title": title,
 						},
-						Footnotes: []types.Footnote{},
 						Elements: []interface{}{
 							types.Section{
 								Level: 0,
@@ -120,7 +116,6 @@ Jane the_Doe <jane@example.com>`
 						ElementReferences: types.ElementReferences{
 							"_title": title,
 						},
-						Footnotes: []types.Footnote{},
 						Elements: []interface{}{
 							types.Section{
 								Level: 0,
@@ -161,7 +156,6 @@ Jane Foo the Doe <jane@example.com>`
 						ElementReferences: types.ElementReferences{
 							"_title": title,
 						},
-						Footnotes: []types.Footnote{},
 						Elements: []interface{}{
 							types.Section{
 								Level: 0,
@@ -199,7 +193,6 @@ John Doe`
 						ElementReferences: types.ElementReferences{
 							"_title": title,
 						},
-						Footnotes: []types.Footnote{},
 						Elements: []interface{}{
 							types.Section{
 								Level: 0,
@@ -236,7 +229,6 @@ Doe`
 						ElementReferences: types.ElementReferences{
 							"_title": title,
 						},
-						Footnotes: []types.Footnote{},
 						Elements: []interface{}{
 							types.Section{
 								Level: 0,
@@ -275,7 +267,6 @@ Doe`
 						ElementReferences: types.ElementReferences{
 							"_title": title,
 						},
-						Footnotes: []types.Footnote{},
 						Elements: []interface{}{
 							types.Section{
 								Level: 0,
@@ -328,7 +319,6 @@ John  Foo Doe  <johndoe@example.com>; Jane the_Doe <jane@example.com>`
 						ElementReferences: types.ElementReferences{
 							"_title": title,
 						},
-						Footnotes: []types.Footnote{},
 						Elements: []interface{}{
 							types.Section{
 								Level: 0,
@@ -355,11 +345,9 @@ John  Foo Doe  <johndoe@example.com>; Jane the_Doe <jane@example.com>`
 						},
 					}
 					expected := types.Document{
-						Attributes: types.DocumentAttributes{},
 						ElementReferences: types.ElementReferences{
 							"_title": title,
 						},
-						Footnotes: []types.Footnote{},
 						Elements: []interface{}{
 							types.Section{
 								Level: 0,
@@ -410,7 +398,6 @@ John  Foo Doe  <johndoe@example.com>; Jane the_Doe <jane@example.com>`
 						ElementReferences: types.ElementReferences{
 							"_title": title,
 						},
-						Footnotes: []types.Footnote{},
 						Elements: []interface{}{
 							types.Section{
 								Level: 0,
@@ -463,7 +450,6 @@ John  Foo Doe  <johndoe@example.com>; Jane the_Doe <jane@example.com>`
 						ElementReferences: types.ElementReferences{
 							"_title": title,
 						},
-						Footnotes: []types.Footnote{},
 						Elements: []interface{}{
 							types.Section{
 								Level: 0,
@@ -514,7 +500,6 @@ John  Foo Doe  <johndoe@example.com>; Jane the_Doe <jane@example.com>`
 					ElementReferences: types.ElementReferences{
 						"_title": title,
 					},
-					Footnotes: []types.Footnote{},
 					Elements: []interface{}{
 						types.Section{
 							Level: 0,
@@ -562,7 +547,6 @@ John  Foo Doe  <johndoe@example.com>; Jane the_Doe <jane@example.com>`
 					ElementReferences: types.ElementReferences{
 						"_title": title,
 					},
-					Footnotes: []types.Footnote{},
 					Elements: []interface{}{
 						types.Section{
 							Level: 0,
@@ -610,7 +594,6 @@ John  Foo Doe  <johndoe@example.com>; Jane the_Doe <jane@example.com>`
 					ElementReferences: types.ElementReferences{
 						"_title": title,
 					},
-					Footnotes: []types.Footnote{},
 					Elements: []interface{}{
 						types.Section{
 							Level: 0,
@@ -655,7 +638,6 @@ John  Foo Doe  <johndoe@example.com>; Jane the_Doe <jane@example.com>`
 					ElementReferences: types.ElementReferences{
 						"_title": title,
 					},
-					Footnotes: []types.Footnote{},
 					Elements: []interface{}{
 						types.Section{
 							Level: 0,
@@ -700,7 +682,6 @@ John  Foo Doe  <johndoe@example.com>; Jane the_Doe <jane@example.com>`
 					ElementReferences: types.ElementReferences{
 						"_title": title,
 					},
-					Footnotes: []types.Footnote{},
 					Elements: []interface{}{
 						types.Section{
 							Level: 0,
@@ -742,7 +723,6 @@ John  Foo Doe  <johndoe@example.com>; Jane the_Doe <jane@example.com>`
 					ElementReferences: types.ElementReferences{
 						"_title": title,
 					},
-					Footnotes: []types.Footnote{},
 					Elements: []interface{}{
 						types.Section{
 							Level: 0,
@@ -785,7 +765,6 @@ John  Foo Doe  <johndoe@example.com>; Jane the_Doe <jane@example.com>`
 					ElementReferences: types.ElementReferences{
 						"_title": title,
 					},
-					Footnotes: []types.Footnote{},
 					Elements: []interface{}{
 						types.Section{
 							Level: 0,
@@ -828,7 +807,6 @@ John  Foo Doe  <johndoe@example.com>; Jane the_Doe <jane@example.com>`
 					ElementReferences: types.ElementReferences{
 						"_title": title,
 					},
-					Footnotes: []types.Footnote{},
 					Elements: []interface{}{
 						types.Section{
 							Level: 0,
@@ -871,7 +849,6 @@ John  Foo Doe  <johndoe@example.com>; Jane the_Doe <jane@example.com>`
 					ElementReferences: types.ElementReferences{
 						"_title": title,
 					},
-					Footnotes: []types.Footnote{},
 					Elements: []interface{}{
 						types.Section{
 							Level: 0,
@@ -914,7 +891,6 @@ John  Foo Doe  <johndoe@example.com>; Jane the_Doe <jane@example.com>`
 					ElementReferences: types.ElementReferences{
 						"_title": title,
 					},
-					Footnotes: []types.Footnote{},
 					Elements: []interface{}{
 						types.Section{
 							Level: 0,
@@ -957,7 +933,6 @@ John  Foo Doe  <johndoe@example.com>; Jane the_Doe <jane@example.com>`
 					ElementReferences: types.ElementReferences{
 						"_title": title,
 					},
-					Footnotes: []types.Footnote{},
 					Elements: []interface{}{
 						types.Section{
 							Level: 0,
@@ -1000,7 +975,6 @@ John  Foo Doe  <johndoe@example.com>; Jane the_Doe <jane@example.com>`
 					ElementReferences: types.ElementReferences{
 						"_title": title,
 					},
-					Footnotes: []types.Footnote{},
 					Elements: []interface{}{
 						types.Section{
 							Level: 0,
@@ -1044,7 +1018,6 @@ v1.0:`
 					ElementReferences: types.ElementReferences{
 						"_title": title,
 					},
-					Footnotes: []types.Footnote{},
 					Elements: []interface{}{
 						types.Section{
 							Level: 0,
@@ -1079,9 +1052,7 @@ v1.0:`
 						"0Author": "Xavier",
 						"Auth0r":  "Xavier",
 					},
-					ElementReferences: types.ElementReferences{},
-					Elements:          []interface{}{},
-					Footnotes:         []types.Footnote{},
+					Elements: []interface{}{},
 				}
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
@@ -1099,12 +1070,9 @@ a paragraph`
 						"author":                     "Xavier",
 						types.DocumentAttrHardBreaks: "",
 					},
-					ElementReferences: types.ElementReferences{},
-					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.TableOfContentsPlaceHolder{},
 						types.Paragraph{
-							Attributes: types.ElementAttributes{},
 							Lines: [][]interface{}{
 								{
 									types.StringElement{Content: "a paragraph"},
@@ -1128,12 +1096,9 @@ a paragraph`
 						"date":   "2017-01-01",
 						"author": "Xavier",
 					},
-					ElementReferences: types.ElementReferences{},
-					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.TableOfContentsPlaceHolder{},
 						types.Paragraph{
-							Attributes: types.ElementAttributes{},
 							Lines: [][]interface{}{
 								{
 									types.StringElement{Content: "a paragraph"},
@@ -1161,12 +1126,9 @@ a paragraph`
 						"author":     "Xavier",
 						"hardbreaks": "",
 					},
-					ElementReferences: types.ElementReferences{},
-					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.TableOfContentsPlaceHolder{},
 						types.Paragraph{
-							Attributes: types.ElementAttributes{},
 							Lines: [][]interface{}{
 								{
 									types.StringElement{Content: "a paragraph"},
@@ -1190,12 +1152,9 @@ a paragraph`
 						"date":   "2017-01-01",
 						"author": "Xavier",
 					},
-					ElementReferences: types.ElementReferences{},
-					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.TableOfContentsPlaceHolder{},
 						types.Paragraph{
-							Attributes: types.ElementAttributes{},
 							Lines: [][]interface{}{
 								{
 									types.StringElement{Content: "a paragraph"},
@@ -1218,11 +1177,8 @@ a paragraph written by {author}.`
 					Attributes: types.DocumentAttributes{
 						"author": "Xavier",
 					},
-					ElementReferences: types.ElementReferences{},
-					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.Paragraph{
-							Attributes: types.ElementAttributes{},
 							Lines: [][]interface{}{
 								{
 									types.StringElement{Content: "a paragraph written by Xavier."},
@@ -1244,11 +1200,8 @@ a paragraph written by {author}.`
 					Attributes: types.DocumentAttributes{
 						"author": "Xavier",
 					},
-					ElementReferences: types.ElementReferences{},
-					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.Paragraph{
-							Attributes: types.ElementAttributes{},
 							Lines: [][]interface{}{
 								{
 									types.StringElement{Content: "a paragraph written by Xavier."},
@@ -1308,7 +1261,6 @@ This journey continues`
 					ElementReferences: types.ElementReferences{
 						"_document_title": title,
 					},
-					Footnotes: []types.Footnote{},
 					Elements: []interface{}{
 						types.Section{
 							Level: 0,
@@ -1319,7 +1271,6 @@ This journey continues`
 							Elements: []interface{}{
 								types.TableOfContentsPlaceHolder{},
 								types.Paragraph{
-									Attributes: types.ElementAttributes{},
 									Lines: [][]interface{}{
 										{
 											types.StringElement{Content: "This journey continues"},
@@ -1343,11 +1294,8 @@ a paragraph written by {author}.`
 					Attributes: types.DocumentAttributes{
 						"author": "Xavier",
 					},
-					ElementReferences: types.ElementReferences{},
-					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.Paragraph{
-							Attributes: types.ElementAttributes{},
 							Lines: [][]interface{}{
 								{
 									types.StringElement{Content: "a paragraph written by Xavier."},
@@ -1370,12 +1318,8 @@ a paragraph written by {author}.`
 :date: 2017-01-01
 :author: Xavier`
 			expected := types.Document{
-				Attributes:        types.DocumentAttributes{},
-				ElementReferences: types.ElementReferences{},
-				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{
 					types.Paragraph{
-						Attributes: types.ElementAttributes{},
 						Lines: [][]interface{}{
 							{
 								types.StringElement{Content: "a paragraph"},
@@ -1400,12 +1344,8 @@ a paragraph written by {author}.`
 			source := `:@date: 2017-01-01
 :{author}: Xavier`
 			expected := types.Document{
-				Attributes:        types.DocumentAttributes{},
-				ElementReferences: types.ElementReferences{},
-				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{
 					types.Paragraph{
-						Attributes: types.ElementAttributes{},
 						Lines: [][]interface{}{
 							{
 								types.StringElement{Content: ":@date: 2017-01-01"},
@@ -1435,11 +1375,8 @@ a paragraph written by {author}.`
 					"icons":              "font",
 					"source-highlighter": "pygments",
 				},
-				ElementReferences: types.ElementReferences{},
-				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{
 					types.Paragraph{
-						Attributes: types.ElementAttributes{},
 						Lines: [][]interface{}{
 							{
 								types.StringElement{Content: "font"},

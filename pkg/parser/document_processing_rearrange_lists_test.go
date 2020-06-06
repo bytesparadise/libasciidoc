@@ -23,13 +23,11 @@ var _ = Describe("rearrange lists", func() {
 		// * unordered 2.1
 		actual := []interface{}{
 			types.UnorderedListItem{
-				Attributes:  types.ElementAttributes{},
 				Level:       1,
 				BulletStyle: types.Dash,
 				CheckStyle:  types.NoCheck,
 				Elements: []interface{}{
 					types.Paragraph{
-						Attributes: types.ElementAttributes{},
 						Lines: [][]interface{}{
 							{
 								types.StringElement{Content: "unordered 1"},
@@ -39,12 +37,10 @@ var _ = Describe("rearrange lists", func() {
 				},
 			},
 			types.OrderedListItem{
-				Attributes:     types.ElementAttributes{},
 				Level:          1,
 				NumberingStyle: types.Arabic,
 				Elements: []interface{}{
 					types.Paragraph{
-						Attributes: types.ElementAttributes{},
 						Lines: [][]interface{}{
 							{
 								types.StringElement{Content: "ordered 1.1"},
@@ -54,12 +50,10 @@ var _ = Describe("rearrange lists", func() {
 				},
 			},
 			types.OrderedListItem{
-				Attributes:     types.ElementAttributes{},
 				Level:          2,
 				NumberingStyle: types.LowerAlpha,
 				Elements: []interface{}{
 					types.Paragraph{
-						Attributes: types.ElementAttributes{},
 						Lines: [][]interface{}{
 							{
 								types.StringElement{Content: "ordered 1.1.a"},
@@ -69,12 +63,10 @@ var _ = Describe("rearrange lists", func() {
 				},
 			},
 			types.OrderedListItem{
-				Attributes:     types.ElementAttributes{},
 				Level:          2,
 				NumberingStyle: types.LowerAlpha,
 				Elements: []interface{}{
 					types.Paragraph{
-						Attributes: types.ElementAttributes{},
 						Lines: [][]interface{}{
 							{
 								types.StringElement{Content: "ordered 1.1.b"},
@@ -84,12 +76,10 @@ var _ = Describe("rearrange lists", func() {
 				},
 			},
 			types.OrderedListItem{
-				Attributes:     types.ElementAttributes{},
 				Level:          2,
 				NumberingStyle: types.LowerAlpha,
 				Elements: []interface{}{
 					types.Paragraph{
-						Attributes: types.ElementAttributes{},
 						Lines: [][]interface{}{
 							{
 								types.StringElement{Content: "ordered 1.1.c"},
@@ -99,12 +89,10 @@ var _ = Describe("rearrange lists", func() {
 				},
 			},
 			types.OrderedListItem{
-				Attributes:     types.ElementAttributes{},
 				Level:          1,
 				NumberingStyle: types.Arabic,
 				Elements: []interface{}{
 					types.Paragraph{
-						Attributes: types.ElementAttributes{},
 						Lines: [][]interface{}{
 							{
 								types.StringElement{Content: "ordered 1.2"},
@@ -114,12 +102,10 @@ var _ = Describe("rearrange lists", func() {
 				},
 			},
 			types.OrderedListItem{
-				Attributes:     types.ElementAttributes{},
 				Level:          2,
 				NumberingStyle: types.LowerRoman,
 				Elements: []interface{}{
 					types.Paragraph{
-						Attributes: types.ElementAttributes{},
 						Lines: [][]interface{}{
 							{
 								types.StringElement{Content: "ordered 1.2.i"},
@@ -129,12 +115,10 @@ var _ = Describe("rearrange lists", func() {
 				},
 			},
 			types.OrderedListItem{
-				Attributes:     types.ElementAttributes{},
 				Level:          2,
 				NumberingStyle: types.LowerRoman,
 				Elements: []interface{}{
 					types.Paragraph{
-						Attributes: types.ElementAttributes{},
 						Lines: [][]interface{}{
 							{
 								types.StringElement{Content: "ordered 1.2.ii"},
@@ -144,12 +128,10 @@ var _ = Describe("rearrange lists", func() {
 				},
 			},
 			types.OrderedListItem{
-				Attributes:     types.ElementAttributes{},
 				Level:          1,
 				NumberingStyle: types.Arabic,
 				Elements: []interface{}{
 					types.Paragraph{
-						Attributes: types.ElementAttributes{},
 						Lines: [][]interface{}{
 							{
 								types.StringElement{Content: "ordered 1.3"},
@@ -159,12 +141,10 @@ var _ = Describe("rearrange lists", func() {
 				},
 			},
 			types.OrderedListItem{
-				Attributes:     types.ElementAttributes{},
 				Level:          1,
 				NumberingStyle: types.Arabic,
 				Elements: []interface{}{
 					types.Paragraph{
-						Attributes: types.ElementAttributes{},
 						Lines: [][]interface{}{
 							{
 								types.StringElement{Content: "ordered 1.4"},
@@ -174,13 +154,11 @@ var _ = Describe("rearrange lists", func() {
 				},
 			},
 			types.UnorderedListItem{
-				Attributes:  types.ElementAttributes{},
 				Level:       1,
 				BulletStyle: types.Dash,
 				CheckStyle:  types.NoCheck,
 				Elements: []interface{}{
 					types.Paragraph{
-						Attributes: types.ElementAttributes{},
 						Lines: [][]interface{}{
 							{
 								types.StringElement{Content: "unordered 2"},
@@ -190,13 +168,11 @@ var _ = Describe("rearrange lists", func() {
 				},
 			},
 			types.UnorderedListItem{
-				Attributes:  types.ElementAttributes{},
 				Level:       2,
 				BulletStyle: types.OneAsterisk,
 				CheckStyle:  types.NoCheck,
 				Elements: []interface{}{
 					types.Paragraph{
-						Attributes: types.ElementAttributes{},
 						Lines: [][]interface{}{
 							{
 								types.StringElement{Content: "unordered 2.1"},
@@ -208,16 +184,13 @@ var _ = Describe("rearrange lists", func() {
 		}
 		expected := []interface{}{
 			types.UnorderedList{
-				Attributes: types.ElementAttributes{},
 				Items: []types.UnorderedListItem{
 					{
-						Attributes:  types.ElementAttributes{},
 						Level:       1,
 						BulletStyle: types.Dash,
 						CheckStyle:  types.NoCheck,
 						Elements: []interface{}{
 							types.Paragraph{
-								Attributes: types.ElementAttributes{},
 								Lines: [][]interface{}{
 									{
 										types.StringElement{Content: "unordered 1"},
@@ -225,15 +198,12 @@ var _ = Describe("rearrange lists", func() {
 								},
 							},
 							types.OrderedList{
-								Attributes: types.ElementAttributes{},
 								Items: []types.OrderedListItem{
 									{
-										Attributes:     types.ElementAttributes{},
 										Level:          1,
 										NumberingStyle: types.Arabic,
 										Elements: []interface{}{
 											types.Paragraph{
-												Attributes: types.ElementAttributes{},
 												Lines: [][]interface{}{
 													{
 														types.StringElement{Content: "ordered 1.1"},
@@ -241,15 +211,12 @@ var _ = Describe("rearrange lists", func() {
 												},
 											},
 											types.OrderedList{
-												Attributes: types.ElementAttributes{},
 												Items: []types.OrderedListItem{
 													{
-														Attributes:     types.ElementAttributes{},
 														Level:          2,
 														NumberingStyle: types.LowerAlpha,
 														Elements: []interface{}{
 															types.Paragraph{
-																Attributes: types.ElementAttributes{},
 																Lines: [][]interface{}{
 																	{
 																		types.StringElement{Content: "ordered 1.1.a"},
@@ -259,12 +226,10 @@ var _ = Describe("rearrange lists", func() {
 														},
 													},
 													{
-														Attributes:     types.ElementAttributes{},
 														Level:          2,
 														NumberingStyle: types.LowerAlpha,
 														Elements: []interface{}{
 															types.Paragraph{
-																Attributes: types.ElementAttributes{},
 																Lines: [][]interface{}{
 																	{
 																		types.StringElement{Content: "ordered 1.1.b"},
@@ -274,12 +239,10 @@ var _ = Describe("rearrange lists", func() {
 														},
 													},
 													{
-														Attributes:     types.ElementAttributes{},
 														Level:          2,
 														NumberingStyle: types.LowerAlpha,
 														Elements: []interface{}{
 															types.Paragraph{
-																Attributes: types.ElementAttributes{},
 																Lines: [][]interface{}{
 																	{
 																		types.StringElement{Content: "ordered 1.1.c"},
@@ -293,12 +256,10 @@ var _ = Describe("rearrange lists", func() {
 										},
 									},
 									{
-										Attributes:     types.ElementAttributes{},
 										Level:          1,
 										NumberingStyle: types.Arabic,
 										Elements: []interface{}{
 											types.Paragraph{
-												Attributes: types.ElementAttributes{},
 												Lines: [][]interface{}{
 													{
 														types.StringElement{Content: "ordered 1.2"},
@@ -306,15 +267,12 @@ var _ = Describe("rearrange lists", func() {
 												},
 											},
 											types.OrderedList{
-												Attributes: types.ElementAttributes{},
 												Items: []types.OrderedListItem{
 													{
-														Attributes:     types.ElementAttributes{},
 														Level:          2,
 														NumberingStyle: types.LowerRoman,
 														Elements: []interface{}{
 															types.Paragraph{
-																Attributes: types.ElementAttributes{},
 																Lines: [][]interface{}{
 																	{
 																		types.StringElement{Content: "ordered 1.2.i"},
@@ -324,12 +282,10 @@ var _ = Describe("rearrange lists", func() {
 														},
 													},
 													{
-														Attributes:     types.ElementAttributes{},
 														Level:          2,
 														NumberingStyle: types.LowerRoman,
 														Elements: []interface{}{
 															types.Paragraph{
-																Attributes: types.ElementAttributes{},
 																Lines: [][]interface{}{
 																	{
 																		types.StringElement{Content: "ordered 1.2.ii"},
@@ -343,12 +299,10 @@ var _ = Describe("rearrange lists", func() {
 										},
 									},
 									{
-										Attributes:     types.ElementAttributes{},
 										Level:          1,
 										NumberingStyle: types.Arabic,
 										Elements: []interface{}{
 											types.Paragraph{
-												Attributes: types.ElementAttributes{},
 												Lines: [][]interface{}{
 													{
 														types.StringElement{Content: "ordered 1.3"},
@@ -358,12 +312,10 @@ var _ = Describe("rearrange lists", func() {
 										},
 									},
 									{
-										Attributes:     types.ElementAttributes{},
 										Level:          1,
 										NumberingStyle: types.Arabic,
 										Elements: []interface{}{
 											types.Paragraph{
-												Attributes: types.ElementAttributes{},
 												Lines: [][]interface{}{
 													{
 														types.StringElement{Content: "ordered 1.4"},
@@ -377,13 +329,11 @@ var _ = Describe("rearrange lists", func() {
 						},
 					},
 					{
-						Attributes:  types.ElementAttributes{},
 						Level:       1,
 						BulletStyle: types.Dash,
 						CheckStyle:  types.NoCheck,
 						Elements: []interface{}{
 							types.Paragraph{
-								Attributes: types.ElementAttributes{},
 								Lines: [][]interface{}{
 									{
 										types.StringElement{Content: "unordered 2"},
@@ -391,16 +341,13 @@ var _ = Describe("rearrange lists", func() {
 								},
 							},
 							types.UnorderedList{
-								Attributes: types.ElementAttributes{},
 								Items: []types.UnorderedListItem{
 									{
-										Attributes:  types.ElementAttributes{},
 										Level:       2,
 										BulletStyle: types.OneAsterisk,
 										CheckStyle:  types.NoCheck,
 										Elements: []interface{}{
 											types.Paragraph{
-												Attributes: types.ElementAttributes{},
 												Lines: [][]interface{}{
 													{
 														types.StringElement{Content: "unordered 2.1"},
@@ -416,16 +363,13 @@ var _ = Describe("rearrange lists", func() {
 				},
 			},
 		}
-		result, err := rearrangeListItems(actual, false)
-		Expect(err).NotTo(HaveOccurred())
-		Expect(result).To(Equal(expected))
+		Expect(rearrangeListItems(actual, false)).To(Equal(expected))
 	})
 
 	It("labeled list with rich terms", func() {
 		actual := []interface{}{
 			types.LabeledListItem{
-				Attributes: types.ElementAttributes{},
-				Level:      1,
+				Level: 1,
 				Term: []interface{}{
 					types.StringElement{
 						Content: "`foo` term",
@@ -433,7 +377,6 @@ var _ = Describe("rearrange lists", func() {
 				},
 				Elements: []interface{}{
 					types.Paragraph{
-						Attributes: types.ElementAttributes{},
 						Lines: [][]interface{}{
 							{
 								types.StringElement{Content: "description 1"},
@@ -443,8 +386,7 @@ var _ = Describe("rearrange lists", func() {
 				},
 			},
 			types.LabeledListItem{
-				Attributes: types.ElementAttributes{},
-				Level:      2,
+				Level: 2,
 				Term: []interface{}{
 					types.StringElement{
 						Content: "`bar` term",
@@ -452,7 +394,6 @@ var _ = Describe("rearrange lists", func() {
 				},
 				Elements: []interface{}{
 					types.Paragraph{
-						Attributes: types.ElementAttributes{},
 						Lines: [][]interface{}{
 							{
 								types.StringElement{Content: "description 2"},
@@ -464,11 +405,9 @@ var _ = Describe("rearrange lists", func() {
 		}
 		expected := []interface{}{
 			types.LabeledList{
-				Attributes: types.ElementAttributes{},
 				Items: []types.LabeledListItem{
 					{
-						Attributes: types.ElementAttributes{},
-						Level:      1,
+						Level: 1,
 						Term: []interface{}{
 							types.QuotedText{
 								Kind: types.Monospace,
@@ -484,7 +423,6 @@ var _ = Describe("rearrange lists", func() {
 						},
 						Elements: []interface{}{
 							types.Paragraph{
-								Attributes: types.ElementAttributes{},
 								Lines: [][]interface{}{
 									{
 										types.StringElement{Content: "description 1"},
@@ -492,11 +430,9 @@ var _ = Describe("rearrange lists", func() {
 								},
 							},
 							types.LabeledList{
-								Attributes: types.ElementAttributes{},
 								Items: []types.LabeledListItem{
 									{
-										Attributes: types.ElementAttributes{},
-										Level:      2,
+										Level: 2,
 										Term: []interface{}{
 											types.QuotedText{
 												Kind: types.Monospace,
@@ -512,7 +448,6 @@ var _ = Describe("rearrange lists", func() {
 										},
 										Elements: []interface{}{
 											types.Paragraph{
-												Attributes: types.ElementAttributes{},
 												Lines: [][]interface{}{
 													{
 														types.StringElement{Content: "description 2"},
@@ -528,9 +463,7 @@ var _ = Describe("rearrange lists", func() {
 				},
 			},
 		}
-		result, err := rearrangeListItems(actual, false)
-		Expect(err).NotTo(HaveOccurred())
-		Expect(result).To(Equal(expected))
+		Expect(rearrangeListItems(actual, false)).To(Equal(expected))
 	})
 
 	It("callout list with rich terms", func() {
@@ -541,7 +474,6 @@ var _ = Describe("rearrange lists", func() {
 				},
 				Elements: []interface{}{
 					types.Paragraph{
-						Attributes: types.ElementAttributes{},
 						Lines: [][]interface{}{
 							{
 								types.StringElement{Content: "description 1"},
@@ -551,10 +483,8 @@ var _ = Describe("rearrange lists", func() {
 				},
 			},
 			types.CalloutListItem{
-				Attributes: types.ElementAttributes{},
 				Elements: []interface{}{
 					types.Paragraph{
-						Attributes: types.ElementAttributes{},
 						Lines: [][]interface{}{
 							{
 								types.StringElement{Content: "description 2"},
@@ -571,10 +501,8 @@ var _ = Describe("rearrange lists", func() {
 				},
 				Items: []types.CalloutListItem{
 					{
-						Attributes: types.ElementAttributes{},
 						Elements: []interface{}{
 							types.Paragraph{
-								Attributes: types.ElementAttributes{},
 								Lines: [][]interface{}{
 									{
 										types.StringElement{Content: "description 1"},
@@ -584,10 +512,8 @@ var _ = Describe("rearrange lists", func() {
 						},
 					},
 					{
-						Attributes: types.ElementAttributes{},
 						Elements: []interface{}{
 							types.Paragraph{
-								Attributes: types.ElementAttributes{},
 								Lines: [][]interface{}{
 									{
 										types.StringElement{Content: "description 2"},
@@ -599,9 +525,7 @@ var _ = Describe("rearrange lists", func() {
 				},
 			},
 		}
-		result, err := rearrangeListItems(actual, false)
-		Expect(err).NotTo(HaveOccurred())
-		Expect(result).To(Equal(expected))
+		Expect(rearrangeListItems(actual, false)).To(Equal(expected))
 	})
 
 })

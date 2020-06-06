@@ -17,7 +17,6 @@ var _ = Describe("include table of contents", func() {
 		Elements: []interface{}{
 			types.BlankLine{},
 			types.Paragraph{
-				Attributes: types.ElementAttributes{},
 				Lines: [][]interface{}{
 					{
 						types.StringElement{Content: "A short preamble"},
@@ -44,8 +43,6 @@ var _ = Describe("include table of contents", func() {
 			Attributes: types.DocumentAttributes{
 				types.AttrTableOfContents: "",
 			},
-			ElementReferences: types.ElementReferences{}, // can leave empty for this test
-			Footnotes:         []types.Footnote{},
 			Elements: []interface{}{
 				preamble,
 				section,
@@ -55,8 +52,6 @@ var _ = Describe("include table of contents", func() {
 			Attributes: types.DocumentAttributes{
 				types.AttrTableOfContents: "",
 			},
-			ElementReferences: types.ElementReferences{},
-			Footnotes:         []types.Footnote{},
 			Elements: []interface{}{
 				tocPlaceHolder,
 				preamble,
@@ -72,7 +67,6 @@ var _ = Describe("include table of contents", func() {
 				types.AttrTableOfContents: "",
 			},
 			ElementReferences: types.ElementReferences{}, // can leave empty for this test
-			Footnotes:         []types.Footnote{},
 			Elements: []interface{}{
 				types.Section{
 					Level: 0,
@@ -92,7 +86,6 @@ var _ = Describe("include table of contents", func() {
 				types.AttrTableOfContents: "",
 			},
 			ElementReferences: types.ElementReferences{}, // can leave empty for this test
-			Footnotes:         []types.Footnote{},
 			Elements: []interface{}{
 				types.Section{
 					Level: 0,
@@ -117,7 +110,6 @@ var _ = Describe("include table of contents", func() {
 				types.AttrTableOfContents: "",
 			},
 			ElementReferences: types.ElementReferences{}, // can leave empty for this test
-			Footnotes:         []types.Footnote{},
 			Elements: []interface{}{
 				types.Section{
 					Level: 0,
@@ -136,7 +128,6 @@ var _ = Describe("include table of contents", func() {
 				types.AttrTableOfContents: "",
 			},
 			ElementReferences: types.ElementReferences{}, // can leave empty for this test
-			Footnotes:         []types.Footnote{},
 			Elements: []interface{}{
 				types.Section{
 					Level: 0,
@@ -159,8 +150,6 @@ var _ = Describe("include table of contents", func() {
 			Attributes: types.DocumentAttributes{
 				types.AttrTableOfContents: "preamble",
 			},
-			ElementReferences: types.ElementReferences{},
-			Footnotes:         []types.Footnote{},
 			Elements: []interface{}{
 				preamble,
 				section,
@@ -170,8 +159,6 @@ var _ = Describe("include table of contents", func() {
 			Attributes: types.DocumentAttributes{
 				types.AttrTableOfContents: "preamble",
 			},
-			ElementReferences: types.ElementReferences{},
-			Footnotes:         []types.Footnote{},
 			Elements: []interface{}{
 				preamble,
 				tocPlaceHolder,
@@ -186,8 +173,6 @@ var _ = Describe("include table of contents", func() {
 			Attributes: types.DocumentAttributes{
 				types.AttrTableOfContents: "preamble",
 			},
-			ElementReferences: types.ElementReferences{},
-			Footnotes:         []types.Footnote{},
 			Elements: []interface{}{
 				types.Section{
 					Level: 0,
@@ -206,8 +191,6 @@ var _ = Describe("include table of contents", func() {
 			Attributes: types.DocumentAttributes{
 				types.AttrTableOfContents: "preamble",
 			},
-			ElementReferences: types.ElementReferences{},
-			Footnotes:         []types.Footnote{},
 			Elements: []interface{}{
 				types.Section{
 					Level: 0,
@@ -231,8 +214,6 @@ var _ = Describe("include table of contents", func() {
 			Attributes: types.DocumentAttributes{
 				types.AttrTableOfContents: "preamble",
 			},
-			ElementReferences: types.ElementReferences{},
-			Footnotes:         []types.Footnote{},
 			Elements: []interface{}{
 				types.Section{
 					Level: 0,
@@ -250,8 +231,6 @@ var _ = Describe("include table of contents", func() {
 			Attributes: types.DocumentAttributes{
 				types.AttrTableOfContents: "preamble",
 			},
-			ElementReferences: types.ElementReferences{},
-			Footnotes:         []types.Footnote{},
 			Elements: []interface{}{
 				types.Section{
 					Level: 0,

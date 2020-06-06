@@ -40,7 +40,6 @@ func parseDraftDocument(r io.Reader, levelOffsets []levelOffset, config configur
 		return types.DraftDocument{
 			Blocks: []interface{}{
 				types.Paragraph{
-					Attributes: types.ElementAttributes{},
 					Lines: [][]interface{}{
 						{
 							types.StringElement{
@@ -96,11 +95,14 @@ func processFileInclusions(elements []interface{}, attrs types.DocumentAttribute
 			if err != nil {
 				return nil, err
 			}
-			e.Attributes.AddAll(extraAttrs)
+			if e.Attributes == nil && len(extraAttrs) > 0 {
+				e.Attributes = types.ElementAttributes{}
+			}
+			e.Attributes.Add(extraAttrs)
 			result = append(result, types.DelimitedBlock{
 				Attributes: e.Attributes,
 				Kind:       e.Kind,
-				Elements:   types.NilSafe(elmts),
+				Elements:   elmts,
 			})
 		case types.Section:
 			for _, offset := range levelOffsets {

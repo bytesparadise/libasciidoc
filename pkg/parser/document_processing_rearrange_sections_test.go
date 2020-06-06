@@ -48,7 +48,6 @@ var _ = Describe("rearrange sections", func() {
 				Title: sectionATitle,
 				Elements: []interface{}{
 					types.Paragraph{
-						Attributes: types.ElementAttributes{},
 						Lines: [][]interface{}{
 							{
 								types.StringElement{Content: "a paragraph"},
@@ -65,7 +64,6 @@ var _ = Describe("rearrange sections", func() {
 				Title: sectionAaTitle,
 				Elements: []interface{}{
 					types.Paragraph{
-						Attributes: types.ElementAttributes{},
 						Lines: [][]interface{}{
 							{
 								types.StringElement{Content: "a paragraph"},
@@ -82,7 +80,6 @@ var _ = Describe("rearrange sections", func() {
 				Title: sectionBTitle,
 				Elements: []interface{}{
 					types.Paragraph{
-						Attributes: types.ElementAttributes{},
 						Lines: [][]interface{}{
 							{
 								types.StringElement{Content: "a paragraph"},
@@ -93,7 +90,6 @@ var _ = Describe("rearrange sections", func() {
 			},
 		}
 		expected := types.Document{
-			Attributes: types.DocumentAttributes{},
 			ElementReferences: types.ElementReferences{
 				"_a_header":    doctitle,
 				"_section_a":   sectionATitle,
@@ -116,7 +112,6 @@ var _ = Describe("rearrange sections", func() {
 							Title: sectionATitle,
 							Elements: []interface{}{
 								types.Paragraph{
-									Attributes: types.ElementAttributes{},
 									Lines: [][]interface{}{
 										{
 											types.StringElement{Content: "a paragraph"},
@@ -131,7 +126,6 @@ var _ = Describe("rearrange sections", func() {
 									Title: sectionAaTitle,
 									Elements: []interface{}{
 										types.Paragraph{
-											Attributes: types.ElementAttributes{},
 											Lines: [][]interface{}{
 												{
 													types.StringElement{Content: "a paragraph"},
@@ -150,7 +144,6 @@ var _ = Describe("rearrange sections", func() {
 							Title: sectionBTitle,
 							Elements: []interface{}{
 								types.Paragraph{
-									Attributes: types.ElementAttributes{},
 									Lines: [][]interface{}{
 										{
 											types.StringElement{Content: "a paragraph"},
@@ -163,8 +156,7 @@ var _ = Describe("rearrange sections", func() {
 				},
 			},
 		}
-		result := rearrangeSections(actual)
-		Expect(result).To(Equal(expected))
+		Expect(rearrangeSections(actual)).To(Equal(expected))
 	})
 
 	It("section levels 1, 2, 3, 3", func() {
@@ -207,7 +199,6 @@ var _ = Describe("rearrange sections", func() {
 				Title: sectionATitle,
 				Elements: []interface{}{
 					types.Paragraph{
-						Attributes: types.ElementAttributes{},
 						Lines: [][]interface{}{
 							{
 								types.StringElement{Content: "a paragraph"},
@@ -224,7 +215,6 @@ var _ = Describe("rearrange sections", func() {
 				Title: sectionAaTitle,
 				Elements: []interface{}{
 					types.Paragraph{
-						Attributes: types.ElementAttributes{},
 						Lines: [][]interface{}{
 							{
 								types.StringElement{Content: "a paragraph"},
@@ -241,7 +231,6 @@ var _ = Describe("rearrange sections", func() {
 				Title: sectionBTitle,
 				Elements: []interface{}{
 					types.Paragraph{
-						Attributes: types.ElementAttributes{},
 						Lines: [][]interface{}{
 							{
 								types.StringElement{Content: "a paragraph"},
@@ -252,7 +241,6 @@ var _ = Describe("rearrange sections", func() {
 			},
 		}
 		expected := types.Document{
-			Attributes: types.DocumentAttributes{},
 			ElementReferences: types.ElementReferences{
 				"_a_header":    doctitle,
 				"_section_a":   sectionATitle,
@@ -275,7 +263,6 @@ var _ = Describe("rearrange sections", func() {
 							Title: sectionATitle,
 							Elements: []interface{}{
 								types.Paragraph{
-									Attributes: types.ElementAttributes{},
 									Lines: [][]interface{}{
 										{
 											types.StringElement{Content: "a paragraph"},
@@ -290,7 +277,6 @@ var _ = Describe("rearrange sections", func() {
 									Title: sectionAaTitle,
 									Elements: []interface{}{
 										types.Paragraph{
-											Attributes: types.ElementAttributes{},
 											Lines: [][]interface{}{
 												{
 													types.StringElement{Content: "a paragraph"},
@@ -307,7 +293,6 @@ var _ = Describe("rearrange sections", func() {
 									Title: sectionBTitle,
 									Elements: []interface{}{
 										types.Paragraph{
-											Attributes: types.ElementAttributes{},
 											Lines: [][]interface{}{
 												{
 													types.StringElement{Content: "a paragraph"},
@@ -322,8 +307,7 @@ var _ = Describe("rearrange sections", func() {
 				},
 			},
 		}
-		result := rearrangeSections(actual)
-		Expect(result).To(Equal(expected))
+		Expect(rearrangeSections(actual)).To(Equal(expected))
 	})
 
 	It("section levels 1, 3, 4, 4", func() {
@@ -366,7 +350,6 @@ var _ = Describe("rearrange sections", func() {
 				Title: sectionATitle,
 				Elements: []interface{}{
 					types.Paragraph{
-						Attributes: types.ElementAttributes{},
 						Lines: [][]interface{}{
 							{
 								types.StringElement{Content: "a paragraph"},
@@ -383,7 +366,6 @@ var _ = Describe("rearrange sections", func() {
 				Title: sectionAaTitle,
 				Elements: []interface{}{
 					types.Paragraph{
-						Attributes: types.ElementAttributes{},
 						Lines: [][]interface{}{
 							{
 								types.StringElement{Content: "a paragraph"},
@@ -400,7 +382,6 @@ var _ = Describe("rearrange sections", func() {
 				Title: sectionBTitle,
 				Elements: []interface{}{
 					types.Paragraph{
-						Attributes: types.ElementAttributes{},
 						Lines: [][]interface{}{
 							{
 								types.StringElement{Content: "a paragraph"},
@@ -411,7 +392,6 @@ var _ = Describe("rearrange sections", func() {
 			},
 		}
 		expected := types.Document{
-			Attributes: types.DocumentAttributes{},
 			ElementReferences: types.ElementReferences{
 				"_a_header":    doctitle,
 				"_section_a":   sectionATitle,
@@ -434,7 +414,6 @@ var _ = Describe("rearrange sections", func() {
 							Title: sectionATitle,
 							Elements: []interface{}{
 								types.Paragraph{
-									Attributes: types.ElementAttributes{},
 									Lines: [][]interface{}{
 										{
 											types.StringElement{Content: "a paragraph"},
@@ -449,7 +428,6 @@ var _ = Describe("rearrange sections", func() {
 									Title: sectionAaTitle,
 									Elements: []interface{}{
 										types.Paragraph{
-											Attributes: types.ElementAttributes{},
 											Lines: [][]interface{}{
 												{
 													types.StringElement{Content: "a paragraph"},
@@ -466,7 +444,6 @@ var _ = Describe("rearrange sections", func() {
 									Title: sectionBTitle,
 									Elements: []interface{}{
 										types.Paragraph{
-											Attributes: types.ElementAttributes{},
 											Lines: [][]interface{}{
 												{
 													types.StringElement{Content: "a paragraph"},
@@ -481,8 +458,7 @@ var _ = Describe("rearrange sections", func() {
 				},
 			},
 		}
-		result := rearrangeSections(actual)
-		Expect(result).To(Equal(expected))
+		Expect(rearrangeSections(actual)).To(Equal(expected))
 	})
 
 })

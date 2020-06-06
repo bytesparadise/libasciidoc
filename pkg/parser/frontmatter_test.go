@@ -29,7 +29,6 @@ first paragraph`
 				Blocks: []interface{}{
 					types.BlankLine{},
 					types.Paragraph{
-						Attributes: types.ElementAttributes{},
 						Lines: [][]interface{}{
 							{
 								types.StringElement{Content: "first paragraph"},
@@ -53,7 +52,6 @@ first paragraph`
 				Blocks: []interface{}{
 					types.BlankLine{},
 					types.Paragraph{
-						Attributes: types.ElementAttributes{},
 						Lines: [][]interface{}{
 							{
 								types.StringElement{Content: "first paragraph"},
@@ -84,11 +82,8 @@ first paragraph`
 					"title":  "a title", // TODO: convert `title` attribute from front-matter into `doctitle` here ?
 					"author": "Xavier",
 				},
-				ElementReferences: types.ElementReferences{},
-				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{
 					types.Paragraph{
-						Attributes: types.ElementAttributes{},
 						Lines: [][]interface{}{
 							{
 								types.StringElement{Content: "first paragraph"},
@@ -106,12 +101,8 @@ first paragraph`
 
 first paragraph`
 			expected := types.Document{
-				Attributes:        types.DocumentAttributes{},
-				ElementReferences: types.ElementReferences{},
-				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{
 					types.Paragraph{
-						Attributes: types.ElementAttributes{},
 						Lines: [][]interface{}{
 							{
 								types.StringElement{Content: "first paragraph"},

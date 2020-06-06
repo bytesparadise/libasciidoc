@@ -20,10 +20,9 @@ var _ = Describe("sections - draft", func() {
 			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.Section{
-						Attributes: types.ElementAttributes{},
-						Level:      0,
-						Title:      doctitle,
-						Elements:   []interface{}{},
+						Level:    0,
+						Title:    doctitle,
+						Elements: []interface{}{},
 					},
 				},
 			}
@@ -38,10 +37,9 @@ var _ = Describe("sections - draft", func() {
 			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.Section{
-						Attributes: types.ElementAttributes{},
-						Level:      0,
-						Title:      doctitle,
-						Elements:   []interface{}{},
+						Level:    0,
+						Title:    doctitle,
+						Elements: []interface{}{},
 					},
 				},
 			}
@@ -59,14 +57,12 @@ and a paragraph`
 			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.Section{
-						Attributes: types.ElementAttributes{},
-						Level:      0,
-						Title:      doctitle,
-						Elements:   []interface{}{},
+						Level:    0,
+						Title:    doctitle,
+						Elements: []interface{}{},
 					},
 					types.BlankLine{},
 					types.Paragraph{
-						Attributes: types.ElementAttributes{},
 						Lines: [][]interface{}{
 							{
 								types.StringElement{Content: "and a paragraph"},
@@ -92,17 +88,15 @@ and a paragraph`
 			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.Section{
-						Attributes: types.ElementAttributes{},
-						Level:      0,
-						Title:      doctitle,
-						Elements:   []interface{}{},
+						Level:    0,
+						Title:    doctitle,
+						Elements: []interface{}{},
 					},
 					types.BlankLine{},
 					types.Section{
-						Attributes: types.ElementAttributes{},
-						Level:      0,
-						Title:      otherDoctitle,
-						Elements:   []interface{}{},
+						Level:    0,
+						Title:    otherDoctitle,
+						Elements: []interface{}{},
 					},
 				},
 			}
@@ -117,10 +111,9 @@ and a paragraph`
 			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.Section{
-						Attributes: types.ElementAttributes{},
-						Level:      1,
-						Title:      section1Title,
-						Elements:   []interface{}{},
+						Level:    1,
+						Title:    section1Title,
+						Elements: []interface{}{},
 					},
 				},
 			}
@@ -140,10 +133,9 @@ and a paragraph`
 			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.Section{
-						Attributes: types.ElementAttributes{},
-						Level:      1,
-						Title:      sectionTitle,
-						Elements:   []interface{}{},
+						Level:    1,
+						Title:    sectionTitle,
+						Elements: []interface{}{},
 					},
 				},
 			}
@@ -163,17 +155,15 @@ and a paragraph`
 			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.Section{
-						Attributes: types.ElementAttributes{},
-						Level:      0,
-						Title:      doctitle,
-						Elements:   []interface{}{},
+						Level:    0,
+						Title:    doctitle,
+						Elements: []interface{}{},
 					},
 					types.BlankLine{},
 					types.Section{
-						Attributes: types.ElementAttributes{},
-						Level:      1,
-						Title:      section1Title,
-						Elements:   []interface{}{},
+						Level:    1,
+						Title:    section1Title,
+						Elements: []interface{}{},
 					},
 				},
 			}
@@ -193,17 +183,15 @@ and a paragraph`
 			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.Section{
-						Attributes: types.ElementAttributes{},
-						Level:      0,
-						Title:      doctitle,
-						Elements:   []interface{}{},
+						Level:    0,
+						Title:    doctitle,
+						Elements: []interface{}{},
 					},
 					types.BlankLine{},
 					types.Section{
-						Attributes: types.ElementAttributes{},
-						Level:      2,
-						Title:      section2Title,
-						Elements:   []interface{}{},
+						Level:    2,
+						Title:    section2Title,
+						Elements: []interface{}{},
 					},
 				},
 			}
@@ -219,13 +207,11 @@ and a paragraph`
 			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.Section{
-						Attributes: types.ElementAttributes{},
-						Level:      1,
-						Title:      section1Title,
-						Elements:   []interface{}{},
+						Level:    1,
+						Title:    section1Title,
+						Elements: []interface{}{},
 					},
 					types.Paragraph{
-						Attributes: types.ElementAttributes{},
 						Lines: [][]interface{}{
 							{
 								types.StringElement{Content: "and a paragraph"},
@@ -247,14 +233,12 @@ and a paragraph`
 			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.Section{
-						Attributes: types.ElementAttributes{},
-						Level:      1,
-						Title:      section1Title,
-						Elements:   []interface{}{},
+						Level:    1,
+						Title:    section1Title,
+						Elements: []interface{}{},
 					},
 					types.BlankLine{},
 					types.Paragraph{
-						Attributes: types.ElementAttributes{},
 						Lines: [][]interface{}{
 							{
 								types.StringElement{Content: "and a paragraph"},
@@ -274,14 +258,12 @@ and a paragraph`
 			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.Section{
-						Attributes: types.ElementAttributes{},
-						Level:      1,
-						Title:      section1Title,
-						Elements:   []interface{}{},
+						Level:    1,
+						Title:    section1Title,
+						Elements: []interface{}{},
 					},
 					types.BlankLine{},
 					types.Paragraph{
-						Attributes: types.ElementAttributes{},
 						Lines: [][]interface{}{
 							{
 								types.StringElement{Content: "and a paragraph"},
@@ -307,8 +289,7 @@ a paragraph`
 			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.Section{
-						Attributes: types.ElementAttributes{},
-						Level:      0,
+						Level: 0,
 						Title: []interface{}{
 							types.StringElement{Content: "a header"},
 						},
@@ -316,15 +297,13 @@ a paragraph`
 					},
 					types.BlankLine{},
 					types.Section{
-						Attributes: types.ElementAttributes{},
-						Level:      1,
+						Level: 1,
 						Title: []interface{}{
 							types.StringElement{Content: "Section A"},
 						},
 						Elements: []interface{}{},
 					},
 					types.Paragraph{
-						Attributes: types.ElementAttributes{},
 						Lines: [][]interface{}{
 							{
 								types.StringElement{Content: "a paragraph"},
@@ -333,15 +312,13 @@ a paragraph`
 					},
 					types.BlankLine{},
 					types.Section{
-						Attributes: types.ElementAttributes{},
-						Level:      2,
+						Level: 2,
 						Title: []interface{}{
 							types.StringElement{Content: "Section A.a"},
 						},
 						Elements: []interface{}{},
 					},
 					types.Paragraph{
-						Attributes: types.ElementAttributes{},
 						Lines: [][]interface{}{
 							{
 								types.StringElement{Content: "a paragraph"},
@@ -350,15 +327,13 @@ a paragraph`
 					},
 					types.BlankLine{},
 					types.Section{
-						Attributes: types.ElementAttributes{},
-						Level:      1,
+						Level: 1,
 						Title: []interface{}{
 							types.StringElement{Content: "Section B"},
 						},
 						Elements: []interface{}{},
 					},
 					types.Paragraph{
-						Attributes: types.ElementAttributes{},
 						Lines: [][]interface{}{
 							{
 								types.StringElement{Content: "a paragraph"},
@@ -442,7 +417,6 @@ a paragraph`
 						Elements: []interface{}{},
 					},
 					types.Paragraph{
-						Attributes: types.ElementAttributes{},
 						Lines: [][]interface{}{
 							{
 								types.StringElement{Content: "a paragraph"},
@@ -467,17 +441,15 @@ a paragraph`
 			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.Section{
-						Attributes: types.ElementAttributes{},
-						Level:      1,
-						Title:      section1aTitle,
-						Elements:   []interface{}{},
+						Level:    1,
+						Title:    section1aTitle,
+						Elements: []interface{}{},
 					},
 					types.BlankLine{},
 					types.Section{
-						Attributes: types.ElementAttributes{},
-						Level:      1,
-						Title:      section1bTitle,
-						Elements:   []interface{}{},
+						Level:    1,
+						Title:    section1bTitle,
+						Elements: []interface{}{},
 					},
 				},
 			}
@@ -490,7 +462,6 @@ a paragraph`
 			section1aTitle := []interface{}{
 				types.StringElement{Content: "link to "},
 				types.InlineLink{
-					Attributes: types.ElementAttributes{},
 					Location: types.Location{
 						Scheme: "https://",
 						Path: []interface{}{
@@ -502,10 +473,9 @@ a paragraph`
 			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.Section{
-						Attributes: types.ElementAttributes{},
-						Level:      1,
-						Title:      section1aTitle,
-						Elements:   []interface{}{},
+						Level:    1,
+						Title:    section1aTitle,
+						Elements: []interface{}{},
 					},
 				},
 			}
@@ -527,12 +497,10 @@ a paragraph with *bold content*`
 				types.StringElement{Content: "section 1"},
 			}
 			expected := types.Document{
-				Attributes: types.DocumentAttributes{},
 				ElementReferences: types.ElementReferences{
 					"_a_header":  title,
 					"_section_1": section1Title,
 				},
-				Footnotes: []types.Footnote{},
 				Elements: []interface{}{
 					types.Section{
 						Level: 0,
@@ -549,7 +517,6 @@ a paragraph with *bold content*`
 								},
 								Elements: []interface{}{
 									types.Paragraph{
-										Attributes: types.ElementAttributes{},
 										Lines: [][]interface{}{
 											{
 												types.StringElement{Content: "a paragraph with "},
@@ -580,8 +547,7 @@ a short preamble
 			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.Section{
-						Attributes: types.ElementAttributes{},
-						Level:      0,
+						Level: 0,
 						Title: []interface{}{
 							types.StringElement{Content: "a title"},
 						},
@@ -589,7 +555,6 @@ a short preamble
 					},
 					types.BlankLine{},
 					types.Paragraph{
-						Attributes: types.ElementAttributes{},
 						Lines: [][]interface{}{
 							{
 								types.StringElement{Content: "a short preamble"},
@@ -598,8 +563,7 @@ a short preamble
 					},
 					types.BlankLine{},
 					types.Section{
-						Attributes: types.ElementAttributes{},
-						Level:      1,
+						Level: 1,
 						Title: []interface{}{
 							types.StringElement{Content: "section 1"},
 						},
@@ -620,8 +584,7 @@ a short preamble
 			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.Section{
-						Attributes: types.ElementAttributes{},
-						Level:      0,
+						Level: 0,
 						Title: []interface{}{
 							types.StringElement{Content: "a title"},
 						},
@@ -632,7 +595,6 @@ a short preamble
 					},
 					types.BlankLine{},
 					types.Paragraph{
-						Attributes: types.ElementAttributes{},
 						Lines: [][]interface{}{
 							{
 								types.StringElement{Content: "a short preamble"},
@@ -641,8 +603,7 @@ a short preamble
 					},
 					types.BlankLine{},
 					types.Section{
-						Attributes: types.ElementAttributes{},
-						Level:      1,
+						Level: 1,
 						Title: []interface{}{
 							types.StringElement{Content: "section 1"},
 						},
@@ -658,8 +619,7 @@ a short preamble
 			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.Section{
-						Attributes: types.ElementAttributes{},
-						Level:      0,
+						Level: 0,
 						Title: []interface{}{
 							types.StringElement{Content: "a title"},
 						},
@@ -667,7 +627,6 @@ a short preamble
 					},
 					types.BlankLine{},
 					types.Paragraph{
-						Attributes: types.ElementAttributes{},
 						Lines: [][]interface{}{
 							{
 								types.StringElement{Content: "a first paragraph"},
@@ -676,7 +635,6 @@ a short preamble
 					},
 					types.BlankLine{},
 					types.Paragraph{
-						Attributes: types.ElementAttributes{},
 						Lines: [][]interface{}{
 							{
 								types.StringElement{Content: "a second paragraph"},
@@ -696,7 +654,6 @@ a short preamble
 			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.Paragraph{
-						Attributes: types.ElementAttributes{},
 						Lines: [][]interface{}{
 							{
 								types.StringElement{Content: "=a header"},
@@ -735,10 +692,9 @@ a short preamble
 			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.Section{
-						Attributes: types.ElementAttributes{},
-						Level:      0,
-						Title:      title,
-						Elements:   []interface{}{},
+						Level:    0,
+						Title:    title,
+						Elements: []interface{}{},
 					},
 					types.BlankLine{},
 					types.LiteralBlock{
@@ -766,7 +722,6 @@ Doc Writer <thedoc@asciidoctor.org>`
 			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.Paragraph{
-						Attributes: types.ElementAttributes{},
 						Lines: [][]interface{}{
 							{
 								types.StringElement{
@@ -802,11 +757,9 @@ var _ = Describe("sections - document", func() {
 				types.StringElement{Content: "a header"},
 			}
 			expected := types.Document{
-				Attributes: types.DocumentAttributes{},
 				ElementReferences: types.ElementReferences{
 					"_a_header": doctitle,
 				},
-				Footnotes: []types.Footnote{},
 				Elements: []interface{}{
 					types.Section{
 						Attributes: types.ElementAttributes{
@@ -827,11 +780,9 @@ var _ = Describe("sections - document", func() {
 				types.StringElement{Content: "a header   "},
 			}
 			expected := types.Document{
-				Attributes: types.DocumentAttributes{},
 				ElementReferences: types.ElementReferences{
 					"_a_header": doctitle,
 				},
-				Footnotes: []types.Footnote{},
 				Elements: []interface{}{
 					types.Section{
 						Attributes: types.ElementAttributes{
@@ -855,11 +806,9 @@ and a paragraph`
 				types.StringElement{Content: "a header"},
 			}
 			expected := types.Document{
-				Attributes: types.DocumentAttributes{},
 				ElementReferences: types.ElementReferences{
 					"_a_header": doctitle,
 				},
-				Footnotes: []types.Footnote{},
 				Elements: []interface{}{
 					types.Section{
 						Attributes: types.ElementAttributes{
@@ -869,7 +818,6 @@ and a paragraph`
 						Title: doctitle,
 						Elements: []interface{}{
 							types.Paragraph{
-								Attributes: types.ElementAttributes{},
 								Lines: [][]interface{}{
 									{
 										types.StringElement{Content: "and a paragraph"},
@@ -895,12 +843,10 @@ and a paragraph`
 			}
 
 			expected := types.Document{
-				Attributes: types.DocumentAttributes{},
 				ElementReferences: types.ElementReferences{
 					"_a_first_header":  doctitle,
 					"_a_second_header": otherDoctitle,
 				},
-				Footnotes: []types.Footnote{},
 				Elements: []interface{}{
 					types.Section{
 						Attributes: types.ElementAttributes{
@@ -929,11 +875,9 @@ and a paragraph`
 				types.StringElement{Content: "section 1"},
 			}
 			expected := types.Document{
-				Attributes: types.DocumentAttributes{},
 				ElementReferences: types.ElementReferences{
 					"_section_1": section1Title,
 				},
-				Footnotes: []types.Footnote{},
 				Elements: []interface{}{
 					types.Section{
 						Attributes: types.ElementAttributes{
@@ -959,11 +903,9 @@ and a paragraph`
 				},
 			}
 			expected := types.Document{
-				Attributes: types.DocumentAttributes{},
 				ElementReferences: types.ElementReferences{
 					"_2_spaces_and_bold_content": sectionTitle,
 				},
-				Footnotes: []types.Footnote{},
 				Elements: []interface{}{
 					types.Section{
 						Attributes: types.ElementAttributes{
@@ -989,12 +931,10 @@ and a paragraph`
 				types.StringElement{Content: "section 1"},
 			}
 			expected := types.Document{
-				Attributes: types.DocumentAttributes{},
 				ElementReferences: types.ElementReferences{
 					"_a_header":  doctitle,
 					"_section_1": section1Title,
 				},
-				Footnotes: []types.Footnote{},
 				Elements: []interface{}{
 					types.Section{
 						Attributes: types.ElementAttributes{
@@ -1029,12 +969,10 @@ and a paragraph`
 				types.StringElement{Content: "section 2"},
 			}
 			expected := types.Document{
-				Attributes: types.DocumentAttributes{},
 				ElementReferences: types.ElementReferences{
 					"_a_header":  doctitle,
 					"_section_2": section2Title,
 				},
-				Footnotes: []types.Footnote{},
 				Elements: []interface{}{
 					types.Section{
 						Attributes: types.ElementAttributes{
@@ -1065,11 +1003,9 @@ and a paragraph`
 				types.StringElement{Content: "a title"},
 			}
 			expected := types.Document{
-				Attributes: types.DocumentAttributes{},
 				ElementReferences: types.ElementReferences{
 					"_a_title": section1Title,
 				},
-				Footnotes: []types.Footnote{},
 				Elements: []interface{}{
 					types.Section{
 						Attributes: types.ElementAttributes{
@@ -1079,7 +1015,6 @@ and a paragraph`
 						Title: section1Title,
 						Elements: []interface{}{
 							types.Paragraph{
-								Attributes: types.ElementAttributes{},
 								Lines: [][]interface{}{
 									{
 										types.StringElement{Content: "and a paragraph"},
@@ -1101,11 +1036,9 @@ and a paragraph`
 				types.StringElement{Content: "a title"},
 			}
 			expected := types.Document{
-				Attributes: types.DocumentAttributes{},
 				ElementReferences: types.ElementReferences{
 					"_a_title": section1Title,
 				},
-				Footnotes: []types.Footnote{},
 				Elements: []interface{}{
 					types.Section{
 						Attributes: types.ElementAttributes{
@@ -1115,7 +1048,6 @@ and a paragraph`
 						Title: section1Title,
 						Elements: []interface{}{
 							types.Paragraph{
-								Attributes: types.ElementAttributes{},
 								Lines: [][]interface{}{
 									{
 										types.StringElement{Content: "and a paragraph"},
@@ -1135,11 +1067,9 @@ and a paragraph`
 				types.StringElement{Content: "a title"},
 			}
 			expected := types.Document{
-				Attributes: types.DocumentAttributes{},
 				ElementReferences: types.ElementReferences{
 					"_a_title": section1Title,
 				},
-				Footnotes: []types.Footnote{},
 				Elements: []interface{}{
 					types.Section{
 						Attributes: types.ElementAttributes{
@@ -1149,7 +1079,6 @@ and a paragraph`
 						Title: section1Title,
 						Elements: []interface{}{
 							types.Paragraph{
-								Attributes: types.ElementAttributes{},
 								Lines: [][]interface{}{
 									{
 										types.StringElement{Content: "and a paragraph"},
@@ -1187,14 +1116,12 @@ a paragraph`
 				types.StringElement{Content: "Section B"},
 			}
 			expected := types.Document{
-				Attributes: types.DocumentAttributes{},
 				ElementReferences: types.ElementReferences{
 					"_a_header":    doctitle,
 					"_section_a":   sectionATitle,
 					"_section_a_a": sectionAaTitle,
 					"_section_b":   sectionBTitle,
 				},
-				Footnotes: []types.Footnote{},
 				Elements: []interface{}{
 					types.Section{
 						Attributes: types.ElementAttributes{
@@ -1211,7 +1138,6 @@ a paragraph`
 								Title: sectionATitle,
 								Elements: []interface{}{
 									types.Paragraph{
-										Attributes: types.ElementAttributes{},
 										Lines: [][]interface{}{
 											{
 												types.StringElement{Content: "a paragraph"},
@@ -1226,7 +1152,6 @@ a paragraph`
 										Title: sectionAaTitle,
 										Elements: []interface{}{
 											types.Paragraph{
-												Attributes: types.ElementAttributes{},
 												Lines: [][]interface{}{
 													{
 														types.StringElement{Content: "a paragraph"},
@@ -1245,7 +1170,6 @@ a paragraph`
 								Title: sectionBTitle,
 								Elements: []interface{}{
 									types.Paragraph{
-										Attributes: types.ElementAttributes{},
 										Lines: [][]interface{}{
 											{
 												types.StringElement{Content: "a paragraph"},
@@ -1285,14 +1209,12 @@ a paragraph`
 				types.StringElement{Content: "Section A.b"},
 			}
 			expected := types.Document{
-				Attributes: types.DocumentAttributes{},
 				ElementReferences: types.ElementReferences{
 					"_a_header":    doctitle,
 					"_section_a":   sectionATitle,
 					"_section_a_a": sectionAaTitle,
 					"_section_a_b": sectionBTitle,
 				},
-				Footnotes: []types.Footnote{},
 				Elements: []interface{}{
 					types.Section{
 						Attributes: types.ElementAttributes{
@@ -1309,7 +1231,6 @@ a paragraph`
 								Title: sectionATitle,
 								Elements: []interface{}{
 									types.Paragraph{
-										Attributes: types.ElementAttributes{},
 										Lines: [][]interface{}{
 											{
 												types.StringElement{Content: "a paragraph"},
@@ -1324,7 +1245,6 @@ a paragraph`
 										Title: sectionAaTitle,
 										Elements: []interface{}{
 											types.Paragraph{
-												Attributes: types.ElementAttributes{},
 												Lines: [][]interface{}{
 													{
 														types.StringElement{Content: "a paragraph"},
@@ -1341,7 +1261,6 @@ a paragraph`
 										Title: sectionBTitle,
 										Elements: []interface{}{
 											types.Paragraph{
-												Attributes: types.ElementAttributes{},
 												Lines: [][]interface{}{
 													{
 														types.StringElement{Content: "a paragraph"},
@@ -1383,14 +1302,12 @@ a paragraph`
 				types.StringElement{Content: "Section A.b"},
 			}
 			expected := types.Document{
-				Attributes: types.DocumentAttributes{},
 				ElementReferences: types.ElementReferences{
 					"_a_header":    doctitle,
 					"_section_a":   sectionATitle,
 					"_section_a_a": sectionAaTitle,
 					"_section_a_b": sectionBTitle,
 				},
-				Footnotes: []types.Footnote{},
 				Elements: []interface{}{
 					types.Section{
 						Attributes: types.ElementAttributes{
@@ -1407,7 +1324,6 @@ a paragraph`
 								Title: sectionATitle,
 								Elements: []interface{}{
 									types.Paragraph{
-										Attributes: types.ElementAttributes{},
 										Lines: [][]interface{}{
 											{
 												types.StringElement{Content: "a paragraph"},
@@ -1422,7 +1338,6 @@ a paragraph`
 										Title: sectionAaTitle,
 										Elements: []interface{}{
 											types.Paragraph{
-												Attributes: types.ElementAttributes{},
 												Lines: [][]interface{}{
 													{
 														types.StringElement{Content: "a paragraph"},
@@ -1439,7 +1354,6 @@ a paragraph`
 										Title: sectionBTitle,
 										Elements: []interface{}{
 											types.Paragraph{
-												Attributes: types.ElementAttributes{},
 												Lines: [][]interface{}{
 													{
 														types.StringElement{Content: "a paragraph"},
@@ -1464,11 +1378,9 @@ a paragraph`
 				types.StringElement{Content: "a header"},
 			}
 			expected := types.Document{
-				Attributes: types.DocumentAttributes{},
 				ElementReferences: types.ElementReferences{
 					"custom_header": sectionTitle,
 				},
-				Footnotes: []types.Footnote{},
 				Elements: []interface{}{
 					types.Section{
 						Attributes: types.ElementAttributes{
@@ -1503,13 +1415,11 @@ a paragraph`
 				types.StringElement{Content: "Section B"},
 			}
 			expected := types.Document{
-				Attributes: types.DocumentAttributes{},
 				ElementReferences: types.ElementReferences{
 					"custom_header": doctitle,
 					"foo":           fooTitle,
 					"bar":           barTitle,
 				},
-				Footnotes: []types.Footnote{},
 				Elements: []interface{}{
 					types.Section{
 						Attributes: types.ElementAttributes{
@@ -1537,7 +1447,6 @@ a paragraph`
 								Title: barTitle,
 								Elements: []interface{}{
 									types.Paragraph{
-										Attributes: types.ElementAttributes{},
 										Lines: [][]interface{}{
 											{
 												types.StringElement{Content: "a paragraph"},
@@ -1565,12 +1474,10 @@ a paragraph`
 			}
 
 			expected := types.Document{
-				Attributes: types.DocumentAttributes{},
 				ElementReferences: types.ElementReferences{
 					"_section_1":   section1aTitle,
 					"_section_1_2": section1bTitle,
 				},
-				Footnotes: []types.Footnote{},
 				Elements: []interface{}{
 					types.Section{
 						Attributes: types.ElementAttributes{
@@ -1612,7 +1519,6 @@ a paragraph`
 					"custom_a_header":  doctitle,
 					"custom_section_1": section1Title,
 				},
-				Footnotes: []types.Footnote{},
 				Elements: []interface{}{
 					types.Section{
 						Attributes: types.ElementAttributes{
@@ -1663,7 +1569,6 @@ a paragraph`
 					"custom1a_section_1a": section1aTitle,
 					"custom1b_section_1b": section1bTitle,
 				},
-				Footnotes: []types.Footnote{},
 				Elements: []interface{}{
 					types.Section{
 						Attributes: types.ElementAttributes{
@@ -1723,7 +1628,6 @@ a paragraph`
 					"custom1a_section_1a": section1aTitle,
 					"custom1b_section_1b": section1bTitle,
 				},
-				Footnotes: []types.Footnote{},
 				Elements: []interface{}{
 					types.Section{
 						Attributes: types.ElementAttributes{
@@ -1762,7 +1666,6 @@ a short preamble
 
 == Section 1`
 			expected := types.Document{
-				Attributes: types.DocumentAttributes{},
 				ElementReferences: types.ElementReferences{
 					"_a_title": []interface{}{
 						types.StringElement{Content: "A Title"},
@@ -1771,7 +1674,6 @@ a short preamble
 						types.StringElement{Content: "Section 1"},
 					},
 				},
-				Footnotes: []types.Footnote{},
 				Elements: []interface{}{
 					types.Section{
 						Attributes: types.ElementAttributes{
@@ -1785,7 +1687,6 @@ a short preamble
 							types.Preamble{
 								Elements: []interface{}{
 									types.Paragraph{
-										Attributes: types.ElementAttributes{},
 										Lines: [][]interface{}{
 											{
 												types.StringElement{Content: "a short preamble"},
@@ -1830,7 +1731,6 @@ a short preamble
 						types.StringElement{Content: "Section 1"},
 					},
 				},
-				Footnotes: []types.Footnote{},
 				Elements: []interface{}{
 					types.Section{
 						Attributes: types.ElementAttributes{
@@ -1845,7 +1745,6 @@ a short preamble
 							types.Preamble{
 								Elements: []interface{}{
 									types.Paragraph{
-										Attributes: types.ElementAttributes{},
 										Lines: [][]interface{}{
 											{
 												types.StringElement{Content: "a short preamble"},
@@ -1877,12 +1776,8 @@ a short preamble
 		It("header invalid - too many spaces", func() {
 			source := "======= a header"
 			expected := types.Document{
-				Attributes:        types.DocumentAttributes{},
-				ElementReferences: types.ElementReferences{},
-				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{
 					types.Paragraph{
-						Attributes: types.ElementAttributes{},
 						Lines: [][]interface{}{
 							{
 								types.StringElement{Content: "======= a header"},
@@ -1896,12 +1791,8 @@ a short preamble
 		It("header invalid - missing space", func() {
 			source := "=a header"
 			expected := types.Document{
-				Attributes:        types.DocumentAttributes{},
-				ElementReferences: types.ElementReferences{},
-				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{
 					types.Paragraph{
-						Attributes: types.ElementAttributes{},
 						Lines: [][]interface{}{
 							{
 								types.StringElement{Content: "=a header"},
@@ -1915,9 +1806,6 @@ a short preamble
 		It("header invalid - header space", func() {
 			source := " = a header with a prefix space"
 			expected := types.Document{
-				Attributes:        types.DocumentAttributes{},
-				ElementReferences: types.ElementReferences{},
-				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{
 					types.LiteralBlock{
 						Attributes: types.ElementAttributes{
@@ -1941,11 +1829,9 @@ a short preamble
 				types.StringElement{Content: "a header"},
 			}
 			expected := types.Document{
-				Attributes: types.DocumentAttributes{},
 				ElementReferences: types.ElementReferences{
 					"_a_header": title,
 				},
-				Footnotes: []types.Footnote{},
 				Elements: []interface{}{
 					types.Section{
 						Attributes: types.ElementAttributes{
@@ -1979,12 +1865,8 @@ a short preamble
 ==============
 Doc Writer <thedoc@asciidoctor.org>`
 			expected := types.Document{
-				Attributes:        types.DocumentAttributes{},
-				ElementReferences: types.ElementReferences{},
-				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{
 					types.Paragraph{
-						Attributes: types.ElementAttributes{},
 						Lines: [][]interface{}{
 							{
 								types.StringElement{

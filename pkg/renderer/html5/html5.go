@@ -254,6 +254,9 @@ func renderManpageHeader(ctx renderer.Context, header types.Section, nameSection
 		return nil, err
 	}
 	description := nameSection.Elements[0].(types.Paragraph) // TODO: type check
+	if description.Attributes == nil {
+		description.Attributes = types.ElementAttributes{}
+	}
 	description.Attributes.AddNonEmpty(types.AttrKind, "manpage")
 	renderedContent, err := renderParagraph(ctx, description)
 	if err != nil {

@@ -15,18 +15,16 @@ var _ = Describe("user macros", func() {
 		It("inline macro empty", func() {
 			source := "AAA hello:[]"
 			expected := types.Paragraph{
-				Attributes: types.ElementAttributes{},
 				Lines: [][]interface{}{
 					{
 						types.StringElement{
 							Content: "AAA ",
 						},
 						types.UserMacro{
-							Kind:       types.InlineMacro,
-							Name:       "hello",
-							Value:      "",
-							Attributes: types.ElementAttributes{},
-							RawText:    "hello:[]",
+							Kind:    types.InlineMacro,
+							Name:    "hello",
+							Value:   "",
+							RawText: "hello:[]",
 						},
 					},
 				},
@@ -37,7 +35,6 @@ var _ = Describe("user macros", func() {
 		It("inline macro with attribute", func() {
 			source := `AAA hello:[suffix="!!!!!"]`
 			expected := types.Paragraph{
-				Attributes: types.ElementAttributes{},
 				Lines: [][]interface{}{
 					{
 						types.StringElement{
@@ -61,18 +58,16 @@ var _ = Describe("user macros", func() {
 		It("inline macro with value", func() {
 			source := `AAA hello:JohnDoe[]`
 			expected := types.Paragraph{
-				Attributes: types.ElementAttributes{},
 				Lines: [][]interface{}{
 					{
 						types.StringElement{
 							Content: "AAA ",
 						},
 						types.UserMacro{
-							Kind:       types.InlineMacro,
-							Name:       "hello",
-							Value:      "JohnDoe",
-							Attributes: types.ElementAttributes{},
-							RawText:    "hello:JohnDoe[]",
+							Kind:    types.InlineMacro,
+							Name:    "hello",
+							Value:   "JohnDoe",
+							RawText: "hello:JohnDoe[]",
 						},
 					},
 				},
@@ -83,7 +78,6 @@ var _ = Describe("user macros", func() {
 		It("inline user macro with value and attributes", func() {
 			source := "repository: git:some/url.git[key1=value1,key2=value2]"
 			expected := types.Paragraph{
-				Attributes: types.ElementAttributes{},
 				Lines: [][]interface{}{
 					{
 						types.StringElement{
@@ -112,11 +106,10 @@ var _ = Describe("user macros", func() {
 
 			source := "git::[]"
 			expected := types.UserMacro{
-				Kind:       types.BlockMacro,
-				Name:       "git",
-				Value:      "",
-				Attributes: types.ElementAttributes{},
-				RawText:    "git::[]",
+				Kind:    types.BlockMacro,
+				Name:    "git",
+				Value:   "",
+				RawText: "git::[]",
 			}
 			Expect(ParseDocumentBlock(source)).To(Equal(expected))
 		})
@@ -153,11 +146,10 @@ var _ = Describe("user macros", func() {
 		It("user macro block with value", func() {
 			source := `git::some/url.git[]`
 			expected := types.UserMacro{
-				Kind:       types.BlockMacro,
-				Name:       "git",
-				Value:      "some/url.git",
-				Attributes: types.ElementAttributes{},
-				RawText:    "git::some/url.git[]",
+				Kind:    types.BlockMacro,
+				Name:    "git",
+				Value:   "some/url.git",
+				RawText: "git::some/url.git[]",
 			}
 			Expect(ParseDocumentBlock(source)).To(Equal(expected))
 		})

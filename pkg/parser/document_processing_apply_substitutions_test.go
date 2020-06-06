@@ -13,7 +13,6 @@ var _ = Describe("document attribute subsititutions", func() {
 		// given
 		elements := []interface{}{
 			types.Paragraph{
-				Attributes: types.ElementAttributes{},
 				Lines: [][]interface{}{
 					{
 						types.DocumentAttributeSubstitution{
@@ -38,7 +37,6 @@ var _ = Describe("document attribute subsititutions", func() {
 		Expect(applied).To(BeTrue())
 		Expect(result).To(Equal([]interface{}{
 			types.Paragraph{
-				Attributes: types.ElementAttributes{},
 				Lines: [][]interface{}{
 					{
 						types.StringElement{
@@ -54,7 +52,6 @@ var _ = Describe("document attribute subsititutions", func() {
 		// given
 		elements := []interface{}{
 			types.Paragraph{
-				Attributes: types.ElementAttributes{},
 				Lines: [][]interface{}{
 					{
 						types.DocumentAttributeSubstitution{
@@ -79,7 +76,6 @@ var _ = Describe("document attribute subsititutions", func() {
 		Expect(applied).To(BeTrue())
 		Expect(result).To(Equal([]interface{}{
 			types.Paragraph{
-				Attributes: types.ElementAttributes{},
 				Lines: [][]interface{}{
 					{
 						types.StringElement{
@@ -95,7 +91,6 @@ var _ = Describe("document attribute subsititutions", func() {
 		// given
 		elements := []interface{}{
 			types.Paragraph{
-				Attributes: types.ElementAttributes{},
 				Lines: [][]interface{}{
 					{
 						types.StringElement{
@@ -123,7 +118,6 @@ var _ = Describe("document attribute subsititutions", func() {
 		Expect(applied).To(BeTrue())
 		Expect(result).To(Equal([]interface{}{
 			types.Paragraph{
-				Attributes: types.ElementAttributes{},
 				Lines: [][]interface{}{
 					{
 						types.StringElement{
@@ -139,7 +133,6 @@ var _ = Describe("document attribute subsititutions", func() {
 		// given
 		elements := []interface{}{
 			types.Paragraph{
-				Attributes: types.ElementAttributes{},
 				Lines: [][]interface{}{
 					{
 						types.StringElement{
@@ -166,7 +159,6 @@ var _ = Describe("document attribute subsititutions", func() {
 		Expect(applied).To(BeFalse())
 		Expect(result).To(Equal([]interface{}{
 			types.Paragraph{
-				Attributes: types.ElementAttributes{},
 				Lines: [][]interface{}{
 					{
 						types.StringElement{
@@ -182,7 +174,6 @@ var _ = Describe("document attribute subsititutions", func() {
 		// given
 		elements := []interface{}{
 			types.Paragraph{
-				Attributes: types.ElementAttributes{},
 				Lines: [][]interface{}{
 					{
 						types.StringElement{
@@ -209,7 +200,6 @@ var _ = Describe("document attribute subsititutions", func() {
 		Expect(applied).To(BeFalse())
 		Expect(result).To(Equal([]interface{}{
 			types.Paragraph{
-				Attributes: types.ElementAttributes{},
 				Lines: [][]interface{}{
 					{
 						types.StringElement{
@@ -225,7 +215,6 @@ var _ = Describe("document attribute subsititutions", func() {
 		// given
 		elements := []interface{}{
 			types.Paragraph{
-				Attributes: types.ElementAttributes{},
 				Lines: [][]interface{}{
 					{
 						types.StringElement{
@@ -262,14 +251,12 @@ var _ = Describe("document attribute subsititutions", func() {
 		Expect(applied).To(BeTrue())
 		Expect(result).To(Equal([]interface{}{
 			types.Paragraph{
-				Attributes: types.ElementAttributes{},
 				Lines: [][]interface{}{
 					{
 						types.StringElement{
 							Content: "a link to ",
 						},
 						types.InlineLink{
-							Attributes: types.ElementAttributes{},
 							Location: types.Location{
 								Scheme: "https://",
 								Path: []interface{}{
@@ -296,7 +283,6 @@ var _ = Describe("document attribute subsititutions", func() {
 				types.OrderedListItem{
 					Elements: []interface{}{
 						types.Paragraph{
-							Attributes: types.ElementAttributes{},
 							Lines: [][]interface{}{
 								{
 									types.DocumentAttributeSubstitution{
@@ -325,7 +311,6 @@ var _ = Describe("document attribute subsititutions", func() {
 				types.OrderedListItem{
 					Elements: []interface{}{
 						types.Paragraph{
-							Attributes: types.ElementAttributes{},
 							Lines: [][]interface{}{
 								{
 									types.StringElement{
@@ -345,7 +330,6 @@ var _ = Describe("document attribute subsititutions", func() {
 				types.UnorderedListItem{
 					Elements: []interface{}{
 						types.Paragraph{
-							Attributes: types.ElementAttributes{},
 							Lines: [][]interface{}{
 								{
 									types.DocumentAttributeSubstitution{
@@ -374,7 +358,6 @@ var _ = Describe("document attribute subsititutions", func() {
 				types.UnorderedListItem{
 					Elements: []interface{}{
 						types.Paragraph{
-							Attributes: types.ElementAttributes{},
 							Lines: [][]interface{}{
 								{
 									types.StringElement{
@@ -394,7 +377,6 @@ var _ = Describe("document attribute subsititutions", func() {
 				types.LabeledListItem{
 					Elements: []interface{}{
 						types.Paragraph{
-							Attributes: types.ElementAttributes{},
 							Lines: [][]interface{}{
 								{
 									types.DocumentAttributeSubstitution{
@@ -423,7 +405,6 @@ var _ = Describe("document attribute subsititutions", func() {
 				types.LabeledListItem{
 					Elements: []interface{}{
 						types.Paragraph{
-							Attributes: types.ElementAttributes{},
 							Lines: [][]interface{}{
 								{
 									types.StringElement{
@@ -446,7 +427,6 @@ var _ = Describe("document attribute subsititutions", func() {
 				types.DelimitedBlock{
 					Elements: []interface{}{
 						types.Paragraph{
-							Attributes: types.ElementAttributes{},
 							Lines: [][]interface{}{
 								{
 									types.DocumentAttributeSubstitution{
@@ -475,7 +455,6 @@ var _ = Describe("document attribute subsititutions", func() {
 				types.DelimitedBlock{
 					Elements: []interface{}{
 						types.Paragraph{
-							Attributes: types.ElementAttributes{},
 							Lines: [][]interface{}{
 								{
 									types.StringElement{
@@ -607,7 +586,6 @@ var _ = Describe("document attribute subsititutions", func() {
 					Name: "foo",
 				},
 				types.Paragraph{
-					Attributes: types.ElementAttributes{},
 					Lines: [][]interface{}{
 						{
 							types.DocumentAttributeSubstitution{
@@ -641,7 +619,6 @@ var _ = Describe("document attribute subsititutions", func() {
 					Name: "foo",
 				},
 				types.Paragraph{
-					Attributes: types.ElementAttributes{},
 					Lines: [][]interface{}{
 						{
 							types.StringElement{

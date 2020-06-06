@@ -34,7 +34,6 @@ with some content linked to <<thetitle>>!`
 					},
 					types.BlankLine{},
 					types.Paragraph{
-						Attributes: types.ElementAttributes{},
 						Lines: [][]interface{}{
 							{
 								types.StringElement{
@@ -77,7 +76,6 @@ with some content linked to <<thetitle,a label to the title>>!`
 					},
 					types.BlankLine{},
 					types.Paragraph{
-						Attributes: types.ElementAttributes{},
 						Lines: [][]interface{}{
 							{
 								types.StringElement{
@@ -106,7 +104,6 @@ with some content linked to <<thetitle,a label to the title>>!`
 			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.Paragraph{
-						Attributes: types.ElementAttributes{},
 						Lines: [][]interface{}{
 							{
 								types.StringElement{
@@ -147,7 +144,6 @@ with some content linked to <<thetitle,a label to the title>>!`
 			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.Paragraph{
-						Attributes: types.ElementAttributes{},
 						Lines: [][]interface{}{
 							{
 								types.StringElement{
@@ -193,7 +189,6 @@ var _ = Describe("cross references - document", func() {
 
 with some content linked to <<thetitle>>!`
 			expected := types.Document{
-				Attributes: types.DocumentAttributes{},
 				ElementReferences: types.ElementReferences{
 					"thetitle": []interface{}{
 						types.StringElement{
@@ -201,7 +196,6 @@ with some content linked to <<thetitle>>!`
 						},
 					},
 				},
-				Footnotes: []types.Footnote{},
 				Elements: []interface{}{
 					types.Section{
 						Level: 1,
@@ -216,7 +210,6 @@ with some content linked to <<thetitle>>!`
 						},
 						Elements: []interface{}{
 							types.Paragraph{
-								Attributes: types.ElementAttributes{},
 								Lines: [][]interface{}{
 									{
 										types.StringElement{
@@ -245,7 +238,6 @@ with some content linked to <<thetitle>>!`
 
 with some content linked to <<thetitle,a label to the title>>!`
 			expected := types.Document{
-				Attributes: types.DocumentAttributes{},
 				ElementReferences: types.ElementReferences{
 					"thetitle": []interface{}{
 						types.StringElement{
@@ -253,7 +245,6 @@ with some content linked to <<thetitle,a label to the title>>!`
 						},
 					},
 				},
-				Footnotes: []types.Footnote{},
 				Elements: []interface{}{
 					types.Section{
 						Level: 1,
@@ -268,7 +259,6 @@ with some content linked to <<thetitle,a label to the title>>!`
 						},
 						Elements: []interface{}{
 							types.Paragraph{
-								Attributes: types.ElementAttributes{},
 								Lines: [][]interface{}{
 									{
 										types.StringElement{
@@ -297,12 +287,8 @@ with some content linked to <<thetitle,a label to the title>>!`
 		It("external cross reference to other doc with plain text location and rich label", func() {
 			source := `some content linked to xref:another-doc.adoc[*another doc*]!`
 			expected := types.Document{
-				Attributes:        types.DocumentAttributes{},
-				ElementReferences: types.ElementReferences{},
-				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{
 					types.Paragraph{
-						Attributes: types.ElementAttributes{},
 						Lines: [][]interface{}{
 							{
 								types.StringElement{
@@ -347,11 +333,8 @@ some content linked to xref:{foo}[another_doc()]!`
 				Attributes: types.DocumentAttributes{
 					"foo": "another-doc.adoc",
 				},
-				ElementReferences: types.ElementReferences{},
-				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{
 					types.Paragraph{
-						Attributes: types.ElementAttributes{},
 						Lines: [][]interface{}{
 							{
 								types.StringElement{

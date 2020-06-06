@@ -26,10 +26,8 @@ var _ = Describe("preambles", func() {
 				"_section_a": sectionATitle,
 				"_section_b": sectionBTitle,
 			},
-			Footnotes: []types.Footnote{},
 			Elements: []interface{}{
 				types.Paragraph{
-					Attributes: types.ElementAttributes{},
 					Lines: [][]interface{}{
 						{
 							types.StringElement{Content: "a short paragraph"},
@@ -38,7 +36,6 @@ var _ = Describe("preambles", func() {
 				},
 				types.BlankLine{},
 				types.Paragraph{
-					Attributes: types.ElementAttributes{},
 					Lines: [][]interface{}{
 						{
 							types.StringElement{Content: "another short paragraph"},
@@ -55,10 +52,8 @@ var _ = Describe("preambles", func() {
 				"_section_a": sectionATitle,
 				"_section_b": sectionBTitle,
 			},
-			Footnotes: []types.Footnote{},
 			Elements: []interface{}{
 				types.Paragraph{
-					Attributes: types.ElementAttributes{},
 					Lines: [][]interface{}{
 						{
 							types.StringElement{Content: "a short paragraph"},
@@ -67,7 +62,6 @@ var _ = Describe("preambles", func() {
 				},
 				types.BlankLine{},
 				types.Paragraph{
-					Attributes: types.ElementAttributes{},
 					Lines: [][]interface{}{
 						{
 							types.StringElement{Content: "another short paragraph"},
@@ -88,10 +82,8 @@ var _ = Describe("preambles", func() {
 				"_section_a": sectionATitle,
 				"_section_b": sectionBTitle,
 			},
-			Footnotes: []types.Footnote{},
 			Elements: []interface{}{
 				types.Paragraph{
-					Attributes: types.ElementAttributes{},
 					Lines: [][]interface{}{
 						{
 							types.StringElement{Content: "a short paragraph"},
@@ -126,12 +118,10 @@ var _ = Describe("preambles", func() {
 				"_section_a": sectionATitle,
 				"_section_b": sectionBTitle,
 			},
-			Footnotes: []types.Footnote{},
 			Elements: []interface{}{
 				types.Preamble{
 					Elements: []interface{}{
 						types.Paragraph{
-							Attributes: types.ElementAttributes{},
 							Lines: [][]interface{}{
 								{
 									types.StringElement{Content: "a short paragraph"},
@@ -172,10 +162,8 @@ var _ = Describe("preambles", func() {
 				"_section_a": sectionATitle,
 				"_section_b": sectionBTitle,
 			},
-			Footnotes: []types.Footnote{},
 			Elements: []interface{}{
 				types.Paragraph{
-					Attributes: types.ElementAttributes{},
 					Lines: [][]interface{}{
 						{
 							types.StringElement{Content: "a short paragraph"},
@@ -184,7 +172,6 @@ var _ = Describe("preambles", func() {
 				},
 				types.BlankLine{},
 				types.Paragraph{
-					Attributes: types.ElementAttributes{},
 					Lines: [][]interface{}{
 						{
 							types.StringElement{Content: "another short paragraph"},
@@ -219,12 +206,10 @@ var _ = Describe("preambles", func() {
 				"_section_a": sectionATitle,
 				"_section_b": sectionBTitle,
 			},
-			Footnotes: []types.Footnote{},
 			Elements: []interface{}{
 				types.Preamble{
 					Elements: []interface{}{
 						types.Paragraph{
-							Attributes: types.ElementAttributes{},
 							Lines: [][]interface{}{
 								{
 									types.StringElement{Content: "a short paragraph"},
@@ -233,7 +218,6 @@ var _ = Describe("preambles", func() {
 						},
 						types.BlankLine{},
 						types.Paragraph{
-							Attributes: types.ElementAttributes{},
 							Lines: [][]interface{}{
 								{
 									types.StringElement{Content: "another short paragraph"},

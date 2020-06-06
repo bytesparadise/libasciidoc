@@ -55,7 +55,6 @@ var _ = Describe("comments", func() {
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.Paragraph{
-							Attributes: types.ElementAttributes{},
 							Lines: [][]interface{}{
 								{
 									types.StringElement{Content: "foo // A single-line comment."},
@@ -74,7 +73,6 @@ another line`
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.Paragraph{
-							Attributes: types.ElementAttributes{},
 							Lines: [][]interface{}{
 								{
 									types.StringElement{Content: "a first line"},
@@ -99,7 +97,6 @@ another line`
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.Paragraph{
-							Attributes: types.ElementAttributes{},
 							Lines: [][]interface{}{
 								{
 									types.StringElement{Content: "a first line"},
@@ -128,8 +125,7 @@ with multiple lines
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.DelimitedBlock{
-							Attributes: types.ElementAttributes{},
-							Kind:       types.Comment,
+							Kind: types.Comment,
 							Elements: []interface{}{
 								types.VerbatimLine{
 									Content: "a *comment* block",
@@ -155,7 +151,6 @@ a second paragraph`
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.Paragraph{
-							Attributes: types.ElementAttributes{},
 							Lines: [][]interface{}{
 								{
 									types.StringElement{Content: "a first paragraph"},
@@ -164,8 +159,7 @@ a second paragraph`
 						},
 						types.BlankLine{}, // blankline is required between a paragraph and the next block
 						types.DelimitedBlock{
-							Attributes: types.ElementAttributes{},
-							Kind:       types.Comment,
+							Kind: types.Comment,
 							Elements: []interface{}{
 								types.VerbatimLine{
 									Content: "a *comment* block",
@@ -176,7 +170,6 @@ a second paragraph`
 							},
 						},
 						types.Paragraph{
-							Attributes: types.ElementAttributes{},
 							Lines: [][]interface{}{
 								{
 									types.StringElement{Content: "a second paragraph"},
@@ -197,10 +190,7 @@ a second paragraph`
 			It("single line comment alone", func() {
 				source := `// A single-line comment.`
 				expected := types.Document{
-					Attributes:        types.DocumentAttributes{},
-					ElementReferences: types.ElementReferences{},
-					Footnotes:         []types.Footnote{},
-					Elements:          []interface{}{},
+					Elements: []interface{}{},
 				}
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
@@ -208,10 +198,7 @@ a second paragraph`
 			It("single line comment with prefixing spaces alone", func() {
 				source := `  // A single-line comment.`
 				expected := types.Document{
-					Attributes:        types.DocumentAttributes{},
-					ElementReferences: types.ElementReferences{},
-					Footnotes:         []types.Footnote{},
-					Elements:          []interface{}{},
+					Elements: []interface{}{},
 				}
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
@@ -219,10 +206,7 @@ a second paragraph`
 			It("single line comment with prefixing tabs alone", func() {
 				source := "\t\t// A single-line comment."
 				expected := types.Document{
-					Attributes:        types.DocumentAttributes{},
-					ElementReferences: types.ElementReferences{},
-					Footnotes:         []types.Footnote{},
-					Elements:          []interface{}{},
+					Elements: []interface{}{},
 				}
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
@@ -230,12 +214,8 @@ a second paragraph`
 			It("single line comment at end of line", func() {
 				source := `foo // A single-line comment.`
 				expected := types.Document{
-					Attributes:        types.DocumentAttributes{},
-					ElementReferences: types.ElementReferences{},
-					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.Paragraph{
-							Attributes: types.ElementAttributes{},
 							Lines: [][]interface{}{
 								{
 									types.StringElement{Content: "foo // A single-line comment."},
@@ -252,12 +232,8 @@ a second paragraph`
 // A single-line comment.
 another line`
 				expected := types.Document{
-					Attributes:        types.DocumentAttributes{},
-					ElementReferences: types.ElementReferences{},
-					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.Paragraph{
-							Attributes: types.ElementAttributes{},
 							Lines: [][]interface{}{
 								{
 									types.StringElement{Content: "a first line"},
@@ -277,12 +253,8 @@ another line`
 	// A single-line comment.
 another line`
 				expected := types.Document{
-					Attributes:        types.DocumentAttributes{},
-					ElementReferences: types.ElementReferences{},
-					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.Paragraph{
-							Attributes: types.ElementAttributes{},
 							Lines: [][]interface{}{
 								{
 									types.StringElement{Content: "a first line"},
@@ -306,10 +278,7 @@ a *comment* block
 with multiple lines
 ////`
 				expected := types.Document{
-					Attributes:        types.DocumentAttributes{},
-					ElementReferences: types.ElementReferences{},
-					Footnotes:         []types.Footnote{},
-					Elements:          []interface{}{},
+					Elements: []interface{}{},
 				}
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
@@ -323,12 +292,8 @@ with multiple lines
 ////
 a second paragraph`
 				expected := types.Document{
-					Attributes:        types.DocumentAttributes{},
-					ElementReferences: types.ElementReferences{},
-					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.Paragraph{
-							Attributes: types.ElementAttributes{},
 							Lines: [][]interface{}{
 								{
 									types.StringElement{Content: "a first paragraph"},
@@ -336,7 +301,6 @@ a second paragraph`
 							},
 						},
 						types.Paragraph{
-							Attributes: types.ElementAttributes{},
 							Lines: [][]interface{}{
 								{
 									types.StringElement{Content: "a second paragraph"},
@@ -365,11 +329,9 @@ a second paragraph`
 				},
 			}
 			expected := types.Document{
-				Attributes: types.DocumentAttributes{},
 				ElementReferences: types.ElementReferences{
 					"_section_1": section1Title,
 				},
-				Footnotes: []types.Footnote{},
 				Elements: []interface{}{
 					types.Section{
 						Attributes: types.ElementAttributes{
@@ -379,7 +341,6 @@ a second paragraph`
 						Title: section1Title,
 						Elements: []interface{}{
 							types.Paragraph{
-								Attributes: types.ElementAttributes{},
 								Lines: [][]interface{}{
 									{
 										types.StringElement{Content: "a first paragraph"},
@@ -387,7 +348,6 @@ a second paragraph`
 								},
 							},
 							types.Paragraph{
-								Attributes: types.ElementAttributes{},
 								Lines: [][]interface{}{
 									{
 										types.StringElement{Content: "a second paragraph"},
@@ -425,12 +385,10 @@ a second paragraph`
 				},
 			}
 			expected := types.Document{
-				Attributes: types.DocumentAttributes{},
 				ElementReferences: types.ElementReferences{
 					"_section_0": section0Title,
 					"_section_1": section1Title,
 				},
-				Footnotes: []types.Footnote{},
 				Elements: []interface{}{
 					types.Section{
 						Attributes: types.ElementAttributes{
@@ -447,7 +405,6 @@ a second paragraph`
 								Title: section1Title,
 								Elements: []interface{}{
 									types.Paragraph{
-										Attributes: types.ElementAttributes{},
 										Lines: [][]interface{}{
 											{
 												types.StringElement{Content: "a first paragraph"},
@@ -455,7 +412,6 @@ a second paragraph`
 										},
 									},
 									types.Paragraph{
-										Attributes: types.ElementAttributes{},
 										Lines: [][]interface{}{
 											{
 												types.StringElement{Content: "a second paragraph"},
