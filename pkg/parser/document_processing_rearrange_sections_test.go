@@ -48,7 +48,6 @@ var _ = Describe("rearrange sections", func() {
 				Title: sectionATitle,
 				Elements: []interface{}{
 					types.Paragraph{
-						Attributes: types.ElementAttributes{},
 						Lines: [][]interface{}{
 							{
 								types.StringElement{Content: "a paragraph"},
@@ -65,7 +64,6 @@ var _ = Describe("rearrange sections", func() {
 				Title: sectionAaTitle,
 				Elements: []interface{}{
 					types.Paragraph{
-						Attributes: types.ElementAttributes{},
 						Lines: [][]interface{}{
 							{
 								types.StringElement{Content: "a paragraph"},
@@ -82,7 +80,6 @@ var _ = Describe("rearrange sections", func() {
 				Title: sectionBTitle,
 				Elements: []interface{}{
 					types.Paragraph{
-						Attributes: types.ElementAttributes{},
 						Lines: [][]interface{}{
 							{
 								types.StringElement{Content: "a paragraph"},
@@ -93,7 +90,6 @@ var _ = Describe("rearrange sections", func() {
 			},
 		}
 		expected := types.Document{
-			Attributes: types.DocumentAttributes{},
 			ElementReferences: types.ElementReferences{
 				"_a_header":    doctitle,
 				"_section_a":   sectionATitle,
@@ -116,7 +112,6 @@ var _ = Describe("rearrange sections", func() {
 							Title: sectionATitle,
 							Elements: []interface{}{
 								types.Paragraph{
-									Attributes: types.ElementAttributes{},
 									Lines: [][]interface{}{
 										{
 											types.StringElement{Content: "a paragraph"},
@@ -131,7 +126,6 @@ var _ = Describe("rearrange sections", func() {
 									Title: sectionAaTitle,
 									Elements: []interface{}{
 										types.Paragraph{
-											Attributes: types.ElementAttributes{},
 											Lines: [][]interface{}{
 												{
 													types.StringElement{Content: "a paragraph"},
@@ -150,7 +144,6 @@ var _ = Describe("rearrange sections", func() {
 							Title: sectionBTitle,
 							Elements: []interface{}{
 								types.Paragraph{
-									Attributes: types.ElementAttributes{},
 									Lines: [][]interface{}{
 										{
 											types.StringElement{Content: "a paragraph"},
@@ -207,7 +200,6 @@ var _ = Describe("rearrange sections", func() {
 				Title: sectionATitle,
 				Elements: []interface{}{
 					types.Paragraph{
-						Attributes: types.ElementAttributes{},
 						Lines: [][]interface{}{
 							{
 								types.StringElement{Content: "a paragraph"},
@@ -224,7 +216,6 @@ var _ = Describe("rearrange sections", func() {
 				Title: sectionAaTitle,
 				Elements: []interface{}{
 					types.Paragraph{
-						Attributes: types.ElementAttributes{},
 						Lines: [][]interface{}{
 							{
 								types.StringElement{Content: "a paragraph"},
@@ -241,7 +232,6 @@ var _ = Describe("rearrange sections", func() {
 				Title: sectionBTitle,
 				Elements: []interface{}{
 					types.Paragraph{
-						Attributes: types.ElementAttributes{},
 						Lines: [][]interface{}{
 							{
 								types.StringElement{Content: "a paragraph"},
@@ -252,7 +242,6 @@ var _ = Describe("rearrange sections", func() {
 			},
 		}
 		expected := types.Document{
-			Attributes: types.DocumentAttributes{},
 			ElementReferences: types.ElementReferences{
 				"_a_header":    doctitle,
 				"_section_a":   sectionATitle,
@@ -275,7 +264,6 @@ var _ = Describe("rearrange sections", func() {
 							Title: sectionATitle,
 							Elements: []interface{}{
 								types.Paragraph{
-									Attributes: types.ElementAttributes{},
 									Lines: [][]interface{}{
 										{
 											types.StringElement{Content: "a paragraph"},
@@ -290,7 +278,6 @@ var _ = Describe("rearrange sections", func() {
 									Title: sectionAaTitle,
 									Elements: []interface{}{
 										types.Paragraph{
-											Attributes: types.ElementAttributes{},
 											Lines: [][]interface{}{
 												{
 													types.StringElement{Content: "a paragraph"},
@@ -307,7 +294,6 @@ var _ = Describe("rearrange sections", func() {
 									Title: sectionBTitle,
 									Elements: []interface{}{
 										types.Paragraph{
-											Attributes: types.ElementAttributes{},
 											Lines: [][]interface{}{
 												{
 													types.StringElement{Content: "a paragraph"},
@@ -366,7 +352,6 @@ var _ = Describe("rearrange sections", func() {
 				Title: sectionATitle,
 				Elements: []interface{}{
 					types.Paragraph{
-						Attributes: types.ElementAttributes{},
 						Lines: [][]interface{}{
 							{
 								types.StringElement{Content: "a paragraph"},
@@ -383,7 +368,6 @@ var _ = Describe("rearrange sections", func() {
 				Title: sectionAaTitle,
 				Elements: []interface{}{
 					types.Paragraph{
-						Attributes: types.ElementAttributes{},
 						Lines: [][]interface{}{
 							{
 								types.StringElement{Content: "a paragraph"},
@@ -400,7 +384,6 @@ var _ = Describe("rearrange sections", func() {
 				Title: sectionBTitle,
 				Elements: []interface{}{
 					types.Paragraph{
-						Attributes: types.ElementAttributes{},
 						Lines: [][]interface{}{
 							{
 								types.StringElement{Content: "a paragraph"},
@@ -411,7 +394,6 @@ var _ = Describe("rearrange sections", func() {
 			},
 		}
 		expected := types.Document{
-			Attributes: types.DocumentAttributes{},
 			ElementReferences: types.ElementReferences{
 				"_a_header":    doctitle,
 				"_section_a":   sectionATitle,
@@ -434,7 +416,6 @@ var _ = Describe("rearrange sections", func() {
 							Title: sectionATitle,
 							Elements: []interface{}{
 								types.Paragraph{
-									Attributes: types.ElementAttributes{},
 									Lines: [][]interface{}{
 										{
 											types.StringElement{Content: "a paragraph"},
@@ -449,7 +430,6 @@ var _ = Describe("rearrange sections", func() {
 									Title: sectionAaTitle,
 									Elements: []interface{}{
 										types.Paragraph{
-											Attributes: types.ElementAttributes{},
 											Lines: [][]interface{}{
 												{
 													types.StringElement{Content: "a paragraph"},
@@ -466,7 +446,6 @@ var _ = Describe("rearrange sections", func() {
 									Title: sectionBTitle,
 									Elements: []interface{}{
 										types.Paragraph{
-											Attributes: types.ElementAttributes{},
 											Lines: [][]interface{}{
 												{
 													types.StringElement{Content: "a paragraph"},

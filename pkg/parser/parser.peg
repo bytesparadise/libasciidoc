@@ -199,7 +199,7 @@ DocumentAttributeSubstitution <- "{" name:(DocumentAttributeName) "}" {
 // Element Attributes
 // ------------------------------------------
 ElementAttributes <- attrs:(ElementAttribute)+ BlankLine* {
-    return types.NewElementAttributes(attrs.([]interface{})), nil
+    return types.NewElementAttributes(attrs.([]interface{}))
 }
 
 ElementAttribute <- &("[" / "." / "#") // skip if the content does not start with one of those characters
@@ -313,7 +313,7 @@ QuoteAttribute <- ([^\r\n,\]]*) {
 }
 
 InlineAttributes <- "[" attrs:(GenericAttribute)* "]" {
-    return types.NewInlineAttributes(attrs.([]interface{}))
+    return types.NewElementAttributes(attrs.([]interface{}))								
 } 
 
 // ------------------------------------------
@@ -359,11 +359,11 @@ TableOfContentsPlaceHolder <- "toc::[]" EOL
 // User Macro
 // ------------------------------------------
 UserMacroBlock <- name:(UserMacroName) "::" value:(UserMacroValue) attrs:(UserMacroAttributes) {
-    return types.NewUserMacroBlock(name.(string), value.(string), attrs.(types.ElementAttributes), string(c.text))
+    return types.NewUserMacroBlock(name.(string), value.(string), attrs, string(c.text))
 }
 
 InlineUserMacro <- name:(UserMacroName) ":" value:(UserMacroValue) attrs:(UserMacroAttributes) {
-    return types.NewInlineUserMacro(name.(string), value.(string), attrs.(types.ElementAttributes), string(c.text))
+    return types.NewInlineUserMacro(name.(string), value.(string), attrs, string(c.text))
 }
 
 UserMacroName <- ([\pL0-9_-]+) {
@@ -375,7 +375,7 @@ UserMacroValue <- [^:[ \r\n]* {
 }
 
 UserMacroAttributes <- "[" attrs:(GenericAttribute)* "]" {
-    return types.NewInlineAttributes(attrs.([]interface{}))
+    return types.NewElementAttributes(attrs.([]interface{}))								
 }
 
 // ------------------------------------------
@@ -388,7 +388,7 @@ FileInclusion <- incl:("include::" path:(FileLocation) inlineAttributes:(FileInc
 }
 
 FileIncludeAttributes <- "[" attrs:(LineRangesAttribute / TagRangesAttribute / GenericAttribute)* "]" {
-    return types.NewInlineAttributes(attrs.([]interface{}))
+    return types.NewElementAttributes(attrs.([]interface{}))								
 } 
 
 LineRangesAttribute <- "lines=" lines:(LineRangesAttributeValue) ","? { 

@@ -67,11 +67,6 @@ const (
 	AttrImageTitle string = "title"
 )
 
-// ElementWithAttributes an element on which attributes can be added/set
-type ElementWithAttributes interface {
-	AddAttributes(attributes ElementAttributes)
-}
-
 // NewElementID initializes a new attribute map with a single entry for the ID using the given value
 func NewElementID(id string) (ElementAttributes, error) {
 	// log.Debugf("initializing a new ElementID with ID=%s", id)
@@ -196,7 +191,7 @@ func NewSourceAttributes(language interface{}, others ...interface{}) (ElementAt
 	}
 	for _, other := range others {
 		if other, ok := other.(ElementAttributes); ok {
-			result.AddAll(other)
+			result.Add(other)
 		}
 	}
 	return result, nil
@@ -204,6 +199,14 @@ func NewSourceAttributes(language interface{}, others ...interface{}) (ElementAt
 
 // ElementAttributes is a map[string]interface{} with some utility methods
 type ElementAttributes map[string]interface{}
+
+func set(attrs ElementAttributes, key string, value interface{}) ElementAttributes {
+	if attrs == nil {
+		attrs = ElementAttributes{}
+	}
+	attrs[key] = value
+	return attrs
+}
 
 // Has returns the true if an entry with the given key exists
 func (a ElementAttributes) Has(key string) bool {
@@ -239,13 +242,12 @@ func (a ElementAttributes) GetAsBool(key string) bool {
 	return false
 }
 
-// AddAll adds all the given attributes to the current ones
-func (a ElementAttributes) AddAll(attributes ElementAttributes) {
-	if attributes == nil {
-		return
-	}
-	for k, v := range attributes {
-		a[k] = v
+// Add adds the given attributes to the current ones
+func (a ElementAttributes) Add(attributes interface{}) {
+	if attrs, ok := attributes.(ElementAttributes); ok {
+		for k, v := range attrs {
+			a[k] = v
+		}
 	}
 }
 
@@ -275,49 +277,43 @@ func (a ElementAttributes) Positionals() [][]interface{} {
 }
 
 // NewElementAttributes retrieves the ElementID, ElementTitle and ElementInlineLink from the given slice of attributes
-func NewElementAttributes(attributes []interface{}) ElementAttributes {
-	attrs := ElementAttributes{}
-	for _, attr := range attributes {
-		// log.Debugf("processing attribute %[1]v (%[1]T)", attr)
-		switch attr := attr.(type) {
-		case []interface{}:
-			// nested case, because of the grammar syntax,
-			// eg: `attributes:(ElementAttribute* LiteralAttribute ElementAttribute*)`
-			// which is used to ensure that a `LiteralAttribute` element is set amongst the attributes
-			r := NewElementAttributes(attr)
-			for k, v := range r {
-				attrs[k] = v
-			}
-		case ElementAttributes:
-			// TODO: warn if attribute already exists and is overridden
-			for k, v := range attr {
-				attrs[k] = v
-			}
-		case map[string]interface{}:
-			// TODO: warn if attribute already exists and is overridden
-			for k, v := range attr {
-				attrs[k] = v
-			}
-		case nil:
-			// ignore
-		default:
-			log.Warnf("unexpected attributes of type: %T", attr)
-		}
+func NewElementAttributes(attributes interface{}) (ElementAttributes, error) {
+	if attributes == nil {
+		return nil, nil
 	}
-	return attrs
-}
-
-// NewInlineAttributes returns a map of attributes
-func NewInlineAttributes(attrs []interface{}) (ElementAttributes, error) {
-	result := ElementAttributes{}
-	for _, attr := range attrs {
-		if attr, ok := attr.(ElementAttributes); ok {
-			for k, v := range attr {
+	switch attrs := attributes.(type) {
+	case []interface{}:
+		// nested case, because of the grammar syntax,
+		// eg: `attributes:(ElementAttribute* LiteralAttribute ElementAttribute*)`
+		// which is used to ensure that a `LiteralAttribute` element is set amongst the attributes
+		if len(attrs) == 0 {
+			return nil, nil
+		}
+		result := ElementAttributes{}
+		for _, a := range attrs {
+			r, err := NewElementAttributes(a)
+			if err != nil {
+				return nil, err
+			}
+			for k, v := range r {
 				result[k] = v
 			}
 		}
+		return result, nil
+	case ElementAttributes:
+		return attrs, nil
+	case map[string]interface{}:
+		if len(attrs) == 0 {
+			return nil, nil
+		}
+		result := ElementAttributes{}
+		for k, v := range attrs {
+			result[k] = v
+		}
+		return result, nil
+	default:
+		return nil, fmt.Errorf("unexpected type of attribute: '%T'", attrs)
 	}
-	return result, nil
 }
 
 func resolveAlt(path Location) string {

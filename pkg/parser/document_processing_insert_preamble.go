@@ -34,7 +34,7 @@ func doInsertPreamble(blocks []interface{}) []interface{} {
 	// no element in the preamble, or no section in the document, so no preamble to generate
 	if len(preamble.Elements) == 0 || len(preamble.Elements) == len(blocks) {
 		log.Debugf("skipping preamble (%d vs %d)", len(preamble.Elements), len(blocks))
-		return types.NilSafe(blocks)
+		return blocks
 	}
 	// now, insert the preamble instead of the 'n' blocks that belong to the preamble
 	// and copy the other items

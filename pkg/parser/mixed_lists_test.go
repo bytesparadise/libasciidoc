@@ -20,20 +20,14 @@ var _ = Describe("mixed lists - document", func() {
 * Item C
 * Item D`
 			expected := types.Document{
-				Attributes:        types.DocumentAttributes{},
-				ElementReferences: types.ElementReferences{},
-				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{
 					types.OrderedList{
-						Attributes: types.ElementAttributes{},
 						Items: []types.OrderedListItem{
 							{
 								Level:          1,
 								NumberingStyle: types.Arabic,
-								Attributes:     map[string]interface{}{},
 								Elements: []interface{}{
 									types.Paragraph{
-										Attributes: types.ElementAttributes{},
 										Lines: [][]interface{}{
 											{
 												types.StringElement{Content: "Item 1"},
@@ -41,16 +35,13 @@ var _ = Describe("mixed lists - document", func() {
 										},
 									},
 									types.UnorderedList{
-										Attributes: types.ElementAttributes{},
 										Items: []types.UnorderedListItem{
 											{
-												Attributes:  types.ElementAttributes{},
 												Level:       1,
 												BulletStyle: types.OneAsterisk,
 												CheckStyle:  types.NoCheck,
 												Elements: []interface{}{
 													types.Paragraph{
-														Attributes: types.ElementAttributes{},
 														Lines: [][]interface{}{
 															{
 																types.StringElement{Content: "Item A"},
@@ -60,13 +51,11 @@ var _ = Describe("mixed lists - document", func() {
 												},
 											},
 											{
-												Attributes:  types.ElementAttributes{},
 												Level:       1,
 												BulletStyle: types.OneAsterisk,
 												CheckStyle:  types.NoCheck,
 												Elements: []interface{}{
 													types.Paragraph{
-														Attributes: types.ElementAttributes{},
 														Lines: [][]interface{}{
 															{
 																types.StringElement{Content: "Item B"},
@@ -80,12 +69,10 @@ var _ = Describe("mixed lists - document", func() {
 								},
 							},
 							{
-								Attributes:     types.ElementAttributes{},
 								Level:          1,
 								NumberingStyle: types.Arabic,
 								Elements: []interface{}{
 									types.Paragraph{
-										Attributes: types.ElementAttributes{},
 										Lines: [][]interface{}{
 											{
 												types.StringElement{Content: "Item 2"},
@@ -93,16 +80,13 @@ var _ = Describe("mixed lists - document", func() {
 										},
 									},
 									types.UnorderedList{
-										Attributes: types.ElementAttributes{},
 										Items: []types.UnorderedListItem{
 											{
-												Attributes:  types.ElementAttributes{},
 												Level:       1,
 												BulletStyle: types.OneAsterisk,
 												CheckStyle:  types.NoCheck,
 												Elements: []interface{}{
 													types.Paragraph{
-														Attributes: types.ElementAttributes{},
 														Lines: [][]interface{}{
 															{
 																types.StringElement{Content: "Item C"},
@@ -112,13 +96,11 @@ var _ = Describe("mixed lists - document", func() {
 												},
 											},
 											{
-												Attributes:  types.ElementAttributes{},
 												Level:       1,
 												BulletStyle: types.OneAsterisk,
 												CheckStyle:  types.NoCheck,
 												Elements: []interface{}{
 													types.Paragraph{
-														Attributes: types.ElementAttributes{},
 														Lines: [][]interface{}{
 															{
 																types.StringElement{Content: "Item D"},
@@ -155,21 +137,15 @@ var _ = Describe("mixed lists - document", func() {
 	- unordered 2
 	* unordered 2.1`
 			expected := types.Document{
-				Attributes:        types.DocumentAttributes{},
-				ElementReferences: types.ElementReferences{},
-				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{
 					types.UnorderedList{
-						Attributes: types.ElementAttributes{},
 						Items: []types.UnorderedListItem{
 							{
-								Attributes:  types.ElementAttributes{},
 								Level:       1,
 								BulletStyle: types.Dash,
 								CheckStyle:  types.NoCheck,
 								Elements: []interface{}{
 									types.Paragraph{
-										Attributes: types.ElementAttributes{},
 										Lines: [][]interface{}{
 											{
 												types.StringElement{Content: "unordered 1"},
@@ -177,15 +153,12 @@ var _ = Describe("mixed lists - document", func() {
 										},
 									},
 									types.OrderedList{
-										Attributes: types.ElementAttributes{},
 										Items: []types.OrderedListItem{
 											{
-												Attributes:     types.ElementAttributes{},
 												Level:          1,
 												NumberingStyle: types.Arabic,
 												Elements: []interface{}{
 													types.Paragraph{
-														Attributes: types.ElementAttributes{},
 														Lines: [][]interface{}{
 															{
 																types.StringElement{Content: "ordered 1.1"},
@@ -193,15 +166,12 @@ var _ = Describe("mixed lists - document", func() {
 														},
 													},
 													types.OrderedList{
-														Attributes: types.ElementAttributes{},
 														Items: []types.OrderedListItem{
 															{
-																Attributes:     types.ElementAttributes{},
 																Level:          2,
 																NumberingStyle: types.LowerAlpha,
 																Elements: []interface{}{
 																	types.Paragraph{
-																		Attributes: types.ElementAttributes{},
 																		Lines: [][]interface{}{
 																			{
 																				types.StringElement{Content: "ordered 1.1.a"},
@@ -211,12 +181,10 @@ var _ = Describe("mixed lists - document", func() {
 																},
 															},
 															{
-																Attributes:     types.ElementAttributes{},
 																Level:          2,
 																NumberingStyle: types.LowerAlpha,
 																Elements: []interface{}{
 																	types.Paragraph{
-																		Attributes: types.ElementAttributes{},
 																		Lines: [][]interface{}{
 																			{
 																				types.StringElement{Content: "ordered 1.1.b"},
@@ -226,12 +194,10 @@ var _ = Describe("mixed lists - document", func() {
 																},
 															},
 															{
-																Attributes:     types.ElementAttributes{},
 																Level:          2,
 																NumberingStyle: types.LowerAlpha,
 																Elements: []interface{}{
 																	types.Paragraph{
-																		Attributes: types.ElementAttributes{},
 																		Lines: [][]interface{}{
 																			{
 																				types.StringElement{Content: "ordered 1.1.c"},
@@ -245,12 +211,10 @@ var _ = Describe("mixed lists - document", func() {
 												},
 											},
 											{
-												Attributes:     types.ElementAttributes{},
 												Level:          1,
 												NumberingStyle: types.Arabic,
 												Elements: []interface{}{
 													types.Paragraph{
-														Attributes: types.ElementAttributes{},
 														Lines: [][]interface{}{
 															{
 																types.StringElement{Content: "ordered 1.2"},
@@ -258,15 +222,12 @@ var _ = Describe("mixed lists - document", func() {
 														},
 													},
 													types.OrderedList{
-														Attributes: types.ElementAttributes{},
 														Items: []types.OrderedListItem{
 															{
-																Attributes:     types.ElementAttributes{},
 																Level:          2,
 																NumberingStyle: types.LowerRoman,
 																Elements: []interface{}{
 																	types.Paragraph{
-																		Attributes: types.ElementAttributes{},
 																		Lines: [][]interface{}{
 																			{
 																				types.StringElement{Content: "ordered 1.2.i"},
@@ -276,12 +237,10 @@ var _ = Describe("mixed lists - document", func() {
 																},
 															},
 															{
-																Attributes:     types.ElementAttributes{},
 																Level:          2,
 																NumberingStyle: types.LowerRoman,
 																Elements: []interface{}{
 																	types.Paragraph{
-																		Attributes: types.ElementAttributes{},
 																		Lines: [][]interface{}{
 																			{
 																				types.StringElement{Content: "ordered 1.2.ii"},
@@ -295,12 +254,10 @@ var _ = Describe("mixed lists - document", func() {
 												},
 											},
 											{
-												Attributes:     types.ElementAttributes{},
 												Level:          1,
 												NumberingStyle: types.Arabic,
 												Elements: []interface{}{
 													types.Paragraph{
-														Attributes: types.ElementAttributes{},
 														Lines: [][]interface{}{
 															{
 																types.StringElement{Content: "ordered 1.3"},
@@ -310,12 +267,10 @@ var _ = Describe("mixed lists - document", func() {
 												},
 											},
 											{
-												Attributes:     types.ElementAttributes{},
 												Level:          1,
 												NumberingStyle: types.Arabic,
 												Elements: []interface{}{
 													types.Paragraph{
-														Attributes: types.ElementAttributes{},
 														Lines: [][]interface{}{
 															{
 																types.StringElement{Content: "ordered 1.4"},
@@ -329,13 +284,11 @@ var _ = Describe("mixed lists - document", func() {
 								},
 							},
 							{
-								Attributes:  types.ElementAttributes{},
 								Level:       1,
 								BulletStyle: types.Dash,
 								CheckStyle:  types.NoCheck,
 								Elements: []interface{}{
 									types.Paragraph{
-										Attributes: types.ElementAttributes{},
 										Lines: [][]interface{}{
 											{
 												types.StringElement{Content: "unordered 2"},
@@ -343,16 +296,13 @@ var _ = Describe("mixed lists - document", func() {
 										},
 									},
 									types.UnorderedList{
-										Attributes: types.ElementAttributes{},
 										Items: []types.UnorderedListItem{
 											{
-												Attributes:  types.ElementAttributes{},
 												Level:       2,
 												BulletStyle: types.OneAsterisk,
 												CheckStyle:  types.NoCheck,
 												Elements: []interface{}{
 													types.Paragraph{
-														Attributes: types.ElementAttributes{},
 														Lines: [][]interface{}{
 															{
 																types.StringElement{Content: "unordered 2.1"},
@@ -398,21 +348,15 @@ ii) ordered 1.2.ii
 .. ordered 3.2.II
 . ordered 3.3`
 			expected := types.Document{
-				Attributes:        types.DocumentAttributes{},
-				ElementReferences: types.ElementReferences{},
-				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{
 					types.UnorderedList{
-						Attributes: types.ElementAttributes{},
 						Items: []types.UnorderedListItem{
 							{
-								Attributes:  types.ElementAttributes{},
 								Level:       1,
 								BulletStyle: types.Dash,
 								CheckStyle:  types.NoCheck,
 								Elements: []interface{}{
 									types.Paragraph{
-										Attributes: types.ElementAttributes{},
 										Lines: [][]interface{}{
 											{
 												types.StringElement{Content: "unordered 1"},
@@ -420,15 +364,12 @@ ii) ordered 1.2.ii
 										},
 									},
 									types.OrderedList{
-										Attributes: types.ElementAttributes{},
 										Items: []types.OrderedListItem{
 											{
-												Attributes:     types.ElementAttributes{},
 												Level:          1,
 												NumberingStyle: types.Arabic,
 												Elements: []interface{}{
 													types.Paragraph{
-														Attributes: types.ElementAttributes{},
 														Lines: [][]interface{}{
 															{
 																types.StringElement{Content: "ordered 1.1"},
@@ -436,15 +377,12 @@ ii) ordered 1.2.ii
 														},
 													},
 													types.OrderedList{
-														Attributes: types.ElementAttributes{},
 														Items: []types.OrderedListItem{
 															{
-																Attributes:     types.ElementAttributes{},
 																Level:          2,
 																NumberingStyle: types.LowerAlpha,
 																Elements: []interface{}{
 																	types.Paragraph{
-																		Attributes: types.ElementAttributes{},
 																		Lines: [][]interface{}{
 																			{
 																				types.StringElement{Content: "ordered 1.1.a"},
@@ -454,12 +392,10 @@ ii) ordered 1.2.ii
 																},
 															},
 															{
-																Attributes:     types.ElementAttributes{},
 																Level:          2,
 																NumberingStyle: types.LowerAlpha,
 																Elements: []interface{}{
 																	types.Paragraph{
-																		Attributes: types.ElementAttributes{},
 																		Lines: [][]interface{}{
 																			{
 																				types.StringElement{Content: "ordered 1.1.b"},
@@ -469,12 +405,10 @@ ii) ordered 1.2.ii
 																},
 															},
 															{
-																Attributes:     types.ElementAttributes{},
 																Level:          2,
 																NumberingStyle: types.LowerAlpha,
 																Elements: []interface{}{
 																	types.Paragraph{
-																		Attributes: types.ElementAttributes{},
 																		Lines: [][]interface{}{
 																			{
 																				types.StringElement{Content: "ordered 1.1.c"},
@@ -488,12 +422,10 @@ ii) ordered 1.2.ii
 												},
 											},
 											{
-												Attributes:     types.ElementAttributes{},
 												Level:          1,
 												NumberingStyle: types.Arabic,
 												Elements: []interface{}{
 													types.Paragraph{
-														Attributes: types.ElementAttributes{},
 														Lines: [][]interface{}{
 															{
 																types.StringElement{Content: "ordered 1.2"},
@@ -501,15 +433,12 @@ ii) ordered 1.2.ii
 														},
 													},
 													types.OrderedList{
-														Attributes: types.ElementAttributes{},
 														Items: []types.OrderedListItem{
 															{
-																Attributes:     types.ElementAttributes{},
 																Level:          2,
 																NumberingStyle: types.LowerRoman,
 																Elements: []interface{}{
 																	types.Paragraph{
-																		Attributes: types.ElementAttributes{},
 																		Lines: [][]interface{}{
 																			{
 																				types.StringElement{Content: "ordered 1.2.i"},
@@ -519,12 +448,10 @@ ii) ordered 1.2.ii
 																},
 															},
 															{
-																Attributes:     types.ElementAttributes{},
 																Level:          2,
 																NumberingStyle: types.LowerRoman,
 																Elements: []interface{}{
 																	types.Paragraph{
-																		Attributes: types.ElementAttributes{},
 																		Lines: [][]interface{}{
 																			{
 																				types.StringElement{Content: "ordered 1.2.ii"},
@@ -538,12 +465,10 @@ ii) ordered 1.2.ii
 												},
 											},
 											{
-												Attributes:     types.ElementAttributes{},
 												Level:          1,
 												NumberingStyle: types.Arabic,
 												Elements: []interface{}{
 													types.Paragraph{
-														Attributes: types.ElementAttributes{},
 														Lines: [][]interface{}{
 															{
 																types.StringElement{Content: "ordered 1.3"},
@@ -553,12 +478,10 @@ ii) ordered 1.2.ii
 												},
 											},
 											{
-												Attributes:     types.ElementAttributes{},
 												Level:          1,
 												NumberingStyle: types.Arabic,
 												Elements: []interface{}{
 													types.Paragraph{
-														Attributes: types.ElementAttributes{},
 														Lines: [][]interface{}{
 															{
 																types.StringElement{Content: "ordered 1.4"},
@@ -572,13 +495,11 @@ ii) ordered 1.2.ii
 								},
 							},
 							{
-								Attributes:  types.ElementAttributes{},
 								Level:       1,
 								BulletStyle: types.Dash,
 								CheckStyle:  types.NoCheck,
 								Elements: []interface{}{
 									types.Paragraph{
-										Attributes: types.ElementAttributes{},
 										Lines: [][]interface{}{
 											{
 												types.StringElement{Content: "unordered 2"},
@@ -586,16 +507,13 @@ ii) ordered 1.2.ii
 										},
 									},
 									types.UnorderedList{
-										Attributes: types.ElementAttributes{},
 										Items: []types.UnorderedListItem{
 											{
-												Attributes:  types.ElementAttributes{},
 												Level:       2,
 												BulletStyle: types.OneAsterisk,
 												CheckStyle:  types.NoCheck,
 												Elements: []interface{}{
 													types.Paragraph{
-														Attributes: types.ElementAttributes{},
 														Lines: [][]interface{}{
 															{
 																types.StringElement{Content: "unordered 2.1"},
@@ -603,16 +521,13 @@ ii) ordered 1.2.ii
 														},
 													},
 													types.UnorderedList{
-														Attributes: types.ElementAttributes{},
 														Items: []types.UnorderedListItem{
 															{
-																Attributes:  types.ElementAttributes{},
 																Level:       3,
 																BulletStyle: types.TwoAsterisks,
 																CheckStyle:  types.NoCheck,
 																Elements: []interface{}{
 																	types.Paragraph{
-																		Attributes: types.ElementAttributes{},
 																		Lines: [][]interface{}{
 																			{
 																				types.StringElement{Content: "unordered 2.1.1"},
@@ -628,13 +543,11 @@ ii) ordered 1.2.ii
 																},
 															},
 															{
-																Attributes:  types.ElementAttributes{},
 																Level:       3,
 																BulletStyle: types.TwoAsterisks,
 																CheckStyle:  types.NoCheck,
 																Elements: []interface{}{
 																	types.Paragraph{
-																		Attributes: types.ElementAttributes{},
 																		Lines: [][]interface{}{
 																			{
 																				types.StringElement{Content: "unordered 2.1.2"},
@@ -648,13 +561,11 @@ ii) ordered 1.2.ii
 												},
 											},
 											{
-												Attributes:  types.ElementAttributes{},
 												Level:       2,
 												BulletStyle: types.OneAsterisk,
 												CheckStyle:  types.NoCheck,
 												Elements: []interface{}{
 													types.Paragraph{
-														Attributes: types.ElementAttributes{},
 														Lines: [][]interface{}{
 															{
 																types.StringElement{Content: "unordered 2.2"},
@@ -668,13 +579,11 @@ ii) ordered 1.2.ii
 								},
 							},
 							{
-								Attributes:  types.ElementAttributes{},
 								Level:       1,
 								BulletStyle: types.Dash,
 								CheckStyle:  types.NoCheck,
 								Elements: []interface{}{
 									types.Paragraph{
-										Attributes: types.ElementAttributes{},
 										Lines: [][]interface{}{
 											{
 												types.StringElement{Content: "unordered 3"},
@@ -682,15 +591,12 @@ ii) ordered 1.2.ii
 										},
 									},
 									types.OrderedList{
-										Attributes: types.ElementAttributes{},
 										Items: []types.OrderedListItem{
 											{
-												Attributes:     types.ElementAttributes{},
 												Level:          1,
 												NumberingStyle: types.Arabic,
 												Elements: []interface{}{
 													types.Paragraph{
-														Attributes: types.ElementAttributes{},
 														Lines: [][]interface{}{
 															{
 																types.StringElement{Content: "ordered 3.1"},
@@ -700,12 +606,10 @@ ii) ordered 1.2.ii
 												},
 											},
 											{
-												Attributes:     types.ElementAttributes{},
 												Level:          1,
 												NumberingStyle: types.Arabic,
 												Elements: []interface{}{
 													types.Paragraph{
-														Attributes: types.ElementAttributes{},
 														Lines: [][]interface{}{
 															{
 																types.StringElement{Content: "ordered 3.2"},
@@ -718,12 +622,10 @@ ii) ordered 1.2.ii
 														},
 														Items: []types.OrderedListItem{
 															{
-																Attributes:     types.ElementAttributes{},
 																Level:          2,
 																NumberingStyle: types.LowerAlpha,
 																Elements: []interface{}{
 																	types.Paragraph{
-																		Attributes: types.ElementAttributes{},
 																		Lines: [][]interface{}{
 																			{
 																				types.StringElement{Content: "ordered 3.2.I"},
@@ -733,12 +635,10 @@ ii) ordered 1.2.ii
 																},
 															},
 															{
-																Attributes:     types.ElementAttributes{},
 																Level:          2,
 																NumberingStyle: types.LowerAlpha,
 																Elements: []interface{}{
 																	types.Paragraph{
-																		Attributes: types.ElementAttributes{},
 																		Lines: [][]interface{}{
 																			{
 																				types.StringElement{Content: "ordered 3.2.II"},
@@ -752,12 +652,10 @@ ii) ordered 1.2.ii
 												},
 											},
 											{
-												Attributes:     types.ElementAttributes{},
 												Level:          1,
 												NumberingStyle: types.Arabic,
 												Elements: []interface{}{
 													types.Paragraph{
-														Attributes: types.ElementAttributes{},
 														Lines: [][]interface{}{
 															{
 																types.StringElement{Content: "ordered 3.3"},
@@ -783,9 +681,6 @@ Operating Systems::
   . Fedora
     * Desktop`
 			expected := types.Document{
-				Attributes:        types.DocumentAttributes{},
-				ElementReferences: types.ElementReferences{},
-				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{
 					types.LabeledList{
 						Attributes: types.ElementAttributes{
@@ -793,8 +688,7 @@ Operating Systems::
 						},
 						Items: []types.LabeledListItem{
 							{
-								Attributes: types.ElementAttributes{},
-								Level:      1,
+								Level: 1,
 								Term: []interface{}{
 									types.StringElement{
 										Content: "Operating Systems",
@@ -802,15 +696,12 @@ Operating Systems::
 								},
 								Elements: []interface{}{
 									types.OrderedList{
-										Attributes: types.ElementAttributes{},
 										Items: []types.OrderedListItem{
 											{
-												Attributes:     types.ElementAttributes{},
 												Level:          1,
 												NumberingStyle: types.Arabic,
 												Elements: []interface{}{
 													types.Paragraph{
-														Attributes: types.ElementAttributes{},
 														Lines: [][]interface{}{
 															{
 																types.StringElement{
@@ -820,16 +711,13 @@ Operating Systems::
 														},
 													},
 													types.UnorderedList{
-														Attributes: types.ElementAttributes{},
 														Items: []types.UnorderedListItem{
 															{
-																Attributes:  types.ElementAttributes{},
 																Level:       1,
 																BulletStyle: types.OneAsterisk,
 																CheckStyle:  types.NoCheck,
 																Elements: []interface{}{
 																	types.Paragraph{
-																		Attributes: types.ElementAttributes{},
 																		Lines: [][]interface{}{
 																			{
 																				types.StringElement{
@@ -879,9 +767,6 @@ Cloud Providers::
 a paragraph
 `
 			expected := types.Document{
-				Attributes:        types.DocumentAttributes{},
-				ElementReferences: types.ElementReferences{},
-				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{
 					types.LabeledList{
 						Attributes: types.ElementAttributes{
@@ -889,8 +774,7 @@ a paragraph
 						},
 						Items: []types.LabeledListItem{
 							{
-								Attributes: types.ElementAttributes{},
-								Level:      1,
+								Level: 1,
 								Term: []interface{}{
 									types.StringElement{
 										Content: "Operating Systems",
@@ -898,11 +782,9 @@ a paragraph
 								},
 								Elements: []interface{}{
 									types.LabeledList{
-										Attributes: types.ElementAttributes{},
 										Items: []types.LabeledListItem{
 											{
-												Attributes: types.ElementAttributes{},
-												Level:      2,
+												Level: 2,
 												Term: []interface{}{
 													types.StringElement{
 														Content: "Linux",
@@ -910,15 +792,12 @@ a paragraph
 												},
 												Elements: []interface{}{
 													types.OrderedList{
-														Attributes: types.ElementAttributes{},
 														Items: []types.OrderedListItem{
 															{
-																Attributes:     types.ElementAttributes{},
 																Level:          1,
 																NumberingStyle: types.Arabic,
 																Elements: []interface{}{
 																	types.Paragraph{
-																		Attributes: types.ElementAttributes{},
 																		Lines: [][]interface{}{
 																			{
 																				types.StringElement{
@@ -928,16 +807,13 @@ a paragraph
 																		},
 																	},
 																	types.UnorderedList{
-																		Attributes: types.ElementAttributes{},
 																		Items: []types.UnorderedListItem{
 																			{
-																				Attributes:  types.ElementAttributes{},
 																				Level:       1,
 																				BulletStyle: types.OneAsterisk,
 																				CheckStyle:  types.NoCheck,
 																				Elements: []interface{}{
 																					types.Paragraph{
-																						Attributes: types.ElementAttributes{},
 																						Lines: [][]interface{}{
 																							{
 																								types.StringElement{
@@ -953,12 +829,10 @@ a paragraph
 																},
 															},
 															{
-																Attributes:     types.ElementAttributes{},
 																Level:          1,
 																NumberingStyle: types.Arabic,
 																Elements: []interface{}{
 																	types.Paragraph{
-																		Attributes: types.ElementAttributes{},
 																		Lines: [][]interface{}{
 																			{
 																				types.StringElement{
@@ -968,16 +842,13 @@ a paragraph
 																		},
 																	},
 																	types.UnorderedList{
-																		Attributes: types.ElementAttributes{},
 																		Items: []types.UnorderedListItem{
 																			{
-																				Attributes:  types.ElementAttributes{},
 																				Level:       1,
 																				BulletStyle: types.OneAsterisk,
 																				CheckStyle:  types.NoCheck,
 																				Elements: []interface{}{
 																					types.Paragraph{
-																						Attributes: types.ElementAttributes{},
 																						Lines: [][]interface{}{
 																							{
 																								types.StringElement{
@@ -989,13 +860,11 @@ a paragraph
 																				},
 																			},
 																			{
-																				Attributes:  types.ElementAttributes{},
 																				Level:       1,
 																				BulletStyle: types.OneAsterisk,
 																				CheckStyle:  types.NoCheck,
 																				Elements: []interface{}{
 																					types.Paragraph{
-																						Attributes: types.ElementAttributes{},
 																						Lines: [][]interface{}{
 																							{
 																								types.StringElement{
@@ -1015,8 +884,7 @@ a paragraph
 												},
 											},
 											{
-												Attributes: types.ElementAttributes{},
-												Level:      2,
+												Level: 2,
 												Term: []interface{}{
 													types.StringElement{
 														Content: "BSD",
@@ -1024,15 +892,12 @@ a paragraph
 												},
 												Elements: []interface{}{
 													types.OrderedList{
-														Attributes: types.ElementAttributes{},
 														Items: []types.OrderedListItem{
 															{
-																Attributes:     types.ElementAttributes{},
 																Level:          1,
 																NumberingStyle: types.Arabic,
 																Elements: []interface{}{
 																	types.Paragraph{
-																		Attributes: types.ElementAttributes{},
 																		Lines: [][]interface{}{
 																			{
 																				types.StringElement{
@@ -1044,12 +909,10 @@ a paragraph
 																},
 															},
 															{
-																Attributes:     types.ElementAttributes{},
 																Level:          1,
 																NumberingStyle: types.Arabic,
 																Elements: []interface{}{
 																	types.Paragraph{
-																		Attributes: types.ElementAttributes{},
 																		Lines: [][]interface{}{
 																			{
 																				types.StringElement{
@@ -1069,8 +932,7 @@ a paragraph
 								},
 							},
 							{
-								Attributes: types.ElementAttributes{},
-								Level:      1,
+								Level: 1,
 								Term: []interface{}{
 									types.StringElement{
 										Content: "Cloud Providers",
@@ -1078,11 +940,9 @@ a paragraph
 								},
 								Elements: []interface{}{
 									types.LabeledList{
-										Attributes: types.ElementAttributes{},
 										Items: []types.LabeledListItem{
 											{
-												Attributes: types.ElementAttributes{},
-												Level:      2,
+												Level: 2,
 												Term: []interface{}{
 													types.StringElement{
 														Content: "PaaS",
@@ -1090,15 +950,12 @@ a paragraph
 												},
 												Elements: []interface{}{
 													types.OrderedList{
-														Attributes: types.ElementAttributes{},
 														Items: []types.OrderedListItem{
 															{
-																Attributes:     types.ElementAttributes{},
 																Level:          1,
 																NumberingStyle: types.Arabic,
 																Elements: []interface{}{
 																	types.Paragraph{
-																		Attributes: types.ElementAttributes{},
 																		Lines: [][]interface{}{
 																			{
 																				types.StringElement{
@@ -1110,12 +967,10 @@ a paragraph
 																},
 															},
 															{
-																Attributes:     types.ElementAttributes{},
 																Level:          1,
 																NumberingStyle: types.Arabic,
 																Elements: []interface{}{
 																	types.Paragraph{
-																		Attributes: types.ElementAttributes{},
 																		Lines: [][]interface{}{
 																			{
 																				types.StringElement{
@@ -1131,8 +986,7 @@ a paragraph
 												},
 											},
 											{
-												Attributes: types.ElementAttributes{},
-												Level:      2,
+												Level: 2,
 												Term: []interface{}{
 													types.StringElement{
 														Content: "IaaS",
@@ -1140,15 +994,12 @@ a paragraph
 												},
 												Elements: []interface{}{
 													types.OrderedList{
-														Attributes: types.ElementAttributes{},
 														Items: []types.OrderedListItem{
 															{
-																Attributes:     types.ElementAttributes{},
 																Level:          1,
 																NumberingStyle: types.Arabic,
 																Elements: []interface{}{
 																	types.Paragraph{
-																		Attributes: types.ElementAttributes{},
 																		Lines: [][]interface{}{
 																			{
 																				types.StringElement{
@@ -1160,12 +1011,10 @@ a paragraph
 																},
 															},
 															{
-																Attributes:     types.ElementAttributes{},
 																Level:          1,
 																NumberingStyle: types.Arabic,
 																Elements: []interface{}{
 																	types.Paragraph{
-																		Attributes: types.ElementAttributes{},
 																		Lines: [][]interface{}{
 																			{
 																				types.StringElement{
@@ -1188,7 +1037,6 @@ a paragraph
 					},
 					// types.BlankLine{},
 					types.Paragraph{
-						Attributes: types.ElementAttributes{},
 						Lines: [][]interface{}{
 							{
 								types.StringElement{
@@ -1211,9 +1059,6 @@ a paragraph
 	.. a
 	. Six`
 			expected := types.Document{
-				Attributes:        types.DocumentAttributes{},
-				ElementReferences: types.ElementReferences{},
-				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{ // a single ordered list
 					types.OrderedList{
 						Attributes: types.ElementAttributes{
@@ -1222,12 +1067,10 @@ a paragraph
 						},
 						Items: []types.OrderedListItem{
 							{
-								Attributes:     types.ElementAttributes{},
 								Level:          1,
 								NumberingStyle: types.Arabic, // will be overridden during rendering
 								Elements: []interface{}{
 									types.Paragraph{
-										Attributes: types.ElementAttributes{},
 										Lines: [][]interface{}{
 											{
 												types.StringElement{
@@ -1237,15 +1080,12 @@ a paragraph
 										},
 									},
 									types.OrderedList{
-										Attributes: types.ElementAttributes{},
 										Items: []types.OrderedListItem{
 											{
-												Attributes:     types.ElementAttributes{},
 												Level:          2,
 												NumberingStyle: types.LowerAlpha,
 												Elements: []interface{}{
 													types.Paragraph{
-														Attributes: types.ElementAttributes{},
 														Lines: [][]interface{}{
 															{
 																types.StringElement{
@@ -1261,12 +1101,10 @@ a paragraph
 								},
 							},
 							{
-								Attributes:     types.ElementAttributes{},
 								Level:          1,
 								NumberingStyle: types.Arabic, // will be overridden during rendering
 								Elements: []interface{}{
 									types.Paragraph{
-										Attributes: types.ElementAttributes{},
 										Lines: [][]interface{}{
 											{
 												types.StringElement{
@@ -1293,9 +1131,6 @@ a paragraph
 .. b
 . Six`
 			expected := types.Document{
-				Attributes:        types.DocumentAttributes{},
-				ElementReferences: types.ElementReferences{},
-				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{ // a single ordered list
 					types.OrderedList{
 						Attributes: types.ElementAttributes{
@@ -1304,12 +1139,10 @@ a paragraph
 						},
 						Items: []types.OrderedListItem{
 							{
-								Attributes:     types.ElementAttributes{},
 								Level:          1,
 								NumberingStyle: types.Arabic, // will be overridden during rendering
 								Elements: []interface{}{
 									types.Paragraph{
-										Attributes: types.ElementAttributes{},
 										Lines: [][]interface{}{
 											{
 												types.StringElement{
@@ -1324,12 +1157,10 @@ a paragraph
 										},
 										Items: []types.OrderedListItem{
 											{
-												Attributes:     types.ElementAttributes{},
 												Level:          2,
 												NumberingStyle: types.LowerAlpha, // will be overridden during rendering
 												Elements: []interface{}{
 													types.Paragraph{
-														Attributes: types.ElementAttributes{},
 														Lines: [][]interface{}{
 															{
 																types.StringElement{
@@ -1341,12 +1172,10 @@ a paragraph
 												},
 											},
 											{
-												Attributes:     types.ElementAttributes{},
 												Level:          2,
 												NumberingStyle: types.LowerAlpha, // will be overridden during rendering
 												Elements: []interface{}{
 													types.Paragraph{
-														Attributes: types.ElementAttributes{},
 														Lines: [][]interface{}{
 															{
 																types.StringElement{
@@ -1362,12 +1191,10 @@ a paragraph
 								},
 							},
 							{
-								Attributes:     types.ElementAttributes{},
 								Level:          1,
 								NumberingStyle: types.Arabic, // will be overridden during rendering
 								Elements: []interface{}{
 									types.Paragraph{
-										Attributes: types.ElementAttributes{},
 										Lines: [][]interface{}{
 											{
 												types.StringElement{
@@ -1393,9 +1220,6 @@ a paragraph
 .. a
 . Six`
 			expected := types.Document{
-				Attributes:        types.DocumentAttributes{},
-				ElementReferences: types.ElementReferences{},
-				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{ // a single ordered list
 					types.OrderedList{
 						Attributes: types.ElementAttributes{
@@ -1404,12 +1228,10 @@ a paragraph
 						},
 						Items: []types.OrderedListItem{
 							{
-								Attributes:     types.ElementAttributes{},
 								Level:          1,
 								NumberingStyle: types.Arabic,
 								Elements: []interface{}{
 									types.Paragraph{
-										Attributes: types.ElementAttributes{},
 										Lines: [][]interface{}{
 											{
 												types.StringElement{
@@ -1428,12 +1250,10 @@ a paragraph
 						},
 						Items: []types.OrderedListItem{
 							{
-								Attributes:     types.ElementAttributes{},
 								Level:          1,
 								NumberingStyle: types.LowerAlpha,
 								Elements: []interface{}{
 									types.Paragraph{
-										Attributes: types.ElementAttributes{},
 										Lines: [][]interface{}{
 											{
 												types.StringElement{
@@ -1443,15 +1263,12 @@ a paragraph
 										},
 									},
 									types.OrderedList{
-										Attributes: types.ElementAttributes{},
 										Items: []types.OrderedListItem{
 											{
-												Attributes:     types.ElementAttributes{},
 												Level:          2,
 												NumberingStyle: types.Arabic,
 												Elements: []interface{}{
 													types.Paragraph{
-														Attributes: types.ElementAttributes{},
 														Lines: [][]interface{}{
 															{
 																types.StringElement{
@@ -1483,9 +1300,6 @@ a paragraph
 . Step 1
 . Step 2`
 			expected := types.Document{
-				Attributes:        types.DocumentAttributes{},
-				ElementReferences: types.ElementReferences{},
-				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{
 					types.UnorderedList{
 						Attributes: types.ElementAttributes{
@@ -1493,7 +1307,6 @@ a paragraph
 						},
 						Items: []types.UnorderedListItem{
 							{
-								Attributes:  types.ElementAttributes{},
 								Level:       1,
 								BulletStyle: types.Dash,
 								CheckStyle:  types.Checked,
@@ -1513,13 +1326,11 @@ a paragraph
 								},
 							},
 							{
-								Attributes:  types.ElementAttributes{},
 								Level:       1,
 								BulletStyle: types.Dash,
 								CheckStyle:  types.NoCheck,
 								Elements: []interface{}{
 									types.Paragraph{
-										Attributes: types.ElementAttributes{},
 										Lines: [][]interface{}{
 											{
 												types.StringElement{
@@ -1538,12 +1349,10 @@ a paragraph
 						},
 						Items: []types.OrderedListItem{
 							{
-								Attributes:     types.ElementAttributes{},
 								Level:          1,
 								NumberingStyle: types.Arabic,
 								Elements: []interface{}{
 									types.Paragraph{
-										Attributes: types.ElementAttributes{},
 										Lines: [][]interface{}{
 											{
 												types.StringElement{
@@ -1555,12 +1364,10 @@ a paragraph
 								},
 							},
 							{
-								Attributes:     types.ElementAttributes{},
 								Level:          1,
 								NumberingStyle: types.Arabic,
 								Elements: []interface{}{
 									types.Paragraph{
-										Attributes: types.ElementAttributes{},
 										Lines: [][]interface{}{
 											{
 												types.StringElement{
@@ -1583,20 +1390,14 @@ a paragraph
 // -
 . b`
 			expected := types.Document{
-				Attributes:        types.DocumentAttributes{},
-				ElementReferences: types.ElementReferences{},
-				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{
 					types.OrderedList{
-						Attributes: types.ElementAttributes{},
 						Items: []types.OrderedListItem{
 							{
-								Attributes:     types.ElementAttributes{},
 								Level:          1,
 								NumberingStyle: types.Arabic,
 								Elements: []interface{}{
 									types.Paragraph{
-										Attributes: types.ElementAttributes{},
 										Lines: [][]interface{}{
 											{
 												types.StringElement{
@@ -1608,12 +1409,10 @@ a paragraph
 								},
 							},
 							{
-								Attributes:     types.ElementAttributes{},
 								Level:          1,
 								NumberingStyle: types.Arabic,
 								Elements: []interface{}{
 									types.Paragraph{
-										Attributes: types.ElementAttributes{},
 										Lines: [][]interface{}{
 											{
 												types.StringElement{
@@ -1638,20 +1437,14 @@ a paragraph
 // -
 . b`
 			expected := types.Document{
-				Attributes:        types.DocumentAttributes{},
-				ElementReferences: types.ElementReferences{},
-				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{
 					types.OrderedList{
-						Attributes: types.ElementAttributes{},
 						Items: []types.OrderedListItem{
 							{
-								Attributes:     types.ElementAttributes{},
 								Level:          1,
 								NumberingStyle: types.Arabic,
 								Elements: []interface{}{
 									types.Paragraph{
-										Attributes: types.ElementAttributes{},
 										Lines: [][]interface{}{
 											{
 												types.StringElement{
@@ -1663,12 +1456,10 @@ a paragraph
 								},
 							},
 							{
-								Attributes:     types.ElementAttributes{},
 								Level:          1,
 								NumberingStyle: types.Arabic,
 								Elements: []interface{}{
 									types.Paragraph{
-										Attributes: types.ElementAttributes{},
 										Lines: [][]interface{}{
 											{
 												types.StringElement{
@@ -1692,20 +1483,14 @@ a paragraph
 // -
 . b`
 			expected := types.Document{
-				Attributes:        types.DocumentAttributes{},
-				ElementReferences: types.ElementReferences{},
-				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{
 					types.OrderedList{
-						Attributes: types.ElementAttributes{},
 						Items: []types.OrderedListItem{
 							{
-								Attributes:     types.ElementAttributes{},
 								Level:          1,
 								NumberingStyle: types.Arabic,
 								Elements: []interface{}{
 									types.Paragraph{
-										Attributes: types.ElementAttributes{},
 										Lines: [][]interface{}{
 											{
 												types.StringElement{
@@ -1719,15 +1504,12 @@ a paragraph
 						},
 					},
 					types.OrderedList{
-						Attributes: types.ElementAttributes{},
 						Items: []types.OrderedListItem{
 							{
-								Attributes:     types.ElementAttributes{},
 								Level:          1,
 								NumberingStyle: types.Arabic,
 								Elements: []interface{}{
 									types.Paragraph{
-										Attributes: types.ElementAttributes{},
 										Lines: [][]interface{}{
 											{
 												types.StringElement{
@@ -1753,20 +1535,14 @@ a paragraph
 // -
 . b`
 			expected := types.Document{
-				Attributes:        types.DocumentAttributes{},
-				ElementReferences: types.ElementReferences{},
-				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{
 					types.OrderedList{
-						Attributes: types.ElementAttributes{},
 						Items: []types.OrderedListItem{
 							{
-								Attributes:     types.ElementAttributes{},
 								Level:          1,
 								NumberingStyle: types.Arabic,
 								Elements: []interface{}{
 									types.Paragraph{
-										Attributes: types.ElementAttributes{},
 										Lines: [][]interface{}{
 											{
 												types.StringElement{
@@ -1780,15 +1556,12 @@ a paragraph
 						},
 					},
 					types.OrderedList{
-						Attributes: types.ElementAttributes{},
 						Items: []types.OrderedListItem{
 							{
-								Attributes:     types.ElementAttributes{},
 								Level:          1,
 								NumberingStyle: types.Arabic,
 								Elements: []interface{}{
 									types.Paragraph{
-										Attributes: types.ElementAttributes{},
 										Lines: [][]interface{}{
 											{
 												types.StringElement{

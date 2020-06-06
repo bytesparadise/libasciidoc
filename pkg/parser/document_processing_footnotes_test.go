@@ -13,7 +13,6 @@ var _ = Describe("footnotes", func() {
 
 		source := []interface{}{
 			types.Paragraph{
-				Attributes: types.ElementAttributes{},
 				Lines: [][]interface{}{
 					{
 						types.StringElement{
@@ -44,7 +43,6 @@ var _ = Describe("footnotes", func() {
 			},
 			types.BlankLine{},
 			types.Paragraph{
-				Attributes: types.ElementAttributes{},
 				Lines: [][]interface{}{
 					{
 						types.StringElement{
@@ -60,7 +58,6 @@ var _ = Describe("footnotes", func() {
 		}
 		expectedDraftDoc := []interface{}{
 			types.Paragraph{
-				Attributes: types.ElementAttributes{},
 				Lines: [][]interface{}{
 					{
 						types.StringElement{
@@ -83,7 +80,6 @@ var _ = Describe("footnotes", func() {
 			},
 			types.BlankLine{},
 			types.Paragraph{
-				Attributes: types.ElementAttributes{},
 				Lines: [][]interface{}{
 					{
 						types.StringElement{

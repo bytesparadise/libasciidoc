@@ -56,9 +56,10 @@ func rearrangeSections(blocks []interface{}) types.Document {
 	if len(sections) > 0 {
 		tle = append(tle, sections[0])
 	}
-
+	if len(elementRefs) == 0 {
+		elementRefs = nil
+	}
 	return types.Document{
-		Attributes:        types.DocumentAttributes{},
 		Elements:          tle,
 		ElementReferences: elementRefs,
 	}

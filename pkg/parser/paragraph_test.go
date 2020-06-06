@@ -19,7 +19,6 @@ var _ = Describe("paragraphs", func() {
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.Paragraph{
-							Attributes: types.ElementAttributes{},
 							Lines: [][]interface{}{
 								{
 									types.StringElement{Content: "hello"},
@@ -36,7 +35,6 @@ var _ = Describe("paragraphs", func() {
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.Paragraph{
-							Attributes: types.ElementAttributes{},
 							Lines: [][]interface{}{
 								{
 									types.StringElement{Content: "a paragraph with some content  "},
@@ -53,7 +51,6 @@ var _ = Describe("paragraphs", func() {
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.Paragraph{
-							Attributes: types.ElementAttributes{},
 							Lines: [][]interface{}{
 								{
 									types.StringElement{Content: "a paragraph with "},
@@ -77,7 +74,6 @@ var _ = Describe("paragraphs", func() {
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.Paragraph{
-							Attributes: types.ElementAttributes{},
 							Lines: [][]interface{}{
 								{
 									types.StringElement{Content: "+"},
@@ -123,7 +119,6 @@ a paragraph`
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.Paragraph{
-							Attributes: types.ElementAttributes{},
 							Lines: [][]interface{}{
 								{
 									types.StringElement{Content: "foo. bar."},
@@ -142,7 +137,6 @@ bar.`
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.Paragraph{
-							Attributes: types.ElementAttributes{},
 							Lines: [][]interface{}{
 								{
 									types.StringElement{Content: "foo. "},
@@ -168,7 +162,6 @@ baz`
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.Paragraph{
-							Attributes: types.ElementAttributes{},
 							Lines: [][]interface{}{
 								{
 									types.StringElement{Content: "foo"},
@@ -221,7 +214,6 @@ foo`
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.Paragraph{
-							Attributes: types.ElementAttributes{},
 							Lines: [][]interface{}{
 								{
 									types.StringElement{Content: "C++"},
@@ -747,7 +739,6 @@ a foo image:foo.png[]`
 										Content: "a foo ",
 									},
 									types.InlineImage{
-										Attributes: types.ElementAttributes{},
 										Location: types.Location{
 											Path: []interface{}{
 												types.StringElement{
@@ -805,8 +796,6 @@ a paragraph`
 					Attributes: types.DocumentAttributes{
 						types.AttrIDPrefix: "bar_",
 					},
-					ElementReferences: types.ElementReferences{},
-					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.ElementAttributes{
@@ -826,13 +815,9 @@ a paragraph`
 			It("empty paragraph", func() {
 				source := `{blank}`
 				expected := types.Document{
-					Attributes:        types.DocumentAttributes{},
-					ElementReferences: types.ElementReferences{},
-					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.Paragraph{
-							Attributes: types.ElementAttributes{},
-							Lines:      [][]interface{}{},
+							Lines: [][]interface{}{},
 						},
 					},
 				}
@@ -842,12 +827,8 @@ a paragraph`
 			It("paragraph with predefined attribute", func() {
 				source := "hello {plus} world"
 				expected := types.Document{
-					Attributes:        types.DocumentAttributes{},
-					ElementReferences: types.ElementReferences{},
-					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.Paragraph{
-							Attributes: types.ElementAttributes{},
 							Lines: [][]interface{}{
 								{
 									types.StringElement{Content: "hello &#43; world"},

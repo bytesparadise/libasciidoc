@@ -55,7 +55,6 @@ a paragraph`
 				source := `[ link=http://foo.bar]
 a paragraph`
 				expected := types.Paragraph{
-					Attributes: types.ElementAttributes{},
 					Lines: [][]interface{}{
 						{
 							types.StringElement{
@@ -76,7 +75,6 @@ a paragraph`
 				source := `[link=http://foo.bar
 a paragraph`
 				expected := types.Paragraph{
-					Attributes: types.ElementAttributes{},
 					Lines: [][]interface{}{
 						{
 							types.StringElement{
@@ -144,7 +142,6 @@ a paragraph`
 				source := `[ #img-foobar ]
 a paragraph`
 				expected := types.Paragraph{
-					Attributes: types.ElementAttributes{},
 					Lines: [][]interface{}{
 						{
 							types.StringElement{
@@ -165,7 +162,6 @@ a paragraph`
 				source := `[#img-foobar
 a paragraph`
 				expected := types.Paragraph{
-					Attributes: types.ElementAttributes{},
 					Lines: [][]interface{}{
 						{
 							types.StringElement{
@@ -213,12 +209,10 @@ a paragraph`
 				source := `. a title
 a list item!`
 				expected := types.OrderedListItem{
-					Attributes:     map[string]interface{}{},
 					Level:          1,
 					NumberingStyle: types.Arabic,
 					Elements: []interface{}{
 						types.Paragraph{
-							Attributes: types.ElementAttributes{},
 							Lines: [][]interface{}{
 								{
 									types.StringElement{
@@ -242,7 +236,6 @@ a list item!`
 a paragraph`
 
 				expected := types.Paragraph{
-					Attributes: types.ElementAttributes{},
 					Lines: [][]interface{}{
 						{
 							types.StringElement{

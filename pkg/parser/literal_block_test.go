@@ -66,7 +66,6 @@ a normal paragraph.`
 					},
 					types.BlankLine{},
 					types.Paragraph{
-						Attributes: types.ElementAttributes{},
 						Lines: [][]interface{}{
 							{
 								types.StringElement{Content: "a normal paragraph."},
@@ -122,7 +121,6 @@ a normal paragraph.`
 						},
 					},
 					types.Paragraph{
-						Attributes: types.ElementAttributes{},
 						Lines: [][]interface{}{
 							{
 								types.StringElement{Content: "a normal paragraph."},
@@ -155,7 +153,6 @@ a normal paragraph.`
 					},
 					types.BlankLine{},
 					types.Paragraph{
-						Attributes: types.ElementAttributes{},
 						Lines: [][]interface{}{
 							{
 								types.StringElement{Content: "a normal paragraph."},
@@ -192,7 +189,6 @@ a normal paragraph.`
 					},
 					types.BlankLine{},
 					types.Paragraph{
-						Attributes: types.ElementAttributes{},
 						Lines: [][]interface{}{
 							{
 								types.StringElement{Content: "a normal paragraph."},
@@ -201,7 +197,7 @@ a normal paragraph.`
 					},
 				},
 			}
-			Expect(ParseDraftDocument(source)).To(Equal(expected))
+			Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 		})
 	})
 

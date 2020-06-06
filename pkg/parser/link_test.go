@@ -17,7 +17,6 @@ var _ = Describe("links", func() {
 			It("external link without text", func() {
 				source := "a link to https://foo.bar"
 				expected := types.Paragraph{
-					Attributes: types.ElementAttributes{},
 					Lines: [][]interface{}{
 						{
 							types.StringElement{Content: "a link to "},
@@ -30,7 +29,6 @@ var _ = Describe("links", func() {
 										},
 									},
 								},
-								Attributes: types.ElementAttributes{},
 							},
 						},
 					},
@@ -41,7 +39,6 @@ var _ = Describe("links", func() {
 			It("external link with empty text", func() {
 				source := "a link to https://foo.bar[]"
 				expected := types.Paragraph{
-					Attributes: types.ElementAttributes{},
 					Lines: [][]interface{}{
 						{
 							types.StringElement{Content: "a link to "},
@@ -54,7 +51,6 @@ var _ = Describe("links", func() {
 										},
 									},
 								},
-								Attributes: types.ElementAttributes{},
 							},
 						},
 					},
@@ -65,7 +61,6 @@ var _ = Describe("links", func() {
 			It("external link with text only", func() {
 				source := "a link to mailto:foo@bar[the foo@bar email]."
 				expected := types.Paragraph{
-					Attributes: types.ElementAttributes{},
 					Lines: [][]interface{}{
 						{
 							types.StringElement{Content: "a link to "},
@@ -96,7 +91,6 @@ var _ = Describe("links", func() {
 			It("external link with text and extra attributes", func() {
 				source := "a link to mailto:foo@bar[the foo@bar email, foo=bar]"
 				expected := types.Paragraph{
-					Attributes: types.ElementAttributes{},
 					Lines: [][]interface{}{
 						{
 							types.StringElement{Content: "a link to "},
@@ -130,14 +124,12 @@ and more text on the
 next lines`
 
 				expected := types.Paragraph{
-					Attributes: types.ElementAttributes{},
 					Lines: [][]interface{}{
 						{
 							types.StringElement{
 								Content: "a ",
 							},
 							types.InlineLink{
-								Attributes: types.ElementAttributes{},
 								Location: types.Location{
 									Scheme: "http://",
 									Path: []interface{}{
@@ -169,14 +161,12 @@ and more text on the
 next lines`
 
 				expected := types.Paragraph{
-					Attributes: types.ElementAttributes{},
 					Lines: [][]interface{}{
 						{
 							types.StringElement{
 								Content: "a ",
 							},
 							types.InlineLink{
-								Attributes: types.ElementAttributes{},
 								Location: types.Location{
 									Scheme: "http://",
 									Path: []interface{}{
@@ -205,7 +195,6 @@ next lines`
 			It("external link with more text afterwards", func() {
 				source := `a link to https://foo.bar and more text`
 				expected := types.Paragraph{
-					Attributes: types.ElementAttributes{},
 					Lines: [][]interface{}{
 						{
 							types.StringElement{Content: "a link to "},
@@ -218,7 +207,6 @@ next lines`
 										},
 									},
 								},
-								Attributes: types.ElementAttributes{},
 							},
 							types.StringElement{Content: " and more text"},
 						},
@@ -232,7 +220,6 @@ next lines`
 				It("external link only with text having comma", func() {
 					source := `a link to http://website.com[A, B, and C]`
 					expected := types.Paragraph{
-						Attributes: types.ElementAttributes{},
 						Lines: [][]interface{}{
 							{
 								types.StringElement{Content: "a link to "},
@@ -272,7 +259,6 @@ next lines`
 				It("external link only with doublequoted text having comma", func() {
 					source := `a link to http://website.com["A, B, and C"]`
 					expected := types.Paragraph{
-						Attributes: types.ElementAttributes{},
 						Lines: [][]interface{}{
 							{
 								types.StringElement{Content: "a link to "},
@@ -302,7 +288,6 @@ next lines`
 				It("external link with doublequoted text having comma and other attrs", func() {
 					source := `a link to http://website.com["A, B, and C", role=foo]`
 					expected := types.Paragraph{
-						Attributes: types.ElementAttributes{},
 						Lines: [][]interface{}{
 							{
 								types.StringElement{Content: "a link to "},
@@ -333,7 +318,6 @@ next lines`
 				It("external link with text having comma and other attributes", func() {
 					source := `a link to http://website.com[A, B, and C, role=foo]`
 					expected := types.Paragraph{
-						Attributes: types.ElementAttributes{},
 						Lines: [][]interface{}{
 							{
 								types.StringElement{Content: "a link to "},
@@ -377,12 +361,10 @@ next lines`
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.Paragraph{
-							Attributes: types.ElementAttributes{},
 							Lines: [][]interface{}{
 								{
 									types.StringElement{Content: "a link to "},
 									types.InlineLink{
-										Attributes: types.ElementAttributes{},
 										Location: types.Location{
 											Scheme: "https://",
 											Path: []interface{}{
@@ -405,7 +387,6 @@ next lines`
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.Paragraph{
-							Attributes: types.ElementAttributes{},
 							Lines: [][]interface{}{
 								{
 									types.StringElement{Content: "a link to "},
@@ -467,7 +448,6 @@ next lines`
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.Paragraph{
-							Attributes: types.ElementAttributes{},
 							Lines: [][]interface{}{
 								{
 									types.StringElement{Content: "a link to "},
@@ -475,7 +455,6 @@ next lines`
 										Kind: types.Bold,
 										Elements: []interface{}{
 											types.InlineLink{
-												Attributes: types.ElementAttributes{},
 												Location: types.Location{
 													Scheme: "https://",
 													Path: []interface{}{
@@ -502,7 +481,6 @@ next lines`
 			It("relative link to doc without text", func() {
 				source := "a link to link:foo.adoc[]"
 				expected := types.Paragraph{
-					Attributes: types.ElementAttributes{},
 					Lines: [][]interface{}{
 						{
 							types.StringElement{Content: "a link to "},
@@ -515,7 +493,6 @@ next lines`
 										},
 									},
 								},
-								Attributes: types.ElementAttributes{},
 							},
 						},
 					},
@@ -526,7 +503,6 @@ next lines`
 			It("relative link to doc with text", func() {
 				source := "a link to link:foo.adoc[foo doc]"
 				expected := types.Paragraph{
-					Attributes: types.ElementAttributes{},
 					Lines: [][]interface{}{
 						{
 							types.StringElement{Content: "a link to "},
@@ -556,7 +532,6 @@ next lines`
 			It("relative link to external URL with text only", func() {
 				source := "a link to link:https://foo.bar[foo doc]"
 				expected := types.Paragraph{
-					Attributes: types.ElementAttributes{},
 					Lines: [][]interface{}{
 						{
 							types.StringElement{Content: "a link to "},
@@ -586,7 +561,6 @@ next lines`
 			It("relative link to external URL with text and extra attributes", func() {
 				source := "a link to link:https://foo.bar[foo doc, foo=bar]"
 				expected := types.Paragraph{
-					Attributes: types.ElementAttributes{},
 					Lines: [][]interface{}{
 						{
 							types.StringElement{Content: "a link to "},
@@ -617,7 +591,6 @@ next lines`
 			It("relative link to external URL with extra attributes only", func() {
 				source := "a link to link:https://foo.bar[foo=bar]"
 				expected := types.Paragraph{
-					Attributes: types.ElementAttributes{},
 					Lines: [][]interface{}{
 						{
 							types.StringElement{Content: "a link to "},
@@ -643,7 +616,6 @@ next lines`
 			It("invalid relative link to doc", func() {
 				source := "a link to link:foo.adoc"
 				expected := types.Paragraph{
-					Attributes: types.ElementAttributes{},
 					Lines: [][]interface{}{
 						{
 							types.StringElement{
@@ -658,7 +630,6 @@ next lines`
 			It("relative link with quoted text attribute", func() {
 				source := "link:/[a _a_ b *b* c `c`]"
 				expected := types.Paragraph{
-					Attributes: types.ElementAttributes{},
 					Lines: [][]interface{}{
 						{
 							types.InlineLink{
@@ -717,7 +688,6 @@ next lines`
 			It("relative link within quoted text", func() {
 				source := "*link:foo[]*"
 				expected := types.Paragraph{
-					Attributes: types.ElementAttributes{},
 					Lines: [][]interface{}{
 						{
 							types.QuotedText{
@@ -732,7 +702,6 @@ next lines`
 												},
 											},
 										},
-										Attributes: types.ElementAttributes{},
 									},
 								},
 							},
@@ -745,7 +714,6 @@ next lines`
 			It("relative link with all valid characters", func() {
 				source := `a link to link:ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789~:/?#@!$&;=()*+,-_.%[as expected]`
 				expected := types.Paragraph{
-					Attributes: types.ElementAttributes{},
 					Lines: [][]interface{}{
 						{
 							types.StringElement{Content: "a link to "},
@@ -776,7 +744,6 @@ next lines`
 				source := `Test 1: link:/test/a b[with space]
 Test 2: link:/test/a%20b[with encoded space]`
 				expected := types.Paragraph{
-					Attributes: types.ElementAttributes{},
 					Lines: [][]interface{}{
 						{
 							types.StringElement{Content: "Test 1: link:/test/a b[with space]"},
@@ -819,16 +786,12 @@ a link to {scheme}:{path}[] and https://foo.baz`
 					Attributes: types.DocumentAttributes{
 						"scheme": "link",
 					},
-					ElementReferences: types.ElementReferences{},
-					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.Paragraph{
-							Attributes: types.ElementAttributes{},
 							Lines: [][]interface{}{
 								{
 									types.StringElement{Content: "a link to "},
 									types.InlineLink{
-										Attributes: types.ElementAttributes{},
 										Location: types.Location{
 											Scheme: "",
 											Path: []interface{}{
@@ -840,7 +803,6 @@ a link to {scheme}:{path}[] and https://foo.baz`
 									},
 									types.StringElement{Content: " and "},
 									types.InlineLink{
-										Attributes: types.ElementAttributes{},
 										Location: types.Location{
 											Scheme: "https://",
 											Path: []interface{}{
@@ -863,7 +825,6 @@ a link to {scheme}:{path}[] and https://foo.baz`
 				It("relative link only with text having comma", func() {
 					source := `a link to link:https://foo.bar[A, B, and C]`
 					expected := types.Paragraph{
-						Attributes: types.ElementAttributes{},
 						Lines: [][]interface{}{
 							{
 								types.StringElement{Content: "a link to "},
@@ -903,7 +864,6 @@ a link to {scheme}:{path}[] and https://foo.baz`
 				It("relative link only with doublequoted text having comma", func() {
 					source := `a link to link:https://foo.bar["A, B, and C"]`
 					expected := types.Paragraph{
-						Attributes: types.ElementAttributes{},
 						Lines: [][]interface{}{
 							{
 								types.StringElement{Content: "a link to "},
@@ -933,7 +893,6 @@ a link to {scheme}:{path}[] and https://foo.baz`
 				It("relative link with doublequoted text having comma and other attrs", func() {
 					source := `a link to link:https://foo.bar["A, B, and C", role=foo]`
 					expected := types.Paragraph{
-						Attributes: types.ElementAttributes{},
 						Lines: [][]interface{}{
 							{
 								types.StringElement{Content: "a link to "},
@@ -964,7 +923,6 @@ a link to {scheme}:{path}[] and https://foo.baz`
 				It("relative link with text having comma and other attributes", func() {
 					source := `a link to link:https://foo.bar[A, B, and C, role=foo]`
 					expected := types.Paragraph{
-						Attributes: types.ElementAttributes{},
 						Lines: [][]interface{}{
 							{
 								types.StringElement{Content: "a link to "},
@@ -1020,7 +978,6 @@ a link to {url}`
 						},
 						types.BlankLine{},
 						types.Paragraph{
-							Attributes: types.ElementAttributes{},
 							Lines: [][]interface{}{
 								{
 									types.StringElement{Content: "a link to "},
@@ -1047,7 +1004,6 @@ a link to {url}`
 						},
 						types.BlankLine{},
 						types.Paragraph{
-							Attributes: types.ElementAttributes{},
 							Lines: [][]interface{}{
 								{
 									types.StringElement{Content: "a link to "},
@@ -1080,7 +1036,6 @@ a link to {scheme}://{path}`
 						},
 						types.BlankLine{},
 						types.Paragraph{
-							Attributes: types.ElementAttributes{},
 							Lines: [][]interface{}{
 								{
 									types.StringElement{
@@ -1123,7 +1078,6 @@ a link to *{scheme}://{path}[] and https://foo.baz[]*`
 						},
 						types.BlankLine{},
 						types.Paragraph{
-							Attributes: types.ElementAttributes{},
 							Lines: [][]interface{}{
 								{
 									types.StringElement{Content: "a link to "},
@@ -1141,7 +1095,6 @@ a link to *{scheme}://{path}[] and https://foo.baz[]*`
 											},
 											types.StringElement{Content: "[] and "},
 											types.InlineLink{
-												Attributes: types.ElementAttributes{},
 												Location: types.Location{
 													Scheme: "https://",
 													Path: []interface{}{
@@ -1181,7 +1134,6 @@ a link to _{scheme}://{path}[] and https://foo.baz[]_`
 						},
 						types.BlankLine{},
 						types.Paragraph{
-							Attributes: types.ElementAttributes{},
 							Lines: [][]interface{}{
 								{
 									types.StringElement{Content: "a link to "},
@@ -1199,7 +1151,6 @@ a link to _{scheme}://{path}[] and https://foo.baz[]_`
 											},
 											types.StringElement{Content: "[] and "},
 											types.InlineLink{
-												Attributes: types.ElementAttributes{},
 												Location: types.Location{
 													Scheme: "https://",
 													Path: []interface{}{
@@ -1239,7 +1190,6 @@ a link to _{scheme}://{path}[] and https://foo.baz[]_`
 						},
 						types.BlankLine{},
 						types.Paragraph{
-							Attributes: types.ElementAttributes{},
 							Lines: [][]interface{}{
 								{
 									types.StringElement{Content: "a link to "},
@@ -1257,7 +1207,6 @@ a link to _{scheme}://{path}[] and https://foo.baz[]_`
 											},
 											types.StringElement{Content: "[] and "},
 											types.InlineLink{
-												Attributes: types.ElementAttributes{},
 												Location: types.Location{
 													Scheme: "https://",
 													Path: []interface{}{
@@ -1284,12 +1233,8 @@ a link to _{scheme}://{path}[] and https://foo.baz[]_`
 		It("relative link within quoted text", func() {
 			source := "*link:foo[]*"
 			expected := types.Document{
-				Attributes:        types.DocumentAttributes{},
-				ElementReferences: types.ElementReferences{},
-				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{
 					types.Paragraph{
-						Attributes: types.ElementAttributes{},
 						Lines: [][]interface{}{
 							{
 								types.QuotedText{
@@ -1303,7 +1248,6 @@ a link to _{scheme}://{path}[] and https://foo.baz[]_`
 													},
 												},
 											},
-											Attributes: types.ElementAttributes{},
 										},
 									},
 								},
@@ -1318,17 +1262,12 @@ a link to _{scheme}://{path}[] and https://foo.baz[]_`
 		It("external link with special characters", func() {
 			source := "a link to https://foo*_.com"
 			expected := types.Document{
-				Attributes:        types.DocumentAttributes{},
-				ElementReferences: types.ElementReferences{},
-				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{
 					types.Paragraph{
-						Attributes: types.ElementAttributes{},
 						Lines: [][]interface{}{
 							{
 								types.StringElement{Content: "a link to "},
 								types.InlineLink{
-									Attributes: types.ElementAttributes{},
 									Location: types.Location{
 										Scheme: "https://",
 										Path: []interface{}{
@@ -1350,12 +1289,8 @@ a link to _{scheme}://{path}[] and https://foo.baz[]_`
 			source := `a link to *https://foo.com[]*`
 
 			expected := types.Document{
-				Attributes:        types.DocumentAttributes{},
-				ElementReferences: types.ElementReferences{},
-				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{
 					types.Paragraph{
-						Attributes: types.ElementAttributes{},
 						Lines: [][]interface{}{
 							{
 								types.StringElement{Content: "a link to "},
@@ -1363,7 +1298,6 @@ a link to _{scheme}://{path}[] and https://foo.baz[]_`
 									Kind: types.Bold,
 									Elements: []interface{}{
 										types.InlineLink{
-											Attributes: types.ElementAttributes{},
 											Location: types.Location{
 												Scheme: "https://",
 												Path: []interface{}{
@@ -1387,12 +1321,8 @@ a link to _{scheme}://{path}[] and https://foo.baz[]_`
 			source := `a link to _https://foo.com[]_`
 
 			expected := types.Document{
-				Attributes:        types.DocumentAttributes{},
-				ElementReferences: types.ElementReferences{},
-				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{
 					types.Paragraph{
-						Attributes: types.ElementAttributes{},
 						Lines: [][]interface{}{
 							{
 								types.StringElement{Content: "a link to "},
@@ -1400,7 +1330,6 @@ a link to _{scheme}://{path}[] and https://foo.baz[]_`
 									Kind: types.Italic,
 									Elements: []interface{}{
 										types.InlineLink{
-											Attributes: types.ElementAttributes{},
 											Location: types.Location{
 												Scheme: "https://",
 												Path: []interface{}{
@@ -1433,11 +1362,8 @@ a link to {url}`
 					Attributes: types.DocumentAttributes{
 						"url": "https://foo2.bar", // overridden by second declaration
 					},
-					ElementReferences: types.ElementReferences{},
-					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.Paragraph{
-							Attributes: types.ElementAttributes{},
 							Lines: [][]interface{}{
 								{
 									types.StringElement{Content: "a link to "},
@@ -1450,7 +1376,6 @@ a link to {url}`
 												},
 											},
 										},
-										Attributes: types.ElementAttributes{},
 									},
 								},
 							},
@@ -1472,11 +1397,8 @@ a link to {scheme}://{path} and https://foo.baz`
 						"scheme": "https",
 						"path":   "foo.bar",
 					},
-					ElementReferences: types.ElementReferences{},
-					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.Paragraph{
-							Attributes: types.ElementAttributes{},
 							Lines: [][]interface{}{
 								{
 									types.StringElement{Content: "a link to "},
@@ -1489,11 +1411,9 @@ a link to {scheme}://{path} and https://foo.baz`
 												},
 											},
 										},
-										Attributes: types.ElementAttributes{},
 									},
 									types.StringElement{Content: " and "},
 									types.InlineLink{
-										Attributes: types.ElementAttributes{},
 										Location: types.Location{
 											Scheme: "https://",
 											Path: []interface{}{
@@ -1523,11 +1443,8 @@ a link to *{scheme}://{path}[] and https://foo.baz[]*`
 						"scheme": "https",
 						"path":   "foo.bar",
 					},
-					ElementReferences: types.ElementReferences{},
-					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.Paragraph{
-							Attributes: types.ElementAttributes{},
 							Lines: [][]interface{}{
 								{
 									types.StringElement{Content: "a link to "},
@@ -1543,11 +1460,9 @@ a link to *{scheme}://{path}[] and https://foo.baz[]*`
 														},
 													},
 												},
-												Attributes: types.ElementAttributes{},
 											},
 											types.StringElement{Content: " and "},
 											types.InlineLink{
-												Attributes: types.ElementAttributes{},
 												Location: types.Location{
 													Scheme: "https://",
 													Path: []interface{}{
@@ -1580,16 +1495,12 @@ a link to {scheme}://{path} and https://foo.baz`
 					Attributes: types.DocumentAttributes{
 						"scheme": "https",
 					},
-					ElementReferences: types.ElementReferences{},
-					Footnotes:         []types.Footnote{},
 					Elements: []interface{}{
 						types.Paragraph{
-							Attributes: types.ElementAttributes{},
 							Lines: [][]interface{}{
 								{
 									types.StringElement{Content: "a link to "},
 									types.InlineLink{
-										Attributes: types.ElementAttributes{},
 										Location: types.Location{
 											Scheme: "https://",
 											Path: []interface{}{
@@ -1601,7 +1512,6 @@ a link to {scheme}://{path} and https://foo.baz`
 									},
 									types.StringElement{Content: " and "},
 									types.InlineLink{
-										Attributes: types.ElementAttributes{},
 										Location: types.Location{
 											Scheme: "https://",
 											Path: []interface{}{
@@ -1627,7 +1537,6 @@ a link to {scheme}://{path} and https://foo.baz`
 				title := []interface{}{
 					types.StringElement{Content: "a title to "},
 					types.InlineLink{
-						Attributes: types.ElementAttributes{},
 						Location: types.Location{
 							Scheme: "https://",
 							Path: []interface{}{
@@ -1639,7 +1548,6 @@ a link to {scheme}://{path} and https://foo.baz`
 					},
 					types.StringElement{Content: " and "},
 					types.InlineLink{
-						Attributes: types.ElementAttributes{},
 						Location: types.Location{
 							Scheme: "https://",
 							Path: []interface{}{
@@ -1658,7 +1566,6 @@ a link to {scheme}://{path} and https://foo.baz`
 					ElementReferences: types.ElementReferences{
 						"_a_title_to_https_foo_bar_and_https_foo_baz": title,
 					},
-					Footnotes: []types.Footnote{},
 					Elements: []interface{}{
 						types.Section{
 							Level: 0,
@@ -1682,7 +1589,6 @@ a link to {scheme}://{path} and https://foo.baz`
 				title := []interface{}{
 					types.StringElement{Content: "a title to "},
 					types.InlineLink{
-						Attributes: types.ElementAttributes{},
 						Location: types.Location{
 							Scheme: "https://",
 							Path: []interface{}{
@@ -1694,7 +1600,6 @@ a link to {scheme}://{path} and https://foo.baz`
 					},
 					types.StringElement{Content: " and "},
 					types.InlineLink{
-						Attributes: types.ElementAttributes{},
 						Location: types.Location{
 							Scheme: "https://",
 							Path: []interface{}{
@@ -1713,7 +1618,6 @@ a link to {scheme}://{path} and https://foo.baz`
 					ElementReferences: types.ElementReferences{
 						"_a_title_to_https_foo_bar_and_https_foo_baz": title,
 					},
-					Footnotes: []types.Footnote{},
 					Elements: []interface{}{
 						types.Section{
 							Level: 1,

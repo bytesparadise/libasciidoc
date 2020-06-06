@@ -128,7 +128,6 @@ var _ = Describe("file inclusions", func() {
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.FileInclusion{
-							Attributes: types.ElementAttributes{},
 							Location: types.Location{
 								Path: []interface{}{
 									types.StringElement{
@@ -153,7 +152,6 @@ var _ = Describe("file inclusions", func() {
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.FileInclusion{
-							Attributes: types.ElementAttributes{},
 							Location: types.Location{
 								Path: []interface{}{
 									types.StringElement{
@@ -203,11 +201,9 @@ var _ = Describe("file inclusions", func() {
 					expected := types.DraftDocument{
 						Blocks: []interface{}{
 							types.DelimitedBlock{
-								Attributes: types.ElementAttributes{},
-								Kind:       types.Fenced,
+								Kind: types.Fenced,
 								Elements: []interface{}{
 									types.FileInclusion{
-										Attributes: types.ElementAttributes{},
 										Location: types.Location{
 											Path: []interface{}{
 												types.StringElement{
@@ -231,11 +227,9 @@ var _ = Describe("file inclusions", func() {
 					expected := types.DraftDocument{
 						Blocks: []interface{}{
 							types.DelimitedBlock{
-								Attributes: types.ElementAttributes{},
-								Kind:       types.Listing,
+								Kind: types.Listing,
 								Elements: []interface{}{
 									types.FileInclusion{
-										Attributes: types.ElementAttributes{},
 										Location: types.Location{
 											Path: []interface{}{
 												types.StringElement{
@@ -259,11 +253,9 @@ var _ = Describe("file inclusions", func() {
 					expected := types.DraftDocument{
 						Blocks: []interface{}{
 							types.DelimitedBlock{
-								Attributes: types.ElementAttributes{},
-								Kind:       types.Example,
+								Kind: types.Example,
 								Elements: []interface{}{
 									types.FileInclusion{
-										Attributes: types.ElementAttributes{},
 										Location: types.Location{
 											Path: []interface{}{
 												types.StringElement{
@@ -287,11 +279,9 @@ var _ = Describe("file inclusions", func() {
 					expected := types.DraftDocument{
 						Blocks: []interface{}{
 							types.DelimitedBlock{
-								Attributes: types.ElementAttributes{},
-								Kind:       types.Quote,
+								Kind: types.Quote,
 								Elements: []interface{}{
 									types.FileInclusion{
-										Attributes: types.ElementAttributes{},
 										Location: types.Location{
 											Path: []interface{}{
 												types.StringElement{
@@ -322,7 +312,6 @@ var _ = Describe("file inclusions", func() {
 								Kind: types.Verse,
 								Elements: []interface{}{
 									types.FileInclusion{
-										Attributes: types.ElementAttributes{},
 										Location: types.Location{
 											Path: []interface{}{
 												types.StringElement{
@@ -346,11 +335,9 @@ var _ = Describe("file inclusions", func() {
 					expected := types.DraftDocument{
 						Blocks: []interface{}{
 							types.DelimitedBlock{
-								Attributes: types.ElementAttributes{},
-								Kind:       types.Sidebar,
+								Kind: types.Sidebar,
 								Elements: []interface{}{
 									types.FileInclusion{
-										Attributes: types.ElementAttributes{},
 										Location: types.Location{
 											Path: []interface{}{
 												types.StringElement{
@@ -364,7 +351,7 @@ var _ = Describe("file inclusions", func() {
 							},
 						},
 					}
-					Expect(ParseDraftDocument(source, WithoutPreprocessing())).To(Equal(expected))
+					Expect(ParseDraftDocument(source, WithoutPreprocessing())).To(MatchDraftDocument(expected))
 				})
 
 				It("should include adoc file within passthrough block", func() {
@@ -375,11 +362,9 @@ var _ = Describe("file inclusions", func() {
 					expected := types.DraftDocument{
 						Blocks: []interface{}{
 							types.DelimitedBlock{
-								Attributes: types.ElementAttributes{},
 								// Kind:       types.InlinePassthrough,
 								Elements: []interface{}{
 									types.FileInclusion{
-										Attributes: types.ElementAttributes{},
 										Location: types.Location{
 											Path: []interface{}{
 												types.StringElement{
@@ -754,8 +739,7 @@ var _ = Describe("file inclusions", func() {
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.Section{
-							Attributes: types.ElementAttributes{},
-							Level:      0,
+							Level: 0,
 							Title: []interface{}{
 								types.StringElement{
 									Content: "Chapter A",
@@ -765,7 +749,6 @@ var _ = Describe("file inclusions", func() {
 						},
 						types.BlankLine{},
 						types.Paragraph{
-							Attributes: types.ElementAttributes{},
 							Lines: [][]interface{}{
 								{
 									types.StringElement{
@@ -788,8 +771,7 @@ var _ = Describe("file inclusions", func() {
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.Section{
-							Attributes: types.ElementAttributes{},
-							Level:      0,
+							Level: 0,
 							Title: []interface{}{
 								types.StringElement{
 									Content: "Chapter A",
@@ -799,7 +781,6 @@ var _ = Describe("file inclusions", func() {
 						},
 						types.BlankLine{},
 						types.Paragraph{
-							Attributes: types.ElementAttributes{},
 							Lines: [][]interface{}{
 								{
 									types.StringElement{
@@ -822,8 +803,7 @@ var _ = Describe("file inclusions", func() {
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.Section{
-							Attributes: types.ElementAttributes{},
-							Level:      1,
+							Level: 1,
 							Title: []interface{}{
 								types.StringElement{
 									Content: "Chapter A",
@@ -833,7 +813,6 @@ var _ = Describe("file inclusions", func() {
 						},
 						types.BlankLine{},
 						types.Paragraph{
-							Attributes: types.ElementAttributes{},
 							Lines: [][]interface{}{
 								{
 									types.StringElement{
@@ -855,8 +834,7 @@ var _ = Describe("file inclusions", func() {
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.Section{
-							Attributes: types.ElementAttributes{},
-							Level:      0,
+							Level: 0,
 							Title: []interface{}{
 								types.StringElement{
 									Content: "Chapter A",
@@ -866,7 +844,6 @@ var _ = Describe("file inclusions", func() {
 						},
 						types.BlankLine{},
 						types.Paragraph{
-							Attributes: types.ElementAttributes{},
 							Lines: [][]interface{}{
 								{
 									types.StringElement{
@@ -893,8 +870,7 @@ include::{includedir}/chapter-a.adoc[]`
 						},
 						types.BlankLine{},
 						types.Section{
-							Attributes: types.ElementAttributes{},
-							Level:      0,
+							Level: 0,
 							Title: []interface{}{
 								types.StringElement{
 									Content: "Chapter A",
@@ -904,7 +880,6 @@ include::{includedir}/chapter-a.adoc[]`
 						},
 						types.BlankLine{},
 						types.Paragraph{
-							Attributes: types.ElementAttributes{},
 							Lines: [][]interface{}{
 								{
 									types.StringElement{
@@ -930,7 +905,6 @@ include::{includedir}/include.foo[]`
 						},
 						types.BlankLine{},
 						types.Paragraph{
-							Attributes: types.ElementAttributes{},
 							Lines: [][]interface{}{
 								{
 									types.QuotedText{
@@ -946,7 +920,6 @@ include::{includedir}/include.foo[]`
 						},
 						types.BlankLine{},
 						types.Paragraph{
-							Attributes: types.ElementAttributes{},
 							Lines: [][]interface{}{
 								{
 									types.StringElement{
@@ -965,8 +938,7 @@ include::{includedir}/include.foo[]`
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.Section{
-							Attributes: types.ElementAttributes{},
-							Level:      1,
+							Level: 1,
 							Title: []interface{}{
 								types.StringElement{
 									Content: "grandchild title",
@@ -976,7 +948,6 @@ include::{includedir}/include.foo[]`
 						},
 						types.BlankLine{},
 						types.Paragraph{
-							Attributes: types.ElementAttributes{},
 							Lines: [][]interface{}{
 								{
 									types.StringElement{
@@ -987,7 +958,6 @@ include::{includedir}/include.foo[]`
 						},
 						types.BlankLine{},
 						types.Paragraph{
-							Attributes: types.ElementAttributes{},
 							Lines: [][]interface{}{
 								{
 									types.StringElement{
@@ -1006,8 +976,7 @@ include::{includedir}/include.foo[]`
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.Section{
-							Attributes: types.ElementAttributes{},
-							Level:      2,
+							Level: 2,
 							Title: []interface{}{
 								types.StringElement{
 									Content: "grandchild title",
@@ -1017,7 +986,6 @@ include::{includedir}/include.foo[]`
 						},
 						types.BlankLine{},
 						types.Paragraph{
-							Attributes: types.ElementAttributes{},
 							Lines: [][]interface{}{
 								{
 									types.StringElement{
@@ -1028,7 +996,6 @@ include::{includedir}/include.foo[]`
 						},
 						types.BlankLine{},
 						types.Paragraph{
-							Attributes: types.ElementAttributes{},
 							Lines: [][]interface{}{
 								{
 									types.StringElement{
@@ -1047,8 +1014,7 @@ include::{includedir}/include.foo[]`
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.Section{
-							Attributes: types.ElementAttributes{},
-							Level:      0,
+							Level: 0,
 							Title: []interface{}{
 								types.StringElement{
 									Content: "grandchild title",
@@ -1058,7 +1024,6 @@ include::{includedir}/include.foo[]`
 						},
 						types.BlankLine{},
 						types.Paragraph{
-							Attributes: types.ElementAttributes{},
 							Lines: [][]interface{}{
 								{
 									types.StringElement{
@@ -1069,7 +1034,6 @@ include::{includedir}/include.foo[]`
 						},
 						types.BlankLine{},
 						types.Paragraph{
-							Attributes: types.ElementAttributes{},
 							Lines: [][]interface{}{
 								{
 									types.StringElement{
@@ -1088,8 +1052,7 @@ include::{includedir}/include.foo[]`
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.Section{
-							Attributes: types.ElementAttributes{},
-							Level:      1, // here the level is changed from `0` to `1` since `root` doc has a `leveloffset=+1` during its inclusion
+							Level: 1, // here the level is changed from `0` to `1` since `root` doc has a `leveloffset=+1` during its inclusion
 							Title: []interface{}{
 								types.StringElement{
 									Content: "parent title",
@@ -1099,7 +1062,6 @@ include::{includedir}/include.foo[]`
 						},
 						types.BlankLine{},
 						types.Paragraph{
-							Attributes: types.ElementAttributes{},
 							Lines: [][]interface{}{
 								{
 									types.StringElement{
@@ -1110,7 +1072,6 @@ include::{includedir}/include.foo[]`
 						},
 						types.BlankLine{},
 						types.Paragraph{
-							Attributes: types.ElementAttributes{},
 							Lines: [][]interface{}{
 								{
 									types.StringElement{
@@ -1121,8 +1082,7 @@ include::{includedir}/include.foo[]`
 						},
 						types.BlankLine{},
 						types.Section{
-							Attributes: types.ElementAttributes{},
-							Level:      3, // here the level is changed from `1` to `3` since both `root` and `parent` docs have a `leveloffset=+1` during their inclusion
+							Level: 3, // here the level is changed from `1` to `3` since both `root` and `parent` docs have a `leveloffset=+1` during their inclusion
 							Title: []interface{}{
 								types.StringElement{
 									Content: "child section 1",
@@ -1132,7 +1092,6 @@ include::{includedir}/include.foo[]`
 						},
 						types.BlankLine{},
 						types.Paragraph{
-							Attributes: types.ElementAttributes{},
 							Lines: [][]interface{}{
 								{
 									types.StringElement{
@@ -1143,8 +1102,7 @@ include::{includedir}/include.foo[]`
 						},
 						types.BlankLine{},
 						types.Section{
-							Attributes: types.ElementAttributes{},
-							Level:      4, // here the level is changed from `1` to `4` since both `root`, `parent` and `child` docs have a `leveloffset=+1` during their inclusion
+							Level: 4, // here the level is changed from `1` to `4` since both `root`, `parent` and `child` docs have a `leveloffset=+1` during their inclusion
 							Title: []interface{}{
 								types.StringElement{
 									Content: "grandchild title",
@@ -1154,7 +1112,6 @@ include::{includedir}/include.foo[]`
 						},
 						types.BlankLine{},
 						types.Paragraph{
-							Attributes: types.ElementAttributes{},
 							Lines: [][]interface{}{
 								{
 									types.StringElement{
@@ -1165,7 +1122,6 @@ include::{includedir}/include.foo[]`
 						},
 						types.BlankLine{},
 						types.Paragraph{
-							Attributes: types.ElementAttributes{},
 							Lines: [][]interface{}{
 								{
 									types.StringElement{
@@ -1176,8 +1132,7 @@ include::{includedir}/include.foo[]`
 						},
 						types.BlankLine{},
 						types.Section{
-							Attributes: types.ElementAttributes{},
-							Level:      4, // here the level is changed from `2` to `4` since both `root` and `parent` docs have a `leveloffset=+1` during their inclusion
+							Level: 4, // here the level is changed from `2` to `4` since both `root` and `parent` docs have a `leveloffset=+1` during their inclusion
 							Title: []interface{}{
 								types.StringElement{
 									Content: "child section 2",
@@ -1187,7 +1142,6 @@ include::{includedir}/include.foo[]`
 						},
 						types.BlankLine{},
 						types.Paragraph{
-							Attributes: types.ElementAttributes{},
 							Lines: [][]interface{}{
 								{
 									types.StringElement{
@@ -1198,7 +1152,6 @@ include::{includedir}/include.foo[]`
 						},
 						types.BlankLine{},
 						types.Paragraph{
-							Attributes: types.ElementAttributes{},
 							Lines: [][]interface{}{
 								{
 									types.StringElement{
@@ -1217,8 +1170,7 @@ include::{includedir}/include.foo[]`
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.Section{
-							Attributes: types.ElementAttributes{},
-							Level:      1, // here the level is offset by `+1` as per root doc attribute in the `include` macro
+							Level: 1, // here the level is offset by `+1` as per root doc attribute in the `include` macro
 							Title: []interface{}{
 								types.StringElement{
 									Content: "parent title",
@@ -1228,7 +1180,6 @@ include::{includedir}/include.foo[]`
 						},
 						types.BlankLine{},
 						types.Paragraph{
-							Attributes: types.ElementAttributes{},
 							Lines: [][]interface{}{
 								{
 									types.StringElement{
@@ -1239,7 +1190,6 @@ include::{includedir}/include.foo[]`
 						},
 						types.BlankLine{},
 						types.Paragraph{
-							Attributes: types.ElementAttributes{},
 							Lines: [][]interface{}{
 								{
 									types.StringElement{
@@ -1250,8 +1200,7 @@ include::{includedir}/include.foo[]`
 						},
 						types.BlankLine{},
 						types.Section{
-							Attributes: types.ElementAttributes{},
-							Level:      3, // here level is forced to "absolute 3"
+							Level: 3, // here level is forced to "absolute 3"
 							Title: []interface{}{
 								types.StringElement{
 									Content: "child section 1",
@@ -1261,7 +1210,6 @@ include::{includedir}/include.foo[]`
 						},
 						types.BlankLine{},
 						types.Paragraph{
-							Attributes: types.ElementAttributes{},
 							Lines: [][]interface{}{
 								{
 									types.StringElement{
@@ -1272,8 +1220,7 @@ include::{includedir}/include.foo[]`
 						},
 						types.BlankLine{},
 						types.Section{
-							Attributes: types.ElementAttributes{},
-							Level:      4, // here the level is set to `4` because it was its parent was offset by 3...
+							Level: 4, // here the level is set to `4` because it was its parent was offset by 3...
 							Title: []interface{}{
 								types.StringElement{
 									Content: "grandchild title",
@@ -1283,7 +1230,6 @@ include::{includedir}/include.foo[]`
 						},
 						types.BlankLine{},
 						types.Paragraph{
-							Attributes: types.ElementAttributes{},
 							Lines: [][]interface{}{
 								{
 									types.StringElement{
@@ -1294,7 +1240,6 @@ include::{includedir}/include.foo[]`
 						},
 						types.BlankLine{},
 						types.Paragraph{
-							Attributes: types.ElementAttributes{},
 							Lines: [][]interface{}{
 								{
 									types.StringElement{
@@ -1305,8 +1250,7 @@ include::{includedir}/include.foo[]`
 						},
 						types.BlankLine{},
 						types.Section{
-							Attributes: types.ElementAttributes{},
-							Level:      4, // here the level is set to `4` because it the first section was moved from `1` to `3` so we use the same offset here
+							Level: 4, // here the level is set to `4` because it the first section was moved from `1` to `3` so we use the same offset here
 							Title: []interface{}{
 								types.StringElement{
 									Content: "child section 2",
@@ -1316,7 +1260,6 @@ include::{includedir}/include.foo[]`
 						},
 						types.BlankLine{},
 						types.Paragraph{
-							Attributes: types.ElementAttributes{},
 							Lines: [][]interface{}{
 								{
 									types.StringElement{
@@ -1327,7 +1270,6 @@ include::{includedir}/include.foo[]`
 						},
 						types.BlankLine{},
 						types.Paragraph{
-							Attributes: types.ElementAttributes{},
 							Lines: [][]interface{}{
 								{
 									types.StringElement{
@@ -1350,8 +1292,7 @@ include::{includedir}/include.foo[]`
 					expected := types.DraftDocument{
 						Blocks: []interface{}{
 							types.DelimitedBlock{
-								Attributes: types.ElementAttributes{},
-								Kind:       types.Fenced,
+								Kind: types.Fenced,
 								Elements: []interface{}{
 									types.VerbatimLine{
 										Content: "= parent title",
@@ -1418,8 +1359,7 @@ include::../../test/includes/chapter-a.adoc[]
 					expected := types.DraftDocument{
 						Blocks: []interface{}{
 							types.DelimitedBlock{
-								Attributes: types.ElementAttributes{},
-								Kind:       types.Listing,
+								Kind: types.Listing,
 								Elements: []interface{}{
 									types.VerbatimLine{
 										Content: "= Chapter A",
@@ -1444,11 +1384,9 @@ include::../../test/includes/chapter-a.adoc[]
 					expected := types.DraftDocument{
 						Blocks: []interface{}{
 							types.DelimitedBlock{
-								Attributes: types.ElementAttributes{},
-								Kind:       types.Example,
+								Kind: types.Example,
 								Elements: []interface{}{
 									types.Paragraph{
-										Attributes: types.ElementAttributes{},
 										Lines: [][]interface{}{
 											{
 												types.StringElement{
@@ -1459,7 +1397,6 @@ include::../../test/includes/chapter-a.adoc[]
 									},
 									types.BlankLine{},
 									types.Paragraph{
-										Attributes: types.ElementAttributes{},
 										Lines: [][]interface{}{
 											{
 												types.StringElement{
@@ -1482,11 +1419,9 @@ ____`
 					expected := types.DraftDocument{
 						Blocks: []interface{}{
 							types.DelimitedBlock{
-								Attributes: types.ElementAttributes{},
-								Kind:       types.Quote,
+								Kind: types.Quote,
 								Elements: []interface{}{
 									types.Paragraph{
-										Attributes: types.ElementAttributes{},
 										Lines: [][]interface{}{
 											{
 												types.StringElement{
@@ -1497,7 +1432,6 @@ ____`
 									},
 									types.BlankLine{},
 									types.Paragraph{
-										Attributes: types.ElementAttributes{},
 										Lines: [][]interface{}{
 											{
 												types.StringElement{
@@ -1527,7 +1461,6 @@ ____`
 								Kind: types.Verse,
 								Elements: []interface{}{
 									types.Paragraph{
-										Attributes: types.ElementAttributes{},
 										Lines: [][]interface{}{
 											{
 												types.StringElement{
@@ -1538,7 +1471,6 @@ ____`
 									},
 									types.BlankLine{},
 									types.Paragraph{
-										Attributes: types.ElementAttributes{},
 										Lines: [][]interface{}{
 											{
 												types.StringElement{
@@ -1561,11 +1493,9 @@ include::../../test/includes/chapter-a.adoc[]
 					expected := types.DraftDocument{
 						Blocks: []interface{}{
 							types.DelimitedBlock{
-								Attributes: types.ElementAttributes{},
-								Kind:       types.Sidebar,
+								Kind: types.Sidebar,
 								Elements: []interface{}{
 									types.Paragraph{
-										Attributes: types.ElementAttributes{},
 										Lines: [][]interface{}{
 											{
 												types.StringElement{
@@ -1576,7 +1506,6 @@ include::../../test/includes/chapter-a.adoc[]
 									},
 									types.BlankLine{},
 									types.Paragraph{
-										Attributes: types.ElementAttributes{},
 										Lines: [][]interface{}{
 											{
 												types.StringElement{
@@ -1600,11 +1529,9 @@ include::../../test/includes/chapter-a.adoc[]
 					expected := types.DraftDocument{
 						Blocks: []interface{}{
 							types.DelimitedBlock{
-								Attributes: types.ElementAttributes{},
 								// Kind:       types.InlinePassthrough,
 								Elements: []interface{}{
 									types.Paragraph{
-										Attributes: types.ElementAttributes{},
 										Lines: [][]interface{}{
 											{
 												types.StringElement{
@@ -1615,7 +1542,6 @@ include::../../test/includes/chapter-a.adoc[]
 									},
 									types.BlankLine{},
 									types.Paragraph{
-										Attributes: types.ElementAttributes{},
 										Lines: [][]interface{}{
 											{
 												types.StringElement{
@@ -1641,8 +1567,7 @@ include::../../test/includes/chapter-a.adoc[]
 						expected := types.DraftDocument{
 							Blocks: []interface{}{
 								types.Section{
-									Attributes: types.ElementAttributes{},
-									Level:      0,
+									Level: 0,
 									Title: []interface{}{
 										types.StringElement{
 											Content: "Chapter A",
@@ -1660,8 +1585,7 @@ include::../../test/includes/chapter-a.adoc[]
 						expected := types.DraftDocument{
 							Blocks: []interface{}{
 								types.Section{
-									Level:      0,
-									Attributes: types.ElementAttributes{},
+									Level: 0,
 									Title: []interface{}{
 										types.StringElement{
 											Content: "Chapter A",
@@ -1705,8 +1629,7 @@ include::../../test/includes/chapter-a.adoc[]
 						expected := types.DraftDocument{
 							Blocks: []interface{}{
 								types.Section{
-									Level:      0,
-									Attributes: types.ElementAttributes{},
+									Level: 0,
 									Title: []interface{}{
 										types.StringElement{
 											Content: "Chapter A",
@@ -1716,7 +1639,6 @@ include::../../test/includes/chapter-a.adoc[]
 								},
 								types.BlankLine{},
 								types.Paragraph{
-									Attributes: types.ElementAttributes{},
 									Lines: [][]interface{}{
 										{
 											types.StringElement{
@@ -1735,8 +1657,7 @@ include::../../test/includes/chapter-a.adoc[]
 						expected := types.DraftDocument{
 							Blocks: []interface{}{
 								types.Section{
-									Level:      0,
-									Attributes: types.ElementAttributes{},
+									Level: 0,
 									Title: []interface{}{
 										types.StringElement{
 											Content: "Chapter A",
@@ -1759,8 +1680,7 @@ include::../../test/includes/chapter-a.adoc[]
 						expected := types.DraftDocument{
 							Blocks: []interface{}{
 								types.Section{
-									Level:      0,
-									Attributes: types.ElementAttributes{},
+									Level: 0,
 									Title: []interface{}{
 										types.StringElement{
 											Content: "Chapter A",
@@ -1780,8 +1700,7 @@ include::../../test/includes/chapter-a.adoc[]
 						expected := types.DraftDocument{
 							Blocks: []interface{}{
 								types.Section{
-									Level:      0,
-									Attributes: types.ElementAttributes{},
+									Level: 0,
 									Title: []interface{}{
 										types.StringElement{
 											Content: "Chapter A",
@@ -1826,8 +1745,7 @@ include::../../test/includes/chapter-a.adoc[]
 						expected := types.DraftDocument{
 							Blocks: []interface{}{
 								types.Section{
-									Level:      0,
-									Attributes: types.ElementAttributes{},
+									Level: 0,
 									Title: []interface{}{
 										types.StringElement{
 											Content: "Chapter A",
@@ -1837,7 +1755,6 @@ include::../../test/includes/chapter-a.adoc[]
 								},
 								types.BlankLine{},
 								types.Paragraph{
-									Attributes: types.ElementAttributes{},
 									Lines: [][]interface{}{
 										{
 											types.StringElement{
@@ -1856,8 +1773,7 @@ include::../../test/includes/chapter-a.adoc[]
 						expected := types.DraftDocument{
 							Blocks: []interface{}{
 								types.Section{
-									Level:      0,
-									Attributes: types.ElementAttributes{},
+									Level: 0,
 									Title: []interface{}{
 										types.StringElement{
 											Content: "Chapter A",
@@ -1867,7 +1783,6 @@ include::../../test/includes/chapter-a.adoc[]
 								},
 								types.BlankLine{},
 								types.Paragraph{
-									Attributes: types.ElementAttributes{},
 									Lines: [][]interface{}{
 										{
 											types.StringElement{
@@ -1887,8 +1802,7 @@ include::../../test/includes/chapter-a.adoc[]
 						expected := types.DraftDocument{
 							Blocks: []interface{}{
 								types.Section{
-									Attributes: types.ElementAttributes{},
-									Level:      1,
+									Level: 1,
 									Title: []interface{}{
 										types.StringElement{
 											Content: "Section 1",
@@ -1912,8 +1826,7 @@ include::../../test/includes/chapter-a.adoc[]
 					expected := types.DraftDocument{
 						Blocks: []interface{}{
 							types.Section{
-								Attributes: types.ElementAttributes{},
-								Level:      1,
+								Level: 1,
 								Title: []interface{}{
 									types.StringElement{
 										Content: "Section 1",
@@ -1935,8 +1848,7 @@ include::../../test/includes/chapter-a.adoc[]
 					expected := types.DraftDocument{
 						Blocks: []interface{}{
 							types.Section{
-								Attributes: types.ElementAttributes{},
-								Level:      1,
+								Level: 1,
 								Title: []interface{}{
 									types.StringElement{
 										Content: "Section 1",
@@ -1946,7 +1858,6 @@ include::../../test/includes/chapter-a.adoc[]
 							},
 							types.BlankLine{},
 							types.Paragraph{
-								Attributes: types.ElementAttributes{},
 								Lines: [][]interface{}{
 									{
 										types.StringElement{
@@ -1972,7 +1883,6 @@ include::../../test/includes/chapter-a.adoc[]
 						Blocks: []interface{}{
 							types.BlankLine{},
 							types.Paragraph{
-								Attributes: types.ElementAttributes{},
 								Lines: [][]interface{}{
 									{
 										types.StringElement{
@@ -1984,7 +1894,6 @@ include::../../test/includes/chapter-a.adoc[]
 							types.BlankLine{},
 							types.BlankLine{},
 							types.Paragraph{
-								Attributes: types.ElementAttributes{},
 								Lines: [][]interface{}{
 									{
 										types.StringElement{
@@ -2024,8 +1933,7 @@ include::../../test/includes/chapter-a.adoc[]
 					expected := types.DraftDocument{
 						Blocks: []interface{}{
 							types.Section{
-								Attributes: types.ElementAttributes{},
-								Level:      1,
+								Level: 1,
 								Title: []interface{}{
 									types.StringElement{
 										Content: "Section 1",
@@ -2035,7 +1943,6 @@ include::../../test/includes/chapter-a.adoc[]
 							},
 							types.BlankLine{},
 							types.Paragraph{
-								Attributes: types.ElementAttributes{},
 								Lines: [][]interface{}{
 									{
 										types.StringElement{
@@ -2047,7 +1954,6 @@ include::../../test/includes/chapter-a.adoc[]
 							types.BlankLine{},
 							types.BlankLine{},
 							types.Paragraph{
-								Attributes: types.ElementAttributes{},
 								Lines: [][]interface{}{
 									{
 										types.StringElement{
@@ -2068,8 +1974,7 @@ include::../../test/includes/chapter-a.adoc[]
 						expected := types.DraftDocument{
 							Blocks: []interface{}{
 								types.Section{
-									Attributes: types.ElementAttributes{},
-									Level:      1,
+									Level: 1,
 									Title: []interface{}{
 										types.StringElement{
 											Content: "Section 1",
@@ -2079,7 +1984,6 @@ include::../../test/includes/chapter-a.adoc[]
 								},
 								types.BlankLine{},
 								types.Paragraph{
-									Attributes: types.ElementAttributes{},
 									Lines: [][]interface{}{
 										{
 											types.StringElement{
@@ -2091,7 +1995,6 @@ include::../../test/includes/chapter-a.adoc[]
 								types.BlankLine{},
 								types.BlankLine{},
 								types.Paragraph{
-									Attributes: types.ElementAttributes{},
 									Lines: [][]interface{}{
 										{
 											types.StringElement{
@@ -2110,8 +2013,7 @@ include::../../test/includes/chapter-a.adoc[]
 						expected := types.DraftDocument{
 							Blocks: []interface{}{
 								types.Section{
-									Attributes: types.ElementAttributes{},
-									Level:      1,
+									Level: 1,
 									Title: []interface{}{
 										types.StringElement{
 											Content: "Section 1",
@@ -2121,7 +2023,6 @@ include::../../test/includes/chapter-a.adoc[]
 								},
 								types.BlankLine{},
 								types.Paragraph{
-									Attributes: types.ElementAttributes{},
 									Lines: [][]interface{}{
 										{
 											types.StringElement{
@@ -2141,8 +2042,7 @@ include::../../test/includes/chapter-a.adoc[]
 						expected := types.DraftDocument{
 							Blocks: []interface{}{
 								types.Section{
-									Attributes: types.ElementAttributes{},
-									Level:      1,
+									Level: 1,
 									Title: []interface{}{
 										types.StringElement{
 											Content: "Section 1",
@@ -2152,7 +2052,6 @@ include::../../test/includes/chapter-a.adoc[]
 								},
 								types.BlankLine{},
 								types.Paragraph{
-									Attributes: types.ElementAttributes{},
 									Lines: [][]interface{}{
 										{
 											types.StringElement{
@@ -2164,7 +2063,6 @@ include::../../test/includes/chapter-a.adoc[]
 								types.BlankLine{},
 								types.BlankLine{},
 								types.Paragraph{
-									Attributes: types.ElementAttributes{},
 									Lines: [][]interface{}{
 										{
 											types.StringElement{
@@ -2183,8 +2081,7 @@ include::../../test/includes/chapter-a.adoc[]
 						expected := types.DraftDocument{
 							Blocks: []interface{}{
 								types.Section{
-									Attributes: types.ElementAttributes{},
-									Level:      1,
+									Level: 1,
 									Title: []interface{}{
 										types.StringElement{
 											Content: "Section 1",
@@ -2203,8 +2100,7 @@ include::../../test/includes/chapter-a.adoc[]
 						expected := types.DraftDocument{
 							Blocks: []interface{}{
 								types.Section{
-									Attributes: types.ElementAttributes{},
-									Level:      1,
+									Level: 1,
 									Title: []interface{}{
 										types.StringElement{
 											Content: "Section 1",
@@ -2223,8 +2119,7 @@ include::../../test/includes/chapter-a.adoc[]
 						expected := types.DraftDocument{
 							Blocks: []interface{}{
 								types.Section{
-									Attributes: types.ElementAttributes{},
-									Level:      1,
+									Level: 1,
 									Title: []interface{}{
 										types.StringElement{
 											Content: "Section 1",
@@ -2235,7 +2130,6 @@ include::../../test/includes/chapter-a.adoc[]
 								types.BlankLine{},
 								types.BlankLine{},
 								types.Paragraph{
-									Attributes: types.ElementAttributes{},
 									Lines: [][]interface{}{
 										{
 											types.StringElement{
@@ -2255,7 +2149,6 @@ include::../../test/includes/chapter-a.adoc[]
 							Blocks: []interface{}{
 								types.BlankLine{},
 								types.Paragraph{
-									Attributes: types.ElementAttributes{},
 									Lines: [][]interface{}{
 										{
 											types.StringElement{
@@ -2281,7 +2174,6 @@ include::../../test/includes/chapter-a.adoc[]
 					expected := types.DraftDocument{
 						Blocks: []interface{}{
 							types.Paragraph{
-								Attributes: types.ElementAttributes{},
 								Lines: [][]interface{}{
 									{
 										types.StringElement{
@@ -2306,7 +2198,6 @@ include::../../test/includes/chapter-a.adoc[]
 					expected := types.DraftDocument{
 						Blocks: []interface{}{
 							types.Paragraph{
-								Attributes: types.ElementAttributes{},
 								Lines: [][]interface{}{
 									{
 										types.StringElement{
@@ -2331,7 +2222,6 @@ include::../../test/includes/chapter-a.adoc[]
 					expected := types.DraftDocument{
 						Blocks: []interface{}{
 							types.Paragraph{
-								Attributes: types.ElementAttributes{},
 								Lines: [][]interface{}{
 									{
 										types.StringElement{
@@ -2358,8 +2248,7 @@ include::../../test/includes/unknown.adoc[leveloffset=+1]
 					expected := types.DraftDocument{
 						Blocks: []interface{}{
 							types.DelimitedBlock{
-								Attributes: types.ElementAttributes{},
-								Kind:       types.Listing,
+								Kind: types.Listing,
 								Elements: []interface{}{
 									types.VerbatimLine{
 										Content: "Unresolved directive in test.adoc - include::../../test/includes/unknown.adoc[leveloffset=+1]",
@@ -2384,8 +2273,7 @@ include::{includedir}/unknown.adoc[leveloffset=+1]
 					expected := types.DraftDocument{
 						Blocks: []interface{}{
 							types.DelimitedBlock{
-								Attributes: types.ElementAttributes{},
-								Kind:       types.Listing,
+								Kind: types.Listing,
 								Elements: []interface{}{
 									types.VerbatimLine{
 										Content: "Unresolved directive in test.adoc - include::{includedir}/unknown.adoc[leveloffset=+1]",
@@ -2414,8 +2302,7 @@ include::{includedir}/grandchild-include.adoc[]`
 							},
 							types.BlankLine{},
 							types.Section{
-								Attributes: types.ElementAttributes{},
-								Level:      1,
+								Level: 1,
 								Title: []interface{}{
 									types.StringElement{
 										Content: "grandchild title",
@@ -2425,7 +2312,6 @@ include::{includedir}/grandchild-include.adoc[]`
 							},
 							types.BlankLine{},
 							types.Paragraph{
-								Attributes: types.ElementAttributes{},
 								Lines: [][]interface{}{
 									{
 										types.StringElement{
@@ -2436,7 +2322,6 @@ include::{includedir}/grandchild-include.adoc[]`
 							},
 							types.BlankLine{},
 							types.Paragraph{
-								Attributes: types.ElementAttributes{},
 								Lines: [][]interface{}{
 									{
 										types.StringElement{
@@ -2462,8 +2347,7 @@ include::{includedir}/grandchild-include.adoc[]`
 							},
 							types.BlankLine{},
 							types.Section{
-								Attributes: types.ElementAttributes{},
-								Level:      1,
+								Level: 1,
 								Title: []interface{}{
 									types.StringElement{
 										Content: "grandchild title",
@@ -2473,7 +2357,6 @@ include::{includedir}/grandchild-include.adoc[]`
 							},
 							types.BlankLine{},
 							types.Paragraph{
-								Attributes: types.ElementAttributes{},
 								Lines: [][]interface{}{
 									{
 										types.StringElement{
@@ -2484,7 +2367,6 @@ include::{includedir}/grandchild-include.adoc[]`
 							},
 							types.BlankLine{},
 							types.Paragraph{
-								Attributes: types.ElementAttributes{},
 								Lines: [][]interface{}{
 									{
 										types.StringElement{
@@ -2513,8 +2395,7 @@ include::{includedir}/grandchild-include.adoc[]
 							},
 							types.BlankLine{},
 							types.DelimitedBlock{
-								Attributes: types.ElementAttributes{},
-								Kind:       types.Listing,
+								Kind: types.Listing,
 								Elements: []interface{}{
 									types.VerbatimLine{
 										Content: "== grandchild title",
@@ -2545,8 +2426,7 @@ include::../../test/includes/hello_world.go.txt[]
 					expected := types.DraftDocument{
 						Blocks: []interface{}{
 							types.DelimitedBlock{
-								Kind:       types.Listing,
-								Attributes: types.ElementAttributes{},
+								Kind: types.Listing,
 								Elements: []interface{}{
 									types.VerbatimLine{
 										Content: `package includes`,
@@ -2584,8 +2464,7 @@ include::../../test/includes/hello_world.go.txt[lines=1]
 					expected := types.DraftDocument{
 						Blocks: []interface{}{
 							types.DelimitedBlock{
-								Kind:       types.Listing,
-								Attributes: types.ElementAttributes{},
+								Kind: types.Listing,
 								Elements: []interface{}{
 									types.VerbatimLine{
 										Content: `package includes`,
@@ -2606,7 +2485,6 @@ include::../../test/includes/hello_world.go.txt[lines=1]
 		It("should include child and grandchild content with relative level offset", func() {
 			source := `include::../../test/includes/parent-include-relative-offset.adoc[leveloffset=+1]`
 			expected := types.Document{
-				Attributes: types.DocumentAttributes{},
 				ElementReferences: types.ElementReferences{
 					"_parent_title": []interface{}{
 						types.StringElement{
@@ -2629,7 +2507,6 @@ include::../../test/includes/hello_world.go.txt[lines=1]
 						},
 					},
 				},
-				Footnotes: []types.Footnote{},
 				Elements: []interface{}{
 					types.Section{
 						Attributes: types.ElementAttributes{
@@ -2643,7 +2520,6 @@ include::../../test/includes/hello_world.go.txt[lines=1]
 						},
 						Elements: []interface{}{
 							types.Paragraph{
-								Attributes: types.ElementAttributes{},
 								Lines: [][]interface{}{
 									{
 										types.StringElement{
@@ -2653,7 +2529,6 @@ include::../../test/includes/hello_world.go.txt[lines=1]
 								},
 							},
 							types.Paragraph{
-								Attributes: types.ElementAttributes{},
 								Lines: [][]interface{}{
 									{
 										types.StringElement{
@@ -2674,7 +2549,6 @@ include::../../test/includes/hello_world.go.txt[lines=1]
 								},
 								Elements: []interface{}{
 									types.Paragraph{
-										Attributes: types.ElementAttributes{},
 										Lines: [][]interface{}{
 											{
 												types.StringElement{
@@ -2695,7 +2569,6 @@ include::../../test/includes/hello_world.go.txt[lines=1]
 										},
 										Elements: []interface{}{
 											types.Paragraph{
-												Attributes: types.ElementAttributes{},
 												Lines: [][]interface{}{
 													{
 														types.StringElement{
@@ -2705,7 +2578,6 @@ include::../../test/includes/hello_world.go.txt[lines=1]
 												},
 											},
 											types.Paragraph{
-												Attributes: types.ElementAttributes{},
 												Lines: [][]interface{}{
 													{
 														types.StringElement{
@@ -2728,7 +2600,6 @@ include::../../test/includes/hello_world.go.txt[lines=1]
 										},
 										Elements: []interface{}{
 											types.Paragraph{
-												Attributes: types.ElementAttributes{},
 												Lines: [][]interface{}{
 													{
 														types.StringElement{
@@ -2738,7 +2609,6 @@ include::../../test/includes/hello_world.go.txt[lines=1]
 												},
 											},
 											types.Paragraph{
-												Attributes: types.ElementAttributes{},
 												Lines: [][]interface{}{
 													{
 														types.StringElement{
@@ -2761,7 +2631,6 @@ include::../../test/includes/hello_world.go.txt[lines=1]
 		It("should include child and grandchild content with relative then absolute level offset", func() {
 			source := `include::../../test/includes/parent-include-absolute-offset.adoc[leveloffset=+1]`
 			expected := types.Document{
-				Attributes: types.DocumentAttributes{},
 				ElementReferences: types.ElementReferences{
 					"_parent_title": []interface{}{
 						types.StringElement{
@@ -2784,7 +2653,6 @@ include::../../test/includes/hello_world.go.txt[lines=1]
 						},
 					},
 				},
-				Footnotes: []types.Footnote{},
 				Elements: []interface{}{
 					types.Section{
 						Attributes: types.ElementAttributes{
@@ -2798,7 +2666,6 @@ include::../../test/includes/hello_world.go.txt[lines=1]
 						},
 						Elements: []interface{}{
 							types.Paragraph{
-								Attributes: types.ElementAttributes{},
 								Lines: [][]interface{}{
 									{
 										types.StringElement{
@@ -2808,7 +2675,6 @@ include::../../test/includes/hello_world.go.txt[lines=1]
 								},
 							},
 							types.Paragraph{
-								Attributes: types.ElementAttributes{},
 								Lines: [][]interface{}{
 									{
 										types.StringElement{
@@ -2829,7 +2695,6 @@ include::../../test/includes/hello_world.go.txt[lines=1]
 								},
 								Elements: []interface{}{
 									types.Paragraph{
-										Attributes: types.ElementAttributes{},
 										Lines: [][]interface{}{
 											{
 												types.StringElement{
@@ -2850,7 +2715,6 @@ include::../../test/includes/hello_world.go.txt[lines=1]
 										},
 										Elements: []interface{}{
 											types.Paragraph{
-												Attributes: types.ElementAttributes{},
 												Lines: [][]interface{}{
 													{
 														types.StringElement{
@@ -2860,7 +2724,6 @@ include::../../test/includes/hello_world.go.txt[lines=1]
 												},
 											},
 											types.Paragraph{
-												Attributes: types.ElementAttributes{},
 												Lines: [][]interface{}{
 													{
 														types.StringElement{
@@ -2883,7 +2746,6 @@ include::../../test/includes/hello_world.go.txt[lines=1]
 										},
 										Elements: []interface{}{
 											types.Paragraph{
-												Attributes: types.ElementAttributes{},
 												Lines: [][]interface{}{
 													{
 														types.StringElement{
@@ -2893,7 +2755,6 @@ include::../../test/includes/hello_world.go.txt[lines=1]
 												},
 											},
 											types.Paragraph{
-												Attributes: types.ElementAttributes{},
 												Lines: [][]interface{}{
 													{
 														types.StringElement{

@@ -16,7 +16,6 @@ var _ = Describe("tables", func() {
 |===
 `
 		expected := types.Table{
-			Attributes: types.ElementAttributes{},
 			Lines: []types.TableLine{
 				{
 					Cells: [][]interface{}{
@@ -58,7 +57,6 @@ var _ = Describe("tables", func() {
 | *foo* foo  | _bar_  | baz
 |===`
 		expected := types.Table{
-			Attributes: types.ElementAttributes{},
 			Lines: []types.TableLine{
 				{
 					Cells: [][]interface{}{
@@ -168,8 +166,7 @@ var _ = Describe("tables", func() {
 		source := `|===
 |===`
 		expected := types.Table{
-			Attributes: types.ElementAttributes{},
-			Lines:      []types.TableLine{},
+			Lines: []types.TableLine{},
 		}
 		Expect(ParseDocumentBlock(source)).To(Equal(expected))
 	})

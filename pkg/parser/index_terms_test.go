@@ -17,7 +17,6 @@ var _ = Describe("index terms", func() {
 			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.Paragraph{
-						Attributes: types.ElementAttributes{},
 						Lines: [][]interface{}{
 							{
 								types.StringElement{
@@ -47,7 +46,6 @@ a paragraph with an index term.`
 			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.Paragraph{
-						Attributes: types.ElementAttributes{},
 						Lines: [][]interface{}{
 							{
 								types.IndexTerm{
@@ -81,12 +79,8 @@ a paragraph with an index term.`
 		It("index term in existing paragraph line", func() {
 			source := `a paragraph with an ((index)) term.`
 			expected := types.Document{
-				Attributes:        types.DocumentAttributes{},
-				ElementReferences: types.ElementReferences{},
-				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{
 					types.Paragraph{
-						Attributes: types.ElementAttributes{},
 						Lines: [][]interface{}{
 							{
 								types.StringElement{
@@ -113,12 +107,8 @@ a paragraph with an index term.`
 			source := `((foo_bar_baz _italic_ normal))
 a paragraph with an index term.`
 			expected := types.Document{
-				Attributes:        types.DocumentAttributes{},
-				ElementReferences: types.ElementReferences{},
-				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{
 					types.Paragraph{
-						Attributes: types.ElementAttributes{},
 						Lines: [][]interface{}{
 							{
 								types.IndexTerm{
@@ -162,7 +152,6 @@ var _ = Describe("concealed index terms", func() {
 			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.Paragraph{
-						Attributes: types.ElementAttributes{},
 						Lines: [][]interface{}{
 							{
 								types.StringElement{
@@ -190,7 +179,6 @@ a paragraph with an index term.`
 			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.Paragraph{
-						Attributes: types.ElementAttributes{},
 						Lines: [][]interface{}{
 							{
 								types.ConcealedIndexTerm{
@@ -216,12 +204,8 @@ a paragraph with an index term.`
 		It("concealed index term in existing paragraph line", func() {
 			source := `a paragraph with an index term (((index, term, here))).`
 			expected := types.Document{
-				Attributes:        types.DocumentAttributes{},
-				ElementReferences: types.ElementReferences{},
-				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{
 					types.Paragraph{
-						Attributes: types.ElementAttributes{},
 						Lines: [][]interface{}{
 							{
 								types.StringElement{
@@ -247,12 +231,8 @@ a paragraph with an index term.`
 			source := `(((index, term)))
 a paragraph with an index term.`
 			expected := types.Document{
-				Attributes:        types.DocumentAttributes{},
-				ElementReferences: types.ElementReferences{},
-				Footnotes:         []types.Footnote{},
 				Elements: []interface{}{
 					types.Paragraph{
-						Attributes: types.ElementAttributes{},
 						Lines: [][]interface{}{
 							{
 								types.ConcealedIndexTerm{

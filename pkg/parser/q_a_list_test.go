@@ -18,9 +18,6 @@ What is libasciidoc?::
 What is the answer to the Ultimate Question?:: 42`
 
 		expected := types.Document{
-			Attributes:        types.DocumentAttributes{},
-			ElementReferences: types.ElementReferences{},
-			Footnotes:         []types.Footnote{},
 			Elements: []interface{}{
 				types.LabeledList{
 					Attributes: types.ElementAttributes{
@@ -29,8 +26,7 @@ What is the answer to the Ultimate Question?:: 42`
 					},
 					Items: []types.LabeledListItem{
 						{
-							Attributes: types.ElementAttributes{},
-							Level:      1,
+							Level: 1,
 							Term: []interface{}{
 								types.StringElement{
 									Content: "What is libasciidoc?",
@@ -38,7 +34,6 @@ What is the answer to the Ultimate Question?:: 42`
 							},
 							Elements: []interface{}{
 								types.Paragraph{
-									Attributes: types.ElementAttributes{},
 									Lines: [][]interface{}{
 										{
 											types.StringElement{
@@ -50,8 +45,7 @@ What is the answer to the Ultimate Question?:: 42`
 							},
 						},
 						{
-							Attributes: types.ElementAttributes{},
-							Level:      1,
+							Level: 1,
 							Term: []interface{}{
 								types.StringElement{
 									Content: "What is the answer to the Ultimate Question?",
@@ -59,7 +53,6 @@ What is the answer to the Ultimate Question?:: 42`
 							},
 							Elements: []interface{}{
 								types.Paragraph{
-									Attributes: types.ElementAttributes{},
 									Lines: [][]interface{}{
 										{
 											types.StringElement{

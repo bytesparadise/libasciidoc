@@ -15,7 +15,6 @@ var _ = Describe("draft document assertions", func() {
 		expected := types.DraftDocument{
 			Blocks: []interface{}{
 				types.Paragraph{
-					Attributes: types.ElementAttributes{},
 					Lines: [][]interface{}{
 						{
 							types.StringElement{
@@ -54,7 +53,6 @@ var _ = Describe("draft document assertions", func() {
 		expected := types.DraftDocument{
 			Blocks: []interface{}{
 				types.Paragraph{
-					Attributes: types.ElementAttributes{},
 					Lines: [][]interface{}{
 						{
 							types.StringElement{
