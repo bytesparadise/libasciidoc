@@ -73,7 +73,7 @@ var _ = Describe("links", func() {
 										},
 									},
 								},
-								Attributes: types.ElementAttributes{
+								Attributes: types.Attributes{
 									"positional-1": []interface{}{
 										types.StringElement{
 											Content: "the foo@bar email",
@@ -103,7 +103,7 @@ var _ = Describe("links", func() {
 										},
 									},
 								},
-								Attributes: types.ElementAttributes{
+								Attributes: types.Attributes{
 									"positional-1": []interface{}{
 										types.StringElement{
 											Content: "the foo@bar email",
@@ -232,7 +232,7 @@ next lines`
 											},
 										},
 									},
-									Attributes: types.ElementAttributes{
+									Attributes: types.Attributes{
 										"positional-1": []interface{}{
 											types.StringElement{
 												Content: "A",
@@ -271,7 +271,7 @@ next lines`
 											},
 										},
 									},
-									Attributes: types.ElementAttributes{
+									Attributes: types.Attributes{
 										"positional-1": []interface{}{
 											types.StringElement{
 												Content: "A, B, and C",
@@ -300,7 +300,7 @@ next lines`
 											},
 										},
 									},
-									Attributes: types.ElementAttributes{
+									Attributes: types.Attributes{
 										"positional-1": []interface{}{
 											types.StringElement{
 												Content: "A, B, and C",
@@ -330,7 +330,7 @@ next lines`
 											},
 										},
 									},
-									Attributes: types.ElementAttributes{
+									Attributes: types.Attributes{
 										"positional-1": []interface{}{
 											types.StringElement{
 												Content: "A",
@@ -391,7 +391,7 @@ next lines`
 								{
 									types.StringElement{Content: "a link to "},
 									types.InlineLink{
-										Attributes: types.ElementAttributes{
+										Attributes: types.Attributes{
 											"positional-1": []interface{}{
 												types.QuotedText{
 													Kind: types.Italic,
@@ -515,7 +515,7 @@ next lines`
 										},
 									},
 								},
-								Attributes: types.ElementAttributes{
+								Attributes: types.Attributes{
 									"positional-1": []interface{}{
 										types.StringElement{
 											Content: "foo doc",
@@ -544,7 +544,7 @@ next lines`
 										},
 									},
 								},
-								Attributes: types.ElementAttributes{
+								Attributes: types.Attributes{
 									"positional-1": []interface{}{
 										types.StringElement{
 											Content: "foo doc",
@@ -573,7 +573,7 @@ next lines`
 										},
 									},
 								},
-								Attributes: types.ElementAttributes{
+								Attributes: types.Attributes{
 									"positional-1": []interface{}{
 										types.StringElement{
 											Content: "foo doc",
@@ -603,7 +603,7 @@ next lines`
 										},
 									},
 								},
-								Attributes: types.ElementAttributes{
+								Attributes: types.Attributes{
 									"foo": "bar",
 								},
 							},
@@ -641,7 +641,7 @@ next lines`
 										},
 									},
 								},
-								Attributes: types.ElementAttributes{
+								Attributes: types.Attributes{
 									"positional-1": []interface{}{
 										types.StringElement{
 											Content: "a ",
@@ -726,7 +726,7 @@ next lines`
 										},
 									},
 								},
-								Attributes: types.ElementAttributes{
+								Attributes: types.Attributes{
 									"positional-1": []interface{}{
 										types.StringElement{
 											Content: "as expected",
@@ -759,7 +759,7 @@ Test 2: link:/test/a%20b[with encoded space]`
 										},
 									},
 								},
-								Attributes: types.ElementAttributes{
+								Attributes: types.Attributes{
 									"positional-1": []interface{}{
 										types.StringElement{
 											Content: "with encoded space",
@@ -783,7 +783,7 @@ Test 2: link:/test/a%20b[with encoded space]`
 a link to {scheme}:{path}[] and https://foo.baz`
 
 				expected := types.Document{
-					Attributes: types.DocumentAttributes{
+					Attributes: types.Attributes{
 						"scheme": "link",
 					},
 					Elements: []interface{}{
@@ -837,7 +837,7 @@ a link to {scheme}:{path}[] and https://foo.baz`
 											},
 										},
 									},
-									Attributes: types.ElementAttributes{
+									Attributes: types.Attributes{
 										"positional-1": []interface{}{
 											types.StringElement{
 												Content: "A",
@@ -876,7 +876,7 @@ a link to {scheme}:{path}[] and https://foo.baz`
 											},
 										},
 									},
-									Attributes: types.ElementAttributes{
+									Attributes: types.Attributes{
 										"positional-1": []interface{}{
 											types.StringElement{
 												Content: "A, B, and C",
@@ -905,7 +905,7 @@ a link to {scheme}:{path}[] and https://foo.baz`
 											},
 										},
 									},
-									Attributes: types.ElementAttributes{
+									Attributes: types.Attributes{
 										"positional-1": []interface{}{
 											types.StringElement{
 												Content: "A, B, and C",
@@ -935,7 +935,7 @@ a link to {scheme}:{path}[] and https://foo.baz`
 											},
 										},
 									},
-									Attributes: types.ElementAttributes{
+									Attributes: types.Attributes{
 										"positional-1": []interface{}{
 											types.StringElement{
 												Content: "A",
@@ -972,7 +972,7 @@ a link to {scheme}:{path}[] and https://foo.baz`
 a link to {url}`
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
-						types.DocumentAttributeDeclaration{
+						types.AttributeDeclaration{
 							Name:  "url",
 							Value: "https://foo.bar",
 						},
@@ -981,7 +981,7 @@ a link to {url}`
 							Lines: [][]interface{}{
 								{
 									types.StringElement{Content: "a link to "},
-									types.DocumentAttributeSubstitution{
+									types.AttributeSubstitution{
 										Name: "url",
 									},
 								},
@@ -998,7 +998,7 @@ a link to {url}`
 a link to {url}`
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
-						types.DocumentAttributeDeclaration{
+						types.AttributeDeclaration{
 							Name:  "url",
 							Value: "https://foo.bar",
 						},
@@ -1007,7 +1007,7 @@ a link to {url}`
 							Lines: [][]interface{}{
 								{
 									types.StringElement{Content: "a link to "},
-									types.DocumentAttributeSubstitution{
+									types.AttributeSubstitution{
 										Name: "url",
 									},
 								},
@@ -1026,11 +1026,11 @@ a link to {scheme}://{path}`
 
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
-						types.DocumentAttributeDeclaration{
+						types.AttributeDeclaration{
 							Name:  "scheme",
 							Value: "https",
 						},
-						types.DocumentAttributeDeclaration{
+						types.AttributeDeclaration{
 							Name:  "path",
 							Value: "foo.bar",
 						},
@@ -1041,13 +1041,13 @@ a link to {scheme}://{path}`
 									types.StringElement{
 										Content: "a link to ",
 									},
-									types.DocumentAttributeSubstitution{
+									types.AttributeSubstitution{
 										Name: "scheme",
 									},
 									types.StringElement{
 										Content: "://",
 									},
-									types.DocumentAttributeSubstitution{
+									types.AttributeSubstitution{
 										Name: "path",
 									},
 								},
@@ -1068,11 +1068,11 @@ a link to *{scheme}://{path}[] and https://foo.baz[]*`
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.BlankLine{},
-						types.DocumentAttributeDeclaration{
+						types.AttributeDeclaration{
 							Name:  "scheme",
 							Value: "https",
 						},
-						types.DocumentAttributeDeclaration{
+						types.AttributeDeclaration{
 							Name:  "path",
 							Value: "foo.bar",
 						},
@@ -1084,13 +1084,13 @@ a link to *{scheme}://{path}[] and https://foo.baz[]*`
 									types.QuotedText{
 										Kind: types.Bold,
 										Elements: []interface{}{
-											types.DocumentAttributeSubstitution{
+											types.AttributeSubstitution{
 												Name: "scheme",
 											},
 											types.StringElement{
 												Content: "://",
 											},
-											types.DocumentAttributeSubstitution{
+											types.AttributeSubstitution{
 												Name: "path",
 											},
 											types.StringElement{Content: "[] and "},
@@ -1124,11 +1124,11 @@ a link to _{scheme}://{path}[] and https://foo.baz[]_`
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.BlankLine{},
-						types.DocumentAttributeDeclaration{
+						types.AttributeDeclaration{
 							Name:  "scheme",
 							Value: "https",
 						},
-						types.DocumentAttributeDeclaration{
+						types.AttributeDeclaration{
 							Name:  "path",
 							Value: "foo.bar",
 						},
@@ -1140,13 +1140,13 @@ a link to _{scheme}://{path}[] and https://foo.baz[]_`
 									types.QuotedText{
 										Kind: types.Italic,
 										Elements: []interface{}{
-											types.DocumentAttributeSubstitution{
+											types.AttributeSubstitution{
 												Name: "scheme",
 											},
 											types.StringElement{
 												Content: "://",
 											},
-											types.DocumentAttributeSubstitution{
+											types.AttributeSubstitution{
 												Name: "path",
 											},
 											types.StringElement{Content: "[] and "},
@@ -1180,11 +1180,11 @@ a link to _{scheme}://{path}[] and https://foo.baz[]_`
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.BlankLine{},
-						types.DocumentAttributeDeclaration{
+						types.AttributeDeclaration{
 							Name:  "scheme",
 							Value: "https",
 						},
-						types.DocumentAttributeDeclaration{
+						types.AttributeDeclaration{
 							Name:  "path",
 							Value: "foo.bar",
 						},
@@ -1196,13 +1196,13 @@ a link to _{scheme}://{path}[] and https://foo.baz[]_`
 									types.QuotedText{
 										Kind: types.Monospace,
 										Elements: []interface{}{
-											types.DocumentAttributeSubstitution{
+											types.AttributeSubstitution{
 												Name: "scheme",
 											},
 											types.StringElement{
 												Content: "://",
 											},
-											types.DocumentAttributeSubstitution{
+											types.AttributeSubstitution{
 												Name: "path",
 											},
 											types.StringElement{Content: "[] and "},
@@ -1359,7 +1359,7 @@ a link to _{scheme}://{path}[] and https://foo.baz[]_`
 a link to {url}`
 
 				expected := types.Document{
-					Attributes: types.DocumentAttributes{
+					Attributes: types.Attributes{
 						"url": "https://foo2.bar", // overridden by second declaration
 					},
 					Elements: []interface{}{
@@ -1393,7 +1393,7 @@ a link to {url}`
 a link to {scheme}://{path} and https://foo.baz`
 
 				expected := types.Document{
-					Attributes: types.DocumentAttributes{
+					Attributes: types.Attributes{
 						"scheme": "https",
 						"path":   "foo.bar",
 					},
@@ -1439,7 +1439,7 @@ a link to {scheme}://{path} and https://foo.baz`
 a link to *{scheme}://{path}[] and https://foo.baz[]*`
 
 				expected := types.Document{
-					Attributes: types.DocumentAttributes{
+					Attributes: types.Attributes{
 						"scheme": "https",
 						"path":   "foo.bar",
 					},
@@ -1492,7 +1492,7 @@ a link to *{scheme}://{path}[] and https://foo.baz[]*`
 a link to {scheme}://{path} and https://foo.baz`
 
 				expected := types.Document{
-					Attributes: types.DocumentAttributes{
+					Attributes: types.Attributes{
 						"scheme": "https",
 					},
 					Elements: []interface{}{
@@ -1559,7 +1559,7 @@ a link to {scheme}://{path} and https://foo.baz`
 					},
 				}
 				expected := types.Document{
-					Attributes: types.DocumentAttributes{
+					Attributes: types.Attributes{
 						"scheme": "https",
 						"path":   "foo.bar",
 					},
@@ -1569,7 +1569,7 @@ a link to {scheme}://{path} and https://foo.baz`
 					Elements: []interface{}{
 						types.Section{
 							Level: 0,
-							Attributes: types.ElementAttributes{
+							Attributes: types.Attributes{
 								types.AttrID: "_a_title_to_https_foo_bar_and_https_foo_baz",
 							},
 							Title:    title,
@@ -1611,7 +1611,7 @@ a link to {scheme}://{path} and https://foo.baz`
 					},
 				}
 				expected := types.Document{
-					Attributes: types.DocumentAttributes{
+					Attributes: types.Attributes{
 						"scheme": "https",
 						"path":   "foo.bar",
 					},
@@ -1621,7 +1621,7 @@ a link to {scheme}://{path} and https://foo.baz`
 					Elements: []interface{}{
 						types.Section{
 							Level: 1,
-							Attributes: types.ElementAttributes{
+							Attributes: types.Attributes{
 								types.AttrID: "_a_title_to_https_foo_bar_and_https_foo_baz",
 							},
 							Title:    title,

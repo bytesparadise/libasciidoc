@@ -15,7 +15,7 @@ var _ = Describe("document attribute subsititutions", func() {
 			types.Paragraph{
 				Lines: [][]interface{}{
 					{
-						types.DocumentAttributeSubstitution{
+						types.AttributeSubstitution{
 							Name: "foo",
 						},
 						types.StringElement{
@@ -26,7 +26,7 @@ var _ = Describe("document attribute subsititutions", func() {
 			},
 		}
 		// when
-		result, applied, err := applyDocumentAttributeSubstitutions(elements, types.DocumentAttributesWithOverrides{
+		result, applied, err := applyAttributeSubstitutions(elements, types.AttributesWithOverrides{
 			Content: map[string]interface{}{
 				"foo": "bar",
 			},
@@ -54,7 +54,7 @@ var _ = Describe("document attribute subsititutions", func() {
 			types.Paragraph{
 				Lines: [][]interface{}{
 					{
-						types.DocumentAttributeSubstitution{
+						types.AttributeSubstitution{
 							Name: "foo",
 						},
 						types.StringElement{
@@ -65,7 +65,7 @@ var _ = Describe("document attribute subsititutions", func() {
 			},
 		}
 		// when
-		result, applied, err := applyDocumentAttributeSubstitutions(elements, types.DocumentAttributesWithOverrides{
+		result, applied, err := applyAttributeSubstitutions(elements, types.AttributesWithOverrides{
 			Content: map[string]interface{}{
 				"foo": "bar",
 			},
@@ -96,7 +96,7 @@ var _ = Describe("document attribute subsititutions", func() {
 						types.StringElement{
 							Content: "baz, ",
 						},
-						types.DocumentAttributeSubstitution{
+						types.AttributeSubstitution{
 							Name: "foo",
 						},
 						types.StringElement{
@@ -107,7 +107,7 @@ var _ = Describe("document attribute subsititutions", func() {
 			},
 		}
 		// when
-		result, applied, err := applyDocumentAttributeSubstitutions(elements, types.DocumentAttributesWithOverrides{
+		result, applied, err := applyAttributeSubstitutions(elements, types.AttributesWithOverrides{
 			Content: map[string]interface{}{
 				"foo": "bar",
 			},
@@ -138,7 +138,7 @@ var _ = Describe("document attribute subsititutions", func() {
 						types.StringElement{
 							Content: "baz, ",
 						},
-						types.DocumentAttributeSubstitution{
+						types.AttributeSubstitution{
 							Name: "foo",
 						},
 						types.StringElement{
@@ -149,7 +149,7 @@ var _ = Describe("document attribute subsititutions", func() {
 			},
 		}
 		// when
-		result, applied, err := applyDocumentAttributeSubstitutions(elements, types.DocumentAttributesWithOverrides{
+		result, applied, err := applyAttributeSubstitutions(elements, types.AttributesWithOverrides{
 			Content:   map[string]interface{}{},
 			Overrides: map[string]string{},
 		})
@@ -190,7 +190,7 @@ var _ = Describe("document attribute subsititutions", func() {
 			},
 		}
 		// when
-		result, applied, err := applyDocumentAttributeSubstitutions(elements, types.DocumentAttributesWithOverrides{
+		result, applied, err := applyAttributeSubstitutions(elements, types.AttributesWithOverrides{
 			Content:   map[string]interface{}{},
 			Overrides: map[string]string{},
 		})
@@ -220,13 +220,13 @@ var _ = Describe("document attribute subsititutions", func() {
 						types.StringElement{
 							Content: "a link to ",
 						},
-						types.DocumentAttributeSubstitution{
+						types.AttributeSubstitution{
 							Name: "scheme",
 						},
 						types.StringElement{
 							Content: "://",
 						},
-						types.DocumentAttributeSubstitution{
+						types.AttributeSubstitution{
 							Name: "host",
 						},
 						types.StringElement{
@@ -237,7 +237,7 @@ var _ = Describe("document attribute subsititutions", func() {
 			},
 		}
 		// when
-		result, applied, err := applyDocumentAttributeSubstitutions(elements, types.DocumentAttributesWithOverrides{
+		result, applied, err := applyAttributeSubstitutions(elements, types.AttributesWithOverrides{
 			Content: map[string]interface{}{
 				"foo":    "bar",
 				"scheme": "https",
@@ -285,7 +285,7 @@ var _ = Describe("document attribute subsititutions", func() {
 						types.Paragraph{
 							Lines: [][]interface{}{
 								{
-									types.DocumentAttributeSubstitution{
+									types.AttributeSubstitution{
 										Name: "foo",
 									},
 									types.StringElement{
@@ -298,7 +298,7 @@ var _ = Describe("document attribute subsititutions", func() {
 				},
 			}
 			// when
-			result, applied, err := applyDocumentAttributeSubstitutions(elements, types.DocumentAttributesWithOverrides{
+			result, applied, err := applyAttributeSubstitutions(elements, types.AttributesWithOverrides{
 				Content: map[string]interface{}{
 					"foo": "bar",
 				},
@@ -332,7 +332,7 @@ var _ = Describe("document attribute subsititutions", func() {
 						types.Paragraph{
 							Lines: [][]interface{}{
 								{
-									types.DocumentAttributeSubstitution{
+									types.AttributeSubstitution{
 										Name: "foo",
 									},
 									types.StringElement{
@@ -345,7 +345,7 @@ var _ = Describe("document attribute subsititutions", func() {
 				},
 			}
 			// when
-			result, applied, err := applyDocumentAttributeSubstitutions(elements, types.DocumentAttributesWithOverrides{
+			result, applied, err := applyAttributeSubstitutions(elements, types.AttributesWithOverrides{
 				Content: map[string]interface{}{
 					"foo": "bar",
 				},
@@ -379,7 +379,7 @@ var _ = Describe("document attribute subsititutions", func() {
 						types.Paragraph{
 							Lines: [][]interface{}{
 								{
-									types.DocumentAttributeSubstitution{
+									types.AttributeSubstitution{
 										Name: "foo",
 									},
 									types.StringElement{
@@ -392,7 +392,7 @@ var _ = Describe("document attribute subsititutions", func() {
 				},
 			}
 			// when
-			result, applied, err := applyDocumentAttributeSubstitutions(elements, types.DocumentAttributesWithOverrides{
+			result, applied, err := applyAttributeSubstitutions(elements, types.AttributesWithOverrides{
 				Content: map[string]interface{}{
 					"foo": "bar",
 				},
@@ -429,7 +429,7 @@ var _ = Describe("document attribute subsititutions", func() {
 						types.Paragraph{
 							Lines: [][]interface{}{
 								{
-									types.DocumentAttributeSubstitution{
+									types.AttributeSubstitution{
 										Name: "foo",
 									},
 									types.StringElement{
@@ -442,7 +442,7 @@ var _ = Describe("document attribute subsititutions", func() {
 				},
 			}
 			// when
-			result, applied, err := applyDocumentAttributeSubstitutions(elements, types.DocumentAttributesWithOverrides{
+			result, applied, err := applyAttributeSubstitutions(elements, types.AttributesWithOverrides{
 				Content: map[string]interface{}{
 					"foo": "bar",
 				},
@@ -482,7 +482,7 @@ var _ = Describe("document attribute subsititutions", func() {
 							},
 							types.QuotedText{
 								Elements: []interface{}{
-									types.DocumentAttributeSubstitution{
+									types.AttributeSubstitution{
 										Name: "foo",
 									},
 									types.StringElement{
@@ -500,7 +500,7 @@ var _ = Describe("document attribute subsititutions", func() {
 				},
 			}
 			// when
-			result, applied, err := applyDocumentAttributeSubstitutions(elements, types.DocumentAttributesWithOverrides{
+			result, applied, err := applyAttributeSubstitutions(elements, types.AttributesWithOverrides{
 				Content: map[string]interface{}{
 					"foo": "bar",
 				},
@@ -542,7 +542,7 @@ var _ = Describe("document attribute subsititutions", func() {
 			elements := []interface{}{
 				types.DelimitedBlock{
 					Elements: []interface{}{
-						types.DocumentAttributeSubstitution{
+						types.AttributeSubstitution{
 							Name: "foo",
 						},
 						types.StringElement{
@@ -552,7 +552,7 @@ var _ = Describe("document attribute subsititutions", func() {
 				},
 			}
 			// when
-			result, applied, err := applyDocumentAttributeSubstitutions(elements, types.DocumentAttributesWithOverrides{
+			result, applied, err := applyAttributeSubstitutions(elements, types.AttributesWithOverrides{
 				Content: map[string]interface{}{
 					"foo": "bar",
 				},
@@ -578,17 +578,17 @@ var _ = Describe("document attribute subsititutions", func() {
 		It("should replace with new StringElement on first position", func() {
 			// given
 			elements := []interface{}{
-				types.DocumentAttributeDeclaration{
+				types.AttributeDeclaration{
 					Name:  "foo",
 					Value: "foo",
 				},
-				types.DocumentAttributeReset{
+				types.AttributeReset{
 					Name: "foo",
 				},
 				types.Paragraph{
 					Lines: [][]interface{}{
 						{
-							types.DocumentAttributeSubstitution{
+							types.AttributeSubstitution{
 								Name: "foo",
 							},
 							types.StringElement{
@@ -599,7 +599,7 @@ var _ = Describe("document attribute subsititutions", func() {
 				},
 			}
 			// when
-			result, applied, err := applyDocumentAttributeSubstitutions(elements, types.DocumentAttributesWithOverrides{
+			result, applied, err := applyAttributeSubstitutions(elements, types.AttributesWithOverrides{
 				Content: map[string]interface{}{
 					"foo": "bar",
 				},
@@ -610,12 +610,12 @@ var _ = Describe("document attribute subsititutions", func() {
 			// then
 			Expect(err).To(Not(HaveOccurred()))
 			Expect(applied).To(BeTrue())
-			Expect(result).To(Equal([]interface{}{ // at this stage, DocumentAttributeDeclaration and DocumentAttributeReset are still present
-				types.DocumentAttributeDeclaration{
+			Expect(result).To(Equal([]interface{}{ // at this stage, AttributeDeclaration and AttributeReset are still present
+				types.AttributeDeclaration{
 					Name:  "foo",
 					Value: "foo",
 				},
-				types.DocumentAttributeReset{
+				types.AttributeReset{
 					Name: "foo",
 				},
 				types.Paragraph{

@@ -246,16 +246,16 @@ func renderSourceBlock(ctx renderer.Context, b types.DelimitedBlock) ([]byte, er
 		return []byte{}, err
 	}
 	content := contentBuf.String()
-	language := b.Attributes.GetAsString(types.AttrLanguage)
 
-	hightligher, _ := ctx.Attributes.GetAsString(types.AttrSyntaxHighlighter)
-	if language != "" && hightligher == "pygments" {
+	highligher, _ := ctx.Attributes.GetAsString(types.AttrSyntaxHighlighter)
+	language, found := b.Attributes.GetAsString(types.AttrLanguage)
+	if found && highligher == "pygments" {
 		// using github.com/alecthomas/chroma to highlight the content
 		contentBuf = bytes.NewBuffer(nil)
 		lexer := lexers.Get(language)
 		lexer = chroma.Coalesce(lexer)
 		style := styles.Fallback
-		if s, exists := ctx.Attributes.GetAsString("pygments-style"); exists {
+		if s, found := ctx.Attributes.GetAsString("pygments-style"); found {
 			style = styles.Get(s)
 		}
 		iterator, err := lexer.Tokenise(nil, content)
@@ -293,7 +293,7 @@ func renderSourceBlock(ctx renderer.Context, b types.DelimitedBlock) ([]byte, er
 	}{
 		ID:                renderElementID(b.Attributes),
 		Title:             renderElementTitle(b.Attributes),
-		SyntaxHighlighter: hightligher,
+		SyntaxHighlighter: highligher,
 		Language:          language,
 		Content:           content,
 	})

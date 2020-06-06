@@ -28,7 +28,7 @@ This journey continues.`
 				Elements: []interface{}{
 					types.Section{
 						Level: 0,
-						Attributes: types.ElementAttributes{
+						Attributes: types.Attributes{
 							types.AttrID: "_document_title",
 						},
 						Title: title,
@@ -60,7 +60,7 @@ John  Foo    Doe  <johndoe@example.com>`
 						},
 					}
 					expected := types.Document{
-						Attributes: types.DocumentAttributes{
+						Attributes: types.Attributes{
 							types.AttrAuthors: []types.DocumentAuthor{
 								{
 									FullName: "John Foo Doe",
@@ -80,7 +80,7 @@ John  Foo    Doe  <johndoe@example.com>`
 						Elements: []interface{}{
 							types.Section{
 								Level: 0,
-								Attributes: types.ElementAttributes{
+								Attributes: types.Attributes{
 									types.AttrID: "_title",
 								},
 								Title:    title,
@@ -100,7 +100,7 @@ Jane the_Doe <jane@example.com>`
 						},
 					}
 					expected := types.Document{
-						Attributes: types.DocumentAttributes{
+						Attributes: types.Attributes{
 							types.AttrAuthors: []types.DocumentAuthor{
 								{
 									FullName: "Jane the Doe",
@@ -119,7 +119,7 @@ Jane the_Doe <jane@example.com>`
 						Elements: []interface{}{
 							types.Section{
 								Level: 0,
-								Attributes: types.ElementAttributes{
+								Attributes: types.Attributes{
 									types.AttrID: "_title",
 								},
 								Title:    title,
@@ -139,7 +139,7 @@ Jane Foo the Doe <jane@example.com>`
 						},
 					}
 					expected := types.Document{
-						Attributes: types.DocumentAttributes{
+						Attributes: types.Attributes{
 							types.AttrAuthors: []types.DocumentAuthor{
 								{
 									FullName: "Jane Foo the Doe",
@@ -159,7 +159,7 @@ Jane Foo the Doe <jane@example.com>`
 						Elements: []interface{}{
 							types.Section{
 								Level: 0,
-								Attributes: types.ElementAttributes{
+								Attributes: types.Attributes{
 									types.AttrID: "_title",
 								},
 								Title:    title,
@@ -179,7 +179,7 @@ John Doe`
 						},
 					}
 					expected := types.Document{
-						Attributes: types.DocumentAttributes{
+						Attributes: types.Attributes{
 							types.AttrAuthors: []types.DocumentAuthor{
 								{
 									FullName: "John Doe",
@@ -196,7 +196,7 @@ John Doe`
 						Elements: []interface{}{
 							types.Section{
 								Level: 0,
-								Attributes: types.ElementAttributes{
+								Attributes: types.Attributes{
 									types.AttrID: "_title",
 								},
 								Title:    title,
@@ -216,7 +216,7 @@ Doe`
 						},
 					}
 					expected := types.Document{
-						Attributes: types.DocumentAttributes{
+						Attributes: types.Attributes{
 							types.AttrAuthors: []types.DocumentAuthor{
 								{
 									FullName: "Doe",
@@ -232,7 +232,7 @@ Doe`
 						Elements: []interface{}{
 							types.Section{
 								Level: 0,
-								Attributes: types.ElementAttributes{
+								Attributes: types.Attributes{
 									types.AttrID: "_title",
 								},
 								Title:    title,
@@ -252,7 +252,7 @@ Doe`
 						},
 					}
 					expected := types.Document{
-						Attributes: types.DocumentAttributes{
+						Attributes: types.Attributes{
 							types.AttrAuthors: []types.DocumentAuthor{
 								{
 									FullName: "John Foo Doe",
@@ -270,7 +270,7 @@ Doe`
 						Elements: []interface{}{
 							types.Section{
 								Level: 0,
-								Attributes: types.ElementAttributes{
+								Attributes: types.Attributes{
 									types.AttrID: "_title",
 								},
 								Title:    title,
@@ -293,7 +293,7 @@ John  Foo Doe  <johndoe@example.com>; Jane the_Doe <jane@example.com>`
 						},
 					}
 					expected := types.Document{
-						Attributes: types.DocumentAttributes{
+						Attributes: types.Attributes{
 							types.AttrAuthors: []types.DocumentAuthor{
 								{
 									FullName: "John Foo Doe",
@@ -322,7 +322,7 @@ John  Foo Doe  <johndoe@example.com>; Jane the_Doe <jane@example.com>`
 						Elements: []interface{}{
 							types.Section{
 								Level: 0,
-								Attributes: types.ElementAttributes{
+								Attributes: types.Attributes{
 									types.AttrID: "_title",
 								},
 								Title:    title,
@@ -351,7 +351,7 @@ John  Foo Doe  <johndoe@example.com>; Jane the_Doe <jane@example.com>`
 						Elements: []interface{}{
 							types.Section{
 								Level: 0,
-								Attributes: types.ElementAttributes{
+								Attributes: types.Attributes{
 									types.AttrID: "_title",
 								},
 								Title:    title,
@@ -372,7 +372,7 @@ John  Foo Doe  <johndoe@example.com>; Jane the_Doe <jane@example.com>`
 						},
 					}
 					expected := types.Document{
-						Attributes: types.DocumentAttributes{
+						Attributes: types.Attributes{
 							types.AttrAuthors: []types.DocumentAuthor{
 								{
 									FullName: "John Foo Doe",
@@ -401,7 +401,7 @@ John  Foo Doe  <johndoe@example.com>; Jane the_Doe <jane@example.com>`
 						Elements: []interface{}{
 							types.Section{
 								Level: 0,
-								Attributes: types.ElementAttributes{
+								Attributes: types.Attributes{
 									types.AttrID: "_title",
 								},
 								Title:    title,
@@ -424,7 +424,7 @@ John  Foo Doe  <johndoe@example.com>; Jane the_Doe <jane@example.com>`
 						},
 					}
 					expected := types.Document{
-						Attributes: types.DocumentAttributes{
+						Attributes: types.Attributes{
 							types.AttrAuthors: []types.DocumentAuthor{
 								{
 									FullName: "John Foo Doe",
@@ -453,7 +453,7 @@ John  Foo Doe  <johndoe@example.com>; Jane the_Doe <jane@example.com>`
 						Elements: []interface{}{
 							types.Section{
 								Level: 0,
-								Attributes: types.ElementAttributes{
+								Attributes: types.Attributes{
 									types.AttrID: "_title",
 								},
 								Title:    title,
@@ -478,7 +478,7 @@ John  Foo Doe  <johndoe@example.com>; Jane the_Doe <jane@example.com>`
 					},
 				}
 				expected := types.Document{
-					Attributes: types.DocumentAttributes{
+					Attributes: types.Attributes{
 						types.AttrAuthors: []types.DocumentAuthor{
 							{
 								FullName: "John Doe",
@@ -503,7 +503,7 @@ John  Foo Doe  <johndoe@example.com>; Jane the_Doe <jane@example.com>`
 					Elements: []interface{}{
 						types.Section{
 							Level: 0,
-							Attributes: types.ElementAttributes{
+							Attributes: types.Attributes{
 								types.AttrID: "_title",
 							},
 							Title:    title,
@@ -525,7 +525,7 @@ John  Foo Doe  <johndoe@example.com>; Jane the_Doe <jane@example.com>`
 					},
 				}
 				expected := types.Document{
-					Attributes: types.DocumentAttributes{
+					Attributes: types.Attributes{
 						types.AttrAuthors: []types.DocumentAuthor{
 							{
 								FullName: "John Doe",
@@ -550,7 +550,7 @@ John  Foo Doe  <johndoe@example.com>; Jane the_Doe <jane@example.com>`
 					Elements: []interface{}{
 						types.Section{
 							Level: 0,
-							Attributes: types.ElementAttributes{
+							Attributes: types.Attributes{
 								types.AttrID: "_title",
 							},
 							Title:    title,
@@ -572,7 +572,7 @@ John  Foo Doe  <johndoe@example.com>; Jane the_Doe <jane@example.com>`
 					},
 				}
 				expected := types.Document{
-					Attributes: types.DocumentAttributes{
+					Attributes: types.Attributes{
 						types.AttrAuthors: []types.DocumentAuthor{
 							{
 								FullName: "John Doe",
@@ -597,7 +597,7 @@ John  Foo Doe  <johndoe@example.com>; Jane the_Doe <jane@example.com>`
 					Elements: []interface{}{
 						types.Section{
 							Level: 0,
-							Attributes: types.ElementAttributes{
+							Attributes: types.Attributes{
 								types.AttrID: "_title",
 							},
 							Title:    title,
@@ -618,7 +618,7 @@ John  Foo Doe  <johndoe@example.com>; Jane the_Doe <jane@example.com>`
 					},
 				}
 				expected := types.Document{
-					Attributes: types.DocumentAttributes{
+					Attributes: types.Attributes{
 						types.AttrAuthors: []types.DocumentAuthor{
 							{
 								FullName: "John Doe",
@@ -641,7 +641,7 @@ John  Foo Doe  <johndoe@example.com>; Jane the_Doe <jane@example.com>`
 					Elements: []interface{}{
 						types.Section{
 							Level: 0,
-							Attributes: types.ElementAttributes{
+							Attributes: types.Attributes{
 								types.AttrID: "_title",
 							},
 							Title:    title,
@@ -662,7 +662,7 @@ John  Foo Doe  <johndoe@example.com>; Jane the_Doe <jane@example.com>`
 					},
 				}
 				expected := types.Document{
-					Attributes: types.DocumentAttributes{
+					Attributes: types.Attributes{
 						types.AttrAuthors: []types.DocumentAuthor{
 							{
 								FullName: "John Doe",
@@ -685,7 +685,7 @@ John  Foo Doe  <johndoe@example.com>; Jane the_Doe <jane@example.com>`
 					Elements: []interface{}{
 						types.Section{
 							Level: 0,
-							Attributes: types.ElementAttributes{
+							Attributes: types.Attributes{
 								types.AttrID: "_title",
 							},
 							Title:    title,
@@ -705,7 +705,7 @@ John  Foo Doe  <johndoe@example.com>; Jane the_Doe <jane@example.com>`
 					},
 				}
 				expected := types.Document{
-					Attributes: types.DocumentAttributes{
+					Attributes: types.Attributes{
 						types.AttrAuthors: []types.DocumentAuthor{
 							{
 								FullName: "John Doe",
@@ -726,7 +726,7 @@ John  Foo Doe  <johndoe@example.com>; Jane the_Doe <jane@example.com>`
 					Elements: []interface{}{
 						types.Section{
 							Level: 0,
-							Attributes: types.ElementAttributes{
+							Attributes: types.Attributes{
 								types.AttrID: "_title",
 							},
 							Title:    title,
@@ -747,7 +747,7 @@ John  Foo Doe  <johndoe@example.com>; Jane the_Doe <jane@example.com>`
 					},
 				}
 				expected := types.Document{
-					Attributes: types.DocumentAttributes{
+					Attributes: types.Attributes{
 						types.AttrAuthors: []types.DocumentAuthor{
 							{
 								FullName: "John Doe",
@@ -768,7 +768,7 @@ John  Foo Doe  <johndoe@example.com>; Jane the_Doe <jane@example.com>`
 					Elements: []interface{}{
 						types.Section{
 							Level: 0,
-							Attributes: types.ElementAttributes{
+							Attributes: types.Attributes{
 								types.AttrID: "_title",
 							},
 							Title:    title,
@@ -789,7 +789,7 @@ John  Foo Doe  <johndoe@example.com>; Jane the_Doe <jane@example.com>`
 					},
 				}
 				expected := types.Document{
-					Attributes: types.DocumentAttributes{
+					Attributes: types.Attributes{
 						types.AttrAuthors: []types.DocumentAuthor{
 							{
 								FullName: "John Doe",
@@ -810,7 +810,7 @@ John  Foo Doe  <johndoe@example.com>; Jane the_Doe <jane@example.com>`
 					Elements: []interface{}{
 						types.Section{
 							Level: 0,
-							Attributes: types.ElementAttributes{
+							Attributes: types.Attributes{
 								types.AttrID: "_title",
 							},
 							Title:    title,
@@ -831,7 +831,7 @@ John  Foo Doe  <johndoe@example.com>; Jane the_Doe <jane@example.com>`
 					},
 				}
 				expected := types.Document{
-					Attributes: types.DocumentAttributes{
+					Attributes: types.Attributes{
 						types.AttrAuthors: []types.DocumentAuthor{
 							{
 								FullName: "John Doe",
@@ -852,7 +852,7 @@ John  Foo Doe  <johndoe@example.com>; Jane the_Doe <jane@example.com>`
 					Elements: []interface{}{
 						types.Section{
 							Level: 0,
-							Attributes: types.ElementAttributes{
+							Attributes: types.Attributes{
 								types.AttrID: "_title",
 							},
 							Title:    title,
@@ -873,7 +873,7 @@ John  Foo Doe  <johndoe@example.com>; Jane the_Doe <jane@example.com>`
 					},
 				}
 				expected := types.Document{
-					Attributes: types.DocumentAttributes{
+					Attributes: types.Attributes{
 						types.AttrAuthors: []types.DocumentAuthor{
 							{
 								FullName: "John Doe",
@@ -894,7 +894,7 @@ John  Foo Doe  <johndoe@example.com>; Jane the_Doe <jane@example.com>`
 					Elements: []interface{}{
 						types.Section{
 							Level: 0,
-							Attributes: types.ElementAttributes{
+							Attributes: types.Attributes{
 								types.AttrID: "_title",
 							},
 							Title:    title,
@@ -915,7 +915,7 @@ John  Foo Doe  <johndoe@example.com>; Jane the_Doe <jane@example.com>`
 					},
 				}
 				expected := types.Document{
-					Attributes: types.DocumentAttributes{
+					Attributes: types.Attributes{
 						types.AttrAuthors: []types.DocumentAuthor{
 							{
 								FullName: "John Doe",
@@ -936,7 +936,7 @@ John  Foo Doe  <johndoe@example.com>; Jane the_Doe <jane@example.com>`
 					Elements: []interface{}{
 						types.Section{
 							Level: 0,
-							Attributes: types.ElementAttributes{
+							Attributes: types.Attributes{
 								types.AttrID: "_title",
 							},
 							Title:    title,
@@ -957,7 +957,7 @@ John  Foo Doe  <johndoe@example.com>; Jane the_Doe <jane@example.com>`
 					},
 				}
 				expected := types.Document{
-					Attributes: types.DocumentAttributes{
+					Attributes: types.Attributes{
 						types.AttrAuthors: []types.DocumentAuthor{
 							{
 								FullName: "John Doe",
@@ -978,7 +978,7 @@ John  Foo Doe  <johndoe@example.com>; Jane the_Doe <jane@example.com>`
 					Elements: []interface{}{
 						types.Section{
 							Level: 0,
-							Attributes: types.ElementAttributes{
+							Attributes: types.Attributes{
 								types.AttrID: "_title",
 							},
 							Title:    title,
@@ -999,7 +999,7 @@ v1.0:`
 					},
 				}
 				expected := types.Document{
-					Attributes: types.DocumentAttributes{
+					Attributes: types.Attributes{
 						types.AttrAuthors: []types.DocumentAuthor{
 							{
 								FullName: "John Doe",
@@ -1013,7 +1013,7 @@ v1.0:`
 							Revnumber: "1.0",
 						},
 						"revnumber": "1.0",
-						// "revremark": "", // exists but is empty
+						// "revremark": "", // found but is empty
 					},
 					ElementReferences: types.ElementReferences{
 						"_title": title,
@@ -1021,7 +1021,7 @@ v1.0:`
 					Elements: []interface{}{
 						types.Section{
 							Level: 0,
-							Attributes: types.ElementAttributes{
+							Attributes: types.Attributes{
 								types.AttrID: "_title",
 							},
 							Title:    title,
@@ -1044,7 +1044,7 @@ v1.0:`
 :0Author: Xavier
 :Auth0r: Xavier`
 				expected := types.Document{
-					Attributes: types.DocumentAttributes{
+					Attributes: types.Attributes{
 						"a":       "",
 						"author":  "Xavier",
 						"_author": "Xavier",
@@ -1064,7 +1064,7 @@ v1.0:`
 :hardbreaks:
 a paragraph`
 				expected := types.Document{
-					Attributes: types.DocumentAttributes{
+					Attributes: types.Attributes{
 						"toc":                        "",
 						"date":                       "2017-01-01",
 						"author":                     "Xavier",
@@ -1091,7 +1091,7 @@ a paragraph`
 
 a paragraph`
 				expected := types.Document{
-					Attributes: types.DocumentAttributes{
+					Attributes: types.Attributes{
 						"toc":    "",
 						"date":   "2017-01-01",
 						"author": "Xavier",
@@ -1120,7 +1120,7 @@ a paragraph`
 
 a paragraph`
 				expected := types.Document{
-					Attributes: types.DocumentAttributes{
+					Attributes: types.Attributes{
 						"toc":        "",
 						"date":       "2017-01-01",
 						"author":     "Xavier",
@@ -1147,7 +1147,7 @@ a paragraph`
 :date: 2017-01-01
 :author: Xavier`
 				expected := types.Document{
-					Attributes: types.DocumentAttributes{
+					Attributes: types.Attributes{
 						"toc":    "",
 						"date":   "2017-01-01",
 						"author": "Xavier",
@@ -1174,7 +1174,7 @@ a paragraph`
 			
 a paragraph written by {author}.`
 				expected := types.Document{
-					Attributes: types.DocumentAttributes{
+					Attributes: types.Attributes{
 						"author": "Xavier",
 					},
 					Elements: []interface{}{
@@ -1197,7 +1197,7 @@ a paragraph written by {author}.`
 :author2!:
 a paragraph written by {author}.`
 				expected := types.Document{
-					Attributes: types.DocumentAttributes{
+					Attributes: types.Attributes{
 						"author": "Xavier",
 					},
 					Elements: []interface{}{
@@ -1225,7 +1225,7 @@ This journey continues`
 					types.StringElement{Content: "Document Title"},
 				}
 				expected := types.Document{
-					Attributes: types.DocumentAttributes{
+					Attributes: types.Attributes{
 						"toc":      "",
 						"keywords": "documentation, team, obstacles, journey, victory",
 						types.AttrAuthors: []types.DocumentAuthor{
@@ -1264,7 +1264,7 @@ This journey continues`
 					Elements: []interface{}{
 						types.Section{
 							Level: 0,
-							Attributes: types.ElementAttributes{
+							Attributes: types.Attributes{
 								types.AttrID: "_document_title",
 							},
 							Title: title,
@@ -1281,7 +1281,9 @@ This journey continues`
 						},
 					},
 				}
-				Expect(ParseDocument(source)).To(MatchDocument(expected))
+				result, err := ParseDocument(source)
+				Expect(err).NotTo(HaveOccurred())
+				Expect(result).To(MatchDocument(expected))
 			})
 
 			It("paragraph with attribute substitution from front-matter", func() {
@@ -1291,7 +1293,7 @@ author: Xavier
 			
 a paragraph written by {author}.`
 				expected := types.Document{
-					Attributes: types.DocumentAttributes{
+					Attributes: types.Attributes{
 						"author": "Xavier",
 					},
 					Elements: []interface{}{
@@ -1371,7 +1373,7 @@ a paragraph written by {author}.`
 			}
 			source := `{icons}`
 			expected := types.Document{
-				Attributes: types.DocumentAttributes{
+				Attributes: types.Attributes{
 					"icons":              "font",
 					"source-highlighter": "pygments",
 				},

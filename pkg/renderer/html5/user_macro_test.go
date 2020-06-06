@@ -128,9 +128,9 @@ func init() {
 <div class="content">
 {{end -}}
 <span>
-{{- if .Attributes.Has "prefix"}}{{escape (.Attributes.GetAsString "prefix")}} {{else}}hello {{end -}}
-{{- if ne .Value ""}}{{escape .Value}}{{else}}world{{- end -}}
-{{- escape (.Attributes.GetAsString "suffix") -}}
+{{- $prefix := index .Attributes "prefix" }}{{ $suffix := index .Attributes "suffix" }}{{ if $prefix }}{{- escape ($prefix) }} {{ else }}hello {{end -}}
+{{- if ne .Value "" }}{{ escape .Value }}{{ else }}world{{- end -}}
+{{- if $suffix }}{{ escape $suffix -}}{{ end -}}
 </span>
 {{- if eq .Kind "block"}}
 </div>

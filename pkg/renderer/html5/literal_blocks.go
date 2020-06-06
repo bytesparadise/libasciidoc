@@ -30,8 +30,7 @@ func init() {
 func renderLiteralBlock(ctx renderer.Context, b types.LiteralBlock) ([]byte, error) {
 	log.Debugf("rendering delimited block with content: %s", b.Lines)
 	var lines []string
-	switch b.Attributes.GetAsString(types.AttrLiteralBlockType) {
-	case types.LiteralBlockWithSpacesOnFirstLine:
+	if t, found := b.Attributes.GetAsString(types.AttrLiteralBlockType); found && t == types.LiteralBlockWithSpacesOnFirstLine {
 		if len(b.Lines) == 1 {
 			lines = []string{strings.TrimLeft(b.Lines[0], " ")}
 		} else {
@@ -54,7 +53,7 @@ func renderLiteralBlock(ctx renderer.Context, b types.LiteralBlock) ([]byte, err
 				lines[i] = strings.TrimPrefix(line, spaces)
 			}
 		}
-	default:
+	} else {
 		lines = b.Lines
 	}
 	result := bytes.NewBuffer(nil)

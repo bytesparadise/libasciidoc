@@ -106,7 +106,7 @@ var _ = Describe("images", func() {
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.ImageBlock{
-							Attributes: types.ElementAttributes{
+							Attributes: types.Attributes{
 								types.AttrImageAlt: "the foo.png image",
 							},
 							Location: types.Location{
@@ -128,7 +128,7 @@ image::images/foo.png[the foo.png image, 600, 400]`
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.ImageBlock{
-							Attributes: types.ElementAttributes{
+							Attributes: types.Attributes{
 								types.AttrID:          "img-foobar",
 								types.AttrCustomID:    true,
 								types.AttrTitle:       "A title to foobar",
@@ -180,7 +180,7 @@ image::images/bar.png[]`
 				expected := types.Document{
 					Elements: []interface{}{
 						types.ImageBlock{
-							Attributes: types.ElementAttributes{
+							Attributes: types.Attributes{
 								types.AttrImageAlt: "foo",
 							},
 							Location: types.Location{
@@ -200,12 +200,12 @@ image::images/bar.png[]`
 
 image::foo.png[]`
 				expected := types.Document{
-					Attributes: types.DocumentAttributes{
+					Attributes: types.Attributes{
 						"imagesdir": "./path/to/images",
 					},
 					Elements: []interface{}{
 						types.ImageBlock{
-							Attributes: types.ElementAttributes{
+							Attributes: types.Attributes{
 								types.AttrImageAlt: "foo",
 							},
 							Location: types.Location{
@@ -225,12 +225,12 @@ image::foo.png[]`
 
 image::{dir}/foo.png[]`
 				expected := types.Document{
-					Attributes: types.DocumentAttributes{
+					Attributes: types.Attributes{
 						"dir": "./path/to/images",
 					},
 					Elements: []interface{}{
 						types.ImageBlock{
-							Attributes: types.ElementAttributes{
+							Attributes: types.Attributes{
 								types.AttrImageAlt: "foo",
 							},
 							Location: types.Location{
@@ -250,12 +250,12 @@ image::{dir}/foo.png[]`
 
 image::foo.png[]`
 				expected := types.Document{
-					Attributes: types.DocumentAttributes{
+					Attributes: types.Attributes{
 						"imagesdir": "./path/to/images",
 					},
 					Elements: []interface{}{
 						types.ImageBlock{
-							Attributes: types.ElementAttributes{
+							Attributes: types.Attributes{
 								types.AttrImageAlt: "foo",
 							},
 							Location: types.Location{
@@ -275,12 +275,12 @@ image::foo.png[]`
 
 image::{imagesdir}/foo.png[]`
 				expected := types.Document{
-					Attributes: types.DocumentAttributes{
+					Attributes: types.Attributes{
 						"imagesdir": "./path/to/images",
 					},
 					Elements: []interface{}{
 						types.ImageBlock{
-							Attributes: types.ElementAttributes{
+							Attributes: types.Attributes{
 								types.AttrImageAlt: "foo",
 							},
 							Location: types.Location{
@@ -427,7 +427,7 @@ image::{imagesdir}/foo.png[]`
 							Lines: [][]interface{}{
 								{
 									types.InlineImage{
-										Attributes: types.ElementAttributes{
+										Attributes: types.Attributes{
 											types.AttrImageAlt: "the foo.png image",
 										},
 										Location: types.Location{
@@ -452,7 +452,7 @@ image::{imagesdir}/foo.png[]`
 							Lines: [][]interface{}{
 								{
 									types.InlineImage{
-										Attributes: types.ElementAttributes{
+										Attributes: types.Attributes{
 											types.AttrImageAlt:   "the foo.png image",
 											types.AttrImageWidth: "600",
 										},
@@ -478,7 +478,7 @@ image::{imagesdir}/foo.png[]`
 							Lines: [][]interface{}{
 								{
 									types.InlineImage{
-										Attributes: types.ElementAttributes{
+										Attributes: types.Attributes{
 											types.AttrImageAlt:    "the foo.png image",
 											types.AttrImageWidth:  "600",
 											types.AttrImageHeight: "400",
@@ -505,7 +505,7 @@ image::{imagesdir}/foo.png[]`
 							Lines: [][]interface{}{
 								{
 									types.InlineImage{
-										Attributes: types.ElementAttributes{
+										Attributes: types.Attributes{
 											types.AttrImageAlt: "the foo.png image",
 										},
 										Location: types.Location{
@@ -530,7 +530,7 @@ image::{imagesdir}/foo.png[]`
 							Lines: [][]interface{}{
 								{
 									types.InlineImage{
-										Attributes: types.ElementAttributes{
+										Attributes: types.Attributes{
 											types.AttrID:       "myid",
 											types.AttrCustomID: true,
 										},
@@ -556,7 +556,7 @@ image::{imagesdir}/foo.png[]`
 							Lines: [][]interface{}{
 								{
 									types.InlineImage{
-										Attributes: types.ElementAttributes{
+										Attributes: types.Attributes{
 											types.AttrID:       "myid",
 											types.AttrCustomID: true,
 											types.AttrTitle:    "mytitle",
@@ -584,7 +584,7 @@ image::{imagesdir}/foo.png[]`
 							Lines: [][]interface{}{
 								{
 									types.InlineImage{
-										Attributes: types.ElementAttributes{
+										Attributes: types.Attributes{
 											types.AttrImageAlt:    "foo",
 											types.AttrImageWidth:  "600",
 											types.AttrImageHeight: "400",
@@ -663,7 +663,7 @@ image::{imagesdir}/foo.png[]`
 image::{imagesdir}/foo.png[]`
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
-						types.DocumentAttributeDeclaration{
+						types.AttributeDeclaration{
 							Name:  "imagesdir",
 							Value: "./path/to/images",
 						},
@@ -671,7 +671,7 @@ image::{imagesdir}/foo.png[]`
 						types.ImageBlock{
 							Location: types.Location{
 								Path: []interface{}{
-									types.DocumentAttributeSubstitution{
+									types.AttributeSubstitution{
 										Name: "imagesdir",
 									},
 									types.StringElement{Content: "/foo.png"},
@@ -694,7 +694,7 @@ image::{imagesdir}/foo.png[]`
 							Lines: [][]interface{}{
 								{
 									types.InlineImage{
-										Attributes: types.ElementAttributes{
+										Attributes: types.Attributes{
 											types.AttrImageAlt: "foo",
 										},
 										Location: types.Location{
@@ -717,7 +717,7 @@ image::{imagesdir}/foo.png[]`
 
 an image:{dir}/foo.png[].`
 				expected := types.Document{
-					Attributes: types.DocumentAttributes{
+					Attributes: types.Attributes{
 						"dir": "./path/to/images",
 					},
 					Elements: []interface{}{
@@ -726,7 +726,7 @@ an image:{dir}/foo.png[].`
 								{
 									types.StringElement{Content: "an "},
 									types.InlineImage{
-										Attributes: types.ElementAttributes{
+										Attributes: types.Attributes{
 											types.AttrImageAlt: "foo",
 										},
 										Location: types.Location{
@@ -750,7 +750,7 @@ an image:{dir}/foo.png[].`
 
 an image:foo.png[].`
 				expected := types.Document{
-					Attributes: types.DocumentAttributes{
+					Attributes: types.Attributes{
 						"imagesdir": "./path/to/images",
 					},
 					Elements: []interface{}{
@@ -759,7 +759,7 @@ an image:foo.png[].`
 								{
 									types.StringElement{Content: "an "},
 									types.InlineImage{
-										Attributes: types.ElementAttributes{
+										Attributes: types.Attributes{
 											types.AttrImageAlt: "foo",
 										},
 										Location: types.Location{
@@ -783,7 +783,7 @@ an image:foo.png[].`
 
 an image:{imagesdir}/foo.png[].`
 				expected := types.Document{
-					Attributes: types.DocumentAttributes{
+					Attributes: types.Attributes{
 						"imagesdir": "./path/to/images",
 					},
 					Elements: []interface{}{
@@ -792,7 +792,7 @@ an image:{imagesdir}/foo.png[].`
 								{
 									types.StringElement{Content: "an "},
 									types.InlineImage{
-										Attributes: types.ElementAttributes{
+										Attributes: types.Attributes{
 											types.AttrImageAlt: "foo",
 										},
 										Location: types.Location{

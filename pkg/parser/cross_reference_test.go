@@ -21,7 +21,7 @@ with some content linked to <<thetitle>>!`
 				Blocks: []interface{}{
 					types.Section{
 						Level: 1,
-						Attributes: types.ElementAttributes{
+						Attributes: types.Attributes{
 							types.AttrID:       "thetitle",
 							types.AttrCustomID: true,
 						},
@@ -63,7 +63,7 @@ with some content linked to <<thetitle,a label to the title>>!`
 				Blocks: []interface{}{
 					types.Section{
 						Level: 1,
-						Attributes: types.ElementAttributes{
+						Attributes: types.Attributes{
 							types.AttrID:       "thetitle",
 							types.AttrCustomID: true,
 						},
@@ -152,7 +152,7 @@ with some content linked to <<thetitle,a label to the title>>!`
 								types.ExternalCrossReference{
 									Location: types.Location{
 										Path: []interface{}{
-											types.DocumentAttributeSubstitution{
+											types.AttributeSubstitution{
 												Name: "foo",
 											},
 											types.StringElement{
@@ -199,7 +199,7 @@ with some content linked to <<thetitle>>!`
 				Elements: []interface{}{
 					types.Section{
 						Level: 1,
-						Attributes: types.ElementAttributes{
+						Attributes: types.Attributes{
 							types.AttrID:       "thetitle",
 							types.AttrCustomID: true,
 						},
@@ -248,7 +248,7 @@ with some content linked to <<thetitle,a label to the title>>!`
 				Elements: []interface{}{
 					types.Section{
 						Level: 1,
-						Attributes: types.ElementAttributes{
+						Attributes: types.Attributes{
 							types.AttrID:       "thetitle",
 							types.AttrCustomID: true,
 						},
@@ -330,7 +330,7 @@ with some content linked to <<thetitle,a label to the title>>!`
 
 some content linked to xref:{foo}[another_doc()]!`
 			expected := types.Document{
-				Attributes: types.DocumentAttributes{
+				Attributes: types.Attributes{
 					"foo": "another-doc.adoc",
 				},
 				Elements: []interface{}{

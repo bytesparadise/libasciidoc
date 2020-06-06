@@ -98,7 +98,7 @@ a paragraph`
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.Paragraph{
-							Attributes: types.ElementAttributes{
+							Attributes: types.Attributes{
 								types.AttrID:       "foo",
 								types.AttrCustomID: true,
 								types.AttrTitle:    "a title",
@@ -188,7 +188,7 @@ baz`
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.Paragraph{
-							Attributes: types.ElementAttributes{
+							Attributes: types.Attributes{
 								types.AttrHardBreaks: nil,
 							},
 							Lines: [][]interface{}{
@@ -236,7 +236,7 @@ foo`
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.Paragraph{
-							Attributes: types.ElementAttributes{
+							Attributes: types.Attributes{
 								types.AttrAdmonitionKind: types.Note,
 							},
 							Lines: [][]interface{}{
@@ -258,7 +258,7 @@ warning!`
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.Paragraph{
-							Attributes: types.ElementAttributes{
+							Attributes: types.Attributes{
 								types.AttrAdmonitionKind: types.Warning,
 							},
 							Lines: [][]interface{}{
@@ -286,7 +286,7 @@ NOTE: this is a note.`
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.Paragraph{
-							Attributes: types.ElementAttributes{
+							Attributes: types.Attributes{
 								types.AttrAdmonitionKind: types.Note,
 								types.AttrID:             "foo",
 								types.AttrCustomID:       true,
@@ -311,7 +311,7 @@ this is a caution!`
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.Paragraph{
-							Attributes: types.ElementAttributes{
+							Attributes: types.Attributes{
 								types.AttrAdmonitionKind: types.Caution,
 							},
 							Lines: [][]interface{}{
@@ -336,7 +336,7 @@ this is a
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.Paragraph{
-							Attributes: types.ElementAttributes{
+							Attributes: types.Attributes{
 								types.AttrAdmonitionKind: types.Caution,
 								types.AttrID:             "foo",
 								types.AttrCustomID:       true,
@@ -377,7 +377,7 @@ And no space after [CAUTION] either.`
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.Paragraph{
-							Attributes: types.ElementAttributes{
+							Attributes: types.Attributes{
 								types.AttrAdmonitionKind: types.Note,
 							},
 							Lines: [][]interface{}{
@@ -390,7 +390,7 @@ And no space after [CAUTION] either.`
 						},
 						types.BlankLine{},
 						types.Paragraph{
-							Attributes: types.ElementAttributes{
+							Attributes: types.Attributes{
 								types.AttrAdmonitionKind: types.Caution,
 							},
 							Lines: [][]interface{}{
@@ -415,7 +415,7 @@ I am a verse paragraph.`
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.Paragraph{
-							Attributes: types.ElementAttributes{
+							Attributes: types.Attributes{
 								types.AttrKind:        types.Verse,
 								types.AttrQuoteAuthor: "john doe",
 								types.AttrQuoteTitle:  "verse title",
@@ -441,7 +441,7 @@ I am a verse paragraph.`
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.Paragraph{
-							Attributes: types.ElementAttributes{
+							Attributes: types.Attributes{
 								types.AttrKind:        types.Verse,
 								types.AttrQuoteAuthor: "john doe",
 								types.AttrQuoteTitle:  "verse title",
@@ -468,7 +468,7 @@ I am a verse paragraph.`
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.Paragraph{
-							Attributes: types.ElementAttributes{
+							Attributes: types.Attributes{
 								types.AttrKind:        types.Verse,
 								types.AttrQuoteAuthor: "john doe",
 							},
@@ -491,7 +491,7 @@ I am a verse paragraph.`
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.Paragraph{
-							Attributes: types.ElementAttributes{
+							Attributes: types.Attributes{
 								types.AttrKind:        types.Verse,
 								types.AttrQuoteAuthor: "john doe",
 							},
@@ -514,7 +514,7 @@ I am a verse paragraph.`
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.Paragraph{
-							Attributes: types.ElementAttributes{
+							Attributes: types.Attributes{
 								types.AttrKind: types.Verse,
 							},
 							Lines: [][]interface{}{
@@ -536,7 +536,7 @@ I am a verse paragraph.`
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.Paragraph{
-							Attributes: types.ElementAttributes{
+							Attributes: types.Attributes{
 								types.AttrKind: types.Verse,
 							},
 							Lines: [][]interface{}{
@@ -558,7 +558,7 @@ image::foo.png[]`
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.Paragraph{
-							Attributes: types.ElementAttributes{
+							Attributes: types.Attributes{
 								types.AttrKind:        types.Verse,
 								types.AttrQuoteAuthor: "john doe",
 								types.AttrQuoteTitle:  "verse title",
@@ -585,7 +585,7 @@ I am a quote paragraph.`
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.Paragraph{
-							Attributes: types.ElementAttributes{
+							Attributes: types.Attributes{
 								types.AttrKind:        types.Quote,
 								types.AttrQuoteAuthor: "john doe",
 								types.AttrQuoteTitle:  "quote title",
@@ -611,7 +611,7 @@ I am a quote paragraph.`
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.Paragraph{
-							Attributes: types.ElementAttributes{
+							Attributes: types.Attributes{
 								types.AttrKind:        types.Quote,
 								types.AttrQuoteAuthor: "john doe",
 								types.AttrQuoteTitle:  "quote title",
@@ -638,7 +638,7 @@ I am a quote paragraph.`
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.Paragraph{
-							Attributes: types.ElementAttributes{
+							Attributes: types.Attributes{
 								types.AttrKind:        types.Quote,
 								types.AttrQuoteAuthor: "john doe",
 							},
@@ -661,7 +661,7 @@ I am a quote paragraph.`
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.Paragraph{
-							Attributes: types.ElementAttributes{
+							Attributes: types.Attributes{
 								types.AttrKind:        types.Quote,
 								types.AttrQuoteAuthor: "john doe",
 							},
@@ -684,7 +684,7 @@ I am a quote paragraph.`
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.Paragraph{
-							Attributes: types.ElementAttributes{
+							Attributes: types.Attributes{
 								types.AttrKind: types.Quote,
 							},
 							Lines: [][]interface{}{
@@ -706,7 +706,7 @@ I am a quote paragraph.`
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.Paragraph{
-							Attributes: types.ElementAttributes{
+							Attributes: types.Attributes{
 								types.AttrKind: types.Quote,
 							},
 							Lines: [][]interface{}{
@@ -728,7 +728,7 @@ a foo image:foo.png[]`
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.Paragraph{
-							Attributes: types.ElementAttributes{
+							Attributes: types.Attributes{
 								types.AttrKind:        types.Quote,
 								types.AttrQuoteAuthor: "john doe",
 								types.AttrQuoteTitle:  "quote title",
@@ -761,7 +761,7 @@ image::foo.png[]`
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.ImageBlock{
-							Attributes: types.ElementAttributes{
+							Attributes: types.Attributes{
 
 								// quote attributes
 								types.AttrKind:        types.Quote,
@@ -793,12 +793,12 @@ image::foo.png[]`
 .a title
 a paragraph`
 				expected := types.Document{
-					Attributes: types.DocumentAttributes{
+					Attributes: types.Attributes{
 						types.AttrIDPrefix: "bar_",
 					},
 					Elements: []interface{}{
 						types.Paragraph{
-							Attributes: types.ElementAttributes{
+							Attributes: types.Attributes{
 								types.AttrTitle: "a title", // there is no default ID. Only custom IDs
 							},
 							Lines: [][]interface{}{

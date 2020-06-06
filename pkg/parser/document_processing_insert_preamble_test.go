@@ -19,7 +19,7 @@ var _ = Describe("preambles", func() {
 
 	It("doc without sections", func() {
 		source := types.Document{
-			Attributes: types.DocumentAttributes{
+			Attributes: types.Attributes{
 				types.AttrTitle: "foo",
 			},
 			ElementReferences: types.ElementReferences{
@@ -45,7 +45,7 @@ var _ = Describe("preambles", func() {
 			},
 		}
 		expected := types.Document{
-			Attributes: types.DocumentAttributes{
+			Attributes: types.Attributes{
 				types.AttrTitle: "foo",
 			},
 			ElementReferences: types.ElementReferences{
@@ -75,7 +75,7 @@ var _ = Describe("preambles", func() {
 
 	It("doc with 1-paragraph preamble", func() {
 		source := types.Document{
-			Attributes: types.DocumentAttributes{
+			Attributes: types.Attributes{
 				types.AttrTitle: "foo",
 			},
 			ElementReferences: types.ElementReferences{
@@ -94,7 +94,7 @@ var _ = Describe("preambles", func() {
 				types.Section{
 					Level: 1,
 					Title: sectionATitle,
-					Attributes: types.ElementAttributes{
+					Attributes: types.Attributes{
 						types.AttrID: "_section_a",
 					},
 
@@ -103,7 +103,7 @@ var _ = Describe("preambles", func() {
 				types.Section{
 					Level: 1,
 					Title: sectionBTitle,
-					Attributes: types.ElementAttributes{
+					Attributes: types.Attributes{
 						types.AttrID: "_section_b",
 					},
 					Elements: []interface{}{},
@@ -111,7 +111,7 @@ var _ = Describe("preambles", func() {
 			},
 		}
 		expected := types.Document{
-			Attributes: types.DocumentAttributes{
+			Attributes: types.Attributes{
 				types.AttrTitle: "foo",
 			},
 			ElementReferences: types.ElementReferences{
@@ -134,7 +134,7 @@ var _ = Describe("preambles", func() {
 				types.Section{
 					Level: 1,
 					Title: sectionATitle,
-					Attributes: types.ElementAttributes{
+					Attributes: types.Attributes{
 						types.AttrID: "_section_a",
 					},
 
@@ -143,7 +143,7 @@ var _ = Describe("preambles", func() {
 				types.Section{
 					Level: 1,
 					Title: sectionBTitle,
-					Attributes: types.ElementAttributes{
+					Attributes: types.Attributes{
 						types.AttrID: "_section_b",
 					},
 					Elements: []interface{}{},
@@ -155,7 +155,7 @@ var _ = Describe("preambles", func() {
 
 	It("doc with 2-paragraph preamble", func() {
 		source := types.Document{
-			Attributes: types.DocumentAttributes{
+			Attributes: types.Attributes{
 				types.AttrTitle: "foo",
 			},
 			ElementReferences: types.ElementReferences{
@@ -182,7 +182,7 @@ var _ = Describe("preambles", func() {
 				types.Section{
 					Level: 1,
 					Title: sectionATitle,
-					Attributes: types.ElementAttributes{
+					Attributes: types.Attributes{
 						types.AttrID: "_section_a",
 					},
 
@@ -191,7 +191,7 @@ var _ = Describe("preambles", func() {
 				types.Section{
 					Level: 1,
 					Title: sectionBTitle,
-					Attributes: types.ElementAttributes{
+					Attributes: types.Attributes{
 						types.AttrID: "_section_b",
 					},
 					Elements: []interface{}{},
@@ -199,7 +199,7 @@ var _ = Describe("preambles", func() {
 			},
 		}
 		expected := types.Document{
-			Attributes: types.DocumentAttributes{
+			Attributes: types.Attributes{
 				types.AttrTitle: "foo",
 			},
 			ElementReferences: types.ElementReferences{
@@ -230,7 +230,7 @@ var _ = Describe("preambles", func() {
 				types.Section{
 					Level: 1,
 					Title: sectionATitle,
-					Attributes: types.ElementAttributes{
+					Attributes: types.Attributes{
 						types.AttrID: "_section_a",
 					},
 
@@ -239,7 +239,7 @@ var _ = Describe("preambles", func() {
 				types.Section{
 					Level: 1,
 					Title: sectionBTitle,
-					Attributes: types.ElementAttributes{
+					Attributes: types.Attributes{
 						types.AttrID: "_section_b",
 					},
 					Elements: []interface{}{},

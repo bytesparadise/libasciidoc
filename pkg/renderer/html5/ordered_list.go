@@ -43,10 +43,10 @@ func renderOrderedList(ctx renderer.Context, l types.OrderedList) ([]byte, error
 			Items          []types.OrderedListItem
 		}{
 			ID:             renderElementID(l.Attributes),
-			Title:          l.Attributes.GetAsString(types.AttrTitle),
-			Role:           l.Attributes.GetAsString(types.AttrRole),
+			Title:          l.Attributes.GetAsStringWithDefault(types.AttrTitle, ""),
+			Role:           l.Attributes.GetAsStringWithDefault(types.AttrRole, ""),
 			NumberingStyle: getNumberingStyle(l),
-			Start:          l.Attributes.GetAsString(types.AttrStart),
+			Start:          l.Attributes.GetAsStringWithDefault(types.AttrStart, ""),
 			Items:          l.Items,
 		},
 	})
@@ -57,7 +57,7 @@ func renderOrderedList(ctx renderer.Context, l types.OrderedList) ([]byte, error
 }
 
 func getNumberingStyle(l types.OrderedList) string {
-	if s := l.Attributes.GetAsString(types.AttrNumberingStyle); s != "" {
+	if s, found := l.Attributes.GetAsString(types.AttrNumberingStyle); found {
 		return s
 	}
 	return string(l.Items[0].NumberingStyle)

@@ -45,7 +45,7 @@ func absoluteOffset(offset int) levelOffset {
 	}
 }
 
-func parseFileToInclude(incl types.FileInclusion, attrs types.DocumentAttributesWithOverrides, levelOffsets []levelOffset, config configuration.Configuration, options ...Option) (types.DraftDocument, error) {
+func parseFileToInclude(incl types.FileInclusion, attrs types.AttributesWithOverrides, levelOffsets []levelOffset, config configuration.Configuration, options ...Option) (types.DraftDocument, error) {
 	path := incl.Location.Resolve(attrs).String()
 	currentDir := filepath.Dir(config.Filename)
 	log.Debugf("parsing '%s' from current dir '%s' (%s)", path, currentDir, config.Filename)
@@ -88,8 +88,7 @@ func parseFileToInclude(incl types.FileInclusion, attrs types.DocumentAttributes
 		}
 	}
 	// parse the content, and returns the corresponding elements
-	l := incl.Attributes.GetAsString(types.AttrLevelOffset)
-	if l != "" {
+	if l, found := incl.Attributes.GetAsString(types.AttrLevelOffset); found {
 		offset, err := strconv.Atoi(l)
 		if err != nil {
 			return types.DraftDocument{}, errors.Wrap(err, "unable to read file to include")
@@ -200,8 +199,7 @@ func readWithinTags(path string, scanner *bufio.Scanner, content *bytes.Buffer, 
 		case "*", "**":
 			continue
 		default:
-			tr, found := currentRanges[tag.Name]
-			if !found {
+			if tr, found := currentRanges[tag.Name]; !found {
 				log.Errorf("tag '%s' not found in include file: %s", tag.Name, path)
 			} else if tr.EndLine == -1 {
 				log.Errorf("detected unclosed tag '%s' starting at line %d of include file: %s", tag.Name, tr.StartLine, path)

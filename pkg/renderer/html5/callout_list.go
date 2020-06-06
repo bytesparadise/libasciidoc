@@ -42,8 +42,8 @@ func renderCalloutList(ctx renderer.Context, l types.CalloutList) ([]byte, error
 			Items []types.CalloutListItem
 		}{
 			ID:    renderElementID(l.Attributes),
-			Title: l.Attributes.GetAsString(types.AttrTitle),
-			Role:  l.Attributes.GetAsString(types.AttrRole),
+			Title: l.Attributes.GetAsStringWithDefault(types.AttrTitle, ""),
+			Role:  l.Attributes.GetAsStringWithDefault(types.AttrRole, ""),
 			Items: l.Items,
 		},
 	})

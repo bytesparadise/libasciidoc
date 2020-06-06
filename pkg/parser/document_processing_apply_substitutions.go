@@ -8,10 +8,10 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-// applyDocumentAttributeSubstitutions(elements applies the document attribute substitutions
+// applyAttributeSubstitutions(elements applies the document attribute substitutions
 // and re-parse the paragraphs that were affected
 // nolint: gocyclo
-func applyDocumentAttributeSubstitutions(element interface{}, attrs types.DocumentAttributesWithOverrides) (interface{}, bool, error) {
+func applyAttributeSubstitutions(element interface{}, attrs types.AttributesWithOverrides) (interface{}, bool, error) {
 	// the document attributes, as they are resolved while processing the blocks
 	// log.Debugf("applying document substitutions on block of type %T", element)
 	switch e := element.(type) {
@@ -19,7 +19,7 @@ func applyDocumentAttributeSubstitutions(element interface{}, attrs types.Docume
 		elements := make([]interface{}, 0, len(e)) // maximum capacity cannot exceed initial input
 		applied := false
 		for _, element := range e {
-			r, a, err := applyDocumentAttributeSubstitutions(element, attrs)
+			r, a, err := applyAttributeSubstitutions(element, attrs)
 			if err != nil {
 				return []interface{}{}, false, err
 			}
@@ -32,13 +32,13 @@ func applyDocumentAttributeSubstitutions(element interface{}, attrs types.Docume
 			return elements, true, err
 		}
 		return elements, false, nil
-	case types.DocumentAttributeDeclaration:
-		attrs.Add(e.Name, e.Value)
+	case types.AttributeDeclaration:
+		attrs.Set(e.Name, e.Value)
 		return e, false, nil
-	case types.DocumentAttributeReset:
+	case types.AttributeReset:
 		attrs.Delete(e.Name)
 		return e, false, nil
-	case types.DocumentAttributeSubstitution:
+	case types.AttributeSubstitution:
 		if value, ok := attrs.GetAsString(e.Name); ok {
 			return types.StringElement{
 				Content: value,
@@ -55,7 +55,7 @@ func applyDocumentAttributeSubstitutions(element interface{}, attrs types.Docume
 	case types.ExternalCrossReference:
 		return e.ResolveLocation(attrs), false, nil
 	case types.Section:
-		title, applied, err := applyDocumentAttributeSubstitutions(e.Title, attrs)
+		title, applied, err := applyAttributeSubstitutions(e.Title, attrs)
 		if err != nil {
 			return struct{}{}, false, err
 		}
@@ -65,42 +65,42 @@ func applyDocumentAttributeSubstitutions(element interface{}, attrs types.Docume
 		e, err = e.ResolveID(attrs)
 		return e, applied, err
 	case types.OrderedListItem:
-		elements, applied, err := applyDocumentAttributeSubstitutions(e.Elements, attrs)
+		elements, applied, err := applyAttributeSubstitutions(e.Elements, attrs)
 		if err != nil {
 			return struct{}{}, false, err
 		}
 		e.Elements = elements.([]interface{})
 		return e, applied, nil
 	case types.UnorderedListItem:
-		elements, applied, err := applyDocumentAttributeSubstitutions(e.Elements, attrs)
+		elements, applied, err := applyAttributeSubstitutions(e.Elements, attrs)
 		if err != nil {
 			return struct{}{}, false, err
 		}
 		e.Elements = elements.([]interface{})
 		return e, applied, nil
 	case types.LabeledListItem:
-		elements, applied, err := applyDocumentAttributeSubstitutions(e.Elements, attrs)
+		elements, applied, err := applyAttributeSubstitutions(e.Elements, attrs)
 		if err != nil {
 			return struct{}{}, false, err
 		}
 		e.Elements = elements.([]interface{})
 		return e, applied, nil
 	case types.QuotedText:
-		elements, applied, err := applyDocumentAttributeSubstitutions(e.Elements, attrs)
+		elements, applied, err := applyAttributeSubstitutions(e.Elements, attrs)
 		if err != nil {
 			return struct{}{}, false, err
 		}
 		e.Elements = elements.([]interface{})
 		return e, applied, nil
 	case types.ContinuedListItemElement:
-		element, applied, err := applyDocumentAttributeSubstitutions(e.Element, attrs)
+		element, applied, err := applyAttributeSubstitutions(e.Element, attrs)
 		if err != nil {
 			return struct{}{}, false, err
 		}
 		e.Element = element
 		return e, applied, nil
 	case types.DelimitedBlock:
-		elements, applied, err := applyDocumentAttributeSubstitutions(e.Elements, attrs)
+		elements, applied, err := applyAttributeSubstitutions(e.Elements, attrs)
 		if err != nil {
 			return struct{}{}, false, err
 		}
@@ -109,7 +109,7 @@ func applyDocumentAttributeSubstitutions(element interface{}, attrs types.Docume
 	case types.Paragraph:
 		applied := false
 		for i, line := range e.Lines {
-			line, a, err := applyDocumentAttributeSubstitutions(line, attrs)
+			line, a, err := applyAttributeSubstitutions(line, attrs)
 			if err != nil {
 				return struct{}{}, false, err
 			}

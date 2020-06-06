@@ -192,7 +192,7 @@ func renderSourceParagraph(ctx renderer.Context, p types.Paragraph) ([]byte, err
 		}{
 			ID:       renderElementID(p.Attributes),
 			Title:    renderElementTitle(p.Attributes),
-			Language: p.Attributes.GetAsString(types.AttrLanguage),
+			Language: p.Attributes.GetAsStringWithDefault(types.AttrLanguage, ""),
 			Lines:    p.Lines,
 		},
 	})
@@ -329,15 +329,15 @@ func renderIconTitle(kind types.AdmonitionKind) string {
 
 func getParagraphClass(p types.Paragraph) string {
 	result := "paragraph"
-	if role := p.Attributes.GetAsString(types.AttrRole); role != "" {
+	if role, found := p.Attributes.GetAsString(types.AttrRole); found {
 		result = result + " " + role
 	}
 	return result
 }
 
-func renderElementTitle(attrs types.ElementAttributes) string {
-	if attrs.Has(types.AttrTitle) {
-		return strings.TrimSpace(attrs.GetAsString(types.AttrTitle))
+func renderElementTitle(attrs types.Attributes) string {
+	if title, found := attrs.GetAsString(types.AttrTitle); found {
+		return strings.TrimSpace(title)
 	}
 	return ""
 }

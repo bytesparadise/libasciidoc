@@ -85,11 +85,11 @@ var emptyPreambleMatcher filterMatcher = func(element interface{}) bool {
 	return result
 }
 
-// documentAttributeMatcher filters the element if it is a DocumentAttributeDeclaration,
-// a DocumentAttributeSubstitution or a DocumentAttributeReset
+// documentAttributeMatcher filters the element if it is a AttributeDeclaration,
+// a AttributeSubstitution or a AttributeReset
 var documentAttributeMatcher filterMatcher = func(element interface{}) bool {
 	switch element.(type) {
-	case types.DocumentAttributeDeclaration, types.DocumentAttributeSubstitution, types.DocumentAttributeReset:
+	case types.AttributeDeclaration, types.AttributeSubstitution, types.AttributeReset:
 		return true
 	default:
 		return false

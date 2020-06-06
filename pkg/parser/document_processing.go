@@ -15,17 +15,17 @@ func ParseDocument(r io.Reader, config configuration.Configuration) (types.Docum
 	if err != nil {
 		return types.Document{}, err
 	}
-	attrs := types.DocumentAttributesWithOverrides{
-		Content:   types.DocumentAttributes{},
+	attrs := types.AttributesWithOverrides{
+		Content:   types.Attributes{},
 		Overrides: config.AttributeOverrides,
 	}
 	// also, add all front-matter key/values
-	attrs.AddAll(draftDoc.FrontMatter.Content)
-	// also, add all DocumentAttributeDeclaration at the top of the document
-	attrs.AddAll(draftDoc.DocumentAttributes())
+	attrs.Add(draftDoc.FrontMatter.Content)
+	// also, add all AttributeDeclaration at the top of the document
+	attrs.Add(draftDoc.Attributes())
 
 	// apply document attribute substitutions and re-parse paragraphs that were affected
-	blocks, _, err := applyDocumentAttributeSubstitutions(draftDoc.Blocks, attrs)
+	blocks, _, err := applyAttributeSubstitutions(draftDoc.Blocks, attrs)
 	if err != nil {
 		return types.Document{}, err
 	}
@@ -48,9 +48,9 @@ func ParseDocument(r io.Reader, config configuration.Configuration) (types.Docum
 	// and add all remaining attributes, too
 	extraAttrs := attrs.All()
 	if doc.Attributes == nil && len(extraAttrs) > 0 {
-		doc.Attributes = types.DocumentAttributes{}
+		doc.Attributes = types.Attributes{}
 	}
-	doc.Attributes.AddAll(extraAttrs)
+	doc.Attributes.Add(extraAttrs)
 	// also insert the table of contents
 	doc = includeTableOfContentsPlaceHolder(doc)
 	// finally

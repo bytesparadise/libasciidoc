@@ -19,7 +19,7 @@ var _ = Describe("checked lists - document", func() {
 		expected := types.Document{
 			Elements: []interface{}{
 				types.UnorderedList{
-					Attributes: types.ElementAttributes{
+					Attributes: types.Attributes{
 						types.AttrTitle: "Checklist",
 					},
 					Items: []types.UnorderedListItem{
@@ -29,7 +29,7 @@ var _ = Describe("checked lists - document", func() {
 							CheckStyle:  types.Checked,
 							Elements: []interface{}{
 								types.Paragraph{
-									Attributes: types.ElementAttributes{
+									Attributes: types.Attributes{
 										types.AttrCheckStyle: types.Checked,
 									},
 									Lines: [][]interface{}{
@@ -48,7 +48,7 @@ var _ = Describe("checked lists - document", func() {
 							CheckStyle:  types.Checked,
 							Elements: []interface{}{
 								types.Paragraph{
-									Attributes: types.ElementAttributes{
+									Attributes: types.Attributes{
 										types.AttrCheckStyle: types.Checked,
 									},
 									Lines: [][]interface{}{
@@ -67,7 +67,7 @@ var _ = Describe("checked lists - document", func() {
 							CheckStyle:  types.Unchecked,
 							Elements: []interface{}{
 								types.Paragraph{
-									Attributes: types.ElementAttributes{
+									Attributes: types.Attributes{
 										types.AttrCheckStyle: types.Unchecked,
 									},
 									Lines: [][]interface{}{
@@ -113,7 +113,7 @@ var _ = Describe("checked lists - document", func() {
 		expected := types.Document{
 			Elements: []interface{}{
 				types.UnorderedList{
-					Attributes: types.ElementAttributes{
+					Attributes: types.Attributes{
 						types.AttrTitle: "Checklist",
 					},
 					Items: []types.UnorderedListItem{
@@ -123,7 +123,7 @@ var _ = Describe("checked lists - document", func() {
 							CheckStyle:  types.Unchecked,
 							Elements: []interface{}{
 								types.Paragraph{
-									Attributes: types.ElementAttributes{
+									Attributes: types.Attributes{
 										types.AttrCheckStyle: types.Unchecked,
 									},
 									Lines: [][]interface{}{
@@ -142,7 +142,7 @@ var _ = Describe("checked lists - document", func() {
 											CheckStyle:  types.Checked,
 											Elements: []interface{}{
 												types.Paragraph{
-													Attributes: types.ElementAttributes{
+													Attributes: types.Attributes{
 														types.AttrCheckStyle: types.Checked,
 													},
 													Lines: [][]interface{}{
@@ -161,7 +161,7 @@ var _ = Describe("checked lists - document", func() {
 											CheckStyle:  types.Checked,
 											Elements: []interface{}{
 												types.Paragraph{
-													Attributes: types.ElementAttributes{
+													Attributes: types.Attributes{
 														types.AttrCheckStyle: types.Checked,
 													},
 													Lines: [][]interface{}{
@@ -180,7 +180,7 @@ var _ = Describe("checked lists - document", func() {
 											CheckStyle:  types.Unchecked,
 											Elements: []interface{}{
 												types.Paragraph{
-													Attributes: types.ElementAttributes{
+													Attributes: types.Attributes{
 														types.AttrCheckStyle: types.Unchecked,
 													},
 													Lines: [][]interface{}{
@@ -229,7 +229,7 @@ var _ = Describe("checked lists - document", func() {
 		expected := types.Document{
 			Elements: []interface{}{
 				types.UnorderedList{
-					Attributes: types.ElementAttributes{
+					Attributes: types.Attributes{
 						types.AttrTitle: "Checklist",
 					},
 					Items: []types.UnorderedListItem{
@@ -239,7 +239,7 @@ var _ = Describe("checked lists - document", func() {
 							CheckStyle:  types.Unchecked,
 							Elements: []interface{}{
 								types.Paragraph{
-									Attributes: types.ElementAttributes{
+									Attributes: types.Attributes{
 										types.AttrCheckStyle: types.Unchecked,
 									},
 									Lines: [][]interface{}{

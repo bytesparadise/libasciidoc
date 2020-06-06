@@ -15,7 +15,7 @@ var _ = Describe("literal blocks - draft", func() {
 		It("literal block from 1-line paragraph with single space", func() {
 			source := ` some literal content`
 			expected := types.LiteralBlock{
-				Attributes: types.ElementAttributes{
+				Attributes: types.Attributes{
 					types.AttrKind:             types.Literal,
 					types.AttrLiteralBlockType: types.LiteralBlockWithSpacesOnFirstLine,
 				},
@@ -31,7 +31,7 @@ var _ = Describe("literal blocks - draft", func() {
 on 3
 lines.`
 			expected := types.LiteralBlock{
-				Attributes: types.ElementAttributes{
+				Attributes: types.Attributes{
 					types.AttrKind:             types.Literal,
 					types.AttrLiteralBlockType: types.LiteralBlockWithSpacesOnFirstLine,
 				},
@@ -53,7 +53,7 @@ a normal paragraph.`
 			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.LiteralBlock{
-						Attributes: types.ElementAttributes{
+						Attributes: types.Attributes{
 							types.AttrKind:             types.Literal,
 							types.AttrLiteralBlockType: types.LiteralBlockWithSpacesOnFirstLine,
 							types.AttrID:               "ID",
@@ -87,7 +87,7 @@ a normal paragraph.`
 some content
 ....`
 			expected := types.LiteralBlock{
-				Attributes: types.ElementAttributes{
+				Attributes: types.Attributes{
 					types.AttrKind:             types.Literal,
 					types.AttrLiteralBlockType: types.LiteralBlockWithDelimiter,
 				},
@@ -109,7 +109,7 @@ a normal paragraph.`
 			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.LiteralBlock{
-						Attributes: types.ElementAttributes{
+						Attributes: types.Attributes{
 							types.AttrKind:             types.Literal,
 							types.AttrLiteralBlockType: types.LiteralBlockWithDelimiter,
 							types.AttrID:               "ID",
@@ -143,7 +143,7 @@ a normal paragraph.`
 			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.LiteralBlock{
-						Attributes: types.ElementAttributes{
+						Attributes: types.Attributes{
 							types.AttrKind:             types.Literal,
 							types.AttrLiteralBlockType: types.LiteralBlockWithAttribute,
 						},
@@ -175,7 +175,7 @@ a normal paragraph.`
 			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.LiteralBlock{
-						Attributes: types.ElementAttributes{
+						Attributes: types.Attributes{
 							types.AttrKind:             types.Literal,
 							types.AttrID:               "ID",
 							types.AttrCustomID:         true,

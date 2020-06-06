@@ -10,7 +10,7 @@ import (
 // May also alter some attributes (eg: doctype from `manpage` to `article`)
 func Validate(doc *types.Document) []Problem {
 	problems := []Problem{}
-	if doctype, exists := doc.Attributes.GetAsString(types.AttrDocType); exists && doctype == "manpage" {
+	if doctype, found := doc.Attributes.GetAsString(types.AttrDocType); found && doctype == "manpage" {
 		problems = append(problems, validateManpage(doc)...)
 	}
 	return problems
@@ -66,7 +66,7 @@ func validateManpage(doc *types.Document) []Problem {
 	}
 	// if any problem found, change the doctype to render the document as a regular article
 	if len(problems) > 0 {
-		doc.Attributes.Add(types.AttrDocType, "article")
+		doc.Attributes.Set(types.AttrDocType, "article")
 	}
 	return problems
 }

@@ -114,7 +114,7 @@ var _ = Describe("ordered lists - draft", func() {
 			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.OrderedListItem{
-						Attributes: types.ElementAttributes{
+						Attributes: types.Attributes{
 							"lowerroman": nil,
 						},
 						Level:          1,
@@ -139,7 +139,7 @@ var _ = Describe("ordered lists - draft", func() {
 					types.OrderedListItem{
 						Level:          1,
 						NumberingStyle: types.Arabic,
-						Attributes: types.ElementAttributes{
+						Attributes: types.Attributes{
 							"start": "5",
 						},
 						Elements: elements,
@@ -157,7 +157,7 @@ var _ = Describe("ordered lists - draft", func() {
 					types.OrderedListItem{
 						Level:          1,
 						NumberingStyle: types.Arabic,
-						Attributes: types.ElementAttributes{
+						Attributes: types.Attributes{
 							"lowerroman": nil,
 							"start":      "5",
 						},
@@ -181,7 +181,7 @@ var _ = Describe("ordered lists - draft", func() {
 					types.OrderedListItem{
 						Level:          1,
 						NumberingStyle: types.Arabic,
-						Attributes: types.ElementAttributes{
+						Attributes: types.Attributes{
 							types.AttrTitle: "Ordered, max nesting",
 						},
 						Elements: []interface{}{
@@ -289,7 +289,7 @@ var _ = Describe("ordered lists - draft", func() {
 					types.OrderedListItem{
 						Level:          1,
 						NumberingStyle: types.Arabic,
-						Attributes: types.ElementAttributes{
+						Attributes: types.Attributes{
 							types.AttrTitle: "Ordered, max nesting",
 						},
 						Elements: []interface{}{
@@ -503,7 +503,7 @@ var _ = Describe("ordered lists - draft", func() {
 					types.OrderedListItem{
 						Level:          3,
 						NumberingStyle: types.LowerRoman,
-						Attributes: types.ElementAttributes{
+						Attributes: types.Attributes{
 							"upperroman": nil,
 						},
 						Elements: []interface{}{
@@ -861,7 +861,7 @@ print("one")
 							types.Paragraph{
 								Lines: [][]interface{}{
 									{
-										types.DocumentAttributeSubstitution{
+										types.AttributeSubstitution{
 											Name: "blank",
 										},
 									},
@@ -887,7 +887,7 @@ print("one")
 							types.Paragraph{
 								Lines: [][]interface{}{
 									{
-										types.DocumentAttributeSubstitution{
+										types.AttributeSubstitution{
 											Name: "blank",
 										},
 									},
@@ -1070,7 +1070,7 @@ var _ = Describe("ordered lists - document", func() {
 			expected := types.Document{
 				Elements: []interface{}{
 					types.OrderedList{
-						Attributes: types.ElementAttributes{
+						Attributes: types.Attributes{
 							types.AttrNumberingStyle: "lowerroman", // will be used during rendering
 						},
 						Items: []types.OrderedListItem{
@@ -1097,7 +1097,7 @@ var _ = Describe("ordered lists - document", func() {
 			expected := types.Document{
 				Elements: []interface{}{
 					types.OrderedList{
-						Attributes: types.ElementAttributes{
+						Attributes: types.Attributes{
 							"start": "5",
 						},
 						Items: []types.OrderedListItem{
@@ -1119,7 +1119,7 @@ var _ = Describe("ordered lists - document", func() {
 			expected := types.Document{
 				Elements: []interface{}{
 					types.OrderedList{
-						Attributes: types.ElementAttributes{
+						Attributes: types.Attributes{
 							types.AttrNumberingStyle: "lowerroman", // will be used during rendering
 							"start":                  "5",
 						},
@@ -1147,7 +1147,7 @@ var _ = Describe("ordered lists - document", func() {
 			expected := types.Document{
 				Elements: []interface{}{
 					types.OrderedList{
-						Attributes: types.ElementAttributes{
+						Attributes: types.Attributes{
 							types.AttrTitle: "Ordered, max nesting",
 						},
 						Items: []types.OrderedListItem{
@@ -1275,7 +1275,7 @@ var _ = Describe("ordered lists - document", func() {
 			expected := types.Document{
 				Elements: []interface{}{
 					types.OrderedList{
-						Attributes: types.ElementAttributes{
+						Attributes: types.Attributes{
 							types.AttrTitle: "Ordered, max nesting",
 						},
 						Items: []types.OrderedListItem{
@@ -1517,7 +1517,7 @@ var _ = Describe("ordered lists - document", func() {
 														},
 													},
 													types.OrderedList{
-														Attributes: types.ElementAttributes{
+														Attributes: types.Attributes{
 															types.AttrNumberingStyle: "upperroman",
 														},
 														Items: []types.OrderedListItem{

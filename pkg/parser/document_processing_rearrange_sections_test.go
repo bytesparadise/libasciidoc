@@ -33,7 +33,7 @@ var _ = Describe("rearrange sections", func() {
 		}
 		actual := []interface{}{
 			types.Section{
-				Attributes: types.ElementAttributes{
+				Attributes: types.Attributes{
 					types.AttrID: "_a_header",
 				},
 				Level:    0,
@@ -41,7 +41,7 @@ var _ = Describe("rearrange sections", func() {
 				Elements: []interface{}{},
 			},
 			types.Section{
-				Attributes: types.ElementAttributes{
+				Attributes: types.Attributes{
 					types.AttrID: "_section_a",
 				},
 				Level: 1,
@@ -57,7 +57,7 @@ var _ = Describe("rearrange sections", func() {
 				},
 			},
 			types.Section{
-				Attributes: types.ElementAttributes{
+				Attributes: types.Attributes{
 					types.AttrID: "_section_a_a",
 				},
 				Level: 2,
@@ -73,7 +73,7 @@ var _ = Describe("rearrange sections", func() {
 				},
 			},
 			types.Section{
-				Attributes: types.ElementAttributes{
+				Attributes: types.Attributes{
 					types.AttrID: "_section_b",
 				},
 				Level: 1,
@@ -98,14 +98,14 @@ var _ = Describe("rearrange sections", func() {
 			},
 			Elements: []interface{}{
 				types.Section{
-					Attributes: types.ElementAttributes{
+					Attributes: types.Attributes{
 						types.AttrID: "_a_header",
 					},
 					Level: 0,
 					Title: doctitle,
 					Elements: []interface{}{
 						types.Section{
-							Attributes: types.ElementAttributes{
+							Attributes: types.Attributes{
 								types.AttrID: "_section_a",
 							},
 							Level: 1,
@@ -119,7 +119,7 @@ var _ = Describe("rearrange sections", func() {
 									},
 								},
 								types.Section{
-									Attributes: types.ElementAttributes{
+									Attributes: types.Attributes{
 										types.AttrID: "_section_a_a",
 									},
 									Level: 2,
@@ -137,7 +137,7 @@ var _ = Describe("rearrange sections", func() {
 							},
 						},
 						types.Section{
-							Attributes: types.ElementAttributes{
+							Attributes: types.Attributes{
 								types.AttrID: "_section_b",
 							},
 							Level: 1,
@@ -184,7 +184,7 @@ var _ = Describe("rearrange sections", func() {
 		}
 		actual := []interface{}{
 			types.Section{
-				Attributes: types.ElementAttributes{
+				Attributes: types.Attributes{
 					types.AttrID: "_a_header",
 				},
 				Level:    0,
@@ -192,7 +192,7 @@ var _ = Describe("rearrange sections", func() {
 				Elements: []interface{}{},
 			},
 			types.Section{
-				Attributes: types.ElementAttributes{
+				Attributes: types.Attributes{
 					types.AttrID: "_section_a",
 				},
 				Level: 1,
@@ -208,7 +208,7 @@ var _ = Describe("rearrange sections", func() {
 				},
 			},
 			types.Section{
-				Attributes: types.ElementAttributes{
+				Attributes: types.Attributes{
 					types.AttrID: "_section_a_a",
 				},
 				Level: 2,
@@ -224,7 +224,7 @@ var _ = Describe("rearrange sections", func() {
 				},
 			},
 			types.Section{
-				Attributes: types.ElementAttributes{
+				Attributes: types.Attributes{
 					types.AttrID: "_section_a_b",
 				},
 				Level: 2,
@@ -249,14 +249,14 @@ var _ = Describe("rearrange sections", func() {
 			},
 			Elements: []interface{}{
 				types.Section{
-					Attributes: types.ElementAttributes{
+					Attributes: types.Attributes{
 						types.AttrID: "_a_header",
 					},
 					Level: 0,
 					Title: doctitle,
 					Elements: []interface{}{
 						types.Section{
-							Attributes: types.ElementAttributes{
+							Attributes: types.Attributes{
 								types.AttrID: "_section_a",
 							},
 							Level: 1,
@@ -270,7 +270,7 @@ var _ = Describe("rearrange sections", func() {
 									},
 								},
 								types.Section{
-									Attributes: types.ElementAttributes{
+									Attributes: types.Attributes{
 										types.AttrID: "_section_a_a",
 									},
 									Level: 2,
@@ -286,7 +286,7 @@ var _ = Describe("rearrange sections", func() {
 									},
 								},
 								types.Section{
-									Attributes: types.ElementAttributes{
+									Attributes: types.Attributes{
 										types.AttrID: "_section_a_b",
 									},
 									Level: 2,
@@ -335,7 +335,7 @@ var _ = Describe("rearrange sections", func() {
 		}
 		actual := []interface{}{
 			types.Section{
-				Attributes: types.ElementAttributes{
+				Attributes: types.Attributes{
 					types.AttrID: "_a_header",
 				},
 				Level:    0,
@@ -343,7 +343,7 @@ var _ = Describe("rearrange sections", func() {
 				Elements: []interface{}{},
 			},
 			types.Section{
-				Attributes: types.ElementAttributes{
+				Attributes: types.Attributes{
 					types.AttrID: "_section_a",
 				},
 				Level: 2,
@@ -359,7 +359,7 @@ var _ = Describe("rearrange sections", func() {
 				},
 			},
 			types.Section{
-				Attributes: types.ElementAttributes{
+				Attributes: types.Attributes{
 					types.AttrID: "_section_a_a",
 				},
 				Level: 3,
@@ -375,7 +375,7 @@ var _ = Describe("rearrange sections", func() {
 				},
 			},
 			types.Section{
-				Attributes: types.ElementAttributes{
+				Attributes: types.Attributes{
 					types.AttrID: "_section_a_b",
 				},
 				Level: 3,
@@ -400,14 +400,14 @@ var _ = Describe("rearrange sections", func() {
 			},
 			Elements: []interface{}{
 				types.Section{
-					Attributes: types.ElementAttributes{
+					Attributes: types.Attributes{
 						types.AttrID: "_a_header",
 					},
 					Level: 0,
 					Title: doctitle,
 					Elements: []interface{}{
 						types.Section{
-							Attributes: types.ElementAttributes{
+							Attributes: types.Attributes{
 								types.AttrID: "_section_a",
 							},
 							Level: 2,
@@ -421,7 +421,7 @@ var _ = Describe("rearrange sections", func() {
 									},
 								},
 								types.Section{
-									Attributes: types.ElementAttributes{
+									Attributes: types.Attributes{
 										types.AttrID: "_section_a_a",
 									},
 									Level: 3,
@@ -437,7 +437,7 @@ var _ = Describe("rearrange sections", func() {
 									},
 								},
 								types.Section{
-									Attributes: types.ElementAttributes{
+									Attributes: types.Attributes{
 										types.AttrID: "_section_a_b",
 									},
 									Level: 3,

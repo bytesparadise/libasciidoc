@@ -63,7 +63,7 @@ var _ = Describe("normalizing string", func() {
 		source := []interface{}{
 			types.StringElement{Content: "link to "},
 			types.InlineLink{
-				Attributes: types.ElementAttributes{},
+				Attributes: types.Attributes{},
 				Location: types.Location{
 					Scheme: "https://",
 					Path: []interface{}{

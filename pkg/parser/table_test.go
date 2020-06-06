@@ -110,7 +110,7 @@ var _ = Describe("tables", func() {
 |row 2, column 2
 |===`
 		expected := types.Table{
-			Attributes: types.ElementAttributes{
+			Attributes: types.Attributes{
 				types.AttrTitle: "table title",
 			},
 			Header: types.TableLine{

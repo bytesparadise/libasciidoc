@@ -44,7 +44,7 @@ var _ = Describe("unordered lists", func() {
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.UnorderedListItem{
-							Attributes: types.ElementAttributes{
+							Attributes: types.Attributes{
 								types.AttrTitle:    "mytitle",
 								types.AttrID:       "listID",
 								types.AttrCustomID: true,
@@ -73,7 +73,7 @@ var _ = Describe("unordered lists", func() {
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.UnorderedListItem{
-							Attributes: types.ElementAttributes{
+							Attributes: types.Attributes{
 								types.AttrTitle: "a title",
 							},
 							Level:       1,
@@ -151,7 +151,7 @@ var _ = Describe("unordered lists", func() {
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.UnorderedListItem{
-							Attributes: types.ElementAttributes{
+							Attributes: types.Attributes{
 								types.AttrTitle: "Unordered list title",
 							},
 							Level:       1,
@@ -672,7 +672,7 @@ on 2 lines, too.`
 							Level:       1,
 							BulletStyle: types.OneAsterisk,
 							CheckStyle:  types.NoCheck,
-							Attributes: types.ElementAttributes{
+							Attributes: types.Attributes{
 								types.AttrTitle: "Unordered, max nesting",
 							},
 							Elements: []interface{}{
@@ -783,7 +783,7 @@ on 2 lines, too.`
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.UnorderedListItem{
-							Attributes: types.ElementAttributes{
+							Attributes: types.Attributes{
 								types.AttrTitle: "Unordered, max nesting",
 							},
 							Level:       1,
@@ -1078,7 +1078,7 @@ The {plus} symbol is on a new line.
 							Level:       1,
 							BulletStyle: types.OneAsterisk,
 							CheckStyle:  types.NoCheck,
-							Attributes: types.ElementAttributes{
+							Attributes: types.Attributes{
 								types.AttrTitle: "Unordered, complex",
 							},
 							Elements: []interface{}{
@@ -1125,7 +1125,7 @@ The {plus} symbol is on a new line.
 											types.StringElement{
 												Content: "This is a new line inside an unordered list using ",
 											},
-											types.DocumentAttributeSubstitution{
+											types.AttributeSubstitution{
 												Name: "plus",
 											},
 											types.StringElement{
@@ -1172,7 +1172,7 @@ The {plus} symbol is on a new line.
 										types.StringElement{
 											Content: "The ",
 										},
-										types.DocumentAttributeSubstitution{
+										types.AttributeSubstitution{
 											Name: "plus",
 										},
 										types.StringElement{
@@ -1444,7 +1444,7 @@ paragraph attached to parent list item`
 				expected := types.Document{
 					Elements: []interface{}{
 						types.UnorderedList{
-							Attributes: types.ElementAttributes{
+							Attributes: types.Attributes{
 								types.AttrID:       "listID",
 								types.AttrCustomID: true,
 								types.AttrTitle:    "mytitle",
@@ -1477,7 +1477,7 @@ paragraph attached to parent list item`
 				expected := types.Document{
 					Elements: []interface{}{
 						types.UnorderedList{
-							Attributes: types.ElementAttributes{
+							Attributes: types.Attributes{
 								types.AttrTitle: "a title",
 							},
 							Items: []types.UnorderedListItem{
@@ -1563,7 +1563,7 @@ paragraph attached to parent list item`
 				expected := types.Document{
 					Elements: []interface{}{
 						types.UnorderedList{
-							Attributes: types.ElementAttributes{
+							Attributes: types.Attributes{
 								types.AttrTitle: "Unordered list title",
 							},
 							Items: []types.UnorderedListItem{
@@ -2143,7 +2143,7 @@ on 2 lines, too.`
 				expected := types.Document{
 					Elements: []interface{}{
 						types.UnorderedList{
-							Attributes: types.ElementAttributes{
+							Attributes: types.Attributes{
 								types.AttrTitle: "Unordered, max nesting",
 							},
 							Items: []types.UnorderedListItem{
@@ -2277,7 +2277,7 @@ on 2 lines, too.`
 				expected := types.Document{
 					Elements: []interface{}{
 						types.UnorderedList{
-							Attributes: types.ElementAttributes{
+							Attributes: types.Attributes{
 								types.AttrTitle: "Unordered, max nesting",
 							},
 							Items: []types.UnorderedListItem{
@@ -2627,7 +2627,7 @@ The {plus} symbol is on a new line.
 				expected := types.Document{
 					Elements: []interface{}{
 						types.UnorderedList{
-							Attributes: types.ElementAttributes{
+							Attributes: types.Attributes{
 								types.AttrTitle: "Unordered, complex",
 							},
 							Items: []types.UnorderedListItem{

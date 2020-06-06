@@ -19,12 +19,12 @@ var _ = Describe("document processing", func() {
 foo
 ----`
 			expected := types.Document{
-				Attributes: types.DocumentAttributes{
+				Attributes: types.Attributes{
 					types.AttrSyntaxHighlighter: "pygments",
 				},
 				Elements: []interface{}{
 					types.DelimitedBlock{
-						Attributes: types.ElementAttributes{
+						Attributes: types.Attributes{
 							types.AttrKind: types.Source,
 						},
 						Kind: types.Source,
@@ -80,13 +80,13 @@ Preamble comes here
 				},
 			}
 			expected := types.Document{
-				Attributes: types.DocumentAttributes{
+				Attributes: types.Attributes{
 					types.AttrTableOfContents: "",
 				},
 				Elements: []interface{}{
 					types.Section{
 						Level: 0,
-						Attributes: types.ElementAttributes{
+						Attributes: types.Attributes{
 							types.AttrID: "_a_title",
 						},
 						Title: headerTitle,
@@ -107,14 +107,14 @@ Preamble comes here
 							},
 							types.Section{
 								Level: 1,
-								Attributes: types.ElementAttributes{
+								Attributes: types.Attributes{
 									types.AttrID: "_section_a",
 								},
 								Title: titleSectionA,
 								Elements: []interface{}{
 									types.Section{
 										Level: 2,
-										Attributes: types.ElementAttributes{
+										Attributes: types.Attributes{
 											types.AttrID: "_section_a_a",
 										},
 										Title:    titleSectionAa,
@@ -124,7 +124,7 @@ Preamble comes here
 							},
 							types.Section{
 								Level: 1,
-								Attributes: types.ElementAttributes{
+								Attributes: types.Attributes{
 									types.AttrID: "_section_b",
 								},
 								Title:    titleSectionB,
@@ -132,7 +132,7 @@ Preamble comes here
 							},
 							types.Section{
 								Level: 1,
-								Attributes: types.ElementAttributes{
+								Attributes: types.Attributes{
 									types.AttrID: "_section_c",
 								},
 								Title:    titleSectionC,
@@ -183,7 +183,7 @@ eve - analyzes an image to determine if it's a picture of a life form
 			}
 
 			expected := types.Document{
-				Attributes: types.DocumentAttributes{
+				Attributes: types.Attributes{
 					types.AttrDocType: "manpage",
 					types.AttrAuthors: []types.DocumentAuthor{
 						{
@@ -202,14 +202,14 @@ eve - analyzes an image to determine if it's a picture of a life form
 				Elements: []interface{}{
 					types.Section{
 						Level: 0,
-						Attributes: types.ElementAttributes{
+						Attributes: types.Attributes{
 							types.AttrID: "_eve_1",
 						},
 						Title: headerSectionTitle,
 						Elements: []interface{}{
 							types.Section{
 								Level: 1,
-								Attributes: types.ElementAttributes{
+								Attributes: types.Attributes{
 									types.AttrID: "_name",
 								},
 								Title: nameSectionTitle,
@@ -227,7 +227,7 @@ eve - analyzes an image to determine if it's a picture of a life form
 							},
 							types.Section{
 								Level: 1,
-								Attributes: types.ElementAttributes{
+								Attributes: types.Attributes{
 									types.AttrID: "_synopsis",
 								},
 								Title:    synopisSectionTitle,

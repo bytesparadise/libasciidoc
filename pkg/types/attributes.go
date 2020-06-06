@@ -11,10 +11,26 @@ import (
 )
 
 // ------------------------------------------
-// Elements attributes
+// Attributes
 // ------------------------------------------
 
 const (
+	// AttrDocType the "doctype" attribute
+	AttrDocType string = "doctype"
+	// AttrSyntaxHighlighter the attribute to define the syntax highlighter on code source blocks
+	AttrSyntaxHighlighter string = "source-highlighter"
+	// AttrIDPrefix the key to retrieve the ID Prefix
+	AttrIDPrefix string = "idprefix"
+	// DefaultIDPrefix the default ID Prefix
+	DefaultIDPrefix string = "_"
+	// AttrTableOfContents the `toc` attribute at document level
+	AttrTableOfContents string = "toc"
+	// AttrTableOfContentsLevels the document attribute which specifies the number of levels to display in the ToC
+	AttrTableOfContentsLevels string = "toclevels"
+	// AttrNoHeader attribute to disable the rendering of document footer
+	AttrNoHeader string = "noheader"
+	// AttrNoFooter attribute to disable the rendering of document footer
+	AttrNoFooter string = "nofooter"
 	// AttrID the key to retrieve the ID
 	AttrID string = "id"
 	// AttrCustomID the key to retrieve the flag that indicates if the element ID is custom or generated
@@ -68,48 +84,48 @@ const (
 )
 
 // NewElementID initializes a new attribute map with a single entry for the ID using the given value
-func NewElementID(id string) (ElementAttributes, error) {
+func NewElementID(id string) (Attributes, error) {
 	// log.Debugf("initializing a new ElementID with ID=%s", id)
-	return ElementAttributes{
+	return Attributes{
 		AttrID:       id,
 		AttrCustomID: true,
 	}, nil
 }
 
 // NewInlineElementID initializes a new attribute map with a single entry for the ID using the given value
-func NewInlineElementID(id string) (ElementAttributes, error) {
+func NewInlineElementID(id string) (Attributes, error) {
 	log.Debugf("initializing a new inline ElementID with ID=%s", id)
-	return ElementAttributes{AttrID: id}, nil
+	return Attributes{AttrID: id}, nil
 }
 
 // NewElementTitle initializes a new attribute map with a single entry for the title using the given value
-func NewElementTitle(title string) (ElementAttributes, error) {
+func NewElementTitle(title string) (Attributes, error) {
 	// log.Debugf("initializing a new ElementTitle with content=%s", title)
-	return ElementAttributes{
+	return Attributes{
 		AttrTitle: title,
 	}, nil
 }
 
 // NewElementRole initializes a new attribute map with a single entry for the title using the given value
-func NewElementRole(role string) (ElementAttributes, error) {
+func NewElementRole(role string) (Attributes, error) {
 	// log.Debugf("initializing a new ElementRole with content=%s", role)
-	return ElementAttributes{
+	return Attributes{
 		AttrRole: role,
 	}, nil
 }
 
 // NewAdmonitionAttribute initializes a new attribute map with a single entry for the admonition kind using the given value
-func NewAdmonitionAttribute(k AdmonitionKind) (ElementAttributes, error) {
-	return ElementAttributes{AttrAdmonitionKind: k}, nil
+func NewAdmonitionAttribute(k AdmonitionKind) (Attributes, error) {
+	return Attributes{AttrAdmonitionKind: k}, nil
 }
 
 // NewAttributeGroup initializes a group of attributes from the given generic attributes.
-func NewAttributeGroup(attributes []interface{}) (ElementAttributes, error) {
+func NewAttributeGroup(attributes []interface{}) (Attributes, error) {
 	// log.Debugf("initializing a new AttributeGroup with %v", attributes)
-	result := make(ElementAttributes)
+	result := make(Attributes)
 	for _, a := range attributes {
 		// log.Debugf("processing attribute element of type %T", a)
-		if a, ok := a.(ElementAttributes); ok {
+		if a, ok := a.(Attributes); ok {
 			for k, v := range a {
 				// log.Debugf("adding attribute %v='%v'", k, v)
 				result[k] = v
@@ -123,7 +139,7 @@ func NewAttributeGroup(attributes []interface{}) (ElementAttributes, error) {
 }
 
 // NewGenericAttribute initializes a new ElementAttribute from the given key and optional value
-func NewGenericAttribute(key string, value interface{}) (ElementAttributes, error) {
+func NewGenericAttribute(key string, value interface{}) (Attributes, error) {
 	result := make(map[string]interface{})
 	k := Apply(key,
 		// remove surrounding quotes
@@ -143,7 +159,7 @@ func NewGenericAttribute(key string, value interface{}) (ElementAttributes, erro
 			result[k] = v
 		}
 	}
-	// log.Debugf("initialized a new ElementAttributes: %v", result)
+	// log.Debugf("initialized a new Attributes: %v", result)
 	return result, nil
 }
 
@@ -172,18 +188,18 @@ func NewQuoteAttributes(kind string, author, title interface{}) (map[string]inte
 }
 
 // NewLiteralAttribute initializes a new attribute map with a single entry for the literal kind of block
-func NewLiteralAttribute() (ElementAttributes, error) {
-	return ElementAttributes{AttrKind: Literal}, nil
+func NewLiteralAttribute() (Attributes, error) {
+	return Attributes{AttrKind: Literal}, nil
 }
 
 // NewPassthroughBlockAttribute initializes a new attribute map with a single entry for the passthrough kind of block
-func NewPassthroughBlockAttribute() (ElementAttributes, error) {
-	return ElementAttributes{AttrKind: Passthrough}, nil
+func NewPassthroughBlockAttribute() (Attributes, error) {
+	return Attributes{AttrKind: Passthrough}, nil
 }
 
 // NewSourceAttributes initializes a new attribute map with two entries, one for the kind of element ("source") and another optional one for the language of the source code
-func NewSourceAttributes(language interface{}, others ...interface{}) (ElementAttributes, error) {
-	result := ElementAttributes{
+func NewSourceAttributes(language interface{}, others ...interface{}) (Attributes, error) {
+	result := Attributes{
 		AttrKind: Source,
 	}
 	if language, ok := language.(string); ok {
@@ -195,24 +211,24 @@ func NewSourceAttributes(language interface{}, others ...interface{}) (ElementAt
 	return result, nil
 }
 
-// ElementAttributes is a map[string]interface{} with some utility methods
-type ElementAttributes map[string]interface{}
+// Attributes is a map[string]interface{} with some utility methods
+type Attributes map[string]interface{}
 
-// Set sets the key/value entry in the ElementAttributes.
-func (a ElementAttributes) Set(key string, value interface{}) ElementAttributes {
+// Set sets the key/value entry in the Attributes.
+func (a Attributes) Set(key string, value interface{}) Attributes {
 	if a == nil {
-		a = ElementAttributes{}
+		a = Attributes{}
 	}
 	a[key] = value
 	return a
 }
 
 // Add adds the given attributes to the current ones
-func (a ElementAttributes) Add(attributes interface{}) ElementAttributes {
+func (a Attributes) Add(attrs interface{}) Attributes {
 	if a == nil {
-		a = ElementAttributes{}
+		a = Attributes{}
 	}
-	if attrs, ok := attributes.(ElementAttributes); ok {
+	if attrs, ok := attrs.(Attributes); ok {
 		for k, v := range attrs {
 			a[k] = v
 			if k == AttrID {
@@ -224,31 +240,55 @@ func (a ElementAttributes) Add(attributes interface{}) ElementAttributes {
 }
 
 // Has returns the true if an entry with the given key exists
-func (a ElementAttributes) Has(key string) bool {
+func (a Attributes) Has(key string) bool {
 	_, ok := a[key]
 	return ok
 }
 
 // NilSafeSet sets the key/value pair unless the value is nil or empty
-func (a ElementAttributes) NilSafeSet(key string, value interface{}) {
+func (a Attributes) NilSafeSet(key string, value interface{}) {
 	if value != nil && value != "" {
 		a[key] = value
 	}
 }
 
-// GetAsString returns the value of the key as a string, or empty string if the key did not exist
-func (a ElementAttributes) GetAsString(key string) string {
-	if v, ok := a[key].(string); ok {
-		return v
-	} else if v, ok := a[key]; ok {
-		return fmt.Sprintf("%v", v)
+// GetAsString gets the string value for the given key (+ `true`),
+// or empty string (+ `false`) if none was found
+// TODO: raise a warning if there was no entry found
+func (a Attributes) GetAsString(key string) (string, bool) {
+	// check in predefined attributes
+	if value, found := Predefined[key]; found {
+		return value, true
 	}
-	return ""
+	if value, found := a[key]; found {
+		if value, ok := value.(string); ok {
+			return value, true
+		} else if v, ok := a[key]; ok {
+			return fmt.Sprintf("%v", v), true
+		}
+	}
+	return "", false
+}
+
+// GetAsStringWithDefault gets the string value for the given key,
+// or returns the given default value
+// TODO: raise a warning if there was no entry found
+func (a Attributes) GetAsStringWithDefault(key, defaultValue string) string {
+	// check in predefined attributes
+	if value, found := Predefined[key]; found {
+		return value
+	}
+	if value, found := a[key]; found {
+		if value, ok := value.(string); ok {
+			return value
+		}
+	}
+	return defaultValue
 }
 
 // GetAsBool returns the value of the key as a bool, or `false` if the key did not exist
 // or if its value was not a bool
-func (a ElementAttributes) GetAsBool(key string) bool {
+func (a Attributes) GetAsBool(key string) bool {
 	if v, ok := a[key]; ok {
 		if v, ok := v.(bool); ok {
 			return v
@@ -259,7 +299,7 @@ func (a ElementAttributes) GetAsBool(key string) bool {
 
 // AddNonEmpty adds the given attribute if its value is non-nil and non-empty
 // TODO: raise a warning if there was already a name/value
-func (a ElementAttributes) AddNonEmpty(key string, value interface{}) {
+func (a Attributes) AddNonEmpty(key string, value interface{}) {
 	// do not add nil or empty values
 	if value == "" {
 		return
@@ -268,7 +308,7 @@ func (a ElementAttributes) AddNonEmpty(key string, value interface{}) {
 }
 
 // Positionals returns all positional attributes, ie, the values for the keys in the form of `positional-<int>`
-func (a ElementAttributes) Positionals() [][]interface{} {
+func (a Attributes) Positionals() [][]interface{} {
 	result := make([][]interface{}, 0, len(a))
 	i := 0
 	for {
@@ -282,8 +322,8 @@ func (a ElementAttributes) Positionals() [][]interface{} {
 	return result
 }
 
-// NewElementAttributes retrieves the ElementID, ElementTitle and ElementInlineLink from the given slice of attributes
-func NewElementAttributes(attributes interface{}) (ElementAttributes, error) {
+// NewAttributes retrieves the ElementID, ElementTitle and ElementInlineLink from the given slice of attributes
+func NewAttributes(attributes interface{}) (Attributes, error) {
 	if attributes == nil {
 		return nil, nil
 	}
@@ -295,9 +335,9 @@ func NewElementAttributes(attributes interface{}) (ElementAttributes, error) {
 		if len(attrs) == 0 {
 			return nil, nil
 		}
-		result := ElementAttributes{}
+		result := Attributes{}
 		for _, a := range attrs {
-			r, err := NewElementAttributes(a)
+			r, err := NewAttributes(a)
 			if err != nil {
 				return nil, err
 			}
@@ -306,13 +346,13 @@ func NewElementAttributes(attributes interface{}) (ElementAttributes, error) {
 			}
 		}
 		return result, nil
-	case ElementAttributes:
+	case Attributes:
 		return attrs, nil
 	case map[string]interface{}:
 		if len(attrs) == 0 {
 			return nil, nil
 		}
-		result := ElementAttributes{}
+		result := Attributes{}
 		for k, v := range attrs {
 			result[k] = v
 		}
@@ -330,3 +370,43 @@ func resolveAlt(path Location) string {
 	}
 	return filename
 }
+
+// // Has returns the true if an entry with the given key exists
+// func (a Attributes) Has(key string) bool {
+// 	_, ok := a[key]
+// 	return ok
+// }
+
+// // Add adds the given attributes
+// func (a Attributes) Add(attrs map[string]interface{}) {
+// 	for k, v := range attrs {
+// 		a.Add(k, v)
+// 	}
+// }
+
+// // Add adds the given attribute if its value is non-nil
+// // TODO: raise a warning if there was already a name/value
+// func (a Attributes) Add(key string, value interface{}) {
+// 	a[key] = value
+// }
+
+// // AddNonEmpty adds the given attribute if its value is non-nil and non-empty
+// // TODO: raise a warning if there was already a name/value
+// func (a Attributes) AddNonEmpty(key string, value interface{}) {
+// 	// do not add nil or empty values
+// 	if value == "" {
+// 		return
+// 	}
+// 	a.Add(key, value)
+// }
+
+// // AddDeclaration adds the given attribute
+// // TODO: raise a warning if there was already a name/value
+// func (a Attributes) AddDeclaration(attr AttributeDeclaration) {
+// 	a.Add(attr.Name, attr.Value)
+// }
+
+// // Delete deletes the given attribute
+// func (a Attributes) Delete(attr AttributeReset) {
+// 	delete(a, attr.Name)
+// }

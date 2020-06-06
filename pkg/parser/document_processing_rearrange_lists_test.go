@@ -469,7 +469,7 @@ var _ = Describe("rearrange lists", func() {
 	It("callout list with rich terms", func() {
 		actual := []interface{}{
 			types.CalloutListItem{
-				Attributes: types.ElementAttributes{
+				Attributes: types.Attributes{
 					types.AttrTitle: "callout title",
 				},
 				Elements: []interface{}{
@@ -496,7 +496,7 @@ var _ = Describe("rearrange lists", func() {
 		}
 		expected := []interface{}{
 			types.CalloutList{
-				Attributes: types.ElementAttributes{
+				Attributes: types.Attributes{
 					types.AttrTitle: "callout title",
 				},
 				Items: []types.CalloutListItem{

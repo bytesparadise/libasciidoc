@@ -138,7 +138,7 @@ func visitSection(ctx renderer.Context, section types.Section, currentLevel int)
 
 	return []types.ToCSection{
 		{
-			ID:       section.Attributes.GetAsString(types.AttrID),
+			ID:       section.Attributes.GetAsStringWithDefault(types.AttrID, ""),
 			Level:    section.Level,
 			Title:    string(renderedTitle),
 			Children: children,

@@ -1384,7 +1384,7 @@ var _ = Describe("quoted texts", func() {
 										Elements: []interface{}{
 											types.StringElement{Content: "a "},
 											types.InlineLink{
-												Attributes: types.ElementAttributes{
+												Attributes: types.Attributes{
 													"positional-1": []interface{}{
 														types.StringElement{
 															Content: "b",
@@ -1505,7 +1505,7 @@ var _ = Describe("quoted texts", func() {
 										Elements: []interface{}{
 											types.StringElement{Content: "a "},
 											types.InlineLink{
-												Attributes: types.ElementAttributes{
+												Attributes: types.Attributes{
 													"positional-1": []interface{}{
 														types.StringElement{
 															Content: "b",
@@ -1626,7 +1626,7 @@ var _ = Describe("quoted texts", func() {
 										Elements: []interface{}{
 											types.StringElement{Content: "a "},
 											types.InlineLink{
-												Attributes: types.ElementAttributes{
+												Attributes: types.Attributes{
 													"positional-1": []interface{}{
 														types.StringElement{
 															Content: "b",
@@ -3866,7 +3866,7 @@ var _ = Describe("quoted texts", func() {
 										Elements: []interface{}{
 											types.StringElement{Content: "a "},
 											types.InlineLink{
-												Attributes: types.ElementAttributes{
+												Attributes: types.Attributes{
 													"positional-1": []interface{}{
 														types.StringElement{
 															Content: "b",
@@ -3903,7 +3903,7 @@ var _ = Describe("quoted texts", func() {
 										Elements: []interface{}{
 											types.StringElement{Content: "a "},
 											types.InlineImage{
-												Attributes: types.ElementAttributes{
+												Attributes: types.Attributes{
 													types.AttrImageAlt: "foo",
 												},
 												Location: types.Location{
@@ -3990,7 +3990,7 @@ var _ = Describe("quoted texts", func() {
 										Elements: []interface{}{
 											types.StringElement{Content: "a "},
 											types.InlineLink{
-												Attributes: types.ElementAttributes{
+												Attributes: types.Attributes{
 													"positional-1": []interface{}{
 														types.StringElement{
 															Content: "b",
@@ -4027,7 +4027,7 @@ var _ = Describe("quoted texts", func() {
 										Elements: []interface{}{
 											types.StringElement{Content: "a "},
 											types.InlineImage{
-												Attributes: types.ElementAttributes{
+												Attributes: types.Attributes{
 													types.AttrImageAlt: "foo",
 												},
 												Location: types.Location{
@@ -4114,7 +4114,7 @@ var _ = Describe("quoted texts", func() {
 										Elements: []interface{}{
 											types.StringElement{Content: "a "},
 											types.InlineLink{
-												Attributes: types.ElementAttributes{
+												Attributes: types.Attributes{
 													"positional-1": []interface{}{
 														types.StringElement{
 															Content: "b",
@@ -4151,7 +4151,7 @@ var _ = Describe("quoted texts", func() {
 										Elements: []interface{}{
 											types.StringElement{Content: "a "},
 											types.InlineImage{
-												Attributes: types.ElementAttributes{
+												Attributes: types.Attributes{
 													types.AttrImageAlt: "foo",
 												},
 												Location: types.Location{
@@ -5132,7 +5132,7 @@ var _ = Describe("quoted texts - final document", func() {
 								Elements: []interface{}{
 									types.StringElement{Content: "a "},
 									types.InlineImage{
-										Attributes: types.ElementAttributes{
+										Attributes: types.Attributes{
 											types.AttrImageAlt: "foo",
 										},
 										Location: types.Location{
@@ -5165,7 +5165,7 @@ var _ = Describe("quoted texts - final document", func() {
 								Elements: []interface{}{
 									types.StringElement{Content: "a "},
 									types.InlineImage{
-										Attributes: types.ElementAttributes{
+										Attributes: types.Attributes{
 											types.AttrImageAlt: "foo",
 										},
 										Location: types.Location{
@@ -5198,7 +5198,7 @@ var _ = Describe("quoted texts - final document", func() {
 								Elements: []interface{}{
 									types.StringElement{Content: "a "},
 									types.InlineImage{
-										Attributes: types.ElementAttributes{
+										Attributes: types.Attributes{
 											types.AttrImageAlt: "foo",
 										},
 										Location: types.Location{

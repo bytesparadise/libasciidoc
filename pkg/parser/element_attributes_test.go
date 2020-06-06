@@ -17,7 +17,7 @@ var _ = Describe("element attributes - draft", func() {
 				source := `[link=http://foo.bar]
 a paragraph`
 				expected := types.Paragraph{
-					Attributes: types.ElementAttributes{
+					Attributes: types.Attributes{
 						"link": "http://foo.bar",
 					},
 					Lines: [][]interface{}{
@@ -34,7 +34,7 @@ a paragraph`
 				source := `[link= http://foo.bar  ]
 a paragraph`
 				expected := types.Paragraph{
-					Attributes: types.ElementAttributes{
+					Attributes: types.Attributes{
 						"link": "http://foo.bar",
 					},
 					Lines: [][]interface{}{
@@ -101,7 +101,7 @@ a paragraph`
 				source := `[[img-foobar]]
 a paragraph`
 				expected := types.Paragraph{
-					Attributes: types.ElementAttributes{
+					Attributes: types.Attributes{
 						types.AttrID:       "img-foobar",
 						types.AttrCustomID: true,
 					},
@@ -120,7 +120,7 @@ a paragraph`
 				source := `[#img-foobar]
 a paragraph`
 				expected := types.Paragraph{
-					Attributes: types.ElementAttributes{
+					Attributes: types.Attributes{
 						types.AttrID:       "img-foobar",
 						types.AttrCustomID: true,
 					},
@@ -188,7 +188,7 @@ a paragraph`
 				source := `.a title
 a paragraph`
 				expected := types.Paragraph{
-					Attributes: types.ElementAttributes{
+					Attributes: types.Attributes{
 						types.AttrTitle: "a title",
 					},
 					Lines: [][]interface{}{
@@ -262,7 +262,7 @@ a paragraph`
 				source := `[.a role]
 a paragraph`
 				expected := types.Paragraph{
-					Attributes: types.ElementAttributes{
+					Attributes: types.Attributes{
 						types.AttrRole: "a role",
 					},
 					Lines: [][]interface{}{
@@ -280,7 +280,7 @@ a paragraph`
 				source := `[role=a role]
 a paragraph`
 				expected := types.Paragraph{
-					Attributes: types.ElementAttributes{
+					Attributes: types.Attributes{
 						types.AttrRole: "a role",
 					},
 					Lines: [][]interface{}{
@@ -302,7 +302,7 @@ a paragraph`
 			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.Paragraph{
-						Attributes: types.ElementAttributes{
+						Attributes: types.Attributes{
 							types.AttrRole: "a role",
 						},
 						Lines: [][]interface{}{
@@ -328,7 +328,7 @@ a paragraph`
 			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.Paragraph{
-						Attributes: types.ElementAttributes{
+						Attributes: types.Attributes{
 							types.AttrRole:     "a role",
 							types.AttrTitle:    "title",
 							types.AttrID:       "ID",

@@ -354,7 +354,7 @@ a paragraph`
 			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.Section{
-						Attributes: types.ElementAttributes{
+						Attributes: types.Attributes{
 							types.AttrID:       "custom_header",
 							types.AttrCustomID: true,
 						},
@@ -388,7 +388,7 @@ a paragraph`
 			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.Section{
-						Attributes: types.ElementAttributes{
+						Attributes: types.Attributes{
 							types.AttrID:       "custom_header",
 							types.AttrCustomID: true,
 						},
@@ -398,7 +398,7 @@ a paragraph`
 					},
 					types.BlankLine{},
 					types.Section{
-						Attributes: types.ElementAttributes{
+						Attributes: types.Attributes{
 							types.AttrID:       "foo",
 							types.AttrCustomID: true,
 						},
@@ -408,7 +408,7 @@ a paragraph`
 					},
 					types.BlankLine{},
 					types.Section{
-						Attributes: types.ElementAttributes{
+						Attributes: types.Attributes{
 							types.AttrID:       "bar",
 							types.AttrCustomID: true,
 						},
@@ -504,7 +504,7 @@ a paragraph with *bold content*`
 				Elements: []interface{}{
 					types.Section{
 						Level: 0,
-						Attributes: types.ElementAttributes{
+						Attributes: types.Attributes{
 							types.AttrID: "_a_header",
 						},
 						Title: title,
@@ -512,7 +512,7 @@ a paragraph with *bold content*`
 							types.Section{
 								Level: 1,
 								Title: section1Title,
-								Attributes: types.ElementAttributes{
+								Attributes: types.Attributes{
 									types.AttrID: "_section_1",
 								},
 								Elements: []interface{}{
@@ -590,7 +590,7 @@ a short preamble
 						},
 						Elements: []interface{}{},
 					},
-					types.DocumentAttributeDeclaration{
+					types.AttributeDeclaration{
 						Name: "toc",
 					},
 					types.BlankLine{},
@@ -669,7 +669,7 @@ a short preamble
 			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.LiteralBlock{
-						Attributes: types.ElementAttributes{
+						Attributes: types.Attributes{
 							types.AttrKind:             types.Literal,
 							types.AttrLiteralBlockType: types.LiteralBlockWithSpacesOnFirstLine,
 						},
@@ -698,7 +698,7 @@ a short preamble
 					},
 					types.BlankLine{},
 					types.LiteralBlock{
-						Attributes: types.ElementAttributes{
+						Attributes: types.Attributes{
 							types.AttrKind:             types.Literal,
 							types.AttrLiteralBlockType: types.LiteralBlockWithSpacesOnFirstLine,
 						},
@@ -762,7 +762,7 @@ var _ = Describe("sections - document", func() {
 				},
 				Elements: []interface{}{
 					types.Section{
-						Attributes: types.ElementAttributes{
+						Attributes: types.Attributes{
 							types.AttrID: "_a_header",
 						},
 						Level:    0,
@@ -785,7 +785,7 @@ var _ = Describe("sections - document", func() {
 				},
 				Elements: []interface{}{
 					types.Section{
-						Attributes: types.ElementAttributes{
+						Attributes: types.Attributes{
 							types.AttrID: "_a_header",
 						},
 						Level:    0,
@@ -811,7 +811,7 @@ and a paragraph`
 				},
 				Elements: []interface{}{
 					types.Section{
-						Attributes: types.ElementAttributes{
+						Attributes: types.Attributes{
 							types.AttrID: "_a_header",
 						},
 						Level: 0,
@@ -849,7 +849,7 @@ and a paragraph`
 				},
 				Elements: []interface{}{
 					types.Section{
-						Attributes: types.ElementAttributes{
+						Attributes: types.Attributes{
 							types.AttrID: "_a_first_header",
 						},
 						Level:    0,
@@ -857,7 +857,7 @@ and a paragraph`
 						Elements: []interface{}{},
 					},
 					types.Section{
-						Attributes: types.ElementAttributes{
+						Attributes: types.Attributes{
 							types.AttrID: "_a_second_header",
 						},
 						Level:    0,
@@ -880,7 +880,7 @@ and a paragraph`
 				},
 				Elements: []interface{}{
 					types.Section{
-						Attributes: types.ElementAttributes{
+						Attributes: types.Attributes{
 							types.AttrID: "_section_1",
 						},
 						Level:    1,
@@ -908,7 +908,7 @@ and a paragraph`
 				},
 				Elements: []interface{}{
 					types.Section{
-						Attributes: types.ElementAttributes{
+						Attributes: types.Attributes{
 							types.AttrID: "_2_spaces_and_bold_content",
 						},
 						Level:    1,
@@ -937,14 +937,14 @@ and a paragraph`
 				},
 				Elements: []interface{}{
 					types.Section{
-						Attributes: types.ElementAttributes{
+						Attributes: types.Attributes{
 							types.AttrID: "_a_header",
 						},
 						Level: 0,
 						Title: doctitle,
 						Elements: []interface{}{
 							types.Section{
-								Attributes: types.ElementAttributes{
+								Attributes: types.Attributes{
 									types.AttrID: "_section_1",
 								},
 								Level:    1,
@@ -975,14 +975,14 @@ and a paragraph`
 				},
 				Elements: []interface{}{
 					types.Section{
-						Attributes: types.ElementAttributes{
+						Attributes: types.Attributes{
 							types.AttrID: "_a_header",
 						},
 						Level: 0,
 						Title: doctitle,
 						Elements: []interface{}{
 							types.Section{
-								Attributes: types.ElementAttributes{
+								Attributes: types.Attributes{
 									types.AttrID: "_section_2",
 								},
 								Level:    2,
@@ -1008,7 +1008,7 @@ and a paragraph`
 				},
 				Elements: []interface{}{
 					types.Section{
-						Attributes: types.ElementAttributes{
+						Attributes: types.Attributes{
 							types.AttrID: "_a_title",
 						},
 						Level: 1,
@@ -1041,7 +1041,7 @@ and a paragraph`
 				},
 				Elements: []interface{}{
 					types.Section{
-						Attributes: types.ElementAttributes{
+						Attributes: types.Attributes{
 							types.AttrID: "_a_title",
 						},
 						Level: 1,
@@ -1072,7 +1072,7 @@ and a paragraph`
 				},
 				Elements: []interface{}{
 					types.Section{
-						Attributes: types.ElementAttributes{
+						Attributes: types.Attributes{
 							types.AttrID: "_a_title",
 						},
 						Level: 1,
@@ -1124,14 +1124,14 @@ a paragraph`
 				},
 				Elements: []interface{}{
 					types.Section{
-						Attributes: types.ElementAttributes{
+						Attributes: types.Attributes{
 							types.AttrID: "_a_header",
 						},
 						Level: 0,
 						Title: doctitle,
 						Elements: []interface{}{
 							types.Section{
-								Attributes: types.ElementAttributes{
+								Attributes: types.Attributes{
 									types.AttrID: "_section_a",
 								},
 								Level: 1,
@@ -1145,7 +1145,7 @@ a paragraph`
 										},
 									},
 									types.Section{
-										Attributes: types.ElementAttributes{
+										Attributes: types.Attributes{
 											types.AttrID: "_section_a_a",
 										},
 										Level: 2,
@@ -1163,7 +1163,7 @@ a paragraph`
 								},
 							},
 							types.Section{
-								Attributes: types.ElementAttributes{
+								Attributes: types.Attributes{
 									types.AttrID: "_section_b",
 								},
 								Level: 1,
@@ -1217,14 +1217,14 @@ a paragraph`
 				},
 				Elements: []interface{}{
 					types.Section{
-						Attributes: types.ElementAttributes{
+						Attributes: types.Attributes{
 							types.AttrID: "_a_header",
 						},
 						Level: 0,
 						Title: doctitle,
 						Elements: []interface{}{
 							types.Section{
-								Attributes: types.ElementAttributes{
+								Attributes: types.Attributes{
 									types.AttrID: "_section_a",
 								},
 								Level: 1,
@@ -1238,7 +1238,7 @@ a paragraph`
 										},
 									},
 									types.Section{
-										Attributes: types.ElementAttributes{
+										Attributes: types.Attributes{
 											types.AttrID: "_section_a_a",
 										},
 										Level: 2,
@@ -1254,7 +1254,7 @@ a paragraph`
 										},
 									},
 									types.Section{
-										Attributes: types.ElementAttributes{
+										Attributes: types.Attributes{
 											types.AttrID: "_section_a_b",
 										},
 										Level: 2,
@@ -1310,14 +1310,14 @@ a paragraph`
 				},
 				Elements: []interface{}{
 					types.Section{
-						Attributes: types.ElementAttributes{
+						Attributes: types.Attributes{
 							types.AttrID: "_a_header",
 						},
 						Level: 0,
 						Title: doctitle,
 						Elements: []interface{}{
 							types.Section{
-								Attributes: types.ElementAttributes{
+								Attributes: types.Attributes{
 									types.AttrID: "_section_a",
 								},
 								Level: 2,
@@ -1331,7 +1331,7 @@ a paragraph`
 										},
 									},
 									types.Section{
-										Attributes: types.ElementAttributes{
+										Attributes: types.Attributes{
 											types.AttrID: "_section_a_a",
 										},
 										Level: 3,
@@ -1347,7 +1347,7 @@ a paragraph`
 										},
 									},
 									types.Section{
-										Attributes: types.ElementAttributes{
+										Attributes: types.Attributes{
 											types.AttrID: "_section_a_b",
 										},
 										Level: 3,
@@ -1383,7 +1383,7 @@ a paragraph`
 				},
 				Elements: []interface{}{
 					types.Section{
-						Attributes: types.ElementAttributes{
+						Attributes: types.Attributes{
 							types.AttrID:       "custom_header",
 							types.AttrCustomID: true,
 						},
@@ -1422,7 +1422,7 @@ a paragraph`
 				},
 				Elements: []interface{}{
 					types.Section{
-						Attributes: types.ElementAttributes{
+						Attributes: types.Attributes{
 							types.AttrID:       "custom_header",
 							types.AttrCustomID: true,
 						},
@@ -1430,7 +1430,7 @@ a paragraph`
 						Title: doctitle,
 						Elements: []interface{}{
 							types.Section{
-								Attributes: types.ElementAttributes{
+								Attributes: types.Attributes{
 									types.AttrID:       "foo",
 									types.AttrCustomID: true,
 								},
@@ -1439,7 +1439,7 @@ a paragraph`
 								Elements: []interface{}{},
 							},
 							types.Section{
-								Attributes: types.ElementAttributes{
+								Attributes: types.Attributes{
 									types.AttrID:       "bar",
 									types.AttrCustomID: true,
 								},
@@ -1480,7 +1480,7 @@ a paragraph`
 				},
 				Elements: []interface{}{
 					types.Section{
-						Attributes: types.ElementAttributes{
+						Attributes: types.Attributes{
 							types.AttrID: "_section_1",
 						},
 						Level:    1,
@@ -1488,7 +1488,7 @@ a paragraph`
 						Elements: []interface{}{},
 					},
 					types.Section{
-						Attributes: types.ElementAttributes{
+						Attributes: types.Attributes{
 							types.AttrID: "_section_1_2",
 						},
 						Level:    1,
@@ -1512,7 +1512,7 @@ a paragraph`
 				types.StringElement{Content: "section 1"},
 			}
 			expected := types.Document{
-				Attributes: types.DocumentAttributes{
+				Attributes: types.Attributes{
 					types.AttrIDPrefix: "custom_",
 				},
 				ElementReferences: types.ElementReferences{
@@ -1521,14 +1521,14 @@ a paragraph`
 				},
 				Elements: []interface{}{
 					types.Section{
-						Attributes: types.ElementAttributes{
+						Attributes: types.Attributes{
 							types.AttrID: "custom_a_header",
 						},
 						Level: 0,
 						Title: doctitle,
 						Elements: []interface{}{
 							types.Section{
-								Attributes: types.ElementAttributes{
+								Attributes: types.Attributes{
 									types.AttrID: "custom_section_1",
 								},
 								Level:    1,
@@ -1561,7 +1561,7 @@ a paragraph`
 				types.StringElement{Content: "section 1b"},
 			}
 			expected := types.Document{
-				Attributes: types.DocumentAttributes{
+				Attributes: types.Attributes{
 					types.AttrIDPrefix: "custom1b_", // overridden by second occurrence of attribute declaration
 				},
 				ElementReferences: types.ElementReferences{
@@ -1571,14 +1571,14 @@ a paragraph`
 				},
 				Elements: []interface{}{
 					types.Section{
-						Attributes: types.ElementAttributes{
+						Attributes: types.Attributes{
 							types.AttrID: "custom1a_a_header",
 						},
 						Level: 0,
 						Title: doctitle,
 						Elements: []interface{}{
 							types.Section{
-								Attributes: types.ElementAttributes{
+								Attributes: types.Attributes{
 									types.AttrID: "custom1a_section_1a",
 								},
 								Level:    1,
@@ -1586,7 +1586,7 @@ a paragraph`
 								Elements: []interface{}{},
 							},
 							types.Section{
-								Attributes: types.ElementAttributes{
+								Attributes: types.Attributes{
 									types.AttrID: "custom1b_section_1b",
 								},
 								Level:    1,
@@ -1620,7 +1620,7 @@ a paragraph`
 				types.StringElement{Content: "section 1b"},
 			}
 			expected := types.Document{
-				Attributes: types.DocumentAttributes{
+				Attributes: types.Attributes{
 					"idprefix": "custom1b_", // overridden by second attribute declaration
 				},
 				ElementReferences: types.ElementReferences{
@@ -1630,14 +1630,14 @@ a paragraph`
 				},
 				Elements: []interface{}{
 					types.Section{
-						Attributes: types.ElementAttributes{
+						Attributes: types.Attributes{
 							types.AttrID: "_a_header",
 						},
 						Level: 0,
 						Title: doctitle,
 						Elements: []interface{}{
 							types.Section{
-								Attributes: types.ElementAttributes{
+								Attributes: types.Attributes{
 									types.AttrID: "custom1a_section_1a",
 								},
 								Level:    1,
@@ -1645,7 +1645,7 @@ a paragraph`
 								Elements: []interface{}{},
 							},
 							types.Section{
-								Attributes: types.ElementAttributes{
+								Attributes: types.Attributes{
 									types.AttrID: "custom1b_section_1b",
 								},
 								Level:    1,
@@ -1676,7 +1676,7 @@ a short preamble
 				},
 				Elements: []interface{}{
 					types.Section{
-						Attributes: types.ElementAttributes{
+						Attributes: types.Attributes{
 							types.AttrID: "_a_title",
 						},
 						Level: 0,
@@ -1696,7 +1696,7 @@ a short preamble
 								},
 							},
 							types.Section{
-								Attributes: types.ElementAttributes{
+								Attributes: types.Attributes{
 									types.AttrID: "_section_1",
 								},
 								Level: 1,
@@ -1720,7 +1720,7 @@ a short preamble
 
 == Section 1`
 			expected := types.Document{
-				Attributes: types.DocumentAttributes{
+				Attributes: types.Attributes{
 					"toc": "",
 				},
 				ElementReferences: types.ElementReferences{
@@ -1733,7 +1733,7 @@ a short preamble
 				},
 				Elements: []interface{}{
 					types.Section{
-						Attributes: types.ElementAttributes{
+						Attributes: types.Attributes{
 							types.AttrID: "_a_title",
 						},
 						Level: 0,
@@ -1754,7 +1754,7 @@ a short preamble
 								},
 							},
 							types.Section{
-								Attributes: types.ElementAttributes{
+								Attributes: types.Attributes{
 									types.AttrID: "_section_1",
 								},
 								Level: 1,
@@ -1808,7 +1808,7 @@ a short preamble
 			expected := types.Document{
 				Elements: []interface{}{
 					types.LiteralBlock{
-						Attributes: types.ElementAttributes{
+						Attributes: types.Attributes{
 							types.AttrKind:             types.Literal,
 							types.AttrLiteralBlockType: types.LiteralBlockWithSpacesOnFirstLine,
 						},
@@ -1834,14 +1834,14 @@ a short preamble
 				},
 				Elements: []interface{}{
 					types.Section{
-						Attributes: types.ElementAttributes{
+						Attributes: types.Attributes{
 							types.AttrID: "_a_header",
 						},
 						Level: 0,
 						Title: title,
 						Elements: []interface{}{
 							types.LiteralBlock{
-								Attributes: types.ElementAttributes{
+								Attributes: types.Attributes{
 									types.AttrKind:             types.Literal,
 									types.AttrLiteralBlockType: types.LiteralBlockWithSpacesOnFirstLine,
 								},
