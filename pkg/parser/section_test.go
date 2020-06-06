@@ -425,7 +425,9 @@ a paragraph`
 					},
 				},
 			}
-			Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+			result, err := ParseDraftDocument(source)
+			Expect(err).NotTo(HaveOccurred())
+			Expect(result).To(MatchDraftDocument(expected))
 		})
 
 		It("sections with same title", func() {
@@ -1459,7 +1461,9 @@ a paragraph`
 					},
 				},
 			}
-			Expect(ParseDocument(source)).To(MatchDocument(expected))
+			result, err := ParseDocument(source)
+			Expect(err).NotTo(HaveOccurred())
+			Expect(result).To(MatchDocument(expected))
 		})
 
 		It("sections with same title", func() {

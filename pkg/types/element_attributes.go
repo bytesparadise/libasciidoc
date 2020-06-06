@@ -190,9 +190,7 @@ func NewSourceAttributes(language interface{}, others ...interface{}) (ElementAt
 		result[AttrLanguage] = strings.TrimSpace(language)
 	}
 	for _, other := range others {
-		if other, ok := other.(ElementAttributes); ok {
-			result.Add(other)
-		}
+		result.Add(other)
 	}
 	return result, nil
 }
@@ -200,12 +198,29 @@ func NewSourceAttributes(language interface{}, others ...interface{}) (ElementAt
 // ElementAttributes is a map[string]interface{} with some utility methods
 type ElementAttributes map[string]interface{}
 
-func set(attrs ElementAttributes, key string, value interface{}) ElementAttributes {
-	if attrs == nil {
-		attrs = ElementAttributes{}
+// Set sets the key/value entry in the ElementAttributes.
+func (a ElementAttributes) Set(key string, value interface{}) ElementAttributes {
+	if a == nil {
+		a = ElementAttributes{}
 	}
-	attrs[key] = value
-	return attrs
+	a[key] = value
+	return a
+}
+
+// Add adds the given attributes to the current ones
+func (a ElementAttributes) Add(attributes interface{}) ElementAttributes {
+	if a == nil {
+		a = ElementAttributes{}
+	}
+	if attrs, ok := attributes.(ElementAttributes); ok {
+		for k, v := range attrs {
+			a[k] = v
+			if k == AttrID {
+				a[AttrCustomID] = true
+			}
+		}
+	}
+	return a
 }
 
 // Has returns the true if an entry with the given key exists
@@ -240,15 +255,6 @@ func (a ElementAttributes) GetAsBool(key string) bool {
 		}
 	}
 	return false
-}
-
-// Add adds the given attributes to the current ones
-func (a ElementAttributes) Add(attributes interface{}) {
-	if attrs, ok := attributes.(ElementAttributes); ok {
-		for k, v := range attrs {
-			a[k] = v
-		}
-	}
 }
 
 // AddNonEmpty adds the given attribute if its value is non-nil and non-empty

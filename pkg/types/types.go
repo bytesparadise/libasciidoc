@@ -47,10 +47,6 @@ blocks:
 		switch b := b.(type) {
 		case Section:
 			if b.Level == 0 {
-				// include all attributes of this section
-				// for k, v := range b.Attributes {
-				// 	result.Add(k, v)
-				// }
 				// also, expand document authors and revision
 				if authors, ok := b.Attributes[AttrAuthors].([]DocumentAuthor); ok {
 					// move to the Document attributes
@@ -451,16 +447,10 @@ func NewSection(level int, title []interface{}, ids []interface{}, attributes in
 	if err != nil {
 		return Section{}, errors.Wrapf(err, "failed to initialize a Section element")
 	}
-	// log.Debugf("initialized a new Section level %d", level)
-	// multiple IDs can be defined (by mistake), and the last one is used
+	// multiple IDs can be defined (by mistake), but only the last one is used
 	for _, id := range ids {
-		if id, ok := id.(ElementAttributes); ok {
-			if attrs == nil {
-				attrs = ElementAttributes{}
-			}
-			attrs.Add(id)
-			attrs[AttrCustomID] = true
-		}
+		attrs = attrs.Add(id)
+
 	}
 	return Section{
 		Level:      level,
@@ -478,7 +468,7 @@ func (s Section) ResolveID(docAttributes DocumentAttributesWithOverrides) (Secti
 			return s, errors.Wrapf(err, "failed to generate default ID on Section element")
 		}
 		idPrefix := docAttributes.GetAsStringWithDefault(AttrIDPrefix, DefaultIDPrefix)
-		s.Attributes = set(s.Attributes, AttrID, idPrefix+replacement)
+		s.Attributes = s.Attributes.Set(AttrID, idPrefix+replacement)
 		log.Debugf("updated section id to '%s'", s.Attributes[AttrID])
 	}
 	return s, nil
@@ -510,10 +500,10 @@ func NewDocumentHeader(title []interface{}, authors interface{}, revision interf
 		return Section{}, err
 	}
 	if authors, ok := authors.([]DocumentAuthor); ok {
-		section.Attributes = set(section.Attributes, AttrAuthors, authors)
+		section.Attributes = section.Attributes.Set(AttrAuthors, authors)
 	}
 	if revision, ok := revision.(DocumentRevision); ok {
-		section.Attributes = set(section.Attributes, AttrRevision, revision)
+		section.Attributes = section.Attributes.Set(AttrRevision, revision)
 	}
 	return section, nil
 }
@@ -1105,7 +1095,7 @@ func NewAdmonitionParagraph(lines []interface{}, admonitionKind AdmonitionKind, 
 	if err != nil {
 		return Paragraph{}, err
 	}
-	p.Attributes = set(p.Attributes, AttrAdmonitionKind, admonitionKind)
+	p.Attributes = p.Attributes.Set(AttrAdmonitionKind, admonitionKind)
 	return p, nil
 }
 
@@ -1217,7 +1207,7 @@ func NewImageBlock(path Location, inlineAttributes ElementAttributes, attributes
 func (b ImageBlock) ResolveLocation(attrs DocumentAttributesWithOverrides) ImageBlock {
 	b.Location = b.Location.Resolve(attrs)
 	if _, found := b.Attributes[AttrImageAlt]; !found {
-		b.Attributes = set(b.Attributes, AttrImageAlt, resolveAlt(b.Location))
+		b.Attributes = b.Attributes.Set(AttrImageAlt, resolveAlt(b.Location))
 	}
 	return b
 }
@@ -1241,7 +1231,7 @@ func NewInlineImage(path Location, attributes ElementAttributes) (InlineImage, e
 func (i InlineImage) ResolveLocation(attrs DocumentAttributesWithOverrides) InlineImage {
 	i.Location = i.Location.Resolve(attrs)
 	if _, found := i.Attributes[AttrImageAlt]; !found {
-		i.Attributes = set(i.Attributes, AttrImageAlt, resolveAlt(i.Location))
+		i.Attributes = i.Attributes.Set(AttrImageAlt, resolveAlt(i.Location))
 	}
 	return i
 }
@@ -1251,26 +1241,26 @@ func NewImageAttributes(alt, width, height interface{}, otherattrs []interface{}
 	var result ElementAttributes
 	if alt, ok := alt.(string); ok {
 		if altStr := Apply(alt, strings.TrimSpace); altStr != "" {
-			result = set(result, AttrImageAlt, altStr)
+			result = result.Set(AttrImageAlt, altStr)
 		}
 	}
 	if width, ok := width.(string); ok {
 		if widthStr := Apply(width, strings.TrimSpace); widthStr != "" {
-			result = set(result, AttrImageWidth, widthStr)
+			result = result.Set(AttrImageWidth, widthStr)
 		}
 	}
 	if height, ok := height.(string); ok {
 		if heightStr := Apply(height, strings.TrimSpace); heightStr != "" {
-			result = set(result, AttrImageHeight, heightStr)
+			result = result.Set(AttrImageHeight, heightStr)
 		}
 	}
 	for _, otherAttr := range otherattrs {
 		if otherAttr, ok := otherAttr.(ElementAttributes); ok {
 			for k, v := range otherAttr {
-				result = set(result, k, v)
+				result = result.Set(k, v)
 				if k == AttrID {
 					// mark custom_id flag to `true`
-					result[AttrCustomID] = true
+					result = result.Set(AttrCustomID, true)
 				}
 			}
 		}

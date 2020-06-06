@@ -22,7 +22,7 @@ func rearrangeSections(blocks []interface{}) types.Document {
 	for _, element := range blocks {
 		if e, ok := element.(types.Section); ok {
 			// avoid duplicate IDs in sections
-			referenceSection(e, elementRefs)
+			referenceSection(&e, elementRefs)
 			if previous == nil { // set first parent
 				log.Debugf("setting section with title %v as a top-level element", e.Title)
 				sections = append(sections, e)
@@ -65,19 +65,19 @@ func rearrangeSections(blocks []interface{}) types.Document {
 	}
 }
 
-func referenceSection(e types.Section, elementRefs types.ElementReferences) {
-	id := e.Attributes.GetAsString(types.AttrID)
+func referenceSection(e *types.Section, elementRefs types.ElementReferences) {
+	attrID := e.Attributes.GetAsString(types.AttrID)
 	for i := 1; ; i++ {
-		var key string
+		var id string
 		if i == 1 {
-			key = id
+			id = attrID
 		} else {
-			key = id + "_" + strconv.Itoa(i)
+			id = attrID + "_" + strconv.Itoa(i)
 		}
-		if _, found := elementRefs[key]; !found {
-			elementRefs[key] = e.Title
+		if _, found := elementRefs[id]; !found {
+			elementRefs[id] = e.Title
 			// override the element id
-			e.Attributes[types.AttrID] = key
+			e.Attributes.Set(types.AttrID, id)
 			break
 		}
 	}
