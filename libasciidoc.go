@@ -10,7 +10,7 @@ import (
 	"github.com/bytesparadise/libasciidoc/pkg/configuration"
 	"github.com/bytesparadise/libasciidoc/pkg/parser"
 	"github.com/bytesparadise/libasciidoc/pkg/renderer"
-	htmlrenderer "github.com/bytesparadise/libasciidoc/pkg/renderer/html5"
+	"github.com/bytesparadise/libasciidoc/pkg/renderer/sgml/html5"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 	"github.com/bytesparadise/libasciidoc/pkg/validator"
 	"github.com/pkg/errors"
@@ -70,7 +70,7 @@ func ConvertToHTML(r io.Reader, output io.Writer, config configuration.Configura
 	}
 	// render
 	ctx := renderer.NewContext(doc, config)
-	metadata, err := htmlrenderer.Render(ctx, doc, output)
+	metadata, err := html5.Render(ctx, doc, output)
 	if err != nil {
 		return types.Metadata{}, err
 	}
