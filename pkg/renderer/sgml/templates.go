@@ -1,0 +1,61 @@
+package sgml
+
+// Templates represents all the templates we use.
+type Templates struct {
+	AdmonitionBlock         string
+	AdmonitionParagraph     string
+	Article                 string
+	ArticleHeader           string
+	BlankLine               string
+	BlockImage              string
+	BoldText                string
+	CalloutList             string
+	DelimitedBlockParagraph string
+	DocumentDetails         string
+	DocumentAuthorDetails   string
+	ExampleBlock            string
+	ExternalCrossReference  string
+	FencedBlock             string
+	Footnote                string
+	FootnoteRef             string
+	FootnoteRefPlain        string
+	Footnotes               string
+	InlineImage             string
+	InternalCrossReference  string
+	InvalidFootnote         string
+	ItalicText              string
+	LabeledList             string
+	LabeledListHorizontal   string
+	LineBreak               string
+	Link                    string
+	ListingBlock            string
+	LiteralBlock            string
+	ManpageHeader           string
+	ManpageNameParagraph    string
+	MonospaceText           string
+	OrderedList             string
+	Paragraph               string
+	PassthroughBlock        string
+	Preamble                string
+	QAndAList               string
+	QuoteBlock              string
+	QuoteParagraph          string
+	SectionContent          string
+	SectionHeader           string
+	SectionOne              string
+	SidebarBlock            string
+	SourceBlock             string
+	SourceBlockContent      string
+	SourceParagraph         string
+	StringElement           string
+	SubscriptText           string
+	SuperscriptText         string
+	Table                   string
+	TocRoot                 string
+	TocSection              string
+	UnorderedList           string
+	VerbatimLine            string
+	VerseBlock              string
+	VerseBlockParagraph     string
+	VerseParagraph          string
+}
