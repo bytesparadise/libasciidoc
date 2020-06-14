@@ -181,6 +181,22 @@ var _ = Describe("quoted texts", func() {
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
+		It("marked role (span) only", func() {
+			source := "[.bob]##bold##"
+			expected := `<div class="paragraph">
+<p><span class="bob">bold</span></p>
+</div>`
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
+		})
+
+		It("marked role id only", func() {
+			source := "[#link]##content##"
+			expected := `<div class="paragraph">
+<p><mark id="link">content</mark></p>
+</div>`
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
+		})
+
 		It("empty role", func() {
 			source := "[]**bold**"
 			expected := `<div class="paragraph">
@@ -227,6 +243,23 @@ var _ = Describe("quoted texts", func() {
 </div>`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
+
+		It("marked content within bold quote in sentence", func() {
+			source := "some *bold and #marked content#* together."
+			expected := `<div class="paragraph">
+<p>some <strong>bold and <mark>marked content</mark></strong> together.</p>
+</div>`
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
+		})
+
+		It("span content within italic quote in sentence", func() {
+			source := "some *bold and [strikeout]#span content#* together."
+			expected := `<div class="paragraph">
+<p>some <strong>bold and <span class="strikeout">span content</span></strong> together.</p>
+</div>`
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
+		})
+
 	})
 
 	Context("invalid  content", func() {

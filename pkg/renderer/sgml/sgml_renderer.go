@@ -39,6 +39,7 @@ type sgmlRenderer struct {
 	literalBlock            *textTemplate
 	manpageHeader           *textTemplate
 	manpageNameParagraph    *textTemplate
+	markedText              *textTemplate
 	monospaceText           *textTemplate
 	orderedList             *textTemplate
 	paragraph               *textTemplate
@@ -101,6 +102,7 @@ func (r *sgmlRenderer) prepareTemplates() error {
 		r.literalBlock, err = r.newTemplate("literal-block", tmpls.LiteralBlock, err)
 		r.manpageHeader, err = r.newTemplate("manpage-header", tmpls.ManpageHeader, err)
 		r.manpageNameParagraph, err = r.newTemplate("manpage-name-paragraph", tmpls.ManpageNameParagraph, err)
+		r.markedText, err = r.newTemplate("marked-text", tmpls.MarkedText, err)
 		r.monospaceText, err = r.newTemplate("monospace-text", tmpls.MonospaceText, err)
 		r.orderedList, err = r.newTemplate("ordered-list", tmpls.OrderedList, err)
 		r.paragraph, err = r.newTemplate("paragraph", tmpls.Paragraph, err)

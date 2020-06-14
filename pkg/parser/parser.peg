@@ -907,7 +907,8 @@ ConstrainedQuotedTextMarker <- "*" !"*" / "_" !"_" / "`" !"`"
 UnconstrainedQuotedTextPrefix <- "**" / "__" / "``" / "^" / "~"
 
 ConstrainedQuotedText <- text:(SingleQuoteBoldText 
-            / SingleQuoteItalicText 
+            / SingleQuoteItalicText
+            / SingleQuoteMarkedText
             / SingleQuoteMonospaceText 
             / SubscriptText 
             / SuperscriptText 
@@ -917,10 +918,12 @@ ConstrainedQuotedText <- text:(SingleQuoteBoldText
 
 UnconstrainedQuotedText <- DoubleQuoteBoldText
             / DoubleQuoteItalicText
+            / DoubleQuoteMarkedText
             / DoubleQuoteMonospaceText
 
 EscapedQuotedText <- EscapedBoldText 
-            / EscapedItalicText 
+            / EscapedItalicText
+            / EscapedMarkedText
             / EscapedMonospaceText 
             / EscapedSubscriptText 
             / EscapedSuperscriptText
@@ -951,7 +954,8 @@ DoubleQuoteBoldTextElements <- DoubleQuoteBoldTextElement (!("**") (Space / Doub
 
 DoubleQuoteBoldTextElement <- Word 
         / SingleQuoteBoldText 
-        / ItalicText 
+        / ItalicText
+        / MarkedText
         / MonospaceText
         / SubscriptText
         / SuperscriptText
@@ -984,7 +988,8 @@ SingleQuoteBoldTextElements <- !Space SingleQuoteBoldTextElement+
 SingleQuoteBoldTextElement <- Word 
         / DoubleQuoteBoldText
         / Space+ ('*' !'*')?
-        / ItalicText 
+        / ItalicText
+        / MarkedText
         / MonospaceText
         / SubscriptText
         / SuperscriptText
@@ -1029,7 +1034,8 @@ DoubleQuoteItalicTextElements <- DoubleQuoteItalicTextElement (!("__") (Space / 
 
 DoubleQuoteItalicTextElement <- Word 
         / SingleQuoteItalicText 
-        / BoldText 
+        / BoldText
+        / MarkedText
         / MonospaceText
         / SubscriptText
         / SuperscriptText
@@ -1060,7 +1066,8 @@ SingleQuoteItalicTextElements <- !Space SingleQuoteItalicTextElement+
 SingleQuoteItalicTextElement <- Word 
         / DoubleQuoteItalicText
         / Space+ ('_' !'_')?
-        / BoldText 
+        / BoldText
+        / MarkedText
         / MonospaceText
         / SubscriptText
         / SuperscriptText
@@ -1105,7 +1112,8 @@ DoubleQuoteMonospaceTextElements <- DoubleQuoteMonospaceTextElement (!("``") (Sp
 DoubleQuoteMonospaceTextElement <- Word 
         / SingleQuoteMonospaceText 
         / BoldText
-        / ItalicText 
+        / ItalicText
+        / MarkedText
         / SubscriptText
         / SuperscriptText
         / InlineImage 
@@ -1138,6 +1146,7 @@ SingleQuoteMonospaceTextElement <-  Word
         / Newline // allows multiline
         / BoldText
         / ItalicText
+        / MarkedText
         / SubscriptText
         / SuperscriptText
         / InlineImage 
@@ -1166,6 +1175,85 @@ EscapedMonospaceText <-
     } / backslashes:(OneOrMoreBackslashes) "`" elements:(SingleQuoteMonospaceTextElements) "`" { // simple punctuation must be evaluated last
         return types.NewEscapedQuotedText(backslashes.(string), "`", elements.([]interface{}))
 } 
+
+// -----------------
+// Marked text
+// -----------------
+
+MarkedText <- DoubleQuoteMarkedText / SingleQuoteMarkedText
+
+DoubleQuoteMarkedText <- attrs:(QuotedTextAttrs)? !`\\` "##" elements:(DoubleQuoteMarkedTextElements) "##" { // double punctuation must be evaluated first
+    return types.NewQuotedText(types.Marked, attrs, elements.([]interface{}))
+}
+
+DoubleQuoteMarkedTextElements <- DoubleQuoteMarkedTextElement (!("##") (Space / DoubleQuoteMarkedTextElement))*  // may start and end with spaces
+
+DoubleQuoteMarkedTextElement <- Word
+        / SingleQuoteMarkedText
+        / BoldText
+        / ItalicText
+        / MonospaceText
+        / SubscriptText
+        / SuperscriptText
+        / InlineImage
+        / Link
+        / InlinePassthrough
+        / DoubleQuoteMarkedTextStringElement
+        / DoubleQuoteMarkedTextFallbackCharacter
+
+DoubleQuoteMarkedTextStringElement <- (!"##" [^\r\n ^~{}])+ {
+    return types.NewStringElement(string(c.text))
+}
+
+DoubleQuoteMarkedTextFallbackCharacter <-
+    [^\r\n#] // anything except EOL and marked delimiter (fallback in case nothing else matched)
+    / "##" Alphanums {  // or a marked delimiter when immediately followed by an alphanum (ie, in the middle of some text)
+    return types.NewStringElement(string(c.text))
+}
+
+SingleQuoteMarkedText <- attrs:(QuotedTextAttrs)? (!`\` "#" !"#") elements:(SingleQuoteMarkedTextElements) "#" { // single punctuation cannot be followed by a character (needs '##' to emphazise a portion of a word)
+    return types.NewQuotedText(types.Marked, attrs, elements.([]interface{}))
+} / attrs:(QuotedTextAttrs)? !`\\` "#" elements:("#" SingleQuoteMarkedTextElements) "#" { // unbalanced `##` vs `#` punctuation.
+    return types.NewQuotedText(types.Marked, attrs, elements.([]interface{})) // include the second heading `_` as a regular StringElement in the italic content
+}
+
+SingleQuoteMarkedTextElements <- !Space SingleQuoteMarkedTextElement+
+
+SingleQuoteMarkedTextElement <- Word
+        / DoubleQuoteMarkedText
+        / Space+ ('#' !'#')?
+        / BoldText
+        / ItalicText
+        / MonospaceText
+        / SubscriptText
+        / SuperscriptText
+        / InlineImage
+        / Link
+        / InlinePassthrough
+        / AttributeSubstitution
+        / SingleQuoteMarkedTextStringElement
+        / SingleQuoteMarkedTextFallbackCharacter
+
+SingleQuoteMarkedTextStringElement <- [^\r\n{} #^~]+ { // anything except EOL, space, bold and subscript/superscript delimiters and brackets. Excludes curly brackets to match with AttributeSubstitution elements
+    return types.NewStringElement(string(c.text))
+}
+
+SingleQuoteMarkedTextFallbackCharacter <-
+    [^\r\n#] // anything except EOL and mark delimiter (fallback in case nothing else matched)
+    / "#" Alphanums {  // or a mark delimiter when immediately followed by an alphanum (ie, in the middle of some text)
+    return types.NewStringElement(string(c.text))
+}
+
+EscapedMarkedText <-
+    backslashes:(TwoOrMoreBackslashes) "##" elements:(DoubleQuoteMarkedTextElements) "##" { // double punctuation must be evaluated first
+        return types.NewEscapedQuotedText(backslashes.(string), "##", elements.([]interface{}))
+    } / backslashes:(OneOrMoreBackslashes) "##" elements:(SingleQuoteMarkedTextElements) "#" { // unbalanced `##` vs `#` punctuation
+        result := append([]interface{}{"#"}, elements.([]interface{}))
+        return types.NewEscapedQuotedText(backslashes.(string), "#", result)
+    } / backslashes:(OneOrMoreBackslashes) "#" elements:(SingleQuoteMarkedTextElements) "#" { // simple punctuation must be evaluated last
+        return types.NewEscapedQuotedText(backslashes.(string), "#", elements.([]interface{}))
+}
+
 
 SubscriptText <- attrs:(QuotedTextAttrs)? !`\` "~" element:(SubscriptTextElement) "~" { // wraps a single word
     return types.NewQuotedText(types.Subscript, attrs, element)
