@@ -8,300 +8,263 @@ import (
 	. "github.com/onsi/gomega" //nolint golint
 )
 
-var _ = Describe("element attributes - draft", func() {
+var _ = Describe("element attributes", func() {
 
-	Context("element link", func() {
+	Context("draft document", func() {
 
-		Context("valid syntax", func() {
-			It("element link alone", func() {
-				source := `[link=http://foo.bar]
+		Context("element link", func() {
+
+			Context("valid syntax", func() {
+
+				It("element link alone", func() {
+					source := `[link=http://foo.bar]
 a paragraph`
-				expected := types.Paragraph{
-					Attributes: types.Attributes{
-						"link": "http://foo.bar",
-					},
-					Lines: [][]interface{}{
-						{
-							types.StringElement{
-								Content: "a paragraph",
+					expected := types.Paragraph{
+						Attributes: types.Attributes{
+							"link": "http://foo.bar",
+						},
+						Lines: [][]interface{}{
+							{
+								types.StringElement{
+									Content: "a paragraph",
+								},
 							},
 						},
-					},
-				}
-				Expect(ParseDocumentBlock(source)).To(Equal(expected))
-			})
-			It("spaces in link", func() {
-				source := `[link= http://foo.bar  ]
+					}
+					Expect(ParseDocumentBlock(source)).To(Equal(expected))
+				})
+				It("spaces in link", func() {
+					source := `[link= http://foo.bar  ]
 a paragraph`
-				expected := types.Paragraph{
-					Attributes: types.Attributes{
-						"link": "http://foo.bar",
-					},
-					Lines: [][]interface{}{
-						{
-							types.StringElement{
-								Content: "a paragraph",
+					expected := types.Paragraph{
+						Attributes: types.Attributes{
+							"link": "http://foo.bar",
+						},
+						Lines: [][]interface{}{
+							{
+								types.StringElement{
+									Content: "a paragraph",
+								},
 							},
 						},
-					},
-				}
-				Expect(ParseDocumentBlock(source)).To(Equal(expected))
-			})
-		})
-
-		Context("invalid syntax", func() {
-
-			It("spaces before keyword", func() {
-				source := `[ link=http://foo.bar]
-a paragraph`
-				expected := types.Paragraph{
-					Lines: [][]interface{}{
-						{
-							types.StringElement{
-								Content: "[ link=http://foo.bar]",
-							},
-						},
-						{
-							types.StringElement{
-								Content: "a paragraph",
-							},
-						},
-					},
-				}
-				Expect(ParseDocumentBlock(source)).To(Equal(expected))
+					}
+					Expect(ParseDocumentBlock(source)).To(Equal(expected))
+				})
 			})
 
-			It("unbalanced brackets", func() {
-				source := `[link=http://foo.bar
+			Context("invalid syntax", func() {
+
+				It("spaces before keyword", func() {
+					source := `[ link=http://foo.bar]
 a paragraph`
-				expected := types.Paragraph{
-					Lines: [][]interface{}{
-						{
-							types.StringElement{
-								Content: "[link=http://foo.bar",
+					expected := types.Paragraph{
+						Lines: [][]interface{}{
+							{
+								types.StringElement{
+									Content: "[ link=http://foo.bar]",
+								},
+							},
+							{
+								types.StringElement{
+									Content: "a paragraph",
+								},
 							},
 						},
-						{
-							types.StringElement{
-								Content: "a paragraph",
-							},
-						},
-					},
-				}
-				Expect(ParseDocumentBlock(source)).To(Equal(expected))
-			})
-		})
-	})
+					}
+					Expect(ParseDocumentBlock(source)).To(Equal(expected))
+				})
 
-	Context("element id", func() {
-
-		Context("valid syntax", func() {
-
-			It("normal syntax", func() {
-				source := `[[img-foobar]]
+				It("unbalanced brackets", func() {
+					source := `[link=http://foo.bar
 a paragraph`
-				expected := types.Paragraph{
-					Attributes: types.Attributes{
-						types.AttrID:       "img-foobar",
-						types.AttrCustomID: true,
-					},
-					Lines: [][]interface{}{
-						{
-							types.StringElement{
-								Content: "a paragraph",
+					expected := types.Paragraph{
+						Lines: [][]interface{}{
+							{
+								types.StringElement{
+									Content: "[link=http://foo.bar",
+								},
+							},
+							{
+								types.StringElement{
+									Content: "a paragraph",
+								},
 							},
 						},
-					},
-				}
-				Expect(ParseDocumentBlock(source)).To(Equal(expected))
-			})
-
-			It("short-hand syntax", func() {
-				source := `[#img-foobar]
-a paragraph`
-				expected := types.Paragraph{
-					Attributes: types.Attributes{
-						types.AttrID:       "img-foobar",
-						types.AttrCustomID: true,
-					},
-					Lines: [][]interface{}{
-						{
-							types.StringElement{
-								Content: "a paragraph",
-							},
-						},
-					},
-				}
-				Expect(ParseDocumentBlock(source)).To(Equal(expected))
+					}
+					Expect(ParseDocumentBlock(source)).To(Equal(expected))
+				})
 			})
 		})
 
-		Context("invalid syntax", func() {
+		Context("element id", func() {
 
-			It("extra spaces", func() {
-				source := `[ #img-foobar ]
+			Context("valid syntax", func() {
+
+				It("normal syntax", func() {
+					source := `[[img-foobar]]
 a paragraph`
-				expected := types.Paragraph{
-					Lines: [][]interface{}{
-						{
-							types.StringElement{
-								Content: "[ #img-foobar ]",
+					expected := types.Paragraph{
+						Attributes: types.Attributes{
+							types.AttrID:       "img-foobar",
+							types.AttrCustomID: true,
+						},
+						Lines: [][]interface{}{
+							{
+								types.StringElement{
+									Content: "a paragraph",
+								},
 							},
 						},
-						{
-							types.StringElement{
-								Content: "a paragraph",
+					}
+					Expect(ParseDocumentBlock(source)).To(Equal(expected))
+				})
+
+				It("short-hand syntax", func() {
+					source := `[#img-foobar]
+a paragraph`
+					expected := types.Paragraph{
+						Attributes: types.Attributes{
+							types.AttrID:       "img-foobar",
+							types.AttrCustomID: true,
+						},
+						Lines: [][]interface{}{
+							{
+								types.StringElement{
+									Content: "a paragraph",
+								},
 							},
 						},
-					},
-				}
-				Expect(ParseDocumentBlock(source)).To(Equal(expected))
+					}
+					Expect(ParseDocumentBlock(source)).To(Equal(expected))
+				})
 			})
 
-			It("unbalanced brackets", func() {
-				source := `[#img-foobar
+			Context("invalid syntax", func() {
+
+				It("extra spaces", func() {
+					source := `[ #img-foobar ]
 a paragraph`
-				expected := types.Paragraph{
-					Lines: [][]interface{}{
-						{
-							types.StringElement{
-								Content: "[#img-foobar",
+					expected := types.Paragraph{
+						Lines: [][]interface{}{
+							{
+								types.StringElement{
+									Content: "[ #img-foobar ]",
+								},
+							},
+							{
+								types.StringElement{
+									Content: "a paragraph",
+								},
 							},
 						},
-						{
-							types.StringElement{
-								Content: "a paragraph",
+					}
+					Expect(ParseDocumentBlock(source)).To(Equal(expected))
+				})
+
+				It("unbalanced brackets", func() {
+					source := `[#img-foobar
+a paragraph`
+					expected := types.Paragraph{
+						Lines: [][]interface{}{
+							{
+								types.StringElement{
+									Content: "[#img-foobar",
+								},
+							},
+							{
+								types.StringElement{
+									Content: "a paragraph",
+								},
 							},
 						},
-					},
-				}
-				Expect(ParseDocumentBlock(source)).To(Equal(expected))
+					}
+					Expect(ParseDocumentBlock(source)).To(Equal(expected))
+				})
 			})
 		})
-	})
 
-	Context("element title", func() {
+		Context("element title", func() {
 
-		Context("valid syntax", func() {
+			Context("valid syntax", func() {
 
-			It("valid element title", func() {
-				source := `.a title
+				It("valid element title", func() {
+					source := `.a title
 a paragraph`
-				expected := types.Paragraph{
-					Attributes: types.Attributes{
-						types.AttrTitle: "a title",
-					},
-					Lines: [][]interface{}{
-						{
-							types.StringElement{
-								Content: "a paragraph",
+					expected := types.Paragraph{
+						Attributes: types.Attributes{
+							types.AttrTitle: "a title",
+						},
+						Lines: [][]interface{}{
+							{
+								types.StringElement{
+									Content: "a paragraph",
+								},
 							},
 						},
-					},
-				}
-				Expect(ParseDocumentBlock(source)).To(Equal(expected))
+					}
+					Expect(ParseDocumentBlock(source)).To(Equal(expected))
+				})
 			})
-		})
 
-		Context("invalid syntax", func() {
+			Context("invalid syntax", func() {
 
-			It("extra space after dot", func() {
-				source := `. a title
+				It("extra space after dot", func() {
+					source := `. a title
 a list item!`
-				expected := types.OrderedListItem{
-					Level:          1,
-					NumberingStyle: types.Arabic,
-					Elements: []interface{}{
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.StringElement{
-										Content: "a title",
+					expected := types.OrderedListItem{
+						Level:          1,
+						NumberingStyle: types.Arabic,
+						Elements: []interface{}{
+							types.Paragraph{
+								Lines: [][]interface{}{
+									{
+										types.StringElement{
+											Content: "a title",
+										},
+									},
+									{
+										types.StringElement{
+											Content: "a list item!",
+										},
 									},
 								},
-								{
-									types.StringElement{
-										Content: "a list item!",
-									},
+							},
+						},
+					}
+					Expect(ParseDocumentBlock(source)).To(Equal(expected))
+				})
+
+				It("not a dot", func() {
+					source := `!a title
+a paragraph`
+
+					expected := types.Paragraph{
+						Lines: [][]interface{}{
+							{
+								types.StringElement{
+									Content: "!a title",
+								},
+							},
+							{
+								types.StringElement{
+									Content: "a paragraph",
 								},
 							},
 						},
-					},
-				}
-				Expect(ParseDocumentBlock(source)).To(Equal(expected))
-			})
-
-			It("not a dot", func() {
-				source := `!a title
-a paragraph`
-
-				expected := types.Paragraph{
-					Lines: [][]interface{}{
-						{
-							types.StringElement{
-								Content: "!a title",
-							},
-						},
-						{
-							types.StringElement{
-								Content: "a paragraph",
-							},
-						},
-					},
-				}
-				Expect(ParseDocumentBlock(source)).To(Equal(expected))
-			})
-		})
-	})
-
-	Context("element role", func() {
-
-		Context("valid syntax", func() {
-
-			It("shortcut role element", func() {
-				source := `[.a role]
-a paragraph`
-				expected := types.Paragraph{
-					Attributes: types.Attributes{
-						types.AttrRole: "a role",
-					},
-					Lines: [][]interface{}{
-						{
-							types.StringElement{
-								Content: "a paragraph",
-							},
-						},
-					},
-				}
-				Expect(ParseDocumentBlock(source)).To(Equal(expected))
-			})
-
-			It("full role syntax", func() {
-				source := `[role=a role]
-a paragraph`
-				expected := types.Paragraph{
-					Attributes: types.Attributes{
-						types.AttrRole: "a role",
-					},
-					Lines: [][]interface{}{
-						{
-							types.StringElement{
-								Content: "a paragraph",
-							},
-						},
-					},
-				}
-				Expect(ParseDocumentBlock(source)).To(Equal(expected))
+					}
+					Expect(ParseDocumentBlock(source)).To(Equal(expected))
+				})
 			})
 		})
 
-		It("blank line after role attribute", func() {
-			source := `[.a role]
+		Context("element role", func() {
 
+			Context("valid syntax", func() {
+
+				It("shortcut role element", func() {
+					source := `[.a role]
 a paragraph`
-			expected := types.DraftDocument{
-				Blocks: []interface{}{
-					types.Paragraph{
+					expected := types.Paragraph{
 						Attributes: types.Attributes{
 							types.AttrRole: "a role",
 						},
@@ -312,27 +275,16 @@ a paragraph`
 								},
 							},
 						},
-					},
-				},
-			}
-			Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
-		})
+					}
+					Expect(ParseDocumentBlock(source)).To(Equal(expected))
+				})
 
-		It("blank lines after id, role and title attributes", func() {
-			source := `[.a role]
-[[ID]]
-.title
-
-
+				It("full role syntax", func() {
+					source := `[role=a role]
 a paragraph`
-			expected := types.DraftDocument{
-				Blocks: []interface{}{
-					types.Paragraph{
+					expected := types.Paragraph{
 						Attributes: types.Attributes{
-							types.AttrRole:     "a role",
-							types.AttrTitle:    "title",
-							types.AttrID:       "ID",
-							types.AttrCustomID: true,
+							types.AttrRole: "a role",
 						},
 						Lines: [][]interface{}{
 							{
@@ -341,10 +293,132 @@ a paragraph`
 								},
 							},
 						},
+					}
+					Expect(ParseDocumentBlock(source)).To(Equal(expected))
+				})
+			})
+
+			It("blank line after role attribute", func() {
+				source := `[.a role]
+
+a paragraph`
+				expected := types.DraftDocument{
+					Blocks: []interface{}{
+						types.Paragraph{
+							Attributes: types.Attributes{
+								types.AttrRole: "a role",
+							},
+							Lines: [][]interface{}{
+								{
+									types.StringElement{
+										Content: "a paragraph",
+									},
+								},
+							},
+						},
 					},
-				},
-			}
-			Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				}
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+			})
+
+			It("blank lines after id, role and title attributes", func() {
+				source := `[.a role]
+[[ID]]
+.title
+
+
+a paragraph`
+				expected := types.DraftDocument{
+					Blocks: []interface{}{
+						types.Paragraph{
+							Attributes: types.Attributes{
+								types.AttrRole:     "a role",
+								types.AttrTitle:    "title",
+								types.AttrID:       "ID",
+								types.AttrCustomID: true,
+							},
+							Lines: [][]interface{}{
+								{
+									types.StringElement{
+										Content: "a paragraph",
+									},
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+			})
+		})
+
+		Context("standalone attributes", func() {
+
+			It("single standalone attribute", func() {
+				source := `[.a role]
+`
+				expected := types.DraftDocument{
+					Blocks: []interface{}{
+						types.Attributes{
+							types.AttrRole: "a role",
+						},
+					},
+				}
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+			})
+
+			It("multiple standalone attributes after a paragraph", func() {
+				source := `a paragraph
+				
+[.a role]
+[[ID]]
+.title`
+				expected := types.DraftDocument{
+					Blocks: []interface{}{
+						types.Paragraph{
+							Lines: [][]interface{}{
+								{
+									types.StringElement{
+										Content: "a paragraph",
+									},
+								},
+							},
+						},
+						types.BlankLine{},
+						types.Attributes{
+							types.AttrRole:     "a role",
+							types.AttrID:       "ID",
+							types.AttrTitle:    "title",
+							types.AttrCustomID: true, // this happens as soon as there's a custom ID and all attributes are merged. Oh well...
+						},
+					},
+				}
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+			})
+		})
+	})
+
+	Context("final document", func() {
+
+		Context("standalone attributes", func() {
+
+			It("single standalone attribute", func() {
+				source := `[.a role]
+`
+				expected := types.Document{
+					Elements: []interface{}{},
+				}
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
+			})
+
+			It("multiple standalone attributes", func() {
+				source := `[.a role]
+[[ID]]
+.title`
+				expected := types.Document{
+					Elements: []interface{}{},
+				}
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
+			})
 		})
 	})
 })

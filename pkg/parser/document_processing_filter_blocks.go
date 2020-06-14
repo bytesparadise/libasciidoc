@@ -10,6 +10,7 @@ import (
 // - all document attribute declaration/substitution/reset
 // - empty preambles
 // - single line comments and comment blocks
+// - standalone attributes
 func filter(elements []interface{}, matchers ...filterMatcher) []interface{} {
 	result := make([]interface{}, 0, len(elements))
 elements:
@@ -70,7 +71,7 @@ elements:
 }
 
 // AllMatchers all the matchers needed to remove the unneeded blocks/elements from the final document
-var allMatchers = []filterMatcher{emptyPreambleMatcher, documentAttributeMatcher, singleLineCommentMatcher, commentBlockMatcher}
+var allMatchers = []filterMatcher{emptyPreambleMatcher, attributeMatcher, singleLineCommentMatcher, commentBlockMatcher}
 
 // filterMatcher returns true if the given element is to be filtered out
 type filterMatcher func(element interface{}) bool
@@ -85,11 +86,11 @@ var emptyPreambleMatcher filterMatcher = func(element interface{}) bool {
 	return result
 }
 
-// documentAttributeMatcher filters the element if it is a AttributeDeclaration,
-// a AttributeSubstitution or a AttributeReset
-var documentAttributeMatcher filterMatcher = func(element interface{}) bool {
+// attributeMatcher filters the element if it is a AttributeDeclaration,
+// a AttributeSubstitution, a AttributeReset or a standalone Attribute
+var attributeMatcher filterMatcher = func(element interface{}) bool {
 	switch element.(type) {
-	case types.AttributeDeclaration, types.AttributeSubstitution, types.AttributeReset:
+	case types.AttributeDeclaration, types.AttributeSubstitution, types.AttributeReset, types.Attributes:
 		return true
 	default:
 		return false
