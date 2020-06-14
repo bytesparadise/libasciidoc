@@ -10,7 +10,7 @@ const (
 <table>
 <tr>
 <td class="icon">
-{{ if .IconClass }}<i class="fa icon-{{ .IconClass }}" title="{{ .IconTitle }}"></i>{{ else }}<div class="title">{{ .IconTitle }}</div>{{ end }}
+{{ if .Icon }}{{ .Icon }}{{ end }}
 </td>
 <td class="content">{{ if .Title }}
 <div class="title">{{ escape .Title }}</div>{{ end }}

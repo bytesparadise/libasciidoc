@@ -590,6 +590,46 @@ with <strong>bold content</strong></p>
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
+		It("admonition block with ID, title and SVG icon", func() {
+			source := `:icons:
+:icontype: svg
+			
+[NOTE]
+[#id-for-admonition-block]
+.title for admonition block
+====
+some listing code
+with *bold content*
+
+* and a list item
+
+====`
+			expected := `<div id="id-for-admonition-block" class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<img src="images/icons/note.svg" alt="Note" title="Note">
+</td>
+<td class="content">
+<div class="title">title for admonition block</div>
+<div class="paragraph">
+<p>some listing code
+with <strong>bold content</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>and a list item</p>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
+</div>`
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
+		})
+
 		It("admonition paragraph and admonition block with multiple elements", func() {
 			source := `[CAUTION]                      
 this is an admonition paragraph.

@@ -62,24 +62,27 @@ func (r *sgmlRenderer) renderAdmonitionParagraph(ctx *renderer.Context, p types.
 	if !ok {
 		return nil, errors.Errorf("failed to render admonition with unknown kind: %T", p.Attributes[types.AttrAdmonitionKind])
 	}
-	err := r.admonitionParagraph.Execute(result, ContextualPipeline{
+	icon, err := r.renderIcon(ctx, types.Icon{Class: string(k)}, true)
+	if err != nil {
+		return nil, err
+	}
+	err = r.admonitionParagraph.Execute(result, ContextualPipeline{
 		Context: ctx,
 		Data: struct {
-			ID        string
-			Title     string
-			Class     string
-			IconTitle string
-			IconClass string
-			Lines     [][]interface{}
+			ID    string
+			Title string
+			Class string
+			Icon  sanitized
+			Lines [][]interface{}
 		}{
-			ID:        r.renderElementID(p.Attributes),
-			Title:     r.renderElementTitle(p.Attributes),
-			Class:     renderClass(k),
-			IconTitle: renderIconTitle(k),
-			IconClass: renderIconClass(ctx, k),
-			Lines:     p.Lines,
+			ID:    r.renderElementID(p.Attributes),
+			Title: r.renderElementTitle(p.Attributes),
+			Icon:  icon,
+			Lines: p.Lines,
+			Class: renderClass(k),
 		},
 	})
+
 	return result.Bytes(), err
 }
 

@@ -27,6 +27,11 @@ type sgmlRenderer struct {
 	footnoteRef             *textTemplate
 	footnoteRefPlain        *textTemplate
 	footnotes               *textTemplate
+	iconAdmonitionText      *textTemplate
+	iconFont                *textTemplate
+	iconImage               *textTemplate
+	iconText                *textTemplate
+	inlineIcon              *textTemplate
 	inlineImage             *textTemplate
 	internalCrossReference  *textTemplate
 	invalidFootnote         *textTemplate
@@ -90,6 +95,10 @@ func (r *sgmlRenderer) prepareTemplates() error {
 		r.footnoteRef, err = r.newTemplate("footnote-ref", tmpls.FootnoteRef, err)
 		r.footnoteRefPlain, err = r.newTemplate("footnote-ref-plain", tmpls.FootnoteRefPlain, err)
 		r.footnotes, err = r.newTemplate("footnotes", tmpls.Footnotes, err)
+		r.iconFont, err = r.newTemplate("icon-font", tmpls.IconFont, err)
+		r.iconImage, err = r.newTemplate("icon-image", tmpls.IconImage, err)
+		r.iconText, err = r.newTemplate("icon-text", tmpls.IconText, err)
+		r.inlineIcon, err = r.newTemplate("inline-icon", tmpls.InlineIcon, err)
 		r.inlineImage, err = r.newTemplate("inline-image", tmpls.InlineImage, err)
 		r.internalCrossReference, err = r.newTemplate("internal-xref", tmpls.InternalCrossReference, err)
 		r.invalidFootnote, err = r.newTemplate("invalid-footnote", tmpls.InvalidFootnote, err)

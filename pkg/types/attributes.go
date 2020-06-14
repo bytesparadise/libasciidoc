@@ -16,71 +16,79 @@ import (
 
 const (
 	// AttrDocType the "doctype" attribute
-	AttrDocType string = "doctype"
+	AttrDocType = "doctype"
 	// AttrSyntaxHighlighter the attribute to define the syntax highlighter on code source blocks
-	AttrSyntaxHighlighter string = "source-highlighter"
+	AttrSyntaxHighlighter = "source-highlighter"
 	// AttrIDPrefix the key to retrieve the ID Prefix
-	AttrIDPrefix string = "idprefix"
+	AttrIDPrefix = "idprefix"
 	// DefaultIDPrefix the default ID Prefix
-	DefaultIDPrefix string = "_"
+	DefaultIDPrefix = "_"
 	// AttrTableOfContents the `toc` attribute at document level
-	AttrTableOfContents string = "toc"
+	AttrTableOfContents = "toc"
 	// AttrTableOfContentsLevels the document attribute which specifies the number of levels to display in the ToC
-	AttrTableOfContentsLevels string = "toclevels"
+	AttrTableOfContentsLevels = "toclevels"
 	// AttrNoHeader attribute to disable the rendering of document footer
-	AttrNoHeader string = "noheader"
+	AttrNoHeader = "noheader"
 	// AttrNoFooter attribute to disable the rendering of document footer
-	AttrNoFooter string = "nofooter"
+	AttrNoFooter = "nofooter"
 	// AttrID the key to retrieve the ID
-	AttrID string = "id"
+	AttrID = "id"
 	// AttrCustomID the key to retrieve the flag that indicates if the element ID is custom or generated
-	AttrCustomID string = "customID"
+	AttrCustomID = "customID"
 	// AttrTitle the key to retrieve the title
-	AttrTitle string = "title"
+	AttrTitle = "title"
 	// AttrAuthors the key to the authors declared after the section level 0 (at the beginning of the doc)
-	AttrAuthors string = "authors"
+	AttrAuthors = "authors"
 	// AttrRevision the key to the revision declared after the section level 0 (at the beginning of the doc)
-	AttrRevision string = "revision"
+	AttrRevision = "revision"
 	// AttrRole the key to retrieve the role
-	AttrRole string = "role"
+	AttrRole = "role"
 	// AttrInlineLink the key to retrieve the link
-	AttrInlineLink string = "link"
+	AttrInlineLink = "link"
 	// AttrAdmonitionKind the key to retrieve the kind of admonition , if a "masquerade" is used
-	AttrAdmonitionKind string = "admonitionKind"
+	AttrAdmonitionKind = "admonitionKind"
 	// AttrQuoteAuthor attribute for the author of a verse
-	AttrQuoteAuthor string = "quoteAuthor"
+	AttrQuoteAuthor = "quoteAuthor"
 	// AttrQuoteTitle attribute for the title of a verse
-	AttrQuoteTitle string = "quoteTitle"
+	AttrQuoteTitle = "quoteTitle"
 	// AttrSource the `source` attribute for a source block or a source paragraph (this is a placeholder, ie, it does not expect any value for this attribute)
-	AttrSource string = "source"
+	AttrSource = "source"
 	// AttrLanguage the `language` attribute for a source block or a source paragraph
-	AttrLanguage string = "language"
+	AttrLanguage = "language"
 	// AttrLineNums the `linenums` attribute for a source block or a source paragraph
-	AttrLineNums string = "linenums"
+	AttrLineNums = "linenums"
 	// AttrCheckStyle the attribute to mark the first element of an unordered list itemd as a checked or not
-	AttrCheckStyle string = "checkstyle"
+	AttrCheckStyle = "checkstyle"
 	// AttrStart the `start` attribute in an ordered list
-	AttrStart string = "start"
+	AttrStart = "start"
 	// AttrNumberingStyle the numbering style of items in a list
-	AttrNumberingStyle string = "numberingStyle"
+	AttrNumberingStyle = "numberingStyle"
 	// AttrQandA the `qanda` attribute for Q&A labeled lists
-	AttrQandA string = "qanda"
+	AttrQandA = "qanda"
 	// AttrLevelOffset the `leveloffset` attribute used in file inclusions
-	AttrLevelOffset string = "leveloffset"
+	AttrLevelOffset = "leveloffset"
 	// AttrLineRanges the `lines` attribute used in file inclusions
-	AttrLineRanges string = "lines"
+	AttrLineRanges = "lines"
 	// AttrTagRanges the `tag`/`tags` attribute used in file inclusions
-	AttrTagRanges string = "tags"
+	AttrTagRanges = "tags"
 	// AttrLastUpdated the "last updated" data in the document, i.e., the output/generation time
-	AttrLastUpdated string = "LastUpdated"
+	AttrLastUpdated = "LastUpdated"
 	// AttrImageAlt the image `alt` attribute
-	AttrImageAlt string = "alt"
+	AttrImageAlt = "alt"
 	// AttrImageWidth the image `width` attribute
-	AttrImageWidth string = "width"
+	AttrImageWidth = "width"
 	// AttrImageHeight the image `height` attribute
-	AttrImageHeight string = "height"
+	AttrImageHeight = "height"
 	// AttrImageTitle the image `title` attribute
-	AttrImageTitle string = "title"
+	AttrImageTitle = "title"
+	// AttrImageLink the `link` attribute, which for HTML wraps the image with a link
+	AttrImageWindow = "window"
+	// AttrIconSize the icon `size`, and can be one of 1x, 2x, 3x, 4x, 5x, lg, fw
+	AttrIconSize = "size"
+	// AttrIconRotate the icon `rotate` attribute, and can be one of 90, 180, or 270
+	AttrIconRotate = "rotate"
+	// AttrIconFlip the icon `flip` attribute, and if set can be "horizontal" or "vertical"
+	AttrIconFlip = "flip"
 )
 
 // NewElementID initializes a new attribute map with a single entry for the ID using the given value

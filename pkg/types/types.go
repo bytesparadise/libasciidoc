@@ -1047,7 +1047,7 @@ func NewParagraph(lines []interface{}, attributes interface{}) (Paragraph, error
 	if err != nil {
 		return Paragraph{}, errors.Wrapf(err, "failed to initialize a Paragraph element")
 	}
-	// log.Debugf("initializing a new paragraph with %d line(s) and %d attribute(s)", len(lines), len(attrs))
+	// log.Debugf("initializing a new Newparagraph with %d line(s) and %d attribute(s)", len(lines), len(attrs))
 	elements := make([][]interface{}, 0)
 	for _, line := range lines {
 		if l, ok := line.([]interface{}); ok {
@@ -1265,6 +1265,64 @@ func NewImageAttributes(alt, width, height interface{}, otherattrs []interface{}
 		}
 	}
 	return result, nil
+}
+
+// ------------------------------------------
+// Icons
+// ------------------------------------------
+
+type Icon struct {
+	Class      string
+	Attributes Attributes
+}
+
+type InlineIcon struct {
+	Class      string
+	Attributes Attributes
+}
+
+type AdmonitionIcon struct {
+	Class      string
+	Attributes Attributes
+}
+
+// NewImageAttributes returns a map of image attributes, some of which have implicit keys (`alt`, `width` and `height`)
+func NewIconAttributes(size interface{}, others []interface{}) (Attributes, error) {
+	var result Attributes
+
+	if alt, ok := size.(string); ok {
+		if sizeStr := Apply(alt, strings.TrimSpace); sizeStr != "" {
+			result = result.Set(AttrIconSize, sizeStr)
+		}
+	}
+	for _, otherAttr := range others {
+		if otherAttr, ok := otherAttr.(Attributes); ok {
+			for k, v := range otherAttr {
+				result = result.Set(k, v)
+				if k == AttrID {
+					// mark custom_id flag to `true`
+					result = result.Set(AttrCustomID, true)
+				}
+			}
+		}
+	}
+	return result, nil
+}
+
+// NewInlineIcon initializes a new `InlineIcon`
+func NewInlineIcon(class string, attributes Attributes) (InlineIcon, error) {
+	return InlineIcon{
+		Class:      class,
+		Attributes: attributes,
+	}, nil
+}
+
+// NewAdmonitionIcon initializes a new `InlineIcon`
+func NewAdmonitionIcon(class string, attributes Attributes) (AdmonitionIcon, error) {
+	return AdmonitionIcon{
+		Class:      class,
+		Attributes: attributes,
+	}, nil
 }
 
 // ------------------------------------------
