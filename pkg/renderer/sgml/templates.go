@@ -32,6 +32,7 @@ type Templates struct {
 	LiteralBlock            string
 	ManpageHeader           string
 	ManpageNameParagraph    string
+	MarkedText              string
 	MonospaceText           string
 	OrderedList             string
 	Paragraph               string

@@ -6,4 +6,5 @@ const (
 	monospaceTextTmpl   = `<code{{ if .ID }} id="{{ .ID }}"{{ end }}{{ if .Roles }} class="{{ .Roles }}"{{ end }}>{{ .Content }}</code>`
 	subscriptTextTmpl   = `<sub{{ if .ID }} id="{{ .ID }}"{{ end }}{{ if .Roles }} class="{{ .Roles }}"{{ end }}>{{ .Content }}</sub>`
 	superscriptTextTmpl = `<sup{{ if .ID }} id="{{ .ID }}"{{ end }}{{ if .Roles }} class="{{ .Roles }}"{{ end }}>{{ .Content }}</sup>`
+	markedTextTmpl      = `{{ if .Roles }}<span{{ else }}<mark{{ end }}{{ if .ID }} id="{{ .ID }}"{{ end }}{{ if .Roles }} class="{{ .Roles }}"{{ end }}>{{ .Content }}{{ if .Roles }}</span>{{ else }}</mark>{{ end }}`
 )

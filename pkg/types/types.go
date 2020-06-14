@@ -1728,6 +1728,8 @@ const (
 	Bold QuotedTextKind = iota
 	// Italic italic quoted text (wrapped with '_' or '__')
 	Italic
+	// Marked text (highlighter, wrapped with '#' or '##')
+	Marked
 	// Monospace monospace quoted text (wrapped with '`' or '``')
 	Monospace
 	// Subscript subscript quoted text (wrapped with '~' or '~~')

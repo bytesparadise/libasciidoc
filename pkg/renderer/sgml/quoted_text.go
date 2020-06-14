@@ -37,6 +37,8 @@ func (r *sgmlRenderer) renderQuotedText(ctx *renderer.Context, t types.QuotedTex
 		tmpl = r.boldText
 	case types.Italic:
 		tmpl = r.italicText
+	case types.Marked:
+		tmpl = r.markedText
 	case types.Monospace:
 		tmpl = r.monospaceText
 	case types.Subscript:

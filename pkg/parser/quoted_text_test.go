@@ -776,6 +776,7 @@ var _ = Describe("quoted texts", func() {
 				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 		})
+
 		Context("attributes", func() {
 			It("simple role italics", func() {
 				source := "[myrole]_italics_"
@@ -999,6 +1000,30 @@ var _ = Describe("quoted texts", func() {
 										Kind: types.Bold,
 										Elements: []interface{}{
 											types.StringElement{Content: "bold"},
+										},
+										Attributes: types.Attributes{
+											types.AttrRole: "bob",
+										},
+									},
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+			})
+
+			It("marked short-hand role only", func() {
+				source := "[.bob]##the builder##"
+				expected := types.DraftDocument{
+					Blocks: []interface{}{
+						types.Paragraph{
+							Lines: [][]interface{}{
+								{
+									types.QuotedText{
+										Kind: types.Marked,
+										Elements: []interface{}{
+											types.StringElement{Content: "the builder"},
 										},
 										Attributes: types.Attributes{
 											types.AttrRole: "bob",
@@ -1455,6 +1480,50 @@ var _ = Describe("quoted texts", func() {
 											types.StringElement{Content: " content"},
 										},
 									},
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+			})
+
+			It("quoted text within marked text", func() {
+				source := "some #marked and _italic_ and *bold* and `monospaced` content together#."
+				expected := types.DraftDocument{
+					Blocks: []interface{}{
+						types.Paragraph{
+							Lines: [][]interface{}{
+								{
+									types.StringElement{Content: "some "},
+									types.QuotedText{
+										Kind: types.Marked,
+										Elements: []interface{}{
+											types.StringElement{Content: "marked and "},
+											types.QuotedText{
+												Kind: types.Italic,
+												Elements: []interface{}{
+													types.StringElement{Content: "italic"},
+												},
+											},
+											types.StringElement{Content: " and "},
+											types.QuotedText{
+												Kind: types.Bold,
+												Elements: []interface{}{
+													types.StringElement{Content: "bold"},
+												},
+											},
+											types.StringElement{Content: " and "},
+											types.QuotedText{
+												Kind: types.Monospace,
+												Elements: []interface{}{
+													types.StringElement{Content: "monospaced"},
+												},
+											},
+											types.StringElement{Content: " content together"},
+										},
+									},
+									types.StringElement{Content: "."},
 								},
 							},
 						},
