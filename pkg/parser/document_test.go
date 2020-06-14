@@ -12,7 +12,7 @@ var _ = Describe("documents", func() {
 
 	Context("draft document", func() {
 
-		It("empty docunment", func() {
+		It("empty document", func() {
 			source := ``
 			expected := types.DraftDocument{
 				Blocks: []interface{}{},

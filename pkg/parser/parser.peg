@@ -57,6 +57,7 @@ DocumentBlock <-
         / AttributeReset 
         / TableOfContentsPlaceHolder
         / UserMacroBlock
+        / StandaloneAttributes
         / Paragraph
 
 AsciidocDocumentBlocksWithinDelimitedBlock <- blocks:(DocumentBlockWithinDelimitedBlock)*
@@ -356,6 +357,10 @@ QuotedTextShortID <- '#' id:([^.#\]]+ {
         return string(c.text), nil
     }) {
     return types.NewElementID(id.(string))
+}
+
+StandaloneAttributes <- attributes:(ElementAttribute)+ BlankLine* EOF { // standalone attributes, i.e., with nothing afterwards
+    return types.NewAttributes(attributes)
 }
 
 // ------------------------------------------
