@@ -776,6 +776,330 @@ var _ = Describe("quoted texts", func() {
 				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 		})
+		Context("attributes", func() {
+			It("simple role italics", func() {
+				source := "[myrole]_italics_"
+				expected := types.DraftDocument{
+					Blocks: []interface{}{
+						types.Paragraph{
+							Lines: [][]interface{}{
+								{
+									types.QuotedText{
+										Kind: types.Italic,
+										Elements: []interface{}{
+											types.StringElement{Content: "italics"},
+										},
+										Attributes: types.Attributes{
+											types.AttrRole: "myrole",
+										},
+									},
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+			})
+
+			It("simple role italics unconstrained", func() {
+				source := "it[uncle]__al__ic"
+				expected := types.DraftDocument{
+					Blocks: []interface{}{
+						types.Paragraph{
+							Lines: [][]interface{}{
+								{
+									types.StringElement{
+										Content: "it",
+									},
+									types.QuotedText{
+										Kind: types.Italic,
+										Elements: []interface{}{
+											types.StringElement{Content: "al"},
+										},
+										Attributes: types.Attributes{
+											types.AttrRole: "uncle",
+										},
+									},
+									types.StringElement{
+										Content: "ic",
+									},
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+			})
+
+			It("simple role bold", func() {
+				source := "[myrole]*bold*"
+				expected := types.DraftDocument{
+					Blocks: []interface{}{
+						types.Paragraph{
+							Lines: [][]interface{}{
+								{
+									types.QuotedText{
+										Kind: types.Bold,
+										Elements: []interface{}{
+											types.StringElement{Content: "bold"},
+										},
+										Attributes: types.Attributes{
+											types.AttrRole: "myrole",
+										},
+									},
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+			})
+
+			It("simple role bold unconstrained", func() {
+				source := "it[uncle]**al**ic"
+				expected := types.DraftDocument{
+					Blocks: []interface{}{
+						types.Paragraph{
+							Lines: [][]interface{}{
+								{
+									types.StringElement{
+										Content: "it",
+									},
+									types.QuotedText{
+										Kind: types.Bold,
+										Elements: []interface{}{
+											types.StringElement{Content: "al"},
+										},
+										Attributes: types.Attributes{
+											types.AttrRole: "uncle",
+										},
+									},
+									types.StringElement{
+										Content: "ic",
+									},
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+			})
+
+			It("simple role mono", func() {
+				source := "[myrole]`true`"
+				expected := types.DraftDocument{
+					Blocks: []interface{}{
+						types.Paragraph{
+							Lines: [][]interface{}{
+								{
+									types.QuotedText{
+										Kind: types.Monospace,
+										Elements: []interface{}{
+											types.StringElement{Content: "true"},
+										},
+										Attributes: types.Attributes{
+											types.AttrRole: "myrole",
+										},
+									},
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+			})
+
+			It("simple role mono unconstrained", func() {
+				source := "int[uncle]``eg``rate"
+				expected := types.DraftDocument{
+					Blocks: []interface{}{
+						types.Paragraph{
+							Lines: [][]interface{}{
+								{
+									types.StringElement{
+										Content: "int",
+									},
+									types.QuotedText{
+										Kind: types.Monospace,
+										Elements: []interface{}{
+											types.StringElement{Content: "eg"},
+										},
+										Attributes: types.Attributes{
+											types.AttrRole: "uncle",
+										},
+									},
+									types.StringElement{
+										Content: "rate",
+									},
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+			})
+
+			It("role with comma truncates", func() {
+				source := "[myrole,and nothing else]_italics_"
+				expected := types.DraftDocument{
+					Blocks: []interface{}{
+						types.Paragraph{
+							Lines: [][]interface{}{
+								{
+									types.QuotedText{
+										Kind: types.Italic,
+										Elements: []interface{}{
+											types.StringElement{Content: "italics"},
+										},
+										Attributes: types.Attributes{
+											types.AttrRole: "myrole",
+										},
+									},
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+			})
+
+			It("short-hand ID only", func() {
+				source := "[#here]*bold*"
+				expected := types.DraftDocument{
+					Blocks: []interface{}{
+						types.Paragraph{
+							Lines: [][]interface{}{
+								{
+									types.QuotedText{
+										Kind: types.Bold,
+										Elements: []interface{}{
+											types.StringElement{Content: "bold"},
+										},
+										Attributes: types.Attributes{
+											types.AttrID:       "here",
+											types.AttrCustomID: true,
+										},
+									},
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+			})
+
+			It("short-hand role only", func() {
+				source := "[.bob]**bold**"
+				expected := types.DraftDocument{
+					Blocks: []interface{}{
+						types.Paragraph{
+							Lines: [][]interface{}{
+								{
+									types.QuotedText{
+										Kind: types.Bold,
+										Elements: []interface{}{
+											types.StringElement{Content: "bold"},
+										},
+										Attributes: types.Attributes{
+											types.AttrRole: "bob",
+										},
+									},
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+			})
+
+			It("short-hand multiple roles and id", func() {
+				source := "[.r1#anchor.r2.r3]**bold**[#here.second.class]_text_"
+				expected := types.DraftDocument{
+					Blocks: []interface{}{
+						types.Paragraph{
+							Lines: [][]interface{}{
+								{
+									types.QuotedText{
+										Kind: types.Bold,
+										Elements: []interface{}{
+											types.StringElement{Content: "bold"},
+										},
+										Attributes: types.Attributes{
+											types.AttrRole:     []string{"r1", "r2", "r3"},
+											types.AttrID:       "anchor",
+											types.AttrCustomID: true,
+										},
+									},
+									types.QuotedText{
+										Kind: types.Italic,
+										Elements: []interface{}{
+											types.StringElement{Content: "text"},
+										},
+										Attributes: types.Attributes{
+											types.AttrRole:     []string{"second", "class"},
+											types.AttrID:       "here",
+											types.AttrCustomID: true,
+										},
+									},
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+			})
+
+			It("empty role", func() {
+				source := "[]**bold**"
+				expected := types.DraftDocument{
+					Blocks: []interface{}{
+						types.Paragraph{
+							Lines: [][]interface{}{
+								{
+									types.QuotedText{
+										Kind: types.Bold,
+										Elements: []interface{}{
+											types.StringElement{Content: "bold"},
+										},
+										Attributes: types.Attributes{
+											types.AttrRole: "",
+										},
+									},
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+			})
+
+			// This demonstrates that we cannot inject malicious data in these attributes.
+			// The content is escaped by the renderer, not the parser.
+			It("embedded garbage", func() {
+				source := "[.<something \"wicked>]**bold**"
+				expected := types.DraftDocument{
+					Blocks: []interface{}{
+						types.Paragraph{
+							Lines: [][]interface{}{
+								{
+									types.QuotedText{
+										Kind: types.Bold,
+										Elements: []interface{}{
+											types.StringElement{Content: "bold"},
+										},
+										Attributes: types.Attributes{
+											types.AttrRole: "<something \"wicked>",
+										},
+									},
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+			})
+
+		})
 
 		Context("nested quoted text", func() {
 

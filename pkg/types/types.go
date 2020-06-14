@@ -1192,7 +1192,7 @@ func NewImageBlock(path Location, inlineAttributes Attributes, attributes interf
 	if attrs == nil && len(inlineAttributes) > 0 {
 		attrs = inlineAttributes
 	} else if len(inlineAttributes) > 0 {
-		attrs.Add(inlineAttributes)
+		attrs = attrs.Add(inlineAttributes)
 	}
 	return ImageBlock{
 		Location:   path,
@@ -1237,6 +1237,7 @@ func (i InlineImage) ResolveLocation(attrs AttributesWithOverrides) InlineImage 
 // NewImageAttributes returns a map of image attributes, some of which have implicit keys (`alt`, `width` and `height`)
 func NewImageAttributes(alt, width, height interface{}, otherattrs []interface{}) (Attributes, error) {
 	var result Attributes
+
 	if alt, ok := alt.(string); ok {
 		if altStr := Apply(alt, strings.TrimSpace); altStr != "" {
 			result = result.Set(AttrImageAlt, altStr)
@@ -1714,8 +1715,9 @@ func NewLineBreak() (LineBreak, error) {
 
 // QuotedText the structure for quoted text
 type QuotedText struct {
-	Kind     QuotedTextKind
-	Elements []interface{}
+	Kind       QuotedTextKind
+	Elements   []interface{}
+	Attributes Attributes
 }
 
 // QuotedTextKind the type for
@@ -1735,10 +1737,15 @@ const (
 )
 
 // NewQuotedText initializes a new `QuotedText` from the given kind and content
-func NewQuotedText(kind QuotedTextKind, elements ...interface{}) (QuotedText, error) {
+func NewQuotedText(kind QuotedTextKind, attributes interface{}, elements ...interface{}) (QuotedText, error) {
+	attrs, err := NewQuotedTextAttributes(attributes)
+	if err != nil {
+		return QuotedText{}, errors.Wrap(err, "failed to initialize a QuotedText element")
+	}
 	return QuotedText{
-		Kind:     kind,
-		Elements: Merge(elements),
+		Kind:       kind,
+		Elements:   Merge(elements),
+		Attributes: attrs,
 	}, nil
 }
 

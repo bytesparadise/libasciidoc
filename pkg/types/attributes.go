@@ -245,6 +245,22 @@ func (a Attributes) Has(key string) bool {
 	return ok
 }
 
+// AppendString sets the value as a singular string value if it did not exist yet,
+// or move the existing value in a slice of strings and append the new one
+func (a Attributes) AppendString(key string, value string) {
+	v, found := a[key]
+	if !found {
+		a[key] = value
+		return
+	}
+	switch v := v.(type) {
+	case string:
+		a[key] = []string{v, value} // move existing value in a slice, along with the new one
+	case []string:
+		a[key] = append(v, value) // just append the new value into the slice
+	}
+}
+
 // NilSafeSet sets the key/value pair unless the value is nil or empty
 func (a Attributes) NilSafeSet(key string, value interface{}) {
 	if value != nil && value != "" {
@@ -358,7 +374,42 @@ func NewAttributes(attributes interface{}) (Attributes, error) {
 		}
 		return result, nil
 	default:
-		return nil, fmt.Errorf("unexpected type of attribute: '%T'", attrs)
+		return nil, fmt.Errorf("unexpected type of attributes: '%T'", attrs)
+	}
+}
+
+// NewQuotedTextAttributes retrieves the attributes for QuotedText elements.
+// We always pass in an array of Attributes.  They may only const of
+// AttrRole or AttrID elements.  We coalesce the AttrRole elements into a
+// single array. We keep only the first AttrID element.
+func NewQuotedTextAttributes(attributes interface{}) (Attributes, error) {
+	if attributes == nil {
+		return nil, nil
+	}
+	switch attrs := attributes.(type) {
+	case Attributes:
+		return attrs, nil
+	case []interface{}:
+		// this is never empty, because we always have at least a role.
+		result := Attributes{}
+		for _, a := range attrs {
+			for k, v := range a.(Attributes) {
+				switch k {
+				case AttrID:
+					// The first ID set wins.
+					if !result.Has(AttrID) {
+						result[AttrID] = v
+						result[AttrCustomID] = true
+					}
+				case AttrRole:
+					result.AppendString(AttrRole, v.(string)) // grammar only generates string values
+				}
+			}
+		}
+		return result, nil
+	default:
+		return nil, fmt.Errorf("unexpected type of attributes: '%T'", attrs)
+
 	}
 }
 
