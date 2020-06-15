@@ -1276,7 +1276,7 @@ type Icon struct {
 	Attributes Attributes
 }
 
-// NewImageAttributes returns a map of image attributes, some of which have implicit keys (`alt`, `width` and `height`)
+// NewIconAttributes returns a map of icon attributes, some of which have implicit keys (`alt`, `width` and `height`)
 func NewIconAttributes(size interface{}, others []interface{}) (Attributes, error) {
 	var result Attributes
 
