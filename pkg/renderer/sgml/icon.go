@@ -10,7 +10,7 @@ import (
 	"strings"
 )
 
-func (r *sgmlRenderer) renderInlineIcon(ctx *renderer.Context, icon types.InlineIcon) ([]byte, error) {
+func (r *sgmlRenderer) renderInlineIcon(ctx *renderer.Context, icon types.Icon) ([]byte, error) {
 	result := &bytes.Buffer{}
 
 	iconStr, err := r.renderIcon(ctx, types.Icon{
@@ -92,7 +92,6 @@ func (r *sgmlRenderer) renderIcon(ctx *renderer.Context, icon types.Icon, admoni
 
 func renderIconPath(ctx *renderer.Context, name string) string {
 	// Icon files by default are in {imagesdir}/icons, where {imagesdir} defaults to "./images"
-	// TODO: This should use the location resolver, but we need to be able to supply a different
 	dir := ctx.Attributes.GetAsStringWithDefault("iconsdir",
 		path.Join(ctx.Attributes.GetAsStringWithDefault("imagesdir", "./images"), "icons"))
 	// TODO: perform attribute substitutions here!

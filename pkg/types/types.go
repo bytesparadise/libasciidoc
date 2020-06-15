@@ -1276,16 +1276,6 @@ type Icon struct {
 	Attributes Attributes
 }
 
-type InlineIcon struct {
-	Class      string
-	Attributes Attributes
-}
-
-type AdmonitionIcon struct {
-	Class      string
-	Attributes Attributes
-}
-
 // NewImageAttributes returns a map of image attributes, some of which have implicit keys (`alt`, `width` and `height`)
 func NewIconAttributes(size interface{}, others []interface{}) (Attributes, error) {
 	var result Attributes
@@ -1310,16 +1300,8 @@ func NewIconAttributes(size interface{}, others []interface{}) (Attributes, erro
 }
 
 // NewInlineIcon initializes a new `InlineIcon`
-func NewInlineIcon(class string, attributes Attributes) (InlineIcon, error) {
-	return InlineIcon{
-		Class:      class,
-		Attributes: attributes,
-	}, nil
-}
-
-// NewAdmonitionIcon initializes a new `InlineIcon`
-func NewAdmonitionIcon(class string, attributes Attributes) (AdmonitionIcon, error) {
-	return AdmonitionIcon{
+func NewInlineIcon(class string, attributes Attributes) (Icon, error) {
+	return Icon{
 		Class:      class,
 		Attributes: attributes,
 	}, nil

@@ -21,7 +21,7 @@ var _ = Describe("icons", func() {
 						types.Paragraph{
 							Lines: [][]interface{}{
 								{
-									types.InlineIcon{
+									types.Icon{
 										Class: "tip",
 									},
 								},
@@ -39,7 +39,7 @@ var _ = Describe("icons", func() {
 						types.Paragraph{
 							Lines: [][]interface{}{
 								{
-									types.InlineIcon{
+									types.Icon{
 										Class: "note",
 									},
 									types.StringElement{
@@ -63,7 +63,7 @@ var _ = Describe("icons", func() {
 									types.StringElement{
 										Content: "beware ",
 									},
-									types.InlineIcon{
+									types.Icon{
 										Class: "caution",
 									},
 									types.StringElement{
@@ -84,7 +84,7 @@ var _ = Describe("icons", func() {
 						types.Paragraph{
 							Lines: [][]interface{}{
 								{
-									types.InlineIcon{
+									types.Icon{
 										Class:      "caution",
 										Attributes: types.Attributes{types.AttrIconSize: "2x"},
 									},
@@ -103,7 +103,7 @@ var _ = Describe("icons", func() {
 						types.Paragraph{
 							Lines: [][]interface{}{
 								{
-									types.InlineIcon{
+									types.Icon{
 										Class:      "caution",
 										Attributes: types.Attributes{types.AttrImageTitle: "bogus"},
 									},
@@ -122,7 +122,7 @@ var _ = Describe("icons", func() {
 						types.Paragraph{
 							Lines: [][]interface{}{
 								{
-									types.InlineIcon{
+									types.Icon{
 										Class: "caution",
 										Attributes: types.Attributes{
 											types.AttrID:       "anchor",
@@ -144,7 +144,7 @@ var _ = Describe("icons", func() {
 						types.Paragraph{
 							Lines: [][]interface{}{
 								{
-									types.InlineIcon{
+									types.Icon{
 										Class: "caution",
 										Attributes: types.Attributes{
 											types.AttrID:         "anchor",
@@ -167,7 +167,7 @@ var _ = Describe("icons", func() {
 						types.Paragraph{
 							Lines: [][]interface{}{
 								{
-									types.InlineIcon{
+									types.Icon{
 										Class: "caution",
 										Attributes: types.Attributes{
 											types.AttrID:         "anchor",
@@ -194,7 +194,7 @@ var _ = Describe("icons", func() {
 									types.StringElement{
 										Content: "here is my icon: ",
 									},
-									types.InlineIcon{
+									types.Icon{
 										Class: "info",
 									},
 								},

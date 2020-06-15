@@ -27,7 +27,6 @@ type sgmlRenderer struct {
 	footnoteRef             *textTemplate
 	footnoteRefPlain        *textTemplate
 	footnotes               *textTemplate
-	iconAdmonitionText      *textTemplate
 	iconFont                *textTemplate
 	iconImage               *textTemplate
 	iconText                *textTemplate

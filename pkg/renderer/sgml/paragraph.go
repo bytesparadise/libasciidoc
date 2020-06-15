@@ -191,13 +191,6 @@ func renderCheckStyle(style interface{}) string {
 	}
 }
 
-func renderIconClass(ctx *renderer.Context, kind types.AdmonitionKind) string {
-	if icons, _ := ctx.Attributes.GetAsString("icons"); icons == "font" {
-		return renderClass(kind)
-	}
-	return ""
-}
-
 func renderClass(kind types.AdmonitionKind) string {
 	switch kind {
 	case types.Tip:
@@ -210,24 +203,6 @@ func renderClass(kind types.AdmonitionKind) string {
 		return "warning"
 	case types.Caution:
 		return "caution"
-	default:
-		log.Errorf("unexpected kind of admonition: %v", kind)
-		return ""
-	}
-}
-
-func renderIconTitle(kind types.AdmonitionKind) string {
-	switch kind {
-	case types.Tip:
-		return "Tip"
-	case types.Note:
-		return "Note"
-	case types.Important:
-		return "Important"
-	case types.Warning:
-		return "Warning"
-	case types.Caution:
-		return "Caution"
 	default:
 		log.Errorf("unexpected kind of admonition: %v", kind)
 		return ""
