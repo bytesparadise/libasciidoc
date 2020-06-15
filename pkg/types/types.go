@@ -1299,7 +1299,7 @@ func NewIconAttributes(size interface{}, others []interface{}) (Attributes, erro
 	return result, nil
 }
 
-// NewInlineIcon initializes a new `InlineIcon`
+// NewInlineIcon initializes a new `Icon`
 func NewInlineIcon(class string, attributes Attributes) (Icon, error) {
 	return Icon{
 		Class:      class,
