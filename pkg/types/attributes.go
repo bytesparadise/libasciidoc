@@ -81,7 +81,7 @@ const (
 	AttrImageHeight = "height"
 	// AttrImageTitle the image `title` attribute
 	AttrImageTitle = "title"
-	// AttrImageLink the `link` attribute, which for HTML wraps the image with a link
+	// AttrImageWindow the `window` attribute, which becomes the target for the link
 	AttrImageWindow = "window"
 	// AttrIconSize the icon `size`, and can be one of 1x, 2x, 3x, 4x, 5x, lg, fw
 	AttrIconSize = "size"
