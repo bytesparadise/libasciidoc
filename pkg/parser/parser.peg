@@ -388,7 +388,8 @@ TitleElement <- element:(Word
         / Space+ 
         / CrossReference
         / InlinePassthrough
-        / InlineImage 
+        / InlineIcon
+        / InlineImage
         / Link
         / InlineFootnote
         / QuotedText
@@ -717,6 +718,7 @@ LabeledListItemTermElement <- element:(Word
         / ConcealedIndexTerm
         / IndexTerm
         / InlinePassthrough
+        / InlineIcon
         / InlineImage 
         / Link
         / InlineFootnote
@@ -880,7 +882,8 @@ InlineElement <-
         / LineBreak // must be before spaces
         / Space+ 
         / !EOL ( 
-            QuotedText 
+            QuotedText
+            / InlineIcon
             / InlineImage 
             / Link 
             / InlinePassthrough 
@@ -964,6 +967,7 @@ DoubleQuoteBoldTextElement <- Word
         / MonospaceText
         / SubscriptText
         / SuperscriptText
+        / InlineIcon
         / InlineImage 
         / Link 
         / InlinePassthrough 
@@ -998,6 +1002,7 @@ SingleQuoteBoldTextElement <- Word
         / MonospaceText
         / SubscriptText
         / SuperscriptText
+        / InlineIcon
         / InlineImage 
         / Link  
         / InlinePassthrough 
@@ -1044,6 +1049,7 @@ DoubleQuoteItalicTextElement <- Word
         / MonospaceText
         / SubscriptText
         / SuperscriptText
+        / InlineIcon
         / InlineImage 
         / Link 
         / InlinePassthrough 
@@ -1076,6 +1082,7 @@ SingleQuoteItalicTextElement <- Word
         / MonospaceText
         / SubscriptText
         / SuperscriptText
+        / InlineIcon
         / InlineImage 
         / Link  
         / InlinePassthrough 
@@ -1121,8 +1128,9 @@ DoubleQuoteMonospaceTextElement <- Word
         / MarkedText
         / SubscriptText
         / SuperscriptText
-        / InlineImage 
-        / Link 
+        / InlineIcon
+        / InlineImage
+        / Link
         / InlinePassthrough 
         / DoubleQuoteMonospaceTextStringElement
         / DoubleQuoteMonospaceTextFallbackCharacter
@@ -1154,6 +1162,7 @@ SingleQuoteMonospaceTextElement <-  Word
         / MarkedText
         / SubscriptText
         / SuperscriptText
+        / InlineIcon
         / InlineImage 
         / Link 
         / InlinePassthrough 
@@ -1200,6 +1209,7 @@ DoubleQuoteMarkedTextElement <- Word
         / MonospaceText
         / SubscriptText
         / SuperscriptText
+        / InlineIcon
         / InlineImage
         / Link
         / InlinePassthrough
@@ -1232,6 +1242,7 @@ SingleQuoteMarkedTextElement <- Word
         / MonospaceText
         / SubscriptText
         / SuperscriptText
+        / InlineIcon
         / InlineImage
         / Link
         / InlinePassthrough
@@ -1422,6 +1433,17 @@ InlineImage <- "image:" !":" path:(Location) inlineAttributes:(ImageAttributes) 
 
 ImageAttributes <- "[" alt:(StandaloneAttributeValue)? ","? width:(StandaloneAttributeValue)? ","? height:(StandaloneAttributeValue)? ","? Space* otherattrs:(GenericAttribute)* "]" {
     return types.NewImageAttributes(alt, width, height, otherattrs.([]interface{}))
+}
+
+// ------------------------------------------------------------------------------------
+// Inline icons
+// ------------------------------------------------------------------------------------
+InlineIcon <- "icon:" iconClass:([\pL0-9_-]+ { return string(c.text), nil }) inlineAttributes:(IconAttributes) {
+    return types.NewIcon(iconClass.(string), inlineAttributes.(types.Attributes))
+}
+
+IconAttributes <- "[" size:(StandaloneAttributeValue)? ","? Space* others:(GenericAttribute)* "]" {
+    return types.NewIconAttributes(size, others.([]interface{}))
 }
 
 // ------------------------------------------------------------------------------------

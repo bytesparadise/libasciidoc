@@ -169,22 +169,24 @@ func (r *sgmlRenderer) renderSourceBlock(ctx *renderer.Context, b types.Delimite
 func (r *sgmlRenderer) renderExampleBlock(ctx *renderer.Context, b types.DelimitedBlock) ([]byte, error) {
 	result := &bytes.Buffer{}
 	if k, ok := b.Attributes[types.AttrAdmonitionKind].(types.AdmonitionKind); ok {
-		err := r.admonitionBlock.Execute(result, ContextualPipeline{
+		icon, err := r.renderIcon(ctx, types.Icon{Class: string(k)}, true)
+		if err != nil {
+			return nil, err
+		}
+		err = r.admonitionBlock.Execute(result, ContextualPipeline{
 			Context: ctx,
 			Data: struct {
-				ID        string
-				Class     string
-				IconClass string
-				IconTitle string
-				Title     string
-				Elements  []interface{}
+				ID       string
+				Class    string
+				Title    string
+				Icon     sanitized
+				Elements []interface{}
 			}{
-				ID:        r.renderElementID(b.Attributes),
-				Class:     renderClass(k),
-				IconClass: renderIconClass(ctx, k),
-				IconTitle: renderIconTitle(k),
-				Title:     r.renderElementTitle(b.Attributes),
-				Elements:  discardTrailingBlankLines(b.Elements),
+				ID:       r.renderElementID(b.Attributes),
+				Class:    renderClass(k),
+				Icon:     icon,
+				Title:    r.renderElementTitle(b.Attributes),
+				Elements: discardTrailingBlankLines(b.Elements),
 			},
 		})
 		return result.Bytes(), err

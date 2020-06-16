@@ -20,6 +20,10 @@ type Templates struct {
 	FootnoteRef             string
 	FootnoteRefPlain        string
 	Footnotes               string
+	IconFont                string
+	IconImage               string
+	IconText                string
+	InlineIcon              string
 	InlineImage             string
 	InternalCrossReference  string
 	InvalidFootnote         string

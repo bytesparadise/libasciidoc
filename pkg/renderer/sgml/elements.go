@@ -109,6 +109,8 @@ func (r *sgmlRenderer) renderElement(ctx *renderer.Context, element interface{})
 		return r.renderInlinePassthrough(ctx, e)
 	case types.ImageBlock:
 		return r.renderImageBlock(ctx, e)
+	case types.Icon:
+		return r.renderInlineIcon(ctx, e)
 	case types.InlineImage:
 		return r.renderInlineImage(e)
 	case types.DelimitedBlock:
@@ -148,6 +150,8 @@ func (r *sgmlRenderer) renderPlainText(ctx *renderer.Context, element interface{
 		return r.renderLines(ctx, element, r.withPlainText())
 	case types.QuotedText:
 		return r.renderPlainText(ctx, element.Elements)
+	case types.Icon:
+		return []byte(element.Attributes.GetAsStringWithDefault(types.AttrImageAlt, "")), nil
 	case types.InlineImage:
 		return []byte(element.Attributes.GetAsStringWithDefault(types.AttrImageAlt, "")), nil
 	case types.InlineLink:
