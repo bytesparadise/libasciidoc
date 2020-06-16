@@ -1907,6 +1907,36 @@ level 2::: description 2`
 			Expect(ParseDocument(source)).To(MatchDocument(expected))
 		})
 
+		It("item with a colon the term", func() {
+			source := `what: ever:: text`
+			expected := types.Document{
+				Elements: []interface{}{
+					types.LabeledList{
+						Items: []types.LabeledListItem{
+							{
+								Level: 1,
+								Term: []interface{}{
+									types.StringElement{
+										Content: "what: ever",
+									},
+								},
+								Elements: []interface{}{
+									types.Paragraph{
+										Lines: [][]interface{}{
+											{
+												types.StringElement{Content: "text"},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			}
+			Expect(ParseDocument(source)).To(MatchDocument(expected))
+		})
+
 	})
 
 })

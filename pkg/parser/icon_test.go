@@ -247,8 +247,8 @@ var _ = Describe("icons", func() {
 				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
-			// NB: The existing grammar for labeled list items does not support any markup
-			// in the term text.
+			// Note that the parsing that occurs here does not include the re-parse of the list item term.
+			// That is done in second pass.
 			It("inline icon as labeled list item description", func() {
 				source := `discount:: icon:tags[alt="Discount"] Cheap cheap!
 item 2:: two`

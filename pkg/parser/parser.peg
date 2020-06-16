@@ -701,7 +701,8 @@ LabeledListItem <- attributes:(Attributes)? term:(VerbatimLabeledListItemTerm) s
 
 LabeledListItemPrefix <- VerbatimLabeledListItemTerm LabeledListItemSeparator
 
-VerbatimLabeledListItemTerm <- content:([^:\r\n]+ {
+VerbatimLabeledListItemChars <- [^:\r\n]+ / ":" !":"
+VerbatimLabeledListItemTerm <- content:( VerbatimLabeledListItemChars + {
     return types.NewStringElement(strings.TrimSpace(string(c.text)))
 })  {
     return types.NewInlineElements(content)

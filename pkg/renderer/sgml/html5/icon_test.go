@@ -253,7 +253,22 @@ what:: icon:question[]`
 				Expect(RenderHTML(source)).To(MatchHTML(expected))
 			})
 
-			It("icon in marked text", func() {
+			It("icon in a term", func() {
+				source := `:icons:
+
+icon:tip[]:: tip of the day`
+				expected := `<div class="dlist">
+<dl>
+<dt class="hdlist1"><span class="icon"><img src="images/icons/tip.png" alt="Tip"></span></dt>
+<dd>
+<p>tip of the day</p>
+</dd>
+</dl>
+</div>`
+				Expect(RenderHTML(source)).To(MatchHTML(expected))
+			})
+
+			It("icon in quoted text", func() {
 				source := `:icons: font
 
 here [strikeout]##we go icon:stop[]##`

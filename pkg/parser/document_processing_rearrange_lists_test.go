@@ -402,6 +402,23 @@ var _ = Describe("rearrange lists", func() {
 					},
 				},
 			},
+			types.LabeledListItem{
+				Level: 2,
+				Term: []interface{}{
+					types.StringElement{
+						Content: "icon:caution[]",
+					},
+				},
+				Elements: []interface{}{
+					types.Paragraph{
+						Lines: [][]interface{}{
+							{
+								types.StringElement{Content: "description 3"},
+							},
+						},
+					},
+				},
+			},
 		}
 		expected := []interface{}{
 			types.LabeledList{
@@ -451,6 +468,23 @@ var _ = Describe("rearrange lists", func() {
 												Lines: [][]interface{}{
 													{
 														types.StringElement{Content: "description 2"},
+													},
+												},
+											},
+										},
+									},
+									{
+										Level: 2,
+										Term: []interface{}{
+											types.Icon{
+												Class: "caution",
+											},
+										},
+										Elements: []interface{}{
+											types.Paragraph{
+												Lines: [][]interface{}{
+													{
+														types.StringElement{Content: "description 3"},
 													},
 												},
 											},
