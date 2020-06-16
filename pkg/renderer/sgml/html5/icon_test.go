@@ -253,12 +253,39 @@ what:: icon:question[]`
 				Expect(RenderHTML(source)).To(MatchHTML(expected))
 			})
 
-			It("icon in quoted text", func() {
+			It("icon in marked text", func() {
 				source := `:icons: font
 
 here [strikeout]##we go icon:stop[]##`
 				expected := `<div class="paragraph">
 <p>here <span class="strikeout">we go <span class="icon"><i class="fa fa-stop"></i></span></span></p>
+</div>`
+				Expect(RenderHTML(source)).To(MatchHTML(expected))
+			})
+
+			It("icon in italic text", func() {
+				source := `:icons: font
+
+here _we go icon:stop[]_`
+				expected := `<div class="paragraph">
+<p>here <em>we go <span class="icon"><i class="fa fa-stop"></i></span></em></p>
+</div>`
+				Expect(RenderHTML(source)).To(MatchHTML(expected))
+			})
+			It("icon in bold text", func() {
+				source := `:icons: font
+
+here *we go icon:stop[]*`
+				expected := `<div class="paragraph">
+<p>here <strong>we go <span class="icon"><i class="fa fa-stop"></i></span></strong></p>
+</div>`
+				Expect(RenderHTML(source)).To(MatchHTML(expected))
+			})
+
+			It("icon in monospace text", func() {
+				source := "here `we go icon:stop[]`"
+				expected := `<div class="paragraph">
+<p>here <code>we go <span class="icon">[Stop]</span></code></p>
 </div>`
 				Expect(RenderHTML(source)).To(MatchHTML(expected))
 			})

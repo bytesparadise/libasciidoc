@@ -315,7 +315,74 @@ item 2:: two`
 				}
 				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
-
+			It("inline icon in marked text", func() {
+				source := `#marked icon:warning[] message#`
+				expected := types.DraftDocument{
+					Blocks: []interface{}{
+						types.Paragraph{
+							Lines: [][]interface{}{
+								{
+									types.QuotedText{
+										Kind: types.Marked,
+										Elements: []interface{}{
+											types.StringElement{Content: "marked "},
+											types.Icon{Class: "warning"},
+											types.StringElement{Content: " message"},
+										},
+									},
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+			})
+			It("inline icon in bold text", func() {
+				source := `in *bold icon:warning[] message*`
+				expected := types.DraftDocument{
+					Blocks: []interface{}{
+						types.Paragraph{
+							Lines: [][]interface{}{
+								{
+									types.StringElement{Content: "in "},
+									types.QuotedText{
+										Kind: types.Bold,
+										Elements: []interface{}{
+											types.StringElement{Content: "bold "},
+											types.Icon{Class: "warning"},
+											types.StringElement{Content: " message"},
+										},
+									},
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+			})
+			It("inline icon in monospace text", func() {
+				source := "in `monospace icon:warning[] message`"
+				expected := types.DraftDocument{
+					Blocks: []interface{}{
+						types.Paragraph{
+							Lines: [][]interface{}{
+								{
+									types.StringElement{Content: "in "},
+									types.QuotedText{
+										Kind: types.Monospace,
+										Elements: []interface{}{
+											types.StringElement{Content: "monospace "},
+											types.Icon{Class: "warning"},
+											types.StringElement{Content: " message"},
+										},
+									},
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+			})
 		})
 	})
 })
