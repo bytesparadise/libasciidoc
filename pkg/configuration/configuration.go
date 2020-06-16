@@ -24,6 +24,7 @@ type Configuration struct {
 	LastUpdated         time.Time
 	IncludeHeaderFooter bool
 	CSS                 string
+	BackEnd             string
 	macros              map[string]MacroTemplate
 }
 
@@ -87,6 +88,13 @@ func WithHeaderFooter(value bool) Setting {
 func WithCSS(href string) Setting {
 	return func(config *Configuration) {
 		config.CSS = href
+	}
+}
+
+// WithBackEnd sets the backend format, valid values are "html", "html5", "xhtml", "xhtml5", and "" (defaults to html5)
+func WithBackEnd(backend string) Setting {
+	return func(config *Configuration) {
+		config.BackEnd = backend
 	}
 }
 

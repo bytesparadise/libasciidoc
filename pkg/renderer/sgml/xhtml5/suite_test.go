@@ -16,9 +16,11 @@ import (
 
 func RenderXHTML(actual string, settings ...configuration.Setting) (string, error) {
 	config := configuration.NewConfiguration(settings...)
+	configuration.WithBackEnd("xhtml5")(&config)
+
 	contentReader := strings.NewReader(actual)
 	resultWriter := bytes.NewBuffer(nil)
-	_, err := libasciidoc.ConvertToXHTML(contentReader, resultWriter, config)
+	_, err := libasciidoc.Convert(contentReader, resultWriter, config)
 	if err != nil {
 		return "", err
 	}
@@ -30,13 +32,13 @@ func RenderXHTML(actual string, settings ...configuration.Setting) (string, erro
 
 // RenderXHTML5Title renders the HTML body using the given source
 func RenderXHTML5Title(actual string, options ...configuration.Setting) (string, error) {
-	config := configuration.NewConfiguration()
+	config := configuration.NewConfiguration(configuration.WithBackEnd("xhtml5"))
 	for _, set := range options {
 		set(&config)
 	}
 	contentReader := strings.NewReader(actual)
 	resultWriter := bytes.NewBuffer(nil)
-	metadata, err := libasciidoc.ConvertToXHTML(contentReader, resultWriter, config)
+	metadata, err := libasciidoc.Convert(contentReader, resultWriter, config)
 	if err != nil {
 		return "", err
 	}

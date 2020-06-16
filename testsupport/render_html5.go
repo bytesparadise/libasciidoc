@@ -11,12 +11,28 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-// RenderHTML renders the HTML body using the given source
-func RenderHTML(actual string, settings ...configuration.Setting) (string, error) {
+// Render renders the HTML body using the given source
+func Render(actual string, settings ...configuration.Setting) (string, error) {
 	config := configuration.NewConfiguration(settings...)
 	contentReader := strings.NewReader(actual)
 	resultWriter := bytes.NewBuffer(nil)
-	_, err := libasciidoc.ConvertToHTML(contentReader, resultWriter, config)
+	_, err := libasciidoc.Convert(contentReader, resultWriter, config)
+	if err != nil {
+		return "", err
+	}
+	if log.IsLevelEnabled(log.DebugLevel) {
+		log.Debug(resultWriter.String())
+	}
+	return resultWriter.String(), nil
+}
+
+// RenderHTML renders the HTML body using the given source
+func RenderHTML(actual string, settings ...configuration.Setting) (string, error) {
+	config := configuration.NewConfiguration(settings...)
+	configuration.WithBackEnd("html5")(&config)
+	contentReader := strings.NewReader(actual)
+	resultWriter := bytes.NewBuffer(nil)
+	_, err := libasciidoc.Convert(contentReader, resultWriter, config)
 	if err != nil {
 		return "", err
 	}
@@ -29,12 +45,13 @@ func RenderHTML(actual string, settings ...configuration.Setting) (string, error
 // RenderHTML5Title renders the HTML body using the given source
 func RenderHTML5Title(actual string, options ...configuration.Setting) (string, error) {
 	config := configuration.NewConfiguration()
+	configuration.WithBackEnd("html5")(&config)
 	for _, set := range options {
 		set(&config)
 	}
 	contentReader := strings.NewReader(actual)
 	resultWriter := bytes.NewBuffer(nil)
-	metadata, err := libasciidoc.ConvertToHTML(contentReader, resultWriter, config)
+	metadata, err := libasciidoc.Convert(contentReader, resultWriter, config)
 	if err != nil {
 		return "", err
 	}
@@ -47,13 +64,15 @@ func RenderHTML5Title(actual string, options ...configuration.Setting) (string, 
 // RenderHTML5Document a custom matcher to verify that a block renders as expected
 func RenderHTML5Document(filename string, options ...configuration.Setting) (string, error) {
 	resultWriter := bytes.NewBuffer(nil)
-	config := configuration.NewConfiguration(append(options, configuration.WithFilename(filename))...)
+	config := configuration.NewConfiguration(options...)
+	configuration.WithFilename(filename)(&config)
+	configuration.WithBackEnd("html5")(&config)
 	stat, err := os.Stat(filename)
 	if err != nil {
 		return "", errors.Wrapf(err, "unable to get stats for file '%s'", filename)
 	}
 	config.LastUpdated = stat.ModTime()
-	_, err = libasciidoc.ConvertFileToHTML(resultWriter, config)
+	_, err = libasciidoc.ConvertFile(resultWriter, config)
 	if err != nil {
 		return "", err
 	}

@@ -11,7 +11,6 @@ import (
 	"github.com/bytesparadise/libasciidoc"
 	"github.com/bytesparadise/libasciidoc/pkg/configuration"
 	logsupport "github.com/bytesparadise/libasciidoc/pkg/log"
-	"github.com/bytesparadise/libasciidoc/pkg/types"
 
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
@@ -47,16 +46,6 @@ func NewRootCmd() *cobra.Command {
 				return helpCommand.RunE(cmd, args)
 			}
 			attrs := parseAttributes(attributes)
-			var convert func(io.Writer, configuration.Configuration) (types.Metadata, error)
-
-			switch backend {
-			case "html", "html5", "":
-				convert = libasciidoc.ConvertFileToHTML
-			case "xhtml", "xhtml5":
-				convert = libasciidoc.ConvertFileToXHTML
-			default:
-				return fmt.Errorf("backend '%s' not supported", backend)
-			}
 			for _, sourcePath := range args {
 				out, close := getOut(cmd, sourcePath, outputName)
 				if out != nil {
@@ -67,8 +56,9 @@ func NewRootCmd() *cobra.Command {
 						configuration.WithFilename(sourcePath),
 						configuration.WithAttributes(attrs),
 						configuration.WithCSS(css),
+						configuration.WithBackEnd(backend),
 						configuration.WithHeaderFooter(!noHeaderFooter))
-					_, err := convert(out, config)
+					_, err := libasciidoc.ConvertFile(out, config)
 					if err != nil {
 						return err
 					}
