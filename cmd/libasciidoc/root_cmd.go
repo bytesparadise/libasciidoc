@@ -11,6 +11,7 @@ import (
 	"github.com/bytesparadise/libasciidoc"
 	"github.com/bytesparadise/libasciidoc/pkg/configuration"
 	logsupport "github.com/bytesparadise/libasciidoc/pkg/log"
+	"github.com/bytesparadise/libasciidoc/pkg/types"
 
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
@@ -23,6 +24,7 @@ func NewRootCmd() *cobra.Command {
 	var outputName string
 	var logLevel string
 	var css string
+	var backend string
 	var attributes []string
 
 	rootCmd := &cobra.Command{
@@ -45,6 +47,16 @@ func NewRootCmd() *cobra.Command {
 				return helpCommand.RunE(cmd, args)
 			}
 			attrs := parseAttributes(attributes)
+			var convert func(io.Writer, configuration.Configuration) (types.Metadata, error)
+
+			switch backend {
+			case "html", "html5", "":
+				convert = libasciidoc.ConvertFileToHTML
+			case "xhtml", "xhtml5":
+				convert = libasciidoc.ConvertFileToXHTML
+			default:
+				return fmt.Errorf("backend '%s' not supported", backend)
+			}
 			for _, sourcePath := range args {
 				out, close := getOut(cmd, sourcePath, outputName)
 				if out != nil {
@@ -56,7 +68,7 @@ func NewRootCmd() *cobra.Command {
 						configuration.WithAttributes(attrs),
 						configuration.WithCSS(css),
 						configuration.WithHeaderFooter(!noHeaderFooter))
-					_, err := libasciidoc.ConvertFileToHTML(out, config)
+					_, err := convert(out, config)
 					if err != nil {
 						return err
 					}
@@ -72,6 +84,7 @@ func NewRootCmd() *cobra.Command {
 	flags.StringVar(&logLevel, "log", "warning", "log level to set [debug|info|warning|error|fatal|panic]")
 	flags.StringVar(&css, "css", "", "the path to the CSS file to link to the document")
 	flags.StringArrayVarP(&attributes, "attribute", "a", []string{}, "a document attribute to set in the form of name, name!, or name=value pair")
+	flags.StringVarP(&backend, "backend", "b", "html5", "backend to format the file")
 	return rootCmd
 }
 

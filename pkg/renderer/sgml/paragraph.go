@@ -275,10 +275,13 @@ func (r *sgmlRenderer) renderLines(ctx *renderer.Context, lines [][]interface{},
 			// log.Debugf("rendered line is not the last one in the slice")
 			var err error
 			if linesRenderer.hardBreaks {
-				_, err = buf.WriteString("<br>\n") // TODO: linebreak template
-			} else {
-				_, err = buf.WriteString("\n")
+				if br, err := r.renderLineBreak(); err != nil {
+					return nil, errors.Wrap(err, "unable to render hardbreak")
+				} else if _, err = buf.Write(br); err != nil {
+					return nil, errors.Wrap(err, "unable to write hardbreak")
+				}
 			}
+			_, err = buf.WriteString("\n")
 			if err != nil {
 				return nil, errors.Wrap(err, "unable to render lines")
 			}

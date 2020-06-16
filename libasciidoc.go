@@ -3,6 +3,7 @@
 package libasciidoc
 
 import (
+	"github.com/bytesparadise/libasciidoc/pkg/renderer/sgml/xhtml5"
 	"io"
 	"os"
 	"time"
@@ -76,4 +77,55 @@ func ConvertToHTML(r io.Reader, output io.Writer, config configuration.Configura
 	}
 	log.Debugf("Done processing document")
 	return metadata, nil
+}
+
+// ConvertToXHTML converts the content of the given reader `r` into a full XHTML document, written in the given writer `output`.
+// Returns an error if a problem occurred
+func ConvertToXHTML(r io.Reader, output io.Writer, config configuration.Configuration) (types.Metadata, error) {
+	start := time.Now()
+	defer func() {
+		duration := time.Since(start)
+		log.Debugf("rendered the XHTML output in %v", duration)
+	}()
+	log.Debugf("parsing the asciidoc source...")
+	doc, err := parser.ParseDocument(r, config) //, parser.Debug(true))
+	if err != nil {
+		return types.Metadata{}, err
+	}
+	// validate the document
+	problems := validator.Validate(&doc)
+	for _, problem := range problems {
+		switch problem.Severity {
+		case validator.Error:
+			log.Error(problem.Message)
+		case validator.Warning:
+			log.Warn(problem.Message)
+		}
+	}
+	// render
+	ctx := renderer.NewContext(doc, config)
+	metadata, err := xhtml5.Render(ctx, doc, output)
+	if err != nil {
+		return types.Metadata{}, err
+	}
+	log.Debugf("Done processing document")
+	return metadata, nil
+}
+
+// ConvertFileToXHTML converts the content of the given filename into an HTML document.
+// The conversion result is written in the given writer `output`, whereas the document metadata (title, etc.) (or an error if a problem occurred) is returned
+// as the result of the function call.
+func ConvertFileToXHTML(output io.Writer, config configuration.Configuration) (types.Metadata, error) {
+	file, err := os.Open(config.Filename)
+	if err != nil {
+		return types.Metadata{}, errors.Wrapf(err, "error opening %s", config.Filename)
+	}
+	defer file.Close()
+	// use the file mtime as the `last updated` value
+	stat, err := os.Stat(config.Filename)
+	if err != nil {
+		return types.Metadata{}, errors.Wrapf(err, "error opening %s", config.Filename)
+	}
+	config.LastUpdated = stat.ModTime()
+	return ConvertToXHTML(file, output, config)
 }
