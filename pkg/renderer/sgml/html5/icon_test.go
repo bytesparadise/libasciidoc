@@ -221,8 +221,48 @@ icon:caution[]`
 </div>`
 				Expect(RenderHTML(source)).To(MatchHTML(expected))
 			})
-
 		})
 
+		Context("icon contexts", func() {
+
+			It("icon in a title", func() {
+				source := `:icons:
+:icontype: svg
+
+== icon:caution[alt="!"] Choke Hazard`
+				expected := `<div class="sect1">
+<h2 id="_choke_hazard"><span class="icon"><img src="images/icons/caution.svg" alt="!"></span> Choke Hazard</h2>
+<div class="sectionbody">
+</div>
+</div>`
+				Expect(RenderHTML(source)).To(MatchHTML(expected))
+			})
+
+			It("icon in a definition", func() {
+				source := `:icons:
+
+what:: icon:question[]`
+				expected := `<div class="dlist">
+<dl>
+<dt class="hdlist1">what</dt>
+<dd>
+<p><span class="icon"><img src="images/icons/question.png" alt="Question"></span></p>
+</dd>
+</dl>
+</div>`
+				Expect(RenderHTML(source)).To(MatchHTML(expected))
+			})
+
+			It("icon in quoted text", func() {
+				source := `:icons: font
+
+here [strikeout]##we go icon:stop[]##`
+				expected := `<div class="paragraph">
+<p>here <span class="strikeout">we go <span class="icon"><i class="fa fa-stop"></i></span></span></p>
+</div>`
+				Expect(RenderHTML(source)).To(MatchHTML(expected))
+			})
+
+		})
 	})
 })

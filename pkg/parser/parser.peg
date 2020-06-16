@@ -1439,7 +1439,7 @@ ImageAttributes <- "[" alt:(StandaloneAttributeValue)? ","? width:(StandaloneAtt
 // Inline icons
 // ------------------------------------------------------------------------------------
 InlineIcon <- "icon:" iconClass:([\pL0-9_-]+ { return string(c.text), nil }) inlineAttributes:(IconAttributes) {
-    return types.NewInlineIcon(iconClass.(string), inlineAttributes.(types.Attributes))
+    return types.NewIcon(iconClass.(string), inlineAttributes.(types.Attributes))
 }
 
 IconAttributes <- "[" size:(StandaloneAttributeValue)? ","? Space* others:(GenericAttribute)* "]" {

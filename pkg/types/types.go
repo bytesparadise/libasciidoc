@@ -1047,7 +1047,7 @@ func NewParagraph(lines []interface{}, attributes interface{}) (Paragraph, error
 	if err != nil {
 		return Paragraph{}, errors.Wrapf(err, "failed to initialize a Paragraph element")
 	}
-	// log.Debugf("initializing a new Newparagraph with %d line(s) and %d attribute(s)", len(lines), len(attrs))
+	// log.Debugf("initializing a new paragraph with %d line(s) and %d attribute(s)", len(lines), len(attrs))
 	elements := make([][]interface{}, 0)
 	for _, line := range lines {
 		if l, ok := line.([]interface{}); ok {
@@ -1299,8 +1299,8 @@ func NewIconAttributes(size interface{}, others []interface{}) (Attributes, erro
 	return result, nil
 }
 
-// NewInlineIcon initializes a new `Icon`
-func NewInlineIcon(class string, attributes Attributes) (Icon, error) {
+// NewIcon initializes a new `Icon`
+func NewIcon(class string, attributes Attributes) (Icon, error) {
 	return Icon{
 		Class:      class,
 		Attributes: attributes,

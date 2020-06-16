@@ -3,7 +3,6 @@ package parser_test
 import (
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 	. "github.com/bytesparadise/libasciidoc/testsupport"
-
 	. "github.com/onsi/ginkgo" //nolint golint
 	. "github.com/onsi/gomega" //nolint golint
 )
@@ -196,6 +195,118 @@ var _ = Describe("icons", func() {
 									},
 									types.Icon{
 										Class: "info",
+									},
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+			})
+
+			It("inline icon in title works", func() {
+				source := `== a icon:note[] from me`
+				expected := types.DraftDocument{
+					Blocks: []interface{}{
+						types.Section{
+							Level: 1,
+							Title: []interface{}{
+								types.StringElement{
+									Content: "a ",
+								},
+								types.Icon{
+									Class: "note",
+								},
+								types.StringElement{
+									Content: " from me",
+								},
+							},
+							Elements: []interface{}{},
+						},
+					},
+				}
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+			})
+
+			It("inline icon at title start", func() {
+				source := `= icon:warning[] or what icon:note[] to do`
+				expected := types.DraftDocument{
+					Blocks: []interface{}{
+						types.Section{
+							Level: 0,
+							Title: []interface{}{
+								types.Icon{Class: "warning"},
+								types.StringElement{Content: " or what "},
+								types.Icon{Class: "note"},
+								types.StringElement{Content: " to do"},
+							},
+							Elements: []interface{}{},
+						},
+					},
+				}
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+			})
+
+			// NB: The existing grammar for labeled list items does not support any markup
+			// in the term text.
+			It("inline icon as labeled list item description", func() {
+				source := `discount:: icon:tags[alt="Discount"] Cheap cheap!
+item 2:: two`
+				expected := types.DraftDocument{
+					Blocks: []interface{}{
+
+						types.LabeledListItem{
+							Level: 1,
+							Term: []interface{}{
+								types.StringElement{Content: "discount"},
+							},
+							Elements: []interface{}{
+								types.Paragraph{
+									Lines: [][]interface{}{
+										{
+											types.Icon{Class: "tags", Attributes: types.Attributes{types.AttrImageAlt: "Discount"}},
+											types.StringElement{Content: " Cheap cheap!"},
+										},
+									},
+								},
+							},
+						},
+						types.LabeledListItem{
+							Level: 1,
+							Term: []interface{}{
+								types.StringElement{Content: "item 2"},
+							},
+							Elements: []interface{}{
+								types.Paragraph{
+									Lines: [][]interface{}{
+										{
+											types.StringElement{Content: "two"},
+										},
+									},
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+
+			})
+
+			It("inline icon in quoted text", func() {
+				source := `an _italicized icon:warning[] message_`
+				expected := types.DraftDocument{
+					Blocks: []interface{}{
+						types.Paragraph{
+							Lines: [][]interface{}{
+								{
+									types.StringElement{Content: "an "},
+									types.QuotedText{
+										Kind: types.Italic,
+										Elements: []interface{}{
+											types.StringElement{Content: "italicized "},
+											types.Icon{Class: "warning"},
+											types.StringElement{Content: " message"},
+										},
 									},
 								},
 							},
