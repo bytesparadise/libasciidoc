@@ -364,6 +364,81 @@ StandaloneAttributes <- attributes:(ElementAttribute)+ BlankLine* EOF { // stand
 }
 
 // ------------------------------------------
+// Quoted Strings (between curly single or double quotes)
+// ------------------------------------------
+
+QuotedString <- qs:(SingleQuotedString / DoubleQuotedString) {
+    return qs, nil
+}
+
+SingleQuotedString <- "'`" elements:SingleQuotedStringElements "`'" {
+    return types.QuotedString{ Kind: types.SingleQuote, Elements: elements.([]interface{})}, nil
+}
+
+SingleQuotedStringElements <- elements:(SingleQuotedStringElement+) {
+    return types.NewInlineElements(elements)
+}
+
+// We have to treat this one special, because of ambiguity with monospace markup.
+SingleQuotedStringElement <- element:(
+        LineBreak // must be before spaces
+        / Space+
+        / InlineIcon
+        / InlineImage
+        / InlineFootnote
+        / InlinePassthrough
+        / Link
+        / AttributeSubstitution
+        / BoldText
+        / ItalicText
+        / MarkedText
+        / SubscriptText
+        / SuperscriptText
+        / !"`'" MonospaceText
+        / DoubleQuotedString
+        / SingleQuotedStringFallbackCharacter) {
+    return element, nil
+}
+
+SingleQuotedStringFallbackCharacter <-  [^\r\n`] / "`" !"'" {
+    return types.NewStringElement(string(c.text))
+}
+
+DoubleQuotedString <- "\"`" elements:DoubleQuotedStringElements "`\"" {
+
+    return types.QuotedString{ Kind: types.DoubleQuote, Elements: elements.([]interface{})}, nil
+}
+
+DoubleQuotedStringElements <- elements:(DoubleQuotedStringElement+) {
+    return types.NewInlineElements(elements)
+}
+
+// We have to treat this one special, because of ambiguity with monospace markup.
+DoubleQuotedStringElement <- element:(
+        LineBreak // must be before spaces
+        // Space+
+        / InlineIcon
+        / InlineImage
+        / InlineFootnote
+        / InlinePassthrough
+        / Link
+        / AttributeSubstitution
+        / BoldText
+        / ItalicText
+        / MarkedText
+        / SubscriptText
+        / SuperscriptText
+        / !"`\"" MonospaceText
+        / SingleQuotedString
+        / DoubleQuotedStringFallbackCharacter) {
+            return element, nil
+}
+
+DoubleQuotedStringFallbackCharacter <-  ([^\r\n`] / "`" !"\"") {
+    return types.NewStringElement(string(c.text))
+}
+
+// ------------------------------------------
 // Sections
 // ------------------------------------------
 Section <- attributes:(Attributes)?
@@ -392,6 +467,7 @@ TitleElement <- element:(Word
         / InlineImage
         / Link
         / InlineFootnote
+        / QuotedString
         / QuotedText
         / AttributeSubstitution
         / AnyChar) {
@@ -723,6 +799,7 @@ LabeledListItemTermElement <- element:(Word
         / InlineImage 
         / Link
         / InlineFootnote
+        / QuotedString
         / QuotedText
         / AttributeSubstitution
         / AnyChar ) {
@@ -882,8 +959,9 @@ InlineElement <-
     element:(InlineWord // more permissive than words
         / LineBreak // must be before spaces
         / Space+ 
-        / !EOL ( 
-            QuotedText
+        / !EOL (
+            QuotedString
+            / QuotedText
             / InlineIcon
             / InlineImage 
             / Link 
@@ -911,9 +989,9 @@ LineBreak <- Space "+" Space* &EOL {
 // ----------------------------------------------------------------------------
 QuotedText <- UnconstrainedQuotedText / ConstrainedQuotedText / EscapedQuotedText
 
-ConstrainedQuotedTextMarker <- "*" !"*" / "_" !"_" / "`" !"`" 
+ConstrainedQuotedTextMarker <- "*" !"*" / "_" !"_" / "#" !"#" / "`" !"`"
 
-UnconstrainedQuotedTextPrefix <- "**" / "__" / "``" / "^" / "~"
+UnconstrainedQuotedTextPrefix <- "**" / "__" / "``" / "##" / "^" / "~"
 
 ConstrainedQuotedText <- text:(SingleQuoteBoldText 
             / SingleQuoteItalicText
@@ -969,9 +1047,10 @@ DoubleQuoteBoldTextElement <- Word
         / SubscriptText
         / SuperscriptText
         / InlineIcon
-        / InlineImage 
-        / Link 
-        / InlinePassthrough 
+        / InlineImage
+        / Link
+        / InlinePassthrough
+        / QuotedString
         / AttributeSubstitution
         / DoubleQuoteBoldTextStringElement
         / DoubleQuoteBoldTextFallbackCharacter
@@ -1006,7 +1085,8 @@ SingleQuoteBoldTextElement <- Word
         / InlineIcon
         / InlineImage 
         / Link  
-        / InlinePassthrough 
+        / InlinePassthrough
+        / QuotedString
         / AttributeSubstitution
         / SingleQuoteBoldTextStringElement
         / SingleQuoteBoldTextFallbackCharacter
@@ -1053,7 +1133,8 @@ DoubleQuoteItalicTextElement <- Word
         / InlineIcon
         / InlineImage 
         / Link 
-        / InlinePassthrough 
+        / InlinePassthrough
+        / QuotedString
         / DoubleQuoteItalicTextStringElement
         / DoubleQuoteItalicTextFallbackCharacter
 
@@ -1087,6 +1168,7 @@ SingleQuoteItalicTextElement <- Word
         / InlineImage 
         / Link  
         / InlinePassthrough 
+        / QuotedString
         / AttributeSubstitution
         / SingleQuoteItalicTextStringElement
         / SingleQuoteItalicTextFallbackCharacter
@@ -1133,6 +1215,7 @@ DoubleQuoteMonospaceTextElement <- Word
         / InlineImage
         / Link
         / InlinePassthrough 
+        / QuotedString
         / DoubleQuoteMonospaceTextStringElement
         / DoubleQuoteMonospaceTextFallbackCharacter
 
@@ -1167,6 +1250,7 @@ SingleQuoteMonospaceTextElement <-  Word
         / InlineImage 
         / Link 
         / InlinePassthrough 
+        / QuotedString
         / AttributeSubstitution
         / SingleQuoteMonospaceTextStringElement
         / SingleQuoteMonospaceTextFallbackCharacter
@@ -1214,6 +1298,7 @@ DoubleQuoteMarkedTextElement <- Word
         / InlineImage
         / Link
         / InlinePassthrough
+        / QuotedString
         / DoubleQuoteMarkedTextStringElement
         / DoubleQuoteMarkedTextFallbackCharacter
 
@@ -1247,6 +1332,7 @@ SingleQuoteMarkedTextElement <- Word
         / InlineImage
         / Link
         / InlinePassthrough
+        / QuotedString
         / AttributeSubstitution
         / SingleQuoteMarkedTextStringElement
         / SingleQuoteMarkedTextFallbackCharacter
@@ -1377,11 +1463,11 @@ LinkAttributes <- "[" firstAttr:(FirstLinkAttributeElement)*
 
 FirstLinkAttributeElement <- element:(
     // surrounded with double quotes
-    ("\"" elements:(QuotedText / QuotedAttributeChar)+ "\"" &(!"=") ","? {
+    ("\"" elements:(QuotedString / QuotedText / QuotedAttributeChar)+ "\"" &(!"=") ","? {
         return types.NewInlineElements(elements.([]interface{}))
     }) /
     // not surrounded with double quotes
-    (elements:(QuotedText / UnquotedAttributeChar)+ &(!"=") ","? {
+    (elements:(QuotedString / QuotedText / UnquotedAttributeChar)+ &(!"=") ","? {
         return types.NewInlineElements(elements.([]interface{}))
     }))  {
         return element, nil
@@ -1803,7 +1889,7 @@ IndexTerm <- "((" term:(IndexTermContent) "))" {
        return types.NewIndexTerm(term.([]interface{}))
 }
 
-IndexTermContent <- elements:(Word / QuotedText / Space / (!"))" .) {
+IndexTermContent <- elements:(Word / QuotedText / QuotedString / Space / (!"))" .) {
     return string(c.text), nil
 })+ {
     return types.NewInlineElements(elements.([]interface{}))
