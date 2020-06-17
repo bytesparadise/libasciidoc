@@ -470,6 +470,89 @@ Last updated {{.LastUpdated}}
 					configuration.WithCSS("path/to/style.css"),
 					configuration.WithHeaderFooter(true))).To(MatchHTMLTemplate(expectedContent, lastUpdated))
 			})
+
+			It("should render html", func() {
+				source := `= Story
+
+Our story begins.`
+				expectedContent := `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="libasciidoc">
+<title>Story</title>
+</head>
+<body class="article">
+<div id="header">
+<h1>Story</h1>
+</div>
+<div id="content">
+<div class="paragraph">
+<p>Our story begins.</p>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated {{.LastUpdated}}
+</div>
+</div>
+</body>
+</html>`
+				Expect(Render(source,
+					configuration.WithBackEnd("html5"),
+					configuration.WithLastUpdated(lastUpdated),
+					configuration.WithHeaderFooter(true))).To(MatchHTMLTemplate(expectedContent, lastUpdated))
+			})
+
+			It("should render xhtml", func() {
+				source := `= Story
+
+Our story begins.`
+				expectedContent := `<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="generator" content="libasciidoc"/>
+<title>Story</title>
+</head>
+<body class="article">
+<div id="header">
+<h1>Story</h1>
+</div>
+<div id="content">
+<div class="paragraph">
+<p>Our story begins.</p>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated {{.LastUpdated}}
+</div>
+</div>
+</body>
+</html>`
+				Expect(Render(source,
+					configuration.WithBackEnd("xhtml5"),
+					configuration.WithLastUpdated(lastUpdated),
+					configuration.WithHeaderFooter(true))).To(MatchHTMLTemplate(expectedContent, lastUpdated))
+			})
+
+			It("should fail given bogus backend", func() {
+				source := `= Story
+
+Our story begins.`
+				doc, err := Render(source,
+					configuration.WithBackEnd("wordperfect"),
+					configuration.WithLastUpdated(lastUpdated),
+					configuration.WithHeaderFooter(true))
+				Expect(doc).To(BeEmpty())
+				Expect(err).To(MatchError("backend 'wordperfect' not supported"))
+			})
+
 		})
 
 	})

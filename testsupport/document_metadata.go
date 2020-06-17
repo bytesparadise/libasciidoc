@@ -12,7 +12,7 @@ import (
 
 // DocumentMetadata processes the actual input into a document and returns its metadata
 func DocumentMetadata(actual string, lastUpdated time.Time) (types.Metadata, error) {
-	return libasciidoc.ConvertToHTML(strings.NewReader(actual),
+	return libasciidoc.Convert(strings.NewReader(actual),
 		bytes.NewBuffer(nil),
-		configuration.NewConfiguration(configuration.WithLastUpdated(lastUpdated)))
+		configuration.NewConfiguration(configuration.WithLastUpdated(lastUpdated), configuration.WithBackEnd("html5")))
 }

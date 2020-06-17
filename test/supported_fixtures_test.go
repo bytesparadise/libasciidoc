@@ -79,8 +79,8 @@ func entries(pattern string) []TableEntry {
 func convert(sourcePath string) (string, error) {
 	// generate the HTML output
 	buff := bytes.NewBuffer(nil)
-	config := configuration.NewConfiguration(configuration.WithFilename(sourcePath))
-	_, err := libasciidoc.ConvertFileToHTML(buff, config)
+	config := configuration.NewConfiguration(configuration.WithFilename(sourcePath), configuration.WithBackEnd("html5"))
+	_, err := libasciidoc.ConvertFile(buff, config)
 	if err != nil {
 		return "", err
 	}

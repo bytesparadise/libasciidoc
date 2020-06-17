@@ -23,6 +23,7 @@ func NewRootCmd() *cobra.Command {
 	var outputName string
 	var logLevel string
 	var css string
+	var backend string
 	var attributes []string
 
 	rootCmd := &cobra.Command{
@@ -55,8 +56,9 @@ func NewRootCmd() *cobra.Command {
 						configuration.WithFilename(sourcePath),
 						configuration.WithAttributes(attrs),
 						configuration.WithCSS(css),
+						configuration.WithBackEnd(backend),
 						configuration.WithHeaderFooter(!noHeaderFooter))
-					_, err := libasciidoc.ConvertFileToHTML(out, config)
+					_, err := libasciidoc.ConvertFile(out, config)
 					if err != nil {
 						return err
 					}
@@ -72,6 +74,7 @@ func NewRootCmd() *cobra.Command {
 	flags.StringVar(&logLevel, "log", "warning", "log level to set [debug|info|warning|error|fatal|panic]")
 	flags.StringVar(&css, "css", "", "the path to the CSS file to link to the document")
 	flags.StringArrayVarP(&attributes, "attribute", "a", []string{}, "a document attribute to set in the form of name, name!, or name=value pair")
+	flags.StringVarP(&backend, "backend", "b", "html5", "backend to format the file")
 	return rootCmd
 }
 

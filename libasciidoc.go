@@ -3,6 +3,8 @@
 package libasciidoc
 
 import (
+	"fmt"
+	"github.com/bytesparadise/libasciidoc/pkg/renderer/sgml/xhtml5"
 	"io"
 	"os"
 	"time"
@@ -27,10 +29,10 @@ var (
 	BuildTime = ""
 )
 
-// ConvertFileToHTML converts the content of the given filename into an HTML document.
+// ConvertFile converts the content of the given filename into an output document.
 // The conversion result is written in the given writer `output`, whereas the document metadata (title, etc.) (or an error if a problem occurred) is returned
-// as the result of the function call.
-func ConvertFileToHTML(output io.Writer, config configuration.Configuration) (types.Metadata, error) {
+// as the result of the function call.  The output format is determined by config.Backend (HTML5 default).
+func ConvertFile(output io.Writer, config configuration.Configuration) (types.Metadata, error) {
 	file, err := os.Open(config.Filename)
 	if err != nil {
 		return types.Metadata{}, errors.Wrapf(err, "error opening %s", config.Filename)
@@ -42,16 +44,27 @@ func ConvertFileToHTML(output io.Writer, config configuration.Configuration) (ty
 		return types.Metadata{}, errors.Wrapf(err, "error opening %s", config.Filename)
 	}
 	config.LastUpdated = stat.ModTime()
-	return ConvertToHTML(file, output, config)
+	return Convert(file, output, config)
 }
 
-// ConvertToHTML converts the content of the given reader `r` into a full HTML document, written in the given writer `output`.
-// Returns an error if a problem occurred
-func ConvertToHTML(r io.Reader, output io.Writer, config configuration.Configuration) (types.Metadata, error) {
+// Convert converts the content of the given reader `r` into a full output document, written in the given writer `output`.
+// Returns an error if a problem occurred. The default will be HTML5, but depends on the config.BackEnd value.
+func Convert(r io.Reader, output io.Writer, config configuration.Configuration) (types.Metadata, error) {
+
+	var render func(*renderer.Context, types.Document, io.Writer) (types.Metadata, error)
+	switch config.BackEnd {
+	case "html", "html5", "":
+		render = html5.Render
+	case "xhtml", "xhtml5":
+		render = xhtml5.Render
+	default:
+		return types.Metadata{}, fmt.Errorf("backend '%s' not supported", config.BackEnd)
+	}
+
 	start := time.Now()
 	defer func() {
 		duration := time.Since(start)
-		log.Debugf("rendered the HTML output in %v", duration)
+		log.Debugf("rendered the output in %v", duration)
 	}()
 	log.Debugf("parsing the asciidoc source...")
 	doc, err := parser.ParseDocument(r, config) //, parser.Debug(true))
@@ -70,10 +83,11 @@ func ConvertToHTML(r io.Reader, output io.Writer, config configuration.Configura
 	}
 	// render
 	ctx := renderer.NewContext(doc, config)
-	metadata, err := html5.Render(ctx, doc, output)
+	metadata, err := render(ctx, doc, output)
 	if err != nil {
 		return types.Metadata{}, err
 	}
 	log.Debugf("Done processing document")
 	return metadata, nil
+
 }
