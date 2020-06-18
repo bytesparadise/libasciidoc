@@ -135,6 +135,8 @@ func (r *sgmlRenderer) renderElement(ctx *renderer.Context, element interface{})
 		return r.renderConcealedIndexTerm(e)
 	case types.VerbatimLine:
 		return r.renderVerbatimLine(e)
+	case types.QuotedString:
+		return r.renderQuotedString(ctx, e)
 	default:
 		return nil, errors.Errorf("unsupported type of element: %T", element)
 	}
@@ -163,6 +165,8 @@ func (r *sgmlRenderer) renderPlainText(ctx *renderer.Context, element interface{
 		return []byte("\n\n"), nil
 	case types.StringElement:
 		return []byte(element.Content), nil
+	case types.QuotedString:
+		return r.renderQuotedStringPlain(ctx, element)
 	case types.Paragraph:
 		return r.renderLines(ctx, element.Lines, r.withPlainText())
 	case types.FootnoteReference:

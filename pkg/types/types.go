@@ -1778,6 +1778,16 @@ const (
 	Superscript
 )
 
+// QuotedStringKind indicates whether this is 'single' or "double" quoted.
+type QuotedStringKind int
+
+const (
+	// SingleQuote means single quotes (')
+	SingleQuote QuotedStringKind = iota
+	// DoubleQuote means double quotes (")
+	DoubleQuote
+)
+
 // NewQuotedText initializes a new `QuotedText` from the given kind and content
 func NewQuotedText(kind QuotedTextKind, attributes interface{}, elements ...interface{}) (QuotedText, error) {
 	attrs, err := NewQuotedTextAttributes(attributes)
@@ -1818,6 +1828,15 @@ func NewEscapedQuotedText(backslashes string, punctuation string, content interf
 			Content: punctuation,
 		},
 	}, nil
+}
+
+type QuotedString struct {
+	Kind     QuotedStringKind
+	Elements []interface{}
+}
+
+func NewQuotedString(kind QuotedStringKind, elements []interface{}) (QuotedString, error) {
+	return QuotedString{Kind: kind, Elements: elements}, nil
 }
 
 // ------------------------------------------
