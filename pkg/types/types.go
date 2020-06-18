@@ -1835,6 +1835,10 @@ type QuotedString struct {
 	Elements []interface{}
 }
 
+func NewQuotedString(kind QuotedStringKind, elements []interface{}) (QuotedString, error) {
+	return QuotedString{Kind: kind, Elements: elements}, nil
+}
+
 // ------------------------------------------
 // InlinePassthrough
 // ------------------------------------------

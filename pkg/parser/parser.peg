@@ -367,12 +367,10 @@ StandaloneAttributes <- attributes:(ElementAttribute)+ BlankLine* EOF { // stand
 // Quoted Strings (between curly single or double quotes)
 // ------------------------------------------
 
-QuotedString <- qs:(SingleQuotedString / DoubleQuotedString) {
-    return qs, nil
-}
+QuotedString <- SingleQuotedString / DoubleQuotedString
 
 SingleQuotedString <- "'`" elements:SingleQuotedStringElements "`'" {
-    return types.QuotedString{ Kind: types.SingleQuote, Elements: elements.([]interface{})}, nil
+    return types.NewQuotedString(types.SingleQuote, elements.([]interface{}))
 }
 
 SingleQuotedStringElements <- elements:(SingleQuotedStringElement+) {
@@ -405,8 +403,7 @@ SingleQuotedStringFallbackCharacter <-  [^\r\n`] / "`" !"'" {
 }
 
 DoubleQuotedString <- "\"`" elements:DoubleQuotedStringElements "`\"" {
-
-    return types.QuotedString{ Kind: types.DoubleQuote, Elements: elements.([]interface{})}, nil
+    return types.NewQuotedString(types.DoubleQuote, elements.([]interface{}))
 }
 
 DoubleQuotedStringElements <- elements:(DoubleQuotedStringElement+) {
