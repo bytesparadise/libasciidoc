@@ -1,4 +1,4 @@
-package html5_test
+package xhtml5_test
 
 import (
 	. "github.com/bytesparadise/libasciidoc/testsupport"
@@ -16,7 +16,7 @@ var _ = Describe("quoted strings", func() {
 			expected := `<div class="paragraph">
 <p><strong>bold content</strong></p>
 </div>`
-			Expect(RenderHTML(source)).To(MatchHTML(expected))
+			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
 		It("simple single quoted string", func() {
@@ -24,14 +24,14 @@ var _ = Describe("quoted strings", func() {
 			expected := `<div class="paragraph">
 <p>&#8216;curly was single&#8217;</p>
 </div>`
-			Expect(RenderHTML(source)).To(MatchHTML(expected))
+			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
-		It("interior spaces with single quoted string", func() {
+		It("spaces with single quoted string", func() {
 			source := "'` curly was single `' or so they say"
 			expected := "<div class=\"paragraph\">\n" +
 				"<p>'` curly was single `' or so they say</p>\n" +
 				"</div>"
-			Expect(RenderHTML(source)).To(MatchHTML(expected))
+			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
 		It("bold in single quoted string", func() {
@@ -39,7 +39,7 @@ var _ = Describe("quoted strings", func() {
 			expected := `<div class="paragraph">
 <p>&#8216;curly <strong>was</strong> single&#8217;</p>
 </div>`
-			Expect(RenderHTML(source)).To(MatchHTML(expected))
+			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
 		It("italics in single quoted string", func() {
@@ -47,7 +47,7 @@ var _ = Describe("quoted strings", func() {
 			expected := `<div class="paragraph">
 <p>&#8216;curly <em>was</em> single&#8217;</p>
 </div>`
-			Expect(RenderHTML(source)).To(MatchHTML(expected))
+			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 
 		})
 		It("span in single quoted string", func() {
@@ -55,7 +55,7 @@ var _ = Describe("quoted strings", func() {
 			expected := `<div class="paragraph">
 <p>&#8216;curly <span class="strikeout">was</span><em>is</em> single&#8217;</p>
 </div>`
-			Expect(RenderHTML(source)).To(MatchHTML(expected))
+			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 
 		})
 		It("curly in monospace  string", func() {
@@ -63,14 +63,14 @@ var _ = Describe("quoted strings", func() {
 			expected := `<div class="paragraph">
 <p>&#8216;curly <code>is</code> single&#8217;</p>
 </div>`
-			Expect(RenderHTML(source)).To(MatchHTML(expected))
+			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 		It("curly as monospace string", func() {
 			source := "'``curly``'"
 			expected := `<div class="paragraph">
 <p>&#8216;<code>curly</code>&#8217;</p>
 </div>`
-			Expect(RenderHTML(source)).To(MatchHTML(expected))
+			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
 		It("curly with nested double curly", func() {
@@ -78,7 +78,7 @@ var _ = Describe("quoted strings", func() {
 			expected := `<div class="paragraph">
 <p>&#8216;single&#8220;double&#8221;&#8217;</p>
 </div>`
-			Expect(RenderHTML(source)).To(MatchHTML(expected))
+			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
 		It("curly in monospace string", func() {
@@ -86,14 +86,14 @@ var _ = Describe("quoted strings", func() {
 			expected := `<div class="paragraph">
 <p><code>&#8216;curly&#8217;</code></p>
 </div>`
-			Expect(RenderHTML(source)).To(MatchHTML(expected))
+			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 		It("curly in italics", func() {
 			source := "_'`curly`'_"
 			expected := `<div class="paragraph">
 <p><em>&#8216;curly&#8217;</em></p>
 </div>`
-			Expect(RenderHTML(source)).To(MatchHTML(expected))
+			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 
 		})
 		It("curly in bold", func() {
@@ -101,7 +101,7 @@ var _ = Describe("quoted strings", func() {
 			expected := `<div class="paragraph">
 <p><strong>&#8216;curly&#8217;</strong></p>
 </div>`
-			Expect(RenderHTML(source)).To(MatchHTML(expected))
+			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
 		It("curly in title", func() {
@@ -111,7 +111,7 @@ var _ = Describe("quoted strings", func() {
 <div class="sectionbody">
 </div>
 </div>`
-			Expect(RenderHTML(source)).To(MatchHTML(expected))
+			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
 		It("curly in list element", func() {
@@ -123,7 +123,7 @@ var _ = Describe("quoted strings", func() {
 </li>
 </ul>
 </div>`
-			Expect(RenderHTML(source)).To(MatchHTML(expected))
+			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
 		It("curly in labeled list", func() {
@@ -136,7 +136,7 @@ var _ = Describe("quoted strings", func() {
 </dd>
 </dl>
 </div>`
-			Expect(RenderHTML(source)).To(MatchHTML(expected))
+			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
 		It("curly in link", func() {
@@ -144,22 +144,22 @@ var _ = Describe("quoted strings", func() {
 			expected := `<div class="paragraph">
 <p><a href="https://www.example.com/a">&#8216;example&#8217;</a></p>
 </div>`
-			Expect(RenderHTML(source)).To(MatchHTML(expected))
+			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 		It("curly in quoted link", func() {
 			source := "https://www.example.com/a[\"an '`example`'\"]"
 			expected := `<div class="paragraph">
 <p><a href="https://www.example.com/a">an &#8216;example&#8217;</a></p>
 </div>`
-			Expect(RenderHTML(source)).To(MatchHTML(expected))
+			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
 		It("image in curly", func() {
 			source := "'`a image:foo.png[]`'"
 			expected := `<div class="paragraph">
-<p>&#8216;a <span class="image"><img src="foo.png" alt=""></span>&#8217;</p>
+<p>&#8216;a <span class="image"><img src="foo.png" alt=""/></span>&#8217;</p>
 </div>`
-			Expect(RenderHTML(source)).To(MatchHTML(expected))
+			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
 		It("icon in curly", func() {
@@ -167,7 +167,7 @@ var _ = Describe("quoted strings", func() {
 			expected := `<div class="paragraph">
 <p>&#8216;a <span class="icon"><i class="fa fa-note"></i></span>&#8217;</p>
 </div>`
-			Expect(RenderHTML(source)).To(MatchHTML(expected))
+			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
 		It("simple single quoted string", func() {
@@ -175,7 +175,7 @@ var _ = Describe("quoted strings", func() {
 			expected := `<div class="paragraph">
 <p>&#8220;curly was single&#8221;</p>
 </div>`
-			Expect(RenderHTML(source)).To(MatchHTML(expected))
+			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 
 		})
 
@@ -184,14 +184,14 @@ var _ = Describe("quoted strings", func() {
 			expected := "<div class=\"paragraph\">\n" +
 				"<p>\"` curly was single `\"</p>\n" +
 				"</div>"
-			Expect(RenderHTML(source)).To(MatchHTML(expected))
+			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 		It("bold in double quoted string", func() {
 			source := "\"`curly *was* single`\""
 			expected := `<div class="paragraph">
 <p>&#8220;curly <strong>was</strong> single&#8221;</p>
 </div>`
-			Expect(RenderHTML(source)).To(MatchHTML(expected))
+			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 
 		})
 		It("italics in double quoted string", func() {
@@ -199,7 +199,7 @@ var _ = Describe("quoted strings", func() {
 			expected := `<div class="paragraph">
 <p>&#8220;curly <em>was</em> single&#8221;</p>
 </div>`
-			Expect(RenderHTML(source)).To(MatchHTML(expected))
+			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
 		It("span in double quoted string", func() {
@@ -207,7 +207,7 @@ var _ = Describe("quoted strings", func() {
 			expected := `<div class="paragraph">
 <p>&#8220;curly <span class="strikeout">was</span><em>is</em> single&#8221;</p>
 </div>`
-			Expect(RenderHTML(source)).To(MatchHTML(expected))
+			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
 		It("double curly in monospace string", func() {
@@ -215,7 +215,7 @@ var _ = Describe("quoted strings", func() {
 			expected := `<div class="paragraph">
 <p>&#8220;curly <code>is</code> single&#8221;</p>
 </div>`
-			Expect(RenderHTML(source)).To(MatchHTML(expected))
+			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
 		It("double curly as monospace string", func() {
@@ -223,28 +223,28 @@ var _ = Describe("quoted strings", func() {
 			expected := `<div class="paragraph">
 <p>&#8220;<code>curly</code>&#8221;</p>
 </div>`
-			Expect(RenderHTML(source)).To(MatchHTML(expected))
+			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 		It("double curly with nested single curly", func() {
 			source := "\"`double'`single`'`\""
 			expected := `<div class="paragraph">
 <p>&#8220;double&#8216;single&#8217;&#8221;</p>
 </div>`
-			Expect(RenderHTML(source)).To(MatchHTML(expected))
+			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 		It("double curly in monospace string", func() {
 			source := "`\"`curly`\"`"
 			expected := `<div class="paragraph">
 <p><code>&#8220;curly&#8221;</code></p>
 </div>`
-			Expect(RenderHTML(source)).To(MatchHTML(expected))
+			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 		It("double curly in italics", func() {
 			source := "_\"`curly`\"_"
 			expected := `<div class="paragraph">
 <p><em>&#8220;curly&#8221;</em></p>
 </div>`
-			Expect(RenderHTML(source)).To(MatchHTML(expected))
+			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 
 		})
 		It("double curly in bold", func() {
@@ -252,7 +252,7 @@ var _ = Describe("quoted strings", func() {
 			expected := `<div class="paragraph">
 <p><strong>&#8220;curly&#8221;</strong></p>
 </div>`
-			Expect(RenderHTML(source)).To(MatchHTML(expected))
+			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 
 		})
 
@@ -263,7 +263,7 @@ var _ = Describe("quoted strings", func() {
 <div class="sectionbody">
 </div>
 </div>`
-			Expect(RenderHTML(source)).To(MatchHTML(expected))
+			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
 		It("double in list element", func() {
@@ -275,7 +275,7 @@ var _ = Describe("quoted strings", func() {
 </li>
 </ul>
 </div>`
-			Expect(RenderHTML(source)).To(MatchHTML(expected))
+			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 
 		})
 		It("double curly in labeled list", func() {
@@ -288,7 +288,7 @@ var _ = Describe("quoted strings", func() {
 </dd>
 </dl>
 </div>`
-			Expect(RenderHTML(source)).To(MatchHTML(expected))
+			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
 		// In a link, the quotes are ambiguous, and we default to assuming they are for enclosing
@@ -298,7 +298,7 @@ var _ = Describe("quoted strings", func() {
 			expected := `<div class="paragraph">
 <p><a href="https://www.example.com/a"><code>example</code></a></p>
 </div>`
-			Expect(RenderHTML(source)).To(MatchHTML(expected))
+			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
 		// This is the unambiguous form.
@@ -308,21 +308,21 @@ var _ = Describe("quoted strings", func() {
 <p><a href="https://www.example.com/a">&#8220;example&#8221;</a></p>
 </div>`
 
-			Expect(RenderHTML(source)).To(MatchHTML(expected))
+			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 		It("image in double curly", func() {
 			source := "\"`a image:foo.png[]`\""
 			expected := `<div class="paragraph">
-<p>&#8220;a <span class="image"><img src="foo.png" alt=""></span>&#8221;</p>
+<p>&#8220;a <span class="image"><img src="foo.png" alt=""/></span>&#8221;</p>
 </div>`
-			Expect(RenderHTML(source)).To(MatchHTML(expected))
+			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 		It("icon in double curly", func() {
 			source := ":icons: font\n\n\"`a icon:note[]`\""
 			expected := `<div class="paragraph">
 <p>&#8220;a <span class="icon"><i class="fa fa-note"></i></span>&#8221;</p>
 </div>`
-			Expect(RenderHTML(source)).To(MatchHTML(expected))
+			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 	})
 })

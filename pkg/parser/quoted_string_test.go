@@ -31,19 +31,46 @@ var _ = Describe("quoted strings", func() {
 			}
 			Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 		})
-		It("spaces with single quoted string", func() {
+		It("interior spaces with single quoted string", func() {
 			source := "'` curly was single `'"
 			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.Paragraph{
 						Lines: [][]interface{}{
 							{
-								types.QuotedString{
-									Kind: types.SingleQuote,
-									Elements: []interface{}{
-										types.StringElement{Content: " curly was single "},
-									},
-								},
+								types.StringElement{Content: "'` curly was single `'"},
+							},
+						},
+					},
+				},
+			}
+			Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+		})
+
+		It("interior ending space with single quoted string", func() {
+			source := "'`curly was single `'"
+			expected := types.DraftDocument{
+				Blocks: []interface{}{
+					types.Paragraph{
+						Lines: [][]interface{}{
+							{
+								types.StringElement{Content: "'`curly was single `'"},
+							},
+						},
+					},
+				},
+			}
+			Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+		})
+
+		It("interior leading space with single quoted string", func() {
+			source := "'` curly was single`'"
+			expected := types.DraftDocument{
+				Blocks: []interface{}{
+					types.Paragraph{
+						Lines: [][]interface{}{
+							{
+								types.StringElement{Content: "'` curly was single`'"},
 							},
 						},
 					},
@@ -528,19 +555,14 @@ var _ = Describe("quoted strings", func() {
 			Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 		})
 
-		It("spaces with double quoted string", func() {
+		It("interior spaces with double quoted string", func() {
 			source := "\"` curly was single `\""
 			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.Paragraph{
 						Lines: [][]interface{}{
 							{
-								types.QuotedString{
-									Kind: types.DoubleQuote,
-									Elements: []interface{}{
-										types.StringElement{Content: " curly was single "},
-									},
-								},
+								types.StringElement{Content: "\"` curly was single `\""},
 							},
 						},
 					},
@@ -548,6 +570,37 @@ var _ = Describe("quoted strings", func() {
 			}
 			Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 		})
+		It("interior ending space with double quoted string", func() {
+			source := "\"`curly was single `\""
+			expected := types.DraftDocument{
+				Blocks: []interface{}{
+					types.Paragraph{
+						Lines: [][]interface{}{
+							{
+								types.StringElement{Content: "\"`curly was single `\""},
+							},
+						},
+					},
+				},
+			}
+			Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+		})
+		It("interior leading space with double quoted string", func() {
+			source := "\"` curly was single`\""
+			expected := types.DraftDocument{
+				Blocks: []interface{}{
+					types.Paragraph{
+						Lines: [][]interface{}{
+							{
+								types.StringElement{Content: "\"` curly was single`\""},
+							},
+						},
+					},
+				},
+			}
+			Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+		})
+
 		It("bold in double quoted string", func() {
 			source := "\"`curly *was* single`\""
 			expected := types.DraftDocument{
