@@ -1,15 +1,15 @@
 package sgml
 
 import (
-	"bytes"
+	"strings"
 
 	"github.com/bytesparadise/libasciidoc/pkg/renderer"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 	"github.com/pkg/errors"
 )
 
-func (r *sgmlRenderer) renderOrderedList(ctx *renderer.Context, l types.OrderedList) ([]byte, error) {
-	result := &bytes.Buffer{}
+func (r *sgmlRenderer) renderOrderedList(ctx *renderer.Context, l types.OrderedList) (string, error) {
+	result := &strings.Builder{}
 	err := r.orderedList.Execute(result, ContextualPipeline{
 		Context: ctx,
 		Data: struct {
@@ -31,9 +31,9 @@ func (r *sgmlRenderer) renderOrderedList(ctx *renderer.Context, l types.OrderedL
 		},
 	})
 	if err != nil {
-		return nil, errors.Wrapf(err, "unable to render ordered list")
+		return "", errors.Wrap(err, "unable to render ordered list")
 	}
-	return result.Bytes(), nil
+	return result.String(), nil
 }
 
 func getNumberingStyle(l types.OrderedList) string {

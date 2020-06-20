@@ -5,7 +5,7 @@ const (
 {{ if .Title }}<div class="title">{{ escape .Title }}</div>
 {{ end }}<ul{{ if .Checklist }} class="checklist"{{ end }}>
 {{ $items := .Items }}{{ range $itemIndex, $item := $items }}<li>
-{{ $elements := $item.Elements }}{{ renderList $ctx $elements | printf "%s" }}
+{{ $elements := $item.Elements }}{{ renderList $ctx $elements }}
 </li>
 {{ end }}</ul>
 </div>{{ end }}`

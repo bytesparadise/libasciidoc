@@ -1,8 +1,8 @@
 package sgml
 
 import (
-	"bytes"
 	"path/filepath"
+	"strings"
 
 	"github.com/bytesparadise/libasciidoc/pkg/renderer"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
@@ -10,9 +10,9 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-func (r *sgmlRenderer) renderInternalCrossReference(ctx *renderer.Context, xref types.InternalCrossReference) ([]byte, error) {
+func (r *sgmlRenderer) renderInternalCrossReference(ctx *renderer.Context, xref types.InternalCrossReference) (string, error) {
 	log.Debugf("rendering cross reference with ID: %s", xref.ID)
-	result := &bytes.Buffer{}
+	result := &strings.Builder{}
 	var label string
 	if xref.Label != "" {
 		label = xref.Label
@@ -20,11 +20,11 @@ func (r *sgmlRenderer) renderInternalCrossReference(ctx *renderer.Context, xref 
 		if t, ok := target.([]interface{}); ok {
 			renderedContent, err := r.renderElement(ctx, t)
 			if err != nil {
-				return nil, errors.Wrapf(err, "error while rendering internal cross reference")
+				return "", errors.Wrap(err, "error while rendering internal cross reference")
 			}
-			label = string(renderedContent)
+			label = renderedContent
 		} else {
-			return nil, errors.Errorf("unable to process internal cross reference to element of type %T", target)
+			return "", errors.Errorf("unable to process internal cross reference to element of type %T", target)
 		}
 	} else {
 		label = "[" + xref.ID + "]"
@@ -37,29 +37,29 @@ func (r *sgmlRenderer) renderInternalCrossReference(ctx *renderer.Context, xref 
 		Label: label,
 	})
 	if err != nil {
-		return nil, errors.Wrapf(err, "unable to render internal cross reference")
+		return "", errors.Wrapf(err, "unable to render internal cross reference")
 	}
-	return result.Bytes(), nil
+	return result.String(), nil
 }
 
-func (r *sgmlRenderer) renderExternalCrossReference(ctx *renderer.Context, xref types.ExternalCrossReference) ([]byte, error) {
+func (r *sgmlRenderer) renderExternalCrossReference(ctx *renderer.Context, xref types.ExternalCrossReference) (string, error) {
 	log.Debugf("rendering cross reference with ID: %s", xref.Location)
-	result := &bytes.Buffer{}
+	result := &strings.Builder{}
 	label, err := r.renderInlineElements(ctx, xref.Label)
 	if err != nil {
-		return nil, errors.Wrapf(err, "unable to render external cross reference")
+		return "", errors.Wrap(err, "unable to render external cross reference")
 	}
 	err = r.externalCrossReference.Execute(result, struct {
 		Href  string
 		Label string
 	}{
 		Href:  getCrossReferenceLocation(xref),
-		Label: string(label),
+		Label: label,
 	})
 	if err != nil {
-		return nil, errors.Wrapf(err, "unable to render external cross reference")
+		return "", errors.Wrap(err, "unable to render external cross reference")
 	}
-	return result.Bytes(), nil
+	return result.String(), nil
 }
 
 func getCrossReferenceLocation(xref types.ExternalCrossReference) string {

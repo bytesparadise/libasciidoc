@@ -3,6 +3,7 @@ package sgml
 import (
 	"bytes"
 	"strconv"
+	"strings"
 
 	"github.com/bytesparadise/libasciidoc/pkg/renderer"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
@@ -40,7 +41,7 @@ func (r *sgmlRenderer) renderDocumentDetails(ctx *renderer.Context) (*sanitized,
 }
 
 func (r *sgmlRenderer) renderDocumentAuthorsDetails(ctx *renderer.Context) (*sanitized, error) { // TODO: use  `types.DocumentAuthor` attribute in context
-	authorsDetailsBuff := &bytes.Buffer{}
+	authorsDetailsBuff := &strings.Builder{}
 	i := 1
 	for {
 		var authorKey string
@@ -57,9 +58,11 @@ func (r *sgmlRenderer) renderDocumentAuthorsDetails(ctx *renderer.Context) (*san
 		}
 		// having at least one author is the minimal requirement for document details
 		if author, ok := ctx.Attributes.GetAsString(authorKey); ok {
-			authorDetailsBuff := &bytes.Buffer{}
+			if i > 1 {
+				authorsDetailsBuff.WriteString("\n")
+			}
 			email, _ := ctx.Attributes.GetAsString(emailKey)
-			err := r.documentAuthorDetails.Execute(authorDetailsBuff, struct {
+			err := r.documentAuthorDetails.Execute(authorsDetailsBuff, struct {
 				Index string
 				Name  string
 				Email string
@@ -72,10 +75,6 @@ func (r *sgmlRenderer) renderDocumentAuthorsDetails(ctx *renderer.Context) (*san
 				return nil, errors.Wrap(err, "error while rendering the document author")
 			}
 			// if there were authors before, need to insert a `\n`
-			if i > 1 {
-				authorsDetailsBuff.WriteString("\n")
-			}
-			authorsDetailsBuff.Write(authorDetailsBuff.Bytes())
 			i++
 		} else {
 			break

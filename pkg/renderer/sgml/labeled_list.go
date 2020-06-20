@@ -1,20 +1,20 @@
 package sgml
 
 import (
-	"bytes"
+	"strings"
 
 	"github.com/bytesparadise/libasciidoc/pkg/renderer"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 	"github.com/pkg/errors"
 )
 
-func (r *sgmlRenderer) renderLabeledList(ctx *renderer.Context, l types.LabeledList) ([]byte, error) {
+func (r *sgmlRenderer) renderLabeledList(ctx *renderer.Context, l types.LabeledList) (string, error) {
 	tmpl, err := r.getLabeledListTmpl(l)
 	if err != nil {
-		return nil, errors.Wrapf(err, "unable to render labeled list")
+		return "", errors.Wrap(err, "unable to render labeled list")
 	}
 
-	result := &bytes.Buffer{}
+	result := &strings.Builder{}
 	// here we must preserve the HTML tags
 	err = tmpl.Execute(result, ContextualPipeline{
 		Context: ctx,
@@ -31,10 +31,10 @@ func (r *sgmlRenderer) renderLabeledList(ctx *renderer.Context, l types.LabeledL
 		},
 	})
 	if err != nil {
-		return nil, errors.Wrapf(err, "unable to render labeled list")
+		return "", errors.Wrap(err, "unable to render labeled list")
 	}
 	// log.Debugf("rendered labeled list: %s", result.Bytes())
-	return result.Bytes(), nil
+	return result.String(), nil
 }
 
 func (r *sgmlRenderer) getLabeledListTmpl(l types.LabeledList) (*textTemplate, error) {

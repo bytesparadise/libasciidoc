@@ -1,7 +1,6 @@
 package sgml
 
 import (
-	"bytes"
 	"fmt"
 	"strings"
 
@@ -18,8 +17,8 @@ func (r *sgmlRenderer) renderFootnote(ctx *renderer.Context, elements []interfac
 	return strings.TrimSpace(string(result)), nil
 }
 
-func (r *sgmlRenderer) renderFootnoteReference(note types.FootnoteReference) ([]byte, error) {
-	result := &bytes.Buffer{}
+func (r *sgmlRenderer) renderFootnoteReference(note types.FootnoteReference) (string, error) {
+	result := &strings.Builder{}
 	if note.ID != types.InvalidFootnoteReference && !note.Duplicate {
 		// valid case for a footnote with content, with our without an explicit reference
 		err := r.footnote.Execute(result, struct {
@@ -30,7 +29,7 @@ func (r *sgmlRenderer) renderFootnoteReference(note types.FootnoteReference) ([]
 			Ref: note.Ref,
 		})
 		if err != nil {
-			return nil, errors.Wrapf(err, "unable to render footnote")
+			return "", errors.Wrap(err, "unable to render footnote")
 		}
 	} else if note.Duplicate {
 		// valid case for a footnote with content, with our without an explicit reference
@@ -42,7 +41,7 @@ func (r *sgmlRenderer) renderFootnoteReference(note types.FootnoteReference) ([]
 			Ref: note.Ref,
 		})
 		if err != nil {
-			return nil, errors.Wrapf(err, "unable to render footnote")
+			return "", errors.Wrap(err, "unable to render footnote")
 		}
 	} else {
 		// invalid footnote
@@ -52,14 +51,14 @@ func (r *sgmlRenderer) renderFootnoteReference(note types.FootnoteReference) ([]
 			Ref: note.Ref,
 		})
 		if err != nil {
-			return nil, errors.Wrapf(err, "unable to render missing footnote")
+			return "", errors.Wrap(err, "unable to render missing footnote")
 		}
 	}
-	return result.Bytes(), nil
+	return result.String(), nil
 }
 
-func (r *sgmlRenderer) renderFootnoteReferencePlainText(note types.FootnoteReference) ([]byte, error) {
-	result := &bytes.Buffer{}
+func (r *sgmlRenderer) renderFootnoteReferencePlainText(note types.FootnoteReference) (string, error) {
+	result := &strings.Builder{}
 	if note.ID != types.InvalidFootnoteReference {
 		// valid case for a footnote with content, with our without an explicit reference
 		err := r.footnoteRefPlain.Execute(result, struct {
@@ -70,20 +69,20 @@ func (r *sgmlRenderer) renderFootnoteReferencePlainText(note types.FootnoteRefer
 			Class: "footnote",
 		})
 		if err != nil {
-			return nil, errors.Wrapf(err, "unable to render footnote")
+			return "", errors.Wrap(err, "unable to render footnote")
 		}
 	} else {
-		return nil, fmt.Errorf("unable to render missing footnote")
+		return "", fmt.Errorf("unable to render missing footnote")
 	}
-	return result.Bytes(), nil
+	return result.String(), nil
 }
 
-func (r *sgmlRenderer) renderFootnotes(ctx *renderer.Context, notes []types.Footnote) ([]byte, error) {
+func (r *sgmlRenderer) renderFootnotes(ctx *renderer.Context, notes []types.Footnote) (string, error) {
 	// skip if there's no foot note in the doc
 	if len(notes) == 0 {
-		return []byte{}, nil
+		return "", nil
 	}
-	result := &bytes.Buffer{}
+	result := &strings.Builder{}
 	err := r.footnotes.Execute(result,
 		ContextualPipeline{
 			Context: ctx,
@@ -94,7 +93,7 @@ func (r *sgmlRenderer) renderFootnotes(ctx *renderer.Context, notes []types.Foot
 			},
 		})
 	if err != nil {
-		return []byte{}, errors.Wrapf(err, "failed to render footnotes")
+		return "", errors.Wrap(err, "failed to render footnotes")
 	}
-	return result.Bytes(), nil
+	return result.String(), nil
 }

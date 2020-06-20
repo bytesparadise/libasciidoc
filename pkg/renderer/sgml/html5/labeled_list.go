@@ -4,9 +4,9 @@ const (
 	labeledListTmpl = `{{ $ctx := .Context }}{{ with .Data }}<div{{ if .ID }} id="{{ .ID }}"{{ end }} class="dlist{{ if .Role }} {{ .Role }}{{ end }}">
 {{ if .Title }}<div class="title">{{ escape .Title }}</div>
 {{ end }}<dl>
-{{ $items := .Items }}{{ range $itemIndex, $item := $items }}<dt class="hdlist1">{{ renderInline $ctx $item.Term | printf "%s" }}</dt>{{ if $item.Elements }}
+{{ $items := .Items }}{{ range $itemIndex, $item := $items }}<dt class="hdlist1">{{ renderInline $ctx $item.Term }}</dt>{{ if $item.Elements }}
 <dd>
-{{ renderList $ctx $item.Elements | printf "%s" }}
+{{ renderList $ctx $item.Elements }}
 </dd>{{ end }}
 {{ end }}</dl>
 </div>{{ end }}`
@@ -16,10 +16,10 @@ const (
 {{ end }}<table>
 <tr>
 <td class="hdlist1">{{ $items := .Items }}{{ range $itemIndex, $item := $items }}
-{{ renderInline $ctx $item.Term | printf "%s" }}
+{{ renderInline $ctx $item.Term }}
 {{ if $item.Elements }}</td>
 <td class="hdlist2">
-{{ renderList $ctx $item.Elements | printf "%s" }}
+{{ renderList $ctx $item.Elements }}
 {{ if includeNewline $ctx $itemIndex $items }}</td>
 </tr>
 <tr>
@@ -32,8 +32,8 @@ const (
 {{ if .Title }}<div class="title">{{ escape .Title }}</div>
 {{ end }}<ol>
 {{ $items := .Items }}{{ range $itemIndex, $item := $items }}<li>
-<p><em>{{ renderInline $ctx $item.Term | printf "%s" }}</em></p>
-{{ if $item.Elements }}{{ renderList $ctx $item.Elements | printf "%s" }}{{ end }}
+<p><em>{{ renderInline $ctx $item.Term }}</em></p>
+{{ if $item.Elements }}{{ renderList $ctx $item.Elements }}{{ end }}
 </li>
 {{ end }}</ol>
 </div>{{ end }}`

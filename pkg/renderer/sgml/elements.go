@@ -1,8 +1,8 @@
 package sgml
 
 import (
-	"bytes"
 	"reflect"
+	"strings"
 
 	"github.com/bytesparadise/libasciidoc/pkg/renderer"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
@@ -11,9 +11,9 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-func (r *sgmlRenderer) renderElements(ctx *renderer.Context, elements []interface{}) ([]byte, error) {
+func (r *sgmlRenderer) renderElements(ctx *renderer.Context, elements []interface{}) (string, error) {
 	log.Debugf("rendering %d elements(s)...", len(elements))
-	buff := &bytes.Buffer{}
+	buff := &strings.Builder{}
 	hasContent := false
 	if !ctx.Config.IncludeHeaderFooter && len(elements) > 0 {
 		if s, ok := elements[0].(types.Section); ok && s.Level == 0 {
@@ -28,7 +28,7 @@ func (r *sgmlRenderer) renderElements(ctx *renderer.Context, elements []interfac
 	for _, element := range elements {
 		renderedElement, err := r.renderElement(ctx, element)
 		if err != nil {
-			return nil, err // no need to wrap the error here
+			return "", err // no need to wrap the error here
 		}
 		// insert new line if there's already some content (except for BlankLine)
 		_, isBlankline := element.(types.BlankLine)
@@ -36,20 +36,20 @@ func (r *sgmlRenderer) renderElements(ctx *renderer.Context, elements []interfac
 		if hasContent && (isVerbatimLine || (!isBlankline && len(renderedElement) > 0)) {
 			buff.WriteString("\n")
 		}
-		buff.Write(renderedElement)
+		buff.WriteString(renderedElement)
 		if len(renderedElement) > 0 {
 			hasContent = true
 		}
 	}
 	// log.Debugf("rendered elements: '%s'", buff.String())
-	return buff.Bytes(), nil
+	return buff.String(), nil
 }
 
 // renderListElements is similar to the `renderElements` func above,
 // but it sets the `withinList` context flag to true for the first element only
-func (r *sgmlRenderer) renderListElements(ctx *renderer.Context, elements []interface{}) ([]byte, error) {
+func (r *sgmlRenderer) renderListElements(ctx *renderer.Context, elements []interface{}) (string, error) {
 	log.Debugf("rendering list with %d element(s)...", len(elements))
-	buff := &bytes.Buffer{}
+	buff := &strings.Builder{}
 	hasContent := false
 	for i, element := range elements {
 		if i == 0 {
@@ -60,23 +60,23 @@ func (r *sgmlRenderer) renderListElements(ctx *renderer.Context, elements []inte
 			ctx.WithinList--
 		}
 		if err != nil {
-			return nil, errors.Wrapf(err, "unable to render a list block")
+			return "", errors.Wrap(err, "unable to render a list block")
 		}
 		// insert new line if there's already some content
 		if hasContent && len(renderedElement) > 0 {
 			buff.WriteString("\n")
 		}
-		buff.Write(renderedElement)
+		buff.WriteString(renderedElement)
 		if len(renderedElement) > 0 {
 			hasContent = true
 		}
 	}
 	// log.Debugf("rendered elements: '%s'", buff.String())
-	return buff.Bytes(), nil
+	return buff.String(), nil
 }
 
 // nolint: gocyclo
-func (r *sgmlRenderer) renderElement(ctx *renderer.Context, element interface{}) ([]byte, error) {
+func (r *sgmlRenderer) renderElement(ctx *renderer.Context, element interface{}) (string, error) {
 	log.Debugf("rendering element of type `%T`", element)
 	switch e := element.(type) {
 	case []interface{}:
@@ -138,12 +138,12 @@ func (r *sgmlRenderer) renderElement(ctx *renderer.Context, element interface{})
 	case types.QuotedString:
 		return r.renderQuotedString(ctx, e)
 	default:
-		return nil, errors.Errorf("unsupported type of element: %T", element)
+		return "", errors.Errorf("unsupported type of element: %T", element)
 	}
 }
 
 // nolint: gocyclo
-func (r *sgmlRenderer) renderPlainText(ctx *renderer.Context, element interface{}) ([]byte, error) {
+func (r *sgmlRenderer) renderPlainText(ctx *renderer.Context, element interface{}) (string, error) {
 	log.Debugf("rendering plain string for element of type %T", element)
 	switch element := element.(type) {
 	case []interface{}:
@@ -153,18 +153,18 @@ func (r *sgmlRenderer) renderPlainText(ctx *renderer.Context, element interface{
 	case types.QuotedText:
 		return r.renderPlainText(ctx, element.Elements)
 	case types.Icon:
-		return []byte(element.Attributes.GetAsStringWithDefault(types.AttrImageAlt, "")), nil
+		return element.Attributes.GetAsStringWithDefault(types.AttrImageAlt, ""), nil
 	case types.InlineImage:
-		return []byte(element.Attributes.GetAsStringWithDefault(types.AttrImageAlt, "")), nil
+		return element.Attributes.GetAsStringWithDefault(types.AttrImageAlt, ""), nil
 	case types.InlineLink:
 		if alt, ok := element.Attributes[types.AttrInlineLinkText].([]interface{}); ok {
 			return r.renderPlainText(ctx, alt)
 		}
-		return []byte(element.Location.String()), nil
+		return element.Location.String(), nil
 	case types.BlankLine:
-		return []byte("\n\n"), nil
+		return "\n\n", nil
 	case types.StringElement:
-		return []byte(element.Content), nil
+		return element.Content, nil
 	case types.QuotedString:
 		return r.renderQuotedStringPlain(ctx, element)
 	case types.Paragraph:
@@ -173,7 +173,7 @@ func (r *sgmlRenderer) renderPlainText(ctx *renderer.Context, element interface{
 		// footnotes are rendered in HTML so they can appear as such in the table of contents
 		return r.renderFootnoteReferencePlainText(element)
 	default:
-		return nil, errors.Errorf("unable to render plain string for element of type '%T'", element)
+		return "", errors.Errorf("unable to render plain string for element of type '%T'", element)
 	}
 }
 

@@ -1,8 +1,8 @@
 package sgml
 
 import (
-	"bytes"
 	"strconv"
+	"strings"
 
 	"github.com/bytesparadise/libasciidoc/pkg/renderer"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
@@ -10,30 +10,30 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-func (r *sgmlRenderer) renderTableOfContents(ctx *renderer.Context, toc types.TableOfContents) ([]byte, error) {
+func (r *sgmlRenderer) renderTableOfContents(ctx *renderer.Context, toc types.TableOfContents) (string, error) {
 	log.Debug("rendering table of contents...")
 	renderedSections, err := r.renderTableOfContentsSections(ctx, toc.Sections)
 	if err != nil {
-		return nil, errors.Wrapf(err, "error while rendering table of contents")
+		return "", errors.Wrap(err, "error while rendering table of contents")
 	}
 	if renderedSections == "" {
 		// nothing to render (document has no section)
-		return []byte{}, nil
+		return "", nil
 	}
-	result := &bytes.Buffer{}
+	result := &strings.Builder{}
 	err = r.tocRoot.Execute(result, renderedSections)
 	if err != nil {
-		return nil, errors.Wrapf(err, "error while rendering table of contents")
+		return "", errors.Wrap(err, "error while rendering table of contents")
 	}
 	// log.Debugf("rendered ToC: %s", result.Bytes())
-	return result.Bytes(), nil
+	return result.String(), nil
 }
 
 func (r *sgmlRenderer) renderTableOfContentsSections(ctx *renderer.Context, sections []types.ToCSection) (sanitized, error) {
 	if len(sections) == 0 {
 		return "", nil
 	}
-	resultBuf := &bytes.Buffer{}
+	resultBuf := &strings.Builder{}
 	err := r.tocSection.Execute(resultBuf, ContextualPipeline{
 		Context: ctx,
 		Data: struct {

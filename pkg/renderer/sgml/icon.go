@@ -1,7 +1,6 @@
 package sgml
 
 import (
-	"bytes"
 	fmt "fmt"
 	"github.com/bytesparadise/libasciidoc/pkg/renderer"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
@@ -10,15 +9,15 @@ import (
 	"strings"
 )
 
-func (r *sgmlRenderer) renderInlineIcon(ctx *renderer.Context, icon types.Icon) ([]byte, error) {
-	result := &bytes.Buffer{}
+func (r *sgmlRenderer) renderInlineIcon(ctx *renderer.Context, icon types.Icon) (string, error) {
+	result := &strings.Builder{}
 
 	iconStr, err := r.renderIcon(ctx, types.Icon{
 		Class:      icon.Class,
 		Attributes: icon.Attributes,
 	}, false)
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 	err = r.inlineIcon.Execute(result, struct {
 		Class  string
@@ -37,9 +36,9 @@ func (r *sgmlRenderer) renderInlineIcon(ctx *renderer.Context, icon types.Icon) 
 	})
 
 	if err != nil {
-		return nil, errors.Wrapf(err, "unable to render inline image")
+		return "", errors.Wrap(err, "unable to render inline image")
 	}
-	return result.Bytes(), nil
+	return result.String(), nil
 }
 
 func (r *sgmlRenderer) renderIcon(ctx *renderer.Context, icon types.Icon, admonition bool) (sanitized, error) {

@@ -1,14 +1,14 @@
 package sgml
 
 import (
-	"bytes"
+	"strings"
 
 	"github.com/bytesparadise/libasciidoc/pkg/renderer"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 	"github.com/pkg/errors"
 )
 
-func (r *sgmlRenderer) renderUnorderedList(ctx *renderer.Context, l types.UnorderedList) ([]byte, error) {
+func (r *sgmlRenderer) renderUnorderedList(ctx *renderer.Context, l types.UnorderedList) (string, error) {
 	// make sure nested elements are aware of that their rendering occurs within a list
 	checkList := false
 	if len(l.Items) > 0 {
@@ -16,7 +16,7 @@ func (r *sgmlRenderer) renderUnorderedList(ctx *renderer.Context, l types.Unorde
 			checkList = true
 		}
 	}
-	result := &bytes.Buffer{}
+	result := &strings.Builder{}
 	// here we must preserve the HTML tags
 	err := r.unorderedList.Execute(result, ContextualPipeline{
 		Context: ctx,
@@ -35,7 +35,7 @@ func (r *sgmlRenderer) renderUnorderedList(ctx *renderer.Context, l types.Unorde
 		},
 	})
 	if err != nil {
-		return nil, errors.Wrapf(err, "unable to render unordered list")
+		return "", errors.Wrap(err, "unable to render unordered list")
 	}
-	return result.Bytes(), nil
+	return result.String(), nil
 }

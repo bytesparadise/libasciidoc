@@ -1,12 +1,12 @@
 package html5
 
 const (
-	paragraphTmpl = `{{ $ctx := .Context }}{{ with .Data }}{{ $renderedLines := renderLines $ctx .Lines .HardBreaks | printf "%s" }}<div {{ if ne .ID "" }}id="{{ .ID }}" {{ end }}class="{{ .Class }}">{{ if ne .Title "" }}
+	paragraphTmpl = `{{ $ctx := .Context }}{{ with .Data }}{{ $renderedLines := renderLines $ctx .Lines .HardBreaks }}<div {{ if ne .ID "" }}id="{{ .ID }}" {{ end }}class="{{ .Class }}">{{ if ne .Title "" }}
 <div class="doctitle">{{ escape .Title }}</div>{{ end }}
 <p>{{ $renderedLines }}</p>
 </div>{{ end }}`
 
-	admonitionParagraphTmpl = `{{ $ctx := .Context }}{{ with .Data }}{{ $renderedLines := renderLines $ctx .Lines | printf "%s" }}{{ if ne $renderedLines "" }}<div {{ if .ID }}id="{{ .ID }}" {{ end }}class="admonitionblock {{ .Class }}">
+	admonitionParagraphTmpl = `{{ $ctx := .Context }}{{ with .Data }}{{ $renderedLines := renderLines $ctx .Lines }}{{ if ne $renderedLines "" }}<div {{ if .ID }}id="{{ .ID }}" {{ end }}class="admonitionblock {{ .Class }}">
 <table>
 <tr>
 <td class="icon">
@@ -20,17 +20,17 @@ const (
 </table>
 </div>{{ end }}{{ end }}`
 
-	delimitedBlockParagraphTmpl = `{{ $ctx := .Context }}{{ with .Data }}<p>{{ .CheckStyle }}{{ renderLines $ctx .Lines | printf "%s" }}</p>{{ end }}`
+	delimitedBlockParagraphTmpl = `{{ $ctx := .Context }}{{ with .Data }}<p>{{ .CheckStyle }}{{ renderLines $ctx .Lines }}</p>{{ end }}`
 
 	sourceParagraphTmpl = `{{ $ctx := .Context }}{{ with .Data }}<div class="listingblock">
 <div class="content">
-<pre class="highlight">{{ if .Language }}<code class="language-{{ .Language }}" data-lang="{{ .Language }}">{{ else }}<code>{{ end }}{{ renderLines $ctx .Lines | printf "%s" }}</code></pre>
+<pre class="highlight">{{ if .Language }}<code class="language-{{ .Language }}" data-lang="{{ .Language }}">{{ else }}<code>{{ end }}{{ renderLines $ctx .Lines }}</code></pre>
 </div>
 </div>{{ end }}`
 
 	verseParagraphTmpl = `{{ $ctx := .Context }}{{ with .Data }}<div {{ if .ID }}id="{{ .ID }}" {{ end }}class="verseblock">{{ if .Title }}
 <div class="title">{{ escape .Title }}</div>{{ end }}
-<pre class="content">{{ renderLines $ctx .Lines plainText | printf "%s" }}</pre>{{ if .Attribution.First }}
+<pre class="content">{{ renderLines $ctx .Lines plainText }}</pre>{{ if .Attribution.First }}
 <div class="attribution">
 &#8212; {{ .Attribution.First }}{{ if .Attribution.Second }}<br>
 <cite>{{ .Attribution.Second }}</cite>{{ end }}
@@ -40,7 +40,7 @@ const (
 	quoteParagraphTmpl = `{{ $ctx := .Context }}{{ with .Data }}<div {{ if .ID }}id="{{ .ID }}" {{ end }}class="quoteblock">{{ if .Title }}
 <div class="title">{{ escape .Title }}</div>{{ end }}
 <blockquote>
-{{ renderLines $ctx .Lines | printf "%s" }}
+{{ renderLines $ctx .Lines }}
 </blockquote>{{ if .Attribution.First }}
 <div class="attribution">
 &#8212; {{ .Attribution.First }}{{ if .Attribution.Second }}<br>
@@ -48,5 +48,5 @@ const (
 </div>{{ end }}
 </div>{{ end }}`
 
-	manpageNameParagraphTmpl = `{{ $ctx := .Context }}{{ with .Data }}{{ $renderedLines := renderLines $ctx .Lines | printf "%s" }}<p>{{ $renderedLines }}</p>{{ end }}`
+	manpageNameParagraphTmpl = `{{ $ctx := .Context }}{{ with .Data }}{{ $renderedLines := renderLines $ctx .Lines }}<p>{{ $renderedLines }}</p>{{ end }}`
 )

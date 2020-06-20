@@ -1,52 +1,52 @@
 package sgml
 
 import (
-	"bytes"
 	"html/template"
+	"strings"
 
 	"github.com/bytesparadise/libasciidoc/pkg/renderer"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 	"github.com/pkg/errors"
 )
 
-func (r *sgmlRenderer) renderInlinePassthrough(ctx *renderer.Context, p types.InlinePassthrough) ([]byte, error) {
+func (r *sgmlRenderer) renderInlinePassthrough(ctx *renderer.Context, p types.InlinePassthrough) (string, error) {
 	renderedContent, err := r.renderPassthroughContent(ctx, p)
 	if err != nil {
-		return nil, errors.Wrap(err, "unable to render passthrough")
+		return "", errors.Wrap(err, "unable to render passthrough")
 	}
 	switch p.Kind {
 	case types.SinglePlusPassthrough:
 		// rendered passthrough content is in an HTML-escaped form
-		buf := &bytes.Buffer{}
-		template.HTMLEscape(buf, renderedContent)
-		return buf.Bytes(), nil
+		buf := &strings.Builder{}
+		template.HTMLEscape(buf, []byte(renderedContent))
+		return buf.String(), nil
 	default:
 		return renderedContent, nil
 	}
 }
 
 // renderPassthroughMacro renders the passthrough content in its raw from
-func (r *sgmlRenderer) renderPassthroughContent(ctx *renderer.Context, p types.InlinePassthrough) ([]byte, error) {
-	buf := &bytes.Buffer{}
+func (r *sgmlRenderer) renderPassthroughContent(ctx *renderer.Context, p types.InlinePassthrough) (string, error) {
+	buf := &strings.Builder{}
 	for _, element := range p.Elements {
 		switch element := element.(type) {
 		case types.StringElement:
 			// "string" elements must be rendered as-is, ie, without any HTML escaping.
 			_, err := buf.WriteString(element.Content)
 			if err != nil {
-				return nil, err
+				return "", err
 			}
 		default:
 			renderedElement, err := r.renderElement(ctx, element)
 			if err != nil {
-				return nil, err
+				return "", err
 			}
-			_, err = buf.Write(renderedElement)
+			_, err = buf.WriteString(renderedElement)
 			if err != nil {
-				return nil, err
+				return "", err
 			}
 
 		}
 	}
-	return buf.Bytes(), nil
+	return buf.String(), nil
 }

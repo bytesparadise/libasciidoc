@@ -1,29 +1,29 @@
 package sgml
 
 import (
-	"bytes"
+	"strings"
 
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 
 	log "github.com/sirupsen/logrus"
 )
 
-func (r *sgmlRenderer) renderBlankLine(ctx *Context, _ types.BlankLine) ([]byte, error) {
+func (r *sgmlRenderer) renderBlankLine(ctx *Context, _ types.BlankLine) (string, error) {
 	if ctx.IncludeBlankLine {
-		buf := &bytes.Buffer{}
+		buf := &strings.Builder{}
 		if err := r.blankLine.Execute(buf, nil); err != nil {
-			return nil, err
+			return "", err
 		}
 		log.Debug("rendering blank line")
-		return buf.Bytes(), nil
+		return buf.String(), nil
 	}
-	return []byte{}, nil
+	return "", nil
 }
 
-func (r *sgmlRenderer) renderLineBreak() ([]byte, error) {
-	buf := &bytes.Buffer{}
+func (r *sgmlRenderer) renderLineBreak() (string, error) {
+	buf := &strings.Builder{}
 	if err := r.lineBreak.Execute(buf, nil); err != nil {
-		return nil, err
+		return "", err
 	}
-	return buf.Bytes(), nil
+	return buf.String(), nil
 }

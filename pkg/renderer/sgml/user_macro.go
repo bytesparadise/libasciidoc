@@ -1,14 +1,14 @@
 package sgml
 
 import (
-	"bytes"
+	"strings"
 
 	"github.com/bytesparadise/libasciidoc/pkg/renderer"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 )
 
-func (r *sgmlRenderer) renderUserMacro(ctx *renderer.Context, um types.UserMacro) ([]byte, error) {
-	buf := &bytes.Buffer{}
+func (r *sgmlRenderer) renderUserMacro(ctx *renderer.Context, um types.UserMacro) (string, error) {
+	buf := &strings.Builder{}
 	macro, err := ctx.Config.MacroTemplate(um.Name)
 	if err != nil {
 		if um.Kind == types.BlockMacro {
@@ -26,8 +26,8 @@ func (r *sgmlRenderer) renderUserMacro(ctx *renderer.Context, um types.UserMacro
 		err = macro.Execute(buf, um)
 	}
 	if err != nil {
-		return nil, err
+		return "", err
 	}
-	return buf.Bytes(), nil
+	return buf.String(), nil
 
 }

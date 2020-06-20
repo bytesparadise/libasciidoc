@@ -1,15 +1,15 @@
 package sgml
 
 import (
-	"bytes"
+	"strings"
 
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 )
 
-func (r *sgmlRenderer) renderVerbatimLine(l types.VerbatimLine) ([]byte, error) {
-	result := &bytes.Buffer{}
+func (r *sgmlRenderer) renderVerbatimLine(l types.VerbatimLine) (string, error) {
+	result := &strings.Builder{}
 	if err := r.verbatimLine.Execute(result, l); err != nil {
-		return nil, err
+		return "", err
 	}
-	return result.Bytes(), nil
+	return result.String(), nil
 }
