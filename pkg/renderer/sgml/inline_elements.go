@@ -1,7 +1,6 @@
 package sgml
 
 import (
-	"bytes"
 	"strings"
 
 	"github.com/bytesparadise/libasciidoc/pkg/renderer"
@@ -22,9 +21,9 @@ func (r *sgmlRenderer) withVerbatim() renderLinesOption {
 	}
 }
 
-func (r *sgmlRenderer) renderInlineElements(ctx *renderer.Context, elements []interface{}, options ...renderLinesOption) ([]byte, error) {
+func (r *sgmlRenderer) renderInlineElements(ctx *renderer.Context, elements []interface{}, options ...renderLinesOption) (string, error) {
 	if len(elements) == 0 {
-		return []byte{}, nil
+		return "", nil
 	}
 	log.Debugf("rendering line with %d element(s)...", len(elements))
 	lr := linesRenderer{
@@ -34,11 +33,11 @@ func (r *sgmlRenderer) renderInlineElements(ctx *renderer.Context, elements []in
 		apply(&lr)
 	}
 	// first pass or rendering, using the provided `renderElementFunc`:
-	buf := &bytes.Buffer{}
+	buf := &strings.Builder{}
 	for i, element := range elements {
 		renderedElement, err := lr.render(ctx, element)
 		if err != nil {
-			return nil, errors.Wrapf(err, "unable to render line")
+			return "", errors.Wrapf(err, "unable to render line")
 		}
 		if i == len(elements)-1 {
 			if _, ok := element.(types.StringElement); ok { // TODO: only for StringElement? or for any kind of element?
@@ -46,16 +45,16 @@ func (r *sgmlRenderer) renderInlineElements(ctx *renderer.Context, elements []in
 				buf.WriteString(strings.TrimRight(string(renderedElement), " "))
 				log.Debugf("trimmed spaces on '%v'", string(renderedElement))
 			} else {
-				buf.Write(renderedElement)
+				buf.WriteString(renderedElement)
 			}
 		} else {
-			buf.Write(renderedElement)
+			buf.WriteString(renderedElement)
 		}
 	}
 	if log.IsLevelEnabled(log.DebugLevel) {
 		log.Debugf("rendered inline elements: '%s'", buf.String())
 	}
-	return buf.Bytes(), nil
+	return buf.String(), nil
 }
 
-type renderFunc func(*renderer.Context, interface{}) ([]byte, error)
+type renderFunc func(*renderer.Context, interface{}) (string, error)

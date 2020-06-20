@@ -1,7 +1,6 @@
 package sgml
 
 import (
-	"bytes"
 	"math"
 	"strings"
 
@@ -11,7 +10,7 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-func (r *sgmlRenderer) renderLiteralBlock(ctx *renderer.Context, b types.LiteralBlock) ([]byte, error) {
+func (r *sgmlRenderer) renderLiteralBlock(ctx *renderer.Context, b types.LiteralBlock) (string, error) {
 	log.Debugf("rendering delimited block with content: %s", b.Lines)
 	var lines []string
 	if t, found := b.Attributes.GetAsString(types.AttrLiteralBlockType); found && t == types.LiteralBlockWithSpacesOnFirstLine {
@@ -40,7 +39,7 @@ func (r *sgmlRenderer) renderLiteralBlock(ctx *renderer.Context, b types.Literal
 	} else {
 		lines = b.Lines
 	}
-	result := &bytes.Buffer{}
+	result := &strings.Builder{}
 	err := r.literalBlock.Execute(result, ContextualPipeline{
 		Context: ctx,
 		Data: struct {
@@ -53,7 +52,7 @@ func (r *sgmlRenderer) renderLiteralBlock(ctx *renderer.Context, b types.Literal
 			Lines: lines,
 		}})
 	if err != nil {
-		return nil, errors.Wrapf(err, "unable to render delimited block")
+		return "", errors.Wrap(err, "unable to render delimited block")
 	}
-	return result.Bytes(), nil
+	return result.String(), nil
 }

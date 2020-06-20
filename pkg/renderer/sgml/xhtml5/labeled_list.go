@@ -6,10 +6,10 @@ const (
 {{ end }}<table>
 <tr>
 <td class="hdlist1">{{ $items := .Items }}{{ range $itemIndex, $item := $items }}
-{{ renderInline $ctx $item.Term | printf "%s" }}
+{{ renderInline $ctx $item.Term }}
 {{ if $item.Elements }}</td>
 <td class="hdlist2">
-{{ renderList $ctx $item.Elements | printf "%s" }}
+{{ renderList $ctx $item.Elements }}
 {{ if includeNewline $ctx $itemIndex $items }}</td>
 </tr>
 <tr>

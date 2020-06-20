@@ -3,6 +3,7 @@ package sgml
 import (
 	"bytes"
 	"strconv"
+	"strings"
 
 	"github.com/alecthomas/chroma"
 	"github.com/alecthomas/chroma/formatters/html"
@@ -14,7 +15,7 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-func (r *sgmlRenderer) renderDelimitedBlock(ctx *renderer.Context, b types.DelimitedBlock) ([]byte, error) {
+func (r *sgmlRenderer) renderDelimitedBlock(ctx *renderer.Context, b types.DelimitedBlock) (string, error) {
 	log.Debugf("rendering delimited block of kind '%v'", b.Attributes[types.AttrKind])
 	var err error
 	kind := b.Kind
@@ -36,11 +37,11 @@ func (r *sgmlRenderer) renderDelimitedBlock(ctx *renderer.Context, b types.Delim
 	case types.Passthrough:
 		return r.renderPassthrough(ctx, b)
 	default:
-		return nil, errors.Wrapf(err, "unable to render delimited block")
+		return "", errors.Wrap(err, "unable to render delimited block")
 	}
 }
 
-func (r *sgmlRenderer) renderFencedBlock(ctx *renderer.Context, b types.DelimitedBlock) ([]byte, error) {
+func (r *sgmlRenderer) renderFencedBlock(ctx *renderer.Context, b types.DelimitedBlock) (string, error) {
 	previousWithinDelimitedBlock := ctx.WithinDelimitedBlock
 	previousIncludeBlankLine := ctx.IncludeBlankLine
 	defer func() {
@@ -49,7 +50,7 @@ func (r *sgmlRenderer) renderFencedBlock(ctx *renderer.Context, b types.Delimite
 	}()
 	ctx.WithinDelimitedBlock = true
 	ctx.IncludeBlankLine = true
-	result := &bytes.Buffer{}
+	result := &strings.Builder{}
 	err := r.fencedBlock.Execute(result, ContextualPipeline{
 		Context: ctx,
 		Data: struct {
@@ -62,10 +63,10 @@ func (r *sgmlRenderer) renderFencedBlock(ctx *renderer.Context, b types.Delimite
 			Elements: discardTrailingBlankLines(b.Elements),
 		},
 	})
-	return result.Bytes(), err
+	return result.String(), err
 }
 
-func (r *sgmlRenderer) renderListingBlock(ctx *renderer.Context, b types.DelimitedBlock) ([]byte, error) {
+func (r *sgmlRenderer) renderListingBlock(ctx *renderer.Context, b types.DelimitedBlock) (string, error) {
 	previousWithinDelimitedBlock := ctx.WithinDelimitedBlock
 	previousIncludeBlankLine := ctx.IncludeBlankLine
 	defer func() {
@@ -74,7 +75,7 @@ func (r *sgmlRenderer) renderListingBlock(ctx *renderer.Context, b types.Delimit
 	}()
 	ctx.WithinDelimitedBlock = true
 	ctx.IncludeBlankLine = true
-	result := &bytes.Buffer{}
+	result := &strings.Builder{}
 	err := r.listingBlock.Execute(result, ContextualPipeline{
 		Context: ctx,
 		Data: struct {
@@ -87,10 +88,10 @@ func (r *sgmlRenderer) renderListingBlock(ctx *renderer.Context, b types.Delimit
 			Elements: discardTrailingBlankLines(b.Elements),
 		},
 	})
-	return result.Bytes(), err
+	return result.String(), err
 }
 
-func (r *sgmlRenderer) renderSourceBlock(ctx *renderer.Context, b types.DelimitedBlock) ([]byte, error) {
+func (r *sgmlRenderer) renderSourceBlock(ctx *renderer.Context, b types.DelimitedBlock) (string, error) {
 	previousWithinDelimitedBlock := ctx.WithinDelimitedBlock
 	previousIncludeBlankLine := ctx.IncludeBlankLine
 	defer func() {
@@ -100,7 +101,7 @@ func (r *sgmlRenderer) renderSourceBlock(ctx *renderer.Context, b types.Delimite
 	ctx.WithinDelimitedBlock = true
 	ctx.IncludeBlankLine = true
 	// first, render the content
-	contentBuf := &bytes.Buffer{}
+	contentBuf := &strings.Builder{}
 	err := r.sourceBlockContent.Execute(contentBuf, ContextualPipeline{
 		Context: ctx,
 		Data: struct {
@@ -109,7 +110,7 @@ func (r *sgmlRenderer) renderSourceBlock(ctx *renderer.Context, b types.Delimite
 			Elements: discardTrailingBlankLines(b.Elements),
 		}})
 	if err != nil {
-		return []byte{}, err
+		return "", err
 	}
 	content := contentBuf.String()
 
@@ -117,7 +118,7 @@ func (r *sgmlRenderer) renderSourceBlock(ctx *renderer.Context, b types.Delimite
 	language, found := b.Attributes.GetAsString(types.AttrLanguage)
 	if found && highlighter == "pygments" {
 		// using github.com/alecthomas/chroma to highlight the content
-		contentBuf = &bytes.Buffer{}
+		contentBuf = &strings.Builder{}
 		lexer := lexers.Get(language)
 		lexer = chroma.Coalesce(lexer)
 		style := styles.Fallback
@@ -126,7 +127,7 @@ func (r *sgmlRenderer) renderSourceBlock(ctx *renderer.Context, b types.Delimite
 		}
 		iterator, err := lexer.Tokenise(nil, content)
 		if err != nil {
-			return []byte{}, err
+			return "", err
 		}
 		options := []html.Option{
 			html.ClassPrefix("tok-"),
@@ -144,7 +145,7 @@ func (r *sgmlRenderer) renderSourceBlock(ctx *renderer.Context, b types.Delimite
 		}
 		err = html.New(options...).Format(contentBuf, style, iterator)
 		if err != nil {
-			return []byte{}, err
+			return "", err
 		}
 		content = contentBuf.String()
 	}
@@ -163,15 +164,15 @@ func (r *sgmlRenderer) renderSourceBlock(ctx *renderer.Context, b types.Delimite
 		Language:          language,
 		Content:           content,
 	})
-	return result.Bytes(), err
+	return result.String(), err
 }
 
-func (r *sgmlRenderer) renderExampleBlock(ctx *renderer.Context, b types.DelimitedBlock) ([]byte, error) {
-	result := &bytes.Buffer{}
+func (r *sgmlRenderer) renderExampleBlock(ctx *renderer.Context, b types.DelimitedBlock) (string, error) {
+	result := &strings.Builder{}
 	if k, ok := b.Attributes[types.AttrAdmonitionKind].(types.AdmonitionKind); ok {
 		icon, err := r.renderIcon(ctx, types.Icon{Class: string(k)}, true)
 		if err != nil {
-			return nil, err
+			return "", err
 		}
 		err = r.admonitionBlock.Execute(result, ContextualPipeline{
 			Context: ctx,
@@ -189,7 +190,7 @@ func (r *sgmlRenderer) renderExampleBlock(ctx *renderer.Context, b types.Delimit
 				Elements: discardTrailingBlankLines(b.Elements),
 			},
 		})
-		return result.Bytes(), err
+		return result.String(), err
 	}
 	// default, example block
 	var title string
@@ -208,11 +209,11 @@ func (r *sgmlRenderer) renderExampleBlock(ctx *renderer.Context, b types.Delimit
 			Elements: discardTrailingBlankLines(b.Elements),
 		},
 	})
-	return result.Bytes(), err
+	return result.String(), err
 }
 
-func (r *sgmlRenderer) renderQuoteBlock(ctx *renderer.Context, b types.DelimitedBlock) ([]byte, error) {
-	result := &bytes.Buffer{}
+func (r *sgmlRenderer) renderQuoteBlock(ctx *renderer.Context, b types.DelimitedBlock) (string, error) {
+	result := &strings.Builder{}
 	err := r.quoteBlock.Execute(result, ContextualPipeline{
 		Context: ctx,
 		Data: struct {
@@ -227,11 +228,11 @@ func (r *sgmlRenderer) renderQuoteBlock(ctx *renderer.Context, b types.Delimited
 			Elements:    b.Elements,
 		},
 	})
-	return result.Bytes(), err
+	return result.String(), err
 }
 
-func (r *sgmlRenderer) renderVerseBlock(ctx *renderer.Context, b types.DelimitedBlock) ([]byte, error) {
-	result := &bytes.Buffer{}
+func (r *sgmlRenderer) renderVerseBlock(ctx *renderer.Context, b types.DelimitedBlock) (string, error) {
+	result := &strings.Builder{}
 	err := r.verseBlock.Execute(result, ContextualPipeline{
 		Context: ctx,
 		Data: struct {
@@ -246,10 +247,10 @@ func (r *sgmlRenderer) renderVerseBlock(ctx *renderer.Context, b types.Delimited
 			Elements:    discardTrailingBlankLines(b.Elements),
 		},
 	})
-	return result.Bytes(), err
+	return result.String(), err
 }
 
-func (r *sgmlRenderer) renderVerseBlockElement(ctx *renderer.Context, element interface{}) ([]byte, error) {
+func (r *sgmlRenderer) renderVerseBlockElement(ctx *renderer.Context, element interface{}) (string, error) {
 	previousIncludeBlankLine := ctx.IncludeBlankLine
 	defer func() {
 		ctx.IncludeBlankLine = previousIncludeBlankLine
@@ -261,13 +262,13 @@ func (r *sgmlRenderer) renderVerseBlockElement(ctx *renderer.Context, element in
 	case types.BlankLine:
 		return r.renderBlankLine(ctx, e)
 	default:
-		return nil, errors.Errorf("unexpected type of element to include in verse block: %T", element)
+		return "", errors.Errorf("unexpected type of element to include in verse block: %T", element)
 	}
 }
 
-func (r *sgmlRenderer) renderVerseBlockParagraph(ctx *renderer.Context, p types.Paragraph) ([]byte, error) {
+func (r *sgmlRenderer) renderVerseBlockParagraph(ctx *renderer.Context, p types.Paragraph) (string, error) {
 	log.Debugf("rendering paragraph with %d line(s) within a delimited block or a list", len(p.Lines))
-	result := &bytes.Buffer{}
+	result := &strings.Builder{}
 	err := r.verseBlockParagraph.Execute(result, ContextualPipeline{
 		Context: ctx,
 		Data: struct {
@@ -276,11 +277,11 @@ func (r *sgmlRenderer) renderVerseBlockParagraph(ctx *renderer.Context, p types.
 			Lines: p.Lines,
 		},
 	})
-	return result.Bytes(), err
+	return result.String(), err
 }
 
-func (r *sgmlRenderer) renderSidebarBlock(ctx *renderer.Context, b types.DelimitedBlock) ([]byte, error) {
-	result := &bytes.Buffer{}
+func (r *sgmlRenderer) renderSidebarBlock(ctx *renderer.Context, b types.DelimitedBlock) (string, error) {
+	result := &strings.Builder{}
 	err := r.sidebarBlock.Execute(result, ContextualPipeline{
 		Context: ctx,
 		Data: struct {
@@ -293,11 +294,11 @@ func (r *sgmlRenderer) renderSidebarBlock(ctx *renderer.Context, b types.Delimit
 			Elements: discardTrailingBlankLines(b.Elements),
 		},
 	})
-	return result.Bytes(), err
+	return result.String(), err
 }
 
-func (r *sgmlRenderer) renderPassthrough(ctx *renderer.Context, b types.DelimitedBlock) ([]byte, error) {
-	result := &bytes.Buffer{}
+func (r *sgmlRenderer) renderPassthrough(ctx *renderer.Context, b types.DelimitedBlock) (string, error) {
+	result := &strings.Builder{}
 	err := r.passthroughBlock.Execute(result, ContextualPipeline{
 		Context: ctx,
 		Data: struct {
@@ -308,7 +309,7 @@ func (r *sgmlRenderer) renderPassthrough(ctx *renderer.Context, b types.Delimite
 			Elements: discardTrailingBlankLines(b.Elements),
 		},
 	})
-	return result.Bytes(), err
+	return result.String(), err
 }
 
 func discardTrailingBlankLines(elements []interface{}) []interface{} {

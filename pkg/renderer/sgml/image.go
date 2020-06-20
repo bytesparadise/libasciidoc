@@ -1,16 +1,16 @@
 package sgml
 
 import (
-	"bytes"
 	"strconv"
+	"strings"
 
 	"github.com/bytesparadise/libasciidoc/pkg/renderer"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 	"github.com/pkg/errors"
 )
 
-func (r *sgmlRenderer) renderImageBlock(ctx *renderer.Context, img types.ImageBlock) ([]byte, error) {
-	result := &bytes.Buffer{}
+func (r *sgmlRenderer) renderImageBlock(ctx *renderer.Context, img types.ImageBlock) (string, error) {
+	result := &strings.Builder{}
 	title := ""
 	if t, found := img.Attributes.GetAsString(types.AttrTitle); found {
 		title = "Figure " + strconv.Itoa(ctx.GetAndIncrementImageCounter()) + ". " + EscapeString(t)
@@ -36,14 +36,14 @@ func (r *sgmlRenderer) renderImageBlock(ctx *renderer.Context, img types.ImageBl
 	})
 
 	if err != nil {
-		return nil, errors.Wrapf(err, "unable to render block image")
+		return "", errors.Wrap(err, "unable to render block image")
 	}
 	// log.Debugf("rendered block image: %s", result.Bytes())
-	return result.Bytes(), nil
+	return result.String(), nil
 }
 
-func (r *sgmlRenderer) renderInlineImage(img types.InlineImage) ([]byte, error) {
-	result := &bytes.Buffer{}
+func (r *sgmlRenderer) renderInlineImage(img types.InlineImage) (string, error) {
+	result := &strings.Builder{}
 	err := r.inlineImage.Execute(result, struct {
 		Role   string
 		Title  string
@@ -62,8 +62,8 @@ func (r *sgmlRenderer) renderInlineImage(img types.InlineImage) ([]byte, error) 
 	})
 
 	if err != nil {
-		return nil, errors.Wrapf(err, "unable to render inline image")
+		return "", errors.Wrap(err, "unable to render inline image")
 	}
 	// log.Debugf("rendered inline image: %s", result.Bytes())
-	return result.Bytes(), nil
+	return result.String(), nil
 }

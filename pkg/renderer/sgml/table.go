@@ -1,10 +1,10 @@
 package sgml
 
 import (
-	"bytes"
 	"fmt"
 	"math"
 	"strconv"
+	"strings"
 
 	"github.com/bytesparadise/libasciidoc/pkg/renderer"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
@@ -12,8 +12,8 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-func (r *sgmlRenderer) renderTable(ctx *renderer.Context, t types.Table) ([]byte, error) {
-	result := &bytes.Buffer{}
+func (r *sgmlRenderer) renderTable(ctx *renderer.Context, t types.Table) (string, error) {
+	result := &strings.Builder{}
 	// inspect first line to obtain cell width ratio
 	widths := []string{}
 	if len(t.Lines) > 0 {
@@ -51,9 +51,9 @@ func (r *sgmlRenderer) renderTable(ctx *renderer.Context, t types.Table) ([]byte
 		},
 	})
 	if err != nil {
-		return nil, errors.Wrapf(err, "failed to render table")
+		return "", errors.Wrap(err, "failed to render table")
 	}
-	return result.Bytes(), nil
+	return result.String(), nil
 }
 
 type formatColumnWidthOption func(float64) float64
