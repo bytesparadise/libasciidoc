@@ -26,6 +26,47 @@ var _ = Describe("quoted texts", func() {
 </div>`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
+
+		It("bold content across newline", func() {
+			source := "some *bold\ncontent*."
+			expected := `<div class="paragraph">
+<p>some <strong>bold
+content</strong>.</p>
+</div>`
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
+		})
+
+		It("bold content across paragraph", func() {
+			source := "some *bold\n\ncontent*."
+			expected := `<div class="paragraph">
+<p>some *bold</p>
+</div>
+<div class="paragraph">
+<p>content*.</p>
+</div>`
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
+		})
+
+		It("double bold content across newline", func() {
+			source := "some **bold\ncontent**."
+			expected := `<div class="paragraph">
+<p>some <strong>bold
+content</strong>.</p>
+</div>`
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
+		})
+
+		It("double bold content across paragraph", func() {
+			source := "some **bold\n\ncontent**."
+			expected := `<div class="paragraph">
+<p>some **bold</p>
+</div>
+<div class="paragraph">
+<p>content**.</p>
+</div>`
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
+		})
+
 	})
 
 	Context("italic content", func() {
@@ -46,6 +87,47 @@ var _ = Describe("quoted texts", func() {
 </div>`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
+
+		It("italic content across newline", func() {
+			source := "some _italic\ncontent_."
+			expected := `<div class="paragraph">
+<p>some <em>italic
+content</em>.</p>
+</div>`
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
+		})
+
+		It("italic content across paragraph", func() {
+			source := "some _italic\n\ncontent_."
+			expected := `<div class="paragraph">
+<p>some _italic</p>
+</div>
+<div class="paragraph">
+<p>content_.</p>
+</div>`
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
+		})
+
+		It("double italic content across newline", func() {
+			source := "some __italic\ncontent__."
+			expected := `<div class="paragraph">
+<p>some <em>italic
+content</em>.</p>
+</div>`
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
+		})
+
+		It("double italic content across paragraph", func() {
+			source := "some __italic\n\ncontent__."
+			expected := `<div class="paragraph">
+<p>some __italic</p>
+</div>
+<div class="paragraph">
+<p>content__.</p>
+</div>`
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
+		})
+
 	})
 
 	Context("monospace content", func() {
@@ -63,6 +145,104 @@ var _ = Describe("quoted texts", func() {
 			source := "some `monospace content`."
 			expected := `<div class="paragraph">
 <p>some <code>monospace content</code>.</p>
+</div>`
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
+		})
+
+		It("monospace content across newline", func() {
+			source := "some `monospace\ncontent`."
+			expected := `<div class="paragraph">
+<p>some <code>monospace
+content</code>.</p>
+</div>`
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
+		})
+
+		It("monospace content across paragraph", func() {
+			source := "some `monospace\n\ncontent`."
+			expected := "<div class=\"paragraph\">\n" +
+				"<p>some `monospace</p>\n" +
+				"</div>\n" +
+				"<div class=\"paragraph\">\n" +
+				"<p>content`.</p>\n</div>"
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
+		})
+
+		It("double monospace content across newline", func() {
+			source := "some ``monospace\ncontent``."
+			expected := `<div class="paragraph">
+<p>some <code>monospace
+content</code>.</p>
+</div>`
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
+		})
+
+		It("double monospace content across paragraph", func() {
+			source := "some ``monospace\n\ncontent``."
+			expected := "<div class=\"paragraph\">\n" +
+				"<p>some ``monospace</p>\n" +
+				"</div>\n" +
+				"<div class=\"paragraph\">\n" +
+				"<p>content``.</p>\n</div>"
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
+		})
+	})
+
+	Context("marked content", func() {
+
+		It("marked content alone", func() {
+			source := "#marked content#"
+			expected := `<div class="paragraph">
+<p><mark>marked content</mark></p>
+</div>`
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
+		})
+
+		It("marked content in sentence", func() {
+
+			source := "some #marked content#."
+			expected := `<div class="paragraph">
+<p>some <mark>marked content</mark>.</p>
+</div>`
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
+		})
+
+		It("marked content across newline", func() {
+			source := "some #marked\ncontent#."
+			expected := `<div class="paragraph">
+<p>some <mark>marked
+content</mark>.</p>
+</div>`
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
+		})
+
+		It("marked content across paragraph", func() {
+			source := "some #marked\n\ncontent#."
+			expected := `<div class="paragraph">
+<p>some #marked</p>
+</div>
+<div class="paragraph">
+<p>content#.</p>
+</div>`
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
+		})
+
+		It("double marked content across newline", func() {
+			source := "some ##marked\ncontent##."
+			expected := `<div class="paragraph">
+<p>some <mark>marked
+content</mark>.</p>
+</div>`
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
+		})
+
+		It("double marked content across paragraph", func() {
+			source := "some ##marked\n\ncontent##."
+			expected := `<div class="paragraph">
+<p>some ##marked</p>
+</div>
+<div class="paragraph">
+<p>content##.</p>
 </div>`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})

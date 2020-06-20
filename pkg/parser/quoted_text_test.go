@@ -77,6 +77,52 @@ var _ = Describe("quoted texts", func() {
 				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
+			It("bold text with newline", func() {
+				source := "*some bold\ncontent*"
+				expected := types.DraftDocument{
+					Blocks: []interface{}{
+						types.Paragraph{
+							Lines: [][]interface{}{
+								{
+									types.QuotedText{
+										Kind: types.Bold,
+										Elements: []interface{}{
+											types.StringElement{Content: "some bold\ncontent"},
+										},
+									},
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+			})
+
+			It("bold text across paragraph", func() {
+				source := "*some bold\n\ncontent*"
+				expected := types.DraftDocument{
+					Blocks: []interface{}{
+						types.Paragraph{
+							Lines: [][]interface{}{
+
+								{
+									types.StringElement{Content: "*some bold"},
+								},
+							},
+						},
+						types.BlankLine{},
+						types.Paragraph{
+							Lines: [][]interface{}{
+								{
+									types.StringElement{Content: "content*"},
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+			})
+
 			It("italic text with 3 words in single quote", func() {
 				source := "_some italic content_"
 				expected := types.DraftDocument{
@@ -98,6 +144,52 @@ var _ = Describe("quoted texts", func() {
 				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
+			It("italic text with newline", func() {
+				source := "_some italic\ncontent_"
+				expected := types.DraftDocument{
+					Blocks: []interface{}{
+						types.Paragraph{
+							Lines: [][]interface{}{
+								{
+									types.QuotedText{
+										Kind: types.Italic,
+										Elements: []interface{}{
+											types.StringElement{Content: "some italic\ncontent"},
+										},
+									},
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+			})
+
+			It("italic text across paragraph", func() {
+				source := "_some italic\n\ncontent_"
+				expected := types.DraftDocument{
+					Blocks: []interface{}{
+						types.Paragraph{
+							Lines: [][]interface{}{
+
+								{
+									types.StringElement{Content: "_some italic"},
+								},
+							},
+						},
+						types.BlankLine{},
+						types.Paragraph{
+							Lines: [][]interface{}{
+								{
+									types.StringElement{Content: "content_"},
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+			})
+
 			It("monospace text with 3 words", func() {
 				source := "`some monospace content`"
 				expected := types.DraftDocument{
@@ -111,6 +203,52 @@ var _ = Describe("quoted texts", func() {
 											types.StringElement{Content: "some monospace content"},
 										},
 									},
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+			})
+
+			It("monospace text with newline", func() {
+				source := "`some monospace\ncontent`"
+				expected := types.DraftDocument{
+					Blocks: []interface{}{
+						types.Paragraph{
+							Lines: [][]interface{}{
+								{
+									types.QuotedText{
+										Kind: types.Monospace,
+										Elements: []interface{}{
+											types.StringElement{Content: "some monospace\ncontent"},
+										},
+									},
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+			})
+
+			It("monospace text across paragraph", func() {
+				source := "`some monospace\n\ncontent`"
+				expected := types.DraftDocument{
+					Blocks: []interface{}{
+						types.Paragraph{
+							Lines: [][]interface{}{
+
+								{
+									types.StringElement{Content: "`some monospace"},
+								},
+							},
+						},
+						types.BlankLine{},
+						types.Paragraph{
+							Lines: [][]interface{}{
+								{
+									types.StringElement{Content: "content`"},
 								},
 							},
 						},
@@ -454,6 +592,52 @@ var _ = Describe("quoted texts", func() {
 				Expect(ParseDraftDocument(source)).To(Equal(expected))
 			})
 
+			It("bold text with newline", func() {
+				source := "**some bold\ncontent**"
+				expected := types.DraftDocument{
+					Blocks: []interface{}{
+						types.Paragraph{
+							Lines: [][]interface{}{
+								{
+									types.QuotedText{
+										Kind: types.Bold,
+										Elements: []interface{}{
+											types.StringElement{Content: "some bold\ncontent"},
+										},
+									},
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+			})
+
+			It("bold text across paragraph", func() {
+				source := "**some bold\n\ncontent**"
+				expected := types.DraftDocument{
+					Blocks: []interface{}{
+						types.Paragraph{
+							Lines: [][]interface{}{
+
+								{
+									types.StringElement{Content: "**some bold"},
+								},
+							},
+						},
+						types.BlankLine{},
+						types.Paragraph{
+							Lines: [][]interface{}{
+								{
+									types.StringElement{Content: "content**"},
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+			})
+
 			It("italic text with 3 words in double quote", func() {
 				source := "__some italic content__"
 				expected := types.DraftDocument{
@@ -475,6 +659,52 @@ var _ = Describe("quoted texts", func() {
 				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
+			It("italic text with newline", func() {
+				source := "__some italic\ncontent__"
+				expected := types.DraftDocument{
+					Blocks: []interface{}{
+						types.Paragraph{
+							Lines: [][]interface{}{
+								{
+									types.QuotedText{
+										Kind: types.Italic,
+										Elements: []interface{}{
+											types.StringElement{Content: "some italic\ncontent"},
+										},
+									},
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+			})
+
+			It("italic text across paragraph", func() {
+				source := "__some italic\n\ncontent__"
+				expected := types.DraftDocument{
+					Blocks: []interface{}{
+						types.Paragraph{
+							Lines: [][]interface{}{
+
+								{
+									types.StringElement{Content: "__some italic"},
+								},
+							},
+						},
+						types.BlankLine{},
+						types.Paragraph{
+							Lines: [][]interface{}{
+								{
+									types.StringElement{Content: "content__"},
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+			})
+
 			It("monospace text with 3 words in double quote", func() {
 				source := "``some monospace content``"
 				expected := types.DraftDocument{
@@ -488,6 +718,52 @@ var _ = Describe("quoted texts", func() {
 											types.StringElement{Content: "some monospace content"},
 										},
 									},
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+			})
+
+			It("monospace text with newline", func() {
+				source := "``some monospace\ncontent``"
+				expected := types.DraftDocument{
+					Blocks: []interface{}{
+						types.Paragraph{
+							Lines: [][]interface{}{
+								{
+									types.QuotedText{
+										Kind: types.Monospace,
+										Elements: []interface{}{
+											types.StringElement{Content: "some monospace\ncontent"},
+										},
+									},
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+			})
+
+			It("monospace text across paragraph", func() {
+				source := "``some monospace\n\ncontent``"
+				expected := types.DraftDocument{
+					Blocks: []interface{}{
+						types.Paragraph{
+							Lines: [][]interface{}{
+
+								{
+									types.StringElement{Content: "``some monospace"},
+								},
+							},
+						},
+						types.BlankLine{},
+						types.Paragraph{
+							Lines: [][]interface{}{
+								{
+									types.StringElement{Content: "content``"},
 								},
 							},
 						},
@@ -775,6 +1051,98 @@ var _ = Describe("quoted texts", func() {
 				}
 				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
+
+			It("marked text with newline", func() {
+				source := "#some marked\ncontent#"
+				expected := types.DraftDocument{
+					Blocks: []interface{}{
+						types.Paragraph{
+							Lines: [][]interface{}{
+								{
+									types.QuotedText{
+										Kind: types.Marked,
+										Elements: []interface{}{
+											types.StringElement{Content: "some marked\ncontent"},
+										},
+									},
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+			})
+
+			It("marked text across paragraph", func() {
+				source := "#some marked\n\ncontent#"
+				expected := types.DraftDocument{
+					Blocks: []interface{}{
+						types.Paragraph{
+							Lines: [][]interface{}{
+
+								{
+									types.StringElement{Content: "#some marked"},
+								},
+							},
+						},
+						types.BlankLine{},
+						types.Paragraph{
+							Lines: [][]interface{}{
+								{
+									types.StringElement{Content: "content#"},
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+			})
+			It("double marked text with newline", func() {
+				source := "##some marked\ncontent##"
+				expected := types.DraftDocument{
+					Blocks: []interface{}{
+						types.Paragraph{
+							Lines: [][]interface{}{
+								{
+									types.QuotedText{
+										Kind: types.Marked,
+										Elements: []interface{}{
+											types.StringElement{Content: "some marked\ncontent"},
+										},
+									},
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+			})
+
+			It("double marked text across paragraph", func() {
+				source := "##some marked\n\ncontent##"
+				expected := types.DraftDocument{
+					Blocks: []interface{}{
+						types.Paragraph{
+							Lines: [][]interface{}{
+
+								{
+									types.StringElement{Content: "##some marked"},
+								},
+							},
+						},
+						types.BlankLine{},
+						types.Paragraph{
+							Lines: [][]interface{}{
+								{
+									types.StringElement{Content: "content##"},
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+			})
+
 		})
 
 		Context("attributes", func() {

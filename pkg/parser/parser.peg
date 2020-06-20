@@ -1036,7 +1036,8 @@ DoubleQuoteBoldText <- attrs:(QuotedTextAttrs)? !`\\` "**" elements:(DoubleQuote
 
 DoubleQuoteBoldTextElements <- DoubleQuoteBoldTextElement (!("**") (Space / DoubleQuoteBoldTextElement))*  // may start and end with spaces
 
-DoubleQuoteBoldTextElement <- Word 
+DoubleQuoteBoldTextElement <- Word
+        / Newline !Newline
         / SingleQuoteBoldText 
         / ItalicText
         / MarkedText
@@ -1071,7 +1072,8 @@ SingleQuoteBoldText <- attrs:(QuotedTextAttrs)? (!`\` "*" !"*") elements:(Single
 
 SingleQuoteBoldTextElements <- !Space SingleQuoteBoldTextElement+
 
-SingleQuoteBoldTextElement <- Word 
+SingleQuoteBoldTextElement <- Word
+        / Newline !Newline
         / DoubleQuoteBoldText
         / Space+ ('*' !'*')?
         / ItalicText
@@ -1120,7 +1122,8 @@ DoubleQuoteItalicText <- attrs:(QuotedTextAttrs)? !`\\` "__" elements:(DoubleQuo
 
 DoubleQuoteItalicTextElements <- DoubleQuoteItalicTextElement (!("__") (Space / DoubleQuoteItalicTextElement))*  // may start and end with spaces
 
-DoubleQuoteItalicTextElement <- Word 
+DoubleQuoteItalicTextElement <- Word
+        / Newline !Newline
         / SingleQuoteItalicText 
         / BoldText
         / MarkedText
@@ -1153,7 +1156,8 @@ SingleQuoteItalicText <- attrs:(QuotedTextAttrs)? (!`\` "_" !"_") elements:(Sing
 
 SingleQuoteItalicTextElements <- !Space SingleQuoteItalicTextElement+
 
-SingleQuoteItalicTextElement <- Word 
+SingleQuoteItalicTextElement <- Word
+        / Newline !Newline
         / DoubleQuoteItalicText
         / Space+ ('_' !'_')?
         / BoldText
@@ -1201,7 +1205,8 @@ DoubleQuoteMonospaceText <- attrs:(QuotedTextAttrs)? !`\\` "``" elements:(Double
 
 DoubleQuoteMonospaceTextElements <- DoubleQuoteMonospaceTextElement (!("``") (Space / DoubleQuoteMonospaceTextElement))* // may start and end with spaces
 
-DoubleQuoteMonospaceTextElement <- Word 
+DoubleQuoteMonospaceTextElement <- Word
+        / Newline !Newline
         / SingleQuoteMonospaceText 
         / BoldText
         / ItalicText
@@ -1234,10 +1239,10 @@ SingleQuoteMonospaceText <- attrs:(QuotedTextAttrs)? (!`\` "`" !"`") elements:(S
 
 SingleQuoteMonospaceTextElements <- !Space SingleQuoteMonospaceTextElement+
 
-SingleQuoteMonospaceTextElement <-  Word 
+SingleQuoteMonospaceTextElement <-  Word
+        / Newline !Newline
         / DoubleQuoteMonospaceText 
         / Space+ ('`' !'`')?  // allow for content such as "`some `nested monospace`". Also, do not allow for double backticks after spaces.
-        / Newline // allows multiline
         / BoldText
         / ItalicText
         / MarkedText
@@ -1286,6 +1291,7 @@ DoubleQuoteMarkedTextElements <- DoubleQuoteMarkedTextElement (!("##") (Space / 
 
 DoubleQuoteMarkedTextElement <- Word
         / SingleQuoteMarkedText
+        / Newline !Newline
         / BoldText
         / ItalicText
         / MonospaceText
@@ -1319,6 +1325,7 @@ SingleQuoteMarkedTextElements <- !Space SingleQuoteMarkedTextElement+
 
 SingleQuoteMarkedTextElement <- Word
         / DoubleQuoteMarkedText
+        / Newline !Newline
         / Space+ ('#' !'#')?
         / BoldText
         / ItalicText
