@@ -1030,7 +1030,7 @@ TwoOrMoreBackslashes <- `\\` `\`* {
 
 BoldText <- DoubleQuoteBoldText / SingleQuoteBoldText // double punctuation must be evaluated first
 
-DoubleQuoteBoldText <- attrs:(QuotedTextAttrs)? !`\\` "**" elements:(DoubleQuoteBoldTextElements) "**" {
+DoubleQuoteBoldText <- attrs:(QuotedTextAttrs)? "**" elements:(DoubleQuoteBoldTextElements) "**" {
     return types.NewQuotedText(types.Bold, attrs, elements.([]interface{}))
 } 
 
@@ -1064,9 +1064,9 @@ DoubleQuoteBoldTextFallbackCharacter <-
     return types.NewStringElement(string(c.text))
 }
 
-SingleQuoteBoldText <- attrs:(QuotedTextAttrs)? (!`\` "*" !"*") elements:(SingleQuoteBoldTextElements) "*" &(!Alphanum) { // single punctuation cannot be followed by a character (needs '**' to emphazise a portion of a word)
+SingleQuoteBoldText <- attrs:(QuotedTextAttrs)? ( "*" !"*") elements:(SingleQuoteBoldTextElements) "*" &(!Alphanum) { // single punctuation cannot be followed by a character (needs '**' to emphazise a portion of a word)
     return types.NewQuotedText(types.Bold, attrs, elements.([]interface{}))
-} / attrs:(QuotedTextAttrs)? !`\\` "*" elements:("*" SingleQuoteBoldTextElements) "*" { // unbalanced `**` vs `*` punctuation.
+} / attrs:(QuotedTextAttrs)? "*" elements:("*" SingleQuoteBoldTextElements) "*" { // unbalanced `**` vs `*` punctuation.
     return types.NewQuotedText(types.Bold, attrs, elements.([]interface{})) // include the second heading `*` as a regular StringElement in the bold content
 } 
 
@@ -1116,7 +1116,7 @@ EscapedBoldText <-
 
 ItalicText <- DoubleQuoteItalicText / SingleQuoteItalicText
 
-DoubleQuoteItalicText <- attrs:(QuotedTextAttrs)? !`\\` "__" elements:(DoubleQuoteItalicTextElements) "__" { // double punctuation must be evaluated first
+DoubleQuoteItalicText <- attrs:(QuotedTextAttrs)? "__" elements:(DoubleQuoteItalicTextElements) "__" { // double punctuation must be evaluated first
     return types.NewQuotedText(types.Italic, attrs, elements.([]interface{}))
 }
 
@@ -1148,9 +1148,9 @@ DoubleQuoteItalicTextFallbackCharacter <-
     return types.NewStringElement(string(c.text))
 }
 
-SingleQuoteItalicText <- attrs:(QuotedTextAttrs)? (!`\` "_" !"_") elements:(SingleQuoteItalicTextElements) "_" { // single punctuation cannot be followed by a character (needs '__' to emphazise a portion of a word)
+SingleQuoteItalicText <- attrs:(QuotedTextAttrs)? ("_" !"_") elements:(SingleQuoteItalicTextElements) "_" { // single punctuation cannot be followed by a character (needs '__' to emphazise a portion of a word)
     return types.NewQuotedText(types.Italic, attrs, elements.([]interface{}))
-} / attrs:(QuotedTextAttrs)? !`\\` "_" elements:("_" SingleQuoteItalicTextElements) "_" { // unbalanced `__` vs `_` punctuation.
+} / attrs:(QuotedTextAttrs)? "_" elements:("_" SingleQuoteItalicTextElements) "_" { // unbalanced `__` vs `_` punctuation.
     return types.NewQuotedText(types.Italic, attrs, elements.([]interface{})) // include the second heading `_` as a regular StringElement in the italic content
 } 
 
@@ -1199,7 +1199,7 @@ EscapedItalicText <-
 // -----------------
 MonospaceText <- DoubleQuoteMonospaceText / SingleQuoteMonospaceText
 
-DoubleQuoteMonospaceText <- attrs:(QuotedTextAttrs)? !`\\` "``" elements:(DoubleQuoteMonospaceTextElements) "``" { // double punctuation must be evaluated first
+DoubleQuoteMonospaceText <- attrs:(QuotedTextAttrs)? "``" elements:(DoubleQuoteMonospaceTextElements) "``" { // double punctuation must be evaluated first
     return types.NewQuotedText(types.Monospace, attrs, elements.([]interface{}))
 }
 
@@ -1231,9 +1231,9 @@ DoubleQuoteMonospaceTextFallbackCharacter <-
     return types.NewStringElement(string(c.text))
 }
 
-SingleQuoteMonospaceText <- attrs:(QuotedTextAttrs)? (!`\` "`" !"`") elements:(SingleQuoteMonospaceTextElements) "`" { // single punctuation cannot be followed by a character (needs "``" to emphazise a portion of a word)
+SingleQuoteMonospaceText <- attrs:(QuotedTextAttrs)? ("`" !"`") elements:(SingleQuoteMonospaceTextElements) "`" { // single punctuation cannot be followed by a character (needs "``" to emphazise a portion of a word)
     return types.NewQuotedText(types.Monospace, attrs, elements.([]interface{}))
-} / attrs:(QuotedTextAttrs)? !`\\` "`" elements:("`" SingleQuoteMonospaceTextElements) "`" { // unbalanced "``" vs "`" punctuation.
+} / attrs:(QuotedTextAttrs)? "`" elements:("`" SingleQuoteMonospaceTextElements) "`" { // unbalanced "``" vs "`" punctuation.
     return types.NewQuotedText(types.Monospace, attrs, elements.([]interface{})) // include the second heading "`" as a regular StringElement in the monospace content
 } 
 
@@ -1283,7 +1283,7 @@ EscapedMonospaceText <-
 
 MarkedText <- DoubleQuoteMarkedText / SingleQuoteMarkedText
 
-DoubleQuoteMarkedText <- attrs:(QuotedTextAttrs)? !`\\` "##" elements:(DoubleQuoteMarkedTextElements) "##" { // double punctuation must be evaluated first
+DoubleQuoteMarkedText <- attrs:(QuotedTextAttrs)? "##" elements:(DoubleQuoteMarkedTextElements) "##" { // double punctuation must be evaluated first
     return types.NewQuotedText(types.Marked, attrs, elements.([]interface{}))
 }
 
@@ -1315,9 +1315,9 @@ DoubleQuoteMarkedTextFallbackCharacter <-
     return types.NewStringElement(string(c.text))
 }
 
-SingleQuoteMarkedText <- attrs:(QuotedTextAttrs)? (!`\` "#" !"#") elements:(SingleQuoteMarkedTextElements) "#" { // single punctuation cannot be followed by a character (needs '##' to emphazise a portion of a word)
+SingleQuoteMarkedText <- attrs:(QuotedTextAttrs)? ("#" !"#") elements:(SingleQuoteMarkedTextElements) "#" { // single punctuation cannot be followed by a character (needs '##' to emphazise a portion of a word)
     return types.NewQuotedText(types.Marked, attrs, elements.([]interface{}))
-} / attrs:(QuotedTextAttrs)? !`\\` "#" elements:("#" SingleQuoteMarkedTextElements) "#" { // unbalanced `##` vs `#` punctuation.
+} / attrs:(QuotedTextAttrs)? "#" elements:("#" SingleQuoteMarkedTextElements) "#" { // unbalanced `##` vs `#` punctuation.
     return types.NewQuotedText(types.Marked, attrs, elements.([]interface{})) // include the second heading `_` as a regular StringElement in the italic content
 }
 
@@ -1362,7 +1362,7 @@ EscapedMarkedText <-
 }
 
 
-SubscriptText <- attrs:(QuotedTextAttrs)? !`\` "~" element:(SubscriptTextElement) "~" { // wraps a single word
+SubscriptText <- attrs:(QuotedTextAttrs)? "~" element:(SubscriptTextElement) "~" { // wraps a single word
     return types.NewQuotedText(types.Subscript, attrs, element)
 }
 
@@ -1376,7 +1376,7 @@ EscapedSubscriptText <- backslashes:(OneOrMoreBackslashes) "~" element:(Subscrip
     return types.NewEscapedQuotedText(backslashes.(string), "~", element)
 } 
 
-SuperscriptText <- attrs:(QuotedTextAttrs)? !`\` "^" element:(SuperscriptTextElement) "^" { // wraps a single word
+SuperscriptText <- attrs:(QuotedTextAttrs)? "^" element:(SuperscriptTextElement) "^" { // wraps a single word
     return types.NewQuotedText(types.Superscript, attrs, element)
 }
 
