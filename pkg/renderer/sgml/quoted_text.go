@@ -1,22 +1,13 @@
 package sgml
 
 import (
-	"strings"
-	"text/template"
-
 	"github.com/bytesparadise/libasciidoc/pkg/renderer"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 	"github.com/pkg/errors"
+	"strings"
 )
 
 // TODO: The bold, italic, and monospace items should be refactored to support semantic tags instead.
-
-type quotedText struct {
-	ID         string
-	Roles      string
-	Attributes types.Attributes
-	Content    sanitized
-}
 
 func (r *sgmlRenderer) renderQuotedText(ctx *renderer.Context, t types.QuotedText) (string, error) {
 	elementsBuffer := &strings.Builder{}
@@ -49,10 +40,15 @@ func (r *sgmlRenderer) renderQuotedText(ctx *renderer.Context, t types.QuotedTex
 	}
 
 	result := &strings.Builder{}
-	err := tmpl.Execute(result, &quotedText{
+	err := tmpl.Execute(result, struct {
+		ID         sanitized
+		Roles      sanitized
+		Attributes types.Attributes
+		Content    sanitized
+	}{
 		Attributes: t.Attributes,
-		ID:         template.HTMLEscapeString(r.renderElementID(t.Attributes)),
-		Roles:      template.HTMLEscapeString(r.renderElementRoles(t.Attributes)),
+		ID:         r.renderElementID(t.Attributes),
+		Roles:      r.renderElementRoles(t.Attributes),
 		Content:    sanitized(elementsBuffer.String()),
 	}) //nolint: gosec
 	if err != nil {

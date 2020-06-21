@@ -1,12 +1,13 @@
 package html5
 
 const (
-	unorderedListTmpl = `{{ $ctx := .Context }}{{ with .Data }}<div{{ if .ID }} id="{{ .ID }}"{{ end }} class="ulist{{ if .Checklist }} checklist{{ end }}{{ if .Role }} {{ .Role }}{{ end}}">
-{{ if .Title }}<div class="title">{{ escape .Title }}</div>
-{{ end }}<ul{{ if .Checklist }} class="checklist"{{ end }}>
-{{ $items := .Items }}{{ range $itemIndex, $item := $items }}<li>
-{{ $elements := $item.Elements }}{{ renderList $ctx $elements }}
-</li>
-{{ end }}</ul>
-</div>{{ end }}`
+	unorderedListTmpl = `<div{{ if .ID }} id="{{ .ID }}"{{ end }}` +
+		` class="ulist{{ if .Checklist }} checklist{{ end }}` +
+		`{{ if .Roles }} {{ .Roles }}{{ end }}"` +
+		">\n" +
+		"{{ if .Title }}<div class=\"title\">{{ escape .Title }}</div>\n{{ end }}" +
+		"<ul{{ if .Checklist }} class=\"checklist\"{{ end }}>\n" +
+		"{{ .Content }}</ul>\n</div>"
+
+	unorderedListItemTmpl = "<li>\n{{ .Content }}\n</li>\n"
 )

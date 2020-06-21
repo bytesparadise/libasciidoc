@@ -29,26 +29,65 @@ func (r *sgmlRenderer) renderTableOfContents(ctx *renderer.Context, toc types.Ta
 	return result.String(), nil
 }
 
-func (r *sgmlRenderer) renderTableOfContentsSections(ctx *renderer.Context, sections []types.ToCSection) (sanitized, error) {
+func (r *sgmlRenderer) renderTableOfContentsSections(ctx *renderer.Context, sections []types.ToCSection) (string, error) {
 	if len(sections) == 0 {
 		return "", nil
 	}
 	resultBuf := &strings.Builder{}
-	err := r.tocSection.Execute(resultBuf, ContextualPipeline{
-		Context: ctx,
-		Data: struct {
-			Level    int
-			Sections []types.ToCSection
-		}{
-			Level:    sections[0].Level,
-			Sections: sections,
-		},
+	contents := &strings.Builder{}
+	for _, entry := range sections {
+		buf, err := r.renderTableOfContentsEntry(ctx, entry)
+		if err != nil {
+			return "", errors.Wrap(err, "unable to render ToC section")
+		}
+		contents.WriteString(buf)
+	}
+
+	err := r.tocSection.Execute(resultBuf, struct {
+		Context  *renderer.Context
+		Level    int
+		Content  string
+		Sections []types.ToCSection
+	}{
+		Context:  ctx,
+		Level:    sections[0].Level,
+		Content:  contents.String(),
+		Sections: sections,
 	})
 	if err != nil {
 		return "", errors.Wrap(err, "failed to render document ToC")
 	}
 	log.Debugf("retrieved sections for ToC: %+v", sections)
-	return sanitized(resultBuf.String()), nil //nolint: gosec
+	return resultBuf.String(), nil //nolint: gosec
+}
+
+func (r *sgmlRenderer) renderTableOfContentsEntry(ctx *renderer.Context, entry types.ToCSection) (string, error) {
+	resultBuf := &strings.Builder{}
+
+	content, err := r.renderTableOfContentsSections(ctx, entry.Children)
+	if err != nil {
+		return "", errors.Wrap(err, "unable to render ToC entry children")
+	}
+
+	err = r.tocEntry.Execute(resultBuf, struct {
+		Context  *renderer.Context
+		Level    int
+		ID       sanitized
+		Title    string
+		Content  string
+		Children []types.ToCSection
+	}{
+		Context:  ctx,
+		Level:    entry.Level,
+		ID:       sanitized(entry.ID),
+		Title:    entry.Title,
+		Content:  content,
+		Children: entry.Children,
+	})
+	if err != nil {
+		return "", errors.Wrap(err, "failed to render document ToC")
+	}
+	return resultBuf.String(), nil //nolint: gosec
 }
 
 // newTableOfContents initializes a TableOfContents from the sections
@@ -100,7 +139,7 @@ func (r *sgmlRenderer) visitSection(ctx *renderer.Context, section types.Section
 		{
 			ID:       section.Attributes.GetAsStringWithDefault(types.AttrID, ""),
 			Level:    section.Level,
-			Title:    string(renderedTitle),
+			Title:    renderedTitle,
 			Children: children,
 		},
 	}, nil

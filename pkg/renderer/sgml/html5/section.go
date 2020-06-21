@@ -2,23 +2,16 @@ package html5
 
 // initializes the sgml
 const (
-	preambleTmpl = `{{ $ctx := .Context }}{{ with .Data }}{{ if .Wrapper }}<div id="preamble">
-<div class="sectionbody">
-{{ end }}{{ renderElements $ctx .Elements }}{{ if .Wrapper }}
-</div>
-</div>{{ end }}{{ end }}`
+	preambleTmpl = "{{ if .Wrapper }}<div id=\"preamble\">\n<div class=\"sectionbody\">\n{{ end }}" +
+		`{{ .Content }}` +
+		"{{ if .Wrapper }}\n</div>\n</div>{{ end }}"
 
-	sectionOneTmpl = `{{ $ctx := .Context }}{{ with .Data }}<div class="{{ .Class }}">
-{{ .SectionTitle }}
-<div class="sectionbody">{{ $elements := renderElements $ctx .Elements }}{{ if $elements }}
-{{ $elements }}{{ end }}
-</div>
-</div>{{ end }}`
+	sectionContentTmpl = "<div class=\"sect{{ .Level }}\">\n" +
+		"{{ .Header }}" +
+		"{{ if eq .Level 1 }}\n<div class=\"sectionbody\">{{ end }}" +
+		"{{ if .Content }}\n{{ .Content }}{{ end }}\n" +
+		"{{ if eq .Level 1 }}</div>\n{{ end }}" +
+		"</div>"
 
-	sectionContentTmpl = `{{ $ctx := .Context }}{{ with .Data }}<div class="{{ .Class }}">
-{{ .SectionTitle }}{{ $elements := renderElements $ctx .Elements }}{{ if $elements }}
-{{ $elements }}{{ end }}
-</div>{{ end }}`
-
-	sectionHeaderTmpl = `<h{{ .Level }} id="{{ .ID }}">{{ .Content }}</h{{ .Level }}>`
+	sectionHeaderTmpl = `<h{{ .LevelPlusOne }} id="{{ .ID }}">{{ .Content }}</h{{ .LevelPlusOne }}>`
 )

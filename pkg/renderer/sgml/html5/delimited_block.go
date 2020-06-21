@@ -1,79 +1,82 @@
 package html5
 
 const (
-	fencedBlockTmpl = `{{ $ctx := .Context }}{{ with .Data }}<div {{ if .ID }}id="{{ .ID }}" {{ end }}class="listingblock">{{ if .Title }}
-<div class="title">{{ escape .Title }}</div>{{ end }}
-<div class="content">
-<pre class="highlight"><code>{{ render $ctx .Elements }}</code></pre>
-</div>
-</div>{{ end }}`
+	fencedBlockTmpl = `<div {{ if .ID }}id="{{ .ID }}" {{ end }}` +
+		"class=\"listingblock{{ if .Roles }} {{ .Roles }}{{ end }}\">\n" +
+		"{{ if .Title }}<div class=\"title\">{{ escape .Title }}</div>\n{{ end }}" +
+		"<div class=\"content\">\n" +
+		"<pre class=\"highlight\"><code>{{ .Content }}</code></pre>\n" +
+		"</div>\n" +
+		"</div>"
 
-	listingBlockTmpl = `{{ $ctx := .Context }}{{ with .Data }}<div {{ if .ID }}id="{{ .ID }}" {{ end }}class="listingblock">{{ if .Title }}
-<div class="title">{{ escape .Title }}</div>{{ end }}
-<div class="content">
-<pre>{{ renderElements $ctx .Elements }}</pre>
-</div>
-</div>{{ end }}`
+	listingBlockTmpl = `<div {{ if .ID }}id="{{ .ID }}" {{ end }}` +
+		"class=\"listingblock{{ if .Roles }} {{ .Roles }}{{ end }}\">\n" +
+		"{{ if .Title }}<div class=\"title\">{{ escape .Title }}</div>\n{{ end }}" +
+		"<div class=\"content\">\n" +
+		"<pre>{{ .Content }}</pre>\n" +
+		"</div>\n" +
+		"</div>"
 
-	sourceBlockTmpl = `<div {{ if .ID }}id="{{ .ID }}" {{ end }}class="listingblock">{{ if .Title }}
-<div class="title">{{ escape .Title }}</div>{{ end }}
-<div class="content">
-<pre class="{{ if .SyntaxHighlighter }}{{ .SyntaxHighlighter }} {{ end }}highlight"><code{{ if .Language }}{{ if not .SyntaxHighlighter }} class="language-{{ .Language}}"{{ end }} data-lang="{{ .Language}}"{{ end }}>{{ .Content }}</code></pre>
-</div>
-</div>`
+	sourceBlockTmpl = `<div {{ if .ID }}id="{{ .ID }}" {{ end }}` +
+		"class=\"listingblock{{ if .Roles }} {{ .Roles }}{{ end }}\">\n" +
+		"{{ if .Title }}<div class=\"title\">{{ escape .Title }}</div>\n{{ end }}" +
+		"<div class=\"content\">\n" +
+		"<pre class=\"" +
+		`{{ if .SyntaxHighlighter }}{{ .SyntaxHighlighter }} {{ end }}` +
+		`highlight">` +
+		`<code{{ if .Language }}{{ if not .SyntaxHighlighter }} class="language-{{ .Language}}"{{ end }} ` +
+		`data-lang="{{ .Language}}"{{ end }}>` +
+		"{{ .Content }}</code></pre>\n" +
+		"</div>\n" +
+		"</div>"
 
-	sourceBlockContentTmpl = `{{ $ctx := .Context }}{{ with .Data }}{{ render $ctx .Elements }}{{ end }}`
+	exampleBlockTmpl = `<div {{ if .ID }}id="{{ .ID }}" {{ end }}` +
+		"class=\"exampleblock{{ if .Roles }} {{ .Roles }}{{ end }}\">\n" +
+		"{{ if .Title }}<div class=\"title\">Example {{ .ExampleNumber }}. {{ escape .Title }}</div>\n{{ end }}" +
+		"<div class=\"content\">\n" +
+		"{{ .Content }}\n" +
+		"</div>\n" +
+		"</div>"
 
-	exampleBlockTmpl = `{{ $ctx := .Context }}{{ with .Data }}<div {{ if .ID }}id="{{ .ID }}" {{ end }}class="exampleblock">{{ if .Title }}
-<div class="title">{{ escape .Title }}</div>{{ end }}
-<div class="content">
-{{ renderElements $ctx .Elements }}
-</div>
-</div>{{ end }}`
+	quoteBlockTmpl = `<div {{ if .ID }}id="{{ .ID }}" {{ end }}` +
+		"class=\"quoteblock{{ if .Roles }} {{ .Roles }}{{ end }}\">\n" +
+		"{{ if .Title }}<div class=\"title\">{{ escape .Title }}</div>\n{{ end }}" +
+		"<blockquote>\n" +
+		"{{ .Content }}\n" +
+		"</blockquote>\n" +
+		"{{ if .Attribution.First }}<div class=\"attribution\">\n" +
+		"&#8212; {{ .Attribution.First }}" +
+		"{{ if .Attribution.Second }}<br>\n<cite>{{ .Attribution.Second }}</cite>{{ end }}\n" +
+		"</div>\n{{ end }}" +
+		"</div>"
 
-	quoteBlockTmpl = `{{ $ctx := .Context }}{{ with .Data }}<div {{ if .ID }}id="{{ .ID }}" {{ end }}class="quoteblock">{{ if .Title }}
-<div class="title">{{ escape .Title }}</div>{{ end }}
-<blockquote>
-{{ renderElements $ctx .Elements }}
-</blockquote>{{ if .Attribution.First }}
-<div class="attribution">
-&#8212; {{ .Attribution.First }}{{ if .Attribution.Second }}<br>
-<cite>{{ .Attribution.Second }}</cite>{{ end }}
-</div>{{ end }}
-</div>{{ end }}`
+	verseBlockTmpl = `<div {{ if .ID }}id="{{ .ID }}" {{ end }}` +
+		"class=\"verseblock{{ if .Roles }} {{ .Roles }}{{ end }}\">\n" +
+		"{{ if .Title }}<div class=\"title\">{{ escape .Title }}</div>\n{{ end }}" +
+		"<pre class=\"content\">{{ .Content }}</pre>\n" +
+		"{{ if .Attribution.First }}<div class=\"attribution\">\n&#8212; {{ .Attribution.First }}" +
+		"{{ if .Attribution.Second }}<br>\n<cite>{{ .Attribution.Second }}</cite>{{ end }}\n" +
+		"</div>\n{{ end }}" +
+		"</div>"
 
-	verseBlockTmpl = `{{ $ctx := .Context }}{{ with .Data }}<div {{ if .ID }}id="{{ .ID }}" {{ end }}class="verseblock">{{ if .Title }}
-<div class="title">{{ escape .Title }}</div>{{ end }}
-<pre class="content">{{ range $index, $element := .Elements }}{{ renderVerse $ctx $element }}{{ end }}</pre>{{ if .Attribution.First }}
-<div class="attribution">
-&#8212; {{ .Attribution.First }}{{ if .Attribution.Second }}<br>
-<cite>{{ .Attribution.Second }}</cite>{{ end }}
-</div>{{ end }}
-</div>{{ end }}`
+	admonitionBlockTmpl = `<div {{ if .ID }}id="{{ .ID}}" {{ end }}` +
+		"class=\"admonitionblock {{ .Kind }}{{ if .Roles }} {{ .Roles }}{{ end }}\">\n" +
+		"<table>\n" +
+		"<tr>\n" +
+		"<td class=\"icon\">\n{{ .Icon }}\n</td>\n" +
+		"<td class=\"content\">\n" +
+		"{{ if .Title }}<div class=\"title\">{{ escape .Title }}</div>\n{{ end }}" +
+		"{{ .Content }}\n" +
+		"</td>\n</tr>\n</table>\n</div>"
 
-	verseBlockParagraphTmpl = `{{ $ctx := .Context }}{{ with .Data }}{{ renderLines $ctx .Lines }}{{ end }}`
-
-	admonitionBlockTmpl = `{{ $ctx := .Context }}{{ with .Data }}<div {{ if .ID }}id="{{ .ID}}" {{ end }}class="admonitionblock {{ .Class }}">
-<table>
-<tr>
-<td class="icon">
-{{ .Icon }}
-</td>
-<td class="content">
-{{ if .Title }}<div class="title">{{ escape .Title }}</div>
-{{ end }}{{ renderElements $ctx .Elements }}
-</td>
-</tr>
-</table>
-</div>{{ end }}`
-
-	sidebarBlockTmpl = `{{ $ctx := .Context }}{{ with .Data }}<div {{ if .ID }}id="{{ .ID }}" {{ end }}class="sidebarblock">
-<div class="content">{{ if .Title }}
-<div class="title">{{ escape .Title }}</div>{{ end }}
-{{ renderElements $ctx .Elements }}
-</div>
-</div>{{ end }}`
+	sidebarBlockTmpl = "<div {{ if .ID }}id=\"{{ .ID }}\" {{ end }}" +
+		"class=\"sidebarblock{{ if .Roles }} {{ .Roles }}{{ end }}\">\n" +
+		"<div class=\"content\">\n" +
+		"{{ if .Title }}<div class=\"title\">{{ escape .Title }}</div>\n{{ end }}" +
+		"{{ .Content }}\n" +
+		"</div>\n" +
+		"</div>"
 
 	// the name here is weird because "pass" as a prefix triggers a false security warning
-	pssThroughBlock = `{{ $ctx := .Context }}{{ with .Data }}{{ render $ctx .Elements }}{{ end }}`
+	pssThroughBlock = `{{ .Content }}`
 )

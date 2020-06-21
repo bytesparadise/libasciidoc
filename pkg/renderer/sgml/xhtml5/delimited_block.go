@@ -1,23 +1,24 @@
 package xhtml5
 
 const (
-	quoteBlockTmpl = `{{ $ctx := .Context }}{{ with .Data }}<div {{ if .ID }}id="{{ .ID }}" {{ end }}class="quoteblock">{{ if .Title }}
-<div class="title">{{ escape .Title }}</div>{{ end }}
-<blockquote>
-{{ renderElements $ctx .Elements }}
-</blockquote>{{ if .Attribution.First }}
-<div class="attribution">
-&#8212; {{ .Attribution.First }}{{ if .Attribution.Second }}<br/>
-<cite>{{ .Attribution.Second }}</cite>{{ end }}
-</div>{{ end }}
-</div>{{ end }}`
+	quoteBlockTmpl = `<div {{ if .ID }}id="{{ .ID }}" {{ end }}` +
+		"class=\"quoteblock{{ if .Roles }} {{ .Roles }}{{ end }}\">\n" +
+		"{{ if .Title }}<div class=\"title\">{{ escape .Title }}</div>\n{{ end }}" +
+		"<blockquote>\n" +
+		"{{ .Content }}\n" +
+		"</blockquote>\n" +
+		"{{ if .Attribution.First }}<div class=\"attribution\">\n" +
+		"&#8212; {{ .Attribution.First }}" +
+		"{{ if .Attribution.Second }}<br/>\n<cite>{{ .Attribution.Second }}</cite>{{ end }}\n" +
+		"</div>\n{{ end }}" +
+		"</div>"
 
-	verseBlockTmpl = `{{ $ctx := .Context }}{{ with .Data }}<div {{ if .ID }}id="{{ .ID }}" {{ end }}class="verseblock">{{ if .Title }}
-<div class="title">{{ escape .Title }}</div>{{ end }}
-<pre class="content">{{ range $index, $element := .Elements }}{{ renderVerse $ctx $element }}{{ end }}</pre>{{ if .Attribution.First }}
-<div class="attribution">
-&#8212; {{ .Attribution.First }}{{ if .Attribution.Second }}<br/>
-<cite>{{ .Attribution.Second }}</cite>{{ end }}
-</div>{{ end }}
-</div>{{ end }}`
+	verseBlockTmpl = `<div {{ if .ID }}id="{{ .ID }}" {{ end }}` +
+		"class=\"verseblock{{ if .Roles }} {{ .Roles }}{{ end }}\">\n" +
+		"{{ if .Title }}<div class=\"title\">{{ escape .Title }}</div>\n{{ end }}" +
+		"<pre class=\"content\">{{ .Content }}</pre>\n" +
+		"{{ if .Attribution.First }}<div class=\"attribution\">\n&#8212; {{ .Attribution.First }}" +
+		"{{ if .Attribution.Second }}<br/>\n<cite>{{ .Attribution.Second }}</cite>{{ end }}\n" +
+		"</div>\n{{ end }}" +
+		"</div>"
 )

@@ -2,7 +2,6 @@ package sgml
 
 import (
 	"bytes"
-	"strconv"
 	"strings"
 
 	"github.com/alecthomas/chroma"
@@ -51,17 +50,25 @@ func (r *sgmlRenderer) renderFencedBlock(ctx *renderer.Context, b types.Delimite
 	ctx.WithinDelimitedBlock = true
 	ctx.IncludeBlankLine = true
 	result := &strings.Builder{}
-	err := r.fencedBlock.Execute(result, ContextualPipeline{
-		Context: ctx,
-		Data: struct {
-			ID       string
-			Title    string
-			Elements []interface{}
-		}{
-			ID:       r.renderElementID(b.Attributes),
-			Title:    r.renderElementTitle(b.Attributes),
-			Elements: discardTrailingBlankLines(b.Elements),
-		},
+	elements := discardTrailingBlankLines(b.Elements)
+	content, err := r.renderElement(ctx, elements)
+	if err != nil {
+		return "", errors.Wrap(err, "unable to render fenced block content")
+	}
+	err = r.fencedBlock.Execute(result, struct {
+		Context  *renderer.Context
+		ID       sanitized
+		Title    string
+		Roles    sanitized
+		Content  sanitized
+		Elements []interface{}
+	}{
+		Context:  ctx,
+		ID:       r.renderElementID(b.Attributes),
+		Title:    r.renderElementTitle(b.Attributes),
+		Roles:    r.renderElementRoles(b.Attributes),
+		Content:  sanitized(content),
+		Elements: elements,
 	})
 	return result.String(), err
 }
@@ -76,17 +83,26 @@ func (r *sgmlRenderer) renderListingBlock(ctx *renderer.Context, b types.Delimit
 	ctx.WithinDelimitedBlock = true
 	ctx.IncludeBlankLine = true
 	result := &strings.Builder{}
-	err := r.listingBlock.Execute(result, ContextualPipeline{
-		Context: ctx,
-		Data: struct {
-			ID       string
-			Title    string
-			Elements []interface{}
-		}{
-			ID:       r.renderElementID(b.Attributes),
-			Title:    r.renderElementTitle(b.Attributes),
-			Elements: discardTrailingBlankLines(b.Elements),
-		},
+	elements := discardTrailingBlankLines(b.Elements)
+	content, err := r.renderElements(ctx, elements)
+	if err != nil {
+		return "", errors.Wrap(err, "unable to render listing block content")
+	}
+
+	err = r.listingBlock.Execute(result, struct {
+		Context  *renderer.Context
+		ID       sanitized
+		Title    string
+		Roles    sanitized
+		Content  sanitized
+		Elements []interface{}
+	}{
+		Context:  ctx,
+		ID:       r.renderElementID(b.Attributes),
+		Title:    r.renderElementTitle(b.Attributes),
+		Roles:    r.renderElementRoles(b.Attributes),
+		Content:  sanitized(content),
+		Elements: discardTrailingBlankLines(b.Elements),
 	})
 	return result.String(), err
 }
@@ -101,24 +117,19 @@ func (r *sgmlRenderer) renderSourceBlock(ctx *renderer.Context, b types.Delimite
 	ctx.WithinDelimitedBlock = true
 	ctx.IncludeBlankLine = true
 	// first, render the content
-	contentBuf := &strings.Builder{}
-	err := r.sourceBlockContent.Execute(contentBuf, ContextualPipeline{
-		Context: ctx,
-		Data: struct {
-			Elements []interface{}
-		}{
-			Elements: discardTrailingBlankLines(b.Elements),
-		}})
+
+	elements := discardTrailingBlankLines(b.Elements)
+	content, err := r.renderElements(ctx, elements)
+
 	if err != nil {
 		return "", err
 	}
-	content := contentBuf.String()
 
 	highlighter, _ := ctx.Attributes.GetAsString(types.AttrSyntaxHighlighter)
 	language, found := b.Attributes.GetAsString(types.AttrLanguage)
 	if found && highlighter == "pygments" {
 		// using github.com/alecthomas/chroma to highlight the content
-		contentBuf = &strings.Builder{}
+		contentBuf := &strings.Builder{}
 		lexer := lexers.Get(language)
 		lexer = chroma.Coalesce(lexer)
 		style := styles.Fallback
@@ -152,8 +163,9 @@ func (r *sgmlRenderer) renderSourceBlock(ctx *renderer.Context, b types.Delimite
 
 	result := &bytes.Buffer{}
 	err = r.sourceBlock.Execute(result, struct {
-		ID                string
+		ID                sanitized
 		Title             string
+		Roles             sanitized
 		Language          string
 		SyntaxHighlighter string
 		Content           string
@@ -161,91 +173,136 @@ func (r *sgmlRenderer) renderSourceBlock(ctx *renderer.Context, b types.Delimite
 		ID:                r.renderElementID(b.Attributes),
 		Title:             r.renderElementTitle(b.Attributes),
 		SyntaxHighlighter: highlighter,
+		Roles:             r.renderElementRoles(b.Attributes),
 		Language:          language,
 		Content:           content,
 	})
 	return result.String(), err
 }
 
-func (r *sgmlRenderer) renderExampleBlock(ctx *renderer.Context, b types.DelimitedBlock) (string, error) {
+func (r *sgmlRenderer) renderAdmonitionBlock(ctx *renderer.Context, b types.DelimitedBlock) (string, error) {
+	kind, _ := b.Attributes[types.AttrAdmonitionKind].(types.AdmonitionKind)
+	icon, err := r.renderIcon(ctx, types.Icon{Class: string(kind)}, true)
+	if err != nil {
+		return "", err
+	}
 	result := &strings.Builder{}
-	if k, ok := b.Attributes[types.AttrAdmonitionKind].(types.AdmonitionKind); ok {
-		icon, err := r.renderIcon(ctx, types.Icon{Class: string(k)}, true)
-		if err != nil {
-			return "", err
-		}
-		err = r.admonitionBlock.Execute(result, ContextualPipeline{
-			Context: ctx,
-			Data: struct {
-				ID       string
-				Class    string
-				Title    string
-				Icon     sanitized
-				Elements []interface{}
-			}{
-				ID:       r.renderElementID(b.Attributes),
-				Class:    renderClass(k),
-				Icon:     icon,
-				Title:    r.renderElementTitle(b.Attributes),
-				Elements: discardTrailingBlankLines(b.Elements),
-			},
-		})
-		return result.String(), err
+	elements := discardTrailingBlankLines(b.Elements)
+	content, err := r.renderElements(ctx, elements)
+	if err != nil {
+		return "", errors.Wrap(err, "unable to render admonition block content")
 	}
+	err = r.admonitionBlock.Execute(result, struct {
+		Context  *renderer.Context
+		ID       sanitized
+		Title    string
+		Kind     types.AdmonitionKind
+		Roles    sanitized
+		Icon     sanitized
+		Content  sanitized
+		Elements []interface{}
+	}{
+		Context:  ctx,
+		ID:       r.renderElementID(b.Attributes),
+		Kind:     kind,
+		Roles:    r.renderElementRoles(b.Attributes),
+		Title:    r.renderElementTitle(b.Attributes),
+		Icon:     icon,
+		Content:  sanitized(content),
+		Elements: elements,
+	})
+	return result.String(), err
+}
+
+func (r *sgmlRenderer) renderExampleBlock(ctx *renderer.Context, b types.DelimitedBlock) (string, error) {
+	if b.Attributes.Has(types.AttrAdmonitionKind) {
+		return r.renderAdmonitionBlock(ctx, b)
+	}
+	result := &strings.Builder{}
+
 	// default, example block
-	var title string
-	if b.Attributes.Has(types.AttrTitle) {
-		title = "Example " + strconv.Itoa(ctx.GetAndIncrementExampleBlockCounter()) + ". " + r.renderElementTitle(b.Attributes)
+	number := ctx.GetAndIncrementExampleBlockCounter()
+	elements := b.Elements
+	content, err := r.renderElements(ctx, elements)
+	if err != nil {
+		return "", errors.Wrap(err, "unable to render example block content")
 	}
-	err := r.exampleBlock.Execute(result, ContextualPipeline{
-		Context: ctx,
-		Data: struct {
-			ID       string
-			Title    string
-			Elements []interface{}
-		}{
-			ID:       r.renderElementID(b.Attributes),
-			Title:    title,
-			Elements: discardTrailingBlankLines(b.Elements),
-		},
+	err = r.exampleBlock.Execute(result, struct {
+		Context       *renderer.Context
+		ID            sanitized
+		Title         string
+		Roles         sanitized
+		ExampleNumber int
+		Content       sanitized
+		Elements      []interface{}
+	}{
+		Context:       ctx,
+		ID:            r.renderElementID(b.Attributes),
+		Title:         r.renderElementTitle(b.Attributes),
+		Roles:         r.renderElementRoles(b.Attributes),
+		ExampleNumber: number,
+		Content:       sanitized(content),
+		Elements:      elements,
 	})
 	return result.String(), err
 }
 
 func (r *sgmlRenderer) renderQuoteBlock(ctx *renderer.Context, b types.DelimitedBlock) (string, error) {
 	result := &strings.Builder{}
-	err := r.quoteBlock.Execute(result, ContextualPipeline{
-		Context: ctx,
-		Data: struct {
-			ID          string
-			Title       string
-			Attribution Attribution
-			Elements    []interface{}
-		}{
-			ID:          r.renderElementID(b.Attributes),
-			Title:       r.renderElementTitle(b.Attributes),
-			Attribution: newDelimitedBlockAttribution(b),
-			Elements:    b.Elements,
-		},
+
+	content, err := r.renderElements(ctx, b.Elements)
+	if err != nil {
+		return "", errors.Wrap(err, "unable to render example block content")
+	}
+
+	err = r.quoteBlock.Execute(result, struct {
+		Context     *renderer.Context
+		ID          sanitized
+		Title       string
+		Roles       sanitized
+		Attribution Attribution
+		Content     sanitized
+		Elements    []interface{}
+	}{
+		Context:     ctx,
+		ID:          r.renderElementID(b.Attributes),
+		Title:       r.renderElementTitle(b.Attributes),
+		Roles:       r.renderElementRoles(b.Attributes),
+		Attribution: newDelimitedBlockAttribution(b),
+		Content:     sanitized(content),
+		Elements:    b.Elements,
 	})
 	return result.String(), err
 }
 
 func (r *sgmlRenderer) renderVerseBlock(ctx *renderer.Context, b types.DelimitedBlock) (string, error) {
 	result := &strings.Builder{}
-	err := r.verseBlock.Execute(result, ContextualPipeline{
-		Context: ctx,
-		Data: struct {
-			ID          string
-			Title       string
-			Attribution Attribution
-			Elements    []interface{}
-		}{
-			ID:          r.renderElementID(b.Attributes),
-			Title:       r.renderElementTitle(b.Attributes),
-			Attribution: newDelimitedBlockAttribution(b),
-			Elements:    discardTrailingBlankLines(b.Elements),
-		},
+	elements := discardTrailingBlankLines(b.Elements)
+	content := &strings.Builder{}
+
+	for _, item := range elements {
+		s, err := r.renderVerseBlockElement(ctx, item)
+		if err != nil {
+			return "", errors.Wrap(err, "unable to render verse block element")
+		}
+		content.WriteString(s)
+	}
+	err := r.verseBlock.Execute(result, struct {
+		Context     *renderer.Context
+		ID          sanitized
+		Title       string
+		Roles       sanitized
+		Attribution Attribution
+		Content     sanitized
+		Elements    []interface{}
+	}{
+		Context:     ctx,
+		ID:          r.renderElementID(b.Attributes),
+		Title:       r.renderElementTitle(b.Attributes),
+		Roles:       r.renderElementRoles(b.Attributes),
+		Attribution: newDelimitedBlockAttribution(b),
+		Content:     sanitized(content.String()),
+		Elements:    elements,
 	})
 	return result.String(), err
 }
@@ -258,7 +315,7 @@ func (r *sgmlRenderer) renderVerseBlockElement(ctx *renderer.Context, element in
 	ctx.IncludeBlankLine = true
 	switch e := element.(type) {
 	case types.Paragraph:
-		return r.renderVerseBlockParagraph(ctx, e)
+		return r.renderLines(ctx, e.Lines)
 	case types.BlankLine:
 		return r.renderBlankLine(ctx, e)
 	default:
@@ -266,48 +323,52 @@ func (r *sgmlRenderer) renderVerseBlockElement(ctx *renderer.Context, element in
 	}
 }
 
-func (r *sgmlRenderer) renderVerseBlockParagraph(ctx *renderer.Context, p types.Paragraph) (string, error) {
-	log.Debugf("rendering paragraph with %d line(s) within a delimited block or a list", len(p.Lines))
-	result := &strings.Builder{}
-	err := r.verseBlockParagraph.Execute(result, ContextualPipeline{
-		Context: ctx,
-		Data: struct {
-			Lines [][]interface{}
-		}{
-			Lines: p.Lines,
-		},
-	})
-	return result.String(), err
-}
-
 func (r *sgmlRenderer) renderSidebarBlock(ctx *renderer.Context, b types.DelimitedBlock) (string, error) {
 	result := &strings.Builder{}
-	err := r.sidebarBlock.Execute(result, ContextualPipeline{
-		Context: ctx,
-		Data: struct {
-			ID       string
-			Title    string
-			Elements []interface{}
-		}{
-			ID:       r.renderElementID(b.Attributes),
-			Title:    r.renderElementTitle(b.Attributes),
-			Elements: discardTrailingBlankLines(b.Elements),
-		},
+
+	elements := discardTrailingBlankLines(b.Elements)
+	content, err := r.renderElements(ctx, elements)
+	if err != nil {
+		return "", errors.Wrap(err, "unable to render sidebar block content")
+	}
+
+	err = r.sidebarBlock.Execute(result, struct {
+		Context  *renderer.Context
+		ID       sanitized
+		Title    string
+		Roles    sanitized
+		Content  sanitized
+		Elements []interface{}
+	}{
+		Context:  ctx,
+		ID:       r.renderElementID(b.Attributes),
+		Title:    r.renderElementTitle(b.Attributes),
+		Roles:    r.renderElementRoles(b.Attributes),
+		Content:  sanitized(content),
+		Elements: discardTrailingBlankLines(b.Elements),
 	})
 	return result.String(), err
 }
 
 func (r *sgmlRenderer) renderPassthrough(ctx *renderer.Context, b types.DelimitedBlock) (string, error) {
 	result := &strings.Builder{}
-	err := r.passthroughBlock.Execute(result, ContextualPipeline{
-		Context: ctx,
-		Data: struct {
-			ID       string
-			Elements []interface{}
-		}{
-			ID:       r.renderElementID(b.Attributes),
-			Elements: discardTrailingBlankLines(b.Elements),
-		},
+	elements := discardTrailingBlankLines(b.Elements)
+	content, err := r.renderElement(ctx, b.Elements)
+	if err != nil {
+		return "", errors.Wrap(err, "unable to render passthrough")
+	}
+	err = r.passthroughBlock.Execute(result, struct {
+		Context  *renderer.Context
+		ID       sanitized
+		Roles    sanitized
+		Content  string
+		Elements []interface{}
+	}{
+		Context:  ctx,
+		ID:       r.renderElementID(b.Attributes),
+		Roles:    r.renderElementRoles(b.Attributes),
+		Content:  content,
+		Elements: elements,
 	})
 	return result.String(), err
 }

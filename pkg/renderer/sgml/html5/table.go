@@ -1,20 +1,27 @@
 package html5
 
 const (
-	tableTmpl = `{{ $ctx := .Context }}{{ with .Data }}<table class="tableblock frame-all grid-all stretch">{{ if .Lines }}
-{{ if .Title }}<caption class="title">{{ escape .Title }}</caption>
-{{ end }}<colgroup>
-{{ $cellWidths := .CellWidths }}{{ range $index, $width := $cellWidths }}<col style="width: {{ $width }}%;">{{ includeNewline $ctx $index $cellWidths }}{{ end }}
-</colgroup>
-{{ if .Header }}{{ if .Header.Cells }}<thead>
-<tr>
-{{ $headerCells := .Header.Cells }}{{ range $index, $cell := $headerCells }}<th class="tableblock halign-left valign-top">{{ renderInline $ctx $cell }}</th>{{ includeNewline $ctx $index $headerCells }}{{ end }}
-</tr>
-</thead>
-{{ end }}{{ end }}<tbody>
-{{ range $indexLine, $line := .Lines }}<tr>
-{{ range $indexCells, $cell := $line.Cells }}<td class="tableblock halign-left valign-top"><p class="tableblock">{{ renderInline $ctx $cell }}</p></td>{{ includeNewline $ctx $indexCells $line.Cells }}{{ end }}
-</tr>
-{{ end }}</tbody>{{ end }}
-</table>{{ end }}`
+	// TODO: These class settings need to be overridable via attributes
+	tableTmpl = "<table class=\"tableblock frame-all grid-all stretch{{ if .Roles }} {{ .Roles }}{{ end }}\">\n" +
+		"{{ if .Title }}<caption class=\"title\">Table {{ .TableNumber }}. {{ escape .Title }}</caption>\n{{ end }}" +
+		"{{ if .Body }}" +
+		"<colgroup>\n" +
+		"{{ range $i, $w := .CellWidths }}<col style=\"width: {{ $w }}%;\">\n{{ end}}" +
+		"</colgroup>\n" +
+		"{{ .Header }}" +
+		"{{ .Body }}" +
+		"{{ end }}" +
+		"</table>"
+
+	tableBodyTmpl = "{{ if .Content }}<tbody>\n{{ .Content }}</tbody>\n{{ end }}"
+
+	tableHeaderTmpl = "{{ if .Content }}<thead>\n<tr>\n{{ .Content }}</tr>\n</thead>\n{{ end }}"
+
+	tableRowTmpl = "<tr>\n{{ .Content }}</tr>\n"
+
+	// TODO: review these alignment choices ... should they be overrideable?
+
+	tableHeaderCellTmpl = "<th class=\"tableblock halign-left valign-top\">{{ .Content }}</th>\n"
+
+	tableCellTmpl = "<td class=\"tableblock halign-left valign-top\"><p class=\"tableblock\">{{ .Content }}</p></td>\n"
 )

@@ -1,6 +1,7 @@
 package sgml
 
 import (
+	"io"
 	"strings"
 
 	"github.com/bytesparadise/libasciidoc/pkg/renderer"
@@ -17,25 +18,47 @@ func (r *sgmlRenderer) renderUnorderedList(ctx *renderer.Context, l types.Unorde
 		}
 	}
 	result := &strings.Builder{}
+	content := &strings.Builder{}
+
+	for _, item := range l.Items {
+		if err := r.renderUnorderedListItem(ctx, content, item); err != nil {
+			return "", errors.Wrap(err, "unable to render unordered list")
+		}
+	}
 	// here we must preserve the HTML tags
-	err := r.unorderedList.Execute(result, ContextualPipeline{
-		Context: ctx,
-		Data: struct {
-			ID        string
-			Title     string
-			Role      string
-			Checklist bool
-			Items     []types.UnorderedListItem
-		}{
-			ID:        r.renderElementID(l.Attributes),
-			Title:     r.renderElementTitle(l.Attributes),
-			Role:      l.Attributes.GetAsStringWithDefault(types.AttrRole, ""),
-			Checklist: checkList,
-			Items:     l.Items,
-		},
+	err := r.unorderedList.Execute(result, struct {
+		Context   *renderer.Context
+		ID        sanitized
+		Title     string
+		Roles     sanitized
+		Checklist bool
+		Items     []types.UnorderedListItem
+		Content   sanitized
+	}{
+		Context:   ctx,
+		ID:        r.renderElementID(l.Attributes),
+		Title:     r.renderElementTitle(l.Attributes),
+		Checklist: checkList,
+		Items:     l.Items,
+		Content:   sanitized(content.String()),
+		Roles:     r.renderElementRoles(l.Attributes),
 	})
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render unordered list")
 	}
 	return result.String(), nil
+}
+func (r *sgmlRenderer) renderUnorderedListItem(ctx *renderer.Context, w io.Writer, item types.UnorderedListItem) error {
+
+	content, err := r.renderListElements(ctx, item.Elements)
+	if err != nil {
+		return errors.Wrap(err, "unable to render unordered list item content")
+	}
+	return r.unorderedListItem.Execute(w, struct {
+		Context *renderer.Context
+		Content sanitized
+	}{
+		Context: ctx,
+		Content: sanitized(content),
+	})
 }

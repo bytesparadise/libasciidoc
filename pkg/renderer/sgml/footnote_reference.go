@@ -2,20 +2,13 @@ package sgml
 
 import (
 	"fmt"
+	"io"
 	"strings"
 
 	"github.com/bytesparadise/libasciidoc/pkg/renderer"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 	"github.com/pkg/errors"
 )
-
-func (r *sgmlRenderer) renderFootnote(ctx *renderer.Context, elements []interface{}) (string, error) {
-	result, err := r.renderInlineElements(ctx, elements)
-	if err != nil {
-		return "", errors.Wrapf(err, "unable to render foot note content")
-	}
-	return strings.TrimSpace(string(result)), nil
-}
 
 func (r *sgmlRenderer) renderFootnoteReference(note types.FootnoteReference) (string, error) {
 	result := &strings.Builder{}
@@ -83,17 +76,47 @@ func (r *sgmlRenderer) renderFootnotes(ctx *renderer.Context, notes []types.Foot
 		return "", nil
 	}
 	result := &strings.Builder{}
-	err := r.footnotes.Execute(result,
-		ContextualPipeline{
-			Context: ctx,
-			Data: struct {
-				Footnotes []types.Footnote
-			}{
-				Footnotes: notes,
-			},
-		})
+	content := &strings.Builder{}
+
+	for _, item := range notes {
+		if err := r.renderFootnoteItem(ctx, content, item); err != nil {
+			return "", errors.Wrap(err, "failed to render footnote item")
+		}
+	}
+
+	err := r.footnotes.Execute(result, struct {
+		Context   *renderer.Context
+		Content   sanitized
+		Footnotes []types.Footnote
+	}{
+		Context:   ctx,
+		Content:   sanitized(content.String()),
+		Footnotes: notes,
+	})
 	if err != nil {
 		return "", errors.Wrap(err, "failed to render footnotes")
 	}
 	return result.String(), nil
+}
+
+func (r *sgmlRenderer) renderFootnoteItem(ctx *renderer.Context, w io.Writer, item types.Footnote) error {
+
+	content, err := r.renderInlineElements(ctx, item.Elements)
+	if err != nil {
+		return errors.Wrapf(err, "unable to render foot note content")
+	}
+	content = strings.TrimSpace(content)
+
+	err = r.footnoteItem.Execute(w, struct {
+		Context *renderer.Context
+		ID      int
+		Ref     string
+		Content sanitized
+	}{
+		Context: ctx,
+		ID:      item.ID,
+		Ref:     item.Ref,
+		Content: sanitized(content),
+	})
+	return err
 }
