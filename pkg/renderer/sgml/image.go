@@ -16,7 +16,7 @@ func (r *sgmlRenderer) renderImageBlock(ctx *renderer.Context, img types.ImageBl
 		title = "Figure " + strconv.Itoa(ctx.GetAndIncrementImageCounter()) + ". " + EscapeString(t)
 	}
 	err := r.blockImage.Execute(result, struct {
-		ID     string
+		ID     sanitized
 		Title  string
 		Role   string
 		Href   string
@@ -25,7 +25,7 @@ func (r *sgmlRenderer) renderImageBlock(ctx *renderer.Context, img types.ImageBl
 		Height string
 		Path   string
 	}{
-		ID:     img.Attributes.GetAsStringWithDefault(types.AttrID, ""),
+		ID:     r.renderElementID(img.Attributes),
 		Title:  title,
 		Role:   img.Attributes.GetAsStringWithDefault(types.AttrRole, ""),
 		Href:   img.Attributes.GetAsStringWithDefault(types.AttrInlineLink, ""),

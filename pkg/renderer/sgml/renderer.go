@@ -36,20 +36,10 @@ func NewRenderer(t Templates) Renderer {
 	}
 	// Establish some default function handlers.
 	r.functions = funcMap{
-		"render":         r.renderElements,
-		"renderElements": r.renderElements,
-		"renderInline":   r.renderInlineElements,
-		"renderList":     r.renderListElements,
-		"renderLines":    r.renderLines,
-		"escape":         EscapeString,
-		"renderToC":      r.renderTableOfContentsSections,
-		"renderFootnote": r.renderFootnote,
-		"includeNewline": r.includeNewline,
-		"renderVerse":    r.renderVerseBlockElement,
-		"plainText":      r.withPlainText,
-		"trimRight":      r.trimRight,
-		"trimLeft":       r.trimLeft,
-		"trim":           r.trimBoth,
+		"escape":    EscapeString,
+		"trimRight": r.trimRight,
+		"trimLeft":  r.trimLeft,
+		"trim":      r.trimBoth,
 	}
 
 	return r

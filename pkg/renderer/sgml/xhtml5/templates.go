@@ -26,7 +26,7 @@ func init() {
 	templates.Footnotes = footnotesTmpl
 	templates.IconImage = iconImageTmpl
 	templates.InlineImage = inlineImageTmpl
-	templates.LabeledListHorizontal = labeledListHorizontalTmpl
+	templates.LabeledListHorizontalItem = labeledListHorizontalItemTmpl
 	templates.Table = tableTmpl
 	templates.QuoteBlock = quoteBlockTmpl
 	templates.QuoteParagraph = quoteParagraphTmpl

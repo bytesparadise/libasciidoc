@@ -1,23 +1,19 @@
 package xhtml5
 
 const (
-	verseParagraphTmpl = `{{ $ctx := .Context }}{{ with .Data }}<div {{ if .ID }}id="{{ .ID }}" {{ end }}class="verseblock">{{ if .Title }}
-<div class="title">{{ escape .Title }}</div>{{ end }}
-<pre class="content">{{ renderLines $ctx .Lines plainText }}</pre>{{ if .Attribution.First }}
-<div class="attribution">
-&#8212; {{ .Attribution.First }}{{ if .Attribution.Second }}<br/>
-<cite>{{ .Attribution.Second }}</cite>{{ end }}
-</div>{{ end }}
-</div>{{ end }}`
+	verseParagraphTmpl = "<div {{ if .ID }}id=\"{{ .ID }}\" {{ end }}class=\"verseblock\">\n" +
+		"{{ if .Title }}<div class=\"title\">{{ escape .Title }}</div>\n{{ end }}" +
+		"<pre class=\"content\">{{ .Content }}</pre>\n" +
+		"{{ if .Attribution.First }}<div class=\"attribution\">\n&#8212; {{ .Attribution.First }}" +
+		"{{ if .Attribution.Second }}<br/>\n<cite>{{ .Attribution.Second }}</cite>\n{{ else }}\n{{ end }}" +
+		"</div>\n{{ end }}</div>"
 
-	quoteParagraphTmpl = `{{ $ctx := .Context }}{{ with .Data }}<div {{ if .ID }}id="{{ .ID }}" {{ end }}class="quoteblock">{{ if .Title }}
-<div class="title">{{ escape .Title }}</div>{{ end }}
-<blockquote>
-{{ renderLines $ctx .Lines }}
-</blockquote>{{ if .Attribution.First }}
-<div class="attribution">
-&#8212; {{ .Attribution.First }}{{ if .Attribution.Second }}<br/>
-<cite>{{ .Attribution.Second }}</cite>{{ end }}
-</div>{{ end }}
-</div>{{ end }}`
+	quoteParagraphTmpl = "<div {{ if .ID }}id=\"{{ .ID }}\" {{ end }}class=\"quoteblock\">\n" +
+		"{{ if .Title }}<div class=\"title\">{{ escape .Title }}</div>\n{{ end }}" +
+		"<blockquote>\n" +
+		"{{ .Content }}\n" +
+		"</blockquote>\n" +
+		"{{ if .Attribution.First }}<div class=\"attribution\">\n&#8212; {{ .Attribution.First }}" +
+		"{{ if .Attribution.Second }}<br/>\n<cite>{{ .Attribution.Second }}</cite>\n{{ else }}\n{{ end }}" +
+		"</div>\n{{ end }}</div>"
 )

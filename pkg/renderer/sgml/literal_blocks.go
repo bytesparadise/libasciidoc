@@ -40,17 +40,22 @@ func (r *sgmlRenderer) renderLiteralBlock(ctx *renderer.Context, b types.Literal
 		lines = b.Lines
 	}
 	result := &strings.Builder{}
-	err := r.literalBlock.Execute(result, ContextualPipeline{
+	err := r.literalBlock.Execute(result, struct {
+		Context *renderer.Context
+		ID      sanitized
+		Title   string
+		Roles   sanitized
+		Content string
+		Lines   []string
+	}{
+
 		Context: ctx,
-		Data: struct {
-			ID    string
-			Title string
-			Lines []string
-		}{
-			ID:    r.renderElementID(b.Attributes),
-			Title: r.renderElementTitle(b.Attributes),
-			Lines: lines,
-		}})
+		ID:      r.renderElementID(b.Attributes),
+		Title:   r.renderElementTitle(b.Attributes),
+		Roles:   r.renderElementRoles(b.Attributes),
+		Lines:   lines,
+		Content: strings.Join(lines, "\n"),
+	})
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render delimited block")
 	}

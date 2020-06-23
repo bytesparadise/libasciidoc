@@ -11,8 +11,12 @@ import (
 
 func (r *sgmlRenderer) renderParagraph(ctx *renderer.Context, p types.Paragraph) (string, error) {
 	result := &strings.Builder{}
-	id := r.renderElementID(p.Attributes)
-	var err error
+	hardbreaks := p.Attributes.Has(types.AttrHardBreaks) || ctx.Attributes.Has(types.DocumentAttrHardBreaks)
+	content, err := r.renderLines(ctx, p.Lines, r.withHardBreaks(hardbreaks))
+
+	if err != nil {
+		return "", errors.Wrap(err, "unable to render paragraph content")
+	}
 	if _, ok := p.Attributes[types.AttrAdmonitionKind]; ok {
 		return r.renderAdmonitionParagraph(ctx, p)
 	} else if kind, ok := p.Attributes[types.AttrKind]; ok && kind == types.Source {
@@ -27,21 +31,20 @@ func (r *sgmlRenderer) renderParagraph(ctx *renderer.Context, p types.Paragraph)
 		return r.renderDelimitedBlockParagraph(ctx, p)
 	} else {
 		log.Debug("rendering a standalone paragraph")
-		err = r.paragraph.Execute(result, ContextualPipeline{
+		err = r.paragraph.Execute(result, struct {
+			Context *renderer.Context
+			ID      sanitized
+			Roles   sanitized
+			Title   string
+			Lines   [][]interface{}
+			Content sanitized
+		}{
 			Context: ctx,
-			Data: struct {
-				ID         string
-				Class      string
-				Title      string
-				Lines      [][]interface{}
-				HardBreaks RenderLinesOption
-			}{
-				ID:         id,
-				Class:      getParagraphClass(p),
-				Title:      r.renderElementTitle(p.Attributes),
-				Lines:      p.Lines,
-				HardBreaks: r.withHardBreaks(p.Attributes.Has(types.AttrHardBreaks) || ctx.Attributes.Has(types.DocumentAttrHardBreaks)),
-			},
+			ID:      r.renderElementID(p.Attributes),
+			Title:   r.renderElementTitle(p.Attributes),
+			Content: sanitized(content),
+			Roles:   r.renderElementRoles(p.Attributes),
+			Lines:   p.Lines,
 		})
 	}
 	if err != nil {
@@ -62,21 +65,28 @@ func (r *sgmlRenderer) renderAdmonitionParagraph(ctx *renderer.Context, p types.
 	if err != nil {
 		return "", err
 	}
-	err = r.admonitionParagraph.Execute(result, ContextualPipeline{
+	content, err := r.renderLines(ctx, p.Lines)
+	if err != nil {
+		return "", err
+	}
+	err = r.admonitionParagraph.Execute(result, struct {
+		Context *renderer.Context
+		ID      sanitized
+		Title   string
+		Roles   sanitized
+		Icon    sanitized
+		Kind    sanitized
+		Content sanitized
+		Lines   [][]interface{}
+	}{
 		Context: ctx,
-		Data: struct {
-			ID    string
-			Title string
-			Class string
-			Icon  sanitized
-			Lines [][]interface{}
-		}{
-			ID:    r.renderElementID(p.Attributes),
-			Title: r.renderElementTitle(p.Attributes),
-			Icon:  icon,
-			Lines: p.Lines,
-			Class: renderClass(k),
-		},
+		ID:      r.renderElementID(p.Attributes),
+		Title:   r.renderElementTitle(p.Attributes),
+		Kind:    sanitized(k),
+		Roles:   r.renderElementRoles(p.Attributes),
+		Icon:    icon,
+		Content: sanitized(content),
+		Lines:   p.Lines,
 	})
 
 	return result.String(), err
@@ -85,19 +95,26 @@ func (r *sgmlRenderer) renderAdmonitionParagraph(ctx *renderer.Context, p types.
 func (r *sgmlRenderer) renderSourceParagraph(ctx *renderer.Context, p types.Paragraph) (string, error) {
 	log.Debug("rendering source paragraph...")
 	result := &strings.Builder{}
-	err := r.sourceParagraph.Execute(result, ContextualPipeline{
-		Context: ctx,
-		Data: struct {
-			ID       string
-			Title    string
-			Language string
-			Lines    [][]interface{}
-		}{
-			ID:       r.renderElementID(p.Attributes),
-			Title:    r.renderElementTitle(p.Attributes),
-			Language: p.Attributes.GetAsStringWithDefault(types.AttrLanguage, ""),
-			Lines:    p.Lines,
-		},
+
+	content, err := r.renderLines(ctx, p.Lines)
+	if err != nil {
+		return "", errors.Wrap(err, "unable to render source paragraph lines")
+	}
+	err = r.sourceParagraph.Execute(result, struct {
+		Context  *renderer.Context
+		ID       sanitized
+		Title    string
+		Language string
+		Content  sanitized
+		Lines    [][]interface{}
+	}{
+
+		Context:  ctx,
+		ID:       r.renderElementID(p.Attributes),
+		Title:    r.renderElementTitle(p.Attributes),
+		Language: p.Attributes.GetAsStringWithDefault(types.AttrLanguage, ""),
+		Content:  sanitized(content),
+		Lines:    p.Lines,
 	})
 	return result.String(), err
 }
@@ -105,53 +122,74 @@ func (r *sgmlRenderer) renderSourceParagraph(ctx *renderer.Context, p types.Para
 func (r *sgmlRenderer) renderVerseParagraph(ctx *renderer.Context, p types.Paragraph) (string, error) {
 	log.Debug("rendering verse paragraph...")
 	result := &strings.Builder{}
-	err := r.verseParagraph.Execute(result, ContextualPipeline{
-		Context: ctx,
-		Data: struct {
-			ID          string
-			Title       string
-			Attribution Attribution
-			Lines       [][]interface{}
-		}{
-			ID:          r.renderElementID(p.Attributes),
-			Title:       r.renderElementTitle(p.Attributes),
-			Attribution: newParagraphAttribution(p),
-			Lines:       p.Lines,
-		},
+
+	content, err := r.renderLines(ctx, p.Lines, r.withPlainText())
+	if err != nil {
+		return "", errors.Wrap(err, "unable to render verse paragraph lines")
+	}
+	err = r.verseParagraph.Execute(result, struct {
+		Context     *renderer.Context
+		ID          sanitized
+		Title       string
+		Attribution Attribution
+		Content     sanitized
+		Lines       [][]interface{}
+	}{
+		Context:     ctx,
+		ID:          r.renderElementID(p.Attributes),
+		Title:       r.renderElementTitle(p.Attributes),
+		Attribution: newParagraphAttribution(p),
+		Content:     sanitized(content),
+		Lines:       p.Lines,
 	})
+
 	return result.String(), err
 }
 
 func (r *sgmlRenderer) renderQuoteParagraph(ctx *renderer.Context, p types.Paragraph) (string, error) {
 	log.Debug("rendering quote paragraph...")
 	result := &strings.Builder{}
-	err := r.quoteParagraph.Execute(result, ContextualPipeline{
-		Context: ctx,
-		Data: struct {
-			ID          string
-			Title       string
-			Attribution Attribution
-			Lines       [][]interface{}
-		}{
-			ID:          r.renderElementID(p.Attributes),
-			Title:       r.renderElementTitle(p.Attributes),
-			Attribution: newParagraphAttribution(p),
-			Lines:       p.Lines,
-		},
+
+	content, err := r.renderLines(ctx, p.Lines)
+	if err != nil {
+		return "", errors.Wrap(err, "unable to render quote paragraph lines")
+	}
+	err = r.quoteParagraph.Execute(result, struct {
+		Context     *renderer.Context
+		ID          sanitized
+		Title       string
+		Attribution Attribution
+		Content     sanitized
+		Lines       [][]interface{}
+	}{
+		Context:     ctx,
+		ID:          r.renderElementID(p.Attributes),
+		Title:       r.renderElementTitle(p.Attributes),
+		Attribution: newParagraphAttribution(p),
+		Content:     sanitized(content),
+		Lines:       p.Lines,
 	})
+
 	return result.String(), err
 }
 
 func (r *sgmlRenderer) renderManpageNameParagraph(ctx *renderer.Context, p types.Paragraph) (string, error) {
 	log.Debug("rendering name section paragraph in manpage...")
 	result := &strings.Builder{}
-	err := r.manpageNameParagraph.Execute(result, ContextualPipeline{
+
+	content, err := r.renderLines(ctx, p.Lines)
+	if err != nil {
+		return "", errors.Wrap(err, "unable to render quote paragraph lines")
+	}
+
+	err = r.manpageNameParagraph.Execute(result, struct {
+		Context *renderer.Context
+		Content sanitized
+		Lines   [][]interface{}
+	}{
 		Context: ctx,
-		Data: struct {
-			Lines [][]interface{}
-		}{
-			Lines: p.Lines,
-		},
+		Content: sanitized(content),
+		Lines:   p.Lines,
 	})
 	return result.String(), err
 }
@@ -159,19 +197,25 @@ func (r *sgmlRenderer) renderManpageNameParagraph(ctx *renderer.Context, p types
 func (r *sgmlRenderer) renderDelimitedBlockParagraph(ctx *renderer.Context, p types.Paragraph) (string, error) {
 	log.Debugf("rendering paragraph with %d line(s) within a delimited block or a list", len(p.Lines))
 	result := &strings.Builder{}
-	err := r.delimitedBlockParagraph.Execute(result, ContextualPipeline{
-		Context: ctx,
-		Data: struct {
-			ID         string
-			Title      string
-			CheckStyle string
-			Lines      [][]interface{}
-		}{
-			ID:         r.renderElementID(p.Attributes),
-			Title:      r.renderElementTitle(p.Attributes),
-			CheckStyle: renderCheckStyle(p.Attributes[types.AttrCheckStyle]),
-			Lines:      p.Lines,
-		},
+
+	content, err := r.renderLines(ctx, p.Lines)
+	if err != nil {
+		return "", errors.Wrap(err, "unable to render delimited block paragraph content")
+	}
+	err = r.delimitedBlockParagraph.Execute(result, struct {
+		Context    *renderer.Context
+		ID         sanitized
+		Title      string
+		CheckStyle string
+		Content    sanitized
+		Lines      [][]interface{}
+	}{
+		Context:    ctx,
+		ID:         r.renderElementID(p.Attributes),
+		Title:      r.renderElementTitle(p.Attributes),
+		CheckStyle: renderCheckStyle(p.Attributes[types.AttrCheckStyle]),
+		Content:    sanitized(content),
+		Lines:      p.Lines,
 	})
 	return result.String(), err
 }
@@ -185,32 +229,6 @@ func renderCheckStyle(style interface{}) string {
 	default:
 		return ""
 	}
-}
-
-func renderClass(kind types.AdmonitionKind) string {
-	switch kind {
-	case types.Tip:
-		return "tip"
-	case types.Note:
-		return "note"
-	case types.Important:
-		return "important"
-	case types.Warning:
-		return "warning"
-	case types.Caution:
-		return "caution"
-	default:
-		log.Errorf("unexpected kind of admonition: %v", kind)
-		return ""
-	}
-}
-
-func getParagraphClass(p types.Paragraph) string {
-	result := "paragraph"
-	if role, found := p.Attributes.GetAsString(types.AttrRole); found {
-		result = result + " " + role
-	}
-	return result
 }
 
 func (r *sgmlRenderer) renderElementTitle(attrs types.Attributes) string {

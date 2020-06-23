@@ -1,7 +1,6 @@
 package sgml
 
 import (
-	"strconv"
 	"strings"
 
 	"github.com/bytesparadise/libasciidoc/pkg/renderer"
@@ -15,15 +14,19 @@ func (r *sgmlRenderer) renderPreamble(ctx *renderer.Context, p types.Preamble) (
 	result := &strings.Builder{}
 	// the <div id="preamble"> wrapper is only necessary
 	// if the document has a section 0
-	err := r.preamble.Execute(result, ContextualPipeline{
+
+	content, err := r.renderElements(ctx, p.Elements)
+	if err != nil {
+		return "", errors.Wrap(err, "error rendering preamble elements")
+	}
+	err = r.preamble.Execute(result, struct {
+		Context *renderer.Context
+		Wrapper bool
+		Content sanitized
+	}{
 		Context: ctx,
-		Data: struct {
-			Wrapper  bool
-			Elements []interface{}
-		}{
-			Wrapper:  ctx.HasHeader,
-			Elements: p.Elements,
-		},
+		Wrapper: ctx.HasHeader,
+		Content: sanitized(content),
 	})
 	if err != nil {
 		return "", errors.Wrap(err, "error while rendering preamble")
@@ -34,29 +37,30 @@ func (r *sgmlRenderer) renderPreamble(ctx *renderer.Context, p types.Preamble) (
 
 func (r *sgmlRenderer) renderSection(ctx *renderer.Context, s types.Section) (string, error) {
 	log.Debugf("rendering section level %d", s.Level)
-	renderedSectionTitle, err := r.renderSectionTitle(ctx, s)
+	title, err := r.renderSectionTitle(ctx, s)
 	if err != nil {
-		return "", errors.Wrap(err, "error while rendering section")
+		return "", errors.Wrap(err, "error while rendering section title")
 	}
+
+	content, err := r.renderElements(ctx, s.Elements)
+	if err != nil {
+		return "", errors.Wrap(err, "error while rendering section content")
+	}
+
 	result := &strings.Builder{}
-	// select the appropriate template for the section
-	var tmpl *textTemplate
-	if s.Level == 1 {
-		tmpl = r.sectionOne
-	} else {
-		tmpl = r.sectionContent
-	}
-	err = tmpl.Execute(result, ContextualPipeline{
-		Context: ctx,
-		Data: struct {
-			Class        string
-			SectionTitle string
-			Elements     []interface{}
-		}{
-			Class:        "sect" + strconv.Itoa(s.Level),
-			SectionTitle: renderedSectionTitle,
-			Elements:     s.Elements,
-		}})
+	err = r.sectionContent.Execute(result, struct {
+		Context  *renderer.Context
+		Header   sanitized
+		Content  sanitized
+		Elements []interface{}
+		Level    int
+	}{
+		Context:  ctx,
+		Header:   title,
+		Level:    s.Level,
+		Elements: s.Elements,
+		Content:  sanitized(content),
+	})
 	if err != nil {
 		return "", errors.Wrap(err, "error while rendering section")
 	}
@@ -64,26 +68,27 @@ func (r *sgmlRenderer) renderSection(ctx *renderer.Context, s types.Section) (st
 	return result.String(), nil
 }
 
-func (r *sgmlRenderer) renderSectionTitle(ctx *renderer.Context, s types.Section) (string, error) {
+func (r *sgmlRenderer) renderSectionTitle(ctx *renderer.Context, s types.Section) (sanitized, error) {
 	result := &strings.Builder{}
 	renderedContent, err := r.renderInlineElements(ctx, s.Title)
 	if err != nil {
 		return "", errors.Wrap(err, "error while rendering sectionTitle content")
 	}
 	renderedContentStr := strings.TrimSpace(renderedContent)
-	id := r.renderElementID(s.Attributes)
 	err = r.sectionHeader.Execute(result, struct {
-		Level   int
-		ID      string
-		Content string
+		Level        int
+		LevelPlusOne int
+		ID           sanitized
+		Content      string
 	}{
-		Level:   s.Level + 1,
-		ID:      id,
-		Content: renderedContentStr,
+		Level:        s.Level,
+		LevelPlusOne: s.Level + 1, // Level 1 is <h2>.
+		ID:           r.renderElementID(s.Attributes),
+		Content:      renderedContentStr,
 	})
 	if err != nil {
 		return "", errors.Wrapf(err, "error while rendering sectionTitle")
 	}
 	// log.Debugf("rendered sectionTitle: %s", result.Bytes())
-	return result.String(), nil
+	return sanitized(result.String()), nil
 }

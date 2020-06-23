@@ -1,52 +1,49 @@
 package html5
 
 const (
-	paragraphTmpl = `{{ $ctx := .Context }}{{ with .Data }}{{ $renderedLines := renderLines $ctx .Lines .HardBreaks }}<div {{ if ne .ID "" }}id="{{ .ID }}" {{ end }}class="{{ .Class }}">{{ if ne .Title "" }}
-<div class="doctitle">{{ escape .Title }}</div>{{ end }}
-<p>{{ $renderedLines }}</p>
-</div>{{ end }}`
+	paragraphTmpl = "<div{{ if .ID }} id=\"{{ .ID }}\"{{ end }}" +
+		" class=\"paragraph{{ if .Roles }} {{ .Roles }}{{ end }}\">\n" +
+		"{{ if .Title  }}<div class=\"doctitle\">{{ escape .Title }}</div>\n{{ end }}" +
+		"<p>{{ .Content }}</p>\n" +
+		"</div>"
 
-	admonitionParagraphTmpl = `{{ $ctx := .Context }}{{ with .Data }}{{ $renderedLines := renderLines $ctx .Lines }}{{ if ne $renderedLines "" }}<div {{ if .ID }}id="{{ .ID }}" {{ end }}class="admonitionblock {{ .Class }}">
-<table>
-<tr>
-<td class="icon">
-{{ if .Icon }}{{ .Icon }}{{ end }}
-</td>
-<td class="content">{{ if .Title }}
-<div class="title">{{ escape .Title }}</div>{{ end }}
-{{ $renderedLines }}
-</td>
-</tr>
-</table>
-</div>{{ end }}{{ end }}`
+	admonitionParagraphTmpl = `{{ if .Content }}` +
+		"<div {{ if .ID }}id=\"{{ .ID }}\" {{ end }}class=\"admonitionblock {{ .Kind }}" +
+		"{{ if .Roles }} {{ .Roles }}{{ end }}\">\n" +
+		"<table>\n<tr>\n<td class=\"icon\">\n" +
+		"{{ if .Icon }}{{ .Icon }}{{ end }}\n" +
+		"</td>\n" +
+		"<td class=\"content\">\n" +
+		"{{ if .Title }}<div class=\"title\">{{ escape .Title }}</div>\n{{ end }}" +
+		"{{ .Content }}\n" +
+		"</td>\n</tr>\n</table>\n</div>{{ end }}"
 
-	delimitedBlockParagraphTmpl = `{{ $ctx := .Context }}{{ with .Data }}<p>{{ .CheckStyle }}{{ renderLines $ctx .Lines }}</p>{{ end }}`
+	delimitedBlockParagraphTmpl = `<p>{{ .CheckStyle }}{{ .Content }}</p>`
 
-	sourceParagraphTmpl = `{{ $ctx := .Context }}{{ with .Data }}<div class="listingblock">
-<div class="content">
-<pre class="highlight">{{ if .Language }}<code class="language-{{ .Language }}" data-lang="{{ .Language }}">{{ else }}<code>{{ end }}{{ renderLines $ctx .Lines }}</code></pre>
-</div>
-</div>{{ end }}`
+	sourceParagraphTmpl = "<div class=\"listingblock\">\n" +
+		"<div class=\"content\">\n" +
+		"<pre class=\"highlight\">" +
+		`<code{{ if .Language }} class="language-{{ .Language }}" data-lang="{{ .Language }}"{{ end }}>` +
+		"{{ .Content }}" +
+		"</code></pre>\n" +
+		"</div>\n" +
+		"</div>"
 
-	verseParagraphTmpl = `{{ $ctx := .Context }}{{ with .Data }}<div {{ if .ID }}id="{{ .ID }}" {{ end }}class="verseblock">{{ if .Title }}
-<div class="title">{{ escape .Title }}</div>{{ end }}
-<pre class="content">{{ renderLines $ctx .Lines plainText }}</pre>{{ if .Attribution.First }}
-<div class="attribution">
-&#8212; {{ .Attribution.First }}{{ if .Attribution.Second }}<br>
-<cite>{{ .Attribution.Second }}</cite>{{ end }}
-</div>{{ end }}
-</div>{{ end }}`
+	verseParagraphTmpl = "<div {{ if .ID }}id=\"{{ .ID }}\" {{ end }}class=\"verseblock\">\n" +
+		"{{ if .Title }}<div class=\"title\">{{ escape .Title }}</div>\n{{ end }}" +
+		"<pre class=\"content\">{{ .Content }}</pre>\n" +
+		"{{ if .Attribution.First }}<div class=\"attribution\">\n&#8212; {{ .Attribution.First }}" +
+		"{{ if .Attribution.Second }}<br>\n<cite>{{ .Attribution.Second }}</cite>\n{{ else }}\n{{ end }}" +
+		"</div>\n{{ end }}</div>"
 
-	quoteParagraphTmpl = `{{ $ctx := .Context }}{{ with .Data }}<div {{ if .ID }}id="{{ .ID }}" {{ end }}class="quoteblock">{{ if .Title }}
-<div class="title">{{ escape .Title }}</div>{{ end }}
-<blockquote>
-{{ renderLines $ctx .Lines }}
-</blockquote>{{ if .Attribution.First }}
-<div class="attribution">
-&#8212; {{ .Attribution.First }}{{ if .Attribution.Second }}<br>
-<cite>{{ .Attribution.Second }}</cite>{{ end }}
-</div>{{ end }}
-</div>{{ end }}`
+	quoteParagraphTmpl = "<div {{ if .ID }}id=\"{{ .ID }}\" {{ end }}class=\"quoteblock\">\n" +
+		"{{ if .Title }}<div class=\"title\">{{ escape .Title }}</div>\n{{ end }}" +
+		"<blockquote>\n" +
+		"{{ .Content }}\n" +
+		"</blockquote>\n" +
+		"{{ if .Attribution.First }}<div class=\"attribution\">\n&#8212; {{ .Attribution.First }}" +
+		"{{ if .Attribution.Second }}<br>\n<cite>{{ .Attribution.Second }}</cite>\n{{ else }}\n{{ end }}" +
+		"</div>\n{{ end }}</div>"
 
-	manpageNameParagraphTmpl = `{{ $ctx := .Context }}{{ with .Data }}{{ $renderedLines := renderLines $ctx .Lines }}<p>{{ $renderedLines }}</p>{{ end }}`
+	manpageNameParagraphTmpl = `<p>{{ .Content }}</p>`
 )

@@ -1,7 +1,6 @@
 package sgml
 
 import (
-	"reflect"
 	"strings"
 
 	"github.com/bytesparadise/libasciidoc/pkg/renderer"
@@ -175,25 +174,4 @@ func (r *sgmlRenderer) renderPlainText(ctx *renderer.Context, element interface{
 	default:
 		return "", errors.Errorf("unable to render plain string for element of type '%T'", element)
 	}
-}
-
-// includeNewline returns an "\n" sequence if the given index is NOT the last entry in the given description lines, empty string otherwise.
-// also, it ignores the element if it is a blank line, depending on the context
-func (r *sgmlRenderer) includeNewline(ctx renderer.Context, index int, content interface{}) string {
-	switch reflect.TypeOf(content).Kind() {
-	case reflect.Slice, reflect.Array:
-		s := reflect.ValueOf(content)
-		if _, match := s.Index(index).Interface().(types.BlankLine); match {
-			if ctx.IncludeBlankLine {
-				return "\n" // TODO: parameterize this?
-			}
-			return ""
-		}
-		if index < s.Len()-1 {
-			return "\n"
-		}
-	default:
-		log.Warnf("content of type '%T' is not an array or a slice", content)
-	}
-	return ""
 }

@@ -24,12 +24,12 @@ func (r *sgmlRenderer) renderInlineIcon(ctx *renderer.Context, icon types.Icon) 
 		Role   string
 		Link   string
 		Window string
-		ID     string
+		ID     sanitized
 		Icon   sanitized
 	}{
 		Class:  icon.Class,
 		Icon:   iconStr,
-		ID:     icon.Attributes.GetAsStringWithDefault(types.AttrID, ""),
+		ID:     r.renderElementID(icon.Attributes),
 		Link:   icon.Attributes.GetAsStringWithDefault(types.AttrInlineLink, ""),
 		Window: icon.Attributes.GetAsStringWithDefault(types.AttrImageWindow, ""),
 		Role:   icon.Attributes.GetAsStringWithDefault(types.AttrRole, ""),
