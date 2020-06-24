@@ -65,6 +65,7 @@ type Templates struct {
 	TableHeader               string
 	TableHeaderCell           string
 	TableRow                  string
+	ThematicBreak             string
 	TocEntry                  string
 	TocRoot                   string
 	TocSection                string

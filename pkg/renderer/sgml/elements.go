@@ -136,6 +136,8 @@ func (r *sgmlRenderer) renderElement(ctx *renderer.Context, element interface{})
 		return r.renderVerbatimLine(e)
 	case types.QuotedString:
 		return r.renderQuotedString(ctx, e)
+	case types.ThematicBreak:
+		return r.renderThematicBreak()
 	default:
 		return "", errors.Errorf("unsupported type of element: %T", element)
 	}
@@ -160,7 +162,7 @@ func (r *sgmlRenderer) renderPlainText(ctx *renderer.Context, element interface{
 			return r.renderPlainText(ctx, alt)
 		}
 		return element.Location.String(), nil
-	case types.BlankLine:
+	case types.BlankLine, types.ThematicBreak:
 		return "\n\n", nil
 	case types.StringElement:
 		return element.Content, nil

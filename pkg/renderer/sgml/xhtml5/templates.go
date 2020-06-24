@@ -28,6 +28,7 @@ func init() {
 	templates.InlineImage = inlineImageTmpl
 	templates.LabeledListHorizontalItem = labeledListHorizontalItemTmpl
 	templates.Table = tableTmpl
+	templates.ThematicBreak = thematicBreakTmpl
 	templates.QuoteBlock = quoteBlockTmpl
 	templates.QuoteParagraph = quoteParagraphTmpl
 	templates.VerseBlock = verseBlockTmpl
