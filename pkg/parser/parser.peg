@@ -369,7 +369,7 @@ StandaloneAttributes <- attributes:(ElementAttribute)+ BlankLine* EOF { // stand
 
 QuotedString <- SingleQuotedString / DoubleQuotedString
 
-SingleQuotedString <- "'`" elements:SingleQuotedStringElements "`'" {
+SingleQuotedString <- SingleQuoteStringStart elements:SingleQuotedStringElements SingleQuoteStringEnd {
     return types.NewQuotedString(types.SingleQuote, elements.([]interface{}))
 }
 
@@ -377,10 +377,14 @@ SingleQuotedStringElements <- elements:(SingleQuotedStringElement+) {
     return types.NewInlineElements(elements)
 }
 
+SingleQuoteStringStart <- "'`" ![ \t\r\n]
+
+SingleQuoteStringEnd <- "`'"
+
 // We have to treat this one special, because of ambiguity with monospace markup.
 SingleQuotedStringElement <- element:(
-        LineBreak // must be before spaces
-        / Space+
+        LineBreak !SingleQuoteStringEnd // must be before spaces
+        / Space+ !SingleQuoteStringEnd
         / InlineIcon
         / InlineImage
         / InlineFootnote
@@ -398,11 +402,11 @@ SingleQuotedStringElement <- element:(
     return element, nil
 }
 
-SingleQuotedStringFallbackCharacter <-  [^\r\n`] / "`" !"'" {
+SingleQuotedStringFallbackCharacter <-  [^\r\n\t `] / "`" !"'" {
     return types.NewStringElement(string(c.text))
 }
 
-DoubleQuotedString <- "\"`" elements:DoubleQuotedStringElements "`\"" {
+DoubleQuotedString <- DoubleQuoteStringStart elements:DoubleQuotedStringElements DoubleQuoteStringEnd {
     return types.NewQuotedString(types.DoubleQuote, elements.([]interface{}))
 }
 
@@ -412,8 +416,8 @@ DoubleQuotedStringElements <- elements:(DoubleQuotedStringElement+) {
 
 // We have to treat this one special, because of ambiguity with monospace markup.
 DoubleQuotedStringElement <- element:(
-        LineBreak // must be before spaces
-        // Space+
+        LineBreak !DoubleQuoteStringEnd // must be before spaces
+        / Space+ !DoubleQuoteStringEnd
         / InlineIcon
         / InlineImage
         / InlineFootnote
@@ -431,7 +435,11 @@ DoubleQuotedStringElement <- element:(
             return element, nil
 }
 
-DoubleQuotedStringFallbackCharacter <-  ([^\r\n`] / "`" !"\"") {
+DoubleQuoteStringStart <- "\"`" ![ \t\r\n]
+
+DoubleQuoteStringEnd <- "`\""
+
+DoubleQuotedStringFallbackCharacter <-  ([^\r\n\t `] / "`" !"\"") {
     return types.NewStringElement(string(c.text))
 }
 
@@ -1039,6 +1047,7 @@ DoubleQuoteBoldTextElements <- DoubleQuoteBoldTextElement (!("**") (Space / Doub
 DoubleQuoteBoldTextElement <- Word
         / Newline !Newline
         / SingleQuoteBoldText 
+        / QuotedString
         / ItalicText
         / MarkedText
         / MonospaceText
@@ -1048,7 +1057,6 @@ DoubleQuoteBoldTextElement <- Word
         / InlineImage
         / Link
         / InlinePassthrough
-        / QuotedString
         / AttributeSubstitution
         / DoubleQuoteBoldTextStringElement
         / DoubleQuoteBoldTextFallbackCharacter
@@ -1075,6 +1083,7 @@ SingleQuoteBoldTextElements <- !Space SingleQuoteBoldTextElement+
 SingleQuoteBoldTextElement <- Word
         / Newline !Newline
         / DoubleQuoteBoldText
+        / QuotedString
         / Space+ ('*' !'*')?
         / ItalicText
         / MarkedText
@@ -1085,7 +1094,6 @@ SingleQuoteBoldTextElement <- Word
         / InlineImage 
         / Link  
         / InlinePassthrough
-        / QuotedString
         / AttributeSubstitution
         / SingleQuoteBoldTextStringElement
         / SingleQuoteBoldTextFallbackCharacter
@@ -1125,6 +1133,7 @@ DoubleQuoteItalicTextElements <- DoubleQuoteItalicTextElement (!("__") (Space / 
 DoubleQuoteItalicTextElement <- Word
         / Newline !Newline
         / SingleQuoteItalicText 
+        / QuotedString
         / BoldText
         / MarkedText
         / MonospaceText
@@ -1134,7 +1143,6 @@ DoubleQuoteItalicTextElement <- Word
         / InlineImage 
         / Link 
         / InlinePassthrough
-        / QuotedString
         / DoubleQuoteItalicTextStringElement
         / DoubleQuoteItalicTextFallbackCharacter
 
@@ -1159,6 +1167,7 @@ SingleQuoteItalicTextElements <- !Space SingleQuoteItalicTextElement+
 SingleQuoteItalicTextElement <- Word
         / Newline !Newline
         / DoubleQuoteItalicText
+        / QuotedString
         / Space+ ('_' !'_')?
         / BoldText
         / MarkedText
@@ -1169,7 +1178,6 @@ SingleQuoteItalicTextElement <- Word
         / InlineImage 
         / Link  
         / InlinePassthrough 
-        / QuotedString
         / AttributeSubstitution
         / SingleQuoteItalicTextStringElement
         / SingleQuoteItalicTextFallbackCharacter
@@ -1208,6 +1216,7 @@ DoubleQuoteMonospaceTextElements <- DoubleQuoteMonospaceTextElement (!("``") (Sp
 DoubleQuoteMonospaceTextElement <- Word
         / Newline !Newline
         / SingleQuoteMonospaceText 
+        / QuotedString
         / BoldText
         / ItalicText
         / MarkedText
@@ -1217,7 +1226,6 @@ DoubleQuoteMonospaceTextElement <- Word
         / InlineImage
         / Link
         / InlinePassthrough 
-        / QuotedString
         / DoubleQuoteMonospaceTextStringElement
         / DoubleQuoteMonospaceTextFallbackCharacter
 
@@ -1242,6 +1250,7 @@ SingleQuoteMonospaceTextElements <- !Space SingleQuoteMonospaceTextElement+
 SingleQuoteMonospaceTextElement <-  Word
         / Newline !Newline
         / DoubleQuoteMonospaceText 
+        / QuotedString
         / Space+ ('`' !'`')?  // allow for content such as "`some `nested monospace`". Also, do not allow for double backticks after spaces.
         / BoldText
         / ItalicText
@@ -1252,7 +1261,6 @@ SingleQuoteMonospaceTextElement <-  Word
         / InlineImage 
         / Link 
         / InlinePassthrough 
-        / QuotedString
         / AttributeSubstitution
         / SingleQuoteMonospaceTextStringElement
         / SingleQuoteMonospaceTextFallbackCharacter
@@ -1292,6 +1300,7 @@ DoubleQuoteMarkedTextElements <- DoubleQuoteMarkedTextElement (!("##") (Space / 
 DoubleQuoteMarkedTextElement <- Word
         / SingleQuoteMarkedText
         / Newline !Newline
+        / QuotedString
         / BoldText
         / ItalicText
         / MonospaceText
@@ -1301,7 +1310,6 @@ DoubleQuoteMarkedTextElement <- Word
         / InlineImage
         / Link
         / InlinePassthrough
-        / QuotedString
         / DoubleQuoteMarkedTextStringElement
         / DoubleQuoteMarkedTextFallbackCharacter
 
@@ -1326,6 +1334,7 @@ SingleQuoteMarkedTextElements <- !Space SingleQuoteMarkedTextElement+
 SingleQuoteMarkedTextElement <- Word
         / DoubleQuoteMarkedText
         / Newline !Newline
+        / QuotedString
         / Space+ ('#' !'#')?
         / BoldText
         / ItalicText
@@ -1336,7 +1345,6 @@ SingleQuoteMarkedTextElement <- Word
         / InlineImage
         / Link
         / InlinePassthrough
-        / QuotedString
         / AttributeSubstitution
         / SingleQuoteMarkedTextStringElement
         / SingleQuoteMarkedTextFallbackCharacter
@@ -1893,7 +1901,7 @@ IndexTerm <- "((" term:(IndexTermContent) "))" {
        return types.NewIndexTerm(term.([]interface{}))
 }
 
-IndexTermContent <- elements:(Word / QuotedText / QuotedString / Space / (!"))" .) {
+IndexTermContent <- elements:(Word / QuotedString / QuotedText / Space / (!"))" .) {
     return string(c.text), nil
 })+ {
     return types.NewInlineElements(elements.([]interface{}))
