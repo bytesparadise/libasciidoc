@@ -72,6 +72,7 @@ var templates = sgml.Templates{
 	TableHeader:               tableHeaderTmpl,
 	TableHeaderCell:           tableHeaderCellTmpl,
 	TableRow:                  tableRowTmpl,
+	ThematicBreak:             thematicBreakTmpl,
 	TocRoot:                   tocRootTmpl,
 	TocEntry:                  tocEntryTmpl,
 	TocSection:                tocSectionTmpl,

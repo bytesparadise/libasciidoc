@@ -46,4 +46,6 @@ const (
 		"</div>\n{{ end }}</div>"
 
 	manpageNameParagraphTmpl = `<p>{{ .Content }}</p>`
+
+	thematicBreakTmpl = "<hr>"
 )

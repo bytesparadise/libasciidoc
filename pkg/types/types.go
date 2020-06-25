@@ -1446,6 +1446,14 @@ func NewDelimitedBlock(kind BlockKind, elements []interface{}, attributes interf
 	}, nil
 }
 
+// ThematicBreak
+
+type ThematicBreak struct{}
+
+func NewThematicBreak() (ThematicBreak, error) {
+	return ThematicBreak{}, nil
+}
+
 // ------------------------------------------
 // Callouts
 // ------------------------------------------
