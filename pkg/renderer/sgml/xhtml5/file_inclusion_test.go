@@ -234,11 +234,11 @@ include::../../../../test/includes/hello_world.go.txt[]`
 <p>package includes</p>
 </div>
 <div class="paragraph">
-<p>import "fmt"</p>
+<p>import &#34;fmt&#34;</p>
 </div>
 <div class="paragraph">
 <p>func helloworld() {
-	fmt.Println("hello, world!")
+	fmt.Println(&#34;hello, world!&#34;)
 }</p>
 </div>`
 		Expect(RenderXHTML(source)).To(MatchHTML(expected))
@@ -285,11 +285,11 @@ include::../../../../test/includes/hello_world.go.txt[]`
 <p>package includes</p>
 </div>
 <div class="paragraph">
-<p>import "fmt"</p>
+<p>import &#34;fmt&#34;</p>
 </div>
 <div class="paragraph">
 <p>func helloworld() {
-	fmt.Println("hello, world!")
+	fmt.Println(&#34;hello, world!&#34;)
 }</p>
 </div>
 </div>
@@ -455,10 +455,10 @@ include::../../../../test/includes/hello_world.go.txt[]
 <div class="content">
 <pre>package includes
 
-import "fmt"
+import &#34;fmt&#34;
 
 func helloworld() {
-	fmt.Println("hello, world!")
+	fmt.Println(&#34;hello, world!&#34;)
 }</pre>
 </div>
 </div>`
@@ -473,10 +473,10 @@ func helloworld() {
 <div class="content">
 <pre class="highlight"><code>package includes
 
-import "fmt"
+import &#34;fmt&#34;
 
 func helloworld() {
-	fmt.Println("hello, world!")
+	fmt.Println(&#34;hello, world!&#34;)
 }</code></pre>
 </div>
 </div>`
@@ -493,11 +493,11 @@ include::../../../../test/includes/hello_world.go.txt[]
 <p>package includes</p>
 </div>
 <div class="paragraph">
-<p>import "fmt"</p>
+<p>import &#34;fmt&#34;</p>
 </div>
 <div class="paragraph">
 <p>func helloworld() {
-	fmt.Println("hello, world!")
+	fmt.Println(&#34;hello, world!&#34;)
 }</p>
 </div>
 </div>
@@ -515,11 +515,11 @@ ____`
 <p>package includes</p>
 </div>
 <div class="paragraph">
-<p>import "fmt"</p>
+<p>import &#34;fmt&#34;</p>
 </div>
 <div class="paragraph">
 <p>func helloworld() {
-	fmt.Println("hello, world!")
+	fmt.Println(&#34;hello, world!&#34;)
 }</p>
 </div>
 </blockquote>
@@ -535,10 +535,10 @@ ____`
 				expected := `<div class="verseblock">
 <pre class="content">package includes
 
-import "fmt"
+import &#34;fmt&#34;
 
 func helloworld() {
-	fmt.Println("hello, world!")
+	fmt.Println(&#34;hello, world!&#34;)
 }</pre>
 </div>`
 				Expect(RenderXHTML(source)).To(MatchHTML(expected))
@@ -554,11 +554,11 @@ include::../../../../test/includes/hello_world.go.txt[]
 <p>package includes</p>
 </div>
 <div class="paragraph">
-<p>import "fmt"</p>
+<p>import &#34;fmt&#34;</p>
 </div>
 <div class="paragraph">
 <p>func helloworld() {
-	fmt.Println("hello, world!")
+	fmt.Println(&#34;hello, world!&#34;)
 }</p>
 </div>
 </div>
@@ -584,7 +584,7 @@ include::../../../../test/includes/hello_world.go.txt[]
 				source := `include::../../../../test/includes/hello_world.go.txt[lines=5..7]`
 				expected := `<div class="paragraph">
 <p>func helloworld() {
-	fmt.Println("hello, world!")
+	fmt.Println(&#34;hello, world!&#34;)
 }</p>
 </div>`
 				Expect(RenderXHTML(source)).To(MatchHTML(expected))
@@ -597,7 +597,7 @@ include::../../../../test/includes/hello_world.go.txt[]
 </div>
 <div class="paragraph">
 <p>func helloworld() {
-	fmt.Println("hello, world!")
+	fmt.Println(&#34;hello, world!&#34;)
 }</p>
 </div>`
 				Expect(RenderXHTML(source)).To(MatchHTML(expected))
@@ -625,7 +625,7 @@ include::../../../../test/includes/hello_world.go.txt[lines=5..7]
 				expected := `<div class="listingblock">
 <div class="content">
 <pre>func helloworld() {
-	fmt.Println("hello, world!")
+	fmt.Println(&#34;hello, world!&#34;)
 }</pre>
 </div>
 </div>`
@@ -641,7 +641,7 @@ include::../../../../test/includes/hello_world.go.txt[lines=1..2;5..7]
 <pre>package includes
 
 func helloworld() {
-	fmt.Println("hello, world!")
+	fmt.Println(&#34;hello, world!&#34;)
 }</pre>
 </div>
 </div>`
