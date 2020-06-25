@@ -28,7 +28,7 @@ var _ = Describe("strings", func() {
 	It("text with trademark", func() {
 		source := `TheRightThing(TM)`
 		expected := `<div class="paragraph">
-<p>TheRightThing&#153;</p>
+<p>TheRightThing&#8482;</p>
 </div>`
 		Expect(RenderXHTML(source)).To(MatchHTML(expected))
 	})

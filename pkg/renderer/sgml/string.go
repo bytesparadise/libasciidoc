@@ -67,7 +67,7 @@ func copyright(source string) string {
 }
 
 func trademark(source string) string {
-	return strings.Replace(source, "(TM)", "&#153;", -1)
+	return strings.Replace(source, "(TM)", "&#8482;", -1)
 }
 
 func registered(source string) string {
