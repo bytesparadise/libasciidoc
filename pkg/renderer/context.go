@@ -20,6 +20,7 @@ type Context struct {
 	Footnotes            []types.Footnote
 	ElementReferences    types.ElementReferences
 	HasHeader            bool
+	UseUnicode           bool
 }
 
 // NewContext returns a new rendering context for the given document.
