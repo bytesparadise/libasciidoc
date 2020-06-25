@@ -26,6 +26,14 @@ var _ = Describe("quoted strings", func() {
 </div>`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
+		It("simple single quoted unicode", func() {
+			source := ":unicode:\n\n'`curly was single`'"
+			expected := "<div class=\"paragraph\">\n" +
+				"<p>\u2018curly was single\u2019</p>\n" +
+				"</div>"
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
+		})
+
 		It("interior spaces with single quoted string", func() {
 			source := "'` curly was single `' or so they say"
 			expected := "<div class=\"paragraph\">\n" +

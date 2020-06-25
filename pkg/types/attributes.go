@@ -89,6 +89,8 @@ const (
 	AttrIconRotate = "rotate"
 	// AttrIconFlip the icon `flip` attribute, and if set can be "horizontal" or "vertical"
 	AttrIconFlip = "flip"
+	// AttrUnicode local libasciidoc attribute to encode output as UTF-i instead of ASCII.
+	AttrUnicode = "unicode"
 )
 
 // NewElementID initializes a new attribute map with a single entry for the ID using the given value

@@ -51,4 +51,16 @@ var _ = Describe("strings", func() {
 </div>`
 		Expect(RenderHTML(source)).To(MatchHTML(expected))
 	})
+
+	It("title with registered unicode", func() {
+		// We will often want to use these symbols in headers.
+		source := ":unicode:\n\n== Registered(R)"
+		expected := "<div class=\"sect1\">\n" +
+			"<h2 id=\"_registered_r\">Registered\u00ae</h2>\n" +
+			"<div class=\"sectionbody\">\n" +
+			"</div>\n" +
+			"</div>"
+		Expect(RenderHTML(source)).To(MatchHTML(expected))
+	})
+
 })

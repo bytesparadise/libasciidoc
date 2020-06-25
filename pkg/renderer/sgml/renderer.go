@@ -91,6 +91,9 @@ func (r *sgmlRenderer) Render(ctx *renderer.Context, doc types.Document, output 
 	if err != nil {
 		return md, err
 	}
+	if doc.Attributes.Has(types.AttrUnicode) {
+		ctx.UseUnicode = true
+	}
 	renderedTitle, err := r.renderDocumentTitle(ctx, doc)
 	if err != nil {
 		return md, errors.Wrapf(err, "unable to render full document")
@@ -104,7 +107,6 @@ func (r *sgmlRenderer) Render(ctx *renderer.Context, doc types.Document, output 
 	if err != nil {
 		return md, errors.Wrapf(err, "unable to render full document")
 	}
-
 	if ctx.Config.IncludeHeaderFooter {
 		log.Debugf("Rendering full document...")
 		err = r.article.Execute(output, struct {
