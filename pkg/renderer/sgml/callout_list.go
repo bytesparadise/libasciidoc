@@ -23,7 +23,7 @@ func (r *sgmlRenderer) renderCalloutList(ctx *renderer.Context, l types.CalloutL
 	err := r.calloutList.Execute(result, struct {
 		Context *renderer.Context
 		ID      sanitized
-		Title   string
+		Title   sanitized
 		Roles   sanitized
 		Content sanitized
 		Items   []types.CalloutListItem

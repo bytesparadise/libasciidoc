@@ -5,7 +5,7 @@ const (
 		` class="olist {{ .NumberingStyle }}` +
 		`{{ if .Roles }} {{ .Roles }}{{ end }}"` +
 		">\n" +
-		"{{ if .Title }}<div class=\"title\">{{ escape .Title }}</div>\n{{ end }}" +
+		"{{ if .Title }}<div class=\"title\">{{ .Title }}</div>\n{{ end }}" +
 		`<ol` +
 		` class="{{ .NumberingStyle }}"` +
 		`{{ if .ListStyle }} type="{{ .ListStyle }}"{{ end }}` +

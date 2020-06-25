@@ -49,7 +49,7 @@ func (r *sgmlRenderer) renderTable(ctx *renderer.Context, t types.Table) (string
 
 	err = r.table.Execute(result, struct {
 		Context     *renderer.Context
-		Title       string
+		Title       sanitized
 		CellWidths  []string
 		TableNumber int
 		Roles       sanitized

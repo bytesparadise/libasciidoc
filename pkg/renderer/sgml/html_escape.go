@@ -19,6 +19,7 @@ var htmlEscaper = strings.NewReplacer(
 	`&`, "&amp;",
 	`<`, "&lt;",
 	`>`, "&gt;",
+	// TODO: These two should be substituted as well.  The elements here could wind up in attributes.
 	// `'`, "&#39;", // "&#39;" is shorter than "&apos;" and apos was not in HTML until HTML5.
 	// `"`, "&#34;", // "&#34;" is shorter than "&quot;".
 )

@@ -10,7 +10,7 @@ const (
 <meta name="generator" content="{{ .Generator }}"/>{{ end }}{{ if .Authors }}
 <meta name="author" content="{{ .Authors }}"/>{{ end }}{{ if .CSS}}
 <link type="text/css" rel="stylesheet" href="{{ .CSS }}"/>{{ end }}
-<title>{{ escape .Title }}</title>
+<title>{{ .Title }}</title>
 </head>
 <body class="{{ .Doctype }}{{ if .Role }} {{ .Role }}{{ end }}">{{ if .IncludeHeader }}
 {{ .Header }}{{ end }}

@@ -28,7 +28,7 @@ func (r *sgmlRenderer) renderLabeledList(ctx *renderer.Context, l types.LabeledL
 	err = tmpl.Execute(result, struct {
 		Context *renderer.Context
 		ID      sanitized
-		Title   string
+		Title   sanitized
 		Roles   sanitized
 		Content sanitized
 		Items   []types.LabeledListItem

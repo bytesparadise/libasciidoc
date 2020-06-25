@@ -29,7 +29,7 @@ func (r *sgmlRenderer) renderUnorderedList(ctx *renderer.Context, l types.Unorde
 	err := r.unorderedList.Execute(result, struct {
 		Context   *renderer.Context
 		ID        sanitized
-		Title     string
+		Title     sanitized
 		Roles     sanitized
 		Checklist bool
 		Items     []types.UnorderedListItem

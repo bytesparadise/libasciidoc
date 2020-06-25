@@ -58,7 +58,7 @@ func (r *sgmlRenderer) renderFencedBlock(ctx *renderer.Context, b types.Delimite
 	err = r.fencedBlock.Execute(result, struct {
 		Context  *renderer.Context
 		ID       sanitized
-		Title    string
+		Title    sanitized
 		Roles    sanitized
 		Content  sanitized
 		Elements []interface{}
@@ -92,7 +92,7 @@ func (r *sgmlRenderer) renderListingBlock(ctx *renderer.Context, b types.Delimit
 	err = r.listingBlock.Execute(result, struct {
 		Context  *renderer.Context
 		ID       sanitized
-		Title    string
+		Title    sanitized
 		Roles    sanitized
 		Content  sanitized
 		Elements []interface{}
@@ -164,7 +164,7 @@ func (r *sgmlRenderer) renderSourceBlock(ctx *renderer.Context, b types.Delimite
 	result := &bytes.Buffer{}
 	err = r.sourceBlock.Execute(result, struct {
 		ID                sanitized
-		Title             string
+		Title             sanitized
 		Roles             sanitized
 		Language          string
 		SyntaxHighlighter string
@@ -195,7 +195,7 @@ func (r *sgmlRenderer) renderAdmonitionBlock(ctx *renderer.Context, b types.Deli
 	err = r.admonitionBlock.Execute(result, struct {
 		Context  *renderer.Context
 		ID       sanitized
-		Title    string
+		Title    sanitized
 		Kind     types.AdmonitionKind
 		Roles    sanitized
 		Icon     sanitized
@@ -230,7 +230,7 @@ func (r *sgmlRenderer) renderExampleBlock(ctx *renderer.Context, b types.Delimit
 	err = r.exampleBlock.Execute(result, struct {
 		Context       *renderer.Context
 		ID            sanitized
-		Title         string
+		Title         sanitized
 		Roles         sanitized
 		ExampleNumber int
 		Content       sanitized
@@ -258,7 +258,7 @@ func (r *sgmlRenderer) renderQuoteBlock(ctx *renderer.Context, b types.Delimited
 	err = r.quoteBlock.Execute(result, struct {
 		Context     *renderer.Context
 		ID          sanitized
-		Title       string
+		Title       sanitized
 		Roles       sanitized
 		Attribution Attribution
 		Content     sanitized
@@ -290,7 +290,7 @@ func (r *sgmlRenderer) renderVerseBlock(ctx *renderer.Context, b types.Delimited
 	err := r.verseBlock.Execute(result, struct {
 		Context     *renderer.Context
 		ID          sanitized
-		Title       string
+		Title       sanitized
 		Roles       sanitized
 		Attribution Attribution
 		Content     sanitized
@@ -335,7 +335,7 @@ func (r *sgmlRenderer) renderSidebarBlock(ctx *renderer.Context, b types.Delimit
 	err = r.sidebarBlock.Execute(result, struct {
 		Context  *renderer.Context
 		ID       sanitized
-		Title    string
+		Title    sanitized
 		Roles    sanitized
 		Content  sanitized
 		Elements []interface{}
