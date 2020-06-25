@@ -10,7 +10,7 @@ import (
 
 var _ = Describe("paragraphs", func() {
 
-	Context("draf document", func() {
+	Context("draft document", func() {
 
 		Context("default paragraphs", func() {
 
@@ -780,6 +780,96 @@ image::foo.png[]`
 				}
 				Expect(ParseDraftDocument(source)).To(Equal(expected))
 			})
+		})
+
+		Context("thematic breaks", func() {
+			It("thematic break form1 by itself", func() {
+				source := "***"
+				expected := types.DraftDocument{
+					Blocks: []interface{}{
+						types.ThematicBreak{},
+					},
+				}
+				Expect(ParseDraftDocument(source)).To(Equal(expected))
+			})
+			It("thematic break form2 by itself", func() {
+				source := "* * *"
+				expected := types.DraftDocument{
+					Blocks: []interface{}{
+						types.ThematicBreak{},
+					},
+				}
+				Expect(ParseDraftDocument(source)).To(Equal(expected))
+			})
+			It("thematic break form3 by itself", func() {
+				source := "---"
+				expected := types.DraftDocument{
+					Blocks: []interface{}{
+						types.ThematicBreak{},
+					},
+				}
+				Expect(ParseDraftDocument(source)).To(Equal(expected))
+			})
+			It("thematic break form4 by itself", func() {
+				source := "- - -"
+				expected := types.DraftDocument{
+					Blocks: []interface{}{
+						types.ThematicBreak{},
+					},
+				}
+				Expect(ParseDraftDocument(source)).To(Equal(expected))
+			})
+			It("thematic break form5 by itself", func() {
+				source := "___"
+				expected := types.DraftDocument{
+					Blocks: []interface{}{
+						types.ThematicBreak{},
+					},
+				}
+				Expect(ParseDraftDocument(source)).To(Equal(expected))
+			})
+			It("thematic break form4 by itself", func() {
+				source := "_ _ _"
+				expected := types.DraftDocument{
+					Blocks: []interface{}{
+						types.ThematicBreak{},
+					},
+				}
+				Expect(ParseDraftDocument(source)).To(Equal(expected))
+			})
+			It("thematic break with leading text", func() {
+				source := "text ***"
+				expected := types.DraftDocument{
+					Blocks: []interface{}{
+						types.Paragraph{
+							Lines: [][]interface{}{
+								{
+									types.StringElement{Content: "text ***"},
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDraftDocument(source)).To(Equal(expected))
+			})
+
+			// NB: three asterisks gets confused with bullets if with trailing text
+			It("thematic break with trailing text", func() {
+				source := "* * * text"
+				expected := types.DraftDocument{
+					Blocks: []interface{}{
+						types.Paragraph{
+							Lines: [][]interface{}{
+								{
+									types.StringElement{Content: "* * * text"},
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDraftDocument(source)).To(Equal(expected))
+			})
+
 		})
 	})
 

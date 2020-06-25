@@ -66,4 +66,9 @@ second line</p>
 		Expect(RenderXHTML(source)).To(MatchHTML(expected))
 	})
 
+	It("thematic break", func() {
+		source := "- - -"
+		expected := "<hr/>"
+		Expect(RenderXHTML(source)).To(MatchHTML(expected))
+	})
 })

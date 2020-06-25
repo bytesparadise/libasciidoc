@@ -47,8 +47,9 @@ DocumentBlock <-
         / DelimitedBlock
         / FileInclusion
         / VerseParagraph // must be before ImageBlock
-        / ImageBlock 
-        / OrderedListItem 
+        / ImageBlock
+        / ThematicBreak
+        / OrderedListItem
         / UnorderedListItem 
         / CalloutListItem
         / ContinuedListItemElement
@@ -67,8 +68,9 @@ DocumentBlockWithinDelimitedBlock <- !EOF
         / BlankLine // must be before LiteralBlock 
         / FileInclusion
         / VerseParagraph
-        / ImageBlock 
-        / OrderedListItem 
+        / ImageBlock
+        / ThematicBreak
+        / OrderedListItem
         / UnorderedListItem 
         / LabeledListItem 
         / ContinuedListItemElement
@@ -658,7 +660,8 @@ ContinuedListItemContent <- !EOF
     content:(DelimitedBlock
         / FileInclusion
         / VerseParagraph // must be before ImageBlock
-        / ImageBlock 
+        / ImageBlock
+        / ThematicBreak
         / OrderedListItem 
         / UnorderedListItem 
         / LabeledListItem 
@@ -1730,6 +1733,11 @@ PassthroughBlockVerbatimContent <- (!PassthroughBlockEndDelimiter content:(Verba
     return content, nil
 })*
 
+// Thematic break
+ThematicBreak <- ("***" / "* * *" / "---" / "- - -" / "___" / "_ _ _") EOL {
+    return types.NewThematicBreak()
+}
+
 // -------------------------------------------------------------------------------------
 // DelimitedBlock content
 // -------------------------------------------------------------------------------------
@@ -1739,7 +1747,8 @@ NormalBlockContent <- NormalBlockElement*
 NormalBlockElement <- 
     !EOF element:(BlankLine 
             / FileInclusion
-            / ImageBlock 
+            / ImageBlock
+            / ThematicBreak
             / OrderedListItem 
             / UnorderedListItem 
             / LabeledListItem 

@@ -27,3 +27,11 @@ func (r *sgmlRenderer) renderLineBreak() (string, error) {
 	}
 	return buf.String(), nil
 }
+
+func (r *sgmlRenderer) renderThematicBreak() (string, error) {
+	buf := &strings.Builder{}
+	if err := r.thematicBreak.Execute(buf, nil); err != nil {
+		return "", err
+	}
+	return buf.String(), nil
+}

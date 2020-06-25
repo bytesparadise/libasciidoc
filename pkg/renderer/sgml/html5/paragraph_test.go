@@ -441,6 +441,11 @@ image::foo.png[]`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
+		It("thematic break", func() {
+			source := "- - -"
+			expected := "<hr>"
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
+		})
 	})
 
 })

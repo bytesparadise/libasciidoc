@@ -72,6 +72,7 @@ type sgmlRenderer struct {
 	tableHeader               *textTemplate
 	tableHeaderCell           *textTemplate
 	tableRow                  *textTemplate
+	thematicBreak             *textTemplate
 	tocEntry                  *textTemplate
 	tocRoot                   *textTemplate
 	tocSection                *textTemplate
@@ -149,6 +150,7 @@ func (r *sgmlRenderer) prepareTemplates() error {
 		r.tableHeader, err = r.newTemplate("table-header", tmpls.TableHeader, err)
 		r.tableHeaderCell, err = r.newTemplate("table-header-cell", tmpls.TableHeaderCell, err)
 		r.tableRow, err = r.newTemplate("table-row", tmpls.TableRow, err)
+		r.thematicBreak, err = r.newTemplate("thematic-break", tmpls.ThematicBreak, err)
 		r.tocEntry, err = r.newTemplate("toc-entry", tmpls.TocEntry, err)
 		r.tocRoot, err = r.newTemplate("toc-root", tmpls.TocRoot, err)
 		r.tocSection, err = r.newTemplate("toc-section", tmpls.TocSection, err)

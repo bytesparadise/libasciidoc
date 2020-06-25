@@ -16,4 +16,6 @@ const (
 		"{{ if .Attribution.First }}<div class=\"attribution\">\n&#8212; {{ .Attribution.First }}" +
 		"{{ if .Attribution.Second }}<br/>\n<cite>{{ .Attribution.Second }}</cite>\n{{ else }}\n{{ end }}" +
 		"</div>\n{{ end }}</div>"
+
+	thematicBreakTmpl = "<hr/>"
 )
