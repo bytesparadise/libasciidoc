@@ -11,13 +11,14 @@ import (
 
 func (r *sgmlRenderer) renderImageBlock(ctx *renderer.Context, img types.ImageBlock) (string, error) {
 	result := &strings.Builder{}
-	title := ""
+	title := sanitized("")
 	if t, found := img.Attributes.GetAsString(types.AttrTitle); found {
-		title = "Figure " + strconv.Itoa(ctx.GetAndIncrementImageCounter()) + ". " + EscapeString(t)
+		// TODO: This should be moved to the template
+		title = sanitized("Figure " + strconv.Itoa(ctx.GetAndIncrementImageCounter()) + ". " + EscapeString(t))
 	}
 	err := r.blockImage.Execute(result, struct {
 		ID     sanitized
-		Title  string
+		Title  sanitized
 		Role   string
 		Href   string
 		Alt    string
@@ -46,7 +47,7 @@ func (r *sgmlRenderer) renderInlineImage(img types.InlineImage) (string, error) 
 	result := &strings.Builder{}
 	err := r.inlineImage.Execute(result, struct {
 		Role   string
-		Title  string
+		Title  sanitized
 		Href   string
 		Alt    string
 		Width  string

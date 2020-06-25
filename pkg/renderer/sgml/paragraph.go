@@ -35,7 +35,7 @@ func (r *sgmlRenderer) renderParagraph(ctx *renderer.Context, p types.Paragraph)
 			Context *renderer.Context
 			ID      sanitized
 			Roles   sanitized
-			Title   string
+			Title   sanitized
 			Lines   [][]interface{}
 			Content sanitized
 		}{
@@ -72,7 +72,7 @@ func (r *sgmlRenderer) renderAdmonitionParagraph(ctx *renderer.Context, p types.
 	err = r.admonitionParagraph.Execute(result, struct {
 		Context *renderer.Context
 		ID      sanitized
-		Title   string
+		Title   sanitized
 		Roles   sanitized
 		Icon    sanitized
 		Kind    sanitized
@@ -103,7 +103,7 @@ func (r *sgmlRenderer) renderSourceParagraph(ctx *renderer.Context, p types.Para
 	err = r.sourceParagraph.Execute(result, struct {
 		Context  *renderer.Context
 		ID       sanitized
-		Title    string
+		Title    sanitized
 		Language string
 		Content  sanitized
 		Lines    [][]interface{}
@@ -130,7 +130,7 @@ func (r *sgmlRenderer) renderVerseParagraph(ctx *renderer.Context, p types.Parag
 	err = r.verseParagraph.Execute(result, struct {
 		Context     *renderer.Context
 		ID          sanitized
-		Title       string
+		Title       sanitized
 		Attribution Attribution
 		Content     sanitized
 		Lines       [][]interface{}
@@ -157,7 +157,7 @@ func (r *sgmlRenderer) renderQuoteParagraph(ctx *renderer.Context, p types.Parag
 	err = r.quoteParagraph.Execute(result, struct {
 		Context     *renderer.Context
 		ID          sanitized
-		Title       string
+		Title       sanitized
 		Attribution Attribution
 		Content     sanitized
 		Lines       [][]interface{}
@@ -205,7 +205,7 @@ func (r *sgmlRenderer) renderDelimitedBlockParagraph(ctx *renderer.Context, p ty
 	err = r.delimitedBlockParagraph.Execute(result, struct {
 		Context    *renderer.Context
 		ID         sanitized
-		Title      string
+		Title      sanitized
 		CheckStyle string
 		Content    sanitized
 		Lines      [][]interface{}
@@ -231,9 +231,9 @@ func renderCheckStyle(style interface{}) string {
 	}
 }
 
-func (r *sgmlRenderer) renderElementTitle(attrs types.Attributes) string {
+func (r *sgmlRenderer) renderElementTitle(attrs types.Attributes) sanitized {
 	if title, found := attrs.GetAsString(types.AttrTitle); found {
-		return strings.TrimSpace(title)
+		return sanitized(EscapeString(strings.TrimSpace(title)))
 	}
 	return ""
 }

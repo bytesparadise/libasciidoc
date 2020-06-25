@@ -5,7 +5,7 @@ const (
 	calloutListTmpl = `<div` +
 		`{{ if .ID }} id="{{ .ID }}"{{ end }} ` +
 		"class=\"colist arabic{{ if .Roles }} {{ .Roles }}{{ end}}\">\n" +
-		"{{ if .Title }}<div class=\"title\">{{ escape .Title }}</div>\n{{ end }}" +
+		"{{ if .Title }}<div class=\"title\">{{ .Title }}</div>\n{{ end }}" +
 		"<ol>\n" +
 		"{{ .Content }}" +
 		"</ol>\n</div>"

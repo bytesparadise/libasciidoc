@@ -22,7 +22,7 @@ func (r *sgmlRenderer) renderOrderedList(ctx *renderer.Context, l types.OrderedL
 	err := r.orderedList.Execute(result, struct {
 		Context        *renderer.Context
 		ID             sanitized
-		Title          string
+		Title          sanitized
 		Roles          sanitized
 		NumberingStyle string
 		ListStyle      string

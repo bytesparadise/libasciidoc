@@ -9,7 +9,7 @@ const (
 		`{{ if .Height }} height="{{ .Height }}"{{ end }}` +
 		`/>{{ if ne .Href "" }}</a>{{ end }}
 </div>{{ if .Title }}
-<div class="title">{{ escape .Title }}</div>
+<div class="title">{{ .Title }}</div>
 {{ else }}
 {{ end }}</div>`
 
@@ -17,6 +17,6 @@ const (
 		`<img src="{{ .Path }}" alt="{{ .Alt }}"` +
 		`{{ if .Width }} width="{{ .Width }}"{{ end }}` +
 		`{{ if .Height }} height="{{ .Height }}"{{ end }}` +
-		`{{ if .Title }} title="{{ escape .Title }}"{{ end }}` +
+		`{{ if .Title }} title="{{ .Title }}"{{ end }}` +
 		`/></span>`
 )

@@ -112,7 +112,7 @@ func (r *sgmlRenderer) Render(ctx *renderer.Context, doc types.Document, output 
 		err = r.article.Execute(output, struct {
 			Generator     string
 			Doctype       string
-			Title         string
+			Title         sanitized
 			Authors       string
 			Header        string
 			Role          string
@@ -146,7 +146,7 @@ func (r *sgmlRenderer) Render(ctx *renderer.Context, doc types.Document, output 
 		}
 	}
 	// generate the metadata to be returned to the caller
-	md.Title = renderedTitle
+	md.Title = string(renderedTitle)
 	// arguably this should be a time.Time for use in Go
 	md.LastUpdated = ctx.Config.LastUpdated.Format(configuration.LastUpdatedFormat)
 	md.TableOfContents = ctx.TableOfContents
@@ -240,13 +240,14 @@ func (r *sgmlRenderer) renderAuthors(doc types.Document) string {
 	return strings.Join(authorStrs, "; ")
 }
 
-func (r *sgmlRenderer) renderDocumentTitle(ctx *renderer.Context, doc types.Document) (string, error) {
+func (r *sgmlRenderer) renderDocumentTitle(ctx *renderer.Context, doc types.Document) (sanitized, error) {
 	if header, found := doc.Header(); found {
+		// TODO: This feels wrong.  The title should not need markup.
 		title, err := r.renderPlainText(ctx, header.Title)
 		if err != nil {
 			return "", errors.Wrap(err, "unable to render document title")
 		}
-		return title, nil
+		return sanitized(title), nil
 	}
 	return "", nil
 }
