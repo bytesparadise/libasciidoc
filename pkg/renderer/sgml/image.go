@@ -1,7 +1,6 @@
 package sgml
 
 import (
-	"strconv"
 	"strings"
 
 	"github.com/bytesparadise/libasciidoc/pkg/renderer"
@@ -11,29 +10,30 @@ import (
 
 func (r *sgmlRenderer) renderImageBlock(ctx *renderer.Context, img types.ImageBlock) (string, error) {
 	result := &strings.Builder{}
-	title := sanitized("")
-	if t, found := img.Attributes.GetAsString(types.AttrTitle); found {
-		// TODO: This should be moved to the template
-		title = sanitized("Figure " + strconv.Itoa(ctx.GetAndIncrementImageCounter()) + ". " + EscapeString(t))
+	number := 0
+	if _, found := img.Attributes.GetAsString(types.AttrTitle); found {
+		number = ctx.GetAndIncrementImageCounter()
 	}
 	err := r.blockImage.Execute(result, struct {
-		ID     sanitized
-		Title  sanitized
-		Role   string
-		Href   string
-		Alt    string
-		Width  string
-		Height string
-		Path   string
+		ID          sanitized
+		Title       sanitized
+		ImageNumber int
+		Role        string
+		Href        string
+		Alt         string
+		Width       string
+		Height      string
+		Path        string
 	}{
-		ID:     r.renderElementID(img.Attributes),
-		Title:  title,
-		Role:   img.Attributes.GetAsStringWithDefault(types.AttrRole, ""),
-		Href:   img.Attributes.GetAsStringWithDefault(types.AttrInlineLink, ""),
-		Alt:    img.Attributes.GetAsStringWithDefault(types.AttrImageAlt, ""),
-		Width:  img.Attributes.GetAsStringWithDefault(types.AttrImageWidth, ""),
-		Height: img.Attributes.GetAsStringWithDefault(types.AttrImageHeight, ""),
-		Path:   img.Location.String(),
+		ID:          r.renderElementID(img.Attributes),
+		Title:       r.renderElementTitle(img.Attributes),
+		ImageNumber: number,
+		Role:        img.Attributes.GetAsStringWithDefault(types.AttrRole, ""),
+		Href:        img.Attributes.GetAsStringWithDefault(types.AttrInlineLink, ""),
+		Alt:         img.Attributes.GetAsStringWithDefault(types.AttrImageAlt, ""),
+		Width:       img.Attributes.GetAsStringWithDefault(types.AttrImageWidth, ""),
+		Height:      img.Attributes.GetAsStringWithDefault(types.AttrImageHeight, ""),
+		Path:        img.Location.String(),
 	})
 
 	if err != nil {
