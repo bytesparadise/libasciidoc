@@ -387,6 +387,7 @@ SingleQuoteStringEnd <- "`'"
 SingleQuotedStringElement <- element:(
         LineBreak !SingleQuoteStringEnd // must be before spaces
         / Space+ !SingleQuoteStringEnd
+        / !"`" Symbol  // Exclude the explicit quote
         / InlineIcon
         / InlineImage
         / InlineFootnote
@@ -400,6 +401,7 @@ SingleQuotedStringElement <- element:(
         / SuperscriptText
         / !"`'" MonospaceText
         / DoubleQuotedString
+        / ImpliedApostrophe
         / SingleQuotedStringFallbackCharacter) {
     return element, nil
 }
@@ -420,6 +422,7 @@ DoubleQuotedStringElements <- elements:(DoubleQuotedStringElement+) {
 DoubleQuotedStringElement <- element:(
         LineBreak !DoubleQuoteStringEnd // must be before spaces
         / Space+ !DoubleQuoteStringEnd
+        / Symbol
         / InlineIcon
         / InlineImage
         / InlineFootnote
@@ -433,6 +436,7 @@ DoubleQuotedStringElement <- element:(
         / SuperscriptText
         / !"`\"" MonospaceText
         / SingleQuotedString
+        / ImpliedApostrophe
         / DoubleQuotedStringFallbackCharacter) {
             return element, nil
 }
@@ -476,7 +480,9 @@ TitleElement <- element:(Word
         / InlineFootnote
         / QuotedString
         / QuotedText
+        / Symbol
         / AttributeSubstitution
+        / ImpliedApostrophe
         / AnyChar) {
     return element, nil
 }
@@ -809,7 +815,9 @@ LabeledListItemTermElement <- element:(Word
         / InlineFootnote
         / QuotedString
         / QuotedText
+        / Symbol
         / AttributeSubstitution
+        / ImpliedApostrophe
         / AnyChar ) {
     return element, nil
 }
@@ -970,6 +978,7 @@ InlineElement <-
         / !EOL (
             QuotedString
             / QuotedText
+            / Symbol
             / InlineIcon
             / InlineImage 
             / Link 
@@ -981,6 +990,7 @@ InlineElement <-
             / InlineElementID
             / ConcealedIndexTerm
             / IndexTerm
+            / ImpliedApostrophe
             / AnyChar)) {
     return element, nil
 }
@@ -1049,27 +1059,24 @@ DoubleQuoteBoldTextElements <- DoubleQuoteBoldTextElement (!("**") (Space / Doub
 
 DoubleQuoteBoldTextElement <- Word
         / Newline !Newline
-        / SingleQuoteBoldText 
+        / SingleQuoteBoldText
         / QuotedString
         / ItalicText
         / MarkedText
         / MonospaceText
         / SubscriptText
         / SuperscriptText
+        / Symbol
         / InlineIcon
         / InlineImage
         / Link
         / InlinePassthrough
         / AttributeSubstitution
-        / DoubleQuoteBoldTextStringElement
+        / ImpliedApostrophe
         / DoubleQuoteBoldTextFallbackCharacter
 
 
-DoubleQuoteBoldTextStringElement <- (!"**" [^\r\n ^~{}])+ { 
-    return types.NewStringElement(string(c.text))
-}
-
-DoubleQuoteBoldTextFallbackCharacter <- 
+DoubleQuoteBoldTextFallbackCharacter <-
     [^\r\n*] // anything except EOL and bold delimiter (fallback in case nothing else matched)
     / "**" Alphanums {  // or a bold delimiter when immediately followed by an alphanum (ie, in the middle of some text)
     return types.NewStringElement(string(c.text))
@@ -1093,19 +1100,16 @@ SingleQuoteBoldTextElement <- Word
         / MonospaceText
         / SubscriptText
         / SuperscriptText
+        / Symbol
         / InlineIcon
         / InlineImage 
         / Link  
         / InlinePassthrough
         / AttributeSubstitution
-        / SingleQuoteBoldTextStringElement
+        / ImpliedApostrophe
         / SingleQuoteBoldTextFallbackCharacter
 
-SingleQuoteBoldTextStringElement <- [^\r\n{} *^~]+ { // anything except EOL, space, bold and subscript/superscript delimiters and brackets. Excludes curly brackets to match with AttributeSubstitution elements
-    return types.NewStringElement(string(c.text))
-}
-
-SingleQuoteBoldTextFallbackCharacter <- 
+SingleQuoteBoldTextFallbackCharacter <-
     [^\r\n*] // anything except EOL and bold delimiter (fallback in case nothing else matched)
     / "*" Alphanums {  // or a bold delimiter when immediately followed by an alphanum (ie, in the middle of some text)
     return types.NewStringElement(string(c.text))
@@ -1135,25 +1139,22 @@ DoubleQuoteItalicTextElements <- DoubleQuoteItalicTextElement (!("__") (Space / 
 
 DoubleQuoteItalicTextElement <- Word
         / Newline !Newline
-        / SingleQuoteItalicText 
+        / SingleQuoteItalicText
         / QuotedString
         / BoldText
         / MarkedText
         / MonospaceText
         / SubscriptText
         / SuperscriptText
+        / Symbol
         / InlineIcon
         / InlineImage 
         / Link 
         / InlinePassthrough
-        / DoubleQuoteItalicTextStringElement
+        / ImpliedApostrophe
         / DoubleQuoteItalicTextFallbackCharacter
 
-DoubleQuoteItalicTextStringElement <- (!"__" [^\r\n ^~{}])+ { 
-    return types.NewStringElement(string(c.text))
-}
-
-DoubleQuoteItalicTextFallbackCharacter <- 
+DoubleQuoteItalicTextFallbackCharacter <-
     [^\r\n_] // anything except EOL and italic delimiter (fallback in case nothing else matched)
     / "__" Alphanums {  // or a italic delimiter when immediately followed by an alphanum (ie, in the middle of some text)
     return types.NewStringElement(string(c.text))
@@ -1177,19 +1178,16 @@ SingleQuoteItalicTextElement <- Word
         / MonospaceText
         / SubscriptText
         / SuperscriptText
+        / Symbol
         / InlineIcon
         / InlineImage 
         / Link  
         / InlinePassthrough 
         / AttributeSubstitution
-        / SingleQuoteItalicTextStringElement
+        / ImpliedApostrophe
         / SingleQuoteItalicTextFallbackCharacter
 
-SingleQuoteItalicTextStringElement <- [^\r\n{} _^~]+ { // anything except EOL, space, bold and subscript/superscript delimiters and brackets. Excludes curly brackets to match with AttributeSubstitution elements
-    return types.NewStringElement(string(c.text))
-}
-
-SingleQuoteItalicTextFallbackCharacter <- 
+SingleQuoteItalicTextFallbackCharacter <-
     [^\r\n_] // anything except EOL and italic delimiter (fallback in case nothing else matched)
     / "_" Alphanums {  // or an italic delimiter when immediately followed by an alphanum (ie, in the middle of some text)
     return types.NewStringElement(string(c.text))
@@ -1218,7 +1216,8 @@ DoubleQuoteMonospaceTextElements <- DoubleQuoteMonospaceTextElement (!("``") (Sp
 
 DoubleQuoteMonospaceTextElement <- Word
         / Newline !Newline
-        / SingleQuoteMonospaceText 
+        / Symbol
+        / SingleQuoteMonospaceText
         / QuotedString
         / BoldText
         / ItalicText
@@ -1229,14 +1228,10 @@ DoubleQuoteMonospaceTextElement <- Word
         / InlineImage
         / Link
         / InlinePassthrough 
-        / DoubleQuoteMonospaceTextStringElement
+        / ImpliedApostrophe
         / DoubleQuoteMonospaceTextFallbackCharacter
 
-DoubleQuoteMonospaceTextStringElement <- (!"``" [^\r\n ^~{}])+ { 
-    return types.NewStringElement(string(c.text))
-}
-
-DoubleQuoteMonospaceTextFallbackCharacter <- 
+DoubleQuoteMonospaceTextFallbackCharacter <-
     [^\r\n`] // anything except EOL and monospace delimiter (fallback in case nothing else matched)
     / "``" Alphanums {  // or a monospace delimiter when immediately followed by an alphanum (ie, in the middle of some text)
     return types.NewStringElement(string(c.text))
@@ -1245,14 +1240,14 @@ DoubleQuoteMonospaceTextFallbackCharacter <-
 SingleQuoteMonospaceText <- attrs:(QuotedTextAttrs)? ("`" !"`") elements:(SingleQuoteMonospaceTextElements) "`" { // single punctuation cannot be followed by a character (needs "``" to emphazise a portion of a word)
     return types.NewQuotedText(types.Monospace, attrs, elements.([]interface{}))
 } / attrs:(QuotedTextAttrs)? "`" elements:("`" SingleQuoteMonospaceTextElements) "`" { // unbalanced "``" vs "`" punctuation.
-    return types.NewQuotedText(types.Monospace, attrs, elements.([]interface{})) // include the second heading "`" as a regular StringElement in the monospace content
-} 
+   return types.NewQuotedText(types.Monospace, attrs, elements.([]interface{})) // include the second heading "`" as a regular StringElement in the monospace content
+}
 
 SingleQuoteMonospaceTextElements <- !Space SingleQuoteMonospaceTextElement+
 
 SingleQuoteMonospaceTextElement <-  Word
         / Newline !Newline
-        / DoubleQuoteMonospaceText 
+        / DoubleQuoteMonospaceText
         / QuotedString
         / Space+ ('`' !'`')?  // allow for content such as "`some `nested monospace`". Also, do not allow for double backticks after spaces.
         / BoldText
@@ -1260,19 +1255,16 @@ SingleQuoteMonospaceTextElement <-  Word
         / MarkedText
         / SubscriptText
         / SuperscriptText
+        / !"`" Symbol
         / InlineIcon
         / InlineImage 
         / Link 
         / InlinePassthrough 
         / AttributeSubstitution
-        / SingleQuoteMonospaceTextStringElement
+        / ImpliedApostrophe
         / SingleQuoteMonospaceTextFallbackCharacter
 
-SingleQuoteMonospaceTextStringElement <- [^\r\n {}`^~]+ { // anything except EOL, space, monospace and subscript/superscript delimiters. Excludes curly brackets to match with AttributeSubstitution elements
-    return types.NewStringElement(string(c.text))
-}
-
-SingleQuoteMonospaceTextFallbackCharacter <- 
+SingleQuoteMonospaceTextFallbackCharacter <-
     [^\r\n`] // anything except EOL and monospace delimiter (fallback in case nothing else matched)
     / "`" Alphanums {  // or an monospace delimiter when immediately followed by an alphanum (ie, in the middle of some text)
     return types.NewStringElement(string(c.text))
@@ -1309,16 +1301,13 @@ DoubleQuoteMarkedTextElement <- Word
         / MonospaceText
         / SubscriptText
         / SuperscriptText
+        / Symbol
         / InlineIcon
         / InlineImage
         / Link
         / InlinePassthrough
-        / DoubleQuoteMarkedTextStringElement
+        / ImpliedApostrophe
         / DoubleQuoteMarkedTextFallbackCharacter
-
-DoubleQuoteMarkedTextStringElement <- (!"##" [^\r\n ^~{}])+ {
-    return types.NewStringElement(string(c.text))
-}
 
 DoubleQuoteMarkedTextFallbackCharacter <-
     [^\r\n#] // anything except EOL and marked delimiter (fallback in case nothing else matched)
@@ -1344,17 +1333,14 @@ SingleQuoteMarkedTextElement <- Word
         / MonospaceText
         / SubscriptText
         / SuperscriptText
+        / Symbol
         / InlineIcon
         / InlineImage
         / Link
         / InlinePassthrough
         / AttributeSubstitution
-        / SingleQuoteMarkedTextStringElement
+        / ImpliedApostrophe
         / SingleQuoteMarkedTextFallbackCharacter
-
-SingleQuoteMarkedTextStringElement <- [^\r\n{} #^~]+ { // anything except EOL, space, bold and subscript/superscript delimiters and brackets. Excludes curly brackets to match with AttributeSubstitution elements
-    return types.NewStringElement(string(c.text))
-}
 
 SingleQuoteMarkedTextFallbackCharacter <-
     [^\r\n#] // anything except EOL and mark delimiter (fallback in case nothing else matched)
@@ -1500,12 +1486,14 @@ UnquotedAttributeChar <- [^\r\n"=\],] { // excludes comma
     return types.NewStringElement(string(c.text))
 }
 
-// rule used after document attribute substitution, to discover links 
-InlineLinks <- 
+// rule used after document attribute substitution, to discover links
+InlineLinks <-
     elements:(Word
+        / Symbol
         / Space+ 
         / ResolvedLink 
         / Parenthesis
+        / ImpliedApostrophe
         / AnyChar
         / Newline)+ EOF {
     return types.NewInlineElements(elements.([]interface{}))
@@ -1935,6 +1923,36 @@ BlankLine <- !EOF Space* EOL {
 }
 
 // ------------------------------------------
+// Symbols
+// ------------------------------------------
+
+Symbol <- Apostrophe / Copyright / Trademark / Registered / Ellipsis
+
+Apostrophe <- "`'" {
+    return types.NewStringElement("\u2019")
+}
+Copyright <- "(C)" {
+    return types.NewStringElement("\u00a9")
+}
+Trademark <- "(TM)" {
+    return types.NewStringElement("\u2122")
+}
+Registered <- "(R)" {
+    return types.NewStringElement("\u00ae")
+}
+Ellipsis <- "..." {
+    return types.NewStringElement("\u2026\u200b")
+}
+
+// The implied apostrophe is used in interior words, and intended to help
+// cases like mother's day.  asciidoctor requires that it be followed by
+// a letter (not a digit) but it can have a digit just before it.
+
+ImpliedApostrophe <- Alphanum "'" &[\pL] {
+    return types.NewStringElement(string(c.text[:1])+"\u2019")
+}
+
+// ------------------------------------------
 // Base Types
 // ------------------------------------------
 Alphanum <- [\pL0-9]
@@ -1956,7 +1974,7 @@ Word <-
     }
 
 InlineWord <- // same as word, but may also contain some punctuation markers
-    [\pL0-9,.?!;]+ &([\r\n ] / EOF) { 
+    [\pL0-9,?!;]+ &([\r\n ] / EOF) {
         return types.NewStringElement(string(c.text))
     } / Word
 

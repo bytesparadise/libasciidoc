@@ -45,7 +45,7 @@ var _ = Describe("strings", func() {
 		// We will often want to use these symbols in headers.
 		source := `== Registered(R)`
 		expected := `<div class="sect1">
-<h2 id="_registered_r">Registered&#174;</h2>
+<h2 id="_registered">Registered&#174;</h2>
 <div class="sectionbody">
 </div>
 </div>`

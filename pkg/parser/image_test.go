@@ -409,7 +409,7 @@ image::{imagesdir}/foo.png[]`
 										},
 									},
 									types.StringElement{
-										Content: " bar...",
+										Content: " bar\u2026\u200b",
 									},
 								},
 							},

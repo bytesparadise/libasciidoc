@@ -29,7 +29,7 @@ var _ = Describe("quoted strings", func() {
 		It("spaces with single quoted string", func() {
 			source := "'` curly was single `' or so they say"
 			expected := "<div class=\"paragraph\">\n" +
-				"<p>&#39;` curly was single `&#39; or so they say</p>\n" +
+				"<p>&#39;` curly was single &#8217; or so they say</p>\n" +
 				"</div>"
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})

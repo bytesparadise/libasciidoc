@@ -296,7 +296,7 @@ Free use of this software is granted under the terms of the MIT License.`
 
 				expectedContent := `<h2 id="_name">Name</h2>
 <div class="sectionbody">
-<p>eve - analyzes an image to determine if it&#39;s a picture of a life form</p>
+<p>eve - analyzes an image to determine if it&#8217;s a picture of a life form</p>
 </div>
 <div class="sect1">
 <h2 id="_synopsis">Synopsis</h2>
@@ -355,7 +355,7 @@ Free use of this software is granted under the terms of the MIT License.`
 <h1>eve(1) Manual Page</h1>
 <h2 id="_name">Name</h2>
 <div class="sectionbody">
-<p>eve - analyzes an image to determine if it&#39;s a picture of a life form</p>
+<p>eve - analyzes an image to determine if it&#8217;s a picture of a life form</p>
 </div>
 </div>
 <div id="content">
@@ -434,7 +434,7 @@ Free use of this software is granted under the terms of the MIT License.`
 <h2 id="_foo">Foo</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>eve - analyzes an image to determine if it&#39;s a picture of a life form</p>
+<p>eve - analyzes an image to determine if it&#8217;s a picture of a life form</p>
 </div>
 </div>
 </div>

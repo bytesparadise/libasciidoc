@@ -38,7 +38,7 @@ var _ = Describe("quoted strings", func() {
 					types.Paragraph{
 						Lines: [][]interface{}{
 							{
-								types.StringElement{Content: "'` curly was single `'"},
+								types.StringElement{Content: "'` curly was single \u2019"},
 							},
 						},
 					},
@@ -54,7 +54,7 @@ var _ = Describe("quoted strings", func() {
 					types.Paragraph{
 						Lines: [][]interface{}{
 							{
-								types.StringElement{Content: "'`curly was single `'"},
+								types.StringElement{Content: "'`curly was single \u2019"},
 							},
 						},
 					},
@@ -70,7 +70,7 @@ var _ = Describe("quoted strings", func() {
 					types.Paragraph{
 						Lines: [][]interface{}{
 							{
-								types.StringElement{Content: "'` curly was single`'"},
+								types.StringElement{Content: "'` curly was single\u2019"},
 							},
 						},
 					},
