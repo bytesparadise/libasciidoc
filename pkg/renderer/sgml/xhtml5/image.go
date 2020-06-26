@@ -9,7 +9,7 @@ const (
 		`{{ if .Height }} height="{{ .Height }}"{{ end }}` +
 		`/>{{ if ne .Href "" }}</a>{{ end }}
 </div>{{ if .Title }}
-<div class="title">{{ .Title }}</div>
+<div class="title">Figure {{ .ImageNumber }}. {{ .Title }}</div>
 {{ else }}
 {{ end }}</div>`
 
