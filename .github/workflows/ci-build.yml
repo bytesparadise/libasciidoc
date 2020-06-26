@@ -9,16 +9,14 @@ on:
     branches:
       - master
 
-
 jobs:
-
   test:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         go-version: [1.13.x, 1.14.x]
         os: [ubuntu-latest, macos-latest, windows-latest]
-    name: ${{ matrix.os }} with Go ${{ matrix.go-version }}
+    name: Test ${{ matrix.os }} with Go ${{ matrix.go-version }}
 
     steps:
     - name: Install Go
@@ -41,11 +39,6 @@ jobs:
       run: |
         make build
 
-    - name: Lint
-      if: runner.os == 'Linux'
-      run: |
-        make lint
-
     - name: Test
       run: |
         make test-with-coverage
@@ -62,4 +55,19 @@ jobs:
       run: |
         make bench-smoke
 
+  golangci:
+    name: Lint with Go ${{ matrix.go-version }}
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        go-version: [1.13.x, 1.14.x]
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Lint
+      uses: golangci/golangci-lint-action@v1
+      with:
+        version: v1.27
+        args: -E gofmt,golint,megacheck,misspell
 
