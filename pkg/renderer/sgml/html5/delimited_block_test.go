@@ -230,10 +230,10 @@ end
 ----`
 			expected := `<div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>require 'sinatra'
+<pre class="highlight"><code>require &#39;sinatra&#39;
 
-get '/hi' do
-  "Hello World!"
+get &#39;/hi&#39; do
+  &#34;Hello World!&#34;
 end</code></pre>
 </div>
 </div>`
@@ -254,10 +254,10 @@ end
 			expected := `<div class="listingblock">
 <div class="title">Source block title</div>
 <div class="content">
-<pre class="highlight"><code class="language-ruby" data-lang="ruby">require 'sinatra'
+<pre class="highlight"><code class="language-ruby" data-lang="ruby">require &#39;sinatra&#39;
 
-get '/hi' do
-  "Hello World!"
+get &#39;/hi&#39; do
+  &#34;Hello World!&#34;
 end</code></pre>
 </div>
 </div>`
@@ -278,10 +278,10 @@ end
 			expected := `<div class="listingblock">
 <div class="title">Source block title</div>
 <div class="content">
-<pre class="highlight"><code class="language-ruby" data-lang="ruby">require 'sinatra'
+<pre class="highlight"><code class="language-ruby" data-lang="ruby">require &#39;sinatra&#39;
 
-get '/hi' do
-  "Hello World!"
+get &#39;/hi&#39; do
+  &#34;Hello World!&#34;
 end</code></pre>
 </div>
 </div>`
@@ -302,10 +302,10 @@ end
 			expected := `<div id="id-for-source-block" class="listingblock">
 <div class="title">app.rb</div>
 <div class="content">
-<pre class="highlight"><code class="language-ruby" data-lang="ruby">require 'sinatra'
+<pre class="highlight"><code class="language-ruby" data-lang="ruby">require &#39;sinatra&#39;
 
-get '/hi' do
-  "Hello World!"
+get &#39;/hi&#39; do
+  &#34;Hello World!&#34;
 end</code></pre>
 </div>
 </div>`
@@ -372,13 +372,13 @@ public class GreetingResourceTest {
 
     @Test
     public void testHelloEndpoint() {
-        Mockito.when(greetingService.hello()).thenReturn("hello from mockito");
+        Mockito.when(greetingService.hello()).thenReturn(&#34;hello from mockito&#34;);
 
         given()
-          .when().get("/hello")
+          .when().get(&#34;/hello&#34;)
           .then()
              .statusCode(200)
-             .body(is("hello from mockito"));
+             .body(is(&#34;hello from mockito&#34;));
     }
 
 }</code></pre>
@@ -454,7 +454,7 @@ and "more" content
 <p><strong>bold content</strong></p>
 </div>
 <div class="paragraph">
-<p>and "more" content</p>
+<p>and &#34;more&#34; content</p>
 </div>
 </div>
 </div>`
