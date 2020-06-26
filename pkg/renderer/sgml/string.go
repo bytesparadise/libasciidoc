@@ -56,38 +56,12 @@ func (r *sgmlRenderer) renderStringElement(ctx *renderer.Context, str types.Stri
 
 	// NB: For all SGML flavors we are aware of, the numeric entities from
 	// Unicode are supported.  We generally avoid named entities.
-	result := convert(buf.String(), ellipsis, copyright, trademark, registered)
+	result := buf.String()
 	if !ctx.UseUnicode {
 		// convert to entities
 		result = asciiEntify(result)
 	}
 	return result, nil
-}
-
-func ellipsis(source string) string {
-	return strings.Replace(source, "...", "\u2026\u200b", -1) // ellipsis and zero width space
-}
-
-func copyright(source string) string {
-	return strings.Replace(source, "(C)", "\u00a9", -1)
-}
-
-func trademark(source string) string {
-	return strings.Replace(source, "(TM)", "\u2122", -1)
-}
-
-func registered(source string) string {
-	return strings.Replace(source, "(R)", "\u00ae", -1)
-}
-
-type converter func(string) string
-
-func convert(source string, converters ...converter) string {
-	result := source
-	for _, convert := range converters {
-		result = convert(result)
-	}
-	return result
 }
 
 func asciiEntify(source string) string {

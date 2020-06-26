@@ -1134,13 +1134,13 @@ The {plus} symbol is on a new line.
 										},
 										{
 											types.StringElement{
-												Content: "We can even force content to start on a separate line...",
+												Content: "We can even force content to start on a separate line\u2026\u200b",
 											},
 											types.LineBreak{},
 										},
 										{
 											types.StringElement{
-												Content: "Amazing, isn't it?",
+												Content: "Amazing, isn\u2019t it?",
 											},
 										},
 									},
@@ -2682,13 +2682,13 @@ The {plus} symbol is on a new line.
 																				},
 																				{
 																					types.StringElement{
-																						Content: "We can even force content to start on a separate line...",
+																						Content: "We can even force content to start on a separate line\u2026\u200b",
 																					},
 																					types.LineBreak{},
 																				},
 																				{
 																					types.StringElement{
-																						Content: "Amazing, isn't it?",
+																						Content: "Amazing, isn\u2019t it?",
 																					},
 																				},
 																			},

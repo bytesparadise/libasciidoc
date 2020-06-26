@@ -218,7 +218,7 @@ eve - analyzes an image to determine if it's a picture of a life form
 										Lines: [][]interface{}{
 											{
 												types.StringElement{
-													Content: "eve - analyzes an image to determine if it's a picture of a life form",
+													Content: "eve - analyzes an image to determine if it\u2019s a picture of a life form",
 												},
 											},
 										},

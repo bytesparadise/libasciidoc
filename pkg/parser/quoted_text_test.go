@@ -5096,7 +5096,6 @@ var _ = Describe("quoted texts", func() {
 							types.Paragraph{
 								Lines: [][]interface{}{
 									{
-
 										types.QuotedText{
 											Kind: types.Monospace,
 											Elements: []interface{}{
