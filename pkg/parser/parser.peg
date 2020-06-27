@@ -316,53 +316,70 @@ InlineAttributes <- "[" attrs:(GenericAttribute)* "]" {
     return types.NewAttributes(attrs.([]interface{}))								
 } 
 
-// Quoted Text attributes (attributes in front of marked up text).
-//
-// There are two forms, regular [role], and short-hand [.role#id].
-// They behave differently from each other and from other attribute lists.
-//
-// Document authors concerned with compatibility should stick to using
-// just alphanumerics, the hyphen, and the underscore, in these values,
-// and should also avoid whitespace.
-
-QuotedTextAttrs <- attrs:(QuotedTextRole / QuotedTextShortHand) {
-    return attrs, nil
+QuotedTextAttrs <- "[" attrs:(QuotedTextAttrRole? ShortHandAttr* NamedAttr*) "]" {
+    return types.NewElementAttributes(attrs)
 }
 
-// This is for [role].  Anything between the brackets is
-// considered, but it must not start with a # or dot.  Anything after a comma
-// (including the comma) is discarded.  (Future support for named attributes?)
-QuotedTextRole <- "[" role:QuotedTextRoleWord? "]" {
+QuotedTextAttrRole <- role:PositionalValue {
     return types.NewElementRole(role.(string))
-}
-
-QuotedTextRoleWord <- ![#.] role:([^\]]* {
-    return strings.SplitN(string(c.text), ",", 2)[0], nil
-}) {
-    return role, nil
-}
-
-// This is for [.role#id] (or [#id.role]).  Multiple roles can be present.  If multiple
-// ids are present only the first is retained.  Either the role or id may be omitted,
-// but at least one must be present.
-QuotedTextShortHand <- "[" attrs:( QuotedTextShortRole / QuotedTextShortID )+ "]" {
-    return attrs, nil
-}
-
-QuotedTextShortRole <- '.' role:([^.#\]]+ { 
-        return string(c.text), nil 
-    }) {
-    return types.NewElementRole(role.(string))
-}
-
-QuotedTextShortID <- '#' id:([^.#\]]+ {
-        return string(c.text), nil
-    }) {
-    return types.NewElementID(id.(string))
 }
 
 StandaloneAttributes <- attributes:(ElementAttribute)+ BlankLine* EOF { // standalone attributes, i.e., with nothing afterwards
     return types.NewAttributes(attributes)
+}
+
+ShortHandAttr <- ShortHandAttrID / ShortHandAttrOption / ShortHandAttrRole
+
+ShortHandAttrOption <- "%" option:ShortHandValue {
+    return types.NewElementOption(option.(string))
+}
+
+ShortHandAttrID <- "#" id:ShortHandValue {
+    return types.NewElementID(id.(string))
+}
+
+ShortHandAttrRole <- '.' role:ShortHandValue {
+    return types.NewElementRole(role.(string))
+}
+
+// PositionalValue is an unnamed attribute.
+PositionalValue <- ShortHandValue
+
+ShortHandValue <- ShortHandValuePlain / AttrValueSingleQuoted / AttrValueDoubleQuoted
+
+// ShortHandValuePlain is sort of like AttrValuePlain, but it also needs to exclude the characters
+// used to start a short hand role, id, or option, as well as equals signs.
+ShortHandValuePlain <- [^,\r\n"' \t.#%=\]][^,\r\n"'.#%=\]]* {
+    return string(c.text), nil
+}
+
+NamedAttr <- ("," Space*)? key:NamedAttrKey Space* "=" Space* value:NamedAttrValue Space* {
+    return types.NewElementNamedAttr(key.(string), value.(string))
+}
+
+// The spec says attributes have be alphanumeric but does not consider foreign letters.  We are more generous.
+NamedAttrKey <- [\pL0-9_][\pL0-9_-]* {
+    return string(c.text), nil
+}
+
+NamedAttrValue <- AttrValueNone / AttrValueSingleQuoted / AttrValueDoubleQuoted / AttrValuePlain
+
+AttrValuePlain <- [^,\r\n"' \t\]]+ {
+    return string(c.text), nil
+}
+
+AttrValueSingleQuoted <- "'" [^'\r\n]+ "'" {
+    return string(c.text[1:len(c.text)-1]), nil
+}
+
+AttrValueDoubleQuoted <- "\"" [^"\r\n]+ "\"" {
+    return string(c.text[1:len(c.text)-1]), nil
+}
+
+// TODO: None is magic word meant to undefine the attribute.  It's unclear what the value of this is.
+// For now we just set it to the empty string.  That should have the same effect in practice.
+AttrValueNone <- "None" {
+    return "", nil
 }
 
 // ------------------------------------------

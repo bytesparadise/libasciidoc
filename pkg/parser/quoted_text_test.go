@@ -1309,7 +1309,7 @@ var _ = Describe("quoted texts", func() {
 			})
 
 			It("role with comma truncates", func() {
-				source := "[myrole,and nothing else]_italics_"
+				source := "[myrole,and=nothing]_italics_"
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.Paragraph{
@@ -1322,6 +1322,7 @@ var _ = Describe("quoted texts", func() {
 										},
 										Attributes: types.Attributes{
 											types.AttrRole: "myrole",
+											"and":          "nothing",
 										},
 									},
 								},
@@ -1454,8 +1455,30 @@ var _ = Describe("quoted texts", func() {
 										Elements: []interface{}{
 											types.StringElement{Content: "bold"},
 										},
+									},
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+			})
+
+			It("quoted role", func() {
+				source := "['here, again']**bold**"
+				expected := types.DraftDocument{
+					Blocks: []interface{}{
+						types.Paragraph{
+							Lines: [][]interface{}{
+								{
+									types.QuotedText{
+										Kind: types.Bold,
+										Elements: []interface{}{
+											types.StringElement{Content: "bold"},
+										},
+										// NB: This will confuse the renderer.
 										Attributes: types.Attributes{
-											types.AttrRole: "",
+											types.AttrRole: "here, again",
 										},
 									},
 								},
@@ -1468,20 +1491,20 @@ var _ = Describe("quoted texts", func() {
 
 			// This demonstrates that we cannot inject malicious data in these attributes.
 			// The content is escaped by the renderer, not the parser.
-			It("embedded garbage", func() {
+			It("bad syntax", func() {
 				source := "[.<something \"wicked>]**bold**"
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.Paragraph{
 							Lines: [][]interface{}{
 								{
+									types.StringElement{
+										Content: "[.<something \"wicked>]",
+									},
 									types.QuotedText{
 										Kind: types.Bold,
 										Elements: []interface{}{
 											types.StringElement{Content: "bold"},
-										},
-										Attributes: types.Attributes{
-											types.AttrRole: "<something \"wicked>",
 										},
 									},
 								},

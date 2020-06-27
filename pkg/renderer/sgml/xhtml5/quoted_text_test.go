@@ -158,7 +158,7 @@ var _ = Describe("quoted texts", func() {
 		})
 
 		It("role with comma truncates", func() {
-			source := "[myrole,and nothing else]_italics_"
+			source := "[myrole,something=here]_italics_"
 			expected := `<div class="paragraph">
 <p><em class="myrole">italics</em></p>
 </div>`
@@ -213,16 +213,33 @@ var _ = Describe("quoted texts", func() {
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
-		// This demonstrates that we cannot inject malicious data in these attributes.
-		// Note that this is a divergence from asciidoctor, which lets you put whatever you want here.
-		It("embedded garbage", func() {
-			source := "[.<something \"wicked>]**bold**"
+		// This is a departure from asciidoctor, as we support quoting the role in first position.
+		// (Asciidoctor passes it, but does not sanitize it, leading to invalid HTML.)
+		It("quoted role", func() {
+			source := "[\"something <wicked>\"]**bold**"
 			expected := `<div class="paragraph">
-<p><strong class="&lt;something &#34;wicked&gt;">bold</strong></p>
+<p><strong class="something &lt;wicked&gt;">bold</strong></p>
 </div>`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
+		It("quoted short-hand role", func() {
+			source := "[.'something \"wicked\"']**bold**"
+			expected := `<div class="paragraph">
+<p><strong class="something &#34;wicked&#34;">bold</strong></p>
+</div>`
+			Expect(RenderXHTML(source)).To(MatchHTML(expected))
+		})
+
+		// This demonstrates that we cannot inject malicious data in these attributes.
+		// Note that this is a divergence from asciidoctor, which lets you put whatever you want here.
+		It("bad syntax", func() {
+			source := "[.<something \"wicked>]**bold**"
+			expected := `<div class="paragraph">
+<p>[.&lt;something &#34;wicked&gt;]<strong>bold</strong></p>
+</div>`
+			Expect(RenderXHTML(source)).To(MatchHTML(expected))
+		})
 	})
 
 	Context("nested content", func() {
