@@ -20,24 +20,24 @@ func (r *sgmlRenderer) renderOrderedList(ctx *renderer.Context, l types.OrderedL
 	}
 
 	err := r.orderedList.Execute(result, struct {
-		Context        *renderer.Context
-		ID             sanitized
-		Title          sanitized
-		Roles          sanitized
-		NumberingStyle string
-		ListStyle      string
-		Start          string
-		Content        sanitized
-		Items          []types.OrderedListItem
+		Context   *renderer.Context
+		ID        sanitized
+		Title     sanitized
+		Roles     sanitized
+		Style     string
+		ListStyle sanitized
+		Start     string
+		Content   sanitized
+		Items     []types.OrderedListItem
 	}{
-		ID:             r.renderElementID(l.Attributes),
-		Title:          r.renderElementTitle(l.Attributes),
-		Roles:          r.renderElementRoles(l.Attributes),
-		NumberingStyle: getNumberingStyle(l),
-		ListStyle:      r.numberingType(getNumberingStyle(l)),
-		Start:          l.Attributes.GetAsStringWithDefault(types.AttrStart, ""),
-		Content:        sanitized(content.String()),
-		Items:          l.Items,
+		ID:        r.renderElementID(l.Attributes),
+		Title:     r.renderElementTitle(l.Attributes),
+		Roles:     r.renderElementRoles(l.Attributes),
+		Style:     getNumberingStyle(l),
+		ListStyle: r.numberingType(getNumberingStyle(l)),
+		Start:     l.Attributes.GetAsStringWithDefault(types.AttrStart, ""),
+		Content:   sanitized(content.String()),
+		Items:     l.Items,
 	})
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render ordered list")
@@ -46,14 +46,14 @@ func (r *sgmlRenderer) renderOrderedList(ctx *renderer.Context, l types.OrderedL
 }
 
 func getNumberingStyle(l types.OrderedList) string {
-	if s, found := l.Attributes.GetAsString(types.AttrNumberingStyle); found {
+	if s, found := l.Attributes.GetAsString(types.AttrStyle); found {
 		return s
 	}
-	return string(l.Items[0].NumberingStyle)
+	return l.Items[0].Style
 }
 
 // this numbering style is only really relevant to HTML
-func (r *sgmlRenderer) numberingType(style string) string {
+func (r *sgmlRenderer) numberingType(style string) sanitized {
 	switch style {
 	case string(types.LowerAlpha):
 		return `a`

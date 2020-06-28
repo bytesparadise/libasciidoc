@@ -28,9 +28,9 @@ var _ = Describe("ordered lists - draft", func() {
 			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.OrderedListItem{
-						Level:          2,
-						NumberingStyle: types.LowerAlpha,
-						Elements:       elements,
+						Level:    2,
+						Style:    types.LowerAlpha,
+						Elements: elements,
 					},
 				},
 			}
@@ -42,9 +42,9 @@ var _ = Describe("ordered lists - draft", func() {
 			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.OrderedListItem{
-						Level:          1,
-						NumberingStyle: types.Arabic,
-						Elements:       elements,
+						Level:    1,
+						Style:    types.Arabic,
+						Elements: elements,
 					},
 				},
 			}
@@ -56,9 +56,9 @@ var _ = Describe("ordered lists - draft", func() {
 			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.OrderedListItem{
-						Level:          1,
-						NumberingStyle: types.LowerAlpha,
-						Elements:       elements,
+						Level:    1,
+						Style:    types.LowerAlpha,
+						Elements: elements,
 					},
 				},
 			}
@@ -70,9 +70,9 @@ var _ = Describe("ordered lists - draft", func() {
 			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.OrderedListItem{
-						Level:          1,
-						NumberingStyle: types.UpperAlpha,
-						Elements:       elements,
+						Level:    1,
+						Style:    types.UpperAlpha,
+						Elements: elements,
 					},
 				},
 			}
@@ -84,9 +84,9 @@ var _ = Describe("ordered lists - draft", func() {
 			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.OrderedListItem{
-						Level:          1,
-						NumberingStyle: types.LowerRoman,
-						Elements:       elements,
+						Level:    1,
+						Style:    types.LowerRoman,
+						Elements: elements,
 					},
 				},
 			}
@@ -98,9 +98,9 @@ var _ = Describe("ordered lists - draft", func() {
 			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.OrderedListItem{
-						Level:          1,
-						NumberingStyle: types.UpperRoman,
-						Elements:       elements,
+						Level:    1,
+						Style:    types.UpperRoman,
+						Elements: elements,
 					},
 				},
 			}
@@ -115,16 +115,16 @@ var _ = Describe("ordered lists - draft", func() {
 				Blocks: []interface{}{
 					types.OrderedListItem{
 						Attributes: types.Attributes{
-							"lowerroman": nil,
+							types.AttrStyle: types.LowerRoman,
 						},
-						Level:          1,
-						NumberingStyle: types.Arabic,
-						Elements:       elements,
+						Level:    1,
+						Style:    types.Arabic,
+						Elements: elements,
 					},
 					types.OrderedListItem{
-						Level:          1,
-						NumberingStyle: types.Arabic,
-						Elements:       elements,
+						Level:    1,
+						Style:    types.Arabic,
+						Elements: elements,
 					},
 				},
 			}
@@ -137,8 +137,8 @@ var _ = Describe("ordered lists - draft", func() {
 			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.OrderedListItem{
-						Level:          1,
-						NumberingStyle: types.Arabic,
+						Level: 1,
+						Style: types.Arabic,
 						Attributes: types.Attributes{
 							"start": "5",
 						},
@@ -155,11 +155,11 @@ var _ = Describe("ordered lists - draft", func() {
 			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.OrderedListItem{
-						Level:          1,
-						NumberingStyle: types.Arabic,
+						Level: 1,
+						Style: types.Arabic,
 						Attributes: types.Attributes{
-							"lowerroman": nil,
-							"start":      "5",
+							types.AttrStyle: types.LowerRoman,
+							"start":         "5",
 						},
 						Elements: elements,
 					},
@@ -179,8 +179,8 @@ var _ = Describe("ordered lists - draft", func() {
 			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.OrderedListItem{
-						Level:          1,
-						NumberingStyle: types.Arabic,
+						Level: 1,
+						Style: types.Arabic,
 						Attributes: types.Attributes{
 							types.AttrTitle: "Ordered, max nesting",
 						},
@@ -197,8 +197,8 @@ var _ = Describe("ordered lists - draft", func() {
 						},
 					},
 					types.OrderedListItem{
-						Level:          2,
-						NumberingStyle: types.LowerAlpha,
+						Level: 2,
+						Style: types.LowerAlpha,
 						Elements: []interface{}{
 							types.Paragraph{
 								Lines: [][]interface{}{
@@ -212,8 +212,8 @@ var _ = Describe("ordered lists - draft", func() {
 						},
 					},
 					types.OrderedListItem{
-						Level:          3,
-						NumberingStyle: types.LowerRoman,
+						Level: 3,
+						Style: types.LowerRoman,
 						Elements: []interface{}{
 							types.Paragraph{
 								Lines: [][]interface{}{
@@ -227,8 +227,8 @@ var _ = Describe("ordered lists - draft", func() {
 						},
 					},
 					types.OrderedListItem{
-						Level:          4,
-						NumberingStyle: types.UpperAlpha,
+						Level: 4,
+						Style: types.UpperAlpha,
 						Elements: []interface{}{
 							types.Paragraph{
 								Lines: [][]interface{}{
@@ -242,8 +242,8 @@ var _ = Describe("ordered lists - draft", func() {
 						},
 					},
 					types.OrderedListItem{
-						Level:          5,
-						NumberingStyle: types.UpperRoman,
+						Level: 5,
+						Style: types.UpperRoman,
 						Elements: []interface{}{
 							types.Paragraph{
 								Lines: [][]interface{}{
@@ -257,8 +257,8 @@ var _ = Describe("ordered lists - draft", func() {
 						},
 					},
 					types.OrderedListItem{
-						Level:          1,
-						NumberingStyle: types.Arabic,
+						Level: 1,
+						Style: types.Arabic,
 						Elements: []interface{}{
 							types.Paragraph{
 								Lines: [][]interface{}{
@@ -287,8 +287,8 @@ var _ = Describe("ordered lists - draft", func() {
 			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.OrderedListItem{
-						Level:          1,
-						NumberingStyle: types.Arabic,
+						Level: 1,
+						Style: types.Arabic,
 						Attributes: types.Attributes{
 							types.AttrTitle: "Ordered, max nesting",
 						},
@@ -305,8 +305,8 @@ var _ = Describe("ordered lists - draft", func() {
 						},
 					},
 					types.OrderedListItem{
-						Level:          2,
-						NumberingStyle: types.LowerAlpha,
+						Level: 2,
+						Style: types.LowerAlpha,
 						Elements: []interface{}{
 							types.Paragraph{
 								Lines: [][]interface{}{
@@ -320,8 +320,8 @@ var _ = Describe("ordered lists - draft", func() {
 						},
 					},
 					types.OrderedListItem{
-						Level:          3,
-						NumberingStyle: types.LowerRoman,
+						Level: 3,
+						Style: types.LowerRoman,
 						Elements: []interface{}{
 							types.Paragraph{
 								Lines: [][]interface{}{
@@ -335,8 +335,8 @@ var _ = Describe("ordered lists - draft", func() {
 						},
 					},
 					types.OrderedListItem{
-						Level:          4,
-						NumberingStyle: types.UpperAlpha,
+						Level: 4,
+						Style: types.UpperAlpha,
 						Elements: []interface{}{
 							types.Paragraph{
 								Lines: [][]interface{}{
@@ -350,8 +350,8 @@ var _ = Describe("ordered lists - draft", func() {
 						},
 					},
 					types.OrderedListItem{
-						Level:          5,
-						NumberingStyle: types.UpperRoman,
+						Level: 5,
+						Style: types.UpperRoman,
 						Elements: []interface{}{
 							types.Paragraph{
 								Lines: [][]interface{}{
@@ -365,8 +365,8 @@ var _ = Describe("ordered lists - draft", func() {
 						},
 					},
 					types.OrderedListItem{
-						Level:          2,
-						NumberingStyle: types.LowerAlpha,
+						Level: 2,
+						Style: types.LowerAlpha,
 						Elements: []interface{}{
 							types.Paragraph{
 								Lines: [][]interface{}{
@@ -394,8 +394,8 @@ var _ = Describe("ordered lists - draft", func() {
 			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.OrderedListItem{
-						Level:          1,
-						NumberingStyle: types.Arabic,
+						Level: 1,
+						Style: types.Arabic,
 						Elements: []interface{}{
 							types.Paragraph{
 								Lines: [][]interface{}{
@@ -407,8 +407,8 @@ var _ = Describe("ordered lists - draft", func() {
 						},
 					},
 					types.OrderedListItem{
-						Level:          1,
-						NumberingStyle: types.Arabic,
+						Level: 1,
+						Style: types.Arabic,
 						Elements: []interface{}{
 							types.Paragraph{
 								Lines: [][]interface{}{
@@ -431,8 +431,8 @@ var _ = Describe("ordered lists - draft", func() {
 			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.OrderedListItem{
-						Level:          1,
-						NumberingStyle: types.Arabic,
+						Level: 1,
+						Style: types.Arabic,
 						Elements: []interface{}{
 							types.Paragraph{
 								Lines: [][]interface{}{
@@ -444,8 +444,8 @@ var _ = Describe("ordered lists - draft", func() {
 						},
 					},
 					types.OrderedListItem{
-						Level:          1,
-						NumberingStyle: types.Arabic,
+						Level: 1,
+						Style: types.Arabic,
 						Elements: []interface{}{
 							types.Paragraph{
 								Lines: [][]interface{}{
@@ -475,8 +475,8 @@ var _ = Describe("ordered lists - draft", func() {
 			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.OrderedListItem{
-						Level:          1,
-						NumberingStyle: types.Arabic,
+						Level: 1,
+						Style: types.Arabic,
 						Elements: []interface{}{
 							types.Paragraph{
 								Lines: [][]interface{}{
@@ -488,8 +488,8 @@ var _ = Describe("ordered lists - draft", func() {
 						},
 					},
 					types.OrderedListItem{
-						Level:          2,
-						NumberingStyle: types.LowerAlpha,
+						Level: 2,
+						Style: types.LowerAlpha,
 						Elements: []interface{}{
 							types.Paragraph{
 								Lines: [][]interface{}{
@@ -501,10 +501,10 @@ var _ = Describe("ordered lists - draft", func() {
 						},
 					},
 					types.OrderedListItem{
-						Level:          3,
-						NumberingStyle: types.LowerRoman,
+						Level: 3,
+						Style: types.LowerRoman,
 						Attributes: types.Attributes{
-							"upperroman": nil,
+							types.AttrStyle: types.UpperRoman,
 						},
 						Elements: []interface{}{
 							types.Paragraph{
@@ -517,8 +517,8 @@ var _ = Describe("ordered lists - draft", func() {
 						},
 					},
 					types.OrderedListItem{
-						Level:          3,
-						NumberingStyle: types.LowerRoman,
+						Level: 3,
+						Style: types.LowerRoman,
 						Elements: []interface{}{
 							types.Paragraph{
 								Lines: [][]interface{}{
@@ -530,8 +530,8 @@ var _ = Describe("ordered lists - draft", func() {
 						},
 					},
 					types.OrderedListItem{
-						Level:          2,
-						NumberingStyle: types.LowerAlpha,
+						Level: 2,
+						Style: types.LowerAlpha,
 						Elements: []interface{}{
 							types.Paragraph{
 								Lines: [][]interface{}{
@@ -543,8 +543,8 @@ var _ = Describe("ordered lists - draft", func() {
 						},
 					},
 					types.OrderedListItem{
-						Level:          1,
-						NumberingStyle: types.Arabic,
+						Level: 1,
+						Style: types.Arabic,
 						Elements: []interface{}{
 							types.Paragraph{
 								Lines: [][]interface{}{
@@ -556,8 +556,8 @@ var _ = Describe("ordered lists - draft", func() {
 						},
 					},
 					types.OrderedListItem{
-						Level:          2,
-						NumberingStyle: types.LowerAlpha,
+						Level: 2,
+						Style: types.LowerAlpha,
 						Elements: []interface{}{
 							types.Paragraph{
 								Lines: [][]interface{}{
@@ -591,8 +591,8 @@ var _ = Describe("ordered lists - draft", func() {
 			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.OrderedListItem{
-						Level:          1,
-						NumberingStyle: types.Arabic,
+						Level: 1,
+						Style: types.Arabic,
 						Elements: []interface{}{
 							types.Paragraph{
 								Lines: [][]interface{}{
@@ -605,8 +605,8 @@ var _ = Describe("ordered lists - draft", func() {
 					},
 					types.BlankLine{},
 					types.OrderedListItem{
-						Level:          2,
-						NumberingStyle: types.LowerAlpha,
+						Level: 2,
+						Style: types.LowerAlpha,
 						Elements: []interface{}{
 							types.Paragraph{
 								Lines: [][]interface{}{
@@ -620,8 +620,8 @@ var _ = Describe("ordered lists - draft", func() {
 					types.BlankLine{},
 					types.BlankLine{},
 					types.OrderedListItem{
-						Level:          3,
-						NumberingStyle: types.LowerRoman,
+						Level: 3,
+						Style: types.LowerRoman,
 						Elements: []interface{}{
 							types.Paragraph{
 								Lines: [][]interface{}{
@@ -636,8 +636,8 @@ var _ = Describe("ordered lists - draft", func() {
 					types.BlankLine{},
 					types.BlankLine{},
 					types.OrderedListItem{
-						Level:          4,
-						NumberingStyle: types.UpperAlpha,
+						Level: 4,
+						Style: types.UpperAlpha,
 						Elements: []interface{}{
 							types.Paragraph{
 								Lines: [][]interface{}{
@@ -649,8 +649,8 @@ var _ = Describe("ordered lists - draft", func() {
 						},
 					},
 					types.OrderedListItem{
-						Level:          5,
-						NumberingStyle: types.UpperRoman,
+						Level: 5,
+						Style: types.UpperRoman,
 						Elements: []interface{}{
 							types.Paragraph{
 								Lines: [][]interface{}{
@@ -677,8 +677,8 @@ var _ = Describe("ordered lists - draft", func() {
 			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.OrderedListItem{
-						Level:          1,
-						NumberingStyle: types.Arabic,
+						Level: 1,
+						Style: types.Arabic,
 						Elements: []interface{}{
 							types.Paragraph{
 								Lines: [][]interface{}{
@@ -690,8 +690,8 @@ var _ = Describe("ordered lists - draft", func() {
 						},
 					},
 					types.OrderedListItem{
-						Level:          1,
-						NumberingStyle: types.Arabic,
+						Level: 1,
+						Style: types.Arabic,
 						Elements: []interface{}{
 							types.Paragraph{
 								Lines: [][]interface{}{
@@ -715,8 +715,8 @@ b. item 2.a`
 			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.OrderedListItem{
-						Level:          1,
-						NumberingStyle: types.Arabic,
+						Level: 1,
+						Style: types.Arabic,
 						Elements: []interface{}{
 							types.Paragraph{
 								Lines: [][]interface{}{
@@ -728,8 +728,8 @@ b. item 2.a`
 						},
 					},
 					types.OrderedListItem{
-						Level:          1,
-						NumberingStyle: types.LowerAlpha,
+						Level: 1,
+						Style: types.LowerAlpha,
 						Elements: []interface{}{
 							types.Paragraph{
 								Lines: [][]interface{}{
@@ -741,8 +741,8 @@ b. item 2.a`
 						},
 					},
 					types.OrderedListItem{
-						Level:          1,
-						NumberingStyle: types.Arabic,
+						Level: 1,
+						Style: types.Arabic,
 						Elements: []interface{}{
 							types.Paragraph{
 								Lines: [][]interface{}{
@@ -754,8 +754,8 @@ b. item 2.a`
 						},
 					},
 					types.OrderedListItem{
-						Level:          1,
-						NumberingStyle: types.LowerAlpha,
+						Level: 1,
+						Style: types.LowerAlpha,
 						Elements: []interface{}{
 							types.Paragraph{
 								Lines: [][]interface{}{
@@ -789,8 +789,8 @@ another delimited block
 			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.OrderedListItem{
-						Level:          1,
-						NumberingStyle: types.Arabic,
+						Level: 1,
+						Style: types.Arabic,
 						Elements: []interface{}{
 							types.Paragraph{
 								Lines: [][]interface{}{
@@ -824,8 +824,8 @@ another delimited block
 						},
 					},
 					types.OrderedListItem{
-						Level:          1,
-						NumberingStyle: types.Arabic,
+						Level: 1,
+						Style: types.Arabic,
 						Elements: []interface{}{
 							types.Paragraph{
 								Lines: [][]interface{}{
@@ -855,8 +855,8 @@ print("one")
 			expected := types.DraftDocument{
 				Blocks: []interface{}{
 					types.OrderedListItem{
-						Level:          1,
-						NumberingStyle: types.Arabic,
+						Level: 1,
+						Style: types.Arabic,
 						Elements: []interface{}{
 							types.Paragraph{
 								Lines: [][]interface{}{
@@ -881,8 +881,8 @@ print("one")
 						},
 					},
 					types.OrderedListItem{
-						Level:          1,
-						NumberingStyle: types.Arabic,
+						Level: 1,
+						Style: types.Arabic,
 						Elements: []interface{}{
 							types.Paragraph{
 								Lines: [][]interface{}{
@@ -935,9 +935,9 @@ var _ = Describe("ordered lists - document", func() {
 					types.OrderedList{
 						Items: []types.OrderedListItem{
 							{
-								Level:          1,
-								NumberingStyle: types.LowerAlpha,
-								Elements:       elements,
+								Level:    1,
+								Style:    types.LowerAlpha,
+								Elements: elements,
 							},
 						},
 					},
@@ -953,9 +953,9 @@ var _ = Describe("ordered lists - document", func() {
 					types.OrderedList{
 						Items: []types.OrderedListItem{
 							{
-								Level:          1,
-								NumberingStyle: types.Arabic,
-								Elements:       elements,
+								Level:    1,
+								Style:    types.Arabic,
+								Elements: elements,
 							},
 						},
 					},
@@ -971,9 +971,9 @@ var _ = Describe("ordered lists - document", func() {
 					types.OrderedList{
 						Items: []types.OrderedListItem{
 							{
-								Level:          1,
-								NumberingStyle: types.LowerAlpha,
-								Elements:       elements,
+								Level:    1,
+								Style:    types.LowerAlpha,
+								Elements: elements,
 							},
 						},
 					},
@@ -990,9 +990,9 @@ var _ = Describe("ordered lists - document", func() {
 						Items: []types.OrderedListItem{
 							{
 
-								Level:          1,
-								NumberingStyle: types.UpperAlpha,
-								Elements:       elements,
+								Level:    1,
+								Style:    types.UpperAlpha,
+								Elements: elements,
 							},
 						},
 					},
@@ -1008,9 +1008,9 @@ var _ = Describe("ordered lists - document", func() {
 					types.OrderedList{
 						Items: []types.OrderedListItem{
 							{
-								Level:          1,
-								NumberingStyle: types.LowerRoman,
-								Elements:       elements,
+								Level:    1,
+								Style:    types.LowerRoman,
+								Elements: elements,
 							},
 						},
 					},
@@ -1026,9 +1026,9 @@ var _ = Describe("ordered lists - document", func() {
 					types.OrderedList{
 						Items: []types.OrderedListItem{
 							{
-								Level:          1,
-								NumberingStyle: types.UpperRoman,
-								Elements:       elements,
+								Level:    1,
+								Style:    types.UpperRoman,
+								Elements: elements,
 							},
 						},
 					},
@@ -1044,8 +1044,8 @@ var _ = Describe("ordered lists - document", func() {
 					types.OrderedList{
 						Items: []types.OrderedListItem{
 							{
-								Level:          1,
-								NumberingStyle: types.Arabic,
+								Level: 1,
+								Style: types.Arabic,
 								Elements: []interface{}{
 									types.Paragraph{
 										Lines: [][]interface{}{
@@ -1071,18 +1071,18 @@ var _ = Describe("ordered lists - document", func() {
 				Elements: []interface{}{
 					types.OrderedList{
 						Attributes: types.Attributes{
-							types.AttrNumberingStyle: "lowerroman", // will be used during rendering
+							types.AttrStyle: "lowerroman", // will be used during rendering
 						},
 						Items: []types.OrderedListItem{
 							{
-								Level:          1,
-								NumberingStyle: types.Arabic, // will be overridden during rendering
-								Elements:       elements,
+								Level:    1,
+								Style:    types.Arabic, // will be overridden during rendering
+								Elements: elements,
 							},
 							{
-								Level:          1,
-								NumberingStyle: types.Arabic, // will be overridden during rendering
-								Elements:       elements,
+								Level:    1,
+								Style:    types.Arabic, // will be overridden during rendering
+								Elements: elements,
 							},
 						},
 					},
@@ -1092,7 +1092,7 @@ var _ = Describe("ordered lists - document", func() {
 		})
 
 		It("ordered list item with explicit start only", func() {
-			source := `[start=5]
+			source := `[start="5"]
 . item`
 			expected := types.Document{
 				Elements: []interface{}{
@@ -1102,9 +1102,9 @@ var _ = Describe("ordered lists - document", func() {
 						},
 						Items: []types.OrderedListItem{
 							{
-								Level:          1,
-								NumberingStyle: types.Arabic,
-								Elements:       elements,
+								Level:    1,
+								Style:    types.Arabic,
+								Elements: elements,
 							},
 						},
 					},
@@ -1120,14 +1120,14 @@ var _ = Describe("ordered lists - document", func() {
 				Elements: []interface{}{
 					types.OrderedList{
 						Attributes: types.Attributes{
-							types.AttrNumberingStyle: "lowerroman", // will be used during rendering
-							"start":                  "5",
+							types.AttrStyle: "lowerroman", // will be used during rendering
+							"start":         "5",
 						},
 						Items: []types.OrderedListItem{
 							{
-								Level:          1,
-								NumberingStyle: types.Arabic, // will be overridden during rendering
-								Elements:       elements,
+								Level:    1,
+								Style:    types.Arabic, // will be overridden during rendering
+								Elements: elements,
 							},
 						},
 					},
@@ -1152,8 +1152,8 @@ var _ = Describe("ordered lists - document", func() {
 						},
 						Items: []types.OrderedListItem{
 							{
-								Level:          1,
-								NumberingStyle: types.Arabic,
+								Level: 1,
+								Style: types.Arabic,
 								Elements: []interface{}{
 									types.Paragraph{
 										Lines: [][]interface{}{
@@ -1167,8 +1167,8 @@ var _ = Describe("ordered lists - document", func() {
 									types.OrderedList{
 										Items: []types.OrderedListItem{
 											{
-												Level:          2,
-												NumberingStyle: types.LowerAlpha,
+												Level: 2,
+												Style: types.LowerAlpha,
 												Elements: []interface{}{
 													types.Paragraph{
 														Lines: [][]interface{}{
@@ -1182,8 +1182,8 @@ var _ = Describe("ordered lists - document", func() {
 													types.OrderedList{
 														Items: []types.OrderedListItem{
 															{
-																Level:          3,
-																NumberingStyle: types.LowerRoman,
+																Level: 3,
+																Style: types.LowerRoman,
 																Elements: []interface{}{
 																	types.Paragraph{
 																		Lines: [][]interface{}{
@@ -1197,8 +1197,8 @@ var _ = Describe("ordered lists - document", func() {
 																	types.OrderedList{
 																		Items: []types.OrderedListItem{
 																			{
-																				Level:          4,
-																				NumberingStyle: types.UpperAlpha,
+																				Level: 4,
+																				Style: types.UpperAlpha,
 																				Elements: []interface{}{
 																					types.Paragraph{
 																						Lines: [][]interface{}{
@@ -1212,8 +1212,8 @@ var _ = Describe("ordered lists - document", func() {
 																					types.OrderedList{
 																						Items: []types.OrderedListItem{
 																							{
-																								Level:          5,
-																								NumberingStyle: types.UpperRoman,
+																								Level: 5,
+																								Style: types.UpperRoman,
 																								Elements: []interface{}{
 																									types.Paragraph{
 																										Lines: [][]interface{}{
@@ -1243,8 +1243,8 @@ var _ = Describe("ordered lists - document", func() {
 								},
 							},
 							{
-								Level:          1,
-								NumberingStyle: types.Arabic,
+								Level: 1,
+								Style: types.Arabic,
 								Elements: []interface{}{
 									types.Paragraph{
 										Lines: [][]interface{}{
@@ -1280,8 +1280,8 @@ var _ = Describe("ordered lists - document", func() {
 						},
 						Items: []types.OrderedListItem{
 							{
-								Level:          1,
-								NumberingStyle: types.Arabic,
+								Level: 1,
+								Style: types.Arabic,
 								Elements: []interface{}{
 									types.Paragraph{
 										Lines: [][]interface{}{
@@ -1295,8 +1295,8 @@ var _ = Describe("ordered lists - document", func() {
 									types.OrderedList{
 										Items: []types.OrderedListItem{
 											{
-												Level:          2,
-												NumberingStyle: types.LowerAlpha,
+												Level: 2,
+												Style: types.LowerAlpha,
 												Elements: []interface{}{
 													types.Paragraph{
 														Lines: [][]interface{}{
@@ -1310,8 +1310,8 @@ var _ = Describe("ordered lists - document", func() {
 													types.OrderedList{
 														Items: []types.OrderedListItem{
 															{
-																Level:          3,
-																NumberingStyle: types.LowerRoman,
+																Level: 3,
+																Style: types.LowerRoman,
 																Elements: []interface{}{
 																	types.Paragraph{
 																		Lines: [][]interface{}{
@@ -1325,8 +1325,8 @@ var _ = Describe("ordered lists - document", func() {
 																	types.OrderedList{
 																		Items: []types.OrderedListItem{
 																			{
-																				Level:          4,
-																				NumberingStyle: types.UpperAlpha,
+																				Level: 4,
+																				Style: types.UpperAlpha,
 																				Elements: []interface{}{
 																					types.Paragraph{
 																						Lines: [][]interface{}{
@@ -1340,8 +1340,8 @@ var _ = Describe("ordered lists - document", func() {
 																					types.OrderedList{
 																						Items: []types.OrderedListItem{
 																							{
-																								Level:          5,
-																								NumberingStyle: types.UpperRoman,
+																								Level: 5,
+																								Style: types.UpperRoman,
 																								Elements: []interface{}{
 																									types.Paragraph{
 																										Lines: [][]interface{}{
@@ -1367,8 +1367,8 @@ var _ = Describe("ordered lists - document", func() {
 												},
 											},
 											{
-												Level:          2,
-												NumberingStyle: types.LowerAlpha,
+												Level: 2,
+												Style: types.LowerAlpha,
 												Elements: []interface{}{
 													types.Paragraph{
 														Lines: [][]interface{}{
@@ -1404,8 +1404,8 @@ var _ = Describe("ordered lists - document", func() {
 					types.OrderedList{
 						Items: []types.OrderedListItem{
 							{
-								Level:          1,
-								NumberingStyle: types.Arabic,
+								Level: 1,
+								Style: types.Arabic,
 								Elements: []interface{}{
 									types.Paragraph{
 										Lines: [][]interface{}{
@@ -1417,8 +1417,8 @@ var _ = Describe("ordered lists - document", func() {
 								},
 							},
 							{
-								Level:          1,
-								NumberingStyle: types.Arabic,
+								Level: 1,
+								Style: types.Arabic,
 								Elements: []interface{}{
 									types.Paragraph{
 										Lines: [][]interface{}{
@@ -1445,8 +1445,8 @@ var _ = Describe("ordered lists - document", func() {
 					types.OrderedList{
 						Items: []types.OrderedListItem{
 							{
-								Level:          1,
-								NumberingStyle: types.Arabic,
+								Level: 1,
+								Style: types.Arabic,
 								Elements: []interface{}{
 									types.Paragraph{
 										Lines: [][]interface{}{
@@ -1458,8 +1458,8 @@ var _ = Describe("ordered lists - document", func() {
 								},
 							},
 							{
-								Level:          1,
-								NumberingStyle: types.Arabic,
+								Level: 1,
+								Style: types.Arabic,
 								Elements: []interface{}{
 									types.Paragraph{
 										Lines: [][]interface{}{
@@ -1493,8 +1493,8 @@ var _ = Describe("ordered lists - document", func() {
 					types.OrderedList{
 						Items: []types.OrderedListItem{
 							{
-								Level:          1,
-								NumberingStyle: types.Arabic,
+								Level: 1,
+								Style: types.Arabic,
 								Elements: []interface{}{
 									types.Paragraph{
 										Lines: [][]interface{}{
@@ -1506,8 +1506,8 @@ var _ = Describe("ordered lists - document", func() {
 									types.OrderedList{
 										Items: []types.OrderedListItem{
 											{
-												Level:          2,
-												NumberingStyle: types.LowerAlpha,
+												Level: 2,
+												Style: types.LowerAlpha,
 												Elements: []interface{}{
 													types.Paragraph{
 														Lines: [][]interface{}{
@@ -1518,12 +1518,12 @@ var _ = Describe("ordered lists - document", func() {
 													},
 													types.OrderedList{
 														Attributes: types.Attributes{
-															types.AttrNumberingStyle: "upperroman",
+															types.AttrStyle: "upperroman",
 														},
 														Items: []types.OrderedListItem{
 															{
-																Level:          3,
-																NumberingStyle: types.LowerRoman, // will be overridden during rendering
+																Level: 3,
+																Style: types.LowerRoman, // will be overridden during rendering
 																Elements: []interface{}{
 																	types.Paragraph{
 																		Lines: [][]interface{}{
@@ -1535,8 +1535,8 @@ var _ = Describe("ordered lists - document", func() {
 																},
 															},
 															{
-																Level:          3,
-																NumberingStyle: types.LowerRoman, // will be overridden during rendering
+																Level: 3,
+																Style: types.LowerRoman, // will be overridden during rendering
 																Elements: []interface{}{
 																	types.Paragraph{
 																		Lines: [][]interface{}{
@@ -1552,8 +1552,8 @@ var _ = Describe("ordered lists - document", func() {
 												},
 											},
 											{
-												Level:          2,
-												NumberingStyle: types.LowerAlpha,
+												Level: 2,
+												Style: types.LowerAlpha,
 												Elements: []interface{}{
 													types.Paragraph{
 														Lines: [][]interface{}{
@@ -1569,8 +1569,8 @@ var _ = Describe("ordered lists - document", func() {
 								},
 							},
 							{
-								Level:          1,
-								NumberingStyle: types.Arabic,
+								Level: 1,
+								Style: types.Arabic,
 								Elements: []interface{}{
 									types.Paragraph{
 										Lines: [][]interface{}{
@@ -1582,8 +1582,8 @@ var _ = Describe("ordered lists - document", func() {
 									types.OrderedList{
 										Items: []types.OrderedListItem{
 											{
-												Level:          2,
-												NumberingStyle: types.LowerAlpha,
+												Level: 2,
+												Style: types.LowerAlpha,
 												Elements: []interface{}{
 													types.Paragraph{
 														Lines: [][]interface{}{
@@ -1625,8 +1625,8 @@ var _ = Describe("ordered lists - document", func() {
 					types.OrderedList{
 						Items: []types.OrderedListItem{
 							{
-								Level:          1,
-								NumberingStyle: types.Arabic,
+								Level: 1,
+								Style: types.Arabic,
 								Elements: []interface{}{
 									types.Paragraph{
 										Lines: [][]interface{}{
@@ -1638,8 +1638,8 @@ var _ = Describe("ordered lists - document", func() {
 									types.OrderedList{
 										Items: []types.OrderedListItem{
 											{
-												Level:          2,
-												NumberingStyle: types.LowerAlpha,
+												Level: 2,
+												Style: types.LowerAlpha,
 												Elements: []interface{}{
 													types.Paragraph{
 														Lines: [][]interface{}{
@@ -1651,8 +1651,8 @@ var _ = Describe("ordered lists - document", func() {
 													types.OrderedList{
 														Items: []types.OrderedListItem{
 															{
-																Level:          3,
-																NumberingStyle: types.LowerRoman,
+																Level: 3,
+																Style: types.LowerRoman,
 																Elements: []interface{}{
 																	types.Paragraph{
 																		Lines: [][]interface{}{
@@ -1664,8 +1664,8 @@ var _ = Describe("ordered lists - document", func() {
 																	types.OrderedList{
 																		Items: []types.OrderedListItem{
 																			{
-																				Level:          4,
-																				NumberingStyle: types.UpperAlpha,
+																				Level: 4,
+																				Style: types.UpperAlpha,
 																				Elements: []interface{}{
 																					types.Paragraph{
 																						Lines: [][]interface{}{
@@ -1677,8 +1677,8 @@ var _ = Describe("ordered lists - document", func() {
 																					types.OrderedList{
 																						Items: []types.OrderedListItem{
 																							{
-																								Level:          5,
-																								NumberingStyle: types.UpperRoman,
+																								Level: 5,
+																								Style: types.UpperRoman,
 																								Elements: []interface{}{
 																									types.Paragraph{
 																										Lines: [][]interface{}{
@@ -1723,8 +1723,8 @@ var _ = Describe("ordered lists - document", func() {
 					types.OrderedList{
 						Items: []types.OrderedListItem{
 							{
-								Level:          1,
-								NumberingStyle: types.Arabic,
+								Level: 1,
+								Style: types.Arabic,
 								Elements: []interface{}{
 									types.Paragraph{
 										Lines: [][]interface{}{
@@ -1736,8 +1736,8 @@ var _ = Describe("ordered lists - document", func() {
 								},
 							},
 							{
-								Level:          1,
-								NumberingStyle: types.Arabic,
+								Level: 1,
+								Style: types.Arabic,
 								Elements: []interface{}{
 									types.Paragraph{
 										Lines: [][]interface{}{
@@ -1765,8 +1765,8 @@ b. item 2.a`
 					types.OrderedList{
 						Items: []types.OrderedListItem{
 							{
-								Level:          1,
-								NumberingStyle: types.Arabic,
+								Level: 1,
+								Style: types.Arabic,
 								Elements: []interface{}{
 									types.Paragraph{
 										Lines: [][]interface{}{
@@ -1778,8 +1778,8 @@ b. item 2.a`
 									types.OrderedList{
 										Items: []types.OrderedListItem{
 											{
-												Level:          2,
-												NumberingStyle: types.LowerAlpha,
+												Level: 2,
+												Style: types.LowerAlpha,
 												Elements: []interface{}{
 													types.Paragraph{
 														Lines: [][]interface{}{
@@ -1795,8 +1795,8 @@ b. item 2.a`
 								},
 							},
 							{
-								Level:          1,
-								NumberingStyle: types.Arabic,
+								Level: 1,
+								Style: types.Arabic,
 								Elements: []interface{}{
 									types.Paragraph{
 										Lines: [][]interface{}{
@@ -1808,8 +1808,8 @@ b. item 2.a`
 									types.OrderedList{
 										Items: []types.OrderedListItem{
 											{
-												Level:          2,
-												NumberingStyle: types.LowerAlpha,
+												Level: 2,
+												Style: types.LowerAlpha,
 												Elements: []interface{}{
 													types.Paragraph{
 														Lines: [][]interface{}{
@@ -1851,8 +1851,8 @@ another delimited block
 					types.OrderedList{
 						Items: []types.OrderedListItem{
 							{
-								Level:          1,
-								NumberingStyle: types.Arabic,
+								Level: 1,
+								Style: types.Arabic,
 								Elements: []interface{}{
 									types.Paragraph{
 										Lines: [][]interface{}{
@@ -1880,8 +1880,8 @@ another delimited block
 								},
 							},
 							{
-								Level:          1,
-								NumberingStyle: types.Arabic,
+								Level: 1,
+								Style: types.Arabic,
 								Elements: []interface{}{
 									types.Paragraph{
 										Lines: [][]interface{}{
@@ -1915,8 +1915,8 @@ print("one")
 					types.OrderedList{
 						Items: []types.OrderedListItem{
 							{
-								Level:          1,
-								NumberingStyle: types.Arabic,
+								Level: 1,
+								Style: types.Arabic,
 								Elements: []interface{}{
 									types.Paragraph{
 										Lines: [][]interface{}{},
@@ -1932,8 +1932,8 @@ print("one")
 								},
 							},
 							{
-								Level:          1,
-								NumberingStyle: types.Arabic,
+								Level: 1,
+								Style: types.Arabic,
 								Elements: []interface{}{
 									types.Paragraph{
 										Lines: [][]interface{}{},

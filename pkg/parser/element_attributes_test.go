@@ -212,8 +212,8 @@ a paragraph`
 					source := `. a title
 a list item!`
 					expected := types.OrderedListItem{
-						Level:          1,
-						NumberingStyle: types.Arabic,
+						Level: 1,
+						Style: types.Arabic,
 						Elements: []interface{}{
 							types.Paragraph{
 								Lines: [][]interface{}{

@@ -61,8 +61,6 @@ const (
 	AttrCheckStyle = "checkstyle"
 	// AttrStart the `start` attribute in an ordered list
 	AttrStart = "start"
-	// AttrNumberingStyle the numbering style of items in a list
-	AttrNumberingStyle = "numberingStyle"
 	// AttrLevelOffset the `leveloffset` attribute used in file inclusions
 	AttrLevelOffset = "leveloffset"
 	// AttrLineRanges the `lines` attribute used in file inclusions

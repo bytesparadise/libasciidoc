@@ -644,28 +644,20 @@ type OrderedList struct {
 
 var _ List = &OrderedList{}
 
-// NumberingStyle the type of numbering for items in an ordered list
-type NumberingStyle string
-
 const (
-	// UnknownNumberingStyle the default, unknown type
-	UnknownNumberingStyle NumberingStyle = "unknown"
 	// Arabic the arabic numbering (1, 2, 3, etc.)
-	Arabic NumberingStyle = "arabic"
-	// Decimal the decimal numbering (01, 02, 03, etc.)
-	Decimal NumberingStyle = "decimal"
+	Arabic = "arabic"
 	// LowerAlpha the lower-alpha numbering (a, b, c, etc.)
-	LowerAlpha NumberingStyle = "loweralpha"
+	LowerAlpha = "loweralpha"
 	// UpperAlpha the upper-alpha numbering (A, B, C, etc.)
-	UpperAlpha NumberingStyle = "upperalpha"
+	UpperAlpha = "upperalpha"
 	// LowerRoman the lower-roman numbering (i, ii, iii, etc.)
-	LowerRoman NumberingStyle = "lowerroman"
+	LowerRoman = "lowerroman"
 	// UpperRoman the upper-roman numbering (I, II, III, etc.)
-	UpperRoman NumberingStyle = "upperroman"
-	// LowerGreek the lower-greek numbering (alpha, beta, etc.)
-	LowerGreek NumberingStyle = "lowergreek"
-	// UpperGreek the upper-roman numbering (Alpha, Beta, etc.)
-	UpperGreek NumberingStyle = "uppergreek"
+	UpperRoman = "upperroman"
+
+	// Other styles are possible, but "uppergreek", "lowergreek", but aren't
+	// generated automatically.
 )
 
 // NewOrderedList initializes a new ordered list with the given item
@@ -685,19 +677,19 @@ func rearrangeListAttributes(attributes Attributes) Attributes {
 	for k := range attributes {
 		switch k {
 		case "upperalpha":
-			attributes[AttrNumberingStyle] = "upperalpha"
+			attributes[AttrStyle] = "upperalpha"
 			delete(attributes, k)
 		case "upperroman":
-			attributes[AttrNumberingStyle] = "upperroman"
+			attributes[AttrStyle] = "upperroman"
 			delete(attributes, k)
 		case "lowerroman":
-			attributes[AttrNumberingStyle] = "lowerroman"
+			attributes[AttrStyle] = "lowerroman"
 			delete(attributes, k)
 		case "loweralpha":
-			attributes[AttrNumberingStyle] = "loweralpha"
+			attributes[AttrStyle] = "loweralpha"
 			delete(attributes, k)
 		case "arabic":
-			attributes[AttrNumberingStyle] = "arabic"
+			attributes[AttrStyle] = "arabic"
 			delete(attributes, k)
 		}
 
@@ -717,10 +709,10 @@ func (l *OrderedList) LastItem() ListItem {
 
 // OrderedListItem the structure for the ordered list items
 type OrderedListItem struct {
-	Attributes     Attributes
-	Level          int
-	NumberingStyle NumberingStyle
-	Elements       []interface{} // TODO: rename to `Blocks`?
+	Attributes Attributes
+	Level      int
+	Style      string
+	Elements   []interface{} // TODO: rename to `Blocks`?
 }
 
 // making sure that the `ListItem` interface is implemented by `OrderedListItem`
@@ -734,10 +726,10 @@ func NewOrderedListItem(prefix OrderedListItemPrefix, elements []interface{}, at
 		return OrderedListItem{}, errors.Wrapf(err, "failed to initialize an OrderedListItem element")
 	}
 	return OrderedListItem{
-		Attributes:     attrs,
-		NumberingStyle: prefix.NumberingStyle,
-		Level:          prefix.Level,
-		Elements:       elements,
+		Attributes: attrs,
+		Style:      prefix.Style,
+		Level:      prefix.Level,
+		Elements:   elements,
 	}, nil
 }
 
@@ -753,15 +745,15 @@ func (i *OrderedListItem) AddElement(element interface{}) {
 
 // OrderedListItemPrefix the prefix used to construct an OrderedListItem
 type OrderedListItemPrefix struct {
-	NumberingStyle NumberingStyle
-	Level          int
+	Style string
+	Level int
 }
 
 // NewOrderedListItemPrefix initializes a new OrderedListItemPrefix
-func NewOrderedListItemPrefix(s NumberingStyle, l int) (OrderedListItemPrefix, error) {
+func NewOrderedListItemPrefix(s string, l int) (OrderedListItemPrefix, error) {
 	return OrderedListItemPrefix{
-		NumberingStyle: s,
-		Level:          l,
+		Style: s,
+		Level: l,
 	}, nil
 }
 
@@ -962,7 +954,7 @@ var _ List = &LabeledList{}
 // NewLabeledList returns a new LabeledList with 1 item
 // The attributes of the given item are moved to the resulting list
 func NewLabeledList(item LabeledListItem) *LabeledList {
-	attrs := rearrangeListAttributes(item.Attributes)
+	attrs := item.Attributes
 	item.Attributes = nil
 	result := LabeledList{
 		Attributes: attrs, // move the item's attributes to the list level
