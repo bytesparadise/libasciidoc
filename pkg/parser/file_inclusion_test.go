@@ -2166,125 +2166,39 @@ include::../../test/includes/chapter-a.adoc[]
 
 			Context("missing file to include", func() {
 
-				It("should replace with error message if directory does not exist in standalone block", func() {
-					// setup logger to write in a buffer so we can check the output
-					console, reset := ConfigureLogger()
-					defer reset()
+				It("should fail with error message if directory does not exist in standalone block", func() {
 					source := `include::{unknown}/unknown.adoc[leveloffset=+1]`
-					expected := types.DraftDocument{
-						Blocks: []interface{}{
-							types.Paragraph{
-								Lines: [][]interface{}{
-									{
-										types.StringElement{
-											Content: "Unresolved directive in test.adoc - include::{unknown}/unknown.adoc[leveloffset=+1]",
-										},
-									},
-								},
-							},
-						},
-					}
-					Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
-					// verify error in logs
-					Expect(console).To(ContainMessageWithLevel(log.ErrorLevel, "failed to include content of '{unknown}/unknown.adoc' in 'test.adoc'"))
+					_, err := ParseDraftDocument(source)
+					Expect(err).To(MatchError("Unresolved directive in test.adoc - include::{unknown}/unknown.adoc[leveloffset=+1]"))
 				})
 
-				It("should replace with error message if file is missing in standalone block", func() {
-					// setup logger to write in a buffer so we can check the output
-					console, reset := ConfigureLogger()
-					defer reset()
-
+				It("should fail with error message if file is missing in standalone block", func() {
 					source := `include::../../test/includes/unknown.adoc[leveloffset=+1]`
-					expected := types.DraftDocument{
-						Blocks: []interface{}{
-							types.Paragraph{
-								Lines: [][]interface{}{
-									{
-										types.StringElement{
-											Content: "Unresolved directive in test.adoc - include::../../test/includes/unknown.adoc[leveloffset=+1]",
-										},
-									},
-								},
-							},
-						},
-					}
-					Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
-					// verify error in logs
-					Expect(console).To(ContainMessageWithLevel(log.ErrorLevel, "failed to include content of '../../test/includes/unknown.adoc' in 'test.adoc'"))
+					_, err := ParseDraftDocument(source)
+					Expect(err).To(MatchError("Unresolved directive in test.adoc - include::../../test/includes/unknown.adoc[leveloffset=+1]"))
 				})
 
-				It("should replace with error message if file with attribute in path is not resolved", func() {
-					// setup logger to write in a buffer so we can check the output
-					console, reset := ConfigureLogger()
-					defer reset()
-
+				It("should fail with error message if file with attribute in path is not resolved", func() {
 					source := `include::{includedir}/unknown.adoc[leveloffset=+1]`
-					expected := types.DraftDocument{
-						Blocks: []interface{}{
-							types.Paragraph{
-								Lines: [][]interface{}{
-									{
-										types.StringElement{
-											Content: "Unresolved directive in test.adoc - include::{includedir}/unknown.adoc[leveloffset=+1]",
-										},
-									},
-								},
-							},
-						},
-					}
-					Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
-					// verify error in logs
-					Expect(console).To(ContainMessageWithLevel(log.ErrorLevel, "failed to include content of '{includedir}/unknown.adoc' in 'test.adoc'"))
+					_, err := ParseDraftDocument(source)
+					Expect(err).To(MatchError("Unresolved directive in test.adoc - include::{includedir}/unknown.adoc[leveloffset=+1]"))
 				})
 
-				It("should replace with error message if file is missing in delimited block", func() {
+				It("should fail with error message if file is missing in delimited block", func() {
 					// setup logger to write in a buffer so we can check the output
-					console, reset := ConfigureLogger()
-					defer reset()
-
 					source := `----
 include::../../test/includes/unknown.adoc[leveloffset=+1]
 ----`
-					expected := types.DraftDocument{
-						Blocks: []interface{}{
-							types.DelimitedBlock{
-								Kind: types.Listing,
-								Elements: []interface{}{
-									types.VerbatimLine{
-										Content: "Unresolved directive in test.adoc - include::../../test/includes/unknown.adoc[leveloffset=+1]",
-									},
-								},
-							},
-						},
-					}
-					Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
-					// verify error in logs
-					Expect(console).To(ContainMessageWithLevel(log.ErrorLevel, "failed to include content of '../../test/includes/unknown.adoc' in 'test.adoc'"))
+					_, err := ParseDraftDocument(source)
+					Expect(err).To(MatchError("Unresolved directive in test.adoc - include::../../test/includes/unknown.adoc[leveloffset=+1]"))
 				})
 
-				It("should replace with error message if file with attribute in path is not resolved", func() {
-					// setup logger to write in a buffer so we can check the output
-					console, reset := ConfigureLogger()
-					defer reset()
-
+				It("should fail with error message if file with attribute in path is not resolved", func() {
 					source := `----
 include::{includedir}/unknown.adoc[leveloffset=+1]
 ----`
-					expected := types.DraftDocument{
-						Blocks: []interface{}{
-							types.DelimitedBlock{
-								Kind: types.Listing,
-								Elements: []interface{}{
-									types.VerbatimLine{
-										Content: "Unresolved directive in test.adoc - include::{includedir}/unknown.adoc[leveloffset=+1]",
-									},
-								},
-							},
-						},
-					}
-					Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
-					// verify error in logs
-					Expect(console).To(ContainMessageWithLevel(log.ErrorLevel, "failed to include content of '{includedir}/unknown.adoc' in 'test.adoc'"))
+					_, err := ParseDraftDocument(source)
+					Expect(err).To(MatchError("Unresolved directive in test.adoc - include::{includedir}/unknown.adoc[leveloffset=+1]"))
 				})
 			})
 
