@@ -94,6 +94,26 @@ and a standalone paragraph`
 		Expect(RenderHTML(source)).To(MatchHTML(expected))
 	})
 
+	It("simple unordered list with style id, title and role", func() {
+		source := `.mytitle
+[#foo]
+[disc.myrole]
+* item 1
+* item 2`
+		expected := `<div id="foo" class="ulist disc myrole">
+<div class="title">mytitle</div>
+<ul class="disc">
+<li>
+<p>item 1</p>
+</li>
+<li>
+<p>item 2</p>
+</li>
+</ul>
+</div>`
+		Expect(RenderHTML(source)).To(MatchHTML(expected))
+	})
+
 	It("simple unordered list with continuation", func() {
 		source := `* item 1
 +
@@ -267,6 +287,27 @@ var _ = Describe("checklists", func() {
 </li>
 <li>
 <p>normal list item</p>
+</li>
+</ul>
+</div>`
+		Expect(RenderHTML(source)).To(MatchHTML(expected))
+	})
+
+	It("simple checklist with style id, title and role", func() {
+		// style is overridden to checklist on ul, but div keeps it (asciidoctor compat)
+		source := `.mytitle
+[#foo]
+[disc.myrole]
+* [x] item 1
+* [x] item 2`
+		expected := `<div id="foo" class="ulist checklist disc myrole">
+<div class="title">mytitle</div>
+<ul class="checklist">
+<li>
+<p>&#10003; item 1</p>
+</li>
+<li>
+<p>&#10003; item 2</p>
 </li>
 </ul>
 </div>`

@@ -31,6 +31,7 @@ func (r *sgmlRenderer) renderUnorderedList(ctx *renderer.Context, l types.Unorde
 		ID        sanitized
 		Title     sanitized
 		Roles     sanitized
+		Style     sanitized
 		Checklist bool
 		Items     []types.UnorderedListItem
 		Content   sanitized
@@ -42,6 +43,7 @@ func (r *sgmlRenderer) renderUnorderedList(ctx *renderer.Context, l types.Unorde
 		Items:     l.Items,
 		Content:   sanitized(content.String()),
 		Roles:     r.renderElementRoles(l.Attributes),
+		Style:     r.renderElementStyle(l.Attributes),
 	})
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render unordered list")
