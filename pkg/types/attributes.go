@@ -91,6 +91,10 @@ const (
 	AttrIconFlip = "flip"
 	// AttrUnicode local libasciidoc attribute to encode output as UTF-i instead of ASCII.
 	AttrUnicode = "unicode"
+	// AttrOptions element options (boolean, comma separated)
+	AttrOptions = "options"
+	// AttrOpts alias for AttrOptions
+	AttrOpts = "opts"
 )
 
 // NewElementID initializes a new attribute map with a single entry for the ID using the given value
@@ -100,6 +104,18 @@ func NewElementID(id string) (Attributes, error) {
 		AttrID:       id,
 		AttrCustomID: true,
 	}, nil
+}
+
+// NewElementOption sets a boolean option.
+func NewElementOption(opt string) (Attributes, error) {
+	return Attributes{AttrOptions: opt}, nil
+}
+
+func NewElementNamedAttr(key string, value string) (Attributes, error) {
+	if key == AttrOpts { // Handle the alias
+		key = AttrOptions
+	}
+	return Attributes{key: value}, nil
 }
 
 // NewInlineElementID initializes a new attribute map with a single entry for the ID using the given value
@@ -388,22 +404,51 @@ func NewAttributes(attributes interface{}) (Attributes, error) {
 	}
 }
 
-// NewQuotedTextAttributes retrieves the attributes for QuotedText elements.
-// We always pass in an array of Attributes.  They may only const of
-// AttrRole or AttrID elements.  We coalesce the AttrRole elements into a
-// single array. We keep only the first AttrID element.
-func NewQuotedTextAttributes(attributes interface{}) (Attributes, error) {
+// NewElementAttributes retrieves the attributes for elements.
+// We always pass in an array of Attributes.  Special handling for certain attributes:
+//
+// AttrID - these are strings, the first occurrence of this wins, and we set AttrCustomID
+// AttrRole - these are strings, we append them into an array
+// AttrOptions - comma separated list, we split and put into a map
+
+func unwrapAttributesList(l []interface{}) ([]Attributes, error) {
+	var result []Attributes
+	for _, v := range l {
+		if v == nil {
+			continue
+		}
+		switch v := v.(type) {
+		case Attributes:
+			result = append(result, v)
+		case []interface{}:
+			inner, err := unwrapAttributesList(v)
+			if err != nil {
+				return nil, err
+			}
+			result = append(result, inner...)
+		default:
+			return nil, fmt.Errorf("unknown attribute type %T", v)
+		}
+	}
+	return result, nil
+}
+
+func NewElementAttributes(attributes interface{}) (Attributes, error) {
 	if attributes == nil {
 		return nil, nil
 	}
+
 	switch attrs := attributes.(type) {
 	case Attributes:
 		return attrs, nil
 	case []interface{}:
-		// this is never empty, because we always have at least a role.
+		all, err := unwrapAttributesList(attrs)
+		if err != nil {
+			return nil, err
+		}
 		result := Attributes{}
-		for _, a := range attrs {
-			for k, v := range a.(Attributes) {
+		for _, a := range all {
+			for k, v := range a {
 				switch k {
 				case AttrID:
 					// The first ID set wins.
@@ -413,13 +458,32 @@ func NewQuotedTextAttributes(attributes interface{}) (Attributes, error) {
 					}
 				case AttrRole:
 					result.AppendString(AttrRole, v.(string)) // grammar only generates string values
+				case AttrOptions, AttrOpts:
+					if !result.Has(AttrOptions) {
+						result[AttrOptions] = map[string]bool{}
+					}
+					m := result[AttrOptions].(map[string]bool)
+					switch v := v.(type) {
+					case string:
+						for _, o := range strings.Split(v, ",") {
+							m[o] = true
+						}
+					case map[string]bool:
+						for o := range v {
+							m[o] = v[o]
+						}
+					}
+				default:
+					result[k] = v
 				}
 			}
+		}
+		if len(result) == 0 {
+			return nil, nil
 		}
 		return result, nil
 	default:
 		return nil, fmt.Errorf("unexpected type of attributes: '%T'", attrs)
-
 	}
 }
 

@@ -1798,7 +1798,7 @@ const (
 
 // NewQuotedText initializes a new `QuotedText` from the given kind and content
 func NewQuotedText(kind QuotedTextKind, attributes interface{}, elements ...interface{}) (QuotedText, error) {
-	attrs, err := NewQuotedTextAttributes(attributes)
+	attrs, err := NewElementAttributes(attributes)
 	if err != nil {
 		return QuotedText{}, errors.Wrap(err, "failed to initialize a QuotedText element")
 	}
