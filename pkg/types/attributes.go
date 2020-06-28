@@ -63,8 +63,6 @@ const (
 	AttrStart = "start"
 	// AttrNumberingStyle the numbering style of items in a list
 	AttrNumberingStyle = "numberingStyle"
-	// AttrQandA the `qanda` attribute for Q&A labeled lists
-	AttrQandA = "qanda"
 	// AttrLevelOffset the `leveloffset` attribute used in file inclusions
 	AttrLevelOffset = "leveloffset"
 	// AttrLineRanges the `lines` attribute used in file inclusions
@@ -95,6 +93,8 @@ const (
 	AttrOptions = "options"
 	// AttrOpts alias for AttrOptions
 	AttrOpts = "opts"
+	// AttrStyle block or list style
+	AttrStyle = "style"
 )
 
 // NewElementID initializes a new attribute map with a single entry for the ID using the given value
@@ -138,6 +138,11 @@ func NewElementRole(role string) (Attributes, error) {
 	return Attributes{
 		AttrRole: role,
 	}, nil
+}
+
+// NewElementStyle initializes a new attribute map with a single entry for the style
+func NewElementStyle(style string) (Attributes, error) {
+	return Attributes{AttrStyle: style}, nil
 }
 
 // NewAdmonitionAttribute initializes a new attribute map with a single entry for the admonition kind using the given value
@@ -269,6 +274,15 @@ func (a Attributes) Add(attrs interface{}) Attributes {
 func (a Attributes) Has(key string) bool {
 	_, ok := a[key]
 	return ok
+}
+
+// HasOption returns true if the option is set.
+func (a Attributes) HasOption(key string) bool {
+	if opts, ok := a[AttrOptions].(map[string]bool); ok {
+		key = strings.TrimPrefix(key, "%")
+		return opts[key]
+	}
+	return false
 }
 
 // AppendString sets the value as a singular string value if it did not exist yet,

@@ -48,16 +48,15 @@ func (r *sgmlRenderer) renderLabeledList(ctx *renderer.Context, l types.LabeledL
 }
 
 func (r *sgmlRenderer) getLabeledListTmpl(l types.LabeledList) (*textTemplate, *textTemplate, error) {
-	if layout, ok := l.Attributes["layout"]; ok {
+	if layout, ok := l.Attributes[types.AttrStyle]; ok {
 		switch layout {
+		case "qanda":
+			return r.qAndAList, r.qAndAListItem, nil
 		case "horizontal":
 			return r.labeledListHorizontal, r.labeledListHorizontalItem, nil
 		default:
 			return nil, nil, errors.Errorf("unsupported labeled list layout: %s", layout)
 		}
-	}
-	if l.Attributes.Has(types.AttrQandA) {
-		return r.qAndAList, r.qAndAListItem, nil
 	}
 	return r.labeledList, r.labeledListItem, nil
 }

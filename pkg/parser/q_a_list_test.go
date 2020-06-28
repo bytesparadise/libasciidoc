@@ -22,7 +22,7 @@ What is the answer to the Ultimate Question?:: 42`
 				types.LabeledList{
 					Attributes: types.Attributes{
 						types.AttrTitle: "Q&A",
-						types.AttrQandA: nil,
+						types.AttrStyle: "qanda",
 					},
 					Items: []types.LabeledListItem{
 						{
@@ -69,4 +69,69 @@ What is the answer to the Ultimate Question?:: 42`
 		}
 		Expect(ParseDocument(source)).To(MatchDocument(expected))
 	})
+
+	It("q and a with role and id", func() {
+		source := `.Q&A
+[qanda#quiz]
+[.key.role2]
+What is libasciidoc?::
+	An implementation of the AsciiDoc processor in Golang.
+What is the answer to the Ultimate Question?:: 42`
+
+		expected := types.Document{
+			Elements: []interface{}{
+				types.LabeledList{
+					Attributes: types.Attributes{
+						types.AttrTitle:    "Q&A",
+						types.AttrStyle:    "qanda",
+						types.AttrID:       "quiz",
+						types.AttrCustomID: true,
+						types.AttrRole:     []string{"key", "role2"},
+					},
+					Items: []types.LabeledListItem{
+						{
+							Level: 1,
+							Term: []interface{}{
+								types.StringElement{
+									Content: "What is libasciidoc?",
+								},
+							},
+							Elements: []interface{}{
+								types.Paragraph{
+									Lines: [][]interface{}{
+										{
+											types.StringElement{
+												Content: "An implementation of the AsciiDoc processor in Golang.",
+											},
+										},
+									},
+								},
+							},
+						},
+						{
+							Level: 1,
+							Term: []interface{}{
+								types.StringElement{
+									Content: "What is the answer to the Ultimate Question?",
+								},
+							},
+							Elements: []interface{}{
+								types.Paragraph{
+									Lines: [][]interface{}{
+										{
+											types.StringElement{
+												Content: "42",
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		}
+		Expect(ParseDocument(source)).To(MatchDocument(expected))
+	})
+
 })

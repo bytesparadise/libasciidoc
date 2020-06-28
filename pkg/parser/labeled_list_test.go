@@ -108,7 +108,7 @@ Item1:: foo`
 				Blocks: []interface{}{
 					types.LabeledListItem{
 						Attributes: types.Attributes{
-							"layout": "horizontal",
+							"style": "horizontal",
 						},
 						Level: 1,
 						Term: []interface{}{
@@ -1109,7 +1109,7 @@ Item1:: foo`
 				Elements: []interface{}{
 					types.LabeledList{
 						Attributes: types.Attributes{
-							"layout": "horizontal",
+							"style": "horizontal",
 						},
 						Items: []types.LabeledListItem{
 							{

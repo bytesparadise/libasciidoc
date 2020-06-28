@@ -11,7 +11,7 @@ import (
 
 func (r *sgmlRenderer) renderParagraph(ctx *renderer.Context, p types.Paragraph) (string, error) {
 	result := &strings.Builder{}
-	hardbreaks := p.Attributes.Has(types.AttrHardBreaks) || ctx.Attributes.Has(types.DocumentAttrHardBreaks)
+	hardbreaks := p.Attributes.Has(types.AttrHardBreaks) || ctx.Attributes.Has(types.DocumentAttrHardBreaks) || p.Attributes.HasOption(types.AttrHardBreaks)
 	content, err := r.renderLines(ctx, p.Lines, r.withHardBreaks(hardbreaks))
 
 	if err != nil {

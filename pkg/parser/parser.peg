@@ -205,14 +205,13 @@ Attributes <- attrs:(ElementAttribute)+ BlankLine* {
 ElementAttribute <- &("[" / "." / "#") // skip if the content does not start with one of those characters
     attr:(ElementID / 
         ElementTitle / 
-        ElementRole / 
+        ElementShortHandAttributes /
         LiteralAttribute / 
         SourceAttributes / 
         QuoteAttributes / 
         VerseAttributes / 
         AdmonitionMarkerAttribute / 
-        HorizontalLayout / 
-        PassthroughBlockAttribute / 
+        PassthroughBlockAttribute /
         AttributeGroup) {
     return attr, nil // avoid returning something like `[]interface{}{attr, EOL}`
 }
@@ -221,8 +220,6 @@ ElementAttribute <- &("[" / "." / "#") // skip if the content does not start wit
 MasqueradeAttribute <- QuoteAttributes / VerseAttributes
 
 ElementID <- "[[" id:(ID) "]]" Space* EOL {
-    return types.NewElementID(id.(string))
-} / "[#" id:(ID) "]"  Space* EOL {
     return types.NewElementID(id.(string))
 }
 
@@ -240,12 +237,30 @@ ElementTitleContent <- [\pL0-9][^\r\n<>]* { // "<" and ">" characters are not al
     return string(c.text), nil
 }
 
-// a role attached to an element, such as a ImageBlock
-// a role starts is wrapped in "[. ]" 
-ElementRole <- "[." role:([\pL0-9] [^\]\r\n]* {
-    return string(c.text), nil
-}) "]" Space* EOL {
-    return types.NewElementRole(role.(string))
+// These are elements that don't start with a leading positional attribute, except
+// perhaps the shorthand attributes.
+ElementShortHandAttributes <- "[" attrs:(ShortHandAttr* NamedAttr*) "]" Space* EOL {
+    return types.NewElementAttributes(attrs)
+}
+
+BlockAttrs <- BlockAttrList / ElementTitle / ElementID
+
+// All blocks have style as their first element, and no block has more than 3 positional elements.
+// This allows us to keep the grammar simpler, and use context to determine what the second and third attributes are.
+BlockAttrList <- "[" attrs:(BlockAttrStyle? ShortHandAttr* BlockAttrPositional2? BlockAttrPositional3? NamedAttr*) "]" EOL {
+    return types.NewElementAttributes(attrs)
+}
+
+BlockAttrStyle <- style:PositionalValue {
+    return types.NewElementStyle(style.(string))
+}
+
+BlockAttrPositional2 <- "," value:PositionalValue {
+    return types.NewElementNamedAttr("positional-2", value.(string))
+}
+
+BlockAttrPositional3 <- "," value:PositionalValue {
+    return types.NewElementNamedAttr("positional-3", value.(string))
 }
 
 LiteralAttribute <- "[literal]" Space* Newline {
@@ -294,10 +309,6 @@ AttributeValue <- value:([^\r\n=,\]]+) {
 
 StandaloneAttributeValue <- value:([^\r\n=,\]]+) !"=" { // standalone attribute value cannot be followed by a `=`, otherwise it causes troubles for standalone values (eg: in images)
     return string(c.text), nil
-}
-
-HorizontalLayout <- "[horizontal]" Space* EOL {
-    return types.Attributes{"layout": "horizontal"}, nil
 }
 
 QuoteAttributes <- "[quote" Space* ","? author:(QuoteAttribute)? ","? title:(QuoteAttribute)? "]" Space* EOL {
@@ -802,8 +813,8 @@ UnorderedListItemContent <- elements:(ListParagraph+) { // Another list or a lit
 // ------------------------------------------
 // Labeled List Items
 // ------------------------------------------
-LabeledListItem <- attributes:(Attributes)? term:(VerbatimLabeledListItemTerm) separator:(LabeledListItemSeparator) description:(LabeledListItemDescription)? {
-    return types.NewLabeledListItem(len(separator.(string)) - 1, term.([]interface{}), description, attributes)
+LabeledListItem <- attrs:(BlockAttrs)* term:(VerbatimLabeledListItemTerm) separator:(LabeledListItemSeparator) description:(LabeledListItemDescription)? {
+    return types.NewLabeledListItem(len(separator.(string)) - 1, term.([]interface{}), description, attrs)
 }
 
 LabeledListItemPrefix <- VerbatimLabeledListItemTerm LabeledListItemSeparator
