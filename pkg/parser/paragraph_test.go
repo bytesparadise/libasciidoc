@@ -189,7 +189,64 @@ baz`
 					Blocks: []interface{}{
 						types.Paragraph{
 							Attributes: types.Attributes{
-								types.AttrHardBreaks: nil,
+								types.AttrOptions: map[string]bool{"hardbreaks": true},
+							},
+							Lines: [][]interface{}{
+								{
+									types.StringElement{Content: "foo"},
+								},
+								{
+									types.StringElement{Content: "bar"},
+								},
+								{
+									types.StringElement{Content: "baz"},
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDraftDocument(source)).To(Equal(expected))
+			})
+
+			It("with paragraph multiple attribute", func() {
+				source := `[%hardbreaks.role1.role2]
+[#anchor]
+foo
+baz`
+				expected := types.DraftDocument{
+					Blocks: []interface{}{
+						types.Paragraph{
+							Attributes: types.Attributes{
+								types.AttrCustomID: true,
+								types.AttrID:       "anchor",
+								types.AttrRole:     []string{"role1", "role2"},
+								types.AttrOptions:  map[string]bool{"hardbreaks": true},
+							},
+							Lines: [][]interface{}{
+								{
+									types.StringElement{Content: "foo"},
+								},
+								{
+									types.StringElement{Content: "baz"},
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDraftDocument(source)).To(Equal(expected))
+			})
+
+			It("with paragraph roles and attribute", func() {
+				source := `[.role1%hardbreaks.role2]
+foo
+bar
+baz`
+				expected := types.DraftDocument{
+					Blocks: []interface{}{
+						types.Paragraph{
+							Attributes: types.Attributes{
+								types.AttrOptions: map[string]bool{"hardbreaks": true},
+								types.AttrRole:    []string{"role1", "role2"},
 							},
 							Lines: [][]interface{}{
 								{

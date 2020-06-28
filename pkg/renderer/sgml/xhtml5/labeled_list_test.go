@@ -503,6 +503,29 @@ What is the answer to the Ultimate Question?:: 42`
 </div>`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
+
+		It("q and a with roles, title", func() {
+			source := `.Q&A
+[qanda#quiz.role1.role2]
+What is libasciidoc?::
+	An implementation of the AsciiDoc processor in Golang.
+What is the answer to the Ultimate Question?:: 42`
+
+			expected := `<div id="quiz" class="qlist qanda role1 role2">
+<div class="title">Q&amp;A</div>
+<ol>
+<li>
+<p><em>What is libasciidoc?</em></p>
+<p>An implementation of the AsciiDoc processor in Golang.</p>
+</li>
+<li>
+<p><em>What is the answer to the Ultimate Question?</em></p>
+<p>42</p>
+</li>
+</ol>
+</div>`
+			Expect(RenderXHTML(source)).To(MatchHTML(expected))
+		})
 	})
 
 	Context("attach to labeled list item ancestor", func() {
