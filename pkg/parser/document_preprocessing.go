@@ -37,19 +37,7 @@ func parseDraftDocument(r io.Reader, levelOffsets []levelOffset, config configur
 	}
 	doc.Blocks, err = processFileInclusions(doc.Blocks, attrs, levelOffsets, config, options...)
 	if err != nil {
-		return types.DraftDocument{
-			Blocks: []interface{}{
-				types.Paragraph{
-					Lines: [][]interface{}{
-						{
-							types.StringElement{
-								Content: err.Error(),
-							},
-						},
-					},
-				},
-			},
-		}, nil
+		return types.DraftDocument{}, err
 	}
 	if log.IsLevelEnabled(log.DebugLevel) {
 		log.Debug("draft document:")
@@ -71,10 +59,7 @@ func processFileInclusions(elements []interface{}, attrs types.AttributesWithOve
 		case types.FileInclusion:
 			// read the file and include its content
 			embedded, err := parseFileToInclude(e, attrs, levelOffsets, config, options...)
-			if errr, ok := err.(FileInclusionError); ok {
-				log.Errorf("failed to include content of '%s' in '%s'", e.Location, errr.Filename)
-				return nil, err
-			} else if err != nil {
+			if err != nil {
 				return nil, err
 			}
 			result = append(result, embedded.Blocks...)
@@ -83,12 +68,7 @@ func processFileInclusions(elements []interface{}, attrs types.AttributesWithOve
 				// use a new var to avoid overridding the current one which needs to stay as-is for the rest of the doc parsing
 				append(options, Entrypoint("VerbatimDocument"))...)
 			if err != nil {
-				// do not fail but retain the error message
-				elmts = []interface{}{
-					types.VerbatimLine{
-						Content: err.Error(),
-					},
-				}
+				return nil, err
 			}
 			// next, parse the elements with the grammar rule that corresponds to the delimited block substitutions (based on its type)
 			extraAttrs, elmts, err := parseDelimitedBlockContent(config.Filename, e.Kind, elmts, options...)

@@ -34,6 +34,7 @@ func RenderHTML(actual string, settings ...configuration.Setting) (string, error
 	resultWriter := bytes.NewBuffer(nil)
 	_, err := libasciidoc.Convert(contentReader, resultWriter, config)
 	if err != nil {
+		log.Error(err)
 		return "", err
 	}
 	if log.IsLevelEnabled(log.DebugLevel) {
