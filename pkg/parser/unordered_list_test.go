@@ -67,6 +67,39 @@ var _ = Describe("unordered lists", func() {
 				}
 				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
+			It("unordered list with style ID, title, role and a single item", func() {
+				source := `.mytitle
+[square#listID]
+[.myrole]
+* a list item`
+				expected := types.DraftDocument{
+					Blocks: []interface{}{
+						types.UnorderedListItem{
+							Attributes: types.Attributes{
+								types.AttrTitle:    "mytitle",
+								types.AttrID:       "listID",
+								types.AttrCustomID: true,
+								types.AttrRole:     "myrole",
+								types.AttrStyle:    "square",
+							},
+							Level:       1,
+							BulletStyle: types.OneAsterisk,
+							CheckStyle:  types.NoCheck,
+							Elements: []interface{}{
+								types.Paragraph{
+									Lines: [][]interface{}{
+										{
+											types.StringElement{Content: "a list item"},
+										},
+									},
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+			})
+
 			It("unordered list with a title and a single item", func() {
 				source := `.a title
 	* a list item`
