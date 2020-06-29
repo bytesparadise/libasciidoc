@@ -10,6 +10,7 @@ const (
 		` class="{{ .Style }}"` +
 		`{{ if .ListStyle }} type="{{ .ListStyle }}"{{ end }}` +
 		`{{ if .Start }} start="{{ .Start }}"{{ end }}` +
+		`{{ if .Reversed }} reversed{{ end }}` +
 		">\n{{ .Content }}</ol>\n</div>"
 
 	orderedListItemTmpl = "<li>\n{{ .Content }}\n</li>\n"
