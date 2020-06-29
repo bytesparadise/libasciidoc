@@ -1588,8 +1588,7 @@ DelimitedBlock <- !Alphanum // delimited blocks, even without attributes, never 
     block:(FencedBlock 
         / ListingBlock 
         / ExampleBlock 
-        / VerseBlock 
-        / QuoteBlock 
+        / QuoteBlock
         / SidebarBlock
         / SingleLineComment
         / PassthroughBlock
@@ -1696,24 +1695,6 @@ QuoteBlock <- attributes:(Attributes)? QuoteBlockStartDelimiter content:(QuoteBl
 }
 
 QuoteBlockVerbatimElement <- (!QuoteBlockEndDelimiter content:(VerbatimContent) { // at this stage, content is a mix of FileInclusions and lines of text (i.e., StringElement)
-    return content, nil
-})*
-
-// -------------------------------------------------------------------------------------
-// Verse blocks
-// -------------------------------------------------------------------------------------
-// VerseBlockDelimiter: see QuoteBlockDelimiter
-
-VerseBlock <- attributes:(Attributes) 
-    &{  
-        kind, found := attributes.(types.Attributes).GetAsString("kind") // once we got the attributes, check that `[verse]`  was set
-        return found && kind == "verse", nil
-    } 
-    QuoteBlockStartDelimiter content:(VerseBlockVerbatimContent) QuoteBlockEndDelimiter {
-        return types.NewDelimitedBlock(types.Verse, content.([]interface{}), attributes)
-    }
-
-VerseBlockVerbatimContent <- (!QuoteBlockEndDelimiter content:(VerbatimContent) { // at this stage, content is a mix of FileInclusions and lines of text (i.e., StringElement)
     return content, nil
 })*
 

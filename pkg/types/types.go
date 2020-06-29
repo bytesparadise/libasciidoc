@@ -1431,6 +1431,9 @@ func NewDelimitedBlock(kind BlockKind, elements []interface{}, attributes interf
 		log.Debugf("overriding kind '%s' to '%s'", kind, k)
 		kind = k
 	}
+	if k, ok := attrs.GetAsString(AttrStyle); ok {
+		kind = BlockKind(k)
+	}
 	return DelimitedBlock{
 		Attributes: attrs,
 		Kind:       kind,
