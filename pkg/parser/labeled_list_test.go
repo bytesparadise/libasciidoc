@@ -131,6 +131,36 @@ Item1:: foo`
 			Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 		})
 
+		It("with a title attribute", func() {
+			source := `[title="Fighters"]
+Item1:: foo`
+			expected := types.DraftDocument{
+				Blocks: []interface{}{
+					types.LabeledListItem{
+						Attributes: types.Attributes{
+							types.AttrTitle: "Fighters",
+						},
+						Level: 1,
+						Term: []interface{}{
+							types.StringElement{
+								Content: "Item1",
+							},
+						},
+						Elements: []interface{}{
+							types.Paragraph{
+								Lines: [][]interface{}{
+									{
+										types.StringElement{Content: "foo"},
+									},
+								},
+							},
+						},
+					},
+				},
+			}
+			Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+		})
+
 		It("with a single term and a blank line", func() {
 			source := `Item1::
 			`

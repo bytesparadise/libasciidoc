@@ -65,14 +65,14 @@ AsciidocDocumentBlocksWithinDelimitedBlock <- blocks:(DocumentBlockWithinDelimit
 
 DocumentBlockWithinDelimitedBlock <- !EOF 
     block:(DelimitedBlock
-        / BlankLine // must be before LiteralBlock 
+        / BlankLine // must be before LiteralBlock
         / FileInclusion
         / VerseParagraph
         / ImageBlock
         / ThematicBreak
         / OrderedListItem
         / UnorderedListItem 
-        / LabeledListItem 
+        / LabeledListItem
         / ContinuedListItemElement
         / LiteralBlock 
         / AttributeDeclaration 
@@ -229,7 +229,7 @@ InlineElementID <- "[[" id:(ID) "]]" Space* { // no EOL here since there can be 
 
 // a title attached to an element, such as a ImageBlock
 // a title starts with a single "." followed by the value, without space in-between
-ElementTitle <- "." title:(ElementTitleContent) EOL {
+ElementTitle <- "." title:(ElementTitleContent) Space* EOL {
     return types.NewElementTitle(title.(string))
 }
 
@@ -247,7 +247,7 @@ BlockAttrs <- BlockAttrList / ElementTitle / ElementID
 
 // All blocks have style as their first element, and no block has more than 3 positional elements.
 // This allows us to keep the grammar simpler, and use context to determine what the second and third attributes are.
-BlockAttrList <- "[" attrs:(BlockAttrStyle? ShortHandAttr* BlockAttrPositional2? BlockAttrPositional3? NamedAttr*) "]" EOL {
+BlockAttrList <- '[' attrs:(BlockAttrStyle? ShortHandAttr* BlockAttrPositional2? BlockAttrPositional3? NamedAttr*) ']' EOL {
     return types.NewElementAttributes(attrs)
 }
 
@@ -354,7 +354,9 @@ ShortHandAttrRole <- '.' role:ShortHandValue {
 }
 
 // PositionalValue is an unnamed attribute.
-PositionalValue <- ShortHandValue
+PositionalValue <- value:ShortHandValue &[,#%.\]] {
+    return value.(string), nil
+}
 
 ShortHandValue <- ShortHandValuePlain / AttrValueSingleQuoted / AttrValueDoubleQuoted
 
@@ -364,7 +366,7 @@ ShortHandValuePlain <- [^,\r\n"' \t.#%=\]][^,\r\n"'.#%=\]]* {
     return string(c.text), nil
 }
 
-NamedAttr <- ("," Space*)? key:NamedAttrKey Space* "=" Space* value:NamedAttrValue Space* {
+NamedAttr <-( "," Space* )? key:NamedAttrKey Space* "=" Space* value:NamedAttrValue Space* {
     return types.NewElementNamedAttr(key.(string), value.(string))
 }
 
@@ -713,8 +715,8 @@ ContinuedListItemContent <- !EOF
 // ------------------------------------------
 // Ordered List Items
 // ------------------------------------------
-OrderedListItem <- attributes:(Attributes)? prefix:(OrderedListItemPrefix) content:(OrderedListItemContent) {
-    return types.NewOrderedListItem(prefix.(types.OrderedListItemPrefix), content.([]interface{}), attributes)
+OrderedListItem <- attrs:(BlockAttrs)* prefix:(OrderedListItemPrefix) content:(OrderedListItemContent) {
+    return types.NewOrderedListItem(prefix.(types.OrderedListItemPrefix), content.([]interface{}), attrs)
 }
 
 OrderedListItemPrefix <- 

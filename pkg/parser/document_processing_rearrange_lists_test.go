@@ -37,8 +37,8 @@ var _ = Describe("rearrange lists", func() {
 				},
 			},
 			types.OrderedListItem{
-				Level:          1,
-				NumberingStyle: types.Arabic,
+				Level: 1,
+				Style: types.Arabic,
 				Elements: []interface{}{
 					types.Paragraph{
 						Lines: [][]interface{}{
@@ -50,8 +50,8 @@ var _ = Describe("rearrange lists", func() {
 				},
 			},
 			types.OrderedListItem{
-				Level:          2,
-				NumberingStyle: types.LowerAlpha,
+				Level: 2,
+				Style: types.LowerAlpha,
 				Elements: []interface{}{
 					types.Paragraph{
 						Lines: [][]interface{}{
@@ -63,8 +63,8 @@ var _ = Describe("rearrange lists", func() {
 				},
 			},
 			types.OrderedListItem{
-				Level:          2,
-				NumberingStyle: types.LowerAlpha,
+				Level: 2,
+				Style: types.LowerAlpha,
 				Elements: []interface{}{
 					types.Paragraph{
 						Lines: [][]interface{}{
@@ -76,8 +76,8 @@ var _ = Describe("rearrange lists", func() {
 				},
 			},
 			types.OrderedListItem{
-				Level:          2,
-				NumberingStyle: types.LowerAlpha,
+				Level: 2,
+				Style: types.LowerAlpha,
 				Elements: []interface{}{
 					types.Paragraph{
 						Lines: [][]interface{}{
@@ -89,8 +89,8 @@ var _ = Describe("rearrange lists", func() {
 				},
 			},
 			types.OrderedListItem{
-				Level:          1,
-				NumberingStyle: types.Arabic,
+				Level: 1,
+				Style: types.Arabic,
 				Elements: []interface{}{
 					types.Paragraph{
 						Lines: [][]interface{}{
@@ -102,8 +102,8 @@ var _ = Describe("rearrange lists", func() {
 				},
 			},
 			types.OrderedListItem{
-				Level:          2,
-				NumberingStyle: types.LowerRoman,
+				Level: 2,
+				Style: types.LowerRoman,
 				Elements: []interface{}{
 					types.Paragraph{
 						Lines: [][]interface{}{
@@ -115,8 +115,8 @@ var _ = Describe("rearrange lists", func() {
 				},
 			},
 			types.OrderedListItem{
-				Level:          2,
-				NumberingStyle: types.LowerRoman,
+				Level: 2,
+				Style: types.LowerRoman,
 				Elements: []interface{}{
 					types.Paragraph{
 						Lines: [][]interface{}{
@@ -128,8 +128,8 @@ var _ = Describe("rearrange lists", func() {
 				},
 			},
 			types.OrderedListItem{
-				Level:          1,
-				NumberingStyle: types.Arabic,
+				Level: 1,
+				Style: types.Arabic,
 				Elements: []interface{}{
 					types.Paragraph{
 						Lines: [][]interface{}{
@@ -141,8 +141,8 @@ var _ = Describe("rearrange lists", func() {
 				},
 			},
 			types.OrderedListItem{
-				Level:          1,
-				NumberingStyle: types.Arabic,
+				Level: 1,
+				Style: types.Arabic,
 				Elements: []interface{}{
 					types.Paragraph{
 						Lines: [][]interface{}{
@@ -200,8 +200,8 @@ var _ = Describe("rearrange lists", func() {
 							types.OrderedList{
 								Items: []types.OrderedListItem{
 									{
-										Level:          1,
-										NumberingStyle: types.Arabic,
+										Level: 1,
+										Style: types.Arabic,
 										Elements: []interface{}{
 											types.Paragraph{
 												Lines: [][]interface{}{
@@ -213,8 +213,8 @@ var _ = Describe("rearrange lists", func() {
 											types.OrderedList{
 												Items: []types.OrderedListItem{
 													{
-														Level:          2,
-														NumberingStyle: types.LowerAlpha,
+														Level: 2,
+														Style: types.LowerAlpha,
 														Elements: []interface{}{
 															types.Paragraph{
 																Lines: [][]interface{}{
@@ -226,8 +226,8 @@ var _ = Describe("rearrange lists", func() {
 														},
 													},
 													{
-														Level:          2,
-														NumberingStyle: types.LowerAlpha,
+														Level: 2,
+														Style: types.LowerAlpha,
 														Elements: []interface{}{
 															types.Paragraph{
 																Lines: [][]interface{}{
@@ -239,8 +239,8 @@ var _ = Describe("rearrange lists", func() {
 														},
 													},
 													{
-														Level:          2,
-														NumberingStyle: types.LowerAlpha,
+														Level: 2,
+														Style: types.LowerAlpha,
 														Elements: []interface{}{
 															types.Paragraph{
 																Lines: [][]interface{}{
@@ -256,8 +256,8 @@ var _ = Describe("rearrange lists", func() {
 										},
 									},
 									{
-										Level:          1,
-										NumberingStyle: types.Arabic,
+										Level: 1,
+										Style: types.Arabic,
 										Elements: []interface{}{
 											types.Paragraph{
 												Lines: [][]interface{}{
@@ -269,8 +269,8 @@ var _ = Describe("rearrange lists", func() {
 											types.OrderedList{
 												Items: []types.OrderedListItem{
 													{
-														Level:          2,
-														NumberingStyle: types.LowerRoman,
+														Level: 2,
+														Style: types.LowerRoman,
 														Elements: []interface{}{
 															types.Paragraph{
 																Lines: [][]interface{}{
@@ -282,8 +282,8 @@ var _ = Describe("rearrange lists", func() {
 														},
 													},
 													{
-														Level:          2,
-														NumberingStyle: types.LowerRoman,
+														Level: 2,
+														Style: types.LowerRoman,
 														Elements: []interface{}{
 															types.Paragraph{
 																Lines: [][]interface{}{
@@ -299,8 +299,8 @@ var _ = Describe("rearrange lists", func() {
 										},
 									},
 									{
-										Level:          1,
-										NumberingStyle: types.Arabic,
+										Level: 1,
+										Style: types.Arabic,
 										Elements: []interface{}{
 											types.Paragraph{
 												Lines: [][]interface{}{
@@ -312,8 +312,8 @@ var _ = Describe("rearrange lists", func() {
 										},
 									},
 									{
-										Level:          1,
-										NumberingStyle: types.Arabic,
+										Level: 1,
+										Style: types.Arabic,
 										Elements: []interface{}{
 											types.Paragraph{
 												Lines: [][]interface{}{

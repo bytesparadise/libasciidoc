@@ -208,6 +208,30 @@ baz`
 				Expect(ParseDraftDocument(source)).To(Equal(expected))
 			})
 
+			It("with paragraph title attribute", func() {
+				source := `[title=My Title]
+foo
+baz`
+				expected := types.DraftDocument{
+					Blocks: []interface{}{
+						types.Paragraph{
+							Attributes: types.Attributes{
+								types.AttrTitle: "My Title",
+							},
+							Lines: [][]interface{}{
+								{
+									types.StringElement{Content: "foo"},
+								},
+								{
+									types.StringElement{Content: "baz"},
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDraftDocument(source)).To(Equal(expected))
+			})
+
 			It("with paragraph multiple attribute", func() {
 				source := `[%hardbreaks.role1.role2]
 [#anchor]

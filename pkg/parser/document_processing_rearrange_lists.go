@@ -123,12 +123,12 @@ func appendListItem(lists []types.List, item interface{}) ([]types.List, error) 
 
 func appendOrderedListItem(lists []types.List, item *types.OrderedListItem) ([]types.List, error) {
 	maxLevel := 0
-	log.Debugf("looking-up list for ordered list having items with level=%d and number style=%v", item.Level, item.NumberingStyle)
+	log.Debugf("looking-up list for ordered list having items with level=%d and number style=%v", item.Level, item.Style)
 	for i, list := range lists {
 		if list, ok := list.(*types.OrderedList); ok {
 			// assume we can't have empty lists
 			maxLevel++
-			if list.Items[0].NumberingStyle == item.NumberingStyle {
+			if list.Items[0].Style == item.Style {
 				log.Debugf("found a matching ordered list at level %d", list.Items[0].Level)
 				// prune items of "deeper/lower" level
 				lists = pruneLists(lists, i)
