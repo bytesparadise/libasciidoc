@@ -341,15 +341,15 @@ StandaloneAttributes <- attributes:(ElementAttribute)+ BlankLine* EOF { // stand
 
 ShortHandAttr <- ShortHandAttrID / ShortHandAttrOption / ShortHandAttrRole
 
-ShortHandAttrOption <- "%" option:ShortHandValue {
+ShortHandAttrOption <- "%" option:ShortHandValue &[,#%.\r\n\]] {
     return types.NewElementOption(option.(string))
 }
 
-ShortHandAttrID <- "#" id:ShortHandValue {
+ShortHandAttrID <- "#" id:ShortHandValue &[,#%.\r\n\]] {
     return types.NewElementID(id.(string))
 }
 
-ShortHandAttrRole <- '.' role:ShortHandValue {
+ShortHandAttrRole <- '.' role:ShortHandValue &[,#%.\r\n\]] {
     return types.NewElementRole(role.(string))
 }
 
@@ -362,7 +362,7 @@ ShortHandValue <- ShortHandValuePlain / AttrValueSingleQuoted / AttrValueDoubleQ
 
 // ShortHandValuePlain is sort of like AttrValuePlain, but it also needs to exclude the characters
 // used to start a short hand role, id, or option, as well as equals signs.
-ShortHandValuePlain <- [^,\r\n"' \t.#%=\]][^,\r\n"'.#%=\]]* {
+ShortHandValuePlain <- [^,\r\n"' \t.#%=\]]  ([^,\r\n"'.#%=\]] / [ \t][^,\r\n"'.#%=\]])* {
     return string(c.text), nil
 }
 
