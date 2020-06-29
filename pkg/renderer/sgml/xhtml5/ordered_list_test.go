@@ -51,6 +51,25 @@ var _ = Describe("ordered lists", func() {
 		Expect(RenderXHTML(source)).To(MatchHTML(expected))
 	})
 
+	It("ordered list item reversed with explicit quoted numbering and start", func() {
+		source := `[lowerroman%reversed, start="5"]
+. item 1
+. item 2`
+		expected := `<div class="olist lowerroman">
+<ol class="lowerroman" type="i" start="5" reversed>
+<li>
+<p>item 1</p>
+</li>
+<li>
+<p>item 2</p>
+</li>
+</ol>
+</div>`
+		Expect(RenderXHTML(source)).To(MatchHTML(expected))
+	})
+
+
+
 	It("ordered list with paragraph continuation", func() {
 		source := `. item 1
 +

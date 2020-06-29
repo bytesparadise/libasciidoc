@@ -28,6 +28,7 @@ func (r *sgmlRenderer) renderOrderedList(ctx *renderer.Context, l types.OrderedL
 		ListStyle sanitized
 		Start     string
 		Content   sanitized
+		Reversed  bool
 		Items     []types.OrderedListItem
 	}{
 		ID:        r.renderElementID(l.Attributes),
@@ -37,6 +38,7 @@ func (r *sgmlRenderer) renderOrderedList(ctx *renderer.Context, l types.OrderedL
 		ListStyle: r.numberingType(getNumberingStyle(l)),
 		Start:     l.Attributes.GetAsStringWithDefault(types.AttrStart, ""),
 		Content:   sanitized(content.String()),
+		Reversed:  l.Attributes.HasOption("reversed"),
 		Items:     l.Items,
 	})
 	if err != nil {
