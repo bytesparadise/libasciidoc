@@ -162,6 +162,75 @@ var _ = Describe("tables", func() {
 		Expect(ParseDocumentBlock(source)).To(Equal(expected))
 	})
 
+	It("table with title, headers, id and multiple roles, stretch", func() {
+		source := `.table title
+[#anchor.role1%autowidth.stretch]
+|===
+|heading 1 |heading 2
+
+|row 1, column 1
+|row 1, column 2
+
+|row 2, column 1
+|row 2, column 2
+|===`
+		expected := types.Table{
+			Attributes: types.Attributes{
+				types.AttrTitle:    "table title",
+				types.AttrOptions:  map[string]bool{"autowidth": true},
+				types.AttrRole:     []string{"role1", "stretch"},
+				types.AttrID:       "anchor",
+				types.AttrCustomID: true,
+			},
+			Header: types.TableLine{
+				Cells: [][]interface{}{
+					{
+						types.StringElement{
+							Content: "heading 1 ",
+						},
+					},
+					{
+						types.StringElement{
+							Content: "heading 2",
+						},
+					},
+				},
+			},
+
+			Lines: []types.TableLine{
+				{
+					Cells: [][]interface{}{
+						{
+							types.StringElement{
+								Content: "row 1, column 1",
+							},
+						},
+						{
+							types.StringElement{
+								Content: "row 1, column 2",
+							},
+						},
+					},
+				},
+				{
+					Cells: [][]interface{}{
+						{
+							types.StringElement{
+								Content: "row 2, column 1",
+							},
+						},
+						{
+							types.StringElement{
+								Content: "row 2, column 2",
+							},
+						},
+					},
+				},
+			},
+		}
+		Expect(ParseDocumentBlock(source)).To(Equal(expected))
+	})
+
 	It("empty table ", func() {
 		source := `|===
 |===`

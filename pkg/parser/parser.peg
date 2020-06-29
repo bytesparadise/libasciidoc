@@ -1797,11 +1797,11 @@ VerseBlockParagraphLine <- elements:(InlineElement)+ EOL {
 // -------------------------------------------------------------------------------------
 // Tables
 // -------------------------------------------------------------------------------------
-Table <- attributes:(Attributes)? TableDelimiter
+Table <- attrs:(BlockAttrs*)? TableDelimiter
     header:(TableLineHeader)?
     lines:(TableLine)*
     (TableDelimiter / EOF) { // end delimiter or end of file
-        return types.NewTable(header, lines.([]interface{}), attributes)
+        return types.NewTable(header, lines.([]interface{}), attrs)
 }
 
 TableCellSeparator <- "|" Space*
