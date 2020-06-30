@@ -1564,13 +1564,13 @@ a link to {scheme}://{path} and https://foo.baz`
 						"path":   "foo.bar",
 					},
 					ElementReferences: types.ElementReferences{
-						"_a_title_to_https_foo_bar_and_https_foo_baz": title,
+						"_a_title_to_httpsfoo_bar_and_httpsfoo_baz": title,
 					},
 					Elements: []interface{}{
 						types.Section{
 							Level: 0,
 							Attributes: types.Attributes{
-								types.AttrID: "_a_title_to_https_foo_bar_and_https_foo_baz",
+								types.AttrID: "_a_title_to_httpsfoo_bar_and_httpsfoo_baz",
 							},
 							Title:    title,
 							Elements: []interface{}{},
@@ -1616,13 +1616,13 @@ a link to {scheme}://{path} and https://foo.baz`
 						"path":   "foo.bar",
 					},
 					ElementReferences: types.ElementReferences{
-						"_a_title_to_https_foo_bar_and_https_foo_baz": title,
+						"_a_title_to_httpsfoo_bar_and_httpsfoo_baz": title,
 					},
 					Elements: []interface{}{
 						types.Section{
 							Level: 1,
 							Attributes: types.Attributes{
-								types.AttrID: "_a_title_to_https_foo_bar_and_https_foo_baz",
+								types.AttrID: "_a_title_to_httpsfoo_bar_and_httpsfoo_baz",
 							},
 							Title:    title,
 							Elements: []interface{}{},
