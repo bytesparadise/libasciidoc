@@ -1181,11 +1181,13 @@ func NewImageBlock(path Location, inlineAttributes Attributes, attributes interf
 	if err != nil {
 		return ImageBlock{}, errors.Wrapf(err, "failed to initialize an ImageBlock element")
 	}
+	// inline attributes trump block attributes
 	if attrs == nil && len(inlineAttributes) > 0 {
 		attrs = inlineAttributes
 	} else if len(inlineAttributes) > 0 {
 		attrs = attrs.Add(inlineAttributes)
 	}
+
 	return ImageBlock{
 		Location:   path,
 		Attributes: attrs,
@@ -1227,7 +1229,7 @@ func (i InlineImage) ResolveLocation(attrs AttributesWithOverrides) InlineImage 
 }
 
 // NewImageAttributes returns a map of image attributes, some of which have implicit keys (`alt`, `width` and `height`)
-func NewImageAttributes(alt, width, height interface{}, otherattrs []interface{}) (Attributes, error) {
+func NewImageAttributes(alt, width, height interface{}, sa []interface{}, others []interface{}) (Attributes, error) {
 	var result Attributes
 
 	if alt, ok := alt.(string); ok {
@@ -1245,7 +1247,18 @@ func NewImageAttributes(alt, width, height interface{}, otherattrs []interface{}
 			result = result.Set(AttrImageHeight, heightStr)
 		}
 	}
-	for _, otherAttr := range otherattrs {
+	for _, otherAttr := range sa {
+		if otherAttr, ok := otherAttr.(Attributes); ok {
+			for k, v := range otherAttr {
+				result = result.Set(k, v)
+				if k == AttrID {
+					// mark custom_id flag to `true`
+					result = result.Set(AttrCustomID, true)
+				}
+			}
+		}
+	}
+	for _, otherAttr := range others {
 		if otherAttr, ok := otherAttr.(Attributes); ok {
 			for k, v := range otherAttr {
 				result = result.Set(k, v)

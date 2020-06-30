@@ -44,6 +44,17 @@ var _ = Describe("images", func() {
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
+		It("block image with alt and dimensions and multiple roles", func() {
+
+			source := "[.role1.role2]\nimage::foo.png[foo image, 600, 400]"
+			expected := `<div class="imageblock role1 role2">
+<div class="content">
+<img src="foo.png" alt="foo image" width="600" height="400">
+</div>
+</div>`
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
+		})
+
 		It("block image with title, alt and dimensions", func() {
 			source := `[#img-foobar]
 .A title to foobar

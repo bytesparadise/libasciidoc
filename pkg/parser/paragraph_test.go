@@ -638,17 +638,15 @@ I am a verse paragraph.`
 image::foo.png[]`
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
-						types.Paragraph{
+						types.ImageBlock{
 							Attributes: types.Attributes{
-								types.AttrKind:        types.Verse,
-								types.AttrQuoteAuthor: "john doe",
-								types.AttrQuoteTitle:  "verse title",
+								types.AttrImageAlt:    "verse",
+								types.AttrImageWidth:  "john doe",
+								types.AttrImageHeight: "verse title",
 							},
-							Lines: [][]interface{}{
-								{
-									types.StringElement{
-										Content: "image::foo.png[]",
-									},
+							Location: types.Location{
+								Path: []interface{}{
+									types.StringElement{Content: "foo.png"},
 								},
 							},
 						},
@@ -842,19 +840,14 @@ image::foo.png[]`
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.ImageBlock{
-							Attributes: types.Attributes{
-
-								// quote attributes
-								types.AttrKind:        types.Quote,
-								types.AttrQuoteAuthor: "john doe",
-								types.AttrQuoteTitle:  "quote title",
-							},
 							Location: types.Location{
-								Path: []interface{}{
-									types.StringElement{
-										Content: "foo.png",
-									},
-								},
+								Scheme: "",
+								Path:   []interface{}{types.StringElement{Content: "foo.png"}},
+							},
+							Attributes: types.Attributes{
+								types.AttrImageAlt:    "quote",
+								types.AttrImageWidth:  "john doe",
+								types.AttrImageHeight: "quote title",
 							},
 						},
 					},

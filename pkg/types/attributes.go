@@ -93,6 +93,10 @@ const (
 	AttrOpts = "opts"
 	// AttrStyle block or list style
 	AttrStyle = "style"
+	// AttrPositional2 positional parameter 2
+	AttrPositional2 = "positional-2"
+	// AttrPositional3 positional parameter 3
+	AttrPositional3 = "positional-3"
 )
 
 // NewElementID initializes a new attribute map with a single entry for the ID using the given value
