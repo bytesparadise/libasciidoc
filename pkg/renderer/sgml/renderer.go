@@ -116,6 +116,8 @@ func (r *sgmlRenderer) Render(ctx *renderer.Context, doc types.Document, output 
 			Authors       string
 			Header        string
 			Role          string
+			ID            sanitized
+			Roles         sanitized
 			Content       sanitized
 			RevNumber     string
 			LastUpdated   string
@@ -128,7 +130,8 @@ func (r *sgmlRenderer) Render(ctx *renderer.Context, doc types.Document, output 
 			Title:         renderedTitle,
 			Authors:       r.renderAuthors(doc),
 			Header:        renderedHeader,
-			Role:          documentRole(doc),
+			Roles:         r.renderDocumentRoles(doc),
+			ID:            r.renderDocumentID(doc),
 			Content:       sanitized(renderedContent), //nolint: gosec
 			RevNumber:     doc.Attributes.GetAsStringWithDefault("revnumber", ""),
 			LastUpdated:   ctx.Config.LastUpdated.Format(configuration.LastUpdatedFormat),
@@ -221,9 +224,19 @@ func (r *sgmlRenderer) splitAndRenderForManpage(ctx *renderer.Context, doc types
 	return "", result.String(), nil
 }
 
-func documentRole(doc types.Document) string {
+func (r *sgmlRenderer) renderDocumentRoles(doc types.Document) sanitized {
 	if header, found := doc.Header(); found {
-		return header.Attributes.GetAsStringWithDefault(types.AttrRole, "")
+		return r.renderElementRoles(header.Attributes)
+	}
+	return ""
+}
+
+func (r *sgmlRenderer) renderDocumentID(doc types.Document) sanitized {
+	if header, found := doc.Header(); found {
+		if header.Attributes.Has(types.AttrCustomID) {
+			// We only want to emit a document body ID, if one was explicitly set
+			return r.renderElementID(header.Attributes)
+		}
 	}
 	return ""
 }

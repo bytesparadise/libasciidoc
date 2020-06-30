@@ -53,12 +53,16 @@ func (r *sgmlRenderer) renderSection(ctx *renderer.Context, s types.Section) (st
 		Header   sanitized
 		Content  sanitized
 		Elements []interface{}
+		ID       sanitized
+		Roles    sanitized
 		Level    int
 	}{
 		Context:  ctx,
 		Header:   title,
 		Level:    s.Level,
 		Elements: s.Elements,
+		ID:       r.renderElementID(s.Attributes),
+		Roles:    r.renderElementRoles(s.Attributes),
 		Content:  sanitized(content),
 	})
 	if err != nil {
@@ -79,11 +83,13 @@ func (r *sgmlRenderer) renderSectionTitle(ctx *renderer.Context, s types.Section
 		Level        int
 		LevelPlusOne int
 		ID           sanitized
+		Roles        sanitized
 		Content      string
 	}{
 		Level:        s.Level,
 		LevelPlusOne: s.Level + 1, // Level 1 is <h2>.
 		ID:           r.renderElementID(s.Attributes),
+		Roles:        r.renderElementRoles(s.Attributes),
 		Content:      renderedContentStr,
 	})
 	if err != nil {

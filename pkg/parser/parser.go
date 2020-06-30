@@ -3817,11 +3817,11 @@ var g = &grammar{
 						&labeledExpr{
 							pos:   position{line: 503, col: 12, offset: 17042},
 							label: "attributes",
-							expr: &zeroOrOneExpr{
+							expr: &zeroOrMoreExpr{
 								pos: position{line: 503, col: 23, offset: 17053},
 								expr: &ruleRefExpr{
 									pos:  position{line: 503, col: 24, offset: 17054},
-									name: "Attributes",
+									name: "BlockAttrs",
 								},
 							},
 						},

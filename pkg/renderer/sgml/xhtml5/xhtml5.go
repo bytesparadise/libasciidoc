@@ -12,7 +12,7 @@ const (
 <link type="text/css" rel="stylesheet" href="{{ .CSS }}"/>{{ end }}
 <title>{{ .Title }}</title>
 </head>
-<body class="{{ .Doctype }}{{ if .Role }} {{ .Role }}{{ end }}">{{ if .IncludeHeader }}
+<body{{ if .ID }} id="{{ .ID }}"{{ end }} class="{{ .Doctype }}{{ if .Roles }} {{ .Roles }}{{ end }}">{{ if .IncludeHeader }}
 {{ .Header }}{{ end }}
 <div id="content">
 {{ .Content }}

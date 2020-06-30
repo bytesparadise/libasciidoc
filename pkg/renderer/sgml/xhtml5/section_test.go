@@ -31,6 +31,18 @@ var _ = Describe("sections", func() {
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
+		It("section level 1 alone with roles and id", func() {
+			source := "[.role1#anchor.role2]\n== a title with *bold* content"
+			// top-level section is not rendered per-say,
+			// but the section will be used to set the HTML page's <title> element
+			expected := `<div class="sect1 role1 role2">
+<h2 id="anchor">a title with <strong>bold</strong> content</h2>
+<div class="sectionbody">
+</div>
+</div>`
+			Expect(RenderXHTML(source)).To(MatchHTML(expected))
+		})
+
 		It("section level 2 alone", func() {
 			source := "=== a title"
 			// top-level section is not rendered per-say,
