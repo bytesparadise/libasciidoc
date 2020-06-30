@@ -41,13 +41,13 @@ AsciidocDocumentBlocks <- header:(DocumentHeader?) others:(DocumentBlock*) {
 
 DocumentBlock <- 
         LabeledListItem // must appear before simple paragraph
+        / ImageBlock
         / SimpleParagraph
         / BlankLine // must be before LiteralBlock 
         / Section
         / DelimitedBlock
         / FileInclusion
-        / VerseParagraph // must be before ImageBlock
-        / ImageBlock
+        / VerseParagraph
         / ThematicBreak
         / OrderedListItem
         / UnorderedListItem 
@@ -64,11 +64,12 @@ DocumentBlock <-
 AsciidocDocumentBlocksWithinDelimitedBlock <- blocks:(DocumentBlockWithinDelimitedBlock)*
 
 DocumentBlockWithinDelimitedBlock <- !EOF 
-    block:(DelimitedBlock
+    block:(
+        ImageBlock
+        / DelimitedBlock
         / BlankLine // must be before LiteralBlock
         / FileInclusion
         / VerseParagraph
-        / ImageBlock
         / ThematicBreak
         / OrderedListItem
         / UnorderedListItem 
@@ -255,12 +256,18 @@ BlockAttrStyle <- style:PositionalValue {
     return types.NewElementStyle(style.(string))
 }
 
-BlockAttrPositional2 <- "," value:PositionalValue {
-    return types.NewElementNamedAttr("positional-2", value.(string))
+BlockAttrPositional2 <- Space* "," Space* value:PositionalValue? {
+    if value != nil {
+        return types.NewElementNamedAttr(types.AttrPositional2, value.(string))
+    }
+    return nil, nil
 }
 
-BlockAttrPositional3 <- "," value:PositionalValue {
-    return types.NewElementNamedAttr("positional-3", value.(string))
+BlockAttrPositional3 <- Space* "," Space* value:PositionalValue? {
+    if value != nil {
+        return types.NewElementNamedAttr(types.AttrPositional3, value.(string))
+    }
+    return nil, nil
 }
 
 LiteralAttribute <- "[literal]" Space* Newline {
@@ -358,11 +365,22 @@ PositionalValue <- value:ShortHandValue &[,#%.\]] {
     return value.(string), nil
 }
 
+// InlinePositionalValue is an unnamed attribute.
+InlinePositionalValue <- Space* value:(InlineValuePlain / AttrValueSingleQuoted / AttrValueDoubleQuoted) Space* &[,#%.\]] {
+    return value.(string), nil
+}
+
+// InlineValuePlain is sort of like AttrValuePlain, but it also needs to exclude the equals sign.
+// It also cannot start or end with a space.
+InlineValuePlain <- [^,\r\n"' \t=\]]  ([^, \t\r\n"'=\]] / [ \t][^, \t\r\n"'=\]])* {
+    return string(c.text), nil
+}
+
 ShortHandValue <- ShortHandValuePlain / AttrValueSingleQuoted / AttrValueDoubleQuoted
 
 // ShortHandValuePlain is sort of like AttrValuePlain, but it also needs to exclude the characters
 // used to start a short hand role, id, or option, as well as equals signs.
-ShortHandValuePlain <- [^,\r\n"' \t.#%=\]]  ([^,\r\n"'.#%=\]] / [ \t][^,\r\n"'.#%=\]])* {
+ShortHandValuePlain <- [^,\r\n"' \t.#%=\]]  ([^ \t,\r\n"'.#%=\]] / [ \t][^ \t,\r\n"'.#%=\]])* {
     return string(c.text), nil
 }
 
@@ -695,8 +713,8 @@ ContinuedListItemElement <- ListItemContinuation element:ContinuedListItemConten
 ContinuedListItemContent <- !EOF 
     content:(DelimitedBlock
         / FileInclusion
-        / VerseParagraph // must be before ImageBlock
         / ImageBlock
+        / VerseParagraph
         / ThematicBreak
         / OrderedListItem 
         / UnorderedListItem 
@@ -1543,17 +1561,46 @@ ResolvedExternalLink <- url:(ResolvedLocation) inlineAttributes:(LinkAttributes)
 // ------------------------------------------
 // Images
 // ------------------------------------------
-ImageBlock <- attributes:(Attributes)? "image::" path:(Location) inlineAttributes:(ImageAttributes) Space* EOL {
-    return types.NewImageBlock(path.(types.Location), inlineAttributes.(types.Attributes), attributes)
+ImageBlock <- attributes:(BlockImageAttrs)* "image::" path:(Location) inlineAttrs:(InlineImageAttrs) Space* EOL {
+    return types.NewImageBlock(path.(types.Location), inlineAttrs.(types.Attributes), attributes)
 }
 
-InlineImage <- "image:" !":" path:(Location) inlineAttributes:(ImageAttributes) {
-    return types.NewInlineImage(path.(types.Location), inlineAttributes.(types.Attributes))
+InlineImage <- "image:" !":" path:(Location) inlineAttrs:(InlineImageAttrs) {
+    return types.NewInlineImage(path.(types.Location), inlineAttrs.(types.Attributes))
 }
 
-ImageAttributes <- "[" alt:(StandaloneAttributeValue)? ","? width:(StandaloneAttributeValue)? ","? height:(StandaloneAttributeValue)? ","? Space* otherattrs:(GenericAttribute)* "]" {
-    return types.NewImageAttributes(alt, width, height, otherattrs.([]interface{}))
+InlineImageAttrs <- '[' attrs:(ImageAltAttrInline? ImageWidthAttr? ImageHeightAttr? NamedAttr*) ']' {
+    return types.NewElementAttributes(attrs)
 }
+
+BlockImageAttrs <- ImageAttrList / ElementTitle / ElementID
+
+ImageAttrList <- '[' attrs:(ImageAltAttr? ShortHandAttr* ImageWidthAttr? ImageHeightAttr? NamedAttr*) ']' Space* EOL {
+    return types.NewElementAttributes(attrs)
+}
+
+ImageAltAttrInline <- value:InlinePositionalValue {
+    return types.NewElementNamedAttr(types.AttrImageAlt, value.(string))
+}
+
+ImageAltAttr <- Space* value:PositionalValue Space* {
+    return types.NewElementNamedAttr(types.AttrImageAlt, value.(string))
+}
+
+ImageWidthAttr <- Space* "," Space* value:PositionalValue? {
+    if value != nil {
+        return types.NewElementNamedAttr(types.AttrImageWidth, value.(string))
+    }
+    return nil, nil
+}
+
+ImageHeightAttr <- Space* "," Space* value:PositionalValue? {
+    if value != nil {
+        return types.NewElementNamedAttr(types.AttrImageHeight, value.(string))
+    }
+    return nil, nil
+}
+
 
 // ------------------------------------------------------------------------------------
 // Inline icons

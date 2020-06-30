@@ -319,11 +319,9 @@ I am a verse paragraph.`
 		It("image block as a verse", func() {
 			source := `[verse, john doe, verse title]
 image::foo.png[]`
-			expected := `<div class="verseblock">
-<pre class="content">image::foo.png[]</pre>
-<div class="attribution">
-&#8212; john doe<br>
-<cite>verse title</cite>
+			expected := `<div class="imageblock">
+<div class="content">
+<img src="foo.png" alt="verse" width="john doe" height="verse title">
 </div>
 </div>`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
@@ -435,7 +433,7 @@ a foo <span class="image"><img src="foo.png" alt="foo"></span>
 image::foo.png[]`
 			expected := `<div class="imageblock">
 <div class="content">
-<img src="foo.png" alt="foo">
+<img src="foo.png" alt="quote" width="john doe" height="quote title">
 </div>
 </div>`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))

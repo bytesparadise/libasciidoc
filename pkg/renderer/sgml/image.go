@@ -18,7 +18,7 @@ func (r *sgmlRenderer) renderImageBlock(ctx *renderer.Context, img types.ImageBl
 		ID          sanitized
 		Title       sanitized
 		ImageNumber int
-		Role        string
+		Roles       sanitized
 		Href        string
 		Alt         string
 		Width       string
@@ -28,7 +28,7 @@ func (r *sgmlRenderer) renderImageBlock(ctx *renderer.Context, img types.ImageBl
 		ID:          r.renderElementID(img.Attributes),
 		Title:       r.renderElementTitle(img.Attributes),
 		ImageNumber: number,
-		Role:        img.Attributes.GetAsStringWithDefault(types.AttrRole, ""),
+		Roles:       r.renderElementRoles(img.Attributes),
 		Href:        img.Attributes.GetAsStringWithDefault(types.AttrInlineLink, ""),
 		Alt:         img.Attributes.GetAsStringWithDefault(types.AttrImageAlt, ""),
 		Width:       img.Attributes.GetAsStringWithDefault(types.AttrImageWidth, ""),
@@ -46,7 +46,7 @@ func (r *sgmlRenderer) renderImageBlock(ctx *renderer.Context, img types.ImageBl
 func (r *sgmlRenderer) renderInlineImage(img types.InlineImage) (string, error) {
 	result := &strings.Builder{}
 	err := r.inlineImage.Execute(result, struct {
-		Role   string
+		Roles  sanitized
 		Title  sanitized
 		Href   string
 		Alt    string
@@ -55,7 +55,7 @@ func (r *sgmlRenderer) renderInlineImage(img types.InlineImage) (string, error) 
 		Path   string
 	}{
 		Title:  r.renderElementTitle(img.Attributes),
-		Role:   img.Attributes.GetAsStringWithDefault(types.AttrRole, ""),
+		Roles:  r.renderElementRoles(img.Attributes),
 		Alt:    img.Attributes.GetAsStringWithDefault(types.AttrImageAlt, ""),
 		Width:  img.Attributes.GetAsStringWithDefault(types.AttrImageWidth, ""),
 		Height: img.Attributes.GetAsStringWithDefault(types.AttrImageHeight, ""),
