@@ -34,7 +34,7 @@ const (
 	// AttrID the key to retrieve the ID
 	AttrID = "id"
 	// AttrCustomID the key to retrieve the flag that indicates if the element ID is custom or generated
-	AttrCustomID = "customID"
+	AttrCustomID = "@customID"
 	// AttrTitle the key to retrieve the title
 	AttrTitle = "title"
 	// AttrAuthors the key to the authors declared after the section level 0 (at the beginning of the doc)
@@ -94,9 +94,9 @@ const (
 	// AttrStyle block or list style
 	AttrStyle = "style"
 	// AttrPositional2 positional parameter 2
-	AttrPositional2 = "positional-2"
+	AttrPositional2 = "@2"
 	// AttrPositional3 positional parameter 3
-	AttrPositional3 = "positional-3"
+	AttrPositional3 = "@3"
 )
 
 // NewElementID initializes a new attribute map with a single entry for the ID using the given value
