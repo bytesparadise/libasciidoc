@@ -2,7 +2,7 @@
 
 This document reports the known limitations and differences with Asciidoc/Asciidoctor.
 In any case, feel free to https://github.com/bytesparadise/libasciidoc/issues[open an issue]
-if you want to discuss about an actual limitation of Libasciidoc or if you want to report a new one.
+if you want to discuss an actual limitation of Libasciidoc or if you want to report a new one.
 
 == Quoted Text
 
@@ -56,12 +56,100 @@ will produce no HTML element at all, whereas Asciidoc/Asciidoctor will produce :
 </div>
 ....
 
+== Constrained Monospace Text and Quoted Strings or Apostrophes
+
+Constrained or imbalanced monospace text may not act fully constrained, or may be confused in the presence of
+imbalanced quoted strings or apostrophes.  Typically such markup is erroneous, but the results from such errors may
+differ between implementations.
+
+== Attribute Lists
+
+Attributes containing inline markup are not rendered with the markup applied.
+
+Attributes lists using undocumented whitespace (particularly in positional parameters) may not parse correctly.
+(Use single or double quotes if your attribute values contain leading or trailing whitespace, and avoid the use
+of whitespace between or surrounding attributes for the most consistent results.)
+
+Escaping of quotes within quoted strings used as attribute value does not work.
+
+== Tables
+
+Only simple tables are supported.  No per-cell table styling, custom delimiters, or unusually formatted tables.
+There is no support for the cols table attribute - the number of columns is determined by the number of cells
+in the first line of the table.
+
+No support for nested tables.
+
+== Lists
+
+Interactive checklists are not supported.
+
+== Images
+
+Interactive SVG support is missing, as is support for inline SVG.
+
+Float, alignment, and caption attributes have no effect.
+
+== Multimedia
+
+Video and audio elements are not supported.
+
 == File Inclusions
 
 File inclusions are performed before the full parsing takes place. During this phase, the main file is parsed to look for `include::` directives and then replace them with the content of the file to include. 
 If the file to include has an empty last line, it will be ignored, so it's always a good practice to include a blank line after the `include::` directive in the main document, to avoid side-effects during
 the "full" parsing.
 
+== Symbols and Characters
+
+Markup for the mdash and arrow symbols is not recognized.
+
+Symbols for quotes (both single and double) will be inlined as numeric HTML entities, even in cases where this is not strictly necessary.
+
+Symbolic entity names (such as `&loz;` for &loz;) are not recognized -- leaving recognition and rendering dependent on the user-agent.
+
+== User Interface Macros
+
+The experimental macros for user interfaces (`kbd`, `menu`, and `btn`) are not supported.
+
+== Admonitions
+
+Use of unicode symbols or other replacement using the per-type caption attribute is not supported.
+
+== Favicon
+
+The `favicon` document attribute is not recognized.
+
+== Syntax Highlighters
+
+Only the `pygments` highlighter is recognized.
+
+== Math
+
+MathML and equations (`[stem]` blocks) are not supported yet.
+
+== Bibliographies
+
+Bibliographies using bibtex are not supported yet.
+
 == Links
 
 When using the `*` and `_` characters at the end of URLs of external links in a quoted text, the attributes markers need to be explicitly set. Eg: `+++a link to *https://foo.com/_[]*+++`.
+
+Using the caret short-hand to indicate link targets should use the blank window is not support.
+
+== Document Types
+
+The inline and book document types are not supported.  Article and manpage documents work fine.
+
+== CSS
+
+At present no CSS is provided, but the output generated should be compatible with asciidoctor CSS.
+
+== Output Formats (Back-ends)
+
+Only HTML and XHTML backends are supported.
+
+== CLI
+
+Support for -d to set the document type is missing.
