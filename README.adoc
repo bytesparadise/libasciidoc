@@ -19,15 +19,24 @@ Although it does not support the full Asciidoc/Asciidoctor syntax, Libasciidoc a
 * Attribute declaration and substitution
 * Paragraphs and admonition paragraphs
 * Delimited Blocks (fenced blocks, listing blocks, example blocks, comment blocks, quoted blocks, sidebar blocks, verse blocks)
+* Source code highlighting of delimited blocks
 * Literal blocks (paragraph starting with a space, with the `+++....+++` delimiter or with the `[literal]` attribute)
-* Quoted text (bold, italic, monospace, superscript and subscript) and substitution prevention using the backslash (`\`) character
-* Passtrough (wrapping with a single plus or a triple plus, or using the `+++pass:[]+++` or `+++pass:q[]+++` macros)
+* Quoted text (bold, italic, monospace, marked, superscript and subscript) and substitution prevention using the backslash (`\`) character
+* Single and double quoted typographic quotes (e.g. '`single`' and "`double`")
+* Explicit and implicit curved apostrophe
+* Copyright (C), Registered (R), and Trademark (TM) symbols
+* Passthrough (wrapping with a single plus or a triple plus, or using the `+++pass:[]+++` or `+++pass:q[]+++` macros)
 * External links in paragraphs (`https://`, `http://`, `ftp://`, `irc://`, `mailto:`)
 * Inline images in paragraphs (`image:`)
 * Image blocks (`image::`)
-* Element attributes (`ID`, `link`, `title`, `role`, etc.) 
-* Labeled, ordered and unordered lists (with nested lists and attributes on items)
+* Icons including font, graphic icons, both in admonition blocks and inline (`icon:`)
+* Element attributes (`ID`, `link`, `title`, `role`, etc.) including short-hand (`[#id.role1.role2]`)
+* Ordered lists including custom numbering types (`arabic`, `upperroman`, `lowergreek`, and so forth)
+* Unordered lists including bullet styles
+* Labeled lists, including `[horizontal]` and `[qanda]` styles
+* Nesting of links of different types & attributes
 * Tables (basic support: header line and cells on multiple lines)
+* Horizontal rules (thematic breaks) and page breaks
 * Table of contents
 * YAML front-matter
 
@@ -35,6 +44,13 @@ Although it does not support the full Asciidoc/Asciidoctor syntax, Libasciidoc a
 See also the link:LIMITATIONS.adoc[known limitations] page for differences between Asciidoc/Asciidoctor and Libasciidoc.
 
 Further elements will be supported in the future. Feel free to open issues https://github.com/bytesparadise/libasciidoc/issues[here] to help prioritizing the upcoming work.
+
+== Output Formats (backend)
+
+Using `-b` (or `--backend`) the following formats are supported:
+
+* `html5` (also `html`), this is the default
+* `xhtml5` (also `xhtml`)
 
 == Installation
 
