@@ -53,6 +53,10 @@ func ReplaceNonAlphanumerics(elements []interface{}, replacement string) (string
 func replaceNonAlphanumerics(content, replacement string) (string, error) {
 	buf := bytes.NewBuffer(nil)
 	lastCharIsSpace := false
+
+	// Drop the :// from links.
+	content = strings.ReplaceAll(content, "://", "")
+
 	for _, r := range strings.TrimLeft(content, " ") { // ignore header spaces
 		if unicode.Is(unicode.Letter, r) || unicode.Is(unicode.Number, r) {
 			_, err := buf.WriteString(strings.ToLower(string(r)))

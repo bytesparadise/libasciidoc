@@ -770,7 +770,7 @@ var _ = Describe("element id resolution", func() {
 				})
 				// then
 				Expect(err).NotTo(HaveOccurred())
-				Expect(section.Attributes[types.AttrID]).To(Equal("_a_link_to_https_foo_com")) // TODO: should be `httpsfoo`
+				Expect(section.Attributes[types.AttrID]).To(Equal("_a_link_to_httpsfoo_com")) // TODO: should be `httpsfoo`
 			})
 		})
 
@@ -831,7 +831,7 @@ var _ = Describe("element id resolution", func() {
 				})
 				// then
 				Expect(err).NotTo(HaveOccurred())
-				Expect(section.Attributes[types.AttrID]).To(Equal("custom_a_link_to_https_foo_com")) // TODO: should be `httpsfoo`
+				Expect(section.Attributes[types.AttrID]).To(Equal("custom_a_link_to_httpsfoo_com")) // TODO: should be `httpsfoo`
 			})
 		})
 

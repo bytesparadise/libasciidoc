@@ -116,7 +116,7 @@ a link to {scheme}://{path}`
 	
 == a title to {scheme}://{path} and https://foo.baz`
 				expected := `<div class="sect1">
-<h2 id="_a_title_to_https_foo_bar_and_https_foo_baz">a title to <a href="https://foo.bar" class="bare">https://foo.bar</a> and <a href="https://foo.baz" class="bare">https://foo.baz</a></h2>
+<h2 id="_a_title_to_httpsfoo_bar_and_httpsfoo_baz">a title to <a href="https://foo.bar" class="bare">https://foo.bar</a> and <a href="https://foo.baz" class="bare">https://foo.baz</a></h2>
 <div class="sectionbody">
 </div>
 </div>`
