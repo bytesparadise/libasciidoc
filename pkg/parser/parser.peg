@@ -500,7 +500,7 @@ DoubleQuotedStringFallbackCharacter <-  ([^\r\n\t `] / "`" !"\"") {
 // ------------------------------------------
 // Sections
 // ------------------------------------------
-Section <- attributes:(Attributes)?
+Section <- attributes:(BlockAttrs)*
     level:(("=")+ {   
         // `=` is level 0, etc.
         return (len(c.text)-1), nil 

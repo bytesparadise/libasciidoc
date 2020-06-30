@@ -80,6 +80,40 @@ Last updated {{.LastUpdated}}
 			To(MatchHTMLTemplate(expected, now))
 	})
 
+	It("header with multple roles and id", func() {
+		source := `[.role1#anchor.role2]
+= My Title`
+		expected := `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="libasciidoc">
+<link type="text/css" rel="stylesheet" href="/path/to/style.css">
+<title>My Title</title>
+</head>
+<body id="anchor" class="article role1 role2">
+<div id="header">
+<h1>My Title</h1>
+</div>
+<div id="content">
+
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated {{.LastUpdated}}
+</div>
+</div>
+</body>
+</html>`
+		now := time.Now()
+		Expect(RenderHTML(source, configuration.WithHeaderFooter(true),
+			configuration.WithCSS("/path/to/style.css"),
+			configuration.WithLastUpdated(now))).
+			To(MatchHTMLTemplate(expected, now))
+	})
+
 	It("should include adoc file without leveloffset from relative file", func() {
 		source := "include::../../../../../test/includes/grandchild-include.adoc[]" // with filename `tmp/foo.adoc`, we are virtually in a subfolder
 		expectedContent := `<div class="sect1">
