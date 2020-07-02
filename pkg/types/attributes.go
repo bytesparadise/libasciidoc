@@ -289,7 +289,7 @@ func (a Attributes) HasOption(key string) bool {
 
 // AppendString sets the value as a singular string value if it did not exist yet,
 // or move the existing value in a slice of strings and append the new one
-func (a Attributes) AppendString(key string, value string) {
+func (a Attributes) AppendString(key string, value interface{}) {
 	v, found := a[key]
 	if !found {
 		a[key] = value
@@ -297,9 +297,19 @@ func (a Attributes) AppendString(key string, value string) {
 	}
 	switch v := v.(type) {
 	case string:
-		a[key] = []string{v, value} // move existing value in a slice, along with the new one
+		switch value := value.(type) {
+		case string:
+			a[key] = []string{v, value} // move existing value in a slice, along with the new one
+		case []string:
+			a[key] = append([]string{v}, value...)
+		}
 	case []string:
-		a[key] = append(v, value) // just append the new value into the slice
+		switch value := value.(type) {
+		case string:
+			a[key] = append(v, value) // just append the new value into the slice
+		case []string:
+			a[key] = append(v, value...)
+		}
 	}
 }
 
@@ -427,80 +437,64 @@ func NewAttributes(attributes interface{}) (Attributes, error) {
 // AttrRole - these are strings, we append them into an array
 // AttrOptions - comma separated list, we split and put into a map
 
-func unwrapAttributesList(l []interface{}) ([]Attributes, error) {
-	var result []Attributes
-	for _, v := range l {
-		if v == nil {
-			continue
-		}
-		switch v := v.(type) {
-		case Attributes:
-			result = append(result, v)
-		case []interface{}:
-			inner, err := unwrapAttributesList(v)
-			if err != nil {
-				return nil, err
-			}
-			result = append(result, inner...)
-		default:
-			return nil, fmt.Errorf("unknown attribute type %T", v)
-		}
-	}
-	return result, nil
-}
-
-func NewElementAttributes(attributes interface{}) (Attributes, error) {
-	if attributes == nil {
+func NewElementAttributes(attributes ...interface{}) (Attributes, error) {
+	if len(attributes) == 0 {
 		return nil, nil
 	}
 
-	switch attrs := attributes.(type) {
-	case Attributes:
-		return attrs, nil
-	case []interface{}:
-		all, err := unwrapAttributesList(attrs)
-		if err != nil {
-			return nil, err
+	var err error
+	result := Attributes{}
+	for _, item := range attributes {
+		if item == nil {
+			continue
 		}
-		result := Attributes{}
-		for _, a := range all {
-			for k, v := range a {
-				switch k {
-				case AttrID:
-					// The first ID set wins.
-					if !result.Has(AttrID) {
-						result[AttrID] = v
-						result[AttrCustomID] = true
-					}
-				case AttrRole:
-					result.AppendString(AttrRole, v.(string)) // grammar only generates string values
-				case AttrOptions, AttrOpts:
-					if !result.Has(AttrOptions) {
-						result[AttrOptions] = map[string]bool{}
-					}
-					m := result[AttrOptions].(map[string]bool)
-					switch v := v.(type) {
-					case string:
-						for _, o := range strings.Split(v, ",") {
-							m[o] = true
-						}
-					case map[string]bool:
-						for o := range v {
-							m[o] = v[o]
-						}
-					}
-				default:
-					result[k] = v
-				}
+		var attrs Attributes
+		switch item := item.(type) {
+		case Attributes:
+			attrs = item
+		case []interface{}:
+			attrs, err = NewElementAttributes(item...)
+			if err != nil {
+				return nil, err
 			}
+		default:
+			return nil, fmt.Errorf("unexpected type of attributes: %T", item)
 		}
-		if len(result) == 0 {
-			return nil, nil
+		for k, v := range attrs {
+			switch k {
+			case AttrID:
+				// The first ID set wins.
+				if !result.Has(AttrID) {
+					result[AttrID] = v
+					result[AttrCustomID] = true
+				}
+			case AttrRole:
+				result.AppendString(AttrRole, v) // grammar only generates string values
+			case AttrOptions, AttrOpts:
+				if !result.Has(AttrOptions) {
+					result[AttrOptions] = map[string]bool{}
+				}
+				m := result[AttrOptions].(map[string]bool)
+				switch v := v.(type) {
+				case string:
+					for _, o := range strings.Split(v, ",") {
+						m[o] = true
+					}
+				case map[string]bool:
+					for o := range v {
+						m[o] = v[o]
+					}
+				}
+			default:
+				result[k] = v
+			}
+
 		}
-		return result, nil
-	default:
-		return nil, fmt.Errorf("unexpected type of attributes: '%T'", attrs)
 	}
+	if len(result) == 0 {
+		return nil, nil
+	}
+	return result, nil
 }
 
 func resolveAlt(path Location) string {

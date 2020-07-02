@@ -217,9 +217,6 @@ ElementAttribute <- &("[" / "." / "#") // skip if the content does not start wit
     return attr, nil // avoid returning something like `[]interface{}{attr, EOL}`
 }
 
-// identify all attributes that masquerade a block element into something else.
-MasqueradeAttribute <- QuoteAttributes / VerseAttributes
-
 ElementID <- "[[" id:(ID) "]]" Space* EOL {
     return types.NewElementID(id.(string))
 }
@@ -1609,8 +1606,12 @@ InlineIcon <- "icon:" iconClass:([\pL0-9_-]+ { return string(c.text), nil }) inl
     return types.NewIcon(iconClass.(string), inlineAttributes.(types.Attributes))
 }
 
-IconAttributes <- "[" size:(StandaloneAttributeValue)? ","? Space* others:(GenericAttribute)* "]" {
-    return types.NewIconAttributes(size, others.([]interface{}))
+IconAttributes <- "[" size:IconSizeAttr? others:NamedAttr* "]" {
+    return types.NewElementAttributes(size, others)
+}
+
+IconSizeAttr <- size:PositionalValue {
+    return types.NewElementNamedAttr(types.AttrIconSize, size.(string))
 }
 
 // ------------------------------------------------------------------------------------
