@@ -1281,29 +1281,6 @@ type Icon struct {
 	Attributes Attributes
 }
 
-// NewIconAttributes returns a map of icon attributes, some of which have implicit keys (`alt`, `width` and `height`)
-func NewIconAttributes(size interface{}, others []interface{}) (Attributes, error) {
-	var result Attributes
-
-	if alt, ok := size.(string); ok {
-		if sizeStr := Apply(alt, strings.TrimSpace); sizeStr != "" {
-			result = result.Set(AttrIconSize, sizeStr)
-		}
-	}
-	for _, otherAttr := range others {
-		if otherAttr, ok := otherAttr.(Attributes); ok {
-			for k, v := range otherAttr {
-				result = result.Set(k, v)
-				if k == AttrID {
-					// mark custom_id flag to `true`
-					result = result.Set(AttrCustomID, true)
-				}
-			}
-		}
-	}
-	return result, nil
-}
-
 // NewIcon initializes a new `Icon`
 func NewIcon(class string, attributes Attributes) (Icon, error) {
 	return Icon{
