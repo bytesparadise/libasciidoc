@@ -2302,3 +2302,39 @@ func NewConcealedIndexTerm(term1, term2, term3 interface{}) (ConcealedIndexTerm,
 		Term3: term3,
 	}, nil
 }
+
+// NewString takes either a single string, or an array of interfaces or strings, and makes
+// a single concatenated string.  Used by the parser when simply collecting all characters that
+// match would not be desired.
+func NewString(v interface{}) (string, error) {
+	switch v := v.(type) {
+	case string:
+		return v, nil
+	case []byte:
+		return string(v), nil
+	case []interface{}:
+		res := &strings.Builder{}
+		for _, item := range v {
+			s, e := NewString(item)
+			if e != nil {
+				return "", e
+			}
+			res.WriteString(s)
+		}
+		return res.String(), nil
+	default:
+		return "", fmt.Errorf("bad string type (%T)", v)
+	}
+}
+
+func NewInlineAttribute(name string, value interface{}) (interface{}, error) {
+	if value == nil {
+		return nil, nil
+	}
+	switch value := value.(type) {
+	case string:
+		return Attributes{name: value}, nil
+	default:
+		return nil, fmt.Errorf("invalid type for attribute %q: %T", name, value)
+	}
+}
