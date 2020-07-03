@@ -327,10 +327,6 @@ QuoteAttribute <- ([^\r\n,\]]*) {
     return string(c.text), nil
 }
 
-InlineAttributes <- "[" attrs:(GenericAttribute)* "]" {
-    return types.NewAttributes(attrs.([]interface{}))								
-} 
-
 QuotedTextAttrs <- "[" attrs:(QuotedTextAttrRole? ShortHandAttr* NamedAttr*) "]" {
     return types.NewElementAttributes(attrs)
 }
@@ -361,6 +357,42 @@ ShortHandAttrRole <- '.' role:ShortHandValue &[,#%.\r\n\]] {
 PositionalValue <- value:ShortHandValue &[,#%.\]] {
     return value.(string), nil
 }
+
+InlineVal <- AttrEmpty / AttrValSQ / AttrValDQ / AttrValPosFB
+
+NamedAttrs <- attrs:NamedAttrPair* {
+    return types.NewElementAttributes(attrs)
+}
+
+NamedAttrPair <- ","? Space* n:NamedAttrKey Space* "=" v:(AttrValDQ / AttrValSQ / AttrValNamedFB) {
+    return types.NewElementNamedAttr(n.(string), v.(string))
+}
+
+// Empty attribute - this prevents us from assigning an empty string to unspecified positional attributes.
+AttrEmpty <- [ \t]* &[,\]] {
+    return nil, nil
+}
+
+// Single Quoted Attribute Values
+// TODO: These values need to be passed through attribute substitution
+AttrValSQ <- Space* "'" val:AttrValSQin "'" Space* &[,\]] { return val, nil }
+
+AttrValSQin <- val:( AttrValSQEsc / [^\r\n'\\]+ / `\` )* { return types.NewString(val) }
+
+AttrValSQEsc <- `\'` { return `'`, nil }
+
+// Double Quoted Attribute Values
+AttrValDQ <- Space* '"' val:AttrValDQin '"' Space* { return val, nil }
+
+AttrValDQin <- val:( AttrValDQEsc / [^\r\n"\\]+ / `\` )* { return types.NewString(val) }
+
+AttrValDQEsc <- `\"` { return `"`, nil }
+
+// Fallback Positional Attribute Values, must not include equals
+AttrValPosFB <- [^,=\r\n\]]* &[,\]] { return strings.TrimSpace(string(c.text)), nil }
+
+// Fallback Named Attribute Value, may include equals
+AttrValNamedFB <- [^,\r\n\]]* &[,\]] { return strings.TrimSpace(string(c.text)), nil }
 
 // InlinePositionalValue is an unnamed attribute.
 InlinePositionalValue <- Space* value:(InlineValuePlain / AttrValueSingleQuoted / AttrValueDoubleQuoted) Space* &[,#%.\]] {
@@ -1566,8 +1598,8 @@ InlineImage <- "image:" !":" path:(Location) inlineAttrs:(InlineImageAttrs) {
     return types.NewInlineImage(path.(types.Location), inlineAttrs.(types.Attributes))
 }
 
-InlineImageAttrs <- '[' attrs:(ImageAltAttrInline? ImageWidthAttr? ImageHeightAttr? NamedAttr*) ']' {
-    return types.NewElementAttributes(attrs)
+InlineImageAttrs <- '[' alt:ImageAltInline w:ImageWidth h:ImageHeight nv:NamedAttrs ']' {
+    return types.NewElementAttributes(alt, w, h, nv)
 }
 
 BlockImageAttrs <- ImageAttrList / ElementTitle / ElementID
@@ -1576,8 +1608,16 @@ ImageAttrList <- '[' attrs:(ImageAltAttr? ShortHandAttr* ImageWidthAttr? ImageHe
     return types.NewElementAttributes(attrs)
 }
 
-ImageAltAttrInline <- value:InlinePositionalValue {
-    return types.NewElementNamedAttr(types.AttrImageAlt, value.(string))
+ImageAltInline <- value:InlineVal? {
+    return types.NewInlineAttribute(types.AttrImageAlt, value)
+}
+
+ImageWidth <- ","? value:InlineVal? {
+    return types.NewInlineAttribute(types.AttrImageWidth, value)
+}
+
+ImageHeight <- ","? value:InlineVal? {
+    return types.NewInlineAttribute(types.AttrImageHeight, value)
 }
 
 ImageAltAttr <- Space* value:PositionalValue Space* {
@@ -1602,16 +1642,16 @@ ImageHeightAttr <- Space* "," Space* value:PositionalValue? {
 // ------------------------------------------------------------------------------------
 // Inline icons
 // ------------------------------------------------------------------------------------
-InlineIcon <- "icon:" iconClass:([\pL0-9_-]+ { return string(c.text), nil }) inlineAttributes:(IconAttributes) {
-    return types.NewIcon(iconClass.(string), inlineAttributes.(types.Attributes))
+InlineIcon <- "icon:" icon:([\pL0-9_-]+ { return string(c.text), nil }) attrs:(IconAttrs) {
+    return types.NewIcon(icon.(string), attrs.(types.Attributes))
 }
 
-IconAttributes <- "[" size:IconSizeAttr? others:NamedAttr* "]" {
-    return types.NewElementAttributes(size, others)
+IconAttrs <- '[' size:IconSize nv:NamedAttrs ']' {
+    return types.NewElementAttributes(size, nv)
 }
 
-IconSizeAttr <- size:PositionalValue {
-    return types.NewElementNamedAttr(types.AttrIconSize, size.(string))
+IconSize <- value:InlineVal? {
+    return types.NewInlineAttribute(types.AttrIconSize, value)
 }
 
 // ------------------------------------------------------------------------------------
