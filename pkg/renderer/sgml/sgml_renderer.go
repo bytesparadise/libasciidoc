@@ -32,6 +32,7 @@ type sgmlRenderer struct {
 	iconFont                  *textTemplate
 	iconImage                 *textTemplate
 	iconText                  *textTemplate
+	imageCaption              *textTemplate
 	inlineIcon                *textTemplate
 	inlineImage               *textTemplate
 	internalCrossReference    *textTemplate
@@ -110,6 +111,7 @@ func (r *sgmlRenderer) prepareTemplates() error {
 		r.iconFont, err = r.newTemplate("icon-font", tmpls.IconFont, err)
 		r.iconImage, err = r.newTemplate("icon-image", tmpls.IconImage, err)
 		r.iconText, err = r.newTemplate("icon-text", tmpls.IconText, err)
+		r.imageCaption, err = r.newTemplate("image-caption", tmpls.ImageCaption, err)
 		r.inlineIcon, err = r.newTemplate("inline-icon", tmpls.InlineIcon, err)
 		r.inlineImage, err = r.newTemplate("inline-image", tmpls.InlineImage, err)
 		r.internalCrossReference, err = r.newTemplate("internal-xref", tmpls.InternalCrossReference, err)
