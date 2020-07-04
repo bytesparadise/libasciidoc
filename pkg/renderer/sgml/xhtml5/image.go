@@ -1,17 +1,18 @@
 package xhtml5
 
 const (
-	blockImageTmpl = `<div{{ if .ID }} id="{{ .ID }}"{{ end }} class="imageblock{{ if .Roles }} {{ .Roles }}{{ end }}">
-<div class="content">
-{{ if ne .Href "" }}<a class="image" href="{{ .Href }}">{{ end }}` +
+	blockImageTmpl = "<div" +
+		"{{ if .ID }} id=\"{{ .ID }}\"{{ end }}" +
+		" class=\"imageblock{{ if .Roles }} {{ .Roles }}{{ end }}\">\n" +
+		"<div class=\"content\">\n" +
+		`{{ if .Href }}<a class="image" href="{{ .Href }}">{{ end }}` +
 		`<img src="{{ .Path }}" alt="{{ .Alt }}"` +
 		`{{ if .Width }} width="{{ .Width }}"{{ end }}` +
 		`{{ if .Height }} height="{{ .Height }}"{{ end }}` +
-		`/>{{ if ne .Href "" }}</a>{{ end }}
-</div>{{ if .Title }}
-<div class="title">Figure {{ .ImageNumber }}. {{ .Title }}</div>
-{{ else }}
-{{ end }}</div>`
+		"/>{{ if .Href }}</a>{{ end }}\n" +
+		"</div>\n" +
+		"{{ if .Title }}<div class=\"title\">{{ .Caption }}{{ .Title }}</div>\n{{ end }}" +
+		"</div>"
 
 	inlineImageTmpl = `<span class="image{{ if .Roles }} {{ .Roles }}{{ end }}">` +
 		`<img src="{{ .Path }}" alt="{{ .Alt }}"` +

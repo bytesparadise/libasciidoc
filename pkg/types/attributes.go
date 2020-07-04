@@ -79,6 +79,12 @@ const (
 	AttrImageTitle = "title"
 	// AttrImageWindow the `window` attribute, which becomes the target for the link
 	AttrImageWindow = "window"
+	// AttrImageCaption is the image caption for block images
+	AttrImageCaption = "caption"
+	// AttrImageFloat is for image float
+	AttrImageFloat = "float"
+	// AttrImageAlign is for image alignment
+	AttrImageAlign = "align"
 	// AttrIconSize the icon `size`, and can be one of 1x, 2x, 3x, 4x, 5x, lg, fw
 	AttrIconSize = "size"
 	// AttrIconRotate the icon `rotate` attribute, and can be one of 90, 180, or 270

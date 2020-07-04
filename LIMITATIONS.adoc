@@ -88,7 +88,8 @@ Interactive checklists are not supported.
 
 Interactive SVG support is missing, as is support for inline SVG.
 
-Float, alignment, and caption attributes have no effect.
+The global figure-caption attribute is not honored.
+Use per-image caption attributes for more control if needed.
 
 == Multimedia
 

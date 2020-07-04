@@ -44,6 +44,29 @@ var _ = Describe("images", func() {
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
+		It("block image with alt and dimensions, float, align", func() {
+
+			source := "image::foo.png[foo image, 600, 400,float=left,align=center]"
+			expected := `<div class="imageblock left text-center">
+<div class="content">
+<img src="foo.png" alt="foo image" width="600" height="400"/>
+</div>
+</div>`
+			Expect(RenderXHTML(source)).To(MatchHTML(expected))
+		})
+
+		It("block image with custom caption", func() {
+
+			source := ".Image Title\nimage::foo.png[foo image, 600, 400,caption=\"Bar A. \"]"
+			expected := `<div class="imageblock">
+<div class="content">
+<img src="foo.png" alt="foo image" width="600" height="400"/>
+</div>
+<div class="title">Bar A. Image Title</div>
+</div>`
+			Expect(RenderXHTML(source)).To(MatchHTML(expected))
+		})
+
 		It("block image with title, alt and dimensions", func() {
 			source := `[#img-foobar]
 .A title to foobar
