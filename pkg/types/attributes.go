@@ -79,8 +79,6 @@ const (
 	AttrImageTitle = "title"
 	// AttrImageWindow the `window` attribute, which becomes the target for the link
 	AttrImageWindow = "window"
-	// AttrImageCaption is the image caption for block images
-	AttrImageCaption = "caption"
 	// AttrImageFloat is for image float
 	AttrImageFloat = "float"
 	// AttrImageAlign is for image alignment
@@ -97,6 +95,8 @@ const (
 	AttrOptions = "options"
 	// AttrOpts alias for AttrOptions
 	AttrOpts = "opts"
+	// AttrCaption is the caption for block images, tables, and so forth
+	AttrCaption = "caption"
 	// AttrStyle block or list style
 	AttrStyle = "style"
 	// AttrPositional2 positional parameter 2

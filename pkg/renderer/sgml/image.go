@@ -20,7 +20,7 @@ func (r *sgmlRenderer) renderImageBlock(ctx *renderer.Context, img types.ImageBl
 	if _, found := img.Attributes.GetAsString(types.AttrTitle); found {
 		number = ctx.GetAndIncrementImageCounter()
 
-		if s, ok := img.Attributes.GetAsString(types.AttrImageCaption); ok {
+		if s, ok := img.Attributes.GetAsString(types.AttrCaption); ok {
 			caption.WriteString(s)
 		} else {
 			err := r.imageCaption.Execute(caption, struct {

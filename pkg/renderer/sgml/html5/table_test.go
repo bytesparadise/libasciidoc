@@ -86,6 +86,44 @@ var _ = Describe("tables", func() {
 		Expect(RenderHTML(source)).To(MatchHTML(expected))
 	})
 
+	It("table with title, custom caption", func() {
+		source := `.table title
+[caption="Example I. "]
+|===
+|Column heading 1 |Column heading 2
+
+|Column 1, row 1
+|Column 2, row 1
+
+|Column 1, row 2
+|Column 2, row 2
+|===`
+		expected := `<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Example I. table title</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Column heading 1</th>
+<th class="tableblock halign-left valign-top">Column heading 2</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Column 1, row 1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Column 2, row 1</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Column 1, row 2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Column 2, row 2</p></td>
+</tr>
+</tbody>
+</table>`
+		Expect(RenderHTML(source)).To(MatchHTML(expected))
+	})
+
 	It("empty table ", func() {
 		source := `|===
 |===`

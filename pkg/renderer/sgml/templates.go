@@ -62,6 +62,7 @@ type Templates struct {
 	SuperscriptText           string
 	Table                     string
 	TableBody                 string
+	TableCaption              string
 	TableCell                 string
 	TableHeader               string
 	TableHeaderCell           string
