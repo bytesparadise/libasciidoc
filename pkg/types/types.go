@@ -1239,7 +1239,7 @@ func NewImageAttributes(alt, width, height interface{}, sa []interface{}, others
 	}
 	if width, ok := width.(string); ok {
 		if widthStr := Apply(width, strings.TrimSpace); widthStr != "" {
-			result = result.Set(AttrImageWidth, widthStr)
+			result = result.Set(AttrWidth, widthStr)
 		}
 	}
 	if height, ok := height.(string); ok {

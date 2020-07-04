@@ -66,7 +66,7 @@ var _ = Describe("attributes", func() {
 				Blocks: []interface{}{
 					types.ImageBlock{
 						Attributes: types.Attributes{
-							types.AttrImageWidth: "200",
+							types.AttrWidth: "200",
 						},
 						Location: types.Location{
 							Path: []interface{}{
@@ -195,7 +195,7 @@ var _ = Describe("attributes", func() {
 						Attributes: types.Attributes{
 							types.AttrImageAlt:    `Quoted, Here`,
 							types.AttrImageHeight: "100", // last one wins
-							types.AttrImageWidth:  "1",
+							types.AttrWidth:       "1",
 						},
 						Location: types.Location{
 							Path: []interface{}{
@@ -215,7 +215,7 @@ var _ = Describe("attributes", func() {
 						Attributes: types.Attributes{
 							types.AttrImageAlt:    `Quoted, Here`,
 							types.AttrImageHeight: "100", // last one wins
-							types.AttrImageWidth:  "1",
+							types.AttrWidth:       "1",
 							"test1":               "123",
 							"test2":               "second test", // shows trailing pad removed
 						},
@@ -237,7 +237,7 @@ var _ = Describe("attributes", func() {
 						Attributes: types.Attributes{
 							types.AttrImageAlt:    `Quoted, Here`,
 							types.AttrImageHeight: "100", // last one wins
-							types.AttrImageWidth:  "1",
+							types.AttrWidth:       "1",
 							"test1":               "123",
 							"test2":               `second "test"`, // shows trailing pad removed
 						},

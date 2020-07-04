@@ -641,7 +641,7 @@ image::foo.png[]`
 						types.ImageBlock{
 							Attributes: types.Attributes{
 								types.AttrImageAlt:    "verse",
-								types.AttrImageWidth:  "john doe",
+								types.AttrWidth:       "john doe",
 								types.AttrImageHeight: "verse title",
 							},
 							Location: types.Location{
@@ -846,7 +846,7 @@ image::foo.png[]`
 							},
 							Attributes: types.Attributes{
 								types.AttrImageAlt:    "quote",
-								types.AttrImageWidth:  "john doe",
+								types.AttrWidth:       "john doe",
 								types.AttrImageHeight: "quote title",
 							},
 						},

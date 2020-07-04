@@ -22,7 +22,7 @@ func (r *sgmlRenderer) renderElementRoles(attrs types.Attributes) sanitized {
 func (r *sgmlRenderer) renderImageRoles(attrs types.Attributes) sanitized {
 	var roles []string
 
-	if val, ok := attrs.GetAsString(types.AttrImageFloat); ok {
+	if val, ok := attrs.GetAsString(types.AttrFloat); ok {
 		roles = append(roles, val)
 	}
 	if val, ok := attrs.GetAsString(types.AttrImageAlign); ok {
