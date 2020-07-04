@@ -69,6 +69,7 @@ var templates = sgml.Templates{
 	SuperscriptText:           superscriptTextTmpl,
 	Table:                     tableTmpl,
 	TableBody:                 tableBodyTmpl,
+	TableCaption:              tableCaptionTmpl,
 	TableCell:                 tableCellTmpl,
 	TableHeader:               tableHeaderTmpl,
 	TableHeaderCell:           tableHeaderCellTmpl,

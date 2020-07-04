@@ -14,6 +14,8 @@ import (
 
 func (r *sgmlRenderer) renderTable(ctx *renderer.Context, t types.Table) (string, error) {
 	result := &strings.Builder{}
+	caption := &strings.Builder{}
+
 	// inspect first line to obtain cell width ratio
 	widths := []string{}
 	if len(t.Lines) > 0 {
@@ -33,8 +35,24 @@ func (r *sgmlRenderer) renderTable(ctx *renderer.Context, t types.Table) (string
 		log.Debugf("current total width: %v -> %v", total, widths[n-1])
 	}
 	number := 0
+	title := r.renderElementTitle(t.Attributes)
+
 	if t.Attributes.Has(types.AttrTitle) {
 		number = ctx.GetAndIncrementTableCounter()
+		if s, ok := t.Attributes.GetAsString(types.AttrCaption); ok {
+			caption.WriteString(s)
+		} else {
+			err := r.tableCaption.Execute(caption, struct {
+				TableNumber int
+				Title       sanitized
+			}{
+				TableNumber: number,
+				Title:       title,
+			})
+			if err != nil {
+				return "", errors.Wrap(err, "unable to format table caption")
+			}
+		}
 	}
 
 	header, err := r.renderTableHeader(ctx, t.Header)
@@ -52,6 +70,7 @@ func (r *sgmlRenderer) renderTable(ctx *renderer.Context, t types.Table) (string
 		Title       sanitized
 		CellWidths  []string
 		TableNumber int
+		Caption     string
 		Roles       sanitized
 		Header      string
 		Body        string
@@ -60,6 +79,7 @@ func (r *sgmlRenderer) renderTable(ctx *renderer.Context, t types.Table) (string
 		Title:       r.renderElementTitle(t.Attributes),
 		CellWidths:  widths,
 		TableNumber: number,
+		Caption:     caption.String(),
 		Roles:       r.renderElementRoles(t.Attributes),
 		Header:      header,
 		Body:        body,
