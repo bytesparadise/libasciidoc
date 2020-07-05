@@ -9,6 +9,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/davecgh/go-spew/spew"
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 	log "github.com/sirupsen/logrus"
@@ -16,20 +17,21 @@ import (
 )
 
 // ------------------------------------------
-// Draft Document: document parsed in a linear fashion, and which needs further
-// processing before rendering
+// Raw Document: result of the first parsing
+// phase, with file inclusions resolved, but
+// nothing more.
 // ------------------------------------------
 
-// DraftDocument the linear-level structure for a document
-type DraftDocument struct {
+// RawDocument the linear-level structure for a document
+type RawDocument struct {
 	FrontMatter FrontMatter
 	Blocks      []interface{}
 }
 
-// NewDraftDocument initializes a new Draft`Document` from the given lines
-func NewDraftDocument(frontMatter interface{}, blocks []interface{}) (DraftDocument, error) {
-	log.Debugf("initializing a new DraftDocument with %d block element(s)", len(blocks))
-	result := DraftDocument{
+// NewRawDocument initializes a new `RawDocument` from the given lines
+func NewRawDocument(frontMatter interface{}, blocks []interface{}) (RawDocument, error) {
+	log.Debugf("initializing a new RawDocument with %d block element(s)", len(blocks))
+	result := RawDocument{
 		Blocks: blocks,
 	}
 	if fm, ok := frontMatter.(FrontMatter); ok {
@@ -40,7 +42,7 @@ func NewDraftDocument(frontMatter interface{}, blocks []interface{}) (DraftDocum
 
 // Attributes returns the document attributes on the top-level section
 // and all the document attribute declarations at the top of the document only.
-func (d DraftDocument) Attributes() Attributes {
+func (d RawDocument) Attributes() Attributes {
 	result := Attributes{}
 blocks:
 	for _, b := range d.Blocks {
@@ -70,6 +72,30 @@ blocks:
 	}
 	log.Debugf("document attributes: %+v", result)
 	return result
+}
+
+// ------------------------------------------
+// Draft Document: document in which
+// all substitutions have been applied
+// ------------------------------------------
+
+// DraftDocument the linear-level structure for a document
+type DraftDocument struct {
+	Attributes  Attributes
+	FrontMatter FrontMatter
+	Blocks      []interface{}
+}
+
+// NewDraftDocument initializes a new Draft`Document` from the given lines
+func NewDraftDocument(frontMatter interface{}, blocks []interface{}) (DraftDocument, error) {
+	log.Debugf("initializing a new DraftDocument with %d block element(s)", len(blocks))
+	result := DraftDocument{
+		Blocks: blocks,
+	}
+	if fm, ok := frontMatter.(FrontMatter); ok {
+		result.FrontMatter = fm
+	}
+	return result, nil
 }
 
 // ------------------------------------------
@@ -1021,10 +1047,29 @@ func (i *LabeledListItem) AddElement(element interface{}) {
 // Paragraph
 // ------------------------------------------
 
+// // RawParagraph a paragraph with raw lines,
+// // returned by the parser and before substitutions are applied
+// type RawParagraph struct {
+// 	Attributes Attributes
+// 	Lines      []interface{}
+// }
+
+// // NewRawParagraph initializes a new `RawParagraph`
+// func NewRawParagraph(lines []interface{}, attributes interface{}) (RawParagraph, error) {
+// 	attrs, err := NewAttributes(attributes)
+// 	if err != nil {
+// 		return RawParagraph{}, errors.Wrapf(err, "failed to initialize a Paragraph element")
+// 	}
+// 	return RawParagraph{
+// 		Attributes: attrs,
+// 		Lines:      lines,
+// 	}, nil
+// }
+
 // Paragraph the structure for the paragraphs
 type Paragraph struct {
 	Attributes Attributes
-	Lines      [][]interface{}
+	Lines      []interface{}
 }
 
 // AttrHardBreaks the attribute to set on a paragraph to render with hard breaks on each line
@@ -1040,17 +1085,17 @@ func NewParagraph(lines []interface{}, attributes interface{}) (Paragraph, error
 		return Paragraph{}, errors.Wrapf(err, "failed to initialize a Paragraph element")
 	}
 	// log.Debugf("initializing a new paragraph with %d line(s) and %d attribute(s)", len(lines), len(attrs))
-	elements := make([][]interface{}, 0)
+	elements := make([]interface{}, 0)
 	for _, line := range lines {
-		if l, ok := line.([]interface{}); ok {
+		switch l := line.(type) {
+		case RawLine, []interface{}:
 			// log.Debugf("processing paragraph line of type %T", line)
 			// if len(l) > 0 {
 			elements = append(elements, l)
 			// }
-		} else {
+		default:
 			return Paragraph{}, errors.Errorf("unsupported paragraph line of type %[1]T: %[1]v", line)
 		}
-
 	}
 	// log.Debugf("generated a paragraph with %d line(s): %v", len(elements), elements)
 	return Paragraph{
@@ -1065,14 +1110,32 @@ var _ FootnotesContainer = Paragraph{}
 // with footnote references. The footnotes are stored in the given 'notes' param
 func (p Paragraph) ReplaceFootnotes(notes *Footnotes) interface{} {
 	for i, line := range p.Lines {
-		for j, element := range line {
-			if note, ok := element.(Footnote); ok {
-				p.Lines[i][j] = notes.Reference(note)
+		if line, ok := line.([]interface{}); ok {
+			for j, element := range line {
+				if note, ok := element.(Footnote); ok {
+					line[j] = notes.Reference(note)
+				}
 			}
+			p.Lines[i] = line
 		}
 	}
 	return p
 }
+
+// // NewRawAdmonitionParagraph returns a new RawParagraph with an extra admonition attribute
+// func NewRawAdmonitionParagraph(lines []interface{}, admonitionKind AdmonitionKind, attributes interface{}) (RawParagraph, error) {
+// 	log.Debugf("new admonition paragraph")
+// 	attrs, err := NewAttributes(attributes)
+// 	if err != nil {
+// 		return RawParagraph{}, errors.Wrapf(err, "failed to initialize an Admonition Paragraph element")
+// 	}
+// 	p, err := NewRawParagraph(lines, attrs)
+// 	if err != nil {
+// 		return RawParagraph{}, err
+// 	}
+// 	p.Attributes = p.Attributes.Set(AttrAdmonitionKind, admonitionKind)
+// 	return p, nil
+// }
 
 // NewAdmonitionParagraph returns a new Paragraph with an extra admonition attribute
 func NewAdmonitionParagraph(lines []interface{}, admonitionKind AdmonitionKind, attributes interface{}) (Paragraph, error) {
@@ -1221,9 +1284,17 @@ func NewInlineImage(path Location, attributes Attributes) (InlineImage, error) {
 // ResolveLocation resolves the image path using the given document attributes
 // also, updates the `alt` attribute based on the resolved path of the image
 func (i InlineImage) ResolveLocation(attrs AttributesWithOverrides) InlineImage {
+	if log.IsLevelEnabled(log.DebugLevel) {
+		log.Debug("resolving location")
+		spew.Fdump(log.StandardLogger().Out, i.Location.Path)
+	}
 	i.Location = i.Location.Resolve(attrs)
 	if _, found := i.Attributes[AttrImageAlt]; !found {
 		i.Attributes = i.Attributes.Set(AttrImageAlt, resolveAlt(i.Location))
+	}
+	if log.IsLevelEnabled(log.DebugLevel) {
+		log.Debugf("resolved location: '%s'", i)
+		spew.Fdump(log.StandardLogger().Out, i.Location.Path)
 	}
 	return i
 }
@@ -1397,6 +1468,23 @@ type sequence struct {
 func (s *sequence) nextVal() int {
 	s.counter++
 	return s.counter
+}
+
+// ------------------------------------------
+// Raw lines
+// ------------------------------------------
+
+// RawLine a line with raw content, read as-is by the parser (before further processing)
+type RawLine struct {
+	Content string
+}
+
+// NewRawLine returns a new slice containing a single StringElement with the given content
+func NewRawLine(content string) (RawLine, error) {
+	log.Debugf("new rawline: '%v'", content)
+	return RawLine{
+		Content: content,
+	}, nil
 }
 
 // ------------------------------------------
@@ -1682,10 +1770,10 @@ func NewStringElement(content string) (StringElement, error) {
 	return StringElement{Content: content}, nil
 }
 
-// String return the content of this StringElement
-func (s StringElement) String() string {
-	return s.Content
-}
+// // String return the content of this StringElement
+// func (s StringElement) String() string {
+// 	return s.Content
+// }
 
 // ------------------------------------------
 // VerbatimLine
@@ -2197,7 +2285,7 @@ type Location struct {
 // NewLocation return a new location with the given elements
 func NewLocation(scheme interface{}, path []interface{}) (Location, error) {
 	path = Merge(path)
-	// log.Debugf("new location: '%[1]s' (%[1]T) '%+[2]v", scheme, path)
+	log.Debugf("new location: '%v' '%+v", scheme, path)
 	s := ""
 	if scheme, ok := scheme.([]byte); ok {
 		s = string(scheme)
@@ -2218,6 +2306,8 @@ func (l Location) String() string { // (attrs map[string]string) string {
 	for _, e := range l.Path {
 		if s, ok := e.(string); ok {
 			result.WriteString(s) // no need to use `fmt.Sprintf` for elements of type 'string'
+		} else if s, ok := e.(StringElement); ok {
+			result.WriteString(s.Content) // no need to use `fmt.Sprintf` for elements of type 'string'
 		} else {
 			result.WriteString(fmt.Sprintf("%s", e))
 		}
@@ -2231,7 +2321,7 @@ const imagesdir = "imagesdir"
 // with their associated values, or their corresponding raw text if
 // no attribute matched
 // returns `true` if some document attribute substitution occurred
-func (l *Location) Resolve(attrs AttributesWithOverrides) Location {
+func (l Location) Resolve(attrs AttributesWithOverrides) Location {
 	content := bytes.NewBuffer(nil)
 	for _, e := range l.Path {
 		switch e := e.(type) {
@@ -2246,6 +2336,8 @@ func (l *Location) Resolve(attrs AttributesWithOverrides) Location {
 		default:
 			if s, ok := e.(string); ok {
 				content.WriteString(s) // no need to use `fmt.Sprintf` for elements of type 'string'
+			} else if s, ok := e.(StringElement); ok {
+				content.WriteString(s.Content) // no need to use `fmt.Sprintf` for elements of type 'string'
 			} else {
 				content.WriteString(fmt.Sprintf("%s", e))
 			}
@@ -2261,6 +2353,7 @@ func (l *Location) Resolve(attrs AttributesWithOverrides) Location {
 			}
 		}
 	}
+	log.Debugf("resolved location: '%v' -> '%s'", l, location)
 	return Location{
 		Scheme: l.Scheme,
 		Path: []interface{}{

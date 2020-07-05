@@ -959,7 +959,7 @@ on <strong>multiple lines</strong></p>
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
-		It("with with author only", func() {
+		It("with author only", func() {
 			source := `> -- John Doe`
 			expected := `<div class="quoteblock">
 <blockquote>

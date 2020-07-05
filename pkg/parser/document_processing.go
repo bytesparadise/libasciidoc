@@ -1,6 +1,7 @@
 package parser
 
 import (
+	"fmt"
 	"io"
 
 	"github.com/bytesparadise/libasciidoc/pkg/configuration"
@@ -10,53 +11,81 @@ import (
 )
 
 // ParseDocument parses the content of the reader identitied by the filename
-func ParseDocument(r io.Reader, config configuration.Configuration) (types.Document, error) {
-	draftDoc, err := ParseDraftDocument(r, config)
+func ParseDocument(r io.Reader, config configuration.Configuration, options ...Option) (types.Document, error) {
+	rawDoc, err := ParseRawDocument(r, config, options...)
 	if err != nil {
 		return types.Document{}, err
 	}
-	attrs := types.AttributesWithOverrides{
-		Content:   types.Attributes{},
-		Overrides: config.AttributeOverrides,
-	}
-	// also, add all front-matter key/values
-	attrs.Add(draftDoc.FrontMatter.Content)
-	// also, add all AttributeDeclaration at the top of the document
-	attrs.Add(draftDoc.Attributes())
 
-	// apply document attribute substitutions and re-parse paragraphs that were affected
-	blocks, _, err := applyAttributeSubstitutions(draftDoc.Blocks, attrs)
+	draftDoc, err := ApplySubstitutions(rawDoc, config, options...)
 	if err != nil {
 		return types.Document{}, err
+	}
+	if log.IsLevelEnabled(log.DebugLevel) {
+		log.Debug("draft doc:")
+		spew.Fdump(log.StandardLogger().Out, draftDoc)
 	}
 
 	// now, merge list items into proper lists
-	blocks, err = rearrangeListItems(blocks.([]interface{}), false)
+	blocks, err := rearrangeListItems(draftDoc.Blocks, false)
 	if err != nil {
 		return types.Document{}, err
 	}
 	// filter out blocks not needed in the final doc
-	blocks = filter(blocks.([]interface{}), allMatchers...)
+	blocks = filter(blocks, allMatchers...)
 
-	blocks, footnotes := processFootnotes(blocks.([]interface{}))
+	blocks, footnotes := processFootnotes(blocks)
 	// now, rearrange elements in a hierarchical manner
-	doc := rearrangeSections(blocks.([]interface{}))
+	doc := rearrangeSections(blocks)
 	// also, set the footnotes
 	doc.Footnotes = footnotes
 	// insert the preamble at the right location
 	doc = includePreamble(doc)
-	// and add all remaining attributes, too
-	extraAttrs := attrs.All()
-	if doc.Attributes == nil && len(extraAttrs) > 0 {
-		doc.Attributes = types.Attributes{}
-	}
-	doc.Attributes.Add(extraAttrs)
+	doc.Attributes = doc.Attributes.Add(draftDoc.Attributes)
 	// also insert the table of contents
 	doc = includeTableOfContentsPlaceHolder(doc)
 	// finally
 	if log.IsLevelEnabled(log.DebugLevel) {
 		log.Debug("final document:")
-		spew.Dump(doc)
+		spew.Fdump(log.StandardLogger().Out, doc)
 	}
 	return doc, nil
+}
+
+// ContextKey a non-built-in type for keys in the context
+type ContextKey string
+
+// LevelOffset the key for the level offset of the file to include
+const LevelOffset ContextKey = "leveloffset"
+
+// ParseRawDocument parses a document's content and applies the preprocessing directives (file inclusions)
+func ParseRawDocument(r io.Reader, config configuration.Configuration, options ...Option) (types.RawDocument, error) {
+	doc, err := parseRawDocument(r, config, options...)
+	if err != nil {
+		return types.RawDocument{}, err
+	}
+	attrs := types.AttributesWithOverrides{
+		Content:   map[string]interface{}{},
+		Overrides: map[string]string{},
+	}
+	if doc.Blocks, err = processFileInclusions(doc.Blocks, attrs, []levelOffset{}, config, options...); err != nil {
+		return types.RawDocument{}, err
+	}
+	if log.IsLevelEnabled(log.DebugLevel) {
+		log.Debug("draft document:")
+		spew.Fdump(log.StandardLogger().Out, doc)
+	}
+	return doc, nil
+}
+
+func parseRawDocument(r io.Reader, config configuration.Configuration, options ...Option) (types.RawDocument, error) {
+	log.Debugf("parsing raw document '%s'", config.Filename)
+	if d, err := ParseReader(config.Filename, r, options...); err != nil {
+		log.Errorf("failed to parse raw document: %s", err)
+		return types.RawDocument{}, err
+	} else if doc, ok := d.(types.RawDocument); ok {
+		return doc, nil
+	} else {
+		return types.RawDocument{}, fmt.Errorf("unexpected type of raw document: '%T'", d)
+	}
 }

@@ -1,6 +1,6 @@
 package testsupport
 
-type filenameMatcher interface {
+type filenameMatcher interface { // TODO: refactor with `Apply` interfaces
 	setFilename(string)
 }
 
@@ -14,12 +14,12 @@ func WithFilename(filename string) FilenameOption {
 	}
 }
 
-// BecomeDraftDocumentOption an option to configure the BecomeDraftDocument matcher
-type BecomeDraftDocumentOption func(c *drafDocumentParserConfig)
+// RawDocumentParserOption an option to configure the BecomeDraftDocument matcher
+type RawDocumentParserOption func(c *rawDocumentParserConfig)
 
-// WithoutPreprocessing disables document preprocessing
-func WithoutPreprocessing() BecomeDraftDocumentOption {
-	return func(c *drafDocumentParserConfig) {
-		c.preprocessing = false
+// WithoutFileInclusions disables file inclusions
+func WithoutFileInclusions() RawDocumentParserOption {
+	return func(c *rawDocumentParserConfig) {
+		c.fileInclusion = false
 	}
 }

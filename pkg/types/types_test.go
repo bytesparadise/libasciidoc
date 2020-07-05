@@ -586,13 +586,13 @@ var _ = Describe("location resolution", func() {
 	)
 })
 
-var _ = DescribeTable("draft document attributes",
-	func(draftDoc types.DraftDocument, expectation types.Attributes) {
-		Expect(draftDoc.Attributes()).To(Equal(expectation))
+var _ = DescribeTable("raw document attributes",
+	func(d types.RawDocument, expectation types.Attributes) {
+		Expect(d.Attributes()).To(Equal(expectation))
 	},
 
 	Entry("should use attribute declarations at top of document only",
-		types.DraftDocument{
+		types.RawDocument{
 			Blocks: []interface{}{
 				types.AttributeDeclaration{
 					Name:  "foo1",
@@ -615,7 +615,7 @@ var _ = DescribeTable("draft document attributes",
 		},
 	),
 	Entry("should use attribute declarations right after section 0 only",
-		types.DraftDocument{
+		types.RawDocument{
 			Blocks: []interface{}{
 				types.Section{
 					Level: 0,
@@ -641,7 +641,7 @@ var _ = DescribeTable("draft document attributes",
 		},
 	),
 	Entry("should include attributes of section 0 only",
-		types.DraftDocument{
+		types.RawDocument{
 			Blocks: []interface{}{
 				types.Section{
 					Level: 0,
@@ -689,7 +689,7 @@ var _ = DescribeTable("draft document attributes",
 		},
 	),
 	Entry("should ignore attribute declarations elsewhere",
-		types.DraftDocument{
+		types.RawDocument{
 			Blocks: []interface{}{
 				types.Section{
 					Level: 1,
@@ -1013,8 +1013,8 @@ var _ = Describe("footnote replacements", func() {
 		It("paragraph with multiple footnotes", func() {
 			// given
 			paragraph := types.Paragraph{
-				Lines: [][]interface{}{
-					{
+				Lines: []interface{}{
+					[]interface{}{
 						types.StringElement{
 							Content: "first line",
 						},
@@ -1027,7 +1027,7 @@ var _ = Describe("footnote replacements", func() {
 							},
 						},
 					},
-					{
+					[]interface{}{
 						types.StringElement{
 							Content: "second line",
 						},
@@ -1039,7 +1039,7 @@ var _ = Describe("footnote replacements", func() {
 							},
 						},
 					},
-					{
+					[]interface{}{
 						types.StringElement{
 							Content: "third line",
 						},
@@ -1055,8 +1055,8 @@ var _ = Describe("footnote replacements", func() {
 			paragraph.ReplaceFootnotes(footnotes)
 			// then
 			Expect(paragraph).To(Equal(types.Paragraph{
-				Lines: [][]interface{}{
-					{
+				Lines: []interface{}{
+					[]interface{}{
 						types.StringElement{
 							Content: "first line",
 						},
@@ -1065,7 +1065,7 @@ var _ = Describe("footnote replacements", func() {
 							Ref: "disclaimer",
 						},
 					},
-					{
+					[]interface{}{
 						types.StringElement{
 							Content: "second line",
 						},
@@ -1073,7 +1073,7 @@ var _ = Describe("footnote replacements", func() {
 							ID: 2,
 						},
 					},
-					{
+					[]interface{}{
 						types.StringElement{
 							Content: "third line",
 						},
@@ -1109,8 +1109,8 @@ var _ = Describe("footnote replacements", func() {
 		It("paragraph with invalid footnote reference", func() {
 			// given
 			paragraph := types.Paragraph{
-				Lines: [][]interface{}{
-					{
+				Lines: []interface{}{
+					[]interface{}{
 						types.StringElement{
 							Content: "first line",
 						},
@@ -1123,7 +1123,7 @@ var _ = Describe("footnote replacements", func() {
 							},
 						},
 					},
-					{
+					[]interface{}{
 						types.StringElement{
 							Content: "second line",
 						},
@@ -1135,7 +1135,7 @@ var _ = Describe("footnote replacements", func() {
 							},
 						},
 					},
-					{
+					[]interface{}{
 						types.StringElement{
 							Content: "third line",
 						},
@@ -1151,8 +1151,8 @@ var _ = Describe("footnote replacements", func() {
 			paragraph.ReplaceFootnotes(footnotes)
 			// then
 			Expect(paragraph).To(Equal(types.Paragraph{
-				Lines: [][]interface{}{
-					{
+				Lines: []interface{}{
+					[]interface{}{
 						types.StringElement{
 							Content: "first line",
 						},
@@ -1161,7 +1161,7 @@ var _ = Describe("footnote replacements", func() {
 							Ref: "disclaimer",
 						},
 					},
-					{
+					[]interface{}{
 						types.StringElement{
 							Content: "second line",
 						},
@@ -1169,7 +1169,7 @@ var _ = Describe("footnote replacements", func() {
 							ID: 2,
 						},
 					},
-					{
+					[]interface{}{
 						types.StringElement{
 							Content: "third line",
 						},

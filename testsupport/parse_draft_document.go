@@ -5,39 +5,36 @@ import (
 
 	"github.com/bytesparadise/libasciidoc/pkg/configuration"
 	"github.com/bytesparadise/libasciidoc/pkg/parser"
+	"github.com/bytesparadise/libasciidoc/pkg/types"
 )
 
 // ParseDraftDocument parses the actual source with the options
-func ParseDraftDocument(actual string, options ...interface{}) (interface{}, error) {
+func ParseDraftDocument(actual string, options ...interface{}) (types.DraftDocument, error) {
 	r := strings.NewReader(actual)
-	c := &drafDocumentParserConfig{
-		preprocessing: true,
-		filename:      "test.adoc",
+	c := &draftDocumentParserConfig{
+		filename: "test.adoc",
 	}
 	parserOptions := []parser.Option{}
 	for _, o := range options {
 		switch set := o.(type) {
-		case BecomeDraftDocumentOption:
-			set(c)
 		case FilenameOption:
 			set(c)
 		case parser.Option:
 			parserOptions = append(parserOptions, set)
 		}
 	}
-
-	if !c.preprocessing {
-		return parser.ParseReader(c.filename, r, append(parserOptions, parser.Entrypoint("AsciidocDocument"))...)
-	}
 	config := configuration.NewConfiguration(configuration.WithFilename(c.filename))
-	return parser.ParseDraftDocument(r, config, parserOptions...)
+	rawDoc, err := parser.ParseRawDocument(r, config, parserOptions...)
+	if err != nil {
+		return types.DraftDocument{}, err
+	}
+	return parser.ApplySubstitutions(rawDoc, config, parserOptions...)
 }
 
-type drafDocumentParserConfig struct {
-	filename      string
-	preprocessing bool
+type draftDocumentParserConfig struct {
+	filename string
 }
 
-func (c *drafDocumentParserConfig) setFilename(f string) {
+func (c *draftDocumentParserConfig) setFilename(f string) {
 	c.filename = f
 }

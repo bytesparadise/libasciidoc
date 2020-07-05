@@ -268,10 +268,13 @@ func (a Attributes) Set(key string, value interface{}) Attributes {
 
 // Add adds the given attributes to the current ones
 func (a Attributes) Add(attrs interface{}) Attributes {
-	if a == nil {
-		a = Attributes{}
-	}
 	if attrs, ok := attrs.(Attributes); ok {
+		if len(attrs) == 0 {
+			return a
+		}
+		if a == nil {
+			a = Attributes{}
+		}
 		for k, v := range attrs {
 			a[k] = v
 			if k == AttrID {

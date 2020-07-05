@@ -34,8 +34,8 @@ This journey continues.`
 						Title: title,
 						Elements: []interface{}{
 							types.Paragraph{
-								Lines: [][]interface{}{
-									{
+								Lines: []interface{}{
+									[]interface{}{
 										types.StringElement{Content: "This journey continues."},
 									},
 								},
@@ -1073,10 +1073,8 @@ a paragraph`
 					Elements: []interface{}{
 						types.TableOfContentsPlaceHolder{},
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.StringElement{Content: "a paragraph"},
-								},
+							Lines: []interface{}{
+								[]interface{}{types.StringElement{Content: "a paragraph"}},
 							},
 						},
 					},
@@ -1099,10 +1097,8 @@ a paragraph`
 					Elements: []interface{}{
 						types.TableOfContentsPlaceHolder{},
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.StringElement{Content: "a paragraph"},
-								},
+							Lines: []interface{}{
+								[]interface{}{types.StringElement{Content: "a paragraph"}},
 							},
 						},
 					},
@@ -1129,10 +1125,8 @@ a paragraph`
 					Elements: []interface{}{
 						types.TableOfContentsPlaceHolder{},
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.StringElement{Content: "a paragraph"},
-								},
+							Lines: []interface{}{
+								[]interface{}{types.StringElement{Content: "a paragraph"}},
 							},
 						},
 					},
@@ -1155,10 +1149,8 @@ a paragraph`
 					Elements: []interface{}{
 						types.TableOfContentsPlaceHolder{},
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.StringElement{Content: "a paragraph"},
-								},
+							Lines: []interface{}{
+								[]interface{}{types.StringElement{Content: "a paragraph"}},
 							},
 						},
 					},
@@ -1179,10 +1171,8 @@ a paragraph written by {author}.`
 					},
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.StringElement{Content: "a paragraph written by Xavier."},
-								},
+							Lines: []interface{}{
+								[]interface{}{types.StringElement{Content: "a paragraph written by Xavier."}},
 							},
 						},
 					},
@@ -1202,10 +1192,8 @@ a paragraph written by {author}.`
 					},
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.StringElement{Content: "a paragraph written by Xavier."},
-								},
+							Lines: []interface{}{
+								[]interface{}{types.StringElement{Content: "a paragraph written by Xavier."}},
 							},
 						},
 					},
@@ -1271,8 +1259,8 @@ This journey continues`
 							Elements: []interface{}{
 								types.TableOfContentsPlaceHolder{},
 								types.Paragraph{
-									Lines: [][]interface{}{
-										{
+									Lines: []interface{}{
+										[]interface{}{
 											types.StringElement{Content: "This journey continues"},
 										},
 									},
@@ -1298,10 +1286,8 @@ a paragraph written by {author}.`
 					},
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.StringElement{Content: "a paragraph written by Xavier."},
-								},
+							Lines: []interface{}{
+								[]interface{}{types.StringElement{Content: "a paragraph written by Xavier."}},
 							},
 						},
 					},
@@ -1322,17 +1308,17 @@ a paragraph written by {author}.`
 			expected := types.Document{
 				Elements: []interface{}{
 					types.Paragraph{
-						Lines: [][]interface{}{
-							{
+						Lines: []interface{}{
+							[]interface{}{
 								types.StringElement{Content: "a paragraph"},
 							},
-							{
+							[]interface{}{
 								types.StringElement{Content: ":toc:"},
 							},
-							{
+							[]interface{}{
 								types.StringElement{Content: ":date: 2017-01-01"},
 							},
-							{
+							[]interface{}{
 								types.StringElement{Content: ":author: Xavier"},
 							},
 						},
@@ -1348,11 +1334,11 @@ a paragraph written by {author}.`
 			expected := types.Document{
 				Elements: []interface{}{
 					types.Paragraph{
-						Lines: [][]interface{}{
-							{
+						Lines: []interface{}{
+							[]interface{}{
 								types.StringElement{Content: ":@date: 2017-01-01"},
 							},
-							{
+							[]interface{}{
 								types.StringElement{Content: ":{author}: Xavier"},
 							},
 						},
@@ -1379,8 +1365,8 @@ a paragraph written by {author}.`
 				},
 				Elements: []interface{}{
 					types.Paragraph{
-						Lines: [][]interface{}{
-							{
+						Lines: []interface{}{
+							[]interface{}{
 								types.StringElement{Content: "font"},
 							},
 						},

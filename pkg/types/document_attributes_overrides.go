@@ -6,8 +6,11 @@ type AttributesWithOverrides struct {
 	Overrides map[string]string
 }
 
-// All returns all attributes
+// All returns all attributes, or `nil` if there is none
 func (a AttributesWithOverrides) All() Attributes {
+	if len(a.Content) == 0 && len(a.Overrides) == 0 {
+		return nil
+	}
 	result := Attributes{}
 	for k, v := range a.Content {
 		result[k] = v

@@ -74,6 +74,6 @@ var _ = Describe("normalizing string", func() {
 				},
 			},
 		}
-		Expect(types.ReplaceNonAlphanumerics(source, "_")).To(Equal("link_to_httpsfoo_bar")) // asciidoctor will return `_link_to_https_foo_bar`
+		Expect(types.ReplaceNonAlphanumerics(source, "_")).To(Equal("link_to_httpsfoo_bar")) // asciidoctor will return `_link_to_httpsfoo_bar`
 	})
 })

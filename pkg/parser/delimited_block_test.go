@@ -12,9 +12,9 @@ var _ = Describe("delimited blocks", func() {
 
 	Context("draft document", func() {
 
-		Context("fenced blocks", func() {
+		Context("fenced block", func() {
 
-			It("fenced block with single line", func() {
+			It("with single line", func() {
 				content := "some fenced code"
 				source := "```\n" + content + "\n" + "```"
 				expected := types.DraftDocument{
@@ -29,10 +29,12 @@ var _ = Describe("delimited blocks", func() {
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				result, err := ParseDraftDocument(source)
+				Expect(err).NotTo(HaveOccurred())
+				Expect(result).To(MatchDraftDocument(expected))
 			})
 
-			It("fenced block with no line", func() {
+			It("with no line", func() {
 				source := "```\n```"
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
@@ -42,10 +44,10 @@ var _ = Describe("delimited blocks", func() {
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
-			It("fenced block with multiple lines alone", func() {
+			It("with multiple lines alone", func() {
 				source := "```\nsome fenced code\nwith an empty line\n\nin the middle\n```"
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
@@ -58,9 +60,7 @@ var _ = Describe("delimited blocks", func() {
 								types.VerbatimLine{
 									Content: "with an empty line",
 								},
-								types.VerbatimLine{
-									Content: "",
-								},
+								types.VerbatimLine{},
 								types.VerbatimLine{
 									Content: "in the middle",
 								},
@@ -68,10 +68,10 @@ var _ = Describe("delimited blocks", func() {
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
-			It("fenced block with multiple lines then a paragraph", func() {
+			It("with multiple lines then a paragraph", func() {
 				source := "```\nsome fenced code\nwith an empty line\n\nin the middle\n```\nthen a normal paragraph."
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
@@ -93,26 +93,32 @@ var _ = Describe("delimited blocks", func() {
 							},
 						},
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.StringElement{Content: "then a normal paragraph."},
+							Lines: []interface{}{
+								[]interface{}{
+									types.StringElement{
+										Content: "then a normal paragraph.",
+									},
 								},
 							},
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				result, err := ParseDraftDocument(source)
+				Expect(err).NotTo(HaveOccurred())
+				Expect(result).To(MatchDraftDocument(expected))
 			})
 
-			It("fenced block after a paragraph", func() {
+			It("after a paragraph", func() {
 				content := "some fenced code"
 				source := "a paragraph.\n\n```\n" + content + "\n" + "```\n"
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.StringElement{Content: "a paragraph."},
+							Lines: []interface{}{
+								[]interface{}{
+									types.StringElement{
+										Content: "a paragraph.",
+									},
 								},
 							},
 						},
@@ -130,7 +136,7 @@ var _ = Describe("delimited blocks", func() {
 				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
-			It("fenced block with unclosed delimiter", func() {
+			It("with unclosed delimiter", func() {
 				source := "```\nEnd of file here"
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
@@ -144,10 +150,10 @@ var _ = Describe("delimited blocks", func() {
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
-			It("fenced block with external link inside - without attributes", func() {
+			It("with external link inside - without attributes", func() {
 				source := "```" + "\n" +
 					"a http://website.com\n" +
 					"and more text on the\n" +
@@ -171,10 +177,10 @@ var _ = Describe("delimited blocks", func() {
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
-			It("fenced block with external link inside - with attributes", func() {
+			It("with external link inside - with attributes", func() {
 				source := "```" + "\n" +
 					"a http://website.com[]" + "\n" +
 					"and more text on the" + "\n" +
@@ -198,10 +204,10 @@ var _ = Describe("delimited blocks", func() {
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
-			It("fenced block with unrendered list", func() {
+			It("with unrendered list", func() {
 				source := "```\n" +
 					"* some \n" +
 					"* listing \n" +
@@ -224,11 +230,11 @@ var _ = Describe("delimited blocks", func() {
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 		})
 
-		Context("listing blocks", func() {
+		Context("listing block", func() {
 
 			It("with single line", func() {
 				source := `----
@@ -246,7 +252,7 @@ some listing code
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("with no line", func() {
@@ -260,7 +266,7 @@ some listing code
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("with multiple lines alone", func() {
@@ -291,7 +297,7 @@ in the middle
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("with unrendered list", func() {
@@ -318,7 +324,7 @@ in the middle
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("with multiple lines then a paragraph", func() {
@@ -349,9 +355,11 @@ then a normal paragraph.`
 							},
 						},
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.StringElement{Content: "then a normal paragraph."},
+							Lines: []interface{}{
+								[]interface{}{
+									types.StringElement{
+										Content: "then a normal paragraph.",
+									},
 								},
 							},
 						},
@@ -369,9 +377,11 @@ some listing code
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.StringElement{Content: "a paragraph."},
+							Lines: []interface{}{
+								[]interface{}{
+									types.StringElement{
+										Content: "a paragraph.",
+									},
 								},
 							},
 						},
@@ -404,7 +414,7 @@ End of file here.`
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("with single callout", func() {
@@ -431,8 +441,8 @@ import <1>
 							Ref: 1,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: [][]interface{}{
-										{
+									Lines: []interface{}{
+										[]interface{}{
 											types.StringElement{
 												Content: "an import",
 											},
@@ -443,7 +453,7 @@ import <1>
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("with multiple callouts on different lines", func() {
@@ -484,8 +494,8 @@ func foo() {} <2>
 							Ref: 1,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: [][]interface{}{
-										{
+									Lines: []interface{}{
+										[]interface{}{
 											types.StringElement{
 												Content: "an import",
 											},
@@ -498,8 +508,8 @@ func foo() {} <2>
 							Ref: 2,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: [][]interface{}{
-										{
+									Lines: []interface{}{
+										[]interface{}{
 											types.StringElement{
 												Content: "a func",
 											},
@@ -510,7 +520,7 @@ func foo() {} <2>
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("with multiple callouts on same line", func() {
@@ -559,8 +569,8 @@ func foo() {} <4>
 							Ref: 1,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: [][]interface{}{
-										{
+									Lines: []interface{}{
+										[]interface{}{
 											types.StringElement{
 												Content: "an import",
 											},
@@ -573,8 +583,8 @@ func foo() {} <4>
 							Ref: 2,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: [][]interface{}{
-										{
+									Lines: []interface{}{
+										[]interface{}{
 											types.StringElement{
 												Content: "a single import",
 											},
@@ -587,8 +597,8 @@ func foo() {} <4>
 							Ref: 3,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: [][]interface{}{
-										{
+									Lines: []interface{}{
+										[]interface{}{
 											types.StringElement{
 												Content: "a single basic import",
 											},
@@ -601,8 +611,8 @@ func foo() {} <4>
 							Ref: 4,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: [][]interface{}{
-										{
+									Lines: []interface{}{
+										[]interface{}{
 											types.StringElement{
 												Content: "a func",
 											},
@@ -613,7 +623,7 @@ func foo() {} <4>
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("with invalid callout", func() {
@@ -632,8 +642,8 @@ import <a>
 							},
 						},
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
+							Lines: []interface{}{
+								[]interface{}{
 									types.StringElement{
 										Content: "<a> an import",
 									},
@@ -642,11 +652,11 @@ import <a>
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 		})
 
-		Context("example blocks", func() {
+		Context("example block", func() {
 
 			It("with single line", func() {
 				source := `====
@@ -658,8 +668,8 @@ some listing code
 							Kind: types.Example,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: [][]interface{}{
-										{
+									Lines: []interface{}{
+										[]interface{}{
 											types.StringElement{
 												Content: "some listing code",
 											},
@@ -670,7 +680,7 @@ some listing code
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("with single line starting with a dot", func() {
@@ -681,10 +691,15 @@ some listing code
 					Blocks: []interface{}{
 						types.DelimitedBlock{
 							Kind: types.Example,
+							Elements: []interface{}{
+								types.Attributes{
+									types.AttrTitle: "foo",
+								},
+							},
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("with multiple lines", func() {
@@ -704,13 +719,13 @@ with *bold content*
 									Attributes: types.Attributes{
 										types.AttrTitle: "foo",
 									},
-									Lines: [][]interface{}{
-										{
+									Lines: []interface{}{
+										[]interface{}{
 											types.StringElement{
 												Content: "some listing code",
 											},
 										},
-										{
+										[]interface{}{
 											types.StringElement{
 												Content: "with ",
 											},
@@ -732,8 +747,8 @@ with *bold content*
 									CheckStyle:  types.NoCheck,
 									Elements: []interface{}{
 										types.Paragraph{
-											Lines: [][]interface{}{
-												{
+											Lines: []interface{}{
+												[]interface{}{
 													types.StringElement{
 														Content: "and a list item",
 													},
@@ -746,22 +761,22 @@ with *bold content*
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("with unclosed delimiter", func() {
 				source := `====
-End of file here`
+End of doc here`
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.DelimitedBlock{
 							Kind: types.Example,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: [][]interface{}{
-										{
+									Lines: []interface{}{
+										[]interface{}{
 											types.StringElement{
-												Content: "End of file here",
+												Content: "End of doc here",
 											},
 										},
 									},
@@ -770,7 +785,7 @@ End of file here`
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("with title", func() {
@@ -787,8 +802,8 @@ foo
 							Kind: types.Example,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: [][]interface{}{
-										{
+									Lines: []interface{}{
+										[]interface{}{
 											types.StringElement{
 												Content: "foo",
 											},
@@ -799,7 +814,7 @@ foo
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("example block starting delimiter only", func() {
@@ -807,15 +822,16 @@ foo
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.DelimitedBlock{
-							Kind: types.Example,
+							Kind:     types.Example,
+							Elements: []interface{}{},
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 		})
 
-		Context("admonition blocks", func() {
+		Context("admonition block", func() {
 
 			It("example block as admonition", func() {
 				source := `[NOTE]
@@ -831,8 +847,8 @@ foo
 							Kind: types.Example,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: [][]interface{}{
-										{
+									Lines: []interface{}{
+										[]interface{}{
 											types.StringElement{
 												Content: "foo",
 											},
@@ -843,7 +859,7 @@ foo
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 
 			})
 
@@ -878,7 +894,7 @@ paragraphs
 			})
 		})
 
-		Context("quote blocks", func() {
+		Context("quote block", func() {
 
 			It("single-line quote block with author and title", func() {
 				source := `[quote, john doe, quote title]
@@ -896,8 +912,8 @@ ____`
 							Kind: types.Quote,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: [][]interface{}{
-										{
+									Lines: []interface{}{
+										[]interface{}{
 											types.StringElement{
 												Content: "some ",
 											},
@@ -919,7 +935,7 @@ ____`
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("multi-line quote with author only", func() {
@@ -945,8 +961,8 @@ ____
 									CheckStyle:  types.NoCheck,
 									Elements: []interface{}{
 										types.Paragraph{
-											Lines: [][]interface{}{
-												{
+											Lines: []interface{}{
+												[]interface{}{
 													types.StringElement{
 														Content: "some ",
 													},
@@ -961,8 +977,8 @@ ____
 									CheckStyle:  types.NoCheck,
 									Elements: []interface{}{
 										types.Paragraph{
-											Lines: [][]interface{}{
-												{
+											Lines: []interface{}{
+												[]interface{}{
 													types.StringElement{
 														Content: "quote ",
 													},
@@ -977,8 +993,8 @@ ____
 									CheckStyle:  types.NoCheck,
 									Elements: []interface{}{
 										types.Paragraph{
-											Lines: [][]interface{}{
-												{
+											Lines: []interface{}{
+												[]interface{}{
 													types.StringElement{
 														Content: "content ",
 													},
@@ -991,7 +1007,7 @@ ____
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("single-line quote with title only", func() {
@@ -1010,8 +1026,8 @@ ____
 							Kind: types.Quote,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: [][]interface{}{
-										{
+									Lines: []interface{}{
+										[]interface{}{
 											types.StringElement{
 												Content: "some quote content ",
 											},
@@ -1022,71 +1038,7 @@ ____
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
-			})
-
-			It("multi-line quote with rendered lists and block and without author and title", func() {
-				source := `[quote]
-____
-* some
-----
-* quote 
-----
-* content
-____`
-				expected := types.DraftDocument{
-					Blocks: []interface{}{
-						types.DelimitedBlock{
-							Attributes: types.Attributes{
-								types.AttrKind: types.Quote,
-							},
-							Kind: types.Quote,
-							Elements: []interface{}{
-								types.UnorderedListItem{
-									Level:       1,
-									BulletStyle: types.OneAsterisk,
-									CheckStyle:  types.NoCheck,
-									Elements: []interface{}{
-										types.Paragraph{
-											Lines: [][]interface{}{
-												{
-													types.StringElement{
-														Content: "some",
-													},
-												},
-											},
-										},
-									},
-								},
-								types.DelimitedBlock{
-									Kind: types.Listing,
-									Elements: []interface{}{
-										types.VerbatimLine{
-											Content: "* quote ",
-										},
-									},
-								},
-								types.UnorderedListItem{
-									Level:       1,
-									BulletStyle: types.OneAsterisk,
-									CheckStyle:  types.NoCheck,
-									Elements: []interface{}{
-										types.Paragraph{
-											Lines: [][]interface{}{
-												{
-													types.StringElement{
-														Content: "content",
-													},
-												},
-											},
-										},
-									},
-								},
-							},
-						},
-					},
-				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("multi-line quote with rendered list and without author and title", func() {
@@ -1114,8 +1066,8 @@ ____`
 									CheckStyle:  types.NoCheck,
 									Elements: []interface{}{
 										types.Paragraph{
-											Lines: [][]interface{}{
-												{
+											Lines: []interface{}{
+												[]interface{}{
 													types.StringElement{
 														Content: "some",
 													},
@@ -1132,8 +1084,8 @@ ____`
 									CheckStyle:  types.NoCheck,
 									Elements: []interface{}{
 										types.Paragraph{
-											Lines: [][]interface{}{
-												{
+											Lines: []interface{}{
+												[]interface{}{
 													types.StringElement{
 														Content: "quote ",
 													},
@@ -1150,8 +1102,8 @@ ____`
 									CheckStyle:  types.NoCheck,
 									Elements: []interface{}{
 										types.Paragraph{
-											Lines: [][]interface{}{
-												{
+											Lines: []interface{}{
+												[]interface{}{
 													types.StringElement{
 														Content: "content",
 													},
@@ -1164,7 +1116,7 @@ ____`
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("empty quote without author and title", func() {
@@ -1177,11 +1129,12 @@ ____`
 							Attributes: types.Attributes{
 								types.AttrKind: types.Quote,
 							},
-							Kind: types.Quote,
+							Kind:     types.Quote,
+							Elements: []interface{}{},
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("unclosed quote without author and title", func() {
@@ -1198,8 +1151,8 @@ foo
 							Kind: types.Quote,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: [][]interface{}{
-										{
+									Lines: []interface{}{
+										[]interface{}{
 											types.StringElement{
 												Content: "foo",
 											},
@@ -1210,11 +1163,11 @@ foo
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 		})
 
-		Context("markdown-style quote blocks", func() {
+		Context("markdown-style quote block", func() {
 
 			It("with single marker without author", func() {
 				source := `> some text
@@ -1226,13 +1179,13 @@ on *multiple lines*`
 							Kind: types.MarkdownQuote,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: [][]interface{}{
-										{
+									Lines: []interface{}{
+										[]interface{}{
 											types.StringElement{
 												Content: "some text",
 											},
 										},
-										{
+										[]interface{}{
 											types.StringElement{
 												Content: "on ",
 											},
@@ -1251,7 +1204,7 @@ on *multiple lines*`
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("with marker on each line without author", func() {
@@ -1264,13 +1217,13 @@ on *multiple lines*`
 							Kind: types.MarkdownQuote,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: [][]interface{}{
-										{
+									Lines: []interface{}{
+										[]interface{}{
 											types.StringElement{
 												Content: "some text",
 											},
 										},
-										{
+										[]interface{}{
 											types.StringElement{
 												Content: "on ",
 											},
@@ -1289,10 +1242,12 @@ on *multiple lines*`
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				result, err := ParseDraftDocument(source)
+				Expect(err).NotTo(HaveOccurred())
+				Expect(result).To(MatchDraftDocument(expected))
 			})
 
-			It("with marker on each line with author", func() {
+			It("with marker on each line with author only", func() {
 				source := `> some text
 > on *multiple lines*
 > -- John Doe`
@@ -1305,13 +1260,13 @@ on *multiple lines*`
 							Kind: types.MarkdownQuote,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: [][]interface{}{
-										{
+									Lines: []interface{}{
+										[]interface{}{
 											types.StringElement{
 												Content: "some text",
 											},
 										},
-										{
+										[]interface{}{
 											types.StringElement{
 												Content: "on ",
 											},
@@ -1330,7 +1285,7 @@ on *multiple lines*`
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("with marker on each line with author and title", func() {
@@ -1348,13 +1303,13 @@ on *multiple lines*`
 							Kind: types.MarkdownQuote,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: [][]interface{}{
-										{
+									Lines: []interface{}{
+										[]interface{}{
 											types.StringElement{
 												Content: "some text",
 											},
 										},
-										{
+										[]interface{}{
 											types.StringElement{
 												Content: "on ",
 											},
@@ -1373,7 +1328,7 @@ on *multiple lines*`
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("with with author only", func() {
@@ -1384,15 +1339,16 @@ on *multiple lines*`
 							Attributes: types.Attributes{
 								types.AttrQuoteAuthor: "John Doe",
 							},
-							Kind: types.MarkdownQuote,
+							Kind:     types.MarkdownQuote,
+							Elements: []interface{}{},
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 		})
 
-		Context("verse blocks", func() {
+		Context("verse block", func() {
 
 			It("single line verse with author and title", func() {
 				source := `[verse, john doe, verse title]
@@ -1410,8 +1366,8 @@ ____`
 							Kind: types.Verse,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: [][]interface{}{
-										{
+									Lines: []interface{}{
+										[]interface{}{
 											types.StringElement{
 												Content: "some ",
 											},
@@ -1433,7 +1389,7 @@ ____`
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("multi-line verse with unrendered list and author only", func() {
@@ -1454,18 +1410,18 @@ ____
 							Kind: types.Verse,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: [][]interface{}{
-										{
+									Lines: []interface{}{
+										[]interface{}{
 											types.StringElement{
 												Content: "- some ",
 											},
 										},
-										{
+										[]interface{}{
 											types.StringElement{
 												Content: "- verse ",
 											},
 										},
-										{
+										[]interface{}{
 											types.StringElement{
 												Content: "- content ",
 											},
@@ -1476,7 +1432,7 @@ ____
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("multi-line verse with title only", func() {
@@ -1495,8 +1451,8 @@ ____
 							Kind: types.Verse,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: [][]interface{}{
-										{
+									Lines: []interface{}{
+										[]interface{}{
 											types.StringElement{
 												Content: "some verse content ",
 											},
@@ -1507,7 +1463,7 @@ ____
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("multi-line verse with unrendered lists and block without author and title", func() {
@@ -1528,28 +1484,28 @@ ____`
 							Kind: types.Verse,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: [][]interface{}{
-										{
+									Lines: []interface{}{
+										[]interface{}{
 											types.StringElement{
 												Content: "* some",
 											},
 										},
-										{
+										[]interface{}{
 											types.StringElement{
 												Content: "----",
 											},
 										},
-										{
+										[]interface{}{
 											types.StringElement{
 												Content: "* verse ",
 											},
 										},
-										{
+										[]interface{}{
 											types.StringElement{
 												Content: "----",
 											},
 										},
-										{
+										[]interface{}{
 											types.StringElement{
 												Content: "* content",
 											},
@@ -1560,7 +1516,7 @@ ____`
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("multi-line verse with unrendered list without author and title", func() {
@@ -1580,8 +1536,8 @@ ____`
 							Kind: types.Verse,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: [][]interface{}{
-										{
+									Lines: []interface{}{
+										[]interface{}{
 											types.StringElement{
 												Content: "* foo",
 											},
@@ -1591,8 +1547,8 @@ ____`
 								types.BlankLine{},
 								types.BlankLine{},
 								types.Paragraph{
-									Lines: [][]interface{}{
-										{
+									Lines: []interface{}{
+										[]interface{}{
 											types.StringElement{
 												Content: "\t* bar",
 											},
@@ -1603,7 +1559,7 @@ ____`
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("empty verse without author and title", func() {
@@ -1616,11 +1572,12 @@ ____`
 							Attributes: types.Attributes{
 								types.AttrKind: types.Verse,
 							},
-							Kind: types.Verse,
+							Kind:     types.Verse,
+							Elements: []interface{}{},
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("unclosed verse without author and title", func() {
@@ -1637,8 +1594,8 @@ foo
 							Kind: types.Verse,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: [][]interface{}{
-										{
+									Lines: []interface{}{
+										[]interface{}{
 											types.StringElement{
 												Content: "foo",
 											},
@@ -1649,11 +1606,11 @@ foo
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 		})
 
-		Context("source blocks", func() {
+		Context("source block", func() {
 
 			sourceCode := []interface{}{
 				types.VerbatimLine{
@@ -1695,7 +1652,7 @@ type Foo struct{
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("with source attribute and comma", func() {
@@ -1719,7 +1676,7 @@ type Foo struct{
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("with title, source and language attributes", func() {
@@ -1746,7 +1703,7 @@ type Foo struct{
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("with id, title, source and language and other attributes", func() {
@@ -1777,15 +1734,15 @@ type Foo struct{
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 		})
 
-		Context("sidebar blocks", func() {
+		Context("sidebar block", func() {
 
-			It("sidebar block with paragraph", func() {
+			It("with paragraph", func() {
 				source := `****
-some *verse* content
+some *bold* content
 ****`
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
@@ -1793,8 +1750,8 @@ some *verse* content
 							Kind: types.Sidebar,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: [][]interface{}{
-										{
+									Lines: []interface{}{
+										[]interface{}{
 											types.StringElement{
 												Content: "some ",
 											},
@@ -1802,7 +1759,7 @@ some *verse* content
 												Kind: types.Bold,
 												Elements: []interface{}{
 													types.StringElement{
-														Content: "verse",
+														Content: "bold",
 													},
 												},
 											},
@@ -1816,13 +1773,13 @@ some *verse* content
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
-			It("sidebar block with title, paragraph and sourcecode block", func() {
+			It("with title, paragraph and sourcecode block", func() {
 				source := `.a title
 ****
-some *verse* content
+some *bold* content
 
 ----
 foo
@@ -1838,8 +1795,8 @@ bar
 							Kind: types.Sidebar,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: [][]interface{}{
-										{
+									Lines: []interface{}{
+										[]interface{}{
 											types.StringElement{
 												Content: "some ",
 											},
@@ -1847,7 +1804,7 @@ bar
 												Kind: types.Bold,
 												Elements: []interface{}{
 													types.StringElement{
-														Content: "verse",
+														Content: "bold",
 													},
 												},
 											},
@@ -1857,7 +1814,7 @@ bar
 										},
 									},
 								},
-								types.BlankLine{}, // blankline is required between paragraph and the next block
+								types.BlankLine{},
 								types.DelimitedBlock{
 									Kind: types.Listing,
 									Elements: []interface{}{
@@ -1873,11 +1830,11 @@ bar
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 		})
 
-		Context("passthrough blocks", func() {
+		Context("passthrough block", func() {
 
 			It("with title", func() {
 				source := `.a title
@@ -1907,7 +1864,7 @@ _foo_
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 		})
 
@@ -1937,8 +1894,8 @@ another paragraph`
 						},
 						types.BlankLine{},
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
+							Lines: []interface{}{
+								[]interface{}{
 									types.StringElement{
 										Content: "another paragraph",
 									},
@@ -1947,16 +1904,16 @@ another paragraph`
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 		})
 	})
 
 	Context("final document", func() {
 
-		Context("fenced blocks", func() {
+		Context("fenced block", func() {
 
-			It("fenced block with single line", func() {
+			It("with single line", func() {
 				content := "some fenced code"
 				source := "```\n" + content + "\n" + "```"
 				expected := types.Document{
@@ -1974,7 +1931,7 @@ another paragraph`
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
-			It("fenced block with no line", func() {
+			It("with no line", func() {
 				source := "```\n```"
 				expected := types.Document{
 					Elements: []interface{}{
@@ -1987,7 +1944,7 @@ another paragraph`
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
-			It("fenced block with multiple lines alone", func() {
+			It("with multiple lines alone", func() {
 				source := "```\nsome fenced code\nwith an empty line\n\nin the middle\n```"
 				expected := types.Document{
 					Elements: []interface{}{
@@ -2013,7 +1970,7 @@ another paragraph`
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
-			It("fenced block with multiple lines then a paragraph", func() {
+			It("with multiple lines then a paragraph", func() {
 				source := "```\nsome fenced code\nwith an empty line\n\nin the middle\n```\nthen a normal paragraph."
 				expected := types.Document{
 					Elements: []interface{}{
@@ -2035,8 +1992,8 @@ another paragraph`
 							},
 						},
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
+							Lines: []interface{}{
+								[]interface{}{
 									types.StringElement{Content: "then a normal paragraph."},
 								},
 							},
@@ -2046,14 +2003,14 @@ another paragraph`
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
-			It("fenced block after a paragraph", func() {
+			It("after a paragraph", func() {
 				content := "some fenced code"
 				source := "a paragraph.\n\n```\n" + content + "\n" + "```\n"
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
+							Lines: []interface{}{
+								[]interface{}{
 									types.StringElement{Content: "a paragraph."},
 								},
 							},
@@ -2071,7 +2028,7 @@ another paragraph`
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
-			It("fenced block with unclosed delimiter", func() {
+			It("with unclosed delimiter", func() {
 				source := "```\nEnd of file here"
 				expected := types.Document{
 					Elements: []interface{}{
@@ -2088,7 +2045,7 @@ another paragraph`
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
-			It("fenced block with external link inside - without attributes", func() {
+			It("with external link inside - without attributes", func() {
 				source := "```\n" +
 					"a http://website.com\n" +
 					"and more text on the\n" +
@@ -2115,7 +2072,7 @@ another paragraph`
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
-			It("fenced block with external link inside - with attributes", func() {
+			It("with external link inside - with attributes", func() {
 				source := "```" + "\n" +
 					"a http://website.com[]" + "\n" +
 					"and more text on the" + "\n" +
@@ -2142,7 +2099,7 @@ another paragraph`
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
-			It("fenced block with unrendered list", func() {
+			It("with unrendered list", func() {
 				source := "```\n" +
 					"* some \n" +
 					"* listing \n" +
@@ -2170,7 +2127,7 @@ another paragraph`
 
 		})
 
-		Context("listing blocks", func() {
+		Context("listing block", func() {
 
 			It("with single line", func() {
 				source := `----
@@ -2291,8 +2248,8 @@ then a normal paragraph.`
 							},
 						},
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
+							Lines: []interface{}{
+								[]interface{}{
 									types.StringElement{Content: "then a normal paragraph."},
 								},
 							},
@@ -2311,8 +2268,8 @@ some listing code
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
+							Lines: []interface{}{
+								[]interface{}{
 									types.StringElement{Content: "a paragraph."},
 								},
 							},
@@ -2374,8 +2331,8 @@ import <1>
 									Ref: 1,
 									Elements: []interface{}{
 										types.Paragraph{
-											Lines: [][]interface{}{
-												{
+											Lines: []interface{}{
+												[]interface{}{
 													types.StringElement{
 														Content: "an import",
 													},
@@ -2388,7 +2345,7 @@ import <1>
 						},
 					},
 				}
-				Expect(ParseDocument(source)).To(Equal(expected))
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
 			It("with multiple callouts on different lines", func() {
@@ -2431,8 +2388,8 @@ func foo() {} <2>
 									Ref: 1,
 									Elements: []interface{}{
 										types.Paragraph{
-											Lines: [][]interface{}{
-												{
+											Lines: []interface{}{
+												[]interface{}{
 													types.StringElement{
 														Content: "an import",
 													},
@@ -2445,8 +2402,8 @@ func foo() {} <2>
 									Ref: 2,
 									Elements: []interface{}{
 										types.Paragraph{
-											Lines: [][]interface{}{
-												{
+											Lines: []interface{}{
+												[]interface{}{
 													types.StringElement{
 														Content: "a func",
 													},
@@ -2459,7 +2416,7 @@ func foo() {} <2>
 						},
 					},
 				}
-				Expect(ParseDocument(source)).To(Equal(expected))
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
 			It("with multiple callouts on same line", func() {
@@ -2510,8 +2467,8 @@ func foo() {} <4>
 									Ref: 1,
 									Elements: []interface{}{
 										types.Paragraph{
-											Lines: [][]interface{}{
-												{
+											Lines: []interface{}{
+												[]interface{}{
 													types.StringElement{
 														Content: "an import",
 													},
@@ -2524,8 +2481,8 @@ func foo() {} <4>
 									Ref: 2,
 									Elements: []interface{}{
 										types.Paragraph{
-											Lines: [][]interface{}{
-												{
+											Lines: []interface{}{
+												[]interface{}{
 													types.StringElement{
 														Content: "a single import",
 													},
@@ -2538,8 +2495,8 @@ func foo() {} <4>
 									Ref: 3,
 									Elements: []interface{}{
 										types.Paragraph{
-											Lines: [][]interface{}{
-												{
+											Lines: []interface{}{
+												[]interface{}{
 													types.StringElement{
 														Content: "a single basic import",
 													},
@@ -2552,8 +2509,8 @@ func foo() {} <4>
 									Ref: 4,
 									Elements: []interface{}{
 										types.Paragraph{
-											Lines: [][]interface{}{
-												{
+											Lines: []interface{}{
+												[]interface{}{
 													types.StringElement{
 														Content: "a func",
 													},
@@ -2585,8 +2542,8 @@ import <a>
 							},
 						},
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
+							Lines: []interface{}{
+								[]interface{}{
 									types.StringElement{
 										Content: "<a> an import",
 									},
@@ -2595,11 +2552,11 @@ import <a>
 						},
 					},
 				}
-				Expect(ParseDocument(source)).To(Equal(expected))
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 		})
 
-		Context("example blocks", func() {
+		Context("example block", func() {
 
 			It("with single line", func() {
 				source := `====
@@ -2611,8 +2568,8 @@ some listing code
 							Kind: types.Example,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: [][]interface{}{
-										{
+									Lines: []interface{}{
+										[]interface{}{
 											types.StringElement{
 												Content: "some listing code",
 											},
@@ -2658,13 +2615,13 @@ with *bold content*
 									Attributes: types.Attributes{
 										types.AttrTitle: "foo",
 									},
-									Lines: [][]interface{}{
-										{
+									Lines: []interface{}{
+										[]interface{}{
 											types.StringElement{
 												Content: "some listing code",
 											},
 										},
-										{
+										[]interface{}{
 											types.StringElement{
 												Content: "with ",
 											},
@@ -2688,8 +2645,8 @@ with *bold content*
 											CheckStyle:  types.NoCheck,
 											Elements: []interface{}{
 												types.Paragraph{
-													Lines: [][]interface{}{
-														{
+													Lines: []interface{}{
+														[]interface{}{
 															types.StringElement{
 																Content: "and a list item",
 															},
@@ -2716,8 +2673,8 @@ End of file here`
 							Kind: types.Example,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: [][]interface{}{
-										{
+									Lines: []interface{}{
+										[]interface{}{
 											types.StringElement{
 												Content: "End of file here",
 											},
@@ -2745,8 +2702,8 @@ foo
 							Kind: types.Example,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: [][]interface{}{
-										{
+									Lines: []interface{}{
+										[]interface{}{
 											types.StringElement{
 												Content: "foo",
 											},
@@ -2774,7 +2731,7 @@ foo
 			})
 		})
 
-		Context("admonition blocks", func() {
+		Context("admonition block", func() {
 
 			It("example block as admonition", func() {
 				source := `[NOTE]
@@ -2790,8 +2747,8 @@ foo
 							Kind: types.Example,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: [][]interface{}{
-										{
+									Lines: []interface{}{
+										[]interface{}{
 											types.StringElement{
 												Content: "foo",
 											},
@@ -2806,7 +2763,7 @@ foo
 
 			})
 
-			It("example block as admonition", func() {
+			It("example block as admonition with multiple lines", func() {
 				source := `[NOTE]
 ====
 multiple
@@ -2823,8 +2780,8 @@ paragraphs
 							Kind: types.Example,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: [][]interface{}{
-										{
+									Lines: []interface{}{
+										[]interface{}{
 											types.StringElement{
 												Content: "multiple",
 											},
@@ -2833,9 +2790,8 @@ paragraphs
 								},
 								types.BlankLine{},
 								types.Paragraph{
-									Lines: [][]interface{}{
-
-										{
+									Lines: []interface{}{
+										[]interface{}{
 											types.StringElement{
 												Content: "paragraphs",
 											},
@@ -2850,7 +2806,7 @@ paragraphs
 			})
 		})
 
-		Context("quote blocks", func() {
+		Context("quote block", func() {
 
 			It("single-line quote block with author and title", func() {
 				source := `[quote, john doe, quote title]
@@ -2868,8 +2824,8 @@ ____`
 							Kind: types.Quote,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: [][]interface{}{
-										{
+									Lines: []interface{}{
+										[]interface{}{
 											types.StringElement{
 												Content: "some ",
 											},
@@ -2919,8 +2875,8 @@ ____
 											CheckStyle:  types.NoCheck,
 											Elements: []interface{}{
 												types.Paragraph{
-													Lines: [][]interface{}{
-														{
+													Lines: []interface{}{
+														[]interface{}{
 															types.StringElement{
 																Content: "some ",
 															},
@@ -2935,8 +2891,8 @@ ____
 											CheckStyle:  types.NoCheck,
 											Elements: []interface{}{
 												types.Paragraph{
-													Lines: [][]interface{}{
-														{
+													Lines: []interface{}{
+														[]interface{}{
 															types.StringElement{
 																Content: "quote ",
 															},
@@ -2951,8 +2907,8 @@ ____
 											CheckStyle:  types.NoCheck,
 											Elements: []interface{}{
 												types.Paragraph{
-													Lines: [][]interface{}{
-														{
+													Lines: []interface{}{
+														[]interface{}{
 															types.StringElement{
 																Content: "content ",
 															},
@@ -2986,8 +2942,8 @@ ____
 							Kind: types.Quote,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: [][]interface{}{
-										{
+									Lines: []interface{}{
+										[]interface{}{
 											types.StringElement{
 												Content: "some quote content ",
 											},
@@ -3026,8 +2982,8 @@ ____`
 											CheckStyle:  types.NoCheck,
 											Elements: []interface{}{
 												types.Paragraph{
-													Lines: [][]interface{}{
-														{
+													Lines: []interface{}{
+														[]interface{}{
 															types.StringElement{
 																Content: "some",
 															},
@@ -3054,8 +3010,8 @@ ____`
 											CheckStyle:  types.NoCheck,
 											Elements: []interface{}{
 												types.Paragraph{
-													Lines: [][]interface{}{
-														{
+													Lines: []interface{}{
+														[]interface{}{
 															types.StringElement{
 																Content: "content",
 															},
@@ -3100,8 +3056,8 @@ ____`
 											CheckStyle:  types.NoCheck,
 											Elements: []interface{}{
 												types.Paragraph{
-													Lines: [][]interface{}{
-														{
+													Lines: []interface{}{
+														[]interface{}{
 															types.StringElement{
 																Content: "some",
 															},
@@ -3116,8 +3072,8 @@ ____`
 											CheckStyle:  types.NoCheck,
 											Elements: []interface{}{
 												types.Paragraph{
-													Lines: [][]interface{}{
-														{
+													Lines: []interface{}{
+														[]interface{}{
 															types.StringElement{
 																Content: "quote ",
 															},
@@ -3132,8 +3088,8 @@ ____`
 											CheckStyle:  types.NoCheck,
 											Elements: []interface{}{
 												types.Paragraph{
-													Lines: [][]interface{}{
-														{
+													Lines: []interface{}{
+														[]interface{}{
 															types.StringElement{
 																Content: "content",
 															},
@@ -3183,8 +3139,8 @@ foo
 							Kind: types.Quote,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: [][]interface{}{
-										{
+									Lines: []interface{}{
+										[]interface{}{
 											types.StringElement{
 												Content: "foo",
 											},
@@ -3199,7 +3155,7 @@ foo
 			})
 		})
 
-		Context("verse blocks", func() {
+		Context("verse block", func() {
 
 			It("single line verse with author and title", func() {
 				source := `[verse, john doe, verse title]
@@ -3217,8 +3173,8 @@ ____`
 							Kind: types.Verse,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: [][]interface{}{
-										{
+									Lines: []interface{}{
+										[]interface{}{
 											types.StringElement{
 												Content: "some ",
 											},
@@ -3261,18 +3217,18 @@ ____
 							Kind: types.Verse,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: [][]interface{}{
-										{
+									Lines: []interface{}{
+										[]interface{}{
 											types.StringElement{
 												Content: "- some ",
 											},
 										},
-										{
+										[]interface{}{
 											types.StringElement{
 												Content: "- verse ",
 											},
 										},
-										{
+										[]interface{}{
 											types.StringElement{
 												Content: "- content ",
 											},
@@ -3302,8 +3258,8 @@ ____
 							Kind: types.Verse,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: [][]interface{}{
-										{
+									Lines: []interface{}{
+										[]interface{}{
 											types.StringElement{
 												Content: "some verse content ",
 											},
@@ -3335,28 +3291,28 @@ ____`
 							Kind: types.Verse,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: [][]interface{}{
-										{
+									Lines: []interface{}{
+										[]interface{}{
 											types.StringElement{
 												Content: "* some",
 											},
 										},
-										{
+										[]interface{}{
 											types.StringElement{
 												Content: "----",
 											},
 										},
-										{
+										[]interface{}{
 											types.StringElement{
 												Content: "* verse ",
 											},
 										},
-										{
+										[]interface{}{
 											types.StringElement{
 												Content: "----",
 											},
 										},
-										{
+										[]interface{}{
 											types.StringElement{
 												Content: "* content",
 											},
@@ -3387,8 +3343,8 @@ ____`
 							Kind: types.Verse,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: [][]interface{}{
-										{
+									Lines: []interface{}{
+										[]interface{}{
 											types.StringElement{
 												Content: "* foo",
 											},
@@ -3398,8 +3354,8 @@ ____`
 								types.BlankLine{},
 								types.BlankLine{},
 								types.Paragraph{
-									Lines: [][]interface{}{
-										{
+									Lines: []interface{}{
+										[]interface{}{
 											types.StringElement{
 												Content: "\t* bar",
 											},
@@ -3445,8 +3401,8 @@ foo
 							Kind: types.Verse,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: [][]interface{}{
-										{
+									Lines: []interface{}{
+										[]interface{}{
 											types.StringElement{
 												Content: "foo",
 											},
@@ -3461,7 +3417,7 @@ foo
 			})
 		})
 
-		Context("source blocks", func() {
+		Context("source block", func() {
 
 			It("with source attribute only", func() {
 				source := `[source]
@@ -3584,9 +3540,9 @@ end
 			})
 		})
 
-		Context("sidebar blocks", func() {
+		Context("sidebar block", func() {
 
-			It("sidebar block with paragraph", func() {
+			It("with paragraph", func() {
 				source := `****
 some *verse* content
 ****`
@@ -3596,8 +3552,8 @@ some *verse* content
 							Kind: types.Sidebar,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: [][]interface{}{
-										{
+									Lines: []interface{}{
+										[]interface{}{
 											types.StringElement{
 												Content: "some ",
 											},
@@ -3622,7 +3578,7 @@ some *verse* content
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
-			It("sidebar block with title, paragraph and sourcecode block", func() {
+			It("with title, paragraph and sourcecode block", func() {
 				source := `.a title
 ****
 some *verse* content
@@ -3641,8 +3597,8 @@ bar
 							Kind: types.Sidebar,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: [][]interface{}{
-										{
+									Lines: []interface{}{
+										[]interface{}{
 											types.StringElement{
 												Content: "some ",
 											},
@@ -3680,7 +3636,7 @@ bar
 			})
 		})
 
-		Context("passthrough blocks", func() {
+		Context("passthrough block", func() {
 
 			It("with title", func() {
 				source := `.a title
@@ -3710,7 +3666,9 @@ _foo_
 						},
 					},
 				}
-				Expect(ParseDocument(source)).To(MatchDocument(expected))
+				result, err := ParseDocument(source)
+				Expect(err).NotTo(HaveOccurred())
+				Expect(result).To(MatchDocument(expected))
 			})
 		})
 
@@ -3739,13 +3697,191 @@ another paragraph`
 							},
 						},
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
+							Lines: []interface{}{
+								[]interface{}{
 									types.StringElement{
 										Content: "another paragraph",
 									},
 								},
 							},
+						},
+					},
+				}
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
+			})
+		})
+
+		Context("markdown-style quote block", func() {
+
+			It("with single marker without author", func() {
+				source := `> some text
+on *multiple lines*`
+
+				expected := types.Document{
+					Elements: []interface{}{
+						types.DelimitedBlock{
+							Kind: types.MarkdownQuote,
+							Elements: []interface{}{
+								types.Paragraph{
+									Lines: []interface{}{
+										[]interface{}{
+											types.StringElement{
+												Content: "some text",
+											},
+										},
+										[]interface{}{
+											types.StringElement{
+												Content: "on ",
+											},
+											types.QuotedText{
+												Kind: types.Bold,
+												Elements: []interface{}{
+													types.StringElement{
+														Content: "multiple lines",
+													},
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
+			})
+
+			It("with marker on each line without author", func() {
+				source := `> some text
+> on *multiple lines*`
+				expected := types.Document{
+					Elements: []interface{}{
+						types.DelimitedBlock{
+							Kind: types.MarkdownQuote,
+							Elements: []interface{}{
+								types.Paragraph{
+									Lines: []interface{}{
+										[]interface{}{
+											types.StringElement{
+												Content: "some text",
+											},
+										},
+										[]interface{}{
+											types.StringElement{
+												Content: "on ",
+											},
+											types.QuotedText{
+												Kind: types.Bold,
+												Elements: []interface{}{
+													types.StringElement{
+														Content: "multiple lines",
+													},
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
+			})
+
+			It("with marker on each line with author only", func() {
+				source := `> some text
+> on *multiple lines*
+> -- John Doe`
+				expected := types.Document{
+					Elements: []interface{}{
+						types.DelimitedBlock{
+							Kind: types.MarkdownQuote,
+							Attributes: types.Attributes{
+								types.AttrQuoteAuthor: "John Doe",
+							},
+							Elements: []interface{}{
+								types.Paragraph{
+									Lines: []interface{}{
+										[]interface{}{
+											types.StringElement{
+												Content: "some text",
+											},
+										},
+										[]interface{}{
+											types.StringElement{
+												Content: "on ",
+											},
+											types.QuotedText{
+												Kind: types.Bold,
+												Elements: []interface{}{
+													types.StringElement{
+														Content: "multiple lines",
+													},
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
+			})
+
+			It("with marker on each line with author and title", func() {
+				source := `.title
+> some text
+> on *multiple lines*
+> -- John Doe`
+				expected := types.Document{
+					Elements: []interface{}{
+						types.DelimitedBlock{
+							Kind: types.MarkdownQuote,
+							Attributes: types.Attributes{
+								types.AttrTitle:       "title",
+								types.AttrQuoteAuthor: "John Doe",
+							},
+							Elements: []interface{}{
+								types.Paragraph{
+									Lines: []interface{}{
+										[]interface{}{
+											types.StringElement{
+												Content: "some text",
+											},
+										},
+										[]interface{}{
+											types.StringElement{
+												Content: "on ",
+											},
+											types.QuotedText{
+												Kind: types.Bold,
+												Elements: []interface{}{
+													types.StringElement{
+														Content: "multiple lines",
+													},
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
+			})
+
+			It("with with author only", func() {
+				source := `> -- John Doe`
+				expected := types.Document{
+					Elements: []interface{}{
+						types.DelimitedBlock{
+							Kind: types.MarkdownQuote,
+							Attributes: types.Attributes{
+								types.AttrQuoteAuthor: "John Doe",
+							},
+							Elements: []interface{}{},
 						},
 					},
 				}

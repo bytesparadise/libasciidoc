@@ -18,8 +18,8 @@ var _ = Describe("block filters", func() {
 				},
 			},
 			types.Paragraph{
-				Lines: [][]interface{}{
-					{
+				Lines: []interface{}{
+					[]interface{}{
 						types.StringElement{},
 					},
 				},
@@ -33,8 +33,8 @@ var _ = Describe("block filters", func() {
 				},
 			},
 			types.Paragraph{
-				Lines: [][]interface{}{
-					{
+				Lines: []interface{}{
+					[]interface{}{
 						types.StringElement{},
 					},
 				},
@@ -47,8 +47,8 @@ var _ = Describe("block filters", func() {
 		actual := []interface{}{
 			types.AttributeDeclaration{},
 			types.Paragraph{
-				Lines: [][]interface{}{
-					{
+				Lines: []interface{}{
+					[]interface{}{
 						types.StringElement{},
 					},
 				},
@@ -56,8 +56,8 @@ var _ = Describe("block filters", func() {
 		}
 		expected := []interface{}{
 			types.Paragraph{
-				Lines: [][]interface{}{
-					{
+				Lines: []interface{}{
+					[]interface{}{
 						types.StringElement{},
 					},
 				},
@@ -70,8 +70,8 @@ var _ = Describe("block filters", func() {
 		actual := []interface{}{
 			types.AttributeSubstitution{},
 			types.Paragraph{
-				Lines: [][]interface{}{
-					{
+				Lines: []interface{}{
+					[]interface{}{
 						types.StringElement{},
 					},
 				},
@@ -79,8 +79,8 @@ var _ = Describe("block filters", func() {
 		}
 		expected := []interface{}{
 			types.Paragraph{
-				Lines: [][]interface{}{
-					{
+				Lines: []interface{}{
+					[]interface{}{
 						types.StringElement{},
 					},
 				},
@@ -93,8 +93,8 @@ var _ = Describe("block filters", func() {
 		actual := []interface{}{
 			types.AttributeReset{},
 			types.Paragraph{
-				Lines: [][]interface{}{
-					{
+				Lines: []interface{}{
+					[]interface{}{
 						types.StringElement{},
 					},
 				},
@@ -102,8 +102,8 @@ var _ = Describe("block filters", func() {
 		}
 		expected := []interface{}{
 			types.Paragraph{
-				Lines: [][]interface{}{
-					{
+				Lines: []interface{}{
+					[]interface{}{
 						types.StringElement{},
 					},
 				},
@@ -118,8 +118,8 @@ var _ = Describe("block filters", func() {
 				Kind: types.Comment,
 			},
 			types.Paragraph{
-				Lines: [][]interface{}{
-					{
+				Lines: []interface{}{
+					[]interface{}{
 						types.StringElement{},
 					},
 				},
@@ -127,8 +127,8 @@ var _ = Describe("block filters", func() {
 		}
 		expected := []interface{}{
 			types.Paragraph{
-				Lines: [][]interface{}{
-					{
+				Lines: []interface{}{
+					[]interface{}{
 						types.StringElement{},
 					},
 				},
@@ -141,8 +141,8 @@ var _ = Describe("block filters", func() {
 		actual := []interface{}{
 			types.SingleLineComment{},
 			types.Paragraph{
-				Lines: [][]interface{}{
-					{
+				Lines: []interface{}{
+					[]interface{}{
 						types.StringElement{},
 					},
 				},
@@ -150,8 +150,8 @@ var _ = Describe("block filters", func() {
 		}
 		expected := []interface{}{
 			types.Paragraph{
-				Lines: [][]interface{}{
-					{
+				Lines: []interface{}{
+					[]interface{}{
 						types.StringElement{},
 					},
 				},
@@ -163,8 +163,8 @@ var _ = Describe("block filters", func() {
 	It("should remove single line comment in a paragraph", func() {
 		actual := []interface{}{
 			types.Paragraph{
-				Lines: [][]interface{}{
-					{
+				Lines: []interface{}{
+					[]interface{}{
 						types.StringElement{},
 						types.SingleLineComment{},
 					},
@@ -173,8 +173,8 @@ var _ = Describe("block filters", func() {
 		}
 		expected := []interface{}{
 			types.Paragraph{
-				Lines: [][]interface{}{
-					{
+				Lines: []interface{}{
+					[]interface{}{
 						types.StringElement{},
 					},
 				},
@@ -186,8 +186,8 @@ var _ = Describe("block filters", func() {
 	It("should retain paragraph with single line comment only", func() {
 		actual := []interface{}{
 			types.Paragraph{
-				Lines: [][]interface{}{
-					{
+				Lines: []interface{}{
+					[]interface{}{
 						types.SingleLineComment{},
 					},
 				},
@@ -195,7 +195,7 @@ var _ = Describe("block filters", func() {
 		}
 		expected := []interface{}{
 			types.Paragraph{
-				Lines: [][]interface{}{},
+				Lines: []interface{}{},
 			},
 		}
 		Expect(filter(actual, allMatchers...)).To(Equal(expected))
@@ -204,12 +204,14 @@ var _ = Describe("block filters", func() {
 	It("should retain paragraph with empty content", func() {
 		actual := []interface{}{
 			types.Paragraph{
-				Lines: [][]interface{}{},
+				Lines: []interface{}{
+					[]interface{}{},
+				},
 			},
 		}
 		expected := []interface{}{
 			types.Paragraph{
-				Lines: [][]interface{}{},
+				Lines: []interface{}{},
 			},
 		}
 		Expect(filter(actual, allMatchers...)).To(Equal(expected))

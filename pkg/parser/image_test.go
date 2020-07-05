@@ -12,170 +12,75 @@ var _ = Describe("images", func() {
 
 	Context("block images", func() {
 
-		Context("draft document", func() {
+		Context("inline elements", func() {
 
-			It("block image with empty alt", func() {
+			It("with empty alt", func() {
 				source := "image::images/foo.png[]"
-				expected := types.DraftDocument{
-					Blocks: []interface{}{
-						types.ImageBlock{
-							Location: types.Location{
-								Path: []interface{}{
-									types.StringElement{Content: "images/foo.png"},
-								},
-							},
+				expected := types.ImageBlock{
+					Location: types.Location{
+						Path: []interface{}{
+							types.StringElement{Content: "images/foo.png"},
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				Expect(ParseDocumentBlock(source)).To(Equal(expected))
 			})
 
-			It("block image with empty alt and trailing spaces", func() {
+			It("with empty alt and trailing spaces", func() {
 				source := "image::images/foo.png[]  \t\t  "
-				expected := types.DraftDocument{
-					Blocks: []interface{}{
-						types.ImageBlock{
-							Location: types.Location{
-								Path: []interface{}{
-									types.StringElement{Content: "images/foo.png"},
-								},
-							},
+				expected := types.ImageBlock{
+					Location: types.Location{
+						Path: []interface{}{
+							types.StringElement{Content: "images/foo.png"},
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				Expect(ParseDocumentBlock(source)).To(Equal(expected))
 			})
 
-			It("block image with line return", func() {
-				// line return here is not considered as a blank line
-				source := `image::images/foo.png[]
-`
-				expected := types.DraftDocument{
-					Blocks: []interface{}{
-						types.ImageBlock{
-							Location: types.Location{
-								Path: []interface{}{
-									types.StringElement{Content: "images/foo.png"},
-								},
-							},
-						},
-					},
-				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
-			})
-
-			It("block image with 1 empty blank line", func() {
-				// here, there's a real blank line with some spaces
-				source := `image::images/foo.png[]
-  `
-				expected := types.DraftDocument{
-					Blocks: []interface{}{
-						types.ImageBlock{
-							Location: types.Location{
-								Path: []interface{}{
-									types.StringElement{Content: "images/foo.png"},
-								},
-							},
-						},
-						types.BlankLine{},
-					},
-				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
-			})
-
-			It("block image with 2 blank lines with spaces and tabs", func() {
-				source := `image::images/foo.png[]
-			`
-				expected := types.DraftDocument{
-					Blocks: []interface{}{
-						types.ImageBlock{
-							Location: types.Location{
-								Path: []interface{}{
-									types.StringElement{Content: "images/foo.png"},
-								},
-							},
-						},
-						types.BlankLine{},
-					},
-				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
-			})
-
-			It("block image with alt", func() {
+			It("with alt", func() {
 				source := `image::images/foo.png[the foo.png image]`
-				expected := types.DraftDocument{
-					Blocks: []interface{}{
-						types.ImageBlock{
-							Attributes: types.Attributes{
-								types.AttrImageAlt: "the foo.png image",
-							},
-							Location: types.Location{
-								Path: []interface{}{
-									types.StringElement{Content: "images/foo.png"},
-								},
-							},
+				expected := types.ImageBlock{
+					Attributes: types.Attributes{
+						types.AttrImageAlt: "the foo.png image",
+					},
+					Location: types.Location{
+						Path: []interface{}{
+							types.StringElement{Content: "images/foo.png"},
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				Expect(ParseDocumentBlock(source)).To(Equal(expected))
 			})
 
-			It("block image with dimensions and id link title meta", func() {
+			It("with dimensions and id link title meta", func() {
 				source := `[#img-foobar]
 .A title to foobar
 [link=http://foo.bar]
 image::images/foo.png[the foo.png image, 600, 400]`
-				expected := types.DraftDocument{
-					Blocks: []interface{}{
-						types.ImageBlock{
-							Attributes: types.Attributes{
-								types.AttrID:          "img-foobar",
-								types.AttrCustomID:    true,
-								types.AttrTitle:       "A title to foobar",
-								types.AttrInlineLink:  "http://foo.bar",
-								types.AttrImageAlt:    "the foo.png image",
-								types.AttrWidth:       "600",
-								types.AttrImageHeight: "400",
-							},
-							Location: types.Location{
-								Path: []interface{}{
-									types.StringElement{Content: "images/foo.png"},
-								},
-							},
+				expected := types.ImageBlock{
+					Attributes: types.Attributes{
+						types.AttrID:          "img-foobar",
+						types.AttrCustomID:    true,
+						types.AttrTitle:       "A title to foobar",
+						types.AttrInlineLink:  "http://foo.bar",
+						types.AttrImageAlt:    "the foo.png image",
+						types.AttrWidth:       "600",
+						types.AttrImageHeight: "400",
+					},
+					Location: types.Location{
+						Path: []interface{}{
+							types.StringElement{Content: "images/foo.png"},
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
-			})
-
-			It("2 block images", func() {
-				source := `image::images/foo.png[]
-image::images/bar.png[]`
-				expected := types.DraftDocument{
-					Blocks: []interface{}{
-						types.ImageBlock{
-							Location: types.Location{
-								Path: []interface{}{
-									types.StringElement{Content: "images/foo.png"},
-								},
-							},
-						},
-						types.ImageBlock{
-							Location: types.Location{
-								Path: []interface{}{
-									types.StringElement{Content: "images/bar.png"},
-								},
-							},
-						},
-					},
-				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				Expect(ParseDocumentBlock(source)).To(Equal(expected))
 			})
 		})
 
 		Context("final document", func() {
 
-			It("block image with empty alt", func() {
+			It("with empty alt", func() {
 				source := "image::images/foo.png[]"
 				expected := types.Document{
 					Elements: []interface{}{
@@ -194,7 +99,7 @@ image::images/bar.png[]`
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
-			It("image block with implicit imagesdir document attribute", func() {
+			It("with implicit imagesdir document attribute", func() {
 				source := `
 :imagesdir: ./path/to/images
 
@@ -219,7 +124,7 @@ image::foo.png[]`
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
-			It("image block with document attribute in URL", func() {
+			It("with document attribute in URL", func() {
 				source := `
 :dir: ./path/to/images
 
@@ -244,7 +149,7 @@ image::{dir}/foo.png[]`
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
-			It("image block with implicit imagesdir", func() {
+			It("with implicit imagesdir", func() {
 				source := `
 :imagesdir: ./path/to/images
 
@@ -269,7 +174,7 @@ image::foo.png[]`
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
-			It("image block with explicit duplicate imagesdir document attribute", func() {
+			It("with explicit duplicate imagesdir document attribute", func() {
 				source := `
 :imagesdir: ./path/to/images
 
@@ -293,395 +198,282 @@ image::{imagesdir}/foo.png[]`
 				}
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
+
+			It("2 block images", func() {
+				source := `image::images/foo.png[]
+image::images/bar.png[]`
+				expected := types.Document{
+					Elements: []interface{}{
+						types.ImageBlock{
+							Attributes: types.Attributes{
+								types.AttrImageAlt: "foo",
+							},
+							Location: types.Location{
+								Path: []interface{}{
+									types.StringElement{Content: "images/foo.png"},
+								},
+							},
+						},
+						types.ImageBlock{
+							Attributes: types.Attributes{
+								types.AttrImageAlt: "bar",
+							},
+							Location: types.Location{
+								Path: []interface{}{
+									types.StringElement{Content: "images/bar.png"},
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
+			})
 		})
 
 		Context("errors", func() {
 
-			Context("parsing the paragraph only", func() {
-
-				It("block image appending inline content", func() {
-					source := "a paragraph\nimage::images/foo.png[]"
-					expected := types.DraftDocument{
-						Blocks: []interface{}{
-							types.Paragraph{
-								Lines: [][]interface{}{
-									{
-										types.StringElement{Content: "a paragraph"},
-									},
-									{
-										types.StringElement{Content: "image::images/foo.png[]"},
-									},
-								},
-							},
-						},
-					}
-					Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
-				})
+			It("appending inline content", func() {
+				source := "a paragraph\nimage::images/foo.png[]"
+				expected := types.Paragraph{
+					Lines: []interface{}{
+						types.RawLine{Content: "a paragraph"},
+						types.RawLine{Content: "image::images/foo.png[]"},
+					},
+				}
+				Expect(ParseDocumentBlock(source)).To(Equal(expected))
 			})
 
-			Context("parsing the whole document", func() {
-
-				It("paragraph with block image with alt and dimensions", func() {
-					source := "a foo image::foo.png[foo image, 600, 400] bar"
-					expected := types.DraftDocument{
-						Blocks: []interface{}{
-							types.Paragraph{
-								Lines: [][]interface{}{
-									{
-										types.StringElement{Content: "a foo image::foo.png[foo image, 600, 400] bar"},
-									},
-								},
-							},
-						},
-					}
-					Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
-				})
+			It("paragraph with block image with alt and dimensions", func() {
+				source := "a foo image::foo.png[foo image, 600, 400] bar"
+				expected := []interface{}{
+					types.StringElement{Content: "a foo image::foo.png[foo image, 600, 400] bar"},
+				}
+				Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 			})
 		})
 	})
 
 	Context("inline images", func() {
 
-		Context("draft document", func() {
+		Context("inline elements", func() {
 
 			It("inline image with empty alt only", func() {
 				source := "image:images/foo.png[]"
-				expected := types.DraftDocument{
-					Blocks: []interface{}{
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.InlineImage{
-										Location: types.Location{
-											Path: []interface{}{
-												types.StringElement{Content: "images/foo.png"},
-											},
-										},
-									},
-								},
+				expected := []interface{}{
+					types.InlineImage{
+						Location: types.Location{
+							Path: []interface{}{
+								types.StringElement{Content: "images/foo.png"},
 							},
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 			})
 
 			It("inline image with empty alt and trailing spaces", func() {
 				source := "image:images/foo.png[]  \t\t  "
-				expected := types.DraftDocument{
-					Blocks: []interface{}{
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.InlineImage{
-										Location: types.Location{
-											Path: []interface{}{
-												types.StringElement{Content: "images/foo.png"},
-											},
-										},
-									},
-									types.StringElement{
-										Content: "  \t\t  ",
-									},
-								},
+				expected := []interface{}{
+					types.InlineImage{
+						Location: types.Location{
+							Path: []interface{}{
+								types.StringElement{Content: "images/foo.png"},
 							},
 						},
 					},
+					types.StringElement{
+						Content: "  \t\t  ",
+					},
 				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 			})
 
 			It("inline image surrounded with test", func() {
 				source := "a foo image:images/foo.png[] bar..."
-				expected := types.DraftDocument{
-					Blocks: []interface{}{
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.StringElement{
-										Content: "a foo ",
-									},
-									types.InlineImage{
-										Location: types.Location{
-											Path: []interface{}{
-												types.StringElement{Content: "images/foo.png"},
-											},
-										},
-									},
-									types.StringElement{
-										Content: " bar\u2026\u200b",
-									},
-								},
+				expected := []interface{}{
+					types.StringElement{
+						Content: "a foo ",
+					},
+					types.InlineImage{
+						Location: types.Location{
+							Path: []interface{}{
+								types.StringElement{Content: "images/foo.png"},
 							},
 						},
 					},
+					types.StringElement{
+						Content: " bar\u2026\u200b",
+					},
 				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 			})
 
 			It("inline image with alt alone", func() {
 				source := "image:images/foo.png[the foo.png image]"
-				expected := types.DraftDocument{
-					Blocks: []interface{}{
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.InlineImage{
-										Attributes: types.Attributes{
-											types.AttrImageAlt: "the foo.png image",
-										},
-										Location: types.Location{
-											Path: []interface{}{
-												types.StringElement{Content: "images/foo.png"},
-											},
-										},
-									},
-								},
+				expected := []interface{}{
+					types.InlineImage{
+						Attributes: types.Attributes{
+							types.AttrImageAlt: "the foo.png image",
+						},
+						Location: types.Location{
+							Path: []interface{}{
+								types.StringElement{Content: "images/foo.png"},
 							},
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 			})
 
 			It("inline image with alt and width", func() {
 				source := "image:images/foo.png[the foo.png image, 600]"
-				expected := types.DraftDocument{
-					Blocks: []interface{}{
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.InlineImage{
-										Attributes: types.Attributes{
-											types.AttrImageAlt: "the foo.png image",
-											types.AttrWidth:    "600",
-										},
-										Location: types.Location{
-											Path: []interface{}{
-												types.StringElement{Content: "images/foo.png"},
-											},
-										},
-									},
-								},
+				expected := []interface{}{
+					types.InlineImage{
+						Attributes: types.Attributes{
+							types.AttrImageAlt: "the foo.png image",
+							types.AttrWidth:    "600",
+						},
+						Location: types.Location{
+							Path: []interface{}{
+								types.StringElement{Content: "images/foo.png"},
 							},
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 			})
 
 			It("inline image with alt, width and height", func() {
 				source := "image:images/foo.png[the foo.png image, 600, 400]"
-				expected := types.DraftDocument{
-					Blocks: []interface{}{
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.InlineImage{
-										Attributes: types.Attributes{
-											types.AttrImageAlt:    "the foo.png image",
-											types.AttrWidth:       "600",
-											types.AttrImageHeight: "400",
-										},
-										Location: types.Location{
-											Path: []interface{}{
-												types.StringElement{Content: "images/foo.png"},
-											},
-										},
-									},
-								},
+				expected := []interface{}{
+					types.InlineImage{
+						Attributes: types.Attributes{
+							types.AttrImageAlt:    "the foo.png image",
+							types.AttrWidth:       "600",
+							types.AttrImageHeight: "400",
+						},
+						Location: types.Location{
+							Path: []interface{}{
+								types.StringElement{Content: "images/foo.png"},
 							},
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 			})
 
 			It("inline image with alt, but empty width and height", func() {
 				source := "image:images/foo.png[the foo.png image, , ]"
-				expected := types.DraftDocument{
-					Blocks: []interface{}{
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.InlineImage{
-										Attributes: types.Attributes{
-											types.AttrImageAlt: "the foo.png image",
-										},
-										Location: types.Location{
-											Path: []interface{}{
-												types.StringElement{Content: "images/foo.png"},
-											},
-										},
-									},
-								},
+				expected := []interface{}{
+					types.InlineImage{
+						Attributes: types.Attributes{
+							types.AttrImageAlt: "the foo.png image",
+						},
+						Location: types.Location{
+							Path: []interface{}{
+								types.StringElement{Content: "images/foo.png"},
 							},
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 			})
 
 			It("inline image with single other attribute only", func() {
 				source := "image:images/foo.png[id=myid]"
-				expected := types.DraftDocument{
-					Blocks: []interface{}{
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.InlineImage{
-										Attributes: types.Attributes{
-											types.AttrID:       "myid",
-											types.AttrCustomID: true,
-										},
-										Location: types.Location{
-											Path: []interface{}{
-												types.StringElement{Content: "images/foo.png"},
-											},
-										},
-									},
-								},
+				expected := []interface{}{
+					types.InlineImage{
+						Attributes: types.Attributes{
+							types.AttrID:       "myid",
+							types.AttrCustomID: true,
+						},
+						Location: types.Location{
+							Path: []interface{}{
+								types.StringElement{Content: "images/foo.png"},
 							},
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 			})
 
 			It("inline image with multiple other attributes only", func() {
 				source := "image:images/foo.png[id=myid, title= mytitle, role = myrole ]"
-				expected := types.DraftDocument{
-					Blocks: []interface{}{
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.InlineImage{
-										Attributes: types.Attributes{
-											types.AttrID:       "myid",
-											types.AttrCustomID: true,
-											types.AttrTitle:    "mytitle",
-											types.AttrRole:     "myrole",
-										},
-										Location: types.Location{
-											Path: []interface{}{
-												types.StringElement{Content: "images/foo.png"},
-											},
-										},
-									},
-								},
+				expected := []interface{}{
+					types.InlineImage{
+						Attributes: types.Attributes{
+							types.AttrID:       "myid",
+							types.AttrCustomID: true,
+							types.AttrTitle:    "mytitle",
+							types.AttrRole:     "myrole",
+						},
+						Location: types.Location{
+							Path: []interface{}{
+								types.StringElement{Content: "images/foo.png"},
 							},
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 			})
 
 			It("inline image with alt, width, height and other attributes", func() {
 				source := "image:images/foo.png[ foo, 600, 400, id=myid, title=mytitle, role=myrole ]"
-				expected := types.DraftDocument{
-					Blocks: []interface{}{
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.InlineImage{
-										Attributes: types.Attributes{
-											types.AttrImageAlt:    "foo",
-											types.AttrWidth:       "600",
-											types.AttrImageHeight: "400",
-											types.AttrID:          "myid",
-											types.AttrCustomID:    true,
-											types.AttrTitle:       "mytitle",
-											types.AttrRole:        "myrole",
-										},
-										Location: types.Location{
-											Path: []interface{}{
-												types.StringElement{Content: "images/foo.png"},
-											},
-										},
-									},
-								},
+				expected := []interface{}{
+					types.InlineImage{
+						Attributes: types.Attributes{
+							types.AttrImageAlt:    "foo",
+							types.AttrWidth:       "600",
+							types.AttrImageHeight: "400",
+							types.AttrID:          "myid",
+							types.AttrCustomID:    true,
+							types.AttrTitle:       "mytitle",
+							types.AttrRole:        "myrole",
+						},
+						Location: types.Location{
+							Path: []interface{}{
+								types.StringElement{Content: "images/foo.png"},
 							},
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 			})
 
 			It("inline image in a paragraph with space after colon", func() {
 				source := "this is an image: image:images/foo.png[]"
-				expected := types.DraftDocument{
-					Blocks: []interface{}{
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.StringElement{
-										Content: "this is an image: ",
-									},
-									types.InlineImage{
-										Location: types.Location{
-											Path: []interface{}{
-												types.StringElement{Content: "images/foo.png"},
-											},
-										},
-									},
-								},
+				expected := []interface{}{
+					types.StringElement{
+						Content: "this is an image: ",
+					},
+					types.InlineImage{
+						Location: types.Location{
+							Path: []interface{}{
+								types.StringElement{Content: "images/foo.png"},
 							},
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 			})
 
 			It("inline image in a paragraph without space separator", func() {
 				source := "this is an inline.image:images/foo.png[]"
-				expected := types.DraftDocument{
-					Blocks: []interface{}{
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.StringElement{
-										Content: "this is an inline.",
-									},
-									types.InlineImage{
-										Location: types.Location{
-											Path: []interface{}{
-												types.StringElement{Content: "images/foo.png"},
-											},
-										},
-									},
-								},
+				expected := []interface{}{
+					types.StringElement{
+						Content: "this is an inline.",
+					},
+					types.InlineImage{
+						Location: types.Location{
+							Path: []interface{}{
+								types.StringElement{Content: "images/foo.png"},
 							},
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 			})
 
-			It("image block with document attribute in URL", func() {
-				source := `:imagesdir: ./path/to/images
-
-image::{imagesdir}/foo.png[]`
-				expected := types.DraftDocument{
-					Blocks: []interface{}{
-						types.AttributeDeclaration{
-							Name:  "imagesdir",
-							Value: "./path/to/images",
-						},
-						types.BlankLine{},
-						types.ImageBlock{
-							Location: types.Location{
-								Path: []interface{}{
-									types.AttributeSubstitution{
-										Name: "imagesdir",
-									},
-									types.StringElement{Content: "/foo.png"},
-								},
-							},
-						},
-					},
-				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
-			})
 		})
 
 		Context("final document", func() {
@@ -691,8 +483,8 @@ image::{imagesdir}/foo.png[]`
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
+							Lines: []interface{}{
+								[]interface{}{
 									types.InlineImage{
 										Attributes: types.Attributes{
 											types.AttrImageAlt: "foo",
@@ -722,8 +514,8 @@ an image:{dir}/foo.png[].`
 					},
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
+							Lines: []interface{}{
+								[]interface{}{
 									types.StringElement{Content: "an "},
 									types.InlineImage{
 										Attributes: types.Attributes{
@@ -755,8 +547,8 @@ an image:foo.png[].`
 					},
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
+							Lines: []interface{}{
+								[]interface{}{
 									types.StringElement{Content: "an "},
 									types.InlineImage{
 										Attributes: types.Attributes{
@@ -788,8 +580,8 @@ an image:{imagesdir}/foo.png[].`
 					},
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
+							Lines: []interface{}{
+								[]interface{}{
 									types.StringElement{Content: "an "},
 									types.InlineImage{
 										Attributes: types.Attributes{
@@ -809,26 +601,51 @@ an image:{imagesdir}/foo.png[].`
 				}
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
+
+			It("with document attribute in URL", func() {
+				source := `:path: ./path/to/images
+
+image::{path}/foo.png[]`
+				expected := types.Document{
+					Attributes: types.Attributes{
+						"path": "./path/to/images",
+					},
+					Elements: []interface{}{
+						types.ImageBlock{
+							Attributes: types.Attributes{
+								types.AttrImageAlt: "foo",
+							},
+							Location: types.Location{
+								Path: []interface{}{
+									types.StringElement{Content: "./path/to/images/foo.png"}, // resolved
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
+			})
 		})
 
 		Context("errors", func() {
+
 			It("inline image appending inline content", func() {
 				source := "a paragraph\nimage::images/foo.png[]"
-				expected := types.DraftDocument{
-					Blocks: []interface{}{
+				expected := types.Document{
+					Elements: []interface{}{
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
+							Lines: []interface{}{
+								[]interface{}{
 									types.StringElement{Content: "a paragraph"},
 								},
-								{
+								[]interface{}{
 									types.StringElement{Content: "image::images/foo.png[]"},
 								},
 							},
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 		})
 	})

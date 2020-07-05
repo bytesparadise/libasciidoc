@@ -28,16 +28,16 @@ var _ = Describe("preambles", func() {
 			},
 			Elements: []interface{}{
 				types.Paragraph{
-					Lines: [][]interface{}{
-						{
+					Lines: []interface{}{
+						[]interface{}{
 							types.StringElement{Content: "a short paragraph"},
 						},
 					},
 				},
 				types.BlankLine{},
 				types.Paragraph{
-					Lines: [][]interface{}{
-						{
+					Lines: []interface{}{
+						[]interface{}{
 							types.StringElement{Content: "another short paragraph"},
 						},
 					},
@@ -54,16 +54,16 @@ var _ = Describe("preambles", func() {
 			},
 			Elements: []interface{}{
 				types.Paragraph{
-					Lines: [][]interface{}{
-						{
+					Lines: []interface{}{
+						[]interface{}{
 							types.StringElement{Content: "a short paragraph"},
 						},
 					},
 				},
 				types.BlankLine{},
 				types.Paragraph{
-					Lines: [][]interface{}{
-						{
+					Lines: []interface{}{
+						[]interface{}{
 							types.StringElement{Content: "another short paragraph"},
 						},
 					},
@@ -84,8 +84,8 @@ var _ = Describe("preambles", func() {
 			},
 			Elements: []interface{}{
 				types.Paragraph{
-					Lines: [][]interface{}{
-						{
+					Lines: []interface{}{
+						[]interface{}{
 							types.StringElement{Content: "a short paragraph"},
 						},
 					},
@@ -122,10 +122,8 @@ var _ = Describe("preambles", func() {
 				types.Preamble{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.StringElement{Content: "a short paragraph"},
-								},
+							Lines: []interface{}{
+								[]interface{}{types.StringElement{Content: "a short paragraph"}},
 							},
 						},
 						types.BlankLine{},
@@ -164,16 +162,16 @@ var _ = Describe("preambles", func() {
 			},
 			Elements: []interface{}{
 				types.Paragraph{
-					Lines: [][]interface{}{
-						{
+					Lines: []interface{}{
+						[]interface{}{
 							types.StringElement{Content: "a short paragraph"},
 						},
 					},
 				},
 				types.BlankLine{},
 				types.Paragraph{
-					Lines: [][]interface{}{
-						{
+					Lines: []interface{}{
+						[]interface{}{
 							types.StringElement{Content: "another short paragraph"},
 						},
 					},
@@ -210,18 +208,14 @@ var _ = Describe("preambles", func() {
 				types.Preamble{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.StringElement{Content: "a short paragraph"},
-								},
+							Lines: []interface{}{
+								[]interface{}{types.StringElement{Content: "a short paragraph"}},
 							},
 						},
 						types.BlankLine{},
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.StringElement{Content: "another short paragraph"},
-								},
+							Lines: []interface{}{
+								[]interface{}{types.StringElement{Content: "another short paragraph"}},
 							},
 						},
 						types.BlankLine{},

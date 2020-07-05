@@ -3,7 +3,7 @@ package testsupport
 import (
 	"fmt"
 
-	. "github.com/onsi/ginkgo" //nolint golint
+	. "github.com/onsi/ginkgo" //nolint go-lint
 	gomegatypes "github.com/onsi/gomega/types"
 	"github.com/pkg/errors"
 	"github.com/sergi/go-diff/diffmatchpatch"

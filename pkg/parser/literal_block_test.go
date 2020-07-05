@@ -8,197 +8,211 @@ import (
 	. "github.com/onsi/gomega" //nolint golint
 )
 
-var _ = Describe("literal blocks - draft", func() {
+var _ = Describe("literal blocks", func() {
 
-	Context("literal blocks with spaces indentation", func() {
+	Context("draft document", func() {
 
-		It("literal block from 1-line paragraph with single space", func() {
-			source := ` some literal content`
-			expected := types.LiteralBlock{
-				Attributes: types.Attributes{
-					types.AttrKind:             types.Literal,
-					types.AttrLiteralBlockType: types.LiteralBlockWithSpacesOnFirstLine,
-				},
-				Lines: []string{
-					" some literal content",
-				},
-			}
-			Expect(ParseDocumentBlock(source)).To(Equal(expected))
-		})
+		Context("literal blocks with spaces indentation", func() {
 
-		It("literal block from paragraph with single space on first line", func() {
-			source := ` some literal content
+			It("literal block from 1-line paragraph with single space", func() {
+				source := ` some literal content`
+				expected := types.DraftDocument{
+					Blocks: []interface{}{
+						types.LiteralBlock{
+							Attributes: types.Attributes{
+								types.AttrKind:             types.Literal,
+								types.AttrLiteralBlockType: types.LiteralBlockWithSpacesOnFirstLine,
+							},
+							Lines: []string{
+								" some literal content",
+							},
+						},
+					},
+				}
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+			})
+
+			It("literal block from paragraph with single space on first line", func() {
+				source := ` some literal content
 on 3
 lines.`
-			expected := types.LiteralBlock{
-				Attributes: types.Attributes{
-					types.AttrKind:             types.Literal,
-					types.AttrLiteralBlockType: types.LiteralBlockWithSpacesOnFirstLine,
-				},
-				Lines: []string{
-					" some literal content",
-					"on 3",
-					"lines.",
-				},
-			}
-			Expect(ParseDocumentBlock(source)).To(Equal(expected))
-		})
+				expected := types.DraftDocument{
+					Blocks: []interface{}{
+						types.LiteralBlock{
+							Attributes: types.Attributes{
+								types.AttrKind:             types.Literal,
+								types.AttrLiteralBlockType: types.LiteralBlockWithSpacesOnFirstLine,
+							},
+							Lines: []string{
+								" some literal content",
+								"on 3",
+								"lines.",
+							},
+						},
+					},
+				}
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+			})
 
-		It("mixing literal block with attributes followed by a paragraph ", func() {
-			source := `.title
+			It("mixing literal block with attributes followed by a paragraph ", func() {
+				source := `.title
 [#ID]
   some literal content
 
 a normal paragraph.`
-			expected := types.DraftDocument{
-				Blocks: []interface{}{
-					types.LiteralBlock{
-						Attributes: types.Attributes{
-							types.AttrKind:             types.Literal,
-							types.AttrLiteralBlockType: types.LiteralBlockWithSpacesOnFirstLine,
-							types.AttrID:               "ID",
-							types.AttrCustomID:         true,
-							types.AttrTitle:            "title",
+				expected := types.DraftDocument{
+					Blocks: []interface{}{
+						types.LiteralBlock{
+							Attributes: types.Attributes{
+								types.AttrKind:             types.Literal,
+								types.AttrLiteralBlockType: types.LiteralBlockWithSpacesOnFirstLine,
+								types.AttrID:               "ID",
+								types.AttrCustomID:         true,
+								types.AttrTitle:            "title",
+							},
+							Lines: []string{
+								"  some literal content",
+							},
 						},
-						Lines: []string{
-							"  some literal content",
-						},
-					},
-					types.BlankLine{},
-					types.Paragraph{
-						Lines: [][]interface{}{
-							{
-								types.StringElement{Content: "a normal paragraph."},
+						types.BlankLine{},
+						types.Paragraph{
+							Lines: []interface{}{
+								[]interface{}{
+									types.StringElement{Content: "a normal paragraph."},
+								},
 							},
 						},
 					},
-				},
-			}
-			Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				}
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+			})
 		})
-	})
 
-	Context("literal blocks with block delimiter", func() {
+		Context("literal blocks with block delimiter", func() {
 
-		It("literal block with empty blank line", func() {
+			It("literal block with empty blank line", func() {
 
-			source := `....
+				source := `....
 
 some content
 ....`
-			expected := types.LiteralBlock{
-				Attributes: types.Attributes{
-					types.AttrKind:             types.Literal,
-					types.AttrLiteralBlockType: types.LiteralBlockWithDelimiter,
-				},
-				Lines: []string{
-					"",
-					"some content",
-				},
-			}
-			Expect(ParseDocumentBlock(source)).To(Equal(expected))
-		})
+				expected := types.DraftDocument{
+					Blocks: []interface{}{
+						types.LiteralBlock{
+							Attributes: types.Attributes{
+								types.AttrKind:             types.Literal,
+								types.AttrLiteralBlockType: types.LiteralBlockWithDelimiter,
+							},
+							Lines: []string{
+								"",
+								"some content",
+							},
+						},
+					},
+				}
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+			})
 
-		It("literal block with delimited and attributes followed by 1-line paragraph", func() {
-			source := `[#ID]
+			It("literal block with delimited and attributes followed by 1-line paragraph", func() {
+				source := `[#ID]
 .title
 ....
 some literal content
 ....
 a normal paragraph.`
-			expected := types.DraftDocument{
-				Blocks: []interface{}{
-					types.LiteralBlock{
-						Attributes: types.Attributes{
-							types.AttrKind:             types.Literal,
-							types.AttrLiteralBlockType: types.LiteralBlockWithDelimiter,
-							types.AttrID:               "ID",
-							types.AttrCustomID:         true,
-							types.AttrTitle:            "title",
+				expected := types.DraftDocument{
+					Blocks: []interface{}{
+						types.LiteralBlock{
+							Attributes: types.Attributes{
+								types.AttrKind:             types.Literal,
+								types.AttrLiteralBlockType: types.LiteralBlockWithDelimiter,
+								types.AttrID:               "ID",
+								types.AttrCustomID:         true,
+								types.AttrTitle:            "title",
+							},
+							Lines: []string{
+								"some literal content",
+							},
 						},
-						Lines: []string{
-							"some literal content",
-						},
-					},
-					types.Paragraph{
-						Lines: [][]interface{}{
-							{
-								types.StringElement{Content: "a normal paragraph."},
+						types.Paragraph{
+							Lines: []interface{}{
+								[]interface{}{
+									types.StringElement{Content: "a normal paragraph."},
+								},
 							},
 						},
 					},
-				},
-			}
-			Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				}
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+			})
 		})
-	})
 
-	Context("literal blocks with attribute", func() {
+		Context("literal blocks with attribute", func() {
 
-		It("literal block from 1-line paragraph with attribute", func() {
-			source := `[literal]   
+			It("literal block from 1-line paragraph with attribute", func() {
+				source := `[literal]   
 some literal content
 
 a normal paragraph.`
-			expected := types.DraftDocument{
-				Blocks: []interface{}{
-					types.LiteralBlock{
-						Attributes: types.Attributes{
-							types.AttrKind:             types.Literal,
-							types.AttrLiteralBlockType: types.LiteralBlockWithAttribute,
+				expected := types.DraftDocument{
+					Blocks: []interface{}{
+						types.LiteralBlock{
+							Attributes: types.Attributes{
+								types.AttrKind:             types.Literal,
+								types.AttrLiteralBlockType: types.LiteralBlockWithAttribute,
+							},
+							Lines: []string{
+								"some literal content",
+							},
 						},
-						Lines: []string{
-							"some literal content",
-						},
-					},
-					types.BlankLine{},
-					types.Paragraph{
-						Lines: [][]interface{}{
-							{
-								types.StringElement{Content: "a normal paragraph."},
+						types.BlankLine{},
+						types.Paragraph{
+							Lines: []interface{}{
+								[]interface{}{
+									types.StringElement{Content: "a normal paragraph."},
+								},
 							},
 						},
 					},
-				},
-			}
-			Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
-		})
+				}
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+			})
 
-		It("literal block from 2-lines paragraph with attribute", func() {
-			source := `[#ID]
+			It("literal block from 2-lines paragraph with attribute", func() {
+				source := `[#ID]
 [literal]   
 .title
 some literal content
 on two lines.
 
 a normal paragraph.`
-			expected := types.DraftDocument{
-				Blocks: []interface{}{
-					types.LiteralBlock{
-						Attributes: types.Attributes{
-							types.AttrKind:             types.Literal,
-							types.AttrID:               "ID",
-							types.AttrCustomID:         true,
-							types.AttrTitle:            "title",
-							types.AttrLiteralBlockType: types.LiteralBlockWithAttribute,
+				expected := types.DraftDocument{
+					Blocks: []interface{}{
+						types.LiteralBlock{
+							Attributes: types.Attributes{
+								types.AttrKind:             types.Literal,
+								types.AttrID:               "ID",
+								types.AttrCustomID:         true,
+								types.AttrTitle:            "title",
+								types.AttrLiteralBlockType: types.LiteralBlockWithAttribute,
+							},
+							Lines: []string{
+								"some literal content",
+								"on two lines.",
+							},
 						},
-						Lines: []string{
-							"some literal content",
-							"on two lines.",
-						},
-					},
-					types.BlankLine{},
-					types.Paragraph{
-						Lines: [][]interface{}{
-							{
-								types.StringElement{Content: "a normal paragraph."},
+						types.BlankLine{},
+						types.Paragraph{
+							Lines: []interface{}{
+								[]interface{}{
+									types.StringElement{Content: "a normal paragraph."},
+								},
 							},
 						},
 					},
-				},
-			}
-			Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				}
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+			})
 		})
 	})
-
 })

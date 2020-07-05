@@ -69,8 +69,8 @@ var _ = Describe("document validator", func() {
 								Elements: []interface{}{
 									types.Paragraph{
 										Attributes: types.Attributes{},
-										Lines: [][]interface{}{
-											{
+										Lines: []interface{}{
+											[]interface{}{
 												types.StringElement{
 													Content: "a single paragraph to describe the program",
 												},
@@ -133,8 +133,8 @@ var _ = Describe("document validator", func() {
 									Elements: []interface{}{
 										types.Paragraph{
 											Attributes: types.Attributes{},
-											Lines: [][]interface{}{
-												{
+											Lines: []interface{}{
+												[]interface{}{
 													types.StringElement{
 														Content: "a single paragraph to describe the program",
 													},
@@ -198,8 +198,8 @@ var _ = Describe("document validator", func() {
 									Elements: []interface{}{
 										types.Paragraph{
 											Attributes: types.Attributes{},
-											Lines: [][]interface{}{
-												{
+											Lines: []interface{}{
+												[]interface{}{
 													types.StringElement{
 														Content: "a single paragraph to describe the program",
 													},
@@ -263,8 +263,8 @@ var _ = Describe("document validator", func() {
 									Elements: []interface{}{
 										types.Paragraph{
 											Attributes: types.Attributes{},
-											Lines: [][]interface{}{
-												{
+											Lines: []interface{}{
+												[]interface{}{
 													types.StringElement{
 														Content: "a single paragraph to describe the program",
 													},
@@ -382,8 +382,8 @@ var _ = Describe("document validator", func() {
 									Elements: []interface{}{
 										types.Paragraph{
 											Attributes: types.Attributes{},
-											Lines: [][]interface{}{
-												{
+											Lines: []interface{}{
+												[]interface{}{
 													types.StringElement{
 														Content: "a single paragraph to describe the program",
 													},
@@ -447,8 +447,8 @@ var _ = Describe("document validator", func() {
 									Elements: []interface{}{
 										types.Paragraph{
 											Attributes: types.Attributes{},
-											Lines: [][]interface{}{
-												{
+											Lines: []interface{}{
+												[]interface{}{
 													types.StringElement{
 														Content: "a single paragraph to describe the program",
 													},

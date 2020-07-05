@@ -689,22 +689,8 @@ func helloworld() {
 			// verify error in logs
 			Expect(console).To(
 				ContainMessageWithLevel(
-					log.ErrorLevel,
+					log.WarnLevel,
 					"detected unclosed tag 'unclosed' starting at line 6 of include file: ../../../../test/includes/tag-include-unclosed.adoc",
-				))
-		})
-
-		It("file inclusion with unknown tag", func() {
-			console, reset := ConfigureLogger()
-			defer reset()
-			source := `include::../../../../test/includes/tag-include.adoc[tag=unknown]`
-			expected := ``
-			Expect(RenderHTML(source)).To(MatchHTML(expected))
-			// verify error in logs
-			Expect(console).To(
-				ContainMessageWithLevel(
-					log.ErrorLevel,
-					"tag 'unknown' not found in include file: ../../../../test/includes/tag-include.adoc",
 				))
 		})
 
