@@ -71,16 +71,10 @@ const (
 	AttrLastUpdated = "LastUpdated"
 	// AttrImageAlt the image `alt` attribute
 	AttrImageAlt = "alt"
-	// AttrImageWidth the image `width` attribute
-	AttrImageWidth = "width"
 	// AttrImageHeight the image `height` attribute
 	AttrImageHeight = "height"
-	// AttrImageTitle the image `title` attribute
-	AttrImageTitle = "title"
 	// AttrImageWindow the `window` attribute, which becomes the target for the link
 	AttrImageWindow = "window"
-	// AttrImageFloat is for image float
-	AttrImageFloat = "float"
 	// AttrImageAlign is for image alignment
 	AttrImageAlign = "align"
 	// AttrIconSize the icon `size`, and can be one of 1x, 2x, 3x, 4x, 5x, lg, fw
@@ -89,7 +83,7 @@ const (
 	AttrIconRotate = "rotate"
 	// AttrIconFlip the icon `flip` attribute, and if set can be "horizontal" or "vertical"
 	AttrIconFlip = "flip"
-	// AttrUnicode local libasciidoc attribute to encode output as UTF-i instead of ASCII.
+	// AttrUnicode local libasciidoc attribute to encode output as UTF-8 instead of ASCII.
 	AttrUnicode = "unicode"
 	// AttrOptions element options (boolean, comma separated)
 	AttrOptions = "options"
@@ -99,6 +93,16 @@ const (
 	AttrCaption = "caption"
 	// AttrStyle block or list style
 	AttrStyle = "style"
+	// AttrWidth the `width` attribute used ior images, tables, and so forth
+	AttrWidth = "width"
+	// AttrFrame the frame used mostly for tables (all, topbot, sides, none)
+	AttrFrame = "frame"
+	// AttrGrid the grid (none, all, cols, rows) in tables
+	AttrGrid = "grid"
+	// AttrStripes controls table row background (even, odd, all, none, hover)
+	AttrStripes = "stripes"
+	// AttrFloat is for image or table float (text flows around)
+	AttrFloat = "float"
 	// AttrPositional2 positional parameter 2
 	AttrPositional2 = "@2"
 	// AttrPositional3 positional parameter 3
@@ -328,7 +332,6 @@ func (a Attributes) NilSafeSet(key string, value interface{}) {
 
 // GetAsString gets the string value for the given key (+ `true`),
 // or empty string (+ `false`) if none was found
-// TODO: raise a warning if there was no entry found
 func (a Attributes) GetAsString(key string) (string, bool) {
 	// check in predefined attributes
 	if value, found := Predefined[key]; found {
@@ -346,7 +349,6 @@ func (a Attributes) GetAsString(key string) (string, bool) {
 
 // GetAsStringWithDefault gets the string value for the given key,
 // or returns the given default value
-// TODO: raise a warning if there was no entry found
 func (a Attributes) GetAsStringWithDefault(key, defaultValue string) string {
 	// check in predefined attributes
 	if value, found := Predefined[key]; found {

@@ -36,6 +36,31 @@ func (r *sgmlRenderer) renderTable(ctx *renderer.Context, t types.Table) (string
 	}
 	number := 0
 	title := r.renderElementTitle(t.Attributes)
+	fit := "stretch"
+	frame := t.Attributes.GetAsStringWithDefault(types.AttrFrame, "all")
+	grid := t.Attributes.GetAsStringWithDefault(types.AttrGrid, "all")
+	float := t.Attributes.GetAsStringWithDefault(types.AttrFloat, "")
+	stripes := t.Attributes.GetAsStringWithDefault(types.AttrStripes, "")
+
+	width, _ := strconv.Atoi(
+		strings.TrimSuffix(t.Attributes.GetAsStringWithDefault(types.AttrWidth, ""), "%"))
+
+	// These are derived from asciidoctor, and our rules here:
+	// * Width can be a number or a percentage
+	// * If width is >= 100, then it becomes "stretch" role, and we clear it
+	// * If width is any other number (besides 0), we do not use the fitting role,
+	//   and instead use an explicit style for the width.
+	// * If width is unset, and %autowidth is set, then we use a fit-content role.
+	// * If none of the above cases are true, we use stretch role (default)
+	if t.Attributes.HasOption("autowidth") {
+		fit = "fit-content"
+	}
+	if width >= 100 {
+		width = 0
+		fit = "stretch"
+	} else if width > 0 {
+		fit = ""
+	}
 
 	if t.Attributes.Has(types.AttrTitle) {
 		number = ctx.GetAndIncrementTableCounter()
@@ -71,6 +96,12 @@ func (r *sgmlRenderer) renderTable(ctx *renderer.Context, t types.Table) (string
 		CellWidths  []string
 		TableNumber int
 		Caption     string
+		Frame       string
+		Grid        string
+		Fit         string
+		Float       string
+		Stripes     string
+		Width       int
 		Roles       sanitized
 		Header      string
 		Body        string
@@ -81,6 +112,12 @@ func (r *sgmlRenderer) renderTable(ctx *renderer.Context, t types.Table) (string
 		TableNumber: number,
 		Caption:     caption.String(),
 		Roles:       r.renderElementRoles(t.Attributes),
+		Frame:       frame,
+		Grid:        grid,
+		Fit:         fit,
+		Float:       float,
+		Stripes:     stripes,
+		Width:       width,
 		Header:      header,
 		Body:        body,
 	})

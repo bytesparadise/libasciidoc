@@ -54,7 +54,7 @@ func (r *sgmlRenderer) renderImageBlock(ctx *renderer.Context, img types.ImageBl
 		Roles:       r.renderImageRoles(img.Attributes),
 		Href:        img.Attributes.GetAsStringWithDefault(types.AttrInlineLink, ""),
 		Alt:         img.Attributes.GetAsStringWithDefault(types.AttrImageAlt, ""),
-		Width:       img.Attributes.GetAsStringWithDefault(types.AttrImageWidth, ""),
+		Width:       img.Attributes.GetAsStringWithDefault(types.AttrWidth, ""),
 		Height:      img.Attributes.GetAsStringWithDefault(types.AttrImageHeight, ""),
 		Path:        img.Location.String(),
 	})
@@ -80,7 +80,7 @@ func (r *sgmlRenderer) renderInlineImage(img types.InlineImage) (string, error) 
 		Title:  r.renderElementTitle(img.Attributes),
 		Roles:  r.renderImageRoles(img.Attributes),
 		Alt:    img.Attributes.GetAsStringWithDefault(types.AttrImageAlt, ""),
-		Width:  img.Attributes.GetAsStringWithDefault(types.AttrImageWidth, ""),
+		Width:  img.Attributes.GetAsStringWithDefault(types.AttrWidth, ""),
 		Height: img.Attributes.GetAsStringWithDefault(types.AttrImageHeight, ""),
 		Path:   img.Location.String(),
 	})

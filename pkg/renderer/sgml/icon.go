@@ -75,8 +75,8 @@ func (r *sgmlRenderer) renderIcon(ctx *renderer.Context, icon types.Icon, admoni
 	}{
 		Class:      icon.Class,
 		Alt:        icon.Attributes.GetAsStringWithDefault(types.AttrImageAlt, strings.Title(icon.Class)),
-		Title:      icon.Attributes.GetAsStringWithDefault(types.AttrImageTitle, title),
-		Width:      icon.Attributes.GetAsStringWithDefault(types.AttrImageWidth, ""),
+		Title:      icon.Attributes.GetAsStringWithDefault(types.AttrTitle, title),
+		Width:      icon.Attributes.GetAsStringWithDefault(types.AttrWidth, ""),
 		Height:     icon.Attributes.GetAsStringWithDefault(types.AttrImageHeight, ""),
 		Size:       icon.Attributes.GetAsStringWithDefault(types.AttrIconSize, ""),
 		Rotate:     icon.Attributes.GetAsStringWithDefault(types.AttrIconRotate, ""),

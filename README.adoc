@@ -35,7 +35,7 @@ Although it does not support the full Asciidoc/Asciidoctor syntax, Libasciidoc a
 * Unordered lists including bullet styles
 * Labeled lists, including `[horizontal]` and `[qanda]` styles
 * Nesting of links of different types & attributes
-* Tables (basic support: header line and cells on multiple lines)
+* Tables (basic support: header line and cells on multiple lines, top-level table styles)
 * Horizontal rules (thematic breaks) and page breaks
 * Table of contents
 * YAML front-matter

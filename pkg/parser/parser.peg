@@ -1613,7 +1613,7 @@ ImageAltInline <- value:InlineVal? {
 }
 
 ImageWidth <- ","? value:InlineVal? {
-    return types.NewInlineAttribute(types.AttrImageWidth, value)
+    return types.NewInlineAttribute(types.AttrWidth, value)
 }
 
 ImageHeight <- ","? value:InlineVal? {
@@ -1626,7 +1626,7 @@ ImageAltAttr <- Space* value:PositionalValue Space* {
 
 ImageWidthAttr <- Space* "," Space* value:PositionalValue? {
     if value != nil {
-        return types.NewElementNamedAttr(types.AttrImageWidth, value.(string))
+        return types.NewElementNamedAttr(types.AttrWidth, value.(string))
     }
     return nil, nil
 }

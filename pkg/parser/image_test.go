@@ -134,7 +134,7 @@ image::images/foo.png[the foo.png image, 600, 400]`
 								types.AttrTitle:       "A title to foobar",
 								types.AttrInlineLink:  "http://foo.bar",
 								types.AttrImageAlt:    "the foo.png image",
-								types.AttrImageWidth:  "600",
+								types.AttrWidth:       "600",
 								types.AttrImageHeight: "400",
 							},
 							Location: types.Location{
@@ -453,8 +453,8 @@ image::{imagesdir}/foo.png[]`
 								{
 									types.InlineImage{
 										Attributes: types.Attributes{
-											types.AttrImageAlt:   "the foo.png image",
-											types.AttrImageWidth: "600",
+											types.AttrImageAlt: "the foo.png image",
+											types.AttrWidth:    "600",
 										},
 										Location: types.Location{
 											Path: []interface{}{
@@ -480,7 +480,7 @@ image::{imagesdir}/foo.png[]`
 									types.InlineImage{
 										Attributes: types.Attributes{
 											types.AttrImageAlt:    "the foo.png image",
-											types.AttrImageWidth:  "600",
+											types.AttrWidth:       "600",
 											types.AttrImageHeight: "400",
 										},
 										Location: types.Location{
@@ -586,7 +586,7 @@ image::{imagesdir}/foo.png[]`
 									types.InlineImage{
 										Attributes: types.Attributes{
 											types.AttrImageAlt:    "foo",
-											types.AttrImageWidth:  "600",
+											types.AttrWidth:       "600",
 											types.AttrImageHeight: "400",
 											types.AttrID:          "myid",
 											types.AttrCustomID:    true,
