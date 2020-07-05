@@ -12,7 +12,9 @@ const (
 		"{{ if .Title }}<caption class=\"title\">{{ .Caption }}{{ .Title }}</caption>\n{{ end }}" +
 		"{{ if .Body }}" +
 		"<colgroup>\n" +
-		"{{ range $i, $w := .CellWidths }}<col style=\"width: {{ $w }}%;\">\n{{ end}}" +
+		"{{ range $i, $w := .Columns }}<col" +
+		"{{ if $w.Width }} style=\"width: {{ $w.Width }}%;\"{{ end }}" +
+		">\n{{ end}}" +
 		"</colgroup>\n" +
 		"{{ .Header }}" +
 		"{{ .Body }}" +
@@ -27,9 +29,7 @@ const (
 
 	tableCaptionTmpl = "Table {{ .TableNumber }}. "
 
-	// TODO: cell styling via attributes
+	tableHeaderCellTmpl = "<th class=\"tableblock halign-{{ .HAlign }} valign-{{ .VAlign }}\">{{ .Content }}</th>\n"
 
-	tableHeaderCellTmpl = "<th class=\"tableblock halign-left valign-top\">{{ .Content }}</th>\n"
-
-	tableCellTmpl = "<td class=\"tableblock halign-left valign-top\"><p class=\"tableblock\">{{ .Content }}</p></td>\n"
+	tableCellTmpl = "<td class=\"tableblock halign-{{ .HAlign }} valign-{{ .VAlign }}\"><p class=\"tableblock\">{{ .Content }}</p></td>\n"
 )

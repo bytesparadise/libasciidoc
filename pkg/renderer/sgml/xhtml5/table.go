@@ -12,7 +12,9 @@ const (
 		"{{ if .Title }}<caption class=\"title\">{{ .Caption }}{{ .Title }}</caption>\n{{ end }}" +
 		"{{ if .Body }}" +
 		"<colgroup>\n" +
-		"{{ range $i, $w := .CellWidths }}<col style=\"width: {{ $w }}%;\"/>\n{{ end}}" +
+		"{{ range $i, $w := .Columns }}<col" +
+		"{{ if $w.Width }} style=\"width: {{ $w.Width }}%;\"{{ end }}" +
+		"/>\n{{ end}}" +
 		"</colgroup>\n" +
 		"{{ .Header }}" +
 		"{{ .Body }}" +

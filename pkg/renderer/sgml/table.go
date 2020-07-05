@@ -1,39 +1,18 @@
 package sgml
 
 import (
-	"fmt"
-	"math"
 	"strconv"
 	"strings"
 
 	"github.com/bytesparadise/libasciidoc/pkg/renderer"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 	"github.com/pkg/errors"
-	log "github.com/sirupsen/logrus"
 )
 
 func (r *sgmlRenderer) renderTable(ctx *renderer.Context, t types.Table) (string, error) {
 	result := &strings.Builder{}
 	caption := &strings.Builder{}
 
-	// inspect first line to obtain cell width ratio
-	widths := []string{}
-	if len(t.Lines) > 0 {
-		line := t.Lines[0]
-		n := len(line.Cells)
-		widths = make([]string, n)
-		total := 0.0
-		for i := 0; i < n-1; i++ {
-			w := 100.0 / float64(n)
-			widths[i] = formatColumnWidth(w)
-			total += w
-		}
-		// last width
-		// int values don't need 4 decimals precision
-
-		widths[n-1] = formatColumnWidth(100-total, lastColumn()) // make sure the last width as the upper rounded value
-		log.Debugf("current total width: %v -> %v", total, widths[n-1])
-	}
 	number := 0
 	title := r.renderElementTitle(t.Attributes)
 	fit := "stretch"
@@ -80,7 +59,7 @@ func (r *sgmlRenderer) renderTable(ctx *renderer.Context, t types.Table) (string
 		}
 	}
 
-	header, err := r.renderTableHeader(ctx, t.Header)
+	header, err := r.renderTableHeader(ctx, t.Header, t.Columns)
 	if err != nil {
 		return "", errors.Wrap(err, "failed to render table")
 	}
@@ -93,7 +72,7 @@ func (r *sgmlRenderer) renderTable(ctx *renderer.Context, t types.Table) (string
 	err = r.table.Execute(result, struct {
 		Context     *renderer.Context
 		Title       sanitized
-		CellWidths  []string
+		Columns     []types.TableColumn
 		TableNumber int
 		Caption     string
 		Frame       string
@@ -108,7 +87,7 @@ func (r *sgmlRenderer) renderTable(ctx *renderer.Context, t types.Table) (string
 	}{
 		Context:     ctx,
 		Title:       r.renderElementTitle(t.Attributes),
-		CellWidths:  widths,
+		Columns:     t.Columns,
 		TableNumber: number,
 		Caption:     caption.String(),
 		Roles:       r.renderElementRoles(t.Attributes),
@@ -127,11 +106,13 @@ func (r *sgmlRenderer) renderTable(ctx *renderer.Context, t types.Table) (string
 	return result.String(), nil
 }
 
-func (r *sgmlRenderer) renderTableHeader(ctx *renderer.Context, l types.TableLine) (string, error) {
+func (r *sgmlRenderer) renderTableHeader(ctx *renderer.Context, l types.TableLine, cols []types.TableColumn) (string, error) {
 	result := &strings.Builder{}
 	content := &strings.Builder{}
+	col := 0
 	for _, cell := range l.Cells {
-		c, err := r.renderTableHeaderCell(ctx, cell)
+		c, err := r.renderTableHeaderCell(ctx, cell, cols[col%len(cols)])
+		col++
 		if err != nil {
 			return "", errors.Wrap(err, "unable to render header")
 		}
@@ -149,7 +130,7 @@ func (r *sgmlRenderer) renderTableHeader(ctx *renderer.Context, l types.TableLin
 	return result.String(), err
 }
 
-func (r *sgmlRenderer) renderTableHeaderCell(ctx *renderer.Context, cell []interface{}) (string, error) {
+func (r *sgmlRenderer) renderTableHeaderCell(ctx *renderer.Context, cell []interface{}, col types.TableColumn) (string, error) {
 	result := &strings.Builder{}
 	content, err := r.renderInlineElements(ctx, cell)
 	if err != nil {
@@ -159,10 +140,14 @@ func (r *sgmlRenderer) renderTableHeaderCell(ctx *renderer.Context, cell []inter
 		Context *renderer.Context
 		Content string
 		Cell    []interface{}
+		VAlign  string
+		HAlign  string
 	}{
 		Context: ctx,
 		Content: content,
 		Cell:    cell,
+		HAlign:  col.HAlign,
+		VAlign:  col.VAlign,
 	})
 	return result.String(), err
 }
@@ -171,7 +156,7 @@ func (r *sgmlRenderer) renderTableBody(ctx *renderer.Context, t types.Table) (st
 	result := &strings.Builder{}
 	content := &strings.Builder{}
 	for _, row := range t.Lines {
-		c, err := r.renderTableRow(ctx, row)
+		c, err := r.renderTableRow(ctx, row, t.Columns)
 		if err != nil {
 			return "", errors.Wrap(err, "unable to render header")
 		}
@@ -181,19 +166,23 @@ func (r *sgmlRenderer) renderTableBody(ctx *renderer.Context, t types.Table) (st
 		Context *renderer.Context
 		Content string
 		Rows    []types.TableLine
+		Columns []types.TableColumn
 	}{
 		Context: ctx,
 		Content: content.String(),
 		Rows:    t.Lines,
+		Columns: t.Columns,
 	})
 	return result.String(), err
 }
 
-func (r *sgmlRenderer) renderTableRow(ctx *renderer.Context, l types.TableLine) (string, error) {
+func (r *sgmlRenderer) renderTableRow(ctx *renderer.Context, l types.TableLine, cols []types.TableColumn) (string, error) {
 	result := &strings.Builder{}
 	content := &strings.Builder{}
+	col := 0
 	for _, cell := range l.Cells {
-		c, err := r.renderTableCell(ctx, cell)
+		c, err := r.renderTableCell(ctx, cell, cols[col%len(cols)])
+		col++
 		if err != nil {
 			return "", errors.Wrap(err, "unable to render header")
 		}
@@ -211,7 +200,7 @@ func (r *sgmlRenderer) renderTableRow(ctx *renderer.Context, l types.TableLine) 
 	return result.String(), err
 }
 
-func (r *sgmlRenderer) renderTableCell(ctx *renderer.Context, cell []interface{}) (string, error) {
+func (r *sgmlRenderer) renderTableCell(ctx *renderer.Context, cell []interface{}, col types.TableColumn) (string, error) {
 	result := &strings.Builder{}
 	content, err := r.renderInlineElements(ctx, cell)
 	if err != nil {
@@ -221,29 +210,14 @@ func (r *sgmlRenderer) renderTableCell(ctx *renderer.Context, cell []interface{}
 		Context *renderer.Context
 		Content string
 		Cell    []interface{}
+		HAlign  string
+		VAlign  string
 	}{
 		Context: ctx,
 		Content: content,
 		Cell:    cell,
+		HAlign:  col.HAlign,
+		VAlign:  col.VAlign,
 	})
 	return result.String(), err
-}
-
-type formatColumnWidthOption func(float64) float64
-
-func lastColumn() formatColumnWidthOption {
-	return func(v float64) float64 {
-		return v + 0.00005
-	}
-}
-
-func formatColumnWidth(v float64, options ...formatColumnWidthOption) string {
-	if v == math.Trunc(v) {
-		// whole numbers don't need 4 decimals
-		return strconv.Itoa(int(v))
-	}
-	for _, opt := range options {
-		v = opt(v)
-	}
-	return fmt.Sprintf("%.4f", v)
 }

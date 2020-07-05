@@ -3,36 +3,12 @@
 This document reports the known limitations and differences with Asciidoc/Asciidoctor.
 In any case, feel free to https://github.com/bytesparadise/libasciidoc/issues[open an issue]
 if you want to discuss an actual limitation of Libasciidoc or if you want to report a new one.
+We also accept pull requests.
 
-== Quoted Text
-
-Quoted text rendering can differ in the following cases:
-
-- when the punctuation is unbalanced. Eg:
-....
-some **bold content*.
-....
-will be rendered as the raw input:
-....
-some **bold content*.
-....
-instead of :
-....
-<p>some <strong>*bold content</strong></p>
-....
-
-- when quoted text uses the same punctuation. Eg:
-....
-*some *nested bold* content*.
-....
-Libasciidoc will detect the nested bold quote and renderer accordingly:
-....
-<strong>some <strong>nested bold</strong> content</strong>.
-....
-whereas Asciidoc/Asciidoctor will produce :
-....
-<p><strong>some *nested bold</strong> content*.</p>
-....
+This list is not necessarily complete, but it should reflect the differences
+likely to impact real documents.
+The entire list of known issues is tracked in https://github.com/bytesparadise/libasciidoc/issues[GitHub].
+We plan to address the majority of these issues.
 
 == Two-line Section Titles
 
@@ -61,6 +37,7 @@ will produce no HTML element at all, whereas Asciidoc/Asciidoctor will produce :
 Constrained or imbalanced monospace text may not act fully constrained, or may be confused in the presence of
 imbalanced quoted strings or apostrophes.  Typically such markup is erroneous, but the results from such errors may
 differ between implementations.
+See https://github.com/bytesparadise/libasciidoc/issues/630[Issue #630].
 
 == Attribute Lists
 
@@ -74,19 +51,32 @@ Escaping of quotes within quoted strings used as attribute value does not work.
 
 == Tables
 
-Only simple tables are supported.  No per-cell table styling, custom delimiters, or unusually formatted tables.
-There is no support for the cols table attribute - the number of columns is determined by the number of cells
-in the first line of the table.
+Custom table delimiters, and custom formats (TSV, CSV, DSV) are not supported.
+See https://github.com/bytesparadise/libasciidoc/issues/696[Issue #696].
 
-No support for nested tables.
+Tables will not parse if the content starts with a blank line.
+See https://github.com/bytesparadise/libasciidoc/issues/692[Issue #692].
+
+Individual cell styles, including spans and repeats, are not supported.
+See https://github.com/bytesparadise/libasciidoc/issues/695[Issue #695].
+
+The style attribute for cell contents (specified in the cols attribute) is ignored (the "d" style for inline content is assumed).
+See https://github.com/bytesparadise/libasciidoc/issues/694[Issue #694].
+
+The parser will likely be confused by ragged tables, or tables that do not use one line per row.
+See https://github.com/bytesparadise/libasciidoc/issues/637[Issue #637].
+
+No support for nested tables. See https://github.com/bytesparadise/libasciidoc/issues/697[Issue #697].
 
 == Lists
 
 Interactive checklists are not supported.
+See https://github.com/bytesparadise/libasciidoc/issues/675[Issue #675].
 
 == Images
 
 Interactive SVG support is missing, as is support for inline SVG.
+See https://github.com/bytesparadise/libasciidoc/issues/674[Issue #674].
 
 The global figure-caption attribute is not honored.
 Use per-image caption attributes for more control if needed.
@@ -94,6 +84,7 @@ Use per-image caption attributes for more control if needed.
 == Multimedia
 
 Video and audio elements are not supported.
+See https://github.com/bytesparadise/libasciidoc/issues/677[Issue #677].
 
 == File Inclusions
 
@@ -104,22 +95,27 @@ the "full" parsing.
 == Symbols and Characters
 
 Markup for the mdash and arrow symbols is not recognized.
+See https://github.com/bytesparadise/libasciidoc/issues/678[Issue #678].
 
 Symbols for quotes (both single and double) will be inlined as numeric HTML entities, even in cases where this is not strictly necessary.
 
 Symbolic entity names (such as `&loz;` for &loz;) are not recognized -- leaving recognition and rendering dependent on the user-agent.
+See https://github.com/bytesparadise/libasciidoc/issues/680[Issue #680].
 
 == User Interface Macros
 
 The experimental macros for user interfaces (`kbd`, `menu`, and `btn`) are not supported.
+See https://github.com/bytesparadise/libasciidoc/issues/607[Issue #607].
 
 == Admonitions
 
 Use of unicode symbols or other replacement using the per-type caption attribute is not supported.
+See https://github.com/bytesparadise/libasciidoc/issues/679[Issue #679].
 
 == Favicon
 
 The `favicon` document attribute is not recognized.
+See https://github.com/bytesparadise/libasciidoc/issues/681[Issue #681].
 
 == Syntax Highlighters
 
@@ -128,24 +124,30 @@ Only the `pygments` highlighter is recognized.
 == Math
 
 MathML and equations (`[stem]` blocks) are not supported yet.
+See https://github.com/bytesparadise/libasciidoc/issues/608[Issue #608].
 
 == Bibliographies
 
 Bibliographies using bibtex are not supported yet.
+See https://github.com/bytesparadise/libasciidoc/issues/609[Issue #609].
 
 == Links
 
 When using the `*` and `_` characters at the end of URLs of external links in a quoted text, the attributes markers need to be explicitly set. Eg: `+++a link to *https://foo.com/_[]*+++`.
 
 Using the caret short-hand to indicate link targets should use the blank window is not support.
+See https://github.com/bytesparadise/libasciidoc/issues/682[Issue #682].
 
 == Document Types
 
 The inline and book document types are not supported.  Article and manpage documents work fine.
+See https://github.com/bytesparadise/libasciidoc/issues/628[Issue #628] and
+https://github.com/bytesparadise/libasciidoc/issues/629[Issue #629].
 
 == CSS
 
 At present no CSS is provided, but the output generated should be compatible with asciidoctor CSS.
+See https://github.com/bytesparadise/libasciidoc/issues/63[Issue #63].
 
 == Output Formats (Back-ends)
 
@@ -154,3 +156,5 @@ Only HTML and XHTML backends are supported.
 == CLI
 
 Support for -d to set the document type is missing.
+See https://github.com/bytesparadise/libasciidoc/issues/616[Issue #616].
+
