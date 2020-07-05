@@ -36,7 +36,7 @@ func (r *sgmlRenderer) renderParagraph(ctx *renderer.Context, p types.Paragraph)
 			ID      sanitized
 			Roles   sanitized
 			Title   sanitized
-			Lines   [][]interface{}
+			Lines   []interface{}
 			Content sanitized
 		}{
 			Context: ctx,
@@ -77,7 +77,7 @@ func (r *sgmlRenderer) renderAdmonitionParagraph(ctx *renderer.Context, p types.
 		Icon    sanitized
 		Kind    sanitized
 		Content sanitized
-		Lines   [][]interface{}
+		Lines   []interface{}
 	}{
 		Context: ctx,
 		ID:      r.renderElementID(p.Attributes),
@@ -106,7 +106,7 @@ func (r *sgmlRenderer) renderSourceParagraph(ctx *renderer.Context, p types.Para
 		Title    sanitized
 		Language string
 		Content  sanitized
-		Lines    [][]interface{}
+		Lines    []interface{}
 	}{
 
 		Context:  ctx,
@@ -133,7 +133,7 @@ func (r *sgmlRenderer) renderVerseParagraph(ctx *renderer.Context, p types.Parag
 		Title       sanitized
 		Attribution Attribution
 		Content     sanitized
-		Lines       [][]interface{}
+		Lines       []interface{}
 	}{
 		Context:     ctx,
 		ID:          r.renderElementID(p.Attributes),
@@ -160,7 +160,7 @@ func (r *sgmlRenderer) renderQuoteParagraph(ctx *renderer.Context, p types.Parag
 		Title       sanitized
 		Attribution Attribution
 		Content     sanitized
-		Lines       [][]interface{}
+		Lines       []interface{}
 	}{
 		Context:     ctx,
 		ID:          r.renderElementID(p.Attributes),
@@ -185,7 +185,7 @@ func (r *sgmlRenderer) renderManpageNameParagraph(ctx *renderer.Context, p types
 	err = r.manpageNameParagraph.Execute(result, struct {
 		Context *renderer.Context
 		Content sanitized
-		Lines   [][]interface{}
+		Lines   []interface{}
 	}{
 		Context: ctx,
 		Content: sanitized(content),
@@ -208,7 +208,7 @@ func (r *sgmlRenderer) renderDelimitedBlockParagraph(ctx *renderer.Context, p ty
 		Title      sanitized
 		CheckStyle string
 		Content    sanitized
-		Lines      [][]interface{}
+		Lines      []interface{}
 	}{
 		Context:    ctx,
 		ID:         r.renderElementID(p.Attributes),
@@ -264,7 +264,7 @@ func (r *sgmlRenderer) withPlainText() RenderLinesOption {
 // renderLines renders all lines (i.e, all `InlineElements`` - each `InlineElements` being a slice of elements to generate a line)
 // and includes an `\n` character in-between, until the last one.
 // Trailing spaces are removed for each line.
-func (r *sgmlRenderer) renderLines(ctx *renderer.Context, lines [][]interface{}, options ...RenderLinesOption) (string, error) { // renderLineFunc renderFunc, hardbreak bool
+func (r *sgmlRenderer) renderLines(ctx *renderer.Context, lines []interface{}, options ...RenderLinesOption) (string, error) { // renderLineFunc renderFunc, hardbreak bool
 	linesRenderer := RenderLinesConfig{
 		render:     r.renderLine,
 		hardBreaks: false,

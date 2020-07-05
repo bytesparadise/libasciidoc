@@ -10,335 +10,141 @@ import (
 
 var _ = Describe("quoted texts", func() {
 
-	Context("draft document", func() {
+	Context("inline elements", func() {
 
 		Context("quoted text with single punctuation", func() {
 
-			It("bold text with 1 word", func() {
-				source := "*hello*"
-				expected := types.DraftDocument{
-					Blocks: []interface{}{
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.QuotedText{
-										Kind: types.Bold,
-										Elements: []interface{}{
-											types.StringElement{Content: "hello"},
-										},
-									},
-								},
-							},
-						},
-					},
-				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
-			})
-
-			It("bold text with 2 words", func() {
-				source := "*bold    content*"
-				expected := types.DraftDocument{
-					Blocks: []interface{}{
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.QuotedText{
-										Kind: types.Bold,
-										Elements: []interface{}{
-											types.StringElement{Content: "bold    content"},
-										},
-									},
-								},
-							},
-						},
-					},
-				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
-			})
-
-			It("bold text with 3 words", func() {
-				source := "*some bold content*"
-				expected := types.DraftDocument{
-					Blocks: []interface{}{
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.QuotedText{
-										Kind: types.Bold,
-										Elements: []interface{}{
-											types.StringElement{Content: "some bold content"},
-										},
-									},
-								},
-							},
-						},
-					},
-				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
-			})
-
 			It("bold text with newline", func() {
 				source := "*some bold\ncontent*"
-				expected := types.DraftDocument{
-					Blocks: []interface{}{
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.QuotedText{
-										Kind: types.Bold,
-										Elements: []interface{}{
-											types.StringElement{Content: "some bold\ncontent"},
-										},
-									},
-								},
+				expected := []interface{}{
+					types.QuotedText{
+						Kind: types.Bold,
+						Elements: []interface{}{
+							types.StringElement{
+								Content: "some bold\ncontent",
 							},
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
-			})
-
-			It("bold text across paragraph", func() {
-				source := "*some bold\n\ncontent*"
-				expected := types.DraftDocument{
-					Blocks: []interface{}{
-						types.Paragraph{
-							Lines: [][]interface{}{
-
-								{
-									types.StringElement{Content: "*some bold"},
-								},
-							},
-						},
-						types.BlankLine{},
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.StringElement{Content: "content*"},
-								},
-							},
-						},
-					},
-				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 			})
 
 			It("italic text with 3 words in single quote", func() {
 				source := "_some italic content_"
-				expected := types.DraftDocument{
-					Blocks: []interface{}{
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.QuotedText{
-										Kind: types.Italic,
-										Elements: []interface{}{
-											types.StringElement{Content: "some italic content"},
-										},
-									},
-								},
+				expected := []interface{}{
+					types.QuotedText{
+						Kind: types.Italic,
+						Elements: []interface{}{
+							types.StringElement{
+								Content: "some italic content",
 							},
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 			})
 
 			It("italic text with newline", func() {
 				source := "_some italic\ncontent_"
-				expected := types.DraftDocument{
-					Blocks: []interface{}{
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.QuotedText{
-										Kind: types.Italic,
-										Elements: []interface{}{
-											types.StringElement{Content: "some italic\ncontent"},
-										},
-									},
-								},
+				expected := []interface{}{
+					types.QuotedText{
+						Kind: types.Italic,
+						Elements: []interface{}{
+							types.StringElement{
+								Content: "some italic\ncontent",
 							},
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
-			})
-
-			It("italic text across paragraph", func() {
-				source := "_some italic\n\ncontent_"
-				expected := types.DraftDocument{
-					Blocks: []interface{}{
-						types.Paragraph{
-							Lines: [][]interface{}{
-
-								{
-									types.StringElement{Content: "_some italic"},
-								},
-							},
-						},
-						types.BlankLine{},
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.StringElement{Content: "content_"},
-								},
-							},
-						},
-					},
-				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 			})
 
 			It("monospace text with 3 words", func() {
 				source := "`some monospace content`"
-				expected := types.DraftDocument{
-					Blocks: []interface{}{
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.QuotedText{
-										Kind: types.Monospace,
-										Elements: []interface{}{
-											types.StringElement{Content: "some monospace content"},
-										},
-									},
-								},
+				expected := []interface{}{
+					types.QuotedText{
+						Kind: types.Monospace,
+						Elements: []interface{}{
+							types.StringElement{
+								Content: "some monospace content",
 							},
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 			})
 
 			It("monospace text with newline", func() {
 				source := "`some monospace\ncontent`"
-				expected := types.DraftDocument{
-					Blocks: []interface{}{
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.QuotedText{
-										Kind: types.Monospace,
-										Elements: []interface{}{
-											types.StringElement{Content: "some monospace\ncontent"},
-										},
-									},
-								},
+				expected := []interface{}{
+					types.QuotedText{
+						Kind: types.Monospace,
+						Elements: []interface{}{
+							types.StringElement{
+								Content: "some monospace\ncontent",
 							},
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
-			})
-
-			It("monospace text across paragraph", func() {
-				source := "`some monospace\n\ncontent`"
-				expected := types.DraftDocument{
-					Blocks: []interface{}{
-						types.Paragraph{
-							Lines: [][]interface{}{
-
-								{
-									types.StringElement{Content: "`some monospace"},
-								},
-							},
-						},
-						types.BlankLine{},
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.StringElement{Content: "content`"},
-								},
-							},
-						},
-					},
-				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 			})
 
 			It("invalid subscript text with 3 words", func() {
 				source := "~some subscript content~"
-				expected := types.DraftDocument{
-					Blocks: []interface{}{
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.StringElement{Content: "~some subscript content~"},
-								},
-							},
-						},
+				expected := []interface{}{
+					types.StringElement{
+						Content: "~some subscript content~",
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 			})
 
 			It("invalid superscript text with 3 words", func() {
 				source := "^some superscript content^"
-				expected := types.DraftDocument{
-					Blocks: []interface{}{
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.StringElement{Content: "^some superscript content^"},
-								},
-							},
-						},
+				expected := []interface{}{
+					types.StringElement{
+						Content: "^some superscript content^",
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 			})
 
 			It("bold text within italic text", func() {
 				source := "_some *bold* content_"
-				expected := types.DraftDocument{
-					Blocks: []interface{}{
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.QuotedText{
-										Kind: types.Italic,
-										Elements: []interface{}{
-											types.StringElement{Content: "some "},
-											types.QuotedText{
-												Kind: types.Bold,
-												Elements: []interface{}{
-													types.StringElement{Content: "bold"},
-												},
-											},
-											types.StringElement{Content: " content"},
-										},
-									},
+				expected := []interface{}{
+					types.QuotedText{
+						Kind: types.Italic,
+						Elements: []interface{}{
+							types.StringElement{Content: "some "},
+							types.QuotedText{
+								Kind: types.Bold,
+								Elements: []interface{}{
+									types.StringElement{Content: "bold"},
 								},
 							},
+							types.StringElement{Content: " content"},
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 			})
 
 			It("monospace text within bold text within italic quote", func() {
 				source := "*some _italic and `monospaced content`_*"
-				expected := types.DraftDocument{
-					Blocks: []interface{}{
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{
+				expected := []interface{}{
+					types.QuotedText{
+						Kind: types.Bold,
+						Elements: []interface{}{
+							types.StringElement{Content: "some "},
+							types.QuotedText{
+								Kind: types.Italic,
+								Elements: []interface{}{
+									types.StringElement{Content: "italic and "},
 									types.QuotedText{
-										Kind: types.Bold,
+										Kind: types.Monospace,
 										Elements: []interface{}{
-											types.StringElement{Content: "some "},
-											types.QuotedText{
-												Kind: types.Italic,
-												Elements: []interface{}{
-													types.StringElement{Content: "italic and "},
-													types.QuotedText{
-														Kind: types.Monospace,
-														Elements: []interface{}{
-															types.StringElement{Content: "monospaced content"},
-														},
-													},
-												},
+											types.StringElement{
+												Content: "monospaced content",
 											},
 										},
 									},
@@ -347,225 +153,145 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 			})
 
 			It("italic text within italic text", func() {
 				source := "_some _very italic_ content_"
-				expected := types.DraftDocument{
-					Blocks: []interface{}{
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.QuotedText{
-										Kind: types.Italic,
-										Elements: []interface{}{
-											types.StringElement{Content: "some _very italic"},
-										},
-									},
-									types.StringElement{Content: " content_"},
-								},
-							},
+				expected := []interface{}{
+					types.QuotedText{
+						Kind: types.Italic,
+						Elements: []interface{}{
+							types.StringElement{Content: "some _very italic"},
 						},
 					},
+					types.StringElement{Content: " content_"},
 				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 			})
 
 			It("bold delimiter text within bold text", func() {
 				source := "*bold*content*"
-				expected := types.DraftDocument{
-					Blocks: []interface{}{
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.QuotedText{
-										Kind: types.Bold,
-										Elements: []interface{}{
-											types.StringElement{Content: "bold*content"},
-										},
-									},
-								},
-							},
+				expected := []interface{}{
+					types.QuotedText{
+						Kind: types.Bold,
+						Elements: []interface{}{
+							types.StringElement{Content: "bold*content"},
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 			})
 
 			It("italic delimiter text within italic text", func() {
 				source := "_italic_content_"
-				expected := types.DraftDocument{
-					Blocks: []interface{}{
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.QuotedText{
-										Kind: types.Italic,
-										Elements: []interface{}{
-											types.StringElement{Content: "italic_content"},
-										},
-									},
-								},
-							},
+				expected := []interface{}{
+					types.QuotedText{
+						Kind: types.Italic,
+						Elements: []interface{}{
+							types.StringElement{Content: "italic_content"},
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 			})
 
 			It("monospace delimiter text within monospace text", func() {
 				source := "`monospace`content`"
-				expected := types.DraftDocument{
-					Blocks: []interface{}{
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.QuotedText{
-										Kind: types.Monospace,
-										Elements: []interface{}{
-											types.StringElement{Content: "monospace`content"},
-										},
-									},
-								},
-							},
+				expected := []interface{}{
+					types.QuotedText{
+						Kind: types.Monospace,
+						Elements: []interface{}{
+							types.StringElement{Content: "monospace`content"},
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 			})
 
 			It("non-bold text then bold text", func() {
 				source := "non*bold*content *bold content*"
-				expected := types.DraftDocument{
-					Blocks: []interface{}{
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.StringElement{
-										Content: "non*bold*content ",
-									},
-									types.QuotedText{
-										Kind: types.Bold,
-										Elements: []interface{}{
-											types.StringElement{Content: "bold content"},
-										},
-									},
-								},
-							},
+				expected := []interface{}{
+					types.StringElement{
+						Content: "non*bold*content ",
+					},
+					types.QuotedText{
+						Kind: types.Bold,
+						Elements: []interface{}{
+							types.StringElement{Content: "bold content"},
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 			})
 			It("non-italic text then italic text", func() {
 				source := "non_italic_content _italic content_"
-				expected := types.DraftDocument{
-					Blocks: []interface{}{
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.StringElement{
-										Content: "non_italic_content ",
-									},
-									types.QuotedText{
-										Kind: types.Italic,
-										Elements: []interface{}{
-											types.StringElement{Content: "italic content"},
-										},
-									},
-								},
-							},
+				expected := []interface{}{
+					types.StringElement{
+						Content: "non_italic_content ",
+					},
+					types.QuotedText{
+						Kind: types.Italic,
+						Elements: []interface{}{
+							types.StringElement{Content: "italic content"},
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 			})
 
 			It("non-monospace text then monospace text", func() {
 				source := "non`monospace`content `monospace content`"
-				expected := types.DraftDocument{
-					Blocks: []interface{}{
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.StringElement{
-										Content: "non`monospace`content ",
-									},
-									types.QuotedText{
-										Kind: types.Monospace,
-										Elements: []interface{}{
-											types.StringElement{Content: "monospace content"},
-										},
-									},
-								},
-							},
+				expected := []interface{}{
+					types.StringElement{
+						Content: "non`monospace`content ",
+					},
+					types.QuotedText{
+						Kind: types.Monospace,
+						Elements: []interface{}{
+							types.StringElement{Content: "monospace content"},
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 			})
 
 			It("subscript text attached", func() {
 				source := "O~2~ is a molecule"
-				expected := types.DraftDocument{
-					Blocks: []interface{}{
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.StringElement{Content: "O"},
-									types.QuotedText{
-										Kind: types.Subscript,
-										Elements: []interface{}{
-											types.StringElement{Content: "2"},
-										},
-									},
-									types.StringElement{Content: " is a molecule"},
-								},
-							},
+				expected := []interface{}{
+					types.StringElement{Content: "O"},
+					types.QuotedText{
+						Kind: types.Subscript,
+						Elements: []interface{}{
+							types.StringElement{Content: "2"},
 						},
 					},
+					types.StringElement{Content: " is a molecule"},
 				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 			})
 
 			It("superscript text attached", func() {
 				source := "M^me^ White"
-				expected := types.DraftDocument{
-					Blocks: []interface{}{
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.StringElement{Content: "M"},
-									types.QuotedText{
-										Kind: types.Superscript,
-										Elements: []interface{}{
-											types.StringElement{Content: "me"},
-										},
-									},
-									types.StringElement{Content: " White"},
-								},
-							},
+				expected := []interface{}{
+					types.StringElement{Content: "M"},
+					types.QuotedText{
+						Kind: types.Superscript,
+						Elements: []interface{}{
+							types.StringElement{Content: "me"},
 						},
 					},
+					types.StringElement{Content: " White"},
 				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 			})
 
 			It("invalid subscript text with 3 words", func() {
 				source := "~some subscript content~"
-				expected := types.DraftDocument{
-					Blocks: []interface{}{
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.StringElement{Content: "~some subscript content~"},
-								},
-							},
-						},
-					},
+				expected := []interface{}{
+					types.StringElement{Content: "~some subscript content~"},
 				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 			})
 		})
 
@@ -573,256 +299,117 @@ var _ = Describe("quoted texts", func() {
 
 			It("bold text of 1 word in double quote", func() {
 				source := "**hello**"
-				expected := types.DraftDocument{
-					Blocks: []interface{}{
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.QuotedText{
-										Kind: types.Bold,
-										Elements: []interface{}{
-											types.StringElement{Content: "hello"},
-										},
-									},
-								},
-							},
+				expected := []interface{}{
+					types.QuotedText{
+						Kind: types.Bold,
+						Elements: []interface{}{
+							types.StringElement{Content: "hello"},
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 			})
 
 			It("bold text with newline", func() {
 				source := "**some bold\ncontent**"
-				expected := types.DraftDocument{
-					Blocks: []interface{}{
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.QuotedText{
-										Kind: types.Bold,
-										Elements: []interface{}{
-											types.StringElement{Content: "some bold\ncontent"},
-										},
-									},
-								},
-							},
+				expected := []interface{}{
+					types.QuotedText{
+						Kind: types.Bold,
+						Elements: []interface{}{
+							types.StringElement{Content: "some bold\ncontent"},
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
-			})
-
-			It("bold text across paragraph", func() {
-				source := "**some bold\n\ncontent**"
-				expected := types.DraftDocument{
-					Blocks: []interface{}{
-						types.Paragraph{
-							Lines: [][]interface{}{
-
-								{
-									types.StringElement{Content: "**some bold"},
-								},
-							},
-						},
-						types.BlankLine{},
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.StringElement{Content: "content**"},
-								},
-							},
-						},
-					},
-				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 			})
 
 			It("italic text with 3 words in double quote", func() {
 				source := "__some italic content__"
-				expected := types.DraftDocument{
-					Blocks: []interface{}{
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.QuotedText{
-										Kind: types.Italic,
-										Elements: []interface{}{
-											types.StringElement{Content: "some italic content"},
-										},
-									},
-								},
-							},
+				expected := []interface{}{
+					types.QuotedText{
+						Kind: types.Italic,
+						Elements: []interface{}{
+							types.StringElement{Content: "some italic content"},
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 			})
 
 			It("italic text with newline", func() {
 				source := "__some italic\ncontent__"
-				expected := types.DraftDocument{
-					Blocks: []interface{}{
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.QuotedText{
-										Kind: types.Italic,
-										Elements: []interface{}{
-											types.StringElement{Content: "some italic\ncontent"},
-										},
-									},
-								},
-							},
+				expected := []interface{}{
+					types.QuotedText{
+						Kind: types.Italic,
+						Elements: []interface{}{
+							types.StringElement{Content: "some italic\ncontent"},
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
-			})
-
-			It("italic text across paragraph", func() {
-				source := "__some italic\n\ncontent__"
-				expected := types.DraftDocument{
-					Blocks: []interface{}{
-						types.Paragraph{
-							Lines: [][]interface{}{
-
-								{
-									types.StringElement{Content: "__some italic"},
-								},
-							},
-						},
-						types.BlankLine{},
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.StringElement{Content: "content__"},
-								},
-							},
-						},
-					},
-				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 			})
 
 			It("monospace text with 3 words in double quote", func() {
 				source := "``some monospace content``"
-				expected := types.DraftDocument{
-					Blocks: []interface{}{
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.QuotedText{
-										Kind: types.Monospace,
-										Elements: []interface{}{
-											types.StringElement{Content: "some monospace content"},
-										},
-									},
-								},
-							},
+				expected := []interface{}{
+					types.QuotedText{
+						Kind: types.Monospace,
+						Elements: []interface{}{
+							types.StringElement{Content: "some monospace content"},
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 			})
 
 			It("monospace text with newline", func() {
 				source := "``some monospace\ncontent``"
-				expected := types.DraftDocument{
-					Blocks: []interface{}{
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.QuotedText{
-										Kind: types.Monospace,
-										Elements: []interface{}{
-											types.StringElement{Content: "some monospace\ncontent"},
-										},
-									},
-								},
-							},
+				expected := []interface{}{
+					types.QuotedText{
+						Kind: types.Monospace,
+						Elements: []interface{}{
+							types.StringElement{Content: "some monospace\ncontent"},
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
-			})
-
-			It("monospace text across paragraph", func() {
-				source := "``some monospace\n\ncontent``"
-				expected := types.DraftDocument{
-					Blocks: []interface{}{
-						types.Paragraph{
-							Lines: [][]interface{}{
-
-								{
-									types.StringElement{Content: "``some monospace"},
-								},
-							},
-						},
-						types.BlankLine{},
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.StringElement{Content: "content``"},
-								},
-							},
-						},
-					},
-				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 			})
 
 			It("superscript text within italic text", func() {
 				source := "__some ^superscript^ content__"
-				expected := types.DraftDocument{
-					Blocks: []interface{}{
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.QuotedText{
-										Kind: types.Italic,
-										Elements: []interface{}{
-											types.StringElement{Content: "some "},
-											types.QuotedText{
-												Kind: types.Superscript,
-												Elements: []interface{}{
-													types.StringElement{Content: "superscript"},
-												},
-											},
-											types.StringElement{Content: " content"},
-										},
-									},
+				expected := []interface{}{
+					types.QuotedText{
+						Kind: types.Italic,
+						Elements: []interface{}{
+							types.StringElement{Content: "some "},
+							types.QuotedText{
+								Kind: types.Superscript,
+								Elements: []interface{}{
+									types.StringElement{Content: "superscript"},
 								},
 							},
+							types.StringElement{Content: " content"},
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 			})
 
 			It("superscript text within italic text within bold quote", func() {
 				source := "**some _italic and ^superscriptcontent^_**"
-				expected := types.DraftDocument{
-					Blocks: []interface{}{
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{
+				expected := []interface{}{
+					types.QuotedText{
+						Kind: types.Bold,
+						Elements: []interface{}{
+							types.StringElement{Content: "some "},
+							types.QuotedText{
+								Kind: types.Italic,
+								Elements: []interface{}{
+									types.StringElement{Content: "italic and "},
 									types.QuotedText{
-										Kind: types.Bold,
+										Kind: types.Superscript,
 										Elements: []interface{}{
-											types.StringElement{Content: "some "},
-											types.QuotedText{
-												Kind: types.Italic,
-												Elements: []interface{}{
-													types.StringElement{Content: "italic and "},
-													types.QuotedText{
-														Kind: types.Superscript,
-														Elements: []interface{}{
-															types.StringElement{Content: "superscriptcontent"},
-														},
-													},
-												},
-											},
+											types.StringElement{Content: "superscriptcontent"},
 										},
 									},
 								},
@@ -830,7 +417,7 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 			})
 		})
 
@@ -838,309 +425,144 @@ var _ = Describe("quoted texts", func() {
 
 			It("inline content with bold text", func() {
 				source := "a paragraph with *some bold content*"
-				expected := types.DraftDocument{
-					Blocks: []interface{}{
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.StringElement{Content: "a paragraph with "},
-									types.QuotedText{
-										Kind: types.Bold,
-										Elements: []interface{}{
-											types.StringElement{Content: "some bold content"},
-										},
-									},
-								},
-							},
+				expected := []interface{}{
+					types.StringElement{Content: "a paragraph with "},
+					types.QuotedText{
+						Kind: types.Bold,
+						Elements: []interface{}{
+							types.StringElement{Content: "some bold content"},
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 			})
 
 			It("inline content with invalid bold text - use case 1", func() {
 				source := "a paragraph with *some bold content"
-				expected := types.DraftDocument{
-					Blocks: []interface{}{
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.StringElement{Content: "a paragraph with *some bold content"},
-								},
-							},
-						},
-					},
+				expected := []interface{}{
+					types.StringElement{Content: "a paragraph with *some bold content"},
 				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 			})
 
 			It("inline content with invalid bold text - use case 2", func() {
 				source := "a paragraph with *some bold content *"
-				expected := types.DraftDocument{
-					Blocks: []interface{}{
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.StringElement{Content: "a paragraph with *some bold content *"},
-								},
-							},
-						},
-					},
+				expected := []interface{}{
+					types.StringElement{Content: "a paragraph with *some bold content *"},
 				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 			})
 
 			It("inline content with invalid bold text - use case 3", func() {
 				source := "a paragraph with * some bold content*"
-				expected := types.DraftDocument{
-					Blocks: []interface{}{
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.StringElement{Content: "a paragraph with * some bold content*"},
-								},
-							},
-						},
-					},
+				expected := []interface{}{
+					types.StringElement{Content: "a paragraph with * some bold content*"},
 				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 			})
 
 			It("invalid italic text within bold text", func() {
 				source := "some *bold and _italic content _ together*."
-				expected := types.DraftDocument{
-					Blocks: []interface{}{
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-
-									types.StringElement{Content: "some "},
-									types.QuotedText{
-										Kind: types.Bold,
-										Elements: []interface{}{
-											types.StringElement{Content: "bold and _italic content _ together"},
-										},
-									},
-									types.StringElement{Content: "."},
-								},
-							},
+				expected := []interface{}{
+					types.StringElement{Content: "some "},
+					types.QuotedText{
+						Kind: types.Bold,
+						Elements: []interface{}{
+							types.StringElement{Content: "bold and _italic content _ together"},
 						},
 					},
+					types.StringElement{Content: "."},
 				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 			})
 
 			It("italic text within invalid bold text", func() {
 				source := "some *bold and _italic content_ together *."
-				expected := types.DraftDocument{
-					Blocks: []interface{}{
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.StringElement{Content: "some *bold and "},
-									types.QuotedText{
-										Kind: types.Italic,
-										Elements: []interface{}{
-											types.StringElement{Content: "italic content"},
-										},
-									},
-									types.StringElement{Content: " together *."},
-								},
-							},
+				expected := []interface{}{
+					types.StringElement{Content: "some *bold and "},
+					types.QuotedText{
+						Kind: types.Italic,
+						Elements: []interface{}{
+							types.StringElement{Content: "italic content"},
 						},
 					},
+					types.StringElement{Content: " together *."},
 				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 			})
 
 			It("inline content with invalid subscript text - use case 1", func() {
 				source := "a paragraph with ~some subscript content"
-				expected := types.DraftDocument{
-					Blocks: []interface{}{
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.StringElement{Content: "a paragraph with ~some subscript content"},
-								},
-							},
-						},
-					},
+				expected := []interface{}{
+					types.StringElement{Content: "a paragraph with ~some subscript content"},
 				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 			})
 
 			It("inline content with invalid subscript text - use case 2", func() {
 				source := "a paragraph with ~some subscript content ~"
-				expected := types.DraftDocument{
-					Blocks: []interface{}{
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.StringElement{Content: "a paragraph with ~some subscript content ~"},
-								},
-							},
-						},
-					},
+				expected := []interface{}{
+					types.StringElement{Content: "a paragraph with ~some subscript content ~"},
 				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 			})
 
 			It("inline content with invalid subscript text - use case 3", func() {
 				source := "a paragraph with ~ some subscript content~"
-				expected := types.DraftDocument{
-					Blocks: []interface{}{
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.StringElement{Content: "a paragraph with ~ some subscript content~"},
-								},
-							},
-						},
-					},
+				expected := []interface{}{
+					types.StringElement{Content: "a paragraph with ~ some subscript content~"},
 				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 			})
 
 			It("inline content with invalid superscript text - use case 1", func() {
 				source := "a paragraph with ^some superscript content"
-				expected := types.DraftDocument{
-					Blocks: []interface{}{
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-
-									types.StringElement{Content: "a paragraph with ^some superscript content"},
-								},
-							},
-						},
-					},
+				expected := []interface{}{
+					types.StringElement{Content: "a paragraph with ^some superscript content"},
 				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 			})
 
 			It("inline content with invalid superscript text - use case 2", func() {
 				source := "a paragraph with ^some superscript content ^"
-				expected := types.DraftDocument{
-					Blocks: []interface{}{
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-
-									types.StringElement{Content: "a paragraph with ^some superscript content ^"},
-								},
-							},
-						},
-					},
+				expected := []interface{}{
+					types.StringElement{Content: "a paragraph with ^some superscript content ^"},
 				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 			})
 
 			It("inline content with invalid superscript text - use case 3", func() {
 				source := "a paragraph with ^ some superscript content^"
-				expected := types.DraftDocument{
-					Blocks: []interface{}{
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-
-									types.StringElement{Content: "a paragraph with ^ some superscript content^"},
-								},
-							},
-						},
-					},
+				expected := []interface{}{
+					types.StringElement{Content: "a paragraph with ^ some superscript content^"},
 				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 			})
 
 			It("marked text with newline", func() {
 				source := "#some marked\ncontent#"
-				expected := types.DraftDocument{
-					Blocks: []interface{}{
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.QuotedText{
-										Kind: types.Marked,
-										Elements: []interface{}{
-											types.StringElement{Content: "some marked\ncontent"},
-										},
-									},
-								},
-							},
+				expected := []interface{}{
+					types.QuotedText{
+						Kind: types.Marked,
+						Elements: []interface{}{
+							types.StringElement{Content: "some marked\ncontent"},
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 			})
 
-			It("marked text across paragraph", func() {
-				source := "#some marked\n\ncontent#"
-				expected := types.DraftDocument{
-					Blocks: []interface{}{
-						types.Paragraph{
-							Lines: [][]interface{}{
-
-								{
-									types.StringElement{Content: "#some marked"},
-								},
-							},
-						},
-						types.BlankLine{},
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.StringElement{Content: "content#"},
-								},
-							},
-						},
-					},
-				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
-			})
 			It("double marked text with newline", func() {
 				source := "##some marked\ncontent##"
-				expected := types.DraftDocument{
-					Blocks: []interface{}{
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.QuotedText{
-										Kind: types.Marked,
-										Elements: []interface{}{
-											types.StringElement{Content: "some marked\ncontent"},
-										},
-									},
-								},
-							},
+				expected := []interface{}{
+					types.QuotedText{
+						Kind: types.Marked,
+						Elements: []interface{}{
+							types.StringElement{Content: "some marked\ncontent"},
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
-			})
-
-			It("double marked text across paragraph", func() {
-				source := "##some marked\n\ncontent##"
-				expected := types.DraftDocument{
-					Blocks: []interface{}{
-						types.Paragraph{
-							Lines: [][]interface{}{
-
-								{
-									types.StringElement{Content: "##some marked"},
-								},
-							},
-						},
-						types.BlankLine{},
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.StringElement{Content: "content##"},
-								},
-							},
-						},
-					},
-				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 			})
 
 		})
@@ -1148,371 +570,259 @@ var _ = Describe("quoted texts", func() {
 		Context("attributes", func() {
 			It("simple role italics", func() {
 				source := "[myrole]_italics_"
-				expected := types.DraftDocument{
-					Blocks: []interface{}{
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.QuotedText{
-										Kind: types.Italic,
-										Elements: []interface{}{
-											types.StringElement{Content: "italics"},
-										},
-										Attributes: types.Attributes{
-											types.AttrRole: "myrole",
-										},
-									},
-								},
-							},
+				expected := []interface{}{
+					types.QuotedText{
+						Kind: types.Italic,
+						Elements: []interface{}{
+							types.StringElement{Content: "italics"},
+						},
+						Attributes: types.Attributes{
+							types.AttrRole: "myrole",
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 			})
 
 			It("simple role italics unconstrained", func() {
 				source := "it[uncle]__al__ic"
-				expected := types.DraftDocument{
-					Blocks: []interface{}{
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.StringElement{
-										Content: "it",
-									},
-									types.QuotedText{
-										Kind: types.Italic,
-										Elements: []interface{}{
-											types.StringElement{Content: "al"},
-										},
-										Attributes: types.Attributes{
-											types.AttrRole: "uncle",
-										},
-									},
-									types.StringElement{
-										Content: "ic",
-									},
-								},
-							},
+				expected := []interface{}{
+					types.StringElement{
+						Content: "it",
+					},
+					types.QuotedText{
+						Kind: types.Italic,
+						Elements: []interface{}{
+							types.StringElement{Content: "al"},
+						},
+						Attributes: types.Attributes{
+							types.AttrRole: "uncle",
 						},
 					},
+					types.StringElement{
+						Content: "ic",
+					},
 				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 			})
 
 			It("simple role bold", func() {
 				source := "[myrole]*bold*"
-				expected := types.DraftDocument{
-					Blocks: []interface{}{
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.QuotedText{
-										Kind: types.Bold,
-										Elements: []interface{}{
-											types.StringElement{Content: "bold"},
-										},
-										Attributes: types.Attributes{
-											types.AttrRole: "myrole",
-										},
-									},
-								},
-							},
+				expected := []interface{}{
+					types.QuotedText{
+						Kind: types.Bold,
+						Elements: []interface{}{
+							types.StringElement{Content: "bold"},
+						},
+						Attributes: types.Attributes{
+							types.AttrRole: "myrole",
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 			})
 
 			It("simple role bold unconstrained", func() {
 				source := "it[uncle]**al**ic"
-				expected := types.DraftDocument{
-					Blocks: []interface{}{
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.StringElement{
-										Content: "it",
-									},
-									types.QuotedText{
-										Kind: types.Bold,
-										Elements: []interface{}{
-											types.StringElement{Content: "al"},
-										},
-										Attributes: types.Attributes{
-											types.AttrRole: "uncle",
-										},
-									},
-									types.StringElement{
-										Content: "ic",
-									},
-								},
-							},
+				expected := []interface{}{
+					types.StringElement{
+						Content: "it",
+					},
+					types.QuotedText{
+						Kind: types.Bold,
+						Elements: []interface{}{
+							types.StringElement{Content: "al"},
+						},
+						Attributes: types.Attributes{
+							types.AttrRole: "uncle",
 						},
 					},
+					types.StringElement{
+						Content: "ic",
+					},
 				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 			})
 
 			It("simple role mono", func() {
 				source := "[myrole]`true`"
-				expected := types.DraftDocument{
-					Blocks: []interface{}{
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.QuotedText{
-										Kind: types.Monospace,
-										Elements: []interface{}{
-											types.StringElement{Content: "true"},
-										},
-										Attributes: types.Attributes{
-											types.AttrRole: "myrole",
-										},
-									},
-								},
-							},
+				expected := []interface{}{
+					types.QuotedText{
+						Kind: types.Monospace,
+						Elements: []interface{}{
+							types.StringElement{Content: "true"},
+						},
+						Attributes: types.Attributes{
+							types.AttrRole: "myrole",
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 			})
 
 			It("simple role mono unconstrained", func() {
 				source := "int[uncle]``eg``rate"
-				expected := types.DraftDocument{
-					Blocks: []interface{}{
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.StringElement{
-										Content: "int",
-									},
-									types.QuotedText{
-										Kind: types.Monospace,
-										Elements: []interface{}{
-											types.StringElement{Content: "eg"},
-										},
-										Attributes: types.Attributes{
-											types.AttrRole: "uncle",
-										},
-									},
-									types.StringElement{
-										Content: "rate",
-									},
-								},
-							},
+				expected := []interface{}{
+					types.StringElement{
+						Content: "int",
+					},
+					types.QuotedText{
+						Kind: types.Monospace,
+						Elements: []interface{}{
+							types.StringElement{Content: "eg"},
+						},
+						Attributes: types.Attributes{
+							types.AttrRole: "uncle",
 						},
 					},
+					types.StringElement{
+						Content: "rate",
+					},
 				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 			})
 
 			It("role with comma truncates", func() {
 				source := "[myrole,and=nothing]_italics_"
-				expected := types.DraftDocument{
-					Blocks: []interface{}{
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.QuotedText{
-										Kind: types.Italic,
-										Elements: []interface{}{
-											types.StringElement{Content: "italics"},
-										},
-										Attributes: types.Attributes{
-											types.AttrRole: "myrole",
-											"and":          "nothing",
-										},
-									},
-								},
-							},
+				expected := []interface{}{
+					types.QuotedText{
+						Kind: types.Italic,
+						Elements: []interface{}{
+							types.StringElement{Content: "italics"},
+						},
+						Attributes: types.Attributes{
+							types.AttrRole: "myrole",
+							"and":          "nothing",
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 			})
 
 			It("short-hand ID only", func() {
 				source := "[#here]*bold*"
-				expected := types.DraftDocument{
-					Blocks: []interface{}{
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.QuotedText{
-										Kind: types.Bold,
-										Elements: []interface{}{
-											types.StringElement{Content: "bold"},
-										},
-										Attributes: types.Attributes{
-											types.AttrID:       "here",
-											types.AttrCustomID: true,
-										},
-									},
-								},
-							},
+				expected := []interface{}{
+					types.QuotedText{
+						Kind: types.Bold,
+						Elements: []interface{}{
+							types.StringElement{Content: "bold"},
+						},
+						Attributes: types.Attributes{
+							types.AttrID:       "here",
+							types.AttrCustomID: true,
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 			})
 
 			It("short-hand role only", func() {
 				source := "[.bob]**bold**"
-				expected := types.DraftDocument{
-					Blocks: []interface{}{
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.QuotedText{
-										Kind: types.Bold,
-										Elements: []interface{}{
-											types.StringElement{Content: "bold"},
-										},
-										Attributes: types.Attributes{
-											types.AttrRole: "bob",
-										},
-									},
-								},
-							},
+				expected := []interface{}{
+					types.QuotedText{
+						Kind: types.Bold,
+						Elements: []interface{}{
+							types.StringElement{Content: "bold"},
+						},
+						Attributes: types.Attributes{
+							types.AttrRole: "bob",
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 			})
 
 			It("marked short-hand role only", func() {
 				source := "[.bob]##the builder##"
-				expected := types.DraftDocument{
-					Blocks: []interface{}{
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.QuotedText{
-										Kind: types.Marked,
-										Elements: []interface{}{
-											types.StringElement{Content: "the builder"},
-										},
-										Attributes: types.Attributes{
-											types.AttrRole: "bob",
-										},
-									},
-								},
-							},
+				expected := []interface{}{
+					types.QuotedText{
+						Kind: types.Marked,
+						Elements: []interface{}{
+							types.StringElement{Content: "the builder"},
+						},
+						Attributes: types.Attributes{
+							types.AttrRole: "bob",
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 			})
 
 			It("short-hand multiple roles and id", func() {
 				source := "[.r1#anchor.r2.r3]**bold**[#here.second.class]_text_"
-				expected := types.DraftDocument{
-					Blocks: []interface{}{
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.QuotedText{
-										Kind: types.Bold,
-										Elements: []interface{}{
-											types.StringElement{Content: "bold"},
-										},
-										Attributes: types.Attributes{
-											types.AttrRole:     []string{"r1", "r2", "r3"},
-											types.AttrID:       "anchor",
-											types.AttrCustomID: true,
-										},
-									},
-									types.QuotedText{
-										Kind: types.Italic,
-										Elements: []interface{}{
-											types.StringElement{Content: "text"},
-										},
-										Attributes: types.Attributes{
-											types.AttrRole:     []string{"second", "class"},
-											types.AttrID:       "here",
-											types.AttrCustomID: true,
-										},
-									},
-								},
-							},
+				expected := []interface{}{
+					types.QuotedText{
+						Kind: types.Bold,
+						Elements: []interface{}{
+							types.StringElement{Content: "bold"},
+						},
+						Attributes: types.Attributes{
+							types.AttrRole:     []string{"r1", "r2", "r3"},
+							types.AttrID:       "anchor",
+							types.AttrCustomID: true,
+						},
+					},
+					types.QuotedText{
+						Kind: types.Italic,
+						Elements: []interface{}{
+							types.StringElement{Content: "text"},
+						},
+						Attributes: types.Attributes{
+							types.AttrRole:     []string{"second", "class"},
+							types.AttrID:       "here",
+							types.AttrCustomID: true,
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 			})
 
 			It("empty role", func() {
 				source := "[]**bold**"
-				expected := types.DraftDocument{
-					Blocks: []interface{}{
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.QuotedText{
-										Kind: types.Bold,
-										Elements: []interface{}{
-											types.StringElement{Content: "bold"},
-										},
-									},
-								},
-							},
+				expected := []interface{}{
+					types.QuotedText{
+						Kind: types.Bold,
+						Elements: []interface{}{
+							types.StringElement{Content: "bold"},
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 			})
 
 			It("quoted role", func() {
 				source := "['here, again']**bold**"
-				expected := types.DraftDocument{
-					Blocks: []interface{}{
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.QuotedText{
-										Kind: types.Bold,
-										Elements: []interface{}{
-											types.StringElement{Content: "bold"},
-										},
-										// NB: This will confuse the renderer.
-										Attributes: types.Attributes{
-											types.AttrRole: "here, again",
-										},
-									},
-								},
-							},
+				expected := []interface{}{
+					types.QuotedText{
+						Kind: types.Bold,
+						Elements: []interface{}{
+							types.StringElement{Content: "bold"},
+						},
+						// NB: This will confuse the renderer.
+						Attributes: types.Attributes{
+							types.AttrRole: "here, again",
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 			})
 
 			// This demonstrates that we cannot inject malicious data in these attributes.
 			// The content is escaped by the renderer, not the parser.
 			It("bad syntax", func() {
 				source := "[.<something \"wicked>]**bold**"
-				expected := types.DraftDocument{
-					Blocks: []interface{}{
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.StringElement{
-										Content: "[.<something \"wicked>]",
-									},
-									types.QuotedText{
-										Kind: types.Bold,
-										Elements: []interface{}{
-											types.StringElement{Content: "bold"},
-										},
-									},
-								},
-							},
+				expected := []interface{}{
+					types.StringElement{
+						Content: "[.<something \"wicked>]",
+					},
+					types.QuotedText{
+						Kind: types.Bold,
+						Elements: []interface{}{
+							types.StringElement{Content: "bold"},
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 			})
 
 		})
@@ -1521,668 +831,468 @@ var _ = Describe("quoted texts", func() {
 
 			It("italic text within bold text", func() {
 				source := "some *bold and _italic content_ together*."
-				expected := types.DraftDocument{
-					Blocks: []interface{}{
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.StringElement{Content: "some "},
-									types.QuotedText{
-										Kind: types.Bold,
-										Elements: []interface{}{
-											types.StringElement{Content: "bold and "},
-											types.QuotedText{
-												Kind: types.Italic,
-												Elements: []interface{}{
-													types.StringElement{Content: "italic content"},
-												},
-											},
-											types.StringElement{Content: " together"},
-										},
-									},
-									types.StringElement{Content: "."},
+				expected := []interface{}{
+					types.StringElement{Content: "some "},
+					types.QuotedText{
+						Kind: types.Bold,
+						Elements: []interface{}{
+							types.StringElement{Content: "bold and "},
+							types.QuotedText{
+								Kind: types.Italic,
+								Elements: []interface{}{
+									types.StringElement{Content: "italic content"},
 								},
 							},
+							types.StringElement{Content: " together"},
 						},
 					},
+					types.StringElement{Content: "."},
 				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 			})
 
 			It("single-quote bold within single-quote bold text", func() {
 				// here we don't allow for bold text within bold text, to comply with the existing implementations (asciidoc and asciidoctor)
 				source := "*some *nested bold* content*"
-				expected := types.DraftDocument{
-					Blocks: []interface{}{
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.QuotedText{
-										Kind: types.Bold,
-										Elements: []interface{}{
-											types.StringElement{Content: "some *nested bold"},
-										},
-									},
-									types.StringElement{Content: " content*"},
-								},
-							},
+				expected := []interface{}{
+					types.QuotedText{
+						Kind: types.Bold,
+						Elements: []interface{}{
+							types.StringElement{Content: "some *nested bold"},
 						},
 					},
+					types.StringElement{Content: " content*"},
 				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 			})
 
 			It("double-quote bold within double-quote bold text", func() {
 				// here we don't allow for bold text within bold text, to comply with the existing implementations (asciidoc and asciidoctor)
 				source := "**some **nested bold** content**"
-				expected := types.DraftDocument{
-					Blocks: []interface{}{
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.QuotedText{
-										Kind: types.Bold,
-										Elements: []interface{}{
-											types.StringElement{Content: "some "},
-										},
-									},
-									types.StringElement{Content: "nested bold"},
-									types.QuotedText{
-										Kind: types.Bold,
-										Elements: []interface{}{
-											types.StringElement{Content: " content"},
-										},
-									},
-								},
-							},
+				expected := []interface{}{
+					types.QuotedText{
+						Kind: types.Bold,
+						Elements: []interface{}{
+							types.StringElement{Content: "some "},
+						},
+					},
+					types.StringElement{Content: "nested bold"},
+					types.QuotedText{
+						Kind: types.Bold,
+						Elements: []interface{}{
+							types.StringElement{Content: " content"},
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 			})
 
 			It("single-quote bold within double-quote bold text", func() {
 				// here we don't allow for bold text within bold text, to comply with the existing implementations (asciidoc and asciidoctor)
 				source := "**some *nested bold* content**"
-				expected := types.DraftDocument{
-					Blocks: []interface{}{
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.QuotedText{
-										Kind: types.Bold,
-										Elements: []interface{}{
-											types.StringElement{Content: "some "},
-											types.QuotedText{
-												Kind: types.Bold,
-												Elements: []interface{}{
-													types.StringElement{Content: "nested bold"},
-												},
-											},
-											types.StringElement{Content: " content"},
-										},
-									},
+				expected := []interface{}{
+					types.QuotedText{
+						Kind: types.Bold,
+						Elements: []interface{}{
+							types.StringElement{Content: "some "},
+							types.QuotedText{
+								Kind: types.Bold,
+								Elements: []interface{}{
+									types.StringElement{Content: "nested bold"},
 								},
 							},
+							types.StringElement{Content: " content"},
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 			})
 
 			It("double-quote bold within single-quote bold text", func() {
 				// here we don't allow for bold text within bold text, to comply with the existing implementations (asciidoc and asciidoctor)
 				source := "*some **nested bold** content*"
-				expected := types.DraftDocument{
-					Blocks: []interface{}{
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.QuotedText{
-										Kind: types.Bold,
-										Elements: []interface{}{
-											types.StringElement{Content: "some "},
-											types.QuotedText{
-												Kind: types.Bold,
-												Elements: []interface{}{
-													types.StringElement{Content: "nested bold"},
-												},
-											},
-											types.StringElement{Content: " content"},
-										},
-									},
+				expected := []interface{}{
+					types.QuotedText{
+						Kind: types.Bold,
+						Elements: []interface{}{
+							types.StringElement{Content: "some "},
+							types.QuotedText{
+								Kind: types.Bold,
+								Elements: []interface{}{
+									types.StringElement{Content: "nested bold"},
 								},
 							},
+							types.StringElement{Content: " content"},
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 			})
 
 			It("single-quote italic within single-quote italic text", func() {
 				// here we don't allow for italic text within italic text, to comply with the existing implementations (asciidoc and asciidoctor)
 				source := "_some _nested italic_ content_"
-				expected := types.DraftDocument{
-					Blocks: []interface{}{
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.QuotedText{
-										Kind: types.Italic,
-										Elements: []interface{}{
-											types.StringElement{Content: "some _nested italic"},
-										},
-									},
-									types.StringElement{Content: " content_"},
-								},
-							},
+				expected := []interface{}{
+					types.QuotedText{
+						Kind: types.Italic,
+						Elements: []interface{}{
+							types.StringElement{Content: "some _nested italic"},
 						},
 					},
+					types.StringElement{Content: " content_"},
 				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 			})
 
 			It("double-quote italic within double-quote italic text", func() {
 				// here we don't allow for italic text within italic text, to comply with the existing implementations (asciidoc and asciidoctor)
 				source := "__some __nested italic__ content__"
-				expected := types.DraftDocument{
-					Blocks: []interface{}{
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.QuotedText{
-										Kind: types.Italic,
-										Elements: []interface{}{
-											types.StringElement{Content: "some "},
-										},
-									},
-									types.StringElement{Content: "nested italic"},
-									types.QuotedText{
-										Kind: types.Italic,
-										Elements: []interface{}{
-											types.StringElement{Content: " content"},
-										},
-									},
-								},
-							},
+				expected := []interface{}{
+					types.QuotedText{
+						Kind: types.Italic,
+						Elements: []interface{}{
+							types.StringElement{Content: "some "},
+						},
+					},
+					types.StringElement{Content: "nested italic"},
+					types.QuotedText{
+						Kind: types.Italic,
+						Elements: []interface{}{
+							types.StringElement{Content: " content"},
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 			})
 
 			It("single-quote italic within double-quote italic text", func() {
 				// here we allow for italic text within italic text, to comply with the existing implementations (asciidoc and asciidoctor)
 				source := "_some __nested italic__ content_"
-				expected := types.DraftDocument{
-					Blocks: []interface{}{
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.QuotedText{
-										Kind: types.Italic,
-										Elements: []interface{}{
-											types.StringElement{Content: "some "},
-											types.QuotedText{
-												Kind: types.Italic,
-												Elements: []interface{}{
-													types.StringElement{Content: "nested italic"},
-												},
-											},
-											types.StringElement{Content: " content"},
-										},
-									},
+				expected := []interface{}{
+					types.QuotedText{
+						Kind: types.Italic,
+						Elements: []interface{}{
+							types.StringElement{Content: "some "},
+							types.QuotedText{
+								Kind: types.Italic,
+								Elements: []interface{}{
+									types.StringElement{Content: "nested italic"},
 								},
 							},
+							types.StringElement{Content: " content"},
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 			})
 
 			It("double-quote italic within single-quote italic text", func() {
 				// here we allow for italic text within italic text, to comply with the existing implementations (asciidoc and asciidoctor)
 				source := "_some __nested italic__ content_"
-				expected := types.DraftDocument{
-					Blocks: []interface{}{
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.QuotedText{
-										Kind: types.Italic,
-										Elements: []interface{}{
-											types.StringElement{Content: "some "},
-											types.QuotedText{
-												Kind: types.Italic,
-												Elements: []interface{}{
-													types.StringElement{Content: "nested italic"},
-												},
-											},
-											types.StringElement{Content: " content"},
-										},
-									},
+				expected := []interface{}{
+					types.QuotedText{
+						Kind: types.Italic,
+						Elements: []interface{}{
+							types.StringElement{Content: "some "},
+							types.QuotedText{
+								Kind: types.Italic,
+								Elements: []interface{}{
+									types.StringElement{Content: "nested italic"},
 								},
 							},
+							types.StringElement{Content: " content"},
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 			})
 
 			It("single-quote monospace within single-quote monospace text", func() {
 				// here we don't allow for monospace text within monospace text, to comply with the existing implementations (asciidoc and asciidoctor)
 				source := "`some `nested monospace` content`"
-				expected := types.DraftDocument{
-					Blocks: []interface{}{
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.QuotedText{
-										Kind: types.Monospace,
-										Elements: []interface{}{
-											types.StringElement{Content: "some `nested monospace"},
-										},
-									},
-									types.StringElement{Content: " content`"},
-								},
-							},
+				expected := []interface{}{
+					types.QuotedText{
+						Kind: types.Monospace,
+						Elements: []interface{}{
+							types.StringElement{Content: "some `nested monospace"},
 						},
 					},
+					types.StringElement{Content: " content`"},
 				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 			})
 
 			It("double-quote monospace within double-quote monospace text", func() {
 				// here we don't allow for monospace text within monospace text, to comply with the existing implementations (asciidoc and asciidoctor)
 				source := "``some ``nested monospace`` content``"
-				expected := types.DraftDocument{
-					Blocks: []interface{}{
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.QuotedText{
-										Kind: types.Monospace,
-										Elements: []interface{}{
-											types.StringElement{Content: "some "},
-										},
-									},
-									types.StringElement{Content: "nested monospace"},
-									types.QuotedText{
-										Kind: types.Monospace,
-										Elements: []interface{}{
-											types.StringElement{Content: " content"},
-										},
-									},
-								},
-							},
+				expected := []interface{}{
+					types.QuotedText{
+						Kind: types.Monospace,
+						Elements: []interface{}{
+							types.StringElement{Content: "some "},
+						},
+					},
+					types.StringElement{Content: "nested monospace"},
+					types.QuotedText{
+						Kind: types.Monospace,
+						Elements: []interface{}{
+							types.StringElement{Content: " content"},
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 			})
 
 			It("single-quote monospace within double-quote monospace text", func() {
 				// here we allow for monospace text within monospace text, to comply with the existing implementations (asciidoc and asciidoctor)
 				source := "`some ``nested monospace`` content`"
-				expected := types.DraftDocument{
-					Blocks: []interface{}{
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.QuotedText{
-										Kind: types.Monospace,
-										Elements: []interface{}{
-											types.StringElement{Content: "some "},
-											types.QuotedText{
-												Kind: types.Monospace,
-												Elements: []interface{}{
-													types.StringElement{Content: "nested monospace"},
-												},
-											},
-											types.StringElement{Content: " content"},
-										},
-									},
+				expected := []interface{}{
+					types.QuotedText{
+						Kind: types.Monospace,
+						Elements: []interface{}{
+							types.StringElement{Content: "some "},
+							types.QuotedText{
+								Kind: types.Monospace,
+								Elements: []interface{}{
+									types.StringElement{Content: "nested monospace"},
 								},
 							},
+							types.StringElement{Content: " content"},
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 			})
 
 			It("double-quote monospace within single-quote monospace text", func() {
 				// here we allow for monospace text within monospace text, to comply with the existing implementations (asciidoc and asciidoctor)
 				source := "`some ``nested monospace`` content`"
-				expected := types.DraftDocument{
-					Blocks: []interface{}{
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.QuotedText{
-										Kind: types.Monospace,
-										Elements: []interface{}{
-											types.StringElement{Content: "some "},
-											types.QuotedText{
-												Kind: types.Monospace,
-												Elements: []interface{}{
-													types.StringElement{Content: "nested monospace"},
-												},
-											},
-											types.StringElement{Content: " content"},
-										},
-									},
+				expected := []interface{}{
+					types.QuotedText{
+						Kind: types.Monospace,
+						Elements: []interface{}{
+							types.StringElement{Content: "some "},
+							types.QuotedText{
+								Kind: types.Monospace,
+								Elements: []interface{}{
+									types.StringElement{Content: "nested monospace"},
 								},
 							},
+							types.StringElement{Content: " content"},
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 			})
 
 			It("quoted text within marked text", func() {
 				source := "some #marked and _italic_ and *bold* and `monospaced` content together#."
-				expected := types.DraftDocument{
-					Blocks: []interface{}{
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.StringElement{Content: "some "},
-									types.QuotedText{
-										Kind: types.Marked,
-										Elements: []interface{}{
-											types.StringElement{Content: "marked and "},
-											types.QuotedText{
-												Kind: types.Italic,
-												Elements: []interface{}{
-													types.StringElement{Content: "italic"},
-												},
-											},
-											types.StringElement{Content: " and "},
-											types.QuotedText{
-												Kind: types.Bold,
-												Elements: []interface{}{
-													types.StringElement{Content: "bold"},
-												},
-											},
-											types.StringElement{Content: " and "},
-											types.QuotedText{
-												Kind: types.Monospace,
-												Elements: []interface{}{
-													types.StringElement{Content: "monospaced"},
-												},
-											},
-											types.StringElement{Content: " content together"},
-										},
-									},
-									types.StringElement{Content: "."},
+				expected := []interface{}{
+					types.StringElement{Content: "some "},
+					types.QuotedText{
+						Kind: types.Marked,
+						Elements: []interface{}{
+							types.StringElement{Content: "marked and "},
+							types.QuotedText{
+								Kind: types.Italic,
+								Elements: []interface{}{
+									types.StringElement{Content: "italic"},
 								},
 							},
+							types.StringElement{Content: " and "},
+							types.QuotedText{
+								Kind: types.Bold,
+								Elements: []interface{}{
+									types.StringElement{Content: "bold"},
+								},
+							},
+							types.StringElement{Content: " and "},
+							types.QuotedText{
+								Kind: types.Monospace,
+								Elements: []interface{}{
+									types.StringElement{Content: "monospaced"},
+								},
+							},
+							types.StringElement{Content: " content together"},
 						},
 					},
+					types.StringElement{Content: "."},
 				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 			})
 
 			It("unbalanced bold in monospace - case 1", func() {
 				source := "`*a`"
-				expected := types.DraftDocument{
-					Blocks: []interface{}{
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.QuotedText{
-										Kind: types.Monospace,
-										Elements: []interface{}{
-											types.StringElement{Content: "*a"},
-										},
-									},
-								},
-							},
+				expected := []interface{}{
+					types.QuotedText{
+						Kind: types.Monospace,
+						Elements: []interface{}{
+							types.StringElement{Content: "*a"},
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 			})
 
 			It("unbalanced bold in monospace - case 2", func() {
 				source := "`a*b`"
-				expected := types.DraftDocument{
-					Blocks: []interface{}{
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.QuotedText{
-										Kind: types.Monospace,
-										Elements: []interface{}{
-											types.StringElement{Content: "a*b"},
-										},
-									},
-								},
-							},
+				expected := []interface{}{
+					types.QuotedText{
+						Kind: types.Monospace,
+						Elements: []interface{}{
+							types.StringElement{Content: "a*b"},
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 			})
 
 			It("italic in monospace", func() {
 				source := "`_a_`"
-				expected := types.DraftDocument{
-					Blocks: []interface{}{
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.QuotedText{
-										Kind: types.Monospace,
-										Elements: []interface{}{
-											types.QuotedText{
-												Kind: types.Italic,
-												Elements: []interface{}{
-													types.StringElement{Content: "a"},
-												},
-											},
-										},
-									},
+				expected := []interface{}{
+					types.QuotedText{
+						Kind: types.Monospace,
+						Elements: []interface{}{
+							types.QuotedText{
+								Kind: types.Italic,
+								Elements: []interface{}{
+									types.StringElement{Content: "a"},
 								},
 							},
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 			})
 
 			It("unbalanced italic in monospace", func() {
 				source := "`a_b`"
-				expected := types.DraftDocument{
-					Blocks: []interface{}{
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.QuotedText{
-										Kind: types.Monospace,
-										Elements: []interface{}{
-											types.StringElement{Content: "a_b"},
-										},
-									},
-								},
-							},
+				expected := []interface{}{
+					types.QuotedText{
+						Kind: types.Monospace,
+						Elements: []interface{}{
+							types.StringElement{Content: "a_b"},
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 			})
 
 			It("unparsed bold in monospace", func() {
 				source := "`a*b*`"
-				expected := types.DraftDocument{
-					Blocks: []interface{}{
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.QuotedText{
-										Kind: types.Monospace,
-										Elements: []interface{}{
-											types.StringElement{Content: "a*b*"},
-										},
-									},
-								},
-							},
+				expected := []interface{}{
+					types.QuotedText{
+						Kind: types.Monospace,
+						Elements: []interface{}{
+							types.StringElement{Content: "a*b*"},
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 			})
 
 			It("parsed subscript in monospace", func() {
 				source := "`a~b~`"
-				expected := types.DraftDocument{
-					Blocks: []interface{}{
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.QuotedText{
-										Kind: types.Monospace,
-										Elements: []interface{}{
-											types.StringElement{Content: "a"},
-											types.QuotedText{
-												Kind: types.Subscript,
-												Elements: []interface{}{
-													types.StringElement{Content: "b"},
-												},
-											},
-										},
-									},
+				expected := []interface{}{
+					types.QuotedText{
+						Kind: types.Monospace,
+						Elements: []interface{}{
+							types.StringElement{Content: "a"},
+							types.QuotedText{
+								Kind: types.Subscript,
+								Elements: []interface{}{
+									types.StringElement{Content: "b"},
 								},
 							},
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 			})
 
 			It("multiline in single quoted monospace - case 1", func() {
 				source := "`a\nb`"
-				expected := types.DraftDocument{
-					Blocks: []interface{}{
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.QuotedText{
-										Kind: types.Monospace,
-										Elements: []interface{}{
-											types.StringElement{Content: "a\nb"},
-										},
-									},
-								},
-							},
+				expected := []interface{}{
+					types.QuotedText{
+						Kind: types.Monospace,
+						Elements: []interface{}{
+							types.StringElement{Content: "a\nb"},
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 			})
 
 			It("multiline in double quoted monospace - case 1", func() {
 				source := "`a\nb`"
-				expected := types.DraftDocument{
-					Blocks: []interface{}{
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.QuotedText{
-										Kind: types.Monospace,
-										Elements: []interface{}{
-											types.StringElement{Content: "a\nb"},
-										},
-									},
-								},
-							},
+				expected := []interface{}{
+					types.QuotedText{
+						Kind: types.Monospace,
+						Elements: []interface{}{
+							types.StringElement{Content: "a\nb"},
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 			})
 
 			It("multiline in single quoted  monospace - case 2", func() {
 				source := "`a\n*b*`"
-				expected := types.DraftDocument{
-					Blocks: []interface{}{
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.QuotedText{
-										Kind: types.Monospace,
-										Elements: []interface{}{
-											types.StringElement{Content: "a\n"},
-											types.QuotedText{
-												Kind: types.Bold,
-												Elements: []interface{}{
-													types.StringElement{Content: "b"},
-												},
-											},
-										},
-									},
+				expected := []interface{}{
+					types.QuotedText{
+						Kind: types.Monospace,
+						Elements: []interface{}{
+							types.StringElement{Content: "a\n"},
+							types.QuotedText{
+								Kind: types.Bold,
+								Elements: []interface{}{
+									types.StringElement{Content: "b"},
 								},
 							},
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 			})
 
 			It("multiline in double quoted  monospace - case 2", func() {
 				source := "`a\n*b*`"
-				expected := types.DraftDocument{
-					Blocks: []interface{}{
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.QuotedText{
-										Kind: types.Monospace,
-										Elements: []interface{}{
-											types.StringElement{Content: "a\n"},
-											types.QuotedText{
-												Kind: types.Bold,
-												Elements: []interface{}{
-													types.StringElement{Content: "b"},
-												},
-											},
-										},
-									},
+				expected := []interface{}{
+					types.QuotedText{
+						Kind: types.Monospace,
+						Elements: []interface{}{
+							types.StringElement{Content: "a\n"},
+							types.QuotedText{
+								Kind: types.Bold,
+								Elements: []interface{}{
+									types.StringElement{Content: "b"},
 								},
 							},
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 			})
 
 			It("link in bold", func() {
 				source := "*a link:/[b]*"
-				expected := types.DraftDocument{
-					Blocks: []interface{}{
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.QuotedText{
-										Kind: types.Bold,
-										Elements: []interface{}{
-											types.StringElement{Content: "a "},
-											types.InlineLink{
-												Attributes: types.Attributes{
-													"positional-1": []interface{}{
-														types.StringElement{
-															Content: "b",
-														},
-													},
-												},
-												Location: types.Location{
-													Path: []interface{}{
-														types.StringElement{
-															Content: "/",
-														},
-													},
-												},
-											},
+				expected := []interface{}{
+					types.QuotedText{
+						Kind: types.Bold,
+						Elements: []interface{}{
+							types.StringElement{Content: "a "},
+							types.InlineLink{
+								Attributes: types.Attributes{
+									"positional-1": []interface{}{
+										types.StringElement{
+											Content: "b",
+										},
+									},
+								},
+								Location: types.Location{
+									Path: []interface{}{
+										types.StringElement{
+											Content: "/",
 										},
 									},
 								},
@@ -2190,29 +1300,21 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 			})
 
 			It("image in bold", func() {
 				source := "*a image:foo.png[]*"
-				expected := types.DraftDocument{
-					Blocks: []interface{}{
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.QuotedText{
-										Kind: types.Bold,
-										Elements: []interface{}{
-											types.StringElement{Content: "a "},
-											types.InlineImage{
-												Location: types.Location{
-													Path: []interface{}{
-														types.StringElement{
-															Content: "foo.png",
-														},
-													},
-												},
-											},
+				expected := []interface{}{
+					types.QuotedText{
+						Kind: types.Bold,
+						Elements: []interface{}{
+							types.StringElement{Content: "a "},
+							types.InlineImage{
+								Location: types.Location{
+									Path: []interface{}{
+										types.StringElement{
+											Content: "foo.png",
 										},
 									},
 								},
@@ -2220,90 +1322,66 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 			})
 
 			It("singleplus passthrough in bold", func() {
 				source := "*a +image:foo.png[]+*"
-				expected := types.DraftDocument{
-					Blocks: []interface{}{
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.QuotedText{
-										Kind: types.Bold,
-										Elements: []interface{}{
-											types.StringElement{Content: "a "},
-											types.InlinePassthrough{
-												Kind: types.SinglePlusPassthrough,
-												Elements: []interface{}{
-													types.StringElement{Content: "image:foo.png[]"},
-												},
-											},
-										},
-									},
+				expected := []interface{}{
+					types.QuotedText{
+						Kind: types.Bold,
+						Elements: []interface{}{
+							types.StringElement{Content: "a "},
+							types.InlinePassthrough{
+								Kind: types.SinglePlusPassthrough,
+								Elements: []interface{}{
+									types.StringElement{Content: "image:foo.png[]"},
 								},
 							},
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 			})
 
 			It("tripleplus passthrough in bold", func() {
 				source := "*a +++image:foo.png[]+++*"
-				expected := types.DraftDocument{
-					Blocks: []interface{}{
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.QuotedText{
-										Kind: types.Bold,
-										Elements: []interface{}{
-											types.StringElement{Content: "a "},
-											types.InlinePassthrough{
-												Kind: types.TriplePlusPassthrough,
-												Elements: []interface{}{
-													types.StringElement{Content: "image:foo.png[]"},
-												},
-											},
-										},
-									},
+				expected := []interface{}{
+					types.QuotedText{
+						Kind: types.Bold,
+						Elements: []interface{}{
+							types.StringElement{Content: "a "},
+							types.InlinePassthrough{
+								Kind: types.TriplePlusPassthrough,
+								Elements: []interface{}{
+									types.StringElement{Content: "image:foo.png[]"},
 								},
 							},
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 			})
 
 			It("link in italic", func() {
 				source := "_a link:/[b]_"
-				expected := types.DraftDocument{
-					Blocks: []interface{}{
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.QuotedText{
-										Kind: types.Italic,
-										Elements: []interface{}{
-											types.StringElement{Content: "a "},
-											types.InlineLink{
-												Attributes: types.Attributes{
-													"positional-1": []interface{}{
-														types.StringElement{
-															Content: "b",
-														},
-													},
-												},
-												Location: types.Location{
-													Path: []interface{}{
-														types.StringElement{
-															Content: "/",
-														},
-													},
-												},
-											},
+				expected := []interface{}{
+					types.QuotedText{
+						Kind: types.Italic,
+						Elements: []interface{}{
+							types.StringElement{Content: "a "},
+							types.InlineLink{
+								Attributes: types.Attributes{
+									"positional-1": []interface{}{
+										types.StringElement{
+											Content: "b",
+										},
+									},
+								},
+								Location: types.Location{
+									Path: []interface{}{
+										types.StringElement{
+											Content: "/",
 										},
 									},
 								},
@@ -2311,29 +1389,21 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 			})
 
 			It("image in italic", func() {
 				source := "_a image:foo.png[]_"
-				expected := types.DraftDocument{
-					Blocks: []interface{}{
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.QuotedText{
-										Kind: types.Italic,
-										Elements: []interface{}{
-											types.StringElement{Content: "a "},
-											types.InlineImage{
-												Location: types.Location{
-													Path: []interface{}{
-														types.StringElement{
-															Content: "foo.png",
-														},
-													},
-												},
-											},
+				expected := []interface{}{
+					types.QuotedText{
+						Kind: types.Italic,
+						Elements: []interface{}{
+							types.StringElement{Content: "a "},
+							types.InlineImage{
+								Location: types.Location{
+									Path: []interface{}{
+										types.StringElement{
+											Content: "foo.png",
 										},
 									},
 								},
@@ -2341,90 +1411,66 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 			})
 
 			It("singleplus passthrough in italic", func() {
 				source := "_a +image:foo.png[]+_"
-				expected := types.DraftDocument{
-					Blocks: []interface{}{
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.QuotedText{
-										Kind: types.Italic,
-										Elements: []interface{}{
-											types.StringElement{Content: "a "},
-											types.InlinePassthrough{
-												Kind: types.SinglePlusPassthrough,
-												Elements: []interface{}{
-													types.StringElement{Content: "image:foo.png[]"},
-												},
-											},
-										},
-									},
+				expected := []interface{}{
+					types.QuotedText{
+						Kind: types.Italic,
+						Elements: []interface{}{
+							types.StringElement{Content: "a "},
+							types.InlinePassthrough{
+								Kind: types.SinglePlusPassthrough,
+								Elements: []interface{}{
+									types.StringElement{Content: "image:foo.png[]"},
 								},
 							},
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 			})
 
 			It("tripleplus passthrough in italic", func() {
 				source := "_a +++image:foo.png[]+++_"
-				expected := types.DraftDocument{
-					Blocks: []interface{}{
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.QuotedText{
-										Kind: types.Italic,
-										Elements: []interface{}{
-											types.StringElement{Content: "a "},
-											types.InlinePassthrough{
-												Kind: types.TriplePlusPassthrough,
-												Elements: []interface{}{
-													types.StringElement{Content: "image:foo.png[]"},
-												},
-											},
-										},
-									},
+				expected := []interface{}{
+					types.QuotedText{
+						Kind: types.Italic,
+						Elements: []interface{}{
+							types.StringElement{Content: "a "},
+							types.InlinePassthrough{
+								Kind: types.TriplePlusPassthrough,
+								Elements: []interface{}{
+									types.StringElement{Content: "image:foo.png[]"},
 								},
 							},
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 			})
 
 			It("link in monospace", func() {
 				source := "`a link:/[b]`"
-				expected := types.DraftDocument{
-					Blocks: []interface{}{
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.QuotedText{
-										Kind: types.Monospace,
-										Elements: []interface{}{
-											types.StringElement{Content: "a "},
-											types.InlineLink{
-												Attributes: types.Attributes{
-													"positional-1": []interface{}{
-														types.StringElement{
-															Content: "b",
-														},
-													},
-												},
-												Location: types.Location{
-													Path: []interface{}{
-														types.StringElement{
-															Content: "/",
-														},
-													},
-												},
-											},
+				expected := []interface{}{
+					types.QuotedText{
+						Kind: types.Monospace,
+						Elements: []interface{}{
+							types.StringElement{Content: "a "},
+							types.InlineLink{
+								Attributes: types.Attributes{
+									"positional-1": []interface{}{
+										types.StringElement{
+											Content: "b",
+										},
+									},
+								},
+								Location: types.Location{
+									Path: []interface{}{
+										types.StringElement{
+											Content: "/",
 										},
 									},
 								},
@@ -2432,29 +1478,21 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 			})
 
 			It("image in monospace", func() {
 				source := "`a image:foo.png[]`"
-				expected := types.DraftDocument{
-					Blocks: []interface{}{
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.QuotedText{
-										Kind: types.Monospace,
-										Elements: []interface{}{
-											types.StringElement{Content: "a "},
-											types.InlineImage{
-												Location: types.Location{
-													Path: []interface{}{
-														types.StringElement{
-															Content: "foo.png",
-														},
-													},
-												},
-											},
+				expected := []interface{}{
+					types.QuotedText{
+						Kind: types.Monospace,
+						Elements: []interface{}{
+							types.StringElement{Content: "a "},
+							types.InlineImage{
+								Location: types.Location{
+									Path: []interface{}{
+										types.StringElement{
+											Content: "foo.png",
 										},
 									},
 								},
@@ -2462,63 +1500,45 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 			})
 
 			It("singleplus passthrough in monospace", func() {
 				source := "`a +image:foo.png[]+`"
-				expected := types.DraftDocument{
-					Blocks: []interface{}{
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-
-									types.QuotedText{
-										Kind: types.Monospace,
-										Elements: []interface{}{
-											types.StringElement{Content: "a "},
-											types.InlinePassthrough{
-												Kind: types.SinglePlusPassthrough,
-												Elements: []interface{}{
-													types.StringElement{Content: "image:foo.png[]"},
-												},
-											},
-										},
-									},
+				expected := []interface{}{
+					types.QuotedText{
+						Kind: types.Monospace,
+						Elements: []interface{}{
+							types.StringElement{Content: "a "},
+							types.InlinePassthrough{
+								Kind: types.SinglePlusPassthrough,
+								Elements: []interface{}{
+									types.StringElement{Content: "image:foo.png[]"},
 								},
 							},
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 			})
 
 			It("tripleplus passthrough in monospace", func() {
 				source := "`a +++image:foo.png[]+++`"
-				expected := types.DraftDocument{
-					Blocks: []interface{}{
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-
-									types.QuotedText{
-										Kind: types.Monospace,
-										Elements: []interface{}{
-											types.StringElement{Content: "a "},
-											types.InlinePassthrough{
-												Kind: types.TriplePlusPassthrough,
-												Elements: []interface{}{
-													types.StringElement{Content: "image:foo.png[]"},
-												},
-											},
-										},
-									},
+				expected := []interface{}{
+					types.QuotedText{
+						Kind: types.Monospace,
+						Elements: []interface{}{
+							types.StringElement{Content: "a "},
+							types.InlinePassthrough{
+								Kind: types.TriplePlusPassthrough,
+								Elements: []interface{}{
+									types.StringElement{Content: "image:foo.png[]"},
 								},
 							},
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 			})
 
 		})
@@ -2529,46 +1549,30 @@ var _ = Describe("quoted texts", func() {
 
 				It("unbalanced bold text - extra on left", func() {
 					source := "**some bold content*"
-					expected := types.DraftDocument{
-						Blocks: []interface{}{
-							types.Paragraph{
-								Lines: [][]interface{}{
-									{
-										types.QuotedText{
-											Kind: types.Bold,
-											Elements: []interface{}{
-												types.StringElement{Content: "*some bold content"},
-											},
-										},
-									},
-								},
+					expected := []interface{}{
+						types.QuotedText{
+							Kind: types.Bold,
+							Elements: []interface{}{
+								types.StringElement{Content: "*some bold content"},
 							},
 						},
 					}
-					Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+					Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 				})
 
 				It("unbalanced bold text - extra on right", func() {
 					source := "*some bold content**"
-					expected := types.DraftDocument{
-						Blocks: []interface{}{
-							types.Paragraph{
-								Lines: [][]interface{}{
-									{
+					expected := []interface{}{
 
-										types.QuotedText{
-											Kind: types.Bold,
-											Elements: []interface{}{
-												types.StringElement{Content: "some bold content"},
-											},
-										},
-										types.StringElement{Content: "*"},
-									},
-								},
+						types.QuotedText{
+							Kind: types.Bold,
+							Elements: []interface{}{
+								types.StringElement{Content: "some bold content"},
 							},
 						},
+						types.StringElement{Content: "*"},
 					}
-					Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+					Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 				})
 			})
 
@@ -2576,46 +1580,30 @@ var _ = Describe("quoted texts", func() {
 
 				It("unbalanced italic text - extra on left", func() {
 					source := "__some italic content_"
-					expected := types.DraftDocument{
-						Blocks: []interface{}{
-							types.Paragraph{
-								Lines: [][]interface{}{
-									{
+					expected := []interface{}{
 
-										types.QuotedText{
-											Kind: types.Italic,
-											Elements: []interface{}{
-												types.StringElement{Content: "_some italic content"},
-											},
-										},
-									},
-								},
+						types.QuotedText{
+							Kind: types.Italic,
+							Elements: []interface{}{
+								types.StringElement{Content: "_some italic content"},
 							},
 						},
 					}
-					Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+					Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 				})
 
 				It("unbalanced italic text - extra on right", func() {
 					source := "_some italic content__"
-					expected := types.DraftDocument{
-						Blocks: []interface{}{
-							types.Paragraph{
-								Lines: [][]interface{}{
-									{
-										types.QuotedText{
-											Kind: types.Italic,
-											Elements: []interface{}{
-												types.StringElement{Content: "some italic content"},
-											},
-										},
-										types.StringElement{Content: "_"},
-									},
-								},
+					expected := []interface{}{
+						types.QuotedText{
+							Kind: types.Italic,
+							Elements: []interface{}{
+								types.StringElement{Content: "some italic content"},
 							},
 						},
+						types.StringElement{Content: "_"},
 					}
-					Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+					Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 				})
 			})
 
@@ -2623,63 +1611,39 @@ var _ = Describe("quoted texts", func() {
 
 				It("unbalanced monospace text - extra on left", func() {
 					source := "``some monospace content`"
-					expected := types.DraftDocument{
-						Blocks: []interface{}{
-							types.Paragraph{
-								Lines: [][]interface{}{
-									{
+					expected := []interface{}{
 
-										types.QuotedText{
-											Kind: types.Monospace,
-											Elements: []interface{}{
-												types.StringElement{Content: "`some monospace content"},
-											},
-										},
-									},
-								},
+						types.QuotedText{
+							Kind: types.Monospace,
+							Elements: []interface{}{
+								types.StringElement{Content: "`some monospace content"},
 							},
 						},
 					}
-					Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+					Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 				})
 
 				It("unbalanced monospace text - extra on right", func() {
 					source := "`some monospace content``"
-					expected := types.DraftDocument{
-						Blocks: []interface{}{
-							types.Paragraph{
-								Lines: [][]interface{}{
-									{
-										types.QuotedText{
-											Kind: types.Monospace,
-											Elements: []interface{}{
-												types.StringElement{Content: "some monospace content"},
-											},
-										},
-										types.StringElement{Content: "`"},
-									},
-								},
+					expected := []interface{}{
+						types.QuotedText{
+							Kind: types.Monospace,
+							Elements: []interface{}{
+								types.StringElement{Content: "some monospace content"},
 							},
 						},
+						types.StringElement{Content: "`"},
 					}
-					Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+					Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 				})
 			})
 
 			It("inline content with unbalanced bold text", func() {
 				source := "a paragraph with *some bold content"
-				expected := types.DraftDocument{
-					Blocks: []interface{}{
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.StringElement{Content: "a paragraph with *some bold content"},
-								},
-							},
-						},
-					},
+				expected := []interface{}{
+					types.StringElement{Content: "a paragraph with *some bold content"},
 				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 			})
 
 		})
@@ -2692,98 +1656,50 @@ var _ = Describe("quoted texts", func() {
 
 					It("escaped bold text with single backslash", func() {
 						source := `\*bold content*`
-						expected := types.DraftDocument{
-							Blocks: []interface{}{
-								types.Paragraph{
-									Lines: [][]interface{}{
-										{
-											types.StringElement{Content: "*bold content*"},
-										},
-									},
-								},
-							},
+						expected := []interface{}{
+							types.StringElement{Content: "*bold content*"},
 						}
-						Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+						Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 					})
 
 					It("escaped bold text with multiple backslashes", func() {
 						source := `\\*bold content*`
-						expected := types.DraftDocument{
-							Blocks: []interface{}{
-								types.Paragraph{
-									Lines: [][]interface{}{
-										{
-											types.StringElement{Content: `\*bold content*`},
-										},
-									},
-								},
-							},
+						expected := []interface{}{
+							types.StringElement{Content: `\*bold content*`},
 						}
-						Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+						Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 					})
 
 					It("escaped bold text with double quote", func() {
 						source := `\\**bold content**`
-						expected := types.DraftDocument{
-							Blocks: []interface{}{
-								types.Paragraph{
-									Lines: [][]interface{}{
-										{
-											types.StringElement{Content: `**bold content**`},
-										},
-									},
-								},
-							},
+						expected := []interface{}{
+							types.StringElement{Content: `**bold content**`},
 						}
-						Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+						Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 					})
 
 					It("escaped bold text with double quote and more backslashes", func() {
 						source := `\\\**bold content**`
-						expected := types.DraftDocument{
-							Blocks: []interface{}{
-								types.Paragraph{
-									Lines: [][]interface{}{
-										{
-											types.StringElement{Content: `\**bold content**`},
-										},
-									},
-								},
-							},
+						expected := []interface{}{
+							types.StringElement{Content: `\**bold content**`},
 						}
-						Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+						Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 					})
 
 					It("escaped bold text with unbalanced double quote", func() {
 						source := `\**bold content*`
-						expected := types.DraftDocument{
-							Blocks: []interface{}{
-								types.Paragraph{
-									Lines: [][]interface{}{
-										{
-											types.StringElement{Content: `**bold content*`},
-										},
-									},
-								},
-							},
+						expected := []interface{}{
+							types.StringElement{Content: `**bold content*`},
 						}
-						Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+						Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 					})
 
 					It("escaped bold text with unbalanced double quote and more backslashes", func() {
 						source := `\\\**bold content*`
-						expected := types.DraftDocument{
-							Blocks: []interface{}{
-								types.Paragraph{
-									Lines: [][]interface{}{
-										{
-											types.StringElement{Content: `\\**bold content*`},
-										},
-									},
-								},
-							},
+						expected := []interface{}{
+							types.StringElement{Content: `\\**bold content*`},
 						}
-						Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+						Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 					})
 				})
 
@@ -2791,71 +1707,47 @@ var _ = Describe("quoted texts", func() {
 
 					It("escaped bold text with nested italic text", func() {
 						source := `\*_italic content_*`
-						expected := types.DraftDocument{
-							Blocks: []interface{}{
-								types.Paragraph{
-									Lines: [][]interface{}{
-										{
-											types.StringElement{Content: "*"},
-											types.QuotedText{
-												Kind: types.Italic,
-												Elements: []interface{}{
-													types.StringElement{Content: "italic content"},
-												},
-											},
-											types.StringElement{Content: "*"},
-										},
-									},
+						expected := []interface{}{
+							types.StringElement{Content: "*"},
+							types.QuotedText{
+								Kind: types.Italic,
+								Elements: []interface{}{
+									types.StringElement{Content: "italic content"},
 								},
 							},
+							types.StringElement{Content: "*"},
 						}
-						Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+						Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 					})
 
 					It("escaped bold text with unbalanced double quote and nested italic test", func() {
 						source := `\**_italic content_*`
-						expected := types.DraftDocument{
-							Blocks: []interface{}{
-								types.Paragraph{
-									Lines: [][]interface{}{
-										{
-											types.StringElement{Content: "**"},
-											types.QuotedText{
-												Kind: types.Italic,
-												Elements: []interface{}{
-													types.StringElement{Content: "italic content"},
-												},
-											},
-											types.StringElement{Content: "*"},
-										},
-									},
+						expected := []interface{}{
+							types.StringElement{Content: "**"},
+							types.QuotedText{
+								Kind: types.Italic,
+								Elements: []interface{}{
+									types.StringElement{Content: "italic content"},
 								},
 							},
+							types.StringElement{Content: "*"},
 						}
-						Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+						Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 					})
 
 					It("escaped bold text with nested italic", func() {
 						source := `\*bold _and italic_ content*`
-						expected := types.DraftDocument{
-							Blocks: []interface{}{
-								types.Paragraph{
-									Lines: [][]interface{}{
-										{
-											types.StringElement{Content: "*bold "},
-											types.QuotedText{
-												Kind: types.Italic,
-												Elements: []interface{}{
-													types.StringElement{Content: "and italic"},
-												},
-											},
-											types.StringElement{Content: " content*"},
-										},
-									},
+						expected := []interface{}{
+							types.StringElement{Content: "*bold "},
+							types.QuotedText{
+								Kind: types.Italic,
+								Elements: []interface{}{
+									types.StringElement{Content: "and italic"},
 								},
 							},
+							types.StringElement{Content: " content*"},
 						}
-						Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+						Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 					})
 				})
 
@@ -2867,98 +1759,50 @@ var _ = Describe("quoted texts", func() {
 
 					It("escaped italic text with single quote", func() {
 						source := `\_italic content_`
-						expected := types.DraftDocument{
-							Blocks: []interface{}{
-								types.Paragraph{
-									Lines: [][]interface{}{
-										{
-											types.StringElement{Content: "_italic content_"},
-										},
-									},
-								},
-							},
+						expected := []interface{}{
+							types.StringElement{Content: "_italic content_"},
 						}
-						Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+						Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 					})
 
 					It("escaped italic text with single quote and more backslashes", func() {
 						source := `\\_italic content_`
-						expected := types.DraftDocument{
-							Blocks: []interface{}{
-								types.Paragraph{
-									Lines: [][]interface{}{
-										{
-											types.StringElement{Content: `\_italic content_`},
-										},
-									},
-								},
-							},
+						expected := []interface{}{
+							types.StringElement{Content: `\_italic content_`},
 						}
-						Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+						Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 					})
 
 					It("escaped italic text with double quote with 2 backslashes", func() {
 						source := `\\__italic content__`
-						expected := types.DraftDocument{
-							Blocks: []interface{}{
-								types.Paragraph{
-									Lines: [][]interface{}{
-										{
-											types.StringElement{Content: `__italic content__`},
-										},
-									},
-								},
-							},
+						expected := []interface{}{
+							types.StringElement{Content: `__italic content__`},
 						}
-						Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+						Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 					})
 
 					It("escaped italic text with double quote with 3 backslashes", func() {
 						source := `\\\__italic content__`
-						expected := types.DraftDocument{
-							Blocks: []interface{}{
-								types.Paragraph{
-									Lines: [][]interface{}{
-										{
-											types.StringElement{Content: `\__italic content__`},
-										},
-									},
-								},
-							},
+						expected := []interface{}{
+							types.StringElement{Content: `\__italic content__`},
 						}
-						Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+						Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 					})
 
 					It("escaped italic text with unbalanced double quote", func() {
 						source := `\__italic content_`
-						expected := types.DraftDocument{
-							Blocks: []interface{}{
-								types.Paragraph{
-									Lines: [][]interface{}{
-										{
-											types.StringElement{Content: `__italic content_`},
-										},
-									},
-								},
-							},
+						expected := []interface{}{
+							types.StringElement{Content: `__italic content_`},
 						}
-						Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+						Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 					})
 
 					It("escaped italic text with unbalanced double quote and more backslashes", func() {
 						source := `\\\__italic content_`
-						expected := types.DraftDocument{
-							Blocks: []interface{}{
-								types.Paragraph{
-									Lines: [][]interface{}{
-										{
-											types.StringElement{Content: `\\__italic content_`}, // only 1 backslash remove
-										},
-									},
-								},
-							},
+						expected := []interface{}{
+							types.StringElement{Content: `\\__italic content_`}, // only 1 backslash remove
 						}
-						Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+						Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 					})
 				})
 
@@ -2966,71 +1810,47 @@ var _ = Describe("quoted texts", func() {
 
 					It("escaped italic text with nested monospace text", func() {
 						source := `\` + "_`monospace content`_" // gives: \_`monospace content`_
-						expected := types.DraftDocument{
-							Blocks: []interface{}{
-								types.Paragraph{
-									Lines: [][]interface{}{
-										{
-											types.StringElement{Content: "_"},
-											types.QuotedText{
-												Kind: types.Monospace,
-												Elements: []interface{}{
-													types.StringElement{Content: "monospace content"},
-												},
-											},
-											types.StringElement{Content: "_"},
-										},
-									},
+						expected := []interface{}{
+							types.StringElement{Content: "_"},
+							types.QuotedText{
+								Kind: types.Monospace,
+								Elements: []interface{}{
+									types.StringElement{Content: "monospace content"},
 								},
 							},
+							types.StringElement{Content: "_"},
 						}
-						Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+						Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 					})
 
 					It("escaped italic text with unbalanced double quote and nested bold test", func() {
 						source := `\__*bold content*_`
-						expected := types.DraftDocument{
-							Blocks: []interface{}{
-								types.Paragraph{
-									Lines: [][]interface{}{
-										{
-											types.StringElement{Content: "__"},
-											types.QuotedText{
-												Kind: types.Bold,
-												Elements: []interface{}{
-													types.StringElement{Content: "bold content"},
-												},
-											},
-											types.StringElement{Content: "_"},
-										},
-									},
+						expected := []interface{}{
+							types.StringElement{Content: "__"},
+							types.QuotedText{
+								Kind: types.Bold,
+								Elements: []interface{}{
+									types.StringElement{Content: "bold content"},
 								},
 							},
+							types.StringElement{Content: "_"},
 						}
-						Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+						Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 					})
 
 					It("escaped italic text with nested bold text", func() {
 						source := `\_italic *and bold* content_`
-						expected := types.DraftDocument{
-							Blocks: []interface{}{
-								types.Paragraph{
-									Lines: [][]interface{}{
-										{
-											types.StringElement{Content: "_italic "},
-											types.QuotedText{
-												Kind: types.Bold,
-												Elements: []interface{}{
-													types.StringElement{Content: "and bold"},
-												},
-											},
-											types.StringElement{Content: " content_"},
-										},
-									},
+						expected := []interface{}{
+							types.StringElement{Content: "_italic "},
+							types.QuotedText{
+								Kind: types.Bold,
+								Elements: []interface{}{
+									types.StringElement{Content: "and bold"},
 								},
 							},
+							types.StringElement{Content: " content_"},
 						}
-						Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+						Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 					})
 				})
 			})
@@ -3041,98 +1861,50 @@ var _ = Describe("quoted texts", func() {
 
 					It("escaped monospace text with single quote", func() {
 						source := `\` + "`monospace content`"
-						expected := types.DraftDocument{
-							Blocks: []interface{}{
-								types.Paragraph{
-									Lines: [][]interface{}{
-										{
-											types.StringElement{Content: "`monospace content`"}, // backslash removed
-										},
-									},
-								},
-							},
+						expected := []interface{}{
+							types.StringElement{Content: "`monospace content`"}, // backslash removed
 						}
-						Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+						Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 					})
 
 					It("escaped monospace text with single quote and more backslashes", func() {
 						source := `\\` + "`monospace content`"
-						expected := types.DraftDocument{
-							Blocks: []interface{}{
-								types.Paragraph{
-									Lines: [][]interface{}{
-										{
-											types.StringElement{Content: `\` + "`monospace content`"}, // only 1 backslash removed
-										},
-									},
-								},
-							},
+						expected := []interface{}{
+							types.StringElement{Content: `\` + "`monospace content`"}, // only 1 backslash removed
 						}
-						Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+						Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 					})
 
 					It("escaped monospace text with double quote", func() {
 						source := `\\` + "`monospace content``"
-						expected := types.DraftDocument{
-							Blocks: []interface{}{
-								types.Paragraph{
-									Lines: [][]interface{}{
-										{
-											types.StringElement{Content: `\` + "`monospace content``"}, // 2 back slashes "consumed"
-										},
-									},
-								},
-							},
+						expected := []interface{}{
+							types.StringElement{Content: `\` + "`monospace content``"}, // 2 back slashes "consumed"
 						}
-						Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+						Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 					})
 
 					It("escaped monospace text with double quote and more backslashes", func() {
 						source := `\\\` + "``monospace content``" // 3 backslashes
-						expected := types.DraftDocument{
-							Blocks: []interface{}{
-								types.Paragraph{
-									Lines: [][]interface{}{
-										{
-											types.StringElement{Content: `\` + "``monospace content``"}, // 2 back slashes "consumed"
-										},
-									},
-								},
-							},
+						expected := []interface{}{
+							types.StringElement{Content: `\` + "``monospace content``"}, // 2 back slashes "consumed"
 						}
-						Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+						Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 					})
 
 					It("escaped monospace text with unbalanced double quote", func() {
 						source := `\` + "``monospace content`"
-						expected := types.DraftDocument{
-							Blocks: []interface{}{
-								types.Paragraph{
-									Lines: [][]interface{}{
-										{
-											types.StringElement{Content: "``monospace content`"},
-										},
-									},
-								},
-							},
+						expected := []interface{}{
+							types.StringElement{Content: "``monospace content`"},
 						}
-						Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+						Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 					})
 
 					It("escaped monospace text with unbalanced double quote and more backslashes", func() {
 						source := `\\\` + "``monospace content`" // 3 backslashes
-						expected := types.DraftDocument{
-							Blocks: []interface{}{
-								types.Paragraph{
-									Lines: [][]interface{}{
-										{
-											types.StringElement{Content: `\\` + "``monospace content`"}, // 2 backslashes removed
-										},
-									},
-								},
-							},
+						expected := []interface{}{
+							types.StringElement{Content: `\\` + "``monospace content`"}, // 2 backslashes removed
 						}
-						Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+						Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 					})
 				})
 
@@ -3140,71 +1912,47 @@ var _ = Describe("quoted texts", func() {
 
 					It("escaped monospace text with nested bold text", func() {
 						source := `\` + "`*bold content*`" // gives: \`*bold content*`
-						expected := types.DraftDocument{
-							Blocks: []interface{}{
-								types.Paragraph{
-									Lines: [][]interface{}{
-										{
-											types.StringElement{Content: "`"},
-											types.QuotedText{
-												Kind: types.Bold,
-												Elements: []interface{}{
-													types.StringElement{Content: "bold content"},
-												},
-											},
-											types.StringElement{Content: "`"},
-										},
-									},
+						expected := []interface{}{
+							types.StringElement{Content: "`"},
+							types.QuotedText{
+								Kind: types.Bold,
+								Elements: []interface{}{
+									types.StringElement{Content: "bold content"},
 								},
 							},
+							types.StringElement{Content: "`"},
 						}
-						Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+						Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 					})
 
 					It("escaped monospace text with unbalanced double backquote and nested bold test", func() {
 						source := `\` + "``*bold content*`"
-						expected := types.DraftDocument{
-							Blocks: []interface{}{
-								types.Paragraph{
-									Lines: [][]interface{}{
-										{
-											types.StringElement{Content: "``"},
-											types.QuotedText{
-												Kind: types.Bold,
-												Elements: []interface{}{
-													types.StringElement{Content: "bold content"},
-												},
-											},
-											types.StringElement{Content: "`"},
-										},
-									},
+						expected := []interface{}{
+							types.StringElement{Content: "``"},
+							types.QuotedText{
+								Kind: types.Bold,
+								Elements: []interface{}{
+									types.StringElement{Content: "bold content"},
 								},
 							},
+							types.StringElement{Content: "`"},
 						}
-						Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+						Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 					})
 
 					It("escaped monospace text with nested bold text", func() {
 						source := `\` + "`monospace *and bold* content`"
-						expected := types.DraftDocument{
-							Blocks: []interface{}{
-								types.Paragraph{
-									Lines: [][]interface{}{
-										{
-											types.StringElement{Content: "`monospace "},
-											types.QuotedText{
-												Kind: types.Bold,
-												Elements: []interface{}{
-													types.StringElement{Content: "and bold"},
-												},
-											},
-											types.StringElement{Content: " content`"},
-										},
-									},
+						expected := []interface{}{
+							types.StringElement{Content: "`monospace "},
+							types.QuotedText{
+								Kind: types.Bold,
+								Elements: []interface{}{
+									types.StringElement{Content: "and bold"},
 								},
 							},
+							types.StringElement{Content: " content`"},
 						}
-						Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+						Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 					})
 				})
 			})
@@ -3215,34 +1963,18 @@ var _ = Describe("quoted texts", func() {
 
 					It("escaped subscript text with single quote", func() {
 						source := `\~subscriptcontent~`
-						expected := types.DraftDocument{
-							Blocks: []interface{}{
-								types.Paragraph{
-									Lines: [][]interface{}{
-										{
-											types.StringElement{Content: "~subscriptcontent~"},
-										},
-									},
-								},
-							},
+						expected := []interface{}{
+							types.StringElement{Content: "~subscriptcontent~"},
 						}
-						Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+						Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 					})
 
 					It("escaped subscript text with single quote and more backslashes", func() {
 						source := `\\~subscriptcontent~`
-						expected := types.DraftDocument{
-							Blocks: []interface{}{
-								types.Paragraph{
-									Lines: [][]interface{}{
-										{
-											types.StringElement{Content: `\~subscriptcontent~`}, // only 1 backslash removed
-										},
-									},
-								},
-							},
+						expected := []interface{}{
+							types.StringElement{Content: `\~subscriptcontent~`}, // only 1 backslash removed
 						}
-						Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+						Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 					})
 
 				})
@@ -3251,48 +1983,32 @@ var _ = Describe("quoted texts", func() {
 
 					It("escaped subscript text with nested bold text", func() {
 						source := `\~*boldcontent*~`
-						expected := types.DraftDocument{
-							Blocks: []interface{}{
-								types.Paragraph{
-									Lines: [][]interface{}{
-										{
-											types.StringElement{Content: "~"},
-											types.QuotedText{
-												Kind: types.Bold,
-												Elements: []interface{}{
-													types.StringElement{Content: "boldcontent"},
-												},
-											},
-											types.StringElement{Content: "~"},
-										},
-									},
+						expected := []interface{}{
+							types.StringElement{Content: "~"},
+							types.QuotedText{
+								Kind: types.Bold,
+								Elements: []interface{}{
+									types.StringElement{Content: "boldcontent"},
 								},
 							},
+							types.StringElement{Content: "~"},
 						}
-						Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+						Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 					})
 
 					It("escaped subscript text with nested bold text", func() {
 						source := `\~subscript *and bold* content~`
-						expected := types.DraftDocument{
-							Blocks: []interface{}{
-								types.Paragraph{
-									Lines: [][]interface{}{
-										{
-											types.StringElement{Content: `\~subscript `},
-											types.QuotedText{
-												Kind: types.Bold,
-												Elements: []interface{}{
-													types.StringElement{Content: "and bold"},
-												},
-											},
-											types.StringElement{Content: " content~"},
-										},
-									},
+						expected := []interface{}{
+							types.StringElement{Content: `\~subscript `},
+							types.QuotedText{
+								Kind: types.Bold,
+								Elements: []interface{}{
+									types.StringElement{Content: "and bold"},
 								},
 							},
+							types.StringElement{Content: " content~"},
 						}
-						Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+						Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 					})
 				})
 			})
@@ -3303,34 +2019,18 @@ var _ = Describe("quoted texts", func() {
 
 					It("escaped superscript text with single quote", func() {
 						source := `\^superscriptcontent^`
-						expected := types.DraftDocument{
-							Blocks: []interface{}{
-								types.Paragraph{
-									Lines: [][]interface{}{
-										{
-											types.StringElement{Content: "^superscriptcontent^"},
-										},
-									},
-								},
-							},
+						expected := []interface{}{
+							types.StringElement{Content: "^superscriptcontent^"},
 						}
-						Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+						Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 					})
 
 					It("escaped superscript text with single quote and more backslashes", func() {
 						source := `\\^superscriptcontent^`
-						expected := types.DraftDocument{
-							Blocks: []interface{}{
-								types.Paragraph{
-									Lines: [][]interface{}{
-										{
-											types.StringElement{Content: `\^superscriptcontent^`}, // only 1 backslash removed
-										},
-									},
-								},
-							},
+						expected := []interface{}{
+							types.StringElement{Content: `\^superscriptcontent^`}, // only 1 backslash removed
 						}
-						Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+						Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 					})
 
 				})
@@ -3339,71 +2039,47 @@ var _ = Describe("quoted texts", func() {
 
 					It("escaped superscript text with nested bold text - case 1", func() {
 						source := `\^*bold content*^` // valid escaped superscript since it has no space within
-						expected := types.DraftDocument{
-							Blocks: []interface{}{
-								types.Paragraph{
-									Lines: [][]interface{}{
-										{
-											types.StringElement{Content: `^`},
-											types.QuotedText{
-												Kind: types.Bold,
-												Elements: []interface{}{
-													types.StringElement{Content: "bold content"},
-												},
-											},
-											types.StringElement{Content: "^"},
-										},
-									},
+						expected := []interface{}{
+							types.StringElement{Content: `^`},
+							types.QuotedText{
+								Kind: types.Bold,
+								Elements: []interface{}{
+									types.StringElement{Content: "bold content"},
 								},
 							},
+							types.StringElement{Content: "^"},
 						}
-						Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+						Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 					})
 
 					It("escaped superscript text with unbalanced double backquote and nested bold test", func() {
 						source := `\^*bold content*^`
-						expected := types.DraftDocument{
-							Blocks: []interface{}{
-								types.Paragraph{
-									Lines: [][]interface{}{
-										{
-											types.StringElement{Content: "^"},
-											types.QuotedText{
-												Kind: types.Bold,
-												Elements: []interface{}{
-													types.StringElement{Content: "bold content"},
-												},
-											},
-											types.StringElement{Content: "^"},
-										},
-									},
+						expected := []interface{}{
+							types.StringElement{Content: "^"},
+							types.QuotedText{
+								Kind: types.Bold,
+								Elements: []interface{}{
+									types.StringElement{Content: "bold content"},
 								},
 							},
+							types.StringElement{Content: "^"},
 						}
-						Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+						Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 					})
 
 					It("escaped superscript text with nested bold text - case 2", func() {
 						source := `\^superscript *and bold* content^` // invalid superscript text since it has spaces within
-						expected := types.DraftDocument{
-							Blocks: []interface{}{
-								types.Paragraph{
-									Lines: [][]interface{}{
-										{
-											types.StringElement{Content: `\^superscript `},
-											types.QuotedText{
-												Kind: types.Bold,
-												Elements: []interface{}{
-													types.StringElement{Content: "and bold"},
-												},
-											},
-											types.StringElement{Content: " content^"},
-										},
-									},
+						expected := []interface{}{
+							types.StringElement{Content: `\^superscript `},
+							types.QuotedText{
+								Kind: types.Bold,
+								Elements: []interface{}{
+									types.StringElement{Content: "and bold"},
 								},
 							},
+							types.StringElement{Content: " content^"},
 						}
-						Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+						Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
 					})
 				})
 			})
@@ -3411,6 +2087,7 @@ var _ = Describe("quoted texts", func() {
 	})
 
 	Context("final document", func() {
+
 		Context("quoted text with single punctuation", func() {
 
 			It("bold text with 1 word", func() {
@@ -3418,8 +2095,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
+							Lines: []interface{}{
+								[]interface{}{
 									types.QuotedText{
 										Kind: types.Bold,
 										Elements: []interface{}{
@@ -3439,8 +2116,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
+							Lines: []interface{}{
+								[]interface{}{
 									types.QuotedText{
 										Kind: types.Bold,
 										Elements: []interface{}{
@@ -3460,8 +2137,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
+							Lines: []interface{}{
+								[]interface{}{
 									types.QuotedText{
 										Kind: types.Bold,
 										Elements: []interface{}{
@@ -3481,8 +2158,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
+							Lines: []interface{}{
+								[]interface{}{
 									types.QuotedText{
 										Kind: types.Italic,
 										Elements: []interface{}{
@@ -3502,8 +2179,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
+							Lines: []interface{}{
+								[]interface{}{
 									types.QuotedText{
 										Kind: types.Monospace,
 										Elements: []interface{}{
@@ -3523,8 +2200,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
+							Lines: []interface{}{
+								[]interface{}{
 									types.StringElement{Content: "~some subscript content~"},
 								},
 							},
@@ -3539,8 +2216,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
+							Lines: []interface{}{
+								[]interface{}{
 									types.StringElement{Content: "^some superscript content^"},
 								},
 							},
@@ -3555,8 +2232,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
+							Lines: []interface{}{
+								[]interface{}{
 									types.QuotedText{
 										Kind: types.Italic,
 										Elements: []interface{}{
@@ -3583,8 +2260,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
+							Lines: []interface{}{
+								[]interface{}{
 									types.QuotedText{
 										Kind: types.Bold,
 										Elements: []interface{}{
@@ -3616,8 +2293,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
+							Lines: []interface{}{
+								[]interface{}{
 									types.QuotedText{
 										Kind: types.Italic,
 										Elements: []interface{}{
@@ -3638,8 +2315,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
+							Lines: []interface{}{
+								[]interface{}{
 									types.StringElement{Content: "O"},
 									types.QuotedText{
 										Kind: types.Subscript,
@@ -3661,8 +2338,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
+							Lines: []interface{}{
+								[]interface{}{
 									types.StringElement{Content: "M"},
 									types.QuotedText{
 										Kind: types.Superscript,
@@ -3684,9 +2361,105 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
+							Lines: []interface{}{
+								[]interface{}{
 									types.StringElement{Content: "~some subscript content~"},
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
+			})
+
+			It("bold text across paragraph", func() {
+				source := "*some bold\n\ncontent*"
+				expected := types.Document{
+					Elements: []interface{}{
+						types.Paragraph{
+							Lines: []interface{}{
+								[]interface{}{
+									types.StringElement{Content: "*some bold"},
+								},
+							},
+						},
+						types.Paragraph{
+							Lines: []interface{}{
+								[]interface{}{
+									types.StringElement{Content: "content*"},
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
+			})
+
+			It("italic text across paragraph", func() {
+				source := "_some italic\n\ncontent_"
+				expected := types.Document{
+					Elements: []interface{}{
+						types.Paragraph{
+							Lines: []interface{}{
+								[]interface{}{
+									types.StringElement{Content: "_some italic"},
+								},
+							},
+						},
+						types.Paragraph{
+							Lines: []interface{}{
+								[]interface{}{
+									types.StringElement{Content: "content_"},
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
+			})
+
+			It("monospace text across paragraph", func() {
+				source := "`some monospace\n\ncontent`"
+				expected := types.Document{
+					Elements: []interface{}{
+						types.Paragraph{
+							Lines: []interface{}{
+								[]interface{}{
+									types.StringElement{Content: "`some monospace"},
+								},
+							},
+						},
+						types.Paragraph{
+							Lines: []interface{}{
+								[]interface{}{
+									types.StringElement{Content: "content`"},
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
+			})
+
+			It("marked text across paragraph", func() {
+				source := "#some marked\n\ncontent#"
+				expected := types.Document{
+					Elements: []interface{}{
+						types.Paragraph{
+							Lines: []interface{}{
+								[]interface{}{
+									types.StringElement{
+										Content: "#some marked",
+									},
+								},
+							},
+						},
+						types.Paragraph{
+							Lines: []interface{}{
+								[]interface{}{
+									types.StringElement{
+										Content: "content#",
+									},
 								},
 							},
 						},
@@ -3704,8 +2477,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
+							Lines: []interface{}{
+								[]interface{}{
 									types.QuotedText{
 										Kind: types.Bold,
 										Elements: []interface{}{
@@ -3725,8 +2498,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
+							Lines: []interface{}{
+								[]interface{}{
 									types.QuotedText{
 										Kind: types.Italic,
 										Elements: []interface{}{
@@ -3746,8 +2519,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
+							Lines: []interface{}{
+								[]interface{}{
 									types.QuotedText{
 										Kind: types.Monospace,
 										Elements: []interface{}{
@@ -3767,8 +2540,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
+							Lines: []interface{}{
+								[]interface{}{
 									types.QuotedText{
 										Kind: types.Italic,
 										Elements: []interface{}{
@@ -3795,8 +2568,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
+							Lines: []interface{}{
+								[]interface{}{
 									types.QuotedText{
 										Kind: types.Bold,
 										Elements: []interface{}{
@@ -3822,6 +2595,107 @@ var _ = Describe("quoted texts", func() {
 				}
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
+
+			It("bold text across paragraph", func() {
+				source := "**some bold\n\ncontent**"
+				expected := types.Document{
+					Elements: []interface{}{
+						types.Paragraph{
+							Lines: []interface{}{
+								[]interface{}{
+									types.StringElement{
+										Content: "**some bold",
+									},
+								},
+							},
+						},
+						types.Paragraph{
+							Lines: []interface{}{
+								[]interface{}{
+									types.StringElement{Content: "content**"},
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
+			})
+
+			It("italic text across paragraph", func() {
+				source := "__some italic\n\ncontent__"
+				expected := types.Document{
+					Elements: []interface{}{
+						types.Paragraph{
+							Lines: []interface{}{
+								[]interface{}{
+									types.StringElement{
+										Content: "__some italic",
+									},
+								},
+							},
+						},
+						types.Paragraph{
+							Lines: []interface{}{
+								[]interface{}{
+									types.StringElement{Content: "content__"},
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
+			})
+
+			It("monospace text across paragraph", func() {
+				source := "``some monospace\n\ncontent``"
+				expected := types.Document{
+					Elements: []interface{}{
+						types.Paragraph{
+							Lines: []interface{}{
+								[]interface{}{
+									types.StringElement{
+										Content: "``some monospace",
+									},
+								},
+							},
+						},
+						types.Paragraph{
+							Lines: []interface{}{
+								[]interface{}{
+									types.StringElement{Content: "content``"},
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
+			})
+
+			It("double marked text across paragraph", func() {
+				source := "##some marked\n\ncontent##"
+				expected := types.Document{
+					Elements: []interface{}{
+						types.Paragraph{
+							Lines: []interface{}{
+								[]interface{}{
+									types.StringElement{
+										Content: "##some marked",
+									},
+								},
+							},
+						},
+						types.Paragraph{
+							Lines: []interface{}{
+								[]interface{}{
+									types.StringElement{Content: "content##"},
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
+			})
+
 		})
 
 		Context("Quoted text inline", func() {
@@ -3831,8 +2705,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
+							Lines: []interface{}{
+								[]interface{}{
 									types.StringElement{Content: "a paragraph with "},
 									types.QuotedText{
 										Kind: types.Bold,
@@ -3853,8 +2727,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
+							Lines: []interface{}{
+								[]interface{}{
 									types.StringElement{Content: "a paragraph with *some bold content"},
 								},
 							},
@@ -3869,8 +2743,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
+							Lines: []interface{}{
+								[]interface{}{
 									types.StringElement{Content: "a paragraph with *some bold content *"},
 								},
 							},
@@ -3885,8 +2759,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
+							Lines: []interface{}{
+								[]interface{}{
 									types.StringElement{Content: "a paragraph with * some bold content*"},
 								},
 							},
@@ -3901,9 +2775,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-
+							Lines: []interface{}{
+								[]interface{}{
 									types.StringElement{Content: "some "},
 									types.QuotedText{
 										Kind: types.Bold,
@@ -3925,8 +2798,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
+							Lines: []interface{}{
+								[]interface{}{
 									types.StringElement{Content: "some *bold and "},
 									types.QuotedText{
 										Kind: types.Italic,
@@ -3948,8 +2821,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
+							Lines: []interface{}{
+								[]interface{}{
 									types.StringElement{Content: "a paragraph with ~some subscript content"},
 								},
 							},
@@ -3964,8 +2837,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
+							Lines: []interface{}{
+								[]interface{}{
 									types.StringElement{Content: "a paragraph with ~some subscript content ~"},
 								},
 							},
@@ -3980,8 +2853,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
+							Lines: []interface{}{
+								[]interface{}{
 									types.StringElement{Content: "a paragraph with ~ some subscript content~"},
 								},
 							},
@@ -3996,9 +2869,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-
+							Lines: []interface{}{
+								[]interface{}{
 									types.StringElement{Content: "a paragraph with ^some superscript content"},
 								},
 							},
@@ -4013,9 +2885,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-
+							Lines: []interface{}{
+								[]interface{}{
 									types.StringElement{Content: "a paragraph with ^some superscript content ^"},
 								},
 							},
@@ -4030,9 +2901,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-
+							Lines: []interface{}{
+								[]interface{}{
 									types.StringElement{Content: "a paragraph with ^ some superscript content^"},
 								},
 							},
@@ -4050,8 +2920,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
+							Lines: []interface{}{
+								[]interface{}{
 									types.StringElement{Content: "some "},
 									types.QuotedText{
 										Kind: types.Bold,
@@ -4081,8 +2951,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
+							Lines: []interface{}{
+								[]interface{}{
 									types.QuotedText{
 										Kind: types.Bold,
 										Elements: []interface{}{
@@ -4104,8 +2974,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
+							Lines: []interface{}{
+								[]interface{}{
 									types.QuotedText{
 										Kind: types.Bold,
 										Elements: []interface{}{
@@ -4133,8 +3003,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
+							Lines: []interface{}{
+								[]interface{}{
 									types.QuotedText{
 										Kind: types.Bold,
 										Elements: []interface{}{
@@ -4162,8 +3032,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
+							Lines: []interface{}{
+								[]interface{}{
 									types.QuotedText{
 										Kind: types.Bold,
 										Elements: []interface{}{
@@ -4191,8 +3061,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
+							Lines: []interface{}{
+								[]interface{}{
 									types.QuotedText{
 										Kind: types.Italic,
 										Elements: []interface{}{
@@ -4214,8 +3084,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
+							Lines: []interface{}{
+								[]interface{}{
 									types.QuotedText{
 										Kind: types.Italic,
 										Elements: []interface{}{
@@ -4243,8 +3113,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
+							Lines: []interface{}{
+								[]interface{}{
 									types.QuotedText{
 										Kind: types.Italic,
 										Elements: []interface{}{
@@ -4272,8 +3142,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
+							Lines: []interface{}{
+								[]interface{}{
 									types.QuotedText{
 										Kind: types.Italic,
 										Elements: []interface{}{
@@ -4301,8 +3171,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
+							Lines: []interface{}{
+								[]interface{}{
 									types.QuotedText{
 										Kind: types.Monospace,
 										Elements: []interface{}{
@@ -4324,8 +3194,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
+							Lines: []interface{}{
+								[]interface{}{
 									types.QuotedText{
 										Kind: types.Monospace,
 										Elements: []interface{}{
@@ -4353,8 +3223,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
+							Lines: []interface{}{
+								[]interface{}{
 									types.QuotedText{
 										Kind: types.Monospace,
 										Elements: []interface{}{
@@ -4382,8 +3252,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
+							Lines: []interface{}{
+								[]interface{}{
 									types.QuotedText{
 										Kind: types.Monospace,
 										Elements: []interface{}{
@@ -4410,8 +3280,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
+							Lines: []interface{}{
+								[]interface{}{
 									types.QuotedText{
 										Kind: types.Monospace,
 										Elements: []interface{}{
@@ -4431,8 +3301,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
+							Lines: []interface{}{
+								[]interface{}{
 									types.QuotedText{
 										Kind: types.Monospace,
 										Elements: []interface{}{
@@ -4452,8 +3322,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
+							Lines: []interface{}{
+								[]interface{}{
 									types.QuotedText{
 										Kind: types.Monospace,
 										Elements: []interface{}{
@@ -4478,8 +3348,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
+							Lines: []interface{}{
+								[]interface{}{
 									types.QuotedText{
 										Kind: types.Monospace,
 										Elements: []interface{}{
@@ -4499,8 +3369,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
+							Lines: []interface{}{
+								[]interface{}{
 									types.QuotedText{
 										Kind: types.Monospace,
 										Elements: []interface{}{
@@ -4520,8 +3390,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
+							Lines: []interface{}{
+								[]interface{}{
 									types.QuotedText{
 										Kind: types.Monospace,
 										Elements: []interface{}{
@@ -4547,8 +3417,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
+							Lines: []interface{}{
+								[]interface{}{
 									types.QuotedText{
 										Kind: types.Monospace,
 										Elements: []interface{}{
@@ -4568,8 +3438,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
+							Lines: []interface{}{
+								[]interface{}{
 									types.QuotedText{
 										Kind: types.Monospace,
 										Elements: []interface{}{
@@ -4589,8 +3459,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
+							Lines: []interface{}{
+								[]interface{}{
 									types.QuotedText{
 										Kind: types.Monospace,
 										Elements: []interface{}{
@@ -4616,8 +3486,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
+							Lines: []interface{}{
+								[]interface{}{
 									types.QuotedText{
 										Kind: types.Monospace,
 										Elements: []interface{}{
@@ -4643,8 +3513,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
+							Lines: []interface{}{
+								[]interface{}{
 									types.QuotedText{
 										Kind: types.Bold,
 										Elements: []interface{}{
@@ -4680,8 +3550,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
+							Lines: []interface{}{
+								[]interface{}{
 									types.QuotedText{
 										Kind: types.Bold,
 										Elements: []interface{}{
@@ -4713,8 +3583,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
+							Lines: []interface{}{
+								[]interface{}{
 									types.QuotedText{
 										Kind: types.Bold,
 										Elements: []interface{}{
@@ -4740,8 +3610,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
+							Lines: []interface{}{
+								[]interface{}{
 									types.QuotedText{
 										Kind: types.Bold,
 										Elements: []interface{}{
@@ -4767,8 +3637,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
+							Lines: []interface{}{
+								[]interface{}{
 									types.QuotedText{
 										Kind: types.Italic,
 										Elements: []interface{}{
@@ -4804,8 +3674,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
+							Lines: []interface{}{
+								[]interface{}{
 									types.QuotedText{
 										Kind: types.Italic,
 										Elements: []interface{}{
@@ -4837,8 +3707,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
+							Lines: []interface{}{
+								[]interface{}{
 									types.QuotedText{
 										Kind: types.Italic,
 										Elements: []interface{}{
@@ -4864,8 +3734,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
+							Lines: []interface{}{
+								[]interface{}{
 									types.QuotedText{
 										Kind: types.Italic,
 										Elements: []interface{}{
@@ -4891,8 +3761,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
+							Lines: []interface{}{
+								[]interface{}{
 									types.QuotedText{
 										Kind: types.Monospace,
 										Elements: []interface{}{
@@ -4928,8 +3798,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
+							Lines: []interface{}{
+								[]interface{}{
 									types.QuotedText{
 										Kind: types.Monospace,
 										Elements: []interface{}{
@@ -4961,9 +3831,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-
+							Lines: []interface{}{
+								[]interface{}{
 									types.QuotedText{
 										Kind: types.Monospace,
 										Elements: []interface{}{
@@ -4989,9 +3858,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-
+							Lines: []interface{}{
+								[]interface{}{
 									types.QuotedText{
 										Kind: types.Monospace,
 										Elements: []interface{}{
@@ -5023,8 +3891,8 @@ var _ = Describe("quoted texts", func() {
 					expected := types.Document{
 						Elements: []interface{}{
 							types.Paragraph{
-								Lines: [][]interface{}{
-									{
+								Lines: []interface{}{
+									[]interface{}{
 										types.QuotedText{
 											Kind: types.Bold,
 											Elements: []interface{}{
@@ -5044,8 +3912,8 @@ var _ = Describe("quoted texts", func() {
 					expected := types.Document{
 						Elements: []interface{}{
 							types.Paragraph{
-								Lines: [][]interface{}{
-									{
+								Lines: []interface{}{
+									[]interface{}{
 
 										types.QuotedText{
 											Kind: types.Bold,
@@ -5070,8 +3938,8 @@ var _ = Describe("quoted texts", func() {
 					expected := types.Document{
 						Elements: []interface{}{
 							types.Paragraph{
-								Lines: [][]interface{}{
-									{
+								Lines: []interface{}{
+									[]interface{}{
 
 										types.QuotedText{
 											Kind: types.Italic,
@@ -5092,8 +3960,8 @@ var _ = Describe("quoted texts", func() {
 					expected := types.Document{
 						Elements: []interface{}{
 							types.Paragraph{
-								Lines: [][]interface{}{
-									{
+								Lines: []interface{}{
+									[]interface{}{
 										types.QuotedText{
 											Kind: types.Italic,
 											Elements: []interface{}{
@@ -5117,8 +3985,8 @@ var _ = Describe("quoted texts", func() {
 					expected := types.Document{
 						Elements: []interface{}{
 							types.Paragraph{
-								Lines: [][]interface{}{
-									{
+								Lines: []interface{}{
+									[]interface{}{
 										types.QuotedText{
 											Kind: types.Monospace,
 											Elements: []interface{}{
@@ -5138,8 +4006,8 @@ var _ = Describe("quoted texts", func() {
 					expected := types.Document{
 						Elements: []interface{}{
 							types.Paragraph{
-								Lines: [][]interface{}{
-									{
+								Lines: []interface{}{
+									[]interface{}{
 										types.QuotedText{
 											Kind: types.Monospace,
 											Elements: []interface{}{
@@ -5161,8 +4029,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
+							Lines: []interface{}{
+								[]interface{}{
 									types.StringElement{Content: "a paragraph with *some bold content"},
 								},
 							},
@@ -5185,8 +4053,8 @@ var _ = Describe("quoted texts", func() {
 						expected := types.Document{
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: [][]interface{}{
-										{
+									Lines: []interface{}{
+										[]interface{}{
 											types.StringElement{Content: "*bold content*"},
 										},
 									},
@@ -5201,8 +4069,8 @@ var _ = Describe("quoted texts", func() {
 						expected := types.Document{
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: [][]interface{}{
-										{
+									Lines: []interface{}{
+										[]interface{}{
 											types.StringElement{Content: `\*bold content*`},
 										},
 									},
@@ -5217,8 +4085,8 @@ var _ = Describe("quoted texts", func() {
 						expected := types.Document{
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: [][]interface{}{
-										{
+									Lines: []interface{}{
+										[]interface{}{
 											types.StringElement{Content: `**bold content**`},
 										},
 									},
@@ -5233,8 +4101,8 @@ var _ = Describe("quoted texts", func() {
 						expected := types.Document{
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: [][]interface{}{
-										{
+									Lines: []interface{}{
+										[]interface{}{
 											types.StringElement{Content: `\**bold content**`},
 										},
 									},
@@ -5249,8 +4117,8 @@ var _ = Describe("quoted texts", func() {
 						expected := types.Document{
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: [][]interface{}{
-										{
+									Lines: []interface{}{
+										[]interface{}{
 											types.StringElement{Content: `**bold content*`},
 										},
 									},
@@ -5265,8 +4133,8 @@ var _ = Describe("quoted texts", func() {
 						expected := types.Document{
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: [][]interface{}{
-										{
+									Lines: []interface{}{
+										[]interface{}{
 											types.StringElement{Content: `\\**bold content*`},
 										},
 									},
@@ -5284,8 +4152,8 @@ var _ = Describe("quoted texts", func() {
 						expected := types.Document{
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: [][]interface{}{
-										{
+									Lines: []interface{}{
+										[]interface{}{
 											types.StringElement{Content: "*"},
 											types.QuotedText{
 												Kind: types.Italic,
@@ -5307,8 +4175,8 @@ var _ = Describe("quoted texts", func() {
 						expected := types.Document{
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: [][]interface{}{
-										{
+									Lines: []interface{}{
+										[]interface{}{
 											types.StringElement{Content: "**"},
 											types.QuotedText{
 												Kind: types.Italic,
@@ -5330,8 +4198,8 @@ var _ = Describe("quoted texts", func() {
 						expected := types.Document{
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: [][]interface{}{
-										{
+									Lines: []interface{}{
+										[]interface{}{
 											types.StringElement{Content: "*bold "},
 											types.QuotedText{
 												Kind: types.Italic,
@@ -5360,8 +4228,8 @@ var _ = Describe("quoted texts", func() {
 						expected := types.Document{
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: [][]interface{}{
-										{
+									Lines: []interface{}{
+										[]interface{}{
 											types.StringElement{Content: "_italic content_"},
 										},
 									},
@@ -5376,8 +4244,8 @@ var _ = Describe("quoted texts", func() {
 						expected := types.Document{
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: [][]interface{}{
-										{
+									Lines: []interface{}{
+										[]interface{}{
 											types.StringElement{Content: `\_italic content_`},
 										},
 									},
@@ -5392,8 +4260,8 @@ var _ = Describe("quoted texts", func() {
 						expected := types.Document{
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: [][]interface{}{
-										{
+									Lines: []interface{}{
+										[]interface{}{
 											types.StringElement{Content: `__italic content__`},
 										},
 									},
@@ -5408,8 +4276,8 @@ var _ = Describe("quoted texts", func() {
 						expected := types.Document{
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: [][]interface{}{
-										{
+									Lines: []interface{}{
+										[]interface{}{
 											types.StringElement{Content: `\__italic content__`},
 										},
 									},
@@ -5424,8 +4292,8 @@ var _ = Describe("quoted texts", func() {
 						expected := types.Document{
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: [][]interface{}{
-										{
+									Lines: []interface{}{
+										[]interface{}{
 											types.StringElement{Content: `__italic content_`},
 										},
 									},
@@ -5440,8 +4308,8 @@ var _ = Describe("quoted texts", func() {
 						expected := types.Document{
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: [][]interface{}{
-										{
+									Lines: []interface{}{
+										[]interface{}{
 											types.StringElement{Content: `\\__italic content_`}, // only 1 backslash remove
 										},
 									},
@@ -5459,8 +4327,8 @@ var _ = Describe("quoted texts", func() {
 						expected := types.Document{
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: [][]interface{}{
-										{
+									Lines: []interface{}{
+										[]interface{}{
 											types.StringElement{Content: "_"},
 											types.QuotedText{
 												Kind: types.Monospace,
@@ -5482,8 +4350,8 @@ var _ = Describe("quoted texts", func() {
 						expected := types.Document{
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: [][]interface{}{
-										{
+									Lines: []interface{}{
+										[]interface{}{
 											types.StringElement{Content: "__"},
 											types.QuotedText{
 												Kind: types.Bold,
@@ -5505,8 +4373,8 @@ var _ = Describe("quoted texts", func() {
 						expected := types.Document{
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: [][]interface{}{
-										{
+									Lines: []interface{}{
+										[]interface{}{
 											types.StringElement{Content: "_italic "},
 											types.QuotedText{
 												Kind: types.Bold,
@@ -5534,8 +4402,8 @@ var _ = Describe("quoted texts", func() {
 						expected := types.Document{
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: [][]interface{}{
-										{
+									Lines: []interface{}{
+										[]interface{}{
 											types.StringElement{Content: "`monospace content`"}, // backslash removed
 										},
 									},
@@ -5550,8 +4418,8 @@ var _ = Describe("quoted texts", func() {
 						expected := types.Document{
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: [][]interface{}{
-										{
+									Lines: []interface{}{
+										[]interface{}{
 											types.StringElement{Content: `\` + "`monospace content`"}, // only 1 backslash removed
 										},
 									},
@@ -5566,8 +4434,8 @@ var _ = Describe("quoted texts", func() {
 						expected := types.Document{
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: [][]interface{}{
-										{
+									Lines: []interface{}{
+										[]interface{}{
 											types.StringElement{Content: `\` + "`monospace content``"}, // 2 back slashes "consumed"
 										},
 									},
@@ -5582,8 +4450,8 @@ var _ = Describe("quoted texts", func() {
 						expected := types.Document{
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: [][]interface{}{
-										{
+									Lines: []interface{}{
+										[]interface{}{
 											types.StringElement{Content: `\` + "``monospace content``"}, // 2 back slashes "consumed"
 										},
 									},
@@ -5598,8 +4466,8 @@ var _ = Describe("quoted texts", func() {
 						expected := types.Document{
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: [][]interface{}{
-										{
+									Lines: []interface{}{
+										[]interface{}{
 											types.StringElement{Content: "``monospace content`"},
 										},
 									},
@@ -5614,8 +4482,8 @@ var _ = Describe("quoted texts", func() {
 						expected := types.Document{
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: [][]interface{}{
-										{
+									Lines: []interface{}{
+										[]interface{}{
 											types.StringElement{Content: `\\` + "``monospace content`"}, // 2 backslashes removed
 										},
 									},
@@ -5633,8 +4501,8 @@ var _ = Describe("quoted texts", func() {
 						expected := types.Document{
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: [][]interface{}{
-										{
+									Lines: []interface{}{
+										[]interface{}{
 											types.StringElement{Content: "`"},
 											types.QuotedText{
 												Kind: types.Bold,
@@ -5656,8 +4524,8 @@ var _ = Describe("quoted texts", func() {
 						expected := types.Document{
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: [][]interface{}{
-										{
+									Lines: []interface{}{
+										[]interface{}{
 											types.StringElement{Content: "``"},
 											types.QuotedText{
 												Kind: types.Bold,
@@ -5679,8 +4547,8 @@ var _ = Describe("quoted texts", func() {
 						expected := types.Document{
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: [][]interface{}{
-										{
+									Lines: []interface{}{
+										[]interface{}{
 											types.StringElement{Content: "`monospace "},
 											types.QuotedText{
 												Kind: types.Bold,
@@ -5708,8 +4576,8 @@ var _ = Describe("quoted texts", func() {
 						expected := types.Document{
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: [][]interface{}{
-										{
+									Lines: []interface{}{
+										[]interface{}{
 											types.StringElement{Content: "~subscriptcontent~"},
 										},
 									},
@@ -5724,8 +4592,8 @@ var _ = Describe("quoted texts", func() {
 						expected := types.Document{
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: [][]interface{}{
-										{
+									Lines: []interface{}{
+										[]interface{}{
 											types.StringElement{Content: `\~subscriptcontent~`}, // only 1 backslash removed
 										},
 									},
@@ -5744,8 +4612,8 @@ var _ = Describe("quoted texts", func() {
 						expected := types.Document{
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: [][]interface{}{
-										{
+									Lines: []interface{}{
+										[]interface{}{
 											types.StringElement{Content: "~"},
 											types.QuotedText{
 												Kind: types.Bold,
@@ -5767,8 +4635,8 @@ var _ = Describe("quoted texts", func() {
 						expected := types.Document{
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: [][]interface{}{
-										{
+									Lines: []interface{}{
+										[]interface{}{
 											types.StringElement{Content: `\~subscript `},
 											types.QuotedText{
 												Kind: types.Bold,
@@ -5796,8 +4664,8 @@ var _ = Describe("quoted texts", func() {
 						expected := types.Document{
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: [][]interface{}{
-										{
+									Lines: []interface{}{
+										[]interface{}{
 											types.StringElement{Content: "^superscriptcontent^"},
 										},
 									},
@@ -5812,8 +4680,8 @@ var _ = Describe("quoted texts", func() {
 						expected := types.Document{
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: [][]interface{}{
-										{
+									Lines: []interface{}{
+										[]interface{}{
 											types.StringElement{Content: `\^superscriptcontent^`}, // only 1 backslash removed
 										},
 									},
@@ -5832,8 +4700,8 @@ var _ = Describe("quoted texts", func() {
 						expected := types.Document{
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: [][]interface{}{
-										{
+									Lines: []interface{}{
+										[]interface{}{
 											types.StringElement{Content: `^`},
 											types.QuotedText{
 												Kind: types.Bold,
@@ -5855,8 +4723,8 @@ var _ = Describe("quoted texts", func() {
 						expected := types.Document{
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: [][]interface{}{
-										{
+									Lines: []interface{}{
+										[]interface{}{
 											types.StringElement{Content: "^"},
 											types.QuotedText{
 												Kind: types.Bold,
@@ -5878,8 +4746,8 @@ var _ = Describe("quoted texts", func() {
 						expected := types.Document{
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: [][]interface{}{
-										{
+									Lines: []interface{}{
+										[]interface{}{
 											types.StringElement{Content: `\^superscript `},
 											types.QuotedText{
 												Kind: types.Bold,
@@ -5899,29 +4767,29 @@ var _ = Describe("quoted texts", func() {
 			})
 		})
 	})
-})
 
-var _ = Describe("quoted texts - final document", func() {
+	Context("final document", func() {
 
-	It("image in bold", func() {
-		source := "*a image:foo.png[]*"
-		expected := types.Document{
-			Elements: []interface{}{
-				types.Paragraph{
-					Lines: [][]interface{}{
-						{
-							types.QuotedText{
-								Kind: types.Bold,
-								Elements: []interface{}{
-									types.StringElement{Content: "a "},
-									types.InlineImage{
-										Attributes: types.Attributes{
-											types.AttrImageAlt: "foo",
-										},
-										Location: types.Location{
-											Path: []interface{}{
-												types.StringElement{
-													Content: "foo.png",
+		It("image in bold", func() {
+			source := "*a image:foo.png[]*"
+			expected := types.Document{
+				Elements: []interface{}{
+					types.Paragraph{
+						Lines: []interface{}{
+							[]interface{}{
+								types.QuotedText{
+									Kind: types.Bold,
+									Elements: []interface{}{
+										types.StringElement{Content: "a "},
+										types.InlineImage{
+											Attributes: types.Attributes{
+												types.AttrImageAlt: "foo",
+											},
+											Location: types.Location{
+												Path: []interface{}{
+													types.StringElement{
+														Content: "foo.png",
+													},
 												},
 											},
 										},
@@ -5931,30 +4799,30 @@ var _ = Describe("quoted texts - final document", func() {
 						},
 					},
 				},
-			},
-		}
-		Expect(ParseDocument(source)).To(MatchDocument(expected))
-	})
+			}
+			Expect(ParseDocument(source)).To(MatchDocument(expected))
+		})
 
-	It("image in italic", func() {
-		source := "_a image:foo.png[]_"
-		expected := types.Document{
-			Elements: []interface{}{
-				types.Paragraph{
-					Lines: [][]interface{}{
-						{
-							types.QuotedText{
-								Kind: types.Italic,
-								Elements: []interface{}{
-									types.StringElement{Content: "a "},
-									types.InlineImage{
-										Attributes: types.Attributes{
-											types.AttrImageAlt: "foo",
-										},
-										Location: types.Location{
-											Path: []interface{}{
-												types.StringElement{
-													Content: "foo.png",
+		It("image in italic", func() {
+			source := "_a image:foo.png[]_"
+			expected := types.Document{
+				Elements: []interface{}{
+					types.Paragraph{
+						Lines: []interface{}{
+							[]interface{}{
+								types.QuotedText{
+									Kind: types.Italic,
+									Elements: []interface{}{
+										types.StringElement{Content: "a "},
+										types.InlineImage{
+											Attributes: types.Attributes{
+												types.AttrImageAlt: "foo",
+											},
+											Location: types.Location{
+												Path: []interface{}{
+													types.StringElement{
+														Content: "foo.png",
+													},
 												},
 											},
 										},
@@ -5964,30 +4832,30 @@ var _ = Describe("quoted texts - final document", func() {
 						},
 					},
 				},
-			},
-		}
-		Expect(ParseDocument(source)).To(MatchDocument(expected))
-	})
+			}
+			Expect(ParseDocument(source)).To(MatchDocument(expected))
+		})
 
-	It("image in monospace", func() {
-		source := "`a image:foo.png[]`"
-		expected := types.Document{
-			Elements: []interface{}{
-				types.Paragraph{
-					Lines: [][]interface{}{
-						{
-							types.QuotedText{
-								Kind: types.Monospace,
-								Elements: []interface{}{
-									types.StringElement{Content: "a "},
-									types.InlineImage{
-										Attributes: types.Attributes{
-											types.AttrImageAlt: "foo",
-										},
-										Location: types.Location{
-											Path: []interface{}{
-												types.StringElement{
-													Content: "foo.png",
+		It("image in monospace", func() {
+			source := "`a image:foo.png[]`"
+			expected := types.Document{
+				Elements: []interface{}{
+					types.Paragraph{
+						Lines: []interface{}{
+							[]interface{}{
+								types.QuotedText{
+									Kind: types.Monospace,
+									Elements: []interface{}{
+										types.StringElement{Content: "a "},
+										types.InlineImage{
+											Attributes: types.Attributes{
+												types.AttrImageAlt: "foo",
+											},
+											Location: types.Location{
+												Path: []interface{}{
+													types.StringElement{
+														Content: "foo.png",
+													},
 												},
 											},
 										},
@@ -5997,8 +4865,8 @@ var _ = Describe("quoted texts - final document", func() {
 						},
 					},
 				},
-			},
-		}
-		Expect(ParseDocument(source)).To(MatchDocument(expected))
+			}
+			Expect(ParseDocument(source)).To(MatchDocument(expected))
+		})
 	})
 })

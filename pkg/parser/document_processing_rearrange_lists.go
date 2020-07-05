@@ -12,7 +12,7 @@ import (
 
 // rearrangeListItems moves the list items into lists, and nested lists if needed
 func rearrangeListItems(blocks []interface{}, withinDelimitedBlock bool) ([]interface{}, error) {
-	// log.Debugf("rearranging list items in %d blocks...", len(blocks))
+	// log.Debug("rearranging list items:")
 	result := make([]interface{}, 0, len(blocks)) // maximum capacity cannot exceed initial input
 	lists := []types.List{}                       // at each level (or depth), we have a list, whatever its type.
 	// track if the previous block was a blank line.

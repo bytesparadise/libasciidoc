@@ -12,147 +12,6 @@ var _ = Describe("paragraphs", func() {
 
 	Context("draft document", func() {
 
-		Context("default paragraphs", func() {
-
-			It("paragraph with 1 word", func() {
-				source := "hello"
-				expected := types.DraftDocument{
-					Blocks: []interface{}{
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.StringElement{Content: "hello"},
-								},
-							},
-						},
-					},
-				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
-			})
-
-			It("paragraph with few words and ending with spaces", func() {
-				source := "a paragraph with some content  "
-				expected := types.DraftDocument{
-					Blocks: []interface{}{
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.StringElement{Content: "a paragraph with some content  "},
-								},
-							},
-						},
-					},
-				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
-			})
-
-			It("paragraph with bold content and spaces", func() {
-				source := "a paragraph with *some bold content*  "
-				expected := types.DraftDocument{
-					Blocks: []interface{}{
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.StringElement{Content: "a paragraph with "},
-									types.QuotedText{
-										Kind: types.Bold,
-										Elements: []interface{}{
-											types.StringElement{Content: "some bold content"},
-										},
-									},
-									types.StringElement{Content: "  "},
-								},
-							},
-						},
-					},
-				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
-			})
-
-			It("paragraph with non-alphanum character before bold text", func() {
-				source := "+*some bold content*"
-				expected := types.DraftDocument{
-					Blocks: []interface{}{
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.StringElement{Content: "+"},
-									types.QuotedText{
-										Kind: types.Bold,
-										Elements: []interface{}{
-											types.StringElement{Content: "some bold content"},
-										},
-									},
-								},
-							},
-						},
-					},
-				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
-			})
-
-			It("paragraph with id and title", func() {
-				source := `[#foo]
-.a title
-a paragraph`
-				expected := types.DraftDocument{
-					Blocks: []interface{}{
-						types.Paragraph{
-							Attributes: types.Attributes{
-								types.AttrID:       "foo",
-								types.AttrCustomID: true,
-								types.AttrTitle:    "a title",
-							},
-							Lines: [][]interface{}{
-								{
-									types.StringElement{Content: "a paragraph"},
-								},
-							},
-						},
-					},
-				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
-			})
-
-			It("paragraph with words and dots on same line", func() {
-				source := `foo. bar.`
-				expected := types.DraftDocument{
-					Blocks: []interface{}{
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.StringElement{Content: "foo. bar."},
-								},
-							},
-						},
-					},
-				}
-
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
-			})
-
-			It("paragraph with words and dots on two lines", func() {
-				source := `foo. 
-bar.`
-				expected := types.DraftDocument{
-					Blocks: []interface{}{
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.StringElement{Content: "foo. "},
-								},
-								{
-									types.StringElement{Content: "bar."},
-								},
-							},
-						},
-					},
-				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
-			})
-
-		})
-
 		Context("paragraphs with line break", func() {
 
 			It("with explicit line break", func() {
@@ -162,22 +21,22 @@ baz`
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
+							Lines: []interface{}{
+								[]interface{}{
 									types.StringElement{Content: "foo"},
 									types.LineBreak{},
 								},
-								{
+								[]interface{}{
 									types.StringElement{Content: "bar"},
 								},
-								{
+								[]interface{}{
 									types.StringElement{Content: "baz"},
 								},
 							},
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("with paragraph attribute", func() {
@@ -191,14 +50,14 @@ baz`
 							Attributes: types.Attributes{
 								types.AttrOptions: map[string]bool{"hardbreaks": true},
 							},
-							Lines: [][]interface{}{
-								{
+							Lines: []interface{}{
+								[]interface{}{
 									types.StringElement{Content: "foo"},
 								},
-								{
+								[]interface{}{
 									types.StringElement{Content: "bar"},
 								},
-								{
+								[]interface{}{
 									types.StringElement{Content: "baz"},
 								},
 							},
@@ -218,11 +77,11 @@ baz`
 							Attributes: types.Attributes{
 								types.AttrTitle: "My Title",
 							},
-							Lines: [][]interface{}{
-								{
+							Lines: []interface{}{
+								[]interface{}{
 									types.StringElement{Content: "foo"},
 								},
-								{
+								[]interface{}{
 									types.StringElement{Content: "baz"},
 								},
 							},
@@ -246,11 +105,11 @@ baz`
 								types.AttrRole:     []string{"role1", "role2"},
 								types.AttrOptions:  map[string]bool{"hardbreaks": true},
 							},
-							Lines: [][]interface{}{
-								{
+							Lines: []interface{}{
+								[]interface{}{
 									types.StringElement{Content: "foo"},
 								},
-								{
+								[]interface{}{
 									types.StringElement{Content: "baz"},
 								},
 							},
@@ -272,21 +131,21 @@ baz`
 								types.AttrOptions: map[string]bool{"hardbreaks": true},
 								types.AttrRole:    []string{"role1", "role2"},
 							},
-							Lines: [][]interface{}{
-								{
+							Lines: []interface{}{
+								[]interface{}{
 									types.StringElement{Content: "foo"},
 								},
-								{
+								[]interface{}{
 									types.StringElement{Content: "bar"},
 								},
-								{
+								[]interface{}{
 									types.StringElement{Content: "baz"},
 								},
 							},
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("not treat plusplus as line break", func() {
@@ -295,18 +154,18 @@ foo`
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
+							Lines: []interface{}{
+								[]interface{}{
 									types.StringElement{Content: "C++"},
 								},
-								{
+								[]interface{}{
 									types.StringElement{Content: "foo"},
 								},
 							},
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 		})
 
@@ -320,17 +179,15 @@ foo`
 							Attributes: types.Attributes{
 								types.AttrAdmonitionKind: types.Note,
 							},
-							Lines: [][]interface{}{
-								{
-									types.StringElement{
-										Content: "this is a note.",
-									},
+							Lines: []interface{}{
+								[]interface{}{
+									types.StringElement{Content: "this is a note."},
 								},
 							},
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("warning admonition paragraph", func() {
@@ -342,22 +199,18 @@ warning!`
 							Attributes: types.Attributes{
 								types.AttrAdmonitionKind: types.Warning,
 							},
-							Lines: [][]interface{}{
-								{
-									types.StringElement{
-										Content: "this is a multiline",
-									},
+							Lines: []interface{}{
+								[]interface{}{
+									types.StringElement{Content: "this is a multiline"},
 								},
-								{
-									types.StringElement{
-										Content: "warning!",
-									},
+								[]interface{}{
+									types.StringElement{Content: "warning!"},
 								},
 							},
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("admonition note paragraph with id and title", func() {
@@ -373,17 +226,15 @@ NOTE: this is a note.`
 								types.AttrCustomID:       true,
 								types.AttrTitle:          "bar",
 							},
-							Lines: [][]interface{}{
-								{
-									types.StringElement{
-										Content: "this is a note.",
-									},
+							Lines: []interface{}{
+								[]interface{}{
+									types.StringElement{Content: "this is a note."},
 								},
 							},
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("caution admonition paragraph with single line", func() {
@@ -395,17 +246,15 @@ this is a caution!`
 							Attributes: types.Attributes{
 								types.AttrAdmonitionKind: types.Caution,
 							},
-							Lines: [][]interface{}{
-								{
-									types.StringElement{
-										Content: "this is a caution!",
-									},
+							Lines: []interface{}{
+								[]interface{}{
+									types.StringElement{Content: "this is a caution!"},
 								},
 							},
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("multiline caution admonition paragraph with title and id", func() {
@@ -423,13 +272,11 @@ this is a
 								types.AttrCustomID:       true,
 								types.AttrTitle:          "bar",
 							},
-							Lines: [][]interface{}{
-								{
-									types.StringElement{
-										Content: "this is a ",
-									},
+							Lines: []interface{}{
+								[]interface{}{
+									types.StringElement{Content: "this is a "},
 								},
-								{
+								[]interface{}{
 									types.QuotedText{
 										Kind: types.Bold,
 										Elements: []interface{}{
@@ -446,7 +293,7 @@ this is a
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("multiple admonition paragraphs", func() {
@@ -461,11 +308,9 @@ And no space after [CAUTION] either.`
 							Attributes: types.Attributes{
 								types.AttrAdmonitionKind: types.Note,
 							},
-							Lines: [][]interface{}{
-								{
-									types.StringElement{
-										Content: "No space after the [NOTE]!",
-									},
+							Lines: []interface{}{
+								[]interface{}{
+									types.StringElement{Content: "No space after the [NOTE]!"},
 								},
 							},
 						},
@@ -474,11 +319,9 @@ And no space after [CAUTION] either.`
 							Attributes: types.Attributes{
 								types.AttrAdmonitionKind: types.Caution,
 							},
-							Lines: [][]interface{}{
-								{
-									types.StringElement{
-										Content: "And no space after [CAUTION] either.",
-									},
+							Lines: []interface{}{
+								[]interface{}{
+									types.StringElement{Content: "And no space after [CAUTION] either."},
 								},
 							},
 						},
@@ -501,17 +344,15 @@ I am a verse paragraph.`
 								types.AttrQuoteAuthor: "john doe",
 								types.AttrQuoteTitle:  "verse title",
 							},
-							Lines: [][]interface{}{
-								{
-									types.StringElement{
-										Content: "I am a verse paragraph.",
-									},
+							Lines: []interface{}{
+								[]interface{}{
+									types.StringElement{Content: "I am a verse paragraph."},
 								},
 							},
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("paragraph as a verse with author, title and other attributes", func() {
@@ -530,17 +371,15 @@ I am a verse paragraph.`
 								types.AttrCustomID:    true,
 								types.AttrTitle:       "universe",
 							},
-							Lines: [][]interface{}{
-								{
-									types.StringElement{
-										Content: "I am a verse paragraph.",
-									},
+							Lines: []interface{}{
+								[]interface{}{
+									types.StringElement{Content: "I am a verse paragraph."},
 								},
 							},
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("paragraph as a verse with empty title", func() {
@@ -553,17 +392,15 @@ I am a verse paragraph.`
 								types.AttrKind:        types.Verse,
 								types.AttrQuoteAuthor: "john doe",
 							},
-							Lines: [][]interface{}{
-								{
-									types.StringElement{
-										Content: "I am a verse paragraph.",
-									},
+							Lines: []interface{}{
+								[]interface{}{
+									types.StringElement{Content: "I am a verse paragraph."},
 								},
 							},
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("paragraph as a verse without title", func() {
@@ -576,17 +413,15 @@ I am a verse paragraph.`
 								types.AttrKind:        types.Verse,
 								types.AttrQuoteAuthor: "john doe",
 							},
-							Lines: [][]interface{}{
-								{
-									types.StringElement{
-										Content: "I am a verse paragraph.",
-									},
+							Lines: []interface{}{
+								[]interface{}{
+									types.StringElement{Content: "I am a verse paragraph."},
 								},
 							},
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("paragraph as a verse with empty author", func() {
@@ -598,17 +433,15 @@ I am a verse paragraph.`
 							Attributes: types.Attributes{
 								types.AttrKind: types.Verse,
 							},
-							Lines: [][]interface{}{
-								{
-									types.StringElement{
-										Content: "I am a verse paragraph.",
-									},
+							Lines: []interface{}{
+								[]interface{}{
+									types.StringElement{Content: "I am a verse paragraph."},
 								},
 							},
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("paragraph as a verse without author", func() {
@@ -620,20 +453,19 @@ I am a verse paragraph.`
 							Attributes: types.Attributes{
 								types.AttrKind: types.Verse,
 							},
-							Lines: [][]interface{}{
-								{
-									types.StringElement{
-										Content: "I am a verse paragraph.",
-									},
+							Lines: []interface{}{
+								[]interface{}{
+									types.StringElement{Content: "I am a verse paragraph."},
 								},
 							},
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("image block as a verse", func() {
+				// assume that the author meant to use an image, so the `verse` attribute will be ignored during rendering
 				source := `[verse, john doe, verse title]
 image::foo.png[]`
 				expected := types.DraftDocument{
@@ -652,7 +484,7 @@ image::foo.png[]`
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 		})
 
@@ -669,17 +501,15 @@ I am a quote paragraph.`
 								types.AttrQuoteAuthor: "john doe",
 								types.AttrQuoteTitle:  "quote title",
 							},
-							Lines: [][]interface{}{
-								{
-									types.StringElement{
-										Content: "I am a quote paragraph.",
-									},
+							Lines: []interface{}{
+								[]interface{}{
+									types.StringElement{Content: "I am a quote paragraph."},
 								},
 							},
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("paragraph as a quote with author, title and other attributes", func() {
@@ -698,17 +528,15 @@ I am a quote paragraph.`
 								types.AttrCustomID:    true,
 								types.AttrTitle:       "universe",
 							},
-							Lines: [][]interface{}{
-								{
-									types.StringElement{
-										Content: "I am a quote paragraph.",
-									},
+							Lines: []interface{}{
+								[]interface{}{
+									types.StringElement{Content: "I am a quote paragraph."},
 								},
 							},
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("paragraph as a quote with empty title", func() {
@@ -721,17 +549,15 @@ I am a quote paragraph.`
 								types.AttrKind:        types.Quote,
 								types.AttrQuoteAuthor: "john doe",
 							},
-							Lines: [][]interface{}{
-								{
-									types.StringElement{
-										Content: "I am a quote paragraph.",
-									},
+							Lines: []interface{}{
+								[]interface{}{
+									types.StringElement{Content: "I am a quote paragraph."},
 								},
 							},
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("paragraph as a quote without title", func() {
@@ -744,17 +570,15 @@ I am a quote paragraph.`
 								types.AttrKind:        types.Quote,
 								types.AttrQuoteAuthor: "john doe",
 							},
-							Lines: [][]interface{}{
-								{
-									types.StringElement{
-										Content: "I am a quote paragraph.",
-									},
+							Lines: []interface{}{
+								[]interface{}{
+									types.StringElement{Content: "I am a quote paragraph."},
 								},
 							},
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("paragraph as a quote with empty author", func() {
@@ -766,17 +590,15 @@ I am a quote paragraph.`
 							Attributes: types.Attributes{
 								types.AttrKind: types.Quote,
 							},
-							Lines: [][]interface{}{
-								{
-									types.StringElement{
-										Content: "I am a quote paragraph.",
-									},
+							Lines: []interface{}{
+								[]interface{}{
+									types.StringElement{Content: "I am a quote paragraph."},
 								},
 							},
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("paragraph as a quote without author", func() {
@@ -788,50 +610,15 @@ I am a quote paragraph.`
 							Attributes: types.Attributes{
 								types.AttrKind: types.Quote,
 							},
-							Lines: [][]interface{}{
-								{
-									types.StringElement{
-										Content: "I am a quote paragraph.",
-									},
+							Lines: []interface{}{
+								[]interface{}{
+									types.StringElement{Content: "I am a quote paragraph."},
 								},
 							},
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
-			})
-
-			It("inline image within a quote", func() {
-				source := `[quote, john doe, quote title]
-a foo image:foo.png[]`
-				expected := types.DraftDocument{
-					Blocks: []interface{}{
-						types.Paragraph{
-							Attributes: types.Attributes{
-								types.AttrKind:        types.Quote,
-								types.AttrQuoteAuthor: "john doe",
-								types.AttrQuoteTitle:  "quote title",
-							},
-							Lines: [][]interface{}{
-								{
-									types.StringElement{
-										Content: "a foo ",
-									},
-									types.InlineImage{
-										Location: types.Location{
-											Path: []interface{}{
-												types.StringElement{
-													Content: "foo.png",
-												},
-											},
-										},
-									},
-								},
-							},
-						},
-					},
-				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("image block is NOT a quote", func() {
@@ -852,11 +639,12 @@ image::foo.png[]`
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 		})
 
 		Context("thematic breaks", func() {
+
 			It("thematic break form1 by itself", func() {
 				source := "***"
 				expected := types.DraftDocument{
@@ -866,6 +654,7 @@ image::foo.png[]`
 				}
 				Expect(ParseDraftDocument(source)).To(Equal(expected))
 			})
+
 			It("thematic break form2 by itself", func() {
 				source := "* * *"
 				expected := types.DraftDocument{
@@ -875,6 +664,7 @@ image::foo.png[]`
 				}
 				Expect(ParseDraftDocument(source)).To(Equal(expected))
 			})
+
 			It("thematic break form3 by itself", func() {
 				source := "---"
 				expected := types.DraftDocument{
@@ -884,6 +674,7 @@ image::foo.png[]`
 				}
 				Expect(ParseDraftDocument(source)).To(Equal(expected))
 			})
+
 			It("thematic break form4 by itself", func() {
 				source := "- - -"
 				expected := types.DraftDocument{
@@ -893,6 +684,7 @@ image::foo.png[]`
 				}
 				Expect(ParseDraftDocument(source)).To(Equal(expected))
 			})
+
 			It("thematic break form5 by itself", func() {
 				source := "___"
 				expected := types.DraftDocument{
@@ -902,6 +694,7 @@ image::foo.png[]`
 				}
 				Expect(ParseDraftDocument(source)).To(Equal(expected))
 			})
+
 			It("thematic break form4 by itself", func() {
 				source := "_ _ _"
 				expected := types.DraftDocument{
@@ -911,13 +704,14 @@ image::foo.png[]`
 				}
 				Expect(ParseDraftDocument(source)).To(Equal(expected))
 			})
+
 			It("thematic break with leading text", func() {
 				source := "text ***"
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
+							Lines: []interface{}{
+								[]interface{}{
 									types.StringElement{Content: "text ***"},
 								},
 							},
@@ -933,8 +727,8 @@ image::foo.png[]`
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
+							Lines: []interface{}{
+								[]interface{}{
 									types.StringElement{Content: "* * * text"},
 								},
 							},
@@ -943,7 +737,6 @@ image::foo.png[]`
 				}
 				Expect(ParseDraftDocument(source)).To(Equal(expected))
 			})
-
 		})
 	})
 
@@ -965,8 +758,8 @@ a paragraph`
 							Attributes: types.Attributes{
 								types.AttrTitle: "a title", // there is no default ID. Only custom IDs
 							},
-							Lines: [][]interface{}{
-								{
+							Lines: []interface{}{
+								[]interface{}{
 									types.StringElement{Content: "a paragraph"},
 								},
 							},
@@ -981,7 +774,7 @@ a paragraph`
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: [][]interface{}{},
+							Lines: []interface{}{},
 						},
 					},
 				}
@@ -993,9 +786,48 @@ a paragraph`
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
+							Lines: []interface{}{
+								[]interface{}{
 									types.StringElement{Content: "hello &#43; world"},
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
+			})
+		})
+
+		Context("quote paragraphs", func() {
+
+			It("inline image within a quote", func() {
+				source := `[quote, john doe, quote title]
+a foo image:foo.png[]`
+				expected := types.Document{
+					Elements: []interface{}{
+						types.Paragraph{
+							Attributes: types.Attributes{
+								types.AttrKind:        types.Quote,
+								types.AttrQuoteAuthor: "john doe",
+								types.AttrQuoteTitle:  "quote title",
+							},
+							Lines: []interface{}{
+								[]interface{}{
+									types.StringElement{
+										Content: "a foo ",
+									},
+									types.InlineImage{
+										Attributes: types.Attributes{
+											types.AttrImageAlt: "foo",
+										},
+										Location: types.Location{
+											Path: []interface{}{
+												types.StringElement{
+													Content: "foo.png",
+												},
+											},
+										},
+									},
 								},
 							},
 						},

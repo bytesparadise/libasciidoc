@@ -149,8 +149,8 @@ func (r *sgmlRenderer) renderPlainText(ctx *renderer.Context, element interface{
 	switch element := element.(type) {
 	case []interface{}:
 		return r.renderInlineElements(ctx, element, r.withVerbatim())
-	case [][]interface{}:
-		return r.renderLines(ctx, element, r.withPlainText())
+	// case []interface{}:
+	// 	return r.renderLines(ctx, element, r.withPlainText())
 	case types.QuotedText:
 		return r.renderPlainText(ctx, element.Elements)
 	case types.Icon:

@@ -95,8 +95,8 @@ Preamble comes here
 							types.Preamble{
 								Elements: []interface{}{
 									types.Paragraph{
-										Lines: [][]interface{}{
-											{
+										Lines: []interface{}{
+											[]interface{}{
 												types.StringElement{
 													Content: "Preamble comes here",
 												},
@@ -215,8 +215,8 @@ eve - analyzes an image to determine if it's a picture of a life form
 								Title: nameSectionTitle,
 								Elements: []interface{}{
 									types.Paragraph{
-										Lines: [][]interface{}{
-											{
+										Lines: []interface{}{
+											[]interface{}{
 												types.StringElement{
 													Content: "eve - analyzes an image to determine if it\u2019s a picture of a life form",
 												},

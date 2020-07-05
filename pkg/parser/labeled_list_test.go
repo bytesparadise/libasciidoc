@@ -27,11 +27,11 @@ on 2 lines`
 						},
 						Elements: []interface{}{
 							types.Paragraph{
-								Lines: [][]interface{}{
-									{
+								Lines: []interface{}{
+									[]interface{}{
 										types.StringElement{Content: "Item 1 description"},
 									},
-									{
+									[]interface{}{
 										types.StringElement{Content: "on 2 lines"},
 									},
 								},
@@ -75,8 +75,8 @@ on 2 lines`
 						Level: 1,
 						Elements: []interface{}{
 							types.Paragraph{
-								Lines: [][]interface{}{
-									{
+								Lines: []interface{}{
+									[]interface{}{
 										types.StringElement{
 											Content: "This function is ",
 										},
@@ -118,8 +118,8 @@ Item1:: foo`
 						},
 						Elements: []interface{}{
 							types.Paragraph{
-								Lines: [][]interface{}{
-									{
+								Lines: []interface{}{
+									[]interface{}{
 										types.StringElement{Content: "foo"},
 									},
 								},
@@ -148,8 +148,8 @@ Item1:: foo`
 						},
 						Elements: []interface{}{
 							types.Paragraph{
-								Lines: [][]interface{}{
-									{
+								Lines: []interface{}{
+									[]interface{}{
 										types.StringElement{Content: "foo"},
 									},
 								},
@@ -198,8 +198,8 @@ Item 3 description`
 						},
 						Elements: []interface{}{
 							types.Paragraph{
-								Lines: [][]interface{}{
-									{
+								Lines: []interface{}{
+									[]interface{}{
 										types.StringElement{Content: "Item 1 description"},
 									},
 								},
@@ -215,8 +215,8 @@ Item 3 description`
 						},
 						Elements: []interface{}{
 							types.Paragraph{
-								Lines: [][]interface{}{
-									{
+								Lines: []interface{}{
+									[]interface{}{
 										types.StringElement{Content: "Item 2 description"},
 									},
 								},
@@ -232,8 +232,8 @@ Item 3 description`
 						},
 						Elements: []interface{}{
 							types.Paragraph{
-								Lines: [][]interface{}{
-									{
+								Lines: []interface{}{
+									[]interface{}{
 										types.StringElement{Content: "Item 3 description"},
 									},
 								},
@@ -263,8 +263,8 @@ Item 3 description`
 						},
 						Elements: []interface{}{
 							types.Paragraph{
-								Lines: [][]interface{}{
-									{
+								Lines: []interface{}{
+									[]interface{}{
 										types.StringElement{Content: "Item 1 description"},
 									},
 								},
@@ -280,8 +280,8 @@ Item 3 description`
 						},
 						Elements: []interface{}{
 							types.Paragraph{
-								Lines: [][]interface{}{
-									{
+								Lines: []interface{}{
+									[]interface{}{
 										types.StringElement{Content: "Item 2 description"},
 									},
 								},
@@ -297,8 +297,8 @@ Item 3 description`
 						},
 						Elements: []interface{}{
 							types.Paragraph{
-								Lines: [][]interface{}{
-									{
+								Lines: []interface{}{
+									[]interface{}{
 										types.StringElement{Content: "Item 3 description"},
 									},
 								},
@@ -332,8 +332,8 @@ Item with description:: something simple`
 						CheckStyle:  types.NoCheck,
 						Elements: []interface{}{
 							types.Paragraph{
-								Lines: [][]interface{}{
-									{
+								Lines: []interface{}{
+									[]interface{}{
 										types.StringElement{Content: "foo"},
 									},
 								},
@@ -346,8 +346,8 @@ Item with description:: something simple`
 						CheckStyle:  types.NoCheck,
 						Elements: []interface{}{
 							types.Paragraph{
-								Lines: [][]interface{}{
-									{
+								Lines: []interface{}{
+									[]interface{}{
 										types.StringElement{Content: "bar"},
 									},
 								},
@@ -363,8 +363,8 @@ Item with description:: something simple`
 						},
 						Elements: []interface{}{
 							types.Paragraph{
-								Lines: [][]interface{}{
-									{
+								Lines: []interface{}{
+									[]interface{}{
 										types.StringElement{Content: "something simple"},
 									},
 								},
@@ -394,11 +394,11 @@ a normal paragraph.`
 						},
 						Elements: []interface{}{
 							types.Paragraph{
-								Lines: [][]interface{}{
-									{
+								Lines: []interface{}{
+									[]interface{}{
 										types.StringElement{Content: "foo"},
 									},
-									{
+									[]interface{}{
 										types.StringElement{Content: "bar"},
 									},
 								},
@@ -407,8 +407,8 @@ a normal paragraph.`
 					},
 					types.BlankLine{},
 					types.Paragraph{
-						Lines: [][]interface{}{
-							{
+						Lines: []interface{}{
+							[]interface{}{
 								types.StringElement{Content: "a normal paragraph."},
 							},
 						},
@@ -461,8 +461,8 @@ another fenced block
 						},
 						Elements: []interface{}{
 							types.Paragraph{
-								Lines: [][]interface{}{
-									{
+								Lines: []interface{}{
+									[]interface{}{
 										types.StringElement{Content: "something simple"},
 									},
 								},
@@ -523,8 +523,8 @@ another fenced block
 						},
 						Elements: []interface{}{
 							types.Paragraph{
-								Lines: [][]interface{}{
-									{
+								Lines: []interface{}{
+									[]interface{}{
 										types.StringElement{Content: "something simple"},
 									},
 								},
@@ -542,117 +542,6 @@ another fenced block
 				},
 			}
 			Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
-		})
-
-		It("with multiple item continuations", func() {
-			source := `Item 1::
-content 1
-+
-NOTE: note
-
-Item 2::
-content 2
-+
-addition
-+
-IMPORTANT: important
-+
-TIP: tip`
-			expected := types.DraftDocument{
-				Blocks: []interface{}{
-					types.LabeledListItem{
-						Level: 1,
-						Term: []interface{}{
-							types.StringElement{
-								Content: "Item 1",
-							},
-						},
-						Elements: []interface{}{
-							types.Paragraph{
-								Lines: [][]interface{}{
-									{
-										types.StringElement{Content: "content 1"},
-									},
-								},
-							},
-						},
-					},
-					// the `+` continuation produces the element below
-					types.ContinuedListItemElement{
-						Offset: 0,
-						Element: types.Paragraph{
-							Attributes: types.Attributes{
-								types.AttrAdmonitionKind: types.Note,
-							},
-							Lines: [][]interface{}{
-								{
-									types.StringElement{Content: "note"},
-								},
-							},
-						},
-					},
-					types.BlankLine{},
-					types.LabeledListItem{
-						Level: 1,
-						Term: []interface{}{
-							types.StringElement{
-								Content: "Item 2",
-							},
-						},
-						Elements: []interface{}{
-							types.Paragraph{
-								Lines: [][]interface{}{
-									{
-										types.StringElement{Content: "content 2"},
-									},
-								},
-							},
-						},
-					},
-					// the `+` continuation produces the element below
-					types.ContinuedListItemElement{
-						Offset: 0,
-						Element: types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.StringElement{
-										Content: "addition",
-									},
-								},
-							},
-						},
-					},
-					// the `+` continuation produces the element below
-					types.ContinuedListItemElement{
-						Offset: 0,
-						Element: types.Paragraph{
-							Attributes: types.Attributes{
-								types.AttrAdmonitionKind: types.Important,
-							},
-							Lines: [][]interface{}{
-								{
-									types.StringElement{Content: "important"},
-								},
-							},
-						},
-					},
-					// the `+` continuation produces the element below
-					types.ContinuedListItemElement{
-						Offset: 0,
-						Element: types.Paragraph{
-							Attributes: types.Attributes{
-								types.AttrAdmonitionKind: types.Tip,
-							},
-							Lines: [][]interface{}{
-								{
-									types.StringElement{Content: "tip"},
-								},
-							},
-						},
-					},
-				},
-			}
-			Expect(ParseDraftDocument(source)).To(Equal(expected))
 		})
 
 		It("with nested unordered list - case 2", func() {
@@ -675,8 +564,8 @@ TIP: tip`
 						CheckStyle:  types.NoCheck,
 						Elements: []interface{}{
 							types.Paragraph{
-								Lines: [][]interface{}{
-									{
+								Lines: []interface{}{
+									[]interface{}{
 										types.StringElement{Content: "unordered item"},
 									},
 								},
@@ -706,8 +595,8 @@ second term:: definition of the second term`
 						},
 						Elements: []interface{}{
 							types.Paragraph{
-								Lines: [][]interface{}{
-									{
+								Lines: []interface{}{
+									[]interface{}{
 										types.StringElement{
 											Content: "definition of the first term",
 										},
@@ -725,8 +614,8 @@ second term:: definition of the second term`
 						},
 						Elements: []interface{}{
 							types.Paragraph{
-								Lines: [][]interface{}{
-									{
+								Lines: []interface{}{
+									[]interface{}{
 										types.StringElement{
 											Content: "definition of the second term",
 										},
@@ -760,8 +649,8 @@ level 1:: description 1`
 						},
 						Elements: []interface{}{
 							types.Paragraph{
-								Lines: [][]interface{}{
-									{
+								Lines: []interface{}{
+									[]interface{}{
 										types.StringElement{
 											Content: "description 1",
 										},
@@ -779,8 +668,8 @@ level 1:: description 1`
 						},
 						Elements: []interface{}{
 							types.Paragraph{
-								Lines: [][]interface{}{
-									{
+								Lines: []interface{}{
+									[]interface{}{
 										types.StringElement{
 											Content: "description 2",
 										},
@@ -798,8 +687,8 @@ level 1:: description 1`
 						},
 						Elements: []interface{}{
 							types.Paragraph{
-								Lines: [][]interface{}{
-									{
+								Lines: []interface{}{
+									[]interface{}{
 										types.StringElement{
 											Content: "description 3",
 										},
@@ -817,8 +706,8 @@ level 1:: description 1`
 						},
 						Elements: []interface{}{
 							types.Paragraph{
-								Lines: [][]interface{}{
-									{
+								Lines: []interface{}{
+									[]interface{}{
 										types.StringElement{
 											Content: "description 1",
 										},
@@ -852,8 +741,8 @@ level 2::: description 2`
 						},
 						Elements: []interface{}{
 							types.Paragraph{
-								Lines: [][]interface{}{
-									{
+								Lines: []interface{}{
+									[]interface{}{
 										types.StringElement{
 											Content: "description 1",
 										},
@@ -871,8 +760,8 @@ level 2::: description 2`
 						},
 						Elements: []interface{}{
 							types.Paragraph{
-								Lines: [][]interface{}{
-									{
+								Lines: []interface{}{
+									[]interface{}{
 										types.StringElement{
 											Content: "description 2",
 										},
@@ -890,8 +779,8 @@ level 2::: description 2`
 						},
 						Elements: []interface{}{
 							types.Paragraph{
-								Lines: [][]interface{}{
-									{
+								Lines: []interface{}{
+									[]interface{}{
 										types.StringElement{
 											Content: "description 3",
 										},
@@ -909,8 +798,8 @@ level 2::: description 2`
 						},
 						Elements: []interface{}{
 							types.Paragraph{
-								Lines: [][]interface{}{
-									{
+								Lines: []interface{}{
+									[]interface{}{
 										types.StringElement{
 											Content: "description 2",
 										},
@@ -945,11 +834,11 @@ on 2 lines`
 
 								Elements: []interface{}{
 									types.Paragraph{
-										Lines: [][]interface{}{
-											{
+										Lines: []interface{}{
+											[]interface{}{
 												types.StringElement{Content: "Item 1 description"},
 											},
-											{
+											[]interface{}{
 												types.StringElement{Content: "on 2 lines"},
 											},
 										},
@@ -1007,8 +896,8 @@ on 2 lines`
 								Level: 1,
 								Elements: []interface{}{
 									types.Paragraph{
-										Lines: [][]interface{}{
-											{
+										Lines: []interface{}{
+											[]interface{}{
 												types.StringElement{
 													Content: "This function is ",
 												},
@@ -1059,8 +948,8 @@ on 2 lines`
 								Level: 1,
 								Elements: []interface{}{
 									types.Paragraph{
-										Lines: [][]interface{}{
-											{
+										Lines: []interface{}{
+											[]interface{}{
 												types.StringElement{
 													Content: "This function is ",
 												},
@@ -1104,8 +993,8 @@ on 2 lines`
 								Level: 1,
 								Elements: []interface{}{
 									types.Paragraph{
-										Lines: [][]interface{}{
-											{
+										Lines: []interface{}{
+											[]interface{}{
 												types.StringElement{
 													Content: "This function is ",
 												},
@@ -1152,8 +1041,8 @@ Item1:: foo`
 
 								Elements: []interface{}{
 									types.Paragraph{
-										Lines: [][]interface{}{
-											{
+										Lines: []interface{}{
+											[]interface{}{
 												types.StringElement{Content: "foo"},
 											},
 										},
@@ -1212,8 +1101,8 @@ Item 3 description`
 
 								Elements: []interface{}{
 									types.Paragraph{
-										Lines: [][]interface{}{
-											{
+										Lines: []interface{}{
+											[]interface{}{
 												types.StringElement{Content: "Item 1 description"},
 											},
 										},
@@ -1230,8 +1119,8 @@ Item 3 description`
 
 								Elements: []interface{}{
 									types.Paragraph{
-										Lines: [][]interface{}{
-											{
+										Lines: []interface{}{
+											[]interface{}{
 												types.StringElement{Content: "Item 2 description"},
 											},
 										},
@@ -1248,8 +1137,8 @@ Item 3 description`
 
 								Elements: []interface{}{
 									types.Paragraph{
-										Lines: [][]interface{}{
-											{
+										Lines: []interface{}{
+											[]interface{}{
 												types.StringElement{Content: "Item 3 description"},
 											},
 										},
@@ -1284,8 +1173,8 @@ Item 3 description`
 
 								Elements: []interface{}{
 									types.Paragraph{
-										Lines: [][]interface{}{
-											{
+										Lines: []interface{}{
+											[]interface{}{
 												types.StringElement{Content: "Item 1 description"},
 											},
 										},
@@ -1302,8 +1191,8 @@ Item 3 description`
 
 												Elements: []interface{}{
 													types.Paragraph{
-														Lines: [][]interface{}{
-															{
+														Lines: []interface{}{
+															[]interface{}{
 																types.StringElement{Content: "Item 2 description"},
 															},
 														},
@@ -1320,8 +1209,8 @@ Item 3 description`
 
 																Elements: []interface{}{
 																	types.Paragraph{
-																		Lines: [][]interface{}{
-																			{
+																		Lines: []interface{}{
+																			[]interface{}{
 																				types.StringElement{Content: "Item 3 description"},
 																			},
 																		},
@@ -1369,8 +1258,8 @@ Item with description:: something simple`
 												CheckStyle:  types.NoCheck,
 												Elements: []interface{}{
 													types.Paragraph{
-														Lines: [][]interface{}{
-															{
+														Lines: []interface{}{
+															[]interface{}{
 																types.StringElement{Content: "foo"},
 															},
 														},
@@ -1383,8 +1272,8 @@ Item with description:: something simple`
 												CheckStyle:  types.NoCheck,
 												Elements: []interface{}{
 													types.Paragraph{
-														Lines: [][]interface{}{
-															{
+														Lines: []interface{}{
+															[]interface{}{
 																types.StringElement{Content: "bar"},
 															},
 														},
@@ -1404,8 +1293,8 @@ Item with description:: something simple`
 								},
 								Elements: []interface{}{
 									types.Paragraph{
-										Lines: [][]interface{}{
-											{
+										Lines: []interface{}{
+											[]interface{}{
 												types.StringElement{Content: "something simple"},
 											},
 										},
@@ -1440,11 +1329,11 @@ a normal paragraph.`
 
 								Elements: []interface{}{
 									types.Paragraph{
-										Lines: [][]interface{}{
-											{
+										Lines: []interface{}{
+											[]interface{}{
 												types.StringElement{Content: "foo"},
 											},
-											{
+											[]interface{}{
 												types.StringElement{Content: "bar"},
 											},
 										},
@@ -1454,8 +1343,8 @@ a normal paragraph.`
 						},
 					},
 					types.Paragraph{
-						Lines: [][]interface{}{
-							{
+						Lines: []interface{}{
+							[]interface{}{
 								types.StringElement{Content: "a normal paragraph."},
 							},
 						},
@@ -1509,8 +1398,8 @@ another fenced block
 
 								Elements: []interface{}{
 									types.Paragraph{
-										Lines: [][]interface{}{
-											{
+										Lines: []interface{}{
+											[]interface{}{
 												types.StringElement{Content: "something simple"},
 											},
 										},
@@ -1578,8 +1467,8 @@ another fenced block
 
 								Elements: []interface{}{
 									types.Paragraph{
-										Lines: [][]interface{}{
-											{
+										Lines: []interface{}{
+											[]interface{}{
 												types.StringElement{Content: "something simple"},
 											},
 										},
@@ -1624,8 +1513,8 @@ another fenced block
 												CheckStyle:  types.NoCheck,
 												Elements: []interface{}{
 													types.Paragraph{
-														Lines: [][]interface{}{
-															{
+														Lines: []interface{}{
+															[]interface{}{
 																types.StringElement{Content: "unordered item"},
 															},
 														},
@@ -1663,8 +1552,8 @@ second term:: definition of the second term`
 								},
 								Elements: []interface{}{
 									types.Paragraph{
-										Lines: [][]interface{}{
-											{
+										Lines: []interface{}{
+											[]interface{}{
 												types.StringElement{
 													Content: "definition of the first term",
 												},
@@ -1682,8 +1571,8 @@ second term:: definition of the second term`
 								},
 								Elements: []interface{}{
 									types.Paragraph{
-										Lines: [][]interface{}{
-											{
+										Lines: []interface{}{
+											[]interface{}{
 												types.StringElement{
 													Content: "definition of the second term",
 												},
@@ -1721,8 +1610,8 @@ level 1:: description 1`
 								},
 								Elements: []interface{}{
 									types.Paragraph{
-										Lines: [][]interface{}{
-											{
+										Lines: []interface{}{
+											[]interface{}{
 												types.StringElement{
 													Content: "description 1",
 												},
@@ -1740,8 +1629,8 @@ level 1:: description 1`
 												},
 												Elements: []interface{}{
 													types.Paragraph{
-														Lines: [][]interface{}{
-															{
+														Lines: []interface{}{
+															[]interface{}{
 																types.StringElement{
 																	Content: "description 2",
 																},
@@ -1759,8 +1648,8 @@ level 1:: description 1`
 																},
 																Elements: []interface{}{
 																	types.Paragraph{
-																		Lines: [][]interface{}{
-																			{
+																		Lines: []interface{}{
+																			[]interface{}{
 																				types.StringElement{
 																					Content: "description 3",
 																				},
@@ -1786,8 +1675,8 @@ level 1:: description 1`
 								},
 								Elements: []interface{}{
 									types.Paragraph{
-										Lines: [][]interface{}{
-											{
+										Lines: []interface{}{
+											[]interface{}{
 												types.StringElement{
 													Content: "description 1",
 												},
@@ -1825,8 +1714,8 @@ level 2::: description 2`
 								},
 								Elements: []interface{}{
 									types.Paragraph{
-										Lines: [][]interface{}{
-											{
+										Lines: []interface{}{
+											[]interface{}{
 												types.StringElement{
 													Content: "description 1",
 												},
@@ -1844,8 +1733,8 @@ level 2::: description 2`
 												},
 												Elements: []interface{}{
 													types.Paragraph{
-														Lines: [][]interface{}{
-															{
+														Lines: []interface{}{
+															[]interface{}{
 																types.StringElement{
 																	Content: "description 2",
 																},
@@ -1863,8 +1752,8 @@ level 2::: description 2`
 																},
 																Elements: []interface{}{
 																	types.Paragraph{
-																		Lines: [][]interface{}{
-																			{
+																		Lines: []interface{}{
+																			[]interface{}{
 																				types.StringElement{
 																					Content: "description 3",
 																				},
@@ -1886,8 +1775,8 @@ level 2::: description 2`
 												},
 												Elements: []interface{}{
 													types.Paragraph{
-														Lines: [][]interface{}{
-															{
+														Lines: []interface{}{
+															[]interface{}{
 																types.StringElement{
 																	Content: "description 2",
 																},
@@ -1922,8 +1811,8 @@ level 2::: description 2`
 								},
 								Elements: []interface{}{
 									types.Paragraph{
-										Lines: [][]interface{}{
-											{
+										Lines: []interface{}{
+											[]interface{}{
 												types.StringElement{Content: "&amp;"},
 											},
 										},
@@ -1952,8 +1841,8 @@ level 2::: description 2`
 								},
 								Elements: []interface{}{
 									types.Paragraph{
-										Lines: [][]interface{}{
-											{
+										Lines: []interface{}{
+											[]interface{}{
 												types.StringElement{Content: "text"},
 											},
 										},
@@ -1967,6 +1856,101 @@ level 2::: description 2`
 			Expect(ParseDocument(source)).To(MatchDocument(expected))
 		})
 
+		It("with multiple item continuations", func() {
+			source := `Item 1::
+content 1
++
+NOTE: note
+
+Item 2::
+content 2
++
+addition
++
+IMPORTANT: important
++
+TIP: tip`
+			expected := types.Document{
+				Elements: []interface{}{
+					types.LabeledList{
+						Items: []types.LabeledListItem{
+							{
+								Level: 1,
+								Term: []interface{}{
+									types.StringElement{
+										Content: "Item 1",
+									},
+								},
+								Elements: []interface{}{
+									types.Paragraph{
+										Lines: []interface{}{
+											[]interface{}{
+												types.StringElement{Content: "content 1"},
+											},
+										},
+									},
+									types.Paragraph{
+										Attributes: types.Attributes{
+											types.AttrAdmonitionKind: types.Note,
+										},
+										Lines: []interface{}{
+											[]interface{}{
+												types.StringElement{Content: "note"},
+											},
+										},
+									},
+								},
+							},
+							{
+								Level: 1,
+								Term: []interface{}{
+									types.StringElement{
+										Content: "Item 2",
+									},
+								},
+								Elements: []interface{}{
+									types.Paragraph{
+										Lines: []interface{}{
+											[]interface{}{
+												types.StringElement{Content: "content 2"},
+											},
+										},
+									},
+									types.Paragraph{
+										Lines: []interface{}{
+											[]interface{}{
+												types.StringElement{Content: "addition"},
+											},
+										},
+									},
+									types.Paragraph{
+										Attributes: types.Attributes{
+											types.AttrAdmonitionKind: types.Important,
+										},
+										Lines: []interface{}{
+											[]interface{}{
+												types.StringElement{Content: "important"},
+											},
+										},
+									},
+									types.Paragraph{
+										Attributes: types.Attributes{
+											types.AttrAdmonitionKind: types.Tip,
+										},
+										Lines: []interface{}{
+											[]interface{}{
+												types.StringElement{Content: "tip"},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			}
+			Expect(ParseDocument(source)).To(MatchDocument(expected))
+		})
 	})
 
 })

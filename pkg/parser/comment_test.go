@@ -55,9 +55,11 @@ var _ = Describe("comments", func() {
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.StringElement{Content: "foo // A single-line comment."},
+							Lines: []interface{}{
+								[]interface{}{
+									types.StringElement{
+										Content: "foo // A single-line comment.",
+									},
 								},
 							},
 						},
@@ -73,15 +75,21 @@ another line`
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.StringElement{Content: "a first line"},
+							Lines: []interface{}{
+								[]interface{}{
+									types.StringElement{
+										Content: "a first line",
+									},
 								},
-								{
-									types.SingleLineComment{Content: " A single-line comment."},
+								[]interface{}{
+									types.SingleLineComment{
+										Content: " A single-line comment.",
+									},
 								},
-								{
-									types.StringElement{Content: "another line"},
+								[]interface{}{
+									types.StringElement{
+										Content: "another line",
+									},
 								},
 							},
 						},
@@ -97,15 +105,21 @@ another line`
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.StringElement{Content: "a first line"},
+							Lines: []interface{}{
+								[]interface{}{
+									types.StringElement{
+										Content: "a first line",
+									},
 								},
-								{
-									types.SingleLineComment{Content: " A single-line comment."},
+								[]interface{}{
+									types.SingleLineComment{
+										Content: " A single-line comment.",
+									},
 								},
-								{
-									types.StringElement{Content: "another line"},
+								[]interface{}{
+									types.StringElement{
+										Content: "another line",
+									},
 								},
 							},
 						},
@@ -151,9 +165,11 @@ a second paragraph`
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.StringElement{Content: "a first paragraph"},
+							Lines: []interface{}{
+								[]interface{}{
+									types.StringElement{
+										Content: "a first paragraph",
+									},
 								},
 							},
 						},
@@ -170,9 +186,11 @@ a second paragraph`
 							},
 						},
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.StringElement{Content: "a second paragraph"},
+							Lines: []interface{}{
+								[]interface{}{
+									types.StringElement{
+										Content: "a second paragraph",
+									},
 								},
 							},
 						},
@@ -216,8 +234,8 @@ a second paragraph`
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
+							Lines: []interface{}{
+								[]interface{}{
 									types.StringElement{Content: "foo // A single-line comment."},
 								},
 							},
@@ -234,11 +252,11 @@ another line`
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
+							Lines: []interface{}{
+								[]interface{}{
 									types.StringElement{Content: "a first line"},
 								},
-								{
+								[]interface{}{
 									types.StringElement{Content: "another line"},
 								},
 							},
@@ -255,11 +273,11 @@ another line`
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
+							Lines: []interface{}{
+								[]interface{}{
 									types.StringElement{Content: "a first line"},
 								},
-								{
+								[]interface{}{
 									types.StringElement{Content: "another line"},
 								},
 							},
@@ -294,15 +312,15 @@ a second paragraph`
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
+							Lines: []interface{}{
+								[]interface{}{
 									types.StringElement{Content: "a first paragraph"},
 								},
 							},
 						},
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
+							Lines: []interface{}{
+								[]interface{}{
 									types.StringElement{Content: "a second paragraph"},
 								},
 							},
@@ -341,15 +359,15 @@ a second paragraph`
 						Title: section1Title,
 						Elements: []interface{}{
 							types.Paragraph{
-								Lines: [][]interface{}{
-									{
+								Lines: []interface{}{
+									[]interface{}{
 										types.StringElement{Content: "a first paragraph"},
 									},
 								},
 							},
 							types.Paragraph{
-								Lines: [][]interface{}{
-									{
+								Lines: []interface{}{
+									[]interface{}{
 										types.StringElement{Content: "a second paragraph"},
 									},
 								},
@@ -405,15 +423,15 @@ a second paragraph`
 								Title: section1Title,
 								Elements: []interface{}{
 									types.Paragraph{
-										Lines: [][]interface{}{
-											{
+										Lines: []interface{}{
+											[]interface{}{
 												types.StringElement{Content: "a first paragraph"},
 											},
 										},
 									},
 									types.Paragraph{
-										Lines: [][]interface{}{
-											{
+										Lines: []interface{}{
+											[]interface{}{
 												types.StringElement{Content: "a second paragraph"},
 											},
 										},

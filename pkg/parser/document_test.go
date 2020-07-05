@@ -14,10 +14,8 @@ var _ = Describe("documents", func() {
 
 		It("empty document", func() {
 			source := ``
-			expected := types.DraftDocument{
-				Blocks: []interface{}{},
-			}
-			Expect(ParseDraftDocument(source)).To(Equal(expected))
+			expected := types.DraftDocument{}
+			Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 		})
 	})
 

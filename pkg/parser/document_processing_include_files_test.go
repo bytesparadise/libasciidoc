@@ -117,15 +117,15 @@ var _ = DescribeTable("check asciidoc file",
 
 var _ = Describe("file inclusions", func() {
 
-	Context("draft document", func() {
+	Context("raw document", func() {
 
-		Context("without preprocessing", func() {
+		Context("without file inclusions", func() {
 
 			It("should include adoc file without leveloffset in local dir", func() {
 				console, reset := ConfigureLogger()
 				defer reset()
 				source := "include::../../test/includes/chapter-a.adoc[]"
-				expected := types.DraftDocument{
+				expected := types.RawDocument{
 					Blocks: []interface{}{
 						types.FileInclusion{
 							Location: types.Location{
@@ -139,8 +139,7 @@ var _ = Describe("file inclusions", func() {
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source,
-					WithoutPreprocessing(), WithFilename("test.adoc"))).To(Equal(expected))
+				Expect(ParseRawDocument(source, WithFilename("test.adoc"), WithoutFileInclusions())).To(MatchRawDocument(expected))
 				// verify no error/warning in logs
 				Expect(console).ToNot(ContainAnyMessageWithLevels(log.ErrorLevel, log.WarnLevel))
 			})
@@ -149,7 +148,7 @@ var _ = Describe("file inclusions", func() {
 				console, reset := ConfigureLogger()
 				defer reset()
 				source := "include::../../../test/includes/chapter-a.adoc[]"
-				expected := types.DraftDocument{
+				expected := types.RawDocument{
 					Blocks: []interface{}{
 						types.FileInclusion{
 							Location: types.Location{
@@ -163,15 +162,14 @@ var _ = Describe("file inclusions", func() {
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source,
-					WithoutPreprocessing(), WithFilename("tmp/foo.adoc"))).To(Equal(expected))
+				Expect(ParseRawDocument(source, WithFilename("tmp/foo.adoc"), WithoutFileInclusions())).To(MatchRawDocument(expected))
 				// verify no error/warning in logs
 				Expect(console).ToNot(ContainAnyMessageWithLevels(log.ErrorLevel, log.WarnLevel))
 			})
 
 			It("should include adoc file with leveloffset attribute", func() {
 				source := "include::../../test/includes/chapter-a.adoc[leveloffset=+1]"
-				expected := types.DraftDocument{
+				expected := types.RawDocument{
 					Blocks: []interface{}{
 						types.FileInclusion{
 							Attributes: types.Attributes{
@@ -188,8 +186,7 @@ var _ = Describe("file inclusions", func() {
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source,
-					WithoutPreprocessing())).To(Equal(expected))
+				Expect(ParseRawDocument(source, WithoutFileInclusions())).To(MatchRawDocument(expected))
 			})
 
 			Context("in delimited blocks", func() {
@@ -198,7 +195,7 @@ var _ = Describe("file inclusions", func() {
 					source := "```\n" +
 						"include::../../test/includes/chapter-a.adoc[]\n" +
 						"```"
-					expected := types.DraftDocument{
+					expected := types.RawDocument{
 						Blocks: []interface{}{
 							types.DelimitedBlock{
 								Kind: types.Fenced,
@@ -217,14 +214,14 @@ var _ = Describe("file inclusions", func() {
 							},
 						},
 					}
-					Expect(ParseDraftDocument(source, WithoutPreprocessing())).To(MatchDraftDocument(expected))
+					Expect(ParseRawDocument(source, WithoutFileInclusions())).To(MatchRawDocument(expected))
 				})
 
 				It("should include adoc file within listing block", func() {
 					source := "----\n" +
 						"include::../../test/includes/chapter-a.adoc[]\n" +
 						"----"
-					expected := types.DraftDocument{
+					expected := types.RawDocument{
 						Blocks: []interface{}{
 							types.DelimitedBlock{
 								Kind: types.Listing,
@@ -243,14 +240,14 @@ var _ = Describe("file inclusions", func() {
 							},
 						},
 					}
-					Expect(ParseDraftDocument(source, WithoutPreprocessing())).To(Equal(expected))
+					Expect(ParseRawDocument(source, WithoutFileInclusions())).To(MatchRawDocument(expected))
 				})
 
 				It("should include adoc file within example block", func() {
 					source := "====\n" +
 						"include::../../test/includes/chapter-a.adoc[]\n" +
 						"===="
-					expected := types.DraftDocument{
+					expected := types.RawDocument{
 						Blocks: []interface{}{
 							types.DelimitedBlock{
 								Kind: types.Example,
@@ -269,14 +266,14 @@ var _ = Describe("file inclusions", func() {
 							},
 						},
 					}
-					Expect(ParseDraftDocument(source, WithoutPreprocessing())).To(Equal(expected))
+					Expect(ParseRawDocument(source, WithoutFileInclusions())).To(MatchRawDocument(expected))
 				})
 
 				It("should include adoc file within quote block", func() {
 					source := "____\n" +
 						"include::../../test/includes/chapter-a.adoc[]\n" +
 						"____"
-					expected := types.DraftDocument{
+					expected := types.RawDocument{
 						Blocks: []interface{}{
 							types.DelimitedBlock{
 								Kind: types.Quote,
@@ -295,7 +292,7 @@ var _ = Describe("file inclusions", func() {
 							},
 						},
 					}
-					Expect(ParseDraftDocument(source, WithoutPreprocessing())).To(Equal(expected))
+					Expect(ParseRawDocument(source, WithoutFileInclusions())).To(MatchRawDocument(expected))
 				})
 
 				It("should include adoc file within verse block", func() {
@@ -303,7 +300,7 @@ var _ = Describe("file inclusions", func() {
 						"____\n" +
 						"include::../../test/includes/chapter-a.adoc[]\n" +
 						"____"
-					expected := types.DraftDocument{
+					expected := types.RawDocument{
 						Blocks: []interface{}{
 							types.DelimitedBlock{
 								Attributes: types.Attributes{
@@ -325,14 +322,14 @@ var _ = Describe("file inclusions", func() {
 							},
 						},
 					}
-					Expect(ParseDraftDocument(source, WithoutPreprocessing())).To(Equal(expected))
+					Expect(ParseRawDocument(source, WithoutFileInclusions())).To(MatchRawDocument(expected))
 				})
 
 				It("should include adoc file within sidebar block", func() {
 					source := "****\n" +
 						"include::../../test/includes/chapter-a.adoc[]\n" +
 						"****"
-					expected := types.DraftDocument{
+					expected := types.RawDocument{
 						Blocks: []interface{}{
 							types.DelimitedBlock{
 								Kind: types.Sidebar,
@@ -351,7 +348,7 @@ var _ = Describe("file inclusions", func() {
 							},
 						},
 					}
-					Expect(ParseDraftDocument(source, WithoutPreprocessing())).To(MatchDraftDocument(expected))
+					Expect(ParseRawDocument(source, WithoutFileInclusions())).To(MatchRawDocument(expected))
 				})
 
 				It("should include adoc file within passthrough block", func() {
@@ -359,7 +356,7 @@ var _ = Describe("file inclusions", func() {
 					source := "++++\n" +
 						"include::../../test/includes/chapter-a.adoc[]\n" +
 						"++++"
-					expected := types.DraftDocument{
+					expected := types.RawDocument{
 						Blocks: []interface{}{
 							types.DelimitedBlock{
 								// Kind:       types.InlinePassthrough,
@@ -378,7 +375,7 @@ var _ = Describe("file inclusions", func() {
 							},
 						},
 					}
-					Expect(ParseDraftDocument(source, WithoutPreprocessing())).To(Equal(expected))
+					Expect(ParseRawDocument(source, WithoutFileInclusions())).To(MatchRawDocument(expected))
 				})
 			})
 
@@ -388,7 +385,7 @@ var _ = Describe("file inclusions", func() {
 
 					It("file inclusion with single unquoted line", func() {
 						source := `include::../../test/includes/chapter-a.adoc[lines=1]`
-						expected := types.DraftDocument{
+						expected := types.RawDocument{
 							Blocks: []interface{}{
 								types.FileInclusion{
 									Attributes: types.Attributes{
@@ -407,13 +404,12 @@ var _ = Describe("file inclusions", func() {
 								},
 							},
 						}
-						Expect(ParseDraftDocument(source,
-							WithoutPreprocessing())).To(Equal(expected))
+						Expect(ParseRawDocument(source, WithoutFileInclusions())).To(MatchRawDocument(expected))
 					})
 
 					It("file inclusion with multiple unquoted lines", func() {
 						source := `include::../../test/includes/chapter-a.adoc[lines=1..2]`
-						expected := types.DraftDocument{
+						expected := types.RawDocument{
 							Blocks: []interface{}{
 								types.FileInclusion{
 									Attributes: types.Attributes{
@@ -432,13 +428,12 @@ var _ = Describe("file inclusions", func() {
 								},
 							},
 						}
-						Expect(ParseDraftDocument(source,
-							WithoutPreprocessing())).To(Equal(expected))
+						Expect(ParseRawDocument(source, WithoutFileInclusions())).To(MatchRawDocument(expected))
 					})
 
 					It("file inclusion with multiple unquoted ranges", func() {
 						source := `include::../../test/includes/chapter-a.adoc[lines=1;3..4;6..-1]`
-						expected := types.DraftDocument{
+						expected := types.RawDocument{
 							Blocks: []interface{}{
 								types.FileInclusion{
 									Attributes: types.Attributes{
@@ -459,13 +454,12 @@ var _ = Describe("file inclusions", func() {
 								},
 							},
 						}
-						Expect(ParseDraftDocument(source,
-							WithoutPreprocessing())).To(Equal(expected))
+						Expect(ParseRawDocument(source, WithoutFileInclusions())).To(MatchRawDocument(expected))
 					})
 
 					It("file inclusion with invalid unquoted range - case 1", func() {
 						source := `include::../../test/includes/chapter-a.adoc[lines=1;3..4;6..foo]` // not a number
-						expected := types.DraftDocument{
+						expected := types.RawDocument{
 							Blocks: []interface{}{
 								types.FileInclusion{
 									Attributes: types.Attributes{
@@ -482,13 +476,12 @@ var _ = Describe("file inclusions", func() {
 								},
 							},
 						}
-						Expect(ParseDraftDocument(source,
-							WithoutPreprocessing())).To(Equal(expected))
+						Expect(ParseRawDocument(source, WithoutFileInclusions())).To(MatchRawDocument(expected))
 					})
 
 					It("file inclusion with invalid unquoted range - case 2", func() {
 						source := `include::../../test/includes/chapter-a.adoc[lines=1,3..4,6..-1]` // using commas instead of semi-colons
-						expected := types.DraftDocument{
+						expected := types.RawDocument{
 							Blocks: []interface{}{
 								types.FileInclusion{
 									Attributes: types.Attributes{
@@ -509,13 +502,12 @@ var _ = Describe("file inclusions", func() {
 								},
 							},
 						}
-						Expect(ParseDraftDocument(source,
-							WithoutPreprocessing())).To(Equal(expected))
+						Expect(ParseRawDocument(source, WithoutFileInclusions())).To(MatchRawDocument(expected))
 					})
 
 					It("file inclusion with invalid unquoted range - case 3", func() {
 						source := `include::../../test/includes/chapter-a.adoc[lines=foo]` // using commas instead of semi-colons
-						expected := types.DraftDocument{
+						expected := types.RawDocument{
 							Blocks: []interface{}{
 								types.FileInclusion{
 									Attributes: types.Attributes{
@@ -532,8 +524,7 @@ var _ = Describe("file inclusions", func() {
 								},
 							},
 						}
-						Expect(ParseDraftDocument(source,
-							WithoutPreprocessing())).To(Equal(expected))
+						Expect(ParseRawDocument(source, WithoutFileInclusions())).To(MatchRawDocument(expected))
 					})
 				})
 
@@ -541,7 +532,7 @@ var _ = Describe("file inclusions", func() {
 
 					It("file inclusion with single quoted line", func() {
 						source := `include::../../test/includes/chapter-a.adoc[lines="1"]`
-						expected := types.DraftDocument{
+						expected := types.RawDocument{
 							Blocks: []interface{}{
 								types.FileInclusion{
 									Attributes: types.Attributes{
@@ -560,13 +551,12 @@ var _ = Describe("file inclusions", func() {
 								},
 							},
 						}
-						Expect(ParseDraftDocument(source,
-							WithoutPreprocessing())).To(Equal(expected))
+						Expect(ParseRawDocument(source, WithoutFileInclusions())).To(MatchRawDocument(expected))
 					})
 
 					It("file inclusion with multiple quoted lines", func() {
 						source := `include::../../test/includes/chapter-a.adoc[lines="1..2"]`
-						expected := types.DraftDocument{
+						expected := types.RawDocument{
 							Blocks: []interface{}{
 								types.FileInclusion{
 									Attributes: types.Attributes{
@@ -585,13 +575,12 @@ var _ = Describe("file inclusions", func() {
 								},
 							},
 						}
-						Expect(ParseDraftDocument(source,
-							WithoutPreprocessing())).To(Equal(expected))
+						Expect(ParseRawDocument(source, WithoutFileInclusions())).To(MatchRawDocument(expected))
 					})
 
 					It("file inclusion with multiple quoted ranges", func() {
 						source := `include::../../test/includes/chapter-a.adoc[lines="1,3..4,6..-1"]`
-						expected := types.DraftDocument{
+						expected := types.RawDocument{
 							Blocks: []interface{}{
 								types.FileInclusion{
 									Attributes: types.Attributes{
@@ -612,13 +601,12 @@ var _ = Describe("file inclusions", func() {
 								},
 							},
 						}
-						Expect(ParseDraftDocument(source,
-							WithoutPreprocessing())).To(Equal(expected))
+						Expect(ParseRawDocument(source, WithoutFileInclusions())).To(MatchRawDocument(expected))
 					})
 
 					It("file inclusion with invalid quoted range - case 1", func() {
 						source := `include::../../test/includes/chapter-a.adoc[lines="1,3..4,6..foo"]` // not a number
-						expected := types.DraftDocument{
+						expected := types.RawDocument{
 							Blocks: []interface{}{
 								types.FileInclusion{
 									Attributes: types.Attributes{
@@ -637,13 +625,12 @@ var _ = Describe("file inclusions", func() {
 								},
 							},
 						}
-						Expect(ParseDraftDocument(source,
-							WithoutPreprocessing())).To(Equal(expected))
+						Expect(ParseRawDocument(source, WithoutFileInclusions())).To(MatchRawDocument(expected))
 					})
 
 					It("file inclusion with invalid quoted range - case 2", func() {
 						source := `include::../../test/includes/chapter-a.adoc[lines="1;3..4;6..10"]` // using semi-colons instead of commas
-						expected := types.DraftDocument{
+						expected := types.RawDocument{
 							Blocks: []interface{}{
 								types.FileInclusion{
 									Attributes: types.Attributes{
@@ -660,8 +647,7 @@ var _ = Describe("file inclusions", func() {
 								},
 							},
 						}
-						Expect(ParseDraftDocument(source,
-							WithoutPreprocessing())).To(Equal(expected))
+						Expect(ParseRawDocument(source, WithoutFileInclusions())).To(MatchRawDocument(expected))
 					})
 				})
 
@@ -669,7 +655,7 @@ var _ = Describe("file inclusions", func() {
 
 					It("file inclusion with single tag", func() {
 						source := `include::../../test/includes/tag-include.adoc[tag=section]`
-						expected := types.DraftDocument{
+						expected := types.RawDocument{
 							Blocks: []interface{}{
 								types.FileInclusion{
 									Attributes: types.Attributes{
@@ -691,13 +677,12 @@ var _ = Describe("file inclusions", func() {
 								},
 							},
 						}
-						Expect(ParseDraftDocument(source,
-							WithoutPreprocessing())).To(Equal(expected))
+						Expect(ParseRawDocument(source, WithoutFileInclusions())).To(MatchRawDocument(expected))
 					})
 
 					It("file inclusion with multiple tags", func() {
 						source := `include::../../test/includes/tag-include.adoc[tags=section;content]`
-						expected := types.DraftDocument{
+						expected := types.RawDocument{
 							Blocks: []interface{}{
 								types.FileInclusion{
 									Attributes: types.Attributes{
@@ -723,20 +708,19 @@ var _ = Describe("file inclusions", func() {
 								},
 							},
 						}
-						Expect(ParseDraftDocument(source,
-							WithoutPreprocessing())).To(Equal(expected))
+						Expect(ParseRawDocument(source, WithoutFileInclusions())).To(MatchRawDocument(expected))
 					})
 				})
 			})
 		})
 
-		Context("with preprocessing", func() {
+		Context("with file inclusions", func() {
 
 			It("should include adoc file without leveloffset from local file", func() {
 				console, reset := ConfigureLogger()
 				defer reset()
 				source := "include::../../test/includes/chapter-a.adoc[]"
-				expected := types.DraftDocument{
+				expected := types.RawDocument{
 					Blocks: []interface{}{
 						types.Section{
 							Level: 0,
@@ -749,17 +733,15 @@ var _ = Describe("file inclusions", func() {
 						},
 						types.BlankLine{},
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.StringElement{
-										Content: "content",
-									},
+							Lines: []interface{}{
+								types.RawLine{
+									Content: "content",
 								},
 							},
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source, WithFilename("foo.adoc"))).To(Equal(expected))
+				Expect(ParseRawDocument(source, WithFilename("foo.adoc"))).To(MatchRawDocument(expected))
 				// verify no error/warning in logs
 				Expect(console).ToNot(ContainAnyMessageWithLevels(log.ErrorLevel, log.WarnLevel))
 			})
@@ -768,7 +750,7 @@ var _ = Describe("file inclusions", func() {
 				console, reset := ConfigureLogger()
 				defer reset()
 				source := "include::../../../test/includes/chapter-a.adoc[]"
-				expected := types.DraftDocument{
+				expected := types.RawDocument{
 					Blocks: []interface{}{
 						types.Section{
 							Level: 0,
@@ -781,17 +763,15 @@ var _ = Describe("file inclusions", func() {
 						},
 						types.BlankLine{},
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.StringElement{
-										Content: "content",
-									},
+							Lines: []interface{}{
+								types.RawLine{
+									Content: "content",
 								},
 							},
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source, WithFilename("tmp/foo.adoc"))).To(Equal(expected))
+				Expect(ParseRawDocument(source, WithFilename("tmp/foo.adoc"))).To(MatchRawDocument(expected))
 				// verify no error/warning in logs
 				Expect(console).ToNot(ContainAnyMessageWithLevels(log.ErrorLevel, log.WarnLevel))
 			})
@@ -800,7 +780,7 @@ var _ = Describe("file inclusions", func() {
 				console, reset := ConfigureLogger()
 				defer reset()
 				source := "include::../../test/includes/chapter-a.adoc[leveloffset=+1]"
-				expected := types.DraftDocument{
+				expected := types.RawDocument{
 					Blocks: []interface{}{
 						types.Section{
 							Level: 1,
@@ -813,17 +793,15 @@ var _ = Describe("file inclusions", func() {
 						},
 						types.BlankLine{},
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.StringElement{
-										Content: "content",
-									},
+							Lines: []interface{}{
+								types.RawLine{
+									Content: "content",
 								},
 							},
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				Expect(ParseRawDocument(source)).To(MatchRawDocument(expected))
 				// verify no error/warning in logs
 				Expect(console).ToNot(ContainAnyMessageWithLevels(log.ErrorLevel, log.WarnLevel))
 			})
@@ -831,7 +809,7 @@ var _ = Describe("file inclusions", func() {
 			It("should include section 0 by default", func() {
 				source := "include::../../test/includes/chapter-a.adoc[]"
 				// at this level (parsing), it is expected that the Section 0 is part of the Prefligh document
-				expected := types.DraftDocument{
+				expected := types.RawDocument{
 					Blocks: []interface{}{
 						types.Section{
 							Level: 0,
@@ -844,17 +822,15 @@ var _ = Describe("file inclusions", func() {
 						},
 						types.BlankLine{},
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.StringElement{
-										Content: "content",
-									},
+							Lines: []interface{}{
+								types.RawLine{
+									Content: "content",
 								},
 							},
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				Expect(ParseRawDocument(source)).To(MatchRawDocument(expected))
 			})
 
 			It("should not include section 0 when attribute found", func() {
@@ -862,7 +838,7 @@ var _ = Describe("file inclusions", func() {
 
 include::{includedir}/chapter-a.adoc[]`
 				// at this level (parsing), it is expected that the Section 0 is part of the Prefligh document
-				expected := types.DraftDocument{
+				expected := types.RawDocument{
 					Blocks: []interface{}{
 						types.AttributeDeclaration{
 							Name:  "includedir",
@@ -880,24 +856,22 @@ include::{includedir}/chapter-a.adoc[]`
 						},
 						types.BlankLine{},
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.StringElement{
-										Content: "content",
-									},
+							Lines: []interface{}{
+								types.RawLine{
+									Content: "content",
 								},
 							},
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				Expect(ParseRawDocument(source)).To(MatchRawDocument(expected))
 			})
 
 			It("should not further process with non-asciidoc files", func() {
 				source := `:includedir: ../../test/includes
 
 include::{includedir}/include.foo[]`
-				expected := types.DraftDocument{
+				expected := types.RawDocument{
 					Blocks: []interface{}{
 						types.AttributeDeclaration{
 							Name:  "includedir",
@@ -905,37 +879,28 @@ include::{includedir}/include.foo[]`
 						},
 						types.BlankLine{},
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.QuotedText{
-										Kind: types.Bold,
-										Elements: []interface{}{
-											types.StringElement{
-												Content: "some strong content",
-											},
-										},
-									},
+							Lines: []interface{}{
+								types.RawLine{
+									Content: "*some strong content*",
 								},
 							},
 						},
 						types.BlankLine{},
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.StringElement{
-										Content: "include::hello_world.go.txt[]",
-									},
+							Lines: []interface{}{
+								types.RawLine{
+									Content: "include::hello_world.go.txt[]",
 								},
 							},
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source, WithFilename("foo.bar"))).To(Equal(expected)) // parent doc may not need to be a '.adoc'
+				Expect(ParseRawDocument(source, WithFilename("foo.bar"))).To(MatchRawDocument(expected)) // parent doc may not need to be a '.adoc'
 			})
 
 			It("should include grandchild content without offset", func() {
 				source := `include::../../test/includes/grandchild-include.adoc[]`
-				expected := types.DraftDocument{
+				expected := types.RawDocument{
 					Blocks: []interface{}{
 						types.Section{
 							Level: 1,
@@ -948,32 +913,28 @@ include::{includedir}/include.foo[]`
 						},
 						types.BlankLine{},
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.StringElement{
-										Content: "first line of grandchild",
-									},
+							Lines: []interface{}{
+								types.RawLine{
+									Content: "first line of grandchild",
 								},
 							},
 						},
 						types.BlankLine{},
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.StringElement{
-										Content: "last line of grandchild",
-									},
+							Lines: []interface{}{
+								types.RawLine{
+									Content: "last line of grandchild",
 								},
 							},
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source, WithFilename("test.adoc"))).To(Equal(expected))
+				Expect(ParseRawDocument(source, WithFilename("test.adoc"))).To(MatchRawDocument(expected))
 			})
 
 			It("should include grandchild content with relative offset", func() {
 				source := `include::../../test/includes/grandchild-include.adoc[leveloffset=+1]`
-				expected := types.DraftDocument{
+				expected := types.RawDocument{
 					Blocks: []interface{}{
 						types.Section{
 							Level: 2,
@@ -986,32 +947,28 @@ include::{includedir}/include.foo[]`
 						},
 						types.BlankLine{},
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.StringElement{
-										Content: "first line of grandchild",
-									},
+							Lines: []interface{}{
+								types.RawLine{
+									Content: "first line of grandchild",
 								},
 							},
 						},
 						types.BlankLine{},
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.StringElement{
-										Content: "last line of grandchild",
-									},
+							Lines: []interface{}{
+								types.RawLine{
+									Content: "last line of grandchild",
 								},
 							},
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source, WithFilename("test.adoc"))).To(Equal(expected))
+				Expect(ParseRawDocument(source, WithFilename("test.adoc"))).To(MatchRawDocument(expected))
 			})
 
 			It("should include grandchild content with absolute offset", func() {
 				source := `include::../../test/includes/grandchild-include.adoc[leveloffset=0]`
-				expected := types.DraftDocument{
+				expected := types.RawDocument{
 					Blocks: []interface{}{
 						types.Section{
 							Level: 0,
@@ -1024,32 +981,28 @@ include::{includedir}/include.foo[]`
 						},
 						types.BlankLine{},
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.StringElement{
-										Content: "first line of grandchild",
-									},
+							Lines: []interface{}{
+								types.RawLine{
+									Content: "first line of grandchild",
 								},
 							},
 						},
 						types.BlankLine{},
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.StringElement{
-										Content: "last line of grandchild",
-									},
+							Lines: []interface{}{
+								types.RawLine{
+									Content: "last line of grandchild",
 								},
 							},
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source, WithFilename("test.adoc"))).To(Equal(expected))
+				Expect(ParseRawDocument(source, WithFilename("test.adoc"))).To(MatchRawDocument(expected))
 			})
 
 			It("should include child and grandchild content with relative level offset", func() {
 				source := `include::../../test/includes/parent-include-relative-offset.adoc[leveloffset=+1]`
-				expected := types.DraftDocument{
+				expected := types.RawDocument{
 					Blocks: []interface{}{
 						types.Section{
 							Level: 1, // here the level is changed from `0` to `1` since `root` doc has a `leveloffset=+1` during its inclusion
@@ -1062,21 +1015,17 @@ include::{includedir}/include.foo[]`
 						},
 						types.BlankLine{},
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.StringElement{
-										Content: "first line of parent",
-									},
+							Lines: []interface{}{
+								types.RawLine{
+									Content: "first line of parent",
 								},
 							},
 						},
 						types.BlankLine{},
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.StringElement{
-										Content: "child preamble",
-									},
+							Lines: []interface{}{
+								types.RawLine{
+									Content: "child preamble",
 								},
 							},
 						},
@@ -1092,11 +1041,9 @@ include::{includedir}/include.foo[]`
 						},
 						types.BlankLine{},
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.StringElement{
-										Content: "first line of child",
-									},
+							Lines: []interface{}{
+								types.RawLine{
+									Content: "first line of child",
 								},
 							},
 						},
@@ -1112,21 +1059,17 @@ include::{includedir}/include.foo[]`
 						},
 						types.BlankLine{},
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.StringElement{
-										Content: "first line of grandchild",
-									},
+							Lines: []interface{}{
+								types.RawLine{
+									Content: "first line of grandchild",
 								},
 							},
 						},
 						types.BlankLine{},
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.StringElement{
-										Content: "last line of grandchild",
-									},
+							Lines: []interface{}{
+								types.RawLine{
+									Content: "last line of grandchild",
 								},
 							},
 						},
@@ -1142,32 +1085,28 @@ include::{includedir}/include.foo[]`
 						},
 						types.BlankLine{},
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.StringElement{
-										Content: "last line of child",
-									},
+							Lines: []interface{}{
+								types.RawLine{
+									Content: "last line of child",
 								},
 							},
 						},
 						types.BlankLine{},
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.StringElement{
-										Content: "last line of parent",
-									},
+							Lines: []interface{}{
+								types.RawLine{
+									Content: "last line of parent",
 								},
 							},
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source, WithFilename("test.adoc"))).To(Equal(expected))
+				Expect(ParseRawDocument(source, WithFilename("test.adoc"))).To(MatchRawDocument(expected))
 			})
 
 			It("should include child and grandchild content with relative then absolute level offset", func() {
 				source := `include::../../test/includes/parent-include-absolute-offset.adoc[leveloffset=+1]`
-				expected := types.DraftDocument{
+				expected := types.RawDocument{
 					Blocks: []interface{}{
 						types.Section{
 							Level: 1, // here the level is offset by `+1` as per root doc attribute in the `include` macro
@@ -1180,21 +1119,17 @@ include::{includedir}/include.foo[]`
 						},
 						types.BlankLine{},
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.StringElement{
-										Content: "first line of parent",
-									},
+							Lines: []interface{}{
+								types.RawLine{
+									Content: "first line of parent",
 								},
 							},
 						},
 						types.BlankLine{},
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.StringElement{
-										Content: "child preamble",
-									},
+							Lines: []interface{}{
+								types.RawLine{
+									Content: "child preamble",
 								},
 							},
 						},
@@ -1210,11 +1145,9 @@ include::{includedir}/include.foo[]`
 						},
 						types.BlankLine{},
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.StringElement{
-										Content: "first line of child",
-									},
+							Lines: []interface{}{
+								types.RawLine{
+									Content: "first line of child",
 								},
 							},
 						},
@@ -1230,21 +1163,17 @@ include::{includedir}/include.foo[]`
 						},
 						types.BlankLine{},
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.StringElement{
-										Content: "first line of grandchild",
-									},
+							Lines: []interface{}{
+								types.RawLine{
+									Content: "first line of grandchild",
 								},
 							},
 						},
 						types.BlankLine{},
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.StringElement{
-										Content: "last line of grandchild",
-									},
+							Lines: []interface{}{
+								types.RawLine{
+									Content: "last line of grandchild",
 								},
 							},
 						},
@@ -1260,27 +1189,23 @@ include::{includedir}/include.foo[]`
 						},
 						types.BlankLine{},
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.StringElement{
-										Content: "last line of child",
-									},
+							Lines: []interface{}{
+								types.RawLine{
+									Content: "last line of child",
 								},
 							},
 						},
 						types.BlankLine{},
 						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.StringElement{
-										Content: "last line of parent",
-									},
+							Lines: []interface{}{
+								types.RawLine{
+									Content: "last line of parent",
 								},
 							},
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source, WithFilename("test.adoc"))).To(Equal(expected))
+				Expect(ParseRawDocument(source, WithFilename("test.adoc"))).To(MatchRawDocument(expected))
 			})
 
 			Context("in delimited blocks", func() {
@@ -1289,162 +1214,138 @@ include::{includedir}/include.foo[]`
 					source := "```\n" +
 						"include::../../test/includes/parent-include.adoc[]\n" +
 						"```"
-					expected := types.DraftDocument{
+					expected := types.RawDocument{
 						Blocks: []interface{}{
 							types.DelimitedBlock{
 								Kind: types.Fenced,
 								Elements: []interface{}{
-									types.VerbatimLine{
+									types.RawLine{
 										Content: "= parent title",
 									},
-									types.VerbatimLine{
+									types.RawLine{
 										Content: "",
 									},
-									types.VerbatimLine{
+									types.RawLine{
 										Content: "first line of parent",
 									},
-									types.VerbatimLine{
+									types.RawLine{
 										Content: "",
 									},
-									types.VerbatimLine{
+									types.RawLine{
 										Content: "= child title",
 									},
-									types.VerbatimLine{
+									types.RawLine{
 										Content: "",
 									},
-									types.VerbatimLine{
+									types.RawLine{
 										Content: "first line of child",
 									},
-									types.VerbatimLine{
+									types.RawLine{
 										Content: "",
 									},
-									types.VerbatimLine{
+									types.RawLine{
 										Content: "== grandchild title",
 									},
-									types.VerbatimLine{
+									types.RawLine{
 										Content: "",
 									},
-									types.VerbatimLine{
+									types.RawLine{
 										Content: "first line of grandchild",
 									},
-									types.VerbatimLine{
+									types.RawLine{
 										Content: "",
 									},
-									types.VerbatimLine{
+									types.RawLine{
 										Content: "last line of grandchild",
 									},
-									types.VerbatimLine{
+									types.RawLine{
 										Content: "",
 									},
-									types.VerbatimLine{
+									types.RawLine{
 										Content: "last line of child",
 									},
-									types.VerbatimLine{
+									types.RawLine{
 										Content: "",
 									},
-									types.VerbatimLine{
+									types.RawLine{
 										Content: "last line of parent",
 									},
 								},
 							},
 						},
 					}
-					Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+					Expect(ParseRawDocument(source)).To(MatchRawDocument(expected))
 				})
 
 				It("should include adoc file within listing block", func() {
 					source := `----
 include::../../test/includes/chapter-a.adoc[]
 ----`
-					expected := types.DraftDocument{
+					expected := types.RawDocument{
 						Blocks: []interface{}{
 							types.DelimitedBlock{
 								Kind: types.Listing,
 								Elements: []interface{}{
-									types.VerbatimLine{
+									types.RawLine{
 										Content: "= Chapter A",
 									},
-									types.VerbatimLine{
+									types.RawLine{
 										Content: "",
 									},
-									types.VerbatimLine{
+									types.RawLine{
 										Content: "content",
 									},
 								},
 							},
 						},
 					}
-					Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+					Expect(ParseRawDocument(source)).To(MatchRawDocument(expected))
 				})
 
 				It("should include adoc file within example block", func() {
 					source := `====
 include::../../test/includes/chapter-a.adoc[]
 ====`
-					expected := types.DraftDocument{
+					expected := types.RawDocument{
 						Blocks: []interface{}{
 							types.DelimitedBlock{
 								Kind: types.Example,
 								Elements: []interface{}{
-									types.Paragraph{
-										Lines: [][]interface{}{
-											{
-												types.StringElement{
-													Content: "= Chapter A",
-												},
-											},
-										},
+									types.RawLine{
+										Content: "= Chapter A",
 									},
-									types.BlankLine{},
-									types.Paragraph{
-										Lines: [][]interface{}{
-											{
-												types.StringElement{
-													Content: "content",
-												},
-											},
-										},
+									types.RawLine{},
+									types.RawLine{
+										Content: "content",
 									},
 								},
 							},
 						},
 					}
-					Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+					Expect(ParseRawDocument(source)).To(MatchRawDocument(expected))
 				})
 
 				It("should include adoc file within quote block", func() {
 					source := `____
 include::../../test/includes/chapter-a.adoc[]
 ____`
-					expected := types.DraftDocument{
+					expected := types.RawDocument{
 						Blocks: []interface{}{
 							types.DelimitedBlock{
 								Kind: types.Quote,
 								Elements: []interface{}{
-									types.Paragraph{
-										Lines: [][]interface{}{
-											{
-												types.StringElement{
-													Content: "= Chapter A",
-												},
-											},
-										},
+									types.RawLine{
+										Content: "= Chapter A",
 									},
-									types.BlankLine{},
-									types.Paragraph{
-										Lines: [][]interface{}{
-											{
-												types.StringElement{
-													Content: "content",
-												},
-											},
-										},
+									types.RawLine{},
+									types.RawLine{
+										Content: "content",
 									},
 								},
 							},
 						},
 					}
-					Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+					Expect(ParseRawDocument(source)).To(MatchRawDocument(expected))
 				})
 
 				It("should include adoc file within verse block", func() {
@@ -1452,7 +1353,7 @@ ____`
 ____
 include::../../test/includes/chapter-a.adoc[]
 ____`
-					expected := types.DraftDocument{
+					expected := types.RawDocument{
 						Blocks: []interface{}{
 							types.DelimitedBlock{
 								Attributes: types.Attributes{
@@ -1460,65 +1361,41 @@ ____`
 								},
 								Kind: types.Verse,
 								Elements: []interface{}{
-									types.Paragraph{
-										Lines: [][]interface{}{
-											{
-												types.StringElement{
-													Content: "= Chapter A",
-												},
-											},
-										},
+									types.RawLine{
+										Content: "= Chapter A",
 									},
-									types.BlankLine{},
-									types.Paragraph{
-										Lines: [][]interface{}{
-											{
-												types.StringElement{
-													Content: "content",
-												},
-											},
-										},
+									types.RawLine{},
+									types.RawLine{
+										Content: "content",
 									},
 								},
 							},
 						},
 					}
-					Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+					Expect(ParseRawDocument(source)).To(MatchRawDocument(expected))
 				})
 
 				It("should include adoc file within sidebar block", func() {
 					source := `****
 include::../../test/includes/chapter-a.adoc[]
 ****`
-					expected := types.DraftDocument{
+					expected := types.RawDocument{
 						Blocks: []interface{}{
 							types.DelimitedBlock{
 								Kind: types.Sidebar,
 								Elements: []interface{}{
-									types.Paragraph{
-										Lines: [][]interface{}{
-											{
-												types.StringElement{
-													Content: "= Chapter A",
-												},
-											},
-										},
+									types.RawLine{
+										Content: "= Chapter A",
 									},
-									types.BlankLine{},
-									types.Paragraph{
-										Lines: [][]interface{}{
-											{
-												types.StringElement{
-													Content: "content",
-												},
-											},
-										},
+									types.RawLine{},
+									types.RawLine{
+										Content: "content",
 									},
 								},
 							},
 						},
 					}
-					Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+					Expect(ParseRawDocument(source)).To(MatchRawDocument(expected))
 				})
 
 				It("should include adoc file within passthrough block", func() {
@@ -1526,35 +1403,23 @@ include::../../test/includes/chapter-a.adoc[]
 					source := `++++
 include::../../test/includes/chapter-a.adoc[]
 ++++`
-					expected := types.DraftDocument{
+					expected := types.RawDocument{
 						Blocks: []interface{}{
 							types.DelimitedBlock{
 								// Kind:       types.InlinePassthrough,
 								Elements: []interface{}{
-									types.Paragraph{
-										Lines: [][]interface{}{
-											{
-												types.StringElement{
-													Content: "= Chapter A",
-												},
-											},
-										},
+									types.RawLine{
+										Content: "= Chapter A",
 									},
-									types.BlankLine{},
-									types.Paragraph{
-										Lines: [][]interface{}{
-											{
-												types.StringElement{
-													Content: "content",
-												},
-											},
-										},
+									types.RawLine{},
+									types.RawLine{
+										Content: "content",
 									},
 								},
 							},
 						},
 					}
-					Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+					Expect(ParseRawDocument(source)).To(MatchRawDocument(expected))
 				})
 			})
 
@@ -1564,7 +1429,7 @@ include::../../test/includes/chapter-a.adoc[]
 
 					It("file inclusion with single unquoted line", func() {
 						source := `include::../../test/includes/chapter-a.adoc[lines=1]`
-						expected := types.DraftDocument{
+						expected := types.RawDocument{
 							Blocks: []interface{}{
 								types.Section{
 									Level: 0,
@@ -1577,12 +1442,12 @@ include::../../test/includes/chapter-a.adoc[]
 								},
 							},
 						}
-						Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+						Expect(ParseRawDocument(source)).To(MatchRawDocument(expected))
 					})
 
 					It("file inclusion with multiple unquoted lines", func() {
 						source := `include::../../test/includes/chapter-a.adoc[lines=1..2]`
-						expected := types.DraftDocument{
+						expected := types.RawDocument{
 							Blocks: []interface{}{
 								types.Section{
 									Level: 0,
@@ -1596,12 +1461,12 @@ include::../../test/includes/chapter-a.adoc[]
 								types.BlankLine{},
 							},
 						}
-						Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+						Expect(ParseRawDocument(source)).To(MatchRawDocument(expected))
 					})
 
 					It("file inclusion with multiple unquoted ranges", func() {
 						source := `include::../../test/includes/chapter-a.adoc[lines=1;3..4;6..-1]` // paragraph becomes the author since the in-between blank line is stripped out
-						expected := types.DraftDocument{
+						expected := types.RawDocument{
 							Blocks: []interface{}{
 								types.Section{
 									Level: 0,
@@ -1621,12 +1486,12 @@ include::../../test/includes/chapter-a.adoc[]
 								},
 							},
 						}
-						Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+						Expect(ParseRawDocument(source)).To(MatchRawDocument(expected))
 					})
 
 					It("file inclusion with invalid unquoted range - case 1", func() {
 						source := `include::../../test/includes/chapter-a.adoc[lines=1;3..4;6..foo]` // not a number
-						expected := types.DraftDocument{
+						expected := types.RawDocument{
 							Blocks: []interface{}{
 								types.Section{
 									Level: 0,
@@ -1639,22 +1504,20 @@ include::../../test/includes/chapter-a.adoc[]
 								},
 								types.BlankLine{},
 								types.Paragraph{
-									Lines: [][]interface{}{
-										{
-											types.StringElement{
-												Content: "content",
-											},
+									Lines: []interface{}{
+										types.RawLine{
+											Content: "content",
 										},
 									},
 								},
 							},
 						}
-						Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+						Expect(ParseRawDocument(source)).To(MatchRawDocument(expected))
 					})
 
 					It("file inclusion with invalid unquoted range - case 2", func() {
 						source := `include::../../test/includes/chapter-a.adoc[lines=1,3..4,6..-1]` // using commas instead of semi-colons
-						expected := types.DraftDocument{
+						expected := types.RawDocument{
 							Blocks: []interface{}{
 								types.Section{
 									Level: 0,
@@ -1667,7 +1530,7 @@ include::../../test/includes/chapter-a.adoc[]
 								},
 							},
 						}
-						Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+						Expect(ParseRawDocument(source)).To(MatchRawDocument(expected))
 					})
 				})
 
@@ -1677,7 +1540,7 @@ include::../../test/includes/chapter-a.adoc[]
 						console, reset := ConfigureLogger()
 						defer reset()
 						source := `include::../../test/includes/chapter-a.adoc[lines="1"]`
-						expected := types.DraftDocument{
+						expected := types.RawDocument{
 							Blocks: []interface{}{
 								types.Section{
 									Level: 0,
@@ -1690,14 +1553,14 @@ include::../../test/includes/chapter-a.adoc[]
 								},
 							},
 						}
-						Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+						Expect(ParseRawDocument(source)).To(MatchRawDocument(expected))
 						// verify no error/warning in logs
 						Expect(console).ToNot(ContainAnyMessageWithLevels(log.ErrorLevel, log.WarnLevel))
 					})
 
 					It("file inclusion with multiple quoted lines", func() {
 						source := `include::../../test/includes/chapter-a.adoc[lines="1..2"]`
-						expected := types.DraftDocument{
+						expected := types.RawDocument{
 							Blocks: []interface{}{
 								types.Section{
 									Level: 0,
@@ -1711,13 +1574,13 @@ include::../../test/includes/chapter-a.adoc[]
 								types.BlankLine{},
 							},
 						}
-						Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+						Expect(ParseRawDocument(source)).To(MatchRawDocument(expected))
 					})
 
 					It("file inclusion with multiple quoted ranges", func() {
 						// here, the `content` paragraph gets attached to the header and becomes the author
 						source := `include::../../test/includes/chapter-a.adoc[lines="1,3..4,6..-1"]`
-						expected := types.DraftDocument{
+						expected := types.RawDocument{
 							Blocks: []interface{}{
 								types.Section{
 									Level: 0,
@@ -1737,12 +1600,12 @@ include::../../test/includes/chapter-a.adoc[]
 								},
 							},
 						}
-						Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+						Expect(ParseRawDocument(source)).To(MatchRawDocument(expected))
 					})
 
 					It("file inclusion with invalid quoted range - case 1", func() {
 						source := `include::../../test/includes/chapter-a.adoc[lines="1,3..4,6..foo"]` // not a number
-						expected := types.DraftDocument{
+						expected := types.RawDocument{
 							Blocks: []interface{}{
 								types.Section{
 									Level: 0,
@@ -1755,22 +1618,20 @@ include::../../test/includes/chapter-a.adoc[]
 								},
 								types.BlankLine{},
 								types.Paragraph{
-									Lines: [][]interface{}{
-										{
-											types.StringElement{
-												Content: "content",
-											},
+									Lines: []interface{}{
+										types.RawLine{
+											Content: "content",
 										},
 									},
 								},
 							},
 						}
-						Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+						Expect(ParseRawDocument(source)).To(MatchRawDocument(expected))
 					})
 
 					It("file inclusion with invalid quoted range - case 2", func() {
 						source := `include::../../test/includes/chapter-a.adoc[lines="1;3..4;6..10"]` // using semi-colons instead of commas
-						expected := types.DraftDocument{
+						expected := types.RawDocument{
 							Blocks: []interface{}{
 								types.Section{
 									Level: 0,
@@ -1783,23 +1644,21 @@ include::../../test/includes/chapter-a.adoc[]
 								},
 								types.BlankLine{},
 								types.Paragraph{
-									Lines: [][]interface{}{
-										{
-											types.StringElement{
-												Content: "content",
-											},
+									Lines: []interface{}{
+										types.RawLine{
+											Content: "content",
 										},
 									},
 								},
 							},
 						}
-						Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+						Expect(ParseRawDocument(source)).To(MatchRawDocument(expected))
 					})
 
 					It("file inclusion with ignored tags", func() {
 						// include using a line range a file having tags
 						source := `include::../../test/includes/tag-include.adoc[lines=3]`
-						expected := types.DraftDocument{
+						expected := types.RawDocument{
 							Blocks: []interface{}{
 								types.Section{
 									Level: 1,
@@ -1812,7 +1671,7 @@ include::../../test/includes/chapter-a.adoc[]
 								},
 							},
 						}
-						Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+						Expect(ParseRawDocument(source)).To(MatchRawDocument(expected))
 					})
 				})
 			})
@@ -1823,7 +1682,7 @@ include::../../test/includes/chapter-a.adoc[]
 					console, reset := ConfigureLogger()
 					defer reset()
 					source := `include::../../test/includes/tag-include.adoc[tag=section]`
-					expected := types.DraftDocument{
+					expected := types.RawDocument{
 						Blocks: []interface{}{
 							types.Section{
 								Level: 1,
@@ -1836,7 +1695,7 @@ include::../../test/includes/chapter-a.adoc[]
 							},
 						},
 					}
-					Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+					Expect(ParseRawDocument(source)).To(MatchRawDocument(expected))
 					// verify no error/warning in logs
 					Expect(console).ToNot(ContainAnyMessageWithLevels(log.ErrorLevel, log.WarnLevel))
 				})
@@ -1845,7 +1704,7 @@ include::../../test/includes/chapter-a.adoc[]
 					console, reset := ConfigureLogger()
 					defer reset()
 					source := `include::../../test/includes/tag-include.adoc[tag=doc]`
-					expected := types.DraftDocument{
+					expected := types.RawDocument{
 						Blocks: []interface{}{
 							types.Section{
 								Level: 1,
@@ -1858,18 +1717,16 @@ include::../../test/includes/chapter-a.adoc[]
 							},
 							types.BlankLine{},
 							types.Paragraph{
-								Lines: [][]interface{}{
-									{
-										types.StringElement{
-											Content: "content",
-										},
+								Lines: []interface{}{
+									types.RawLine{
+										Content: "content",
 									},
 								},
 							},
 							types.BlankLine{},
 						},
 					}
-					Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+					Expect(ParseRawDocument(source)).To(MatchRawDocument(expected))
 					// verify no error/warning in logs
 					Expect(console).ToNot(ContainAnyMessageWithLevels(log.ErrorLevel, log.WarnLevel))
 				})
@@ -1879,58 +1736,46 @@ include::../../test/includes/chapter-a.adoc[]
 					console, reset := ConfigureLogger()
 					defer reset()
 					source := `include::../../test/includes/tag-include-unclosed.adoc[tag=unclosed]`
-					expected := types.DraftDocument{
+					expected := types.RawDocument{
 						Blocks: []interface{}{
 							types.BlankLine{},
 							types.Paragraph{
-								Lines: [][]interface{}{
-									{
-										types.StringElement{
-											Content: "content",
-										},
+								Lines: []interface{}{
+									types.RawLine{
+										Content: "content",
 									},
 								},
 							},
 							types.BlankLine{},
 							types.BlankLine{},
 							types.Paragraph{
-								Lines: [][]interface{}{
-									{
-										types.StringElement{
-											Content: "end",
-										},
+								Lines: []interface{}{
+									types.RawLine{
+										Content: "end",
 									},
 								},
 							},
 						},
 					}
-					Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+					Expect(ParseRawDocument(source)).To(MatchRawDocument(expected))
 					// verify error in logs
-					Expect(console).To(ContainMessageWithLevel(log.ErrorLevel,
+					Expect(console).To(ContainMessageWithLevel(log.WarnLevel,
 						"detected unclosed tag 'unclosed' starting at line 6 of include file: ../../test/includes/tag-include-unclosed.adoc",
 					))
 				})
 
 				It("file inclusion with unknown tag", func() {
 					// given
-					// setup logger to write in a buffer so we can check the output
-					console, reset := ConfigureLogger()
-					defer reset()
 					source := `include::../../test/includes/tag-include.adoc[tag=unknown]`
-					expected := types.DraftDocument{
-						Blocks: []interface{}{},
-					}
 					// when/then
-					Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+					_, err := ParseRawDocument(source)
 					// verify error in logs
-					Expect(console).To(ContainMessageWithLevel(log.ErrorLevel,
-						"tag 'unknown' not found in include file: ../../test/includes/tag-include.adoc",
-					))
+					Expect(err).To(MatchError("tag 'unknown' not found in include file: ../../test/includes/tag-include.adoc"))
 				})
 
 				It("file inclusion with no tag", func() {
 					source := `include::../../test/includes/tag-include.adoc[]`
-					expected := types.DraftDocument{
+					expected := types.RawDocument{
 						Blocks: []interface{}{
 							types.Section{
 								Level: 1,
@@ -1943,35 +1788,31 @@ include::../../test/includes/chapter-a.adoc[]
 							},
 							types.BlankLine{},
 							types.Paragraph{
-								Lines: [][]interface{}{
-									{
-										types.StringElement{
-											Content: "content",
-										},
+								Lines: []interface{}{
+									types.RawLine{
+										Content: "content",
 									},
 								},
 							},
 							types.BlankLine{},
 							types.BlankLine{},
 							types.Paragraph{
-								Lines: [][]interface{}{
-									{
-										types.StringElement{
-											Content: "end",
-										},
+								Lines: []interface{}{
+									types.RawLine{
+										Content: "end",
 									},
 								},
 							},
 						},
 					}
-					Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+					Expect(ParseRawDocument(source)).To(MatchRawDocument(expected))
 				})
 
 				Context("permutations", func() {
 
 					It("all lines", func() {
 						source := `include::../../test/includes/tag-include.adoc[tag=**]` // includes all content except lines with tags
-						expected := types.DraftDocument{
+						expected := types.RawDocument{
 							Blocks: []interface{}{
 								types.Section{
 									Level: 1,
@@ -1984,33 +1825,29 @@ include::../../test/includes/chapter-a.adoc[]
 								},
 								types.BlankLine{},
 								types.Paragraph{
-									Lines: [][]interface{}{
-										{
-											types.StringElement{
-												Content: "content",
-											},
+									Lines: []interface{}{
+										types.RawLine{
+											Content: "content",
 										},
 									},
 								},
 								types.BlankLine{},
 								types.BlankLine{},
 								types.Paragraph{
-									Lines: [][]interface{}{
-										{
-											types.StringElement{
-												Content: "end",
-											},
+									Lines: []interface{}{
+										types.RawLine{
+											Content: "end",
 										},
 									},
 								},
 							},
 						}
-						Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+						Expect(ParseRawDocument(source)).To(MatchRawDocument(expected))
 					})
 
 					It("all tagged regions", func() {
 						source := `include::../../test/includes/tag-include.adoc[tag=*]` // includes all sections
-						expected := types.DraftDocument{
+						expected := types.RawDocument{
 							Blocks: []interface{}{
 								types.Section{
 									Level: 1,
@@ -2023,23 +1860,21 @@ include::../../test/includes/chapter-a.adoc[]
 								},
 								types.BlankLine{},
 								types.Paragraph{
-									Lines: [][]interface{}{
-										{
-											types.StringElement{
-												Content: "content",
-											},
+									Lines: []interface{}{
+										types.RawLine{
+											Content: "content",
 										},
 									},
 								},
 								types.BlankLine{},
 							},
 						}
-						Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+						Expect(ParseRawDocument(source)).To(MatchRawDocument(expected))
 					})
 
 					It("all the lines outside and inside of tagged regions", func() {
 						source := `include::../../test/includes/tag-include.adoc[tag=**;*]` // includes all sections
-						expected := types.DraftDocument{
+						expected := types.RawDocument{
 							Blocks: []interface{}{
 								types.Section{
 									Level: 1,
@@ -2052,33 +1887,29 @@ include::../../test/includes/chapter-a.adoc[]
 								},
 								types.BlankLine{},
 								types.Paragraph{
-									Lines: [][]interface{}{
-										{
-											types.StringElement{
-												Content: "content",
-											},
+									Lines: []interface{}{
+										types.RawLine{
+											Content: "content",
 										},
 									},
 								},
 								types.BlankLine{},
 								types.BlankLine{},
 								types.Paragraph{
-									Lines: [][]interface{}{
-										{
-											types.StringElement{
-												Content: "end",
-											},
+									Lines: []interface{}{
+										types.RawLine{
+											Content: "end",
 										},
 									},
 								},
 							},
 						}
-						Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+						Expect(ParseRawDocument(source)).To(MatchRawDocument(expected))
 					})
 
 					It("regions tagged doc, but not nested regions tagged content", func() {
 						source := `include::../../test/includes/tag-include.adoc[tag=doc;!content]` // includes all sections
-						expected := types.DraftDocument{
+						expected := types.RawDocument{
 							Blocks: []interface{}{
 								types.Section{
 									Level: 1,
@@ -2092,12 +1923,12 @@ include::../../test/includes/chapter-a.adoc[]
 								types.BlankLine{},
 							},
 						}
-						Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+						Expect(ParseRawDocument(source)).To(MatchRawDocument(expected))
 					})
 
 					It("all tagged regions, but excludes any regions tagged content", func() {
 						source := `include::../../test/includes/tag-include.adoc[tag=*;!content]` // includes all sections
-						expected := types.DraftDocument{
+						expected := types.RawDocument{
 							Blocks: []interface{}{
 								types.Section{
 									Level: 1,
@@ -2111,12 +1942,12 @@ include::../../test/includes/chapter-a.adoc[]
 								types.BlankLine{},
 							},
 						}
-						Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+						Expect(ParseRawDocument(source)).To(MatchRawDocument(expected))
 					})
 
 					It("all tagged regions, but excludes any regions tagged content", func() {
 						source := `include::../../test/includes/tag-include.adoc[tag=**;!content]` // includes all sections
-						expected := types.DraftDocument{
+						expected := types.RawDocument{
 							Blocks: []interface{}{
 								types.Section{
 									Level: 1,
@@ -2130,74 +1961,70 @@ include::../../test/includes/chapter-a.adoc[]
 								types.BlankLine{},
 								types.BlankLine{},
 								types.Paragraph{
-									Lines: [][]interface{}{
-										{
-											types.StringElement{
-												Content: "end",
-											},
+									Lines: []interface{}{
+										types.RawLine{
+											Content: "end",
 										},
 									},
 								},
 							},
 						}
-						Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+						Expect(ParseRawDocument(source)).To(MatchRawDocument(expected))
 					})
 
 					It("**;!* — selects only the regions of the document outside of tags", func() {
 						source := `include::../../test/includes/tag-include.adoc[tag=**;!*]` // includes all sections
-						expected := types.DraftDocument{
+						expected := types.RawDocument{
 							Blocks: []interface{}{
 								types.BlankLine{},
 								types.Paragraph{
-									Lines: [][]interface{}{
-										{
-											types.StringElement{
-												Content: "end",
-											},
+									Lines: []interface{}{
+										types.RawLine{
+											Content: "end",
 										},
 									},
 								},
 							},
 						}
-						Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+						Expect(ParseRawDocument(source)).To(MatchRawDocument(expected))
 					})
 				})
 			})
 
 			Context("missing file to include", func() {
 
-				It("should fail with error message if directory does not exist in standalone block", func() {
+				It("should fail if directory does not exist in standalone block", func() {
 					source := `include::{unknown}/unknown.adoc[leveloffset=+1]`
-					_, err := ParseDraftDocument(source)
+					_, err := ParseRawDocument(source)
 					Expect(err).To(MatchError("Unresolved directive in test.adoc - include::{unknown}/unknown.adoc[leveloffset=+1]"))
 				})
 
-				It("should fail with error message if file is missing in standalone block", func() {
-					source := `include::../../test/includes/unknown.adoc[leveloffset=+1]`
-					_, err := ParseDraftDocument(source)
-					Expect(err).To(MatchError("Unresolved directive in test.adoc - include::../../test/includes/unknown.adoc[leveloffset=+1]"))
+				It("should fail if file is missing in standalone block", func() {
+					source := `include::{unknown}/unknown.adoc[leveloffset=+1]`
+					_, err := ParseRawDocument(source)
+					Expect(err).To(MatchError("Unresolved directive in test.adoc - include::{unknown}/unknown.adoc[leveloffset=+1]"))
 				})
 
-				It("should fail with error message if file with attribute in path is not resolved", func() {
+				It("should fail if file with attribute in path is not resolved in standalone block", func() {
 					source := `include::{includedir}/unknown.adoc[leveloffset=+1]`
-					_, err := ParseDraftDocument(source)
+					_, err := ParseRawDocument(source)
 					Expect(err).To(MatchError("Unresolved directive in test.adoc - include::{includedir}/unknown.adoc[leveloffset=+1]"))
 				})
 
-				It("should fail with error message if file is missing in delimited block", func() {
-					// setup logger to write in a buffer so we can check the output
+				It("should fail if file is missing in delimited block", func() {
 					source := `----
 include::../../test/includes/unknown.adoc[leveloffset=+1]
 ----`
-					_, err := ParseDraftDocument(source)
+					_, err := ParseRawDocument(source)
 					Expect(err).To(MatchError("Unresolved directive in test.adoc - include::../../test/includes/unknown.adoc[leveloffset=+1]"))
 				})
 
-				It("should fail with error message if file with attribute in path is not resolved", func() {
+				It("should fail if file with attribute in path is not resolved in delimited block", func() {
+					// setup logger to write in a buffer so we can check the output
 					source := `----
 include::{includedir}/unknown.adoc[leveloffset=+1]
 ----`
-					_, err := ParseDraftDocument(source)
+					_, err := ParseRawDocument(source)
 					Expect(err).To(MatchError("Unresolved directive in test.adoc - include::{includedir}/unknown.adoc[leveloffset=+1]"))
 				})
 			})
@@ -2208,7 +2035,7 @@ include::{includedir}/unknown.adoc[leveloffset=+1]
 					source := `:includedir: ../../test/includes
 			
 include::{includedir}/grandchild-include.adoc[]`
-					expected := types.DraftDocument{
+					expected := types.RawDocument{
 						Blocks: []interface{}{
 							types.AttributeDeclaration{
 								Name:  "includedir",
@@ -2226,34 +2053,30 @@ include::{includedir}/grandchild-include.adoc[]`
 							},
 							types.BlankLine{},
 							types.Paragraph{
-								Lines: [][]interface{}{
-									{
-										types.StringElement{
-											Content: "first line of grandchild",
-										},
+								Lines: []interface{}{
+									types.RawLine{
+										Content: "first line of grandchild",
 									},
 								},
 							},
 							types.BlankLine{},
 							types.Paragraph{
-								Lines: [][]interface{}{
-									{
-										types.StringElement{
-											Content: "last line of grandchild",
-										},
+								Lines: []interface{}{
+									types.RawLine{
+										Content: "last line of grandchild",
 									},
 								},
 							},
 						},
 					}
-					Expect(ParseDraftDocument(source, WithFilename("foo.adoc"))).To(Equal(expected))
+					Expect(ParseRawDocument(source, WithFilename("foo.adoc"))).To(MatchRawDocument(expected))
 				})
 
 				It("should resolve path with attribute in standalone block from relative file", func() {
 					source := `:includedir: ../../../test/includes
 			
 include::{includedir}/grandchild-include.adoc[]`
-					expected := types.DraftDocument{
+					expected := types.RawDocument{
 						Blocks: []interface{}{
 							types.AttributeDeclaration{
 								Name:  "includedir",
@@ -2271,28 +2094,23 @@ include::{includedir}/grandchild-include.adoc[]`
 							},
 							types.BlankLine{},
 							types.Paragraph{
-								Lines: [][]interface{}{
-									{
-										types.StringElement{
-											Content: "first line of grandchild",
-										},
+								Lines: []interface{}{
+									types.RawLine{
+										Content: "first line of grandchild",
 									},
 								},
 							},
 							types.BlankLine{},
 							types.Paragraph{
-								Lines: [][]interface{}{
-									{
-										types.StringElement{
-											Content: "last line of grandchild",
-										},
+								Lines: []interface{}{
+									types.RawLine{
+										Content: "last line of grandchild",
 									},
 								},
 							},
 						},
 					}
-					Expect(ParseDraftDocument(source,
-						WithFilename("tmp/foo.adoc"))).To(Equal(expected))
+					Expect(ParseRawDocument(source, WithFilename("tmp/foo.adoc"))).To(MatchRawDocument(expected))
 				})
 
 				It("should resolve path with attribute in delimited block", func() {
@@ -2301,7 +2119,7 @@ include::{includedir}/grandchild-include.adoc[]`
 ----
 include::{includedir}/grandchild-include.adoc[]
 ----`
-					expected := types.DraftDocument{
+					expected := types.RawDocument{
 						Blocks: []interface{}{
 							types.AttributeDeclaration{
 								Name:  "includedir",
@@ -2311,22 +2129,22 @@ include::{includedir}/grandchild-include.adoc[]
 							types.DelimitedBlock{
 								Kind: types.Listing,
 								Elements: []interface{}{
-									types.VerbatimLine{
+									types.RawLine{
 										Content: "== grandchild title",
 									},
-									types.VerbatimLine{},
-									types.VerbatimLine{
+									types.RawLine{},
+									types.RawLine{
 										Content: "first line of grandchild",
 									},
-									types.VerbatimLine{},
-									types.VerbatimLine{
+									types.RawLine{},
+									types.RawLine{
 										Content: "last line of grandchild",
 									},
 								},
 							},
 						},
 					}
-					Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+					Expect(ParseRawDocument(source)).To(MatchRawDocument(expected))
 				})
 			})
 
@@ -2337,37 +2155,37 @@ include::{includedir}/grandchild-include.adoc[]
 					source := `----
 include::../../test/includes/hello_world.go.txt[] 
 ----`
-					expected := types.DraftDocument{
+					expected := types.RawDocument{
 						Blocks: []interface{}{
 							types.DelimitedBlock{
 								Kind: types.Listing,
 								Elements: []interface{}{
-									types.VerbatimLine{
+									types.RawLine{
 										Content: `package includes`,
 									},
-									types.VerbatimLine{
+									types.RawLine{
 										Content: "",
 									},
-									types.VerbatimLine{
+									types.RawLine{
 										Content: `import "fmt"`,
 									},
-									types.VerbatimLine{
+									types.RawLine{
 										Content: "",
 									},
-									types.VerbatimLine{
+									types.RawLine{
 										Content: `func helloworld() {`,
 									},
-									types.VerbatimLine{
+									types.RawLine{
 										Content: `	fmt.Println("hello, world!")`,
 									},
-									types.VerbatimLine{
+									types.RawLine{
 										Content: `}`,
 									},
 								},
 							},
 						},
 					}
-					Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+					Expect(ParseRawDocument(source)).To(MatchRawDocument(expected))
 				})
 
 				It("include go file with a simple range", func() {
@@ -2375,19 +2193,19 @@ include::../../test/includes/hello_world.go.txt[]
 					source := `----
 include::../../test/includes/hello_world.go.txt[lines=1] 
 ----`
-					expected := types.DraftDocument{
+					expected := types.RawDocument{
 						Blocks: []interface{}{
 							types.DelimitedBlock{
 								Kind: types.Listing,
 								Elements: []interface{}{
-									types.VerbatimLine{
+									types.RawLine{
 										Content: `package includes`,
 									},
 								},
 							},
 						},
 					}
-					Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+					Expect(ParseRawDocument(source)).To(MatchRawDocument(expected))
 				})
 			})
 		})
@@ -2434,8 +2252,8 @@ include::../../test/includes/hello_world.go.txt[lines=1]
 						},
 						Elements: []interface{}{
 							types.Paragraph{
-								Lines: [][]interface{}{
-									{
+								Lines: []interface{}{
+									[]interface{}{
 										types.StringElement{
 											Content: "first line of parent",
 										},
@@ -2443,8 +2261,8 @@ include::../../test/includes/hello_world.go.txt[lines=1]
 								},
 							},
 							types.Paragraph{
-								Lines: [][]interface{}{
-									{
+								Lines: []interface{}{
+									[]interface{}{
 										types.StringElement{
 											Content: "child preamble",
 										},
@@ -2463,8 +2281,8 @@ include::../../test/includes/hello_world.go.txt[lines=1]
 								},
 								Elements: []interface{}{
 									types.Paragraph{
-										Lines: [][]interface{}{
-											{
+										Lines: []interface{}{
+											[]interface{}{
 												types.StringElement{
 													Content: "first line of child",
 												},
@@ -2483,8 +2301,8 @@ include::../../test/includes/hello_world.go.txt[lines=1]
 										},
 										Elements: []interface{}{
 											types.Paragraph{
-												Lines: [][]interface{}{
-													{
+												Lines: []interface{}{
+													[]interface{}{
 														types.StringElement{
 															Content: "first line of grandchild",
 														},
@@ -2492,8 +2310,8 @@ include::../../test/includes/hello_world.go.txt[lines=1]
 												},
 											},
 											types.Paragraph{
-												Lines: [][]interface{}{
-													{
+												Lines: []interface{}{
+													[]interface{}{
 														types.StringElement{
 															Content: "last line of grandchild",
 														},
@@ -2514,8 +2332,8 @@ include::../../test/includes/hello_world.go.txt[lines=1]
 										},
 										Elements: []interface{}{
 											types.Paragraph{
-												Lines: [][]interface{}{
-													{
+												Lines: []interface{}{
+													[]interface{}{
 														types.StringElement{
 															Content: "last line of child",
 														},
@@ -2523,8 +2341,8 @@ include::../../test/includes/hello_world.go.txt[lines=1]
 												},
 											},
 											types.Paragraph{
-												Lines: [][]interface{}{
-													{
+												Lines: []interface{}{
+													[]interface{}{
 														types.StringElement{
 															Content: "last line of parent",
 														},
@@ -2580,8 +2398,8 @@ include::../../test/includes/hello_world.go.txt[lines=1]
 						},
 						Elements: []interface{}{
 							types.Paragraph{
-								Lines: [][]interface{}{
-									{
+								Lines: []interface{}{
+									[]interface{}{
 										types.StringElement{
 											Content: "first line of parent",
 										},
@@ -2589,8 +2407,8 @@ include::../../test/includes/hello_world.go.txt[lines=1]
 								},
 							},
 							types.Paragraph{
-								Lines: [][]interface{}{
-									{
+								Lines: []interface{}{
+									[]interface{}{
 										types.StringElement{
 											Content: "child preamble",
 										},
@@ -2609,8 +2427,8 @@ include::../../test/includes/hello_world.go.txt[lines=1]
 								},
 								Elements: []interface{}{
 									types.Paragraph{
-										Lines: [][]interface{}{
-											{
+										Lines: []interface{}{
+											[]interface{}{
 												types.StringElement{
 													Content: "first line of child",
 												},
@@ -2629,8 +2447,8 @@ include::../../test/includes/hello_world.go.txt[lines=1]
 										},
 										Elements: []interface{}{
 											types.Paragraph{
-												Lines: [][]interface{}{
-													{
+												Lines: []interface{}{
+													[]interface{}{
 														types.StringElement{
 															Content: "first line of grandchild",
 														},
@@ -2638,8 +2456,8 @@ include::../../test/includes/hello_world.go.txt[lines=1]
 												},
 											},
 											types.Paragraph{
-												Lines: [][]interface{}{
-													{
+												Lines: []interface{}{
+													[]interface{}{
 														types.StringElement{
 															Content: "last line of grandchild",
 														},
@@ -2660,8 +2478,8 @@ include::../../test/includes/hello_world.go.txt[lines=1]
 										},
 										Elements: []interface{}{
 											types.Paragraph{
-												Lines: [][]interface{}{
-													{
+												Lines: []interface{}{
+													[]interface{}{
 														types.StringElement{
 															Content: "last line of child",
 														},
@@ -2669,8 +2487,8 @@ include::../../test/includes/hello_world.go.txt[lines=1]
 												},
 											},
 											types.Paragraph{
-												Lines: [][]interface{}{
-													{
+												Lines: []interface{}{
+													[]interface{}{
 														types.StringElement{
 															Content: "last line of parent",
 														},

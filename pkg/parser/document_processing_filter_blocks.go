@@ -30,14 +30,21 @@ elements:
 			e.Elements = filter(e.Elements, matchers...)
 			result = append(result, e)
 		case types.Paragraph:
-			lines := make([][]interface{}, 0, len(e.Lines))
+			log.Debug("filtering on paragraph")
+			lines := make([]interface{}, 0, len(e.Lines))
 			for _, l := range e.Lines {
-				l = filter(l, matchers...)
-				if len(l) > 0 {
-					lines = append(lines, l)
+				log.Debugf("filtering on paragraph line of type '%T'", l)
+				if l, ok := l.([]interface{}); ok {
+					l = filter(l, matchers...)
+					if len(l) > 0 {
+						lines = append(lines, l)
+					}
 				}
 			}
 			e.Lines = lines
+			result = append(result, e)
+		case types.DelimitedBlock:
+			e.Elements = filter(e.Elements, matchers...)
 			result = append(result, e)
 		case types.OrderedList:
 			items := make([]types.OrderedListItem, 0, len(e.Items))
