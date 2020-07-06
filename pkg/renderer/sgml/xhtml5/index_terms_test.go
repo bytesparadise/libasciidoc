@@ -13,7 +13,8 @@ var _ = Describe("index terms", func() {
 		source := `a paragraph with an ((index)) term.`
 		expected := `<div class="paragraph">
 <p>a paragraph with an index term.</p>
-</div>`
+</div>
+`
 		Expect(RenderXHTML(source)).To(MatchHTML(expected))
 	})
 
@@ -23,7 +24,8 @@ a paragraph with an index term.`
 		expected := `<div class="paragraph">
 <p>foo_bar_baz <em>italic</em>
 a paragraph with an index term.</p>
-</div>`
+</div>
+`
 		Expect(RenderXHTML(source)).To(MatchHTML(expected))
 	})
 })
@@ -34,7 +36,8 @@ var _ = Describe("concealed index terms", func() {
 		source := `a paragraph with an index term (((index, term, here))).`
 		expected := `<div class="paragraph">
 <p>a paragraph with an index term .</p>
-</div>`
+</div>
+`
 		Expect(RenderXHTML(source)).To(MatchHTML(expected))
 	})
 
@@ -43,7 +46,8 @@ var _ = Describe("concealed index terms", func() {
 a paragraph with an index term.`
 		expected := `<div class="paragraph">
 <p>a paragraph with an index term.</p>
-</div>`
+</div>
+`
 		Expect(RenderXHTML(source)).To(MatchHTML(expected))
 	})
 
@@ -52,7 +56,8 @@ a paragraph with an index term.`
 a paragraph with an index term.`
 		expected := `<div class="paragraph">
 <p>a paragraph with an index term.</p>
-</div>`
+</div>
+`
 		Expect(RenderXHTML(source)).To(MatchHTML(expected))
 	})
 
@@ -78,7 +83,8 @@ message is accepted.  If no topic matches, then the message is
 discarded.</p>
 </dd>
 </dl>
-</div>`
+</div>
+`
 		Expect(RenderXHTML(source)).To(MatchHTML(expected))
 	})
 })

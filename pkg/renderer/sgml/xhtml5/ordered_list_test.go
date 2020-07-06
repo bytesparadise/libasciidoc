@@ -21,7 +21,8 @@ var _ = Describe("ordered lists", func() {
 <p>item 1</p>
 </li>
 </ol>
-</div>`
+</div>
+`
 		Expect(RenderXHTML(source)).To(MatchHTML(expected))
 	})
 
@@ -34,7 +35,8 @@ var _ = Describe("ordered lists", func() {
 <p>item</p>
 </li>
 </ol>
-</div>`
+</div>
+`
 		Expect(RenderXHTML(source)).To(MatchHTML(expected))
 	})
 
@@ -47,7 +49,8 @@ var _ = Describe("ordered lists", func() {
 <p>item</p>
 </li>
 </ol>
-</div>`
+</div>
+`
 		Expect(RenderXHTML(source)).To(MatchHTML(expected))
 	})
 
@@ -64,7 +67,8 @@ var _ = Describe("ordered lists", func() {
 <p>item 2</p>
 </li>
 </ol>
-</div>`
+</div>
+`
 		Expect(RenderXHTML(source)).To(MatchHTML(expected))
 	})
 
@@ -81,7 +85,8 @@ foo`
 </div>
 </li>
 </ol>
-</div>`
+</div>
+`
 		Expect(RenderXHTML(source)).To(MatchHTML(expected))
 	})
 
@@ -102,7 +107,8 @@ foo
 </div>
 </li>
 </ol>
-</div>`
+</div>
+`
 		Expect(RenderXHTML(source)).To(MatchHTML(expected))
 	})
 
@@ -150,7 +156,8 @@ foo
 </div>
 </li>
 </ol>
-</div>`
+</div>
+`
 		Expect(RenderXHTML(source)).To(MatchHTML(expected))
 	})
 
@@ -194,7 +201,8 @@ foo
 </div>
 </li>
 </ol>
-</div>`
+</div>
+`
 		Expect(RenderXHTML(source)).To(MatchHTML(expected))
 	})
 
@@ -319,7 +327,8 @@ extra lines.</p>
 </div>
 </li>
 </ul>
-</div>`
+</div>
+`
 		Expect(RenderXHTML(source)).To(MatchHTML(expected))
 	})
 
@@ -363,7 +372,8 @@ a. foo
 </div>
 </li>
 </ul>
-</div>`
+</div>
+`
 		Expect(RenderXHTML(source)).To(MatchHTML(expected))
 	})
 
@@ -397,7 +407,8 @@ print("one")
 </div>
 </li>
 </ol>
-</div>`
+</div>
+`
 		Expect(RenderXHTML(source)).To(MatchHTML(expected))
 	})
 
@@ -434,7 +445,8 @@ paragraph attached to grandparent list item`
 </div>
 </li>
 </ol>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -468,7 +480,8 @@ paragraph attached to parent list item`
 </div>
 </li>
 </ol>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -501,7 +514,8 @@ paragraph attached to child list item`
 </div>
 </li>
 </ol>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 	})

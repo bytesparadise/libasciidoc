@@ -17,7 +17,8 @@ var _ = Describe("icons", func() {
 				source := "icon:caution[]"
 				expected := `<div class="paragraph">
 <p><span class="icon">[Caution]</span></p>
-</div>`
+</div>
+`
 				Expect(RenderHTML(source)).To(MatchHTML(expected))
 			})
 
@@ -25,7 +26,8 @@ var _ = Describe("icons", func() {
 				source := `icon:caution[title="title"]`
 				expected := `<div class="paragraph">
 <p><span class="icon">[Caution]</span></p>
-</div>`
+</div>
+`
 				Expect(RenderHTML(source)).To(MatchHTML(expected))
 			})
 
@@ -33,7 +35,8 @@ var _ = Describe("icons", func() {
 				source := `icon:caution[alt="Alternate"]`
 				expected := `<div class="paragraph">
 <p><span class="icon">[Alternate]</span></p>
-</div>`
+</div>
+`
 				Expect(RenderHTML(source)).To(MatchHTML(expected))
 			})
 
@@ -42,7 +45,8 @@ var _ = Describe("icons", func() {
 icon:amazon[link="https://amazon.com"]`
 				expected := `<div class="paragraph">
 <p><span class="icon"><a class="image" href="https://amazon.com">[Amazon]</a></span></p>
-</div>`
+</div>
+`
 				Expect(RenderHTML(source)).To(MatchHTML(expected))
 			})
 
@@ -51,7 +55,8 @@ icon:amazon[link="https://amazon.com"]`
 icon:amazon[link="https://amazon.com",window="new front"]`
 				expected := `<div class="paragraph">
 <p><span class="icon"><a class="image" href="https://amazon.com" target="new front">[Amazon]</a></span></p>
-</div>`
+</div>
+`
 				Expect(RenderHTML(source)).To(MatchHTML(expected))
 			})
 
@@ -65,7 +70,8 @@ icon:amazon[link="https://amazon.com",window="new front"]`
 icon:caution[]`
 				expected := `<div class="paragraph">
 <p><span class="icon"><i class="fa fa-caution"></i></span></p>
-</div>`
+</div>
+`
 				Expect(RenderHTML(source)).To(MatchHTML(expected))
 			})
 
@@ -75,7 +81,8 @@ icon:caution[]`
 icon:caution[title="title"]`
 				expected := `<div class="paragraph">
 <p><span class="icon"><i class="fa fa-caution" title="title"></i></span></p>
-</div>`
+</div>
+`
 				Expect(RenderHTML(source)).To(MatchHTML(expected))
 			})
 
@@ -85,7 +92,8 @@ icon:caution[title="title"]`
 icon:caution[alt="Alternate"]`
 				expected := `<div class="paragraph">
 <p><span class="icon"><i class="fa fa-caution"></i></span></p>
-</div>`
+</div>
+`
 				Expect(RenderHTML(source)).To(MatchHTML(expected))
 			})
 
@@ -95,7 +103,8 @@ icon:caution[alt="Alternate"]`
 icon:tip[fw]`
 				expected := `<div class="paragraph">
 <p><span class="icon"><i class="fa fa-tip fa-fw"></i></span></p>
-</div>`
+</div>
+`
 				Expect(RenderHTML(source)).To(MatchHTML(expected))
 			})
 			It("inline icon attributes", func() {
@@ -104,7 +113,8 @@ icon:tip[fw]`
 icon:tip[fw,rotate=90,flip=horizontal]`
 				expected := `<div class="paragraph">
 <p><span class="icon"><i class="fa fa-tip fa-fw fa-rotate-90 fa-flip-horizontal"></i></span></p>
-</div>`
+</div>
+`
 				Expect(RenderHTML(source)).To(MatchHTML(expected))
 			})
 			It("inline icon width, height", func() {
@@ -113,7 +123,8 @@ icon:tip[fw,rotate=90,flip=horizontal]`
 icon:warning[width=20px,height=30px]`
 				expected := `<div class="paragraph">
 <p><span class="icon"><i class="fa fa-warning"></i></span></p>
-</div>`
+</div>
+`
 				Expect(RenderHTML(source)).To(MatchHTML(expected))
 			})
 
@@ -123,7 +134,8 @@ icon:warning[width=20px,height=30px]`
 icon:amazon[link="https://amazon.com"]`
 				expected := `<div class="paragraph">
 <p><span class="icon"><a class="image" href="https://amazon.com"><i class="fa fa-amazon"></i></a></span></p>
-</div>`
+</div>
+`
 				Expect(RenderHTML(source)).To(MatchHTML(expected))
 			})
 
@@ -133,7 +145,8 @@ icon:amazon[link="https://amazon.com"]`
 icon:amazon[link="https://amazon.com",window="new front"]`
 				expected := `<div class="paragraph">
 <p><span class="icon"><a class="image" href="https://amazon.com" target="new front"><i class="fa fa-amazon"></i></a></span></p>
-</div>`
+</div>
+`
 				Expect(RenderHTML(source)).To(MatchHTML(expected))
 			})
 
@@ -147,7 +160,8 @@ icon:amazon[link="https://amazon.com",window="new front"]`
 icon:caution[]`
 				expected := `<div class="paragraph">
 <p><span class="icon"><img src="images/icons/caution.png" alt="Caution"></span></p>
-</div>`
+</div>
+`
 				Expect(RenderHTML(source)).To(MatchHTML(expected))
 			})
 
@@ -157,7 +171,8 @@ icon:caution[]`
 icon:caution[title="title"]`
 				expected := `<div class="paragraph">
 <p><span class="icon"><img src="images/icons/caution.png" alt="Caution" title="title"></span></p>
-</div>`
+</div>
+`
 				Expect(RenderHTML(source)).To(MatchHTML(expected))
 			})
 
@@ -167,7 +182,8 @@ icon:caution[title="title"]`
 icon:tip[fw]`
 				expected := `<div class="paragraph">
 <p><span class="icon"><img src="images/icons/tip.png" alt="Tip" class="fa-fw"></span></p>
-</div>`
+</div>
+`
 				Expect(RenderHTML(source)).To(MatchHTML(expected))
 			})
 			It("inline icon attributes", func() {
@@ -176,7 +192,8 @@ icon:tip[fw]`
 icon:tip[fw,rotate=90,flip=horizontal]`
 				expected := `<div class="paragraph">
 <p><span class="icon"><img src="images/icons/tip.png" alt="Tip" class="fa-fw fa-rotate-90 fa-flip-horizontal"></span></p>
-</div>`
+</div>
+`
 				Expect(RenderHTML(source)).To(MatchHTML(expected))
 			})
 
@@ -186,7 +203,8 @@ icon:tip[fw,rotate=90,flip=horizontal]`
 icon:amazon[link="https://amazon.com"]`
 				expected := `<div class="paragraph">
 <p><span class="icon"><a class="image" href="https://amazon.com"><img src="images/icons/amazon.png" alt="Amazon"></a></span></p>
-</div>`
+</div>
+`
 				Expect(RenderHTML(source)).To(MatchHTML(expected))
 			})
 
@@ -196,7 +214,8 @@ icon:amazon[link="https://amazon.com"]`
 icon:amazon[link="https://amazon.com",window="new front"]`
 				expected := `<div class="paragraph">
 <p><span class="icon"><a class="image" href="https://amazon.com" target="new front"><img src="images/icons/amazon.png" alt="Amazon"></a></span></p>
-</div>`
+</div>
+`
 				Expect(RenderHTML(source)).To(MatchHTML(expected))
 			})
 
@@ -207,7 +226,8 @@ icon:amazon[link="https://amazon.com",window="new front"]`
 icon:caution[]`
 				expected := `<div class="paragraph">
 <p><span class="icon"><img src="assets/ico/caution.png" alt="Caution"></span></p>
-</div>`
+</div>
+`
 				Expect(RenderHTML(source)).To(MatchHTML(expected))
 			})
 
@@ -218,7 +238,8 @@ icon:caution[]`
 icon:caution[]`
 				expected := `<div class="paragraph">
 <p><span class="icon"><img src="images/icons/caution.svg" alt="Caution"></span></p>
-</div>`
+</div>
+`
 				Expect(RenderHTML(source)).To(MatchHTML(expected))
 			})
 		})
@@ -234,7 +255,8 @@ icon:caution[]`
 <h2 id="_choke_hazard"><span class="icon"><img src="images/icons/caution.svg" alt="!"></span> Choke Hazard</h2>
 <div class="sectionbody">
 </div>
-</div>`
+</div>
+`
 				Expect(RenderHTML(source)).To(MatchHTML(expected))
 			})
 
@@ -249,7 +271,8 @@ what:: icon:question[]`
 <p><span class="icon"><img src="images/icons/question.png" alt="Question"></span></p>
 </dd>
 </dl>
-</div>`
+</div>
+`
 				Expect(RenderHTML(source)).To(MatchHTML(expected))
 			})
 
@@ -264,7 +287,8 @@ icon:tip[]:: tip of the day`
 <p>tip of the day</p>
 </dd>
 </dl>
-</div>`
+</div>
+`
 				Expect(RenderHTML(source)).To(MatchHTML(expected))
 			})
 
@@ -274,7 +298,8 @@ icon:tip[]:: tip of the day`
 here [strikeout]##we go icon:stop[]##`
 				expected := `<div class="paragraph">
 <p>here <span class="strikeout">we go <span class="icon"><i class="fa fa-stop"></i></span></span></p>
-</div>`
+</div>
+`
 				Expect(RenderHTML(source)).To(MatchHTML(expected))
 			})
 
@@ -284,7 +309,8 @@ here [strikeout]##we go icon:stop[]##`
 here _we go icon:stop[]_`
 				expected := `<div class="paragraph">
 <p>here <em>we go <span class="icon"><i class="fa fa-stop"></i></span></em></p>
-</div>`
+</div>
+`
 				Expect(RenderHTML(source)).To(MatchHTML(expected))
 			})
 			It("icon in bold text", func() {
@@ -293,7 +319,8 @@ here _we go icon:stop[]_`
 here *we go icon:stop[]*`
 				expected := `<div class="paragraph">
 <p>here <strong>we go <span class="icon"><i class="fa fa-stop"></i></span></strong></p>
-</div>`
+</div>
+`
 				Expect(RenderHTML(source)).To(MatchHTML(expected))
 			})
 
@@ -301,7 +328,8 @@ here *we go icon:stop[]*`
 				source := "here `we go icon:stop[]`"
 				expected := `<div class="paragraph">
 <p>here <code>we go <span class="icon">[Stop]</span></code></p>
-</div>`
+</div>
+`
 				Expect(RenderHTML(source)).To(MatchHTML(expected))
 			})
 

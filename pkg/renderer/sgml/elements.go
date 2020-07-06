@@ -13,7 +13,6 @@ import (
 func (r *sgmlRenderer) renderElements(ctx *renderer.Context, elements []interface{}) (string, error) {
 	log.Debugf("rendering %d elements(s)...", len(elements))
 	buff := &strings.Builder{}
-	hasContent := false
 	if !ctx.Config.IncludeHeaderFooter && len(elements) > 0 {
 		if s, ok := elements[0].(types.Section); ok && s.Level == 0 {
 			// don't render the top-level section, but only its elements (plus the rest if there's anything)
@@ -30,15 +29,11 @@ func (r *sgmlRenderer) renderElements(ctx *renderer.Context, elements []interfac
 			return "", err // no need to wrap the error here
 		}
 		// insert new line if there's already some content (except for BlankLine)
-		_, isBlankline := element.(types.BlankLine)
 		_, isVerbatimLine := element.(types.VerbatimLine)
-		if hasContent && (isVerbatimLine || (!isBlankline && len(renderedElement) > 0)) {
+		if buff.Len() > 0 && isVerbatimLine {
 			buff.WriteString("\n")
 		}
 		buff.WriteString(renderedElement)
-		if len(renderedElement) > 0 {
-			hasContent = true
-		}
 	}
 	// log.Debugf("rendered elements: '%s'", buff.String())
 	return buff.String(), nil
@@ -49,7 +44,6 @@ func (r *sgmlRenderer) renderElements(ctx *renderer.Context, elements []interfac
 func (r *sgmlRenderer) renderListElements(ctx *renderer.Context, elements []interface{}) (string, error) {
 	log.Debugf("rendering list with %d element(s)...", len(elements))
 	buff := &strings.Builder{}
-	hasContent := false
 	for i, element := range elements {
 		if i == 0 {
 			ctx.WithinList++
@@ -61,14 +55,7 @@ func (r *sgmlRenderer) renderListElements(ctx *renderer.Context, elements []inte
 		if err != nil {
 			return "", errors.Wrap(err, "unable to render a list block")
 		}
-		// insert new line if there's already some content
-		if hasContent && len(renderedElement) > 0 {
-			buff.WriteString("\n")
-		}
 		buff.WriteString(renderedElement)
-		if len(renderedElement) > 0 {
-			hasContent = true
-		}
 	}
 	// log.Debugf("rendered elements: '%s'", buff.String())
 	return buff.String(), nil

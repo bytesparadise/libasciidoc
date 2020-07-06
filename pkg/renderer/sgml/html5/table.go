@@ -19,7 +19,7 @@ const (
 		"{{ .Header }}" +
 		"{{ .Body }}" +
 		"{{ end }}" +
-		"</table>"
+		"</table>\n"
 
 	tableBodyTmpl = "{{ if .Content }}<tbody>\n{{ .Content }}</tbody>\n{{ end }}"
 

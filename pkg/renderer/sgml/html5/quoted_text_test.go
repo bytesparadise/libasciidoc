@@ -15,7 +15,8 @@ var _ = Describe("quoted texts", func() {
 			source := "*bold content*"
 			expected := `<div class="paragraph">
 <p><strong>bold content</strong></p>
-</div>`
+</div>
+`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -23,7 +24,8 @@ var _ = Describe("quoted texts", func() {
 			source := "some *bold content*."
 			expected := `<div class="paragraph">
 <p>some <strong>bold content</strong>.</p>
-</div>`
+</div>
+`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -32,7 +34,8 @@ var _ = Describe("quoted texts", func() {
 			expected := `<div class="paragraph">
 <p>some <strong>bold
 content</strong>.</p>
-</div>`
+</div>
+`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -43,7 +46,8 @@ content</strong>.</p>
 </div>
 <div class="paragraph">
 <p>content*.</p>
-</div>`
+</div>
+`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -52,7 +56,8 @@ content</strong>.</p>
 			expected := `<div class="paragraph">
 <p>some <strong>bold
 content</strong>.</p>
-</div>`
+</div>
+`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -63,7 +68,8 @@ content</strong>.</p>
 </div>
 <div class="paragraph">
 <p>content**.</p>
-</div>`
+</div>
+`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -75,7 +81,8 @@ content</strong>.</p>
 			source := "_italic content_"
 			expected := `<div class="paragraph">
 <p><em>italic content</em></p>
-</div>`
+</div>
+`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -84,7 +91,8 @@ content</strong>.</p>
 			source := "some _italic content_."
 			expected := `<div class="paragraph">
 <p>some <em>italic content</em>.</p>
-</div>`
+</div>
+`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -93,7 +101,8 @@ content</strong>.</p>
 			expected := `<div class="paragraph">
 <p>some <em>italic
 content</em>.</p>
-</div>`
+</div>
+`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -104,7 +113,8 @@ content</em>.</p>
 </div>
 <div class="paragraph">
 <p>content_.</p>
-</div>`
+</div>
+`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -113,7 +123,8 @@ content</em>.</p>
 			expected := `<div class="paragraph">
 <p>some <em>italic
 content</em>.</p>
-</div>`
+</div>
+`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -124,7 +135,8 @@ content</em>.</p>
 </div>
 <div class="paragraph">
 <p>content__.</p>
-</div>`
+</div>
+`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -136,7 +148,8 @@ content</em>.</p>
 			source := "`monospace content`"
 			expected := `<div class="paragraph">
 <p><code>monospace content</code></p>
-</div>`
+</div>
+`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -145,7 +158,8 @@ content</em>.</p>
 			source := "some `monospace content`."
 			expected := `<div class="paragraph">
 <p>some <code>monospace content</code>.</p>
-</div>`
+</div>
+`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -154,7 +168,8 @@ content</em>.</p>
 			expected := `<div class="paragraph">
 <p>some <code>monospace
 content</code>.</p>
-</div>`
+</div>
+`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -164,7 +179,7 @@ content</code>.</p>
 				"<p>some `monospace</p>\n" +
 				"</div>\n" +
 				"<div class=\"paragraph\">\n" +
-				"<p>content`.</p>\n</div>"
+				"<p>content`.</p>\n</div>\n"
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -173,7 +188,8 @@ content</code>.</p>
 			expected := `<div class="paragraph">
 <p>some <code>monospace
 content</code>.</p>
-</div>`
+</div>
+`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -183,7 +199,7 @@ content</code>.</p>
 				"<p>some ``monospace</p>\n" +
 				"</div>\n" +
 				"<div class=\"paragraph\">\n" +
-				"<p>content``.</p>\n</div>"
+				"<p>content``.</p>\n</div>\n"
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 	})
@@ -194,7 +210,8 @@ content</code>.</p>
 			source := "#marked content#"
 			expected := `<div class="paragraph">
 <p><mark>marked content</mark></p>
-</div>`
+</div>
+`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -203,7 +220,8 @@ content</code>.</p>
 			source := "some #marked content#."
 			expected := `<div class="paragraph">
 <p>some <mark>marked content</mark>.</p>
-</div>`
+</div>
+`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -212,7 +230,8 @@ content</code>.</p>
 			expected := `<div class="paragraph">
 <p>some <mark>marked
 content</mark>.</p>
-</div>`
+</div>
+`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -223,7 +242,8 @@ content</mark>.</p>
 </div>
 <div class="paragraph">
 <p>content#.</p>
-</div>`
+</div>
+`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -232,7 +252,8 @@ content</mark>.</p>
 			expected := `<div class="paragraph">
 <p>some <mark>marked
 content</mark>.</p>
-</div>`
+</div>
+`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -243,7 +264,8 @@ content</mark>.</p>
 </div>
 <div class="paragraph">
 <p>content##.</p>
-</div>`
+</div>
+`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 	})
@@ -254,7 +276,8 @@ content</mark>.</p>
 			source := "~subscriptcontent~"
 			expected := `<div class="paragraph">
 <p><sub>subscriptcontent</sub></p>
-</div>`
+</div>
+`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -263,7 +286,8 @@ content</mark>.</p>
 			source := "some ~subscriptcontent~."
 			expected := `<div class="paragraph">
 <p>some <sub>subscriptcontent</sub>.</p>
-</div>`
+</div>
+`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 	})
@@ -274,7 +298,8 @@ content</mark>.</p>
 			source := "^superscriptcontent^"
 			expected := `<div class="paragraph">
 <p><sup>superscriptcontent</sup></p>
-</div>`
+</div>
+`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -283,7 +308,8 @@ content</mark>.</p>
 			source := "some ^superscriptcontent^."
 			expected := `<div class="paragraph">
 <p>some <sup>superscriptcontent</sup>.</p>
-</div>`
+</div>
+`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 	})
@@ -293,7 +319,8 @@ content</mark>.</p>
 			source := "[myrole]_italics_"
 			expected := `<div class="paragraph">
 <p><em class="myrole">italics</em></p>
-</div>`
+</div>
+`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -301,7 +328,8 @@ content</mark>.</p>
 			source := "it[uncle]__al__ic"
 			expected := `<div class="paragraph">
 <p>it<em class="uncle">al</em>ic</p>
-</div>`
+</div>
+`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -309,7 +337,8 @@ content</mark>.</p>
 			source := "[myrole]*bold*"
 			expected := `<div class="paragraph">
 <p><strong class="myrole">bold</strong></p>
-</div>`
+</div>
+`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -317,7 +346,8 @@ content</mark>.</p>
 			source := "it[uncle]**al**ic"
 			expected := `<div class="paragraph">
 <p>it<strong class="uncle">al</strong>ic</p>
-</div>`
+</div>
+`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -325,7 +355,8 @@ content</mark>.</p>
 			source := "[myrole]`true`"
 			expected := `<div class="paragraph">
 <p><code class="myrole">true</code></p>
-</div>`
+</div>
+`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -333,7 +364,8 @@ content</mark>.</p>
 			source := "int[uncle]``eg``rate"
 			expected := `<div class="paragraph">
 <p>int<code class="uncle">eg</code>rate</p>
-</div>`
+</div>
+`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -341,7 +373,8 @@ content</mark>.</p>
 			source := "[myrole,and=nothing_else]_italics_"
 			expected := `<div class="paragraph">
 <p><em class="myrole">italics</em></p>
-</div>`
+</div>
+`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -349,7 +382,8 @@ content</mark>.</p>
 			source := "[#here]*bold*"
 			expected := `<div class="paragraph">
 <p><strong id="here">bold</strong></p>
-</div>`
+</div>
+`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -357,7 +391,8 @@ content</mark>.</p>
 			source := "[.bob]**bold**"
 			expected := `<div class="paragraph">
 <p><strong class="bob">bold</strong></p>
-</div>`
+</div>
+`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -365,7 +400,8 @@ content</mark>.</p>
 			source := "[.bob]##bold##"
 			expected := `<div class="paragraph">
 <p><span class="bob">bold</span></p>
-</div>`
+</div>
+`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -373,7 +409,8 @@ content</mark>.</p>
 			source := "[#link]##content##"
 			expected := `<div class="paragraph">
 <p><mark id="link">content</mark></p>
-</div>`
+</div>
+`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -381,7 +418,8 @@ content</mark>.</p>
 			source := "[]**bold**"
 			expected := `<div class="paragraph">
 <p><strong>bold</strong></p>
-</div>`
+</div>
+`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -389,7 +427,8 @@ content</mark>.</p>
 			source := "[.r1#anchor.r2.r3]**bold**[#here.second.class]_text_"
 			expected := `<div class="paragraph">
 <p><strong id="anchor" class="r1 r2 r3">bold</strong><em id="here" class="second class">text</em></p>
-</div>`
+</div>
+`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -399,7 +438,8 @@ content</mark>.</p>
 			source := "[\"something <wicked>\"]**bold**"
 			expected := `<div class="paragraph">
 <p><strong class="something &lt;wicked&gt;">bold</strong></p>
-</div>`
+</div>
+`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -407,7 +447,8 @@ content</mark>.</p>
 			source := "[.'something \"wicked\"']**bold**"
 			expected := `<div class="paragraph">
 <p><strong class="something &#34;wicked&#34;">bold</strong></p>
-</div>`
+</div>
+`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -417,7 +458,8 @@ content</mark>.</p>
 			source := "[.<something \"wicked>]**bold**"
 			expected := `<div class="paragraph">
 <p>[.&lt;something &#34;wicked&gt;]<strong>bold</strong></p>
-</div>`
+</div>
+`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -430,7 +472,8 @@ content</mark>.</p>
 			source := "*some *nested bold* content*."
 			expected := `<div class="paragraph">
 <p><strong>some *nested bold</strong> content*.</p>
-</div>`
+</div>
+`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -438,7 +481,8 @@ content</mark>.</p>
 			source := "some *bold and _italic content_* together."
 			expected := `<div class="paragraph">
 <p>some <strong>bold and <em>italic content</em></strong> together.</p>
-</div>`
+</div>
+`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -446,7 +490,8 @@ content</mark>.</p>
 			source := "some *bold and #marked content#* together."
 			expected := `<div class="paragraph">
 <p>some <strong>bold and <mark>marked content</mark></strong> together.</p>
-</div>`
+</div>
+`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -454,7 +499,8 @@ content</mark>.</p>
 			source := "some *bold and [strikeout]#span content#* together."
 			expected := `<div class="paragraph">
 <p>some <strong>bold and <span class="strikeout">span content</span></strong> together.</p>
-</div>`
+</div>
+`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -466,7 +512,8 @@ content</mark>.</p>
 			source := "some *bold and _italic content_ * together."
 			expected := `<div class="paragraph">
 <p>some *bold and <em>italic content</em> * together.</p>
-</div>`
+</div>
+`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -475,7 +522,8 @@ content</mark>.</p>
 			source := "some *bold and _italic content _ together*."
 			expected := `<div class="paragraph">
 <p>some <strong>bold and _italic content _ together</strong>.</p>
-</div>`
+</div>
+`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 	})
@@ -486,7 +534,8 @@ content</mark>.</p>
 			source := "some \\*bold content*."
 			expected := `<div class="paragraph">
 <p>some *bold content*.</p>
-</div>`
+</div>
+`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -494,7 +543,8 @@ content</mark>.</p>
 			source := "some \\*bold and _italic content_* together."
 			expected := `<div class="paragraph">
 <p>some *bold and <em>italic content</em>* together.</p>
-</div>`
+</div>
+`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -506,7 +556,8 @@ content</mark>.</p>
 			source := "`*a`"
 			expected := `<div class="paragraph">
 <p><code>*a</code></p>
-</div>`
+</div>
+`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -514,7 +565,8 @@ content</mark>.</p>
 			source := "`a*b`"
 			expected := `<div class="paragraph">
 <p><code>a*b</code></p>
-</div>`
+</div>
+`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -522,7 +574,8 @@ content</mark>.</p>
 			source := "`_a_`"
 			expected := `<div class="paragraph">
 <p><code><em>a</em></code></p>
-</div>`
+</div>
+`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -530,7 +583,8 @@ content</mark>.</p>
 			source := "`a_b`"
 			expected := `<div class="paragraph">
 <p><code>a_b</code></p>
-</div>`
+</div>
+`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -538,7 +592,8 @@ content</mark>.</p>
 			source := "`a*b*`"
 			expected := `<div class="paragraph">
 <p><code>a*b*</code></p>
-</div>`
+</div>
+`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -546,7 +601,8 @@ content</mark>.</p>
 			source := "`a~b~`"
 			expected := `<div class="paragraph">
 <p><code>a<sub>b</sub></code></p>
-</div>`
+</div>
+`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -555,7 +611,8 @@ content</mark>.</p>
 			expected := `<div class="paragraph">
 <p><code>a
 b</code></p>
-</div>`
+</div>
+`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -564,7 +621,8 @@ b</code></p>
 			expected := `<div class="paragraph">
 <p><code>a
 <strong>b</strong></code></p>
-</div>`
+</div>
+`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -572,7 +630,8 @@ b</code></p>
 			source := "*a link:/[b]*"
 			expected := `<div class="paragraph">
 <p><strong>a <a href="/">b</a></strong></p>
-</div>`
+</div>
+`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -580,7 +639,8 @@ b</code></p>
 			source := "*a image:foo.png[]*"
 			expected := `<div class="paragraph">
 <p><strong>a <span class="image"><img src="foo.png" alt="foo"></span></strong></p>
-</div>`
+</div>
+`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -588,7 +648,8 @@ b</code></p>
 			source := "*a +image:foo.png[]+*"
 			expected := `<div class="paragraph">
 <p><strong>a image:foo.png[]</strong></p>
-</div>`
+</div>
+`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -596,7 +657,8 @@ b</code></p>
 			source := "*a +++image:foo.png[]+++*"
 			expected := `<div class="paragraph">
 <p><strong>a image:foo.png[]</strong></p>
-</div>`
+</div>
+`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -604,7 +666,8 @@ b</code></p>
 			source := "_a link:/[b]_"
 			expected := `<div class="paragraph">
 <p><em>a <a href="/">b</a></em></p>
-</div>`
+</div>
+`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -612,7 +675,8 @@ b</code></p>
 			source := "_a image:foo.png[]_"
 			expected := `<div class="paragraph">
 <p><em>a <span class="image"><img src="foo.png" alt="foo"></span></em></p>
-</div>`
+</div>
+`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -620,7 +684,8 @@ b</code></p>
 			source := "_a +image:foo.png[]+_"
 			expected := `<div class="paragraph">
 <p><em>a image:foo.png[]</em></p>
-</div>`
+</div>
+`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -628,7 +693,8 @@ b</code></p>
 			source := "_a +++image:foo.png[]+++_"
 			expected := `<div class="paragraph">
 <p><em>a image:foo.png[]</em></p>
-</div>`
+</div>
+`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -636,7 +702,8 @@ b</code></p>
 			source := "`a link:/[b]`"
 			expected := `<div class="paragraph">
 <p><code>a <a href="/">b</a></code></p>
-</div>`
+</div>
+`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -644,7 +711,8 @@ b</code></p>
 			source := "`a image:foo.png[]`"
 			expected := `<div class="paragraph">
 <p><code>a <span class="image"><img src="foo.png" alt="foo"></span></code></p>
-</div>`
+</div>
+`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -652,7 +720,8 @@ b</code></p>
 			source := "`a +image:foo.png[]+`"
 			expected := `<div class="paragraph">
 <p><code>a image:foo.png[]</code></p>
-</div>`
+</div>
+`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -660,7 +729,8 @@ b</code></p>
 			source := "`a +++image:foo.png[]+++`"
 			expected := `<div class="paragraph">
 <p><code>a image:foo.png[]</code></p>
-</div>`
+</div>
+`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -668,59 +738,57 @@ b</code></p>
 			source := "this *mother's mothers' mothers`'*\n"
 			expected := "<div class=\"paragraph\">\n" +
 				"<p>this <strong>mother&#8217;s mothers&#39; mothers&#8217;</strong></p>\n" +
-				"</div>"
+				"</div>\n"
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 		It("apostrophes in double bold", func() {
 			source := "this **mother's mothers' mothers`'**\n"
 			expected := "<div class=\"paragraph\">\n" +
 				"<p>this <strong>mother&#8217;s mothers&#39; mothers&#8217;</strong></p>\n" +
-				"</div>"
+				"</div>\n"
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 		It("apostrophes in single italic", func() {
 			source := "this _mother's mothers' mothers`'_\n"
 			expected := "<div class=\"paragraph\">\n" +
 				"<p>this <em>mother&#8217;s mothers&#39; mothers&#8217;</em></p>\n" +
-				"</div>"
+				"</div>\n"
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 		It("apostrophes in double italic", func() {
 			source := "this __mother's mothers' mothers`'__\n"
 			expected := "<div class=\"paragraph\">\n" +
 				"<p>this <em>mother&#8217;s mothers&#39; mothers&#8217;</em></p>\n" +
-				"</div>"
+				"</div>\n"
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 		It("apostrophes in single mono", func() {
 			source := "this `mother's mothers' day`\n" // no typographic quotes here
 			expected := "<div class=\"paragraph\">\n" +
 				"<p>this <code>mother&#8217;s mothers&#39; day</code></p>\n" +
-				"</div>"
+				"</div>\n"
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 		It("apostrophes in double mono", func() {
 			source := "this ``mother's mothers' mothers`' day``\n"
 			expected := "<div class=\"paragraph\">\n" +
 				"<p>this <code>mother&#8217;s mothers&#39; mothers&#8217; day</code></p>\n" +
-				"</div>"
+				"</div>\n"
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 		It("apostrophes in single marked", func() {
 			source := "this #mother's mothers' mothers`'#\n"
 			expected := "<div class=\"paragraph\">\n" +
 				"<p>this <mark>mother&#8217;s mothers&#39; mothers&#8217;</mark></p>\n" +
-				"</div>"
+				"</div>\n"
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 		It("apostrophes in double marked", func() {
 			source := "this ##mother's mothers' mothers`'##\n"
 			expected := "<div class=\"paragraph\">\n" +
 				"<p>this <mark>mother&#8217;s mothers&#39; mothers&#8217;</mark></p>\n" +
-				"</div>"
+				"</div>\n"
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
-
 	})
-
 })

@@ -19,7 +19,8 @@ var _ = Describe("footnotes", func() {
 <div class="footnote" id="_footnotedef_1">
 <a href="#_footnoteref_1">1</a>. a note for foo
 </div>
-</div>`
+</div>
+`
 		Expect(RenderXHTML(source)).To(MatchHTML(expected))
 	})
 
@@ -33,7 +34,8 @@ var _ = Describe("footnotes", func() {
 <div class="footnote" id="_footnotedef_1">
 <a href="#_footnoteref_1">1</a>. some <strong>rich</strong> <a href="https://foo.com">content</a>
 </div>
-</div>`
+</div>
+`
 		Expect(RenderXHTML(source)).To(MatchHTML(expected))
 	})
 
@@ -57,7 +59,8 @@ A bold statement!<sup class="footnote" id="_footnote_disclaimer">[<a id="_footno
 <div class="footnote" id="_footnotedef_2">
 <a href="#_footnoteref_2">2</a>. Opinions are my own.
 </div>
-</div>`
+</div>
+`
 		Expect(RenderXHTML(source)).To(MatchHTML(expected))
 	})
 
@@ -98,7 +101,8 @@ a paragraph with another footnote:[baz]`
 <div class="footnote" id="_footnotedef_3">
 <a href="#_footnoteref_3">3</a>. baz
 </div>
-</div>`
+</div>
+`
 		Expect(RenderXHTML(source)).To(MatchHTML(expected))
 	})
 })

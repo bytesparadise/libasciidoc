@@ -21,7 +21,8 @@ var _ = Describe("comments", func() {
 			source := `foo // A single-line comment.`
 			expected := `<div class="paragraph">
 <p>foo // A single-line comment.</p>
-</div>`
+</div>
+`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -32,7 +33,8 @@ another line`
 			expected := `<div class="paragraph">
 <p>a first line
 another line</p>
-</div>`
+</div>
+`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 	})
@@ -62,7 +64,8 @@ a second paragraph`
 </div>
 <div class="paragraph">
 <p>a second paragraph</p>
-</div>`
+</div>
+`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 	})

@@ -7,5 +7,5 @@ const (
 		"<div class=\"content\">\n" +
 		"<pre>{{ .Content }}</pre>\n" +
 		"</div>\n" +
-		"</div>"
+		"</div>\n"
 )

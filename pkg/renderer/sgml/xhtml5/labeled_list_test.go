@@ -38,7 +38,8 @@ on 2 lines.</p>
 on 2 lines, too.</p>
 </dd>
 </dl>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -52,7 +53,8 @@ on 2 lines, too.</p>
 <p>This function is <em>untyped</em>.</p>
 </dd>
 </dl>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -67,7 +69,8 @@ item 2:: description 2.`
 <p>description 2.</p>
 </dd>
 </dl>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -85,7 +88,8 @@ item 2:: description 2.`
 <p>description 2.</p>
 </dd>
 </dl>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -98,7 +102,8 @@ item 2:: description 2.`
 <p>&lt;script&gt;alert(&#34;foo!&#34;)&lt;/script&gt;</p>
 </dd>
 </dl>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -125,7 +130,8 @@ item 2:: description 2.`
 <p>something simple</p>
 </dd>
 </dl>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -162,7 +168,8 @@ item 2:: something simple`
 <p>something simple</p>
 </dd>
 </dl>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -182,7 +189,8 @@ second term:: definition of the second term`
 <p>definition of the second term</p>
 </dd>
 </dl>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -222,7 +230,8 @@ on 2 lines, too.</p>
 </td>
 </tr>
 </table>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -268,7 +277,8 @@ item 2
 </td>
 </tr>
 </table>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -296,7 +306,8 @@ item 2:: description 2.`
 <p>description 2.</p>
 </dd>
 </dl>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -331,7 +342,8 @@ another delimited block
 </div>
 </dd>
 </dl>
-</div>`
+</div>
+`
 
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
@@ -400,7 +412,8 @@ tip
 </div>
 </dd>
 </dl>
-</div>`
+</div>
+`
 
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
@@ -436,7 +449,8 @@ another delimited block
 <div class="content">
 <pre>another delimited block</pre>
 </div>
-</div>`
+</div>
+`
 
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
@@ -474,7 +488,8 @@ Item 3 description`
 </div>
 </dd>
 </dl>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 	})
@@ -500,7 +515,8 @@ What is the answer to the Ultimate Question?:: 42`
 <p>42</p>
 </li>
 </ol>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -523,7 +539,8 @@ What is the answer to the Ultimate Question?:: 42`
 <p>42</p>
 </li>
 </ol>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 	})
@@ -567,7 +584,8 @@ paragraph attached to grandparent list item`
 </div>
 </dd>
 </dl>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -607,7 +625,8 @@ paragraph attached to parent list item`
 </div>
 </dd>
 </dl>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -646,7 +665,8 @@ paragraph attached to child list item`
 </div>
 </dd>
 </dl>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 	})

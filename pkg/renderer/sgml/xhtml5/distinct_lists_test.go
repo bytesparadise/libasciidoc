@@ -32,7 +32,8 @@ var _ = Describe("lists of items", func() {
 <p>Six</p>
 </li>
 </ol>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -58,7 +59,8 @@ var _ = Describe("lists of items", func() {
 <p>Six</p>
 </li>
 </ol>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -89,7 +91,8 @@ var _ = Describe("lists of items", func() {
 </div>
 </li>
 </ol>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -123,7 +126,8 @@ var _ = Describe("lists of items", func() {
 <p>Step 2</p>
 </li>
 </ol>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 	})
@@ -141,7 +145,8 @@ var _ = Describe("lists of items", func() {
 <p>b</p>
 </li>
 </ol>
-</div>`
+</div>
+`
 		Expect(RenderXHTML(source)).To(MatchHTML(expected))
 	})
 
@@ -160,7 +165,8 @@ var _ = Describe("lists of items", func() {
 <p>b</p>
 </li>
 </ol>
-</div>`
+</div>
+`
 		Expect(RenderXHTML(source)).To(MatchHTML(expected))
 	})
 
@@ -182,7 +188,8 @@ var _ = Describe("lists of items", func() {
 <p>b</p>
 </li>
 </ol>
-</div>`
+</div>
+`
 		Expect(RenderXHTML(source)).To(MatchHTML(expected))
 	})
 
@@ -206,7 +213,8 @@ var _ = Describe("lists of items", func() {
 <p>b</p>
 </li>
 </ol>
-</div>`
+</div>
+`
 		Expect(RenderXHTML(source)).To(MatchHTML(expected))
 	})
 })

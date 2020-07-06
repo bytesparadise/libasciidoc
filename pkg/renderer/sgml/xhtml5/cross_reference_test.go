@@ -24,7 +24,8 @@ with some content linked to <<thetitle>>!`
 <p>with some content linked to <a href="#thetitle">a title</a>!</p>
 </div>
 </div>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -40,7 +41,8 @@ with some content linked to <<thetitle,a label to the title>>!`
 <p>with some content linked to <a href="#thetitle">a label to the title</a>!</p>
 </div>
 </div>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -57,7 +59,8 @@ with some content linked to <<thewrongtitle>>!`
 <p>with some content linked to <a href="#thewrongtitle">[thewrongtitle]</a>!</p>
 </div>
 </div>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 	})
@@ -68,7 +71,8 @@ with some content linked to <<thewrongtitle>>!`
 			source := `some content linked to xref:another-doc.adoc[*another doc*]!`
 			expected := `<div class="paragraph">
 <p>some content linked to <a href="another-doc.html"><strong>another doc</strong></a>!</p>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -77,7 +81,8 @@ with some content linked to <<thewrongtitle>>!`
 some content linked to xref:{foo}.adoc[another_doc()]!`
 			expected := `<div class="paragraph">
 <p>some content linked to <a href="foo-doc.html">another_doc()</a>!</p>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 	})

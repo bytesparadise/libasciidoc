@@ -24,7 +24,8 @@ var _ = Describe("tables", func() {
 <td class="tableblock halign-left valign-top"><p class="tableblock"><em>bar</em></p></td>
 </tr>
 </tbody>
-</table>`
+</table>
+`
 		Expect(RenderXHTML(source)).To(MatchHTML(expected))
 	})
 
@@ -45,7 +46,8 @@ var _ = Describe("tables", func() {
 <td class="tableblock halign-left valign-top"><p class="tableblock">baz</p></td>
 </tr>
 </tbody>
-</table>`
+</table>
+`
 		Expect(RenderXHTML(source)).To(MatchHTML(expected))
 	})
 
@@ -82,7 +84,8 @@ var _ = Describe("tables", func() {
 <td class="tableblock halign-left valign-top"><p class="tableblock">Column 2, row 2</p></td>
 </tr>
 </tbody>
-</table>`
+</table>
+`
 		Expect(RenderXHTML(source)).To(MatchHTML(expected))
 	})
 
@@ -120,7 +123,8 @@ var _ = Describe("tables", func() {
 <td class="tableblock halign-left valign-top"><p class="tableblock">Column 2, row 2</p></td>
 </tr>
 </tbody>
-</table>`
+</table>
+`
 		Expect(RenderXHTML(source)).To(MatchHTML(expected))
 	})
 
@@ -128,7 +132,8 @@ var _ = Describe("tables", func() {
 		source := `|===
 |===`
 		expected := `<table class="tableblock frame-all grid-all stretch">
-</table>`
+</table>
+`
 		Expect(RenderXHTML(source)).To(MatchHTML(expected))
 	})
 
@@ -165,7 +170,8 @@ var _ = Describe("tables", func() {
 <td class="tableblock halign-left valign-top"><p class="tableblock">bar</p></td>
 </tr>
 </tbody>
-</table>`
+</table>
+`
 		Expect(RenderXHTML(source)).To(MatchHTML(expected))
 	})
 
@@ -204,63 +210,72 @@ var _ = Describe("tables", func() {
 <td class="tableblock halign-left valign-top"><p class="tableblock">bar</p></td>
 </tr>
 </tbody>
-</table>`
+</table>
+`
 		Expect(RenderXHTML(source)).To(MatchHTML(expected))
 	})
 
 	It("autowidth ", func() {
 		source := "[%autowidth]\n|===\n|==="
 		expected := `<table class="tableblock frame-all grid-all fit-content">
-</table>`
+</table>
+`
 		Expect(RenderXHTML(source)).To(MatchHTML(expected))
 	})
 
 	It("fixed width (number)", func() {
 		source := "[width=75]\n|===\n|==="
 		expected := `<table class="tableblock frame-all grid-all" style="width: 75%;">
-</table>`
+</table>
+`
 		Expect(RenderXHTML(source)).To(MatchHTML(expected))
 	})
 
 	It("fixed width (percent)", func() {
 		source := "[width=75%]\n|===\n|==="
 		expected := `<table class="tableblock frame-all grid-all" style="width: 75%;">
-</table>`
+</table>
+`
 		Expect(RenderXHTML(source)).To(MatchHTML(expected))
 	})
 
 	It("fixed width (100 percent)", func() {
 		source := "[width=100%]\n|===\n|==="
 		expected := `<table class="tableblock frame-all grid-all stretch">
-</table>`
+</table>
+`
 		Expect(RenderXHTML(source)).To(MatchHTML(expected))
 	})
 
 	It("fixed width (> 100 percent)", func() {
 		source := "[width=205]\n|===\n|==="
 		expected := `<table class="tableblock frame-all grid-all stretch">
-</table>`
+</table>
+`
 		Expect(RenderXHTML(source)).To(MatchHTML(expected))
 	})
 
 	It("fixed width overrides fit", func() {
 		source := "[%autowidth,width=25]\n|===\n|==="
 		expected := `<table class="tableblock frame-all grid-all" style="width: 25%;">
-</table>`
+</table>
+`
 		Expect(RenderXHTML(source)).To(MatchHTML(expected))
 	})
 
 	It("fixed width overrides fit (> 100 percent)", func() {
 		source := "[%autowidth,width=205]\n|===\n|==="
 		expected := `<table class="tableblock frame-all grid-all stretch">
-</table>`
+</table>
+`
 		Expect(RenderXHTML(source)).To(MatchHTML(expected))
 	})
 
 	It("grid, frames, float, stripes", func() {
 		source := "[%autowidth,grid=rows,frame=sides,stripes=hover,float=right]\n|===\n|==="
 		expected := `<table class="tableblock frame-sides grid-rows stripes-hover fit-content right">
-</table>`
+</table>
+`
 		Expect(RenderXHTML(source)).To(MatchHTML(expected))
 	})
 
@@ -279,7 +294,8 @@ var _ = Describe("tables", func() {
 <td class="tableblock halign-left valign-top"><p class="tableblock">three</p></td>
 </tr>
 </tbody>
-</table>`
+</table>
+`
 		Expect(RenderXHTML(source)).To(MatchHTML(expected))
 	})
 
@@ -305,7 +321,8 @@ var _ = Describe("tables", func() {
 <td class="tableblock halign-left valign-top"><p class="tableblock">three</p></td>
 </tr>
 </tbody>
-</table>`
+</table>
+`
 		Expect(RenderXHTML(source)).To(MatchHTML(expected))
 	})
 
@@ -331,7 +348,8 @@ var _ = Describe("tables", func() {
 <td class="tableblock halign-left valign-top"><p class="tableblock">three</p></td>
 </tr>
 </tbody>
-</table>`
+</table>
+`
 		Expect(RenderXHTML(source)).To(MatchHTML(expected))
 	})
 
@@ -357,7 +375,8 @@ var _ = Describe("tables", func() {
 <td class="tableblock halign-left valign-top"><p class="tableblock">three</p></td>
 </tr>
 </tbody>
-</table>`
+</table>
+`
 		Expect(RenderXHTML(source)).To(MatchHTML(expected))
 	})
 
@@ -389,7 +408,8 @@ var _ = Describe("tables", func() {
 <td class="tableblock halign-left valign-top"><p class="tableblock">five</p></td>
 </tr>
 </tbody>
-</table>`
+</table>
+`
 		Expect(RenderXHTML(source)).To(MatchHTML(expected))
 	})
 
@@ -423,7 +443,8 @@ var _ = Describe("tables", func() {
 <td class="tableblock halign-right valign-top"><p class="tableblock">five</p></td>
 </tr>
 </tbody>
-</table>`
+</table>
+`
 		Expect(RenderXHTML(source)).To(MatchHTML(expected))
 	})
 

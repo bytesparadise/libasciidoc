@@ -30,7 +30,6 @@ var _ = Describe("document header", func() {
 <h1>The <em>Document</em> <strong>Title</strong></h1>
 </div>
 <div id="content">
-
 </div>
 <div id="footer">
 <div id="footer-text">
@@ -64,7 +63,6 @@ Last updated {{.LastUpdated}}
 <h1>My Title</h1>
 </div>
 <div id="content">
-
 </div>
 <div id="footer">
 <div id="footer-text">
@@ -98,7 +96,6 @@ Last updated {{.LastUpdated}}
 <h1>My Title</h1>
 </div>
 <div id="content">
-
 </div>
 <div id="footer">
 <div id="footer-text">
@@ -126,7 +123,8 @@ Last updated {{.LastUpdated}}
 <p>last line of grandchild</p>
 </div>
 </div>
-</div>`
+</div>
+`
 		Expect(RenderHTML(source, configuration.WithFilename("tmp/foo.adoc"))).To(Equal(expectedContent))
 	})
 
@@ -158,7 +156,8 @@ a note
 </td>
 </tr>
 </table>
-</div>`
+</div>
+`
 		Expect(RenderHTML(source, configuration.WithAttributes(attrs))).To(Equal(expected))
 	})
 
@@ -187,7 +186,8 @@ a note
 </td>
 </tr>
 </table>
-</div>`
+</div>
+`
 		Expect(RenderHTML(source, configuration.WithAttributes(attrs))).To(Equal(expected))
 	})
 
@@ -438,7 +438,8 @@ Image is not a picture of a life form.</p>
 Free use of this software is granted under the terms of the MIT License.</p>
 </div>
 </div>
-</div>`
+</div>
+`
 		now := time.Now()
 		Expect(RenderHTML(source, configuration.WithFilename("test.adoc"),
 			configuration.WithAttributes(map[string]string{

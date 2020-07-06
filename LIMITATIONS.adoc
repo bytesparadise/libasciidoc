@@ -15,6 +15,17 @@ We plan to address the majority of these issues.
 Two-line section titles (setext headings) are not supported, and there are no plans to support it for now.
 See https://github.com/bytesparadise/libasciidoc/issues/187[Issue #187] for more on this decision.
 
+== Empty Document Body
+
+When the body of a document is empty, asciidoctor inserts a newline
+character.  This whitespace is not significant, and Libasciidoc does not emit one.
+
+== Empty Quote Block Content
+
+Likewise, when a quote block has no body, asciidoctor emits a newline between
+the opening and closing `<blockquote>` elements.  This serves no purpose,
+Libasciidoc does not emit one.
+
 == Passthroughs
 
 The Inline pass macro will not render nothing at all instead of an empty paragraph

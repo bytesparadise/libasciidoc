@@ -18,7 +18,8 @@ var _ = Describe("images", func() {
 <div class="content">
 <img src="foo.png" alt="foo"/>
 </div>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -29,7 +30,8 @@ var _ = Describe("images", func() {
 <div class="content">
 <img src="foo.png" alt="foo image"/>
 </div>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -40,7 +42,8 @@ var _ = Describe("images", func() {
 <div class="content">
 <img src="foo.png" alt="foo image" width="600" height="400"/>
 </div>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -51,7 +54,8 @@ var _ = Describe("images", func() {
 <div class="content">
 <img src="foo.png" alt="foo image" width="600" height="400"/>
 </div>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -63,7 +67,8 @@ var _ = Describe("images", func() {
 <img src="foo.png" alt="foo image" width="600" height="400"/>
 </div>
 <div class="title">Bar A. Image Title</div>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -77,7 +82,8 @@ image::images/foo.png[the foo.png image,600,400]`
 <a class="image" href="http://foo.bar"><img src="images/foo.png" alt="the foo.png image" width="600" height="400"/></a>
 </div>
 <div class="title">Figure 1. A title to foobar</div>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -91,7 +97,8 @@ image::foo.png[foo image, 600, 400]`
 <img src="foo.png" alt="foo image" width="600" height="400"/>
 </div>
 <div class="title">Figure 1. mytitle</div>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -102,7 +109,8 @@ image::foo.png[foo image, 600, 400]`
 <img src="foo.png" alt="foo image" width="600" height="400"/>
 </div>
 <div class="title">Figure 1. mytitle</div>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -118,7 +126,8 @@ image::appa.png[]`
 <div class="content">
 <img src="appa.png" alt="appa"/>
 </div>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -132,7 +141,8 @@ image::appa.png[]`
 				source := "image:app.png[]"
 				expected := `<div class="paragraph">
 <p><span class="image"><img src="app.png" alt="app"/></span></p>
-</div>`
+</div>
+`
 				Expect(RenderXHTML(source)).To(MatchHTML(expected))
 			})
 
@@ -140,7 +150,8 @@ image::appa.png[]`
 				source := "image:foo.png[id=myid, title=mytitle, role=myrole]"
 				expected := `<div class="paragraph">
 <p><span class="image myrole"><img src="foo.png" alt="foo" title="mytitle"/></span></p>
-</div>`
+</div>
+`
 				Expect(RenderXHTML(source)).To(MatchHTML(expected))
 			})
 
@@ -148,7 +159,8 @@ image::appa.png[]`
 				source := "image:foo.png[foo image]"
 				expected := `<div class="paragraph">
 <p><span class="image"><img src="foo.png" alt="foo image"/></span></p>
-</div>`
+</div>
+`
 				Expect(RenderXHTML(source)).To(MatchHTML(expected))
 			})
 
@@ -156,7 +168,8 @@ image::appa.png[]`
 				source := "image:foo.png[foo image, 600, 400]"
 				expected := `<div class="paragraph">
 <p><span class="image"><img src="foo.png" alt="foo image" width="600" height="400"/></span></p>
-</div>`
+</div>
+`
 				Expect(RenderXHTML(source)).To(MatchHTML(expected))
 			})
 
@@ -164,7 +177,8 @@ image::appa.png[]`
 				source := "a foo image:foo.png[foo image, 600, 400] bar"
 				expected := `<div class="paragraph">
 <p>a foo <span class="image"><img src="foo.png" alt="foo image" width="600" height="400"/></span> bar</p>
-</div>`
+</div>
+`
 				Expect(RenderXHTML(source)).To(MatchHTML(expected))
 			})
 		})
@@ -175,7 +189,8 @@ image::appa.png[]`
 				source := "a foo image::foo.png[foo image, 600, 400] bar"
 				expected := `<div class="paragraph">
 <p>a foo image::foo.png[foo image, 600, 400] bar</p>
-</div>`
+</div>
+`
 				Expect(RenderXHTML(source)).To(MatchHTML(expected))
 			})
 		})
@@ -191,7 +206,8 @@ image::foo.png[]`
 <div class="content">
 <img src="./assets/foo.png" alt="foo"/>
 </div>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -211,7 +227,8 @@ image::bar.png[]`
 <div class="content">
 <img src="./assets2/bar.png" alt="bar"/>
 </div>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -223,7 +240,8 @@ image::https://example.com/foo.png[]`
 <div class="content">
 <img src="https://example.com/foo.png" alt="foo"/>
 </div>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -235,7 +253,8 @@ image::/bar/foo.png[]`
 <div class="content">
 <img src="/bar/foo.png" alt="foo"/>
 </div>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -247,7 +266,8 @@ image::file:///bar/foo.png[]`
 <div class="content">
 <img src="file:///bar/foo.png" alt="foo"/>
 </div>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 	})

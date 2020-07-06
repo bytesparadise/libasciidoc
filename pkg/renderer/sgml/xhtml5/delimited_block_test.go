@@ -19,7 +19,8 @@ var _ = Describe("delimited blocks", func() {
 
 here</code></pre>
 </div>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -32,7 +33,8 @@ here</code></pre>
 
 here</code></pre>
 </div>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -48,7 +50,8 @@ here</code></pre>
 and more text on the
 next lines</code></pre>
 </div>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 	})
@@ -68,7 +71,8 @@ here
 
 here</pre>
 </div>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -83,7 +87,8 @@ some source code
 <div class="content">
 <pre>some source code</pre>
 </div>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -99,7 +104,8 @@ some source code
 <div class="content">
 <pre>some source code</pre>
 </div>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -111,7 +117,8 @@ some source code
 <div class="content">
 <pre>&lt;a&gt;link&lt;/a&gt;</pre>
 </div>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -131,7 +138,8 @@ import <1>
 <p>an import</p>
 </li>
 </ol>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -160,7 +168,8 @@ func foo() {} <b class="conum">(2)</b></pre>
 <p>a func</p>
 </li>
 </ol>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -196,7 +205,8 @@ func foo() {} <b class="conum">(4)</b></pre>
 <p>a func</p>
 </li>
 </ol>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -212,7 +222,8 @@ import <a>
 </div>
 <div class="paragraph">
 <p>&lt;a&gt; an import</p>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 	})
@@ -236,7 +247,8 @@ get &#39;/hi&#39; do
   &#34;Hello World!&#34;
 end</code></pre>
 </div>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -260,7 +272,8 @@ get &#39;/hi&#39; do
   &#34;Hello World!&#34;
 end</code></pre>
 </div>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -284,7 +297,8 @@ get &#39;/hi&#39; do
   &#34;Hello World!&#34;
 end</code></pre>
 </div>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -308,7 +322,8 @@ get &#39;/hi&#39; do
   &#34;Hello World!&#34;
 end</code></pre>
 </div>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -321,7 +336,8 @@ end</code></pre>
 <div class="content">
 <pre class="highlight"><code>&lt;a&gt;link&lt;/a&gt;</code></pre>
 </div>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -333,7 +349,8 @@ end</code></pre>
 <div class="content">
 <pre>  a&lt;&lt;b</pre>
 </div>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 		It("with callouts and syntax highlighting", func() {
@@ -390,7 +407,8 @@ public class GreetingResourceTest {
 <p>We need to use the @RestClient CDI qualifier, since Quarkus creates the GreetingService bean with this qualifier.</p>
 </li>
 </ol>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 	})
@@ -419,7 +437,8 @@ with <strong>bold content</strong></p>
 </ul>
 </div>
 </div>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -438,7 +457,8 @@ and more content
 <p>and more content</p>
 </div>
 </div>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -457,7 +477,8 @@ and "more" content
 <p>and &#34;more&#34; content</p>
 </div>
 </div>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -475,7 +496,8 @@ foo
 <p>foo</p>
 </div>
 </div>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 	})
@@ -512,7 +534,8 @@ with <strong>bold content</strong></p>
 </td>
 </tr>
 </table>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -548,7 +571,8 @@ with <strong>bold content</strong></p>
 </td>
 </tr>
 </table>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 		It("admonition block with ID, title and icon", func() {
@@ -586,7 +610,8 @@ with <strong>bold content</strong></p>
 </td>
 </tr>
 </table>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -626,7 +651,8 @@ with <strong>bold content</strong></p>
 </td>
 </tr>
 </table>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -671,7 +697,8 @@ this is an admonition paragraph.
 </td>
 </tr>
 </table>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -692,7 +719,8 @@ an admonition text on
 </td>
 </tr>
 </table>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -715,7 +743,8 @@ an admonition text on 1 line.
 </td>
 </tr>
 </table>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 	})
@@ -738,7 +767,8 @@ ____`
 &#8212; john doe<br/>
 <cite>quote title</cite>
 </div>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -760,7 +790,8 @@ ____`
 &#8212; john doe<br/>
 <cite>quote title</cite>
 </div>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -793,7 +824,8 @@ ____`
 &#8212; john doe<br/>
 <cite>quote title</cite>
 </div>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -831,7 +863,8 @@ ____`
 <div class="attribution">
 &#8212; john doe
 </div>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -849,7 +882,8 @@ ____`
 <div class="attribution">
 &#8212; quote title
 </div>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -870,7 +904,8 @@ ____`
 are preserved, but not trailing spaces</p>
 </div>
 </blockquote>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -881,9 +916,9 @@ ____`
 			// asciidoctor will include an empty line in the `blockquote` element, I'm not sure why.
 			expected := `<div class="quoteblock">
 <blockquote>
-
 </blockquote>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 
 		})
@@ -902,7 +937,8 @@ on *multiple lines*`
 on <strong>multiple lines</strong></p>
 </div>
 </blockquote>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -917,7 +953,8 @@ on <strong>multiple lines</strong></p>
 on <strong>multiple lines</strong></p>
 </div>
 </blockquote>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -935,7 +972,8 @@ on <strong>multiple lines</strong></p>
 <div class="attribution">
 &#8212; John Doe
 </div>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -955,7 +993,8 @@ on <strong>multiple lines</strong></p>
 <div class="attribution">
 &#8212; John Doe
 </div>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -963,12 +1002,12 @@ on <strong>multiple lines</strong></p>
 			source := `> -- John Doe`
 			expected := `<div class="quoteblock">
 <blockquote>
-
 </blockquote>
 <div class="attribution">
 &#8212; John Doe
 </div>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 	})
@@ -987,7 +1026,8 @@ ____`
 &#8212; john doe<br/>
 <cite>verse title</cite>
 </div>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -1005,7 +1045,8 @@ ____`
 &#8212; john doe<br/>
 <cite>verse title</cite>
 </div>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -1029,7 +1070,8 @@ and more!</pre>
 &#8212; john doe<br/>
 <cite>verse title</cite>
 </div>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -1043,7 +1085,8 @@ ____`
 <div class="attribution">
 &#8212; john doe
 </div>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -1057,7 +1100,8 @@ ____`
 <div class="attribution">
 &#8212; verse title
 </div>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -1074,7 +1118,8 @@ ____`
 <pre class="content">lines
 	and tabs
 are preserved</pre>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -1084,7 +1129,8 @@ ____
 ____`
 			expected := `<div class="verseblock">
 <pre class="content"></pre>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 
 		})
@@ -1103,7 +1149,8 @@ some *verse* content
 <p>some <strong>verse</strong> content</p>
 </div>
 </div>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -1131,7 +1178,8 @@ bar</pre>
 </div>
 </div>
 </div>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 	})
@@ -1153,7 +1201,8 @@ type Foo struct{
 	<span class="tok-nx">Field</span> <span class="tok-kt">string</span>
 <span class="tok-p">}</span></code></pre>
 </div>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -1172,7 +1221,8 @@ type Foo struct{
 	Field string
 }</code></pre>
 </div>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -1191,7 +1241,8 @@ type Foo struct{
 	Field string
 }</code></pre>
 </div>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -1211,7 +1262,8 @@ type Foo struct{
 	<span class="tok-nx">Field</span> <span class="tok-kt">string</span>
 <span class="tok-p">}</span></code></pre>
 </div>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -1232,7 +1284,8 @@ type Foo struct{
 <span class="tok-ln">2</span>    <span class="tok-nx">Field</span> <span class="tok-kt">string</span>
 <span class="tok-ln">3</span><span class="tok-p">}</span></code></pre>
 </div>
-</div>` // the pygment.py sets the line number class to `tok-ln` but here we expect `tok-ln`
+</div>
+` // the pygment.py sets the line number class to `tok-ln` but here we expect `tok-ln`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -1254,7 +1307,8 @@ type Foo struct{
 <span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2</span>    Field <span style="color:#078;font-weight:bold">string</span>
 <span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3</span>}</code></pre>
 </div>
-</div>` // the pygment.py sets the line number class to `tok-ln` but here we expect `tok-ln`
+</div>
+` // the pygment.py sets the line number class to `tok-ln` but here we expect `tok-ln`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 	})
@@ -1270,7 +1324,8 @@ _foo_
 ++++`
 			expected := `_foo_
 
-*bar*`
+*bar*
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -1288,7 +1343,8 @@ another paragraph`
 *bar*
 <div class="paragraph">
 <p>another paragraph</p>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 	})

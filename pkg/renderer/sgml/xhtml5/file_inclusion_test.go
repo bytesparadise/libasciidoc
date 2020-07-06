@@ -29,7 +29,8 @@ var _ = Describe("file inclusions", func() {
 <p>last line of grandchild</p>
 </div>
 </div>
-</div>`
+</div>
+`
 		Expect(RenderXHTML(source, configuration.WithFilename("test.adoc"), configuration.WithLastUpdated(lastUpdated))).To(Equal(expected))
 		Expect(DocumentMetadata(source, lastUpdated)).To(Equal(types.Metadata{
 			Title:       "",
@@ -63,7 +64,8 @@ var _ = Describe("file inclusions", func() {
 <p>last line of grandchild</p>
 </div>
 </div>
-</div>`
+</div>
+`
 		Expect(RenderXHTML(source, configuration.WithFilename("tmp/foo.adoc"))).To(Equal(expected))
 		// verify no error/warning in logs
 		Expect(console).ToNot(ContainAnyMessageWithLevels(log.ErrorLevel, log.WarnLevel))
@@ -79,7 +81,8 @@ var _ = Describe("file inclusions", func() {
 <div class="paragraph">
 <p>last line of grandchild</p>
 </div>
-</div>`
+</div>
+`
 		Expect(RenderXHTML(source, configuration.WithFilename("test.adoc"))).To(Equal(expected))
 	})
 
@@ -95,7 +98,8 @@ var _ = Describe("file inclusions", func() {
 <p>last line of grandchild</p>
 </div>
 </div>
-</div>`
+</div>
+`
 		Expect(RenderXHTML(source, configuration.WithFilename("test.adoc"))).To(Equal(expected))
 	})
 
@@ -135,7 +139,8 @@ var _ = Describe("file inclusions", func() {
 </div>
 </div>
 </div>
-</div>`
+</div>
+`
 		Expect(RenderXHTML(source, configuration.WithFilename("test.adoc"))).To(Equal(expected))
 	})
 
@@ -175,7 +180,8 @@ var _ = Describe("file inclusions", func() {
 </div>
 </div>
 </div>
-</div>`
+</div>
+`
 		Expect(RenderXHTML(source, configuration.WithFilename("test.adoc"))).To(Equal(expected))
 	})
 
@@ -199,7 +205,8 @@ include::../../../../test/includes/chapter-a.adoc[leveloffset=+1]`
 <p>content</p>
 </div>
 </div>
-</div>`
+</div>
+`
 		Expect(RenderXHTML(source)).To(MatchHTML(expected))
 	})
 
@@ -207,7 +214,8 @@ include::../../../../test/includes/chapter-a.adoc[leveloffset=+1]`
 		source := `include::../../../../test/includes/chapter-a.adoc[]`
 		expected := `<div class="paragraph">
 <p>content</p>
-</div>`
+</div>
+`
 		Expect(RenderXHTML(source)).To(MatchHTML(expected))
 	})
 
@@ -217,7 +225,8 @@ include::../../../../test/includes/chapter-a.adoc[leveloffset=+1]`
 include::{includedir}/chapter-a.adoc[]`
 		expected := `<div class="paragraph">
 <p>content</p>
-</div>`
+</div>
+`
 		Expect(RenderXHTML(source)).To(MatchHTML(expected))
 	})
 
@@ -240,7 +249,8 @@ include::../../../../test/includes/hello_world.go.txt[]`
 <p>func helloworld() {
 	fmt.Println(&#34;hello, world!&#34;)
 }</p>
-</div>`
+</div>
+`
 		Expect(RenderXHTML(source)).To(MatchHTML(expected))
 	})
 
@@ -253,7 +263,8 @@ include::{includedir}/include.foo[]`
 </div>
 <div class="paragraph">
 <p>include::hello_world.go.txt[]</p>
-</div>`
+</div>
+`
 		Expect(RenderXHTML(source)).To(MatchHTML(expected))
 	})
 
@@ -293,7 +304,8 @@ include::../../../../test/includes/hello_world.go.txt[]`
 }</p>
 </div>
 </div>
-</div>`
+</div>
+`
 		Expect(RenderXHTML(source)).To(MatchHTML(expected))
 	})
 
@@ -321,7 +333,8 @@ a third paragraph`
 <p>a third paragraph</p>
 </div>
 </div>
-</div>`
+</div>
+`
 		Expect(RenderXHTML(source)).To(MatchHTML(expected))
 	})
 
@@ -346,7 +359,8 @@ include::../../../../test/includes/chapter-a.adoc[]
 
 content</pre>
 </div>
-</div>`
+</div>
+`
 				Expect(RenderXHTML(source)).To(MatchHTML(expected))
 			})
 
@@ -360,7 +374,8 @@ content</pre>
 
 content</code></pre>
 </div>
-</div>`
+</div>
+`
 				Expect(RenderXHTML(source)).To(MatchHTML(expected))
 			})
 
@@ -377,7 +392,8 @@ include::../../../../test/includes/chapter-a.adoc[]
 <p>content</p>
 </div>
 </div>
-</div>`
+</div>
+`
 				Expect(RenderXHTML(source)).To(MatchHTML(expected))
 			})
 
@@ -394,7 +410,8 @@ ____`
 <p>content</p>
 </div>
 </blockquote>
-</div>`
+</div>
+`
 				Expect(RenderXHTML(source)).To(MatchHTML(expected))
 			})
 
@@ -407,7 +424,8 @@ ____`
 <pre class="content">= Chapter A
 
 content</pre>
-</div>`
+</div>
+`
 				Expect(RenderXHTML(source)).To(MatchHTML(expected))
 			})
 
@@ -424,7 +442,8 @@ include::../../../../test/includes/chapter-a.adoc[]
 <p>content</p>
 </div>
 </div>
-</div>`
+</div>
+`
 				Expect(RenderXHTML(source)).To(MatchHTML(expected))
 			})
 
@@ -461,7 +480,8 @@ func helloworld() {
 	fmt.Println(&#34;hello, world!&#34;)
 }</pre>
 </div>
-</div>`
+</div>
+`
 				Expect(RenderXHTML(source)).To(MatchHTML(expected))
 			})
 
@@ -479,7 +499,8 @@ func helloworld() {
 	fmt.Println(&#34;hello, world!&#34;)
 }</code></pre>
 </div>
-</div>`
+</div>
+`
 				Expect(RenderXHTML(source)).To(MatchHTML(expected))
 			})
 
@@ -501,7 +522,8 @@ include::../../../../test/includes/hello_world.go.txt[]
 }</p>
 </div>
 </div>
-</div>`
+</div>
+`
 				Expect(RenderXHTML(source)).To(MatchHTML(expected))
 			})
 
@@ -523,7 +545,8 @@ ____`
 }</p>
 </div>
 </blockquote>
-</div>`
+</div>
+`
 				Expect(RenderXHTML(source)).To(MatchHTML(expected))
 			})
 
@@ -540,7 +563,8 @@ import &#34;fmt&#34;
 func helloworld() {
 	fmt.Println(&#34;hello, world!&#34;)
 }</pre>
-</div>`
+</div>
+`
 				Expect(RenderXHTML(source)).To(MatchHTML(expected))
 			})
 
@@ -562,7 +586,8 @@ include::../../../../test/includes/hello_world.go.txt[]
 }</p>
 </div>
 </div>
-</div>`
+</div>
+`
 				Expect(RenderXHTML(source)).To(MatchHTML(expected))
 			})
 		})
@@ -576,7 +601,8 @@ include::../../../../test/includes/hello_world.go.txt[]
 				source := `include::../../../../test/includes/hello_world.go.txt[lines=1]`
 				expected := `<div class="paragraph">
 <p>package includes</p>
-</div>`
+</div>
+`
 				Expect(RenderXHTML(source)).To(MatchHTML(expected))
 			})
 
@@ -586,7 +612,8 @@ include::../../../../test/includes/hello_world.go.txt[]
 <p>func helloworld() {
 	fmt.Println(&#34;hello, world!&#34;)
 }</p>
-</div>`
+</div>
+`
 				Expect(RenderXHTML(source)).To(MatchHTML(expected))
 			})
 
@@ -599,7 +626,8 @@ include::../../../../test/includes/hello_world.go.txt[]
 <p>func helloworld() {
 	fmt.Println(&#34;hello, world!&#34;)
 }</p>
-</div>`
+</div>
+`
 				Expect(RenderXHTML(source)).To(MatchHTML(expected))
 			})
 		})
@@ -614,7 +642,8 @@ include::../../../../test/includes/hello_world.go.txt[lines=1]
 <div class="content">
 <pre>package includes</pre>
 </div>
-</div>`
+</div>
+`
 				Expect(RenderXHTML(source)).To(MatchHTML(expected))
 			})
 
@@ -628,7 +657,8 @@ include::../../../../test/includes/hello_world.go.txt[lines=5..7]
 	fmt.Println(&#34;hello, world!&#34;)
 }</pre>
 </div>
-</div>`
+</div>
+`
 				Expect(RenderXHTML(source)).To(MatchHTML(expected))
 			})
 
@@ -644,7 +674,8 @@ func helloworld() {
 	fmt.Println(&#34;hello, world!&#34;)
 }</pre>
 </div>
-</div>`
+</div>
+`
 				Expect(RenderXHTML(source)).To(MatchHTML(expected))
 			})
 		})
@@ -658,7 +689,8 @@ func helloworld() {
 <h2 id="_section_1">Section 1</h2>
 <div class="sectionbody">
 </div>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -671,7 +703,8 @@ func helloworld() {
 <p>content</p>
 </div>
 </div>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -684,7 +717,8 @@ func helloworld() {
 </div>
 <div class="paragraph">
 <p>end</p>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 			// verify error in logs
 			Expect(console).To(
@@ -706,7 +740,8 @@ func helloworld() {
 <p>end</p>
 </div>
 </div>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -724,7 +759,8 @@ func helloworld() {
 <p>end</p>
 </div>
 </div>
-</div>`
+</div>
+`
 				Expect(RenderXHTML(source)).To(MatchHTML(expected))
 			})
 
@@ -737,7 +773,8 @@ func helloworld() {
 <p>content</p>
 </div>
 </div>
-</div>`
+</div>
+`
 				Expect(RenderXHTML(source)).To(MatchHTML(expected))
 			})
 
@@ -753,7 +790,8 @@ func helloworld() {
 <p>end</p>
 </div>
 </div>
-</div>`
+</div>
+`
 				Expect(RenderXHTML(source)).To(MatchHTML(expected))
 			})
 
@@ -763,7 +801,8 @@ func helloworld() {
 <h2 id="_section_1">Section 1</h2>
 <div class="sectionbody">
 </div>
-</div>`
+</div>
+`
 				Expect(RenderXHTML(source)).To(MatchHTML(expected))
 			})
 
@@ -773,7 +812,8 @@ func helloworld() {
 <h2 id="_section_1">Section 1</h2>
 <div class="sectionbody">
 </div>
-</div>`
+</div>
+`
 				Expect(RenderXHTML(source)).To(MatchHTML(expected))
 			})
 
@@ -786,7 +826,8 @@ func helloworld() {
 <p>end</p>
 </div>
 </div>
-</div>`
+</div>
+`
 				Expect(RenderXHTML(source)).To(MatchHTML(expected))
 			})
 
@@ -794,7 +835,8 @@ func helloworld() {
 				source := `include::../../../../test/includes/tag-include.adoc[tag=**;!*]` // includes all sections
 				expected := `<div class="paragraph">
 <p>end</p>
-</div>`
+</div>
+`
 				Expect(RenderXHTML(source)).To(MatchHTML(expected))
 			})
 		})
@@ -834,7 +876,8 @@ func helloworld() {
 </div>
 </div>
 </div>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -862,7 +905,8 @@ last line of child
 
 last line of parent</pre>
 </div>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 	})
@@ -883,7 +927,8 @@ include::{includedir}/grandchild-include.adoc[]`
 <p>last line of grandchild</p>
 </div>
 </div>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -901,9 +946,9 @@ first line of grandchild
 
 last line of grandchild</pre>
 </div>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 	})
-
 })

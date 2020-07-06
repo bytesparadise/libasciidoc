@@ -25,7 +25,8 @@ var _ = Describe("unordered lists", func() {
 <p>item 3</p>
 </li>
 </ul>
-</div>`
+</div>
+`
 		Expect(RenderHTML(source)).To(MatchHTML(expected))
 	})
 
@@ -50,7 +51,8 @@ and a standalone paragraph`
 </div>
 <div class="paragraph">
 <p>and a standalone paragraph</p>
-</div>`
+</div>
+`
 		Expect(RenderHTML(source)).To(MatchHTML(expected))
 	})
 
@@ -70,7 +72,8 @@ and a standalone paragraph`
 <p>item 2</p>
 </li>
 </ul>
-</div>`
+</div>
+`
 		Expect(RenderHTML(source)).To(MatchHTML(expected))
 	})
 
@@ -90,7 +93,8 @@ and a standalone paragraph`
 <p>item 2</p>
 </li>
 </ul>
-</div>`
+</div>
+`
 		Expect(RenderHTML(source)).To(MatchHTML(expected))
 	})
 
@@ -110,7 +114,8 @@ and a standalone paragraph`
 <p>item 2</p>
 </li>
 </ul>
-</div>`
+</div>
+`
 		Expect(RenderHTML(source)).To(MatchHTML(expected))
 	})
 
@@ -132,7 +137,8 @@ foo
 <p>item 2</p>
 </li>
 </ul>
-</div>`
+</div>
+`
 		Expect(RenderHTML(source)).To(MatchHTML(expected))
 	})
 
@@ -160,7 +166,8 @@ foo
 <p>item 2</p>
 </li>
 </ul>
-</div>`
+</div>
+`
 		Expect(RenderHTML(source)).To(MatchHTML(expected))
 	})
 
@@ -189,7 +196,8 @@ foo
 <p>item 2</p>
 </li>
 </ul>
-</div>`
+</div>
+`
 		Expect(RenderHTML(source)).To(MatchHTML(expected))
 	})
 
@@ -224,7 +232,8 @@ another delimited block
 <p>bar</p>
 </li>
 </ul>
-</div>`
+</div>
+`
 		Expect(RenderHTML(source)).To(MatchHTML(expected))
 	})
 
@@ -260,7 +269,8 @@ another delimited block
 <div class="content">
 <pre>another delimited block</pre>
 </div>
-</div>`
+</div>
+`
 		Expect(RenderHTML(source)).To(MatchHTML(expected))
 	})
 })
@@ -289,7 +299,8 @@ var _ = Describe("checklists", func() {
 <p>normal list item</p>
 </li>
 </ul>
-</div>`
+</div>
+`
 		Expect(RenderHTML(source)).To(MatchHTML(expected))
 	})
 
@@ -310,7 +321,8 @@ var _ = Describe("checklists", func() {
 <p>&#10003; item 2</p>
 </li>
 </ul>
-</div>`
+</div>
+`
 		Expect(RenderHTML(source)).To(MatchHTML(expected))
 	})
 
@@ -344,7 +356,8 @@ var _ = Describe("checklists", func() {
 <p>normal list item</p>
 </li>
 </ul>
-</div>`
+</div>
+`
 		Expect(RenderHTML(source)).To(MatchHTML(expected))
 	})
 
@@ -373,7 +386,8 @@ var _ = Describe("checklists", func() {
 <p>normal list item</p>
 </li>
 </ul>
-</div>`
+</div>
+`
 		Expect(RenderHTML(source)).To(MatchHTML(expected))
 	})
 
@@ -410,7 +424,8 @@ paragraph attached to grandparent list item`
 </div>
 </li>
 </ul>
-</div>`
+</div>
+`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -444,7 +459,8 @@ paragraph attached to parent list item`
 </div>
 </li>
 </ul>
-</div>`
+</div>
+`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -477,7 +493,8 @@ paragraph attached to child list item`
 </div>
 </li>
 </ul>
-</div>`
+</div>
+`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 	})

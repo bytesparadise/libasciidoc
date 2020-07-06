@@ -27,7 +27,8 @@ var _ = Describe("sections", func() {
 <h2 id="_a_title_with_bold_content">a title with <strong>bold</strong> content</h2>
 <div class="sectionbody">
 </div>
-</div>`
+</div>
+`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -39,7 +40,8 @@ var _ = Describe("sections", func() {
 <h2 id="anchor">a title with <strong>bold</strong> content</h2>
 <div class="sectionbody">
 </div>
-</div>`
+</div>
+`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -49,7 +51,8 @@ var _ = Describe("sections", func() {
 			// but the section will be used to set the HTML page's <title> element
 			expected := `<div class="sect2">
 <h3 id="_a_title">a title</h3>
-</div>`
+</div>
+`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -59,7 +62,8 @@ var _ = Describe("sections", func() {
 <h2 id="_2_spaces_and_bold_content"><strong>2 spaces and bold content</strong></h2>
 <div class="sectionbody">
 </div>
-</div>`
+</div>
+`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -67,7 +71,8 @@ var _ = Describe("sections", func() {
 			source := `=== a section title, with *bold content*`
 			expected := `<div class="sect2">
 <h3 id="_a_section_title_with_bold_content">a section title, with <strong>bold content</strong></h3>
-</div>`
+</div>
+`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -81,7 +86,8 @@ var _ = Describe("sections", func() {
 <h2 id="custom_id">a section title, with <strong>bold content</strong></h2>
 <div class="sectionbody">
 </div>
-</div>`
+</div>
+`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -94,7 +100,8 @@ var _ = Describe("sections", func() {
 <h2 id="id_a_section_title">a section title</h2>
 <div class="sectionbody">
 </div>
-</div>`
+</div>
+`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -111,7 +118,8 @@ var _ = Describe("sections", func() {
 <h2 id="_section_1_2">section 1</h2>
 <div class="sectionbody">
 </div>
-</div>`
+</div>
+`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 	})
@@ -136,7 +144,8 @@ and a second paragraph`
 <p>and a second paragraph</p>
 </div>
 </div>
-</div>`
+</div>
+`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -148,7 +157,8 @@ a paragraph`
 			// but the section will be used to set the HTML page's <title> element
 			expected := `<div class="paragraph">
 <p>a paragraph</p>
-</div>`
+</div>
+`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -181,7 +191,8 @@ with some text`
 <p>with some text</p>
 </div>
 </div>
-</div>`
+</div>
+`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -226,7 +237,8 @@ with some text, too`
 <p>with some text, too</p>
 </div>
 </div>
-</div>`
+</div>
+`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -258,7 +270,8 @@ Listing block content is commonly used to preserve code input.</pre>
 <p>foo</p>
 </div>
 </div>
-</div>`
+</div>
+`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 	})
@@ -289,7 +302,8 @@ here</p>
 <p>content here</p>
 </div>
 </div>
-</div>`
+</div>
+`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -312,7 +326,8 @@ here</p>
 <p>content here</p>
 </div>
 </div>
-</div>`
+</div>
+`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 	})

@@ -17,7 +17,8 @@ var _ = Describe("literal blocks", func() {
 <div class="content">
 <pre>some literal content</pre>
 </div>
-</div>`
+</div>
+`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -31,7 +32,8 @@ lines.`
 on 3
 lines.</pre>
 </div>
-</div>`
+</div>
+`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -45,7 +47,8 @@ lines.</pre>
 on 3
 lines.</pre>
 </div>
-</div>`
+</div>
+`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -59,7 +62,8 @@ lines.</pre>
   on many lines  
     has some heading spaces preserved.</pre>
 </div>
-</div>`
+</div>
+`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -77,7 +81,8 @@ a normal paragraph.`
 </div>
 <div class="paragraph">
 <p>a normal paragraph.</p>
-</div>`
+</div>
+`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 	})
@@ -99,7 +104,8 @@ a normal paragraph.`
 </div>
 <div class="paragraph">
 <p>a normal paragraph.</p>
-</div>`
+</div>
+`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -123,7 +129,8 @@ a normal paragraph.`
 </div>
 <div class="paragraph">
 <p>a normal paragraph.</p>
-</div>`
+</div>
+`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -144,7 +151,8 @@ on two lines.</pre>
 </div>
 <div class="paragraph">
 <p>a normal paragraph.</p>
-</div>`
+</div>
+`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 	})
