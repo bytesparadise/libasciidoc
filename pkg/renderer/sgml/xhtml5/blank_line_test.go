@@ -17,7 +17,8 @@ second paragraph`
 </div>
 <div class="paragraph">
 <p>second paragraph</p>
-</div>`
+</div>
+`
 		Expect(RenderXHTML(source)).To(MatchHTML(expected))
 	})
 
@@ -30,7 +31,8 @@ second paragraph`
 </div>
 <div class="paragraph">
 <p>second paragraph</p>
-</div>`
+</div>
+`
 		Expect(RenderXHTML(source)).To(MatchHTML(expected))
 	})
 
@@ -41,7 +43,8 @@ second paragraph`
 		`
 		expected := `<div class="paragraph">
 <p>first paragraph</p>
-</div>`
+</div>
+`
 		Expect(RenderXHTML(source)).To(MatchHTML(expected))
 	})
 
@@ -52,7 +55,8 @@ second paragraph`
         `
 		expected := `<div class="paragraph">
 <p>first paragraph</p>
-</div>`
+</div>
+`
 		Expect(RenderXHTML(source)).To(MatchHTML(expected))
 	})
 
@@ -62,13 +66,14 @@ second line`
 		expected := `<div class="paragraph">
 <p>first line<br/>
 second line</p>
-</div>`
+</div>
+`
 		Expect(RenderXHTML(source)).To(MatchHTML(expected))
 	})
 
 	It("thematic break", func() {
 		source := "- - -"
-		expected := "<hr/>"
+		expected := "<hr/>\n"
 		Expect(RenderXHTML(source)).To(MatchHTML(expected))
 	})
 })

@@ -57,13 +57,13 @@ func getNumberingStyle(l types.OrderedList) string {
 // this numbering style is only really relevant to HTML
 func (r *sgmlRenderer) numberingType(style string) sanitized {
 	switch style {
-	case string(types.LowerAlpha):
+	case types.LowerAlpha:
 		return `a`
-	case string(types.UpperAlpha):
+	case types.UpperAlpha:
 		return `A`
-	case string(types.LowerRoman):
+	case types.LowerRoman:
 		return `i`
-	case string(types.UpperRoman):
+	case types.UpperRoman:
 		return `I`
 	default:
 		return ""

@@ -7,7 +7,7 @@ const (
 		"<div class=\"content\">\n" +
 		"<pre class=\"highlight\"><code>{{ .Content }}</code></pre>\n" +
 		"</div>\n" +
-		"</div>"
+		"</div>\n"
 
 	listingBlockTmpl = `<div {{ if .ID }}id="{{ .ID }}" {{ end }}` +
 		"class=\"listingblock{{ if .Roles }} {{ .Roles }}{{ end }}\">\n" +
@@ -15,7 +15,7 @@ const (
 		"<div class=\"content\">\n" +
 		"<pre>{{ .Content }}</pre>\n" +
 		"</div>\n" +
-		"</div>"
+		"</div>\n"
 
 	sourceBlockTmpl = `<div {{ if .ID }}id="{{ .ID }}" {{ end }}` +
 		"class=\"listingblock{{ if .Roles }} {{ .Roles }}{{ end }}\">\n" +
@@ -28,27 +28,27 @@ const (
 		`data-lang="{{ .Language}}"{{ end }}>` +
 		"{{ .Content }}</code></pre>\n" +
 		"</div>\n" +
-		"</div>"
+		"</div>\n"
 
 	exampleBlockTmpl = `<div {{ if .ID }}id="{{ .ID }}" {{ end }}` +
 		"class=\"exampleblock{{ if .Roles }} {{ .Roles }}{{ end }}\">\n" +
 		"{{ if .Title }}<div class=\"title\">Example {{ .ExampleNumber }}. {{ .Title }}</div>\n{{ end }}" +
 		"<div class=\"content\">\n" +
-		"{{ .Content }}\n" +
+		"{{ .Content }}" +
 		"</div>\n" +
-		"</div>"
+		"</div>\n"
 
 	quoteBlockTmpl = `<div {{ if .ID }}id="{{ .ID }}" {{ end }}` +
 		"class=\"quoteblock{{ if .Roles }} {{ .Roles }}{{ end }}\">\n" +
 		"{{ if .Title }}<div class=\"title\">{{ .Title }}</div>\n{{ end }}" +
 		"<blockquote>\n" +
-		"{{ .Content }}\n" +
+		"{{ .Content }}" +
 		"</blockquote>\n" +
 		"{{ if .Attribution.First }}<div class=\"attribution\">\n" +
 		"&#8212; {{ .Attribution.First }}" +
 		"{{ if .Attribution.Second }}<br>\n<cite>{{ .Attribution.Second }}</cite>{{ end }}\n" +
 		"</div>\n{{ end }}" +
-		"</div>"
+		"</div>\n"
 
 	verseBlockTmpl = `<div {{ if .ID }}id="{{ .ID }}" {{ end }}` +
 		"class=\"verseblock{{ if .Roles }} {{ .Roles }}{{ end }}\">\n" +
@@ -57,7 +57,7 @@ const (
 		"{{ if .Attribution.First }}<div class=\"attribution\">\n&#8212; {{ .Attribution.First }}" +
 		"{{ if .Attribution.Second }}<br>\n<cite>{{ .Attribution.Second }}</cite>{{ end }}\n" +
 		"</div>\n{{ end }}" +
-		"</div>"
+		"</div>\n"
 
 	admonitionBlockTmpl = `<div {{ if .ID }}id="{{ .ID}}" {{ end }}` +
 		"class=\"admonitionblock {{ .Kind }}{{ if .Roles }} {{ .Roles }}{{ end }}\">\n" +
@@ -66,17 +66,17 @@ const (
 		"<td class=\"icon\">\n{{ .Icon }}\n</td>\n" +
 		"<td class=\"content\">\n" +
 		"{{ if .Title }}<div class=\"title\">{{ .Title }}</div>\n{{ end }}" +
-		"{{ .Content }}\n" +
-		"</td>\n</tr>\n</table>\n</div>"
+		"{{ .Content }}" +
+		"</td>\n</tr>\n</table>\n</div>\n"
 
 	sidebarBlockTmpl = "<div {{ if .ID }}id=\"{{ .ID }}\" {{ end }}" +
 		"class=\"sidebarblock{{ if .Roles }} {{ .Roles }}{{ end }}\">\n" +
 		"<div class=\"content\">\n" +
 		"{{ if .Title }}<div class=\"title\">{{ .Title }}</div>\n{{ end }}" +
-		"{{ .Content }}\n" +
+		"{{ .Content }}" +
 		"</div>\n" +
-		"</div>"
+		"</div>\n"
 
 	// the name here is weird because "pass" as a prefix triggers a false security warning
-	pssThroughBlock = `{{ .Content }}`
+	pssThroughBlock = "{{ .Content }}\n"
 )

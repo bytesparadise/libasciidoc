@@ -19,5 +19,5 @@ const (
 		"{{ .Header }}" +
 		"{{ .Body }}" +
 		"{{ end }}" +
-		"</table>"
+		"</table>\n"
 )

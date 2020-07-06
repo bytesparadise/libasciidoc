@@ -86,7 +86,6 @@ John Foo Doe <johndoe@example.com>; Jane Doe <janedoe@example.com>`
 </div>
 </div>
 <div id="content">
-
 </div>
 <div id="footer">
 <div id="footer-text">

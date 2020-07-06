@@ -80,7 +80,8 @@ var _ = Describe("root cmd", func() {
 		Expect(buf.String()).ToNot(BeEmpty())
 		Expect(buf.String()).To(Equal(`<div class="paragraph">
 <p>bar1 and bar2</p>
-</div>`))
+</div>
+`))
 	})
 
 	It("render with attribute reset", func() {
@@ -99,7 +100,8 @@ var _ = Describe("root cmd", func() {
 		Expect(buf.String()).To(Equal(`level=warning msg="unable to find attribute 'foo2'"
 <div class="paragraph">
 <p>bar1 and {foo2}</p>
-</div>`))
+</div>
+`))
 	})
 
 	It("render multiple files", func() {

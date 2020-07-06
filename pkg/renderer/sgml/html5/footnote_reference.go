@@ -5,7 +5,7 @@ const (
 	footnoteRefTmpl      = `<sup class="footnoteref">[<a class="footnote" href="#_footnotedef_{{ .ID }}" title="View footnote.">{{ .ID }}</a>]</sup>`
 	footnoteRefPlainTmpl = `<sup class="{{ .Class }}">[{{ .ID }}]</sup>`
 	invalidFootnoteTmpl  = `<sup class="footnoteref red" title="Unresolved footnote reference.">[{{ .Ref }}]</sup>`
-	footnotesTmpl        = "\n<div id=\"footnotes\">\n<hr>\n{{ .Content }}</div>"
+	footnotesTmpl        = "<div id=\"footnotes\">\n<hr>\n{{ .Content }}</div>\n"
 
 	// arguably this should instead be an ordered list.
 	footnoteItemTmpl = "<div class=\"footnote\" id=\"_footnotedef_{{ .ID }}\">\n" +

@@ -3,11 +3,11 @@ package html5
 const (
 	tocRootTmpl = "<div id=\"toc\" class=\"toc\">\n" +
 		"<div id=\"toctitle\">Table of Contents</div>\n" +
-		"{{ . }}\n" +
-		"</div>"
+		"{{ . }}" +
+		"</div>\n"
 
-	tocSectionTmpl = "<ul class=\"sectlevel{{ .Level }}\">\n{{ .Content }}</ul>"
+	tocSectionTmpl = "<ul class=\"sectlevel{{ .Level }}\">\n{{ .Content }}</ul>\n"
 
 	tocEntryTmpl = "<li><a href=\"#{{ .ID }}\">{{ .Title }}</a>" +
-		"{{ if .Content }}\n{{ .Content }}\n{{ end }}</li>\n"
+		"{{ if .Content }}\n{{ .Content }}{{ end }}</li>\n"
 )

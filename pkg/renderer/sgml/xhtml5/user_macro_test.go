@@ -22,7 +22,8 @@ var _ = Describe("user macros", func() {
 			source := "hello::[]"
 			expected := `<div class="paragraph">
 <p>hello::[]</p>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -75,7 +76,8 @@ var _ = Describe("user macros", func() {
 			source := "hello:[]"
 			expected := `<div class="paragraph">
 <p>hello:[]</p>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -84,7 +86,8 @@ var _ = Describe("user macros", func() {
 			source := "AAA hello:[]"
 			expected := `<div class="paragraph">
 <p>AAA <span>hello world</span></p>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source, configuration.WithMacroTemplate(helloMacroTmpl.Name(), helloMacroTmpl))).To(Equal(expected))
 		})
 
@@ -93,7 +96,8 @@ var _ = Describe("user macros", func() {
 			source := `AAA hello:[suffix="!!!!!"]`
 			expected := `<div class="paragraph">
 <p>AAA <span>hello world!!!!!</span></p>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source, configuration.WithMacroTemplate(helloMacroTmpl.Name(), helloMacroTmpl))).To(Equal(expected))
 		})
 
@@ -102,7 +106,8 @@ var _ = Describe("user macros", func() {
 			source := `AAA hello:JohnDoe[]`
 			expected := `<div class="paragraph">
 <p>AAA <span>hello JohnDoe</span></p>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source, configuration.WithMacroTemplate(helloMacroTmpl.Name(), helloMacroTmpl))).To(Equal(expected))
 		})
 
@@ -111,7 +116,8 @@ var _ = Describe("user macros", func() {
 			source := `AAA hello:JohnDoe[prefix="Hi ",suffix="!!"]`
 			expected := `<div class="paragraph">
 <p>AAA <span>Hi JohnDoe!!</span></p>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source, configuration.WithMacroTemplate(helloMacroTmpl.Name(), helloMacroTmpl))).To(Equal(expected))
 		})
 

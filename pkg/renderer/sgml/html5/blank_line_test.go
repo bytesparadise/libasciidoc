@@ -18,7 +18,8 @@ second paragraph`
 </div>
 <div class="paragraph">
 <p>second paragraph</p>
-</div>`
+</div>
+`
 		Expect(RenderHTML(source)).To(MatchHTML(expected))
 	})
 
@@ -31,7 +32,8 @@ second paragraph`
 </div>
 <div class="paragraph">
 <p>second paragraph</p>
-</div>`
+</div>
+`
 		Expect(RenderHTML(source)).To(MatchHTML(expected))
 	})
 
@@ -42,7 +44,8 @@ second paragraph`
 		`
 		expected := `<div class="paragraph">
 <p>first paragraph</p>
-</div>`
+</div>
+`
 		Expect(RenderHTML(source)).To(MatchHTML(expected))
 	})
 
@@ -53,7 +56,8 @@ second paragraph`
         `
 		expected := `<div class="paragraph">
 <p>first paragraph</p>
-</div>`
+</div>
+`
 		Expect(RenderHTML(source)).To(MatchHTML(expected))
 	})
 })

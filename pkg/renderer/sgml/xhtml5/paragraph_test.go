@@ -17,7 +17,8 @@ var _ = Describe("paragraphs", func() {
 			expected := `<div class="paragraph">
 <p><strong>bold content</strong>
 &amp; more content afterwards</p>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -27,7 +28,8 @@ var _ = Describe("paragraphs", func() {
 			expected := `<div class="paragraph">
 <p><strong>bold content</strong>
    &amp; more content afterwards&#8230;&#8203;</p>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -38,7 +40,8 @@ var _ = Describe("paragraphs", func() {
 			expected := `<div id="foo" class="paragraph">
 <div class="doctitle">a title</div>
 <p><strong>bold content</strong> with more content afterwards&#8230;&#8203;</p>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -54,7 +57,8 @@ and here another paragraph
 </div>
 <div class="paragraph">
 <p>and here another paragraph</p>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -62,7 +66,8 @@ and here another paragraph
 			source := `a 'subsection' paragraph.`
 			expected := `<div class="paragraph">
 <p>a &#39;subsection&#39; paragraph.</p>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -70,7 +75,8 @@ and here another paragraph
 			source := `{blank}`
 			expected := `<div class="paragraph">
 <p></p>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 
 		})
@@ -80,7 +86,8 @@ and here another paragraph
 some content`
 			expected := `<div class="paragraph text-left">
 <p>some content</p>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 
 		})
@@ -96,7 +103,8 @@ baz`
 <p>foo<br/>
 bar
 baz</p>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -110,7 +118,8 @@ baz`
 <p>foo<br/>
 bar<br/>
 baz</p>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -123,7 +132,8 @@ baz`
 <p>foo<br/>
 bar<br/>
 baz</p>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -135,7 +145,8 @@ baz</p>
 a paragraph written by {author}.`
 			expected := `<div class="paragraph">
 <p>a paragraph written by Xavier.</p>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 	})
@@ -155,7 +166,8 @@ this is a note.
 </td>
 </tr>
 </table>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -174,7 +186,8 @@ warning!
 </td>
 </tr>
 </table>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -194,7 +207,8 @@ this is a note.
 </td>
 </tr>
 </table>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 	})
@@ -215,7 +229,8 @@ this is a caution!
 </td>
 </tr>
 </table>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -238,7 +253,8 @@ this is a
 </td>
 </tr>
 </table>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 	})
@@ -254,7 +270,8 @@ I am a verse paragraph.`
 &#8212; john doe<br/>
 <cite>verse title</cite>
 </div>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -270,7 +287,8 @@ I am a verse paragraph.`
 &#8212; john doe<br/>
 <cite>verse title</cite>
 </div>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -282,7 +300,8 @@ I am a verse paragraph.`
 <div class="attribution">
 &#8212; john doe
 </div>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -294,7 +313,8 @@ I am a verse paragraph.`
 <div class="attribution">
 &#8212; john doe
 </div>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -303,7 +323,8 @@ I am a verse paragraph.`
 I am a verse paragraph.`
 			expected := `<div class="verseblock">
 <pre class="content">I am a verse paragraph.</pre>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -312,7 +333,8 @@ I am a verse paragraph.`
 I am a verse paragraph.`
 			expected := `<div class="verseblock">
 <pre class="content">I am a verse paragraph.</pre>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -323,7 +345,8 @@ image::foo.png[]`
 <div class="content">
 <img src="foo.png" alt="verse" width="john doe" height="verse title"/>
 </div>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 	})
@@ -341,7 +364,8 @@ some <strong>quote</strong> content
 &#8212; john doe<br/>
 <cite>quote title</cite>
 </div>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -359,7 +383,8 @@ I am a quote paragraph.
 &#8212; john doe<br/>
 <cite>quote title</cite>
 </div>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -373,7 +398,8 @@ I am a quote paragraph.
 <div class="attribution">
 &#8212; john doe
 </div>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -387,7 +413,8 @@ I am a quote paragraph.
 <div class="attribution">
 &#8212; john doe
 </div>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -398,7 +425,8 @@ I am a quote paragraph.`
 <blockquote>
 I am a quote paragraph.
 </blockquote>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -409,7 +437,8 @@ I am a quote paragraph.`
 <blockquote>
 I am a quote paragraph.
 </blockquote>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -424,7 +453,8 @@ a foo <span class="image"><img src="foo.png" alt="foo"/></span>
 &#8212; john doe<br/>
 <cite>quote title</cite>
 </div>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -435,10 +465,9 @@ image::foo.png[]`
 <div class="content">
 <img src="foo.png" alt="quote" width="john doe" height="quote title"/>
 </div>
-</div>`
+</div>
+`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
-
 	})
-
 })

@@ -5,7 +5,7 @@ const (
 		" class=\"paragraph{{ if .Roles }} {{ .Roles }}{{ end }}\">\n" +
 		"{{ if .Title  }}<div class=\"doctitle\">{{ .Title }}</div>\n{{ end }}" +
 		"<p>{{ .Content }}</p>\n" +
-		"</div>"
+		"</div>\n"
 
 	admonitionParagraphTmpl = `{{ if .Content }}` +
 		"<div {{ if .ID }}id=\"{{ .ID }}\" {{ end }}class=\"admonitionblock {{ .Kind }}" +
@@ -15,10 +15,10 @@ const (
 		"</td>\n" +
 		"<td class=\"content\">\n" +
 		"{{ if .Title }}<div class=\"title\">{{ .Title }}</div>\n{{ end }}" +
-		"{{ .Content }}\n" +
-		"</td>\n</tr>\n</table>\n</div>{{ end }}"
+		"{{ .Content }}" +
+		"\n</td>\n</tr>\n</table>\n</div>\n{{ end }}"
 
-	delimitedBlockParagraphTmpl = `<p>{{ .CheckStyle }}{{ .Content }}</p>`
+	delimitedBlockParagraphTmpl = "<p>{{ .CheckStyle }}{{ .Content }}</p>\n"
 
 	sourceParagraphTmpl = "<div class=\"listingblock\">\n" +
 		"<div class=\"content\">\n" +
@@ -27,14 +27,14 @@ const (
 		"{{ .Content }}" +
 		"</code></pre>\n" +
 		"</div>\n" +
-		"</div>"
+		"</div>\n"
 
 	verseParagraphTmpl = "<div {{ if .ID }}id=\"{{ .ID }}\" {{ end }}class=\"verseblock\">\n" +
 		"{{ if .Title }}<div class=\"title\">{{ .Title }}</div>\n{{ end }}" +
 		"<pre class=\"content\">{{ .Content }}</pre>\n" +
 		"{{ if .Attribution.First }}<div class=\"attribution\">\n&#8212; {{ .Attribution.First }}" +
 		"{{ if .Attribution.Second }}<br>\n<cite>{{ .Attribution.Second }}</cite>\n{{ else }}\n{{ end }}" +
-		"</div>\n{{ end }}</div>"
+		"</div>\n{{ end }}</div>\n"
 
 	quoteParagraphTmpl = "<div {{ if .ID }}id=\"{{ .ID }}\" {{ end }}class=\"quoteblock\">\n" +
 		"{{ if .Title }}<div class=\"title\">{{ .Title }}</div>\n{{ end }}" +
@@ -43,9 +43,9 @@ const (
 		"</blockquote>\n" +
 		"{{ if .Attribution.First }}<div class=\"attribution\">\n&#8212; {{ .Attribution.First }}" +
 		"{{ if .Attribution.Second }}<br>\n<cite>{{ .Attribution.Second }}</cite>\n{{ else }}\n{{ end }}" +
-		"</div>\n{{ end }}</div>"
+		"</div>\n{{ end }}</div>\n"
 
-	manpageNameParagraphTmpl = `<p>{{ .Content }}</p>`
+	manpageNameParagraphTmpl = "<p>{{ .Content }}</p>\n"
 
-	thematicBreakTmpl = "<hr>"
+	thematicBreakTmpl = "<hr>\n"
 )

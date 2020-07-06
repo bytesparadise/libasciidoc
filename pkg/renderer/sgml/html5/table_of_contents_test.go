@@ -82,7 +82,8 @@ A preamble...
 <h2 id="_section_c">Section C</h2>
 <div class="sectionbody">
 </div>
-</div>`
+</div>
+`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -170,7 +171,8 @@ A preamble...
 <h2 id="_section_c">Section C</h2>
 <div class="sectionbody">
 </div>
-</div>`
+</div>
+`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -182,7 +184,8 @@ level 1 sections not exists.`
 
 			expected := `<div class="paragraph">
 <p>level 1 sections not exists.</p>
-</div>`
+</div>
+`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 
 		})

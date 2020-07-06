@@ -219,7 +219,6 @@ func (r *sgmlRenderer) splitAndRenderForManpage(ctx *renderer.Context, doc types
 	}
 	result := &strings.Builder{}
 	result.WriteString(renderedHeader)
-	result.WriteString("\n")
 	result.WriteString(renderedContent)
 	return "", result.String(), nil
 }

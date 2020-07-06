@@ -17,7 +17,8 @@ var _ = Describe("html5 body renderer", func() {
 		// then
 		expected := `<div class="paragraph">
 <p>hello, world!</p>
-</div>`
+</div>
+`
 		Expect(err).NotTo(HaveOccurred())
 		Expect(result).To(Equal(expected))
 	})
@@ -46,5 +47,4 @@ var _ = Describe("html5 body renderer", func() {
 		Expect(err).ToNot(HaveOccurred())
 		Expect(result).To(Equal(""))
 	})
-
 })

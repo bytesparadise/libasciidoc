@@ -8,8 +8,8 @@ const (
 		"{{ if .Title }}<div class=\"title\">{{ .Title }}</div>\n{{ end }}" +
 		"<ol>\n" +
 		"{{ .Content }}" +
-		"</ol>\n</div>"
+		"</ol>\n</div>\n"
 
 	// NB: The items are numbered sequentially.
-	calloutListItemTmpl = "<li>\n{{ .Content }}\n</li>\n"
+	calloutListItemTmpl = "<li>\n{{ .Content }}</li>\n"
 )

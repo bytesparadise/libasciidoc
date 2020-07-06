@@ -12,7 +12,7 @@ const (
 		"/>{{ if .Href }}</a>{{ end }}\n" +
 		"</div>\n" +
 		"{{ if .Title }}<div class=\"title\">{{ .Caption }}{{ .Title }}</div>\n{{ end }}" +
-		"</div>"
+		"</div>\n"
 
 	inlineImageTmpl = `<span class="image{{ if .Roles }} {{ .Roles }}{{ end }}">` +
 		`<img src="{{ .Path }}" alt="{{ .Alt }}"` +

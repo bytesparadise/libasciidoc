@@ -16,7 +16,8 @@ var _ = Describe("passthroughs", func() {
 			source := `++++++`
 			expected := `<div class="paragraph">
 <p></p>
-</div>`
+</div>
+`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -24,7 +25,8 @@ var _ = Describe("passthroughs", func() {
 			source := `++++++ with more content afterwards...`
 			expected := `<div class="paragraph">
 <p> with more content afterwards&#8230;&#8203;</p>
-</div>`
+</div>
+`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -32,7 +34,8 @@ var _ = Describe("passthroughs", func() {
 			source := `+++*bold content*+++`
 			expected := `<div class="paragraph">
 <p>*bold content*</p>
-</div>`
+</div>
+`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -40,7 +43,8 @@ var _ = Describe("passthroughs", func() {
 			source := `The text +++<u>underline & me</u>+++ is underlined.`
 			expected := `<div class="paragraph">
 <p>The text <u>underline & me</u> is underlined.</p>
-</div>`
+</div>
+`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 	})
@@ -51,7 +55,8 @@ var _ = Describe("passthroughs", func() {
 			source := `++`
 			expected := `<div class="paragraph">
 <p>++</p>
-</div>`
+</div>
+`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -59,7 +64,8 @@ var _ = Describe("passthroughs", func() {
 			source := `++ with more content afterwards...`
 			expected := `<div class="paragraph">
 <p>++ with more content afterwards&#8230;&#8203;</p>
-</div>`
+</div>
+`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -67,7 +73,8 @@ var _ = Describe("passthroughs", func() {
 			source := `+*bold content*+`
 			expected := `<div class="paragraph">
 <p>*bold content*</p>
-</div>`
+</div>
+`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -75,7 +82,8 @@ var _ = Describe("passthroughs", func() {
 			source := `The text +<u>underline me</u>+ is not underlined.`
 			expected := `<div class="paragraph">
 <p>The text &lt;u&gt;underline me&lt;/u&gt; is not underlined.</p>
-</div>`
+</div>
+`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -83,7 +91,8 @@ var _ = Describe("passthroughs", func() {
 			source := `The text + *hello*, world + is not passed through.`
 			expected := `<div class="paragraph">
 <p>The text + <strong>hello</strong>, world + is not passed through.</p>
-</div>`
+</div>
+`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 	})
@@ -94,7 +103,8 @@ var _ = Describe("passthroughs", func() {
 			source := `pass:[hello]`
 			expected := `<div class="paragraph">
 <p>hello</p>
-</div>`
+</div>
+`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -102,7 +112,8 @@ var _ = Describe("passthroughs", func() {
 			source := `pass:[hello, world]`
 			expected := `<div class="paragraph">
 <p>hello, world</p>
-</div>`
+</div>
+`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -110,7 +121,8 @@ var _ = Describe("passthroughs", func() {
 			source := `pass:[]`
 			expected := `<div class="paragraph">
 <p></p>
-</div>`
+</div>
+`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -118,7 +130,8 @@ var _ = Describe("passthroughs", func() {
 			source := `pass:[ *hello*, world ]`
 			expected := `<div class="paragraph">
 <p> *hello*, world </p>
-</div>`
+</div>
+`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -127,7 +140,8 @@ var _ = Describe("passthroughs", func() {
 			expected := `<div class="paragraph">
 <p>hello,
 world</p>
-</div>`
+</div>
+`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 	})
@@ -138,7 +152,8 @@ world</p>
 			source := `pass:q[*hello*]`
 			expected := `<div class="paragraph">
 <p><strong>hello</strong></p>
-</div>`
+</div>
+`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -146,7 +161,8 @@ world</p>
 			source := `pass:q[ a *hello*, world ]   `
 			expected := `<div class="paragraph">
 <p> a <strong>hello</strong>, world </p>
-</div>`
+</div>
+`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
@@ -154,7 +170,8 @@ world</p>
 			source := `an pass:q[ *hello*, world ] mention`
 			expected := `<div class="paragraph">
 <p>an  <strong>hello</strong>, world  mention</p>
-</div>`
+</div>
+`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 	})

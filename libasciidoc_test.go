@@ -65,7 +65,8 @@ a paragraph with *bold content*`
 <p>a paragraph with <strong>bold content</strong></p>
 </div>
 </div>
-</div>`
+</div>
+`
 				Expect(RenderHTML(source)).To(Equal(expectedContent))
 				Expect(RenderHTML5Title(source)).To(Equal(expectedTitle))
 			})
@@ -81,7 +82,8 @@ a paragraph with *bold content*`
 <p>a paragraph with <strong>bold content</strong></p>
 </div>
 </div>
-</div>`
+</div>
+`
 				Expect(RenderHTML(source)).To(Equal(expectedContent))
 				Expect(RenderHTML5Title(source)).To(Equal(""))
 			})
@@ -110,7 +112,8 @@ a paragraph`
 </div>
 </div>
 </div>
-</div>`
+</div>
+`
 				Expect(RenderHTML(source)).To(Equal(expectedContent))
 				Expect(RenderHTML5Title(source)).To(Equal(expectedTitle))
 				Expect(DocumentMetadata(source, lastUpdated)).To(Equal(types.Metadata{
@@ -172,7 +175,8 @@ a paragraph with _italic content_`
 <p>a paragraph with <em>italic content</em></p>
 </div>
 </div>
-</div>`
+</div>
+`
 				Expect(RenderHTML(source)).To(Equal(expectedContent))
 				Expect(RenderHTML5Title(source)).To(Equal(expectedTitle))
 				Expect(DocumentMetadata(source, lastUpdated)).To(Equal(types.Metadata{
@@ -216,7 +220,8 @@ a paragraph with _italic content_`
 <p>last line of grandchild</p>
 </div>
 </div>
-</div>`
+</div>
+`
 				Expect(RenderHTML(source, configuration.WithFilename("test.adoc"))).To(Equal(expected))
 				Expect(DocumentMetadata(source, lastUpdated)).To(Equal(types.Metadata{
 					Title:       "",
@@ -314,7 +319,8 @@ Free use of this software is granted under the terms of the MIT License.`
 Free use of this software is granted under the terms of the MIT License.</p>
 </div>
 </div>
-</div>`
+</div>
+`
 				Expect(RenderHTML(source, configuration.WithAttribute(types.AttrDocType, "manpage"))).To(Equal(expectedContent))
 			})
 		})
@@ -556,5 +562,4 @@ Our story begins.`
 		})
 
 	})
-
 })

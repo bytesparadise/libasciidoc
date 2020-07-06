@@ -8,7 +8,7 @@ const (
 		">\n" +
 		"{{ if .Title }}<div class=\"title\">{{ .Title }}</div>\n{{ end }}" +
 		"<ul{{ if .Checklist }} class=\"checklist\"{{ else if .Style }} class=\"{{ .Style }}\"{{ end }}>\n" +
-		"{{ .Content }}</ul>\n</div>"
+		"{{ .Content }}</ul>\n</div>\n"
 
-	unorderedListItemTmpl = "<li>\n{{ .Content }}\n</li>\n"
+	unorderedListItemTmpl = "<li>\n{{ .Content }}</li>\n"
 )
