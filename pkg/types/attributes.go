@@ -103,6 +103,8 @@ const (
 	AttrStripes = "stripes"
 	// AttrFloat is for image or table float (text flows around)
 	AttrFloat = "float"
+	// AttrCols the table columns attribute
+	AttrCols = "cols"
 	// AttrPositional2 positional parameter 2
 	AttrPositional2 = "@2"
 	// AttrPositional3 positional parameter 3

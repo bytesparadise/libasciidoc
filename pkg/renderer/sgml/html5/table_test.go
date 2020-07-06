@@ -264,4 +264,168 @@ var _ = Describe("tables", func() {
 		Expect(RenderHTML(source)).To(MatchHTML(expected))
 	})
 
+	It("table with cols relative widths", func() {
+		source := "[cols=\"3,2,5\"]\n|===\n|one|two|three\n|==="
+		expected := `<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 30%;">
+<col style="width: 20%;">
+<col style="width: 50%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">one</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">two</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">three</p></td>
+</tr>
+</tbody>
+</table>`
+		Expect(RenderHTML(source)).To(MatchHTML(expected))
+	})
+
+	It("table with cols relative widths and header", func() {
+		source := "[cols=\"3,2,5\"]\n|===\n|h1|h2|h3\n\n|one|two|three\n|==="
+		expected := `<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 30%;">
+<col style="width: 20%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">h1</th>
+<th class="tableblock halign-left valign-top">h2</th>
+<th class="tableblock halign-left valign-top">h3</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">one</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">two</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">three</p></td>
+</tr>
+</tbody>
+</table>`
+		Expect(RenderHTML(source)).To(MatchHTML(expected))
+	})
+
+	It("autowidth overrides column widths", func() {
+		source := "[%autowidth,cols=\"3,2,5\"]\n|===\n|h1|h2|h3\n\n|one|two|three\n|==="
+		expected := `<table class="tableblock frame-all grid-all fit-content">
+<colgroup>
+<col>
+<col>
+<col>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">h1</th>
+<th class="tableblock halign-left valign-top">h2</th>
+<th class="tableblock halign-left valign-top">h3</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">one</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">two</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">three</p></td>
+</tr>
+</tbody>
+</table>`
+		Expect(RenderHTML(source)).To(MatchHTML(expected))
+	})
+
+	It("column auto-width", func() {
+		source := "[cols=\"30,~,~\"]\n|===\n|h1|h2|h3\n\n|one|two|three\n|==="
+		expected := `<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 30%;">
+<col>
+<col>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">h1</th>
+<th class="tableblock halign-left valign-top">h2</th>
+<th class="tableblock halign-left valign-top">h3</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">one</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">two</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">three</p></td>
+</tr>
+</tbody>
+</table>`
+		Expect(RenderHTML(source)).To(MatchHTML(expected))
+	})
+
+	It("columns with repeat", func() {
+		source := "[cols=\"3*10,2*~\"]\n|===\n|h1|h2|h3|h4|h5\n\n|one|two|three|four|five\n|==="
+		expected := `<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 10%;">
+<col style="width: 10%;">
+<col style="width: 10%;">
+<col>
+<col>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">h1</th>
+<th class="tableblock halign-left valign-top">h2</th>
+<th class="tableblock halign-left valign-top">h3</th>
+<th class="tableblock halign-left valign-top">h4</th>
+<th class="tableblock halign-left valign-top">h5</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">one</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">two</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">three</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">four</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">five</p></td>
+</tr>
+</tbody>
+</table>`
+		Expect(RenderHTML(source)).To(MatchHTML(expected))
+	})
+
+	It("columns with alignment changes", func() {
+		// source := "[cols=\"2*^.^,<,.>,>\"]\n|===\n|==="
+
+		source := "[cols=\"2*^.^,<,.>,>\"]\n|===\n|h1|h2|h3|h4|h5\n\n|one|two|three|four|five\n|==="
+		expected := `<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-center valign-middle">h1</th>
+<th class="tableblock halign-center valign-middle">h2</th>
+<th class="tableblock halign-left valign-top">h3</th>
+<th class="tableblock halign-left valign-bottom">h4</th>
+<th class="tableblock halign-right valign-top">h5</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-center valign-middle"><p class="tableblock">one</p></td>
+<td class="tableblock halign-center valign-middle"><p class="tableblock">two</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">three</p></td>
+<td class="tableblock halign-left valign-bottom"><p class="tableblock">four</p></td>
+<td class="tableblock halign-right valign-top"><p class="tableblock">five</p></td>
+</tr>
+</tbody>
+</table>`
+		Expect(RenderHTML(source)).To(MatchHTML(expected))
+	})
+
+	// TODO: Verify styles -- it's verified in the parser for now, but we still need to implement styles.
 })
