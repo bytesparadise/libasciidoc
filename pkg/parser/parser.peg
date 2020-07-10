@@ -210,7 +210,7 @@ Attributes <- attrs:(ElementAttribute)+ BlankLine* {
     return types.NewAttributes(attrs.([]interface{}))
 }
 
-ElementAttribute <- &("[" / "." / "#") // skip if the content does not start with one of those characters
+ElementAttribute <- &("[" / "." ) // skip if the content does not start with one of those characters
     attr:(ElementID / 
         ElementTitle / 
         ElementShortHandAttributes /
@@ -400,17 +400,6 @@ AttrValPosFB <- [^,=\r\n\]]* &[,\]] { return strings.TrimSpace(string(c.text)), 
 
 // Fallback Named Attribute Value, may include equals
 AttrValNamedFB <- [^,\r\n\]]* &[,\]] { return strings.TrimSpace(string(c.text)), nil }
-
-// InlinePositionalValue is an unnamed attribute.
-InlinePositionalValue <- Space* value:(InlineValuePlain / AttrValueSingleQuoted / AttrValueDoubleQuoted) Space* &[,#%.\]] {
-    return value.(string), nil
-}
-
-// InlineValuePlain is sort of like AttrValuePlain, but it also needs to exclude the equals sign.
-// It also cannot start or end with a space.
-InlineValuePlain <- [^,\r\n"' \t=\]]  ([^, \t\r\n"'=\]] / [ \t][^, \t\r\n"'=\]])* {
-    return string(c.text), nil
-}
 
 ShortHandValue <- ShortHandValuePlain / AttrValueSingleQuoted / AttrValueDoubleQuoted
 
