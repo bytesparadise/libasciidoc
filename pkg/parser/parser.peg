@@ -210,7 +210,7 @@ Attributes <- attrs:(ElementAttribute)+ BlankLine* {
     return types.NewAttributes(attrs.([]interface{}))
 }
 
-ElementAttribute <- &("[" / "." / "#") // skip if the content does not start with one of those characters
+ElementAttribute <- &("[" / "." ) // skip if the content does not start with one of those characters
     attr:(ElementID / 
         ElementTitle / 
         ElementShortHandAttributes /
