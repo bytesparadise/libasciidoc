@@ -1299,50 +1299,6 @@ func (i InlineImage) ResolveLocation(attrs AttributesWithOverrides) InlineImage 
 	return i
 }
 
-// NewImageAttributes returns a map of image attributes, some of which have implicit keys (`alt`, `width` and `height`)
-func NewImageAttributes(alt, width, height interface{}, sa []interface{}, others []interface{}) (Attributes, error) {
-	var result Attributes
-
-	if alt, ok := alt.(string); ok {
-		if altStr := Apply(alt, strings.TrimSpace); altStr != "" {
-			result = result.Set(AttrImageAlt, altStr)
-		}
-	}
-	if width, ok := width.(string); ok {
-		if widthStr := Apply(width, strings.TrimSpace); widthStr != "" {
-			result = result.Set(AttrWidth, widthStr)
-		}
-	}
-	if height, ok := height.(string); ok {
-		if heightStr := Apply(height, strings.TrimSpace); heightStr != "" {
-			result = result.Set(AttrImageHeight, heightStr)
-		}
-	}
-	for _, otherAttr := range sa {
-		if otherAttr, ok := otherAttr.(Attributes); ok {
-			for k, v := range otherAttr {
-				result = result.Set(k, v)
-				if k == AttrID {
-					// mark custom_id flag to `true`
-					result = result.Set(AttrCustomID, true)
-				}
-			}
-		}
-	}
-	for _, otherAttr := range others {
-		if otherAttr, ok := otherAttr.(Attributes); ok {
-			for k, v := range otherAttr {
-				result = result.Set(k, v)
-				if k == AttrID {
-					// mark custom_id flag to `true`
-					result = result.Set(AttrCustomID, true)
-				}
-			}
-		}
-	}
-	return result, nil
-}
-
 // ------------------------------------------
 // Icons
 // ------------------------------------------
