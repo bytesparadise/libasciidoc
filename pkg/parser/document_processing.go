@@ -67,6 +67,7 @@ func ParseRawDocument(r io.Reader, config configuration.Configuration, options .
 	attrs := types.AttributesWithOverrides{
 		Content:   map[string]interface{}{},
 		Overrides: map[string]string{},
+		Counters:  map[string]interface{}{},
 	}
 	if doc.Blocks, err = processFileInclusions(doc.Blocks, attrs, []levelOffset{}, config, options...); err != nil {
 		return types.RawDocument{}, err

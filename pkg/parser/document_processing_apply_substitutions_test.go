@@ -610,4 +610,72 @@ var _ = Describe("document attribute subsititutions", func() {
 		})
 	})
 
+	Context("counters", func() {
+
+		It("should start at one", func() {
+			// given
+			elements := []interface{}{
+				types.CounterSubstitution{
+					Name: "foo",
+				},
+			}
+			result, err := applyAttributeSubstitutions(elements, types.AttributesWithOverrides{
+				Content:   map[string]interface{}{},
+				Overrides: map[string]string{},
+				Counters:  map[string]interface{}{},
+			})
+			Expect(err).To(Not(HaveOccurred()))
+			Expect(result).To(Equal([]interface{}{ // at this stage, AttributeDeclaration and AttributeReset are still present
+				types.StringElement{
+					Content: "1",
+				},
+			}))
+		})
+
+		It("should increment correctly", func() {
+			// given
+			elements := []interface{}{
+				types.CounterSubstitution{
+					Name: "foo",
+				},
+				types.CounterSubstitution{
+					Name: "bar",
+				},
+				types.CounterSubstitution{
+					Name: "foo",
+				},
+				types.CounterSubstitution{
+					Name:   "alpha",
+					Value:  'a',
+					Hidden: true,
+				},
+				types.CounterSubstitution{
+					Name: "alpha",
+				},
+				types.CounterSubstitution{
+					Name:   "set",
+					Value:  33,
+					Hidden: true,
+				},
+				types.CounterSubstitution{
+					Name:   "set",
+					Hidden: true,
+				},
+				types.CounterSubstitution{
+					Name: "set",
+				},
+			}
+			result, err := applyAttributeSubstitutions(elements, types.AttributesWithOverrides{
+				Content:   map[string]interface{}{},
+				Overrides: map[string]string{},
+				Counters:  map[string]interface{}{},
+			})
+			Expect(err).To(Not(HaveOccurred()))
+			Expect(result).To(Equal([]interface{}{ // at this stage, AttributeDeclaration and AttributeReset are still present
+				types.StringElement{
+					Content: "112b35", // elements get concatenated
+				},
+			}))
+		})
+	})
 })
