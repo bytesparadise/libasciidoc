@@ -109,6 +109,8 @@ const (
 	AttrPositional2 = "@2"
 	// AttrPositional3 positional parameter 3
 	AttrPositional3 = "@3"
+	// AttrVersionLabel labels the version number in the document
+	AttrVersionLabel = "version-label"
 )
 
 // NewElementID initializes a new attribute map with a single entry for the ID using the given value
@@ -338,16 +340,19 @@ func (a Attributes) NilSafeSet(key string, value interface{}) {
 // GetAsString gets the string value for the given key (+ `true`),
 // or empty string (+ `false`) if none was found
 func (a Attributes) GetAsString(key string) (string, bool) {
-	// check in predefined attributes
-	if value, found := Predefined[key]; found {
-		return value, true
-	}
 	if value, found := a[key]; found {
+		if value == nil {
+			return "", false // nil here means attribute was reset
+		}
 		if value, ok := value.(string); ok {
 			return value, true
 		} else if v, ok := a[key]; ok {
 			return fmt.Sprintf("%v", v), true
 		}
+	}
+	// check in predefined attributes
+	if value, found := Predefined[key]; found {
+		return value, true
 	}
 	return "", false
 }
@@ -355,14 +360,17 @@ func (a Attributes) GetAsString(key string) (string, bool) {
 // GetAsStringWithDefault gets the string value for the given key,
 // or returns the given default value
 func (a Attributes) GetAsStringWithDefault(key, defaultValue string) string {
-	// check in predefined attributes
-	if value, found := Predefined[key]; found {
-		return value
-	}
 	if value, found := a[key]; found {
+		if value == nil {
+			return "" // nil present means attribute was reset
+		}
 		if value, ok := value.(string); ok {
 			return value
 		}
+	}
+	// check in predefined attributes
+	if value, found := Predefined[key]; found {
+		return value
 	}
 	return defaultValue
 }

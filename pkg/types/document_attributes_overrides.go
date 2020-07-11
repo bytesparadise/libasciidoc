@@ -33,11 +33,6 @@ func (a AttributesWithOverrides) Add(attrs map[string]interface{}) {
 	}
 }
 
-// Delete deletes the given attribute
-func (a AttributesWithOverrides) Delete(key string) {
-	delete(a.Content, key)
-}
-
 // GetAsString gets the string value for the given key (+ `true`),
 // or empty string (+ `false`) if none was found
 func (a AttributesWithOverrides) GetAsString(key string) (string, bool) {

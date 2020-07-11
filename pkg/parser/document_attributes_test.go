@@ -1188,7 +1188,9 @@ a paragraph written by {author}.`
 a paragraph written by {author}.`
 				expected := types.Document{
 					Attributes: types.Attributes{
-						"author": "Xavier",
+						"author":  "Xavier",
+						"author1": nil,
+						"author2": nil,
 					},
 					Elements: []interface{}{
 						types.Paragraph{
