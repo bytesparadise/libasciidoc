@@ -740,6 +740,7 @@ a link to {scheme}://{path} and https://foo.baz`
 					expected := types.Document{
 						Attributes: types.Attributes{
 							"scheme": "https",
+							"path":   nil,
 						},
 						Elements: []interface{}{
 							types.Paragraph{
@@ -1193,6 +1194,7 @@ a link to {scheme}:{path}[] and https://foo.baz`
 				expected := types.Document{
 					Attributes: types.Attributes{
 						"scheme": "link",
+						"path":   nil,
 					},
 					Elements: []interface{}{
 						types.Paragraph{

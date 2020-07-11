@@ -34,5 +34,6 @@ func init() {
 		"two-colons":     "::",
 		"two-semicolons": ";",
 		"cpp":            "C++",
+		AttrVersionLabel: "version",
 	}
 }

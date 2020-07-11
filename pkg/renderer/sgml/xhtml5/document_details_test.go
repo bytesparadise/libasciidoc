@@ -173,6 +173,92 @@ a paragraph`
 			)).To(MatchHTMLTemplate(expected, now))
 		})
 
+		It("with author and version label reset", func() {
+			source := `= Document Title
+Joe Blow <joe.blow@example.com>
+1.5, May 21, 1999
+:version-label!:
+
+a paragraph`
+			expected := `<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="generator" content="libasciidoc"/>
+<meta name="author" content="Joe Blow"/>
+<title>Document Title</title>
+</head>
+<body class="article">
+<div id="header">
+<h1>Document Title</h1>
+<div class="details">
+<span id="author" class="author">Joe Blow</span><br/>
+<span id="email" class="email"><a href="mailto:joe.blow@example.com">joe.blow@example.com</a></span><br/>
+<span id="revnumber">1.5,</span>
+<span id="revdate">May 21, 1999</span>
+</div>
+</div>
+<div id="content">
+<div class="paragraph">
+<p>a paragraph</p>
+</div>
+</div>
+</body>
+</html>`
+			Expect(RenderXHTML(source,
+				configuration.WithHeaderFooter(true),
+				configuration.WithLastUpdated(now),
+				configuration.WithAttributes(map[string]string{
+					types.AttrNoFooter: "",
+				}),
+			)).To(MatchHTMLTemplate(expected, now))
+		})
+
+		It("with author and custom version label only", func() {
+			source := `= Document Title
+Joe Blow <joe.blow@example.com>
+1.0, May 21, 1999
+:version-label: Edition
+
+a paragraph`
+			expected := `<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="generator" content="libasciidoc"/>
+<meta name="author" content="Joe Blow"/>
+<title>Document Title</title>
+</head>
+<body class="article">
+<div id="header">
+<h1>Document Title</h1>
+<div class="details">
+<span id="author" class="author">Joe Blow</span><br/>
+<span id="email" class="email"><a href="mailto:joe.blow@example.com">joe.blow@example.com</a></span><br/>
+<span id="revnumber">Edition 1.0,</span>
+<span id="revdate">May 21, 1999</span>
+</div>
+</div>
+<div id="content">
+<div class="paragraph">
+<p>a paragraph</p>
+</div>
+</div>
+</body>
+</html>`
+			Expect(RenderXHTML(source,
+				configuration.WithHeaderFooter(true),
+				configuration.WithLastUpdated(now),
+				configuration.WithAttributes(map[string]string{
+					types.AttrNoFooter: "",
+				}),
+			)).To(MatchHTMLTemplate(expected, now))
+		})
+
 		It("without header and with footer", func() {
 			source := `= Document Title
 
@@ -238,6 +324,5 @@ a paragraph`
 				}),
 			)).To(MatchHTMLTemplate(expected, now))
 		})
-
 	})
 })

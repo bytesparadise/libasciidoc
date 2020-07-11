@@ -80,7 +80,7 @@ func applyAttributeSubstitutionsOnElement(element interface{}, attrs types.Attri
 		attrs.Set(e.Name, e.Value)
 		return e, false, nil
 	case types.AttributeReset:
-		attrs.Delete(e.Name)
+		attrs.Set(e.Name, nil) // This allows us to test for a reset vs. undefined.
 		return e, false, nil
 	case types.AttributeSubstitution:
 		if value, ok := attrs.GetAsString(e.Name); ok {

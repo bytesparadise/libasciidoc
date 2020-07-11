@@ -3,7 +3,7 @@ package html5
 const (
 	documentDetailsTmpl = `<div class="details">{{ if .Authors }}
 {{ .Authors }}{{ end }}{{ if .RevNumber }}
-<span id="revnumber">version {{ .RevNumber }}{{ if .RevDate }},{{ end }}</span>{{ end }}{{ if .RevDate }}
+<span id="revnumber">{{ if .RevLabel }}{{ .RevLabel }} {{ end }}{{ .RevNumber }}{{ if .RevDate }},{{ end }}</span>{{ end }}{{ if .RevDate }}
 <span id="revdate">{{ .RevDate }}</span>{{ end }}{{ if .RevRemark }}
 <br><span id="revremark">{{ .RevRemark }}</span>{{ end }}
 </div>

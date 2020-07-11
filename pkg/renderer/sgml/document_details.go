@@ -2,6 +2,7 @@ package sgml
 
 import (
 	"bytes"
+	"fmt"
 	"strconv"
 	"strings"
 
@@ -17,20 +18,24 @@ func (r *sgmlRenderer) renderDocumentDetails(ctx *renderer.Context) (*sanitized,
 			return nil, errors.Wrap(err, "error while rendering the document details")
 		}
 		documentDetailsBuff := &bytes.Buffer{}
+		revLabel, _ := ctx.Attributes.GetAsString("version-label")
 		revNumber, _ := ctx.Attributes.GetAsString("revnumber")
 		revDate, _ := ctx.Attributes.GetAsString("revdate")
 		revRemark, _ := ctx.Attributes.GetAsString("revremark")
 		err = r.documentDetails.Execute(documentDetailsBuff, struct {
 			Authors   sanitized
+			RevLabel  string
 			RevNumber string
 			RevDate   string
 			RevRemark string
 		}{
 			Authors:   *authors,
+			RevLabel:  revLabel,
 			RevNumber: revNumber,
 			RevDate:   revDate,
 			RevRemark: revRemark,
 		})
+		fmt.Printf("DEBUG: REVISION: %q\n", revLabel)
 		if err != nil {
 			return nil, errors.Wrap(err, "error while rendering the document details")
 		}

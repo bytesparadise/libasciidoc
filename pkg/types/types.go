@@ -272,20 +272,10 @@ type AttributeDeclaration struct {
 
 // NewAttributeDeclaration initializes a new AttributeDeclaration with the given name and optional value
 func NewAttributeDeclaration(name string, value interface{}) (AttributeDeclaration, error) {
-	var attrName, attrValue string
-	attrName = Apply(name,
-		func(s string) string {
-			return strings.TrimSpace(s)
-		})
-	if value, ok := value.(string); ok {
-		attrValue = Apply(value,
-			func(s string) string {
-				return strings.TrimSpace(s)
-			})
-	}
-	log.Debugf("initialized a new AttributeDeclaration: '%s' -> '%s'", attrName, attrValue)
+	attrValue, _ := value.(string)
+	log.Debugf("initialized a new AttributeDeclaration: '%s' -> '%s'", name, attrValue)
 	return AttributeDeclaration{
-		Name:  attrName,
+		Name:  name,
 		Value: attrValue,
 	}, nil
 }
