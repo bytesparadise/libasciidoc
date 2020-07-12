@@ -128,9 +128,13 @@ See https://github.com/bytesparadise/libasciidoc/issues/679[Issue #679].
 The `favicon` document attribute is not recognized.
 See https://github.com/bytesparadise/libasciidoc/issues/681[Issue #681].
 
-== Syntax Highlighters
+== Syntax Highlighting
 
-Only the `pygments` highlighter is recognized.
+Libasciidoc highlights source code using https://github.com/alecthomas/chroma[Chroma].
+To use it, specify `chroma` for the `source-highlighter` attribute.  The value of `pygments`
+is treated as an alias.  Chroma supports all the standard pygments styles, as well as the vast
+majority of the same source code languages. However some more esoteric languages might not be supported.
+See https://github.com/alecthomas/chroma#supported-languages[Chroma's documentation] for details.
 
 == Math
 

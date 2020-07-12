@@ -56,7 +56,6 @@ type Templates struct {
 	SectionHeader             string
 	SidebarBlock              string
 	SourceBlock               string
-	SourceParagraph           string
 	StringElement             string
 	SubscriptText             string
 	SuperscriptText           string

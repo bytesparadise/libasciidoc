@@ -93,30 +93,11 @@ func (r *sgmlRenderer) renderAdmonitionParagraph(ctx *renderer.Context, p types.
 }
 
 func (r *sgmlRenderer) renderSourceParagraph(ctx *renderer.Context, p types.Paragraph) (string, error) {
-	log.Debug("rendering source paragraph...")
-	result := &strings.Builder{}
-
-	content, err := r.renderLines(ctx, p.Lines)
-	if err != nil {
-		return "", errors.Wrap(err, "unable to render source paragraph lines")
-	}
-	err = r.sourceParagraph.Execute(result, struct {
-		Context  *renderer.Context
-		ID       sanitized
-		Title    sanitized
-		Language string
-		Content  sanitized
-		Lines    []interface{}
-	}{
-
-		Context:  ctx,
-		ID:       r.renderElementID(p.Attributes),
-		Title:    r.renderElementTitle(p.Attributes),
-		Language: p.Attributes.GetAsStringWithDefault(types.AttrLanguage, ""),
-		Content:  sanitized(content),
-		Lines:    p.Lines,
+	return r.renderSourceBlock(ctx, types.DelimitedBlock{
+		Kind:       types.Source,
+		Attributes: p.Attributes,
+		Elements:   p.Lines,
 	})
-	return result.String(), err
 }
 
 func (r *sgmlRenderer) renderVerseParagraph(ctx *renderer.Context, p types.Paragraph) (string, error) {

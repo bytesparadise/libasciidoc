@@ -19,7 +19,7 @@ Although it does not support the full Asciidoc/Asciidoctor syntax, Libasciidoc a
 * Attribute declaration and substitution
 * Paragraphs and admonition paragraphs
 * Delimited Blocks (fenced blocks, listing blocks, example blocks, comment blocks, quoted blocks, sidebar blocks, verse blocks)
-* Source code highlighting of delimited blocks
+* Source code highlighting of delimited blocks (use either `chroma` or `pygments` as the `source-highlighter`)
 * Literal blocks (paragraph starting with a space, with the `+++....+++` delimiter or with the `[literal]` attribute)
 * Quoted text (bold, italic, monospace, marked, superscript and subscript) and substitution prevention using the backslash (`\`) character
 * Single and double quoted typographic quotes (e.g. '`single`' and "`double`")
