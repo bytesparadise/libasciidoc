@@ -2,7 +2,6 @@ package sgml
 
 import (
 	"bytes"
-	"fmt"
 	"strconv"
 	"strings"
 
@@ -35,7 +34,6 @@ func (r *sgmlRenderer) renderDocumentDetails(ctx *renderer.Context) (*sanitized,
 			RevDate:   revDate,
 			RevRemark: revRemark,
 		})
-		fmt.Printf("DEBUG: REVISION: %q\n", revLabel)
 		if err != nil {
 			return nil, errors.Wrap(err, "error while rendering the document details")
 		}
