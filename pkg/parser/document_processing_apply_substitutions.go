@@ -76,6 +76,12 @@ func applyAttributeSubstitutions(elements []interface{}, attrs types.AttributesW
 
 }
 
+// applyCounterSubstitutions is called by applyAttributeSubstitutionsOnElement.  Unless there is an error with
+// the element (the counter is the wrong type, which should never occur), it will return a StringElement, true
+// (because we always either find the element, or allocate one), and nil.  On an error it will return nil, false,
+// and the error.  The extra boolean here is to fit the calling expectations of our caller.  This function was
+// factored out of a case from applyAttributeSubstitutionsOnElement in order to reduce the complexity of that
+// function, but otherwise it should have no callers.
 func applyCounterSubstitution(c types.CounterSubstitution, attrs types.AttributesWithOverrides) (interface{}, bool, error) {
 	counter := attrs.Counters[c.Name]
 	if counter == nil {
