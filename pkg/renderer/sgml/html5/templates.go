@@ -18,6 +18,7 @@ var templates = sgml.Templates{
 	BoldText:                  boldTextTmpl,
 	CalloutList:               calloutListTmpl,
 	CalloutListItem:           calloutListItemTmpl,
+	CalloutRef:                calloutRefTmpl,
 	DelimitedBlockParagraph:   delimitedBlockParagraphTmpl,
 	DocumentDetails:           documentDetailsTmpl,
 	DocumentAuthorDetails:     documentAuthorDetailsTmpl,

@@ -12,4 +12,7 @@ const (
 
 	// NB: The items are numbered sequentially.
 	calloutListItemTmpl = "<li>\n{{ .Content }}</li>\n"
+
+	// This should probably have been a <span>, but for compatibility we use <b>
+	calloutRefTmpl = "<b class=\"conum\">({{ .Ref }})</b>"
 )
