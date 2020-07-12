@@ -20,15 +20,6 @@ const (
 
 	delimitedBlockParagraphTmpl = "<p>{{ .CheckStyle }}{{ .Content }}</p>\n"
 
-	sourceParagraphTmpl = "<div class=\"listingblock\">\n" +
-		"<div class=\"content\">\n" +
-		"<pre class=\"highlight\">" +
-		`<code{{ if .Language }} class="language-{{ .Language }}" data-lang="{{ .Language }}"{{ end }}>` +
-		"{{ .Content }}" +
-		"</code></pre>\n" +
-		"</div>\n" +
-		"</div>\n"
-
 	verseParagraphTmpl = "<div {{ if .ID }}id=\"{{ .ID }}\" {{ end }}class=\"verseblock\">\n" +
 		"{{ if .Title }}<div class=\"title\">{{ .Title }}</div>\n{{ end }}" +
 		"<pre class=\"content\">{{ .Content }}</pre>\n" +

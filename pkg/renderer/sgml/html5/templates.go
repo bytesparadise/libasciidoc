@@ -63,7 +63,6 @@ var templates = sgml.Templates{
 	SectionHeader:             sectionHeaderTmpl,
 	SidebarBlock:              sidebarBlockTmpl,
 	SourceBlock:               sourceBlockTmpl,
-	SourceParagraph:           sourceParagraphTmpl,
 	StringElement:             stringTmpl,
 	SubscriptText:             subscriptTextTmpl,
 	SuperscriptText:           superscriptTextTmpl,

@@ -477,4 +477,21 @@ image::foo.png[]`
 		})
 	})
 
+	Context("source paragraphs", func() {
+
+		It("with source and languages attributes", func() {
+			source := `:source-highlighter: chroma
+
+[source,c]
+int main(int argc, char **argv);
+`
+			expected := `<div class="listingblock">
+<div class="content">
+<pre class="chroma highlight"><code data-lang="c"><span class="tok-kt">int</span> <span class="tok-nf">main</span><span class="tok-p">(</span><span class="tok-kt">int</span> <span class="tok-n">argc</span><span class="tok-p">,</span> <span class="tok-kt">char</span> <span class="tok-o">**</span><span class="tok-n">argv</span><span class="tok-p">);</span></code></pre>
+</div>
+</div>
+`
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
+		})
+	})
 })
