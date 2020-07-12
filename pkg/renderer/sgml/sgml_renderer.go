@@ -63,13 +63,11 @@ type sgmlRenderer struct {
 	sectionHeader             *textTemplate
 	sidebarBlock              *textTemplate
 	sourceBlock               *textTemplate
-	sourceParagraph           *textTemplate
 	stringElement             *textTemplate
 	subscriptText             *textTemplate
 	superscriptText           *textTemplate
 	table                     *textTemplate
 	tableBody                 *textTemplate
-	tableCaption              *textTemplate
 	tableCell                 *textTemplate
 	tableHeader               *textTemplate
 	tableHeaderCell           *textTemplate
@@ -144,12 +142,10 @@ func (r *sgmlRenderer) prepareTemplates() error {
 		r.stringElement, err = r.newTemplate("string-element", tmpls.StringElement, err)
 		r.sidebarBlock, err = r.newTemplate("sidebar-block", tmpls.SidebarBlock, err)
 		r.sourceBlock, err = r.newTemplate("source-block", tmpls.SourceBlock, err)
-		r.sourceParagraph, err = r.newTemplate("source-paragraph", tmpls.SourceParagraph, err)
 		r.subscriptText, err = r.newTemplate("subscript", tmpls.SubscriptText, err)
 		r.superscriptText, err = r.newTemplate("superscript", tmpls.SuperscriptText, err)
 		r.table, err = r.newTemplate("table", tmpls.Table, err)
 		r.tableBody, err = r.newTemplate("table-body", tmpls.TableBody, err)
-		r.tableCaption, err = r.newTemplate("table-caption", tmpls.TableCaption, err)
 		r.tableCell, err = r.newTemplate("table-cell", tmpls.TableCell, err)
 		r.tableHeader, err = r.newTemplate("table-header", tmpls.TableHeader, err)
 		r.tableHeaderCell, err = r.newTemplate("table-header-cell", tmpls.TableHeaderCell, err)

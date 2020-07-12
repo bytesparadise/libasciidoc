@@ -111,6 +111,8 @@ const (
 	AttrPositional3 = "@3"
 	// AttrVersionLabel labels the version number in the document
 	AttrVersionLabel = "version-label"
+	// AttrTableCaption is the table caption
+	AttrTableCaption = "table-caption"
 )
 
 // NewElementID initializes a new attribute map with a single entry for the ID using the given value
@@ -327,13 +329,6 @@ func (a Attributes) AppendString(key string, value interface{}) {
 		case []string:
 			a[key] = append(v, value...)
 		}
-	}
-}
-
-// NilSafeSet sets the key/value pair unless the value is nil or empty
-func (a Attributes) NilSafeSet(key string, value interface{}) {
-	if value != nil && value != "" {
-		a[key] = value
 	}
 }
 

@@ -56,13 +56,11 @@ type Templates struct {
 	SectionHeader             string
 	SidebarBlock              string
 	SourceBlock               string
-	SourceParagraph           string
 	StringElement             string
 	SubscriptText             string
 	SuperscriptText           string
 	Table                     string
 	TableBody                 string
-	TableCaption              string
 	TableCell                 string
 	TableHeader               string
 	TableHeaderCell           string

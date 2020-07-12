@@ -27,8 +27,6 @@ const (
 
 	tableRowTmpl = "<tr>\n{{ .Content }}</tr>\n"
 
-	tableCaptionTmpl = "Table {{ .TableNumber }}. "
-
 	tableHeaderCellTmpl = "<th class=\"tableblock halign-{{ .HAlign }} valign-{{ .VAlign }}\">{{ .Content }}</th>\n"
 
 	tableCellTmpl = "<td class=\"tableblock halign-{{ .HAlign }} valign-{{ .VAlign }}\"><p class=\"tableblock\">{{ .Content }}</p></td>\n"

@@ -6,14 +6,6 @@ import (
 	"github.com/pkg/errors"
 )
 
-// NilSafe returns a new slice if the given elements is nil, otherwise it returns the given elements
-func NilSafe(elements []interface{}) []interface{} {
-	if elements != nil {
-		return elements
-	}
-	return make([]interface{}, 0)
-}
-
 // Merge merge string elements together
 func Merge(elements ...interface{}) []interface{} {
 	result := make([]interface{}, 0)

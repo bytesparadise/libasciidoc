@@ -26,5 +26,5 @@ const (
 		"</div>\n" +
 		"</div>\n{{ end }}" +
 		"</body>\n" +
-		"</html>"
+		"</html>\n"
 )

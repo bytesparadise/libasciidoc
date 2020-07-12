@@ -26,7 +26,7 @@ const (
 		"</div>\n" +
 		"</div>\n{{ end }}" +
 		"</body>\n" +
-		"</html>"
+		"</html>\n"
 
 	articleHeaderTmpl = "<div id=\"header\">\n" +
 		"<h1>{{ .Header }}</h1>\n" +

@@ -14,7 +14,6 @@ func (r *sgmlRenderer) renderTable(ctx *renderer.Context, t types.Table) (string
 	caption := &strings.Builder{}
 
 	number := 0
-	title := r.renderElementTitle(t.Attributes)
 	fit := "stretch"
 	frame := t.Attributes.GetAsStringWithDefault(types.AttrFrame, "all")
 	grid := t.Attributes.GetAsStringWithDefault(types.AttrGrid, "all")
@@ -42,21 +41,20 @@ func (r *sgmlRenderer) renderTable(ctx *renderer.Context, t types.Table) (string
 	}
 
 	if t.Attributes.Has(types.AttrTitle) {
-		number = ctx.GetAndIncrementTableCounter()
-		if s, ok := t.Attributes.GetAsString(types.AttrCaption); ok {
-			caption.WriteString(s)
-		} else {
-			err := r.tableCaption.Execute(caption, struct {
-				TableNumber int
-				Title       sanitized
-			}{
-				TableNumber: number,
-				Title:       title,
-			})
-			if err != nil {
-				return "", errors.Wrap(err, "unable to format table caption")
-			}
+		c, ok := t.Attributes.GetAsString(types.AttrCaption)
+		if !ok {
+			c, _ = ctx.Attributes.GetAsString(types.AttrTableCaption)
 		}
+
+		// TODO: This is a very primitive and incomplete replacement of the counter attribute only.
+		// This should be removed when attribute values are allowed to contain attributes.
+		// Also this expansion should be limited to just singly quoted strings in the Attribute list,
+		// or the default.  Ultimately this should all be done long before it gets into the renderer.
+		if strings.Contains(c, "{counter:table-counter}") {
+			number = ctx.GetAndIncrementTableCounter()
+			c = strings.ReplaceAll(c, "{counter:table-counter}", strconv.Itoa(number))
+		}
+		caption.WriteString(c)
 	}
 
 	header, err := r.renderTableHeader(ctx, t.Header, t.Columns)

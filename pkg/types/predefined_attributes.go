@@ -35,5 +35,6 @@ func init() {
 		"two-semicolons": ";",
 		"cpp":            "C++",
 		AttrVersionLabel: "version",
+		AttrTableCaption: "Table {counter:table-counter}. ",
 	}
 }
