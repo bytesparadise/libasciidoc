@@ -202,10 +202,6 @@ AttributeReset <- ":!" name:(AttributeName) ":" Space* EOL {
     return types.NewAttributeReset(name.(string))
 }
 
-xAttributeSubstitution <- "{" name:(AttributeName) "}" {
-    return types.NewAttributeSubstitution(name.(string))
-}
-
 AttributeSubstitution <- CounterSub / AttrSub
 
 AttrSub <- "{" name:AttributeName "}" {
