@@ -113,6 +113,16 @@ const (
 	AttrVersionLabel = "version-label"
 	// AttrTableCaption is the table caption
 	AttrTableCaption = "table-caption"
+	// AttrCautionCaption is the CAUTION caption
+	AttrCautionCaption = "caution-caption"
+	// AttrImportantCaption is the IMPORTANT caption
+	AttrImportantCaption = "important-caption"
+	// AttrNoteCaption is the NOTE caption
+	AttrNoteCaption = "note-caption"
+	// AttrTipCaption is the TIP caption
+	AttrTipCaption = "tip-caption"
+	// AttrWarningCaption is the TIP caption
+	AttrWarningCaption = "warning-caption"
 )
 
 // NewElementID initializes a new attribute map with a single entry for the ID using the given value

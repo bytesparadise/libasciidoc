@@ -257,6 +257,44 @@ this is a
 `
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
+
+		It("admonition note replace caption", func() {
+			source := `[caption=Aviso]
+NOTE: this is a note.`
+			expected := `<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Aviso</div>
+</td>
+<td class="content">
+this is a note.
+</td>
+</tr>
+</table>
+</div>
+`
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
+		})
+
+		It("admonition warning default caption", func() {
+			source := `:warning-caption: Red Alert!
+WARNING: Missiles inbound.`
+			expected := `<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Red Alert!</div>
+</td>
+<td class="content">
+Missiles inbound.
+</td>
+</tr>
+</table>
+</div>
+`
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
+		})
 	})
 
 	Context("verse paragraphs", func() {

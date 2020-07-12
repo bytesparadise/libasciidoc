@@ -61,7 +61,7 @@ func (r *sgmlRenderer) renderAdmonitionParagraph(ctx *renderer.Context, p types.
 	if !ok {
 		return "", errors.Errorf("failed to render admonition with unknown kind: %T", p.Attributes[types.AttrAdmonitionKind])
 	}
-	icon, err := r.renderIcon(ctx, types.Icon{Class: string(k)}, true)
+	icon, err := r.renderIcon(ctx, types.Icon{Class: string(k), Attributes: p.Attributes}, true)
 	if err != nil {
 		return "", err
 	}
