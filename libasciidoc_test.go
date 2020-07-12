@@ -268,7 +268,8 @@ Last updated {{.LastUpdated}}
 </div>
 </div>
 </body>
-</html>`
+</html>
+`
 				filename := "test/includes/chapter-a.adoc"
 				stat, err := os.Stat(filename)
 				Expect(err).NotTo(HaveOccurred())
@@ -390,7 +391,8 @@ Last updated {{.LastUpdated}}
 </div>
 </div>
 </body>
-</html>`
+</html>
+`
 				Expect(RenderHTML(source,
 					configuration.WithAttribute(types.AttrDocType, "manpage"),
 					configuration.WithLastUpdated(lastUpdated),
@@ -469,7 +471,8 @@ Last updated {{.LastUpdated}}
 </div>
 </div>
 </body>
-</html>`
+</html>
+`
 				Expect(RenderHTML(source,
 					configuration.WithAttribute(types.AttrDocType, "manpage"),
 					configuration.WithLastUpdated(lastUpdated),
@@ -505,7 +508,8 @@ Last updated {{.LastUpdated}}
 </div>
 </div>
 </body>
-</html>`
+</html>
+`
 				Expect(Render(source,
 					configuration.WithBackEnd("html5"),
 					configuration.WithLastUpdated(lastUpdated),
@@ -540,7 +544,8 @@ Last updated {{.LastUpdated}}
 </div>
 </div>
 </body>
-</html>`
+</html>
+`
 				Expect(Render(source,
 					configuration.WithBackEnd("xhtml5"),
 					configuration.WithLastUpdated(lastUpdated),

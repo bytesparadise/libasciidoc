@@ -55,7 +55,8 @@ Last updated {{.LastUpdated}}
 </div>
 </div>
 </body>
-</html>`
+</html>
+`
 			now := time.Now()
 			Expect(RenderHTML(source, configuration.WithHeaderFooter(true), configuration.WithLastUpdated(now))).To(MatchHTMLTemplate(expected, now))
 		})
@@ -93,7 +94,8 @@ Last updated {{.LastUpdated}}
 </div>
 </div>
 </body>
-</html>`
+</html>
+`
 			now := time.Now()
 			Expect(RenderHTML(source, configuration.WithHeaderFooter(true), configuration.WithLastUpdated(now))).
 				To(MatchHTMLTemplate(expected, now))
@@ -132,7 +134,8 @@ Last updated {{.LastUpdated}}
 </div>
 </div>
 </body>
-</html>`
+</html>
+`
 			Expect(RenderHTML(source,
 				configuration.WithHeaderFooter(true),
 				configuration.WithLastUpdated(now),
@@ -163,7 +166,8 @@ a paragraph`
 </div>
 </div>
 </body>
-</html>`
+</html>
+`
 			Expect(RenderHTML(source,
 				configuration.WithHeaderFooter(true),
 				configuration.WithLastUpdated(now),
@@ -198,7 +202,8 @@ Last updated {{.LastUpdated}}
 </div>
 </div>
 </body>
-</html>`
+</html>
+`
 			Expect(RenderHTML(source,
 				configuration.WithHeaderFooter(true),
 				configuration.WithLastUpdated(now),
@@ -228,7 +233,8 @@ a paragraph`
 </div>
 </div>
 </body>
-</html>`
+</html>
+`
 			Expect(RenderHTML(source,
 				configuration.WithHeaderFooter(true),
 				configuration.WithLastUpdated(now),
