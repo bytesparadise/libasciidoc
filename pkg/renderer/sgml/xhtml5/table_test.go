@@ -175,6 +175,48 @@ var _ = Describe("tables", func() {
 		Expect(RenderXHTML(source)).To(MatchHTML(expected))
 	})
 
+	It("2 tables with no caption label", func() {
+		source := `:table-caption!:
+
+.Title 1
+|===
+| foo | bar
+|===
+
+.Title 2
+|===
+| foo | bar
+|===`
+		expected := `<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Title 1</caption>
+<colgroup>
+<col style="width: 50%;"/>
+<col style="width: 50%;"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">foo</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">bar</p></td>
+</tr>
+</tbody>
+</table>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Title 2</caption>
+<colgroup>
+<col style="width: 50%;"/>
+<col style="width: 50%;"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">foo</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">bar</p></td>
+</tr>
+</tbody>
+</table>
+`
+		Expect(RenderXHTML(source)).To(MatchHTML(expected))
+	})
+
 	It("2 tables with 2 counters", func() {
 		source := `.Title 1
 |===

@@ -68,7 +68,6 @@ type sgmlRenderer struct {
 	superscriptText           *textTemplate
 	table                     *textTemplate
 	tableBody                 *textTemplate
-	tableCaption              *textTemplate
 	tableCell                 *textTemplate
 	tableHeader               *textTemplate
 	tableHeaderCell           *textTemplate
@@ -147,7 +146,6 @@ func (r *sgmlRenderer) prepareTemplates() error {
 		r.superscriptText, err = r.newTemplate("superscript", tmpls.SuperscriptText, err)
 		r.table, err = r.newTemplate("table", tmpls.Table, err)
 		r.tableBody, err = r.newTemplate("table-body", tmpls.TableBody, err)
-		r.tableCaption, err = r.newTemplate("table-caption", tmpls.TableCaption, err)
 		r.tableCell, err = r.newTemplate("table-cell", tmpls.TableCell, err)
 		r.tableHeader, err = r.newTemplate("table-header", tmpls.TableHeader, err)
 		r.tableHeaderCell, err = r.newTemplate("table-header-cell", tmpls.TableHeaderCell, err)
