@@ -37,7 +37,8 @@ Last updated {{.LastUpdated}}
 </div>
 </div>
 </body>
-</html>`
+</html>
+`
 		now := time.Now()
 		Expect(RenderXHTML(source, configuration.WithHeaderFooter(true),
 			configuration.WithCSS("/path/to/style.css"),
@@ -70,7 +71,8 @@ Last updated {{.LastUpdated}}
 </div>
 </div>
 </body>
-</html>`
+</html>
+`
 		now := time.Now()
 		Expect(RenderXHTML(source, configuration.WithHeaderFooter(true),
 			configuration.WithCSS("/path/to/style.css"),
@@ -103,7 +105,8 @@ Last updated {{.LastUpdated}}
 </div>
 </div>
 </body>
-</html>`
+</html>
+`
 		now := time.Now()
 		Expect(RenderXHTML(source, configuration.WithHeaderFooter(true),
 			configuration.WithCSS("/path/to/style.css"),
@@ -321,7 +324,8 @@ Last updated {{.LastUpdated}}
 </div>
 </div>
 </body>
-</html>`
+</html>
+`
 		now := time.Now()
 		Expect(RenderXHTML(source, configuration.WithFilename("test.adoc"),
 			configuration.WithAttributes(map[string]string{
