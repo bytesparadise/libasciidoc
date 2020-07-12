@@ -4,6 +4,7 @@ package types
 type AttributesWithOverrides struct {
 	Content   map[string]interface{}
 	Overrides map[string]string
+	Counters  map[string]interface{}
 }
 
 // All returns all attributes, or `nil` if there is none

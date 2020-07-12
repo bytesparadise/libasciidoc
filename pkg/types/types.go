@@ -302,6 +302,33 @@ func NewAttributeSubstitution(attrName string) (AttributeSubstitution, error) {
 	return AttributeSubstitution{Name: attrName}, nil
 }
 
+// CounterSubstitution is a counter, that may increment when it is substituted.
+// If Increment is set, then it will increment before being expanded.
+type CounterSubstitution struct {
+	Name   string
+	Hidden bool
+	Value  interface{} // may be a byte for character
+}
+
+// NewCounterSubstitution returns a counter substitution.
+func NewCounterSubstitution(name string, hidden bool, val interface{}) (CounterSubstitution, error) {
+	if val != nil {
+		switch v := val.(type) {
+		case string:
+			val = rune(v[0])
+		case []uint8:
+			val = rune(v[0])
+		case uint8:
+			val = rune(v)
+		}
+	}
+	return CounterSubstitution{
+		Name:   name,
+		Hidden: hidden,
+		Value:  val,
+	}, nil
+}
+
 // ------------------------------------------
 // Element kinds
 // ------------------------------------------

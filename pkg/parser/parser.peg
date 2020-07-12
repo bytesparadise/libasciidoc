@@ -202,8 +202,36 @@ AttributeReset <- ":!" name:(AttributeName) ":" Space* EOL {
     return types.NewAttributeReset(name.(string))
 }
 
-AttributeSubstitution <- "{" name:(AttributeName) "}" {
+AttributeSubstitution <- CounterSub / AttrSub
+
+AttrSub <- "{" name:AttributeName "}" {
     return types.NewAttributeSubstitution(name.(string))
+}
+
+CounterSub <- CounterSub1 / CounterSub2 / CounterSubAlpha / CounterSubAlpha2 / CounterSubStart / CounterSubStart2
+
+CounterSub1 <- "{counter:" name:AttributeName "}" {
+    return types.NewCounterSubstitution(name.(string), false, nil)
+}
+
+CounterSub2 <- "{counter2:" name:AttributeName "}" {
+    return types.NewCounterSubstitution(name.(string), true, nil)
+}
+
+CounterSubAlpha <- "{counter:" name:AttributeName ":" start:[A-Za-z] "}" {
+    return types.NewCounterSubstitution(name.(string), false, start)
+}
+
+CounterSubAlpha2 <- "{counter2:" name:AttributeName ":" start:[A-Za-z] "}" {
+    return types.NewCounterSubstitution(name.(string), true, start)
+}
+
+CounterSubStart <- "{counter:" name:AttributeName ":" num:([0-9]+ { return strconv.Atoi(string(c.text)) }) "}" {
+    return types.NewCounterSubstitution(name.(string), false, num.(int))
+}
+
+CounterSubStart2 <- "{counter2:" name:AttributeName ":" num:([0-9]+ { return strconv.Atoi(string(c.text)) }) "}" {
+    return types.NewCounterSubstitution(name.(string), true, num.(int))
 }
 
 Attributes <- attrs:(ElementAttribute)+ BlankLine* {
