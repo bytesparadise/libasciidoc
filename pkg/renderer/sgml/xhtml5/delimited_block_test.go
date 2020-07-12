@@ -327,6 +327,22 @@ end</code></pre>
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
+		It("with title, source and unknown languages attributes", func() {
+			source := `[source,brainfart]
+.Source block title
+----
+int main(int argc, char **argv);
+----`
+			expected := `<div class="listingblock">
+<div class="title">Source block title</div>
+<div class="content">
+<pre class="highlight"><code class="language-brainfart" data-lang="brainfart">int main(int argc, char **argv);</code></pre>
+</div>
+</div>
+`
+			Expect(RenderXHTML(source)).To(MatchHTML(expected))
+		})
+
 		It("with html content", func() {
 			source := `[source]
 ----

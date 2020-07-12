@@ -127,13 +127,17 @@ func (r *sgmlRenderer) renderSourceBlock(ctx *renderer.Context, b types.Delimite
 
 	highlighter, _ := ctx.Attributes.GetAsString(types.AttrSyntaxHighlighter)
 	language, found := b.Attributes.GetAsString(types.AttrLanguage)
-	if found && highlighter == "pygments" {
+	if found && (highlighter == "chroma" || highlighter == "pygments") {
 		// using github.com/alecthomas/chroma to highlight the content
 		contentBuf := &strings.Builder{}
 		lexer := lexers.Get(language)
+		if lexer == nil {
+			lexer = lexers.Fallback
+		}
 		lexer = chroma.Coalesce(lexer)
 		style := styles.Fallback
-		if s, found := ctx.Attributes.GetAsString("pygments-style"); found {
+
+		if s, found := ctx.Attributes.GetAsString(highlighter + "-style"); found {
 			style = styles.Get(s)
 		}
 		iterator, err := lexer.Tokenise(nil, content)
@@ -145,7 +149,7 @@ func (r *sgmlRenderer) renderSourceBlock(ctx *renderer.Context, b types.Delimite
 			html.PreventSurroundingPre(true),
 		}
 		// extra option: inline CSS instead of classes
-		if ctx.Attributes.GetAsStringWithDefault("pygments-css", "classes") == "style" {
+		if ctx.Attributes.GetAsStringWithDefault(highlighter+"-css", "classes") == "style" {
 			options = append(options, html.WithClasses(false))
 		} else {
 			options = append(options, html.WithClasses(true))
