@@ -241,10 +241,9 @@ func (r *sgmlRenderer) renderSourceBlock(ctx *renderer.Context, b types.Delimite
 		}
 	} else {
 		elements := discardTrailingBlankLines(b.Elements)
-		if s, err := r.renderElements(ctx, elements); err != nil {
+		var err error
+		if content, err = r.renderElements(ctx, elements); err != nil {
 			return "", err
-		} else {
-			content = s
 		}
 	}
 
