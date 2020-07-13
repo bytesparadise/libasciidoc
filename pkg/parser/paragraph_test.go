@@ -167,6 +167,22 @@ foo`
 				}
 				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
+
+			It("with counters", func() {
+				source := `foo{counter:foo} bar{counter2:foo} baz{counter:foo} bob{counter:bob}`
+				expected := types.DraftDocument{
+					Blocks: []interface{}{
+						types.Paragraph{
+							Lines: []interface{}{
+								[]interface{}{
+									types.StringElement{Content: "foo1 bar baz3 bob1"},
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+			})
 		})
 
 		Context("admonition paragraphs", func() {

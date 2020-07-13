@@ -97,7 +97,7 @@ var emptyPreambleMatcher filterMatcher = func(element interface{}) bool {
 // a AttributeSubstitution, a AttributeReset or a standalone Attribute
 var attributeMatcher filterMatcher = func(element interface{}) bool {
 	switch element.(type) {
-	case types.AttributeDeclaration, types.AttributeSubstitution, types.AttributeReset, types.Attributes:
+	case types.AttributeDeclaration, types.AttributeSubstitution, types.AttributeReset, types.Attributes, types.CounterSubstitution:
 		return true
 	default:
 		return false
