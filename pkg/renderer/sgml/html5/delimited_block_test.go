@@ -679,7 +679,7 @@ with *bold content*
 <table>
 <tr>
 <td class="icon">
-<img src="images/icons/note.svg" alt="Note" title="Note">
+<img src="images/icons/note.svg" alt="Note">
 </td>
 <td class="content">
 <div class="title">title for admonition block</div>

@@ -269,7 +269,7 @@ func (r *sgmlRenderer) renderSourceBlock(ctx *renderer.Context, b types.Delimite
 
 func (r *sgmlRenderer) renderAdmonitionBlock(ctx *renderer.Context, b types.DelimitedBlock) (string, error) {
 	kind, _ := b.Attributes[types.AttrAdmonitionKind].(types.AdmonitionKind)
-	icon, err := r.renderIcon(ctx, types.Icon{Class: string(kind)}, true)
+	icon, err := r.renderIcon(ctx, types.Icon{Class: string(kind), Attributes: b.Attributes}, true)
 	if err != nil {
 		return "", err
 	}

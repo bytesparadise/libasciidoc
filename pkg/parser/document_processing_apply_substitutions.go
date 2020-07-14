@@ -3,6 +3,7 @@ package parser
 import (
 	"fmt"
 	"io"
+	"strconv"
 	"strings"
 
 	"github.com/bytesparadise/libasciidoc/pkg/configuration"
@@ -22,6 +23,7 @@ func ApplySubstitutions(rawDoc types.RawDocument, config configuration.Configura
 	attrs := types.AttributesWithOverrides{
 		Content:   types.Attributes{},
 		Overrides: config.AttributeOverrides,
+		Counters:  map[string]interface{}{},
 	}
 	// also, add all front-matter key/values
 	attrs.Add(rawDoc.FrontMatter.Content)
@@ -74,6 +76,54 @@ func applyAttributeSubstitutions(elements []interface{}, attrs types.AttributesW
 
 }
 
+// applyCounterSubstitutions is called by applyAttributeSubstitutionsOnElement.  Unless there is an error with
+// the element (the counter is the wrong type, which should never occur), it will return a StringElement, true
+// (because we always either find the element, or allocate one), and nil.  On an error it will return nil, false,
+// and the error.  The extra boolean here is to fit the calling expectations of our caller.  This function was
+// factored out of a case from applyAttributeSubstitutionsOnElement in order to reduce the complexity of that
+// function, but otherwise it should have no callers.
+func applyCounterSubstitution(c types.CounterSubstitution, attrs types.AttributesWithOverrides) (interface{}, bool, error) {
+	counter := attrs.Counters[c.Name]
+	if counter == nil {
+		counter = 0
+	}
+	increment := true
+	if c.Value != nil {
+		attrs.Counters[c.Name] = c.Value
+		counter = c.Value
+		increment = false
+	}
+	switch counter := counter.(type) {
+	case int:
+		if increment {
+			counter++
+		}
+		attrs.Counters[c.Name] = counter
+		if c.Hidden {
+			// return empty string facilitates merging
+			return types.StringElement{Content: ""}, true, nil
+		}
+		return types.StringElement{
+			Content: strconv.Itoa(counter),
+		}, true, nil
+	case rune:
+		if increment {
+			counter++
+		}
+		attrs.Counters[c.Name] = counter
+		if c.Hidden {
+			// return empty string facilitates merging
+			return types.StringElement{Content: ""}, true, nil
+		}
+		return types.StringElement{
+			Content: string(counter),
+		}, true, nil
+
+	default:
+		return nil, false, fmt.Errorf("invalid counter type %T", counter)
+	}
+
+}
 func applyAttributeSubstitutionsOnElement(element interface{}, attrs types.AttributesWithOverrides) (interface{}, bool, error) {
 	switch e := element.(type) {
 	case types.AttributeDeclaration:
@@ -92,6 +142,8 @@ func applyAttributeSubstitutionsOnElement(element interface{}, attrs types.Attri
 		return types.StringElement{
 			Content: "{" + e.Name + "}",
 		}, false, nil
+	case types.CounterSubstitution:
+		return applyCounterSubstitution(e, attrs)
 	case types.ImageBlock:
 		return e.ResolveLocation(attrs), false, nil
 	case types.InlineImage:
@@ -193,7 +245,7 @@ func parseInlineLinks(elements []interface{}) ([]interface{}, error) {
 // Block substitutions
 // ----------------------------------------------------------------------------
 
-// applyBlockSubstitutions applies the subtitutions on paragraphs and delimited blocks (including when in continued list elements)
+// applyBlockSubstitutions applies the substitutions on paragraphs and delimited blocks (including when in continued list elements)
 func applyBlockSubstitutions(elements []interface{}, config configuration.Configuration, options ...Option) ([]interface{}, error) {
 	log.Debug("apply block substitutions")
 	if len(elements) == 0 {
@@ -436,7 +488,7 @@ func applyParagraphSubstitutions(lines []interface{}, sub paragraphSubstitution)
 
 type paragraphSubstitution func(lines []interface{}, options ...Option) ([]interface{}, error)
 
-func normalParagraph(options ...Option) paragraphSubstitution {
+func normalParagraph(_ ...Option) paragraphSubstitution {
 	return func(lines []interface{}, options ...Option) ([]interface{}, error) {
 		log.Debugf("applying the 'normal' substitution on a paragraph")
 		raw, err := serializeParagraph(lines)
