@@ -136,6 +136,10 @@ is treated as an alias.  Chroma supports all the standard pygments styles, as we
 majority of the same source code languages. However some more esoteric languages might not be supported.
 See https://github.com/alecthomas/chroma#supported-languages[Chroma's documentation] for details.
 
+== Callouts
+
+Libasciidoc does not support font or image based callouts yet.
+
 == Math
 
 MathML and equations (`[stem]` blocks) are not supported yet.

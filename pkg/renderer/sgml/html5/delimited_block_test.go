@@ -357,6 +357,36 @@ end</code></pre>
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
+		It("with C content, and callout", func() {
+			source := `:source-highlighter: chroma
+[source, c]
+----
+#include <stdio.h>
+
+printf("Hello world!\n"); // <1>
+<a>link</a>
+----
+<1> A greeting
+`
+			expected := `<div class="listingblock">
+<div class="content">
+<pre class="chroma highlight"><code data-lang="c"><span class="tok-cp">#include</span> <span class="tok-cpf">&lt;stdio.h&gt;</span><span class="tok-cp">
+</span><span class="tok-cp"></span>
+<span class="tok-n">printf</span><span class="tok-p">(</span><span class="tok-s">&#34;Hello world!</span><span class="tok-se">\n</span><span class="tok-s">&#34;</span><span class="tok-p">);</span> <span class="tok-c1">// <b class="conum">(1)</b>
+</span><span class="tok-c1"></span><span class="tok-o">&lt;</span><span class="tok-n">a</span><span class="tok-o">&gt;</span><span class="tok-n">link</span><span class="tok-o">&lt;/</span><span class="tok-n">a</span><span class="tok-o">&gt;</span></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>A greeting</p>
+</li>
+</ol>
+</div>
+`
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
+		})
+
 		It("with other content", func() {
 			source := `----
   a<<b

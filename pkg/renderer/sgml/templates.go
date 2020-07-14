@@ -11,6 +11,7 @@ type Templates struct {
 	BoldText                  string
 	CalloutList               string
 	CalloutListItem           string
+	CalloutRef                string
 	DelimitedBlockParagraph   string
 	DocumentDetails           string
 	DocumentAuthorDetails     string

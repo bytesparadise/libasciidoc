@@ -18,6 +18,7 @@ type sgmlRenderer struct {
 	boldText                  *textTemplate
 	calloutList               *textTemplate
 	calloutListItem           *textTemplate
+	calloutRef                *textTemplate
 	delimitedBlockParagraph   *textTemplate
 	documentDetails           *textTemplate
 	documentAuthorDetails     *textTemplate
@@ -96,6 +97,7 @@ func (r *sgmlRenderer) prepareTemplates() error {
 		r.boldText, err = r.newTemplate("bold-text", tmpls.BoldText, err)
 		r.calloutList, err = r.newTemplate("callout-list", tmpls.CalloutList, err)
 		r.calloutListItem, err = r.newTemplate("callout-list-item", tmpls.CalloutListItem, err)
+		r.calloutRef, err = r.newTemplate("callout-ref", tmpls.CalloutRef, err)
 		r.delimitedBlockParagraph, err = r.newTemplate("delimited-block-paragraph", tmpls.DelimitedBlockParagraph, err)
 		r.documentDetails, err = r.newTemplate("document-details", tmpls.DocumentDetails, err)
 		r.documentAuthorDetails, err = r.newTemplate("document-author-details", tmpls.DocumentAuthorDetails, err)

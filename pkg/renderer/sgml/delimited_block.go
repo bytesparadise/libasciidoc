@@ -2,6 +2,7 @@ package sgml
 
 import (
 	"bytes"
+	"strconv"
 	"strings"
 
 	"github.com/alecthomas/chroma"
@@ -107,6 +108,71 @@ func (r *sgmlRenderer) renderListingBlock(ctx *renderer.Context, b types.Delimit
 	return result.String(), err
 }
 
+func (r *sgmlRenderer) renderSourceLine(w *strings.Builder, item interface{}) {
+	switch item := item.(type) {
+	case types.VerbatimLine:
+		w.WriteString(item.Content)
+		for _, co := range item.Callouts {
+			// We inject an escaped sequence for now, which we can replace later with
+			// a fully rendered version of the callout. We use two non-characters
+			// (reserved for this kind of use by Unicode) to bracket callouts, allowing
+			// us to find them again in post-processing..
+			w.WriteString("\ufdd0")
+			w.WriteString(strconv.Itoa(co.Ref))
+			w.WriteString("\ufdd1")
+		}
+	case types.StringElement:
+		w.WriteString(item.Content)
+	case []interface{}:
+		for _, sub := range item {
+			r.renderSourceLine(w, sub)
+		}
+	}
+}
+
+func (r *sgmlRenderer) renderCalloutRef(co types.Callout) (string, error) {
+	result := &strings.Builder{}
+	err := r.calloutRef.Execute(result, co)
+	if err != nil {
+		return "", errors.Wrap(err, "unable to render callout number")
+	}
+	return result.String(), nil
+}
+
+func (r *sgmlRenderer) renderSourceCallouts(source string) (string, error) {
+	result := &strings.Builder{}
+	num := 0
+	co := false
+	for _, ch := range source {
+		if co {
+			if ch >= '0' && ch <= '9' {
+				num *= 10
+				num += int(ch - '0')
+				continue
+			}
+			if ch == '\ufdd1' {
+				s, err := r.renderCalloutRef(types.Callout{Ref: num})
+				if err != nil {
+					return "", errors.Wrap(err, "unable to render source block")
+				}
+				result.WriteString(s)
+				co = false
+				continue
+			}
+			// unexpected character - just copy it to output.
+			result.WriteRune(ch)
+		}
+		if ch == '\ufdd0' {
+			// start of integer
+			num = 0
+			co = true
+			continue
+		}
+		result.WriteRune(ch)
+	}
+	return result.String(), nil
+}
+
 func (r *sgmlRenderer) renderSourceBlock(ctx *renderer.Context, b types.DelimitedBlock) (string, error) {
 	previousWithinDelimitedBlock := ctx.WithinDelimitedBlock
 	previousIncludeBlankLine := ctx.IncludeBlankLine
@@ -119,15 +185,20 @@ func (r *sgmlRenderer) renderSourceBlock(ctx *renderer.Context, b types.Delimite
 	// first, render the content
 
 	elements := discardTrailingBlankLines(b.Elements)
-	content, err := r.renderElements(ctx, elements)
-
-	if err != nil {
-		return "", err
-	}
 
 	highlighter, _ := ctx.Attributes.GetAsString(types.AttrSyntaxHighlighter)
 	language, found := b.Attributes.GetAsString(types.AttrLanguage)
+	content := ""
 	if found && (highlighter == "chroma" || highlighter == "pygments") {
+
+		source := &strings.Builder{}
+		for i, line := range elements {
+			if i > 0 {
+				source.WriteRune('\n')
+			}
+			r.renderSourceLine(source, line)
+		}
+
 		// using github.com/alecthomas/chroma to highlight the content
 		contentBuf := &strings.Builder{}
 		lexer := lexers.Get(language)
@@ -140,7 +211,8 @@ func (r *sgmlRenderer) renderSourceBlock(ctx *renderer.Context, b types.Delimite
 		if s, found := ctx.Attributes.GetAsString(highlighter + "-style"); found {
 			style = styles.Get(s)
 		}
-		iterator, err := lexer.Tokenise(nil, content)
+		// iterator, err := lexer.Tokenise(nil, content)
+		iterator, err := lexer.Tokenise(nil, source.String())
 		if err != nil {
 			return "", err
 		}
@@ -163,10 +235,20 @@ func (r *sgmlRenderer) renderSourceBlock(ctx *renderer.Context, b types.Delimite
 			return "", err
 		}
 		content = contentBuf.String()
+		content, err = r.renderSourceCallouts(content)
+		if err != nil {
+			return "", err
+		}
+	} else {
+		elements := discardTrailingBlankLines(b.Elements)
+		var err error
+		if content, err = r.renderElements(ctx, elements); err != nil {
+			return "", err
+		}
 	}
 
 	result := &bytes.Buffer{}
-	err = r.sourceBlock.Execute(result, struct {
+	err := r.sourceBlock.Execute(result, struct {
 		ID                sanitized
 		Title             sanitized
 		Roles             sanitized
@@ -181,6 +263,7 @@ func (r *sgmlRenderer) renderSourceBlock(ctx *renderer.Context, b types.Delimite
 		Language:          language,
 		Content:           content,
 	})
+
 	return result.String(), err
 }
 
