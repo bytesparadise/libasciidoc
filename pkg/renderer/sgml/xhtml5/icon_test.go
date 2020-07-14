@@ -16,7 +16,7 @@ var _ = Describe("icons", func() {
 			It("inline icon alone", func() {
 				source := "icon:caution[]"
 				expected := `<div class="paragraph">
-<p><span class="icon">[Caution]</span></p>
+<p><span class="icon">[caution]</span></p>
 </div>
 `
 				Expect(RenderXHTML(source)).To(MatchHTML(expected))
@@ -25,7 +25,7 @@ var _ = Describe("icons", func() {
 			It("inline icon title", func() {
 				source := `icon:caution[title="title"]`
 				expected := `<div class="paragraph">
-<p><span class="icon">[Caution]</span></p>
+<p><span class="icon">[caution]</span></p>
 </div>
 `
 				Expect(RenderXHTML(source)).To(MatchHTML(expected))
@@ -44,7 +44,7 @@ var _ = Describe("icons", func() {
 				source := `
 icon:amazon[link="https://amazon.com"]`
 				expected := `<div class="paragraph">
-<p><span class="icon"><a class="image" href="https://amazon.com">[Amazon]</a></span></p>
+<p><span class="icon"><a class="image" href="https://amazon.com">[amazon]</a></span></p>
 </div>
 `
 				Expect(RenderXHTML(source)).To(MatchHTML(expected))
@@ -54,7 +54,7 @@ icon:amazon[link="https://amazon.com"]`
 				source := `
 icon:amazon[link="https://amazon.com",window="new front"]`
 				expected := `<div class="paragraph">
-<p><span class="icon"><a class="image" href="https://amazon.com" target="new front">[Amazon]</a></span></p>
+<p><span class="icon"><a class="image" href="https://amazon.com" target="new front">[amazon]</a></span></p>
 </div>
 `
 				Expect(RenderXHTML(source)).To(MatchHTML(expected))
@@ -159,7 +159,7 @@ icon:amazon[link="https://amazon.com",window="new front"]`
 
 icon:caution[]`
 				expected := `<div class="paragraph">
-<p><span class="icon"><img src="images/icons/caution.png" alt="Caution"/></span></p>
+<p><span class="icon"><img src="images/icons/caution.png" alt="caution"/></span></p>
 </div>
 `
 				Expect(RenderXHTML(source)).To(MatchHTML(expected))
@@ -170,7 +170,7 @@ icon:caution[]`
 
 icon:caution[title="title"]`
 				expected := `<div class="paragraph">
-<p><span class="icon"><img src="images/icons/caution.png" alt="Caution" title="title"/></span></p>
+<p><span class="icon"><img src="images/icons/caution.png" alt="caution" title="title"/></span></p>
 </div>
 `
 				Expect(RenderXHTML(source)).To(MatchHTML(expected))
@@ -181,7 +181,7 @@ icon:caution[title="title"]`
 
 icon:tip[fw]`
 				expected := `<div class="paragraph">
-<p><span class="icon"><img src="images/icons/tip.png" alt="Tip" class="fa-fw"/></span></p>
+<p><span class="icon"><img src="images/icons/tip.png" alt="tip" class="fa-fw"/></span></p>
 </div>
 `
 				Expect(RenderXHTML(source)).To(MatchHTML(expected))
@@ -191,7 +191,7 @@ icon:tip[fw]`
 
 icon:tip[fw,rotate=90,flip=horizontal]`
 				expected := `<div class="paragraph">
-<p><span class="icon"><img src="images/icons/tip.png" alt="Tip" class="fa-fw fa-rotate-90 fa-flip-horizontal"/></span></p>
+<p><span class="icon"><img src="images/icons/tip.png" alt="tip" class="fa-fw fa-rotate-90 fa-flip-horizontal"/></span></p>
 </div>
 `
 				Expect(RenderXHTML(source)).To(MatchHTML(expected))
@@ -202,7 +202,7 @@ icon:tip[fw,rotate=90,flip=horizontal]`
 
 icon:amazon[link="https://amazon.com"]`
 				expected := `<div class="paragraph">
-<p><span class="icon"><a class="image" href="https://amazon.com"><img src="images/icons/amazon.png" alt="Amazon"/></a></span></p>
+<p><span class="icon"><a class="image" href="https://amazon.com"><img src="images/icons/amazon.png" alt="amazon"/></a></span></p>
 </div>
 `
 				Expect(RenderXHTML(source)).To(MatchHTML(expected))
@@ -213,7 +213,7 @@ icon:amazon[link="https://amazon.com"]`
 
 icon:amazon[link="https://amazon.com",window="new front"]`
 				expected := `<div class="paragraph">
-<p><span class="icon"><a class="image" href="https://amazon.com" target="new front"><img src="images/icons/amazon.png" alt="Amazon"/></a></span></p>
+<p><span class="icon"><a class="image" href="https://amazon.com" target="new front"><img src="images/icons/amazon.png" alt="amazon"/></a></span></p>
 </div>
 `
 				Expect(RenderXHTML(source)).To(MatchHTML(expected))
@@ -225,7 +225,7 @@ icon:amazon[link="https://amazon.com",window="new front"]`
 
 icon:caution[]`
 				expected := `<div class="paragraph">
-<p><span class="icon"><img src="assets/ico/caution.png" alt="Caution"/></span></p>
+<p><span class="icon"><img src="assets/ico/caution.png" alt="caution"/></span></p>
 </div>
 `
 				Expect(RenderXHTML(source)).To(MatchHTML(expected))
@@ -237,7 +237,7 @@ icon:caution[]`
 
 icon:caution[]`
 				expected := `<div class="paragraph">
-<p><span class="icon"><img src="images/icons/caution.svg" alt="Caution"/></span></p>
+<p><span class="icon"><img src="images/icons/caution.svg" alt="caution"/></span></p>
 </div>
 `
 				Expect(RenderXHTML(source)).To(MatchHTML(expected))
@@ -268,7 +268,7 @@ what:: icon:question[]`
 <dl>
 <dt class="hdlist1">what</dt>
 <dd>
-<p><span class="icon"><img src="images/icons/question.png" alt="Question"/></span></p>
+<p><span class="icon"><img src="images/icons/question.png" alt="question"/></span></p>
 </dd>
 </dl>
 </div>
@@ -282,7 +282,7 @@ what:: icon:question[]`
 icon:tip[]:: tip of the day`
 				expected := `<div class="dlist">
 <dl>
-<dt class="hdlist1"><span class="icon"><img src="images/icons/tip.png" alt="Tip"/></span></dt>
+<dt class="hdlist1"><span class="icon"><img src="images/icons/tip.png" alt="tip"/></span></dt>
 <dd>
 <p>tip of the day</p>
 </dd>
@@ -327,7 +327,7 @@ here *we go icon:stop[]*`
 			It("icon in monospace text", func() {
 				source := "here `we go icon:stop[]`"
 				expected := `<div class="paragraph">
-<p>here <code>we go <span class="icon">[Stop]</span></code></p>
+<p>here <code>we go <span class="icon">[stop]</span></code></p>
 </div>
 `
 				Expect(RenderXHTML(source)).To(MatchHTML(expected))

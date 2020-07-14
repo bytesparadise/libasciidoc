@@ -44,8 +44,10 @@ func (r *sgmlRenderer) renderInlineIcon(ctx *renderer.Context, icon types.Icon) 
 func (r *sgmlRenderer) renderIcon(ctx *renderer.Context, icon types.Icon, admonition bool) (sanitized, error) {
 	icons := ctx.Attributes.GetAsStringWithDefault("icons", "text")
 	var template *textTemplate
+	font := false
 	switch icons {
 	case "font":
+		font = true
 		template = r.iconFont
 	case "text":
 		template = r.iconText
@@ -55,8 +57,25 @@ func (r *sgmlRenderer) renderIcon(ctx *renderer.Context, icon types.Icon, admoni
 		return "", fmt.Errorf("unsupported icon type %s", icons)
 	}
 	title := ""
+	alt := icon.Class
+
+	// TODO: This is rather inconsistent, and done for CSS compatibility.  We should
+	// expand the templates, and eliminate this code in the future.
 	if admonition {
-		title = strings.Title(icon.Class)
+		// Admonition uses title on block instead of the icon, and the alt text is
+		// taken from the caption.  However, in admonitions using the font, the alt
+		// is used as the title element instead.  Go figure.
+		alt = ctx.Attributes.GetAsStringWithDefault(icon.Class+"-caption", "")
+		alt = icon.Attributes.GetAsStringWithDefault(types.AttrCaption, alt)
+		if font {
+			title = alt
+			alt = ""
+		}
+	} else {
+		// Inline icons use the alt attribute, and may optionally carry a title.
+		// The alt is the icon class name unless overridden.  They don't use the caption at all.
+		alt = icon.Attributes.GetAsStringWithDefault(types.AttrImageAlt, alt)
+		title = icon.Attributes.GetAsStringWithDefault(types.AttrTitle, "")
 	}
 	s := &strings.Builder{}
 	err := template.Execute(s, struct {
@@ -74,8 +93,8 @@ func (r *sgmlRenderer) renderIcon(ctx *renderer.Context, icon types.Icon, admoni
 		Admonition bool
 	}{
 		Class:      icon.Class,
-		Alt:        icon.Attributes.GetAsStringWithDefault(types.AttrImageAlt, strings.Title(icon.Class)),
-		Title:      icon.Attributes.GetAsStringWithDefault(types.AttrTitle, title),
+		Alt:        alt,
+		Title:      title,
 		Width:      icon.Attributes.GetAsStringWithDefault(types.AttrWidth, ""),
 		Height:     icon.Attributes.GetAsStringWithDefault(types.AttrImageHeight, ""),
 		Size:       icon.Attributes.GetAsStringWithDefault(types.AttrIconSize, ""),
