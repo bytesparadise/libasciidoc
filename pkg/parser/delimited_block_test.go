@@ -232,6 +232,39 @@ var _ = Describe("delimited blocks", func() {
 				}
 				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
+
+			Context("with custom substitutions", func() {
+
+				It("should apply the 'none' substitution", func() {
+					source := "[subs=none]\n```" + "\n" +
+						"a http://website.com[]" + "\n" +
+						"and more text on the" + "\n" +
+						"next lines" + "\n" +
+						"```"
+					expected := types.DraftDocument{
+						Blocks: []interface{}{
+							types.DelimitedBlock{
+								Kind: types.Fenced,
+								Attributes: types.Attributes{
+									types.AttrSubstitutions: "none",
+								},
+								Elements: []interface{}{
+									types.VerbatimLine{
+										Content: "a http://website.com[]",
+									},
+									types.VerbatimLine{
+										Content: "and more text on the",
+									},
+									types.VerbatimLine{
+										Content: "next lines",
+									},
+								},
+							},
+						},
+					}
+					Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				})
+			})
 		})
 
 		Context("listing block", func() {
@@ -653,6 +686,10 @@ import <a>
 					},
 				}
 				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+			})
+
+			Context("with custom substitutions", func() {
+
 			})
 		})
 

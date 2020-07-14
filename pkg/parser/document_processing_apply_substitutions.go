@@ -2,7 +2,6 @@ package parser
 
 import (
 	"fmt"
-	"io"
 	"strconv"
 	"strings"
 
@@ -77,12 +76,13 @@ func applyAttributeSubstitutions(elements []interface{}, attrs types.AttributesW
 }
 
 // applyCounterSubstitutions is called by applyAttributeSubstitutionsOnElement.  Unless there is an error with
-// the element (the counter is the wrong type, which should never occur), it will return a StringElement, true
-// (because we always either find the element, or allocate one), and nil.  On an error it will return nil, false,
+// the element (the counter is the wrong type, which should never occur), it will return a `StringElement, true`
+// (because we always either find the element, or allocate one), and `nil`.  On an error it will return `nil, false`,
 // and the error.  The extra boolean here is to fit the calling expectations of our caller.  This function was
 // factored out of a case from applyAttributeSubstitutionsOnElement in order to reduce the complexity of that
 // function, but otherwise it should have no callers.
 func applyCounterSubstitution(c types.CounterSubstitution, attrs types.AttributesWithOverrides) (interface{}, bool, error) {
+	log.Debugf("applying counter substitution for '%s'", c.Name)
 	counter := attrs.Counters[c.Name]
 	if counter == nil {
 		counter = 0
@@ -125,6 +125,7 @@ func applyCounterSubstitution(c types.CounterSubstitution, attrs types.Attribute
 
 }
 func applyAttributeSubstitutionsOnElement(element interface{}, attrs types.AttributesWithOverrides) (interface{}, bool, error) {
+	log.Debugf("applying attribute substitutions on '%[1]v' (%[1]T)", element)
 	switch e := element.(type) {
 	case types.AttributeDeclaration:
 		attrs.Set(e.Name, e.Value)
@@ -255,14 +256,11 @@ func applyBlockSubstitutions(elements []interface{}, config configuration.Config
 	for _, e := range elements {
 		switch e := e.(type) {
 		case types.Paragraph:
-			lines, err := applyParagraphSubstitutions(e.Lines, normalParagraph(options...))
+			p, err := applyParagraphSubstitutions(e)
 			if err != nil {
 				return nil, err
 			}
-			result = append(result, types.Paragraph{
-				Attributes: e.Attributes,
-				Lines:      lines,
-			})
+			result = append(result, p)
 		case types.DelimitedBlock:
 			subs := delimitedBlockSubstitutions(e.Kind, config, options...)
 			if err := applyDelimitedBlockSubstitutions(&e, subs); err != nil {
@@ -289,9 +287,11 @@ func applyBlockSubstitutions(elements []interface{}, config configuration.Config
 
 func delimitedBlockSubstitutions(kind types.BlockKind, config configuration.Configuration, options ...Option) []blockSubstitution {
 	switch kind {
-	case types.Fenced, types.Listing, types.Literal, types.Source, types.Comment, types.Passthrough:
+	case types.Fenced, types.Listing, types.Literal, types.Source, types.Passthrough:
 		// return the verbatim elements
 		return []blockSubstitution{verbatimBlock(options...)}
+	case types.Comment:
+		return []blockSubstitution{none()}
 	case types.Example, types.Quote, types.Sidebar:
 		return []blockSubstitution{normalBlock(config, options...)}
 	case types.Verse:
@@ -326,7 +326,7 @@ func normalBlock(config configuration.Configuration, options ...Option) blockSub
 		if err != nil {
 			return err
 		}
-		if b.Elements, err = parseContent(config.Filename, raw, append(options, Entrypoint("NormalBlockContent"))...); err != nil {
+		if b.Elements, err = parseContent(config.Filename, raw, append(options, Entrypoint("NormalBlockContentSubstitution"))...); err != nil {
 			return err
 		}
 		// now, check if there are nested delimited blocks, in which case apply the same substitution recursively
@@ -351,7 +351,7 @@ func verseBlock(config configuration.Configuration, options ...Option) blockSubs
 		if err != nil {
 			return err
 		}
-		b.Elements, err = parseContent(config.Filename, raw, append(options, Entrypoint("VerseBlockContent"))...)
+		b.Elements, err = parseContent(config.Filename, raw, append(options, Entrypoint("VerseBlockContentSubstitution"))...)
 		return err
 	}
 }
@@ -364,7 +364,7 @@ func verbatimBlock(options ...Option) blockSubstitution {
 		for _, elmt := range b.Elements {
 			switch elmt := elmt.(type) {
 			case types.RawLine:
-				elements, err := parseRawLine(elmt, append(options, Entrypoint("VerbatimContent"))...)
+				elements, err := parseRawLine(elmt, append(options, Entrypoint("VerbatimContentSubstitution"))...)
 				if err != nil {
 					return errors.Wrapf(err, "failed to apply verbatim substitution on '%s'", elmt.Content)
 				}
@@ -374,13 +374,6 @@ func verbatimBlock(options ...Option) blockSubstitution {
 			}
 		}
 		b.Elements = result
-		return nil
-	}
-}
-
-// // disables substitutions
-func none() blockSubstitution {
-	return func(b *types.DelimitedBlock) error {
 		return nil
 	}
 }
@@ -399,7 +392,7 @@ func markdownQuote(config configuration.Configuration, options ...Option) blockS
 		if err != nil {
 			return err
 		}
-		b.Elements, err = parseContent(config.Filename, raw, append(options, Entrypoint("NormalBlockContent"))...)
+		b.Elements, err = parseContent(config.Filename, raw, append(options, Entrypoint("NormalBlockContentSubstitution"))...)
 		return err
 	}
 }
@@ -424,6 +417,22 @@ func extractQuoteBlockAttribution(elements []interface{}) ([]interface{}, string
 	return elements, ""
 }
 
+// disables substitutions
+// returns the given content as-is (converting `RawLine` elements to `VerbatimLine` elements)
+func none() blockSubstitution {
+	return func(b *types.DelimitedBlock) error {
+		for i, element := range b.Elements {
+			switch e := element.(type) {
+			case types.RawLine:
+				b.Elements[i] = types.VerbatimLine{
+					Content: e.Content,
+				}
+			}
+		}
+		return nil
+	}
+}
+
 func parseRawLine(line types.RawLine, options ...Option) ([]interface{}, error) {
 	result := []interface{}{}
 	log.Debugf("parsing '%s'", line.Content)
@@ -441,22 +450,23 @@ func parseRawLine(line types.RawLine, options ...Option) ([]interface{}, error) 
 	return result, nil
 }
 
-func parseContent(filename string, r io.Reader, options ...Option) ([]interface{}, error) {
-	result, err := ParseReader(filename, r, options...)
+func parseContent(filename string, content string, options ...Option) ([]interface{}, error) {
+	log.Debugf("parsing '%s'", content)
+	result, err := ParseReader(filename, strings.NewReader(content), options...)
 	if err != nil {
 		return nil, err
 	}
 	if result, ok := result.([]interface{}); ok {
-		if log.IsLevelEnabled(log.DebugLevel) {
-			log.Debug("parsed content:")
-			spew.Fdump(log.StandardLogger().Out, result)
-		}
-		return result, nil
+		// if log.IsLevelEnabled(log.DebugLevel) {
+		// 	log.Debug("parsed content:")
+		// 	spew.Fdump(log.StandardLogger().Out, types.Merge(result))
+		// }
+		return types.Merge(result), nil
 	}
 	return nil, fmt.Errorf("unexpected type of content: '%T'", result)
 }
 
-func serializeBlock(elements []interface{}) (io.Reader, error) {
+func serializeBlock(elements []interface{}) (string, error) {
 	if log.IsLevelEnabled(log.DebugLevel) {
 		log.Debug("serializing elements in a delimited block")
 		spew.Fdump(log.StandardLogger().Out, elements)
@@ -469,47 +479,240 @@ func serializeBlock(elements []interface{}) (io.Reader, error) {
 				buf.WriteString("\n")
 			}
 		} else {
-			return nil, fmt.Errorf("unexpected type of element while serializing the content of a delimited block: '%T'", elmt)
+			return "", fmt.Errorf("unexpected type of element while serializing the content of a delimited block: '%T'", elmt)
 		}
 	}
 	log.Debugf("raw content: '%s'", buf.String())
-	return strings.NewReader(buf.String()), nil
+	return buf.String(), nil
 }
 
 // ----------------------------------------------------------------------------
 // Paragraph substitutions
 // ----------------------------------------------------------------------------
 
-func applyParagraphSubstitutions(lines []interface{}, sub paragraphSubstitution) ([]interface{}, error) {
-	// TODO: support multiple substitutions, where the first one processed `RawLine` elements, and the following
-	// ones deal with `[]interface{}` containing `StringElement`, etc.
-	return sub(lines)
-}
-
-type paragraphSubstitution func(lines []interface{}, options ...Option) ([]interface{}, error)
-
-func normalParagraph(_ ...Option) paragraphSubstitution {
-	return func(lines []interface{}, options ...Option) ([]interface{}, error) {
-		log.Debugf("applying the 'normal' substitution on a paragraph")
-		raw, err := serializeParagraph(lines)
+// func applyParagraphSubstitutions(lines []interface{}, subs ...paragraphSubstitution) ([]interface{}, error) {
+func applyParagraphSubstitutions(p types.Paragraph, options ...Option) (types.Paragraph, error) {
+	subs, found := p.Attributes.GetAsString(types.AttrSubstitutions)
+	if !found {
+		// apply the default substitution
+		lines, err := substitution("normal")(p.Lines, options...)
 		if err != nil {
-			return nil, err
+			return types.Paragraph{}, err
 		}
-		return parseContent("", raw, append(options, Entrypoint("NormalParagraphContent"))...)
+		return types.Paragraph{
+			Attributes: p.Attributes,
+			Lines:      lines,
+		}, nil
+	}
+	// apply all the configured substitutions
+	for _, sub := range strings.Split(subs, ",") {
+		lines, err := substitution(sub)(p.Lines, options...)
+		if err != nil {
+			return types.Paragraph{}, err
+		}
+		p.Lines = lines
+	}
+	return p, nil
+}
+
+// func normalParagraph(options ...Option) paragraphSubstitution {
+// 	return func(lines []interface{}, options ...Option) ([]interface{}, error) {
+// 		log.Debugf("applying the 'normal' substitution on a paragraph")
+// 		raw, err := serializeParagraph(lines)
+// 		if err != nil {
+// 			return nil, err
+// 		}
+// 		return parseContent("", raw, append(options, Entrypoint("DefaultParagraphContent"))...)
+// 	}
+// }
+
+// // replaces <, >, and & with their corresponding entities
+// var specialchars = func(elements []interface{}, config configuration.Configuration, options ...Option) ([]interface{}, error) {
+// 	return elements, nil
+// }
+
+// // quotes applies the text formatting substitution
+// var quotes = func(lines []interface{}, options ...Option) ([]interface{}, error) {
+// 	for i, line := range lines {
+// 		switch line := line.(type) {
+// 		case types.RawLine:
+// 			elements, err := ParseReader("", strings.NewReader(line.Content), Entrypoint("QuotedTextSubstitution"))
+// 			if err != nil {
+// 				return nil, err
+// 			}
+// 			lines[i] = elements
+// 		default:
+// 			return nil, fmt.Errorf("unsupported type of line: %T", line)
+// 		}
+// 	}
+// 	return lines, nil
+// }
+
+// // marcos processes the inline macros substitutions
+// var macros = func(lines []interface{}, options ...Option) ([]interface{}, error) {
+// 	for i, line := range lines {
+// 		switch line := line.(type) {
+// 		case types.RawLine:
+// 			elements, err := ParseReader("", strings.NewReader(line.Content), Entrypoint("InlineMacrosSubstitution"))
+// 			if err != nil {
+// 				return nil, err
+// 			}
+// 			lines[i] = elements
+// 		default:
+// 			return nil, fmt.Errorf("unsupported type of line: %T", line)
+// 		}
+// 	}
+// 	return lines, nil
+// }
+
+type paragraphSubstitutionFunc func(lines []interface{}, options ...Option) ([]interface{}, error)
+
+// substitution returns the substitution func matching the given name
+// otherwise, returns a default substitution which will ultemately fail
+func substitution(name string) paragraphSubstitutionFunc {
+	log.Debugf("applying the '%s' paragraph substitution", name)
+	switch name {
+	case "normal":
+		return paragraphSubstitution("DefaultParagraphContent")
+	case "quotes":
+		return paragraphSubstitution("QuotedTextSubstitution")
+	case "macros":
+		return paragraphSubstitution("InlineMacrosSubstitution")
+	case "attributes":
+		return paragraphSubstitution("AttributesSubstitution")
+	case "none":
+		return paragraphSubstitution("NoneSubstitution")
+	default:
+		return func(lines []interface{}, options ...Option) ([]interface{}, error) {
+			return nil, fmt.Errorf("unsupported substitution: '%s", name)
+		}
 	}
 }
 
-func serializeParagraph(lines []interface{}) (io.Reader, error) {
-	buf := strings.Builder{}
-	for i, line := range lines {
-		if r, ok := line.(types.RawLine); ok {
-			buf.WriteString(r.Content)
-			if i < len(lines)-1 {
-				buf.WriteString("\n")
+func paragraphSubstitution(entrypoint string) paragraphSubstitutionFunc {
+	return func(lines []interface{}, options ...Option) ([]interface{}, error) {
+		elements := []interface{}{}
+		for _, element := range serializeParagraphLines(lines) {
+			switch element := element.(type) {
+			case types.StringElement: // coming straight from the Raw document
+				elmts, err := parseContent("", element.Content, Entrypoint(entrypoint))
+				if err != nil {
+					return nil, err
+				}
+				elements = append(elements, elmts...)
+			default:
+				elements = append(elements, element)
 			}
-		} else {
-			return nil, fmt.Errorf("unexpected type of element while serializing a paragraph: '%T'", line)
+		}
+		// after processing all the elements, we want to split them in separate lines again, to retain the initial input "form"
+		result := make([]interface{}, 0, len(lines))
+		line := []interface{}{}
+		for _, element := range types.Merge(elements) {
+			switch element := element.(type) {
+			case types.StringElement:
+				// if content has line breaks, then split in multiple lines
+				if split := strings.Split(element.Content, "\n"); len(split) > 1 {
+					for i, s := range split {
+						if len(s) > 0 { // no need to insert empty StringElements
+							line = append(line, types.StringElement{Content: s})
+						}
+						if i < len(split)-1 {
+							result = append(result, line)
+							line = []interface{}{} // reset for the next line, except for the last item
+						}
+					}
+				} else {
+					line = append(line, element)
+				}
+			case types.SingleLineComment: // single-line comments are on their own lines
+				if len(line) > 0 {
+					result = append(result, line)
+				}
+				result = append(result, []interface{}{element})
+				line = []interface{}{} // reset for the next line
+			default:
+				line = append(line, element)
+			}
+		}
+		if len(line) > 0 { // don't forget the last line (if applicable)
+			result = append(result, line)
+		}
+		if log.IsLevelEnabled(log.DebugLevel) {
+			log.Debugf("paragraph lines after substitution:")
+			spew.Fdump(log.StandardLogger().Out, result)
+		}
+		return result, nil
+	}
+}
+
+// // replaces attribute references
+// var attributes = func(elements []interface{}, config configuration.Configuration, options ...Option) ([]interface{}, error) {
+// 	return elements, nil
+// }
+
+// // substitutes textual and character reference replacements
+// var replacements = func(elements []interface{}, config configuration.Configuration, options ...Option) ([]interface{}, error) {
+// 	return elements, nil
+// }
+
+// // replaces the line break character (+)
+// var postReplacements = func(elements []interface{}, config configuration.Configuration, options ...Option) ([]interface{}, error) {
+// 	return elements, nil
+// }
+
+// func parseDelimitedBlockElements(filename string, elements []interface{}, options ...Option) ([]interface{}, error) {
+// 	verbatim, err := serialize(elements)
+// 	if err != nil {
+// 		return nil, err
+// 	}
+// 	e, err := ParseReader(filename, verbatim, options...)
+// 	if err != nil {
+// 		return nil, err
+// 	}
+// 	if result, ok := e.([]interface{}); ok {
+// 		return result, nil
+// 	}
+// 	return nil, fmt.Errorf("unexpected type of element after parsing the content of a delimited block: '%T'", e)
+// }
+
+func serializeParagraphLines(lines []interface{}) []interface{} {
+	result := []interface{}{}
+	for i, line := range lines {
+		switch line := line.(type) {
+		case types.RawLine:
+			result = append(result, types.StringElement{
+				Content: line.Content,
+			})
+		case types.SingleLineComment:
+			result = append(result, line)
+		case []interface{}:
+			result = append(result, line...)
+		}
+		if i < len(lines)-1 {
+			result = append(result, types.StringElement{
+				Content: "\n",
+			})
 		}
 	}
-	return strings.NewReader(buf.String()), nil
+	result = types.Merge(result)
+	if log.IsLevelEnabled(log.DebugLevel) {
+		log.Debugf("serialized paragraph:")
+		spew.Fdump(log.StandardLogger().Out, result)
+	}
+	return result
 }
+
+// func serializeParagraph(lines []interface{}) (io.Reader, error) {
+// 	buf := strings.Builder{}
+// 	for i, line := range lines {
+// 		if r, ok := line.(types.RawLine); ok {
+// 			buf.WriteString(r.Content)
+// 			if i < len(lines)-1 {
+// 				buf.WriteString("\n")
+// 			}
+// 		} else {
+// 			return nil, fmt.Errorf("unexpected type of element while serializing a paragraph: '%T'", line)
+// 		}
+// 	}
+// 	return strings.NewReader(buf.String()), nil
+// }

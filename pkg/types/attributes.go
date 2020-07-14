@@ -123,6 +123,8 @@ const (
 	AttrTipCaption = "tip-caption"
 	// AttrWarningCaption is the TIP caption
 	AttrWarningCaption = "warning-caption"
+	// AttrSubstitutions the "subs" attribute to configure substitutions on delimited blocks and paragraphs
+	AttrSubstitutions = "subs"
 )
 
 // NewElementID initializes a new attribute map with a single entry for the ID using the given value
