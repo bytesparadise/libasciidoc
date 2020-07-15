@@ -546,6 +546,64 @@ foo
 `
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
+
+		It("example block with custom caption and title", func() {
+			source := `[caption="Caption A. "]
+.example block title
+====
+foo
+
+====`
+			expected := `<div class="exampleblock">
+<div class="title">Caption A. example block title</div>
+<div class="content">
+<div class="paragraph">
+<p>foo</p>
+</div>
+</div>
+</div>
+`
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
+		})
+		It("example block with custom global caption and title", func() {
+			source := `:example-caption: Caption
+
+.example block title
+====
+foo
+
+====`
+			expected := `<div class="exampleblock">
+<div class="title">Caption 1. example block title</div>
+<div class="content">
+<div class="paragraph">
+<p>foo</p>
+</div>
+</div>
+</div>
+`
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
+		})
+		It("example block with suppressed caption and title", func() {
+			source := `:example-caption!:
+
+.example block title
+====
+foo
+
+====`
+			expected := `<div class="exampleblock">
+<div class="title">example block title</div>
+<div class="content">
+<div class="paragraph">
+<p>foo</p>
+</div>
+</div>
+</div>
+`
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
+		})
+
 	})
 
 	Context("admonition blocks", func() {
