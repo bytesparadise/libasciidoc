@@ -306,18 +306,34 @@ func (r *sgmlRenderer) renderExampleBlock(ctx *renderer.Context, b types.Delimit
 		return r.renderAdmonitionBlock(ctx, b)
 	}
 	result := &strings.Builder{}
+	caption := &strings.Builder{}
 
 	// default, example block
-	number := ctx.GetAndIncrementExampleBlockCounter()
+	number := 0
 	elements := b.Elements
 	content, err := r.renderElements(ctx, elements)
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render example block content")
 	}
+
+	c, ok := b.Attributes.GetAsString(types.AttrCaption)
+	if !ok {
+		c, _ = ctx.Attributes.GetAsString(types.AttrExampleCaption)
+		if c != "" {
+			c += " {counter:example-number}. "
+		}
+	}
+	// TODO: Replace this hack when we have attribute substitution fully working
+	if strings.Contains(c, "{counter:example-number}") {
+		number = ctx.GetAndIncrementExampleBlockCounter()
+		c = strings.ReplaceAll(c, "{counter:example-number}", strconv.Itoa(number))
+	}
+	caption.WriteString(c)
 	err = r.exampleBlock.Execute(result, struct {
 		Context       *renderer.Context
 		ID            sanitized
 		Title         sanitized
+		Caption       string
 		Roles         sanitized
 		ExampleNumber int
 		Content       sanitized
@@ -326,6 +342,7 @@ func (r *sgmlRenderer) renderExampleBlock(ctx *renderer.Context, b types.Delimit
 		Context:       ctx,
 		ID:            r.renderElementID(b.Attributes),
 		Title:         r.renderElementTitle(b.Attributes),
+		Caption:       caption.String(),
 		Roles:         r.renderElementRoles(b.Attributes),
 		ExampleNumber: number,
 		Content:       sanitized(content),
