@@ -217,6 +217,48 @@ var _ = Describe("tables", func() {
 		Expect(RenderXHTML(source)).To(MatchHTML(expected))
 	})
 
+	It("2 tables with custom caption label", func() {
+		source := `:table-caption: Chart
+
+.First
+|===
+| foo | bar
+|===
+
+.Second
+|===
+| foo | bar
+|===`
+		expected := `<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Chart 1. First</caption>
+<colgroup>
+<col style="width: 50%;"/>
+<col style="width: 50%;"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">foo</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">bar</p></td>
+</tr>
+</tbody>
+</table>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Chart 2. Second</caption>
+<colgroup>
+<col style="width: 50%;"/>
+<col style="width: 50%;"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">foo</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">bar</p></td>
+</tr>
+</tbody>
+</table>
+`
+		Expect(RenderXHTML(source)).To(MatchHTML(expected))
+	})
+
 	It("2 tables with 2 counters", func() {
 		source := `.Title 1
 |===

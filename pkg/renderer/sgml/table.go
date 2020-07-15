@@ -44,15 +44,20 @@ func (r *sgmlRenderer) renderTable(ctx *renderer.Context, t types.Table) (string
 		c, ok := t.Attributes.GetAsString(types.AttrCaption)
 		if !ok {
 			c, _ = ctx.Attributes.GetAsString(types.AttrTableCaption)
+			if c != "" {
+				// We always append the figure number, unless the caption is disabled.
+				// This is for asciidoctor compatibility.
+				c += " {counter:table-number}. "
+			}
 		}
 
 		// TODO: This is a very primitive and incomplete replacement of the counter attribute only.
 		// This should be removed when attribute values are allowed to contain attributes.
 		// Also this expansion should be limited to just singly quoted strings in the Attribute list,
 		// or the default.  Ultimately this should all be done long before it gets into the renderer.
-		if strings.Contains(c, "{counter:table-counter}") {
+		if strings.Contains(c, "{counter:table-number}") {
 			number = ctx.GetAndIncrementTableCounter()
-			c = strings.ReplaceAll(c, "{counter:table-counter}", strconv.Itoa(number))
+			c = strings.ReplaceAll(c, "{counter:table-number}", strconv.Itoa(number))
 		}
 		caption.WriteString(c)
 	}
