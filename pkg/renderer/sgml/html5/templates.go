@@ -33,7 +33,6 @@ var templates = sgml.Templates{
 	IconFont:                  iconFontTmpl,
 	IconImage:                 iconImageTmpl,
 	IconText:                  iconTextTmpl,
-	ImageCaption:              imageCaptionTmpl,
 	InlineIcon:                inlineIconTmpl,
 	InlineImage:               inlineImageTmpl,
 	InternalCrossReference:    internalCrossReferenceTmpl,

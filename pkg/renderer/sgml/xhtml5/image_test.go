@@ -72,6 +72,34 @@ var _ = Describe("images", func() {
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
+		It("block image with custom global figure-caption", func() {
+
+			source := ":figure-caption: Picture\n" +
+				".Image Title\nimage::foo.png[foo image, 600, 400]"
+			expected := `<div class="imageblock">
+<div class="content">
+<img src="foo.png" alt="foo image" width="600" height="400"/>
+</div>
+<div class="title">Picture 1. Image Title</div>
+</div>
+`
+			Expect(RenderXHTML(source)).To(MatchHTML(expected))
+		})
+
+		It("block image with suppressed caption", func() {
+
+			source := ":figure-caption!:\n" +
+				".Image Title\nimage::foo.png[foo image, 600, 400]"
+			expected := `<div class="imageblock">
+<div class="content">
+<img src="foo.png" alt="foo image" width="600" height="400"/>
+</div>
+<div class="title">Image Title</div>
+</div>
+`
+			Expect(RenderXHTML(source)).To(MatchHTML(expected))
+		})
+
 		It("block image with title, alt and dimensions", func() {
 			source := `[#img-foobar]
 .A title to foobar

@@ -111,6 +111,8 @@ const (
 	AttrPositional3 = "@3"
 	// AttrVersionLabel labels the version number in the document
 	AttrVersionLabel = "version-label"
+	// AttrFigureCaption is the figure (image) caption
+	AttrFigureCaption = "figure-caption"
 	// AttrTableCaption is the table caption
 	AttrTableCaption = "table-caption"
 	// AttrCautionCaption is the CAUTION caption
