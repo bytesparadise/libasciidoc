@@ -36,6 +36,7 @@ func init() {
 		"cpp":                "C++",
 		AttrVersionLabel:     "version",
 		AttrTableCaption:     "Table {counter:table-counter}. ",
+		AttrFigureCaption:    "Figure",
 		AttrCautionCaption:   "Caution",
 		AttrImportantCaption: "Important",
 		AttrNoteCaption:      "Note",

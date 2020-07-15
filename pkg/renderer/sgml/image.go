@@ -1,6 +1,7 @@
 package sgml
 
 import (
+	"strconv"
 	"strings"
 
 	"github.com/bytesparadise/libasciidoc/pkg/renderer"
@@ -18,22 +19,21 @@ func (r *sgmlRenderer) renderImageBlock(ctx *renderer.Context, img types.ImageBl
 	// regardless if we have a number or not. This will probably lead to confusion
 	// if mixed custom and stock captioning is used.
 	if _, found := img.Attributes.GetAsString(types.AttrTitle); found {
-		number = ctx.GetAndIncrementImageCounter()
-
-		if s, ok := img.Attributes.GetAsString(types.AttrCaption); ok {
-			caption.WriteString(s)
-		} else {
-			err := r.imageCaption.Execute(caption, struct {
-				ImageNumber int
-				Title       sanitized
-			}{
-				ImageNumber: number,
-				Title:       title,
-			})
-			if err != nil {
-				return "", errors.Wrap(err, "unable to format image caption")
+		c, ok := img.Attributes.GetAsString(types.AttrCaption)
+		if !ok {
+			c, _ = ctx.Attributes.GetAsString(types.AttrFigureCaption)
+			if c != "" {
+				// We always append the figure number, unless the caption is disabled.
+				// This is for asciidoctor compatibility.
+				c += " {counter:figure-number}. "
 			}
 		}
+		// TODO: Replace this hack when we have attribute substitution fully working
+		if strings.Contains(c, "{counter:figure-number}") {
+			number = ctx.GetAndIncrementImageCounter()
+			c = strings.ReplaceAll(c, "{counter:figure-number}", strconv.Itoa(number))
+		}
+		caption.WriteString(c)
 	}
 	err := r.blockImage.Execute(result, struct {
 		ID          sanitized
