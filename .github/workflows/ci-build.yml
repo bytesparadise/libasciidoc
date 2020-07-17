@@ -35,6 +35,11 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-go-
 
+    - name: Verify parser
+      if: runner.os == 'Linux'
+      run: |
+        make verify-parser
+
     - name: Build
       run: |
         make build

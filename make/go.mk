@@ -65,9 +65,10 @@ PARSER_DIFF_STATUS :=
 ## verify that the parser was built with the latest version of pigeon, using the `optimize-grammar` option
 verify-parser: prebuild-checks
 ifneq ($(shell git diff --quiet pkg/parser/parser.go; echo $$?), 0)
-	$(error "parser was generated with an older version of 'mna/pigeon' or without the '-optimize' option(s).")
+	@git diff pkg/parser/parser.go
+	$(error "parser was generated with an older version of 'mna/pigeon' or without the '-optimize-parser' option enabled.")
 else
-	@echo "parser is ok"
+	@echo "generated parser is ok"
 endif
 
 .PHONY: install
