@@ -138,7 +138,7 @@ var _ = Describe("icons", func() {
 					Blocks: []interface{}{
 						types.Section{
 							Attributes: types.Attributes{
-								types.AttrID: "_a_from_me", // TODO: missing icon class
+								types.AttrID: "_a_note_from_me",
 							},
 							Level: 1,
 							Title: []interface{}{
@@ -166,7 +166,7 @@ var _ = Describe("icons", func() {
 						types.Section{
 							Level: 0,
 							Attributes: types.Attributes{
-								types.AttrID: "_or_what_to_do", // TODO: should be "_warning_or_what_note_to_do"
+								types.AttrID: "_warning_or_what_note_to_do",
 							},
 							Title: []interface{}{
 								types.Icon{Class: "warning"},

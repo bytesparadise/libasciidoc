@@ -41,6 +41,16 @@ func ReplaceNonAlphanumerics(elements []interface{}, replacement string) (string
 				buf.WriteString(replacement)
 			}
 			buf.WriteString(r)
+		case Icon:
+			s := element.Attributes.GetAsStringWithDefault(AttrImageAlt, element.Class)
+			r, err := replaceNonAlphanumerics(s, replacement)
+			if err != nil {
+				return "", err
+			}
+			if buf.Len() > 0 {
+				buf.WriteString(replacement)
+			}
+			buf.WriteString(r)
 		default:
 			// other types are ignored
 		}
