@@ -36,11 +36,11 @@ func (r *sgmlRenderer) renderImageBlock(ctx *renderer.Context, img types.ImageBl
 		caption.WriteString(c)
 	}
 	err := r.blockImage.Execute(result, struct {
-		ID          sanitized
-		Title       sanitized
+		ID          string
+		Title       string
 		ImageNumber int
 		Caption     string
-		Roles       sanitized
+		Roles       string
 		Href        string
 		Alt         string
 		Width       string
@@ -69,8 +69,8 @@ func (r *sgmlRenderer) renderImageBlock(ctx *renderer.Context, img types.ImageBl
 func (r *sgmlRenderer) renderInlineImage(img types.InlineImage) (string, error) {
 	result := &strings.Builder{}
 	err := r.inlineImage.Execute(result, struct {
-		Roles  sanitized
-		Title  sanitized
+		Roles  string
+		Title  string
 		Href   string
 		Alt    string
 		Width  string

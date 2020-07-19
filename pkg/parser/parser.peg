@@ -270,7 +270,7 @@ ElementTitleContent <- [\pL0-9][^\r\n<>]* { // "<" and ">" characters are not al
     return string(c.text), nil
 }
 
-// These are elements that don't start with a leading positional attribute, except
+// These are elements that do not start with a leading positional attribute, except
 // perhaps the shorthand attributes.
 ElementShortHandAttributes <- "[" attrs:(ShortHandAttr* NamedAttr*) "]" Space* EOL {
     return types.NewElementAttributes(attrs)
@@ -492,7 +492,7 @@ SingleQuotedStringElement <- element:(
         / InlineIcon
         / InlineImage
         / InlineFootnote
-        / InlinePassthrough
+        / InlinePassthrough // must be before the SpecialCharacter rule (because of `+`)
         / Link
         / AttributeSubstitution
         / BoldText
@@ -503,6 +503,7 @@ SingleQuotedStringElement <- element:(
         / !"`'" MonospaceText
         / DoubleQuotedString
         / ImpliedApostrophe
+        / SpecialCharacter
         / SingleQuotedStringFallbackCharacter) {
     return element, nil
 }
@@ -523,11 +524,12 @@ DoubleQuotedStringElements <- elements:(DoubleQuotedStringElement+) {
 DoubleQuotedStringElement <- element:(
         LineBreak !DoubleQuoteStringEnd // must be before spaces
         / Space+ !DoubleQuoteStringEnd
-        / Symbol
         / InlineIcon
         / InlineImage
         / InlineFootnote
-        / InlinePassthrough
+        / InlinePassthrough // must be before the SpecialCharacter rule (because of `+`)
+        / Symbol
+        / SpecialCharacter
         / Link
         / AttributeSubstitution
         / BoldText
@@ -573,14 +575,15 @@ TitleElements <- elements:(!Newline !InlineElementID TitleElement)+ { // absorbs
 TitleElement <- element:(Word
         / LineBreak // must be before spaces
         / Space+ 
-        / CrossReference
-        / InlinePassthrough
+        / CrossReference // must be before the SpecialCharacter rule
+        / InlinePassthrough // must be before the SpecialCharacter rule (because of `+`)
         / InlineIcon
         / InlineImage
         / Link
         / InlineFootnote
         / QuotedString
         / QuotedText
+        / SpecialCharacter
         / Symbol
         / AttributeSubstitution
         / ImpliedApostrophe
@@ -911,13 +914,14 @@ LabeledListItemTermElement <- element:(Word
         / CrossReference
         / ConcealedIndexTerm
         / IndexTerm
-        / InlinePassthrough
+        / InlinePassthrough // must be before the SpecialCharacter rule (because of `+`)
         / InlineIcon
         / InlineImage 
         / Link
         / InlineFootnote
         / QuotedString
         / QuotedText
+        / SpecialCharacter
         / Symbol
         / AttributeSubstitution
         / ImpliedApostrophe
@@ -1116,13 +1120,14 @@ InlineElement <-
         / !EOL (
             QuotedString
             / QuotedText
-            / Symbol
             / InlineIcon
             / InlineImage 
             / Link 
-            / InlinePassthrough 
+            / InlinePassthrough // must be before the SpecialCharacter rule (because of `+`)
             / InlineFootnote 
             / CrossReference 
+            / SpecialCharacter
+            / Symbol
             / InlineUserMacro 
             / AttributeSubstitution 
             / InlineElementID
@@ -1204,11 +1209,12 @@ DoubleQuoteBoldTextElement <- Word
         / MonospaceText
         / SubscriptText
         / SuperscriptText
+        / InlinePassthrough // must be before the SpecialCharacter rule (because of `+`)
+        / SpecialCharacter
         / Symbol
         / InlineIcon
         / InlineImage
         / Link
-        / InlinePassthrough
         / AttributeSubstitution
         / ImpliedApostrophe
         / DoubleQuoteBoldTextFallbackCharacter
@@ -1238,11 +1244,12 @@ SingleQuoteBoldTextElement <- Word
         / MonospaceText
         / SubscriptText
         / SuperscriptText
+        / InlinePassthrough // must be before the SpecialCharacter rule (because of `+`)
+        / SpecialCharacter
         / Symbol
         / InlineIcon
         / InlineImage 
         / Link  
-        / InlinePassthrough
         / AttributeSubstitution
         / ImpliedApostrophe
         / SingleQuoteBoldTextFallbackCharacter
@@ -1284,11 +1291,12 @@ DoubleQuoteItalicTextElement <- Word
         / MonospaceText
         / SubscriptText
         / SuperscriptText
+        / InlinePassthrough // must be before the SpecialCharacter rule (because of `+`)
+        / SpecialCharacter
         / Symbol
         / InlineIcon
         / InlineImage 
         / Link 
-        / InlinePassthrough
         / ImpliedApostrophe
         / DoubleQuoteItalicTextFallbackCharacter
 
@@ -1316,11 +1324,12 @@ SingleQuoteItalicTextElement <- Word
         / MonospaceText
         / SubscriptText
         / SuperscriptText
+        / InlinePassthrough // must be before the SpecialCharacter rule (because of `+`)
+        / SpecialCharacter
         / Symbol
         / InlineIcon
         / InlineImage 
         / Link  
-        / InlinePassthrough 
         / AttributeSubstitution
         / ImpliedApostrophe
         / SingleQuoteItalicTextFallbackCharacter
@@ -1354,9 +1363,11 @@ DoubleQuoteMonospaceTextElements <- DoubleQuoteMonospaceTextElement (!("``") (Sp
 
 DoubleQuoteMonospaceTextElement <- Word
         / Newline !Newline
-        / Symbol
-        / SingleQuoteMonospaceText
         / QuotedString
+        / InlinePassthrough // must be before the SpecialCharacter rule (because of `+`)
+        / Symbol
+        / SpecialCharacter
+        / SingleQuoteMonospaceText
         / BoldText
         / ItalicText
         / MarkedText
@@ -1365,7 +1376,6 @@ DoubleQuoteMonospaceTextElement <- Word
         / InlineIcon
         / InlineImage
         / Link
-        / InlinePassthrough 
         / ImpliedApostrophe
         / DoubleQuoteMonospaceTextFallbackCharacter
 
@@ -1393,11 +1403,12 @@ SingleQuoteMonospaceTextElement <-  Word
         / MarkedText
         / SubscriptText
         / SuperscriptText
+        / InlinePassthrough // must be before the SpecialCharacter rule (because of `+`)
         / !"`" Symbol
+        / SpecialCharacter
         / InlineIcon
         / InlineImage 
         / Link 
-        / InlinePassthrough 
         / AttributeSubstitution
         / ImpliedApostrophe
         / SingleQuoteMonospaceTextFallbackCharacter
@@ -1439,11 +1450,12 @@ DoubleQuoteMarkedTextElement <- Word
         / MonospaceText
         / SubscriptText
         / SuperscriptText
+        / InlinePassthrough // must be before the SpecialCharacter rule (because of `+`)
         / Symbol
+        / SpecialCharacter
         / InlineIcon
         / InlineImage
         / Link
-        / InlinePassthrough
         / ImpliedApostrophe
         / DoubleQuoteMarkedTextFallbackCharacter
 
@@ -1472,10 +1484,11 @@ SingleQuoteMarkedTextElement <- Word
         / SubscriptText
         / SuperscriptText
         / Symbol
+        / InlinePassthrough // must be before the SpecialCharacter rule (because of `+`)
+        / SpecialCharacter
         / InlineIcon
         / InlineImage
         / Link
-        / InlinePassthrough
         / AttributeSubstitution
         / ImpliedApostrophe
         / SingleQuoteMarkedTextFallbackCharacter
@@ -1628,6 +1641,7 @@ UnquotedAttributeChar <- [^\r\n"=\],] { // excludes comma
 InlineLinks <-
     elements:(Word
         / Symbol
+        / SpecialCharacter
         / Space+ 
         / ResolvedLink 
         / Parenthesis
@@ -2071,7 +2085,7 @@ IndexTerm <- "((" term:(IndexTermContent) "))" {
        return types.NewIndexTerm(term.([]interface{}))
 }
 
-IndexTermContent <- elements:(Word / QuotedString / QuotedText / Space / (!"))" .) {
+IndexTermContent <- elements:(Word / QuotedString / QuotedText / Space / SpecialCharacter / (!"))" .) {
     return string(c.text), nil
 })+ {
     return types.NewInlineElements(elements.([]interface{}))
@@ -2118,11 +2132,20 @@ Ellipsis <- "..." {
 }
 
 // The implied apostrophe is used in interior words, and intended to help
-// cases like mother's day.  asciidoctor requires that it be followed by
+// cases like "mother's day".  asciidoctor requires that it be followed by
 // a letter (not a digit) but it can have a digit just before it.
 
 ImpliedApostrophe <- Alphanum "'" &[\pL] {
     return types.NewStringElement(string(c.text[:1])+"\u2019")
+}
+
+// ------------------------------------------------------------------------------------
+// Special Characters 
+// They need to be identified as they may have a special treatment during the rendering
+// ------------------------------------------------------------------------------------
+
+SpecialCharacter <- ("<" / ">" / "&" / "+") { // "+" is parsed here for the sake of HTML output compatibility with Asciidoctor which replaces it with the `&#43;` entity
+    return types.NewSpecialCharacter(string(c.text))
 }
 
 // ------------------------------------------

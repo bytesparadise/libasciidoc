@@ -1813,7 +1813,7 @@ level 2::: description 2`
 									types.Paragraph{
 										Lines: []interface{}{
 											[]interface{}{
-												types.StringElement{Content: "&amp;"},
+												types.SpecialCharacter{Content: "&"},
 											},
 										},
 									},

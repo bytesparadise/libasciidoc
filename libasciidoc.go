@@ -4,10 +4,11 @@ package libasciidoc
 
 import (
 	"fmt"
-	"github.com/bytesparadise/libasciidoc/pkg/renderer/sgml/xhtml5"
 	"io"
 	"os"
 	"time"
+
+	"github.com/bytesparadise/libasciidoc/pkg/renderer/sgml/xhtml5"
 
 	"github.com/bytesparadise/libasciidoc/pkg/configuration"
 	"github.com/bytesparadise/libasciidoc/pkg/parser"

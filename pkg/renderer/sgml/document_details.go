@@ -10,7 +10,7 @@ import (
 	"github.com/pkg/errors"
 )
 
-func (r *sgmlRenderer) renderDocumentDetails(ctx *renderer.Context) (*sanitized, error) {
+func (r *sgmlRenderer) renderDocumentDetails(ctx *renderer.Context) (*string, error) {
 	if ctx.Attributes.Has(types.AttrAuthors) {
 		authors, err := r.renderDocumentAuthorsDetails(ctx)
 		if err != nil {
@@ -22,7 +22,7 @@ func (r *sgmlRenderer) renderDocumentDetails(ctx *renderer.Context) (*sanitized,
 		revDate, _ := ctx.Attributes.GetAsString("revdate")
 		revRemark, _ := ctx.Attributes.GetAsString("revremark")
 		err = r.documentDetails.Execute(documentDetailsBuff, struct {
-			Authors   sanitized
+			Authors   string
 			RevLabel  string
 			RevNumber string
 			RevDate   string
@@ -37,13 +37,13 @@ func (r *sgmlRenderer) renderDocumentDetails(ctx *renderer.Context) (*sanitized,
 		if err != nil {
 			return nil, errors.Wrap(err, "error while rendering the document details")
 		}
-		documentDetails := sanitized(documentDetailsBuff.String()) //nolint: gosec
+		documentDetails := string(documentDetailsBuff.String()) //nolint: gosec
 		return &documentDetails, nil
 	}
 	return nil, nil
 }
 
-func (r *sgmlRenderer) renderDocumentAuthorsDetails(ctx *renderer.Context) (*sanitized, error) { // TODO: use  `types.DocumentAuthor` attribute in context
+func (r *sgmlRenderer) renderDocumentAuthorsDetails(ctx *renderer.Context) (*string, error) { // TODO: use  `types.DocumentAuthor` attribute in context
 	authorsDetailsBuff := &strings.Builder{}
 	i := 1
 	for {
@@ -83,6 +83,6 @@ func (r *sgmlRenderer) renderDocumentAuthorsDetails(ctx *renderer.Context) (*san
 			break
 		}
 	}
-	result := sanitized(authorsDetailsBuff.String()) //nolint: gosec
+	result := string(authorsDetailsBuff.String()) //nolint: gosec
 	return &result, nil
 }

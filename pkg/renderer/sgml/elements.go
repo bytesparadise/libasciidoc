@@ -125,6 +125,8 @@ func (r *sgmlRenderer) renderElement(ctx *renderer.Context, element interface{})
 		return r.renderQuotedString(ctx, e)
 	case types.ThematicBreak:
 		return r.renderThematicBreak()
+	case types.SpecialCharacter:
+		return r.renderSpecialCharacter(e)
 	default:
 		return "", errors.Errorf("unsupported type of element: %T", element)
 	}

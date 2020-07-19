@@ -1,7 +1,6 @@
 package sgml
 
 import (
-	htmltemplate "html/template"
 	"io"
 	"strings"
 	texttemplate "text/template"
@@ -112,13 +111,13 @@ func (r *sgmlRenderer) Render(ctx *renderer.Context, doc types.Document, output 
 		err = r.article.Execute(output, struct {
 			Generator     string
 			Doctype       string
-			Title         sanitized
+			Title         string
 			Authors       string
 			Header        string
 			Role          string
-			ID            sanitized
-			Roles         sanitized
-			Content       sanitized
+			ID            string
+			Roles         string
+			Content       string
 			RevNumber     string
 			LastUpdated   string
 			CSS           string
@@ -132,7 +131,7 @@ func (r *sgmlRenderer) Render(ctx *renderer.Context, doc types.Document, output 
 			Header:        renderedHeader,
 			Roles:         r.renderDocumentRoles(doc),
 			ID:            r.renderDocumentID(doc),
-			Content:       sanitized(renderedContent), //nolint: gosec
+			Content:       string(renderedContent), //nolint: gosec
 			RevNumber:     doc.Attributes.GetAsStringWithDefault("revnumber", ""),
 			LastUpdated:   ctx.Config.LastUpdated.Format(configuration.LastUpdatedFormat),
 			CSS:           ctx.Config.CSS,
@@ -223,14 +222,14 @@ func (r *sgmlRenderer) splitAndRenderForManpage(ctx *renderer.Context, doc types
 	return "", result.String(), nil
 }
 
-func (r *sgmlRenderer) renderDocumentRoles(doc types.Document) sanitized {
+func (r *sgmlRenderer) renderDocumentRoles(doc types.Document) string {
 	if header, found := doc.Header(); found {
 		return r.renderElementRoles(header.Attributes)
 	}
 	return ""
 }
 
-func (r *sgmlRenderer) renderDocumentID(doc types.Document) sanitized {
+func (r *sgmlRenderer) renderDocumentID(doc types.Document) string {
 	if header, found := doc.Header(); found {
 		if header.Attributes.Has(types.AttrCustomID) {
 			// We only want to emit a document body ID, if one was explicitly set
@@ -252,14 +251,14 @@ func (r *sgmlRenderer) renderAuthors(doc types.Document) string {
 	return strings.Join(authorStrs, "; ")
 }
 
-func (r *sgmlRenderer) renderDocumentTitle(ctx *renderer.Context, doc types.Document) (sanitized, error) {
+func (r *sgmlRenderer) renderDocumentTitle(ctx *renderer.Context, doc types.Document) (string, error) {
 	if header, found := doc.Header(); found {
 		// TODO: This feels wrong.  The title should not need markup.
 		title, err := r.renderPlainText(ctx, header.Title)
 		if err != nil {
 			return "", errors.Wrap(err, "unable to render document title")
 		}
-		return sanitized(title), nil
+		return string(title), nil
 	}
 	return "", nil
 }
@@ -277,7 +276,7 @@ func (r *sgmlRenderer) renderArticleHeader(ctx *renderer.Context, header types.S
 	output := &strings.Builder{}
 	err = r.articleHeader.Execute(output, struct {
 		Header  string
-		Details *htmltemplate.HTML // TODO: convert to sanitized (no need to be a pointer)
+		Details *string // TODO: convert to string (no need to be a pointer)
 	}{
 		Header:  renderedHeader,
 		Details: documentDetails,
@@ -310,12 +309,12 @@ func (r *sgmlRenderer) renderManpageHeader(ctx *renderer.Context, header types.S
 	err = r.manpageHeader.Execute(output, struct {
 		Header    string
 		Name      string
-		Content   sanitized
+		Content   string
 		IncludeH1 bool
 	}{
 		Header:    renderedHeader,
 		Name:      renderedName,
-		Content:   sanitized(renderedContent), //nolint: gosec
+		Content:   string(renderedContent), //nolint: gosec
 		IncludeH1: len(renderedHeader) > 0,
 	})
 	if err != nil {

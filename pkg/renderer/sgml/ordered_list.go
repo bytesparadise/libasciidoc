@@ -21,13 +21,13 @@ func (r *sgmlRenderer) renderOrderedList(ctx *renderer.Context, l types.OrderedL
 
 	err := r.orderedList.Execute(result, struct {
 		Context   *renderer.Context
-		ID        sanitized
-		Title     sanitized
-		Roles     sanitized
+		ID        string
+		Title     string
+		Roles     string
 		Style     string
-		ListStyle sanitized
+		ListStyle string
 		Start     string
-		Content   sanitized
+		Content   string
 		Reversed  bool
 		Items     []types.OrderedListItem
 	}{
@@ -37,7 +37,7 @@ func (r *sgmlRenderer) renderOrderedList(ctx *renderer.Context, l types.OrderedL
 		Style:     getNumberingStyle(l),
 		ListStyle: r.numberingType(getNumberingStyle(l)),
 		Start:     l.Attributes.GetAsStringWithDefault(types.AttrStart, ""),
-		Content:   sanitized(content.String()),
+		Content:   string(content.String()),
 		Reversed:  l.Attributes.HasOption("reversed"),
 		Items:     l.Items,
 	})
@@ -55,7 +55,7 @@ func getNumberingStyle(l types.OrderedList) string {
 }
 
 // this numbering style is only really relevant to HTML
-func (r *sgmlRenderer) numberingType(style string) sanitized {
+func (r *sgmlRenderer) numberingType(style string) string {
 	switch style {
 	case types.LowerAlpha:
 		return `a`
@@ -78,9 +78,9 @@ func (r *sgmlRenderer) renderOrderedListItem(ctx *renderer.Context, w io.Writer,
 	}
 	return r.orderedListItem.Execute(w, struct {
 		Context *renderer.Context
-		Content sanitized
+		Content string
 	}{
 		Context: ctx,
-		Content: sanitized(content),
+		Content: string(content),
 	})
 }

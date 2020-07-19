@@ -28,20 +28,20 @@ func (r *sgmlRenderer) renderUnorderedList(ctx *renderer.Context, l types.Unorde
 	// here we must preserve the HTML tags
 	err := r.unorderedList.Execute(result, struct {
 		Context   *renderer.Context
-		ID        sanitized
-		Title     sanitized
-		Roles     sanitized
-		Style     sanitized
+		ID        string
+		Title     string
+		Roles     string
+		Style     string
 		Checklist bool
 		Items     []types.UnorderedListItem
-		Content   sanitized
+		Content   string
 	}{
 		Context:   ctx,
 		ID:        r.renderElementID(l.Attributes),
 		Title:     r.renderElementTitle(l.Attributes),
 		Checklist: checkList,
 		Items:     l.Items,
-		Content:   sanitized(content.String()),
+		Content:   string(content.String()),
 		Roles:     r.renderElementRoles(l.Attributes),
 		Style:     r.renderElementStyle(l.Attributes),
 	})
@@ -58,9 +58,9 @@ func (r *sgmlRenderer) renderUnorderedListItem(ctx *renderer.Context, w io.Write
 	}
 	return r.unorderedListItem.Execute(w, struct {
 		Context *renderer.Context
-		Content sanitized
+		Content string
 	}{
 		Context: ctx,
-		Content: sanitized(content),
+		Content: string(content),
 	})
 }

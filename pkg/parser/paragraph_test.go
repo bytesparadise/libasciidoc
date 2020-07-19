@@ -156,7 +156,9 @@ foo`
 						types.Paragraph{
 							Lines: []interface{}{
 								[]interface{}{
-									types.StringElement{Content: "C++"},
+									types.StringElement{Content: "C"},
+									types.SpecialCharacter{Content: "+"},
+									types.SpecialCharacter{Content: "+"},
 								},
 								[]interface{}{
 									types.StringElement{Content: "foo"},
@@ -804,7 +806,9 @@ a paragraph`
 						types.Paragraph{
 							Lines: []interface{}{
 								[]interface{}{
-									types.StringElement{Content: "hello &#43; world"},
+									types.StringElement{Content: "hello "},
+									types.SpecialCharacter{Content: "+"},
+									types.StringElement{Content: " world"},
 								},
 							},
 						},

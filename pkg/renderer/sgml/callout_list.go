@@ -22,17 +22,17 @@ func (r *sgmlRenderer) renderCalloutList(ctx *renderer.Context, l types.CalloutL
 	}
 	err := r.calloutList.Execute(result, struct {
 		Context *renderer.Context
-		ID      sanitized
-		Title   sanitized
-		Roles   sanitized
-		Content sanitized
+		ID      string
+		Title   string
+		Roles   string
+		Content string
 		Items   []types.CalloutListItem
 	}{
 		Context: ctx,
 		ID:      r.renderElementID(l.Attributes),
 		Title:   r.renderElementTitle(l.Attributes),
 		Roles:   r.renderElementRoles(l.Attributes),
-		Content: sanitized(content.String()),
+		Content: string(content.String()),
 		Items:   l.Items,
 	})
 	if err != nil {
@@ -50,11 +50,11 @@ func (r *sgmlRenderer) renderCalloutListItem(ctx *renderer.Context, w io.Writer,
 	err = r.calloutListItem.Execute(w, struct {
 		Context *renderer.Context
 		Ref     int
-		Content sanitized
+		Content string
 	}{
 		Context: ctx,
 		Ref:     item.Ref,
-		Content: sanitized(content),
+		Content: string(content),
 	})
 	if err != nil {
 		return errors.Wrap(err, "unable to render callout list")

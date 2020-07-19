@@ -818,7 +818,18 @@ Doc Writer <thedoc@asciidoctor.org>`
 									types.StringElement{Content: "=============="},
 								},
 								[]interface{}{
-									types.StringElement{Content: "Doc Writer <thedoc@asciidoctor.org>"},
+									types.StringElement{
+										Content: "Doc Writer ",
+									},
+									types.SpecialCharacter{
+										Content: "<",
+									},
+									types.StringElement{
+										Content: "thedoc@asciidoctor.org",
+									},
+									types.SpecialCharacter{
+										Content: ">",
+									},
 								},
 							},
 						},
@@ -1962,7 +1973,16 @@ Doc Writer <thedoc@asciidoctor.org>`
 								},
 								[]interface{}{
 									types.StringElement{
-										Content: "Doc Writer <thedoc@asciidoctor.org>",
+										Content: "Doc Writer ",
+									},
+									types.SpecialCharacter{
+										Content: "<",
+									},
+									types.StringElement{
+										Content: "thedoc@asciidoctor.org",
+									},
+									types.SpecialCharacter{
+										Content: ">",
 									},
 								},
 							},

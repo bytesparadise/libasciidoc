@@ -72,14 +72,14 @@ func (r *sgmlRenderer) renderTableOfContentsEntry(ctx *renderer.Context, entry t
 	err = r.tocEntry.Execute(resultBuf, struct {
 		Context  *renderer.Context
 		Level    int
-		ID       sanitized
+		ID       string
 		Title    string
 		Content  string
 		Children []types.ToCSection
 	}{
 		Context:  ctx,
 		Level:    entry.Level,
-		ID:       sanitized(entry.ID),
+		ID:       string(entry.ID),
 		Title:    entry.Title,
 		Content:  content,
 		Children: entry.Children,

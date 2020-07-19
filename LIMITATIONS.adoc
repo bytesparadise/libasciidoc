@@ -28,7 +28,7 @@ Libasciidoc does not emit one.
 
 == Passthroughs
 
-The Inline pass macro will not render nothing at all instead of an empty paragraph
+The inline passthrough macro will not render nothing at all instead of an empty paragraph
 when the macro is empty. I.e.:
 
 ....
@@ -40,6 +40,31 @@ will produce no HTML element at all, whereas Asciidoc/Asciidoctor will produce :
 ....
 <div class="paragraph">
 <p></p>
+</div>
+....
+
+Also, the inline passthrough macro does not support line breaks within its content. I.e:
+
+....
++hello,
+world+
+....
+
+will produce:
+
+....
+<div class="paragraph">
+<p>&#43;hello,
+world&#43;</p>
+</div>
+....
+
+whereas Asciidoctor will produce :
+
+....
+<div class="paragraph">
+<p>hello,
+world</p>
 </div>
 ....
 

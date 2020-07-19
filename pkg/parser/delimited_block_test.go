@@ -644,8 +644,17 @@ import <a>
 						types.Paragraph{
 							Lines: []interface{}{
 								[]interface{}{
+									types.SpecialCharacter{
+										Content: "<",
+									},
 									types.StringElement{
-										Content: "<a> an import",
+										Content: "a",
+									},
+									types.SpecialCharacter{
+										Content: ">",
+									},
+									types.StringElement{
+										Content: " an import",
 									},
 								},
 							},
@@ -2544,8 +2553,17 @@ import <a>
 						types.Paragraph{
 							Lines: []interface{}{
 								[]interface{}{
+									types.SpecialCharacter{
+										Content: "<",
+									},
 									types.StringElement{
-										Content: "<a> an import",
+										Content: "a",
+									},
+									types.SpecialCharacter{
+										Content: ">",
+									},
+									types.StringElement{
+										Content: " an import",
 									},
 								},
 							},

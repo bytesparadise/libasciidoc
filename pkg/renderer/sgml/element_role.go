@@ -7,19 +7,19 @@ import (
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 )
 
-func (r *sgmlRenderer) renderElementRoles(attrs types.Attributes) sanitized {
+func (r *sgmlRenderer) renderElementRoles(attrs types.Attributes) string {
 	switch r := attrs[types.AttrRole].(type) {
 	case []string:
-		return sanitized(template.HTMLEscapeString(strings.Join(r, " ")))
+		return string(template.HTMLEscapeString(strings.Join(r, " ")))
 	case string:
-		return sanitized(template.HTMLEscapeString(r))
+		return string(template.HTMLEscapeString(r))
 	default:
 		return ""
 	}
 }
 
 // Image roles add float and alignment attributes -- we turn these into roles.
-func (r *sgmlRenderer) renderImageRoles(attrs types.Attributes) sanitized {
+func (r *sgmlRenderer) renderImageRoles(attrs types.Attributes) string {
 	var roles []string
 
 	if val, ok := attrs.GetAsString(types.AttrFloat); ok {
@@ -34,5 +34,5 @@ func (r *sgmlRenderer) renderImageRoles(attrs types.Attributes) sanitized {
 	case string:
 		roles = append(roles, r)
 	}
-	return sanitized(template.HTMLEscapeString(strings.Join(roles, " ")))
+	return string(template.HTMLEscapeString(strings.Join(roles, " ")))
 }

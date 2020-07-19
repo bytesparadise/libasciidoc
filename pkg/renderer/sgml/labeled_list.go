@@ -27,17 +27,17 @@ func (r *sgmlRenderer) renderLabeledList(ctx *renderer.Context, l types.LabeledL
 	// here we must preserve the HTML tags
 	err = tmpl.Execute(result, struct {
 		Context *renderer.Context
-		ID      sanitized
-		Title   sanitized
-		Roles   sanitized
-		Content sanitized
+		ID      string
+		Title   string
+		Roles   string
+		Content string
 		Items   []types.LabeledListItem
 	}{
 		Context: ctx,
 		ID:      r.renderElementID(l.Attributes),
 		Title:   r.renderElementTitle(l.Attributes),
 		Roles:   r.renderElementRoles(l.Attributes),
-		Content: sanitized(content.String()),
+		Content: string(content.String()),
 		Items:   l.Items,
 	})
 	if err != nil {
@@ -73,14 +73,14 @@ func (r *sgmlRenderer) renderLabeledListItem(ctx *renderer.Context, tmpl *textTe
 	}
 	err = tmpl.Execute(w, struct {
 		Context      *renderer.Context
-		Term         sanitized
-		Content      sanitized
+		Term         string
+		Content      string
 		Continuation bool
 	}{
 		Context:      ctx,
-		Term:         sanitized(term),
+		Term:         string(term),
 		Continuation: continuation,
-		Content:      sanitized(content),
+		Content:      string(content),
 	})
 	return content == "", err
 }
