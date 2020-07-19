@@ -22,11 +22,11 @@ func (r *sgmlRenderer) renderPreamble(ctx *renderer.Context, p types.Preamble) (
 	err = r.preamble.Execute(result, struct {
 		Context *renderer.Context
 		Wrapper bool
-		Content sanitized
+		Content string
 	}{
 		Context: ctx,
 		Wrapper: ctx.HasHeader,
-		Content: sanitized(content),
+		Content: string(content),
 	})
 	if err != nil {
 		return "", errors.Wrap(err, "error while rendering preamble")
@@ -50,11 +50,11 @@ func (r *sgmlRenderer) renderSection(ctx *renderer.Context, s types.Section) (st
 	result := &strings.Builder{}
 	err = r.sectionContent.Execute(result, struct {
 		Context  *renderer.Context
-		Header   sanitized
-		Content  sanitized
+		Header   string
+		Content  string
 		Elements []interface{}
-		ID       sanitized
-		Roles    sanitized
+		ID       string
+		Roles    string
 		Level    int
 	}{
 		Context:  ctx,
@@ -63,7 +63,7 @@ func (r *sgmlRenderer) renderSection(ctx *renderer.Context, s types.Section) (st
 		Elements: s.Elements,
 		ID:       r.renderElementID(s.Attributes),
 		Roles:    r.renderElementRoles(s.Attributes),
-		Content:  sanitized(content),
+		Content:  string(content),
 	})
 	if err != nil {
 		return "", errors.Wrap(err, "error while rendering section")
@@ -72,7 +72,7 @@ func (r *sgmlRenderer) renderSection(ctx *renderer.Context, s types.Section) (st
 	return result.String(), nil
 }
 
-func (r *sgmlRenderer) renderSectionTitle(ctx *renderer.Context, s types.Section) (sanitized, error) {
+func (r *sgmlRenderer) renderSectionTitle(ctx *renderer.Context, s types.Section) (string, error) {
 	result := &strings.Builder{}
 	renderedContent, err := r.renderInlineElements(ctx, s.Title)
 	if err != nil {
@@ -82,8 +82,8 @@ func (r *sgmlRenderer) renderSectionTitle(ctx *renderer.Context, s types.Section
 	err = r.sectionHeader.Execute(result, struct {
 		Level        int
 		LevelPlusOne int
-		ID           sanitized
-		Roles        sanitized
+		ID           string
+		Roles        string
 		Content      string
 	}{
 		Level:        s.Level,
@@ -96,5 +96,5 @@ func (r *sgmlRenderer) renderSectionTitle(ctx *renderer.Context, s types.Section
 		return "", errors.Wrapf(err, "error while rendering sectionTitle")
 	}
 	// log.Debugf("rendered sectionTitle: %s", result.Bytes())
-	return sanitized(result.String()), nil
+	return string(result.String()), nil
 }

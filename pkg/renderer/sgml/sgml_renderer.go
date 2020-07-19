@@ -63,6 +63,7 @@ type sgmlRenderer struct {
 	sectionHeader             *textTemplate
 	sidebarBlock              *textTemplate
 	sourceBlock               *textTemplate
+	specialCharacter          *textTemplate
 	stringElement             *textTemplate
 	subscriptText             *textTemplate
 	superscriptText           *textTemplate
@@ -142,6 +143,7 @@ func (r *sgmlRenderer) prepareTemplates() error {
 		r.stringElement, err = r.newTemplate("string-element", tmpls.StringElement, err)
 		r.sidebarBlock, err = r.newTemplate("sidebar-block", tmpls.SidebarBlock, err)
 		r.sourceBlock, err = r.newTemplate("source-block", tmpls.SourceBlock, err)
+		r.specialCharacter, err = r.newTemplate("special-character", tmpls.SpecialCharacter, err)
 		r.subscriptText, err = r.newTemplate("subscript", tmpls.SubscriptText, err)
 		r.superscriptText, err = r.newTemplate("superscript", tmpls.SuperscriptText, err)
 		r.table, err = r.newTemplate("table", tmpls.Table, err)

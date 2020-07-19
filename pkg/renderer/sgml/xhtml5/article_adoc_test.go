@@ -3,8 +3,9 @@ package xhtml5_test
 import (
 	"bufio"
 	"bytes"
-	"github.com/bytesparadise/libasciidoc/pkg/renderer/sgml/xhtml5"
 	"os"
+
+	"github.com/bytesparadise/libasciidoc/pkg/renderer/sgml/xhtml5"
 
 	"github.com/bytesparadise/libasciidoc/pkg/configuration"
 	"github.com/bytesparadise/libasciidoc/pkg/parser"

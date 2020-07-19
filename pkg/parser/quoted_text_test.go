@@ -813,7 +813,19 @@ var _ = Describe("quoted texts", func() {
 				source := "[.<something \"wicked>]**bold**"
 				expected := []interface{}{
 					types.StringElement{
-						Content: "[.<something \"wicked>]",
+						Content: "[.",
+					},
+					types.SpecialCharacter{
+						Content: "<",
+					},
+					types.StringElement{
+						Content: "something \"wicked",
+					},
+					types.SpecialCharacter{
+						Content: ">",
+					},
+					types.StringElement{
+						Content: "]",
 					},
 					types.QuotedText{
 						Kind: types.Bold,

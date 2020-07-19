@@ -86,11 +86,11 @@ func (r *sgmlRenderer) renderFootnotes(ctx *renderer.Context, notes []types.Foot
 
 	err := r.footnotes.Execute(result, struct {
 		Context   *renderer.Context
-		Content   sanitized
+		Content   string
 		Footnotes []types.Footnote
 	}{
 		Context:   ctx,
-		Content:   sanitized(content.String()),
+		Content:   string(content.String()),
 		Footnotes: notes,
 	})
 	if err != nil {
@@ -111,12 +111,12 @@ func (r *sgmlRenderer) renderFootnoteItem(ctx *renderer.Context, w io.Writer, it
 		Context *renderer.Context
 		ID      int
 		Ref     string
-		Content sanitized
+		Content string
 	}{
 		Context: ctx,
 		ID:      item.ID,
 		Ref:     item.Ref,
-		Content: sanitized(content),
+		Content: string(content),
 	})
 	return err
 }

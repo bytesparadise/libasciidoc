@@ -42,9 +42,9 @@ func (r *sgmlRenderer) renderLiteralBlock(ctx *renderer.Context, b types.Literal
 	result := &strings.Builder{}
 	err := r.literalBlock.Execute(result, struct {
 		Context *renderer.Context
-		ID      sanitized
-		Title   sanitized
-		Roles   sanitized
+		ID      string
+		Title   string
+		Roles   string
 		Content string
 		Lines   []string
 	}{

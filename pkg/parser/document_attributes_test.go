@@ -431,7 +431,7 @@ John  Foo Doe  <johndoe@example.com>; Jane the_Doe <jane@example.com>`
 									Email:    "johndoe@example.com",
 								},
 								{
-									FullName: "Jane the Doe", // fill name was sanitized
+									FullName: "Jane the Doe",
 									Email:    "jane@example.com",
 								},
 							},

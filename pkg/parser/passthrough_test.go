@@ -207,9 +207,8 @@ var _ = Describe("passthroughs", func() {
 						types.Paragraph{
 							Lines: []interface{}{
 								[]interface{}{
-									types.StringElement{
-										Content: "++",
-									},
+									types.SpecialCharacter{Content: "+"},
+									types.SpecialCharacter{Content: "+"},
 								},
 							},
 						},
@@ -248,7 +247,7 @@ var _ = Describe("passthroughs", func() {
 						types.Paragraph{
 							Lines: []interface{}{
 								[]interface{}{
-									types.StringElement{
+									types.SpecialCharacter{
 										Content: "+",
 									},
 									types.QuotedText{
@@ -278,8 +277,11 @@ var _ = Describe("passthroughs", func() {
 						types.Paragraph{
 							Lines: []interface{}{
 								[]interface{}{
+									types.SpecialCharacter{
+										Content: "+",
+									},
 									types.StringElement{
-										Content: "+ ",
+										Content: " ",
 									},
 									types.QuotedText{
 										Kind: types.Bold,
@@ -290,7 +292,10 @@ var _ = Describe("passthroughs", func() {
 										},
 									},
 									types.StringElement{
-										Content: ", world+",
+										Content: ", world",
+									},
+									types.SpecialCharacter{
+										Content: "+",
 									},
 								},
 							},
@@ -307,8 +312,11 @@ var _ = Describe("passthroughs", func() {
 						types.Paragraph{
 							Lines: []interface{}{
 								[]interface{}{
+									types.SpecialCharacter{
+										Content: "+",
+									},
 									types.StringElement{
-										Content: "+ ",
+										Content: " ",
 									},
 									types.QuotedText{
 										Kind: types.Bold,
@@ -337,13 +345,19 @@ var _ = Describe("passthroughs", func() {
 						types.Paragraph{
 							Lines: []interface{}{
 								[]interface{}{
+									types.SpecialCharacter{
+										Content: "+",
+									},
 									types.StringElement{
-										Content: "+hello,",
+										Content: "hello,",
 									},
 								},
 								[]interface{}{
 									types.StringElement{
-										Content: "world+",
+										Content: "world",
+									},
+									types.SpecialCharacter{
+										Content: "+",
 									},
 								},
 							},

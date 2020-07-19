@@ -2,11 +2,12 @@ package sgml
 
 import (
 	fmt "fmt"
+	"path"
+	"strings"
+
 	"github.com/bytesparadise/libasciidoc/pkg/renderer"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 	"github.com/pkg/errors"
-	"path"
-	"strings"
 )
 
 func (r *sgmlRenderer) renderInlineIcon(ctx *renderer.Context, icon types.Icon) (string, error) {
@@ -24,8 +25,8 @@ func (r *sgmlRenderer) renderInlineIcon(ctx *renderer.Context, icon types.Icon) 
 		Role   string
 		Link   string
 		Window string
-		ID     sanitized
-		Icon   sanitized
+		ID     string
+		Icon   string
 	}{
 		Class:  icon.Class,
 		Icon:   iconStr,
@@ -41,7 +42,7 @@ func (r *sgmlRenderer) renderInlineIcon(ctx *renderer.Context, icon types.Icon) 
 	return result.String(), nil
 }
 
-func (r *sgmlRenderer) renderIcon(ctx *renderer.Context, icon types.Icon, admonition bool) (sanitized, error) {
+func (r *sgmlRenderer) renderIcon(ctx *renderer.Context, icon types.Icon, admonition bool) (string, error) {
 	icons := ctx.Attributes.GetAsStringWithDefault("icons", "text")
 	var template *textTemplate
 	font := false
@@ -105,7 +106,7 @@ func (r *sgmlRenderer) renderIcon(ctx *renderer.Context, icon types.Icon, admoni
 		Path:       renderIconPath(ctx, icon.Class),
 		Admonition: admonition,
 	})
-	return sanitized(s.String()), err
+	return string(s.String()), err
 }
 
 func renderIconPath(ctx *renderer.Context, name string) string {

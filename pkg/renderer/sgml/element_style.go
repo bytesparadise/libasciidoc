@@ -6,9 +6,9 @@ import (
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 )
 
-func (r *sgmlRenderer) renderElementStyle(attrs types.Attributes) sanitized {
+func (r *sgmlRenderer) renderElementStyle(attrs types.Attributes) string {
 	if id, ok := attrs[types.AttrStyle].(string); ok {
-		return sanitized(template.HTMLEscapeString(id))
+		return string(template.HTMLEscapeString(id))
 	}
 	return ""
 }

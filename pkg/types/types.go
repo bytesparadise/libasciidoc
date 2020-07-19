@@ -551,7 +551,7 @@ func NewDocumentHeader(title []interface{}, authors interface{}, revision interf
 // those attributes can be used in attribute substitutions in the document
 func expandAuthors(authors []DocumentAuthor) Attributes {
 	result := make(map[string]interface{}, 1+6*len(authors)) // each author may add up to 6 fields in the result map
-	sanitized := make([]DocumentAuthor, 0, len(authors))
+	s := make([]DocumentAuthor, 0, len(authors))
 	for i, author := range authors {
 		var part1, part2, part3, email string
 		author.FullName = strings.ReplaceAll(author.FullName, "  ", " ")
@@ -608,13 +608,13 @@ func expandAuthors(authors []DocumentAuthor) Attributes {
 		if email != "" {
 			result[key("email", i)] = email
 		}
-		// also include a "sanitized" version of the given author
-		sanitized = append(sanitized, DocumentAuthor{
+		// also include a "string" version of the given author
+		s = append(s, DocumentAuthor{
 			FullName: result[key("author", i)].(string),
 			Email:    email,
 		})
 	}
-	result[AttrAuthors] = sanitized
+	result[AttrAuthors] = s
 	log.Debugf("authors: %v", result)
 	return result
 }
@@ -2324,4 +2324,19 @@ func NewInlineAttribute(name string, value interface{}) (interface{}, error) {
 	default:
 		return nil, fmt.Errorf("invalid type for attribute %q: %T", name, value)
 	}
+}
+
+// ------------------------------------------------------------------------------------
+// Special Characters
+// They need to be identified as they may have a special treatment during the rendering
+// ------------------------------------------------------------------------------------
+
+// SpecialCharacter a special character, which may get a special treatment later during rendering
+type SpecialCharacter StringElement
+
+// NewSpecialCharacter return a new SpecialCharacter
+func NewSpecialCharacter(content string) (SpecialCharacter, error) {
+	return SpecialCharacter{
+		Content: content,
+	}, nil
 }

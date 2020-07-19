@@ -1158,7 +1158,13 @@ The {plus} symbol is on a new line.
 										},
 										[]interface{}{
 											types.StringElement{
-												Content: "This is a new line inside an unordered list using &#43; symbol.",
+												Content: "This is a new line inside an unordered list using ",
+											},
+											types.SpecialCharacter{
+												Content: "+",
+											},
+											types.StringElement{
+												Content: " symbol.",
 											},
 										},
 										[]interface{}{
@@ -1199,7 +1205,13 @@ The {plus} symbol is on a new line.
 								Lines: []interface{}{
 									[]interface{}{
 										types.StringElement{
-											Content: "The &#43; symbol is on a new line.", // attributes are subsituted
+											Content: "The ",
+										},
+										types.SpecialCharacter{
+											Content: "+",
+										},
+										types.StringElement{
+											Content: " symbol is on a new line.",
 										},
 									},
 								},
@@ -2437,7 +2449,7 @@ on 2 lines, too.`
 										types.Paragraph{
 											Lines: []interface{}{
 												[]interface{}{
-													types.StringElement{Content: "&amp;"},
+													types.SpecialCharacter{Content: "&"},
 												},
 											},
 										},
@@ -2698,7 +2710,13 @@ The {plus} symbol is on a new line.
 																				},
 																				[]interface{}{
 																					types.StringElement{
-																						Content: "This is a new line inside an unordered list using &#43; symbol.",
+																						Content: "This is a new line inside an unordered list using ",
+																					},
+																					types.SpecialCharacter{
+																						Content: "+",
+																					},
+																					types.StringElement{
+																						Content: " symbol.",
 																					},
 																				},
 																				[]interface{}{
@@ -2735,7 +2753,13 @@ The {plus} symbol is on a new line.
 																							Lines: []interface{}{
 																								[]interface{}{
 																									types.StringElement{
-																										Content: "The &#43; symbol is on a new line.",
+																										Content: "The ",
+																									},
+																									types.SpecialCharacter{
+																										Content: "+",
+																									},
+																									types.StringElement{
+																										Content: " symbol is on a new line.",
 																									},
 																								},
 																							},

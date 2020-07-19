@@ -58,17 +58,17 @@ func (r *sgmlRenderer) renderFencedBlock(ctx *renderer.Context, b types.Delimite
 	}
 	err = r.fencedBlock.Execute(result, struct {
 		Context  *renderer.Context
-		ID       sanitized
-		Title    sanitized
-		Roles    sanitized
-		Content  sanitized
+		ID       string
+		Title    string
+		Roles    string
+		Content  string
 		Elements []interface{}
 	}{
 		Context:  ctx,
 		ID:       r.renderElementID(b.Attributes),
 		Title:    r.renderElementTitle(b.Attributes),
 		Roles:    r.renderElementRoles(b.Attributes),
-		Content:  sanitized(content),
+		Content:  string(content),
 		Elements: elements,
 	})
 	return result.String(), err
@@ -92,17 +92,17 @@ func (r *sgmlRenderer) renderListingBlock(ctx *renderer.Context, b types.Delimit
 
 	err = r.listingBlock.Execute(result, struct {
 		Context  *renderer.Context
-		ID       sanitized
-		Title    sanitized
-		Roles    sanitized
-		Content  sanitized
+		ID       string
+		Title    string
+		Roles    string
+		Content  string
 		Elements []interface{}
 	}{
 		Context:  ctx,
 		ID:       r.renderElementID(b.Attributes),
 		Title:    r.renderElementTitle(b.Attributes),
 		Roles:    r.renderElementRoles(b.Attributes),
-		Content:  sanitized(content),
+		Content:  string(content),
 		Elements: discardTrailingBlankLines(b.Elements),
 	})
 	return result.String(), err
@@ -249,9 +249,9 @@ func (r *sgmlRenderer) renderSourceBlock(ctx *renderer.Context, b types.Delimite
 
 	result := &bytes.Buffer{}
 	err := r.sourceBlock.Execute(result, struct {
-		ID                sanitized
-		Title             sanitized
-		Roles             sanitized
+		ID                string
+		Title             string
+		Roles             string
 		Language          string
 		SyntaxHighlighter string
 		Content           string
@@ -281,12 +281,12 @@ func (r *sgmlRenderer) renderAdmonitionBlock(ctx *renderer.Context, b types.Deli
 	}
 	err = r.admonitionBlock.Execute(result, struct {
 		Context  *renderer.Context
-		ID       sanitized
-		Title    sanitized
+		ID       string
+		Title    string
 		Kind     types.AdmonitionKind
-		Roles    sanitized
-		Icon     sanitized
-		Content  sanitized
+		Roles    string
+		Icon     string
+		Content  string
 		Elements []interface{}
 	}{
 		Context:  ctx,
@@ -295,7 +295,7 @@ func (r *sgmlRenderer) renderAdmonitionBlock(ctx *renderer.Context, b types.Deli
 		Roles:    r.renderElementRoles(b.Attributes),
 		Title:    r.renderElementTitle(b.Attributes),
 		Icon:     icon,
-		Content:  sanitized(content),
+		Content:  string(content),
 		Elements: elements,
 	})
 	return result.String(), err
@@ -331,12 +331,12 @@ func (r *sgmlRenderer) renderExampleBlock(ctx *renderer.Context, b types.Delimit
 	caption.WriteString(c)
 	err = r.exampleBlock.Execute(result, struct {
 		Context       *renderer.Context
-		ID            sanitized
-		Title         sanitized
+		ID            string
+		Title         string
 		Caption       string
-		Roles         sanitized
+		Roles         string
 		ExampleNumber int
-		Content       sanitized
+		Content       string
 		Elements      []interface{}
 	}{
 		Context:       ctx,
@@ -345,7 +345,7 @@ func (r *sgmlRenderer) renderExampleBlock(ctx *renderer.Context, b types.Delimit
 		Caption:       caption.String(),
 		Roles:         r.renderElementRoles(b.Attributes),
 		ExampleNumber: number,
-		Content:       sanitized(content),
+		Content:       string(content),
 		Elements:      elements,
 	})
 	return result.String(), err
@@ -361,11 +361,11 @@ func (r *sgmlRenderer) renderQuoteBlock(ctx *renderer.Context, b types.Delimited
 
 	err = r.quoteBlock.Execute(result, struct {
 		Context     *renderer.Context
-		ID          sanitized
-		Title       sanitized
-		Roles       sanitized
+		ID          string
+		Title       string
+		Roles       string
 		Attribution Attribution
-		Content     sanitized
+		Content     string
 		Elements    []interface{}
 	}{
 		Context:     ctx,
@@ -373,7 +373,7 @@ func (r *sgmlRenderer) renderQuoteBlock(ctx *renderer.Context, b types.Delimited
 		Title:       r.renderElementTitle(b.Attributes),
 		Roles:       r.renderElementRoles(b.Attributes),
 		Attribution: newDelimitedBlockAttribution(b),
-		Content:     sanitized(content),
+		Content:     string(content),
 		Elements:    b.Elements,
 	})
 	return result.String(), err
@@ -393,11 +393,11 @@ func (r *sgmlRenderer) renderVerseBlock(ctx *renderer.Context, b types.Delimited
 	}
 	err := r.verseBlock.Execute(result, struct {
 		Context     *renderer.Context
-		ID          sanitized
-		Title       sanitized
-		Roles       sanitized
+		ID          string
+		Title       string
+		Roles       string
 		Attribution Attribution
-		Content     sanitized
+		Content     string
 		Elements    []interface{}
 	}{
 		Context:     ctx,
@@ -405,7 +405,7 @@ func (r *sgmlRenderer) renderVerseBlock(ctx *renderer.Context, b types.Delimited
 		Title:       r.renderElementTitle(b.Attributes),
 		Roles:       r.renderElementRoles(b.Attributes),
 		Attribution: newDelimitedBlockAttribution(b),
-		Content:     sanitized(content.String()),
+		Content:     string(content.String()),
 		Elements:    elements,
 	})
 	return result.String(), err
@@ -438,17 +438,17 @@ func (r *sgmlRenderer) renderSidebarBlock(ctx *renderer.Context, b types.Delimit
 
 	err = r.sidebarBlock.Execute(result, struct {
 		Context  *renderer.Context
-		ID       sanitized
-		Title    sanitized
-		Roles    sanitized
-		Content  sanitized
+		ID       string
+		Title    string
+		Roles    string
+		Content  string
 		Elements []interface{}
 	}{
 		Context:  ctx,
 		ID:       r.renderElementID(b.Attributes),
 		Title:    r.renderElementTitle(b.Attributes),
 		Roles:    r.renderElementRoles(b.Attributes),
-		Content:  sanitized(content),
+		Content:  string(content),
 		Elements: discardTrailingBlankLines(b.Elements),
 	})
 	return result.String(), err
@@ -463,8 +463,8 @@ func (r *sgmlRenderer) renderPassthrough(ctx *renderer.Context, b types.Delimite
 	}
 	err = r.passthroughBlock.Execute(result, struct {
 		Context  *renderer.Context
-		ID       sanitized
-		Roles    sanitized
+		ID       string
+		Roles    string
 		Content  string
 		Elements []interface{}
 	}{

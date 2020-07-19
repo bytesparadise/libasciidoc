@@ -74,7 +74,7 @@ func (r *sgmlRenderer) renderTable(ctx *renderer.Context, t types.Table) (string
 
 	err = r.table.Execute(result, struct {
 		Context     *renderer.Context
-		Title       sanitized
+		Title       string
 		Columns     []types.TableColumn
 		TableNumber int
 		Caption     string
@@ -84,7 +84,7 @@ func (r *sgmlRenderer) renderTable(ctx *renderer.Context, t types.Table) (string
 		Float       string
 		Stripes     string
 		Width       int
-		Roles       sanitized
+		Roles       string
 		Header      string
 		Body        string
 	}{

@@ -54,7 +54,7 @@ var _ = Describe("passthroughs", func() {
 		It("an empty standalone singleplus passthrough", func() {
 			source := `++`
 			expected := `<div class="paragraph">
-<p>++</p>
+<p>&#43;&#43;</p>
 </div>
 `
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
@@ -63,7 +63,7 @@ var _ = Describe("passthroughs", func() {
 		It("an empty singleplus passthrough in a paragraph", func() {
 			source := `++ with more content afterwards...`
 			expected := `<div class="paragraph">
-<p>++ with more content afterwards&#8230;&#8203;</p>
+<p>&#43;&#43; with more content afterwards&#8230;&#8203;</p>
 </div>
 `
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
@@ -90,7 +90,7 @@ var _ = Describe("passthroughs", func() {
 		It("invalid singleplus passthrough in paragraph", func() {
 			source := `The text + *hello*, world + is not passed through.`
 			expected := `<div class="paragraph">
-<p>The text + <strong>hello</strong>, world + is not passed through.</p>
+<p>The text &#43; <strong>hello</strong>, world &#43; is not passed through.</p>
 </div>
 `
 			Expect(RenderHTML(source)).To(MatchHTML(expected))

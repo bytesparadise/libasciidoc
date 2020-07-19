@@ -1048,7 +1048,7 @@ print("one")
 										types.Paragraph{
 											Lines: []interface{}{
 												[]interface{}{
-													types.StringElement{Content: "&amp;"},
+													types.SpecialCharacter{Content: "&"},
 												},
 											},
 										},

@@ -33,16 +33,16 @@ func (r *sgmlRenderer) renderParagraph(ctx *renderer.Context, p types.Paragraph)
 		log.Debug("rendering a standalone paragraph")
 		err = r.paragraph.Execute(result, struct {
 			Context *renderer.Context
-			ID      sanitized
-			Roles   sanitized
-			Title   sanitized
+			ID      string
+			Roles   string
+			Title   string
 			Lines   []interface{}
-			Content sanitized
+			Content string
 		}{
 			Context: ctx,
 			ID:      r.renderElementID(p.Attributes),
 			Title:   r.renderElementTitle(p.Attributes),
-			Content: sanitized(content),
+			Content: string(content),
 			Roles:   r.renderElementRoles(p.Attributes),
 			Lines:   p.Lines,
 		})
@@ -71,21 +71,21 @@ func (r *sgmlRenderer) renderAdmonitionParagraph(ctx *renderer.Context, p types.
 	}
 	err = r.admonitionParagraph.Execute(result, struct {
 		Context *renderer.Context
-		ID      sanitized
-		Title   sanitized
-		Roles   sanitized
-		Icon    sanitized
-		Kind    sanitized
-		Content sanitized
+		ID      string
+		Title   string
+		Roles   string
+		Icon    string
+		Kind    string
+		Content string
 		Lines   []interface{}
 	}{
 		Context: ctx,
 		ID:      r.renderElementID(p.Attributes),
 		Title:   r.renderElementTitle(p.Attributes),
-		Kind:    sanitized(k),
+		Kind:    string(k),
 		Roles:   r.renderElementRoles(p.Attributes),
 		Icon:    icon,
-		Content: sanitized(content),
+		Content: string(content),
 		Lines:   p.Lines,
 	})
 
@@ -110,17 +110,17 @@ func (r *sgmlRenderer) renderVerseParagraph(ctx *renderer.Context, p types.Parag
 	}
 	err = r.verseParagraph.Execute(result, struct {
 		Context     *renderer.Context
-		ID          sanitized
-		Title       sanitized
+		ID          string
+		Title       string
 		Attribution Attribution
-		Content     sanitized
+		Content     string
 		Lines       []interface{}
 	}{
 		Context:     ctx,
 		ID:          r.renderElementID(p.Attributes),
 		Title:       r.renderElementTitle(p.Attributes),
 		Attribution: newParagraphAttribution(p),
-		Content:     sanitized(content),
+		Content:     string(content),
 		Lines:       p.Lines,
 	})
 
@@ -137,17 +137,17 @@ func (r *sgmlRenderer) renderQuoteParagraph(ctx *renderer.Context, p types.Parag
 	}
 	err = r.quoteParagraph.Execute(result, struct {
 		Context     *renderer.Context
-		ID          sanitized
-		Title       sanitized
+		ID          string
+		Title       string
 		Attribution Attribution
-		Content     sanitized
+		Content     string
 		Lines       []interface{}
 	}{
 		Context:     ctx,
 		ID:          r.renderElementID(p.Attributes),
 		Title:       r.renderElementTitle(p.Attributes),
 		Attribution: newParagraphAttribution(p),
-		Content:     sanitized(content),
+		Content:     string(content),
 		Lines:       p.Lines,
 	})
 
@@ -165,11 +165,11 @@ func (r *sgmlRenderer) renderManpageNameParagraph(ctx *renderer.Context, p types
 
 	err = r.manpageNameParagraph.Execute(result, struct {
 		Context *renderer.Context
-		Content sanitized
+		Content string
 		Lines   []interface{}
 	}{
 		Context: ctx,
-		Content: sanitized(content),
+		Content: string(content),
 		Lines:   p.Lines,
 	})
 	return result.String(), err
@@ -185,17 +185,17 @@ func (r *sgmlRenderer) renderDelimitedBlockParagraph(ctx *renderer.Context, p ty
 	}
 	err = r.delimitedBlockParagraph.Execute(result, struct {
 		Context    *renderer.Context
-		ID         sanitized
-		Title      sanitized
+		ID         string
+		Title      string
 		CheckStyle string
-		Content    sanitized
+		Content    string
 		Lines      []interface{}
 	}{
 		Context:    ctx,
 		ID:         r.renderElementID(p.Attributes),
 		Title:      r.renderElementTitle(p.Attributes),
 		CheckStyle: renderCheckStyle(p.Attributes[types.AttrCheckStyle]),
-		Content:    sanitized(content),
+		Content:    string(content),
 		Lines:      p.Lines,
 	})
 	return result.String(), err
@@ -212,9 +212,9 @@ func renderCheckStyle(style interface{}) string {
 	}
 }
 
-func (r *sgmlRenderer) renderElementTitle(attrs types.Attributes) sanitized {
+func (r *sgmlRenderer) renderElementTitle(attrs types.Attributes) string {
 	if title, found := attrs.GetAsString(types.AttrTitle); found {
-		return sanitized(EscapeString(strings.TrimSpace(title)))
+		return string(EscapeString(strings.TrimSpace(title)))
 	}
 	return ""
 }

@@ -18,12 +18,12 @@ func init() {
 		"ldquo":              "\u201c",
 		"rdquo":              "\u201d",
 		"deg":                "\u00b0",
-		"plus":               "&#43;", // leave this to prevent passthrough decode?
+		"plus":               "+", // leave this to prevent passthrough decode?
 		"brvbar":             "\u00a6",
 		"vbar":               "|", // TODO: maybe convert this because of tables?
-		"amp":                "&amp;",
-		"lt":                 "&lt;",
-		"gt":                 "&gt;",
+		"amp":                "&",
+		"lt":                 "<",
+		"gt":                 ">",
 		"startsb":            "[",
 		"endsb":              "]",
 		"caret":              "^",
