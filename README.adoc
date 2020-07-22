@@ -8,7 +8,6 @@ image:https://codecov.io/gh/bytesparadise/libasciidoc/branch/master/graph/badge.
 image:https://img.shields.io/badge/License-Apache%202.0-blue.svg["License", link="https://opensource.org/licenses/Apache-2.0"]
 
 Libasciidoc is an open source Go library to convert from Asciidoc to HTML.
-It is is available under the terms of the https://raw.githubusercontent.com/bytesparadise/libasciidoc/LICENSE[Apache License 2.0].
 
 == Supported syntax
 
@@ -108,3 +107,11 @@ libasciidoc.ConvertToHTML(context.Background(), content, output, renderer.WithMa
 == How to contribute
 
 Please refer to the link:CONTRIBUTE.adoc[Contribute] page.
+
+== License
+
+Libasciidoc is available under the terms of the https://raw.githubusercontent.com/bytesparadise/libasciidoc/LICENSE[Apache License 2.0].
+
+== Trademark
+
+AsciiDoc is a trademark of the Eclipse Foundation
