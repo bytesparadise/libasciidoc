@@ -53,8 +53,11 @@ Using `-b` (or `--backend`) the following formats are supported:
 
 == Installation
 
+This is a standard Go package, and it installs like you might expect.
+
+To install it in your `$GOPATH` (assuming `$GOPATH/bin` is on your path), just use `go install`:
+
     $ go get -u github.com/bytesparadise/libasciidoc
-    $ make install
 
 == Usage
 
