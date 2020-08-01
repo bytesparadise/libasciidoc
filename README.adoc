@@ -77,11 +77,11 @@ Libasciidoc provides 2 functions to convert an Asciidoc content into HTML:
 
 1. Converting an `io.Reader` into an HTML document:
 
-    ConvertToHTML(r io.Reader, output io.Writer, config configuration.Configuration) (types.Metadata, error) 
+    Convert(r io.Reader, output io.Writer, config configuration.Configuration) (types.Metadata, error) 
 
 2. Converting a file (given its name) into an HTML document:
 
-   ConvertFileToHTML(output io.Writer, config configuration.Configuration) (types.Metadata, error)
+   ConvertFile(output io.Writer, config configuration.Configuration) (types.Metadata, error)
 
 where the returned `types.Metadata` object contains the document's title which is not part of the generated HTML `<body>` part, as well as the other attributes of the source document.
 
@@ -104,7 +104,7 @@ var tmpl = template.Must(t.Parse(tmplStr))
 
 output := &strings.Builder{}
 content := strings.NewReader(`example::hello world[suffix=!!!!!]`)
-libasciidoc.ConvertToHTML(context.Background(), content, output, renderer.WithMacroTemplate(tmpl.Name(), tmpl))
+libasciidoc.Convert(content, output, renderer.WithMacroTemplate(tmpl.Name(), tmpl))
 ```
 
 == How to contribute
