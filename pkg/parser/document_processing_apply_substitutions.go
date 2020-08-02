@@ -499,17 +499,33 @@ func normalParagraph(_ ...Option) paragraphSubstitution {
 	}
 }
 
-func serializeParagraph(lines []interface{}) (io.Reader, error) {
-	buf := strings.Builder{}
-	for i, line := range lines {
-		if r, ok := line.(types.RawLine); ok {
-			buf.WriteString(r.Content)
-			if i < len(lines)-1 {
-				buf.WriteString("\n")
-			}
-		} else {
-			return nil, fmt.Errorf("unexpected type of element while serializing a paragraph: '%T'", line)
+func serializeRawLines(w *strings.Builder, line interface{}) error {
+	if line == nil {
+		return nil
+	}
+	switch line := line.(type) {
+	case types.RawLine:
+		if w.Len() > 0 {
+			w.WriteString("\n")
 		}
+		w.WriteString(line.Content)
+	case []interface{}:
+		for _, line := range line {
+			if err := serializeRawLines(w, line); err != nil {
+				return err
+			}
+		}
+	default:
+		return fmt.Errorf("unexpected element type serializing raw lines: '%T'", line)
+	}
+	return nil
+}
+
+func serializeParagraph(lines []interface{}) (io.Reader, error) {
+	buf := &strings.Builder{}
+	err := serializeRawLines(buf, lines)
+	if err != nil {
+		return nil, err
 	}
 	return strings.NewReader(buf.String()), nil
 }
