@@ -73,7 +73,7 @@ func ParseRawDocument(r io.Reader, config configuration.Configuration, options .
 		return types.RawDocument{}, err
 	}
 	if log.IsLevelEnabled(log.DebugLevel) {
-		log.Debug("draft document:")
+		log.Debug("raw document:")
 		spew.Fdump(log.StandardLogger().Out, doc)
 	}
 	return doc, nil

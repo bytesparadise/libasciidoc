@@ -1951,6 +1951,88 @@ TIP: tip`
 			}
 			Expect(ParseDocument(source)).To(MatchDocument(expected))
 		})
+
+		It("with list item continuations", func() {
+			source := `item::
+This is the first line of the first paragraph.
+This is the second line of the first paragraph.
++
+This is the first line of the continuation paragraph.
+This is the second line of the continuation paragraph.
++
+This is the next continuation paragraph.
++
+TIP: We can embed admonitions too!
+`
+			expected := types.Document{
+				Elements: []interface{}{
+					types.LabeledList{
+						Items: []types.LabeledListItem{
+							{
+								Level: 1,
+								Term: []interface{}{
+									types.StringElement{
+										Content: "item",
+									},
+								},
+								Elements: []interface{}{
+									types.Paragraph{
+										Lines: []interface{}{
+											[]interface{}{
+												types.StringElement{
+													Content: "This is the first line of the first paragraph.",
+												},
+											},
+											[]interface{}{
+												types.StringElement{
+													Content: "This is the second line of the first paragraph.",
+												},
+											},
+										},
+									},
+									types.Paragraph{
+										Lines: []interface{}{
+											[]interface{}{
+												types.StringElement{
+													Content: "This is the first line of the continuation paragraph.",
+												},
+											},
+											[]interface{}{
+												types.StringElement{
+													Content: "This is the second line of the continuation paragraph.",
+												},
+											},
+										},
+									},
+									types.Paragraph{
+										Lines: []interface{}{
+											[]interface{}{
+												types.StringElement{
+													Content: "This is the next continuation paragraph.",
+												},
+											},
+										},
+									},
+									types.Paragraph{
+										Attributes: types.Attributes{
+											types.AttrAdmonitionKind: types.Tip,
+										},
+										Lines: []interface{}{
+											[]interface{}{
+												types.StringElement{
+													Content: "We can embed admonitions too!",
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			}
+			Expect(ParseDocument(source)).To(MatchDocument(expected))
+		})
 	})
 
 })

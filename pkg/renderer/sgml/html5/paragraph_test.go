@@ -9,7 +9,7 @@ import (
 
 var _ = Describe("paragraphs", func() {
 
-	Context("paragraphs", func() {
+	Context("regular paragraphs", func() {
 
 		It("a standalone paragraph with special character", func() {
 			source := `*bold content* 
@@ -89,7 +89,15 @@ some content`
 </div>
 `
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
+		})
 
+		It("paragraph with predefined attribute", func() {
+			source := "hello {plus} world"
+			expected := `<div class="paragraph">
+<p>hello &#43; world</p>
+</div>
+`
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 	})
 

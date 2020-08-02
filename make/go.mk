@@ -45,7 +45,7 @@ generate-optimized: install-pigeon
 
 .PHONY: build
 ## build the binary executable from CLI
-build: prebuild-checks generate-optimized
+build: prebuild-checks verify-parser generate-optimized
 	$(eval BUILD_COMMIT:=$(shell git rev-parse --short HEAD))
 	$(eval BUILD_TAG:=$(shell git tag --contains $(BUILD_COMMIT)))
 	$(eval BUILD_TIME:=$(shell date -u '+%Y-%m-%dT%H:%M:%SZ'))

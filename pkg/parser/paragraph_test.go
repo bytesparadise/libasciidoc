@@ -1,6 +1,8 @@
 package parser_test
 
 import (
+	"strings"
+
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 	. "github.com/bytesparadise/libasciidoc/testsupport"
 
@@ -12,7 +14,7 @@ var _ = Describe("paragraphs", func() {
 
 	Context("draft document", func() {
 
-		Context("paragraphs with line break", func() {
+		Context("regular paragraphs", func() {
 
 			It("with explicit line break", func() {
 				source := `foo +
@@ -36,7 +38,9 @@ baz`
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				result, err := ParseDraftDocument(source)
+				Expect(err).NotTo(HaveOccurred())
+				Expect(result).To(MatchDraftDocument(expected))
 			})
 
 			It("with paragraph attribute", func() {
@@ -184,6 +188,403 @@ foo`
 					},
 				}
 				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+			})
+
+			Context("with substitutions", func() {
+
+				// using the same input for all substitution tests
+				source := `:github-url: https://github.com
+					
+[subs="$(SUBS)"]
+a link to https://github.com[] <using the *inline link macro*>
+another one using attribute substitution: {github-url}[]...
+// a single-line comment`
+
+				It("should apply the 'none' substitution", func() {
+					s := strings.ReplaceAll(source, "$(SUBS)", "none")
+					expected := types.DraftDocument{
+						Attributes: types.Attributes{
+							"github-url": "https://github.com",
+						},
+						Blocks: []interface{}{
+							types.AttributeDeclaration{
+								Name:  "github-url",
+								Value: "https://github.com",
+							},
+							types.BlankLine{},
+							types.Paragraph{
+								Attributes: types.Attributes{
+									types.AttrSubstitutions: "none",
+								},
+								Lines: []interface{}{
+									[]interface{}{
+										types.StringElement{Content: "a link to https://github.com[] <using the *inline link macro*>"},
+									},
+									[]interface{}{
+										types.StringElement{Content: "another one using attribute substitution: {github-url}[]..."},
+									},
+									[]interface{}{
+										types.SingleLineComment{
+											Content: " a single-line comment",
+										},
+									},
+								},
+							},
+						},
+					}
+					Expect(ParseDraftDocument(s)).To(MatchDraftDocument(expected))
+				})
+
+				It("should apply the 'quotes' substitution on multiple lines", func() {
+					// quoted text is parsed but inline link macro is not
+					s := strings.ReplaceAll(source, "$(SUBS)", "quotes")
+					expected := types.DraftDocument{
+						Attributes: types.Attributes{
+							"github-url": "https://github.com",
+						},
+						Blocks: []interface{}{
+							types.AttributeDeclaration{
+								Name:  "github-url",
+								Value: "https://github.com",
+							},
+							types.BlankLine{},
+							types.Paragraph{
+								Attributes: types.Attributes{
+									types.AttrSubstitutions: "quotes",
+								},
+								Lines: []interface{}{
+									[]interface{}{
+										types.StringElement{
+											Content: "a link to https://github.com[] <using the ",
+										},
+										types.QuotedText{
+											Kind: types.Bold,
+											Elements: []interface{}{
+												types.StringElement{
+													Content: "inline link macro",
+												},
+											},
+										},
+										types.StringElement{
+											Content: ">",
+										},
+									},
+									[]interface{}{
+										types.StringElement{
+											Content: "another one using attribute substitution: {github-url}[]...",
+										},
+									},
+									[]interface{}{
+										types.SingleLineComment{
+											Content: " a single-line comment",
+										},
+									},
+								},
+							},
+						},
+					}
+					Expect(ParseDraftDocument(s)).To(MatchDraftDocument(expected))
+				})
+
+				It("should apply the 'macros' substitution on multiple lines", func() {
+					// quoted text is not parsed but inline link macro is
+					s := strings.ReplaceAll(source, "$(SUBS)", "macros")
+					expected := types.DraftDocument{
+						Attributes: types.Attributes{
+							"github-url": "https://github.com",
+						},
+						Blocks: []interface{}{
+							types.AttributeDeclaration{
+								Name:  "github-url",
+								Value: "https://github.com",
+							},
+							types.BlankLine{},
+							types.Paragraph{
+								Attributes: types.Attributes{
+									types.AttrSubstitutions: "macros",
+								},
+								Lines: []interface{}{
+									[]interface{}{
+										types.StringElement{
+											Content: "a link to ",
+										},
+										types.InlineLink{
+											Location: types.Location{
+												Scheme: "https://",
+												Path: []interface{}{
+													types.StringElement{
+														Content: "github.com",
+													},
+												},
+											},
+										},
+										types.StringElement{
+											Content: " <using the *inline link macro*>",
+										},
+									},
+									[]interface{}{
+										types.StringElement{
+											Content: "another one using attribute substitution: {github-url}[]...",
+										},
+									},
+									[]interface{}{
+										types.SingleLineComment{
+											Content: " a single-line comment",
+										},
+									},
+								},
+							},
+						},
+					}
+					Expect(ParseDraftDocument(s)).To(MatchDraftDocument(expected))
+				})
+
+				It("should apply the 'attributes' substitution on multiple lines", func() {
+					// quoted text is not parsed but inline link macro is
+					s := strings.ReplaceAll(source, "$(SUBS)", "attributes")
+					expected := types.DraftDocument{
+						Attributes: types.Attributes{
+							"github-url": "https://github.com",
+						},
+						Blocks: []interface{}{
+							types.AttributeDeclaration{
+								Name:  "github-url",
+								Value: "https://github.com",
+							},
+							types.BlankLine{},
+							types.Paragraph{
+								Attributes: types.Attributes{
+									types.AttrSubstitutions: "attributes",
+								},
+								Lines: []interface{}{
+									[]interface{}{
+										types.StringElement{Content: "a link to https://github.com[] <using the *inline link macro*>"},
+									},
+									[]interface{}{
+										types.StringElement{Content: "another one using attribute substitution: "},
+										types.InlineLink{
+											Location: types.Location{
+												Scheme: "https://",
+												Path: []interface{}{
+													types.StringElement{
+														Content: "github.com",
+													},
+												},
+											},
+										},
+										types.StringElement{Content: "..."},
+									},
+									[]interface{}{
+										types.SingleLineComment{
+											Content: " a single-line comment",
+										},
+									},
+								},
+							},
+						},
+					}
+					Expect(ParseDraftDocument(s)).To(MatchDraftDocument(expected))
+				})
+
+				It("should apply the specialchars substitution on multiple lines", func() {
+					// quoted text is not parsed but inline link macro is
+					s := strings.ReplaceAll(source, "$(SUBS)", "specialchars")
+					expected := types.DraftDocument{
+						Attributes: types.Attributes{
+							"github-url": "https://github.com",
+						},
+						Blocks: []interface{}{
+							types.AttributeDeclaration{
+								Name:  "github-url",
+								Value: "https://github.com",
+							},
+							types.BlankLine{},
+							types.Paragraph{
+								Attributes: types.Attributes{
+									types.AttrSubstitutions: "specialchars",
+								},
+								Lines: []interface{}{
+									[]interface{}{
+										types.StringElement{Content: "a link to https://github.com[] "},
+										types.SpecialCharacter{Content: "<"},
+										types.StringElement{Content: "using the *inline link macro*"},
+										types.SpecialCharacter{Content: ">"},
+									},
+									[]interface{}{
+										types.StringElement{Content: "another one using attribute substitution: {github-url}[]..."},
+									},
+									[]interface{}{
+										types.SingleLineComment{
+											Content: " a single-line comment",
+										},
+									},
+								},
+							},
+						},
+					}
+					Expect(ParseDraftDocument(s)).To(MatchDraftDocument(expected))
+				})
+
+				It("should apply the replacements substitution on multiple lines", func() {
+					// quoted text is not parsed but inline link macro is
+					s := strings.ReplaceAll(source, "$(SUBS)", "replacements")
+					expected := types.DraftDocument{
+						Attributes: types.Attributes{
+							"github-url": "https://github.com",
+						},
+						Blocks: []interface{}{
+							types.AttributeDeclaration{
+								Name:  "github-url",
+								Value: "https://github.com",
+							},
+							types.BlankLine{},
+							types.Paragraph{
+								Attributes: types.Attributes{
+									types.AttrSubstitutions: "replacements",
+								},
+								Lines: []interface{}{
+									[]interface{}{
+										types.StringElement{Content: "a link to https://github.com[] <using the *inline link macro*>"},
+									},
+									[]interface{}{
+										types.StringElement{Content: "another one using attribute substitution: {github-url}[]\u2026\u200b"},
+									},
+									[]interface{}{
+										types.SingleLineComment{
+											Content: " a single-line comment",
+										},
+									},
+								},
+							},
+						},
+					}
+					Expect(ParseDraftDocument(s)).To(MatchDraftDocument(expected))
+				})
+
+				It("should apply the 'quotes' and 'macros' substitutions", func() {
+					// quoted text and inline link macro are both parsed
+					s := strings.ReplaceAll(source, "$(SUBS)", "quotes,macros")
+					expected := types.DraftDocument{
+						Attributes: types.Attributes{
+							"github-url": "https://github.com",
+						},
+						Blocks: []interface{}{
+							types.AttributeDeclaration{
+								Name:  "github-url",
+								Value: "https://github.com",
+							},
+							types.BlankLine{},
+							types.Paragraph{
+								Attributes: types.Attributes{
+									types.AttrSubstitutions: "quotes,macros",
+								},
+								Lines: []interface{}{
+									[]interface{}{
+										types.StringElement{
+											Content: "a link to ",
+										},
+										types.InlineLink{
+											Location: types.Location{
+												Scheme: "https://",
+												Path: []interface{}{
+													types.StringElement{
+														Content: "github.com",
+													},
+												},
+											},
+										},
+										types.StringElement{
+											Content: " <using the ",
+										},
+										types.QuotedText{
+											Kind: types.Bold,
+											Elements: []interface{}{
+												types.StringElement{
+													Content: "inline link macro",
+												},
+											},
+										},
+										types.StringElement{
+											Content: ">",
+										},
+									},
+									[]interface{}{
+										types.StringElement{Content: "another one using attribute substitution: {github-url}[]..."},
+									},
+									[]interface{}{
+										types.SingleLineComment{
+											Content: " a single-line comment",
+										},
+									},
+								},
+							},
+						},
+					}
+					Expect(ParseDraftDocument(s)).To(MatchDraftDocument(expected))
+				})
+
+				It("should apply the 'macros' and 'quotes' substitutions", func() {
+					// quoted text and inline link macro are both parsed
+					// (same as above, but with subs in reversed order)
+					s := strings.ReplaceAll(source, "$(SUBS)", "macros,quotes")
+					expected := types.DraftDocument{
+						Attributes: types.Attributes{
+							"github-url": "https://github.com",
+						},
+						Blocks: []interface{}{
+							types.AttributeDeclaration{
+								Name:  "github-url",
+								Value: "https://github.com",
+							},
+							types.BlankLine{},
+							types.Paragraph{
+								Attributes: types.Attributes{
+									types.AttrSubstitutions: "macros,quotes",
+								},
+								Lines: []interface{}{
+									[]interface{}{
+										types.StringElement{
+											Content: "a link to ",
+										},
+										types.InlineLink{
+											Location: types.Location{
+												Scheme: "https://",
+												Path: []interface{}{
+													types.StringElement{
+														Content: "github.com",
+													},
+												},
+											},
+										},
+										types.StringElement{
+											Content: " <using the ",
+										},
+										types.QuotedText{
+											Kind: types.Bold,
+											Elements: []interface{}{
+												types.StringElement{
+													Content: "inline link macro",
+												},
+											},
+										},
+										types.StringElement{
+											Content: ">",
+										},
+									},
+									[]interface{}{
+										types.StringElement{Content: "another one using attribute substitution: {github-url}[]..."},
+									},
+									[]interface{}{
+										types.SingleLineComment{
+											Content: " a single-line comment",
+										},
+									},
+								},
+							},
+						},
+					}
+					Expect(ParseDraftDocument(s)).To(MatchDraftDocument(expected))
+				})
 			})
 		})
 
@@ -816,6 +1217,163 @@ a paragraph`
 				}
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
+
+			Context("with substitutions", func() {
+
+				It("should apply the 'none' substitution", func() {
+					source := `[subs="none"]
+a *link* to https://github.com[] <here>`
+					expected := types.Document{
+						Elements: []interface{}{
+							types.Paragraph{
+								Attributes: types.Attributes{
+									types.AttrSubstitutions: "none",
+								},
+								Lines: []interface{}{
+									[]interface{}{
+										types.StringElement{Content: "a *link* to https://github.com[] <here>"},
+									},
+								},
+							},
+						},
+					}
+					Expect(ParseDocument(source)).To(MatchDocument(expected))
+				})
+
+				It("should apply the 'macros' substitution", func() {
+					// quoted text is not parsed but inline link macro is
+					source := `[subs="macros"]
+a *link* to https://github.com[] <here>`
+					expected := types.Document{
+						Elements: []interface{}{
+							types.Paragraph{
+								Attributes: types.Attributes{
+									types.AttrSubstitutions: "macros",
+								},
+								Lines: []interface{}{
+									[]interface{}{
+										types.StringElement{
+											Content: "a *link* to ",
+										},
+										types.InlineLink{
+											Location: types.Location{
+												Scheme: "https://",
+												Path: []interface{}{
+													types.StringElement{
+														Content: "github.com",
+													},
+												},
+											},
+										},
+										types.StringElement{
+											Content: " <here>",
+										},
+									},
+								},
+							},
+						},
+					}
+					Expect(ParseDocument(source)).To(MatchDocument(expected))
+				})
+
+				It("should apply the 'attributes' substitution", func() {
+					// quoted text is not parsed but inline link macro is
+					source := `:github-url: https://github.com
+
+[subs="attributes"]
+a *link* to {github-url} <here>`
+					expected := types.Document{
+						Attributes: types.Attributes{
+							"github-url": "https://github.com",
+						},
+						Elements: []interface{}{
+							types.Paragraph{
+								Attributes: types.Attributes{
+									types.AttrSubstitutions: "attributes",
+								},
+								Lines: []interface{}{
+									[]interface{}{
+										types.StringElement{
+											Content: "a *link* to ",
+										},
+										types.InlineLink{ // converted into a link
+											Location: types.Location{
+												Scheme: "https://",
+												Path: []interface{}{
+													types.StringElement{
+														Content: "github.com",
+													},
+												},
+											},
+										},
+										types.StringElement{
+											Content: " ",
+										},
+										types.SpecialCharacter{
+											Content: "<",
+										},
+										types.StringElement{
+											Content: "here",
+										},
+										types.SpecialCharacter{
+											Content: ">",
+										},
+									},
+								},
+							},
+						},
+					}
+					Expect(ParseDocument(source)).To(MatchDocument(expected))
+				})
+
+				It("should apply the 'macros' and 'quotes' substitutions", func() {
+					// quoted text and inline link macro are both parsed
+					// (same as above, but with subs in reversed order)
+					source := `[subs="quotes,macros"]
+a *link* to https://github.com[] <here>`
+					expected := types.DraftDocument{
+						Blocks: []interface{}{
+							types.Paragraph{
+								Attributes: types.Attributes{
+									types.AttrSubstitutions: "quotes,macros",
+								},
+								Lines: []interface{}{
+									[]interface{}{
+										types.StringElement{
+											Content: "a ",
+										},
+										types.QuotedText{
+											Kind: types.Bold,
+											Elements: []interface{}{
+												types.StringElement{
+													Content: "link",
+												},
+											},
+										},
+										types.StringElement{
+											Content: " to ",
+										},
+										types.InlineLink{
+											Location: types.Location{
+												Scheme: "https://",
+												Path: []interface{}{
+													types.StringElement{
+														Content: "github.com",
+													},
+												},
+											},
+										},
+										types.StringElement{
+											Content: " <here>",
+										},
+									},
+								},
+							},
+						},
+					}
+					Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				})
+			})
 		})
 
 		Context("quote paragraphs", func() {
@@ -844,91 +1402,6 @@ a foo image:foo.png[]`
 											Path: []interface{}{
 												types.StringElement{
 													Content: "foo.png",
-												},
-											},
-										},
-									},
-								},
-							},
-						},
-					},
-				}
-				Expect(ParseDocument(source)).To(MatchDocument(expected))
-			})
-		})
-
-		Context("list paragraphs", func() {
-
-			It("inline image within a quote", func() {
-				source := `item::
-This is the first line of the first paragraph.
-This is the second line of the first paragraph.
-+
-This is the first line of the continuation paragraph.
-This is the second line of the continuation paragraph.
-+
-This is the next continuation paragraph.
-+
-TIP: We can embed admonitions too!
-`
-				expected := types.Document{
-					Elements: []interface{}{
-						types.LabeledList{
-							Items: []types.LabeledListItem{
-								{
-									Level: 1,
-									Term: []interface{}{
-										types.StringElement{
-											Content: "item",
-										},
-									},
-									Elements: []interface{}{
-										types.Paragraph{
-											Lines: []interface{}{
-												[]interface{}{
-													types.StringElement{
-														Content: "This is the first line of the first paragraph.",
-													},
-												},
-												[]interface{}{
-													types.StringElement{
-														Content: "This is the second line of the first paragraph.",
-													},
-												},
-											},
-										},
-										types.Paragraph{
-											Lines: []interface{}{
-												[]interface{}{
-													types.StringElement{
-														Content: "This is the first line of the continuation paragraph.",
-													},
-												},
-												[]interface{}{
-													types.StringElement{
-														Content: "This is the second line of the continuation paragraph.",
-													},
-												},
-											},
-										},
-										types.Paragraph{
-											Lines: []interface{}{
-												[]interface{}{
-													types.StringElement{
-														Content: "This is the next continuation paragraph.",
-													},
-												},
-											},
-										},
-										types.Paragraph{
-											Attributes: types.Attributes{
-												types.AttrAdmonitionKind: types.Tip,
-											},
-											Lines: []interface{}{
-												[]interface{}{
-													types.StringElement{
-														Content: "We can embed admonitions too!",
-													},
 												},
 											},
 										},
