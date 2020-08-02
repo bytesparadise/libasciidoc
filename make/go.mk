@@ -41,9 +41,7 @@ generate: install-pigeon
 ## generate the .go file based on the asciidoc grammar
 generate-optimized: install-pigeon
 	@echo "generating the parser (optimized)..."
-	@pigeon -optimize-parser \
-		-alternate-entrypoints AsciidocRawDocument,RawFile,TextDocument,DocumentRawBlock,FileLocation,IncludedFileLine,InlineLinks,LabeledListItemTerm,NormalBlockContent,NormalParagraphContent,VerseBlockContent,MarkdownQuoteBlockAttribution,InlineElements \
-		-o ./pkg/parser/parser.go ./pkg/parser/parser.peg
+	@go generate ./...
 
 .PHONY: build
 ## build the binary executable from CLI
