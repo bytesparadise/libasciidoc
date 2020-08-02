@@ -29,6 +29,23 @@ Don’t get discouraged if you don't get an immediate response, this is a side-p
 
 Testing existing features is a good way to contribute to the project, too!
 
+== Modifying The Grammar
+
+If you're working on the code, and want to modify the grammar (parser/parser.peg), you
+will need to install the https://github.com/mna/pigeon[pigeon] grammar generator:
+
+    $ go get -u github.com/mna/pigeon
+
+Then if you're updating the grammar, you then will need to use go generate:
+
+   $ go generate ./...
+
+(This is made possible by the pkg/parser/generate.go file.
+See that file for details on the flags used with pigeon.)
+
+Then you can go build as per normal:
+
+   $ go build ./...
 
 == Benchmarking
 
