@@ -1101,23 +1101,20 @@ func NewParagraph(lines []interface{}, attributes interface{}) (Paragraph, error
 	if err != nil {
 		return Paragraph{}, errors.Wrapf(err, "failed to initialize a Paragraph element")
 	}
-	// log.Debugf("initializing a new paragraph with %d line(s) and %d attribute(s)", len(lines), len(attrs))
-	elements := make([]interface{}, 0)
-	for _, line := range lines {
-		switch l := line.(type) {
-		case RawLine, []interface{}:
-			// log.Debugf("processing paragraph line of type %T", line)
-			// if len(l) > 0 {
-			elements = append(elements, l)
-			// }
-		default:
-			return Paragraph{}, errors.Errorf("unsupported paragraph line of type %[1]T: %[1]v", line)
-		}
-	}
+	// // log.Debugf("initializing a new paragraph with %d line(s) and %d attribute(s)", len(lines), len(attrs))
+	// elements := make([]interface{}, 0)
+	// for _, line := range lines {
+	// 	switch l := line.(type) {
+	// 	case RawLine, SingleLineComment, []interface{}:
+	// 		elements = append(elements, l)
+	// 	default:
+	// 		return Paragraph{}, errors.Errorf("unsupported paragraph line of type %[1]T: %[1]v", line)
+	// 	}
+	// }
 	// log.Debugf("generated a paragraph with %d line(s): %v", len(elements), elements)
 	return Paragraph{
 		Attributes: attrs,
-		Lines:      elements,
+		Lines:      lines,
 	}, nil
 }
 
@@ -1448,9 +1445,7 @@ func (s *sequence) nextVal() int {
 // ------------------------------------------
 
 // RawLine a line with raw content, read as-is by the parser (before further processing)
-type RawLine struct {
-	Content string
-}
+type RawLine = StringElement
 
 // NewRawLine returns a new slice containing a single StringElement with the given content
 func NewRawLine(content string) (RawLine, error) {

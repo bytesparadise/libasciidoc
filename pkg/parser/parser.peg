@@ -49,7 +49,7 @@ AsciidocDocumentRawBlocks <- header:(DocumentHeader?) others:(DocumentRawBlock*)
 DocumentRawBlock <- 
         LabeledListItem // must appear before simple paragraph
         / ImageBlock
-        / SimpleParagraph
+        / SimpleRawParagraph
         / BlankLine // must be before LiteralBlock 
         / Section
         / DelimitedBlock
@@ -68,6 +68,7 @@ DocumentRawBlock <-
         / StandaloneAttributes
         / RawParagraph
 
+// TODO: unused?
 AsciidocDocumentBlocksWithinDelimitedBlock <- blocks:(DocumentBlockWithinDelimitedBlock)*
 
 DocumentBlockWithinDelimitedBlock <- !EOF 
@@ -117,9 +118,9 @@ YamlFrontMatterContent <- ((!YamlFrontMatterToken .)+)* {
 // Document Header and Metadata
 // ------------------------------------------
 DocumentHeader <- "=" Space+ title:(TitleElements) id:(InlineElementID*) EOL
-        (SingleLineComment / CommentBlock)*
+        (Space* SingleLineComment / CommentBlock)*
         authors:(DocumentAuthors?) 
-        (SingleLineComment / CommentBlock)*
+        (Space* SingleLineComment / CommentBlock)*
         revision:(DocumentRevision?) {
     return types.NewDocumentHeader(title.([]interface{}), authors, revision)
 }
@@ -466,9 +467,9 @@ AttrValueNone <- "None" {
     return "", nil
 }
 
-// ------------------------------------------
+// ------------------------------------------------------
 // Quoted Strings (between curly single or double quotes)
-// ------------------------------------------
+// ------------------------------------------------------
 
 QuotedString <- SingleQuotedString / DoubleQuotedString
 
@@ -719,7 +720,7 @@ VerbatimFileLine <- !EOF content:([^\r\n]* {
 }
 
 // Entrypoint to parse a file to include. May contain nested file inclusion macros
-RawFileContent <- (FileInclusion / RawLine)*
+RawFileContent <- (FileInclusion / SingleLineComment / RawLine)*
 
 
 // ------------------------------------------
@@ -969,7 +970,7 @@ AdmonitionKind <- "TIP" {
 // 
 RawParagraph <- 
     // admonition paragraph 
-    attributes:(Attributes)? t:(AdmonitionKind) ": " lines:(RawParagraphLine)+ { 
+    attributes:(Attributes)? t:(AdmonitionKind) ": " lines:(SingleLineComment / RawParagraphLine)+ { 
         return types.NewAdmonitionParagraph(lines.([]interface{}), t.(types.AdmonitionKind), attributes)
     } / 
     // markdown-style blockquote paragraph
@@ -988,7 +989,7 @@ RawParagraph <-
         return types.NewDelimitedBlock(types.Passthrough, content.([]interface{}), attributes)
     } /
     // other kind of paragraph (verse, regular, etc.)
-    attributes:(Attributes)? !BlockDelimiter lines:(RawParagraphLine)+ { 
+    attributes:(Attributes)? !BlockDelimiter lines:(SingleLineComment / RawParagraphLine)+ { 
         return types.NewParagraph(lines.([]interface{}), attributes)
     }
 
@@ -996,12 +997,39 @@ MarkdownQuoteBlockRawContent <- (!BlankLine "> "? content:(RawLine) { // at this
     return content, nil
 })+
 
-RawParagraphLine <- !BlankLine content:(RawParagraphLineContent) EOL {
-    return types.NewRawLine(content.(string))
-}
+RawParagraphLine <- 
+    content:(RawParagraphLineContent) EOL &{
+        // exclude line if it is a blankline
+        if strings.Trim(content.(string), " \t") == "" {
+            return false, nil
+        }
+        return true, nil
+    } {
+        return types.NewRawLine(content.(string))
+    }
 
 RawParagraphLineContent <- [^\r\n]+ { 
     return string(c.text), nil 
+}
+
+// a paragraph whose first line begins with a word followed by spaces
+SimpleRawParagraph <- attributes:(Attributes)? 
+    &{
+        // skip if the '[literal]' attribute was set on this paragraph
+        if attrs, ok := attributes.(types.Attributes); ok {
+            kind, exists := attrs[types.AttrKind]
+            return !exists || kind != types.Literal, nil
+        }
+        return true, nil
+    }
+    firstLine: FirstParagraphRawLine
+    otherLines:(SingleLineComment / RawParagraphLine)* { 
+    return types.NewParagraph(append([]interface{}{firstLine}, otherLines.([]interface{})...), attributes)
+}
+
+FirstParagraphRawLine <- 
+    content:(elements:Word [^\r\n]* { return string(c.text), nil}) EOL { 
+    return types.NewRawLine(content.(string))
 }
 
 // a paragraph is a group of line ending with a blank line (or end of file)
@@ -1035,34 +1063,10 @@ MarkdownQuoteBlockAttribution <- "-- " author:(([^\r\n]+) {
     return author, nil
 }
 
+// TODO: unused?
 OpenPassthroughParagraphContent <- (!BlankLine content:(VerbatimContent) { // at this stage, content is a mix of FileInclusions and lines of text (i.e., StringElement)
     return content, nil
 })+
-
-// a paragraph whose first line begins with a word followed by spaces
-SimpleParagraph <- attributes:(Attributes)? 
-    &{
-        // skip if the '[literal]' attribute was set on this paragraph
-        if attrs, ok := attributes.(types.Attributes); ok {
-            kind, exists := attrs[types.AttrKind]
-            return !exists || kind != types.Literal, nil
-        }
-        return true, nil
-    }
-    firstLine: FirstParagraphRawLine
-    otherLines:(OtherParagraphRawLine)* { 
-    return types.NewParagraph(append([]interface{}{firstLine}, otherLines.([]interface{})...), attributes)
-}
-
-FirstParagraphRawLine <- 
-    content:(elements:Word [^\r\n]* { return string(c.text), nil}) EOL { 
-    return types.NewRawLine(content.(string))
-}
-
-OtherParagraphRawLine <- RawParagraphLine
-
-// extra entrypoint when parsing a paragraph line during the substition phase
-NormalParagraphContent <- InlineElements+
 
 // ------------------------------------------
 // Continued Paragraphs
@@ -1079,7 +1083,7 @@ ContinuedRawParagraph <-
         return types.NewParagraph(lines.([]interface{}), attributes)
 } 
 
-ContinuedRawParagraphLines <- firstLine:(FirstParagraphRawLine) otherLines:(!ListItemContinuation OtherParagraphRawLine)* {
+ContinuedRawParagraphLines <- firstLine:(FirstParagraphRawLine) otherLines:(!ListItemContinuation (SingleLineComment / RawParagraphLine))* {
     return append([]interface{}{firstLine}, otherLines.([]interface{})...), nil
 }
 
@@ -1640,7 +1644,6 @@ UnquotedAttributeChar <- [^\r\n"=\],] { // excludes comma
 // rule used after document attribute substitution, to discover links
 InlineLinks <-
     elements:(Word
-        / Symbol
         / SpecialCharacter
         / Space+ 
         / ResolvedLink 
@@ -1779,22 +1782,6 @@ RawLineContent <- [^\r\n]* {
     return string(c.text), nil 
 }
 
-VerbatimContent <- VerbatimLine
-
-VerbatimLine <- content:(VerbatimLineContent) callouts:(Callouts)? EOL {
-    return types.NewVerbatimLine(content.(string), callouts)
-}
-
-VerbatimLineContent <- (!Callouts (Space+ / [^ \r\n]+))* { 
-    return string(c.text), nil
-}
-
-Callouts <- Callout+
-
-Callout <- "<" ref:([0-9]+ { return strconv.Atoi(string(c.text)) }) ">" Space* &(EOL / Callout) {
-    return types.NewCallout(ref.(int))
-}
-
 CalloutListItem <- ref:(CalloutListItemPrefix) description:(ListParagraph+) {
     return types.NewCalloutListItem(ref.(int), description.([]interface{}))
 }
@@ -1910,14 +1897,51 @@ ThematicBreak <- ("***" / "* * *" / "---" / "- - -" / "___" / "_ _ _") EOL {
     return types.NewThematicBreak()
 }
 
+
 // -------------------------------------------------------------------------------------
-// DelimitedBlock content
+// DelimitedBlock and Paragraph Substitutions (standalone rules)
 // -------------------------------------------------------------------------------------
+
+// extra entrypoint when parsing a whole paragraph line at once during the substition phase
+NormalParagraphContentSubstitution <-   
+    (   SingleLineComment /
+        (   (InlineWord // more permissive than words
+            / LineBreak // must be before spaces
+            / Space+ 
+            / Quotes
+            / InlineMacros
+            / Symbol
+            / SpecialCharacter
+            / QuotedString 
+            / ImpliedApostrophe
+            / AttributeSubstitution
+            / AnyChar
+            )+ Newline?)
+    )+
+
+Quotes <- QuotedText
+
+InlineMacros <- InlineIcon
+                / InlineImage 
+                / Link 
+                / InlinePassthrough 
+                / InlineFootnote 
+                / CrossReference 
+                / InlineUserMacro 
+                / InlineElementID
+                / ConcealedIndexTerm
+                / IndexTerm
+            
+ReplacementsSubstitution <- (Symbol 
+            / InlineWord // more permissive than words
+            / Space+ 
+            / AnyChar
+            / Newline)+ EOF
 
 // standalone rule when applying substitutions
-NormalBlockContent <- NormalElement*
+NormalBlockContentSubstitution <- NormalBlockElement*
 
-NormalElement <- 
+NormalBlockElement <- 
     !EOF element:(BlankLine 
             / FileInclusion
             / ImageBlock
@@ -1936,8 +1960,69 @@ NormalElement <-
         return element, nil
     } 
 
+VerbatimContentSubstitution <- VerbatimLine
+
+VerbatimLine <- content:(VerbatimLineContent) callouts:(Callouts)? EOL {
+    return types.NewVerbatimLine(content.(string), callouts)
+}
+
+VerbatimLineContent <- (!Callouts (Space+ / [^ \r\n]+))* { 
+    return string(c.text), nil
+}
+
+Callouts <- Callout+
+
+Callout <- "<" ref:([0-9]+ { return strconv.Atoi(string(c.text)) }) ">" Space* &(EOL / Callout) {
+    return types.NewCallout(ref.(int))
+}
+
+// standalone rule for the "quotes" substitution
+QuotedTextSubstitution <- 
+    elements:(InlineWord // more permissive than words
+        / Space+ 
+        / QuotedText 
+        / AnyChar
+        / Newline)+ {
+            return types.NewInlineElements(elements.([]interface{}))
+        }
+
+// standalone rule for the "macros" substitution
+InlineMacrosSubstitution <- 
+    elements:(InlineWord // more permissive than words
+        / Space+ 
+        / InlineMacros
+        / AnyChar
+        / Newline)+ {
+            return types.NewInlineElements(elements.([]interface{}))
+        }
+
+// standalone rule for the "attributes" substitution
+AttributesSubstitution <- 
+    elements:(InlineWord // more permissive than words
+        / Space+ 
+        / AttributeSubstitution
+        / AnyChar
+        / Newline)+{
+            return types.NewInlineElements(elements.([]interface{}))
+        }
+
+SpecialCharactersSubstitution <- 
+    elements:(SpecialCharacter
+        / Word
+        / Space+
+        / AnyChar
+        / Newline)+ {
+            return types.NewInlineElements(elements.([]interface{}))
+        }
+
+// standalone rule for the "none" substitution
+NoneSubstitution <- (
+    ([^\r\n]+ EOL { // just text
+        return types.NewStringElement(string(c.text))
+    }))+
+
 // standalone rule used by the default verse block substitution
-VerseBlockContent <- VerseBlockElement*
+VerseBlockContentSubstitution <- VerseBlockElement*
 
 VerseBlockElement <- !EOF element:(BlankLine / VerseBlockParagraph) {
     return element, nil
@@ -1995,7 +2080,7 @@ CommentBlockRawContent <- (!CommentBlockEndDelimiter line:(DelimitedBlockRawLine
     return line, nil
 })*
 
-SingleLineComment <- !CommentBlockDelimiter Space* "//" content:(SingleLineCommentContent) EOL {
+SingleLineComment <- !CommentBlockDelimiter "//" content:(SingleLineCommentContent) EOL {
     return types.NewSingleLineComment(content.(string))
 }
 
