@@ -1160,8 +1160,8 @@ The {plus} symbol is on a new line.
 											types.StringElement{
 												Content: "This is a new line inside an unordered list using ",
 											},
-											types.SpecialCharacter{
-												Content: "+",
+											types.PredefinedAttribute{
+												Name: "plus",
 											},
 											types.StringElement{
 												Content: " symbol.",
@@ -1207,8 +1207,8 @@ The {plus} symbol is on a new line.
 										types.StringElement{
 											Content: "The ",
 										},
-										types.SpecialCharacter{
-											Content: "+",
+										types.PredefinedAttribute{
+											Name: "plus",
 										},
 										types.StringElement{
 											Content: " symbol is on a new line.",
@@ -2449,7 +2449,9 @@ on 2 lines, too.`
 										types.Paragraph{
 											Lines: []interface{}{
 												[]interface{}{
-													types.SpecialCharacter{Content: "&"},
+													types.PredefinedAttribute{
+														Name: "amp",
+													},
 												},
 											},
 										},
@@ -2712,8 +2714,8 @@ The {plus} symbol is on a new line.
 																					types.StringElement{
 																						Content: "This is a new line inside an unordered list using ",
 																					},
-																					types.SpecialCharacter{
-																						Content: "+",
+																					types.PredefinedAttribute{
+																						Name: "plus",
 																					},
 																					types.StringElement{
 																						Content: " symbol.",
@@ -2755,8 +2757,8 @@ The {plus} symbol is on a new line.
 																									types.StringElement{
 																										Content: "The ",
 																									},
-																									types.SpecialCharacter{
-																										Content: "+",
+																									types.PredefinedAttribute{
+																										Name: "plus",
 																									},
 																									types.StringElement{
 																										Content: " symbol is on a new line.",

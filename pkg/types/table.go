@@ -14,6 +14,7 @@ import (
 // Tables
 // ------------------------------------------
 
+// TableColumn a table column
 type TableColumn struct {
 	widthVal float64 // internally used number, will be 0 for automatic, cleared post processing
 	Width    string  // percentage or relative (0 for automatic)

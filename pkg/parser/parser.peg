@@ -2229,7 +2229,7 @@ ImpliedApostrophe <- Alphanum "'" &[\pL] {
 // They need to be identified as they may have a special treatment during the rendering
 // ------------------------------------------------------------------------------------
 
-SpecialCharacter <- ("<" / ">" / "&" / "+") { // "+" is parsed here for the sake of HTML output compatibility with Asciidoctor which replaces it with the `&#43;` entity
+SpecialCharacter <- ("<" / ">" / "&" ) {
     return types.NewSpecialCharacter(string(c.text))
 }
 

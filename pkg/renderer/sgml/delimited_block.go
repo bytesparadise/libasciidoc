@@ -68,7 +68,7 @@ func (r *sgmlRenderer) renderFencedBlock(ctx *renderer.Context, b types.Delimite
 		ID:       r.renderElementID(b.Attributes),
 		Title:    r.renderElementTitle(b.Attributes),
 		Roles:    r.renderElementRoles(b.Attributes),
-		Content:  string(content),
+		Content:  content,
 		Elements: elements,
 	})
 	return result.String(), err
@@ -102,7 +102,7 @@ func (r *sgmlRenderer) renderListingBlock(ctx *renderer.Context, b types.Delimit
 		ID:       r.renderElementID(b.Attributes),
 		Title:    r.renderElementTitle(b.Attributes),
 		Roles:    r.renderElementRoles(b.Attributes),
-		Content:  string(content),
+		Content:  content,
 		Elements: discardTrailingBlankLines(b.Elements),
 	})
 	return result.String(), err
@@ -295,7 +295,7 @@ func (r *sgmlRenderer) renderAdmonitionBlock(ctx *renderer.Context, b types.Deli
 		Roles:    r.renderElementRoles(b.Attributes),
 		Title:    r.renderElementTitle(b.Attributes),
 		Icon:     icon,
-		Content:  string(content),
+		Content:  content,
 		Elements: elements,
 	})
 	return result.String(), err
@@ -318,7 +318,7 @@ func (r *sgmlRenderer) renderExampleBlock(ctx *renderer.Context, b types.Delimit
 
 	c, ok := b.Attributes.GetAsString(types.AttrCaption)
 	if !ok {
-		c, _ = ctx.Attributes.GetAsString(types.AttrExampleCaption)
+		c = ctx.Attributes.GetAsStringWithDefault(types.AttrExampleCaption, "Example")
 		if c != "" {
 			c += " {counter:example-number}. "
 		}
@@ -345,7 +345,7 @@ func (r *sgmlRenderer) renderExampleBlock(ctx *renderer.Context, b types.Delimit
 		Caption:       caption.String(),
 		Roles:         r.renderElementRoles(b.Attributes),
 		ExampleNumber: number,
-		Content:       string(content),
+		Content:       content,
 		Elements:      elements,
 	})
 	return result.String(), err
@@ -373,7 +373,7 @@ func (r *sgmlRenderer) renderQuoteBlock(ctx *renderer.Context, b types.Delimited
 		Title:       r.renderElementTitle(b.Attributes),
 		Roles:       r.renderElementRoles(b.Attributes),
 		Attribution: newDelimitedBlockAttribution(b),
-		Content:     string(content),
+		Content:     content,
 		Elements:    b.Elements,
 	})
 	return result.String(), err
@@ -448,7 +448,7 @@ func (r *sgmlRenderer) renderSidebarBlock(ctx *renderer.Context, b types.Delimit
 		ID:       r.renderElementID(b.Attributes),
 		Title:    r.renderElementTitle(b.Attributes),
 		Roles:    r.renderElementRoles(b.Attributes),
-		Content:  string(content),
+		Content:  content,
 		Elements: discardTrailingBlankLines(b.Elements),
 	})
 	return result.String(), err

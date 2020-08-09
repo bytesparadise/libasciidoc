@@ -678,13 +678,13 @@ import <a>
 							Lines: []interface{}{
 								[]interface{}{
 									types.SpecialCharacter{
-										Content: "<",
+										Name: "<",
 									},
 									types.StringElement{
 										Content: "a",
 									},
 									types.SpecialCharacter{
-										Content: ">",
+										Name: ">",
 									},
 									types.StringElement{
 										Content: " an import",
@@ -2591,13 +2591,13 @@ import <a>
 							Lines: []interface{}{
 								[]interface{}{
 									types.SpecialCharacter{
-										Content: "<",
+										Name: "<",
 									},
 									types.StringElement{
 										Content: "a",
 									},
 									types.SpecialCharacter{
-										Content: ">",
+										Name: ">",
 									},
 									types.StringElement{
 										Content: " an import",

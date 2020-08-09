@@ -10,6 +10,7 @@ import (
 // thereby helping minimize collisions based on conflicting package
 // names.  It also reduces the imports we have to use everywhere else.
 
+// Context the rendering context
 type Context = renderer.Context
 
 type textTemplate = text.Template

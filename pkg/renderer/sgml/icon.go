@@ -42,6 +42,14 @@ func (r *sgmlRenderer) renderInlineIcon(ctx *renderer.Context, icon types.Icon) 
 	return result.String(), nil
 }
 
+var defaultIconClasses = map[string]string{
+	types.AttrCautionCaption:   "Caution",
+	types.AttrImportantCaption: "Important",
+	types.AttrNoteCaption:      "Note",
+	types.AttrTipCaption:       "Tip",
+	types.AttrWarningCaption:   "Warning",
+}
+
 func (r *sgmlRenderer) renderIcon(ctx *renderer.Context, icon types.Icon, admonition bool) (string, error) {
 	icons := ctx.Attributes.GetAsStringWithDefault("icons", "text")
 	var template *textTemplate
@@ -66,7 +74,7 @@ func (r *sgmlRenderer) renderIcon(ctx *renderer.Context, icon types.Icon, admoni
 		// Admonition uses title on block instead of the icon, and the alt text is
 		// taken from the caption.  However, in admonitions using the font, the alt
 		// is used as the title element instead.  Go figure.
-		alt = ctx.Attributes.GetAsStringWithDefault(icon.Class+"-caption", "")
+		alt = ctx.Attributes.GetAsStringWithDefault(icon.Class+"-caption", defaultIconClasses[icon.Class+"-caption"])
 		alt = icon.Attributes.GetAsStringWithDefault(types.AttrCaption, alt)
 		if font {
 			title = alt

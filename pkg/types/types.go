@@ -296,10 +296,17 @@ type AttributeSubstitution struct {
 	Name string
 }
 
-// NewAttributeSubstitution initializes a new Document Attribute Substitutions
-func NewAttributeSubstitution(attrName string) (AttributeSubstitution, error) {
-	log.Debugf("initialized a new AttributeSubstitution: '%s'", attrName)
-	return AttributeSubstitution{Name: attrName}, nil
+// PredefinedAttribute a special kind of attribute substitution, which
+// uses a predefined attribute
+type PredefinedAttribute AttributeSubstitution
+
+// NewAttributeSubstitution initializes a new Attribute Substitutions
+func NewAttributeSubstitution(name string) (interface{}, error) {
+	if isPrefedinedAttribute(name) {
+		return PredefinedAttribute{Name: name}, nil
+	}
+	log.Debugf("initialized a new AttributeSubstitution: '%s'", name)
+	return AttributeSubstitution{Name: name}, nil
 }
 
 // CounterSubstitution is a counter, that may increment when it is substituted.
@@ -1101,16 +1108,6 @@ func NewParagraph(lines []interface{}, attributes interface{}) (Paragraph, error
 	if err != nil {
 		return Paragraph{}, errors.Wrapf(err, "failed to initialize a Paragraph element")
 	}
-	// // log.Debugf("initializing a new paragraph with %d line(s) and %d attribute(s)", len(lines), len(attrs))
-	// elements := make([]interface{}, 0)
-	// for _, line := range lines {
-	// 	switch l := line.(type) {
-	// 	case RawLine, SingleLineComment, []interface{}:
-	// 		elements = append(elements, l)
-	// 	default:
-	// 		return Paragraph{}, errors.Errorf("unsupported paragraph line of type %[1]T: %[1]v", line)
-	// 	}
-	// }
 	// log.Debugf("generated a paragraph with %d line(s): %v", len(elements), elements)
 	return Paragraph{
 		Attributes: attrs,
@@ -1135,21 +1132,6 @@ func (p Paragraph) ReplaceFootnotes(notes *Footnotes) interface{} {
 	}
 	return p
 }
-
-// // NewRawAdmonitionParagraph returns a new RawParagraph with an extra admonition attribute
-// func NewRawAdmonitionParagraph(lines []interface{}, admonitionKind AdmonitionKind, attributes interface{}) (RawParagraph, error) {
-// 	log.Debugf("new admonition paragraph")
-// 	attrs, err := NewAttributes(attributes)
-// 	if err != nil {
-// 		return RawParagraph{}, errors.Wrapf(err, "failed to initialize an Admonition Paragraph element")
-// 	}
-// 	p, err := NewRawParagraph(lines, attrs)
-// 	if err != nil {
-// 		return RawParagraph{}, err
-// 	}
-// 	p.Attributes = p.Attributes.Set(AttrAdmonitionKind, admonitionKind)
-// 	return p, nil
-// }
 
 // NewAdmonitionParagraph returns a new Paragraph with an extra admonition attribute
 func NewAdmonitionParagraph(lines []interface{}, admonitionKind AdmonitionKind, attributes interface{}) (Paragraph, error) {
@@ -1317,6 +1299,7 @@ func (i InlineImage) ResolveLocation(attrs AttributesWithOverrides) InlineImage 
 // Icons
 // ------------------------------------------
 
+// Icon an icon
 type Icon struct {
 	Class      string
 	Attributes Attributes
@@ -1487,10 +1470,10 @@ func NewDelimitedBlock(kind BlockKind, elements []interface{}, attributes interf
 	}, nil
 }
 
-// ThematicBreak
-
+// ThematicBreak a thematic break
 type ThematicBreak struct{}
 
+// NewThematicBreak returns a new ThematicBreak
 func NewThematicBreak() (ThematicBreak, error) {
 	return ThematicBreak{}, nil
 }
@@ -1800,11 +1783,13 @@ func NewEscapedQuotedText(backslashes string, punctuation string, content interf
 	}, nil
 }
 
+// QuotedString a quoted string
 type QuotedString struct {
 	Kind     QuotedStringKind
 	Elements []interface{}
 }
 
+// NewQuotedString returns a new QuotedString
 func NewQuotedString(kind QuotedStringKind, elements []interface{}) (QuotedString, error) {
 	return QuotedString{Kind: kind, Elements: elements}, nil
 }
@@ -2309,6 +2294,7 @@ func NewString(v interface{}) (string, error) {
 	}
 }
 
+// NewInlineAttribute returns a new InlineAttribute if the value is a string (or an error otherwise)
 func NewInlineAttribute(name string, value interface{}) (interface{}, error) {
 	if value == nil {
 		return nil, nil
@@ -2327,11 +2313,13 @@ func NewInlineAttribute(name string, value interface{}) (interface{}, error) {
 // ------------------------------------------------------------------------------------
 
 // SpecialCharacter a special character, which may get a special treatment later during rendering
-type SpecialCharacter StringElement
+type SpecialCharacter struct {
+	Name string
+}
 
 // NewSpecialCharacter return a new SpecialCharacter
-func NewSpecialCharacter(content string) (SpecialCharacter, error) {
+func NewSpecialCharacter(name string) (SpecialCharacter, error) {
 	return SpecialCharacter{
-		Content: content,
+		Name: name,
 	}, nil
 }

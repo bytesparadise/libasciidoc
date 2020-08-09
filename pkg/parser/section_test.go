@@ -822,13 +822,13 @@ Doc Writer <thedoc@asciidoctor.org>`
 										Content: "Doc Writer ",
 									},
 									types.SpecialCharacter{
-										Content: "<",
+										Name: "<",
 									},
 									types.StringElement{
 										Content: "thedoc@asciidoctor.org",
 									},
 									types.SpecialCharacter{
-										Content: ">",
+										Name: ">",
 									},
 								},
 							},
@@ -1976,13 +1976,13 @@ Doc Writer <thedoc@asciidoctor.org>`
 										Content: "Doc Writer ",
 									},
 									types.SpecialCharacter{
-										Content: "<",
+										Name: "<",
 									},
 									types.StringElement{
 										Content: "thedoc@asciidoctor.org",
 									},
 									types.SpecialCharacter{
-										Content: ">",
+										Name: ">",
 									},
 								},
 							},

@@ -1813,7 +1813,7 @@ level 2::: description 2`
 									types.Paragraph{
 										Lines: []interface{}{
 											[]interface{}{
-												types.SpecialCharacter{Content: "&"},
+												types.PredefinedAttribute{Name: "amp"},
 											},
 										},
 									},
