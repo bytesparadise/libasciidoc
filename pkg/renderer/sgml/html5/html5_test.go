@@ -195,7 +195,6 @@ a note
 	})
 
 	It("render manpage document with header and footer", func() {
-
 		source := `= eve(1)
 Andrew Stanton
 v1.0.0

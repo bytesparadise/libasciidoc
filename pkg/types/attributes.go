@@ -145,6 +145,7 @@ func NewElementOption(opt string) (Attributes, error) {
 	return Attributes{AttrOptions: opt}, nil
 }
 
+// NewElementNamedAttr a named (or positional) element
 func NewElementNamedAttr(key string, value string) (Attributes, error) {
 	if key == AttrOpts { // Handle the alias
 		key = AttrOptions
@@ -361,10 +362,6 @@ func (a Attributes) GetAsString(key string) (string, bool) {
 			return fmt.Sprintf("%v", v), true
 		}
 	}
-	// check in predefined attributes
-	if value, found := Predefined[key]; found {
-		return value, true
-	}
 	return "", false
 }
 
@@ -377,11 +374,9 @@ func (a Attributes) GetAsStringWithDefault(key, defaultValue string) string {
 		}
 		if value, ok := value.(string); ok {
 			return value
+		} else if v, ok := a[key]; ok {
+			return fmt.Sprintf("%v", v)
 		}
-	}
-	// check in predefined attributes
-	if value, found := Predefined[key]; found {
-		return value
 	}
 	return defaultValue
 }
@@ -468,7 +463,6 @@ func NewAttributes(attributes interface{}) (Attributes, error) {
 // AttrID - these are strings, the first occurrence of this wins, and we set AttrCustomID
 // AttrRole - these are strings, we append them into an array
 // AttrOptions - comma separated list, we split and put into a map
-
 func NewElementAttributes(attributes ...interface{}) (Attributes, error) {
 	if len(attributes) == 0 {
 		return nil, nil
@@ -537,43 +531,3 @@ func resolveAlt(path Location) string {
 	}
 	return filename
 }
-
-// // Has returns the true if an entry with the given key exists
-// func (a Attributes) Has(key string) bool {
-// 	_, ok := a[key]
-// 	return ok
-// }
-
-// // Add adds the given attributes
-// func (a Attributes) Add(attrs map[string]interface{}) {
-// 	for k, v := range attrs {
-// 		a.Add(k, v)
-// 	}
-// }
-
-// // Add adds the given attribute if its value is non-nil
-// // TODO: raise a warning if there was already a name/value
-// func (a Attributes) Add(key string, value interface{}) {
-// 	a[key] = value
-// }
-
-// // AddNonEmpty adds the given attribute if its value is non-nil and non-empty
-// // TODO: raise a warning if there was already a name/value
-// func (a Attributes) AddNonEmpty(key string, value interface{}) {
-// 	// do not add nil or empty values
-// 	if value == "" {
-// 		return
-// 	}
-// 	a.Add(key, value)
-// }
-
-// // AddDeclaration adds the given attribute
-// // TODO: raise a warning if there was already a name/value
-// func (a Attributes) AddDeclaration(attr AttributeDeclaration) {
-// 	a.Add(attr.Name, attr.Value)
-// }
-
-// // Delete deletes the given attribute
-// func (a Attributes) Delete(attr AttributeReset) {
-// 	delete(a, attr.Name)
-// }

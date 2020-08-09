@@ -816,13 +816,13 @@ var _ = Describe("quoted texts", func() {
 						Content: "[.",
 					},
 					types.SpecialCharacter{
-						Content: "<",
+						Name: "<",
 					},
 					types.StringElement{
 						Content: "something \"wicked",
 					},
 					types.SpecialCharacter{
-						Content: ">",
+						Name: ">",
 					},
 					types.StringElement{
 						Content: "]",

@@ -12,9 +12,9 @@ func (r *sgmlRenderer) renderSpecialCharacter(s types.SpecialCharacter) (string,
 	log.Debugf("rendering special character...")
 	result := &strings.Builder{}
 	if err := r.specialCharacter.Execute(result, struct {
-		Content string
+		Name string
 	}{
-		Content: s.Content,
+		Name: s.Name,
 	}); err != nil {
 		return "", errors.Wrap(err, "error while rendering special character")
 	}

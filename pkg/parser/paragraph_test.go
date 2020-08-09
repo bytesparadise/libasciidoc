@@ -160,9 +160,7 @@ foo`
 						types.Paragraph{
 							Lines: []interface{}{
 								[]interface{}{
-									types.StringElement{Content: "C"},
-									types.SpecialCharacter{Content: "+"},
-									types.SpecialCharacter{Content: "+"},
+									types.StringElement{Content: "C++"},
 								},
 								[]interface{}{
 									types.StringElement{Content: "foo"},
@@ -406,9 +404,9 @@ another one using attribute substitution: {github-url}[]...
 								Lines: []interface{}{
 									[]interface{}{
 										types.StringElement{Content: "a link to https://github.com[] "},
-										types.SpecialCharacter{Content: "<"},
+										types.SpecialCharacter{Name: "<"},
 										types.StringElement{Content: "using the *inline link macro*"},
-										types.SpecialCharacter{Content: ">"},
+										types.SpecialCharacter{Name: ">"},
 									},
 									[]interface{}{
 										types.StringElement{Content: "another one using attribute substitution: {github-url}[]..."},
@@ -1193,7 +1191,13 @@ a paragraph`
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{},
+							Lines: []interface{}{
+								[]interface{}{
+									types.PredefinedAttribute{
+										Name: "blank",
+									},
+								},
+							},
 						},
 					},
 				}
@@ -1208,7 +1212,7 @@ a paragraph`
 							Lines: []interface{}{
 								[]interface{}{
 									types.StringElement{Content: "hello "},
-									types.SpecialCharacter{Content: "+"},
+									types.PredefinedAttribute{Name: "plus"},
 									types.StringElement{Content: " world"},
 								},
 							},
@@ -1310,13 +1314,13 @@ a *link* to {github-url} <here>`
 											Content: " ",
 										},
 										types.SpecialCharacter{
-											Content: "<",
+											Name: "<",
 										},
 										types.StringElement{
 											Content: "here",
 										},
 										types.SpecialCharacter{
-											Content: ">",
+											Name: ">",
 										},
 									},
 								},

@@ -214,8 +214,11 @@ func renderCheckStyle(style interface{}) string {
 
 func (r *sgmlRenderer) renderElementTitle(attrs types.Attributes) string {
 	if title, found := attrs.GetAsString(types.AttrTitle); found {
-		return string(EscapeString(strings.TrimSpace(title)))
+		result := EscapeString(strings.TrimSpace(title))
+		log.Debugf("rendered title: '%s'", result)
+		return result
 	}
+	log.Debug("no title to render")
 	return ""
 }
 

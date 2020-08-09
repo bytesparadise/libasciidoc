@@ -43,7 +43,7 @@ func (r *sgmlRenderer) renderTable(ctx *renderer.Context, t types.Table) (string
 	if t.Attributes.Has(types.AttrTitle) {
 		c, ok := t.Attributes.GetAsString(types.AttrCaption)
 		if !ok {
-			c, _ = ctx.Attributes.GetAsString(types.AttrTableCaption)
+			c = ctx.Attributes.GetAsStringWithDefault(types.AttrTableCaption, "Table")
 			if c != "" {
 				// We always append the figure number, unless the caption is disabled.
 				// This is for asciidoctor compatibility.

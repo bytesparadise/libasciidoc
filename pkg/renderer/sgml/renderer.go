@@ -1,6 +1,7 @@
 package sgml
 
 import (
+	"fmt"
 	"io"
 	"strings"
 	texttemplate "text/template"
@@ -35,25 +36,74 @@ func NewRenderer(t Templates) Renderer {
 	}
 	// Establish some default function handlers.
 	r.functions = funcMap{
-		"escape":    EscapeString,
-		"trimRight": r.trimRight,
-		"trimLeft":  r.trimLeft,
-		"trim":      r.trimBoth,
+		"escape":              EscapeString,
+		"trimRight":           trimRight,
+		"trimLeft":            trimLeft,
+		"trim":                trimBoth,
+		"specialCharacter":    specialCharacter,
+		"predefinedAttribute": predefinedAttribute,
 	}
 
 	return r
 }
 
-func (r *sgmlRenderer) trimLeft(s string) string {
+func trimLeft(s string) string {
 	return strings.TrimLeft(s, " ")
 }
 
-func (r *sgmlRenderer) trimRight(s string) string {
+func trimRight(s string) string {
 	return strings.TrimRight(s, " ")
 }
 
-func (r *sgmlRenderer) trimBoth(s string) string {
+func trimBoth(s string) string {
 	return strings.Trim(s, " ")
+}
+
+var specialCharacters = map[string]string{
+	">": "&gt;",
+	"<": "&lt;",
+	"&": "&amp;",
+}
+
+func specialCharacter(c string) string {
+	return specialCharacters[c]
+}
+
+var predefinedAttributes = map[string]string{
+	"sp":             " ",
+	"blank":          "",
+	"empty":          "",
+	"nbsp":           "\u00a0",
+	"zwsp":           "\u200b",
+	"wj":             "\u2060",
+	"apos":           "&#39;",
+	"quot":           "&#34;",
+	"lsquo":          "\u2018",
+	"rsquo":          "\u2019",
+	"ldquo":          "\u201c",
+	"rdquo":          "\u201d",
+	"deg":            "\u00b0",
+	"plus":           "&#43;",
+	"brvbar":         "\u00a6",
+	"vbar":           "|", // TODO: maybe convert this because of tables?
+	"amp":            "&amp;",
+	"lt":             "<",
+	"gt":             ">",
+	"startsb":        "[",
+	"endsb":          "]",
+	"caret":          "^",
+	"asterisk":       "*",
+	"tilde":          "~",
+	"backslash":      `\`,
+	"backtick":       "`",
+	"two-colons":     "::",
+	"two-semicolons": ";",
+	"cpp":            "C++",
+}
+
+func predefinedAttribute(a string) string {
+	log.Debugf("predefined attribute '%s': '%s", a, predefinedAttributes[a])
+	return predefinedAttributes[a]
 }
 
 func (r *sgmlRenderer) SetFunction(name string, fn interface{}) {
@@ -72,11 +122,13 @@ func (r *sgmlRenderer) newTemplate(name string, tmpl string, err error) (*textTe
 	if err != nil {
 		return nil, err
 	}
+	if len(tmpl) == 0 {
+		return nil, fmt.Errorf("empty template for '%s'", name)
+	}
 	t := texttemplate.New(name)
 	t.Funcs(r.functions)
-	t, err = t.Parse(tmpl)
-	if err != nil {
-		log.Errorf("failed to initialize '%s' template: %v", name, err)
+	if t, err = t.Parse(tmpl); err != nil {
+		log.Errorf("failed to initialize the '%s' template: %v", name, err)
 		return nil, err
 	}
 	return t, nil

@@ -856,7 +856,7 @@ print("one")
 . {blank}
 +
 ----
-print("one")
+print("two")
 ----`
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
@@ -866,7 +866,9 @@ print("one")
 							Elements: []interface{}{
 								types.Paragraph{
 									Lines: []interface{}{
-										[]interface{}{}, // empty line
+										[]interface{}{
+											types.PredefinedAttribute{Name: "blank"},
+										},
 									},
 								},
 							},
@@ -888,7 +890,9 @@ print("one")
 							Elements: []interface{}{
 								types.Paragraph{
 									Lines: []interface{}{
-										[]interface{}{}, // empty line
+										[]interface{}{
+											types.PredefinedAttribute{Name: "blank"},
+										},
 									},
 								},
 							},
@@ -899,7 +903,7 @@ print("one")
 								Kind: types.Listing,
 								Elements: []interface{}{
 									types.VerbatimLine{
-										Content: "print(\"one\")",
+										Content: "print(\"two\")",
 									},
 								},
 							},
@@ -1048,7 +1052,7 @@ print("one")
 										types.Paragraph{
 											Lines: []interface{}{
 												[]interface{}{
-													types.SpecialCharacter{Content: "&"},
+													types.PredefinedAttribute{Name: "amp"},
 												},
 											},
 										},
@@ -1906,7 +1910,7 @@ print("one")
 . {blank}
 +
 ----
-print("one")
+print("two")
 ----`
 				expected := types.Document{
 					Elements: []interface{}{
@@ -1917,7 +1921,11 @@ print("one")
 									Style: types.Arabic,
 									Elements: []interface{}{
 										types.Paragraph{
-											Lines: []interface{}{},
+											Lines: []interface{}{
+												[]interface{}{
+													types.PredefinedAttribute{Name: "blank"},
+												},
+											},
 										},
 										types.DelimitedBlock{
 											Kind: types.Listing,
@@ -1934,13 +1942,17 @@ print("one")
 									Style: types.Arabic,
 									Elements: []interface{}{
 										types.Paragraph{
-											Lines: []interface{}{},
+											Lines: []interface{}{
+												[]interface{}{
+													types.PredefinedAttribute{Name: "blank"},
+												},
+											},
 										},
 										types.DelimitedBlock{
 											Kind: types.Listing,
 											Elements: []interface{}{
 												types.VerbatimLine{
-													Content: "print(\"one\")",
+													Content: "print(\"two\")",
 												},
 											},
 										},

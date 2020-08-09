@@ -21,7 +21,7 @@ func (r *sgmlRenderer) renderImageBlock(ctx *renderer.Context, img types.ImageBl
 	if _, found := img.Attributes.GetAsString(types.AttrTitle); found {
 		c, ok := img.Attributes.GetAsString(types.AttrCaption)
 		if !ok {
-			c, _ = ctx.Attributes.GetAsString(types.AttrFigureCaption)
+			c = ctx.Attributes.GetAsStringWithDefault(types.AttrFigureCaption, "Figure")
 			if c != "" {
 				// We always append the figure number, unless the caption is disabled.
 				// This is for asciidoctor compatibility.

@@ -1,14 +1,13 @@
-package types_test
+package sgml
 
 import (
-	"github.com/bytesparadise/libasciidoc/pkg/types"
 	. "github.com/onsi/ginkgo/extensions/table"
 	. "github.com/onsi/gomega" //nolint golint
 )
 
 var _ = DescribeTable("predefined attributes",
 	func(code, rendered string) {
-		Expect(types.Predefined[code]).To(Equal(rendered))
+		Expect(predefinedAttribute(code)).To(Equal(rendered))
 	},
 	Entry("sp", "sp", " "),
 	Entry("blank", "blank", ""),

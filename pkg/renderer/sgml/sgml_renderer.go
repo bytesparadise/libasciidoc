@@ -55,6 +55,7 @@ type sgmlRenderer struct {
 	paragraph                 *textTemplate
 	passthroughBlock          *textTemplate
 	preamble                  *textTemplate
+	predefinedAttribute       *textTemplate
 	qAndAList                 *textTemplate
 	qAndAListItem             *textTemplate
 	quoteBlock                *textTemplate
@@ -134,6 +135,7 @@ func (r *sgmlRenderer) prepareTemplates() error {
 		r.paragraph, err = r.newTemplate("paragraph", tmpls.Paragraph, err)
 		r.passthroughBlock, err = r.newTemplate("passthrough", tmpls.PassthroughBlock, err)
 		r.preamble, err = r.newTemplate("preamble", tmpls.Preamble, err)
+		r.predefinedAttribute, err = r.newTemplate("predefined attribute", tmpls.PredefinedAttribute, err)
 		r.qAndAList, err = r.newTemplate("qanda-list", tmpls.QAndAList, err)
 		r.qAndAListItem, err = r.newTemplate("qanda-list-item", tmpls.QAndAListItem, err)
 		r.quoteBlock, err = r.newTemplate("quote-block", tmpls.QuoteBlock, err)

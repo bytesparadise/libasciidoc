@@ -41,10 +41,6 @@ func (a AttributesWithOverrides) GetAsString(key string) (string, bool) {
 	if value, found := a.Overrides[key]; found {
 		return value, true
 	}
-	// check in predefined attributes
-	if value, found := Predefined[key]; found {
-		return value, true
-	}
 	// if value is reset
 	if _, found := a.Overrides["!"+key]; found {
 		return "", false
@@ -60,10 +56,6 @@ func (a AttributesWithOverrides) GetAsString(key string) (string, bool) {
 // or returns the given default value
 func (a AttributesWithOverrides) GetAsStringWithDefault(key, defaultValue string) string {
 	if value, found := a.Overrides[key]; found {
-		return value
-	}
-	// check in predefined attributes
-	if value, found := Predefined[key]; found {
 		return value
 	}
 	if value, found := a.Content[key].(string); found {

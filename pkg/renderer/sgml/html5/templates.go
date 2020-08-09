@@ -55,6 +55,7 @@ var templates = sgml.Templates{
 	PassthroughBlock:          pssThroughBlock,
 	Paragraph:                 paragraphTmpl,
 	Preamble:                  preambleTmpl,
+	PredefinedAttribute:       predefinedAttributeTmpl,
 	QAndAList:                 qAndAListTmpl,
 	QAndAListItem:             qAndAListItemTmpl,
 	QuoteBlock:                quoteBlockTmpl,

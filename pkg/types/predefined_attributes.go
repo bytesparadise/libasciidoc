@@ -1,47 +1,44 @@
 package types
 
-// Predefined the predefined document attributes, mainly for special characters
-var Predefined map[string]string
+// PredefinedAttributes the predefined document attributes
+// May be converted into HTML entities
+var predefinedAttributes = []string{
+	"sp",
+	"blank",
+	"empty",
+	"nbsp",
+	"zwsp",
+	"wj",
+	"apos",
+	"quot",
+	"lsquo",
+	"rsquo",
+	"ldquo",
+	"rdquo",
+	"deg",
+	"plus",
+	"brvbar",
+	"vbar",
+	"amp",
+	"lt",
+	"gt",
+	"startsb",
+	"endsb",
+	"caret",
+	"asterisk",
+	"tilde",
+	"backslash",
+	"backtick",
+	"two-colons",
+	"two-semicolons",
+	"cpp",
+}
 
-func init() {
-	Predefined = map[string]string{
-		"sp":                 " ",
-		"blank":              "",
-		"empty":              "",
-		"nbsp":               "\u00a0",
-		"zwsp":               "\u200b",
-		"wj":                 "\u2060",
-		"apos":               "&#39;",
-		"quot":               "&#34;",
-		"lsquo":              "\u2018",
-		"rsquo":              "\u2019",
-		"ldquo":              "\u201c",
-		"rdquo":              "\u201d",
-		"deg":                "\u00b0",
-		"plus":               "+", // leave this to prevent passthrough decode?
-		"brvbar":             "\u00a6",
-		"vbar":               "|", // TODO: maybe convert this because of tables?
-		"amp":                "&",
-		"lt":                 "<",
-		"gt":                 ">",
-		"startsb":            "[",
-		"endsb":              "]",
-		"caret":              "^",
-		"asterisk":           "*",
-		"tilde":              "~",
-		"backslash":          `\`,
-		"backtick":           "`",
-		"two-colons":         "::",
-		"two-semicolons":     ";",
-		"cpp":                "C++",
-		AttrVersionLabel:     "version",
-		AttrExampleCaption:   "Example",
-		AttrTableCaption:     "Table",
-		AttrFigureCaption:    "Figure",
-		AttrCautionCaption:   "Caution",
-		AttrImportantCaption: "Important",
-		AttrNoteCaption:      "Note",
-		AttrTipCaption:       "Tip",
-		AttrWarningCaption:   "Warning",
+func isPrefedinedAttribute(a string) bool {
+	for _, v := range predefinedAttributes {
+		if v == a {
+			return true
+		}
 	}
+	return false
 }
