@@ -32,6 +32,7 @@ func processFileInclusions(elements []interface{}, globalAttrs types.AttributesW
 			result = append(result, e)
 		case types.FileInclusion:
 			// read the file and include its content
+
 			elements, err := parseFileToInclude(e, globalAttrs, levelOffsets, config, options...)
 			if err != nil {
 				return nil, err
@@ -97,8 +98,35 @@ func absoluteOffset(offset int) levelOffset {
 	}
 }
 
+// applies the elements and attributes substitutions on the given image block.
+func applySubstitutionsOnFileInclusion(f types.FileInclusion, attrs types.AttributesWithOverrides, options ...Option) (types.FileInclusion, error) {
+	elements := f.Location.Path
+	// apply all the "normal" subtitutions
+	subs := []elementsSubstitutionFunc{
+		substituteAttributesFunc,                  // detect the replacements
+		applyAttributeSubstitutionsOnElementsFunc, // apply the replacements
+	}
+	var err error
+	for _, sub := range subs {
+		if elements, err = sub(elements, attrs, options...); err != nil {
+			return types.FileInclusion{}, err
+		}
+	}
+	f.Location.Path = elements
+
+	if log.IsLevelEnabled(log.DebugLevel) {
+		log.Debugf("FileInclusion after substitution:")
+		spew.Fdump(log.StandardLogger().Out, f)
+	}
+	return f, nil
+}
+
 func parseFileToInclude(incl types.FileInclusion, attrs types.AttributesWithOverrides, levelOffsets []levelOffset, config configuration.Configuration, options ...Option) ([]interface{}, error) {
-	path := incl.Location.Resolve(attrs).String()
+	incl, err := applySubstitutionsOnFileInclusion(incl, attrs)
+	if err != nil {
+		return nil, err
+	}
+	path := incl.Location.Stringify()
 	currentDir := filepath.Dir(config.Filename)
 	log.Debugf("parsing '%s' from current dir '%s' (%s)", path, currentDir, config.Filename)
 	f, absPath, done, err := open(filepath.Join(currentDir, path))

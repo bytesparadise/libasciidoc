@@ -173,7 +173,7 @@ var _ = Describe("quoted strings", func() {
 		It("image in curly", func() {
 			source := "'`a image:foo.png[]`'"
 			expected := `<div class="paragraph">
-<p>&#8216;a <span class="image"><img src="foo.png" alt=""/></span>&#8217;</p>
+<p>&#8216;a <span class="image"><img src="foo.png" alt="foo"/></span>&#8217;</p>
 </div>
 `
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
@@ -327,7 +327,7 @@ var _ = Describe("quoted strings", func() {
 		It("double curly in link (becomes mono)", func() {
 			source := "https://www.example.com/a[\"`example`\"]"
 			expected := `<div class="paragraph">
-<p><a href="https://www.example.com/a"><code>example</code></a></p>
+<p><a href="https://www.example.com/a">&#8220;example&#8221;</a></p>
 </div>
 `
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
@@ -346,7 +346,7 @@ var _ = Describe("quoted strings", func() {
 		It("image in double curly", func() {
 			source := "\"`a image:foo.png[]`\""
 			expected := `<div class="paragraph">
-<p>&#8220;a <span class="image"><img src="foo.png" alt=""/></span>&#8221;</p>
+<p>&#8220;a <span class="image"><img src="foo.png" alt="foo"/></span>&#8221;</p>
 </div>
 `
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))

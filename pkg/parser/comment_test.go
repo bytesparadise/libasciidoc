@@ -47,7 +47,7 @@ var _ = Describe("comments", func() {
 			It("single line comment within a paragraph", func() {
 				source := `a first line
 // A single-line comment.
-another line // with a comment`
+another line // not a comment`
 				expected := types.DraftDocument{
 					Blocks: []interface{}{
 						types.Paragraph{
@@ -64,7 +64,7 @@ another line // with a comment`
 								},
 								[]interface{}{
 									types.StringElement{
-										Content: "another line // with a comment",
+										Content: "another line // not a comment",
 									},
 								},
 							},

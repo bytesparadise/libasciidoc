@@ -482,7 +482,7 @@ var _ = Describe("location resolution", func() {
 		func(actual types.Location, expected types.Location, expectedStr string) {
 			actual = actual.Resolve(attrs)
 			Expect(actual).To(Equal(expected))
-			Expect(actual.String()).To(Equal(expectedStr))
+			Expect(actual.Stringify()).To(Equal(expectedStr))
 		},
 		Entry("includes/file.ext",
 			types.Location{

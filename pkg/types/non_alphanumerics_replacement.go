@@ -33,7 +33,7 @@ func ReplaceNonAlphanumerics(elements []interface{}, replacement string) (string
 			}
 			buf.WriteString(r)
 		case InlineLink:
-			r, err := replaceNonAlphanumerics(element.Location.String(), replacement)
+			r, err := replaceNonAlphanumerics(element.Location.Stringify(), replacement)
 			if err != nil {
 				return "", err
 			}

@@ -67,13 +67,15 @@ What is the answer to the Ultimate Question?:: 42`
 				},
 			},
 		}
-		Expect(ParseDocument(source)).To(MatchDocument(expected))
+		result, err := ParseDocument(source)
+		Expect(err).NotTo(HaveOccurred())
+		Expect(result).To(MatchDocument(expected))
 	})
 
 	It("q and a with role and id", func() {
 		source := `.Q&A
 [qanda#quiz]
-[.key.role2]
+[.role1.role2]
 What is libasciidoc?::
 	An implementation of the AsciiDoc processor in Golang.
 What is the answer to the Ultimate Question?:: 42`
@@ -86,7 +88,7 @@ What is the answer to the Ultimate Question?:: 42`
 						types.AttrStyle:    "qanda",
 						types.AttrID:       "quiz",
 						types.AttrCustomID: true,
-						types.AttrRole:     []string{"key", "role2"},
+						types.AttrRole:     []interface{}{types.ElementRole{"role1"}, types.ElementRole{"role2"}},
 					},
 					Items: []types.LabeledListItem{
 						{

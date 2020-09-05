@@ -316,7 +316,7 @@ a paragraph`
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.Attributes{
-									types.AttrRole: "a role",
+									types.AttrRole: types.ElementRole{"a role"},
 								},
 								Lines: []interface{}{
 									[]interface{}{
@@ -338,7 +338,7 @@ a paragraph`
 						Elements: []interface{}{
 							types.Paragraph{
 								Attributes: types.Attributes{
-									types.AttrRole: "a role",
+									types.AttrRole: types.ElementRole{"a role"},
 								},
 								Lines: []interface{}{
 									[]interface{}{
@@ -362,7 +362,7 @@ a paragraph`
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.Attributes{
-								types.AttrRole: "a role",
+								types.AttrRole: types.ElementRole{"a role"},
 							},
 							Lines: []interface{}{
 								[]interface{}{types.StringElement{
@@ -373,7 +373,9 @@ a paragraph`
 						},
 					},
 				}
-				Expect(ParseDocument(source)).To(MatchDocument(expected))
+				result, err := ParseDocument(source)
+				Expect(err).NotTo(HaveOccurred())
+				Expect(result).To(MatchDocument(expected))
 			})
 
 			It("blank lines after id, role and title attributes", func() {
@@ -387,7 +389,7 @@ a paragraph`
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.Attributes{
-								types.AttrRole:     "a role",
+								types.AttrRole:     types.ElementRole{"a role"},
 								types.AttrTitle:    "title",
 								types.AttrID:       "ID",
 								types.AttrCustomID: true,

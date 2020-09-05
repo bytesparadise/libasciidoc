@@ -13,7 +13,6 @@ func (r *sgmlRenderer) renderParagraph(ctx *renderer.Context, p types.Paragraph)
 	result := &strings.Builder{}
 	hardbreaks := p.Attributes.Has(types.AttrHardBreaks) || ctx.Attributes.Has(types.DocumentAttrHardBreaks) || p.Attributes.HasOption(types.AttrHardBreaks)
 	content, err := r.renderLines(ctx, p.Lines, r.withHardBreaks(hardbreaks))
-
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render paragraph content")
 	}
@@ -30,6 +29,10 @@ func (r *sgmlRenderer) renderParagraph(ctx *renderer.Context, p types.Paragraph)
 	} else if ctx.WithinDelimitedBlock || ctx.WithinList > 0 {
 		return r.renderDelimitedBlockParagraph(ctx, p)
 	} else {
+		roles, err := r.renderElementRoles(p.Attributes)
+		if err != nil {
+			return "", errors.Wrap(err, "unable to render paragraph roles")
+		}
 		log.Debug("rendering a standalone paragraph")
 		err = r.paragraph.Execute(result, struct {
 			Context *renderer.Context
@@ -43,14 +46,13 @@ func (r *sgmlRenderer) renderParagraph(ctx *renderer.Context, p types.Paragraph)
 			ID:      r.renderElementID(p.Attributes),
 			Title:   r.renderElementTitle(p.Attributes),
 			Content: string(content),
-			Roles:   r.renderElementRoles(p.Attributes),
+			Roles:   roles,
 			Lines:   p.Lines,
 		})
+		if err != nil {
+			return "", errors.Wrap(err, "unable to render paragraph")
+		}
 	}
-	if err != nil {
-		return "", errors.Wrap(err, "unable to render paragraph")
-	}
-	// log.Debugf("rendered paragraph: '%s'", result.String())
 	return result.String(), nil
 }
 
@@ -69,6 +71,10 @@ func (r *sgmlRenderer) renderAdmonitionParagraph(ctx *renderer.Context, p types.
 	if err != nil {
 		return "", err
 	}
+	roles, err := r.renderElementRoles(p.Attributes)
+	if err != nil {
+		return "", errors.Wrap(err, "unable to render fenced block content")
+	}
 	err = r.admonitionParagraph.Execute(result, struct {
 		Context *renderer.Context
 		ID      string
@@ -83,7 +89,7 @@ func (r *sgmlRenderer) renderAdmonitionParagraph(ctx *renderer.Context, p types.
 		ID:      r.renderElementID(p.Attributes),
 		Title:   r.renderElementTitle(p.Attributes),
 		Kind:    string(k),
-		Roles:   r.renderElementRoles(p.Attributes),
+		Roles:   roles,
 		Icon:    icon,
 		Content: string(content),
 		Lines:   p.Lines,

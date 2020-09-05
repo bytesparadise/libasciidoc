@@ -49,7 +49,7 @@ var _ = Describe("unordered lists", func() {
 								types.AttrTitle:    "mytitle",
 								types.AttrID:       "listID",
 								types.AttrCustomID: true,
-								types.AttrRole:     "myrole",
+								types.AttrRole:     types.ElementRole{"myrole"},
 							},
 							Level:       1,
 							BulletStyle: types.OneAsterisk,
@@ -80,7 +80,7 @@ var _ = Describe("unordered lists", func() {
 								types.AttrTitle:    "mytitle",
 								types.AttrID:       "listID",
 								types.AttrCustomID: true,
-								types.AttrRole:     "myrole",
+								types.AttrRole:     types.ElementRole{"myrole"},
 								types.AttrStyle:    "square",
 							},
 							Level:       1,
@@ -1483,7 +1483,7 @@ paragraph attached to parent list item`
 								types.AttrID:       "listID",
 								types.AttrCustomID: true,
 								types.AttrTitle:    "mytitle",
-								types.AttrRole:     "myrole",
+								types.AttrRole:     types.ElementRole{"myrole"},
 							},
 							Items: []types.UnorderedListItem{
 								{

@@ -56,6 +56,11 @@ func (r *sgmlRenderer) renderFencedBlock(ctx *renderer.Context, b types.Delimite
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render fenced block content")
 	}
+	roles, err := r.renderElementRoles(b.Attributes)
+	if err != nil {
+		return "", errors.Wrap(err, "unable to render fenced block roles")
+	}
+
 	err = r.fencedBlock.Execute(result, struct {
 		Context  *renderer.Context
 		ID       string
@@ -67,7 +72,7 @@ func (r *sgmlRenderer) renderFencedBlock(ctx *renderer.Context, b types.Delimite
 		Context:  ctx,
 		ID:       r.renderElementID(b.Attributes),
 		Title:    r.renderElementTitle(b.Attributes),
-		Roles:    r.renderElementRoles(b.Attributes),
+		Roles:    roles,
 		Content:  content,
 		Elements: elements,
 	})
@@ -89,6 +94,10 @@ func (r *sgmlRenderer) renderListingBlock(ctx *renderer.Context, b types.Delimit
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render listing block content")
 	}
+	roles, err := r.renderElementRoles(b.Attributes)
+	if err != nil {
+		return "", errors.Wrap(err, "unable to render listing block roles")
+	}
 
 	err = r.listingBlock.Execute(result, struct {
 		Context  *renderer.Context
@@ -101,7 +110,7 @@ func (r *sgmlRenderer) renderListingBlock(ctx *renderer.Context, b types.Delimit
 		Context:  ctx,
 		ID:       r.renderElementID(b.Attributes),
 		Title:    r.renderElementTitle(b.Attributes),
-		Roles:    r.renderElementRoles(b.Attributes),
+		Roles:    roles,
 		Content:  content,
 		Elements: discardTrailingBlankLines(b.Elements),
 	})
@@ -246,9 +255,12 @@ func (r *sgmlRenderer) renderSourceBlock(ctx *renderer.Context, b types.Delimite
 			return "", err
 		}
 	}
-
+	roles, err := r.renderElementRoles(b.Attributes)
+	if err != nil {
+		return "", errors.Wrap(err, "unable to render source block roles")
+	}
 	result := &bytes.Buffer{}
-	err := r.sourceBlock.Execute(result, struct {
+	err = r.sourceBlock.Execute(result, struct {
 		ID                string
 		Title             string
 		Roles             string
@@ -259,7 +271,7 @@ func (r *sgmlRenderer) renderSourceBlock(ctx *renderer.Context, b types.Delimite
 		ID:                r.renderElementID(b.Attributes),
 		Title:             r.renderElementTitle(b.Attributes),
 		SyntaxHighlighter: highlighter,
-		Roles:             r.renderElementRoles(b.Attributes),
+		Roles:             roles,
 		Language:          language,
 		Content:           content,
 	})
@@ -279,6 +291,10 @@ func (r *sgmlRenderer) renderAdmonitionBlock(ctx *renderer.Context, b types.Deli
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render admonition block content")
 	}
+	roles, err := r.renderElementRoles(b.Attributes)
+	if err != nil {
+		return "", errors.Wrap(err, "unable to render fenced block content")
+	}
 	err = r.admonitionBlock.Execute(result, struct {
 		Context  *renderer.Context
 		ID       string
@@ -292,7 +308,7 @@ func (r *sgmlRenderer) renderAdmonitionBlock(ctx *renderer.Context, b types.Deli
 		Context:  ctx,
 		ID:       r.renderElementID(b.Attributes),
 		Kind:     kind,
-		Roles:    r.renderElementRoles(b.Attributes),
+		Roles:    roles,
 		Title:    r.renderElementTitle(b.Attributes),
 		Icon:     icon,
 		Content:  content,
@@ -315,7 +331,10 @@ func (r *sgmlRenderer) renderExampleBlock(ctx *renderer.Context, b types.Delimit
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render example block content")
 	}
-
+	roles, err := r.renderElementRoles(b.Attributes)
+	if err != nil {
+		return "", errors.Wrap(err, "unable to render fenced block content")
+	}
 	c, ok := b.Attributes.GetAsString(types.AttrCaption)
 	if !ok {
 		c = ctx.Attributes.GetAsStringWithDefault(types.AttrExampleCaption, "Example")
@@ -343,7 +362,7 @@ func (r *sgmlRenderer) renderExampleBlock(ctx *renderer.Context, b types.Delimit
 		ID:            r.renderElementID(b.Attributes),
 		Title:         r.renderElementTitle(b.Attributes),
 		Caption:       caption.String(),
-		Roles:         r.renderElementRoles(b.Attributes),
+		Roles:         roles,
 		ExampleNumber: number,
 		Content:       content,
 		Elements:      elements,
@@ -358,7 +377,10 @@ func (r *sgmlRenderer) renderQuoteBlock(ctx *renderer.Context, b types.Delimited
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render example block content")
 	}
-
+	roles, err := r.renderElementRoles(b.Attributes)
+	if err != nil {
+		return "", errors.Wrap(err, "unable to render fenced block content")
+	}
 	err = r.quoteBlock.Execute(result, struct {
 		Context     *renderer.Context
 		ID          string
@@ -371,7 +393,7 @@ func (r *sgmlRenderer) renderQuoteBlock(ctx *renderer.Context, b types.Delimited
 		Context:     ctx,
 		ID:          r.renderElementID(b.Attributes),
 		Title:       r.renderElementTitle(b.Attributes),
-		Roles:       r.renderElementRoles(b.Attributes),
+		Roles:       roles,
 		Attribution: newDelimitedBlockAttribution(b),
 		Content:     content,
 		Elements:    b.Elements,
@@ -383,7 +405,10 @@ func (r *sgmlRenderer) renderVerseBlock(ctx *renderer.Context, b types.Delimited
 	result := &strings.Builder{}
 	elements := discardTrailingBlankLines(b.Elements)
 	content := &strings.Builder{}
-
+	roles, err := r.renderElementRoles(b.Attributes)
+	if err != nil {
+		return "", errors.Wrap(err, "unable to render fenced block content")
+	}
 	for _, item := range elements {
 		s, err := r.renderVerseBlockElement(ctx, item)
 		if err != nil {
@@ -391,7 +416,7 @@ func (r *sgmlRenderer) renderVerseBlock(ctx *renderer.Context, b types.Delimited
 		}
 		content.WriteString(s)
 	}
-	err := r.verseBlock.Execute(result, struct {
+	err = r.verseBlock.Execute(result, struct {
 		Context     *renderer.Context
 		ID          string
 		Title       string
@@ -403,7 +428,7 @@ func (r *sgmlRenderer) renderVerseBlock(ctx *renderer.Context, b types.Delimited
 		Context:     ctx,
 		ID:          r.renderElementID(b.Attributes),
 		Title:       r.renderElementTitle(b.Attributes),
-		Roles:       r.renderElementRoles(b.Attributes),
+		Roles:       roles,
 		Attribution: newDelimitedBlockAttribution(b),
 		Content:     string(content.String()),
 		Elements:    elements,
@@ -435,7 +460,10 @@ func (r *sgmlRenderer) renderSidebarBlock(ctx *renderer.Context, b types.Delimit
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render sidebar block content")
 	}
-
+	roles, err := r.renderElementRoles(b.Attributes)
+	if err != nil {
+		return "", errors.Wrap(err, "unable to render fenced block content")
+	}
 	err = r.sidebarBlock.Execute(result, struct {
 		Context  *renderer.Context
 		ID       string
@@ -447,7 +475,7 @@ func (r *sgmlRenderer) renderSidebarBlock(ctx *renderer.Context, b types.Delimit
 		Context:  ctx,
 		ID:       r.renderElementID(b.Attributes),
 		Title:    r.renderElementTitle(b.Attributes),
-		Roles:    r.renderElementRoles(b.Attributes),
+		Roles:    roles,
 		Content:  content,
 		Elements: discardTrailingBlankLines(b.Elements),
 	})
@@ -461,6 +489,10 @@ func (r *sgmlRenderer) renderPassthrough(ctx *renderer.Context, b types.Delimite
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render passthrough")
 	}
+	roles, err := r.renderElementRoles(b.Attributes)
+	if err != nil {
+		return "", errors.Wrap(err, "unable to render fenced block content")
+	}
 	err = r.passthroughBlock.Execute(result, struct {
 		Context  *renderer.Context
 		ID       string
@@ -470,7 +502,7 @@ func (r *sgmlRenderer) renderPassthrough(ctx *renderer.Context, b types.Delimite
 	}{
 		Context:  ctx,
 		ID:       r.renderElementID(b.Attributes),
-		Roles:    r.renderElementRoles(b.Attributes),
+		Roles:    roles,
 		Content:  content,
 		Elements: elements,
 	})

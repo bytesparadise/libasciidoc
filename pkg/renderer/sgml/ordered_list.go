@@ -18,8 +18,11 @@ func (r *sgmlRenderer) renderOrderedList(ctx *renderer.Context, l types.OrderedL
 			return "", errors.Wrap(err, "unable to render unordered list")
 		}
 	}
-
-	err := r.orderedList.Execute(result, struct {
+	roles, err := r.renderElementRoles(l.Attributes)
+	if err != nil {
+		return "", errors.Wrap(err, "unable to render ordered list roles")
+	}
+	err = r.orderedList.Execute(result, struct {
 		Context   *renderer.Context
 		ID        string
 		Title     string
@@ -33,7 +36,7 @@ func (r *sgmlRenderer) renderOrderedList(ctx *renderer.Context, l types.OrderedL
 	}{
 		ID:        r.renderElementID(l.Attributes),
 		Title:     r.renderElementTitle(l.Attributes),
-		Roles:     r.renderElementRoles(l.Attributes),
+		Roles:     roles,
 		Style:     getNumberingStyle(l),
 		ListStyle: r.numberingType(getNumberingStyle(l)),
 		Start:     l.Attributes.GetAsStringWithDefault(types.AttrStart, ""),

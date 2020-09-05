@@ -250,7 +250,7 @@ var _ = Describe("quoted texts", func() {
 		It("quoted short-hand role", func() {
 			source := "[.'something \"wicked\"']**bold**"
 			expected := `<div class="paragraph">
-<p><strong class="something &#34;wicked&#34;">bold</strong></p>
+<p><strong class="something "wicked"">bold</strong></p>
 </div>
 `
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))

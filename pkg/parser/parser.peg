@@ -18,18 +18,12 @@ AsciidocRawDocument <- frontmatter:(FrontMatter?) blocks:(AsciidocDocumentRawBlo
     return types.NewRawDocument(frontmatter, blocks.([]interface{}))
 }
 
-// TODO: Deprecated?
-VerbatimDocument <- blocks:(VerbatimFileContent) EOF {
-    return types.NewDraftDocument(nil, blocks.([]interface{}))
-}
-
 // custom entrypoint used for file inclusions
 RawFile <- blocks:(RawFileContent) EOF {
     return types.NewRawDocument(nil, blocks.([]interface{}))
 }
 
 // custom entrypoint used for file inclusions
-// TODO: remove this rule ?
 TextDocument <- blocks:(TextDocumentBlocks) EOF {
     return types.NewRawDocument(nil, blocks.([]interface{}))
 }
@@ -67,9 +61,6 @@ DocumentRawBlock <-
         / UserMacroBlock
         / StandaloneAttributes
         / RawParagraph
-
-// TODO: unused?
-AsciidocDocumentBlocksWithinDelimitedBlock <- blocks:(DocumentBlockWithinDelimitedBlock)*
 
 DocumentBlockWithinDelimitedBlock <- !EOF 
     block:(
@@ -254,7 +245,7 @@ ElementAttribute <- &("[" / "." ) // skip if the content does not start with one
 }
 
 ElementID <- "[[" id:(ID) "]]" Space* EOL {
-    return types.NewElementID(id.(string))
+    return types.NewElementID(id)
 }
 
 InlineElementID <- "[[" id:(ID) "]]" Space* { // no EOL here since there can be multiple InlineElementID on the same line
@@ -286,19 +277,19 @@ BlockAttrList <- '[' attrs:(BlockAttrStyle? ShortHandAttr* BlockAttrPositional2?
 }
 
 BlockAttrStyle <- style:PositionalValue {
-    return types.NewElementStyle(style.(string))
+    return types.NewElementStyle(style)
 }
 
 BlockAttrPositional2 <- Space* "," Space* value:PositionalValue? {
     if value != nil {
-        return types.NewElementNamedAttr(types.AttrPositional2, value.(string))
+        return types.NewElementNamedAttr(types.AttrPositional2, value)
     }
     return nil, nil
 }
 
 BlockAttrPositional3 <- Space* "," Space* value:PositionalValue? {
     if value != nil {
-        return types.NewElementNamedAttr(types.AttrPositional3, value.(string))
+        return types.NewElementNamedAttr(types.AttrPositional3, value)
     }
     return nil, nil
 }
@@ -368,7 +359,7 @@ QuotedTextAttrs <- "[" attrs:(QuotedTextAttrRole? ShortHandAttr* NamedAttr*) "]"
 }
 
 QuotedTextAttrRole <- role:PositionalValue {
-    return types.NewElementRole(role.(string))
+    return types.NewElementRole(role)
 }
 
 StandaloneAttributes <- attributes:(ElementAttribute)+ BlankLine* EOF { // standalone attributes, i.e., with nothing afterwards
@@ -378,20 +369,20 @@ StandaloneAttributes <- attributes:(ElementAttribute)+ BlankLine* EOF { // stand
 ShortHandAttr <- ShortHandAttrID / ShortHandAttrOption / ShortHandAttrRole
 
 ShortHandAttrOption <- "%" option:ShortHandValue &[,#%.\r\n\]] {
-    return types.NewElementOption(option.(string))
+    return types.NewElementOption(option)
 }
 
 ShortHandAttrID <- "#" id:ShortHandValue &[,#%.\r\n\]] {
-    return types.NewElementID(id.(string))
+    return types.NewElementID(id)
 }
 
 ShortHandAttrRole <- '.' role:ShortHandValue &[,#%.\r\n\]] {
-    return types.NewElementRole(role.(string))
+    return types.NewElementRole(role)
 }
 
 // PositionalValue is an unnamed attribute.
 PositionalValue <- value:ShortHandValue &[,#%.\]] {
-    return value.(string), nil
+    return value, nil
 }
 
 InlineVal <- AttrEmpty / AttrValSQ / AttrValDQ / AttrValPosFB
@@ -434,12 +425,19 @@ ShortHandValue <- ShortHandValuePlain / AttrValueSingleQuoted / AttrValueDoubleQ
 
 // ShortHandValuePlain is sort of like AttrValuePlain, but it also needs to exclude the characters
 // used to start a short hand role, id, or option, as well as equals signs.
-ShortHandValuePlain <- [^,\r\n"' \t.#%=\]]  ([^ \t,\r\n"'.#%=\]] / [ \t][^ \t,\r\n"'.#%=\]])* {
-    return string(c.text), nil
-}
+ShortHandValuePlain <- first:([^,\r\n"' \t.#%=\]] {
+       return types.NewStringElement(string(c.text))
+    })
+    others: (ElementPlaceHolder 
+        / ([^ \t,\r\n"'.#%=\]] / [ \t][^ \t,\r\n"'.#%=\]] {
+            return types.NewStringElement(string(c.text))
+        })
+    )* {
+        return append([]interface{}{first}, others.([]interface{})...), nil
+    }
 
 NamedAttr <-( "," Space* )? key:NamedAttrKey Space* "=" Space* value:NamedAttrValue Space* {
-    return types.NewElementNamedAttr(key.(string), value.(string))
+    return types.NewElementNamedAttr(key.(string), value)
 }
 
 // The spec says attributes have be alphanumeric but does not consider foreign letters.  We are more generous.
@@ -453,104 +451,24 @@ AttrValuePlain <- [^,\r\n"' \t\]]+ {
     return string(c.text), nil
 }
 
-AttrValueSingleQuoted <- "'" [^'\r\n]+ "'" {
-    return string(c.text[1:len(c.text)-1]), nil
-}
+AttrValueSingleQuoted <- "'" elements:(
+    ([^'\r\n\uFFFD]+ { 
+        return types.NewStringElement(string(c.text))
+    }) / ElementPlaceHolder)+ "'" {
+        return elements, nil
+    }
 
-AttrValueDoubleQuoted <- "\"" [^"\r\n]+ "\"" {
-    return string(c.text[1:len(c.text)-1]), nil
-}
+AttrValueDoubleQuoted <- "\"" elements:(
+    ([^"\r\n\uFFFD]+ { 
+        return types.NewStringElement(string(c.text))
+    }) / ElementPlaceHolder)+ "\"" {
+        return elements, nil
+    }
 
 // TODO: None is magic word meant to undefine the attribute.  It is unclear what the value of this is.
 // For now we just set it to the empty string.  That should have the same effect in practice.
 AttrValueNone <- "None" {
     return "", nil
-}
-
-// ------------------------------------------------------
-// Quoted Strings (between curly single or double quotes)
-// ------------------------------------------------------
-
-QuotedString <- SingleQuotedString / DoubleQuotedString
-
-SingleQuotedString <- SingleQuoteStringStart elements:SingleQuotedStringElements SingleQuoteStringEnd {
-    return types.NewQuotedString(types.SingleQuote, elements.([]interface{}))
-}
-
-SingleQuotedStringElements <- elements:(SingleQuotedStringElement+) {
-    return types.NewInlineElements(elements)
-}
-
-SingleQuoteStringStart <- "'`" ![ \t\r\n]
-
-SingleQuoteStringEnd <- "`'"
-
-// We have to treat this one special, because of ambiguity with monospace markup.
-SingleQuotedStringElement <- element:(
-        LineBreak !SingleQuoteStringEnd // must be before spaces
-        / Space+ !SingleQuoteStringEnd
-        / !"`" Symbol  // Exclude the explicit quote
-        / InlineIcon
-        / InlineImage
-        / InlineFootnote
-        / InlinePassthrough // must be before the SpecialCharacter rule (because of `+`)
-        / Link
-        / AttributeSubstitution
-        / BoldText
-        / ItalicText
-        / MarkedText
-        / SubscriptText
-        / SuperscriptText
-        / !"`'" MonospaceText
-        / DoubleQuotedString
-        / ImpliedApostrophe
-        / SpecialCharacter
-        / SingleQuotedStringFallbackCharacter) {
-    return element, nil
-}
-
-SingleQuotedStringFallbackCharacter <-  [^\r\n\t `] / "`" !"'" {
-    return types.NewStringElement(string(c.text))
-}
-
-DoubleQuotedString <- DoubleQuoteStringStart elements:DoubleQuotedStringElements DoubleQuoteStringEnd {
-    return types.NewQuotedString(types.DoubleQuote, elements.([]interface{}))
-}
-
-DoubleQuotedStringElements <- elements:(DoubleQuotedStringElement+) {
-    return types.NewInlineElements(elements)
-}
-
-// We have to treat this one special, because of ambiguity with monospace markup.
-DoubleQuotedStringElement <- element:(
-        LineBreak !DoubleQuoteStringEnd // must be before spaces
-        / Space+ !DoubleQuoteStringEnd
-        / InlineIcon
-        / InlineImage
-        / InlineFootnote
-        / InlinePassthrough // must be before the SpecialCharacter rule (because of `+`)
-        / Symbol
-        / SpecialCharacter
-        / Link
-        / AttributeSubstitution
-        / BoldText
-        / ItalicText
-        / MarkedText
-        / SubscriptText
-        / SuperscriptText
-        / !"`\"" MonospaceText
-        / SingleQuotedString
-        / ImpliedApostrophe
-        / DoubleQuotedStringFallbackCharacter) {
-            return element, nil
-}
-
-DoubleQuoteStringStart <- "\"`" ![ \t\r\n]
-
-DoubleQuoteStringEnd <- "`\""
-
-DoubleQuotedStringFallbackCharacter <-  ([^\r\n\t `] / "`" !"\"") {
-    return types.NewStringElement(string(c.text))
 }
 
 // ------------------------------------------
@@ -576,18 +494,7 @@ TitleElements <- elements:(!Newline !InlineElementID TitleElement)+ { // absorbs
 TitleElement <- element:(Word
         / LineBreak // must be before spaces
         / Space+ 
-        / CrossReference // must be before the SpecialCharacter rule
-        / InlinePassthrough // must be before the SpecialCharacter rule (because of `+`)
-        / InlineIcon
-        / InlineImage
-        / Link
-        / InlineFootnote
-        / QuotedString
-        / QuotedText
-        / SpecialCharacter
-        / Symbol
-        / AttributeSubstitution
-        / ImpliedApostrophe
+        / ElementPlaceHolder
         / AnyChar) {
     return element, nil
 }
@@ -710,13 +617,6 @@ TagWildcard <- stars:(("*")+ {
         return len(stars.(string)) <= 2, nil 
     } {
     return stars, nil
-}
-
-// TODO: deprecated?
-VerbatimFileLine <- !EOF content:([^\r\n]* { 
-            return string(c.text), nil
-        }) EOL {
-    return types.NewVerbatimFileLine(content.(string))
 }
 
 // Entrypoint to parse a file to include. May contain nested file inclusion macros
@@ -1063,11 +963,6 @@ MarkdownQuoteBlockAttribution <- "-- " author:(([^\r\n]+) {
     return author, nil
 }
 
-// TODO: unused?
-OpenPassthroughParagraphContent <- (!BlankLine content:(VerbatimContent) { // at this stage, content is a mix of FileInclusions and lines of text (i.e., StringElement)
-    return content, nil
-})+
-
 // ------------------------------------------
 // Continued Paragraphs
 // ------------------------------------------
@@ -1083,7 +978,7 @@ ContinuedRawParagraph <-
         return types.NewParagraph(lines.([]interface{}), attributes)
 } 
 
-ContinuedRawParagraphLines <- firstLine:(FirstParagraphRawLine) otherLines:(!ListItemContinuation (SingleLineComment / RawParagraphLine))* {
+ContinuedRawParagraphLines <- firstLine:(FirstParagraphRawLine) otherLines:(!ListItemContinuation line:(SingleLineComment / RawParagraphLine) { return line, nil })* {
     return append([]interface{}{firstLine}, otherLines.([]interface{})...), nil
 }
 
@@ -1118,7 +1013,7 @@ InlineElements <- !BlankLine
     }
 
 InlineElement <-  
-    element:(InlineWord // more permissive than words
+    element:(InlineWord // more permissive than the 'Word' rule
         / LineBreak // must be before spaces
         / Space+ 
         / !EOL (
@@ -1129,7 +1024,7 @@ InlineElement <-
             / Link 
             / InlinePassthrough // must be before the SpecialCharacter rule (because of `+`)
             / InlineFootnote 
-            / CrossReference 
+            / CrossReference // must appear before SpecialCharacter
             / SpecialCharacter
             / Symbol
             / InlineUserMacro 
@@ -1138,6 +1033,7 @@ InlineElement <-
             / ConcealedIndexTerm
             / IndexTerm
             / ImpliedApostrophe
+            / ElementPlaceHolder
             / AnyChar)) {
     return element, nil
 }
@@ -1202,9 +1098,10 @@ DoubleQuoteBoldText <- attrs:(QuotedTextAttrs)? "**" elements:(DoubleQuoteBoldTe
     return types.NewQuotedText(types.Bold, attrs, elements.([]interface{}))
 } 
 
-DoubleQuoteBoldTextElements <- DoubleQuoteBoldTextElement (!("**") (Space / DoubleQuoteBoldTextElement))*  // may start and end with spaces
+DoubleQuoteBoldTextElements <- DoubleQuoteBoldTextElement*  
 
-DoubleQuoteBoldTextElement <- Word
+DoubleQuoteBoldTextElement <- !("**") element:(Word
+        / Space // may start and end with spaces
         / Newline !Newline
         / SingleQuoteBoldText
         / QuotedString
@@ -1213,16 +1110,10 @@ DoubleQuoteBoldTextElement <- Word
         / MonospaceText
         / SubscriptText
         / SuperscriptText
-        / InlinePassthrough // must be before the SpecialCharacter rule (because of `+`)
-        / SpecialCharacter
-        / Symbol
-        / InlineIcon
-        / InlineImage
-        / Link
-        / AttributeSubstitution
-        / ImpliedApostrophe
-        / DoubleQuoteBoldTextFallbackCharacter
-
+        / ElementPlaceHolder
+        / DoubleQuoteBoldTextFallbackCharacter) {
+    return element, nil
+}
 
 DoubleQuoteBoldTextFallbackCharacter <-
     [^\r\n*] // anything except EOL and bold delimiter (fallback in case nothing else matched)
@@ -1248,14 +1139,7 @@ SingleQuoteBoldTextElement <- Word
         / MonospaceText
         / SubscriptText
         / SuperscriptText
-        / InlinePassthrough // must be before the SpecialCharacter rule (because of `+`)
-        / SpecialCharacter
-        / Symbol
-        / InlineIcon
-        / InlineImage 
-        / Link  
-        / AttributeSubstitution
-        / ImpliedApostrophe
+        / ElementPlaceHolder
         / SingleQuoteBoldTextFallbackCharacter
 
 SingleQuoteBoldTextFallbackCharacter <-
@@ -1284,9 +1168,10 @@ DoubleQuoteItalicText <- attrs:(QuotedTextAttrs)? "__" elements:(DoubleQuoteItal
     return types.NewQuotedText(types.Italic, attrs, elements.([]interface{}))
 }
 
-DoubleQuoteItalicTextElements <- DoubleQuoteItalicTextElement (!("__") (Space / DoubleQuoteItalicTextElement))*  // may start and end with spaces
+DoubleQuoteItalicTextElements <- DoubleQuoteItalicTextElement* 
 
-DoubleQuoteItalicTextElement <- Word
+DoubleQuoteItalicTextElement <- !("__") element:(Word
+        / Space // may start and end with spaces
         / Newline !Newline
         / SingleQuoteItalicText
         / QuotedString
@@ -1295,14 +1180,10 @@ DoubleQuoteItalicTextElement <- Word
         / MonospaceText
         / SubscriptText
         / SuperscriptText
-        / InlinePassthrough // must be before the SpecialCharacter rule (because of `+`)
-        / SpecialCharacter
-        / Symbol
-        / InlineIcon
-        / InlineImage 
-        / Link 
-        / ImpliedApostrophe
-        / DoubleQuoteItalicTextFallbackCharacter
+        / ElementPlaceHolder
+        / DoubleQuoteItalicTextFallbackCharacter) {
+    return element, nil
+}
 
 DoubleQuoteItalicTextFallbackCharacter <-
     [^\r\n_] // anything except EOL and italic delimiter (fallback in case nothing else matched)
@@ -1328,14 +1209,7 @@ SingleQuoteItalicTextElement <- Word
         / MonospaceText
         / SubscriptText
         / SuperscriptText
-        / InlinePassthrough // must be before the SpecialCharacter rule (because of `+`)
-        / SpecialCharacter
-        / Symbol
-        / InlineIcon
-        / InlineImage 
-        / Link  
-        / AttributeSubstitution
-        / ImpliedApostrophe
+        / ElementPlaceHolder
         / SingleQuoteItalicTextFallbackCharacter
 
 SingleQuoteItalicTextFallbackCharacter <-
@@ -1363,25 +1237,26 @@ DoubleQuoteMonospaceText <- attrs:(QuotedTextAttrs)? "``" elements:(DoubleQuoteM
     return types.NewQuotedText(types.Monospace, attrs, elements.([]interface{}))
 }
 
-DoubleQuoteMonospaceTextElements <- DoubleQuoteMonospaceTextElement (!("``") (Space / DoubleQuoteMonospaceTextElement))* // may start and end with spaces
+DoubleQuoteMonospaceTextElements <- DoubleQuoteMonospaceTextElement* // may start and end with spaces
 
-DoubleQuoteMonospaceTextElement <- Word
+DoubleQuoteMonospaceTextElement <- !("``") element:(Word
+        / Space // may start and end with spaces
         / Newline !Newline
         / QuotedString
-        / InlinePassthrough // must be before the SpecialCharacter rule (because of `+`)
-        / Symbol
-        / SpecialCharacter
+        / Apostrophe { // must be before SingleQuoteMonospaceText
+            // do not convert to apostrophe (yet)
+            return types.NewStringElement(string(c.text))
+        }
         / SingleQuoteMonospaceText
         / BoldText
         / ItalicText
         / MarkedText
         / SubscriptText
         / SuperscriptText
-        / InlineIcon
-        / InlineImage
-        / Link
-        / ImpliedApostrophe
-        / DoubleQuoteMonospaceTextFallbackCharacter
+        / ElementPlaceHolder
+        / DoubleQuoteMonospaceTextFallbackCharacter) {
+    return element, nil
+}
 
 DoubleQuoteMonospaceTextFallbackCharacter <-
     [^\r\n`] // anything except EOL and monospace delimiter (fallback in case nothing else matched)
@@ -1407,14 +1282,11 @@ SingleQuoteMonospaceTextElement <-  Word
         / MarkedText
         / SubscriptText
         / SuperscriptText
-        / InlinePassthrough // must be before the SpecialCharacter rule (because of `+`)
-        / !"`" Symbol
-        / SpecialCharacter
-        / InlineIcon
-        / InlineImage 
-        / Link 
-        / AttributeSubstitution
-        / ImpliedApostrophe
+        / Apostrophe {
+            // do not convert to apostrophe (yet)
+            return types.NewStringElement(string(c.text))
+        }
+        / ElementPlaceHolder
         / SingleQuoteMonospaceTextFallbackCharacter
 
 SingleQuoteMonospaceTextFallbackCharacter <-
@@ -1432,6 +1304,76 @@ EscapedMonospaceText <-
     } / backslashes:(OneOrMoreBackslashes) "`" elements:(SingleQuoteMonospaceTextElements) "`" { // simple punctuation must be evaluated last
         return types.NewEscapedQuotedText(backslashes.(string), "`", elements.([]interface{}))
 } 
+
+// ------------------------------------------------------
+// Quoted Strings (between curly single or double quotes)
+// ------------------------------------------------------
+
+QuotedString <- SingleQuotedString / DoubleQuotedString
+
+SingleQuotedString <- SingleQuoteStringStart elements:SingleQuotedStringElements SingleQuoteStringEnd {
+    return types.NewQuotedString(types.SingleQuote, elements.([]interface{}))
+}
+
+SingleQuotedStringElements <- elements:(SingleQuotedStringElement+) {
+    return types.NewInlineElements(elements)
+}
+
+SingleQuoteStringStart <- "'`" ![ \t\r\n]
+
+SingleQuoteStringEnd <- "`'"
+
+// We have to treat this one special, because of ambiguity with monospace markup.
+SingleQuotedStringElement <- element:(
+        LineBreak !SingleQuoteStringEnd // must be before spaces
+        / Space+ !SingleQuoteStringEnd
+        / !"`" Symbol  // Exclude the explicit quote
+        / BoldText
+        / ItalicText
+        / MarkedText
+        / SubscriptText
+        / SuperscriptText
+        / !"`'" MonospaceText
+        / DoubleQuotedString
+        / SingleQuotedStringFallbackCharacter) {
+    return element, nil
+}
+
+SingleQuotedStringFallbackCharacter <-  [^\r\n\t `] / "`" !"'" {
+    return types.NewStringElement(string(c.text))
+}
+
+DoubleQuotedString <- DoubleQuoteStringStart elements:DoubleQuotedStringElements DoubleQuoteStringEnd {
+    return types.NewQuotedString(types.DoubleQuote, elements.([]interface{}))
+}
+
+DoubleQuotedStringElements <- elements:(DoubleQuotedStringElement+) {
+    return types.NewInlineElements(elements)
+}
+
+// We have to treat this one special, because of ambiguity with monospace markup.
+DoubleQuotedStringElement <- element:(
+        LineBreak !DoubleQuoteStringEnd // must be before spaces
+        / Space+ !DoubleQuoteStringEnd
+        / BoldText
+        / ItalicText
+        / MarkedText
+        / SubscriptText
+        / SuperscriptText
+        / !"`\"" MonospaceText
+        /SingleQuotedString
+        / DoubleQuotedStringFallbackCharacter) {
+            return element, nil
+}
+
+DoubleQuoteStringStart <- "\"`" ![ \t\r\n]
+
+DoubleQuoteStringEnd <- "`\""
+
+DoubleQuotedStringFallbackCharacter <-  ([^\r\n\t `] / "`" !"\"") {
+    return types.NewStringElement(string(c.text))
+}
+
 
 // -----------------
 // Marked text
@@ -1454,13 +1396,7 @@ DoubleQuoteMarkedTextElement <- Word
         / MonospaceText
         / SubscriptText
         / SuperscriptText
-        / InlinePassthrough // must be before the SpecialCharacter rule (because of `+`)
-        / Symbol
-        / SpecialCharacter
-        / InlineIcon
-        / InlineImage
-        / Link
-        / ImpliedApostrophe
+        / ElementPlaceHolder
         / DoubleQuoteMarkedTextFallbackCharacter
 
 DoubleQuoteMarkedTextFallbackCharacter <-
@@ -1487,14 +1423,7 @@ SingleQuoteMarkedTextElement <- Word
         / MonospaceText
         / SubscriptText
         / SuperscriptText
-        / Symbol
-        / InlinePassthrough // must be before the SpecialCharacter rule (because of `+`)
-        / SpecialCharacter
-        / InlineIcon
-        / InlineImage
-        / Link
-        / AttributeSubstitution
-        / ImpliedApostrophe
+        / ElementPlaceHolder
         / SingleQuoteMarkedTextFallbackCharacter
 
 SingleQuoteMarkedTextFallbackCharacter <-
@@ -1619,11 +1548,11 @@ LinkAttributes <- "[" firstAttr:(FirstLinkAttributeElement)*
 
 FirstLinkAttributeElement <- element:(
     // surrounded with double quotes
-    ("\"" elements:(QuotedString / QuotedText / QuotedAttributeChar)+ "\"" &(!"=") ","? {
+    ("\"" elements:(QuotedString / QuotedText / ElementPlaceHolder / QuotedAttributeChar)+ "\"" &(!"=") ","? {
         return types.NewInlineElements(elements.([]interface{}))
     }) /
     // not surrounded with double quotes
-    (elements:(QuotedString / QuotedText / UnquotedAttributeChar)+ &(!"=") ","? {
+    (elements:(QuotedString / QuotedText / ElementPlaceHolder / UnquotedAttributeChar)+ &(!"=") ","? {
         return types.NewInlineElements(elements.([]interface{}))
     }))  {
         return element, nil
@@ -1647,8 +1576,6 @@ InlineLinks <-
         / SpecialCharacter
         / Space+ 
         / ResolvedLink 
-        / Parenthesis
-        / ImpliedApostrophe
         / AnyChar
         / Newline)+ EOF {
     return types.NewInlineElements(elements.([]interface{}))
@@ -1669,11 +1596,12 @@ ResolvedExternalLink <- url:(ResolvedLocation) inlineAttributes:(LinkAttributes)
 // Images
 // ------------------------------------------
 ImageBlock <- attributes:(BlockImageAttrs)* "image::" path:(Location) inlineAttrs:(InlineImageAttrs) Space* EOL {
+    // 'imagesdir' attribute is added after applying the attribute substitutions on the image location
     return types.NewImageBlock(path.(types.Location), inlineAttrs.(types.Attributes), attributes)
 }
 
 InlineImage <- "image:" !":" path:(Location) inlineAttrs:(InlineImageAttrs) {
-    return types.NewInlineImage(path.(types.Location), inlineAttrs.(types.Attributes))
+    return types.NewInlineImage(path.(types.Location), inlineAttrs.(types.Attributes), c.globalStore["imagesdir"])
 }
 
 InlineImageAttrs <- '[' alt:ImageAltInline w:ImageWidth h:ImageHeight nv:NamedAttrs ']' {
@@ -1699,19 +1627,19 @@ ImageHeight <- ","? value:InlineVal? {
 }
 
 ImageAltAttr <- Space* value:PositionalValue Space* {
-    return types.NewElementNamedAttr(types.AttrImageAlt, value.(string))
+    return types.NewElementNamedAttr(types.AttrImageAlt, value)
 }
 
 ImageWidthAttr <- Space* "," Space* value:PositionalValue? {
     if value != nil {
-        return types.NewElementNamedAttr(types.AttrWidth, value.(string))
+        return types.NewElementNamedAttr(types.AttrWidth, value)
     }
     return nil, nil
 }
 
 ImageHeightAttr <- Space* "," Space* value:PositionalValue? {
     if value != nil {
-        return types.NewElementNamedAttr(types.AttrImageHeight, value.(string))
+        return types.NewElementNamedAttr(types.AttrImageHeight, value)
     }
     return nil, nil
 }
@@ -1902,25 +1830,6 @@ ThematicBreak <- ("***" / "* * *" / "---" / "- - -" / "___" / "_ _ _") EOL {
 // DelimitedBlock and Paragraph Substitutions (standalone rules)
 // -------------------------------------------------------------------------------------
 
-// extra entrypoint when parsing a whole paragraph line at once during the substition phase
-NormalParagraphContentSubstitution <-   
-    (   SingleLineComment /
-        (   (InlineWord // more permissive than words
-            / LineBreak // must be before spaces
-            / Space+ 
-            / Quotes
-            / InlineMacros
-            / Symbol
-            / SpecialCharacter
-            / QuotedString 
-            / ImpliedApostrophe
-            / AttributeSubstitution
-            / AnyChar
-            )+ Newline?)
-    )+
-
-Quotes <- QuotedText
-
 InlineMacros <- InlineIcon
                 / InlineImage 
                 / Link 
@@ -1931,12 +1840,18 @@ InlineMacros <- InlineIcon
                 / InlineElementID
                 / ConcealedIndexTerm
                 / IndexTerm
-            
+
+ElementPlaceHolder <- "\uFFFD" ref:([0-9]+ { return string(c.text), nil }) "\uFFFD" {
+    return types.NewElementPlaceHolder(ref.(string))
+}
+
 ReplacementsSubstitution <- (Symbol 
-            / InlineWord // more permissive than words
-            / Space+ 
-            / AnyChar
-            / Newline)+ EOF
+    / InlineWord // more permissive than the 'Word' rule
+    / Space+ 
+    / ImpliedApostrophe
+    / ElementPlaceHolder
+    / AnyChar
+    / Newline)+ EOF
 
 // standalone rule when applying substitutions
 NormalBlockContentSubstitution <- NormalBlockElement*
@@ -1976,11 +1891,35 @@ Callout <- "<" ref:([0-9]+ { return strconv.Atoi(string(c.text)) }) ">" Space* &
     return types.NewCallout(ref.(int))
 }
 
+// internal substitution to detect passthrough blocks
+InlinePassthroughSubstitution <- 
+    elements:(InlinePassthrough 
+        / InlineWord // more permissive than the 'Word' rule
+        / Space+ 
+        / AnyChar
+        / Newline)+ {
+            return types.NewInlineElements(elements.([]interface{}))
+        }
+
 // standalone rule for the "quotes" substitution
 QuotedTextSubstitution <- 
-    elements:(InlineWord // more permissive than words
+    elements:(InlineWord // more permissive than the 'Word' rule
         / Space+ 
         / QuotedText 
+        / QuotedString
+        / ElementPlaceHolder
+        / AnyChar
+        / Newline)+ {
+            return types.NewInlineElements(elements.([]interface{}))
+        }
+
+// standalone rule for the "macros" substitution
+// TODO: remove (unused)?
+QuotedTextAndInlineMacrosSubstitution <- 
+    elements:(InlineWord // more permissive than the 'Word' rule
+        / Space+ 
+        / QuotedText
+        / InlineMacros
         / AnyChar
         / Newline)+ {
             return types.NewInlineElements(elements.([]interface{}))
@@ -1988,9 +1927,10 @@ QuotedTextSubstitution <-
 
 // standalone rule for the "macros" substitution
 InlineMacrosSubstitution <- 
-    elements:(InlineWord // more permissive than words
+    elements:(InlineWord // more permissive than the 'Word' rule
         / Space+ 
         / InlineMacros
+        / ElementPlaceHolder
         / AnyChar
         / Newline)+ {
             return types.NewInlineElements(elements.([]interface{}))
@@ -1998,9 +1938,10 @@ InlineMacrosSubstitution <-
 
 // standalone rule for the "attributes" substitution
 AttributesSubstitution <- 
-    elements:(InlineWord // more permissive than words
+    elements:(InlineWord // more permissive than the 'Word' rule
         / Space+ 
         / AttributeSubstitution
+        / ElementPlaceHolder
         / AnyChar
         / Newline)+{
             return types.NewInlineElements(elements.([]interface{}))
@@ -2014,6 +1955,15 @@ SpecialCharactersSubstitution <-
         / Newline)+ {
             return types.NewInlineElements(elements.([]interface{}))
         }
+
+
+PostReplacementsSubstitution <- (
+    InlineWord // more permissive than the 'Word' rule
+    / ElementPlaceHolder
+    / LineBreak
+    / Space+ 
+    / AnyChar
+    / Newline)+ EOF
 
 // standalone rule for the "none" substitution
 NoneSubstitution <- (
@@ -2170,7 +2120,7 @@ IndexTerm <- "((" term:(IndexTermContent) "))" {
        return types.NewIndexTerm(term.([]interface{}))
 }
 
-IndexTermContent <- elements:(Word / QuotedString / QuotedText / Space / SpecialCharacter / (!"))" .) {
+IndexTermContent <- elements:(Word / QuotedString / QuotedText / Space / SpecialCharacter / ElementPlaceHolder / (!"))" .) {
     return string(c.text), nil
 })+ {
     return types.NewInlineElements(elements.([]interface{}))
@@ -2229,9 +2179,12 @@ ImpliedApostrophe <- Alphanum "'" &[\pL] {
 // They need to be identified as they may have a special treatment during the rendering
 // ------------------------------------------------------------------------------------
 
-SpecialCharacter <- ("<" / ">" / "&" ) {
-    return types.NewSpecialCharacter(string(c.text))
-}
+SpecialCharacter <- InternalCrossReference / Callout {
+    // if we have a InternalCrossReference or a Callout, we just return a StringElement. 
+        return types.NewStringElement(string(c.text))
+    } / ("<" / ">" / "&" ) {
+        return types.NewSpecialCharacter(string(c.text))
+    }
 
 // ------------------------------------------
 // Base Types
@@ -2264,7 +2217,7 @@ AnyChar <- [^\r\n] {
     return types.NewStringElement(string(c.text))
 } 
 
-FileLocation <- path:(FILENAME / AttributeSubstitution)+ {
+FileLocation <- path:(FILENAME / ElementPlaceHolder)+ {
     return types.NewLocation("", path.([]interface{}))
 }
 
@@ -2272,15 +2225,15 @@ ResolvedFileLocation <- path:([^\r\n [])+ {
     return types.NewLocation("", path.([]interface{}))
 }
 
-Location <- scheme:(URL_SCHEME)? path:(FILENAME / AttributeSubstitution)+ {
+Location <- scheme:(URL_SCHEME)? path:(FILENAME  / ElementPlaceHolder)+ {
     return types.NewLocation(scheme, path.([]interface{}))
 }
 
-LocationWithScheme <- scheme:(URL_SCHEME) path:(FILENAME / AttributeSubstitution)+ {
+LocationWithScheme <- scheme:(URL_SCHEME) path:(FILENAME / ElementPlaceHolder)+ {
     return types.NewLocation(scheme, path.([]interface{}))
 }
 
-FILENAME <- ([^\r\n{}[\] ])+ // not supported for now: EOL, space, "[", "]", "{" and "}" as they may be used for document attribute substitutions
+FILENAME <- ([^\r\n[\]\uFFFD ])+ // not supported for now: EOL, space, "[", "]"
 
 ResolvedLocation <- scheme:(URL_SCHEME) path:(RESOLVED_FILENAME) {
     return types.NewLocation(scheme, path.([]interface{}))

@@ -86,18 +86,6 @@ type DraftDocument struct {
 	Blocks      []interface{}
 }
 
-// NewDraftDocument initializes a new Draft`Document` from the given lines
-func NewDraftDocument(frontMatter interface{}, blocks []interface{}) (DraftDocument, error) {
-	log.Debugf("initializing a new DraftDocument with %d block element(s)", len(blocks))
-	result := DraftDocument{
-		Blocks: blocks,
-	}
-	if fm, ok := frontMatter.(FrontMatter); ok {
-		result.FrontMatter = fm
-	}
-	return result, nil
-}
-
 // ------------------------------------------
 // Document
 // ------------------------------------------
@@ -496,7 +484,6 @@ func NewSection(level int, title []interface{}, ids []interface{}, attributes in
 	// multiple IDs can be defined (by mistake), but only the last one is used
 	for _, id := range ids {
 		attrs = attrs.Add(id)
-
 	}
 	return Section{
 		Level:      level,
@@ -509,6 +496,7 @@ func NewSection(level int, title []interface{}, ids []interface{}, attributes in
 // ResolveID resolves/updates the "ID" attribute in the section (in case the title changed after some document attr substitution)
 func (s Section) ResolveID(docAttributes AttributesWithOverrides) (Section, error) {
 	if !s.Attributes.GetAsBool(AttrCustomID) {
+		log.Debugf("resolving section id")
 		replacement, err := ReplaceNonAlphanumerics(s.Title, "_")
 		if err != nil {
 			return s, errors.Wrapf(err, "failed to generate default ID on Section element")
@@ -1217,13 +1205,6 @@ func NewExternalCrossReference(location Location, attributes Attributes) (Extern
 	}, nil
 }
 
-// ResolveLocation resolves the image path using the given document attributes
-// also, updates the `alt` attribute based on the resolved path of the image
-func (r ExternalCrossReference) ResolveLocation(attrs AttributesWithOverrides) ExternalCrossReference {
-	r.Location = r.Location.Resolve(attrs)
-	return r
-}
-
 // ------------------------------------------
 // Images
 // ------------------------------------------
@@ -1235,7 +1216,7 @@ type ImageBlock struct {
 }
 
 // NewImageBlock initializes a new `ImageBlock`
-func NewImageBlock(path Location, inlineAttributes Attributes, attributes interface{}) (ImageBlock, error) {
+func NewImageBlock(location Location, inlineAttributes Attributes, attributes interface{}) (ImageBlock, error) {
 	attrs, err := NewAttributes(attributes)
 	if err != nil {
 		return ImageBlock{}, errors.Wrapf(err, "failed to initialize an ImageBlock element")
@@ -1246,21 +1227,10 @@ func NewImageBlock(path Location, inlineAttributes Attributes, attributes interf
 	} else if len(inlineAttributes) > 0 {
 		attrs = attrs.Add(inlineAttributes)
 	}
-
 	return ImageBlock{
-		Location:   path,
+		Location:   location,
 		Attributes: attrs,
 	}, nil
-}
-
-// ResolveLocation resolves the image path using the given document attributes
-// also, updates the `alt` attribute based on the resolved path of the image
-func (b ImageBlock) ResolveLocation(attrs AttributesWithOverrides) ImageBlock {
-	b.Location = b.Location.Resolve(attrs)
-	if _, found := b.Attributes[AttrImageAlt]; !found {
-		b.Attributes = b.Attributes.Set(AttrImageAlt, resolveAlt(b.Location))
-	}
-	return b
 }
 
 // InlineImage the structure for the inline image macros
@@ -1270,29 +1240,15 @@ type InlineImage struct {
 }
 
 // NewInlineImage initializes a new `InlineImage` (similar to ImageBlock, but without attributes)
-func NewInlineImage(path Location, attributes Attributes) (InlineImage, error) {
+func NewInlineImage(location Location, attributes Attributes, imagesdir interface{}) (InlineImage, error) {
+	if !attributes.Has(AttrImageAlt) {
+		attributes = attributes.Set(AttrImageAlt, resolveAlt(location))
+	}
+	location = location.WithPathPrefix(imagesdir)
 	return InlineImage{
-		Location:   path,
+		Location:   location,
 		Attributes: attributes,
 	}, nil
-}
-
-// ResolveLocation resolves the image path using the given document attributes
-// also, updates the `alt` attribute based on the resolved path of the image
-func (i InlineImage) ResolveLocation(attrs AttributesWithOverrides) InlineImage {
-	if log.IsLevelEnabled(log.DebugLevel) {
-		log.Debug("resolving location")
-		spew.Fdump(log.StandardLogger().Out, i.Location.Path)
-	}
-	i.Location = i.Location.Resolve(attrs)
-	if _, found := i.Attributes[AttrImageAlt]; !found {
-		i.Attributes = i.Attributes.Set(AttrImageAlt, resolveAlt(i.Location))
-	}
-	if log.IsLevelEnabled(log.DebugLevel) {
-		log.Debugf("resolved location: '%s'", i)
-		spew.Fdump(log.StandardLogger().Out, i.Location.Path)
-	}
-	return i
 }
 
 // ------------------------------------------
@@ -1428,7 +1384,9 @@ func (s *sequence) nextVal() int {
 // ------------------------------------------
 
 // RawLine a line with raw content, read as-is by the parser (before further processing)
-type RawLine = StringElement
+type RawLine struct {
+	Content string
+}
 
 // NewRawLine returns a new slice containing a single StringElement with the given content
 func NewRawLine(content string) (RawLine, error) {
@@ -1668,13 +1626,6 @@ func NewVerbatimLine(content string, callouts interface{}) (VerbatimLine, error)
 	return VerbatimLine{
 		Content:  content,
 		Callouts: cos,
-	}, nil
-}
-
-// NewVerbatimFileLine initializes a new `VerbatimLine` from the given content in a file
-func NewVerbatimFileLine(content string) (VerbatimLine, error) {
-	return VerbatimLine{
-		Content: content,
 	}, nil
 }
 
@@ -2159,7 +2110,7 @@ type Location struct {
 // NewLocation return a new location with the given elements
 func NewLocation(scheme interface{}, path []interface{}) (Location, error) {
 	path = Merge(path)
-	log.Debugf("new location: '%v' '%+v", scheme, path)
+	log.Debugf("new location: scheme='%v' path='%+v", scheme, path)
 	s := ""
 	if scheme, ok := scheme.([]byte); ok {
 		s = string(scheme)
@@ -2170,20 +2121,40 @@ func NewLocation(scheme interface{}, path []interface{}) (Location, error) {
 	}, nil
 }
 
-// Resolve resolves the Location by replacing all document attribute substitutions
-// with their associated values, or their corresponding raw text if
-// no attribute matched
-// returns the resolved attribute
-func (l Location) String() string { // (attrs map[string]string) string {
+// WithPathPrefix adds the given prefix to the path if this latter is NOT an absolute
+// path and if there is no defined scheme
+func (l Location) WithPathPrefix(p interface{}) Location {
+	if p, ok := p.(string); ok && p != "" {
+		if l.Scheme == "" && !strings.HasPrefix(l.Stringify(), "/") {
+			if u, err := url.Parse(l.Stringify()); err == nil {
+				if !u.IsAbs() {
+					l.Path = append([]interface{}{
+						StringElement{
+							Content: p,
+						},
+					}, l.Path...)
+				}
+			}
+		}
+	}
+	return l
+}
+
+// Stringify returns a string representation of the location
+func (l Location) Stringify() string { // (attrs map[string]string) string {
 	result := bytes.NewBuffer(nil)
 	result.WriteString(l.Scheme)
-	for _, e := range l.Path {
+	for i, e := range l.Path {
 		if s, ok := e.(string); ok {
 			result.WriteString(s) // no need to use `fmt.Sprintf` for elements of type 'string'
 		} else if s, ok := e.(StringElement); ok {
 			result.WriteString(s.Content) // no need to use `fmt.Sprintf` for elements of type 'string'
 		} else {
 			result.WriteString(fmt.Sprintf("%s", e))
+		}
+		// include a "/" separator after each path element
+		if i < len(l.Path)-1 {
+			result.WriteString("/")
 		}
 	}
 	return result.String()
@@ -2196,6 +2167,10 @@ const imagesdir = "imagesdir"
 // no attribute matched
 // returns `true` if some document attribute substitution occurred
 func (l Location) Resolve(attrs AttributesWithOverrides) Location {
+	if log.IsLevelEnabled(log.DebugLevel) {
+		log.Debugf("resolving location using '%v'", attrs)
+		spew.Fdump(log.StandardLogger().Out, l.Path)
+	}
 	content := bytes.NewBuffer(nil)
 	for _, e := range l.Path {
 		switch e := e.(type) {
@@ -2207,16 +2182,15 @@ func (l Location) Resolve(attrs AttributesWithOverrides) Location {
 				content.WriteString(e.Name)
 				content.WriteRune('}')
 			}
+		case string:
+			content.WriteString(e) // no need to use `fmt.Sprintf` for elements of type 'string'
+		case StringElement:
+			content.WriteString(e.Content) // no need to use `fmt.Sprintf` for elements of type 'string'
 		default:
-			if s, ok := e.(string); ok {
-				content.WriteString(s) // no need to use `fmt.Sprintf` for elements of type 'string'
-			} else if s, ok := e.(StringElement); ok {
-				content.WriteString(s.Content) // no need to use `fmt.Sprintf` for elements of type 'string'
-			} else {
-				content.WriteString(fmt.Sprintf("%s", e))
-			}
+			content.WriteString(fmt.Sprintf("%s", e))
 		}
 	}
+	// location should remain an []interface{} and may contain SpecialCahracter elements
 	location := content.String()
 	if l.Scheme == "" && !strings.HasPrefix(location, "/") {
 		if u, err := url.Parse(location); err == nil {
@@ -2322,4 +2296,27 @@ func NewSpecialCharacter(name string) (SpecialCharacter, error) {
 	return SpecialCharacter{
 		Name: name,
 	}, nil
+}
+
+// ------------------------------------------------------------------------------------
+// ElementPlaceHolder
+// They need to be identified as they may have a special treatment during the rendering
+// ------------------------------------------------------------------------------------
+
+// ElementPlaceHolder a placeholder for elements which may have been parsed
+// during previous substitution, and which are replaced with a placeholder while
+// serializing the content to parse with the "macros" substitution
+type ElementPlaceHolder struct {
+	Ref string
+}
+
+// NewElementPlaceHolder returns a new ElementPlaceHolder with the given reference.
+func NewElementPlaceHolder(ref string) (ElementPlaceHolder, error) {
+	return ElementPlaceHolder{
+		Ref: ref,
+	}, nil
+}
+
+func (p ElementPlaceHolder) String() string {
+	return "\uFFFD" + p.Ref + "\uFFFD"
 }

@@ -46,6 +46,10 @@ func (r *sgmlRenderer) renderSection(ctx *renderer.Context, s types.Section) (st
 	if err != nil {
 		return "", errors.Wrap(err, "error while rendering section content")
 	}
+	roles, err := r.renderElementRoles(s.Attributes)
+	if err != nil {
+		return "", errors.Wrap(err, "unable to render section roles")
+	}
 
 	result := &strings.Builder{}
 	err = r.sectionContent.Execute(result, struct {
@@ -62,7 +66,7 @@ func (r *sgmlRenderer) renderSection(ctx *renderer.Context, s types.Section) (st
 		Level:    s.Level,
 		Elements: s.Elements,
 		ID:       r.renderElementID(s.Attributes),
-		Roles:    r.renderElementRoles(s.Attributes),
+		Roles:    roles,
 		Content:  string(content),
 	})
 	if err != nil {
@@ -78,6 +82,11 @@ func (r *sgmlRenderer) renderSectionTitle(ctx *renderer.Context, s types.Section
 	if err != nil {
 		return "", errors.Wrap(err, "error while rendering sectionTitle content")
 	}
+	roles, err := r.renderElementRoles(s.Attributes)
+	if err != nil {
+		return "", errors.Wrap(err, "unable to render section content")
+	}
+
 	renderedContentStr := strings.TrimSpace(renderedContent)
 	err = r.sectionHeader.Execute(result, struct {
 		Level        int
@@ -89,7 +98,7 @@ func (r *sgmlRenderer) renderSectionTitle(ctx *renderer.Context, s types.Section
 		Level:        s.Level,
 		LevelPlusOne: s.Level + 1, // Level 1 is <h2>.
 		ID:           r.renderElementID(s.Attributes),
-		Roles:        r.renderElementRoles(s.Attributes),
+		Roles:        roles,
 		Content:      renderedContentStr,
 	})
 	if err != nil {

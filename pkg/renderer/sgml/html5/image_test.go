@@ -102,7 +102,8 @@ var _ = Describe("images", func() {
 
 		It("block image with alt and dimensions and multiple roles", func() {
 
-			source := "[.role1.role2]\nimage::foo.png[foo image, 600, 400]"
+			source := `[.role1.role2]
+image::foo.png[foo image, 600, 400]`
 			expected := `<div class="imageblock role1 role2">
 <div class="content">
 <img src="foo.png" alt="foo image" width="600" height="400">

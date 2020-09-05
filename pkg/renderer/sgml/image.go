@@ -35,7 +35,11 @@ func (r *sgmlRenderer) renderImageBlock(ctx *renderer.Context, img types.ImageBl
 		}
 		caption.WriteString(c)
 	}
-	err := r.blockImage.Execute(result, struct {
+	roles, err := r.renderImageRoles(img.Attributes)
+	if err != nil {
+		return "", errors.Wrap(err, "unable to render image roles")
+	}
+	err = r.blockImage.Execute(result, struct {
 		ID          string
 		Title       string
 		ImageNumber int
@@ -51,12 +55,12 @@ func (r *sgmlRenderer) renderImageBlock(ctx *renderer.Context, img types.ImageBl
 		Title:       title,
 		ImageNumber: number,
 		Caption:     caption.String(),
-		Roles:       r.renderImageRoles(img.Attributes),
+		Roles:       roles,
 		Href:        img.Attributes.GetAsStringWithDefault(types.AttrInlineLink, ""),
 		Alt:         img.Attributes.GetAsStringWithDefault(types.AttrImageAlt, ""),
 		Width:       img.Attributes.GetAsStringWithDefault(types.AttrWidth, ""),
 		Height:      img.Attributes.GetAsStringWithDefault(types.AttrImageHeight, ""),
-		Path:        img.Location.String(),
+		Path:        img.Location.Stringify(),
 	})
 
 	if err != nil {
@@ -68,7 +72,11 @@ func (r *sgmlRenderer) renderImageBlock(ctx *renderer.Context, img types.ImageBl
 
 func (r *sgmlRenderer) renderInlineImage(img types.InlineImage) (string, error) {
 	result := &strings.Builder{}
-	err := r.inlineImage.Execute(result, struct {
+	roles, err := r.renderImageRoles(img.Attributes)
+	if err != nil {
+		return "", errors.Wrap(err, "unable to render image roles")
+	}
+	err = r.inlineImage.Execute(result, struct {
 		Roles  string
 		Title  string
 		Href   string
@@ -78,11 +86,11 @@ func (r *sgmlRenderer) renderInlineImage(img types.InlineImage) (string, error) 
 		Path   string
 	}{
 		Title:  r.renderElementTitle(img.Attributes),
-		Roles:  r.renderImageRoles(img.Attributes),
+		Roles:  roles,
 		Alt:    img.Attributes.GetAsStringWithDefault(types.AttrImageAlt, ""),
 		Width:  img.Attributes.GetAsStringWithDefault(types.AttrWidth, ""),
 		Height: img.Attributes.GetAsStringWithDefault(types.AttrImageHeight, ""),
-		Path:   img.Location.String(),
+		Path:   img.Location.Stringify(),
 	})
 
 	if err != nil {

@@ -2,6 +2,7 @@ package types
 
 import (
 	"bytes"
+	"fmt"
 
 	"github.com/pkg/errors"
 )
@@ -47,6 +48,24 @@ func appendBuffer(elements []interface{}, buf *bytes.Buffer) ([]interface{}, *by
 		return append(elements, s), bytes.NewBuffer(nil)
 	}
 	return elements, buf
+}
+
+// Reduce merges and returns a string if the given elements only contain a single StringElement
+// (ie, return its `Content`), otherwise rsturn the given elements
+func Reduce(elements interface{}) (interface{}, error) {
+	if e, ok := elements.(string); ok {
+		return e, nil
+	}
+	if elmts, ok := elements.([]interface{}); ok {
+		elmts = Merge(elmts...)
+		if len(elmts) == 1 {
+			if e, ok := elmts[0].(StringElement); ok {
+				return e.Content, nil
+			}
+		}
+		return elements, nil
+	}
+	return nil, fmt.Errorf("unsupported type of items to reduce: '%T'", elements)
 }
 
 // applyFunc a function to apply on the result of the `apply` function below, before returning

@@ -56,8 +56,36 @@ var _ = Describe("passthroughs", func() {
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
-			It("tripleplus inline passthrough with spaces", func() {
-				source := `+++ *hello*, world +++`
+			It("tripleplus inline passthrough with spaces and nested attribute substitution", func() {
+				source := `:hello: HELLO
+				
++++ {hello}, world +++` // attribute susbsitution must not occur
+				expected := types.Document{
+					Attributes: types.Attributes{
+						"hello": "HELLO",
+					},
+					Elements: []interface{}{
+						types.Paragraph{
+							Lines: []interface{}{
+								[]interface{}{
+									types.InlinePassthrough{
+										Kind: types.TriplePlusPassthrough,
+										Elements: []interface{}{
+											types.StringElement{
+												Content: " {hello}, world ",
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
+			})
+
+			It("tripleplus inline passthrough with spaces aned nested quoted text", func() {
+				source := `+++ *hello*, world +++` // macro susbsitution must not occur
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
@@ -353,6 +381,39 @@ var _ = Describe("passthroughs", func() {
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
+			Context("invalid cases", func() {
+				It("invalid singleplus passthrough in paragraph", func() {
+					source := `The text + *hello*, world + is not passed through.`
+					expected := types.Document{
+						Elements: []interface{}{
+							types.Paragraph{
+								Lines: []interface{}{
+									[]interface{}{
+										types.StringElement{
+											Content: "The text + ",
+										},
+										types.QuotedText{
+											Kind: types.Bold,
+											Elements: []interface{}{
+												types.StringElement{
+													Content: "hello",
+												},
+											},
+										},
+										types.StringElement{
+											Content: ", world + is not passed through.",
+										},
+									},
+								},
+							},
+						},
+					}
+					result, err := ParseDocument(source)
+					Expect(err).NotTo(HaveOccurred())
+					Expect(result).To(MatchDocument(expected))
+				})
+			})
+
 		})
 
 		Context("passthrough macro", func() {
@@ -529,5 +590,6 @@ var _ = Describe("passthroughs", func() {
 				})
 			})
 		})
+
 	})
 })
