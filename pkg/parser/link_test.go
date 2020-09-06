@@ -612,7 +612,9 @@ a link to {url}`
 							types.Paragraph{
 								Lines: []interface{}{
 									[]interface{}{
-										types.StringElement{Content: "a link to "},
+										types.StringElement{
+											Content: "a link to ",
+										},
 										types.InlineLink{
 											Location: types.Location{
 												Scheme: "https://",
@@ -707,7 +709,9 @@ a link to *{scheme}://{path}[] and https://foo.baz[]*`
 														},
 													},
 												},
-												types.StringElement{Content: " and "},
+												types.StringElement{
+													Content: " and ",
+												},
 												types.InlineLink{
 													Location: types.Location{
 														Scheme: "https://",
@@ -1123,7 +1127,13 @@ a link to {scheme}://{path} and https://foo.baz`
 											Scheme: "",
 											Path: []interface{}{
 												types.StringElement{
-													Content: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789~:/?#@!$&;=()*+,-_.%",
+													Content: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789~:/?#@!$",
+												},
+												types.SpecialCharacter{
+													Name: "&",
+												},
+												types.StringElement{
+													Content: ";=()*+,-_.%",
 												},
 											},
 										},
@@ -1199,10 +1209,12 @@ a link to {scheme}:{path}[] and https://foo.baz`
 					Elements: []interface{}{
 						types.Paragraph{
 							Lines: []interface{}{
-								[]interface{}{types.StringElement{Content: "a link to "},
+								[]interface{}{
+									types.StringElement{
+										Content: "a link to ",
+									},
 									types.InlineLink{
 										Location: types.Location{
-											Scheme: "",
 											Path: []interface{}{
 												types.StringElement{
 													Content: "{path}",
@@ -1210,7 +1222,9 @@ a link to {scheme}:{path}[] and https://foo.baz`
 											},
 										},
 									},
-									types.StringElement{Content: " and "},
+									types.StringElement{
+										Content: " and ",
+									},
 									types.InlineLink{
 										Location: types.Location{
 											Scheme: "https://",

@@ -246,7 +246,7 @@ eve - analyzes an image to determine if it's a picture of a life form
 				configuration.WithAttributes(map[string]string{
 					types.AttrDocType: "manpage",
 				},
-				))).To(Equal(expected))
+				))).To(MatchDocument(expected))
 		})
 
 	})

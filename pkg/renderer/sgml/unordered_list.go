@@ -25,8 +25,13 @@ func (r *sgmlRenderer) renderUnorderedList(ctx *renderer.Context, l types.Unorde
 			return "", errors.Wrap(err, "unable to render unordered list")
 		}
 	}
+	roles, err := r.renderElementRoles(l.Attributes)
+	if err != nil {
+		return "", errors.Wrap(err, "unable to render unordered list roles")
+	}
+
 	// here we must preserve the HTML tags
-	err := r.unorderedList.Execute(result, struct {
+	err = r.unorderedList.Execute(result, struct {
 		Context   *renderer.Context
 		ID        string
 		Title     string
@@ -42,7 +47,7 @@ func (r *sgmlRenderer) renderUnorderedList(ctx *renderer.Context, l types.Unorde
 		Checklist: checkList,
 		Items:     l.Items,
 		Content:   string(content.String()),
-		Roles:     r.renderElementRoles(l.Attributes),
+		Roles:     roles,
 		Style:     r.renderElementStyle(l.Attributes),
 	})
 	if err != nil {

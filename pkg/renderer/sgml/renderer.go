@@ -158,6 +158,10 @@ func (r *sgmlRenderer) Render(ctx *renderer.Context, doc types.Document, output 
 	if err != nil {
 		return md, errors.Wrapf(err, "unable to render full document")
 	}
+	roles, err := r.renderDocumentRoles(doc)
+	if err != nil {
+		return md, errors.Wrap(err, "unable to render fenced block content")
+	}
 	if ctx.Config.IncludeHeaderFooter {
 		log.Debugf("Rendering full document...")
 		err = r.article.Execute(output, struct {
@@ -181,7 +185,7 @@ func (r *sgmlRenderer) Render(ctx *renderer.Context, doc types.Document, output 
 			Title:         renderedTitle,
 			Authors:       r.renderAuthors(doc),
 			Header:        renderedHeader,
-			Roles:         r.renderDocumentRoles(doc),
+			Roles:         roles,
 			ID:            r.renderDocumentID(doc),
 			Content:       string(renderedContent), //nolint: gosec
 			RevNumber:     doc.Attributes.GetAsStringWithDefault("revnumber", ""),
@@ -274,11 +278,11 @@ func (r *sgmlRenderer) splitAndRenderForManpage(ctx *renderer.Context, doc types
 	return "", result.String(), nil
 }
 
-func (r *sgmlRenderer) renderDocumentRoles(doc types.Document) string {
+func (r *sgmlRenderer) renderDocumentRoles(doc types.Document) (string, error) {
 	if header, found := doc.Header(); found {
 		return r.renderElementRoles(header.Attributes)
 	}
-	return ""
+	return "", nil
 }
 
 func (r *sgmlRenderer) renderDocumentID(doc types.Document) string {

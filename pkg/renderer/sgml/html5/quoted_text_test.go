@@ -446,7 +446,7 @@ content</mark>.</p>
 		It("quoted short-hand role", func() {
 			source := "[.'something \"wicked\"']**bold**"
 			expected := `<div class="paragraph">
-<p><strong class="something &#34;wicked&#34;">bold</strong></p>
+<p><strong class="something "wicked"">bold</strong></p>
 </div>
 `
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
@@ -741,6 +741,7 @@ b</code></p>
 				"</div>\n"
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
+
 		It("apostrophes in double bold", func() {
 			source := "this **mother's mothers' mothers`'**\n"
 			expected := "<div class=\"paragraph\">\n" +
@@ -748,6 +749,7 @@ b</code></p>
 				"</div>\n"
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
+
 		It("apostrophes in single italic", func() {
 			source := "this _mother's mothers' mothers`'_\n"
 			expected := "<div class=\"paragraph\">\n" +
@@ -755,6 +757,7 @@ b</code></p>
 				"</div>\n"
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
+
 		It("apostrophes in double italic", func() {
 			source := "this __mother's mothers' mothers`'__\n"
 			expected := "<div class=\"paragraph\">\n" +
@@ -762,6 +765,7 @@ b</code></p>
 				"</div>\n"
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
+
 		It("apostrophes in single mono", func() {
 			source := "this `mother's mothers' day`\n" // no typographic quotes here
 			expected := "<div class=\"paragraph\">\n" +
@@ -769,6 +773,7 @@ b</code></p>
 				"</div>\n"
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
+
 		It("apostrophes in double mono", func() {
 			source := "this ``mother's mothers' mothers`' day``\n"
 			expected := "<div class=\"paragraph\">\n" +
@@ -776,6 +781,7 @@ b</code></p>
 				"</div>\n"
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
+
 		It("apostrophes in single marked", func() {
 			source := "this #mother's mothers' mothers`'#\n"
 			expected := "<div class=\"paragraph\">\n" +
@@ -783,6 +789,7 @@ b</code></p>
 				"</div>\n"
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
+
 		It("apostrophes in double marked", func() {
 			source := "this ##mother's mothers' mothers`'##\n"
 			expected := "<div class=\"paragraph\">\n" +

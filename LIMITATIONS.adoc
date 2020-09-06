@@ -128,6 +128,28 @@ File inclusions are performed before the full parsing takes place. During this p
 If the file to include has an empty last line, it will be ignored, so it's always a good practice to include a blank line after the `include::` directive in the main document, to avoid side-effects during
 the "full" parsing.
 
+== Substitutions
+
+In "normal" paragraphs, Asciidoctor processes the content with the following substitutions, in the following order:
+
+1. Special characters
+2. Quotes
+3. Attribute references
+4. Replacements
+5. Inline macros
+6. Post replacements
+
+However, splitting the "Quotes" and "Inline Macros" in two distinct steps causes troubles in LibAsciidoc, when an inline macro is wrapped in quoted text, or when an inline macro contains quoted attributes. 
+As a consequence, in "normal" paragraphs, LibAsciidoc processes the content with the following substitutions, in the following order:
+
+1. Special characters
+2. Attribute references
+3. Replacements
+4. Quotes and Inline macros
+5. Post replacements
+
+
+
 == Symbols and Characters
 
 Markup for the mdash and arrow symbols is not recognized.

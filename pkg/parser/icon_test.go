@@ -15,121 +15,193 @@ var _ = Describe("icons", func() {
 
 			It("inline icon with empty alt only", func() {
 				source := "icon:tip[]"
-				expected := []interface{}{
-					types.Icon{
-						Class: "tip",
+				expected := types.DraftDocument{
+					Blocks: []interface{}{
+						types.Paragraph{
+							Lines: []interface{}{
+								[]interface{}{
+									types.Icon{
+										Class: "tip",
+									},
+								},
+							},
+						},
 					},
 				}
-				Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("inline icon with empty alt and trailing spaces", func() {
 				source := "icon:note[]  \t\t  "
-				expected := []interface{}{
-					types.Icon{
-						Class: "note",
-					},
-					types.StringElement{
-						Content: "  \t\t  ",
+				expected := types.DraftDocument{
+					Blocks: []interface{}{
+						types.Paragraph{
+							Lines: []interface{}{
+								[]interface{}{
+									types.Icon{
+										Class: "note",
+									},
+									types.StringElement{
+										Content: "  \t\t  ",
+									},
+								},
+							},
+						},
 					},
 				}
-				Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("inline icon with empty alt surrounded by text", func() {
 				source := "beware icon:caution[] of tigers"
-				expected := []interface{}{
-					types.StringElement{
-						Content: "beware ",
-					},
-					types.Icon{
-						Class: "caution",
-					},
-					types.StringElement{
-						Content: " of tigers",
+				expected := types.DraftDocument{
+					Blocks: []interface{}{
+						types.Paragraph{
+							Lines: []interface{}{
+								[]interface{}{
+									types.StringElement{
+										Content: "beware ",
+									},
+									types.Icon{
+										Class: "caution",
+									},
+									types.StringElement{
+										Content: " of tigers",
+									},
+								},
+							},
+						},
 					},
 				}
-				Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("inline icon with size alone", func() {
 				source := "icon:caution[2x]"
-				expected := []interface{}{
-					types.Icon{
-						Class:      "caution",
-						Attributes: types.Attributes{types.AttrIconSize: "2x"},
+				expected := types.DraftDocument{
+					Blocks: []interface{}{
+						types.Paragraph{
+							Lines: []interface{}{
+								[]interface{}{
+									types.Icon{
+										Class:      "caution",
+										Attributes: types.Attributes{types.AttrIconSize: "2x"},
+									},
+								},
+							},
+						},
 					},
 				}
-				Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("inline icon with other attribute (title)", func() {
 				source := "icon:caution[title=\"bogus\"]"
-				expected := []interface{}{
-					types.Icon{
-						Class:      "caution",
-						Attributes: types.Attributes{types.AttrTitle: "bogus"},
+				expected := types.DraftDocument{
+					Blocks: []interface{}{
+						types.Paragraph{
+							Lines: []interface{}{
+								[]interface{}{
+									types.Icon{
+										Class:      "caution",
+										Attributes: types.Attributes{types.AttrTitle: "bogus"},
+									},
+								},
+							},
+						},
 					},
 				}
-				Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("inline icon with anchor attribute", func() {
 				source := "icon:caution[id=anchor]"
-				expected := []interface{}{
-					types.Icon{
-						Class: "caution",
-						Attributes: types.Attributes{
-							types.AttrID:       "anchor",
-							types.AttrCustomID: true,
+				expected := types.DraftDocument{
+					Blocks: []interface{}{
+						types.Paragraph{
+							Lines: []interface{}{
+								[]interface{}{
+									types.Icon{
+										Class: "caution",
+										Attributes: types.Attributes{
+											types.AttrID:       "anchor",
+											types.AttrCustomID: true,
+										},
+									},
+								},
+							},
 						},
 					},
 				}
-				Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("inline icon with multiple other attributes", func() {
 				source := "icon:caution[id=anchor,title=\"White Fang\"]"
-				expected := []interface{}{
-					types.Icon{
-						Class: "caution",
-						Attributes: types.Attributes{
-							types.AttrID:       "anchor",
-							types.AttrCustomID: true,
-							types.AttrTitle:    "White Fang",
+				expected := types.DraftDocument{
+					Blocks: []interface{}{
+						types.Paragraph{
+							Lines: []interface{}{
+								[]interface{}{
+									types.Icon{
+										Class: "caution",
+										Attributes: types.Attributes{
+											types.AttrID:       "anchor",
+											types.AttrCustomID: true,
+											types.AttrTitle:    "White Fang",
+										},
+									},
+								},
+							},
 						},
 					},
 				}
-				Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("inline icon with size and multiple other attributes", func() {
 				source := "icon:caution[fw,id=anchor,title=\"White Fang\"]"
-				expected := []interface{}{
-					types.Icon{
-						Class: "caution",
-						Attributes: types.Attributes{
-							types.AttrID:       "anchor",
-							types.AttrCustomID: true,
-							types.AttrTitle:    "White Fang",
-							types.AttrIconSize: "fw",
+				expected := types.DraftDocument{
+					Blocks: []interface{}{
+						types.Paragraph{
+							Lines: []interface{}{
+								[]interface{}{
+									types.Icon{
+										Class: "caution",
+										Attributes: types.Attributes{
+											types.AttrID:       "anchor",
+											types.AttrCustomID: true,
+											types.AttrTitle:    "White Fang",
+											types.AttrIconSize: "fw",
+										},
+									},
+								},
+							},
 						},
 					},
 				}
-				Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("inline icon with space after colon", func() {
 				source := "here is my icon: icon:info[]"
-				expected := []interface{}{
-					types.StringElement{
-						Content: "here is my icon: ",
-					},
-					types.Icon{
-						Class: "info",
+				expected := types.DraftDocument{
+					Blocks: []interface{}{
+						types.Paragraph{
+							Lines: []interface{}{
+								[]interface{}{
+									types.StringElement{
+										Content: "here is my icon: ",
+									},
+									types.Icon{
+										Class: "info",
+									},
+								},
+							},
+						},
 					},
 				}
-				Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("inline icon in title works", func() {
@@ -232,64 +304,96 @@ item 2:: two`
 
 			It("inline icon in quoted text", func() {
 				source := `an _italicized icon:warning[] message_`
-				expected := []interface{}{
-					types.StringElement{
-						Content: "an ",
-					},
-					types.QuotedText{
-						Kind: types.Italic,
-						Elements: []interface{}{
-							types.StringElement{Content: "italicized "},
-							types.Icon{Class: "warning"},
-							types.StringElement{Content: " message"},
+				expected := types.DraftDocument{
+					Blocks: []interface{}{
+						types.Paragraph{
+							Lines: []interface{}{
+								[]interface{}{
+									types.StringElement{
+										Content: "an ",
+									},
+									types.QuotedText{
+										Kind: types.Italic,
+										Elements: []interface{}{
+											types.StringElement{Content: "italicized "},
+											types.Icon{Class: "warning"},
+											types.StringElement{Content: " message"},
+										},
+									},
+								},
+							},
 						},
 					},
 				}
-				Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 			It("inline icon in marked text", func() {
 				source := `#marked icon:warning[] message#`
-				expected := []interface{}{
-					types.QuotedText{
-						Kind: types.Marked,
-						Elements: []interface{}{
-							types.StringElement{Content: "marked "},
-							types.Icon{Class: "warning"},
-							types.StringElement{Content: " message"},
+				expected := types.DraftDocument{
+					Blocks: []interface{}{
+						types.Paragraph{
+							Lines: []interface{}{
+								[]interface{}{
+									types.QuotedText{
+										Kind: types.Marked,
+										Elements: []interface{}{
+											types.StringElement{Content: "marked "},
+											types.Icon{Class: "warning"},
+											types.StringElement{Content: " message"},
+										},
+									},
+								},
+							},
 						},
 					},
 				}
-				Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 			It("inline icon in bold text", func() {
 				source := `in *bold icon:warning[] message*`
-				expected := []interface{}{
-					types.StringElement{Content: "in "},
-					types.QuotedText{
-						Kind: types.Bold,
-						Elements: []interface{}{
-							types.StringElement{Content: "bold "},
-							types.Icon{Class: "warning"},
-							types.StringElement{Content: " message"},
+				expected := types.DraftDocument{
+					Blocks: []interface{}{
+						types.Paragraph{
+							Lines: []interface{}{
+								[]interface{}{
+									types.StringElement{Content: "in "},
+									types.QuotedText{
+										Kind: types.Bold,
+										Elements: []interface{}{
+											types.StringElement{Content: "bold "},
+											types.Icon{Class: "warning"},
+											types.StringElement{Content: " message"},
+										},
+									},
+								},
+							},
 						},
 					},
 				}
-				Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 			It("inline icon in monospace text", func() {
 				source := "in `monospace icon:warning[] message`"
-				expected := []interface{}{
-					types.StringElement{Content: "in "},
-					types.QuotedText{
-						Kind: types.Monospace,
-						Elements: []interface{}{
-							types.StringElement{Content: "monospace "},
-							types.Icon{Class: "warning"},
-							types.StringElement{Content: " message"},
+				expected := types.DraftDocument{
+					Blocks: []interface{}{
+						types.Paragraph{
+							Lines: []interface{}{
+								[]interface{}{
+									types.StringElement{Content: "in "},
+									types.QuotedText{
+										Kind: types.Monospace,
+										Elements: []interface{}{
+											types.StringElement{Content: "monospace "},
+											types.Icon{Class: "warning"},
+											types.StringElement{Content: " message"},
+										},
+									},
+								},
+							},
 						},
 					},
 				}
-				Expect(ParseInlineElements(source)).To(MatchInlineElements(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 		})
 	})

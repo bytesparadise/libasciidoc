@@ -63,8 +63,8 @@ func (r *sgmlRenderer) renderExternalCrossReference(ctx *renderer.Context, xref 
 }
 
 func getCrossReferenceLocation(xref types.ExternalCrossReference) string {
-	loc := xref.Location.String()
-	ext := filepath.Ext(xref.Location.String())
+	loc := xref.Location.Stringify()
+	ext := filepath.Ext(xref.Location.Stringify())
 	log.Debugf("ext of '%s': '%s'", loc, ext)
 	return loc[:len(loc)-len(ext)] + ".html" // TODO output extension
 }

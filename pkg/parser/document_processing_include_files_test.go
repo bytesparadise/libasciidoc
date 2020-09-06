@@ -23,20 +23,6 @@ var _ = DescribeTable("'FileLocation' pattern",
 		GinkgoT().Log("expected result: %s", spew.Sdump(expected))
 		Expect(actual).To(Equal(expected))
 	},
-	Entry("'chapter'", "chapter", types.Location{
-		Path: []interface{}{
-			types.StringElement{
-				Content: "chapter",
-			},
-		},
-	}),
-	Entry("'chapter.adoc'", "chapter.adoc", types.Location{
-		Path: []interface{}{
-			types.StringElement{
-				Content: "chapter.adoc",
-			},
-		},
-	}),
 	Entry("'chapter-a.adoc'", "chapter-a.adoc", types.Location{
 		Path: []interface{}{
 			types.StringElement{
@@ -58,45 +44,17 @@ var _ = DescribeTable("'FileLocation' pattern",
 			},
 		},
 	}),
-	Entry("'chapter-{foo}.adoc'", "chapter-{foo}.adoc", types.Location{
-		Path: []interface{}{
-			types.StringElement{
-				Content: "chapter-",
-			},
-			types.AttributeSubstitution{
-				Name: "foo",
-			},
-			types.StringElement{
-				Content: ".adoc",
-			},
-		},
-	}),
 	Entry("'{includedir}/chapter-{foo}.adoc'", "{includedir}/chapter-{foo}.adoc", types.Location{
 		Path: []interface{}{
-			types.AttributeSubstitution{
-				Name: "includedir",
-			},
 			types.StringElement{
-				Content: "/chapter-",
-			},
-			types.AttributeSubstitution{
-				Name: "foo",
-			},
-			types.StringElement{
-				Content: ".adoc",
+				Content: "{includedir}/chapter-{foo}.adoc", // attribute substitutions are treared as part of the string element
 			},
 		},
 	}),
 	Entry("'{scheme}://{path}'", "{scheme}://{path}", types.Location{
 		Path: []interface{}{
-			types.AttributeSubstitution{
-				Name: "scheme",
-			},
-			types.StringElement{
-				Content: "://",
-			},
-			types.AttributeSubstitution{
-				Name: "path",
+			types.StringElement{ // attribute substitutions are treared as part of the string element
+				Content: "{scheme}://{path}",
 			},
 		},
 	}),
@@ -864,7 +822,9 @@ include::{includedir}/chapter-a.adoc[]`
 						},
 					},
 				}
-				Expect(ParseRawDocument(source)).To(MatchRawDocument(expected))
+				result, err := ParseRawDocument(source)
+				Expect(err).NotTo(HaveOccurred())
+				Expect(result).To(MatchRawDocument(expected))
 			})
 
 			It("should not further process with non-asciidoc files", func() {

@@ -39,9 +39,12 @@ func (r *sgmlRenderer) renderQuotedText(ctx *renderer.Context, t types.QuotedTex
 	default:
 		return "", errors.Errorf("unsupported quoted text kind: '%v'", t.Kind)
 	}
-
+	roles, err := r.renderElementRoles(t.Attributes)
+	if err != nil {
+		return "", errors.Wrap(err, "unable to render quoted text roles")
+	}
 	result := &strings.Builder{}
-	err := tmpl.Execute(result, struct {
+	err = tmpl.Execute(result, struct {
 		ID         string
 		Roles      string
 		Attributes types.Attributes
@@ -49,7 +52,7 @@ func (r *sgmlRenderer) renderQuotedText(ctx *renderer.Context, t types.QuotedTex
 	}{
 		Attributes: t.Attributes,
 		ID:         r.renderElementID(t.Attributes),
-		Roles:      r.renderElementRoles(t.Attributes),
+		Roles:      roles,
 		Content:    string(elementsBuffer.String()),
 	}) //nolint: gosec
 	if err != nil {

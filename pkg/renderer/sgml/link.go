@@ -11,7 +11,7 @@ import (
 
 func (r *sgmlRenderer) renderLink(ctx *renderer.Context, l types.InlineLink) (string, error) { //nolint: unparam
 	result := &strings.Builder{}
-	location := l.Location.String()
+	location := l.Location.Stringify()
 	text := ""
 	class := ""
 	var err error

@@ -200,65 +200,69 @@ var _ = Describe("tables", func() {
 |row 2, column 1
 |row 2, column 2
 |===`
-		expected := types.Table{
-			Attributes: types.Attributes{
-				types.AttrTitle:    "table title",
-				types.AttrOptions:  map[string]bool{"autowidth": true},
-				types.AttrRole:     []string{"role1", "stretch"},
-				types.AttrID:       "anchor",
-				types.AttrCustomID: true,
-			},
-			Header: types.TableLine{
-				Cells: [][]interface{}{
-					{
-						types.StringElement{
-							Content: "heading 1 ",
-						},
+		expected := types.DraftDocument{
+			Blocks: []interface{}{
+				types.Table{
+					Attributes: types.Attributes{
+						types.AttrTitle:    "table title",
+						types.AttrOptions:  map[string]bool{"autowidth": true},
+						types.AttrRole:     []interface{}{types.ElementRole{"role1"}, types.ElementRole{"stretch"}},
+						types.AttrID:       "anchor",
+						types.AttrCustomID: true,
 					},
-					{
-						types.StringElement{
-							Content: "heading 2",
-						},
-					},
-				},
-			},
-			Columns: []types.TableColumn{
-				// autowidth clears width
-				{Width: "", HAlign: "left", VAlign: "top"},
-				{Width: "", HAlign: "left", VAlign: "top"},
-			},
-			Lines: []types.TableLine{
-				{
-					Cells: [][]interface{}{
-						{
-							types.StringElement{
-								Content: "row 1, column 1",
+					Header: types.TableLine{
+						Cells: [][]interface{}{
+							{
+								types.StringElement{
+									Content: "heading 1 ",
+								},
 							},
-						},
-						{
-							types.StringElement{
-								Content: "row 1, column 2",
+							{
+								types.StringElement{
+									Content: "heading 2",
+								},
 							},
 						},
 					},
-				},
-				{
-					Cells: [][]interface{}{
+					Columns: []types.TableColumn{
+						// autowidth clears width
+						{Width: "", HAlign: "left", VAlign: "top"},
+						{Width: "", HAlign: "left", VAlign: "top"},
+					},
+					Lines: []types.TableLine{
 						{
-							types.StringElement{
-								Content: "row 2, column 1",
+							Cells: [][]interface{}{
+								{
+									types.StringElement{
+										Content: "row 1, column 1",
+									},
+								},
+								{
+									types.StringElement{
+										Content: "row 1, column 2",
+									},
+								},
 							},
 						},
 						{
-							types.StringElement{
-								Content: "row 2, column 2",
+							Cells: [][]interface{}{
+								{
+									types.StringElement{
+										Content: "row 2, column 1",
+									},
+								},
+								{
+									types.StringElement{
+										Content: "row 2, column 2",
+									},
+								},
 							},
 						},
 					},
 				},
 			},
 		}
-		Expect(ParseDocumentBlock(source)).To(Equal(expected))
+		Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 	})
 
 	It("empty table ", func() {

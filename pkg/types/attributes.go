@@ -6,6 +6,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/davecgh/go-spew/spew"
 	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
 )
@@ -132,8 +133,12 @@ const (
 )
 
 // NewElementID initializes a new attribute map with a single entry for the ID using the given value
-func NewElementID(id string) (Attributes, error) {
+func NewElementID(id interface{}) (Attributes, error) {
 	// log.Debugf("initializing a new ElementID with ID=%s", id)
+	id, err := Reduce(id)
+	if err != nil {
+		return nil, err
+	}
 	return Attributes{
 		AttrID:       id,
 		AttrCustomID: true,
@@ -141,16 +146,31 @@ func NewElementID(id string) (Attributes, error) {
 }
 
 // NewElementOption sets a boolean option.
-func NewElementOption(opt string) (Attributes, error) {
-	return Attributes{AttrOptions: opt}, nil
+func NewElementOption(options interface{}) (Attributes, error) {
+	options, err := Reduce(options)
+	if err != nil {
+		return nil, err
+	}
+	return Attributes{
+		AttrOptions: options,
+	}, nil
 }
 
 // NewElementNamedAttr a named (or positional) element
-func NewElementNamedAttr(key string, value string) (Attributes, error) {
+func NewElementNamedAttr(key string, value interface{}) (Attributes, error) {
+	value, err := Reduce(value)
+	if err != nil {
+		return nil, err
+	}
 	if key == AttrOpts { // Handle the alias
 		key = AttrOptions
 	}
-	return Attributes{key: value}, nil
+	switch key {
+	case AttrRole:
+		return Attributes{key: ElementRole{value}}, nil
+	default:
+		return Attributes{key: value}, nil
+	}
 }
 
 // NewInlineElementID initializes a new attribute map with a single entry for the ID using the given value
@@ -167,16 +187,33 @@ func NewElementTitle(title string) (Attributes, error) {
 	}, nil
 }
 
+type ElementRole []interface{}
+
 // NewElementRole initializes a new attribute map with a single entry for the title using the given value
-func NewElementRole(role string) (Attributes, error) {
+func NewElementRole(role interface{}) (Attributes, error) {
 	// log.Debugf("initializing a new ElementRole with content=%s", role)
-	return Attributes{
-		AttrRole: role,
-	}, nil
+	role, err := Reduce(role)
+	if err != nil {
+		return nil, err
+	}
+	switch role := role.(type) {
+	case []interface{}:
+		return Attributes{
+			AttrRole: ElementRole(role), // convert
+		}, nil
+	default:
+		return Attributes{
+			AttrRole: ElementRole{role}, // wrap
+		}, nil
+	}
 }
 
 // NewElementStyle initializes a new attribute map with a single entry for the style
-func NewElementStyle(style string) (Attributes, error) {
+func NewElementStyle(style interface{}) (Attributes, error) {
+	style, err := Reduce(style)
+	if err != nil {
+		return nil, err
+	}
 	return Attributes{AttrStyle: style}, nil
 }
 
@@ -187,14 +224,18 @@ func NewAdmonitionAttribute(k AdmonitionKind) (Attributes, error) {
 
 // NewAttributeGroup initializes a group of attributes from the given generic attributes.
 func NewAttributeGroup(attributes []interface{}) (Attributes, error) {
-	// log.Debugf("initializing a new AttributeGroup with %v", attributes)
+	log.Debugf("initializing a new AttributeGroup with %v", attributes)
 	result := make(Attributes)
 	for _, a := range attributes {
 		// log.Debugf("processing attribute element of type %T", a)
 		if a, ok := a.(Attributes); ok {
 			for k, v := range a {
-				// log.Debugf("adding attribute %v='%v'", k, v)
-				result[k] = v
+				switch k {
+				case AttrRole:
+					result[k] = ElementRole{v}
+				default:
+					result[k] = v
+				}
 			}
 		} else {
 			return result, errors.Errorf("unable to process element of type '%[1]T': '%[1]s'", a)
@@ -323,28 +364,28 @@ func (a Attributes) HasOption(key string) bool {
 	return false
 }
 
-// AppendString sets the value as a singular string value if it did not exist yet,
-// or move the existing value in a slice of strings and append the new one
-func (a Attributes) AppendString(key string, value interface{}) {
+// sets the value as a singular string value if it did not exist yet,
+// or move the existing value in a slice and append the new one
+func (a Attributes) append(key string, value interface{}) {
 	v, found := a[key]
 	if !found {
 		a[key] = value
 		return
 	}
 	switch v := v.(type) {
-	case string:
+	case []interface{}:
 		switch value := value.(type) {
-		case string:
-			a[key] = []string{v, value} // move existing value in a slice, along with the new one
-		case []string:
-			a[key] = append([]string{v}, value...)
-		}
-	case []string:
-		switch value := value.(type) {
-		case string:
-			a[key] = append(v, value) // just append the new value into the slice
-		case []string:
+		case []interface{}:
 			a[key] = append(v, value...)
+		default:
+			a[key] = append(v, value) // just append the new value into the slice
+		}
+	default:
+		switch value := value.(type) {
+		case []interface{}:
+			a[key] = append([]interface{}{v}, value...)
+		default:
+			a[key] = []interface{}{v, value} // move existing value in a slice, along with the new one
 		}
 	}
 }
@@ -467,7 +508,10 @@ func NewElementAttributes(attributes ...interface{}) (Attributes, error) {
 	if len(attributes) == 0 {
 		return nil, nil
 	}
-
+	if log.IsLevelEnabled(log.DebugLevel) {
+		log.Debug("new element attributes:")
+		spew.Fdump(log.StandardLogger().Out, attributes)
+	}
 	var err error
 	result := Attributes{}
 	for _, item := range attributes {
@@ -495,7 +539,7 @@ func NewElementAttributes(attributes ...interface{}) (Attributes, error) {
 					result[AttrCustomID] = true
 				}
 			case AttrRole:
-				result.AppendString(AttrRole, v) // grammar only generates string values
+				result.append(AttrRole, v)
 			case AttrOptions, AttrOpts:
 				if !result.Has(AttrOptions) {
 					result[AttrOptions] = map[string]bool{}
@@ -524,7 +568,7 @@ func NewElementAttributes(attributes ...interface{}) (Attributes, error) {
 }
 
 func resolveAlt(path Location) string {
-	_, filename := filepath.Split(path.String())
+	_, filename := filepath.Split(path.Stringify())
 	ext := filepath.Ext(filename)
 	if ext != "" {
 		return strings.TrimSuffix(filename, ext)
