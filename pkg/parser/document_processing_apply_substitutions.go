@@ -463,9 +463,8 @@ var (
 	substituteAttributesFunc        = elementsSubstitutionWithPlaceholders("AttributesSubstitution") // TODO: include with applyAttributeSubstitutionsOnElementsFunc?
 	substituteReplacementsFunc      = elementsSubstitutionWithPlaceholders("ReplacementsSubstitution")
 	substituteInlineMacrosFunc      = elementsSubstitutionWithPlaceholders("InlineMacrosSubstitution") // elementsSubstitution("InlineMacrosSubstitution")
-	// substituteQuotedTextAndInlineMacrosFunc = elementsSubstitution("QuotedTextAndInlineMacrosSubstitution")
-	substitutePostReplacementsFunc = elementsSubstitutionWithPlaceholders("PostReplacementsSubstitution")
-	substituteNothingFunc          = elementsSubstitution("NoneSubstitution")
+	substitutePostReplacementsFunc  = elementsSubstitutionWithPlaceholders("PostReplacementsSubstitution")
+	substituteNothingFunc           = elementsSubstitution("NoneSubstitution")
 )
 
 func elementsSubstitution(ruleName string) elementsSubstitutionFunc {

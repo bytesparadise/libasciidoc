@@ -1914,18 +1914,6 @@ QuotedTextSubstitution <-
         }
 
 // standalone rule for the "macros" substitution
-// TODO: remove (unused)?
-QuotedTextAndInlineMacrosSubstitution <- 
-    elements:(InlineWord // more permissive than the 'Word' rule
-        / Space+ 
-        / QuotedText
-        / InlineMacros
-        / AnyChar
-        / Newline)+ {
-            return types.NewInlineElements(elements.([]interface{}))
-        }
-
-// standalone rule for the "macros" substitution
 InlineMacrosSubstitution <- 
     elements:(InlineWord // more permissive than the 'Word' rule
         / Space+ 
