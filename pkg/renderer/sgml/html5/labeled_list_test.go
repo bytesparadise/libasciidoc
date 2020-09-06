@@ -99,7 +99,7 @@ item 2:: description 2.`
 <dl>
 <dt class="hdlist1">item 1</dt>
 <dd>
-<p>&lt;script&gt;alert(&#34;foo!&#34;)&lt;/script&gt;</p>
+<p>&lt;script&gt;alert("foo!")&lt;/script&gt;</p>
 </dd>
 </dl>
 </div>

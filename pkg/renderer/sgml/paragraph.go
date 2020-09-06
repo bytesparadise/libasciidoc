@@ -39,15 +39,13 @@ func (r *sgmlRenderer) renderParagraph(ctx *renderer.Context, p types.Paragraph)
 			ID      string
 			Roles   string
 			Title   string
-			Lines   []interface{}
 			Content string
 		}{
 			Context: ctx,
 			ID:      r.renderElementID(p.Attributes),
 			Title:   r.renderElementTitle(p.Attributes),
-			Content: string(content),
 			Roles:   roles,
-			Lines:   p.Lines,
+			Content: string(content),
 		})
 		if err != nil {
 			return "", errors.Wrap(err, "unable to render paragraph")

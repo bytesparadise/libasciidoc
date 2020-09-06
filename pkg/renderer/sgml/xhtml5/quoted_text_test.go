@@ -261,7 +261,7 @@ var _ = Describe("quoted texts", func() {
 		It("bad syntax", func() {
 			source := "[.<something \"wicked>]**bold**"
 			expected := `<div class="paragraph">
-<p>[.&lt;something &#34;wicked&gt;]<strong>bold</strong></p>
+<p>[.&lt;something "wicked&gt;]<strong>bold</strong></p>
 </div>
 `
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
