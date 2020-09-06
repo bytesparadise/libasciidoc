@@ -43,7 +43,7 @@ func (r *sgmlRenderer) renderInlineElements(ctx *renderer.Context, elements []in
 			if _, ok := element.(types.StringElement); ok { // TODO: only for StringElement? or for any kind of element?
 				// trim trailing spaces before returning the line
 				buf.WriteString(strings.TrimRight(string(renderedElement), " "))
-				log.Debugf("trimmed spaces on '%v'", string(renderedElement))
+				// log.Debugf("trimmed spaces on '%v'", string(renderedElement))
 			} else {
 				buf.WriteString(renderedElement)
 			}

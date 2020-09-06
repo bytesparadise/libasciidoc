@@ -243,11 +243,11 @@ include::../../../../test/includes/hello_world.go.txt[]`
 <p>package includes</p>
 </div>
 <div class="paragraph">
-<p>import &#34;fmt&#34;</p>
+<p>import "fmt"</p>
 </div>
 <div class="paragraph">
 <p>func helloworld() {
-	fmt.Println(&#34;hello, world!&#34;)
+	fmt.Println("hello, world!")
 }</p>
 </div>
 `
@@ -296,11 +296,11 @@ include::../../../../test/includes/hello_world.go.txt[]`
 <p>package includes</p>
 </div>
 <div class="paragraph">
-<p>import &#34;fmt&#34;</p>
+<p>import "fmt"</p>
 </div>
 <div class="paragraph">
 <p>func helloworld() {
-	fmt.Println(&#34;hello, world!&#34;)
+	fmt.Println("hello, world!")
 }</p>
 </div>
 </div>
@@ -514,11 +514,11 @@ include::../../../../test/includes/hello_world.go.txt[]
 <p>package includes</p>
 </div>
 <div class="paragraph">
-<p>import &#34;fmt&#34;</p>
+<p>import "fmt"</p>
 </div>
 <div class="paragraph">
 <p>func helloworld() {
-	fmt.Println(&#34;hello, world!&#34;)
+	fmt.Println("hello, world!")
 }</p>
 </div>
 </div>
@@ -537,11 +537,11 @@ ____`
 <p>package includes</p>
 </div>
 <div class="paragraph">
-<p>import &#34;fmt&#34;</p>
+<p>import "fmt"</p>
 </div>
 <div class="paragraph">
 <p>func helloworld() {
-	fmt.Println(&#34;hello, world!&#34;)
+	fmt.Println("hello, world!")
 }</p>
 </div>
 </blockquote>
@@ -558,10 +558,10 @@ ____`
 				expected := `<div class="verseblock">
 <pre class="content">package includes
 
-import &#34;fmt&#34;
+import "fmt"
 
 func helloworld() {
-	fmt.Println(&#34;hello, world!&#34;)
+	fmt.Println("hello, world!")
 }</pre>
 </div>
 `
@@ -578,11 +578,11 @@ include::../../../../test/includes/hello_world.go.txt[]
 <p>package includes</p>
 </div>
 <div class="paragraph">
-<p>import &#34;fmt&#34;</p>
+<p>import "fmt"</p>
 </div>
 <div class="paragraph">
 <p>func helloworld() {
-	fmt.Println(&#34;hello, world!&#34;)
+	fmt.Println("hello, world!")
 }</p>
 </div>
 </div>
@@ -610,7 +610,7 @@ include::../../../../test/includes/hello_world.go.txt[]
 				source := `include::../../../../test/includes/hello_world.go.txt[lines=5..7]`
 				expected := `<div class="paragraph">
 <p>func helloworld() {
-	fmt.Println(&#34;hello, world!&#34;)
+	fmt.Println("hello, world!")
 }</p>
 </div>
 `
@@ -624,7 +624,7 @@ include::../../../../test/includes/hello_world.go.txt[]
 </div>
 <div class="paragraph">
 <p>func helloworld() {
-	fmt.Println(&#34;hello, world!&#34;)
+	fmt.Println("hello, world!")
 }</p>
 </div>
 `

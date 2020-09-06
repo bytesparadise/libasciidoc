@@ -57,7 +57,7 @@ var _ = Describe("strings", func() {
 	It("text with implicit apostrophe no match", func() {
 		source := `Mothers' Day`
 		expected := `<div class="paragraph">
-<p>Mothers&#39; Day</p>
+<p>Mothers' Day</p>
 </div>
 `
 		Expect(RenderHTML(source)).To(MatchHTML(expected))

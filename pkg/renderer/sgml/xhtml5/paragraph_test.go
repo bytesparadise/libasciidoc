@@ -65,7 +65,7 @@ and here another paragraph
 		It("paragraph with single quotes", func() {
 			source := `a 'subsection' paragraph.`
 			expected := `<div class="paragraph">
-<p>a &#39;subsection&#39; paragraph.</p>
+<p>a 'subsection' paragraph.</p>
 </div>
 `
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))

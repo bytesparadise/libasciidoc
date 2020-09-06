@@ -65,7 +65,7 @@ and here another paragraph
 		It("paragraph with single quotes", func() {
 			source := `a 'subsection' paragraph.`
 			expected := `<div class="paragraph">
-<p>a &#39;subsection&#39; paragraph.</p>
+<p>a 'subsection' paragraph.</p>
 </div>
 `
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
@@ -99,63 +99,81 @@ some content`
 `
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
-	})
 
-	Context("paragraphs with line break", func() {
+		Context("with custom substitutions", func() {
 
-		It("with explicit line break", func() {
-			source := `foo +
+			It("with attributes substitution", func() {
+				source := `:github-url: https://github.com
+
+[subs="attributes"]
+a link to https://github.com[] <using the *inline link macro*>
+another one using attribute substitution: {github-url}[]...
+// a single-line comment`
+				expected := `<div class="paragraph">
+<p>a link to https://github.com[] <using the *inline link macro*>
+another one using attribute substitution: https://github.com[]...</p>
+</div>
+`
+				Expect(RenderHTML(source)).To(MatchHTML(expected))
+			})
+		})
+
+		Context("with line break", func() {
+
+			It("with explicit line break", func() {
+				source := `foo +
 bar
 baz`
-			expected := `<div class="paragraph">
+				expected := `<div class="paragraph">
 <p>foo<br>
 bar
 baz</p>
 </div>
 `
-			Expect(RenderHTML(source)).To(MatchHTML(expected))
-		})
+				Expect(RenderHTML(source)).To(MatchHTML(expected))
+			})
 
-		It("with paragraph attribute", func() {
+			It("with paragraph attribute", func() {
 
-			source := `[%hardbreaks]
+				source := `[%hardbreaks]
 foo
 bar
 baz`
-			expected := `<div class="paragraph">
+				expected := `<div class="paragraph">
 <p>foo<br>
 bar<br>
 baz</p>
 </div>
 `
-			Expect(RenderHTML(source)).To(MatchHTML(expected))
-		})
+				Expect(RenderHTML(source)).To(MatchHTML(expected))
+			})
 
-		It("with document attribute", func() {
-			source := `:hardbreaks:
+			It("with document attribute", func() {
+				source := `:hardbreaks:
 foo
 bar
 baz`
-			expected := `<div class="paragraph">
+				expected := `<div class="paragraph">
 <p>foo<br>
 bar<br>
 baz</p>
 </div>
 `
-			Expect(RenderHTML(source)).To(MatchHTML(expected))
-		})
+				Expect(RenderHTML(source)).To(MatchHTML(expected))
+			})
 
-		It("paragraph with document attribute resets", func() {
-			source := `:author: Xavier
+			It("paragraph with document attribute resets", func() {
+				source := `:author: Xavier
 						
 :!author1:
 :author2!:
 a paragraph written by {author}.`
-			expected := `<div class="paragraph">
+				expected := `<div class="paragraph">
 <p>a paragraph written by Xavier.</p>
 </div>
 `
-			Expect(RenderHTML(source)).To(MatchHTML(expected))
+				Expect(RenderHTML(source)).To(MatchHTML(expected))
+			})
 		})
 	})
 

@@ -520,7 +520,7 @@ and "more" content
 <p><strong>bold content</strong></p>
 </div>
 <div class="paragraph">
-<p>and &#34;more&#34; content</p>
+<p>and "more" content</p>
 </div>
 </div>
 </div>
