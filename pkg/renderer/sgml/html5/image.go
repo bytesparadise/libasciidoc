@@ -9,5 +9,5 @@ const (
 {{ else }}
 {{ end }}</div>
 `
-	inlineImageTmpl = `<span class="image{{ if .Roles }} {{ .Roles }}{{ end }}"><img src="{{ .Path }}" alt="{{ .Alt }}"{{ if .Width }} width="{{ .Width }}"{{ end }}{{ if .Height }} height="{{ .Height }}"{{ end }}{{ if .Title }} title="{{ .Title }}"{{ end }}></span>`
+	inlineImageTmpl = `<span class="image{{ if .Roles }} {{ .Roles }}{{ end }}">{{ if ne .Href "" }}<a class="image" href="{{ .Href }}">{{ end }}<img src="{{ .Path }}" alt="{{ .Alt }}"{{ if .Width }} width="{{ .Width }}"{{ end }}{{ if .Height }} height="{{ .Height }}"{{ end }}{{ if .Title }} title="{{ .Title }}"{{ end }}>{{ if ne .Href "" }}</a>{{ end }}</span>`
 )
