@@ -201,6 +201,15 @@ image::appa.png[]`
 				Expect(RenderXHTML(source)).To(MatchHTML(expected))
 			})
 
+			It("inline image with link", func() {
+				source := "image:foo.png[foo image, link=http://foo.bar]"
+				expected := `<div class="paragraph">
+<p><span class="image"><a class="image" href="http://foo.bar"><img src="foo.png" alt="foo image"/></a></span></p>
+</div>
+`
+				Expect(RenderXHTML(source)).To(MatchHTML(expected))
+			})
+
 			It("paragraph with inline image with alt and dimensions", func() {
 				source := "a foo image:foo.png[foo image, 600, 400] bar"
 				expected := `<div class="paragraph">

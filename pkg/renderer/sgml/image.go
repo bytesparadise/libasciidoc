@@ -87,6 +87,7 @@ func (r *sgmlRenderer) renderInlineImage(img types.InlineImage) (string, error) 
 	}{
 		Title:  r.renderElementTitle(img.Attributes),
 		Roles:  roles,
+		Href:   img.Attributes.GetAsStringWithDefault(types.AttrInlineLink, ""),
 		Alt:    img.Attributes.GetAsStringWithDefault(types.AttrImageAlt, ""),
 		Width:  img.Attributes.GetAsStringWithDefault(types.AttrWidth, ""),
 		Height: img.Attributes.GetAsStringWithDefault(types.AttrImageHeight, ""),

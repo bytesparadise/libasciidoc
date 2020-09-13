@@ -15,9 +15,10 @@ const (
 		"</div>\n"
 
 	inlineImageTmpl = `<span class="image{{ if .Roles }} {{ .Roles }}{{ end }}">` +
+		`{{ if .Href }}<a class="image" href="{{ .Href }}">{{ end }}` +
 		`<img src="{{ .Path }}" alt="{{ .Alt }}"` +
 		`{{ if .Width }} width="{{ .Width }}"{{ end }}` +
 		`{{ if .Height }} height="{{ .Height }}"{{ end }}` +
 		`{{ if .Title }} title="{{ .Title }}"{{ end }}` +
-		`/></span>`
+		`/>{{ if .Href }}</a>{{ end }}</span>`
 )
