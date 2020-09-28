@@ -447,7 +447,7 @@ var _ = Describe("quoted texts", func() {
 			})
 		})
 
-		Context("Quoted text with double punctuation", func() {
+		Context("quoted text with double punctuation", func() {
 
 			It("bold text of 1 word in double quote", func() {
 				source := "**hello**"
@@ -637,7 +637,7 @@ var _ = Describe("quoted texts", func() {
 			})
 		})
 
-		Context("Quoted text inline", func() {
+		Context("quoted text inline", func() {
 
 			It("inline content with bold text", func() {
 				source := "a paragraph with *some bold content*"
@@ -1123,6 +1123,44 @@ var _ = Describe("quoted texts", func() {
 										},
 										Attributes: types.Attributes{
 											types.AttrRole: types.ElementRole{"bob"},
+										},
+									},
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+			})
+
+			It("short-hand role with special characters", func() {
+				source := "[\"a <role>\"]**bold**"
+				expected := types.DraftDocument{
+					Blocks: []interface{}{
+						types.Paragraph{
+							Lines: []interface{}{
+								[]interface{}{
+									types.QuotedText{
+										Kind: types.Bold,
+										Attributes: types.Attributes{
+											types.AttrRole: types.ElementRole{
+												types.StringElement{
+													Content: "a ",
+												},
+												// wrapping quotes are not preserved
+												types.SpecialCharacter{
+													Name: "<",
+												},
+												types.StringElement{
+													Content: "role",
+												},
+												types.SpecialCharacter{
+													Name: ">",
+												},
+											},
+										},
+										Elements: []interface{}{
+											types.StringElement{Content: "bold"},
 										},
 									},
 								},
@@ -3794,7 +3832,7 @@ var _ = Describe("quoted texts", func() {
 
 		})
 
-		Context("Quoted text with double punctuation", func() {
+		Context("quoted text with double punctuation", func() {
 
 			It("bold text of 1 word in double quote", func() {
 				source := "**hello**"
@@ -4022,7 +4060,7 @@ var _ = Describe("quoted texts", func() {
 
 		})
 
-		Context("Quoted text inline", func() {
+		Context("quoted text inline", func() {
 
 			It("inline content with bold text", func() {
 				source := "a paragraph with *some bold content*"
@@ -6090,29 +6128,29 @@ var _ = Describe("quoted texts", func() {
 				})
 			})
 		})
-	})
 
-	Context("final document", func() {
+		Context("nested images", func() {
 
-		It("image in bold", func() {
-			source := "*a image:foo.png[]*"
-			expected := types.Document{
-				Elements: []interface{}{
-					types.Paragraph{
-						Lines: []interface{}{
-							[]interface{}{
-								types.QuotedText{
-									Kind: types.Bold,
-									Elements: []interface{}{
-										types.StringElement{Content: "a "},
-										types.InlineImage{
-											Attributes: types.Attributes{
-												types.AttrImageAlt: "foo",
-											},
-											Location: types.Location{
-												Path: []interface{}{
-													types.StringElement{
-														Content: "foo.png",
+			It("image in bold", func() {
+				source := "*a image:foo.png[]*"
+				expected := types.Document{
+					Elements: []interface{}{
+						types.Paragraph{
+							Lines: []interface{}{
+								[]interface{}{
+									types.QuotedText{
+										Kind: types.Bold,
+										Elements: []interface{}{
+											types.StringElement{Content: "a "},
+											types.InlineImage{
+												Attributes: types.Attributes{
+													types.AttrImageAlt: "foo",
+												},
+												Location: types.Location{
+													Path: []interface{}{
+														types.StringElement{
+															Content: "foo.png",
+														},
 													},
 												},
 											},
@@ -6122,30 +6160,30 @@ var _ = Describe("quoted texts", func() {
 							},
 						},
 					},
-				},
-			}
-			Expect(ParseDocument(source)).To(MatchDocument(expected))
-		})
+				}
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
+			})
 
-		It("image in italic", func() {
-			source := "_a image:foo.png[]_"
-			expected := types.Document{
-				Elements: []interface{}{
-					types.Paragraph{
-						Lines: []interface{}{
-							[]interface{}{
-								types.QuotedText{
-									Kind: types.Italic,
-									Elements: []interface{}{
-										types.StringElement{Content: "a "},
-										types.InlineImage{
-											Attributes: types.Attributes{
-												types.AttrImageAlt: "foo",
-											},
-											Location: types.Location{
-												Path: []interface{}{
-													types.StringElement{
-														Content: "foo.png",
+			It("image in italic", func() {
+				source := "_a image:foo.png[]_"
+				expected := types.Document{
+					Elements: []interface{}{
+						types.Paragraph{
+							Lines: []interface{}{
+								[]interface{}{
+									types.QuotedText{
+										Kind: types.Italic,
+										Elements: []interface{}{
+											types.StringElement{Content: "a "},
+											types.InlineImage{
+												Attributes: types.Attributes{
+													types.AttrImageAlt: "foo",
+												},
+												Location: types.Location{
+													Path: []interface{}{
+														types.StringElement{
+															Content: "foo.png",
+														},
 													},
 												},
 											},
@@ -6155,30 +6193,30 @@ var _ = Describe("quoted texts", func() {
 							},
 						},
 					},
-				},
-			}
-			Expect(ParseDocument(source)).To(MatchDocument(expected))
-		})
+				}
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
+			})
 
-		It("image in monospace", func() {
-			source := "`a image:foo.png[]`"
-			expected := types.Document{
-				Elements: []interface{}{
-					types.Paragraph{
-						Lines: []interface{}{
-							[]interface{}{
-								types.QuotedText{
-									Kind: types.Monospace,
-									Elements: []interface{}{
-										types.StringElement{Content: "a "},
-										types.InlineImage{
-											Attributes: types.Attributes{
-												types.AttrImageAlt: "foo",
-											},
-											Location: types.Location{
-												Path: []interface{}{
-													types.StringElement{
-														Content: "foo.png",
+			It("image in monospace", func() {
+				source := "`a image:foo.png[]`"
+				expected := types.Document{
+					Elements: []interface{}{
+						types.Paragraph{
+							Lines: []interface{}{
+								[]interface{}{
+									types.QuotedText{
+										Kind: types.Monospace,
+										Elements: []interface{}{
+											types.StringElement{Content: "a "},
+											types.InlineImage{
+												Attributes: types.Attributes{
+													types.AttrImageAlt: "foo",
+												},
+												Location: types.Location{
+													Path: []interface{}{
+														types.StringElement{
+															Content: "foo.png",
+														},
 													},
 												},
 											},
@@ -6188,9 +6226,9 @@ var _ = Describe("quoted texts", func() {
 							},
 						},
 					},
-				},
-			}
-			Expect(ParseDocument(source)).To(MatchDocument(expected))
+				}
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
+			})
 		})
 	})
 })
