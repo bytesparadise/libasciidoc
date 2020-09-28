@@ -29,8 +29,10 @@ foo
 						},
 						Kind: types.Source,
 						Elements: []interface{}{
-							types.VerbatimLine{
-								Content: "foo",
+							[]interface{}{
+								types.StringElement{
+									Content: "foo",
+								},
 							},
 						},
 					},

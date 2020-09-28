@@ -5,7 +5,6 @@ import (
 
 	"github.com/bytesparadise/libasciidoc/pkg/renderer"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
-	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -37,7 +36,7 @@ func (r *sgmlRenderer) renderInlineElements(ctx *renderer.Context, elements []in
 	for i, element := range elements {
 		renderedElement, err := lr.render(ctx, element)
 		if err != nil {
-			return "", errors.Wrapf(err, "unable to render line")
+			return "", err
 		}
 		if i == len(elements)-1 {
 			if _, ok := element.(types.StringElement); ok { // TODO: only for StringElement? or for any kind of element?

@@ -2,6 +2,7 @@ package sgml
 
 import (
 	"bytes"
+	"fmt"
 	"strconv"
 	"strings"
 
@@ -16,10 +17,8 @@ import (
 )
 
 func (r *sgmlRenderer) renderDelimitedBlock(ctx *renderer.Context, b types.DelimitedBlock) (string, error) {
-	log.Debugf("rendering delimited block of kind '%v'", b.Attributes[types.AttrKind])
-	var err error
-	kind := b.Kind
-	switch kind {
+	log.Debugf("rendering delimited block of kind '%v'", b.Kind)
+	switch b.Kind {
 	case types.Fenced:
 		return r.renderFencedBlock(ctx, b)
 	case types.Listing:
@@ -37,7 +36,7 @@ func (r *sgmlRenderer) renderDelimitedBlock(ctx *renderer.Context, b types.Delim
 	case types.Passthrough:
 		return r.renderPassthrough(ctx, b)
 	default:
-		return "", errors.Wrap(err, "unable to render delimited block")
+		return "", fmt.Errorf("unable to render delimited block of kind '%v'", b.Kind)
 	}
 }
 
@@ -51,12 +50,12 @@ func (r *sgmlRenderer) renderFencedBlock(ctx *renderer.Context, b types.Delimite
 	ctx.WithinDelimitedBlock = true
 	ctx.IncludeBlankLine = true
 	result := &strings.Builder{}
-	elements := discardTrailingBlankLines(b.Elements)
-	content, err := r.renderElement(ctx, elements)
+	lines := discardTrailingBlankLines(b.Elements)
+	content, err := r.renderLines(ctx, lines)
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render fenced block content")
 	}
-	roles, err := r.renderElementRoles(b.Attributes)
+	roles, err := r.renderElementRoles(ctx, b.Attributes)
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render fenced block roles")
 	}
@@ -74,7 +73,7 @@ func (r *sgmlRenderer) renderFencedBlock(ctx *renderer.Context, b types.Delimite
 		Title:    r.renderElementTitle(b.Attributes),
 		Roles:    roles,
 		Content:  content,
-		Elements: elements,
+		Elements: lines,
 	})
 	return result.String(), err
 }
@@ -90,172 +89,38 @@ func (r *sgmlRenderer) renderListingBlock(ctx *renderer.Context, b types.Delimit
 	ctx.IncludeBlankLine = true
 	result := &strings.Builder{}
 	elements := discardTrailingBlankLines(b.Elements)
-	content, err := r.renderElements(ctx, elements)
+	content, err := r.renderLines(ctx, elements)
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render listing block content")
 	}
-	roles, err := r.renderElementRoles(b.Attributes)
+	roles, err := r.renderElementRoles(ctx, b.Attributes)
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render listing block roles")
 	}
 
 	err = r.listingBlock.Execute(result, struct {
-		Context  *renderer.Context
-		ID       string
-		Title    string
-		Roles    string
-		Content  string
-		Elements []interface{}
+		Context *renderer.Context
+		ID      string
+		Title   string
+		Roles   string
+		Content string
 	}{
-		Context:  ctx,
-		ID:       r.renderElementID(b.Attributes),
-		Title:    r.renderElementTitle(b.Attributes),
-		Roles:    roles,
-		Content:  content,
-		Elements: discardTrailingBlankLines(b.Elements),
+		Context: ctx,
+		ID:      r.renderElementID(b.Attributes),
+		Title:   r.renderElementTitle(b.Attributes),
+		Roles:   roles,
+		Content: content,
 	})
 	return result.String(), err
 }
 
-func (r *sgmlRenderer) renderSourceLine(w *strings.Builder, item interface{}) {
-	switch item := item.(type) {
-	case types.VerbatimLine:
-		w.WriteString(item.Content)
-		for _, co := range item.Callouts {
-			// We inject an escaped sequence for now, which we can replace later with
-			// a fully rendered version of the callout. We use two non-characters
-			// (reserved for this kind of use by Unicode) to bracket callouts, allowing
-			// us to find them again in post-processing..
-			w.WriteString("\ufdd0")
-			w.WriteString(strconv.Itoa(co.Ref))
-			w.WriteString("\ufdd1")
-		}
-	case types.StringElement:
-		w.WriteString(item.Content)
-	case []interface{}:
-		for _, sub := range item {
-			r.renderSourceLine(w, sub)
-		}
-	}
-}
-
-func (r *sgmlRenderer) renderCalloutRef(co types.Callout) (string, error) {
-	result := &strings.Builder{}
-	err := r.calloutRef.Execute(result, co)
-	if err != nil {
-		return "", errors.Wrap(err, "unable to render callout number")
-	}
-	return result.String(), nil
-}
-
-func (r *sgmlRenderer) renderSourceCallouts(source string) (string, error) {
-	result := &strings.Builder{}
-	num := 0
-	co := false
-	for _, ch := range source {
-		if co {
-			if ch >= '0' && ch <= '9' {
-				num *= 10
-				num += int(ch - '0')
-				continue
-			}
-			if ch == '\ufdd1' {
-				s, err := r.renderCalloutRef(types.Callout{Ref: num})
-				if err != nil {
-					return "", errors.Wrap(err, "unable to render source block")
-				}
-				result.WriteString(s)
-				co = false
-				continue
-			}
-			// unexpected character - just copy it to output.
-			result.WriteRune(ch)
-		}
-		if ch == '\ufdd0' {
-			// start of integer
-			num = 0
-			co = true
-			continue
-		}
-		result.WriteRune(ch)
-	}
-	return result.String(), nil
-}
-
 func (r *sgmlRenderer) renderSourceBlock(ctx *renderer.Context, b types.DelimitedBlock) (string, error) {
-	previousWithinDelimitedBlock := ctx.WithinDelimitedBlock
-	previousIncludeBlankLine := ctx.IncludeBlankLine
-	defer func() {
-		ctx.WithinDelimitedBlock = previousWithinDelimitedBlock
-		ctx.IncludeBlankLine = previousIncludeBlankLine
-	}()
-	ctx.WithinDelimitedBlock = true
-	ctx.IncludeBlankLine = true
 	// first, render the content
-
-	elements := discardTrailingBlankLines(b.Elements)
-
-	highlighter, _ := ctx.Attributes.GetAsString(types.AttrSyntaxHighlighter)
-	language, found := b.Attributes.GetAsString(types.AttrLanguage)
-	content := ""
-	if found && (highlighter == "chroma" || highlighter == "pygments") {
-
-		source := &strings.Builder{}
-		for i, line := range elements {
-			if i > 0 {
-				source.WriteRune('\n')
-			}
-			r.renderSourceLine(source, line)
-		}
-
-		// using github.com/alecthomas/chroma to highlight the content
-		contentBuf := &strings.Builder{}
-		lexer := lexers.Get(language)
-		if lexer == nil {
-			lexer = lexers.Fallback
-		}
-		lexer = chroma.Coalesce(lexer)
-		style := styles.Fallback
-
-		if s, found := ctx.Attributes.GetAsString(highlighter + "-style"); found {
-			style = styles.Get(s)
-		}
-		// iterator, err := lexer.Tokenise(nil, content)
-		iterator, err := lexer.Tokenise(nil, source.String())
-		if err != nil {
-			return "", err
-		}
-		options := []html.Option{
-			html.ClassPrefix("tok-"),
-			html.PreventSurroundingPre(true),
-		}
-		// extra option: inline CSS instead of classes
-		if ctx.Attributes.GetAsStringWithDefault(highlighter+"-css", "classes") == "style" {
-			options = append(options, html.WithClasses(false))
-		} else {
-			options = append(options, html.WithClasses(true))
-		}
-		// extra option: line numbers
-		if b.Attributes.Has(types.AttrLineNums) {
-			options = append(options, html.WithLineNumbers(true))
-		}
-		err = html.New(options...).Format(contentBuf, style, iterator)
-		if err != nil {
-			return "", err
-		}
-		content = contentBuf.String()
-		content, err = r.renderSourceCallouts(content)
-		if err != nil {
-			return "", err
-		}
-	} else {
-		elements := discardTrailingBlankLines(b.Elements)
-		var err error
-		if content, err = r.renderElements(ctx, elements); err != nil {
-			return "", err
-		}
+	content, highlighter, language, err := r.renderSourceLines(ctx, b)
+	if err != nil {
+		return "", errors.Wrap(err, "unable to render source block content")
 	}
-	roles, err := r.renderElementRoles(b.Attributes)
+	roles, err := r.renderElementRoles(ctx, b.Attributes)
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render source block roles")
 	}
@@ -279,6 +144,130 @@ func (r *sgmlRenderer) renderSourceBlock(ctx *renderer.Context, b types.Delimite
 	return result.String(), err
 }
 
+func (r *sgmlRenderer) renderSourceLines(ctx *renderer.Context, b types.DelimitedBlock) (string, string, string, error) {
+	previousWithinDelimitedBlock := ctx.WithinDelimitedBlock
+	previousIncludeBlankLine := ctx.IncludeBlankLine
+	defer func() {
+		ctx.WithinDelimitedBlock = previousWithinDelimitedBlock
+		ctx.IncludeBlankLine = previousIncludeBlankLine
+	}()
+	ctx.WithinDelimitedBlock = true
+	ctx.IncludeBlankLine = true
+
+	lines := discardTrailingBlankLines(b.Elements)
+	highlighter, _ := ctx.Attributes.GetAsString(types.AttrSyntaxHighlighter)
+	language, found := b.Attributes.GetAsString(types.AttrLanguage)
+	if found && (highlighter == "chroma" || highlighter == "pygments") {
+		ctx.EncodeSpecialChars = false
+		defer func() {
+			ctx.EncodeSpecialChars = true
+		}()
+		// using github.com/alecthomas/chroma to highlight the content
+		lexer := lexers.Get(language)
+		if lexer == nil {
+			lexer = lexers.Fallback
+		}
+		lexer = chroma.Coalesce(lexer)
+		style := styles.Fallback
+		if s, found := ctx.Attributes.GetAsString(highlighter + "-style"); found {
+			style = styles.Get(s)
+		}
+		options := []html.Option{
+			html.ClassPrefix("tok-"),
+			html.PreventSurroundingPre(true),
+		}
+		// extra option: inline CSS instead of classes
+		if ctx.Attributes.GetAsStringWithDefault(highlighter+"-css", "classes") == "style" {
+			options = append(options, html.WithClasses(false))
+		} else {
+			options = append(options, html.WithClasses(true))
+		}
+		result := &strings.Builder{}
+		for i, line := range lines {
+			// extra option: line numbers
+			if b.Attributes.Has(types.AttrLineNums) {
+				options = append(options, html.WithLineNumbers(true), html.BaseLineNumber(i+1))
+			}
+
+			renderedLine, callouts, err := r.renderSourceLine(ctx, line)
+			if err != nil {
+				return "", "", "", err
+			}
+			highlightedLineBuf := &strings.Builder{}
+			// iterator, err := lexer.Tokenise(nil, content)
+			iterator, err := lexer.Tokenise(nil, renderedLine)
+			if err != nil {
+				return "", "", "", err
+			}
+			if err = html.New(options...).Format(highlightedLineBuf, style, iterator); err != nil {
+				return "", "", "", err
+			}
+			result.WriteString(highlightedLineBuf.String())
+			// append callouts at the end of the highlighted line
+			for _, callout := range callouts {
+				renderedCallout, err := r.renderCalloutRef(callout)
+				if err != nil {
+					return "", "", "", err
+				}
+				result.WriteString(renderedCallout)
+			}
+			// content, err = r.renderSourceCallouts(content)
+			// if err != nil {
+			// 	return "", "", "", err
+			// }
+			if i < len(lines)-1 {
+				result.WriteRune('\n')
+			}
+
+		}
+		if log.IsLevelEnabled(log.DebugLevel) {
+			log.Debug("source block content:")
+			fmt.Fprintln(log.StandardLogger().Out, result.String())
+		}
+		return result.String(), highlighter, language, nil
+	}
+	result, err := r.renderLines(ctx, lines)
+	if err != nil {
+		if err != nil {
+			return "", "", "", err
+		}
+	}
+	return result, highlighter, language, nil
+}
+
+func (r *sgmlRenderer) renderSourceLine(ctx *renderer.Context, line interface{}) (string, []types.Callout, error) {
+	elements, ok := line.([]interface{})
+	if !ok {
+		return "", nil, fmt.Errorf("invalid type of line: '%T'", line)
+	}
+	result := strings.Builder{}
+	callouts := make([]types.Callout, 0, len(elements))
+	for _, e := range elements {
+		switch e := e.(type) {
+		case types.StringElement, types.SpecialCharacter:
+			s, err := r.renderElement(ctx, e)
+			if err != nil {
+				return "", nil, err
+			}
+			result.WriteString(s)
+		case types.Callout:
+			callouts = append(callouts, e)
+		default:
+			return "", nil, fmt.Errorf("unexpected type of element: '%T'", line)
+		}
+	}
+	return result.String(), callouts, nil
+}
+
+func (r *sgmlRenderer) renderCalloutRef(co types.Callout) (string, error) {
+	result := &strings.Builder{}
+	err := r.calloutRef.Execute(result, co)
+	if err != nil {
+		return "", errors.Wrap(err, "unable to render callout number")
+	}
+	return result.String(), nil
+}
+
 func (r *sgmlRenderer) renderAdmonitionBlock(ctx *renderer.Context, b types.DelimitedBlock) (string, error) {
 	kind, _ := b.Attributes[types.AttrAdmonitionKind].(types.AdmonitionKind)
 	icon, err := r.renderIcon(ctx, types.Icon{Class: string(kind), Attributes: b.Attributes}, true)
@@ -291,7 +280,7 @@ func (r *sgmlRenderer) renderAdmonitionBlock(ctx *renderer.Context, b types.Deli
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render admonition block content")
 	}
-	roles, err := r.renderElementRoles(b.Attributes)
+	roles, err := r.renderElementRoles(ctx, b.Attributes)
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render fenced block content")
 	}
@@ -331,7 +320,7 @@ func (r *sgmlRenderer) renderExampleBlock(ctx *renderer.Context, b types.Delimit
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render example block content")
 	}
-	roles, err := r.renderElementRoles(b.Attributes)
+	roles, err := r.renderElementRoles(ctx, b.Attributes)
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render fenced block content")
 	}
@@ -377,7 +366,7 @@ func (r *sgmlRenderer) renderQuoteBlock(ctx *renderer.Context, b types.Delimited
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render example block content")
 	}
-	roles, err := r.renderElementRoles(b.Attributes)
+	roles, err := r.renderElementRoles(ctx, b.Attributes)
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render fenced block content")
 	}
@@ -404,18 +393,27 @@ func (r *sgmlRenderer) renderQuoteBlock(ctx *renderer.Context, b types.Delimited
 func (r *sgmlRenderer) renderVerseBlock(ctx *renderer.Context, b types.DelimitedBlock) (string, error) {
 	result := &strings.Builder{}
 	elements := discardTrailingBlankLines(b.Elements)
-	content := &strings.Builder{}
-	roles, err := r.renderElementRoles(b.Attributes)
+	roles, err := r.renderElementRoles(ctx, b.Attributes)
 	if err != nil {
-		return "", errors.Wrap(err, "unable to render fenced block content")
+		return "", errors.Wrap(err, "unable to render verser block")
 	}
-	for _, item := range elements {
-		s, err := r.renderVerseBlockElement(ctx, item)
-		if err != nil {
-			return "", errors.Wrap(err, "unable to render verse block element")
-		}
-		content.WriteString(s)
+	previousWithinDelimitedBlock := ctx.WithinDelimitedBlock
+	defer func() {
+		ctx.WithinDelimitedBlock = previousWithinDelimitedBlock
+	}()
+	ctx.WithinDelimitedBlock = true
+	content, err := r.renderLines(ctx, b.Elements)
+	if err != nil {
+		return "", errors.Wrap(err, "unable to render verse block")
 	}
+	// for _, item := range elements {
+	// 	s, err := r.renderVerseBlockElement(ctx, item)
+	// 	if err != nil {
+	// 		return "", errors.Wrap(err, "unable to render verse block element")
+	// 	}
+	// 	content.WriteString(s)
+	// }
+
 	err = r.verseBlock.Execute(result, struct {
 		Context     *renderer.Context
 		ID          string
@@ -430,26 +428,10 @@ func (r *sgmlRenderer) renderVerseBlock(ctx *renderer.Context, b types.Delimited
 		Title:       r.renderElementTitle(b.Attributes),
 		Roles:       roles,
 		Attribution: newDelimitedBlockAttribution(b),
-		Content:     string(content.String()),
+		Content:     string(content),
 		Elements:    elements,
 	})
 	return result.String(), err
-}
-
-func (r *sgmlRenderer) renderVerseBlockElement(ctx *renderer.Context, element interface{}) (string, error) {
-	previousIncludeBlankLine := ctx.IncludeBlankLine
-	defer func() {
-		ctx.IncludeBlankLine = previousIncludeBlankLine
-	}()
-	ctx.IncludeBlankLine = true
-	switch e := element.(type) {
-	case types.Paragraph:
-		return r.renderLines(ctx, e.Lines)
-	case types.BlankLine:
-		return r.renderBlankLine(ctx, e)
-	default:
-		return "", errors.Errorf("unexpected type of element to include in verse block: %T", element)
-	}
 }
 
 func (r *sgmlRenderer) renderSidebarBlock(ctx *renderer.Context, b types.DelimitedBlock) (string, error) {
@@ -460,7 +442,7 @@ func (r *sgmlRenderer) renderSidebarBlock(ctx *renderer.Context, b types.Delimit
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render sidebar block content")
 	}
-	roles, err := r.renderElementRoles(b.Attributes)
+	roles, err := r.renderElementRoles(ctx, b.Attributes)
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render fenced block content")
 	}
@@ -485,11 +467,19 @@ func (r *sgmlRenderer) renderSidebarBlock(ctx *renderer.Context, b types.Delimit
 func (r *sgmlRenderer) renderPassthrough(ctx *renderer.Context, b types.DelimitedBlock) (string, error) {
 	result := &strings.Builder{}
 	elements := discardTrailingBlankLines(b.Elements)
-	content, err := r.renderElement(ctx, b.Elements)
+	previousWithinDelimitedBlock := ctx.WithinDelimitedBlock
+	previousIncludeBlankLine := ctx.IncludeBlankLine
+	defer func() {
+		ctx.WithinDelimitedBlock = previousWithinDelimitedBlock
+		ctx.IncludeBlankLine = previousIncludeBlankLine
+	}()
+	ctx.WithinDelimitedBlock = true
+	ctx.IncludeBlankLine = true
+	content, err := r.renderLines(ctx, b.Elements)
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render passthrough")
 	}
-	roles, err := r.renderElementRoles(b.Attributes)
+	roles, err := r.renderElementRoles(ctx, b.Attributes)
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render fenced block content")
 	}
@@ -509,28 +499,40 @@ func (r *sgmlRenderer) renderPassthrough(ctx *renderer.Context, b types.Delimite
 	return result.String(), err
 }
 
-func discardTrailingBlankLines(elements []interface{}) []interface{} {
+func discardTrailingBlankLines(lines []interface{}) []interface{} {
 	// discard blank elements at the end
-	log.Debugf("discarding trailing blank lines on %d elements...", len(elements))
-	filteredElements := make([]interface{}, len(elements))
-	copy(filteredElements, elements)
-
+	log.Debugf("discarding trailing blank lines on %d elements...", len(lines))
+	filteredLines := make([]interface{}, len(lines))
+	copy(filteredLines, lines)
+	// heading empty lines
 	for {
-		if len(filteredElements) == 0 {
+		if len(filteredLines) == 0 {
 			break
 		}
-		if l, ok := filteredElements[len(filteredElements)-1].(types.VerbatimLine); ok && l.IsEmpty() {
-			log.Debugf("element of type '%T' at position %d is a blank line, discarding it", filteredElements[len(filteredElements)-1], len(filteredElements)-1)
+		if l, ok := filteredLines[0].([]interface{}); ok && len(l) == 0 {
 			// remove last element of the slice since it's a blank line
-			filteredElements = filteredElements[:len(filteredElements)-1]
-		} else if _, ok := filteredElements[len(filteredElements)-1].(types.BlankLine); ok {
-			log.Debugf("element of type '%T' at position %d is a blank line, discarding it", filteredElements[len(filteredElements)-1], len(filteredElements)-1)
+			filteredLines = filteredLines[1:]
+		} else if _, ok := filteredLines[0].(types.BlankLine); ok {
 			// remove last element of the slice since it's a blank line
-			filteredElements = filteredElements[:len(filteredElements)-1]
+			filteredLines = filteredLines[:len(filteredLines)-1]
 		} else {
 			break
 		}
 	}
-	log.Debugf("returning %d elements", len(filteredElements))
-	return filteredElements
+	// trailing empty lines
+	for {
+		if len(filteredLines) == 0 {
+			break
+		}
+		if l, ok := filteredLines[len(filteredLines)-1].([]interface{}); ok && len(l) == 0 {
+			// remove last element of the slice since it's a blank line
+			filteredLines = filteredLines[:len(filteredLines)-1]
+		} else if _, ok := filteredLines[len(filteredLines)-1].(types.BlankLine); ok {
+			// remove last element of the slice since it's a blank line
+			filteredLines = filteredLines[:len(filteredLines)-1]
+		} else {
+			break
+		}
+	}
+	return filteredLines
 }

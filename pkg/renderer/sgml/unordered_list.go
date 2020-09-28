@@ -25,7 +25,7 @@ func (r *sgmlRenderer) renderUnorderedList(ctx *renderer.Context, l types.Unorde
 			return "", errors.Wrap(err, "unable to render unordered list")
 		}
 	}
-	roles, err := r.renderElementRoles(l.Attributes)
+	roles, err := r.renderElementRoles(ctx, l.Attributes)
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render unordered list roles")
 	}

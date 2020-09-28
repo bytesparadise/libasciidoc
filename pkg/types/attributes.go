@@ -6,7 +6,6 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/davecgh/go-spew/spew"
 	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
 )
@@ -187,6 +186,7 @@ func NewElementTitle(title string) (Attributes, error) {
 	}, nil
 }
 
+// ElementRole the attribute value of an element role
 type ElementRole []interface{}
 
 // NewElementRole initializes a new attribute map with a single entry for the title using the given value
@@ -508,10 +508,10 @@ func NewElementAttributes(attributes ...interface{}) (Attributes, error) {
 	if len(attributes) == 0 {
 		return nil, nil
 	}
-	if log.IsLevelEnabled(log.DebugLevel) {
-		log.Debug("new element attributes:")
-		spew.Fdump(log.StandardLogger().Out, attributes)
-	}
+	// if log.IsLevelEnabled(log.DebugLevel) {
+	// 	log.Debug("new element attributes:")
+	// 	spew.Fdump(log.StandardLogger().Out, attributes)
+	// }
 	var err error
 	result := Attributes{}
 	for _, item := range attributes {

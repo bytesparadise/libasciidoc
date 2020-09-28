@@ -810,8 +810,10 @@ another delimited block
 							Element: types.DelimitedBlock{
 								Kind: types.Listing,
 								Elements: []interface{}{
-									types.VerbatimLine{
-										Content: "a delimited block",
+									[]interface{}{
+										types.StringElement{
+											Content: "a delimited block",
+										},
 									},
 								},
 							},
@@ -821,8 +823,10 @@ another delimited block
 							Element: types.DelimitedBlock{
 								Kind: types.Listing,
 								Elements: []interface{}{
-									types.VerbatimLine{
-										Content: "another delimited block",
+									[]interface{}{
+										types.StringElement{
+											Content: "another delimited block",
+										},
 									},
 								},
 							},
@@ -878,8 +882,10 @@ print("two")
 							Element: types.DelimitedBlock{
 								Kind: types.Listing,
 								Elements: []interface{}{
-									types.VerbatimLine{
-										Content: "print(\"one\")",
+									[]interface{}{
+										types.StringElement{
+											Content: "print(\"one\")",
+										},
 									},
 								},
 							},
@@ -902,8 +908,10 @@ print("two")
 							Element: types.DelimitedBlock{
 								Kind: types.Listing,
 								Elements: []interface{}{
-									types.VerbatimLine{
-										Content: "print(\"two\")",
+									[]interface{}{
+										types.StringElement{
+											Content: "print(\"two\")",
+										},
 									},
 								},
 							},
@@ -1866,16 +1874,20 @@ another delimited block
 										types.DelimitedBlock{
 											Kind: types.Listing,
 											Elements: []interface{}{
-												types.VerbatimLine{
-													Content: "a delimited block",
+												[]interface{}{
+													types.StringElement{
+														Content: "a delimited block",
+													},
 												},
 											},
 										},
 										types.DelimitedBlock{
 											Kind: types.Listing,
 											Elements: []interface{}{
-												types.VerbatimLine{
-													Content: "another delimited block",
+												[]interface{}{
+													types.StringElement{
+														Content: "another delimited block",
+													},
 												},
 											},
 										},
@@ -1930,8 +1942,10 @@ print("two")
 										types.DelimitedBlock{
 											Kind: types.Listing,
 											Elements: []interface{}{
-												types.VerbatimLine{
-													Content: "print(\"one\")",
+												[]interface{}{
+													types.StringElement{
+														Content: "print(\"one\")",
+													},
 												},
 											},
 										},
@@ -1951,8 +1965,10 @@ print("two")
 										types.DelimitedBlock{
 											Kind: types.Listing,
 											Elements: []interface{}{
-												types.VerbatimLine{
-													Content: "print(\"two\")",
+												[]interface{}{
+													types.StringElement{
+														Content: "print(\"two\")",
+													},
 												},
 											},
 										},

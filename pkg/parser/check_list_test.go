@@ -258,9 +258,10 @@ var _ = Describe("checked lists", func() {
 												Elements: []interface{}{
 													types.Paragraph{
 														Lines: []interface{}{
-															[]interface{}{types.StringElement{
-																Content: "a normal list item",
-															},
+															[]interface{}{
+																types.StringElement{
+																	Content: "a normal list item",
+																},
 															},
 														},
 													},
@@ -273,9 +274,10 @@ var _ = Describe("checked lists", func() {
 												Elements: []interface{}{
 													types.Paragraph{
 														Lines: []interface{}{
-															[]interface{}{types.StringElement{
-																Content: "another normal list item",
-															},
+															[]interface{}{
+																types.StringElement{
+																	Content: "another normal list item",
+																},
 															},
 														},
 													},

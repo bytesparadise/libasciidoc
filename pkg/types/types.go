@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"fmt"
 	"net/url"
-	"regexp"
 	"sort"
 	"strconv"
 	"strings"
@@ -1610,36 +1609,33 @@ func NewStringElement(content string) (StringElement, error) {
 // ------------------------------------------
 
 // VerbatimLine the structure for verbatim line, ie, read "as-is" from a given text document.
+//TODO: remove
 type VerbatimLine struct {
-	Content  string
+	Elements []interface{}
 	Callouts []Callout
 }
 
 // NewVerbatimLine initializes a new `VerbatimLine` from the given content
-func NewVerbatimLine(content string, callouts interface{}) (VerbatimLine, error) {
+func NewVerbatimLine(elements []interface{}, callouts []interface{}) (VerbatimLine, error) {
 	var cos []Callout
-	if callouts, ok := callouts.([]interface{}); ok {
-		for _, c := range callouts {
-			cos = append(cos, c.(Callout))
-		}
+	for _, c := range callouts {
+		cos = append(cos, c.(Callout))
 	}
 	return VerbatimLine{
-		Content:  content,
+		Elements: elements,
 		Callouts: cos,
 	}, nil
 }
 
-var emptyStringRE = regexp.MustCompile(` \t`)
-
 // IsEmpty return `true` if the line contains only whitespaces and tabs
 func (s VerbatimLine) IsEmpty() bool {
-	return len(s.Content) == 0 || emptyStringRE.MatchString(s.Content)
+	return len(s.Elements) == 0 // || emptyStringRE.MatchString(s.Content)
 }
 
-// String return the content of this VerbatimLine
-func (s VerbatimLine) String() string {
-	return s.Content
-}
+// // String return the content of this VerbatimLine
+// func (s VerbatimLine) String() string {
+// 	return s.Content
+// }
 
 // ------------------------------------------
 // Explicit line breaks

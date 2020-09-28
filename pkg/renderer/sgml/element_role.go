@@ -7,14 +7,14 @@ import (
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 )
 
-func (r *sgmlRenderer) renderElementRoles(attrs types.Attributes) (string, error) {
+func (r *sgmlRenderer) renderElementRoles(ctx *Context, attrs types.Attributes) (string, error) {
 	var roles []string
 	switch role := attrs[types.AttrRole].(type) {
 	case []interface{}:
 		for _, er := range role {
 			switch er := er.(type) {
 			case types.ElementRole:
-				s, err := r.renderElementRole(er)
+				s, err := r.renderElementRole(ctx, er)
 				if err != nil {
 					return "", err
 				}
@@ -24,7 +24,7 @@ func (r *sgmlRenderer) renderElementRoles(attrs types.Attributes) (string, error
 			}
 		}
 	case types.ElementRole:
-		s, err := r.renderElementRole(role)
+		s, err := r.renderElementRole(ctx, role)
 		if err != nil {
 			return "", err
 		}
@@ -34,7 +34,7 @@ func (r *sgmlRenderer) renderElementRoles(attrs types.Attributes) (string, error
 }
 
 // Image roles add float and alignment attributes -- we turn these into roles.
-func (r *sgmlRenderer) renderImageRoles(attrs types.Attributes) (string, error) {
+func (r *sgmlRenderer) renderImageRoles(ctx *Context, attrs types.Attributes) (string, error) {
 	var roles []string
 	if val, ok := attrs.GetAsString(types.AttrFloat); ok {
 		roles = append(roles, val)
@@ -47,7 +47,7 @@ func (r *sgmlRenderer) renderImageRoles(attrs types.Attributes) (string, error) 
 		for _, er := range role {
 			switch er := er.(type) {
 			case types.ElementRole:
-				s, err := r.renderElementRole(er)
+				s, err := r.renderElementRole(ctx, er)
 				if err != nil {
 					return "", err
 				}
@@ -57,7 +57,7 @@ func (r *sgmlRenderer) renderImageRoles(attrs types.Attributes) (string, error) 
 			}
 		}
 	case types.ElementRole:
-		s, err := r.renderElementRole(role)
+		s, err := r.renderElementRole(ctx, role)
 		if err != nil {
 			return "", err
 		}
@@ -66,7 +66,7 @@ func (r *sgmlRenderer) renderImageRoles(attrs types.Attributes) (string, error) 
 	return strings.Join(roles, " "), nil
 }
 
-func (r *sgmlRenderer) renderElementRole(role types.ElementRole) (string, error) {
+func (r *sgmlRenderer) renderElementRole(ctx *Context, role types.ElementRole) (string, error) {
 	result := strings.Builder{}
 	for _, e := range role {
 		switch e := e.(type) {
@@ -75,7 +75,7 @@ func (r *sgmlRenderer) renderElementRole(role types.ElementRole) (string, error)
 		case types.StringElement:
 			result.WriteString(e.Content)
 		case types.SpecialCharacter:
-			s, err := r.renderSpecialCharacter(e)
+			s, err := r.renderSpecialCharacter(ctx, e)
 			if err != nil {
 				return "", err
 			}

@@ -1057,8 +1057,10 @@ another delimited block
 							Element: types.DelimitedBlock{
 								Kind: types.Listing,
 								Elements: []interface{}{
-									types.VerbatimLine{
-										Content: "a delimited block",
+									[]interface{}{
+										types.StringElement{
+											Content: "a delimited block",
+										},
 									},
 								},
 							},
@@ -1068,8 +1070,10 @@ another delimited block
 							Element: types.DelimitedBlock{
 								Kind: types.Listing,
 								Elements: []interface{}{
-									types.VerbatimLine{
-										Content: "another delimited block",
+									[]interface{}{
+										types.StringElement{
+											Content: "another delimited block",
+										},
 									},
 								},
 							},
@@ -1267,8 +1271,10 @@ another delimited block
 						types.DelimitedBlock{
 							Kind: types.Listing,
 							Elements: []interface{}{
-								types.VerbatimLine{
-									Content: "a delimited block",
+								[]interface{}{
+									types.StringElement{
+										Content: "a delimited block",
+									},
 								},
 							},
 						},
@@ -1289,8 +1295,10 @@ another delimited block
 						types.DelimitedBlock{
 							Kind: types.Listing,
 							Elements: []interface{}{
-								types.VerbatimLine{
-									Content: "another delimited block",
+								[]interface{}{
+									types.StringElement{
+										Content: "another delimited block",
+									},
 								},
 							},
 						},
@@ -2609,16 +2617,20 @@ another delimited block
 										types.DelimitedBlock{
 											Kind: types.Listing,
 											Elements: []interface{}{
-												types.VerbatimLine{
-													Content: "a delimited block",
+												[]interface{}{
+													types.StringElement{
+														Content: "a delimited block",
+													},
 												},
 											},
 										},
 										types.DelimitedBlock{
 											Kind: types.Listing,
 											Elements: []interface{}{
-												types.VerbatimLine{
-													Content: "another delimited block",
+												[]interface{}{
+													types.StringElement{
+														Content: "another delimited block",
+													},
 												},
 											},
 										},
@@ -2840,8 +2852,10 @@ another delimited block
 						types.DelimitedBlock{
 							Kind: types.Listing,
 							Elements: []interface{}{
-								types.VerbatimLine{
-									Content: "a delimited block",
+								[]interface{}{
+									types.StringElement{
+										Content: "a delimited block",
+									},
 								},
 							},
 						},
@@ -2866,8 +2880,10 @@ another delimited block
 						types.DelimitedBlock{
 							Kind: types.Listing,
 							Elements: []interface{}{
-								types.VerbatimLine{
-									Content: "another delimited block",
+								[]interface{}{
+									types.StringElement{
+										Content: "another delimited block",
+									},
 								},
 							},
 						},

@@ -394,7 +394,7 @@ print("one")
 <p></p>
 <div class="listingblock">
 <div class="content">
-<pre>print(&#34;one&#34;)</pre>
+<pre>print("one")</pre>
 </div>
 </div>
 </li>
@@ -402,7 +402,7 @@ print("one")
 <p></p>
 <div class="listingblock">
 <div class="content">
-<pre>print(&#34;one&#34;)</pre>
+<pre>print("one")</pre>
 </div>
 </div>
 </li>
