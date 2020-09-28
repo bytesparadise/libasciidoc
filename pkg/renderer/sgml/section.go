@@ -46,7 +46,7 @@ func (r *sgmlRenderer) renderSection(ctx *renderer.Context, s types.Section) (st
 	if err != nil {
 		return "", errors.Wrap(err, "error while rendering section content")
 	}
-	roles, err := r.renderElementRoles(s.Attributes)
+	roles, err := r.renderElementRoles(ctx, s.Attributes)
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render section roles")
 	}
@@ -82,7 +82,7 @@ func (r *sgmlRenderer) renderSectionTitle(ctx *renderer.Context, s types.Section
 	if err != nil {
 		return "", errors.Wrap(err, "error while rendering sectionTitle content")
 	}
-	roles, err := r.renderElementRoles(s.Attributes)
+	roles, err := r.renderElementRoles(ctx, s.Attributes)
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render section content")
 	}

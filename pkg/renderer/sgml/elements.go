@@ -83,6 +83,8 @@ func (r *sgmlRenderer) renderElement(ctx *renderer.Context, element interface{})
 		return r.renderUnorderedList(ctx, e)
 	case types.CalloutList:
 		return r.renderCalloutList(ctx, e)
+	case types.Callout:
+		return r.renderCalloutRef(e)
 	case types.Paragraph:
 		return r.renderParagraph(ctx, e)
 	case types.InternalCrossReference:
@@ -98,7 +100,7 @@ func (r *sgmlRenderer) renderElement(ctx *renderer.Context, element interface{})
 	case types.Icon:
 		return r.renderInlineIcon(ctx, e)
 	case types.InlineImage:
-		return r.renderInlineImage(e)
+		return r.renderInlineImage(ctx, e)
 	case types.DelimitedBlock:
 		return r.renderDelimitedBlock(ctx, e)
 	case types.Table:
@@ -126,7 +128,7 @@ func (r *sgmlRenderer) renderElement(ctx *renderer.Context, element interface{})
 	case types.ThematicBreak:
 		return r.renderThematicBreak()
 	case types.SpecialCharacter:
-		return r.renderSpecialCharacter(e)
+		return r.renderSpecialCharacter(ctx, e)
 	case types.PredefinedAttribute:
 		return r.renderPredefinedAttribute(e)
 	default:

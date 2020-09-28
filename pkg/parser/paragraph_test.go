@@ -193,13 +193,95 @@ foo`
 				// using the same input for all substitution tests
 				source := `:github-url: https://github.com
 					
-[subs="$(SUBS)"]
+[subs="$SUBS"]
 a link to https://github.com[] <using the *inline link macro*>
 another one using attribute substitution: {github-url}[]...
-// a single-line comment`
+// a single-line comment.`
 
-				It("should apply the 'none' substitution", func() {
-					s := strings.ReplaceAll(source, "$(SUBS)", "none")
+				It("should apply the 'default' substitution on multiple lines", func() {
+					// quoted text is parsed but inline link macro is not
+					s := strings.ReplaceAll(source, "[subs=\"$SUBS\"]", "")
+					expected := types.DraftDocument{
+						Attributes: types.Attributes{
+							"github-url": "https://github.com",
+						},
+						Blocks: []interface{}{
+							types.AttributeDeclaration{
+								Name:  "github-url",
+								Value: "https://github.com",
+							},
+							types.BlankLine{},
+							types.BlankLine{},
+							types.Paragraph{
+								Lines: []interface{}{
+									[]interface{}{
+										types.StringElement{
+											Content: "a link to ",
+										},
+										types.InlineLink{
+											Location: types.Location{
+												Scheme: "https://",
+												Path: []interface{}{
+													types.StringElement{
+														Content: "github.com",
+													},
+												},
+											},
+										},
+										types.StringElement{
+											Content: " ",
+										},
+										types.SpecialCharacter{
+											Name: "<",
+										},
+										types.StringElement{
+											Content: "using the ",
+										},
+										types.QuotedText{
+											Kind: types.Bold,
+											Elements: []interface{}{
+												types.StringElement{
+													Content: "inline link macro",
+												},
+											},
+										},
+										types.SpecialCharacter{
+											Name: ">",
+										},
+									},
+									[]interface{}{
+										types.StringElement{
+											Content: "another one using attribute substitution: ",
+										},
+										types.InlineLink{
+											Location: types.Location{
+												Scheme: "https://",
+												Path: []interface{}{
+													types.StringElement{
+														Content: "github.com",
+													},
+												},
+											},
+										},
+										types.StringElement{
+											Content: "\u2026\u200b", // symbol for ellipsis, applied by the 'replacements' substitution
+										},
+									},
+									[]interface{}{
+										types.SingleLineComment{
+											Content: " a single-line comment.",
+										},
+									},
+								},
+							},
+						},
+					}
+					Expect(ParseDraftDocument(s)).To(MatchDraftDocument(expected))
+				})
+
+				It("should apply the 'normal' substitution on multiple lines", func() {
+					// quoted text is parsed but inline link macro is not
+					s := strings.ReplaceAll(source, "$SUBS", "normal")
 					expected := types.DraftDocument{
 						Attributes: types.Attributes{
 							"github-url": "https://github.com",
@@ -212,18 +294,65 @@ another one using attribute substitution: {github-url}[]...
 							types.BlankLine{},
 							types.Paragraph{
 								Attributes: types.Attributes{
-									types.AttrSubstitutions: "none",
+									types.AttrSubstitutions: "normal",
 								},
 								Lines: []interface{}{
 									[]interface{}{
-										types.StringElement{Content: "a link to https://github.com[] <using the *inline link macro*>"},
+										types.StringElement{
+											Content: "a link to ",
+										},
+										types.InlineLink{
+											Location: types.Location{
+												Scheme: "https://",
+												Path: []interface{}{
+													types.StringElement{
+														Content: "github.com",
+													},
+												},
+											},
+										},
+										types.StringElement{
+											Content: " ",
+										},
+										types.SpecialCharacter{
+											Name: "<",
+										},
+										types.StringElement{
+											Content: "using the ",
+										},
+										types.QuotedText{
+											Kind: types.Bold,
+											Elements: []interface{}{
+												types.StringElement{
+													Content: "inline link macro",
+												},
+											},
+										},
+										types.SpecialCharacter{
+											Name: ">",
+										},
 									},
 									[]interface{}{
-										types.StringElement{Content: "another one using attribute substitution: {github-url}[]..."},
+										types.StringElement{
+											Content: "another one using attribute substitution: ",
+										},
+										types.InlineLink{
+											Location: types.Location{
+												Scheme: "https://",
+												Path: []interface{}{
+													types.StringElement{
+														Content: "github.com",
+													},
+												},
+											},
+										},
+										types.StringElement{
+											Content: "\u2026\u200b", // symbol for ellipsis, applied by the 'replacements' substitution
+										},
 									},
 									[]interface{}{
 										types.SingleLineComment{
-											Content: " a single-line comment",
+											Content: " a single-line comment.",
 										},
 									},
 								},
@@ -235,7 +364,7 @@ another one using attribute substitution: {github-url}[]...
 
 				It("should apply the 'quotes' substitution on multiple lines", func() {
 					// quoted text is parsed but inline link macro is not
-					s := strings.ReplaceAll(source, "$(SUBS)", "quotes")
+					s := strings.ReplaceAll(source, "$SUBS", "quotes")
 					expected := types.DraftDocument{
 						Attributes: types.Attributes{
 							"github-url": "https://github.com",
@@ -274,7 +403,7 @@ another one using attribute substitution: {github-url}[]...
 									},
 									[]interface{}{
 										types.SingleLineComment{
-											Content: " a single-line comment",
+											Content: " a single-line comment.",
 										},
 									},
 								},
@@ -286,7 +415,7 @@ another one using attribute substitution: {github-url}[]...
 
 				It("should apply the 'macros' substitution on multiple lines", func() {
 					// quoted text is not parsed but inline link macro is
-					s := strings.ReplaceAll(source, "$(SUBS)", "macros")
+					s := strings.ReplaceAll(source, "$SUBS", "macros")
 					expected := types.DraftDocument{
 						Attributes: types.Attributes{
 							"github-url": "https://github.com",
@@ -327,7 +456,7 @@ another one using attribute substitution: {github-url}[]...
 									},
 									[]interface{}{
 										types.SingleLineComment{
-											Content: " a single-line comment",
+											Content: " a single-line comment.",
 										},
 									},
 								},
@@ -339,7 +468,7 @@ another one using attribute substitution: {github-url}[]...
 
 				It("should apply the 'attributes' substitution on multiple lines", func() {
 					// quoted text is not parsed but inline link macro is
-					s := strings.ReplaceAll(source, "$(SUBS)", "attributes")
+					s := strings.ReplaceAll(source, "$SUBS", "attributes")
 					expected := types.DraftDocument{
 						Attributes: types.Attributes{
 							"github-url": "https://github.com",
@@ -363,7 +492,7 @@ another one using attribute substitution: {github-url}[]...
 									},
 									[]interface{}{
 										types.SingleLineComment{
-											Content: " a single-line comment",
+											Content: " a single-line comment.",
 										},
 									},
 								},
@@ -375,7 +504,7 @@ another one using attribute substitution: {github-url}[]...
 
 				It("should apply the 'attributes,macros' substitution on multiple lines", func() {
 					// quoted text is not parsed but inline link macro is
-					s := strings.ReplaceAll(source, "$(SUBS)", "attributes,macros")
+					s := strings.ReplaceAll(source, "$SUBS", "attributes,macros")
 					expected := types.DraftDocument{
 						Attributes: types.Attributes{
 							"github-url": "https://github.com",
@@ -421,7 +550,7 @@ another one using attribute substitution: {github-url}[]...
 									},
 									[]interface{}{
 										types.SingleLineComment{
-											Content: " a single-line comment",
+											Content: " a single-line comment.",
 										},
 									},
 								},
@@ -433,7 +562,7 @@ another one using attribute substitution: {github-url}[]...
 
 				It("should apply the 'specialchars' substitution on multiple lines", func() {
 					// quoted text is not parsed but inline link macro is
-					s := strings.ReplaceAll(source, "$(SUBS)", "specialchars")
+					s := strings.ReplaceAll(source, "$SUBS", "specialchars")
 					expected := types.DraftDocument{
 						Attributes: types.Attributes{
 							"github-url": "https://github.com",
@@ -460,7 +589,7 @@ another one using attribute substitution: {github-url}[]...
 									},
 									[]interface{}{
 										types.SingleLineComment{
-											Content: " a single-line comment",
+											Content: " a single-line comment.",
 										},
 									},
 								},
@@ -470,9 +599,9 @@ another one using attribute substitution: {github-url}[]...
 					Expect(ParseDraftDocument(s)).To(MatchDraftDocument(expected))
 				})
 
-				It("should apply the replacements substitution on multiple lines", func() {
+				It("should apply the 'replacements' substitution on multiple lines", func() {
 					// quoted text is not parsed but inline link macro is
-					s := strings.ReplaceAll(source, "$(SUBS)", "replacements")
+					s := strings.ReplaceAll(source, "$SUBS", "replacements")
 					expected := types.DraftDocument{
 						Attributes: types.Attributes{
 							"github-url": "https://github.com",
@@ -496,7 +625,7 @@ another one using attribute substitution: {github-url}[]...
 									},
 									[]interface{}{
 										types.SingleLineComment{
-											Content: " a single-line comment",
+											Content: " a single-line comment.",
 										},
 									},
 								},
@@ -506,9 +635,9 @@ another one using attribute substitution: {github-url}[]...
 					Expect(ParseDraftDocument(s)).To(MatchDraftDocument(expected))
 				})
 
-				It("should apply the 'quotes' and 'macros' substitutions", func() {
+				It("should apply the 'quotes,macros' substitutions", func() {
 					// quoted text and inline link macro are both parsed
-					s := strings.ReplaceAll(source, "$(SUBS)", "quotes,macros")
+					s := strings.ReplaceAll(source, "$SUBS", "quotes,macros")
 					expected := types.DraftDocument{
 						Attributes: types.Attributes{
 							"github-url": "https://github.com",
@@ -558,7 +687,7 @@ another one using attribute substitution: {github-url}[]...
 									},
 									[]interface{}{
 										types.SingleLineComment{
-											Content: " a single-line comment",
+											Content: " a single-line comment.",
 										},
 									},
 								},
@@ -568,10 +697,10 @@ another one using attribute substitution: {github-url}[]...
 					Expect(ParseDraftDocument(s)).To(MatchDraftDocument(expected))
 				})
 
-				It("should apply the 'macros' and 'quotes' substitutions", func() {
+				It("should apply the 'macros,quotes' substitutions", func() {
 					// quoted text and inline link macro are both parsed
 					// (same as above, but with subs in reversed order)
-					s := strings.ReplaceAll(source, "$(SUBS)", "macros,quotes")
+					s := strings.ReplaceAll(source, "$SUBS", "macros,quotes")
 					expected := types.DraftDocument{
 						Attributes: types.Attributes{
 							"github-url": "https://github.com",
@@ -621,7 +750,42 @@ another one using attribute substitution: {github-url}[]...
 									},
 									[]interface{}{
 										types.SingleLineComment{
-											Content: " a single-line comment",
+											Content: " a single-line comment.",
+										},
+									},
+								},
+							},
+						},
+					}
+					Expect(ParseDraftDocument(s)).To(MatchDraftDocument(expected))
+				})
+
+				It("should apply the 'none' substitution", func() {
+					s := strings.ReplaceAll(source, "$SUBS", "none")
+					expected := types.DraftDocument{
+						Attributes: types.Attributes{
+							"github-url": "https://github.com",
+						},
+						Blocks: []interface{}{
+							types.AttributeDeclaration{
+								Name:  "github-url",
+								Value: "https://github.com",
+							},
+							types.BlankLine{},
+							types.Paragraph{
+								Attributes: types.Attributes{
+									types.AttrSubstitutions: "none",
+								},
+								Lines: []interface{}{
+									[]interface{}{
+										types.StringElement{Content: "a link to https://github.com[] <using the *inline link macro*>"},
+									},
+									[]interface{}{
+										types.StringElement{Content: "another one using attribute substitution: {github-url}[]..."},
+									},
+									[]interface{}{
+										types.SingleLineComment{
+											Content: " a single-line comment.",
 										},
 									},
 								},
@@ -1276,13 +1440,13 @@ a paragraph`
 				// using the same input for all substitution tests
 				source := `:github-url: https://github.com
 					
-[subs="$(SUBS)"]
+[subs="$SUBS"]
 a link to https://github.com[] <using the *inline link macro*>
 another one using attribute substitution: {github-url}[]...
 // a single-line comment`
 
 				It("should apply the 'none' substitution", func() {
-					s := strings.ReplaceAll(source, "$(SUBS)", "none")
+					s := strings.ReplaceAll(source, "$SUBS", "none")
 					expected := types.Document{
 						Attributes: types.Attributes{
 							"github-url": "https://github.com",
@@ -1308,7 +1472,7 @@ another one using attribute substitution: {github-url}[]...
 
 				It("should apply the 'quotes' substitution on multiple lines", func() {
 					// quoted text is parsed but inline link macro is not
-					s := strings.ReplaceAll(source, "$(SUBS)", "quotes")
+					s := strings.ReplaceAll(source, "$SUBS", "quotes")
 					expected := types.Document{
 						Attributes: types.Attributes{
 							"github-url": "https://github.com",
@@ -1349,7 +1513,7 @@ another one using attribute substitution: {github-url}[]...
 
 				It("should apply the 'macros' substitution on multiple lines", func() {
 					// quoted text is not parsed but inline link macro is
-					s := strings.ReplaceAll(source, "$(SUBS)", "macros")
+					s := strings.ReplaceAll(source, "$SUBS", "macros")
 					expected := types.Document{
 						Attributes: types.Attributes{
 							"github-url": "https://github.com",
@@ -1392,7 +1556,7 @@ another one using attribute substitution: {github-url}[]...
 
 				It("should apply the 'attributes' substitution on multiple lines", func() {
 					// quoted text is not parsed but inline link macro is
-					s := strings.ReplaceAll(source, "$(SUBS)", "attributes")
+					s := strings.ReplaceAll(source, "$SUBS", "attributes")
 					expected := types.Document{
 						Attributes: types.Attributes{
 							"github-url": "https://github.com",
@@ -1418,7 +1582,7 @@ another one using attribute substitution: {github-url}[]...
 
 				It("should apply the 'attributes,macros' substitution on multiple lines", func() {
 					// quoted text is not parsed but inline link macro is
-					s := strings.ReplaceAll(source, "$(SUBS)", "attributes,macros")
+					s := strings.ReplaceAll(source, "$SUBS", "attributes,macros")
 					expected := types.Document{
 						Attributes: types.Attributes{
 							"github-url": "https://github.com",
@@ -1466,7 +1630,7 @@ another one using attribute substitution: {github-url}[]...
 
 				It("should apply the 'specialchars' substitution on multiple lines", func() {
 					// quoted text is not parsed but inline link macro is
-					s := strings.ReplaceAll(source, "$(SUBS)", "specialchars")
+					s := strings.ReplaceAll(source, "$SUBS", "specialchars")
 					expected := types.Document{
 						Attributes: types.Attributes{
 							"github-url": "https://github.com",
@@ -1495,7 +1659,7 @@ another one using attribute substitution: {github-url}[]...
 
 				It("should apply the replacements substitution on multiple lines", func() {
 					// quoted text is not parsed but inline link macro is
-					s := strings.ReplaceAll(source, "$(SUBS)", "replacements")
+					s := strings.ReplaceAll(source, "$SUBS", "replacements")
 					expected := types.Document{
 						Attributes: types.Attributes{
 							"github-url": "https://github.com",
@@ -1521,7 +1685,7 @@ another one using attribute substitution: {github-url}[]...
 
 				It("should apply the 'quotes' and 'macros' substitutions", func() {
 					// quoted text and inline link macro are both parsed
-					s := strings.ReplaceAll(source, "$(SUBS)", "quotes,macros")
+					s := strings.ReplaceAll(source, "$SUBS", "quotes,macros")
 					expected := types.Document{
 						Attributes: types.Attributes{
 							"github-url": "https://github.com",
@@ -1574,7 +1738,7 @@ another one using attribute substitution: {github-url}[]...
 				It("should apply the 'macros' and 'quotes' substitutions", func() {
 					// quoted text and inline link macro are both parsed
 					// (same as above, but with subs in reversed order)
-					s := strings.ReplaceAll(source, "$(SUBS)", "macros,quotes")
+					s := strings.ReplaceAll(source, "$SUBS", "macros,quotes")
 					expected := types.Document{
 						Attributes: types.Attributes{
 							"github-url": "https://github.com",

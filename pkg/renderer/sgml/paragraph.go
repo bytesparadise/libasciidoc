@@ -29,7 +29,7 @@ func (r *sgmlRenderer) renderParagraph(ctx *renderer.Context, p types.Paragraph)
 	} else if ctx.WithinDelimitedBlock || ctx.WithinList > 0 {
 		return r.renderDelimitedBlockParagraph(ctx, p)
 	} else {
-		roles, err := r.renderElementRoles(p.Attributes)
+		roles, err := r.renderElementRoles(ctx, p.Attributes)
 		if err != nil {
 			return "", errors.Wrap(err, "unable to render paragraph roles")
 		}
@@ -69,7 +69,7 @@ func (r *sgmlRenderer) renderAdmonitionParagraph(ctx *renderer.Context, p types.
 	if err != nil {
 		return "", err
 	}
-	roles, err := r.renderElementRoles(p.Attributes)
+	roles, err := r.renderElementRoles(ctx, p.Attributes)
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render fenced block content")
 	}
@@ -262,18 +262,17 @@ func (r *sgmlRenderer) renderLines(ctx *renderer.Context, lines []interface{}, o
 	}
 	buf := &strings.Builder{}
 	for i, e := range lines {
-		renderedElement, err := linesRenderer.render(ctx, e)
+		renderedLine, err := linesRenderer.render(ctx, e)
 		if err != nil {
 			return "", errors.Wrap(err, "unable to render lines")
 		}
-		if len(renderedElement) > 0 {
-			_, err := buf.WriteString(renderedElement)
-			if err != nil {
+		if len(renderedLine) > 0 {
+			if _, err := buf.WriteString(renderedLine); err != nil {
 				return "", errors.Wrap(err, "unable to render lines")
 			}
 		}
 
-		if i < len(lines)-1 && (len(renderedElement) > 0 || ctx.WithinDelimitedBlock) {
+		if i < len(lines)-1 && (len(renderedLine) > 0 || ctx.WithinDelimitedBlock) {
 			// log.Debugf("rendered line is not the last one in the slice")
 			var err error
 			if linesRenderer.hardBreaks {
@@ -289,7 +288,7 @@ func (r *sgmlRenderer) renderLines(ctx *renderer.Context, lines []interface{}, o
 			}
 		}
 	}
-	// log.Debugf("rendered lines: '%s'", buf.String())
+	log.Debugf("rendered lines: '%s'", buf.String())
 	return buf.String(), nil
 }
 

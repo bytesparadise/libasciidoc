@@ -101,11 +101,7 @@ func absoluteOffset(offset int) levelOffset {
 // applies the elements and attributes substitutions on the given image block.
 func applySubstitutionsOnFileInclusion(f types.FileInclusion, attrs types.AttributesWithOverrides, options ...Option) (types.FileInclusion, error) {
 	elements := f.Location.Path
-	// apply all the "normal" subtitutions
-	subs := []elementsSubstitutionFunc{
-		substituteAttributesFunc,                  // detect the replacements
-		applyAttributeSubstitutionsOnElementsFunc, // apply the replacements
-	}
+	subs := []elementsSubstitution{substituteAttributes} // TODO: no need for an array here
 	var err error
 	for _, sub := range subs {
 		if elements, err = sub(elements, attrs, options...); err != nil {

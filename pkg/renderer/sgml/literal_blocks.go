@@ -39,7 +39,7 @@ func (r *sgmlRenderer) renderLiteralBlock(ctx *renderer.Context, b types.Literal
 	} else {
 		lines = b.Lines
 	}
-	roles, err := r.renderElementRoles(b.Attributes)
+	roles, err := r.renderElementRoles(ctx, b.Attributes)
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render literal block roles")
 	}

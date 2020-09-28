@@ -241,10 +241,10 @@ end
 ----`
 			expected := `<div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>require &#39;sinatra&#39;
+<pre class="highlight"><code>require 'sinatra'
 
-get &#39;/hi&#39; do
-  &#34;Hello World!&#34;
+get '/hi' do
+  "Hello World!"
 end</code></pre>
 </div>
 </div>
@@ -266,10 +266,10 @@ end
 			expected := `<div class="listingblock">
 <div class="title">Source block title</div>
 <div class="content">
-<pre class="highlight"><code class="language-ruby" data-lang="ruby">require &#39;sinatra&#39;
+<pre class="highlight"><code class="language-ruby" data-lang="ruby">require 'sinatra'
 
-get &#39;/hi&#39; do
-  &#34;Hello World!&#34;
+get '/hi' do
+  "Hello World!"
 end</code></pre>
 </div>
 </div>
@@ -291,10 +291,10 @@ end
 			expected := `<div class="listingblock">
 <div class="title">Source block title</div>
 <div class="content">
-<pre class="highlight"><code class="language-ruby" data-lang="ruby">require &#39;sinatra&#39;
+<pre class="highlight"><code class="language-ruby" data-lang="ruby">require 'sinatra'
 
-get &#39;/hi&#39; do
-  &#34;Hello World!&#34;
+get '/hi' do
+  "Hello World!"
 end</code></pre>
 </div>
 </div>
@@ -316,10 +316,10 @@ end
 			expected := `<div id="id-for-source-block" class="listingblock">
 <div class="title">app.rb</div>
 <div class="content">
-<pre class="highlight"><code class="language-ruby" data-lang="ruby">require &#39;sinatra&#39;
+<pre class="highlight"><code class="language-ruby" data-lang="ruby">require 'sinatra'
 
-get &#39;/hi&#39; do
-  &#34;Hello World!&#34;
+get '/hi' do
+  "Hello World!"
 end</code></pre>
 </div>
 </div>
@@ -357,7 +357,7 @@ int main(int argc, char **argv);
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
-		It("with C content, and callout", func() {
+		It("with highlighter and callouts", func() {
 			source := `:source-highlighter: chroma
 [source, c]
 ----
@@ -370,10 +370,10 @@ printf("Hello world!\n"); // <1>
 `
 			expected := `<div class="listingblock">
 <div class="content">
-<pre class="chroma highlight"><code data-lang="c"><span class="tok-cp">#include</span> <span class="tok-cpf">&lt;stdio.h&gt;</span><span class="tok-cp">
-</span><span class="tok-cp"></span>
-<span class="tok-n">printf</span><span class="tok-p">(</span><span class="tok-s">&#34;Hello world!</span><span class="tok-se">\n</span><span class="tok-s">&#34;</span><span class="tok-p">);</span> <span class="tok-c1">// <b class="conum">(1)</b>
-</span><span class="tok-c1"></span><span class="tok-o">&lt;</span><span class="tok-n">a</span><span class="tok-o">&gt;</span><span class="tok-n">link</span><span class="tok-o">&lt;/</span><span class="tok-n">a</span><span class="tok-o">&gt;</span></code></pre>
+<pre class="chroma highlight"><code data-lang="c"><span class="tok-cp">#include</span> <span class="tok-cpf">&lt;stdio.h&gt;</span>
+
+<span class="tok-n">printf</span><span class="tok-p">(</span><span class="tok-s">&#34;Hello world!</span><span class="tok-se">\n</span><span class="tok-s">&#34;</span><span class="tok-p">);</span> <span class="tok-o">//</span> <b class="conum">(1)</b>
+<span class="tok-o">&lt;</span><span class="tok-n">a</span><span class="tok-o">&gt;</span><span class="tok-n">link</span><span class="tok-o">&lt;/</span><span class="tok-n">a</span><span class="tok-o">&gt;</span></code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -435,13 +435,13 @@ public class GreetingResourceTest {
 
     @Test
     public void testHelloEndpoint() {
-        Mockito.when(greetingService.hello()).thenReturn(&#34;hello from mockito&#34;);
+        Mockito.when(greetingService.hello()).thenReturn("hello from mockito");
 
         given()
-          .when().get(&#34;/hello&#34;)
+          .when().get("/hello")
           .then()
              .statusCode(200)
-             .body(is(&#34;hello from mockito&#34;));
+             .body(is("hello from mockito"));
     }
 
 }</code></pre>

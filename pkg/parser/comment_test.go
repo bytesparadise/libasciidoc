@@ -158,11 +158,15 @@ with multiple lines
 						types.DelimitedBlock{
 							Kind: types.Comment,
 							Elements: []interface{}{
-								types.VerbatimLine{
-									Content: "a *comment* block",
+								[]interface{}{
+									types.StringElement{
+										Content: "a *comment* block",
+									},
 								},
-								types.VerbatimLine{
-									Content: "with multiple lines",
+								[]interface{}{
+									types.StringElement{
+										Content: "with multiple lines",
+									},
 								},
 							},
 						},
@@ -194,11 +198,15 @@ a second paragraph`
 						types.DelimitedBlock{
 							Kind: types.Comment,
 							Elements: []interface{}{
-								types.VerbatimLine{
-									Content: "a *comment* block",
+								[]interface{}{
+									types.StringElement{
+										Content: "a *comment* block",
+									},
 								},
-								types.VerbatimLine{
-									Content: "with multiple lines",
+								[]interface{}{
+									types.StringElement{
+										Content: "with multiple lines",
+									},
 								},
 							},
 						},

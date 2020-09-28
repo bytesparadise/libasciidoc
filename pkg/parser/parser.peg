@@ -14,7 +14,7 @@ import (
 // ----------------------------------------------------------------
 // AsciidocRawDocument - fully parsed document, line by line
 // ----------------------------------------------------------------
-AsciidocRawDocument <- frontmatter:(FrontMatter?) blocks:(AsciidocDocumentRawBlocks) EOF {
+AsciidocRawDocument <- frontmatter:(FrontMatter?) blocks:(RawDocumentBlocks) EOF {
     return types.NewRawDocument(frontmatter, blocks.([]interface{}))
 }
 
@@ -31,7 +31,7 @@ TextDocument <- blocks:(TextDocumentBlocks) EOF {
 // ------------------------------------------
 // Document blocks
 // ------------------------------------------
-AsciidocDocumentRawBlocks <- header:(DocumentHeader?) others:(DocumentRawBlock*) {
+RawDocumentBlocks <- header:(DocumentHeader?) others:(DocumentRawBlock*) {
     if header != nil && others != nil {
         return append([]interface{}{header}, others.([]interface{})...), nil
     } else if others != nil {
@@ -825,7 +825,6 @@ LabeledListItemTermElement <- element:(Word
         / SpecialCharacter
         / Symbol
         / AttributeSubstitution
-        / ImpliedApostrophe
         / AnyChar ) {
     return element, nil
 }
@@ -957,12 +956,6 @@ Paragraph <-
 
 ParagraphLine <- InlineElements
 
-MarkdownQuoteBlockAttribution <- "-- " author:(([^\r\n]+) {
-    return string(c.text), nil
-    }) EOL {
-    return author, nil
-}
-
 // ------------------------------------------
 // Continued Paragraphs
 // ------------------------------------------
@@ -1032,7 +1025,6 @@ InlineElement <-
             / InlineElementID
             / ConcealedIndexTerm
             / IndexTerm
-            / ImpliedApostrophe
             / ElementPlaceHolder
             / AnyChar)) {
     return element, nil
@@ -1830,6 +1822,7 @@ ThematicBreak <- ("***" / "* * *" / "---" / "- - -" / "___" / "_ _ _") EOL {
 // DelimitedBlock and Paragraph Substitutions (standalone rules)
 // -------------------------------------------------------------------------------------
 
+// TODO: remove?
 InlineMacros <- InlineIcon
                 / InlineImage 
                 / Link 
@@ -1845,19 +1838,53 @@ ElementPlaceHolder <- "\uFFFD" ref:([0-9]+ { return string(c.text), nil }) "\uFF
     return types.NewElementPlaceHolder(ref.(string))
 }
 
-ReplacementsSubstitution <- (Symbol 
-    / InlineWord // more permissive than the 'Word' rule
-    / Space+ 
-    / ImpliedApostrophe
-    / ElementPlaceHolder
-    / AnyChar
-    / Newline)+ EOF
+// internal rule to detect passthrough blocks before other substitutions are applied
+InlinePassthroughSubs <- 
+    (InlinePassthrough 
+        / InlineWord // more permissive than the 'Word' rule
+        / ElementPlaceHolder
+        / Space+ 
+        / AnyChar
+        / Newline)* EOF
 
-// standalone rule when applying substitutions
-NormalBlockContentSubstitution <- NormalBlockElement*
+// standalone rule for the "specialcharacters" substitution when callouts should be processed as special characters
+SpecialCharacterSubs <- 
+    (InlineWord // more permissive than the 'Word' rule
+        / SpecialCharacter
+        / ElementPlaceHolder
+        / Space+
+        / AnyChar
+        / Newline)* EOF
 
-NormalBlockElement <- 
-    !EOF element:(BlankLine 
+// standalone rule for the "quotes" substitution
+QuotedTextSubs <- 
+    (InlineWord // more permissive than the 'Word' rule
+        / Space+ 
+        / QuotedText 
+        / QuotedString
+        / ElementPlaceHolder
+        / AnyChar
+        / Newline)* EOF
+
+// standalone rule for the "attributes" substitution
+AttributeSubs <- 
+    (InlineWord // more permissive than the 'Word' rule
+        / Space+ 
+        / AttributeSubstitution
+        / ElementPlaceHolder
+        / AnyChar
+        / Newline)* EOF
+
+// standalone rule for the "macros" substitution
+InlineMacroSubs <- 
+    (InlineWord // more permissive than the 'Word' rule
+        / Space+ 
+        / InlineMacros
+        / ElementPlaceHolder
+        / AnyChar
+        / Newline)* EOF
+
+NormalBlocks <- elements:(BlankLine 
             / FileInclusion
             / ImageBlock
             / ThematicBreak
@@ -1867,112 +1894,77 @@ NormalBlockElement <-
             / ContinuedListItemElement
             / DelimitedBlock
             / LiteralBlock 
-            / AttributeDeclaration 
-            / AttributeReset 
-            / TableOfContentsPlaceHolder
             / StandaloneAttributes
-            / Paragraph) {
-        return element, nil
+            / RawParagraph)* EOF {
+        return elements, nil
     } 
 
-VerbatimContentSubstitution <- VerbatimLine
+// standalone rule for the "macros" substitution for Verse blocks
+VerseMacroSubs <- (
+        InlineWord // more permissive than the 'Word' rule
+        / Space+ 
+        / ElementPlaceHolder
+        / AnyChar
+        / Newline)* EOF 
 
-VerbatimLine <- content:(VerbatimLineContent) callouts:(Callouts)? EOL {
-    return types.NewVerbatimLine(content.(string), callouts)
+// standalone rule for the "macros" substitution for Markdown Quote blocks
+MarkdownQuoteMacroSubs <- lines:(MarkdownQuoteLine)* EOF {
+    return types.NewParagraph(lines.([]interface{}), nil)
 }
 
-VerbatimLineContent <- (!Callouts (Space+ / [^ \r\n]+))* { 
+MarkdownQuoteLine <- 
+    elements:(InlineWord // more permissive than the 'Word' rule
+        / Space+ 
+        / InlineMacros
+        / ElementPlaceHolder
+        / AnyChar)+ EOL {
+    return types.NewInlineElements(elements.([]interface{})) 
+}
+
+MarkdownQuoteAttribution <- "-- " author:(([^\r\n]+) {
     return string(c.text), nil
+    }) EOL {
+    return author, nil
 }
 
-Callouts <- Callout+
+// standalone rule for the "replacements" substitution
+ReplacementSubs <- 
+    (InlineWord // more permissive than the 'Word' rule
+        / Space+ 
+        / Symbol 
+        / ElementPlaceHolder
+        / AnyChar
+        / Newline)* EOF
+
+// standalone rule for the "post_replacements" substitution 
+// TODO: simplify as we only need to search for LineBreak at the end of the line?
+PostReplacementSubs <- (
+    InlineWord // more permissive than the 'Word' rule
+    / ElementPlaceHolder
+    / LineBreak // must be before `Space+`
+    / Space+ 
+    / AnyChar
+    / Newline)* EOF
+
+// standalone rule for the "callouts" substitution 
+CalloutSubs <- 
+    (InlineWord // more permissive than the 'Word' rule
+        / ElementPlaceHolder
+        / Space+
+        / Callout
+        / AnyChar
+        / Newline)* EOF
 
 Callout <- "<" ref:([0-9]+ { return strconv.Atoi(string(c.text)) }) ">" Space* &(EOL / Callout) {
     return types.NewCallout(ref.(int))
 }
 
-// internal substitution to detect passthrough blocks
-InlinePassthroughSubstitution <- 
-    elements:(InlinePassthrough 
-        / InlineWord // more permissive than the 'Word' rule
-        / Space+ 
-        / AnyChar
-        / Newline)+ {
-            return types.NewInlineElements(elements.([]interface{}))
-        }
-
-// standalone rule for the "quotes" substitution
-QuotedTextSubstitution <- 
-    elements:(InlineWord // more permissive than the 'Word' rule
-        / Space+ 
-        / QuotedText 
-        / QuotedString
-        / ElementPlaceHolder
-        / AnyChar
-        / Newline)+ {
-            return types.NewInlineElements(elements.([]interface{}))
-        }
-
-// standalone rule for the "macros" substitution
-InlineMacrosSubstitution <- 
-    elements:(InlineWord // more permissive than the 'Word' rule
-        / Space+ 
-        / InlineMacros
-        / ElementPlaceHolder
-        / AnyChar
-        / Newline)+ {
-            return types.NewInlineElements(elements.([]interface{}))
-        }
-
-// standalone rule for the "attributes" substitution
-AttributesSubstitution <- 
-    elements:(InlineWord // more permissive than the 'Word' rule
-        / Space+ 
-        / AttributeSubstitution
-        / ElementPlaceHolder
-        / AnyChar
-        / Newline)+{
-            return types.NewInlineElements(elements.([]interface{}))
-        }
-
-SpecialCharactersSubstitution <- 
-    elements:(SpecialCharacter
-        / Word
-        / Space+
-        / AnyChar
-        / Newline)+ {
-            return types.NewInlineElements(elements.([]interface{}))
-        }
-
-
-PostReplacementsSubstitution <- (
-    InlineWord // more permissive than the 'Word' rule
-    / ElementPlaceHolder
-    / LineBreak
-    / Space+ 
-    / AnyChar
-    / Newline)+ EOF
-
 // standalone rule for the "none" substitution
-NoneSubstitution <- (
-    ([^\r\n]+ EOL { // just text
+NoneSubs <- (
+    ElementPlaceHolder 
+    / (!EOF [^\r\n]* EOL { // just text, including empty lines
         return types.NewStringElement(string(c.text))
-    }))+
-
-// standalone rule used by the default verse block substitution
-VerseBlockContentSubstitution <- VerseBlockElement*
-
-VerseBlockElement <- !EOF element:(BlankLine / VerseBlockParagraph) {
-    return element, nil
-}
-
-VerseBlockParagraph <- lines:(VerseBlockParagraphLine)+ {
-    return types.NewParagraph(lines.([]interface{}), nil)
-} 
-
-VerseBlockParagraphLine <- elements:(InlineElement)+ EOL {
-    return types.NewInlineElements(elements)
-}
+    }))* EOF
 
 // -------------------------------------------------------------------------------------
 // Tables
@@ -2136,7 +2128,7 @@ BlankLine <- !EOF Space* EOL {
 // Symbols
 // ------------------------------------------
 
-Symbol <- Apostrophe / Copyright / Trademark / Registered / Ellipsis
+Symbol <- Apostrophe / Copyright / Trademark / Registered / Ellipsis / ImpliedApostrophe
 
 Apostrophe <- "`'" {
     return types.NewStringElement("\u2019")
@@ -2167,8 +2159,8 @@ ImpliedApostrophe <- Alphanum "'" &[\pL] {
 // They need to be identified as they may have a special treatment during the rendering
 // ------------------------------------------------------------------------------------
 
-SpecialCharacter <- InternalCrossReference / Callout {
-    // if we have a InternalCrossReference or a Callout, we just return a StringElement. 
+SpecialCharacter <- InternalCrossReference {
+    // if we have a InternalCrossReference we just return a StringElement. 
         return types.NewStringElement(string(c.text))
     } / ("<" / ">" / "&" ) {
         return types.NewSpecialCharacter(string(c.text))

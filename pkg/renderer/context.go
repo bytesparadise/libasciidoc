@@ -14,6 +14,7 @@ type Context struct {
 	TableOfContents      types.TableOfContents
 	IncludeBlankLine     bool
 	WithinDelimitedBlock bool
+	EncodeSpecialChars   bool
 	WithinList           int
 	counters             map[string]int
 	Attributes           types.Attributes
@@ -27,12 +28,13 @@ type Context struct {
 func NewContext(doc types.Document, config configuration.Configuration) *Context {
 	_, hasHeader := doc.Header()
 	return &Context{
-		Config:            config,
-		counters:          make(map[string]int),
-		Attributes:        doc.Attributes,
-		ElementReferences: doc.ElementReferences,
-		Footnotes:         doc.Footnotes,
-		HasHeader:         hasHeader,
+		Config:             config,
+		counters:           make(map[string]int),
+		Attributes:         doc.Attributes,
+		ElementReferences:  doc.ElementReferences,
+		Footnotes:          doc.Footnotes,
+		HasHeader:          hasHeader,
+		EncodeSpecialChars: true,
 	}
 }
 

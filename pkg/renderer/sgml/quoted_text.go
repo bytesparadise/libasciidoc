@@ -39,7 +39,7 @@ func (r *sgmlRenderer) renderQuotedText(ctx *renderer.Context, t types.QuotedTex
 	default:
 		return "", errors.Errorf("unsupported quoted text kind: '%v'", t.Kind)
 	}
-	roles, err := r.renderElementRoles(t.Attributes)
+	roles, err := r.renderElementRoles(ctx, t.Attributes)
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render quoted text roles")
 	}

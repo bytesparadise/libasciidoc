@@ -8,8 +8,13 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-func (r *sgmlRenderer) renderSpecialCharacter(s types.SpecialCharacter) (string, error) {
+func (r *sgmlRenderer) renderSpecialCharacter(ctx *Context, s types.SpecialCharacter) (string, error) {
 	log.Debugf("rendering special character...")
+	if !ctx.EncodeSpecialChars {
+		// just return the special character as-is
+		return s.Name, nil
+	}
+	// TODO: no need for a template here, just a map
 	result := &strings.Builder{}
 	if err := r.specialCharacter.Execute(result, struct {
 		Name string

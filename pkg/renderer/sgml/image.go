@@ -35,7 +35,7 @@ func (r *sgmlRenderer) renderImageBlock(ctx *renderer.Context, img types.ImageBl
 		}
 		caption.WriteString(c)
 	}
-	roles, err := r.renderImageRoles(img.Attributes)
+	roles, err := r.renderImageRoles(ctx, img.Attributes)
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render image roles")
 	}
@@ -70,9 +70,9 @@ func (r *sgmlRenderer) renderImageBlock(ctx *renderer.Context, img types.ImageBl
 	return result.String(), nil
 }
 
-func (r *sgmlRenderer) renderInlineImage(img types.InlineImage) (string, error) {
+func (r *sgmlRenderer) renderInlineImage(ctx *Context, img types.InlineImage) (string, error) {
 	result := &strings.Builder{}
-	roles, err := r.renderImageRoles(img.Attributes)
+	roles, err := r.renderImageRoles(ctx, img.Attributes)
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render image roles")
 	}

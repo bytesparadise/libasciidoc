@@ -446,8 +446,10 @@ another fenced block
 						Element: types.DelimitedBlock{
 							Kind: types.Listing,
 							Elements: []interface{}{
-								types.VerbatimLine{
-									Content: "a fenced block",
+								[]interface{}{
+									types.StringElement{
+										Content: "a fenced block",
+									},
 								},
 							},
 						},
@@ -463,7 +465,9 @@ another fenced block
 							types.Paragraph{
 								Lines: []interface{}{
 									[]interface{}{
-										types.StringElement{Content: "something simple"},
+										types.StringElement{
+											Content: "something simple",
+										},
 									},
 								},
 							},
@@ -475,8 +479,10 @@ another fenced block
 						Element: types.DelimitedBlock{
 							Kind: types.Listing,
 							Elements: []interface{}{
-								types.VerbatimLine{
-									Content: "another fenced block",
+								[]interface{}{
+									types.StringElement{
+										Content: "another fenced block",
+									},
 								},
 							},
 						},
@@ -509,8 +515,10 @@ another fenced block
 					types.DelimitedBlock{
 						Kind: types.Listing,
 						Elements: []interface{}{
-							types.VerbatimLine{
-								Content: "a fenced block",
+							[]interface{}{
+								types.StringElement{
+									Content: "a fenced block",
+								},
 							},
 						},
 					},
@@ -534,8 +542,10 @@ another fenced block
 					types.DelimitedBlock{
 						Kind: types.Listing,
 						Elements: []interface{}{
-							types.VerbatimLine{
-								Content: "another fenced block",
+							[]interface{}{
+								types.StringElement{
+									Content: "another fenced block",
+								},
 							},
 						},
 					},
@@ -1381,8 +1391,10 @@ another fenced block
 									types.DelimitedBlock{
 										Kind: types.Listing,
 										Elements: []interface{}{
-											types.VerbatimLine{
-												Content: "a fenced block",
+											[]interface{}{
+												types.StringElement{
+													Content: "a fenced block",
+												},
 											},
 										},
 									},
@@ -1407,8 +1419,10 @@ another fenced block
 									types.DelimitedBlock{
 										Kind: types.Listing,
 										Elements: []interface{}{
-											types.VerbatimLine{
-												Content: "another fenced block",
+											[]interface{}{
+												types.StringElement{
+													Content: "another fenced block",
+												},
 											},
 										},
 									},
@@ -1450,8 +1464,10 @@ another fenced block
 					types.DelimitedBlock{
 						Kind: types.Listing,
 						Elements: []interface{}{
-							types.VerbatimLine{
-								Content: "a fenced block",
+							[]interface{}{
+								types.StringElement{
+									Content: "a fenced block",
+								},
 							},
 						},
 					},
@@ -1480,8 +1496,10 @@ another fenced block
 					types.DelimitedBlock{
 						Kind: types.Listing,
 						Elements: []interface{}{
-							types.VerbatimLine{
-								Content: "another fenced block",
+							[]interface{}{
+								types.StringElement{
+									Content: "another fenced block",
+								},
 							},
 						},
 					},
