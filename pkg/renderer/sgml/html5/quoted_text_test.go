@@ -315,6 +315,7 @@ content</mark>.</p>
 	})
 
 	Context("attributes", func() {
+
 		It("simple role italics", func() {
 			source := "[myrole]_italics_"
 			expected := `<div class="paragraph">
@@ -355,6 +356,16 @@ content</mark>.</p>
 			source := "[myrole]`true`"
 			expected := `<div class="paragraph">
 <p><code class="myrole">true</code></p>
+</div>
+`
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
+		})
+
+		It("short-hand role with special characters", func() {
+			source := `["a <role>"]**bold**`
+			// wrapping quotes are not preserved
+			expected := `<div class="paragraph">
+<p><strong class="a &lt;role&gt;">bold</strong></p>
 </div>
 `
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
