@@ -1698,7 +1698,7 @@ include::../../test/includes/chapter-a.adoc[]
 					source := `include::../../test/includes/tag-include-unclosed.adoc[tag=unclosed]`
 					expected := types.RawDocument{
 						Blocks: []interface{}{
-							types.BlankLine{},
+							// leading blanklines are ignored
 							types.Paragraph{
 								Lines: []interface{}{
 									types.RawLine{
@@ -1936,7 +1936,7 @@ include::../../test/includes/chapter-a.adoc[]
 						source := `include::../../test/includes/tag-include.adoc[tag=**;!*]` // includes all sections
 						expected := types.RawDocument{
 							Blocks: []interface{}{
-								types.BlankLine{},
+								// leading blanklines are ignored
 								types.Paragraph{
 									Lines: []interface{}{
 										types.RawLine{
