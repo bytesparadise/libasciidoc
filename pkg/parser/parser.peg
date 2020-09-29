@@ -31,11 +31,11 @@ TextDocument <- blocks:(TextDocumentBlocks) EOF {
 // ------------------------------------------
 // Document blocks
 // ------------------------------------------
-RawDocumentBlocks <- header:(DocumentHeader?) others:(DocumentRawBlock*) {
-    if header != nil && others != nil {
-        return append([]interface{}{header}, others.([]interface{})...), nil
-    } else if others != nil {
-        return others.([]interface{}), nil
+RawDocumentBlocks <- Newline* header:(DocumentHeader?) blocks:(DocumentRawBlock*) {
+    if header != nil && blocks != nil {
+        return append([]interface{}{header}, blocks.([]interface{})...), nil
+    } else if blocks != nil {
+        return blocks.([]interface{}), nil
     }
     return []interface{}{}, nil
 }
