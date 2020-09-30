@@ -124,10 +124,10 @@ func applySubstitutionsOnDelimitedBlock(b types.DelimitedBlock, attrs types.Attr
 
 func applyNormalBlockSubstitutions(b types.DelimitedBlock, attrs types.AttributesWithOverrides, options ...Option) (types.DelimitedBlock, error) {
 	funcs := []elementsSubstitution{}
-	subs := b.Attributes.GetAsStringWithDefault(types.AttrSubstitutions, "default")
+	subs, _ := b.Attributes.GetAsString(types.AttrSubstitutions)
 	for _, s := range strings.Split(subs, ",") {
 		switch s {
-		case "default", "normal":
+		case "", "normal":
 			funcs = append(funcs,
 				substituteInlinePassthrough,
 				substituteSpecialCharacters,
@@ -188,10 +188,10 @@ func applyNormalBlockSubstitutions(b types.DelimitedBlock, attrs types.Attribute
 
 func applyVerbatimBlockSubstitutions(b types.DelimitedBlock, attrs types.AttributesWithOverrides, options ...Option) (types.DelimitedBlock, error) {
 	funcs := []elementsSubstitution{}
-	subs := b.Attributes.GetAsStringWithDefault(types.AttrSubstitutions, "default")
+	subs, _ := b.Attributes.GetAsString(types.AttrSubstitutions)
 	for _, s := range strings.Split(subs, ",") {
 		switch s {
-		case "default":
+		case "":
 			funcs = append(funcs, substituteCallouts, substituteSpecialCharacters)
 		case "normal":
 			funcs = append(funcs,
@@ -233,10 +233,10 @@ func applyVerbatimBlockSubstitutions(b types.DelimitedBlock, attrs types.Attribu
 
 func applyVerseBlockSubstitutions(b types.DelimitedBlock, attrs types.AttributesWithOverrides, options ...Option) (types.DelimitedBlock, error) {
 	funcs := []elementsSubstitution{}
-	subs := b.Attributes.GetAsStringWithDefault(types.AttrSubstitutions, "normal")
+	subs, _ := b.Attributes.GetAsString(types.AttrSubstitutions)
 	for _, s := range strings.Split(subs, ",") {
 		switch s {
-		case "normal":
+		case "", "normal":
 			funcs = append(funcs,
 				substituteInlinePassthrough,
 				substituteSpecialCharacters,
@@ -276,38 +276,14 @@ func applyVerseBlockSubstitutions(b types.DelimitedBlock, attrs types.Attributes
 }
 
 func applyMarkdownQuoteBlockSubstitutions(b types.DelimitedBlock, attrs types.AttributesWithOverrides, options ...Option) (types.DelimitedBlock, error) {
-	subs := b.Attributes.GetAsStringWithDefault(types.AttrSubstitutions, "normal")
-	funcs := []elementsSubstitution{}
-	for _, s := range strings.Split(subs, ",") {
-		switch s {
-		case "normal":
-			funcs = append(funcs,
-				substituteInlinePassthrough,
-				substituteSpecialCharacters,
-				substituteQuotedTexts,
-				substituteAttributes,
-				substituteReplacements,
-				substituteMarkdownQuoteMacros,
-				substitutePostReplacements,
-			)
-		case "specialcharacters", "specialchars":
-			funcs = append(funcs, substituteSpecialCharacters)
-		case "quotes":
-			funcs = append(funcs, substituteQuotedTexts)
-		case "attributes":
-			funcs = append(funcs, substituteAttributes)
-		case "macros":
-			funcs = append(funcs, substituteMarkdownQuoteMacros)
-		case "replacements":
-			funcs = append(funcs, substituteReplacements)
-		case "post_replacements":
-			funcs = append(funcs, substitutePostReplacements)
-		case "none":
-			funcs = append(funcs, substituteNone)
-		default:
-			return types.DelimitedBlock{}, fmt.Errorf("unsupported substitution: '%s", s)
-		}
-	}
+	funcs := []elementsSubstitution{
+		substituteInlinePassthrough,
+		substituteSpecialCharacters,
+		substituteQuotedTexts,
+		substituteAttributes,
+		substituteReplacements,
+		substituteMarkdownQuoteMacros,
+		substitutePostReplacements}
 	// attempt to extract the block attributions
 	var author string
 	if b.Elements, author = extractMarkdownQuoteAttribution(b.Elements); author != "" {
@@ -447,7 +423,7 @@ func applySubstitutionsOnParagraph(p types.Paragraph, attrs types.AttributesWith
 // paragraphSubstitutions returns the substitution funcs to apply on the given paragraph `p`
 // otherwise, returns a default substitution which will ultemately fail
 func paragraphSubstitutions(p types.Paragraph) ([]elementsSubstitution, error) {
-	subs := p.Attributes.GetAsStringWithDefault(types.AttrSubstitutions, "normal")
+	subs, _ := p.Attributes.GetAsString(types.AttrSubstitutions)
 	// log.Debugf("determining substitutions for '%s' on a paragraph", subs)
 	funcs := []elementsSubstitution{}
 	for _, s := range strings.Split(subs, ",") {
@@ -464,7 +440,7 @@ func paragraphSubstitutions(p types.Paragraph) ([]elementsSubstitution, error) {
 			funcs = append(funcs, substituteReplacements)
 		case "post_replacements":
 			funcs = append(funcs, substitutePostReplacements)
-		case "normal":
+		case "", "normal":
 			funcs = append(funcs,
 				substituteInlinePassthrough,
 				substituteSpecialCharacters,

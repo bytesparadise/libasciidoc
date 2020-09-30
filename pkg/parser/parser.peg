@@ -1902,6 +1902,7 @@ NormalBlocks <- elements:(BlankLine
 // standalone rule for the "macros" substitution for Verse blocks
 VerseMacroSubs <- (
         InlineWord // more permissive than the 'Word' rule
+        / InlineMacros
         / Space+ 
         / ElementPlaceHolder
         / AnyChar
