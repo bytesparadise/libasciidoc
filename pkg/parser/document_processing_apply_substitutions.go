@@ -110,8 +110,10 @@ func applySubstitutionsOnDelimitedBlock(b types.DelimitedBlock, attrs types.Attr
 	switch b.Kind {
 	case types.Example, types.Quote, types.Sidebar:
 		return applyNormalBlockSubstitutions(b, attrs, options...)
-	case types.Fenced, types.Listing, types.Literal, types.Source, types.Passthrough:
+	case types.Fenced, types.Listing, types.Literal, types.Source:
 		return applyVerbatimBlockSubstitutions(b, attrs, options...)
+	case types.Passthrough:
+		return applyPassthroughBlockSubstitutions(b, attrs, options...)
 	case types.Verse:
 		return applyVerseBlockSubstitutions(b, attrs, options...)
 	case types.MarkdownQuote:
@@ -193,6 +195,51 @@ func applyVerbatimBlockSubstitutions(b types.DelimitedBlock, attrs types.Attribu
 		switch s {
 		case "":
 			funcs = append(funcs, substituteCallouts, substituteSpecialCharacters)
+		case "normal":
+			funcs = append(funcs,
+				substituteInlinePassthrough,
+				substituteSpecialCharacters,
+				substituteQuotedTexts,
+				substituteAttributes,
+				substituteReplacements,
+				substituteInlineMacros,
+				substitutePostReplacements)
+		case "specialcharacters", "specialchars":
+			funcs = append(funcs, substituteSpecialCharacters)
+		case "quotes":
+			funcs = append(funcs, substituteQuotedTexts)
+		case "attributes":
+			funcs = append(funcs, substituteAttributes)
+		case "macros":
+			funcs = append(funcs, substituteInlineMacros)
+		case "replacements":
+			funcs = append(funcs, substituteReplacements)
+		case "post_replacements":
+			funcs = append(funcs, substitutePostReplacements)
+		case "none":
+			funcs = append(funcs, substituteNone)
+		default:
+			return types.DelimitedBlock{}, fmt.Errorf("unsupported substitution: '%s", s)
+		}
+	}
+	funcs = append(funcs, splitLines)
+	// apply all the substitutions
+	var err error
+	for _, sub := range funcs {
+		if b.Elements, err = sub(b.Elements, attrs, options...); err != nil {
+			return types.DelimitedBlock{}, err
+		}
+	}
+	return b, nil
+}
+
+func applyPassthroughBlockSubstitutions(b types.DelimitedBlock, attrs types.AttributesWithOverrides, options ...Option) (types.DelimitedBlock, error) {
+	funcs := []elementsSubstitution{}
+	subs, _ := b.Attributes.GetAsString(types.AttrSubstitutions)
+	for _, s := range strings.Split(subs, ",") {
+		switch s {
+		case "":
+			funcs = append(funcs, substituteCallouts)
 		case "normal":
 			funcs = append(funcs,
 				substituteInlinePassthrough,

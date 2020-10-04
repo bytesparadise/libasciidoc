@@ -2649,6 +2649,35 @@ _foo_
 					}
 					Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 				})
+
+				It("with special characters", func() {
+					source := `++++
+<input>
+
+<input>
+++++`
+					expected := types.DraftDocument{
+						Blocks: []interface{}{
+							types.DelimitedBlock{
+								Kind: types.Passthrough,
+								Elements: []interface{}{
+									[]interface{}{
+										types.StringElement{
+											Content: "<input>",
+										},
+									},
+									[]interface{}{},
+									[]interface{}{
+										types.StringElement{
+											Content: "<input>",
+										},
+									},
+								},
+							},
+						},
+					}
+					Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				})
 			})
 
 			Context("passthrough open block", func() {

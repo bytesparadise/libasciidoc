@@ -1234,6 +1234,19 @@ _foo_
 				Expect(RenderXHTML(source)).To(MatchHTML(expected))
 			})
 
+			It("with special characters", func() {
+				source := `++++
+<input>
+
+<input>
+++++`
+				expected := `<input>
+
+<input>
+`
+				Expect(RenderHTML(source)).To(MatchHTML(expected))
+			})
+
 		})
 
 		Context("passthrough open block", func() {
