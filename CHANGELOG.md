@@ -1,4 +1,4 @@
-# [](https://github.com/bytesparadise/libasciidoc/compare/v0.5.0...v0.5.1) (2020-10-04)
+# [0.5.1](https://github.com/bytesparadise/libasciidoc/compare/v0.5.0...v0.5.1) (2020-10-04)
 
 This is a patch-release to solve a bug in the passthrough block substitutions. 
 This issue should have been addressed in v0.5.0 but it wasn't triaged 🤦‍♂️
