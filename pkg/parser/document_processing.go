@@ -60,33 +60,21 @@ const LevelOffset ContextKey = "leveloffset"
 
 // ParseRawDocument parses a document's content and applies the preprocessing directives (file inclusions)
 func ParseRawDocument(r io.Reader, config configuration.Configuration, options ...Option) (types.RawDocument, error) {
-	doc, err := parseRawDocument(r, config, options...)
+	// first, let's find all file inclusions and replace with the actual content to include
+	source, err := ParseRawSource(r, config, options...)
 	if err != nil {
 		return types.RawDocument{}, err
 	}
-	attrs := types.AttributesWithOverrides{
-		Content:   map[string]interface{}{},
-		Overrides: map[string]string{},
-		Counters:  map[string]interface{}{},
-	}
-	if doc.Blocks, err = processFileInclusions(doc.Blocks, attrs, []levelOffset{}, config, options...); err != nil {
-		return types.RawDocument{}, err
-	}
 	if log.IsLevelEnabled(log.DebugLevel) {
-		log.Debug("raw document:")
-		spew.Fdump(log.StandardLogger().Out, doc)
+		log.Debug("source to parse:")
+		fmt.Fprintf(log.StandardLogger().Out, "'%s'\n", source)
 	}
-	return doc, nil
-}
-
-func parseRawDocument(r io.Reader, config configuration.Configuration, options ...Option) (types.RawDocument, error) {
-	log.Debugf("parsing raw document '%s'", config.Filename)
-	if d, err := ParseReader(config.Filename, r, options...); err != nil {
-		log.Errorf("failed to parse raw document: %s", err)
+	// then let's parse the "source" to detect raw blocks
+	if result, err := Parse(config.Filename, source, append(options, Entrypoint("RawDocument"))...); err != nil {
 		return types.RawDocument{}, err
-	} else if doc, ok := d.(types.RawDocument); ok {
+	} else if doc, ok := result.(types.RawDocument); ok {
 		return doc, nil
 	} else {
-		return types.RawDocument{}, fmt.Errorf("unexpected type of raw document: '%T'", d)
+		return types.RawDocument{}, fmt.Errorf("unexpected type of raw lines: '%T'", result)
 	}
 }

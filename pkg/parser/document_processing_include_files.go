@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"bytes"
 	"fmt"
+	"io"
 	"os"
 	"path/filepath"
 	"strconv"
@@ -11,77 +12,90 @@ import (
 
 	"github.com/bytesparadise/libasciidoc/pkg/configuration"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
-	"github.com/davecgh/go-spew/spew"
 	"github.com/pkg/errors"
 
 	log "github.com/sirupsen/logrus"
 )
 
-// processDraftDocument resolves the file inclusions if any is found in the given elements
-// and applies level offset on sections when needed
-func processFileInclusions(elements []interface{}, globalAttrs types.AttributesWithOverrides, levelOffsets []levelOffset, config configuration.Configuration, options ...Option) ([]interface{}, error) {
-	if len(elements) == 0 {
-		return nil, nil
+// ParseRawSource parses a document's content and applies the preprocessing directives (file inclusions)
+func ParseRawSource(r io.Reader, config configuration.Configuration, options ...Option) ([]byte, error) {
+	attrs := types.AttributesWithOverrides{
+		Content:   map[string]interface{}{},
+		Overrides: map[string]string{},
+		Counters:  map[string]interface{}{},
 	}
-	result := []interface{}{}
-	// log.Debugf("processing potential file inclusions in %d element(s) and leveloffset '%v'", len(elements), levelOffsets)
-	for _, e := range elements {
-		switch e := e.(type) {
-		case types.AttributeDeclaration: // may be needed if there's an attribute substitution in the path of the file to include
-			globalAttrs.Set(e.Name, e.Value)
-			result = append(result, e)
-		case types.FileInclusion:
-			// read the file and include its content
+	return parseRawSource(r, attrs, []levelOffset{}, config, append(options, Entrypoint("RawSource"))...)
+}
 
-			elements, err := parseFileToInclude(e, globalAttrs, levelOffsets, config, options...)
-			if err != nil {
-				return nil, err
-			}
-			if log.IsLevelEnabled(log.DebugLevel) {
-				log.Debug("elements from included file:")
-				spew.Fdump(log.StandardLogger().Out, elements)
-			}
-			result = append(result, elements...)
-		case types.DelimitedBlock:
-			elements, err := processFileInclusions(e.Elements, globalAttrs, levelOffsets, config, append(options, Entrypoint("RawFile"))...)
-			if err != nil {
-				return nil, err
-			}
-			e.Elements = elements
-			result = append(result, e)
-		case types.Section:
+func parseRawSource(r io.Reader, attrs types.AttributesWithOverrides, levelOffsets []levelOffset, config configuration.Configuration, options ...Option) ([]byte, error) {
+	// log.Debugf("parsing raw document '%s'", config.Filename)
+	lines, err := ParseReader(config.Filename, r, options...)
+	if err != nil {
+		log.Errorf("failed to parse raw document: %s", err)
+		return nil, err
+	}
+	l, ok := lines.([]interface{})
+	if !ok {
+		return nil, fmt.Errorf("unexpected type of raw lines: '%T'", lines)
+	}
+	return processFileInclusions(l, attrs, levelOffsets, config, options...)
+}
+
+// processFileInclusions processes the file inclusions in the given lines and returns a serialized content which can be parsed again
+func processFileInclusions(lines []interface{}, globalAttrs types.AttributesWithOverrides, levelOffsets []levelOffset, config configuration.Configuration, options ...Option) ([]byte, error) {
+	result := bytes.NewBuffer(nil)
+	for _, line := range lines {
+		switch l := line.(type) {
+		case types.RawLine:
+			result.WriteString(l.Stringify())
+			// append linefeed
+			result.WriteString("\n")
+		case types.RawSection:
 			for _, offset := range levelOffsets {
-				oldLevel := e.Level
-				offset.apply(&e)
+				oldLevel := l.Level
+				offset.apply(&l)
 				// replace the absolute when the first section is processed with a relative offset
 				// which is based on the actual level offset that resulted in the application of the absolute offset
 				if offset.absolute {
 					levelOffsets = []levelOffset{
-						relativeOffset(e.Level - oldLevel),
+						relativeOffset(l.Level - oldLevel),
 					}
 				}
 			}
-			result = append(result, e)
+			result.WriteString(l.Stringify())
+			// append linefeed
+			result.WriteString("\n")
+		case types.AttributeDeclaration:
+			globalAttrs.Set(l.Name, l.Value)
+			result.WriteString(l.Stringify())
+			// append linefeed
+			result.WriteString("\n")
+		case types.FileInclusion:
+			includedLines, err := parseFileToInclude(l, globalAttrs, levelOffsets, config, options...)
+			if err != nil {
+				return nil, err
+			}
+			result.Write(includedLines)
 		default:
-			result = append(result, e)
+			return nil, fmt.Errorf("unexpected type of line: '%T'", line)
 		}
 	}
-	return result, nil
+	return result.Bytes(), nil
+
 }
 
 // levelOffset a func that applies a given offset to the sections of a child document to include in a parent doc (the caller)
 type levelOffset struct {
 	absolute bool
 	value    int
-	apply    func(*types.Section)
+	apply    func(*types.RawSection)
 }
 
 func relativeOffset(offset int) levelOffset {
 	return levelOffset{
 		absolute: false,
 		value:    offset,
-		apply: func(s *types.Section) {
-			log.Debugf("applying relative offset: %d + %d on %+v", s.Level, offset, s.Title)
+		apply: func(s *types.RawSection) {
 			s.Level += offset
 		},
 	}
@@ -91,8 +105,7 @@ func absoluteOffset(offset int) levelOffset {
 	return levelOffset{
 		absolute: true,
 		value:    offset,
-		apply: func(s *types.Section) {
-			log.Debugf("applying absolute offset: %d -> %d on %+v", s.Level, offset, s.Title)
+		apply: func(s *types.RawSection) {
 			s.Level = offset
 		},
 	}
@@ -109,32 +122,27 @@ func applySubstitutionsOnFileInclusion(f types.FileInclusion, attrs types.Attrib
 		}
 	}
 	f.Location.Path = elements
-
-	if log.IsLevelEnabled(log.DebugLevel) {
-		log.Debugf("FileInclusion after substitution:")
-		spew.Fdump(log.StandardLogger().Out, f)
-	}
 	return f, nil
 }
 
-func parseFileToInclude(incl types.FileInclusion, attrs types.AttributesWithOverrides, levelOffsets []levelOffset, config configuration.Configuration, options ...Option) ([]interface{}, error) {
+func parseFileToInclude(incl types.FileInclusion, attrs types.AttributesWithOverrides, levelOffsets []levelOffset, config configuration.Configuration, options ...Option) ([]byte, error) {
 	incl, err := applySubstitutionsOnFileInclusion(incl, attrs)
 	if err != nil {
 		return nil, err
 	}
 	path := incl.Location.Stringify()
 	currentDir := filepath.Dir(config.Filename)
-	log.Debugf("parsing '%s' from current dir '%s' (%s)", path, currentDir, config.Filename)
+	// log.Debugf("parsing '%s' from current dir '%s' (%s)", path, currentDir, config.Filename)
 	f, absPath, done, err := open(filepath.Join(currentDir, path))
 	defer done()
 	if err != nil {
-		return nil, failedToIncludeFile(config.Filename, incl.RawText)
+		return nil, fmt.Errorf("Unresolved directive in %s - %s", config.Filename, incl.RawText)
 	}
 	content := bytes.NewBuffer(nil)
 	scanner := bufio.NewScanner(bufio.NewReader(f))
 	if lineRanges, ok := incl.LineRanges(); ok {
 		if err := readWithinLines(scanner, content, lineRanges); err != nil {
-			return nil, failedToIncludeFile(config.Filename, incl.RawText)
+			return nil, fmt.Errorf("Unresolved directive in %s - %s", config.Filename, incl.RawText)
 		}
 	} else if tagRanges, ok := incl.TagRanges(); ok {
 		if err := readWithinTags(path, scanner, content, tagRanges); err != nil {
@@ -142,11 +150,15 @@ func parseFileToInclude(incl types.FileInclusion, attrs types.AttributesWithOver
 		}
 	} else {
 		if err := readAll(scanner, content); err != nil {
-			return nil, failedToIncludeFile(config.Filename, incl.RawText)
+			return nil, fmt.Errorf("Unresolved directive in %s - %s", config.Filename, incl.RawText)
 		}
 	}
 	if err := scanner.Err(); err != nil {
-		return nil, failedToIncludeFile(config.Filename, incl.RawText)
+		return nil, fmt.Errorf("Unresolved directive in %s - %s", config.Filename, incl.RawText)
+	}
+	// just include the file content if the file to include is not an Asciidoc document.
+	if !IsAsciidoc(absPath) {
+		return content.Bytes(), nil
 	}
 	// parse the content, and returns the corresponding elements
 	if l, found := incl.Attributes.GetAsString(types.AttrLevelOffset); found {
@@ -161,23 +173,11 @@ func parseFileToInclude(incl types.FileInclusion, attrs types.AttributesWithOver
 
 		}
 	}
-	// use a simpler/different grammar for non-asciidoc files.
-	if !IsAsciidoc(absPath) {
-		options = append(options, Entrypoint("TextDocument")) // TODO: delete rule and use VerbatimDocument?
-	}
+
 	inclConfig := config.Clone()
 	inclConfig.Filename = absPath
-	// now, let's parse the doc and process nested file inclusions
-	draft, err := parseRawDocument(content, inclConfig, options...)
-	if err != nil {
-		return nil, errors.Wrap(err, "unable to parse file to include")
-	}
-	return processFileInclusions(draft.Blocks, attrs, levelOffsets, inclConfig, options...)
-}
-
-// failedToIncludeFile returns a new error when a file could not be included in the current document
-func failedToIncludeFile(filename string, rawText string) error {
-	return fmt.Errorf("Unresolved directive in %s - %s", filename, rawText)
+	// now, let's parse this content and process nested file inclusions
+	return parseRawSource(content, attrs, levelOffsets, inclConfig, options...)
 }
 
 func readWithinLines(scanner *bufio.Scanner, content *bytes.Buffer, lineRanges types.LineRanges) error {

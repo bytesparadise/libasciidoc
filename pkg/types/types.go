@@ -15,13 +15,7 @@ import (
 	yaml "gopkg.in/yaml.v2"
 )
 
-// ------------------------------------------
-// Raw Document: result of the first parsing
-// phase, with file inclusions resolved, but
-// nothing more.
-// ------------------------------------------
-
-// RawDocument the linear-level structure for a document
+// RawDocument document with a front-matter and raw blocks (will be refined in subsequent processing phases)
 type RawDocument struct {
 	FrontMatter FrontMatter
 	Blocks      []interface{}
@@ -71,6 +65,63 @@ blocks:
 	}
 	log.Debugf("document attributes: %+v", result)
 	return result
+}
+
+// RawSection a document section (when processing file inclusions)
+// We only care about the level here
+type RawSection struct {
+	Level   int
+	Title   string
+	RawText string
+}
+
+// NewRawSection returns a new RawSection
+func NewRawSection(level int, title string) (RawSection, error) {
+	log.Debugf("new rawsection: '%s' (%d)", title, level)
+	return RawSection{
+		Level: level,
+		Title: title,
+	}, nil
+}
+
+var _ Stringer = RawSection{}
+
+// Stringify returns the string representation of this section, as it existed in the source document
+func (s RawSection) Stringify() string {
+	return strings.Repeat("=", s.Level+1) + " " + s.Title
+}
+
+// ------------------------------------------
+// Raw lines
+// ------------------------------------------
+
+// RawLine a line with raw content, read as-is by the parser (before further processing)
+type RawLine struct {
+	Content string
+}
+
+// NewRawLine returns a new slice containing a single StringElement with the given content
+func NewRawLine(content string) (RawLine, error) {
+	log.Debugf("new rawline: '%v'", content)
+	return RawLine{
+		Content: content,
+	}, nil
+}
+
+var _ Stringer = RawLine{}
+
+// Stringify return the string content of this RawLine
+func (r RawLine) Stringify() string {
+	return r.Content
+}
+
+// ------------------------------------------
+// common interfaces
+// ------------------------------------------
+
+// Stringer a type which can be serializes as a string
+type Stringer interface {
+	Stringify() string
 }
 
 // ------------------------------------------
@@ -265,6 +316,16 @@ func NewAttributeDeclaration(name string, value interface{}) (AttributeDeclarati
 		Name:  name,
 		Value: attrValue,
 	}, nil
+}
+
+var _ Stringer = AttributeDeclaration{}
+
+// Stringify returns the string representation of this attribute declaration, as it existed in the source document
+func (a AttributeDeclaration) Stringify() string {
+	if len(a.Value) == 0 {
+		return ":" + a.Name + ":"
+	}
+	return ":" + a.Name + ": " + a.Value
 }
 
 // AttributeReset the type for AttributeReset
@@ -1355,7 +1416,7 @@ func (f *Footnotes) Reference(note Footnote) FootnoteReference {
 		ref.Duplicate = true
 	} else {
 		ref.ID = InvalidFootnoteReference
-		logrus.Errorf("no footnote with reference '%s'", note.Ref)
+		logrus.Warnf("no footnote with reference '%s'", note.Ref)
 	}
 	ref.Ref = note.Ref
 	return ref
@@ -1376,23 +1437,6 @@ type sequence struct {
 func (s *sequence) nextVal() int {
 	s.counter++
 	return s.counter
-}
-
-// ------------------------------------------
-// Raw lines
-// ------------------------------------------
-
-// RawLine a line with raw content, read as-is by the parser (before further processing)
-type RawLine struct {
-	Content string
-}
-
-// NewRawLine returns a new slice containing a single StringElement with the given content
-func NewRawLine(content string) (RawLine, error) {
-	log.Debugf("new rawline: '%v'", content)
-	return RawLine{
-		Content: content,
-	}, nil
 }
 
 // ------------------------------------------

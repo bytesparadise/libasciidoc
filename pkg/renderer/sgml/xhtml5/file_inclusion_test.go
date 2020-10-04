@@ -887,15 +887,15 @@ include::../../../../test/includes/parent-include.adoc[leveloffset=+1]
 ----`
 			expected := `<div class="listingblock">
 <div class="content">
-<pre>= parent title
+<pre>== parent title
 
 first line of parent
 
-= child title
+== child title
 
 first line of child
 
-== grandchild title
+=== grandchild title
 
 first line of grandchild
 
