@@ -1,4 +1,80 @@
-# [](https://github.com/bytesparadise/libasciidoc/compare/v0.3.0...v) (2020-04-19)
+# [0.5.0](https://github.com/bytesparadise/libasciidoc/compare/v0.3.0...v) (2020-10-04)
+
+Version 0.5.0 adds the XHTML5 backend, as well as support for custom substitutions on paragraphs and delimited blocks.
+Also, rendering on other blocks as also been greatly improved, thanks to better support for attributes. 
+Finally, source blocks can now be rendered with the [Chroma syntax highlighter](https://github.com/alecthomas/chroma) (using the `:source-highlighter: pygments` or `:source-highlighter: chroma` document attribute) and callouts are supported.
+
+As usual, this version also includes its share bug fixes as well.
+
+Huge thanks to [gdamore](https://github.com/gdamore) and [pjanx](https://github.com/pjanx) for their numerous contributions 🙌
+
+
+### Bug Fixes
+
+* **parser:** colons, images and icons not supported in list terms ([#615](https://github.com/bytesparadise/libasciidoc/issues/615)) ([b61a886](https://github.com/bytesparadise/libasciidoc/commit/b61a88665c3ce458b04d7918b5f619fc3fd9c118)), closes [#614](https://github.com/bytesparadise/libasciidoc/issues/614)
+* **parser:** expose authors and revision in the document attributes ([#521](https://github.com/bytesparadise/libasciidoc/issues/521)) ([9335817](https://github.com/bytesparadise/libasciidoc/commit/933581710d196b02dddbad4fd8ce9bece5788d47)), closes [#517](https://github.com/bytesparadise/libasciidoc/issues/517)
+* **parser:** failure to convert nested elements ([#740](https://github.com/bytesparadise/libasciidoc/issues/740)) ([6f07b44](https://github.com/bytesparadise/libasciidoc/commit/6f07b44465e7afa7a402a970ecc1a282dc2f1dc9)), closes [#739](https://github.com/bytesparadise/libasciidoc/issues/739)
+* **parser:** fix footnotes grammar ([#535](https://github.com/bytesparadise/libasciidoc/issues/535)) ([03587bb](https://github.com/bytesparadise/libasciidoc/commit/03587bbc469fb5fedf5c6d1d601eaf156de45429)), closes [#532](https://github.com/bytesparadise/libasciidoc/issues/532)
+* **parser:** fix quoted text delimitation ([#505](https://github.com/bytesparadise/libasciidoc/issues/505)) ([c394f70](https://github.com/bytesparadise/libasciidoc/commit/c394f70c3ccca98ef291be6a7c0e58cd2cf05b29)), closes [#504](https://github.com/bytesparadise/libasciidoc/issues/504)
+* **parser:** ignore standalone attributes at the end of doc ([#606](https://github.com/bytesparadise/libasciidoc/issues/606)) ([a57b8fb](https://github.com/bytesparadise/libasciidoc/commit/a57b8fb7d6b0d057f4f01b4713d9688554b172a1)), closes [#605](https://github.com/bytesparadise/libasciidoc/issues/605)
+* **parser:** Inline attribute parsing is incorrect ([#684](https://github.com/bytesparadise/libasciidoc/issues/684)) ([04f2a1d](https://github.com/bytesparadise/libasciidoc/commit/04f2a1d9e3e16deb9bf3630184190cd2ea51557b))
+* **parser:** quoted strings should not allow interior adjacent spaces ([#636](https://github.com/bytesparadise/libasciidoc/issues/636)) ([fc8a97e](https://github.com/bytesparadise/libasciidoc/commit/fc8a97e04e163c147b55f3d6a37fb7cf71e2e3ff)), closes [#622](https://github.com/bytesparadise/libasciidoc/issues/622)
+* **parser:** quoted text newline handling ([#624](https://github.com/bytesparadise/libasciidoc/issues/624)) ([07252b5](https://github.com/bytesparadise/libasciidoc/commit/07252b5014d4a571f84cf88d56cd510446ca4bc5)), closes [#623](https://github.com/bytesparadise/libasciidoc/issues/623)
+* **parser:** verify configuration attributes ([#513](https://github.com/bytesparadise/libasciidoc/issues/513)) ([a9da628](https://github.com/bytesparadise/libasciidoc/commit/a9da62801e237f7a3af43f673691a2e9fc5c877c)), closes [#509](https://github.com/bytesparadise/libasciidoc/issues/509)
+* **parser:** verify document with leading empty line ([#757](https://github.com/bytesparadise/libasciidoc/issues/757)) ([921565a](https://github.com/bytesparadise/libasciidoc/commit/921565aadd342f04b7580f949f218735d04e92d5)), closes [#707](https://github.com/bytesparadise/libasciidoc/issues/707)
+* **parser/renderer:** support concelead index terms in labeled lists ([#507](https://github.com/bytesparadise/libasciidoc/issues/507)) ([1b574d6](https://github.com/bytesparadise/libasciidoc/commit/1b574d6df47a3385b35e387ec7bcdb8914a7d16a)), closes [#502](https://github.com/bytesparadise/libasciidoc/issues/502)
+* **parser/renderer:** support non-alphanum characters in index terms ([#506](https://github.com/bytesparadise/libasciidoc/issues/506)) ([c94b470](https://github.com/bytesparadise/libasciidoc/commit/c94b470f87718276c89476e098b9442ff57d76a1)), closes [#503](https://github.com/bytesparadise/libasciidoc/issues/503)
+* **renderer:** do not 'HTML escape' string elements ([#752](https://github.com/bytesparadise/libasciidoc/issues/752)) ([4fd36b5](https://github.com/bytesparadise/libasciidoc/commit/4fd36b5347513db2a8d04d32188e323e104b8690)), closes [#741](https://github.com/bytesparadise/libasciidoc/issues/741)
+* **renderer:** do not highlight syntax when language is not set ([#515](https://github.com/bytesparadise/libasciidoc/issues/515)) ([c3439bd](https://github.com/bytesparadise/libasciidoc/commit/c3439bd0e201af844e56093a636fa3341cb3bb6f)), closes [#514](https://github.com/bytesparadise/libasciidoc/issues/514)
+* **renderer:** do not HTML escape content twice in source blocks ([#571](https://github.com/bytesparadise/libasciidoc/issues/571)) ([08b705d](https://github.com/bytesparadise/libasciidoc/commit/08b705d0ac25a17a0cde880075fd62dc4bc778e0)), closes [#570](https://github.com/bytesparadise/libasciidoc/issues/570)
+* **renderer:** Remove stray debugging message ([#716](https://github.com/bytesparadise/libasciidoc/issues/716)) ([8b13202](https://github.com/bytesparadise/libasciidoc/commit/8b132025ceff8f9efe09585c7551c33b43fa8534))
+* **renderer:** Section ID should include the icon class ([#730](https://github.com/bytesparadise/libasciidoc/issues/730)) ([994c92f](https://github.com/bytesparadise/libasciidoc/commit/994c92f151f719b16c6e43e5ac2fa2e98c34259a)), closes [#691](https://github.com/bytesparadise/libasciidoc/issues/691)
+* **renderer:** source highlighter should get unadulterated string ([#723](https://github.com/bytesparadise/libasciidoc/issues/723)) ([8fbc228](https://github.com/bytesparadise/libasciidoc/commit/8fbc2282dc14e9fa5ab05b82e4c5b107d65ebf51)), closes [#721](https://github.com/bytesparadise/libasciidoc/issues/721)
+* **renderer:** Wrong code for (TM) ([#642](https://github.com/bytesparadise/libasciidoc/issues/642)) ([f8cb430](https://github.com/bytesparadise/libasciidoc/commit/f8cb4301cadd8b5975fdd15908a37ed2f0c7d972)), closes [#641](https://github.com/bytesparadise/libasciidoc/issues/641)
+* **types:** `CalloutListItem` must implement `DocumentElement` ([#569](https://github.com/bytesparadise/libasciidoc/issues/569)) ([d759c0b](https://github.com/bytesparadise/libasciidoc/commit/d759c0b7ebcbc1c1a744fc2376f4cc5629342ce6)), closes [#568](https://github.com/bytesparadise/libasciidoc/issues/568)
+
+
+### Features
+
+* **parser:** custom subs on paragraphs ([#726](https://github.com/bytesparadise/libasciidoc/issues/726)) ([5dcda32](https://github.com/bytesparadise/libasciidoc/commit/5dcda3220c3178d9ae327dbecd7d040704d593b5)), closes [#597](https://github.com/bytesparadise/libasciidoc/issues/597)
+* **parser:** custom substitutions on paragraphs ([#749](https://github.com/bytesparadise/libasciidoc/issues/749)) ([7050c34](https://github.com/bytesparadise/libasciidoc/commit/7050c3426cbaf3b823f28431358d878af08990c1)), closes [#597](https://github.com/bytesparadise/libasciidoc/issues/597)
+* **parser:** support custom substitutions on delimited blocks ([#755](https://github.com/bytesparadise/libasciidoc/issues/755)) ([2179d24](https://github.com/bytesparadise/libasciidoc/commit/2179d247e08d87c2b1ba04b395921daf82b3e504)), closes [#558](https://github.com/bytesparadise/libasciidoc/issues/558)
+* **parser:** support custom substitutions on delimited blocks ([#759](https://github.com/bytesparadise/libasciidoc/issues/759)) ([667d4ce](https://github.com/bytesparadise/libasciidoc/commit/667d4cedc2662e9f8c30c4fad2d52c800723411f)), closes [#558](https://github.com/bytesparadise/libasciidoc/issues/558)
+* **parser:** support Markdown style quote blocks ([#563](https://github.com/bytesparadise/libasciidoc/issues/563)) ([b17f6e1](https://github.com/bytesparadise/libasciidoc/commit/b17f6e1ab1014d9eedc8df7dffc441f30b179787)), closes [#561](https://github.com/bytesparadise/libasciidoc/issues/561)
+* **parser/renderer:** Multiple roles for images. ([#669](https://github.com/bytesparadise/libasciidoc/issues/669)) ([efdeeea](https://github.com/bytesparadise/libasciidoc/commit/efdeeeab8bb9fce5358ed37f421f9354ed0d774e)), closes [#602](https://github.com/bytesparadise/libasciidoc/issues/602)
+* **parser/renderer:** Render curved quotes ([#648](https://github.com/bytesparadise/libasciidoc/issues/648)) ([51153eb](https://github.com/bytesparadise/libasciidoc/commit/51153ebae8b2ded797e80a5b27fa37c01244626c)), closes [#176](https://github.com/bytesparadise/libasciidoc/issues/176)
+* **parser/renderer:** support callouts in verbatim blocks ([#567](https://github.com/bytesparadise/libasciidoc/issues/567)) ([9b5a26c](https://github.com/bytesparadise/libasciidoc/commit/9b5a26c7e403ee2d33703758314f6c87d2657e9d)), closes [#562](https://github.com/bytesparadise/libasciidoc/issues/562)
+* **parser/renderer:** Support inline role assignment ([#598](https://github.com/bytesparadise/libasciidoc/issues/598)) ([4ab8453](https://github.com/bytesparadise/libasciidoc/commit/4ab84532ee4578dfe3d792a4bc847b73f4372257)), closes [#588](https://github.com/bytesparadise/libasciidoc/issues/588)
+* **parser/renderer:** support passthrough blocks ([#572](https://github.com/bytesparadise/libasciidoc/issues/572)) ([a4870b3](https://github.com/bytesparadise/libasciidoc/commit/a4870b316dbb6427a5b4af72d22ce5c8f131d1a8)), closes [#269](https://github.com/bytesparadise/libasciidoc/issues/269)
+* **parser/renderer:** Support wanted for #mark# syntax ([#600](https://github.com/bytesparadise/libasciidoc/issues/600)) ([90b4f2d](https://github.com/bytesparadise/libasciidoc/commit/90b4f2d3dff3c93203be1716362991a0866d378f)), closes [#599](https://github.com/bytesparadise/libasciidoc/issues/599)
+* **parser/renderer:** unordered lists should support style ([#660](https://github.com/bytesparadise/libasciidoc/issues/660)) ([c93bc82](https://github.com/bytesparadise/libasciidoc/commit/c93bc82d9c184379699051058861e1ac3abb9241)), closes [#658](https://github.com/bytesparadise/libasciidoc/issues/658)
+* **parser/renderer/types:** Support inline and image icons ([#613](https://github.com/bytesparadise/libasciidoc/issues/613)) ([fb7414e](https://github.com/bytesparadise/libasciidoc/commit/fb7414e00767ec87ec6b432c6778470b1f595eb2)), closes [#587](https://github.com/bytesparadise/libasciidoc/issues/587) [#611](https://github.com/bytesparadise/libasciidoc/issues/611) [#610](https://github.com/bytesparadise/libasciidoc/issues/610)
+* **renderer:** Add image float, align, and capture support. ([#685](https://github.com/bytesparadise/libasciidoc/issues/685)) ([c51cc09](https://github.com/bytesparadise/libasciidoc/commit/c51cc09cc9439b05e73f90e8e894a65fdd7a02e9))
+* **renderer:** add XHTML5 support ([#618](https://github.com/bytesparadise/libasciidoc/issues/618)) ([4448584](https://github.com/bytesparadise/libasciidoc/commit/444858407c4b029e6bdc8105402fcaf78b3292d5)), closes [#601](https://github.com/bytesparadise/libasciidoc/issues/601)
+* **renderer:** attribute to disable header and footer ([#516](https://github.com/bytesparadise/libasciidoc/issues/516)) ([3867576](https://github.com/bytesparadise/libasciidoc/commit/386757605b23cbea31587e29f32ada513a41f203)), closes [#510](https://github.com/bytesparadise/libasciidoc/issues/510)
+* **renderer:** Closing html tag should have a newline appended ([#718](https://github.com/bytesparadise/libasciidoc/issues/718)) ([6774f18](https://github.com/bytesparadise/libasciidoc/commit/6774f186e2fa43372f9d5010ff997473710bcd9c)), closes [#702](https://github.com/bytesparadise/libasciidoc/issues/702)
+* **renderer:** Customizable admonition captions ([#724](https://github.com/bytesparadise/libasciidoc/issues/724)) ([d960766](https://github.com/bytesparadise/libasciidoc/commit/d960766f5f94d6ea64e79882002b0cadab948502)), closes [#679](https://github.com/bytesparadise/libasciidoc/issues/679)
+* **renderer:** Customizable caption prefix. ([5c0d5ca](https://github.com/bytesparadise/libasciidoc/commit/5c0d5caa82271c27505aaf31a113ee3d0fff58cf))
+* **renderer:** Example blocks should support custom captions ([5dd3224](https://github.com/bytesparadise/libasciidoc/commit/5dd3224e115c165891d1ac9223617813d8161043))
+* **renderer:** htmlEscape should escape quotes ([#647](https://github.com/bytesparadise/libasciidoc/issues/647)) ([991725d](https://github.com/bytesparadise/libasciidoc/commit/991725d0c8cdfecf5ecbc8becc1831df326019a0)), closes [#644](https://github.com/bytesparadise/libasciidoc/issues/644)
+* **renderer:** include authors in 'meta' tag ([#544](https://github.com/bytesparadise/libasciidoc/issues/544)) ([6bdca28](https://github.com/bytesparadise/libasciidoc/commit/6bdca281406c4a79ebab22f726dd8673127a5e25)), closes [#543](https://github.com/bytesparadise/libasciidoc/issues/543)
+* **renderer:** inline images deserve links, too ([#754](https://github.com/bytesparadise/libasciidoc/issues/754)) ([3480071](https://github.com/bytesparadise/libasciidoc/commit/3480071e77b4e284d0a95b984d64df822f965ff0))
+* **renderer:** role not honored on h1 titles ([#583](https://github.com/bytesparadise/libasciidoc/issues/583)) ([#584](https://github.com/bytesparadise/libasciidoc/issues/584)) ([79a43b3](https://github.com/bytesparadise/libasciidoc/commit/79a43b390f3866e40a8570a9ad70c49f5b8157ec))
+* **renderer:** support Copyright character replacement ([#526](https://github.com/bytesparadise/libasciidoc/issues/526)) ([c0f5b5c](https://github.com/bytesparadise/libasciidoc/commit/c0f5b5c06d122bc406240ec216d133f5c96fb688)), closes [#169](https://github.com/bytesparadise/libasciidoc/issues/169) [#524](https://github.com/bytesparadise/libasciidoc/issues/524)
+* **renderer:** Support customizable table captions ([#689](https://github.com/bytesparadise/libasciidoc/issues/689)) ([4c8b1fd](https://github.com/bytesparadise/libasciidoc/commit/4c8b1fd9c2537e4881745dc68a8150e540b0c7f2))
+* **renderer:** support manpage doctype ([#531](https://github.com/bytesparadise/libasciidoc/issues/531)) ([9538b1a](https://github.com/bytesparadise/libasciidoc/commit/9538b1a5ae1e6f63f5db18dc390cfa845b17e61a)), closes [#511](https://github.com/bytesparadise/libasciidoc/issues/511)
+* **renderer:** Support reversed lists ([#668](https://github.com/bytesparadise/libasciidoc/issues/668)) ([b323d2f](https://github.com/bytesparadise/libasciidoc/commit/b323d2f8667d98c341b9f769efdf5240c0d5ed7d)), closes [#662](https://github.com/bytesparadise/libasciidoc/issues/662)
+* **renderer:** Tables should honor table-caption attribute ([#717](https://github.com/bytesparadise/libasciidoc/issues/717)) ([a6273dd](https://github.com/bytesparadise/libasciidoc/commit/a6273dd169394cc7eb5a0f0e4a333161f927cbba))
+* **renderer:** Top level table styling ([#690](https://github.com/bytesparadise/libasciidoc/issues/690)) ([e6437ac](https://github.com/bytesparadise/libasciidoc/commit/e6437ac8caaf57dd25b7aca08013392d42bd904d))
+* **renderer:** version-label not honored ([#711](https://github.com/bytesparadise/libasciidoc/issues/711)) ([d3c117e](https://github.com/bytesparadise/libasciidoc/commit/d3c117ed55c4a07153f643cab59f5a62726c881d)), closes [#710](https://github.com/bytesparadise/libasciidoc/issues/710)
+* **types/parser/renderer:** Support for counters ([#715](https://github.com/bytesparadise/libasciidoc/issues/715)) ([b9e82cd](https://github.com/bytesparadise/libasciidoc/commit/b9e82cd4bc445151a24066cb160d96be34582da2)), closes [#714](https://github.com/bytesparadise/libasciidoc/issues/714)
+* **types/renderer:** Table cols attribute support ([#698](https://github.com/bytesparadise/libasciidoc/issues/698)) ([#698](https://github.com/bytesparadise/libasciidoc/issues/698)) ([122f8da](https://github.com/bytesparadise/libasciidoc/commit/122f8da6f6baddf70273b6b05026688267a72451)), closes [#694](https://github.com/bytesparadise/libasciidoc/issues/694) [#686](https://github.com/bytesparadise/libasciidoc/issues/686)
+* **validator:** validate manpage document ([#545](https://github.com/bytesparadise/libasciidoc/issues/545)) ([65b298d](https://github.com/bytesparadise/libasciidoc/commit/65b298ddf604585ab4e07d7adcd978f4ccb4fc94)), closes [#529](https://github.com/bytesparadise/libasciidoc/issues/529)
+* **renderer:** Support chroma, fix source paragraph ([#720](https://github.com/bytesparadise/libasciidoc/issues/720)) ([533e63d0](https://github.com/bytesparadise/libasciidoc/commit/533e63d0fb05c3baa534deb0a027ba4f44388866)), closes [#706](https://github.com/bytesparadise/libasciidoc/issues/706)
+
+
+
+# [0.4.0](https://github.com/bytesparadise/libasciidoc/compare/v0.3.0...v0.4.0) (2020-04-19)
 
 Focus of v0.4.0 was around support for manpage document, plus a bit of refactoring and some bug fixes.
 
@@ -26,11 +102,8 @@ Thanks to [gdamore](https://github.com/gdamore) for reporting issues and helping
 
 
 
-# [](https://github.com/bytesparadise/libasciidoc/compare/v0.4.0...v) (2020-04-19)
 
-
-
-# [](https://github.com/bytesparadise/libasciidoc/compare/v0.2.0...v) (2020-03-14)
+# [0.3.0](https://github.com/bytesparadise/libasciidoc/compare/v0.2.0...v0.3.0) (2020-03-14)
 
 Focus of v0.3.0 was around performances, support for file inclusions, syntax highlighting in source blocks, configuration via the CLI and, refactoring and bug fixes.
 
@@ -87,12 +160,8 @@ Thanks to [Arteneko](https://github.com/Arteneko), [gdamore](https://github.com/
 * **renderer:** support file inclusion of non asciidoc files ([#321](https://github.com/bytesparadise/libasciidoc/issues/321)) ([8779f54](https://github.com/bytesparadise/libasciidoc/commit/8779f54e4ed3d100defd0b143da8ac360a6a4a26)), closes [#312](https://github.com/bytesparadise/libasciidoc/issues/312)
 * **renderer:** support pygments syntax highlight ([#489](https://github.com/bytesparadise/libasciidoc/issues/489)) ([cbd9c89](https://github.com/bytesparadise/libasciidoc/commit/cbd9c89af6bd3464a63dec805e285c9a794f5f27)), closes [#488](https://github.com/bytesparadise/libasciidoc/issues/488)
 
-# [](https://github.com/bytesparadise/libasciidoc/compare/v0.2.0...v) (2019-02-24)
-
-
 
 # [0.2.0](https://github.com/bytesparadise/libasciidoc/compare/v0.1.0...v0.2.0) (2019-02-24)
-
 
 ### Bug Fixes
 
