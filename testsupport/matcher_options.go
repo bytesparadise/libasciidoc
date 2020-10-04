@@ -13,13 +13,3 @@ func WithFilename(filename string) FilenameOption {
 		m.setFilename(filename)
 	}
 }
-
-// RawDocumentParserOption an option to configure the BecomeDraftDocument matcher
-type RawDocumentParserOption func(c *rawDocumentParserConfig)
-
-// WithoutFileInclusions disables file inclusions
-func WithoutFileInclusions() RawDocumentParserOption {
-	return func(c *rawDocumentParserConfig) {
-		c.fileInclusion = false
-	}
-}

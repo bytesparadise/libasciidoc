@@ -12,20 +12,44 @@ import (
 }
 
 // ----------------------------------------------------------------
-// AsciidocRawDocument - fully parsed document, line by line
+// RawSource - source with file inclusions or just plain text
 // ----------------------------------------------------------------
-AsciidocRawDocument <- frontmatter:(FrontMatter?) blocks:(RawDocumentBlocks) EOF {
+RawSource <- lines:(AttributeDeclaration / RawSection / FileInclusion / RawLine)* {
+    return lines.([]interface{}), nil
+}
+
+// we need to identify section titles to properly handle file inclusions with level offsets
+RawSection <- 
+    level:(("=")+ {   
+        // `=` is level 0, etc.
+        return (len(c.text)-1), nil 
+    })
+    &{  
+        // use a predicate to make sure that only `=` (level 0) to `======` (level 5) are allowed
+        return level.(int) <= 5, nil 
+    } 
+    Space+ title:(RawSectionTitle) EOL {
+    return types.NewRawSection(level.(int), title.(string)) 
+}
+
+RawSectionTitle <- [^\r\n]* { 
+    return string(c.text), nil 
+}
+
+RawLine <- !EOF content:(RawLineContent) EOL { // line MAY have content
+    return types.NewRawLine(content.(string))
+}
+
+RawLineContent <- [^\r\n]* { 
+    return string(c.text), nil 
+}
+
+
+// ----------------------------------------------------------------
+// RawDocument - fully parsed document with raw blocks
+// ----------------------------------------------------------------
+RawDocument <- frontmatter:(FrontMatter?) blocks:(RawDocumentBlocks) EOF {
     return types.NewRawDocument(frontmatter, blocks.([]interface{}))
-}
-
-// custom entrypoint used for file inclusions
-RawFile <- blocks:(RawFileContent) EOF {
-    return types.NewRawDocument(nil, blocks.([]interface{}))
-}
-
-// custom entrypoint used for file inclusions
-TextDocument <- blocks:(TextDocumentBlocks) EOF {
-    return types.NewRawDocument(nil, blocks.([]interface{}))
 }
 
 // ------------------------------------------
@@ -47,7 +71,6 @@ DocumentRawBlock <-
         / BlankLine // must be before LiteralBlock 
         / Section
         / DelimitedBlock
-        / FileInclusion
         / RawVerseParagraph
         / ThematicBreak
         / OrderedListItem
@@ -61,34 +84,6 @@ DocumentRawBlock <-
         / UserMacroBlock
         / StandaloneAttributes
         / RawParagraph
-
-DocumentBlockWithinDelimitedBlock <- !EOF 
-    block:(
-        ImageBlock
-        / DelimitedBlock
-        / BlankLine // must be before LiteralBlock
-        / FileInclusion
-        / RawVerseParagraph
-        / ThematicBreak
-        / OrderedListItem
-        / UnorderedListItem 
-        / LabeledListItem
-        / ContinuedListItemElement
-        / LiteralBlock 
-        / AttributeDeclaration 
-        / AttributeReset 
-        / TableOfContentsPlaceHolder
-        / UserMacroBlock
-        / RawParagraph) {
-    return block, nil
-}
-
-TextDocumentBlocks <- blocks:(TextDocumentBlock)*
-
-TextDocumentBlock <- !EOF 
-    block:(BlankLine / RawParagraph) {
-    return block, nil
-}
 
 // ------------------------------------------
 // Front Matter
@@ -515,7 +510,7 @@ InlineUserMacro <- name:(UserMacroName) ":" value:(UserMacroValue) attrs:(UserMa
     return types.NewInlineUserMacro(name.(string), value.(string), attrs, string(c.text))
 }
 
-UserMacroName <- ([\pL0-9_-]+) {
+UserMacroName <- !"include" ([\pL0-9_-]+) {
     return string(c.text), nil
 }
 
@@ -619,10 +614,6 @@ TagWildcard <- stars:(("*")+ {
     return stars, nil
 }
 
-// Entrypoint to parse a file to include. May contain nested file inclusion macros
-RawFileContent <- (FileInclusion / SingleLineComment / RawLine)*
-
-
 // ------------------------------------------
 // Tag macros in lines of files to include
 // ------------------------------------------
@@ -671,7 +662,6 @@ ContinuedListItemElement <- ListItemContinuation element:ContinuedListItemConten
 
 ContinuedListItemContent <- !EOF 
     content:(DelimitedBlock
-        / FileInclusion
         / ImageBlock
         / RawVerseParagraph
         / ThematicBreak
@@ -1692,15 +1682,7 @@ BlockDelimiter <- !(Alphanum) LiteralBlockDelimiter //TODO: use "start" delimite
                 / SidebarBlockDelimiter
                 / PassthroughBlockDelimiter
 
-DelimitedBlockRawLine <- FileInclusion / RawLine
-
-RawLine <- !EOF content:(RawLineContent) EOL { // line MAY have content
-    return types.NewRawLine(content.(string))
-}
-
-RawLineContent <- [^\r\n]* { 
-    return string(c.text), nil 
-}
+DelimitedBlockRawLine <- RawLine
 
 CalloutListItem <- ref:(CalloutListItemPrefix) description:(ListParagraph+) {
     return types.NewCalloutListItem(ref.(int), description.([]interface{}))
@@ -1822,7 +1804,6 @@ ThematicBreak <- ("***" / "* * *" / "---" / "- - -" / "___" / "_ _ _") EOL {
 // DelimitedBlock and Paragraph Substitutions (standalone rules)
 // -------------------------------------------------------------------------------------
 
-// TODO: remove?
 InlineMacros <- InlineIcon
                 / InlineImage 
                 / Link 
@@ -1885,7 +1866,6 @@ InlineMacroSubs <-
         / Newline)* EOF
 
 NormalBlocks <- elements:(BlankLine 
-            / FileInclusion
             / ImageBlock
             / ThematicBreak
             / OrderedListItem 
