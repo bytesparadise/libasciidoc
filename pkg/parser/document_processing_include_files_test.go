@@ -80,7 +80,7 @@ var _ = Describe("file inclusions", func() {
 		Context("without file inclusions", func() {
 
 			It("should include adoc file without leveloffset in local dir", func() {
-				console, reset := ConfigureLogger()
+				logs, reset := ConfigureLogger(log.WarnLevel)
 				defer reset()
 				source := "include::../../test/includes/chapter-a.adoc[]"
 				expected := types.RawDocument{
@@ -99,11 +99,11 @@ var _ = Describe("file inclusions", func() {
 				}
 				Expect(ParseRawDocument(source, WithFilename("test.adoc"), WithoutFileInclusions())).To(MatchRawDocument(expected))
 				// verify no error/warning in logs
-				Expect(console).ToNot(ContainAnyMessageWithLevels(log.ErrorLevel, log.WarnLevel))
+				Expect(logs).ToNot(ContainAnyMessageWithLevels(log.ErrorLevel, log.WarnLevel))
 			})
 
 			It("should include adoc file without leveloffset in relative dir", func() {
-				console, reset := ConfigureLogger()
+				logs, reset := ConfigureLogger(log.WarnLevel)
 				defer reset()
 				source := "include::../../../test/includes/chapter-a.adoc[]"
 				expected := types.RawDocument{
@@ -122,7 +122,7 @@ var _ = Describe("file inclusions", func() {
 				}
 				Expect(ParseRawDocument(source, WithFilename("tmp/foo.adoc"), WithoutFileInclusions())).To(MatchRawDocument(expected))
 				// verify no error/warning in logs
-				Expect(console).ToNot(ContainAnyMessageWithLevels(log.ErrorLevel, log.WarnLevel))
+				Expect(logs).ToNot(ContainAnyMessageWithLevels(log.ErrorLevel, log.WarnLevel))
 			})
 
 			It("should include adoc file with leveloffset attribute", func() {
@@ -675,7 +675,7 @@ var _ = Describe("file inclusions", func() {
 		Context("with file inclusions", func() {
 
 			It("should include adoc file without leveloffset from local file", func() {
-				console, reset := ConfigureLogger()
+				logs, reset := ConfigureLogger(log.WarnLevel)
 				defer reset()
 				source := "include::../../test/includes/chapter-a.adoc[]"
 				expected := types.RawDocument{
@@ -701,11 +701,11 @@ var _ = Describe("file inclusions", func() {
 				}
 				Expect(ParseRawDocument(source, WithFilename("foo.adoc"))).To(MatchRawDocument(expected))
 				// verify no error/warning in logs
-				Expect(console).ToNot(ContainAnyMessageWithLevels(log.ErrorLevel, log.WarnLevel))
+				Expect(logs).ToNot(ContainAnyMessageWithLevels(log.ErrorLevel, log.WarnLevel))
 			})
 
 			It("should include adoc file without leveloffset from relative file", func() {
-				console, reset := ConfigureLogger()
+				logs, reset := ConfigureLogger(log.WarnLevel)
 				defer reset()
 				source := "include::../../../test/includes/chapter-a.adoc[]"
 				expected := types.RawDocument{
@@ -731,11 +731,11 @@ var _ = Describe("file inclusions", func() {
 				}
 				Expect(ParseRawDocument(source, WithFilename("tmp/foo.adoc"))).To(MatchRawDocument(expected))
 				// verify no error/warning in logs
-				Expect(console).ToNot(ContainAnyMessageWithLevels(log.ErrorLevel, log.WarnLevel))
+				Expect(logs).ToNot(ContainAnyMessageWithLevels(log.ErrorLevel, log.WarnLevel))
 			})
 
 			It("should include adoc file with leveloffset", func() {
-				console, reset := ConfigureLogger()
+				logs, reset := ConfigureLogger(log.WarnLevel)
 				defer reset()
 				source := "include::../../test/includes/chapter-a.adoc[leveloffset=+1]"
 				expected := types.RawDocument{
@@ -761,7 +761,7 @@ var _ = Describe("file inclusions", func() {
 				}
 				Expect(ParseRawDocument(source)).To(MatchRawDocument(expected))
 				// verify no error/warning in logs
-				Expect(console).ToNot(ContainAnyMessageWithLevels(log.ErrorLevel, log.WarnLevel))
+				Expect(logs).ToNot(ContainAnyMessageWithLevels(log.ErrorLevel, log.WarnLevel))
 			})
 
 			It("should include section 0 by default", func() {
@@ -1497,7 +1497,7 @@ include::../../test/includes/chapter-a.adoc[]
 				Context("with quoted line ranges", func() {
 
 					It("file inclusion with single quoted line", func() {
-						console, reset := ConfigureLogger()
+						logs, reset := ConfigureLogger(log.WarnLevel)
 						defer reset()
 						source := `include::../../test/includes/chapter-a.adoc[lines="1"]`
 						expected := types.RawDocument{
@@ -1515,7 +1515,7 @@ include::../../test/includes/chapter-a.adoc[]
 						}
 						Expect(ParseRawDocument(source)).To(MatchRawDocument(expected))
 						// verify no error/warning in logs
-						Expect(console).ToNot(ContainAnyMessageWithLevels(log.ErrorLevel, log.WarnLevel))
+						Expect(logs).ToNot(ContainAnyMessageWithLevels(log.ErrorLevel, log.WarnLevel))
 					})
 
 					It("file inclusion with multiple quoted lines", func() {
@@ -1639,7 +1639,7 @@ include::../../test/includes/chapter-a.adoc[]
 			Context("with tag ranges", func() {
 
 				It("file inclusion with single tag", func() {
-					console, reset := ConfigureLogger()
+					logs, reset := ConfigureLogger(log.WarnLevel)
 					defer reset()
 					source := `include::../../test/includes/tag-include.adoc[tag=section]`
 					expected := types.RawDocument{
@@ -1657,11 +1657,11 @@ include::../../test/includes/chapter-a.adoc[]
 					}
 					Expect(ParseRawDocument(source)).To(MatchRawDocument(expected))
 					// verify no error/warning in logs
-					Expect(console).ToNot(ContainAnyMessageWithLevels(log.ErrorLevel, log.WarnLevel))
+					Expect(logs).ToNot(ContainAnyMessageWithLevels(log.ErrorLevel, log.WarnLevel))
 				})
 
 				It("file inclusion with surrounding tag", func() {
-					console, reset := ConfigureLogger()
+					logs, reset := ConfigureLogger(log.WarnLevel)
 					defer reset()
 					source := `include::../../test/includes/tag-include.adoc[tag=doc]`
 					expected := types.RawDocument{
@@ -1688,12 +1688,12 @@ include::../../test/includes/chapter-a.adoc[]
 					}
 					Expect(ParseRawDocument(source)).To(MatchRawDocument(expected))
 					// verify no error/warning in logs
-					Expect(console).ToNot(ContainAnyMessageWithLevels(log.ErrorLevel, log.WarnLevel))
+					Expect(logs).ToNot(ContainAnyMessageWithLevels(log.ErrorLevel, log.WarnLevel))
 				})
 
 				It("file inclusion with unclosed tag", func() {
 					// setup logger to write in a buffer so we can check the output
-					console, reset := ConfigureLogger()
+					logs, reset := ConfigureLogger(log.WarnLevel)
 					defer reset()
 					source := `include::../../test/includes/tag-include-unclosed.adoc[tag=unclosed]`
 					expected := types.RawDocument{
@@ -1719,7 +1719,7 @@ include::../../test/includes/chapter-a.adoc[]
 					}
 					Expect(ParseRawDocument(source)).To(MatchRawDocument(expected))
 					// verify error in logs
-					Expect(console).To(ContainMessageWithLevel(log.WarnLevel,
+					Expect(logs).To(ContainMessageWithLevel(log.WarnLevel,
 						"detected unclosed tag 'unclosed' starting at line 6 of include file: ../../test/includes/tag-include-unclosed.adoc",
 					))
 				})

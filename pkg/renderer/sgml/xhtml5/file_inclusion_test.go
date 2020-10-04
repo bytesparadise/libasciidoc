@@ -15,7 +15,7 @@ import (
 var _ = Describe("file inclusions", func() {
 
 	It("should include adoc file without leveloffset from local file", func() {
-		console, reset := ConfigureLogger()
+		logs, reset := ConfigureLogger(log.WarnLevel)
 		defer reset()
 		lastUpdated := time.Now()
 		source := "include::../../../../test/includes/grandchild-include.adoc[]"
@@ -47,11 +47,11 @@ var _ = Describe("file inclusions", func() {
 			},
 		}))
 		// verify no error/warning in logs
-		Expect(console).ToNot(ContainAnyMessageWithLevels(log.ErrorLevel, log.WarnLevel))
+		Expect(logs).ToNot(ContainAnyMessageWithLevels(log.ErrorLevel, log.WarnLevel))
 	})
 
 	It("should include adoc file without leveloffset from relative file", func() {
-		console, reset := ConfigureLogger()
+		logs, reset := ConfigureLogger(log.WarnLevel)
 		defer reset()
 		source := "include::../../../../../test/includes/grandchild-include.adoc[]"
 		expected := `<div class="sect1">
@@ -68,7 +68,7 @@ var _ = Describe("file inclusions", func() {
 `
 		Expect(RenderXHTML(source, configuration.WithFilename("tmp/foo.adoc"))).To(Equal(expected))
 		// verify no error/warning in logs
-		Expect(console).ToNot(ContainAnyMessageWithLevels(log.ErrorLevel, log.WarnLevel))
+		Expect(logs).ToNot(ContainAnyMessageWithLevels(log.ErrorLevel, log.WarnLevel))
 	})
 
 	It("should include grandchild content with relative offset", func() {
@@ -709,7 +709,7 @@ func helloworld() {
 		})
 
 		It("file inclusion with unclosed tag", func() {
-			console, reset := ConfigureLogger()
+			logs, reset := ConfigureLogger(log.WarnLevel)
 			defer reset()
 			source := `include::../../../../test/includes/tag-include-unclosed.adoc[tag=unclosed]`
 			expected := `<div class="paragraph">
@@ -721,7 +721,7 @@ func helloworld() {
 `
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 			// verify error in logs
-			Expect(console).To(
+			Expect(logs).To(
 				ContainMessageWithLevel(
 					log.WarnLevel,
 					"detected unclosed tag 'unclosed' starting at line 6 of include file: ../../../../test/includes/tag-include-unclosed.adoc",
