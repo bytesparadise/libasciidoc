@@ -5,11 +5,12 @@ import (
 	"os"
 
 	logsupport "github.com/bytesparadise/libasciidoc/pkg/log"
+	"github.com/sirupsen/logrus"
 	log "github.com/sirupsen/logrus"
 )
 
 func init() {
-	logsupport.Setup()
+	logsupport.Setup(logrus.ErrorLevel)
 	if debugMode() {
 		log.SetLevel(log.DebugLevel)
 		log.Info("Running test with logs in DEBUG level")

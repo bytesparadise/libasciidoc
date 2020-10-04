@@ -36,7 +36,7 @@ func NewRootCmd() *cobra.Command {
 				fmt.Fprintf(cmd.OutOrStderr(), "unable to parse log level '%v'", logLevel)
 				return err
 			}
-			logsupport.Setup()
+			logsupport.Setup(log.WarnLevel)
 			log.SetLevel(lvl)
 			log.SetOutput(cmd.OutOrStdout())
 			return nil

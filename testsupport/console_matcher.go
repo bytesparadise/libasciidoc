@@ -16,7 +16,7 @@ import (
 // ConfigureLogger configures the logger to write to a `Readable`.
 // Also returns a func that can be used to reset the logger at the
 // end of the test.
-func ConfigureLogger() (io.Reader, func()) {
+func ConfigureLogger(level log.Level) (io.Reader, func()) {
 	fmtr := log.StandardLogger().Formatter
 	t := tee{
 		buf: bytes.NewBuffer(nil),
@@ -26,9 +26,12 @@ func ConfigureLogger() (io.Reader, func()) {
 	log.SetFormatter(&log.JSONFormatter{
 		DisableTimestamp: true,
 	})
+	oldLevel := log.GetLevel()
+	log.SetLevel(level)
 	return t, func() {
 		log.SetOutput(os.Stdout)
 		log.SetFormatter(fmtr)
+		log.SetLevel(oldLevel)
 	}
 }
 
