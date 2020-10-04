@@ -1,3 +1,14 @@
+# [](https://github.com/bytesparadise/libasciidoc/compare/v0.5.0...v0.5.1) (2020-10-04)
+
+This is a patch-release to solve a bug in the passthrough block substitutions. 
+This issue should have been addressed in v0.5.0 but it wasn't triaged 🤦‍♂️
+
+### Bug Fixes
+
+* **parser:** ignore special chars in passthrough blocks ([#763](https://github.com/bytesparadise/libasciidoc/issues/763)) ([3f4ee89](https://github.com/bytesparadise/libasciidoc/commit/3f4ee893b7e1322daedfd874fff1fe20117033da)), closes [#746](https://github.com/bytesparadise/libasciidoc/issues/746)
+
+
+
 # [0.5.0](https://github.com/bytesparadise/libasciidoc/compare/v0.3.0...v) (2020-10-04)
 
 Version 0.5.0 adds the XHTML5 backend, as well as support for custom substitutions on paragraphs and delimited blocks.
